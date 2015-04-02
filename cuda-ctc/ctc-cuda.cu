@@ -200,14 +200,14 @@ void setup(int& nvertices, Extent& host_extent, float dt)
 	params.lmax = 1.442599;
 	params.q = 1;
 	params.Cq = 1.8;
-	params.totArea0 = 1256;
-	params.totVolume0 = 4188;
+	params.totArea0 = 660;
+	params.totVolume0 = 1590;
 	params.area0 = params.totArea0 / (float)ntriang;
-	params.ka = 945;
-	params.kd = 10;
-	params.kv = 150;
-	params.gammaT = 9;
-	params.gammaC = 3;
+	params.ka = 345;
+	params.kd = 0;
+	params.kv = 300;
+	params.gammaT = 6;
+	params.gammaC = 2;
 
 	params.rc = 0.5;
 	params.aij = 100;
@@ -215,7 +215,7 @@ void setup(int& nvertices, Extent& host_extent, float dt)
 	params.sigma = sqrt(2 * params.gamma * params.kbT);
 	params.dt = dt;
 
-	float phi = 8.0 / 180.0*M_PI;
+	float phi = 3.0 / 180.0*M_PI;
 	params.sinTheta0 = sin(phi);
 	params.cosTheta0 = cos(phi);
 	params.kb = 6.048;
