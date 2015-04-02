@@ -138,6 +138,13 @@ namespace KernelsRBC
     SimpleDeviceBuffer<float *> _ddestinations;
     SimpleDeviceBuffer<const float *> _dsources;
     SimpleDeviceBuffer<int> _dcodes;
+
+    void dispose()
+    {
+	_ddestinations.dispose();
+	_dsources.dispose();
+	_dcodes.dispose();
+    }
     
     void shift_send_particles(cudaStream_t stream, const int nrbcs, const int nvertices,
 			      const float ** const sources, const int * codes, float ** const destinations)
@@ -209,7 +216,12 @@ namespace KernelsRBC
     void merge_all_accel(cudaStream_t stream, const int nrbcs, const int nvertices,
 			 const float ** const sources, float ** const destinations)
     {
+	if (nrbcs == 0)
+	    return;
+
 	const int nthreads = nrbcs * nvertices * 3;
+
+	CUDA_CHECK(cudaPeekAtLastError());
 
 	if (nrbcs < cmaxnrbcs)
 	{
@@ -848,5 +860,7 @@ ComputeInteractionsRBC::~ComputeInteractionsRBC()
 
     CUDA_CHECK(cudaEventDestroy(evextents));
     CUDA_CHECK(cudaEventDestroy(evfsi));
+
+    KernelsRBC::dispose();
 }
 
