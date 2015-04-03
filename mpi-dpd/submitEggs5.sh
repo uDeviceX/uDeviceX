@@ -56,7 +56,7 @@ cd ${wd}
 #export CRAY_CUDA_MPS=1
 
 echo "#!/bin/bash -l
-#SBATCH --account=s436                                  
+#SBATCH --account=s448                               
 #SBATCH --ntasks=${tot}
 #SBATCH --nodes=${tot}
 #SBATCH --time=3:00:00
