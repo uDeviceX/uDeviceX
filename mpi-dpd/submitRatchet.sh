@@ -39,7 +39,7 @@ cp ctcs-ic.txt ${wd}/
 cd ../mpi-dpd
 
 here=`pwd`
-ln -s ${here}/sorting${nx}x${ny}.dat ${wd}/sdf.dat
+ln -s ${here}/sorting/sorting${nx}x${ny}.dat ${wd}/sdf.dat
 cp test ${wd}/test
 
 cp ../cuda-rbc/rbc2.atom_parsed ${wd}/../cuda-rbc
@@ -58,7 +58,7 @@ echo "#!/bin/bash -l
 #SBATCH --account=s436                                  
 #SBATCH --ntasks=${tot}
 #SBATCH --nodes=${tot}
-#SBATCH --time=1:00:00
+#SBATCH --time=3:00:00
 #SBATCH --signal="USR1"@520
 
 export XVELAVG=10

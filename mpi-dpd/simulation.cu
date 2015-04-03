@@ -235,7 +235,7 @@ void Simulation::_create_walls(const bool verbose, bool & termination_request)
     }
     
     MPI_CHECK(MPI_Barrier(activecomm));
-    redistribute.adjust_message_sizes(new_sizes);
+    //redistribute.adjust_message_sizes(new_sizes);
     dpd.adjust_message_sizes(new_sizes);
     MPI_CHECK(MPI_Barrier(activecomm));
     
