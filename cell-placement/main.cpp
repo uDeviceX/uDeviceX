@@ -262,7 +262,7 @@ int main(int argc, const char ** argv)
 	   domainextent[0], domainextent[1], domainextent[2]);
     
     Extent extents[2] = {
-	compute_extent("../cuda-rbc/rbc2.atom_parsed"),
+	compute_extent("../cuda-rbc/cell.dat"),
 	compute_extent("../cuda-ctc/sphere.dat")
     };
 
@@ -277,7 +277,7 @@ int main(int argc, const char ** argv)
 	int attempt = 0;
 	for(; attempt < maxattempts; ++attempt)
 	{
-	    const int type = 1;//(int)(drand48() >= 0.25);
+	    const int type = (int)(drand48() >= 0.1);
 
 	    TransformedExtent t(extents[type], domainextent);
 	    

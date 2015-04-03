@@ -68,7 +68,7 @@ namespace CudaRBC
 		//        1, 1.8, a, v, a/m.ntriang, 945, 0, 472.5,
 		//        90, 30, sin(phi), cos(phi), 6.048
 
-		const char* fname = "../cuda-rbc/rbc2.atom_parsed";
+		const char* fname = "../cuda-rbc/cell.dat";
 		ifstream in(fname);
 		string line;
 
@@ -266,6 +266,31 @@ namespace CudaRBC
 		params.kb = kb * params.kbT;
 
 		params.mass = 1.1 / 0.995 * params.totVolume0 * ndens / nparticles;
+
+	params.kbT = 0.0945;
+        params.p = 0.00141;
+        params.lmax = 1.442599;
+        params.q = 1;
+        params.Cq = 1.8;
+        params.totArea0 = 660;
+        params.totVolume0 = 1590;
+        params.area0 = params.totArea0 / (float)ntriang;
+        params.ka = 345;
+        params.kd = 0;
+        params.kv = 300;
+        params.gammaT = 6;
+        params.gammaC = 2;
+
+        params.rc = 0.5;
+        params.aij = 100;
+        params.gamma = 45;
+        params.sigma = sqrt(2 * params.gamma * params.kbT);
+        //params.dt = dt;
+
+        phi = 3.0 / 180.0*M_PI;
+        params.sinTheta0 = sin(phi);
+        params.cosTheta0 = cos(phi);
+        params.kb = 16.048;
 
 		params.ndihedrals = ndihedrals;
 		params.ntriang = ntriang;

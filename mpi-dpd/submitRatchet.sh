@@ -42,8 +42,8 @@ here=`pwd`
 ln -s ${here}/sorting/sorting${nx}x${ny}.dat ${wd}/sdf.dat
 cp test ${wd}/test
 
-cp ../cuda-rbc/rbc2.atom_parsed ${wd}/../cuda-rbc
-cp ../cuda-ctc/sphere.dat ${wd}/../cuda-ctc
+cp ../cuda-rbc/cell.dat ${wd}/../cuda-rbc
+cp ../cuda-ctc/sphere20.dat ${wd}/../cuda-ctc
 
 echo "********* Global params **********" > ${wd}/params.dat
 head -n 35 common.h >> ${wd}/params.dat
@@ -55,7 +55,7 @@ cd ${wd}
 #export CRAY_CUDA_MPS=1
 
 echo "#!/bin/bash -l
-#SBATCH --account=s436                                  
+#SBATCH --account=s448                                  
 #SBATCH --ntasks=${tot}
 #SBATCH --nodes=${tot}
 #SBATCH --time=3:00:00
@@ -67,8 +67,8 @@ export ZVELAVG=3
 export HEX_COMM_FACTOR=2
 
 aprun -n ${tot} -N 1 ./test ${nx} ${ny} 1
-" > SortRBC${nx}x${ny}
+" > SortCells${nx}x${ny}
 
-sbatch SortRBC${nx}x${ny}
+sbatch SortCells${nx}x${ny}
 
 echo "done!"

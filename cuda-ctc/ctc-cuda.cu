@@ -51,7 +51,7 @@ void setup(int& nvertices, Extent& host_extent, float dt)
 {
 	const bool report = false;
 
-	const char* fname = "../cuda-ctc/sphere.dat";
+	const char* fname = "../cuda-ctc/sphere20.dat";
 	ifstream in(fname);
 	string line;
 
@@ -200,8 +200,8 @@ void setup(int& nvertices, Extent& host_extent, float dt)
 	params.lmax = 1.442599;
 	params.q = 1;
 	params.Cq = 1.8;
-	params.totArea0 = 660;
-	params.totVolume0 = 1590;
+	params.totArea0 = 1256;
+	params.totVolume0 = 4188;
 	params.area0 = params.totArea0 / (float)ntriang;
 	params.ka = 345;
 	params.kd = 0;
@@ -218,7 +218,7 @@ void setup(int& nvertices, Extent& host_extent, float dt)
 	float phi = 3.0 / 180.0*M_PI;
 	params.sinTheta0 = sin(phi);
 	params.cosTheta0 = cos(phi);
-	params.kb = 6.048;
+	params.kb = 16.048;
 }
 
     int get_nvertices()
