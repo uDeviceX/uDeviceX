@@ -30,7 +30,7 @@ let lx4=lx/4
 
 cd ../cell-placement
 make
-./cell-placement ${lx4} ${ly} 240
+./cell-placement ${lx} ${ly} 240
 nrbcs=`wc -l rbcs-ic.txt | awk '{print $1}'`
 echo "Generated ${nrbcs} RBCs"
 cp rbcs-ic.txt ${wd}/
