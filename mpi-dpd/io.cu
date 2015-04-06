@@ -88,13 +88,13 @@ void xyz_dump(MPI_Comm comm, MPI_Comm cartcomm, const char * filename, const cha
     MPI_CHECK( MPI_File_close(&f));
 }
 
-void _write_bytes(const void * const ptr, const int nbytes, MPI_File f, MPI_Comm comm)
+void _write_bytes(const void * const ptr, const long long nbytes, MPI_File f, MPI_Comm comm)
 {
     MPI_Offset base;
     MPI_CHECK( MPI_File_get_position(f, &base));
     
-    int offset = 0;
-    MPI_CHECK( MPI_Exscan(&nbytes, &offset, 1, MPI_INTEGER, MPI_SUM, comm)); 
+    MPI_Offset offset = 0;
+    MPI_CHECK( MPI_Exscan(&nbytes, &offset, 1, MPI_LONG_LONG, MPI_SUM, comm)); 
 	
     MPI_Status status;
 	

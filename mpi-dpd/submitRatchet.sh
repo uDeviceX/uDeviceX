@@ -26,10 +26,11 @@ ny=$2
 let tot=nx*ny
 let lx=48*nx
 let ly=48*ny
+let l2=lx/2
 
 cd ../cell-placement
 make
-./cell-placement ${lx} ${ly} 48
+./cell-placement ${l2} ${ly} 48
 nrbcs=`wc -l rbcs-ic.txt | awk '{print $1}'`
 echo "Generated ${nrbcs} RBCs"
 cp rbcs-ic.txt ${wd}/
@@ -55,10 +56,10 @@ cd ${wd}
 #export CRAY_CUDA_MPS=1
 
 echo "#!/bin/bash -l
-#SBATCH --account=s448                                  
+#SBATCH --account=s436                           
 #SBATCH --ntasks=${tot}
 #SBATCH --nodes=${tot}
-#SBATCH --time=3:00:00
+#SBATCH --time=5:00:00
 #SBATCH --signal="USR1"@520
 
 export XVELAVG=10
