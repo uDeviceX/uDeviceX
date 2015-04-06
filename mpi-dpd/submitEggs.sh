@@ -68,8 +68,8 @@ export ZVELAVG=3
 export HEX_COMM_FACTOR=2
 
 aprun -n ${tot} -N 1 ./test ${nx} ${ny} 1
-" > iChip1${nx}x${ny}
+" > iChip${nx}x${ny}
 
-sbatch iChip1${nx}x${ny}
+sbatch iChip${nx}x${ny}
 
 echo "done!"
