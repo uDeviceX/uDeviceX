@@ -43,8 +43,8 @@ const bool ctcs = false;
 const bool xyz_dumps = false;
 const bool hdf5field_dumps = true;
 const bool hdf5part_dumps = false;
-const int steps_per_report = 1000;
-const int steps_per_dump = 1000;
+const int steps_per_report = 2000;
+const int steps_per_dump = 2000;
 const int wall_creation_stepid = 5000;
 
 #include <cstdlib>
