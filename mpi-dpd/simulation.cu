@@ -235,7 +235,7 @@ void Simulation::_create_walls(const bool verbose, bool & termination_request)
     }
 
     MPI_CHECK(MPI_Barrier(activecomm));
-    //redistribute.adjust_message_sizes(new_sizes);
+    redistribute.adjust_message_sizes(new_sizes);
     dpd.adjust_message_sizes(new_sizes);
     MPI_CHECK(MPI_Barrier(activecomm));
 
@@ -338,11 +338,11 @@ void Simulation::_forces()
 
     if (rbcscoll) 
         rbc_interactions.fsi_bulk(particles.xyzuvw.data, particles.size, particles.axayaz.data, cells.start, cells.count,
-                rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
+                rbcscoll->data(), rbcscoll->count(), rbcscoll->fsiacc(), mainstream);
 
     if (ctcscoll) 
         ctc_interactions.fsi_bulk(particles.xyzuvw.data, particles.size, particles.axayaz.data, cells.start, cells.count,
-                ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
+                ctcscoll->data(), ctcscoll->count(), ctcscoll->fsiacc(), mainstream);
 
     CUDA_CHECK(cudaPeekAtLastError());
 
@@ -352,11 +352,11 @@ void Simulation::_forces()
     if (ctcscoll) 
         ctc_interactions.exchange_count();
 
-    if (rbcscoll) 
-        rbc_interactions.internal_forces(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
+    if (rbcscoll && wall)
+        wall->interactions(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->fsiacc(), NULL, NULL, mainstream);
 
-    if (ctcscoll) 
-        ctc_interactions.internal_forces(ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
+    if (ctcscoll && wall)
+        wall->interactions(ctcscoll->data(), ctcscoll->pcount(), ctcscoll->fsiacc(), NULL, NULL, mainstream);
 
     if (rbcscoll) 
         rbc_interactions.post_p();
@@ -364,19 +364,44 @@ void Simulation::_forces()
     if (ctcscoll) 
         ctc_interactions.post_p();
 
-    if (rbcscoll && wall)
-        wall->interactions(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->acc(), NULL, NULL, mainstream);
-
-    if (ctcscoll && wall)
-        wall->interactions(ctcscoll->data(), ctcscoll->pcount(), ctcscoll->acc(), NULL, NULL, mainstream);
-
     if (rbcscoll) 
         rbc_interactions.fsi_halo(particles.xyzuvw.data, particles.size, particles.axayaz.data, cells.start, cells.count,
-                rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
+                rbcscoll->data(), rbcscoll->count(), rbcscoll->fsiacc(), mainstream);
 
     if (ctcscoll) 
         ctc_interactions.fsi_halo(particles.xyzuvw.data, particles.size, particles.axayaz.data, cells.start, cells.count,
-                ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
+                ctcscoll->data(), ctcscoll->count(), ctcscoll->fsiacc(), mainstream);
+
+    // Now we have the solvent forces on the cells, compute the internal forces
+    for (int sstep = 0; sstep < nsubsteps; sstep++)
+    {
+        // Start with acc induced by solvent
+        if (rbcscoll)
+        {
+            CUDA_CHECK( cudaMemcpy(rbcscoll->acc(), rbcscoll->fsiacc(), 3*rbcscoll->pcount()*sizeof(float), cudaMemcpyDeviceToDevice) );
+            rbc_interactions.internal_forces(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
+            rbcscoll->update_stage2_and_1(0.0, mainstream, dt / (nsubsteps));
+            if (wall)
+                wall->bounce(rbcscoll->data(), rbcscoll->pcount(), mainstream);
+
+        }
+
+        if (ctcscoll)
+        {
+            CUDA_CHECK( cudaMemcpy(ctcscoll->acc(), ctcscoll->fsiacc(), 3*ctcscoll->pcount()*sizeof(float), cudaMemcpyDeviceToDevice) );
+            ctc_interactions.internal_forces(ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
+            ctcscoll->update_stage2_and_1(0.0, mainstream, dt / (nsubsteps));
+            if (wall)
+                wall->bounce(ctcscoll->data(), ctcscoll->pcount(), mainstream);
+        }
+    }
+
+    if (rbcscoll)
+        rbc_interactions.internal_forces(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
+
+    if (ctcscoll)
+        ctc_interactions.internal_forces(ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
+
 
     dpd.local_interactions(particles.xyzuvw.data, particles.size, particles.axayaz.data, cells.start, cells.count, mainstream);
 
@@ -386,23 +411,23 @@ void Simulation::_forces()
 
     CUDA_CHECK(cudaPeekAtLastError());
 
-    if (rbcscoll) 
+    if (rbcscoll)
         rbc_interactions.post_a();
 
-    if (ctcscoll) 
+    if (ctcscoll)
         ctc_interactions.post_a();
 
 
     dpd.wait_for_messages(mainstream);
     dpd.remote_interactions(particles.xyzuvw.data, particles.size, particles.axayaz.data, mainstream);
 
-    if (rbcscoll) 
+    if (rbcscoll)
         rbc_interactions.merge_a(rbcscoll->acc(), mainstream);
 
-    if (ctcscoll) 
+    if (ctcscoll)
         ctc_interactions.merge_a(ctcscoll->acc(), mainstream);
 
-    timings["interactions"] += MPI_Wtime() - tstart; 
+    timings["interactions"] += MPI_Wtime() - tstart;
 
     CUDA_CHECK(cudaPeekAtLastError());
 }
@@ -480,13 +505,13 @@ void Simulation::_update_and_bounce()
 
     CUDA_CHECK(cudaPeekAtLastError());
 
-    if (rbcscoll)
-        rbcscoll->update_stage2_and_1(0.0, mainstream);
-
-    CUDA_CHECK(cudaPeekAtLastError());
-
-    if (ctcscoll)
-        ctcscoll->update_stage2_and_1(0.0, mainstream);
+    //        if (rbcscoll)
+    //            rbcscoll->update_stage2_and_1(0.0, mainstream);
+    //
+    //        CUDA_CHECK(cudaPeekAtLastError());
+    //
+    //        if (ctcscoll)
+    //            ctcscoll->update_stage2_and_1(0.0, mainstream);
     timings["update"] += MPI_Wtime() - tstart;
 
     if (wall)
@@ -506,15 +531,15 @@ void Simulation::_update_and_bounce()
     CUDA_CHECK(cudaPeekAtLastError());
 }
 
-Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_termination)()) :  
-                            cartcomm(cartcomm), activecomm(activecomm),
-                            particles(_ic()), cells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN),
-                            rbcscoll(NULL), ctcscoll(NULL), wall(NULL),
-                            redistribute(cartcomm),  redistribute_rbcs(cartcomm),  redistribute_ctcs(cartcomm),
-                            dpd(cartcomm), rbc_interactions(cartcomm), ctc_interactions(cartcomm),
-                            dump_part("allparticles.h5part", activecomm, cartcomm),  dump_field(cartcomm),  dump_part_solvent(NULL),
-                            check_termination(check_termination),
-                            driving_acceleration(0), host_idle_time(0), nsteps((int)(tend / dt))
+Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_termination)()) :
+                                                                cartcomm(cartcomm), activecomm(activecomm),
+                                                                particles(_ic()), cells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN),
+                                                                rbcscoll(NULL), ctcscoll(NULL), wall(NULL),
+                                                                redistribute(cartcomm),  redistribute_rbcs(cartcomm),  redistribute_ctcs(cartcomm),
+                                                                dpd(cartcomm), rbc_interactions(cartcomm), ctc_interactions(cartcomm),
+                                                                dump_part("allparticles.h5part", activecomm, cartcomm),  dump_field(cartcomm),  dump_part_solvent(NULL),
+                                                                check_termination(check_termination),
+                                                                driving_acceleration(0), host_idle_time(0), nsteps((int)(tend / dt))
 {
     //Side not of Yu-Hang:
     //in production runs replace the numbers with 4 unique ones that are same across ranks
@@ -531,7 +556,7 @@ Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_term
         rbcscoll->setup();
     }
 
-    if (ctcs) 
+    if (ctcs)
     {
         ctcscoll = new CollectionCTC(cartcomm);
         ctcscoll->setup();
@@ -566,68 +591,68 @@ void Simulation::run()
         const bool verbose = it > 0 && rank == 0;
 
 #ifdef _USE_NVTX_
-        if (it == 7001)
-        {
-            NvtxTracer::currently_profiling = true;
-            CUDA_CHECK(cudaProfilerStart());
-        }
-        else if (it == 7051)
-        {
-            CUDA_CHECK(cudaProfilerStop());
-            NvtxTracer::currently_profiling = false;
-            CUDA_CHECK(cudaDeviceSynchronize());
+if (it == 7001)
+{
+    NvtxTracer::currently_profiling = true;
+    CUDA_CHECK(cudaProfilerStart());
+}
+else if (it == 7051)
+{
+    CUDA_CHECK(cudaProfilerStop());
+    NvtxTracer::currently_profiling = false;
+    CUDA_CHECK(cudaDeviceSynchronize());
 
-            if (rank == 0)
-                printf("profiling session ended. terminating the simulation now...\n");
+    if (rank == 0)
+        printf("profiling session ended. terminating the simulation now...\n");
 
-            break;
-        }
+    break;
+}
 #endif
 
-        if (it % steps_per_report == 0)
-        {
-            CUDA_CHECK(cudaStreamSynchronize(mainstream));
+if (it % steps_per_report == 0)
+{
+    CUDA_CHECK(cudaStreamSynchronize(mainstream));
 
-            if (check_termination())
-                break;
+    if (check_termination())
+        break;
 
-            _report(verbose, it);
-        }
+    _report(verbose, it);
+}
 
-        _redistribute();
+_redistribute();
 
-        if (walls && it >= wall_creation_stepid && wall == NULL)
-        {
-            CUDA_CHECK(cudaDeviceSynchronize());
+if (walls && it >= wall_creation_stepid && wall == NULL)
+{
+    CUDA_CHECK(cudaDeviceSynchronize());
 
-            bool termination_request = false;
+    bool termination_request = false;
 
-            _create_walls(verbose, termination_request);
+    _create_walls(verbose, termination_request);
 
-            _redistribute();
+    _redistribute();
 
-            if (termination_request)
-                break;
+    if (termination_request)
+        break;
 
-            time_simulation_start = MPI_Wtime();
+    time_simulation_start = MPI_Wtime();
 
-            if (pushtheflow)
-                driving_acceleration = hydrostatic_a;
+    if (pushtheflow)
+        driving_acceleration = hydrostatic_a;
 
-            if (rank == 0)
-                printf("the simulation begins now and it consists of %.3e steps\n", (double)(nsteps - it));
-        }
+    if (rank == 0)
+        printf("the simulation begins now and it consists of %.3e steps\n", (double)(nsteps - it));
+}
 
-        _forces();
+_forces();
 
-        if (it % steps_per_dump == 0)
-        {
-            CUDA_CHECK(cudaStreamSynchronize(mainstream));
+if (it % steps_per_dump == 0)
+{
+    CUDA_CHECK(cudaStreamSynchronize(mainstream));
 
-            _data_dump(it);
-        }
+    _data_dump(it);
+}
 
-        _update_and_bounce();
+_update_and_bounce();
     }
 
     const double time_simulation_stop = MPI_Wtime();

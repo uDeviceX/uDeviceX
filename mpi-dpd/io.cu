@@ -100,8 +100,8 @@ void _write_bytes(const void * const ptr, const long long nbytes, MPI_File f, MP
 	
     MPI_CHECK( MPI_File_write_at_all(f, base + offset, ptr, nbytes, MPI_CHAR, &status));
 
-    int ntotal = 0;
-    MPI_CHECK( MPI_Allreduce(&nbytes, &ntotal, 1, MPI_INT, MPI_SUM, comm) );
+    long long ntotal = 0;
+    MPI_CHECK( MPI_Allreduce(&nbytes, &ntotal, 1, MPI_LONG_LONG, MPI_SUM, comm) );
     
     MPI_CHECK( MPI_File_seek(f, ntotal, MPI_SEEK_CUR));
 }
