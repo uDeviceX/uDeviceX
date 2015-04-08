@@ -59,7 +59,7 @@ echo "#!/bin/bash -l
 #SBATCH --account=s436                           
 #SBATCH --ntasks=${tot}
 #SBATCH --nodes=${tot}
-#SBATCH --time=4:00:00
+#SBATCH --time=5:00:00
 #SBATCH --signal="USR1"@520
 
 export XVELAVG=10

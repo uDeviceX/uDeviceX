@@ -481,12 +481,12 @@ void Simulation::_update_and_bounce()
     CUDA_CHECK(cudaPeekAtLastError());
 
     if (rbcscoll)
-        rbcscoll->update_stage2_and_1(driving_acceleration, mainstream);
+        rbcscoll->update_stage2_and_1(0.0, mainstream);
 
     CUDA_CHECK(cudaPeekAtLastError());
 
     if (ctcscoll)
-        ctcscoll->update_stage2_and_1(driving_acceleration, mainstream);
+        ctcscoll->update_stage2_and_1(0.0, mainstream);
     timings["update"] += MPI_Wtime() - tstart;
 
     if (wall)
