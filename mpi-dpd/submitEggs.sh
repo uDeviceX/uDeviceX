@@ -28,16 +28,18 @@ let lx=48*nx
 let ly=48*ny
 let lx4=lx/4
 
-cd ../cell-placement
-make
-./cell-placement ${lx} ${ly} 48
-nrbcs=`wc -l rbcs-ic.txt | awk '{print $1}'`
-echo "Generated ${nrbcs} RBCs"
-cp rbcs-ic.txt ${wd}/
-nctcs=`wc -l ctcs-ic.txt | awk '{print $1}'`
-echo "Generated ${nctcs} CTCs"
-cp ctcs-ic.txt ${wd}/
-cd ../mpi-dpd
+#cd ../cell-placement
+#make
+#./cell-placement ${lx} ${ly} 48
+#nrbcs=`wc -l rbcs-ic.txt | awk '{print $1}'`
+#echo "Generated ${nrbcs} RBCs"
+#cp rbcs-ic.txt ${wd}/
+#nctcs=`wc -l ctcs-ic.txt | awk '{print $1}'`
+#echo "Generated ${nctcs} CTCs"
+#cp ctcs-ic.txt ${wd}/
+#cd ../mpi-dpd
+
+cp one-ic.txt ${wd}/ctcs-ic.txt
 
 here=`pwd`
 ln -s ${here}/eggs/${nx}x${ny}.dat ${wd}/sdf.dat
@@ -56,10 +58,10 @@ cd ${wd}
 #export CRAY_CUDA_MPS=1
 
 echo "#!/bin/bash -l
-#SBATCH --account=s436               
+#SBATCH --account=s448               
 #SBATCH --ntasks=${tot}
 #SBATCH --nodes=${tot}
-#SBATCH --time=5:00:00
+#SBATCH --time=3:00:00
 #SBATCH --signal="USR1"@520
 
 export XVELAVG=10
@@ -68,8 +70,8 @@ export ZVELAVG=3
 export HEX_COMM_FACTOR=2
 
 aprun -n ${tot} -N 1 ./test ${nx} ${ny} 1
-" > iChip${nx}x${ny}
+" > iChipCTC${nx}x${ny}
 
-sbatch iChip${nx}x${ny}
+sbatch iChipCTC${nx}x${ny}
 
 echo "done!"
