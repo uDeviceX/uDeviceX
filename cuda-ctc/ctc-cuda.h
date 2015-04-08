@@ -1,5 +1,5 @@
 /*
- *  rbc.h
+ *  ctc-cuda.h
  *  ctc local
  *
  *  Created by Dmitry Alexeev on Nov 3, 2014
@@ -15,36 +15,38 @@ using namespace std;
 
 namespace CudaCTC
 {
-    struct
-    {
-	float kbT, p, lmax, q, Cq, totArea0, totVolume0, area0,
-	    ka, kd, kv, gammaT, gammaC,  sinTheta0, cosTheta0, kb,
-	    rc, aij, gamma, sigma, dt;
+	struct Params
+	{
+		float kbT, p, lmax, q, Cq, totArea0, totVolume0, area0,
+		ka, kd, kv, gammaT, gammaC,  sinTheta0, cosTheta0, kb,
+		rc, aij, gamma, sigma, dt, mass;
+		int ntriang, ndihedrals, nparticles;
 
-    } static params;
+	};
 
-    struct Extent
-    {
-	float xmin, ymin, zmin;
-	float xmax, ymax, zmax;
-    };
+	struct Extent
+	{
+		float xmin, ymin, zmin;
+		float xmax, ymax, zmax;
+	};
 
-/* blocking, initializes params */
-    void setup(int& nvertices, Extent& host_extent, float dt);
+	static Params params;
+	static __constant__ Params devParams;
 
-    int get_nvertices();
-    
-/* A * (x, 1) */
-    void initialize(float *device_xyzuvw, const float (*transform)[4]);
+	/* blocking, initializes params */
+	void setup(int& nvertices, Extent& host_extent);
 
-/* non-synchronizing */
-    void forces_nohost(cudaStream_t stream, const float * const device_xyzuvw, float * const device_axayaz);
+	int get_nvertices();
 
-/*non-synchronizing, extent not initialized */
-    void extent_nohost(cudaStream_t stream, const float * const xyzuvw, Extent * device_extent, int n = -1);
+	/* A * (x, 1) */
+	void initialize(float *device_xyzuvw, const float (*transform)[4]);
 
-/* get me a pointer to YOUR plain array - no allocation on my side */
-    void get_triangle_indexing(int (*&host_triplets_ptr)[3], int& ntriangles);
+	/* non-synchronizing */
+	void forces_nohost(cudaStream_t stream, int ncells, const float * const device_xyzuvw, float * const device_axayaz);
 
-    //void interforce_nohost(cudaStream_t stream, const float * const xyzuvw, const int nrbcs, float * const axayaz, const int saru_tag);
+	/*non-synchronizing, extent not initialized */
+	void extent_nohost(cudaStream_t stream, int ncells, const float * const xyzuvw, Extent * device_extent, int n = -1);
+
+	/* get me a pointer to YOUR plain array - no allocation on my side */
+	void get_triangle_indexing(int (*&host_triplets_ptr)[3], int& ntriangles);
 };

@@ -225,7 +225,7 @@ namespace CudaRBC
 
 		dummy = new Extent[maxCells];
 
-		unitsSetup(1.64, 0.00141, 19.0476, 64, 1104.168, 159.0438, 0, 135, 94, 1e-6, 2.4295e-6, 4, report); //unitsSetup(1.64, 0.00705, 6, 15, 1000, 5000, 5, 135, 90, 1e-6, 1e-5, 4, report);
+		unitsSetup(1.64, 0.00141*2, 19.0476*0.5, 200, 40104.168, 40059.0438, 0, 660, 1596, 1e-6, 2.4295e-6, 4, report); //unitsSetup(1.64, 0.00705, 6, 15, 1000, 5000, 5, 135, 90, 1e-6, 1e-5, 4, report);
 	}
 
 	void unitsSetup(float lmax, float p, float cq, float kb, float ka, float kv, float gammaC,
@@ -260,37 +260,37 @@ namespace CudaRBC
 		params.sigma = sqrt(2 * params.gamma * params.kbT);
 		//		params.dt = dt;
 
-		float phi = 6.9 / 180.0*M_PI; //float phi = 3.1 / 180.0*M_PI;
+		float phi = 3.7 / 180.0*M_PI; //float phi = 3.1 / 180.0*M_PI;
 		params.sinTheta0 = sin(phi);
 		params.cosTheta0 = cos(phi);
 		params.kb = kb * params.kbT;
 
 		params.mass = 1.1 / 0.995 * params.totVolume0 * ndens / nparticles;
 
-	params.kbT = 0.0945;
-        params.p = 0.00141;
-        params.lmax = 1.442599;
-        params.q = 1;
-        params.Cq = 1.8;
-        params.totArea0 = 660;
-        params.totVolume0 = 1590;
-        params.area0 = params.totArea0 / (float)ntriang;
-        params.ka = 345;
-        params.kd = 0;
-        params.kv = 300;
-        params.gammaT = 6;
-        params.gammaC = 2;
-
-        params.rc = 0.5;
-        params.aij = 100;
-        params.gamma = 45;
-        params.sigma = sqrt(2 * params.gamma * params.kbT);
-        //params.dt = dt;
-
-        phi = 3.0 / 180.0*M_PI;
-        params.sinTheta0 = sin(phi);
-        params.cosTheta0 = cos(phi);
-        params.kb = 16.048;
+//		params.kbT = 0.0945;
+//        params.p = 0.00141;
+//        params.lmax = 1.442599;
+//        params.q = 1;
+//        params.Cq = 1.8;
+//        params.totArea0 = 660;
+//        params.totVolume0 = 1590;
+//        params.area0 = params.totArea0 / (float)ntriang;
+//        params.ka = 345;
+//        params.kd = 0;
+//        params.kv = 300;
+//        params.gammaT = 6;
+//        params.gammaC = 2;
+//
+//        params.rc = 0.5;
+//        params.aij = 100;
+//        params.gamma = 45;
+//        params.sigma = sqrt(2 * params.gamma * params.kbT);
+//        //params.dt = dt;
+//
+//        phi = 3.7 / 180.0*M_PI;
+//        params.sinTheta0 = sin(phi);
+//        params.cosTheta0 = cos(phi);
+//        params.kb = 16.048;
 
 		params.ndihedrals = ndihedrals;
 		params.ntriang = ntriang;
