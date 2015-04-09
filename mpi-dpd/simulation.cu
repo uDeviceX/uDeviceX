@@ -437,9 +437,11 @@ void Simulation::_qoi(Particle* rbcs, Particle * ctcs, const float tm)
     const float h = 1;
     int dims[3], periods[3], coords[3];
     MPI_CHECK( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
+    // RANK SHIFT
+    const int nbins = ceil(YSIZE_SUBDOMAIN * dims[1] / h);
 
-    vector<int> locRBChisto(ceil(YSIZE_SUBDOMAIN * dims[1] / h), 0);
-    vector<int> locCTChisto(ceil(YSIZE_SUBDOMAIN * dims[1] / h), 0);
+    vector<int> locRBChisto(nbins, 0);
+    vector<int> locCTChisto(nbins, 0);
 
     if (rbcscoll)
         for (int p = 0; p < rbcscoll->count(); p++)
@@ -448,7 +450,7 @@ void Simulation::_qoi(Particle* rbcs, Particle * ctcs, const float tm)
             Particle * cur = rbcs + p * rbcscoll->nvertices;
             for (int i=0; i < rbcscoll->nvertices; i++)
                 ycom += cur[i].x[1];
-            ycom /= rbcscoll->nvertices;
+            ycom = ycom / rbcscoll->nvertices + (coords[1] + 0.5) * YSIZE_SUBDOMAIN;
             locRBChisto[floor(ycom / h)]++;
         }
 
@@ -460,25 +462,25 @@ void Simulation::_qoi(Particle* rbcs, Particle * ctcs, const float tm)
 
             for (int i=0; i < ctcscoll->nvertices; i++)
                 ycom += cur[i].x[1];
-            ycom /= ctcscoll->nvertices;
+            ycom = ycom / ctcscoll->nvertices + (coords[1] + 0.5) * YSIZE_SUBDOMAIN;
             locCTChisto[floor(ycom / h)]++;
         }
 
-    MPI_CHECK( MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &locRBChisto[0], &locRBChisto[0], locRBChisto.size(), MPI_INT, MPI_SUM, 0, cartcomm) );
-    MPI_CHECK( MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &locCTChisto[0], &locCTChisto[0], locCTChisto.size(), MPI_INT, MPI_SUM, 0, cartcomm) );
+    MPI_CHECK( MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &locRBChisto[0], &locRBChisto[0], nbins, MPI_INT, MPI_SUM, 0, cartcomm) );
+    MPI_CHECK( MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &locCTChisto[0], &locCTChisto[0], nbins, MPI_INT, MPI_SUM, 0, cartcomm) );
 
     if (rank == 0)
     {
         FILE* fout = fopen("rbchisto.dat", qoiid == 0 ? "w" : "a");
         fprintf(fout, "\n %f\n", tm);
-        for (int i=0; i<locRBChisto.size(); i++)
-            fprintf(fout, "%f   %d", i*h + 0.5*h, locRBChisto[i]);
+        for (int i=0; i<nbins; i++)
+            fprintf(fout, "%f   %d\n", i*h + 0.5*h, locRBChisto[i]);
         fclose(fout);
 
         fout = fopen("ctchisto.dat", qoiid == 0 ? "w" : "a");
         fprintf(fout, "\n %f\n", tm);
-        for (int i=0; i<locCTChisto.size(); i++)
-            fprintf(fout, "%f   %d", i*h + 0.5*h, locCTChisto[i]);
+        for (int i=0; i<nbins; i++)
+            fprintf(fout, "%f   %d\n", i*h + 0.5*h, locCTChisto[i]);
         fclose(fout);
 
         qoiid++;

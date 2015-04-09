@@ -37,8 +37,8 @@ const float sigmaf = sigma / sqrt(dt);
 const float aij = 50;
 
 const float hydrostatic_a = 0.03;
-const float period = 100;
-const float init_time = 500;
+const float period = 10;
+const float init_time = 20;
 
 const bool walls = true;
 const bool pushtheflow = true;
@@ -49,7 +49,7 @@ const bool hdf5field_dumps = true;
 const bool hdf5part_dumps = false;
 const int steps_per_report = 1000;
 const int steps_per_dump = 1000;
-const int wall_creation_stepid = 5000;
+const int wall_creation_stepid = 1000;
 const int nsubsteps = 10;
 
 #include <cstdlib>
