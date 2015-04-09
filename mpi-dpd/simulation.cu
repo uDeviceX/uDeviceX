@@ -432,6 +432,59 @@ void Simulation::_forces()
     CUDA_CHECK(cudaPeekAtLastError());
 }
 
+void Simulation::_qoi(Particle* rbcs, Particle * ctcs, const float tm)
+{
+    const float h = 1;
+    int dims[3], periods[3], coords[3];
+    MPI_CHECK( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
+
+    vector<int> locRBChisto(ceil(YSIZE_SUBDOMAIN * dims[1] / h), 0);
+    vector<int> locCTChisto(ceil(YSIZE_SUBDOMAIN * dims[1] / h), 0);
+
+    if (rbcscoll)
+        for (int p = 0; p < rbcscoll->count(); p++)
+        {
+            float ycom = 0;
+            Particle * cur = rbcs + p * rbcscoll->nvertices;
+            for (int i=0; i < rbcscoll->nvertices; i++)
+                ycom += cur[i].x[1];
+            ycom /= rbcscoll->nvertices;
+            locRBChisto[floor(ycom / h)]++;
+        }
+
+    if (ctcscoll)
+        for (int p = 0; p < ctcscoll->count(); p++)
+        {
+            float ycom = 0;
+            Particle * cur = ctcs + p * ctcscoll->nvertices;
+
+            for (int i=0; i < ctcscoll->nvertices; i++)
+                ycom += cur[i].x[1];
+            ycom /= ctcscoll->nvertices;
+            locCTChisto[floor(ycom / h)]++;
+        }
+
+    MPI_CHECK( MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &locRBChisto[0], &locRBChisto[0], locRBChisto.size(), MPI_INT, MPI_SUM, 0, cartcomm) );
+    MPI_CHECK( MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &locCTChisto[0], &locCTChisto[0], locCTChisto.size(), MPI_INT, MPI_SUM, 0, cartcomm) );
+
+    if (rank == 0)
+    {
+        FILE* fout = fopen("rbchisto.dat", qoiid == 0 ? "w" : "a");
+        fprintf(fout, "\n %f\n", tm);
+        for (int i=0; i<locRBChisto.size(); i++)
+            fprintf(fout, "%f   %d", i*h + 0.5*h, locRBChisto[i]);
+        fclose(fout);
+
+        fout = fopen("ctchisto.dat", qoiid == 0 ? "w" : "a");
+        fprintf(fout, "\n %f\n", tm);
+        for (int i=0; i<locCTChisto.size(); i++)
+            fprintf(fout, "%f   %d", i*h + 0.5*h, locCTChisto[i]);
+        fclose(fout);
+
+        qoiid++;
+    }
+}
+
 void Simulation::_data_dump(const int idtimestep)
 {
     NVTX_RANGE("data-dump");
@@ -492,6 +545,8 @@ void Simulation::_data_dump(const int idtimestep)
     if (ctcscoll)
         ctcscoll->dump(activecomm, cartcomm);
 
+    _qoi(p+particles.size, p+particles.size + rbcscoll->pcount(), idtimestep * dt);
+
     delete [] p;
     delete [] a;
 
@@ -532,14 +587,14 @@ void Simulation::_update_and_bounce()
 }
 
 Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_termination)()) :
-                                                                cartcomm(cartcomm), activecomm(activecomm),
-                                                                particles(_ic()), cells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN),
-                                                                rbcscoll(NULL), ctcscoll(NULL), wall(NULL),
-                                                                redistribute(cartcomm),  redistribute_rbcs(cartcomm),  redistribute_ctcs(cartcomm),
-                                                                dpd(cartcomm), rbc_interactions(cartcomm), ctc_interactions(cartcomm),
-                                                                dump_part("allparticles.h5part", activecomm, cartcomm),  dump_field(cartcomm),  dump_part_solvent(NULL),
-                                                                check_termination(check_termination),
-                                                                driving_acceleration(0), host_idle_time(0), nsteps((int)(tend / dt))
+                                                                                                                cartcomm(cartcomm), activecomm(activecomm),
+                                                                                                                particles(_ic()), cells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN),
+                                                                                                                rbcscoll(NULL), ctcscoll(NULL), wall(NULL),
+                                                                                                                redistribute(cartcomm),  redistribute_rbcs(cartcomm),  redistribute_ctcs(cartcomm),
+                                                                                                                dpd(cartcomm), rbc_interactions(cartcomm), ctc_interactions(cartcomm),
+                                                                                                                dump_part("allparticles.h5part", activecomm, cartcomm),  dump_field(cartcomm),  dump_part_solvent(NULL),
+                                                                                                                check_termination(check_termination),
+                                                                                                                driving_acceleration(0), host_idle_time(0), nsteps((int)(tend / dt)), qoiid(0)
 {
     //Side not of Yu-Hang:
     //in production runs replace the numbers with 4 unique ones that are same across ranks
@@ -591,68 +646,74 @@ void Simulation::run()
         const bool verbose = it > 0 && rank == 0;
 
 #ifdef _USE_NVTX_
-if (it == 7001)
-{
-    NvtxTracer::currently_profiling = true;
-    CUDA_CHECK(cudaProfilerStart());
-}
-else if (it == 7051)
-{
-    CUDA_CHECK(cudaProfilerStop());
-    NvtxTracer::currently_profiling = false;
-    CUDA_CHECK(cudaDeviceSynchronize());
+        if (it == 7001)
+        {
+            NvtxTracer::currently_profiling = true;
+            CUDA_CHECK(cudaProfilerStart());
+        }
+        else if (it == 7051)
+        {
+            CUDA_CHECK(cudaProfilerStop());
+            NvtxTracer::currently_profiling = false;
+            CUDA_CHECK(cudaDeviceSynchronize());
 
-    if (rank == 0)
-        printf("profiling session ended. terminating the simulation now...\n");
+            if (rank == 0)
+                printf("profiling session ended. terminating the simulation now...\n");
 
-    break;
-}
+            break;
+        }
 #endif
 
-if (it % steps_per_report == 0)
-{
-    CUDA_CHECK(cudaStreamSynchronize(mainstream));
+        if (it % steps_per_report == 0)
+        {
+            CUDA_CHECK(cudaStreamSynchronize(mainstream));
 
-    if (check_termination())
-        break;
+            if (check_termination())
+                break;
 
-    _report(verbose, it);
-}
+            _report(verbose, it);
+        }
 
-_redistribute();
+        _redistribute();
 
-if (walls && it >= wall_creation_stepid && wall == NULL)
-{
-    CUDA_CHECK(cudaDeviceSynchronize());
+        if (walls && it >= wall_creation_stepid && wall == NULL)
+        {
+            CUDA_CHECK(cudaDeviceSynchronize());
 
-    bool termination_request = false;
+            bool termination_request = false;
 
-    _create_walls(verbose, termination_request);
+            _create_walls(verbose, termination_request);
 
-    _redistribute();
+            _redistribute();
 
-    if (termination_request)
-        break;
+            if (termination_request)
+                break;
 
-    time_simulation_start = MPI_Wtime();
+            time_simulation_start = MPI_Wtime();
 
-    if (pushtheflow)
-        driving_acceleration = hydrostatic_a;
+            if (pushtheflow)
+                driving_acceleration = hydrostatic_a;
 
-    if (rank == 0)
-        printf("the simulation begins now and it consists of %.3e steps\n", (double)(nsteps - it));
-}
+            if (rank == 0)
+                printf("the simulation begins now and it consists of %.3e steps\n", (double)(nsteps - it));
+        }
 
-_forces();
+        if (walls)
+        {
+            if (it * dt < init_time) driving_acceleration = hydrostatic_a;
+            else driving_acceleration = sin(2*M_PI * (it*dt - init_time) / period);
+        }
 
-if (it % steps_per_dump == 0)
-{
-    CUDA_CHECK(cudaStreamSynchronize(mainstream));
+        _forces();
 
-    _data_dump(it);
-}
+        if (it % steps_per_dump == 0)
+        {
+            CUDA_CHECK(cudaStreamSynchronize(mainstream));
 
-_update_and_bounce();
+            _data_dump(it);
+        }
+
+        _update_and_bounce();
     }
 
     const double time_simulation_stop = MPI_Wtime();
