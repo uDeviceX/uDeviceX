@@ -437,8 +437,11 @@ void Simulation::_qoi(Particle* rbcs, Particle * ctcs, const float tm)
     const float h = 1;
     int dims[3], periods[3], coords[3];
     MPI_CHECK( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
+
+    const int DIR = 0; // x
+    const int subdomain = (DIR == 0)*XSIZE_SUBDOMAIN + (DIR == 1)*YSIZE_SUBDOMAIN + (DIR == 2)*ZSIZE_SUBDOMAIN;
     // RANK SHIFT
-    const int nbins = ceil(YSIZE_SUBDOMAIN * dims[1] / h);
+    const int nbins = ceil(subdomain * dims[DIR] / h);
 
     vector<int> locRBChisto(nbins, 0);
     vector<int> locCTChisto(nbins, 0);
@@ -446,24 +449,35 @@ void Simulation::_qoi(Particle* rbcs, Particle * ctcs, const float tm)
     if (rbcscoll)
         for (int p = 0; p < rbcscoll->count(); p++)
         {
-            float ycom = 0;
+            float com = 0;
             Particle * cur = rbcs + p * rbcscoll->nvertices;
+
             for (int i=0; i < rbcscoll->nvertices; i++)
-                ycom += cur[i].x[1];
-            ycom = ycom / rbcscoll->nvertices + (coords[1] + 0.5) * YSIZE_SUBDOMAIN;
-            locRBChisto[floor(ycom / h)]++;
+                com += cur[i].x[DIR];
+            com = com / rbcscoll->nvertices + (coords[DIR] + 0.5) * subdomain;
+
+            int ibin = floor(com / h);
+            if (ibin >= nbins) ibin = nbins - 1;
+            if (ibin < 0) ibin = 0;
+
+            locRBChisto[ibin]++;
         }
 
     if (ctcscoll)
         for (int p = 0; p < ctcscoll->count(); p++)
         {
-            float ycom = 0;
+            float com = 0;
             Particle * cur = ctcs + p * ctcscoll->nvertices;
 
             for (int i=0; i < ctcscoll->nvertices; i++)
-                ycom += cur[i].x[1];
-            ycom = ycom / ctcscoll->nvertices + (coords[1] + 0.5) * YSIZE_SUBDOMAIN;
-            locCTChisto[floor(ycom / h)]++;
+                com += cur[i].x[DIR];
+            com = com / ctcscoll->nvertices + (coords[DIR] + 0.5) * subdomain;
+
+            int ibin = floor(com / h);
+            if (ibin >= nbins) ibin = nbins - 1;
+            if (ibin < 0) ibin = 0;
+
+            locCTChisto[ibin]++;
         }
 
     MPI_CHECK( MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &locRBChisto[0], &locRBChisto[0], nbins, MPI_INT, MPI_SUM, 0, cartcomm) );
@@ -589,14 +603,14 @@ void Simulation::_update_and_bounce()
 }
 
 Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_termination)()) :
-                                                                                                                cartcomm(cartcomm), activecomm(activecomm),
-                                                                                                                particles(_ic()), cells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN),
-                                                                                                                rbcscoll(NULL), ctcscoll(NULL), wall(NULL),
-                                                                                                                redistribute(cartcomm),  redistribute_rbcs(cartcomm),  redistribute_ctcs(cartcomm),
-                                                                                                                dpd(cartcomm), rbc_interactions(cartcomm), ctc_interactions(cartcomm),
-                                                                                                                dump_part("allparticles.h5part", activecomm, cartcomm),  dump_field(cartcomm),  dump_part_solvent(NULL),
-                                                                                                                check_termination(check_termination),
-                                                                                                                driving_acceleration(0), host_idle_time(0), nsteps((int)(tend / dt)), qoiid(0)
+                                                                                                                        cartcomm(cartcomm), activecomm(activecomm),
+                                                                                                                        particles(_ic()), cells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN),
+                                                                                                                        rbcscoll(NULL), ctcscoll(NULL), wall(NULL),
+                                                                                                                        redistribute(cartcomm),  redistribute_rbcs(cartcomm),  redistribute_ctcs(cartcomm),
+                                                                                                                        dpd(cartcomm), rbc_interactions(cartcomm), ctc_interactions(cartcomm),
+                                                                                                                        dump_part("allparticles.h5part", activecomm, cartcomm),  dump_field(cartcomm),  dump_part_solvent(NULL),
+                                                                                                                        check_termination(check_termination),
+                                                                                                                        driving_acceleration(0), host_idle_time(0), nsteps((int)(tend / dt)), qoiid(0)
 {
     //Side not of Yu-Hang:
     //in production runs replace the numbers with 4 unique ones that are same across ranks
