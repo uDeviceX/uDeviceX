@@ -307,6 +307,7 @@ void Simulation::_create_walls(const bool verbose, bool & termination_request)
 
 void Simulation::_forces()
 {
+
     //THIS IS WHERE WE WANT TO ACHIEVE 70% OF THE PEAK
     //TODO: i need a coordinating class that performs all the local work while waiting for the communication
 
@@ -338,11 +339,11 @@ void Simulation::_forces()
 
     if (rbcscoll) 
         rbc_interactions.fsi_bulk(particles.xyzuvw.data, particles.size, particles.axayaz.data, cells.start, cells.count,
-                rbcscoll->data(), rbcscoll->count(), rbcscoll->fsiacc(), mainstream);
+                rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
 
     if (ctcscoll) 
         ctc_interactions.fsi_bulk(particles.xyzuvw.data, particles.size, particles.axayaz.data, cells.start, cells.count,
-                ctcscoll->data(), ctcscoll->count(), ctcscoll->fsiacc(), mainstream);
+                ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
 
     CUDA_CHECK(cudaPeekAtLastError());
 
@@ -352,11 +353,11 @@ void Simulation::_forces()
     if (ctcscoll) 
         ctc_interactions.exchange_count();
 
-    if (rbcscoll && wall)
-        wall->interactions(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->fsiacc(), NULL, NULL, mainstream);
-
-    if (ctcscoll && wall)
-        wall->interactions(ctcscoll->data(), ctcscoll->pcount(), ctcscoll->fsiacc(), NULL, NULL, mainstream);
+//    if (rbcscoll)
+//        rbc_interactions.internal_forces(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
+//
+//    if (ctcscoll)
+//        ctc_interactions.internal_forces(ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
 
     if (rbcscoll) 
         rbc_interactions.post_p();
@@ -364,44 +365,19 @@ void Simulation::_forces()
     if (ctcscoll) 
         ctc_interactions.post_p();
 
+    if (rbcscoll && wall)
+        wall->interactions(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->acc(), NULL, NULL, mainstream);
+
+    if (ctcscoll && wall)
+        wall->interactions(ctcscoll->data(), ctcscoll->pcount(), ctcscoll->acc(), NULL, NULL, mainstream);
+
     if (rbcscoll) 
         rbc_interactions.fsi_halo(particles.xyzuvw.data, particles.size, particles.axayaz.data, cells.start, cells.count,
-                rbcscoll->data(), rbcscoll->count(), rbcscoll->fsiacc(), mainstream);
-
-    if (ctcscoll) 
-        ctc_interactions.fsi_halo(particles.xyzuvw.data, particles.size, particles.axayaz.data, cells.start, cells.count,
-                ctcscoll->data(), ctcscoll->count(), ctcscoll->fsiacc(), mainstream);
-
-    // Now we have the solvent forces on the cells, compute the internal forces
-    for (int sstep = 0; sstep < nsubsteps; sstep++)
-    {
-        // Start with acc induced by solvent
-        if (rbcscoll)
-        {
-            CUDA_CHECK( cudaMemcpy(rbcscoll->acc(), rbcscoll->fsiacc(), 3*rbcscoll->pcount()*sizeof(float), cudaMemcpyDeviceToDevice) );
-            rbc_interactions.internal_forces(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
-            rbcscoll->update_stage2_and_1(0.0, mainstream, dt / (nsubsteps));
-            if (wall)
-                wall->bounce(rbcscoll->data(), rbcscoll->pcount(), mainstream);
-
-        }
-
-        if (ctcscoll)
-        {
-            CUDA_CHECK( cudaMemcpy(ctcscoll->acc(), ctcscoll->fsiacc(), 3*ctcscoll->pcount()*sizeof(float), cudaMemcpyDeviceToDevice) );
-            ctc_interactions.internal_forces(ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
-            ctcscoll->update_stage2_and_1(0.0, mainstream, dt / (nsubsteps));
-            if (wall)
-                wall->bounce(ctcscoll->data(), ctcscoll->pcount(), mainstream);
-        }
-    }
-
-    if (rbcscoll)
-        rbc_interactions.internal_forces(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
+                rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
 
     if (ctcscoll)
-        ctc_interactions.internal_forces(ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
-
+        ctc_interactions.fsi_halo(particles.xyzuvw.data, particles.size, particles.axayaz.data, cells.start, cells.count,
+                ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
 
     dpd.local_interactions(particles.xyzuvw.data, particles.size, particles.axayaz.data, cells.start, cells.count, mainstream);
 
@@ -417,15 +393,46 @@ void Simulation::_forces()
     if (ctcscoll)
         ctc_interactions.post_a();
 
-
-    dpd.wait_for_messages(mainstream);
-    dpd.remote_interactions(particles.xyzuvw.data, particles.size, particles.axayaz.data, mainstream);
-
     if (rbcscoll)
         rbc_interactions.merge_a(rbcscoll->acc(), mainstream);
 
-    if (ctcscoll)
+    if (ctcscoll) 
         ctc_interactions.merge_a(ctcscoll->acc(), mainstream);
+
+
+    // Now we have the solvent forces on the cells, compute the internal forces
+    if (rbcscoll)
+        CUDA_CHECK( cudaMemcpy(rbcscoll->fsiacc(), rbcscoll->acc(), 3*rbcscoll->pcount()*sizeof(float), cudaMemcpyDeviceToDevice) );
+
+    if (ctcscoll)
+        CUDA_CHECK( cudaMemcpy(ctcscoll->fsiacc(), ctcscoll->acc(), 3*ctcscoll->pcount()*sizeof(float), cudaMemcpyDeviceToDevice) );
+
+    for (int sstep = 0; sstep < nsubsteps; sstep++)
+    {
+        // Start with acc induced by solvent
+        if (rbcscoll)
+        {
+            CUDA_CHECK( cudaMemcpy(rbcscoll->acc(), rbcscoll->fsiacc(), 3*rbcscoll->pcount()*sizeof(float), cudaMemcpyDeviceToDevice) );
+            rbc_interactions.internal_forces(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
+            rbcscoll->update_stage2_and_1(0.0, mainstream, dt / (nsubsteps));
+            if (wall)
+                wall->bounce(rbcscoll->data(), rbcscoll->pcount(), mainstream, dt / (nsubsteps));
+
+        }
+
+        if (ctcscoll)
+        {
+            CUDA_CHECK( cudaMemcpy(ctcscoll->acc(), ctcscoll->fsiacc(), 3*ctcscoll->pcount()*sizeof(float), cudaMemcpyDeviceToDevice) );
+            ctc_interactions.internal_forces(ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
+            ctcscoll->update_stage2_and_1(0.0, mainstream, dt / (nsubsteps));
+            if (wall)
+                wall->bounce(ctcscoll->data(), ctcscoll->pcount(), mainstream, dt / (nsubsteps));
+        }
+    }
+
+
+    dpd.wait_for_messages(mainstream);
+    dpd.remote_interactions(particles.xyzuvw.data, particles.size, particles.axayaz.data, mainstream);
 
     timings["interactions"] += MPI_Wtime() - tstart;
 
@@ -603,14 +610,14 @@ void Simulation::_update_and_bounce()
 }
 
 Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_termination)()) :
-                                                                                                                        cartcomm(cartcomm), activecomm(activecomm),
-                                                                                                                        particles(_ic()), cells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN),
-                                                                                                                        rbcscoll(NULL), ctcscoll(NULL), wall(NULL),
-                                                                                                                        redistribute(cartcomm),  redistribute_rbcs(cartcomm),  redistribute_ctcs(cartcomm),
-                                                                                                                        dpd(cartcomm), rbc_interactions(cartcomm), ctc_interactions(cartcomm),
-                                                                                                                        dump_part("allparticles.h5part", activecomm, cartcomm),  dump_field(cartcomm),  dump_part_solvent(NULL),
-                                                                                                                        check_termination(check_termination),
-                                                                                                                        driving_acceleration(0), host_idle_time(0), nsteps((int)(tend / dt)), qoiid(0)
+                                                                                                                                cartcomm(cartcomm), activecomm(activecomm),
+                                                                                                                                particles(_ic()), cells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN),
+                                                                                                                                rbcscoll(NULL), ctcscoll(NULL), wall(NULL),
+                                                                                                                                redistribute(cartcomm),  redistribute_rbcs(cartcomm),  redistribute_ctcs(cartcomm),
+                                                                                                                                dpd(cartcomm), rbc_interactions(cartcomm), ctc_interactions(cartcomm),
+                                                                                                                                dump_part("allparticles.h5part", activecomm, cartcomm),  dump_field(cartcomm),  dump_part_solvent(NULL),
+                                                                                                                                check_termination(check_termination),
+                                                                                                                                driving_acceleration(0), host_idle_time(0), nsteps((int)(tend / dt)), qoiid(0)
 {
     //Side not of Yu-Hang:
     //in production runs replace the numbers with 4 unique ones that are same across ranks
@@ -717,7 +724,7 @@ void Simulation::run()
         if (walls)
         {
             if (it * dt < init_time) driving_acceleration = hydrostatic_a;
-            else driving_acceleration = sin(2*M_PI * (it*dt - init_time) / period);
+            else driving_acceleration = hydrostatic_a * sin(2*M_PI * (it*dt - init_time) / period);
         }
 
         _forces();

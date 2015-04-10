@@ -588,7 +588,7 @@ nvertices(0), dualcells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN)
 	MPI_CHECK( MPI_Cart_rank(cartcomm, coordsneighbor, dstranks + i) );
     }
 
-    KernelsRBC::ParamsFSI params = {12.5 , gammadpd, sigmaf};
+    KernelsRBC::ParamsFSI params = {aij , gammadpd, sigmaf};
 
     CUDA_CHECK(cudaMemcpyToSymbol(KernelsRBC::params, &params, sizeof(KernelsRBC::ParamsFSI)));
 

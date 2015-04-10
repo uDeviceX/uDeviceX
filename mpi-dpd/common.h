@@ -36,7 +36,7 @@ const float sigma = sqrt(2 * gammadpd * kBT);
 const float sigmaf = sigma / sqrt(dt);
 const float aij = 50;
 
-const float hydrostatic_a = 0.05;
+const float hydrostatic_a = 0.1;
 const float period = 200;
 const float init_time = 500;
 
