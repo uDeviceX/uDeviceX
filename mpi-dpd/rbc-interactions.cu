@@ -269,7 +269,7 @@ namespace KernelsRBC
 	const float invrij = rsqrtf(rij2);
 	
 	const float rij = rij2 * invrij;
-	const float argwr = max((float)0, 1 - rij/0.4f);
+	const float argwr = max((float)0, 1 - rij);
 	const float wr = powf(argwr, powf(0.5f, -VISCOSITY_S_LEVEL));
 	
 	const float xr = _xr * invrij;
@@ -351,7 +351,7 @@ namespace KernelsRBC
 	    assert(mystart >= 0 && mystart <= myend);
 	    assert(myend <= npsolvent);
 
-	    #pragma unroll 4
+#pragma unroll 4
 	    for(int s = mystart; s < myend; ++s)
 	    {
 		float f[3];
@@ -376,76 +376,97 @@ namespace KernelsRBC
     __constant__ Particle * packstates[26];
     __constant__ Acceleration * packresults[26];
 
+    template<int BLOCKSIZE>
     __global__ void fsi_forces_all(const float seed,
 				   Acceleration * accsolvent, const int npsolvent, const int nremote)
     {
-	const int gid = threadIdx.x + blockDim.x * blockIdx.x;
+	assert(blockDim.x == BLOCKSIZE);
+	assert(blockDim.x * gridDim.x >= nremote);
 
-	if (gid >= nremote)
-	    return;
+	__shared__ float tmp[BLOCKSIZE * 6];
+
+	const int tid = threadIdx.x;
+	const int gidstart =  blockDim.x * blockIdx.x;
+
+	const int nlocal = min(blockDim.x, nremote - gidstart);
+
+	{
+	    const int n = nlocal * 6;
+
+	    for(int l = tid; l < n; l += blockDim.x)
+	    {
+		const int gid = gidstart + l / 6;
 
 	const int key9 = 9 * ((gid >= packstarts[9]) + (gid >= packstarts[18]));
 	const int key3 = 3 * ((gid >= packstarts[key9 + 3]) + (gid >= packstarts[key9 + 6]));
 	const int key1 = (gid >= packstarts[key9 + key3 + 1]) + (gid >= packstarts[key9 + key3 + 2]);
-	const int code = key9 + key3 + key1;
 
-	assert(code >= 0 && code < 26);
-	assert(gid >= packstarts[code] && gid < packstarts[code + 1]);
-
+		const int code = key9 + key3 + key1;
 	const int lpid = gid - packstarts[code];
-	const Particle p = packstates[code][lpid];
-
-	const float3 xp = make_float3(p.x[0], p.x[1], p.x[2]);
-	const float3 up = make_float3(p.u[0], p.u[1], p.u[2]);
 		
-	const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
+		tmp[l] = *((l % 6) + (float *)&packstates[code][lpid]);
+	    }
+	}
 
-	int mycid[3];
-	for(int c = 0; c < 3; ++c)
-	    mycid[c] = L[c]/2 + (int)floor(p.x[c]);
+	__syncthreads();
 
-	for(int c = 0; c < 3; ++c)
-	    if (mycid[c] < -1 || mycid[c] >= L[c] + 1)
+	float3 xp, up;
+	if (tid + gidstart < nremote)
 	    {
-		for(int c = 0; c < 3; ++c)
-		    packresults[code][lpid].a[c] = 0;
+	    xp.x = tmp[0 + 6 * tid];
+	    xp.y = tmp[1 + 6 * tid];
+	    xp.z = tmp[2 + 6 * tid];
+	    up.x = tmp[3 + 6 * tid];
+	    up.y = tmp[4 + 6 * tid];
+	    up.z = tmp[5 + 6 * tid];
 
-		return;
+	    for(int c = 0; c < 6; ++c)
+		assert(!isnan(tmp[c + 6 * tid]));
 	    }
 
-	float fsum[3] = {0, 0, 0};
+	__syncthreads();
 	
-	for(int code = 0; code < 27; ++code)
+	if (tid + gidstart < nremote)
 	{
-	    const int d[3] = {
-		(code % 3) - 1,
-		(code/3 % 3) - 1,
-		(code/9 % 3) - 1
-	    };
+	    float fsum[3] = {0, 0, 0};
 	    
-	    int vcid[3];
-	    for(int c = 0; c < 3; ++c)
-		vcid[c] = mycid[c] + d[c];
+	    const int xcid = XSIZE_SUBDOMAIN / 2 + (int)floor(xp.x);
+	    const int ycid = YSIZE_SUBDOMAIN / 2 + (int)floor(xp.y);
+	    const int zcid = ZSIZE_SUBDOMAIN / 2 + (int)floor(xp.z);
 
-	    bool validcid = true;
-	    for(int c = 0; c < 3; ++c)
-		validcid &= vcid[c] >= 0 && vcid[c] < L[c];
+	    const bool invalid =
+		xcid < -1 || xcid >= XSIZE_SUBDOMAIN + 1 ||
+		ycid < -1 || ycid >= YSIZE_SUBDOMAIN + 1 ||
+		zcid < -1 || zcid >= ZSIZE_SUBDOMAIN + 1 ;
 
-	    if (!validcid)
+	    if (!invalid)
+		for(int code = 0; code < 27; ++code)
+		{
+		    const int xsrccid = xcid + (code % 3) - 1;
+		    const int ysrccid = ycid + (code/3 % 3) - 1;
+		    const int zsrccid = zcid + (code/9 % 3) - 1;
+
+		    const bool invalidsrccid =
+			xsrccid < 0 || xsrccid >= XSIZE_SUBDOMAIN ||
+			ysrccid < 0 || ysrccid >= YSIZE_SUBDOMAIN ||
+			zsrccid < 0 || zsrccid >= ZSIZE_SUBDOMAIN ;
+
+		    if (invalidsrccid)
 		continue;
 	    
-	    const int cid = vcid[0] + XSIZE_SUBDOMAIN * (vcid[1] + YSIZE_SUBDOMAIN * vcid[2]);
-	    const int mystart = tex1Dfetch(texCellsStart, cid);
-	    const int myend = mystart + tex1Dfetch(texCellsCount, cid);
+		    const int srccid = xsrccid + XSIZE_SUBDOMAIN * (ysrccid + YSIZE_SUBDOMAIN * zsrccid);
+
+		    const int mystart = tex1Dfetch(texCellsStart, srccid);
+		    const int myend = mystart + tex1Dfetch(texCellsCount, srccid);
 	    
 	    assert(mystart >= 0 && mystart <= myend);
 	    assert(myend <= npsolvent);
 
-	    #pragma unroll 4
+#pragma unroll 4
 	    for(int s = mystart; s < myend; ++s)
 	    {
 		float f[3];
-		const bool nonzero = fsi_kernel(seed, gid, xp, up, s, f[0], f[1], f[2]);
+			const bool nonzero = fsi_kernel(seed, tid + gidstart, xp, up, s, f[0], f[1], f[2]);
 
 		if (nonzero)
 		{
@@ -459,7 +480,32 @@ namespace KernelsRBC
 	}
 	
 	for(int c = 0; c < 3; ++c)
-	    packresults[code][lpid].a[c] = fsum[c];
+		assert(!isnan(fsum[c]));
+
+	    tmp[0 + 3 * tid] = fsum[0];
+	    tmp[1 + 3 * tid] = fsum[1];
+	    tmp[2 + 3 * tid] = fsum[2];
+	}
+
+	__syncthreads();
+
+	{
+	    const int n = nlocal * 3;
+
+	    for(int l = tid; l < n; l += blockDim.x)
+	    {
+		const int gid = gidstart + l / 3;
+
+		const int key9 = 9 * ((gid >= packstarts[9]) + (gid >= packstarts[18]));
+		const int key3 = 3 * ((gid >= packstarts[key9 + 3]) + (gid >= packstarts[key9 + 6]));
+		const int key1 = (gid >= packstarts[key9 + key3 + 1]) + (gid >= packstarts[key9 + key3 + 2]);
+
+		const int code = key9 + key3 + key1;
+		const int lpid = gid - packstarts[code];
+
+		packresults[code][lpid].a[l % 3] = tmp[l];
+	    }
+	}
     }
 
     __global__ void merge_accelerations(const Acceleration * const src, const int n, Acceleration * const dst)
@@ -542,7 +588,7 @@ nvertices(0), dualcells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN)
 	MPI_CHECK( MPI_Cart_rank(cartcomm, coordsneighbor, dstranks + i) );
     }
 
-    KernelsRBC::ParamsFSI params = {300 , gammadpd, sigmaf};
+    KernelsRBC::ParamsFSI params = {aij, gammadpd, sigmaf};
     
     CUDA_CHECK(cudaMemcpyToSymbol(KernelsRBC::params, &params, sizeof(KernelsRBC::ParamsFSI)));
     
@@ -806,7 +852,7 @@ void ComputeInteractionsRBC::fsi_halo(const Particle * const solvent, const int 
 	}
 	    
 	if(nremote)
-	    KernelsRBC::fsi_forces_all<<< (nremote + 127) / 128, 128, 0, stream>>>(local_trunk.get_float(), accsolvent, nparticles, nremote);
+	    KernelsRBC::fsi_forces_all<128><<< (nremote + 127) / 128, 128, 0, stream>>>(local_trunk.get_float(), accsolvent, nparticles, nremote);
 
     }
 #else
