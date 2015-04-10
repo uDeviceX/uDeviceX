@@ -19,34 +19,34 @@
 #endif
 
 enum { 
-    XSIZE_SUBDOMAIN = 48,
+    XSIZE_SUBDOMAIN = 32,
     YSIZE_SUBDOMAIN = 48,
-    ZSIZE_SUBDOMAIN = 48,
+    ZSIZE_SUBDOMAIN = 64,
     XMARGIN_WALL = 6,
     YMARGIN_WALL = 6,
     ZMARGIN_WALL = 6,
 };
 
 const int numberdensity = 4;
-const float dt = 0.005;
+const float dt = 0.001;
 const float tend = 5000;
 const float kBT = 1.0;
-const float gammadpd = 12;
+const float gammadpd = 45;
 const float sigma = sqrt(2 * gammadpd * kBT); 
 const float sigmaf = sigma / sqrt(dt);
 const float aij = 50;
-const float hydrostatic_a = 0.003;
+const float hydrostatic_a = 0.05;
 const bool walls = true;
 const bool pushtheflow = true;
-const bool rbcs = true;
-const bool ctcs = true;
+const bool rbcs = false;
+const bool ctcs = false;
 const bool xyz_dumps = false;
 const bool hdf5field_dumps = true;
 const bool hdf5part_dumps = false;
-const int steps_per_report = 200;
-const int steps_per_dump = 200;
+const int steps_per_report = 2000;
+const int steps_per_dump = 2000;
 const int wall_creation_stepid = 5000;
-const int nsubsteps = 10;
+const int nsubsteps = 1;
 
 #include <cstdlib>
 #include <cstdio>

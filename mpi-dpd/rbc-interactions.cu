@@ -269,7 +269,7 @@ namespace KernelsRBC
 	const float invrij = rsqrtf(rij2);
 	
 	const float rij = rij2 * invrij;
-	const float argwr = max((float)0, 1 - rij);
+	const float argwr = max((float)0, 1 - rij/0.4f);
 	const float wr = powf(argwr, powf(0.5f, -VISCOSITY_S_LEVEL));
 	
 	const float xr = _xr * invrij;
@@ -542,7 +542,7 @@ nvertices(0), dualcells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN)
 	MPI_CHECK( MPI_Cart_rank(cartcomm, coordsneighbor, dstranks + i) );
     }
 
-    KernelsRBC::ParamsFSI params = {12.5 , gammadpd, sigmaf};
+    KernelsRBC::ParamsFSI params = {300 , gammadpd, sigmaf};
     
     CUDA_CHECK(cudaMemcpyToSymbol(KernelsRBC::params, &params, sizeof(KernelsRBC::ParamsFSI)));
     
