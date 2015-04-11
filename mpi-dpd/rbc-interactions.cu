@@ -25,50 +25,10 @@ namespace KernelsRBC
 
     __constant__ ParamsFSI params;
 
-    texture<float2, cudaTextureType1D> texSolventParticles;
-    texture<int, cudaTextureType1D> texCellsStart, texCellsCount;
+    texture<float2, cudaTextureType1D> texSolventParticles, texSoluteParticles;
+    texture<int, cudaTextureType1D> texCellsStart, texCellsCount, texSoluteCellsStart, texSoluteCellsCount;
 
     static bool firsttime = true;
-
-    __global__ void fsi_forces(const float seed,
-			       Acceleration * accsolvent, const int npsolvent,
-			       const Particle * const particle, const int nparticles, Acceleration * accrbc);
-
-    void setup(const Particle * const solvent, const int npsolvent, const int * const cellsstart, const int * const cellscount)
-    {
-	if (firsttime)
-	{
-	    texCellsStart.channelDesc = cudaCreateChannelDesc<int>();
-	    texCellsStart.filterMode = cudaFilterModePoint;
-	    texCellsStart.mipmapFilterMode = cudaFilterModePoint;
-	    texCellsStart.normalized = 0;
-
-	    texCellsCount.channelDesc = cudaCreateChannelDesc<int>();
-	    texCellsCount.filterMode = cudaFilterModePoint;
-	    texCellsCount.mipmapFilterMode = cudaFilterModePoint;
-	    texCellsCount.normalized = 0;
-
-	    texSolventParticles.channelDesc = cudaCreateChannelDesc<float2>();
-	    texSolventParticles.filterMode = cudaFilterModePoint;
-	    texSolventParticles.mipmapFilterMode = cudaFilterModePoint;
-	    texSolventParticles.normalized = 0;
-	    firsttime = false;
-	}
-
-	size_t textureoffset;
-	CUDA_CHECK(cudaBindTexture(&textureoffset, &texSolventParticles, solvent, &texSolventParticles.channelDesc,
-				   sizeof(float) * 6 * npsolvent));
-
-	const int ncells = XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN;
-
-	assert(textureoffset == 0);
-	CUDA_CHECK(cudaBindTexture(&textureoffset, &texCellsStart, cellsstart, &texCellsStart.channelDesc, sizeof(int) * ncells));
-	assert(textureoffset == 0);
-	CUDA_CHECK(cudaBindTexture(&textureoffset, &texCellsCount, cellscount, &texCellsCount.channelDesc, sizeof(int) * ncells));
-	assert(textureoffset == 0);
-
-	CUDA_CHECK(cudaFuncSetCacheConfig(fsi_forces, cudaFuncCachePreferL1));
-    }
 
     __global__ void shift_send_particles_kernel(const Particle * const src, const int n, const int code, Particle * const dst)
     {
@@ -244,7 +204,6 @@ namespace KernelsRBC
 	}
     }
 
-
     __device__ bool fsi_kernel(const float seed,
 			       const int dpid, const float3 xp, const float3 up, const int spid,
 			       float& xforce, float& yforce, float& zforce)
@@ -281,8 +240,6 @@ namespace KernelsRBC
 	    yr * (up.y - stmp2.x) +
 	    zr * (up.z - stmp2.y);
 
-	//const float mysaru = saru(saru_tag, dpid, spid);
-	//const float myrandnr = 3.464101615f * mysaru - 1.732050807f;
 	const float myrandnr = Logistic::mean0var1(seed, dpid, spid);
 
 	const float strength = params.aij * argwr +  (- params.gamma * wr * rdotv + params.sigmaf * myrandnr) * wr;
@@ -294,7 +251,159 @@ namespace KernelsRBC
 	return true;
     }
 
+    __device__ float3 fsi_interaction(const float seed,
+				      const int dpid, const float3 up, const int spid,
+				      const float2 stmp1, const float2 stmp2,
+				      const float _xr, const float _yr, const float _zr, const float rij2)
+    {
+	const float invrij = rsqrtf(rij2);
+
+	const float rij = rij2 * invrij;
+	const float argwr = 1 - rij;
+	const float wr = viscosity_function<-VISCOSITY_S_LEVEL>(argwr);
+
+	const float xr = _xr * invrij;
+	const float yr = _yr * invrij;
+	const float zr = _zr * invrij;
+
+	const float rdotv =
+	    xr * (up.x - stmp1.y) +
+	    yr * (up.y - stmp2.x) +
+	    zr * (up.z - stmp2.y);
+
+	const float myrandnr = Logistic::mean0var1(seed, dpid, spid);
+
+	const float strength = params.aij * argwr +  (- params.gamma * wr * rdotv + params.sigmaf * myrandnr) * wr;
+
+	return make_float3(strength * xr, strength * yr, strength * zr);
+    }
+
+
+    template<int XCPB, int YCPB, int ZCPB, int COLS, int ROWS>
     __global__ void fsi_forces(const float seed,
+			       float * const accsolute, const int nsolute,
+			       float * const accsolvent, const int nsolvent)
+    {
+	enum { CPB = XCPB * YCPB * ZCPB };
+
+	assert(warpSize == COLS * ROWS);
+	assert(blockDim.x == warpSize && blockDim.y == CPB && blockDim.z == 1);
+	assert(ROWS * 3 <= warpSize);
+
+	const int tid = threadIdx.x;
+	const int wid = threadIdx.y;
+
+	const int subtid = tid % COLS;
+	const int slot = tid / COLS;
+
+	__shared__ int volatile starts[CPB][32], scan[CPB][32];
+
+	const int xmycid = blockIdx.x * XCPB + ((wid) % XCPB);
+	const int ymycid = blockIdx.y * YCPB + ((wid / XCPB) % YCPB);
+	const int zmycid = blockIdx.z * ZCPB + ((wid / (XCPB * YCPB)) % ZCPB);
+
+	assert(xmycid >= 0 && xmycid < XSIZE_SUBDOMAIN);
+	assert(ymycid >= 0 && ymycid < YSIZE_SUBDOMAIN);
+	assert(zmycid >= 0 && zmycid < ZSIZE_SUBDOMAIN);
+
+	const int mycid = xmycid + XSIZE_SUBDOMAIN * (ymycid + YSIZE_SUBDOMAIN * zmycid);
+
+	int mycount = 0, myscan = 0;
+
+	if (tid < 27)
+	{
+	    const int dx = tid % 3;
+	    const int dy = (tid / 3) % 3;
+	    const int dz = (tid / 9) % 3;
+
+	    int xcid = xmycid + dx - 1;
+	    int ycid = ymycid + dy - 1;
+	    int zcid = zmycid + dz - 1;
+
+	    const bool valid_cid =
+		xcid >= 0 && xcid < XSIZE_SUBDOMAIN &&
+		ycid >= 0 && ycid < YSIZE_SUBDOMAIN &&
+		zcid >= 0 && zcid < ZSIZE_SUBDOMAIN ;
+
+	    xcid = min(XSIZE_SUBDOMAIN - 1, max(0, xcid));
+	    ycid = min(YSIZE_SUBDOMAIN - 1, max(0, ycid));
+	    zcid = min(ZSIZE_SUBDOMAIN - 1, max(0, zcid));
+
+	    const int cid = max(0, xcid + XSIZE_SUBDOMAIN * (ycid + YSIZE_SUBDOMAIN * zcid));
+
+	    starts[wid][tid] = tex1Dfetch(texCellsStart, cid);
+
+	    myscan = mycount = valid_cid * tex1Dfetch(texCellsCount, cid);
+	}
+
+	for(int L = 1; L < 32; L <<= 1)
+	    myscan += (tid >= L) * __shfl_up(myscan, L);
+
+	if (tid < 28)
+	    scan[wid][tid] = myscan - mycount;
+
+	const int nsrc = scan[wid][27];
+
+	const int dststart = tex1Dfetch(texSoluteCellsStart, mycid);
+	const int lastdst = dststart + tex1Dfetch(texSoluteCellsCount, mycid);
+
+	for(int dpid = dststart + slot; dpid < lastdst; dpid += ROWS)
+	{
+	    float3 xdest, udest, force = make_float3(0, 0, 0);
+
+	    float2 dtmp0 = tex1Dfetch(texSoluteParticles, 3 * dpid);
+	    xdest.x = dtmp0.x;
+	    xdest.y = dtmp0.y;
+
+	    dtmp0 = tex1Dfetch(texSoluteParticles, 3 * dpid + 1);
+	    xdest.z = dtmp0.x;
+	    udest.x = dtmp0.y;
+
+	    dtmp0 = tex1Dfetch(texSoluteParticles, 3 * dpid + 2);
+	    udest.y = dtmp0.x;
+	    udest.z = dtmp0.y;
+
+	    for(int pid = subtid; pid < nsrc; pid += COLS)
+	    {
+		const int key9 = 9 * ((pid >= scan[wid][9]) + (pid >= scan[wid][18]));
+		const int key3 = 3 * ((pid >= scan[wid][key9 + 3]) + (pid >= scan[wid][key9 + 6]));
+		const int key = key9 + key3;
+
+		const int spid = pid - scan[wid][key] + starts[wid][key];
+		const int sentry = 3 * spid;
+		const float2 stmp0 = tex1Dfetch(texSolventParticles, sentry);
+		const float2 stmp1 = tex1Dfetch(texSolventParticles, sentry + 1);
+
+		const float xr = xdest.x - stmp0.x;
+		const float yr = xdest.y - stmp0.y;
+		const float zr = xdest.z - stmp1.x;
+		const float rij2 = xr * xr + yr * yr + zr * zr;
+
+		if (rij2 < 1.0f)
+		{
+		    const float2 stmp2 = tex1Dfetch(texSolventParticles, sentry + 2);
+		    const float3 f = fsi_interaction(seed, dpid, udest, spid, stmp1, stmp2, xr, yr, zr, rij2);
+
+		    /*atomicAdd(accsolute + 3 * dpid    , f.x);
+		    atomicAdd(accsolute + 3 * dpid + 1, f.y);
+		    atomicAdd(accsolute + 3 * dpid + 2, f.z);*/
+		    force.x += f.x;
+		    force.y += f.y;
+		    force.z += f.z;
+
+		    atomicAdd(accsolvent + 3 * spid    , -f.x);
+		    atomicAdd(accsolvent + 3 * spid + 1, -f.y);
+		    atomicAdd(accsolvent + 3 * spid + 2, -f.z);
+		}
+	    }
+
+	    atomicAdd(accsolute + 3 * dpid    , force.x);
+	    atomicAdd(accsolute + 3 * dpid + 1, force.y);
+	    atomicAdd(accsolute + 3 * dpid + 2, force.z);
+	}
+    }
+
+    __global__ void fsi_forces_old(const float seed,
 			       Acceleration * accsolvent, const int npsolvent,
 			       const Particle * const particle, const int nparticles, Acceleration * accrbc)
     {
@@ -376,53 +485,88 @@ namespace KernelsRBC
     __constant__ Particle * packstates[26];
     __constant__ Acceleration * packresults[26];
 
-    template<int BLOCKSIZE>
-    __global__ void fsi_forces_all(const float seed,
-				   Acceleration * accsolvent, const int npsolvent, const int nremote)
+    template<int BLOCKSIZE> __global__  __launch_bounds__(32 * 4, 16)
+	void fsi_forces_all(const float seed, Acceleration * accsolvent, const int npsolvent, const int nremote)
     {
 	assert(blockDim.x == BLOCKSIZE);
 	assert(blockDim.x * gridDim.x >= nremote);
 
-	__shared__ float tmp[BLOCKSIZE * 6];
+	__shared__ float tmp[BLOCKSIZE * 3];
 
 	const int tid = threadIdx.x;
-	const int gidstart =  blockDim.x * blockIdx.x;
+	const int gidstart =  BLOCKSIZE * blockIdx.x;
 
-	const int nlocal = min(blockDim.x, nremote - gidstart);
+	const int nlocal = min(BLOCKSIZE, nremote - gidstart);
+
+	float3 xp, up;
+
+#ifndef NDEBUG
+	xp = make_float3(-313.313f, -313.313f, -313.313f); //che e' poi l'auto di paperino
+	up = make_float3(-313.313f, -313.313f, -313.313f);
+#endif
 
 	{
 	    const int n = nlocal * 6;
+	    const int h = nlocal * 3;
 
-	    for(int l = tid; l < n; l += blockDim.x)
+	    for(int base = 0; base < n; base += h)
 	    {
-		const int gid = gidstart + l / 6;
+#pragma unroll 3
+		for(int x = tid; x < h; x += BLOCKSIZE)
+		{
+		    const int l = base + x;
+		    const int gid = gidstart + l / 6;
 
-		const int key9 = 9 * ((gid >= packstarts[9]) + (gid >= packstarts[18]));
-		const int key3 = 3 * ((gid >= packstarts[key9 + 3]) + (gid >= packstarts[key9 + 6]));
-		const int key1 = (gid >= packstarts[key9 + key3 + 1]) + (gid >= packstarts[key9 + key3 + 2]);
+		    const int key9 = 9 * ((gid >= packstarts[9]) + (gid >= packstarts[18]));
+		    const int key3 = 3 * ((gid >= packstarts[key9 + 3]) + (gid >= packstarts[key9 + 6]));
+		    const int key1 = (gid >= packstarts[key9 + key3 + 1]) + (gid >= packstarts[key9 + key3 + 2]);
 
-		const int code = key9 + key3 + key1;
-		const int lpid = gid - packstarts[code];
+		    const int code = key9 + key3 + key1;
+		    const int lpid = gid - packstarts[code];
 
-		tmp[l] = *((l % 6) + (float *)&packstates[code][lpid]);
+		    assert(x < BLOCKSIZE * 3);
+		    tmp[x] = *((l % 6) + (float *)&packstates[code][lpid]);
+		}
+
+		__syncthreads();
+
+		const int xstart = tid * 6 - base;
+
+		if (0 <= xstart && xstart + 3 <= h)
+		{
+		    xp.x = tmp[0 + xstart];
+		    xp.y = tmp[1 + xstart];
+		    xp.z = tmp[2 + xstart];
+
+		    assert(0 + 6 * tid - base >= 0);
+		    assert(2 + 6 * tid - base < 3 * BLOCKSIZE);
+		}
+
+		const int ustart = 3 + 6 * tid - base;
+
+		if (0 <= ustart && ustart + 3 <= h)
+		{
+		    up.x = tmp[0 + ustart];
+		    up.y = tmp[1 + ustart];
+		    up.z = tmp[2 + ustart];
+
+		    assert(3 + 6 * tid - base >= 0);
+		    assert(5 + 6 * tid - base < 3 * BLOCKSIZE);
+		}
 	    }
 	}
 
-	__syncthreads();
+#ifndef NDEBUG
+	assert(xp.x != -313.313f || gidstart + tid >= nremote);
+	assert(xp.y != -313.313f || gidstart + tid >= nremote);
+	assert(xp.z != -313.313f || gidstart + tid >= nremote);
+	assert(up.x != -313.313f || gidstart + tid >= nremote);
+	assert(up.y != -313.313f || gidstart + tid >= nremote);
+	assert(up.z != -313.313f || gidstart + tid >= nremote);
+#endif
 
-	float3 xp, up;
-	if (tid + gidstart < nremote)
-	{
-	    xp.x = tmp[0 + 6 * tid];
-	    xp.y = tmp[1 + 6 * tid];
-	    xp.z = tmp[2 + 6 * tid];
-	    up.x = tmp[3 + 6 * tid];
-	    up.y = tmp[4 + 6 * tid];
-	    up.z = tmp[5 + 6 * tid];
-
-	    for(int c = 0; c < 6; ++c)
-		assert(!isnan(tmp[c + 6 * tid]));
-	}
+	assert(!isnan(xp.x) && !isnan(xp.y) && !isnan(xp.z));
+	assert(!isnan(up.x) && !isnan(up.y) && !isnan(up.z));
 
 	__syncthreads();
 
@@ -492,7 +636,8 @@ namespace KernelsRBC
 	{
 	    const int n = nlocal * 3;
 
-	    for(int l = tid; l < n; l += blockDim.x)
+#pragma unroll 3
+	    for(int l = tid; l < n; l += BLOCKSIZE)
 	    {
 		const int gid = gidstart + l / 3;
 
@@ -550,6 +695,77 @@ namespace KernelsRBC
 	    else
 		dst[actualpid].a[c] = src[pid].a[c];
 	}
+    }
+
+
+    void setup(const Particle * const solvent, const int npsolvent, const int * const cellsstart, const int * const cellscount,
+	       const Particle * const solute, const int npsolute, const int * const solute_cellsstart, const int * const solute_cellscount)
+    {
+	if (firsttime)
+	{
+	    texCellsStart.channelDesc = cudaCreateChannelDesc<int>();
+	    texCellsStart.filterMode = cudaFilterModePoint;
+	    texCellsStart.mipmapFilterMode = cudaFilterModePoint;
+	    texCellsStart.normalized = 0;
+
+	    texCellsCount.channelDesc = cudaCreateChannelDesc<int>();
+	    texCellsCount.filterMode = cudaFilterModePoint;
+	    texCellsCount.mipmapFilterMode = cudaFilterModePoint;
+	    texCellsCount.normalized = 0;
+
+	    texSoluteCellsStart.channelDesc = cudaCreateChannelDesc<int>();
+	    texSoluteCellsStart.filterMode = cudaFilterModePoint;
+	    texSoluteCellsStart.mipmapFilterMode = cudaFilterModePoint;
+	    texSoluteCellsStart.normalized = 0;
+
+	    texSoluteCellsCount.channelDesc = cudaCreateChannelDesc<int>();
+	    texSoluteCellsCount.filterMode = cudaFilterModePoint;
+	    texSoluteCellsCount.mipmapFilterMode = cudaFilterModePoint;
+	    texSoluteCellsCount.normalized = 0;
+
+	    texSolventParticles.channelDesc = cudaCreateChannelDesc<float2>();
+	    texSolventParticles.filterMode = cudaFilterModePoint;
+	    texSolventParticles.mipmapFilterMode = cudaFilterModePoint;
+	    texSolventParticles.normalized = 0;
+
+	    texSoluteParticles.channelDesc = cudaCreateChannelDesc<float2>();
+	    texSoluteParticles.filterMode = cudaFilterModePoint;
+	    texSoluteParticles.mipmapFilterMode = cudaFilterModePoint;
+	    texSoluteParticles.normalized = 0;
+
+	    firsttime = false;
+	}
+
+	size_t textureoffset;
+	CUDA_CHECK(cudaBindTexture(&textureoffset, &texSolventParticles, solvent, &texSolventParticles.channelDesc,
+				   sizeof(float) * 6 * npsolvent));
+	assert(textureoffset == 0);
+
+
+	CUDA_CHECK(cudaBindTexture(&textureoffset, &texSoluteParticles, solute, &texSoluteParticles.channelDesc,
+				   sizeof(float) * 6 * npsolute));
+	assert(textureoffset == 0);
+
+
+	const int ncells = XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN;
+
+	assert(textureoffset == 0);
+	CUDA_CHECK(cudaBindTexture(&textureoffset, &texCellsStart, cellsstart, &texCellsStart.channelDesc, sizeof(int) * ncells));
+	assert(textureoffset == 0);
+	CUDA_CHECK(cudaBindTexture(&textureoffset, &texCellsCount, cellscount, &texCellsCount.channelDesc, sizeof(int) * ncells));
+	assert(textureoffset == 0);
+
+	CUDA_CHECK(cudaBindTexture(&textureoffset, &texSoluteCellsStart, solute_cellsstart, &texSoluteCellsStart.channelDesc,
+				   sizeof(int) * ncells));
+	assert(textureoffset == 0);
+	CUDA_CHECK(cudaBindTexture(&textureoffset, &texSoluteCellsCount, solute_cellscount, &texSoluteCellsCount.channelDesc,
+				   sizeof(int) * ncells));
+	assert(textureoffset == 0);
+
+
+	CUDA_CHECK(cudaFuncSetCacheConfig(fsi_forces<2, 2, 1, 8, 4>, cudaFuncCachePreferL1));
+	CUDA_CHECK(cudaFuncSetCacheConfig(fsi_forces_old, cudaFuncCachePreferL1));
+
     }
 }
 
@@ -760,13 +976,13 @@ void ComputeInteractionsRBC::fsi_bulk(const Particle * const solvent, const int 
 {
     NVTX_RANGE("RBC/fsi-bulk", NVTX_C6);
 
-    KernelsRBC::setup(solvent, nparticles, cellsstart_solvent, cellscount_solvent);
+
 
     if (nrbcs > 0 && nparticles > 0)
     {
 	const float seed = local_trunk.get_float();
 
-#if 0
+#if 1
 	const int nsolvent = nparticles;
 	const int nsolute = nrbcs * nvertices;
 	const int3 vcells = make_int3(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
@@ -778,27 +994,24 @@ void ComputeInteractionsRBC::fsi_bulk(const Particle * const solvent, const int 
 	reordering.resize(nsolute);
 	dualcells.build(reordered_solute.data, nrbcs * nvertices, stream, reordering.data);
 
-	texSolventStart.acquire(const_cast<int *>(cellsstart_solvent), ncells + 1);
-	texSolvent.acquire((float2 *)const_cast<Particle *>(solvent), nsolvent * 3);
-	texSoluteStart.acquire(const_cast<int *>(dualcells.start), ncells + 1);
-	texSolute.acquire((float2 *)const_cast<Particle *>(reordered_solute.data), reordered_solute.capacity);
+	//texSoluteStart.acquire(const_cast<int *>(dualcells.start), ncells + 1);
+	//texSolute.acquire((float2 *)const_cast<Particle *>(reordered_solute.data), reordered_solute.capacity);
 
-	//solute to solvent
-	lacc_solvent.resize(nsolvent);
-	forces_dpd_cuda_bipartite_nohost(stream, (float2 *)solvent, nsolvent, texSolventStart.texObj, texSoluteStart.texObj, texSolute.texObj,
-					 nsolute, vcells, 12.5, gammadpd, sigma / sqrt(dt), seed, 0, (float *)lacc_solvent.data);
-
-	//solvent to solute
 	lacc_solute.resize(nsolute);
-	forces_dpd_cuda_bipartite_nohost(stream, (float2 *)reordered_solute.data, nsolute, texSoluteStart.texObj, texSolventStart.texObj, texSolvent.texObj,
-					 nsolvent, vcells, 12.5, gammadpd, sigma / sqrt(dt), seed, 1, (float *)lacc_solute.data);
+	CUDA_CHECK(cudaMemsetAsync(lacc_solute.data, 0, sizeof(float) * 3 * lacc_solute.size, stream));
 
-	KernelsRBC::merge_accelerations_float<<< (nparticles * 3 + 127) / 128, 128, 0, stream >>>(lacc_solvent.data, nparticles, accsolvent);
+	KernelsRBC::setup(solvent, nparticles, cellsstart_solvent, cellscount_solvent,
+			  reordered_solute.data, nsolute, dualcells.start, dualcells.count);
+
+	KernelsRBC::fsi_forces<2, 2, 1, 8, 4><<<
+	    dim3(vcells.x / 2, vcells.y / 2, vcells.z), dim3(32, 4), 0, stream>>>
+	    (seed, (float *)lacc_solute.data, nsolute, (float *)accsolvent, nsolvent);
 
         KernelsRBC::merge_accelerations_scattered_float<false><<< (nrbcs * nvertices * 3 + 127) / 128, 128, 0, stream >>>(
 	    reordering.data, lacc_solute.data, nrbcs * nvertices, accrbc);
 
 #else
+	KernelsRBC::setup(solvent, nparticles, cellsstart_solvent, cellscount_solvent, NULL, 0, NULL,NULL);
 	KernelsRBC::fsi_forces<<< (nrbcs * nvertices + 127) / 128, 128, 0, stream >>>
 	    (seed, accsolvent, nparticles, rbcs, nrbcs * nvertices, accrbc);
 #endif
