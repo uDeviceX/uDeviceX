@@ -353,11 +353,11 @@ void Simulation::_forces()
     if (ctcscoll) 
         ctc_interactions.exchange_count();
 
-//    if (rbcscoll)
-//        rbc_interactions.internal_forces(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
-//
-//    if (ctcscoll)
-//        ctc_interactions.internal_forces(ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
+    //    if (rbcscoll)
+    //        rbc_interactions.internal_forces(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
+    //
+    //    if (ctcscoll)
+    //        ctc_interactions.internal_forces(ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
 
     if (rbcscoll) 
         rbc_interactions.post_p();
@@ -597,11 +597,11 @@ void Simulation::_update_and_bounce()
         tstart = MPI_Wtime();
         wall->bounce(particles.xyzuvw.data, particles.size, mainstream);
 
-        if (rbcscoll)
-            wall->bounce(rbcscoll->data(), rbcscoll->pcount(), mainstream);
-
-        if (ctcscoll)
-            wall->bounce(ctcscoll->data(), ctcscoll->pcount(), mainstream);
+        //        if (rbcscoll)
+        //            wall->bounce(rbcscoll->data(), rbcscoll->pcount(), mainstream);
+        //
+        //        if (ctcscoll)
+        //            wall->bounce(ctcscoll->data(), ctcscoll->pcount(), mainstream);
 
         timings["bounce-walls"] += MPI_Wtime() - tstart;
     }
@@ -610,14 +610,14 @@ void Simulation::_update_and_bounce()
 }
 
 Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_termination)()) :
-                                                                                                                                cartcomm(cartcomm), activecomm(activecomm),
-                                                                                                                                particles(_ic()), cells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN),
-                                                                                                                                rbcscoll(NULL), ctcscoll(NULL), wall(NULL),
-                                                                                                                                redistribute(cartcomm),  redistribute_rbcs(cartcomm),  redistribute_ctcs(cartcomm),
-                                                                                                                                dpd(cartcomm), rbc_interactions(cartcomm), ctc_interactions(cartcomm),
-                                                                                                                                dump_part("allparticles.h5part", activecomm, cartcomm),  dump_field(cartcomm),  dump_part_solvent(NULL),
-                                                                                                                                check_termination(check_termination),
-                                                                                                                                driving_acceleration(0), host_idle_time(0), nsteps((int)(tend / dt)), qoiid(0)
+                                                                                                                                        cartcomm(cartcomm), activecomm(activecomm),
+                                                                                                                                        particles(_ic()), cells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN),
+                                                                                                                                        rbcscoll(NULL), ctcscoll(NULL), wall(NULL),
+                                                                                                                                        redistribute(cartcomm),  redistribute_rbcs(cartcomm),  redistribute_ctcs(cartcomm),
+                                                                                                                                        dpd(cartcomm), rbc_interactions(cartcomm), ctc_interactions(cartcomm),
+                                                                                                                                        dump_part("allparticles.h5part", activecomm, cartcomm),  dump_field(cartcomm),  dump_part_solvent(NULL),
+                                                                                                                                        check_termination(check_termination),
+                                                                                                                                        driving_acceleration(0), host_idle_time(0), nsteps((int)(tend / dt)), qoiid(0)
 {
     //Side not of Yu-Hang:
     //in production runs replace the numbers with 4 unique ones that are same across ranks
@@ -723,8 +723,18 @@ void Simulation::run()
 
         if (walls)
         {
-            if (it * dt < init_time) driving_acceleration = hydrostatic_a;
-            else driving_acceleration = hydrostatic_a * sin(2*M_PI * (it*dt - init_time) / period);
+            if (it * dt < init_time)
+            {
+                driving_acceleration = hydrostatic_a;
+            }
+            else
+            {
+                float s = 4*sin(2*M_PI * (it*dt - init_time) / period);
+                s = s > 1 ? 1 : s;
+                s = s < -1 ? -1 : s;
+                driving_acceleration = hydrostatic_a * s;
+            }
+
         }
 
         _forces();

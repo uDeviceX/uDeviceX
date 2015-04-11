@@ -225,7 +225,7 @@ namespace CudaCTC
 
 		dummy = new Extent[maxCells];
 
-		unitsSetup(1.64, 0.00141, 19.0476, 200, 180104.168, 180059.0438, 0, 1256, 4189, 1e-6, 2.4295e-6, 4, false); //unitsSetup(1.64, 0.00705, 6, 15, 1000, 5000, 5, 135, 90, 1e-6, 1e-5, 4, report);
+		unitsSetup(1.64, 0.00141, 19.0476, 200, 30000, 30000, 0, 1256, 4189, 1e-6, 2.4295e-6, 4, false); //unitsSetup(1.64, 0.00705, 6, 15, 1000, 5000, 5, 135, 90, 1e-6, 1e-5, 4, report);
 	}
 
 	void unitsSetup(float lmax, float p, float cq, float kb, float ka, float kv, float gammaC,

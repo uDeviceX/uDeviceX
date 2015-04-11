@@ -285,7 +285,7 @@ namespace SolidWallsKernel
 	return true;
     }
 
-    __global__ void bounce(Particle * const particles, const int n, const int rank, const float dt)
+    __global__ void bounce(Particle * const particles, const int n, const int rank, const double dt)
     {
 	assert(blockDim.x * gridDim.x >= n);
 
@@ -1020,7 +1020,7 @@ ComputeInteractionsWall::ComputeInteractionsWall(MPI_Comm cartcomm, Particle* co
     CUDA_CHECK(cudaPeekAtLastError());
 }
 
-void ComputeInteractionsWall::bounce(Particle * const p, const int n, cudaStream_t stream, const float deltat)
+void ComputeInteractionsWall::bounce(Particle * const p, const int n, cudaStream_t stream, const double deltat)
 {
     NVTX_RANGE("WALL/bounce", NVTX_C3)
 	
