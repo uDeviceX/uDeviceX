@@ -22,9 +22,9 @@ enum {
     XSIZE_SUBDOMAIN = 48,
     YSIZE_SUBDOMAIN = 48,
     ZSIZE_SUBDOMAIN = 48,
-    XMARGIN_WALL = 16,
-    YMARGIN_WALL = 16,
-    ZMARGIN_WALL = 16,
+    XMARGIN_WALL = 24,
+    YMARGIN_WALL = 24,
+    ZMARGIN_WALL = 24,
 };
 
 const int numberdensity = 4;
@@ -36,9 +36,9 @@ const float sigma = sqrt(2 * gammadpd * kBT);
 const float sigmaf = sigma / sqrt(dt);
 const float aij = 50;
 
-const float hydrostatic_a = 0.15;
-const float period = 300;
-const float init_time = 500;
+const float hydrostatic_a = 0.18;
+const float period = 1000;
+const float init_time = 1500;
 
 const bool walls = true;
 const bool pushtheflow = true;
