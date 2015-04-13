@@ -3,6 +3,7 @@
  *  Part of CTC/cell-placement/
  *
  *  Created and authored by Diego Rossinelli on 2014-12-18.
+ *  Further edited by Dmitry Alexeev on 2014-03-25.
  *  Copyright 2015. All rights reserved.
  *
  *  Users are NOT authorized
@@ -31,7 +32,7 @@ Extent compute_extent(const char * const path)
 {
     ifstream in(path);
     string line;
-    
+
     if (in.good())
 	cout << "Reading file " << path << endl;
     else
@@ -43,7 +44,7 @@ Extent compute_extent(const char * const path)
     int nparticles, nbonds, ntriang, ndihedrals;
 
     in >> nparticles >> nbonds >> ntriang >> ndihedrals;
-    
+
     if (in.good())
 	cout << "File contains " << nparticles << " atoms, " << nbonds << " bonds, " << ntriang
 	     << " triangles and " << ndihedrals << " dihedrals" << endl;
@@ -52,7 +53,7 @@ Extent compute_extent(const char * const path)
 	cout << "Couldn't parse the file" << endl;
 	exit(1);
     }
-    
+
     vector<float> xs(nparticles), ys(nparticles), zs(nparticles);
 
     for(int i = 0; i < nparticles; ++i)
@@ -91,17 +92,17 @@ struct TransformedExtent
 	    local_xmin[0] = extent.xmin;
 	    local_xmin[1] = extent.ymin;
 	    local_xmin[2] = extent.zmin;
-	    
+
 	    local_xmax[0] = extent.xmax;
 	    local_xmax[1] = extent.ymax;
 	    local_xmax[2] = extent.zmax;
-	
+
 	    build_transform(extent, domain_extent);
-	    
+
 	    for(int i = 0; i < 8; ++i)
 	    {
 		const int idx[3] = { i % 2, (i/2) % 2, (i/4) % 2 };
-		
+
 		float local[3];
 		for(int c = 0; c < 3; ++c)
 		    local[c] = idx[c] ? local_xmax[c] : local_xmin[c];
@@ -131,10 +132,10 @@ struct TransformedExtent
 	    for(int i = 0; i < 3; ++i)
 		transform[i][3] = - 0.5 * (local_xmin[i] + local_xmax[i]);
 
-	    const float angles[3] = { 
-		0.25 * (drand48() - 0.5) * 2 * M_PI, 
-		M_PI * 0.5 + 0.25 * (drand48() * 2 - 1) * M_PI,
-		0.25 * (drand48() - 0.5) * 2 * M_PI
+	    const float angles[3] = {
+		(float)(0.25 * (drand48() - 0.5) * 2 * M_PI),
+		(float)(M_PI * 0.5 + 0.25 * (drand48() * 2 - 1) * M_PI),
+		(float)(0.25 * (drand48() - 0.5) * 2 * M_PI)
 	    };
 
 	    for(int d = 0; d < 3; ++d)
@@ -152,15 +153,15 @@ struct TransformedExtent
 		{
 		    tmp[0][0] = tmp[1][1] = c;
 		    tmp[0][1] = -(tmp[1][0] = s);
-		} 
-		else 
+		}
+		else
 		    if (d == 1)
 		    {
 			tmp[0][0] = tmp[2][2] = c;
 			tmp[0][2] = -(tmp[2][0] = s);
 		    }
 		    else
-		    {  
+		    {
 			tmp[1][1] = tmp[2][2] = c;
 			tmp[1][2] = -(tmp[2][1] = s);
 		    }
@@ -170,7 +171,7 @@ struct TransformedExtent
 		    for(int j = 0; j < 4; ++j)
 		    {
 			float s = 0;
-			    
+
 			for(int k = 0; k < 4; ++k)
 			    s += transform[i][k] * tmp[k][j];
 
@@ -198,7 +199,7 @@ struct TransformedExtent
 
     bool collides(const TransformedExtent a, const float tol)
 	{
-	    int s[3], e[3];
+	    float s[3], e[3];
 
 	    for(int c = 0; c < 3; ++c)
 	    {
@@ -218,30 +219,30 @@ void verify(string path2ic)
     printf("VERIFYING <%s>\n", path2ic.c_str());
 
     FILE * f = fopen(path2ic.c_str(), "r");
-    
+
     bool isgood = true;
-    
+
     while(isgood)
     {
 	float tmp[19];
 	for(int c = 0; c < 19; ++c)
 	{
 	    int retval = fscanf(f, "%f", tmp + c);
-	    
+
 	    isgood &= retval == 1;
 	}
-	
+
 	if (isgood)
 	{
 	    printf("reading: ");
-	    
+
 	    for(int c = 0; c < 19; ++c)
 		printf("%f ", tmp[c]);
-	    
+
 	    printf("\n");
 	}
     }
-    
+
     fclose(f);
 
     printf("========================================\n\n\n\n");
@@ -249,72 +250,77 @@ void verify(string path2ic)
 
 class Checker
 {
+    const float safetymargin;
     float h[3];
-    int n[3];
-    int ntot;
-    
+    int n[3], ntot;
+
     vector<list<TransformedExtent> > data;
-    
+
 public:
-    Checker(float hh, int dext[3]);
-    bool check(TransformedExtent& ex);
-    void add(TransformedExtent& ex);
+
+    Checker(float hh, int dext[3], const float safetymargin):
+	safetymargin(safetymargin)
+	{
+	    h[0] = h[1] = h[2] = hh;
+
+	    for (int d = 0; d < 3; ++d)
+		n[d] = (int)ceil((double)dext[d] / h[d]) + 2;
+
+	    ntot = n[0] * n[1] * n[2];
+
+	    data.resize(ntot);
+	}
+
+    bool check(TransformedExtent& ex)
+	{
+	    int imin[3], imax[3];
+
+	    for (int d=0; d<3; d++)
+	    {
+		imin[d] = floor(ex.xmin[d] / h[d]) + 1;
+		imax[d] = floor(ex.xmax[d] / h[d]) + 1;
+	    }
+
+	    for (int i=imin[0]; i<=imax[0]; i++)
+		for (int j=imin[1]; j<=imax[1]; j++)
+		    for (int k=imin[2]; k<=imax[2]; k++)
+		    {
+			const int icell = i * n[1] * n[2] + j * n[2] + k;
+
+			bool good = true;
+
+			for (auto rival : data[icell])
+			    good &= !ex.collides(rival, safetymargin);
+
+			if (!good)
+			    return false;
+		    }
+
+	    return true;
+	}
+
+
+    void add(TransformedExtent& ex)
+	{
+	    int imin[3], imax[3];
+
+	    for (int d=0; d<3; ++d)
+	    {
+		imin[d] = floor(ex.xmin[d] / h[d]) + 1;
+		imax[d] = floor(ex.xmax[d] / h[d]) + 1;
+	    }
+
+	    bool good = true;
+
+	    for (int i=imin[0]; i<=imax[0]; i++)
+		for (int j=imin[1]; j<=imax[1]; j++)
+		    for (int k=imin[2]; k<=imax[2]; k++)
+		    {
+			const int icell = i * n[1]*n[2] + j * n[2] + k;
+			data[icell].push_back(ex);
+		    }
+	}
 };
-
-Checker::Checker(float hh, int dext[3])
-{
-    h[0] = h[1] = h[2] = hh;
-    
-    for (int d=0; d<3; d++)
-        n[d] = ceil((double)dext[d] / h[d]) + 2;
-    
-    ntot = n[0]*n[1]*n[2];
-    data.resize(ntot);
-}
-
-bool Checker::check(TransformedExtent &ex)
-{
-    int imin[3], imax[3];
-    
-    for (int d=0; d<3; d++)
-    {
-        imin[d] = floor(ex.xmin[d] / h[d]) + 1;
-        imax[d] = floor(ex.xmax[d] / h[d]) + 1;
-    }
-    
-    bool good = true;
-    for (int i=imin[0]; i<=imax[0]; i++)
-        for (int j=imin[1]; j<=imax[1]; j++)
-            for (int k=imin[2]; k<=imax[2]; k++)
-            {
-                int icell = i * n[1]*n[2] + j * n[2] + k;
-                for (auto rival : data[icell])
-                    good &= !ex.collides(rival, 5.0f);
-                
-                if (!good) return false;
-            }
-    return true;
-}
-
-void Checker::add(TransformedExtent& ex)
-{
-    int imin[3], imax[3];
-    
-    for (int d=0; d<3; d++)
-    {
-        imin[d] = floor(ex.xmin[d] / h[d]) + 1;
-        imax[d] = floor(ex.xmax[d] / h[d]) + 1;
-    }
-    
-    bool good = true;
-    for (int i=imin[0]; i<=imax[0]; i++)
-        for (int j=imin[1]; j<=imax[1]; j++)
-            for (int k=imin[2]; k<=imax[2]; k++)
-            {
-                const int icell = i * n[1]*n[2] + j * n[2] + k;
-                data[icell].push_back(ex);
-            }
-}
 
 int main(int argc, const char ** argv)
 {
@@ -328,18 +334,21 @@ int main(int argc, const char ** argv)
     for(int i = 0; i < 3; ++i)
 	domainextent[i] = atoi(argv[1 + i]);
 
-    printf("domain extent: %d %d %d\n", 
+    printf("domain extent: %d %d %d\n",
 	   domainextent[0], domainextent[1], domainextent[2]);
-    
+
     Extent extents[2] = {
         compute_extent("../cuda-rbc/cell.dat"),
         compute_extent("../cuda-ctc/sphere20.dat")
     };
 
     bool failed = false;
-    
+
     vector<TransformedExtent> results[2];
-    Checker checker(10.0, domainextent);
+
+    const float tol = 5.0;
+
+    Checker checker(8, domainextent, tol);
 
     int tot = 0;
     while(!failed)
@@ -352,28 +361,30 @@ int main(int argc, const char ** argv)
             const int type = (int)(drand48() >= 0.05);
 
 	    TransformedExtent t(extents[type], domainextent);
-	    
+
 	    bool noncolliding = true;
 
-//            for(int i = 0; i < 2; ++i)
-//                for(int j = 0; j < results[i].size() && noncolliding; ++j)
-//                    noncolliding &= !t.collides(results[i][j], 0.00);
-	    
-            bool ch = checker.check(t);
-            //if (ch != noncolliding) printf("orig %d  vs checker %d\n", noncolliding, ch);
-            
-            if (ch)
+#if 0
+            //original code
+	    for(int i = 0; i < 2; ++i)
+		for(int j = 0; j < results[i].size() && noncolliding; ++j)
+		    noncolliding &= !t.collides(results[i][j], tol);
+#else
+            noncolliding = checker.check(t);
+#endif
+
+            if (noncolliding)
 	    {
                 checker.add(t);
 		results[type].push_back(t);
-                tot++;
+                ++tot;
 		break;
 	    }
 	}
 
-        if (tot % 1000 == 0) printf("Done with %d cells...\n", tot);
-        //printf("attempts: %d, result: %d\n", attempt, results[0].size() + results[1].size());
-	
+        if (tot % 1000 == 0)
+	    printf("Done with %d cells...\n", tot);
+
 	failed |= attempt == maxattempts;
     }
 
@@ -382,7 +393,7 @@ int main(int argc, const char ** argv)
     for(int idtype = 0; idtype < 2; ++idtype)
     {
 	FILE * f = fopen(output_names[idtype].c_str(), "w");
-	
+
 	for(vector<TransformedExtent>::iterator it = results[idtype].begin(); it != results[idtype].end(); ++it)
 	{
 	    for(int c = 0; c < 3; ++c)
@@ -398,11 +409,7 @@ int main(int argc, const char ** argv)
 	fclose(f);
     }
 
-    printf("Generated %d RBCs, %d CTCs\n", results[0].size(), results[1].size());
-    
-    //for(int idtype = 0; idtype < 2; ++idtype)
-    //    verify(output_names[idtype]);
-    
+    printf("Generated %d RBCs, %d CTCs\n", (int)results[0].size(), (int)results[1].size());
+
     return 0;
 }
-
