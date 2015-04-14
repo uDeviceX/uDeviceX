@@ -188,7 +188,7 @@ struct TransformedExtent
 		maxlocalextent = max(maxlocalextent, local_xmax[i] - local_xmin[i]);
 
 	    for(int i = 0; i < 3; ++i)
-		transform[i][3] += 0.5 * maxlocalextent + drand48() * (domain_extent[i] - maxlocalextent);
+		transform[i][3] += 1.0 * maxlocalextent + drand48() * (domain_extent[i] - 2.0*maxlocalextent);
 	}
 
     void apply(float x[3], float y[3])

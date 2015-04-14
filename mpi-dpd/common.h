@@ -22,9 +22,9 @@ enum {
     XSIZE_SUBDOMAIN = 48,
     YSIZE_SUBDOMAIN = 48,
     ZSIZE_SUBDOMAIN = 48,
-    XMARGIN_WALL = 24,
-    YMARGIN_WALL = 24,
-    ZMARGIN_WALL = 24,
+    XMARGIN_WALL = 30,
+    YMARGIN_WALL = 30,
+    ZMARGIN_WALL = 30,
 };
 
 const int numberdensity = 4;
@@ -36,7 +36,7 @@ const float sigma = sqrt(2 * gammadpd * kBT);
 const float sigmaf = sigma / sqrt(dt);
 const float aij = 50;
 
-const float hydrostatic_a = 0.1;
+const float hydrostatic_a = 0.05;
 const float period = 1000;
 const float init_time = 1500;
 
@@ -49,7 +49,7 @@ const bool hdf5field_dumps = true;
 const bool hdf5part_dumps = false;
 const int steps_per_report = 1000;
 const int steps_per_dump = 1000;
-const int wall_creation_stepid = 1000;
+const int wall_creation_stepid = 5000;
 const int nsubsteps = 10;
 
 #include <cstdlib>

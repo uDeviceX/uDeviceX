@@ -1,7 +1,7 @@
 #!/usr/local/bin/bash
 
-if [ $# -ne 2 ]; then
-	echo "usage: $0 <# procs along X> <# procs along Y>"
+if [ $# -ne 5 ]; then
+	echo "usage: $0 <# procs along X> <# procs along Y> <# procs along Z> <scale> <sdf filename>"
 	exit 1;
 fi
 
@@ -23,14 +23,17 @@ mkdir -p ${wd}/../cuda-ctc
 
 nx=$1
 ny=$2
-let tot=nx*ny
-let lx=48*nx
-let ly=48*ny
-let lx=lx/5
+nz=$3
+scale=$4
+let tot=nx*ny*nz
+let lx=48*nx/scale
+let ly=48*ny/scale
+let lx=lx/4
+let lz=48*nz/scale
 
 cd ../cell-placement
 make
-./cell-placement ${lx} ${ly} 48
+./cell-placement 80 ${ly} ${lz}
 nrbcs=`wc -l rbcs-ic.txt | awk '{print $1}'`
 echo "Generated ${nrbcs} RBCs"
 cp rbcs-ic.txt ${wd}/
@@ -40,7 +43,11 @@ cp ctcs-ic.txt ${wd}/
 cd ../mpi-dpd
 
 here=`pwd`
-ln -s ${here}/sorting/sorting${nx}x${ny}.dat ${wd}/sdf.dat
+if [ ! -f ${5} ]; then
+	echo "File doesn't exist"
+	exit 1
+fi
+ln -s ${here}/${5} ${wd}/sdf.dat
 cp test ${wd}/test
 
 cp ../cuda-rbc/cell.dat ${wd}/../cuda-rbc
@@ -67,9 +74,9 @@ export YVELAVG=3
 export ZVELAVG=3
 export HEX_COMM_FACTOR=2
 
-aprun -n ${tot} -N 1 ./test ${nx} ${ny} 1
-" > SortCells${nx}x${ny}
+aprun -n ${tot} -N 1 ./test ${nx} ${ny} ${nz}
+" > SortCells${nx}x${ny}x${nz}
 
-sbatch SortCells${nx}x${ny}
+sbatch SortCells${nx}x${ny}x${nz}
 
 echo "done!"

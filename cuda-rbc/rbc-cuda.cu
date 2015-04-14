@@ -60,7 +60,7 @@ namespace CudaRBC
     
 	void setup(int& nvertices, Extent& host_extent)
 	{
-	    const float scale=1;
+	    const float scale=2;
 		
 		const bool report = false;
 
@@ -225,7 +225,7 @@ namespace CudaRBC
 
 		dummy = new Extent[maxCells];
 
-		unitsSetup(1.64, 0.00141, 19.0476, 200, 20000, 20000, 0, 660, 1596, 1e-6, 2.4295e-6, 4, report); //unitsSetup(1.64, 0.00705, 6, 15, 1000, 5000, 5, 135, 90, 1e-6, 1e-5, 4, report);
+		unitsSetup(1.64, 0.00141, 19.0476, 200, 15000, 15000, 0, 660, 1596, 0.5e-6, 2.4295e-6, 2, report); //unitsSetup(1.64, 0.00705, 6, 15, 1000, 5000, 5, 135, 90, 1e-6, 1e-5, 4, report);
 	}
 
 	void unitsSetup(float lmax, float p, float cq, float kb, float ka, float kv, float gammaC,
