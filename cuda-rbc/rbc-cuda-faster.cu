@@ -223,7 +223,7 @@ namespace CudaRBC
         assert(textureoffset == 0);
 
         //unitsSetup(1.64, 0.00141, 19.0476, 64, 1104.168, 159.0438, 0, 135, 94, 1e-6, 2.4295e-6, 4, report); //unitsSetup(1.64, 0.00705, 6, 15, 1000, 5000, 5, 135, 90, 1e-6, 1e-5, 4, report);
-        unitsSetup(1.64, 0.001412*4, 19.0476*0.25, 100, 3000, 3000, 2, 135, 93, 1e-6, 2.4295e-6, 4, report);
+        unitsSetup(1.64, 0.001412*4, 19.0476*0.25, 100, 5000, 5000, 2, 135, 93, 1e-6, 2.4295e-6, 4, report);
     }
 
     void unitsSetup(float lmax, float p, float cq, float kb, float ka, float kv, float gammaC,
