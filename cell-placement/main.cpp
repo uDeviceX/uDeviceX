@@ -346,7 +346,7 @@ int main(int argc, const char ** argv)
 
     vector<TransformedExtent> results[2];
 
-    const float tol = 19.0;
+    const float tol = 22.0;
 
     Checker checker(8, domainextent, tol);
 
