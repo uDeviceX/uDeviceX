@@ -595,7 +595,8 @@ namespace CudaRBC
 
     __global__ __launch_bounds__(128, 7)
     void fall_kernel(const int degreemax, const int npatches, const int nrbcs,
-            Acceleration* const acc, short2* packedVertIds, int4* packedTrIds, int4* packedDihIds, short4* packedReduceIds)
+            Acceleration* const acc, short2 const* __restrict__ packedVertIds, int4 const* __restrict__  packedTrIds,
+            int4 const* __restrict__  packedDihIds, short4 const* __restrict__  packedReduceIds)
     {
         const int globid = threadIdx.x + blockDim.x * blockIdx.x;
         const int idrbc  = globid / (npatches * WARPSIZE);

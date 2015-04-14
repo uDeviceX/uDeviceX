@@ -77,6 +77,8 @@ class Simulation
     void _update_and_bounce();
     void _qoi(Particle* rbcs, Particle * ctcs, const float tm);
 
+    void _lockstep();
+
 public:
 
     Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_termination)()) ;
