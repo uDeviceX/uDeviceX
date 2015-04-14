@@ -13,7 +13,7 @@ CXXFLAGS+= -O0 -g
 GPUFLAGS+= -O0 -g -G -lineinfo
 else ifeq "$(config)" "release"
 CXXFLAGS+= -O3 -g -fno-tree-vectorize -funroll-loops -DNDEBUG
-GPUFLAGS+= -O4 -DNDEBUG
+GPUFLAGS+= -O3 -DNDEBUG -g
 else ifeq "$(config)" "profile"
 GPUFLAGS+= -O3 -lineinfo -g
 CXXFLAGS+= -O1 -g 
@@ -52,13 +52,16 @@ clean:
 test-rbc: main.o rbcvector-cpu-utils.o rbc.o
 	$(CXX) $^  $(LIBS) -o $@
 
-test-cuda-rbc: main.cudaobj rbc-cuda.cudaobj #rbc.o
+test-cuda-rbc: main.cudaobj rbc-cuda-faster.cudaobj #rbc.o
+	$(CXX) $(GPULIBS) $^ -o $@
+	
+test-old-rbc: main.cudaobj rbc-cuda.cudaobj #rbc.o
 	$(CXX) $(GPULIBS) $^ -o $@
 
-libcuda-rbc.so: rbcvector-cuda-utils.cudaobj rbc-cuda.cudaobj rbcvector-cpu-utils.o
+libcuda-rbc.so: rbc-cuda-faster.cudaobj
 	$(CXX) $(CXXFLAGS) -shared $^ -o $@ -L/usr/local/cuda-6.0/lib64/ -lcudart -lcurand
 
-libcuda-rbc.a: rbcvector-cuda-utils.cudaobj rbc-cuda.cudaobj rbcvector-cpu-utils.o
+libcuda-rbc.a: rbc-cuda-faster.cudaobj
 	ar rcs $@ $^
 
 lib-rbc.so: rbcvector-cpu-utils.o rbc.o

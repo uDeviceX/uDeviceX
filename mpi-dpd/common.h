@@ -26,7 +26,7 @@ enum {
     YMARGIN_WALL = 6,
     ZMARGIN_WALL = 6,
 };
-
+// Use with slevel = 0, viscosity is 1.7
 const int numberdensity = 4;
 const float dt = 0.005;
 const float tend = 50000;
