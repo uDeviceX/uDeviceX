@@ -346,7 +346,7 @@ int main(int argc, const char ** argv)
 
     vector<TransformedExtent> results[2];
 
-    const float tol = 5.0;
+    const float tol = 19.0;
 
     Checker checker(8, domainextent, tol);
 
@@ -358,7 +358,7 @@ int main(int argc, const char ** argv)
 	int attempt = 0;
 	for(; attempt < maxattempts; ++attempt)
 	{
-            const int type = (int)(drand48() >= 0.05);
+            const int type = (int)(drand48() >= 0.12);
 
 	    TransformedExtent t(extents[type], domainextent);
 

@@ -5,6 +5,11 @@ if [ $# -ne 5 ]; then
 	exit 1;
 fi
 
+if [ ! -f ${5} ]; then
+	echo "File doesn't exist"
+	exit 1
+fi
+
 pattern=/scratch/daint/alexeedm/ctc/funnels
 i=-1
 
@@ -26,10 +31,10 @@ ny=$2
 nz=$3
 scale=$4
 let tot=nx*ny*nz
-let lx=48*nx/scale
-let ly=48*ny/scale
+let lx=48*nx
+let ly=48*ny
 let lx=lx/4
-let lz=48*nz/scale
+let lz=48*nz
 
 cd ../cell-placement
 make
@@ -43,10 +48,6 @@ cp ctcs-ic.txt ${wd}/
 cd ../mpi-dpd
 
 here=`pwd`
-if [ ! -f ${5} ]; then
-	echo "File doesn't exist"
-	exit 1
-fi
 ln -s ${here}/${5} ${wd}/sdf.dat
 cp test ${wd}/test
 
@@ -63,10 +64,10 @@ cd ${wd}
 #export CRAY_CUDA_MPS=1
 
 echo "#!/bin/bash -l
-#SBATCH --account=s448                         
+#SBATCH --account=s436                         
 #SBATCH --ntasks=${tot}
 #SBATCH --nodes=${tot}
-#SBATCH --time=5:00:00
+#SBATCH --time=1:00:00
 #SBATCH --signal="USR1"@520
 
 export XVELAVG=10
