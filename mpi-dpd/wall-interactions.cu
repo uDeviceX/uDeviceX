@@ -625,8 +625,7 @@ struct FieldSampler
 	    if (verbose)
 		printf("reading binary data...\n");
 
-	    MPI_CHECK( MPI_File_read_at_all(fh, 44, data, nvoxels, MPI_FLOAT, &status));
-
+	    MPI_CHECK( MPI_File_read_at_all(fh, filesize - sizeof(float) * nvoxels, data, nvoxels, MPI_FLOAT, &status));
 	    MPI_CHECK( MPI_File_close(&fh));
 	}
 
