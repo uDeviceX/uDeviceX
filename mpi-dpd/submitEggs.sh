@@ -26,18 +26,18 @@ ny=$2
 let tot=nx*ny
 let lx=48*nx
 let ly=48*ny
-let lx4=lx/4
+let ly2=2*ly/3
 
-#cd ../cell-placement
-#make
-#./cell-placement ${lx} ${ly} 48
-#nrbcs=`wc -l rbcs-ic.txt | awk '{print $1}'`
-#echo "Generated ${nrbcs} RBCs"
-#cp rbcs-ic.txt ${wd}/
-#nctcs=`wc -l ctcs-ic.txt | awk '{print $1}'`
-#echo "Generated ${nctcs} CTCs"
-#cp ctcs-ic.txt ${wd}/
-#cd ../mpi-dpd
+cd ../cell-placement
+make
+./cell-placement ${lx} ${ly} 48
+nrbcs=`wc -l rbcs-ic.txt | awk '{print $1}'`
+echo "Generated ${nrbcs} RBCs"
+cp rbcs-ic.txt ${wd}/
+nctcs=`wc -l ctcs-ic.txt | awk '{print $1}'`
+echo "Generated ${nctcs} CTCs"
+cp ctcs-ic.txt ${wd}/
+cd ../mpi-dpd
 
 cp one-ic.txt ${wd}/ctcs-ic.txt
 
@@ -63,6 +63,7 @@ echo "#!/bin/bash -l
 #SBATCH --nodes=${tot}
 #SBATCH --time=1:00:00
 #SBATCH --signal="USR1"@520
+#SBATCH --partition=viz
 
 export XVELAVG=10
 export YVELAVG=3
