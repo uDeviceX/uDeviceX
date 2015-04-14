@@ -60,7 +60,7 @@ namespace CudaRBC
     
 	void setup(int& nvertices, Extent& host_extent)
 	{
-	    const float scale=1;
+	    const float scale=2;
 		
 		const bool report = false;
 
@@ -68,7 +68,7 @@ namespace CudaRBC
 		//        1, 1.8, a, v, a/m.ntriang, 945, 0, 472.5,
 		//        90, 30, sin(phi), cos(phi), 6.048
 
-		const char* fname = "../cuda-rbc/rbc2.atom_parsed";
+		const char* fname = "../cuda-rbc/cell.dat";
 		ifstream in(fname);
 		string line;
 
@@ -224,8 +224,8 @@ namespace CudaRBC
 		assert(textureoffset == 0);
 
 		dummy = new Extent[maxCells];
-		unitsSetup(1.64, 0.001412*2, 19.0476*0.5, 160, 11004.168, 10159.0438, 2, 135, 91, 1e-6, 2.4295e-6, 4, report);
-		//unitsSetup(1.64, 0.00141, 19.0476, 64, 1104.168, 159.0438, 0, 135, 94, 1e-6, 2.4295e-6, 4, report); //unitsSetup(1.64, 0.00705, 6, 15, 1000, 5000, 5, 135, 90, 1e-6, 1e-5, 4, report);
+
+		unitsSetup(1.64, 0.00141, 19.0476, 200, 15000, 15000, 0, 660, 1596, 0.5e-6, 2.4295e-6, 2, report); //unitsSetup(1.64, 0.00705, 6, 15, 1000, 5000, 5, 135, 90, 1e-6, 1e-5, 4, report);
 	}
 
 	void unitsSetup(float lmax, float p, float cq, float kb, float ka, float kv, float gammaC,
@@ -260,7 +260,7 @@ namespace CudaRBC
 		params.sigma = sqrt(2 * params.gamma * params.kbT);
 		//		params.dt = dt;
 
-		float phi = 6.9 / 180.0*M_PI; //float phi = 3.1 / 180.0*M_PI;
+		float phi = 3.7 / 180.0*M_PI; //float phi = 3.1 / 180.0*M_PI;
 		params.sinTheta0 = sin(phi);
 		params.cosTheta0 = cos(phi);
 		params.kb = kb * params.kbT;

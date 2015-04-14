@@ -40,11 +40,11 @@ class ComputeInteractionsWall
     
 public:
 
-    ComputeInteractionsWall(MPI_Comm cartcomm, Particle* const p, const int n, int& nsurvived, ExpectedMessageSizes& new_sizes);
+    ComputeInteractionsWall(MPI_Comm cartcomm, Particle* const p, const int n, int& nsurvived, ExpectedMessageSizes& new_sizes, const bool verbose);
 
     ~ComputeInteractionsWall();
      
-    void bounce(Particle * const p, const int n, cudaStream_t stream);
+    void bounce(Particle * const p, const int n, cudaStream_t stream, const float deltat = dt);
 
     void interactions(const Particle * const p, const int n, Acceleration * const acc,
 		      const int * const cellsstart, const int * const cellscount, cudaStream_t stream);

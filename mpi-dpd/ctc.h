@@ -22,39 +22,39 @@ class RedistributeCTCs : public RedistributeRBCs
 {
     void _compute_extents(const Particle * const xyzuvw, const int nrbcs, cudaStream_t stream)
     {
-        assert(sizeof(CudaCTC::Extent) == sizeof(CudaRBC::Extent));
+	assert(sizeof(CudaCTC::Extent) == sizeof(CudaRBC::Extent));
 #if 1
-        if (nrbcs)
-            minmax_massimo(xyzuvw, nvertices, nrbcs, minextents.devptr, maxextents.devptr, stream);
+	if (nrbcs)
+	    minmax_massimo(xyzuvw, nvertices, nrbcs, minextents.devptr, maxextents.devptr, stream);
 #else
-        for(int i = 0; i < nrbcs; ++i)
-            CudaCTC::extent_nohost(stream, (float *)(xyzuvw + nvertices * i), (CudaCTC::Extent *)(extents.devptr + i));
+	for(int i = 0; i < nrbcs; ++i)
+	    CudaCTC::extent_nohost(stream, (float *)(xyzuvw + nvertices * i), (CudaCTC::Extent *)(extents.devptr + i));
 #endif
     }
 
 public:
 
-    RedistributeCTCs(MPI_Comm _cartcomm):RedistributeRBCs(_cartcomm)
-{
-        if (ctcs)
-        {
-            CudaCTC::Extent host_extent;
+RedistributeCTCs(MPI_Comm _cartcomm):RedistributeRBCs(_cartcomm)
+    {
+	if (ctcs)
+	{
+	    CudaCTC::Extent host_extent;
             CudaCTC::setup(nvertices, host_extent);
-        }
-}
+	}
+    }
 };
-
+  
 class ComputeInteractionsCTC : public ComputeInteractionsRBC
 {
     void _compute_extents(const Particle * const xyzuvw, const int nrbcs, cudaStream_t stream)
     {
-        assert(sizeof(CudaCTC::Extent) == sizeof(CudaRBC::Extent));
+	assert(sizeof(CudaCTC::Extent) == sizeof(CudaRBC::Extent));
 #if 1
-        if (nrbcs)
-            minmax_massimo(xyzuvw, nvertices, nrbcs, minextents.devptr, maxextents.devptr, stream);
+	if (nrbcs)
+	    minmax_massimo(xyzuvw, nvertices, nrbcs, minextents.devptr, maxextents.devptr, stream);
 #else
-        for(int i = 0; i < nrbcs; ++i)
-            CudaCTC::extent_nohost(stream, (float *)(xyzuvw + nvertices * i), (CudaCTC::Extent *)(extents.devptr + i));
+	for(int i = 0; i < nrbcs; ++i)
+	    CudaCTC::extent_nohost(stream, (float *)(xyzuvw + nvertices * i), (CudaCTC::Extent *)(extents.devptr + i));
 #endif
     }
 
@@ -65,16 +65,15 @@ public:
         CudaCTC::forces_nohost(stream, nrbcs, (float *)rbcs, (float *)accrbc);
     } 
 
-
-    ComputeInteractionsCTC(MPI_Comm _cartcomm) : ComputeInteractionsRBC(_cartcomm)
+ComputeInteractionsCTC(MPI_Comm _cartcomm) : ComputeInteractionsRBC(_cartcomm)
     {
-        local_trunk = Logistic::KISS(598 - myrank, 20383 + myrank, 129037, 2580);
+	local_trunk = Logistic::KISS(598 - myrank, 20383 + myrank, 129037, 2580);
 
-        if (ctcs)
-        {
-            CudaCTC::Extent host_extent;
+	if (ctcs)
+	{
+	    CudaCTC::Extent host_extent;
             CudaCTC::setup(nvertices, host_extent);
-        }
+	}
     }
 };
 
@@ -82,27 +81,27 @@ class CollectionCTC : public CollectionRBC
 {
     void _initialize(float *device_xyzuvw, const float (*transform)[4])
     {
-        CudaCTC::initialize(device_xyzuvw, transform);
+	CudaCTC::initialize(device_xyzuvw, transform);
     }
 
 public:
 
-    CollectionCTC(MPI_Comm cartcomm) : CollectionRBC(cartcomm)
-{
-        if (ctcs)
-        {
-            CudaCTC::Extent extent;
+CollectionCTC(MPI_Comm cartcomm) : CollectionRBC(cartcomm)
+    {
+	if (ctcs)
+	{
+	    CudaCTC::Extent extent;
             CudaCTC::setup(nvertices, extent);
+	
+	    assert(extent.xmax - extent.xmin < XSIZE_SUBDOMAIN);
+	    assert(extent.ymax - extent.ymin < YSIZE_SUBDOMAIN);
+	    assert(extent.zmax - extent.zmin < ZSIZE_SUBDOMAIN);
 
-            assert(extent.xmax - extent.xmin < XSIZE_SUBDOMAIN);
-            assert(extent.ymax - extent.ymin < YSIZE_SUBDOMAIN);
-            assert(extent.zmax - extent.zmin < ZSIZE_SUBDOMAIN);
+	    CudaCTC::get_triangle_indexing(indices, ntriangles);
+	}
 
-            CudaCTC::get_triangle_indexing(indices, ntriangles);
-        }
-
-        path2xyz = "ctcs.xyz";
-        format4ply = "ply/ctcs-%04d.ply";
-        path2ic = "ctcs-ic.txt";
-}
+	path2xyz = "ctcs.xyz";
+	format4ply = "ply/ctcs-%04d.ply";
+	path2ic = "ctcs-ic.txt";
+    }
 };
