@@ -30,8 +30,8 @@ struct ParticleArray
 
     void resize(int n);
     void preserve_resize(int n);
-    void update_stage1(const float driving_acceleration, cudaStream_t stream);
-    void update_stage2_and_1(const float driving_acceleration, cudaStream_t stream);
+    void update_stage1(const float driving_acceleration, cudaStream_t stream, const float timestep = dt);
+    void update_stage2_and_1(const float driving_acceleration, cudaStream_t stream, const float timestep = dt);
     void clear_velocity();
 
     void clear_acc(cudaStream_t stream)
@@ -53,6 +53,7 @@ protected:
     
     int (*indices)[3];
     int ntriangles;
+    SimpleDeviceBuffer<Acceleration> fsi_axayaz;
 
 public:
     
@@ -64,6 +65,7 @@ public:
      
     Particle * data() { return xyzuvw.data; }
     Acceleration * acc() { return axayaz.data; }
+    Acceleration * fsiacc() { return fsi_axayaz.data; }
     void remove(const int * const entries, const int nentries);
     void resize(const int rbcs_count);
     void preserve_resize(int n);
