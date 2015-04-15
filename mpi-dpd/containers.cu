@@ -120,18 +120,18 @@ ParticleArray::ParticleArray(vector<Particle> ic)
     CUDA_CHECK(cudaFuncSetCacheConfig(*upkernel, cudaFuncCachePreferL1));
 }
 
-void ParticleArray::update_stage1(const float driving_acceleration, cudaStream_t stream)
+void ParticleArray::update_stage1(const float driving_acceleration, cudaStream_t stream, const float timestep)
 {
     if (size)
 	ParticleKernels::update_stage1<<<(xyzuvw.size + 127) / 128, 128, 0, stream>>>(
-	    xyzuvw.data, axayaz.data, xyzuvw.size, dt, driving_acceleration , false);
+	    xyzuvw.data, axayaz.data, xyzuvw.size, timestep, driving_acceleration , false);
 }
 
-void  ParticleArray::update_stage2_and_1(const float driving_acceleration, cudaStream_t stream)
+void  ParticleArray::update_stage2_and_1(const float driving_acceleration, cudaStream_t stream, const float timestep)
 {
     if (size)
 	ParticleKernels::update_stage2_and_1<<<(xyzuvw.size * 3 + 127) / 128, 128, 0, stream>>>
-	    (xyzuvw.data, axayaz.data, xyzuvw.size, dt, driving_acceleration);
+	    (xyzuvw.data, axayaz.data, xyzuvw.size, timestep, driving_acceleration);
 }
 
 void ParticleArray::resize(int n)
@@ -171,6 +171,7 @@ void CollectionRBC::resize(const int count)
     nrbcs = count;
 
     ParticleArray::resize(count * nvertices);
+    fsi_axayaz.resize(count * nvertices);
 }
 
 void CollectionRBC::preserve_resize(const int count)

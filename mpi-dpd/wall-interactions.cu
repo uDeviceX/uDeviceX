@@ -637,7 +637,6 @@ struct FieldSampler
 		printf("reading binary data... from byte %d\n", header_size);
 
 	    MPI_CHECK( MPI_File_read_at_all(fh, header_size, data, nvoxels, MPI_FLOAT, &status));
-
 	    MPI_CHECK( MPI_File_close(&fh));
 	}
 
@@ -1047,12 +1046,12 @@ ComputeInteractionsWall::ComputeInteractionsWall(MPI_Comm cartcomm, Particle* co
     CUDA_CHECK(cudaPeekAtLastError());
 }
 
-void ComputeInteractionsWall::bounce(Particle * const p, const int n, cudaStream_t stream)
+void ComputeInteractionsWall::bounce(Particle * const p, const int n, cudaStream_t stream, const float deltat)
 {
     NVTX_RANGE("WALL/bounce", NVTX_C3)
 
 	if (n > 0)
-	    SolidWallsKernel::bounce<<< (n + 127) / 128, 128, 0, stream>>>(p, n, myrank, dt);
+	    SolidWallsKernel::bounce<<< (n + 127) / 128, 128, 0, stream>>>(p, n, myrank, deltat);
 
     CUDA_CHECK(cudaPeekAtLastError());
 }
