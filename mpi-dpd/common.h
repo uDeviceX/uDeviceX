@@ -26,7 +26,7 @@ enum {
     YMARGIN_WALL = 6,
     ZMARGIN_WALL = 6,
 };
-
+// Use with slevel = 0, viscosity is 1.7
 const int numberdensity = 4;
 const float dt = 0.005;
 const float tend = 5000;
@@ -44,7 +44,7 @@ const bool xyz_dumps = false;
 const bool hdf5field_dumps = true;
 const bool hdf5part_dumps = false;
 const int steps_per_report = 500;
-const int steps_per_dump = 500;
+const int steps_per_dump = 100;
 const int wall_creation_stepid = 5000;
 const int nsubsteps = 10;
 
@@ -219,7 +219,8 @@ SimpleDeviceBuffer(int n = 0): capacity(0), size(0), data(NULL) { resize(n);}
 	    if (data != NULL)
 		CUDA_CHECK(cudaFree(data));
 	    
-	    capacity = n;
+	    const int conservative_estimate = (int)ceil(1.2 * n);
+	    capacity = 128 * ((conservative_estimate + 129) / 128);
 	    
 	    CUDA_CHECK(cudaMalloc(&data, sizeof(T) * capacity));
 	    

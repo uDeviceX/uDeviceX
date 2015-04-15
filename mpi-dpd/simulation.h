@@ -64,6 +64,7 @@ class Simulation
     float driving_acceleration;
     float host_idle_time;
     int nranks, rank;  
+    int qoiid;
 	    
     std::vector<Particle> _ic();
 
@@ -74,6 +75,9 @@ class Simulation
     void _forces();
     void _data_dump(const int idtimestep);
     void _update_and_bounce();
+    void _qoi(Particle* rbcs, Particle * ctcs, const float tm);
+
+    void _lockstep();
 
 public:
 
