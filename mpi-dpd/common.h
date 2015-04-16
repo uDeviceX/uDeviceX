@@ -35,7 +35,7 @@ const float gammadpd = 12;
 const float sigma = sqrt(2 * gammadpd * kBT); 
 const float sigmaf = sigma / sqrt(dt);
 const float aij = 50;
-const float hydrostatic_a = 0.0001;
+const float hydrostatic_a = 0.0005;
 const bool walls = true;
 const bool pushtheflow = true;
 const bool rbcs = true;
@@ -47,6 +47,8 @@ const int steps_per_report = 2500;
 const int steps_per_dump = 5000;
 const int wall_creation_stepid = 5000;
 const int nsubsteps = 2;
+
+extern bool is_mps_enabled;
 
 #include <cstdlib>
 #include <cstdio>
@@ -413,7 +415,7 @@ class LocalComm
 	MPI_Comm local_comm;
 	int local_rank, local_nranks;
 	int rank, nranks;
-	int cuda_mps_enabled;
+
 	char name[MPI_MAX_PROCESSOR_NAME];
 	int len;
 
