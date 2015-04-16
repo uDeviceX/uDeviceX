@@ -365,8 +365,28 @@ int main(int argc, const char ** argv)
     const float tol = 0.1;
 
     Checker checker(8, domainextent, tol);
-
     int tot = 0;
+
+    TransformedExtent onectc(extents[1], domainextent);
+
+    for (int i=0; i<4; i++)
+        for (int j=0; j<4; j++)
+            onectc.transform[i][j] = (i == j) ? 1 : 0;
+    onectc.transform[0][3] = 30;
+    onectc.transform[1][3] = 500;
+    onectc.transform[2][3] = 48;
+
+    onectc.xmin[0] = extents[1].xmin + onectc.transform[0][3];
+    onectc.xmin[1] = extents[1].ymin + onectc.transform[1][3];
+    onectc.xmin[2] = extents[1].zmin + onectc.transform[2][3];
+    onectc.xmax[0] = extents[1].xmax + onectc.transform[0][3];
+    onectc.xmax[1] = extents[1].ymax + onectc.transform[1][3];
+    onectc.xmax[2] = extents[1].zmax + onectc.transform[2][3];
+
+    checker.add(onectc);
+    results[1].push_back(onectc);
+    ++tot;
+
     while(!failed)
     {
         const int maxattempts = 100000;

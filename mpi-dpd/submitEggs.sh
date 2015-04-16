@@ -84,7 +84,7 @@ echo "#!/bin/bash -l
 #SBATCH --account=s436
 #SBATCH --ntasks=${tot}
 #SBATCH --nodes=${nnodes}
-#SBATCH --time=2:00:00
+#SBATCH --time=6:00:00
 #SBATCH --signal="USR1"@520
 ##SBATCH --partition=viz
 
