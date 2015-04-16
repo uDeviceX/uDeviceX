@@ -19,7 +19,7 @@
 #endif
 
 enum { 
-    XSIZE_SUBDOMAIN = 48,
+    XSIZE_SUBDOMAIN = 32,
     YSIZE_SUBDOMAIN = 48,
     ZSIZE_SUBDOMAIN = 48,
     XMARGIN_WALL = 6,

@@ -1,5 +1,10 @@
 #!/usr/local/bin/bash
 
+get_abs_filename() {
+  # $1 : relative filename
+  echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
+}
+
 if [ $# -ne 5 ]; then
 	echo "usage: $0 <# procs along X> <# procs along Y> <# of procs along Z> <tasks per node> <geometry file>"
 	exit 1;
@@ -51,8 +56,8 @@ cd ../mpi-dpd
 
 #cp one-ic.txt ${wd}/ctcs-ic.txt
 
-here=`pwd`
-ln -s ${here}/${file} ${wd}/sdf.dat
+fullfile=$(get_abs_filename "${file}")
+ln -s ${fullfile} ${wd}/sdf.dat
 cp test ${wd}/test
 
 cp ../cuda-rbc/rbc2.atom_parsed ${wd}/../cuda-rbc
@@ -67,13 +72,16 @@ cd ${wd}
 
 
 if [[ ${mps_per_node} -gt 1 ]]; then
-	mps_line="export CRAY_CUDA_MPS=1"
+	mps_line="export CRAY_CUDA_MPS=1
+export MPICH_ENV_DISPLAY=3
+export MPICH_RANK_REORDER_DISPLAY=1
+export MPICH_RANK_REORDER_METHOD=2"
 fi
 
 let nnodes=tot/mps_per_node
 
 echo "#!/bin/bash -l
-#SBATCH --account=s448    
+#SBATCH --account=s436
 #SBATCH --ntasks=${tot}
 #SBATCH --nodes=${nnodes}
 #SBATCH --time=2:00:00
