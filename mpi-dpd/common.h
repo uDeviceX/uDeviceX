@@ -35,7 +35,7 @@ const float gammadpd = 12;
 const float sigma = sqrt(2 * gammadpd * kBT); 
 const float sigmaf = sigma / sqrt(dt);
 const float aij = 50;
-const float hydrostatic_a = 0.01;
+const float hydrostatic_a = 0.0001;
 const bool walls = true;
 const bool pushtheflow = true;
 const bool rbcs = true;
@@ -43,10 +43,10 @@ const bool ctcs = false;
 const bool xyz_dumps = false;
 const bool hdf5field_dumps = true;
 const bool hdf5part_dumps = false;
-const int steps_per_report = 500;
-const int steps_per_dump = 500;
+const int steps_per_report = 2500;
+const int steps_per_dump = 5000;
 const int wall_creation_stepid = 5000;
-const int nsubsteps = 10;
+const int nsubsteps = 2;
 
 #include <cstdlib>
 #include <cstdio>
