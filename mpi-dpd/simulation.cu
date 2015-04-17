@@ -553,9 +553,8 @@ void Simulation::_qoi(Particle* rbcs, Particle * ctcs, const float tm)
         fout = fopen("rbccom.txt", qoiid == 0 ? "w" : "a");
         fprintf(fout, "%f   %e %e %e\n", tm, rbccom[0] / totrbcs, rbccom[1] / totrbcs, rbccom[2] / totrbcs);
         fclose(fout);
-
-        qoiid++;
     }
+    qoiid++;
 }
 
 void Simulation::_data_dump(const int idtimestep)
