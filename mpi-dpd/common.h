@@ -19,23 +19,23 @@
 #endif
 
 enum { 
-    XSIZE_SUBDOMAIN = 32,
-    YSIZE_SUBDOMAIN = 48,
-    ZSIZE_SUBDOMAIN = 48,
+    XSIZE_SUBDOMAIN = 64,
+    YSIZE_SUBDOMAIN = 64,
+    ZSIZE_SUBDOMAIN = 64,
     XMARGIN_WALL = 6,
     YMARGIN_WALL = 6,
     ZMARGIN_WALL = 6,
 };
 // Use with slevel = 0, viscosity is 1.7
 const int numberdensity = 4;
-const float dt = 0.005;
+const float dt = 0.0075;
 const float tend = 5000;
 const float kBT = 1.0;
-const float gammadpd = 12;
+const float gammadpd = 10;
 const float sigma = sqrt(2 * gammadpd * kBT); 
 const float sigmaf = sigma / sqrt(dt);
 const float aij = 50;
-const float hydrostatic_a = 0.0005;
+const float hydrostatic_a = 0.025;
 const bool walls = true;
 const bool pushtheflow = true;
 const bool rbcs = true;
@@ -43,7 +43,7 @@ const bool ctcs = true;
 const bool xyz_dumps = false;
 const bool hdf5field_dumps = true;
 const bool hdf5part_dumps = false;
-const int steps_per_report = 2500;
+const int steps_per_report = 5000;
 const int steps_per_dump = 5000;
 const int wall_creation_stepid = 5000;
 const int nsubsteps = 10;

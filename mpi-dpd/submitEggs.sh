@@ -57,7 +57,7 @@ cd ../mpi-dpd
 #cp one-ic.txt ${wd}/ctcs-ic.txt
 
 fullfile=$(get_abs_filename "${file}")
-ln -s ${fullfile} ${wd}/sdf.dat
+cp ${fullfile} ${wd}/sdf.dat
 cp test ${wd}/test
 
 cp ../cuda-rbc/rbc2.atom_parsed ${wd}/../cuda-rbc
