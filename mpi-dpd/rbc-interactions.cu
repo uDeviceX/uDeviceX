@@ -21,6 +21,11 @@
 #define __global__
 #endif
 
+#ifndef __device__
+#define __device__
+#endif
+
+
 #ifndef __launch_bounds__
 #define __launch_bounds__(a, b)
 #endif
@@ -34,8 +39,8 @@ namespace KernelsRBC
 
     __constant__ ParamsFSI params;
 
-    texture<float2, cudaTextureType1D> texSolventParticles, texSoluteParticles;
-    texture<int, cudaTextureType1D> texCellsStart, texCellsCount, texSoluteCellsStart, texSoluteCellsCount;
+    texture<float2, cudaTextureType1D> texSolventParticles, texSoluteParticles, texOtherParticles;
+    texture<int, cudaTextureType1D> texCellsStart, texCellsCount, texSoluteCellsStart, texSoluteCellsCount, texOtherStart, texOtherCount;
 
     static bool firsttime = true;
 
@@ -309,19 +314,6 @@ namespace KernelsRBC
         return make_float3(strength * xr, strength * yr, strength * zr);
     }
 
-    __device__ inline float3 imem_interaction(const float3 dcenter, const float dx, const float dy, const float dz, const float rij2)
-    {
-        const float invrij2 = 2.0f / rij2;
-        const float invrij6 = invrij2;
-
-        const float cos = (dcenter.x * dx + dcenter.y * dy + dcenter.z * dz) * rsqrt(rij2) *
-                rsqrt(dcenter.x * dcenter.x + dcenter.y * dcenter.y + dcenter.z * dcenter.z);
-        const float strength = min((cos < 0.2) * invrij6, 500.0f);
-
-        return make_float3(strength * dx, strength * dy, strength * dz);
-    }
-
-
     template<int XCPB, int YCPB, int ZCPB, int COLS, int ROWS>
     __global__ void fsi_forces(const float seed,
             float * const accsolute, const int nsolute,
@@ -442,128 +434,6 @@ namespace KernelsRBC
         }
     }
 
-
-    template<int XCPB, int YCPB, int ZCPB, int COLS, int ROWS>
-    __global__ void imem_forces(float * const accsolvent, const int* __restrict__ reordering, const int nsolute, const int nvertices, const float* __restrict__ coms)
-    {
-        enum { CPB = XCPB * YCPB * ZCPB };
-
-        assert(warpSize == COLS * ROWS);
-        assert(blockDim.x == warpSize && blockDim.y == CPB && blockDim.z == 1);
-        assert(ROWS * 3 <= warpSize);
-
-        const int tid = threadIdx.x;
-        const int wid = threadIdx.y;
-
-        const int subtid = tid % COLS;
-        const int slot = tid / COLS;
-
-        __shared__ int volatile starts[CPB][32], scan[CPB][32];
-
-        const int xmycid = blockIdx.x * XCPB + ((wid) % XCPB);
-        const int ymycid = blockIdx.y * YCPB + ((wid / XCPB) % YCPB);
-        const int zmycid = blockIdx.z * ZCPB + ((wid / (XCPB * YCPB)) % ZCPB);
-
-        assert(xmycid >= 0 && xmycid < XSIZE_SUBDOMAIN);
-        assert(ymycid >= 0 && ymycid < YSIZE_SUBDOMAIN);
-        assert(zmycid >= 0 && zmycid < ZSIZE_SUBDOMAIN);
-
-        const int mycid = xmycid + XSIZE_SUBDOMAIN * (ymycid + YSIZE_SUBDOMAIN * zmycid);
-
-        int mycount = 0, myscan = 0;
-
-        if (tid < 27)
-        {
-            const int dx = tid % 3;
-            const int dy = (tid / 3) % 3;
-            const int dz = (tid / 9) % 3;
-
-            int xcid = xmycid + dx - 1;
-            int ycid = ymycid + dy - 1;
-            int zcid = zmycid + dz - 1;
-
-            const bool valid_cid =
-                    xcid >= 0 && xcid < XSIZE_SUBDOMAIN &&
-                    ycid >= 0 && ycid < YSIZE_SUBDOMAIN &&
-                    zcid >= 0 && zcid < ZSIZE_SUBDOMAIN ;
-
-            xcid = min(XSIZE_SUBDOMAIN - 1, max(0, xcid));
-            ycid = min(YSIZE_SUBDOMAIN - 1, max(0, ycid));
-            zcid = min(ZSIZE_SUBDOMAIN - 1, max(0, zcid));
-
-            const int cid = max(0, xcid + XSIZE_SUBDOMAIN * (ycid + YSIZE_SUBDOMAIN * zcid));
-
-            starts[wid][tid] = tex1Dfetch(texSoluteCellsStart, cid);
-
-            myscan = mycount = valid_cid * tex1Dfetch(texSoluteCellsCount, cid);
-        }
-
-        for(int L = 1; L < 32; L <<= 1)
-            myscan += (tid >= L) * __shfl_up(myscan, L);
-
-        if (tid < 28)
-            scan[wid][tid] = myscan - mycount;
-
-        const int nsrc = scan[wid][27];
-
-        const int dststart = tex1Dfetch(texSoluteCellsStart, mycid);
-        const int lastdst = dststart + tex1Dfetch(texSoluteCellsCount, mycid);
-
-        for(int dpid = dststart + slot; dpid < lastdst; dpid += ROWS)
-        {
-            assert(dpid >= 0 && dpid < nsolute);
-            float3 xdest, force = make_float3(0.0f, 0.0f, 0.0f);
-
-            float2 dtmp0 = tex1Dfetch(texSoluteParticles, 3 * dpid);
-            xdest.x = dtmp0.x;
-            xdest.y = dtmp0.y;
-
-            dtmp0 = tex1Dfetch(texSoluteParticles, 3 * dpid + 1);
-            xdest.z = dtmp0.x;
-
-            const int    dstcid3 = 3*(reordering[dpid] / nvertices);
-            const float3 dstcen = make_float3(coms[dstcid3+0], coms[dstcid3+1], coms[dstcid3+2]);
-
-            for(int pid = subtid; pid < nsrc; pid += COLS)
-            {
-                const int key9 = 9 * ((pid >= scan[wid][9]) + (pid >= scan[wid][18]));
-                const int key3 = 3 * ((pid >= scan[wid][key9 + 3]) + (pid >= scan[wid][key9 + 6]));
-                const int key = key9 + key3;
-
-                const int spid = pid - scan[wid][key] + starts[wid][key];
-
-                assert(spid >= 0 && spid < nsolute);
-
-                const int sentry = 3 * spid;
-                const float2 stmp0 = tex1Dfetch(texSoluteParticles, sentry);
-                const float2 stmp1 = tex1Dfetch(texSoluteParticles, sentry + 1);
-
-                const int    srccid3 = 3*(reordering[spid] / nvertices);
-                const float3 srccen = make_float3(coms[srccid3+0], coms[srccid3+1], coms[srccid3+2]);
-
-                const float xr = xdest.x - stmp0.x;
-                const float yr = xdest.y - stmp0.y;
-                const float zr = xdest.z - stmp1.x;
-                const float rij2 = xr * xr + yr * yr + zr * zr;
-
-                if (rij2 < 0.16f && dstcid3 != srccid3)
-                {
-//                    printf("%d %d   %d %d   %f = %f %f %f  %f %f %f\n", dstcid3, srccid3, dpid, spid, rij2,
-//                            xdest.x, xdest.y, xdest.z, stmp0.x, stmp0.y, stmp1.x);
-                    const float3 f = imem_interaction(make_float3(dstcen.x - srccen.x, dstcen.y - srccen.y, dstcen.z - srccen.z), xr, yr, zr, rij2);
-
-                    force.x += f.x;
-                    force.y += f.y;
-                    force.z += f.z;
-                }
-            }
-
-            atomicAdd(accsolvent + 3 * dpid    , force.x);
-            atomicAdd(accsolvent + 3 * dpid + 1, force.y);
-            atomicAdd(accsolvent + 3 * dpid + 2, force.z);
-        }
-    }
-
     __global__ void fsi_forces_old(const float seed,
             Acceleration * accsolvent, const int npsolvent,
             const Particle * const particle, const int nparticles, Acceleration * accrbc)
@@ -645,6 +515,10 @@ namespace KernelsRBC
     __constant__ int packstarts[27];
     __constant__ Particle * packstates[26];
     __constant__ Acceleration * packresults[26];
+
+    __constant__ int oth_packstarts[27];
+    __constant__ Particle * oth_packstates[26];
+    __constant__ Acceleration * oth_packresults[26];
 
     __device__ float3 __shfl_float3(float3 f, int l) {
 
@@ -873,6 +747,380 @@ namespace KernelsRBC
         }
     }
 
+    //***************************************************************************************************************************
+    //* Inter-membrane forces
+    //***************************************************************************************************************************
+
+    __device__ inline float3 imem_interaction(const float3 dcenter, const float dx, const float dy, const float dz, const float rij2)
+    {
+        if (rij2 > 0.2f) return make_float3(0.0f, 0.0f, 0.0f);
+        const float invrij2 = 5.0f / rij2;
+        const float invrij6 = invrij2;
+
+        const float cos = (dcenter.x * dx + dcenter.y * dy + dcenter.z * dz) * rsqrt(rij2) *
+                rsqrt(dcenter.x * dcenter.x + dcenter.y * dcenter.y + dcenter.z * dcenter.z);
+        const float strength = min((cos < 0.2) * invrij6, 500.0f);
+
+        return make_float3(strength * dx, strength * dy, strength * dz);
+    }
+
+    template<int XCPB, int YCPB, int ZCPB, int COLS, int ROWS, bool BIP>
+    __global__ void imem_forces(float * const accsolute, const int* __restrict__ reordering, const int nsolute, const int nvertices, const float* __restrict__ coms,
+            float* const accOther, const int* __restrict__ reorderingOther,  const int nOther, const int nvertOther, const float* __restrict__ comsOther)
+    {
+        enum { CPB = XCPB * YCPB * ZCPB };
+
+        assert(warpSize == COLS * ROWS);
+        assert(blockDim.x == warpSize && blockDim.y == CPB && blockDim.z == 1);
+        assert(ROWS * 3 <= warpSize);
+
+        const int tid = threadIdx.x;
+        const int wid = threadIdx.y;
+
+        const int subtid = tid % COLS;
+        const int slot = tid / COLS;
+
+        __shared__ int volatile starts[CPB][32], scan[CPB][32];
+
+        const int xmycid = blockIdx.x * XCPB + ((wid) % XCPB);
+        const int ymycid = blockIdx.y * YCPB + ((wid / XCPB) % YCPB);
+        const int zmycid = blockIdx.z * ZCPB + ((wid / (XCPB * YCPB)) % ZCPB);
+
+        assert(xmycid >= 0 && xmycid < XSIZE_SUBDOMAIN);
+        assert(ymycid >= 0 && ymycid < YSIZE_SUBDOMAIN);
+        assert(zmycid >= 0 && zmycid < ZSIZE_SUBDOMAIN);
+
+        const int mycid = xmycid + XSIZE_SUBDOMAIN * (ymycid + YSIZE_SUBDOMAIN * zmycid);
+
+        int mycount = 0, myscan = 0;
+
+        if (tid < 27)
+        {
+            const int dx = tid % 3;
+            const int dy = (tid / 3) % 3;
+            const int dz = (tid / 9) % 3;
+
+            int xcid = xmycid + dx - 1;
+            int ycid = ymycid + dy - 1;
+            int zcid = zmycid + dz - 1;
+
+            const bool valid_cid =
+                    xcid >= 0 && xcid < XSIZE_SUBDOMAIN &&
+                    ycid >= 0 && ycid < YSIZE_SUBDOMAIN &&
+                    zcid >= 0 && zcid < ZSIZE_SUBDOMAIN ;
+
+            xcid = min(XSIZE_SUBDOMAIN - 1, max(0, xcid));
+            ycid = min(YSIZE_SUBDOMAIN - 1, max(0, ycid));
+            zcid = min(ZSIZE_SUBDOMAIN - 1, max(0, zcid));
+
+            const int cid = max(0, xcid + XSIZE_SUBDOMAIN * (ycid + YSIZE_SUBDOMAIN * zcid));
+
+            starts[wid][tid] = tex1Dfetch(BIP ? texOtherStart : texSoluteCellsStart, cid);
+
+            myscan = mycount = valid_cid * tex1Dfetch(BIP ? texOtherCount : texSoluteCellsCount, cid);
+        }
+
+        for(int L = 1; L < 32; L <<= 1)
+            myscan += (tid >= L) * __shfl_up(myscan, L);
+        if (__shfl(myscan, 26) == 0) return;
+
+        if (tid < 28)
+            scan[wid][tid] = myscan - mycount;
+
+        const int nsrc = scan[wid][27];
+
+        const int dststart = tex1Dfetch(texSoluteCellsStart, mycid);
+        const int lastdst = dststart + tex1Dfetch(texSoluteCellsCount, mycid);
+
+        for(int dpid = dststart + slot; dpid < lastdst; dpid += ROWS)
+        {
+            assert(dpid >= 0 && dpid < nsolute);
+            float3 xdest, force = make_float3(0.0f, 0.0f, 0.0f);
+
+            float2 dtmp0 = tex1Dfetch(texSoluteParticles, 3 * dpid);
+            xdest.x = dtmp0.x;
+            xdest.y = dtmp0.y;
+
+            dtmp0 = tex1Dfetch(texSoluteParticles, 3 * dpid + 1);
+            xdest.z = dtmp0.x;
+
+            const int    dstcid3 = 3*(reordering[dpid] / nvertices);
+            const float3 dstcen = make_float3(coms[dstcid3+0], coms[dstcid3+1], coms[dstcid3+2]);
+
+            for(int pid = subtid; pid < nsrc; pid += COLS)
+            {
+                const int key9 = 9 * ((pid >= scan[wid][9]) + (pid >= scan[wid][18]));
+                const int key3 = 3 * ((pid >= scan[wid][key9 + 3]) + (pid >= scan[wid][key9 + 6]));
+                const int key = key9 + key3;
+
+                const int spid = pid - scan[wid][key] + starts[wid][key];
+
+                assert(spid >= 0 && spid < nsolute);
+
+                const int sentry = 3 * spid;
+                const float2 stmp0 = tex1Dfetch(BIP ? texOtherParticles : texSoluteParticles, sentry);
+                const float2 stmp1 = tex1Dfetch(BIP ? texOtherParticles : texSoluteParticles, sentry + 1);
+
+                const int    srccid3 = BIP ? 3*(reorderingOther[spid] / nvertOther) : 3*(reordering[spid] / nvertices);
+                const float3 srccen = BIP ? make_float3(comsOther[srccid3+0], comsOther[srccid3+1], comsOther[srccid3+2]) :
+                        make_float3(coms[srccid3+0], coms[srccid3+1], coms[srccid3+2]);
+
+                const float xr = xdest.x - stmp0.x;
+                const float yr = xdest.y - stmp0.y;
+                const float zr = xdest.z - stmp1.x;
+                const float rij2 = xr * xr + yr * yr + zr * zr;
+
+                if (rij2 < 1.0f && (BIP || dstcid3 != srccid3))
+                {
+                    const float3 f = imem_interaction(make_float3(dstcen.x - srccen.x, dstcen.y - srccen.y, dstcen.z - srccen.z), xr, yr, zr, rij2);
+
+                    force.x += f.x;
+                    force.y += f.y;
+                    force.z += f.z;
+
+                    if (BIP)
+                    {
+                        atomicAdd(accOther + 3 * dpid    , -f.x);
+                        atomicAdd(accOther + 3 * dpid + 1, -f.y);
+                        atomicAdd(accOther + 3 * dpid + 2, -f.z);
+                    }
+                }
+            }
+
+            atomicAdd(accsolute + 3 * dpid    , force.x);
+            atomicAdd(accsolute + 3 * dpid + 1, force.y);
+            atomicAdd(accsolute + 3 * dpid + 2, force.z);
+        }
+    }
+
+    __inline__ __device__ float3 warpReduceSum(float3 val)
+    {
+#pragma unroll
+        for (int offset = warpSize/2; offset > 0; offset /= 2)
+        {
+            val.x += __shfl_down(val.x, offset);
+            val.y += __shfl_down(val.y, offset);
+            val.z += __shfl_down(val.z, offset);
+        }
+        return val;
+    }
+
+    __global__ void remote_coms(const int ncells, const int nvert, float* coms)
+    {
+        const int tid = threadIdx.x;
+        const int cid = blockIdx.x;
+
+        const int key9 = 9 * ((cid >= packstarts[9]/nvert) + (cid >= packstarts[18]/nvert));
+        const int key3 = 3 * ((cid >= packstarts[key9 + 3]/nvert) + (cid >= packstarts[key9 + 6]/nvert));
+        const int key1 = (cid >= packstarts[key9 + key3 + 1]/nvert) + (cid >= packstarts[key9 + key3 + 2]/nvert);
+
+        const int code = key9 + key3 + key1;
+        const float* myxyz = (float *)&packstates[code][cid*nvert - packstarts[code]];
+        const float2* xyz2 = (float2*)myxyz;
+
+        float3 mycom = make_float3(0.0f, 0.0f, 0.0f);
+
+        for(int i = tid; i < nvert; i += blockDim.x)
+        {
+            float2 tmp1 = xyz2[i*3 + 0];
+            float2 tmp2 = xyz2[i*3 + 1];
+
+            mycom.x += tmp1.x;
+            mycom.y += tmp1.y;
+            mycom.z += tmp2.x;
+        }
+
+        mycom = warpReduceSum(mycom);
+        mycom.x /= nvert;
+        mycom.y /= nvert;
+        mycom.z /= nvert;
+
+        if (tid == 0)
+        {
+            coms[cid*3+0] = mycom.x;
+            coms[cid*3+1] = mycom.y;
+            coms[cid*3+2] = mycom.z;
+        }
+        __syncthreads();
+        if ((tid % warpSize) == 0 && tid > 0)
+        {
+            atomicAdd(coms + cid*3+0, mycom.x);
+            atomicAdd(coms + cid*3+1, mycom.y);
+            atomicAdd(coms + cid*3+2, mycom.z);
+        }
+    }
+
+    template<int BLOCKSIZE> __global__  __launch_bounds__(32 * 4, 16)
+    void imem_forces_all_nopref(Acceleration * accsolute, const int npsolute, const int nvertSolute, const float* __restrict__ comsSolute,
+            const int* __restrict__ reordering,
+            const int npremote, const int nvertRemote, const float* __restrict__ comsRemote)
+    {
+        assert(blockDim.x == BLOCKSIZE);
+        assert(blockDim.x * gridDim.x >= npremote);
+
+        __shared__ float tmp [BLOCKSIZE * 3];
+        __shared__ float cids[BLOCKSIZE * 3];
+        __shared__ int volatile starts[BLOCKSIZE];
+        __shared__ int volatile scan[BLOCKSIZE];
+
+        const int tid = threadIdx.x;
+        const int gidstart =  BLOCKSIZE * blockIdx.x;
+
+        const int lid = threadIdx.x%32;
+        const int wof = threadIdx.x&(~31);
+        const int wst = gidstart+wof;
+
+        const int nlocal = min(BLOCKSIZE, npremote - gidstart);
+
+        float3 xp, up;
+        float3 dstcen;
+
+#ifndef NDEBUG
+        xp = make_float3(-313.313f, -313.313f, -313.313f); //che e' poi l'auto di paperino
+        up = make_float3(-313.313f, -313.313f, -313.313f);
+#endif
+
+        {
+            const int n = nlocal * 6;
+            const int h = nlocal * 3;
+
+            for(int base = 0; base < n; base += h)
+            {
+#pragma unroll 3
+                for(int x = tid; x < h; x += BLOCKSIZE)
+                {
+                    const int l = base + x;
+                    const int gid = gidstart + l / 6;
+
+                    const int key9 = 9 * ((gid >= packstarts[9]) + (gid >= packstarts[18]));
+                    const int key3 = 3 * ((gid >= packstarts[key9 + 3]) + (gid >= packstarts[key9 + 6]));
+                    const int key1 = (gid >= packstarts[key9 + key3 + 1]) + (gid >= packstarts[key9 + key3 + 2]);
+
+                    const int code = key9 + key3 + key1;
+                    const int lpid = gid - packstarts[code];
+
+                    assert(x < BLOCKSIZE * 3);
+                    tmp[x] = *((l % 6) + (float *)&packstates[code][lpid]);
+                    cids[x/6] = gid / nvertRemote;
+                }
+
+                __syncthreads();
+
+                const int xstart = tid * 6 - base;
+
+                if (0 <= xstart && xstart + 3 <= h)
+                {
+                    xp.x = tmp[0 + xstart];
+                    xp.y = tmp[1 + xstart];
+                    xp.z = tmp[2 + xstart];
+
+                    const int dstcid3 = 3*cids[xstart/6];
+                    dstcen.x = comsRemote[dstcid3 + 0];
+                    dstcen.y = comsRemote[dstcid3 + 1];
+                    dstcen.z = comsRemote[dstcid3 + 2];
+
+                    assert(0 + 6 * tid - base >= 0);
+                    assert(2 + 6 * tid - base < 3 * BLOCKSIZE);
+                }
+            }
+        }
+
+#ifndef NDEBUG
+        assert(xp.x != -313.313f || gidstart + tid >= npremote);
+        assert(xp.y != -313.313f || gidstart + tid >= npremote);
+        assert(xp.z != -313.313f || gidstart + tid >= npremote);
+#endif
+
+        assert(!isnan(xp.x) && !isnan(xp.y) && !isnan(xp.z));
+        assert(!isnan(up.x) && !isnan(up.y) && !isnan(up.z));
+
+        __syncthreads();
+
+        if (wst < npremote)
+        {
+            char mycid[4] = {-2,-2,-2,0};
+            if (tid + gidstart < npremote)
+            {
+                mycid[0] = XSIZE_SUBDOMAIN / 2 + (int)floor(xp.x);
+                mycid[1] = YSIZE_SUBDOMAIN / 2 + (int)floor(xp.y);
+                mycid[2] = ZSIZE_SUBDOMAIN / 2 + (int)floor(xp.z);
+                mycid[3] = 1;
+
+                if (mycid[0] < -1 || mycid[0] >= XSIZE_SUBDOMAIN + 1 ||
+                        mycid[1] < -1 || mycid[1] >= YSIZE_SUBDOMAIN + 1 ||
+                        mycid[2] < -1 || mycid[2] >= ZSIZE_SUBDOMAIN + 1)
+                    mycid[3] = 0;
+            }
+
+            const char4 offs = tid2ind[lid];
+
+            for(int l = 0; l < 32; l++) {
+
+                char ccel[4];
+                *((int *)ccel) = __shfl(*((int *)mycid), l);
+                if (!ccel[3]) continue;
+
+                int mycount=0, myscan=0;
+                if (lid < 27) {
+
+                    ccel[0] += offs.x;
+                    ccel[1] += offs.y;
+                    ccel[2] += offs.z;
+
+                    bool validcid = ccel[0] >= 0 && ccel[0] < XSIZE_SUBDOMAIN &&
+                            ccel[1] >= 0 && ccel[1] < YSIZE_SUBDOMAIN &&
+                            ccel[2] >= 0 && ccel[2] < ZSIZE_SUBDOMAIN;
+
+                    const int cid = (validcid) ? (ccel[0] + XSIZE_SUBDOMAIN*(ccel[1] + YSIZE_SUBDOMAIN*ccel[2])) : 0;
+                    starts[threadIdx.x] = (validcid) ? tex1Dfetch(texSoluteCellsStart, cid) : 0;
+                    myscan = mycount = (validcid) ? tex1Dfetch(texSoluteCellsCount, cid) : 0;
+                }
+#pragma unroll
+                for(int L = 1; L < 32; L <<= 1)
+                    myscan += (lid >= L)*__shfl_up(myscan, L);
+
+                if (lid < 28) scan[threadIdx.x] = myscan - mycount;
+
+                float3 dxp = __shfl_float3(xp, l);
+                float3 ddstcen = __shfl_float3(dstcen, l);
+
+                const int nsrc = scan[wof+27];
+                for(int sid = lid; sid < nsrc; sid += 32)
+                {
+
+                    const int key9 = 9*((sid >= scan[wof + 9]) + (sid >= scan[wof + 18]));
+                    const int key3 = 3*((sid >= scan[wof + key9+3]) + (sid >= scan[wof + key9+6]));
+                    const int key1 = (sid >= scan[wof + key9+key3+1]) + (sid >= scan[wof + key9+key3+2]);
+                    int s = sid - scan[wof + key3+key9+key1] + starts[wof + key3+key9+key1];
+
+                    const int sentry = 3 * s;
+                    const float2 stmp0 = tex1Dfetch(texSoluteParticles, sentry);
+                    const float2 stmp1 = tex1Dfetch(texSoluteParticles, sentry + 1);
+
+                    const int    srccid = reordering[s] / nvertSolute;
+                    const float3 srccen = make_float3(comsSolute[3*srccid+0], comsSolute[3*srccid+1], comsSolute[3*srccid+2]);
+
+                    const float xr = dxp.x - stmp0.x;
+                    const float yr = dxp.y - stmp0.y;
+                    const float zr = dxp.z - stmp1.x;
+                    const float rij2 = xr * xr + yr * yr + zr * zr;
+
+                    if (rij2 < 1.0f)
+                    {
+                        const float3 f = imem_interaction(make_float3(ddstcen.x - srccen.x, ddstcen.y - srccen.y, ddstcen.z - srccen.z), xr, yr, zr, rij2);
+
+                        atomicAdd((float *)(accsolute + s),   -f.x);
+                        atomicAdd((float *)(accsolute + s)+1, -f.y);
+                        atomicAdd((float *)(accsolute + s)+2, -f.z);
+                    }
+                }
+            }
+        }
+    }
+
+    //***************************************************************************************************************************
+    //***************************************************************************************************************************
+
     __global__ void merge_accelerations(const Acceleration * const src, const int n, Acceleration * const dst)
     {
         const int gid = threadIdx.x + blockDim.x * blockIdx.x;
@@ -997,7 +1245,7 @@ namespace KernelsRBC
 }
 
 ComputeInteractionsRBC::ComputeInteractionsRBC(MPI_Comm _cartcomm):
-                                                nvertices(0), dualcells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN)
+                                                                                                                                                                                                                                                                        nvertices(0), dualcells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN)
 {
     assert(XSIZE_SUBDOMAIN % 2 == 0 && YSIZE_SUBDOMAIN % 2 == 0 && ZSIZE_SUBDOMAIN % 2 == 0);
     assert(XSIZE_SUBDOMAIN >= 2 && YSIZE_SUBDOMAIN >= 2 && ZSIZE_SUBDOMAIN >= 2);
@@ -1249,60 +1497,6 @@ void ComputeInteractionsRBC::fsi_bulk(const Particle * const solvent, const int 
     }
 }
 
-void ComputeInteractionsRBC::imem_bulk(const Particle * const rbcs, const int nrbcs, Acceleration * accrbc, cudaStream_t stream)
-{
-    static float *coms;
-    static bool isinited = false;
-    static int maxcells;
-
-    NVTX_RANGE("RBC/imem-bulk", NVTX_C6);
-
-    const int nsolute = nrbcs * nvertices;
-
-    KernelsRBC::setup(NULL, 0, NULL, NULL, reordered_solute.data, nsolute, dualcells.start, dualcells.count);
-
-    if (!isinited)
-    {
-        maxcells = 2*nrbcs;
-        CUDA_CHECK( cudaMalloc(&coms, 3*maxcells * sizeof(float)) );
-        isinited = true;
-    }
-    if (nrbcs > maxcells)
-    {
-        maxcells = 2*nrbcs;
-        CUDA_CHECK( cudaFree(coms) );
-        CUDA_CHECK( cudaMalloc(&coms, 3*maxcells * sizeof(float)) );
-    }
-
-    if (nrbcs > 0)
-    {
-        const int3 vcells = make_int3(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
-
-        CudaRBC::getCom(stream, nrbcs, (float*)reordered_solute.data, coms);
-
-        CUDA_CHECK( cudaMemset((float *)lacc_solute.data, 0, 3 * nrbcs * nvertices * sizeof(float)) );
-        KernelsRBC::imem_forces<2, 2, 1, 8, 4><<<
-                dim3(vcells.x / 2, vcells.y / 2, vcells.z), dim3(32, 4), 0, stream>>>
-                ((float *)lacc_solute.data, reordering.data, nsolute, nvertices, coms);
-
-        KernelsRBC::merge_accelerations_scattered_float<true><<< (nrbcs * nvertices * 3 + 127) / 128, 128, 0, stream >>>(
-                reordering.data, lacc_solute.data, nrbcs * nvertices, accrbc);
-
-        //int nrbcs = 2;
-        float* h_acc = new float[nrbcs*nvertices*3];
-        CUDA_CHECK( cudaMemcpy(h_acc, (float *)lacc_solute.data, 3 * nrbcs * nvertices * sizeof(float), cudaMemcpyDeviceToHost) );
-
-        float tot1 = 0, tot2 = 0;
-        for (int i=0; i<nvertices*nrbcs; i++)
-        {
-            //if (fabs(h_acc[3*i+2]) > 0) printf("    !!  %.3d:  [%.3f  %.3f %.3f]\n", i, h_acc[3*i+0], h_acc[3*i+1], h_acc[3*i+2]);
-            if (i < nvertices) tot1 += h_acc[3*i+2];
-            else tot2 += h_acc[3*i+2];
-        }
-        //printf("1: %f,  2: %f\n", tot1, tot2);
-    }
-}
-
 void ComputeInteractionsRBC::fsi_halo(const Particle * const solvent, const int nparticles, Acceleration * accsolvent,
         const int * const cellsstart_solvent, const int * const cellscount_solvent,
         const Particle * const rbcs, const int nrbcs, Acceleration * accrbc, cudaStream_t stream)
@@ -1380,6 +1574,220 @@ void ComputeInteractionsRBC::fsi_halo(const Particle * const solvent, const int 
 #endif
 
     CUDA_CHECK(cudaEventRecord(evfsi));
+
+    CUDA_CHECK(cudaPeekAtLastError());
+}
+
+
+void ComputeInteractionsRBC::imem_bulk(const Particle * const rbcs, const int nrbcs, Acceleration * accrbc, cudaStream_t stream)
+{
+    static float *coms;
+    static bool isinited = false;
+    static int maxcells;
+
+    NVTX_RANGE("RBC/imem-bulk", NVTX_C6);
+
+    const int nsolute = nrbcs * nvertices;
+
+    KernelsRBC::setup(NULL, 0, NULL, NULL, reordered_solute.data, nsolute, dualcells.start, dualcells.count);
+
+    if (!isinited)
+    {
+        maxcells = 2*nrbcs;
+        CUDA_CHECK( cudaMalloc(&coms, 3*maxcells * sizeof(float)) );
+        isinited = true;
+    }
+    if (nrbcs > maxcells)
+    {
+        maxcells = 2*nrbcs;
+        CUDA_CHECK( cudaFree(coms) );
+        CUDA_CHECK( cudaMalloc(&coms, 3*maxcells * sizeof(float)) );
+    }
+
+    if (nrbcs > 0)
+    {
+        const int3 vcells = make_int3(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
+
+        CudaRBC::getCom(stream, nrbcs, (float*)reordered_solute.data, coms);
+
+        CUDA_CHECK( cudaMemset((float *)lacc_solute.data, 0, 3 * nrbcs * nvertices * sizeof(float)) );
+        KernelsRBC::imem_forces<2, 2, 1, 8, 4, false><<<
+                dim3(vcells.x / 2, vcells.y / 2, vcells.z), dim3(32, 4), 0, stream>>>
+                ((float *)lacc_solute.data, reordering.data, nsolute, nvertices, coms, 0, 0, 0, 0, 0);
+
+        KernelsRBC::merge_accelerations_scattered_float<true><<< (nrbcs * nvertices * 3 + 127) / 128, 128, 0, stream >>>(
+                reordering.data, lacc_solute.data, nrbcs * nvertices, accrbc);
+
+        //        //int nrbcs = 2;
+        //        float* h_acc = new float[nrbcs*nvertices*3];
+        //        CUDA_CHECK( cudaMemcpy(h_acc, (float *)lacc_solute.data, 3 * nrbcs * nvertices * sizeof(float), cudaMemcpyDeviceToHost) );
+        //
+        //        float tot1 = 0, tot2 = 0;
+        //        for (int i=0; i<nvertices*nrbcs; i++)
+        //        {
+        //            //if (fabs(h_acc[3*i+2]) > 0) printf("    !!  %.3d:  [%.3f  %.3f %.3f]\n", i, h_acc[3*i+0], h_acc[3*i+1], h_acc[3*i+2]);
+        //            if (i < nvertices) tot1 += h_acc[3*i+2];
+        //            else tot2 += h_acc[3*i+2];
+        //        }
+        //        //printf("1: %f,  2: %f\n", tot1, tot2);
+    }
+}
+
+void ComputeInteractionsRBC::imem_bulk(const Particle * const rbcs, const int nrbcs, Acceleration * accrbc, cudaStream_t stream)
+{
+    static float *coms;
+    static bool isinited = false;
+    static int maxcells;
+
+    NVTX_RANGE("RBC/imem-bulk", NVTX_C6);
+
+    const int nsolute = nrbcs * nvertices;
+
+    KernelsRBC::setup(NULL, 0, NULL, NULL, reordered_solute.data, nsolute, dualcells.start, dualcells.count);
+
+    if (!isinited)
+    {
+        maxcells = 2*nrbcs;
+        CUDA_CHECK( cudaMalloc(&coms, 3*maxcells * sizeof(float)) );
+        isinited = true;
+    }
+    if (nrbcs > maxcells)
+    {
+        maxcells = 2*nrbcs;
+        CUDA_CHECK( cudaFree(coms) );
+        CUDA_CHECK( cudaMalloc(&coms, 3*maxcells * sizeof(float)) );
+    }
+
+    if (nrbcs > 0)
+    {
+        const int3 vcells = make_int3(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
+
+        CudaRBC::getCom(stream, nrbcs, (float*)reordered_solute.data, coms);
+
+        CUDA_CHECK( cudaMemset((float *)lacc_solute.data, 0, 3 * nrbcs * nvertices * sizeof(float)) );
+        KernelsRBC::imem_forces<2, 2, 1, 8, 4, false><<<
+                dim3(vcells.x / 2, vcells.y / 2, vcells.z), dim3(32, 4), 0, stream>>>
+                ((float *)lacc_solute.data, reordering.data, nsolute, nvertices, coms, 0, 0, 0, 0, 0);
+
+        KernelsRBC::merge_accelerations_scattered_float<true><<< (nrbcs * nvertices * 3 + 127) / 128, 128, 0, stream >>>(
+                reordering.data, lacc_solute.data, nrbcs * nvertices, accrbc);
+
+        //        //int nrbcs = 2;
+        //        float* h_acc = new float[nrbcs*nvertices*3];
+        //        CUDA_CHECK( cudaMemcpy(h_acc, (float *)lacc_solute.data, 3 * nrbcs * nvertices * sizeof(float), cudaMemcpyDeviceToHost) );
+        //
+        //        float tot1 = 0, tot2 = 0;
+        //        for (int i=0; i<nvertices*nrbcs; i++)
+        //        {
+        //            //if (fabs(h_acc[3*i+2]) > 0) printf("    !!  %.3d:  [%.3f  %.3f %.3f]\n", i, h_acc[3*i+0], h_acc[3*i+1], h_acc[3*i+2]);
+        //            if (i < nvertices) tot1 += h_acc[3*i+2];
+        //            else tot2 += h_acc[3*i+2];
+        //        }
+        //        //printf("1: %f,  2: %f\n", tot1, tot2);
+    }
+}
+
+void ComputeInteractionsRBC::imem_halo(const Particle * const rbcs, const int nrbcs, Acceleration * accrbc, cudaStream_t stream)
+{
+    NVTX_RANGE("RBC/imem-halo", NVTX_C7);
+
+    static float *coms, *comsRemote;
+    static bool isinited = false;
+    static int maxcells, maxremote;
+
+    int nremote = 0;
+
+    {
+        static int packstarts[27];
+
+        packstarts[0] = 0;
+        for(int i = 0, s = 0; i < 26; ++i)
+            packstarts[i + 1] = (s += remote[i].state.size);
+
+        nremote = packstarts[26];
+
+        if (!is_mps_enabled)
+            CUDA_CHECK(cudaMemcpyToSymbolAsync(KernelsRBC::packstarts, packstarts,
+                    sizeof(packstarts), 0, cudaMemcpyHostToDevice, stream));
+        else
+            CUDA_CHECK(cudaMemcpyToSymbol(KernelsRBC::packstarts, packstarts,
+                    sizeof(packstarts), 0, cudaMemcpyHostToDevice));
+    }
+
+    {
+        static Particle * packstates[26];
+
+        for(int i = 0; i < 26; ++i)
+            packstates[i] = remote[i].state.devptr;
+
+        if (!is_mps_enabled)
+            CUDA_CHECK(cudaMemcpyToSymbolAsync(KernelsRBC::packstates, packstates,
+                    sizeof(packstates), 0, cudaMemcpyHostToDevice, stream));
+        else
+            CUDA_CHECK(cudaMemcpyToSymbol(KernelsRBC::packstates, packstates,
+                    sizeof(packstates), 0, cudaMemcpyHostToDevice));
+    }
+
+    {
+        static Acceleration * packresults[26];
+
+        for(int i = 0; i < 26; ++i)
+            packresults[i] = remote[i].result.devptr;
+
+        if (!is_mps_enabled)
+            CUDA_CHECK(cudaMemcpyToSymbolAsync(KernelsRBC::packresults, packresults,
+                    sizeof(packresults), 0, cudaMemcpyHostToDevice, stream));
+        else
+            CUDA_CHECK(cudaMemcpyToSymbol(KernelsRBC::packresults, packresults,
+                    sizeof(packresults), 0, cudaMemcpyHostToDevice));
+    }
+    int nRemCells = nremote / nvertices;
+
+    KernelsRBC::setup(NULL, 0, NULL, NULL, reordered_solute.data, nrbcs*nvertices, dualcells.start, dualcells.count);
+
+    if (!isinited)
+    {
+        maxcells = 2*nrbcs;
+        maxremote = 2*nRemCells;
+        CUDA_CHECK( cudaMalloc(&coms,       3*maxcells  * sizeof(float)) );
+        CUDA_CHECK( cudaMalloc(&comsRemote, 3*maxremote * sizeof(float)) );
+        isinited = true;
+    }
+    if (nrbcs > maxcells)
+    {
+        maxcells = 2*nrbcs;
+        CUDA_CHECK( cudaFree(coms) );
+        CUDA_CHECK( cudaMalloc(&coms, 3*maxcells * sizeof(float)) );
+    }
+    if (nRemCells > maxcells)
+    {
+        maxremote = 2*nRemCells;
+        CUDA_CHECK( cudaFree(comsRemote) );
+        CUDA_CHECK( cudaMalloc(&comsRemote, 3*maxremote * sizeof(float)) );
+    }
+
+    //printf(" iam %d,  %d  %d\n", myrank, nrbcs, nRemCells);
+    if(nremote > 0 && nrbcs > 0)
+    {
+        CudaRBC::getCom(stream, nrbcs, (float*)reordered_solute.data, coms);
+        KernelsRBC::remote_coms<<<nRemCells, 128, 0, stream>>>(nRemCells, nvertices, comsRemote);
+
+        //        float* h_acc = new float[nRemCells*3];
+        //        CUDA_CHECK( cudaMemcpy(h_acc, comsRemote, 3 * nrbcs * sizeof(float), cudaMemcpyDeviceToHost) );
+        //
+        //        for (int i=0; i<nRemCells; i++)
+        //        {
+        //            printf("    iam %d !!  %.3d:  [%.3f  %.3f %.3f]\n", myrank, i, h_acc[3*i+0], h_acc[3*i+1], h_acc[3*i+2]);
+        //        }
+
+        CUDA_CHECK( cudaMemset((float *)lacc_solute.data, 0, 3 * nrbcs * nvertices * sizeof(float)) );
+        KernelsRBC::imem_forces_all_nopref<128><<< (nremote + 127) / 128, 128, 0, stream>>>
+                (lacc_solute.data, nrbcs*nvertices, nvertices, coms, reordering.data,
+                        nremote, nvertices, comsRemote);
+
+        KernelsRBC::merge_accelerations_scattered_float<true><<< (nrbcs * nvertices * 3 + 127) / 128, 128, 0, stream >>>(
+                reordering.data, lacc_solute.data, nrbcs * nvertices, accrbc);
+    }
 
     CUDA_CHECK(cudaPeekAtLastError());
 }

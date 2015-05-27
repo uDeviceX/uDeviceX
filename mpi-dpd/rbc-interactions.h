@@ -88,6 +88,7 @@ public:
 		  const Particle * const rbcs, const int nrbcs, Acceleration * accrbc, cudaStream_t stream);
 
     void imem_bulk(const Particle * const rbcs, const int nrbcs, Acceleration * accrbc, cudaStream_t stream);
+    void imem_halo(const Particle * const rbcs, const int nrbcs, Acceleration * accrbc, cudaStream_t stream);
 
     void post_a();
 
