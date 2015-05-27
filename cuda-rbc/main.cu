@@ -17,7 +17,7 @@
  *
  */
 
-#include "rbc-cuda.h"
+#include "rbc-cuda-faster.h"
 #include "timer.h"
 #include "misc.h"
 #include "cuda-common.h"
@@ -154,14 +154,14 @@ public:
 
 	SimRBC(const real L, int ncells): L(L), ncells(ncells)
 {
+		float *coms, *d_coms;
 		CudaRBC::Extent extent;
-		CudaRBC::Extent *devExtents, *hstExtents;
 		CudaRBC::setup(nparticles, extent);
 
 		gpuErrchk( cudaMalloc(&xyzuvw, ncells * 6*nparticles*sizeof(real)) );
 		gpuErrchk( cudaMalloc(&fxfyfz, ncells * 3*nparticles*sizeof(real)) );
-		gpuErrchk( cudaMalloc(&devExtents, ncells * sizeof(CudaRBC::Extent)) );
-		hstExtents = new CudaRBC::Extent[ncells];
+		gpuErrchk( cudaMalloc(&d_coms, ncells * 3*sizeof(real)) );
+		coms = new float[3*ncells];
 
 		float A[4][4];
 		memset(&A[0][0], 0, 16*sizeof(float));
@@ -175,15 +175,13 @@ public:
 		}
 		printf("initialized\n");
 
-		CudaRBC::extent_nohost(0, ncells, xyzuvw, devExtents);
-		gpuErrchk( cudaMemcpy(hstExtents, devExtents, ncells * sizeof(CudaRBC::Extent), cudaMemcpyDeviceToHost) );
+		CudaRBC::getCom(0, ncells, xyzuvw, d_coms);
+		gpuErrchk( cudaMemcpy(coms, d_coms, 3 * ncells * sizeof(real), cudaMemcpyDeviceToHost) );
 		cudaDeviceSynchronize();
 		for (int i=0; i<ncells; i++)
 		{
-			printf("#%.3d:  [%.3f  %.3f], [%.3f  %.3f], [%.3f  %.3f]\n", i,
-					hstExtents[i].xmin, hstExtents[i].xmax,
-					hstExtents[i].ymin, hstExtents[i].ymax,
-					hstExtents[i].zmin, hstExtents[i].zmax);
+			printf("#%.3d:  [%.3f  %.3f %.3f]\n", i,
+			        coms[3*i+0], coms[3*i+1], coms[3*i+2]);
 		}
 
 		cudaEventCreate(&start);
@@ -262,7 +260,7 @@ int main()
 
 	real L = 10000; //  /Volumes/Phenix/CTC/vanilla-rbc/evolution.xyz
 
-	SimRBC sim(L, 50);
+	SimRBC sim(L, 130);
 
 	sim.run(0.05, 0.001);
 

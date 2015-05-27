@@ -87,6 +87,8 @@ public:
 		  const int * const cellsstart_solvent, const int * const cellscount_solvent,
 		  const Particle * const rbcs, const int nrbcs, Acceleration * accrbc, cudaStream_t stream);
 
+    void imem_bulk(const Particle * const rbcs, const int nrbcs, Acceleration * accrbc, cudaStream_t stream);
+
     void post_a();
 
     void merge_a(Acceleration * accrbc, cudaStream_t stream);
