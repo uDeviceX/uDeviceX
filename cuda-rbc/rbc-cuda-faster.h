@@ -39,7 +39,6 @@ namespace CudaRBC
     int get_nvertices();
 
     void getCom(cudaStream_t stream, int ncells, const float * const device_xyzuvw, float * const device_com);
-
     /* A * (x, 1) */
     void initialize(float *device_xyzuvw, const float (*transform)[4]);
 

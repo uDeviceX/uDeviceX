@@ -367,27 +367,24 @@ int main(int argc, const char ** argv)
     Checker checker(8, domainextent, tol);
     int tot = 0;
 
-    const int type = 1;
-    TransformedExtent t(extents[type], domainextent);
+    TransformedExtent onectc(extents[1], domainextent);
+
     for (int i=0; i<4; i++)
         for (int j=0; j<4; j++)
-            if (i==j) t.transform[i][j] = 1;
-            else      t.transform[i][j] = 0;
+            onectc.transform[i][j] = (i == j) ? 1 : 0;
+    onectc.transform[0][3] = 30;
+    onectc.transform[1][3] = 500;
+    onectc.transform[2][3] = 48;
 
-    t.transform[0][3] = 20;
-    t.transform[1][3] = 20;
-    t.transform[2][3] = 20;
+    onectc.xmin[0] = extents[1].xmin + onectc.transform[0][3];
+    onectc.xmin[1] = extents[1].ymin + onectc.transform[1][3];
+    onectc.xmin[2] = extents[1].zmin + onectc.transform[2][3];
+    onectc.xmax[0] = extents[1].xmax + onectc.transform[0][3];
+    onectc.xmax[1] = extents[1].ymax + onectc.transform[1][3];
+    onectc.xmax[2] = extents[1].zmax + onectc.transform[2][3];
 
-    t.xmin[0] = extents[type].xmin + t.transform[0][3];
-    t.xmin[1] = extents[type].ymin + t.transform[1][3];
-    t.xmin[2] = extents[type].zmin + t.transform[2][3];
-
-    t.xmax[0] = extents[type].xmax + t.transform[0][3];
-    t.xmax[1] = extents[type].ymax + t.transform[1][3];
-    t.xmax[2] = extents[type].zmax + t.transform[2][3];
-
-    checker.add(t);
-    results[type].push_back(t);
+    checker.add(onectc);
+    results[1].push_back(onectc);
     ++tot;
 
     while(!failed)

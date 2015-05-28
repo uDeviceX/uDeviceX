@@ -96,7 +96,6 @@ namespace CudaRBC
             dummy = new Extent[maxCells];
         }
     }
-
     void setup(int& nv, Extent& host_extent)
     {
         const float scale=1;
@@ -236,7 +235,7 @@ namespace CudaRBC
         CUDA_CHECK( cudaBindTexture(&textureoffset, &texTriangles4, triangles, &texTriangles4.channelDesc, ntriangles * 4 * sizeof(int)) );
         assert(textureoffset == 0);
 
-        unitsSetup(1.64, 0.001412, 19.0476, 45, 2500, 3500, 10, 135, 90, 1e-6, 2.4295e-6, 4, report);
+        unitsSetup(1.64, 0.001412, 19.0476, 50, 3000, 4000, 50, 135, 91, 1e-6, 2.4295e-6, 4, report);
     }
 
     void unitsSetup(float lmax, float p, float cq, float kb, float ka, float kv, float gammaC,
@@ -492,7 +491,6 @@ namespace CudaRBC
             atomicAdd(coms + cid*3+2, mycom.z);
         }
     }
-
     __device__ __forceinline__ void trCoeffs(const int trid, const int pverts, const float area, const float3 *verts, float *trAlphas)
     {
         const int mask = 0x1ff;
@@ -840,7 +838,6 @@ namespace CudaRBC
         comKernel<<<blocks, threads, 0, stream>>> (ncells, device_xyzuvw, device_com);
         CUDA_CHECK( cudaPeekAtLastError() );
     }
-
     void forces_nohost(cudaStream_t stream, int ncells, const float * const device_xyzuvw, float * const device_axayaz)
     {
         if (ncells == 0) return;

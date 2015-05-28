@@ -19,33 +19,34 @@
 #endif
 
 enum { 
-    XSIZE_SUBDOMAIN = 40,
-    YSIZE_SUBDOMAIN = 40,
-    ZSIZE_SUBDOMAIN = 40,
-    XMARGIN_WALL = 10,
-    YMARGIN_WALL = 10,
-    ZMARGIN_WALL = 10,
+    XSIZE_SUBDOMAIN = 48,
+    YSIZE_SUBDOMAIN = 48,
+    ZSIZE_SUBDOMAIN = 48,
+    XMARGIN_WALL = 12,
+    YMARGIN_WALL = 12,
+    ZMARGIN_WALL = 12,
 };
-
+// Use with slevel = 0, viscosity is 1.7
 const int numberdensity = 4;
-const float dt = 0.001;
+const float dt = 0.005;
 const float tend = 50000;
 const float kBT = 1.0;
-const float gammadpd = 45;
+const float gammadpd = 12;
 const float sigma = sqrt(2 * gammadpd * kBT); 
 const float sigmaf = sigma / sqrt(dt);
-const float aij = 25;
-const float hydrostatic_a = 0.2;
+const float aij = 50;
+const float hydrostatic_a = 0.005;
 const bool walls = true;
 const bool pushtheflow = true;
 const bool rbcs = true;
 const bool ctcs = true;
 const bool xyz_dumps = false;
-const bool hdf5field_dumps = false;
+const bool hdf5field_dumps = true;
 const bool hdf5part_dumps = false;
-const int steps_per_report = 500;
-const int steps_per_dump = 500;
-const int wall_creation_stepid = 2000;
+const int steps_per_report = 1000;
+const int steps_per_dump = 1000;
+const int wall_creation_stepid = 5000;
+const int nsubsteps = 5;
 
 extern bool is_mps_enabled;
 

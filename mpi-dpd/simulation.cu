@@ -12,6 +12,9 @@
 
 #include "simulation.h"
 
+
+#define _USE_TSS
+
 std::vector<Particle> Simulation::_ic()
 {
     srand48(rank);
@@ -400,11 +403,14 @@ void Simulation::_forces()
     if (rbcscoll)
         rbc_interactions.imem_halo(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
 
+#ifndef _USE_TSS
+
     if (rbcscoll)
         rbc_interactions.internal_forces(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
 
     if (ctcscoll)
         ctc_interactions.internal_forces(ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
+#endif
 
     if (wall)
         wall->interactions(particles.xyzuvw.data, particles.size, particles.axayaz.data,
@@ -418,19 +424,157 @@ void Simulation::_forces()
     if (ctcscoll) 
         ctc_interactions.post_a();
 
-
     dpd.wait_for_messages(mainstream);
     dpd.remote_interactions(particles.xyzuvw.data, particles.size, particles.axayaz.data, mainstream);
 
-    if (rbcscoll)
+    if (rbcscoll) 
         rbc_interactions.merge_a(rbcscoll->acc(), mainstream);
 
-    if (ctcscoll)
+    if (ctcscoll) 
         ctc_interactions.merge_a(ctcscoll->acc(), mainstream);
+
+#ifdef _USE_TSS
+    { // TSS
+        if (rbcscoll)
+            CUDA_CHECK( cudaMemcpy(rbcscoll->fsiacc(), rbcscoll->acc(), 3*rbcscoll->pcount()*sizeof(float), cudaMemcpyDeviceToDevice) );
+
+        if (ctcscoll)
+            CUDA_CHECK( cudaMemcpy(ctcscoll->fsiacc(), ctcscoll->acc(), 3*ctcscoll->pcount()*sizeof(float), cudaMemcpyDeviceToDevice) );
+
+        for (int sstep = 0; sstep < nsubsteps; sstep++)
+        {
+            // Start with acc induced by solvent
+            if (rbcscoll)
+            {
+                CUDA_CHECK( cudaMemcpy(rbcscoll->acc(), rbcscoll->fsiacc(), 3*rbcscoll->pcount()*sizeof(float), cudaMemcpyDeviceToDevice) );
+                rbc_interactions.internal_forces(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
+                rbcscoll->update_stage2_and_1(0.0, mainstream, (dt / nsubsteps));
+
+                if (wall)
+                    wall->bounce(rbcscoll->data(), rbcscoll->pcount(), mainstream, dt / (nsubsteps));
+            }
+
+            if (ctcscoll)
+            {
+                CUDA_CHECK( cudaMemcpy(ctcscoll->acc(), ctcscoll->fsiacc(), 3*ctcscoll->pcount()*sizeof(float), cudaMemcpyDeviceToDevice) );
+                ctc_interactions.internal_forces(ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
+                ctcscoll->update_stage2_and_1(0.0, mainstream, dt / (nsubsteps));
+                if (wall)
+                    wall->bounce(ctcscoll->data(), ctcscoll->pcount(), mainstream, dt / (nsubsteps));
+            }
+        }
+        CUDA_CHECK(cudaPeekAtLastError());
+    }
+#endif
 
     timings["interactions"] += MPI_Wtime() - tstart; 
 
     CUDA_CHECK(cudaPeekAtLastError());
+
+}
+
+void Simulation::_qoi(Particle* rbcs, Particle * ctcs, const float tm)
+{
+    const float h = 1;
+    int dims[3], periods[3], coords[3];
+    MPI_CHECK( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
+
+    const int DIR = 1; // y
+    const int subdomain[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
+    // RANK SHIFT
+    const int nbins = ceil(subdomain[DIR] * dims[DIR] / h);
+
+    vector<int> locRBChisto(nbins, 0);
+    vector<int> locCTChisto(nbins, 0);
+    float rbccom[3] = {0, 0, 0};
+
+    if (rbcscoll)
+    {
+        for (int p = 0; p < rbcscoll->count(); p++)
+        {
+            float com = 0;
+            Particle * cur = rbcs + p * rbcscoll->nvertices;
+
+            for (int i=0; i < rbcscoll->nvertices; i++)
+            {
+                com += cur[i].x[DIR];
+                for (int d = 0; d<3; d++)
+                    rbccom[d] += cur[i].x[d] + (coords[d] + 0.5) * subdomain[d];
+            }
+            com = com / rbcscoll->nvertices + (coords[DIR] + 0.5) * subdomain[DIR];
+
+            int ibin = floor(com / h);
+            if (ibin >= nbins) ibin = nbins - 1;
+            if (ibin < 0) ibin = 0;
+
+            locRBChisto[ibin]++;
+        }
+    }
+
+    if (ctcscoll)
+        for (int p = 0; p < ctcscoll->count(); p++)
+        {
+            float com = 0;
+            Particle * cur = ctcs + p * ctcscoll->nvertices;
+
+            for (int i=0; i < ctcscoll->nvertices; i++)
+                com += cur[i].x[DIR];
+            com = com / ctcscoll->nvertices + (coords[DIR] + 0.5) * subdomain[DIR];
+
+            int ibin = floor(com / h);
+            if (ibin >= nbins) ibin = nbins - 1;
+            if (ibin < 0) ibin = 0;
+
+            locCTChisto[ibin]++;
+        }
+
+    MPI_CHECK( MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &locRBChisto[0], &locRBChisto[0], nbins, MPI_INT, MPI_SUM, 0, cartcomm) );
+    MPI_CHECK( MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &locCTChisto[0], &locCTChisto[0], nbins, MPI_INT, MPI_SUM, 0, cartcomm) );
+    MPI_CHECK( MPI_Reduce(rank == 0 ? MPI_IN_PLACE : rbccom, rbccom, 3, MPI_FLOAT, MPI_SUM, 0, cartcomm) );
+
+
+    if (ctcscoll && ctcscoll->count() > 0)
+    {
+        float com[3];
+        com[0] = com[1] = com[2] = 0;
+
+        for (int v = 0; v<ctcscoll->pcount(); v++)
+            for (int d=0; d<3; d++)
+                com[d] += ctcs[v].x[d] + (coords[d] + 0.5) * subdomain[d];
+
+        com[0] /= ctcscoll->pcount();
+        com[1] /= ctcscoll->pcount();
+        com[2] /= ctcscoll->pcount();
+
+        FILE* f = fopen("ctccom.txt", qoiid == 0 ? "w" : "a");
+        fprintf(f, "%f   %e %e %e\n", tm, com[0], com[1], com[2]);
+        fclose(f);
+    }
+
+    if (rank == 0)
+    {
+        FILE* fout = fopen("rbchisto.dat", qoiid == 0 ? "w" : "a");
+        fprintf(fout, "\n %f\n", tm);
+        for (int i=0; i<nbins; i++)
+            fprintf(fout, "%f   %d\n", i*h + 0.5*h, locRBChisto[i]);
+        fclose(fout);
+
+        fout = fopen("ctchisto.dat", qoiid == 0 ? "w" : "a");
+        fprintf(fout, "\n %f\n", tm);
+        for (int i=0; i<nbins; i++)
+            fprintf(fout, "%f   %d\n", i*h + 0.5*h, locCTChisto[i]);
+        fclose(fout);
+
+        float totrbcs = 0;
+        for (int i=0; i<nbins; i++)
+            totrbcs += locRBChisto[i];
+        totrbcs *= rbcscoll->nvertices;
+
+        fout = fopen("rbccom.txt", qoiid == 0 ? "w" : "a");
+        fprintf(fout, "%f   %e %e %e\n", tm, rbccom[0] / totrbcs, rbccom[1] / totrbcs, rbccom[2] / totrbcs);
+        fclose(fout);
+    }
+    qoiid++;
 }
 
 void Simulation::_data_dump(const int idtimestep)
@@ -453,6 +597,11 @@ void Simulation::_data_dump(const int idtimestep)
     CUDA_CHECK(cudaMemcpy(p, particles.xyzuvw.data, sizeof(Particle) * particles.size, cudaMemcpyDeviceToHost));
     CUDA_CHECK(cudaMemcpy(a, particles.axayaz.data, sizeof(Acceleration) * particles.size, cudaMemcpyDeviceToHost));
 
+#ifdef _USE_TSS
+    for (int i=0; i<particles.size; i++)
+        for (int c=0; c<3; c++)
+            p[i].u[c] += dt * a[i].a[c];
+#endif
     int start = particles.size;
 
     if (rbcscoll)
@@ -493,6 +642,7 @@ void Simulation::_data_dump(const int idtimestep)
     if (ctcscoll)
         ctcscoll->dump(activecomm, cartcomm);
 
+    _qoi(p+particles.size, p+particles.size + rbcscoll->pcount(), idtimestep * dt);
     delete [] p;
     delete [] a;
 
@@ -506,13 +656,15 @@ void Simulation::_update_and_bounce()
 
     CUDA_CHECK(cudaPeekAtLastError());
 
+#ifndef _USE_TSS
     if (rbcscoll)
-        rbcscoll->update_stage2_and_1(driving_acceleration, mainstream);
+        rbcscoll->update_stage2_and_1(0.0, mainstream);
 
     CUDA_CHECK(cudaPeekAtLastError());
 
     if (ctcscoll)
-        ctcscoll->update_stage2_and_1(driving_acceleration, mainstream);
+        ctcscoll->update_stage2_and_1(0.0, mainstream);
+#endif
     timings["update"] += MPI_Wtime() - tstart;
 
     if (wall)
@@ -520,11 +672,13 @@ void Simulation::_update_and_bounce()
         tstart = MPI_Wtime();
         wall->bounce(particles.xyzuvw.data, particles.size, mainstream);
 
+#ifndef _USE_TSS
         if (rbcscoll)
             wall->bounce(rbcscoll->data(), rbcscoll->pcount(), mainstream);
 
         if (ctcscoll)
             wall->bounce(ctcscoll->data(), ctcscoll->pcount(), mainstream);
+#endif
 
         timings["bounce-walls"] += MPI_Wtime() - tstart;
     }
@@ -540,13 +694,12 @@ Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_term
                             dpd(cartcomm), rbc_interactions(cartcomm), ctc_interactions(cartcomm),
                             dump_part("allparticles.h5part", activecomm, cartcomm),  dump_field(cartcomm),  dump_part_solvent(NULL),
                             check_termination(check_termination),
-                            driving_acceleration(0), host_idle_time(0), nsteps((int)(tend / dt))
+                            driving_acceleration(0), host_idle_time(0), nsteps((int)(tend / dt)), qoiid(0)
 {
     //Side not of Yu-Hang:
     //in production runs replace the numbers with 4 unique ones that are same across ranks
     //KISS rng_trunk( 0x26F94D92, 0x383E7D1E, 0x46144B48, 0x6DDD73CB );
 
-    localcomm.initialize(activecomm);
 
     MPI_CHECK( MPI_Comm_size(activecomm, &nranks) );
     MPI_CHECK( MPI_Comm_rank(activecomm, &rank) );
@@ -606,7 +759,6 @@ void Simulation::_lockstep()
 
     CUDA_CHECK(cudaPeekAtLastError());
 
-    localcomm.barrier(); // peh: 1
 
     if (rbcscoll)
         rbc_interactions.exchange_count();
@@ -627,7 +779,6 @@ void Simulation::_lockstep()
     if (ctcscoll)
         ctc_interactions.fsi_bulk(particles.xyzuvw.data, particles.size, particles.axayaz.data, cells.start, cells.count,
                 ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
-
     if (rbcscoll)
         rbc_interactions.imem_bulk(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
 
@@ -684,12 +835,13 @@ void Simulation::_lockstep()
 
     redistribute.bulk(particles.size, mainstream);
 
+#ifndef _USE_TSS
     if (rbcscoll)
         rbc_interactions.internal_forces(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
 
     if (ctcscoll)
         ctc_interactions.internal_forces(ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
-
+#endif
     CUDA_CHECK(cudaPeekAtLastError());
 
     if (rbcscoll && wall)
@@ -704,6 +856,7 @@ void Simulation::_lockstep()
     if (ctcscoll)
         ctc_interactions.merge_a(ctcscoll->acc(), mainstream);
 
+#ifndef _USE_TSS
     if (rbcscoll)
         rbcscoll->update_stage2_and_1(driving_acceleration, mainstream);
 
@@ -717,6 +870,38 @@ void Simulation::_lockstep()
 
     if (wall && ctcscoll)
         wall->bounce(ctcscoll->data(), ctcscoll->pcount(), mainstream);
+#else
+    { // TSS
+        if (rbcscoll)
+            CUDA_CHECK( cudaMemcpy(rbcscoll->fsiacc(), rbcscoll->acc(), 3*rbcscoll->pcount()*sizeof(float), cudaMemcpyDeviceToDevice) );
+
+        if (ctcscoll)
+            CUDA_CHECK( cudaMemcpy(ctcscoll->fsiacc(), ctcscoll->acc(), 3*ctcscoll->pcount()*sizeof(float), cudaMemcpyDeviceToDevice) );
+
+        for (int sstep = 0; sstep < nsubsteps; sstep++)
+        {
+            // Start with acc induced by solvent
+            if (rbcscoll)
+            {
+                CUDA_CHECK( cudaMemcpy(rbcscoll->acc(), rbcscoll->fsiacc(), 3*rbcscoll->pcount()*sizeof(float), cudaMemcpyDeviceToDevice) );
+                rbc_interactions.internal_forces(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
+                rbcscoll->update_stage2_and_1(0.0, mainstream, dt / (nsubsteps));
+                if (wall)
+                    wall->bounce(rbcscoll->data(), rbcscoll->pcount(), mainstream, dt / (nsubsteps));
+            }
+
+            if (ctcscoll)
+            {
+                CUDA_CHECK( cudaMemcpy(ctcscoll->acc(), ctcscoll->fsiacc(), 3*ctcscoll->pcount()*sizeof(float), cudaMemcpyDeviceToDevice) );
+                ctc_interactions.internal_forces(ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
+                ctcscoll->update_stage2_and_1(0.0, mainstream, dt / (nsubsteps));
+                if (wall)
+                    wall->bounce(ctcscoll->data(), ctcscoll->pcount(), mainstream, dt / (nsubsteps));
+            }
+        }
+        CUDA_CHECK(cudaPeekAtLastError());
+    }
+#endif
 
     const int newnp = redistribute.recv_count(mainstream, host_idle_time);
 
@@ -738,7 +923,6 @@ void Simulation::_lockstep()
 
     redistribute.recv_unpack(unordered_particles.data, newnp, mainstream, host_idle_time);
 
-    localcomm.barrier();	// peh: +2
 
     particles.resize(newnp);
 
@@ -769,7 +953,7 @@ void Simulation::_lockstep()
 
     CUDA_CHECK(cudaPeekAtLastError());
 
-    //  localcomm.barrier();  // peh: +3
+    localcomm.barrier();	// peh: +1
 
     timings["lockstep"] += MPI_Wtime() - tstart;
 }
@@ -790,11 +974,13 @@ void Simulation::run()
 
     particles.update_stage1(driving_acceleration, mainstream);
 
+#ifndef _USE_TSS
     if (rbcscoll)
         rbcscoll->update_stage1(driving_acceleration, mainstream);
 
     if (ctcscoll)
         ctcscoll->update_stage1(driving_acceleration, mainstream);
+#endif
 
     int it;
     enum { nvtxstart = 8001, nvtxstop = 8051 } ;
