@@ -43,6 +43,7 @@ protected:
     } remote[26], local[26];
 
     virtual void _compute_extents(const Particle * const xyzuvw, const int nrbcs, cudaStream_t stream);
+    virtual void _get_coms(cudaStream_t stream, int nrbcs, float* xyz, float* coms);
 
     void _wait(std::vector<MPI_Request>& v)
     {
@@ -92,8 +93,10 @@ public:
     void imem_bulk(const Particle * const rbcs, const int nrbcs, Acceleration * accrbc, cudaStream_t stream);
     void imem_halo(const Particle * const rbcs, const int nrbcs, Acceleration * accrbc, cudaStream_t stream);
 
-    void imem_ctc_rbc_bulk(const Particle * const rbcs, const int nrbcs, Acceleration * accrbc,
+    void imem_rbc_ctc_bulk(const Particle * const rbcs, const int nrbcs, Acceleration * accrbc,
             ComputeInteractionsRBC* ctc_int, const Particle * const ctcs, const int nctcs, Acceleration * accctc, cudaStream_t stream);
+    void imem_rbc_ctc_halo(const Particle * const rbcs, const int nrbcs, Acceleration * accrbc,
+            ComputeInteractionsRBC* ctc_int, const int nctcs, cudaStream_t stream);
 
     void post_a();
 

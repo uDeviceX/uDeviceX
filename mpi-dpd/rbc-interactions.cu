@@ -754,13 +754,13 @@ namespace KernelsRBC
 
     __device__ inline float3 imem_interaction(const float3 dcenter, const float dx, const float dy, const float dz, const float rij2)
     {
-        if (rij2 > 0.2f) return make_float3(0.0f, 0.0f, 0.0f);
-        const float invrij2 = 5.0f / rij2;
+        if (rij2 > 0.25f) return make_float3(0.0f, 0.0f, 0.0f);
+        const float invrij2 = 3.0f / rij2;
         const float invrij6 = invrij2;
 
         const float cos = (dcenter.x * dx + dcenter.y * dy + dcenter.z * dz) * rsqrt(rij2) *
                 rsqrt(dcenter.x * dcenter.x + dcenter.y * dcenter.y + dcenter.z * dcenter.z);
-        const float strength = min((cos < 0.2) * invrij6, 500.0f);
+        const float strength = min((cos > 0.0) * invrij6, 500.0f);
 
         return make_float3(strength * dx, strength * dy, strength * dz);
     }
@@ -856,14 +856,14 @@ namespace KernelsRBC
 
                 const int spid = pid - scan[wid][key] + starts[wid][key];
 
-                assert(spid >= 0 && spid < nsolute);
+                assert(spid >= 0 && spid < BIP ? nOther : nsolute);
 
                 const int sentry = 3 * spid;
                 const float2 stmp0 = tex1Dfetch(BIP ? texOtherParticles : texSoluteParticles, sentry);
                 const float2 stmp1 = tex1Dfetch(BIP ? texOtherParticles : texSoluteParticles, sentry + 1);
 
                 const int    srccid3 = BIP ? 3*(reorderingOther[spid] / nvertOther) : 3*(reordering[spid] / nvertices);
-                const float3 srccen = BIP ? make_float3(comsOther[srccid3+0], comsOther[srccid3+1], comsOther[srccid3+2]) :
+                const float3 srccen  = BIP ? make_float3(comsOther[srccid3+0], comsOther[srccid3+1], comsOther[srccid3+2]) :
                         make_float3(coms[srccid3+0], coms[srccid3+1], coms[srccid3+2]);
 
                 const float xr = xdest.x - stmp0.x;
@@ -881,9 +881,9 @@ namespace KernelsRBC
 
                     if (BIP)
                     {
-                        atomicAdd(accOther + 3 * dpid    , -f.x);
-                        atomicAdd(accOther + 3 * dpid + 1, -f.y);
-                        atomicAdd(accOther + 3 * dpid + 2, -f.z);
+                        atomicAdd(accOther + 3 * spid    , -f.x);
+                        atomicAdd(accOther + 3 * spid + 1, -f.y);
+                        atomicAdd(accOther + 3 * spid + 2, -f.z);
                     }
                 }
             }
@@ -1261,7 +1261,7 @@ namespace KernelsRBC
 }
 
 ComputeInteractionsRBC::ComputeInteractionsRBC(MPI_Comm _cartcomm):
-                                                                                                                                                                                                                                                                                                                                                        nvertices(0), dualcells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN)
+                                                                                                                                                                                                                                                                                                                                                                                nvertices(0), dualcells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN)
 {
     assert(XSIZE_SUBDOMAIN % 2 == 0 && YSIZE_SUBDOMAIN % 2 == 0 && ZSIZE_SUBDOMAIN % 2 == 0);
     assert(XSIZE_SUBDOMAIN >= 2 && YSIZE_SUBDOMAIN >= 2 && ZSIZE_SUBDOMAIN >= 2);
@@ -1305,13 +1305,13 @@ ComputeInteractionsRBC::ComputeInteractionsRBC(MPI_Comm _cartcomm):
 
 void ComputeInteractionsRBC::_compute_extents(const Particle * const rbcs, const int nrbcs, cudaStream_t stream)
 {
-#if 1
     if (nrbcs)
         minmax_massimo(rbcs, nvertices, nrbcs, minextents.devptr, maxextents.devptr, stream);
-#else
-    for(int i = 0; i < nrbcs; ++i)
-        CudaRBC::extent_nohost(stream, (float *)(rbcs + nvertices * i), extents.devptr + i);
-#endif
+}
+
+void ComputeInteractionsRBC::_get_coms(cudaStream_t stream, int nrbcs, float* xyz, float* coms)
+{
+    CudaRBC::getCom(stream, nrbcs, xyz, coms);
 }
 
 void ComputeInteractionsRBC::extent(const Particle * const rbcs, const int nrbcs, cudaStream_t stream)
@@ -1624,7 +1624,7 @@ void ComputeInteractionsRBC::imem_bulk(const Particle * const rbcs, const int nr
     {
         const int3 vcells = make_int3(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
 
-        CudaRBC::getCom(stream, nrbcs, (float*)reordered_solute.data, coms);
+        CudaRBC::getCom(stream, nrbcs, (float*)rbcs, coms);
 
         CUDA_CHECK( cudaMemset((float *)lacc_solute.data, 0, 3 * nrbcs * nvertices * sizeof(float)) );
         KernelsRBC::imem_forces<2, 2, 1, 8, 4, false><<<
@@ -1649,7 +1649,7 @@ void ComputeInteractionsRBC::imem_bulk(const Particle * const rbcs, const int nr
     }
 }
 
-void ComputeInteractionsRBC::imem_ctc_rbc_bulk(const Particle * const rbcs, const int nrbcs, Acceleration * accrbc,
+void ComputeInteractionsRBC::imem_rbc_ctc_bulk(const Particle * const rbcs, const int nrbcs, Acceleration * accrbc,
         ComputeInteractionsRBC* ctc_int, const Particle * const ctcs, const int nctcs, Acceleration * accctc, cudaStream_t stream)
 {
     static float *coms, *comsCtc;
@@ -1701,11 +1701,11 @@ void ComputeInteractionsRBC::imem_ctc_rbc_bulk(const Particle * const rbcs, cons
 
     const int3 vcells = make_int3(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
 
-    CudaRBC::getCom(stream, nrbcs, (float*)reordered_solute.data, coms);
-    CudaCTC::getCom(stream, nctcs, (float*)ctc_int->reordered_solute.data, comsCtc);
+    CudaRBC::getCom(stream, nrbcs, (float*)rbcs, coms);
+    CudaCTC::getCom(stream, nctcs, (float*)ctcs, comsCtc);
 
-    CUDA_CHECK( cudaMemset((float *)lacc_solute.data, 0, 3 * nrbcs * nvertices * sizeof(float)) );
-    CUDA_CHECK( cudaMemset((float *)ctc_int->lacc_solute.data, 0, 3 * nrbcs * nvertices * sizeof(float)) );
+    CUDA_CHECK( cudaMemset((float *)lacc_solute.data, 0, 3 * nprbc * sizeof(float)) );
+    CUDA_CHECK( cudaMemset((float *)ctc_int->lacc_solute.data, 0, 3 * npctc * sizeof(float)) );
 
     KernelsRBC::imem_forces<2, 2, 1, 8, 4, true><<<
             dim3(vcells.x / 2, vcells.y / 2, vcells.z), dim3(32, 4), 0, stream>>> (
@@ -1797,19 +1797,10 @@ void ComputeInteractionsRBC::imem_halo(const Particle * const rbcs, const int nr
         CUDA_CHECK( cudaMalloc(&comsRemote, 3*maxremote * sizeof(float)) );
     }
 
-    //printf(" iam %d,  %d  %d\n", myrank, nrbcs, nRemCells);
     if(nremote > 0 && nrbcs > 0)
     {
-        CudaRBC::getCom(stream, nrbcs, (float*)reordered_solute.data, coms);
+        CudaRBC::getCom(stream, nrbcs, (float*)rbcs, coms);
         KernelsRBC::remote_coms<<<nRemCells, 128, 0, stream>>>(nRemCells, nvertices, comsRemote);
-
-        //        float* h_acc = new float[nRemCells*3];
-        //        CUDA_CHECK( cudaMemcpy(h_acc, comsRemote, 3 * nrbcs * sizeof(float), cudaMemcpyDeviceToHost) );
-        //
-        //        for (int i=0; i<nRemCells; i++)
-        //        {
-        //            printf("    iam %d !!  %.3d:  [%.3f  %.3f %.3f]\n", myrank, i, h_acc[3*i+0], h_acc[3*i+1], h_acc[3*i+2]);
-        //        }
 
         CUDA_CHECK( cudaMemset((float *)lacc_solute.data, 0, 3 * nrbcs * nvertices * sizeof(float)) );
         KernelsRBC::imem_forces_all_nopref<128><<< (nremote + 127) / 128, 128, 0, stream>>>
@@ -1819,6 +1810,125 @@ void ComputeInteractionsRBC::imem_halo(const Particle * const rbcs, const int nr
         KernelsRBC::merge_accelerations_scattered_float<true><<< (nrbcs * nvertices * 3 + 127) / 128, 128, 0, stream >>>(
                 reordering.data, lacc_solute.data, nrbcs * nvertices, accrbc);
     }
+
+    CUDA_CHECK(cudaPeekAtLastError());
+}
+
+void ComputeInteractionsRBC::imem_rbc_ctc_halo(const Particle * const rbcs, const int nrbcs, Acceleration * accrbc,
+        ComputeInteractionsRBC* ctc_int, const int nctcs, cudaStream_t stream)
+{
+    NVTX_RANGE("RBC/imem-halo", NVTX_C7);
+
+    static float *coms, *comsRemote;
+    static bool isinited = false;
+    static int maxcells, maxremote;
+
+    int nremote = 0;
+
+    {
+        static int packstarts[27];
+
+        packstarts[0] = 0;
+        for(int i = 0, s = 0; i < 26; ++i)
+            packstarts[i + 1] = (s += ctc_int->remote[i].state.size);
+
+        nremote = packstarts[26];
+
+        if (!is_mps_enabled)
+            CUDA_CHECK(cudaMemcpyToSymbolAsync(KernelsRBC::packstarts, packstarts,
+                    sizeof(packstarts), 0, cudaMemcpyHostToDevice, stream));
+        else
+            CUDA_CHECK(cudaMemcpyToSymbol(KernelsRBC::packstarts, packstarts,
+                    sizeof(packstarts), 0, cudaMemcpyHostToDevice));
+    }
+
+    {
+        static Particle * packstates[26];
+
+        for(int i = 0; i < 26; ++i)
+            packstates[i] = ctc_int->remote[i].state.devptr;
+
+        if (!is_mps_enabled)
+            CUDA_CHECK(cudaMemcpyToSymbolAsync(KernelsRBC::packstates, packstates,
+                    sizeof(packstates), 0, cudaMemcpyHostToDevice, stream));
+        else
+            CUDA_CHECK(cudaMemcpyToSymbol(KernelsRBC::packstates, packstates,
+                    sizeof(packstates), 0, cudaMemcpyHostToDevice));
+    }
+
+    {
+        static Acceleration * packresults[26];
+
+        for(int i = 0; i < 26; ++i)
+            packresults[i] = ctc_int->remote[i].result.devptr;
+
+        if (!is_mps_enabled)
+            CUDA_CHECK(cudaMemcpyToSymbolAsync(KernelsRBC::packresults, packresults,
+                    sizeof(packresults), 0, cudaMemcpyHostToDevice, stream));
+        else
+            CUDA_CHECK(cudaMemcpyToSymbol(KernelsRBC::packresults, packresults,
+                    sizeof(packresults), 0, cudaMemcpyHostToDevice));
+    }
+    int nRemCells = nremote / ctc_int->nvertices;
+
+    if (nremote * nrbcs == 0) return;
+
+    KernelsRBC::setup(NULL, 0, NULL, NULL, reordered_solute.data, nrbcs*nvertices, dualcells.start, dualcells.count);
+
+    if (!isinited)
+    {
+        maxcells = 2*nrbcs;
+        maxremote = 2*nRemCells;
+        CUDA_CHECK( cudaMalloc(&coms,       3*maxcells  * sizeof(float)) );
+        CUDA_CHECK( cudaMalloc(&comsRemote, 3*maxremote * sizeof(float)) );
+        isinited = true;
+    }
+    if (nrbcs > maxcells)
+    {
+        maxcells = 2*nrbcs;
+        CUDA_CHECK( cudaFree(coms) );
+        CUDA_CHECK( cudaMalloc(&coms, 3*maxcells * sizeof(float)) );
+    }
+    if (nRemCells > maxcells)
+    {
+        maxremote = 2*nRemCells;
+        CUDA_CHECK( cudaFree(comsRemote) );
+        CUDA_CHECK( cudaMalloc(&comsRemote, 3*maxremote * sizeof(float)) );
+    }
+
+    _get_coms(stream, nrbcs, (float*)rbcs, coms);
+    KernelsRBC::remote_coms<<<nRemCells, 128, 0, stream>>>(nRemCells, ctc_int->nvertices, comsRemote);
+
+//    {
+//        float* h_acc = new float[nrbcs*3];
+//        CUDA_CHECK( cudaMemcpy(h_acc, coms, 3 * nrbcs * sizeof(float), cudaMemcpyDeviceToHost) );
+//
+//        for (int i=0; i<nrbcs; i++)
+//        {
+//            printf("  iam %d  own:  %.3d:  [%.3f  %.3f %.3f]\n", myrank, i,
+//                    h_acc[3*i+0]+XSIZE_SUBDOMAIN*(0.5+myrank), h_acc[3*i+1]+YSIZE_SUBDOMAIN*0.5, h_acc[3*i+2]+ZSIZE_SUBDOMAIN*0.5);
+//        }
+//    }
+//
+//    {
+//        float* h_acc = new float[nRemCells*3];
+//        CUDA_CHECK( cudaMemcpy(h_acc, comsRemote, 3 * nRemCells * sizeof(float), cudaMemcpyDeviceToHost) );
+//
+//        for (int i=0; i<nRemCells; i++)
+//        {
+//            printf("  iam %d  rem:  %.3d:  [%.3f  %.3f %.3f]\n", myrank, i,
+//                    h_acc[3*i+0]+XSIZE_SUBDOMAIN*(0.5+myrank), h_acc[3*i+1]+YSIZE_SUBDOMAIN*0.5, h_acc[3*i+2]+ZSIZE_SUBDOMAIN*0.5);
+//        }
+//    }
+
+
+    CUDA_CHECK( cudaMemset((float *)lacc_solute.data, 0, 3 * nrbcs * nvertices * sizeof(float)) );
+    KernelsRBC::imem_forces_all_nopref<128><<< (nremote + 127) / 128, 128, 0, stream>>>
+            (lacc_solute.data, nrbcs*nvertices, nvertices, coms, reordering.data,
+                    nremote, ctc_int->nvertices, comsRemote);
+
+    KernelsRBC::merge_accelerations_scattered_float<true><<< (nrbcs * nvertices * 3 + 127) / 128, 128, 0, stream >>>(
+            reordering.data, lacc_solute.data, nrbcs * nvertices, accrbc);
 
     CUDA_CHECK(cudaPeekAtLastError());
 }
