@@ -12,6 +12,7 @@
 
 #include <set>
 #include <../dpd-rng.h>
+#include <ctc-cuda.h>
 
 #include "rbc-interactions.h"
 #include "minmax-massimo.h"
@@ -1191,6 +1192,16 @@ namespace KernelsRBC
             texSoluteCellsCount.mipmapFilterMode = cudaFilterModePoint;
             texSoluteCellsCount.normalized = 0;
 
+            texOtherStart.channelDesc = cudaCreateChannelDesc<int>();
+            texOtherStart.filterMode = cudaFilterModePoint;
+            texOtherStart.mipmapFilterMode = cudaFilterModePoint;
+            texOtherStart.normalized = 0;
+
+            texOtherCount.channelDesc = cudaCreateChannelDesc<int>();
+            texOtherCount.filterMode = cudaFilterModePoint;
+            texOtherCount.mipmapFilterMode = cudaFilterModePoint;
+            texOtherCount.normalized = 0;
+
             texSolventParticles.channelDesc = cudaCreateChannelDesc<float2>();
             texSolventParticles.filterMode = cudaFilterModePoint;
             texSolventParticles.mipmapFilterMode = cudaFilterModePoint;
@@ -1200,6 +1211,11 @@ namespace KernelsRBC
             texSoluteParticles.filterMode = cudaFilterModePoint;
             texSoluteParticles.mipmapFilterMode = cudaFilterModePoint;
             texSoluteParticles.normalized = 0;
+
+            texOtherParticles.channelDesc = cudaCreateChannelDesc<float2>();
+            texOtherParticles.filterMode = cudaFilterModePoint;
+            texOtherParticles.mipmapFilterMode = cudaFilterModePoint;
+            texOtherParticles.normalized = 0;
 
             firsttime = false;
         }
@@ -1245,7 +1261,7 @@ namespace KernelsRBC
 }
 
 ComputeInteractionsRBC::ComputeInteractionsRBC(MPI_Comm _cartcomm):
-                                                                                                                                                                                                                                                                        nvertices(0), dualcells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN)
+                                                                                                                                                                                                                                                                                                                                                        nvertices(0), dualcells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN)
 {
     assert(XSIZE_SUBDOMAIN % 2 == 0 && YSIZE_SUBDOMAIN % 2 == 0 && ZSIZE_SUBDOMAIN % 2 == 0);
     assert(XSIZE_SUBDOMAIN >= 2 && YSIZE_SUBDOMAIN >= 2 && ZSIZE_SUBDOMAIN >= 2);
@@ -1633,22 +1649,41 @@ void ComputeInteractionsRBC::imem_bulk(const Particle * const rbcs, const int nr
     }
 }
 
-void ComputeInteractionsRBC::imem_bulk(const Particle * const rbcs, const int nrbcs, Acceleration * accrbc, cudaStream_t stream)
+void ComputeInteractionsRBC::imem_ctc_rbc_bulk(const Particle * const rbcs, const int nrbcs, Acceleration * accrbc,
+        ComputeInteractionsRBC* ctc_int, const Particle * const ctcs, const int nctcs, Acceleration * accctc, cudaStream_t stream)
 {
-    static float *coms;
+    static float *coms, *comsCtc;
     static bool isinited = false;
-    static int maxcells;
+    static int maxcells, maxCtcs;
 
-    NVTX_RANGE("RBC/imem-bulk", NVTX_C6);
+    NVTX_RANGE("RBC/imem_rbc-ctc_bulk", NVTX_C6);
 
-    const int nsolute = nrbcs * nvertices;
+    const int nprbc = nrbcs * nvertices;
+    const int npctc = nctcs * ctc_int->nvertices;
 
-    KernelsRBC::setup(NULL, 0, NULL, NULL, reordered_solute.data, nsolute, dualcells.start, dualcells.count);
+    if (nprbc * npctc == 0) return;
+
+    KernelsRBC::setup(NULL, 0, NULL, NULL, reordered_solute.data, nprbc, dualcells.start, dualcells.count);
+
+    size_t textureoffset = 0;
+    CUDA_CHECK(cudaBindTexture(&textureoffset, &KernelsRBC::texOtherParticles,
+            (float*)ctcs, &KernelsRBC::texOtherParticles.channelDesc, sizeof(float) * 6 * npctc));
+    assert(textureoffset == 0);
+
+    const int ncells = XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN;
+    CUDA_CHECK(cudaBindTexture(&textureoffset, &KernelsRBC::texOtherStart,
+            ctc_int->dualcells.start, &KernelsRBC::texOtherStart.channelDesc, sizeof(int) * ncells));
+    assert(textureoffset == 0);
+    CUDA_CHECK(cudaBindTexture(&textureoffset, &KernelsRBC::texOtherCount,
+            ctc_int->dualcells.count, &KernelsRBC::texOtherCount.channelDesc, sizeof(int) * ncells));
+    assert(textureoffset == 0);
 
     if (!isinited)
     {
         maxcells = 2*nrbcs;
-        CUDA_CHECK( cudaMalloc(&coms, 3*maxcells * sizeof(float)) );
+        maxCtcs  = 2*nctcs;
+        CUDA_CHECK( cudaMalloc(&coms,    3*maxcells * sizeof(float)) );
+        CUDA_CHECK( cudaMalloc(&comsCtc, 3*maxCtcs  * sizeof(float)) );
         isinited = true;
     }
     if (nrbcs > maxcells)
@@ -1657,34 +1692,30 @@ void ComputeInteractionsRBC::imem_bulk(const Particle * const rbcs, const int nr
         CUDA_CHECK( cudaFree(coms) );
         CUDA_CHECK( cudaMalloc(&coms, 3*maxcells * sizeof(float)) );
     }
-
-    if (nrbcs > 0)
+    if (nctcs > maxCtcs)
     {
-        const int3 vcells = make_int3(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
-
-        CudaRBC::getCom(stream, nrbcs, (float*)reordered_solute.data, coms);
-
-        CUDA_CHECK( cudaMemset((float *)lacc_solute.data, 0, 3 * nrbcs * nvertices * sizeof(float)) );
-        KernelsRBC::imem_forces<2, 2, 1, 8, 4, false><<<
-                dim3(vcells.x / 2, vcells.y / 2, vcells.z), dim3(32, 4), 0, stream>>>
-                ((float *)lacc_solute.data, reordering.data, nsolute, nvertices, coms, 0, 0, 0, 0, 0);
-
-        KernelsRBC::merge_accelerations_scattered_float<true><<< (nrbcs * nvertices * 3 + 127) / 128, 128, 0, stream >>>(
-                reordering.data, lacc_solute.data, nrbcs * nvertices, accrbc);
-
-        //        //int nrbcs = 2;
-        //        float* h_acc = new float[nrbcs*nvertices*3];
-        //        CUDA_CHECK( cudaMemcpy(h_acc, (float *)lacc_solute.data, 3 * nrbcs * nvertices * sizeof(float), cudaMemcpyDeviceToHost) );
-        //
-        //        float tot1 = 0, tot2 = 0;
-        //        for (int i=0; i<nvertices*nrbcs; i++)
-        //        {
-        //            //if (fabs(h_acc[3*i+2]) > 0) printf("    !!  %.3d:  [%.3f  %.3f %.3f]\n", i, h_acc[3*i+0], h_acc[3*i+1], h_acc[3*i+2]);
-        //            if (i < nvertices) tot1 += h_acc[3*i+2];
-        //            else tot2 += h_acc[3*i+2];
-        //        }
-        //        //printf("1: %f,  2: %f\n", tot1, tot2);
+        maxCtcs = 2*nctcs;
+        CUDA_CHECK( cudaFree(comsCtc) );
+        CUDA_CHECK( cudaMalloc(&comsCtc, 3*maxCtcs * sizeof(float)) );
     }
+
+    const int3 vcells = make_int3(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
+
+    CudaRBC::getCom(stream, nrbcs, (float*)reordered_solute.data, coms);
+    CudaCTC::getCom(stream, nctcs, (float*)ctc_int->reordered_solute.data, comsCtc);
+
+    CUDA_CHECK( cudaMemset((float *)lacc_solute.data, 0, 3 * nrbcs * nvertices * sizeof(float)) );
+    CUDA_CHECK( cudaMemset((float *)ctc_int->lacc_solute.data, 0, 3 * nrbcs * nvertices * sizeof(float)) );
+
+    KernelsRBC::imem_forces<2, 2, 1, 8, 4, true><<<
+            dim3(vcells.x / 2, vcells.y / 2, vcells.z), dim3(32, 4), 0, stream>>> (
+                    (float *)lacc_solute.data, reordering.data, nprbc, nvertices, coms,
+                    (float *)ctc_int->lacc_solute.data, ctc_int->reordering.data, npctc, ctc_int->nvertices, comsCtc);
+
+    KernelsRBC::merge_accelerations_scattered_float<true><<< (nprbc * 3 + 127) / 128, 128, 0, stream >>>(
+            reordering.data, lacc_solute.data, nprbc, accrbc);
+    KernelsRBC::merge_accelerations_scattered_float<true><<< (npctc * 3 + 127) / 128, 128, 0, stream >>>(
+            ctc_int->reordering.data, ctc_int->lacc_solute.data, npctc, accctc);
 }
 
 void ComputeInteractionsRBC::imem_halo(const Particle * const rbcs, const int nrbcs, Acceleration * accrbc, cudaStream_t stream)

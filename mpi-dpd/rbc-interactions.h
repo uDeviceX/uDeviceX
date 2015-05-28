@@ -26,7 +26,7 @@ protected:
     MPI_Comm cartcomm;
     MPI_Request reqsendcounts[26], reqrecvcounts[26];
 
-    int nvertices, myrank, nranks, dims[3], periods[3], coords[3], dstranks[26], recv_tags[26], recv_counts[26], send_counts[26];
+    int myrank, nranks, dims[3], periods[3], coords[3], dstranks[26], recv_tags[26], recv_counts[26], send_counts[26];
 
     std::vector<MPI_Request> reqsendp, reqrecvp, reqsendacc, reqrecvacc;
     std::vector< int > haloreplica[26];
@@ -58,6 +58,8 @@ protected:
 
     cudaEvent_t evextents, evfsi;
 
+public:
+    int nvertices;
     CellLists dualcells;
     SimpleDeviceBuffer<Acceleration> lacc_solute;
     SimpleDeviceBuffer<Particle> reordered_solute;
@@ -89,6 +91,9 @@ public:
 
     void imem_bulk(const Particle * const rbcs, const int nrbcs, Acceleration * accrbc, cudaStream_t stream);
     void imem_halo(const Particle * const rbcs, const int nrbcs, Acceleration * accrbc, cudaStream_t stream);
+
+    void imem_ctc_rbc_bulk(const Particle * const rbcs, const int nrbcs, Acceleration * accrbc,
+            ComputeInteractionsRBC* ctc_int, const Particle * const ctcs, const int nctcs, Acceleration * accctc, cudaStream_t stream);
 
     void post_a();
 
