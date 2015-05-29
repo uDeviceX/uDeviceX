@@ -287,6 +287,7 @@ void Simulation::_create_walls(const bool verbose, bool & termination_request)
         H5PartDump sd("survived-particles.h5part", activecomm, cartcomm);
         Particle * p = new Particle[particles.size];
 
+        if (particles.size)
         CUDA_CHECK(cudaMemcpy(p, particles.xyzuvw.data, sizeof(Particle) * particles.size, cudaMemcpyDeviceToHost));
 
         sd.dump(p, particles.size);

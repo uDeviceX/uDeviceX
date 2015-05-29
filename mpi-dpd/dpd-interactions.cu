@@ -120,6 +120,7 @@ void ComputeInteractionsDPD::local_interactions(const Particle * const p, const 
 			       1, XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN, aij, gammadpd, 
 			       sigma, 1. / sqrt(dt), local_trunk.get_float(), stream);
 
+	if (n)
 	LocalDPD::merge<<< (n * 3 + 127) / 128, 128, 0, stream >>>((float *)acc_local.data, (float *)a, 3 * n);
     }
 }
@@ -334,6 +335,7 @@ void ComputeInteractionsDPD::remote_interactions(const Particle * const p, const
 	    CUDA_CHECK(cudaStreamWaitEvent(stream, evremoteint[i], 0));
 
 #if 1
+	if (RemoteDPD::npackedparticles)
 	RemoteDPD::merge_all<<< (RemoteDPD::npackedparticles + 127) / 128, 128, 0, stream >>>(a, n, RemoteDPD::npackedparticles);
 #else
 	for(int i = 0; i < 26; ++i)
