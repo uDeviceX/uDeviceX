@@ -45,7 +45,7 @@ const bool hdf5field_dumps = true;
 const bool hdf5part_dumps = false;
 const int steps_per_report = 1000;
 const int steps_per_dump = 1000;
-const int wall_creation_stepid = 5000;
+const int wall_creation_stepid = 1000;
 const int nsubsteps = 5;
 
 extern bool is_mps_enabled;

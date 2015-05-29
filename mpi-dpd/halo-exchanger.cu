@@ -312,6 +312,7 @@ void HaloExchanger::_pack_all(const Particle * const p, const int n, const bool 
             CUDA_CHECK(cudaMemcpyToSymbol(PackingHalo::baginfos, baginfos, sizeof(baginfos), 0, cudaMemcpyHostToDevice));
     }
 
+    if (PackingHalo::ncells)
     PackingHalo::fill_all<<< (PackingHalo::ncells + 1) / 2, 32, 0, stream>>>(p, n, required_send_bag_size);
 
     CUDA_CHECK(cudaEventRecord(evfillall, stream));
@@ -354,6 +355,7 @@ void HaloExchanger::pack(const Particle * const p, const int n, const int * cons
         }
     }
 
+    if (PackingHalo::ncells)
     PackingHalo::count_all<<<(PackingHalo::ncells + 127) / 128, 128, 0, stream>>>(cellsstart, cellscount, PackingHalo::ncells);
 
     if (!is_mps_enabled)
@@ -417,6 +419,7 @@ void HaloExchanger::pack(const Particle * const p, const int n, const int * cons
         }
     }
 
+    if (PackingHalo::ncells)
     PackingHalo::copycells<0><<< (PackingHalo::ncells + 127) / 128, 128, 0, stream>>>(PackingHalo::ncells);
 
     _pack_all(p, n, firstpost, stream);
@@ -667,6 +670,7 @@ void HaloExchanger::wait_for_messages(cudaStream_t stream)
         }
     }
 
+    if (PackingHalo::ncells)
     PackingHalo::copycells<1><<< (PackingHalo::ncells + 127) / 128, 128, 0, stream>>>(PackingHalo::ncells);
 
     CUDA_CHECK(cudaPeekAtLastError());

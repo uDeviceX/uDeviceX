@@ -544,7 +544,7 @@ void RedistributeParticles::pack(const Particle * const particles, const int npa
 
     size_t textureoffset;
 
-    if (narticles)
+    if (nparticles)
         CUDA_CHECK(cudaBindTexture(&textureoffset, &RedistributeParticlesKernels::texAllParticles, particles,
                 &RedistributeParticlesKernels::texAllParticles.channelDesc,
                 sizeof(float) * 6 * nparticles));
