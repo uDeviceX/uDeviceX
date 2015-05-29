@@ -40,7 +40,7 @@ nz=$3
 let tot=nx*ny*nz
 let lx=48*nx
 let ly=48*ny
-let ly2=3*ly/4
+let ly2=2*ly/4
 let lz=nz*48
 
 cd ../cell-placement
@@ -60,8 +60,8 @@ fullfile=$(get_abs_filename "${file}")
 cp ${fullfile} ${wd}/sdf.dat
 cp test ${wd}/test
 
-cp ../cuda-rbc/rbc2.atom_parsed ${wd}/../cuda-rbc
-cp ../cuda-ctc/sphere.dat ${wd}/../cuda-ctc
+cp ../cuda-rbc/rbc2.atom_parsed ../cuda-rbc/geom.dat ${wd}/../cuda-rbc
+cp ../cuda-ctc/sphere14.dat ${wd}/../cuda-ctc
 
 echo "********* Global params **********" > ${wd}/params.dat
 head -n 50 common.h >> ${wd}/params.dat
@@ -84,9 +84,9 @@ echo "#!/bin/bash -l
 #SBATCH --account=s436
 #SBATCH --ntasks=${tot}
 #SBATCH --nodes=${nnodes}
-#SBATCH --time=2:00:00
+#SBATCH --time=6:00:00
 #SBATCH --signal="USR1"@30
-##SBATCH --partition=viz
+#SBATCH --partition=viz
 
 ${mps_line}
 
