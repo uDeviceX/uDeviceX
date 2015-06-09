@@ -31,7 +31,7 @@ const int numberdensity = 4;
 const float dt = 0.005;
 const float tend = 50000;
 const float kBT = 1.0;
-const float gammadpd = 12;
+const float gammadpd = 20;
 const float sigma = sqrt(2 * gammadpd * kBT); 
 const float sigmaf = sigma / sqrt(dt);
 const float aij = 50;
@@ -45,7 +45,7 @@ const bool hdf5field_dumps = true;
 const bool hdf5part_dumps = false;
 const int steps_per_report = 1000;
 const int steps_per_dump = 1000;
-const int wall_creation_stepid = 1000;
+const int wall_creation_stepid = 5000;
 const int nsubsteps = 5;
 
 extern bool is_mps_enabled;

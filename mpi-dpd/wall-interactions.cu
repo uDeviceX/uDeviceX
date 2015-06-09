@@ -847,7 +847,7 @@ ComputeInteractionsWall::ComputeInteractionsWall(MPI_Comm cartcomm, Particle* co
 
                     new_sizes.msgsizes[entry] = (int)avgsize;
 
-                    printf("rank %d   dir: [%d %d %d],  size: %f\n", myrank, d[0], d[1], d[2], avgsize);
+                    //printf("rank %d   dir: [%d %d %d],  size: %f\n", myrank, d[0], d[1], d[2], avgsize);
 
                 }
     }

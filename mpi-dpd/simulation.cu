@@ -288,7 +288,7 @@ void Simulation::_create_walls(const bool verbose, bool & termination_request)
         Particle * p = new Particle[particles.size];
 
         if (particles.size)
-        CUDA_CHECK(cudaMemcpy(p, particles.xyzuvw.data, sizeof(Particle) * particles.size, cudaMemcpyDeviceToHost));
+            CUDA_CHECK(cudaMemcpy(p, particles.xyzuvw.data, sizeof(Particle) * particles.size, cudaMemcpyDeviceToHost));
 
         sd.dump(p, particles.size);
 
@@ -554,26 +554,35 @@ void Simulation::_qoi(Particle* rbcs, Particle * ctcs, const float tm)
 
     if (rank == 0)
     {
-        FILE* fout = fopen("rbchisto.dat", qoiid == 0 ? "w" : "a");
-        fprintf(fout, "\n %f\n", tm);
-        for (int i=0; i<nbins; i++)
-            fprintf(fout, "%f   %d\n", i*h + 0.5*h, locRBChisto[i]);
-        fclose(fout);
+        if (rbcscoll)
+        {
+            FILE* fout = fopen("rbchisto.dat", qoiid == 0 ? "w" : "a");
+            fprintf(fout, "\n %f\n", tm);
+            for (int i=0; i<nbins; i++)
+                fprintf(fout, "%f   %d\n", i*h + 0.5*h, locRBChisto[i]);
+            fclose(fout);
+        }
 
-        fout = fopen("ctchisto.dat", qoiid == 0 ? "w" : "a");
-        fprintf(fout, "\n %f\n", tm);
-        for (int i=0; i<nbins; i++)
-            fprintf(fout, "%f   %d\n", i*h + 0.5*h, locCTChisto[i]);
-        fclose(fout);
+        if (ctcscoll)
+        {
+            FILE* fout = fopen("ctchisto.dat", qoiid == 0 ? "w" : "a");
+            fprintf(fout, "\n %f\n", tm);
+            for (int i=0; i<nbins; i++)
+                fprintf(fout, "%f   %d\n", i*h + 0.5*h, locCTChisto[i]);
+            fclose(fout);
+        }
 
-        float totrbcs = 0;
-        for (int i=0; i<nbins; i++)
-            totrbcs += locRBChisto[i];
-        totrbcs *= rbcscoll->nvertices;
+        if (rbcscoll)
+        {
+            float totrbcs = 0;
+            for (int i=0; i<nbins; i++)
+                totrbcs += locRBChisto[i];
+            totrbcs *= rbcscoll->nvertices;
 
-        fout = fopen("rbccom.txt", qoiid == 0 ? "w" : "a");
-        fprintf(fout, "%f   %e %e %e\n", tm, rbccom[0] / totrbcs, rbccom[1] / totrbcs, rbccom[2] / totrbcs);
-        fclose(fout);
+            FILE* fout = fopen("rbccom.txt", qoiid == 0 ? "w" : "a");
+            fprintf(fout, "%f   %e %e %e\n", tm, rbccom[0] / totrbcs, rbccom[1] / totrbcs, rbccom[2] / totrbcs);
+            fclose(fout);
+        }
     }
     qoiid++;
 }
@@ -643,7 +652,7 @@ void Simulation::_data_dump(const int idtimestep)
     if (ctcscoll)
         ctcscoll->dump(activecomm, cartcomm);
 
-    _qoi(p+particles.size, p+particles.size + rbcscoll->pcount(), idtimestep * dt);
+    _qoi(p+particles.size, p+particles.size + (rbcscoll ? rbcscoll->pcount() : 0), idtimestep * dt);
     delete [] p;
     delete [] a;
 
@@ -688,14 +697,14 @@ void Simulation::_update_and_bounce()
 }
 
 Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_termination)()) :  
-                            cartcomm(cartcomm), activecomm(activecomm),
-                            particles(_ic()), cells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN),
-                            rbcscoll(NULL), ctcscoll(NULL), wall(NULL),
-                            redistribute(cartcomm),  redistribute_rbcs(cartcomm),  redistribute_ctcs(cartcomm),
-                            dpd(cartcomm), rbc_interactions(cartcomm), ctc_interactions(cartcomm),
-                            dump_part("allparticles.h5part", activecomm, cartcomm),  dump_field(cartcomm),  dump_part_solvent(NULL),
-                            check_termination(check_termination),
-                            driving_acceleration(0), host_idle_time(0), nsteps((int)(tend / dt)), qoiid(0)
+                                    cartcomm(cartcomm), activecomm(activecomm),
+                                    particles(_ic()), cells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN),
+                                    rbcscoll(NULL), ctcscoll(NULL), wall(NULL),
+                                    redistribute(cartcomm),  redistribute_rbcs(cartcomm),  redistribute_ctcs(cartcomm),
+                                    dpd(cartcomm), rbc_interactions(cartcomm), ctc_interactions(cartcomm),
+                                    dump_part("allparticles.h5part", activecomm, cartcomm),  dump_field(cartcomm),  dump_part_solvent(NULL),
+                                    check_termination(check_termination),
+                                    driving_acceleration(0), host_idle_time(0), nsteps((int)(tend / dt)), qoiid(0)
 {
     //Side not of Yu-Hang:
     //in production runs replace the numbers with 4 unique ones that are same across ranks
@@ -804,7 +813,7 @@ void Simulation::_lockstep()
                 &ctc_interactions, ctcscoll->count(), mainstream);
 
         ctc_interactions.imem_rbc_ctc_halo(ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(),
-                        &rbc_interactions, rbcscoll->count(), mainstream);
+                &rbc_interactions, rbcscoll->count(), mainstream);
     }
 
     if (rbcscoll)
