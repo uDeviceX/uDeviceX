@@ -19,9 +19,9 @@
 #endif
 
 enum { 
-    XSIZE_SUBDOMAIN = 48,
-    YSIZE_SUBDOMAIN = 48,
-    ZSIZE_SUBDOMAIN = 48,
+    XSIZE_SUBDOMAIN = 32,
+    YSIZE_SUBDOMAIN = 64,
+    ZSIZE_SUBDOMAIN = 32,
     XMARGIN_WALL = 12,
     YMARGIN_WALL = 12,
     ZMARGIN_WALL = 12,
@@ -45,7 +45,7 @@ const bool hdf5field_dumps = true;
 const bool hdf5part_dumps = false;
 const int steps_per_report = 5000;
 const int steps_per_dump = 5000;
-const int wall_creation_stepid = 5000;
+const int wall_creation_stepid = 50000;
 const int nsubsteps = 5;
 
 extern bool is_mps_enabled;

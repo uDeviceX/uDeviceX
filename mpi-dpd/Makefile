@@ -5,8 +5,8 @@ ARCH_VAL ?= compute_35
 CODE_VAL ?= sm_35
 
 NVCCFLAGS += -I$(HDF5_DIR)/include -Xcudafe "--diag_suppress=unrecognized_gcc_pragma"
-NVCCFLAGS +=  -arch $(ARCH_VAL) -code $(CODE_VAL) -O3 -use_fast_math -g -DNDEBUG
-CXXFLAGS += -L../cuda-dpd-sem/dpd -L../cuda-rbc/ -L../cuda-ctc/ -O3 -g  -std=c++11	
+NVCCFLAGS +=  -arch $(ARCH_VAL) -code $(CODE_VAL) -O2 -use_fast_math -g -lineinfo
+CXXFLAGS += -L../cuda-dpd-sem/dpd -L../cuda-rbc/ -L../cuda-ctc/ -O2 -g  -std=c++11	
 #-DNDEBUG
 NVCCFLAGS += -I../cuda-dpd-sem/dpd -I../cuda-rbc/ -I../cuda-ctc
 

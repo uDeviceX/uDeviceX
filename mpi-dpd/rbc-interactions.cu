@@ -1790,7 +1790,7 @@ void ComputeInteractionsRBC::imem_halo(const Particle * const rbcs, const int nr
         CUDA_CHECK( cudaFree(coms) );
         CUDA_CHECK( cudaMalloc(&coms, 3*maxcells * sizeof(float)) );
     }
-    if (nRemCells > maxcells)
+    if (nRemCells > maxremote)
     {
         maxremote = 2*nRemCells;
         CUDA_CHECK( cudaFree(comsRemote) );
@@ -1889,7 +1889,7 @@ void ComputeInteractionsRBC::imem_rbc_ctc_halo(const Particle * const rbcs, cons
         CUDA_CHECK( cudaFree(coms) );
         CUDA_CHECK( cudaMalloc(&coms, 3*maxcells * sizeof(float)) );
     }
-    if (nRemCells > maxcells)
+    if (nRemCells > maxremote)
     {
         maxremote = 2*nRemCells;
         CUDA_CHECK( cudaFree(comsRemote) );
