@@ -32,9 +32,9 @@ un('Ly           , 'length                 , "domain size in OY") $
 un('nu           , 'length^2/'time         , "kinematic static viscosity of DPD solvent") $
 un('ky           , 1/length                , "wave number of the force") $
 un('f0           , di('Acceleration)       , "amplitude of a body acceleration") $
-un('tau_xy       , di('Stess)              , "stress component") $
+un('tau_xy       , di('Stress)             , "stress component") $
 un('y            , 'length                 , "coordinate") $
-un('vmax         , di('Velocity)           , "maximaum velocity") $
+un('vmax         , di('Velocity)           , "maximum velocity") $
 un('Re           , 1                       , "Reynolds number") $
 
 ky    : 2*%pi/'Ly;
