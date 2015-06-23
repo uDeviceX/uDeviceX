@@ -58,7 +58,7 @@ vx_expr: rhs(bc2(so, 'y=-Ly/4, 'vx=0, 'y=Ly/4, 'vx=0));
 (%o37)                        -------------------
                                         2
                                    4 %pi  nu
-*/                                   
+*/
 
 
 /* check dimension */
