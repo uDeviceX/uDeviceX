@@ -1,0 +1,91 @@
+/* Kolmogorov flow
+
+  Ellero, Marco, Mar Serrano, and Pep Espanol. "Incompressible
+  smoothed particle hydrodynamics." Journal of Computational Physics
+  226.2 (2007): 1731-1752., page 1738, eq (41)
+
+  Meshalkin, L. D., and Ia. G. Sinai. “Investigation of the Stability
+  of a Stationary Solution of a System of Equations for the Plane
+  Movement of an Incompressible Viscous Liquid.” Journal of Applied
+  Mathematics and Mechanics 25, no. 6 (1961):
+  1700–1705. doi:10.1016/0021-8928(62)90149-1.
+
+*/
+
+
+load("dimension") $
+load("draw") $
+alias(di,  dimension) $
+
+/* print info */
+who(e):= printf(true, "~8a :  ~12a : ~40a~%", e , get(e, 'di), get(e, 'de))$
+
+/* register units and description of a parameter */
+un(e, u, d):= (put(e, u, 'di), put(e, d, 'de)) $
+
+un('Velocity     , 'length/'time           , "velocity units") $
+un('Acceleration , di('Velocity)/'time     , "acceleration units") $
+un('Force        , di('Acceleration)*'mass , "force units") $
+un('Stress       , di('Force)/length^2     , "units of stress in 3D") $
+un('rho          , 'mass/'length^3         , "physical density of DPD in 3D") $
+un('Ly           , 'length                 , "domain size in OY") $
+un('nu           , 'length^2/'time         , "kinematic static viscosity of DPD solvent") $
+un('ky           , 1/length                , "wave number of the force") $
+un('f0           , di('Acceleration)       , "amplitude of a body acceleration") $
+un('tau_xy       , di('Stess)              , "stress component") $
+un('y            , 'length                 , "coordinate") $
+un('vmax         , di('Velocity)           , "maximaum velocity") $
+un('Re           , 1                       , "Reynolds number") $
+
+ky    : 2*%pi/'Ly;
+mu    : 'nu*'rho;
+
+
+/* define the only non-zero component of a stress tensor */
+depends(vx, y);
+tau_xy:  mu*diff('vx, 'y);
+
+eq: diff(tau_xy, y) = - 'f0*'rho*cos(ky*y);
+assume(Ly>0);
+
+so: ode2(eq, 'vx, 'y);
+vx_expr: rhs(bc2(so, 'y=-Ly/4, 'vx=0, 'y=Ly/4, 'vx=0));
+
+/*
+                                   2     2 %pi y
+                              f0 Ly  cos(-------)
+                                           Ly
+(%o37)                        -------------------
+                                        2
+                                   4 %pi  nu
+*/                                   
+
+
+/* check dimension */
+di(vx_expr);
+
+vmax_expr: 'vmax = subst('y=0, vx_expr);
+Re: subst(vmax_expr, 'Ly*'vmax/'nu);
+
+/* check dimension */
+di('Re);
+
+/* example of parameters */
+var: [Ly=48, nu=1.7, f0=10^(-4)];
+e: explicit(vx_expr, 'y, -'Ly/2, 'Ly/2);
+e: subst(var, e);
+draw2d(e);
+
+/* Re */
+subst(var, Re), numer;
+/* (%o39)                        0.09693176765893963 */
+
+/* solve for `nu if we know `vmax' */
+solve(vmax_expr = 'vmax, 'nu)[1];
+/*
+                                           2
+                                      f0 Ly
+(%o37)                         nu = -----------
+                                         2
+                                    4 %pi  vmax
+                                    */
