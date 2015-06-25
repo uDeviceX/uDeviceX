@@ -1,0 +1,102 @@
+/* Parameters of DPD
+
+[1] Fedosov, Dmitry A. Multiscale modeling of blood flow and soft
+matter. Brown University, 2010.
+
+[2] Groot, Robert D., and Patrick B. Warren. "Dissipative particle
+dynamics: Bridging the gap between atomistic and mesoscopic
+simulation." Journal of Chemical Physics 107.11 (1997): 4423. */
+
+load("dimension") ;
+load("draw") $
+load("to_poly_solve") $
+alias(di,  dimension) $
+
+/* print info */
+who(e):= (printf(true, "~8a :  ~24a : ~40a~%", e , get(e, 'di), get(e, 'de)), 'done)$
+
+/* register units and description of a parameter */
+un(e, u, d):= (put(e, u, 'di), put(e, d, 'de)) $
+
+/* helpful operator */
+infix("<-", 180, 20) $
+ilist(a)::= buildq([a], if not listp(a) then (a: [], a) else a) $
+"<-"(a, b)::= buildq([a, b], (ilist(a), if not member(b, a) then a: endcons(b, a), b)) $
+
+/* a copy from abs_integrate.mac  */
+safe_op(e) := block([inflag : true], if mapatom(e) then false else op(e)) $
+
+/* process dimensions in expression */
+mdi(e):= block([ans, op: safe_op(e)],
+  if errcatch(ans: di(e))#[] then ans
+  else if op="*" or op="." or op="=" or op="[" then map(mdi, e)
+  else funmake('di, [e])) $
+
+/* substitute units from solution */
+usubst_aux(so, name, descr):= block([d: assoc(funmake('di, [name]), so)],
+  if d=false then error("dimension is not in `so'"),
+  un(name, d, descr));
+usubst(so, [L]):= for el in L do block([name, descr],
+  [name, descr]: el,
+  usubst_aux(so, name, descr));
+
+/* go from old to new units (under constraction) */
+rs(old, new):= block([eq_s, eq_l, los, vun],
+  eq_s: map( lambda([el], block([name: lhs(el), val: rhs(el)],
+        assoc(name, new)*di(name) = assoc(name, old))), new),
+  eq_l: block([logexpand: all], log(eq_s)),
+  los : linsolve(eq_l, map(log, fundamental_dimensions)),
+  vun : map( lambda([el], map(exp, el)), los),
+
+  block([assume_pos: true],
+    map( lambda([el], lhs(el)=subst(vun, rhs(el)/di(lhs(el)))),
+      old)));
+
+un('Velocity     , 'length/'time           , "velocity units") $
+un('Acceleration , di('Velocity)/'time     , "acceleration units") $
+un('Force        , di('Acceleration)*'mass , "force units") $
+un('Stress       , di('Force)/'length^2     , "units of stress in 3D") $
+un('rij          , 'length                  , "length of `rij_v = ri_v - rj_v'") $
+un('rc           , 'length                  , "cutoff distance") $
+un('eij          , 1                       , "unit vector in direction of rij") $
+un('k            , 1                       , "power factor in DPD kernel function") $
+un('xsi_ij       , 1                       , "random variable") $
+un('Fc           , di('Force)              , "conservative force") $
+un('Fr           , di('Force)              , "random force") $         /* (2.3) [1] */
+un('Fd           , di('Force)              , "dissipative force") $
+un('vij          , di('Velocity)           , "relative particles velocity") $
+un('dt           , 'time                   , "time step") $
+un('n            , 1/'length^3             , "particle number density") $ /* for 3D */
+un('m            , mass                    , "particle mass" )$
+un('L            , length                  , "domain box size" )$
+
+/* eq. (2.8)-(2.9) in [2], a simplified form for dimensional analysis */
+eq <- Fc = aij * (1-rij/rc)*eij $
+eq <- Fd = -gamma*wD*(vij.eij)*eij $
+eq <- Fr = sigma*wR*xsi_ij/sqrt(dt)*eij $
+eq <- wD = wR^2 $
+eq <- wR = (1-rij/rc)^k $
+/* eq <- dv/dt = Fc + Fd + Fr $ (see [2]) */
+eq <- sigma^2 = 2*gamma*kT $ /*  fluctuation-dissipation theorem (FDT) (eq. (5) [2]) */
+
+eq_d: mdi(eq);
+
+var: map('di, [aij, gamma, sigma, wD, wR, kT]) $
+so : solve(eq_d, var)[1];
+usubst(so,
+  ['aij,         "conservative force constant"],
+  ['gamma,       "dissipative force constant"],
+  ['sigma,       "random force constant"],
+  ['wD,          "dissipative force kernel"],
+  ['wD,          "random      force kernel"],
+  ['kT   ,       "temperature in energy units"]) $
+
+/* [2], page 101 */
+old: ['kT=0.0945, 'aij = 4.0,   'n=3,        'rc=1.4  ,   'm=1,          'dt=dt_fed,
+      'gamma=30.0] ;
+
+new: ['kT=1.0 ,                              'rc=  1  ,   'm=1                    ] ;
+
+rs(old, new), numer;
+
+transpose(matrix(%));
