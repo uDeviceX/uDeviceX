@@ -1,0 +1,16 @@
+Parameters:
+
+#+BEGIN_SRC maxima :results output
+/* [2], page 101 */
+p_fed: ['kT=0.09451, 'aij = 4.0,   'n=3,        'rc=3/2  ,   'm=1,          'dt=0.00125,
+      'gamma=30.0, 'k=1/4] ;
+p_rbc: ['kT=1, 'aij = 45,   'n=4,        'rc=1  ,   'm=1,          'dt=dt_fed,
+       'gamma=45,   'k=1/4];
+p_az: ['kT=0.0945, 'aij = 4.0,   'n=3,        'rc=3/2  ,   'm=1,          'dt=0.00125,
+      'gamma=30.0, 'k=1] ;
+p_new: ['kT=0.0945,                              'rc=  1  ,   'm=1                    ] ;
+p_fed: ['kT=0.09451, 'aij = 4.0,   'n=3,        'rc=3/2  ,   'm=1,          'dt=0.00125,
+'gamma='gamma_in, 'k=1/4] ;
+#+END_SRC
+
+

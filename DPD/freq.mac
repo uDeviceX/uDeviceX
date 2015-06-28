@@ -1,0 +1,20 @@
+eij :    1 $
+Fc  :    aij * (1-rij/rc)*eij $
+
+F1  :     Fc;
+F2  :    -Fc;
+
+F10: subst(rij = rij0 + dx, F1);
+F20: subst(rij = rij0 - dx, F2);
+
+Ftay: taylor(F10 + F20, dx, 0, 1);
+
+depends(dx, t);
+eq: m*'diff(dx, t, 2) = Ftay;
+
+assume(aij>0, rc>0, m>0);
+so: ode2(eq, dx, t);
+
+subst(lambda([e], tau_c: t/e), 'sin, so);
+
+tau_c;

@@ -1,0 +1,17 @@
+load("fourie");
+/* partition expression based on the predicate (see rtest_ns_utils.mac) */
+pred_partition(expr, pr):= block([yes: [], no: [], inflag: true],
+  for e in expr do if pr(e) then push(e, yes) else push(e, no),
+  [reverse(yes), reverse(no)]);
+
+funp_log(e):= funp('log, e);
+mexp(e):= block([inflag: true, yes, no],
+  if not mapatom(e) and op(e)="*" then (
+    [yes, no]: pred_partition(args(e), 'funp_log),
+    if length(yes)>1 then no: append(no, rest(yes)),
+    yes: first(yes),
+    exp(yes)^apply("*", no))
+  else exp(e));
+
+
+

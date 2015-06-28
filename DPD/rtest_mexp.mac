@@ -1,0 +1,9 @@
+(kill(all), 'done);
+'done$
+
+(load("mexp.mac"), 'done);
+'done$
+
+block([l: [0, 1, 1/2, 'x, log(2)/10, log(2)*log(3)/30, log(3)+log(4)]],
+  ev(map('mexp, l) - map('exp , l), numer));
+[0,0.0,0.0,0,0.0,0.0,0.0]$

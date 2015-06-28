@@ -1,0 +1,68 @@
+(kill(all), 'done);
+'done$
+
+(load("dscale.mac"), 'done);
+'done$
+
+block([fr, to, rst, fundamental_dimensions: ['length]], local(L, r, z),
+  put('L, 'length  , 'dimension),
+  put('r, 'length, 'dimension),
+  put('z, 'length, 'dimension),  
+  fr:  ['L=1      ],
+  to:  ['L=2      ],
+  rst: ['L, 'r, 'z],
+  dscale(fr, to, rst));
+['L = 2, 'r = 4, 'z = 2*'z]$
+
+block([fr, to, rst, fundamental_dimensions: ['length]], local(L, r, z),
+  put('L, 'length  , 'dimension),
+  put('r, 'length, 'dimension),
+  put('z, 'length, 'dimension),  
+  fr:  ['L=1, 'r=2],
+  to:  ['L=2      ],
+  dscale(fr, to));
+[L = 2,r = 4]$
+
+block([fr, to, rst, fundamental_dimensions: ['length, 'time]], local(L, r, v, t),
+  put('L, 'length,        'dimension),
+  put('r, 'length,        'dimension),
+  put('t, 'time,          'dimension),  
+  put('v, 'length/time,   'dimension),
+  fr:  ['L=1, 'r=2, 't=1, 'v=1],
+  to:  ['L=2, 't=2],
+  rst: ['L, 'r, 't, 'v],
+  dscale(fr, to, rst));
+['L = 2, 'r = 4, 't = 2, 'v = 1]$
+
+block([fr, to, rst, fundamental_dimensions: ['length, 'time]], local(L, r, v, t),
+  put('L, 'length,        'dimension),
+  put('r, 'length,        'dimension),
+  put('t, 'time,          'dimension),  
+  put('v, 'length/time,   'dimension),
+  fr:  ['v*'t/'L = 1, 'r/'L = 2, 't='to, 'r='ro],
+  to:  ['L=10,  't=10],
+  rst: ['L, 'r, 't, 'v],
+  dscale(fr, to, rst));
+[L = 10,r = 20,t = 10,v = 1]$
+
+block([fr, to, rst, fundamental_dimensions: ['length, 'time]], local(sigma, L, r, v, t),
+  put('L,     'length,      'dimension),
+  put('r,     'length,      'dimension),
+  put('sigma,  sqrt('time), 'dimension),
+  put('v,     'length/time, 'dimension),
+  put('t,     'time,        'dimension),  
+  fr:  ['sigma^2/'t = 1, 'r/'L = 2, 'v=1, 't=1, 'r=1],
+  to:  ['L=10,  'sigma = 2],
+  rst: ['L, 'r, 'sigma, 'v, 't],
+  dscale(fr, to, rst));
+[L = 10,r = 20,sigma = 2,v = 5,t = 4]$
+
+block([fr, to, rst, fundamental_dimensions: ['length]], local(L, r, z),
+  put('L, 'length  , 'dimension),
+  put('r, 'length, 'dimension),
+  put('z, 'length, 'dimension),  
+  fr:  ['L/'r=1              ],
+  to:  ['L=2                 ],
+  rst: ['L,  z, r            ],
+  dscale(fr, to, rst));
+[L = 1,r = 1,z = z/Lo]$

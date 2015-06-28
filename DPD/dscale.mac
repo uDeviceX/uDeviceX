@@ -1,0 +1,49 @@
+load("dimension") $
+load("fourie"); /* for funp */
+load("mexp.mac") ;
+
+listdifference(l1, l2):= listify(setdifference(setify(l1), setify(l2)));
+
+require_rhs_pairs(l):= (if not listp(l) then error("(dscale.mac) should be a list"),
+  map(lambda([e], if mapatom(e) or op(e)#"=" then error("should be a list of n=v pairs ([n=v])")), l),
+  'done);
+
+require_dimension(l):= (if not listp(l) then error("(dscale.mac) should be a list"),
+  map(lambda([e], if funp('dimension, dimension(e)) then
+      block([msg: printf(true, "(dscale.mac) ~a does not have dimension", e)],
+        error(msg))), l),
+  'done);
+
+/* [eq_n, fa, so, , linsolvewarn: false] */
+dscale(fr, to, [rst_in]):= block([rst], local(rst),
+  rst: if emptyp(rst_in) then map('lhs, fr) else first(rst_in),
+  require_rhs_pairs(fr), require_rhs_pairs(to),
+  dscale_aux(fr, to, rst));
+
+dscale_aux(fr, to, rst):= ([ratprint: false, assume_pos: true, logexpand: all, linsolve_params: false, %rnum_list,
+  eq_fr, eq_to, va_fd, va_fr, va_to, va, va_lo, eq_lo, so],
+  local(switch_units),
+  switch_units(e):= funmake("=", [e, subst(so, e/dimension(e))]),
+
+  eq_fr : fr,
+  eq_to : map( lambda([e], lhs(e)/dimension(lhs(e)) = rhs(e)), to),
+  
+  va_fd : fundamental_dimensions,
+  va_to : listofvars(map('lhs, to)),
+  require_dimension(va_to),
+  va_fr : listofvars(map('lhs, fr)),
+  require_dimension(va_fr),
+    
+  va    : append(va_fd, va_fr, va_to),
+  va    : unique(va),
+  va_lo : map('log, va),
+  eq_lo : map('log, append(eq_to, eq_fr)),
+  so    : linsolve(eq_lo, va_lo),
+
+  if not emptyp(%rnum_list) then printf(true, "the system is under-determined~%"),
+  if emptyp(so) then error("cannot solve for fundamental dimensions"),
+  if listp(so) and listp(first(so)) then so: first(so),
+  so  : map(   lambda([e], map('mexp, e)), so),
+/*  so  : sublist(so, lambda([e], member(lhs(e), va_fd))), */
+  rst: map('switch_units, rst),
+  ratsimp(rst));
