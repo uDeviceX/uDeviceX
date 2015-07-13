@@ -1030,7 +1030,7 @@ void Simulation::run()
 
         _redistribute();
 
-#if 0
+#if 1
         lockstep_check:
 
         const bool lockstep_OK =

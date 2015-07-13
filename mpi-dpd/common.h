@@ -44,7 +44,7 @@ const bool xyz_dumps = false;
 const bool hdf5field_dumps = true;
 const bool hdf5part_dumps = false;
 const int steps_per_report = 5000;
-const int steps_per_dump = 5000;
+const int steps_per_dump = 2000;
 const int wall_creation_stepid = 50000;
 const int nsubsteps = 3;
 
