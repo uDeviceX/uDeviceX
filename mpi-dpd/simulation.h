@@ -17,6 +17,8 @@
 #include <vector>
 #include <string>
 
+#include <pthread.h>
+
 #ifdef _USE_NVTX_
 #include <cuda_profiler_api.h>
 #endif
@@ -39,9 +41,6 @@ class Simulation
     CellLists cells;
     CollectionRBC * rbcscoll;
     CollectionCTC * ctcscoll;
-
-    H5PartDump dump_part, *dump_part_solvent;
-    H5FieldDump dump_field;
     
     RedistributeParticles redistribute;
     RedistributeRBCs redistribute_rbcs;
@@ -55,6 +54,7 @@ class Simulation
     LocalComm localcomm;
 
     bool (*check_termination)();
+    bool simulation_is_done;
 
     MPI_Comm activecomm, cartcomm;
 
@@ -81,6 +81,19 @@ class Simulation
 
     void _lockstep();
 
+    pthread_t thread_datadump;
+    pthread_mutex_t mutex_datadump;
+    pthread_cond_t request_datadump, done_datadump;
+    bool datadump_pending;
+    int datadump_idtimestep, datadump_nsolvent, datadump_nrbcs, datadump_nctcs;
+
+    PinnedHostBuffer<Particle> particles_datadump;
+    PinnedHostBuffer<Acceleration> accelerations_datadump;
+
+    cudaEvent_t evdownloaded;
+
+    void  _datadump_async();
+
 public:
 
     Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_termination)()) ;
@@ -88,4 +101,6 @@ public:
     void run();
 
     ~Simulation();
+
+    static void * datadump_trampoline(void * x) { ((Simulation *)x)->_datadump_async(); return NULL; }
 };

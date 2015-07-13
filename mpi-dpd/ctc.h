@@ -82,8 +82,10 @@ class CollectionCTC : public CollectionRBC
     {
         CudaCTC::initialize(device_xyzuvw, transform);
     }
-
+    
 public:
+    
+    int nvertices;
 
     CollectionCTC(MPI_Comm cartcomm) : CollectionRBC(cartcomm)
 {
