@@ -1295,7 +1295,7 @@ ComputeInteractionsRBC::ComputeInteractionsRBC(MPI_Comm _cartcomm):
         MPI_CHECK( MPI_Cart_rank(cartcomm, coordsneighbor, dstranks + i) );
     }
 
-    KernelsRBC::ParamsFSI params = {2*aij , gammadpd, sigmaf};
+    KernelsRBC::ParamsFSI params = {0*aij , gammadpd, sigmaf};
 
     CUDA_CHECK(cudaMemcpyToSymbol(KernelsRBC::params, &params, sizeof(KernelsRBC::ParamsFSI)));
 

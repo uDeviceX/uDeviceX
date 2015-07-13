@@ -362,7 +362,7 @@ int main(int argc, const char ** argv)
 
     vector<TransformedExtent> results[2];
 
-    const float tol = 20.0;
+    const float tol = 0.2;
 
     Checker checker(8+tol, domainextent, tol);
     int tot = 0;
@@ -383,9 +383,9 @@ int main(int argc, const char ** argv)
     onectc.xmax[1] = extents[1].ymax + onectc.transform[1][3];
     onectc.xmax[2] = extents[1].zmax + onectc.transform[2][3];
 
-    //checker.add(onectc);
-    //results[1].push_back(onectc);
-    //++tot;
+    checker.add(onectc);
+    results[1].push_back(onectc);
+    ++tot;
 
     while(!failed)
     {
