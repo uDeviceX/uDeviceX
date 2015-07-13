@@ -348,6 +348,8 @@ namespace CudaCTC
         const int threads = 128;
         const int blocks  = (nparticles + threads - 1) / threads;
 
+        printf("%x  %x  OOOOOOOOOOOOOOOOOOO\n", device_xyzuvw, orig_xyzuvw);
+
         gpuErrchk( cudaMemcpyToSymbol(A, transform, 16 * sizeof(float)) );
         gpuErrchk( cudaMemcpy(device_xyzuvw, orig_xyzuvw, 6*nparticles * sizeof(float), cudaMemcpyDeviceToDevice) );
         transformKernel<<<blocks, threads>>>(device_xyzuvw, nparticles);
