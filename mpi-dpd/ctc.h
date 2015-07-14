@@ -85,8 +85,6 @@ class CollectionCTC : public CollectionRBC
     
 public:
     
-    int nvertices;
-
     CollectionCTC(MPI_Comm cartcomm) : CollectionRBC(cartcomm)
 {
         if (ctcs)

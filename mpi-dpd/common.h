@@ -28,8 +28,8 @@ enum {
 };
 // Use with slevel = 0, viscosity is 1.7
 const int numberdensity = 4;
-const float dt = 0.0025;
-const float tend = 50000;
+const float dt = 0.001;
+const float tend = 5;
 const float kBT = 1.0;
 const float gammadpd = 20;
 const float sigma = sqrt(2 * gammadpd * kBT); 
@@ -45,8 +45,8 @@ const bool hdf5field_dumps = true;
 const bool hdf5part_dumps = false;
 const int steps_per_report = 5000;
 const int steps_per_dump = 2000;
-const int wall_creation_stepid = 50000;
-const int nsubsteps = 3;
+const int wall_creation_stepid = 1000;
+const int nsubsteps = 1;
 
 extern bool is_mps_enabled;
 
