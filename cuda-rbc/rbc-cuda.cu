@@ -225,75 +225,75 @@ namespace CudaRBC
 
 		dummy = new Extent[maxCells];
 
-		unitsSetup(1.64, 0.001412*2, 19.0476*0.5, 160, 11004.168, 10159.0438, 2, 135, 91, 1e-6, 2.4295e-6, 4, report);
-		//unitsSetup(1.64, 0.00141, 19.0476, 64, 1104.168, 159.0438, 0, 135, 94, 1e-6, 2.4295e-6, 4, report); //unitsSetup(1.64, 0.00705, 6, 15, 1000, 5000, 5, 135, 90, 1e-6, 1e-5, 4, report);
-	}
+        unitsSetup(1.194170681, 0.003092250212, 20.49568481, 39.2254922344138, 13223.5137655706, 7710.76185113627, 18.14524310, 135, 94, 1e-6, 2.4295e-6, 4, true);
+    }
 
-	void unitsSetup(float lmax, float p, float cq, float kb, float ka, float kv, float gammaC,
-			float totArea0, float totVolume0, float lunit, float tunit, int ndens, bool prn)
-	{
-		const float lrbc = 1.000000e-06;
-		const float trbc = 3.009441e-03;
-		//const float mrbc = 3.811958e-13;
+    void unitsSetup(float lmax, float p, float cq, float kb, float ka, float kv, float gammaC,
+            float totArea0, float totVolume0, float lunit, float tunit, int ndens, bool prn)
+    {
+        const float lrbc = 1.000000e-06;
+        const float trbc = 3.009441e-03;
+        //const float mrbc = 3.811958e-13;
 
-		float ll = lunit / lrbc;
-		float tt = tunit / trbc;
+        float ll = lunit / lrbc;
+        float tt = tunit / trbc;
 
-		float l0 = 0.537104 / ll;
+        float l0 = 0.5606098578 / ll;
 
-		params.kbT = 580 * 250 * pow(ll, -2.0) * pow(tt, 2.0);
-		params.p = p / ll;
-		params.lmax = lmax / ll;
-		params.q = 1;
-		params.Cq = cq * params.kbT * pow(ll, -2.0);
-		params.totArea0 = totArea0 * pow(ll, -2.0);
-		params.area0 = params.totArea0 / (float)ntriang;
-		params.totVolume0 = totVolume0 * pow(ll, -3.0);
-		params.ka =  params.kbT * ka / (l0*l0);
-		params.kd =  params.kbT * 0.0 / (l0*l0);
-		params.kv =  params.kbT * kv / (l0*l0*l0);//	params.kv =  params.kbT * kv * (l0*l0*l0);
-		params.gammaC = gammaC * 580 * pow(tt, 1.0);
-		params.gammaT = 3.0 * params.gammaC;
+        params.kbT = 0.0848 * 1239*1239 * pow(ll, -2.0) * pow(tt, 2.0);
+        params.p = p / ll;
+        params.lmax = lmax / ll;
+        params.q = 1;
+        params.Cq = cq * params.kbT * pow(ll, -2.0);
+        params.totArea0 = totArea0 * pow(ll, -2.0);
+        params.totVolume0 = totVolume0 * pow(ll, -3.0);
+        params.ka =  params.kbT * ka / (l0*l0) / params.totArea0;
+        params.kv =  params.kbT * kv / (l0*l0*l0) / params.totVolume0 / 6;
+        params.gammaC = gammaC * 1239 * pow(tt, 1.0);
+        params.gammaT = 3.0 * params.gammaC;
 
-		params.rc = 0.5;
-		params.aij = 100;
-		params.gamma = 15;
-		params.sigma = sqrt(2 * params.gamma * params.kbT);
-		//		params.dt = dt;
 
-		float phi = 6.9 / 180.0*M_PI; //float phi = 3.1 / 180.0*M_PI;
-		params.sinTheta0 = sin(phi);
-		params.cosTheta0 = cos(phi);
-		params.kb = kb * params.kbT;
+        float phi = 6.9722 / 180.0*M_PI; //float phi = 3.1 / 180.0*M_PI;
+        params.sinTheta0 = sin(phi);
+        params.cosTheta0 = cos(phi);
+        params.kb = kb * params.kbT;
 
-		params.mass = 1.1 / 0.995 * params.totVolume0 * ndens / nparticles;
+        //params.mass = 1.1 / 0.995 * params.totVolume0 * ndens / nvertices;
 
-		params.ndihedrals = ndihedrals;
-		params.ntriang = ntriang;
-		params.nparticles = nparticles;
-		gpuErrchk( cudaMemcpyToSymbol  (devParams, &params, sizeof(Params)) );
+        params.ntriang = ntriangles;
+        params.nvertices = nvertices;
 
-		if (prn)
-		{
-			printf("\n************* Parameters setup *************\n");
-			printf("Started with <RBC space (DPD space)>:\n");
-			printf("    DPD unit of time:  %e\n",   tunit);
-			printf("    DPD unit of length:  %e\n\n", lunit);
-			printf("\t Lmax    %12.5f  (%12.5f)\n", lmax,   params.lmax);
-			printf("\t p       %12.5f  (%12.5f)\n", p,      params.p);
-			printf("\t Cq      %12.5f  (%12.5f)\n", cq,     params.Cq);
-			printf("\t kb      %12.5f  (%12.5f)\n", kb,     params.kb);
-			printf("\t ka      %12.5f  (%12.5f)\n", ka,     params.ka);
-			printf("\t kv      %12.5f  (%12.5f)\n", kv,     params.kv);
-			printf("\t gammaC  %12.5f  (%12.5f)\n\n", gammaC, params.gammaC);
+        params.sint0kb = params.sinTheta0 * params.kb;
+        params.cost0kb = params.cosTheta0 * params.kb;
+        params.kbToverp = params.kbT / params.p;
 
-			printf("\t kbT     %12e in dpd\n", params.kbT);
-			printf("\t mass    %12.5f in dpd\n", params.mass);
-			printf("\t area    %12.5f  (%12.5f)\n", totArea0,  params.totArea0);
-			printf("\t volume  %12.5f  (%12.5f)\n", totVolume0, params.totVolume0);
-			printf("************* **************** *************\n\n");
-		}
-	}
+        for (int i=0; i<npatches; i++)
+            params.patchSize[i] = patchSize[i];
+
+        CUDA_CHECK( cudaMemcpyToSymbol  (devParams, &params, sizeof(Params)) );
+
+
+        if (prn)
+        {
+            printf("\n************* Parameters setup *************\n");
+            printf("Started with <RBC space (DPD space)>:\n");
+            printf("    DPD unit of time:  %e\n",   tunit);
+            printf("    DPD unit of length:  %e\n\n", lunit);
+            printf("\t Lmax    %12.5f  (%12.5f)\n", lmax,   params.lmax);
+            printf("\t p       %12.5f  (%12.5f)\n", p,      params.p);
+            printf("\t Cq      %12.5f  (%12.5f)\n", cq,     params.Cq);
+            printf("\t kb      %12.5f  (%12.5f)\n", kb,     params.kb);
+            printf("\t ka      %12.5f  (%12.5f)\n", ka,     params.ka * params.totArea0);
+            printf("\t kv      %12.5f  (%12.5f)\n", kv,     params.kv * params.totVolume0 * 6);
+            printf("\t gammaC  %12.5f  (%12.5f)\n\n", gammaC, params.gammaC);
+
+            printf("\t kbT     %12e in dpd\n", params.kbT);
+            //printf("\t mass    %12.5f in dpd\n", params.mass);
+            printf("\t area    %12.5f  (%12.5f)\n", totArea0,  params.totArea0);
+            printf("\t volume  %12.5f  (%12.5f)\n", totVolume0, params.totVolume0);
+            printf("************* **************** *************\n\n");
+        }
+    }
 
 	int get_nvertices()
 	{

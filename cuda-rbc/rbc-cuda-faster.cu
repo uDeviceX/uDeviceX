@@ -235,7 +235,7 @@ namespace CudaRBC
         CUDA_CHECK( cudaBindTexture(&textureoffset, &texTriangles4, triangles, &texTriangles4.channelDesc, ntriangles * 4 * sizeof(int)) );
         assert(textureoffset == 0);
 
-        unitsSetup(1.64, 0.001412, 19.0476, 35, 2500, 3500, 50, 135, 91, 1e-6, 2.4295e-6, 4, report);
+        unitsSetup(1.194170681, 0.003092250212, 20.49568481, 39.2254922344138, 13223.5137655706, 7710.76185113627, 18.14524310, 135, 94, 1e-6, 2.4295e-6, 4, true);
     }
 
     void unitsSetup(float lmax, float p, float cq, float kb, float ka, float kv, float gammaC,
@@ -248,9 +248,9 @@ namespace CudaRBC
         float ll = lunit / lrbc;
         float tt = tunit / trbc;
 
-        float l0 = 0.537104 / ll;
+        float l0 = 0.5606098578 / ll;
 
-        params.kbT = 580 * 250 * pow(ll, -2.0) * pow(tt, 2.0);
+        params.kbT = 0.0848 * 1239*1239 * pow(ll, -2.0) * pow(tt, 2.0);
         params.p = p / ll;
         params.lmax = lmax / ll;
         params.q = 1;
@@ -259,11 +259,11 @@ namespace CudaRBC
         params.totVolume0 = totVolume0 * pow(ll, -3.0);
         params.ka =  params.kbT * ka / (l0*l0) / params.totArea0;
         params.kv =  params.kbT * kv / (l0*l0*l0) / params.totVolume0 / 6;
-        params.gammaC = gammaC * 580 * pow(tt, 1.0);
+        params.gammaC = gammaC * 1239 * pow(tt, 1.0);
         params.gammaT = 3.0 * params.gammaC;
 
 
-        float phi = 6.9 / 180.0*M_PI; //float phi = 3.1 / 180.0*M_PI;
+        float phi = 6.9722 / 180.0*M_PI; //float phi = 3.1 / 180.0*M_PI;
         params.sinTheta0 = sin(phi);
         params.cosTheta0 = cos(phi);
         params.kb = kb * params.kbT;

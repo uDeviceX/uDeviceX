@@ -75,7 +75,7 @@ class Simulation
     void _create_walls(const bool verbose, bool & termination_request);
     void _remove_bodies_from_wall(CollectionRBC * coll);
     void _forces();
-    void _data_dump(const int idtimestep);
+    void _datadump(const int idtimestep);
     void _update_and_bounce();
     void _qoi(Particle* rbcs, Particle * ctcs, const float tm);
 

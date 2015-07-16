@@ -22,34 +22,35 @@ class RedistributeCTCs : public RedistributeRBCs
 {
     void _compute_extents(const Particle * const xyzuvw, const int nrbcs, cudaStream_t stream)
     {
-        assert(sizeof(CudaCTC::Extent) == sizeof(CudaRBC::Extent));
+	assert(sizeof(CudaCTC::Extent) == sizeof(CudaRBC::Extent));
 #if 1
-        if (nrbcs)
-            minmax_massimo(xyzuvw, nvertices, nrbcs, minextents.devptr, maxextents.devptr, stream);
+	if (nrbcs)
+	    minmax_massimo(xyzuvw, nvertices, nrbcs, minextents.devptr, maxextents.devptr, stream);
 #else
-        for(int i = 0; i < nrbcs; ++i)
-            CudaCTC::extent_nohost(stream, (float *)(xyzuvw + nvertices * i), (CudaCTC::Extent *)(extents.devptr + i));
+	for(int i = 0; i < nrbcs; ++i)
+	    CudaCTC::extent_nohost(stream, (float *)(xyzuvw + nvertices * i), (CudaCTC::Extent *)(extents.devptr + i));
 #endif
     }
 
 public:
 
-    RedistributeCTCs(MPI_Comm _cartcomm):RedistributeRBCs(_cartcomm)
-{
-        if (ctcs)
-        {
-            CudaCTC::Extent host_extent;
+RedistributeCTCs(MPI_Comm _cartcomm):RedistributeRBCs(_cartcomm)
+    {
+	if (ctcs)
+	{
+	    CudaCTC::Extent host_extent;
             CudaCTC::setup(nvertices, host_extent);
-        }
-}
+	}
+    }
 };
 
 class ComputeInteractionsCTC : public ComputeInteractionsRBC
 {
     void _compute_extents(const Particle * const xyzuvw, const int nrbcs, cudaStream_t stream)
     {
-        if (nrbcs)
-            minmax_massimo(xyzuvw, nvertices, nrbcs, minextents.devptr, maxextents.devptr, stream);
+	assert(sizeof(CudaCTC::Extent) == sizeof(CudaRBC::Extent));
+	if (nrbcs)
+	    minmax_massimo(xyzuvw, nvertices, nrbcs, minextents.devptr, maxextents.devptr, stream);
     }
 
     void _get_coms(cudaStream_t stream, int nrbcs, float* xyz, float* coms)
@@ -62,45 +63,52 @@ public:
     void internal_forces(const Particle * const rbcs, const int nrbcs, Acceleration * accrbc, cudaStream_t stream)
     {
         CudaCTC::forces_nohost(stream, nrbcs, (float *)rbcs, (float *)accrbc);
-    } 
+    }
 
-    ComputeInteractionsCTC(MPI_Comm _cartcomm) : ComputeInteractionsRBC(_cartcomm)
+ComputeInteractionsCTC(MPI_Comm _cartcomm) : ComputeInteractionsRBC(_cartcomm)
     {
-        local_trunk = Logistic::KISS(598 - myrank, 20383 + myrank, 129037, 2580);
+	local_trunk = Logistic::KISS(598 - myrank, 20383 + myrank, 129037, 2580);
 
-        if (ctcs)
-        {
-            CudaCTC::Extent host_extent;
+	if (ctcs)
+	{
+	    CudaCTC::Extent host_extent;
             CudaCTC::setup(nvertices, host_extent);
-        }
+	}
     }
 };
 
 class CollectionCTC : public CollectionRBC
 {
+    static int (*indices)[3], ntriangles, nvertices;
+
+    int _ntriangles() const { return ntriangles; }
+
     void _initialize(float *device_xyzuvw, const float (*transform)[4])
     {
-        CudaCTC::initialize(device_xyzuvw, transform);
+	CudaCTC::initialize(device_xyzuvw, transform);
     }
-    
+
 public:
-    
-    CollectionCTC(MPI_Comm cartcomm) : CollectionRBC(cartcomm)
-{
-        if (ctcs)
-        {
-            CudaCTC::Extent extent;
+
+    int get_nvertices() const { return nvertices; }
+
+CollectionCTC(MPI_Comm cartcomm) : CollectionRBC(cartcomm)
+    {
+	if (ctcs)
+	{
+	    CudaCTC::Extent extent;
             CudaCTC::setup(nvertices, extent);
 
-            assert(extent.xmax - extent.xmin < XSIZE_SUBDOMAIN);
-            assert(extent.ymax - extent.ymin < YSIZE_SUBDOMAIN);
-            assert(extent.zmax - extent.zmin < ZSIZE_SUBDOMAIN);
+	    assert(extent.xmax - extent.xmin < XSIZE_SUBDOMAIN);
+	    assert(extent.ymax - extent.ymin < YSIZE_SUBDOMAIN);
+	    assert(extent.zmax - extent.zmin < ZSIZE_SUBDOMAIN);
 
-            CudaCTC::get_triangle_indexing(indices, ntriangles);
-        }
+	    CudaCTC::get_triangle_indexing(indices, ntriangles);
+	}
+    }
 
-        path2xyz = "ctcs.xyz";
-        format4ply = "ply/ctcs-%04d.ply";
-        path2ic = "ctcs-ic.txt";
-}
+    static void dump(MPI_Comm comm, MPI_Comm cartcomm, Particle * const p, const Acceleration * const a, const int n, const int iddatadump)
+    {
+	_dump("xyz/ctcs.xyz", "ply/ctcs-%04d.ply", comm, cartcomm, ntriangles, n / nvertices, nvertices, indices, p, a, n, iddatadump);
+    }
 };

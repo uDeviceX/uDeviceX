@@ -40,7 +40,7 @@ nz=$3
 let tot=nx*ny*nz
 let lx=48*nx
 let ly=48*ny
-let ly2=2*ly/4
+let ly2=22*ly/40
 let lz=nz*48
 
 cd ../cell-placement
@@ -84,7 +84,7 @@ echo "#!/bin/bash -l
 #SBATCH --account=s436
 #SBATCH --ntasks=${tot}
 #SBATCH --nodes=${nnodes}
-#SBATCH --time=6:00:00
+#SBATCH --time=10:00:00
 #SBATCH --signal="USR1"@30
 ##SBATCH --partition=viz
 

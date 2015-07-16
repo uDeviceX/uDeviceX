@@ -10,6 +10,8 @@
  *  before getting a written permission from the author of this file.
  */
 
+#include <sys/stat.h>
+
 #include "simulation.h"
 
 
@@ -182,7 +184,7 @@ void Simulation::_remove_bodies_from_wall(CollectionRBC * coll)
     CUDA_CHECK(cudaMemcpy(tmp.data(), marks.data, sizeof(int) * marks.size, cudaMemcpyDeviceToHost));
 
     const int nbodies = coll->count();
-    const int nvertices = coll->nvertices;
+    const int nvertices = coll->get_nvertices();
 
     std::vector<int> tokill;
     for(int i = 0; i < nbodies; ++i)
@@ -289,21 +291,6 @@ void Simulation::_create_walls(const bool verbose, bool & termination_request)
 	sd.dump(p, particles.size);
 
 	delete [] p;
-    }
-
-    if (rank == 0)
-    {
-	if( access( "particles.xyz", F_OK ) != -1 )
-	{
-	    const int retval = rename ("particles.xyz", "particles-equilibration.xyz");
-	    assert(retval != -1);
-	}
-
-	if( access( "rbcs.xyz", F_OK ) != -1 )
-	{
-	    const int retval = rename ("rbcs.xyz", "rbcs-equilibration.xyz");
-	    assert(retval != -1);
-	}
     }
 }
 
@@ -489,15 +476,15 @@ void Simulation::_qoi(Particle* rbcs, Particle * ctcs, const float tm)
         for (int p = 0; p < rbcscoll->count(); p++)
         {
             float com = 0;
-            Particle * cur = rbcs + p * rbcscoll->nvertices;
+            Particle * cur = rbcs + p * rbcscoll->get_nvertices();
 
-            for (int i=0; i < rbcscoll->nvertices; i++)
+            for (int i=0; i < rbcscoll->get_nvertices(); i++)
             {
                 com += cur[i].x[DIR];
                 for (int d = 0; d<3; d++)
                     rbccom[d] += cur[i].x[d] + (coords[d] + 0.5) * subdomain[d];
             }
-            com = com / rbcscoll->nvertices + (coords[DIR] + 0.5) * subdomain[DIR];
+            com = com / rbcscoll->get_nvertices() + (coords[DIR] + 0.5) * subdomain[DIR];
 
             int ibin = floor(com / h);
             if (ibin >= nbins) ibin = nbins - 1;
@@ -511,11 +498,11 @@ void Simulation::_qoi(Particle* rbcs, Particle * ctcs, const float tm)
         for (int p = 0; p < ctcscoll->count(); p++)
         {
             float com = 0;
-            Particle * cur = ctcs + p * ctcscoll->nvertices;
+            Particle * cur = ctcs + p * ctcscoll->get_nvertices();
 
-            for (int i=0; i < ctcscoll->nvertices; i++)
+            for (int i=0; i < ctcscoll->get_nvertices(); i++)
                 com += cur[i].x[DIR];
-            com = com / ctcscoll->nvertices + (coords[DIR] + 0.5) * subdomain[DIR];
+            com = com / ctcscoll->get_nvertices() + (coords[DIR] + 0.5) * subdomain[DIR];
 
             int ibin = floor(com / h);
             if (ibin >= nbins) ibin = nbins - 1;
@@ -572,7 +559,7 @@ void Simulation::_qoi(Particle* rbcs, Particle * ctcs, const float tm)
             float totrbcs = 0;
             for (int i=0; i<nbins; i++)
                 totrbcs += locRBChisto[i];
-            totrbcs *= rbcscoll->nvertices;
+            totrbcs *= rbcscoll->get_nvertices();
 
             FILE* fout = fopen("rbccom.txt", qoiid == 0 ? "w" : "a");
             fprintf(fout, "%f   %e %e %e\n", tm, rbccom[0] / totrbcs, rbccom[1] / totrbcs, rbccom[2] / totrbcs);
@@ -582,7 +569,7 @@ void Simulation::_qoi(Particle* rbcs, Particle * ctcs, const float tm)
     qoiid++;
 }
 
-void Simulation::_data_dump(const int idtimestep)
+void Simulation::_datadump(const int idtimestep)
 {
     double tstart = MPI_Wtime();
 
@@ -651,8 +638,9 @@ void Simulation::_datadump_async()
     nvtxNameOsThread(pthread_self(), "DATADUMP_THREAD");
 #endif
 
-    int iddatadump = 0;
+    int iddatadump = 0, rank;
     int curr_idtimestep = -1;
+    bool wallcreated = false;
 
     MPI_Comm myactivecomm, mycartcomm;
 
@@ -661,6 +649,13 @@ void Simulation::_datadump_async()
 
     H5PartDump dump_part("allparticles.h5part", activecomm, cartcomm), *dump_part_solvent = NULL;
     H5FieldDump dump_field(cartcomm);
+
+    MPI_CHECK(MPI_Comm_rank(myactivecomm, &rank));
+
+    if (rank == 0)
+	mkdir("xyz", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+
+    MPI_CHECK(MPI_Barrier(myactivecomm));
 
     while (true)
     {
@@ -686,14 +681,34 @@ void Simulation::_datadump_async()
 	    diagnostics(myactivecomm, mycartcomm, p, n, dt, datadump_idtimestep, a);
 	}
 
-	if (xyz_dumps)	
+	if (xyz_dumps)
 	{
 	    NVTX_RANGE("xyz dump", NVTX_C2);
-	    xyz_dump(myactivecomm, mycartcomm, "particles.xyz", "all-particles", p, n, datadump_idtimestep > 0);
+
+	    if (walls && datadump_idtimestep >= wall_creation_stepid && !wallcreated)
+	    {
+		if (rank == 0)
+		{
+		    if( access("xyz/particles-equilibration.xyz", F_OK ) == -1 )
+			rename ("xyz/particles.xyz", "xyz/particles-equilibration.xyz");
+
+		    if( access( "xyz/rbcs-equilibration.xyz", F_OK ) == -1 )
+			rename ("xyz/rbcs.xyz", "xyz/rbcs-equilibration.xyz");
+
+		    if( access( "xyz/ctcs-equilibration.xyz", F_OK ) == -1 )
+			rename ("xyz/ctcs.xyz", "xyz/ctcs-equilibration.xyz");
+		}
+
+		MPI_CHECK(MPI_Barrier(myactivecomm));
+
+		wallcreated = true;
+	    }
+
+	    xyz_dump(myactivecomm, mycartcomm, "xyz/particles.xyz", "all-particles", p, n, datadump_idtimestep > 0);
 	}
 
 	if (hdf5part_dumps)
-	{	
+	{
 	    NVTX_RANGE("h5part dump", NVTX_C3);
 
 	    if (!dump_part_solvent && walls && datadump_idtimestep >= wall_creation_stepid)
@@ -720,10 +735,11 @@ void Simulation::_datadump_async()
 	    NVTX_RANGE("ply dump", NVTX_C5);
 
 	    if (rbcscoll)
-		rbcscoll->dump(myactivecomm, mycartcomm, p + datadump_nsolvent, a + datadump_nsolvent, datadump_nrbcs, iddatadump);
+		CollectionRBC::dump(myactivecomm, mycartcomm, p + datadump_nsolvent, a + datadump_nsolvent, datadump_nrbcs, iddatadump);
 
 	    if (ctcscoll)
-		ctcscoll->dump(myactivecomm, mycartcomm, p + datadump_nsolvent + datadump_nrbcs, a + datadump_nsolvent + datadump_nrbcs, datadump_nctcs, iddatadump);
+		CollectionCTC::dump(myactivecomm, mycartcomm, p + datadump_nsolvent + datadump_nrbcs,
+				    a + datadump_nsolvent + datadump_nrbcs, datadump_nctcs, iddatadump);
 	}
 
 	_qoi(particles_datadump.data+particles.size, particles_datadump.data+particles.size + (rbcscoll ? rbcscoll->pcount() : 0), curr_idtimestep * dt);
@@ -803,13 +819,13 @@ Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_term
     if (rbcs)
     {
 	rbcscoll = new CollectionRBC(cartcomm);
-	rbcscoll->setup();
+	rbcscoll->setup("rbcs-ic.txt");
     }
 
     if (ctcs)
     {
 	ctcscoll = new CollectionCTC(cartcomm);
-	ctcscoll->setup();
+	ctcscoll->setup("ctcs-ic.txt");
     }
 
     //setting up the asynchronous data dumps
@@ -872,6 +888,7 @@ void Simulation::_lockstep()
 
     CUDA_CHECK(cudaPeekAtLastError());
 
+    localcomm.barrier(); // peh: 1
 
     if (rbcscoll)
 	rbc_interactions.exchange_count();
@@ -1036,6 +1053,7 @@ void Simulation::_lockstep()
 
     redistribute.recv_unpack(unordered_particles.data, newnp, mainstream, host_idle_time);
 
+    localcomm.barrier();	// peh: +2
 
     particles.resize(newnp);
 
@@ -1066,7 +1084,7 @@ void Simulation::_lockstep()
 
     CUDA_CHECK(cudaPeekAtLastError());
 
-    localcomm.barrier();	// peh: +1
+//  localcomm.barrier();  // peh: +3
 
     timings["lockstep"] += MPI_Wtime() - tstart;
 }
@@ -1179,7 +1197,7 @@ void Simulation::run()
 	_forces();
 
 	if (it % steps_per_dump == 0)
-	    _data_dump(it);
+	    _datadump(it);
 
 	_update_and_bounce();
     }

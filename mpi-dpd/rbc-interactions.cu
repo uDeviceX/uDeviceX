@@ -265,7 +265,7 @@ namespace KernelsRBC
         const float invrij = rsqrtf(rij2);
 
         const float rij = rij2 * invrij;
-	const float argwr = max((float)0, 1 - rij/0.6);
+        const float argwr = max((float)0, 1 - rij/0.6);
         const float wr = powf(argwr, powf(0.5f, -VISCOSITY_S_LEVEL));
 
         const float xr = _xr * invrij;
@@ -296,7 +296,7 @@ namespace KernelsRBC
         const float invrij = rsqrtf(rij2);
 
         const float rij = rij2 * invrij;
-	const float argwr = max((float)0, 1 - rij/0.6);
+        const float argwr = max((float)0, 1 - rij/0.6);
         const float wr = viscosity_function<-VISCOSITY_S_LEVEL>(argwr);
 
         const float xr = _xr * invrij;
@@ -758,9 +758,9 @@ namespace KernelsRBC
         const float invrij2 = 3.0f / rij2;
         const float invrij6 = invrij2;
 
-        const float cos = (dcenter.x * dx + dcenter.y * dy + dcenter.z * dz) * rsqrt(rij2) *
-                rsqrt(dcenter.x * dcenter.x + dcenter.y * dcenter.y + dcenter.z * dcenter.z);
-        const float strength = min((cos > 0.0) * invrij6, 500.0f);
+        const float cos = (dcenter.x * dx + dcenter.y * dy + dcenter.z * dz);
+
+        float strength = min((cos > 0.0)*invrij6, 500.0f);
 
         return make_float3(strength * dx, strength * dy, strength * dz);
     }
@@ -1261,7 +1261,7 @@ namespace KernelsRBC
 }
 
 ComputeInteractionsRBC::ComputeInteractionsRBC(MPI_Comm _cartcomm):
-                                                                                                                                                                                                                                                                                                                                                                                nvertices(0), dualcells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN)
+                                                                                                                                                                                                                                                                                                                                                                                        nvertices(0), dualcells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN)
 {
     assert(XSIZE_SUBDOMAIN % 2 == 0 && YSIZE_SUBDOMAIN % 2 == 0 && ZSIZE_SUBDOMAIN % 2 == 0);
     assert(XSIZE_SUBDOMAIN >= 2 && YSIZE_SUBDOMAIN >= 2 && ZSIZE_SUBDOMAIN >= 2);
@@ -1899,27 +1899,27 @@ void ComputeInteractionsRBC::imem_rbc_ctc_halo(const Particle * const rbcs, cons
     _get_coms(stream, nrbcs, (float*)rbcs, coms);
     KernelsRBC::remote_coms<<<nRemCells, 128, 0, stream>>>(nRemCells, ctc_int->nvertices, comsRemote);
 
-//    {
-//        float* h_acc = new float[nrbcs*3];
-//        CUDA_CHECK( cudaMemcpy(h_acc, coms, 3 * nrbcs * sizeof(float), cudaMemcpyDeviceToHost) );
-//
-//        for (int i=0; i<nrbcs; i++)
-//        {
-//            printf("  iam %d  own:  %.3d:  [%.3f  %.3f %.3f]\n", myrank, i,
-//                    h_acc[3*i+0]+XSIZE_SUBDOMAIN*(0.5+myrank), h_acc[3*i+1]+YSIZE_SUBDOMAIN*0.5, h_acc[3*i+2]+ZSIZE_SUBDOMAIN*0.5);
-//        }
-//    }
-//
-//    {
-//        float* h_acc = new float[nRemCells*3];
-//        CUDA_CHECK( cudaMemcpy(h_acc, comsRemote, 3 * nRemCells * sizeof(float), cudaMemcpyDeviceToHost) );
-//
-//        for (int i=0; i<nRemCells; i++)
-//        {
-//            printf("  iam %d  rem:  %.3d:  [%.3f  %.3f %.3f]\n", myrank, i,
-//                    h_acc[3*i+0]+XSIZE_SUBDOMAIN*(0.5+myrank), h_acc[3*i+1]+YSIZE_SUBDOMAIN*0.5, h_acc[3*i+2]+ZSIZE_SUBDOMAIN*0.5);
-//        }
-//    }
+    //    {
+    //        float* h_acc = new float[nrbcs*3];
+    //        CUDA_CHECK( cudaMemcpy(h_acc, coms, 3 * nrbcs * sizeof(float), cudaMemcpyDeviceToHost) );
+    //
+    //        for (int i=0; i<nrbcs; i++)
+    //        {
+    //            printf("  iam %d  own:  %.3d:  [%.3f  %.3f %.3f]\n", myrank, i,
+    //                    h_acc[3*i+0]+XSIZE_SUBDOMAIN*(0.5+myrank), h_acc[3*i+1]+YSIZE_SUBDOMAIN*0.5, h_acc[3*i+2]+ZSIZE_SUBDOMAIN*0.5);
+    //        }
+    //    }
+    //
+    //    {
+    //        float* h_acc = new float[nRemCells*3];
+    //        CUDA_CHECK( cudaMemcpy(h_acc, comsRemote, 3 * nRemCells * sizeof(float), cudaMemcpyDeviceToHost) );
+    //
+    //        for (int i=0; i<nRemCells; i++)
+    //        {
+    //            printf("  iam %d  rem:  %.3d:  [%.3f  %.3f %.3f]\n", myrank, i,
+    //                    h_acc[3*i+0]+XSIZE_SUBDOMAIN*(0.5+myrank), h_acc[3*i+1]+YSIZE_SUBDOMAIN*0.5, h_acc[3*i+2]+ZSIZE_SUBDOMAIN*0.5);
+    //        }
+    //    }
 
 
     CUDA_CHECK( cudaMemset((float *)lacc_solute.data, 0, 3 * nrbcs * nvertices * sizeof(float)) );
