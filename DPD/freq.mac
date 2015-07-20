@@ -1,5 +1,6 @@
 eij :    1 $
 Fc  :    aij * (1-rij/rc)*eij $
+Ec: integrate(Fc, rij, rc/2, rc);
 
 F1  :     Fc;
 F2  :    -Fc;

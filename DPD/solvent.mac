@@ -11,8 +11,6 @@ simulation." Journal of Chemical Physics 107.11 (1997): 4423.
 
 */
 
-
-
 load("dimension") ;
 load("draw") $
 load("to_poly_solve") $
@@ -47,8 +45,6 @@ usubst(so, [L]):= for el in L do block([name, descr],
   [name, descr]: el,
   usubst_aux(so, name, descr));
 
-
-
 assume('k>0, 'rc>0);
 
 un('Velocity     , 'length/'time           , "velocity units") $
@@ -67,8 +63,8 @@ un('vij          , di('Velocity)           , "relative particles velocity") $
 un('dt           , 'time                   , "time step") $
 un('n            , 1/'length^3             , "particle number density") $ /* for 3D */
 un('m            , 'mass                   , "particle mass" )$
-un('L            , length                  , "domain box size" )$
-un('kk           , 1/length                , "spacial wave vector" )$
+un('L            , 'length                 , "domain box size" )$
+un('kk           , 1/'length               , "spacial wave vector" )$
 un('nu           , 'length^2/'time         , "kinematic static viscosity of DPD solvent") $
 un('zz           , 1/'time                 , "decay rate") $ /* eq (13) in [3] */
 
@@ -85,7 +81,7 @@ eq <- wD = wD_expr $
 eq_fd <- sigma^2 = 2*gamma*kT $ /*  fluctuation-dissipation theorem (FDT) (eq. (5) [2]) */
 
 /* derived variables */
-eq_s <- m*v0^2 / 2 = kT $
+eq_s <- m*v0^2  = kT $
 eq_s <- om0 = 1/3*n*I*gamma/m ;    /* [3], Table 1, added mass for consistancy with [1] */
 eq_s <- t0 = 1/om0;
 eq_s <- l0 = v0 * t0 $
@@ -118,7 +114,11 @@ usubst(so,
   ['OmegaA,      "dimensionless conservative interaction"])$
 
 so_s: solve(append(eq_s, eq_fd), [v0, om0, t0, l0, Omega0, ls, OmegaS, ta, OmegaA, 'gamma])[2];
-ev(['Omega0, 'OmegaA, 'OmegaS, 'kk*'l0, 'zz/'om0 ], p_fed, so_s, infeval, k=1, m=1, rc=1);
+
+un(A, 'length^2/'time, "parameter of autocorrelation") $
+un(B, 'time          , "parameter of autocorrelation") $
+o(e):= funmake("=", [e,  ev(e, p_fed, so_s, infeval, k=1)]);
+map(o, ['Omega0, 'OmegaA, 'OmegaS, 'kk*'l0, 'zz/'om0, 'B*'om0, 'A/('om0*'rc^2) ]);
 
 /*
 dl(e):= subst(endcons(k=1, so_s), e);

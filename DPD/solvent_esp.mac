@@ -1,0 +1,166 @@
+/* Parameters of DPD
+
+[1] Fedosov, Dmitry A. Multiscale modeling of blood flow and soft
+matter. Brown University, 2010.
+
+[2] Groot, Robert D., and Patrick B. Warren. "Dissipative particle
+dynamics: Bridging the gap between atomistic and mesoscopic
+simulation." Journal of Chemical Physics 107.11 (1997): 4423.
+
+[3] Rippol, Espanol, 2001
+
+*/
+
+load ("scifac")       $
+load("dimension")     $
+load("draw")          $
+load("dscale.mac")    $
+alias(di,  dimension) $
+
+%ndim%: 3             $
+
+/* print info */
+who(e):= (printf(true, "~8a :  ~24a : ~40a~%", e , get(e, 'di), get(e, 'de)), 'done)$
+
+/* register units and description of a parameter */
+un(e, u, d):= (put(e, u, 'di), put(e, d, 'de)) $
+
+/* helpful operator */
+infix("<-", 180, 20) $
+ilist(a)  ::=buildq([a], if not listp(a) then (a: [], a) else a) $
+"<-"(a, b)::=buildq([a, b], (ilist(a), if not member(b, a) then a: endcons(b, a), b)) $
+
+/* a copy from abs_integrate.mac  */
+safe_op(e) := block([inflag : true], if mapatom(e) then false else op(e)) $
+
+/* process dimensions in expression */
+mdi(e):= block([ans, op: safe_op(e)],
+  if errcatch(ans: di(e))#[] then ans
+  else if op="*" or op="." or op="=" or op="[" then map(mdi, e)
+  else funmake('di, [e])) $
+
+/* substitute units from solution */
+usubst_aux(so, name, descr):= block([d: assoc(funmake('di, [name]), so)],
+  if d=false then error("dimension is not in `so'"),
+  un(name, abs(d), descr));
+usubst(so, [L]):= for el in L do block([name, descr],
+  [name, descr]: el,
+  usubst_aux(so, name, descr));
+
+assume('k>0, 'rc>0, 'm>0);
+
+un('Velocity     , 'length/'time            , "velocity units") $
+un('Acceleration , di('Velocity)/'time      , "acceleration units") $
+un('Force        , di('Acceleration)*'mass  , "force units") $
+un('rij          , 'length                  , "length of `rij_v = ri_v - rj_v'") $
+un('rc           , 'length                  , "cutoff distance") $
+un('eij          , 1                        , "unit vector in direction of rij") $      /* rij with `cap' in [3] */
+un('k            , 1                        , "power factor in DPD kernel") $
+un('xsi_ij       , 1                        , "random variable") $
+un('Fc           , di('Force)               , "conservative force") $
+un('Fr           , di('Force)               , "random force") $                         /* Eq. (2) [3] */
+un('Fd           , di('Force)               , "dissipative force") $
+un('vij          , di('Velocity)            , "relative particles velocity") $
+un('dt           , 'time                    , "time step") $
+un('n            , 1/'length^%ndim%         , "particle number density") $             /* Table 1 [3] */
+un('m            , 'mass                    , "particle mass" )$
+un('L            , 'length                  , "domain box size" )$
+un('kk           , 1/'length                , "spacial wave vector" )$                 /* Eq. (13) [3] */
+un('nu           , 'length^2/'time          , "static viscosity") $
+un('zz           , 1/'time                  , "energy decay rate") $                   /* Eq. (13) [3] */
+
+wint(e):= if      %ndim%=3 then 4*%pi*integrate(e*'rij^2, 'rij, 0, 'rc)               /* operator [..]; defined in [3] */
+          else if %ndim%=2 then 2*%pi*integrate(e*'rij  , 'rij, 0, 'rc)               /* on page 7273  */
+          else                        integrate(e       , 'rij, 0, 'rc) $
+/* DPD kernel */
+wD_expr:  (1-'rij/'rc)^'k;
+I: wint(wD_expr) $
+
+eq <- Fc =   m*aij * (1-rij/rc)*eij $ /* not in [3] */
+eq <- Fd =   m*gamma*wD*(eij.vij)*eij $
+eq <- Fr =   m*sigma*wR*xsi_ij/sqrt(dt)*eij $
+eq <- wD = wR^2 $
+eq <- wD = wD_expr $
+
+eq_fd <- m*sigma^2 = 2*gamma*kT $ /*  fluctuation-dissipation theorem (FDT) (5) [3] */
+
+/* derived parameters */
+eq_s <- m*v0^2   = kT            $    /* Table 1 */
+eq_s <- om0 = 1/%ndim%*n*I*gamma $
+eq_s <- t0 = 1/om0               $
+eq_s <- l0 = v0 * t0             $
+eq_s <- Omega0 = rc/l0           $
+eq_s <-     ls = 1/n^(1/%ndim%)  $ 
+eq_s <- OmegaS = rc/ls           $
+eq_s <- ta     = sqrt(m*rc/aij)  $
+eq_s <- OmegaA = aij*rc*m / kT     $    /* Table 1 */
+
+/* a system of equations for dimension */
+eq_d: append(mdi(eq), mdi(eq_fd), mdi(eq_s));
+
+/* solve for dimensions */
+var: ['aij, 'gamma, 'sigma, 'wD, 'wR, 'kT, 'v0, 'om0, 't0, 'l0, 'Omega0, 'OmegaS, 'ls, 'ta, 'OmegaA] $
+so : solve(eq_d, map('di, var))[1];
+
+usubst(so,
+  ['aij,         "conservative force constant"],
+  ['gamma,       "dissipative force constant"],
+  ['sigma,       "random force constant"],
+  ['wD,          "dissipative force kernel"],
+  ['wR,          "random      force kernel"],
+  ['kT ,         "temperature in energy units"],
+  ['om0 ,        "collision frequency"],
+  ['v0  ,        "equailibrium particle velocity"],
+  ['l0  ,        "dynamics distance"],
+  ['t0  ,        "collision time"],
+  ['Omega0,      "dynamics overlapping"],
+  ['ls    ,      "'density' length"],  /* is not named in [3] */
+  ['OmegaS,      "dimensionless density"],
+  ['ta    ,      "conservative force time"],
+  ['OmegaA,      "dimensionless conservative interaction"])$
+
+so_s: solve(append(eq_s, eq_fd),
+  ['v0, 'om0, 't0, 'l0, 'Omega0, 'ls, 'OmegaS, 'ta, 'OmegaA, 'gamma])[2];
+
+un(A, 'length^2/'time, "parameter of autocorrelation") $
+un(B, 'time          , "parameter of autocorrelation") $
+
+o(e):= funmake("=", [e,  ev(e, p_fed, so_s, infeval)]);
+
+
+sigma_expr: rhs(solve(eq_fd, sigma)[2]);
+
+p_fed: [aij = 50, gamma = 12, rc = 1, m = 1, kT = 1, n = 4, k=1, 'sigma=sigma_expr];
+
+map(o, ['Omega0, 'OmegaA, 'OmegaS, 'kk*'l0, 'zz/'om0, 'B*'om0, 'A/('om0*'rc^2) ]), numer;
+
+
+/* Eq. (35) in [3]
+a2 : wint('rij^2*wD_expr)/ (2*(%ndim%+2)*'rc^2 *wint(wD_expr));
+zz_first: - (1/2 + a2*Omega0^2)*'q^2;
+subst([sigma=3, kT=1, k=1, rc=1, m=1, n=4], subst (so_s, -zz_first/'q^2*om0*l0^2*'n)), numer;
+
+subst([sigma=3, kT=1, k=1, rc=1, m=1, n=4], subst (so_s, -zz_first/'q^2)), numer;
+
+
+*/
+
+/*
+draw2d ( 'xrange=[0, 2], 'yrange=[-5, 0], terminal='png, file_name = printf(false, "ndim~d", %ndim%),
+  explicit( subst(['k=1/100, 'Omega0= 1], zz_first), 'q, 0, 2),
+  explicit( subst(['k=1/100, 'Omega0= 5], zz_first), 'q, 0, 2),
+  explicit( subst(['k=1/100, 'Omega0=10], zz_first), 'q, 0, 2),
+  explicit( subst(['k=1/100, 'Omega0=20], zz_first), 'q, 0, 2),  
+  'color = 'red,
+  explicit( subst(['k=1, 'Omega0= 1], zz_first), 'q, 0, 2),
+  explicit( subst(['k=1, 'Omega0= 5], zz_first), 'q, 0, 2),
+  explicit( subst(['k=1, 'Omega0=10], zz_first), 'q, 0, 2),
+  explicit( subst(['k=1, 'Omega0=20], zz_first), 'q, 0, 2));
+*/
+
+/*
+dl(e):= subst(endcons(k=1, so_s), e);
+p    : [Omega0='Omega0_in, OmegaA='OmegaA_in, OmegaS='OmegaS_in] ;
+p    : dl(p) ;
+d    : dscale(p, ['rc=1, 'm=1, 'kT=1], ['nu, 'gamma, 'aij, 'kT, 'n, 'rc, 'm, 'kk, dl('zz/'om0)]);
+*/
