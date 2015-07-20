@@ -45,7 +45,7 @@ let lz=nz*48
 
 cd ../cell-placement
 make
-./cell-placement ${lx} ${ly2} ${lz}
+#./cell-placement ${lx} ${ly2} ${lz}
 nrbcs=`wc -l rbcs-ic.txt | awk '{print $1}'`
 echo "Generated ${nrbcs} RBCs"
 cp rbcs-ic.txt ${wd}/
@@ -81,10 +81,10 @@ fi
 let nnodes=tot/mps_per_node
 
 echo "#!/bin/bash -l
-#SBATCH --account=s436
+#SBATCH --account=s448
 #SBATCH --ntasks=${tot}
 #SBATCH --nodes=${nnodes}
-#SBATCH --time=10:00:00
+#SBATCH --time=00:10:00
 #SBATCH --signal="USR1"@30
 ##SBATCH --partition=viz
 

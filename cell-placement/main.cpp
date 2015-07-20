@@ -149,9 +149,9 @@ struct TransformedExtent
             transform[i][3] = - 0.5 * (local_xmin[i] + local_xmax[i]);
 
         const float angles[3] = {
-                (float)(0.04 * (drand48() - 0.5) * 2 * M_PI),
-                (float)(M_PI * 0.5 + 0.04 * (drand48() * 2 - 1) * M_PI),
-                (float)(0.04 * (drand48() - 0.5) * 2 * M_PI)
+                (float)(0.02 * (drand48() - 0.5) * 2 * M_PI),
+                (float)(M_PI * 0.5 + 0.02 * (drand48() * 2 - 1) * M_PI),
+                (float)(0.02 * (drand48() - 0.5) * 2 * M_PI)
         };
 
         for(int d = 0; d < 3; ++d)
@@ -362,7 +362,7 @@ int main(int argc, const char ** argv)
 
     vector<TransformedExtent> results[2];
 
-    const float tol = 0.2;
+    const float tol = 0.1;
 
     Checker checker(8+tol, domainextent, tol);
     int tot = 0;
@@ -373,7 +373,7 @@ int main(int argc, const char ** argv)
         for (int j=0; j<4; j++)
             onectc.transform[i][j] = (i == j) ? 1 : 0;
     onectc.transform[0][3] = 30;
-    onectc.transform[1][3] = 224;
+    onectc.transform[1][3] = 328;
     onectc.transform[2][3] = 33;
 
     onectc.xmin[0] = extents[1].xmin + onectc.transform[0][3];

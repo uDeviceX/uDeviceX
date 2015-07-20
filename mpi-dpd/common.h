@@ -29,13 +29,13 @@ enum {
 // Use with slevel = 0, viscosity is 1.7
 const int numberdensity = 4;
 const float dt = 0.0025;
-const float tend = 500000;
+const float tend = 3;
 const float kBT = 1.0;
 const float gammadpd = 20;
 const float sigma = sqrt(2 * gammadpd * kBT); 
 const float sigmaf = sigma / sqrt(dt);
 const float aij = 50;
-const float hydrostatic_a = 0.02;
+const float hydrostatic_a = 0.018;
 const bool walls = true;
 const bool pushtheflow = true;
 const bool rbcs = true;
@@ -43,9 +43,9 @@ const bool ctcs = true;
 const bool xyz_dumps = false;
 const bool hdf5field_dumps = true;
 const bool hdf5part_dumps = false;
-const int steps_per_report = 2000;
-const int steps_per_dump = 2000;
-const int wall_creation_stepid = 5000;
+const int steps_per_report = 1000;
+const int steps_per_dump = 1000;
+const int wall_creation_stepid = 1000;
 const int nsubsteps = 3;
 
 extern bool is_mps_enabled;
