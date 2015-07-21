@@ -1,0 +1,20 @@
+maxima2dump(lmp_data, atom_data, fname):=
+with_stdout(fname,
+  block([m], local(m, tprint, nprint),
+    tprint([l]):=apply('printf, cons(true, l)),
+    nprint(s):=printf(true, "~a~%", s),
+    nprint("LAMMPS configuration file generated with maxima2dump.mac"),
+    tprint("~%"),
+    tprint("~d atoms~%", lmp_data['natoms]),
+    tprint("~%"),
+    tprint("~d atom types~%", 1),
+    tprint("~%"),
+/*    tprint("~1,16e ~1,16e~%",  lmp_data['xlo], lmp_data['xhi]),
+    tprint("~1,16e ~1,16e~%",  lmp_data['ylo], lmp_data['yhi]),
+    tprint("~1,16e ~1,16e~%",  lmp_data['zlo], lmp_data['zhi]), */
+    tprint("~a", "ITEM: ATOMS"),
+    tprint("~{ ~a~}~%", lmp_data['columns]),
+    if not emptyp(atom_data) then (
+      m: apply(matrix,
+        makelist(subvar(atom_data, el), el, lmp_data['columns])),
+      write_data(transpose(m), ?\*standard\-output\*))))$
