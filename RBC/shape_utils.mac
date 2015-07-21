@@ -1,0 +1,117 @@
+/* matlab `linspace' */
+mat_linspace2(a,b,n) := block([ans: [], st ],
+  if n>0 then push(b, ans),
+  if n>1 then (st: (b-a)/(n-1),
+    for i:n-2 thru 0 step -1 do push(a + i*st, ans)),
+  ans);
+
+mat_linspace(a, b, [n]):=
+if emptyp(n) then mat_linspace2(a, b, 100) else mat_linspace2(a, b, first(n));
+
+/* matlab `diff' */
+mat_diff(x) := map("-", rest(x), rest(x, -1));
+
+/* matlab `sum' */
+mat_sum(x) := xreduce("+", x);
+
+/* matlab `cumsum' */
+mat_cumsum(x):= block([ans: [], s: 0],
+  for e in x do (s: s+e, push(s, ans)),
+  reverse(ans));
+
+mat_idx(x, idx):= block([ans: []], for i in idx do push(inpart(x, i), ans), reverse(ans));
+
+vsq(L):= lsum(e^2, e, L);
+vabs(L):= sqrt(vsq(L));
+
+/* where elements of `a' in `b' */
+split_by_npoinst2(a, np, lo, hi):= block([ia: 1, na: length(a),  ans: [], nexp, st, nc: 0, i: 1,
+  prederror: true], local(a),
+  /* we expect this number of points */
+  nexp: np - 1,
+  if lo then (i: i + 1, push(1, ans),  nexp: nexp + 1),
+  /* step */
+  st : (a[na] - a[1])/np,
+  po : a[1] + st,
+  while nc<np-1 and i<=na do (
+    if a[i]>=po then (push(i, ans), po: po + st, nc: nc + 1),
+    i : i + 1),
+  if hi then (push(na, ans), nexp: nexp + 1),
+  if length(ans)#nexp then 
+     error(printf(false, "something is wrong in `split_by_npoinst, length(ans)=~d, nexp=~d, st=~g",
+         length(ans), nexp, st)),
+     reverse(ans));
+
+split_by_npoinst(a, np, [rst]):= block([lo, hi],
+  lo : if length(rst)<1 then true  else first(rst),
+  hi : if length(rst)<2 then false else second(rst),
+  split_by_npoinst2(a, np, lo, hi));
+
+
+/*
+
+generate atom position
+
+expr_p0 : expression for circumference of RBC, should be a function of 'r
+rlo, rhi: lower and higher value of 'r
+nout    : number of atoms
+
+Returns : a list of pairs with atom position
+
+*/
+gen_eqspaced_atom(expr_p0, rlo, rhi, nout):= block([np: 10000, r0, z0, dr, dz, seglen,
+  cumlen, totlen, idx, rd0, zd0],
+
+  if listofvars(expr_p0)#['r] then error("`expr_p0' should be an expression with 'r"),
+  if not numberp(rlo)         then error("`rlo'     should be a  number"),
+  if not numberp(rhi)         then error("`rhi'     should be a  number"),
+
+  if not integerp(nout)       then error("`rhi'     should be an integer number"),
+
+  r0: mat_linspace(rlo, rhi, np)            ,
+  z0: apply(create_list, [expr_p0, 'r, r0]) ,
+
+  /* symmetry */
+  r0: append(r0,  reverse(r0)) ,
+  z0: append(z0, -reverse(z0)) ,
+
+  dr: mat_diff(r0) ,
+  dz: mat_diff(z0) ,
+
+  seglen: sqrt( dr^2 + dz^2) ,
+  cumlen: mat_cumsum(seglen) ,
+  totlen: last(cumlen)       ,
+
+  idx: split_by_npoinst(cumlen, nout, true, false),
+  rd0: mat_idx(r0, idx),
+  zd0: mat_idx(z0, idx),
+  map("[", rd0, zd0));
+
+
+try_discret(st):= block([ans: [1], Pc: %P%[1], st2: st^2, np: length(%P%), i: 0], local(%P%),
+  if not numberp(st) then error("`st' should be number"),
+  while i<np and length(ans)<=%nout% do (i: i + 1,
+    if vsq(%P%[i]-Pc)>=st2 then (Pc: %P%[i], push(i, ans))),
+  if      length(ans)>%nout% then  'under
+  else if length(ans)<%nout% then  'over
+  else if length(ans)=%nout% and first(ans)#np then 'under
+  else (%try_discret_points%: copylist(ans), 'zero));
+
+/* selects `nout' approximatly equaly spaced points on the curve given
+   by a list of XY pairs (see rtest_shape_utils.mac) */
+select_points(P, nout):= block([%P%: P, %nout%: nout, slo, shi, smi, rmi, nit: 0, maxit: 100,
+     numer: true],
+  if not integerp(nout) then error("`nout' shoud be an integer"),
+  if not listp(P) or not listp(first(P)) then error("`P' shoud be a list of XY pairs"),
+  /* use binary search to find optimal distance between neighboring points */
+  slo:       0,
+  shi:    1000, /* big number */
+  catch (
+    while nit<maxit do (
+      smi: (slo + shi)/2,
+      nit: nit + 1,
+      rmi: try_discret(smi),
+      if      rmi='zero  then throw(smi)
+      else if rmi='under then slo: smi else shi: smi)),
+  if nit=maxit then error("`select_points did not converged"),
+    mat_idx(P, %try_discret_points%));

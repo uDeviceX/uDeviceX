@@ -1,0 +1,69 @@
+/*
+
+[1] Fedosov2010
+ 
+*/
+
+load("shape_utils.mac");
+load("draw");
+
+/* parameters are from [1], I cannot get the paper, so I belive Fedosov */
+par: ['D0 = 7.82, 'a0 = 0.0518, 'a1=2.0026, 'a2=-4.491];
+expr: D0 * sqrt(1 - 4*(x^2 + y^2)/D0^2) *
+      (a0 + a1 * (x^2 + y^2)/D0^2 + a2*(x^2 + y^2)^2/D0^4);
+
+/* in polar coordinates */
+assume(D0>0);
+expr_p: trigsimp(subst( [x = r*cos(p), y = r*sin(p)], expr));
+
+
+/* use parameters */
+expr_p0: subst(par, expr_p);
+D00    : subst(par, D0);
+
+nout: 50 $
+np  : 2000 $
+r0: mat_linspace(-D00/2, D00/2, np)       $
+z0: apply(create_list, [expr_p0, 'r, r0]) $
+
+/* use symmetry */
+r0: append(r0,  reverse(r0)) $
+z0: append(z0, -reverse(z0)) $
+ P: map("[", r0, z0) $
+
+trace(try_discret);
+A: select_points(P, nout);
+
+/* 
+draw2d (xrange = [-D00, D00], yrange = [-D00, D00],
+  points(A),
+  color = 'red,
+  user_preamble="set size sq",
+  explicit(  expr_p0, r, -D00/2, D00/2),
+  explicit( -expr_p0, r, -D00/2, D00/2)); */
+
+
+lmp['xlo]: 0;
+lmp['xhi]: 1;
+
+lmp['ylo]: 0;
+lmp['yhi]: 1;
+
+lmp['zlo]: 0;
+lmp['zhi]: 1;
+
+lmp['bounds]: ["pp", "pp", "pp"]$
+
+lmp['columns]: ['id,'type,'x,'y,'z] $
+lmp['natoms] : length(A);
+
+atm['x]: map('first, A);
+atm['y]: map('second, A);
+atm['z]: makelist(0, length(A));
+
+atm['id]: makelist(i, i, length(A));
+atm['type]: makelist(1, i, length(A));
+
+load("maxima2dump.mac");
+
+maxima2dump(lmp, atm, "preved.atom");

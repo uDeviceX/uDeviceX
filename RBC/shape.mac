@@ -1,0 +1,58 @@
+/*
+
+[1] Fedosov2010
+ 
+*/
+
+load("draw");
+alias(di, dimension);
+
+/* length is in mu meters AKA 1e-6 m */
+put('D0, 'length, 'di);
+put('x,  'length, 'di);
+put('y,  'length, 'di);
+put('r,  'length, 'di);
+
+put('a0, 1, 'di);
+put('a1, 1, 'di);
+put('a2, 1, 'di);
+
+
+/* parameters are from [1], I cannot get the paper, so I belive Fedosov */
+par: ['D0 = 7.82, 'a0 = 0.0518, 'a1=2.0026, 'a2=-4.491];
+expr: D0 * sqrt(1 - 4*(x^2 + y^2)/D0^2) *
+      (a0 + a1 * (x^2 + y^2)/D0^2 + a2*(x^2 + y^2)^2/D0^4);
+
+/* 3D shape */
+/* draw3d( explicit(subst(par, expr), x, -4, 4, y, -4, 4),
+  explicit(subst(par, -expr), x, -4, 4, y, -4, 4)); */
+
+/* in polar coordinates */
+assume(D0>0);
+expr_p: trigsimp(subst( [x = r*cos(p), y = r*sin(p)], expr));
+
+/* D0 is a diameter of RBC */
+rmax: rhs(last(solve(expr_p = 0, r)));
+
+I: 2*%pi*integrate(r*expr_p, r, 0, rmax);
+di(I);
+
+Sexpr: r * sqrt(1 + diff(expr_p, r)^2);
+di(Sexpr);
+
+Sexpr0: subst(par, Sexpr);
+S: 2*%pi* quad_qags(Sexpr0, r, 0, subst(par, rmax), 'epsrel=1e-12)[1];
+
+Volume: subst(par, 2*I);
+Area  : subst(par, 2*S);
+
+[Area, Volume], numer;
+
+/*
+volume should be 8.00-9.0e-14 liter = 8.0-9.0e-17 m^3
+[2] https://en.wikipedia.org/wiki/Mean_corpuscular_volume#Interpretation
+
+ */
+
+Vref : 8.5e-17;
+Volume * (1e-6)^3 / Vref, numer;

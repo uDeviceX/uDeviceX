@@ -1,0 +1,37 @@
+(kill(all), 'done);
+'done$
+
+(load("shape_utils.mac"), 'done);
+'done$
+
+mat_linspace(0, 1, 3);
+[0,1/2,1]$
+
+mat_linspace(0, 1, 4);
+[0,1/3,2/3,1]$
+
+mat_linspace(1, 0, 4);
+[1,2/3,1/3,0]$
+
+mat_linspace(0, 0, 1);
+[0]$
+
+mat_linspace(0, 1, 1);
+[1]$
+
+mat_linspace(0, 1, 1);
+[1]$
+
+mat_cumsum([1, 2, 3, 4]);
+[1, 3, 6, 10];
+
+
+/*
+phi: mat_linspace(0, 2*%pi, 50);
+x  : sin(phi);
+y  : cos(phi);
+P  : map("[", x, y);
+A  : block([numer: true], select_points(P, 10));
+draw2d ( points(P), 'color='red, points(A)); */
+
+
