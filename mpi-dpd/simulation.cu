@@ -354,12 +354,12 @@ void Simulation::_forces()
 	ctc_interactions.fsi_bulk(particles.xyzuvw.data, particles.size, particles.axayaz.data, cells.start, cells.count,
 				  ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
 
-    if (rbcscoll)
-        rbc_interactions.imem_bulk(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
+    //if (rbcscoll)
+    //    rbc_interactions.imem_bulk(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
 
-    if (rbcscoll && ctcscoll)
-        rbc_interactions.imem_rbc_ctc_bulk(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(),
-                &ctc_interactions, ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
+    //if (rbcscoll && ctcscoll)
+    //    rbc_interactions.imem_rbc_ctc_bulk(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(),
+    //            &ctc_interactions, ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
 
     if (rbcscoll && wall)
 	wall->interactions(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->acc(), NULL, NULL, mainstream);
@@ -375,17 +375,17 @@ void Simulation::_forces()
 	ctc_interactions.fsi_halo(particles.xyzuvw.data, particles.size, particles.axayaz.data, cells.start, cells.count,
 				  ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
 
-    if (rbcscoll && ctcscoll)
-    {
-        rbc_interactions.imem_rbc_ctc_halo(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(),
-                &ctc_interactions, ctcscoll->count(), mainstream);
+    //if (rbcscoll && ctcscoll)
+    //{
+    //    rbc_interactions.imem_rbc_ctc_halo(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(),
+    //            &ctc_interactions, ctcscoll->count(), mainstream);
 
-        ctc_interactions.imem_rbc_ctc_halo(ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(),
-                &rbc_interactions, rbcscoll->count(), mainstream);
-    }
+    //    ctc_interactions.imem_rbc_ctc_halo(ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(),
+    //            &rbc_interactions, rbcscoll->count(), mainstream);
+    //}
 
-    if (rbcscoll)
-        rbc_interactions.imem_halo(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
+    //if (rbcscoll)
+    //    rbc_interactions.imem_halo(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
 
 #ifndef _USE_TSS
 
@@ -909,12 +909,12 @@ void Simulation::_lockstep()
     if (ctcscoll)
 	ctc_interactions.fsi_bulk(particles.xyzuvw.data, particles.size, particles.axayaz.data, cells.start, cells.count,
 				  ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
-    if (rbcscoll)
-        rbc_interactions.imem_bulk(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
+    //if (rbcscoll)
+    //    rbc_interactions.imem_bulk(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
 
-    if (rbcscoll && ctcscoll)
-        rbc_interactions.imem_rbc_ctc_bulk(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(),
-                &ctc_interactions, ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
+    //if (rbcscoll && ctcscoll)
+    //    rbc_interactions.imem_rbc_ctc_bulk(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(),
+    //            &ctc_interactions, ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
 
     if (rbcscoll)
 	rbc_interactions.fsi_halo(particles.xyzuvw.data, particles.size, particles.axayaz.data, cells.start, cells.count,
@@ -924,17 +924,17 @@ void Simulation::_lockstep()
 	ctc_interactions.fsi_halo(particles.xyzuvw.data, particles.size, particles.axayaz.data, cells.start, cells.count,
 				  ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
 
-    if (rbcscoll)
-        rbc_interactions.imem_halo(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
+    //if (rbcscoll)
+    //    rbc_interactions.imem_halo(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
 
-    if (rbcscoll && ctcscoll)
-    {
-        rbc_interactions.imem_rbc_ctc_halo(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(),
-                &ctc_interactions, ctcscoll->count(), mainstream);
+    //if (rbcscoll && ctcscoll)
+    //{
+    //    rbc_interactions.imem_rbc_ctc_halo(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(),
+    //            &ctc_interactions, ctcscoll->count(), mainstream);
 
-        ctc_interactions.imem_rbc_ctc_halo(ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(),
-                &rbc_interactions, rbcscoll->count(), mainstream);
-    }
+    //    ctc_interactions.imem_rbc_ctc_halo(ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(),
+    //            &rbc_interactions, rbcscoll->count(), mainstream);
+    //}
 
     if (rbcscoll)
 	rbc_interactions.post_a();
@@ -1114,7 +1114,7 @@ void Simulation::run()
 #endif
 
     int it;
-    enum { nvtxstart = 7651, nvtxstop = 8051 } ;
+    enum { nvtxstart = 20005, nvtxstop = 20055 } ;
 
     for(it = 0; it < nsteps; ++it)
     {
