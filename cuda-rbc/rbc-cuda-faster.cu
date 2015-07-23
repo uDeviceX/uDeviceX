@@ -235,7 +235,7 @@ namespace CudaRBC
         CUDA_CHECK( cudaBindTexture(&textureoffset, &texTriangles4, triangles, &texTriangles4.channelDesc, ntriangles * 4 * sizeof(int)) );
         assert(textureoffset == 0);
 
-        unitsSetup(1.194170681, 0.003092250212, 20.49568481, 29.2254922344138, 10223.5137655706, 7710.76185113627, 10.14524310, 135, 94, 1e-6, 2.4295e-6, 4, true);
+        unitsSetup(1.194170681, 0.003092250212, 20.49568481, 29.2254922344138, 10223.5137655706, 7710.76185113627, 10.14524310, 135, 94, 1e-6, 2.4295e-6, 4, false);
     }
 
     void unitsSetup(float lmax, float p, float cq, float kb, float ka, float kv, float gammaC,

@@ -29,7 +29,7 @@ enum {
 // Use with slevel = 0, viscosity is 1.7
 const int numberdensity = 4;
 const float dt = 0.0025;
-const float tend = 50;
+const float tend = 60;
 const float kBT = 1.0;
 const float gammadpd = 20;
 const float sigma = sqrt(2 * gammadpd * kBT); 
