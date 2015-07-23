@@ -265,7 +265,7 @@ namespace KernelsRBC
         const float invrij = rsqrtf(rij2);
 
         const float rij = rij2 * invrij;
-        const float argwr = max((float)0, 1 - rij/0.6);
+        const float argwr = max((float)0, 1 - rij);
         const float wr = powf(argwr, powf(0.5f, -VISCOSITY_S_LEVEL));
 
         const float xr = _xr * invrij;
@@ -296,7 +296,7 @@ namespace KernelsRBC
         const float invrij = rsqrtf(rij2);
 
         const float rij = rij2 * invrij;
-        const float argwr = max((float)0, 1 - rij/0.6);
+        const float argwr = max((float)0, 1 - rij);
         const float wr = viscosity_function<-VISCOSITY_S_LEVEL>(argwr);
 
         const float xr = _xr * invrij;
