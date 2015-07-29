@@ -1,20 +1,81 @@
-maxima2dump(lmp_data, atom_data, fname):=
-with_stdout(fname,
-  block([m], local(m, tprint, nprint),
-    tprint([l]):=apply('printf, cons(true, l)),
-    nprint(s):=printf(true, "~a~%", s),
-    nprint("LAMMPS configuration file generated with maxima2dump.mac"),
-    tprint("~%"),
-    tprint("~d atoms~%", lmp_data['natoms]),
-    tprint("~%"),
-    tprint("~d atom types~%", 1),
-    tprint("~%"),
-/*    tprint("~1,16e ~1,16e~%",  lmp_data['xlo], lmp_data['xhi]),
-    tprint("~1,16e ~1,16e~%",  lmp_data['ylo], lmp_data['yhi]),
-    tprint("~1,16e ~1,16e~%",  lmp_data['zlo], lmp_data['zhi]), */
-    tprint("~a", "ITEM: ATOMS"),
-    tprint("~{ ~a~}~%", lmp_data['columns]),
-    if not emptyp(atom_data) then (
-      m: apply(matrix,
-        makelist(subvar(atom_data, el), el, lmp_data['columns])),
-      write_data(transpose(m), ?\*standard\-output\*))))$
+/* create 2D RBC configuration for a list of XY pairs
+
+P[1] - P[2] - ... - P[n-1] - P[n] - P[1]
+
+P: list of XY pairs
+fname: file name
+
+Usage:
+
+maxima2dump([ [0, 0], [1, 1], [2, 2], [3, 3] ], "preved.atom");
+
+*/
+
+maxima2dump(P, fname):= block([natoms, xlo, xhi, ylo, yhi, zlo, zhi, x, y, z2d,
+  mol_id, atom_type, bond_type, angle_type, nbonds, nangles],
+  
+  local(wrap, prn),
+
+  /* default parameters */
+  xlo: -7,
+  xhi:  7,
+
+  ylo: -7,
+  yhi:  7,
+
+  zlo:  -0.1,
+  zhi :  0.1,
+
+  /* z-coordinate for all atoms */
+  z2d: 0.0,
+
+  mol_id: 1,
+  atom_type: 1,
+  bond_type: 1,
+  angle_type: 1,
+  /***********************/
+
+  natoms : length(P),
+  nbonds : natoms,
+  nangles: natoms,
+
+  x  : map('first, P),
+  y  : map('second, P),
+
+  define(wrap(i), buildq([natoms],
+      if i>natoms then i - natoms
+      else if i<1 then i + natoms
+      else i)),
+
+  prn([L]):=apply('printf, cons(true, L)),
+
+  with_stdout(fname,
+    prn("LAMMPS configuration file generated with maxima2dump.mac~%"),
+    prn("~%"),
+    prn("~d  atoms~%",  natoms),
+    prn("~d  bonds~%",  nbonds),
+    prn("~d  angles~%", nangles),
+    prn("~%"),
+    prn("1   atom types~%"),
+    prn("1   bond types~%"),
+    prn("1   angle types~%"),
+    prn("~%"),
+    prn("~6,16e ~6,16e xlo xhi~%", xlo, xhi),
+    prn("~6,16e ~6,16e ylo yhi~%", ylo, yhi),
+    prn("~6,16e ~6,16e zlo zhi~%", zlo, zhi),
+    prn("~%"),
+    prn("Atoms~%"),
+    prn("~%"),
+    for iatom thru natoms do prn("~d ~d ~d ~6,16e ~6,16e ~6,16e~%",
+      iatom, mol_id, atom_type, x[iatom], y[iatom], z2d),
+    prn("~%"),
+    prn("Bonds~%"),
+    prn("~%"),
+    for ibond thru nbonds do prn("~d ~d ~d ~d~%", ibond, bond_type,
+      ibond, wrap(ibond + 1)),
+    prn("~%"),
+    prn("Angles~%"),
+    prn("~%"),
+    for iangles thru nangles do prn("~d ~d ~d ~d ~d~%", iangles, angle_type,
+      iangles, wrap(iangles+1), wrap(iangles+2))));
+
