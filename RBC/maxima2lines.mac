@@ -1,0 +1,16 @@
+/* write a list of XY-pairs to lines file (visit can read it) */
+
+maxima2lines1(P):= block([z2d],
+  /* z-coordinate for all atoms */
+  z2d: 0.0,
+  for R in P do prn("~6,16e, ~6,16e, ~6,16e~%", first(R), second(R), z2d));
+
+maxima2lines(fname, [PP]):= block([], local(prn),
+    prn([L]):=apply('printf, cons(true, L)),
+    with_stdout(fname,
+      for P in PP do (maxima2lines1(P),
+        prn("~%"))));
+
+maxima2lines("medved.dat",  [[1, 2], [3, 4], [5, 6]],
+  [[1, 2], [3, 4], [5, 6]] + 100);
+  
