@@ -114,4 +114,40 @@ select_points(P, nout):= block([%P%: P, %nout%: nout, slo, shi, smi, rmi, nit: 0
       if      rmi='zero  then throw(smi)
       else if rmi='under then slo: smi else shi: smi)),
   if nit=maxit then error("`select_points did not converged"),
-    mat_idx(P, %try_discret_points%));
+  reverse(mat_idx(P, %try_discret_points%)));
+
+gen_rbc(nout):= block([par, expr, expr_p, D00, np, r0, z0, P, A],
+  local(D0, x, y, a0, a1, a2),
+  np  : 2000 ,
+  par: ['D0 = 7.82, 'a0 = 0.0518, 'a1=2.0026, 'a2=-4.491],
+  expr: D0 * sqrt(1 - 4*('x^2 + 'y^2)/'D0^2) *
+      ('a0 + 'a1 * ('x^2 + 'y^2)/'D0^2 + 'a2*('x^2 + 'y^2)^2/'D0^4),
+
+  /* in polar coordinates */
+  assume(D0>0),
+  expr_p: trigsimp(subst( [x = r*cos(p), y = r*sin(p)], expr)),
+
+  /* substitute parameters */
+  expr_p0: subst(par, expr_p),
+  D00    : subst(par, D0),
+
+  /* number of points on the circumference of RBC */
+  r0: mat_linspace(-D00/2, D00/2, np)       ,
+  z0: apply(create_list, [expr_p0, 'r, r0]) ,
+
+  /* use symmetry */
+  r0: append(r0,  reverse(r0)) ,
+  z0: append(z0, -reverse(z0)) ,
+  P: map("[", r0, z0) ,
+
+  select_points(P, nout + 1));
+
+gen_sphere(nout):= block([D0, phi0, x0, y0, numer: true],
+  D0  : 6,
+  phi0 : mat_linspace(-%pi, %pi, nout+1),
+  phi0 : reverse(phi0),
+
+  x0   : map('cos, phi0),
+  y0   : map('sin, phi0),
+
+  map("[", x0, y0));
