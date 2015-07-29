@@ -1,0 +1,309 @@
+/*
+
+[1] Fedosov, Dmitry A. Multiscale modeling of blood flow and soft
+matter. Brown University, 2010, PhD dissertation
+
+[2] Dao, M., J. Li, and S. Suresh. "Molecularly based analysis of
+deformation of spectrin network and human erythrocyte." Materials
+Science and Engineering: C 26.8 (2006): 1232-1244.
+
+[3] Mueller, K. In silico particle margination in blood
+flow. Universitaet zu Koeln, 2015, PhD dissertation
+
+*/
+
+load ("scifac") $
+load("abs_integrate");
+load("scifac");
+load("multiadditive") $
+load("membr_utils.mac") $
+load("dimension") $
+load("shape_utils.mac") $
+
+alias(di,  dimension) $
+declare(di, posfun);
+
+/* process dimensions in expression */
+mdi(e):=(%mdi_extra_eq%: [], mdi1(e));
+mdi1(e):= block([ans, inflag: true,
+  op,       ?\*standard\-output\*: ?make\-broadcast\-stream()],
+  op: safe_op(e),
+  if errcatch(ans: di(e))#[] then ans
+  else if op="+"           then (
+    push(mdi1(first(e)=second(e)), %mdi_extra_eq%),
+    if length(e)=2 then mdi1(second(e)) else mdi1(rest(e)))
+  else if op="=" or op="[" then map(mdi1, e)
+  else if op='cos or op='sin or op='exp then block([A: first(e)],
+    if not constantp(A) then push(mdi1(A)=1, %mdi_extra_eq%),
+    1)
+  else if op="*" or op="." or op='cp or op='dot then funmake("*", map(mdi1, args(e)))
+  else if op="^" then block([inflag: true, A, B],
+    A: first(e), B: second(e),
+    if not constantp(B) then push(mdi1(B) = 1, %mdi_extra_eq%),
+    funmake("^", [mdi1(A), B]))
+  else funmake('di, [e])) $
+
+/* print info */
+who(e):= (printf(true, "~8a :  ~24a : ~40a~%", e , get(e, 'di), get(e, 'de)), 'done)$
+
+/* register units and description of a parameter */
+un(e, u, d):= (put(e, u, 'di), put(e, d, 'de)) $
+
+un('Velocity     , 'length/'time           , "velocity units") $
+un('Energy       , 'mass*di('Velocity)^2   , "energy units") $
+un('p1_v, 'length,    "radius vector of point 1");
+un('Vb   , di(Energy), "bending energy");
+un('Vsp  , di(Energy), "spring  energy");
+un('Va   , di(Energy), "area    energy");
+un('kbT  , di(Energy), "thermal    energy");
+/* un('lm   , 'length   , "maximal spring extension"); */
+
+declare(membrane_constant,                                    feature);
+  
+declare([kbT, ka, kb, A0, Arest              ],                membrane_constant) $
+declare([lm, kp, lp                          ],                membrane_constant) $
+
+declare([p1_v, p2_v, p3_v],                                   nonscalar) $
+declare([a12_v, a32_v],                                       nonscalar) $
+
+/* order of vertices: p1, p2, p3  in clockwise direction:
+
+set term dumb
+plot "r.dat" u 1:2:($0+1) with labels offset 1 notitle
+
+              4 +-++---+--+---+--+--+---++-+
+                +  +   +  +   +  +  +   +  +
+              3 +-+                      +-+
+              2 +-+                      +-+
+                |    3                  9  |
+              1 +-2     4            8   10+
+              0 +1+        5  6   7      +-11
+                |         17  16 15        |
+             -1 +-20   18           14   +12
+                |   19                 13  |
+             -2 +-+                      +-+
+             -3 +-+                      +-+
+                +  +   +  +   +  +  +   +  +
+             -4 +-++---+--+---+--+--+---++-+
+               -4 -3  -2 -1   0  1  2   3  4
+
+*/
+
+adef: ['a12_v      = ('p1_v - 'p2_v),
+       'a32_v      = ('p3_v - 'p2_v),
+       'lj2        =  dot('a12_v, 'a12_v),
+       'lj         =  sqrt(lj2),
+       'xj         =  'lj/'lm,
+       'A          =  1/2*cp('p2_v, 'p1_v),
+       'ctheta      =  dot('a32_v,'a12_v)/sqrt( dot('a12_v,'a12_v)) / sqrt(dot('a32_v,'a32_v))
+       ];
+
+rdef: ['Vb         =  'kb*(1+'ctheta),
+       'Acurrent   =  'A + 'Arest,
+       'Va         =  'ka*('Acurrent - 'A0)^2/2 ,
+       'Vsp        =  'kbT * 'lm/(4*'lp) * (3*'xj^2 - 2*'xj^3)/(1-'xj) + 'kp/'lj
+];
+%cvars%: ['p1_v, 'p2_v, 'p3_v];
+
+ee: append(adef, rdef);
+
+di_eq: mdi(ee);
+di_eq: append(%mdi_extra_eq%, copylist(di_eq));
+dvars: unique(map('first, args_of(di_eq, 'di)));
+dvars: map(lambda([e], funmake('di, [e])), dvars);
+dvars: map('log, dvars);
+mso: block([logexpand: all, so],
+  so: linsolve(log(di_eq), dvars),
+  map(lambda([e], map('exp, e)), so));
+
+mso: create_list( [first(lhs(v)), rhs(v), 'di], v, mso);
+for m in mso do apply('qput, m);
+
+eq: mdiff(ee);
+
+cp_and_dot_vars(e):= block([A, B],
+  A: listofvars(args_of(args_of( e,  'cp ), 'del)),
+  B: listofvars(args_of(args_of( e,  'dot), 'del)),
+  ldifference(append(A, B), %cvars%));
+cp_and_dot_vars_emptyp(e):= emptyp(cp_and_dot_vars(e));
+
+lvars: ldifference( listofvars(args_of(eq, del)), %cvars%);
+lvars: map('del, lvars);
+
+good: [];
+bad : linsolve(eq, lvars);
+while not emptyp(bad) do  (
+  [good, bad] : pred_partition(append(good, bad), cp_and_dot_vars_emptyp),
+  bad: subst(good, bad));
+
+/* list of energies */
+evars: ['Vb, 'Va, 'Vsp];
+
+for v in %cvars% do (
+  for e in evars do (
+    d: assoc( del(e), good),
+    d: resimp(d),
+    Force[e, v]: gcfac(fullratsimp( -sdiff(d, del(v))))));
+
+/* push a list `e' into list 'l' */
+lpush(e):= (for a in e do push(a, body), body);
+
+eq2as(e):= subst(":", "=", e);
+eq2decl(e):= map('lhs, e);
+
+cp (v, u):= dot(sk(v), u);
+sk (v):=[-second(v), first(v)];
+dot(v, u):= block([listarith: true], v.u);
+
+list2block(d, b):= block([B: funmake("(", args(b))],
+  funmake('block, [d, B]));
+
+gen_fun(e, vars):= block([fname, body: [], decl: []],
+  decl :  eq2decl(adef),
+  fname:  concat('f, e),
+  (body: [],
+    lpush(eq2as(adef)),
+    push(create_list(float(Force[e, v]), v, vars), body),
+    body: reverse(body)),
+  define(funmake(fname, vars), list2block(decl, body)),
+  apply(fundef, [fname]));
+gen_fun('Vb,  ['p1_v, 'p2_v, 'p3_v]);
+gen_fun('Va,  ['p1_v, 'p2_v]);
+gen_fun('Vsp, ['p1_v, 'p2_v]);
+
+define(wrap(i), buildq([natoms],
+      if i>natoms then i - natoms
+      else if i<1 then i + natoms
+      else i));
+
+define(getA(), buildq([natoms], block([p1_v, p2_v, id1, id2, A],
+      A: 0,
+      for i: 1 thru natoms do (
+        id1: i,
+        id2: wrap(i+1),
+
+        p1_v: R[id1],
+        p2_v: R[id2],
+
+        A: A + 1/2*cp(p2_v, p1_v)),
+      return(A))));
+
+define(getVsp(), buildq([natoms, Expr: assoc(Vsp, rdef),
+    dec: eq2decl(adef),
+    def:    eq2as(adef)],
+    block([E, id1, id2, p1_v, p2_v],
+      E : 0,
+      for i: 1 thru natoms do (
+        id1: i,
+        id2: wrap(i+1),
+
+        p1_v: R[id1],
+        p2_v: R[id2],
+        block([splice(dec)],
+          splice(def),
+          E: E + Expr)),
+      E)));
+
+define(getVb(), buildq([natoms, Expr: assoc(Vb, rdef),
+    dec: eq2decl(adef),
+    def:    eq2as(adef)],
+    block([E, id1, id2, id3, p1_v, p2_v, p3_v],
+      E : 0,
+      for i: 1 thru natoms do (
+        id1: i,
+        id2: wrap(i+1),
+        id3: wrap(i+2),        
+
+        p1_v: R[id1],
+        p2_v: R[id2],
+        p3_v: R[id3],
+        
+        block([splice(dec)],
+          splice(def),
+          E: E + Expr)),
+      E)));
+
+define(getKin(), buildq([natoms],
+    block([E, v0],
+      E: 0,
+      for i: 1 thru natoms do (v0: v[i],
+        E: E + dot(V[i], V[i])/2),
+      E)));
+
+define(getVa(), assoc(Va, rdef));
+
+nullF():= (F: R0*0, 'done);
+nullV():= (V: R0*0, 'done);
+
+define(update_f_bond(), buildq([natoms], block([id1, id2, p1_v, p2_v],
+    for i: 1 thru natoms do (
+      id1: i,
+      id2: wrap(i+1),
+
+      p1_v: R[id1],
+      p2_v: R[id2],
+
+      [F[id1], F[id2]]: [F[id1], F[id2]] + fVsp(p1_v, p2_v) + fVa(p1_v, p2_v)))));
+
+define(update_f_angle(), buildq([natoms], block([id1, id2, id3, p1_v, p2_v, p3_v],
+    for i: 1 thru natoms do (
+      id1:      i   ,
+      id2: wrap(i+1),
+      id3: wrap(i+2),      
+
+      p1_v: R[id1],
+      p2_v: R[id2],
+      p3_v: R[id3],      
+      [F[id1], F[id2], F[id3]]:  [F[id1], F[id2], F[id3]] + fVb(p1_v, p2_v, p3_v)))));
+
+define(update_v(), buildq([natoms],
+    for i: 1 thru natoms do V[i]: float(V[i] + dt*F[i])));
+
+define(update_r(), buildq([natoms],
+    for i: 1 thru natoms do R[i]: R[i] + dt*V[i]));
+
+natoms: 50$
+R0 : rest(gen_rbc(natoms), -1)$
+R: copylist(R0)               $
+
+R12: R[1] - R[2] $
+l0 : sqrt(dot(R12, R12))       ;
+lm : 2.2*l0                    ;
+A0 : getA()                    ;
+D0 : 7.82                      ;
+kbT: 1.00                      ;
+ka : 37210 * (kbT/D0^2)        ;
+kb : 2/sqrt(3)*   50/kbT       ;
+lp : 2*lm;
+F0: subst([a12_v = 'lj,
+  'kbT=kbT, 'xj=l0/lm, 'lm=lm, 'lj2=lj^2, 'lj=l0, 'lp=lp],
+  Force['Vsp, 'p1_v]);
+kp: rhs(solve(F0, 'kp)[1]);
+kp: float(kp);
+
+/*
+ka : 0.0;
+kb : 0.0; */
+dt : 5e-4;
+
+load("maxima2lines.mac") $
+for i thru length(R) do R[i][1] : R[i][1] * 1.2;
+
+block([numer: true],
+  nullV(),
+  Acurrent : getA(),
+  En0 : float(getVa() + getVb() + getVsp() + getKin()),
+  for itime: 0 thru 100000000 do (
+    fname: printf(false, "membr.~9,'0d.lines", itime),
+    Acurrent : getA(),
+    if mod(itime, 100)=0 then (
+      maxima2lines(fname, cons(last(R), R)),
+      En : float(getVa() + getVb() + getVsp() + getKin()),
+      print(['tot, En-En0, getKin()])),
+    
+    nullF(),
+    update_f_bond(),
+    update_f_angle(),
+    nullV(),
+    update_v(),
+    update_r()));
