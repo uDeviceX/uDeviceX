@@ -1,0 +1,109 @@
+load("dimension") $
+
+alias(di,  dimension) $
+declare(di, posfun);
+
+/*
+(%i1) pred_partition([1, 2, 3, 4, 5], oddp);
+(%o1)                         [[1, 3, 5], [2, 4]]
+*/
+pred_partition(expr, pr):= block([yes: [], no: [], inflag: true], local(pr),
+  for e in expr do if pr(e) then push(e, yes) else push(e, no),
+  [reverse(yes), reverse(no)]);
+
+safe_op(e) := block([inflag : true],
+  if mapatom(e) then false else op(e));
+
+/* take differential operator */
+mdiff(e):= block([prederror: true, inflag: true, op: safe_op(e), arg],
+  if op="+" or op="[" or op="=" then map(mdiff, e)
+  else if op="*"     then mdiff(first(e))*rest(e) + first(e)*mdiff(rest(e))
+  else if op='dot    then block([a: first(e), b: second(e)],
+    dot(mdiff(a), b) + dot(a, mdiff(b)))
+  else if op='cp     then block([a: first(e), b: second(e)],
+    cp(mdiff(a), b) + cp(a, mdiff(b)))
+                                                         /* diff(a^n) */
+  else if op="^"  then block([a: first(e), n: second(e)], a^n*log(a)*mdiff(n)+a^(n-1)*n*mdiff(a))
+  else if op='cos then block([a: first(e)],
+    -sin(a)*mdiff(a))
+  else if op='sin then block([a: first(e)],
+    cos(a)*mdiff(a))
+  else if op=false and mapatom(e) and featurep(e, membrane_constant) then 0
+  else if op=false then diff(e)
+  else (print(op),
+    error("I am confused, teach me how to diff this")));
+
+sdiff(e, [L]):= block([ans, opsubst: true, dotexptsimp: false],
+  e  : subst(".", dot, e),
+  e  : subst(lambda([A, B], sk(A).B), cp, e),
+  ans: apply('diff, cons(e, L)),
+  subst(dot, ".", ans));
+
+/* return a list of lists of arguments of function 'f */
+args_of(e, f):=block([ans: []], local(f),
+  subst( lambda([[L]], push(L, ans), funmake(f , L)), f, e),
+  ans);
+
+/* true if e contain function 'f */
+funp(f, e):=block([ans: false], local(f),
+  subst( lambda([[L]], ans: true, funmake(f , L)), f, e),
+  ans);
+nfunp(f, e):= not funp(f, e);
+
+/* returns difference of two lists */
+ldifference(A, B):= listify(setdifference( setify(A), setify(B)));
+
+resimp(e):=expand(e, 0, 0);
+
+/* make 'dot (dot product) and 'cp (cross product) multiadditive */
+load("multiadditive");
+declare(cp , multiadditive);
+declare(dot, multiadditive);
+
+declare(cp, antisymmetric);
+declare(dot,    symmetric);
+
+/* pull constant out of 'dot and 'cp */
+matchdeclare(CC, constantp);
+matchdeclare(ANY, all);
+matchdeclare(XX, lambda([e], not constantp(e)));
+block([simp: false],
+  tellsimpafter( cp(CC*XX, ANY), CC*cp(XX, ANY)),
+  tellsimpafter(dot(CC*XX, ANY), CC*dot(XX, ANY)),
+  tellsimpafter( cp(ANY, CC*XX), CC*cp(ANY, XX)),
+  tellsimpafter(dot(ANY, CC*XX), CC*dot(ANY, XX)));
+
+/* argument with 'del should be at the end */
+matchdeclare([AA, BB, CC], nfunp('del));
+matchdeclare(XX,            funp('del));
+block([simp: false],
+  tellsimp(cp(XX, AA), -cp(AA, XX)),
+  tellsimp(dot(AA, cp(BB, XX)),   dot(cp(AA, BB), XX)),
+  tellsimp(dot(cp(AA, XX), CC),  -dot(cp(AA, CC), XX)));
+
+/* process dimensions in expression */
+mdi(e):=(%mdi_extra_eq%: [], mdi1(e));
+mdi1(e):= block([ans, inflag: true,
+  op,       ?\*standard\-output\*: ?make\-broadcast\-stream()],
+  op: safe_op(e),
+  if errcatch(ans: di(e))#[] then ans
+  else if op="+"           then (
+    push(mdi1(first(e)=second(e)), %mdi_extra_eq%),
+    if length(e)=2 then mdi1(second(e)) else mdi1(rest(e)))
+  else if op="=" or op="[" then map(mdi1, e)
+  else if op='cos or op='sin or op='exp then block([A: first(e)],
+    if not constantp(A) then push(mdi1(A)=1, %mdi_extra_eq%),
+    1)
+  else if op="*" or op="." or op='cp or op='dot then funmake("*", map(mdi1, args(e)))
+  else if op="^" then block([inflag: true, A, B],
+    A: first(e), B: second(e),
+    if not constantp(B) then push(mdi1(B) = 1, %mdi_extra_eq%),
+    funmake("^", [mdi1(A), B]))
+  else funmake('di, [e])) $
+
+/* print info */
+who(e):= (printf(true, "~8a :  ~24a : ~40a~%", e , get(e, 'di), get(e, 'de)), 'done)$
+
+/* register units and description of a parameter */
+un(e, u, d):= (put(e, u, 'di), put(e, d, 'de)) $
+

@@ -1,0 +1,80 @@
+(kill(all), 'done);
+'done$
+
+(load("membr_utils.mac"), 'done);
+'done$
+
+pred_partition([1, 2, 3, 4, 5], oddp);
+[[1,3,5],[2,4]]$
+
+pred_partition([1, 3], oddp);
+[[1,3],[]]$
+
+pred_partition(f(2, 4), oddp);
+[[],[2, 4]]$
+
+pred_partition(f(), oddp);
+[[],[]]$
+
+args_of(sin(x) + sin(y) + cos(x), 'sin);
+[[y],[x]]$
+
+args_of(f(x, y) + g(z, w), 'f);
+[[x,y]]$
+
+funp(f, f(x));
+true$
+
+funp(g, f(x));
+false$
+
+funp('sin, sin(x));
+true$
+
+ldifference([1, 2], [2]);
+[1]$
+
+ldifference([1, 2], []);
+[1,2]$
+
+ldifference([], [1]);
+[]$
+
+cp(a, b+c);
+cp(a,c)+cp(a,b)$
+
+dot(a, b+c);
+dot(a,c)+dot(a,b)$
+
+dot(a+b, c+d);
+dot(b,d)+dot(b,c)+dot(a,d)+dot(a,c)$
+
+dot(10*a, b);
+10*dot(a,b)$
+
+map(mdiff, [f, f^2, f^3, f + g, f*g, 10*f]);
+[del(f),2*f*del(f),3*f^2*del(f),del(g)+del(f),f*del(g)+g*del(f),10*del(f)]$
+
+mdiff([sin(f), cos(f)]);
+[cos(f)*del(f),-sin(f)*del(f)]$
+
+mdiff(dot(f, g));
+dot(g,del(f))+dot(f,del(g))$
+
+mdiff(dot(f, g)^2);
+2*dot(f,g)*(dot(g,del(f))+dot(f,del(g)))$
+
+mdiff(dot(cp(f, g), cp(f, g)));
+(-2*dot(cp(cp(f,g),g),del(f)))-2*dot(cp(f,cp(f,g)),del(g))$
+
+sdiff(dot(f(x), g(x)), x);
+dot(g(x),'diff(f(x),x,1))+dot(f(x),'diff(g(x),x,1))$
+
+dot(del(A), cp(B, C));
+dot(cp(B, C), del(A)) $
+
+dot(A, cp(del(B), C));
+- dot(cp(A, C), del(B)) $
+
+dot(A, cp(B, del(C)));
+dot(cp(A, B), del(C)) $
