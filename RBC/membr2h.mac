@@ -226,15 +226,15 @@ R0 : rest(gen_rbc(natoms), -1)$
 R: copylist(R0)               $
 
 R12: R[quotient(natoms, 4)+1] - R[quotient(natoms, 4)] $
-l0 : sqrt(dot(R12, R12))       ;
-A0 : getA()                    ;
-L0 : getL()                    ;
-D0 : 7.82                      ;
+l0 : sqrt(dot(R12, R12));
+A0 : getA();
+L0 : getL();
+D0 : 7.82;
 
-ka : 1e4                       ;
-kb : 1e4                       ;
-ksp: 1e3                       ;
-kl : -5e3                       ;
+ka : 1e4;
+kb : 1e4;
+ksp: 1e3;
+kl : -5e3;
 
 dt : 5e-4;
 

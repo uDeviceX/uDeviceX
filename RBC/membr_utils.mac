@@ -30,8 +30,8 @@ mdiff(e):= block([prederror: true, inflag: true, op: safe_op(e), arg],
     cos(a)*mdiff(a))
   else if op=false and mapatom(e) and featurep(e, membrane_constant) then 0
   else if op=false then diff(e)
-  else (print(op),
-    error("I am confused, teach me how to diff this")));
+  else (printf(true, "(mdiff) I see operator: ~a~%", op),
+    error("(mdiff) I am confused, teach me how to 'diff this")));
 
 sdiff(e, [L]):= block([ans, opsubst: true, dotexptsimp: false],
   e  : subst(".", dot, e),
@@ -107,3 +107,33 @@ who(e):= (printf(true, "~8a :  ~24a : ~40a~%", e , get(e, 'di), get(e, 'de)), 'd
 /* register units and description of a parameter */
 un(e, u, d):= (put(e, u, 'di), put(e, d, 'de)) $
 
+
+%ndim%: 2;
+co[1]: co['x]: 'x;
+co[2]: co['y]: 'y;
+co[3]: co['z]: 'z;
+matchdeclare(V, lambda([e], mapatom(e) and nonscalarp(e)));
+defrule(rdevector, V, v2co(V));
+
+v2name(n, i):=if atom(n) then concat(n, i)
+else if subvarp(n) then arraymake(concat(part(n, 0), i), args(n)) else error("v2name see a strange name");
+
+v2co(V):=makelist(v2name(V, co[d]), d, 1, %ndim%);
+sk_def[2]: lambda([v], [-second(v), first(v)]);
+
+qfloat([L])::=buildq([L: create_list(funmake(":", [v, funmake('float, [v])]), v, L)],
+  block(splice(L), 'done));
+
+devector5(e):=apply1(e, rdevector);
+devector4(e):=subst(lambda([A, B], dot(sk(A), B)), 'cp,
+  devector5(e));
+devector3(e):=subst(sk_def[%ndim%], 'sk,
+  devector4(e));
+devector2(e):=subst(".", 'dot, devector3(e));
+devector1(e):=subst(lambda([A, B],
+    if listp(A) and listp(B) and length(A)=length(B) then map("=", A, B)
+    else if listp(A) and B=0 then create_list(q=0, q, A)
+    else funmake("=", [A, B])),
+  "=",
+  devector2(e));
+devector (e):=devector1(e);

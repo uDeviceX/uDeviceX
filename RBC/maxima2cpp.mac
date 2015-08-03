@@ -1,0 +1,228 @@
+load("expr2c.mac") $
+
+block([inflag : true], if not(member('push, map('op, macros))) then load("basic"));
+
+%lfalse%: part( '(if 'c then 'e), 4);
+%nfalse%: part( '(thru 10 do 'e), 1);
+
+/* returns content of a file as a string */
+file2string(fin):= block([sout: make_string_output_stream()],
+  with_stdout(sout,
+    printfile(fin),
+  get_output_stream_string(sout)));
+
+/* like `with_stdout' but returns string */
+with_strout([L])::= buildq([sout: gensym(), L],
+  (sout : make_string_output_stream(),
+    with_stdout(sout, splice(L)),
+    get_output_stream_string(sout)));
+
+pr([L])::= buildq([A: cons(true, L)],
+  printf(splice(A)));
+
+safe_op(e) := block([inflag : true], if mapatom(e) then false else op(e)) $
+nsafe_op(e):= block([op: safe_op(e)], if op#false then nounify(op));
+
+safe_first(a):= if listp(a) then first(a) else a;
+safe_push(a, L)::= buildq([a, L],
+  if listp(L) then push(a, L) else (L: [], push(a, L)));
+
+lisp_type_cpp['flonum]: 'double;
+lisp_type_cpp['fixnum]: 'int;
+lisp_type_cpp['float] : 'double;
+lisp_type_cpp['false] : 'unknown_type;
+reg_type(v, m):= safe_push( funmake("=", [v, m]), %cpp_type_decl%);
+get_type(v):= if not listp(%cpp_type_decl%) then lisp_type_cpp['false] else lisp_type_cpp[assoc(v, %cpp_type_decl%)];
+
+process_mode_declare_print(v, m):= if not listp(%func_args%) or not member(v, %func_args%) then pr("~20a ~a;~%", lisp_type_cpp[m], v);
+process_mode_declare3(v, m):= (reg_type(v, m), process_mode_declare_print(v, m));
+process_mode_declare2(v, m):= if not emptyp(v) then
+(process_mode_declare3(safe_first(v), m),
+  if listp(v) then process_mode_declare2(rest(v), m));
+process_mode_declare1(a):=
+  if not emptyp(a) then (
+    process_mode_declare2(first(a), second(a)),
+    if length(a)>2 then process_mode_declare1(rest(rest(a))));
+process_mode_declare(e):= block([a: args(e)], process_mode_declare1(a));
+
+process_mdo(e):= block([],
+  variable      : part(e, 1),
+  initial_value : part(e, 2),
+  increment     : part(e, 3),
+  next_expr     : part(e, 4),
+  limit_expr    : part(e, 5),
+  condition     : part(e, 6),
+  body          : part(e, 7),
+  if        variable=%nfalse% then variable     : gensym(),
+  if   initial_value=%nfalse% then initial_value:        1,
+  cpp_mdo2      : if increment=false or increment>0
+                                     then with_strout(pr("~a <= ~d", variable, limit_expr))
+                                     else with_strout(pr("~a >= ~d", variable, limit_expr)),
+  cpp_mdo3      : if increment=false then with_strout(pr("~a++", variable))
+                                     else with_strout(pr("~a+=~d", variable, increment)),
+  pr("for (int ~a = ~d; ~a; ~a)~%", variable, initial_value, cpp_mdo2, cpp_mdo3),
+  process_mprogn1(body));
+
+process_mcond1(a):=block([i: 3, cond1, expr1, condn, exprn],
+  condn1: with_strout(process4(expr2c(part(a, 1)))),
+  expr1 : part(a, 2),
+  pr("if (~a) ", condn1),
+  process_mprogn1(expr1),
+  while part(a, i)#true do (
+    condn: with_strout(process4(expr2c(part(a, i)))),
+    exprn: part(a, i+1),
+    pr("else if (~a) ", condn),
+    process_mprogn1(exprn),
+    i: i + 2),
+  if part(a, i+1)#%lfalse% then (
+    expre: part(a, i+1),
+    pr("else "),
+    process_mprogn1(expre)));
+process_mcond(e):= block([a: args(e)], process_mcond1(a));
+
+process_msetq1(var, val):= pr("~a = ~a", with_strout(process4(var)), with_strout(process4(expr2c(val))));
+process_msetq(e):= process_msetq1(part(e, 1), part(e, 2));
+
+process_mdefine3(n, a, b, defs):= block([hdr, tlist, v_and_type],
+  t: map('get_type, a),
+  hdr: with_strout(
+    pr("void ~a (", n),
+    for i thru length(a) do (
+      if i>1 then pr(", "),
+      pr("~a ~a", part(t, i), part(a, i))),
+    pr(")")),
+  pr("~a ~%", hdr),
+  pr("{~%"),
+  if defs#"" then pr("~a", defs),
+  process_mprogn3(b),
+  pr("}"));
+
+safe_list(e):= if listp(e) then e else [e];
+process_mdefine2(n, a, ub):= block([%func_args%: a, %cpp_type_decl%, defs, b: []],
+  defs: with_strout(
+    for e in ub do if nsafe_op(e)=nounify('mode_declare) then process_mode_declare(e) else push(e, b)),
+  process_mdefine3(n, a, reverse(b), defs));
+
+process_mdefine1(n, a, b):= block([ub],
+  if      nsafe_op(b)=nounify('mprogn)
+  then ub: args(b)
+  else if nsafe_op(b)=nounify('block) and (emptyp(args(b)) or not listp(part(b, 1)))
+  then ub: args(b)
+  elseif nsafe_op(b)=nounify('block) and listp(part(b, 1))
+  then ub: append(part(b, 1), rest(args(b)))
+  else ub : safe_list(b),
+  process_mdefine2(n, a, ub));
+process_mdefine (e):= process_mdefine1(part(part(e, 1), 0), args(part(e, 1)), part(e, 2));
+
+process_subvar1(n, a):= (pr("~a", n), for e in a do pr("[~a]", e));
+process_subvar (e):=process_subvar1(part(e, 0), args(e));
+
+process_block2 (ub):= block([defs, b: []],
+  defs: with_strout(
+    for e in ub do if nsafe_op(e)=nounify('mode_declare)
+    then process_mode_declare(e) else
+    if nsafe_op(e)#false then push(e, b)),
+  b: reverse(b),
+  pr("{~%"),
+  if defs#"" then pr("~a", defs),
+  process_mprogn3(b),
+  pr("}"));
+
+process_block1(a):= (
+  if emptyp(a) or not listp(part(a, 1))
+  then ub: a
+  elseif listp(part(a, 1))
+  then ub: append(part(a, 1), rest(a))
+  else ub : a,
+  process_block2(ub));
+process_block(e):= process_block1(args(e));
+
+process_mprogn3(a):= for e in a do (process4(e), pr(";~%"));
+process_mprogn2(a):= if length(a)=1 then (process4(first(a)), pr(";~%")) else
+(pr("{~%"),
+  process_mprogn3(a),
+  pr("}"));
+process_mprogn1(a):= if not listp(a) then process_mprogn2([a]) else process_mprogn2(a);
+process_mprogn (e):= process_mprogn1(args(e));
+
+process_cpp_array1(n, t, s):= (pr("~20a ~a", lisp_type_cpp[t], n),
+   for i in s do pr("[~d]", i));
+ process_cpp_array (e)      := process_cpp_array1 (part(e, 1), part(e, 2), part(e, 3));
+
+hide_quotation(e):=ssubst("<###>", "\"", e);
+show_quotation(e):=ssubst("\"",   "<###>", e);
+  
+process_literate1(a):= for s in a do pr("~a~%", hide_quotation(s));
+  
+process_literate(e):=process_literate1(args(e));
+
+process4(e):= block([], op: nsafe_op(e),
+  if      stringp(e)           then  pr("~a", e)
+  else if op=nounify('literate) then  process_literate(e)
+  else if op=nounify('mdefine) then  process_mdefine(e)
+  else if op=nounify('msetq)   then  process_msetq(e)
+  else if op=nounify('mdo)     then  process_mdo(e)
+  else if op=nounify('mcond)   then  process_mcond(e)
+  else if op=nounify('block)   then  process_block(e)  
+  else if op=nounify('mprogn)  then  process_mprogn(e)
+  else if op=nounify('cpp_array)  then  process_cpp_array(e)  
+  /*  else if subvarp(e)           then  process_subvar(e) */
+  else if op#false             then  pr("~a", string(e))
+  else pr("~a", string(e)));
+
+idx2cpp(e):= if not subvarp(e) then e else with_strout(process_subvar(e));
+process3(e):= process_mprogn1(e);
+process2(e):= process3(scanmap(idx2cpp, e));
+
+process1(e):= block([ans: with_strout(process2(e))],
+  pr("~a", ssubst("", "\"", ans)));
+
+process(e):= block([ans: with_strout(process1(e))],
+  pr("~a", show_quotation(ans)));
+
+/*
+gy_ic():=for jj from 2 thru 33 do
+block([yy:0.03125*(jj-1.0),yl:0.0,yh:1.0,yc:0.5],
+  mode_declare([yy,yl,yh,yc],flonum),
+  for ii from 2 thru 65 do
+  block([xx:0.03125*(ii-1.5),xl:0.0,xh:2.0,xc:1.0],
+    mode_declare([xx,xl,xh,xc],flonum),gy[1,ii,jj]:0.0))$
+
+
+gy_rh():=for jj from 2 thru 33 do
+       block([],
+             for ii from 2 thru 65 do
+                 block([],
+                       gy[1,ii,jj]:5.0e-5
+                                   *((-32.0
+                                    *(0.25*(gx[0,ii+1,jj+1]+gx[0,ii+1,jj])
+                                          *(vy[0,ii+2,jj]+vy[0,ii+1,jj])
+                                     -0.25*(gx[0,ii,jj+1]+gx[0,ii,jj])
+                                          *(vy[0,ii+1,jj]+vy[0,ii,jj])
+                                     +0.25*(gy[0,ii,jj+2]+gy[0,ii,jj+1])
+                                          *(vy[0,ii,jj+2]+vy[0,ii,jj+1])
+                                     -0.25*(gy[0,ii,jj+1]+gy[0,ii,jj])
+                                          *(vy[0,ii,jj+1]+vy[0,ii,jj])))
+                                    +1024.0
+                                     *(vy[0,ii+1,jj]+vy[0,ii,jj+1]
+                                                    -4.0*vy[0,ii,jj]
+                                                    +vy[0,ii,jj-1]
+                                                    +vy[0,ii-1,jj])
+                                    +48.0
+                                     *(32.0*(vy[0,ii,jj+1]-1.0*vy[0,ii,jj])
+                                      +32.0*(vx[0,ii,jj+1]-1.0*vx[0,ii,jj])
+                                      -32.0*(vy[0,ii,jj]-1.0*vy[0,ii,jj-1])
+                                      -32.0
+                                       *(vx[0,ii-1,jj+1]-1.0*vx[0,ii-1,jj]))
+                                    -32.0*(Pi[0,ii,jj+1]-1.0*Pi[0,ii,jj])
+                                    +fby[0,ii,jj])
+                                  +gy[0,ii,jj]))$
+
+rho_bc():=for jj from 0 thru 67 do
+        block([jjr:jj],mode_declare(jjr,fixnum),
+              if jj < 2 then jjr:jj+64 elseif jj >= 66 then jjr:jj-64,
+              for ii from 0 thru 131 do
+                  block([iir:ii],mode_declare(iir,fixnum),
+                        if ii < 2 then iir:ii+128 elseif ii >= 130
+                            then iir:ii-128,rho[0,ii,jj]:rho[1,iir,jjr]))$
+*/

@@ -1,0 +1,38 @@
+/* velocity autocorreltion function for 1D toy model */
+
+load("distrib");
+
+
+
+sig: 1;
+np: 10;
+c:  1;
+eta: 1;
+
+array(v, flonum, np);
+
+define(rnd(), buildq([sig], random_normal(0, sig)));
+define(wrp(i), buildq([np], if i<0 then i+np else if i>=np then i - np else i));
+
+uf(v1, v2, f)::= buildq([r: gensym(), v1, v2, f],
+  (r: f, v1: v1 + r, v2 : v2 - r, r));
+
+ rnd_f: '(uf(v[i], v[j],  rnd()));
+visc_f: '(uf(v[i], v[j], -eta*(v[i] - v[j])));
+
+for i:  0  thru np - 1 do 
+for d: -c  thru  c do if d#0 then
+block([j: wrp(i-d)], print([i, j]));
+
+mt   : 20;
+klist: [1, 2, 5, 10];
+
+%z%: 0;
+define(rshift(), buildq([mt],
+    %z%: %z% - 1, z: mod(z, mt), if %z%<0 then %z% + mt));
+define(  ring(i), buildq([mt],
+  block([aux:   mod(%z% +i, mt)],
+    if aux<0 then aux + mt else aux)));
+
+
+array(vk, flonum, length(klist), mt);

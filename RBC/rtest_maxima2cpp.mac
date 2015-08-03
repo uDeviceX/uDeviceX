@@ -1,0 +1,229 @@
+(kill(all), 'done);
+'done$
+
+(load("maxima2cpp.mac"), 'done);
+'done$
+
+is(nsafe_op(sin(x))='sin);
+true;
+
+is(nsafe_op(sin(x))=verbify('sin));
+false;
+
+file2string("test.file.txt");
+"preved
+medved
+"$
+
+with_strout(printf(true, "preved"));
+"preved"$
+
+with_strout(pr("preved ~a", 'medved));
+"preved medved"$
+
+with_strout(process_mdo(  '(for i: 0 thru 10 do 'body) ));
+"for (int i = 0; i <= 10; i++)
+'body;
+"$
+
+/*
+with_strout(process_mdo(  '(thru 10 do 'body)));
+"for (int g1569 = 1; g1569 <= 10; g1569++)
+'body;
+"$
+*/
+
+with_strout(process_mdo(  '(for i: 0 thru 10 step 2 do ('b1, 'b2)) ));
+"for (int i = 0; i <= 10; i+=2)
+{
+'b1;
+'b2;
+};
+"$
+
+with_strout(process_mdo(  '(for i: 10 thru 0 step -2 do 'body) ));
+"for (int i = 10; i >= 0; i+=-2)
+'body;
+"$
+
+with_strout(process_mode_declare( '(mode_declare(i, flonum))));
+"double               i;
+"$
+
+with_strout(process_mode_declare( '(mode_declare([i,j], flonum))));
+"double               i;
+double               j;
+"$
+
+with_strout(process_mode_declare( '(mode_declare([i,j], flonum, N, fixnum))));
+"double               i;
+double               j;
+int                  N;
+"$
+
+block([%cpp_type_decl%],
+  process_mode_declare( '(mode_declare(i, flonum))),
+  %cpp_type_decl%);
+[i = flonum]$
+
+block([%cpp_type_decl%],
+  process_mode_declare( '(mode_declare(i, flonum))),
+  %cpp_type_decl%);
+[i = flonum]$
+
+block([%cpp_type_decl%],
+  process_mode_declare( '(mode_declare(i, flonum, N, fixnum))),
+  map('get_type, ['i, 'N, 'j]));
+[double,int,'unknown_type]$
+
+block([%func_args%: ['i, 'j]],
+  with_strout(process_mode_declare( '(mode_declare([i,j], flonum, N, fixnum)))));
+"int                  N;
+"$
+
+with_strout(process_mcond('(if 'cond1 then 'expr1)));
+"if ('cond1) 'expr1;
+"$
+
+with_strout(process_mcond('(if 'cond1 then expr1 else expr2)));
+"if ('cond1) expr1;
+else expr2;
+"$
+
+with_strout(process_mcond('(if 'cond1 then (expr1, expr1))));
+"if ('cond1) {
+expr1;
+expr1;
+};
+"$
+
+with_strout(process_mcond('(if 'cond1 then expr1 elseif cond2 then expr2 else expr3)));
+"if ('cond1) expr1;
+else if (cond2) expr2;
+else expr3;
+"$
+
+with_strout(process_msetq( '(a : 42) ));
+"a = 42"$
+
+with_strout(process_mdefine( '(f(x, y):=(mode_declare(x, flonum), 'body) )));
+"void f (double x, unknown_type y) 
+{
+'body;
+}"$
+
+with_strout(process_mdefine( '(f(x, y):=(mode_declare(x, flonum), 'b1, 'b2) )));
+"void f (double x, unknown_type y) 
+{
+'b1;
+'b2;
+}"$
+
+with_strout(process_mdefine( '(f(x, y):=block())));
+"void f (unknown_type x, unknown_type y) 
+{
+}"$
+
+with_strout(process_mdefine( '(f(x, y):=block(mode_declare(zu, flonum), 'body) )));
+"void f (unknown_type x, unknown_type y) 
+{
+double               zu;
+'body;
+}"$
+
+with_strout(process_mdefine( '(f(x, y):=block([q: 1, z: 10], mode_declare(x, flonum), 'body1, 'body2) )));
+"void f (double x, unknown_type y) 
+{
+q = 1;
+z = 10;
+'body1;
+'body2;
+}"$
+
+with_strout(process_subvar(a[i]));
+"a[i]"$
+
+with_strout(process_subvar(a[i,j]));
+"a[i][j]"$
+
+with_strout(process('(a : 10)));
+"a = 10;
+"$
+
+with_strout(process('(a : 10, b : a)));
+"{
+a = 10;
+b = a;
+};
+"$
+
+with_strout(process_block('block([a: 2], b: a, mode_declare(b, fixnum))));
+"{
+int                  b;
+a = 2;
+b = a;
+}"$
+
+with_strout(process( a[i,j] + b[i,j] ));
+"b[i][j]+a[i][j];
+"$
+
+with_strout(process( cpp_array(a, flonum, [10])));
+"double               a[10];
+"$
+
+with_strout(process( cpp_array(a, flonum, [2,10])));
+"double               a[2][10];
+"$
+
+with_strout(process( '(cpp_array(a, flonum, [2,10]), f())));
+"{
+double               a[2][10];
+f();
+};
+"$
+
+with_strout( process( '(a : x^2) ) );
+"a = x*x;
+"$
+
+with_strout( process( '(if a<x^2 then a: 2,  if a<x^2 then a: 2)));
+"{
+if (a < x*x) a = 2;
+;
+if (a < x*x) a = 2;
+;
+};
+"$
+
+with_strout( process (literate("#include \"preved.h\"")));
+"#include \"preved.h\"
+;
+"$
+
+with_strout( process( '(
+      a: 42,
+      literate("#include \"preved.h\""),
+      b : a + b)) );
+"{
+a = 42;
+#include \"preved.h\"
+;
+b = b+a;
+};
+"$
+
+/* process( '(a: 1, b: 2, c: 3, for i: 1 thru 10 do (q: i, z: i)) ) ; */
+
+/*
+
+block([grind: true], process(fundef(rho_bc)));
+block([grind: true], process(fundef(gy_rh)));
+
+*/
+
+/*
+process_block( 'block(a, b));
+process_block( 'block([a: 10], b));
+process_block( 'block([a: 10, c: 30], b));
+process_block( 'block([], b)); */

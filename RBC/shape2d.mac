@@ -31,3 +31,6 @@ D00    : subst(par, D0);
 
 Area: 2*integrate(expr_p, r, -D0/2, D0/2);
 Area0: subst(par, Area), numer;
+
+load("maxima2dump.mac");
+maxima2dump(rest(A, -1), "rbc2d.atom");
