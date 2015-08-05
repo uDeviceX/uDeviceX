@@ -54,9 +54,14 @@ floatized ?= 1
 slevel ?= 0
 flops ?= 0
 datadump ?= 1
+tss ?= 0
 
 ifeq "$(datadump)" "0"
 NVCCFLAGS += -D_NO_DUMPS_
+endif
+
+ifneq "$(tss)" "0"
+NVCCFLAGS += -D_TSS_STEPS=$(tss)
 endif
 
 NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel)

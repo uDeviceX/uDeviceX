@@ -76,7 +76,8 @@ class Simulation
     void _report(const bool verbose, const int idtimestep);
     void _create_walls(const bool verbose, bool & termination_request);
     void _remove_bodies_from_wall(CollectionRBC * coll);
-    void _forces();
+
+    void _forces(bool firsttime = false);
     void _datadump(const int idtimestep);
     void _update_and_bounce();
     void _lockstep();

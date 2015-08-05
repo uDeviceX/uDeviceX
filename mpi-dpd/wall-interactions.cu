@@ -998,12 +998,12 @@ ComputeInteractionsWall::ComputeInteractionsWall(MPI_Comm cartcomm, Particle* co
     CUDA_CHECK(cudaPeekAtLastError());
 }
 
-void ComputeInteractionsWall::bounce(Particle * const p, const int n, cudaStream_t stream)
+void ComputeInteractionsWall::bounce(Particle * const p, const int n, cudaStream_t stream, const float deltat)
 {
     NVTX_RANGE("WALL/bounce", NVTX_C3)
 
 	if (n > 0)
-	    SolidWallsKernel::bounce<<< (n + 127) / 128, 128, 0, stream>>>((float2 *)p, n, myrank, dt);
+	    SolidWallsKernel::bounce<<< (n + 127) / 128, 128, 0, stream>>>((float2 *)p, n, myrank, deltat);
 
     CUDA_CHECK(cudaPeekAtLastError());
 }
