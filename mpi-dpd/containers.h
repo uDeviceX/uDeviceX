@@ -25,7 +25,6 @@ struct ParticleArray
 
     SimpleDeviceBuffer<Particle> xyzuvw;
     SimpleDeviceBuffer<Acceleration> axayaz;
-    SimpleDeviceBuffer<Acceleration> fsi_axayaz;
 
     void resize(int n);
     void preserve_resize(int n);
@@ -44,6 +43,7 @@ class CollectionRBC : public ParticleArray
     static int (*indices)[3];
     static int ntriangles;
     static int nvertices;
+    SimpleDeviceBuffer<Acceleration> fsi_axayaz;
 
 protected:
 
