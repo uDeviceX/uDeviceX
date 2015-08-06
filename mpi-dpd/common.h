@@ -36,10 +36,11 @@ const float sigmaf = sigma / sqrt(dt);
 const float aij = 25;
 const float hydrostatic_a = 0.05;
 
-
 extern float tend;
 extern bool walls, pushtheflow, doublepoiseuille, rbcs, ctcs, xyz_dumps, hdf5field_dumps, hdf5part_dumps, is_mps_enabled;
 extern int steps_per_report, steps_per_dump, wall_creation_stepid, nvtxstart, nvtxstop, nsubsteps;
+
+
 
 __device__ __forceinline__
 void read_AOS6f(const float2 * const data, const int nparticles, float2& s0, float2& s1, float2& s2)
@@ -306,7 +307,7 @@ SimpleDeviceBuffer(int n = 0): capacity(0), size(0), data(NULL) { resize(n);}
 	    if (data != NULL)
 		CUDA_CHECK(cudaFree(data));
 	    
-	    const int conservative_estimate = (int)ceil(1.2 * n);
+	    const int conservative_estimate = (int)ceil(1.1 * n);
 	    capacity = 128 * ((conservative_estimate + 129) / 128);
 	    
 	    CUDA_CHECK(cudaMalloc(&data, sizeof(T) * capacity));
@@ -520,3 +521,4 @@ public:
 	MPI_Comm get_comm() { return local_comm;  }
 };
 
+extern LocalComm localcomm;

@@ -53,12 +53,11 @@ class Simulation
     ComputeInteractionsCTC ctc_interactions;
     ComputeInteractionsWall * wall;
 
-    LocalComm localcomm;
-
     bool (*check_termination)();
     bool simulation_is_done;
 
     MPI_Comm activecomm, cartcomm;
+    //LocalComm localcomm;
 
     cudaStream_t mainstream;
     
