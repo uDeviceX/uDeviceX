@@ -413,14 +413,15 @@ void Simulation::_forces(bool firsttime)
         ctc_interactions.fsi_halo(particles->xyzuvw.data, particles->size, particles->axayaz.data, cells.start, cells.count,
                 ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
 
-#ifndef _TSS_STEPS
-    if (rbcscoll)
-        rbc_interactions.internal_forces(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
+	if (nsubsteps == 0)
+	{
+    	if (rbcscoll)
+    	    rbc_interactions.internal_forces(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
 
-    if (ctcscoll)
-        ctc_interactions.internal_forces(ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
-#endif
-
+    	if (ctcscoll)
+    	    ctc_interactions.internal_forces(ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
+	}
+	
     if (wall)
         wall->interactions(particles->xyzuvw.data, particles->size, particles->axayaz.data,
                 cells.start, cells.count, mainstream);
@@ -442,7 +443,7 @@ void Simulation::_forces(bool firsttime)
     if (ctcscoll)
         ctc_interactions.merge_a(ctcscoll->acc(), mainstream);
 
-#ifdef _TSS_STEPS
+	if (nsubsteps)
     { // TSS
         if (rbcscoll)
             CUDA_CHECK( cudaMemcpy(rbcscoll->fsiacc(), rbcscoll->acc(), 3*rbcscoll->pcount()*sizeof(float), cudaMemcpyDeviceToDevice) );
@@ -450,7 +451,7 @@ void Simulation::_forces(bool firsttime)
         if (ctcscoll)
             CUDA_CHECK( cudaMemcpy(ctcscoll->fsiacc(), ctcscoll->acc(), 3*ctcscoll->pcount()*sizeof(float), cudaMemcpyDeviceToDevice) );
 
-        for (int sstep = 0; sstep < _TSS_STEPS; sstep++)
+        for (int sstep = 0; sstep < nsubsteps; sstep++)
         {
             // Start with acc induced by solvent
             if (rbcscoll)
@@ -459,12 +460,12 @@ void Simulation::_forces(bool firsttime)
                 rbc_interactions.internal_forces(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
 
                 if (firsttime )
-                    rbcscoll->update_stage1(0.0, mainstream, (dt / _TSS_STEPS));
+                    rbcscoll->update_stage1(0.0, mainstream, (dt / nsubsteps));
                 else
-                    rbcscoll->update_stage2_and_1(0.0, mainstream, (dt / _TSS_STEPS));
+                    rbcscoll->update_stage2_and_1(0.0, mainstream, (dt / nsubsteps));
 
                 if (wall)
-                    wall->bounce(rbcscoll->data(), rbcscoll->pcount(), mainstream, dt / (_TSS_STEPS));
+                    wall->bounce(rbcscoll->data(), rbcscoll->pcount(), mainstream, dt / (nsubsteps));
             }
 
             if (ctcscoll)
@@ -473,17 +474,17 @@ void Simulation::_forces(bool firsttime)
                 ctc_interactions.internal_forces(ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
 
                 if (firsttime )
-                    ctcscoll->update_stage2_and_1(0.0, mainstream, dt / (_TSS_STEPS));
+                    ctcscoll->update_stage2_and_1(0.0, mainstream, dt / (nsubsteps));
                 else
-                    ctcscoll->update_stage1(0.0, mainstream, dt / (_TSS_STEPS));
+                    ctcscoll->update_stage1(0.0, mainstream, dt / (nsubsteps));
 
                 if (wall)
-                    wall->bounce(ctcscoll->data(), ctcscoll->pcount(), mainstream, dt / (_TSS_STEPS));
+                    wall->bounce(ctcscoll->data(), ctcscoll->pcount(), mainstream, dt / (nsubsteps));
             }
         }
         CUDA_CHECK(cudaPeekAtLastError());
     }
-#endif
+
     timings["interactions"] += MPI_Wtime() - tstart;
 
     CUDA_CHECK(cudaPeekAtLastError());
@@ -510,17 +511,17 @@ void Simulation::_datadump(const int idtimestep)
     accelerations_datadump.resize(n);
 
     CUDA_CHECK(cudaMemcpyAsync(particles_datadump.data, particles->xyzuvw.data, sizeof(Particle) * particles->size, cudaMemcpyDeviceToHost,0));
-#ifdef _TSS_STEPS
-    CUDA_CHECK(cudaMemcpy(accelerations_datadump.data, particles->axayaz.data, sizeof(Acceleration) * particles->size, cudaMemcpyDeviceToHost));
+	if (nsubsteps)
+	{
+   		CUDA_CHECK(cudaMemcpy(accelerations_datadump.data, particles->axayaz.data, sizeof(Acceleration) * particles->size, cudaMemcpyDeviceToHost));
 
-    for (int i=0; i<particles->size; i++)
-        for (int c=0; c<3; c++)
-            particles_datadump.data[i].u[c] += dt * accelerations_datadump.data[i].a[c];
-#else
-    CUDA_CHECK(cudaMemcpyAsync(accelerations_datadump.data, particles->axayaz.data, sizeof(Acceleration) * particles->size, cudaMemcpyDeviceToHost, 0));
-#endif
-
-
+    	for (int i=0; i<particles->size; i++)
+        	for (int c=0; c<3; c++)
+            	particles_datadump.data[i].u[c] += dt * accelerations_datadump.data[i].a[c];
+	}
+	else
+    	CUDA_CHECK(cudaMemcpyAsync(accelerations_datadump.data, particles->axayaz.data, sizeof(Acceleration) * particles->size, cudaMemcpyDeviceToHost, 0));
+    	
     int start = particles->size;
 
     if (rbcscoll)
@@ -699,15 +700,16 @@ void Simulation::_update_and_bounce()
 
     CUDA_CHECK(cudaPeekAtLastError());
 
-#ifndef _TSS_STEPS
-    if (rbcscoll)
-        rbcscoll->update_stage2_and_1(driving_acceleration, mainstream);
+	if (nsubsteps == 0)
+	{
+		if (rbcscoll)
+			rbcscoll->update_stage2_and_1(driving_acceleration, mainstream);
 
-    CUDA_CHECK(cudaPeekAtLastError());
+		CUDA_CHECK(cudaPeekAtLastError());
 
-    if (ctcscoll)
-        ctcscoll->update_stage2_and_1(driving_acceleration, mainstream);
-#endif
+		if (ctcscoll)
+			ctcscoll->update_stage2_and_1(driving_acceleration, mainstream);
+	}
 
     timings["update"] += MPI_Wtime() - tstart;
 
@@ -716,14 +718,15 @@ void Simulation::_update_and_bounce()
         tstart = MPI_Wtime();
         wall->bounce(particles->xyzuvw.data, particles->size, mainstream);
 
-#ifndef _TSS_STEPS
-        if (rbcscoll)
-            wall->bounce(rbcscoll->data(), rbcscoll->pcount(), mainstream);
+		if (nsubsteps == 0)
+		{
+			if (rbcscoll)
+				wall->bounce(rbcscoll->data(), rbcscoll->pcount(), mainstream);
 
-        if (ctcscoll)
-            wall->bounce(ctcscoll->data(), ctcscoll->pcount(), mainstream);
-#endif
-
+			if (ctcscoll)
+				wall->bounce(ctcscoll->data(), ctcscoll->pcount(), mainstream);
+		}
+		
         timings["bounce-walls"] += MPI_Wtime() - tstart;
     }
 
@@ -920,14 +923,15 @@ void Simulation::_lockstep()
 
     redistribute.bulk(particles->size, cells.start, cells.count, mainstream);
 
-#ifndef _TSS_STEPS
-    if (rbcscoll)
-        rbc_interactions.internal_forces(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
+	if (nsubsteps == 0)
+	{
+		if (rbcscoll)
+			rbc_interactions.internal_forces(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
 
-    if (ctcscoll)
-        ctc_interactions.internal_forces(ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
+		if (ctcscoll)
+			ctc_interactions.internal_forces(ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
+	}
 
-#endif
     CUDA_CHECK(cudaPeekAtLastError());
 
     if (rbcscoll && wall)
@@ -942,21 +946,23 @@ void Simulation::_lockstep()
     if (ctcscoll)
         ctc_interactions.merge_a(ctcscoll->acc(), mainstream);
 
-#ifndef _TSS_STEPS
-    if (rbcscoll)
-        rbcscoll->update_stage2_and_1(driving_acceleration, mainstream);
+	if (nsubsteps == 0)
+	{
+		if (rbcscoll)
+			rbcscoll->update_stage2_and_1(driving_acceleration, mainstream);
 
-    CUDA_CHECK(cudaPeekAtLastError());
+		CUDA_CHECK(cudaPeekAtLastError());
 
-    if (ctcscoll)
-        ctcscoll->update_stage2_and_1(driving_acceleration, mainstream);
+		if (ctcscoll)
+			ctcscoll->update_stage2_and_1(driving_acceleration, mainstream);
 
-    if (wall && rbcscoll)
-        wall->bounce(rbcscoll->data(), rbcscoll->pcount(), mainstream);
+		if (wall && rbcscoll)
+			wall->bounce(rbcscoll->data(), rbcscoll->pcount(), mainstream);
 
-    if (wall && ctcscoll)
-        wall->bounce(ctcscoll->data(), ctcscoll->pcount(), mainstream);
-#else
+		if (wall && ctcscoll)
+			wall->bounce(ctcscoll->data(), ctcscoll->pcount(), mainstream);
+	}
+	else
     { // TSS
         if (rbcscoll)
             CUDA_CHECK( cudaMemcpy(rbcscoll->fsiacc(), rbcscoll->acc(), 3*rbcscoll->pcount()*sizeof(float), cudaMemcpyDeviceToDevice) );
@@ -964,30 +970,29 @@ void Simulation::_lockstep()
         if (ctcscoll)
             CUDA_CHECK( cudaMemcpy(ctcscoll->fsiacc(), ctcscoll->acc(), 3*ctcscoll->pcount()*sizeof(float), cudaMemcpyDeviceToDevice) );
 
-        for (int sstep = 0; sstep < _TSS_STEPS; sstep++)
+        for (int sstep = 0; sstep < nsubsteps; sstep++)
         {
             // Start with acc induced by solvent
             if (rbcscoll)
             {
                 CUDA_CHECK( cudaMemcpy(rbcscoll->acc(), rbcscoll->fsiacc(), 3*rbcscoll->pcount()*sizeof(float), cudaMemcpyDeviceToDevice) );
                 rbc_interactions.internal_forces(rbcscoll->data(), rbcscoll->count(), rbcscoll->acc(), mainstream);
-                rbcscoll->update_stage2_and_1(0.0, mainstream, dt / (_TSS_STEPS));
+                rbcscoll->update_stage2_and_1(0.0, mainstream, dt / (nsubsteps));
                 if (wall)
-                    wall->bounce(rbcscoll->data(), rbcscoll->pcount(), mainstream, dt / (_TSS_STEPS));
+                    wall->bounce(rbcscoll->data(), rbcscoll->pcount(), mainstream, dt / (nsubsteps));
             }
 
             if (ctcscoll)
             {
                 CUDA_CHECK( cudaMemcpy(ctcscoll->acc(), ctcscoll->fsiacc(), 3*ctcscoll->pcount()*sizeof(float), cudaMemcpyDeviceToDevice) );
                 ctc_interactions.internal_forces(ctcscoll->data(), ctcscoll->count(), ctcscoll->acc(), mainstream);
-                ctcscoll->update_stage2_and_1(0.0, mainstream, dt / (_TSS_STEPS));
+                ctcscoll->update_stage2_and_1(0.0, mainstream, dt / (nsubsteps));
                 if (wall)
-                    wall->bounce(ctcscoll->data(), ctcscoll->pcount(), mainstream, dt / (_TSS_STEPS));
+                    wall->bounce(ctcscoll->data(), ctcscoll->pcount(), mainstream, dt / (nsubsteps));
             }
         }
         CUDA_CHECK(cudaPeekAtLastError());
     }
-#endif
 
     const int newnp = redistribute.recv_count(mainstream, host_idle_time);
 
@@ -1063,16 +1068,17 @@ void Simulation::run()
 
     particles->update_stage1(driving_acceleration, mainstream);
 
-#ifndef _TSS_STEPS
+if (nsubsteps)
+{
     if (rbcscoll)
         rbcscoll->update_stage1(driving_acceleration, mainstream);
 
     if (ctcscoll)
         ctcscoll->update_stage1(driving_acceleration, mainstream);
-#endif
+}
 
     int it;
-    enum { nvtxstart = 8981, nvtxstop = 9021 } ;
+    
 
     for(it = 0; it < nsteps; ++it)
     {
