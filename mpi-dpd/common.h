@@ -40,8 +40,8 @@ const float hydrostatic_a = 0.05;
 extern float tend;
 extern bool walls, pushtheflow, doublepoiseuille, rbcs, ctcs, xyz_dumps, hdf5field_dumps, hdf5part_dumps, is_mps_enabled;
 extern int steps_per_report, steps_per_dump, wall_creation_stepid, nvtxstart, nvtxstop;
-
-
+extern bool rbc_honeycomb_ic;
+extern float cell_scale;
 
 __device__ __forceinline__
 void read_AOS6f(const float2 * const data, const int nparticles, float2& s0, float2& s1, float2& s2)

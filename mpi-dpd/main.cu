@@ -26,6 +26,8 @@ bool currently_profiling = false;
 float tend;
 bool walls, pushtheflow, doublepoiseuille, rbcs, ctcs, xyz_dumps, hdf5field_dumps, hdf5part_dumps, is_mps_enabled, adjust_message_sizes;
 int steps_per_report, steps_per_dump, wall_creation_stepid, nvtxstart, nvtxstop;
+bool rbc_honeycomb_ic;
+float cell_scale;
 
 LocalComm localcomm;
 
@@ -88,6 +90,10 @@ int main(int argc, char ** argv)
 #else
     const bool mpi_thread_safe = argp("-mpi_thread_safe").asBool(false);
 #endif
+
+    // for in-situ RBC generation
+    rbc_honeycomb_ic = argp("-honeycomb").asBool(false);
+    cell_scale = argp("-cellscale").asDouble(1.0);
 
     SignalHandling::setup();
 

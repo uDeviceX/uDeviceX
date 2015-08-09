@@ -312,7 +312,65 @@ cartcomm(cartcomm), ncells(0)
 void CollectionRBC::setup(const char * const path2ic)
 {
     vector<TransformedExtent> allrbcs;
+    vector<TransformedExtent> good;
 
+    if( rbc_honeycomb_ic ) {
+        if( myrank == 0 ) printf( "Instantiating RBCs in-situ\n" );
+
+        static double xstep = cell_scale * 8.4;
+        static double ystep = cell_scale * 8.4 * sqrt( 3 ) / 2.0;
+        static double zstep = cell_scale * 3.25;
+
+        double Lx = dims[0] * XSIZE_SUBDOMAIN;
+        double Ly = dims[1] * YSIZE_SUBDOMAIN;
+        double Lz = dims[2] * ZSIZE_SUBDOMAIN;
+        double nx = 0, ny = 0, nz = 0;
+        bool exhausted = false;
+        bool stagger = false;
+
+        while( !exhausted ) {
+            double dx = xstep * ( nx + 0.5 ) - coords[0] * XSIZE_SUBDOMAIN;
+            double dy = ystep * ( ny + 0.5 ) - coords[1] * YSIZE_SUBDOMAIN;
+            double dz = zstep * ( nz + 0.5 ) - coords[2] * ZSIZE_SUBDOMAIN;
+            if( dx >= 0 && dx < XSIZE_SUBDOMAIN &&
+                    dy >= 0 && dy < YSIZE_SUBDOMAIN &&
+                    dz >= 0 && dz < ZSIZE_SUBDOMAIN ) {
+
+                TransformedExtent e;
+                dx -= 0.5 * XSIZE_SUBDOMAIN;
+                dy -= 0.5 * YSIZE_SUBDOMAIN;
+                dz -= 0.5 * ZSIZE_SUBDOMAIN;
+                e.com[0] = dx;
+                e.com[1] = dy;
+                e.com[2] = dz;
+                for( int i = 0; i < 4; i++ ) for( int j = 0; j < 4; j++ ) e.transform[i][j] = i == j;
+                e.transform[0][3] = dx;
+                e.transform[1][3] = dy;
+                e.transform[2][3] = dz;
+                good.push_back( e );
+            }
+            nx++;
+            if( nx * xstep >= Lx - 0.5 * xstep ) {
+                nx = 0;
+                stagger = !stagger;
+                if( stagger ) nx += 0.5;
+                ny++;
+                if( ny * ystep >= Ly - 0.5 * ystep ) {
+                    ny = 0;
+                    nz++;
+                    if( nz * zstep >= Lz - 0.5 * zstep ) {
+                        nz = 0;
+                        exhausted = true;
+                    }
+                }
+            }
+        }
+        long long int n = good.size(), N;
+        MPI_Reduce( &n, &N, 1, MPI_LONG_LONG_INT, MPI_SUM, 0, cartcomm );
+        if( myrank == 0 )
+            printf( "%d RBCs generated, hematocrit %.1lf%%\n", N,
+                    100.0 * N * 92.45 * pow( cell_scale, 3 ) / double( dims[0] ) / double( dims[1] ) / double( dims[2] ) / double( XSIZE_SUBDOMAIN ) / double( YSIZE_SUBDOMAIN ) / double( ZSIZE_SUBDOMAIN ) );
+    } else {
     if (myrank == 0)
     {
 	//read transformed extent from file
@@ -361,8 +419,6 @@ void CollectionRBC::setup(const char * const path2ic)
 
     MPI_CHECK(MPI_Bcast(&allrbcs.front(), nfloats_per_entry * allrbcs_count, MPI_FLOAT, 0, cartcomm));
 
-    vector<TransformedExtent> good;
-
     const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
 
     for(vector<TransformedExtent>::iterator it = allrbcs.begin(); it != allrbcs.end(); ++it)
@@ -379,6 +435,7 @@ void CollectionRBC::setup(const char * const path2ic)
 
 	    good.push_back(*it);
 	}
+    }
     }
 
     resize(good.size());
