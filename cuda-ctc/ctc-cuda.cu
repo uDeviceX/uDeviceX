@@ -60,8 +60,6 @@ __constant__ float A[4][4];
 
     void setup(int& nvertices, Extent& host_extent)
 {
-        const float scale=1;
-
 	const bool report = false;
 
         //        0.0945, 0.00141, 1.642599,
@@ -107,9 +105,9 @@ __constant__ float A[4][4];
 		xyzuvw_host[6*cur+3] = xyzuvw_host[6*cur+4] = xyzuvw_host[6*cur+5] = 0;
 
             // Scale in dpd units
-            xyzuvw_host[6*cur+0] *= scale;
-            xyzuvw_host[6*cur+1] *= scale;
-            xyzuvw_host[6*cur+2] *= scale;
+            xyzuvw_host[6*cur+0] *= cell_scale;
+            xyzuvw_host[6*cur+1] *= cell_scale;
+            xyzuvw_host[6*cur+2] *= cell_scale;
 
 		if (aid != 1) break;
 		cur++;
@@ -225,7 +223,7 @@ __constant__ float A[4][4];
 
         dummy = new Extent[maxCells];
 
-        unitsSetup(1.64, 0.00141, 19.0476, 120, 12000, 12000, 0, 1256, 4189, 1e-6/ scale, 2.4295e-6, 4, false);
+        unitsSetup(1.64, 0.00141, 19.0476, 120, 12000, 12000, 0, 1256, 4189, 1e-6/ cell_scale, 2.4295e-6, 4, false);
     }
 
     void unitsSetup(float lmax, float p, float cq, float kb, float ka, float kv, float gammaC,

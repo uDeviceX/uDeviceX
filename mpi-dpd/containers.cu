@@ -315,7 +315,7 @@ void CollectionRBC::setup(const char * const path2ic)
     vector<TransformedExtent> good;
 
     if( rbc_honeycomb_ic ) {
-        if( myrank == 0 ) printf( "Instantiating RBCs in-situ\n" );
+        if( myrank == 0 ) printf( "Instantiating RBCs at scale %f in-situ\n", cell_scale );
 
         static double xstep = cell_scale * 8.4;
         static double ystep = cell_scale * 8.4 * sqrt( 3 ) / 2.0;

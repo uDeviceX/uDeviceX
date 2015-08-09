@@ -13,6 +13,8 @@
 
 using namespace std;
 
+extern float cell_scale;
+
 namespace CudaCTC
 {
 	struct Params
