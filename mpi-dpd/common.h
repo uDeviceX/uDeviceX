@@ -20,15 +20,15 @@
 
 enum 
 { 
-    XSIZE_SUBDOMAIN = 96,
-    YSIZE_SUBDOMAIN = 96,
-    ZSIZE_SUBDOMAIN = 96,
+    XSIZE_SUBDOMAIN = 48,
+    YSIZE_SUBDOMAIN = 48,
+    ZSIZE_SUBDOMAIN = 48,
     XMARGIN_WALL = 6,
     YMARGIN_WALL = 6,
     ZMARGIN_WALL = 6,
 };
 
-const int numberdensity = 3;
+const int numberdensity = 4;
 const float dt = 0.001;
 const float kBT = 0.0945;
 const float gammadpd = 45;
