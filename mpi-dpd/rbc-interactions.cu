@@ -25,8 +25,8 @@ namespace KernelsRBC
 
     __constant__ ParamsFSI params;
 
-    texture<float2, cudaTextureType1D> texSolventParticles, texSoluteParticles;
-    texture<int, cudaTextureType1D> texCellsStart, texCellsCount, texSoluteCellsStart, texSoluteCellsCount;
+    texture<float2, cudaTextureType1D> texSolventParticles;
+    texture<int, cudaTextureType1D> texCellsStart, texCellsCount;
 
     static bool firsttime = true;
 
@@ -204,556 +204,335 @@ namespace KernelsRBC
 	}
     }
 
-    __device__ bool fsi_kernel(const float seed,
-			       const int dpid, const float3 xp, const float3 up, const int spid,
-			       float& xforce, float& yforce, float& zforce)
+#if !defined(__CUDA_ARCH__)
+#warning __CUDA_ARCH__ not defined! assuming 350
+#define _ACCESS(x) __ldg(x)
+#elif __CUDA_ARCH__ >= 350
+#define _ACCESS(x) __ldg(x)
+#else
+#define _ACCESS(x) (*(x))
+#endif
+
+    static const int NCELLS = XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN;
+
+    __global__  __launch_bounds__(128, 10)
+	void interactions_3tpp(const float2 * const particles, const int np, const int nsolvent,
+			       float * const acc, float * const accsolvent, const float seed)
     {
-	xforce = yforce = zforce = 0;
+	assert(blockDim.x * gridDim.x >= np * 3);
 
-	const int sentry = 3 * spid;
+	const int gid = threadIdx.x + blockDim.x * blockIdx.x;
+       	const int pid = gid / 3;
+	const int zplane = gid % 3;
 
-	const float2 stmp0 = tex1Dfetch(texSolventParticles, sentry);
-	const float2 stmp1 = tex1Dfetch(texSolventParticles, sentry + 1);
-	const float2 stmp2 = tex1Dfetch(texSolventParticles, sentry + 2);
-
-	const float _xr = xp.x - stmp0.x;
-	const float _yr = xp.y - stmp0.y;
-	const float _zr = xp.z - stmp1.x;
-
-	const float rij2 = _xr * _xr + _yr * _yr + _zr * _zr;
-
-	if (rij2 > 1)
-	    return false;
-
-	const float invrij = rsqrtf(rij2);
-
-	const float rij = rij2 * invrij;
-	const float argwr = max((float)0, 1 - rij);
-	const float wr = powf(argwr, powf(0.5f, -VISCOSITY_S_LEVEL));
-
-	const float xr = _xr * invrij;
-	const float yr = _yr * invrij;
-	const float zr = _zr * invrij;
-
-	const float rdotv =
-	    xr * (up.x - stmp1.y) +
-	    yr * (up.y - stmp2.x) +
-	    zr * (up.z - stmp2.y);
-
-	const float myrandnr = Logistic::mean0var1(seed, dpid, spid);
-
-	const float strength = params.aij * argwr +  (- params.gamma * wr * rdotv + params.sigmaf * myrandnr) * wr;
-
-	xforce = strength * xr;
-	yforce = strength * yr;
-	zforce = strength * zr;
-
-	return true;
-    }
-
-    __device__ float3 fsi_interaction(const float seed,
-				      const int dpid, const float3 up, const int spid,
-				      const float2 stmp1, const float2 stmp2,
-				      const float _xr, const float _yr, const float _zr, const float rij2)
-    {
-	const float invrij = rsqrtf(rij2);
-
-	const float rij = rij2 * invrij;
-	const float argwr = 1 - rij;
-	const float wr = viscosity_function<-VISCOSITY_S_LEVEL>(argwr);
-
-	const float xr = _xr * invrij;
-	const float yr = _yr * invrij;
-	const float zr = _zr * invrij;
-
-	const float rdotv =
-	    xr * (up.x - stmp1.y) +
-	    yr * (up.y - stmp2.x) +
-	    zr * (up.z - stmp2.y);
-
-	const float myrandnr = Logistic::mean0var1(seed, dpid, spid);
-
-	const float strength = params.aij * argwr +  (- params.gamma * wr * rdotv + params.sigmaf * myrandnr) * wr;
-
-	return make_float3(strength * xr, strength * yr, strength * zr);
-    }
-
-
-    template<int XCPB, int YCPB, int ZCPB, int COLS, int ROWS>
-    __global__ void fsi_forces(const float seed,
-			       float * const accsolute, const int nsolute,
-			       float * const accsolvent, const int nsolvent)
-    {
-	enum { CPB = XCPB * YCPB * ZCPB };
-
-	assert(warpSize == COLS * ROWS);
-	assert(blockDim.x == warpSize && blockDim.y == CPB && blockDim.z == 1);
-	assert(ROWS * 3 <= warpSize);
-
-	const int tid = threadIdx.x;
-	const int wid = threadIdx.y;
-
-	const int subtid = tid % COLS;
-	const int slot = tid / COLS;
-
-	__shared__ int volatile starts[CPB][32], scan[CPB][32];
-
-	const int xmycid = blockIdx.x * XCPB + ((wid) % XCPB);
-	const int ymycid = blockIdx.y * YCPB + ((wid / XCPB) % YCPB);
-	const int zmycid = blockIdx.z * ZCPB + ((wid / (XCPB * YCPB)) % ZCPB);
-
-	assert(xmycid >= 0 && xmycid < XSIZE_SUBDOMAIN);
-	assert(ymycid >= 0 && ymycid < YSIZE_SUBDOMAIN);
-	assert(zmycid >= 0 && zmycid < ZSIZE_SUBDOMAIN);
-
-	const int mycid = xmycid + XSIZE_SUBDOMAIN * (ymycid + YSIZE_SUBDOMAIN * zmycid);
-
-	int mycount = 0, myscan = 0;
-
-	if (tid < 27)
-	{
-	    const int dx = tid % 3;
-	    const int dy = (tid / 3) % 3;
-	    const int dz = (tid / 9) % 3;
-
-	    int xcid = xmycid + dx - 1;
-	    int ycid = ymycid + dy - 1;
-	    int zcid = zmycid + dz - 1;
-
-	    const bool valid_cid =
-		xcid >= 0 && xcid < XSIZE_SUBDOMAIN &&
-		ycid >= 0 && ycid < YSIZE_SUBDOMAIN &&
-		zcid >= 0 && zcid < ZSIZE_SUBDOMAIN ;
-
-	    xcid = min(XSIZE_SUBDOMAIN - 1, max(0, xcid));
-	    ycid = min(YSIZE_SUBDOMAIN - 1, max(0, ycid));
-	    zcid = min(ZSIZE_SUBDOMAIN - 1, max(0, zcid));
-
-	    const int cid = max(0, xcid + XSIZE_SUBDOMAIN * (ycid + YSIZE_SUBDOMAIN * zcid));
-
-	    starts[wid][tid] = tex1Dfetch(texCellsStart, cid);
-
-	    myscan = mycount = valid_cid * tex1Dfetch(texCellsCount, cid);
-	}
-
-	for(int L = 1; L < 32; L <<= 1)
-	    myscan += (tid >= L) * __shfl_up(myscan, L);
-
-	if (tid < 28)
-	    scan[wid][tid] = myscan - mycount;
-
-	const int nsrc = scan[wid][27];
-
-	const int dststart = tex1Dfetch(texSoluteCellsStart, mycid);
-	const int lastdst = dststart + tex1Dfetch(texSoluteCellsCount, mycid);
-
-	for(int dpid = dststart + slot; dpid < lastdst; dpid += ROWS)
-	{
-	    float3 xdest, udest, force = make_float3(0, 0, 0);
-
-	    float2 dtmp0 = tex1Dfetch(texSoluteParticles, 3 * dpid);
-	    xdest.x = dtmp0.x;
-	    xdest.y = dtmp0.y;
-
-	    dtmp0 = tex1Dfetch(texSoluteParticles, 3 * dpid + 1);
-	    xdest.z = dtmp0.x;
-	    udest.x = dtmp0.y;
-
-	    dtmp0 = tex1Dfetch(texSoluteParticles, 3 * dpid + 2);
-	    udest.y = dtmp0.x;
-	    udest.z = dtmp0.y;
-
-	    for(int pid = subtid; pid < nsrc; pid += COLS)
-	    {
-		const int key9 = 9 * ((pid >= scan[wid][9]) + (pid >= scan[wid][18]));
-		const int key3 = 3 * ((pid >= scan[wid][key9 + 3]) + (pid >= scan[wid][key9 + 6]));
-		const int key = key9 + key3;
-
-		const int spid = pid - scan[wid][key] + starts[wid][key];
-		const int sentry = 3 * spid;
-		const float2 stmp0 = tex1Dfetch(texSolventParticles, sentry);
-		const float2 stmp1 = tex1Dfetch(texSolventParticles, sentry + 1);
-
-		const float xr = xdest.x - stmp0.x;
-		const float yr = xdest.y - stmp0.y;
-		const float zr = xdest.z - stmp1.x;
-		const float rij2 = xr * xr + yr * yr + zr * zr;
-
-		if (rij2 < 1.0f)
-		{
-		    const float2 stmp2 = tex1Dfetch(texSolventParticles, sentry + 2);
-		    const float3 f = fsi_interaction(seed, dpid, udest, spid, stmp1, stmp2, xr, yr, zr, rij2);
-
-		    /*atomicAdd(accsolute + 3 * dpid    , f.x);
-		      atomicAdd(accsolute + 3 * dpid + 1, f.y);
-		      atomicAdd(accsolute + 3 * dpid + 2, f.z);*/
-		    force.x += f.x;
-		    force.y += f.y;
-		    force.z += f.z;
-
-		    atomicAdd(accsolvent + 3 * spid    , -f.x);
-		    atomicAdd(accsolvent + 3 * spid + 1, -f.y);
-		    atomicAdd(accsolvent + 3 * spid + 2, -f.z);
-		}
-	    }
-
-	    atomicAdd(accsolute + 3 * dpid    , force.x);
-	    atomicAdd(accsolute + 3 * dpid + 1, force.y);
-	    atomicAdd(accsolute + 3 * dpid + 2, force.z);
-	}
-    }
-
-    __global__ void fsi_forces_old(const float seed,
-				   Acceleration * accsolvent, const int npsolvent,
-				   const Particle * const particle, const int nparticles, Acceleration * accrbc)
-    {
-	const int dpid = threadIdx.x + blockDim.x * blockIdx.x;
-
-	if (dpid >= nparticles)
+	if (pid >= np)
 	    return;
 
-	const Particle p = particle[dpid];
+	const float2 dst0 = _ACCESS(particles + 3 * pid + 0);
+	const float2 dst1 = _ACCESS(particles + 3 * pid + 1);
+	const float2 dst2 = _ACCESS(particles + 3 * pid + 2);
 
-	const float3 xp = make_float3(p.x[0], p.x[1], p.x[2]);
-	const float3 up = make_float3(p.u[0], p.u[1], p.u[2]);
+	int scan1, scan2, ncandidates, spidbase;
+	int deltaspid1, deltaspid2;
 
-	const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
-
-	int mycid[3];
-	for(int c = 0; c < 3; ++c)
-	    mycid[c] = L[c]/2 + (int)floor(p.x[c]);
-
-	for(int c = 0; c < 3; ++c)
-	    if (mycid[c] < -1 || mycid[c] >= L[c] + 1)
-	    {
-		for(int c = 0; c < 3; ++c)
-		    accrbc[dpid].a[c] = 0;
-
-		return;
-	    }
-
-	float fsum[3] = {0, 0, 0};
-
-	for(int code = 0; code < 27; ++code)
 	{
-	    const int d[3] = {
-		(code % 3) - 1,
-		(code/3 % 3) - 1,
-		(code/9 % 3) - 1
+	    enum
+	    {
+		XCELLS = XSIZE_SUBDOMAIN,
+		YCELLS = YSIZE_SUBDOMAIN,
+		ZCELLS = ZSIZE_SUBDOMAIN,
+		XOFFSET = XCELLS / 2,
+		YOFFSET = YCELLS / 2,
+		ZOFFSET = ZCELLS / 2
 	    };
 
-	    int vcid[3];
-	    for(int c = 0; c < 3; ++c)
-		vcid[c] = mycid[c] + d[c];
+	    const int xcenter = XOFFSET + (int)floorf(dst0.x);
+	    const int xstart = max(0, xcenter - 1);
+	    const int xcount = min(XCELLS, xcenter + 2) - xstart;
 
-	    bool validcid = true;
-	    for(int c = 0; c < 3; ++c)
-		validcid &= vcid[c] >= 0 && vcid[c] < L[c];
+	    if (xcenter - 1 >= XCELLS || xcenter + 2 <= 0)
+		return;
 
-	    if (!validcid)
-		continue;
+	    assert(xcount >= 0);
 
-	    const int cid = vcid[0] + XSIZE_SUBDOMAIN * (vcid[1] + YSIZE_SUBDOMAIN * vcid[2]);
-	    const int mystart = tex1Dfetch(texCellsStart, cid);
-	    const int myend = mystart + tex1Dfetch(texCellsCount, cid);
+	    const int ycenter = YOFFSET + (int)floorf(dst0.y);
 
-	    assert(mystart >= 0 && mystart <= myend);
-	    assert(myend <= npsolvent);
+	    const int zcenter = ZOFFSET + (int)floorf(dst1.x);
+	    const int zmy = zcenter - 1 + zplane;
+	    const bool zvalid = zmy >= 0 && zmy < ZCELLS;
 
-#pragma unroll 4
-	    for(int s = mystart; s < myend; ++s)
+	    int count0 = 0, count1 = 0, count2 = 0;
+
+	    if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < YCELLS)
 	    {
-		float f[3];
-		const bool nonzero = fsi_kernel(seed, dpid, xp, up, s, f[0], f[1], f[2]);
-
-		if (nonzero)
-		{
-		    for(int c = 0; c < 3; ++c)
-			fsum[c] += f[c];
-
-		    for(int c = 0; c < 3; ++c)
-			atomicAdd(c + (float *)(accsolvent + s), -f[c]);
-		}
+		const int cid0 = xstart + XCELLS * (ycenter - 1 + YCELLS * zmy);
+		assert(cid0 >= 0 && cid0 + xcount <= NCELLS);
+		spidbase = tex1Dfetch(texCellsStart, cid0);
+		count0 = ((cid0 + xcount == NCELLS) ? nsolvent : tex1Dfetch(texCellsStart, cid0 + xcount)) - spidbase;
 	    }
+
+	    if (zvalid && ycenter >= 0 && ycenter < YCELLS)
+	    {
+		const int cid1 = xstart + XCELLS * (ycenter + YCELLS * zmy);
+		assert(cid1 >= 0 && cid1 + xcount <= NCELLS);
+		deltaspid1 = tex1Dfetch(texCellsStart, cid1);
+		count1 = ((cid1 + xcount == NCELLS) ? nsolvent : tex1Dfetch(texCellsStart, cid1 + xcount)) - deltaspid1;
+	    }
+
+	    if (zvalid && ycenter + 1 >= 0 && ycenter + 1 < YCELLS)
+	    {
+		const int cid2 = xstart + XCELLS * (ycenter + 1 + YCELLS * zmy);
+		deltaspid2 = tex1Dfetch(texCellsStart, cid2);
+		assert(cid2 >= 0 && cid2 + xcount <= NCELLS);
+		count2 = ((cid2 + xcount == NCELLS) ? nsolvent : tex1Dfetch(texCellsStart, cid2 + xcount)) - deltaspid2;
+	    }
+
+	    scan1 = count0;
+	    scan2 = count0 + count1;
+	    ncandidates = scan2 + count2;
+
+	    deltaspid1 -= scan1;
+	    deltaspid2 -= scan2;
 	}
 
+	float xforce = 0, yforce = 0, zforce = 0;
+
+#pragma unroll 3
+	for(int i = 0; i < ncandidates; ++i)
+	{
+	    const int m1 = (int)(i >= scan1);
+	    const int m2 = (int)(i >= scan2);
+	    const int spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
+
+	    assert(spid >= 0 && spid < nsolvent);
+
+	    const int sentry = 3 * spid;
+	    const float2 stmp0 = tex1Dfetch(texSolventParticles, sentry    );
+	    const float2 stmp1 = tex1Dfetch(texSolventParticles, sentry + 1);
+	    const float2 stmp2 = tex1Dfetch(texSolventParticles, sentry + 2);
+
+	    const float _xr = dst0.x - stmp0.x;
+	    const float _yr = dst0.y - stmp0.y;
+	    const float _zr = dst1.x - stmp1.x;
+
+	    const float rij2 = _xr * _xr + _yr * _yr + _zr * _zr;
+
+	    const float invrij = rsqrtf(rij2);
+
+	    const float rij = rij2 * invrij;
+
+	    if (rij2 >= 1)
+		continue;
+
+	    const float argwr = 1.f - rij;
+	    const float wr = viscosity_function<-VISCOSITY_S_LEVEL>(argwr);
+
+	    const float xr = _xr * invrij;
+	    const float yr = _yr * invrij;
+	    const float zr = _zr * invrij;
+
+	    const float rdotv =
+		xr * (dst1.y - stmp1.y) +
+		yr * (dst2.x - stmp2.x) +
+		zr * (dst2.y - stmp2.y);
+
+	    const float myrandnr = Logistic::mean0var1(seed, pid, spid);
+
+	    const float strength = params.aij * argwr + (- params.gamma * wr * rdotv + params.sigmaf * myrandnr) * wr;
+
+	    const float xinteraction = strength * xr;
+	    const float yinteraction = strength * yr;
+	    const float zinteraction = strength * zr;
+
+	    xforce += xinteraction;
+	    yforce += yinteraction;
+	    zforce += zinteraction;
+
+	    atomicAdd(accsolvent + sentry    , -xinteraction);
+	    atomicAdd(accsolvent + sentry + 1, -yinteraction);
+	    atomicAdd(accsolvent + sentry + 2, -zinteraction);
+	}
+
+	atomicAdd(acc + 3 * pid + 0, xforce);
+	atomicAdd(acc + 3 * pid + 1, yforce);
+	atomicAdd(acc + 3 * pid + 2, zforce);
+
 	for(int c = 0; c < 3; ++c)
-	    accrbc[dpid].a[c] = fsum[c];
+	    assert(!isnan(acc[3 * pid + c]));
     }
 
-    __constant__ int packstarts[27];
+    __constant__ int packstarts_padded[27], packcount[26];
     __constant__ Particle * packstates[26];
     __constant__ Acceleration * packresults[26];
 
-    __device__ float3 __shfl_float3(float3 f, int l) {
-
-	return make_float3(__shfl(f.x, l),
-			   __shfl(f.y, l),
-			   __shfl(f.z, l));
-    }
-
-    __constant__ char4 tid2ind[32] = {{-1, -1, -1, 0}, {0, -1, -1, 0}, {1, -1, -1, 0},
-				      {-1,  0, -1, 0}, {0,  0, -1, 0}, {1,  0, -1, 0},
-				      {-1 , 1, -1, 0}, {0,  1, -1, 0}, {1,  1, -1, 0},
-				      {-1, -1,  0, 0}, {0, -1,  0, 0}, {1, -1,  0, 0},
-				      {-1,  0,  0, 0}, {0,  0,  0, 0}, {1,  0,  0, 0},
-				      {-1,  1,  0, 0}, {0,  1,  0, 0}, {1,  1,  0, 0},
-				      {-1, -1,  1, 0}, {0, -1,  1, 0}, {1, -1,  1, 0},
-				      {-1,  0,  1, 0}, {0,  0,  1, 0}, {1,  0,  1, 0},
-				      {-1,  1,  1, 0}, {0,  1,  1, 0}, {1,  1,  1, 0},
-				      { 0,  0,  0, 0}, {0,  0,  0, 0}, {0,  0,  0, 0},
-				      { 0,  0,  0, 0}, {0,  0,  0, 0}};
-
-    template<int BLOCKSIZE> __global__  __launch_bounds__(32 * 4, 16)
-	void fsi_forces_all_nopref(const float seed, Acceleration * accsolvent, const int npsolvent, const int nremote)
+    __global__ 
+	void interactions_halo(const int nparticles_padded,
+			       const int nsolvent, float * const accsolvent, const float seed)
     {
-	assert(blockDim.x == BLOCKSIZE);
-	assert(blockDim.x * gridDim.x >= nremote);
+	assert(blockDim.x * gridDim.x >= nparticles_padded);
 
-	__shared__ float tmp[BLOCKSIZE * 3];
-	__shared__ int volatile starts[BLOCKSIZE];
-	__shared__ int volatile scan[BLOCKSIZE];
+	const int laneid = threadIdx.x & 0x1f;
+	const int warpid = threadIdx.x >> 5;
+	const int localbase = 32 * (warpid + 4 * blockIdx.x);
+	const int pid = localbase + laneid;
+	
+	if (localbase >= nparticles_padded)
+	    return;
 
-	const int tid = threadIdx.x;
-	const int gidstart =  BLOCKSIZE * blockIdx.x;
-
-	const int lid = threadIdx.x%32;
-	const int wof = threadIdx.x&(~31);
-	const int wst = gidstart+wof;
-
-	const int nlocal = min(BLOCKSIZE, nremote - gidstart);
-
-	float3 xp, up;
-
-#ifndef NDEBUG
-	xp = make_float3(-313.313f, -313.313f, -313.313f); //che e' poi l'auto di paperino
-	up = make_float3(-313.313f, -313.313f, -313.313f);
-#endif
+	int nunpack;
+	float2 dst0, dst1, dst2;
+	float * dst = NULL;
 
 	{
-	    const int n = nlocal * 6;
-	    const int h = nlocal * 3;
+	    const uint key9 = 9 * (localbase >= packstarts_padded[9]) + 9 * (localbase >= packstarts_padded[18]);
+	    const uint key3 = 3 * (localbase >= packstarts_padded[key9 + 3]) + 3 * (localbase >= packstarts_padded[key9 + 6]);
+	    const uint key1 = (localbase >= packstarts_padded[key9 + key3 + 1]) + (localbase >= packstarts_padded[key9 + key3 + 2]);
+	    const int code = key9 + key3 + key1;
+	    assert(code >= 0 && code < 26);
+	    assert(localbase >= packstarts_padded[code] && localbase < packstarts_padded[code + 1]);
 
-	    for(int base = 0; base < n; base += h)
+	    const int unpackbase = localbase - packstarts_padded[code];
+	    assert (unpackbase >= 0);
+	    assert(unpackbase < packcount[code]);
+
+	    nunpack = min(32, packcount[code] - unpackbase);
+
+	    if (nunpack == 0)
+		return;
+
+	    read_AOS6f((float2 *)(packstates[code] + unpackbase), nunpack, dst0, dst1, dst2);
+
+	    dst = (float*)(packresults[code] + unpackbase);
+	}
+
+	float xforce = 0, yforce = 0, zforce = 0;
+
+	const int nzplanes = laneid < nunpack ? 3 : 0;
+
+	for(int zplane = 0; zplane < nzplanes; ++zplane)
+	{
+	    int scan1, scan2, ncandidates, spidbase;
+	    int deltaspid1, deltaspid2;
+
 	    {
-#pragma unroll 3
-		for(int x = tid; x < h; x += BLOCKSIZE)
+		enum
 		{
-		    const int l = base + x;
-		    const int gid = gidstart + l / 6;
+		    XCELLS = XSIZE_SUBDOMAIN,
+		    YCELLS = YSIZE_SUBDOMAIN,
+		    ZCELLS = ZSIZE_SUBDOMAIN,
+		    XOFFSET = XCELLS / 2,
+		    YOFFSET = YCELLS / 2,
+		    ZOFFSET = ZCELLS / 2
+		};
 
-		    const int key9 = 9 * ((gid >= packstarts[9]) + (gid >= packstarts[18]));
-		    const int key3 = 3 * ((gid >= packstarts[key9 + 3]) + (gid >= packstarts[key9 + 6]));
-		    const int key1 = (gid >= packstarts[key9 + key3 + 1]) + (gid >= packstarts[key9 + key3 + 2]);
+		const int NCELLS = XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN;
+		const int xcenter = XOFFSET + (int)floorf(dst0.x);
+		const int xstart = max(0, xcenter - 1);
+		const int xcount = min(XCELLS, xcenter + 2) - xstart;
 
-		    const int code = key9 + key3 + key1;
-		    const int lpid = gid - packstarts[code];
+		if (xcenter - 1 >= XCELLS || xcenter + 2 <= 0)
+		    continue;
 
-		    assert(x < BLOCKSIZE * 3);
-		    tmp[x] = *((l % 6) + (float *)&packstates[code][lpid]);
-		}
+		assert(xcount >= 0);
 
-		__syncthreads();
+		const int ycenter = YOFFSET + (int)floorf(dst0.y);
 
-		const int xstart = tid * 6 - base;
+		const int zcenter = ZOFFSET + (int)floorf(dst1.x);
+		const int zmy = zcenter - 1 + zplane;
+		const bool zvalid = zmy >= 0 && zmy < ZCELLS;
 
-		if (0 <= xstart && xstart + 3 <= h)
+		int count0 = 0, count1 = 0, count2 = 0;
+
+		if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < YCELLS)
 		{
-		    xp.x = tmp[0 + xstart];
-		    xp.y = tmp[1 + xstart];
-		    xp.z = tmp[2 + xstart];
-
-		    assert(0 + 6 * tid - base >= 0);
-		    assert(2 + 6 * tid - base < 3 * BLOCKSIZE);
+		    const int cid0 = xstart + XCELLS * (ycenter - 1 + YCELLS * zmy);
+		    assert(cid0 >= 0 && cid0 + xcount <= NCELLS);
+		    spidbase = tex1Dfetch(texCellsStart, cid0);
+		    count0 = ((cid0 + xcount == NCELLS) ? nsolvent : tex1Dfetch(texCellsStart, cid0 + xcount)) - spidbase;
 		}
 
-		const int ustart = 3 + 6 * tid - base;
-
-		if (0 <= ustart && ustart + 3 <= h)
+		if (zvalid && ycenter >= 0 && ycenter < YCELLS)
 		{
-		    up.x = tmp[0 + ustart];
-		    up.y = tmp[1 + ustart];
-		    up.z = tmp[2 + ustart];
-
-		    assert(3 + 6 * tid - base >= 0);
-		    assert(5 + 6 * tid - base < 3 * BLOCKSIZE);
+		    const int cid1 = xstart + XCELLS * (ycenter + YCELLS * zmy);
+		    assert(cid1 >= 0 && cid1 + xcount <= NCELLS);
+		    deltaspid1 = tex1Dfetch(texCellsStart, cid1);
+		    count1 = ((cid1 + xcount == NCELLS) ? nsolvent : tex1Dfetch(texCellsStart, cid1 + xcount)) - deltaspid1;
 		}
-	    }
-	}
 
-#ifndef NDEBUG
-	assert(xp.x != -313.313f || gidstart + tid >= nremote);
-	assert(xp.y != -313.313f || gidstart + tid >= nremote);
-	assert(xp.z != -313.313f || gidstart + tid >= nremote);
-	assert(up.x != -313.313f || gidstart + tid >= nremote);
-	assert(up.y != -313.313f || gidstart + tid >= nremote);
-	assert(up.z != -313.313f || gidstart + tid >= nremote);
-#endif
-
-	assert(!isnan(xp.x) && !isnan(xp.y) && !isnan(xp.z));
-	assert(!isnan(up.x) && !isnan(up.y) && !isnan(up.z));
-
-	__syncthreads();
-
-	if (wst < nremote)
-	{
-	    char mycid[4] = {-2,-2,-2,0};
-	    if (tid + gidstart < nremote) {
-	        mycid[0] = XSIZE_SUBDOMAIN / 2 + (int)floor(xp.x);
-	        mycid[1] = YSIZE_SUBDOMAIN / 2 + (int)floor(xp.y);
-	        mycid[2] = ZSIZE_SUBDOMAIN / 2 + (int)floor(xp.z);
-		mycid[3] = 1;
-
-	        if (mycid[0] < -1 || mycid[0] >= XSIZE_SUBDOMAIN + 1 ||
-		    mycid[1] < -1 || mycid[1] >= YSIZE_SUBDOMAIN + 1 ||
-		    mycid[2] < -1 || mycid[2] >= ZSIZE_SUBDOMAIN + 1)
-		    mycid[3] = 0;
-            }
-
-	    float fsum[3] = {0, 0, 0};
-	    const char4 offs = tid2ind[lid];
-
-	    for(int l = 0; l < 32; l++) {
-
-		char ccel[4];
-		*((int *)ccel) = __shfl(*((int *)mycid), l);
-		if (!ccel[3]) continue;
-
-    		int mycount=0, myscan=0;
-		if (lid < 27) {
-
-		    ccel[0] += offs.x;
-		    ccel[1] += offs.y;
-		    ccel[2] += offs.z;
-
-		    bool validcid = ccel[0] >= 0 && ccel[0] < XSIZE_SUBDOMAIN &&
-			ccel[1] >= 0 && ccel[1] < YSIZE_SUBDOMAIN &&
-			ccel[2] >= 0 && ccel[2] < ZSIZE_SUBDOMAIN;
-
-		    const int cid = (validcid) ? (ccel[0] + XSIZE_SUBDOMAIN*(ccel[1] + YSIZE_SUBDOMAIN*ccel[2])) : 0;
-		    starts[threadIdx.x] = (validcid) ? tex1Dfetch(texCellsStart, cid) : 0;
-		    myscan = mycount = (validcid) ? tex1Dfetch(texCellsCount, cid) : 0;
+		if (zvalid && ycenter + 1 >= 0 && ycenter + 1 < YCELLS)
+		{
+		    const int cid2 = xstart + XCELLS * (ycenter + 1 + YCELLS * zmy);
+		    deltaspid2 = tex1Dfetch(texCellsStart, cid2);
+		    assert(cid2 >= 0 && cid2 + xcount <= NCELLS);
+		    count2 = ((cid2 + xcount == NCELLS) ? nsolvent : tex1Dfetch(texCellsStart, cid2 + xcount)) - deltaspid2;
 		}
-#pragma unroll
-		for(int L = 1; L < 32; L <<= 1)
-		    myscan += (lid >= L)*__shfl_up(myscan, L);
 
-		if (lid < 28) scan[threadIdx.x] = myscan - mycount;
+		scan1 = count0;
+		scan2 = count0 + count1;
+		ncandidates = scan2 + count2;
 
-		float ftmp[3] = {0, 0, 0};
-		float3 dxp = __shfl_float3(xp, l);
-		float3 dup = __shfl_float3(up, l);
-
-		const int did = wst+l;
-
-		const int nsrc = scan[wof+27];
-		for(int sid = lid; sid < nsrc; sid += 32) {
-
-		    const int key9 = 9*((sid >= scan[wof + 9]) + (sid >= scan[wof + 18]));
-		    const int key3 = 3*((sid >= scan[wof + key9+3]) + (sid >= scan[wof + key9+6]));
-		    const int key1 = (sid >= scan[wof + key9+key3+1]) + (sid >= scan[wof + key9+key3+2]);
-		    int s = sid - scan[wof + key3+key9+key1] + starts[wof + key3+key9+key1];
-
-		    float f[3];
-		    const bool nonzero = fsi_kernel(seed, did, dxp, dup, s, f[0], f[1], f[2]);
-
-		    if (nonzero) {
-			ftmp[0] += f[0];
-			ftmp[1] += f[1];
-			ftmp[2] += f[2];
-
-			atomicAdd((float *)(accsolvent + s),   -f[0]);
-			atomicAdd((float *)(accsolvent + s)+1, -f[1]);
-			atomicAdd((float *)(accsolvent + s)+2, -f[2]);
-		    }
-		}
-#pragma unroll
-		for(int z = 16; z; z >>= 1) {
-		    ftmp[0] += __shfl_xor(ftmp[0], z);
-		    ftmp[1] += __shfl_xor(ftmp[1], z);
-		    ftmp[2] += __shfl_xor(ftmp[2], z);
-		}
-		if (l == lid) {
-		    fsum[0] = ftmp[0];
-		    fsum[1] = ftmp[1];
-		    fsum[2] = ftmp[2];
-		}
+		deltaspid1 -= scan1;
+		deltaspid2 -= scan2;
 	    }
 
-	    for(int c = 0; c < 3;  ++c)
-		assert(!isnan(fsum[c]));
-
-	    tmp[0 + 3 * tid] = fsum[0];
-	    tmp[1 + 3 * tid] = fsum[1];
-	    tmp[2 + 3 * tid] = fsum[2];
-	}
-
-	__syncthreads();
-
-	{
-	    const int n = nlocal * 3;
-
-#pragma unroll 3
-	    for(int l = tid; l < n; l += BLOCKSIZE)
+	    for(int i = 0; i < ncandidates; ++i)
 	    {
-		const int gid = gidstart + l / 3;
+		const int m1 = (int)(i >= scan1);
+		const int m2 = (int)(i >= scan2);
+		const int spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
 
-		const int key9 = 9 * ((gid >= packstarts[9]) + (gid >= packstarts[18]));
-		const int key3 = 3 * ((gid >= packstarts[key9 + 3]) + (gid >= packstarts[key9 + 6]));
-		const int key1 = (gid >= packstarts[key9 + key3 + 1]) + (gid >= packstarts[key9 + key3 + 2]);
+		assert(spid >= 0 && spid < nsolvent);
 
-		const int code = key9 + key3 + key1;
-		const int lpid = gid - packstarts[code];
+		const int sentry = 3 * spid;
+		const float2 stmp0 = tex1Dfetch(texSolventParticles, sentry    );
+		const float2 stmp1 = tex1Dfetch(texSolventParticles, sentry + 1);
+		const float2 stmp2 = tex1Dfetch(texSolventParticles, sentry + 2);
 
-		packresults[code][lpid].a[l % 3] = tmp[l];
+		const float _xr = dst0.x - stmp0.x;
+		const float _yr = dst0.y - stmp0.y;
+		const float _zr = dst1.x - stmp1.x;
+
+		const float rij2 = _xr * _xr + _yr * _yr + _zr * _zr;
+
+		const float invrij = rsqrtf(rij2);
+
+		const float rij = rij2 * invrij;
+
+		if (rij2 >= 1)
+		    continue;
+
+		const float argwr = 1.f - rij;
+		const float wr = viscosity_function<-VISCOSITY_S_LEVEL>(argwr);
+
+		const float xr = _xr * invrij;
+		const float yr = _yr * invrij;
+		const float zr = _zr * invrij;
+
+		const float rdotv =
+		    xr * (dst1.y - stmp1.y) +
+		    yr * (dst2.x - stmp2.x) +
+		    zr * (dst2.y - stmp2.y);
+
+		const float myrandnr = Logistic::mean0var1(seed, pid, spid);
+
+		const float strength = params.aij * argwr + (- params.gamma * wr * rdotv + params.sigmaf * myrandnr) * wr;
+
+		const float xinteraction = strength * xr;
+		const float yinteraction = strength * yr;
+		const float zinteraction = strength * zr;
+
+		xforce += xinteraction;
+		yforce += yinteraction;
+		zforce += zinteraction;
+
+		atomicAdd(accsolvent + sentry    , -xinteraction);
+		atomicAdd(accsolvent + sentry + 1, -yinteraction);
+		atomicAdd(accsolvent + sentry + 2, -zinteraction);
 	    }
 	}
+
+	write_AOS3f(dst, nunpack, xforce, yforce, zforce);
     }
-
-    __global__ void merge_accelerations(const Acceleration * const src, const int n, Acceleration * const dst)
-    {
-	const int gid = threadIdx.x + blockDim.x * blockIdx.x;
-
-	if (gid < n)
-	    for(int c = 0; c < 3; ++c)
-		dst[gid].a[c] += src[gid].a[c];
-    }
-
-    __global__ void merge_accelerations_float(const Acceleration * const src, const int n, Acceleration * const dst)
-    {
-	assert(blockDim.x * gridDim.x >= n * 3);
-
-	const int gid = threadIdx.x + blockDim.x * blockIdx.x;
-
-	const int pid = gid / 3;
-	const int c = gid % 3;
-
-	if (pid < n)
-	    dst[pid].a[c] += src[pid].a[c];
-    }
-
-    template<bool accumulation>
-    __global__ void merge_accelerations_scattered_float(const int * const reordering, const Acceleration * const src,
-							const int n, Acceleration * const dst)
-    {
-	assert(blockDim.x * gridDim.x >= n * 3);
-
-	const int gid = threadIdx.x + blockDim.x * blockIdx.x;
-
-	const int pid = gid / 3;
-	const int c = gid % 3;
-
-	if (pid < n)
-	{
-	    const int actualpid = reordering[pid];
-
-	    if (accumulation)
-		dst[actualpid].a[c] += src[pid].a[c];
-	    else
-		dst[actualpid].a[c] = src[pid].a[c];
-	}
-    }
-
 
     void setup(const Particle * const solvent, const int npsolvent, const int * const cellsstart, const int * const cellscount,
 	       const Particle * const solute, const int npsolute, const int * const solute_cellsstart, const int * const solute_cellscount)
@@ -770,25 +549,10 @@ namespace KernelsRBC
 	    texCellsCount.mipmapFilterMode = cudaFilterModePoint;
 	    texCellsCount.normalized = 0;
 
-	    texSoluteCellsStart.channelDesc = cudaCreateChannelDesc<int>();
-	    texSoluteCellsStart.filterMode = cudaFilterModePoint;
-	    texSoluteCellsStart.mipmapFilterMode = cudaFilterModePoint;
-	    texSoluteCellsStart.normalized = 0;
-
-	    texSoluteCellsCount.channelDesc = cudaCreateChannelDesc<int>();
-	    texSoluteCellsCount.filterMode = cudaFilterModePoint;
-	    texSoluteCellsCount.mipmapFilterMode = cudaFilterModePoint;
-	    texSoluteCellsCount.normalized = 0;
-
 	    texSolventParticles.channelDesc = cudaCreateChannelDesc<float2>();
 	    texSolventParticles.filterMode = cudaFilterModePoint;
 	    texSolventParticles.mipmapFilterMode = cudaFilterModePoint;
 	    texSolventParticles.normalized = 0;
-
-	    texSoluteParticles.channelDesc = cudaCreateChannelDesc<float2>();
-	    texSoluteParticles.filterMode = cudaFilterModePoint;
-	    texSoluteParticles.mipmapFilterMode = cudaFilterModePoint;
-	    texSoluteParticles.normalized = 0;
 
 	    firsttime = false;
 	}
@@ -799,39 +563,20 @@ namespace KernelsRBC
 				       sizeof(float) * 6 * npsolvent));
 	assert(textureoffset == 0);
 
-
-	if (npsolute)
-	    CUDA_CHECK(cudaBindTexture(&textureoffset, &texSoluteParticles, solute, &texSoluteParticles.channelDesc, sizeof(float) * 6 * npsolute));
-	assert(textureoffset == 0);
-
-
 	const int ncells = XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN;
 
-	assert(textureoffset == 0);
 	CUDA_CHECK(cudaBindTexture(&textureoffset, &texCellsStart, cellsstart, &texCellsStart.channelDesc, sizeof(int) * ncells));
 	assert(textureoffset == 0);
 	CUDA_CHECK(cudaBindTexture(&textureoffset, &texCellsCount, cellscount, &texCellsCount.channelDesc, sizeof(int) * ncells));
 	assert(textureoffset == 0);
 
-	if (solute_cellsstart)
-	    CUDA_CHECK(cudaBindTexture(&textureoffset, &texSoluteCellsStart, solute_cellsstart, &texSoluteCellsStart.channelDesc,
-				       sizeof(int) * ncells));
-	assert(textureoffset == 0);
-
-	if (solute_cellscount)
-	    CUDA_CHECK(cudaBindTexture(&textureoffset, &texSoluteCellsCount, solute_cellscount, &texSoluteCellsCount.channelDesc,
-				       sizeof(int) * ncells));
-	assert(textureoffset == 0);
-
-
-	CUDA_CHECK(cudaFuncSetCacheConfig(fsi_forces<2, 2, 1, 8, 4>, cudaFuncCachePreferL1));
-	CUDA_CHECK(cudaFuncSetCacheConfig(fsi_forces_old, cudaFuncCachePreferL1));
-
+	CUDA_CHECK(cudaFuncSetCacheConfig(interactions_3tpp, cudaFuncCachePreferL1));
+	//CUDA_CHECK(cudaFuncSetCacheConfig(fsi_forces_old, cudaFuncCachePreferL1));
     }
 }
 
 ComputeInteractionsRBC::ComputeInteractionsRBC(MPI_Comm _cartcomm):
-nvertices(0), dualcells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN)
+nvertices(0)
 {
     assert(XSIZE_SUBDOMAIN % 2 == 0 && YSIZE_SUBDOMAIN % 2 == 0 && ZSIZE_SUBDOMAIN % 2 == 0);
     assert(XSIZE_SUBDOMAIN >= 2 && YSIZE_SUBDOMAIN >= 2 && ZSIZE_SUBDOMAIN >= 2);
@@ -887,21 +632,6 @@ void ComputeInteractionsRBC::_compute_extents(const Particle * const rbcs, const
 void ComputeInteractionsRBC::extent(const Particle * const rbcs, const int nrbcs, cudaStream_t stream)
 {
     NVTX_RANGE("RBC/extent", NVTX_C2);
-
-    const int nsolute = nrbcs * nvertices;
-
-    reordered_solute.resize(nsolute);
-    reordering.resize(nsolute);
-    lacc_solute.resize(nsolute);
-
-    if (nrbcs > 0)
-    {
-	CUDA_CHECK(cudaMemsetAsync(lacc_solute.data, 0, sizeof(float) * 3 * nsolute, stream));
-
-	CUDA_CHECK(cudaMemcpyAsync(reordered_solute.data, rbcs, sizeof(Particle) * nrbcs * nvertices, cudaMemcpyDeviceToDevice, stream));
-
-	dualcells.build(reordered_solute.data, nrbcs * nvertices, stream, reordering.data);
-    }
 
     minextents.resize(nrbcs);
     maxextents.resize(nrbcs);
@@ -1060,26 +790,14 @@ void ComputeInteractionsRBC::fsi_bulk(const Particle * const solvent, const int 
     const int nsolvent = nparticles;
 
     KernelsRBC::setup(solvent, nparticles, cellsstart_solvent, cellscount_solvent,
-		      reordered_solute.data, nsolute, dualcells.start, dualcells.count);
+		      NULL, 0, NULL, NULL);
 
     if (nrbcs > 0 && nparticles > 0)
     {
 	const float seed = local_trunk.get_float();
 
-#if 1
-	const int3 vcells = make_int3(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
-
-	KernelsRBC::fsi_forces<2, 2, 1, 8, 4><<<
-	    dim3(vcells.x / 2, vcells.y / 2, vcells.z), dim3(32, 4), 0, stream>>>
-	    (seed, (float *)lacc_solute.data, nsolute, (float *)accsolvent, nsolvent);
-
-        KernelsRBC::merge_accelerations_scattered_float<true><<< (nrbcs * nvertices * 3 + 127) / 128, 128, 0, stream >>>(
-	    reordering.data, lacc_solute.data, nrbcs * nvertices, accrbc);
-
-#else
-	KernelsRBC::fsi_forces<<< (nrbcs * nvertices + 127) / 128, 128, 0, stream >>>
-	    (seed, accsolvent, nparticles, rbcs, nrbcs * nvertices, accrbc);
-#endif
+	KernelsRBC::interactions_3tpp<<< (3 * nsolute + 127) / 128, 128, 0, stream >>>
+	    ((float2 *)rbcs, nsolute, nsolvent, (float *)accrbc, (float *)accsolvent, seed);
     }
 }
 
@@ -1090,25 +808,31 @@ void ComputeInteractionsRBC::fsi_halo(const Particle * const solvent, const int 
     NVTX_RANGE("RBC/fsi-halo", NVTX_C7);
 
     KernelsRBC::setup(solvent, nparticles, cellsstart_solvent, cellscount_solvent,
-		      NULL, 0, NULL, 0);
+		      NULL, 0, NULL, NULL);
     _wait(reqrecvp);
     _wait(reqsendp);
 
 #if 1
     {
-	int nremote = 0;
+	int nremote_padded = 0;
 
 	{
-	    static int packstarts[27];
+	    static int packcount[26], packstarts_padded[27];
 
-	    packstarts[0] = 0;
+	    for(int i = 0; i < 26; ++i)
+		packcount[i] = remote[i].state.size;
+	    
+	    CUDA_CHECK(cudaMemcpyToSymbolAsync(KernelsRBC::packcount, packcount,
+					       sizeof(packcount), 0, cudaMemcpyHostToDevice, stream));
+	    
+	    packstarts_padded[0] = 0;
 	    for(int i = 0, s = 0; i < 26; ++i)
-		packstarts[i + 1] = (s += remote[i].state.size);
+		packstarts_padded[i + 1] = (s += 32 * ((remote[i].state.size + 31) / 32));
 
-	    nremote = packstarts[26];
-
-	    CUDA_CHECK(cudaMemcpyToSymbolAsync(KernelsRBC::packstarts, packstarts,
-					       sizeof(packstarts), 0, cudaMemcpyHostToDevice, stream));
+	    nremote_padded = packstarts_padded[26];
+	    
+	    CUDA_CHECK(cudaMemcpyToSymbolAsync(KernelsRBC::packstarts_padded, packstarts_padded,
+					       sizeof(packstarts_padded), 0, cudaMemcpyHostToDevice, stream));
 	}
 
 	{
@@ -1131,10 +855,9 @@ void ComputeInteractionsRBC::fsi_halo(const Particle * const solvent, const int 
 					       sizeof(packresults), 0, cudaMemcpyHostToDevice, stream));
 	}
 
-	if(nremote)
-	    KernelsRBC::fsi_forces_all_nopref<128><<< (nremote + 127) / 128, 128, 0, stream>>>
-		(local_trunk.get_float(), accsolvent, nparticles, nremote);
-
+	if(nremote_padded)
+	    KernelsRBC::interactions_halo<<< (nremote_padded + 127) / 128, 128, 0, stream>>>
+		(nremote_padded, nparticles, (float *)accsolvent, local_trunk.get_float());
     }
 #else
     for(int i = 0; i < 26; ++i)
