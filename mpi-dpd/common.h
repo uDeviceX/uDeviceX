@@ -35,7 +35,7 @@ const float gammadpd = 45;
 const float sigma = sqrt(2 * gammadpd * kBT);
 const float sigmaf = sigma / sqrt(dt);
 const float aij = 25;
-const float hydrostatic_a = 0.05;
+const float hydrostatic_a = 0.005;
 
 extern float tend;
 extern bool walls, pushtheflow, doublepoiseuille, rbcs, ctcs, xyz_dumps, hdf5field_dumps, hdf5part_dumps, is_mps_enabled;
