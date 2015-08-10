@@ -35,7 +35,7 @@ const float gammadpd = 45;
 const float sigma = sqrt(2 * gammadpd * kBT); 
 const float sigmaf = sigma / sqrt(dt);
 const float aij = 33;
-const float hydrostatic_a = 0.005;
+const float hydrostatic_a = 0.0005;
 
 extern float tend;
 extern bool walls, pushtheflow, doublepoiseuille, rbcs, ctcs, xyz_dumps, hdf5field_dumps, hdf5part_dumps, is_mps_enabled;
@@ -308,7 +308,7 @@ SimpleDeviceBuffer(int n = 0): capacity(0), size(0), data(NULL) { resize(n);}
 	    if (data != NULL)
 		CUDA_CHECK(cudaFree(data));
 	    
-	    const int conservative_estimate = (int)ceil(1.1 * n);
+	    const int conservative_estimate = (int)ceil(1.05 * n);
 	    capacity = 128 * ((conservative_estimate + 129) / 128);
 	    
 	    CUDA_CHECK(cudaMalloc(&data, sizeof(T) * capacity));
