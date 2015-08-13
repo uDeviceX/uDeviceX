@@ -1,0 +1,165 @@
+
+/*
+
+[1] Fedosov, Dmitry A. Multiscale modeling of blood flow and soft
+matter. Brown University, 2010, PhD dissertation
+
+[2] Dao, M., J. Li, and S. Suresh. "Molecularly based analysis of
+deformation of spectrin network and human erythrocyte." Materials
+Science and Engineering: C 26.8 (2006): 1232-1244.
+
+[3] Mueller, K. In silico particle margination in blood
+flow. Universitaet zu Koeln, 2015, PhD dissertation
+
+*/
+
+load ("scifac") $
+load("abs_integrate");
+load("scifac");
+load("multiadditive") $
+load("membr_utils.mac") $
+load("shape_utils.mac") $
+load("dimension") $
+
+declare(membrane_constant, feature);
+  
+declare([kbT , ka , kb, A0, Arest],  membrane_constant) $ 
+declare([l0  ,  ksp               ], membrane_constant) $
+                                                                       
+declare([p1_v, p2_v, p3_v], nonscalar) $                           
+declare([a12_v, a32_v],     nonscalar) $                           
+declare(f_v,                nonscalar) $
+                                                                       
+adef_gen: ['a12_v       = 'p1_v - 'p2_v];
+
+adef_ang: ['a32_v       = 'p3_v - 'p2_v,
+           'dot_a12     = dot('a12_v,'a12_v),
+           'dot_a32     = dot('a32_v,'a32_v),
+           'dot_a32_a12 = dot('a32_v,'a12_v),
+           'ctheta      = 'dot_a32_a12/(sqrt('dot_a12)*sqrt('dot_a32))];
+
+adef_bnd: ['lj2         =  dot('a12_v, 'a12_v),
+           'lj          =  sqrt('lj2),
+            'A          =  1/2*cp('p2_v, 'p1_v)];
+
+rdef:     ['Acurrent    =  'A + 'Arest,
+           'Vb          =  'kb*(1+'ctheta),
+           'Va          =  'ka*('Acurrent - 'A0)^2/2 + 'kl*'Acurrent^2/2 + 'ksp*('lj - 'l0)^2/2];
+           
+%cvars%:  ['p1_v, 'p2_v, 'p3_v];
+ee: append(adef_gen, adef_ang, adef_bnd, rdef);
+
+
+/* register units and description of a parameter */
+un(e, u, d):= (put(e, u, 'di), put(e, d, 'de)) $
+un('Velocity     , 'length/'time           , "velocity units") $
+un('Energy       , 'mass*di('Velocity)^2   , "energy units") $
+un('p1_v, 'length,    "radius vector of point 1");
+un('p2_v, 'length,    "radius vector of point 1");
+un('p3_v, 'length,    "radius vector of point 1");
+un('Vb   , di(Energy), "bending energy");
+un('Va   , di(Energy), "area    energy");
+un('kbT  , di(Energy), "thermal    energy");
+un('A0    , 'length^2, "equilibrium area of 2D membrain");
+
+un('kl  , false, "coefficient of local area energy");
+un('ka  , false, "coefficient of global area energy");
+un('ksp , false, "harmonic spring coefficient");
+un('kb  , false, "bending energy constant");
+un('l0  , false, "equilibrium spring length");
+
+di_eq: mdi(ee);
+di_so: di_solve(di_eq);
+di_set(di_so);
+map('who, ['kl, ka, 'ksp, 'kb, 'l0, 'A0]);
+
+eq: mdiff(ee);
+cp_and_dot_vars(e):= block([A, B],
+  A: listofvars(args_of(args_of(e,  'cp ), 'del)),
+  B: listofvars(args_of(args_of(e,  'dot), 'del)),
+  ldifference(append(A, B), %cvars%));
+cp_and_dot_vars_emptyp(e):= emptyp(cp_and_dot_vars(e));
+
+lvars: ldifference(listofvars(args_of(eq, del)), %cvars%);
+lvars: map('del, lvars);
+
+good: [];
+bad : linsolve(eq, lvars);
+while not emptyp(bad) do  ([good, bad] :
+  pred_partition(append(good, bad), cp_and_dot_vars_emptyp),
+  bad: subst(good, bad));
+
+/* list of energies */
+evars: ['Vb, 'Va];
+
+for v in %cvars% do (
+  for e in evars do (
+    d: assoc( del(e), good),
+    d: resimp(d),
+    Force[e, v]: gcfac(fullratsimp( -sdiff(d, del(v))))));
+
+Force['Vb, 'p3_v];
+Force['Va, 'p2_v];
+
+declare([f1, f2, f3], nonscalar);
+frc: [f1 = Force['Va, 'p1_v], f2 = Force['Va, 'p2_v]];
+frc: flatten(devector(frc));
+frc: subst(":", "=", frc);
+
+def: flatten(devector([adef_gen, adef_bnd]));
+def: subst(":", "=", def);
+
+nm: map('lhs, def);
+tpy: create_list( funmake('mode_declare, [v, 'flonum]), v, nm);
+
+inp: flatten(devector([p1_v, p2_v, Acurrent]));
+inp_type: create_list( funmake('mode_declare, [v, 'flonum]), v, inp);
+
+qfloat(def, frc);
+  
+fname: 'm2d_bnd;
+u: buildq([fname, inp, inp_type, nm, tpy, def, frc],
+  fname(splice(inp)):=
+  block([splice(nm)],
+    splice(inp_type),
+    splice(tpy),
+    splice(def),
+    splice(frc)));
+
+load("maxima2cpp.mac");
+
+sb  : create_list(v = v[type], v, [kl, ka, ksp, l0, A0]);
+sb_p: devector([ [p1_vx, p1_vy] = p1_v , [p1_vx, p1_vy] = p1_v] );
+
+process(subst(sb, u));
+
+
+/*
+
+nmembr: 3;
+
+R[imembr, iatom]
+V[imembr, iatom]
+F[imembr, iatom]
+C[imembr]
+
+create_ic
+
+for imembr
+  update Acurrent[imembr]
+  update C[imembr]
+  null_f
+  update_f_bnd
+  update_f_ang
+
+for imembr
+for jmembr
+  update_f_intermembr
+
+for imembr
+  update_v
+  update_r
+
+output
+
+*/
