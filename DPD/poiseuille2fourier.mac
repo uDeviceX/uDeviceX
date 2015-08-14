@@ -1,0 +1,33 @@
+load("draw") $
+
+/* size of the domain */
+L: 1;
+
+/* one half of "Kolmogorov" profile */
+v(x):= x*(L-x);
+
+/* basis functions */
+s(n):= sin(2*%pi*n*x/(2*L));
+
+/* fourier coefficient */
+A(n, expr):=block([expr0: expr, expr1: subst('x='x-L, expr)],
+  1/L*(integrate(expr0*s(n), x, 0, L) + integrate(-expr1*s(n), x, L, 2*L)));
+
+/* take `nmax' functions */
+nmax: 5;
+
+/* fourier approximation of "Kolmogorov" profile */
+v_fourier: sum(A('n, v(x))*'s('n), n, 1, nmax);
+
+/*
+G s(n) = eta(n) * s(n) */
+
+nn: create_list( [n, A(n)], n, 1, nmax);
+nn: sublist(nn, lambda([e], second(e)#0));
+nn: map( lambda([e], e/nn[1]), nn);
+
+draw2d ( logy=true, 'points_joined=true, points(nn));
+draw2d ( explicit(v(x), x, 0, L), explicit(-v(x-L), x, L, 2*L),
+  'color='red, explicit(v_fourier, x, 0, 2*L) );
+
+

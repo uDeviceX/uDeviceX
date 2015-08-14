@@ -40,7 +40,6 @@ un('Re           , 1                       , "Reynolds number") $
 ky    : 2*%pi/'Ly;
 mu    : 'nu*'rho;
 
-
 /* define the only non-zero component of a stress tensor */
 depends(vx, y);
 tau_xy:  mu*diff('vx, 'y);
