@@ -16,7 +16,7 @@ OBJS = 	dpd.o wall.o fsi.o contact.o \
 	solvent-exchange.o solute-exchange.o \
 	common.o containers.o io.o \
 	scan.o minmax.o redistancing.o \
-	simulation.o main.o
+	simulation.o main.o dumper.o
 
 LIBS = -lcuda-dpd -lcuda-rbc -lcuda-ctc -lcudart -ldl -lz
 
@@ -49,16 +49,6 @@ floatized ?= 1
 slevel ?= 0
 flops ?= 0
 datadump ?= 1
-
-ifeq "$(datadump)" "0"
-NVCCFLAGS += -D_NO_DUMPS_
-endif
-ifeq "$(datadump)" "1"
-NVCCFLAGS += -D_SYNC_DUMPS_
-endif
-ifeq "$(datadump)" "2"
-NVCCFLAGS += -D_ASYNC_DUMPS_
-endif
 
 NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel)
 

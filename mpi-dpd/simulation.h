@@ -60,7 +60,7 @@ class Simulation
     bool (*check_termination)();
     bool simulation_is_done;
 
-    MPI_Comm activecomm, cartcomm;
+    MPI_Comm activecomm, cartcomm, intercomm;
     //LocalComm localcomm;
 
     cudaStream_t mainstream, uploadstream, downloadstream;
@@ -100,11 +100,9 @@ class Simulation
 
 public:
 
-    Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_termination)()) ;
+    Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, MPI_Comm intercomm, bool (*check_termination)()) ;
     
     void run();
 
     ~Simulation();
-
-    static void * datadump_trampoline(void * x) { ((Simulation *)x)->_datadump_async(); return NULL; }
 };

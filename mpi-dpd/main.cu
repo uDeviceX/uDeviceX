@@ -21,6 +21,7 @@
 
 #include "argument-parser.h"
 #include "simulation.h"
+#include "dumper.h"
 
 bool currently_profiling = false;
 float tend;
@@ -85,12 +86,6 @@ int main(int argc, char ** argv)
     adjust_message_sizes = argp("-adjust_message_sizes").asBool(false);
     contactforces = argp("-contactforces").asBool(false);
 
-#ifndef _NO_DUMPS_
-    const bool mpi_thread_safe = argp("-mpi_thread_safe").asBool(true);
-#else
-    const bool mpi_thread_safe = argp("-mpi_thread_safe").asBool(false);
-#endif
-
     SignalHandling::setup();
 
 #ifdef _USE_NVTX_
@@ -117,40 +112,27 @@ int main(int argc, char ** argv)
 
     int nranks, rank;
 
-    if (mpi_thread_safe)
-    {
-	//needed for the asynchronous data dumps
-	setenv("MPICH_MAX_THREAD_SAFETY", "multiple", 0);
 
-	int provided_safety_level;
-	MPI_CHECK( MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided_safety_level));
-
+    MPI_CHECK(MPI_Init(&argc, &argv));
 	MPI_CHECK( MPI_Comm_size(MPI_COMM_WORLD, &nranks) );
 	MPI_CHECK( MPI_Comm_rank(MPI_COMM_WORLD, &rank) );
 
-	if (provided_safety_level != MPI_THREAD_MULTIPLE)
-	{
-	    if (rank == 0)
-		printf("ooooooooops MPI thread safety level is just %d. Aborting now.\n", provided_safety_level);
-	    abort();
-	}
+    MPI_Comm  iocomm, activecomm, intercomm, splitcomm;
+
+    assert(nranks & 0x1 == 0);
+    int computeTask = (rank+1) % 2;
+    MPI_CHECK( MPI_Comm_split(MPI_COMM_WORLD, computeTask, rank, &splitcomm) );
+    if (computeTask)
+        MPI_CHECK( MPI_Comm_dup(splitcomm, &activecomm) );
 	else
-	    if (rank == 0)
-		printf("I have set MPICH_MAX_THREAD_SAFETY=multiple\n");
-    }
+        MPI_CHECK( MPI_Comm_dup(splitcomm, &iocomm) );
+
+    if (computeTask)
+        MPI_CHECK( MPI_Intercomm_create(activecomm, 0, MPI_COMM_WORLD, 1, 0, &intercomm) );
     else
-    {
-	MPI_CHECK(MPI_Init(&argc, &argv));
-	MPI_CHECK( MPI_Comm_size(MPI_COMM_WORLD, &nranks) );
-	MPI_CHECK( MPI_Comm_rank(MPI_COMM_WORLD, &rank) );
+        MPI_CHECK( MPI_Intercomm_create(iocomm,     0, MPI_COMM_WORLD, 0, 0, &intercomm) );
 
-	const char * env_thread_safety = getenv("MPICH_MAX_THREAD_SAFETY");
 
-	if (rank == 0 && env_thread_safety)
-	    printf("I read MPICH_MAX_THREAD_SAFETY=%s", env_thread_safety);
-    }
-
-    MPI_Comm activecomm = MPI_COMM_WORLD;
 #if defined(CUSTOM_REORDERING)
     activecomm = setup_reorder_comm(MPI_COMM_WORLD, rank, nranks);
 #endif
@@ -160,7 +142,7 @@ int main(int argc, char ** argv)
     const char * env_reorder = getenv("MPICH_RANK_REORDER_METHOD");
 
     //reordering of the ranks according to the computational domain and environment variables
-    if (atoi(env_reorder ? env_reorder : "-1") == atoi("3"))
+    if (computeTask && atoi(env_reorder ? env_reorder : "-1") == atoi("3"))
     {
 	reordering = false;
 
@@ -182,18 +164,22 @@ int main(int argc, char ** argv)
 	    return 0;
 	}
 
-	MPI_CHECK(MPI_Barrier(activecomm));
+        MPI_CHECK(MPI_Barrier(MPI_COMM_WORLD));
     }
 
-    MPI_Comm cartcomm;
+    MPI_Comm cartcomm, iocartcomm;
 
     int periods[] = {1, 1, 1};
 
+    if (computeTask)
     MPI_CHECK( MPI_Cart_create(activecomm, 3, ranks, periods, (int)reordering, &cartcomm) );
+    else
+        MPI_CHECK( MPI_Cart_create(iocomm, 3, ranks, periods, (int)reordering, &iocartcomm) );
 
     activecomm = cartcomm;
 
     //print the rank-to-node mapping
+    if (computeTask)
     {
 	char name[1024];
 	int len;
@@ -219,6 +205,8 @@ int main(int argc, char ** argv)
 
     //RAII
     {
+        if (computeTask)
+        {
 	MPI_CHECK(MPI_Barrier(activecomm));
 
 	if (rank == 0)
@@ -231,21 +219,38 @@ int main(int argc, char ** argv)
 
 	MPI_CHECK(MPI_Barrier(activecomm));
 	
-	Simulation simulation(cartcomm, activecomm, SignalHandling::check_termination_request);
-
+            Simulation simulation(cartcomm, activecomm, intercomm, SignalHandling::check_termination_request);
 	simulation.run();
     }
+        else
+        {
+            Dumper dumper(iocomm, iocartcomm, intercomm);
+            dumper.do_dump();
+        }
+    }
 
+    if (computeTask)
+    {
     if (activecomm != cartcomm)
 	MPI_CHECK(MPI_Comm_free(&activecomm));
 
     MPI_CHECK(MPI_Comm_free(&cartcomm));
+        MPI_CHECK(MPI_Comm_free(&intercomm));
+    }
+    else
+    {
+        MPI_CHECK(MPI_Comm_free(&iocomm));
+        MPI_CHECK(MPI_Comm_free(&intercomm));
+    }
 
     MPI_CHECK(MPI_Finalize());
 
+    if (computeTask)
+    {
     CUDA_CHECK(cudaDeviceSynchronize());
 
     CUDA_CHECK(cudaDeviceReset());
+    }
 
     return 0;
 }

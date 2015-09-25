@@ -27,6 +27,9 @@
 #include <sstream>
 #include <vector>
 
+//#define USE_POSIX_IO
+#include <fcntl.h>
+
 #include "io.h"
 
 using namespace std;
@@ -83,33 +86,193 @@ void xyz_dump(MPI_Comm comm, MPI_Comm cartcomm, const char * filename, const cha
 
     MPI_Status status;
 
-    MPI_CHECK( MPI_File_write_at_all(f, base + offset, const_cast<char *>(content.c_str()), len, MPI_CHAR, &status));
+    MPI_CHECK( MPI_File_write_at(f, base + offset, const_cast<char *>(content.c_str()), len, MPI_CHAR, &status));
 
     MPI_CHECK( MPI_File_close(&f));
 }
 
-void _write_bytes(const void * const ptr, const int nbytes32, MPI_File f, MPI_Comm comm)
+void _write_bytes_mpi(const void * const ptr, const int nbytes32, MPI_File f, MPI_Offset base0, MPI_Offset offset0, MPI_Comm comm, int rank)
 {
-    MPI_Offset base;
-    MPI_CHECK( MPI_File_get_position(f, &base));
-
-    MPI_Offset offset = 0, nbytes = nbytes32;
-    MPI_CHECK( MPI_Exscan(&nbytes, &offset, 1, MPI_OFFSET, MPI_SUM, comm));
+    MPI_Offset base = base0;
+    MPI_Offset offset = offset0;
+    MPI_Offset nbytes = nbytes32;
 
     MPI_Status status;
 
     MPI_CHECK( MPI_File_write_at_all(f, base + offset, ptr, nbytes, MPI_CHAR, &status));
-
-    MPI_Offset ntotal = 0;
-    MPI_CHECK( MPI_Allreduce(&nbytes, &ntotal, 1, MPI_OFFSET, MPI_SUM, comm) );
-
-    MPI_CHECK( MPI_File_seek(f, ntotal, MPI_SEEK_CUR));
 }
 
-void ply_dump(MPI_Comm comm, MPI_Comm cartcomm, const char * filename,
+void _write_bytes_posix(const void * const ptr, const int nbytes32, int f, MPI_Offset base0, MPI_Offset offset0, MPI_Comm comm)
+{
+    MPI_Offset base = base0;
+    MPI_Offset offset = offset0;
+    MPI_Offset nbytes = nbytes32;
+
+    MPI_Offset rc;
+    rc = lseek64(f, base + offset, SEEK_SET);
+    if (rc == -1)
+    {
+        printf("lseek64 failed!\n");
+        MPI_Abort(MPI_COMM_WORLD, rc);
+}
+
+    char * ptr0 = (char *)ptr;
+    MPI_Offset remaining = nbytes;
+    while (remaining > 0)
+    {
+        rc = write(f, ptr0, nbytes);
+        if (rc == -1)
+        {
+            printf("write failed!\n");
+            MPI_Abort(MPI_COMM_WORLD, rc);
+        }
+        if (rc < remaining)
+        {
+        }
+        remaining -= rc;
+        ptr0 += rc;
+    }
+}
+
+void ply_dump_mpi(MPI_Comm comm, MPI_Comm cartcomm, const char * filename,
 	      int (*mesh_indices)[3], const int ninstances, const int ntriangles_per_instance,
 	      Particle * _particles, int nvertices_per_instance, bool append)
 {
+    double t0 = MPI_Wtime();
+    std::vector<Particle> particles(_particles, _particles + ninstances * nvertices_per_instance);
+
+    int rank, size;
+    MPI_CHECK( MPI_Comm_rank(comm, &rank) );
+    MPI_CHECK( MPI_Comm_size(comm, &size) );
+
+    int dims[3], periods[3], coords[3];
+    MPI_CHECK( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
+
+    /* Part II: particles */
+    int NPOINTS = 0;
+    const int n = particles.size();
+    MPI_CHECK( MPI_Allreduce(&n, &NPOINTS, 1, MPI_INT, MPI_SUM, comm) );
+
+    /* Part III: triangles */
+    const int ntriangles = ntriangles_per_instance * ninstances;
+    int NTRIANGLES = 0;
+    MPI_CHECK( MPI_Allreduce(&ntriangles, &NTRIANGLES, 1, MPI_INT, MPI_SUM, comm) );
+
+    /* Part I: header */
+    std::stringstream ss;
+    if (rank == 0)
+    {
+        ss <<  "ply\n";
+        ss <<  "format binary_little_endian 1.0\n";
+        ss <<  "element vertex " << NPOINTS << "\n";
+        ss <<  "property float x\nproperty float y\nproperty float z\n";
+        ss <<  "property float u\nproperty float v\nproperty float w\n";
+        //ss <<  "property float xnormal\nproperty float ynormal\nproperty float znormal\n";
+        ss <<  "element face " << NTRIANGLES << "\n";
+        ss <<  "property list int int vertex_index\n";
+        ss <<  "end_header\n";
+    }
+    string content = ss.str();
+
+    const int headersize = content.size();
+    int HEADERSIZE = 0;
+    MPI_CHECK( MPI_Allreduce(&headersize, &HEADERSIZE, 1, MPI_INT, MPI_SUM, comm) );
+
+    unsigned long size0 = HEADERSIZE;
+    unsigned long size1 = NPOINTS*sizeof(Particle);
+    //  unsigned long size2 = NTRIANGLES*4*sizeof(int);
+
+    MPI_Offset base0 = 0; 
+    MPI_Offset base1 = base0 + size0;
+    MPI_Offset base2 = base1 + size1; 
+
+    int ioffset0 = 0;
+    int ioffset1 = 0;
+    int ioffset2 = 0;
+    MPI_CHECK( MPI_Exscan(&headersize, &ioffset0, 1, MPI_INTEGER, MPI_SUM, comm));
+    MPI_CHECK( MPI_Exscan(&n, &ioffset1, 1, MPI_INTEGER, MPI_SUM, comm));
+    MPI_CHECK( MPI_Exscan(&ntriangles, &ioffset2, 1, MPI_INTEGER, MPI_SUM, comm));
+
+    MPI_Offset poffset0 = ioffset0*sizeof(char);
+    MPI_Offset poffset1 = ioffset1*sizeof(Particle);
+    MPI_Offset poffset2 = ioffset2*4*sizeof(int);
+
+    MPI_File f;
+    double t1 = MPI_Wtime();
+
+    int cb = 1;
+    while (cb*2 <= size) cb *= 2;
+
+    cb = min(cb, 128);
+    char cbstr[100];
+    sprintf(cbstr, "%d", cb);
+
+    MPI_Info info;
+    MPI_Info_create(&info);
+    MPI_Info_set(info, "cb_nodes", cbstr);
+    MPI_Info_set(info, "romio_cb_write", "enable");
+    MPI_Info_set(info, "romio_ds_write", "disable");
+    MPI_Info_set(info, "striping_factor", cbstr);
+
+    MPI_CHECK( MPI_File_open(comm, filename , MPI_MODE_WRONLY | (append ? MPI_MODE_APPEND : MPI_MODE_CREATE), info, &f) );
+    double t2 = MPI_Wtime();
+
+#if 0
+    if (!append) {
+        //	MPI_CHECK( MPI_File_set_size (f, 0));
+        MPI_CHECK (MPI_File_set_size (f, size0 + size1 + size2));
+    }
+#endif
+
+    _write_bytes_mpi(content.c_str(), content.size(), f, base0, poffset0, comm, rank);
+    const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
+
+    for(int i = 0; i < n; ++i)
+        for(int c = 0; c < 3; ++c)
+            particles[i].x[c] += L[c] / 2 + coords[c] * L[c];
+
+    _write_bytes_mpi(&particles.front(), sizeof(Particle) * n, f, base1, poffset1, comm, rank);
+
+    int poffset = ioffset1;
+    std::vector<int> buf;
+
+    for(int j = 0; j < ninstances; ++j)
+        for(int i = 0; i < ntriangles_per_instance; ++i)
+        {
+            int primitive[4] = { 3,
+                    poffset + nvertices_per_instance * j + mesh_indices[i][0],
+                    poffset + nvertices_per_instance * j + mesh_indices[i][1],
+                    poffset + nvertices_per_instance * j + mesh_indices[i][2] };
+
+            buf.insert(buf.end(), primitive, primitive + 4);
+        }
+
+    _write_bytes_mpi(&buf.front(), sizeof(int) * buf.size(), f, base2, poffset2, comm, rank);
+
+    MPI_Barrier(comm);
+
+//    double t3 = MPI_Wtime();
+//    MPI_CHECK( MPI_File_close(&f));
+//    double t4 = MPI_Wtime();
+//
+//    double d0 = 1e3*(t1 - t0);
+//    double d1 = 1e3*(t2 - t1);
+//    double d2 = 1e3*(t3 - t2);
+//    double d3 = 1e3*(t4 - t3);
+//
+//    MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &d0, &d0, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+//    MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &d1, &d1, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+//    MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &d2, &d2, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+//    MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &d3, &d3, 1, MPI_DOUBLE, MPI_MAX, 0, comm);
+//
+//    if (!rank) printf("ply_dump_mpi:\t %.2f ms;  \t prep: %.2f, open %.2f, write %.2f, close %.2f\n", d0+d1+d2+d3, d0, d1, d2, d3);
+}
+
+void ply_dump_posix(MPI_Comm comm, MPI_Comm cartcomm, const char * filename,
+        int (*mesh_indices)[3], const int ninstances, const int ntriangles_per_instance,
+        Particle * _particles, int nvertices_per_instance, bool append)
+{
+    double t0 = MPI_Wtime();
     std::vector<Particle> particles(_particles, _particles + ninstances * nvertices_per_instance);
 
     int rank;
@@ -118,22 +281,18 @@ void ply_dump(MPI_Comm comm, MPI_Comm cartcomm, const char * filename,
     int dims[3], periods[3], coords[3];
     MPI_CHECK( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
 
+    /* Part II: particles */
     int NPOINTS = 0;
     const int n = particles.size();
-    MPI_CHECK( MPI_Reduce(&n, &NPOINTS, 1, MPI_INT, MPI_SUM, 0, comm) );
+    MPI_CHECK( MPI_Allreduce(&n, &NPOINTS, 1, MPI_INT, MPI_SUM, comm) );
 
+    /* Part III: triangles */
     const int ntriangles = ntriangles_per_instance * ninstances;
     int NTRIANGLES = 0;
-    MPI_CHECK( MPI_Reduce(&ntriangles, &NTRIANGLES, 1, MPI_INT, MPI_SUM, 0, comm) );
+    MPI_CHECK( MPI_Allreduce(&ntriangles, &NTRIANGLES, 1, MPI_INT, MPI_SUM, comm) );
 
-    MPI_File f;
-    MPI_CHECK( MPI_File_open(comm, filename , MPI_MODE_WRONLY | (append ? MPI_MODE_APPEND : MPI_MODE_CREATE), MPI_INFO_NULL, &f) );
-
-    if (!append)
-	MPI_CHECK( MPI_File_set_size (f, 0));
-
+    /* Part I: header */
     std::stringstream ss;
-
     if (rank == 0)
     {
 	ss <<  "ply\n";
@@ -146,23 +305,77 @@ void ply_dump(MPI_Comm comm, MPI_Comm cartcomm, const char * filename,
 	ss <<  "property list int int vertex_index\n";
 	ss <<  "end_header\n";
     }
-
     string content = ss.str();
 
-    _write_bytes(content.c_str(), content.size(), f, comm);
+    const int headersize = content.size();
+    int HEADERSIZE = 0;
+    MPI_CHECK( MPI_Allreduce(&headersize, &HEADERSIZE, 1, MPI_INT, MPI_SUM, comm) );
 
+    unsigned long size0 = HEADERSIZE;
+    unsigned long size1 = NPOINTS*sizeof(Particle);
+    //  unsigned long size2 = NTRIANGLES*4*sizeof(int);
+
+    MPI_Offset base0 = 0; 
+    MPI_Offset base1 = base0 + size0;
+    MPI_Offset base2 = base1 + size1; 
+
+    int ioffset0 = 0;
+    int ioffset1 = 0;
+    int ioffset2 = 0;
+    MPI_CHECK( MPI_Exscan(&headersize, &ioffset0, 1, MPI_INTEGER, MPI_SUM, comm));
+    MPI_CHECK( MPI_Exscan(&n, &ioffset1, 1, MPI_INTEGER, MPI_SUM, comm));
+    MPI_CHECK( MPI_Exscan(&ntriangles, &ioffset2, 1, MPI_INTEGER, MPI_SUM, comm));
+
+    MPI_Offset poffset0 = ioffset0*sizeof(char);
+    MPI_Offset poffset1 = ioffset1*sizeof(Particle);
+    MPI_Offset poffset2 = ioffset2*4*sizeof(int);
+
+    int f;
+    if (rank == 0)
+    {
+        f = open((char *)filename, O_CREAT | O_WRONLY | O_DIRECT, 0664);
+        if (f <= 0)
+        {
+            printf("File creation failed!\n");
+            MPI_Abort(MPI_COMM_WORLD, f);
+        }
+        //ftruncate(f, size0+size1+size2);
+        close(f);
+    }
+
+#if 1
+    MPI_CHECK(MPI_Barrier(comm));
+#else
+    int flag = 0;
+    MPI_Status status;
+    MPI_Request req;
+    MPI_Ibarrier(comm, &req);
+    while (1)
+    {
+        MPI_Test(&req, &flag, &status);
+        if (flag == 1)
+            break;
+        else
+            usleep(100);
+    }
+#endif
+    f = open((char *)filename, O_WRONLY, 0664);
+    if (f <= 0)
+    {
+        printf("File opening failed!\n");
+        MPI_Abort(MPI_COMM_WORLD, f);
+    }
+
+    _write_bytes_posix(content.c_str(), content.size(), f, base0, poffset0, comm);
     const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
 
     for(int i = 0; i < n; ++i)
 	for(int c = 0; c < 3; ++c)
 	    particles[i].x[c] += L[c] / 2 + coords[c] * L[c];
 
-    _write_bytes(&particles.front(), sizeof(Particle) * n, f, comm);
+    _write_bytes_posix(&particles.front(), sizeof(Particle) * n, f, base1, poffset1, comm);
 
-    int poffset = 0;
-
-    MPI_CHECK( MPI_Exscan(&n, &poffset, 1, MPI_INTEGER, MPI_SUM, comm));
-
+    int poffset = ioffset1;
     std::vector<int> buf;
 
     for(int j = 0; j < ninstances; ++j)
@@ -176,9 +389,34 @@ void ply_dump(MPI_Comm comm, MPI_Comm cartcomm, const char * filename,
 	    buf.insert(buf.end(), primitive, primitive + 4);
 	}
 
-    _write_bytes(&buf.front(), sizeof(int) * buf.size(), f, comm);
+    _write_bytes_posix(&buf.front(), sizeof(int) * buf.size(), f, base2, poffset2, comm);
 
-    MPI_CHECK( MPI_File_close(&f));
+    close(f);
+
+    double t1 = MPI_Wtime();
+    if (!rank && (t1-t0 > 0.05)) printf("ply_dump_posix:\t %f ms\n", 1e3*(t1-t0));
+}
+
+void ply_dump(MPI_Comm comm, MPI_Comm cartcomm, const char * filename,
+        int (*mesh_indices)[3], const int ninstances, const int ntriangles_per_instance,
+        Particle * _particles, int nvertices_per_instance, bool append)
+{
+#ifdef USE_POSIX_IO
+    ply_dump_posix(comm, cartcomm, filename, mesh_indices, ninstances, ntriangles_per_instance,
+            _particles, nvertices_per_instance, append);
+#else
+    ply_dump_mpi(comm, cartcomm, filename, mesh_indices, ninstances, ntriangles_per_instance,
+            _particles, nvertices_per_instance, append);
+
+#if 0 // only for debugging
+    char new_filename[256];
+    strcpy(new_filename, filename);
+    strcat(new_filename, ".posix");
+    ply_dump_posix(comm, cartcomm, new_filename, mesh_indices, ninstances, ntriangles_per_instance,
+            _particles, nvertices_per_instance, append);
+#endif
+#endif
+
 }
 
 H5PartDump::H5PartDump(const string fname, MPI_Comm comm, MPI_Comm cartcomm): tstamp(0), disposed(false)
@@ -313,10 +551,26 @@ void H5FieldDump::_write_fields(const char * const path2h5,
 				MPI_Comm comm, const float time)
 {
 #ifndef NO_H5
-    int nranks[3], periods[3], myrank[3];
+    int nranks[3], periods[3], myrank[3], size;
     MPI_CHECK( MPI_Cart_get(cartcomm, 3, nranks, periods, myrank) );
+    MPI_CHECK( MPI_Comm_size(comm, &size) );
 
     id_t plist_id_access = H5Pcreate(H5P_FILE_ACCESS);
+
+    int cb = 1;
+    while (cb*2 <= size) cb *= 2;
+
+    cb = min(cb, 128);
+    char cbstr[100];
+    sprintf(cbstr, "%d", cb);
+
+    MPI_Info info;
+    MPI_Info_create(&info);
+    MPI_Info_set(info, "cb_nodes", cbstr);
+    MPI_Info_set(info, "romio_cb_write", "enable");
+    MPI_Info_set(info, "romio_ds_write", "disable");
+    MPI_Info_set(info, "striping_factor", cbstr);
+
     H5Pset_fapl_mpio(plist_id_access, comm, MPI_INFO_NULL);
 
     hid_t file_id = H5Fcreate(path2h5, H5F_ACC_TRUNC, H5P_DEFAULT, plist_id_access);
@@ -479,3 +733,4 @@ H5FieldDump::~H5FieldDump()
 }
 
 bool H5FieldDump::directory_exists = false;
+
