@@ -34,6 +34,7 @@
 #include "redistribute-rbcs.h"
 #include "ctc.h"
 #include "io.h"
+#include "velcontroller.h"
 
 class Simulation
 {
@@ -56,6 +57,8 @@ class Simulation
     ComputeContact contact;
 
     ComputeWall * wall;
+
+    VelController* velcont;
 
     bool (*check_termination)();
     bool simulation_is_done;

@@ -683,6 +683,10 @@ Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_term
     int dims[3], periods[3], coords[3];
     MPI_CHECK( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
 
+    int xl[3] = {0, 0, 0};
+    int xh[3] = {24, 48, 48};
+    velcont = new VelController(xl, xh, coords, make_float3(0.5, 0, 0), activecomm);
+
     {
 	particles = &particles_pingpong[0];
 	newparticles = &particles_pingpong[1];
@@ -995,6 +999,18 @@ void Simulation::run()
 	if (lockstep_OK)
 	{
 	    _lockstep();
+
+	    if (wall != NULL)
+	    {
+            if (it % 10 == 0)
+                velcont->sample(cells.start, particles->xyzuvw.data, mainstream);
+
+            if (it % 50 == 0)
+            {
+                const float3 newf = velcont->adjustF(mainstream);
+                driving_acceleration = newf.x;
+            }
+	    }
 
 	    ++it;
 
