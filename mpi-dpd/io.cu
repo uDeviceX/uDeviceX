@@ -252,7 +252,7 @@ void ply_dump_mpi(MPI_Comm comm, MPI_Comm cartcomm, const char * filename,
     MPI_Barrier(comm);
 
 //    double t3 = MPI_Wtime();
-//    MPI_CHECK( MPI_File_close(&f));
+    MPI_CHECK( MPI_File_close(&f));
 //    double t4 = MPI_Wtime();
 //
 //    double d0 = 1e3*(t1 - t0);

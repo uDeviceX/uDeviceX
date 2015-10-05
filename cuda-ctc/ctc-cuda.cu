@@ -176,6 +176,7 @@ __constant__ float A[4][4];
 	}
 
 	in.close();
+	nvertices = nparticles;
 
         int *dummyiii;
         if ( cudaMalloc(&dummyiii, sizeof(int)) == cudaErrorDevicesUnavailable )
@@ -194,7 +195,6 @@ __constant__ float A[4][4];
 	delete[] xyzuvw_host;
 	delete[] dihedrals_host;
 
-	nvertices = nparticles;
 	host_extent.xmin = xmin[0] - origin[0];
 	host_extent.ymin = xmin[1] - origin[1];
 	host_extent.zmin = xmin[2] - origin[2];
