@@ -36,6 +36,9 @@ class ComputeWall
 
     CellLists cells;
 
+    SimpleDeviceBuffer<float3> frcs;
+    int samples;
+
 public:
 
     ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int& nsurvived, ExpectedMessageSizes& new_sizes, const bool verbose);

@@ -83,6 +83,7 @@ int main(int argc, char ** argv)
     nvtxstop = argp("-nvtxstop").asInt(10500);
     adjust_message_sizes = argp("-adjust_message_sizes").asBool(false);
     contactforces = argp("-contactforces").asBool(false);
+    hdf5field_dumps = argp("-hdf5field_dumps").asBool(false);
 
 #ifndef _NO_DUMPS_
     const bool mpi_thread_safe = argp("-mpi_thread_safe").asBool(true);

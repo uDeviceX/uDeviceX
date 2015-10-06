@@ -53,21 +53,18 @@ namespace VelControlKernels
         return val;
     }
 
-    __global__ void reduceWarp(float3 *res, const float3 * const __restrict__ vel, const uint total, const uint chunks)
+    __global__ void reduceByWarp(float3 *res, const float3 * const __restrict__ vel, const uint total)
     {
+        assert(blockDim.x == 32);
         const uint id = threadIdx.x + blockIdx.x*blockDim.x;
-        const uint ch = blockIdx.x % chunks;
+        const uint ch = blockIdx.x;
         if (id >= total) return;
 
         const float3 val  = vel[id];
         const float3 rval = warpReduceSum(val);
 
         if ((threadIdx.x % warpSize) == 0)
-        {
-            res[ch].x=rval.x;
-            res[ch].y=rval.y;
-            res[ch].z=rval.z;
-        }
+            res[ch]=rval;
     }
 }
 
@@ -119,17 +116,17 @@ void VelController::sample(const int * const cellsstart, const Particle* const p
 
 float3 VelController::adjustF(cudaStream_t stream)
 {
-    const int chunks = total / 32;
+    const int chunks = (total+31) / 32;
     if (avgvel.size < chunks) avgvel.resize(chunks);
 
     if (total)
     {
-        VelControlKernels::reduceWarp <<< (total + 31) / 32, 32, 0, stream >>> (avgvel.devptr, vel.data, total, chunks);
+        VelControlKernels::reduceByWarp <<< (total + 31) / 32, 32, 0, stream >>> (avgvel.devptr, vel.data, total);
         CUDA_CHECK( cudaStreamSynchronize(stream) );
     }
 
     float3 cur = make_float3(0, 0, 0);
-    for (int i=0; i<total; i++)
+    for (int i=0; i<chunks; i++)
         cur += avgvel.data[i];
 
     MPI_CHECK( MPI_Allreduce(MPI_IN_PLACE, &cur.x, 3, MPI_FLOAT, MPI_SUM, comm) );
