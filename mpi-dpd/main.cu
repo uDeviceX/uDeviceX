@@ -27,6 +27,8 @@ float tend;
 bool walls, pushtheflow, doublepoiseuille, rbcs, ctcs, xyz_dumps, hdf5field_dumps, hdf5part_dumps, is_mps_enabled, adjust_message_sizes, contactforces;
 int steps_per_report, steps_per_dump, wall_creation_stepid, nvtxstart, nvtxstop;
 
+float stretchingForce, RBClmax, RBCp, RBCcq, RBCkb, RBCka, RBCkv, RBCgammaC;
+
 LocalComm localcomm;
 
 namespace SignalHandling
@@ -84,6 +86,17 @@ int main(int argc, char ** argv)
     nvtxstop = argp("-nvtxstop").asInt(10500);
     adjust_message_sizes = argp("-adjust_message_sizes").asBool(false);
     contactforces = argp("-contactforces").asBool(false);
+
+    // float stretchingForce, RBClmax, RBCp, RBCcq, RBCkb, RBCka, RBCkv, RBCgammaC;
+    // 1.23, 0.00253, 2.4, 6.6, 5000, 5000, 10
+    stretchingForce = argp("-stretchingForce").asDouble(0.0);
+    RBClmax = argp("-RBClmax").asDouble(1.23);
+    RBCp = argp("-RBCp").asDouble(0.00253);
+    RBCcq = argp("-RBCcq").asDouble(2.4);
+    RBCkb = argp("-RBCkb").asDouble(6.6);
+    RBCka = argp("-RBCka").asDouble(5000);
+    RBCkv = argp("-RBCkv").asDouble(5000);
+    RBCgammaC = argp("-RBCgammaC").asDouble(10);
 
 #ifndef _NO_DUMPS_
     const bool mpi_thread_safe = argp("-mpi_thread_safe").asBool(true);

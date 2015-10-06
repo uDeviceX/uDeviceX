@@ -26,6 +26,7 @@
 
 using namespace std;
 
+extern float stretchingForce, RBClmax, RBCp, RBCcq, RBCkb, RBCka, RBCkv, RBCgammaC;
 
 #define CUDA_CHECK(ans) do { cudaAssert((ans), __FILE__, __LINE__); } while(0)
 inline void cudaAssert(cudaError_t code, const char *file, int line)
@@ -51,6 +52,8 @@ namespace CudaRBC
     float* devtrs4;
 
     int *triplets;
+
+    float *addfrc;
 
     __constant__ float A[4][4];
 
@@ -262,6 +265,30 @@ namespace CudaRBC
         params.nvertices = nvertices;
         params.ntriangles = triangles.size();
 
+        // Find stretching points
+        vector< pair<float, int> > tmp(nvertices);
+        for (int i=0; i<nvertices; i++)
+        {
+            tmp[i].first = particles[i].x[0];
+            tmp[i].second = i;
+        }
+        sort(tmp.begin(), tmp.end());
+
+        float* hAddfrc = new float[nvertices];
+        memset(hAddfrc, 0, nvertices*sizeof(float));
+        const int strVerts = 10;
+        for (int i=0; i<strVerts; i++)
+        {
+            hAddfrc[tmp[i].second] = -stretchingForce / strVerts;
+            hAddfrc[tmp[nvertices - 1 - i].second] = +stretchingForce / strVerts;
+        }
+
+        //for (int i=0; i<nvertices; i++)
+        //    printf("%d: x=%.3f, f=%.3f\n", i, particles[i].x[0], hAddfrc[i]);
+
+        CUDA_CHECK( cudaMalloc(&addfrc, nvertices*sizeof(float)) );
+        CUDA_CHECK( cudaMemcpy(addfrc, hAddfrc, nvertices*sizeof(float), cudaMemcpyHostToDevice) );
+
         float* xyzuvw_host = new float[6*nvertices * sizeof(float)];
         for (int i=0; i<nvertices; i++)
         {
@@ -309,65 +336,65 @@ namespace CudaRBC
         maxCells = 0;
         CUDA_CHECK( cudaMalloc(&host_av, 1 * 2 * sizeof(float)) );
 
-        unitsSetup(1.64, 0.001412, 19.0476, 35, 2500, 3500, 50, 135, 91, 1e-6, 2.4295e-6, 4, report);
+        unitsSetup(RBClmax, RBCp, RBCcq, RBCkb, RBCka, RBCkv, RBCgammaC, 135, 94, 1e-6, 2.4295e-6, 4, report);
 
         CUDA_CHECK( cudaFuncSetCacheConfig(fall_kernel<498>, cudaFuncCachePreferL1) );
     }
 
     void unitsSetup(float lmax, float p, float cq, float kb, float ka, float kv, float gammaC,
-            float totArea0, float totVolume0, float lunit, float tunit, int ndens, bool prn)
-    {
-        const float lrbc = 1.000000e-06;
-        const float trbc = 3.009441e-03;
-        //const float mrbc = 3.811958e-13;
-
-        float ll = lunit / lrbc;
-        float tt = tunit / trbc;
-
-        params.kbT = 580 * 250 * pow(ll, -2.0) * pow(tt, 2.0);
-        params.p = p / ll;
-        params.lmax = lmax / ll;
-        params.q = 1;
-        params.Cq = cq * params.kbT * pow(ll, -2.0);
-        params.totArea0 = totArea0 * pow(ll, -2.0);
-        params.totVolume0 = totVolume0 * pow(ll, -3.0);
-        params.l0 = sqrt(params.totArea0 / (2.0*params.nvertices - 4.) * 4.0/sqrt(3.0));
-        params.ka = ka * params.kbT / (params.totArea0 * params.l0 * params.l0);
-        params.kv = kv * params.kbT / (6 * params.totVolume0 * powf(params.l0, 3));
-        params.gammaC = gammaC * 580 * pow(tt, 1.0);
-        params.gammaT = 3.0 * params.gammaC;
-
-        float phi = 6.97 / 180.0*M_PI;
-        params.sinTheta0 = sin(phi);
-        params.cosTheta0 = cos(phi);
-        params.kb = kb * params.kbT;
-
-        params.kbToverp = params.kbT / params.p;
-        params.sint0kb = params.sinTheta0 * params.kb;
-        params.cost0kb = params.cosTheta0 * params.kb;
-        CUDA_CHECK( cudaMemcpyToSymbol  (devParams, &params, sizeof(Params)) );
-
-        if (prn)
+                float totArea0, float totVolume0, float lunit, float tunit, int ndens, bool prn)
         {
-            printf("\n************* Parameters setup *************\n");
-            printf("Started with <RBC space (DPD space)>:\n");
-            printf("    DPD unit of time:  %e\n",   tunit);
-            printf("    DPD unit of length:  %e\n\n", lunit);
-            printf("\t Lmax    %12.5f  (%12.5f)\n", lmax,   params.lmax);
-            printf("\t l0      %12.5f\n",           params.l0);
-            printf("\t p       %12.5f  (%12.5f)\n", p,      params.p);
-            printf("\t Cq      %12.5f  (%12.5f)\n", cq,     params.Cq);
-            printf("\t kb      %12.5f  (%12.5f)\n", kb,     params.kb);
-            printf("\t ka      %12.5f  (%12.5f)\n", ka,     params.ka);
-            printf("\t kv      %12.5f  (%12.5f)\n", kv,     params.kv);
-            printf("\t gammaC  %12.5f  (%12.5f)\n\n", gammaC, params.gammaC);
+            const float lrbc = 1.000000e-06;
+            const float trbc = 3.009441e-03;
+            //const float mrbc = 3.811958e-13;
 
-            printf("\t kbT     %12e in dpd\n", params.kbT);
-            printf("\t area    %12.5f  (%12.5f)\n", totArea0,  params.totArea0);
-            printf("\t volume  %12.5f  (%12.5f)\n", totVolume0, params.totVolume0);
-            printf("************* **************** *************\n\n");
+            float ll = lunit / lrbc;
+            float tt = tunit / trbc;
+
+            params.kbT = 580 * 250 * pow(ll, -2.0) * pow(tt, 2.0);
+            params.p = p / ll;
+            params.lmax = lmax / ll;
+            params.q = 1;
+            params.Cq = cq * pow(ll, -2.0);
+            params.totArea0 = totArea0 * pow(ll, -2.0);
+            params.totVolume0 = totVolume0 * pow(ll, -3.0);
+            params.l0 = sqrt(params.totArea0 / (2.0*params.nvertices - 4.) * 4.0/sqrt(3.0));
+            params.ka = ka / (params.totArea0);
+            params.kv = kv  / (6 * params.totVolume0);
+            params.gammaC = gammaC * 580 * pow(tt, 1.0);
+            params.gammaT = 3.0 * params.gammaC;
+
+            float phi = 6.97 / 180.0*M_PI;
+            params.sinTheta0 = sin(phi);
+            params.cosTheta0 = cos(phi);
+            params.kb = kb;// * params.kbT;
+
+            params.kbToverp = params.kbT / params.p;
+            params.sint0kb = params.sinTheta0 * params.kb;
+            params.cost0kb = params.cosTheta0 * params.kb;
+            CUDA_CHECK( cudaMemcpyToSymbol  (devParams, &params, sizeof(Params)) );
+
+            if (prn)
+            {
+                printf("\n************* Parameters setup *************\n");
+                printf("Started with <RBC space (DPD space)>:\n");
+                printf("    DPD unit of time:  %e\n",   tunit);
+                printf("    DPD unit of length:  %e\n\n", lunit);
+                printf("\t Lmax    %12.5f  (%12.5f)\n", lmax,   params.lmax);
+                printf("\t l0      %12.5f\n",           params.l0);
+                printf("\t p       %12.5f  (%12.5f)\n", p,      params.p);
+                printf("\t Cq      %12.5f  (%12.5f)\n", cq,     params.Cq);
+                printf("\t kb      %12.5f  (%12.5f)\n", kb,     params.kb);
+                printf("\t ka      %12.5f  (%12.5f)\n", ka,     params.ka);
+                printf("\t kv      %12.5f  (%12.5f)\n", kv,     params.kv);
+                printf("\t gammaC  %12.5f  (%12.5f)\n\n", gammaC, params.gammaC);
+
+                printf("\t kbT     %12e in dpd\n", params.kbT);
+                printf("\t area    %12.5f  (%12.5f)\n", totArea0,  params.totArea0);
+                printf("\t volume  %12.5f  (%12.5f)\n", totVolume0, params.totVolume0);
+                printf("************* **************** *************\n\n");
+            }
         }
-    }
 
     int get_nvertices()
     {
@@ -642,6 +669,16 @@ namespace CudaRBC
         }
     }
 
+    //
+
+    __global__ void addKernel(float* axayaz, float* const __restrict__ addfrc, int n)
+    {
+        uint pid = threadIdx.x + blockIdx.x * blockDim.x;
+        if (pid < n)
+            axayaz[3*pid + 0] += addfrc[pid];
+
+    }
+
     // **************************************************************************************************
 
     void forces_nohost(cudaStream_t stream, int ncells, const float * const device_xyzuvw, float * const device_axayaz)
@@ -676,6 +713,7 @@ namespace CudaRBC
         int blocks  = (ncells*params.nvertices*7 + threads-1) / threads;
 
         fall_kernel<498><<<blocks, threads, 0, stream>>>(ncells, host_av, device_axayaz);
+        addKernel<<<(params.nvertices + 127) / 128, 128, 0, stream>>>(device_axayaz, addfrc, params.nvertices);
     }
 
     void get_triangle_indexing(int (*&host_triplets_ptr)[3], int& ntriangles)

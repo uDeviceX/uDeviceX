@@ -98,6 +98,8 @@ class Simulation
 
     void  _datadump_async();
 
+    float diam[3];
+
 public:
 
     Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_termination)()) ;

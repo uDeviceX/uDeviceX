@@ -30,8 +30,8 @@ enum
 
 const int numberdensity = 4;
 const float dt = 0.001;
-const float kBT = 0.0945;
-const float gammadpd = 45;
+const float kBT = 1.0;
+const float gammadpd = 4.5;
 const float sigma = sqrt(2 * gammadpd * kBT);
 const float sigmaf = sigma / sqrt(dt);
 const float aij = 25;

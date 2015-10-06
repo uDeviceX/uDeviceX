@@ -37,14 +37,14 @@ protected:
 
     cudaEvent_t evextents;
 
-    PinnedHostBuffer<float3> minextents, maxextents;
-
     virtual void _compute_extents(const Particle * const xyzuvw, const int nrbcs, cudaStream_t stream);
 
     void _post_recvcount();
     
 public:
     
+    PinnedHostBuffer<float3> minextents, maxextents;
+
     RedistributeRBCs(MPI_Comm comm);
         
     void extent(const Particle * const xyzuvw, const int nrbcs, cudaStream_t stream);

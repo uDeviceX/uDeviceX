@@ -158,6 +158,10 @@ void Simulation::_redistribute()
 
     //localcomm.barrier();
 
+    diam[0] += redistribute_rbcs.maxextents.data[0].x - redistribute_rbcs.minextents.data[0].x;
+    diam[1] += redistribute_rbcs.maxextents.data[0].y - redistribute_rbcs.minextents.data[0].y;
+    diam[2] += redistribute_rbcs.maxextents.data[0].z - redistribute_rbcs.minextents.data[0].z;
+
     timings["redistribute"] += MPI_Wtime() - tstart;
 }
 
@@ -215,6 +219,9 @@ void Simulation::_report(const bool verbose, const int idtimestep)
 
 	t0 = t1;
     }
+
+    printf("RBC diameters: %f %f %f\n", diam[0] / steps_per_report, diam[1] / steps_per_report, diam[2] / steps_per_report);
+    diam[0] = diam[1] = diam[2] = 0;
 }
 
 void Simulation::_remove_bodies_from_wall(CollectionRBC * coll)
@@ -757,6 +764,8 @@ Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_term
 	}
     }
 #endif
+
+    diam[0] = diam[1] = diam[2] = 0;
 }
 
 void Simulation::_lockstep()
@@ -996,6 +1005,10 @@ void Simulation::run()
 	if (lockstep_OK)
 	{
 	    _lockstep();
+
+        diam[0] += redistribute_rbcs.maxextents.data[0].x - redistribute_rbcs.minextents.data[0].x;
+        diam[1] += redistribute_rbcs.maxextents.data[0].y - redistribute_rbcs.minextents.data[0].y;
+        diam[2] += redistribute_rbcs.maxextents.data[0].z - redistribute_rbcs.minextents.data[0].z;
 
 	    ++it;
 
