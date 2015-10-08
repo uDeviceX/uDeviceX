@@ -58,7 +58,8 @@ class Simulation
 
     ComputeWall * wall;
 
-    VelController* velcont;
+    VelController* velcont1;
+    VelController* velcont2;
 
     bool (*check_termination)();
     bool simulation_is_done;
