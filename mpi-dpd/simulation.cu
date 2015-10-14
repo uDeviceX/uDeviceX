@@ -689,11 +689,11 @@ Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_term
 
     int xl1[3] = {0, 0, 5};
     int xh1[3] = {48, 48, 10};
-    velcont1 = new VelController(xl1, xh1, coords, make_float3(10.5, 0, 0), activecomm);
+    velcont1 = new VelController(xl1, xh1, coords, make_float3(1.5, 0, 0), activecomm);
 
     int xl2[3] = {0, 0, 38};
     int xh2[3] = {48, 48, 43};
-    velcont2 = new VelController(xl2, xh2, coords, make_float3(-10.5, 0, 0), activecomm);
+    velcont2 = new VelController(xl2, xh2, coords, make_float3(-1.5, 0, 0), activecomm);
 
     {
         particles = &particles_pingpong[0];
