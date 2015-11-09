@@ -1,0 +1,114 @@
+divert(-1)
+
+define(`forloop',
+       `pushdef(`$1', `$2')_forloop(`$1', `$2', `$3', `$4')popdef(`$1')')
+       
+define(`_forloop',
+      `$4`'ifelse($1, `$3', ,
+      `define(`$1', incr($1))_forloop(`$1', `$2', `$3', `$4')')')
+      
+define(`forrloop',
+       `pushdef(`$1', `$2')_forrloop(`$1', `$2', `$3', `$4')popdef(`$1')')
+       
+define(`_forrloop',
+       `$4`'ifelse($1, `$3', ,
+       `define(`$1', decr($1))_forrloop(`$1', `$2', `$3', `$4')')')
+        
+define(BINOMIAL, `syscmd(python binomial.py $1 $2)')
+                           
+#USAGE LUNROLL
+#$1 iteration variable
+#$2 iteration start
+#$3 iteration end
+#$4 body
+                                   
+define(LUNROLL, `forloop($1, $2, $3,`$4')')
+define(RLUNROLL, `forrloop($1, $2, $3, `$4')')
+define(EIGHT, 8)
+define(SEVEN, 7)
+define(THREE, 3)
+define(FOUR, 4)
+define(`TMP', $1_$2)
+
+divert(0)
+
+#include <immintrin.h>
+
+#include "avxoperators.h"
+
+__attribute__((always_inline)) static void inter8x4(const float * const __restrict xs,  const float * const __restrict ys,  const float * const __restrict zs,
+													const float * const __restrict us,  const float * const __restrict vs,  const float * const __restrict ws,
+													__m256 x1, __m256 y1, __m256 z1, __m256 u1, __m256 v1, __m256 w1,
+                                                    __m256 &ax, __m256 &ay, __m256 &az
+                                                    LUNROLL(`i', 0, THREE, `, __m256 TMP(r,i)'))
+{
+const float dt = 0.001;
+const float kBT = 0.0945;
+const float gammadpd = 45;
+const float sigma = sqrt(2 * gammadpd * kBT);
+const float sigmaf = sigma / sqrt(dt);
+const float aij = 25;
+
+const __m256 vone    = _mm256_set1_ps(1.0f);
+const __m256 vaij    = _mm256_set1_ps(aij);
+const __m256 vgamma  = _mm256_set1_ps(gammadpd);
+const __m256 vsigmaf = _mm256_set1_ps(sigmaf);
+
+const __m256 veps    = _mm256_set1_ps(1e-14);
+
+LUNROLL(`i', 0, THREE, `const __m256 TMP(x2, i) =  _mm256_load_ps(xs + eval(i` * 8'));
+')
+LUNROLL(`i', 0, THREE, `const __m256 TMP(y2, i) =  _mm256_load_ps(ys + eval(i` * 8'));
+')
+LUNROLL(`i', 0, THREE, `const __m256 TMP(z2, i) =  _mm256_load_ps(zs + eval(i` * 8'));
+')
+LUNROLL(`i', 0, THREE, `const __m256 TMP(u2, i) =  _mm256_load_ps(us + eval(i` * 8'));
+')
+LUNROLL(`i', 0, THREE, `const __m256 TMP(v2, i) =  _mm256_load_ps(vs + eval(i` * 8'));
+')
+LUNROLL(`i', 0, THREE, `const __m256 TMP(w2, i) =  _mm256_load_ps(ws + eval(i` * 8'));
+')
+
+LUNROLL(`i', 0, THREE, `
+const __m256 TMP(_xr, i) = x1 - TMP(x2, i);
+const __m256 TMP(_yr, i) = y1 - TMP(y2, i);
+const __m256 TMP(_zr, i) = z1 - TMP(z2, i);')
+
+
+LUNROLL(`i', 0, THREE, `
+const __m256 TMP(rij2, i) = TMP(_xr, i) * TMP(_xr, i) + TMP(_yr, i) * TMP(_yr, i) + TMP(_zr, i) * TMP(_zr, i) + veps; ')
+
+
+LUNROLL(`i', 0, THREE, `
+const __m256 TMP(invrij, i) = myrsqrt(TMP(rij2, i));
+const __m256 TMP(rij, i)    = TMP(rij2, i) * TMP(invrij, i);
+const __m256 TMP(argwr, i)  = _mm256_max_ps(vone - TMP(rij, i), _mm256_setzero_ps());
+const __m256 TMP(wr, i)     = TMP(argwr, i);')
+
+LUNROLL(`i', 0, THREE, `
+const __m256 TMP(xr, i)  = TMP(_xr, i) * TMP(invrij, i);
+const __m256 TMP(yr, i)  = TMP(_yr, i) * TMP(invrij, i);
+const __m256 TMP(zr, i)  = TMP(_zr, i) * TMP(invrij, i);')
+
+LUNROLL(`i', 0, THREE, `
+const __m256 TMP(_ur, i) = u1 - TMP(u2, i);
+const __m256 TMP(_vr, i) = v1 - TMP(v2, i);
+const __m256 TMP(_wr, i) = w1 - TMP(w2, i);')
+
+
+LUNROLL(`i', 0, THREE, `
+const __m256 TMP(rdotv, i) = TMP(xr, i) * TMP(_ur, i) + TMP(yr, i) * TMP(_vr, i) + TMP(zr, i) * TMP(_wr, i); ')
+LUNROLL(`i', 0, THREE, `
+const __m256 TMP(cons, i) = vaij * TMP(argwr, i);
+const __m256 TMP(diss, i) = vgamma * TMP(wr, i) * TMP(rdotv, i);
+const __m256 TMP(rand, i) = vsigmaf * TMP(r, i);')
+
+LUNROLL(`i', 0, THREE, `
+const __m256 TMP(strength, i) = TMP(cons, i) - (TMP(diss, i) + TMP(rand, i)) * TMP(wr, i);')
+
+LUNROLL(`i', 0, THREE, `
+ax += TMP(strength, i) * TMP(xr, i);
+ay += TMP(strength, i) * TMP(yr, i);
+az += TMP(strength, i) * TMP(zr, i);')
+}
+
