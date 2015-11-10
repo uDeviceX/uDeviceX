@@ -134,8 +134,8 @@ __forceinline__ __device__ float4 _dpd_interaction( const int dpid, const float4
 #define LOAD4(VAR) \
         const float4 VAR##VAR##1_1 = ((float4*)VAR##1)[id1]; \
         const float4 VAR##VAR##1_2 = ((float4*)VAR##2)[id1]; \
-        const float4 VAR##VAR##2_1 = ((float4*)VAR##1)[id2]; \
-        const float4 VAR##VAR##2_2 = ((float4*)VAR##2)[id2];
+//        const float4 VAR##VAR##2_1 = ((float4*)VAR##1)[id2]; \
+//        const float4 VAR##VAR##2_2 = ((float4*)VAR##2)[id2];
 
 #define COMP1(ID, COO) \
         const float3 f##ID = _dpd_interaction(id1*4+ID, \
@@ -161,7 +161,8 @@ __forceinline__ __device__ float4 _dpd_interaction( const int dpid, const float4
         ((float4*)a##COO##1)[id2] = make_float4( f4.COO,  f5.COO,  f6.COO,  f7.COO); \
         ((float4*)a##COO##2)[id2] = make_float4(-f4.COO, -f5.COO, -f6.COO, -f7.COO);
 
-#define streamNdsts 2
+#define streamNdsts 1
+//__launch_bounds__(128, 7)
 __global__ void streamCalc(float * const x1, float * const y1, float * const z1,
         float * const x2, float * const y2, float * const z2,
         float * const u1, float * const v1, float * const w1,
@@ -173,7 +174,7 @@ __global__ void streamCalc(float * const x1, float * const y1, float * const z1,
     if (gid >= n / (4*streamNdsts) ) return;
 
     const int id1 = gid;
-    const int id2 = gid + n / (4*streamNdsts);
+//    const int id2 = gid + n / (4*streamNdsts);
 
     LOAD4(x)
     LOAD4(y)
@@ -182,23 +183,22 @@ __global__ void streamCalc(float * const x1, float * const y1, float * const z1,
     LOAD4(v)
     LOAD4(w)
 
-
     COMP1(0, x);
     COMP1(1, y);
     COMP1(2, z);
     COMP1(3, w);
 
-    COMP2(4, x);
-    COMP2(5, y);
-    COMP2(6, z);
-    COMP2(7, w);
+//     COMP2(4, x);
+//     COMP2(5, y);
+//     COMP2(6, z);
+//     COMP2(7, w);
 
     WRITE1(x);
     WRITE1(y);
     WRITE1(z);
-    WRITE2(x);
-    WRITE2(y);
-    WRITE2(z);
+//     WRITE2(x);
+//     WRITE2(y);
+//     WRITE2(z);
 }
 
 //=====================================================================================================
@@ -306,14 +306,6 @@ int main(int argc, const char * argv[])
     p2.u[1] = new float[n];
     p2.u[2] = new float[n];
 
-    Acceleration a1, a2;
-    a1.a[0] = new float[n];
-    a1.a[1] = new float[n];
-    a1.a[2] = new float[n];
-    a2.a[0] = new float[n];
-    a2.a[1] = new float[n];
-    a2.a[2] = new float[n];
-
     printf("Initializing...\n");
 
     //srand48(time(NULL));
@@ -407,7 +399,7 @@ int main(int argc, const char * argv[])
         cudaEventCreate(&stop);
 
         cudaEventRecord(start);
-        streamCalc<<< (n/8+th-1)/th, th >>> (x1, y1, z1, x2, y2, z2,
+        streamCalc<<< (n/4+th-1)/th, th >>> (x1, y1, z1, x2, y2, z2,
                 u1, v1, w1, u2, v2, w2,
                 ax1, ay1, az1, ax2, ay2, az2, n);
         cudaEventRecord(stop);
@@ -433,7 +425,7 @@ int main(int argc, const char * argv[])
     //=====================================================================================================
     //=====================================================================================================
 
-    const int ns = 32*4000;
+    const int ns = 32*10000;
     struct { float4 *x, *u, *a; } p, dp;
     p.x = new float4[ns];
     p.u = new float4[ns];
