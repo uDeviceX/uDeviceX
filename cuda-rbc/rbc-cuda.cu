@@ -309,7 +309,10 @@ namespace CudaRBC
         maxCells = 0;
         CUDA_CHECK( cudaMalloc(&host_av, 1 * 2 * sizeof(float)) );
 
-        unitsSetup(1.64, 0.001412, 19.0476, 35, 2500, 3500, 50, 135, 91, 1e-6, 2.4295e-6, 4, report);
+        //unitsSetup(1.64, 0.001412, 19.0476, 35, 2500, 3500, 50, 135, 91, 1e-6, 2.4295e-6, 4, report);
+	//DA: unitsSetup(1.194170681, 0.003092250212, 20.49568481, 39.2254922344138, 13223.5137655706, 7710.76185113627, 18.14524310, 135, 94, 1e-6, 2.4295e-6, 4, report);
+	//SL:
+	unitsSetup(1.194170681, 9.104E-3, 1.314E+1, 1.000E+2, 10 * 2.500E+3, 10 * 3.500E+3, 3.500E+1, 135, 94, 1e-6, 2.4295e-6, 4, report);
 
         CUDA_CHECK( cudaFuncSetCacheConfig(fall_kernel<498>, cudaFuncCachePreferL1) );
     }

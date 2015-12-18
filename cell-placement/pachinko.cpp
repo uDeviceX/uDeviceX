@@ -14,6 +14,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cmath>
+#include <string>
 
 #include "checker.h"
 
@@ -21,9 +22,9 @@ using namespace std;
 
 int main(int argc, const char ** argv)
 {
-    if (argc != 4)
+    if (argc != 7)
     {
-        printf("usage: ./cell-placement <xdomain-extent> <ydomain-extent> <zdomain-extent>\n");
+        printf("usage: ./cell-placement <xdomain-extent> <ydomain-extent> <zdomain-extent> <singlectc-xpos> <singlectc-ypos> <singlectc-zpos>\n");
         exit(-1);
     }
 
@@ -31,8 +32,13 @@ int main(int argc, const char ** argv)
     for(int i = 0; i < 3; ++i)
         domainextent[i] = atoi(argv[1 + i]);
 
-    printf("domain extent: %d %d %d\n",
-            domainextent[0], domainextent[1], domainextent[2]);
+    float ctcposition[3];
+    for(int i = 0; i < 3; ++i)
+        ctcposition[i] = atoi(argv[1 + 3 + i]);
+
+    printf("domain extent: %d %d %d, ctc position: %f %f %f\n",
+	   domainextent[0], domainextent[1], domainextent[2],
+	   ctcposition[0], ctcposition[1], ctcposition[2]);
 
     Extent extents[2] = {
             compute_extent("../cuda-rbc/rbc2.atom_parsed"),
@@ -43,21 +49,40 @@ int main(int argc, const char ** argv)
 
     vector<TransformedExtent> results[2];
 
-    const float tol = 0.1;
+    const float tol = 0.02;
 
     Checker checker(8 + tol, domainextent, tol);
     int tot = 0;
 
+    TransformedExtent onectc(extents[1], domainextent);
+
+    for (int i=0; i<4; i++)
+        for (int j=0; j<4; j++)
+            onectc.transform[i][j] = i == j;
+
+    onectc.transform[0][3] = ctcposition[0];
+    onectc.transform[1][3] = ctcposition[1];
+    onectc.transform[2][3] = ctcposition[2];
+
+    onectc.xmin[0] = extents[1].xmin + onectc.transform[0][3];
+    onectc.xmin[1] = extents[1].ymin + onectc.transform[1][3];
+    onectc.xmin[2] = extents[1].zmin + onectc.transform[2][3];
+    onectc.xmax[0] = extents[1].xmax + onectc.transform[0][3];
+    onectc.xmax[1] = extents[1].ymax + onectc.transform[1][3];
+    onectc.xmax[2] = extents[1].zmax + onectc.transform[2][3];
+
+    checker.add(onectc);
+    results[1].push_back(onectc);
+    ++tot;
+
     while(!failed)
     {
-        const int maxattempts = 10000;
+        const int maxattempts = 10000000;
 
         int attempt = 0;
         for(; attempt < maxattempts; ++attempt)
         {
-            const int type = 0;//(int)(drand48() >= 0.25);
-
-            TransformedExtent t(extents[type], domainextent);
+            TransformedExtent t(extents[0], domainextent);
 
             bool noncolliding = true;
 
@@ -73,14 +98,18 @@ int main(int argc, const char ** argv)
             if (noncolliding)
             {
                 checker.add(t);
-                results[type].push_back(t);
+                results[0].push_back(t);
                 ++tot;
                 break;
             }
         }
 
         if (tot % 1000 == 0)
+	{
             printf("Done with %d cells...\n", tot);
+	    const double hematocrit = (tot - 1) * 94. / (domainextent[0] * domainextent[1] * domainextent[2]);
+	    printf("Hematocrit %.1f%%\n", hematocrit*100);
+	}
 
         failed |= attempt == maxattempts;
     }
@@ -107,6 +136,8 @@ int main(int argc, const char ** argv)
     }
 
     printf("Generated %d RBCs, %d CTCs\n", (int)results[0].size(), (int)results[1].size());
+    const double hematocrit = (tot - 1) * 94. / (domainextent[0] * domainextent[1] * domainextent[2]);
+    printf("Hematocrit %.1f%%\n", hematocrit*100);
 
     return 0;
 }

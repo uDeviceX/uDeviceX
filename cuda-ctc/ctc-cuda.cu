@@ -68,7 +68,7 @@ __constant__ float A[4][4];
         //        1, 1.8, a, v, a/m.ntriang, 945, 0, 472.5,
         //        90, 30, sin(phi), cos(phi), 6.048
 
-        const char* fname = "../cuda-ctc/sphere20.dat";
+        const char* fname = "../cuda-ctc/sphere14.dat";
 	ifstream in(fname);
 	string line;
 
@@ -225,7 +225,8 @@ __constant__ float A[4][4];
 
         dummy = new Extent[maxCells];
 
-        unitsSetup(1.64, 0.00141, 19.0476, 120, 12000, 12000, 0, 1256, 4189, 1e-6/ scale, 2.4295e-6, 4, false);
+        //unitsSetup(1.64, 0.00141, 19.0476, 120, 12000, 12000, 0, 1256, 4189, 1e-6/ scale, 2.4295e-6, 4, false);
+	unitsSetup(1.64, 0.00141, 19.0476, 120, 40000, 40000, 0, 660, 1596, 1e-6/ scale, 2.4295e-6, 4, false);
     }
 
     void unitsSetup(float lmax, float p, float cq, float kb, float ka, float kv, float gammaC,
