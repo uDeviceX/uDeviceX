@@ -74,7 +74,7 @@ int main(int argc, char ** argv)
 	for(int i = xsize - 3; i < xsize; ++i, ++nslices)
 	    avgU += udotnx(line.c_str(), i);
 
-	printf("%e\n", avgU / nslices);
+	printf("%s\t%e\n", line.c_str(), avgU / nslices);
     }
 
     MPI_CHECK( MPI_Finalize() );
