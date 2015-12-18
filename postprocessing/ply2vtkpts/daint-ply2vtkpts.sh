@@ -29,17 +29,18 @@ convert_some()
     done
 }
 
-if (( $# != 3))
+if (( $# != 4))
 then
-    echo "usage ./convert-all.sh <subfolder> <nvertices-per-rbc> <nvertices-per-ctc>"
+    echo "usage ./convert-all.sh <dstfolder> <srcfolder> <nvertices-per-rbc> <nvertices-per-ctc>"
 
     exit 1
 fi
 
 
-MYFOLDER=$1 #for example "ichip31"
-NVERTRBC=$2 #for example 498
-NVERTCTC=$3 #for example 5220
+DSTFOLDER=$1 #for example "ichip31"
+SRCFOLDER=$2 
+NVERTRBC=$3 #for example 498
+NVERTCTC=$4 #for example 5220
 
-convert_some "$MYFOLDER" /scratch/daint/alexeedm/ctc/"$MYFOLDER"/ply/  "rbcs-*.ply" $NVERTRBC
-convert_some "$MYFOLDER" /scratch/daint/alexeedm/ctc/"$MYFOLDER"/ply/  "ctcs-*.ply" $NVERTCTC
+convert_some "$DSTFOLDER" "$SRCFOLDER" "rbcs-*.ply" $NVERTRBC
+convert_some "$DSTFOLDER" "$SRCFOLDER" "ctcs-*.ply" $NVERTCTC
