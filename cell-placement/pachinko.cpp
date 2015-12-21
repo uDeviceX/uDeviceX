@@ -22,9 +22,9 @@ using namespace std;
 
 int main(int argc, const char ** argv)
 {
-    if (argc != 7)
+    if (argc != 8)
     {
-        printf("usage: ./cell-placement <xdomain-extent> <ydomain-extent> <zdomain-extent> <singlectc-xpos> <singlectc-ypos> <singlectc-zpos>\n");
+        printf("usage: ./cell-placement <xdomain-extent> <ydomain-extent> <zdomain-extent> <singlectc-xpos> <singlectc-ypos> <singlectc-zpos> <hematocrit>\n");
         exit(-1);
     }
 
@@ -36,9 +36,12 @@ int main(int argc, const char ** argv)
     for(int i = 0; i < 3; ++i)
         ctcposition[i] = atoi(argv[1 + 3 + i]);
 
-    printf("domain extent: %d %d %d, ctc position: %f %f %f\n",
+    float target_hematocrit = atof(argv[7]) * 0.01;
+
+    printf("domain extent: %d %d %d, ctc position: %f %f %f, target hematocrit: %f%%\n",
 	   domainextent[0], domainextent[1], domainextent[2],
-	   ctcposition[0], ctcposition[1], ctcposition[2]);
+	   ctcposition[0], ctcposition[1], ctcposition[2],
+	   target_hematocrit * 100);
 
     Extent extents[2] = {
             compute_extent("../cuda-rbc/rbc2.atom_parsed"),
@@ -75,6 +78,8 @@ int main(int argc, const char ** argv)
     results[1].push_back(onectc);
     ++tot;
 
+    double hematocrit = 0;
+
     while(!failed)
     {
         const int maxattempts = 10000000;
@@ -105,14 +110,17 @@ int main(int argc, const char ** argv)
         }
 
         if (tot % 1000 == 0)
-	{
-            printf("Done with %d cells...\n", tot);
-	    const double hematocrit = (tot - 1) * 94. / (domainextent[0] * domainextent[1] * domainextent[2]);
-	    printf("Hematocrit %.1f%%\n", hematocrit*100);
-	}
+	    printf("Done with %d cells, hematocrit %.1f%% ..\n", tot, hematocrit * 100);
+	
+	hematocrit = (tot - 1) * 94. / (domainextent[0] * domainextent[1] * domainextent[2]);
+
+	if (hematocrit > target_hematocrit)
+	    break;
 
         failed |= attempt == maxattempts;
     }
+
+    printf("CONCLUDING WITH %d cells and hematocrit %.1f%% ..\n", tot, hematocrit * 100);
 
     string output_names[2] = { "rbcs-ic.txt", "ctcs-ic.txt" };
 
@@ -136,8 +144,6 @@ int main(int argc, const char ** argv)
     }
 
     printf("Generated %d RBCs, %d CTCs\n", (int)results[0].size(), (int)results[1].size());
-    const double hematocrit = (tot - 1) * 94. / (domainextent[0] * domainextent[1] * domainextent[2]);
-    printf("Hematocrit %.1f%%\n", hematocrit*100);
 
     return 0;
 }
