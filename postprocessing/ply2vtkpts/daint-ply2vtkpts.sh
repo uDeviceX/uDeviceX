@@ -1,10 +1,10 @@
 module swap PrgEnv-cray PrgEnv-gnu
 module load cray-hdf5-parallel
-module unload cray-mpich/7.0.4
-module load cray-mpich/7.1.1
-module unload gcc
-module load gcc/4.9.1
-module load vtk
+#module unload cray-mpich/7.0.4
+#module load cray-mpich/7.1.1
+#module unload gcc
+#module load gcc/4.9.1
+#module load vtk
 
 convert_some()
 {
