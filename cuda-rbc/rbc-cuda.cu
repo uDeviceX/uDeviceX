@@ -21,6 +21,7 @@
 #include <cuda_runtime.h>
 #include <vector>
 #include <algorithm>
+#include "../mpi-dpd/params.h"
 
 #include "helper_math.h"
 
@@ -56,7 +57,7 @@ namespace CudaRBC
 
     int maxCells;
 
-    void unitsSetup(float lmax, float p, float cq, float kb, float ka, float kv, float gammaC,
+    void unitsSetup(float lmax, float p, float kb, float ka, float kv, float gammaC,
             float totArea0, float totVolume0, float lunit, float tunit, int ndens, bool prn);
 
     void eat_until(FILE * f, string target)
@@ -309,45 +310,42 @@ namespace CudaRBC
         maxCells = 0;
         CUDA_CHECK( cudaMalloc(&host_av, 1 * 2 * sizeof(float)) );
 
-        //unitsSetup(1.64, 0.001412, 19.0476, 35, 2500, 3500, 50, 135, 91, 1e-6, 2.4295e-6, 4, report);
-	//DA: unitsSetup(1.194170681, 0.003092250212, 20.49568481, 39.2254922344138, 13223.5137655706, 7710.76185113627, 18.14524310, 135, 94, 1e-6, 2.4295e-6, 4, report);
-	//SL:
-	//unitsSetup(1.194170681, 9.104E-3, 1.314E+1, 1.000E+2, 10 * 2.500E+3, 10 * 3.500E+3, 3.500E+1, 135, 94, 1e-6, 2.4295e-6, 4, report);
-//SL: BEST GUESS
-	unitsSetup(2, 0.1, 5.21371,
-		   400, 2500, 2500,
-		   0, 85.0614, 45.5134,
-		   1e-6, 2.4295e-6, 8, report);
-        CUDA_CHECK( cudaFuncSetCacheConfig(fall_kernel<498>, cudaFuncCachePreferL1) );
+        unitsSetup(
+		   1.37286,	0.0346221,
+		   1,	4900,	5000,
+		   0,	167.269,	125.506,
+		   1e-6, 2.4295e-6, 4, report);
+
+         CUDA_CHECK( cudaFuncSetCacheConfig(fall_kernel<498>, cudaFuncCachePreferL1) );
     }
 
-    void unitsSetup(float lmax, float p, float cq, float kb, float ka, float kv, float gammaC,
+    void unitsSetup(float lmax, float p, float kb, float ka, float kv, float gammaC,
             float totArea0, float totVolume0, float lunit, float tunit, int ndens, bool prn)
     {
         const float lrbc = 1.000000e-06;
-        const float trbc = 3.009441e-03;
         //const float mrbc = 3.811958e-13;
 
         float ll = lunit / lrbc;
-        float tt = tunit / trbc;
 
-        params.kbT = 580 * 250 * pow(ll, -2.0) * pow(tt, 2.0);
+        params.kbT = kBT * pow(ll, -2.0);
         params.p = p / ll;
         params.lmax = lmax / ll;
         params.q = 1;
-        params.Cq = cq * params.kbT * pow(ll, -2.0);
+	//        params.Cq = cq * pow(ll, -2.0);
         params.totArea0 = totArea0 * pow(ll, -2.0);
         params.totVolume0 = totVolume0 * pow(ll, -3.0);
+        params.Area0		= params.totArea0 / (2.0*params.nvertices - 4.);
         params.l0 = sqrt(params.totArea0 / (2.0*params.nvertices - 4.) * 4.0/sqrt(3.0));
-        params.ka = ka * params.kbT / (params.totArea0 * params.l0 * params.l0);
-        params.kv = kv * params.kbT / (6 * params.totVolume0 * powf(params.l0, 3));
-        params.gammaC = gammaC * 580 * pow(tt, 1.0);
+        params.ka = ka / (params.totArea0 * params.l0 * params.l0);
+        params.kv = kv / (6 * params.totVolume0 * powf(params.l0, 3));
+	params.kd = 100;
+        params.gammaC = gammaC;
         params.gammaT = 3.0 * params.gammaC;
 
-        float phi = 6.97 / 180.0*M_PI;
+        float phi = 6.9722 / 180.0*M_PI;
         params.sinTheta0 = sin(phi);
         params.cosTheta0 = cos(phi);
-        params.kb = kb * params.kbT;
+        params.kb = kb;
 
         params.kbToverp = params.kbT / params.p;
         params.sint0kb = params.sinTheta0 * params.kb;
@@ -363,7 +361,7 @@ namespace CudaRBC
             printf("\t Lmax    %12.5f  (%12.5f)\n", lmax,   params.lmax);
             printf("\t l0      %12.5f\n",           params.l0);
             printf("\t p       %12.5f  (%12.5f)\n", p,      params.p);
-            printf("\t Cq      %12.5f  (%12.5f)\n", cq,     params.Cq);
+	    //            printf("\t Cq      %12.5f  (%12.5f)\n", cq,     params.Cq);
             printf("\t kb      %12.5f  (%12.5f)\n", kb,     params.kb);
             printf("\t ka      %12.5f  (%12.5f)\n", ka,     params.ka);
             printf("\t kv      %12.5f  (%12.5f)\n", kv,     params.kv);
@@ -467,10 +465,14 @@ namespace CudaRBC
 
         const float3 normal = cross(x21, x31);
 
-        const float n_2 = 2.0f * rsqrtf(dot(normal, normal));
+	const float Ak = 0.5 * sqrtf(dot(normal, normal));
+	const float A0 = devParams.Area0;
+	const float n_2 = 1.0 / Ak;
+
         const float n_2to3 = n_2*n_2*n_2;
-        const float coefArea = 0.25f * (devParams.Cq * n_2to3 -
-                devParams.ka * (area - devParams.totArea0) * n_2);
+        const float coefArea = 0.25f * ( //devParams.Cq * n_2to3 -
+					- devParams.ka * (area - devParams.totArea0) * n_2) -
+	  devParams.kd*(Ak-A0)/(4.*A0*Ak);
 
         const float coeffVol = devParams.kv * (volume - devParams.totVolume0);
         const float3 addFArea = coefArea * cross(normal, x32);
@@ -479,9 +481,16 @@ namespace CudaRBC
         float r = length(v2 - v1);
         r = r < 0.0001f ? 0.0001f : r;
         const float xx = r/devParams.lmax;
-        const float IbforceI = devParams.kbToverp * ( 0.25f/((1.0f-xx)*(1.0f-xx)) - 0.25f + xx ) / r;
 
-        return addFArea + addFVolume + IbforceI * x21;
+ 	const float mpow = 2;
+ 	const float kp   = 0.117515;
+
+        const float IbforceI_wcl =
+		devParams.kbToverp * ( 0.25f/((1.0f-xx)*(1.0f-xx)) - 0.25f + xx ) / r;
+        const float IbforceI_pow = - kp / powf(r, mpow)                           / r;
+	float IbondI = IbforceI_wcl + IbforceI_pow;
+
+        return addFArea + addFVolume + IbondI * x21;
     }
 
     __device__ __forceinline__ float3 _fvisc(const float3 v1, const float3 v2, const float3 u1, const float3 u2)

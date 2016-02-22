@@ -897,10 +897,10 @@ void Simulation::_lockstep()
     solutex.recv_a(mainstream);
 
     if (rbcscoll)
-	rbcscoll->update_stage2_and_1(driving_acceleration, mainstream);
+      rbcscoll->update_stage2_and_1(0.0, mainstream);
 
     if (ctcscoll)
-	ctcscoll->update_stage2_and_1(driving_acceleration, mainstream);
+      ctcscoll->update_stage2_and_1(0.0, mainstream);
 
     if (wall && rbcscoll)
 	wall->bounce(rbcscoll->data(), rbcscoll->pcount(), mainstream);
@@ -978,10 +978,10 @@ void Simulation::run()
     particles->update_stage1(driving_acceleration, mainstream);
 
     if (rbcscoll)
-	rbcscoll->update_stage1(driving_acceleration, mainstream);
+	rbcscoll->update_stage1(0.0, mainstream);
 
     if (ctcscoll)
-	ctcscoll->update_stage1(driving_acceleration, mainstream);
+	ctcscoll->update_stage1(0.0, mainstream);
 
     int it;
 
