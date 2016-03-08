@@ -311,9 +311,9 @@ namespace CudaRBC
         CUDA_CHECK( cudaMalloc(&host_av, 1 * 2 * sizeof(float)) );
 
         unitsSetup(
-		   1.37286,	0.0346221,
-		   1,	4900,	5000,
-		   0,	167.269,	125.506,
+		   1.15791,	0.00820981,
+		   5	,	4900,	5000	,
+		   0,	118.992,	75.3038	,
 		   1e-6, 2.4295e-6, 4, report);
 
          CUDA_CHECK( cudaFuncSetCacheConfig(fall_kernel<498>, cudaFuncCachePreferL1) );
@@ -483,7 +483,7 @@ namespace CudaRBC
         const float xx = r/devParams.lmax;
 
  	const float mpow = 2;
- 	const float kp   = 0.117515;
+ 	const float kp   = 0.352545;
 
         const float IbforceI_wcl =
 		devParams.kbToverp * ( 0.25f/((1.0f-xx)*(1.0f-xx)) - 0.25f + xx ) / r;
