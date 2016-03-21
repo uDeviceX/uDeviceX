@@ -68,5 +68,5 @@ public:
     }
 
     void interactions(const Particle * const p, const int n, Acceleration * const acc,
-		      const int * const cellsstart, const int * const cellscount, cudaStream_t stream);
+		      const int * const cellsstart, const int * const cellscount, cudaStream_t stream, const float myaij = aij);
 };

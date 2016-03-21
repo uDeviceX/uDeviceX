@@ -59,7 +59,7 @@ namespace SolidWallsKernel
 
     template<bool computestresses>
     __global__ void interactions_3tpp(const float2 * const particles, const int np, const int nsolid,
-				      float * const acc, const float seed, const float sigmaf, const float xvel, const float y0);
+				      float * const acc, const float seed, const float sigmaf, const float xvel, const float y0, const float myaij);
 
     void setup()
     {
@@ -389,7 +389,7 @@ namespace SolidWallsKernel
     template<bool computestresses >
     __global__ __launch_bounds__(128, 16) void interactions_3tpp(const float2 * const particles, const int np, const int nsolid,
 								 float * const acc, const float seed, const float sigmaf,
-								 const float xvelocity_wall, const float z0)
+								 const float xvelocity_wall, const float z0, const float myaij)
     {
         assert(blockDim.x * gridDim.x >= np * 3);
 
@@ -508,7 +508,7 @@ namespace SolidWallsKernel
 
             const float myrandnr = Logistic::mean0var1(seed, pid, spid);
 
-            const float strength = aij * argwr + (- gammadpd * wr * rdotv + sigmaf * myrandnr) * wr;
+            const float strength = myaij * argwr + (- gammadpd * wr * rdotv + sigmaf * myrandnr) * wr;
 
             xforce += strength * xr;
             yforce += strength * yr;
@@ -1127,7 +1127,7 @@ void ComputeWall::bounce(Particle * const p, const int n, cudaStream_t stream)
 }
 
 void ComputeWall::interactions(const Particle * const p, const int n, Acceleration * const acc,
-        const int * const cellsstart, const int * const cellscount, cudaStream_t stream)
+        const int * const cellsstart, const int * const cellscount, cudaStream_t stream, const float myaij)
 {
     NVTX_RANGE("WALL/interactions", NVTX_C3);
 
@@ -1155,11 +1155,11 @@ void ComputeWall::interactions(const Particle * const p, const int n, Accelerati
 	    CUDA_CHECK(cudaMemcpyToSymbolAsync(SolidWallsKernel::stressinfo, &strinfo, sizeof(strinfo), 0, cudaMemcpyHostToDevice, stream));
 
 	    SolidWallsKernel::interactions_3tpp<true><<< (3 * n + 127) / 128, 128, 0, stream>>>
-                ((float2 *)p, n, solid_size, (float *)acc, trunk.get_float(), sigmaf, xvelocity, z0);
+                ((float2 *)p, n, solid_size, (float *)acc, trunk.get_float(), sigmaf, xvelocity, z0, myaij);
 	}
 	else
 	    SolidWallsKernel::interactions_3tpp<false><<< (3 * n + 127) / 128, 128, 0, stream>>>
-                ((float2 *)p, n, solid_size, (float *)acc, trunk.get_float(), sigmaf, xvelocity, z0);
+                ((float2 *)p, n, solid_size, (float *)acc, trunk.get_float(), sigmaf, xvelocity, z0, myaij);
 
 
         CUDA_CHECK(cudaUnbindTexture(SolidWallsKernel::texWallParticles));

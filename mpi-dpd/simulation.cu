@@ -384,10 +384,10 @@ void Simulation::_forces()
     CUDA_CHECK(cudaPeekAtLastError());
 
     if (rbcscoll && wall)
-	wall->interactions(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->acc(), NULL, NULL, mainstream);
+	wall->interactions(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->acc(), NULL, NULL, mainstream, 0);
 
     if (ctcscoll && wall)
-	wall->interactions(ctcscoll->data(), ctcscoll->pcount(), ctcscoll->acc(), NULL, NULL, mainstream);
+	wall->interactions(ctcscoll->data(), ctcscoll->pcount(), ctcscoll->acc(), NULL, NULL, mainstream, 0);
 
     if (wall)
 	wall->interactions(particles->xyzuvw.data, particles->size, particles->axayaz.data,
@@ -887,10 +887,10 @@ void Simulation::_lockstep()
     CUDA_CHECK(cudaPeekAtLastError());
 
     if (rbcscoll && wall)
-	wall->interactions(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->acc(), NULL, NULL, mainstream);
+	wall->interactions(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->acc(), NULL, NULL, mainstream, 0);
 
     if (ctcscoll && wall)
-	wall->interactions(ctcscoll->data(), ctcscoll->pcount(), ctcscoll->acc(), NULL, NULL, mainstream);
+	wall->interactions(ctcscoll->data(), ctcscoll->pcount(), ctcscoll->acc(), NULL, NULL, mainstream, 0);
 
     CUDA_CHECK(cudaPeekAtLastError());
 
