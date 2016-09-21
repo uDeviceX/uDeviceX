@@ -5,6 +5,12 @@ function err(s) {
     exit
 }
 
+function logg(s,    cmd) {
+    cmd = "cat 1>&2"
+    printf "(comments.awk) %s\n", s | cmd
+    close(cmd)
+}
+
 function read_file(fn,    line, sep) { # reads file content into string `a'
     while (getline line < fn > 0) {
 	a = a sep line
@@ -64,24 +70,28 @@ function end_index(s, t,    i) {
     return i + length(t)
 }
 
-function transform_comment(cm,    r_lo, r_hi, be, end) {
+function transform_comment(    lo, hi, be, end) {
     beg = " *  Users are NOT authorized"
     end = "permission from the author of this file."
 
-    r_lo =     index(cm, beg)
-    if (r_lo == 0)             return cm
-    r_hi = end_index(cm, end)
-    if (r_hi == 0)             err("I found beg but cannot find end in comments block in " fn)
+    lo =     index(cm, beg)
+    if (lo == 0)             return 0
+    hi = end_index(cm, end)
+    if (hi == 0)             err("I found beg but cannot find end in comments block in " fn)
 
-    return remove(cm, r_lo, r_hi)
+    cm = remove(cm, lo, hi)
+    return 1
 }
 
-function transfrom(    rc, cm) {
+function transfrom(    rc) {
     if (!find_comment_block()) return
 
     cm = substr(a, lo, hi - lo + 1) # get comment block as a string
-    cm = transform_comment(cm)      # transfrom comment block
+    rc = transform_comment()        # transfrom comment block
 
+    if (!rc) return
+
+    logg("trans: " fn)
     a = replace(a, lo, hi, cm)
 }
 
