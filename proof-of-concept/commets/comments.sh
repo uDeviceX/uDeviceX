@@ -7,7 +7,7 @@ t=/tmp/comments.$$.cu
 $c $f    > d
 diff $f d
 
-for f in `find . -type f -name '*.cu' -or -name '*.h' -or -name '*.cpp'`
+for f in `find . -type f -name '*.cu' -or -name '*.h' -or -name '*.cpp' -or -name '*.cc'`
 do
     $c $f > $t
     cp $t $f
