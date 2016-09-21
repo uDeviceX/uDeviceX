@@ -1,0 +1,17 @@
+Alexeev, D.
+Amoudruz, L.
+Bernaschi, M.
+Bisson, M.
+Conti, C.
+Economides, A.
+Fatica, M.
+Hadjidoukas, P.
+Joubert, W.
+Karniadakis G.
+Koumoutsakos, P.
+Kulakova, L.
+Litvinov, S.
+Lykov, K.
+Pivkin, I.
+Rossinelli, D.
+Tang, Y.-H.
