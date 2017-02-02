@@ -20,7 +20,7 @@ using namespace std;
 
 RedistributeParticles::RedistributeParticles(MPI_Comm cartcomm, int L): cartcomm(cartcomm), L(L)
 {
-    assert(L % 2 == 0);
+    // assert(L % 2 == 0);
 	    
     MPI_CHECK( MPI_Comm_rank(cartcomm, &myrank));
 	    
@@ -60,7 +60,7 @@ int RedistributeParticles::stage1(Particle * p, int n)
 	    myentries[code].push_back(i);
 
 	    for(int c = 0; c < 3; ++c)
-		assert(p[i].x[c] >= -L/2 - L && p[i].x[c] < L/2 + L);
+		// assert(p[i].x[c] >= -L/2 - L && p[i].x[c] < L/2 + L);
 	}
 	    
 	notleaving = myentries[0].size();
@@ -111,7 +111,7 @@ int RedistributeParticles::stage1(Particle * p, int n)
 
 void RedistributeParticles::stage2(Particle * p, int n)
 {
-    assert(n == notleaving + arriving);
+    // assert(n == notleaving + arriving);
 
     copy(tmp.begin(), tmp.begin() + notleaving, p);
 
@@ -144,7 +144,7 @@ void RedistributeParticles::stage2(Particle * p, int n)
 		
 	    int code = vcode[0] + 3 * (vcode[1] + 3 * vcode[2]);
 
-	    assert(code == 0);
+	    // assert(code == 0);
 	}
     }
 }

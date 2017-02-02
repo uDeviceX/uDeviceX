@@ -103,7 +103,7 @@ namespace SolidWallsKernel
             lambda[c] = t - (int)t;
             texcoord[c] = (int)t + 0.5;
 
-            assert(texcoord[c] >= 0 && texcoord[c] <= TEXSIZES[c]);
+            // assert(texcoord[c] >= 0 && texcoord[c] <= TEXSIZES[c]);
         }
 
         const float s000 = tex3D(texSDF, texcoord[0] + 0, texcoord[1] + 0, texcoord[2] + 0);
@@ -183,7 +183,7 @@ namespace SolidWallsKernel
                 cuda_printf("oooooooooops wall-interactions: texture coordinate %f exceeds bounds [0, %d] for c %d\nincrease MARGIN or decrease timestep", TEXSIZES[c], tc[c], c);
             }
 
-            assert(tc[c] >= 0 && tc[c] <= TEXSIZES[c]);
+            // assert(tc[c] >= 0 && tc[c] <= TEXSIZES[c]);
         }
 
         float xmygrad = (tex3D(texSDF, tc[0] + 1, tc[1], tc[2]) - tex3D(texSDF, tc[0] - 1, tc[1], tc[2]));
@@ -206,7 +206,7 @@ namespace SolidWallsKernel
 
     __global__ void fill_keys(const Particle * const particles, const int n, int * const key)
     {
-        assert(blockDim.x * gridDim.x >= n);
+        // assert(blockDim.x * gridDim.x >= n);
 
         const int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
@@ -221,7 +221,7 @@ namespace SolidWallsKernel
 
     __global__ void strip_solid4(Particle * const src, const int n, float4 * dst)
     {
-        assert(blockDim.x * gridDim.x >= n);
+        // assert(blockDim.x * gridDim.x >= n);
 
         const int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
@@ -235,7 +235,7 @@ namespace SolidWallsKernel
 
     __device__ void handle_collision(const float currsdf, float& x, float& y, float& z, float& u, float& v, float& w, const int rank, const float dt)
     {
-        assert(currsdf >= 0);
+        // assert(currsdf >= 0);
         const float xold = x - dt * u;
         const float yold = y - dt * v;
         const float zold = z - dt * w;
@@ -290,7 +290,7 @@ namespace SolidWallsKernel
             const float3 mygrad = ugrad_sdf(x, y, z);
             const float DphiDt = max(1e-4f, mygrad.x * u + mygrad.y * v + mygrad.z * w);
 
-            assert(DphiDt > 0);
+            // assert(DphiDt > 0);
             subdt = min(dt, max(0.f, subdt - currsdf / DphiDt * 1.02f));
         }
 
@@ -300,7 +300,7 @@ namespace SolidWallsKernel
             const float3 mygrad = ugrad_sdf(xstar.x, xstar.y, xstar.z);
             const float DphiDt = max(1e-4f, mygrad.x * u + mygrad.y * v + mygrad.z * w);
 
-            assert(DphiDt > 0);
+            // assert(DphiDt > 0);
 
             subdt = min(dt, max(0.f, subdt - sdf(xstar.x, xstar.y, xstar.z) / DphiDt * 1.02f));
         }
@@ -321,7 +321,7 @@ namespace SolidWallsKernel
             y = yold;
             z = zold;
 
-            assert(sdf(x, y, z) < 0);
+            // assert(sdf(x, y, z) < 0);
         }
 
         return;
@@ -341,7 +341,7 @@ namespace SolidWallsKernel
     __global__ __launch_bounds__(32 * 4, 12)
     void bounce(float2 * const particles, const int nparticles, const int rank, const float dt)
     {
-        assert(blockDim.x * gridDim.x >= nparticles);
+        // assert(blockDim.x * gridDim.x >= nparticles);
 
         const int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
@@ -361,7 +361,7 @@ namespace SolidWallsKernel
             if (!(abs(x[c]) <= L[c]/2 + MARGIN[c]))
                 cuda_printf("bounce: ooooooooops component %d we have %f %f %f outside %d + %d\n", c, x[0], x[1], x[2], L[c]/2, MARGIN[c]);
 
-            assert(abs(x[c]) <= L[c]/2 + MARGIN[c]);
+            // assert(abs(x[c]) <= L[c]/2 + MARGIN[c]);
         }
 #endif
 
@@ -395,7 +395,7 @@ namespace SolidWallsKernel
     __global__ __launch_bounds__(128, 16) void interactions_3tpp(const float2 * const particles, const int np, const int nsolid,
             float * const acc, const float seed, const float sigmaf)
     {
-        assert(blockDim.x * gridDim.x >= np * 3);
+        // assert(blockDim.x * gridDim.x >= np * 3);
 
         const int gid = threadIdx.x + blockDim.x * blockIdx.x;
         const int pid = gid / 3;
@@ -422,8 +422,8 @@ namespace SolidWallsKernel
 
             for(int c = 0; c < 3; ++c)
             {
-                assert( x[c] >= -L[c]/2 - MARGIN[c]);
-                assert( x[c] < L[c]/2 + MARGIN[c]);
+                // assert( x[c] >= -L[c]/2 - MARGIN[c]);
+                // assert( x[c] < L[c]/2 + MARGIN[c]);
             }
         }
 #endif
@@ -444,9 +444,9 @@ namespace SolidWallsKernel
                 NCELLS = XCELLS * YCELLS * ZCELLS
             };
 
-            assert (xbase > 0 && xbase < -1 + XCELLS &&
-                    ybase > 0 && ybase < -1 + YCELLS &&
-                    zbase > 0 && zbase < -1 + ZCELLS );
+            // assert (xbase > 0 && xbase < -1 + XCELLS &&
+            //         ybase > 0 && ybase < -1 + YCELLS &&
+            //         zbase > 0 && zbase < -1 + ZCELLS );
 
             const int cid0 = xbase - 1 + XCELLS * (ybase - 1 + YCELLS * (zbase - 1 + zplane));
 
@@ -459,7 +459,7 @@ namespace SolidWallsKernel
 
             const int cid2 = cid0 + XCELLS * 2;
             deltaspid2 = tex1Dfetch(texWallCellStart, cid2);
-            assert(cid2 + 3 <= NCELLS);
+            // assert(cid2 + 3 <= NCELLS);
             const int count2 = cid2 + 3 == NCELLS ? nsolid : tex1Dfetch(texWallCellStart, cid2 + 3) - deltaspid2;
 
             scan1 = count0;
@@ -479,7 +479,7 @@ namespace SolidWallsKernel
             const int m2 = (int)(i >= scan2);
             const int spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
 
-            assert(spid >= 0 && spid < nsolid);
+            // assert(spid >= 0 && spid < nsolid);
 
             const float4 stmp0 = tex1Dfetch(texWallParticles, spid);
 
@@ -521,8 +521,9 @@ namespace SolidWallsKernel
         atomicAdd(acc + 3 * pid + 1, yforce);
         atomicAdd(acc + 3 * pid + 2, zforce);
 
-        for(int c = 0; c < 3; ++c)
-            assert(!isnan(acc[3 * pid + c]));
+        for(int c = 0; c < 3; ++c) {
+            // assert(!isnan(acc[3 * pid + c]));
+		}
     }
 }
 
@@ -788,8 +789,8 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int&
     const int TEXTURESIZE[3] = { XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE };
 
 #ifndef NDEBUG
-    assert(fabs(dims[0] * XSIZE_SUBDOMAIN / (double) (dims[1] * YSIZE_SUBDOMAIN) - sampler.extent[0] / (double)sampler.extent[1]) < 1e-5);
-    assert(fabs(dims[0] * XSIZE_SUBDOMAIN / (double) (dims[2] * ZSIZE_SUBDOMAIN) - sampler.extent[0] / (double)sampler.extent[2]) < 1e-5);
+    // assert(fabs(dims[0] * XSIZE_SUBDOMAIN / (double) (dims[1] * YSIZE_SUBDOMAIN) - sampler.extent[0] / (double)sampler.extent[1]) < 1e-5);
+    // assert(fabs(dims[0] * XSIZE_SUBDOMAIN / (double) (dims[2] * ZSIZE_SUBDOMAIN) - sampler.extent[0] / (double)sampler.extent[2]) < 1e-5);
 #endif
 
     if (myrank == 0)
@@ -963,7 +964,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int&
     thrust::sort_by_key(keys.begin(), keys.end(), thrust::device_ptr<Particle>(p));
 
     nsurvived = thrust::count(keys.begin(), keys.end(), 0);
-    assert(nsurvived <= n);
+    // assert(nsurvived <= n);
 
     const int nbelt = thrust::count(keys.begin() + nsurvived, keys.end(), 1);
 
@@ -1031,8 +1032,9 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int&
             MPI_CHECK( MPI_Waitall(26, reqrecv, statuses) );
             MPI_CHECK( MPI_Waitall(26, reqsend, statuses) );
 
-            for(int i = 0; i < 26; ++i)
-                assert(remsizes[i] >= 0);
+            for(int i = 0; i < 26; ++i) {
+                // assert(remsizes[i] >= 0);
+			}
         }
 
         std::vector<Particle> remote[26];
@@ -1131,15 +1133,15 @@ void ComputeWall::interactions(const Particle * const p, const int n, Accelerati
         size_t textureoffset;
         CUDA_CHECK(cudaBindTexture(&textureoffset, &SolidWallsKernel::texWallParticles, solid4,
                 &SolidWallsKernel::texWallParticles.channelDesc, sizeof(float4) * solid_size));
-        assert(textureoffset == 0);
+        // assert(textureoffset == 0);
 
         CUDA_CHECK(cudaBindTexture(&textureoffset, &SolidWallsKernel::texWallCellStart, cells.start,
                 &SolidWallsKernel::texWallCellStart.channelDesc, sizeof(int) * cells.ncells));
-        assert(textureoffset == 0);
+        // assert(textureoffset == 0);
 
         CUDA_CHECK(cudaBindTexture(&textureoffset, &SolidWallsKernel::texWallCellCount, cells.count,
                 &SolidWallsKernel::texWallCellCount.channelDesc, sizeof(int) * cells.ncells));
-        assert(textureoffset == 0);
+        // assert(textureoffset == 0);
 
         SolidWallsKernel::interactions_3tpp<<< (3 * n + 127) / 128, 128, 0, stream>>>
                 ((float2 *)p, n, solid_size, (float *)acc, trunk.get_float(), sigmaf);

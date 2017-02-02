@@ -59,7 +59,7 @@ __device__ int encode(int ix, int iy, int iz, int3 ncells)
 {
     const int retval = ix + ncells.x * (iy + iz * ncells.y);
 
-    assert(retval < ncells.x * ncells.y * ncells.z && retval>=0);
+    // assert(retval < ncells.x * ncells.y * ncells.z && retval>=0);
 
     return retval; 
 }
@@ -79,7 +79,7 @@ inline void cudaAssert(cudaError_t code, const char *file, int line, bool abort=
 {
     if (code != cudaSuccess) 
     {
-	fprintf(stderr,"GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
+	fprintf(stderr,"GPU// assert: %s %s %d\n", cudaGetErrorString(code), file, line);
 	sleep(5);
 	if (abort) exit(code);
     }
@@ -201,7 +201,7 @@ void build_clists_vanilla(float * const xyzuvw, int np, const float rc,
 
     if (nonemptycells != NULL)
     {
-	assert(nonemptycells->second != NULL);
+	// assert(nonemptycells->second != NULL);
 	
 	const int nonempties = copy_if(counting_iterator<int>(0), counting_iterator<int>(ncells), 
 				       device_ptr<int>(cellscount), device_ptr<int>(nonemptycells->second), is_gzero())

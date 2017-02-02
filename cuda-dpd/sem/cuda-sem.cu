@@ -41,9 +41,9 @@ __global__ __launch_bounds__(32 * CPB, 16)
 		       const int idtimestep, 
 		       cudaTextureObject_t texStart, cudaTextureObject_t texCount, cudaTextureObject_t texParticles)
 {
-    assert(warpSize == COLS * ROWS);
-    assert(blockDim.x == warpSize && blockDim.y == CPB && blockDim.z == 1);
-    assert(ROWS * 3 <= warpSize);
+    // assert(warpSize == COLS * ROWS);
+    // assert(blockDim.x == warpSize && blockDim.y == CPB && blockDim.z == 1);
+    // assert(ROWS * 3 <= warpSize);
 
     const int tid = threadIdx.x; 
     const int subtid = tid % COLS;
@@ -98,7 +98,7 @@ __global__ __launch_bounds__(32 * CPB, 16)
 	    const int key3 = 3 * (pid >= scan[wid][key9 + 2]) + 3 * (pid >= scan[wid][key9 + 5]);
 	    const int key1 = (pid >= scan[wid][key9 + key3]) + (pid >= scan[wid][key9 + key3 + 1]);
 	    const int key = key9 + key3 + key1;
-	    assert(subtid >= np2 || pid >= (key ? scan[wid][key - 1] : 0) && pid < scan[wid][key]);
+	    // assert(subtid >= np2 || pid >= (key ? scan[wid][key - 1] : 0) && pid < scan[wid][key]);
 
 	    const int spid = starts[wid][key] + pid - (key ? scan[wid][key - 1] : 0);
 	    const int sentry = 3 * spid;
@@ -273,9 +273,9 @@ void forces_sem_cuda_nohost(
 	    cnt += collision;
 	}
 	printf("i found %d host interactions and with cuda i found %d\n", cnt, (int)axayaz[0 + 3 * i]);
-	assert(cnt == (float)axayaz[0 + 3 * i]);
+	// assert(cnt == (float)axayaz[0 + 3 * i]);
 	printf("fc aij ref %f vs cuda %e\n", fc,  (float)axayaz[1 + 3 * i]);
-	assert(fabs(fc - (float)axayaz[1 + 3 * i]) < 1e-4);
+	// assert(fabs(fc - (float)axayaz[1 + 3 * i]) < 1e-4);
     }
     
     printf("test done.\n");
@@ -551,9 +551,9 @@ void forces_sem_cuda_direct_nohost(
 	    cnt += collision;
 	}
 	if (cnt != (int)axayaz[0 + 3 * i]) printf("i found %d host interactions and with cuda i found %d\n", cnt, (int)axayaz[0 + 3 * i]);
-	//assert((float)cnt == (float)axayaz[0 + 3 * i]);
+	//// assert((float)cnt == (float)axayaz[0 + 3 * i]);
 	if (fabs((float)fc - (float)axayaz[1 + 3 * i]) > 1e-4) printf("fc aij ref %f vs cuda %f\n", fc,  (float)axayaz[1 + 3 * i]);
-	//assert(fabs((float)fc - (float)axayaz[1 + 3 * i]) < 1e-4);
+	//// assert(fabs((float)fc - (float)axayaz[1 + 3 * i]) < 1e-4);
     }
 
     printf("test done.\n");

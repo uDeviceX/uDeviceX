@@ -71,7 +71,7 @@ Value(string content_) : content(content_) { /*printf("%s\n",content.c_str());*/
     {
 	//printf("mycontent is %s\n", content.c_str());
 	std::stringstream ss(content);
-	//assert(ss.good());
+	//// assert(ss.good());
 	vector<float> retval;
 	double e;
 
@@ -84,7 +84,7 @@ Value(string content_) : content(content_) { /*printf("%s\n",content.c_str());*/
 	}
 
 	if (musthave_size > 0)
-	    assert(musthave_size == (int)retval.size());
+	    // assert(musthave_size == (int)retval.size());
 
 	return retval;
     }

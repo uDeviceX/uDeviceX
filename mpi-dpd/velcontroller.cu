@@ -36,7 +36,7 @@ namespace VelControlKernels
         }
     }
 
-    __global__ void push(const int * const __restrict__ cellsstart, Acceleration* acc, float3 f, CellInfo info)
+    __global__ void push(const int * const __restrict__ cellsstart, Acceleration* acc, float3 f, CellInfo info, const Particle* const p)
     {
         const uint3 ccoos = {threadIdx.x + blockIdx.x*blockDim.x,
                 threadIdx.y + blockIdx.y*blockDim.y,
@@ -51,6 +51,9 @@ namespace VelControlKernels
                 acc[pid].a[0] += f.x;
                 //acc[pid].a[1] += f.y;
                 //acc[pid].a[2] += f.z;
+
+//				if(fabs(p[pid].u[0]) > 1e-16)
+//					acc[pid].a[0] /= p[pid].u[0];
             }
         }
     }
@@ -68,7 +71,7 @@ namespace VelControlKernels
 
     __global__ void reduceByWarp(float3 *res, const float3 * const __restrict__ vel, const uint total)
     {
-        assert(blockDim.x == 32);
+        // assert(blockDim.x == 32);
         const uint id = threadIdx.x + blockIdx.x*blockDim.x;
         const uint ch = blockIdx.x;
         if (id >= total) return;
@@ -82,7 +85,7 @@ namespace VelControlKernels
 }
 
 VelController::VelController(int xl[3], int xh[3], int mpicoos[3], float3 desired, MPI_Comm comm) :
-                desired(desired), Kp(2), Ki(1), Kd(8), factor(0.08), sampleid(0)
+                desired(desired), Kp(3), Ki(1), Kd(10), factor(0.01), sampleid(0)
 {
     MPI_CHECK( MPI_Comm_dup(comm, &this->comm) );
     MPI_CHECK( MPI_Comm_size(comm, &size) );
@@ -138,7 +141,7 @@ void VelController::push(const int * const cellsstart, const Particle* const p, 
             (info.n[2] + block.z - 1) / block.z );
 
     if (total)
-        VelControlKernels::push <<<grid, block, 0, stream>>> (cellsstart, acc, f, info);
+        VelControlKernels::push <<<grid, block, 0, stream>>> (cellsstart, acc, f, info, p);
 }
 
 float3 VelController::adjustF(cudaStream_t stream)

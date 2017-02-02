@@ -18,8 +18,8 @@
 
 RedistributeRBCs::RedistributeRBCs(MPI_Comm _cartcomm): nvertices(CudaRBC::get_nvertices())
 {
-    assert(XSIZE_SUBDOMAIN % 2 == 0 && YSIZE_SUBDOMAIN % 2 == 0 && ZSIZE_SUBDOMAIN % 2 == 0);
-    assert(XSIZE_SUBDOMAIN >= 2 && YSIZE_SUBDOMAIN >= 2 && ZSIZE_SUBDOMAIN >= 2);
+    // assert(XSIZE_SUBDOMAIN % 2 == 0 && YSIZE_SUBDOMAIN % 2 == 0 && ZSIZE_SUBDOMAIN % 2 == 0);
+    // assert(XSIZE_SUBDOMAIN >= 2 && YSIZE_SUBDOMAIN >= 2 && ZSIZE_SUBDOMAIN >= 2);
     
     if (rbcs)
     {
@@ -85,7 +85,7 @@ namespace ReorderingRBC
 
 	const int nfloats_per_rbc = 6 * nvertices;
 
-	assert(nfloats_per_rbc * nrbcs <= blockDim.x * gridDim.x);
+	// assert(nfloats_per_rbc * nrbcs <= blockDim.x * gridDim.x);
 
 	const int gid = threadIdx.x + blockDim.x * blockIdx.x;
 	
@@ -93,7 +93,7 @@ namespace ReorderingRBC
 	    return;
 
 	const int idrbc = gid / nfloats_per_rbc;
-	assert(idrbc < nrbcs);
+	// assert(idrbc < nrbcs);
 
 	const int offset = gid % nfloats_per_rbc;
 	
@@ -301,7 +301,7 @@ namespace ParticleReorderingRBC
     __global__ void shift(const Particle * const psrc, const int np, const int code, const int rank, 
 			  const bool check, Particle * const pdst)
     {
-	assert(blockDim.x * gridDim.x >= np);
+	// assert(blockDim.x * gridDim.x >= np);
 	
 	int pid = threadIdx.x + blockDim.x * blockIdx.x;
 	
@@ -337,7 +337,7 @@ namespace ParticleReorderingRBC
 		       d[0], d[1], d[2], pnew.x[0], pnew.x[1], pnew.x[2],
 		       old.x[0], old.x[1], old.x[2]);
 	    
-	    assert(newcode == 0);
+	    // assert(newcode == 0);
 	}
 #endif
     }
@@ -347,7 +347,7 @@ void RedistributeRBCs::unpack(Particle * const xyzuvw, const int nrbcs, cudaStre
 {
     NVTX_RANGE("RDC/recv-unpack", NVTX_C7);
 
-    assert(notleaving + arriving == nrbcs);
+    // assert(notleaving + arriving == nrbcs);
 
     MPI_Status statuses[26];
     MPI_CHECK(MPI_Waitall(recvreq.size(), &recvreq.front(), statuses) );
@@ -367,7 +367,7 @@ void RedistributeRBCs::unpack(Particle * const xyzuvw, const int nrbcs, cudaStre
 	    ParticleReorderingRBC::shift<<< (count + 127) / 128, 128, 0, stream >>>
 		(halo_recvbufs[i].devptr, count, i, myrank, false, xyzuvw + s);
 
-	assert(s <= nrbcs * nvertices);
+	// assert(s <= nrbcs * nvertices);
 
 	s += halo_recvbufs[i].size;
     }

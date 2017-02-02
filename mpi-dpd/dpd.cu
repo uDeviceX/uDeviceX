@@ -115,7 +115,7 @@ namespace BipsBatch
 #define _ACCESS(x) (*(x))
 #endif
 
-	assert(ndstall <= gridDim.x * blockDim.x);
+	// assert(ndstall <= gridDim.x * blockDim.x);
 
 	BatchInfo info;
 
@@ -134,7 +134,7 @@ namespace BipsBatch
 
 		code =  key9 + key3 + key1;
 		dpid = gid - start[code];
-		assert(code < 26);
+		// assert(code < 26);
 	    }
 
 	    info = batchinfos[code];
@@ -152,7 +152,7 @@ namespace BipsBatch
 	const float wp = info.xdst[5 + dpid * 6];
 
 	const int dstbase = 3 * info.scattered_entries[dpid];
-	assert(dstbase < sizeadst * 3);
+	// assert(dstbase < sizeadst * 3);
 
 	uint scan1, scan2, ncandidates, spidbase;
 	int deltaspid1 = 0, deltaspid2 = 0;
@@ -205,7 +205,7 @@ namespace BipsBatch
 	    else if (info.halotype == HALO_EDGE)
 		colstencilsize = max(xstencilsize, max(ystencilsize, zstencilsize));
 
-	    assert(rowstencilsize * colstencilsize == xstencilsize * ystencilsize * zstencilsize);
+	    // assert(rowstencilsize * colstencilsize == xstencilsize * ystencilsize * zstencilsize);
 
 	    spidbase = _ACCESS(info.cellstarts + basecid);
 	    const int count0 = _ACCESS(info.cellstarts + basecid + colstencilsize) - spidbase;
@@ -231,7 +231,7 @@ namespace BipsBatch
 	    deltaspid1 -= scan1;
 	    deltaspid2 -= scan2;
 
-	    assert(count1 >= 0 && count2 >= 0);
+	    // assert(count1 >= 0 && count2 >= 0);
 	}
 
 	const float2 * const xsrc = info.xsrc;
@@ -246,7 +246,7 @@ namespace BipsBatch
 	    const int m1 = (int)(i >= scan1);
 	    const int m2 = (int)(i >= scan2);
 	    const uint spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
-	    assert(spid < info.nsrc);
+	    // assert(spid < info.nsrc);
 
 	    const float2 s0 = _ACCESS(xsrc + 0 + spid * 3);
 	    const float2 s1 = _ACCESS(xsrc + 1 + spid * 3);

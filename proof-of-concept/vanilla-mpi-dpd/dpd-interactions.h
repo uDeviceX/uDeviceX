@@ -54,7 +54,7 @@ public:
 ComputeInteractionsDPD(MPI_Comm cartcomm, int L):
     cartcomm(cartcomm), L(L)
     {
-	assert(L % 2 == 0);
+	// assert(L % 2 == 0);
 	MPI_CHECK( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
 		   
 	MPI_CHECK( MPI_Comm_rank(cartcomm, &myrank));

@@ -174,7 +174,7 @@ template<bool project>
 __global__  void subindex_local(const int nparticles, const float2 * particles, int * const partials,
 				      uchar4 * const subindices)
 {
-    assert(blockDim.x == 128 && blockDim.x * gridDim.x >= nparticles);
+    // assert(blockDim.x == 128 && blockDim.x * gridDim.x >= nparticles);
 
     const int lane = threadIdx.x & 0x1f;
     const int warpid = threadIdx.x >> 5;
@@ -289,7 +289,7 @@ __global__  void subindex_local(const int nparticles, const float2 * particles, 
 	    globalstart = atomicAdd(partials + cid, pcount);
 
 	const int subindex = __shfl(globalstart, start) + (lane - start);
-	assert(subindex < 0xff && subindex >= 0 || cid < 0 );
+	// assert(subindex < 0xff && subindex >= 0 || cid < 0 );
 
 	uchar4 entry = make_uchar4(0xff, 0xff, 0xff, 0xff);
 
@@ -314,7 +314,7 @@ __global__ static void compress_counts(const int nentries, const int4 * const co
     if (4 * gid >= nentries)
 	return;
 
-    assert(nentries % 4 == 0);
+    // assert(nentries % 4 == 0);
 
     const int4 entry = counts[gid];
 

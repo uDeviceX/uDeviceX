@@ -26,13 +26,15 @@
 
 using namespace std;
 
+extern float RBCx0, RBCp, RBCka, RBCkb, RBCkd, RBCkv, RBCgammaC,
+	RBCtotArea, RBCtotVolume;
 
 #define CUDA_CHECK(ans) do { cudaAssert((ans), __FILE__, __LINE__); } while(0)
 inline void cudaAssert(cudaError_t code, const char *file, int line)
 {
     if (code != cudaSuccess)
     {
-        fprintf(stderr,"GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
+        fprintf(stderr,"GPU// assert: %s %s %d\n", cudaGetErrorString(code), file, line);
 
         abort();
     }
@@ -52,12 +54,15 @@ namespace CudaRBC
 
     int *triplets;
 
+    float *addfrc;
+
     __constant__ float A[4][4];
 
     int maxCells;
 
-    void unitsSetup(float lmax, float p, float cq, float kb, float ka, float kv, float gammaC,
-            float totArea0, float totVolume0, float lunit, float tunit, int ndens, bool prn);
+    void unitsSetup(float x0, float p, float ka, float kb, float kd, float kv,
+		float gammaC, float totArea0, float totVolume0, float lunit, float tunit, int ndens,
+		bool prn);
 
     void eat_until(FILE * f, string target)
     {
@@ -99,7 +104,7 @@ namespace CudaRBC
         size_t textureoffset;
         CUDA_CHECK(cudaBindTexture(&textureoffset, &texAdjVert, data,
                 &texAdjVert.channelDesc, sizeof(int) * nentries));
-        assert(textureoffset == 0);
+        // assert(textureoffset == 0);
 
         texAdjVert2.channelDesc = cudaCreateChannelDesc<int>();
         texAdjVert2.filterMode = cudaFilterModePoint;
@@ -108,7 +113,7 @@ namespace CudaRBC
 
         CUDA_CHECK(cudaBindTexture(&textureoffset, &texAdjVert2, data2,
                 &texAdjVert.channelDesc, sizeof(int) * nentries));
-        assert(textureoffset == 0);
+        // assert(textureoffset == 0);
     }
 
     struct Particle
@@ -199,7 +204,7 @@ namespace CudaRBC
 
             for(int d = 0; d < 3; ++d)
             {
-                assert(tri[d] >= 0 && tri[d] < nvertices);
+                // assert(tri[d] >= 0 && tri[d] < nvertices);
 
                 adjacentPairs[tri[d]][tri[(d + 1) % 3]] = tri[(d + 2) % 3];
             }
@@ -211,8 +216,8 @@ namespace CudaRBC
             maxldeg.push_back(adjacentPairs[i].size());
 
         const int degreemax = *max_element(maxldeg.begin(), maxldeg.end());
-        assert(degreemax == 7);
-        assert(nvertices == 498);
+        // assert(degreemax == 7);
+        // assert(nvertices == 498);
 
         vector<int> adjVert(nvertices * degreemax, -1);
 
@@ -225,7 +230,7 @@ namespace CudaRBC
 
             for(int i = 2; i < l.size(); ++i)
             {
-                assert(l.find(last) != l.end());
+                // assert(l.find(last) != l.end());
 
                 int tmp = adjVert[i + degreemax * v] = l.find(last)->second;
                 last = tmp;
@@ -251,7 +256,7 @@ namespace CudaRBC
                 const int nterms =  set_intersection(s1.begin(), s1.end(), s2.begin(), s2.end(),
                         result.begin()) - result.begin();
 
-                assert(nterms == 2);
+                // assert(nterms == 2);
 
                 const int myguy = result[0] == v;
 
@@ -261,6 +266,32 @@ namespace CudaRBC
 
         params.nvertices = nvertices;
         params.ntriangles = triangles.size();
+#if 1
+        // Find stretching points
+		float stretchingForce = 0;
+        vector< pair<float, int> > tmp(nvertices);
+        for (int i=0; i<nvertices; i++)
+        {
+            tmp[i].first = particles[i].x[0];
+            tmp[i].second = i;
+        }
+        sort(tmp.begin(), tmp.end());
+
+        float* hAddfrc = new float[nvertices];
+        memset(hAddfrc, 0, nvertices*sizeof(float));
+        const int strVerts = 3; // 10
+        for (int i=0; i<strVerts; i++)
+        {
+            hAddfrc[tmp[i].second] = -stretchingForce / strVerts;
+            hAddfrc[tmp[nvertices - 1 - i].second] = +stretchingForce / strVerts;
+        }
+
+        //for (int i=0; i<nvertices; i++)
+        //    printf("%d: x=%.3f, f=%.3f\n", i, particles[i].x[0], hAddfrc[i]);
+
+        CUDA_CHECK( cudaMalloc(&addfrc, nvertices*sizeof(float)) );
+        CUDA_CHECK( cudaMemcpy(addfrc, hAddfrc, nvertices*sizeof(float), cudaMemcpyHostToDevice) );
+#endif
 
         float* xyzuvw_host = new float[6*nvertices * sizeof(float)];
         for (int i=0; i<nvertices; i++)
@@ -304,47 +335,59 @@ namespace CudaRBC
 
         size_t textureoffset;
         CUDA_CHECK( cudaBindTexture(&textureoffset, &texTriangles4, devtrs4, &texTriangles4.channelDesc, params.ntriangles * 4 * sizeof(int)) );
-        assert(textureoffset == 0);
+        // assert(textureoffset == 0);
 
         maxCells = 0;
         CUDA_CHECK( cudaMalloc(&host_av, 1 * 2 * sizeof(float)) );
 
-        unitsSetup(1.64, 0.001412, 19.0476, 35, 2500, 3500, 50, 135, 91, 1e-6, 2.4295e-6, 4, report);
-
+        unitsSetup(RBCx0, RBCp, RBCka, RBCkb, RBCkd, RBCkv, RBCgammaC, 
+			RBCtotArea, RBCtotVolume, 1e-6, -1 /* not used */, -1 /* not used */, report);
         CUDA_CHECK( cudaFuncSetCacheConfig(fall_kernel<498>, cudaFuncCachePreferL1) );
     }
 
-    void unitsSetup(float lmax, float p, float cq, float kb, float ka, float kv, float gammaC,
-            float totArea0, float totVolume0, float lunit, float tunit, int ndens, bool prn)
+    void unitsSetup(float x0, float p, float ka, float kb, float kd, float kv,
+		float gammaC, float totArea0, float totVolume0, float lunit, float tunit, int ndens,
+		bool prn)
     {
         const float lrbc = 1.000000e-06;
-        const float trbc = 3.009441e-03;
-        //const float mrbc = 3.811958e-13;
-
         float ll = lunit / lrbc;
-        float tt = tunit / trbc;
+		const float Escale = 4.2e-20; // units conversion from master
 
-        params.kbT = 580 * 250 * pow(ll, -2.0) * pow(tt, 2.0);
-        params.p = p / ll;
-        params.lmax = lmax / ll;
-        params.q = 1;
-        params.Cq = cq * params.kbT * pow(ll, -2.0);
-        params.totArea0 = totArea0 * pow(ll, -2.0);
-        params.totVolume0 = totVolume0 * pow(ll, -3.0);
-        params.l0 = sqrt(params.totArea0 / (2.0*params.nvertices - 4.) * 4.0/sqrt(3.0));
-        params.ka = ka * params.kbT / (params.totArea0 * params.l0 * params.l0);
-        params.kv = kv * params.kbT / (6 * params.totVolume0 * powf(params.l0, 3));
-        params.gammaC = gammaC * 580 * pow(tt, 1.0);
-        params.gammaT = 3.0 * params.gammaC;
+		float kBT2D3D = 1;
+        float phi = 6.97 / 180.0*M_PI; /* theta_0 */
 
-        float phi = 6.97 / 180.0*M_PI;
-        params.sinTheta0 = sin(phi);
-        params.cosTheta0 = cos(phi);
-        params.kb = kb * params.kbT;
+        params.sinTheta0	= sin(phi);
+        params.cosTheta0	= cos(phi);
+		params.kbT			= (23+273) * 1.38e-23 * kBT2D3D / Escale; // doesn't matter, because it always enters as kBT/p
+		params.mpow			= 2; /* WLC-POW */
 
-        params.kbToverp = params.kbT / params.p;
-        params.sint0kb = params.sinTheta0 * params.kb;
-        params.cost0kb = params.cosTheta0 * params.kb;
+		/* units conversion: Fedosov -> uDeviceX */
+		params.kv			= kv			* ll;
+        params.gammaC		= gammaC		;
+		params.ka			= ka			;
+		params.kd			= kd			;
+		params.p			= p				/ ll;
+//		params.lmax			= lmax			/ ll;
+        params.totArea0		= totArea0		/ (ll*ll);
+        params.kb			= kb			/ (ll*ll);
+		params.kbT			= params.kbT	/ (ll*ll);
+        params.totVolume0	= totVolume0	/ (ll*ll*ll);
+//		params.kp			= kp			/ (ll*ll*powf(ll,params.mpow-1));
+
+		// derived parameters
+        params.Area0		= params.totArea0 / (2.0*params.nvertices - 4.);
+        params.l0			= sqrt(params.Area0 * 4.0/sqrt(3.0));
+		params.lmax			= params.l0 / x0;
+        params.gammaT		= 3.0 * params.gammaC;
+        params.kbToverp		= params.kbT / params.p;
+        params.sint0kb		= params.sinTheta0 * params.kb;
+        params.cost0kb		= params.cosTheta0 * params.kb;
+		params.kp			= ( params.kbT * x0 * (4*x0*x0-9*x0+6) * params.l0*params.l0 ) / ( 4*params.p*(x0-1)*(x0-1) );
+
+		/* to simplify further computations */
+        params.ka			= params.ka / (params.totArea0 * params.l0 * params.l0);
+        params.kv			= params.kv / (6 * params.totVolume0 * powf(params.l0, 3));
+
         CUDA_CHECK( cudaMemcpyToSymbol  (devParams, &params, sizeof(Params)) );
 
         if (prn)
@@ -353,10 +396,9 @@ namespace CudaRBC
             printf("Started with <RBC space (DPD space)>:\n");
             printf("    DPD unit of time:  %e\n",   tunit);
             printf("    DPD unit of length:  %e\n\n", lunit);
-            printf("\t Lmax    %12.5f  (%12.5f)\n", lmax,   params.lmax);
+//            printf("\t Lmax    %12.5f  (%12.5f)\n", lmax,   params.lmax);
             printf("\t l0      %12.5f\n",           params.l0);
             printf("\t p       %12.5f  (%12.5f)\n", p,      params.p);
-            printf("\t Cq      %12.5f  (%12.5f)\n", cq,     params.Cq);
             printf("\t kb      %12.5f  (%12.5f)\n", kb,     params.kb);
             printf("\t ka      %12.5f  (%12.5f)\n", ka,     params.ka);
             printf("\t kv      %12.5f  (%12.5f)\n", kv,     params.kv);
@@ -453,17 +495,17 @@ namespace CudaRBC
     __device__ __forceinline__ float3 _fangle(const float3 v1, const float3 v2, const float3 v3,
             const float area, const float volume)
     {
-        assert(devParams.q == 1);
         const float3 x21 = v2 - v1;
         const float3 x32 = v3 - v2;
         const float3 x31 = v3 - v1;
 
         const float3 normal = cross(x21, x31);
 
-        const float n_2 = 2.0f * rsqrtf(dot(normal, normal));
-        const float n_2to3 = n_2*n_2*n_2;
-        const float coefArea = 0.25f * (devParams.Cq * n_2to3 -
-                devParams.ka * (area - devParams.totArea0) * n_2);
+	const float Ak = 0.5 * sqrtf(dot(normal, normal));
+	const float A0 = devParams.Area0;
+        const float n_2 = 1.0 / Ak;
+        const float coefArea = 0.25f * (                      -
+                devParams.ka * (area - devParams.totArea0) * n_2) - devParams.kd*(Ak-A0)/(4.*A0*Ak);
 
         const float coeffVol = devParams.kv * (volume - devParams.totVolume0);
         const float3 addFArea = coefArea * cross(normal, x32);
@@ -472,9 +514,13 @@ namespace CudaRBC
         float r = length(v2 - v1);
         r = r < 0.0001f ? 0.0001f : r;
         const float xx = r/devParams.lmax;
-        const float IbforceI = devParams.kbToverp * ( 0.25f/((1.0f-xx)*(1.0f-xx)) - 0.25f + xx ) / r;
+        const float IbforceI_wcl =
+		devParams.kbToverp * ( 0.25f/((1.0f-xx)*(1.0f-xx)) - 0.25f + xx ) / r;
+		const float kp    = devParams.kp;
+		const float mpow  = devParams.mpow;
+        const float IbforceI_pow = - kp / powf(r, mpow)                          / r;
 
-        return addFArea + addFVolume + IbforceI * x21;
+        return addFArea + addFVolume + (IbforceI_wcl + IbforceI_pow ) * x21;
     }
 
     __device__ __forceinline__ float3 _fvisc(const float3 v1, const float3 v2, const float3 u1, const float3 u2)
@@ -642,6 +688,16 @@ namespace CudaRBC
         }
     }
 
+    //
+
+    __global__ void addKernel(float* axayaz, float* const __restrict__ addfrc, int n)
+    {
+        uint pid = threadIdx.x + blockIdx.x * blockDim.x;
+        if (pid < n)
+            axayaz[3*pid + 0] += addfrc[pid];
+
+    }
+
     // **************************************************************************************************
 
     void forces_nohost(cudaStream_t stream, int ncells, const float * const device_xyzuvw, float * const device_axayaz)
@@ -658,7 +714,7 @@ namespace CudaRBC
         size_t textureoffset;
         CUDA_CHECK( cudaBindTexture(&textureoffset, &texVertices, (float2 *)device_xyzuvw,
                 &texVertices.channelDesc, ncells * params.nvertices * sizeof(float) * 6) );
-        assert(textureoffset == 0);
+        // assert(textureoffset == 0);
 
         dim3 avThreads(256, 1);
         dim3 avBlocks( 1, ncells );
@@ -676,6 +732,7 @@ namespace CudaRBC
         int blocks  = (ncells*params.nvertices*7 + threads-1) / threads;
 
         fall_kernel<498><<<blocks, threads, 0, stream>>>(ncells, host_av, device_axayaz);
+        addKernel<<<(params.nvertices + 127) / 128, 128, 0, stream>>>(device_axayaz, addfrc, params.nvertices);
     }
 
     void get_triangle_indexing(int (*&host_triplets_ptr)[3], int& ntriangles)

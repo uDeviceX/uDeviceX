@@ -56,19 +56,19 @@ Grid::Grid(size_t szY, size_t szX)
 
 const float& Grid::operator() (size_t i, size_t j) const
 {
-  assert(i < m_n1 && j < m_n2);
+  // assert(i < m_n1 && j < m_n2);
   return m_data[i + m_n1 * j];
 }
 
 float& Grid::operator() (size_t i, size_t j)
 {
-  assert(i < m_n1 && j < m_n2);
+  // assert(i < m_n1 && j < m_n2);
   return m_data[i + m_n1 * j];
 }
 
 size_t Grid::size(size_t index) const
 {
-  assert(index <= 2);
+  // assert(index <= 2);
   return index == 0 ? m_n1 : m_n2;
 }
 
@@ -89,7 +89,7 @@ FunnelObstacle::FunnelObstacle(const float plength, const float domainLengthX, c
     for (size_t ix = 0; ix <  m_grid.size(1); ++ix) {
       float point[] = {ix * h[0]- m_domainLength[0]/2.0f, iy * h[1] - m_domainLength[1]/2.0f};
       float dist = calcDist(point[0], point[1]);
-      assert(!std::isnan(dist));
+      // assert(!std::isnan(dist));
       m_grid(iy, ix) = dist;
     }
   }
@@ -119,14 +119,14 @@ bool FunnelObstacle::isInside(const float x, const float y) const
 
 std::pair<bool, float> FunnelObstacle::sample(const float x, const float y) const
 {
-  assert(insideBoundingBox(x, y));
+  // assert(insideBoundingBox(x, y));
   float hy = m_domainLength[1] / (m_grid.size(0) - 1.0);
   float hx = m_domainLength[0] / (m_grid.size(1) - 1.0);
 
   // shift origin to the left bottom of the BB
   float xShift = x + m_domainLength[0]/2;
   float yShift = y + m_domainLength[1]/2;
-  assert(xShift >= 0.0 && xShift >= 0.0);
+  // assert(xShift >= 0.0 && xShift >= 0.0);
 
   size_t ix, iy;
   // index_x = floor( p_x / h_x )
@@ -148,7 +148,7 @@ std::pair<bool, float> FunnelObstacle::sample(const float x, const float y) cons
     }
   }
 
-  assert(iminX < m_grid.size(0) && iminY < m_grid.size(1));
+  // assert(iminX < m_grid.size(0) && iminY < m_grid.size(1));
   float dist2 = m_grid(iminY, iminX);*/
 
   return std::pair<bool, float>(d < 0.0, fabs(d));
@@ -157,7 +157,7 @@ std::pair<bool, float> FunnelObstacle::sample(const float x, const float y) cons
 bool FunnelObstacle::isBetweenLayers(const float x, const float y,
                                      const float bottom, const float up) const
 {
-    assert(bottom < up && up < std::min(m_skinWidth[0], m_skinWidth[1]));
+    // assert(bottom < up && up < std::min(m_skinWidth[0], m_skinWidth[1]));
     std::pair<bool, float> res = sample(x, y);
     if (!res.first) //outside
         return res.second >= bottom && res.second <= up;
@@ -179,7 +179,7 @@ void FunnelObstacle::initInterface()
     m_interface.push_back(mkUpLine(x, m_y0));
   }
 
-  assert(m_interface.size() == m_obstacleDetalization);
+  // assert(m_interface.size() == m_obstacleDetalization);
 }
 
 float FunnelObstacle::calcDist(const float x, const float y) const
@@ -248,7 +248,7 @@ void FunnelObstacle::read(const std::string& fileName)
     for (size_t ix = 0; ix < m_grid.size(1); ++ix) {
       float val;
       int result  = fscanf(f, "   %e", &val);
-      assert(result == 1);
+      // assert(result == 1);
       m_grid(iy, ix) = val;
     }
 

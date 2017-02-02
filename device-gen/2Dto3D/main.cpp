@@ -15,7 +15,7 @@
 #include <cmath>
 #include <algorithm>
 #include <vector>
-#include <assert.h>
+#include <// assert.h>
 
 using namespace std;
 
@@ -39,7 +39,7 @@ int main(int argc, char ** argv)
     {   
         printf("Reading file %s...\n", argv[1]);
         FILE * f = fopen(argv[1], "r");
-        assert(f != 0);
+        // assert(f != 0);
         float zextentOld;
         int NZOld;
         fscanf(f, "%f %f %f\n", &xextent, &yextent, &zextentOld);
@@ -72,15 +72,15 @@ int main(int argc, char ** argv)
                 else
                     val = (zsdf < 0) ? xysdf : sqrt(zsdf * zsdf + xysdf * xysdf);
             
-                assert(iy + NY * (ix + NX * iz) < volume.size());
-                assert(volume[iy + NY * (ix + NX * iz)] == 0.0f);
+                // assert(iy + NY * (ix + NX * iz) < volume.size());
+                // assert(volume[iy + NY * (ix + NX * iz)] == 0.0f);
                 volume[iy + NY * (ix + NX * iz)] = val;
             }
     }
    
     {
         FILE * f = fopen(argv[5], "w");
-        assert(f != 0);
+        // assert(f != 0);
         fprintf(f, "%f %f %f\n", yextent, xextent, zextent + 2.0f * zmargin); //exchange X and Y
         fprintf(f, "%d %d %d\n", NY, NX, NZ);
         fwrite(&volume[0], sizeof(float), volume.size(), f);

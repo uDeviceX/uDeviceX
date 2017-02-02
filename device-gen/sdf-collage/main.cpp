@@ -16,7 +16,7 @@
 #include <algorithm>
 #include <cmath>
 #include <vector>
-#include <assert.h>
+#include <// assert.h>
 #include <string>
 
 using namespace std;
@@ -151,11 +151,11 @@ int main(int argc, char ** argv)
         cookie.resize(1);
         // for one file
         FILE * f = fopen(argv[1], "r");
-        assert(f != 0);
+        // assert(f != 0);
         fscanf(f, "%f %f %f\n", &xextent, &yextent, &zextent);
         fscanf(f, "%d %d %d\n", &NX, &NY, &NZ);
         printf("Extent: [%f, %f, %f]. Grid size: [%d, %d, %d]\n", xextent, yextent, zextent, NX, NY,NZ);
-        assert(NZ == 1);
+        // assert(NZ == 1);
         cookie[0].resize(NX * NY * NZ, 0.0f);
         fread(&cookie[0][0], sizeof(float), NX * NY * NZ, f);
         fclose(f);
@@ -173,8 +173,8 @@ int main(int argc, char ** argv)
                     const int gy = iy + NY * ty;
                     const int dst = gx + stride * gy;
                     
-                    assert(dst < cake.size());
-                    assert(ix + NX * iy < cookie[0].size());
+                    // assert(dst < cake.size());
+                    // assert(ix + NX * iy < cookie[0].size());
                     cake[dst] = cookie[0][ix + NX * iy];
                 }
         }
@@ -182,7 +182,7 @@ int main(int argc, char ** argv)
         vector<string> files;
         
         FILE* fs = fopen(argv[1], "r");
-        assert(fs != 0);
+        // assert(fs != 0);
         string buf(127, ' ');
         while(fscanf(fs, "%s\n", &buf[0]) == 1) {
             files.push_back(buf);
@@ -191,17 +191,17 @@ int main(int argc, char ** argv)
         
         ytimes = files.size();
         cookie.resize(ytimes);
-        assert(xtimes == 1);
+        // assert(xtimes == 1);
 
         for (int i = files.size() - 1; i >= 0; --i)
         {
             printf("Reading file %s ...\n", files[i].c_str());
             FILE * f = fopen(files[i].c_str(), "r");
-            assert(f != 0);
+            // assert(f != 0);
             fscanf(f, "%f %f %f\n", &xextent, &yextent, &zextent);
             fscanf(f, "%d %d %d\n", &NX, &NY, &NZ);
             printf("Extent: [%g, %g, %g]. Grid size: [%d, %d, %d]\n", xextent, yextent, zextent, NX, NY,NZ);
-            assert(NZ == 1);
+            // assert(NZ == 1);
             cookie[i].resize(NX * NY * NZ, 0.0f);
             fread(&cookie[i][0], sizeof(float), NX * NY * NZ, f);
             fclose(f);
@@ -216,7 +216,7 @@ int main(int argc, char ** argv)
     
     {
         FILE * f = fopen(argv[4], "w");
-        assert(f != 0);
+        // assert(f != 0);
         fprintf(f, "%f %f %f\n", xtimes * xextent, ytimes * yextent, 1.0f);
         fprintf(f, "%d %d %d\n", xtimes * NX, ytimes * NY, 1);
         fwrite(&cake[0], sizeof(float), cake.size(), f);

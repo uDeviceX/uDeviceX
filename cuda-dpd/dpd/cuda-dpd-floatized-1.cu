@@ -51,7 +51,7 @@ __device__ float3 _dpd_interaction( const int dpid, const float4 xdest, const fl
     const float _zr = xdest.z - xsrc.z;
 
     const float rij2 = _xr * _xr + _yr * _yr + _zr * _zr;
-    assert( rij2 < 1 );
+    // assert( rij2 < 1 );
 
     const float invrij = rsqrtf( rij2 );
     const float rij = rij2 * invrij;
@@ -515,12 +515,12 @@ void forces_dpd_cuda_nohost( const float * const xyzuvw, const float4 * const xy
     }
 
     CUDA_CHECK( cudaBindTexture( &textureoffset, &texParticlesF4, xyzouvwo,  &texParticlesF4.channelDesc, sizeof( float ) * 8 * np ) );
-    assert( textureoffset == 0 );
+    // assert( textureoffset == 0 );
     CUDA_CHECK( cudaBindTexture( &textureoffset, &texParticlesH4, xyzo_half, &texParticlesH4.channelDesc, sizeof( ushort4 ) * np ) );
-    assert( textureoffset == 0 );
+    // assert( textureoffset == 0 );
     make_texture2 <<< 64, 512, 0, stream>>>( start_and_count, cellsstart, cellscount, ncells );
     CUDA_CHECK( cudaBindTexture( &textureoffset, &texStartAndCount, start_and_count, &texStartAndCount.channelDesc, sizeof( uint2 ) * ncells ) );
-    assert( textureoffset == 0 );
+    // assert( textureoffset == 0 );
 
     c.ncells = make_int3( nx, ny, nz );
     c.nxyz = nx * ny * nz;

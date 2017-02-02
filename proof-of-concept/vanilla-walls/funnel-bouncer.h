@@ -114,7 +114,7 @@ public:
     AngleIndex(float rc, float y0)
     : sectorSz(0.0f), nSectors(0.0f)
     {
-        assert(y0 < 0);
+        // assert(y0 < 0);
         sectorSz = 2.0f * asin(rc/sqrt(-y0));
         nSectors = static_cast<size_t>(2.0f * M_PI) / sectorSz + 1;
     }
@@ -137,7 +137,7 @@ public:
     int computeIndex(const float x, const float y) const
     {
         float angle = getAngle(x, y);
-        assert(angle >= 0.0f && angle <= 2.0f * M_PI);
+        // assert(angle >= 0.0f && angle <= 2.0f * M_PI);
         return trunc(angle/sectorSz);
     }
 

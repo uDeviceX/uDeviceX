@@ -340,13 +340,13 @@ int main(int argc, char ** argv)
 			if( access( "trajectories.xyz", F_OK ) != -1 )
 			{
 			    const int retval = rename ("trajectories.xyz", "trajectories-equilibration.xyz");
-			    assert(retval != -1);
+			    // assert(retval != -1);
 			}
 		    
 			if( access( "rbcs.xyz", F_OK ) != -1 )
 			{
 			    const int retval = rename ("rbcs.xyz", "rbcs-equilibration.xyz");
-			    assert(retval != -1);
+			    // assert(retval != -1);
 			}
 		    }
 
@@ -534,7 +534,7 @@ int main(int argc, char ** argv)
 			start += ctcscoll->pcount();
 		    }
 
-		    assert(start == n);
+		    // assert(start == n);
 
 		    diagnostics(cartcomm, p, n, dt, it, L, a);
 		    

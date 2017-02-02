@@ -121,7 +121,7 @@ struct Particles
             const float yr = _yr * invrij;
             const float zr = _zr * invrij;
 
-            assert(xv[j] == 0 && yv[j] == 0 && zv[j] == 0);
+            // assert(xv[j] == 0 && yv[j] == 0 && zv[j] == 0);
             const float rdotv =
             xr * (vel[0] - xv[j]) +
             yr * (vel[1] - yv[j]) +
@@ -541,14 +541,14 @@ struct SandwichBouncer: Bouncer
 	    const float yold = y - dt * v;
 	    const float zold = z - dt * w;
 
-	    assert(fabs(zold) - half_width <= 0);
-	    assert(fabs(w) > 0);
+	    // assert(fabs(zold) - half_width <= 0);
+	    // assert(fabs(w) > 0);
 
 	    const float s = 1 - 2 * signbit(w);
 	    const float t = (s * half_width - zold) / w;
 
-	    assert(t >= 0);
-	    assert(t <= dt);
+	    // assert(t >= 0);
+	    // assert(t <= dt);
 		    
 	    const float lambda = 2 * t - dt;
 		    
@@ -556,7 +556,7 @@ struct SandwichBouncer: Bouncer
 	    y = yold + lambda * v;
 	    z = zold + lambda * w;
 	    
-	    assert(fabs(zold + lambda * w) - half_width <= 0);
+	    // assert(fabs(zold + lambda * w) - half_width <= 0);
 
 	    u = -u;
 	    v = -v;
@@ -703,7 +703,7 @@ struct TomatoSandwich: SandwichBouncer
 	    if (r2 >= radius2)
 		return false;
 	    
-	    assert(dt > 0);
+	    // assert(dt > 0);
 			
 	    const float xold = x - dt * u;
 	    const float yold = y - dt * v;
@@ -716,14 +716,14 @@ struct TomatoSandwich: SandwichBouncer
 	     if (r2old < radius2)
 		 printf("r2old : %.30f\n", r2old);
 	     
-	    assert(r2old >= radius2);
+	    // assert(r2old >= radius2);
 
 	    const float t = _compute_collision_time(xold, yold, u, v, xc, yc, radius2);
 	    if (t < 0)
 		printf("t is %.20e\n", t);
 	    
-	    assert(t >= 0);
-	    assert(t <= dt);
+	    // assert(t >= 0);
+	    // assert(t <= dt);
 		    
 	    const float lambda = 2 * t - dt;
 		    

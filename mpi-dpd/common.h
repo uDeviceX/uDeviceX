@@ -18,28 +18,32 @@
 #define cuda_printf(...) do { printf(__VA_ARGS__); } while(0)
 #endif
 
+#define kBT2D3D (1) // 2d to 3d temperature conversion
+#define RC_FX (1) // rc_F/rc_X
+
 enum
 {
-    XSIZE_SUBDOMAIN = 48,
-    YSIZE_SUBDOMAIN = 48,
-    ZSIZE_SUBDOMAIN = 48,
+    XSIZE_SUBDOMAIN = 128,
+    YSIZE_SUBDOMAIN = 32,
+    ZSIZE_SUBDOMAIN = 64,
     XMARGIN_WALL = 6,
     YMARGIN_WALL = 6,
     ZMARGIN_WALL = 6,
 };
 
-const int numberdensity = 4;
-const float dt = 0.001;
-const float kBT = 0.0945;
-const float gammadpd = 45;
+const int numberdensity = 10 * (RC_FX*RC_FX*RC_FX);     // default: 3
+const float gammadpd = 30;                           // default: 4.5
+const float kBT = 1 * kBT2D3D / (RC_FX*RC_FX);                // default: 1
+const float dt          = 0.001;                       // default: 0.001
+
+const float aij = 7.5; // default: 75*kBT/numberdensity -- Groot and Warren (1997)
+const float hydrostatic_a = 0.05 / RC_FX;
 const float sigma = sqrt(2 * gammadpd * kBT);
 const float sigmaf = sigma / sqrt(dt);
-const float aij = 25;
-const float hydrostatic_a = 0.05;
 
-extern float tend;
+extern float tend, desired_shrate;
 extern bool walls, pushtheflow, doublepoiseuille, rbcs, ctcs, xyz_dumps, hdf5field_dumps, hdf5part_dumps, is_mps_enabled, contactforces;
-extern int steps_per_report, steps_per_dump, wall_creation_stepid, nvtxstart, nvtxstop;
+extern int steps_per_report, steps_per_dump, steps_per_hdf5dump, wall_creation_stepid, nvtxstart, nvtxstop;
 
 #include <cstdlib>
 #include <cstdio>
@@ -54,7 +58,7 @@ inline void cudaAssert(cudaError_t code, const char *file, int line)
 {
     if (code != cudaSuccess)
     {
-	fprintf(stderr,"GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
+	fprintf(stderr,"GPU// assert: %s %s %d\n", cudaGetErrorString(code), file, line);
 
 	abort();
     }
@@ -224,7 +228,7 @@ SimpleDeviceBuffer(int n = 0): capacity(0), size(0), data(NULL) { resize(n);}
 
     void resize(const int n)
 	{
-	    assert(n >= 0);
+	    // assert(n >= 0);
 
 	    size = n;
 
@@ -246,7 +250,7 @@ SimpleDeviceBuffer(int n = 0): capacity(0), size(0), data(NULL) { resize(n);}
 
     void preserve_resize(const int n)
 	{
-	    assert(n >= 0);
+	    // assert(n >= 0);
 
 	    T * old = data;
 
@@ -289,7 +293,7 @@ SimpleHostBuffer(int n = 0): capacity(0), size(0), data(NULL) { resize(n);}
 
     void resize(const int n)
 	{
-	    assert(n >= 0);
+	    // assert(n >= 0);
 
 	    size = n;
 
@@ -307,7 +311,7 @@ SimpleHostBuffer(int n = 0): capacity(0), size(0), data(NULL) { resize(n);}
 
     void preserve_resize(const int n)
 	{
-	    assert(n >= 0);
+	    // assert(n >= 0);
 
 	    T * old = data;
 
@@ -351,7 +355,7 @@ PinnedHostBuffer(int n = 0): capacity(0), size(0), data(NULL), devptr(NULL) { re
 
     void resize(const int n)
 	{
-	    assert(n >= 0);
+	    // assert(n >= 0);
 
 	    size = n;
 
@@ -371,7 +375,7 @@ PinnedHostBuffer(int n = 0): capacity(0), size(0), data(NULL), devptr(NULL) { re
 
     void preserve_resize(const int n)
 	{
-	    assert(n >= 0);
+	    // assert(n >= 0);
 
 	    T * old = data;
 

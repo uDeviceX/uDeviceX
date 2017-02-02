@@ -108,7 +108,7 @@ __device__ float3 _dpd_interaction( const uint dpid, const float4 xdest, const f
     const float _zr = xdest.z - xtmp.z; // 1 FLOP
 
     const float rij2 = _xr * _xr + _yr * _yr + _zr * _zr; // 5 FLOPS
-    assert( rij2 < 1.f );
+    // assert( rij2 < 1.f );
 
     const float invrij = rsqrtf( rij2 ); // 1 FLOP
     const float rij = rij2 * invrij; // 1 FLOP
@@ -138,7 +138,7 @@ __device__ float3 _dpd_interaction(const int dpid, const float4 xdest, const flo
     const float _zr = xdest.z - xsrc.z;
 
     const float rij2 = _xr * _xr + _yr * _yr + _zr * _zr;
-    assert(rij2 < 1);
+    // assert(rij2 < 1);
 
     const float invrij = rsqrtf(rij2);
     const float rij = rij2 * invrij;
@@ -166,7 +166,7 @@ __device__ void core( const uint nsrc, const uint2 * const starts_and_scans,
                       const uint ndst, const uint dststart )
 {
 	uint srccount = 0;
-    assert( ndst == ROWS );
+    // assert( ndst == ROWS );
 
     const uint tid = threadIdx.x;
     const uint wid = threadIdx.y;
@@ -466,7 +466,7 @@ __device__ void core_ilp( const uint nsrc, const uint2 * const starts_and_scans,
 __global__ __launch_bounds__( 32 * CPB, 16 )
 void _dpd_forces_floatized()
 {
-    assert( blockDim.x == warpSize && blockDim.y == CPB && blockDim.z == 1 );
+    // assert( blockDim.x == warpSize && blockDim.y == CPB && blockDim.z == 1 );
 
     const uint tid = threadIdx.x;
     const uint wid = threadIdx.y;
@@ -552,7 +552,7 @@ __device__ void core_flops_counter( unsigned long long *FLOPS, const uint nsrc, 
         const uint ndst, const uint dststart )
 {
 	uint srccount = 0;
-    assert( ndst == ROWS );
+    // assert( ndst == ROWS );
 
     const uint tid = threadIdx.x;
     const uint wid = threadIdx.y;
@@ -877,7 +877,7 @@ __device__ void core_ilp_flops_counter( unsigned long long *FLOPS, const uint ns
 __global__ __launch_bounds__( 32 * CPB, 16 )
 void _dpd_forces_floatized_flops_counter(unsigned long long *FLOPS)
 {
-    assert( blockDim.x == warpSize && blockDim.y == CPB && blockDim.z == 1 );
+    // assert( blockDim.x == warpSize && blockDim.y == CPB && blockDim.z == 1 );
 
     const uint tid = threadIdx.x;
     const uint wid = threadIdx.y;
@@ -998,11 +998,11 @@ void forces_dpd_cuda_nohost( const float * const xyzuvw, float * const axayaz,  
 	}
     copy<<<64,512,0,stream>>>( xyz_o_uvw_o, xyzuvw, np );
     CUDA_CHECK( cudaBindTexture( &textureoffset, &texParticles2, xyz_o_uvw_o, &texParticles2.channelDesc, sizeof( float ) * 8 * np ) );
-    assert( textureoffset == 0 );
+    // assert( textureoffset == 0 );
     CUDA_CHECK( cudaBindTexture( &textureoffset, &texStart, cellsstart, &texStart.channelDesc, sizeof( uint ) * ncells ) );
-    assert( textureoffset == 0 );
+    // assert( textureoffset == 0 );
     CUDA_CHECK( cudaBindTexture( &textureoffset, &texCount, cellscount, &texCount.channelDesc, sizeof( uint ) * ncells ) );
-    assert( textureoffset == 0 );
+    // assert( textureoffset == 0 );
 	#endif
 
     static InfoDPD c;

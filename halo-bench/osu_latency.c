@@ -13,7 +13,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <assert.h>
+#include <// assert.h>
 #include <string.h>
 
 #ifdef _ENABLE_OPENACC_
@@ -498,7 +498,7 @@ allocate_memory (char ** sbuf, char ** rbuf, int rank)
 {
     unsigned long align_size = getpagesize();
 
-    assert(align_size <= MAX_ALIGNMENT);
+    // assert(align_size <= MAX_ALIGNMENT);
 
 //    switch (rank) {
 	if (rank == root_id) {

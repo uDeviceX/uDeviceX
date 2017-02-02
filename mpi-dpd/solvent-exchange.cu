@@ -22,8 +22,8 @@ SolventExchange::SolventExchange(MPI_Comm _cartcomm, const int basetag):  baseta
 {
     safety_factor = getenv("HEX_COMM_FACTOR") ? atof(getenv("HEX_COMM_FACTOR")) : 1.2;
 
-    assert(XSIZE_SUBDOMAIN % 2 == 0 && YSIZE_SUBDOMAIN % 2 == 0 && ZSIZE_SUBDOMAIN % 2 == 0);
-    assert(XSIZE_SUBDOMAIN >= 2 && YSIZE_SUBDOMAIN >= 2 && ZSIZE_SUBDOMAIN >= 2);
+    // assert(XSIZE_SUBDOMAIN % 2 == 0 && YSIZE_SUBDOMAIN % 2 == 0 && ZSIZE_SUBDOMAIN % 2 == 0);
+    // assert(XSIZE_SUBDOMAIN >= 2 && YSIZE_SUBDOMAIN >= 2 && ZSIZE_SUBDOMAIN >= 2);
 
     MPI_CHECK( MPI_Comm_dup(_cartcomm, &cartcomm));
 
@@ -76,7 +76,7 @@ namespace PackingHalo
 
     __global__ void count_all(const int * const cellsstart, const int * const cellscount, const int ntotalcells)
     {
-	assert(blockDim.x * gridDim.x >= ntotalcells);
+	// assert(blockDim.x * gridDim.x >= ntotalcells);
 
 	const int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
@@ -88,8 +88,8 @@ namespace PackingHalo
 	const int key1 = (gid >= cellpackstarts[key9 + key3 + 1]) + (gid >= cellpackstarts[key9 + key3 + 2]);
 	const int code = key9 + key3 + key1;
 
-	assert(code >= 0 && code < 26);
-	assert(gid >= cellpackstarts[code] && gid < cellpackstarts[code + 1]);
+	// assert(code >= 0 && code < 26);
+	// assert(gid >= cellpackstarts[code] && gid < cellpackstarts[code + 1]);
 
 	const int d[3] = { (code + 2) % 3 - 1, (code / 3 + 2) % 3 - 1, (code / 9 + 2) % 3 - 1 };
 
@@ -105,7 +105,7 @@ namespace PackingHalo
 
 	const int ndstcells = halo_size[0] * halo_size[1] * halo_size[2];
 
-	assert(cellpackstarts[code + 1] - cellpackstarts[code] == ndstcells + 1);
+	// assert(cellpackstarts[code + 1] - cellpackstarts[code] == ndstcells + 1);
 
 	const int dstcid = gid - cellpackstarts[code];
 
@@ -121,14 +121,16 @@ namespace PackingHalo
 	    for(int c = 0; c < 3; ++c)
 		srccellpos[c] = halo_start[c] + dstcellpos[c] + L[c] / 2;
 
-	    for(int c = 0; c < 3; ++c)
-		assert(srccellpos[c] >= 0);
+	    for(int c = 0; c < 3; ++c) {
+		// assert(srccellpos[c] >= 0);
+		}
 
-	    for(int c = 0; c < 3; ++c)
-		assert(srccellpos[c] < L[c]);
+	    for(int c = 0; c < 3; ++c) {
+		// assert(srccellpos[c] < L[c]);
+		}
 
 	    const int srcentry = srccellpos[0] + XSIZE_SUBDOMAIN * (srccellpos[1] + YSIZE_SUBDOMAIN * srccellpos[2]);
-	    assert(srcentry < XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN);
+	    // assert(srcentry < XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN);
 
 	    const int enabled = cellpacks[code].enabled;
 
@@ -147,7 +149,7 @@ namespace PackingHalo
     template<int slot>
     __global__ void copycells(const int n)
     {
-	assert(blockDim.x * gridDim.x >= n);
+	// assert(blockDim.x * gridDim.x >= n);
 
 	const int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
@@ -183,7 +185,7 @@ namespace PackingHalo
 
 	    }
 
-	    assert(p.x[c] >= halo_start - eps && p.x[c] < halo_end + eps);
+	    // assert(p.x[c] >= halo_start - eps && p.x[c] < halo_end + eps);
 	}
     }
 #endif
@@ -191,7 +193,7 @@ namespace PackingHalo
     template<int NWARPS>
     __global__ void scan_diego()
     {
-	assert(gridDim.x == 26 && blockDim.x == 32 * NWARPS);
+	// assert(gridDim.x == 26 && blockDim.x == 32 * NWARPS);
 
 	__shared__ int shdata[32];
 
@@ -274,8 +276,8 @@ namespace PackingHalo
 
     __global__ void fill_all(const Particle * const particles, const int np, int * const required_bag_size)
     {
-	assert(sizeof(Particle) == 6 * sizeof(float));
-	assert(blockDim.x == warpSize);
+	// assert(sizeof(Particle) == 6 * sizeof(float));
+	// assert(blockDim.x == warpSize);
 
 	const int gcid = (threadIdx.x >> 4) + 2 * blockIdx.x;
 
@@ -287,8 +289,8 @@ namespace PackingHalo
 	const int key1 = (gcid >= cellpackstarts[key9 + key3 + 1]) + (gcid >= cellpackstarts[key9 + key3 + 2]);
 	const int code = key9 + key3 + key1;
 
-	assert(code >= 0 && code < 26);
-	assert(gcid >= cellpackstarts[code] && gcid < cellpackstarts[code + 1]);
+	// assert(code >= 0 && code < 26);
+	// assert(gcid >= cellpackstarts[code] && gcid < cellpackstarts[code + 1]);
 
 	const int cellid = gcid - cellpackstarts[code];
 
@@ -304,7 +306,7 @@ namespace PackingHalo
 	    const int lpid = i / 6;
 	    const int dpid = base_dst + lpid;
 	    const int spid = base_src + lpid;
-	    assert(spid < np && spid >= 0);
+	    // assert(spid < np && spid >= 0);
 
 	    const int c = i % 6;
 
@@ -333,7 +335,7 @@ namespace PackingHalo
 #ifndef NDEBUG
     __global__ void check_send_particles(Particle * p, int n, int code)
     {
-	assert(blockDim.x * gridDim.x >= n);
+	// assert(blockDim.x * gridDim.x >= n);
 
 	const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
 
@@ -342,9 +344,9 @@ namespace PackingHalo
 	if (pid >= n)
 	    return;
 
-	assert(p[pid].x[0] >= -L[0] / 2 || p[pid].x[0] < L[0] / 2 ||
-	       p[pid].x[1] >= -L[1] / 2 || p[pid].x[1] < L[1] / 2 ||
-	       p[pid].x[2] >= -L[2] / 2 || p[pid].x[2] < L[2] / 2);
+	// assert(p[pid].x[0] >= -L[0] / 2 || p[pid].x[0] < L[0] / 2 ||
+	//       p[pid].x[1] >= -L[1] / 2 || p[pid].x[1] < L[1] / 2 ||
+	//       p[pid].x[2] >= -L[2] / 2 || p[pid].x[2] < L[2] / 2);
 
 	const int d[3] = { (code + 2) % 3 - 1, (code / 3 + 2) % 3 - 1, (code / 9 + 2) % 3 - 1 };
 
@@ -358,7 +360,7 @@ namespace PackingHalo
 		       pid, p[pid].x[0], p[pid].x[1], p[pid].x[2],
 		       c, halo_start, halo_end, eps);
 
-	    assert(p[pid].x[c] >= halo_start - eps && p[pid].x[c] < halo_end + eps);
+	    // assert(p[pid].x[c] >= halo_start - eps && p[pid].x[c] < halo_end + eps);
 	}
     }
 #endif
@@ -521,7 +523,7 @@ void SolventExchange::post(const Particle * const p, const int n, cudaStream_t s
 
 	    //sendhalos[i].hbuf.size = nrequired;
 	    sendhalos[i].hbuf.resize(nrequired);
-	    assert(nrequired <= sendhalos[i].dbuf.capacity && nrequired <= sendhalos[i].hbuf.capacity);
+	    // assert(nrequired <= sendhalos[i].dbuf.capacity && nrequired <= sendhalos[i].hbuf.capacity);
 
 	    sendhalos[i].scattered_entries.size = nrequired;
 	}
@@ -610,7 +612,7 @@ void SolventExchange::post_expected_recv()
 
     for(int i = 0, c = 0; i < 26; ++i)
     {
-	assert(recvhalos[i].hbuf.capacity >= recvhalos[i].expected);
+	// assert(recvhalos[i].hbuf.capacity >= recvhalos[i].expected);
 
 	if (recvhalos[i].expected)
 	    MPI_CHECK( MPI_Irecv(recvhalos[i].hbuf.data, recvhalos[i].expected, Particle::datatype(), dstranks[i],

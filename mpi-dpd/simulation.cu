@@ -474,7 +474,7 @@ void Simulation::_datadump(const int idtimestep)
         start += ctcscoll->pcount();
     }
 
-    assert(start == n);
+    // assert(start == n);
 
     CUDA_CHECK(cudaEventRecord(evdownloaded, 0));
 
@@ -588,13 +588,17 @@ void Simulation::_datadump_async()
                 dump_part.dump(p, n);
         }
 
-        if (hdf5field_dumps)
+//        if (hdf5field_dumps)
+//        if (hdf5field_dumps && (datadump_idtimestep % steps_per_hdf5dump == 0) && datadump_idtimestep >= 600/dt)
+        if (hdf5field_dumps && (datadump_idtimestep % steps_per_hdf5dump == 0))
         {
             NVTX_RANGE("hdf5 field dump", NVTX_C4);
 
             dump_field.dump(activecomm, p, datadump_nsolvent, datadump_idtimestep);
         }
 
+		// LINA: this is to not to dump the beginning
+//        if (datadump_idtimestep >= 600/dt)
         {
             NVTX_RANGE("ply dump", NVTX_C5);
 
@@ -687,13 +691,15 @@ Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_term
     int dims[3], periods[3], coords[3];
     MPI_CHECK( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
 
-    int xl1[3] = {0, 0, 5};
-    int xh1[3] = {48, 48, 10};
-    velcont1 = new VelController(xl1, xh1, coords, make_float3(1.5, 0, 0), activecomm);
+    int xl1[3] = {0, 0, 3};
+    int xh1[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, 8};
+    velcont1 = new VelController(xl1, xh1, coords,
+			make_float3(-desired_shrate*(ZSIZE_SUBDOMAIN/2-8), 0, 0), activecomm);
 
-    int xl2[3] = {0, 0, 38};
-    int xh2[3] = {48, 48, 43};
-    velcont2 = new VelController(xl2, xh2, coords, make_float3(-1.5, 0, 0), activecomm);
+    int xl2[3] = {0, 0, ZSIZE_SUBDOMAIN-8};
+    int xh2[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN-3};
+    velcont2 = new VelController(xl2, xh2, coords,
+			make_float3(desired_shrate*(ZSIZE_SUBDOMAIN/2-8), 0, 0), activecomm);
 
     {
         particles = &particles_pingpong[0];

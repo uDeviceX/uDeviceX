@@ -219,9 +219,9 @@ __constant__ float A[4][4];
 
         size_t textureoffset;
         gpuErrchk( cudaBindTexture(&textureoffset, &texTriangles4, triangles, &texTriangles4.channelDesc, ntriang * 4 * sizeof(int)) );
-        assert(textureoffset == 0);
+        // assert(textureoffset == 0);
         gpuErrchk( cudaBindTexture(&textureoffset, &texDihedrals4, dihedrals, &texDihedrals4.channelDesc, ndihedrals * 4 * sizeof(int)) );
-        assert(textureoffset == 0);
+        // assert(textureoffset == 0);
 
         dummy = new Extent[maxCells];
 
@@ -624,7 +624,7 @@ __inline__ __host__ __device__ float3 fmaxf(float3 a, float3 b)
 
         size_t textureoffset;
         gpuErrchk( cudaBindTexture(&textureoffset, &texParticles,  device_xyzuvw, &texParticles.channelDesc,  ncells * nparticles * 6 * sizeof(float)) );
-        assert(textureoffset == 0);
+        // assert(textureoffset == 0);
 
         dim3 trThreads(32*3, 1);
         dim3 trBlocks( (ntriang + trThreads.x - 1) / trThreads.x, ncells );

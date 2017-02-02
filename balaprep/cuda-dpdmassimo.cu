@@ -59,7 +59,7 @@ __device__ float3 _dpd_interaction(const int dpid, const float3 xdest, const flo
     const float _zr = xdest.z - stmp1.x;
    
     const float rij2 = _xr * _xr + _yr * _yr + _zr * _zr;
-    assert(rij2 < 1);
+    // assert(rij2 < 1);
     
     const float invrij = rsqrtf(rij2);
     const float rij = rij2 * invrij;
@@ -92,7 +92,7 @@ __device__ void core(const int nsrc, const int * const scan, const int * const s
 	srcids[i] = 0;
     
     int srccount = 0;   
-    assert(ndst == ROWS);
+    // assert(ndst == ROWS);
     
     const int tid = threadIdx.x; 
     const int slot = tid / COLS;
@@ -240,9 +240,9 @@ __device__ void core_ilp(const int nsrc, const int * const scan, const int * con
 __global__ __launch_bounds__(32 * CPB, 16) 
 void _dpd_forces_saru()
 {
-    assert(warpSize == COLS * ROWS);
-    assert(blockDim.x == warpSize && blockDim.y == CPB && blockDim.z == 1);
-    assert(ROWS * 3 <= warpSize);
+    // assert(warpSize == COLS * ROWS);
+    // assert(blockDim.x == warpSize && blockDim.y == CPB && blockDim.z == 1);
+    // assert(ROWS * 3 <= warpSize);
 
     const int tid = threadIdx.x;
     const int wid = threadIdx.y;
@@ -307,9 +307,9 @@ __global__ __launch_bounds__(32 * CPB, 16)
 {
     const int COLS = 32;
     const int ROWS = 1;
-    assert(warpSize == COLS * ROWS);
-    assert(blockDim.x == warpSize && blockDim.y == CPB && blockDim.z == 1);
-    assert(ROWS * 3 <= warpSize);
+    // assert(warpSize == COLS * ROWS);
+    // assert(blockDim.x == warpSize && blockDim.y == CPB && blockDim.z == 1);
+    // assert(ROWS * 3 <= warpSize);
 
     const int tid = threadIdx.x; 
     const int subtid = tid % COLS;
@@ -385,12 +385,12 @@ __global__ __launch_bounds__(32 * CPB, 16)
 	    {
 		const int key1 = (pid >= scan[wid][key9 + key3 + 1]) + (pid >= scan[wid][key9 + key3 + 2]);
 		const int keyref = key9 + key3 + key1;
-		assert(keyref >= 0 && keyref < 27);
-		assert(pid >= scan[wid][keyref]);
-		assert(pid < scan[wid][keyref + 1] || pid >= nsrc);
+		// assert(keyref >= 0 && keyref < 27);
+		// assert(pid >= scan[wid][keyref]);
+		// assert(pid < scan[wid][keyref + 1] || pid >= nsrc);
 
 		const int spidref = pid - scan[wid][keyref] + starts[wid][keyref];
-		assert(spidref == spid || pid >= nsrc);
+		// assert(spidref == spid || pid >= nsrc);
 	    }
 #endif
 	    
@@ -467,10 +467,10 @@ __global__ __launch_bounds__(32 * CPB, 16)
 __global__ __launch_bounds__(32 * CPB, 8) 
     void inspect_dpd_forces_saru(const int COLS, const int ROWS, const int nparticles, int2 * const entries, const int nentries)
 {
-    assert(nentries = COLS * nparticles);
-    assert(warpSize == COLS * ROWS);
-    assert(blockDim.x == warpSize && blockDim.y == CPB && blockDim.z == 1);
-    assert(ROWS * 3 <= warpSize);
+    // assert(nentries = COLS * nparticles);
+    // assert(warpSize == COLS * ROWS);
+    // assert(blockDim.x == warpSize && blockDim.y == CPB && blockDim.z == 1);
+    // assert(ROWS * 3 <= warpSize);
 
     const int tid = threadIdx.x; 
     const int subtid = tid % COLS;
@@ -622,11 +622,11 @@ void forces_dpd_cuda_nohost(const float * const xyzuvw, float * const axayaz,  c
 
     size_t textureoffset;
     CUDA_CHECK(cudaBindTexture(&textureoffset, &texParticles2, xyzuvw, &texParticles2.channelDesc, sizeof(float) * 6 * np));
-    assert(textureoffset == 0);
+    // assert(textureoffset == 0);
     CUDA_CHECK(cudaBindTexture(&textureoffset, &texStart, cellsstart, &texStart.channelDesc, sizeof(int) * ncells));
-    assert(textureoffset == 0);
+    // assert(textureoffset == 0);
     CUDA_CHECK(cudaBindTexture(&textureoffset, &texCount, cellscount, &texCount.channelDesc, sizeof(int) * ncells));
-    assert(textureoffset == 0);
+    // assert(textureoffset == 0);
       
     InfoDPD c;
     c.ncells = make_int3(nx, ny, nz);
@@ -671,7 +671,7 @@ void forces_dpd_cuda_nohost(const float * const xyzuvw, float * const axayaz,  c
 	    sprintf(path2report, "inspection-%d-tstep.txt", cetriolo);
 
 	    FILE * f = fopen(path2report, "w");
-	    assert(f);
+	    // assert(f);
 
 	    for(int i = 0, c = 0; i < np; ++i)
 	    {
@@ -902,9 +902,9 @@ void forces_dpd_cuda_aos(float * const _xyzuvw, float * const _axayaz,
 	    cnt += collision;
 	}
 	printf("i found %d host interactions and with cuda i found %d\n", cnt, (int)axayaz[0 + 3 * ii]);
-	assert(cnt == (float)axayaz[0 + 3 * ii]);
+	// assert(cnt == (float)axayaz[0 + 3 * ii]);
 	printf("fc aij ref %f vs cuda %e\n", fc,  (float)axayaz[1 + 3 * ii]);
-	assert(fabs(fc - (float)axayaz[1 + 3 * ii]) < 1e-4);
+	// assert(fabs(fc - (float)axayaz[1 + 3 * ii]) < 1e-4);
     }
     
     printf("test done.\n");

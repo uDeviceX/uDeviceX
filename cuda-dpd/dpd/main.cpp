@@ -215,9 +215,9 @@ int main()
 		    real yf = (fc - gamma * wd * rdotv + sigma * wr * gij) * yr;
 		    real zf = (fc - gamma * wd * rdotv + sigma * wr * gij) * zr;
 
-		    assert(!::isnan(xf));
-		    assert(!::isnan(yf));
-		    assert(!::isnan(zf));
+		    // assert(!::isnan(xf));
+		    // assert(!::isnan(yf));
+		    // assert(!::isnan(zf));
 
 		    xa[i] += xf;
 		    ya[i] += yf;

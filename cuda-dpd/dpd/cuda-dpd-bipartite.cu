@@ -39,8 +39,8 @@ void _bipartite_dpd_directforces(float * const axayaz, const int np, const int n
 				 const float seed, const int mask, const float * xyzuvw, const float * xyzuvw_src,
 				 const float invrc, const float aij, const float gamma, const float sigmaf)
 {
-    assert(blockDim.x % warpSize == 0);
-    assert(blockDim.x * gridDim.x >= np);
+    // assert(blockDim.x % warpSize == 0);
+    // assert(blockDim.x * gridDim.x >= np);
     
     const int tid = threadIdx.x % warpSize;
     const int pid = threadIdx.x + blockDim.x * blockIdx.x;
@@ -131,9 +131,9 @@ void _bipartite_dpd_directforces(float * const axayaz, const int np, const int n
 
     if (valid)
     {
-	assert(!isnan(xforce));
-	assert(!isnan(yforce));
-	assert(!isnan(zforce));
+	// assert(!isnan(xforce));
+	// assert(!isnan(yforce));
+	// assert(!isnan(zforce));
     
 	axayaz[0 + 3 * pid] = xforce;
 	axayaz[1 + 3 * pid] = yforce;
@@ -165,9 +165,9 @@ __global__ __launch_bounds__(32 * CPB, 16)
 			  const float aij, const float gamma, const float sigmaf,
 			  const float seed, const int mask, float * const axayaz)
 {
-    assert(warpSize == COLS * ROWS);
-    assert(blockDim.x == warpSize && blockDim.y == CPB && blockDim.z == 1);
-    assert(ROWS * 3 <= warpSize);
+    // assert(warpSize == COLS * ROWS);
+    // assert(blockDim.x == warpSize && blockDim.y == CPB && blockDim.z == 1);
+    // assert(ROWS * 3 <= warpSize);
 
     const int tid = threadIdx.x; 
     const int subtid = tid % COLS;
@@ -275,7 +275,7 @@ __global__ __launch_bounds__(32 * CPB, 16)
 		const float strength = aij * argwr + (- gamma * wr * rdotv + sigmaf * myrandnr) * wr;
 		const bool valid = (slot < np1) && (subtid < np2);
 
-		assert( (dpid >= 0 && dpid < np && spid >= 0 && spid < np_src) || ! valid); 
+		// assert( (dpid >= 0 && dpid < np && spid >= 0 && spid < np_src) || ! valid); 
 		
 		if (valid)
 		{

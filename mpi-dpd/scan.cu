@@ -52,8 +52,8 @@ __global__ void bexscan(unsigned int *v, int n) {
 
 	extern __shared__ unsigned int shtmp[]; 
 
-	//assert(gridDim.x == 1);
-	//assert(blockDim.x == BDIM);
+	//// assert(gridDim.x == 1);
+	//// assert(blockDim.x == BDIM);
 
 	for(int i = threadIdx.x; i < n; i += BDIM) shtmp[i] = v[i];
 
@@ -110,7 +110,7 @@ __global__ void gexscan(uint4 *vin, unsigned int *offs, uint4 *vout, int n) {
 
 	__shared__ unsigned int woff[NWARP]; 
 
-	//assert(0 == NWARP%4);
+	//// assert(0 == NWARP%4);
 
 	if (tid < n) val[0] = vin[tid];
 	else 	     val[0] = make_uint4(0,0,0,0);

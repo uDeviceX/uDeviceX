@@ -23,9 +23,11 @@
 #include "simulation.h"
 
 bool currently_profiling = false;
-float tend;
+float tend, desired_shrate;
 bool walls, pushtheflow, doublepoiseuille, rbcs, ctcs, xyz_dumps, hdf5field_dumps, hdf5part_dumps, is_mps_enabled, adjust_message_sizes, contactforces;
-int steps_per_report, steps_per_dump, wall_creation_stepid, nvtxstart, nvtxstop;
+int steps_per_report, steps_per_dump, steps_per_hdf5dump, wall_creation_stepid, nvtxstart, nvtxstop;
+
+float RBCx0, RBCp, RBCcq, RBCkb, RBCka, RBCkv, RBCgammaC, RBCkd, RBCtotArea, RBCtotVolume;
 
 LocalComm localcomm;
 
@@ -77,14 +79,28 @@ int main(int argc, char ** argv)
     ctcs = argp("-ctcs").asBool(false);
     xyz_dumps = argp("-xyz_dumps").asBool(false);
     hdf5field_dumps = argp("-hdf5field_dumps").asBool(false);
+    hdf5part_dumps = argp("-hdf5part_dumps").asBool(false);
     steps_per_report = argp("-steps_per_report").asInt(1000);
     steps_per_dump = argp("-steps_per_dump").asInt(1000);
+    steps_per_hdf5dump = argp("-steps_per_hdf5dump").asInt(2000);
     wall_creation_stepid = argp("-wall_creation_stepid").asInt(5000);
     nvtxstart = argp("-nvtxstart").asInt(10400);
     nvtxstop = argp("-nvtxstop").asInt(10500);
     adjust_message_sizes = argp("-adjust_message_sizes").asBool(false);
     contactforces = argp("-contactforces").asBool(false);
     hdf5field_dumps = argp("-hdf5field_dumps").asBool(false);
+
+	// desired shear rate in DPD units
+    desired_shrate = argp("-shrate").asDouble(1);
+    RBCx0 = argp("-RBCx0").asDouble(0.5);
+    RBCp = argp("-RBCp").asDouble(0.0054);
+    RBCka = argp("-RBCka").asDouble(4900);
+    RBCkb = argp("-RBCkb").asDouble(40);
+    RBCkd = argp("-RBCkd").asDouble(100);
+    RBCkv = argp("-RBCkv").asDouble(5000);
+    RBCgammaC = argp("-RBCgammaC").asDouble(30);
+    RBCtotArea = argp("-RBCtotArea").asDouble(124);
+    RBCtotVolume = argp("-RBCtotVolume").asDouble(90);
 
 #ifndef _NO_DUMPS_
     const bool mpi_thread_safe = argp("-mpi_thread_safe").asBool(true);

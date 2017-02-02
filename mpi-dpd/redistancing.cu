@@ -116,9 +116,9 @@ namespace Redistancing
     
     __global__ void step(float * dst)
     {
-	assert(blockDim.x * gridDim.x >= info.NX);
-	assert(blockDim.y * gridDim.y >= info.NY);
-	assert(blockDim.z * gridDim.z >= info.NZ);
+	// assert(blockDim.x * gridDim.x >= info.NX);
+	// assert(blockDim.y * gridDim.y >= info.NY);
+	// assert(blockDim.z * gridDim.z >= info.NZ);
 
 	const int ix = threadIdx.x + blockDim.x * blockIdx.x;
 	const int iy = threadIdx.y + blockDim.y * blockIdx.y;
@@ -150,8 +150,8 @@ namespace Redistancing
 	    if( anycrossing(ix, iy, iz, sgn0) )
 	    {
 		//undisclosed code here, for now
-		assert(!isnan(val));
-		assert(!isinf(val));
+		// assert(!isnan(val));
+		// assert(!isinf(val));
 	    }
 	    else						
 		val = sussman_scheme(ix, iy, iz, sgn0);
@@ -159,9 +159,9 @@ namespace Redistancing
 
 	dst[ix + info.NX * (iy + info.NY * iz)] = val;
 	
-	assert(!isnan(val));
-	assert(!isinf(val));
-	assert(val * sgn0 >= 0); 
+	// assert(!isnan(val));
+	// assert(!isinf(val));
+	// assert(val * sgn0 >= 0); 
     }
 }
 

@@ -21,7 +21,7 @@ class RedistributeCTCs : public RedistributeRBCs
 {
     void _compute_extents(const Particle * const xyzuvw, const int nrbcs, cudaStream_t stream)
     {
-	assert(sizeof(CudaCTC::Extent) == sizeof(CudaRBC::Extent));
+	// assert(sizeof(CudaCTC::Extent) == sizeof(CudaRBC::Extent));
 #if 1
 	if (nrbcs)
 	    minmax(xyzuvw, nvertices, nrbcs, minextents.devptr, maxextents.devptr, stream);
@@ -65,9 +65,9 @@ CollectionCTC(MPI_Comm cartcomm) : CollectionRBC(cartcomm)
 	    CudaCTC::Extent extent;
 	    CudaCTC::setup(nvertices, extent);
 
-	    assert(extent.xmax - extent.xmin < XSIZE_SUBDOMAIN);
-	    assert(extent.ymax - extent.ymin < YSIZE_SUBDOMAIN);
-	    assert(extent.zmax - extent.zmin < ZSIZE_SUBDOMAIN);
+	    // assert(extent.xmax - extent.xmin < XSIZE_SUBDOMAIN);
+	    // assert(extent.ymax - extent.ymin < YSIZE_SUBDOMAIN);
+	    // assert(extent.zmax - extent.zmin < ZSIZE_SUBDOMAIN);
 
 	    CudaCTC::get_triangle_indexing(indices, ntriangles);
 	}

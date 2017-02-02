@@ -22,11 +22,11 @@ public:
   }
   void start(cudaStream_t s = 0) { cudaEventRecord(tStart, s); 
                                    tStarted = true; tStopped = false; }
-  void stop(cudaStream_t s = 0)  { assert(tStarted);
+  void stop(cudaStream_t s = 0)  { // assert(tStarted);
                                    cudaEventRecord(tStop, s); 
                                    tStarted = false; tStopped = true; }
   float elapsed() {
-    assert(tStopped);
+    // assert(tStopped);
     if (!tStopped) return 0; 
     cudaEventSynchronize(tStop);
     float milliseconds = 0;

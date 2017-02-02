@@ -92,7 +92,10 @@ protected:
 
 	int expected() const { return (int)ceil(history.max() * 1.1); }
 
-	int capacity() const { assert(hstate.capacity == dstate.capacity); return dstate.capacity; }
+	int capacity() const {
+		// assert(hstate.capacity == dstate.capacity);
+		return dstate.capacity;
+	}
 
     } remote[26];
 
@@ -115,7 +118,10 @@ protected:
 
 	int expected() const { return (int)ceil(history.max() * 1.1); }
 
-	int capacity() const { assert(result.capacity == scattered_indices.capacity); return scattered_indices.capacity; }
+	int capacity() const {
+		// assert(result.capacity == scattered_indices.capacity);
+		return scattered_indices.capacity;
+	}
 
     } local[26];
 
@@ -194,8 +200,9 @@ protected:
     void _not_nan(const float * const x, const int n) const
     {
 #ifndef NDEBUG
-	for(int i = 0; i < n; ++i)
-	    assert(!isnan(x[i]));
+	for(int i = 0; i < n; ++i) {
+	    // assert(!isnan(x[i]));
+	}
 #endif
     }
 

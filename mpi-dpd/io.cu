@@ -205,7 +205,7 @@ void H5PartDump::_initialize(const std::string filename, MPI_Comm comm, MPI_Comm
     fflush(stdout);
     H5PartFile * f = H5PartOpenFileParallel(path, H5PART_WRITE, comm);
 
-    assert(f != NULL);
+    // assert(f != NULL);
 
     handler = f;
 #endif
@@ -316,7 +316,7 @@ void H5FieldDump::_write_fields(const char * const path2h5,
     int nranks[3], periods[3], myrank[3];
     MPI_CHECK( MPI_Cart_get(cartcomm, 3, nranks, periods, myrank) );
 
-    id_t plist_id_access = H5Pcreate(H5P_FILE_ACCESS);
+    hid_t plist_id_access = H5Pcreate(H5P_FILE_ACCESS);
     H5Pset_fapl_mpio(plist_id_access, comm, MPI_INFO_NULL);
 
     hid_t file_id = H5Fcreate(path2h5, H5F_ACC_TRUNC, H5P_DEFAULT, plist_id_access);
@@ -329,7 +329,7 @@ void H5FieldDump::_write_fields(const char * const path2h5,
     for(int ichannel = 0; ichannel < nchannels; ++ichannel)
     {
 	hid_t dset_id = H5Dcreate(file_id, channelnames[ichannel], H5T_NATIVE_FLOAT, filespace_simple, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-	id_t plist_id = H5Pcreate(H5P_DATASET_XFER);
+	hid_t plist_id = H5Pcreate(H5P_DATASET_XFER);
 
 	H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
 
@@ -359,7 +359,7 @@ void H5FieldDump::_write_fields(const char * const path2h5,
 	sprintf(wrapper, "%s.xmf", string(path2h5).substr(0, string(path2h5).find_last_of(".h5") - 2).data());
 
 	FILE * xmf = fopen(wrapper, "w");
-	assert(xmf);
+	// assert(xmf);
 
 	_xdmf_header(xmf);
 	_xdmf_grid(xmf, time, string(path2h5).substr(string(path2h5).find_last_of("/") + 1).c_str(), channelnames, nchannels);
@@ -454,7 +454,7 @@ H5FieldDump::~H5FieldDump()
 
     FILE * xmf = fopen("h5/flowfields-sequence.xmf", "w");
 
-    assert(xmf);
+    // assert(xmf);
 
     _xdmf_header(xmf);
 

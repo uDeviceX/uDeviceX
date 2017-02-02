@@ -74,14 +74,14 @@ workxrank_t *reorder(int *ranks) {
       exit(1);
     }
     retval = fscanf(f, "%f %f %f\n", sysL + 0, sysL + 1, sysL + 2);
-    assert(retval == 3);
+    // assert(retval == 3);
     retval = fscanf(f, "%d %d %d\n", N + 0, N + 1, N + 2);
-    assert(retval == 3);
+    // assert(retval == 3);
     const int nvoxels = N[0] * N[1] * N[2];
     data = new float[nvoxels];
 
     retval = fread(data, sizeof(float), nvoxels, f);
-    assert(retval == nvoxels);
+    // assert(retval == nvoxels);
 
     fclose(f);
     return NULL;

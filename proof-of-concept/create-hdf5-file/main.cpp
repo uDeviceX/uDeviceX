@@ -89,7 +89,7 @@ void write_hdf5field(const char * path, const float *const data, const int nchan
 	sprintf(wrapper, "%s.xmf", path);
 
 	FILE * xmf = fopen(wrapper, "w");
-	assert(xmf);
+	// assert(xmf);
 	fprintf(xmf, "<?xml version=\"1.0\" ?>\n");
 	fprintf(xmf, "<!DOCTYPE Xdmf SYSTEM \"Xdmf.dtd\" []>\n");
 	fprintf(xmf, "<Xdmf Version=\"2.0\">\n");

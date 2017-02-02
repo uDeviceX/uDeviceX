@@ -151,14 +151,14 @@ void test(const int L)
 	for(int i = 0; i < yzhisto.size(); ++i)
 	{
 	    // printf("%d reading %d ref is %d\n", i, (int)yzhisto[i], (int)yzhist[i]);
-	    assert(yzhisto[i]  == yzhist[i]);
+	    // assert(yzhisto[i]  == yzhist[i]);
 	    s += yzhisto[i];
 
 	    for(int k = 0; k < yzhist[i]; ++k)
 		subids[i].insert(k);
 	}
 	//printf("s == %d is equal to %d == N\n", s , N);
-	assert(s == N);
+	// assert(s == N);
 	
 	for(int i = 0; i < N; ++i)
 	{
@@ -170,21 +170,21 @@ void test(const int L)
 	    const int loff = loffsets[i];
 	    const int en = yzcid[i];
 
-	    assert(en == entry);
+	    // assert(en == entry);
 
-	    assert(subids[en].find(loff) != subids[en].end());
+	    // assert(subids[en].find(loff) != subids[en].end());
 	    subids[en].erase(loff);
 	}
 
 	for(int i = 0; i < yzhisto.size(); ++i)
-	    assert(subids[i].size() == 0);
+	    // assert(subids[i].size() == 0);
 
 	printf("first level   verifications passed.\n");
 
 	const int mymax = *max_element(yzhist.begin(), yzhist.end());
 	printf("mymax: %d maxstripe: %d\n", mymax, *failuretest.maxstripe);
-	assert(mymax == *failuretest.maxstripe);
-	//assert(false);
+	// assert(mymax == *failuretest.maxstripe);
+	//// assert(false);
     }
 
     {
@@ -192,7 +192,7 @@ void test(const int L)
 	for(int i = 0; i < dyzscan.size(); ++i)
 	{
 	    //printf("%d -> %d (%d)\n", i, (int)dyzscan[i], (int) yzhisto[i]);
-	    assert(dyzscan[i] == s);
+	    // assert(dyzscan[i] == s);
 	    s += yzhisto[i];
 	}
     }
@@ -208,7 +208,7 @@ void test(const int L)
 	    const int base = lut[entry];
 	    const int offset = loffsets[landing];
 	    //printf("%d: %d -> %d\n", i, landing, base + offset);
-	    assert(i == base + offset);
+	    // assert(i == base + offset);
 	}
   
 	printf("second level   verification passed\n"); 
@@ -220,7 +220,7 @@ void test(const int L)
 	host_vector<bool> marked(N);
 
 	//printf("start[0] : %d\n", (int)start[0]);
-	assert(start[0] == 0);
+	// assert(start[0] == 0);
 	
 	for(int iz = 0; iz < ZL; ++iz)
 	    for(int iy = 0; iy < YL; ++iy)
@@ -231,12 +231,12 @@ void test(const int L)
 		    const int myc = c[cid];
 
 		    //intf("cid %d : my start and count are %d %d\n", cid, mys, myc);
-		    assert(mys >= 0 && mys < N);
-		    assert(myc >= 0 && myc <= N);
+		    // assert(mys >= 0 && mys < N);
+		    // assert(myc >= 0 && myc <= N);
 
 		    for(int i = mys; i < mys + myc; ++i)
 		    {
-			assert(!marked[i]);
+			// assert(!marked[i]);
 			const float x = aos[0 + 6 * i];
 			const float y = aos[1 + 6 * i];
 			const float z = aos[2 + 6 * i];
@@ -246,9 +246,9 @@ void test(const int L)
 			const float zcheck = z - domainstart.z;
 
 			//printf("checking p %d: %f %f %f  ref: %d %d %d\n", i, xcheck , ycheck, zcheck, ix, iy, iz);
-			assert(xcheck >= ix && xcheck < ix + 1);
-			assert(ycheck >= iy && ycheck < iy + 1);
-			assert(zcheck >= iz && zcheck < iz + 1);
+			// assert(xcheck >= ix && xcheck < ix + 1);
+			// assert(ycheck >= iy && ycheck < iy + 1);
+			// assert(zcheck >= iz && zcheck < iz + 1);
 						
 			marked[i] = true;
 		    }
@@ -263,9 +263,9 @@ void test(const int L)
 	{
 	    const int key = order[i];
 	    //printf("%d : %d\n", i, key);
-	    assert(key >= 0);
-	    assert(key < N);
-	    assert(ids.find(key) == ids.end());
+	    // assert(key >= 0);
+	    // assert(key < N);
+	    // assert(ids.find(key) == ids.end());
 	    ids.insert(key);
 	}
 	

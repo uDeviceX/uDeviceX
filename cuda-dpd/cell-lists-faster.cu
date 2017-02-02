@@ -33,8 +33,8 @@ __global__ void yzhistogram(const int np,
 {
     extern __shared__ int shmemhisto[];
 
-    assert(blockDim.y == 1);
-    assert(blockDim.x == warpSize * WARPS);
+    // assert(blockDim.y == 1);
+    // assert(blockDim.x == warpSize * WARPS);
 
     const int tid = threadIdx.x;
 #ifndef TEST_MAURO
@@ -85,8 +85,8 @@ __global__ void yzhistogram(const int np,
 	int ycid = min(ncells.y - 1, max(0, (int)(floor(y[j] - domainstart.y) * invrc)));
 	int zcid = min(ncells.z - 1, max(0, (int)(floor(z[j] - domainstart.z) * invrc)));
 	    
-	assert(ycid >= 0 && ycid < ncells.y);
-	assert(zcid >= 0 && zcid < ncells.z);
+	// assert(ycid >= 0 && ycid < ncells.y);
+	// assert(zcid >= 0 && zcid < ncells.z);
 
 	entries[j] = -1;
 #ifndef TEST_MAURO
@@ -270,9 +270,9 @@ __global__ void xgather(const int * const ids, const int np, const float invrc, 
 			int * const starts, int * const counts,
 			float * const xyzuvw, const int bufsize, int * const order, int *loffs)
 {
-    assert(gridDim.x == 1 && gridDim.y == ncells.y / YCPB && gridDim.z == ncells.z);
-    assert(blockDim.x == warpSize);
-    assert(blockDim.y == YCPB);
+    // assert(gridDim.x == 1 && gridDim.y == ncells.y / YCPB && gridDim.z == ncells.z);
+    // assert(blockDim.x == warpSize);
+    // assert(blockDim.y == YCPB);
     
     extern __shared__ volatile int allhisto[];
     volatile int * const xhisto = &allhisto[ncells.x * threadIdx.y];
@@ -316,8 +316,8 @@ __global__ void xgather(const int * const ids, const int np, const float invrc, 
 	id &= 0x00FFFFFF;
 #endif
 	const int val = atomicAdd((int *)(xhisto + xcid), 1);
-	assert(xcid < ncells.x);
-	assert(i < bufsize);
+	// assert(xcid < ncells.x);
+	// assert(i < bufsize);
 #ifndef TEST_MAURO	
 	loffset[i] = val |  (xcid << 16);
 #else
@@ -362,7 +362,7 @@ __global__ void xgather(const int * const ids, const int np, const float invrc, 
 	const int entry = loffs[i];
 #endif
 	const int xcid = entry >> 16;
-	assert(xcid < ncells.x);
+	// assert(xcid < ncells.x);
 	const int loff = entry & 0xffff;
 
 	const int dest = (xcid == 0 ? 0 : xhisto[xcid - 1]) + loff;
@@ -383,7 +383,7 @@ __global__ void xgather(const int * const ids, const int np, const float invrc, 
     {
 	const int c = i % 6;
 	const int p = reordered[i / 6];
-	assert(i / 6 < bufsize);
+	// assert(i / 6 < bufsize);
 	
 	xyzuvw[base + i] = tex1Dfetch(texParticlesCLS, c + 6 * p);
     }
@@ -444,7 +444,7 @@ struct FailureTest
 	    if (maxstripe == NULL)
 	    {
 		CUDA_CHECK(cudaHostAlloc((void **)&maxstripe, sizeof(int), cudaHostAllocMapped));
-		assert(maxstripe != NULL);
+		// assert(maxstripe != NULL);
 		
 		CUDA_CHECK(cudaHostGetDevicePointer(&dmaxstripe, maxstripe, 0));
 	    }
@@ -479,7 +479,7 @@ void build_clists(float * const device_xyzuvw, int np, const float rc,
 		  int * const order, int * device_cellsstart, int * device_cellscount,
 		  std::pair<int, int *> * nonemptycells, cudaStream_t stream, const float * const src_device_xyzuvw)
 {
-    assert(np > 0);
+    // assert(np > 0);
     
     const float3 domainstart = make_float3(xdomainstart, ydomainstart, zdomainstart);
     const int3 ncells = make_int3(xcells, ycells, zcells);
@@ -547,7 +547,7 @@ void build_clists(float * const device_xyzuvw, int np, const float rc,
     }
       
     failuretest.reset(); 
-    assert(failuretest.maxstripe != NULL);
+    // assert(failuretest.maxstripe != NULL);
     
     const float * xyzuvw_copy = xyzuvw_internal_copy;
 
@@ -639,7 +639,7 @@ void build_clists(float * const device_xyzuvw, int np, const float rc,
 
 	    shmem_fp = sizeof(int) * (ncells.x  + 2 * xbufsize) * YCPB;
 	    
-	    assert(shmem_fp < 48 * 1024);
+	    // assert(shmem_fp < 48 * 1024);
 	    
 	    xgather<YCPB><<< dim3(1, ncells.y / YCPB, ncells.z), dim3(32, YCPB), shmem_fp, stream>>>
 		(outid, np, 1 / rc, ncells, domainstart, device_cellsstart, device_cellscount, device_xyzuvw, xbufsize,
@@ -662,7 +662,7 @@ void build_clists(float * const device_xyzuvw, int np, const float rc,
 	if (*failuretest.maxstripe > xbufsize)
 	{
 	    //we should not be here anymore, after assignement at line 526
-	    assert(false);
+	    // assert(false);
 	    
 	    CUDA_CHECK(cudaThreadSynchronize());
 	    
@@ -712,7 +712,7 @@ void build_clists(float * const device_xyzuvw, int np, const float rc,
 
     if (nonemptycells != NULL)
     {
-	assert(nonemptycells->second != NULL);
+	// assert(nonemptycells->second != NULL);
 
 	const int ntotcells = ncells.x * ncells.y * ncells.z;
 	const int nonempties = copy_if(counting_iterator<int>(0), counting_iterator<int>(ntotcells), 

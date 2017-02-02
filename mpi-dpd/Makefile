@@ -1,8 +1,8 @@
 -include .cache.Makefile
 
 NVCC ?= nvcc -ccbin $(CXX)
-ARCH_VAL ?= compute_35
-CODE_VAL ?= sm_35
+ARCH_VAL ?= compute_60
+CODE_VAL ?= sm_60
 
 NVCCFLAGS += -I$(HDF5_DIR)/include -Xcudafe "--diag_suppress=unrecognized_gcc_pragma"
 NVCCFLAGS +=  -arch $(ARCH_VAL) -code $(CODE_VAL) -O3 -use_fast_math -g 
@@ -19,7 +19,7 @@ OBJS = 	dpd.o wall.o fsi.o contact.o \
 	scan.o minmax.o redistancing.o \
 	simulation.o main.o velcontroller.o
 
-LIBS = -lcuda-dpd -lcuda-rbc -lcuda-ctc -lcudart -ldl -lz
+LIBS = -lcuda-dpd -lcuda-rbc -lcuda-ctc -lcudart -ldl -lz -lpthread
 
 nvtx ?= 0
 ifneq "$(nvtx)" "0"
@@ -28,7 +28,7 @@ NVCCFLAGS += -D_USE_NVTX_ -lineinfo
 endif
 
 ifneq "$(h5part)" "0"
-LIBS += -L$(HDF5_DIR)/lib -lhdf5 -L/scratch/daint/diegor/h5part/lib/ -lH5Part
+LIBS += -L$(HDF5_DIR)/lib -lhdf5 -L/users/lina/usr/hdf5part/lib/ -lH5Part
 else
 NVCCFLAGS += -DNO_H5PART
 endif

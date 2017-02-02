@@ -29,14 +29,14 @@ bool SandwichBouncer::_handle_collision(float& x, float& y, float& z,
     const float yold = y - dt * v;
     const float zold = z - dt * w;
 
-    assert(fabs(zold) - half_width <= 0);
-    assert(fabs(w) > 0);
+    // assert(fabs(zold) - half_width <= 0);
+    // assert(fabs(w) > 0);
 
     const float s = 1 - 2 * signbit(w);
     const float t = (s * half_width - zold) / w;
 
-    assert(t >= 0);
-    assert(t <= dt);
+    // assert(t >= 0);
+    // assert(t <= dt);
 
     const float lambda = 2 * t - dt;
 
@@ -44,7 +44,7 @@ bool SandwichBouncer::_handle_collision(float& x, float& y, float& z,
     y = yold + lambda * v;
     z = zold + lambda * w;
 
-    assert(fabs(zold + lambda * w) - half_width <= 0);
+    // assert(fabs(zold + lambda * w) - half_width <= 0);
 
     u = -u;
     v = -v;
@@ -184,7 +184,7 @@ bool TomatoSandwich::_handle_collision(float& x, float& y, float& z,
     if (r2 >= radius2)
     return false;
 
-    assert(dt > 0);
+    // assert(dt > 0);
 
     const float xold = x - dt * u;
     const float yold = y - dt * v;
@@ -197,14 +197,14 @@ bool TomatoSandwich::_handle_collision(float& x, float& y, float& z,
      if (r2old < radius2)
      printf("r2old : %.30f\n", r2old);
 
-    assert(r2old >= radius2);
+    // assert(r2old >= radius2);
 
     const float t = _compute_collision_time(xold, yold, u, v, xc, yc, radius2);
     if (t < 0)
     printf("t is %.20e\n", t);
 
-    assert(t >= 0);
-    assert(t <= dt);
+    // assert(t >= 0);
+    // assert(t <= dt);
 
     const float lambda = 2 * t - dt;
 
@@ -423,13 +423,13 @@ void TomatoSandwich::computeDPDPairForLayer(const float kBT, const double dt, in
     float zOffset = -trunc(coord[2] / w + zh) * w;
     // shift atom to the range [-w/2, w/2]
     float coordShifted[] = {coord[0], coord[1], coord[2] + zOffset};
-    assert(coordShifted[2] >= -w/2.0f && coordShifted[2] <= w/2.0f);
+    // assert(coordShifted[2] >= -w/2.0f && coordShifted[2] <= w/2.0f);
 
     int coreLayerIndex = trunc((coordShifted[2] + w/2)/rc);
     if (coreLayerIndex == 3) // iff coordShifted[2] == 1.5, temporary workaround
         coreLayerIndex = 2;
 
-    assert(coreLayerIndex >= 0 && coreLayerIndex < 3);
+    // assert(coreLayerIndex >= 0 && coreLayerIndex < 3);
 
     float layersOffsetZ[] = {0.0f, 0.0f, 0.0f};
     if (coreLayerIndex == 0)
@@ -550,7 +550,7 @@ void TomatoSandwich::dpd_forces_1particle(size_t layerIndex, const float kBT, co
         const float yr = _yr * invrij;
         const float zr = _zr * invrij;
 
-        assert(frLayer.xv[j] == 0 && frLayer.yv[j] == 0 && frLayer.zv[j] == 0); //TODO remove v
+        // assert(frLayer.xv[j] == 0 && frLayer.yv[j] == 0 && frLayer.zv[j] == 0); //TODO remove v
         const float rdotv =
         xr * (vel[0] - frLayer.xv[j]) +
         yr * (vel[1] - frLayer.yv[j]) +

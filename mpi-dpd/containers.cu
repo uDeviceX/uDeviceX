@@ -28,7 +28,7 @@ namespace ParticleKernels
     __global__ void update_stage1(Particle * p, Acceleration * a, int n, float dt,
 				  const float _driving_acceleration, const float threshold, const bool doublePoiseuille, const bool check = true)
     {
-	assert(blockDim.x * gridDim.x >= n);
+	// assert(blockDim.x * gridDim.x >= n);
 
 	const int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
@@ -37,9 +37,9 @@ namespace ParticleKernels
 
 	for(int c = 0; c < 3; ++c)
 	{
-	    assert(!isnan(p[pid].x[c]));
-	    assert(!isnan(p[pid].u[c]));
-	    assert(!isnan(a[pid].a[c]));
+	    // assert(!isnan(p[pid].x[c]));
+	    // assert(!isnan(p[pid].u[c]));
+	    // assert(!isnan(a[pid].a[c]));
 	}
 
 	float driving_acceleration = _driving_acceleration;
@@ -59,8 +59,8 @@ namespace ParticleKernels
 	if (check)
 	    for(int c = 0; c < 3; ++c)
 	    {
-		assert(p[pid].x[c] >= -L[c] -L[c]/2);
-		assert(p[pid].x[c] <= +L[c] +L[c]/2);
+		// assert(p[pid].x[c] >= -L[c] -L[c]/2);
+		// assert(p[pid].x[c] <= +L[c] +L[c]/2);
 	    }
 #endif
     }
@@ -79,7 +79,7 @@ namespace ParticleKernels
 #define _ACCESS(x) (*(x))
 #endif
 
-	assert(blockDim.x == 128 && blockDim.x * gridDim.x >= nparticles);
+	// assert(blockDim.x == 128 && blockDim.x * gridDim.x >= nparticles);
 
 	const int warpid = threadIdx.x >> 5;
 	const int base = 32 * (warpid + 4 * blockIdx.x);
@@ -215,7 +215,7 @@ namespace ParticleKernels
 
     __global__ void clear_velocity(Particle * const p, const int n)
     {
-	assert(blockDim.x * gridDim.x >= n);
+	// assert(blockDim.x * gridDim.x >= n);
 
 	const int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
@@ -306,9 +306,9 @@ cartcomm(cartcomm), ncells(0)
     CudaRBC::Extent extent;
     CudaRBC::setup(nvertices, extent);
 
-/*    assert(extent.xmax - extent.xmin < XSIZE_SUBDOMAIN);
-    assert(extent.ymax - extent.ymin < YSIZE_SUBDOMAIN);
-    assert(extent.zmax - extent.zmin < ZSIZE_SUBDOMAIN);*/
+/*    // assert(extent.xmax - extent.xmin < XSIZE_SUBDOMAIN);
+    // assert(extent.ymax - extent.ymin < YSIZE_SUBDOMAIN);
+    // assert(extent.zmax - extent.zmin < ZSIZE_SUBDOMAIN);*/
 }
 
 void CollectionRBC::setup(const char * const path2ic)
@@ -359,7 +359,7 @@ void CollectionRBC::setup(const char * const path2ic)
     allrbcs.resize(allrbcs_count);
 
     const int nfloats_per_entry = sizeof(TransformedExtent) / sizeof(float);
-    assert( sizeof(TransformedExtent) % sizeof(float) == 0);
+    // assert( sizeof(TransformedExtent) % sizeof(float) == 0);
 
     MPI_CHECK(MPI_Bcast(&allrbcs.front(), nfloats_per_entry * allrbcs_count, MPI_FLOAT, 0, cartcomm));
 
@@ -430,9 +430,9 @@ void CollectionRBC::_dump(const char * const path2xyz, const char * const format
     for(int i = 0; i < n; ++i)
 	for(int c = 0; c < 3; ++c)
 	{
-	    assert(!isnan(p[i].x[c]));
-	    assert(!isnan(p[i].u[c]));
-	    assert(!isnan(a[i].a[c]));
+	    // assert(!isnan(p[i].x[c]));
+	    // assert(!isnan(p[i].u[c]));
+	    // assert(!isnan(a[i].a[c]));
 
 	    p[i].x[c] -= dt * p[i].u[c];
 	    p[i].u[c] -= 0.5 * dt * a[i].a[c];
@@ -444,7 +444,7 @@ void CollectionRBC::_dump(const char * const path2xyz, const char * const format
     char buf[200];
     sprintf(buf, format4ply, ctr);
 
-    if (ctr ==0)
+//    if (ctr ==0)
     {
 	int rank;
 	MPI_CHECK(MPI_Comm_rank(comm, &rank));

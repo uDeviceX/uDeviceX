@@ -80,6 +80,6 @@ public:
     static void dump(MPI_Comm comm, MPI_Comm cartcomm,
 		     Particle * const p, const Acceleration * const a, const int n, const int iddatadump)
     {
-	_dump("xyz/rbcs.xyz", "ply/rbcs-%04d.ply", comm, cartcomm, ntriangles, n / nvertices, nvertices, indices, p, a, n, iddatadump);
+	_dump("xyz/rbcs.xyz", "ply/rbcs-%05d.ply", comm, cartcomm, ntriangles, n / nvertices, nvertices, indices, p, a, n, iddatadump);
     }
 };
