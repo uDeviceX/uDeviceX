@@ -510,7 +510,8 @@ void Simulation::_datadump_async()
     MPI_CHECK(MPI_Comm_dup(activecomm, &myactivecomm) );
     MPI_CHECK(MPI_Comm_dup(cartcomm, &mycartcomm) );
 
-    H5PartDump dump_part("allparticles->h5part", activecomm, cartcomm), *dump_part_solvent = NULL;
+	printf("ALLPARTICLES CHECK\n");
+    H5PartDump dump_part("allparticles.h5part", activecomm, cartcomm), *dump_part_solvent = NULL;
     H5FieldDump dump_field(cartcomm);
 
     MPI_CHECK(MPI_Comm_rank(myactivecomm, &rank));
