@@ -19,6 +19,7 @@
 #include "io.h"
 #include "ctc.h"
 #include "last_bit_float.h"
+#include "visc-aux.h"
 
 int (*CollectionRBC::indices)[3] = NULL, CollectionRBC::ntriangles = -1, CollectionRBC::nvertices = -1;
 
@@ -206,14 +207,20 @@ namespace ParticleKernels
 	     }
 	 }
 
-	 if (laneid < nwords)
+	 if (laneid < nwords) {
+		 last_bit_float::Preserver up1(pdata[laneid].y);
 	     pdata[laneid] = s0;
+	 }
 
-	 if (laneid + 32 < nwords)
+	 if (laneid + 32 < nwords) {
+		 last_bit_float::Preserver up1(pdata[laneid + 32].y);
 	     pdata[laneid + 32] = s1;
+	 }
 
-	 if (laneid + 64 < nwords)
+	 if (laneid + 64 < nwords) {
+		 last_bit_float::Preserver up1(pdata[laneid + 64].y);
 	     pdata[laneid + 64] = s2;
+	 }
     }
 
     __global__ void clear_velocity(Particle * const p, const int n)

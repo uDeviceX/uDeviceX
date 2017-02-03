@@ -20,3 +20,12 @@ std::vector<int> get_traced_list(int n, Particle * const particles) {
   }
   return ilist;
 }
+
+void print_traced_particles(Particle * particles, int n) {
+  int count = 0;
+    for(int i = 0; i < n; ++i) {
+        bool traced = last_bit_float::get(particles[i].u[0]);
+        if (traced) count++;
+    }
+    printf("%d particles are traced\n", count);
+}
