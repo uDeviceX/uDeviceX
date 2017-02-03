@@ -18,6 +18,7 @@
 #include "containers.h"
 #include "io.h"
 #include "ctc.h"
+#include "last_bit_float.h"
 
 int (*CollectionRBC::indices)[3] = NULL, CollectionRBC::ntriangles = -1, CollectionRBC::nvertices = -1;
 
@@ -34,6 +35,8 @@ namespace ParticleKernels
 
 	if (pid >= n)
 	    return;
+
+	last_bit_float::Preserver up0(p[pid].u[0]);
 
 	for(int c = 0; c < 3; ++c)
 	{
@@ -222,6 +225,7 @@ namespace ParticleKernels
 	if (pid >= n)
 	    return;
 
+	last_bit_float::Preserver up(p[pid].u[0]);
 	for(int c = 0; c < 3; ++c)
 	    p[pid].u[c] = 0;
     }
@@ -427,15 +431,17 @@ void CollectionRBC::_dump(const char * const path2xyz, const char * const format
     const bool firsttime = ctr == 0;
 
     //we fused VV stages so we need to recover the state before stage 1
-    for(int i = 0; i < n; ++i)
-	for(int c = 0; c < 3; ++c)
-	{
-	    // assert(!isnan(p[i].x[c]));
-	    // assert(!isnan(p[i].u[c]));
-	    // assert(!isnan(a[i].a[c]));
+    for(int i = 0; i < n; ++i) {
+		last_bit_float::Preserver up(p[i].u[0]);
+		for(int c = 0; c < 3; ++c)
+		{
+			// assert(!isnan(p[i].x[c]));
+			// assert(!isnan(p[i].u[c]));
+			// assert(!isnan(a[i].a[c]));
 
-	    p[i].x[c] -= dt * p[i].u[c];
-	    p[i].u[c] -= 0.5 * dt * a[i].a[c];
+			p[i].x[c] -= dt * p[i].u[c];
+			p[i].u[c] -= 0.5 * dt * a[i].a[c];
+		}
 	}
 
     if (xyz_dumps)

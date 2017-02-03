@@ -18,6 +18,7 @@ OBJS = 	dpd.o wall.o fsi.o contact.o \
 	common.o containers.o io.o \
 	scan.o minmax.o redistancing.o \
 	last_bit_float.o \
+	visc-aux.o \
 	simulation.o main.o velcontroller.o
 
 LIBS = -lcuda-dpd -lcuda-rbc -lcuda-ctc -lcudart -ldl -lz -lpthread

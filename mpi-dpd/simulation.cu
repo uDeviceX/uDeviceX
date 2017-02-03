@@ -13,6 +13,7 @@
 #include <sys/stat.h>
 
 #include "simulation.h"
+#include "visc-aux.h"
 
 __global__ void make_texture( float4 * __restrict xyzouvwo, ushort4 * __restrict xyzo_half, const float * __restrict xyzuvw, const uint n )
 {
@@ -83,6 +84,8 @@ std::vector<Particle> Simulation::_ic()
                     ic[p].u[1] = 0;
                     ic[p].u[2] = 0;
                 }
+
+    set_traced_particles(ic.size(), &ic[0]);
 
     /* use this to check robustness
        for(int i = 0; i < ic.size(); ++i)
