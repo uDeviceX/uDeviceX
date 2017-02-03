@@ -1,8 +1,8 @@
 -include .cache.Makefile
 
 NVCC ?= nvcc -ccbin $(CXX)
-ARCH_VAL ?= compute_60
-CODE_VAL ?= sm_60
+ARCH_VAL ?= compute_35
+CODE_VAL ?= sm_35
 
 NVCCFLAGS += -I$(HDF5_DIR)/include -Xcudafe "--diag_suppress=unrecognized_gcc_pragma"
 NVCCFLAGS +=  -arch $(ARCH_VAL) -code $(CODE_VAL) -O3 -use_fast_math -g 
@@ -28,13 +28,13 @@ NVCCFLAGS += -D_USE_NVTX_ -lineinfo
 endif
 
 ifneq "$(h5part)" "0"
-LIBS += -L$(HDF5_DIR)/lib -lhdf5 -L/users/lina/usr/hdf5part/lib/ -lH5Part
+LIBS += -L${H5PART_DIR}/lib -lH5Part
 else
 NVCCFLAGS += -DNO_H5PART
 endif
 
 ifneq "$(h5)" "0"
-LIBS += -lhdf5 #-L$(HDF5_DIR)/lib
+LIBS += -L$(HDF5_DIR)/lib -lhdf5
 else
 NVCCFLAGS += -DNO_H5
 endif
