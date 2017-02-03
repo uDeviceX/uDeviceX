@@ -28,6 +28,8 @@
 #include <vector>
 
 #include "io.h"
+#include "last_bit_float.h"
+#include "visc-aux.h"
 
 using namespace std;
 
@@ -217,22 +219,25 @@ void H5PartDump::dump(Particle * host_particles, int n)
     if (disposed)
     	return;
 
+    vector<int> traced;
+    for(int i = 0; i < n; ++i)
+        if (last_bit_float::get(host_particles[i].u[0]))
+            traced.push_back(i);
+    int ntraced = traced.size();
+
     H5PartFile * f = (H5PartFile *)handler;
-
     H5PartSetStep(f, tstamp);
-
-    H5PartSetNumParticles(f, n);
+    H5PartSetNumParticles(f, ntraced);
 
     string labels[] = {"x", "y", "z"};
 
+    vector<float> data(ntraced);
     for(int c = 0; c < 3; ++c)
     {
-	vector<float> data(n);
+        for(int i = 0; i < ntraced; ++i)
+            data[i] = host_particles[traced[i]].x[c] + origin[c];
 
-	for(int i = 0; i < n; ++i)
-	    data[i] = host_particles[i].x[c] + origin[c];
-
-	H5PartWriteDataFloat32(f, labels[c].c_str(), &data.front());
+        H5PartWriteDataFloat32(f, labels[c].c_str(), &data.front());
     }
 
     tstamp++;
@@ -427,7 +432,7 @@ void H5FieldDump::dump(MPI_Comm comm, const Particle * const p, const int n, int
     {
 	int rank;
 	MPI_CHECK(MPI_Comm_rank(comm, &rank));
-	
+
 	if (rank == 0)
 	    mkdir("h5", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
