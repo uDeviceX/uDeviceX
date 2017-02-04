@@ -19,24 +19,24 @@
 #endif
 
 #define kBT2D3D (1) // 2d to 3d temperature conversion
-#define RC_FX (1) // rc_F/rc_X
+#define RC_FX (1.5) // rc_F/rc_X
 
 enum
 {
-    XSIZE_SUBDOMAIN = 128,
-    YSIZE_SUBDOMAIN = 32,
+    XSIZE_SUBDOMAIN = 64,
+    YSIZE_SUBDOMAIN = 16,
     ZSIZE_SUBDOMAIN = 64,
     XMARGIN_WALL = 6,
     YMARGIN_WALL = 6,
     ZMARGIN_WALL = 6,
 };
 
-const int numberdensity = 10 * (RC_FX*RC_FX*RC_FX);     // default: 3
-const float gammadpd = 30;                           // default: 4.5
-const float kBT = 1 * kBT2D3D / (RC_FX*RC_FX);                // default: 1
-const float dt          = 0.001;                       // default: 0.001
+const int numberdensity = 3 * (RC_FX*RC_FX*RC_FX);     // default: 3
+const float gammadpd = 8;                           // default: 4.5
+const float kBT = 0.1 * kBT2D3D / (RC_FX*RC_FX);                // default: 1
+const float dt          = 0.0005;                       // default: 0.001
 
-const float aij = 7.5; // default: 75*kBT/numberdensity -- Groot and Warren (1997)
+const float aij = 4 / RC_FX; // default: 75*kBT/numberdensity -- Groot and Warren (1997)
 const float hydrostatic_a = 0.05 / RC_FX;
 const float sigma = sqrt(2 * gammadpd * kBT);
 const float sigmaf = sigma / sqrt(dt);
