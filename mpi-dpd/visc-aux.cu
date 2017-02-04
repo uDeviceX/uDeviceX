@@ -3,6 +3,8 @@
 #include "common.h"
 #include "last_bit_float.h"
 
+extern float RBCscale;
+
 bool is_inside_rbc(float x, float y, float z, float th) {
     x *= th; y *= th; z *= th;
 
@@ -27,7 +29,7 @@ void set_traced_particles(int n, Particle * particles) {
     float x = particles[i].x[0];
     float y = particles[i].x[1];
     float z = particles[i].x[2];
-    if (is_inside_rbc(x, y, z, 1.1))
+    if (is_inside_rbc(x, y, z, 1.1/RBCscale))
       last_bit_float::set(particles[i].u[0], true);
   }
 }

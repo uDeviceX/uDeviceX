@@ -27,7 +27,7 @@ float tend, desired_shrate;
 bool walls, pushtheflow, doublepoiseuille, rbcs, ctcs, xyz_dumps, hdf5field_dumps, hdf5part_dumps, is_mps_enabled, adjust_message_sizes, contactforces;
 int steps_per_report, steps_per_dump, steps_per_hdf5dump, wall_creation_stepid, nvtxstart, nvtxstop;
 
-float RBCx0, RBCp, RBCcq, RBCkb, RBCka, RBCkv, RBCgammaC, RBCkd, RBCtotArea, RBCtotVolume;
+float RBCx0, RBCp, RBCcq, RBCkb, RBCka, RBCkv, RBCgammaC, RBCkd, RBCtotArea, RBCtotVolume, RBCscale;
 
 LocalComm localcomm;
 
@@ -93,7 +93,7 @@ int main(int argc, char ** argv)
 	// desired shear rate in DPD units
     desired_shrate = argp("-shrate").asDouble(1);
     RBCx0 = argp("-RBCx0").asDouble(0.5);
-    RBCp = argp("-RBCp").asDouble(0.0054);
+    RBCp = argp("-RBCp").asDouble(0.0045);
     RBCka = argp("-RBCka").asDouble(4900);
     RBCkb = argp("-RBCkb").asDouble(40);
     RBCkd = argp("-RBCkd").asDouble(100);
@@ -101,6 +101,8 @@ int main(int argc, char ** argv)
     RBCgammaC = argp("-RBCgammaC").asDouble(30);
     RBCtotArea = argp("-RBCtotArea").asDouble(124);
     RBCtotVolume = argp("-RBCtotVolume").asDouble(90);
+
+    RBCscale = 1/RC_FX;
 
 #ifndef _NO_DUMPS_
     const bool mpi_thread_safe = argp("-mpi_thread_safe").asBool(true);
@@ -247,7 +249,7 @@ int main(int argc, char ** argv)
 	localcomm.initialize(activecomm);
 
 	MPI_CHECK(MPI_Barrier(activecomm));
-	
+
 	Simulation simulation(cartcomm, activecomm, SignalHandling::check_termination_request);
 
 	simulation.run();

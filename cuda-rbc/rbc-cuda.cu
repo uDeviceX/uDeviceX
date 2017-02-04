@@ -27,7 +27,7 @@
 using namespace std;
 
 extern float RBCx0, RBCp, RBCka, RBCkb, RBCkd, RBCkv, RBCgammaC,
-	RBCtotArea, RBCtotVolume;
+	RBCtotArea, RBCtotVolume, RBCscale;
 
 #define CUDA_CHECK(ans) do { cudaAssert((ans), __FILE__, __LINE__); } while(0)
 inline void cudaAssert(cudaError_t code, const char *file, int line)
@@ -127,7 +127,7 @@ namespace CudaRBC
 
     void setup(int& nvertices, Extent& host_extent)
     {
-        const float scale=1;
+        const float scale = RBCscale;
         const bool report = false;
 
         FILE * f = fopen("../cuda-rbc/rbc.dat", "r");
@@ -340,7 +340,7 @@ namespace CudaRBC
         maxCells = 0;
         CUDA_CHECK( cudaMalloc(&host_av, 1 * 2 * sizeof(float)) );
 
-        unitsSetup(RBCx0, RBCp, RBCka, RBCkb, RBCkd, RBCkv, RBCgammaC, 
+        unitsSetup(RBCx0, RBCp, RBCka, RBCkb, RBCkd, RBCkv, RBCgammaC,
 			RBCtotArea, RBCtotVolume, 1e-6, -1 /* not used */, -1 /* not used */, report);
         CUDA_CHECK( cudaFuncSetCacheConfig(fall_kernel<498>, cudaFuncCachePreferL1) );
     }
@@ -350,7 +350,7 @@ namespace CudaRBC
 		bool prn)
     {
         const float lrbc = 1.000000e-06;
-        float ll = lunit / lrbc;
+        float ll =  (lunit/lrbc) / RBCscale;
 		const float Escale = 4.2e-20; // units conversion from master
 
 		float kBT2D3D = 1;
