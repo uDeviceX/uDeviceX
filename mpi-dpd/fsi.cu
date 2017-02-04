@@ -31,7 +31,7 @@ ComputeFSI::ComputeFSI(MPI_Comm comm)
 
     //TODO: use CUDA_CHECK(cudaEventCreateWithFlags(&evuploaded, cudaEventDisableTiming));
 
-    KernelsFSI::Params params = {0.0, gammadpd, sigmaf};
+    KernelsFSI::Params params = {aij, gammadpd, sigmaf};
 
     CUDA_CHECK(cudaMemcpyToSymbol(KernelsFSI::params, &params, sizeof(params)));
 
