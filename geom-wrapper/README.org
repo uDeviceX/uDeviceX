@@ -1,0 +1,11 @@
+A wrapper for cgal [1]
+
+[1] http://www.cgal.org
+
+#+BEGIN_SRC sh
+cmake . -DCMAKE_VERBOSE_MAKEFILE=ON
+make
+
+# or `nm libHello.a'
+nm libHello.a | c++filt
+#+END_SRC
