@@ -55,8 +55,10 @@ namespace SignalHandling
     }
 }
 
+void hello_a();
 int main(int argc, char ** argv)
 {
+    hello_a();
     int ranks[3];
 
     //parsing of the positional arguments
