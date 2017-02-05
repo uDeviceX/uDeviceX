@@ -13,3 +13,5 @@ void             set_traced_particles(int n, Particle * particle);
 std::vector<int> get_traced_list(int n, Particle * particles);
 
 void print_traced_particles(Particle * particles, int n);
+
+void hello_a();

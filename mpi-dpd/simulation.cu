@@ -456,6 +456,8 @@ void Simulation::_datadump(const int idtimestep)
     particles_datadump.resize(n);
     accelerations_datadump.resize(n);
 
+#include "simulation.hack.h"
+
     CUDA_CHECK(cudaMemcpyAsync(particles_datadump.data, particles->xyzuvw.data, sizeof(Particle) * particles->size, cudaMemcpyDeviceToHost,0));
     CUDA_CHECK(cudaMemcpyAsync(accelerations_datadump.data, particles->axayaz.data, sizeof(Acceleration) * particles->size, cudaMemcpyDeviceToHost,0));
 
