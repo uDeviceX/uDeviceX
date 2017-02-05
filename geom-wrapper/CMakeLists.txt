@@ -7,6 +7,9 @@ if (CGAL_FOUND)
       set_target_properties(Hello PROPERTIES LINK_SEARCH_START_STATIC 1)
       set_target_properties(Hello PROPERTIES LINK_SEARCH_END_STATIC 1)
 
+        # use `auto' in c++
+	target_compile_features(Hello PRIVATE cxx_auto_type)
+
       add_subdirectory(Demo)
   else()
     message(STATUS "This program requires the CGAL library, and will not be compiled.")

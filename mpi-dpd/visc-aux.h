@@ -14,4 +14,6 @@ std::vector<int> get_traced_list(int n, Particle * particles);
 
 void print_traced_particles(Particle * particles, int n);
 
-void hello_a();
+typedef std::vector<float> TVec;
+void hello_a(TVec& sol_xx, TVec& sol_yy, TVec& sol_zz,
+	     TVec& rbc_xx, TVec& rbc_yy, TVec& rbc_zz);
