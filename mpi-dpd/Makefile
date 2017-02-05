@@ -21,7 +21,7 @@ OBJS = 	dpd.o wall.o fsi.o contact.o \
 	visc-aux.o \
 	simulation.o main.o velcontroller.o
 
-LIBS = -lcuda-dpd -lcuda-rbc -lcuda-ctc -lcudart -ldl -lz -lpthread
+LIBS += -lcuda-dpd -lcuda-rbc -lcuda-ctc -lcudart -ldl -lz -lpthread
 
 nvtx ?= 0
 ifneq "$(nvtx)" "0"
