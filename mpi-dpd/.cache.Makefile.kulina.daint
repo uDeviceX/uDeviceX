@@ -1,0 +1,15 @@
+# h5 = 0
+h5part = 0
+
+ARCH_VAL = compute_60
+CODE_VAL = sm_60
+
+MY_MPICH2_DIR=/opt/cray/pe/mpt/7.5.0/gni/mpich-gnu/5.1
+NVCC = nvcc -I$(MY_MPICH2_DIR)/include -L$(MY_MPICH2_DIR)/lib -I$(HDF5_DIR)/include -DNO_H5PART
+CXX = CC $(CRAY_CUDATOOLKIT_POST_LINK_OPTS) $(CRAY_CUDATOOLKIT_INCLUDE_OPTS) -L$(HDF5_DIR)/lib
+
+# geom-wrapper libraries
+# cd ../geom-wrapper && cmake . && make
+GWRP_LIBS = ../geom-wrapper/libHello.a
+
+LIBS=${GWRP_LIBS}
