@@ -27,7 +27,7 @@ __constant__ BipartiteInfoDPD bipart_info;
 #ifndef NDEBUG
 //#define _CHECK_
 #endif
- 
+
 #define COLS 8
 #define ROWS (32 / COLS)
 #define CPB 4
@@ -41,7 +41,7 @@ void _bipartite_dpd_directforces(float * const axayaz, const int np, const int n
 {
     // assert(blockDim.x % warpSize == 0);
     // assert(blockDim.x * gridDim.x >= np);
-    
+
     const int tid = threadIdx.x % warpSize;
     const int pid = threadIdx.x + blockDim.x * blockIdx.x;
     const bool valid = pid < np;
@@ -59,7 +59,7 @@ void _bipartite_dpd_directforces(float * const axayaz, const int np, const int n
     }
 
     float xforce = 0, yforce = 0, zforce = 0;
-    
+
     for(int s = 0; s < np_src; s += warpSize)
     {
 	float my_xq, my_yq, my_zq, my_uq, my_vq, my_wq;
@@ -75,7 +75,7 @@ void _bipartite_dpd_directforces(float * const axayaz, const int np, const int n
 	    my_vq = xyzuvw_src[4 + (tid + s) * 6];
 	    my_wq = xyzuvw_src[5 + (tid + s) * 6];
 	}
-	
+
 	for(int l = 0; l < batchsize; ++l)
 	{
 	    const float xq = __shfl(my_xq, l);
@@ -87,17 +87,17 @@ void _bipartite_dpd_directforces(float * const axayaz, const int np, const int n
 
 	    //necessary to force the execution shuffles here below
 	    //__syncthreads();
-	    
+
 	    //if (valid)
 	    {
 		const float _xr = xp - xq;
 		const float _yr = yp - yq;
 		const float _zr = zp - zq;
-		
+
 		const float rij2 = _xr * _xr + _yr * _yr + _zr * _zr;
-		
+
 		const float invrij = rsqrtf(rij2);
-		 
+
 		const float rij = rij2 * invrij;
 		const float argwr = max((float)0, 1 - rij * invrc);
 		const float wr = viscosity_function<-VISCOSITY_S_LEVEL>(argwr);
@@ -106,18 +106,19 @@ void _bipartite_dpd_directforces(float * const axayaz, const int np, const int n
 		const float yr = _yr * invrij;
 		const float zr = _zr * invrij;
 
-		const float rdotv = 
+		const float rdotv =
 		    xr * (up - uq) +
 		    yr * (vp - vq) +
 		    zr * (wp - wq);
-		
+
 		const int spid = s + l;
 		const int dpid = pid;
-		
+
 		const int arg1 = mask * dpid + (1 - mask) * spid;
 		const int arg2 = mask * spid + (1 - mask) * dpid;
 		const float myrandnr = Logistic::mean0var1(seed, arg1, arg2);
-		
+
+		// check for viscosity last bit tag and define gamma
 		const float strength = aij * argwr + (- gamma * wr * rdotv + sigmaf * myrandnr) * wr;
 		//if (valid && spid < np_src)
 		{
@@ -134,7 +135,7 @@ void _bipartite_dpd_directforces(float * const axayaz, const int np, const int n
 	// assert(!isnan(xforce));
 	// assert(!isnan(yforce));
 	// assert(!isnan(zforce));
-    
+
 	axayaz[0 + 3 * pid] = xforce;
 	axayaz[1 + 3 * pid] = yforce;
 	axayaz[2 + 3 * pid] = zforce;
@@ -152,14 +153,14 @@ void directforces_dpd_cuda_bipartite_nohost(
 	printf("warning: directforces_dpd_cuda_bipartite_nohost called with ZERO!\n");
 	return;
     }
- 
+
     _bipartite_dpd_directforces<<<(np + 127) / 128, 128, 0, stream>>>(axayaz, np, np_src, seed, mask,
 								      xyzuvw, xyzuvw_src, 1, aij, gamma, sigma * invsqrtdt);
-   
+
     CUDA_CHECK(cudaPeekAtLastError());
 }
 
-__global__ __launch_bounds__(32 * CPB, 16) 
+__global__ __launch_bounds__(32 * CPB, 16)
     void _dpd_bipforces(const float2 * const xyzuvw, const int np, cudaTextureObject_t texDstStart,
 			  cudaTextureObject_t texSrcStart,  cudaTextureObject_t texSrcParticles, const int np_src, const int3 halo_ncells,
 			  const float aij, const float gamma, const float sigmaf,
@@ -169,42 +170,42 @@ __global__ __launch_bounds__(32 * CPB, 16)
     // assert(blockDim.x == warpSize && blockDim.y == CPB && blockDim.z == 1);
     // assert(ROWS * 3 <= warpSize);
 
-    const int tid = threadIdx.x; 
+    const int tid = threadIdx.x;
     const int subtid = tid % COLS;
     const int slot = tid / COLS;
     const int wid = threadIdx.y;
-     
+
     __shared__ int volatile starts[CPB][32], scan[CPB][32];
 
     const int mycid = blockIdx.x * CPB + threadIdx.y;
-    
+
     if (mycid >= halo_ncells.x * halo_ncells.y * halo_ncells.z)
 	return;
-    
-    int mycount = 0, myscan = 0; 
+
+    int mycount = 0, myscan = 0;
     if (tid < 27)
     {
 	const int dx = (tid) % 3;
-	const int dy = ((tid / 3)) % 3; 
+	const int dy = ((tid / 3)) % 3;
 	const int dz = ((tid / 9)) % 3;
 
 	int xcid = (mycid % halo_ncells.x) + dx - 1;
 	int ycid = ((mycid / halo_ncells.x) % halo_ncells.y) + dy - 1;
 	int zcid = ((mycid / halo_ncells.x / halo_ncells.y) % halo_ncells.z) + dz - 1;
-	
-	const bool valid_cid = 
+
+	const bool valid_cid =
 	    xcid >= 0 && xcid < halo_ncells.x &&
 	    ycid >= 0 && ycid < halo_ncells.y &&
-	    zcid >= 0 && zcid < halo_ncells.z ; 
-	
+	    zcid >= 0 && zcid < halo_ncells.z ;
+
 	xcid = min(halo_ncells.x - 1, max(0, xcid));
 	ycid = min(halo_ncells.y - 1, max(0, ycid));
 	zcid = min(halo_ncells.z - 1, max(0, zcid));
-	
+
 	const int cid = max(0, xcid + halo_ncells.x * (ycid + halo_ncells.y * zcid));
-	
+
 	starts[wid][tid] = tex1Dfetch<int>(texSrcStart, cid);
-	
+
 	myscan = mycount = valid_cid * (tex1Dfetch<int>(texSrcStart, cid + 1) - tex1Dfetch<int>(texSrcStart, cid));
     }
 
@@ -213,10 +214,10 @@ __global__ __launch_bounds__(32 * CPB, 16)
 
     if (tid < 28)
 	scan[wid][tid] = myscan - mycount;
-  
+
     const int dststart = tex1Dfetch<int>(texDstStart, mycid);
     const int nsrc = scan[wid][27], ndst = tex1Dfetch<int>(texDstStart, mycid + 1) - tex1Dfetch<int>(texDstStart, mycid);
-    
+
     for(int d = 0; d < ndst; d += ROWS)
     {
 	const int np1 = min(ndst - d, ROWS);
@@ -227,7 +228,7 @@ __global__ __launch_bounds__(32 * CPB, 16)
 	float2 dtmp0 = xyzuvw[entry];
 	float2 dtmp1 = xyzuvw[entry + 1];
 	float2 dtmp2 = xyzuvw[entry + 2];
-	
+
 	float f[3] = {0, 0, 0};
 
 	for(int s = 0; s < nsrc; s += COLS)
@@ -239,16 +240,16 @@ __global__ __launch_bounds__(32 * CPB, 16)
 	    const int key = key9 + key3;
 	    const int spid = pid - scan[wid][key] + starts[wid][key];
 	    const int sentry = 3 * spid;
-	    
+
 	    const float2 stmp0 = tex1Dfetch<float2>(texSrcParticles, sentry);
 	    const float2 stmp1 = tex1Dfetch<float2>(texSrcParticles, sentry + 1);
 	    const float2 stmp2 = tex1Dfetch<float2>(texSrcParticles, sentry + 2);
-	    
+
 	    {
 		const float xforce = f[0];
 		const float yforce = f[1];
 		const float zforce = f[2];
-			    
+
 		const float _xr = dtmp0.x - stmp0.x;
 		const float _yr = dtmp0.y - stmp0.y;
 		const float _zr = dtmp1.x - stmp1.x;
@@ -262,30 +263,31 @@ __global__ __launch_bounds__(32 * CPB, 16)
 		const float xr = _xr * invrij;
 		const float yr = _yr * invrij;
 		const float zr = _zr * invrij;
-		
-		const float rdotv = 
+
+		const float rdotv =
 		    xr * (dtmp1.y - stmp1.y) +
 		    yr * (dtmp2.x - stmp2.x) +
 		    zr * (dtmp2.y - stmp2.y);
-		
+
 		const int arg1 = mask * dpid + (1 - mask) * spid;
 		const int arg2 = mask * spid + (1 - mask) * dpid;
 		const float myrandnr = Logistic::mean0var1(seed, arg1, arg2);
-		
+
+		// check for viscosity last bit tag and define gamma
 		const float strength = aij * argwr + (- gamma * wr * rdotv + sigmaf * myrandnr) * wr;
 		const bool valid = (slot < np1) && (subtid < np2);
 
-		// assert( (dpid >= 0 && dpid < np && spid >= 0 && spid < np_src) || ! valid); 
-		
+		// assert( (dpid >= 0 && dpid < np && spid >= 0 && spid < np_src) || ! valid);
+
 		if (valid)
 		{
 		    f[0] = xforce + strength * xr;
 		    f[1] = yforce + strength * yr;
 		    f[2] = zforce + strength * zr;
 		}
-	    } 
+	    }
 	}
-		
+
 	for(int L = COLS / 2; L > 0; L >>=1)
 	    for(int c = 0; c < 3; ++c)
 		f[c] += __shfl_xor(f[c], L);
@@ -296,7 +298,7 @@ __global__ __launch_bounds__(32 * CPB, 16)
 
 	if (slot < np1)
 	    axayaz[c + 3 * dstpid] = fcontrib;
-    } 
+    }
 }
 
 void forces_dpd_cuda_bipartite_nohost(cudaStream_t stream, const float2 * const xyzuvw, const int np, cudaTextureObject_t texDstStart,
@@ -304,9 +306,9 @@ void forces_dpd_cuda_bipartite_nohost(cudaStream_t stream, const float2 * const 
 				      const int3 halo_ncells,
 				      const float aij, const float gamma, const float sigmaf,
 				      const float seed, const int mask, float * const axayaz)
-{ 
+{
     const int ncells = halo_ncells.x * halo_ncells.y * halo_ncells.z;
-    
+
     static bool fbip_init = false;
 
     if (!fbip_init)

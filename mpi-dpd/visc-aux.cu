@@ -52,3 +52,7 @@ void print_traced_particles(Particle * particles, int n) {
     }
     printf("%d particles are traced\n", count);
 }
+
+__host__ __device__ float get_gamma_from_tag(float u0, float2 gamma) {
+	return last_bit_float::get(u0) ? gamma.x : gamma.y;
+}

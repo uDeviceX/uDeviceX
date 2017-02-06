@@ -14,10 +14,11 @@
 
 #include "common-kernels.h"
 #include "fsi.h"
+#include "visc-aux.h"
 
 namespace KernelsFSI
 {
-    struct Params { float aij, gamma, sigmaf; };
+    struct Params { float aij, sigmaf; float2 gamma; };
 
     __constant__ Params params;
 }
@@ -31,7 +32,7 @@ ComputeFSI::ComputeFSI(MPI_Comm comm)
 
     //TODO: use CUDA_CHECK(cudaEventCreateWithFlags(&evuploaded, cudaEventDisableTiming));
 
-    KernelsFSI::Params params = {aij, gammadpd, sigmaf};
+    KernelsFSI::Params params = {aij, sigmaf, gammadpd};
 
     CUDA_CHECK(cudaMemcpyToSymbol(KernelsFSI::params, &params, sizeof(params)));
 
@@ -179,7 +180,10 @@ namespace KernelsFSI
 
 	    const float myrandnr = Logistic::mean0var1(seed, pid, spid);
 
-	    const float strength = params.aij * argwr + (- params.gamma * wr * rdotv + params.sigmaf * myrandnr) * wr;
+		// check for viscosity last bit tag and define gamma
+		// u0 is defined analogous to _bipartite_dpd_directforces_floatized
+		float gamma_tag = get_gamma_from_tag(dst1.y, params.gamma);
+	    const float strength = params.aij * argwr + (- gamma_tag * wr * rdotv + params.sigmaf * myrandnr) * wr;
 
 	    const float xinteraction = strength * xr;
 	    const float yinteraction = strength * yr;
@@ -426,7 +430,10 @@ namespace KernelsFSI
 
 		const float myrandnr = Logistic::mean0var1(seed, pid, spid);
 
-		const float strength = params.aij * argwr + (- params.gamma * wr * rdotv + params.sigmaf * myrandnr) * wr;
+		// check for viscosity last bit tag and define gamma
+		// u0 is defined analogous to _bipartite_dpd_directforces_floatized
+		float gamma_tag = get_gamma_from_tag(dst1.y, params.gamma);
+		const float strength = params.aij * argwr + (- gamma_tag * wr * rdotv + params.sigmaf * myrandnr) * wr;
 
 		const float xinteraction = strength * xr;
 		const float yinteraction = strength * yr;

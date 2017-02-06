@@ -19,6 +19,7 @@ static const float ljsigma2 = ljsigma * ljsigma;
 #include "common-kernels.h"
 #include "scan.h"
 #include "contact.h"
+#include "visc-aux.h"
 
 namespace KernelsContact
 {
@@ -36,7 +37,7 @@ namespace KernelsContact
 
     union CellEntry { int pid; uchar4 code; };
 
-    struct Params { float gamma, sigmaf, rc2; };
+    struct Params { float sigmaf, rc2; float2 gamma; };
 
     __constant__ Params params;
 
@@ -72,7 +73,7 @@ cellsstart(KernelsContact::NCELLS + 16), cellscount(KernelsContact::NCELLS + 16)
 
     local_trunk = Logistic::KISS(7119 - myrank, 187 + myrank, 18278, 15674);
 
-    KernelsContact::Params params = { gammadpd, sigmaf, 1};
+    KernelsContact::Params params = { sigmaf, 1, gammadpd};
 
     CUDA_CHECK(cudaMemcpyToSymbol(KernelsContact::params, &params, sizeof(params)));
 
@@ -354,7 +355,10 @@ namespace KernelsContact
 
 	    const float myrandnr = Logistic::mean0var1(seed, pid, spid);
 
-	    const float strength = lj + (- params.gamma * wr * rdotv + params.sigmaf * myrandnr) * wr;
+		// check for viscosity last bit tag and define gamma
+		// u0 is defined analogous to _bipartite_dpd_directforces_floatized
+		float gamma_tag = get_gamma_from_tag(dst1.y, params.gamma);
+	    const float strength = lj + (- gamma_tag * wr * rdotv + params.sigmaf * myrandnr) * wr;
 
 	    const float xinteraction = strength * xr;
 	    const float yinteraction = strength * yr;
@@ -564,7 +568,10 @@ namespace KernelsContact
 
 		const float myrandnr = Logistic::mean0var1(seed, pid, spid);
 
-		const float strength = lj + (- params.gamma * wr * rdotv + params.sigmaf * myrandnr) * wr;
+		// check for viscosity last bit tag and define gamma
+		// u0 is defined analogous to _bipartite_dpd_directforces_floatized
+		float gamma_tag = get_gamma_from_tag(dst1.y, params.gamma);
+		const float strength = lj + (- gamma_tag * wr * rdotv + params.sigmaf * myrandnr) * wr;
 
 		const float xinteraction = strength * xr;
 		const float yinteraction = strength * yr;

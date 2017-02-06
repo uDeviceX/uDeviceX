@@ -20,6 +20,7 @@ std::vector<float> sol_xx(nsol), sol_yy(nsol), sol_zz(nsol), \
 #define SXX sol_hst[i].x[0]
 #define SYY sol_hst[i].x[1]
 #define SZZ sol_hst[i].x[2]
+#define SUU sol_hst[i].u[0]
 
 #define RXX rbc_hst[i].x[0]
 #define RYY rbc_hst[i].x[1]
@@ -32,9 +33,11 @@ for (i = 0; i < nrbc; i++) {rbc_xx[i] = RXX; rbc_yy[i] = RYY; rbc_zz[i] = RZZ;}
 /* process in `geom-wrapper' */
 hello_a(sol_xx, sol_yy, sol_zz, rbc_xx, rbc_yy, rbc_zz);
 
-/* back to AoS */
-for (i = 0; i < nsol; i++) {SXX = sol_xx[i]; SYY = sol_yy[i]; SZZ = sol_zz[i];}
-for (i = 0; i < nrbc; i++) {RXX = rbc_xx[i]; RYY = rbc_yy[i]; RZZ = rbc_zz[i];}
+/* set the last bit to 1 for tagged particles */
+for (i = 0; i < nsol; i++) {
+	if (i < 50) last_bit_float::set(SUU, true);
+	else last_bit_float::set(SUU, false);
+}
 
 /* copy to device */
 cudaMemcpy(sol_dev, sol_hst, szp*nsol, cudaMemcpyHostToDevice);

@@ -45,8 +45,11 @@ cuda-dpd.o: $(CUDADPD) cuda-dpd.h
 	$(NVCC) $(NVCCFLAGS) -cubin $(CUDADPD)
 	$(NVCC) $(NVCCFLAGS) -c $(CUDADPD) -o $@
 
+# use `-dc' flag to do separate compilation of `last_bit_float'
+# Separate Compilation and Linking of CUDA C++ Device Code
+# http://devblogs.nvidia.com/parallelforall/separate-compilation-linking-cuda-device-code
 cuda-dpd-bipartite.o: $(CUDADPDBIP) cuda-dpd.h
-	$(NVCC) $(NVCCFLAGS) -c $(CUDADPDBIP) -o $@
+	$(NVCC) $(NVCCFLAGS) -dc $(CUDADPDBIP) -o $@
 
 ../%.o:
 	make -C ../ $(@:../%=%) CXX="$(CXX)" NVCC="$(NVCC)"

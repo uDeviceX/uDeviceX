@@ -216,6 +216,8 @@ void H5PartDump::_initialize(const std::string filename, MPI_Comm comm, MPI_Comm
 void H5PartDump::dump(Particle * host_particles, int n)
 {
 #ifndef NO_H5PART
+	printf("Hello from H5Part!\n");
+
     if (disposed)
     	return;
 

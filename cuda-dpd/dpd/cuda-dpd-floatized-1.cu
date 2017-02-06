@@ -69,6 +69,7 @@ __device__ float3 _dpd_interaction( const int dpid, const float4 xdest, const fl
 
     const float myrandnr = Logistic::mean0var1( info.seed, xmin( spid, dpid ), xmax( spid, dpid ) );
 
+    // check for viscosity last bit tag and define gamma
     const float strength = info.aij * wc - ( info.gamma * wr * rdotv + info.sigmaf * myrandnr ) * wr;
 
     return make_float3( strength * xr, strength * yr, strength * zr );
@@ -476,7 +477,7 @@ void forces_dpd_cuda_nohost( const float * const xyzuvw, const float4 * const xy
         texParticlesH4.normalized = 0;
 
         CUDA_CHECK( cudaFuncSetCacheConfig( _dpd_forces_symm_merged, cudaFuncCachePreferEqual ) );
-        
+
 
 #ifdef _TIME_PROFILE_
         CUDA_CHECK( cudaEventCreate( &evstart ) );
@@ -503,7 +504,7 @@ void forces_dpd_cuda_nohost( const float * const xyzuvw, const float4 * const xy
     static InfoDPD c;
 
     size_t textureoffset;
-   
+
     static uint2 *start_and_count;
     static int last_nc;
     if( !start_and_count || last_nc < ncells ) {

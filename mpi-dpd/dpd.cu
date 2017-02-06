@@ -17,6 +17,7 @@
 #include <cuda-dpd.h>
 
 #include "dpd.h"
+#include "visc-aux.h"
 
 using namespace std;
 
@@ -103,7 +104,7 @@ namespace BipsBatch
     __constant__ BatchInfo batchinfos[26];
 
     __global__ void
-    interaction_kernel(const float aij, const float gamma, const float sigmaf,
+    interaction_kernel(const float aij, const float2 gamma, const float sigmaf,
 		       const int ndstall, float * const adst, const int sizeadst)
     {
 #if !defined(__CUDA_ARCH__)
@@ -276,7 +277,10 @@ namespace BipsBatch
 	    const uint arg2 = mask ? spid : dpid;
 	    const float myrandnr = Logistic::mean0var1(seed, arg1, arg2);
 
-	    const float strength = aij * argwr + (- gamma * wr * rdotv + sigmaf * myrandnr) * wr;
+		// check for viscosity last bit tag and define gamma
+		// u0 is defined analogous to _bipartite_dpd_directforces_floatized
+		float gamma_tag = get_gamma_from_tag(up, gamma);
+	    const float strength = aij * argwr + (- gamma_tag * wr * rdotv + sigmaf * myrandnr) * wr;
 
 	    xforce += strength * xr;
 	    yforce += strength * yr;
@@ -294,7 +298,7 @@ namespace BipsBatch
 
     cudaEvent_t evhalodone;
 
-    void interactions(const float aij, const float gamma, const float sigma, const float invsqrtdt,
+    void interactions(const float aij, const float2 gamma, const float sigma, const float invsqrtdt,
 		      const BatchInfo infos[20], cudaStream_t computestream, cudaStream_t uploadstream, float * const acc, const int n)
     {
 	if (firstcall)

@@ -14,6 +14,7 @@
 
 #include "simulation.h"
 #include "visc-aux.h"
+#include "last_bit_float.h"
 
 __global__ void make_texture( float4 * __restrict xyzouvwo, ushort4 * __restrict xyzo_half, const float * __restrict xyzuvw, const uint n )
 {

@@ -28,16 +28,15 @@ template<> inline __device__ float viscosity_function<0>(float x){ return x; }
 #include "../cell-lists.h"
 
 void forces_dpd_cuda_nohost(const float * const xyzuvw, const float4 * const xyzouvwo, const ushort4 * const xyzo_half,
-			    float * const _axayaz,  const int np,
-			    const int * const cellsstart, const int * const cellscount, 
+			    float * const axayaz,  const int np,
+			    const int * const cellsstart, const int * const cellscount,
 			    const float rc,
 			    const float XL, const float YL, const float ZL,
 			    const float aij,
-			    const float gamma,
+			    const float2 gamma,
 			    const float sigma,
 			    const float invsqrtdt,
-			    const float seed1,
-			    cudaStream_t stream);		  
+			    const float seed, cudaStream_t stream);
 
 void forces_dpd_cuda(const float * const xp, const float * const yp, const float * const zp,
 		     const float * const xv, const float * const yv, const float * const zv,
@@ -46,7 +45,7 @@ void forces_dpd_cuda(const float * const xp, const float * const yp, const float
 		     const float rc,
 		     const float LX, const float LY, const float LZ,
 		     const float a,
-		     const float gamma,
+		     const float2 gamma,
 		     const float sigma,
 		     const float invsqrtdt,
 		     const float seed);
@@ -54,11 +53,11 @@ void forces_dpd_cuda(const float * const xp, const float * const yp, const float
 void directforces_dpd_cuda_bipartite_nohost(
     const float * const xyzuvw, float * const axayaz, const int np,
     const float * const xyzuvw_src, const int np_src,
-    const float aij, const float gamma, const float sigma, const float invsqrtdt,
+    const float aij, const float2 gamma, const float sigma, const float invsqrtdt,
     const float seed, const int mask, cudaStream_t stream);
 
 void forces_dpd_cuda_bipartite_nohost(cudaStream_t stream, const float2 * const xyzuvw, const int np, cudaTextureObject_t texDstStart,
 				      cudaTextureObject_t texSrcStart, cudaTextureObject_t texSrcParticles, const int np_src,
 				      const int3 halo_ncells,
-				      const float aij, const float gamma, const float sigmaf,
+				      const float aij, const float2 gamma, const float sigmaf,
 				      const float seed, const int mask, float * const axayaz);

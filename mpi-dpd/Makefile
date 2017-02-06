@@ -12,10 +12,10 @@ NVCCFLAGS += -I../cuda-dpd/dpd -I../cuda-rbc/ -I../cuda-ctc
 #NVCCFLAGS +=  -DREPORT_TOPOLOGY $(CRAY_PMI_INCLUDE_OPTS)
 #NVCCFLAGS += -DCUSTOM_REORDERING=1
 
-OBJS = 	dpd.o wall.o fsi.o contact.o \
+OBJS = 	containers.o wall.o dpd.o fsi.o contact.o \
 	redistribute-particles.o redistribute-rbcs.o \
 	solvent-exchange.o solute-exchange.o \
-	common.o containers.o io.o \
+	common.o io.o \
 	scan.o minmax.o redistancing.o \
 	last_bit_float.o \
 	visc-aux.o \
@@ -83,7 +83,22 @@ test:  $(OBJS) libcuda-dpd libcuda-rbc libcuda-ctc
 containers.o: containers.cu
 	$(NVCC) $(NVCCFLAGS) -dc $*.cu            -c -o $*.o
 	$(NVCC) $(NVCCFLAGS) -M  $*.cu           >      $*.d
+wall.o: wall.cu
+	$(NVCC) $(NVCCFLAGS) -dc $*.cu            -c -o $*.o
+	$(NVCC) $(NVCCFLAGS) -M  $*.cu           >      $*.d
+fsi.o: fsi.cu
+	$(NVCC) $(NVCCFLAGS) -dc $*.cu            -c -o $*.o
+	$(NVCC) $(NVCCFLAGS) -M  $*.cu           >      $*.d
+contact.o: contact.cu
+	$(NVCC) $(NVCCFLAGS) -dc $*.cu            -c -o $*.o
+	$(NVCC) $(NVCCFLAGS) -M  $*.cu           >      $*.d
 last_bit_float.o: last_bit_float.cu
+	$(NVCC) $(NVCCFLAGS) -dc $*.cu            -c -o $*.o
+	$(NVCC) $(NVCCFLAGS) -M  $*.cu           >      $*.d
+dpd.o: dpd.cu
+	$(NVCC) $(NVCCFLAGS) -dc $*.cu            -c -o $*.o
+	$(NVCC) $(NVCCFLAGS) -M  $*.cu           >      $*.d
+visc-aux.o: visc-aux.cu
 	$(NVCC) $(NVCCFLAGS) -dc $*.cu            -c -o $*.o
 	$(NVCC) $(NVCCFLAGS) -M  $*.cu           >      $*.d
 

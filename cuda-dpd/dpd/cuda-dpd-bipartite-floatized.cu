@@ -18,7 +18,8 @@
 struct BipartiteInfoDPD {
     int3 ncells;
     float3 domainsize, invdomainsize, domainstart;
-    float invrc, aij, gamma, sigmaf;
+    float invrc, aij, sigmaf;
+    float2 gamma;
 };
 
 __constant__ BipartiteInfoDPD bipart_info;
@@ -32,11 +33,12 @@ const static uint ROWS = (32 / COLS);
 const static uint CPB = 4;
 
 #include "../hacks.h"
+#include "../../mpi-dpd/visc-aux.h"
 
 __global__
 void _bipartite_dpd_directforces_floatized( float * const axayaz, const int np, const int np_src,
                                   const float seed, const int mask, const float * xyzuvw, const float * xyzuvw_src,
-                                  const float invrc, const float aij, const float gamma, const float sigmaf )
+                                  const float invrc, const float aij, const float2 gamma, const float sigmaf )
 {
     // assert( blockDim.x % warpSize == 0 );
     // assert( blockDim.x * gridDim.x >= np );
@@ -113,7 +115,9 @@ void _bipartite_dpd_directforces_floatized( float * const axayaz, const int np, 
                 const int arg2 = mask * spid + ( 1 - mask ) * dpid;
                 const float myrandnr = Logistic::mean0var1( seed, arg1, arg2 );
 
-                const float strength = aij * argwr + ( - gamma * wr * rdotv + sigmaf * myrandnr ) * wr;
+                // check for viscosity last bit tag and define gamma
+                float gamma_tag = get_gamma_from_tag(up, gamma);
+                const float strength = aij * argwr + ( - gamma_tag * wr * rdotv + sigmaf * myrandnr ) * wr;
                 //if (valid && spid < np_src)
                 {
                     xforce += strength * xr;
@@ -138,7 +142,7 @@ void _bipartite_dpd_directforces_floatized( float * const axayaz, const int np, 
 void directforces_dpd_cuda_bipartite_nohost(
     const float * const xyzuvw, float * const axayaz, const int np,
     const float * const xyzuvw_src, const int np_src,
-    const float aij, const float gamma, const float sigma, const float invsqrtdt,
+    const float aij, const float2 gamma, const float sigma, const float invsqrtdt,
     const float seed, const int mask, cudaStream_t stream )
 {
     if( np == 0 || np_src == 0 ) {
@@ -155,7 +159,7 @@ void directforces_dpd_cuda_bipartite_nohost(
 __global__ __launch_bounds__( 32 * CPB, 16 )
 void _dpd_bipforces_floatized( const float2 * const xyzuvw, const int np, cudaTextureObject_t texDstStart,
                      cudaTextureObject_t texSrcStart,  cudaTextureObject_t texSrcParticles, const int np_src, const int3 halo_ncells,
-                     const float aij, const float gamma, const float sigmaf,
+                     const float aij, const float2 gamma, const float sigmaf,
                      const float seed, const uint mask, float * const axayaz )
 {
     // assert( warpSize == COLS * ROWS );
@@ -257,7 +261,10 @@ void _dpd_bipforces_floatized( const float2 * const xyzuvw, const int np, cudaTe
                 const uint arg2 = xsel_gt( mask, 0u, spid, dpid );
                 const float myrandnr = Logistic::mean0var1( seed, arg1, arg2 );
 
-                const float strength = aij * argwr + ( - gamma * wr * rdotv + sigmaf * myrandnr ) * wr;
+                // check for viscosity last bit tag and define gamma
+                // u0 is defined analogous to _bipartite_dpd_directforces_floatized
+                float gamma_tag = get_gamma_from_tag(dtmp1.y, gamma);
+                const float strength = aij * argwr + ( - gamma_tag * wr * rdotv + sigmaf * myrandnr ) * wr;
                 const bool valid = xfcmp_lt( slot, np1 ) * xfcmp_lt( subtid, np2 );
 
                 // assert( ( dpid >= 0 && dpid < np && spid >= 0 && spid < np_src ) || ! valid );
@@ -288,7 +295,7 @@ void _dpd_bipforces_floatized( const float2 * const xyzuvw, const int np, cudaTe
 void forces_dpd_cuda_bipartite_nohost( cudaStream_t stream, const float2 * const xyzuvw, const int np, cudaTextureObject_t texDstStart,
                                        cudaTextureObject_t texSrcStart, cudaTextureObject_t texSrcParticles, const int np_src,
                                        const int3 halo_ncells,
-                                       const float aij, const float gamma, const float sigmaf,
+                                       const float aij, const float2 gamma, const float sigmaf,
                                        const float seed, const int mask, float * const axayaz )
 {
     const int ncells = halo_ncells.x * halo_ncells.y * halo_ncells.z;

@@ -126,6 +126,7 @@ __device__ float3 _dpd_interaction( const uint dpid, const float4 xdest, const f
 
     const float myrandnr = Logistic::mean0var1( info.seed, xmin(spid,dpid), xmax(spid,dpid) );  // 54+2 FLOP
 
+    // check for viscosity last bit tag and define gamma
     const float strength = info.aij * wc - ( info.gamma * wr * rdotv + info.sigmaf * myrandnr ) * wr; // 7 FLOPS
 
     return make_float3( strength * xr, strength * yr, strength * zr );
@@ -156,6 +157,7 @@ __device__ float3 _dpd_interaction(const int dpid, const float4 xdest, const flo
 
     const float myrandnr = Logistic::mean0var1(info.seed, min(spid, dpid), max(spid, dpid));
 
+    // check for viscosity last bit tag and define gamma
     const float strength = info.aij * argwr - (info.gamma * wr * rdotv + info.sigmaf * myrandnr) * wr;
 
     return make_float3(strength * xr, strength * yr, strength * zr);
