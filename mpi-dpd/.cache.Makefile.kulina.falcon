@@ -1,0 +1,40 @@
+#    CXX              - C++ compiler
+#    *_CXXFLAGS      - flags needed to compile
+#    *_LDFLAGS       - flags needed to link
+#    *_LIBS          - libraries
+
+h5part = 1
+h5 = 1
+
+CXX = g++
+NVCC_BIN = /usr/local/cuda-8.0/bin/nvcc
+
+# how to get the flags: mpicxx -show
+#                     : pkg-config --libs mpich
+MPI_CXXFLAGS = -I/usr/include/mpich-x86_64
+MPI_LDFLAGS  = -L/usr/lib64/mpich/lib -Wl,-rpath -Wl,/usr/lib64/mpich/lib
+MPI_LIBS = -lmpichcxx -lmpich
+
+# how to get the flags: h5c++ -show
+#                     : pkg-config hdf5-mpich --libs
+# link: https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8.17/src/hdf5-1.8.17.tar.gz
+# conf: --prefix=$HOME/prefix/hdf5 --enable-parallel CXX=/usr/lib64/mpich/bin/mpic++ CC=/usr/lib64/mpich/bin/mpicc
+HDF5_CXXFLAGS = -I${HOME}/usr/hdf5/include
+HDF5_LDFLAGS  = -L${HOME}/usr/hdf5/lib
+HDF5_LIBS = ${HOME}/usr/hdf5/lib/libhdf5_hl.a ${HOME}/usr/hdf5/lib/libhdf5.a
+
+# link: https://codeforge.lbl.gov/frs/download.php/file/387/H5Part-1.6.6.tar.gz
+# conf: --prefix=$HOME/prefix/h5part --enable-parallel --with-hdf5=$HOME/prefix/hdf5 CXX=/usr/lib64/mpich/bin/mpic++ CC=/usr/lib64/mpich/bin/mpicc
+H5PART_CXXFLAGS = -I${HOME}/usr/h5part/include
+H5PART_LDFLAGS =  -L${HOME}/usr/h5part/lib
+H5PART_LIBS = -lH5Part
+
+NVCC_LDFALGS = -L/usr/local/cuda-8.0/lib64 -Wl,-rpath -Wl,/usr/local/cuda-8.0/lib64
+
+# geom-wrapper libraries
+# cd ../geom-wrapper && cmake . && make
+GWRP_LIBS = ../geom-wrapper/libHello.a
+
+NVCC = ${NVCC_BIN} ${H5PART_CXXFLAGS} ${HDF5_CXXFLAGS} ${MPI_CXXFLAGS}
+CXXFLAGS = -Wl,--as-needed ${H5PART_LDFLAGS} ${HDF5_LDFLAGS} ${MPI_LDFLAGS} ${NVCC_LDFALGS} # (sic) passed to a linker in uDeviceX
+LIBS = ${GWRP_LIBS} ${H5PART_LIBS} ${HDF5_LIBS} ${MPI_LIBS}
