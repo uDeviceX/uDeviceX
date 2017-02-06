@@ -1,15 +1,43 @@
-# h5 = 0
-h5part = 0
+#    CXX              - C++ compiler
+#    *_CXXFLAGS      - flags needed to compile
+#    *_LDFLAGS       - flags needed to link
+#    *_LIBS          - libraries
+
+h5part = 1
+h5 = 1
 
 ARCH_VAL = compute_60
 CODE_VAL = sm_60
 
-MY_MPICH2_DIR=/opt/cray/pe/mpt/7.5.0/gni/mpich-gnu/5.1
-NVCC = nvcc -I$(MY_MPICH2_DIR)/include -L$(MY_MPICH2_DIR)/lib -I$(HDF5_DIR)/include -DNO_H5PART
-CXX = CC $(CRAY_CUDATOOLKIT_POST_LINK_OPTS) $(CRAY_CUDATOOLKIT_INCLUDE_OPTS) -L$(HDF5_DIR)/lib
+CXX = CC
+NVCC_BIN = nvcc
+
+# how to get the flags: mpicxx -show
+#                     : pkg-config --libs mpich
+MPI_CXXFLAGS = -I${MPICH_DIR}/include
+MPI_LDFLAGS  = -L/${MPICH_DIR}/lib -Wl,-rpath -Wl,${MPICH_DIR}/lib
+MPI_LIBS = -lmpich_gnu_51 -lmpichcxx_gnu_51
+
+# how to get the flags: h5c++ -show
+#                     : pkg-config hdf5-mpich --libs
+# link: https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8.17/src/hdf5-1.8.17.tar.gz
+# conf: --prefix=$HOME/prefix/hdf5 --enable-parallel CXX=/usr/lib64/mpich/bin/mpic++ CC=/usr/lib64/mpich/bin/mpicc
+HDF5_CXXFLAGS = -I${HDF5_DIR}/include
+HDF5_LDFLAGS  = -L${HDF5_DIR}/lib -Wl,-rpath -Wl,${HDF5_DIR}/lib
+HDF5_LIBS = -lhdf5
+
+# link: https://codeforge.lbl.gov/frs/download.php/file/387/H5Part-1.6.6.tar.gz
+# conf: --prefix=$HOME/prefix/h5part --enable-parallel --with-hdf5=$HOME/prefix/hdf5 CXX=/usr/lib64/mpich/bin/mpic++ CC=/usr/lib64/mpich/bin/mpicc
+H5PART_CXXFLAGS = -I${HOME}/usr/h5part/include
+H5PART_LDFLAGS =  -L${HOME}/usr/h5part/lib
+H5PART_LIBS = -lH5Part
+
+NVCC_LDFALGS = -L${CRAY_CUDATOOLKIT_DIR}/lib64 -Wl,-rpath -Wl,${CRAY_CUDATOOLKIT_DIR}/lib64
 
 # geom-wrapper libraries
 # cd ../geom-wrapper && cmake . && make
 GWRP_LIBS = ../geom-wrapper/libHello.a
 
-LIBS=${GWRP_LIBS}
+NVCC = ${NVCC_BIN} ${H5PART_CXXFLAGS} ${HDF5_CXXFLAGS} ${MPI_CXXFLAGS}
+CXXFLAGS = -Wl,--as-needed ${H5PART_LDFLAGS} ${HDF5_LDFLAGS} ${MPI_LDFLAGS} ${NVCC_LDFALGS} # (sic) passed to a linker in uDeviceX
+LIBS = ${GWRP_LIBS} ${H5PART_LIBS} ${HDF5_LIBS} ${MPI_LIBS}
