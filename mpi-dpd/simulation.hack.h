@@ -31,7 +31,7 @@ for (i = 0; i < nsol; i++) {sol_xx[i] = SXX; sol_yy[i] = SYY; sol_zz[i] = SZZ;}
 for (i = 0; i < nrbc; i++) {rbc_xx[i] = RXX; rbc_yy[i] = RYY; rbc_zz[i] = RZZ;}
 
 /* process in `geom-wrapper' */
-hello_a(sol_xx, sol_yy, sol_zz, rbc_xx, rbc_yy, rbc_zz);
+/* hello_a(sol_xx, sol_yy, sol_zz, rbc_xx, rbc_yy, rbc_zz); */
 
 /* set the last bit to 1 for tagged particles */
 for (i = 0; i < nsol; i++) {

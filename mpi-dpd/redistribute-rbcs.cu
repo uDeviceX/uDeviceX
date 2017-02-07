@@ -15,33 +15,35 @@
 #include "redistribute-particles.h"
 #include "redistribute-rbcs.h"
 #include "minmax.h"
+#include "geom-wrapper.h"
 
 RedistributeRBCs::RedistributeRBCs(MPI_Comm _cartcomm): nvertices(CudaRBC::get_nvertices())
 {
     // assert(XSIZE_SUBDOMAIN % 2 == 0 && YSIZE_SUBDOMAIN % 2 == 0 && ZSIZE_SUBDOMAIN % 2 == 0);
     // assert(XSIZE_SUBDOMAIN >= 2 && YSIZE_SUBDOMAIN >= 2 && ZSIZE_SUBDOMAIN >= 2);
-    
+
     if (rbcs)
     {
 	CudaRBC::Extent host_extent;
 	CudaRBC::setup(nvertices, host_extent);
+	iotags_init_file("../cuda-rbc/rbc.dat");
     }
-    
+
     MPI_CHECK(MPI_Comm_dup(_cartcomm, &cartcomm));
-	    
+
     MPI_CHECK( MPI_Comm_rank(cartcomm, &myrank));
-	    
+
     MPI_CHECK( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
-	    
+
     rankneighbors[0] = myrank;
     for(int i = 1; i < 27; ++i)
     {
 	int d[3] = { (i + 1) % 3 - 1, (i / 3 + 1) % 3 - 1, (i / 9 + 1) % 3 - 1 };
-	
+
 	int coordsneighbor[3];
 	for(int c = 0; c < 3; ++c)
 	    coordsneighbor[c] = coords[c] + d[c];
-		
+
 	MPI_CHECK( MPI_Cart_rank(cartcomm, coordsneighbor, rankneighbors + i) );
 
 	for(int c = 0; c < 3; ++c)
@@ -77,7 +79,7 @@ namespace ReorderingRBC
     __constant__ float * csources[cmaxnrbcs], * cdestinations[cmaxnrbcs];
 
     template <bool from_cmem>
-    __global__ void pack_all_kernel(const int nrbcs, const int nvertices, 
+    __global__ void pack_all_kernel(const int nrbcs, const int nvertices,
 				    const float ** const dsources, float ** const ddestinations)
     {
 	if (nrbcs == 0)
@@ -88,21 +90,21 @@ namespace ReorderingRBC
 	// assert(nfloats_per_rbc * nrbcs <= blockDim.x * gridDim.x);
 
 	const int gid = threadIdx.x + blockDim.x * blockIdx.x;
-	
-	if (gid >= nfloats_per_rbc * nrbcs) 
+
+	if (gid >= nfloats_per_rbc * nrbcs)
 	    return;
 
 	const int idrbc = gid / nfloats_per_rbc;
 	// assert(idrbc < nrbcs);
 
 	const int offset = gid % nfloats_per_rbc;
-	
+
 	float val;
 	if (from_cmem)
 	    val = csources[idrbc][offset];
 	else
 	    val = dsources[idrbc][offset];
-	
+
 	if (from_cmem)
 	    cdestinations[idrbc][offset] = val;
 	else
@@ -123,7 +125,7 @@ namespace ReorderingRBC
 	{
 	    CUDA_CHECK(cudaMemcpyToSymbolAsync(cdestinations, destinations, sizeof(float *) * nrbcs, 0, cudaMemcpyHostToDevice, stream));
 	    CUDA_CHECK(cudaMemcpyToSymbolAsync(csources, sources, sizeof(float *) * nrbcs, 0, cudaMemcpyHostToDevice, stream));
-	    
+
 	    pack_all_kernel<true><<<(nthreads + 127) / 128, 128, 0, stream>>>(nrbcs, nvertices, NULL, NULL);
 	}
 	else
@@ -156,7 +158,7 @@ void RedistributeRBCs::extent(const Particle * const xyzuvw, const int nrbcs, cu
 
     CUDA_CHECK(cudaEventRecord(evextents, stream));
 }
-    
+
 void RedistributeRBCs::pack_sendcount(const Particle * const xyzuvw, const int nrbcs, cudaStream_t stream)
 {
     NVTX_RANGE("RDC/pack-sendcount", NVTX_C3);
@@ -175,13 +177,13 @@ void RedistributeRBCs::pack_sendcount(const Particle * const xyzuvw, const int n
 	    0.5 * (minext.y + maxext.y),
 	    0.5 * (minext.z + maxext.z)
 	};
-	
+
 	const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
 
 	int vcode[3];
 	for(int c = 0; c < 3; ++c)
 	    vcode[c] = (2 + (p[c] >= -L[c]/2) + (p[c] >= L[c]/2)) % 3;
-	
+
 	const int code = vcode[0] + 3 * (vcode[1] + 3 * vcode[2]);
 
 	reordering_indices[code].push_back(i);
@@ -204,15 +206,15 @@ void RedistributeRBCs::pack_sendcount(const Particle * const xyzuvw, const int n
 	    for(int j = 0; j < reordering_indices[i].size(); ++j)
 	    {
 		src.push_back((float *)(xyzuvw + nvertices * reordering_indices[i][j]));
-		
+
 		if (i)
 		    dst.push_back((float *)(halo_sendbufs[i].devptr + nvertices * j));
 		else
 		    dst.push_back((float *)(bulk.data + nvertices * j));
 	    }
-	
+
 	ReorderingRBC::pack_all(stream, src.size(), nvertices, &src.front(), &dst.front());
-	
+
 	CUDA_CHECK(cudaPeekAtLastError());
     }
 #else
@@ -227,7 +229,7 @@ void RedistributeRBCs::pack_sendcount(const Particle * const xyzuvw, const int n
 #endif
 
     CUDA_CHECK(cudaStreamSynchronize(stream));
-    
+
     for(int i = 1; i < 27; ++i)
 	MPI_CHECK( MPI_Isend(&halo_sendbufs[i].size, 1, MPI_INTEGER, rankneighbors[i], i + 1024, cartcomm, &sendcountreq[i-1]) );
 }
@@ -241,7 +243,7 @@ void RedistributeRBCs::_post_recvcount()
 	MPI_Request req;
 
 	MPI_CHECK( MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, anti_rankneighbors[i], i + 1024, cartcomm, &req) );
-	
+
 	recvcountreq.push_back(req);
     }
 }
@@ -260,15 +262,15 @@ int RedistributeRBCs::post()
     for(int i = 1; i < 27; ++i)
     {
 	const int count = recv_counts[i];
-	
+
 	arriving += count;
 	halo_recvbufs[i].resize(count);
     }
-    
+
     arriving /= nvertices;
     notleaving = bulk.size / nvertices;
-  
-    MPI_Status statuses[26];	    
+
+    MPI_Status statuses[26];
     MPI_CHECK( MPI_Waitall(26, sendcountreq, statuses) );
 
     for(int i = 1; i < 27; ++i)
@@ -298,18 +300,18 @@ int RedistributeRBCs::post()
 
 namespace ParticleReorderingRBC
 {
-    __global__ void shift(const Particle * const psrc, const int np, const int code, const int rank, 
+    __global__ void shift(const Particle * const psrc, const int np, const int code, const int rank,
 			  const bool check, Particle * const pdst)
     {
 	// assert(blockDim.x * gridDim.x >= np);
-	
+
 	int pid = threadIdx.x + blockDim.x * blockIdx.x;
-	
+
 	int d[3] = { (code + 1) % 3 - 1, (code / 3 + 1) % 3 - 1, (code / 9 + 1) % 3 - 1 };
-	
+
 	if (pid >= np)
 	    return;
-	
+
 #ifndef NDEBUG
 	Particle old = psrc[pid];
 #endif
@@ -328,15 +330,15 @@ namespace ParticleReorderingRBC
 	    int vcode[3];
 	    for(int c = 0; c < 3; ++c)
 		vcode[c] = (2 + (pnew.x[c] >= -L[c]/2) + (pnew.x[c] >= L[c]/2)) % 3;
-		
+
 	    int newcode = vcode[0] + 3 * (vcode[1] + 3 * vcode[2]);
 
 	    if(newcode != 0)
-		printf("rank %d) particle %d: ouch: new code is %d %d %d arriving from code %d -> %d %d %d \np: %f %f %f (before: %f %f %f)\n", 
+		printf("rank %d) particle %d: ouch: new code is %d %d %d arriving from code %d -> %d %d %d \np: %f %f %f (before: %f %f %f)\n",
 		       rank,  pid, vcode[0], vcode[1], vcode[2], code,
 		       d[0], d[1], d[2], pnew.x[0], pnew.x[1], pnew.x[2],
 		       old.x[0], old.x[1], old.x[2]);
-	    
+
 	    // assert(newcode == 0);
 	}
 #endif
@@ -352,13 +354,13 @@ void RedistributeRBCs::unpack(Particle * const xyzuvw, const int nrbcs, cudaStre
     MPI_Status statuses[26];
     MPI_CHECK(MPI_Waitall(recvreq.size(), &recvreq.front(), statuses) );
     MPI_CHECK(MPI_Waitall(sendreq.size(), &sendreq.front(), statuses) );
-    
+
     recvreq.clear();
     sendreq.clear();
-   
-    CUDA_CHECK(cudaMemcpyAsync(xyzuvw, bulk.data, notleaving * nvertices * sizeof(Particle), 
+
+    CUDA_CHECK(cudaMemcpyAsync(xyzuvw, bulk.data, notleaving * nvertices * sizeof(Particle),
 			       cudaMemcpyDeviceToDevice, stream));
-    
+
     for(int i = 1, s = notleaving * nvertices; i < 27; ++i)
     {
 	const int count =  halo_recvbufs[i].size;
@@ -378,6 +380,6 @@ void RedistributeRBCs::unpack(Particle * const xyzuvw, const int nrbcs, cudaStre
 }
 
 RedistributeRBCs::~RedistributeRBCs()
-{    
+{
     MPI_CHECK(MPI_Comm_free(&cartcomm));
 }
