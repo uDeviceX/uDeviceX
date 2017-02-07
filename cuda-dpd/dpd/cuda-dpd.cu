@@ -16,6 +16,7 @@
 
 #include "cuda-dpd.h"
 #include "../dpd-rng.h"
+#include "../../mpi-dpd/visc-aux.h"
 
 struct InfoDPD
 {

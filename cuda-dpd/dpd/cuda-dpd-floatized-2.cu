@@ -17,6 +17,7 @@
 #include "../tiny-float.h"
 #include "../dpd-rng.h"
 #include "../hacks.h"
+#include "../../mpi-dpd/visc-aux.h"
 
 #define USE_TEXOBJ 0
 
@@ -24,7 +25,8 @@ struct InfoDPD {
     int3 ncells;
     float ncell_x, ncell_y;
     float3 domainsize, invdomainsize, domainstart;
-    float invrc, aij, gamma, sigmaf;
+    float invrc, aij, sigmaf;
+    float2 gamma;
     float * axayaz;
     float seed;
 	#if (USE_TEXOBJ&1)
@@ -127,7 +129,8 @@ __device__ float3 _dpd_interaction( const uint dpid, const float4 xdest, const f
     const float myrandnr = Logistic::mean0var1( info.seed, xmin(spid,dpid), xmax(spid,dpid) );  // 54+2 FLOP
 
     // check for viscosity last bit tag and define gamma
-    const float strength = info.aij * wc - ( info.gamma * wr * rdotv + info.sigmaf * myrandnr ) * wr; // 7 FLOPS
+    float gamma_tag = get_gamma_from_tag(udest.x, info.gamma);
+    const float strength = info.aij * wc - ( gamma_tag * wr * rdotv + info.sigmaf * myrandnr ) * wr; // 7 FLOPS
 
     return make_float3( strength * xr, strength * yr, strength * zr );
 }
@@ -158,7 +161,8 @@ __device__ float3 _dpd_interaction(const int dpid, const float4 xdest, const flo
     const float myrandnr = Logistic::mean0var1(info.seed, min(spid, dpid), max(spid, dpid));
 
     // check for viscosity last bit tag and define gamma
-    const float strength = info.aij * argwr - (info.gamma * wr * rdotv + info.sigmaf * myrandnr) * wr;
+    float gamma_tag = get_gamma_from_tag(udest.x, info.gamma);
+    const float strength = info.aij * argwr - (gamma_tag * wr * rdotv + info.sigmaf * myrandnr) * wr;
 
     return make_float3(strength * xr, strength * yr, strength * zr);
 }
@@ -974,7 +978,7 @@ void forces_dpd_cuda_nohost( const float * const xyzuvw, float * const axayaz,  
                              const float rc,
                              const float XL, const float YL, const float ZL,
                              const float aij,
-                             const float gamma,
+                             const float2 gamma,
                              const float sigma,
                              const float invsqrtdt,
                              const float seed, cudaStream_t stream )

@@ -17,12 +17,14 @@
 
 #include "cuda-dpd.h"
 #include "../dpd-rng.h"
+#include "../../mpi-dpd/visc-aux.h"
 
 struct InfoDPD {
     int3 ncells;
     uint nxyz;
     float3 domainsize, invdomainsize, domainstart;
-    float invrc, aij, gamma, sigmaf;
+    float invrc, aij, sigmaf;
+    float2 gamma;
     float * axayaz;
     float seed;
 };
@@ -70,7 +72,8 @@ __device__ float3 _dpd_interaction( const int dpid, const float4 xdest, const fl
     const float myrandnr = Logistic::mean0var1( info.seed, xmin( spid, dpid ), xmax( spid, dpid ) );
 
     // check for viscosity last bit tag and define gamma
-    const float strength = info.aij * wc - ( info.gamma * wr * rdotv + info.sigmaf * myrandnr ) * wr;
+    float gamma_tag = get_gamma_from_tag(udest.x, info.gamma);
+    const float strength = info.aij * wc - ( gamma_tag * wr * rdotv + info.sigmaf * myrandnr ) * wr;
 
     return make_float3( strength * xr, strength * yr, strength * zr );
 }
@@ -441,7 +444,7 @@ void forces_dpd_cuda_nohost( const float * const xyzuvw, const float4 * const xy
                              const float rc,
                              const float XL, const float YL, const float ZL,
                              const float aij,
-                             const float gamma,
+                             const float2 gamma,
                              const float sigma,
                              const float invsqrtdt,
                              const float seed, cudaStream_t stream )
