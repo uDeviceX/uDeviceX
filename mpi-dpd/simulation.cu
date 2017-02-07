@@ -16,6 +16,10 @@
 #include "visc-aux.h"
 #include "last_bit_float.h"
 #include "geom-wrapper.h"
+#define NPMAX 5000000 /* TODO: */
+float rbc_xx[NPMAX], rbc_yy[NPMAX], rbc_zz[NPMAX];
+float sol_xx[NPMAX], sol_yy[NPMAX], sol_zz[NPMAX];
+int   iotags[NPMAX];
 
 __global__ void make_texture( float4 * __restrict xyzouvwo, ushort4 * __restrict xyzo_half, const float * __restrict xyzuvw, const uint n )
 {

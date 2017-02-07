@@ -13,14 +13,9 @@ cudaMemcpy(sol_hst, sol_dev, szp*nsol, cudaMemcpyDeviceToHost);
 if (rbcscoll)
   cudaMemcpy(rbc_hst, rbc_dev, szp*nrbc, cudaMemcpyDeviceToHost);
 
-/* from AoS to vectors */
-std::vector<float> sol_xx(nsol), sol_yy(nsol), sol_zz(nsol), \
-  /*            */ rbc_xx(nrbc), rbc_yy(nrbc), rbc_zz(nrbc);
-
 #define SXX sol_hst[i].x[0]
 #define SYY sol_hst[i].x[1]
 #define SZZ sol_hst[i].x[2]
-#define SUU sol_hst[i].u[0]
 
 #define RXX rbc_hst[i].x[0]
 #define RYY rbc_hst[i].x[1]
@@ -30,14 +25,15 @@ int i;
 for (i = 0; i < nsol; i++) {sol_xx[i] = SXX; sol_yy[i] = SYY; sol_zz[i] = SZZ;}
 for (i = 0; i < nrbc; i++) {rbc_xx[i] = RXX; rbc_yy[i] = RYY; rbc_zz[i] = RZZ;}
 
-/* process in `geom-wrapper' */
-/* hello_a(sol_xx, sol_yy, sol_zz, rbc_xx, rbc_yy, rbc_zz); */
+iotags_all(nrbc, rbc_xx, rbc_yy, rbc_zz,
+	   nsol, sol_xx, sol_yy, sol_zz,
+	   iotags);
 
+#define SUU sol_hst[i].u[0]
 /* set the last bit to 1 for tagged particles */
-for (i = 0; i < nsol; i++) {
-	if (i < 50) last_bit_float::set(SUU, true);
-	else last_bit_float::set(SUU, false);
-}
+for (i = 0; i < nsol; i++) last_bit_float::set(SUU, iotags[i] != 0);
+int cnt; for (i = cnt = 0; i < nsol; i++) if (iotags[i] != 0) cnt++;
+printf("cnt: %d\n", cnt);
 
 /* copy to device */
 cudaMemcpy(sol_dev, sol_hst, szp*nsol, cudaMemcpyHostToDevice);
