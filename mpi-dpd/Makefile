@@ -71,13 +71,13 @@ inquire: $(bash [ `cat slevel.txt` == "$(slevel)" ] || { echo "cleanall" ; } )
 
 test:  $(OBJS) libcuda-dpd libcuda-rbc libcuda-ctc
 	echo h5part is "$(h5part)"
-	$(NVCC) $(NVCCFLAGS) -dlink $(OBJS) $(LIBS) -o gpuCode.o # I have some device code in OBJS. I have to link it separatly
+	$(NVCC) $(NVCCFLAGS) -dlink -L../cuda-dpd/dpd $(OBJS) $(LIBS) -o gpuCode.o # I have some device code in OBJS. I have to link it separatly
 	$(CXX)  $(CXXFLAGS) gpuCode.o $(OBJS) $(LIBS) -o test
 
 
 -include $(OBJS:.o=.d)
 
-# use `-dc' flag to do separate compilation of `last_bit_float'
+# use `-dc' flag to do separate compilation
 # Separate Compilation and Linking of CUDA C++ Device Code
 # http://devblogs.nvidia.com/parallelforall/separate-compilation-linking-cuda-device-code
 containers.o: containers.cu

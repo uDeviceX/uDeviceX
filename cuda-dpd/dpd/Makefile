@@ -41,13 +41,13 @@ libcuda-dpd.a: cuda-dpd.o cuda-dpd-bipartite.o ../profiler-dpd.o celllists
 libcuda-dpd.so: cuda-dpd.o cuda-dpd-bipartite.o ../profiler-dpd.o celllists
 	$(CXX) $(CXXFLAGS) -shared cuda-dpd.o cuda-dpd-bipartite.o ../profiler-dpd.o ../cell-lists.o ../cell-lists-faster.o -o libcuda-dpd.so  -lcudart -lcurand
 
-cuda-dpd.o: $(CUDADPD) cuda-dpd.h
-	$(NVCC) $(NVCCFLAGS) -cubin $(CUDADPD)
-	$(NVCC) $(NVCCFLAGS) -c $(CUDADPD) -o $@
-
-# use `-dc' flag to do separate compilation of `last_bit_float'
+# use `-dc' flag to do separate compilation
 # Separate Compilation and Linking of CUDA C++ Device Code
 # http://devblogs.nvidia.com/parallelforall/separate-compilation-linking-cuda-device-code
+cuda-dpd.o: $(CUDADPD) cuda-dpd.h
+	$(NVCC) $(NVCCFLAGS) -dc -cubin $(CUDADPD)
+	$(NVCC) $(NVCCFLAGS) -dc $(CUDADPD) -o $@
+
 cuda-dpd-bipartite.o: $(CUDADPDBIP) cuda-dpd.h
 	$(NVCC) $(NVCCFLAGS) -dc $(CUDADPDBIP) -o $@
 
