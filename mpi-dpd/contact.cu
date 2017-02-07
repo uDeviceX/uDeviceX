@@ -20,6 +20,7 @@ static const float ljsigma2 = ljsigma * ljsigma;
 #include "scan.h"
 #include "contact.h"
 #include "visc-aux.h"
+#include "last_bit_float.h"
 
 namespace KernelsContact
 {
@@ -322,47 +323,19 @@ namespace KernelsContact
 	    const float2 stmp1 = _ACCESS(csolutes[soluteid] +  sentry + 1);
 	    const float2 stmp2 = _ACCESS(csolutes[soluteid] +  sentry + 2);
 
-	    const float _xr = dst0.x - stmp0.x;
-	    const float _yr = dst0.y - stmp0.y;
-	    const float _zr = dst1.x - stmp1.x;
-
-	    const float rij2 = _xr * _xr + _yr * _yr + _zr * _zr;
-	    // assert(rij2 > 0);
-
-	    const float invrij = rsqrtf(rij2);
-
-	    const float rij = rij2 * invrij;
-
-	    if (rij2 >= params.rc2)
-		continue;
-
-	    const float invr2 = invrij * invrij;
-	    const float t2 = ljsigma2 * invr2;
-	    const float t4 = t2 * t2;
-	    const float t6 = t4 * t2;
-	    const float lj = min(1e3f, max(0.f, 24.f * invrij * t6 * (2.f * t6 - 1.f)));
-
-	    const float wr = viscosity_function<-VISCOSITY_S_LEVEL>(1.f - rij);
-
-	    const float xr = _xr * invrij;
-	    const float yr = _yr * invrij;
-	    const float zr = _zr * invrij;
-
-	    const float rdotv =
-		xr * (dst1.y - stmp1.y) +
-		yr * (dst2.x - stmp2.x) +
-		zr * (dst2.y - stmp2.y);
-
 	    const float myrandnr = Logistic::mean0var1(seed, pid, spid);
 
-		// check for viscosity last bit tag and define gamma
-		// u0 is defined analogous to _bipartite_dpd_directforces_floatized
-		float gamma_tag = get_gamma_from_tag(dst1.y, params.gamma);
-	    const float strength = lj + (- gamma_tag * wr * rdotv + params.sigmaf * myrandnr) * wr;
+        // check for particle types and compute the DPD force
+        float3 pos1 = {dst0.x, dst0.y, dst1.x}, pos2 = {stmp0.x, stmp0.y, stmp1.x};
+        float3 vel1 = {dst1.y, dst2.x, dst2.y}, vel2 = {stmp1.y, stmp2.x, stmp2.y};
+        int type1 = 2;  // RBC membrane
+        int type2 = 2;  // RBC membrane
+        const float3 strength = compute_dpd_force_traced(type1, type2,
+                pos1, pos2, vel1, vel2, myrandnr);
 
-	    const float xinteraction = strength * xr;
-	    const float yinteraction = strength * yr;
-	    const float zinteraction = strength * zr;
+	    const float xinteraction = strength.x;
+	    const float yinteraction = strength.y;
+	    const float zinteraction = strength.z;
 
 	    xforce += xinteraction;
 	    yforce += yinteraction;
@@ -535,47 +508,19 @@ namespace KernelsContact
 		const float2 stmp1 = _ACCESS(csolutes[soluteid] + sentry + 1);
 		const float2 stmp2 = _ACCESS(csolutes[soluteid] + sentry + 2);
 
-		const float _xr = dst0.x - stmp0.x;
-		const float _yr = dst0.y - stmp0.y;
-		const float _zr = dst1.x - stmp1.x;
-
-		const float rij2 = _xr * _xr + _yr * _yr + _zr * _zr;
-		// assert(rij2 > 0);
-
-		const float invrij = rsqrtf(rij2);
-
-		const float rij = rij2 * invrij;
-
-		if (rij2 >= params.rc2)
-		    continue;
-
-		const float invr2 = invrij * invrij;
-		const float t2 = ljsigma2 * invr2;
-		const float t4 = t2 * t2;
-		const float t6 = t4 * t2;
-		const float lj = min(1e3f, max(0.f, 24.f * invrij * t6 * (2.f * t6 - 1.f)));
-
-		const float wr = viscosity_function<-VISCOSITY_S_LEVEL>(1.f - rij);
-
-		const float xr = _xr * invrij;
-		const float yr = _yr * invrij;
-		const float zr = _zr * invrij;
-
-		const float rdotv =
-		    xr * (dst1.y - stmp1.y) +
-		    yr * (dst2.x - stmp2.x) +
-		    zr * (dst2.y - stmp2.y);
-
 		const float myrandnr = Logistic::mean0var1(seed, pid, spid);
 
-		// check for viscosity last bit tag and define gamma
-		// u0 is defined analogous to _bipartite_dpd_directforces_floatized
-		float gamma_tag = get_gamma_from_tag(dst1.y, params.gamma);
-		const float strength = lj + (- gamma_tag * wr * rdotv + params.sigmaf * myrandnr) * wr;
+        // check for particle types and compute the DPD force
+        float3 pos1 = {dst0.x, dst0.y, dst1.x}, pos2 = {stmp0.x, stmp0.y, stmp1.x};
+        float3 vel1 = {dst1.y, dst2.x, dst2.y}, vel2 = {stmp1.y, stmp2.x, stmp2.y};
+        int type1 = 2;  // RBC membrane
+        int type2 = 2;  // RBC membrane
+        const float3 strength = compute_dpd_force_traced(type1, type2,
+                pos1, pos2, vel1, vel2, myrandnr);
 
-		const float xinteraction = strength * xr;
-		const float yinteraction = strength * yr;
-		const float zinteraction = strength * zr;
+		const float xinteraction = strength.x;
+		const float yinteraction = strength.y;
+		const float zinteraction = strength.z;
 
 		xforce += xinteraction;
 		yforce += yinteraction;

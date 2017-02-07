@@ -15,6 +15,7 @@
 #include "common-kernels.h"
 #include "fsi.h"
 #include "visc-aux.h"
+#include "last_bit_float.h"
 
 namespace KernelsFSI
 {
@@ -153,41 +154,19 @@ namespace KernelsFSI
 	    const float2 stmp1 = tex1Dfetch(texSolventParticles, sentry + 1);
 	    const float2 stmp2 = tex1Dfetch(texSolventParticles, sentry + 2);
 
-	    const float _xr = dst0.x - stmp0.x;
-	    const float _yr = dst0.y - stmp0.y;
-	    const float _zr = dst1.x - stmp1.x;
-
-	    const float rij2 = _xr * _xr + _yr * _yr + _zr * _zr;
-
-	    const float invrij = rsqrtf(rij2);
-
-	    const float rij = rij2 * invrij;
-
-	    if (rij2 >= 1)
-		continue;
-
-	    const float argwr = 1.f - rij;
-	    const float wr = viscosity_function<-VISCOSITY_S_LEVEL>(argwr);
-
-	    const float xr = _xr * invrij;
-	    const float yr = _yr * invrij;
-	    const float zr = _zr * invrij;
-
-	    const float rdotv =
-		xr * (dst1.y - stmp1.y) +
-		yr * (dst2.x - stmp2.x) +
-		zr * (dst2.y - stmp2.y);
-
 	    const float myrandnr = Logistic::mean0var1(seed, pid, spid);
 
-		// check for viscosity last bit tag and define gamma
-		// u0 is defined analogous to _bipartite_dpd_directforces_floatized
-		float gamma_tag = get_gamma_from_tag(dst1.y, params.gamma);
-	    const float strength = params.aij * argwr + (- gamma_tag * wr * rdotv + params.sigmaf * myrandnr) * wr;
+        // check for particle types and compute the DPD force
+        float3 pos1 = {dst0.x, dst0.y, dst1.x}, pos2 = {stmp0.x, stmp0.y, stmp1.x};
+        float3 vel1 = {dst1.y, dst2.x, dst2.y}, vel2 = {stmp1.y, stmp2.x, stmp2.y};
+        int type1 = 2;  // RBC membrane
+        int type2 = last_bit_float::get(vel2.x);
+        const float3 strength = compute_dpd_force_traced(type1, type2,
+                pos1, pos2, vel1, vel2, myrandnr);
 
-	    const float xinteraction = strength * xr;
-	    const float yinteraction = strength * yr;
-	    const float zinteraction = strength * zr;
+	    const float xinteraction = strength.x;
+	    const float yinteraction = strength.y;
+	    const float zinteraction = strength.z;
 
 	    xforce += xinteraction;
 	    yforce += yinteraction;
@@ -403,41 +382,19 @@ namespace KernelsFSI
 		const float2 stmp1 = tex1Dfetch(texSolventParticles, sentry + 1);
 		const float2 stmp2 = tex1Dfetch(texSolventParticles, sentry + 2);
 
-		const float _xr = dst0.x - stmp0.x;
-		const float _yr = dst0.y - stmp0.y;
-		const float _zr = dst1.x - stmp1.x;
-
-		const float rij2 = _xr * _xr + _yr * _yr + _zr * _zr;
-
-		const float invrij = rsqrtf(rij2);
-
-		const float rij = rij2 * invrij;
-
-		if (rij2 >= 1)
-		    continue;
-
-		const float argwr = 1.f - rij;
-		const float wr = viscosity_function<-VISCOSITY_S_LEVEL>(argwr);
-
-		const float xr = _xr * invrij;
-		const float yr = _yr * invrij;
-		const float zr = _zr * invrij;
-
-		const float rdotv =
-		    xr * (dst1.y - stmp1.y) +
-		    yr * (dst2.x - stmp2.x) +
-		    zr * (dst2.y - stmp2.y);
-
 		const float myrandnr = Logistic::mean0var1(seed, pid, spid);
 
-		// check for viscosity last bit tag and define gamma
-		// u0 is defined analogous to _bipartite_dpd_directforces_floatized
-		float gamma_tag = get_gamma_from_tag(dst1.y, params.gamma);
-		const float strength = params.aij * argwr + (- gamma_tag * wr * rdotv + params.sigmaf * myrandnr) * wr;
+		// check for particle types and compute the DPD force
+		float3 pos1 = { dst0.x,  dst0.y,  dst1.x}, pos2 = {stmp0.x, stmp0.y, stmp1.x};
+		float3 vel1 = { dst1.y,  dst2.x,  dst2.y}, vel2 = {stmp1.y, stmp2.x, stmp2.y};
+		int type1 = 2;  // RBC membrane
+		int type2 = last_bit_float::get(vel2.x);
+		const float3 strength = compute_dpd_force_traced(type1, type2,
+			pos1, pos2, vel1, vel2, myrandnr);
 
-		const float xinteraction = strength * xr;
-		const float yinteraction = strength * yr;
-		const float zinteraction = strength * zr;
+		const float xinteraction = strength.x;
+		const float yinteraction = strength.y;
+		const float zinteraction = strength.z;
 
 		xforce += xinteraction;
 		yforce += yinteraction;

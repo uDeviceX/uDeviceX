@@ -14,6 +14,8 @@
 
 #include "../dpd-rng.h"
 #include "cuda-dpd.h"
+#include "../../mpi-dpd/visc-aux.h"
+#include "../../mpi-dpd/last_bit_float.h"
 
 struct BipartiteInfoDPD {
     int3 ncells;
@@ -87,42 +89,25 @@ void _bipartite_dpd_directforces_floatized( float * const axayaz, const int np, 
 
             //if (valid)
             {
-                const float _xr = xp - xq;
-                const float _yr = yp - yq;
-                const float _zr = zp - zq;
-
-                const float rij2 = _xr * _xr + _yr * _yr + _zr * _zr;
-
-                const float invrij = rsqrtf( rij2 );
-
-                const float rij = rij2 * invrij;
-                const float argwr = max( ( float )0, 1 - rij * invrc );
-                const float wr = viscosity_function<-VISCOSITY_S_LEVEL>(argwr);
-
-                const float xr = _xr * invrij;
-                const float yr = _yr * invrij;
-                const float zr = _zr * invrij;
-
-                const float rdotv =
-                    xr * ( up - uq ) +
-                    yr * ( vp - vq ) +
-                    zr * ( wp - wq );
-
                 const int spid = s + l;
                 const int dpid = pid;
-
                 const int arg1 = mask * dpid + ( 1 - mask ) * spid;
                 const int arg2 = mask * spid + ( 1 - mask ) * dpid;
                 const float myrandnr = Logistic::mean0var1( seed, arg1, arg2 );
 
-                // check for viscosity last bit tag and define gamma
-                float gamma_tag = get_gamma_from_tag(up, gamma);
-                const float strength = aij * argwr + ( - gamma_tag * wr * rdotv + sigmaf * myrandnr ) * wr;
+                // check for particle types and compute the DPD force
+                float3 pos1 = {xp, yp, zp}, pos2 = {xq, yq, zq};
+                float3 vel1 = {up, vp, wp}, vel2 = {uq, vq, wq};
+                int type1 = last_bit_float::get(vel1.x);
+                int type2 = last_bit_float::get(vel2.x);
+                const float3 strength = compute_dpd_force_traced(type1, type2,
+                        pos1, pos2, vel1, vel2, myrandnr);
+
                 //if (valid && spid < np_src)
                 {
-                    xforce += strength * xr;
-                    yforce += strength * yr;
-                    zforce += strength * zr;
+                    xforce += strength.x;
+                    yforce += strength.y;
+                    zforce += strength.z;
                 }
             }
         }
@@ -238,41 +223,26 @@ void _dpd_bipforces_floatized( const float2 * const xyzuvw, const int np, cudaTe
             const float2 stmp2 = tex1Dfetch<float2>( texSrcParticles, xadd( sentry, 2 ) );
 
             {
-                const float _xr = dtmp0.x - stmp0.x;
-                const float _yr = dtmp0.y - stmp0.y;
-                const float _zr = dtmp1.x - stmp1.x;
-
-                const float rij2 = _xr * _xr + _yr * _yr + _zr * _zr;
-                const float invrij = rsqrtf( rij2 );
-                const float rij = rij2 * invrij;
-                const float argwr = max( ( float )0, 1 - rij );
-                const float wr = viscosity_function<-VISCOSITY_S_LEVEL>(argwr);
-
-                const float xr = _xr * invrij;
-                const float yr = _yr * invrij;
-                const float zr = _zr * invrij;
-
-                const float rdotv =
-                    xr * ( dtmp1.y - stmp1.y ) +
-                    yr * ( dtmp2.x - stmp2.x ) +
-                    zr * ( dtmp2.y - stmp2.y );
-
                 const uint arg1 = xsel_gt( mask, 0u, dpid, spid );
                 const uint arg2 = xsel_gt( mask, 0u, spid, dpid );
                 const float myrandnr = Logistic::mean0var1( seed, arg1, arg2 );
 
-                // check for viscosity last bit tag and define gamma
-                // u0 is defined analogous to _bipartite_dpd_directforces_floatized
-                float gamma_tag = get_gamma_from_tag(dtmp1.y, gamma);
-                const float strength = aij * argwr + ( - gamma_tag * wr * rdotv + sigmaf * myrandnr ) * wr;
+                // check for particle types and compute the DPD force
+                float3 pos1 = {dtmp0.x, dtmp0.y, dtmp1.x}, pos2 = {stmp0.x, stmp0.y, stmp1.x};
+                float3 vel1 = {dtmp1.y, dtmp2.x, dtmp2.y}, vel2 = {stmp1.y, stmp2.x, stmp2.y};
+                int type1 = last_bit_float::get(vel1.x);
+                int type2 = last_bit_float::get(vel2.x);
+                const float3 strength = compute_dpd_force_traced(type1, type2,
+                        pos1, pos2, vel1, vel2, myrandnr);
+
                 const bool valid = xfcmp_lt( slot, np1 ) * xfcmp_lt( subtid, np2 );
 
                 // assert( ( dpid >= 0 && dpid < np && spid >= 0 && spid < np_src ) || ! valid );
 
                 if( valid ) {
-                    f.x += strength * xr;
-                    f.y += strength * yr;
-                    f.z += strength * zr;
+                    f.x += strength.x;
+                    f.y += strength.y;
+                    f.z += strength.z;
                 }
             }
         }

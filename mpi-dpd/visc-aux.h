@@ -18,4 +18,5 @@ typedef std::vector<float> TVec;
 void hello_a(TVec& sol_xx, TVec& sol_yy, TVec& sol_zz,
 	     TVec& rbc_xx, TVec& rbc_yy, TVec& rbc_zz);
 
-__host__ __device__ float get_gamma_from_tag(float u0, float2 gamma);
+__device__ float3 compute_dpd_force_traced(int type1, int type2,
+    float3 pos1, float3 pos2, float3 vel1, float3 vel2, float myrandnr);

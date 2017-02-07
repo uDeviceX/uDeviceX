@@ -53,6 +53,42 @@ void print_traced_particles(Particle * particles, int n) {
     printf("%d particles are traced\n", count);
 }
 
-__host__ __device__ float get_gamma_from_tag(float u0, float2 gamma) {
-	return last_bit_float::get(u0) ? gamma.x : gamma.y;
+__device__ float3 compute_dpd_force_traced(int type1, int type2,
+    float3 pos1, float3 pos2, float3 vel1, float3 vel2, float myrandnr) {
+  /* return the DPD interaction force based on particle types
+     type: 0 -- outer solvent, 1 -- inner solvent, 2 -- membrane, 3 -- wall */
+
+  const float _xr = pos1.x - pos2.x;
+  const float _yr = pos1.y - pos2.y;
+  const float _zr = pos1.z - pos2.z;
+
+  const float rij2 = _xr * _xr + _yr * _yr + _zr * _zr;
+  const float invrij = rsqrtf(rij2);
+  const float rij = rij2 * invrij;
+  if (rij2 >= 1)
+      return make_float3(0, 0, 0);
+
+  const float argwr = 1.f - rij;
+  const float wr = viscosity_function<-VISCOSITY_S_LEVEL>(argwr);
+
+  const float xr = _xr * invrij;
+  const float yr = _yr * invrij;
+  const float zr = _zr * invrij;
+
+  const float rdotv =
+      xr * (vel1.x - vel2.x) +
+      yr * (vel1.y - vel2.y) +
+      zr * (vel1.z - vel2.z);
+
+  const int numberdensity = 3 * (RC_FX*RC_FX*RC_FX);   // default: 3
+  const float gammadpd = 8;                           // default: 4.5
+  const float kBT = 0.1 * kBT2D3D / (RC_FX*RC_FX);     // default: 1
+  const float dt = 0.0005;                             // default: 0.001
+  const float aij = 4 / RC_FX; // default: 75*kBT/numberdensity -- Groot and Warren (1997)
+  const float sigma = sqrt(2 * gammadpd * kBT);
+  const float sigmaf = sigma / sqrt(dt);
+
+  const float strength = aij * argwr + (-gammadpd * wr * rdotv + sigmaf * myrandnr) * wr;
+
+  return make_float3(strength*xr, strength*yr, strength*zr);
 }

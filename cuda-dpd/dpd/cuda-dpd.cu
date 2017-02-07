@@ -17,6 +17,7 @@
 #include "cuda-dpd.h"
 #include "../dpd-rng.h"
 #include "../../mpi-dpd/visc-aux.h"
+#include "../../mpi-dpd/last_bit_float.h"
 
 struct InfoDPD
 {
@@ -47,34 +48,17 @@ __device__ float3 _dpd_interaction(const int dpid, const float3 xdest, const flo
     //const float2 stmp1 = tex1Dfetch(texParticles2, sentry + 1);
     const float2 stmp2 = tex1Dfetch(texParticles2, sentry + 2);
 
-    const float _xr = xdest.x - stmp0.x;
-    const float _yr = xdest.y - stmp0.y;
-    const float _zr = xdest.z - stmp1.x;
-    const float rij2 = _xr * _xr + _yr * _yr + _zr * _zr;
-    // assert(rij2 < 1);
-
-    const float invrij = rsqrtf(rij2);
-    const float rij = rij2 * invrij;
-    const float argwr = 1 - rij;
-    const float wr = viscosity_function<-VISCOSITY_S_LEVEL>(argwr);
-
-    const float xr = _xr * invrij;
-    const float yr = _yr * invrij;
-    const float zr = _zr * invrij;
-
-    const float rdotv =
-	xr * (udest.x - stmp1.y) +
-	yr * (udest.y - stmp2.x) +
-	zr * (udest.z - stmp2.y);
-
     const float myrandnr = Logistic::mean0var1(info.seed, min(spid, dpid), max(spid, dpid));
 
-	// check for viscosity last bit tag and define gamma
-	// u0 is defined analogous to _bipartite_dpd_directforces_floatized
-	float gamma_tag = get_gamma_from_tag(udest.x, info.gamma);
-    const float strength = info.aij * argwr - (gamma_tag * wr * rdotv + info.sigmaf * myrandnr) * wr;
+    // check for particle types and compute the DPD force
+    float3 pos1 = {xdest.x, xdest.y, xdest.z}, pos2 = {stmp0.x, stmp0.y, stmp1.x};
+    float3 vel1 = {udest.x, udest.y, udest.z}, vel2 = {stmp1.y, stmp2.x, stmp2.y};
+    int type1 = last_bit_float::get(vel1.x);
+    int type2 = last_bit_float::get(vel2.x);
+    const float3 strength = compute_dpd_force_traced(type1, type2,
+            pos1, pos2, vel1, vel2, myrandnr);
 
-    return make_float3(strength * xr, strength * yr, strength * zr);
+    return strength;
 }
 
 #define __IMOD(x,y) ((x)-((x)/(y))*(y))
@@ -183,35 +167,17 @@ __device__ float3 _dpd_interaction(const int dpid, const float3 xdest, const flo
     const float2 stmp1 = tex1Dfetch(texParticles2, sentry + 1);
     const float2 stmp2 = tex1Dfetch(texParticles2, sentry + 2);
 
-    const float _xr = xdest.x - stmp0.x;
-    const float _yr = xdest.y - stmp0.y;
-    const float _zr = xdest.z - stmp1.x;
-
-    const float rij2 = _xr * _xr + _yr * _yr + _zr * _zr;
-    // assert(rij2 < 1);
-
-    const float invrij = rsqrtf(rij2);
-    const float rij = rij2 * invrij;
-    const float argwr = 1 - rij;
-    const float wr = viscosity_function<-VISCOSITY_S_LEVEL>(argwr);
-
-    const float xr = _xr * invrij;
-    const float yr = _yr * invrij;
-    const float zr = _zr * invrij;
-
-    const float rdotv =
-	xr * (udest.x - stmp1.y) +
-	yr * (udest.y - stmp2.x) +
-	zr * (udest.z - stmp2.y);
-
     const float myrandnr = Logistic::mean0var1(info.seed, min(spid, dpid), max(spid, dpid));
 
-	// check for viscosity last bit tag and define gamma
-	// u0 is defined analogous to _bipartite_dpd_directforces_floatized
-	float gamma_tag = get_gamma_from_tag(udest.x, info.gamma);
-    const float strength = info.aij * argwr - (gamma_tag * wr * rdotv + info.sigmaf * myrandnr) * wr;
+    // check for particle types and compute the DPD force
+    float3 pos1 = {xdest.x, xdest.y, xdest.z}, pos2 = {stmp0.x, stmp0.y, stmp1.x};
+    float3 vel1 = {udest.x, udest.y, udest.z}, vel2 = {stmp1.y, stmp2.x, stmp2.y};
+    int type1 = last_bit_float::get(vel1.x);
+    int type2 = last_bit_float::get(vel2.x);
+    const float3 strength = compute_dpd_force_traced(type1, type2,
+            pos1, pos2, vel1, vel2, myrandnr);
 
-    return make_float3(strength * xr, strength * yr, strength * zr);
+    return strength;
 }
 
 template<int COLS, int ROWS, int NSRCMAX>

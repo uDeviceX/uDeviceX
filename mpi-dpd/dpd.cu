@@ -18,6 +18,7 @@
 
 #include "dpd.h"
 #include "visc-aux.h"
+#include "last_bit_float.h"
 
 using namespace std;
 
@@ -253,38 +254,21 @@ namespace BipsBatch
 	    const float2 s1 = _ACCESS(xsrc + 1 + spid * 3);
 	    const float2 s2 = _ACCESS(xsrc + 2 + spid * 3);
 
-	    const float _xr = xp - s0.x;
-	    const float _yr = yp - s0.y;
-	    const float _zr = zp - s1.x;
-
-	    const float rij2 = _xr * _xr + _yr * _yr + _zr * _zr;
-	    const float invrij = rsqrtf(rij2);
-
-	    const float rij = rij2 * invrij;
-	    const float argwr = max(0.f, 1.f - rij);
-	    const float wr = viscosity_function<-VISCOSITY_S_LEVEL>(argwr);
-
-	    const float xr = _xr * invrij;
-	    const float yr = _yr * invrij;
-	    const float zr = _zr * invrij;
-
-	    const float rdotv =
-		xr * (up - s1.y) +
-		yr * (vp - s2.x) +
-		zr * (wp - s2.y);
-
 	    const uint arg1 = mask ? dpid : spid;
 	    const uint arg2 = mask ? spid : dpid;
 	    const float myrandnr = Logistic::mean0var1(seed, arg1, arg2);
 
-		// check for viscosity last bit tag and define gamma
-		// u0 is defined analogous to _bipartite_dpd_directforces_floatized
-		float gamma_tag = get_gamma_from_tag(up, gamma);
-	    const float strength = aij * argwr + (- gamma_tag * wr * rdotv + sigmaf * myrandnr) * wr;
+        // check for particle types and compute the DPD force
+        float3 pos1 = {xp, yp, zp}, pos2 = {s0.x, s0.y, s1.x};
+        float3 vel1 = {up, vp, wp}, vel2 = {s1.y, s2.x, s2.y};
+        int type1 = last_bit_float::get(vel1.x);
+        int type2 = last_bit_float::get(vel2.x);
+        const float3 strength = compute_dpd_force_traced(type1, type2,
+                pos1, pos2, vel1, vel2, myrandnr);
 
-	    xforce += strength * xr;
-	    yforce += strength * yr;
-	    zforce += strength * zr;
+	    xforce += strength.x;
+	    yforce += strength.y;
+	    zforce += strength.z;
 	}
 
 	atomicAdd(adst + dstbase + 0, xforce);

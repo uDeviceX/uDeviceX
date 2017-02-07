@@ -29,6 +29,7 @@
 #include "wall.h"
 #include "redistancing.h"
 #include "visc-aux.h"
+#include "last_bit_float.h"
 
 enum
 {
@@ -488,37 +489,19 @@ namespace SolidWallsKernel
             const float yq = stmp0.y;
             const float zq = stmp0.z;
 
-            const float _xr = dst0.x - xq;
-            const float _yr = dst0.y - yq;
-            const float _zr = dst1.x - zq;
-
-            const float rij2 = _xr * _xr + _yr * _yr + _zr * _zr;
-
-            const float invrij = rsqrtf(rij2);
-
-            const float rij = rij2 * invrij;
-            const float argwr = max(0.f, 1.f - rij);
-            const float wr = viscosity_function<-VISCOSITY_S_LEVEL>(argwr);
-
-            const float xr = _xr * invrij;
-            const float yr = _yr * invrij;
-            const float zr = _zr * invrij;
-
-            const float rdotv =
-                    xr * (dst1.y - 0) +
-                    yr * (dst2.x - 0) +
-                    zr * (dst2.y - 0);
-
             const float myrandnr = Logistic::mean0var1(seed, pid, spid);
 
-            // check for viscosity last bit tag and define gamma
-            // u0 is defined analogous to _bipartite_dpd_directforces_floatized
-            float gamma_tag = get_gamma_from_tag(dst1.y, gammadpd);
-            const float strength = aij * argwr + (- gamma_tag * wr * rdotv + sigmaf * myrandnr) * wr;
+            // check for particle types and compute the DPD force
+            float3 pos1 = {dst0.x, dst0.y, dst1.x}, pos2 = {xq, yq, zq};
+            float3 vel1 = {dst1.y, dst2.x, dst2.y}, vel2 = {0, 0, 0};
+            int type1 = 3;  // wall
+            int type2 = last_bit_float::get(vel2.x);
+            const float3 strength = compute_dpd_force_traced(type1, type2,
+                    pos1, pos2, vel1, vel2, myrandnr);
 
-            xforce += strength * xr;
-            yforce += strength * yr;
-            zforce += strength * zr;
+            xforce += strength.x;
+            yforce += strength.y;
+            zforce += strength.z;
         }
 
         atomicAdd(acc + 3 * pid + 0, xforce);

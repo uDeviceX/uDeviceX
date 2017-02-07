@@ -18,6 +18,7 @@
 #include "cuda-dpd.h"
 #include "../dpd-rng.h"
 #include "../../mpi-dpd/visc-aux.h"
+#include "../../mpi-dpd/last_bit_float.h"
 
 struct InfoDPD {
     int3 ncells;
@@ -48,34 +49,17 @@ texture<uint2, cudaTextureType1D> texStartAndCount;
 
 __device__ float3 _dpd_interaction( const int dpid, const float4 xdest, const float4 udest, const float4 xsrc, const float4 usrc, const int spid )
 {
-    const float _xr = xdest.x - xsrc.x;
-    const float _yr = xdest.y - xsrc.y;
-    const float _zr = xdest.z - xsrc.z;
-
-    const float rij2 = _xr * _xr + _yr * _yr + _zr * _zr;
-    // assert( rij2 < 1 );
-
-    const float invrij = rsqrtf( rij2 );
-    const float rij = rij2 * invrij;
-    const float wc = max(0.f, 1 - rij);
-    const float wr = viscosity_function < -VISCOSITY_S_LEVEL > ( wc );
-
-    const float xr = _xr * invrij;
-    const float yr = _yr * invrij;
-    const float zr = _zr * invrij;
-
-    const float rdotv =
-        xr * ( udest.x - usrc.x ) +
-        yr * ( udest.y - usrc.y ) +
-        zr * ( udest.z - usrc.z );
-
     const float myrandnr = Logistic::mean0var1( info.seed, xmin( spid, dpid ), xmax( spid, dpid ) );
 
-    // check for viscosity last bit tag and define gamma
-    float gamma_tag = get_gamma_from_tag(udest.x, info.gamma);
-    const float strength = info.aij * wc - ( gamma_tag * wr * rdotv + info.sigmaf * myrandnr ) * wr;
+    // check for particle types and compute the DPD force
+    float3 pos1 = {xdest.x, xdest.y, xdest.z}, pos2 = {xsrc.x, xsrc.y, xsrc.z};
+    float3 vel1 = {udest.x, udest.y, udest.z}, vel2 = {usrc.x, usrc.y, usrc.z};
+    int type1 = last_bit_float::get(vel1.x);
+    int type2 = last_bit_float::get(vel2.x);
+    const float3 strength = compute_dpd_force_traced(type1, type2,
+            pos1, pos2, vel1, vel2, myrandnr);
 
-    return make_float3( strength * xr, strength * yr, strength * zr );
+    return strength;
 }
 
 #define __IMOD(x,y) ((x)-((x)/(y))*(y))
