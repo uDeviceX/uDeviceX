@@ -20,6 +20,7 @@ export HEX_COMM_FACTOR=2
 
 srun --ntasks 1 --export ALL ./test 1 1 1 -rbcs -hdf5field_dumps -tend=1 -steps_per_dump=200 -steps_per_hdf5dump=200 -hdf5part_dumps
 
-# h5part: ./test 1 1 1 -rbcs -hdf5field_dumps -tend=1 -steps_per_dump=200 -steps_per_hdf5dump=200 -hdf5part_dumps
+# h5part: ./test 1 1 1 -rbcs -hdf5field_dumps -tend=1  -steps_per_dump=200 -steps_per_hdf5dump=200 -hdf5part_dumps
+#         ./test 1 1 1 -rbcs -hdf5field_dumps -tend=20 -steps_per_dump=200 -steps_per_hdf5dump=200 -hdf5part_dumps -shrate=20
 
 #=====END====
