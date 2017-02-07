@@ -511,10 +511,9 @@ namespace SolidWallsKernel
 
             const float myrandnr = Logistic::mean0var1(seed, pid, spid);
 
-            // check for viscosity last bit tag and define gamma TODO: replace tmp with gammadpd
+            // check for viscosity last bit tag and define gamma
             // u0 is defined analogous to _bipartite_dpd_directforces_floatized
-            float2 tmp = {1., 1.};
-            float gamma_tag = get_gamma_from_tag(dst1.y, tmp/*gammadpd*/);
+            float gamma_tag = get_gamma_from_tag(dst1.y, gammadpd);
             const float strength = aij * argwr + (- gamma_tag * wr * rdotv + sigmaf * myrandnr) * wr;
 
             xforce += strength * xr;

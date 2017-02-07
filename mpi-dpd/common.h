@@ -32,7 +32,7 @@ enum
 };
 
 const int numberdensity = 3 * (RC_FX*RC_FX*RC_FX);     // default: 3
-const float2 gammadpd = {8, 8};                           // default: 4.5
+__device__ const float2 gammadpd = {8, 8};                           // default: 4.5
 const float kBT = 0.1 * kBT2D3D / (RC_FX*RC_FX);                // default: 1
 const float dt          = 0.0005;                       // default: 0.001
 

@@ -24,23 +24,23 @@
 struct vec3
 {
     real x, y, z;
-    
+
     __host__ __device__ vec3(real x0, real x1, real x2)
     {
         x = x0;
         y = x1;
         z = x2;
     }
-    
+
     __host__ __device__ vec3(const real *r)
     {
         x = r[0];
         y = r[1];
         z = r[2];
     }
-    
+
     __host__ __device__ vec3() : x(0), y(0), z(0) { };
-    
+
     __host__ __device__ vec3& operator=(const vec3& u)
     {
         if (&u == this) return *this;
@@ -49,31 +49,31 @@ struct vec3
         z = u.z;
         return *this;
     }
-    
+
     __host__ __device__ vec3  operator+(const vec3& u) const
     {
         vec3 res(x+u.x, y+u.y, z+u.z);
         return res;
     }
-    
+
     __host__ __device__ vec3  operator-(const vec3& u) const
     {
         vec3 res(x-u.x, y-u.y, z-u.z);
         return res;
     }
-    
+
     __host__ __device__ vec3  operator/(const real& a) const
     {
         vec3 res(x/a, y/a, z/a);
         return res;
     }
-    
+
     __host__ __device__ vec3  operator*(const real& a) const
     {
         vec3 res(x*a, y*a, z*a);
         return res;
     }
-    
+
     __host__ __device__ vec3& operator+=(const vec3& u)
     {
         x += u.x;
@@ -81,7 +81,7 @@ struct vec3
         z += u.z;
         return *this;
     }
-    
+
     __host__ __device__ vec3& operator-=(const vec3& u)
     {
         x -= u.x;
@@ -89,7 +89,7 @@ struct vec3
         z -= u.z;
         return *this;
     }
-    
+
     __host__ __device__ vec3& operator/=(const real& a)
     {
         x /= a;
@@ -97,7 +97,7 @@ struct vec3
         z /= a;
         return *this;
     }
-    
+
     __host__ __device__ vec3& operator*=(const real& a)
     {
         x *= a;
@@ -105,13 +105,13 @@ struct vec3
         z *= a;
         return *this;
     }
-    
+
     __host__ __device__ vec3  operator-() const
     {
         vec3 res(-x, -y, -z);
         return res;
     }
-    
+
     __host__ __device__ real& operator[](int i)
     {
         if (i == 0) return x;
