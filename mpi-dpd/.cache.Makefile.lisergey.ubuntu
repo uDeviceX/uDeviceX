@@ -6,6 +6,9 @@
 h5part = 1
 h5 = 1
 
+CXX = g++
+NVCC_BIN = nvcc
+
 # how to get the flags: mpicxx -show
 #                     : pkg-config --libs mpich
 MPI_CXXFLAGS = -I/usr/include/mpich
@@ -25,9 +28,14 @@ H5PART_LDFLAGS =  -L${HOME}/prefix/h5part/lib
 H5PART_LIBS = -lH5Part
 
 # Ubuntu 16.04: https://github.com/BVLC/caffe/issues/4046
-NVCC_CXXFLAGS = -D_FORCE_INLINES
+NVCC_CXXFLAGS = --compiler-options=-D_FORCE_INLINES
 
-NVCC = nvcc --compiler-options="${H5PART_CXXFLAGS} ${HDF5_CXXFLAGS} ${MPI_CXXFLAGS}" ${NVCC_CXXFLAGS}
-CXXFLAGS = ${H5PART_LDFLAGS} ${HDF5_LDFLAGS} ${MPI_LDFLAGS} # (sic) passed to a linker in uDeviceX
-LIBS =  ${H5PART_LIBS} ${HDF5_LIBS}  ${MPI_LIBS}
-CXX = g++
+# geom-wrapper libraries
+# cd ../geom-wrapper && cmake . && make
+GWRP_LIBS = ../geom-wrapper/libgeom-wrapper.a -lgmp -lCGAL -lboost_system
+GWRP_CXXFLAGS = -I../geom-wrapper
+GWRP_LDFLAGS =
+
+NVCC = ${NVCC_BIN} ${GWRP_CXXFLAGS} ${H5PART_CXXFLAGS} ${HDF5_CXXFLAGS} ${MPI_CXXFLAGS} ${NVCC_CXXFLAGS}
+CXXFLAGS = ${GWRP_LDFLAGS} ${H5PART_LDFLAGS} ${HDF5_LDFLAGS} ${MPI_LDFLAGS} ${NVCC_LDFALGS} # (sic) passed to a linker in uDeviceX
+LIBS = ${GWRP_LIBS} ${H5PART_LIBS} ${HDF5_LIBS} ${MPI_LIBS}
