@@ -35,6 +35,6 @@ NVCC_LDFALGS = -L/usr/local/cuda-8.0/lib64 -Wl,-rpath -Wl,/usr/local/cuda-8.0/li
 # cd ../geom-wrapper && cmake . && make
 GWRP_LIBS = ../geom-wrapper/libHello.a
 
-NVCC = ${NVCC_BIN} --compiler-options="${H5PART_CXXFLAGS} ${HDF5_CXXFLAGS} ${MPI_CXXFLAGS}"
+NVCC = ${NVCC_BIN} ${H5PART_CXXFLAGS} ${HDF5_CXXFLAGS} ${MPI_CXXFLAGS}
 CXXFLAGS = -Wl,--as-needed ${H5PART_LDFLAGS} ${HDF5_LDFLAGS} ${MPI_LDFLAGS} ${NVCC_LDFALGS} # (sic) passed to a linker in uDeviceX
 LIBS = ${GWRP_LIBS} ${H5PART_LIBS} ${HDF5_LIBS} ${MPI_LIBS}
