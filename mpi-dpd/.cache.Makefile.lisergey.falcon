@@ -7,7 +7,8 @@ h5part = 1
 h5 = 1
 
 CXX = g++
-NVCC_BIN = /usr/local/cuda-8.0/bin/nvcc
+NVCC_DIR = /usr/local/cuda-8.0
+NVCC_BIN = ${NVCC_DIR}/bin/nvcc
 
 # how to get the flags: mpicxx -show
 #                     : pkg-config --libs mpich
@@ -19,9 +20,10 @@ MPI_LIBS = -lmpichcxx -lmpich
 #                     : pkg-config hdf5-mpich --libs
 # link: https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8.17/src/hdf5-1.8.17.tar.gz
 # conf: --prefix=$HOME/prefix/hdf5 --enable-parallel CXX=/usr/lib64/mpich/bin/mpic++ CC=/usr/lib64/mpich/bin/mpicc
-HDF5_CXXFLAGS = -I${HOME}/prefix/hdf5/include
-HDF5_LDFLAGS  = -L${HOME}/prefix/hdf5/lib
-HDF5_LIBS = ${HOME}/prefix/hdf5/lib/libhdf5_hl.a ${HOME}/prefix/hdf5/lib/libhdf5.a
+HDF5_DIR=${HOME}/prefix/hdf5
+HDF5_CXXFLAGS = -I${HDF5_DIR}/include
+HDF5_LDFLAGS  = -L${HDF5_DIR}/lib -Wl,-rpath -Wl,${HDF5_DIR}/lib
+HDF5_LIBS = -lhdf5
 
 # link: https://codeforge.lbl.gov/frs/download.php/file/387/H5Part-1.6.6.tar.gz
 # conf: --prefix=$HOME/prefix/h5part --enable-parallel --with-hdf5=$HOME/prefix/hdf5 CXX=/usr/lib64/mpich/bin/mpic++ CC=/usr/lib64/mpich/bin/mpicc
@@ -29,12 +31,14 @@ H5PART_CXXFLAGS = -I${HOME}/prefix/h5part/include
 H5PART_LDFLAGS =  -L${HOME}/prefix/h5part/lib
 H5PART_LIBS = -lH5Part
 
-NVCC_LDFALGS = -L/usr/local/cuda-8.0/lib64 -Wl,-rpath -Wl,/usr/local/cuda-8.0/lib64
+NVCC_LDFALGS = -L${NVCC_DIR}/lib64 -Wl,-rpath -Wl,${NVCC_DIR}/lib64
 
 # geom-wrapper libraries
 # cd ../geom-wrapper && cmake . && make
-GWRP_LIBS = ../geom-wrapper/libHello.a
+GWRP_CXXFLAGS = -I../geom-wrapper
+GWRP_LDFLAGS = -L${HOME}/prefix/cgal/lib64 -Wl,-rpath,${HOME}/prefix/cgal/lib64:${HOME}/prefix/pkgsrc/lib
+GWRP_LIBS = ../geom-wrapper/libgeom-wrapper.a -lgmp -lCGAL
 
-NVCC = ${NVCC_BIN} ${H5PART_CXXFLAGS} ${HDF5_CXXFLAGS} ${MPI_CXXFLAGS}
-CXXFLAGS = -Wl,--as-needed ${H5PART_LDFLAGS} ${HDF5_LDFLAGS} ${MPI_LDFLAGS} ${NVCC_LDFALGS} # (sic) passed to a linker in uDeviceX
+NVCC = ${NVCC_BIN} ${GWRP_CXXFLAGS} ${H5PART_CXXFLAGS} ${HDF5_CXXFLAGS} ${MPI_CXXFLAGS}
+CXXFLAGS = ${GWRP_LDFLAGS} ${H5PART_LDFLAGS} ${HDF5_LDFLAGS} ${MPI_LDFLAGS} ${NVCC_LDFALGS} # (sic)
 LIBS = ${GWRP_LIBS} ${H5PART_LIBS} ${HDF5_LIBS} ${MPI_LIBS}
