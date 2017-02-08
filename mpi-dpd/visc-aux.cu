@@ -80,15 +80,15 @@ __device__ float3 compute_dpd_force_traced(int type1, int type2,
       yr * (vel1.y - vel2.y) +
       zr * (vel1.z - vel2.z);
 
-  const int numberdensity = 3 * (RC_FX*RC_FX*RC_FX);   // default: 3
-  const float gammadpd = 8;                           // default: 4.5
-  const float kBT = 0.1 * kBT2D3D / (RC_FX*RC_FX);     // default: 1
-  const float dt = 0.0005;                             // default: 0.001
-  const float aij = 4 / RC_FX; // default: 75*kBT/numberdensity -- Groot and Warren (1997)
-  const float sigma = sqrt(2 * gammadpd * kBT);
-  const float sigmaf = sigma / sqrt(dt);
+  // particle type dependent constants
+  const float gammadpd[4] = {56, 8, 56, 56};              // default: 4.5
+  const float aij[4] = {4 / RC_FX, 4 / RC_FX, 4 / RC_FX, 4 / RC_FX}; // default: 75*kBT/numberdensity -- Groot and Warren (1997)
 
-  const float strength = aij * argwr + (-gammadpd * wr * rdotv + sigmaf * myrandnr) * wr;
+  const float aij_pair = 0.5 * (aij[type1] + aij[type2]);
+  const float gammadpd_pair = 0.5 * (gammadpd[type1] + gammadpd[type2]);
+  const float sigmaf_pair = sqrt(2*gammadpd_pair*kBT / dt);
+
+  const float strength = aij_pair * argwr + (-gammadpd_pair * wr * rdotv + sigmaf_pair * myrandnr) * wr;
 
   return make_float3(strength*xr, strength*yr, strength*zr);
 }
