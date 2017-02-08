@@ -105,7 +105,7 @@ namespace BipsBatch
     __constant__ BatchInfo batchinfos[26];
 
     __global__ void
-    interaction_kernel(const float aij, const float2 gamma, const float sigmaf,
+    interaction_kernel(const float aij, const float gamma, const float sigmaf,
 		       const int ndstall, float * const adst, const int sizeadst)
     {
 #if !defined(__CUDA_ARCH__)
@@ -282,7 +282,7 @@ namespace BipsBatch
 
     cudaEvent_t evhalodone;
 
-    void interactions(const float aij, const float2 gamma, const float sigma, const float invsqrtdt,
+    void interactions(const float aij, const float gamma, const float sigma, const float invsqrtdt,
 		      const BatchInfo infos[20], cudaStream_t computestream, cudaStream_t uploadstream, float * const acc, const int n)
     {
 	if (firstcall)

@@ -19,7 +19,7 @@
 
 namespace KernelsFSI
 {
-    struct Params { float aij, sigmaf; float2 gamma; };
+    struct Params { float aij, gamma, sigmaf; };
 
     __constant__ Params params;
 }
@@ -33,7 +33,7 @@ ComputeFSI::ComputeFSI(MPI_Comm comm)
 
     //TODO: use CUDA_CHECK(cudaEventCreateWithFlags(&evuploaded, cudaEventDisableTiming));
 
-    KernelsFSI::Params params = {aij, sigmaf, gammadpd};
+    KernelsFSI::Params params = {aij, gammadpd, sigmaf};
 
     CUDA_CHECK(cudaMemcpyToSymbol(KernelsFSI::params, &params, sizeof(params)));
 

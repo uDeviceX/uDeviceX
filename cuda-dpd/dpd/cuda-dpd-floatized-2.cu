@@ -26,8 +26,7 @@ struct InfoDPD {
     int3 ncells;
     float ncell_x, ncell_y;
     float3 domainsize, invdomainsize, domainstart;
-    float invrc, aij, sigmaf;
-    float2 gamma;
+    float invrc, aij, gamma, sigmaf;
     float * axayaz;
     float seed;
 	#if (USE_TEXOBJ&1)
@@ -946,7 +945,7 @@ void forces_dpd_cuda_nohost(const float * const xyzuvw, const float4 * const xyz
 			    const float rc,
 			    const float XL, const float YL, const float ZL,
 			    const float aij,
-			    const float2 gamma,
+			    const float gamma,
 			    const float sigma,
 			    const float invsqrtdt,
 			    const float seed, cudaStream_t stream)

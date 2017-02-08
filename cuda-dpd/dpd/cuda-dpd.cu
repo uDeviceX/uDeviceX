@@ -23,8 +23,7 @@ struct InfoDPD
 {
     int3 ncells;
     float3 domainsize, invdomainsize, domainstart;
-    float invrc, aij, sigmaf;
-	float2 gamma;
+    float invrc, aij, gamma, sigmaf;
     float * axayaz;
     float seed;
 };
@@ -669,7 +668,7 @@ void forces_dpd_cuda_nohost(const float * const xyzuvw, const float4 * const xyz
 			    const float rc,
 			    const float XL, const float YL, const float ZL,
 			    const float aij,
-			    const float2 gamma,
+			    const float gamma,
 			    const float sigma,
 			    const float invsqrtdt,
 			    const float seed, cudaStream_t stream)
@@ -848,7 +847,7 @@ void forces_dpd_cuda_aos(float * const _xyzuvw, float * const _axayaz,
 		     const float rc,
 		     const float XL, const float YL, const float ZL,
 		     const float aij,
-		     const float2 gamma,
+		     const float gamma,
 		     const float sigma,
 		     const float invsqrtdt,
 			 const float seed,
@@ -1019,7 +1018,7 @@ void forces_dpd_cuda(const float * const xp, const float * const yp, const float
 		     const float rc,
 		     const float LX, const float LY, const float LZ,
 		     const float aij,
-		     const float2 gamma,
+		     const float gamma,
 		     const float sigma,
 		     const float invsqrtdt,
 		     const float seed)

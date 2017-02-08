@@ -38,7 +38,7 @@ namespace KernelsContact
 
     union CellEntry { int pid; uchar4 code; };
 
-    struct Params { float sigmaf, rc2; float2 gamma; };
+    struct Params { float sigmaf, gamma, rc2; };
 
     __constant__ Params params;
 
@@ -74,7 +74,7 @@ cellsstart(KernelsContact::NCELLS + 16), cellscount(KernelsContact::NCELLS + 16)
 
     local_trunk = Logistic::KISS(7119 - myrank, 187 + myrank, 18278, 15674);
 
-    KernelsContact::Params params = { sigmaf, 1, gammadpd};
+    KernelsContact::Params params = { sigmaf, gammadpd, 1 };
 
     CUDA_CHECK(cudaMemcpyToSymbol(KernelsContact::params, &params, sizeof(params)));
 
