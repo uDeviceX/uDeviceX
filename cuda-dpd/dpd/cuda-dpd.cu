@@ -50,8 +50,8 @@ __device__ float3 _dpd_interaction(const int dpid, const float3 xdest, const flo
     const float myrandnr = Logistic::mean0var1(info.seed, min(spid, dpid), max(spid, dpid));
 
     // check for particle types and compute the DPD force
-    float3 pos1 = {xdest.x, xdest.y, xdest.z}, pos2 = {stmp0.x, stmp0.y, stmp1.x};
-    float3 vel1 = {udest.x, udest.y, udest.z}, vel2 = {stmp1.y, stmp2.x, stmp2.y};
+    float3 pos1 = make_float3(xdest.x, xdest.y, xdest.z), pos2 = make_float3(stmp0.x, stmp0.y, stmp1.x);
+    float3 vel1 = make_float3(udest.x, udest.y, udest.z), vel2 = make_float3(stmp1.y, stmp2.x, stmp2.y);
     int type1 = last_bit_float::get(vel1.x);
     int type2 = last_bit_float::get(vel2.x);
     const float3 strength = compute_dpd_force_traced(type1, type2,
@@ -169,8 +169,8 @@ __device__ float3 _dpd_interaction(const int dpid, const float3 xdest, const flo
     const float myrandnr = Logistic::mean0var1(info.seed, min(spid, dpid), max(spid, dpid));
 
     // check for particle types and compute the DPD force
-    float3 pos1 = {xdest.x, xdest.y, xdest.z}, pos2 = {stmp0.x, stmp0.y, stmp1.x};
-    float3 vel1 = {udest.x, udest.y, udest.z}, vel2 = {stmp1.y, stmp2.x, stmp2.y};
+    float3 pos1 = make_float3(xdest.x, xdest.y, xdest.z), pos2 = make_float3(stmp0.x, stmp0.y, stmp1.x);
+    float3 vel1 = make_float3(udest.x, udest.y, udest.z), vel2 = make_float3(stmp1.y, stmp2.x, stmp2.y);
     int type1 = last_bit_float::get(vel1.x);
     int type2 = last_bit_float::get(vel2.x);
     const float3 strength = compute_dpd_force_traced(type1, type2,
@@ -492,8 +492,8 @@ __global__ __launch_bounds__(32 * CPB, 16)
 		const float myrandnr = Logistic::mean0var1(info.seed, min(spid, dpid), max(spid, dpid));
 
 		// check for particle types and compute the DPD force
-		float3 pos1 = {dtmp0.x, dtmp0.y, dtmp1.x}, pos2 = {stmp0.x, stmp0.y, stmp1.x};
-		float3 vel1 = {dtmp1.y, dtmp2.x, dtmp2.y}, vel2 = {stmp1.y, stmp2.x, stmp2.y};
+		float3 pos1 = make_float3(dtmp0.x, dtmp0.y, dtmp1.x), pos2 = make_float3(stmp0.x, stmp0.y, stmp1.x);
+		float3 vel1 = make_float3(dtmp1.y, dtmp2.x, dtmp2.y), vel2 = make_float3(stmp1.y, stmp2.x, stmp2.y);
 		int type1 = last_bit_float::get(vel1.x);
 		int type2 = last_bit_float::get(vel2.x);
 		const float3 strength = compute_dpd_force_traced(type1, type2,

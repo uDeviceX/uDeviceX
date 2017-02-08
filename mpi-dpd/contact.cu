@@ -326,8 +326,8 @@ namespace KernelsContact
 	    const float myrandnr = Logistic::mean0var1(seed, pid, spid);
 
         // check for particle types and compute the DPD force
-        float3 pos1 = {dst0.x, dst0.y, dst1.x}, pos2 = {stmp0.x, stmp0.y, stmp1.x};
-        float3 vel1 = {dst1.y, dst2.x, dst2.y}, vel2 = {stmp1.y, stmp2.x, stmp2.y};
+        float3 pos1 = make_float3(dst0.x, dst0.y, dst1.x), pos2 = make_float3(stmp0.x, stmp0.y, stmp1.x);
+        float3 vel1 = make_float3(dst1.y, dst2.x, dst2.y), vel2 = make_float3(stmp1.y, stmp2.x, stmp2.y);
         int type1 = 2;  // RBC membrane
         int type2 = 2;  // RBC membrane
         const float3 strength = compute_dpd_force_traced(type1, type2,
@@ -511,8 +511,8 @@ namespace KernelsContact
 		const float myrandnr = Logistic::mean0var1(seed, pid, spid);
 
         // check for particle types and compute the DPD force
-        float3 pos1 = {dst0.x, dst0.y, dst1.x}, pos2 = {stmp0.x, stmp0.y, stmp1.x};
-        float3 vel1 = {dst1.y, dst2.x, dst2.y}, vel2 = {stmp1.y, stmp2.x, stmp2.y};
+        float3 pos1 = make_float3(dst0.x, dst0.y, dst1.x), pos2 = make_float3(stmp0.x, stmp0.y, stmp1.x);
+        float3 vel1 = make_float3(dst1.y, dst2.x, dst2.y), vel2 = make_float3(stmp1.y, stmp2.x, stmp2.y);
         int type1 = 2;  // RBC membrane
         int type2 = 2;  // RBC membrane
         const float3 strength = compute_dpd_force_traced(type1, type2,

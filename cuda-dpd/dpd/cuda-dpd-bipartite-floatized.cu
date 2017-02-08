@@ -95,8 +95,8 @@ void _bipartite_dpd_directforces_floatized( float * const axayaz, const int np, 
                 const float myrandnr = Logistic::mean0var1( seed, arg1, arg2 );
 
                 // check for particle types and compute the DPD force
-                float3 pos1 = {xp, yp, zp}, pos2 = {xq, yq, zq};
-                float3 vel1 = {up, vp, wp}, vel2 = {uq, vq, wq};
+                float3 pos1 = make_float3(xp, yp, zp), pos2 = make_float3(xq, yq, zq);
+                float3 vel1 = make_float3(up, vp, wp), vel2 = make_float3(uq, vq, wq);
                 int type1 = last_bit_float::get(vel1.x);
                 int type2 = last_bit_float::get(vel2.x);
                 const float3 strength = compute_dpd_force_traced(type1, type2,
@@ -227,8 +227,8 @@ void _dpd_bipforces_floatized( const float2 * const xyzuvw, const int np, cudaTe
                 const float myrandnr = Logistic::mean0var1( seed, arg1, arg2 );
 
                 // check for particle types and compute the DPD force
-                float3 pos1 = {dtmp0.x, dtmp0.y, dtmp1.x}, pos2 = {stmp0.x, stmp0.y, stmp1.x};
-                float3 vel1 = {dtmp1.y, dtmp2.x, dtmp2.y}, vel2 = {stmp1.y, stmp2.x, stmp2.y};
+                float3 pos1 = make_float3(dtmp0.x, dtmp0.y, dtmp1.x), pos2 = make_float3(stmp0.x, stmp0.y, stmp1.x);
+                float3 vel1 = make_float3(dtmp1.y, dtmp2.x, dtmp2.y), vel2 = make_float3(stmp1.y, stmp2.x, stmp2.y);
                 int type1 = last_bit_float::get(vel1.x);
                 int type2 = last_bit_float::get(vel2.x);
                 const float3 strength = compute_dpd_force_traced(type1, type2,

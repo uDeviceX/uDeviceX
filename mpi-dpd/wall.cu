@@ -492,8 +492,8 @@ namespace SolidWallsKernel
             const float myrandnr = Logistic::mean0var1(seed, pid, spid);
 
             // check for particle types and compute the DPD force
-            float3 pos1 = {dst0.x, dst0.y, dst1.x}, pos2 = {xq, yq, zq};
-            float3 vel1 = {dst1.y, dst2.x, dst2.y}, vel2 = {0, 0, 0};
+            float3 pos1 = make_float3(dst0.x, dst0.y, dst1.x), pos2 = make_float3(xq, yq, zq);
+            float3 vel1 = make_float3(dst1.y, dst2.x, dst2.y), vel2 = make_float3(0, 0, 0);
             int type1 = 3;  // wall
             int type2 = last_bit_float::get(vel2.x);
             const float3 strength = compute_dpd_force_traced(type1, type2,

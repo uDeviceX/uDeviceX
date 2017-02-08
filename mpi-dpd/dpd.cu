@@ -259,8 +259,8 @@ namespace BipsBatch
 	    const float myrandnr = Logistic::mean0var1(seed, arg1, arg2);
 
         // check for particle types and compute the DPD force
-        float3 pos1 = {xp, yp, zp}, pos2 = {s0.x, s0.y, s1.x};
-        float3 vel1 = {up, vp, wp}, vel2 = {s1.y, s2.x, s2.y};
+        float3 pos1 = make_float3(xp, yp, zp), pos2 = make_float3(s0.x, s0.y, s1.x);
+        float3 vel1 = make_float3(up, vp, wp), vel2 = make_float3(s1.y, s2.x, s2.y);
         int type1 = last_bit_float::get(vel1.x);
         int type2 = last_bit_float::get(vel2.x);
         const float3 strength = compute_dpd_force_traced(type1, type2,
