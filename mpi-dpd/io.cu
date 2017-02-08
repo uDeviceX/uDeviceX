@@ -33,63 +33,6 @@
 
 using namespace std;
 
-void xyz_dump(MPI_Comm comm, MPI_Comm cartcomm, const char * filename, const char * particlename, Particle * particles, int n, bool append)
-{
-    int rank;
-    MPI_CHECK( MPI_Comm_rank(comm, &rank) );
-
-    int dims[3], periods[3], coords[3];
-    MPI_CHECK( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
-
-    const int nlocal = n;
-    MPI_CHECK( MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &n, &n, 1, MPI_INT, MPI_SUM, 0, comm) );
-
-    bool filenotthere;
-    if (rank == 0)
-	filenotthere = access(filename, F_OK ) == -1;
-
-    MPI_CHECK( MPI_Bcast(&filenotthere, 1, MPI_INT, 0, comm) );
-
-    append &= !filenotthere;
-
-    MPI_File f;
-    MPI_CHECK( MPI_File_open(comm, filename , MPI_MODE_WRONLY | (append ? MPI_MODE_APPEND : MPI_MODE_CREATE), MPI_INFO_NULL, &f) );
-
-    if (!append)
-	MPI_CHECK( MPI_File_set_size (f, 0));
-
-    MPI_Offset base;
-    MPI_CHECK( MPI_File_get_position(f, &base));
-
-    std::stringstream ss;
-
-    if (rank == 0)
-    {
-	ss <<  n << "\n";
-	ss << particlename << "\n";
-
-	printf("xyz dump <%s>: total number of particles: %d\n", filename, n);
-    }
-
-    for(int i = 0; i < nlocal; ++i)
-	ss << rank << " "
-	   << (particles[i].x[0] + XSIZE_SUBDOMAIN / 2 + coords[0] * XSIZE_SUBDOMAIN) << " "
-	   << (particles[i].x[1] + YSIZE_SUBDOMAIN / 2 + coords[1] * YSIZE_SUBDOMAIN) << " "
-	   << (particles[i].x[2] + ZSIZE_SUBDOMAIN / 2 + coords[2] * ZSIZE_SUBDOMAIN) << "\n";
-
-    string content = ss.str();
-
-    MPI_Offset len = content.size();
-    MPI_Offset offset = 0;
-    MPI_CHECK( MPI_Exscan(&len, &offset, 1, MPI_OFFSET, MPI_SUM, comm));
-
-    MPI_Status status;
-
-    MPI_CHECK( MPI_File_write_at_all(f, base + offset, const_cast<char *>(content.c_str()), len, MPI_CHAR, &status));
-
-    MPI_CHECK( MPI_File_close(&f));
-}
-
 void _write_bytes(const void * const ptr, const int nbytes32, MPI_File f, MPI_Comm comm)
 {
     MPI_Offset base;
