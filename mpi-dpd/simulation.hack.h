@@ -31,9 +31,9 @@ iotags_all(nrbc, rbc_xx, rbc_yy, rbc_zz,
 
 #define SUU sol_hst[i].u[0]
 /* set the last bit to 1 for tagged particles */
-for (i = 0; i < nsol; i++) last_bit_float::set(SUU, iotags[i] != 0);
-int cnt; for (i = cnt = 0; i < nsol; i++) if (iotags[i] != 0) cnt++;
-printf("cnt: %d\n", cnt);
+for (i = 0; i < nsol; i++) last_bit_float::set(SUU, iotags[i] != -1);
+int cnt; for (i = cnt = 0; i < nsol; i++) if (iotags[i] != -1) cnt++;
+fprintf(stderr, "cnt: %d\n", cnt);
 
 /* copy to device */
 cudaMemcpy(sol_dev, sol_hst, szp*nsol, cudaMemcpyHostToDevice);
