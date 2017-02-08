@@ -485,29 +485,6 @@ void Simulation::_datadump_async()
             diagnostics(myactivecomm, mycartcomm, p, n, dt, datadump_idtimestep, a);
         }
 
-        if (xyz_dumps)
-        {
-            NVTX_RANGE("xyz dump", NVTX_C2);
-
-            if (walls && datadump_idtimestep >= wall_creation_stepid && !wallcreated)
-            {
-                if (rank == 0)
-                {
-                    if( access("xyz/particles-equilibration.xyz", F_OK ) == -1 )
-                        rename ("xyz/particles.xyz", "xyz/particles-equilibration.xyz");
-
-                    if( access( "xyz/rbcs-equilibration.xyz", F_OK ) == -1 )
-                        rename ("xyz/rbcs.xyz", "xyz/rbcs-equilibration.xyz");
-                }
-
-                MPI_CHECK(MPI_Barrier(myactivecomm));
-
-                wallcreated = true;
-            }
-
-            xyz_dump(myactivecomm, mycartcomm, "xyz/particles->xyz", "all-particles", p, n, datadump_idtimestep > 0);
-        }
-
         if (hdf5part_dumps)
         {
             NVTX_RANGE("h5part dump", NVTX_C3);

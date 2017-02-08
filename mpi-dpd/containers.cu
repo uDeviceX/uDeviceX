@@ -449,8 +449,6 @@ void CollectionRBC::_dump(const char * const path2xyz, const char * const format
 		}
 	}
 
-    if (xyz_dumps)
-	xyz_dump(comm, cartcomm, path2xyz, "cell-particles", p, n, !firsttime);
 
     char buf[200];
     sprintf(buf, format4ply, ctr);
