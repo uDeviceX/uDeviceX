@@ -16,12 +16,7 @@
 #include <map>
 #include <vector>
 #include <string>
-
 #include <pthread.h>
-
-#ifdef _USE_NVTX_
-#include <cuda_profiler_api.h>
-#endif
 
 #include "common.h"
 #include "containers.h"

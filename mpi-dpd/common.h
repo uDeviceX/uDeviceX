@@ -64,55 +64,6 @@ inline void cudaAssert(cudaError_t code, const char *file, int line)
     }
 }
 
-#ifdef _USE_NVTX_
-
-#include <nvToolsExt.h>
-enum NVTX_COLORS
-{
-    NVTX_C1 = 0x0000ff00,
-    NVTX_C2 = 0x000000ff,
-    NVTX_C3 = 0x00ffff00,
-    NVTX_C4 = 0x00ff00ff,
-    NVTX_C5 = 0x0000ffff,
-    NVTX_C6 = 0x00ff0000,
-    NVTX_C7 = 0x00ffffff
-};
-
-class NvtxTracer
-{
-    bool active;
-
-public:
-
-    static bool currently_profiling;
-
-NvtxTracer(const char* name, NVTX_COLORS color = NVTX_C1): active(false)
-    {
-	if (currently_profiling)
-	{
-	    active = true;
-
-	    nvtxEventAttributes_t eventAttrib = {0};
-	    eventAttrib.version = NVTX_VERSION;
-	    eventAttrib.size = NVTX_EVENT_ATTRIB_STRUCT_SIZE;
-	    eventAttrib.colorType = NVTX_COLOR_ARGB;
-	    eventAttrib.color = color;
-	    eventAttrib.messageType = NVTX_MESSAGE_TYPE_ASCII;
-	    eventAttrib.message.ascii = name;
-	    nvtxRangePushEx(&eventAttrib);
-	}
-    }
-
-    ~NvtxTracer()
-    {
-	if (active) nvtxRangePop();
-    }
-};
-
-#define NVTX_RANGE(arg...) NvtxTracer uniq_name_using_macros(arg);
-#else
-#define NVTX_RANGE(arg...)
-#endif
 
 #include <mpi.h>
 

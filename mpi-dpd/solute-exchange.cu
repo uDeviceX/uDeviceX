@@ -351,8 +351,6 @@ void SoluteExchange::pack_p(cudaStream_t stream)
     if (wsolutes.size() == 0)
 	return;
 
-    NVTX_RANGE("FSI/pack", NVTX_C4);
-
     ++iterationcount;
 
     packscount.resize(26 * wsolutes.size());
@@ -371,8 +369,6 @@ void SoluteExchange::post_p(cudaStream_t stream, cudaStream_t downloadstream)
 
     //consolidate the packing
     {
-	NVTX_RANGE("FSI/consolidate", NVTX_C5);
-
 	CUDA_CHECK(cudaEventSynchronize(evPpacked));
 
 	if (iterationcount == 0)
@@ -448,8 +444,6 @@ void SoluteExchange::post_p(cudaStream_t stream, cudaStream_t downloadstream)
 
     //post the sending of the packs
     {
-	NVTX_RANGE("FSI/send", NVTX_C6);
-
 	reqsendC.resize(26);
 
 	for(int i = 0; i < 26; ++i)
@@ -492,8 +486,6 @@ void SoluteExchange::recv_p(cudaStream_t uploadstream)
     if (wsolutes.size() == 0)
 	return;
 
-    NVTX_RANGE("FSI/recv-p", NVTX_C7);
-    
     _wait(reqrecvC);
     _wait(reqrecvP);
 
@@ -534,8 +526,6 @@ void SoluteExchange::recv_p(cudaStream_t uploadstream)
 
 void SoluteExchange::halo(cudaStream_t uploadstream, cudaStream_t stream)
 {
-    NVTX_RANGE("FSI/halo", NVTX_C7);
-
     if (wsolutes.size() == 0)
 	return;
         
@@ -568,8 +558,6 @@ void SoluteExchange::post_a()
 {
     if (wsolutes.size() == 0)
 	return;
-
-    NVTX_RANGE("FSI/send-a", NVTX_C1);
 
     CUDA_CHECK(cudaEventSynchronize(evAcomputed));
 
@@ -633,8 +621,6 @@ void SoluteExchange::recv_a(cudaStream_t stream)
 
     if (wsolutes.size() == 0)
 	return;
-
-    NVTX_RANGE("FSI/merge", NVTX_C2);
 
     {
 	float * recvbags[26];

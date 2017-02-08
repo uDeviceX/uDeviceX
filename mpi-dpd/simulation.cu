@@ -436,10 +436,6 @@ void Simulation::_datadump(const int idtimestep)
 
 void Simulation::_datadump_async()
 {
-#ifdef _USE_NVTX_
-    nvtxNameOsThread(pthread_self(), "DATADUMP_THREAD");
-#endif
-
     int iddatadump = 0, rank;
     int curr_idtimestep = -1;
     bool wallcreated = false;
@@ -481,14 +477,11 @@ void Simulation::_datadump_async()
         Acceleration * a = accelerations_datadump.data;
 
         {
-            NVTX_RANGE("diagnostics", NVTX_C1);
             diagnostics(myactivecomm, mycartcomm, p, n, dt, datadump_idtimestep, a);
         }
 
         if (hdf5part_dumps)
         {
-            NVTX_RANGE("h5part dump", NVTX_C3);
-
             if (!dump_part_solvent && walls && datadump_idtimestep >= wall_creation_stepid)
             {
                 dump_part.close();
@@ -506,16 +499,12 @@ void Simulation::_datadump_async()
 //        if (hdf5field_dumps && (datadump_idtimestep % steps_per_hdf5dump == 0) && datadump_idtimestep >= 600/dt)
         if (hdf5field_dumps && (datadump_idtimestep % steps_per_hdf5dump == 0))
         {
-            NVTX_RANGE("hdf5 field dump", NVTX_C4);
-
             dump_field.dump(activecomm, p, datadump_nsolvent, datadump_idtimestep);
         }
 
 		// LINA: this is to not to dump the beginning
 //        if (datadump_idtimestep >= 600/dt)
         {
-            NVTX_RANGE("ply dump", NVTX_C5);
-
             if (rbcscoll)
                 CollectionRBC::dump(myactivecomm, mycartcomm, p + datadump_nsolvent, a + datadump_nsolvent, datadump_nrbcs, iddatadump);
         }
@@ -828,25 +817,6 @@ void Simulation::run()
     for(it = 0; it < nsteps; ++it)
     {
         const bool verbose = it > 0 && rank == 0;
-
-#ifdef _USE_NVTX_
-        if (it == nvtxstart)
-        {
-            NvtxTracer::currently_profiling = true;
-            CUDA_CHECK(cudaProfilerStart());
-        }
-        else if (it == nvtxstop)
-        {
-            CUDA_CHECK(cudaProfilerStop());
-            NvtxTracer::currently_profiling = false;
-            CUDA_CHECK(cudaDeviceSynchronize());
-
-            if (rank == 0)
-                printf("profiling session ended. terminating the simulation now...\n");
-
-            break;
-        }
-#endif
 
         if (it % steps_per_report == 0)
         {

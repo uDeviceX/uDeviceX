@@ -370,8 +370,6 @@ namespace KernelsContact
 
 void ComputeContact::bulk(std::vector<ParticlesWrap> wsolutes, cudaStream_t stream)
 {
-    NVTX_RANGE("Contact/bulk", NVTX_C6);
-
     if (wsolutes.size() == 0)
 	return;
 
@@ -550,8 +548,6 @@ namespace KernelsContact
 
 void ComputeContact::halo(ParticlesWrap halos[26], cudaStream_t stream)
 {
-    NVTX_RANGE("Contact/halo", NVTX_C7);
-
     int nremote_padded = 0;
 
     {

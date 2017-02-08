@@ -110,10 +110,6 @@ int main(int argc, char ** argv)
 
     SignalHandling::setup();
 
-#ifdef _USE_NVTX_
-    nvtxNameOsThread(pthread_self(), "MASTER_THREAD");
-#endif
-
     CUDA_CHECK(cudaSetDevice(0));
 
     CUDA_CHECK(cudaDeviceReset());

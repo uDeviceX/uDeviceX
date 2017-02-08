@@ -242,8 +242,6 @@ namespace KernelsFSI
 
 void ComputeFSI::bulk(std::vector<ParticlesWrap> wsolutes, cudaStream_t stream)
 {
-    NVTX_RANGE("FSI/bulk", NVTX_C6);
-
     if (wsolutes.size() == 0)
 	return;
 
@@ -423,8 +421,6 @@ namespace KernelsFSI
 
 void ComputeFSI::halo(ParticlesWrap halos[26], cudaStream_t stream)
 {
-    NVTX_RANGE("FSI/halo", NVTX_C7);
-
     KernelsFSI::setup(wsolvent.p, wsolvent.n, wsolvent.cellsstart, wsolvent.cellscount);
 
     CUDA_CHECK(cudaPeekAtLastError());

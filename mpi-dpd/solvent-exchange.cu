@@ -398,7 +398,6 @@ void SolventExchange::pack(const Particle * const p, const int n, const int * co
 
     nlocal = n;
 
-    NVTX_RANGE("HEX/pack", NVTX_C2);
 
     if (firstpost)
     {
@@ -489,8 +488,6 @@ void SolventExchange::pack(const Particle * const p, const int n, const int * co
 void SolventExchange::post(const Particle * const p, const int n, cudaStream_t stream, cudaStream_t downloadstream)
 {
     {
-	NVTX_RANGE("HEX/consolidate", NVTX_C2);
-
 	CUDA_CHECK(cudaEventSynchronize(evfillall));
 
 	bool succeeded = true;
@@ -559,8 +556,6 @@ void SolventExchange::post(const Particle * const p, const int n, cudaStream_t s
     //CUDA_CHECK(cudaEventSynchronize(evdownloaded));
 
     {
-	NVTX_RANGE("HEX/send", NVTX_C2);
-
 	for(int i = 0, c = 0; i < 26; ++i)
 	    if (sendhalos[i].expected)
 		MPI_CHECK( MPI_Isend(sendhalos[i].hcellstarts.data, sendhalos[i].hcellstarts.size, MPI_INTEGER, dstranks[i],
@@ -608,8 +603,6 @@ void SolventExchange::post(const Particle * const p, const int n, cudaStream_t s
 
 void SolventExchange::post_expected_recv()
 {
-    NVTX_RANGE("HEX/post irecv", NVTX_C3);
-
     for(int i = 0, c = 0; i < 26; ++i)
     {
 	// assert(recvhalos[i].hbuf.capacity >= recvhalos[i].expected);
@@ -634,8 +627,6 @@ void SolventExchange::post_expected_recv()
 
 void SolventExchange::recv(cudaStream_t stream, cudaStream_t uploadstream)
 {
-    NVTX_RANGE("HEX/wait-recv", NVTX_C4);
-
     CUDA_CHECK(cudaPeekAtLastError());
 
     {

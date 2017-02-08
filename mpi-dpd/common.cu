@@ -16,10 +16,6 @@
 
 #include "common.h"
 
-#ifdef _USE_NVTX_
-bool NvtxTracer::currently_profiling = false;
-#endif
-
 bool Particle::initialized = false;
 
 MPI_Datatype Particle::mytype;
@@ -30,8 +26,6 @@ MPI_Datatype Acceleration::mytype;
 
 void CellLists::build(Particle * const p, const int n, cudaStream_t stream, int * const order, const Particle * const src)
 {
-    NVTX_RANGE("Cells-build", NVTX_C1)
-
 	if (n > 0)
 	{
 	    const bool vanilla_cases =

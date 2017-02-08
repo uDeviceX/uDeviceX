@@ -23,12 +23,6 @@ OBJS = 	containers.o wall.o dpd.o fsi.o contact.o \
 
 LIBS += -lcuda-dpd -lcuda-rbc -lcudart -ldl -lz -lpthread
 
-nvtx ?= 0
-ifneq "$(nvtx)" "0"
-LIBS += -lnvToolsExt
-NVCCFLAGS += -D_USE_NVTX_ -lineinfo
-endif
-
 ifneq "$(h5part)" "0"
 LIBS += -L${H5PART_DIR}/lib -lH5Part
 else

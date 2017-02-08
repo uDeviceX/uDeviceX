@@ -78,8 +78,6 @@ ComputeDPD::ComputeDPD(MPI_Comm cartcomm): SolventExchange(cartcomm, 0), local_t
 void ComputeDPD::local_interactions(const Particle * const xyzuvw, const float4 * const xyzouvwo, const ushort4 * const xyzo_half,
 				    const int n, Acceleration * const a, const int * const cellsstart, const int * const cellscount, cudaStream_t stream)
 {
-    NVTX_RANGE("DPD/local", NVTX_C5);
-
     if (n > 0)
 	forces_dpd_cuda_nohost((float*)xyzuvw, xyzouvwo, xyzo_half, (float *)a, n,
 			       cellsstart, cellscount,
@@ -317,8 +315,6 @@ namespace BipsBatch
 
 void ComputeDPD::remote_interactions(const Particle * const p, const int n, Acceleration * const a, cudaStream_t stream, cudaStream_t uploadstream)
 {
-    NVTX_RANGE("DPD/remote", NVTX_C3);
-
     CUDA_CHECK(cudaPeekAtLastError());
 
     static BipsBatch::BatchInfo infos[26];

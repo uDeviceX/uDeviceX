@@ -606,8 +606,6 @@ bool RedistributeParticles::_adjust_recv_buffers(const int requested_capacities[
 
 void RedistributeParticles::pack(const Particle * const particles, const int nparticles, cudaStream_t mystream)
 {
-    NVTX_RANGE("RDP/pack");
-
     bool secondchance = false;
 
     if (firstcall)
@@ -683,8 +681,6 @@ pack_attempt:
 
 void RedistributeParticles::send()
 {
-    NVTX_RANGE("RDP/send", NVTX_C2);
-
     if (!firstcall)
 	_waitall(sendcountreq, nactiveneighbors);
 
@@ -777,8 +773,6 @@ int RedistributeParticles::recv_count(cudaStream_t mystream, float& host_idle_ti
 {
     CUDA_CHECK(cudaPeekAtLastError());
 
-    NVTX_RANGE("RDP/recv-count", NVTX_C3);
-
     host_idle_time += _waitall(recvcountreq, nactiveneighbors);
 
     {
@@ -822,8 +816,6 @@ int RedistributeParticles::recv_count(cudaStream_t mystream, float& host_idle_ti
 void RedistributeParticles::recv_unpack(Particle * const particles, float4 * const xyzouvwo, ushort4 * const xyzo_half, const int nparticles,
 					int * const cellstarts, int * const cellcounts, cudaStream_t mystream, float& host_idling_time)
 {
-    NVTX_RANGE("RDP/recv-unpack", NVTX_C4);
-
     // assert(nparticles == nexpected);
 
     host_idling_time += _waitall(recvmsgreq, nactiveneighbors);

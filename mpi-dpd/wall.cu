@@ -542,8 +542,6 @@ struct FieldSampler
 
     FieldSampler(const char * path, MPI_Comm comm, const bool verbose)
     {
-        NVTX_RANGE("WALL/load-file", NVTX_C3);
-
         if (verbose)
             printf("reading header...\n");
 
@@ -689,8 +687,6 @@ struct FieldSampler
     void sample(const float start[3], const float spacing[3], const int nsize[3],
             float * const output, const float amplitude_rescaling)
     {
-        NVTX_RANGE("WALL/sample", NVTX_C7);
-
         Bspline<4> bsp;
 
         for(int iz = 0; iz < nsize[2]; ++iz)
@@ -800,8 +796,6 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int&
 
     //extra redistancing because margin might exceed the domain
     {
-        NVTX_RANGE("WALL/redistancing", NVTX_C4);
-
         const double dx =  (XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL) / (double)XTEXTURESIZE;
         const double dy =  (YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL) / (double)YTEXTURESIZE;
         const double dz =  (ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL) / (double)ZTEXTURESIZE;
@@ -859,8 +853,6 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int&
 
     if (hdf5field_dumps)
     {
-        NVTX_RANGE("WALL/h5-dump", NVTX_C4);
-
         if (myrank == 0)
             printf("H5 data dump of the geometry...\n");
 
@@ -943,8 +935,6 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int&
     SimpleDeviceBuffer<Particle> solid_remote;
 
     {
-        NVTX_RANGE("WALL/exchange-particles", NVTX_C3)
-
 	                    thrust::host_vector<Particle> local = solid_local;
 
         int dstranks[26], remsizes[26], recv_tags[26];
@@ -1061,8 +1051,6 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int&
 
 void ComputeWall::bounce(Particle * const p, const int n, cudaStream_t stream)
 {
-    NVTX_RANGE("WALL/bounce", NVTX_C3)
-
 	                if (n > 0)
 	                    SolidWallsKernel::bounce<<< (n + 127) / 128, 128, 0, stream>>>((float2 *)p, n, myrank, dt);
 
@@ -1073,7 +1061,6 @@ void ComputeWall::bounce(Particle * const p, const int n, cudaStream_t stream)
 void ComputeWall::interactions(const Particle * const p, const int n, Acceleration * const acc,
         const int * const cellsstart, const int * const cellscount, cudaStream_t stream)
 {
-    NVTX_RANGE("WALL/interactions", NVTX_C3);
     //cellsstart and cellscount IGNORED for now
 
     if (n > 0 && solid_size > 0)

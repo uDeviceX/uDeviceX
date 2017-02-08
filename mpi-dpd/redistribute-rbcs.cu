@@ -64,7 +64,6 @@ RedistributeRBCs::RedistributeRBCs(MPI_Comm _cartcomm): nvertices(CudaRBC::get_n
 
 void RedistributeRBCs::_compute_extents(const Particle * const xyzuvw, const int nrbcs, cudaStream_t stream)
 {
-    NVTX_RANGE("RDC/extent", NVTX_C7);
 
 #if 1
     if (nrbcs)
@@ -147,8 +146,6 @@ namespace ReorderingRBC
 
 void RedistributeRBCs::extent(const Particle * const xyzuvw, const int nrbcs, cudaStream_t stream)
 {
-    NVTX_RANGE("RDC/extent", NVTX_C2);
-
     minextents.resize(nrbcs);
     maxextents.resize(nrbcs);
 
@@ -163,8 +160,6 @@ void RedistributeRBCs::extent(const Particle * const xyzuvw, const int nrbcs, cu
 
 void RedistributeRBCs::pack_sendcount(const Particle * const xyzuvw, const int nrbcs, cudaStream_t stream)
 {
-    NVTX_RANGE("RDC/pack-sendcount", NVTX_C3);
-
     CUDA_CHECK(cudaEventSynchronize(evextents));
 
     std::vector<int> reordering_indices[27];
@@ -252,8 +247,6 @@ void RedistributeRBCs::_post_recvcount()
 
 int RedistributeRBCs::post()
 {
-    NVTX_RANGE("RDC/post", NVTX_C3);
-
     {
 	MPI_Status statuses[recvcountreq.size()];
 	MPI_CHECK( MPI_Waitall(recvcountreq.size(), &recvcountreq.front(), statuses) );
@@ -349,8 +342,6 @@ namespace ParticleReorderingRBC
 
 void RedistributeRBCs::unpack(Particle * const xyzuvw, const int nrbcs, cudaStream_t stream)
 {
-    NVTX_RANGE("RDC/recv-unpack", NVTX_C7);
-
     // assert(notleaving + arriving == nrbcs);
 
     MPI_Status statuses[26];
