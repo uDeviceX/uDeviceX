@@ -4,7 +4,12 @@
 #include <CGAL/Side_of_triangle_mesh.h>
 #include "rbc_utils.h"
 
-static float  *xx, *yy, *zz;   /* single RBC parameters */
+struct BB { /* RBC bounding box */
+  float xlo, ylo, zlo;
+  float xhi, yhi, zhi;
+};
+
+static float  *xx, *yy, *zz; /* single RBC parameters */
 static int   *ff1, *ff2, *ff3;
 static long   nb, nf;
 
@@ -12,6 +17,7 @@ static int    nsol;
 
 static float Lx, Ly, Lz; /* simulation domain */
 static int   pbcx, pbcy, pbcz;
+static BB    bb;
 
 template <class HDS>
 class Build_RBC : public CGAL::Modifier_base<HDS> {
@@ -79,12 +85,13 @@ namespace ud2f { /* [uD]eviceX rbc definition file [to] [f]aces */
     }
   }
 
-  void read_faces(FILE* fd) {
+  void read_faces(FILE* fd) { /* acclocats and fills `ff1', `ff2',
+				 `ff3' */
     auto szi = sizeof(int);
     ff1 = (int*)malloc(nf*szi); ff2 = (int*)malloc(nf*szi); ff3 = (int*)malloc(nf*szi);
 
     do nl(); while (!s_eq(line, "Angles"));
-    do nl(); while ( s_eq(line, "")); /* skip empty */
+    do nl(); while ( s_eq(line, ""));
     int iangle, tangle; /* id and type of an `angle'; unused */
     int f1, f2, f3, ifa = 0;
     do {
@@ -110,15 +117,34 @@ void iotags_init_file(const char* fn) { /* like `iotags_init' but read
 			  `ff2', `ff3' */
 }
 
-void iotags_domain(float Lx_, float Ly_, float Lz_,
+void iotags_domain(float xlo, float ylo, float zlo,
+		   float xhi, float yhi, float zhi,
 		   int pbcx_, int pbcy_, int pbcz_) {
-  Lx = Lx_; Ly = Ly_; Lz = Lz_;
+  Lx = xhi - xlo; Ly = yhi - ylo; Lz = zhi - zlo;
   pbcx = pbcx_; pbcy = pbcy_; pbcz = pbcz_;
 }
 
-void iotags_single(float* rbc_xx, float* rbc_yy, float* rbc_zz,
+void iotags_bb() { /* return a structure with bounding box */
+  bb.xlo = bb.xhi = xx[0]; bb.ylo = bb.yhi = yy[0]; bb.zlo = bb.zhi = zz[0];
+  for (long iv = 1; iv < nb; iv++) {
+    auto x = xx[iv], y = yy[iv], z = zz[iv];
+    if (x < bb.xlo) bb.xlo = x; else if (x > bb.xhi) bb.xhi = x;
+    if (y < bb.ylo) bb.ylo = y; else if (y > bb.yhi) bb.yhi = y;
+    if (z < bb.zlo) bb.zlo = z; else if (z > bb.zhi) bb.zhi = z;
+  }
+}
+
+bool iotags_inside_bb(float x, float y, float z) {
+  return bb.xlo < x && x < bb.xhi && \
+/*    */ bb.ylo < y && y < bb.yhi && \
+	 bb.zlo < z && z < bb.zhi;
+}
+
+void iotags_single(long io, /* id of an RBC */
+		   float* rbc_xx, float* rbc_yy, float* rbc_zz,
 		   float* sol_xx, float* sol_yy, float* sol_zz,
-		   int* iotags) { /* fills iotags */
+		   int* iotags) { /* put `io' in `iotags' if a solvent
+				     particle is inside RBC */
   xx = rbc_xx; yy = rbc_yy; zz = rbc_zz; /* set the rest
 					    of static variables */
   typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
@@ -127,15 +153,16 @@ void iotags_single(float* rbc_xx, float* rbc_yy, float* rbc_zz,
   typedef Kernel::Point_3 Point;
 
   Build_RBC<HalfedgeDS> RBC {};
-  Polyhedron P;
-  P.delegate(RBC);
+  Polyhedron P; P.delegate(RBC);
   CGAL::Side_of_triangle_mesh<Polyhedron, Kernel> inside{P};
+
+  iotags_bb(); /* compute bounding box */
   for (long isol = 0; isol < nsol; isol++) {
     auto x = sol_xx[isol], y = sol_yy[isol], z = sol_zz[isol];
-    
+    if (!iotags_inside_bb(x, y, z)) continue;
     auto p = Point(x, y, z);
     auto res = inside(p);
-    if (res == CGAL::ON_BOUNDED_SIDE) iotags[isol] = 1;
+    if (res == CGAL::ON_BOUNDED_SIDE) iotags[isol] = io;
   }
 }
 
@@ -154,14 +181,16 @@ void iotags_all(long  nrbc , float* rbc_xx, float* rbc_yy, float* rbc_zz,
   nsol = nsol_; /* set static */
   auto no = nrbc / nb; /* number of objects (RBCs); nrbc: is the total
 			  number of DPD partices belonging to RBCs */
-  for (long isol = 0; isol < nsol; isol++) iotags[isol] = 0;
+  for (long isol = 0; isol < nsol; isol++) iotags[isol] = -1; /* .. means not inside */
   for (long io = 0; io < no; io++) { /* for every RBC */
     auto x0 = rbc_xx[0], y0 = rbc_yy[0], z0 = rbc_zz[0]; /* any vertex of RBC*/
+    if (io % 100 == 0) fprintf(stderr, "(geom-wrapper) rbc: %ld of %ld\n", io, no);
     iotags_recenter(sol_xx, sol_yy, sol_zz,
     		    x0, y0, z0); /* recenter solvent using periodic BC */
-    iotags_single(rbc_xx, rbc_yy, rbc_zz,
+    iotags_single(io,
+		  rbc_xx, rbc_yy, rbc_zz,
   		  sol_xx, sol_yy, sol_zz,
-  		  iotags);
+		  /* output */ iotags);
     rbc_xx += nb; rbc_yy += nb; rbc_zz += nb;
   }
 }

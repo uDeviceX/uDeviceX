@@ -16,7 +16,7 @@ Usage:
 
 # TEST: iotags.t3
 # export nb=498
-# export xl=0 yl=0 zl=0 xh=64 yh=64 zh=64
+# export xl=0 yl=0 zl=0 xh=32 yh=32 zh=32
 # export pbcx=1 pbcy=1 pbcz=1
 # ./iotags test_data/faces.two.bin test_data/rbc.two.bin test_data/solvent.two.bin     tags.out.bin
 
@@ -28,11 +28,13 @@ Usage:
 #include "rbc_utils.h"
 using std::vector;
 
-#define NVAR  3 /* x, y, z */
 #define NV_PER_FACE 3
 
-static int   pbcx, pbcy, pbcz;
-static float Lx, Ly, Lz;
+static int   nvar; /* number of variables in one line of input file
+		      x, y, z (3, default), x, y, z, vx, vy, vz (6) */
+
+static int   pbcx, pbcy, pbcz; /* domain */
+static float xl, yl, zl,   xh, yh, zh;
 
 namespace rbc {
   long   nv; /* number of vertices */
@@ -64,16 +66,17 @@ namespace rbc {
 
   void init_rbc_file(const char* fn) {
     fd = safe_fopen(fn, "r");
-    nv = gnp<float>(fd, NVAR);
+    nv = gnp<float>(fd, nvar);
   }
 
   void read_vertices() { /* read all RBCs vertices */
-    auto sz = nv*NVAR;
+    auto sz = nv*nvar;
     vector<float> buf(sz);
     safe_fread(buf.data(), sz, sizeof(float), fd);
     xx.resize(nv); yy.resize(nv); zz.resize(nv);
     for (int iv = 0, ib = 0; iv < nv; iv++) {
       xx[iv] = buf[ib++]; yy[iv] = buf[ib++]; zz[iv] = buf[ib++];
+      ib += nvar - 3; /* skip the rest of variables */
     }
   }
 
@@ -87,18 +90,19 @@ namespace sol {
   FILE* fd;
 
   void read_vertices() {
-    auto sz = nv * NVAR;
+    auto sz = nv * nvar;
     std::vector<float> buf(sz);
     safe_fread(buf.data(), sz, sizeof(float), fd);
     xx.resize(nv); yy.resize(nv); zz.resize(nv);
     for (int iv = 0, ib = 0; iv < nv; iv++) {
       xx[iv] = buf[ib++]; yy[iv] = buf[ib++]; zz[iv] = buf[ib++];
+      ib += nvar - 3; /* skip the rest of variables */
     }
   }
 
   void read_file(const char* fn) {
       fd = safe_fopen(fn, "r");
-      nv = gnp<float>(fd, NVAR);
+      nv = gnp<float>(fd, nvar);
       read_vertices();
       fclose(fd);
   }
@@ -106,10 +110,10 @@ namespace sol {
 
 void init() {
   rbc::nb = env2d("nb");
-  auto xl = env2f("xl"), yl = env2f("yl"), zl = env2f("zl");
-  auto xh = env2f("xh"), yh = env2f("yh"), zh = env2f("zh");
-  Lx = xh - xl, Ly = yh - yl, Lz = zh - zl;
+  xl = env2f("xl"), yl = env2f("yl"), zl = env2f("zl");
+  xh = env2f("xh"), yh = env2f("yh"), zh = env2f("zh");
   pbcx = env2d("pbcx"), pbcy = env2d("pbcy"), pbcz = env2d("pbcz");
+  nvar = env2d_default("nvar", 3);
 }
 
 
@@ -134,7 +138,7 @@ int main(int argc, const char** argv) {
   rbc::init_rbc_file(rbc_fn);
 
   //iotags_init(rbc::nb, rbc::nf, rbc::ff1.data(), rbc::ff2.data(), rbc::ff3.data());
-  iotags_domain(Lx, Ly, Lz, pbcx, pbcy, pbcz);
+  iotags_domain(xl, yl, zl,    xh, yh, zh,    pbcx, pbcy, pbcz);
   iotags_init_file("test_data/rbc.org.ud");
   rbc::read_vertices();
   vector<int> iotags(sol::nv, 0);

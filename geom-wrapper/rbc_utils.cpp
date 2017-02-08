@@ -22,6 +22,11 @@ int env2d(const char* n) { /* read an integer from env. */
   return atoi(v_ch);
 }
 
+int env2d_default(const char* n, int def) { /* read an integer from env with default */
+  char* v_ch = getenv(n);
+  return v_ch == NULL ? def : atoi(v_ch);
+}
+
 FILE* safe_fopen(const char* fn, const char *mode) {
   FILE* fd = fopen(fn, mode);
   if (fd == NULL) {

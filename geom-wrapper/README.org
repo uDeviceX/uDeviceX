@@ -1,11 +1,38 @@
 A wrapper for cgal [1]
 
-[1] http://www.cgal.org
+* Installing cgal
+** debian
+#+BEGIN_SRC sh
+sudo apt install libcgal-dev libcgal-qt5-dev -y
+#+END_SRC
+
+* Installing cgal
+** osx
+#+BEGIN_SRC sh
+brew install cgal
+echo 'export CGAL_DIR=/usr/local/Cellar/cgal/4.9' >>~/.bash_profile
+#+END_SRC
+
+** daint
+#+BEGIN_SRC sh
+git clone https://github.com/Linuxbrew/brew.git ~/.linuxbrew
+echo 'export PATH="$HOME/.linuxbrew/bin:$PATH"' >>~/.bashrc
+brew install cgal
+echo 'export CGAL_DIR=$HOME/.linuxbrew/Cellar/cgal/4.9' >>~/.bashrc
+#+END_SRC
+
+* Build geom-wrapper
 
 #+BEGIN_SRC sh
 cmake . -DCMAKE_VERBOSE_MAKEFILE=ON
 make
-
-# or `nm libHello.a'
-nm libHello.a | c++filt
 #+END_SRC
+
+* Linking with geom-wrapper
+#+BEGIN_EXAMPLE
+GWRP_CXXFLAGS = -I../geom-wrapper
+GWRP_LDFLAGS = -L${HOME}/prefix/cgal/lib64 -Wl,-rpath,${HOME}/prefix/cgal/lib64:${HOME}/prefix/pkgsrc/lib
+GWRP_LIBS = ../geom-wrapper/libgeom-wrapper.a -lgmp -lCGAL
+#+END_EXAMPLE
+
+[1] http://www.cgal.org
