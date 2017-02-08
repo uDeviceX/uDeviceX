@@ -23,8 +23,15 @@ echo 'export CGAL_DIR=$HOME/.linuxbrew/Cellar/cgal/4.9' >>~/.bashrc
 
 * Build geom-wrapper
 
+** ubuntu
 #+BEGIN_SRC sh
 cmake . -DCMAKE_VERBOSE_MAKEFILE=ON
+make
+#+END_SRC
+
+** falcon
+#+BEGIN_SRC
+PATH=$HOME/.linuxbrew/bin:$PATH CGAL_DIR=$HOME/.linuxbrew/Cellar/cgal/4.9 cmake . -DCMAKE_VERBOSE_MAKEFILE=ON
 make
 #+END_SRC
 
