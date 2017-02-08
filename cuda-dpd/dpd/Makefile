@@ -32,9 +32,6 @@ NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel) -lineinfo -Xptxas -v
 
 .DEFAULT_GOAL = test-dpd
 
-test-dpd: main.cpp libcuda-dpd.so
-	$(CXX) $(CXXFLAGS) $^  -lcudart -lcurand -o test-dpd
-
 libcuda-dpd.a: cuda-dpd.o cuda-dpd-bipartite.o ../profiler-dpd.o celllists
 	ar rcs $@ cuda-dpd.o cuda-dpd-bipartite.o ../profiler-dpd.o ../cell-lists.o ../cell-lists-faster.o
 

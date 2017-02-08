@@ -6,11 +6,8 @@ CODE_VAL ?= sm_35
 
 NVCCFLAGS += -I$(HDF5_DIR)/include -Xcudafe "--diag_suppress=unrecognized_gcc_pragma"
 NVCCFLAGS +=  -arch $(ARCH_VAL) -code $(CODE_VAL) -O3 -use_fast_math -g
-#-DNDEBUG
 CXXFLAGS += -L../cuda-dpd/dpd -L../cuda-rbc/ -O3 -g  -std=c++11 -DNDEBUG
 NVCCFLAGS += -I../cuda-dpd/dpd -I../cuda-rbc/
-#NVCCFLAGS +=  -DREPORT_TOPOLOGY $(CRAY_PMI_INCLUDE_OPTS)
-#NVCCFLAGS += -DCUSTOM_REORDERING=1
 
 OBJS = 	containers.o wall.o dpd.o fsi.o contact.o \
 	redistribute-particles.o redistribute-rbcs.o \
@@ -56,11 +53,11 @@ inquire: $(bash [ `cat slevel.txt` == "$(slevel)" ] || { echo "cleanall" ; } )
 	$(bash echo "$(slevel)" > slevel.txt )
 	$(MAKE) $(MFLAGS) test
 
+ # I have some device code in OBJS. I have to link it separatly
 test:  $(OBJS) libcuda-dpd libcuda-rbc
 	echo h5part is "$(h5part)"
-	$(NVCC) $(NVCCFLAGS) -dlink -L../cuda-dpd/dpd $(OBJS) $(LIBS) -o gpuCode.o # I have some device code in OBJS. I have to link it separatly
+	$(NVCC) $(NVCCFLAGS) -dlink -L../cuda-dpd/dpd $(OBJS) $(LIBS) -o gpuCode.o
 	$(CXX)  $(CXXFLAGS) gpuCode.o $(OBJS) $(LIBS) -o test
-
 
 -include $(OBJS:.o=.d)
 
@@ -92,8 +89,6 @@ visc-aux.o: visc-aux.cu
 %.o: %.cu
 	$(NVCC) $(NVCCFLAGS) $*.cu -c -o $*.o
 	$(NVCC) $(NVCCFLAGS) -M $*.cu > $*.d
-#	$(NVCC) $(NVCCFLAGS) -c $*.cu --cubin
-#	$(NVCC) $(NVCCFLAGS) -c $*.cu --ptx
 
 libcuda-dpd:
 	$(MAKE) -C ../cuda-dpd/dpd libcuda-dpd.a nonperiodic=1 floatized="$(floatized)" flops="$(flops)" CXX="$(CXX)" NVCC="$(NVCC)" ARCH_VAL="$(ARCH_VAL)" CODE_VAL="$(CODE_VAL)" slevel="$(slevel)"
