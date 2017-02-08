@@ -1,6 +1,5 @@
 /*
  *  rbc.h
- *  ctc local
  *
  *  Created by Dmitry Alexeev on Nov 3, 2014
  *  Copyright 2014 ETH Zurich. All rights reserved.

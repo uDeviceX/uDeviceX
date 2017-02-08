@@ -7,8 +7,8 @@ CODE_VAL ?= sm_35
 NVCCFLAGS += -I$(HDF5_DIR)/include -Xcudafe "--diag_suppress=unrecognized_gcc_pragma"
 NVCCFLAGS +=  -arch $(ARCH_VAL) -code $(CODE_VAL) -O3 -use_fast_math -g
 #-DNDEBUG
-CXXFLAGS += -L../cuda-dpd/dpd -L../cuda-rbc/ -L../cuda-ctc/ -O3 -g  -std=c++11 -DNDEBUG
-NVCCFLAGS += -I../cuda-dpd/dpd -I../cuda-rbc/ -I../cuda-ctc
+CXXFLAGS += -L../cuda-dpd/dpd -L../cuda-rbc/ -O3 -g  -std=c++11 -DNDEBUG
+NVCCFLAGS += -I../cuda-dpd/dpd -I../cuda-rbc/
 #NVCCFLAGS +=  -DREPORT_TOPOLOGY $(CRAY_PMI_INCLUDE_OPTS)
 #NVCCFLAGS += -DCUSTOM_REORDERING=1
 
@@ -21,7 +21,7 @@ OBJS = 	containers.o wall.o dpd.o fsi.o contact.o \
 	visc-aux.o \
 	simulation.o main.o velcontroller.o
 
-LIBS += -lcuda-dpd -lcuda-rbc -lcuda-ctc -lcudart -ldl -lz -lpthread
+LIBS += -lcuda-dpd -lcuda-rbc -lcudart -ldl -lz -lpthread
 
 nvtx ?= 0
 ifneq "$(nvtx)" "0"
@@ -69,7 +69,7 @@ inquire: $(bash [ `cat slevel.txt` == "$(slevel)" ] || { echo "cleanall" ; } )
 	$(bash echo "$(slevel)" > slevel.txt )
 	$(MAKE) $(MFLAGS) test
 
-test:  $(OBJS) libcuda-dpd libcuda-rbc libcuda-ctc
+test:  $(OBJS) libcuda-dpd libcuda-rbc
 	echo h5part is "$(h5part)"
 	$(NVCC) $(NVCCFLAGS) -dlink -L../cuda-dpd/dpd $(OBJS) $(LIBS) -o gpuCode.o # I have some device code in OBJS. I have to link it separatly
 	$(CXX)  $(CXXFLAGS) gpuCode.o $(OBJS) $(LIBS) -o test
@@ -114,9 +114,6 @@ libcuda-dpd:
 libcuda-rbc:
 	$(MAKE) -C ../cuda-rbc/ libcuda-rbc.a CXX="$(CXX)" NVCC="$(NVCC)" ARCH_VAL="$(ARCH_VAL)" CODE_VAL="$(CODE_VAL)"
 
-libcuda-ctc:
-	$(MAKE) -C ../cuda-ctc/ libcuda-ctc.a CXX="$(CXX)" NVCC="$(NVCC)" ARCH_VAL="$(ARCH_VAL)" CODE_VAL="$(CODE_VAL)"
-
 clean:
 	rm -f test *.o *.d slevel.txt
 
@@ -124,7 +121,6 @@ cleanall: clean
 	rm -f slevel.txt
 	make -C ../cuda-dpd/dpd clean
 	make -C ../cuda-rbc clean
-	make -C ../cuda-ctc clean
 
 #we want to give always a try to update the libs - too complicated to track dependecies there
-.PHONY = clean libcuda-dpd libcuda-rbc libcuda-ctc inquire
+.PHONY = clean libcuda-dpd libcuda-rbc inquire

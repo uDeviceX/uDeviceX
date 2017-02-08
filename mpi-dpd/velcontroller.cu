@@ -1,6 +1,5 @@
 /*
  *  velcontroller.cu
- *  ctc falcon
  *
  *  Created by Dmitry Alexeev on Sep 24, 2015
  *  Copyright 2015 ETH Zurich. All rights reserved.

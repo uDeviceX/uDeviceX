@@ -17,13 +17,11 @@
 
 #include "containers.h"
 #include "io.h"
-#include "ctc.h"
 #include "last_bit_float.h"
 #include "visc-aux.h"
 
 int (*CollectionRBC::indices)[3] = NULL, CollectionRBC::ntriangles = -1, CollectionRBC::nvertices = -1;
 
-int (*CollectionCTC::indices)[3] = NULL, CollectionCTC::ntriangles = -1, CollectionCTC::nvertices = -1;
 
 namespace ParticleKernels
 {

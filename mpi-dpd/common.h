@@ -42,7 +42,7 @@ const float sigma = sqrt(2 * gammadpd * kBT); //, sqrt(2 * gammadpd.y * kBT)};
 const float sigmaf = sigma / sqrt(dt);
 
 extern float tend, desired_shrate;
-extern bool walls, pushtheflow, doublepoiseuille, rbcs, ctcs, xyz_dumps, hdf5field_dumps, hdf5part_dumps, is_mps_enabled, contactforces;
+extern bool walls, pushtheflow, doublepoiseuille, rbcs, xyz_dumps, hdf5field_dumps, hdf5part_dumps, is_mps_enabled, contactforces;
 extern int steps_per_report, steps_per_dump, steps_per_hdf5dump, wall_creation_stepid, nvtxstart, nvtxstop;
 
 #include <cstdlib>

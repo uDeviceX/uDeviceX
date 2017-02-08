@@ -1,6 +1,5 @@
 /*
  *  rbc-cuda.cu
- *  ctc local
  *
  *  Created by Dmitry Alexeev on Nov 3, 2014
  *  Completely rewritten by Dmitry Alexeev and Diego Rossinelli since April 1, 2015.

@@ -32,7 +32,6 @@
 #include "solute-exchange.h"
 #include "redistribute-particles.h"
 #include "redistribute-rbcs.h"
-#include "ctc.h"
 #include "io.h"
 #include "velcontroller.h"
 
@@ -45,11 +44,9 @@ class Simulation
     
     CellLists cells;
     CollectionRBC * rbcscoll;
-    CollectionCTC * ctcscoll;
     
     RedistributeParticles redistribute;
     RedistributeRBCs redistribute_rbcs;
-    RedistributeCTCs redistribute_ctcs;
     
     ComputeDPD dpd;
     SoluteExchange solutex;
@@ -92,7 +89,7 @@ class Simulation
     pthread_mutex_t mutex_datadump;
     pthread_cond_t request_datadump, done_datadump;
     bool datadump_pending;
-    int datadump_idtimestep, datadump_nsolvent, datadump_nrbcs, datadump_nctcs;
+    int datadump_idtimestep, datadump_nsolvent, datadump_nrbcs;
     bool async_thread_initialized;
 
     PinnedHostBuffer<Particle> particles_datadump;
