@@ -19,11 +19,6 @@
 #include <thrust/sort.h>
 #include <thrust/count.h>
 
-#ifndef NO_VTK
-#include <vtkImageData.h>
-#include <vtkXMLImageDataWriter.h>
-#endif
-
 #include "io.h"
 #include "solvent-exchange.h"
 #include "wall.h"
@@ -814,44 +809,6 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int&
         redistancing(field, XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE, dx, dy, dz, XTEXTURESIZE * 2);
     }
 
-#ifndef NO_VTK
-    {
-        if (myrank == 0)
-            printf("writing to VTK file..\n");
-
-        vtkImageData * img = vtkImageData::New();
-
-        img->SetExtent(0, XTEXTURESIZE-1, 0, YTEXTURESIZE-1, 0, ZTEXTURESIZE-1);
-        img->SetDimensions(XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE);
-        img->AllocateScalars(VTK_FLOAT, 1);
-
-        const float dx = (XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL) / (float)XTEXTURESIZE;
-        const float dy = (YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL) / (float)YTEXTURESIZE;
-        const float dz = (ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL) / (float)ZTEXTURESIZE;
-
-        const float x0 = -XSIZE_SUBDOMAIN / 2 - XMARGIN_WALL;
-        const float y0 = -YSIZE_SUBDOMAIN / 2 - YMARGIN_WALL;
-        const float z0 = -ZSIZE_SUBDOMAIN / 2 - ZMARGIN_WALL;
-
-        img->SetSpacing(dx, dy, dz);
-        img->SetOrigin(x0, y0, z0);
-
-        for(int iz=0; iz<ZTEXTURESIZE; iz++)
-            for(int iy=0; iy<YTEXTURESIZE; iy++)
-                for(int ix=0; ix<XTEXTURESIZE; ix++)
-                    img->SetScalarComponentFromFloat(ix, iy, iz, 0,  field[ix + XTEXTURESIZE * (iy + YTEXTURESIZE * iz)]);
-
-        vtkXMLImageDataWriter * writer = vtkXMLImageDataWriter::New();
-        char buf[1024];
-        sprintf(buf, "redistancing-rank%d.vti", myrank);
-        writer->SetFileName(buf);
-        writer->SetInputData(img);
-        writer->Write();
-
-        writer->Delete();
-        img->Delete();
-    }
-#endif
 
     if (myrank == 0)
         printf("estimating geometry-based message sizes...\n");
