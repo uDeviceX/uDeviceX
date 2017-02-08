@@ -20,6 +20,10 @@
 #include "../../mpi-dpd/visc-aux.h"
 #include "../../mpi-dpd/last_bit_float.h"
 
+/*  Disable __launch_bounds__
+TODO: find a place for global definitions */
+#define UD_LAUNCH_BOUNDS(...)
+
 #define USE_TEXOBJ 0
 
 struct InfoDPD {
@@ -435,7 +439,7 @@ __device__ void core_ilp( const uint nsrc, const uint2 * const starts_and_scans,
         info.axayaz[ xmad( dpid, 3.f, subtid ) ] = fcontrib;  // 2 FLOPS
 }
 
-__global__ __launch_bounds__( 32 * CPB, 16 )
+__global__ UD_LAUNCH_BOUNDS( 32 * CPB, 16 )
 void _dpd_forces_floatized()
 {
     // assert( blockDim.x == warpSize && blockDim.y == CPB && blockDim.z == 1 );
@@ -846,7 +850,7 @@ __device__ void core_ilp_flops_counter( unsigned long long *FLOPS, const uint ns
     }
 }
 
-__global__ __launch_bounds__( 32 * CPB, 16 )
+__global__ UD_LAUNCH_BOUNDS( 32 * CPB, 16 )
 void _dpd_forces_floatized_flops_counter(unsigned long long *FLOPS)
 {
     // assert( blockDim.x == warpSize && blockDim.y == CPB && blockDim.z == 1 );

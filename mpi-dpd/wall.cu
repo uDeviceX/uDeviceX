@@ -31,6 +31,10 @@
 #include "visc-aux.h"
 #include "last_bit_float.h"
 
+/*  Disable __launch_bounds__
+TODO: find a place for global definitions */
+#define UD_LAUNCH_BOUNDS(...)
+
 enum
 {
     XSIZE_WALLCELLS = 2 * XMARGIN_WALL + XSIZE_SUBDOMAIN,
@@ -340,7 +344,7 @@ namespace SolidWallsKernel
         return val;
     }
 
-    __global__ __launch_bounds__(32 * 4, 12)
+    __global__ UD_LAUNCH_BOUNDS(32 * 4, 12)
     void bounce(float2 * const particles, const int nparticles, const int rank, const float dt)
     {
         // assert(blockDim.x * gridDim.x >= nparticles);
@@ -394,7 +398,7 @@ namespace SolidWallsKernel
         }
     }
 
-    __global__ __launch_bounds__(128, 16) void interactions_3tpp(const float2 * const particles, const int np, const int nsolid,
+    __global__ UD_LAUNCH_BOUNDS(128, 16) void interactions_3tpp(const float2 * const particles, const int np, const int nsolid,
             float * const acc, const float seed, const float sigmaf)
     {
         // assert(blockDim.x * gridDim.x >= np * 3);

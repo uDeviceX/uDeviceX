@@ -17,6 +17,10 @@
 #include "../../mpi-dpd/visc-aux.h"
 #include "../../mpi-dpd/last_bit_float.h"
 
+/*  Disable __launch_bounds__
+TODO: find a place for global definitions */
+#define UD_LAUNCH_BOUNDS(...)
+
 struct BipartiteInfoDPD {
     int3 ncells;
     float3 domainsize, invdomainsize, domainstart;
@@ -140,7 +144,7 @@ void directforces_dpd_cuda_bipartite_nohost(
     CUDA_CHECK( cudaPeekAtLastError() );
 }
 
-__global__ __launch_bounds__( 32 * CPB, 16 )
+__global__ UD_LAUNCH_BOUNDS( 32 * CPB, 16 )
 void _dpd_bipforces_floatized( const float2 * const xyzuvw, const int np, cudaTextureObject_t texDstStart,
                      cudaTextureObject_t texSrcStart,  cudaTextureObject_t texSrcParticles, const int np_src, const int3 halo_ncells,
                      const float aij, const float gamma, const float sigmaf,

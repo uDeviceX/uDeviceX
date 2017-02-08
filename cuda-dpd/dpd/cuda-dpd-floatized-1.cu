@@ -20,6 +20,10 @@
 #include "../../mpi-dpd/visc-aux.h"
 #include "../../mpi-dpd/last_bit_float.h"
 
+/*  Disable __launch_bounds__
+TODO: find a place for global definitions */
+#define UD_LAUNCH_BOUNDS(...)
+
 struct InfoDPD {
     int3 ncells;
     uint nxyz;
@@ -156,7 +160,7 @@ __forceinline__ __device__ void core_ytang( const uint dststart, const uint psha
 #define MYCPBZ  (2)
 #define MYWPB   (4)
 
-__global__  __launch_bounds__( 32 * MYWPB, 16 )
+__global__  UD_LAUNCH_BOUNDS( 32 * MYWPB, 16 )
 void _dpd_forces_symm_merged()
 {
 
@@ -405,7 +409,7 @@ __global__ void check_acc_transposed( const int np )
 }
 
 
-__global__  __launch_bounds__( 1024, 2 )
+__global__  UD_LAUNCH_BOUNDS( 1024, 2 )
 void transpose_acc( const int np )
 {
     __shared__ volatile float  smem[32][96];

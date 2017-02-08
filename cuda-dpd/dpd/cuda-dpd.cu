@@ -19,6 +19,10 @@
 #include "../../mpi-dpd/visc-aux.h"
 #include "../../mpi-dpd/last_bit_float.h"
 
+/*  Disable __launch_bounds__
+TODO: find a place for global definitions */
+#define UD_LAUNCH_BOUNDS(...)
+
 struct InfoDPD
 {
     int3 ncells;
@@ -333,7 +337,7 @@ __device__ void core_ilp(const int nsrc, const int * const scan, const int * con
 	info.axayaz[subtid + 3 * dpid] = fcontrib;
 }
 
-__global__ __launch_bounds__(32 * CPB, 16)
+__global__ UD_LAUNCH_BOUNDS(32 * CPB, 16)
 void _dpd_forces()
 {
     // assert(blockDim.x == warpSize && blockDim.y == CPB && blockDim.z == 1);
@@ -396,7 +400,7 @@ void _dpd_forces()
 }
 
 #else
-__global__ __launch_bounds__(32 * CPB, 16)
+__global__ UD_LAUNCH_BOUNDS(32 * CPB, 16)
     void _dpd_forces()
 {
     const int COLS = 32;
@@ -535,7 +539,7 @@ __global__ __launch_bounds__(32 * CPB, 16)
 
 
 #ifdef _INSPECT_
-__global__ __launch_bounds__(32 * CPB, 8)
+__global__ UD_LAUNCH_BOUNDS(32 * CPB, 8)
     void inspect_dpd_forces(const int COLS, const int ROWS, const int nparticles, int2 * const entries, const int nentries)
 {
     // assert(nentries = COLS * nparticles);

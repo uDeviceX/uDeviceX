@@ -22,6 +22,10 @@ static const float ljsigma2 = ljsigma * ljsigma;
 #include "visc-aux.h"
 #include "last_bit_float.h"
 
+/*  Disable __launch_bounds__
+TODO: find a place for global definitions */
+#define UD_LAUNCH_BOUNDS(...)
+
 namespace KernelsContact
 {
     enum
@@ -224,7 +228,7 @@ void ComputeContact::build_cells(std::vector<ParticlesWrap> wsolutes, cudaStream
 
 namespace KernelsContact
 {
-    __global__  __launch_bounds__(128, 10)
+    __global__  UD_LAUNCH_BOUNDS(128, 10)
 	void bulk_3tpp(const float2 * const particles,
 		       const int np, const int ncellentries, const int nsolutes,
 		       float * const acc, const float seed, const int mysoluteid)

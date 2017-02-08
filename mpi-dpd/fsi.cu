@@ -17,6 +17,10 @@
 #include "visc-aux.h"
 #include "last_bit_float.h"
 
+/*  Disable __launch_bounds__
+TODO: find a place for global definitions */
+#define UD_LAUNCH_BOUNDS(...)
+
 namespace KernelsFSI
 {
     struct Params { float aij, gamma, sigmaf; };
@@ -49,7 +53,7 @@ namespace KernelsFSI
 
     static const int NCELLS = XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN;
 
-    __global__  __launch_bounds__(128, 10)
+    __global__  UD_LAUNCH_BOUNDS(128, 10)
 	void interactions_3tpp(const float2 * const particles, const int np, const int nsolvent,
 			       float * const acc, float * const accsolvent, const float seed)
     {
