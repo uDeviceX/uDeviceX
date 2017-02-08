@@ -28,7 +28,7 @@ RedistributeRBCs::RedistributeRBCs(MPI_Comm _cartcomm): nvertices(CudaRBC::get_n
 	CudaRBC::setup(nvertices, host_extent);
 	iotags_init_file("../cuda-rbc/rbc.dat"); /* TODO: */
 	/* [xyz]lo, [xyz]hi   pbc[xyz] (9 in total) */
-	iotags_domain(0, 0, 0, 64, 16, 64,    1, 1, 1);
+	iotags_domain(0, 0, 0, XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN, 1, 1, 1);
     }
 
     MPI_CHECK(MPI_Comm_dup(_cartcomm, &cartcomm));
