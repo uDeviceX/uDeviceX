@@ -90,27 +90,6 @@ void _bipartite_dpd_directforces(float * const axayaz, const int np, const int n
 
 	    //if (valid)
 	    {
-		const float _xr = xp - xq;
-		const float _yr = yp - yq;
-		const float _zr = zp - zq;
-
-		const float rij2 = _xr * _xr + _yr * _yr + _zr * _zr;
-
-		const float invrij = rsqrtf(rij2);
-
-		const float rij = rij2 * invrij;
-		const float argwr = max((float)0, 1 - rij * invrc);
-		const float wr = viscosity_function<-VISCOSITY_S_LEVEL>(argwr);
-
-		const float xr = _xr * invrij;
-		const float yr = _yr * invrij;
-		const float zr = _zr * invrij;
-
-		const float rdotv =
-		    xr * (up - uq) +
-		    yr * (vp - vq) +
-		    zr * (wp - wq);
-
 		const int spid = s + l;
 		const int dpid = pid;
 
@@ -118,13 +97,19 @@ void _bipartite_dpd_directforces(float * const axayaz, const int np, const int n
 		const int arg2 = mask * spid + (1 - mask) * dpid;
 		const float myrandnr = Logistic::mean0var1(seed, arg1, arg2);
 
-		// check for viscosity last bit tag and define gamma
-		const float strength = aij * argwr + (- gamma * wr * rdotv + sigmaf * myrandnr) * wr;
+        // check for particle types and compute the DPD force
+        float3 pos1 = {xp, yp, zp}, pos2 = {xq, yq, zq};
+        float3 vel1 = {up, vp, wp}, vel2 = {uq, vq, wq};
+        int type1 = last_bit_float::get(vel1.x);
+        int type2 = last_bit_float::get(vel2.x);
+        const float3 strength = compute_dpd_force_traced(type1, type2,
+                pos1, pos2, vel1, vel2, myrandnr);
+
 		//if (valid && spid < np_src)
 		{
-		    xforce += strength * xr;
-		    yforce += strength * yr;
-		    zforce += strength * zr;
+		    xforce += strength.x;
+		    yforce += strength.y;
+		    zforce += strength.z;
 		}
 	    }
 	}
@@ -250,40 +235,27 @@ __global__ __launch_bounds__(32 * CPB, 16)
 		const float yforce = f[1];
 		const float zforce = f[2];
 
-		const float _xr = dtmp0.x - stmp0.x;
-		const float _yr = dtmp0.y - stmp0.y;
-		const float _zr = dtmp1.x - stmp1.x;
-
-		const float rij2 = _xr * _xr + _yr * _yr + _zr * _zr;
-		const float invrij = rsqrtf(rij2);
-		const float rij = rij2 * invrij;
-		const float argwr = max((float)0, 1 - rij);
-		const float wr = viscosity_function<-VISCOSITY_S_LEVEL>(argwr);
-
-		const float xr = _xr * invrij;
-		const float yr = _yr * invrij;
-		const float zr = _zr * invrij;
-
-		const float rdotv =
-		    xr * (dtmp1.y - stmp1.y) +
-		    yr * (dtmp2.x - stmp2.x) +
-		    zr * (dtmp2.y - stmp2.y);
-
 		const int arg1 = mask * dpid + (1 - mask) * spid;
 		const int arg2 = mask * spid + (1 - mask) * dpid;
 		const float myrandnr = Logistic::mean0var1(seed, arg1, arg2);
 
-		// check for viscosity last bit tag and define gamma
-		const float strength = aij * argwr + (- gamma * wr * rdotv + sigmaf * myrandnr) * wr;
+        // check for particle types and compute the DPD force
+        float3 pos1 = {stmp0.x, stmp0.y, stmp1.x}, pos2 = {stmp0.x, stmp0.y, stmp1.x};
+        float3 vel1 = {stmp1.y, stmp2.x, stmp2.y}, vel2 = {stmp1.y, stmp2.x, stmp2.y};
+        int type1 = last_bit_float::get(vel1.x);
+        int type2 = last_bit_float::get(vel2.x);
+        const float3 strength = compute_dpd_force_traced(type1, type2,
+                pos1, pos2, vel1, vel2, myrandnr);
+
 		const bool valid = (slot < np1) && (subtid < np2);
 
 		// assert( (dpid >= 0 && dpid < np && spid >= 0 && spid < np_src) || ! valid);
 
 		if (valid)
 		{
-		    f[0] = xforce + strength * xr;
-		    f[1] = yforce + strength * yr;
-		    f[2] = zforce + strength * zr;
+		    f[0] = xforce + strength.x;
+		    f[1] = yforce + strength.y;
+		    f[2] = zforce + strength.z;
 		}
 	    }
 	}

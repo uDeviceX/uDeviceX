@@ -489,38 +489,16 @@ __global__ __launch_bounds__(32 * CPB, 16)
 #endif
 
 	    {
-		const float xdiff = dtmp0.x - stmp0.x;
-		const float ydiff = dtmp0.y - stmp0.y;
-		const float zdiff = dtmp1.x - stmp1.x;
-
-#ifndef _NONPERIODIC_KERNEL_
-		asdasda
-		const float _xr = xdiff - info.domainsize.x * floorf(0.5f + xdiff * info.invdomainsize.x);
-		const float _yr = ydiff - info.domainsize.y * floorf(0.5f + ydiff * info.invdomainsize.y);
-		const float _zr = zdiff - info.domainsize.z * floorf(0.5f + zdiff * info.invdomainsize.z);
-#else
-		const float _xr = xdiff;
-		const float _yr = ydiff;
-		const float _zr = zdiff;
-#endif
-		const float rij2 = _xr * _xr + _yr * _yr + _zr * _zr;
-		const float invrij = rsqrtf(rij2);
-		const float rij = rij2 * invrij;
-		const float argwr = max((float)0, 1 - rij * info.invrc);
-		const float wr = viscosity_function<-VISCOSITY_S_LEVEL>(argwr);
-		const float xr = _xr * invrij;
-		const float yr = _yr * invrij;
-		const float zr = _zr * invrij;
-
-		const float rdotv =
-		    xr * (dtmp1.y - stmp1.y) +
-		    yr * (dtmp2.x - stmp2.x) +
-		    zr * (dtmp2.y - stmp2.y);
-
 		const float myrandnr = Logistic::mean0var1(info.seed, min(spid, dpid), max(spid, dpid));
 
-		// check for viscosity last bit tag and define gamma
-		const float strength = info.aij * argwr - (info.gamma * wr * rdotv + info.sigmaf * myrandnr) * wr;
+		// check for particle types and compute the DPD force
+		float3 pos1 = {dtmp0.x, dtmp0.y, dtmp1.x}, pos2 = {stmp0.x, stmp0.y, stmp1.x};
+		float3 vel1 = {dtmp1.y, dtmp2.x, dtmp2.y}, vel2 = {stmp1.y, stmp2.x, stmp2.y};
+		int type1 = last_bit_float::get(vel1.x);
+		int type2 = last_bit_float::get(vel2.x);
+		const float3 strength = compute_dpd_force_traced(type1, type2,
+				pos1, pos2, vel1, vel2, myrandnr);
+
 		const bool valid = (dpid != spid) && (slot < np1) && (subtid < np2);
 
 		if (valid)
@@ -530,9 +508,9 @@ __global__ __launch_bounds__(32 * CPB, 16)
 		    yforce += wr;
 		    zforce += 0;
 #else
-		    xforce += strength * xr;
-		    yforce += strength * yr;
-		    zforce += strength * zr;
+		    xforce += strength.x;
+		    yforce += strength.y;
+		    zforce += strength.z;
 #endif
 		}
 	    }
