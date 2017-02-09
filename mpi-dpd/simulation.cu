@@ -452,15 +452,13 @@ void Simulation::_datadump_async()
                 dump_part.dump(p, n);
         }
 
-//        if (hdf5field_dumps)
-//        if (hdf5field_dumps && (datadump_idtimestep % steps_per_hdf5dump == 0) && datadump_idtimestep >= 600/dt)
         if (hdf5field_dumps && (datadump_idtimestep % steps_per_hdf5dump == 0))
         {
             dump_field.dump(activecomm, p, datadump_nsolvent, datadump_idtimestep);
         }
 
-		// LINA: this is to not to dump the beginning
-//        if (datadump_idtimestep >= 600/dt)
+	/* LINA: this is to not to dump the beginning
+	   if (datadump_idtimestep >= 600/dt) */
         {
             if (rbcscoll)
                 CollectionRBC::dump(myactivecomm, mycartcomm, p + datadump_nsolvent, a + datadump_nsolvent, datadump_nrbcs, iddatadump);
@@ -516,7 +514,7 @@ void Simulation::_update_and_bounce()
 
 Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_termination)()) :
             cartcomm(cartcomm), activecomm(activecomm),
-            /*particles(_ic()),*/ cells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN),
+            cells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN),
             rbcscoll(NULL), wall(NULL),
             redistribute(cartcomm),  redistribute_rbcs(cartcomm),
             dpd(cartcomm), fsi(cartcomm), contact(cartcomm), solutex(cartcomm),
@@ -531,7 +529,6 @@ Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_term
 
     if (contactforces)
         solutex.attach_halocomputation(contact);
-    //localcomm.initialize(activecomm);
 
     int dims[3], periods[3], coords[3];
     MPI_CHECK( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
@@ -779,8 +776,7 @@ void Simulation::run()
 
         _redistribute();
 
-#if 1
-        lockstep_check:
+    lockstep_check:
 
         const bool lockstep_OK =
                 !(walls && it >= wall_creation_stepid && wall == NULL) &&
@@ -791,8 +787,6 @@ void Simulation::run()
         if (lockstep_OK)
         {
             _lockstep();
-
-            //if (wall != NULL)
             {
                 if (it % 10 == 0)
                 {
@@ -812,7 +806,6 @@ void Simulation::run()
 
             goto lockstep_check;
         }
-#endif
 
         if (walls && it >= wall_creation_stepid && wall == NULL)
         {
