@@ -5,7 +5,7 @@ ARCH_VAL ?= compute_35
 CODE_VAL ?= sm_35
 
 NVCCFLAGS += -arch $(ARCH_VAL) -code $(CODE_VAL) -O3 -use_fast_math -g -std=c++11
-CXXFLAGS  += -L../cuda-dpd/dpd -L../cuda-rbc/    -O3 -g  -std=c++11 -DNDEBUG
+LDFLAGS   += -L../cuda-dpd/dpd -L../cuda-rbc/    -O3 -g  -std=c++11 -DNDEBUG
 NVCCFLAGS += -I../cuda-dpd/dpd -I../cuda-rbc/
 
 OBJS = \
@@ -42,7 +42,7 @@ NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel)
 # I have some device code in OBJS. I have to link it separatly
 test:  $(OBJS) libcuda-dpd libcuda-rbc
 	$(NVCC) $(NVCCFLAGS) -dlink -L../cuda-dpd/dpd $(OBJS) $(LIBS) -o gpuCode.o
-	$(CXX)  $(CXXFLAGS) gpuCode.o $(OBJS) $(LIBS) -o test
+	$(CXX)  $(LDFLAGS) gpuCode.o $(OBJS) $(LIBS) -o test
 
 %.o:              %.cu;              $(NVCC) $(NVCCFLAGS)     $< -c -o $@
 # use `-dc' flag to do separate compilation

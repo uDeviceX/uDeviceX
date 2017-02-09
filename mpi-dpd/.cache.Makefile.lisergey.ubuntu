@@ -16,6 +16,7 @@ MPI_LDFLAGS  = -L/usr/lib/x86_64-linux-gnu
 MPI_LIBS = -lmpichcxx -lmpich
 
 # how to get the flags: h5c++ -show
+
 #                     : pkg-config hdf5-mpich --libs
 HDF5_CXXFLAGS = -I/usr/include/hdf5/mpich
 HDF5_LDFLAGS  = -L/usr/lib/x86_64-linux-gnu/hdf5/mpich
@@ -37,5 +38,5 @@ GWRP_CXXFLAGS = -I../geom-wrapper
 GWRP_LDFLAGS =
 
 NVCC = ${NVCC_BIN} ${GWRP_CXXFLAGS} ${H5PART_CXXFLAGS} ${HDF5_CXXFLAGS} ${MPI_CXXFLAGS} ${NVCC_CXXFLAGS}
-CXXFLAGS = ${GWRP_LDFLAGS} ${H5PART_LDFLAGS} ${HDF5_LDFLAGS} ${MPI_LDFLAGS} ${NVCC_LDFALGS} # (sic) passed to a linker in uDeviceX
+LDFLAGS = ${GWRP_LDFLAGS} ${H5PART_LDFLAGS} ${HDF5_LDFLAGS} ${MPI_LDFLAGS} ${NVCC_LDFALGS} # (sic) passed to a linker in uDeviceX
 LIBS = ${GWRP_LIBS} ${H5PART_LIBS} ${HDF5_LIBS} ${MPI_LIBS}
