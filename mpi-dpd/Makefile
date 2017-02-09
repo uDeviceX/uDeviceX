@@ -55,6 +55,7 @@ fsi.o:            fsi.cu;            $(NVCC) $(NVCCFLAGS) -dc $< -c -o $@
 last_bit_float.o: last_bit_float.cu; $(NVCC) $(NVCCFLAGS) -dc $< -c -o $@
 visc-aux.o:       visc-aux.cu;       $(NVCC) $(NVCCFLAGS) -dc $< -c -o $@
 wall.o:           wall.cu;           $(NVCC) $(NVCCFLAGS) -dc $< -c -o $@
+include Makefile.dep
 
 libcuda-dpd:
 	make -C ../cuda-dpd/dpd libcuda-dpd.a \

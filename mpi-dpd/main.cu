@@ -25,10 +25,8 @@
 #include "solute-exchange.h"
 #include "fsi.h"
 #include "contact.h"
-#include "solute-exchange.h"
 #include "redistribute-particles.h"
 #include "redistribute-rbcs.h"
-#include "io.h"
 #include "velcontroller.h"
 #include "simulation.h"
 

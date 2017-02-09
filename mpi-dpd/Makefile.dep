@@ -1,0 +1,21 @@
+# Generated with by ../tools/deps.awk *.cu *.h
+# (do not include '*.h' files in other '*.h' files)
+
+common.cu: common.h
+contact.cu: common-kernels.h common.h common.h contact.h last_bit_float.h scan.h solute-exchange.h visc-aux.h
+containers.cu: common.h containers.h io.h last_bit_float.h visc-aux.h
+dpd.cu: common.h dpd.h last_bit_float.h solvent-exchange.h visc-aux.h
+fsi.cu: common-kernels.h common.h fsi.h last_bit_float.h solute-exchange.h visc-aux.h
+io.cu: common.h io.h last_bit_float.h visc-aux.h
+last_bit_float.cu: last_bit_float.h
+main.cu: argument-parser.h common.h contact.h containers.h dpd.h fsi.h redistribute-particles.h redistribute-rbcs.h simulation.h solute-exchange.h solvent-exchange.h velcontroller.h wall.h
+minmax.cu: common.h minmax.h
+redistancing.cu: common.h redistancing.h
+redistribute-particles.cu: common-kernels.h common.h redistribute-particles.h scan.h
+redistribute-rbcs.cu: common.h minmax.h redistribute-particles.h redistribute-rbcs.h
+simulation.cu: common.h contact.h containers.h dpd.h fsi.h io.h last_bit_float.h redistribute-particles.h redistribute-rbcs.h simulation.h simulation.hack.h solute-exchange.h solute-exchange.h solvent-exchange.h velcontroller.h visc-aux.h wall.h
+solute-exchange.cu: common-kernels.h common.h solute-exchange.h
+solvent-exchange.cu: common.h solvent-exchange.h
+velcontroller.cu: common.h velcontroller.h
+visc-aux.cu: common.h last_bit_float.h visc-aux.h
+wall.cu: common.h io.h last_bit_float.h redistancing.h solvent-exchange.h visc-aux.h wall.h
