@@ -20,20 +20,22 @@ function asplit(str, arr,   temp, i, n) {  # make an assoc array from str
     sub(/^#include/, "")
     sub(/^[\t ]*/, ""); sub(/[\t ]*$/, "") # trimp spaces and tabs
     sub(/^"/, ""); sub(/"$/, "") # trim `"'
-    # lg_br: lesser and greater brackets
-    lg_br = sub(/^</, ""); sub(/>$/, "") # trim `<>'
+    # lesser and greater brackets
+    has_lg = sub(/^</, ""); sub(/>$/, "") # trim `<>'
 
     has_h =     $0 ~ /[.]h$/
     has_sys =   $0 ~ /^sys\//
     has_thrust = $0 ~ /^thrust\//
 
-    if (!has_h || has_sys || has_thrust) next
+    if (!has_h || has_sys || has_lg) next
     if ($0 in sys_hdr)                   next
 
     dep[FILENAME]=dep[FILENAME] " " $0
 }
 
 END {
-    for (f in dep)
+    for (f in dep) {
+	hdr = f ~ /[.]h$/
 	print f ":" dep[f]
+    }
 }
