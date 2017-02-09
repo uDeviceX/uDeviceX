@@ -43,7 +43,7 @@ const float sigmaf = sigma / sqrt(dt);
 
 extern float tend, desired_shrate;
 extern bool walls, pushtheflow, doublepoiseuille, rbcs, hdf5field_dumps, hdf5part_dumps, is_mps_enabled, contactforces;
-extern int steps_per_report, steps_per_dump, steps_per_hdf5dump, wall_creation_stepid, nvtxstart, nvtxstop;
+extern int steps_per_report, steps_per_dump, steps_per_hdf5dump, wall_creation_stepid;
 
 #include <cstdlib>
 #include <cstdio>

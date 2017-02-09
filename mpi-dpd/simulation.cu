@@ -400,7 +400,6 @@ void Simulation::_datadump_async()
 {
     int iddatadump = 0, rank;
     int curr_idtimestep = -1;
-    bool wallcreated = false;
 
     MPI_Comm myactivecomm, mycartcomm;
 
@@ -786,8 +785,6 @@ void Simulation::run()
         const bool lockstep_OK =
                 !(walls && it >= wall_creation_stepid && wall == NULL) &&
                 !(it % steps_per_dump == 0) &&
-                !(it + 1 == nvtxstart) &&
-                !(it + 1 == nvtxstop) &&
                 !((it + 1) % steps_per_report == 0) &&
                 !(it + 1 == nsteps);
 

@@ -55,16 +55,6 @@ namespace ParticleKernels
 	for(int c = 0; c < 3; ++c)
 	    p[pid].x[c] += p[pid].u[c] * dt;
 
-#ifndef NDEBUG
-	const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
-
-	if (check)
-	    for(int c = 0; c < 3; ++c)
-	    {
-		// assert(p[pid].x[c] >= -L[c] -L[c]/2);
-		// assert(p[pid].x[c] <= +L[c] +L[c]/2);
-	    }
-#endif
     }
 
     __global__ void update_stage2_and_1(float2 * const _pdata, const float * const _adata,

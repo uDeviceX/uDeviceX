@@ -25,7 +25,7 @@
 bool currently_profiling = false;
 float tend, desired_shrate;
 bool walls, pushtheflow, doublepoiseuille, rbcs, hdf5field_dumps, hdf5part_dumps, is_mps_enabled, adjust_message_sizes, contactforces;
-int steps_per_report, steps_per_dump, steps_per_hdf5dump, wall_creation_stepid, nvtxstart, nvtxstop;
+int steps_per_report, steps_per_dump, steps_per_hdf5dump, wall_creation_stepid;
 
 float RBCx0, RBCp, RBCcq, RBCkb, RBCka, RBCkv, RBCgammaC, RBCkd, RBCtotArea, RBCtotVolume, RBCscale;
 
@@ -82,8 +82,6 @@ int main(int argc, char ** argv)
     steps_per_dump = argp("-steps_per_dump").asInt(1000);
     steps_per_hdf5dump = argp("-steps_per_hdf5dump").asInt(2000);
     wall_creation_stepid = argp("-wall_creation_stepid").asInt(5000);
-    nvtxstart = argp("-nvtxstart").asInt(10400);
-    nvtxstop = argp("-nvtxstop").asInt(10500);
     adjust_message_sizes = argp("-adjust_message_sizes").asBool(false);
     contactforces = argp("-contactforces").asBool(false);
     hdf5field_dumps = argp("-hdf5field_dumps").asBool(false);
