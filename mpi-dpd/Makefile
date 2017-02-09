@@ -4,9 +4,9 @@ NVCC ?= nvcc -ccbin $(CXX)
 ARCH_VAL ?= compute_35
 CODE_VAL ?= sm_35
 
-NVCCFLAGS += -I$(HDF5_DIR)/include -Xcudafe "--diag_suppress=unrecognized_gcc_pragma"
-NVCCFLAGS +=  -arch $(ARCH_VAL) -code $(CODE_VAL) -O3 -use_fast_math -g
-CXXFLAGS += -L../cuda-dpd/dpd -L../cuda-rbc/ -O3 -g  -std=c++11 -DNDEBUG
+NVCCFLAGS += -Xcudafe "--diag_suppress=unrecognized_gcc_pragma"
+NVCCFLAGS += -arch $(ARCH_VAL) -code $(CODE_VAL) -O3 -use_fast_math -g
+CXXFLAGS  += -L../cuda-dpd/dpd -L../cuda-rbc/ -O3 -g  -std=c++11 -DNDEBUG
 NVCCFLAGS += -I../cuda-dpd/dpd -I../cuda-rbc/
 
 OBJS = 	containers.o wall.o dpd.o fsi.o contact.o \
@@ -18,17 +18,13 @@ OBJS = 	containers.o wall.o dpd.o fsi.o contact.o \
 	visc-aux.o \
 	simulation.o main.o velcontroller.o
 
-LIBS += -lcuda-dpd -lcuda-rbc -lcudart -ldl -lz -lpthread
+LIBS += -lcuda-dpd -lcuda-rbc -lcudart
 
-ifneq "$(h5part)" "0"
-LIBS += -L${H5PART_DIR}/lib -lH5Part
-else
+ifeq ($(h5part),0)
 NVCCFLAGS += -DNO_H5PART
 endif
 
-ifneq "$(h5)" "0"
-LIBS += -L$(HDF5_DIR)/lib -lhdf5
-else
+ifeq ($(h5),0)
 NVCCFLAGS += -DNO_H5
 endif
 
@@ -53,7 +49,7 @@ inquire: $(bash [ `cat slevel.txt` == "$(slevel)" ] || { echo "cleanall" ; } )
 	$(bash echo "$(slevel)" > slevel.txt )
 	$(MAKE) $(MFLAGS) test
 
- # I have some device code in OBJS. I have to link it separatly
+# I have some device code in OBJS. I have to link it separatly
 test:  $(OBJS) libcuda-dpd libcuda-rbc
 	echo h5part is "$(h5part)"
 	$(NVCC) $(NVCCFLAGS) -dlink -L../cuda-dpd/dpd $(OBJS) $(LIBS) -o gpuCode.o

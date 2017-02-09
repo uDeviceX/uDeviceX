@@ -5,28 +5,9 @@ CXXFLAGS+= -fopenmp -std=c++11 -Wno-unknown-pragmas -Wno-reorder -Wno-comment -W
 GPULIBS+= -lcudart
 GPUFLAGS+= -arch=$(ARCH_VAL)  -code=$(CODE_VAL)  
 GPUFLAGS+= --use_fast_math
-
-config ?= release
-
-ifeq "$(config)" "debug"
-CXXFLAGS+= -O0 -g
-GPUFLAGS+= -O0 -g -G -lineinfo
-else ifeq "$(config)" "release"
 CXXFLAGS+= -O3 -g -fno-tree-vectorize -funroll-loops -DNDEBUG
 GPUFLAGS+= -O4 -DNDEBUG
-else ifeq "$(config)" "profile"
-GPUFLAGS+= -O3 -lineinfo -g
-CXXFLAGS+= -O1 -g 
-endif
 
-OS = $(shell uname)
-ifneq "$(OS)" "Darwin"
-LIBS += -lrt
-endif
-
-DIRS = ./
-INCLUDES += -I$(DIRS)
-.DEFAULT_GOAL := test-cuda-rbc
 .PHONY: clean
 
 ifneq "$(MAKECMDGOALS)" "clean"
@@ -44,7 +25,6 @@ clean:
 	rm -f *.o *.so *.a
 	rm -f *.d *.dcu
 	rm -f test-rbc
-	rm -f test-cuda-rbc
 
 libcuda-rbc.a: rbc-cuda.cudaobj
 	ar rcs $@ $^
