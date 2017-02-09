@@ -1,12 +1,19 @@
--include .cache.Makefile
+include .cache.Makefile # local settings (see .cache.Makefile.* for examples)
 
-NVCC ?= nvcc -ccbin $(CXX)
+NVCC     ?= nvcc -ccbin $(CXX)
 ARCH_VAL ?= compute_35
 CODE_VAL ?= sm_35
+#OPT ?= -O3 -use_fast_math -g
+# for cuda-gdb
+OPT      ?= -O0 -g --device-debug
 
-NVCCFLAGS += -arch $(ARCH_VAL) -code $(CODE_VAL) -O3 -use_fast_math -g -std=c++11
-LDFLAGS   += -L../cuda-dpd/dpd -L../cuda-rbc/    -O3 -g  -std=c++11 -DNDEBUG
-NVCCFLAGS += -I../cuda-dpd/dpd -I../cuda-rbc/
+slevel   ?= 0
+datadump ?= 1
+
+NVCCFLAGS += -arch $(ARCH_VAL) -code $(CODE_VAL) -std=c++11
+LDFLAGS   += -L../cuda-dpd/dpd -L../cuda-rbc
+NVCCFLAGS += -I../cuda-dpd/dpd -I../cuda-rbc
+LIBS      += -lcuda-dpd -lcuda-rbc -lcudart
 
 OBJS = \
 containers.o wall.o dpd.o \
@@ -17,8 +24,6 @@ minmax.o redistancing.o last_bit_float.o \
 visc-aux.o simulation.o main.o \
 velcontroller.o
 
-LIBS += -lcuda-dpd -lcuda-rbc -lcudart
-
 ifeq ($(h5part),0)
 NVCCFLAGS += -DNO_H5PART
 endif
@@ -26,9 +31,6 @@ endif
 ifeq ($(h5),0)
 NVCCFLAGS += -DNO_H5
 endif
-
-slevel ?= 0
-datadump ?= 1
 
 ifeq ($(datadump),0)
 NVCCFLAGS += -D_NO_DUMPS_
@@ -40,37 +42,37 @@ endif
 NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel)
 
 # I have some device code in OBJS. I have to link it separatly
-test:  $(OBJS) libcuda-dpd libcuda-rbc
-	$(NVCC) $(NVCCFLAGS) -dlink -L../cuda-dpd/dpd $(OBJS) $(LIBS) -o gpuCode.o
+test:   $(OBJS) libcuda-dpd libcuda-rbc
+	$(NVCC) $(NVCCFLAGS) $(OPT) -dlink -L../cuda-dpd/dpd -L../cuda-rbc/dpd $(OBJS) $(LIBS) -o gpuCode.o
 	$(CXX)  $(LDFLAGS) gpuCode.o $(OBJS) $(LIBS) -o test
 
-%.o:              %.cu;              $(NVCC) $(NVCCFLAGS)     $< -c -o $@
-# use `-dc' flag to do separate compilation
-# Separate Compilation and Linking of CUDA C++ Device Code
+# a rule for the most of *.cu files
+%.o:              %.cu;              $(NVCC) $(NVCCFLAGS) $(OPT)     $< -c -o $@
+
+# some files must be compiled in diferent way (with `-dc' flag) See
+# "Separate Compilation and Linking of CUDA C++ Device Code"
 # http://devblogs.nvidia.com/parallelforall/separate-compilation-linking-cuda-device-code
-contact.o:        contact.cu;        $(NVCC) $(NVCCFLAGS) -dc $< -c -o $@
-containers.o:     containers.cu;     $(NVCC) $(NVCCFLAGS) -dc $< -c -o $@
-dpd.o:            dpd.cu;            $(NVCC) $(NVCCFLAGS) -dc $< -c -o $@
-fsi.o:            fsi.cu;            $(NVCC) $(NVCCFLAGS) -dc $< -c -o $@
-last_bit_float.o: last_bit_float.cu; $(NVCC) $(NVCCFLAGS) -dc $< -c -o $@
-visc-aux.o:       visc-aux.cu;       $(NVCC) $(NVCCFLAGS) -dc $< -c -o $@
-wall.o:           wall.cu;           $(NVCC) $(NVCCFLAGS) -dc $< -c -o $@
-include Makefile.dep
+contact.o:        contact.cu;        $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
+containers.o:     containers.cu;     $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
+dpd.o:            dpd.cu;            $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
+fsi.o:            fsi.cu;            $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
+last_bit_float.o: last_bit_float.cu; $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
+visc-aux.o:       visc-aux.cu;       $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
+wall.o:           wall.cu;           $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
+include    Makefile.dep # dependencies
 
 libcuda-dpd:
 	make -C ../cuda-dpd/dpd libcuda-dpd.a \
-	CXX="$(CXX)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)"
+	CXX="$(CXX)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
 
 libcuda-rbc:
 	make -C ../cuda-rbc libcuda-rbc.a \
-	CXX="$(CXX)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)"
+	CXX="$(CXX)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
 
-clean:
+cleanall:
 	rm -f test *.o
-
-cleanall: clean
 	make -C ../cuda-rbc     clean
 	make -C ../cuda-dpd     clean
 	make -C ../cuda-dpd/dpd clean
 
-.PHONY = clean libcuda-dpd libcuda-rbc
+.PHONY = clean cleanall libcuda-dpd libcuda-rbc
