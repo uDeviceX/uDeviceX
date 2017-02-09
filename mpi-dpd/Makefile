@@ -81,10 +81,16 @@ visc-aux.o: visc-aux.cu
 	$(NVCC) $(NVCCFLAGS) -M $@ > $*.d
 
 libcuda-dpd:
-	$(MAKE) -C ../cuda-dpd/dpd libcuda-dpd.a CXX="$(CXX)" NVCC="$(NVCC)" ARCH_VAL="$(ARCH_VAL)" CODE_VAL="$(CODE_VAL)" slevel="$(slevel)"
+	$(MAKE) -C ../cuda-dpd/dpd libcuda-dpd.a \
+	slevel="$(slevel)" \
+	CODE_VAL="$(CODE_VAL)" ARCH_VAL="$(ARCH_VAL)" \
+	CXX="$(CXX)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)"
 
 libcuda-rbc:
-	$(MAKE) -C ../cuda-rbc/ libcuda-rbc.a CXX="$(CXX)" NVCC="$(NVCC)" ARCH_VAL="$(ARCH_VAL)" CODE_VAL="$(CODE_VAL)"
+	$(MAKE) -C ../cuda-rbc libcuda-rbc.a
+	slevel="$(slevel)" \
+	CODE_VAL="$(CODE_VAL)" ARCH_VAL="$(ARCH_VAL)" \
+	CXX="$(CXX)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)"
 
 clean:
 	rm -f test *.o *.d slevel.txt
