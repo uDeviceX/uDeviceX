@@ -1,6 +1,6 @@
 include .cache.Makefile # local settings (see .cache.Makefile.* for examples)
 
-NVCC     ?= nvcc -ccbin $(CXX)
+NVCC     ?= nvcc
 ARCH_VAL ?= compute_35
 CODE_VAL ?= sm_35
 OPT ?= -O3 -use_fast_math -g
