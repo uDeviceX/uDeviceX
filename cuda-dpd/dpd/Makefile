@@ -4,16 +4,6 @@ include ../Makefile
 
 CUDADPD = cuda-dpd-floatized-1.cu
 CUDADPDBIP = cuda-dpd-bipartite-floatized.cu
-
-ifeq "$(flops)" "1"
-        NVCCFLAGS += -D_COUNT_FLOPS
-endif
-
-ifeq "$(nonperiodic)" "1"
-    NVCCFLAGS += -D_NONPERIODIC_KERNEL_
-endif
-
-
 NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel) -lineinfo -Xptxas -v
 
 .DEFAULT_GOAL = test-dpd

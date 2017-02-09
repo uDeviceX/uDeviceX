@@ -28,7 +28,6 @@ NVCCFLAGS += -DNO_H5
 endif
 
 slevel ?= 0
-flops ?= 0
 datadump ?= 1
 
 ifeq ($(datadump),0)
@@ -85,7 +84,7 @@ visc-aux.o: visc-aux.cu
 	$(NVCC) $(NVCCFLAGS) -M $*.cu > $*.d
 
 libcuda-dpd:
-	$(MAKE) -C ../cuda-dpd/dpd libcuda-dpd.a nonperiodic=1 flops="$(flops)" CXX="$(CXX)" NVCC="$(NVCC)" ARCH_VAL="$(ARCH_VAL)" CODE_VAL="$(CODE_VAL)" slevel="$(slevel)"
+	$(MAKE) -C ../cuda-dpd/dpd libcuda-dpd.a CXX="$(CXX)" NVCC="$(NVCC)" ARCH_VAL="$(ARCH_VAL)" CODE_VAL="$(CODE_VAL)" slevel="$(slevel)"
 
 libcuda-rbc:
 	$(MAKE) -C ../cuda-rbc/ libcuda-rbc.a CXX="$(CXX)" NVCC="$(NVCC)" ARCH_VAL="$(ARCH_VAL)" CODE_VAL="$(CODE_VAL)"
