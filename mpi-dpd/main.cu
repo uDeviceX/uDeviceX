@@ -15,9 +15,6 @@
 #include <csignal>
 #include <mpi.h>
 #include <errno.h>
-#if defined(REPORT_TOPOLOGY)
-#include <pmi.h>
-#endif
 
 #include "argument-parser.h"
 #include "simulation.h"
@@ -201,30 +198,6 @@ int main(int argc, char ** argv)
     MPI_CHECK( MPI_Cart_create(activecomm, 3, ranks, periods, (int)reordering, &cartcomm) );
 
     activecomm = cartcomm;
-
-    //print the rank-to-node mapping
-    {
-	char name[1024];
-	int len;
-	MPI_CHECK(MPI_Get_processor_name(name, &len));
-
-	int dims[3], periods[3], coords[3];
-	MPI_CHECK( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
-
-	MPI_CHECK(MPI_Barrier(activecomm));
-#if defined(REPORT_TOPOLOGY)
-	int nid;
-	int rc = PMI_Get_nid(rank, &nid);
-	pmi_mesh_coord_t xyz;
-	PMI_Get_meshcoord((uint16_t) nid, &xyz);
-	printf("RANK %d: (%d, %d, %d) -> %s (%d, %d, %d)\n", rank, coords[0], coords[1], coords[2], name, xyz.mesh_x, xyz.mesh_y, xyz.mesh_z);
-#else
-	printf("RANK %d: (%d, %d, %d) -> %s\n", rank, coords[0], coords[1], coords[2], name);
-#endif
-	fflush(stdout);
-
-	MPI_CHECK(MPI_Barrier(activecomm));
-    }
 
     //RAII
     {
