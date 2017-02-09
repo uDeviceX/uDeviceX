@@ -4,9 +4,8 @@ NVCC ?= nvcc -ccbin $(CXX)
 ARCH_VAL ?= compute_35
 CODE_VAL ?= sm_35
 
-NVCCFLAGS += -Xcudafe "--diag_suppress=unrecognized_gcc_pragma"
-NVCCFLAGS += -arch $(ARCH_VAL) -code $(CODE_VAL) -O3 -use_fast_math -g
-CXXFLAGS  += -L../cuda-dpd/dpd -L../cuda-rbc/ -O3 -g  -std=c++11 -DNDEBUG
+NVCCFLAGS += -arch $(ARCH_VAL) -code $(CODE_VAL) -O3 -use_fast_math -g -std=c++11
+CXXFLAGS  += -L../cuda-dpd/dpd -L../cuda-rbc/    -O3 -g  -std=c++11 -DNDEBUG
 NVCCFLAGS += -I../cuda-dpd/dpd -I../cuda-rbc/
 
 OBJS = 	containers.o wall.o dpd.o fsi.o contact.o \
