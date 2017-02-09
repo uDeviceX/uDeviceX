@@ -53,17 +53,26 @@ function asplit(str, arr,   temp, i, n) {  # make an assoc array from str
     n = ++ndep_af[$0  ]       # FILENAME depends of `f' (shouble be "after")
     dep_af [$0,n] = FILENAME
 
+    pos_be[FILENAME,$0] = FILENAME ":" FNR
+    pos_af[$0,FILENAME] = FILENAME ":" FNR
+
 }
 
 END {
     for (f in ndep_be) dsort(dep_be, f, ndep_be[f])
     for (f in ndep_af) dsort(dep_af, f, ndep_af[f])
-    
+
     for (f in ndep_be) {
 	hdr = f ~ /[.]h$/ # is it a header
 	if (!hdr) continue
 
-	printf "%s <= %s\n", f,    dep_list(dep_be, f, ndep_be[f])
-	printf "   %s => %s\n", f, dep_list(dep_af, f, ndep_af[f])
+	for (i = 1; i <= ndep_be[f]; i++) { # format a messages for
+					    # emacs *compilation*
+					    # buffer
+	    printf "%s: error: %s\n", pos_be[f, dep_be[f,i]], dep_be[f,i]
+	    for (j = 1; j <= ndep_af[f]; j++)
+		printf "%s: warning: %s\n", pos_af[f, dep_af[f,j]], dep_af[f,j]
+	}
+	print "\n"
     }
 }
