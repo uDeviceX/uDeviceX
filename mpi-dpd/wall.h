@@ -15,7 +15,6 @@
 #include <mpi.h>
 
 #include <../dpd-rng.h>
-#include "common.h"
 
 namespace SolidWallsKernel
 {
