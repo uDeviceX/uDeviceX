@@ -134,10 +134,6 @@ void Simulation::_redistribute()
         redistribute_rbcs.unpack(rbcscoll->data(), rbcscoll->count(), mainstream);
 
     CUDA_CHECK(cudaPeekAtLastError());
-
-    //localcomm.barrier();
-
-    timings["redistribute"] += MPI_Wtime() - tstart;
 }
 
 void Simulation::_report(const bool verbose, const int idtimestep)
@@ -177,21 +173,6 @@ void Simulation::_report(const bool verbose, const int idtimestep)
         static double t0 = MPI_Wtime(), t1;
 
         t1 = MPI_Wtime();
-
-        if (verbose)
-        {
-            printf("\x1b[92mbeginning of time step %d (%.3f ms)\x1b[0m\n", idtimestep, (t1 - t0) * 1e3 / steps_per_report);
-            printf("in more details, per time step:\n");
-            double tt = 0;
-            for(std::map<string, double>::iterator it = timings.begin(); it != timings.end(); ++it)
-            {
-                printf("%s: %.3f ms\n", it->first.c_str(), it->second * 1e3 / steps_per_report);
-                tt += it->second;
-                it->second = 0;
-            }
-            printf("discrepancy: %.3f ms\n", ((t1 - t0) - tt) * 1e3 / steps_per_report);
-        }
-
         t0 = t1;
     }
 }
@@ -362,9 +343,6 @@ void Simulation::_forces()
     solutex.post_a();
 
     solutex.recv_a(mainstream);
-
-    timings["interactions"] += MPI_Wtime() - tstart;
-
     CUDA_CHECK(cudaPeekAtLastError());
 }
 
@@ -416,8 +394,6 @@ void Simulation::_datadump(const int idtimestep)
 #endif
 
     pthread_mutex_unlock(&mutex_datadump);
-
-    timings["data-dump"] += MPI_Wtime() - tstart;
 }
 
 void Simulation::_datadump_async()
@@ -436,10 +412,6 @@ void Simulation::_datadump_async()
     H5FieldDump dump_field(cartcomm);
 
     MPI_CHECK(MPI_Comm_rank(myactivecomm, &rank));
-
-    if (rank == 0)
-        mkdir("xyz", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-
     MPI_CHECK(MPI_Barrier(myactivecomm));
 
     while (true)
@@ -531,9 +503,6 @@ void Simulation::_update_and_bounce()
         rbcscoll->update_stage2_and_1(driving_acceleration, mainstream);
 
     CUDA_CHECK(cudaPeekAtLastError());
-
-    timings["update"] += MPI_Wtime() - tstart;
-
     if (wall)
     {
         tstart = MPI_Wtime();
@@ -541,8 +510,6 @@ void Simulation::_update_and_bounce()
 
         if (rbcscoll)
             wall->bounce(rbcscoll->data(), rbcscoll->pcount(), mainstream);
-
-        timings["bounce-walls"] += MPI_Wtime() - tstart;
     }
 
     CUDA_CHECK(cudaPeekAtLastError());
@@ -774,8 +741,6 @@ void Simulation::_lockstep()
         redistribute_rbcs.unpack(rbcscoll->data(), rbcscoll->count(), mainstream);
 
     CUDA_CHECK(cudaPeekAtLastError());
-
-    timings["lockstep"] += MPI_Wtime() - tstart;
 }
 
 
@@ -784,7 +749,6 @@ void Simulation::run()
     if (rank == 0 && !walls)
         printf("the simulation begins now and it consists of %.3e steps\n", (double)nsteps);
 
-    double time_simulation_start = MPI_Wtime();
 
     _redistribute();
     _forces();
@@ -866,7 +830,6 @@ void Simulation::run()
             if (termination_request)
                 break;
 
-            time_simulation_start = MPI_Wtime();
 
             if (pushtheflow)
                 driving_acceleration = hydrostatic_a;
@@ -898,19 +861,8 @@ void Simulation::run()
         }
     }
 
-    const double time_simulation_stop = MPI_Wtime();
-    const double telapsed = time_simulation_stop - time_simulation_start;
 
     simulation_is_done = true;
-
-    if (rank == 0)
-        if (it == nsteps)
-            printf("simulation is done after %.2lf s (%dm%ds). Ciao.\n",
-                    telapsed, (int)(telapsed / 60), (int)(telapsed) % 60);
-        else
-            if (it != wall_creation_stepid)
-                printf("external termination request (signal) after %.3e s. Bye.\n", telapsed);
-
     fflush(stdout);
 }
 
