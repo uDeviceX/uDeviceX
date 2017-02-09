@@ -1,5 +1,3 @@
--include .cache.Makefile
-
 include ../Makefile
 
 CUDADPD = cuda-dpd-floatized-1.cu

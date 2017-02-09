@@ -1,5 +1,3 @@
--include .cache.Makefile
-
 CXXFLAGS +=  -L$(subst :, -L,$(LD_LIBRARY_PATH))
 CXXFLAGS+= -fopenmp -std=c++11 -Wno-unknown-pragmas -Wno-reorder -Wno-comment -Wno-deprecated
 GPULIBS+= -lcudart
