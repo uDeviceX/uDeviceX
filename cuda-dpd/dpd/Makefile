@@ -1,5 +1,3 @@
-include ../Makefile
-
 libcuda-dpd.a: cuda-dpd.o cuda-dpd-bipartite.o celllists
 	ar rcs $@ cuda-dpd.o cuda-dpd-bipartite.o ../cell-lists.o ../cell-lists-faster.o
 
@@ -13,7 +11,7 @@ cuda-dpd-bipartite.o: cuda-dpd-bipartite-floatized.cu cuda-dpd.h
 	$(NVCC) $(NVCCFLAGS) -dc $< -o $@
 
 ../%.o:
-	make -C ../ $(@:../%=%) \
+	make -C ..
 	CXX="$(CXX)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)"
 
 celllists:

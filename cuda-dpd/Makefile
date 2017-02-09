@@ -5,7 +5,7 @@ cell-lists-faster.o: cell-lists-faster.cu cell-lists.h
 	$(NVCC) $(NVCCFLAGS) -c $< -o $@
 
 clean:
-	rm -f test-cell-lists *.o
+	rm -f *.o
 
 subclean: clean
 
