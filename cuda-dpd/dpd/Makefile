@@ -4,8 +4,6 @@ CUDADPD = cuda-dpd-floatized-1.cu
 CUDADPDBIP = cuda-dpd-bipartite-floatized.cu
 NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel) -lineinfo -Xptxas -v
 
-.DEFAULT_GOAL = test-dpd
-
 libcuda-dpd.a: cuda-dpd.o cuda-dpd-bipartite.o celllists
 	ar rcs $@ cuda-dpd.o cuda-dpd-bipartite.o ../cell-lists.o ../cell-lists-faster.o
 
@@ -27,8 +25,7 @@ celllists:
 	make -C ../ cell-lists.o NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)"
 
 clean:
-	rm -f test-dpd *.o *.a
-	make -C ../ clean
+	rm -f *.o *.a
 
 subclean: clean
 
