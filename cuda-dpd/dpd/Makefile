@@ -14,16 +14,13 @@ cuda-dpd-bipartite.o: cuda-dpd-bipartite-floatized.cu cuda-dpd.h
 
 ../%.o:
 	make -C ../ $(@:../%=%) \
-	slevel="$(slevel)" \
 	CXX="$(CXX)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)"
 
 celllists:
 	make -C ../ cell-lists-faster.o \
-	slevel="$(slevel)" \
 	CXX="$(CXX)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)"
 
 	make -C ../ cell-lists.o \
-	slevel="$(slevel)" \
 	CXX="$(CXX)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)"
 
 clean:
