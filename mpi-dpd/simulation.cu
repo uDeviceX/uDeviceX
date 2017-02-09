@@ -86,14 +86,13 @@ std::vector<Particle> Simulation::_ic() {
   srand48(rank);
   std::vector<Particle> pp;
   int  L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
-  auto nd   = numberdensity;
-  int iz, iy, ix, l;
+  int iz, iy, ix, l, nd   = numberdensity;
   for (iz = 0; iz < L[2]; iz++)
     for (iy = 0; iy < L[1]; iy++)
       for (ix = 0; ix < L[0]; ix++) {
-	auto xc = -L[0]/2 + ix, yc = -L[1]/2 + iy, zc = -L[2]/2 + iz;
+	int xc = -L[0]/2 + ix, yc = -L[1]/2 + iy, zc = -L[2]/2 + iz;
  	for (l = 0; l < nd; l++) {
-	  auto p = Particle(); auto dr = 0.99;
+	  Particle p = Particle(); float dr = 0.99;
 	  p.x[0] = xc + dr*drand48();
 	  p.x[1] = yc + dr*drand48();
 	  p.x[2] = zc + dr*drand48();

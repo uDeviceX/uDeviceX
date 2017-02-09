@@ -10,7 +10,7 @@ OPT ?= -O3 -use_fast_math -g
 slevel   ?= 0
 datadump ?= 1
 
-NVCCFLAGS += -arch $(ARCH_VAL) -code $(CODE_VAL) -std=c++11
+NVCCFLAGS += -arch $(ARCH_VAL) -code $(CODE_VAL)
 LDFLAGS   += -L../cuda-dpd/dpd -L../cuda-rbc
 NVCCFLAGS += -I../cuda-dpd/dpd -I../cuda-rbc
 LIBS      += -lcuda-dpd -lcuda-rbc -lcudart
