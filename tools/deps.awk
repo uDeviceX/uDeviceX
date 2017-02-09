@@ -10,6 +10,23 @@ BEGIN {
 	   "cuda_runtime.h stdint.h unistd.h math.h math_functions.h", sys_hdr)
 }
 
+function dep_list(d, f, n,   i, ans) { # return dep as a string
+    ans = ""
+    for (i = 1; i <= n; i++)
+	ans = ans " " d[f,i]
+    return ans
+}
+
+function dswap(d, f, i, j,     tmp) {
+    tmp = d[f, i]; d[f, i] = d[f, j]; d[f, j] = tmp
+}
+
+function dsort(d, f, n,   i, j) { # sort deps in O(N^2)
+    for (i=1; i<=n; i++)
+	for (j=2; j<=n; j++)
+	    if (d[f,j] < d[f,i]) dswap(d, f, i, j)
+}
+
 function asplit(str, arr,   temp, i, n) {  # make an assoc array from str
     n = split(str, temp)
     for (i = 1; i <= n; i++) arr[temp[i]]++
@@ -30,12 +47,23 @@ function asplit(str, arr,   temp, i, n) {  # make an assoc array from str
     if (!has_h || has_sys || has_lg) next
     if ($0 in sys_hdr)                   next
 
-    dep[FILENAME]=dep[FILENAME] " " $0
+    n = ++ndep_be[FILENAME  ] # `f' depends on FILENAME (shouble be "before")
+    dep_be [FILENAME,n] = $0
+
+    n = ++ndep_af[$0  ]       # FILENAME depends of `f' (shouble be "after")
+    dep_af [$0,n] = FILENAME
+
 }
 
 END {
-    for (f in dep) {
-	hdr = f ~ /[.]h$/
-	print f ":" dep[f]
+    for (f in ndep_be) dsort(dep_be, f, ndep_be[f])
+    for (f in ndep_af) dsort(dep_af, f, ndep_af[f])
+    
+    for (f in ndep_be) {
+	hdr = f ~ /[.]h$/ # is it a header
+	if (!hdr) continue
+
+	printf "%s <= %s\n", f,    dep_list(dep_be, f, ndep_be[f])
+	printf "   %s => %s\n", f, dep_list(dep_af, f, ndep_af[f])
     }
 }
