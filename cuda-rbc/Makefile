@@ -22,7 +22,7 @@ vpath %.cpp %.h %.cu $(DIRS)
 
 clean:
 	rm -f *.cudaobj
-	rm -f *.o *.so *.a
+	rm -f *.o *.a
 	rm -f *.d *.dcu
 	rm -f test-rbc
 

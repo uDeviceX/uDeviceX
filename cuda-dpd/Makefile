@@ -7,9 +7,6 @@ NVCCFLAGS += -arch=$(ARCH_VAL)  -code=$(CODE_VAL) -O4
 NVCCFLAGS += --use_fast_math
 NVCCFLAGS += -g
 
-profiler-dpd.o:	profiler-dpd.cpp profiler-dpd.h
-	$(NVCC) $(CXXFLAGS) -c profiler-dpd.cpp
-
 cell-lists.o: cell-lists.cu cell-lists.h
 	$(NVCC) $(NVCCFLAGS) -c $< -o $@
 

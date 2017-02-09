@@ -136,47 +136,6 @@ void Simulation::_redistribute()
     CUDA_CHECK(cudaPeekAtLastError());
 }
 
-void Simulation::_report(const bool verbose, const int idtimestep)
-{
-    report_host_memory_usage(activecomm, stdout);
-
-    {
-        static double t0 = MPI_Wtime(), t1;
-
-        t1 = MPI_Wtime();
-
-        float host_busy_time = (MPI_Wtime() - t0) - host_idle_time;
-
-        host_busy_time *= 1e3 / steps_per_report;
-
-        float sumval, maxval, minval;
-        MPI_CHECK(MPI_Reduce(&host_busy_time, &sumval, 1, MPI_FLOAT, MPI_SUM, 0, activecomm));
-        MPI_CHECK(MPI_Reduce(&host_busy_time, &maxval, 1, MPI_FLOAT, MPI_MAX, 0, activecomm));
-        MPI_CHECK(MPI_Reduce(&host_busy_time, &minval, 1, MPI_FLOAT, MPI_MIN, 0, activecomm));
-
-        int commsize;
-        MPI_CHECK(MPI_Comm_size(activecomm, &commsize));
-
-        const double imbalance = 100 * (maxval / sumval * commsize - 1);
-
-        if (verbose && imbalance >= 0)
-            printf("\x1b[93moverall imbalance: %.f%%, host workload min/avg/max: %.2f/%.2f/%.2f ms\x1b[0m\n",
-                    imbalance , minval, sumval / commsize, maxval);
-
-        localcomm.print_particles(particles->size);
-
-        host_idle_time = 0;
-        t0 = t1;
-    }
-
-    {
-        static double t0 = MPI_Wtime(), t1;
-
-        t1 = MPI_Wtime();
-        t0 = t1;
-    }
-}
-
 void Simulation::_remove_bodies_from_wall(CollectionRBC * coll)
 {
     if (!coll || !coll->count())
@@ -763,17 +722,6 @@ void Simulation::run()
     for(it = 0; it < nsteps; ++it)
     {
         const bool verbose = it > 0 && rank == 0;
-
-        if (it % steps_per_report == 0)
-        {
-            CUDA_CHECK(cudaStreamSynchronize(mainstream));
-
-            if (simulation_is_done = check_termination())
-                break;
-
-            _report(verbose, it);
-        }
-
         _redistribute();
 
     lockstep_check:
@@ -781,7 +729,6 @@ void Simulation::run()
         const bool lockstep_OK =
                 !(walls && it >= wall_creation_stepid && wall == NULL) &&
                 !(it % steps_per_dump == 0) &&
-                !((it + 1) % steps_per_report == 0) &&
                 !(it + 1 == nsteps);
 
         if (lockstep_OK)

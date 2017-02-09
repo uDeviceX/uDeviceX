@@ -22,10 +22,9 @@
 #include "argument-parser.h"
 #include "simulation.h"
 
-bool currently_profiling = false;
 float tend, desired_shrate;
 bool walls, pushtheflow, doublepoiseuille, rbcs, hdf5field_dumps, hdf5part_dumps, is_mps_enabled, adjust_message_sizes, contactforces;
-int steps_per_report, steps_per_dump, steps_per_hdf5dump, wall_creation_stepid;
+int steps_per_dump, steps_per_hdf5dump, wall_creation_stepid;
 
 float RBCx0, RBCp, RBCcq, RBCkb, RBCka, RBCkv, RBCgammaC, RBCkd, RBCtotArea, RBCtotVolume, RBCscale;
 
@@ -78,7 +77,6 @@ int main(int argc, char ** argv)
     rbcs = argp("-rbcs").asBool(false);
     hdf5field_dumps = argp("-hdf5field_dumps").asBool(false);
     hdf5part_dumps = argp("-hdf5part_dumps").asBool(false);
-    steps_per_report = argp("-steps_per_report").asInt(1000);
     steps_per_dump = argp("-steps_per_dump").asInt(1000);
     steps_per_hdf5dump = argp("-steps_per_hdf5dump").asInt(2000);
     wall_creation_stepid = argp("-wall_creation_stepid").asInt(5000);
