@@ -44,7 +44,7 @@ test:  $(OBJS) libcuda-dpd libcuda-rbc
 	$(NVCC) $(NVCCFLAGS) -dlink -L../cuda-dpd/dpd $(OBJS) $(LIBS) -o gpuCode.o
 	$(CXX)  $(CXXFLAGS) gpuCode.o $(OBJS) $(LIBS) -o test
 
-%.o: %.cu;                           $(NVCC) $(NVCCFLAGS)     $< -c -o $@
+%.o:              %.cu;              $(NVCC) $(NVCCFLAGS)     $< -c -o $@
 # use `-dc' flag to do separate compilation
 # Separate Compilation and Linking of CUDA C++ Device Code
 # http://devblogs.nvidia.com/parallelforall/separate-compilation-linking-cuda-device-code
