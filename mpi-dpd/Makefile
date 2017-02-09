@@ -39,10 +39,6 @@ endif
 
 NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel)
 
-inquire: $(bash [ `cat slevel.txt` == "$(slevel)" ] || { echo "cleanall" ; } )
-	$(bash echo "$(slevel)" > slevel.txt )
-	make test
-
 # I have some device code in OBJS. I have to link it separatly
 test:  $(OBJS) libcuda-dpd libcuda-rbc
 	$(NVCC) $(NVCCFLAGS) -dlink -L../cuda-dpd/dpd $(OBJS) $(LIBS) -o gpuCode.o
@@ -81,21 +77,17 @@ visc-aux.o: visc-aux.cu
 
 libcuda-dpd:
 	make -C ../cuda-dpd/dpd libcuda-dpd.a \
-	slevel="$(slevel)" \
 	CXX="$(CXX)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)"
 
 libcuda-rbc:
 	make -C ../cuda-rbc libcuda-rbc.a \
-	slevel="$(slevel)" \
 	CXX="$(CXX)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)"
 
 clean:
-	rm -f test *.o *.d slevel.txt
+	rm -f test *.o *.d
 
 cleanall: clean
-	rm -f slevel.txt
 	make -C ../cuda-dpd/dpd clean
 	make -C ../cuda-rbc clean
 
-#we want to give always a try to update the libs - too complicated to track dependecies there
-.PHONY = clean libcuda-dpd libcuda-rbc inquire
+.PHONY = clean libcuda-dpd libcuda-rbc
