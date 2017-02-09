@@ -8,14 +8,14 @@ NVCCFLAGS += -arch $(ARCH_VAL) -code $(CODE_VAL) -O3 -use_fast_math -g -std=c++1
 CXXFLAGS  += -L../cuda-dpd/dpd -L../cuda-rbc/    -O3 -g  -std=c++11 -DNDEBUG
 NVCCFLAGS += -I../cuda-dpd/dpd -I../cuda-rbc/
 
-OBJS = 	containers.o wall.o dpd.o fsi.o contact.o \
-	redistribute-particles.o redistribute-rbcs.o \
-	solvent-exchange.o solute-exchange.o \
-	common.o io.o \
-	scan.o minmax.o redistancing.o \
-	last_bit_float.o \
-	visc-aux.o \
-	simulation.o main.o velcontroller.o
+OBJS = \
+containers.o wall.o dpd.o \
+fsi.o contact.o redistribute-particles.o \
+redistribute-rbcs.o solvent-exchange.o solute-exchange.o \
+common.o io.o scan.o \
+minmax.o redistancing.o last_bit_float.o \
+visc-aux.o simulation.o main.o \
+velcontroller.o
 
 LIBS += -lcuda-dpd -lcuda-rbc -lcudart
 
