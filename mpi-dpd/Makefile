@@ -44,32 +44,17 @@ test:  $(OBJS) libcuda-dpd libcuda-rbc
 	$(NVCC) $(NVCCFLAGS) -dlink -L../cuda-dpd/dpd $(OBJS) $(LIBS) -o gpuCode.o
 	$(CXX)  $(CXXFLAGS) gpuCode.o $(OBJS) $(LIBS) -o test
 
+%.o: %.cu;                           $(NVCC) $(NVCCFLAGS)     $< -c -o $@
 # use `-dc' flag to do separate compilation
 # Separate Compilation and Linking of CUDA C++ Device Code
 # http://devblogs.nvidia.com/parallelforall/separate-compilation-linking-cuda-device-code
-containers.o: containers.cu
-	$(NVCC) $(NVCCFLAGS) -dc $<            -c -o $@
-
-wall.o: wall.cu
-	$(NVCC) $(NVCCFLAGS) -dc $<            -c -o $@
-
-fsi.o: fsi.cu
-	$(NVCC) $(NVCCFLAGS) -dc $<            -c -o $@
-
-contact.o: contact.cu
-	$(NVCC) $(NVCCFLAGS) -dc $<            -c -o $@
-
-last_bit_float.o: last_bit_float.cu
-	$(NVCC) $(NVCCFLAGS) -dc $<            -c -o $@
-
-dpd.o: dpd.cu
-	$(NVCC) $(NVCCFLAGS) -dc $<            -c -o $@
-
-visc-aux.o: visc-aux.cu
-	$(NVCC) $(NVCCFLAGS) -dc $<            -c -o $@
-
-%.o: %.cu
-	$(NVCC) $(NVCCFLAGS) $< -c -o $@
+contact.o:        contact.cu;        $(NVCC) $(NVCCFLAGS) -dc $< -c -o $@
+containers.o:     containers.cu;     $(NVCC) $(NVCCFLAGS) -dc $< -c -o $@
+dpd.o:            dpd.cu;            $(NVCC) $(NVCCFLAGS) -dc $< -c -o $@
+fsi.o:            fsi.cu;            $(NVCC) $(NVCCFLAGS) -dc $< -c -o $@
+last_bit_float.o: last_bit_float.cu; $(NVCC) $(NVCCFLAGS) -dc $< -c -o $@
+visc-aux.o:       visc-aux.cu;       $(NVCC) $(NVCCFLAGS) -dc $< -c -o $@
+wall.o:           wall.cu;           $(NVCC) $(NVCCFLAGS) -dc $< -c -o $@
 
 libcuda-dpd:
 	make -C ../cuda-dpd/dpd libcuda-dpd.a \
