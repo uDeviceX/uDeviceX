@@ -69,6 +69,7 @@ libcuda-rbc:
 	make -C ../cuda-rbc libcuda-rbc.a \
 	CXX="$(CXX)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
 
+clean   : cleanall
 cleanall:
 	rm -f test *.o
 	make -C ../cuda-rbc     clean

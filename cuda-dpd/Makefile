@@ -6,9 +6,6 @@ cell-lists.o: cell-lists.cu cell-lists.h
 cell-lists-faster.o: cell-lists-faster.cu cell-lists.h
 	$(NVCC) $(NVCCFLAGS) $(OPT)       -c $< -o $@
 
-clean:
-	rm -f *.o
-
+clean: ; rm -f *.o
 subclean: clean
-
 .PHONY = clean subclean
