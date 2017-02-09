@@ -83,17 +83,23 @@ function makefile_header() {
     printf "\n"
 }
 
-function makefile_rule() {
+function cu2o(f) {
+    sub(/[.]cu$/, ".o", f)
+    return f
+}
+
+function makefile_rule(    f, fo) {
     for (f in ndep_be)
 	dsort(dep_be, f, ndep_be[f])
 
     makefile_header()
-    for (f in ndep_be)
-	printf "%s: %s\n", f, dep_list(dep_be, f, ndep_be[f]) | "sort"
+    for (f in ndep_be) {
+	fo = cu2o(f)
+	printf "%s: %s\n", fo, dep_list(dep_be, f, ndep_be[f]) | "sort"
+    }
  }
 
 END {
-    emacs_buffer()
-
+    # emacs_buffer()
     makefile_rule()
 }
