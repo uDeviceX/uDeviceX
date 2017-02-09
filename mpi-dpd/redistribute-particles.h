@@ -14,7 +14,6 @@
 
 #include <mpi.h>
 
-#include "common.h"
 
 class RedistributeParticles
 {

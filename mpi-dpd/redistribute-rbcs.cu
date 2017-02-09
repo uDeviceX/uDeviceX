@@ -12,6 +12,7 @@
 
 #include <vector>
 
+#include "common.h"
 #include "redistribute-particles.h"
 #include "redistribute-rbcs.h"
 #include "minmax.h"

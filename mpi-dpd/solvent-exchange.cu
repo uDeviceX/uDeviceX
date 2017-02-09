@@ -14,6 +14,7 @@
 #include <cstring>
 #include <algorithm>
 
+#include "common.h"
 #include "solvent-exchange.h"
 
 using namespace std;

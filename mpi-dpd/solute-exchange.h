@@ -14,7 +14,6 @@
 
 #include <vector>
 
-#include "common.h"
 
 class SoluteExchange
 {

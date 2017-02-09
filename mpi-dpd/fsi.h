@@ -15,7 +15,6 @@
 #include <vector>
 #include <rbc-cuda.h>
 
-#include "solute-exchange.h"
 
 #include <../dpd-rng.h>
 

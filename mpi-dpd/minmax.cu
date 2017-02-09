@@ -10,6 +10,7 @@
  *  before getting a written permission from the author of this file.
  */
 
+#include "common.h"
 #include "minmax.h"
 
 #define MAXTHREADS 1024

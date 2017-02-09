@@ -16,7 +16,6 @@
 
 #include <rbc-cuda.h>
 
-#include "common.h"
 
 class RedistributeRBCs
 {

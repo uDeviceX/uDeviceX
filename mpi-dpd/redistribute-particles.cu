@@ -16,6 +16,7 @@
 
 #include "common-kernels.h"
 #include "scan.h"
+#include "common.h"
 #include "redistribute-particles.h"
 
 #ifndef WARPSIZE

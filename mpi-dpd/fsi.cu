@@ -13,6 +13,8 @@
 #include <../dpd-rng.h>
 
 #include "common-kernels.h"
+#include "common.h"
+#include "solute-exchange.h"
 #include "fsi.h"
 #include "visc-aux.h"
 #include "last_bit_float.h"

@@ -22,12 +22,14 @@
 #include "containers.h"
 #include "dpd.h"
 #include "wall.h"
+#include "solute-exchange.h"
 #include "fsi.h"
 #include "contact.h"
 #include "solute-exchange.h"
 #include "redistribute-particles.h"
 #include "redistribute-rbcs.h"
 #include "io.h"
+#include "common.h"
 #include "velcontroller.h"
 
 class Simulation
