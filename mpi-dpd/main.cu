@@ -17,6 +17,19 @@
 #include <errno.h>
 
 #include "argument-parser.h"
+#include "common.h"
+#include "containers.h"
+#include "solvent-exchange.h"
+#include "dpd.h"
+#include "wall.h"
+#include "solute-exchange.h"
+#include "fsi.h"
+#include "contact.h"
+#include "solute-exchange.h"
+#include "redistribute-particles.h"
+#include "redistribute-rbcs.h"
+#include "io.h"
+#include "velcontroller.h"
 #include "simulation.h"
 
 float tend, desired_shrate;

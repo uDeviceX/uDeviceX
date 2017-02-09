@@ -59,8 +59,8 @@ function asplit(str, arr,   temp, i, n) {  # make an assoc array from str
 }
 
 END {
-    for (f in ndep_be) dsort(dep_be, f, ndep_be[f])
-    for (f in ndep_af) dsort(dep_af, f, ndep_af[f])
+    #for (f in ndep_be) dsort(dep_be, f, ndep_be[f])
+    #for (f in ndep_af) dsort(dep_af, f, ndep_af[f])
 
     for (f in ndep_be) {
 	hdr = f ~ /[.]h$/ # is it a header

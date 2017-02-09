@@ -12,10 +12,24 @@
 
 #include <sys/stat.h>
 
+#include "common.h"
+#include "containers.h"
+#include "solvent-exchange.h"
+#include "dpd.h"
+#include "wall.h"
+#include "solute-exchange.h"
+#include "fsi.h"
+#include "contact.h"
+#include "solute-exchange.h"
+#include "redistribute-particles.h"
+#include "redistribute-rbcs.h"
+#include "io.h"
+#include "velcontroller.h"
 #include "simulation.h"
 #include "visc-aux.h"
 #include "last_bit_float.h"
 #include "geom-wrapper.h"
+
 #define NPMAX 5000000 /* TODO: */
 float rbc_xx[NPMAX], rbc_yy[NPMAX], rbc_zz[NPMAX];
 float sol_xx[NPMAX], sol_yy[NPMAX], sol_zz[NPMAX];
