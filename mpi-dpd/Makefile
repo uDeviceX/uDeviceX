@@ -41,7 +41,7 @@ NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel)
 
 inquire: $(bash [ `cat slevel.txt` == "$(slevel)" ] || { echo "cleanall" ; } )
 	$(bash echo "$(slevel)" > slevel.txt )
-	$(MAKE) test
+	make test
 
 # I have some device code in OBJS. I have to link it separatly
 test:  $(OBJS) libcuda-dpd libcuda-rbc
@@ -80,12 +80,12 @@ visc-aux.o: visc-aux.cu
 	$(NVCC) $(NVCCFLAGS) -M $@ > $*.d
 
 libcuda-dpd:
-	$(MAKE) -C ../cuda-dpd/dpd libcuda-dpd.a \
+	make -C ../cuda-dpd/dpd libcuda-dpd.a \
 	slevel="$(slevel)" \
 	CXX="$(CXX)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)"
 
 libcuda-rbc:
-	$(MAKE) -C ../cuda-rbc libcuda-rbc.a \
+	make -C ../cuda-rbc libcuda-rbc.a \
 	slevel="$(slevel)" \
 	CXX="$(CXX)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)"
 
