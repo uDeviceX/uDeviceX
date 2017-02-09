@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# nuke files in uD: Try to compile if it compiles without th file nuke
-# it
+# nuke files in uD: Try to compile if it compiles without the file
+# delete the file
 
 match () { # return 1 if matching
     echo "$f" | awk '!/'"$@"'/{exit 1}'
