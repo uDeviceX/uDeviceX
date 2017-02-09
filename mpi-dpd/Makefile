@@ -55,30 +55,30 @@ test:  $(OBJS) libcuda-dpd libcuda-rbc
 # Separate Compilation and Linking of CUDA C++ Device Code
 # http://devblogs.nvidia.com/parallelforall/separate-compilation-linking-cuda-device-code
 containers.o: containers.cu
-	$(NVCC) $(NVCCFLAGS) -dc $*.cu            -c -o $*.o
-	$(NVCC) $(NVCCFLAGS) -M  $*.cu           >      $*.d
+	$(NVCC) $(NVCCFLAGS) -dc $<            -c -o $@
+	$(NVCC) $(NVCCFLAGS) -M  $<           >      $*.d
 wall.o: wall.cu
-	$(NVCC) $(NVCCFLAGS) -dc $*.cu            -c -o $*.o
-	$(NVCC) $(NVCCFLAGS) -M  $*.cu           >      $*.d
+	$(NVCC) $(NVCCFLAGS) -dc $<            -c -o $@
+	$(NVCC) $(NVCCFLAGS) -M  $<           >      $*.d
 fsi.o: fsi.cu
-	$(NVCC) $(NVCCFLAGS) -dc $*.cu            -c -o $*.o
-	$(NVCC) $(NVCCFLAGS) -M  $*.cu           >      $*.d
+	$(NVCC) $(NVCCFLAGS) -dc $<            -c -o $@
+	$(NVCC) $(NVCCFLAGS) -M  $<           >      $*.d
 contact.o: contact.cu
-	$(NVCC) $(NVCCFLAGS) -dc $*.cu            -c -o $*.o
-	$(NVCC) $(NVCCFLAGS) -M  $*.cu           >      $*.d
+	$(NVCC) $(NVCCFLAGS) -dc $<            -c -o $@
+	$(NVCC) $(NVCCFLAGS) -M  $<           >      $*.d
 last_bit_float.o: last_bit_float.cu
-	$(NVCC) $(NVCCFLAGS) -dc $*.cu            -c -o $*.o
-	$(NVCC) $(NVCCFLAGS) -M  $*.cu           >      $*.d
+	$(NVCC) $(NVCCFLAGS) -dc $<            -c -o $@
+	$(NVCC) $(NVCCFLAGS) -M  $<           >      $*.d
 dpd.o: dpd.cu
-	$(NVCC) $(NVCCFLAGS) -dc $*.cu            -c -o $*.o
-	$(NVCC) $(NVCCFLAGS) -M  $*.cu           >      $*.d
+	$(NVCC) $(NVCCFLAGS) -dc $<            -c -o $@
+	$(NVCC) $(NVCCFLAGS) -M  $<           >      $*.d
 visc-aux.o: visc-aux.cu
-	$(NVCC) $(NVCCFLAGS) -dc $*.cu            -c -o $*.o
-	$(NVCC) $(NVCCFLAGS) -M  $*.cu           >      $*.d
+	$(NVCC) $(NVCCFLAGS) -dc $<            -c -o $@
+	$(NVCC) $(NVCCFLAGS) -M  $<           >      $*.d
 
 %.o: %.cu
-	$(NVCC) $(NVCCFLAGS) $*.cu -c -o $*.o
-	$(NVCC) $(NVCCFLAGS) -M $*.cu > $*.d
+	$(NVCC) $(NVCCFLAGS) $< -c -o $@
+	$(NVCC) $(NVCCFLAGS) -M $@ > $*.d
 
 libcuda-dpd:
 	$(MAKE) -C ../cuda-dpd/dpd libcuda-dpd.a CXX="$(CXX)" NVCC="$(NVCC)" ARCH_VAL="$(ARCH_VAL)" CODE_VAL="$(CODE_VAL)" slevel="$(slevel)"
