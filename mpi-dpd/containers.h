@@ -15,8 +15,6 @@
 #include <vector>
 #include <string>
 
-#include "common.h"
-
 struct ParticleArray
 {
     int size;

@@ -19,6 +19,7 @@
 #include <thrust/sort.h>
 #include <thrust/count.h>
 
+#include "common.h"
 #include "io.h"
 #include "solvent-exchange.h"
 #include "wall.h"

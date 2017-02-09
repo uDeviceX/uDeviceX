@@ -15,6 +15,7 @@
 
 #include <rbc-cuda.h>
 
+#include "common.h"
 #include "containers.h"
 #include "io.h"
 #include "last_bit_float.h"

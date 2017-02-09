@@ -27,6 +27,7 @@
 #include <sstream>
 #include <vector>
 
+#include "common.h"
 #include "io.h"
 #include "last_bit_float.h"
 #include "visc-aux.h"
