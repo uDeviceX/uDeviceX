@@ -16,6 +16,8 @@
 
 #include <cuda-dpd.h>
 
+#include "common.h"
+#include "solvent-exchange.h"
 #include "dpd.h"
 #include "visc-aux.h"
 #include "last_bit_float.h"

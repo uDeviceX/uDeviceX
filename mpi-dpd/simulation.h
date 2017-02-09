@@ -20,6 +20,7 @@
 
 #include "common.h"
 #include "containers.h"
+#include "solvent-exchange.h"
 #include "dpd.h"
 #include "wall.h"
 #include "solute-exchange.h"

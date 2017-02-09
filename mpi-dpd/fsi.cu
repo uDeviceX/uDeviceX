@@ -12,8 +12,8 @@
 
 #include <../dpd-rng.h>
 
-#include "common-kernels.h"
 #include "common.h"
+#include "common-kernels.h"
 #include "solute-exchange.h"
 #include "fsi.h"
 #include "visc-aux.h"

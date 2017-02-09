@@ -20,8 +20,6 @@
 
 #include <../dpd-rng.h>
 
-#include "common.h"
-#include "solvent-exchange.h"
 
 //see the vanilla version of this code for details about how this class operates
 class ComputeDPD : public SolventExchange
