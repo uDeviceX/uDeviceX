@@ -83,7 +83,8 @@ clean:
 	rm -f test *.o
 
 cleanall: clean
+	make -C ../cuda-rbc     clean
+	make -C ../cuda-dpd     clean
 	make -C ../cuda-dpd/dpd clean
-	make -C ../cuda-rbc clean
 
 .PHONY = clean libcuda-dpd libcuda-rbc
