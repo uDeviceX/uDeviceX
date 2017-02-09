@@ -45,7 +45,6 @@ inquire: $(bash [ `cat slevel.txt` == "$(slevel)" ] || { echo "cleanall" ; } )
 
 # I have some device code in OBJS. I have to link it separatly
 test:  $(OBJS) libcuda-dpd libcuda-rbc
-	echo h5part is "$(h5part)"
 	$(NVCC) $(NVCCFLAGS) -dlink -L../cuda-dpd/dpd $(OBJS) $(LIBS) -o gpuCode.o
 	$(CXX)  $(CXXFLAGS) gpuCode.o $(OBJS) $(LIBS) -o test
 
