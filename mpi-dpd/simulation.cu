@@ -68,24 +68,25 @@ void Simulation::_update_helper_arrays()
     CUDA_CHECK(cudaPeekAtLastError());
 }
 
-std::vector<Particle> Simulation::_ic()
-{
+std::vector<Particle> Simulation::_ic() {
   srand48(rank);
   std::vector<Particle> pp;
-  int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
+  int  L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
+  auto nd   = numberdensity;
   int iz, iy, ix, l;
-  for(iz = 0; iz < L[2]; iz++)
-    for(iy = 0; iy < L[1]; iy++)
-      for(ix = 0; ix < L[0]; ix++)
-	for(l = 0; l < numberdensity; l++)
-	  {
-	    auto p = Particle();
-	    p.x[0] = -L[0]/2 + ix + 0.99 * drand48();
-	    p.x[1] = -L[1]/2 + iy + 0.99 * drand48();
-	    p.x[2] = -L[2]/2 + iz + 0.99 * drand48();
-	    p.u[0] = p.u[1] = p.u[2] = 0;
-	    pp.push_back(p);
-	  }
+  for (iz = 0; iz < L[2]; iz++)
+    for (iy = 0; iy < L[1]; iy++)
+      for (ix = 0; ix < L[0]; ix++) {
+	auto xc = -L[0]/2 + ix, yc = -L[1]/2 + iy, zc = -L[2]/2 + iz;
+ 	for (l = 0; l < nd; l++) {
+	  auto p = Particle(); auto dr = 0.99;
+	  p.x[0] = xc + dr*drand48();
+	  p.x[1] = yc + dr*drand48();
+	  p.x[2] = zc + dr*drand48();
+	  p.u[0] = p.u[1] = p.u[2] = 0;
+	  pp.push_back(p);
+	}
+      }
   set_traced_particles(pp.size(), &pp[0]);
   return pp;
 }
