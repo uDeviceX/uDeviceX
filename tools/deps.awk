@@ -7,13 +7,16 @@
 
 BEGIN {
     asplit("cuda.h stdlib.h stdio.h errno.h mpi.h H5Part.h hdf5.h pthread.h " \
-	   "cuda_runtime.h stdint.h unistd.h math.h math_functions.h", sys_hdr)
+	   "cuda_runtime.h stdint.h unistd.h math.h math_functions.h " \
+	   "geom-wrapper.h helper_math.h", sys_hdr)
 }
 
-function dep_list(d, f, n,   i, ans) { # return dep as a string
+function dep_list(d, f, n,   i, ans, sep) { # return dep as a string
     ans = ""
-    for (i = 1; i <= n; i++)
-	ans = ans " " d[f,i]
+    for (i = 1; i <= n; i++) {
+	sep = i == 1 ? "" : " "
+	ans = ans sep d[f,i]
+    }
     return ans
 }
 
@@ -23,7 +26,7 @@ function dswap(d, f, i, j,     tmp) {
 
 function dsort(d, f, n,   i, j) { # sort deps in O(N^2)
     for (i=1; i<=n; i++)
-	for (j=2; j<=n; j++)
+	for (j=i; j<=n; j++)
 	    if (d[f,j] < d[f,i]) dswap(d, f, i, j)
 }
 
@@ -58,10 +61,7 @@ function asplit(str, arr,   temp, i, n) {  # make an assoc array from str
 
 }
 
-END {
-    #for (f in ndep_be) dsort(dep_be, f, ndep_be[f])
-    #for (f in ndep_af) dsort(dep_af, f, ndep_af[f])
-
+function emacs_buffer() {
     for (f in ndep_be) {
 	hdr = f ~ /[.]h$/ # is it a header
 	if (!hdr) continue
@@ -75,4 +75,25 @@ END {
 	}
 	print "\n"
     }
+}
+
+function makefile_header() {
+    printf "%s", "# Generated with by ../tools/deps.awk *.cu *.h\n"
+    printf "%s", "# (do not include '*.h' files in other '*.h' files)\n"
+    printf "\n"
+}
+
+function makefile_rule() {
+    for (f in ndep_be)
+	dsort(dep_be, f, ndep_be[f])
+
+    makefile_header()
+    for (f in ndep_be)
+	printf "%s: %s\n", f, dep_list(dep_be, f, ndep_be[f]) | "sort"
+ }
+
+END {
+    emacs_buffer()
+
+    makefile_rule()
 }
