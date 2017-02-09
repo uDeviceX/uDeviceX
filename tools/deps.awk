@@ -6,7 +6,8 @@
 # ../tools/deps.awk *.cu
 
 BEGIN {
-    asplit("cuda.h stdlib.h stdio.h errno.h mpi.h H5Part.h hdf5.h", sys_hdr)
+    asplit("cuda.h stdlib.h stdio.h errno.h mpi.h H5Part.h hdf5.h pthread.h " \
+	   "cuda_runtime.h stdint.h unistd.h math.h math_functions.h", sys_hdr)
 }
 
 function asplit(str, arr,   temp, i, n) {  # make an assoc array from str
@@ -29,5 +30,10 @@ function asplit(str, arr,   temp, i, n) {  # make an assoc array from str
     if (!has_h || has_sys || has_thrust) next
     if ($0 in sys_hdr)                   next
 
-    if (lg_br) print FILENAME ":" NR ":"  $0
+    dep[FILENAME]=dep[FILENAME] " " $0
+}
+
+END {
+    for (f in dep)
+	print f ":" dep[f]
 }
