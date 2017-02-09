@@ -4,4 +4,4 @@ HDF5_DIR=${HOME}/usr/hdf5
 H5PART_DIR=${HOME}/usr/h5part
 MPICH_DIR=${HOME}/usr/mpich313
 NVCC = nvcc -I${HDF5_DIR}/include -I${H5PART_DIR}/include -I${MPICH_DIR}/include
-CXX = /home/kulina/usr/mpich313/bin/mpic++
+LINK = /home/kulina/usr/mpich313/bin/mpic++

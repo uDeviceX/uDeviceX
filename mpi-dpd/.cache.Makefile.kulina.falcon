@@ -1,4 +1,4 @@
-#    CXX              - C++ compiler
+#    LINK            - linker
 #    *_CXXFLAGS      - flags needed to compile
 #    *_LDFLAGS       - flags needed to link
 #    *_LIBS          - libraries
@@ -6,7 +6,7 @@
 h5part = 1
 h5 = 1
 
-CXX = g++
+LINK = g++
 NVCC_DIR = /usr/local/cuda-8.0
 NVCC_BIN = ${NVCC_DIR}/bin/nvcc
 

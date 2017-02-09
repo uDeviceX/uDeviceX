@@ -1,4 +1,4 @@
-#    CXX              - C++ compiler
+#    LINK            - linker
 #    *_CXXFLAGS      - flags needed to compile
 #    *_LDFLAGS       - flags needed to link
 #    *_LIBS          - libraries
@@ -9,7 +9,7 @@ h5 = 1
 ARCH_VAL = compute_60
 CODE_VAL = sm_60
 
-CXX = CC
+LINK = CC
 NVCC_BIN = nvcc
 
 # how to get the flags: mpicxx -show

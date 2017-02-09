@@ -44,7 +44,7 @@ NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel)
 # I have some device code in OBJS. I have to link it separatly
 test:   $(OBJS) libcuda-dpd libcuda-rbc
 	$(NVCC) $(NVCCFLAGS) $(OPT) -dlink -L../cuda-dpd/dpd -L../cuda-rbc/dpd $(OBJS) $(LIBS) -o gpuCode.o
-	$(CXX)  $(LDFLAGS) gpuCode.o $(OBJS) $(LIBS) -o test
+	$(LINK)  $(LDFLAGS) gpuCode.o $(OBJS) $(LIBS) -o test
 
 # a rule for the most of *.cu files
 %.o:              %.cu;              $(NVCC) $(NVCCFLAGS) $(OPT)     $< -c -o $@
@@ -63,11 +63,11 @@ include    Makefile.dep # dependencies
 
 libcuda-dpd:
 	make -C ../cuda-dpd/dpd libcuda-dpd.a \
-	CXX="$(CXX)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
+	LINK="$(LINK)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
 
 libcuda-rbc:
 	make -C ../cuda-rbc libcuda-rbc.a \
-	CXX="$(CXX)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
+	LINK="$(LINK)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
 
 clean   : cleanall
 cleanall:
