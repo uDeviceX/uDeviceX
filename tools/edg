@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Generate a command for remote debugging in emacs
+# An example of a command
+# (gud-gdb "/usr/local/cuda-8.0/bin/cuda-gdb --fullname /ssh:falcon:work/uD/kulina/hack.rbc_shear/mpi-dpd/test -x /tmp/p.gdb")
+# $ cat /tmp/p.gdb
+#   set  args  1 1 1 -rbcs -hdf5field_dumps -tend=1 -steps_per_dump=200 -steps_per_hdf5dump=200 -hdf5part_dumps
+
+# Usage:
+# ../tools/edg ./test 1 1 1 -rbcs -hdf5field_dumps -tend=1  -steps_per_dump=200 -steps_per_hdf5dump=200 -hdf5part_dumps
+#   `C-x C-e' at the end of the command
+
+# TEST: edg.t1
+# ../tools/edg ./test 1 1 1 -rbcs \
+#   -hdf5field_dumps -tend=1  -steps_per_dump=200 -steps_per_hdf5dump=200 -hdf5part_dumps | \
+#       awk '{gsub("[0-9]", "X"); print}' >  emacs.out.txt
+#
+
+cgdb=/usr/local/cuda-8.0/bin/cuda-gdb
+h=falcon # a host
+
+t=/tmp/edg.$$.gdb # tmp file is gdb script; TODO: no cleanup
+
+clean () {
+    rm -f -- "${t?error}"
+}
+
+trap "clean; exit 1" 1 2 3 15
+e="$1"; shift
+
+gdb_script () {
+    (
+	printf "%s" "set args"
+	for f
+	do
+	    printf " \'%s\'" "$f"
+	done
+	printf "\n"
+	printf "start\n"
+    )
+}
+
+gdb_script "$@" > "$t"
+printf '(gud-gdb "%s --fullname /ssh:%s:%s/%s -x %s")' "$cgdb" "$h" "`pwd`" "$e" "$t"
+printf "\n"
