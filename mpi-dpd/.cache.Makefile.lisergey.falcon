@@ -9,6 +9,7 @@ h5 = 1
 LINK = g++
 NVCC_DIR = /usr/local/cuda-8.0
 NVCC_BIN = ${NVCC_DIR}/bin/nvcc
+OPT      = -O0 -g --device-debug
 
 # how to get the flags: mpicxx -show
 #                     : pkg-config --libs mpich
