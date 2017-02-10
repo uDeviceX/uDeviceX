@@ -12,3 +12,16 @@
 *.ply
 *.png
 *.dcu
+*.cubin
+*.cudaobj
+geom-wrapper/CMakeFiles/*
+geom-wrapper/*/CMakeFiles/*
+geom-wrapper/*/Makefile
+geom-wrapper/Makefile
+CMakeCache.txt
+*.h5
+*.xmf
+*.vtk
+*.h5part
+rbcs-*.ply
+*.cmake
