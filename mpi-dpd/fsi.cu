@@ -68,8 +68,6 @@ namespace KernelsFSI
 #define _ACCESS(x) (*(x))
 #endif
 
-	// assert(blockDim.x * gridDim.x >= np * 3);
-
 	const int gid = threadIdx.x + blockDim.x * blockIdx.x;
        	const int pid = gid / 3;
 	const int zplane = gid % 3;
@@ -102,8 +100,6 @@ namespace KernelsFSI
 	    if (xcenter - 1 >= XCELLS || xcenter + 2 <= 0)
 		return;
 
-	    // assert(xcount >= 0);
-
 	    const int ycenter = YOFFSET + (int)floorf(dst0.y);
 
 	    const int zcenter = ZOFFSET + (int)floorf(dst1.x);
@@ -115,7 +111,6 @@ namespace KernelsFSI
 	    if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < YCELLS)
 	    {
 		const int cid0 = xstart + XCELLS * (ycenter - 1 + YCELLS * zmy);
-		// assert(cid0 >= 0 && cid0 + xcount <= NCELLS);
 		spidbase = tex1Dfetch(texCellsStart, cid0);
 		count0 = ((cid0 + xcount == NCELLS) ? nsolvent : tex1Dfetch(texCellsStart, cid0 + xcount)) - spidbase;
 	    }
@@ -123,7 +118,6 @@ namespace KernelsFSI
 	    if (zvalid && ycenter >= 0 && ycenter < YCELLS)
 	    {
 		const int cid1 = xstart + XCELLS * (ycenter + YCELLS * zmy);
-		// assert(cid1 >= 0 && cid1 + xcount <= NCELLS);
 		deltaspid1 = tex1Dfetch(texCellsStart, cid1);
 		count1 = ((cid1 + xcount == NCELLS) ? nsolvent : tex1Dfetch(texCellsStart, cid1 + xcount)) - deltaspid1;
 	    }
@@ -132,7 +126,6 @@ namespace KernelsFSI
 	    {
 		const int cid2 = xstart + XCELLS * (ycenter + 1 + YCELLS * zmy);
 		deltaspid2 = tex1Dfetch(texCellsStart, cid2);
-		// assert(cid2 >= 0 && cid2 + xcount <= NCELLS);
 		count2 = ((cid2 + xcount == NCELLS) ? nsolvent : tex1Dfetch(texCellsStart, cid2 + xcount)) - deltaspid2;
 	    }
 
@@ -152,8 +145,6 @@ namespace KernelsFSI
 	    const int m1 = (int)(i >= scan1);
 	    const int m2 = (int)(i >= scan2);
 	    const int spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
-
-	    // assert(spid >= 0 && spid < nsolvent);
 
 	    const int sentry = 3 * spid;
 	    const float2 stmp0 = tex1Dfetch(texSolventParticles, sentry    );
@@ -178,13 +169,6 @@ namespace KernelsFSI
 	    yforce += yinteraction;
 	    zforce += zinteraction;
 
-	    // assert(!isnan(xinteraction));
-	    // assert(!isnan(yinteraction));
-	    // assert(!isnan(zinteraction));
-	    // assert(fabs(xinteraction) < 1e4);
-	    // assert(fabs(yinteraction) < 1e4);
-	    // assert(fabs(zinteraction) < 1e4);
-
 	    atomicAdd(accsolvent + sentry    , -xinteraction);
 	    atomicAdd(accsolvent + sentry + 1, -yinteraction);
 	    atomicAdd(accsolvent + sentry + 2, -zinteraction);
@@ -193,10 +177,6 @@ namespace KernelsFSI
 	atomicAdd(acc + 3 * pid + 0, xforce);
 	atomicAdd(acc + 3 * pid + 1, yforce);
 	atomicAdd(acc + 3 * pid + 2, zforce);
-
-	for(int c = 0; c < 3; ++c) {
-	    // assert(!isnan(acc[3 * pid + c]));
-	}
     }
 
     void setup(const Particle * const solvent, const int npsolvent, const int * const cellsstart, const int * const cellscount)
@@ -229,16 +209,13 @@ namespace KernelsFSI
 	{
 	    CUDA_CHECK(cudaBindTexture(&textureoffset, &texSolventParticles, solvent, &texSolventParticles.channelDesc,
 				       sizeof(float) * 6 * npsolvent));
-	    // assert(textureoffset == 0);
 	}
 
 	const int ncells = XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN;
 
 	CUDA_CHECK(cudaBindTexture(&textureoffset, &texCellsStart, cellsstart, &texCellsStart.channelDesc, sizeof(int) * ncells));
-	// assert(textureoffset == 0);
 
 	CUDA_CHECK(cudaBindTexture(&textureoffset, &texCellsCount, cellscount, &texCellsCount.channelDesc, sizeof(int) * ncells));
-	// assert(textureoffset == 0);
     }
 }
 
@@ -267,8 +244,6 @@ namespace KernelsFSI
 
     __global__ 	void interactions_halo(const int nparticles_padded, const int nsolvent, float * const accsolvent, const float seed)
     {
-	// assert(blockDim.x * gridDim.x >= nparticles_padded);
-
 	const int laneid = threadIdx.x & 0x1f;
 	const int warpid = threadIdx.x >> 5;
 	const int localbase = 32 * (warpid + 4 * blockIdx.x);
@@ -286,12 +261,7 @@ namespace KernelsFSI
 	    const uint key3 = 3 * (localbase >= packstarts_padded[key9 + 3]) + 3 * (localbase >= packstarts_padded[key9 + 6]);
 	    const uint key1 = (localbase >= packstarts_padded[key9 + key3 + 1]) + (localbase >= packstarts_padded[key9 + key3 + 2]);
 	    const int code = key9 + key3 + key1;
-	    // assert(code >= 0 && code < 26);
-	    // assert(localbase >= packstarts_padded[code] && localbase < packstarts_padded[code + 1]);
-
 	    const int unpackbase = localbase - packstarts_padded[code];
-	    // assert (unpackbase >= 0);
-	    // assert(unpackbase < packcount[code]);
 
 	    nunpack = min(32, packcount[code] - unpackbase);
 
@@ -331,8 +301,6 @@ namespace KernelsFSI
 		if (xcenter - 1 >= XCELLS || xcenter + 2 <= 0)
 		    continue;
 
-		// assert(xcount >= 0);
-
 		const int ycenter = YOFFSET + (int)floorf(dst0.y);
 
 		const int zcenter = ZOFFSET + (int)floorf(dst1.x);
@@ -344,7 +312,6 @@ namespace KernelsFSI
 		if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < YCELLS)
 		{
 		    const int cid0 = xstart + XCELLS * (ycenter - 1 + YCELLS * zmy);
-		    // assert(cid0 >= 0 && cid0 + xcount <= NCELLS);
 		    spidbase = tex1Dfetch(texCellsStart, cid0);
 		    count0 = ((cid0 + xcount == NCELLS) ? nsolvent : tex1Dfetch(texCellsStart, cid0 + xcount)) - spidbase;
 		}
@@ -352,7 +319,6 @@ namespace KernelsFSI
 		if (zvalid && ycenter >= 0 && ycenter < YCELLS)
 		{
 		    const int cid1 = xstart + XCELLS * (ycenter + YCELLS * zmy);
-		    // assert(cid1 >= 0 && cid1 + xcount <= NCELLS);
 		    deltaspid1 = tex1Dfetch(texCellsStart, cid1);
 		    count1 = ((cid1 + xcount == NCELLS) ? nsolvent : tex1Dfetch(texCellsStart, cid1 + xcount)) - deltaspid1;
 		}
@@ -361,7 +327,6 @@ namespace KernelsFSI
 		{
 		    const int cid2 = xstart + XCELLS * (ycenter + 1 + YCELLS * zmy);
 		    deltaspid2 = tex1Dfetch(texCellsStart, cid2);
-		    // assert(cid2 >= 0 && cid2 + xcount <= NCELLS);
 		    count2 = ((cid2 + xcount == NCELLS) ? nsolvent : tex1Dfetch(texCellsStart, cid2 + xcount)) - deltaspid2;
 		}
 
@@ -378,8 +343,6 @@ namespace KernelsFSI
 		const int m1 = (int)(i >= scan1);
 		const int m2 = (int)(i >= scan2);
 		const int spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
-
-		// assert(spid >= 0 && spid < nsolvent);
 
 		const int sentry = 3 * spid;
 		const float2 stmp0 = tex1Dfetch(texSolventParticles, sentry    );
@@ -403,13 +366,6 @@ namespace KernelsFSI
 		xforce += xinteraction;
 		yforce += yinteraction;
 		zforce += zinteraction;
-
-		// assert(!isnan(xinteraction));
-		// assert(!isnan(yinteraction));
-		// assert(!isnan(zinteraction));
-		// assert(fabs(xinteraction) < 1e4);
-		// assert(fabs(yinteraction) < 1e4);
-		// assert(fabs(zinteraction) < 1e4);
 
 		atomicAdd(accsolvent + sentry    , -xinteraction);
 		atomicAdd(accsolvent + sentry + 1, -yinteraction);

@@ -213,9 +213,6 @@ void Simulation::_create_walls(const bool verbose, bool & termination_request)
 
             const float factor = 1 + IudotnI * dt * 10 * numberdensity;
 
-            //printf("RANK %d: direction %d %d %d -> IudotnI is %f and final factor is %f\n",
-            //rank, d[0], d[1], d[2], IudotnI, 1 + IudotnI * dt * numberdensity);
-
             new_sizes.msgsizes[code] *= factor;
         }
     }
@@ -350,8 +347,6 @@ void Simulation::_datadump(const int idtimestep)
 
         start += rbcscoll->pcount();
     }
-
-    // assert(start == n);
 
     CUDA_CHECK(cudaEventRecord(evdownloaded, 0));
 

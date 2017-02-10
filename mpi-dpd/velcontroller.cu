@@ -48,11 +48,6 @@ namespace VelControlKernels
             for (uint pid = cellsstart[cid]; pid < cellsstart[cid+1]; pid++)
             {
                 acc[pid].a[0] += f.x;
-                //acc[pid].a[1] += f.y;
-                //acc[pid].a[2] += f.z;
-
-//				if(fabs(p[pid].u[0]) > 1e-16)
-//					acc[pid].a[0] /= p[pid].u[0];
             }
         }
     }
@@ -70,7 +65,6 @@ namespace VelControlKernels
 
     __global__ void reduceByWarp(float3 *res, const float3 * const __restrict__ vel, const uint total)
     {
-        // assert(blockDim.x == 32);
         const uint id = threadIdx.x + blockIdx.x*blockDim.x;
         const uint ch = blockIdx.x;
         if (id >= total) return;

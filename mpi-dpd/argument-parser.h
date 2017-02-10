@@ -37,7 +37,7 @@ public:
 
 Value() : content("") {}
 
-Value(string content_) : content(content_) { /*printf("%s\n",content.c_str());*/ }
+Value(string content_) : content(content_) {}
 
     double asDouble(double def=0) const
     {
@@ -69,22 +69,18 @@ Value(string content_) : content(content_) { /*printf("%s\n",content.c_str());*/
 
     vector<float> asVecFloat(const int musthave_size = -1) const
     {
-	//printf("mycontent is %s\n", content.c_str());
 	std::stringstream ss(content);
-	//// assert(ss.good());
 	vector<float> retval;
 	double e;
 
 	while (ss >> e)
 	{
 	    retval.push_back(e);
-	    //  printf("reading %f\n", e);
 	    if (ss.peek() == ',')
 		ss.ignore();
 	}
 
 	if (musthave_size > 0)
-	    // assert(musthave_size == (int)retval.size());
 
 	return retval;
     }

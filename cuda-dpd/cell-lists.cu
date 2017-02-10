@@ -16,54 +16,13 @@
 
 #include "cell-lists.h"
 
-#if 0
-// The following encoding/decoding was taken from
-// http://fgiesen.wordpress.com/2009/12/13/decoding-morton-codes/
-// "Insert" two 0 bits after each of the 10 low bits of x
-__device__ inline uint Part1By2(uint x)
-{
-    x &= 0x000003ff;                  // x = ---- ---- ---- ---- ---- --98 7654 3210
-    x = (x ^ (x << 16)) & 0xff0000ff; // x = ---- --98 ---- ---- ---- ---- 7654 3210
-    x = (x ^ (x <<  8)) & 0x0300f00f; // x = ---- --98 ---- ---- 7654 ---- ---- 3210
-    x = (x ^ (x <<  4)) & 0x030c30c3; // x = ---- --98 ---- 76-- --54 ---- 32-- --10
-    x = (x ^ (x <<  2)) & 0x09249249; // x = ---- 9--8 --7- -6-- 5--4 --3- -2-- 1--0
-    return x;
-} 
-
-// Inverse of Part1By2 - "delete" all bits not at positions divisible by 3
-__device__ uint inline Compact1By2(uint x)
-{
-    x &= 0x09249249;                  // x = ---- 9--8 --7- -6-- 5--4 --3- -2-- 1--0
-    x = (x ^ (x >>  2)) & 0x030c30c3; // x = ---- --98 ---- 76-- --54 ---- 32-- --10
-    x = (x ^ (x >>  4)) & 0x0300f00f; // x = ---- --98 ---- ---- 7654 ---- ---- 3210
-    x = (x ^ (x >>  8)) & 0xff0000ff; // x = ---- --98 ---- ---- ---- ---- 7654 3210
-    x = (x ^ (x >> 16)) & 0x000003ff; // x = ---- ---- ---- ---- ---- --98 7654 3210
-    return x;
-}
-
-__device__ int inline encode(int x, int y, int z, int3 ncells) 
-{
-    return (Part1By2(z) << 2) + (Part1By2(y) << 1) + Part1By2(x);
-}
-
-__device__ int3 inline decode(int code, int3 ncells)
-{
-    return make_int3(
-	Compact1By2(code >> 0),
-	Compact1By2(code >> 1),
-	Compact1By2(code >> 2)
-	);
-}
-#else
-__device__ int encode(int ix, int iy, int iz, int3 ncells) 
+__device__ int encode(int ix, int iy, int iz, int3 ncells)
 {
     const int retval = ix + ncells.x * (iy + iz * ncells.y);
 
-    // assert(retval < ncells.x * ncells.y * ncells.z && retval>=0);
-
-    return retval; 
+    return retval;
 }
-	
+
 __device__ int3 decode(int code, int3 ncells)
 {
     const int ix = code % ncells.x;
@@ -72,14 +31,13 @@ __device__ int3 decode(int code, int3 ncells)
 
     return make_int3(ix, iy, iz);
 }
-#endif
 
 #define CUDA_CHECK(ans) do { cudaAssert((ans), __FILE__, __LINE__); } while(0)
 inline void cudaAssert(cudaError_t code, const char *file, int line, bool abort=true)
 {
-    if (code != cudaSuccess) 
+    if (code != cudaSuccess)
     {
-	fprintf(stderr,"GPU// assert: %s %s %d\n", cudaGetErrorString(code), file, line);
+	fprintf(stderr,"GPU assert: %s %s %d\n", cudaGetErrorString(code), file, line);
 	sleep(5);
 	if (abort) exit(code);
     }
@@ -95,11 +53,11 @@ __global__ void pid2code(int * codes, int * pids, const int np, const float * xy
     const float x = (xyzuvw[0 + 6 * pid] - domainstart.x) * invrc;
     const float y = (xyzuvw[1 + 6 * pid] - domainstart.y) * invrc;
     const float z = (xyzuvw[2 + 6 * pid] - domainstart.z) * invrc;
-    
+
     int ix = (int)floor(x);
     int iy = (int)floor(y);
     int iz = (int)floor(z);
-    
+
     /*   if( !(ix >= 0 && ix < ncells.x) ||
 	!(iy >= 0 && iy < ncells.y) ||
 	!(iz >= 0 && iz < ncells.z))
@@ -109,7 +67,7 @@ __global__ void pid2code(int * codes, int * pids, const int np, const float * xy
     ix = max(0, min(ncells.x - 1, ix));
     iy = max(0, min(ncells.y - 1, iy));
     iz = max(0, min(ncells.z - 1, iz));
-    
+
     codes[pid] = encode(ix, iy, iz, ncells);
     pids[pid] = pid;
 };
@@ -117,7 +75,7 @@ __global__ void pid2code(int * codes, int * pids, const int np, const float * xy
 __global__ void _gather(const float * input, const int * indices, float * output, const int n)
 {
     const int tid = threadIdx.x + blockDim.x * blockIdx.x;
-    
+
     if (tid < n)
 	output[tid] = input[(tid % 6) + 6 * indices[tid / 6]];
 }
@@ -175,7 +133,7 @@ void build_clists_vanilla(float * const xyzuvw, int np, const float rc,
     pid2code<<<(np + 127) / 128, 128>>>(_ptr(codes), _ptr(pids), np, xyzuvw, make_int3(xcells, ycells, zcells), make_float3(xstart, ystart, zstart), 1./rc);
 
     sort_by_key(codes.begin(), codes.end(), pids.begin());
-    
+
     {
 	device_vector<float> tmp(np * 6);
 
@@ -183,17 +141,17 @@ void build_clists_vanilla(float * const xyzuvw, int np, const float rc,
 	    copy(device_ptr<float>((float *)src_device_xyzuvw), device_ptr<float>((float *)src_device_xyzuvw + 6 * np), tmp.begin());
 	else
 	     copy(device_ptr<float>(xyzuvw), device_ptr<float>(xyzuvw + 6 * np), tmp.begin());
-	
+
 	_gather<<<(6 * np + 127) / 128, 128>>>(_ptr(tmp), _ptr(pids), xyzuvw, 6 * np);
 	CUDA_CHECK(cudaPeekAtLastError());
     }
-   
+
     const int ncells = xcells * ycells * zcells;
     device_vector<int> cids(ncells), cidsp1(ncells);
-    
+
     _generate_cids<<< (cids.size() + 127) / 128, 128>>>(_ptr(cids), ncells, 0,  make_int3(xcells, ycells, zcells));
     _generate_cids<<< (cidsp1.size() + 127) / 128, 128>>>(_ptr(cidsp1), ncells, 1, make_int3(xcells, ycells, zcells) );
-	
+
     lower_bound(codes.begin(), codes.end(), cids.begin(), cids.end(), device_ptr<int>(cellsstart));
     lower_bound(codes.begin(), codes.end(), cidsp1.begin(), cidsp1.end(), device_ptr<int>(cellscount));
 
@@ -201,12 +159,10 @@ void build_clists_vanilla(float * const xyzuvw, int np, const float rc,
 
     if (nonemptycells != NULL)
     {
-	// assert(nonemptycells->second != NULL);
-	
-	const int nonempties = copy_if(counting_iterator<int>(0), counting_iterator<int>(ncells), 
+	const int nonempties = copy_if(counting_iterator<int>(0), counting_iterator<int>(ncells),
 				       device_ptr<int>(cellscount), device_ptr<int>(nonemptycells->second), is_gzero())
 	    - device_ptr<int>(nonemptycells->second);
-	
+
 	nonemptycells->first = nonempties;
     }
 

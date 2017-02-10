@@ -58,7 +58,7 @@ inline void cudaAssert(cudaError_t code, const char *file, int line)
 {
     if (code != cudaSuccess)
     {
-	fprintf(stderr,"GPU// assert: %s %s %d\n", cudaGetErrorString(code), file, line);
+	fprintf(stderr,"GPU assert: %s %s %d\n", cudaGetErrorString(code), file, line);
 
 	abort();
     }
@@ -179,8 +179,6 @@ SimpleDeviceBuffer(int n = 0): capacity(0), size(0), data(NULL) { resize(n);}
 
     void resize(const int n)
 	{
-	    // assert(n >= 0);
-
 	    size = n;
 
 	    if (capacity >= n)
@@ -201,8 +199,6 @@ SimpleDeviceBuffer(int n = 0): capacity(0), size(0), data(NULL) { resize(n);}
 
     void preserve_resize(const int n)
 	{
-	    // assert(n >= 0);
-
 	    T * old = data;
 
 	    const int oldsize = size;
@@ -244,8 +240,6 @@ SimpleHostBuffer(int n = 0): capacity(0), size(0), data(NULL) { resize(n);}
 
     void resize(const int n)
 	{
-	    // assert(n >= 0);
-
 	    size = n;
 
 	    if (capacity >= n)
@@ -262,8 +256,6 @@ SimpleHostBuffer(int n = 0): capacity(0), size(0), data(NULL) { resize(n);}
 
     void preserve_resize(const int n)
 	{
-	    // assert(n >= 0);
-
 	    T * old = data;
 
 	    const int oldsize = size;
@@ -306,8 +298,6 @@ PinnedHostBuffer(int n = 0): capacity(0), size(0), data(NULL), devptr(NULL) { re
 
     void resize(const int n)
 	{
-	    // assert(n >= 0);
-
 	    size = n;
 
 	    if (capacity >= n)
@@ -326,8 +316,6 @@ PinnedHostBuffer(int n = 0): capacity(0), size(0), data(NULL), devptr(NULL) { re
 
     void preserve_resize(const int n)
 	{
-	    // assert(n >= 0);
-
 	    T * old = data;
 
 	    const int oldsize = size;

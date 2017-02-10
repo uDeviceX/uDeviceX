@@ -26,9 +26,6 @@ namespace SolutePUP
 SoluteExchange::SoluteExchange(MPI_Comm _cartcomm) :
 iterationcount(-1), packstotalstart(27), host_packstotalstart(27), host_packstotalcount(26)
 {
-    // assert(XSIZE_SUBDOMAIN % 2 == 0 && YSIZE_SUBDOMAIN % 2 == 0 && ZSIZE_SUBDOMAIN % 2 == 0);
-    // assert(XSIZE_SUBDOMAIN >= 4 && YSIZE_SUBDOMAIN >= 4 && ZSIZE_SUBDOMAIN >= 4);
-
     MPI_CHECK( MPI_Comm_dup(_cartcomm, &cartcomm));
     MPI_CHECK( MPI_Comm_size(cartcomm, &nranks));
     MPI_CHECK( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
@@ -75,8 +72,6 @@ namespace SolutePUP
 
     __global__ void scatter_indices(const float2 * const particles, const int nparticles, int * const counts)
     {
-	// assert(blockDim.x * gridDim.x >= nparticles && blockDim.x == 128);
-
 	const int warpid = threadIdx.x >> 5;
 	const int base = 32 * (warpid + 4 * blockIdx.x);
 	const int nsrc = min(32, nparticles - base);
@@ -96,14 +91,6 @@ namespace SolutePUP
 	    HYSIZE = YSIZE_SUBDOMAIN / 2,
 	    HZSIZE = ZSIZE_SUBDOMAIN / 2
 	};
-
-	// assert(s0.x >= -HXSIZE + 1 - XSIZE_SUBDOMAIN && s0.x < HXSIZE - 1 + XSIZE_SUBDOMAIN);
-	// assert(s0.y >= -HYSIZE + 1 - YSIZE_SUBDOMAIN && s0.y < HYSIZE - 1 + YSIZE_SUBDOMAIN);
-	// assert(s1.x >= -HZSIZE + 1 - ZSIZE_SUBDOMAIN && s1.x < HZSIZE - 1 + ZSIZE_SUBDOMAIN);
-
-	// assert(fabs(s1.y) < 1e4);
-	// assert(fabs(s2.x) < 1e4);
-	// assert(fabs(s2.y) < 1e4);
 
 	const int halocode[3] =
 	    {
@@ -125,8 +112,6 @@ namespace SolutePUP
 		const int zterm = (halocode[2] * (d == 2) + 2) % 3;
 
 		const int bagid = xterm + 3 * (yterm + 3 * zterm);
-		// assert(bagid >= 0 && bagid < 26);
-
 		const int myid = coffsets[bagid] + atomicAdd(counts + bagid, 1);
 
 		if (myid < ccapacities[bagid])
@@ -143,8 +128,6 @@ namespace SolutePUP
 		const int zterm = (halocode[2] * (d != 2) + 2) % 3;
 
 		const int bagid = xterm + 3 * (yterm + 3 * zterm);
-		// assert(bagid >= 0 && bagid < 26);
-
 		const int myid = coffsets[bagid] + atomicAdd(counts + bagid, 1);
 
 		if (myid < ccapacities[bagid])
@@ -159,8 +142,6 @@ namespace SolutePUP
 	    const int zterm = (halocode[2] + 2) % 3;
 
 	    const int bagid = xterm + 3 * (yterm + 3 * zterm);
-	    // assert(bagid >= 0 && bagid < 26);
-
 	    const int myid = coffsets[bagid] + atomicAdd(counts + bagid, 1);
 
 	    if (myid < ccapacities[bagid])
@@ -170,8 +151,6 @@ namespace SolutePUP
 
     __global__ void tiny_scan(const int * const counts, const int * const oldtotalcounts, int * const totalcounts, int * const paddedstarts)
     {
-	// assert(blockDim.x == 32 && gridDim.x == 1);
-
 	const int tid = threadIdx.x;
 
 	int mycount = 0;
@@ -209,8 +188,6 @@ namespace SolutePUP
 
     __global__ void pack(const float2 * const particles, const int nparticles, float2 * const buffer, const int nbuffer, const int soluteid)
     {
-	// assert(blockDim.x == 128);
-
 #if !defined(__CUDA_ARCH__)
 #warning __CUDA_ARCH__ not defined! assuming 350
 #define _ACCESS(x) __ldg(x)
@@ -239,12 +216,7 @@ namespace SolutePUP
 		(int)(localbase >= cpaddedstarts[key9 + key3 + 2]);
 
 	    const int code = key9 + key3 + key1;
-
-	    // assert(code >= 0 && code < 26);
-	    // assert(localbase >= cpaddedstarts[code] && localbase < cpaddedstarts[code + 1]);
-
 	    const int packbase = localbase - cpaddedstarts[code];
-	    // assert(packbase >= 0 && packbase < ccounts[code]);
 
 	    const int npack = min(32, ccounts[code] - packbase);
 
@@ -255,9 +227,7 @@ namespace SolutePUP
 	    if (lane < npack)
 	    {
 		const int entry = coffsets[code] + packbase + lane;
-		// assert(entry >= 0 && entry < ccapacities[code]);
 		const int pid = _ACCESS(scattered_indices[code] + entry);
-		// assert(pid >= 0 && pid < nparticles);
 
 		const int entry2 = 3 * pid;
 
@@ -269,10 +239,6 @@ namespace SolutePUP
 		s0.y -= ((code / 3 + 2) % 3 - 1) * YSIZE_SUBDOMAIN;
 		s1.x -= ((code / 9 + 2) % 3 - 1) * ZSIZE_SUBDOMAIN;
 	    }
-
-	    // assert(cbases[code] + coffsets[code] + packbase >= 0 && npack >= 0);
-	    // assert(cbases[code] + coffsets[code] + packbase + npack < nbuffer);
-
 	    write_AOS6f(buffer + 3 * (cbases[code] + coffsets[code] + packbase), npack, s0, s1, s2);
 	}
     }
@@ -407,16 +373,6 @@ void SoluteExchange::post_p(cudaStream_t stream, cudaStream_t downloadstream)
 	    _pack_attempt(stream);
 
 	    CUDA_CHECK(cudaStreamSynchronize(stream));
-
-#ifndef NDEBUG
-	    for(int i = 0; i < 26; ++i) {
-		// assert(send_counts[i] == host_packstotalcount.data[i]);
-		}
-
-	    for(int i = 0; i < 26; ++i) {
-		// assert(send_counts[i] <= local[i].capacity());
-		}
-#endif
 	}
 
 	for(int i = 0; i < 26; ++i)
@@ -435,7 +391,6 @@ void SoluteExchange::post_p(cudaStream_t stream, cudaStream_t downloadstream)
 
 	if (host_packstotalstart.data[26])
 	{
-	    // assert(host_packbuf.capacity >= packbuf.capacity);
 	    CUDA_CHECK(cudaMemcpyAsync(host_packbuf.data, packbuf.data, sizeof(Particle) * host_packstotalstart.data[26],
 				       cudaMemcpyDeviceToHost, downloadstream));
 	}
@@ -519,7 +474,7 @@ void SoluteExchange::recv_p(cudaStream_t uploadstream)
     }
 
     _postrecvC();
-    
+
     for(int i = 0; i < 26; ++i)
 	CUDA_CHECK(cudaMemcpyAsync(remote[i].dstate.data, remote[i].hstate.data, sizeof(Particle) * remote[i].hstate.size,
 				   cudaMemcpyHostToDevice, uploadstream));
@@ -529,27 +484,27 @@ void SoluteExchange::halo(cudaStream_t uploadstream, cudaStream_t stream)
 {
     if (wsolutes.size() == 0)
 	return;
-        
+
     if (iterationcount)
 	_wait(reqsendA);
-    
+
     ParticlesWrap halos[26];
-    
+
     for(int i = 0; i < 26; ++i)
 	halos[i] = ParticlesWrap(remote[i].dstate.data, remote[i].dstate.size, remote[i].result.devptr);
-    
+
     CUDA_CHECK(cudaStreamSynchronize(uploadstream));
-    
+
     for(int i = 0; i < visitors.size(); ++i)
 	visitors[i]->halo(halos, stream);
-    
+
     CUDA_CHECK(cudaPeekAtLastError());
-    
+
     CUDA_CHECK(cudaEventRecord(evAcomputed, stream));
-    
+
     for(int i = 0; i < 26; ++i)
 	local[i].update();
-    
+
 #ifndef _DUMBCRAY_
     _postrecvP();
 #endif
@@ -593,11 +548,7 @@ namespace SolutePUP
 		(int)(pid >= cpaddedstarts[key9 + key3 + 2]);
 
 	    const int code = key9 + key3 + key1;
-	    // assert(code >= 0 && code < 26);
-	    // assert(pid >= cpaddedstarts[code] && pid < cpaddedstarts[code + 1]);
-
 	    const int lpid = pid - cpaddedstarts[code];
-	    // assert(lpid >= 0);
 
 	    if (lpid >= ccounts[code])
 		continue;
@@ -605,11 +556,8 @@ namespace SolutePUP
 	    const int component = gid % 3;
 
 	    const int entry = coffsets[code] + lpid;
-	    // assert(entry >= 0 && entry <= ccapacities[code]);
-
 	    const float myval = _ACCESS(recvbags[code] + component +  3 * entry);
 	    const int dpid = _ACCESS(scattered_indices[code] + entry);
-	    // assert(dpid >= 0 && dpid < nparticles);
 
 	    atomicAdd(accelerations + 3 * dpid + component, myval);
 	}

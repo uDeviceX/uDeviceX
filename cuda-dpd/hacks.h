@@ -18,9 +18,9 @@
 #define CUDA_CHECK(ans) do { cudaAssert((ans), __FILE__, __LINE__); } while(0)
 inline void cudaAssert(cudaError_t code, const char *file, int line, bool abort=true)
 {
-    if (code != cudaSuccess) 
+    if (code != cudaSuccess)
     {
-	fprintf(stderr,"GPU// assert: %s %s %d\n", cudaGetErrorString(code), file, line);
+	fprintf(stderr,"GPU assert: %s %s %d\n", cudaGetErrorString(code), file, line);
 	sleep(5);
 	if (abort) exit(code);
     }
@@ -47,7 +47,7 @@ struct TextureWrap
 	    resDesc.res.linear.devPtr = data;
 	    resDesc.res.linear.sizeInBytes = n * sizeof(ElementType);
 	    resDesc.res.linear.desc = cudaCreateChannelDesc<ElementType>();
-    
+
 	    struct cudaTextureDesc texDesc;
 	    memset(&texDesc, 0, sizeof(texDesc));
 	    texDesc.addressMode[0]   = cudaAddressModeWrap;

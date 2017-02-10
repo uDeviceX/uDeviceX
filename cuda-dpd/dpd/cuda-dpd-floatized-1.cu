@@ -165,8 +165,6 @@ void _dpd_forces_symm_merged()
 {
 
     asm volatile( ".shared .u32 smem[512];" ::: "memory" );
-    //* was: __shared__ uint2 volatile start_n_scan[MYWPB][32];
-    //* was: __shared__ uint  volatile queue[MYWPB][64];
 
     const uint tid = threadIdx.x;
     const uint wid = threadIdx.y;
@@ -186,9 +184,6 @@ void _dpd_forces_symm_merged()
                       offs.x;
 
     for( uint it = 0; it < 4 ; it = xadd( it, 1u ) ) {
-
-        //* was: const int cid = cbase + ( it < 2u ) * info.ncells.x * info.ncells.y +
-        //* was:                 ( ( it & 1u ) ^ ( it >> 1 ) ) * info.ncells.x;
         int cid;
         asm( "{  .reg .pred    p;"
              "   .reg .f32     incf;"
@@ -203,18 +198,6 @@ void _dpd_forces_symm_merged()
              "=r"( cid ) : "r"( cbase ), "f"( u2f( it ) ), "f"( u2f( 2u ) ), "f"( i2f( info.ncells.y ) ), "f"( u2f( ( it & 1u ) ^ ( it >> 1 ) ) ),
              "r"( info.ncells.x ) );
 
-        //* was: uint mycount=0, myscan=0;
-        //* was: if (tid < 14) {
-        //* was: const int cid = cbase +
-        //* was:        (it>1)*info.ncells.x*info.ncells.y +
-        //* was:        ((it&1)^((it>>1)&1))*info.ncells.x;
-
-        //* was: const bool valid_cid = (cid >= 0) && (cid < info.ncells.x*info.ncells.y*info.ncells.z);
-        //* was: const uint2 sc = valid_cid ? tex1Dfetch( texStartAndCount, cid ) : make_uint2(0,0);
-
-        //* was: start_n_scan[wid][tid].x = (valid_cid) ? sc.x : 0;
-        //* was: myscan = mycount = (valid_cid) ? sc.y : 0;
-        //* was: }
         uint mystart = 0, mycount = 0, myscan;
         asm( "{  .reg .pred vc;"
              "   .reg .u32  foo, bar;"
@@ -233,10 +216,6 @@ void _dpd_forces_symm_merged()
                       "r"( mystart ) :
                       "memory" );
 
-        // was: #pragma unroll
-        // was: for(int L = 1; L < 32; L <<= 1) {
-        // was:     myscan = xadd( myscan, (tid >= L)*__shfl_up(myscan, L) );
-        // was: }
         asm( "{ .reg .pred   p;"
              "  .reg .f32    myscan, theirscan;"
              "   mov.b32     myscan, %0;"
@@ -254,16 +233,11 @@ void _dpd_forces_symm_merged()
              "}" : "+r"( myscan ) );
 
 
-        //* was: if (tid < 15) start_n_scan[wid][tid].y = myscan - mycount;
         asm volatile( "{    .reg .pred lt15;"
                       "      setp.lt.f32 lt15, %0, %1;"
                       "@lt15 st.volatile.shared.u32 [%2+4], %3;"
                       "}":: "f"( u2f( tid ) ), "f"( u2f( 15u ) ), "r"( xmad( tid, 8.f, pshare ) ), "r"( xsub( myscan, mycount ) ) : "memory" );
 
-        //* was: const uint dststart = start_n_scan[wid][13].x;
-        //* was: const uint lastdst  = xsub( xadd( dststart, start_n_scan[wid][14].y ), start_n_scan[wid][13].y );
-        //* was: const uint nsrc     = start_n_scan[wid][14].y;
-        //* was: const uint spidext  = start_n_scan[wid][13].x;
         uint x13, y13, y14; // TODO: LDS.128
         asm volatile( "ld.volatile.shared.v2.u32 {%0,%1}, [%3+104];" // 104 = 13 x 8-byte uint2
                       "ld.volatile.shared.u32     %2,     [%3+116];" // 116 = 14 x 8-bute uint2 + .y
@@ -278,11 +252,6 @@ void _dpd_forces_symm_merged()
         for( uint p = 0; p < nsrc; p = xadd( p, 32u ) ) {
 
             const uint pid = p + tid;
-
-            //* was: const uint key9 = 9*(pid >= start_n_scan[wid][9].y);
-            //* was: uint key3 = 3*(pid >= start_n_scan[wid][key9 + 3].y);
-            //* was: key3 += (key9 < 9) ? 3*(pid >= start_n_scan[wid][key9 + 6].y) : 0;
-            //* was: const uint spid = pid - start_n_scan[wid][key3+key9].y + start_n_scan[wid][key3+key9].x;
             uint spid;
             asm volatile( "{ .reg .pred p, q, r;" // TODO: HOW TO USE LDS.128
                           "  .reg .f32  key;"
@@ -323,7 +292,6 @@ void _dpd_forces_symm_merged()
                 const float dz = xdest.z - xsrc.z;
                 const float d2 = dx * dx + dy * dy + dz * dz;
 
-                //* was: int interacting = 0;
                 asm volatile( ".reg .pred interacting;" );
                 uint overview;
                 asm( "   setp.lt.ftz.f32  interacting, %3, 1.0;"
@@ -334,7 +302,6 @@ void _dpd_forces_symm_merged()
 
                 const uint insert = xadd( nb, i2u( __popc( overview & __lanemask_lt() ) ) );
 
-                //* was: if (interacting) queue[wid][insert] = __pack_8_24( xsub(dpid,dststart), spid );
                 asm volatile( "@interacting st.volatile.shared.u32 [%0+1024], %1;" : :
                               "r"( xmad( insert, 4.f, pshare ) ),
                               "r"( __pack_8_24( xsub( dpid, dststart ), spid ) ) :
@@ -345,7 +312,6 @@ void _dpd_forces_symm_merged()
                     core_ytang( dststart, pshare, tid, spidext );
                     nb = xsub( nb, 32u );
 
-                    //* was: queue[tid] = queue[tid+32];
                     asm volatile( "{ .reg .u32 tmp;"
                                   "   ld.volatile.shared.u32 tmp, [%0+1024+128];"
                                   "   st.volatile.shared.u32 [%0+1024], tmp;"
@@ -437,10 +403,6 @@ void forces_dpd_cuda_nohost( const float * const xyzuvw, const float4 * const xy
                              const float invsqrtdt,
                              const float seed, cudaStream_t stream )
 {
-//  #ifdef ONESTEP
-//  cudaDeviceSetLimit( cudaLimitPrintfFifoSize, 32 * 1024 * 1024 );
-//  #endif
-
     if( np == 0 ) {
         printf( "WARNING: forces_dpd_cuda_nohost called with np = %d\n", np );
         return;
@@ -507,12 +469,9 @@ void forces_dpd_cuda_nohost( const float * const xyzuvw, const float4 * const xy
     }
 
     CUDA_CHECK( cudaBindTexture( &textureoffset, &texParticlesF4, xyzouvwo,  &texParticlesF4.channelDesc, sizeof( float ) * 8 * np ) );
-    // assert( textureoffset == 0 );
     CUDA_CHECK( cudaBindTexture( &textureoffset, &texParticlesH4, xyzo_half, &texParticlesH4.channelDesc, sizeof( ushort4 ) * np ) );
-    // assert( textureoffset == 0 );
     make_texture2 <<< 64, 512, 0, stream>>>( start_and_count, cellsstart, cellscount, ncells );
     CUDA_CHECK( cudaBindTexture( &textureoffset, &texStartAndCount, start_and_count, &texStartAndCount.channelDesc, sizeof( uint2 ) * ncells ) );
-    // assert( textureoffset == 0 );
 
     c.ncells = make_int3( nx, ny, nz );
     c.nxyz = nx * ny * nz;
@@ -547,7 +506,6 @@ void forces_dpd_cuda_nohost( const float * const xyzuvw, const float4 * const xy
     if( c.ncells.x % MYCPBX == 0 && c.ncells.y % MYCPBY == 0 && c.ncells.z % MYCPBZ == 0 ) {
         _dpd_forces_symm_merged <<< dim3( c.ncells.x / MYCPBX, c.ncells.y / MYCPBY, c.ncells.z / MYCPBZ ), dim3( 32, MYWPB ), 0, stream >>> ();
 #ifdef TRANSPOSED_ATOMICS
-        // check_acc_transposed<<<1, 1, 0, stream>>>( np );
         transpose_acc <<< 28, 1024, 0, stream>>>( np );
 #endif
     } else {

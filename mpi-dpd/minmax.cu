@@ -18,7 +18,7 @@
 #define MAXV     100000000.
 #define MINV    -100000000.
 
-typedef struct 
+typedef struct
 {
     int g_block_id;
     int g_blockcnt;
@@ -44,13 +44,7 @@ __global__ void minmaxob(const Particle * const d_data, float3 *d_min, float3 *d
     int xyz;
     for(int i=tid; i<3*blockDim.x; i+=blockDim.x) {
 	xyz=i%3;
-	//    if(xyz==0) {
 	shrtmp[xyz][i/3] = (i/3<size)?d_data[i/3+blockIdx.x*size].x[xyz]:MINV;
-	//    } else if(xyz==1) {
-	//      shrtmp[xyz][i/3] = (i/3<size)?d_data[i/3+blockIdx.x*blockDim.x].y:MINV;
-	//    } else {
-	//      shrtmp[xyz][i/3] = (i/3<size)?d_data[i/3+blockIdx.x*blockDim.x].z:MINV;
-	//    }
     }
     __syncthreads();
     mintemp1.x = (tid<size)?shrtmp[0][tid]:MAXV;
@@ -134,13 +128,7 @@ __global__ void minmaxmba(const Particle  *d_data, float3 *d_min, float3 *d_max,
   int xyz;
   for(int i=tid; i<3*blockDim.x; i+=blockDim.x) {
     xyz=i%3;
-    //    if(xyz==0) {
     shrtmp[xyz][i/3] = (i/3+my_blockId*blockDim.x<size)?d_data[i/3+my_blockId*blockDim.x+which*size].x[xyz]:MINV;
-    //    } else if(xyz==1) {
-    //      shrtmp[xyz][i/3] = (i/3+my_blockId*blockDim.x<size)?d_data[i/3+my_blockId*blockDim.x+which*size].y:MINV;
-    //    } else {
-    //      shrtmp[xyz][i/3] = (i/3+my_blockId*blockDim.x<size)?d_data[i/3+my_blockId*blockDim.x+which*size].z:MINV;
-     //    }
   }
   __syncthreads();
   mintemp1.x = (tid+my_blockId*blockDim.x<size)?shrtmp[0][tid]:MAXV;
@@ -217,7 +205,7 @@ __global__ void minmaxmba(const Particle  *d_data, float3 *d_min, float3 *d_max,
 
 }
 
-void minmax(const Particle * const rbc, int size, int n, float3 *minrbc, float3 *maxrbc, cudaStream_t stream) 
+void minmax(const Particle * const rbc, int size, int n, float3 *minrbc, float3 *maxrbc, cudaStream_t stream)
 {
     const int size32 = ((size + 31) / 32) * 32;
 
@@ -228,12 +216,12 @@ void minmax(const Particle * const rbc, int size, int n, float3 *minrbc, float3 
 	static int nctc = -1;
 
         static sblockds_t *ptoblockds = NULL;
-	
-        if( n > nctc) 
+
+        if( n > nctc)
 	{
 	    sblockds_t * h_ptoblockds = new sblockds_t[n];
-	    
-	    for(int i=0; i < n; i++)  
+
+	    for(int i=0; i < n; i++)
 	    {
 		h_ptoblockds[i].g_block_id=0;
 		h_ptoblockds[i].g_blockcnt=0;
@@ -245,7 +233,7 @@ void minmax(const Particle * const rbc, int size, int n, float3 *minrbc, float3 
 		h_ptoblockds[i].maxval.z=MINV;
 	    }
 
-	    if (ptoblockds != NULL) 
+	    if (ptoblockds != NULL)
 		CUDA_CHECK(cudaFree(ptoblockds));
 
            CUDA_CHECK(cudaMalloc((void **)&ptoblockds,sizeof(sblockds_t) * n));

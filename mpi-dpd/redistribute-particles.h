@@ -18,7 +18,7 @@
 class RedistributeParticles
 {
     static const int basetag = 950;
-    
+
 public:
 
     struct UnpackBuffer
@@ -26,7 +26,7 @@ public:
 	float2 * buffer;
 	int capacity;
     };
-   
+
     struct PackBuffer : UnpackBuffer
     {
 	int * scattered_indices;
@@ -39,7 +39,7 @@ public:
     void bulk(const int nparticles,
 	      int * const cellstarts, int * const cellcounts,
 	      cudaStream_t mystream);
-   
+
     int recv_count(cudaStream_t, float& host_idling_time);
 
     void recv_unpack(Particle * const particles, float4 * const xyzouvwo, ushort4 * const xyzo_half, const int nparticles,
@@ -50,17 +50,17 @@ public:
     void adjust_message_sizes(ExpectedMessageSizes sizes);
 
     ~RedistributeParticles();
-   
+
     int pack_size(const int code) { return send_sizes[code]; }
-   
+
     float pinned_data(const int code, const int entry) { return pinnedhost_sendbufs[code][entry]; }
-   
+
 private:
 
     MPI_Comm cartcomm;
 
     bool firstcall;
-    
+
     int dims[3], periods[3], coords[3], neighbor_ranks[27], recv_tags[27],
 	default_message_sizes[27], send_sizes[27], recv_sizes[27],
 	nsendmsgreq, nexpected, nbulk, nhalo, nhalo_padded, myrank;
@@ -71,18 +71,18 @@ private:
 
     MPI_Request sendcountreq[27], recvcountreq[27], sendmsgreq[27 * 2], recvmsgreq[27 * 2];
 
-    cudaEvent_t evpacking, evsizes; //, evcompaction;
+    cudaEvent_t evpacking, evsizes;
 
     float _waitall(MPI_Request * reqs, const int n)
     {
 	const double tstart = MPI_Wtime();
 
 	MPI_Status statuses[n];
-	MPI_CHECK( MPI_Waitall(n, reqs, statuses) );    
+	MPI_CHECK( MPI_Waitall(n, reqs, statuses) );
 
 	return MPI_Wtime() - tstart;
     }
-   
+
     void _post_recv();
     void _cancel_recv();
 
@@ -91,9 +91,9 @@ private:
 
     PinnedHostBuffer<bool> failure;
     PinnedHostBuffer<int> packsizes;
-   
+
     float * pinnedhost_sendbufs[27], * pinnedhost_recvbufs[27];
-   
+
     PackBuffer packbuffers[27];
     UnpackBuffer unpackbuffers[27];
 

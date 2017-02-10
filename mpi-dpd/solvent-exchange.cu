@@ -23,9 +23,6 @@ SolventExchange::SolventExchange(MPI_Comm _cartcomm, const int basetag):  baseta
 {
     safety_factor = getenv("HEX_COMM_FACTOR") ? atof(getenv("HEX_COMM_FACTOR")) : 1.2;
 
-    // assert(XSIZE_SUBDOMAIN % 2 == 0 && YSIZE_SUBDOMAIN % 2 == 0 && ZSIZE_SUBDOMAIN % 2 == 0);
-    // assert(XSIZE_SUBDOMAIN >= 2 && YSIZE_SUBDOMAIN >= 2 && ZSIZE_SUBDOMAIN >= 2);
-
     MPI_CHECK( MPI_Comm_dup(_cartcomm, &cartcomm));
 
     MPI_CHECK( MPI_Comm_rank(cartcomm, &myrank));
@@ -77,8 +74,6 @@ namespace PackingHalo
 
     __global__ void count_all(const int * const cellsstart, const int * const cellscount, const int ntotalcells)
     {
-	// assert(blockDim.x * gridDim.x >= ntotalcells);
-
 	const int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
 	if (gid >= cellpackstarts[26])
@@ -88,12 +83,7 @@ namespace PackingHalo
 	const int key3 = 3 * ((gid >= cellpackstarts[key9 + 3]) + (gid >= cellpackstarts[key9 + 6]));
 	const int key1 = (gid >= cellpackstarts[key9 + key3 + 1]) + (gid >= cellpackstarts[key9 + key3 + 2]);
 	const int code = key9 + key3 + key1;
-
-	// assert(code >= 0 && code < 26);
-	// assert(gid >= cellpackstarts[code] && gid < cellpackstarts[code + 1]);
-
 	const int d[3] = { (code + 2) % 3 - 1, (code / 3 + 2) % 3 - 1, (code / 9 + 2) % 3 - 1 };
-
 	const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
 
 	int halo_start[3];
@@ -105,9 +95,6 @@ namespace PackingHalo
 	    halo_size[c] = min(d[c] * L[c] + L[c]/2 + 1, L[c]/2) - halo_start[c];
 
 	const int ndstcells = halo_size[0] * halo_size[1] * halo_size[2];
-
-	// assert(cellpackstarts[code + 1] - cellpackstarts[code] == ndstcells + 1);
-
 	const int dstcid = gid - cellpackstarts[code];
 
 	if (dstcid < ndstcells)
@@ -122,17 +109,7 @@ namespace PackingHalo
 	    for(int c = 0; c < 3; ++c)
 		srccellpos[c] = halo_start[c] + dstcellpos[c] + L[c] / 2;
 
-	    for(int c = 0; c < 3; ++c) {
-		// assert(srccellpos[c] >= 0);
-		}
-
-	    for(int c = 0; c < 3; ++c) {
-		// assert(srccellpos[c] < L[c]);
-		}
-
 	    const int srcentry = srccellpos[0] + XSIZE_SUBDOMAIN * (srccellpos[1] + YSIZE_SUBDOMAIN * srccellpos[2]);
-	    // assert(srcentry < XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN);
-
 	    const int enabled = cellpacks[code].enabled;
 
 	    cellpacks[code].start[dstcid] = enabled * cellsstart[srcentry];
@@ -150,8 +127,6 @@ namespace PackingHalo
     template<int slot>
     __global__ void copycells(const int n)
     {
-	// assert(blockDim.x * gridDim.x >= n);
-
 	const int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
 	if (gid >= cellpackstarts[26])
@@ -185,8 +160,6 @@ namespace PackingHalo
 		       p.x[0], p.x[1], p.x[2], c, halo_start, halo_end, eps);
 
 	    }
-
-	    // assert(p.x[c] >= halo_start - eps && p.x[c] < halo_end + eps);
 	}
     }
 #endif
@@ -194,8 +167,6 @@ namespace PackingHalo
     template<int NWARPS>
     __global__ void scan_diego()
     {
-	// assert(gridDim.x == 26 && blockDim.x == 32 * NWARPS);
-
 	__shared__ int shdata[32];
 
 	const int code = blockIdx.x;
@@ -277,9 +248,6 @@ namespace PackingHalo
 
     __global__ void fill_all(const Particle * const particles, const int np, int * const required_bag_size)
     {
-	// assert(sizeof(Particle) == 6 * sizeof(float));
-	// assert(blockDim.x == warpSize);
-
 	const int gcid = (threadIdx.x >> 4) + 2 * blockIdx.x;
 
 	if (gcid >= cellpackstarts[26])
@@ -289,14 +257,8 @@ namespace PackingHalo
 	const int key3 = 3 * ((gcid >= cellpackstarts[key9 + 3]) + (gcid >= cellpackstarts[key9 + 6]));
 	const int key1 = (gcid >= cellpackstarts[key9 + key3 + 1]) + (gcid >= cellpackstarts[key9 + key3 + 2]);
 	const int code = key9 + key3 + key1;
-
-	// assert(code >= 0 && code < 26);
-	// assert(gcid >= cellpackstarts[code] && gcid < cellpackstarts[code + 1]);
-
 	const int cellid = gcid - cellpackstarts[code];
-
 	const int tid = threadIdx.x & 0xf;
-
 	const int base_src = baginfos[code].start_src[cellid];
 	const int base_dst = baginfos[code].start_dst[cellid];
 	const int nsrc = min(baginfos[code].count_src[cellid], baginfos[code].bagsize - base_dst);
@@ -307,13 +269,10 @@ namespace PackingHalo
 	    const int lpid = i / 6;
 	    const int dpid = base_dst + lpid;
 	    const int spid = base_src + lpid;
-	    // assert(spid < np && spid >= 0);
-
 	    const int c = i % 6;
 
 	    float2 word = *(float2 *)&particles[spid].x[c];
 	    *(float2 *)&baginfos[code].dbag[dpid].x[c] = word;
-	    //*(float2 *)&baginfos[code].hbag[dpid].x[c] = word;
 
 #ifndef NDEBUG
 	    halo_particle_check(particles[spid], spid, code)   ;
@@ -336,18 +295,11 @@ namespace PackingHalo
 #ifndef NDEBUG
     __global__ void check_send_particles(Particle * p, int n, int code)
     {
-	// assert(blockDim.x * gridDim.x >= n);
-
 	const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
-
 	const int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
 	if (pid >= n)
 	    return;
-
-	// assert(p[pid].x[0] >= -L[0] / 2 || p[pid].x[0] < L[0] / 2 ||
-	//       p[pid].x[1] >= -L[1] / 2 || p[pid].x[1] < L[1] / 2 ||
-	//       p[pid].x[2] >= -L[2] / 2 || p[pid].x[2] < L[2] / 2);
 
 	const int d[3] = { (code + 2) % 3 - 1, (code / 3 + 2) % 3 - 1, (code / 9 + 2) % 3 - 1 };
 
@@ -360,8 +312,6 @@ namespace PackingHalo
 		printf("oooops particle %d: %e %e %e component %d not within %f , %f eps %f\n",
 		       pid, p[pid].x[0], p[pid].x[1], p[pid].x[2],
 		       c, halo_start, halo_end, eps);
-
-	    // assert(p[pid].x[c] >= halo_start - eps && p[pid].x[c] < halo_end + eps);
 	}
     }
 #endif
@@ -518,11 +468,7 @@ void SolventExchange::post(const Particle * const p, const int n, cudaStream_t s
 	    const int nrequired = required_send_bag_size_host[i];
 
 	    sendhalos[i].dbuf.size = nrequired;
-
-	    //sendhalos[i].hbuf.size = nrequired;
 	    sendhalos[i].hbuf.resize(nrequired);
-	    // assert(nrequired <= sendhalos[i].dbuf.capacity && nrequired <= sendhalos[i].hbuf.capacity);
-
 	    sendhalos[i].scattered_entries.size = nrequired;
 	}
     }
@@ -531,9 +477,6 @@ void SolventExchange::post(const Particle * const p, const int n, cudaStream_t s
 	if (sendhalos[i].hbuf.size)
 	    CUDA_CHECK(cudaMemcpyAsync(sendhalos[i].hbuf.data, sendhalos[i].dbuf.data, sizeof(Particle) * sendhalos[i].hbuf.size,
 				       cudaMemcpyDeviceToHost, downloadstream));
-
-    //this is commented due to the hanging described below
-    //CUDA_CHECK(cudaEventRecord(evdownloaded, downloadstream));
 
 #ifndef NDEBUG
     CUDA_CHECK(cudaStreamSynchronize(0));
@@ -553,9 +496,6 @@ void SolventExchange::post(const Particle * const p, const int n, cudaStream_t s
 #endif
 
     CUDA_CHECK(cudaStreamSynchronize(downloadstream));
-    //this hangs undefinitely on XK7 (please confirm)
-    //CUDA_CHECK(cudaEventSynchronize(evdownloaded));
-
     {
 	for(int i = 0, c = 0; i < 26; ++i)
 	    if (sendhalos[i].expected)
@@ -606,8 +546,6 @@ void SolventExchange::post_expected_recv()
 {
     for(int i = 0, c = 0; i < 26; ++i)
     {
-	// assert(recvhalos[i].hbuf.capacity >= recvhalos[i].expected);
-
 	if (recvhalos[i].expected)
 	    MPI_CHECK( MPI_Irecv(recvhalos[i].hbuf.data, recvhalos[i].expected, Particle::datatype(), dstranks[i],
 				 basetag + recv_tags[i], cartcomm, recvreq + c++ ));
@@ -720,10 +658,6 @@ void SolventExchange::adjust_message_sizes(ExpectedMessageSizes sizes)
 	const int entry = d[0] + 3 * (d[1] + 3 * d[2]);
 	int estimate = sizes.msgsizes[entry] * safety_factor;
 	estimate = 64 * ((estimate + 63) / 64);
-
-	//if (estimate)
-	//    printf("RANK %d: direction %d %d %d: adjusting msg %d with entry %d  to %d and safety factor is %f\n",
-	//	   myrank, d[0] - 1, d[1] - 1, d[2] - 1, i, entry, estimate, safety_factor);
 
 	recvhalos[i].adjust(estimate);
 	sendhalos[i].adjust(estimate);

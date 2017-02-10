@@ -18,11 +18,11 @@
 class SoluteExchange
 {
     enum { TAGBASE_C = 113, TAGBASE_P = 365, TAGBASE_A = 668, TAGBASE_P2 = 1055, TAGBASE_A2 = 1501 };
-    
+
 public:
-    
+
     struct Visitor { virtual void halo(ParticlesWrap solutehalos[26], cudaStream_t stream) = 0; };
-    
+
 protected:
 
     MPI_Comm cartcomm;
@@ -37,16 +37,16 @@ protected:
 
     SimpleDeviceBuffer<int> packscount, packsstart, packsoffset, packstotalstart;
     PinnedHostBuffer<int> host_packstotalstart, host_packstotalcount;
-    
+
     SimpleDeviceBuffer<Particle> packbuf;
     PinnedHostBuffer<Particle> host_packbuf;
-   
+
     std::vector<ParticlesWrap> wsolutes;
-    
+
     std::vector<MPI_Request> reqsendC, reqrecvC, reqsendP, reqrecvP, reqsendA, reqrecvA;
 
     std::vector<Visitor *> visitors;
-    
+
     class TimeSeriesWindow
     {
 	static const int N = 200;
@@ -92,7 +92,6 @@ protected:
 	int expected() const { return (int)ceil(history.max() * 1.1); }
 
 	int capacity() const {
-		// assert(hstate.capacity == dstate.capacity);
 		return dstate.capacity;
 	}
 
@@ -118,7 +117,6 @@ protected:
 	int expected() const { return (int)ceil(history.max() * 1.1); }
 
 	int capacity() const {
-		// assert(result.capacity == scattered_indices.capacity);
 		return scattered_indices.capacity;
 	}
 
@@ -198,17 +196,12 @@ protected:
 
     void _not_nan(const float * const x, const int n) const
     {
-#ifndef NDEBUG
-	for(int i = 0; i < n; ++i) {
-	    // assert(!isnan(x[i]));
-	}
-#endif
     }
 
     void _pack_attempt(cudaStream_t stream);
 
 public:
-    
+
     SoluteExchange(MPI_Comm cartcomm);
 
     void bind_solutes(std::vector<ParticlesWrap> wsolutes) { this->wsolutes = wsolutes; }
@@ -220,7 +213,7 @@ public:
     void post_p(cudaStream_t stream, cudaStream_t downloadstream);
 
     void recv_p(cudaStream_t uploadstream);
-    
+
     void halo(cudaStream_t uploadstream, cudaStream_t stream);
 
     void post_a();

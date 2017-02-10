@@ -151,8 +151,6 @@ void H5PartDump::_initialize(const std::string filename, MPI_Comm comm, MPI_Comm
     fflush(stdout);
     H5PartFile * f = H5PartOpenFileParallel(path, H5PART_WRITE, comm);
 
-    // assert(f != NULL);
-
     handler = f;
 #endif
 }
@@ -310,7 +308,6 @@ void H5FieldDump::_write_fields(const char * const path2h5,
 	sprintf(wrapper, "%s.xmf", string(path2h5).substr(0, string(path2h5).find_last_of(".h5") - 2).data());
 
 	FILE * xmf = fopen(wrapper, "w");
-	// assert(xmf);
 
 	_xdmf_header(xmf);
 	_xdmf_grid(xmf, time, string(path2h5).substr(string(path2h5).find_last_of("/") + 1).c_str(), channelnames, nchannels);
@@ -404,8 +401,6 @@ H5FieldDump::~H5FieldDump()
 	return;
 
     FILE * xmf = fopen("h5/flowfields-sequence.xmf", "w");
-
-    // assert(xmf);
 
     _xdmf_header(xmf);
 

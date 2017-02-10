@@ -18,7 +18,7 @@ __global__ void breduce(uint4 *vin, unsigned int *vout, int n) {
 	const int tid = blockDim.x*blockIdx.x + threadIdx.x;
 	uint4 val = make_uint4(0,0,0,0);
 
-	__shared__ unsigned int shtmp[NWARP]; 
+	__shared__ unsigned int shtmp[NWARP];
 
 	if (tid < n) val = vin[tid];
 
@@ -38,7 +38,7 @@ __global__ void breduce(uint4 *vin, unsigned int *vout, int n) {
 	__syncthreads();
 	if (0 == wid) {
 		val.x = (lid < NWARP) ? shtmp[lid] : 0;
-		
+
 		#pragma unroll
 		for(int i = 16; i > 0; i >>= 1)
 			val.x += __shfl_down((int)val.x, i);
@@ -50,10 +50,7 @@ __global__ void breduce(uint4 *vin, unsigned int *vout, int n) {
 template <int BDIM>
 __global__ void bexscan(unsigned int *v, int n) {
 
-	extern __shared__ unsigned int shtmp[]; 
-
-	//// assert(gridDim.x == 1);
-	//// assert(blockDim.x == BDIM);
+	extern __shared__ unsigned int shtmp[];
 
 	for(int i = threadIdx.x; i < n; i += BDIM) shtmp[i] = v[i];
 
@@ -108,9 +105,7 @@ __global__ void gexscan(uint4 *vin, unsigned int *offs, uint4 *vout, int n) {
 	const int tid = blockDim.x*blockIdx.x + threadIdx.x;
 	uint4 val[4];
 
-	__shared__ unsigned int woff[NWARP]; 
-
-	//// assert(0 == NWARP%4);
+	__shared__ unsigned int woff[NWARP];
 
 	if (tid < n) val[0] = vin[tid];
 	else 	     val[0] = make_uint4(0,0,0,0);
@@ -195,7 +190,7 @@ __global__ void gexscan(uint4 *vin, unsigned int *offs, uint4 *vout, int n) {
 	val[3].w += val[3].z;
 
 	vout += tid*4;
-	
+
 	#pragma unroll
 	for(int i = 0; i < 4; i++)
 		vout[i] = val[i];
@@ -205,18 +200,18 @@ __global__ void gexscan(uint4 *vin, unsigned int *offs, uint4 *vout, int n) {
 void scan(const unsigned char * const input, const int size, cudaStream_t stream, uint * const output)
 {
     enum { THREADS = 128 } ;
-    
+
     static uint * tmp = NULL;
 
     if (tmp == NULL)
     	cudaMalloc(&tmp, sizeof(uint) * (64 * 64 * 64 / THREADS));
 
     int nblocks = ((size / 16) + THREADS - 1 ) / THREADS;
-    
+
     breduce< THREADS / 32 ><<<nblocks, THREADS, 0, stream>>>((uint4 *)input, tmp, size / 16);
-    
+
     bexscan< THREADS ><<<1, THREADS, nblocks*sizeof(uint), stream>>>(tmp, nblocks);
-    
+
     gexscan< THREADS / 32 ><<<nblocks, THREADS, 0, stream>>>((uint4 *)input, tmp, (uint4 *)output, size / 16);
 }
 
@@ -264,15 +259,11 @@ int main(int argc, char **argv) {
 
 	cudaEvent_t start, stop;
         float et;
-	
+
 	h_vin = (unsigned char *)Malloc(SIZE*sizeof(*h_vin));
 	for(i = 0; i < SIZE; i++)
 		h_vin[i] = rand()%255;
 
-	if (SIDE < 48 || SIDE > 64) {
-	    //	fprintf(stderr, "SIDE MUST be in [48, 52, 56, 60, 64]\n");
-	    //exit(EXIT_FAILURE);
-	}
 	if (SIZE % 16) {
 		fprintf(stderr, "SIZE MUST be a multiple of 16!\n");
 		exit(EXIT_FAILURE);
@@ -282,7 +273,7 @@ int main(int argc, char **argv) {
 	MY_CUDA_CHECK(cudaSetDevice(0));
 	d_vin = (unsigned char *)myCudaMalloc(SIZE*sizeof(*d_vin));
 	MY_CUDA_CHECK( cudaMemcpy(d_vin, h_vin, SIZE*sizeof(*d_vin), cudaMemcpyHostToDevice) );
-	
+
 	dsol = (unsigned int *)Malloc(SIZE*sizeof(*dsol));
 	hsol = (unsigned int *)Malloc(SIZE*sizeof(*hsol));
 	memset(hsol, 0, SIZE*sizeof(*hsol));

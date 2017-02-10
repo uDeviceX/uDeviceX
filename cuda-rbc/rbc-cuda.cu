@@ -37,7 +37,7 @@ inline void cudaAssert(cudaError_t code, const char *file, int line)
 {
     if (code != cudaSuccess)
     {
-        fprintf(stderr,"GPU// assert: %s %s %d\n", cudaGetErrorString(code), file, line);
+        fprintf(stderr,"GPU assert: %s %s %d\n", cudaGetErrorString(code), file, line);
 
         abort();
     }
@@ -107,7 +107,6 @@ namespace CudaRBC
         size_t textureoffset;
         CUDA_CHECK(cudaBindTexture(&textureoffset, &texAdjVert, data,
                 &texAdjVert.channelDesc, sizeof(int) * nentries));
-        // assert(textureoffset == 0);
 
         texAdjVert2.channelDesc = cudaCreateChannelDesc<int>();
         texAdjVert2.filterMode = cudaFilterModePoint;
@@ -116,7 +115,6 @@ namespace CudaRBC
 
         CUDA_CHECK(cudaBindTexture(&textureoffset, &texAdjVert2, data2,
                 &texAdjVert.channelDesc, sizeof(int) * nentries));
-        // assert(textureoffset == 0);
     }
 
     struct Particle
@@ -173,8 +171,6 @@ namespace CudaRBC
             const int retval = fscanf(f, "%d %d %d %d %d\n", dummy + 0, dummy + 1,
                     &tri.x, &tri.y, &tri.z);
 
-            //tri.x -= 1;      tri.y -= 1;      tri.z -= 1;
-
             if (retval != 5)
                 break;
 
@@ -207,8 +203,6 @@ namespace CudaRBC
 
             for(int d = 0; d < 3; ++d)
             {
-                // assert(tri[d] >= 0 && tri[d] < nvertices);
-
                 adjacentPairs[tri[d]][tri[(d + 1) % 3]] = tri[(d + 2) % 3];
             }
 
@@ -219,8 +213,6 @@ namespace CudaRBC
             maxldeg.push_back(adjacentPairs[i].size());
 
         const int degreemax = *max_element(maxldeg.begin(), maxldeg.end());
-        // assert(degreemax == 7);
-        // assert(nvertices == 498);
 
         vector<int> adjVert(nvertices * degreemax, -1);
 
@@ -233,8 +225,6 @@ namespace CudaRBC
 
             for(int i = 2; i < l.size(); ++i)
             {
-                // assert(l.find(last) != l.end());
-
                 int tmp = adjVert[i + degreemax * v] = l.find(last)->second;
                 last = tmp;
             }
@@ -259,8 +249,6 @@ namespace CudaRBC
                 const int nterms =  set_intersection(s1.begin(), s1.end(), s2.begin(), s2.end(),
                         result.begin()) - result.begin();
 
-                // assert(nterms == 2);
-
                 const int myguy = result[0] == v;
 
                 adjVert2[i + degreemax * v] = result[myguy];
@@ -269,7 +257,7 @@ namespace CudaRBC
 
         params.nvertices = nvertices;
         params.ntriangles = triangles.size();
-#if 1
+
         // Find stretching points
 		float stretchingForce = 0;
         vector< pair<float, int> > tmp(nvertices);
@@ -289,12 +277,8 @@ namespace CudaRBC
             hAddfrc[tmp[nvertices - 1 - i].second] = +stretchingForce / strVerts;
         }
 
-        //for (int i=0; i<nvertices; i++)
-        //    printf("%d: x=%.3f, f=%.3f\n", i, particles[i].x[0], hAddfrc[i]);
-
         CUDA_CHECK( cudaMalloc(&addfrc, nvertices*sizeof(float)) );
         CUDA_CHECK( cudaMemcpy(addfrc, hAddfrc, nvertices*sizeof(float), cudaMemcpyHostToDevice) );
-#endif
 
         float* xyzuvw_host = new float[6*nvertices * sizeof(float)];
         for (int i=0; i<nvertices; i++)
@@ -338,7 +322,6 @@ namespace CudaRBC
 
         size_t textureoffset;
         CUDA_CHECK( cudaBindTexture(&textureoffset, &texTriangles4, devtrs4, &texTriangles4.channelDesc, params.ntriangles * 4 * sizeof(int)) );
-        // assert(textureoffset == 0);
 
         maxCells = 0;
         CUDA_CHECK( cudaMalloc(&host_av, 1 * 2 * sizeof(float)) );
@@ -370,12 +353,10 @@ namespace CudaRBC
 		params.ka			= ka			;
 		params.kd			= kd			;
 		params.p			= p				/ ll;
-//		params.lmax			= lmax			/ ll;
         params.totArea0		= totArea0		/ (ll*ll);
         params.kb			= kb			/ (ll*ll);
 		params.kbT			= params.kbT	/ (ll*ll);
         params.totVolume0	= totVolume0	/ (ll*ll*ll);
-//		params.kp			= kp			/ (ll*ll*powf(ll,params.mpow-1));
 
 		// derived parameters
         params.Area0		= params.totArea0 / (2.0*params.nvertices - 4.);
@@ -399,7 +380,6 @@ namespace CudaRBC
             printf("Started with <RBC space (DPD space)>:\n");
             printf("    DPD unit of time:  %e\n",   tunit);
             printf("    DPD unit of length:  %e\n\n", lunit);
-//            printf("\t Lmax    %12.5f  (%12.5f)\n", lmax,   params.lmax);
             printf("\t l0      %12.5f\n",           params.l0);
             printf("\t p       %12.5f  (%12.5f)\n", p,      params.p);
             printf("\t kb      %12.5f  (%12.5f)\n", kb,     params.kb);
@@ -717,7 +697,6 @@ namespace CudaRBC
         size_t textureoffset;
         CUDA_CHECK( cudaBindTexture(&textureoffset, &texVertices, (float2 *)device_xyzuvw,
                 &texVertices.channelDesc, ncells * params.nvertices * sizeof(float) * 6) );
-        // assert(textureoffset == 0);
 
         dim3 avThreads(256, 1);
         dim3 avBlocks( 1, ncells );
@@ -725,11 +704,6 @@ namespace CudaRBC
         CUDA_CHECK( cudaMemsetAsync(host_av, 0, ncells * 2 * sizeof(float), stream) );
         areaAndVolumeKernel<<<avBlocks, avThreads, 0, stream>>>(host_av);
         CUDA_CHECK( cudaPeekAtLastError() );
-
-//        		float *temp = new float[ncells*2];
-//        		CUDA_CHECK( cudaMemcpy(temp, host_av, ncells * 2 * sizeof(float), cudaMemcpyDeviceToHost) );
-//        		for (int i=0; i<ncells; i++)
-//        			printf("# %d:  Area:  %.4f,  volume  %.4f\n", i, temp[2*i], temp[2*i+1]);
 
         int threads = 128;
         int blocks  = (ncells*params.nvertices*7 + threads-1) / threads;

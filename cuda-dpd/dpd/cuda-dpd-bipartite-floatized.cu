@@ -45,9 +45,6 @@ void _bipartite_dpd_directforces_floatized( float * const axayaz, const int np, 
                                   const float seed, const int mask, const float * xyzuvw, const float * xyzuvw_src,
                                   const float invrc, const float aij, const float gamma, const float sigmaf )
 {
-    // assert( blockDim.x % warpSize == 0 );
-    // assert( blockDim.x * gridDim.x >= np );
-
     const int tid = threadIdx.x % warpSize;
     const int pid = threadIdx.x + blockDim.x * blockIdx.x;
     const bool valid = pid < np;
@@ -87,10 +84,6 @@ void _bipartite_dpd_directforces_floatized( float * const axayaz, const int np, 
             const float vq = __shfl( my_vq, l );
             const float wq = __shfl( my_wq, l );
 
-            //necessary to force the execution shuffles here below
-            //__syncthreads();
-
-            //if (valid)
             {
                 const int spid = s + l;
                 const int dpid = pid;
@@ -106,7 +99,6 @@ void _bipartite_dpd_directforces_floatized( float * const axayaz, const int np, 
                 const float3 strength = compute_dpd_force_traced(type1, type2,
                         pos1, pos2, vel1, vel2, myrandnr);
 
-                //if (valid && spid < np_src)
                 {
                     xforce += strength.x;
                     yforce += strength.y;
@@ -117,10 +109,6 @@ void _bipartite_dpd_directforces_floatized( float * const axayaz, const int np, 
     }
 
     if( valid ) {
-        // assert( !isnan( xforce ) );
-        // assert( !isnan( yforce ) );
-        // assert( !isnan( zforce ) );
-
         axayaz[0 + 3 * pid] = xforce;
         axayaz[1 + 3 * pid] = yforce;
         axayaz[2 + 3 * pid] = zforce;
@@ -150,10 +138,6 @@ void _dpd_bipforces_floatized( const float2 * const xyzuvw, const int np, cudaTe
                      const float aij, const float gamma, const float sigmaf,
                      const float seed, const uint mask, float * const axayaz )
 {
-    // assert( warpSize == COLS * ROWS );
-    // assert( blockDim.x == warpSize && blockDim.y == CPB && blockDim.z == 1 );
-    // assert( ROWS * 3 <= warpSize );
-
     const uint tid = threadIdx.x;
     const uint subtid = tid % COLS;
     const uint slot = tid / COLS;
@@ -239,8 +223,6 @@ void _dpd_bipforces_floatized( const float2 * const xyzuvw, const int np, cudaTe
                         pos1, pos2, vel1, vel2, myrandnr);
 
                 const bool valid = xfcmp_lt( slot, np1 ) * xfcmp_lt( subtid, np2 );
-
-                // assert( ( dpid >= 0 && dpid < np && spid >= 0 && spid < np_src ) || ! valid );
 
                 if( valid ) {
                     f.x += strength.x;
