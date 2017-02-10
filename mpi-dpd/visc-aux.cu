@@ -12,7 +12,7 @@ __device__ bool inbox(float x, float y, float z) {
 __device__ float3 compute_dpd_force_traced(int type1, int type2,
         float3 pos1, float3 pos2, float3 vel1, float3 vel2, float myrandnr) {
     /* return the DPD interaction force based on particle types
-type: 0 -- outer solvent, 1 -- inner solvent, 2 -- membrane, 3 -- wall */
+       type: 0 -- outer solvent, 1 -- inner solvent, 2 -- membrane, 3 -- wall */
 
     const float _xr = pos1.x - pos2.x;
     const float _yr = pos1.y - pos2.y;
