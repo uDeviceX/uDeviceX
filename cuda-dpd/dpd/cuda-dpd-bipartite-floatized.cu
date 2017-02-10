@@ -14,7 +14,6 @@
 
 #include "../dpd-rng.h"
 #include "cuda-dpd.h"
-#include "../../mpi-dpd/visc-aux.h"
 #include "../../mpi-dpd/last_bit_float.h"
 
 /*  Disable __launch_bounds__
