@@ -21,7 +21,7 @@ fsi.o contact.o redistribute-particles.o \
 redistribute-rbcs.o solvent-exchange.o solute-exchange.o \
 common.o io.o scan.o \
 minmax.o redistancing.o last_bit_float.o \
-visc-aux.o simulation.o main.o \
+dpd-forces.o simulation.o main.o \
 velcontroller.o
 
 ifeq ($(h5part),0)
@@ -57,7 +57,7 @@ containers.o:     containers.cu;     $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 dpd.o:            dpd.cu;            $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 fsi.o:            fsi.cu;            $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 last_bit_float.o: last_bit_float.cu; $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
-visc-aux.o:       visc-aux.cu;       $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
+dpd-forces.o:     dpd-forces.cu;     $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 wall.o:           wall.cu;           $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 include    Makefile.dep # dependencies
 

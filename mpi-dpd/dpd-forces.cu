@@ -1,4 +1,4 @@
-#include "visc-aux.h"
+#include "dpd-forces.h"
 #include "common.h"
 
 __device__ bool inbox(float x, float y, float z,

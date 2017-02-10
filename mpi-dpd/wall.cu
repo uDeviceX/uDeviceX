@@ -24,7 +24,7 @@
 #include "solvent-exchange.h"
 #include "wall.h"
 #include "redistancing.h"
-#include "visc-aux.h"
+#include "dpd-forces.h"
 #include "last_bit_float.h"
 
 /*  Disable __launch_bounds__

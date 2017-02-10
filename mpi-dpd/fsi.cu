@@ -16,7 +16,7 @@
 #include "common-kernels.h"
 #include "solute-exchange.h"
 #include "fsi.h"
-#include "visc-aux.h"
+#include "dpd-forces.h"
 #include "last_bit_float.h"
 
 /*  Disable __launch_bounds__

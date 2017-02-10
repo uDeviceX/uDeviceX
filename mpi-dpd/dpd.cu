@@ -19,7 +19,7 @@
 #include "common.h"
 #include "solvent-exchange.h"
 #include "dpd.h"
-#include "visc-aux.h"
+#include "dpd-forces.h"
 #include "last_bit_float.h"
 
 using namespace std;

@@ -25,7 +25,7 @@
 #include "io.h"
 #include "velcontroller.h"
 #include "simulation.h"
-#include "visc-aux.h"
+#include "dpd-forces.h"
 #include "last_bit_float.h"
 #include "geom-wrapper.h"
 

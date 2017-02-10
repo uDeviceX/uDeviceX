@@ -37,7 +37,7 @@ const static uint ROWS = (32 / COLS);
 const static uint CPB = 4;
 
 #include "../hacks.h"
-#include "../../mpi-dpd/visc-aux.h"
+#include "../../mpi-dpd/dpd-forces.h"
 
 __global__
 void _bipartite_dpd_directforces_floatized( float * const axayaz, const int np, const int np_src,

@@ -21,7 +21,7 @@ static const float ljsigma2 = ljsigma * ljsigma;
 #include "scan.h"
 #include "solute-exchange.h"
 #include "contact.h"
-#include "visc-aux.h"
+#include "dpd-forces.h"
 #include "last_bit_float.h"
 
 /*  Disable __launch_bounds__
