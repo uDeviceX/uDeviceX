@@ -53,6 +53,13 @@ void print_traced_particles(Particle * particles, int n) {
     printf("%d particles are traced\n", count);
 }
 
+__device__ bool inbox(float x, float y, float z) {
+    float xl = -3, xh = 3;
+    float yl = -3, yh = 3;
+    float zl = -3, zh = 3;
+    return xl < x && x < xh && yl < y && y < yh  && zl < z && z < zh;
+}
+
 __device__ float3 compute_dpd_force_traced(int type1, int type2,
     float3 pos1, float3 pos2, float3 vel1, float3 vel2, float myrandnr) {
   /* return the DPD interaction force based on particle types
