@@ -19,7 +19,6 @@ static const float ljsigma2 = ljsigma * ljsigma;
 #include "common.h"
 #include "common-kernels.h"
 #include "scan.h"
-#include "common.h"
 #include "solute-exchange.h"
 #include "contact.h"
 #include "visc-aux.h"
