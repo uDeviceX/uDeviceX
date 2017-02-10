@@ -10,7 +10,6 @@
 *.orig
 *.xyz
 *.ply
-*.png
 *.dcu
 *.cubin
 *.cudaobj

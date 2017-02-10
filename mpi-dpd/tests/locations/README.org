@@ -1,0 +1,8 @@
+I compile with the printing in dpd-forces.cu and main.cu enabled
+
+out.*.txt store outputs of 20 timesteps of a simulation:
+    > ./test 1 1 1 -rbcs -hdf5field_dumps -tend=100e-4 -steps_per_dump=200 -steps_per_hdf5dump=200 -hdf5part_dumps -shrate=8
+
+I plot them in gnuplot with
+    > splot "<awk '/CDFT/' out.1.txt" w p pt 6, "<awk '/CDFT/' out.2.txt" w p pt 2, "<awk '/CDFT/' out.3.txt" w p pt 1
+They should look very similar, see out.1-3.png
