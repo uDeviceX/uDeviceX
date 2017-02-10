@@ -100,7 +100,6 @@ std::vector<Particle> Simulation::_ic() {
                 }
             }
     fprintf(stderr, "(simulation.cu) generated %d\n solvent particles", pp.size());
-    set_traced_particles(pp.size(), &pp[0]);
     return pp;
 }
 
