@@ -17,89 +17,89 @@
 
 class RedistributeParticles
 {
-    static const int basetag = 950;
+  static const int basetag = 950;
 
-public:
+ public:
 
-    struct UnpackBuffer
-    {
-	float2 * buffer;
-	int capacity;
-    };
+  struct UnpackBuffer
+  {
+    float2 * buffer;
+    int capacity;
+  };
 
-    struct PackBuffer : UnpackBuffer
-    {
-	int * scattered_indices;
-    };
+  struct PackBuffer : UnpackBuffer
+  {
+    int * scattered_indices;
+  };
 
-    void pack(const Particle * const p, const int n, cudaStream_t stream);
+  void pack(const Particle * const p, const int n, cudaStream_t stream);
 
-    void send();
+  void send();
 
-    void bulk(const int nparticles,
-	      int * const cellstarts, int * const cellcounts,
-	      cudaStream_t mystream);
+  void bulk(const int nparticles,
+            int * const cellstarts, int * const cellcounts,
+            cudaStream_t mystream);
 
-    int recv_count(cudaStream_t, float& host_idling_time);
+  int recv_count(cudaStream_t, float& host_idling_time);
 
-    void recv_unpack(Particle * const particles, float4 * const xyzouvwo, ushort4 * const xyzo_half, const int nparticles,
-		     int * const cellstarts, int * const cellcounts, cudaStream_t, float& host_idling_time);
+  void recv_unpack(Particle * const particles, float4 * const xyzouvwo, ushort4 * const xyzo_half, const int nparticles,
+                   int * const cellstarts, int * const cellcounts, cudaStream_t, float& host_idling_time);
 
-    RedistributeParticles(MPI_Comm cartcomm);
+  RedistributeParticles(MPI_Comm cartcomm);
 
-    void adjust_message_sizes(ExpectedMessageSizes sizes);
+  void adjust_message_sizes(ExpectedMessageSizes sizes);
 
-    ~RedistributeParticles();
+  ~RedistributeParticles();
 
-    int pack_size(const int code) { return send_sizes[code]; }
+  int pack_size(const int code) { return send_sizes[code]; }
 
-    float pinned_data(const int code, const int entry) { return pinnedhost_sendbufs[code][entry]; }
+  float pinned_data(const int code, const int entry) { return pinnedhost_sendbufs[code][entry]; }
 
-private:
+ private:
 
-    MPI_Comm cartcomm;
+  MPI_Comm cartcomm;
 
-    bool firstcall;
+  bool firstcall;
 
-    int dims[3], periods[3], coords[3], neighbor_ranks[27], recv_tags[27],
-	default_message_sizes[27], send_sizes[27], recv_sizes[27],
-	nsendmsgreq, nexpected, nbulk, nhalo, nhalo_padded, myrank;
+  int dims[3], periods[3], coords[3], neighbor_ranks[27], recv_tags[27],
+  default_message_sizes[27], send_sizes[27], recv_sizes[27],
+  nsendmsgreq, nexpected, nbulk, nhalo, nhalo_padded, myrank;
 
-    float safety_factor;
+  float safety_factor;
 
-    int nactiveneighbors;
+  int nactiveneighbors;
 
-    MPI_Request sendcountreq[27], recvcountreq[27], sendmsgreq[27 * 2], recvmsgreq[27 * 2];
+  MPI_Request sendcountreq[27], recvcountreq[27], sendmsgreq[27 * 2], recvmsgreq[27 * 2];
 
-    cudaEvent_t evpacking, evsizes;
+  cudaEvent_t evpacking, evsizes;
 
-    float _waitall(MPI_Request * reqs, const int n)
-    {
-	const double tstart = MPI_Wtime();
+  float _waitall(MPI_Request * reqs, const int n)
+  {
+    const double tstart = MPI_Wtime();
 
-	MPI_Status statuses[n];
-	MPI_CHECK( MPI_Waitall(n, reqs, statuses) );
+    MPI_Status statuses[n];
+    MPI_CHECK( MPI_Waitall(n, reqs, statuses) );
 
-	return MPI_Wtime() - tstart;
-    }
+    return MPI_Wtime() - tstart;
+  }
 
-    void _post_recv();
-    void _cancel_recv();
+  void _post_recv();
+  void _cancel_recv();
 
-    void _adjust_send_buffers(const int capacities[27]);
-    bool _adjust_recv_buffers(const int capacities[27]);
+  void _adjust_send_buffers(const int capacities[27]);
+  bool _adjust_recv_buffers(const int capacities[27]);
 
-    PinnedHostBuffer<bool> failure;
-    PinnedHostBuffer<int> packsizes;
+  PinnedHostBuffer<bool> failure;
+  PinnedHostBuffer<int> packsizes;
 
-    float * pinnedhost_sendbufs[27], * pinnedhost_recvbufs[27];
+  float * pinnedhost_sendbufs[27], * pinnedhost_recvbufs[27];
 
-    PackBuffer packbuffers[27];
-    UnpackBuffer unpackbuffers[27];
+  PackBuffer packbuffers[27];
+  UnpackBuffer unpackbuffers[27];
 
-    SimpleDeviceBuffer<unsigned char> compressed_cellcounts;
-    SimpleDeviceBuffer<Particle> remote_particles;
-    SimpleDeviceBuffer<uint> scattered_indices;
-    SimpleDeviceBuffer<uchar4> subindices, subindices_remote;
+  SimpleDeviceBuffer<unsigned char> compressed_cellcounts;
+  SimpleDeviceBuffer<Particle> remote_particles;
+  SimpleDeviceBuffer<uint> scattered_indices;
+  SimpleDeviceBuffer<uchar4> subindices, subindices_remote;
 };
 

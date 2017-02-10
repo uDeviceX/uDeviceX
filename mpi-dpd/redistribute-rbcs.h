@@ -19,37 +19,37 @@
 
 class RedistributeRBCs
 {
-protected:
+ protected:
 
-    MPI_Comm cartcomm;
-    MPI_Request sendcountreq[26];
+   MPI_Comm cartcomm;
+   MPI_Request sendcountreq[26];
 
-    std::vector<MPI_Request> sendreq, recvreq, recvcountreq;
-    
-    int myrank, dims[3], periods[3], coords[3], rankneighbors[27], anti_rankneighbors[27];
-    int recv_counts[27];
+   std::vector<MPI_Request> sendreq, recvreq, recvcountreq;
 
-    SimpleDeviceBuffer<Particle> bulk;
-    PinnedHostBuffer<Particle> halo_recvbufs[27], halo_sendbufs[27];
+   int myrank, dims[3], periods[3], coords[3], rankneighbors[27], anti_rankneighbors[27];
+   int recv_counts[27];
 
-    int nvertices, arriving, notleaving;
+   SimpleDeviceBuffer<Particle> bulk;
+   PinnedHostBuffer<Particle> halo_recvbufs[27], halo_sendbufs[27];
 
-    cudaEvent_t evextents;
+   int nvertices, arriving, notleaving;
 
-    PinnedHostBuffer<float3> minextents, maxextents;
+   cudaEvent_t evextents;
 
-    virtual void _compute_extents(const Particle * const xyzuvw, const int nrbcs, cudaStream_t stream);
+   PinnedHostBuffer<float3> minextents, maxextents;
 
-    void _post_recvcount();
-    
-public:
-    
-    RedistributeRBCs(MPI_Comm comm);
-        
-    void extent(const Particle * const xyzuvw, const int nrbcs, cudaStream_t stream);
-    void pack_sendcount(const Particle * const xyzuvw, const int nrbcs, cudaStream_t stream);
-    int post();
-    void unpack(Particle * const xyzuvw, const int nrbcs, cudaStream_t stream);
-    
-    ~RedistributeRBCs();
+   virtual void _compute_extents(const Particle * const xyzuvw, const int nrbcs, cudaStream_t stream);
+
+   void _post_recvcount();
+
+ public:
+
+   RedistributeRBCs(MPI_Comm comm);
+
+   void extent(const Particle * const xyzuvw, const int nrbcs, cudaStream_t stream);
+   void pack_sendcount(const Particle * const xyzuvw, const int nrbcs, cudaStream_t stream);
+   int post();
+   void unpack(Particle * const xyzuvw, const int nrbcs, cudaStream_t stream);
+
+   ~RedistributeRBCs();
 };

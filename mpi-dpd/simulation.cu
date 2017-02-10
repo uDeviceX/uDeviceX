@@ -82,26 +82,26 @@ void Simulation::_update_helper_arrays()
 }
 
 std::vector<Particle> Simulation::_ic() {
-  srand48(rank);
-  std::vector<Particle> pp;
-  int  L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
-  int iz, iy, ix, l, nd   = numberdensity;
-  for (iz = 0; iz < L[2]; iz++)
-    for (iy = 0; iy < L[1]; iy++)
-      for (ix = 0; ix < L[0]; ix++) {
-	int xc = -L[0]/2 + ix, yc = -L[1]/2 + iy, zc = -L[2]/2 + iz;
- 	for (l = 0; l < nd; l++) {
-	  Particle p = Particle(); float dr = 0.99;
-	  p.x[0] = xc + dr*drand48();
-	  p.x[1] = yc + dr*drand48();
-	  p.x[2] = zc + dr*drand48();
-	  p.u[0] = p.u[1] = p.u[2] = 0;
-	  pp.push_back(p);
-	}
-      }
-  fprintf(stderr, "(simulation.cu) generated %d\n solvent particles", pp.size());
-  set_traced_particles(pp.size(), &pp[0]);
-  return pp;
+    srand48(rank);
+    std::vector<Particle> pp;
+    int  L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
+    int iz, iy, ix, l, nd   = numberdensity;
+    for (iz = 0; iz < L[2]; iz++)
+        for (iy = 0; iy < L[1]; iy++)
+            for (ix = 0; ix < L[0]; ix++) {
+                int xc = -L[0]/2 + ix, yc = -L[1]/2 + iy, zc = -L[2]/2 + iz;
+                for (l = 0; l < nd; l++) {
+                    Particle p = Particle(); float dr = 0.99;
+                    p.x[0] = xc + dr*drand48();
+                    p.x[1] = yc + dr*drand48();
+                    p.x[2] = zc + dr*drand48();
+                    p.u[0] = p.u[1] = p.u[2] = 0;
+                    pp.push_back(p);
+                }
+            }
+    fprintf(stderr, "(simulation.cu) generated %d\n solvent particles", pp.size());
+    set_traced_particles(pp.size(), &pp[0]);
+    return pp;
 }
 
 void Simulation::_redistribute()
@@ -200,15 +200,15 @@ void Simulation::_create_walls(const bool verbose, bool & termination_request)
         for(int code = 0; code < 27; ++code)
         {
             const int d[3] = {
-                    (code % 3) - 1,
-                    ((code / 3) % 3) - 1,
-                    ((code / 9) % 3) - 1
+                (code % 3) - 1,
+                ((code / 3) % 3) - 1,
+                ((code / 9) % 3) - 1
             };
 
             const double IudotnI =
-                    fabs(d[0] * xvelavg) +
-                    fabs(d[1] * yvelavg) +
-                    fabs(d[2] * zvelavg) ;
+                fabs(d[0] * xvelavg) +
+                fabs(d[1] * yvelavg) +
+                fabs(d[2] * zvelavg) ;
 
             const float factor = 1 + IudotnI * dt * 10 * numberdensity;
 
@@ -373,7 +373,7 @@ void Simulation::_datadump_async()
     MPI_CHECK(MPI_Comm_dup(activecomm, &myactivecomm) );
     MPI_CHECK(MPI_Comm_dup(cartcomm, &mycartcomm) );
 
-	printf("ALLPARTICLES CHECK\n");
+    printf("ALLPARTICLES CHECK\n");
     H5PartDump dump_part("allparticles.h5part", activecomm, cartcomm), *dump_part_solvent = NULL;
     H5FieldDump dump_field(cartcomm);
 
@@ -424,8 +424,8 @@ void Simulation::_datadump_async()
             dump_field.dump(activecomm, p, datadump_nsolvent, datadump_idtimestep);
         }
 
-	/* LINA: this is to not to dump the beginning
-	   if (datadump_idtimestep >= 600/dt) */
+        /* LINA: this is to not to dump the beginning
+           if (datadump_idtimestep >= 600/dt) */
         {
             if (rbcscoll)
                 CollectionRBC::dump(myactivecomm, mycartcomm, p + datadump_nsolvent, a + datadump_nsolvent, datadump_nrbcs, iddatadump);
@@ -480,14 +480,14 @@ void Simulation::_update_and_bounce()
 }
 
 Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_termination)()) :
-            cartcomm(cartcomm), activecomm(activecomm),
-            cells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN),
-            rbcscoll(NULL), wall(NULL),
-            redistribute(cartcomm),  redistribute_rbcs(cartcomm),
-            dpd(cartcomm), fsi(cartcomm), contact(cartcomm), solutex(cartcomm),
-            check_termination(check_termination),
-            driving_acceleration(0), host_idle_time(0), nsteps((int)(tend / dt)),
-            datadump_pending(false), simulation_is_done(false)
+    cartcomm(cartcomm), activecomm(activecomm),
+    cells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN),
+    rbcscoll(NULL), wall(NULL),
+    redistribute(cartcomm),  redistribute_rbcs(cartcomm),
+    dpd(cartcomm), fsi(cartcomm), contact(cartcomm), solutex(cartcomm),
+    check_termination(check_termination),
+    driving_acceleration(0), host_idle_time(0), nsteps((int)(tend / dt)),
+    datadump_pending(false), simulation_is_done(false)
 {
     MPI_CHECK( MPI_Comm_size(activecomm, &nranks) );
     MPI_CHECK( MPI_Comm_rank(activecomm, &rank) );
@@ -503,12 +503,12 @@ Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_term
     int xl1[3] = {0, 0, 3};
     int xh1[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, 8};
     velcont1 = new VelController(xl1, xh1, coords,
-			make_float3(-desired_shrate*(ZSIZE_SUBDOMAIN/2-8), 0, 0), activecomm);
+            make_float3(-desired_shrate*(ZSIZE_SUBDOMAIN/2-8), 0, 0), activecomm);
 
     int xl2[3] = {0, 0, ZSIZE_SUBDOMAIN-8};
     int xh2[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN-3};
     velcont2 = new VelController(xl2, xh2, coords,
-			make_float3(desired_shrate*(ZSIZE_SUBDOMAIN/2-8), 0, 0), activecomm);
+            make_float3(desired_shrate*(ZSIZE_SUBDOMAIN/2-8), 0, 0), activecomm);
 
     {
         particles = &particles_pingpong[0];
@@ -732,12 +732,12 @@ void Simulation::run()
         const bool verbose = it > 0 && rank == 0;
         _redistribute();
 
-    lockstep_check:
+lockstep_check:
 
         const bool lockstep_OK =
-                !(walls && it >= wall_creation_stepid && wall == NULL) &&
-                !(it % steps_per_dump == 0) &&
-                !(it + 1 == nsteps);
+            !(walls && it >= wall_creation_stepid && wall == NULL) &&
+            !(it % steps_per_dump == 0) &&
+            !(it + 1 == nsteps);
 
         if (lockstep_OK)
         {

@@ -40,16 +40,16 @@ enum
     XTEXTURESIZE = 256,
 
     _YTEXTURESIZE =
-            ((YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL) * XTEXTURESIZE + XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL - 1)
-            / (XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL),
+        ((YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL) * XTEXTURESIZE + XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL - 1)
+        / (XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL),
 
-            YTEXTURESIZE = 16 * ((_YTEXTURESIZE + 15) / 16),
+    YTEXTURESIZE = 16 * ((_YTEXTURESIZE + 15) / 16),
 
-            _ZTEXTURESIZE =
-                    ((ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL) * XTEXTURESIZE + XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL - 1)
-                    / (XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL),
+    _ZTEXTURESIZE =
+        ((ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL) * XTEXTURESIZE + XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL - 1)
+        / (XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL),
 
-                    ZTEXTURESIZE = 16 * ((_ZTEXTURESIZE + 15) / 16),
+    ZTEXTURESIZE = 16 * ((_ZTEXTURESIZE + 15) / 16),
 
 };
 
@@ -326,51 +326,51 @@ namespace SolidWallsKernel
     }
 
     __global__ UD_LAUNCH_BOUNDS(32 * 4, 12)
-    void bounce(float2 * const particles, const int nparticles, const int rank, const float dt)
-    {
-        const int pid = threadIdx.x + blockDim.x * blockIdx.x;
+        void bounce(float2 * const particles, const int nparticles, const int rank, const float dt)
+        {
+            const int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
-        if (pid >= nparticles)
-            return;
+            if (pid >= nparticles)
+                return;
 
-        float2 data0 = particles[pid * 3];
-        float2 data1 = particles[pid * 3 + 1];
+            float2 data0 = particles[pid * 3];
+            float2 data1 = particles[pid * 3 + 1];
 
 #ifndef NDEBUG
-        const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
-        const int MARGIN[3] = { XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL };
-        const float x[3] = { data0.x, data0.y, data1.x } ;
+            const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
+            const int MARGIN[3] = { XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL };
+            const float x[3] = { data0.x, data0.y, data1.x } ;
 
-        for(int c = 0; c < 3; ++c)
-        {
-            if (!(abs(x[c]) <= L[c]/2 + MARGIN[c]))
-                cuda_printf("bounce: ooooooooops component %d we have %f %f %f outside %d + %d\n", c, x[0], x[1], x[2], L[c]/2, MARGIN[c]);
-        }
+            for(int c = 0; c < 3; ++c)
+            {
+                if (!(abs(x[c]) <= L[c]/2 + MARGIN[c]))
+                    cuda_printf("bounce: ooooooooops component %d we have %f %f %f outside %d + %d\n", c, x[0], x[1], x[2], L[c]/2, MARGIN[c]);
+            }
 #endif
 
-        if (pid < nparticles)
-        {
-            const float mycheapsdf = cheap_sdf(data0.x, data0.y, data1.x);
-
-            if (mycheapsdf >= -1.7320f * ((float)XSIZE_WALLCELLS / (float)XTEXTURESIZE))
+            if (pid < nparticles)
             {
-                const float currsdf = sdf(data0.x, data0.y, data1.x);
+                const float mycheapsdf = cheap_sdf(data0.x, data0.y, data1.x);
 
-                float2 data2 = particles[pid * 3 + 2];
-
-                const float3 v0 = make_float3(data1.y, data2.x, data2.y);
-
-                if (currsdf >= 0)
+                if (mycheapsdf >= -1.7320f * ((float)XSIZE_WALLCELLS / (float)XTEXTURESIZE))
                 {
-                    handle_collision(currsdf, data0.x, data0.y, data1.x, data1.y, data2.x, data2.y, rank, dt);
+                    const float currsdf = sdf(data0.x, data0.y, data1.x);
 
-                    particles[3 * pid] = data0;
-                    particles[3 * pid + 1] = data1;
-                    particles[3 * pid + 2] = data2;
+                    float2 data2 = particles[pid * 3 + 2];
+
+                    const float3 v0 = make_float3(data1.y, data2.x, data2.y);
+
+                    if (currsdf >= 0)
+                    {
+                        handle_collision(currsdf, data0.x, data0.y, data1.x, data1.y, data2.x, data2.y, rank, dt);
+
+                        particles[3 * pid] = data0;
+                        particles[3 * pid + 1] = data1;
+                        particles[3 * pid + 2] = data2;
+                    }
                 }
             }
         }
-    }
 
     __global__ UD_LAUNCH_BOUNDS(128, 16) void interactions_3tpp(const float2 * const particles, const int np, const int nsolid,
             float * const acc, const float seed, const float sigmaf)
@@ -474,22 +474,22 @@ template<int k>
 struct Bspline
 {
     template<int i>
-    static float eval(float x)
-    {
-        return
+        static float eval(float x)
+        {
+            return
                 (x - i) / (k - 1) * Bspline<k - 1>::template eval<i>(x) +
                 (i + k - x) / (k - 1) * Bspline<k - 1>::template eval<i + 1>(x);
-    }
+        }
 };
 
 template<>
 struct Bspline<1>
 {
     template <int i>
-    static float eval(float x)
-    {
-        return  (float)(i) <= x && x < (float)(i + 1);
-    }
+        static float eval(float x)
+        {
+            return  (float)(i) <= x && x < (float)(i + 1);
+        }
 };
 
 struct FieldSampler
@@ -600,9 +600,9 @@ struct FieldSampler
                 for(int ix = 0; ix < nsize[0]; ++ix)
                 {
                     const float x[3] = {
-                            start[0] + (ix  + 0.5f) * spacing[0] - 0.5f,
-                            start[1] + (iy  + 0.5f) * spacing[1] - 0.5f,
-                            start[2] + (iz  + 0.5f) * spacing[2] - 0.5f
+                        start[0] + (ix  + 0.5f) * spacing[0] - 0.5f,
+                        start[1] + (iy  + 0.5f) * spacing[1] - 0.5f,
+                        start[2] + (iz  + 0.5f) * spacing[2] - 0.5f
                     };
 
                     int anchor[3];
@@ -661,8 +661,8 @@ struct FieldSampler
 
 ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int& nsurvived,
         ExpectedMessageSizes& new_sizes, const bool verbose):
-                    cartcomm(cartcomm), arrSDF(NULL), solid4(NULL), solid_size(0),
-                    cells(XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL, YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL, ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL)
+    cartcomm(cartcomm), arrSDF(NULL), solid4(NULL), solid_size(0),
+    cells(XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL, YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL, ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL)
 {
     MPI_CHECK( MPI_Comm_rank(cartcomm, &myrank));
 
@@ -717,15 +717,15 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int&
                     const int entry = (dx + 1) + 3 * ((dy + 1) + 3 * (dz + 1));
 
                     int local_start[3] = {
-                            d[0] + (d[0] == 1) * (XSIZE_SUBDOMAIN - 2),
-                            d[1] + (d[1] == 1) * (YSIZE_SUBDOMAIN - 2),
-                            d[2] + (d[2] == 1) * (ZSIZE_SUBDOMAIN - 2)
+                        d[0] + (d[0] == 1) * (XSIZE_SUBDOMAIN - 2),
+                        d[1] + (d[1] == 1) * (YSIZE_SUBDOMAIN - 2),
+                        d[2] + (d[2] == 1) * (ZSIZE_SUBDOMAIN - 2)
                     };
 
                     int local_extent[3] = {
-                            1 * (d[0] != 0 ? 2 : XSIZE_SUBDOMAIN),
-                            1 * (d[1] != 0 ? 2 : YSIZE_SUBDOMAIN),
-                            1 * (d[2] != 0 ? 2 : ZSIZE_SUBDOMAIN)
+                        1 * (d[0] != 0 ? 2 : XSIZE_SUBDOMAIN),
+                        1 * (d[1] != 0 ? 2 : YSIZE_SUBDOMAIN),
+                        1 * (d[2] != 0 ? 2 : ZSIZE_SUBDOMAIN)
                     };
 
                     float start[3], spacing[3];
@@ -835,7 +835,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int&
     SimpleDeviceBuffer<Particle> solid_remote;
 
     {
-	                    thrust::host_vector<Particle> local = solid_local;
+        thrust::host_vector<Particle> local = solid_local;
 
         int dstranks[26], remsizes[26], recv_tags[26];
         for(int i = 0; i < 26; ++i)
@@ -947,8 +947,8 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int&
 
 void ComputeWall::bounce(Particle * const p, const int n, cudaStream_t stream)
 {
-	                if (n > 0)
-	                    SolidWallsKernel::bounce<<< (n + 127) / 128, 128, 0, stream>>>((float2 *)p, n, myrank, dt);
+    if (n > 0)
+        SolidWallsKernel::bounce<<< (n + 127) / 128, 128, 0, stream>>>((float2 *)p, n, myrank, dt);
 
     samples++;
     CUDA_CHECK(cudaPeekAtLastError());
@@ -963,16 +963,16 @@ void ComputeWall::interactions(const Particle * const p, const int n, Accelerati
     {
         size_t textureoffset;
         CUDA_CHECK(cudaBindTexture(&textureoffset, &SolidWallsKernel::texWallParticles, solid4,
-                &SolidWallsKernel::texWallParticles.channelDesc, sizeof(float4) * solid_size));
+                    &SolidWallsKernel::texWallParticles.channelDesc, sizeof(float4) * solid_size));
 
         CUDA_CHECK(cudaBindTexture(&textureoffset, &SolidWallsKernel::texWallCellStart, cells.start,
-                &SolidWallsKernel::texWallCellStart.channelDesc, sizeof(int) * cells.ncells));
+                    &SolidWallsKernel::texWallCellStart.channelDesc, sizeof(int) * cells.ncells));
 
         CUDA_CHECK(cudaBindTexture(&textureoffset, &SolidWallsKernel::texWallCellCount, cells.count,
-                &SolidWallsKernel::texWallCellCount.channelDesc, sizeof(int) * cells.ncells));
+                    &SolidWallsKernel::texWallCellCount.channelDesc, sizeof(int) * cells.ncells));
 
         SolidWallsKernel::interactions_3tpp<<< (3 * n + 127) / 128, 128, 0, stream>>>
-                ((float2 *)p, n, solid_size, (float *)acc, trunk.get_float(), sigmaf);
+            ((float2 *)p, n, solid_size, (float *)acc, trunk.get_float(), sigmaf);
 
         CUDA_CHECK(cudaUnbindTexture(SolidWallsKernel::texWallParticles));
         CUDA_CHECK(cudaUnbindTexture(SolidWallsKernel::texWallCellStart));

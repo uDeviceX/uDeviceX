@@ -53,8 +53,8 @@ void _write_bytes(const void * const ptr, const int nbytes32, MPI_File f, MPI_Co
 }
 
 void ply_dump(MPI_Comm comm, MPI_Comm cartcomm, const char * filename,
-	      int (*mesh_indices)[3], const int ninstances, const int ntriangles_per_instance,
-	      Particle * _particles, int nvertices_per_instance, bool append)
+        int (*mesh_indices)[3], const int ninstances, const int ntriangles_per_instance,
+        Particle * _particles, int nvertices_per_instance, bool append)
 {
     std::vector<Particle> particles(_particles, _particles + ninstances * nvertices_per_instance);
 
@@ -76,21 +76,21 @@ void ply_dump(MPI_Comm comm, MPI_Comm cartcomm, const char * filename,
     MPI_CHECK( MPI_File_open(comm, filename , MPI_MODE_WRONLY | (append ? MPI_MODE_APPEND : MPI_MODE_CREATE), MPI_INFO_NULL, &f) );
 
     if (!append)
-	MPI_CHECK( MPI_File_set_size (f, 0));
+        MPI_CHECK( MPI_File_set_size (f, 0));
 
     std::stringstream ss;
 
     if (rank == 0)
     {
-	ss <<  "ply\n";
-	ss <<  "format binary_little_endian 1.0\n";
-	ss <<  "element vertex " << NPOINTS << "\n";
-	ss <<  "property float x\nproperty float y\nproperty float z\n";
-	ss <<  "property float u\nproperty float v\nproperty float w\n";
-	//ss <<  "property float xnormal\nproperty float ynormal\nproperty float znormal\n";
-	ss <<  "element face " << NTRIANGLES << "\n";
-	ss <<  "property list int int vertex_index\n";
-	ss <<  "end_header\n";
+        ss <<  "ply\n";
+        ss <<  "format binary_little_endian 1.0\n";
+        ss <<  "element vertex " << NPOINTS << "\n";
+        ss <<  "property float x\nproperty float y\nproperty float z\n";
+        ss <<  "property float u\nproperty float v\nproperty float w\n";
+        //ss <<  "property float xnormal\nproperty float ynormal\nproperty float znormal\n";
+        ss <<  "element face " << NTRIANGLES << "\n";
+        ss <<  "property list int int vertex_index\n";
+        ss <<  "end_header\n";
     }
 
     string content = ss.str();
@@ -100,8 +100,8 @@ void ply_dump(MPI_Comm comm, MPI_Comm cartcomm, const char * filename,
     const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
 
     for(int i = 0; i < n; ++i)
-	for(int c = 0; c < 3; ++c)
-	    particles[i].x[c] += L[c] / 2 + coords[c] * L[c];
+        for(int c = 0; c < 3; ++c)
+            particles[i].x[c] += L[c] / 2 + coords[c] * L[c];
 
     _write_bytes(&particles.front(), sizeof(Particle) * n, f, comm);
 
@@ -112,15 +112,15 @@ void ply_dump(MPI_Comm comm, MPI_Comm cartcomm, const char * filename,
     std::vector<int> buf;
 
     for(int j = 0; j < ninstances; ++j)
-	for(int i = 0; i < ntriangles_per_instance; ++i)
-	{
-	    int primitive[4] = { 3,
-				 poffset + nvertices_per_instance * j + mesh_indices[i][0],
-				 poffset + nvertices_per_instance * j + mesh_indices[i][1],
-				 poffset + nvertices_per_instance * j + mesh_indices[i][2] };
+        for(int i = 0; i < ntriangles_per_instance; ++i)
+        {
+            int primitive[4] = { 3,
+                poffset + nvertices_per_instance * j + mesh_indices[i][0],
+                poffset + nvertices_per_instance * j + mesh_indices[i][1],
+                poffset + nvertices_per_instance * j + mesh_indices[i][2] };
 
-	    buf.insert(buf.end(), primitive, primitive + 4);
-	}
+            buf.insert(buf.end(), primitive, primitive + 4);
+        }
 
     _write_bytes(&buf.front(), sizeof(int) * buf.size(), f, comm);
 
@@ -141,7 +141,7 @@ void H5PartDump::_initialize(const std::string filename, MPI_Comm comm, MPI_Comm
 
     const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
     for(int c = 0; c < 3; ++c)
-	origin[c] = L[c] / 2 + coords[c] * L[c];
+        origin[c] = L[c] / 2 + coords[c] * L[c];
 
     mkdir("h5", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
@@ -158,10 +158,10 @@ void H5PartDump::_initialize(const std::string filename, MPI_Comm comm, MPI_Comm
 void H5PartDump::dump(Particle * host_particles, int n)
 {
 #ifndef NO_H5PART
-	printf("Hello from H5Part!\n");
+    printf("Hello from H5Part!\n");
 
     if (disposed)
-    	return;
+        return;
 
     vector<int> traced;
     for(int i = 0; i < n; ++i)
@@ -193,20 +193,20 @@ void H5PartDump::_dispose()
 #ifndef NO_H5PART
     if (!disposed)
     {
-	H5PartFile * f = (H5PartFile *)handler;
+        H5PartFile * f = (H5PartFile *)handler;
 
-	H5PartCloseFile(f);
+        H5PartCloseFile(f);
 
-	disposed = true;
+        disposed = true;
 
-	handler = NULL;
+        handler = NULL;
     }
 #endif
 }
 
 H5PartDump::~H5PartDump()
 {
-     _dispose();
+    _dispose();
 }
 
 void H5FieldDump::_xdmf_header(FILE * xmf)
@@ -218,12 +218,12 @@ void H5FieldDump::_xdmf_header(FILE * xmf)
 }
 
 void H5FieldDump::_xdmf_grid(FILE * xmf, float time,
-			     const char * const h5path, const char * const * channelnames, int nchannels)
+        const char * const h5path, const char * const * channelnames, int nchannels)
 {
     fprintf(xmf, "   <Grid Name=\"mesh\" GridType=\"Uniform\">\n");
     fprintf(xmf, "     <Time Value=\"%.f\"/>\n", time);
     fprintf(xmf, "     <Topology TopologyType=\"3DCORECTMesh\" Dimensions=\"%d %d %d\"/>\n",
-	    1 + (int)globalsize[2], 1 + (int)globalsize[1], 1 + (int)globalsize[0]);
+            1 + (int)globalsize[2], 1 + (int)globalsize[1], 1 + (int)globalsize[0]);
 
     fprintf(xmf, "     <Geometry GeometryType=\"ORIGIN_DXDYDZ\">\n");
     fprintf(xmf, "       <DataItem Name=\"Origin\" Dimensions=\"3\" NumberType=\"Float\" Precision=\"4\" Format=\"XML\">\n");
@@ -238,18 +238,18 @@ void H5FieldDump::_xdmf_grid(FILE * xmf, float time,
 
     for(int ichannel = 0; ichannel < nchannels; ++ichannel)
     {
-	fprintf(xmf, "     <Attribute Name=\"%s\" AttributeType=\"Scalar\" Center=\"Cell\">\n", channelnames[ichannel]);
-	fprintf(xmf, "       <DataItem Dimensions=\"%d %d %d 1\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n",
-		(int)globalsize[2], (int)globalsize[1], (int)globalsize[0]);
+        fprintf(xmf, "     <Attribute Name=\"%s\" AttributeType=\"Scalar\" Center=\"Cell\">\n", channelnames[ichannel]);
+        fprintf(xmf, "       <DataItem Dimensions=\"%d %d %d 1\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n",
+                (int)globalsize[2], (int)globalsize[1], (int)globalsize[0]);
 
-	fprintf(xmf, "        %s:/%s\n", h5path, channelnames[ichannel]);
+        fprintf(xmf, "        %s:/%s\n", h5path, channelnames[ichannel]);
 
-	fprintf(xmf, "       </DataItem>\n");
-	fprintf(xmf, "     </Attribute>\n");
+        fprintf(xmf, "       </DataItem>\n");
+        fprintf(xmf, "     </Attribute>\n");
     }
 
     fprintf(xmf, "   </Grid>\n");
-    }
+}
 
 void H5FieldDump::_xdmf_epilogue(FILE * xmf)
 {
@@ -258,8 +258,8 @@ void H5FieldDump::_xdmf_epilogue(FILE * xmf)
 }
 
 void H5FieldDump::_write_fields(const char * const path2h5,
-				const float * const channeldata[], const char * const * const channelnames, const int nchannels,
-				MPI_Comm comm, const float time)
+        const float * const channeldata[], const char * const * const channelnames, const int nchannels,
+        MPI_Comm comm, const float time)
 {
 #ifndef NO_H5
     int nranks[3], periods[3], myrank[3];
@@ -277,23 +277,23 @@ void H5FieldDump::_write_fields(const char * const path2h5,
 
     for(int ichannel = 0; ichannel < nchannels; ++ichannel)
     {
-	hid_t dset_id = H5Dcreate(file_id, channelnames[ichannel], H5T_NATIVE_FLOAT, filespace_simple, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-	hid_t plist_id = H5Pcreate(H5P_DATASET_XFER);
+        hid_t dset_id = H5Dcreate(file_id, channelnames[ichannel], H5T_NATIVE_FLOAT, filespace_simple, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+        hid_t plist_id = H5Pcreate(H5P_DATASET_XFER);
 
-	H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
+        H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
 
-	hsize_t start[4] = { myrank[2] * L[2], myrank[1] * L[1], myrank[0] * L[0], 0};
-	hsize_t extent[4] = { L[2], L[1], L[0],  1};
-	hid_t filespace = H5Dget_space(dset_id);
-	H5Sselect_hyperslab(filespace, H5S_SELECT_SET, start, NULL, extent, NULL);
+        hsize_t start[4] = { myrank[2] * L[2], myrank[1] * L[1], myrank[0] * L[0], 0};
+        hsize_t extent[4] = { L[2], L[1], L[0],  1};
+        hid_t filespace = H5Dget_space(dset_id);
+        H5Sselect_hyperslab(filespace, H5S_SELECT_SET, start, NULL, extent, NULL);
 
-	hid_t memspace = H5Screate_simple(4, extent, NULL);
-	herr_t status = H5Dwrite(dset_id, H5T_NATIVE_FLOAT, memspace, filespace, plist_id, channeldata[ichannel]);
+        hid_t memspace = H5Screate_simple(4, extent, NULL);
+        herr_t status = H5Dwrite(dset_id, H5T_NATIVE_FLOAT, memspace, filespace, plist_id, channeldata[ichannel]);
 
-	H5Sclose(memspace);
-	H5Sclose(filespace);
-	H5Pclose(plist_id);
-	H5Dclose(dset_id);
+        H5Sclose(memspace);
+        H5Sclose(filespace);
+        H5Pclose(plist_id);
+        H5Dclose(dset_id);
     }
 
     H5Sclose(filespace_simple);
@@ -304,16 +304,16 @@ void H5FieldDump::_write_fields(const char * const path2h5,
 
     if (!rankscalar)
     {
-	char wrapper[256];
-	sprintf(wrapper, "%s.xmf", string(path2h5).substr(0, string(path2h5).find_last_of(".h5") - 2).data());
+        char wrapper[256];
+        sprintf(wrapper, "%s.xmf", string(path2h5).substr(0, string(path2h5).find_last_of(".h5") - 2).data());
 
-	FILE * xmf = fopen(wrapper, "w");
+        FILE * xmf = fopen(wrapper, "w");
 
-	_xdmf_header(xmf);
-	_xdmf_grid(xmf, time, string(path2h5).substr(string(path2h5).find_last_of("/") + 1).c_str(), channelnames, nchannels);
-	_xdmf_epilogue(xmf);
+        _xdmf_header(xmf);
+        _xdmf_grid(xmf, time, string(path2h5).substr(string(path2h5).find_last_of("/") + 1).c_str(), channelnames, nchannels);
+        _xdmf_epilogue(xmf);
 
-	fclose(xmf);
+        fclose(xmf);
     }
 #endif // NO_H5
 }
@@ -326,7 +326,7 @@ H5FieldDump::H5FieldDump(MPI_Comm cartcomm): cartcomm(cartcomm), last_idtimestep
     const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
 
     for(int c = 0; c < 3; ++c)
-	globalsize[c] = L[c] * dims[c];
+        globalsize[c] = L[c] * dims[c];
 }
 
 void H5FieldDump::dump_scalarfield(MPI_Comm comm, const float * const data, const char * channelname)
@@ -347,41 +347,41 @@ void H5FieldDump::dump(MPI_Comm comm, const Particle * const p, const int n, int
     vector<float> rho(ncells), u[3];
 
     for(int c = 0; c < 3; ++c)
-	u[c].resize(ncells);
+        u[c].resize(ncells);
 
     for(int i = 0; i < n; ++i)
     {
-	const int cellindex[3] = {
+        const int cellindex[3] = {
             max(0, min(XSIZE_SUBDOMAIN - 1, (int)(floor(p[i].x[0])) + XSIZE_SUBDOMAIN / 2)),
             max(0, min(YSIZE_SUBDOMAIN - 1, (int)(floor(p[i].x[1])) + YSIZE_SUBDOMAIN / 2)),
             max(0, min(ZSIZE_SUBDOMAIN - 1, (int)(floor(p[i].x[2])) + ZSIZE_SUBDOMAIN / 2))
         };
 
-	const int entry = cellindex[0] + XSIZE_SUBDOMAIN * (cellindex[1] + YSIZE_SUBDOMAIN * cellindex[2]);
+        const int entry = cellindex[0] + XSIZE_SUBDOMAIN * (cellindex[1] + YSIZE_SUBDOMAIN * cellindex[2]);
 
-	rho[entry] += 1;
+        rho[entry] += 1;
 
-	for(int c = 0; c < 3; ++c)
-	    u[c][entry] += p[i].u[c];
+        for(int c = 0; c < 3; ++c)
+            u[c][entry] += p[i].u[c];
     }
 
     for(int c = 0; c < 3; ++c)
-	for(int i = 0; i < ncells; ++i)
-	    u[c][i] = rho[i] ? u[c][i] / rho[i] : 0;
+        for(int i = 0; i < ncells; ++i)
+            u[c][i] = rho[i] ? u[c][i] / rho[i] : 0;
 
     const char * names[] = { "density", "u", "v", "w" };
 
     if (!directory_exists)
     {
-	int rank;
-	MPI_CHECK(MPI_Comm_rank(comm, &rank));
+        int rank;
+        MPI_CHECK(MPI_Comm_rank(comm, &rank));
 
-	if (rank == 0)
-	    mkdir("h5", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+        if (rank == 0)
+            mkdir("h5", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
-	directory_exists = true;
+        directory_exists = true;
 
-	MPI_CHECK(MPI_Barrier(comm));
+        MPI_CHECK(MPI_Barrier(comm));
     }
 
     char filepath[512];
@@ -398,7 +398,7 @@ H5FieldDump::~H5FieldDump()
 {
 #ifndef NO_H5
     if (last_idtimestep == 0)
-	return;
+        return;
 
     FILE * xmf = fopen("h5/flowfields-sequence.xmf", "w");
 
@@ -409,10 +409,10 @@ H5FieldDump::~H5FieldDump()
     const char * channelnames[] = { "density", "u", "v", "w" };
     for(int it = 0; it <= last_idtimestep; it += steps_per_dump)
     {
-	char filepath[512];
-	sprintf(filepath, "h5/flowfields-%04d.h5", it / steps_per_dump);
+        char filepath[512];
+        sprintf(filepath, "h5/flowfields-%04d.h5", it / steps_per_dump);
 
-	_xdmf_grid(xmf, it * dt,  string(filepath).substr(string(filepath).find_last_of("/") + 1).c_str(), channelnames, 4);
+        _xdmf_grid(xmf, it * dt,  string(filepath).substr(string(filepath).find_last_of("/") + 1).c_str(), channelnames, 4);
     }
 
     fprintf(xmf, "   </Grid>\n");

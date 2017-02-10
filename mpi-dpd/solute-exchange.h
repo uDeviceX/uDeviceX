@@ -17,208 +17,208 @@
 
 class SoluteExchange
 {
-    enum { TAGBASE_C = 113, TAGBASE_P = 365, TAGBASE_A = 668, TAGBASE_P2 = 1055, TAGBASE_A2 = 1501 };
+  enum { TAGBASE_C = 113, TAGBASE_P = 365, TAGBASE_A = 668, TAGBASE_P2 = 1055, TAGBASE_A2 = 1501 };
 
-public:
+ public:
 
-    struct Visitor { virtual void halo(ParticlesWrap solutehalos[26], cudaStream_t stream) = 0; };
+  struct Visitor { virtual void halo(ParticlesWrap solutehalos[26], cudaStream_t stream) = 0; };
 
-protected:
+ protected:
 
-    MPI_Comm cartcomm;
+  MPI_Comm cartcomm;
 
-    int iterationcount;
+  int iterationcount;
 
-    int nranks, dstranks[26],
-	dims[3], periods[3], coords[3], myrank,
-	recv_tags[26], recv_counts[26], send_counts[26];
+  int nranks, dstranks[26],
+  dims[3], periods[3], coords[3], myrank,
+  recv_tags[26], recv_counts[26], send_counts[26];
 
-    cudaEvent_t evPpacked, evAcomputed;
+  cudaEvent_t evPpacked, evAcomputed;
 
-    SimpleDeviceBuffer<int> packscount, packsstart, packsoffset, packstotalstart;
-    PinnedHostBuffer<int> host_packstotalstart, host_packstotalcount;
+  SimpleDeviceBuffer<int> packscount, packsstart, packsoffset, packstotalstart;
+  PinnedHostBuffer<int> host_packstotalstart, host_packstotalcount;
 
-    SimpleDeviceBuffer<Particle> packbuf;
-    PinnedHostBuffer<Particle> host_packbuf;
+  SimpleDeviceBuffer<Particle> packbuf;
+  PinnedHostBuffer<Particle> host_packbuf;
 
-    std::vector<ParticlesWrap> wsolutes;
+  std::vector<ParticlesWrap> wsolutes;
 
-    std::vector<MPI_Request> reqsendC, reqrecvC, reqsendP, reqrecvP, reqsendA, reqrecvA;
+  std::vector<MPI_Request> reqsendC, reqrecvC, reqsendP, reqrecvP, reqsendA, reqrecvA;
 
-    std::vector<Visitor *> visitors;
+  std::vector<Visitor *> visitors;
 
-    class TimeSeriesWindow
-    {
-	static const int N = 200;
+  class TimeSeriesWindow
+  {
+    static const int N = 200;
 
-	int count, data[N];
+    int count, data[N];
 
-    public:
+   public:
 
     TimeSeriesWindow(): count(0) { }
 
-	void update(int val) { data[count++ % N] = ::max(0, val); }
+    void update(int val) { data[count++ % N] = ::max(0, val); }
 
-	int max() const
-	    {
-		int retval = 0;
-
-		for(int i = 0; i < min(N, count); ++i)
-		    retval = ::max(data[i], retval);
-
-		return retval;
-	    }
-    };
-
-    class RemoteHalo
+    int max() const
     {
-	TimeSeriesWindow history;
+      int retval = 0;
 
-    public:
+      for(int i = 0; i < min(N, count); ++i)
+        retval = ::max(data[i], retval);
 
-	SimpleDeviceBuffer<Particle> dstate;
-	PinnedHostBuffer<Particle> hstate;
-	PinnedHostBuffer<Acceleration> result;
-	std::vector<Particle> pmessage;
+      return retval;
+    }
+  };
 
-	void preserve_resize(int n)
-	    {
-		dstate.resize(n);
-		hstate.preserve_resize(n);
-		result.resize(n);
-		history.update(n);
-	    }
+  class RemoteHalo
+  {
+    TimeSeriesWindow history;
 
-	int expected() const { return (int)ceil(history.max() * 1.1); }
+   public:
 
-	int capacity() const {
-		return dstate.capacity;
-	}
+    SimpleDeviceBuffer<Particle> dstate;
+    PinnedHostBuffer<Particle> hstate;
+    PinnedHostBuffer<Acceleration> result;
+    std::vector<Particle> pmessage;
 
-    } remote[26];
-
-    class LocalHalo
+    void preserve_resize(int n)
     {
-	TimeSeriesWindow history;
-
-    public:
-
-	SimpleDeviceBuffer<int> scattered_indices;
-	PinnedHostBuffer<Acceleration> result;
-
-	void resize(int n)
-	{
-	    scattered_indices.resize(n);
-	    result.resize(n);
-	}
-
-	void update() { history.update(result.size); }
-
-	int expected() const { return (int)ceil(history.max() * 1.1); }
-
-	int capacity() const {
-		return scattered_indices.capacity;
-	}
-
-    } local[26];
-
-    void _adjust_packbuffers()
-    {
-	int s = 0;
-
-	for(int i = 0; i < 26; ++i)
-	    s += 32 * ((local[i].capacity() + 31) / 32);
-
-	packbuf.resize(s);
-	host_packbuf.resize(s);
+      dstate.resize(n);
+      hstate.preserve_resize(n);
+      result.resize(n);
+      history.update(n);
     }
 
-    void _wait(std::vector<MPI_Request>& v)
-    {
-	MPI_Status statuses[v.size()];
+    int expected() const { return (int)ceil(history.max() * 1.1); }
 
-	if (v.size())
-	    MPI_CHECK(MPI_Waitall(v.size(), &v.front(), statuses));
-
-	v.clear();
+    int capacity() const {
+      return dstate.capacity;
     }
 
-    void _postrecvC()
+  } remote[26];
+
+  class LocalHalo
+  {
+    TimeSeriesWindow history;
+
+   public:
+
+    SimpleDeviceBuffer<int> scattered_indices;
+    PinnedHostBuffer<Acceleration> result;
+
+    void resize(int n)
     {
+      scattered_indices.resize(n);
+      result.resize(n);
+    }
+
+    void update() { history.update(result.size); }
+
+    int expected() const { return (int)ceil(history.max() * 1.1); }
+
+    int capacity() const {
+      return scattered_indices.capacity;
+    }
+
+  } local[26];
+
+  void _adjust_packbuffers()
+  {
+    int s = 0;
+
+    for(int i = 0; i < 26; ++i)
+      s += 32 * ((local[i].capacity() + 31) / 32);
+
+    packbuf.resize(s);
+    host_packbuf.resize(s);
+  }
+
+  void _wait(std::vector<MPI_Request>& v)
+  {
+    MPI_Status statuses[v.size()];
+
+    if (v.size())
+      MPI_CHECK(MPI_Waitall(v.size(), &v.front(), statuses));
+
+    v.clear();
+  }
+
+  void _postrecvC()
+  {
 #ifndef NDEBUG
-	memset(recv_counts, 0x8f, sizeof(int) * 26);
+    memset(recv_counts, 0x8f, sizeof(int) * 26);
 #endif
-	for(int i = 0; i < 26; ++i)
-	{
-	    MPI_Request reqC;
-
-	    MPI_CHECK( MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, dstranks[i],
-				 TAGBASE_C + recv_tags[i], cartcomm,  &reqC) );
-
-	    reqrecvC.push_back(reqC);
-	}
-    }
-
-    void _postrecvP()
+    for(int i = 0; i < 26; ++i)
     {
-	for(int i = 0; i < 26; ++i)
-	{
-	    MPI_Request reqP;
+      MPI_Request reqC;
 
-#ifndef NDEBUG
-	    memset(remote[i].hstate.data, 0xff, remote[i].hstate.capacity * sizeof(Particle));
-#endif
+      MPI_CHECK( MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, dstranks[i],
+                           TAGBASE_C + recv_tags[i], cartcomm,  &reqC) );
 
-	    remote[i].pmessage.resize(remote[i].expected());
-
-	    MPI_CHECK( MPI_Irecv(&remote[i].pmessage.front(), remote[i].expected() * 6, MPI_FLOAT, dstranks[i],
-				 TAGBASE_P + recv_tags[i], cartcomm, &reqP) );
-
-	    reqrecvP.push_back(reqP);
-	}
+      reqrecvC.push_back(reqC);
     }
+  }
 
-    void _postrecvA()
+  void _postrecvP()
+  {
+    for(int i = 0; i < 26; ++i)
     {
-	for(int i = 0; i < 26; ++i)
-	{
-	    MPI_Request reqA;
+      MPI_Request reqP;
 
 #ifndef NDEBUG
-	    memset(local[i].result.data, 0xff, local[i].result.capacity * sizeof(Acceleration));
+      memset(remote[i].hstate.data, 0xff, remote[i].hstate.capacity * sizeof(Particle));
 #endif
-	    MPI_CHECK( MPI_Irecv(local[i].result.data, local[i].result.size * 3, MPI_FLOAT, dstranks[i],
-				 TAGBASE_A + recv_tags[i], cartcomm, &reqA) );
 
-	    reqrecvA.push_back(reqA);
-	}
+      remote[i].pmessage.resize(remote[i].expected());
+
+      MPI_CHECK( MPI_Irecv(&remote[i].pmessage.front(), remote[i].expected() * 6, MPI_FLOAT, dstranks[i],
+                           TAGBASE_P + recv_tags[i], cartcomm, &reqP) );
+
+      reqrecvP.push_back(reqP);
     }
+  }
 
-    void _not_nan(const float * const x, const int n) const
+  void _postrecvA()
+  {
+    for(int i = 0; i < 26; ++i)
     {
+      MPI_Request reqA;
+
+#ifndef NDEBUG
+      memset(local[i].result.data, 0xff, local[i].result.capacity * sizeof(Acceleration));
+#endif
+      MPI_CHECK( MPI_Irecv(local[i].result.data, local[i].result.size * 3, MPI_FLOAT, dstranks[i],
+                           TAGBASE_A + recv_tags[i], cartcomm, &reqA) );
+
+      reqrecvA.push_back(reqA);
     }
+  }
 
-    void _pack_attempt(cudaStream_t stream);
+  void _not_nan(const float * const x, const int n) const
+  {
+  }
 
-public:
+  void _pack_attempt(cudaStream_t stream);
 
-    SoluteExchange(MPI_Comm cartcomm);
+ public:
 
-    void bind_solutes(std::vector<ParticlesWrap> wsolutes) { this->wsolutes = wsolutes; }
+  SoluteExchange(MPI_Comm cartcomm);
 
-    void attach_halocomputation(Visitor& visitor) { visitors.push_back(&visitor); }
+  void bind_solutes(std::vector<ParticlesWrap> wsolutes) { this->wsolutes = wsolutes; }
 
-    void pack_p(cudaStream_t stream);
+  void attach_halocomputation(Visitor& visitor) { visitors.push_back(&visitor); }
 
-    void post_p(cudaStream_t stream, cudaStream_t downloadstream);
+  void pack_p(cudaStream_t stream);
 
-    void recv_p(cudaStream_t uploadstream);
+  void post_p(cudaStream_t stream, cudaStream_t downloadstream);
 
-    void halo(cudaStream_t uploadstream, cudaStream_t stream);
+  void recv_p(cudaStream_t uploadstream);
 
-    void post_a();
+  void halo(cudaStream_t uploadstream, cudaStream_t stream);
 
-    void recv_a(cudaStream_t stream);
+  void post_a();
 
-    ~SoluteExchange();
+  void recv_a(cudaStream_t stream);
+
+  ~SoluteExchange();
 };

@@ -15,4 +15,4 @@ std::vector<int> get_traced_list(int n, Particle * particles);
 void print_traced_particles(Particle * particles, int n);
 
 __device__ float3 compute_dpd_force_traced(int type1, int type2,
-    float3 pos1, float3 pos2, float3 vel1, float3 vel2, float myrandnr);
+                                           float3 pos1, float3 pos2, float3 vel1, float3 vel2, float myrandnr);

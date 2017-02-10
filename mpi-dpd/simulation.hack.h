@@ -1,6 +1,6 @@
 /*
-  declaration:
-    cudaError_t cudaMemcpy (void * dst, const void * src, size_t count, enum cudaMemcpyKind kind)
+declaration:
+cudaError_t cudaMemcpy (void * dst, const void * src, size_t count, enum cudaMemcpyKind kind)
 
 */
 
@@ -21,13 +21,13 @@ if (rbcscoll)
 #define RYY rbc_hst[i].x[1]
 #define RZZ rbc_hst[i].x[2]
 
-int i;
-for (i = 0; i < nsol; i++) {sol_xx[i] = SXX; sol_yy[i] = SYY; sol_zz[i] = SZZ;}
-for (i = 0; i < nrbc; i++) {rbc_xx[i] = RXX; rbc_yy[i] = RYY; rbc_zz[i] = RZZ;}
+  int i;
+  for (i = 0; i < nsol; i++) {sol_xx[i] = SXX; sol_yy[i] = SYY; sol_zz[i] = SZZ;}
+  for (i = 0; i < nrbc; i++) {rbc_xx[i] = RXX; rbc_yy[i] = RYY; rbc_zz[i] = RZZ;}
 
-iotags_all(nrbc, rbc_xx, rbc_yy, rbc_zz,
-	   nsol, sol_xx, sol_yy, sol_zz,
-	   iotags);
+  iotags_all(nrbc, rbc_xx, rbc_yy, rbc_zz,
+             nsol, sol_xx, sol_yy, sol_zz,
+             iotags);
 
 #define SUU sol_hst[i].u[0]
 /* set the last bit to 1 for tagged particles */

@@ -37,9 +37,9 @@ inline void cudaAssert(cudaError_t code, const char *file, int line, bool abort=
 {
     if (code != cudaSuccess)
     {
-	fprintf(stderr,"GPU assert: %s %s %d\n", cudaGetErrorString(code), file, line);
-	sleep(5);
-	if (abort) exit(code);
+        fprintf(stderr,"GPU assert: %s %s %d\n", cudaGetErrorString(code), file, line);
+        sleep(5);
+        if (abort) exit(code);
     }
 }
 
@@ -48,7 +48,7 @@ __global__ void pid2code(int * codes, int * pids, const int np, const float * xy
     const int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
     if (pid >= np)
-	return;
+        return;
 
     const float x = (xyzuvw[0 + 6 * pid] - domainstart.x) * invrc;
     const float y = (xyzuvw[1 + 6 * pid] - domainstart.y) * invrc;
@@ -59,10 +59,10 @@ __global__ void pid2code(int * codes, int * pids, const int np, const float * xy
     int iz = (int)floor(z);
 
     /*   if( !(ix >= 0 && ix < ncells.x) ||
-	!(iy >= 0 && iy < ncells.y) ||
-	!(iz >= 0 && iz < ncells.z))
-	printf("pid %d: oops %f %f %f -> %d %d %d\n", pid, x, y, z, ix, iy, iz);
-    */
+         !(iy >= 0 && iy < ncells.y) ||
+         !(iz >= 0 && iz < ncells.z))
+         printf("pid %d: oops %f %f %f -> %d %d %d\n", pid, x, y, z, ix, iy, iz);
+     */
 
     ix = max(0, min(ncells.x - 1, ix));
     iy = max(0, min(ncells.y - 1, iy));
@@ -77,7 +77,7 @@ __global__ void _gather(const float * input, const int * indices, float * output
     const int tid = threadIdx.x + blockDim.x * blockIdx.x;
 
     if (tid < n)
-	output[tid] = input[(tid % 6) + 6 * indices[tid / 6]];
+        output[tid] = input[(tid % 6) + 6 * indices[tid / 6]];
 }
 
 __global__ void _generate_cids(int * cids, const int ntotcells, const int offset, const int3 ncells)
@@ -86,31 +86,31 @@ __global__ void _generate_cids(int * cids, const int ntotcells, const int offset
 
     if (tid < ntotcells)
     {
-	const int xcid = tid % ncells.x;
-	const int ycid = (tid / ncells.x) % ncells.y;
-	const int zcid = (tid / ncells.x / ncells.y) % ncells.z;
+        const int xcid = tid % ncells.x;
+        const int ycid = (tid / ncells.x) % ncells.y;
+        const int zcid = (tid / ncells.x / ncells.y) % ncells.z;
 
-	cids[tid] = encode(xcid, ycid, zcid, ncells) + offset;
+        cids[tid] = encode(xcid, ycid, zcid, ncells) + offset;
     }
 }
 
-__global__
+    __global__
 void _count_particles(const int * const cellsstart, int * const cellscount, const int ncells)
 {
     const int tid = threadIdx.x + blockDim.x * blockIdx.x;
 
     if (tid < ncells)
-	cellscount[tid] -= cellsstart[tid];
+        cellscount[tid] -= cellsstart[tid];
 }
 
 
 struct is_gzero
 {
-  __host__ __device__
-  bool operator()(const int &x)
-  {
-    return  x > 0;
-  }
+    __host__ __device__
+        bool operator()(const int &x)
+        {
+            return  x > 0;
+        }
 };
 
 #include <thrust/host_vector.h>
@@ -125,9 +125,9 @@ using namespace thrust;
 template<typename T> T * _ptr(device_vector<T>& v) { return raw_pointer_cast(v.data()); }
 
 void build_clists_vanilla(float * const xyzuvw, int np, const float rc,
-			  const int xcells, const int ycells, const int zcells,
-			  const float xstart, const float ystart, const float zstart,
-			  int * const order, int * cellsstart, int * cellscount, std::pair<int, int *> * nonemptycells, cudaStream_t stream, const float * const src_device_xyzuvw)
+        const int xcells, const int ycells, const int zcells,
+        const float xstart, const float ystart, const float zstart,
+        int * const order, int * cellsstart, int * cellscount, std::pair<int, int *> * nonemptycells, cudaStream_t stream, const float * const src_device_xyzuvw)
 {
     device_vector<int> codes(np), pids(np);
     pid2code<<<(np + 127) / 128, 128>>>(_ptr(codes), _ptr(pids), np, xyzuvw, make_int3(xcells, ycells, zcells), make_float3(xstart, ystart, zstart), 1./rc);
@@ -135,15 +135,15 @@ void build_clists_vanilla(float * const xyzuvw, int np, const float rc,
     sort_by_key(codes.begin(), codes.end(), pids.begin());
 
     {
-	device_vector<float> tmp(np * 6);
+        device_vector<float> tmp(np * 6);
 
-	if (src_device_xyzuvw)
-	    copy(device_ptr<float>((float *)src_device_xyzuvw), device_ptr<float>((float *)src_device_xyzuvw + 6 * np), tmp.begin());
-	else
-	     copy(device_ptr<float>(xyzuvw), device_ptr<float>(xyzuvw + 6 * np), tmp.begin());
+        if (src_device_xyzuvw)
+            copy(device_ptr<float>((float *)src_device_xyzuvw), device_ptr<float>((float *)src_device_xyzuvw + 6 * np), tmp.begin());
+        else
+            copy(device_ptr<float>(xyzuvw), device_ptr<float>(xyzuvw + 6 * np), tmp.begin());
 
-	_gather<<<(6 * np + 127) / 128, 128>>>(_ptr(tmp), _ptr(pids), xyzuvw, 6 * np);
-	CUDA_CHECK(cudaPeekAtLastError());
+        _gather<<<(6 * np + 127) / 128, 128>>>(_ptr(tmp), _ptr(pids), xyzuvw, 6 * np);
+        CUDA_CHECK(cudaPeekAtLastError());
     }
 
     const int ncells = xcells * ycells * zcells;
@@ -159,14 +159,14 @@ void build_clists_vanilla(float * const xyzuvw, int np, const float rc,
 
     if (nonemptycells != NULL)
     {
-	const int nonempties = copy_if(counting_iterator<int>(0), counting_iterator<int>(ncells),
-				       device_ptr<int>(cellscount), device_ptr<int>(nonemptycells->second), is_gzero())
-	    - device_ptr<int>(nonemptycells->second);
+        const int nonempties = copy_if(counting_iterator<int>(0), counting_iterator<int>(ncells),
+                device_ptr<int>(cellscount), device_ptr<int>(nonemptycells->second), is_gzero())
+            - device_ptr<int>(nonemptycells->second);
 
-	nonemptycells->first = nonempties;
+        nonemptycells->first = nonempties;
     }
 
     if (order != NULL)
-	copy(pids.begin(), pids.end(), order);
+        copy(pids.begin(), pids.end(), order);
 }
 

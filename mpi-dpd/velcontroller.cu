@@ -15,8 +15,8 @@ namespace VelControlKernels
     __global__ void sample(const int * const __restrict__ cellsstart, const float2* const __restrict__ p, float3* res, CellInfo info)
     {
         const uint3 ccoos = {threadIdx.x + blockIdx.x*blockDim.x,
-                threadIdx.y + blockIdx.y*blockDim.y,
-                threadIdx.z + blockIdx.z*blockDim.z};
+            threadIdx.y + blockIdx.y*blockDim.y,
+            threadIdx.z + blockIdx.z*blockDim.z};
 
         if (ccoos.x < info.n[0] && ccoos.y < info.n[1] && ccoos.z < info.n[2])
         {
@@ -38,8 +38,8 @@ namespace VelControlKernels
     __global__ void push(const int * const __restrict__ cellsstart, Acceleration* acc, float3 f, CellInfo info, const Particle* const p)
     {
         const uint3 ccoos = {threadIdx.x + blockIdx.x*blockDim.x,
-                threadIdx.y + blockIdx.y*blockDim.y,
-                threadIdx.z + blockIdx.z*blockDim.z};
+            threadIdx.y + blockIdx.y*blockDim.y,
+            threadIdx.z + blockIdx.z*blockDim.z};
 
         if (ccoos.x < info.n[0] && ccoos.y < info.n[1] && ccoos.z < info.n[2])
         {
@@ -78,7 +78,7 @@ namespace VelControlKernels
 }
 
 VelController::VelController(int xl[3], int xh[3], int mpicoos[3], float3 desired, MPI_Comm comm) :
-                desired(desired), Kp(3), Ki(1), Kd(10), factor(0.01), sampleid(0)
+    desired(desired), Kp(3), Ki(1), Kd(10), factor(0.01), sampleid(0)
 {
     MPI_CHECK( MPI_Comm_dup(comm, &this->comm) );
     MPI_CHECK( MPI_Comm_size(comm, &size) );

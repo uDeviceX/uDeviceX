@@ -26,22 +26,22 @@ MPI_Datatype Acceleration::mytype;
 
 void CellLists::build(Particle * const p, const int n, cudaStream_t stream, int * const order, const Particle * const src)
 {
-	if (n > 0)
-	{
-	    const bool vanilla_cases =
-		is_mps_enabled && !(XSIZE_SUBDOMAIN < 64 && YSIZE_SUBDOMAIN < 64 && ZSIZE_SUBDOMAIN < 64) ||
-		localcomm.get_size() == 8 && XSIZE_SUBDOMAIN >= 96 && YSIZE_SUBDOMAIN >= 96 && ZSIZE_SUBDOMAIN >= 96;
+    if (n > 0)
+    {
+        const bool vanilla_cases =
+            is_mps_enabled && !(XSIZE_SUBDOMAIN < 64 && YSIZE_SUBDOMAIN < 64 && ZSIZE_SUBDOMAIN < 64) ||
+            localcomm.get_size() == 8 && XSIZE_SUBDOMAIN >= 96 && YSIZE_SUBDOMAIN >= 96 && ZSIZE_SUBDOMAIN >= 96;
 
-	    if (true)
-		build_clists_vanilla((float * )p, n, 1, LX, LY, LZ, -LX/2, -LY/2, -LZ/2, order, start, count,  NULL, stream, (float *)src);
-	    else
-		build_clists((float * )p, n, 1, LX, LY, LZ, -LX/2, -LY/2, -LZ/2, order, start, count,  NULL, stream, (float *)src);
-	}
-	else
-	{
-	    CUDA_CHECK(cudaMemsetAsync(start, 0, sizeof(int) * ncells, stream));
-	    CUDA_CHECK(cudaMemsetAsync(count, 0, sizeof(int) * ncells, stream));
-	}
+        if (true)
+            build_clists_vanilla((float * )p, n, 1, LX, LY, LZ, -LX/2, -LY/2, -LZ/2, order, start, count,  NULL, stream, (float *)src);
+        else
+            build_clists((float * )p, n, 1, LX, LY, LZ, -LX/2, -LY/2, -LZ/2, order, start, count,  NULL, stream, (float *)src);
+    }
+    else
+    {
+        CUDA_CHECK(cudaMemsetAsync(start, 0, sizeof(int) * ncells, stream));
+        CUDA_CHECK(cudaMemsetAsync(count, 0, sizeof(int) * ncells, stream));
+    }
 }
 
 
@@ -49,8 +49,8 @@ void diagnostics(MPI_Comm comm, MPI_Comm cartcomm, Particle * particles, int n, 
 {
     double p[] = {0, 0, 0};
     for(int i = 0; i < n; ++i)
-	for(int c = 0; c < 3; ++c)
-	    p[c] += particles[i].u[c];
+        for(int c = 0; c < 3; ++c)
+            p[c] += particles[i].u[c];
 
     int rank;
     MPI_CHECK( MPI_Comm_rank(comm, &rank) );
@@ -62,7 +62,7 @@ void diagnostics(MPI_Comm comm, MPI_Comm cartcomm, Particle * particles, int n, 
 
     double ke = 0;
     for(int i = 0; i < n; ++i)
-	ke += pow(particles[i].u[0], 2) + pow(particles[i].u[1], 2) + pow(particles[i].u[2], 2);
+        ke += pow(particles[i].u[0], 2) + pow(particles[i].u[1], 2) + pow(particles[i].u[2], 2);
 
     MPI_CHECK( MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &ke, &ke, 1, MPI_DOUBLE, MPI_SUM, 0, comm) );
     MPI_CHECK( MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &n, &n, 1, MPI_INT, MPI_SUM, 0, comm) );
@@ -71,17 +71,17 @@ void diagnostics(MPI_Comm comm, MPI_Comm cartcomm, Particle * particles, int n, 
 
     if (rank == 0)
     {
-	static bool firsttime = true;
-	FILE * f = fopen("diag.txt", firsttime ? "w" : "a");
-	firsttime = false;
+        static bool firsttime = true;
+        FILE * f = fopen("diag.txt", firsttime ? "w" : "a");
+        firsttime = false;
 
-	if (idstep == 0)
-	    fprintf(f, "TSTEP\tKBT\tPX\tPY\tPZ\n");
+        if (idstep == 0)
+            fprintf(f, "TSTEP\tKBT\tPX\tPY\tPZ\n");
 
-	printf("\x1b[91m%e\t%.10e\t%.10e\t%.10e\t%.10e\x1b[0m\n", idstep * dt, kbt, p[0], p[1], p[2]);
-	fprintf(f, "%e\t%.10e\t%.10e\t%.10e\t%.10e\n", idstep * dt, kbt, p[0], p[1], p[2]);
+        printf("\x1b[91m%e\t%.10e\t%.10e\t%.10e\t%.10e\x1b[0m\n", idstep * dt, kbt, p[0], p[1], p[2]);
+        fprintf(f, "%e\t%.10e\t%.10e\t%.10e\t%.10e\n", idstep * dt, kbt, p[0], p[1], p[2]);
 
-	fclose(f);
+        fclose(f);
     }
 }
 
@@ -89,7 +89,7 @@ inline size_t hash_string(const char *buf)
 {
     size_t result = 0;
     while( *buf != 0 ) {
-	result = result * 31 + *buf++;
+        result = result * 31 + *buf++;
     }
 
     return result;

@@ -21,74 +21,74 @@
 
 class Simulation
 {
-    ParticleArray particles_pingpong[2];
-    ParticleArray * particles, * newparticles;
-    SimpleDeviceBuffer<float4> xyzouvwo;
-    SimpleDeviceBuffer<ushort4> xyzo_half;
-    
-    CellLists cells;
-    CollectionRBC * rbcscoll;
-    
-    RedistributeParticles redistribute;
-    RedistributeRBCs redistribute_rbcs;
-    
-    ComputeDPD dpd;
-    SoluteExchange solutex;
-    ComputeFSI fsi;
-    ComputeContact contact;
+  ParticleArray particles_pingpong[2];
+  ParticleArray * particles, * newparticles;
+  SimpleDeviceBuffer<float4> xyzouvwo;
+  SimpleDeviceBuffer<ushort4> xyzo_half;
 
-    ComputeWall * wall;
+  CellLists cells;
+  CollectionRBC * rbcscoll;
 
-    VelController* velcont1;
-    VelController* velcont2;
+  RedistributeParticles redistribute;
+  RedistributeRBCs redistribute_rbcs;
 
-    bool (*check_termination)();
-    bool simulation_is_done;
+  ComputeDPD dpd;
+  SoluteExchange solutex;
+  ComputeFSI fsi;
+  ComputeContact contact;
 
-    MPI_Comm activecomm, cartcomm;
-    //LocalComm localcomm;
+  ComputeWall * wall;
 
-    cudaStream_t mainstream, uploadstream, downloadstream;
-    
-    std::map<std::string, double> timings;
+  VelController* velcont1;
+  VelController* velcont2;
 
-    const size_t nsteps;
-    float driving_acceleration;
-    float host_idle_time;
-    int nranks, rank;  
-	    
-    std::vector<Particle> _ic();
-    void _update_helper_arrays();
-    
-    void _redistribute();
-    void _create_walls(const bool verbose, bool & termination_request);
-    void _remove_bodies_from_wall(CollectionRBC * coll);
-    void _forces();
-    void _datadump(const int idtimestep);
-    void _update_and_bounce();
-    void _lockstep();
+  bool (*check_termination)();
+  bool simulation_is_done;
 
-    pthread_t thread_datadump;
-    pthread_mutex_t mutex_datadump;
-    pthread_cond_t request_datadump, done_datadump;
-    bool datadump_pending;
-    int datadump_idtimestep, datadump_nsolvent, datadump_nrbcs;
-    bool async_thread_initialized;
+  MPI_Comm activecomm, cartcomm;
+  //LocalComm localcomm;
 
-    PinnedHostBuffer<Particle> particles_datadump;
-    PinnedHostBuffer<Acceleration> accelerations_datadump;
+  cudaStream_t mainstream, uploadstream, downloadstream;
 
-    cudaEvent_t evdownloaded;
+  std::map<std::string, double> timings;
 
-    void  _datadump_async();
+  const size_t nsteps;
+  float driving_acceleration;
+  float host_idle_time;
+  int nranks, rank;
 
-public:
+  std::vector<Particle> _ic();
+  void _update_helper_arrays();
 
-    Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_termination)()) ;
-    
-    void run();
+  void _redistribute();
+  void _create_walls(const bool verbose, bool & termination_request);
+  void _remove_bodies_from_wall(CollectionRBC * coll);
+  void _forces();
+  void _datadump(const int idtimestep);
+  void _update_and_bounce();
+  void _lockstep();
 
-    ~Simulation();
+  pthread_t thread_datadump;
+  pthread_mutex_t mutex_datadump;
+  pthread_cond_t request_datadump, done_datadump;
+  bool datadump_pending;
+  int datadump_idtimestep, datadump_nsolvent, datadump_nrbcs;
+  bool async_thread_initialized;
 
-    static void * datadump_trampoline(void * x) { ((Simulation *)x)->_datadump_async(); return NULL; }
+  PinnedHostBuffer<Particle> particles_datadump;
+  PinnedHostBuffer<Acceleration> accelerations_datadump;
+
+  cudaEvent_t evdownloaded;
+
+  void  _datadump_async();
+
+ public:
+
+  Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_termination)()) ;
+
+  void run();
+
+  ~Simulation();
+
+  static void * datadump_trampoline(void * x) { ((Simulation *)x)->_datadump_async(); return NULL; }
 };

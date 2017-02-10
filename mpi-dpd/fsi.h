@@ -20,20 +20,20 @@
 
 class ComputeFSI : public SoluteExchange::Visitor
 {
-    //TODO: use cudaEvent_t evuploaded;
+  //TODO: use cudaEvent_t evuploaded;
 
-    SolventWrap wsolvent;
+  SolventWrap wsolvent;
 
-    Logistic::KISS local_trunk;
+  Logistic::KISS local_trunk;
 
-public:
+ public:
 
-    void bind_solvent(SolventWrap wrap) { wsolvent = wrap; }
+  void bind_solvent(SolventWrap wrap) { wsolvent = wrap; }
 
-    ComputeFSI(MPI_Comm comm);
+  ComputeFSI(MPI_Comm comm);
 
-    void bulk(std::vector<ParticlesWrap> wsolutes, cudaStream_t stream);
+  void bulk(std::vector<ParticlesWrap> wsolutes, cudaStream_t stream);
 
-    /*override of SoluteExchange::Visitor::halo*/
-    void halo(ParticlesWrap solutes[26], cudaStream_t stream);
+  /*override of SoluteExchange::Visitor::halo*/
+  void halo(ParticlesWrap solutes[26], cudaStream_t stream);
 };

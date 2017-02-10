@@ -18,34 +18,34 @@
 
 namespace SolidWallsKernel
 {
-    __global__ void fill_keys(const Particle * const particles, const int n, int * const key);
+__global__ void fill_keys(const Particle * const particles, const int n, int * const key);
 }
 
 class ComputeWall
 {
-    MPI_Comm cartcomm;
-    int myrank, dims[3], periods[3], coords[3];
+  MPI_Comm cartcomm;
+  int myrank, dims[3], periods[3], coords[3];
 
-    Logistic::KISS trunk;
+  Logistic::KISS trunk;
 
-    int solid_size;
-    float4 * solid4;
+  int solid_size;
+  float4 * solid4;
 
-    cudaArray * arrSDF;
+  cudaArray * arrSDF;
 
-    CellLists cells;
+  CellLists cells;
 
-    SimpleDeviceBuffer<float3> frcs;
-    int samples;
+  SimpleDeviceBuffer<float3> frcs;
+  int samples;
 
-public:
+ public:
 
-    ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int& nsurvived, ExpectedMessageSizes& new_sizes, const bool verbose);
+  ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int& nsurvived, ExpectedMessageSizes& new_sizes, const bool verbose);
 
-    ~ComputeWall();
+  ~ComputeWall();
 
-    void bounce(Particle * const p, const int n, cudaStream_t stream);
+  void bounce(Particle * const p, const int n, cudaStream_t stream);
 
-    void interactions(const Particle * const p, const int n, Acceleration * const acc,
-		      const int * const cellsstart, const int * const cellscount, cudaStream_t stream);
+  void interactions(const Particle * const p, const int n, Acceleration * const acc,
+                    const int * const cellsstart, const int * const cellscount, cudaStream_t stream);
 };
