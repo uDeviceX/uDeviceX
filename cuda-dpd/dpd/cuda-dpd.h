@@ -32,9 +32,6 @@ void forces_dpd_cuda_nohost(const float * const xyzuvw, const float4 * const xyz
                             const int * const cellsstart, const int * const cellscount,
                             const float rc,
                             const float XL, const float YL, const float ZL,
-                            const float aij,
-                            const float gamma,
-                            const float sigma,
                             const float invsqrtdt,
                             const float seed, cudaStream_t stream);
 
@@ -44,20 +41,16 @@ void forces_dpd_cuda(const float * const xp, const float * const yp, const float
                      const int np,
                      const float rc,
                      const float LX, const float LY, const float LZ,
-                     const float a,
-                     const float gamma,
-                     const float sigma,
                      const float invsqrtdt,
                      const float seed);
 
 void directforces_dpd_cuda_bipartite_nohost(
     const float * const xyzuvw, float * const axayaz, const int np,
     const float * const xyzuvw_src, const int np_src,
-    const float aij, const float gamma, const float sigma, const float invsqrtdt,
+    const float invsqrtdt,
     const float seed, const int mask, cudaStream_t stream);
 
 void forces_dpd_cuda_bipartite_nohost(cudaStream_t stream, const float2 * const xyzuvw, const int np, cudaTextureObject_t texDstStart,
                                       cudaTextureObject_t texSrcStart, cudaTextureObject_t texSrcParticles, const int np_src,
                                       const int3 halo_ncells,
-                                      const float aij, const float gamma, const float sigmaf,
                                       const float seed, const int mask, float * const axayaz);

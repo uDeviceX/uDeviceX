@@ -61,7 +61,7 @@ namespace SolidWallsKernel
     texture<int, 1, cudaReadModeElementType> texWallCellStart, texWallCellCount;
 
     __global__ void interactions_3tpp(const float2 * const particles, const int np, const int nsolid,
-            float * const acc, const float seed, const float sigmaf);
+            float * const acc, const float seed);
     void setup()
     {
         texSDF.normalized = 0;
@@ -373,7 +373,7 @@ namespace SolidWallsKernel
         }
 
     __global__ UD_LAUNCH_BOUNDS(128, 16) void interactions_3tpp(const float2 * const particles, const int np, const int nsolid,
-            float * const acc, const float seed, const float sigmaf)
+            float * const acc, const float seed)
     {
         const int gid = threadIdx.x + blockDim.x * blockIdx.x;
         const int pid = gid / 3;
@@ -972,7 +972,7 @@ void ComputeWall::interactions(const Particle * const p, const int n, Accelerati
                     &SolidWallsKernel::texWallCellCount.channelDesc, sizeof(int) * cells.ncells));
 
         SolidWallsKernel::interactions_3tpp<<< (3 * n + 127) / 128, 128, 0, stream>>>
-            ((float2 *)p, n, solid_size, (float *)acc, trunk.get_float(), sigmaf);
+            ((float2 *)p, n, solid_size, (float *)acc, trunk.get_float());
 
         CUDA_CHECK(cudaUnbindTexture(SolidWallsKernel::texWallParticles));
         CUDA_CHECK(cudaUnbindTexture(SolidWallsKernel::texWallCellStart));

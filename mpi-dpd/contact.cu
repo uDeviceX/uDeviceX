@@ -44,10 +44,6 @@ namespace KernelsContact
 
     union CellEntry { int pid; uchar4 code; };
 
-    struct Params { float sigmaf, gamma, rc2; };
-
-    __constant__ Params params;
-
     texture<int, cudaTextureType1D> texCellsStart, texCellEntries;
 
     __global__ void bulk_3tpp(const float2 * const particles, const int np, const int ncellentries, const int nsolutes,
@@ -79,10 +75,6 @@ ComputeContact::ComputeContact(MPI_Comm comm):
     MPI_CHECK( MPI_Comm_rank(comm, &myrank));
 
     local_trunk = Logistic::KISS(7119 - myrank, 187 + myrank, 18278, 15674);
-
-    KernelsContact::Params params = { sigmaf, gammadpd, 1 };
-
-    CUDA_CHECK(cudaMemcpyToSymbol(KernelsContact::params, &params, sizeof(params)));
 
     CUDA_CHECK(cudaPeekAtLastError());
 }

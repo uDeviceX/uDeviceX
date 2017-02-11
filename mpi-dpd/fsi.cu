@@ -23,25 +23,12 @@
 TODO: find a place for global definitions */
 #define UD_LAUNCH_BOUNDS(...)
 
-namespace KernelsFSI
-{
-    struct Params { float aij, gamma, sigmaf; };
-
-    __constant__ Params params;
-}
-
 ComputeFSI::ComputeFSI(MPI_Comm comm)
 {
     int myrank;
     MPI_CHECK( MPI_Comm_rank(comm, &myrank));
 
     local_trunk = Logistic::KISS(1908 - myrank, 1409 + myrank, 290, 12968);
-
-    //TODO: use CUDA_CHECK(cudaEventCreateWithFlags(&evuploaded, cudaEventDisableTiming));
-
-    KernelsFSI::Params params = {aij, gammadpd, sigmaf};
-
-    CUDA_CHECK(cudaMemcpyToSymbol(KernelsFSI::params, &params, sizeof(params)));
 
     CUDA_CHECK(cudaPeekAtLastError());
 }

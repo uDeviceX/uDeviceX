@@ -83,8 +83,8 @@ void ComputeDPD::local_interactions(const Particle * const xyzuvw, const float4 
     if (n > 0)
         forces_dpd_cuda_nohost((float*)xyzuvw, xyzouvwo, xyzo_half, (float *)a, n,
                 cellsstart, cellscount,
-                1, XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN, aij, gammadpd,
-                sigma, 1. / sqrt(dt), local_trunk.get_float(), stream);
+                1, XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN,
+                1. / sqrt(dt), local_trunk.get_float(), stream);
 }
 
 namespace BipsBatch
@@ -105,8 +105,7 @@ namespace BipsBatch
     __constant__ BatchInfo batchinfos[26];
 
     __global__ void
-        interaction_kernel(const float aij, const float gamma, const float sigmaf,
-                const int ndstall, float * const adst, const int sizeadst)
+        interaction_kernel(const int ndstall, float * const adst, const int sizeadst)
         {
 #if !defined(__CUDA_ARCH__)
 #warning __CUDA_ARCH__ not defined! assuming 350
@@ -272,7 +271,7 @@ namespace BipsBatch
 
     cudaEvent_t evhalodone;
 
-    void interactions(const float aij, const float gamma, const float sigma, const float invsqrtdt,
+    void interactions(const float invsqrtdt,
             const BatchInfo infos[20], cudaStream_t computestream, cudaStream_t uploadstream, float * const acc, const int n)
     {
         if (firstcall)
@@ -299,7 +298,7 @@ namespace BipsBatch
         CUDA_CHECK(cudaStreamWaitEvent(computestream, evhalodone, 0));
 
         if (nthreads)
-            interaction_kernel<<< (nthreads + 127) / 128, 128, 0, computestream>>>(aij, gamma, sigma * invsqrtdt, nthreads, acc, n);
+            interaction_kernel<<< (nthreads + 127) / 128, 128, 0, computestream>>>(nthreads, acc, n);
 
         CUDA_CHECK(cudaPeekAtLastError());
     }
@@ -333,7 +332,7 @@ void ComputeDPD::remote_interactions(const Particle * const p, const int n, Acce
         infos[i] = entry;
     }
 
-    BipsBatch::interactions(aij, gammadpd, sigma, 1. / sqrt(dt), infos, stream, uploadstream, (float *)a, n);
+    BipsBatch::interactions(1. / sqrt(dt), infos, stream, uploadstream, (float *)a, n);
 
     CUDA_CHECK(cudaPeekAtLastError());
 }

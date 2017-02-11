@@ -32,14 +32,10 @@ enum
 };
 
 const int numberdensity = 3 * (RC_FX*RC_FX*RC_FX);     // default: 3
-const float gammadpd = 8;                           // default: 4.5
 const float kBT = 0.1 * kBT2D3D / (RC_FX*RC_FX);                // default: 1
 const float dt          = 0.0005;                       // default: 0.001
 
-const float aij = 4 / RC_FX; // default: 75*kBT/numberdensity -- Groot and Warren (1997)
 const float hydrostatic_a = 0.05 / RC_FX;
-const float sigma = sqrt(2 * gammadpd * kBT); //, sqrt(2 * gammadpd.y * kBT)};
-const float sigmaf = sigma / sqrt(dt);
 
 extern float tend, desired_shrate;
 extern bool walls, pushtheflow, doublepoiseuille, rbcs, hdf5field_dumps, hdf5part_dumps, is_mps_enabled, contactforces;
