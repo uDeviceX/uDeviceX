@@ -80,8 +80,6 @@ class Value
          ss.ignore();
      }
 
-     if (musthave_size > 0)
-
        return retval;
    }
 };

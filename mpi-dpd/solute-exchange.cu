@@ -189,7 +189,6 @@ namespace SolutePUP
     __global__ void pack(const float2 * const particles, const int nparticles, float2 * const buffer, const int nbuffer, const int soluteid)
     {
 #if !defined(__CUDA_ARCH__)
-#warning __CUDA_ARCH__ not defined! assuming 350
 #define _ACCESS(x) __ldg(x)
 #elif __CUDA_ARCH__ >= 350
 #define _ACCESS(x) __ldg(x)

@@ -55,7 +55,6 @@ namespace ParticleKernels
     {
 
 #if !defined(__CUDA_ARCH__)
-#warning __CUDA_ARCH__ not defined! assuming 350
 #define _ACCESS(x) __ldg(x)
 #elif __CUDA_ARCH__ >= 350
 #define _ACCESS(x) __ldg(x)
@@ -406,7 +405,6 @@ void CollectionRBC::_dump(const char * const path2xyz, const char * const format
         Particle * const p, const Acceleration * const a, const int n, const int iddatadump)
 {
     int ctr = iddatadump;
-    const bool firsttime = ctr == 0;
 
     //we fused VV stages so we need to recover the state before stage 1
     for(int i = 0; i < n; ++i) {
