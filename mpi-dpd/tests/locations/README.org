@@ -1,8 +1,7 @@
-I compile with the printing in dpd-forces.cu and main.cu enabled
+I run with:
+    > make -j slevel=-1 && ./test 1 1 1 -rbcs -tend=5000e-4 -shrate=8 -steps_per_dump=100
+    > cp diag.txt tests/diag/diag.x.txt
 
-out.x.txt store outputs of:
-    > make -j slevel=-1 && ./test 1 1 1 -rbcs -tend=1000e-4 -steps_per_dump=1 -shrate=8 > tests/locations/out.x.txt
-
-I plot them in gnuplot with
-    > splot "<awk -f ../../../tools/bcut.awk out.1.txt" w p pt 6
-They should look very similar, see out.1-2-3.png and out.1-wrong.png
+I plot results in gnuplot with
+    > plot "diag.1.txt", "diag.2.txt", "diag.3.txt", "diag.wrong.txt"
+See diag.png for picture
