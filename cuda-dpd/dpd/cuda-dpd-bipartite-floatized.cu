@@ -10,8 +10,6 @@
  *  before getting a written permission from the author of this file.
  */
 
-#include <cassert>
-
 #include "../dpd-rng.h"
 #include "cuda-dpd.h"
 #include "../../mpi-dpd/last_bit_float.h"

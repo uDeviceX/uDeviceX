@@ -16,7 +16,6 @@
 #include <fstream>
 #include <iostream>
 #include <utility>
-#include <cassert>
 #include <cuda_runtime.h>
 #include <vector>
 #include <algorithm>

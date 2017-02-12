@@ -44,7 +44,6 @@ extern int steps_per_dump, steps_per_hdf5dump, wall_creation_stepid;
 #include <cstdlib>
 #include <cstdio>
 #include <cmath>
-#include <cassert>
 
 #include <unistd.h>
 #include <cuda_runtime.h>

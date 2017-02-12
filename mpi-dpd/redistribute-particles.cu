@@ -10,7 +10,6 @@
  *  before getting a written permission from the author of this file.
  */
 
-#include <cassert>
 #include <vector>
 #include <algorithm>
 

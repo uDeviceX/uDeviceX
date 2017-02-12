@@ -12,7 +12,6 @@
  */
 
 #include <cstdio>
-#include <cassert>
 
 //#define TEST_MAURO
 

@@ -11,7 +11,6 @@
  */
 
 #include <cstdio>
-#include <cassert>
 #include <unistd.h>
 
 #include "cell-lists.h"

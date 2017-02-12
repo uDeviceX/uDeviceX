@@ -12,7 +12,6 @@
  */
 
 #include <cstdio>
-#include <cassert>
 #include <mpi.h>
 
 #include "cuda-dpd.h"

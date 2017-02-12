@@ -11,7 +11,6 @@
  */
 
 #include <cstdio>
-#include <cassert>
 #include <csignal>
 #include <mpi.h>
 #include <errno.h>
