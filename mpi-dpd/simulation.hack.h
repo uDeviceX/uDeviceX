@@ -42,7 +42,7 @@ if (rbcscoll) {
     /* set the last bit to 1 for tagged particles */
     for (i = 0; i < nsol; i++) last_bit_float::set(SUU, iotags[i] != -1);
     int cnt; for (i = cnt = 0; i < nsol; i++) if (iotags[i] != -1) cnt++;
-    fprintf(stderr, "cnt: %d\n", cnt);
+    fprintf(stderr, "(simulation.hack.h) cnt: %d\n", cnt);
 
     /* copy to device */
     cudaMemcpy(rbc_dev, rbc_hst, szp*nrbc, cudaMemcpyHostToDevice);
