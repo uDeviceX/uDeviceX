@@ -22,10 +22,6 @@
 
 #include "helper_math.h"
 
-/*  Disable __launch_bounds__
-TODO: find a place for global definitions */
-#define UD_LAUNCH_BOUNDS(...)
-
 using namespace std;
 
 extern float RBCx0, RBCp, RBCka, RBCkb, RBCkd, RBCkv, RBCgammaC,

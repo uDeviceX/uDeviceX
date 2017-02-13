@@ -27,10 +27,6 @@
 #include "dpd-forces.h"
 #include "last_bit_float.h"
 
-/*  Disable __launch_bounds__
-TODO: find a place for global definitions */
-#define UD_LAUNCH_BOUNDS(...)
-
 enum
 {
     XSIZE_WALLCELLS = 2 * XMARGIN_WALL + XSIZE_SUBDOMAIN,

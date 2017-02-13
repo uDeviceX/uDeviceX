@@ -24,10 +24,6 @@ static const float ljsigma2 = ljsigma * ljsigma;
 #include "dpd-forces.h"
 #include "last_bit_float.h"
 
-/*  Disable __launch_bounds__
-TODO: find a place for global definitions */
-#define UD_LAUNCH_BOUNDS(...)
-
 namespace KernelsContact
 {
     enum

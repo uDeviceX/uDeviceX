@@ -14,10 +14,6 @@
 #include "cuda-dpd.h"
 #include "../../mpi-dpd/last_bit_float.h"
 
-/*  Disable __launch_bounds__
-TODO: find a place for global definitions */
-#define UD_LAUNCH_BOUNDS(...)
-
 struct BipartiteInfoDPD {
     int3 ncells;
     float3 domainsize, invdomainsize, domainstart;

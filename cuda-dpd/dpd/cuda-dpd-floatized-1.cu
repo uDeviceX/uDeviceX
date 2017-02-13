@@ -19,10 +19,6 @@
 #include "../../mpi-dpd/dpd-forces.h"
 #include "../../mpi-dpd/last_bit_float.h"
 
-/*  Disable __launch_bounds__
-TODO: find a place for global definitions */
-#define UD_LAUNCH_BOUNDS(...)
-
 struct InfoDPD {
     int3 ncells;
     uint nxyz;

@@ -19,10 +19,6 @@
 #include "dpd-forces.h"
 #include "last_bit_float.h"
 
-/*  Disable __launch_bounds__
-TODO: find a place for global definitions */
-#define UD_LAUNCH_BOUNDS(...)
-
 ComputeFSI::ComputeFSI(MPI_Comm comm)
 {
     int myrank;
