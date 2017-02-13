@@ -158,31 +158,22 @@ void H5PartDump::_initialize(const std::string filename, MPI_Comm comm, MPI_Comm
 void H5PartDump::dump(Particle * host_particles, int n)
 {
 #ifndef NO_H5PART
-    printf("Hello from H5Part!\n");
-
-    if (disposed)
-        return;
-
+    if (disposed) return;
     vector<int> traced;
-    for(int i = 0; i < n; ++i)
-        traced.push_back(i);
+
+    for(int i = 0; i < n; ++i) traced.push_back(i);
     int ntraced = traced.size();
 
     H5PartFile * f = (H5PartFile *)handler;
     H5PartSetStep(f, tstamp);
     H5PartSetNumParticles(f, ntraced);
-
     string labels[] = {"x", "y", "z"};
-
     vector<float> data(ntraced);
-    for(int c = 0; c < 3; ++c)
-    {
-        for(int i = 0; i < ntraced; ++i)
-            data[i] = host_particles[traced[i]].x[c] + origin[c];
-
-        H5PartWriteDataFloat32(f, labels[c].c_str(), &data.front());
+    for(int c = 0; c < 3; ++c) {
+	for(int i = 0; i < ntraced; ++i)
+	    data[i] = host_particles[traced[i]].x[c] + origin[c];
+	H5PartWriteDataFloat32(f, labels[c].c_str(), &data.front());
     }
-
     tstamp++;
 #endif
 }
