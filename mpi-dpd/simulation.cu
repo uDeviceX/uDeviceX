@@ -81,6 +81,12 @@ void Simulation::_update_helper_arrays()
     CUDA_CHECK(cudaPeekAtLastError());
 }
 
+/* set initial velocity of a particle */
+void _ic_vel(float x, float y, float z, float* vx, float* vy, float* vz) {
+  float gd = desired_shrate; /* "gamma dot" */
+  *vx = gd*z; *vy = 0; *vz = 0;
+}
+
 std::vector<Particle> Simulation::_ic() {
     srand48(rank);
     std::vector<Particle> pp;
@@ -97,6 +103,7 @@ std::vector<Particle> Simulation::_ic() {
 		float y = ylo + dr*drand48();
 		float z = zlo + dr*drand48();
 		p.x[0] = x; p.x[1] = y; p.x[2] = z;
+		_ic_vel(x, y, z, &p.u[0], &p.u[1], &p.u[2]);
 		pp.push_back(p);
 	      }
             }
