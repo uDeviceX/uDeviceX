@@ -89,15 +89,16 @@ std::vector<Particle> Simulation::_ic() {
     for (iz = 0; iz < L[2]; iz++)
         for (iy = 0; iy < L[1]; iy++)
             for (ix = 0; ix < L[0]; ix++) {
-                int xc = -L[0]/2 + ix, yc = -L[1]/2 + iy, zc = -L[2]/2 + iz;
-                for (l = 0; l < nd; l++) {
-                    Particle p = Particle(); float dr = 0.99;
-                    p.x[0] = xc + dr*drand48();
-                    p.x[1] = yc + dr*drand48();
-                    p.x[2] = zc + dr*drand48();
-                    p.u[0] = p.u[1] = p.u[2] = 0;
-                    pp.push_back(p);
-                }
+	      /* edge of a cell */
+	      int xlo = -L[0]/2 + ix, ylo = -L[1]/2 + iy, zlo = -L[2]/2 + iz;
+	      for (l = 0; l < nd; l++) {
+		Particle p = Particle(); float dr = 0.99;
+		float x = xlo + dr*drand48();
+		float y = ylo + dr*drand48();
+		float z = zlo + dr*drand48();
+		p.x[0] = x; p.x[1] = y; p.x[2] = z;
+		pp.push_back(p);
+	      }
             }
     fprintf(stderr, "(simulation.cu) generated %d\n solvent particles", pp.size());
     return pp;
