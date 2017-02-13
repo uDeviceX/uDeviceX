@@ -162,22 +162,29 @@ void H5PartDump::dump(Particle * P, int n)
     H5PartFile * f = (H5PartFile*)handler;
     H5PartSetStep(f, tstamp); H5PartSetNumParticles(f, n);
 
-    const char* lbl[] = {"x", "y", "z"};
+    int i,  c ; /* dimension */
+    const char* rlbl[] = {"x", "y", "z"};
     vector<h5part_float32_t> FD(n); /* float data */
-    for (int c = 0; c < 3; c++) {
-	for (int i = 0; i < n; i++) FD[i] = P[i].x[c] + origin[c];
-	H5PartWriteDataFloat32(f, lbl[c], &FD.front());
+    for (c = 0; c < 3; c++) {
+      for (i = 0; i < n; i++) FD[i] = P[i].x[c] + origin[c];
+      H5PartWriteDataFloat32(f, rlbl[c], &FD.front());
+    }
+
+    const char* vlbl[] = {"u", "v", "w"};
+    for (c = 0; c < 3; c++) {
+      for (i = 0; i < n; i++) FD[i] = P[i].u[c];
+      H5PartWriteDataFloat32(f, vlbl[c], &FD.front());
     }
 
     vector <h5part_int64_t> ID(n); /* integer data */
-    for (int type, i = 0; i < n; i++) {
-      type = last_bit_float::get(P[i].u[0]); /* TODO: */
+    for (i = 0; i < n; i++) {
+      int type = last_bit_float::get(P[i].u[0]); /* TODO: */
       ID[i] = type;
     }
     H5PartWriteDataInt64(f, "type", &ID.front());
 
     /* to make visit H5part plugin happy */
-    for (int i = 0; i < n; i++) ID[i] = i;
+    for (i = 0; i < n; i++) ID[i] = i;
     H5PartWriteDataInt64(f, "sortedKey", &ID.front());
 
     tstamp++;
