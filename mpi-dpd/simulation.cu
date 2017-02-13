@@ -270,8 +270,10 @@ void Simulation::_forces()
     dpd.local_interactions(particles->xyzuvw.data, xyzouvwo.data, xyzo_half.data, particles->size, particles->axayaz.data,
             cells.start, cells.count, mainstream);
 
-    velcont1->push(cells.start, particles->xyzuvw.data, particles->axayaz.data, mainstream);
-    velcont2->push(cells.start, particles->xyzuvw.data, particles->axayaz.data, mainstream);
+    if (!doublepoiseuille) {
+        velcont1->push(cells.start, particles->xyzuvw.data, particles->axayaz.data, mainstream);
+        velcont2->push(cells.start, particles->xyzuvw.data, particles->axayaz.data, mainstream);
+    }
 
     dpd.post(particles->xyzuvw.data, particles->size, mainstream, downloadstream);
 
@@ -604,8 +606,10 @@ void Simulation::_lockstep()
 
     dpd.local_interactions(particles->xyzuvw.data, xyzouvwo.data, xyzo_half.data, particles->size, particles->axayaz.data,
             cells.start, cells.count, mainstream);
-    velcont1->push(cells.start, particles->xyzuvw.data, particles->axayaz.data, mainstream);
-    velcont2->push(cells.start, particles->xyzuvw.data, particles->axayaz.data, mainstream);
+    if (!doublepoiseuille) {
+        velcont1->push(cells.start, particles->xyzuvw.data, particles->axayaz.data, mainstream);
+        velcont2->push(cells.start, particles->xyzuvw.data, particles->axayaz.data, mainstream);
+    }
 
     if (contactforces)
         contact.build_cells(wsolutes, mainstream);
@@ -742,17 +746,19 @@ lockstep_check:
         {
             _lockstep();
             {
-                if (it % 10 == 0)
-                {
-                    velcont1->sample(cells.start, particles->xyzuvw.data, mainstream);
-                    velcont2->sample(cells.start, particles->xyzuvw.data, mainstream);
-                }
+                if (!doublepoiseuille) {
+                    if (it % 10 == 0)
+                    {
+                        velcont1->sample(cells.start, particles->xyzuvw.data, mainstream);
+                        velcont2->sample(cells.start, particles->xyzuvw.data, mainstream);
+                    }
 
-                if (it % 500 == 0)
-                {
-                    velcont1->adjustF(mainstream);
-                    velcont2->adjustF(mainstream);
-                    driving_acceleration = 0;
+                    if (it % 500 == 0)
+                    {
+                        velcont1->adjustF(mainstream);
+                        velcont2->adjustF(mainstream);
+                        driving_acceleration = 0;
+                    }
                 }
             }
 
@@ -790,17 +796,19 @@ lockstep_check:
 #endif
         _update_and_bounce();
         {
-            if (it % 10 == 0)
-            {
-                velcont1->sample(cells.start, particles->xyzuvw.data, mainstream);
-                velcont2->sample(cells.start, particles->xyzuvw.data, mainstream);
-            }
+            if (!doublepoiseuille) {
+                if (it % 10 == 0)
+                {
+                    velcont1->sample(cells.start, particles->xyzuvw.data, mainstream);
+                    velcont2->sample(cells.start, particles->xyzuvw.data, mainstream);
+                }
 
-            if (it % 500 == 0)
-            {
-                velcont1->adjustF(mainstream);
-                velcont2->adjustF(mainstream);
-                driving_acceleration = 0;
+                if (it % 500 == 0)
+                {
+                    velcont1->adjustF(mainstream);
+                    velcont2->adjustF(mainstream);
+                    driving_acceleration = 0;
+                }
             }
         }
     }
