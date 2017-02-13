@@ -155,7 +155,7 @@ __forceinline__ __device__ void core_ytang( const uint dststart, const uint psha
 #define MYCPBZ  (2)
 #define MYWPB   (4)
 
-__global__  UD_LAUNCH_BOUNDS( 32 * MYWPB, 16 )
+__global__
 void _dpd_forces_symm_merged()
 {
 
@@ -370,7 +370,7 @@ __global__ void check_acc_transposed( const int np )
 }
 
 
-__global__  UD_LAUNCH_BOUNDS( 1024, 2 )
+__global__
 void transpose_acc( const int np )
 {
     __shared__ volatile float  smem[32][96];

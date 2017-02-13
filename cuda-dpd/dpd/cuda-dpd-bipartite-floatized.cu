@@ -125,7 +125,7 @@ void directforces_dpd_cuda_bipartite_nohost(
     CUDA_CHECK( cudaPeekAtLastError() );
 }
 
-__global__ UD_LAUNCH_BOUNDS( 32 * CPB, 16 )
+__global__
 void _dpd_bipforces_floatized( const float2 * const xyzuvw, const int np, cudaTextureObject_t texDstStart,
                      cudaTextureObject_t texSrcStart,  cudaTextureObject_t texSrcParticles, const int np_src, const int3 halo_ncells,
                      const float seed, const uint mask, float * const axayaz )

@@ -321,7 +321,7 @@ namespace SolidWallsKernel
         return val;
     }
 
-    __global__ UD_LAUNCH_BOUNDS(32 * 4, 12)
+    __global__
         void bounce(float2 * const particles, const int nparticles, const int rank, const float dt)
         {
             const int pid = threadIdx.x + blockDim.x * blockIdx.x;
@@ -368,7 +368,7 @@ namespace SolidWallsKernel
             }
         }
 
-    __global__ UD_LAUNCH_BOUNDS(128, 16) void interactions_3tpp(const float2 * const particles, const int np, const int nsolid,
+    __global__  void interactions_3tpp(const float2 * const particles, const int np, const int nsolid,
             float * const acc, const float seed)
     {
         const int gid = threadIdx.x + blockDim.x * blockIdx.x;

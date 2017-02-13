@@ -210,7 +210,7 @@ void ComputeContact::build_cells(std::vector<ParticlesWrap> wsolutes, cudaStream
 
 namespace KernelsContact
 {
-    __global__  UD_LAUNCH_BOUNDS(128, 10)
+    __global__
         void bulk_3tpp(const float2 * const particles,
                 const int np, const int ncellentries, const int nsolutes,
                 float * const acc, const float seed, const int mysoluteid)

@@ -38,7 +38,7 @@ namespace KernelsFSI
 
     static const int NCELLS = XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN;
 
-    __global__  UD_LAUNCH_BOUNDS(128, 10)
+    __global__
         void interactions_3tpp(const float2 * const particles, const int np, const int nsolvent,
                 float * const acc, float * const accsolvent, const float seed)
         {
