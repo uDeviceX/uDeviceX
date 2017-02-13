@@ -165,8 +165,7 @@ void H5PartDump::dump(Particle * host_particles, int n)
 
     vector<int> traced;
     for(int i = 0; i < n; ++i)
-        if (last_bit_float::get(host_particles[i].u[0]))
-            traced.push_back(i);
+        traced.push_back(i);
     int ntraced = traced.size();
 
     H5PartFile * f = (H5PartFile *)handler;
