@@ -7,7 +7,7 @@ OPT ?= -O3 -use_fast_math -g
 # for cuda-gdb
 #OPT      ?= -O0 -g --device-debug
 
-slevel   ?= 0
+slevel   ?= -1
 datadump ?= 1
 
 NVCCFLAGS += -arch $(ARCH_VAL) -code $(CODE_VAL)
