@@ -83,7 +83,7 @@ void Simulation::_update_helper_arrays()
 
 /* set initial velocity of a particle */
 void _ic_vel(float x, float y, float z, float* vx, float* vy, float* vz) {
-  float gd = desired_shrate; /* "gamma dot" */
+  float gd = -desired_shrate/2.0; /* "gamma dot" */
   *vx = gd*z; *vy = 0; *vz = 0;
 }
 
