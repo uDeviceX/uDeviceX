@@ -23,16 +23,16 @@
 
 enum
 {
-  XSIZE_SUBDOMAIN = 32,
-  YSIZE_SUBDOMAIN = 16,
-  ZSIZE_SUBDOMAIN = 32,
+    XSIZE_SUBDOMAIN = 16,
+    YSIZE_SUBDOMAIN = 16,
+    ZSIZE_SUBDOMAIN = 16,
   XMARGIN_WALL = 6,
   YMARGIN_WALL = 6,
   ZMARGIN_WALL = 6,
 };
 
-const int numberdensity = 3 * (RC_FX*RC_FX*RC_FX);     // default: 3
-const float kBT = 0.1 * kBT2D3D / (RC_FX*RC_FX);                // default: 1
+const int numberdensity = 10 * (RC_FX*RC_FX*RC_FX); // default: 3
+const float kBT = 0.1 * kBT2D3D / (RC_FX*RC_FX); // default: 1
 const float dt          = 0.0005;                       // default: 0.001
 
 const float hydrostatic_a = 0.05 / RC_FX;

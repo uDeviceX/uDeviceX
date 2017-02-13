@@ -155,25 +155,31 @@ void H5PartDump::_initialize(const std::string filename, MPI_Comm comm, MPI_Comm
 #endif
 }
 
-void H5PartDump::dump(Particle * host_particles, int n)
+void H5PartDump::dump(Particle * P, int n)
 {
 #ifndef NO_H5PART
     if (disposed) return;
-    vector<int> traced;
+    H5PartFile * f = (H5PartFile*)handler;
+    H5PartSetStep(f, tstamp); H5PartSetNumParticles(f, n);
 
-    for(int i = 0; i < n; ++i) traced.push_back(i);
-    int ntraced = traced.size();
-
-    H5PartFile * f = (H5PartFile *)handler;
-    H5PartSetStep(f, tstamp);
-    H5PartSetNumParticles(f, ntraced);
-    string labels[] = {"x", "y", "z"};
-    vector<float> data(ntraced);
-    for(int c = 0; c < 3; ++c) {
-	for(int i = 0; i < ntraced; ++i)
-	    data[i] = host_particles[traced[i]].x[c] + origin[c];
-	H5PartWriteDataFloat32(f, labels[c].c_str(), &data.front());
+    const char* lbl[] = {"x", "y", "z"};
+    vector<h5part_float32_t> FD(n); /* float data */
+    for (int c = 0; c < 3; c++) {
+	for (int i = 0; i < n; i++) FD[i] = P[i].x[c] + origin[c];
+	H5PartWriteDataFloat32(f, lbl[c], &FD.front());
     }
+
+    vector <h5part_int64_t> ID(n); /* integer data */
+    for (int type, i = 0; i < n; i++) {
+      type = last_bit_float::get(P[i].u[0]); /* TODO: */
+      ID[i] = type;
+    }
+    H5PartWriteDataInt64(f, "type", &ID.front());
+
+    /* to make visit H5part plugin happy */
+    for (int i = 0; i < n; i++) ID[i] = i;
+    H5PartWriteDataInt64(f, "sortedKey", &ID.front());
+
     tstamp++;
 #endif
 }
