@@ -37,7 +37,7 @@ for i in $(seq $st $fin); do
 	sed -i "/const float kBT/c\const float kBT = $kBT * kBT2D3D / (RC_FX*RC_FX); \/\/ default: 1" common.h
 
 	sed -i "/const float gammadpd\[/c\    const float gammadpd[4] = {$gammadpd1, $gammadpd2, $gammadpd1, $gammadpd1}; \/\/ default: 4.5" dpd-forces.cu
-	sed -i "/const float aij\[/c\    const float aij[4] = {$aij1, $aij2, $aij1, $aij1}; \/\/ default: 75*kBT/numberdensity -- Groot and Warren (1997)" dpd-forces.cu
+	sed -i "/const float aij\[/c\    const float aij[4] = {$aij1 / RC_FX, $aij2 / RC_FX, $aij1 / RC_FX, $aij1 / RC_FX}; \/\/ default: 75*kBT/numberdensity -- Groot and Warren (1997)" dpd-forces.cu
 
 	make -j slevel=-1
 	)
