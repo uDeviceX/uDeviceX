@@ -37,7 +37,7 @@ __device__ float3 compute_dpd_force_traced(int type1, int type2,
 
     // particle type dependent constants
     const float gammadpd[4] = {8, 8, 8, 8};  // default: 8
-    const float aij[4] = {4, 4, 4, 4};  // default: 4
+    const float aij[4] = {4 / RC_FX, 4 / RC_FX, 4 / RC_FX, 4 / RC_FX};  // default: 4
 
     const float aij_pair = 0.5 * (aij[type1] + aij[type2]);
     const float gammadpd_pair = 0.5 * (gammadpd[type1] + gammadpd[type2]);
