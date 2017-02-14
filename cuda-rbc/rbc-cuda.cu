@@ -339,7 +339,7 @@ namespace CudaRBC
 
         params.sinTheta0	= sin(phi);
         params.cosTheta0	= cos(phi);
-        params.kbT			= (23+273) * 1.38e-23 * kBT2D3D / Escale; // doesn't matter, because it always enters as kBT/p
+        params.kbT		    = 0.1 * kBT2D3D;
         params.mpow			= 2; /* WLC-POW */
 
         /* units conversion: Fedosov -> uDeviceX */
