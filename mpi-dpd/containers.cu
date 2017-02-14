@@ -26,7 +26,7 @@ int (*CollectionRBC::indices)[3] = NULL, CollectionRBC::ntriangles = -1, Collect
 
 namespace ParticleKernels
 {
-    __global__ void update_stage1(Particle * p, Acceleration * a, int n, float dt,
+    __global__ void update_stage1(float mass, Particle * p, Acceleration * a, int n, float dt,
             const float _driving_acceleration, const float threshold, const bool doublePoiseuille, const bool check = true)
     {
         const int pid = threadIdx.x + blockDim.x * blockIdx.x;
@@ -42,14 +42,14 @@ namespace ParticleKernels
             driving_acceleration *= -1;
 
         for(int c = 0; c < 3; ++c)
-            p[pid].u[c] += (a[pid].a[c] + (c == 0 ? driving_acceleration : 0)) * dt * 0.5;
+            p[pid].u[c] += (a[pid].a[c]/mass + (c == 0 ? driving_acceleration : 0)) * dt * 0.5;
 
         for(int c = 0; c < 3; ++c)
             p[pid].x[c] += p[pid].u[c] * dt;
 
     }
 
-    __global__ void update_stage2_and_1(float2 * const _pdata, const float * const _adata,
+    __global__ void update_stage2_and_1(float mass, float2 * const _pdata, const float * const _adata,
             const int nparticles, const float dt, const float _driving_acceleration, const float threshold,
             const bool doublePoiseuille)
     {
@@ -138,9 +138,9 @@ namespace ParticleKernels
         if (doublePoiseuille && s0.y <= threshold)
             driving_acceleration *= -1;
 
-        s1.y += (ax + driving_acceleration) * dt;
-        s2.x += ay * dt;
-        s2.y += az * dt;
+        s1.y += (ax/mass + driving_acceleration) * dt;
+        s2.x += ay/mass * dt;
+        s2.y += az/mass * dt;
 
         s0.x += s1.y * dt;
         s0.y += s2.x * dt;
@@ -213,18 +213,18 @@ namespace ParticleKernels
     }
 }
 
-void ParticleArray::update_stage1(const float driving_acceleration, cudaStream_t stream)
+void ParticleArray::update_stage1(float mass, const float driving_acceleration, cudaStream_t stream)
 {
     if (size)
         ParticleKernels::update_stage1<<<(xyzuvw.size + 127) / 128, 128, 0, stream>>>(
-                xyzuvw.data, axayaz.data, xyzuvw.size, dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille, false);
+                mass, xyzuvw.data, axayaz.data, xyzuvw.size, dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille, false);
 }
 
-void  ParticleArray::update_stage2_and_1(const float driving_acceleration, cudaStream_t stream)
+void  ParticleArray::update_stage2_and_1(float mass, const float driving_acceleration, cudaStream_t stream)
 {
     if (size)
         ParticleKernels::update_stage2_and_1<<<(xyzuvw.size + 127) / 128, 128, 0, stream>>>
-            ((float2 *)xyzuvw.data, (float *)axayaz.data, xyzuvw.size, dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
+            (mass, (float2 *)xyzuvw.data, (float *)axayaz.data, xyzuvw.size, dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
 void ParticleArray::resize(int n)

@@ -468,12 +468,12 @@ void Simulation::_datadump_async()
 void Simulation::_update_and_bounce()
 {
     double tstart = MPI_Wtime();
-    particles->update_stage2_and_1(driving_acceleration, mainstream);
+    particles->update_stage2_and_1(1, driving_acceleration, mainstream);
 
     CUDA_CHECK(cudaPeekAtLastError());
 
     if (rbcscoll)
-        rbcscoll->update_stage2_and_1(driving_acceleration, mainstream);
+        rbcscoll->update_stage2_and_1(rbc_mass, driving_acceleration, mainstream);
 
     CUDA_CHECK(cudaPeekAtLastError());
     if (wall)
@@ -656,7 +656,7 @@ void Simulation::_lockstep()
 
     solutex.post_a();
 
-    particles->update_stage2_and_1(driving_acceleration, mainstream);
+    particles->update_stage2_and_1(1, driving_acceleration, mainstream);
 
     if (wall)
         wall->bounce(particles->xyzuvw.data, particles->size, mainstream);
@@ -679,7 +679,7 @@ void Simulation::_lockstep()
     solutex.recv_a(mainstream);
 
     if (rbcscoll)
-        rbcscoll->update_stage2_and_1(driving_acceleration, mainstream);
+        rbcscoll->update_stage2_and_1(rbc_mass, driving_acceleration, mainstream);
 
 
     const int newnp = redistribute.recv_count(mainstream, host_idle_time);
@@ -730,10 +730,10 @@ void Simulation::run()
     if (!walls && pushtheflow)
         driving_acceleration = hydrostatic_a;
 
-    particles->update_stage1(driving_acceleration, mainstream);
+    particles->update_stage1(1, driving_acceleration, mainstream);
 
     if (rbcscoll)
-        rbcscoll->update_stage1(driving_acceleration, mainstream);
+        rbcscoll->update_stage1(rbc_mass, driving_acceleration, mainstream);
 
     int it;
 
