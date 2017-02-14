@@ -34,7 +34,7 @@ for i in $(seq $st $fin); do
 	(
 	cd $dpd_dir
 
-	sed -i "/#define RC_FX/c\#define RC_FX ($RC_FX)" common.h
+	sed -i "/#define RC_FX/c\#define RC_FX ($RC_FX)  \/\/ rc_F/rc_X; default: 1.5" common.h
 	sed -i "/const int numberdensity/c\const int numberdensity = $nd * (RC_FX*RC_FX*RC_FX); \/\/ default: 3" common.h
 	sed -i "/const float kBT/c\const float kBT = $kBT * kBT2D3D / (RC_FX*RC_FX); \/\/ default: 1" common.h
 
