@@ -33,7 +33,7 @@ __device__ float3 compute_dpd_force_traced(int type1, int type2,
     const float rij2 = _xr * _xr + _yr * _yr + _zr * _zr;
     const float invrij = rsqrtf(rij2);
     const float rij = rij2 * invrij;
-    if (rij2 >= RC_FX)
+    if (rij2 >= 1)
         return make_float3(0, 0, 0);
 
     const float argwr = 1.f - rij;
