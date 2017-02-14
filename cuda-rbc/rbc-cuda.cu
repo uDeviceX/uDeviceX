@@ -332,7 +332,6 @@ namespace CudaRBC
     {
         const float lrbc = 1.000000e-06;
         float ll =  (lunit/lrbc) / RBCscale;
-        const float Escale = 4.2e-20; // units conversion from master
 
         float kBT2D3D = 1;
         float phi = 6.97 / 180.0*M_PI; /* theta_0 */
