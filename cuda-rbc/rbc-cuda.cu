@@ -363,8 +363,8 @@ namespace CudaRBC
         params.kp			= ( params.kbT * x0 * (4*x0*x0-9*x0+6) * params.l0*params.l0 ) / ( 4*params.p*(x0-1)*(x0-1) );
 
         /* to simplify further computations */
-        params.ka			= params.ka / (params.totArea0 * params.l0 * params.l0);
-        params.kv			= params.kv / (6 * params.totVolume0 * powf(params.l0, 3));
+        params.ka			= params.ka / params.totArea0;
+        params.kv			= params.kv / (6 * params.totVolume0);
 
         CUDA_CHECK( cudaMemcpyToSymbol  (devParams, &params, sizeof(Params)) );
 
@@ -481,8 +481,8 @@ namespace CudaRBC
         const float Ak = 0.5 * sqrtf(dot(normal, normal));
         const float A0 = devParams.Area0;
         const float n_2 = 1.0 / Ak;
-        const float coefArea = 0.25f * (                      -
-                devParams.ka * (area - devParams.totArea0) * n_2) - devParams.kd*(Ak-A0)/(4.*A0*Ak);
+        const float coefArea = -0.25f * (devParams.ka * (area - devParams.totArea0) * n_2)
+            - devParams.kd*(Ak-A0)/(4.*A0*Ak);
 
         const float coeffVol = devParams.kv * (volume - devParams.totVolume0);
         const float3 addFArea = coefArea * cross(normal, x32);
