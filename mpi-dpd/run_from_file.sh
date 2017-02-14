@@ -45,7 +45,7 @@ for i in $(seq $st $fin); do
 	)
 
 	# prepare working directory
-	dir=simulations/aij1_${aij1}_aij2_${aij2}_nd_${nd}_gammadpd1_${gammadpd1}_gammadpd2_${gammadpd2}_kBT_${kBT}_shrate_${shrate}_gammaC_${gammaC}_kb_${kb}_p_${p}_x0_${x0}
+	dir=simulations/rc_${RC_FX}_aij1_${aij1}_aij2_${aij2}_nd_${nd}_gammadpd1_${gammadpd1}_gammadpd2_${gammadpd2}_kBT_${kBT}_shrate_${shrate}_gammaC_${gammaC}_kb_${kb}_p_${p}_x0_${x0}
 	mkdir -p $dir
 	(
 	cd $dir
