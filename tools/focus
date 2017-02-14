@@ -1,0 +1,47 @@
+#!/bin/awk -f
+
+# Gives better names for directories
+
+# Usage:
+# ls -d * | focus
+# ls -d * | focus | sh
+
+BEGIN {
+    sep = "_"
+}
+
+{
+    d0[NR] = $0 # old directories names
+}
+
+END {
+    nd = NR # number of directories
+
+    # first pass over every directory
+    for (id = 1; id <= nd; id++) {
+	nk = split(d0[id], a, sep); nk /= 2 # number of key-value pairs
+	for (ik = 1; ik <= nk; ik++) {
+	    k = a[2*ik-1]; v = a[2*ik]
+	    KV[k,v]++ # seen this key value pair
+	}
+    }
+
+    # second pass over every directory
+    for (id = 1; id <= nd; id++) {
+	nk = split(d0[id], a, sep); nk /= 2 # number of key-value pairs
+	for (ik = 1; ik <= nk; ik++) {
+	    k = a[2*ik-1]; v = a[2*ik]
+	    if (KV[k,v] == nd) continue # skip the if it wass seen in
+					# all
+	    sep_out = length(d1[id]) ? sep : ""
+	    d1[id] = d1[id] sep_out k sep v # accumulate a new name
+	}
+    }
+
+    # print the command
+    for (id = 1; id <= nd; id++) {
+	cmd = "test -e %s || ln -s %s %s"
+	cmd = sprintf(cmd, d1[id], d0[id], d1[id])
+	print cmd
+    }
+}
