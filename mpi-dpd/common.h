@@ -18,22 +18,22 @@
 #define cuda_printf(...) do { printf(__VA_ARGS__); } while(0)
 #endif
 
-#define kBT2D3D (1) // 2d to 3d temperature conversion
-#define RC_FX (1.5) // rc_F/rc_X
+#define kBT2D3D (1)  // 2d to 3d temperature conversion
+#define RC_FX (1.5)  // rc_F/rc_X; default: 1.5
 
 enum
 {
     XSIZE_SUBDOMAIN = 16,
     YSIZE_SUBDOMAIN = 16,
     ZSIZE_SUBDOMAIN = 16,
-  XMARGIN_WALL = 6,
-  YMARGIN_WALL = 6,
-  ZMARGIN_WALL = 6,
+    XMARGIN_WALL = 6,
+    YMARGIN_WALL = 6,
+    ZMARGIN_WALL = 6,
 };
 
-const int numberdensity = 10 * (RC_FX*RC_FX*RC_FX); // default: 3
-const float kBT = 0.1 * kBT2D3D / (RC_FX*RC_FX); // default: 1
-const float dt          = 0.0005;                       // default: 0.001
+const int numberdensity = 3 * (RC_FX*RC_FX*RC_FX);  // default: 3
+const float kBT = 0.1 * kBT2D3D / (RC_FX*RC_FX);  // default: 1
+const float dt = 0.0005;  // default: 0.001
 
 const float hydrostatic_a = 0.05 / RC_FX;
 

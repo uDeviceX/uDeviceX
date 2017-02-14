@@ -10,10 +10,6 @@
  *  before getting a written permission from the author of this file.
  */
 
-static const int maxsolutes = 32;
-static const float ljsigma = 0.5;
-static const float ljsigma2 = ljsigma * ljsigma;
-
 #include <../dpd-rng.h>
 
 #include "common.h"
@@ -23,6 +19,11 @@ static const float ljsigma2 = ljsigma * ljsigma;
 #include "contact.h"
 #include "dpd-forces.h"
 #include "last_bit_float.h"
+
+static const int maxsolutes = 32;
+static const float ljsigma = 0.3;
+static const float ljsigma2 = ljsigma * ljsigma;
+static const float ljepsilon = 1.0 /(RC_FX*RC_FX);
 
 namespace KernelsContact
 {

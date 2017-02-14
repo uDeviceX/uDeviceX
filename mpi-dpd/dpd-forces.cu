@@ -36,8 +36,8 @@ __device__ float3 compute_dpd_force_traced(int type1, int type2,
         zr * (vel1.z - vel2.z);
 
     // particle type dependent constants
-    const float gammadpd[4] = {4.5, 4.5, 4.5, 4.5}; // default: 4.5
-    const float aij[4] = {7.5, 7.5, 7.5, 7.5}; // default: 75*kBT/numberdensity -- Groot and Warren (1997)
+    const float gammadpd[4] = {8, 8, 8, 8};  // default: 8
+    const float aij[4] = {4, 4, 4, 4};  // default: 4
 
     const float aij_pair = 0.5 * (aij[type1] + aij[type2]);
     const float gammadpd_pair = 0.5 * (gammadpd[type1] + gammadpd[type2]);
