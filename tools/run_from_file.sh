@@ -3,13 +3,13 @@
 dpd_dir=$HOME/rbc_shear_tags/mpi-dpd
 rbc_dir=$HOME/rbc_shear_tags/cuda-rbc
 
-sed -i "/XSIZE_SUBDOMAIN/c\    XSIZE_SUBDOMAIN = 16," $dpd_dir/common.h
+sed -i "/XSIZE_SUBDOMAIN/c\    XSIZE_SUBDOMAIN = 64," $dpd_dir/common.h
 sed -i "/YSIZE_SUBDOMAIN/c\    YSIZE_SUBDOMAIN = 16,"  $dpd_dir/common.h
-sed -i "/ZSIZE_SUBDOMAIN/c\    ZSIZE_SUBDOMAIN = 16,"  $dpd_dir/common.h
-echo "0 0 0  1 0 0 8  0 1 0 8  0 0 1 8  0 0 0 1" > $dpd_dir/rbcs-ic.txt
+sed -i "/ZSIZE_SUBDOMAIN/c\    ZSIZE_SUBDOMAIN = 32,"  $dpd_dir/common.h
+echo "0 0 0  1 0 0 32  0 1 0 8  0 0 1 16  0 0 0 1" > $dpd_dir/rbcs-ic.txt
 
-st=6
-fin=6
+st=2
+fin=5
 
 mkdir -p simulations
 
@@ -29,6 +29,7 @@ for i in $(seq $st $fin); do
 	kb=$(       awk -v n=$i 'NR==n {print $10}' points.txt)
 	p=$(        awk -v n=$i 'NR==n {print $11}' points.txt)
 	x0=$(       awk -v n=$i 'NR==n {print $12}' points.txt)
+	kd=$(       awk -v n=$i 'NR==n {print $13}' points.txt)
 
 	# recompile
 	(
@@ -41,14 +42,17 @@ for i in $(seq $st $fin); do
 	sed -i "/const float gammadpd\[/c\    const float gammadpd[4] = {$gammadpd1, $gammadpd2, $gammadpd1, $gammadpd1}; \/\/ default: 4.5" dpd-forces.cu
 	sed -i "/const float aij\[/c\    const float aij[4] = {$aij1 / RC_FX, $aij2 / RC_FX, $aij1 / RC_FX, $aij1 / RC_FX}; \/\/ default: 75*kBT/numberdensity -- Groot and Warren (1997)" dpd-forces.cu
 
-	make -j slevel=-1
+	make clean
+	make -j slevel=-2
 	)
 
 	# prepare working directory
-	dir=simulations/rc_${RC_FX}_aij1_${aij1}_aij2_${aij2}_nd_${nd}_gammadpd1_${gammadpd1}_gammadpd2_${gammadpd2}_kBT_${kBT}_shrate_${shrate}_gammaC_${gammaC}_kb_${kb}_p_${p}_x0_${x0}
+	dir=simulations/rc_${RC_FX}_aij1_${aij1}_aij2_${aij2}_nd_${nd}_gammadpd1_${gammadpd1}_gammadpd2_${gammadpd2}_kBT_${kBT}_shrate_${shrate}_gammaC_${gammaC}_kb_${kb}_p_${p}_x0_${x0}_kd_${kd}
 	mkdir -p $dir
 	(
 	cd $dir
+
+	test -e ply || ln -s mpi-dpd/ply ply
 
 	mkdir -p cuda-rbc
 	cp $rbc_dir/rbc.dat cuda-rbc
@@ -61,8 +65,8 @@ for i in $(seq $st $fin); do
 	cp $HOME/scripts/rbc/plyfile.py .
 	awk -v n=$i 'NR==n' ../../../points.txt > params.txt
 
-	st_p_d=$(awk -v sh=$shrate 'BEGIN {print int(1000/sh)}')
-	tend=$(awk -v sh=$shrate 'BEGIN {print int(2000/sh)}')
+	st_p_d=$(awk -v sh=$shrate 'BEGIN {print int(500/sh)}')
+	tend=$(awk -v sh=$shrate 'BEGIN {print int(1500/sh)}')
 
 	rm -f runme.sh
 	touch runme.sh
@@ -76,8 +80,8 @@ for i in $(seq $st $fin); do
 	echo "#SBATCH --account=ch7" >> runme.sh
 	echo "#SBATCH --constraint=gpu" >> runme.sh
 	echo "export HEX_COMM_FACTOR=3" >> runme.sh
-	echo "srun -n 1 --export ALL ./test 1 1 1 -tend=$tend -rbcs -steps_per_dump=$st_p_d -shrate=$shrate -RBCtotArea=124 -RBCtotVolume=90 -RBCka=4900 -RBCkb=$kb -RBCkd=100 -RBCkv=5000 -RBCgammaC=$gammaC -RBCx0=$x0 -RBCp=$p -hdf5field_dumps -steps_per_hdf5dump=$st_p_d -hdf5part_dumps" >> runme.sh
+	echo "./test 1 1 1 -tend=$tend -rbcs -steps_per_dump=$st_p_d -shrate=$shrate -RBCtotArea=124 -RBCtotVolume=90 -RBCka=4900 -RBCkb=$kb -RBCkd=$kd -RBCkv=5000 -RBCgammaC=$gammaC -RBCx0=$x0 -RBCp=$p -hdf5field_dumps -steps_per_hdf5dump=$st_p_d -hdf5part_dumps" >> runme.sh
 
-	sbatch runme.sh
+	sh runme.sh
 	)
 done
