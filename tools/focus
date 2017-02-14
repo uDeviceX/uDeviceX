@@ -40,8 +40,8 @@ END {
 
     # print the command
     for (id = 1; id <= nd; id++) {
-	cmd = "ln -s ./%s ./%s"
-	cmd = sprintf(cmd, d0[id], d1[id])
+	cmd = "test -e %s || ln -s %s %s"
+	cmd = sprintf(cmd, d1[id], d0[id], d1[id])
 	print cmd
     }
 }
