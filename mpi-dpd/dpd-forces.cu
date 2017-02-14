@@ -39,11 +39,26 @@ __device__ float3 compute_dpd_force_traced(int type1, int type2,
     const float gammadpd[4] = {8, 8, 8, 8};  // default: 8
     const float aij[4] = {4, 4, 4, 4};  // default: 4
 
+    // RBC contact interactions
+    const float ljsigma = 0.3;
+    const float ljepsilon = 1.0 / (RC_FX*RC_FX);
+
     const float aij_pair = 0.5 * (aij[type1] + aij[type2]);
     const float gammadpd_pair = 0.5 * (gammadpd[type1] + gammadpd[type2]);
     const float sigmaf_pair = sqrt(2*gammadpd_pair*kBT / dt);
 
-    const float strength = aij_pair * argwr + (-gammadpd_pair * wr * rdotv + sigmaf_pair * myrandnr) * wr;
+    float strength = (-gammadpd_pair * wr * rdotv + sigmaf_pair * myrandnr) * wr;
+    if (type1 == 2 && type2 == 2) {  // membrane contact
+        const float invr2 = invrij * invrij;
+        const float t2 = ljsigma * ljsigma * invr2;
+        const float t4 = t2 * t2;
+        const float t6 = t4 * t2;
+        const float lj = min(1e4f, max(0.f, ljepsilon * 24.f * invrij * t6 * (2.f * t6 - 1.f)));
+
+        strength += lj;
+    } else {
+        strength += aij_pair * argwr;
+    }
 
     return make_float3(strength*xr, strength*yr, strength*zr);
 }

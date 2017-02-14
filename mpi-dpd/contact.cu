@@ -21,9 +21,6 @@
 #include "last_bit_float.h"
 
 static const int maxsolutes = 32;
-static const float ljsigma = 0.3;
-static const float ljsigma2 = ljsigma * ljsigma;
-static const float ljepsilon = 1.0 /(RC_FX*RC_FX);
 
 namespace KernelsContact
 {
