@@ -17,22 +17,24 @@ for i in $(seq $st $fin); do
 	echo "Running case $i"
 
 	# read parameters
-	aij1=$(     awk -v n=$i 'NR==n {print $1}'  points.txt)
-	aij2=$(     awk -v n=$i 'NR==n {print $2}'  points.txt)
-	nd=$(       awk -v n=$i 'NR==n {print $3}'  points.txt)
-	gammadpd1=$(awk -v n=$i 'NR==n {print $4}'  points.txt)
-	gammadpd2=$(awk -v n=$i 'NR==n {print $5}'  points.txt)
-	kBT=$(      awk -v n=$i 'NR==n {print $6}'  points.txt)
-	shrate=$(   awk -v n=$i 'NR==n {print $7}'  points.txt)
-	gammaC=$(   awk -v n=$i 'NR==n {print $8}'  points.txt)
-	kb=$(       awk -v n=$i 'NR==n {print $9}'  points.txt)
-	p=$(        awk -v n=$i 'NR==n {print $10}' points.txt)
-	x0=$(       awk -v n=$i 'NR==n {print $11}' points.txt)
+	RC_FX=$(    awk -v n=$i 'NR==n {print $1}'  points.txt)
+	aij1=$(     awk -v n=$i 'NR==n {print $2}'  points.txt)
+	aij2=$(     awk -v n=$i 'NR==n {print $3}'  points.txt)
+	nd=$(       awk -v n=$i 'NR==n {print $4}'  points.txt)
+	gammadpd1=$(awk -v n=$i 'NR==n {print $5}'  points.txt)
+	gammadpd2=$(awk -v n=$i 'NR==n {print $6}'  points.txt)
+	kBT=$(      awk -v n=$i 'NR==n {print $7}'  points.txt)
+	shrate=$(   awk -v n=$i 'NR==n {print $8}'  points.txt)
+	gammaC=$(   awk -v n=$i 'NR==n {print $9}'  points.txt)
+	kb=$(       awk -v n=$i 'NR==n {print $10}' points.txt)
+	p=$(        awk -v n=$i 'NR==n {print $11}' points.txt)
+	x0=$(       awk -v n=$i 'NR==n {print $12}' points.txt)
 
 	# recompile
 	(
 	cd $dpd_dir
 
+	sed -i "/#define RC_FX/c\#define RC_FX ($RC_FX)" common.h
 	sed -i "/const int numberdensity/c\const int numberdensity = $nd * (RC_FX*RC_FX*RC_FX); \/\/ default: 3" common.h
 	sed -i "/const float kBT/c\const float kBT = $kBT * kBT2D3D / (RC_FX*RC_FX); \/\/ default: 1" common.h
 
