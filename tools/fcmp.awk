@@ -28,7 +28,7 @@
 # ./fcmp.awk  f1 f2 && echo t4 > true.out.txt
 
 function hash(e,  h) {
-    h = sprintf("%.3g", e)
+    h = sprintf("%.2g", e)
     # printf "hash[%s] = %s\n", e, h | "cat 2>&1"
     return h
 }
