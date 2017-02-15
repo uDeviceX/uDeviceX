@@ -113,7 +113,7 @@ std::vector<Particle> Simulation::_ic() {
 	  pp.push_back(p);
 	}
       }
-  fprintf(stderr, "(simulation.cu) generated %d\n solvent particles", pp.size());
+  fprintf(stderr, "(simulation.cu) generated %d solvent particles\n", pp.size());
   return pp;
 }
 
