@@ -1,6 +1,2 @@
-I run with:
-    > make clean && make -j && ./test 1 1 1 -rbcs -tend=5000e-4 -shrate=8 -steps_per_dump=100 && cp diag.txt tests/diag/diag.x.txt
-
-I plot results in gnuplot with
-    > plot "diag.1.txt", "diag.2.txt", "diag.3.txt", "diag.wrong.txt"
-See diag.png for picture
+Run from the mpi-dpd folder as:
+    sh tests/diag/run_diag.sh
