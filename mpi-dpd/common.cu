@@ -27,16 +27,7 @@ MPI_Datatype Acceleration::mytype;
 void CellLists::build(Particle * const p, const int n, cudaStream_t stream, int * const order, const Particle * const src)
 {
     if (n > 0)
-    {
-        const bool vanilla_cases =
-            is_mps_enabled && !(XSIZE_SUBDOMAIN < 64 && YSIZE_SUBDOMAIN < 64 && ZSIZE_SUBDOMAIN < 64) ||
-            localcomm.get_size() == 8 && XSIZE_SUBDOMAIN >= 96 && YSIZE_SUBDOMAIN >= 96 && ZSIZE_SUBDOMAIN >= 96;
-
-        if (true)
-            build_clists_vanilla((float * )p, n, 1, LX, LY, LZ, -LX/2, -LY/2, -LZ/2, order, start, count,  NULL, stream, (float *)src);
-        else
-            build_clists((float * )p, n, 1, LX, LY, LZ, -LX/2, -LY/2, -LZ/2, order, start, count,  NULL, stream, (float *)src);
-    }
+      build_clists_vanilla((float * )p, n, 1, LX, LY, LZ, -LX/2, -LY/2, -LZ/2, order, start, count,  NULL, stream, (float *)src);
     else
     {
         CUDA_CHECK(cudaMemsetAsync(start, 0, sizeof(int) * ncells, stream));
