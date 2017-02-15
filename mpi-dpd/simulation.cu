@@ -94,27 +94,27 @@ void _ic_vel(float x, float y, float z, float* vx, float* vy, float* vz) {
 }
 
 std::vector<Particle> Simulation::_ic() {
-    srand48(rank);
-    std::vector<Particle> pp;
-    int  L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
-    int iz, iy, ix, l, nd   = numberdensity;
-    for (iz = 0; iz < L[2]; iz++)
-        for (iy = 0; iy < L[1]; iy++)
-            for (ix = 0; ix < L[0]; ix++) {
-	      /* edge of a cell */
-	      int xlo = -L[0]/2 + ix, ylo = -L[1]/2 + iy, zlo = -L[2]/2 + iz;
-	      for (l = 0; l < nd; l++) {
-		Particle p = Particle(); float dr = 0.99;
-		float x = xlo + dr*drand48();
-		float y = ylo + dr*drand48();
-		float z = zlo + dr*drand48();
-		p.x[0] = x; p.x[1] = y; p.x[2] = z;
-		_ic_vel(x, y, z, &p.u[0], &p.u[1], &p.u[2]);
-		pp.push_back(p);
-	      }
-            }
-    fprintf(stderr, "(simulation.cu) generated %d\n solvent particles", pp.size());
-    return pp;
+  srand48(rank);
+  std::vector<Particle> pp;
+  int  L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
+  int iz, iy, ix, l, nd   = numberdensity;
+  for (iz = 0; iz < L[2]; iz++)
+    for (iy = 0; iy < L[1]; iy++)
+      for (ix = 0; ix < L[0]; ix++) {
+	/* edge of a cell */
+	int xlo = -L[0]/2 + ix, ylo = -L[1]/2 + iy, zlo = -L[2]/2 + iz;
+	for (l = 0; l < nd; l++) {
+	  Particle p = Particle(); float dr = 0.99;
+	  float x = xlo + dr*drand48();
+	  float y = ylo + dr*drand48();
+	  float z = zlo + dr*drand48();
+	  p.x[0] = x; p.x[1] = y; p.x[2] = z;
+	  _ic_vel(x, y, z, &p.u[0], &p.u[1], &p.u[2]);
+	  pp.push_back(p);
+	}
+      }
+  fprintf(stderr, "(simulation.cu) generated %d\n solvent particles", pp.size());
+  return pp;
 }
 
 void Simulation::_redistribute()
