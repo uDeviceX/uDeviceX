@@ -13,6 +13,16 @@ __device__ float3 compute_dpd_force_traced(int type1, int type2,
     /* return the DPD interaction force based on particle types
      * type: 0 -- outer solvent, 1 -- inner solvent, 2 -- membrane, 3 -- wall */
 
+    type1 = type2 = 0;
+    if (inbox(pos1.x, pos1.y, pos1.z,
+                -XSIZE_SUBDOMAIN/2, XSIZE_SUBDOMAIN/2,
+                -3, 3,
+                -ZSIZE_SUBDOMAIN/2, ZSIZE_SUBDOMAIN/2)) type1 = 1;
+    if (inbox(pos2.x, pos2.y, pos2.z,
+                -XSIZE_SUBDOMAIN/2, XSIZE_SUBDOMAIN/2,
+                -3, 3,
+                -ZSIZE_SUBDOMAIN/2, ZSIZE_SUBDOMAIN/2)) type2 = 1;
+
     /************** User-defined constants ***********/
     // All particles: DPD interactions
     const float gammadpd[4] = {4.5, 4.5, 4.5, 4.5}; // default: 4.5
@@ -24,16 +34,6 @@ __device__ float3 compute_dpd_force_traced(int type1, int type2,
     const float ljsigma = 0.3;  // default: 0.3
     const float ljepsilon = 1.0 / (RC_FX*RC_FX);  // default: 1
     /********** End of User-defined constants ********/
-
-    type1 = type2 = 0;
-    if (inbox(pos1.x, pos1.y, pos1.z,
-                -XSIZE_SUBDOMAIN/2, XSIZE_SUBDOMAIN/2,
-                -3, 3,
-                -ZSIZE_SUBDOMAIN/2, ZSIZE_SUBDOMAIN/2)) type1 = 1;
-    if (inbox(pos2.x, pos2.y, pos2.z,
-                -XSIZE_SUBDOMAIN/2, XSIZE_SUBDOMAIN/2,
-                -3, 3,
-                -ZSIZE_SUBDOMAIN/2, ZSIZE_SUBDOMAIN/2)) type2 = 1;
 
 
     const float _xr = pos1.x - pos2.x;
