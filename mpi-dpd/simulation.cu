@@ -743,15 +743,14 @@ void Simulation::run()
         const bool verbose = it > 0 && rank == 0;
         _redistribute();
 
-lockstep_check:
+        while (true) {
+            const bool lockstep_OK =
+                !(walls && it >= wall_creation_stepid && wall == NULL) &&
+                !(it % steps_per_dump == 0) &&
+                !(it + 1 == nsteps);
 
-        const bool lockstep_OK =
-            !(walls && it >= wall_creation_stepid && wall == NULL) &&
-            !(it % steps_per_dump == 0) &&
-            !(it + 1 == nsteps);
+            if (!lockstep_OK) break;
 
-        if (lockstep_OK)
-        {
             _lockstep();
             {
                 if (!doublepoiseuille) {
@@ -771,8 +770,6 @@ lockstep_check:
             }
 
             ++it;
-
-            goto lockstep_check;
         }
 
         if (walls && it >= wall_creation_stepid && wall == NULL)
