@@ -28,6 +28,7 @@
 #include <vector>
 
 #include "common.h"
+#include <string>
 #include "io.h"
 #include "last_bit_float.h"
 #include "dpd-forces.h"

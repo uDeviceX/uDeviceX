@@ -11,13 +11,6 @@
  */
 
 #pragma once
-
-#include <vector>
-#include <rbc-cuda.h>
-
-
-#include <../dpd-rng.h>
-
 class ComputeContact : public SoluteExchange::Visitor
 {
   //cudaEvent_t evuploaded;

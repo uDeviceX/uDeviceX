@@ -1,8 +1,6 @@
 #pragma once
 
 /* helper functions for DPD MSD calculations */
-#include <vector>
-
 class Particle;
 
 __device__ float3 compute_dpd_force_traced(int type1, int type2,

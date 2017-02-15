@@ -14,6 +14,8 @@
 #include <sys/stat.h>
 
 #include <rbc-cuda.h>
+#include <vector>
+#include <string>
 
 #include "common.h"
 #include "containers.h"
