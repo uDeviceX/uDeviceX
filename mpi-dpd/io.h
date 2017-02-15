@@ -10,10 +10,6 @@
  *  before getting a written permission from the author of this file.
  */
 
-#include <mpi.h>
-
-#include <string>
-
 void ply_dump(MPI_Comm comm, MPI_Comm cartcomm, const char * filename,
               int (*mesh_indices)[3], const int ninstances, const int ntriangles_per_instance, Particle * _particles,
               int nvertices_per_instance, bool append);

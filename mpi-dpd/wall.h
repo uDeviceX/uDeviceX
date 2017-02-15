@@ -12,10 +12,6 @@
 
 #pragma once
 
-#include <mpi.h>
-
-#include <../dpd-rng.h>
-
 namespace SolidWallsKernel
 {
 __global__ void fill_keys(const Particle * const particles, const int n, int * const key);

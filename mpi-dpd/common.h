@@ -42,12 +42,7 @@ extern float tend, desired_shrate;
 extern bool walls, pushtheflow, doublepoiseuille, rbcs, hdf5field_dumps, hdf5part_dumps, is_mps_enabled, contactforces;
 extern int steps_per_dump, steps_per_hdf5dump, wall_creation_stepid;
 
-#include <cstdlib>
 #include <cstdio>
-#include <cmath>
-
-#include <unistd.h>
-#include <cuda_runtime.h>
 
 #define CUDA_CHECK(ans) do { cudaAssert((ans), __FILE__, __LINE__); } while(0)
 inline void cudaAssert(cudaError_t code, const char *file, int line)

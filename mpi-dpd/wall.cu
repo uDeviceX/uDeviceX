@@ -22,6 +22,7 @@
 #include "common.h"
 #include "io.h"
 #include "solvent-exchange.h"
+#include <../dpd-rng.h>
 #include "wall.h"
 #include "redistancing.h"
 #include "dpd-forces.h"
