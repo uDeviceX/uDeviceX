@@ -12,13 +12,6 @@
 
 #pragma once
 
-#include <csignal>
-#include <map>
-#include <vector>
-#include <string>
-#include <pthread.h>
-
-
 class Simulation
 {
   ParticleArray particles_pingpong[2];
