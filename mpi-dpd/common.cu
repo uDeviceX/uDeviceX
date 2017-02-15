@@ -10,10 +10,10 @@
  *  before getting a written permission from the author of this file.
  */
 
+#include <mpi.h>
 #include <sys/resource.h>
-
 #include <cuda-dpd.h>
-
+#include <cstdio>
 #include "common.h"
 
 bool Particle::initialized = false;

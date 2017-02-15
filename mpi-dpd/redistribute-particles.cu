@@ -12,7 +12,8 @@
 
 #include <vector>
 #include <algorithm>
-
+#include <cstdio>
+#include <mpi.h>
 #include "common.h"
 #include "common-kernels.h"
 #include "scan.h"

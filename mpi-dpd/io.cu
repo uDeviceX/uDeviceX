@@ -26,7 +26,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
-
+#include <mpi.h>
 #include "common.h"
 #include <string>
 #include "io.h"

@@ -12,9 +12,6 @@
 
 #pragma once
 
-#include <mpi.h>
-
-
 class RedistributeParticles
 {
   static const int basetag = 950;

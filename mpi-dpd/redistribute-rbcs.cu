@@ -10,8 +10,10 @@
  *  before getting a written permission from the author of this file.
  */
 
+#include <mpi.h>
+#include <rbc-cuda.h>
 #include <vector>
-
+#include <mpi.h>
 #include "common.h"
 #include "redistribute-particles.h"
 #include "redistribute-rbcs.h"

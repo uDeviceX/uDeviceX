@@ -11,13 +11,6 @@
  */
 
 #pragma once
-
-#include <vector>
-#include <rbc-cuda.h>
-
-
-#include <../dpd-rng.h>
-
 class ComputeFSI : public SoluteExchange::Visitor
 {
   //TODO: use cudaEvent_t evuploaded;

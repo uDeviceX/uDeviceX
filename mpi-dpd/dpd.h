@@ -12,15 +12,6 @@
 
 #pragma once
 
-#include <utility>
-#include <mpi.h>
-
-#include <map>
-#include <string>
-
-#include <../dpd-rng.h>
-
-
 //see the vanilla version of this code for details about how this class operates
 class ComputeDPD : public SolventExchange
 {

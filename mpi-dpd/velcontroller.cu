@@ -6,6 +6,8 @@
  *
  */
 
+#include <cstdio>
+#include <mpi.h>
 #include "common.h"
 #include "velcontroller.h"
 #include "helper_math.h"

@@ -10,8 +10,9 @@
  *  before getting a written permission from the author of this file.
  */
 
+#include <cstdio>
 #include "redistancing.h"
-
+#include <mpi.h>
 #include "common.h"
 
 #define _ACCESS(ary, x, y, z) tex3D(tex##ary, x, y, z)

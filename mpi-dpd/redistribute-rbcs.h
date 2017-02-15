@@ -12,11 +12,6 @@
 
 #pragma once
 
-#include <mpi.h>
-
-#include <rbc-cuda.h>
-
-
 class RedistributeRBCs
 {
  protected:

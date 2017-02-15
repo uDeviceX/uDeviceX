@@ -42,8 +42,6 @@ extern float tend, desired_shrate;
 extern bool walls, pushtheflow, doublepoiseuille, rbcs, hdf5field_dumps, hdf5part_dumps, is_mps_enabled, contactforces;
 extern int steps_per_dump, steps_per_hdf5dump, wall_creation_stepid;
 
-#include <cstdio>
-
 #define CUDA_CHECK(ans) do { cudaAssert((ans), __FILE__, __LINE__); } while(0)
 inline void cudaAssert(cudaError_t code, const char *file, int line)
 {
@@ -55,8 +53,6 @@ inline void cudaAssert(cudaError_t code, const char *file, int line)
   }
 }
 
-
-#include <mpi.h>
 
 #define MPI_CHECK(ans) do { mpiAssert((ans), __FILE__, __LINE__); } while(0)
 
@@ -331,8 +327,6 @@ struct PinnedHostBuffer
     CUDA_CHECK(cudaHostGetDevicePointer(&devptr, data, 0));
   }
 };
-
-#include <cuda-dpd.h>
 
 //container for the cell lists, which contains only two integer vectors of size ncells.
 //the start[cell-id] array gives the entry in the particle array associated to first particle belonging to cell-id

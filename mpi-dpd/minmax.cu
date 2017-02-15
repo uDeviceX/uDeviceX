@@ -10,6 +10,8 @@
  *  before getting a written permission from the author of this file.
  */
 
+#include <cstdio>
+#include <mpi.h>
 #include "common.h"
 #include "minmax.h"
 

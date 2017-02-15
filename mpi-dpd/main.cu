@@ -14,7 +14,8 @@
 #include <csignal>
 #include <mpi.h>
 #include <errno.h>
-
+#include <../dpd-rng.h>
+#include <map>
 #include "argument-parser.h"
 #include "common.h"
 #include "containers.h"

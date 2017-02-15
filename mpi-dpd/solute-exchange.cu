@@ -13,7 +13,9 @@
 //#define _DUMBCRAY_
 
 #include <../dpd-rng.h>
-
+#include <vector>
+#include <cstdio>
+#include <mpi.h>
 #include "common.h"
 #include "common-kernels.h"
 #include "solute-exchange.h"

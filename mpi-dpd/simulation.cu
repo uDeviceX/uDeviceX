@@ -11,7 +11,13 @@
  */
 
 #include <sys/stat.h>
-
+#include <map>
+#include <string>
+#include <vector>
+#include <../dpd-rng.h>
+#include <rbc-cuda.h>
+#include <cstdio>
+#include <mpi.h>
 #include "common.h"
 #include "containers.h"
 #include "solvent-exchange.h"

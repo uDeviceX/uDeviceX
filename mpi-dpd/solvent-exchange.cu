@@ -13,7 +13,8 @@
 
 #include <cstring>
 #include <algorithm>
-
+#include <cstdio>
+#include <mpi.h>
 #include "common.h"
 #include "solvent-exchange.h"
 

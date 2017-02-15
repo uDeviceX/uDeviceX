@@ -1,4 +1,7 @@
 #include "dpd-forces.h"
+#include <cstdio>
+#include <mpi.h>
+#include <cuda-dpd.h>
 #include "common.h"
 
 __device__ bool inbox(float x, float y, float z,

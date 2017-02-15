@@ -12,9 +12,6 @@
 
 #pragma once
 
-#include <mpi.h>
-
-
 class SolventExchange
 {
   MPI_Comm cartcomm;
