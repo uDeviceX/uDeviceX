@@ -3,9 +3,6 @@ OPT_LOCAL=-O3 -g # I have to overwrite the optimization because this	\
 cell-lists.o: cell-lists.cu cell-lists.h
 	$(NVCC) $(NVCCFLAGS) $(OPT_LOCAL) -c $< -o $@
 
-cell-lists-faster.o: cell-lists-faster.cu cell-lists.h
-	$(NVCC) $(NVCCFLAGS) $(OPT)       -c $< -o $@
-
 clean: ; rm -f *.o
 subclean: clean
 .PHONY = clean subclean

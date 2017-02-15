@@ -1,5 +1,5 @@
 libcuda-dpd.a: cuda-dpd.o cuda-dpd-bipartite.o celllists
-	ar rcs $@ cuda-dpd.o cuda-dpd-bipartite.o ../cell-lists.o ../cell-lists-faster.o
+	ar rcs $@ cuda-dpd.o cuda-dpd-bipartite.o ../cell-lists.o
 
 # use `-dc' flag to do separate compilation
 # Separate Compilation and Linking of CUDA C++ Device Code
@@ -15,9 +15,6 @@ cuda-dpd-bipartite.o: cuda-dpd-bipartite-floatized.cu cuda-dpd.h
 	LINK="$(LINK)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
 
 celllists:
-	make -C ../ cell-lists-faster.o \
-	LINK="$(LINK)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
-
 	make -C ../ cell-lists.o \
 	LINK="$(LINK)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
 
