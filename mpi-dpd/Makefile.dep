@@ -2,20 +2,20 @@
 # (do not include '*.h' files in other '*.h' files)
 
 common.o: common.h
-contact.o: common-kernels.h common.h contact.h last_bit_float.h scan.h solute-exchange.h dpd-forces.h
-containers.o: common.h containers.h io.h last_bit_float.h dpd-forces.h
-dpd.o: common.h dpd.h last_bit_float.h solvent-exchange.h dpd-forces.h
-fsi.o: common-kernels.h common.h fsi.h last_bit_float.h solute-exchange.h dpd-forces.h
-io.o: common.h io.h last_bit_float.h dpd-forces.h
+contact.o: common-kernels.h common.h contact.h dpd-forces.h last_bit_float.h scan.h solute-exchange.h
+containers.o: common.h containers.h dpd-forces.h io.h last_bit_float.h
+dpd-forces.o: common.h dpd-forces.h
+dpd.o: common.h dpd-forces.h dpd.h last_bit_float.h solvent-exchange.h
+fsi.o: common-kernels.h common.h dpd-forces.h fsi.h last_bit_float.h solute-exchange.h
+io.o: common.h dpd-forces.h io.h last_bit_float.h
 last_bit_float.o: last_bit_float.h
 main.o: argument-parser.h common.h contact.h containers.h dpd.h fsi.h redistribute-particles.h redistribute-rbcs.h simulation.h solute-exchange.h solvent-exchange.h velcontroller.h wall.h
 minmax.o: common.h minmax.h
 redistancing.o: common.h redistancing.h
 redistribute-particles.o: common-kernels.h common.h redistribute-particles.h scan.h
 redistribute-rbcs.o: common.h minmax.h redistribute-particles.h redistribute-rbcs.h
-simulation.o: common.h contact.h containers.h dpd.h fsi.h io.h last_bit_float.h redistribute-particles.h redistribute-rbcs.h simulation.h simulation.hack.h solute-exchange.h solvent-exchange.h velcontroller.h dpd-forces.h wall.h
+simulation.o: common.h contact.h containers.h dpd-forces.h dpd.h fsi.h io.h last_bit_float.h redistribute-particles.h redistribute-rbcs.h simulation.h simulation.hack.h solute-exchange.h solvent-exchange.h velcontroller.h wall.h
 solute-exchange.o: common-kernels.h common.h solute-exchange.h
 solvent-exchange.o: common.h solvent-exchange.h
 velcontroller.o: common.h velcontroller.h
-dpd-forces.o: common.h last_bit_float.h dpd-forces.h
-wall.o: common.h io.h last_bit_float.h redistancing.h solvent-exchange.h dpd-forces.h wall.h
+wall.o: common.h dpd-forces.h io.h last_bit_float.h redistancing.h solvent-exchange.h wall.h
