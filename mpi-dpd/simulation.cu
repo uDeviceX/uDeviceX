@@ -752,20 +752,18 @@ void Simulation::run()
             if (!lockstep_OK) break;
 
             _lockstep();
-            {
-                if (!doublepoiseuille) {
-                    if (it % 10 == 0)
-                    {
-                        velcont1->sample(cells.start, particles->xyzuvw.data, mainstream);
-                        velcont2->sample(cells.start, particles->xyzuvw.data, mainstream);
-                    }
+            if (!doublepoiseuille) {
+                if (it % 10 == 0)
+                {
+                    velcont1->sample(cells.start, particles->xyzuvw.data, mainstream);
+                    velcont2->sample(cells.start, particles->xyzuvw.data, mainstream);
+                }
 
-                    if (it % 500 == 0)
-                    {
-                        velcont1->adjustF(mainstream);
-                        velcont2->adjustF(mainstream);
-                        driving_acceleration = 0;
-                    }
+                if (it % 500 == 0)
+                {
+                    velcont1->adjustF(mainstream);
+                    velcont2->adjustF(mainstream);
+                    driving_acceleration = 0;
                 }
             }
 
