@@ -14,7 +14,7 @@
 
 #include <cuda-dpd.h>
 #include <string>
-#include <../dpd-rng.h>
+#include <dpd-rng.h>
 #include <cstdio>
 #include <mpi.h>
 #include "common.h"

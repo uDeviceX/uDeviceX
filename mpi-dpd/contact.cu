@@ -10,7 +10,7 @@
  *  before getting a written permission from the author of this file.
  */
 
-#include <../dpd-rng.h>
+#include <dpd-rng.h>
 
 #include <vector>
 #include <cstdio>

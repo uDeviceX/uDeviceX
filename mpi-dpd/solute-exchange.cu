@@ -12,7 +12,7 @@
 
 //#define _DUMBCRAY_
 
-#include <../dpd-rng.h>
+#include <dpd-rng.h>
 #include <vector>
 #include <cstdio>
 #include <mpi.h>

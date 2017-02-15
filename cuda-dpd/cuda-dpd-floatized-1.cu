@@ -15,9 +15,9 @@
 #include <mpi.h>
 
 #include "cuda-dpd.h"
-#include "../dpd-rng.h"
-#include "../../mpi-dpd/dpd-forces.h"
-#include "../../mpi-dpd/last_bit_float.h"
+#include "dpd-rng.h"
+#include "../mpi-dpd/dpd-forces.h"
+#include "../mpi-dpd/last_bit_float.h"
 
 struct InfoDPD {
     int3 ncells;
@@ -325,7 +325,7 @@ void _dpd_forces_symm_merged()
 
 bool fdpd_init = false;
 static bool is_mps_enabled = false;
-#include "../hacks.h"
+#include "hacks.h"
 #ifdef _TIME_PROFILE_
 static cudaEvent_t evstart, evstop;
 #endif

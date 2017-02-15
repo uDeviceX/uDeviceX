@@ -11,8 +11,8 @@ slevel   ?= -2
 datadump ?= 1
 
 NVCCFLAGS += -arch $(ARCH_VAL) -code $(CODE_VAL)
-LDFLAGS   += -L../cuda-dpd/dpd -L../cuda-rbc
-NVCCFLAGS += -I../cuda-dpd/dpd -I../cuda-rbc
+LDFLAGS   += -L../cuda-dpd -L../cuda-rbc
+NVCCFLAGS += -I../cuda-dpd -I../cuda-rbc
 LIBS      += -lcuda-dpd -lcuda-rbc -lcudart
 
 OBJS = \
@@ -43,7 +43,7 @@ NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel)
 
 # I have some device code in OBJS. I have to link it separatly
 test:   $(OBJS) libcuda-dpd libcuda-rbc
-	$(NVCC) $(NVCCFLAGS) $(OPT) -dlink -L../cuda-dpd/dpd -L../cuda-rbc/dpd $(OBJS) $(LIBS) -o gpuCode.o
+	$(NVCC) $(NVCCFLAGS) $(OPT) -dlink -L../cuda-dpd -L../cuda-rbc $(OBJS) $(LIBS) -o gpuCode.o
 	$(LINK)  $(LDFLAGS) gpuCode.o $(OBJS) $(LIBS) -o test
 
 # a rule for the most of *.cu files
@@ -62,7 +62,7 @@ wall.o:           wall.cu;           $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 include    Makefile.dep # dependencies
 
 libcuda-dpd:
-	make -C ../cuda-dpd/dpd libcuda-dpd.a \
+	make -C ../cuda-dpd libcuda-dpd.a \
 	LINK="$(LINK)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
 
 libcuda-rbc:
@@ -74,6 +74,5 @@ cleanall:
 	rm -f test *.o
 	make -C ../cuda-rbc     clean
 	make -C ../cuda-dpd     clean
-	make -C ../cuda-dpd/dpd clean
 
 .PHONY = clean cleanall libcuda-dpd libcuda-rbc
