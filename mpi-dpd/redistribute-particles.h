@@ -73,14 +73,10 @@ class RedistributeParticles
 
   cudaEvent_t evpacking, evsizes;
 
-  float _waitall(MPI_Request * reqs, const int n)
+  void _waitall(MPI_Request * reqs, const int n)
   {
-    const double tstart = MPI_Wtime();
-
     MPI_Status statuses[n];
     MPI_CHECK( MPI_Waitall(n, reqs, statuses) );
-
-    return MPI_Wtime() - tstart;
   }
 
   void _post_recv();
