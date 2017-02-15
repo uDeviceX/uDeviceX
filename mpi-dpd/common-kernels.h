@@ -1,4 +1,4 @@
-#pragma once
+
 
 
 __device__ __forceinline__

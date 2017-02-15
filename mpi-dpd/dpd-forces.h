@@ -1,4 +1,4 @@
-#pragma once
+
 
 /* helper functions for DPD MSD calculations */
 class Particle;

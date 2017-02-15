@@ -10,7 +10,7 @@
  *  before getting a written permission from the author of this file.
  */
 
-#pragma once
+
 
 namespace SolidWallsKernel
 {

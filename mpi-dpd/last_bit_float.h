@@ -1,4 +1,4 @@
-#pragma once
+
 
 namespace last_bit_float {
 // return a last bit of a float

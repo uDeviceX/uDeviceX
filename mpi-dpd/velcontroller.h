@@ -6,7 +6,7 @@
  *
  */
 
-#pragma once
+
 
 
 struct CellInfo

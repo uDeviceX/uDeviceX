@@ -10,7 +10,7 @@
  *  before getting a written permission from the author of this file.
  */
 
-#pragma once
+
 
 //see the vanilla version of this code for details about how this class operates
 class ComputeDPD : public SolventExchange
