@@ -53,7 +53,6 @@ class Simulation
 
   const size_t nsteps;
   float driving_acceleration;
-  float host_idle_time;
   int nranks, rank;
 
   std::vector<Particle> _ic();

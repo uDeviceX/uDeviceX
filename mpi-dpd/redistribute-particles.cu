@@ -667,11 +667,11 @@ void RedistributeParticles::bulk(const int nparticles, int * const cellstarts, i
     CUDA_CHECK(cudaPeekAtLastError());
 }
 
-int RedistributeParticles::recv_count(cudaStream_t mystream, float& host_idle_time)
+int RedistributeParticles::recv_count(cudaStream_t mystream)
 {
     CUDA_CHECK(cudaPeekAtLastError());
 
-    host_idle_time += _waitall(recvcountreq, nactiveneighbors);
+    _waitall(recvcountreq, nactiveneighbors);
 
     {
         static int usize[27], ustart[28], ustart_padded[28];
@@ -712,9 +712,9 @@ int RedistributeParticles::recv_count(cudaStream_t mystream, float& host_idle_ti
 }
 
 void RedistributeParticles::recv_unpack(Particle * const particles, float4 * const xyzouvwo, ushort4 * const xyzo_half, const int nparticles,
-        int * const cellstarts, int * const cellcounts, cudaStream_t mystream, float& host_idling_time)
+        int * const cellstarts, int * const cellcounts, cudaStream_t mystream)
 {
-    host_idling_time += _waitall(recvmsgreq, nactiveneighbors);
+    _waitall(recvmsgreq, nactiveneighbors);
 
     const bool haschanged = true;
     _adjust_recv_buffers(recv_sizes);

@@ -131,7 +131,7 @@ void Simulation::_redistribute()
 
     CUDA_CHECK(cudaPeekAtLastError());
 
-    const int newnp = redistribute.recv_count(mainstream, host_idle_time);
+    const int newnp = redistribute.recv_count(mainstream);
 
     int nrbcs;
     if (rbcscoll)
@@ -144,7 +144,7 @@ void Simulation::_redistribute()
     xyzouvwo.resize(newnp * 2);
     xyzo_half.resize(newnp);
 
-    redistribute.recv_unpack(newparticles->xyzuvw.data, xyzouvwo.data, xyzo_half.data, newnp, cells.start, cells.count, mainstream, host_idle_time);
+    redistribute.recv_unpack(newparticles->xyzuvw.data, xyzouvwo.data, xyzo_half.data, newnp, cells.start, cells.count, mainstream);
 
     CUDA_CHECK(cudaPeekAtLastError());
 
@@ -494,7 +494,7 @@ Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm) :
     rbcscoll(NULL), wall(NULL),
     redistribute(cartcomm),  redistribute_rbcs(cartcomm),
     dpd(cartcomm), fsi(cartcomm), contact(cartcomm), solutex(cartcomm),
-    driving_acceleration(0), host_idle_time(0), nsteps((int)(tend / dt)),
+    driving_acceleration(0), nsteps((int)(tend / dt)),
     datadump_pending(false), simulation_is_done(false)
 {
     MPI_CHECK( MPI_Comm_size(activecomm, &nranks) );
@@ -681,7 +681,7 @@ void Simulation::_lockstep()
         rbcscoll->update_stage2_and_1(rbc_mass, driving_acceleration, mainstream);
 
 
-    const int newnp = redistribute.recv_count(mainstream, host_idle_time);
+    const int newnp = redistribute.recv_count(mainstream);
 
     CUDA_CHECK(cudaPeekAtLastError());
 
@@ -695,7 +695,7 @@ void Simulation::_lockstep()
     xyzouvwo.resize(newnp * 2);
     xyzo_half.resize(newnp);
 
-    redistribute.recv_unpack(newparticles->xyzuvw.data, xyzouvwo.data, xyzo_half.data, newnp, cells.start, cells.count, mainstream, host_idle_time);
+    redistribute.recv_unpack(newparticles->xyzuvw.data, xyzouvwo.data, xyzo_half.data, newnp, cells.start, cells.count, mainstream);
 
     CUDA_CHECK(cudaPeekAtLastError());
 
