@@ -189,7 +189,7 @@ void Simulation::_remove_bodies_from_wall(CollectionRBC * coll)
     CUDA_CHECK(cudaPeekAtLastError());
 }
 
-void Simulation::_create_walls(const bool verbose, bool & termination_request)
+void Simulation::_create_walls(const bool verbose)
 {
     if (verbose)
         printf("creation of the walls...\n");
@@ -774,15 +774,9 @@ void Simulation::run()
         {
             CUDA_CHECK(cudaDeviceSynchronize());
 
-            bool termination_request = false;
-
-            _create_walls(verbose, termination_request);
+            _create_walls(verbose);
 
             _redistribute();
-
-            if (termination_request)
-                break;
-
 
             if (pushtheflow)
                 driving_acceleration = hydrostatic_a;

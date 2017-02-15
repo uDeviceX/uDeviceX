@@ -54,11 +54,6 @@ namespace SignalHandling
         action.sa_handler = signal_handler;
         sigaction(SIGUSR1, &action, NULL);
     }
-
-    bool check_termination_request()
-    {
-        return graceful_exit;
-    }
 }
 
 int main(int argc, char ** argv)
@@ -223,7 +218,7 @@ int main(int argc, char ** argv)
 
         MPI_CHECK(MPI_Barrier(activecomm));
 
-        Simulation simulation(cartcomm, activecomm, SignalHandling::check_termination_request);
+        Simulation simulation(cartcomm, activecomm);
 
         simulation.run();
     }
