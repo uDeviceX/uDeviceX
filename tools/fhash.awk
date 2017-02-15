@@ -1,6 +1,6 @@
 #!/usr/bin/awk -f
 #
-# Round numbers in first column and sorts output
+# Round and sort numbers in first column
 #
 # Usage:
 # awk '{print $2}' diag.txt | fhash.awk
