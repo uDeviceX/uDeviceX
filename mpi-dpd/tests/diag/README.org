@@ -1,6 +1,5 @@
 I run with:
-    > make -j slevel=-1 && ./test 1 1 1 -rbcs -tend=5000e-4 -shrate=8 -steps_per_dump=100
-    > cp diag.txt tests/diag/diag.x.txt
+    > make clean && make -j && ./test 1 1 1 -rbcs -tend=5000e-4 -shrate=8 -steps_per_dump=100 && cp diag.txt tests/diag/diag.x.txt
 
 I plot results in gnuplot with
     > plot "diag.1.txt", "diag.2.txt", "diag.3.txt", "diag.wrong.txt"
