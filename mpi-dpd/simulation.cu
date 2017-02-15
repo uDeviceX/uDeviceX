@@ -488,13 +488,12 @@ void Simulation::_update_and_bounce()
     CUDA_CHECK(cudaPeekAtLastError());
 }
 
-Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_termination)()) :
+Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm) :
     cartcomm(cartcomm), activecomm(activecomm),
     cells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN),
     rbcscoll(NULL), wall(NULL),
     redistribute(cartcomm),  redistribute_rbcs(cartcomm),
     dpd(cartcomm), fsi(cartcomm), contact(cartcomm), solutex(cartcomm),
-    check_termination(check_termination),
     driving_acceleration(0), host_idle_time(0), nsteps((int)(tend / dt)),
     datadump_pending(false), simulation_is_done(false)
 {

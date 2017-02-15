@@ -42,7 +42,6 @@ class Simulation
   VelController* velcont1;
   VelController* velcont2;
 
-  bool (*check_termination)();
   bool simulation_is_done;
 
   MPI_Comm activecomm, cartcomm;
@@ -84,7 +83,7 @@ class Simulation
 
  public:
 
-  Simulation(MPI_Comm cartcomm, MPI_Comm activecomm, bool (*check_termination)()) ;
+  Simulation(MPI_Comm cartcomm, MPI_Comm activecomm) ;
 
   void run();
 
