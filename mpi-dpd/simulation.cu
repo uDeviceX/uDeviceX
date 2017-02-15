@@ -119,8 +119,6 @@ std::vector<Particle> Simulation::_ic() {
 
 void Simulation::_redistribute()
 {
-    double tstart = MPI_Wtime();
-
     redistribute.pack(particles->xyzuvw.data, particles->size, mainstream);
 
     CUDA_CHECK(cudaPeekAtLastError());
@@ -254,8 +252,6 @@ void Simulation::_create_walls(const bool verbose)
 
 void Simulation::_forces()
 {
-    double tstart = MPI_Wtime();
-
     SolventWrap wsolvent(particles->xyzuvw.data, particles->size, particles->axayaz.data, cells.start, cells.count);
 
     std::vector<ParticlesWrap> wsolutes;
@@ -332,8 +328,6 @@ void Simulation::_forces()
 
 void Simulation::_datadump(const int idtimestep)
 {
-    double tstart = MPI_Wtime();
-
     pthread_mutex_lock(&mutex_datadump);
 
     while (datadump_pending)
@@ -472,7 +466,6 @@ void Simulation::_datadump_async()
 
 void Simulation::_update_and_bounce()
 {
-    double tstart = MPI_Wtime();
     particles->update_stage2_and_1(1, driving_acceleration, mainstream);
 
     CUDA_CHECK(cudaPeekAtLastError());
@@ -483,7 +476,6 @@ void Simulation::_update_and_bounce()
     CUDA_CHECK(cudaPeekAtLastError());
     if (wall)
     {
-        tstart = MPI_Wtime();
         wall->bounce(particles->xyzuvw.data, particles->size, mainstream);
 
         if (rbcscoll)
@@ -594,8 +586,6 @@ Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm) :
 
 void Simulation::_lockstep()
 {
-    double tstart = MPI_Wtime();
-
     SolventWrap wsolvent(particles->xyzuvw.data, particles->size, particles->axayaz.data, cells.start, cells.count);
 
     std::vector<ParticlesWrap> wsolutes;
