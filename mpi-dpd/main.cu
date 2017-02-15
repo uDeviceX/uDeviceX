@@ -38,24 +38,6 @@ float RBCx0, RBCp, RBCcq, RBCkb, RBCka, RBCkv, RBCgammaC, RBCkd, RBCtotArea, RBC
 
 LocalComm localcomm;
 
-namespace SignalHandling
-{
-    volatile sig_atomic_t graceful_exit = 0, graceful_signum = 0;
-
-    void signal_handler(int signum)
-    {
-        graceful_exit = 1;
-        graceful_signum = signum;
-    }
-
-    void setup()
-    {
-        struct sigaction action;
-        memset(&action, 0, sizeof(struct sigaction));
-        action.sa_handler = signal_handler;
-        sigaction(SIGUSR1, &action, NULL);
-    }
-}
 
 int main(int argc, char ** argv)
 {
@@ -106,8 +88,6 @@ int main(int argc, char ** argv)
 #else
     const bool mpi_thread_safe = argp("-mpi_thread_safe").asBool(false);
 #endif
-
-    SignalHandling::setup();
 
     CUDA_CHECK(cudaSetDevice(0));
 
