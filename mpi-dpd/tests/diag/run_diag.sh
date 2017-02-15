@@ -1,5 +1,22 @@
-echo "0 0 0  1 0 0 8  0 1 0 8  0 0 1 8  0 0 0 1" > rbcs-ic.txt
-make clean && make -j
-./test 1 1 1 -rbcs -tend=5000e-4 -shrate=8 -steps_per_dump=100
-cp diag.txt tests/diag/diag.test.txt
-(cd ../tools/ && sh ./cmp_diag.sh ../mpi-dpd/tests/diag/diag.ref.txt ../mpi-dpd/tests/diag/diag.test.txt)
+#!/bin/bash
+
+# Run from this directory:
+#  > atest run_diag.sh
+
+# To update the test change TEST to cTEST and run
+#  > atest run_diag.sh
+# add crap from test_data/* to git
+
+# TEST: diag.t1
+# export PATH=../../../tools:$PATH
+# (cd ../..  && echo 0 0 0  1 0 0 8  0 1 0 8  0 0 1 8  0 0 0 1 > rbcs-ic.txt)
+# (cd ../..  && make clean && make -j && make -C ../tools)
+# (cd ../..  && ./test 1 1 1 -rbcs -tend=0.5 -shrate=8 -steps_per_dump=100)
+# (cd ../..  && awk '{print $2}' diag.txt | fhash.awk ) > diag.out.txt
+#
+# TEST: diag.t2
+# export PATH=../../../tools:$PATH
+# (cd ../..  && echo 0 0 0  1 0 0 8  0 1 0 8  0 0 1 8  0 0 0 1 > rbcs-ic.txt)
+# (cd ../..  && make clean && make -j && make -C ../tools)
+# (cd ../..  && ./test 1 1 1 -rbcs -tend=0.5 -shrate=8 -steps_per_dump=100)
+# (cd ../..  && ply2punto ply/rbcs-00009.ply | fhash.awk -v tol=5) > ply.out.txt

@@ -1,2 +1,4 @@
-Run from the mpi-dpd folder as:
-    sh tests/diag/run_diag.sh
+Goto  mpi-dpd/tests/diag and run
+    > atest run_diag.sh
+
+tools/atest should be on PATH

@@ -9,4 +9,5 @@ t2=/tmp/cmp2.$$.txt
 awk '{print $2}' $f1 > $t1
 awk '{print $2}' $f2 > $t2
 
-./fcmp.awk $t1 $t2 && echo "PASS"
+# fcmp.awk should be on the PATH
+fcmp.awk $t1 $t2 && echo "PASS"
