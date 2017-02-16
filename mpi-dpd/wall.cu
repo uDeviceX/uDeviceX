@@ -87,12 +87,12 @@ __device__ float sdf(float x, float y, float z) {
   int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
   int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
 
-  float p[3] = {x, y, z};
+  float r[3] = {x, y, z};
 
   float texcoord[3], lambda[3];
   for (int c = 0; c < 3; ++c) {
     float t =
-        TEXSIZES[c] * (p[c] + L[c] / 2 + MARGIN[c]) / (L[c] + 2 * MARGIN[c]);
+        TEXSIZES[c] * (r[c] + L[c] / 2 + MARGIN[c]) / (L[c] + 2 * MARGIN[c]);
 
     lambda[c] = t - (int)t;
     texcoord[c] = (int)t + 0.5;
@@ -127,11 +127,11 @@ __device__ float cheap_sdf(float x, float y,
   int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
   int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
 
-  float p[3] = {x, y, z};
+  float r[3] = {x, y, z};
 
   float texcoord[3];
   for (int c = 0; c < 3; ++c)
-    texcoord[c] = 0.5001f + (int)(TEXSIZES[c] * (p[c] + L[c] / 2 + MARGIN[c]) /
+    texcoord[c] = 0.5001f + (int)(TEXSIZES[c] * (r[c] + L[c] / 2 + MARGIN[c]) /
                                   (L[c] + 2 * MARGIN[c]));
 
   return tex3D(texSDF, texcoord[0], texcoord[1], texcoord[2]);
@@ -141,11 +141,10 @@ __device__ float3 ugrad_sdf(float x, float y, float z) {
   int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
   int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
   int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
-  float p[3] = {x, y, z};
-
-  float tc[3];
+  
+  float tc[3], r[3] = {x, y, z};
   for (int c = 0; c < 3; ++c)
-    tc[c] = 0.5001f + (int)(TEXSIZES[c] * (p[c] + L[c] / 2 + MARGIN[c]) /
+    tc[c] = 0.5001f + (int)(TEXSIZES[c] * (r[c] + L[c] / 2 + MARGIN[c]) /
                             (L[c] + 2 * MARGIN[c]));
 
   float factors[3];
@@ -164,10 +163,10 @@ __device__ float3 grad_sdf(float x, float y, float z) {
   int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
   int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
 
-  float tc[3], p[3] = {x, y, z};
+  float tc[3], r[3] = {x, y, z};
   for (int c = 0; c < 3; ++c)
     tc[c] =
-        TEXSIZES[c] * (p[c] + L[c] / 2 + MARGIN[c]) / (L[c] + 2 * MARGIN[c]);
+        TEXSIZES[c] * (r[c] + L[c] / 2 + MARGIN[c]) / (L[c] + 2 * MARGIN[c]);
 
   float xmygrad = (tex3D(texSDF, tc[0] + 1, tc[1], tc[2]) -
                    tex3D(texSDF, tc[0] - 1, tc[1], tc[2]));
