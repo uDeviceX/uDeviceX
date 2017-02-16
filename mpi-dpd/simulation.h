@@ -48,7 +48,6 @@ class Simulation
   float driving_acceleration;
   int nranks, rank;
 
-  std::vector<Particle> _ic();
   void _update_helper_arrays();
 
   void _redistribute();

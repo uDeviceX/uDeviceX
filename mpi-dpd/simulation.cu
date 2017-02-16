@@ -97,13 +97,11 @@ void Simulation::_update_helper_arrays() {
 /* set initial velocity of a particle */
 void _ic_vel(float x, float y, float z, float *vx, float *vy, float *vz) {
   float gd = 0.5 * desired_shrate; /* "gamma dot" */
-  *vx = gd * z;
-  *vy = 0;
-  *vz = 0;
+  *vx = gd * z; *vy = 0; *vz = 0;
 }
 
-std::vector<Particle> Simulation::_ic() {
-  srand48(rank);
+std::vector<Particle> _ic() {
+  srand48(0);
   std::vector<Particle> pp;
   int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
   int iz, iy, ix, l, nd = numberdensity;
