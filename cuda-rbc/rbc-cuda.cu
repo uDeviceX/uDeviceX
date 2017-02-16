@@ -591,14 +591,16 @@ namespace CudaRBC
 
             const float3 v0 = make_float3(tmp0.x, tmp0.y, tmp1.x);
 
-            //       v4
-            //     /   \
-            //   v1 --> v2 --> v3
-            //     \   /
-            //       V
-            //       v0
+	    /*
+                   v4
+                 /   \
+               v1 --> v2 --> v3
+                 \   /
+                   V
+                   v0
 
-            // dihedrals: 0124, 0123
+             dihedrals: 0124, 0123
+	    */
 
             int idv1, idv2, idv3, idv4;
             idv1 = tex1Dfetch(texAdjVert, neighid + degreemax * lid);
