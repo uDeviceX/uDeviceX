@@ -10,30 +10,30 @@
  *  before getting a written permission from the author of this file.
  */
 
+#include <sys/stat.h>
+#include <map>
+#include <string>
+#include <vector>
+#include <dpd-rng.h>
+#include <rbc-cuda.h>
+#include <cstdio>
+#include <mpi.h>
 #include "common.h"
-#include "contact.h"
 #include "containers.h"
-#include "dpd-forces.h"
+#include "solvent-exchange.h"
 #include "dpd.h"
+#include "wall.h"
+#include "solute-exchange.h"
 #include "fsi.h"
-#include "geom-wrapper.h"
-#include "io.h"
-#include "last_bit_float.h"
+#include "contact.h"
 #include "redistribute-particles.h"
 #include "redistribute-rbcs.h"
-#include "simulation.h"
-#include "solute-exchange.h"
-#include "solvent-exchange.h"
+#include "io.h"
 #include "velcontroller.h"
-#include "wall.h"
-#include <cstdio>
-#include <dpd-rng.h>
-#include <map>
-#include <mpi.h>
-#include <rbc-cuda.h>
-#include <string>
-#include <sys/stat.h>
-#include <vector>
+#include "simulation.h"
+#include "dpd-forces.h"
+#include "last_bit_float.h"
+#include "geom-wrapper.h"
 
 #define NPMAX 5000000 /* TODO: */
 float rbc_xx[NPMAX], rbc_yy[NPMAX], rbc_zz[NPMAX];

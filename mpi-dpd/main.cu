@@ -10,25 +10,25 @@
  *  before getting a written permission from the author of this file.
  */
 
+#include <cstdio>
+#include <csignal>
+#include <mpi.h>
+#include <errno.h>
+#include <dpd-rng.h>
+#include <map>
 #include "argument-parser.h"
 #include "common.h"
-#include "contact.h"
 #include "containers.h"
+#include "solvent-exchange.h"
 #include "dpd.h"
+#include "wall.h"
+#include "solute-exchange.h"
 #include "fsi.h"
+#include "contact.h"
 #include "redistribute-particles.h"
 #include "redistribute-rbcs.h"
-#include "simulation.h"
-#include "solute-exchange.h"
-#include "solvent-exchange.h"
 #include "velcontroller.h"
-#include "wall.h"
-#include <csignal>
-#include <cstdio>
-#include <dpd-rng.h>
-#include <errno.h>
-#include <map>
-#include <mpi.h>
+#include "simulation.h"
 
 float tend, desired_shrate;
 bool walls, pushtheflow, doublepoiseuille, rbcs, hdf5field_dumps,
