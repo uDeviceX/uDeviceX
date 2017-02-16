@@ -172,14 +172,7 @@ namespace SolidWallsKernel
 
         float tc[3];
         for(int c = 0; c < 3; ++c)
-        {
-            tc[c] = TEXSIZES[c] * (p[c] + L[c] / 2 + MARGIN[c]) / (L[c] + 2 * MARGIN[c]);
-
-            if (!(tc[c] >= 0 && tc[c] <= TEXSIZES[c]))
-            {
-                cuda_printf("oooooooooops wall-interactions: texture coordinate %f exceeds bounds [0, %d] for c %d\nincrease MARGIN or decrease timestep", TEXSIZES[c], tc[c], c);
-            }
-        }
+	  tc[c] = TEXSIZES[c] * (p[c] + L[c] / 2 + MARGIN[c]) / (L[c] + 2 * MARGIN[c]);
 
         float xmygrad = (tex3D(texSDF, tc[0] + 1, tc[1], tc[2]) - tex3D(texSDF, tc[0] - 1, tc[1], tc[2]));
         float ymygrad = (tex3D(texSDF, tc[0], tc[1] + 1, tc[2]) - tex3D(texSDF, tc[0], tc[1] - 1, tc[2]));
