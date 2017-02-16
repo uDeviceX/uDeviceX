@@ -98,14 +98,9 @@ __device__ float sdf(float x, float y, float z) {
     tc[c] = (int)t + 0.5;
   }
 
-  float s000 = tex3D(texSDF, tc[0] + 0, tc[1] + 0, tc[2] + 0);
-  float s001 = tex3D(texSDF, tc[0] + 1, tc[1] + 0, tc[2] + 0);
-  float s010 = tex3D(texSDF, tc[0] + 0, tc[1] + 1, tc[2] + 0);
-  float s011 = tex3D(texSDF, tc[0] + 1, tc[1] + 1, tc[2] + 0);
-  float s100 = tex3D(texSDF, tc[0] + 0, tc[1] + 0, tc[2] + 1);
-  float s101 = tex3D(texSDF, tc[0] + 1, tc[1] + 0, tc[2] + 1);
-  float s110 = tex3D(texSDF, tc[0] + 0, tc[1] + 1, tc[2] + 1);
-  float s111 = tex3D(texSDF, tc[0] + 1, tc[1] + 1, tc[2] + 1);
+  float s000 = tex0(0, 0, 0), s001 = tex0(1, 0, 0), s010 = tex0(0, 1, 0);
+  float s011 = tex0(1, 1, 0), s100 = tex0(0, 0, 1), s101 = tex0(1, 0, 1);
+  float s110 = tex0(0, 1, 1), s111 = tex0(1, 1, 1);
 
   float s00x = s000 * (1 - lmbd[0]) + lmbd[0] * s001;
   float s01x = s010 * (1 - lmbd[0]) + lmbd[0] * s011;
@@ -134,7 +129,7 @@ __device__ float cheap_sdf(float x, float y, float z) // within the
     tc[c] = 0.5001f + (int)(TEXSIZES[c] * (r[c] + L[c] / 2 + MARGIN[c]) /
                                   (L[c] + 2 * MARGIN[c]));
 
-  return tex3D(texSDF, tc[0], tc[1], tc[2]);
+  return tex0(0, 0, 0);
 }
 
 __device__ float3 ugrad_sdf(float x, float y, float z) {
@@ -148,10 +143,10 @@ __device__ float3 ugrad_sdf(float x, float y, float z) {
                             (L[c] + 2 * MARGIN[c]));
   for (int c = 0; c < 3; ++c) fcts[c] = TEXSIZES[c] / (2 * MARGIN[c] + L[c]);
 
-  float myval = tex3D(texSDF, tc[0], tc[1], tc[2]);
-  float gx = fcts[0] * (tex3D(texSDF, tc[0] + 1, tc[1], tc[2]) - myval);
-  float gy = fcts[1] * (tex3D(texSDF, tc[0], tc[1] + 1, tc[2]) - myval);
-  float gz = fcts[2] * (tex3D(texSDF, tc[0], tc[1], tc[2] + 1) - myval);
+  float myval = tex0(0, 0, 0);
+  float gx = fcts[0] * (tex0(1, 0, 0) - myval);
+  float gy = fcts[1] * (tex0(0, 1, 0) - myval);
+  float gz = fcts[2] * (tex0(0, 0, 1) - myval);
 
   return make_float3(gx, gy, gz);
 }
@@ -167,9 +162,9 @@ __device__ float3 grad_sdf(float x, float y, float z) {
         TEXSIZES[c] * (r[c] + L[c] / 2 + MARGIN[c]) / (L[c] + 2 * MARGIN[c]);
 
   float gx, gy, gz;
-  gx = tex3D(texSDF,tc[0]+1,tc[1]  ,tc[2]  ) - tex3D(texSDF,tc[0]-1, tc[1]  , tc[2]  );
-  gy = tex3D(texSDF,tc[0]  ,tc[1]+1,tc[2]  ) - tex3D(texSDF,tc[0]  , tc[1]-1, tc[2]  );
-  gz = tex3D(texSDF,tc[0]  ,tc[1]  ,tc[2]+1) - tex3D(texSDF,tc[0]  , tc[1]  , tc[2]-1);
+  gx = tex0(1, 0, 0) - tex0(-1,  0,  0);
+  gy = tex0(0, 1, 0) - tex0( 0, -1,  0);
+  gz = tex0(0, 0, 1) - tex0( 0,  0, -1);
 
   float ggmag = sqrt(gx*gx + gy*gy + gz*gz);
 
