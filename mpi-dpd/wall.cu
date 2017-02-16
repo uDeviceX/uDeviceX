@@ -389,14 +389,6 @@ namespace SolidWallsKernel
 
         const float2 dst2 = particles[3 * pid + 2];
 
-#ifndef NDEBUG
-        {
-            const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
-            const int MARGIN[3] = { XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL };
-            const float x[3] = { dst0.x, dst0.y, dst1.x};
-        }
-#endif
-
         uint scan1, scan2, ncandidates, spidbase;
         int deltaspid1, deltaspid2;
 
