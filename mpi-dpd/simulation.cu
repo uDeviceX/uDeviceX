@@ -570,7 +570,6 @@ Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm)
     rbcscoll->setup("rbcs-ic.txt");
   }
 
-#ifndef _NO_DUMPS_
   // setting up the asynchronous data dumps
   {
     CUDA_CHECK(cudaEventCreate(&evdownloaded,
@@ -599,7 +598,6 @@ Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm)
       exit(-1);
     }
   }
-#endif
 }
 
 void Simulation::_lockstep() {
@@ -786,10 +784,9 @@ void Simulation::run() {
     }
     _forces();
 
-#ifndef _NO_DUMPS_
     if (it % steps_per_dump == 0)
       _datadump(it);
-#endif
+
     _update_and_bounce();
     {
       if (!doublepoiseuille) {
@@ -811,13 +808,11 @@ void Simulation::run() {
 }
 
 Simulation::~Simulation() {
-#ifndef _NO_DUMPS_
   pthread_mutex_lock(&mutex_datadump);
   datadump_pending = true;
   pthread_cond_signal(&request_datadump);
   pthread_mutex_unlock(&mutex_datadump);
   pthread_join(thread_datadump, NULL);
-#endif
 
   CUDA_CHECK(cudaStreamDestroy(mainstream));
   CUDA_CHECK(cudaStreamDestroy(uploadstream));
@@ -825,5 +820,5 @@ Simulation::~Simulation() {
 
   if (wall) delete wall;
   if (rbcscoll) delete rbcscoll;
-    
+
 }

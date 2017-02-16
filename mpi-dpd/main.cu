@@ -81,11 +81,7 @@ int main(int argc, char **argv) {
 
   RBCscale = 1 / RC_FX;
 
-#ifndef _NO_DUMPS_
   const bool mpi_thread_safe = argp("-mpi_thread_safe").asBool(true);
-#else
-  const bool mpi_thread_safe = argp("-mpi_thread_safe").asBool(false);
-#endif
 
   CUDA_CHECK(cudaSetDevice(0));
   CUDA_CHECK(cudaDeviceReset());
