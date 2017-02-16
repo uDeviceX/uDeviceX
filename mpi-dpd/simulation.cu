@@ -782,7 +782,7 @@ void Simulation::run() {
         driving_acceleration = hydrostatic_a;
 
       if (rank == 0)
-        fprintf(stderr, "the simulation consists of %ll steps\n", nsteps - it);
+        fprintf(stderr, "the simulation consists of %ld steps\n", nsteps - it);
     }
     _forces();
 

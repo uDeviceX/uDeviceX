@@ -42,8 +42,6 @@ class Simulation
 
   cudaStream_t mainstream, uploadstream, downloadstream;
 
-  std::map<std::string, double> timings;
-
   const size_t nsteps;
   float driving_acceleration;
   int nranks, rank;
