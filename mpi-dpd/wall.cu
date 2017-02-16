@@ -89,12 +89,12 @@ __device__ float sdf(float x, float y, float z) {
 
   float r[3] = {x, y, z};
 
-  float texcoord[3], lambda[3];
+  float texcoord[3], lmbd[3];
   for (int c = 0; c < 3; ++c) {
     float t =
         TEXSIZES[c] * (r[c] + L[c] / 2 + MARGIN[c]) / (L[c] + 2 * MARGIN[c]);
 
-    lambda[c] = t - (int)t;
+    lmbd[c] = t - (int)t;
     texcoord[c] = (int)t + 0.5;
   }
 
@@ -107,21 +107,23 @@ __device__ float sdf(float x, float y, float z) {
   float s110 = tex3D(texSDF, texcoord[0] + 0, texcoord[1] + 1, texcoord[2] + 1);
   float s111 = tex3D(texSDF, texcoord[0] + 1, texcoord[1] + 1, texcoord[2] + 1);
 
-  float s00x = s000 * (1 - lambda[0]) + lambda[0] * s001;
-  float s01x = s010 * (1 - lambda[0]) + lambda[0] * s011;
-  float s10x = s100 * (1 - lambda[0]) + lambda[0] * s101;
-  float s11x = s110 * (1 - lambda[0]) + lambda[0] * s111;
+  float s00x = s000 * (1 - lmbd[0]) + lmbd[0] * s001;
+  float s01x = s010 * (1 - lmbd[0]) + lmbd[0] * s011;
+  float s10x = s100 * (1 - lmbd[0]) + lmbd[0] * s101;
+  float s11x = s110 * (1 - lmbd[0]) + lmbd[0] * s111;
 
-  float s0yx = s00x * (1 - lambda[1]) + lambda[1] * s01x;
-  float s1yx = s10x * (1 - lambda[1]) + lambda[1] * s11x;
+  float s0yx = s00x * (1 - lmbd[1]) + lmbd[1] * s01x;
+  float s1yx = s10x * (1 - lmbd[1]) + lmbd[1] * s11x;
 
-  float szyx = s0yx * (1 - lambda[2]) + lambda[2] * s1yx;
+  float szyx = s0yx * (1 - lmbd[2]) + lmbd[2] * s1yx;
 
   return szyx;
 }
 
-__device__ float cheap_sdf(float x, float y,
-                           float z) // within the rescaled texel width error
+__device__ float cheap_sdf(float x, float y, float z) // within the
+						      // rescaled
+						      // texel width
+						      // error
 {
   int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
   int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
@@ -147,15 +149,15 @@ __device__ float3 ugrad_sdf(float x, float y, float z) {
     tc[c] = 0.5001f + (int)(TEXSIZES[c] * (r[c] + L[c] / 2 + MARGIN[c]) /
                             (L[c] + 2 * MARGIN[c]));
 
-  float factors[3];
-  for (int c = 0; c < 3; ++c) factors[c] = TEXSIZES[c] / (2 * MARGIN[c] + L[c]);
+  float fcts[3];
+  for (int c = 0; c < 3; ++c) fcts[c] = TEXSIZES[c] / (2 * MARGIN[c] + L[c]);
 
   float myval = tex3D(texSDF, tc[0], tc[1], tc[2]);
-  float xmygrad = factors[0] * (tex3D(texSDF, tc[0] + 1, tc[1], tc[2]) - myval);
-  float ymygrad = factors[1] * (tex3D(texSDF, tc[0], tc[1] + 1, tc[2]) - myval);
-  float zmygrad = factors[2] * (tex3D(texSDF, tc[0], tc[1], tc[2] + 1) - myval);
+  float gx = fcts[0] * (tex3D(texSDF, tc[0] + 1, tc[1], tc[2]) - myval);
+  float gy = fcts[1] * (tex3D(texSDF, tc[0], tc[1] + 1, tc[2]) - myval);
+  float gz = fcts[2] * (tex3D(texSDF, tc[0], tc[1], tc[2] + 1) - myval);
 
-  return make_float3(xmygrad, ymygrad, zmygrad);
+  return make_float3(gx, gy, gz);
 }
 
 __device__ float3 grad_sdf(float x, float y, float z) {
@@ -168,20 +170,20 @@ __device__ float3 grad_sdf(float x, float y, float z) {
     tc[c] =
         TEXSIZES[c] * (r[c] + L[c] / 2 + MARGIN[c]) / (L[c] + 2 * MARGIN[c]);
 
-  float xmygrad = (tex3D(texSDF, tc[0] + 1, tc[1], tc[2]) -
+  float gx = (tex3D(texSDF, tc[0] + 1, tc[1], tc[2]) -
                    tex3D(texSDF, tc[0] - 1, tc[1], tc[2]));
-  float ymygrad = (tex3D(texSDF, tc[0], tc[1] + 1, tc[2]) -
+  float gy = (tex3D(texSDF, tc[0], tc[1] + 1, tc[2]) -
                    tex3D(texSDF, tc[0], tc[1] - 1, tc[2]));
-  float zmygrad = (tex3D(texSDF, tc[0], tc[1], tc[2] + 1) -
+  float gz = (tex3D(texSDF, tc[0], tc[1], tc[2] + 1) -
                    tex3D(texSDF, tc[0], tc[1], tc[2] - 1));
 
-  float mygradmag =
-      sqrt(xmygrad * xmygrad + ymygrad * ymygrad + zmygrad * zmygrad);
+  float ggmag =
+      sqrt(gx * gx + gy * gy + gz * gz);
 
-  if (mygradmag > 1e-6) {
-    xmygrad /= mygradmag; ymygrad /= mygradmag; zmygrad /= mygradmag;
+  if (ggmag > 1e-6) {
+    gx /= ggmag; gy /= ggmag; gz /= ggmag;
   }
-  return make_float3(xmygrad, ymygrad, zmygrad);
+  return make_float3(gx, gy, gz);
 }
 
 __global__ void fill_keys(const Particle *const pp, const int n,
@@ -213,10 +215,10 @@ __device__ void handle_collision(const float currsdf, float &x, float &y,
   if (sdf(xold, yold, zold) >= 0) {
     // this is the worst case - it means that old position was bad already
     // we need to search and rescue the particle
-    float3 mygrad = grad_sdf(x, y, z);
+    float3 gg = grad_sdf(x, y, z);
     float mysdf = currsdf;
 
-    x -= mysdf * mygrad.x; y -= mysdf * mygrad.y; z -= mysdf * mygrad.z;
+    x -= mysdf * gg.x; y -= mysdf * gg.y; z -= mysdf * gg.z;
 
     for (int l = 8; l >= 1; --l) {
       if (sdf(x, y, z) < 0) {
@@ -226,9 +228,9 @@ __device__ void handle_collision(const float currsdf, float &x, float &y,
 
       float jump = 1.1f * mysdf / (1 << l);
 
-      x -= jump * mygrad.x;
-      y -= jump * mygrad.y;
-      z -= jump * mygrad.z;
+      x -= jump * gg.x;
+      y -= jump * gg.y;
+      z -= jump * gg.z;
     }
   }
 
@@ -236,26 +238,26 @@ __device__ void handle_collision(const float currsdf, float &x, float &y,
   float subdt = dt;
 
   {
-    float3 mygrad = ugrad_sdf(x, y, z);
-    float DphiDt = max(1e-4f, mygrad.x * u + mygrad.y * v + mygrad.z * w);
+    float3 gg = ugrad_sdf(x, y, z);
+    float DphiDt = max(1e-4f, gg.x * u + gg.y * v + gg.z * w);
 
     subdt = min(dt, max(0.f, subdt - currsdf / DphiDt * 1.02f));
   }
 
   {
     float3 xstar = make_float3(x + subdt * u, y + subdt * v, z + subdt * w);
-    float3 mygrad = ugrad_sdf(xstar.x, xstar.y, xstar.z);
-    float DphiDt = max(1e-4f, mygrad.x * u + mygrad.y * v + mygrad.z * w);
+    float3 gg = ugrad_sdf(xstar.x, xstar.y, xstar.z);
+    float DphiDt = max(1e-4f, gg.x * u + gg.y * v + gg.z * w);
 
     subdt = min(
         dt, max(0.f, subdt - sdf(xstar.x, xstar.y, xstar.z) / DphiDt * 1.02f));
   }
 
-  float lambda = 2 * subdt - dt;
+  float lmbd = 2 * subdt - dt;
 
-  x = xold + lambda * u;
-  y = yold + lambda * v;
-  z = zold + lambda * w;
+  x = xold + lmbd * u;
+  y = yold + lmbd * v;
+  z = zold + lmbd * w;
 
   u = -u;
   v = -v;
