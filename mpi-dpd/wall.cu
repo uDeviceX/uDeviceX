@@ -17,11 +17,9 @@
 
 #include <thrust/device_vector.h>
 #include <thrust/sort.h>
-#include <thrust/count.h>
 #include <mpi.h>
 #include "common.h"
 #include "io.h"
-#include "solvent-exchange.h"
 #include <dpd-rng.h>
 #include "wall.h"
 #include "redistancing.h"
