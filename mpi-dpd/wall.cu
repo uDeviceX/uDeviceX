@@ -197,6 +197,26 @@ namespace SolidWallsKernel {
     dst[pid] = make_float4(p.x[0], p.x[1], p.x[2], 0);
   }
 
+  __device__ void wall_vell(float x, float y, float z,
+			    float *vxw, float *vyw, float *vzw) {
+    *vxw = gamma_dot * z; *vyw = 0; *vzw = 0; /* velocity of the wall;
+					         TODO: works only for
+					         one processor */
+  }
+
+  __device__ void bounce_vel(float    x, float    y, float    z,
+			     float* vxp, float* vyp, float* vzp) {
+    float vx = *vxp,  vy = *vyp, vz = *vzp;
+    
+    float vxw, vyw, vzw; wall_vell(x, y, z, &vxw, &vyw, &vzw);
+    
+    vx -= vxw; vx = -vx; vx += vxw;
+    vy -= vyw; vy = -vy; vy += vyw;
+    vz -= vzw; vz = -vz; vz += vzw;
+
+    *vxp = vx; *vyp = vy; *vzp = vz;
+  }
+
   __device__ void handle_collision(const float currsdf, float &x, float &y,
 				   float &z, float &u, float &v, float &w,
 				   const float dt) {
@@ -211,7 +231,7 @@ namespace SolidWallsKernel {
 
       for (int l = 8; l >= 1; --l) {
 	if (sdf(x, y, z) < 0) {
-	  update_vel(&u, &v, &w); return;
+	  bounce_vel(x, y, z, &u, &v, &w); return;
 	}
 	float jump = 1.1f * sdf0 / (1 << l);
 	x -= jump * gg.x; y -= jump * gg.y; z -= jump * gg.z;
@@ -236,7 +256,7 @@ namespace SolidWallsKernel {
 
     float lmbd = 2 * subdt - dt;
     x = xold + lmbd * u; y = yold + lmbd * v; z = zold + lmbd * w;
-    update_vel(&u, &v, &w);
+    bounce_vel(x, y, z, &u, &v, &w);
     if (sdf(x, y, z) >= 0) {
       x = xold; y = yold; z = zold;
     }
@@ -331,26 +351,44 @@ namespace SolidWallsKernel {
 
     float xforce = 0, yforce = 0, zforce = 0;
 
-#pragma unroll 2
+#define zig x
+#define zag y
+
+#define uno x
+#define due y
+#define tre z
+
+#define mf3 make_float3
+#define TYPE_WALL 3
+    float  x = dst0.zig,  y = dst0.zag,  z = dst1.zig; /* bulk particle  */
+    float vx = dst1.zag, vy = dst2.zig, vz = dst2.zag;
+      
     for (int i = 0; i < ncandidates; ++i) {
       int m1 = (int)(i >= scan1);
       int m2 = (int)(i >= scan2);
       int spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
       float4 stmp0 = tex1Dfetch(texWallParticles, spid);
-      float xq = stmp0.x, yq = stmp0.y, zq = stmp0.z;
-      float myrandnr = Logistic::mean0var1(seed, pid, spid);
+      
+      float  xw = stmp0.uno,  yw = stmp0.due,  zw = stmp0.tre; /* wall particle */
+      float vxw, vyw, vzw; wall_vell(xw, yw, zw, &vxw, &vyw, &vzw);
+      float rnd = Logistic::mean0var1(seed, pid, spid);
 
       // check for particle types and compute the DPD force
-      float3 pos1 = make_float3(dst0.x, dst0.y, dst1.x),
-	pos2 = make_float3(xq, yq, zq);
-      float3 vel1 = make_float3(dst1.y, dst2.x, dst2.y),
-	vel2 = make_float3(0, 0, 0);
-      int type1 = 3; // wall
-      int type2 = last_bit_float::get(vel2.x);
-      float3 strength = compute_dpd_force_traced(type1, type2, pos1, pos2, vel1,
-						 vel2, myrandnr);
+      int type_bulk = last_bit_float::get(vx);
+      float3 strength = compute_dpd_force_traced(type_bulk      , TYPE_WALL,
+						 mf3(x ,  y,  z), mf3( xw,  yw,  zw),
+						 mf3(vx, vy, vz), mf3(vxw, vyw, vzw), rnd);
       xforce += strength.x; yforce += strength.y; zforce += strength.z;
     }
+#undef zig
+#undef zag
+
+#undef uno
+#undef due
+
+#undef tre
+#undef mf3
+#undef TYPE_WALL    
 
     atomicAdd(acc + 3 * pid + 0, xforce);
     atomicAdd(acc + 3 * pid + 1, yforce);
