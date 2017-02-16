@@ -559,14 +559,10 @@ struct FieldSampler
             fread(data, sizeof(float), nvoxels, fh);
 
             fclose(fh);
-
-            printf("broadcasting data\n");
-
             for(size_t i = 0; i < nvoxels; i += CHUNKSIZE)
             {
                 size_t s = (i + CHUNKSIZE <= nvoxels ) ? CHUNKSIZE : (nvoxels - i);
                 MPI_CHECK( MPI_Bcast(data + i, s, MPI_FLOAT, 0, comm ) );
-                printf("bum %d\n", i);
             }
 
         }
