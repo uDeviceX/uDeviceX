@@ -88,48 +88,48 @@ namespace SolidWallsKernel
 
     __device__ float sdf(float x, float y, float z)
     {
-        const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
-        const int MARGIN[3] = { XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL };
-        const int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE };
+        int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
+        int MARGIN[3] = { XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL };
+        int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE };
 
         float p[3] = {x, y, z};
 
         float texcoord[3], lambda[3];
         for(int c = 0; c < 3; ++c)
         {
-            const float t = TEXSIZES[c] * (p[c] + L[c] / 2 + MARGIN[c]) / (L[c] + 2 * MARGIN[c]);
+            float t = TEXSIZES[c] * (p[c] + L[c] / 2 + MARGIN[c]) / (L[c] + 2 * MARGIN[c]);
 
             lambda[c] = t - (int)t;
             texcoord[c] = (int)t + 0.5;
         }
 
-        const float s000 = tex3D(texSDF, texcoord[0] + 0, texcoord[1] + 0, texcoord[2] + 0);
-        const float s001 = tex3D(texSDF, texcoord[0] + 1, texcoord[1] + 0, texcoord[2] + 0);
-        const float s010 = tex3D(texSDF, texcoord[0] + 0, texcoord[1] + 1, texcoord[2] + 0);
-        const float s011 = tex3D(texSDF, texcoord[0] + 1, texcoord[1] + 1, texcoord[2] + 0);
-        const float s100 = tex3D(texSDF, texcoord[0] + 0, texcoord[1] + 0, texcoord[2] + 1);
-        const float s101 = tex3D(texSDF, texcoord[0] + 1, texcoord[1] + 0, texcoord[2] + 1);
-        const float s110 = tex3D(texSDF, texcoord[0] + 0, texcoord[1] + 1, texcoord[2] + 1);
-        const float s111 = tex3D(texSDF, texcoord[0] + 1, texcoord[1] + 1, texcoord[2] + 1);
+        float s000 = tex3D(texSDF, texcoord[0] + 0, texcoord[1] + 0, texcoord[2] + 0);
+        float s001 = tex3D(texSDF, texcoord[0] + 1, texcoord[1] + 0, texcoord[2] + 0);
+        float s010 = tex3D(texSDF, texcoord[0] + 0, texcoord[1] + 1, texcoord[2] + 0);
+        float s011 = tex3D(texSDF, texcoord[0] + 1, texcoord[1] + 1, texcoord[2] + 0);
+        float s100 = tex3D(texSDF, texcoord[0] + 0, texcoord[1] + 0, texcoord[2] + 1);
+        float s101 = tex3D(texSDF, texcoord[0] + 1, texcoord[1] + 0, texcoord[2] + 1);
+        float s110 = tex3D(texSDF, texcoord[0] + 0, texcoord[1] + 1, texcoord[2] + 1);
+        float s111 = tex3D(texSDF, texcoord[0] + 1, texcoord[1] + 1, texcoord[2] + 1);
 
-        const float s00x = s000 * (1 - lambda[0]) + lambda[0] * s001;
-        const float s01x = s010 * (1 - lambda[0]) + lambda[0] * s011;
-        const float s10x = s100 * (1 - lambda[0]) + lambda[0] * s101;
-        const float s11x = s110 * (1 - lambda[0]) + lambda[0] * s111;
+        float s00x = s000 * (1 - lambda[0]) + lambda[0] * s001;
+        float s01x = s010 * (1 - lambda[0]) + lambda[0] * s011;
+        float s10x = s100 * (1 - lambda[0]) + lambda[0] * s101;
+        float s11x = s110 * (1 - lambda[0]) + lambda[0] * s111;
 
-        const float s0yx = s00x * (1 - lambda[1]) + lambda[1] * s01x;
-        const float s1yx = s10x * (1 - lambda[1]) + lambda[1] * s11x;
+        float s0yx = s00x * (1 - lambda[1]) + lambda[1] * s01x;
+        float s1yx = s10x * (1 - lambda[1]) + lambda[1] * s11x;
 
-        const float szyx = s0yx * (1 - lambda[2]) + lambda[2] * s1yx;
+        float szyx = s0yx * (1 - lambda[2]) + lambda[2] * s1yx;
 
         return szyx;
     }
 
     __device__ float cheap_sdf(float x, float y, float z) //within the rescaled texel width error
     {
-        const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
-        const int MARGIN[3] = { XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL };
-        const int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE };
+        int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
+        int MARGIN[3] = { XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL };
+        int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE };
 
         float p[3] = {x, y, z};
 
@@ -142,10 +142,10 @@ namespace SolidWallsKernel
 
     __device__ float3 ugrad_sdf(float x, float y, float z)
     {
-        const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
-        const int MARGIN[3] = { XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL };
-        const int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE };
-        const float p[3] = {x, y, z};
+        int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
+        int MARGIN[3] = { XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL };
+        int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE };
+        float p[3] = {x, y, z};
 
         float tc[3];
         for(int c = 0; c < 3; ++c)
@@ -165,10 +165,10 @@ namespace SolidWallsKernel
 
     __device__ float3 grad_sdf(float x, float y, float z)
     {
-        const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
-        const int MARGIN[3] = { XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL };
-        const int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE };
-        const float p[3] = {x, y, z};
+        int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
+        int MARGIN[3] = { XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL };
+        int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE };
+        float p[3] = {x, y, z};
 
         float tc[3];
         for(int c = 0; c < 3; ++c)
@@ -194,20 +194,20 @@ namespace SolidWallsKernel
 
     __global__ void fill_keys(const Particle * const particles, const int n, int * const key)
     {
-        const int pid = threadIdx.x + blockDim.x * blockIdx.x;
+        int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
         if (pid >= n)
             return;
 
-        const Particle p = particles[pid];
+        Particle p = particles[pid];
 
-        const float mysdf = sdf(p.x[0], p.x[1], p.x[2]);
+        float mysdf = sdf(p.x[0], p.x[1], p.x[2]);
         key[pid] = (int)(mysdf >= 0) + (int)(mysdf > 2);
     }
 
     __global__ void strip_solid4(Particle * const src, const int n, float4 * dst)
     {
-        const int pid = threadIdx.x + blockDim.x * blockIdx.x;
+        int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
         if (pid >= n)
             return;
@@ -219,9 +219,9 @@ namespace SolidWallsKernel
 
     __device__ void handle_collision(const float currsdf, float& x, float& y, float& z, float& u, float& v, float& w, const int rank, const float dt)
     {
-        const float xold = x - dt * u;
-        const float yold = y - dt * v;
-        const float zold = z - dt * w;
+        float xold = x - dt * u;
+        float yold = y - dt * v;
+        float zold = z - dt * w;
 
         if (sdf(xold, yold, zold) >= 0)
         {
@@ -231,8 +231,8 @@ namespace SolidWallsKernel
             cuda_printf("Warning rank %d sdf: %f (%.4f %.4f %.4f), from: sdf %f (%.4f %.4f %.4f)...   ",
                     rank, currsdf, x, y, z, sdf(xold, yold, zold), xold, yold, zold);
 
-            const float3 mygrad = grad_sdf(x, y, z);
-            const float mysdf = currsdf;
+            float3 mygrad = grad_sdf(x, y, z);
+            float mysdf = currsdf;
 
             x -= mysdf * mygrad.x;
             y -= mysdf * mygrad.y;
@@ -251,7 +251,7 @@ namespace SolidWallsKernel
                     return;
                 }
 
-                const float jump = 1.1f * mysdf / (1 << l);
+                float jump = 1.1f * mysdf / (1 << l);
 
                 x -= jump * mygrad.x;
                 y -= jump * mygrad.y;
@@ -270,21 +270,21 @@ namespace SolidWallsKernel
         float subdt = dt;
 
         {
-            const float3 mygrad = ugrad_sdf(x, y, z);
-            const float DphiDt = max(1e-4f, mygrad.x * u + mygrad.y * v + mygrad.z * w);
+            float3 mygrad = ugrad_sdf(x, y, z);
+            float DphiDt = max(1e-4f, mygrad.x * u + mygrad.y * v + mygrad.z * w);
 
             subdt = min(dt, max(0.f, subdt - currsdf / DphiDt * 1.02f));
         }
 
         {
-            const float3 xstar = make_float3(x + subdt * u, y + subdt * v, z + subdt * w);
-            const float3 mygrad = ugrad_sdf(xstar.x, xstar.y, xstar.z);
-            const float DphiDt = max(1e-4f, mygrad.x * u + mygrad.y * v + mygrad.z * w);
+            float3 xstar = make_float3(x + subdt * u, y + subdt * v, z + subdt * w);
+            float3 mygrad = ugrad_sdf(xstar.x, xstar.y, xstar.z);
+            float DphiDt = max(1e-4f, mygrad.x * u + mygrad.y * v + mygrad.z * w);
 
             subdt = min(dt, max(0.f, subdt - sdf(xstar.x, xstar.y, xstar.z) / DphiDt * 1.02f));
         }
 
-        const float lambda = 2 * subdt - dt;
+        float lambda = 2 * subdt - dt;
 
         x = xold + lambda * u;
         y = yold + lambda * v;
@@ -318,7 +318,7 @@ namespace SolidWallsKernel
     __global__
         void bounce(float2 * const particles, const int nparticles, const int rank, const float dt)
         {
-            const int pid = threadIdx.x + blockDim.x * blockIdx.x;
+            int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
             if (pid >= nparticles)
                 return;
@@ -327,9 +327,9 @@ namespace SolidWallsKernel
             float2 data1 = particles[pid * 3 + 1];
 
 #ifndef NDEBUG
-            const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
-            const int MARGIN[3] = { XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL };
-            const float x[3] = { data0.x, data0.y, data1.x } ;
+            int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
+            int MARGIN[3] = { XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL };
+            float x[3] = { data0.x, data0.y, data1.x } ;
 
             for(int c = 0; c < 3; ++c)
             {
@@ -340,15 +340,15 @@ namespace SolidWallsKernel
 
             if (pid < nparticles)
             {
-                const float mycheapsdf = cheap_sdf(data0.x, data0.y, data1.x);
+                float mycheapsdf = cheap_sdf(data0.x, data0.y, data1.x);
 
                 if (mycheapsdf >= -1.7320f * ((float)XSIZE_WALLCELLS / (float)XTEXTURESIZE))
                 {
-                    const float currsdf = sdf(data0.x, data0.y, data1.x);
+                    float currsdf = sdf(data0.x, data0.y, data1.x);
 
                     float2 data2 = particles[pid * 3 + 2];
 
-                    const float3 v0 = make_float3(data1.y, data2.x, data2.y);
+                    float3 v0 = make_float3(data1.y, data2.x, data2.y);
 
                     if (currsdf >= 0)
                     {
@@ -365,30 +365,30 @@ namespace SolidWallsKernel
     __global__  void interactions_3tpp(const float2 * const particles, const int np, const int nsolid,
             float * const acc, const float seed)
     {
-        const int gid = threadIdx.x + blockDim.x * blockIdx.x;
-        const int pid = gid / 3;
-        const int zplane = gid % 3;
+        int gid = threadIdx.x + blockDim.x * blockIdx.x;
+        int pid = gid / 3;
+        int zplane = gid % 3;
 
         if (pid >= np)
             return;
 
-        const float2 dst0 = particles[3 * pid + 0];
-        const float2 dst1 = particles[3 * pid + 1];
+        float2 dst0 = particles[3 * pid + 0];
+        float2 dst1 = particles[3 * pid + 1];
 
-        const float interacting_threshold = -1 - 1.7320f * ((float)XSIZE_WALLCELLS / (float)XTEXTURESIZE);
+        float interacting_threshold = -1 - 1.7320f * ((float)XSIZE_WALLCELLS / (float)XTEXTURESIZE);
 
         if (cheap_sdf(dst0.x, dst0.y, dst1.x) <= interacting_threshold)
             return;
 
-        const float2 dst2 = particles[3 * pid + 2];
+        float2 dst2 = particles[3 * pid + 2];
 
         uint scan1, scan2, ncandidates, spidbase;
         int deltaspid1, deltaspid2;
 
         {
-            const int xbase = (int)(dst0.x - (-XSIZE_SUBDOMAIN/2 - XMARGIN_WALL));
-            const int ybase = (int)(dst0.y - (-YSIZE_SUBDOMAIN/2 - YMARGIN_WALL));
-            const int zbase = (int)(dst1.x - (-ZSIZE_SUBDOMAIN/2 - ZMARGIN_WALL));
+            int xbase = (int)(dst0.x - (-XSIZE_SUBDOMAIN/2 - XMARGIN_WALL));
+            int ybase = (int)(dst0.y - (-YSIZE_SUBDOMAIN/2 - YMARGIN_WALL));
+            int zbase = (int)(dst1.x - (-ZSIZE_SUBDOMAIN/2 - ZMARGIN_WALL));
 
             enum
             {
@@ -398,18 +398,18 @@ namespace SolidWallsKernel
                 NCELLS = XCELLS * YCELLS * ZCELLS
             };
 
-            const int cid0 = xbase - 1 + XCELLS * (ybase - 1 + YCELLS * (zbase - 1 + zplane));
+            int cid0 = xbase - 1 + XCELLS * (ybase - 1 + YCELLS * (zbase - 1 + zplane));
 
             spidbase = tex1Dfetch(texWallCellStart, cid0);
             int count0 = tex1Dfetch(texWallCellStart, cid0 + 3) - spidbase;
 
-            const int cid1 = cid0 + XCELLS;
+            int cid1 = cid0 + XCELLS;
             deltaspid1 = tex1Dfetch(texWallCellStart, cid1);
-            const int count1 = tex1Dfetch(texWallCellStart, cid1 + 3) - deltaspid1;
+            int count1 = tex1Dfetch(texWallCellStart, cid1 + 3) - deltaspid1;
 
-            const int cid2 = cid0 + XCELLS * 2;
+            int cid2 = cid0 + XCELLS * 2;
             deltaspid2 = tex1Dfetch(texWallCellStart, cid2);
-            const int count2 = cid2 + 3 == NCELLS ? nsolid : tex1Dfetch(texWallCellStart, cid2 + 3) - deltaspid2;
+            int count2 = cid2 + 3 == NCELLS ? nsolid : tex1Dfetch(texWallCellStart, cid2 + 3) - deltaspid2;
 
             scan1 = count0;
             scan2 = count0 + count1;
@@ -424,21 +424,21 @@ namespace SolidWallsKernel
 #pragma unroll 2
         for(int i = 0; i < ncandidates; ++i)
         {
-            const int m1 = (int)(i >= scan1);
-            const int m2 = (int)(i >= scan2);
-            const int spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
-            const float4 stmp0 = tex1Dfetch(texWallParticles, spid);
-            const float xq = stmp0.x;
-            const float yq = stmp0.y;
-            const float zq = stmp0.z;
-            const float myrandnr = Logistic::mean0var1(seed, pid, spid);
+            int m1 = (int)(i >= scan1);
+            int m2 = (int)(i >= scan2);
+            int spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
+            float4 stmp0 = tex1Dfetch(texWallParticles, spid);
+            float xq = stmp0.x;
+            float yq = stmp0.y;
+            float zq = stmp0.z;
+            float myrandnr = Logistic::mean0var1(seed, pid, spid);
 
             // check for particle types and compute the DPD force
             float3 pos1 = make_float3(dst0.x, dst0.y, dst1.x), pos2 = make_float3(xq, yq, zq);
             float3 vel1 = make_float3(dst1.y, dst2.x, dst2.y), vel2 = make_float3(0, 0, 0);
             int type1 = 3;  // wall
             int type2 = last_bit_float::get(vel2.x);
-            const float3 strength = compute_dpd_force_traced(type1, type2,
+            float3 strength = compute_dpd_force_traced(type1, type2,
                     pos1, pos2, vel1, vel2, myrandnr);
 
             xforce += strength.x;
@@ -484,7 +484,7 @@ struct FieldSampler
         if (verbose)
             printf("reading header...\n");
 
-        static const size_t CHUNKSIZE = 1 << 25;
+        static size_t CHUNKSIZE = 1 << 25;
 
         int rank;
         MPI_CHECK(MPI_Comm_rank(comm, &rank));
@@ -498,7 +498,7 @@ struct FieldSampler
             fread(header, 1, sizeof(header), fh);
 
             printf("root parsing header\n");
-            const int retval = sscanf(header, "%f %f %f\n%d %d %d\n", extent + 0, extent + 1, extent + 2, N + 0, N + 1, N + 2);
+            int retval = sscanf(header, "%f %f %f\n%d %d %d\n", extent + 0, extent + 1, extent + 2, N + 0, N + 1, N + 2);
 
             if(retval != 6)
             {
@@ -513,7 +513,7 @@ struct FieldSampler
             if (verbose)
                 printf("allocating data...\n");
 
-            const int nvoxels = N[0] * N[1] * N[2];
+            int nvoxels = N[0] * N[1] * N[2];
 
             data = new float[nvoxels];
 
@@ -555,7 +555,7 @@ struct FieldSampler
         {
             MPI_CHECK( MPI_Bcast( N, 3, MPI_INT, 0, comm ) );
             MPI_CHECK( MPI_Bcast(extent, 3, MPI_FLOAT, 0, comm ) );
-            const int nvoxels = N[0] * N[1] * N[2];
+            int nvoxels = N[0] * N[1] * N[2];
 
             data = new float[nvoxels];
 
@@ -577,7 +577,7 @@ struct FieldSampler
             for(int iy = 0; iy < nsize[1]; ++iy)
                 for(int ix = 0; ix < nsize[0]; ++ix)
                 {
-                    const float x[3] = {
+                    float x[3] = {
                         start[0] + (ix  + 0.5f) * spacing[0] - 0.5f,
                         start[1] + (iy  + 0.5f) * spacing[1] - 0.5f,
                         start[2] + (iz  + 0.5f) * spacing[2] - 0.5f
@@ -600,7 +600,7 @@ struct FieldSampler
 
                             for(int sx = 0; sx < 4; ++sx)
                             {
-                                const int l[3] = {sx, sy, sz};
+                                int l[3] = {sx, sy, sz};
 
                                 int g[3];
                                 for(int c = 0; c < 3; ++c)
@@ -650,9 +650,9 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int&
 
     FieldSampler sampler("sdf.dat", cartcomm, verbose);
 
-    const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
-    const int MARGIN[3] = { XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL };
-    const int TEXTURESIZE[3] = { XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE };
+    int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
+    int MARGIN[3] = { XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL };
+    int TEXTURESIZE[3] = { XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE };
 
     if (myrank == 0)
         printf("sampling the geometry file...\n");
@@ -665,7 +665,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int&
             spacing[c] =  sampler.N[c] * (L[c] + 2 * MARGIN[c]) / (float)(dims[c] * L[c]) / (float) TEXTURESIZE[c];
         }
 
-        const float amplitude_rescaling = (XSIZE_SUBDOMAIN /*+ 2 * XMARGIN_WALL*/) / (sampler.extent[0] / dims[0]) ;
+        float amplitude_rescaling = (XSIZE_SUBDOMAIN /*+ 2 * XMARGIN_WALL*/) / (sampler.extent[0] / dims[0]) ;
 
         sampler.sample(start, spacing, TEXTURESIZE, field, amplitude_rescaling);
     }
@@ -675,9 +675,9 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int&
 
     //extra redistancing because margin might exceed the domain
     {
-        const double dx =  (XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL) / (double)XTEXTURESIZE;
-        const double dy =  (YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL) / (double)YTEXTURESIZE;
-        const double dz =  (ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL) / (double)ZTEXTURESIZE;
+        double dx =  (XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL) / (double)XTEXTURESIZE;
+        double dy =  (YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL) / (double)YTEXTURESIZE;
+        double dz =  (ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL) / (double)ZTEXTURESIZE;
 
         redistancing(field, XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE, dx, dy, dz, XTEXTURESIZE * 2);
     }
@@ -691,8 +691,8 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int&
             for(int dy = -1; dy <= 1; ++dy)
                 for(int dx = -1; dx <= 1; ++dx)
                 {
-                    const int d[3] = { dx, dy, dz };
-                    const int entry = (dx + 1) + 3 * ((dy + 1) + 3 * (dz + 1));
+                    int d[3] = { dx, dy, dz };
+                    int entry = (dx + 1) + 3 * ((dy + 1) + 3 * (dz + 1));
 
                     int local_start[3] = {
                         d[0] + (d[0] == 1) * (XSIZE_SUBDOMAIN - 2),
@@ -713,7 +713,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int&
                         spacing[c] = sampler.N[c] / (float)(dims[c] * L[c]) ;
                     }
 
-                    const int nextent = local_extent[0] * local_extent[1] * local_extent[2];
+                    int nextent = local_extent[0] * local_extent[1] * local_extent[2];
                     float * data = new float[nextent];
 
                     sampler.sample(start, spacing, local_extent, data, 1);
@@ -746,7 +746,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int&
 
         int size[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
 
-        const float amplitude_rescaling = L[0] / (sampler.extent[0] / dims[0]);
+        float amplitude_rescaling = L[0] / (sampler.extent[0] / dims[0]);
         sampler.sample(start, spacing, size, walldata, amplitude_rescaling);
 
         H5FieldDump dump(cartcomm);
@@ -784,13 +784,13 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int&
 
     nsurvived = thrust::count(keys.begin(), keys.end(), 0);
 
-    const int nbelt = thrust::count(keys.begin() + nsurvived, keys.end(), 1);
+    int nbelt = thrust::count(keys.begin() + nsurvived, keys.end(), 1);
 
     thrust::device_vector<Particle> solid_local(thrust::device_ptr<Particle>(p + nsurvived), thrust::device_ptr<Particle>(p + nsurvived + nbelt));
 
     if (hdf5part_dumps)
     {
-        const int n = solid_local.size();
+        int n = solid_local.size();
 
         Particle * phost = new Particle[n];
 
@@ -818,7 +818,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int&
         int dstranks[26], remsizes[26], recv_tags[26];
         for(int i = 0; i < 26; ++i)
         {
-            const int d[3] = { (i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1 };
+            int d[3] = { (i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1 };
 
             recv_tags[i] = (2 - d[0]) % 3 + 3 * ((2 - d[1]) % 3 + 3 * ((2 - d[2]) % 3));
 
@@ -838,7 +838,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int&
             for(int i = 0; i < 26; ++i)
                 MPI_CHECK( MPI_Irecv(remsizes + i, 1, MPI_INTEGER, dstranks[i], 123 + recv_tags[i], cartcomm, reqrecv + i) );
 
-            const int localsize = local.size();
+            int localsize = local.size();
 
             MPI_Request reqsend[26];
             for(int i = 0; i < 26; ++i)
@@ -873,7 +873,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int&
         std::vector<Particle> selected;
         for(int i = 0; i < 26; ++i)
         {
-            const int d[3] = { (i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1 };
+            int d[3] = { (i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1 };
 
             for(int j = 0; j < remote[i].size(); ++j)
             {
