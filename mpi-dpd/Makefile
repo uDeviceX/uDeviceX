@@ -8,7 +8,6 @@ OPT ?= -O3 -use_fast_math -g
 #OPT      ?= -O0 -g --device-debug
 
 slevel   ?= -2
-datadump ?= 1
 
 NVCCFLAGS += -arch $(ARCH_VAL) -code $(CODE_VAL)
 LDFLAGS   += -L../cuda-dpd -L../cuda-rbc
@@ -32,13 +31,7 @@ ifeq ($(h5),0)
 NVCCFLAGS += -DNO_H5
 endif
 
-ifeq ($(datadump),0)
-NVCCFLAGS += -D_NO_DUMPS_
-endif
-ifeq ($(datadump),1)
 NVCCFLAGS += -D_SYNC_DUMPS_
-endif
-
 NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel)
 
 # I have some device code in OBJS. I have to link it separatly
