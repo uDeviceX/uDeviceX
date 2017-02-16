@@ -129,9 +129,7 @@ __device__ float cheap_sdf(float x, float y, float z) // within the
   int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
   int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
 
-  float r[3] = {x, y, z};
-
-  float texcoord[3];
+  float texcoord[3], r[3] = {x, y, z};;
   for (int c = 0; c < 3; ++c)
     texcoord[c] = 0.5001f + (int)(TEXSIZES[c] * (r[c] + L[c] / 2 + MARGIN[c]) /
                                   (L[c] + 2 * MARGIN[c]));
@@ -144,12 +142,10 @@ __device__ float3 ugrad_sdf(float x, float y, float z) {
   int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
   int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
   
-  float tc[3], r[3] = {x, y, z};
+  float tc[3], fcts[3], r[3] = {x, y, z};
   for (int c = 0; c < 3; ++c)
     tc[c] = 0.5001f + (int)(TEXSIZES[c] * (r[c] + L[c] / 2 + MARGIN[c]) /
                             (L[c] + 2 * MARGIN[c]));
-
-  float fcts[3];
   for (int c = 0; c < 3; ++c) fcts[c] = TEXSIZES[c] / (2 * MARGIN[c] + L[c]);
 
   float myval = tex3D(texSDF, tc[0], tc[1], tc[2]);
@@ -170,15 +166,12 @@ __device__ float3 grad_sdf(float x, float y, float z) {
     tc[c] =
         TEXSIZES[c] * (r[c] + L[c] / 2 + MARGIN[c]) / (L[c] + 2 * MARGIN[c]);
 
-  float gx = (tex3D(texSDF, tc[0] + 1, tc[1], tc[2]) -
-                   tex3D(texSDF, tc[0] - 1, tc[1], tc[2]));
-  float gy = (tex3D(texSDF, tc[0], tc[1] + 1, tc[2]) -
-                   tex3D(texSDF, tc[0], tc[1] - 1, tc[2]));
-  float gz = (tex3D(texSDF, tc[0], tc[1], tc[2] + 1) -
-                   tex3D(texSDF, tc[0], tc[1], tc[2] - 1));
+  float gx, gy, gz;
+  gx = tex3D(texSDF,tc[0]+1,tc[1]  ,tc[2]  ) - tex3D(texSDF,tc[0]-1, tc[1]  , tc[2]  );
+  gy = tex3D(texSDF,tc[0]  ,tc[1]+1,tc[2]  ) - tex3D(texSDF,tc[0]  , tc[1]-1, tc[2]  );
+  gz = tex3D(texSDF,tc[0]  ,tc[1]  ,tc[2]+1) - tex3D(texSDF,tc[0]  , tc[1]  , tc[2]-1);
 
-  float ggmag =
-      sqrt(gx * gx + gy * gy + gz * gz);
+  float ggmag = sqrt(gx*gx + gy*gy + gz*gz);
 
   if (ggmag > 1e-6) {
     gx /= ggmag; gy /= ggmag; gz /= ggmag;
