@@ -385,5 +385,3 @@ class LocalComm
 
   MPI_Comm get_comm() { return local_comm;  }
 };
-
-extern LocalComm localcomm;
