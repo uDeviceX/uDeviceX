@@ -26,6 +26,8 @@
 #include "dpd-forces.h"
 #include "last_bit_float.h"
 
+#define tex0(ix, iy, iz) (tex3D(texSDF, tc[0] + ix, tc[1] + iy, tc[2] + iz))
+
 enum {
   XSIZE_WALLCELLS = 2 * XMARGIN_WALL + XSIZE_SUBDOMAIN,
   YSIZE_WALLCELLS = 2 * YMARGIN_WALL + YSIZE_SUBDOMAIN,
@@ -87,25 +89,23 @@ __device__ float sdf(float x, float y, float z) {
   int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
   int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
 
-  float r[3] = {x, y, z};
-
-  float texcoord[3], lmbd[3];
+  float tc[3], lmbd[3], r[3] = {x, y, z};
   for (int c = 0; c < 3; ++c) {
     float t =
         TEXSIZES[c] * (r[c] + L[c] / 2 + MARGIN[c]) / (L[c] + 2 * MARGIN[c]);
 
     lmbd[c] = t - (int)t;
-    texcoord[c] = (int)t + 0.5;
+    tc[c] = (int)t + 0.5;
   }
 
-  float s000 = tex3D(texSDF, texcoord[0] + 0, texcoord[1] + 0, texcoord[2] + 0);
-  float s001 = tex3D(texSDF, texcoord[0] + 1, texcoord[1] + 0, texcoord[2] + 0);
-  float s010 = tex3D(texSDF, texcoord[0] + 0, texcoord[1] + 1, texcoord[2] + 0);
-  float s011 = tex3D(texSDF, texcoord[0] + 1, texcoord[1] + 1, texcoord[2] + 0);
-  float s100 = tex3D(texSDF, texcoord[0] + 0, texcoord[1] + 0, texcoord[2] + 1);
-  float s101 = tex3D(texSDF, texcoord[0] + 1, texcoord[1] + 0, texcoord[2] + 1);
-  float s110 = tex3D(texSDF, texcoord[0] + 0, texcoord[1] + 1, texcoord[2] + 1);
-  float s111 = tex3D(texSDF, texcoord[0] + 1, texcoord[1] + 1, texcoord[2] + 1);
+  float s000 = tex3D(texSDF, tc[0] + 0, tc[1] + 0, tc[2] + 0);
+  float s001 = tex3D(texSDF, tc[0] + 1, tc[1] + 0, tc[2] + 0);
+  float s010 = tex3D(texSDF, tc[0] + 0, tc[1] + 1, tc[2] + 0);
+  float s011 = tex3D(texSDF, tc[0] + 1, tc[1] + 1, tc[2] + 0);
+  float s100 = tex3D(texSDF, tc[0] + 0, tc[1] + 0, tc[2] + 1);
+  float s101 = tex3D(texSDF, tc[0] + 1, tc[1] + 0, tc[2] + 1);
+  float s110 = tex3D(texSDF, tc[0] + 0, tc[1] + 1, tc[2] + 1);
+  float s111 = tex3D(texSDF, tc[0] + 1, tc[1] + 1, tc[2] + 1);
 
   float s00x = s000 * (1 - lmbd[0]) + lmbd[0] * s001;
   float s01x = s010 * (1 - lmbd[0]) + lmbd[0] * s011;
@@ -129,12 +129,12 @@ __device__ float cheap_sdf(float x, float y, float z) // within the
   int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
   int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
 
-  float texcoord[3], r[3] = {x, y, z};;
+  float tc[3], r[3] = {x, y, z};;
   for (int c = 0; c < 3; ++c)
-    texcoord[c] = 0.5001f + (int)(TEXSIZES[c] * (r[c] + L[c] / 2 + MARGIN[c]) /
+    tc[c] = 0.5001f + (int)(TEXSIZES[c] * (r[c] + L[c] / 2 + MARGIN[c]) /
                                   (L[c] + 2 * MARGIN[c]));
 
-  return tex3D(texSDF, texcoord[0], texcoord[1], texcoord[2]);
+  return tex3D(texSDF, tc[0], tc[1], tc[2]);
 }
 
 __device__ float3 ugrad_sdf(float x, float y, float z) {
@@ -201,10 +201,7 @@ __global__ void strip_solid4(Particle *const src, const int n, float4 *dst) {
 __device__ void handle_collision(const float currsdf, float &x, float &y,
                                  float &z, float &u, float &v, float &w,
                                  const int rank, const float dt) {
-  float xold = x - dt * u;
-  float yold = y - dt * v;
-  float zold = z - dt * w;
-
+  float xold = x - dt * u, yold = y - dt * v, zold = z - dt * w;
   if (sdf(xold, yold, zold) >= 0) {
     // this is the worst case - it means that old position was bad already
     // we need to search and rescue the particle
@@ -215,25 +212,18 @@ __device__ void handle_collision(const float currsdf, float &x, float &y,
 
     for (int l = 8; l >= 1; --l) {
       if (sdf(x, y, z) < 0) {
-        u = -u; v = -v; w = -w;
-        return;
+        u = -u; v = -v; w = -w; return;
       }
-
       float jump = 1.1f * mysdf / (1 << l);
-
-      x -= jump * gg.x;
-      y -= jump * gg.y;
-      z -= jump * gg.z;
+      x -= jump * gg.x; y -= jump * gg.y; z -= jump * gg.z;
     }
   }
 
   // newton raphson steps
   float subdt = dt;
-
   {
     float3 gg = ugrad_sdf(x, y, z);
     float DphiDt = max(1e-4f, gg.x * u + gg.y * v + gg.z * w);
-
     subdt = min(dt, max(0.f, subdt - currsdf / DphiDt * 1.02f));
   }
 
@@ -241,28 +231,16 @@ __device__ void handle_collision(const float currsdf, float &x, float &y,
     float3 xstar = make_float3(x + subdt * u, y + subdt * v, z + subdt * w);
     float3 gg = ugrad_sdf(xstar.x, xstar.y, xstar.z);
     float DphiDt = max(1e-4f, gg.x * u + gg.y * v + gg.z * w);
-
     subdt = min(
         dt, max(0.f, subdt - sdf(xstar.x, xstar.y, xstar.z) / DphiDt * 1.02f));
   }
 
   float lmbd = 2 * subdt - dt;
-
-  x = xold + lmbd * u;
-  y = yold + lmbd * v;
-  z = zold + lmbd * w;
-
-  u = -u;
-  v = -v;
-  w = -w;
-
+  x = xold + lmbd * u; y = yold + lmbd * v; z = zold + lmbd * w;
+  u = -u; v = -v; w = -w;
   if (sdf(x, y, z) >= 0) {
-    x = xold;
-    y = yold;
-    z = zold;
+    x = xold; y = yold; z = zold;
   }
-
-  return;
 }
 
 __inline__ __device__ float3 warpReduceSum(float3 val) {
@@ -370,9 +348,7 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
     int m2 = (int)(i >= scan2);
     int spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
     float4 stmp0 = tex1Dfetch(texWallParticles, spid);
-    float xq = stmp0.x;
-    float yq = stmp0.y;
-    float zq = stmp0.z;
+    float xq = stmp0.x, yq = stmp0.y, zq = stmp0.z;
     float myrandnr = Logistic::mean0var1(seed, pid, spid);
 
     // check for particle types and compute the DPD force
@@ -384,10 +360,7 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
     int type2 = last_bit_float::get(vel2.x);
     float3 strength = compute_dpd_force_traced(type1, type2, pos1, pos2, vel1,
                                                vel2, myrandnr);
-
-    xforce += strength.x;
-    yforce += strength.y;
-    zforce += strength.z;
+    xforce += strength.x; yforce += strength.y; zforce += strength.z;
   }
 
   atomicAdd(acc + 3 * pid + 0, xforce);

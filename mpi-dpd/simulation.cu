@@ -729,8 +729,7 @@ void Simulation::_lockstep() {
 
 void Simulation::run() {
   if (rank == 0 && !walls)
-    printf("the simulation begins now and it consists of %.3e steps\n",
-           (double)nsteps);
+    printf("simulation consists of %ll steps\n", nsteps);
 
   _redistribute();
   _forces();
