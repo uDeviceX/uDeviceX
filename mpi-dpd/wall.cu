@@ -151,8 +151,7 @@ __device__ float3 ugrad_sdf(float x, float y, float z) {
                             (L[c] + 2 * MARGIN[c]));
 
   float factors[3];
-  for (int c = 0; c < 3; ++c)
-    factors[c] = TEXSIZES[c] / (2 * MARGIN[c] + L[c]);
+  for (int c = 0; c < 3; ++c) factors[c] = TEXSIZES[c] / (2 * MARGIN[c] + L[c]);
 
   float myval = tex3D(texSDF, tc[0], tc[1], tc[2]);
   float xmygrad = factors[0] * (tex3D(texSDF, tc[0] + 1, tc[1], tc[2]) - myval);
@@ -184,9 +183,7 @@ __device__ float3 grad_sdf(float x, float y, float z) {
       sqrt(xmygrad * xmygrad + ymygrad * ymygrad + zmygrad * zmygrad);
 
   if (mygradmag > 1e-6) {
-    xmygrad /= mygradmag;
-    ymygrad /= mygradmag;
-    zmygrad /= mygradmag;
+    xmygrad /= mygradmag; ymygrad /= mygradmag; zmygrad /= mygradmag;
   }
 
   return make_float3(xmygrad, ymygrad, zmygrad);
@@ -196,8 +193,7 @@ __global__ void fill_keys(const Particle *const particles, const int n,
                           int *const key) {
   int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
-  if (pid >= n)
-    return;
+  if (pid >= n) return;
 
   Particle p = particles[pid];
 
@@ -208,8 +204,7 @@ __global__ void fill_keys(const Particle *const particles, const int n,
 __global__ void strip_solid4(Particle *const src, const int n, float4 *dst) {
   int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
-  if (pid >= n)
-    return;
+  if (pid >= n) return;
 
   Particle p = src[pid];
 
@@ -316,8 +311,7 @@ __global__ void bounce(float2 *const particles, const int nparticles,
                        const int rank, const float dt) {
   int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
-  if (pid >= nparticles)
-    return;
+  if (pid >= nparticles) return;
 
   float2 data0 = particles[pid * 3];
   float2 data1 = particles[pid * 3 + 1];
@@ -365,8 +359,7 @@ __global__ void interactions_3tpp(const float2 *const particles, const int np,
   int pid = gid / 3;
   int zplane = gid % 3;
 
-  if (pid >= np)
-    return;
+  if (pid >= np) return;
 
   float2 dst0 = particles[3 * pid + 0];
   float2 dst1 = particles[3 * pid + 1];
@@ -374,8 +367,7 @@ __global__ void interactions_3tpp(const float2 *const particles, const int np,
   float interacting_threshold =
       -1 - 1.7320f * ((float)XSIZE_WALLCELLS / (float)XTEXTURESIZE);
 
-  if (cheap_sdf(dst0.x, dst0.y, dst1.x) <= interacting_threshold)
-    return;
+  if (cheap_sdf(dst0.x, dst0.y, dst1.x) <= interacting_threshold) return;
 
   float2 dst2 = particles[3 * pid + 2];
 
@@ -469,8 +461,7 @@ struct FieldSampler {
   int N[3];
 
   FieldSampler(const char *path, MPI_Comm comm, const bool verbose) {
-    if (verbose)
-      printf("reading header...\n");
+    if (verbose) printf("reading header...\n");
 
     static size_t CHUNKSIZE = 1 << 25;
 
@@ -497,8 +488,7 @@ struct FieldSampler {
       MPI_CHECK(MPI_Bcast(N, 3, MPI_INT, 0, comm));
       MPI_CHECK(MPI_Bcast(extent, 3, MPI_FLOAT, 0, comm));
 
-      if (verbose)
-        printf("allocating data...\n");
+      if (verbose) printf("allocating data...\n");
 
       int nvoxels = N[0] * N[1] * N[2];
 
@@ -521,8 +511,7 @@ struct FieldSampler {
           header_size = i + 1;
         }
 
-      if (verbose)
-        printf("reading binary data... from byte %d\n", header_size);
+      if (verbose) printf("reading binary data... from byte %d\n", header_size);
 
       fseek(fh, header_size, SEEK_SET);
       fread(data, sizeof(float), nvoxels, fh);
@@ -559,8 +548,7 @@ struct FieldSampler {
                         start[2] + (iz + 0.5f) * spacing[2] - 0.5f};
 
           int anchor[3];
-          for (int c = 0; c < 3; ++c)
-            anchor[c] = (int)floor(x[c]);
+          for (int c = 0; c < 3; ++c) anchor[c] = (int)floor(x[c]);
 
           float w[3][4];
           for (int c = 0; c < 3; ++c)
@@ -589,15 +577,13 @@ struct FieldSampler {
           for (int sz = 0; sz < 4; ++sz) {
             float s = 0;
 
-            for (int sy = 0; sy < 4; ++sy)
-              s += w[1][sy] * tmp[sz][sy];
+            for (int sy = 0; sy < 4; ++sy) s += w[1][sy] * tmp[sz][sy];
 
             partial[sz] = s;
           }
 
           float val = 0;
-          for (int sz = 0; sz < 4; ++sz)
-            val += w[2][sz] * partial[sz];
+          for (int sz = 0; sz < 4; ++sz) val += w[2][sz] * partial[sz];
 
           output[ix + nsize[0] * (iy + nsize[1] * iz)] =
               val * amplitude_rescaling;
@@ -626,8 +612,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle *const p, const int n,
   int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
   int TEXTURESIZE[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
 
-  if (myrank == 0)
-    printf("sampling the geometry file...\n");
+  if (myrank == 0) printf("sampling the geometry file...\n");
 
   {
     float start[3], spacing[3];
@@ -644,8 +629,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle *const p, const int n,
     sampler.sample(start, spacing, TEXTURESIZE, field, amplitude_rescaling);
   }
 
-  if (myrank == 0)
-    printf("redistancing the geometry field...\n");
+  if (myrank == 0) printf("redistancing the geometry field...\n");
 
   // extra redistancing because margin might exceed the domain
   {
@@ -657,8 +641,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle *const p, const int n,
                  XTEXTURESIZE * 2);
   }
 
-  if (myrank == 0)
-    printf("estimating geometry-based message sizes...\n");
+  if (myrank == 0) printf("estimating geometry-based message sizes...\n");
 
   {
     for (int dz = -1; dz <= 1; ++dz)
@@ -688,8 +671,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle *const p, const int n,
           sampler.sample(start, spacing, local_extent, data, 1);
 
           int s = 0;
-          for (int i = 0; i < nextent; ++i)
-            s += (data[i] < 0);
+          for (int i = 0; i < nextent; ++i) s += (data[i] < 0);
 
           delete[] data;
           double avgsize =
@@ -701,8 +683,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle *const p, const int n,
   }
 
   if (hdf5field_dumps) {
-    if (myrank == 0)
-      printf("H5 data dump of the geometry...\n");
+    if (myrank == 0) printf("H5 data dump of the geometry...\n");
 
     float *walldata =
         new float[XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN];
@@ -744,8 +725,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle *const p, const int n,
 
   CUDA_CHECK(cudaBindTextureToArray(SolidWallsKernel::texSDF, arrSDF, fmt));
 
-  if (myrank == 0)
-    printf("carving out wall particles...\n");
+  if (myrank == 0) printf("carving out wall particles...\n");
 
   thrust::device_vector<int> keys(n);
 
@@ -800,16 +780,14 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle *const p, const int n,
           (2 - d[0]) % 3 + 3 * ((2 - d[1]) % 3 + 3 * ((2 - d[2]) % 3));
 
       int coordsneighbor[3];
-      for (int c = 0; c < 3; ++c)
-        coordsneighbor[c] = coords[c] + d[c];
+      for (int c = 0; c < 3; ++c) coordsneighbor[c] = coords[c] + d[c];
 
       MPI_CHECK(MPI_Cart_rank(cartcomm, coordsneighbor, dstranks + i));
     }
 
     // send local counts - receive remote counts
     {
-      for (int i = 0; i < 26; ++i)
-        remsizes[i] = -1;
+      for (int i = 0; i < 26; ++i) remsizes[i] = -1;
 
       MPI_Request reqrecv[26];
       for (int i = 0; i < 26; ++i)
@@ -832,8 +810,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle *const p, const int n,
 
     // send local data - receive remote data
     {
-      for (int i = 0; i < 26; ++i)
-        remote[i].resize(remsizes[i]);
+      for (int i = 0; i < 26; ++i) remote[i].resize(remsizes[i]);
 
       MPI_Request reqrecv[26];
       for (int i = 0; i < 26; ++i)
@@ -859,8 +836,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle *const p, const int n,
       for (int j = 0; j < remote[i].size(); ++j) {
         Particle p = remote[i][j];
 
-        for (int c = 0; c < 3; ++c)
-          p.x[c] += d[c] * L[c];
+        for (int c = 0; c < 3; ++c) p.x[c] += d[c] * L[c];
 
         bool inside = true;
 
@@ -868,8 +844,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle *const p, const int n,
           inside &=
               p.x[c] >= -L[c] / 2 - MARGIN[c] && p.x[c] < L[c] / 2 + MARGIN[c];
 
-        if (inside)
-          selected.push_back(p);
+        if (inside) selected.push_back(p);
       }
     }
 
@@ -890,13 +865,11 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle *const p, const int n,
                         sizeof(Particle) * solid_remote.size,
                         cudaMemcpyDeviceToDevice));
 
-  if (solid_size > 0)
-    cells.build(solid, solid_size, 0);
+  if (solid_size > 0) cells.build(solid, solid_size, 0);
 
   CUDA_CHECK(cudaMalloc(&solid4, sizeof(float4) * solid_size));
 
-  if (myrank == 0)
-    printf("consolidating wall particles...\n");
+  if (myrank == 0) printf("consolidating wall particles...\n");
 
   if (solid_size > 0)
     SolidWallsKernel::strip_solid4<<<(solid_size + 127) / 128, 128>>>(
