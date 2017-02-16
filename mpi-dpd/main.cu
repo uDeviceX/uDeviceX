@@ -127,9 +127,6 @@ int main(int argc, char **argv) {
   }
 
   MPI_Comm activecomm = MPI_COMM_WORLD;
-#if defined(CUSTOM_REORDERING)
-  activecomm = setup_reorder_comm(MPI_COMM_WORLD, rank, nranks);
-#endif
 
   bool reordering = true;
   const char *env_reorder = getenv("MPICH_RANK_REORDER_METHOD");
