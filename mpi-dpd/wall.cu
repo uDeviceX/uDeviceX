@@ -286,14 +286,14 @@ __inline__ __device__ float3 warpReduceSum(float3 val) {
   return val;
 }
 
-__global__ void bounce(float2 *const particles, const int nparticles,
+__global__ void bounce(float2 *const pp, const int nparticles,
                        const int rank, const float dt) {
   int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
   if (pid >= nparticles) return;
 
-  float2 data0 = particles[pid * 3];
-  float2 data1 = particles[pid * 3 + 1];
+  float2 data0 = pp[pid * 3];
+  float2 data1 = pp[pid * 3 + 1];
   if (pid < nparticles) {
     float mycheapsdf = cheap_sdf(data0.x, data0.y, data1.x);
 
@@ -301,7 +301,7 @@ __global__ void bounce(float2 *const particles, const int nparticles,
         -1.7320f * ((float)XSIZE_WALLCELLS / (float)XTEXTURESIZE)) {
       float currsdf = sdf(data0.x, data0.y, data1.x);
 
-      float2 data2 = particles[pid * 3 + 2];
+      float2 data2 = pp[pid * 3 + 2];
 
       float3 v0 = make_float3(data1.y, data2.x, data2.y);
 
@@ -309,15 +309,15 @@ __global__ void bounce(float2 *const particles, const int nparticles,
         handle_collision(currsdf, data0.x, data0.y, data1.x, data1.y, data2.x,
                          data2.y, rank, dt);
 
-        particles[3 * pid] = data0;
-        particles[3 * pid + 1] = data1;
-        particles[3 * pid + 2] = data2;
+        pp[3 * pid] = data0;
+        pp[3 * pid + 1] = data1;
+        pp[3 * pid + 2] = data2;
       }
     }
   }
 }
 
-__global__ void interactions_3tpp(const float2 *const particles, const int np,
+__global__ void interactions_3tpp(const float2 *const pp, const int np,
                                   const int nsolid, float *const acc,
                                   const float seed) {
   int gid = threadIdx.x + blockDim.x * blockIdx.x;
@@ -326,15 +326,15 @@ __global__ void interactions_3tpp(const float2 *const particles, const int np,
 
   if (pid >= np) return;
 
-  float2 dst0 = particles[3 * pid + 0];
-  float2 dst1 = particles[3 * pid + 1];
+  float2 dst0 = pp[3 * pid + 0];
+  float2 dst1 = pp[3 * pid + 1];
 
   float interacting_threshold =
       -1 - 1.7320f * ((float)XSIZE_WALLCELLS / (float)XTEXTURESIZE);
 
   if (cheap_sdf(dst0.x, dst0.y, dst1.x) <= interacting_threshold) return;
 
-  float2 dst2 = particles[3 * pid + 2];
+  float2 dst2 = pp[3 * pid + 2];
 
   uint scan1, scan2, ncandidates, spidbase;
   int deltaspid1, deltaspid2;
