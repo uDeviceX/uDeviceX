@@ -244,7 +244,7 @@ void Simulation::_create_walls(const bool verbose) {
   _remove_bodies_from_wall(rbcscoll);
 
   {
-    H5PartDump sd("survived-particles->h5part", activecomm, cartcomm);
+    H5PartDump sd("survived-particles.h5part", activecomm, cartcomm);
     Particle *p = new Particle[particles->size];
 
     CUDA_CHECK(cudaMemcpy(p, particles->xyzuvw.data,
