@@ -37,8 +37,6 @@
 # x=0.75 y=8 z=12
 # (cd ../..  && echo 0 0 0  1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt)
 # (cd ../..  && make clean && make -j && make -C ../tools)
-# (cd ../..  && ./test 1 1 1 -rbcs -tend=1.5 -shrate=10 -steps_per_dump=300  \
+# (cd ../..  && ./test 1 1 1 -rbcs -tend=5.0 -steps_per_dump=300  -walls  -wall_creation_stepid=1 \
 #       -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=300)
 # (cd ../..  && ply2punto ply/rbcs-00009.ply | fhash.awk -v tol=2) > ply.out.txt
-
-

@@ -214,7 +214,7 @@ void Simulation::_remove_bodies_from_wall(CollectionRBC *coll) {
   }
 
   coll->remove(&tokill.front(), tokill.size());
-  _ic_vel(coll->xyzuvw.data, coll->size); /* set initial velocity */
+  coll->clear_velocity();
 
   CUDA_CHECK(cudaPeekAtLastError());
 }
@@ -249,7 +249,7 @@ void Simulation::_create_walls(const bool verbose) {
   }
 
   particles->resize(nsurvived);
-  _ic_vel(particles->xyzuvw.data, particles->size); /* set velocity */
+  particles->clear_velocity();
 
   cells.build(particles->xyzuvw.data, particles->size, 0, NULL, NULL);
 
