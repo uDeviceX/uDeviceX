@@ -48,7 +48,7 @@ class CollectionRBC : public ParticleArray
 
   virtual void _initialize(float *device_xyzuvw, const float (*transform)[4]);
 
-  static void _dump(const char * const path2xyz, const char * const format4ply,
+  static void _dump(const char * const format4ply,
                     MPI_Comm comm, MPI_Comm cartcomm, const int ntriangles, const int ncells, const int nvertices,
                     int (* const indices)[3],
                     Particle * const p, const Acceleration * const a, const int n, const int iddatadump);
@@ -74,6 +74,6 @@ class CollectionRBC : public ParticleArray
   static void dump(MPI_Comm comm, MPI_Comm cartcomm,
                    Particle * const p, const Acceleration * const a, const int n, const int iddatadump)
   {
-    _dump("xyz/rbcs.xyz", "ply/rbcs-%05d.ply", comm, cartcomm, ntriangles, n / nvertices, nvertices, indices, p, a, n, iddatadump);
+    _dump("ply/rbcs-%05d.ply", comm, cartcomm, ntriangles, n / nvertices, nvertices, indices, p, a, n, iddatadump);
   }
 };

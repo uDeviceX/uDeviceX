@@ -191,7 +191,7 @@ class SoluteExchange
     }
   }
 
-  void _not_nan(const float * const x, const int n) const
+  void _not_nan(const float * const, const int) const
   {
   }
 

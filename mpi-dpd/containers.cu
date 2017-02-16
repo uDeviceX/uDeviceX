@@ -404,7 +404,7 @@ void CollectionRBC::remove(const int * const entries, const int nentries)
     CUDA_CHECK(cudaMemcpy(xyzuvw.data, survived.data, sizeof(Particle) * survived.size, cudaMemcpyDeviceToDevice));
 }
 
-void CollectionRBC::_dump(const char * const path2xyz, const char * const format4ply,
+void CollectionRBC::_dump(const char * const format4ply,
         MPI_Comm comm, MPI_Comm cartcomm, const int ntriangles, const int ncells, const int nvertices, int (* const indices)[3],
         Particle * const p, const Acceleration * const a, const int n, const int iddatadump)
 {
