@@ -43,5 +43,5 @@ class ComputeWall
   void bounce(Particle * const p, const int n, cudaStream_t stream);
 
   void interactions(const Particle * const p, const int n, Acceleration * const acc,
-                    const int * const cellsstart, const int * const cellscount, cudaStream_t stream);
+                    cudaStream_t stream);
 };

@@ -809,8 +809,6 @@ void ComputeWall::bounce(Particle *const p, const int n, cudaStream_t stream) {
 
 void ComputeWall::interactions(const Particle *const p, const int n,
                                Acceleration *const acc,
-                               const int *const cellsstart,
-                               const int *const cellscount,
                                cudaStream_t stream) {
   // cellsstart and cellscount IGNORED for now
 
@@ -832,8 +830,8 @@ void ComputeWall::interactions(const Particle *const p, const int n,
                                sizeof(int) * cells.ncells));
 
     SolidWallsKernel::
-        interactions_3tpp<<<(3 * n + 127) / 128, 128, 0, stream>>>(
-            (float2 *)p, n, solid_size, (float *)acc, trunk.get_float());
+      interactions_3tpp<<<(3 * n + 127) / 128, 128, 0, stream>>>(
+								 (float2 *)p, n, solid_size, (float *)acc, trunk.get_float());
 
     CUDA_CHECK(cudaUnbindTexture(SolidWallsKernel::texWallParticles));
     CUDA_CHECK(cudaUnbindTexture(SolidWallsKernel::texWallCellStart));

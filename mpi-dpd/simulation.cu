@@ -305,12 +305,11 @@ void Simulation::_forces() {
 
   if (rbcscoll && wall)
     wall->interactions(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->acc(),
-                       NULL, NULL, mainstream);
+                       mainstream);
 
   if (wall)
     wall->interactions(particles->xyzuvw.data, particles->size,
-                       particles->axayaz.data, cells.start, cells.count,
-                       mainstream);
+                       particles->axayaz.data, mainstream);
 
   CUDA_CHECK(cudaPeekAtLastError());
 
@@ -645,7 +644,7 @@ void Simulation::_lockstep() {
 
   if (wall)
     wall->interactions(particles->xyzuvw.data, particles->size,
-                       particles->axayaz.data, cells.start, cells.count,
+                       particles->axayaz.data,
                        mainstream);
 
   CUDA_CHECK(cudaPeekAtLastError());
@@ -691,7 +690,7 @@ void Simulation::_lockstep() {
 
   if (rbcscoll && wall)
     wall->interactions(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->acc(),
-                       NULL, NULL, mainstream);
+                       mainstream);
   CUDA_CHECK(cudaPeekAtLastError());
   solutex.recv_a(mainstream);
   if (rbcscoll)
