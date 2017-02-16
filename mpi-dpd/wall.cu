@@ -53,7 +53,7 @@ texture<float, 3, cudaReadModeElementType> texSDF;
 texture<float4, 1, cudaReadModeElementType> texWallParticles;
 texture<int, 1, cudaReadModeElementType> texWallCellStart, texWallCellCount;
 
-__global__ void interactions_3tpp(const float2 *const particles, const int np,
+__global__ void interactions_3tpp(const float2 *const pp, const int np,
                                   const int nsolid, float *const acc,
                                   const float seed);
 void setup() {
@@ -185,13 +185,13 @@ __device__ float3 grad_sdf(float x, float y, float z) {
   return make_float3(xmygrad, ymygrad, zmygrad);
 }
 
-__global__ void fill_keys(const Particle *const particles, const int n,
+__global__ void fill_keys(const Particle *const pp, const int n,
                           int *const key) {
   int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
   if (pid >= n) return;
 
-  Particle p = particles[pid];
+  Particle p = pp[pid];
 
   float mysdf = sdf(p.x[0], p.x[1], p.x[2]);
   key[pid] = (int)(mysdf >= 0) + (int)(mysdf > 2);
@@ -214,12 +214,6 @@ __device__ void handle_collision(const float currsdf, float &x, float &y,
   if (sdf(xold, yold, zold) >= 0) {
     // this is the worst case - it means that old position was bad already
     // we need to search and rescue the particle
-
-    cuda_printf("Warning rank %d sdf: %f (%.4f %.4f %.4f), from: sdf %f (%.4f "
-                "%.4f %.4f)...   ",
-                rank, currsdf, x, y, z, sdf(xold, yold, zold), xold, yold,
-                zold);
-
     float3 mygrad = grad_sdf(x, y, z);
     float mysdf = currsdf;
 
@@ -425,9 +419,7 @@ struct FieldSampler {
   float *data, extent[3];
   int N[3];
 
-  FieldSampler(const char *path, MPI_Comm comm, const bool verbose) {
-    if (verbose) printf("reading header...\n");
-
+  FieldSampler(const char *path, MPI_Comm comm) {
     static size_t CHUNKSIZE = 1 << 25;
 
     int rank;
@@ -453,8 +445,6 @@ struct FieldSampler {
       MPI_CHECK(MPI_Bcast(N, 3, MPI_INT, 0, comm));
       MPI_CHECK(MPI_Bcast(extent, 3, MPI_FLOAT, 0, comm));
 
-      if (verbose) printf("allocating data...\n");
-
       int nvoxels = N[0] * N[1] * N[2];
 
       data = new float[nvoxels];
@@ -475,8 +465,6 @@ struct FieldSampler {
 
           header_size = i + 1;
         }
-
-      if (verbose) printf("reading binary data... from byte %d\n", header_size);
 
       fseek(fh, header_size, SEEK_SET);
       fread(data, sizeof(float), nvoxels, fh);
@@ -559,8 +547,7 @@ struct FieldSampler {
 };
 
 ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle *const p, const int n,
-                         int &nsurvived, ExpectedMessageSizes &new_sizes,
-                         const bool verbose)
+                         int &nsurvived, ExpectedMessageSizes &new_sizes)
     : cartcomm(cartcomm), arrSDF(NULL), solid4(NULL), solid_size(0),
       cells(XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL,
             YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL,
@@ -571,7 +558,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle *const p, const int n,
 
   float *field = new float[XTEXTURESIZE * YTEXTURESIZE * ZTEXTURESIZE];
 
-  FieldSampler sampler("sdf.dat", cartcomm, verbose);
+  FieldSampler sampler("sdf.dat", cartcomm);
 
   int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
   int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};

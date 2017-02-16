@@ -36,7 +36,7 @@ class ComputeWall
 
  public:
 
-  ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int& nsurvived, ExpectedMessageSizes& new_sizes, const bool verbose);
+  ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int& nsurvived, ExpectedMessageSizes& new_sizes);
 
   ~ComputeWall();
 
