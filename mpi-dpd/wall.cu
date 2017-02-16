@@ -214,6 +214,7 @@ namespace SolidWallsKernel {
     vy -= vyw; vy = -vy; vy += vyw;
     vz -= vzw; vz = -vz; vz += vzw;
 
+    last_bit_float::Preserver up1(*vxp);
     *vxp = vx; *vyp = vy; *vzp = vz;
   }
 
