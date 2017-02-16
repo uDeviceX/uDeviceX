@@ -32,11 +32,11 @@ enum
 };
 
 const int numberdensity = 3 * (RC_FX*RC_FX*RC_FX);  // default: 3
-const float kBT = kBT2D3D / (RC_FX*RC_FX);  // default: 1
+const float kBT = 1e-6 * kBT2D3D / (RC_FX*RC_FX);  // default: 1
 const float dt = 0.0005;  // default: 0.001
 const float rbc_mass = 0.5;
 
-const float gamma_dot = 15.0;
+const float gamma_dot = 5.0;
 
 const float hydrostatic_a = 0.05 / RC_FX;
 
