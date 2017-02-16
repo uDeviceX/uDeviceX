@@ -29,7 +29,6 @@
 #include "redistribute-particles.h"
 #include "redistribute-rbcs.h"
 #include "io.h"
-#include "velcontroller.h"
 #include "simulation.h"
 #include "dpd-forces.h"
 #include "last_bit_float.h"
@@ -96,8 +95,7 @@ void Simulation::_update_helper_arrays() {
 
 /* set initial velocity of a particle */
 void _ic_vel(float x, float y, float z, float *vx, float *vy, float *vz) {
-  float gd = 0.5 * desired_shrate; /* "gamma dot" */
-  *vx = gd * z; *vy = 0; *vz = 0;
+  *vx = gamma_dot * z; *vy = 0; *vz = 0;
 }
 
 std::vector<Particle> _ic() {
@@ -233,7 +231,7 @@ void Simulation::_create_walls(const bool verbose) {
   }
 
   particles->resize(nsurvived);
-  particles->clear_velocity();
+  particles->clear_velocity(); 
   cells.build(particles->xyzuvw.data, particles->size, 0, NULL, NULL);
 
   _update_helper_arrays();
@@ -289,13 +287,6 @@ void Simulation::_forces() {
   dpd.local_interactions(particles->xyzuvw.data, xyzouvwo.data, xyzo_half.data,
                          particles->size, particles->axayaz.data, cells.start,
                          cells.count, mainstream);
-
-  if (!doublepoiseuille) {
-    velcont1->push(cells.start, particles->xyzuvw.data, particles->axayaz.data,
-                   mainstream);
-    velcont2->push(cells.start, particles->xyzuvw.data, particles->axayaz.data,
-                   mainstream);
-  }
 
   dpd.post(particles->xyzuvw.data, particles->size, mainstream, downloadstream);
 
@@ -518,20 +509,6 @@ Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm)
   int dims[3], periods[3], coords[3];
   MPI_CHECK(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
 
-  int xl1[3] = {0, 0, 3};
-  int xh1[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, 8};
-  velcont1 = new VelController(
-      xl1, xh1, coords,
-      make_float3(-desired_shrate * (ZSIZE_SUBDOMAIN / 2 - 8), 0, 0),
-      activecomm);
-
-  int xl2[3] = {0, 0, ZSIZE_SUBDOMAIN - 8};
-  int xh2[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN - 3};
-  velcont2 = new VelController(
-      xl2, xh2, coords,
-      make_float3(desired_shrate * (ZSIZE_SUBDOMAIN / 2 - 8), 0, 0),
-      activecomm);
-
   {
     particles = &particles_pingpong[0];
     newparticles = &particles_pingpong[1];
@@ -626,12 +603,6 @@ void Simulation::_lockstep() {
   dpd.local_interactions(particles->xyzuvw.data, xyzouvwo.data, xyzo_half.data,
                          particles->size, particles->axayaz.data, cells.start,
                          cells.count, mainstream);
-  if (!doublepoiseuille) {
-    velcont1->push(cells.start, particles->xyzuvw.data, particles->axayaz.data,
-                   mainstream);
-    velcont2->push(cells.start, particles->xyzuvw.data, particles->axayaz.data,
-                   mainstream);
-  }
 
   if (contactforces)
     contact.build_cells(wsolutes, mainstream);
@@ -753,18 +724,6 @@ void Simulation::run() {
       if (!lockstep_OK) break;
 
       _lockstep();
-      if (!doublepoiseuille) {
-        if (it % 10 == 0) {
-          velcont1->sample(cells.start, particles->xyzuvw.data, mainstream);
-          velcont2->sample(cells.start, particles->xyzuvw.data, mainstream);
-        }
-
-        if (it % 500 == 0) {
-          velcont1->adjustF(mainstream);
-          velcont2->adjustF(mainstream);
-          driving_acceleration = 0;
-        }
-      }
       ++it;
     }
 
@@ -786,20 +745,6 @@ void Simulation::run() {
       _datadump(it);
 
     _update_and_bounce();
-    {
-      if (!doublepoiseuille) {
-        if (it % 10 == 0) {
-          velcont1->sample(cells.start, particles->xyzuvw.data, mainstream);
-          velcont2->sample(cells.start, particles->xyzuvw.data, mainstream);
-        }
-
-        if (it % 500 == 0) {
-          velcont1->adjustF(mainstream);
-          velcont2->adjustF(mainstream);
-          driving_acceleration = 0;
-        }
-      }
-    }
   }
   simulation_is_done = true;
   fflush(stdout);

@@ -20,8 +20,8 @@ fsi.o contact.o redistribute-particles.o \
 redistribute-rbcs.o solvent-exchange.o solute-exchange.o \
 common.o io.o scan.o \
 minmax.o redistancing.o last_bit_float.o \
-dpd-forces.o simulation.o main.o \
-velcontroller.o
+dpd-forces.o simulation.o main.o
+
 
 ifeq ($(h5part),0)
 NVCCFLAGS += -DNO_H5PART

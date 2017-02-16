@@ -32,13 +32,15 @@ enum
 };
 
 const int numberdensity = 3 * (RC_FX*RC_FX*RC_FX);  // default: 3
-const float kBT = 1e-7 * kBT2D3D / (RC_FX*RC_FX);  // default: 1
+const float kBT = kBT2D3D / (RC_FX*RC_FX);  // default: 1
 const float dt = 0.0005;  // default: 0.001
 const float rbc_mass = 0.5;
 
+const float gamma_dot = 15.0;
+
 const float hydrostatic_a = 0.05 / RC_FX;
 
-extern float tend, desired_shrate;
+extern float tend;
 extern bool walls, pushtheflow, doublepoiseuille, rbcs, hdf5field_dumps, hdf5part_dumps, is_mps_enabled, contactforces;
 extern int steps_per_dump, steps_per_hdf5dump, wall_creation_stepid;
 

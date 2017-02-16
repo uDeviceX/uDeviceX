@@ -31,10 +31,6 @@ class Simulation
   ComputeContact contact;
 
   ComputeWall * wall;
-
-  VelController* velcont1;
-  VelController* velcont2;
-
   bool simulation_is_done;
 
   MPI_Comm activecomm, cartcomm;

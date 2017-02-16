@@ -27,10 +27,9 @@
 #include "contact.h"
 #include "redistribute-particles.h"
 #include "redistribute-rbcs.h"
-#include "velcontroller.h"
 #include "simulation.h"
 
-float tend, desired_shrate;
+float tend;
 bool walls, pushtheflow, doublepoiseuille, rbcs, hdf5field_dumps,
     hdf5part_dumps, is_mps_enabled, adjust_message_sizes, contactforces;
 int steps_per_dump, steps_per_hdf5dump, wall_creation_stepid;
@@ -68,7 +67,6 @@ int main(int argc, char **argv) {
   hdf5field_dumps = argp("-hdf5field_dumps").asBool(false);
 
   // desired shear rate in DPD units
-  desired_shrate = argp("-shrate").asDouble(1);
   RBCx0 = argp("-RBCx0").asDouble(0.5);
   RBCp = argp("-RBCp").asDouble(0.0045);
   RBCka = argp("-RBCka").asDouble(4900);
