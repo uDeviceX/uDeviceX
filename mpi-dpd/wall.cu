@@ -163,9 +163,8 @@ __device__ float3 grad_sdf(float x, float y, float z) {
   int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
   int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
   int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
-  float p[3] = {x, y, z};
 
-  float tc[3];
+  float tc[3], p[3] = {x, y, z};
   for (int c = 0; c < 3; ++c)
     tc[c] =
         TEXSIZES[c] * (p[c] + L[c] / 2 + MARGIN[c]) / (L[c] + 2 * MARGIN[c]);
@@ -183,7 +182,6 @@ __device__ float3 grad_sdf(float x, float y, float z) {
   if (mygradmag > 1e-6) {
     xmygrad /= mygradmag; ymygrad /= mygradmag; zmygrad /= mygradmag;
   }
-
   return make_float3(xmygrad, ymygrad, zmygrad);
 }
 
@@ -201,11 +199,8 @@ __global__ void fill_keys(const Particle *const particles, const int n,
 
 __global__ void strip_solid4(Particle *const src, const int n, float4 *dst) {
   int pid = threadIdx.x + blockDim.x * blockIdx.x;
-
   if (pid >= n) return;
-
   Particle p = src[pid];
-
   dst[pid] = make_float4(p.x[0], p.x[1], p.x[2], 0);
 }
 
@@ -228,18 +223,11 @@ __device__ void handle_collision(const float currsdf, float &x, float &y,
     float3 mygrad = grad_sdf(x, y, z);
     float mysdf = currsdf;
 
-    x -= mysdf * mygrad.x;
-    y -= mysdf * mygrad.y;
-    z -= mysdf * mygrad.z;
+    x -= mysdf * mygrad.x; y -= mysdf * mygrad.y; z -= mysdf * mygrad.z;
 
     for (int l = 8; l >= 1; --l) {
       if (sdf(x, y, z) < 0) {
-        u = -u;
-        v = -v;
-        w = -w;
-
-        cuda_printf("rescued in %d steps\n", 9 - l);
-
+        u = -u; v = -v; w = -w;
         return;
       }
 
@@ -249,13 +237,6 @@ __device__ void handle_collision(const float currsdf, float &x, float &y,
       y -= jump * mygrad.y;
       z -= jump * mygrad.z;
     }
-
-    cuda_printf("RANK %d bounce collision failed OLD: %f %f %f, sdf %e \nNEW: "
-                "%f %f %f sdf %e, gradient %f %f %f\n",
-                rank, xold, yold, zold, sdf(xold, yold, zold), x, y, z,
-                sdf(x, y, z), mygrad.x, mygrad.y, mygrad.z);
-
-    return;
   }
 
   // newton raphson steps
@@ -313,20 +294,6 @@ __global__ void bounce(float2 *const particles, const int nparticles,
 
   float2 data0 = particles[pid * 3];
   float2 data1 = particles[pid * 3 + 1];
-
-#ifndef NDEBUG
-  int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
-  int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
-  float x[3] = {data0.x, data0.y, data1.x};
-
-  for (int c = 0; c < 3; ++c) {
-    if (!(abs(x[c]) <= L[c] / 2 + MARGIN[c]))
-      cuda_printf(
-          "bounce: ooooooooops component %d we have %f %f %f outside %d + %d\n",
-          c, x[0], x[1], x[2], L[c] / 2, MARGIN[c]);
-  }
-#endif
-
   if (pid < nparticles) {
     float mycheapsdf = cheap_sdf(data0.x, data0.y, data1.x);
 
