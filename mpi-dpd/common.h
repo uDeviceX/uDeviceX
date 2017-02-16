@@ -56,7 +56,7 @@ inline void cudaAssert(cudaError_t code, const char *file, int line)
 
 #define MPI_CHECK(ans) do { mpiAssert((ans), __FILE__, __LINE__); } while(0)
 
-inline void mpiAssert(int code, const char *file, int line, bool abort=true)
+inline void mpiAssert(int code, const char *file, int line)
 {
   if (code != MPI_SUCCESS)
   {
