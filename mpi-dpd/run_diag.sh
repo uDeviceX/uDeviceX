@@ -27,7 +27,7 @@
 # ./test 1 1 1 -rbcs -tend=0.5 -steps_per_dump=100
 # ply2punto ply/rbcs-00009.ply | fhash.awk -v tol=2 > ply.out.txt
 #
-# TEST: diag.t3
+# cTEST: diag.t3
 # export PATH=../tools:$PATH
 # cp .conf.test.h .conf.h
 # cp sdf/wall1/wall.dat                               sdf.dat
