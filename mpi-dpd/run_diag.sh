@@ -14,7 +14,7 @@
 # make clean && make -j && make -C ../tools
 # rm -rf ply h5 diag.txt
 # ./test 1 1 1 -rbcs -tend=0.5 -steps_per_dump=100
-# awk '{print $2}' diag.txt    | fhash.awk -v tol=2) > diag.out.txt
+# awk '{print $2}' diag.txt    | fhash.awk -v tol=2 > diag.out.txt
 #
 # TEST: diag.t2
 # set -x
