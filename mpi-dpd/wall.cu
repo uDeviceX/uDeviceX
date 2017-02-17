@@ -205,11 +205,11 @@ namespace SolidWallsKernel {
 						 one processor */
   }
 
-  __device__ void bounce_vel(float    x, float    y, float    z,
+  __device__ void bounce_vel(float   xw, float   yw, float   zw, /* wall */
 			     float* vxp, float* vyp, float* vzp) {
     float vx = *vxp,  vy = *vyp, vz = *vzp;
 
-    float vxw, vyw, vzw; wall_vell(x, y, z, &vxw, &vyw, &vzw);
+    float vxw, vyw, vzw; wall_vell(xw, yw, zw, &vxw, &vyw, &vzw);
 
     vx -= vxw; vx = -vx; vx += vxw;
     vy -= vyw; vy = -vy; vy += vyw;
@@ -224,43 +224,58 @@ namespace SolidWallsKernel {
 				   float &vx, float &vy, float &vz,
 				   float dt) {
     float x0 = x - vx*dt, y0 = y - vy*dt, z0 = z - vz*dt;
-    if (sdf(x0, y0, z0) >= 0) {
-      // this is the worst case - it means that 0 position was bad already
-      // we need to search and rescue the particle
-      float3 gg = grad_sdf(x, y, z);
-      float sdf0 = currsdf;
-      x -= sdf0 * gg.x; y -= sdf0 * gg.y; z -= sdf0 * gg.z;
+    if (sdf(x0, y0, z0) >= 0) { /* this is the worst case - 0 position
+				   was bad already we need to search
+				   and rescue the particle */
+      float3 dsdf = grad_sdf(x, y, z); float sdf0 = currsdf;
+      x -= sdf0 * dsdf.x; y -= sdf0 * dsdf.y; z -= sdf0 * dsdf.z;
       for (int l = 8; l >= 1; --l) {
 	if (sdf(x, y, z) < 0) {
+	  /* we are confused anyway! use particle position as wall
+	     position */
 	  bounce_vel(x, y, z, &vx, &vy, &vz); return;
 	}
 	float jump = 1.1f * sdf0 / (1 << l);
-	x -= jump * gg.x; y -= jump * gg.y; z -= jump * gg.z;
+	x -= jump * dsdf.x; y -= jump * dsdf.y; z -= jump * dsdf.z;
       }
     }
 
-    // newton raphson steps
-    float subdt = dt;
-    {
-      float3 gg = ugrad_sdf(x, y, z);
-      float DphiDt = max(1e-4f, gg.x * vx + gg.y * vy + gg.z * vz);
-      subdt = min(dt, max(0.f, subdt - currsdf / DphiDt * 1.02f));
-    }
+    /*
+      Bounce back (stage I)
 
-    {
-      float3 xstar = make_float3(x + subdt * vx, y + subdt * vy, z + subdt * vz);
-      float3 gg = ugrad_sdf(xstar.x, xstar.y, xstar.z);
-      float DphiDt = max(1e-4f, gg.x * vx + gg.y * vy + gg.z * vz);
-      subdt = min(
-		  dt, max(0.f, subdt - sdf(xstar.x, xstar.y, xstar.z) / DphiDt * 1.02f));
-    }
+      Find wall position (sdf(wall) = 0): make two steps of Newton's
+      method for the equation phi(t) = 0, where phi(t) = sdf(rr(t))
+      and rr(t) = [x + vx*t, y + vy*t, z + vz*t]. We are going back
+      and `t' is in [-dt, 0].
 
-    float lmbd = 2 * subdt - dt;
-    x = x0 + lmbd * vx; y = y0 + lmbd * vy; z = z0 + lmbd * vz;
-    bounce_vel(x, y, z, &vx, &vy, &vz);
-    if (sdf(x, y, z) >= 0) {
-      x = x0; y = y0; z = z0;
-    }
+      dphi = v . grad(sdf). Newton step is t_new = t_old - dphi/phi
+
+      Stop if sdf is small. Cap `t' to [-dt, 0].
+     */
+#define rr(t) make_float3(x + vx*t, y + vy*t, z + vz*t)
+#define small(phi) (fabs(phi) < 1e-6)
+    float3 r, dsdf; float phi, dphi, t = 0;
+    r = rr(t); phi = currsdf;            if (small(phi)) goto done;
+    dsdf = ugrad_sdf(r.x, r.y, r.z);
+    dphi = vx*dsdf.x + vy*dsdf.y + vz*dsdf.z;
+    t -= dphi/phi; if (t < -dt) t = -dt; if (t > 0) t = 0;
+
+    r = rr(t); phi = sdf(r.x, r.y, r.z); if (small(phi)) goto done;
+    dsdf = ugrad_sdf(r.x, r.y, r.z);
+    dphi = vx*dsdf.x + vy*dsdf.y + vz*dsdf.z;
+    t -= dphi/phi; if (t < -dt) t = -dt; if (t > 0) t = 0;
+#undef rr
+#undef small
+  done:
+    /* Bounce back (stage II)  */
+    float xw = x + t*vx, yw = y + t*vy, zw = z + t*vz; /* wall position */
+
+    /*!!!!!!!!!!! */ float xo = x, yo = y, zo = z;
+    x += 2*t*vx; y += 2*t*vy; z += 2*t*vz; /* reflection relatively
+					       to wall */
+    /*!!!!!!!!!!! */ printf("%g %g %g %g %g %g :wall:\n", xo, yo, zo, x, y, z);
+    bounce_vel(xw, yw, zw, &vx, &vy, &vz);
+    if (sdf(x, y, z) >= 0) {x = x0; y = y0; z = z0;}
   }
 
   __global__ void bounce(float2 *const pp, int nparticles, float dt) {
