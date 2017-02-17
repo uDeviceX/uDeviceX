@@ -10,6 +10,7 @@
 # TEST: diag.t1
 # set -x
 # export PATH=../tools:$PATH
+# cp .cache.conf.test.h .cache.conf.h
 # echo 0 0 0  1 0 0 8  0 1 0 8  0 0 1 8  0 0 0 1 > rbcs-ic.txt
 # make clean && make -j && make -C ../tools
 # rm -rf ply h5 diag.txt
@@ -19,6 +20,7 @@
 # TEST: diag.t2
 # set -x
 # export PATH=../tools:$PATH
+# cp .cache.conf.test.h .cache.conf.h
 # echo 0 0 0  1 0 0 8  0 1 0 8  0 0 1 8  0 0 0 1 > rbcs-ic.txt
 # make clean && make -j && make -C ../tools
 # rm -rf ply h5 diag.txt
@@ -27,6 +29,7 @@
 #
 # TEST: diag.t3
 # export PATH=../tools:$PATH
+# cp .cache.conf.test.h .cache.conf.h
 # cp sdf/wall1/wall.dat                               sdf.dat
 # x=0.75 y=8 z=12
 # echo 0 0 0  1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
@@ -38,6 +41,7 @@
 #
 # TEST: diag.t4
 # export PATH=../tools:$PATH
+# cp .cache.conf.test.h .cache.conf.h
 # cp sdf/wall1/wall.dat sdf.dat
 # make clean && make -j && make -C ../tools
 # rm -rf ply h5 diag.txt

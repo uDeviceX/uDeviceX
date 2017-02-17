@@ -18,27 +18,25 @@
 #define cuda_printf(...) do { printf(__VA_ARGS__); } while(0)
 #endif
 
-#define kBT2D3D (1)  // 2d to 3d temperature conversion
-#define RC_FX (1.5)  // rc_F/rc_X; default: 1.5
+#include ".cache.conf.h"
 
 enum
 {
-    XSIZE_SUBDOMAIN = 16,
-    YSIZE_SUBDOMAIN = 16,
-    ZSIZE_SUBDOMAIN = 16,
-    XMARGIN_WALL = 6,
-    YMARGIN_WALL = 6,
-    ZMARGIN_WALL = 6,
+    XSIZE_SUBDOMAIN = _XSIZE_SUBDOMAIN,
+    YSIZE_SUBDOMAIN = _YSIZE_SUBDOMAIN,
+    ZSIZE_SUBDOMAIN = _ZSIZE_SUBDOMAIN,
+    XMARGIN_WALL = _XMARGIN_WALL,
+    YMARGIN_WALL = _YMARGIN_WALL,
+    ZMARGIN_WALL = _ZMARGIN_WALL,
 };
 
-const int numberdensity = 3 * (RC_FX*RC_FX*RC_FX);  // default: 3
-const float kBT = 1e-6 * kBT2D3D / (RC_FX*RC_FX);  // default: 1
-const float dt = 0.0005;  // default: 0.001
-const float rbc_mass = 0.5;
-
-const float gamma_dot = 5.0;
-
-const float hydrostatic_a = 0.05 / RC_FX;
+const float rc            = _rc;
+const float dt            = _dt;
+const float rbc_mass      = _rbc_mass;
+const float gamma_dot     = _gamma_dot;
+const float hydrostatic_a = _hydrostatic_a / rc;
+const float kBT           = _kBT           / (rc*rc);
+const int numberdensity   = _numberdensity * (rc*rc*rc);
 
 extern float tend;
 extern bool walls, pushtheflow, doublepoiseuille, rbcs, hdf5field_dumps, hdf5part_dumps, is_mps_enabled, contactforces;

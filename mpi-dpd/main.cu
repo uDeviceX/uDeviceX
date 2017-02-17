@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
   RBCtotArea = argp("-RBCtotArea").asDouble(124);
   RBCtotVolume = argp("-RBCtotVolume").asDouble(90);
 
-  RBCscale = 1 / RC_FX;
+  RBCscale = 1 / rc;
 
   const bool mpi_thread_safe = argp("-mpi_thread_safe").asBool(true);
 
