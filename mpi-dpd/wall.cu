@@ -101,16 +101,17 @@ namespace SolidWallsKernel {
     float s110 = tex0(0, 1, 1), s111 = tex0(1, 1, 1);
 #undef tex0
 
-    float s00x = s000 * (1 - lmbd[0]) + lmbd[0] * s001;
-    float s01x = s010 * (1 - lmbd[0]) + lmbd[0] * s011;
-    float s10x = s100 * (1 - lmbd[0]) + lmbd[0] * s101;
-    float s11x = s110 * (1 - lmbd[0]) + lmbd[0] * s111;
+#define wavrg(A, B, p) A*(1-p) + p*B /* weighted average */
+    float s00x = wavrg(s000, s001, lmbd[0]);
+    float s01x = wavrg(s010, s011, lmbd[0]);
+    float s10x = wavrg(s100, s101, lmbd[0]);
+    float s11x = wavrg(s110, s111, lmbd[0]);
 
-    float s0yx = s00x * (1 - lmbd[1]) + lmbd[1] * s01x;
-    float s1yx = s10x * (1 - lmbd[1]) + lmbd[1] * s11x;
+    float s0yx = wavrg(s00x, s01x, lmbd[1]);
 
-    float szyx = s0yx * (1 - lmbd[2]) + lmbd[2] * s1yx;
-
+    float s1yx = wavrg(s10x, s11x, lmbd[1]);
+    float szyx = wavrg(s0yx, s1yx, lmbd[2]);
+#undef wavrg
     return szyx;
   }
 
@@ -200,16 +201,16 @@ namespace SolidWallsKernel {
   __device__ void wall_vell(float x, float y, float z,
 			    float *vxw, float *vyw, float *vzw) {
     *vxw = gamma_dot * z; *vyw = 0; *vzw = 0; /* velocity of the wall;
-					         TODO: works only for
-					         one processor */
+						 TODO: works only for
+						 one processor */
   }
 
   __device__ void bounce_vel(float    x, float    y, float    z,
 			     float* vxp, float* vyp, float* vzp) {
     float vx = *vxp,  vy = *vyp, vz = *vzp;
-    
+
     float vxw, vyw, vzw; wall_vell(x, y, z, &vxw, &vyw, &vzw);
-    
+
     vx -= vxw; vx = -vx; vx += vxw;
     vy -= vyw; vy = -vy; vy += vyw;
     vz -= vzw; vz = -vz; vz += vzw;
@@ -363,13 +364,13 @@ namespace SolidWallsKernel {
 #define TYPE_WALL 3
     float  x = dst0.zig,  y = dst0.zag,  z = dst1.zig; /* bulk particle  */
     float vx = dst1.zag, vy = dst2.zig, vz = dst2.zag;
-      
+
     for (int i = 0; i < ncandidates; ++i) {
       int m1 = (int)(i >= scan1);
       int m2 = (int)(i >= scan2);
       int spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
       float4 stmp0 = tex1Dfetch(texWallParticles, spid);
-      
+
       float  xw = stmp0.uno,  yw = stmp0.due,  zw = stmp0.tre; /* wall particle */
       float vxw, vyw, vzw; wall_vell(xw, yw, zw, &vxw, &vyw, &vzw);
       float rnd = Logistic::mean0var1(seed, pid, spid);
@@ -389,7 +390,7 @@ namespace SolidWallsKernel {
 
 #undef tre
 #undef mf3
-#undef TYPE_WALL    
+#undef TYPE_WALL
 
     atomicAdd(acc + 3 * pid + 0, xforce);
     atomicAdd(acc + 3 * pid + 1, yforce);
