@@ -27,7 +27,7 @@
 # ./test 1 1 1 -rbcs -tend=0.5 -steps_per_dump=100
 # ply2punto ply/rbcs-00009.ply | fhash.awk -v tol=2 > ply.out.txt
 #
-# cTEST: diag.t3
+# sTEST: diag.t3
 # export PATH=../tools:$PATH
 # cp .conf.test.h .conf.h
 # cp sdf/wall1/wall.dat                               sdf.dat
@@ -47,7 +47,7 @@
 # cp sdf/wall1/wall.dat sdf.dat
 # make clean && make -j && make -C ../tools
 # rm -rf ply h5 diag.txt
-# ./test 1 1 1 -tend=1.0 -steps_per_dump=300 -walls -wall_creation_stepid=100 \
+# ./test 1 1 1 -tend=2.0 -steps_per_dump=300 -walls -wall_creation_stepid=100 \
 #       -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=300
 # avg_h5.m h5/flowfields-0006.h5 | fhash.awk -v tol=2 > h5.out.txt
 #
@@ -69,4 +69,4 @@
 # rm -rf ply h5 diag.txt
 # ./test 1 1 1 -tend=4.0 -steps_per_dump=300 -walls -wall_creation_stepid=100 \
 #       -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=300 -pushtheflow
-# mid_h5.m h5/flowfields-0026.h5 | fhash.awk -v tol=2 > h5.out.txt
+# mid_h5.m h5/flowfields-0026.h5 | fhash.awk -v tol=3 > h5.out.txt

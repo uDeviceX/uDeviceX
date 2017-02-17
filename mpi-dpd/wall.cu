@@ -23,7 +23,6 @@
 #include "io.h"
 #include <dpd-rng.h>
 #include "wall.h"
-#include "redistancing.h"
 #include "dpd-forces.h"
 #include "last_bit_float.h"
 
@@ -590,20 +589,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle *const p, const int n,
     sampler.sample(start, spacing, TEXTURESIZE, field, amplitude_rescaling);
   }
 
-  if (myrank == 0) printf("redistancing the geometry field...\n");
-
-  // extra redistancing because margin might exceed the domain
-  {
-    double dx = (XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL) / (double)XTEXTURESIZE;
-    double dy = (YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL) / (double)YTEXTURESIZE;
-    double dz = (ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL) / (double)ZTEXTURESIZE;
-
-    redistancing(field, XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE, dx, dy, dz,
-		 XTEXTURESIZE * 2);
-  }
-
   if (myrank == 0) printf("estimating geometry-based message sizes...\n");
-
   {
     for (int dz = -1; dz <= 1; ++dz)
       for (int dy = -1; dy <= 1; ++dy)

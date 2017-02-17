@@ -19,7 +19,7 @@ containers.o wall.o dpd.o \
 fsi.o contact.o redistribute-particles.o \
 redistribute-rbcs.o solvent-exchange.o solute-exchange.o \
 common.o io.o scan.o \
-minmax.o redistancing.o last_bit_float.o \
+minmax.o last_bit_float.o \
 dpd-forces.o simulation.o main.o
 
 

@@ -19,4 +19,6 @@ vx = vx(lo_x:hi_x, :, :); % cut a part in the middle
 vx = sq(mean(vx, 1));
 vx = sq(mean(vx, 1));
 
+eps = 1e-3; idx = vx < eps; vx(idx) = 0; % filter small
+
 dlmwrite(stdout, vx', '\n');

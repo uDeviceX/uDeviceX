@@ -11,10 +11,9 @@ io.o: .conf.h common.h dpd-forces.h io.h last_bit_float.h
 last_bit_float.o: last_bit_float.h
 main.o: .conf.h argument-parser.h common.h contact.h containers.h dpd.h fsi.h redistribute-particles.h redistribute-rbcs.h simulation.h solute-exchange.h solvent-exchange.h wall.h
 minmax.o: .conf.h common.h minmax.h
-redistancing.o: .conf.h common.h redistancing.h
 redistribute-particles.o: .conf.h common-kernels.h common.h redistribute-particles.h scan.h
 redistribute-rbcs.o: .conf.h common.h minmax.h redistribute-particles.h redistribute-rbcs.h
 simulation.o: .conf.h common.h contact.h containers.h dpd-forces.h dpd.h fsi.h io.h last_bit_float.h redistribute-particles.h redistribute-rbcs.h simulation.h simulation.hack.h solute-exchange.h solvent-exchange.h wall.h
 solute-exchange.o: .conf.h common-kernels.h common.h solute-exchange.h
 solvent-exchange.o: .conf.h common.h solvent-exchange.h
-wall.o: .conf.h common.h dpd-forces.h io.h last_bit_float.h redistancing.h wall.h
+wall.o: .conf.h common.h dpd-forces.h io.h last_bit_float.h wall.h
