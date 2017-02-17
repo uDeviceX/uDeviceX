@@ -14,6 +14,7 @@
 #include <sys/resource.h>
 #include <cuda-dpd.h>
 #include <cstdio>
+#include ".conf.h" /* configuration file (copy from .conf.test.h) */
 #include "common.h"
 
 bool Particle::initialized = false;
