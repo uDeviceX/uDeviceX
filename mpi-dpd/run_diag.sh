@@ -61,7 +61,7 @@
 #       -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=300 -pushtheflow
 # avg_h5.m h5/flowfields-0013.h5 | fhash.awk -v tol=2 > h5.out.txt
 #
-# cTEST: diag.t6
+# TEST: diag.t6
 # export PATH=../tools:$PATH
 # cp .conf.poiseuille.h .conf.h
 # cp sdf/cyl1/cyl.dat sdf.dat
