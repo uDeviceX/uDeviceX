@@ -20,17 +20,6 @@
 
 #include ".cache.conf.h"
 
-enum
-{
-    XSIZE_SUBDOMAIN = _XSIZE_SUBDOMAIN,
-    YSIZE_SUBDOMAIN = _YSIZE_SUBDOMAIN,
-    ZSIZE_SUBDOMAIN = _ZSIZE_SUBDOMAIN,
-    XMARGIN_WALL = _XMARGIN_WALL,
-    YMARGIN_WALL = _YMARGIN_WALL,
-    ZMARGIN_WALL = _ZMARGIN_WALL,
-};
-
-const float rc            = _rc;
 const float dt            = _dt;
 const float rbc_mass      = _rbc_mass;
 const float gamma_dot     = _gamma_dot;

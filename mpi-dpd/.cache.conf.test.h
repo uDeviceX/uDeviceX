@@ -1,11 +1,11 @@
-#define _rc               1.5  /* cutoff radius */
+#define rc                1.5  /* cutoff radius */
 
-#define _XSIZE_SUBDOMAIN  16
-#define _YSIZE_SUBDOMAIN  16
-#define _ZSIZE_SUBDOMAIN  16
-#define _XMARGIN_WALL     6
-#define _YMARGIN_WALL     6
-#define _ZMARGIN_WALL     6
+#define XSIZE_SUBDOMAIN   16
+#define YSIZE_SUBDOMAIN   16
+#define ZSIZE_SUBDOMAIN   16
+#define XMARGIN_WALL      6
+#define YMARGIN_WALL      6
+#define ZMARGIN_WALL      6
 
 #define _numberdensity    3
 #define _kBT              1e-6

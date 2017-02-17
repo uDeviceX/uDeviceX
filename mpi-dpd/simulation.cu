@@ -573,11 +573,11 @@ Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm)
     particles_datadump.resize(particles->size * 1.5);
     accelerations_datadump.resize(particles->size * 1.5);
 
-    int rc = pthread_mutex_init(&mutex_datadump, NULL);
-    rc |= pthread_cond_init(&done_datadump, NULL);
-    rc |= pthread_cond_init(&request_datadump, NULL);
+    int rcode = pthread_mutex_init(&mutex_datadump, NULL);
+    rcode |= pthread_cond_init(&done_datadump, NULL);
+    rcode |= pthread_cond_init(&request_datadump, NULL);
     async_thread_initialized = 0;
-    rc |= pthread_create(&thread_datadump, NULL, datadump_trampoline, this);
+    rcode |= pthread_create(&thread_datadump, NULL, datadump_trampoline, this);
 
     while (1) {
       pthread_mutex_lock(&mutex_datadump);
@@ -588,8 +588,8 @@ Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm)
 	break;
     }
 
-    if (rc) {
-      printf("ERROR; return code from pthread_create() is %d\n", rc);
+    if (rcode) {
+      printf("ERROR; return code from pthread_create() is %d\n", rcode);
       exit(-1);
     }
   }
