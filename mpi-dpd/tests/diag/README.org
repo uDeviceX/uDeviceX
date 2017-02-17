@@ -1,4 +1,0 @@
-Goto  mpi-dpd/tests/diag and run
-    > atest run_diag.sh
-
-tools/atest should be on PATH
