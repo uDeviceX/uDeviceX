@@ -1,6 +1,6 @@
 #!/usr/bin/env octave-qf
 
-% Usage (octave-qf wrapper should on on the PATH):
+% Usage (octave-qf wrapper should be on the PATH):
 % > ./hello.m test_data/ff.h5
 
 % octave hello world
