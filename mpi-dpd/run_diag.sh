@@ -48,3 +48,13 @@
 # ./test 1 1 1 -tend=1.0 -steps_per_dump=300 -walls -wall_creation_stepid=100 \
 #       -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=300
 # avg_h5.m h5/flowfields-0006.h5 | fhash.awk -v tol=2 > h5.out.txt
+#
+# TEST: diag.t5
+# export PATH=../tools:$PATH
+# cp .conf.poiseuille.h .conf.h
+# cp sdf/wall1/wall.dat sdf.dat
+# make clean && make -j && make -C ../tools
+# rm -rf ply h5 diag.txt
+# ./test 1 1 1 -tend=2.0 -steps_per_dump=300 -walls -wall_creation_stepid=100 \
+#       -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=300 -pushtheflow
+# avg_h5.m h5/flowfields-0013.h5 | fhash.awk -v tol=2 > h5.out.txt
