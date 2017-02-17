@@ -4,7 +4,7 @@
 % > ./hello_h5part.m test_data/all.h5part
 
 fn  = argv(){1}; % file name
-fn  = 'test_data/all.h5part';
+% fn  = 'test_data/all.h5part';
 D   = load('-hdf5', fn);
 
 % ts: timestep; f: field (x, y, ...)
