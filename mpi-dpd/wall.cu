@@ -219,21 +219,20 @@ namespace SolidWallsKernel {
     *vxp = vx; *vyp = vy; *vzp = vz;
   }
 
-  __device__ void handle_collision(const float currsdf, float &x, float &y,
-				   float &z, float &u, float &v, float &w,
-				   const float dt) {
-    float xold = x - dt * u, yold = y - dt * v, zold = z - dt * w;
-    if (sdf(xold, yold, zold) >= 0) {
-      // this is the worst case - it means that old position was bad already
+  __device__ void handle_collision(float currsdf,
+				   float &x, float &y, float &z,
+				   float &vx, float &vy, float &vz,
+				   float dt) {
+    float x0 = x - vx*dt, y0 = y - vy*dt, z0 = z - vz*dt;
+    if (sdf(x0, y0, z0) >= 0) {
+      // this is the worst case - it means that 0 position was bad already
       // we need to search and rescue the particle
       float3 gg = grad_sdf(x, y, z);
       float sdf0 = currsdf;
-
       x -= sdf0 * gg.x; y -= sdf0 * gg.y; z -= sdf0 * gg.z;
-
       for (int l = 8; l >= 1; --l) {
 	if (sdf(x, y, z) < 0) {
-	  bounce_vel(x, y, z, &u, &v, &w); return;
+	  bounce_vel(x, y, z, &vx, &vy, &vz); return;
 	}
 	float jump = 1.1f * sdf0 / (1 << l);
 	x -= jump * gg.x; y -= jump * gg.y; z -= jump * gg.z;
@@ -244,23 +243,23 @@ namespace SolidWallsKernel {
     float subdt = dt;
     {
       float3 gg = ugrad_sdf(x, y, z);
-      float DphiDt = max(1e-4f, gg.x * u + gg.y * v + gg.z * w);
+      float DphiDt = max(1e-4f, gg.x * vx + gg.y * vy + gg.z * vz);
       subdt = min(dt, max(0.f, subdt - currsdf / DphiDt * 1.02f));
     }
 
     {
-      float3 xstar = make_float3(x + subdt * u, y + subdt * v, z + subdt * w);
+      float3 xstar = make_float3(x + subdt * vx, y + subdt * vy, z + subdt * vz);
       float3 gg = ugrad_sdf(xstar.x, xstar.y, xstar.z);
-      float DphiDt = max(1e-4f, gg.x * u + gg.y * v + gg.z * w);
+      float DphiDt = max(1e-4f, gg.x * vx + gg.y * vy + gg.z * vz);
       subdt = min(
 		  dt, max(0.f, subdt - sdf(xstar.x, xstar.y, xstar.z) / DphiDt * 1.02f));
     }
 
     float lmbd = 2 * subdt - dt;
-    x = xold + lmbd * u; y = yold + lmbd * v; z = zold + lmbd * w;
-    bounce_vel(x, y, z, &u, &v, &w);
+    x = x0 + lmbd * vx; y = y0 + lmbd * vy; z = z0 + lmbd * vz;
+    bounce_vel(x, y, z, &vx, &vy, &vz);
     if (sdf(x, y, z) >= 0) {
-      x = xold; y = yold; z = zold;
+      x = x0; y = y0; z = z0;
     }
   }
 
