@@ -14,6 +14,7 @@
 #include <rbc-cuda.h>
 #include <vector>
 #include <mpi.h>
+#include ".conf.h" /* configuration file (copy from .conf.test.h) */
 #include "common.h"
 #include "redistribute-particles.h"
 #include "redistribute-rbcs.h"

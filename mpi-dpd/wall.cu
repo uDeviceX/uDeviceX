@@ -18,6 +18,7 @@
 #include <thrust/device_vector.h>
 #include <thrust/sort.h>
 #include <mpi.h>
+#include ".conf.h" /* configuration file (copy from .conf.test.h) */
 #include "common.h"
 #include "io.h"
 #include <dpd-rng.h>
@@ -248,25 +249,25 @@ namespace SolidWallsKernel {
       and rr(t) = [x + vx*t, y + vy*t, z + vz*t]. We are going back
       and `t' is in [-dt, 0].
 
-      dphi = v . grad(sdf). Newton step is t_new = t_old - dphi/phi
+      dphi = v . grad(sdf). Newton step is t_new = t_old - phi/dphi
 
-      Stop if sdf is small. Cap `t' to [-dt, 0].
+      Give up if dsdf is small. Cap `t' to [-dt, 0].
      */
 #define rr(t) make_float3(x + vx*t, y + vy*t, z + vz*t)
 #define small(phi) (fabs(phi) < 1e-6)
     float3 r, dsdf; float phi, dphi, t = 0;
-    r = rr(t); phi = currsdf;            if (small(phi)) goto done;
+    r = rr(t); phi = currsdf;
     dsdf = ugrad_sdf(r.x, r.y, r.z);
-    dphi = vx*dsdf.x + vy*dsdf.y + vz*dsdf.z;
-    t -= dphi/phi; if (t < -dt) t = -dt; if (t > 0) t = 0;
+    dphi = vx*dsdf.x + vy*dsdf.y + vz*dsdf.z; if (small(dphi)) goto giveup;
+    t -= phi/dphi;                            if (t < -dt) t = -dt; if (t > 0) t = 0;
 
-    r = rr(t); phi = sdf(r.x, r.y, r.z); if (small(phi)) goto done;
+    r = rr(t); phi = sdf(r.x, r.y, r.z);
     dsdf = ugrad_sdf(r.x, r.y, r.z);
-    dphi = vx*dsdf.x + vy*dsdf.y + vz*dsdf.z;
-    t -= dphi/phi; if (t < -dt) t = -dt; if (t > 0) t = 0;
+    dphi = vx*dsdf.x + vy*dsdf.y + vz*dsdf.z; if (small(dphi)) goto giveup;
+    t -= phi/dphi;                            if (t < -dt) t = -dt; if (t > 0) t = 0;
 #undef rr
 #undef small
-  done:
+  giveup:
     /* Bounce back (stage II)  */
     float xw = x + t*vx, yw = y + t*vy, zw = z + t*vz; /* wall position */
 

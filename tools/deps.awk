@@ -46,7 +46,7 @@ function asplit(str, arr,   temp, i, n) {  # make an assoc array from str
 /^#include/ {
     sub(/^#include/, "")
     sub(/^[\t ]*/, ""); sub(/[\t ]*$/, "") # trimp spaces and tabs
-    sub(/^"/, ""); sub(/"$/, "") # trim `"'
+    sub(/^[^"]*"/, ""); sub(/".*$/, "") # trim `"'
     # lesser and greater brackets
     has_lg = sub(/^</, ""); sub(/>$/, "") # trim `<>'
 
@@ -55,7 +55,8 @@ function asplit(str, arr,   temp, i, n) {  # make an assoc array from str
     has_thrust = $0 ~ /^thrust\//
 
     if (!has_h || has_sys || has_lg) next
-    if ($0 in sys_hdr)                   next
+    
+    if ($0 in sys_hdr)               next
 
     fn = FILENAME; hd = $0 # file name and processed header
 

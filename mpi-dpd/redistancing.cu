@@ -13,6 +13,7 @@
 #include <cstdio>
 #include "redistancing.h"
 #include <mpi.h>
+#include ".conf.h" /* configuration file (copy from .conf.test.h) */
 #include "common.h"
 
 #define _ACCESS(ary, x, y, z) tex3D(tex##ary, x, y, z)

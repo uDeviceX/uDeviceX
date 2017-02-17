@@ -19,6 +19,7 @@
 
 #include <cstdio>
 #include <mpi.h>
+#include ".conf.h" /* configuration file (copy from .conf.test.h) */
 #include "common.h"
 #include "containers.h"
 #include "io.h"
