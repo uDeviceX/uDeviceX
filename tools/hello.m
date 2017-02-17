@@ -1,7 +1,7 @@
 #!/usr/bin/env octave-qf
 
 % octave hello world
-fn  = 'test_data/ff.h5'; % file name
+fn  = argv(){1}; % file name
 X = 1; Y = 2; Z = 3;
 sq  = @squeeze;
 grd = @(n) (1:n) - 1/2;
