@@ -270,10 +270,8 @@ namespace SolidWallsKernel {
     /* Bounce back (stage II)  */
     float xw = x + t*vx, yw = y + t*vy, zw = z + t*vz; /* wall position */
 
-    /*!!!!!!!!!!! */ float xo = x, yo = y, zo = z;
     x += 2*t*vx; y += 2*t*vy; z += 2*t*vz; /* reflection relatively
 					       to wall */
-    /*!!!!!!!!!!! */ printf("%g %g %g %g %g %g :wall:\n", xo, yo, zo, x, y, z);
     bounce_vel(xw, yw, zw, &vx, &vy, &vz);
     if (sdf(x, y, z) >= 0) {x = x0; y = y0; z = z0;}
   }
