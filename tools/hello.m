@@ -1,5 +1,8 @@
 #!/usr/bin/env octave-qf
 
+% Usage (octave-qf wrapper should on on the PATH):
+% > ./hello.m test_data/ff.h5
+
 % octave hello world
 fn  = argv(){1}; % file name
 X = 1; Y = 2; Z = 3;
