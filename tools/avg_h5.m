@@ -13,9 +13,8 @@ vx = sq(u); vy = sq(v); vz = sq(w);
 nx = size(vx, X); ny = size(vy, Y); nz = size(vz, Z);
 xx = grd(nx); yy = grd(ny); zz = grd(nz);
 
-% vx = sq(mean(mean(vx, X), Y));  % -- error: horizontal dimensions mismatch (16x1 vs 1x16) 
-vx = sq(mean(vx, X));
-vx = sq(mean(vx, X));
+vx = sq(mean(vx, 1));
+vx = sq(mean(vx, 1));
 
 % dlmwrite('vx.dat', [zz' vx'], ' ');
 dlmwrite(stdout, vx', ' ');

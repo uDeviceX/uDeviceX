@@ -67,6 +67,6 @@
 # cp sdf/cyl1/cyl.dat sdf.dat
 # make clean && make -j && make -C ../tools
 # rm -rf ply h5 diag.txt
-# ./test 1 1 1 -tend=2.0 -steps_per_dump=300 -walls -wall_creation_stepid=100 \
+# ./test 1 1 1 -tend=4.0 -steps_per_dump=300 -walls -wall_creation_stepid=100 \
 #       -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=300 -pushtheflow
-# mid_h5.m h5/flowfields-0013.h5 | fhash.awk -v tol=2 > h5.out.txt
+# mid_h5.m h5/flowfields-0026.h5 | fhash.awk -v tol=2 > h5.out.txt
