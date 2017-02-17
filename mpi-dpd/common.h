@@ -18,7 +18,8 @@
 #define cuda_printf(...) do { printf(__VA_ARGS__); } while(0)
 #endif
 
-#include ".cache.conf.h"
+/* configuration file (copy from .conf.test.h) */
+#include ".conf.h"
 
 const float dt            = _dt;
 const float rbc_mass      = _rbc_mass;
