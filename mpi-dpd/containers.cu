@@ -37,13 +37,13 @@ namespace ParticleKernels
         const int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
         if (pid >= n) return;
-	int type; float driving_acceleration, mass, vx = p[pid].u[0];
+	int type; float driving_acceleration, mass, vx = p[pid].u[0], y = p[pid].x[1];
 	if      ( rbcflag                            ) type = MEMB_TYPE;
 	else if (!rbcflag &&  last_bit_float::get(vx)) type =   IN_TYPE;
 	else if (!rbcflag && !last_bit_float::get(vx)) type =  OUT_TYPE;
 	mass                 = (type == MEMB_TYPE) ? rbc_mass : 1;
         driving_acceleration = (type ==   IN_TYPE) ? 0        : _driving_acceleration;
-	if (doublePoiseuille && p[pid].x[1] <= threshold) driving_acceleration *= -1;
+	if (doublePoiseuille && y <= threshold) driving_acceleration *= -1;
 
         for(int c = 0; c < 3; ++c) {
 	  last_bit_float::Preserver up0(p[pid].u[0]);
@@ -139,13 +139,13 @@ namespace ParticleKernels
             }
         }
 
-	int type; float driving_acceleration, mass, vx = s1.y;
+	int type; float driving_acceleration, mass, vx = s1.y, y = s0.y;
 	if      (rbcflag                             ) type = MEMB_TYPE;
 	else if (!rbcflag &&  last_bit_float::get(vx)) type =  IN_TYPE;
 	else if (!rbcflag && !last_bit_float::get(vx)) type = OUT_TYPE;
 	mass                 = (type == MEMB_TYPE) ? rbc_mass : 1;
         driving_acceleration = (type ==   IN_TYPE) ? 0        : _driving_acceleration;
-        if (doublePoiseuille && s0.y <= threshold) driving_acceleration *= -1;
+        if (doublePoiseuille && y <= threshold) driving_acceleration *= -1;
 
         s1.y += (ax/mass + driving_acceleration) * dt;
         s2.x += ay/mass * dt;
