@@ -423,33 +423,25 @@ template <> struct Bspline<1> {
 };
 
 struct FieldSampler {
-  float *data, extent[3]; int N[3];
+  float *data,  extent[3];
+  int N[3];
 
-  FieldSampler(const char *path, MPI_Comm comm) {
+  FieldSampler(const char *path, MPI_Comm comm) { /* read sdf file */
     size_t CHUNKSIZE = 1 << 25; int rank;
-    
     MPI_CHECK(MPI_Comm_rank(comm, &rank));
     if (rank == 0) {
-      char header[2048];
-      FILE *fh = fopen(path, "rb");
-      fread(header, 1, sizeof(header), fh);
-      sscanf(header, "%f %f %f\n%d %d %d\n", extent + 0,
-	     extent + 1, extent + 2, N + 0, N + 1, N + 2);
-      printf("broadcasting N\n");
+      FILE *fh = fopen(path, "r");
+      char line[2048];
+      fgets(line, sizeof(line), fh);
+      sscanf(line, "%f %f %f", &extent[0], &extent[1], &extent[2]);
+      fgets(line, sizeof(line), fh);
+      sscanf(line, "%d %d %d", &N[0], &N[1], &N[2]);
+
       MPI_CHECK(MPI_Bcast(N, 3, MPI_INT, 0, comm));
       MPI_CHECK(MPI_Bcast(extent, 3, MPI_FLOAT, 0, comm));
+
       int nvoxels = N[0] * N[1] * N[2];
       data = new float[nvoxels];
-      int header_size = 0;
-      for (int i = 0; i < sizeof(header); ++i)
-	if (header[i] == '\n') {
-	  if (header_size > 0) {
-	    header_size = i + 1;
-	    break;
-	  }
-	  header_size = i + 1;
-	}
-      fseek(fh, header_size, SEEK_SET);
       fread(data, sizeof(float), nvoxels, fh);
       fclose(fh);
       for (size_t i = 0; i < nvoxels; i += CHUNKSIZE) {
@@ -460,9 +452,7 @@ struct FieldSampler {
       MPI_CHECK(MPI_Bcast(N, 3, MPI_INT, 0, comm));
       MPI_CHECK(MPI_Bcast(extent, 3, MPI_FLOAT, 0, comm));
       int nvoxels = N[0] * N[1] * N[2];
-
       data = new float[nvoxels];
-
       for (size_t i = 0; i < nvoxels; i += CHUNKSIZE) {
 	size_t s = (i + CHUNKSIZE <= nvoxels) ? CHUNKSIZE : (nvoxels - i);
 	MPI_CHECK(MPI_Bcast(data + i, s, MPI_FLOAT, 0, comm));
