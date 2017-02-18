@@ -71,7 +71,7 @@
 #       -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=300 -pushtheflow
 # mid_h5.m h5/flowfields-0026.h5 | fhash.awk -v tol=2 > h5.out.txt
 #
-# cTEST: flow.around.t1
+# TEST: flow.around.t1
 # export PATH=../tools:$PATH
 # cp .conf.around.h  .conf.h
 # cp sdf/cyl1/cyl.dat sdf.dat
