@@ -42,7 +42,7 @@ namespace ParticleKernels
 	else if (!rbcflag &&  last_bit_float::get(vx)) type =   IN_TYPE;
 	else if (!rbcflag && !last_bit_float::get(vx)) type =  OUT_TYPE;
 	mass                 = (type == MEMB_TYPE) ? rbc_mass : 1;
-        driving_acceleration = (type ==  IN_TYPE ) ? 0        : _driving_acceleration;
+        driving_acceleration = (type ==   IN_TYPE) ? 0        : _driving_acceleration;
 	if (doublePoiseuille && p[pid].x[1] <= threshold) driving_acceleration *= -1;
 
         for(int c = 0; c < 3; ++c) {
@@ -144,7 +144,7 @@ namespace ParticleKernels
 	else if (!rbcflag &&  last_bit_float::get(vx)) type =  IN_TYPE;
 	else if (!rbcflag && !last_bit_float::get(vx)) type = OUT_TYPE;
 	mass                 = (type == MEMB_TYPE) ? rbc_mass : 1;
-        driving_acceleration = (type ==  IN_TYPE) ? 0        : _driving_acceleration;
+        driving_acceleration = (type ==   IN_TYPE) ? 0        : _driving_acceleration;
         if (doublePoiseuille && s0.y <= threshold) driving_acceleration *= -1;
 
         s1.y += (ax/mass + driving_acceleration) * dt;
