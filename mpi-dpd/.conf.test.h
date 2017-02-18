@@ -8,7 +8,7 @@
 #define ZMARGIN_WALL      6
 
 #define _numberdensity    3
-#define _kBT              1e-6
+#define _kBT              1e-7
 #define _dt               5e-4  /* timestep */
 #define _rbc_mass         0.5   /* ratio of RBC particle mass to solvent particle mass */
 #define _gamma_dot        5.0   /* shear rate */

@@ -447,7 +447,7 @@ void Simulation::_datadump_async() {
 	dump_part.close();
 
 	dump_part_solvent =
-	    new H5PartDump("solvent-particles->h5part", activecomm, cartcomm);
+	    new H5PartDump("solvent-particles.h5part", activecomm, cartcomm);
       }
 
       if (dump_part_solvent)
