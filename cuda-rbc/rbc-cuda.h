@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include <cuda_runtime.h>
-
 using namespace std;
 
 namespace CudaRBC

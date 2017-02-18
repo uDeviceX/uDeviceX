@@ -9,14 +9,9 @@
 
 #include "rbc-cuda.h"
 
-#include <math_functions.h>
 #include <cstdio>
 #include <map>
-#include <string>
-#include <fstream>
 #include <iostream>
-#include <utility>
-#include <cuda_runtime.h>
 #include <vector>
 #include <algorithm>
 
