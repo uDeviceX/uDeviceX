@@ -7,7 +7,7 @@
 #  > atest run_diag.sh
 # add crap from test_data/* to git
 
-# sTEST: diag.t1
+# TEST: diag.t1
 # set -x
 # export PATH=../tools:$PATH
 # cp .conf.test.h .conf.h
@@ -17,7 +17,7 @@
 # ./test 1 1 1 -rbcs -tend=0.5 -steps_per_dump=100
 # awk '{print $2}' diag.txt    | fhash.awk -v tol=2 > diag.out.txt
 #
-# sTEST: diag.t2
+# TEST: diag.t2
 # set -x
 # export PATH=../tools:$PATH
 # cp .conf.test.h .conf.h
@@ -27,7 +27,7 @@
 # ./test 1 1 1 -rbcs -tend=0.5 -steps_per_dump=100
 # ply2punto ply/rbcs-00009.ply | fhash.awk -v tol=2 > ply.out.txt
 #
-# sTEST: diag.t3
+# TEST: diag.t3
 # export PATH=../tools:$PATH
 # cp .conf.test.h .conf.h
 # cp sdf/wall1/wall.dat                               sdf.dat
@@ -37,11 +37,11 @@
 # rm -rf ply h5 diag.txt
 # ./test 1 1 1 -rbcs -tend=1.0 -steps_per_dump=300  -walls  -wall_creation_stepid=100 \
 #       -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=300
-# ply2punto ply/rbcs-00006.ply | fhash.awk -v tol=2 > ply.out.txt
+# ply2punto ply/rbcs-00006.ply | fhash.awk -v tol=1 > ply.out.txt
 #
 #
 #
-# sTEST: diag.t4
+# TEST: diag.t4
 # export PATH=../tools:$PATH
 # cp .conf.test.h .conf.h
 # cp sdf/wall1/wall.dat sdf.dat
@@ -51,7 +51,7 @@
 #       -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=300
 # avg_h5.m h5/flowfields-0006.h5 | fhash.awk -v tol=2 > h5.out.txt
 #
-# sTEST: diag.t5
+# TEST: diag.t5
 # export PATH=../tools:$PATH
 # cp .conf.poiseuille.h .conf.h
 # cp sdf/wall1/wall.dat sdf.dat
@@ -61,7 +61,7 @@
 #       -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=300 -pushtheflow
 # avg_h5.m h5/flowfields-0013.h5 | fhash.awk -v tol=2 > h5.out.txt
 #
-# sTEST: diag.t6
+# TEST: diag.t6
 # export PATH=../tools:$PATH
 # cp .conf.poiseuille.h .conf.h
 # cp sdf/cyl1/cyl.dat sdf.dat
