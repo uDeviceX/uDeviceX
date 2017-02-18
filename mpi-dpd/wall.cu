@@ -268,13 +268,11 @@ namespace SolidWallsKernel {
 #undef small
   giveup:
     /* Bounce back (stage II)
-
        change particle position and velocity
      */
-    float xw = x + t*vx, yw = y + t*vy, zw = z + t*vz; /* wall position */
-
-    x += 2*t*vx; y += 2*t*vy; z += 2*t*vz; /* reflection relatively
-					       to wall */
+    float xw = x + t*vx, yw = y + t*vy, zw = z + t*vz; /* wall */
+    x += 2*t*vx; y += 2*t*vy; z += 2*t*vz; /* bouncing relatively to
+					       wall */
     bounce_vel(xw, yw, zw, &vx, &vy, &vz);
     if (sdf(x, y, z) >= 0) {x = x0; y = y0; z = z0;}
   }
