@@ -39,15 +39,16 @@ namespace ParticleKernels
         if (pid >= n) return;
         float mass = rbcflag ? rbc_mass : 1;
 
-        last_bit_float::Preserver up0(p[pid].u[0]);
 
         float driving_acceleration = _driving_acceleration;
 
         if (doublePoiseuille && p[pid].x[1] <= threshold)
             driving_acceleration *= -1;
 
-        for(int c = 0; c < 3; ++c)
-            p[pid].u[c] += (a[pid].a[c]/mass + (c == 0 ? driving_acceleration : 0)) * dt * 0.5;
+        for(int c = 0; c < 3; ++c) {
+	  last_bit_float::Preserver up0(p[pid].u[0]);
+	  p[pid].u[c] += (a[pid].a[c]/mass + (c == 0 ? driving_acceleration : 0)) * dt * 0.5;
+	}
 
         for(int c = 0; c < 3; ++c)
             p[pid].x[c] += p[pid].u[c] * dt;
