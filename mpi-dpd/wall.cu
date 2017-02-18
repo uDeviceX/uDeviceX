@@ -374,7 +374,6 @@ namespace SolidWallsKernel {
 #define tre z
 
 #define mf3 make_float3
-#define TYPE_WALL 3
     float  x = dst0.zig,  y = dst0.zag,  z = dst1.zig; /* bulk particle  */
     float vx = dst1.zag, vy = dst2.zig, vz = dst2.zag;
 
@@ -389,8 +388,8 @@ namespace SolidWallsKernel {
       float rnd = Logistic::mean0var1(seed, pid, spid);
 
       // check for particle types and compute the DPD force
-      int type_bulk = last_bit_float::get(vx);
-      float3 strength = compute_dpd_force_traced(type_bulk      , TYPE_WALL,
+      int type_bulk = last_bit_float::get(vx) ? IN_TYPE : OUT_TYPE;
+      float3 strength = compute_dpd_force_traced(type_bulk      , WALL_TYPE,
 						 mf3(x ,  y,  z), mf3( xw,  yw,  zw),
 						 mf3(vx, vy, vz), mf3(vxw, vyw, vzw), rnd);
       xforce += strength.x; yforce += strength.y; zforce += strength.z;
@@ -403,7 +402,6 @@ namespace SolidWallsKernel {
 
 #undef tre
 #undef mf3
-#undef TYPE_WALL
 
     atomicAdd(acc + 3 * pid + 0, xforce);
     atomicAdd(acc + 3 * pid + 1, yforce);
