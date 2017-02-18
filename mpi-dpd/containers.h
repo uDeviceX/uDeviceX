@@ -22,8 +22,8 @@ struct ParticleArray
 
   void resize(int n);
   void preserve_resize(int n);
-  void upd_stg1      (float mass, float driving_acceleration, cudaStream_t stream);
-  void upd_stg2_and_1(float mass, float driving_acceleration, cudaStream_t stream);
+  void upd_stg1      (bool rbcflag, float driving_acceleration, cudaStream_t stream);
+  void upd_stg2_and_1(bool rbcflag, float driving_acceleration, cudaStream_t stream);
   void clear_velocity();
 
   void clear_acc(cudaStream_t stream)

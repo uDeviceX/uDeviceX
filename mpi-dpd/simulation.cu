@@ -493,12 +493,12 @@ void Simulation::_datadump_async() {
 }
 
 void Simulation::_update_and_bounce() {
-  particles->upd_stg2_and_1(1, driving_acceleration, mainstream);
+  particles->upd_stg2_and_1(false, driving_acceleration, mainstream);
 
   CUDA_CHECK(cudaPeekAtLastError());
 
   if (rbcscoll)
-    rbcscoll->upd_stg2_and_1(rbc_mass, driving_acceleration, mainstream);
+    rbcscoll->upd_stg2_and_1(true, driving_acceleration, mainstream);
 
   CUDA_CHECK(cudaPeekAtLastError());
   if (wall) {
@@ -664,7 +664,7 @@ void Simulation::_lockstep() {
 
   solutex.post_a();
 
-  particles->upd_stg2_and_1(1, driving_acceleration, mainstream);
+  particles->upd_stg2_and_1(false, driving_acceleration, mainstream);
 
   if (wall)
     wall->bounce(particles->xyzuvw.data, particles->size, mainstream);
@@ -685,7 +685,7 @@ void Simulation::_lockstep() {
   CUDA_CHECK(cudaPeekAtLastError());
   solutex.recv_a(mainstream);
   if (rbcscoll)
-    rbcscoll->upd_stg2_and_1(rbc_mass, driving_acceleration, mainstream);
+    rbcscoll->upd_stg2_and_1(true, driving_acceleration, mainstream);
   const int newnp = redistribute.recv_count(mainstream);
   CUDA_CHECK(cudaPeekAtLastError());
   if (rbcscoll)
@@ -727,10 +727,10 @@ void Simulation::run() {
   if (!walls && pushtheflow)
     driving_acceleration = hydrostatic_a;
 
-  particles->upd_stg1(1, driving_acceleration, mainstream);
+  particles->upd_stg1(false, driving_acceleration, mainstream);
 
   if (rbcscoll)
-    rbcscoll->upd_stg1(rbc_mass, driving_acceleration, mainstream);
+    rbcscoll->upd_stg1(true, driving_acceleration, mainstream);
 
   int it;
   for (it = 0; it < nsteps; ++it) {

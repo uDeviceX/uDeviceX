@@ -31,13 +31,13 @@ int (*CollectionRBC::indices)[3] = NULL, CollectionRBC::ntriangles = -1, Collect
 
 namespace ParticleKernels
 {
-    __global__ void upd_stg1(float mass, Particle * p, Acceleration * a, int n, float dt,
-				  float _driving_acceleration, float threshold, bool doublePoiseuille)
+    __global__ void upd_stg1(bool rbcflag, Particle * p, Acceleration * a, int n, float dt,
+			     float _driving_acceleration, float threshold, bool doublePoiseuille)
     {
         const int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
-        if (pid >= n)
-            return;
+        if (pid >= n) return;
+        float mass = rbcflag ? rbc_mass : 1;
 
         last_bit_float::Preserver up0(p[pid].u[0]);
 
@@ -54,7 +54,7 @@ namespace ParticleKernels
 
     }
 
-    __global__ void upd_stg2_and_1(float mass, float2 * const _pdata, const float * const _adata,
+    __global__ void upd_stg2_and_1(bool rbcflag, float2 * const _pdata, const float * const _adata,
 					int nparticles, float dt, float _driving_acceleration, float threshold,
 					bool doublePoiseuille)
     {
@@ -143,6 +143,7 @@ namespace ParticleKernels
         if (doublePoiseuille && s0.y <= threshold)
             driving_acceleration *= -1;
 
+	float mass = rbcflag ? rbc_mass : 1;
         s1.y += (ax/mass + driving_acceleration) * dt;
         s2.x += ay/mass * dt;
         s2.y += az/mass * dt;
@@ -218,18 +219,18 @@ namespace ParticleKernels
     }
 }
 
-void ParticleArray::upd_stg1(float mass, float driving_acceleration, cudaStream_t stream)
+void ParticleArray::upd_stg1(bool rbcflag, float driving_acceleration, cudaStream_t stream)
 {
     if (size)
         ParticleKernels::upd_stg1<<<(xyzuvw.size + 127) / 128, 128, 0, stream>>>(
-                mass, xyzuvw.data, axayaz.data, xyzuvw.size, dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
+                rbcflag, xyzuvw.data, axayaz.data, xyzuvw.size, dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
-void  ParticleArray::upd_stg2_and_1(float mass, float driving_acceleration, cudaStream_t stream)
+void  ParticleArray::upd_stg2_and_1(bool rbcflag, float driving_acceleration, cudaStream_t stream)
 {
     if (size)
         ParticleKernels::upd_stg2_and_1<<<(xyzuvw.size + 127) / 128, 128, 0, stream>>>
-            (mass, (float2 *)xyzuvw.data, (float *)axayaz.data, xyzuvw.size, dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
+            (rbcflag, (float2 *)xyzuvw.data, (float *)axayaz.data, xyzuvw.size, dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
 void ParticleArray::resize(int n)
