@@ -32,7 +32,7 @@ int (*CollectionRBC::indices)[3] = NULL, CollectionRBC::ntriangles = -1, Collect
 namespace ParticleKernels
 {
     __global__ void update_stage1(float mass, Particle * p, Acceleration * a, int n, float dt,
-            const float _driving_acceleration, const float threshold, const bool doublePoiseuille, const bool check = true)
+				  float _driving_acceleration, float threshold, bool doublePoiseuille)
     {
         const int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
@@ -55,8 +55,8 @@ namespace ParticleKernels
     }
 
     __global__ void update_stage2_and_1(float mass, float2 * const _pdata, const float * const _adata,
-            const int nparticles, const float dt, const float _driving_acceleration, const float threshold,
-            const bool doublePoiseuille)
+					int nparticles, float dt, float _driving_acceleration, float threshold,
+					bool doublePoiseuille)
     {
 
 #if !defined(__CUDA_ARCH__)
@@ -218,14 +218,14 @@ namespace ParticleKernels
     }
 }
 
-void ParticleArray::update_stage1(float mass, const float driving_acceleration, cudaStream_t stream)
+void ParticleArray::update_stage1(float mass, float driving_acceleration, cudaStream_t stream)
 {
     if (size)
         ParticleKernels::update_stage1<<<(xyzuvw.size + 127) / 128, 128, 0, stream>>>(
-                mass, xyzuvw.data, axayaz.data, xyzuvw.size, dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille, false);
+                mass, xyzuvw.data, axayaz.data, xyzuvw.size, dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
-void  ParticleArray::update_stage2_and_1(float mass, const float driving_acceleration, cudaStream_t stream)
+void  ParticleArray::update_stage2_and_1(float mass, float driving_acceleration, cudaStream_t stream)
 {
     if (size)
         ParticleKernels::update_stage2_and_1<<<(xyzuvw.size + 127) / 128, 128, 0, stream>>>
