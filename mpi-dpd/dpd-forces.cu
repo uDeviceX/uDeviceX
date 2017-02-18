@@ -5,13 +5,6 @@
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */
 #include "common.h"
 
-__device__ bool inbox(float x, float y, float z,
-        float xl=-3, float xh=3,
-        float yl=-3, float yh=3,
-        float zl=-3, float zh=3) {
-    return xl < x && x < xh && yl < y && y < yh  && zl < z && z < zh;
-}
-
 __device__ float3 compute_dpd_force_traced(int type1, int type2,
         float3 pos1, float3 pos2, float3 vel1, float3 vel2, float myrandnr) {
     /* return the DPD interaction force based on particle types
