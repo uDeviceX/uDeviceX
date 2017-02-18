@@ -460,8 +460,8 @@ struct FieldSampler {
     }
   }
 
-  void sample(const float start[3], const float spacing[3], const int nsize[3],
-	      float *const output, const float amplitude_rescaling) {
+  void sample(float start[3], float spacing[3], int nsize[3], float amplitude_rescaling,
+	      float *const output) {
     Bspline<4> bsp;
 
     for (int iz = 0; iz < nsize[2]; ++iz)
@@ -549,7 +549,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle *const p, const int n,
     float amplitude_rescaling = (XSIZE_SUBDOMAIN /*+ 2 * XMARGIN_WALL*/) /
       (sampler.extent[0] / dims[0]);
 
-    sampler.sample(start, spacing, TEXTURESIZE, field, amplitude_rescaling);
+    sampler.sample(start, spacing, TEXTURESIZE, amplitude_rescaling, field);
   }
 
   if (myrank == 0) printf("estimating geometry-based message sizes...\n");
@@ -578,7 +578,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle *const p, const int n,
 	  int nextent = local_extent[0] * local_extent[1] * local_extent[2];
 	  float *data = new float[nextent];
 
-	  sampler.sample(start, spacing, local_extent, data, 1);
+	  sampler.sample(start, spacing, local_extent, 1, data);
 
 	  int s = 0;
 	  for (int i = 0; i < nextent; ++i) s += (data[i] < 0);
@@ -607,7 +607,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle *const p, const int n,
     int size[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
 
     float amplitude_rescaling = L[0] / (sampler.extent[0] / dims[0]);
-    sampler.sample(start, spacing, size, walldata, amplitude_rescaling);
+    sampler.sample(start, spacing, size, amplitude_rescaling, walldata);
 
     H5FieldDump dump(cartcomm);
     dump.dump_scalarfield(cartcomm, walldata, "wall");
