@@ -7,7 +7,7 @@
 #  > atest run_diag.sh
 # add crap from test_data/* to git
 
-# TEST: diag.t1
+# sTEST: diag.t1
 # set -x
 # export PATH=../tools:$PATH
 # cp .conf.test.h .conf.h
@@ -17,7 +17,7 @@
 # ./test 1 1 1 -rbcs -tend=0.5 -steps_per_dump=100
 # awk '{print $2}' diag.txt    | fhash.awk -v tol=2 > diag.out.txt
 #
-# TEST: diag.t2
+# sTEST: diag.t2
 # set -x
 # export PATH=../tools:$PATH
 # cp .conf.test.h .conf.h
@@ -41,7 +41,7 @@
 #
 #
 #
-# TEST: diag.t4
+# sTEST: diag.t4
 # export PATH=../tools:$PATH
 # cp .conf.test.h .conf.h
 # cp sdf/wall1/wall.dat sdf.dat
@@ -51,7 +51,7 @@
 #       -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=300
 # avg_h5.m h5/flowfields-0006.h5 | fhash.awk -v tol=2 > h5.out.txt
 #
-# TEST: diag.t5
+# sTEST: diag.t5
 # export PATH=../tools:$PATH
 # cp .conf.poiseuille.h .conf.h
 # cp sdf/wall1/wall.dat sdf.dat
@@ -61,12 +61,12 @@
 #       -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=300 -pushtheflow
 # avg_h5.m h5/flowfields-0013.h5 | fhash.awk -v tol=2 > h5.out.txt
 #
-# TEST: diag.t6
+# cTEST: diag.t6
 # export PATH=../tools:$PATH
-# cp .conf.poiseuille.h .conf.h
+## cp .conf.poiseuille.h .conf.h
 # cp sdf/cyl1/cyl.dat sdf.dat
 # make clean && make -j && make -C ../tools
 # rm -rf ply h5 diag.txt
 # ./test 1 1 1 -tend=4.0 -steps_per_dump=300 -walls -wall_creation_stepid=100 \
 #       -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=300 -pushtheflow
-# mid_h5.m h5/flowfields-0026.h5 | fhash.awk -v tol=3 > h5.out.txt
+# mid_h5.m h5/flowfields-0026.h5 | fhash.awk -v tol=2 > h5.out.txt
