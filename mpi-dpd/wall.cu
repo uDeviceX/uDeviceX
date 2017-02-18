@@ -423,65 +423,39 @@ template <> struct Bspline<1> {
 };
 
 struct FieldSampler {
-  float *data, extent[3];
-  int N[3];
+  float *data, extent[3]; int N[3];
 
   FieldSampler(const char *path, MPI_Comm comm) {
-    static size_t CHUNKSIZE = 1 << 25;
-
-    int rank;
+    size_t CHUNKSIZE = 1 << 25; int rank;
+    
     MPI_CHECK(MPI_Comm_rank(comm, &rank));
-
     if (rank == 0) {
       char header[2048];
-
       FILE *fh = fopen(path, "rb");
-
       fread(header, 1, sizeof(header), fh);
-
-      printf("root parsing header\n");
-      int retval = sscanf(header, "%f %f %f\n%d %d %d\n", extent + 0,
-			  extent + 1, extent + 2, N + 0, N + 1, N + 2);
-
-      if (retval != 6) {
-	printf("ooops something went wrong in reading %s.\n", path);
-	exit(EXIT_FAILURE);
-      }
-
+      sscanf(header, "%f %f %f\n%d %d %d\n", extent + 0,
+	     extent + 1, extent + 2, N + 0, N + 1, N + 2);
       printf("broadcasting N\n");
       MPI_CHECK(MPI_Bcast(N, 3, MPI_INT, 0, comm));
       MPI_CHECK(MPI_Bcast(extent, 3, MPI_FLOAT, 0, comm));
-
       int nvoxels = N[0] * N[1] * N[2];
-
       data = new float[nvoxels];
-
-      if (data == NULL) {
-	printf("ooops bad allocation %s.\n", path);
-	exit(EXIT_FAILURE);
-      }
-
       int header_size = 0;
-
       for (int i = 0; i < sizeof(header); ++i)
 	if (header[i] == '\n') {
 	  if (header_size > 0) {
 	    header_size = i + 1;
 	    break;
 	  }
-
 	  header_size = i + 1;
 	}
-
       fseek(fh, header_size, SEEK_SET);
       fread(data, sizeof(float), nvoxels, fh);
-
       fclose(fh);
       for (size_t i = 0; i < nvoxels; i += CHUNKSIZE) {
 	size_t s = (i + CHUNKSIZE <= nvoxels) ? CHUNKSIZE : (nvoxels - i);
 	MPI_CHECK(MPI_Bcast(data + i, s, MPI_FLOAT, 0, comm));
       }
-
     } else {
       MPI_CHECK(MPI_Bcast(N, 3, MPI_INT, 0, comm));
       MPI_CHECK(MPI_Bcast(extent, 3, MPI_FLOAT, 0, comm));
