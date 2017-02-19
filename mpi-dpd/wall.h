@@ -40,8 +40,8 @@ class ComputeWall
 
   ~ComputeWall();
 
-  void bounce(Particle * const p, const int n, cudaStream_t stream);
+  void wall_bounce(Particle * const p, const int n, cudaStream_t stream);
 
-  void interactions(const Particle * const p, const int n, Acceleration * const acc,
+  void wall_interactions(const Particle * const p, const int n, Acceleration * const acc,
                     cudaStream_t stream);
 };

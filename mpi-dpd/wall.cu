@@ -803,7 +803,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle *const p, const int n,
   samples = 0;
 }
 
-void ComputeWall::bounce(Particle *const p, const int n, cudaStream_t stream) {
+void ComputeWall::wall_bounce(Particle *const p, const int n, cudaStream_t stream) {
   if (n > 0)
     SolidWallsKernel::bounce<<<(n + 127) / 128, 128, 0, stream>>>(
 								  (float2 *)p, n, dt);
@@ -812,7 +812,7 @@ void ComputeWall::bounce(Particle *const p, const int n, cudaStream_t stream) {
   CUDA_CHECK(cudaPeekAtLastError());
 }
 
-void ComputeWall::interactions(const Particle *const p, const int n,
+void ComputeWall::wall_interactions(const Particle *const p, const int n,
 			       Acceleration *const acc,
 			       cudaStream_t stream) {
   // cellsstart and cellscount IGNORED for now

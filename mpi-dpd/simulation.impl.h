@@ -237,11 +237,11 @@ void sim_forces() {
   CUDA_CHECK(cudaPeekAtLastError());
 
   if (rbcscoll && wall)
-    wall->interactions(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->acc(),
+    wall->wall_interactions(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->acc(),
 		       mainstream);
 
   if (wall)
-    wall->interactions(particles->xyzuvw.data, particles->size,
+    wall->wall_interactions(particles->xyzuvw.data, particles->size,
 		       particles->axayaz.data, mainstream);
 
   CUDA_CHECK(cudaPeekAtLastError());
@@ -424,10 +424,10 @@ static void sim_update_and_bounce() {
 
   CUDA_CHECK(cudaPeekAtLastError());
   if (wall) {
-    wall->bounce(particles->xyzuvw.data, particles->size, mainstream);
+    wall->wall_bounce(particles->xyzuvw.data, particles->size, mainstream);
 
     if (rbcscoll)
-      wall->bounce(rbcscoll->data(), rbcscoll->pcount(), mainstream);
+      wall->wall_bounce(rbcscoll->data(), rbcscoll->pcount(), mainstream);
   }
 
   CUDA_CHECK(cudaPeekAtLastError());
@@ -543,7 +543,7 @@ static void sim_lockstep() {
   CUDA_CHECK(cudaPeekAtLastError());
 
   if (wall)
-    wall->interactions(particles->xyzuvw.data, particles->size,
+    wall->wall_interactions(particles->xyzuvw.data, particles->size,
 		       particles->axayaz.data,
 		       mainstream);
 
@@ -565,7 +565,7 @@ static void sim_lockstep() {
   CUDA_CHECK(cudaPeekAtLastError());
   solutex->post_a();
   particles->upd_stg2_and_1(false, driving_acceleration, mainstream);
-  if (wall) wall->bounce(particles->xyzuvw.data, particles->size, mainstream);
+  if (wall) wall->wall_bounce(particles->xyzuvw.data, particles->size, mainstream);
   CUDA_CHECK(cudaPeekAtLastError());
   redistribute->pack(particles->xyzuvw.data, particles->size, mainstream);
   redistribute->send();
@@ -573,7 +573,7 @@ static void sim_lockstep() {
   CUDA_CHECK(cudaPeekAtLastError());
 
   if (rbcscoll && wall)
-    wall->interactions(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->acc(),
+    wall->wall_interactions(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->acc(),
 		       mainstream);
   CUDA_CHECK(cudaPeekAtLastError());
   solutex->recv_a(mainstream);
