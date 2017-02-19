@@ -35,7 +35,7 @@ extern int nvertices;
 class CollectionRBC : public ParticleArray {
  protected:
   MPI_Comm cartcomm;
-  int myrank, coords[3];
+  int myrank;
   void _initialize(float *device_xyzuvw, float (*transform)[4]);
  public:
   int ncells;

@@ -456,7 +456,7 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
 
   if (contactforces) solutex->attach_halocomputation(contact);
 
-  int dims[3], periods[3], coords[3];
+  int dims[3], periods[3]; /* `coords' is global */
   MPI_CHECK(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
   origin = make_float3((0.5 + coords[0]) * XSIZE_SUBDOMAIN,
 		       (0.5 + coords[1]) * YSIZE_SUBDOMAIN,

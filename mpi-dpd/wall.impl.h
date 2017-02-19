@@ -506,7 +506,7 @@ void wall_init(MPI_Comm cartcomm_, Particle *const p, const int n,
   frcs = new SimpleDeviceBuffer<float3>;
   cartcomm = cartcomm_;
 
-  int myrank, dims[3], periods[3], coords[3];
+  int myrank, dims[3], periods[3];
   MPI_CHECK(MPI_Comm_rank(cartcomm, &myrank));
   MPI_CHECK(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
 

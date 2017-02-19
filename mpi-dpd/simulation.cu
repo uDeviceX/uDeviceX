@@ -37,6 +37,10 @@
 #include <thrust/device_vector.h>
 #include <thrust/sort.h>
 
+/*** from containters.h ****/
+float3 origin, globalextent;
+int    coords[3];
+
 /**** from wall.h ****/
 MPI_Comm cartcomm;
 Logistic::KISS trunk;
@@ -49,9 +53,6 @@ CellLists *wall_cells;
 SimpleDeviceBuffer<float3> *frcs;
 int samples;
 #include "wall.impl.h"
-
-/*** from containters.h ****/
-float3 origin, globalextent;
 
 /**** from simulation.h ****/
 ParticleArray *particles_pingpong[2];
