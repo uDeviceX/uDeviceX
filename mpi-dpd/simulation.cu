@@ -51,7 +51,7 @@ SoluteExchange* solutex;
 ComputeFSI* fsi;
 ComputeContact* contact;
 
-ComputeWall * wall;
+ComputeWall * wall; bool wall_created = false;
 bool sim_is_done;
 
 MPI_Comm activecomm, cartcomm;
