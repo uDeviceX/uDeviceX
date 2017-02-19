@@ -10,21 +10,6 @@
  *  before getting a written permission from the author of this file.
  */
 
-#include <sys/stat.h>
-
-#include <rbc-cuda.h>
-#include <vector>
-#include <string>
-
-#include <cstdio>
-#include <mpi.h>
-#include ".conf.h" /* configuration file (copy from .conf.test.h) */
-#include "common.h"
-#include "containers.h"
-#include "io.h"
-#include "last_bit_float.h"
-#include "dpd-forces.h"
-
 int (*indices)[3] = NULL;
 int ntriangles = -1;
 int nvertices = -1;
@@ -212,60 +197,59 @@ namespace ParticleKernels {
     }
 } /* end of ParticleKernels */
 
-void ParticleArray::upd_stg1(bool rbcflag, float driving_acceleration, cudaStream_t stream) {
-    if (S)
-	ParticleKernels::upd_stg1<<<(pp.S + 127) / 128, 128, 0, stream>>>
-	  (rbcflag, pp.D, aa.D, pp.S,
-	   dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
+void upd_stg1(ParticleArray* pa, bool rbcflag, float driving_acceleration, cudaStream_t stream) {
+  if (pa->S)
+    ParticleKernels::upd_stg1<<<(pa->pp.S + 127) / 128, 128, 0, stream>>>
+      (rbcflag, pa->pp.D, pa->aa.D, pa->pp.S,
+       dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
-void  ParticleArray::upd_stg2_and_1(bool rbcflag, float driving_acceleration, cudaStream_t stream) {
-    if (S)
-	ParticleKernels::upd_stg2_and_1<<<(pp.S + 127) / 128, 128, 0, stream>>>
-	  (rbcflag, (float2 *)pp.D, (float *)aa.D, pp.S,
-	   dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
+void  upd_stg2_and_1(ParticleArray* pa, bool rbcflag, float driving_acceleration, cudaStream_t stream) {
+  if (pa->S)
+    ParticleKernels::upd_stg2_and_1<<<(pa->pp.S + 127) / 128, 128, 0, stream>>>
+      (rbcflag, (float2 *)pa->pp.D, (float *)pa->aa.D, pa->pp.S,
+       dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
-void ParticleArray::pa_resize(int n) {
-    S = n;
-
+void pa_resize(ParticleArray* pa, int n) {
+    pa->S = n;
     /* YTANG: need the array to be 32-padded for locally transposed
        storage of acceleration */
     if ( n % 32 ) {
-	pp.preserve_resize( n - n % 32 + 32 );
-	aa.preserve_resize( n - n % 32 + 32 );
+	pa->pp.preserve_resize( n - n % 32 + 32 );
+	pa->aa.preserve_resize( n - n % 32 + 32 );
     }
-    pp.resize(n);
-    aa.resize(n);
+    pa->pp.resize(n);
+    pa->aa.resize(n);
 }
 
-void ParticleArray::pa_preserve_resize(int n) {
-    int oldsize = S;
-    S = n;
+void pa_preserve_resize(ParticleArray* pa, int n) {
+    int oldsize = pa->S;
+    pa->S = n;
 
-    pp.preserve_resize(n);
-    aa.preserve_resize(n);
+    pa->pp.preserve_resize(n);
+    pa->aa.preserve_resize(n);
 
-    if (S > oldsize)
-	CC(cudaMemset(aa.D + oldsize, 0, sizeof(Acceleration) * (S-oldsize)));
+    if (pa->S > oldsize)
+	CC(cudaMemset(pa->aa.D + oldsize, 0, sizeof(Acceleration) * (pa->S-oldsize)));
 }
 
-void ParticleArray::clear_velocity() {
-    if (S)
-	ParticleKernels::clear_velocity<<<(pp.S + 127) / 128, 128 >>>(pp.D, pp.S);
+void clear_velocity(ParticleArray* pa) {
+  if (pa->S)
+    ParticleKernels::clear_velocity<<<(pa->pp.S + 127) / 128, 128 >>>(pa->pp.D, pa->pp.S);
 }
 
-void CollectionRBC::rbc_resize(int count) {
+void rbc_resize(ParticleArray* pa, int count) {
     ncells = count;
-    ParticleArray::pa_resize(count*nvertices);
+    pa_resize(pa, count*nvertices);
 }
 
-void CollectionRBC::rbc_preserve_resize(int count) {
+void rbc_preserve_resize(ParticleArray* pa, int count) {
     ncells = count;
-    ParticleArray::pa_preserve_resize(count*nvertices);
+    pa_preserve_resize(pa, count*nvertices);
 }
 
-CollectionRBC::CollectionRBC() {
+void rbc_init() {
   ncells = 0;
   int dims[3], periods[3];
   MPI_CHECK( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
@@ -279,7 +263,12 @@ struct TransformedExtent {
     float com[3];
     float transform[4][4];
 };
-void CollectionRBC::setup(const char *path2ic) {
+
+void _initialize(float *device_pp, float (*transform)[4]) {
+  CudaRBC::initialize(device_pp, transform);
+}
+
+void setup(ParticleArray* pa, const char *path2ic) {
     vector<TransformedExtent> allrbcs;
     if (rank == 0) {
 	//read transformed extent from file
@@ -329,16 +318,12 @@ void CollectionRBC::setup(const char *path2ic) {
 	}
     }
 
-    rbc_resize(good.size());
+    rbc_resize(pa, good.size());
     for(int i = 0; i < good.size(); ++i)
-	_initialize((float *)(pp.D + nvertices * i), good[i].transform);
+      _initialize((float *)(pa->pp.D + nvertices * i), good[i].transform);
 }
 
-void CollectionRBC::_initialize(float *device_pp, float (*transform)[4]) {
-    CudaRBC::initialize(device_pp, transform);
-}
-
-void CollectionRBC::remove(int *entries, int nentries) {
+void remove(ParticleArray* pa, int *entries, int nentries) {
     std::vector<bool > marks(ncells, true);
 
     for(int i = 0; i < nentries; ++i)
@@ -352,14 +337,15 @@ void CollectionRBC::remove(int *entries, int nentries) {
     int nsurvived = survivors.size();
     SimpleDeviceBuffer<Particle> survived(nvertices*nsurvived);
     for(int i = 0; i < nsurvived; ++i)
-	CC(cudaMemcpy(survived.D + nvertices * i, pp.D + nvertices * survivors[i],
+	CC(cudaMemcpy(survived.D + nvertices * i, pa->pp.D + nvertices * survivors[i],
 		    sizeof(Particle) * nvertices, cudaMemcpyDeviceToDevice));
-
-    rbc_resize(nsurvived);
-
-    CC(cudaMemcpy(pp.D, survived.D, sizeof(Particle) * survived.S, cudaMemcpyDeviceToDevice));
+    rbc_resize(pa, nsurvived);
+    CC(cudaMemcpy(pa->pp.D, survived.D,
+		  sizeof(Particle) * survived.S, cudaMemcpyDeviceToDevice));
 }
 
+int  pcount() {return ncells * nvertices;}
+void clear_acc(ParticleArray* pa, cudaStream_t stream) {CC(cudaMemsetAsync(pa->aa.D, 0, sizeof(Acceleration) * pa->aa.S, stream));}
 static void rbc_dump0(const char *format4ply,
 		      MPI_Comm comm, int ncells,
 		      Particle *p, Acceleration *a, int n, int iddatadump) {

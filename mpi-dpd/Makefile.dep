@@ -3,17 +3,16 @@
 
 common.o: .conf.h common.h
 contact.o: .conf.h common-kernels.h common.h contact.h dpd-forces.h last_bit_float.h scan.h solute-exchange.h
-containers.o: .conf.h common.h containers.h dpd-forces.h io.h last_bit_float.h
 dpd-forces.o: .conf.h common.h dpd-forces.h
 dpd.o: .conf.h common.h dpd-forces.h dpd.h last_bit_float.h solvent-exchange.h
 fsi.o: .conf.h common-kernels.h common.h dpd-forces.h fsi.h last_bit_float.h solute-exchange.h
 io.o: .conf.h common.h dpd-forces.h io.h last_bit_float.h
 last_bit_float.o: last_bit_float.h
-main.o: .conf.h argument-parser.h common.h contact.h containers.h dpd.h fsi.h redistribute-particles.h redistribute-rbcs.h simulation.h solute-exchange.h solvent-exchange.h
+main.o: .conf.h argument-parser.h common.h contact.h dpd.h fsi.h redistribute-particles.h redistribute-rbcs.h simulation.h solute-exchange.h solvent-exchange.h
 minmax.o: .conf.h common.h minmax.h
 redistribute-particles.o: .conf.h common-kernels.h common.h redistribute-particles.h scan.h
 redistribute-rbcs.o: .conf.h common.h minmax.h redistribute-particles.h redistribute-rbcs.h
 simulation.impl.h: simulation.hack.h
-simulation.o: .conf.h common.h contact.h containers.h dpd-forces.h dpd.h fsi.h io.h last_bit_float.h redistribute-particles.h redistribute-rbcs.h simulation.h simulation.impl.h solute-exchange.h solvent-exchange.h wall.impl.h
+simulation.o: .conf.h common.h contact.h containers.impl.h dpd-forces.h dpd.h fsi.h io.h last_bit_float.h redistribute-particles.h redistribute-rbcs.h simulation.h simulation.impl.h solute-exchange.h solvent-exchange.h wall.impl.h
 solute-exchange.o: .conf.h common-kernels.h common.h solute-exchange.h
 solvent-exchange.o: .conf.h common.h solvent-exchange.h

@@ -19,7 +19,6 @@
 #include "argument-parser.h"
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */
 #include "common.h"
-#include "containers.h"
 #include "solvent-exchange.h"
 #include "dpd.h"
 #include "solute-exchange.h"

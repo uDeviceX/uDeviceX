@@ -808,7 +808,7 @@ void wall_interactions(const Particle *const p, const int n,
 
     SolidWallsKernel::
       interactions_3tpp<<<(3 * n + 127) / 128, 128, 0, stream>>>(
-								 (float2 *)p, n, solid_size, (float *)acc, trunk.get_float());
+								 (float2 *)p, n, solid_size, (float *)acc, trunk->get_float());
 
     CC(cudaUnbindTexture(SolidWallsKernel::texWallParticles));
     CC(cudaUnbindTexture(SolidWallsKernel::texWallCellStart));

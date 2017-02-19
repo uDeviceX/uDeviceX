@@ -20,7 +20,6 @@
 #include <mpi.h>
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */
 #include "common.h"
-#include "containers.h"
 #include "solvent-exchange.h"
 #include "dpd.h"
 #include "solute-exchange.h"
@@ -43,13 +42,20 @@ int    coords[3];
 MPI_Comm cartcomm;
 int nranks, rank;
 int ncells = 0;
+struct ParticleArray {
+  int S; /* size */
+  SimpleDeviceBuffer<Particle>     pp; /* xyzuvw */
+  SimpleDeviceBuffer<Acceleration> aa; /* axayaz */
+};
+
+#include "containers.impl.h"
 
 /**** from wall.h ****/
-Logistic::KISS trunk;
+Logistic::KISS* trunk;
 
-int solid_size = 0;
-float4 *solid4 = NULL;
-cudaArray *arrSDF = NULL;
+int solid_size;
+float4 *solid4;
+cudaArray *arrSDF;
 CellLists *wall_cells;
 
 SimpleDeviceBuffer<float3> *frcs;
@@ -59,7 +65,7 @@ int samples;
 /**** from simulation.h ****/
 ParticleArray *particles_pingpong[2];
 ParticleArray *particles, *newparticles;
-CollectionRBC *rbcscoll = NULL;
+ParticleArray *rbcscoll;
 
 SimpleDeviceBuffer<float4 > *xyzouvwo;
 SimpleDeviceBuffer<ushort4> *xyzo_half;
