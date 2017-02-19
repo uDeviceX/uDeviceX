@@ -36,12 +36,11 @@ class CollectionRBC : public ParticleArray {
  protected:
   MPI_Comm cartcomm;
   int myrank;
-  void _initialize(float *device_xyzuvw, float (*transform)[4]);
+  void _initialize(float *device_pp, float (*transform)[4]);
  public:
   int ncells;
   CollectionRBC(MPI_Comm cartcomm);
   void setup(const char *path2ic);
-  Acceleration * acc() {return aa.D;}
   void remove(int *  entries, int nentries);
   void resize(int rbcs_count);
   void preserve_resize(int n);

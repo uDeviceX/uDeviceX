@@ -201,8 +201,7 @@ void sim_forces() {
   std::vector<ParticlesWrap> wsolutes;
 
   if (rbcscoll)
-    wsolutes.push_back(
-	ParticlesWrap(rbcscoll->pp.D, rbcscoll->pcount(), rbcscoll->acc()));
+    wsolutes.push_back(ParticlesWrap(rbcscoll->pp.D, rbcscoll->pcount(), rbcscoll->aa.D));
 
   fsi->bind_solvent(wsolvent);
 
@@ -234,7 +233,7 @@ void sim_forces() {
   CC(cudaPeekAtLastError());
 
   if (rbcscoll && wall_created)
-    wall_interactions(rbcscoll->pp.D, rbcscoll->pcount(), rbcscoll->acc(),
+    wall_interactions(rbcscoll->pp.D, rbcscoll->pcount(), rbcscoll->aa.D,
 		       mainstream);
 
   if (wall_created)
@@ -261,7 +260,7 @@ void sim_forces() {
 
   if (rbcscoll)
     CudaRBC::forces_nohost(mainstream, rbcscoll->ncells,
-			   (float *)rbcscoll->pp.D, (float *)rbcscoll->acc());
+			   (float *)rbcscoll->pp.D, (float *)rbcscoll->aa.D);
 
   CC(cudaPeekAtLastError());
 
@@ -518,7 +517,7 @@ static void sim_lockstep() {
 
   if (rbcscoll)
     wsolutes.push_back(
-	ParticlesWrap(rbcscoll->pp.D, rbcscoll->pcount(), rbcscoll->acc()));
+	ParticlesWrap(rbcscoll->pp.D, rbcscoll->pcount(), rbcscoll->aa.D));
 
   fsi->bind_solvent(wsolvent);
   solutex->bind_solutes(wsolutes);
@@ -558,7 +557,7 @@ static void sim_lockstep() {
 
   if (rbcscoll)
     CudaRBC::forces_nohost(mainstream, rbcscoll->ncells,
-			   (float *)rbcscoll->pp.D, (float *)rbcscoll->acc());
+			   (float *)rbcscoll->pp.D, (float *)rbcscoll->aa.D);
   CC(cudaPeekAtLastError());
   solutex->post_a();
   particles->upd_stg2_and_1(false, driving_acceleration, mainstream);
@@ -570,18 +569,17 @@ static void sim_lockstep() {
   CC(cudaPeekAtLastError());
 
   if (rbcscoll && wall_created)
-    wall_interactions(rbcscoll->pp.D, rbcscoll->pcount(), rbcscoll->acc(),
+    wall_interactions(rbcscoll->pp.D, rbcscoll->pcount(), rbcscoll->aa.D,
 		       mainstream);
   CC(cudaPeekAtLastError());
   solutex->recv_a(mainstream);
   if (rbcscoll) rbcscoll->upd_stg2_and_1(true, driving_acceleration, mainstream);
-  const int newnp = redistribute->recv_count(mainstream);
+  int newnp = redistribute->recv_count(mainstream);
   CC(cudaPeekAtLastError());
-  if (rbcscoll)
+  if (rbcscoll) {
     redistribute_rbcs->extent(rbcscoll->pp.D, rbcscoll->ncells, mainstream);
-  if (rbcscoll)
-    redistribute_rbcs->pack_sendcount(rbcscoll->pp.D, rbcscoll->ncells,
-				     mainstream);
+    redistribute_rbcs->pack_sendcount(rbcscoll->pp.D, rbcscoll->ncells, mainstream);
+  }
   newparticles->resize(newnp);
   xyzouvwo->resize(newnp * 2);
   xyzo_half->resize(newnp);

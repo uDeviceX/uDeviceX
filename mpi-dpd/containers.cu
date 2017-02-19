@@ -335,8 +335,8 @@ void CollectionRBC::setup(const char *path2ic) {
 	_initialize((float *)(pp.D + nvertices * i), good[i].transform);
 }
 
-void CollectionRBC::_initialize(float *device_xyzuvw, float (*transform)[4]) {
-    CudaRBC::initialize(device_xyzuvw, transform);
+void CollectionRBC::_initialize(float *device_pp, float (*transform)[4]) {
+    CudaRBC::initialize(device_pp, transform);
 }
 
 void CollectionRBC::remove(int *entries, int nentries) {
