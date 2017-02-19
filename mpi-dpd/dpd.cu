@@ -323,9 +323,9 @@ void ComputeDPD::remote_interactions(const Particle * const p, const int n, Acce
         const int m2 = 0 == dz;
 
         BipsBatch::BatchInfo entry = {
-            (float *)sendhalos[i].dbuf.data, (float2 *)recvhalos[i].dbuf.data, interrank_trunks[i].get_float(),
+            (float *)sendhalos[i].dbuf.D, (float2 *)recvhalos[i].dbuf.D, interrank_trunks[i].get_float(),
             sendhalos[i].dbuf.size, recvhalos[i].dbuf.size, interrank_masks[i],
-            recvhalos[i].dcellstarts.data, sendhalos[i].scattered_entries.data,
+            recvhalos[i].dcellstarts.D, sendhalos[i].scattered_entries.D,
             dx, dy, dz,
             1 + m0 * (XSIZE_SUBDOMAIN - 1), 1 + m1 * (YSIZE_SUBDOMAIN - 1), 1 + m2 * (ZSIZE_SUBDOMAIN - 1),
             (BipsBatch::HaloType)(abs(dx) + abs(dy) + abs(dz))

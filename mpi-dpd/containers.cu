@@ -214,14 +214,14 @@ namespace ParticleKernels {
 void ParticleArray::upd_stg1(bool rbcflag, float driving_acceleration, cudaStream_t stream) {
     if (size)
 	ParticleKernels::upd_stg1<<<(xyzuvw.size + 127) / 128, 128, 0, stream>>>
-	  (rbcflag, xyzuvw.data, axayaz.data, xyzuvw.size,
+	  (rbcflag, xyzuvw.D, axayaz.D, xyzuvw.size,
 	   dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
 void  ParticleArray::upd_stg2_and_1(bool rbcflag, float driving_acceleration, cudaStream_t stream) {
     if (size)
 	ParticleKernels::upd_stg2_and_1<<<(xyzuvw.size + 127) / 128, 128, 0, stream>>>
-	  (rbcflag, (float2 *)xyzuvw.data, (float *)axayaz.data, xyzuvw.size,
+	  (rbcflag, (float2 *)xyzuvw.D, (float *)axayaz.D, xyzuvw.size,
 	   dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
@@ -235,10 +235,6 @@ void ParticleArray::resize(int n) {
     }
     xyzuvw.resize(n);
     axayaz.resize(n);
-
-#ifndef NDEBUG
-    CUDA_CHECK(cudaMemset(axayaz.data, 0, sizeof(Acceleration) * size));
-#endif
 }
 
 void ParticleArray::preserve_resize(int n) {
@@ -249,12 +245,12 @@ void ParticleArray::preserve_resize(int n) {
     axayaz.preserve_resize(n);
 
     if (size > oldsize)
-	CUDA_CHECK(cudaMemset(axayaz.data + oldsize, 0, sizeof(Acceleration) * (size-oldsize)));
+	CUDA_CHECK(cudaMemset(axayaz.D + oldsize, 0, sizeof(Acceleration) * (size-oldsize)));
 }
 
 void ParticleArray::clear_velocity() {
     if (size)
-	ParticleKernels::clear_velocity<<<(xyzuvw.size + 127) / 128, 128 >>>(xyzuvw.data, xyzuvw.size);
+	ParticleKernels::clear_velocity<<<(xyzuvw.size + 127) / 128, 128 >>>(xyzuvw.D, xyzuvw.size);
 }
 
 void CollectionRBC::resize(int count) {
@@ -334,7 +330,7 @@ void CollectionRBC::setup(const char *path2ic) {
 
     resize(good.size());
     for(int i = 0; i < good.size(); ++i)
-	_initialize((float *)(xyzuvw.data + nvertices * i), good[i].transform);
+	_initialize((float *)(xyzuvw.D + nvertices * i), good[i].transform);
 }
 
 void CollectionRBC::_initialize(float *device_xyzuvw, float (*transform)[4]) {
@@ -355,12 +351,12 @@ void CollectionRBC::remove(int *entries, int nentries) {
     int nsurvived = survivors.size();
     SimpleDeviceBuffer<Particle> survived(nvertices*nsurvived);
     for(int i = 0; i < nsurvived; ++i)
-	CUDA_CHECK(cudaMemcpy(survived.data + nvertices * i, data() + nvertices * survivors[i],
+	CUDA_CHECK(cudaMemcpy(survived.D + nvertices * i, data() + nvertices * survivors[i],
 		    sizeof(Particle) * nvertices, cudaMemcpyDeviceToDevice));
 
     resize(nsurvived);
 
-    CUDA_CHECK(cudaMemcpy(xyzuvw.data, survived.data, sizeof(Particle) * survived.size, cudaMemcpyDeviceToDevice));
+    CUDA_CHECK(cudaMemcpy(xyzuvw.D, survived.D, sizeof(Particle) * survived.size, cudaMemcpyDeviceToDevice));
 }
 
 void rbc_dump0(const char *format4ply,

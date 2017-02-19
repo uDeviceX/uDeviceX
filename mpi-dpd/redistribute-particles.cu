@@ -664,7 +664,7 @@ void RedistributeParticles::bulk(const int nparticles, int * const cellstarts, i
 
     if (nparticles)
         subindex_local<false><<< (nparticles + 127) / 128, 128, 0, mystream>>>
-            (nparticles, RedistributeParticlesKernels::texparticledata, cellcounts, subindices.data);
+            (nparticles, RedistributeParticlesKernels::texparticledata, cellcounts, subindices.D);
 
     CUDA_CHECK(cudaPeekAtLastError());
 }
@@ -738,34 +738,34 @@ void RedistributeParticles::recv_unpack(Particle * const particles, float4 * con
     CUDA_CHECK(cudaPeekAtLastError());
 
 #ifndef NDEBUG
-    CUDA_CHECK(cudaMemset(remote_particles.data, 0xff, sizeof(Particle) * remote_particles.size));
+    CUDA_CHECK(cudaMemset(remote_particles.D, 0xff, sizeof(Particle) * remote_particles.size));
 #endif
 
     if (nhalo)
         RedistributeParticlesKernels::subindex_remote<<< (nhalo_padded + 127) / 128, 128, 0, mystream >>>
-            (nhalo_padded, nhalo, cellcounts, (float2 *)remote_particles.data, subindices_remote.data);
+            (nhalo_padded, nhalo, cellcounts, (float2 *)remote_particles.D, subindices_remote.D);
 
     if (compressed_cellcounts.size)
         compress_counts<<< (compressed_cellcounts.size + 127) / 128, 128, 0, mystream >>>
-            (compressed_cellcounts.size, (int4 *)cellcounts, (uchar4 *)compressed_cellcounts.data);
+            (compressed_cellcounts.size, (int4 *)cellcounts, (uchar4 *)compressed_cellcounts.D);
 
-    scan(compressed_cellcounts.data, compressed_cellcounts.size, mystream, (uint *)cellstarts);
+    scan(compressed_cellcounts.D, compressed_cellcounts.size, mystream, (uint *)cellstarts);
 
 #ifndef NDEBUG
-    CUDA_CHECK(cudaMemset(scattered_indices.data, 0xff, sizeof(int) * scattered_indices.size));
+    CUDA_CHECK(cudaMemset(scattered_indices.D, 0xff, sizeof(int) * scattered_indices.size));
 #endif
 
     if (subindices.size)
         RedistributeParticlesKernels::scatter_indices<<< (subindices.size + 127) / 128, 128, 0, mystream>>>
-            (false, subindices.data, subindices.size, cellstarts, scattered_indices.data, scattered_indices.size);
+            (false, subindices.D, subindices.size, cellstarts, scattered_indices.D, scattered_indices.size);
 
     if (nhalo)
         RedistributeParticlesKernels::scatter_indices<<< (nhalo + 127) / 128, 128, 0, mystream>>>
-            (true, subindices_remote.data, nhalo, cellstarts, scattered_indices.data, scattered_indices.size);
+            (true, subindices_remote.D, nhalo, cellstarts, scattered_indices.D, scattered_indices.size);
 
     if (nparticles)
         RedistributeParticlesKernels::gather_particles<<< (nparticles + 127) / 128, 128, 0, mystream>>>
-            (scattered_indices.data, (float2 *)remote_particles.data, nhalo,
+            (scattered_indices.D, (float2 *)remote_particles.D, nhalo,
              RedistributeParticlesKernels::ntexparticles, nparticles, (float2 *)particles, xyzouvwo, xyzo_half);
 
     CUDA_CHECK(cudaPeekAtLastError());

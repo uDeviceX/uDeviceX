@@ -122,10 +122,10 @@ namespace ReorderingRBC
             _ddestinations.resize(nrbcs);
             _dsources.resize(nrbcs);
 
-            CUDA_CHECK(cudaMemcpyAsync(_ddestinations.data, destinations, sizeof(float *) * nrbcs, cudaMemcpyHostToDevice, stream));
-            CUDA_CHECK(cudaMemcpyAsync(_dsources.data, sources, sizeof(float *) * nrbcs, cudaMemcpyHostToDevice, stream));
+            CUDA_CHECK(cudaMemcpyAsync(_ddestinations.D, destinations, sizeof(float *) * nrbcs, cudaMemcpyHostToDevice, stream));
+            CUDA_CHECK(cudaMemcpyAsync(_dsources.D, sources, sizeof(float *) * nrbcs, cudaMemcpyHostToDevice, stream));
 
-            pack_all_kernel<false><<<(nthreads + 127) / 128, 128, 0, stream>>>(nrbcs, nvertices, _dsources.data, _ddestinations.data);
+            pack_all_kernel<false><<<(nthreads + 127) / 128, 128, 0, stream>>>(nrbcs, nvertices, _dsources.D, _ddestinations.D);
         }
 
         CUDA_CHECK(cudaPeekAtLastError());
@@ -194,7 +194,7 @@ void RedistributeRBCs::pack_sendcount(const Particle * const xyzuvw, const int n
                 if (i)
                     dst.push_back((float *)(halo_sendbufs[i].devptr + nvertices * j));
                 else
-                    dst.push_back((float *)(bulk.data + nvertices * j));
+                    dst.push_back((float *)(bulk.D + nvertices * j));
             }
 
         ReorderingRBC::pack_all(stream, src.size(), nvertices, &src.front(), &dst.front());
@@ -322,7 +322,7 @@ void RedistributeRBCs::unpack(Particle * const xyzuvw, const int nrbcs, cudaStre
     recvreq.clear();
     sendreq.clear();
 
-    CUDA_CHECK(cudaMemcpyAsync(xyzuvw, bulk.data, notleaving * nvertices * sizeof(Particle),
+    CUDA_CHECK(cudaMemcpyAsync(xyzuvw, bulk.D, notleaving * nvertices * sizeof(Particle),
                 cudaMemcpyDeviceToDevice, stream));
 
     for(int i = 1, s = notleaving * nvertices; i < 27; ++i)

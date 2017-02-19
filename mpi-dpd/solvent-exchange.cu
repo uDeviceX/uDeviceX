@@ -327,12 +327,12 @@ void SolventExchange::_pack_all(const Particle * const p, const int n, const boo
 
         for(int i = 0; i < 26; ++i)
         {
-            baginfos[i].start_src = sendhalos[i].tmpstart.data;
-            baginfos[i].count_src = sendhalos[i].tmpcount.data;
-            baginfos[i].start_dst = sendhalos[i].dcellstarts.data;
+            baginfos[i].start_src = sendhalos[i].tmpstart.D;
+            baginfos[i].count_src = sendhalos[i].tmpcount.D;
+            baginfos[i].start_dst = sendhalos[i].dcellstarts.D;
             baginfos[i].bagsize = sendhalos[i].dbuf.capacity;
-            baginfos[i].scattered_entries = sendhalos[i].scattered_entries.data;
-            baginfos[i].dbag = sendhalos[i].dbuf.data;
+            baginfos[i].scattered_entries = sendhalos[i].scattered_entries.D;
+            baginfos[i].dbag = sendhalos[i].dbuf.D;
             baginfos[i].hbag = sendhalos[i].hbuf.data;
         }
 
@@ -371,10 +371,10 @@ void SolventExchange::pack(const Particle * const p, const int n, const int * co
             static PackingHalo::CellPackSOA cellpacks[26];
             for(int i = 0; i < 26; ++i)
             {
-                cellpacks[i].start = sendhalos[i].tmpstart.data;
-                cellpacks[i].count = sendhalos[i].tmpcount.data;
+                cellpacks[i].start = sendhalos[i].tmpstart.D;
+                cellpacks[i].count = sendhalos[i].tmpcount.D;
                 cellpacks[i].enabled = sendhalos[i].expected > 0;
-                cellpacks[i].scan = sendhalos[i].dcellstarts.data;
+                cellpacks[i].scan = sendhalos[i].dcellstarts.D;
                 cellpacks[i].size = sendhalos[i].dcellstarts.size;
             }
 
@@ -405,7 +405,7 @@ void SolventExchange::pack(const Particle * const p, const int n, const int * co
         {
             static int * srccells[26];
             for(int i = 0; i < 26; ++i)
-                srccells[i] = sendhalos[i].dcellstarts.data;
+                srccells[i] = sendhalos[i].dcellstarts.D;
 
             CUDA_CHECK(cudaMemcpyToSymbol(PackingHalo::srccells, srccells, sizeof(srccells), 0, cudaMemcpyHostToDevice));
 
@@ -425,7 +425,7 @@ void SolventExchange::pack(const Particle * const p, const int n, const int * co
 
             static int * dstcells[26];
             for(int i = 0; i < 26; ++i)
-                dstcells[i] = recvhalos[i].dcellstarts.data;
+                dstcells[i] = recvhalos[i].dcellstarts.D;
 
             CUDA_CHECK(cudaMemcpyToSymbol(PackingHalo::dstcells, dstcells, sizeof(dstcells), sizeof(dstcells), cudaMemcpyHostToDevice));
         }
@@ -477,7 +477,7 @@ void SolventExchange::post(const Particle * const p, const int n, cudaStream_t s
 
     for(int i = 0; i < 26; ++i)
         if (sendhalos[i].hbuf.size)
-            CUDA_CHECK(cudaMemcpyAsync(sendhalos[i].hbuf.data, sendhalos[i].dbuf.data, sizeof(Particle) * sendhalos[i].hbuf.size,
+            CUDA_CHECK(cudaMemcpyAsync(sendhalos[i].hbuf.data, sendhalos[i].dbuf.D, sizeof(Particle) * sendhalos[i].hbuf.size,
                         cudaMemcpyDeviceToHost, downloadstream));
 
 #ifndef NDEBUG
@@ -489,7 +489,7 @@ void SolventExchange::post(const Particle * const p, const int n, cudaStream_t s
             const int nd = sendhalos[i].dbuf.size;
 
             if (nd > 0)
-                PackingHalo::check_send_particles<<<(nd + 127)/ 128, 128, 0, stream>>>(sendhalos[i].dbuf.data, nd, i);
+                PackingHalo::check_send_particles<<<(nd + 127)/ 128, 128, 0, stream>>>(sendhalos[i].dbuf.D, nd, i);
         }
 
     CUDA_CHECK(cudaStreamSynchronize(0));
@@ -605,11 +605,11 @@ void SolventExchange::recv(cudaStream_t stream, cudaStream_t uploadstream)
     }
 
     for(int i = 0; i < 26; ++i)
-        CUDA_CHECK(cudaMemcpyAsync(recvhalos[i].dbuf.data, recvhalos[i].hbuf.data,
+        CUDA_CHECK(cudaMemcpyAsync(recvhalos[i].dbuf.D, recvhalos[i].hbuf.data,
                     sizeof(Particle) * recvhalos[i].hbuf.size, cudaMemcpyHostToDevice, uploadstream));
 
     for(int i = 0; i < 26; ++i)
-        CUDA_CHECK(cudaMemcpyAsync(recvhalos[i].dcellstarts.data, recvhalos[i].hcellstarts.data,
+        CUDA_CHECK(cudaMemcpyAsync(recvhalos[i].dcellstarts.D, recvhalos[i].hcellstarts.data,
                     sizeof(int) * recvhalos[i].hcellstarts.size, cudaMemcpyHostToDevice, uploadstream));
 
     CUDA_CHECK(cudaPeekAtLastError());

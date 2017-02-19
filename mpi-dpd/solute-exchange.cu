@@ -53,7 +53,7 @@ SoluteExchange::SoluteExchange(MPI_Comm _cartcomm) :
 
         CUDA_CHECK(cudaMemcpyToSymbol(SolutePUP::ccapacities, &local[i].scattered_indices.capacity, sizeof(int),
                     sizeof(int) * i, cudaMemcpyHostToDevice));
-        CUDA_CHECK(cudaMemcpyToSymbol(SolutePUP::scattered_indices, &local[i].scattered_indices.data,
+        CUDA_CHECK(cudaMemcpyToSymbol(SolutePUP::scattered_indices, &local[i].scattered_indices.D,
                     sizeof(int *), sizeof(int *) * i, cudaMemcpyHostToDevice));
     }
 
@@ -249,25 +249,25 @@ namespace SolutePUP
 void SoluteExchange::_pack_attempt(cudaStream_t stream)
 {
 #ifndef NDEBUG
-    CUDA_CHECK(cudaMemsetAsync(packbuf.data, 0xff, sizeof(Particle) * packbuf.capacity, stream));
+    CUDA_CHECK(cudaMemsetAsync(packbuf.D, 0xff, sizeof(Particle) * packbuf.capacity, stream));
     memset(host_packbuf.data, 0xff, sizeof(Particle) * packbuf.capacity);
 
     for(int i = 0; i < 26; ++i)
     {
-        CUDA_CHECK(cudaMemsetAsync(local[i].scattered_indices.data, 0x8f, sizeof(int) * local[i].scattered_indices.capacity, stream));
+        CUDA_CHECK(cudaMemsetAsync(local[i].scattered_indices.D, 0x8f, sizeof(int) * local[i].scattered_indices.capacity, stream));
         CUDA_CHECK(cudaMemsetAsync(local[i].result.data, 0xff, sizeof(Acceleration) * local[i].result.capacity, stream));
     }
 #endif
     CUDA_CHECK(cudaPeekAtLastError());
 
     if (packscount.size)
-        CUDA_CHECK(cudaMemsetAsync(packscount.data, 0, sizeof(int) * packscount.size, stream));
+        CUDA_CHECK(cudaMemsetAsync(packscount.D, 0, sizeof(int) * packscount.size, stream));
 
     if (packsoffset.size)
-        CUDA_CHECK(cudaMemsetAsync(packsoffset.data, 0, sizeof(int) * packsoffset.size, stream));
+        CUDA_CHECK(cudaMemsetAsync(packsoffset.D, 0, sizeof(int) * packsoffset.size, stream));
 
     if (packsstart.size)
-        CUDA_CHECK(cudaMemsetAsync(packsstart.data, 0, sizeof(int) * packsstart.size, stream));
+        CUDA_CHECK(cudaMemsetAsync(packsstart.D, 0, sizeof(int) * packsstart.size, stream));
 
     SolutePUP::init<<< 1, 1, 0, stream >>>();
 
@@ -277,24 +277,24 @@ void SoluteExchange::_pack_attempt(cudaStream_t stream)
 
         if (it.n)
         {
-            CUDA_CHECK(cudaMemcpyToSymbolAsync(SolutePUP::coffsets, packsoffset.data + 26 * i, sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice, stream));
+            CUDA_CHECK(cudaMemcpyToSymbolAsync(SolutePUP::coffsets, packsoffset.D + 26 * i, sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice, stream));
 
-            SolutePUP::scatter_indices<<< (it.n + 127) / 128, 128, 0, stream >>>((float2 *)it.p, it.n, packscount.data + i * 26);
+            SolutePUP::scatter_indices<<< (it.n + 127) / 128, 128, 0, stream >>>((float2 *)it.p, it.n, packscount.D + i * 26);
         }
 
-        SolutePUP::tiny_scan<<< 1, 32, 0, stream >>>(packscount.data + i * 26, packsoffset.data + 26 * i,
-                packsoffset.data + 26 * (i + 1), packsstart.data + i * 27);
+        SolutePUP::tiny_scan<<< 1, 32, 0, stream >>>(packscount.D + i * 26, packsoffset.D + 26 * i,
+                packsoffset.D + 26 * (i + 1), packsstart.D + i * 27);
 
         CUDA_CHECK(cudaPeekAtLastError());
     }
 
-    CUDA_CHECK(cudaMemcpyAsync(host_packstotalcount.data, packsoffset.data + 26 * wsolutes.size(), sizeof(int) * 26, cudaMemcpyDeviceToHost, stream));
+    CUDA_CHECK(cudaMemcpyAsync(host_packstotalcount.data, packsoffset.D + 26 * wsolutes.size(), sizeof(int) * 26, cudaMemcpyDeviceToHost, stream));
 
-    SolutePUP::tiny_scan<<< 1, 32, 0, stream >>>(packsoffset.data + 26 * wsolutes.size(), NULL, NULL, packstotalstart.data);
+    SolutePUP::tiny_scan<<< 1, 32, 0, stream >>>(packsoffset.D + 26 * wsolutes.size(), NULL, NULL, packstotalstart.D);
 
-    CUDA_CHECK(cudaMemcpyAsync(host_packstotalstart.data, packstotalstart.data, sizeof(int) * 27, cudaMemcpyDeviceToHost, stream));
+    CUDA_CHECK(cudaMemcpyAsync(host_packstotalstart.data, packstotalstart.D, sizeof(int) * 27, cudaMemcpyDeviceToHost, stream));
 
-    CUDA_CHECK(cudaMemcpyToSymbolAsync(SolutePUP::cbases, packstotalstart.data, sizeof(int) * 27, 0, cudaMemcpyDeviceToDevice, stream));
+    CUDA_CHECK(cudaMemcpyToSymbolAsync(SolutePUP::cbases, packstotalstart.D, sizeof(int) * 27, 0, cudaMemcpyDeviceToDevice, stream));
 
     for(int i = 0; i < wsolutes.size(); ++i)
     {
@@ -302,11 +302,11 @@ void SoluteExchange::_pack_attempt(cudaStream_t stream)
 
         if (it.n)
         {
-            CUDA_CHECK(cudaMemcpyToSymbolAsync(SolutePUP::coffsets, packsoffset.data + 26 * i, sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice, stream));
-            CUDA_CHECK(cudaMemcpyToSymbolAsync(SolutePUP::ccounts, packscount.data + 26 * i, sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice, stream));
-            CUDA_CHECK(cudaMemcpyToSymbolAsync(SolutePUP::cpaddedstarts, packsstart.data + 27 * i, sizeof(int) * 27, 0, cudaMemcpyDeviceToDevice, stream));
+            CUDA_CHECK(cudaMemcpyToSymbolAsync(SolutePUP::coffsets, packsoffset.D + 26 * i, sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice, stream));
+            CUDA_CHECK(cudaMemcpyToSymbolAsync(SolutePUP::ccounts, packscount.D + 26 * i, sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice, stream));
+            CUDA_CHECK(cudaMemcpyToSymbolAsync(SolutePUP::cpaddedstarts, packsstart.D + 27 * i, sizeof(int) * 27, 0, cudaMemcpyDeviceToDevice, stream));
 
-            SolutePUP::pack<<< 14 * 16, 128, 0, stream >>>((float2 *)it.p, it.n, (float2 *)packbuf.data, packbuf.capacity, i);
+            SolutePUP::pack<<< 14 * 16, 128, 0, stream >>>((float2 *)it.p, it.n, (float2 *)packbuf.D, packbuf.capacity, i);
         }
     }
 
@@ -366,7 +366,7 @@ void SoluteExchange::post_p(cudaStream_t stream, cudaStream_t downloadstream)
 
             int * newindices[26];
             for(int i = 0; i < 26; ++i)
-                newindices[i] = local[i].scattered_indices.data;
+                newindices[i] = local[i].scattered_indices.D;
 
             CUDA_CHECK(cudaMemcpyToSymbolAsync(SolutePUP::scattered_indices, newindices, sizeof(newindices), 0, cudaMemcpyHostToDevice, stream));
 
@@ -393,7 +393,7 @@ void SoluteExchange::post_p(cudaStream_t stream, cudaStream_t downloadstream)
 
         if (host_packstotalstart.data[26])
         {
-            CUDA_CHECK(cudaMemcpyAsync(host_packbuf.data, packbuf.data, sizeof(Particle) * host_packstotalstart.data[26],
+            CUDA_CHECK(cudaMemcpyAsync(host_packbuf.data, packbuf.D, sizeof(Particle) * host_packstotalstart.data[26],
                         cudaMemcpyDeviceToHost, downloadstream));
         }
 
@@ -456,7 +456,7 @@ void SoluteExchange::recv_p(cudaStream_t uploadstream)
         remote[i].preserve_resize(count);
 
 #ifndef NDEBUG
-        CUDA_CHECK(cudaMemsetAsync(remote[i].dstate.data, 0xff, sizeof(Particle) * remote[i].dstate.capacity, uploadstream));
+        CUDA_CHECK(cudaMemsetAsync(remote[i].dstate.D, 0xff, sizeof(Particle) * remote[i].dstate.capacity, uploadstream));
         CUDA_CHECK(cudaMemsetAsync(remote[i].result.data, 0xff, sizeof(Acceleration) * remote[i].result.capacity, uploadstream));
 #endif
 
@@ -478,7 +478,7 @@ void SoluteExchange::recv_p(cudaStream_t uploadstream)
     _postrecvC();
 
     for(int i = 0; i < 26; ++i)
-        CUDA_CHECK(cudaMemcpyAsync(remote[i].dstate.data, remote[i].hstate.data, sizeof(Particle) * remote[i].hstate.size,
+        CUDA_CHECK(cudaMemcpyAsync(remote[i].dstate.D, remote[i].hstate.data, sizeof(Particle) * remote[i].hstate.size,
                     cudaMemcpyHostToDevice, uploadstream));
 }
 
@@ -493,7 +493,7 @@ void SoluteExchange::halo(cudaStream_t uploadstream, cudaStream_t stream)
     ParticlesWrap halos[26];
 
     for(int i = 0; i < 26; ++i)
-        halos[i] = ParticlesWrap(remote[i].dstate.data, remote[i].dstate.size, remote[i].result.devptr);
+        halos[i] = ParticlesWrap(remote[i].dstate.D, remote[i].dstate.size, remote[i].result.devptr);
 
     CUDA_CHECK(cudaStreamSynchronize(uploadstream));
 
@@ -590,9 +590,9 @@ void SoluteExchange::recv_a(cudaStream_t stream)
 
         if (it.n)
         {
-            CUDA_CHECK(cudaMemcpyToSymbolAsync(SolutePUP::cpaddedstarts, packsstart.data + 27 * i, sizeof(int) * 27, 0, cudaMemcpyDeviceToDevice, stream));
-            CUDA_CHECK(cudaMemcpyToSymbolAsync(SolutePUP::ccounts, packscount.data + 26 * i, sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice, stream));
-            CUDA_CHECK(cudaMemcpyToSymbolAsync(SolutePUP::coffsets, packsoffset.data + 26 * i, sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice, stream));
+            CUDA_CHECK(cudaMemcpyToSymbolAsync(SolutePUP::cpaddedstarts, packsstart.D + 27 * i, sizeof(int) * 27, 0, cudaMemcpyDeviceToDevice, stream));
+            CUDA_CHECK(cudaMemcpyToSymbolAsync(SolutePUP::ccounts, packscount.D + 26 * i, sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice, stream));
+            CUDA_CHECK(cudaMemcpyToSymbolAsync(SolutePUP::coffsets, packsoffset.D + 26 * i, sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice, stream));
 
             SolutePUP::unpack<<< 16 * 14, 128, 0, stream >>>((float *)it.a, it.n);
         }

@@ -165,13 +165,13 @@ void ComputeContact::build_cells(std::vector<ParticlesWrap> wsolutes, cudaStream
     subindices.resize(ntotal);
     cellsentries.resize(ntotal);
 
-    CUDA_CHECK(cudaMemsetAsync(cellscount.data, 0, sizeof(int) * cellscount.size, stream));
+    CUDA_CHECK(cudaMemsetAsync(cellscount.D, 0, sizeof(int) * cellscount.size, stream));
 
 #ifndef NDEBUG
-    CUDA_CHECK(cudaMemsetAsync(cellsentries.data, 0xff, sizeof(int) * cellsentries.capacity, stream));
-    CUDA_CHECK(cudaMemsetAsync(subindices.data, 0xff, sizeof(int) * subindices.capacity, stream));
-    CUDA_CHECK(cudaMemsetAsync(compressed_cellscount.data, 0xff, sizeof(unsigned char) * compressed_cellscount.capacity, stream));
-    CUDA_CHECK(cudaMemsetAsync(cellsstart.data, 0xff, sizeof(int) * cellsstart.capacity, stream));
+    CUDA_CHECK(cudaMemsetAsync(cellsentries.D, 0xff, sizeof(int) * cellsentries.capacity, stream));
+    CUDA_CHECK(cudaMemsetAsync(subindices.D, 0xff, sizeof(int) * subindices.capacity, stream));
+    CUDA_CHECK(cudaMemsetAsync(compressed_cellscount.D, 0xff, sizeof(unsigned char) * compressed_cellscount.capacity, stream));
+    CUDA_CHECK(cudaMemsetAsync(cellsstart.D, 0xff, sizeof(int) * cellsstart.capacity, stream));
 #endif
 
     CUDA_CHECK(cudaPeekAtLastError());
@@ -183,15 +183,15 @@ void ComputeContact::build_cells(std::vector<ParticlesWrap> wsolutes, cudaStream
 
         if (it.n)
             subindex_local<true><<< (it.n + 127) / 128, 128, 0, stream >>>
-                (it.n, (float2 *)it.p, cellscount.data, subindices.data + ctr);
+                (it.n, (float2 *)it.p, cellscount.D, subindices.D + ctr);
 
         ctr += it.n;
     }
 
     compress_counts<<< (compressed_cellscount.size + 127) / 128, 128, 0, stream >>>
-        (compressed_cellscount.size, (int4 *)cellscount.data, (uchar4 *)compressed_cellscount.data);
+        (compressed_cellscount.size, (int4 *)cellscount.D, (uchar4 *)compressed_cellscount.D);
 
-    scan(compressed_cellscount.data, compressed_cellscount.size, stream, (uint *)cellsstart.data);
+    scan(compressed_cellscount.D, compressed_cellscount.size, stream, (uint *)cellsstart.D);
 
     ctr = 0;
     for(int i = 0; i < wsolutes.size(); ++i)
@@ -200,14 +200,14 @@ void ComputeContact::build_cells(std::vector<ParticlesWrap> wsolutes, cudaStream
 
         if (it.n)
             KernelsContact::populate<<< (it.n + 127) / 128, 128, 0, stream >>>
-                (subindices.data + ctr, cellsstart.data, it.n, i, ntotal, (KernelsContact::CellEntry *)cellsentries.data);
+                (subindices.D + ctr, cellsstart.D, it.n, i, ntotal, (KernelsContact::CellEntry *)cellsentries.D);
 
         ctr += it.n;
     }
 
     CUDA_CHECK(cudaPeekAtLastError());
 
-    KernelsContact::bind(cellsstart.data, cellsentries.data, ntotal, wsolutes, stream, cellscount.data);
+    KernelsContact::bind(cellsstart.D, cellsentries.D, ntotal, wsolutes, stream, cellscount.D);
 }
 
 namespace KernelsContact
