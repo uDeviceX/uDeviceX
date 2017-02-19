@@ -1,8 +1,6 @@
-
-
 namespace last_bit_float {
-// return a last bit of a float
-// See http://stackoverflow.com/a/1723938
+  /* return a last bit of a float
+     See http://stackoverflow.com/a/1723938 */
 __host__ __device__ bool get(const float f);
 
 // set a last bit of a float to `bit'
