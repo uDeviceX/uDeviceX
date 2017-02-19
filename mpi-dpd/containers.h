@@ -31,35 +31,27 @@ struct ParticleArray
 };
 
 extern int nvertices;
-class CollectionRBC : public ParticleArray
-{
+class CollectionRBC : public ParticleArray {
  protected:
   MPI_Comm cartcomm;
-  int ncells, myrank, coords[3];
-
+  int myrank, coords[3];
   void _initialize(float *device_xyzuvw, float (*transform)[4]);
-
-  static void _dump(const char * format4ply,
+  static void _dump(const char *format4ply,
 		    MPI_Comm comm, MPI_Comm cartcomm,  int ncells,
-		    Particle *  p,  Acceleration *  a,  int n, int iddatadump);
+		    Particle *p,  Acceleration *a,     int n, int iddatadump);
  public:
+  int ncells;
   CollectionRBC(MPI_Comm cartcomm);
-
   void setup(const char *path2ic);
 
-  Particle * data() { return xyzuvw.data; }
-  Acceleration * acc() { return axayaz.data; }
-
+  Particle * data()    {return xyzuvw.data;}
+  Acceleration * acc() {return axayaz.data;}
   void remove(int *  entries, int nentries);
   void resize(int rbcs_count);
   void preserve_resize(int n);
-
-  int count()  {return ncells; }
-  int pcount() {return ncells * nvertices;}
-
+  int  pcount() {return ncells * nvertices;}
   static void dump(MPI_Comm comm, MPI_Comm cartcomm,
-                   Particle * p, Acceleration * a, int n, int iddatadump)
-  {
+                   Particle* p, Acceleration* a, int n, int iddatadump) {
     _dump("ply/rbcs-%05d.ply", comm, cartcomm, n / nvertices, p, a, n, iddatadump);
   }
 };

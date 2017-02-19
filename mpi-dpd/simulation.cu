@@ -51,11 +51,12 @@ int samples;
 
 ParticleArray *particles_pingpong[2];
 ParticleArray *particles, *newparticles;
+CollectionRBC *rbcscoll = NULL;
+
 SimpleDeviceBuffer<float4 > *xyzouvwo;
 SimpleDeviceBuffer<ushort4> *xyzo_half;
 
 CellLists* cells;
-CollectionRBC * rbcscoll = NULL;
 
 RedistributeParticles* redistribute;
 RedistributeRBCs* redistribute_rbcs;
