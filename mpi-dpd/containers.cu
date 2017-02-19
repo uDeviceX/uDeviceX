@@ -245,7 +245,7 @@ void ParticleArray::preserve_resize(int n) {
     aa.preserve_resize(n);
 
     if (size > oldsize)
-	CUDA_CHECK(cudaMemset(aa.D + oldsize, 0, sizeof(Acceleration) * (size-oldsize)));
+	CC(cudaMemset(aa.D + oldsize, 0, sizeof(Acceleration) * (size-oldsize)));
 }
 
 void ParticleArray::clear_velocity() {
@@ -351,12 +351,12 @@ void CollectionRBC::remove(int *entries, int nentries) {
     int nsurvived = survivors.size();
     SimpleDeviceBuffer<Particle> survived(nvertices*nsurvived);
     for(int i = 0; i < nsurvived; ++i)
-	CUDA_CHECK(cudaMemcpy(survived.D + nvertices * i, data() + nvertices * survivors[i],
+	CC(cudaMemcpy(survived.D + nvertices * i, data() + nvertices * survivors[i],
 		    sizeof(Particle) * nvertices, cudaMemcpyDeviceToDevice));
 
     resize(nsurvived);
 
-    CUDA_CHECK(cudaMemcpy(pp.D, survived.D, sizeof(Particle) * survived.size, cudaMemcpyDeviceToDevice));
+    CC(cudaMemcpy(pp.D, survived.D, sizeof(Particle) * survived.size, cudaMemcpyDeviceToDevice));
 }
 
 static void rbc_dump0(const char *format4ply,

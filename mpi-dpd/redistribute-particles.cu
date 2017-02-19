@@ -412,19 +412,19 @@ RedistributeParticles::RedistributeParticles(MPI_Comm _cartcomm):
 
         const int estimate = numberdensity * safety_factor * nhalocells;
 
-        CUDA_CHECK(cudaMalloc(&packbuffers[i].scattered_indices, sizeof(int) * estimate));
+        CC(cudaMalloc(&packbuffers[i].scattered_indices, sizeof(int) * estimate));
 
         if (i && estimate)
         {
-            CUDA_CHECK(cudaHostAlloc(&pinnedhost_sendbufs[i], sizeof(float) * 6 * estimate, cudaHostAllocMapped));
-            CUDA_CHECK(cudaHostGetDevicePointer(&packbuffers[i].buffer, pinnedhost_sendbufs[i], 0));
+            CC(cudaHostAlloc(&pinnedhost_sendbufs[i], sizeof(float) * 6 * estimate, cudaHostAllocMapped));
+            CC(cudaHostGetDevicePointer(&packbuffers[i].buffer, pinnedhost_sendbufs[i], 0));
 
-            CUDA_CHECK(cudaHostAlloc(&pinnedhost_recvbufs[i], sizeof(float) * 6 * estimate, cudaHostAllocMapped));
-            CUDA_CHECK(cudaHostGetDevicePointer(&unpackbuffers[i].buffer, pinnedhost_recvbufs[i], 0));
+            CC(cudaHostAlloc(&pinnedhost_recvbufs[i], sizeof(float) * 6 * estimate, cudaHostAllocMapped));
+            CC(cudaHostGetDevicePointer(&unpackbuffers[i].buffer, pinnedhost_recvbufs[i], 0));
         }
         else
         {
-            CUDA_CHECK(cudaMalloc(&packbuffers[i].buffer, sizeof(float) * 6 * estimate));
+            CC(cudaMalloc(&packbuffers[i].buffer, sizeof(float) * 6 * estimate));
             unpackbuffers[i].buffer = packbuffers[i].buffer;
 
             pinnedhost_sendbufs[i] = NULL;
@@ -446,10 +446,10 @@ RedistributeParticles::RedistributeParticles(MPI_Comm _cartcomm):
     RedistributeParticlesKernels::texAllParticlesFloat2.mipmapFilterMode = cudaFilterModePoint;
     RedistributeParticlesKernels::texAllParticlesFloat2.normalized = 0;
 
-    CUDA_CHECK(cudaEventCreate(&evpacking, cudaEventDisableTiming));
-    CUDA_CHECK(cudaEventCreate(&evsizes, cudaEventDisableTiming));
+    CC(cudaEventCreate(&evpacking, cudaEventDisableTiming));
+    CC(cudaEventCreate(&evsizes, cudaEventDisableTiming));
 
-    CUDA_CHECK( cudaFuncSetCacheConfig( RedistributeParticlesKernels::gather_particles, cudaFuncCachePreferL1 ) );
+    CC( cudaFuncSetCacheConfig( RedistributeParticlesKernels::gather_particles, cudaFuncCachePreferL1 ) );
 }
 
 void RedistributeParticles::_post_recv()
@@ -475,23 +475,23 @@ void RedistributeParticles::_adjust_send_buffers(const int requested_capacities[
 
         const int capacity = requested_capacities[i];
 
-        CUDA_CHECK(cudaFree(packbuffers[i].scattered_indices));
-        CUDA_CHECK(cudaMalloc(&packbuffers[i].scattered_indices, sizeof(int) * capacity));
+        CC(cudaFree(packbuffers[i].scattered_indices));
+        CC(cudaMalloc(&packbuffers[i].scattered_indices, sizeof(int) * capacity));
 
         if (i)
         {
-            CUDA_CHECK(cudaFreeHost(pinnedhost_sendbufs[i]));
+            CC(cudaFreeHost(pinnedhost_sendbufs[i]));
 
-            CUDA_CHECK(cudaHostAlloc(&pinnedhost_sendbufs[i], sizeof(float) * 6 * capacity, cudaHostAllocMapped));
-            CUDA_CHECK(cudaHostGetDevicePointer(&packbuffers[i].buffer, pinnedhost_sendbufs[i], 0));
+            CC(cudaHostAlloc(&pinnedhost_sendbufs[i], sizeof(float) * 6 * capacity, cudaHostAllocMapped));
+            CC(cudaHostGetDevicePointer(&packbuffers[i].buffer, pinnedhost_sendbufs[i], 0));
 
             packbuffers[i].capacity = capacity;
         }
         else
         {
-            CUDA_CHECK(cudaFree(packbuffers[i].buffer));
+            CC(cudaFree(packbuffers[i].buffer));
 
-            CUDA_CHECK(cudaMalloc(&packbuffers[i].buffer, sizeof(float) * 6 * capacity));
+            CC(cudaMalloc(&packbuffers[i].buffer, sizeof(float) * 6 * capacity));
             unpackbuffers[i].buffer = packbuffers[i].buffer;
 
             packbuffers[i].capacity = capacity;
@@ -518,13 +518,13 @@ bool RedistributeParticles::_adjust_recv_buffers(const int requested_capacities[
             //preserve-resize policy
             float * const old = pinnedhost_recvbufs[i];
 
-            CUDA_CHECK(cudaHostAlloc(&pinnedhost_recvbufs[i], sizeof(float) * 6 * capacity, cudaHostAllocMapped));
-            CUDA_CHECK(cudaHostGetDevicePointer(&unpackbuffers[i].buffer, pinnedhost_recvbufs[i], 0));
+            CC(cudaHostAlloc(&pinnedhost_recvbufs[i], sizeof(float) * 6 * capacity, cudaHostAllocMapped));
+            CC(cudaHostGetDevicePointer(&unpackbuffers[i].buffer, pinnedhost_recvbufs[i], 0));
 
-            CUDA_CHECK(cudaMemcpy(pinnedhost_recvbufs[i], old, sizeof(float) * 6 * unpackbuffers[i].capacity,
+            CC(cudaMemcpy(pinnedhost_recvbufs[i], old, sizeof(float) * 6 * unpackbuffers[i].capacity,
                         cudaMemcpyHostToHost));
 
-            CUDA_CHECK(cudaFreeHost(old));
+            CC(cudaFreeHost(old));
         }
         else
         {
@@ -547,12 +547,12 @@ void RedistributeParticles::pack(const Particle * const particles, const int npa
 
     size_t textureoffset;
     if (nparticles)
-        CUDA_CHECK(cudaBindTexture(&textureoffset, &RedistributeParticlesKernels::texAllParticles, particles,
+        CC(cudaBindTexture(&textureoffset, &RedistributeParticlesKernels::texAllParticles, particles,
                     &RedistributeParticlesKernels::texAllParticles.channelDesc,
                     sizeof(float) * 6 * nparticles));
 
     if (nparticles)
-        CUDA_CHECK(cudaBindTexture(&textureoffset, &RedistributeParticlesKernels::texAllParticlesFloat2, particles,
+        CC(cudaBindTexture(&textureoffset, &RedistributeParticlesKernels::texAllParticlesFloat2, particles,
                     &RedistributeParticlesKernels::texAllParticlesFloat2.channelDesc,
                     sizeof(float) * 6 * nparticles));
 
@@ -561,7 +561,7 @@ void RedistributeParticles::pack(const Particle * const particles, const int npa
 
 pack_attempt:
 
-    CUDA_CHECK(cudaMemcpyToSymbolAsync(RedistributeParticlesKernels::pack_buffers, packbuffers,
+    CC(cudaMemcpyToSymbolAsync(RedistributeParticlesKernels::pack_buffers, packbuffers,
                 sizeof(PackBuffer) * 27, 0, cudaMemcpyHostToDevice, mystream));
 
     *failure.data = false;
@@ -572,7 +572,7 @@ pack_attempt:
 
     RedistributeParticlesKernels::tiny_scan<<<1, 32, 0, mystream>>>(nparticles, packbuffers[0].capacity, packsizes.devptr, failure.devptr);
 
-    CUDA_CHECK(cudaEventRecord(evsizes, mystream));
+    CC(cudaEventRecord(evsizes, mystream));
 
 #ifndef NDEBUG
     RedistributeParticlesKernels::check_scan<<<1, 1, 0, mystream>>>();
@@ -581,14 +581,14 @@ pack_attempt:
     if (nparticles)
         RedistributeParticlesKernels::pack<<< (3 * nparticles + 127) / 128, 128, 0, mystream>>> (nparticles, nparticles * 3);
 
-    CUDA_CHECK(cudaEventRecord(evpacking, mystream));
+    CC(cudaEventRecord(evpacking, mystream));
 
-    CUDA_CHECK(cudaEventSynchronize(evsizes));
+    CC(cudaEventSynchronize(evsizes));
 
     if (*failure.data)
     {
         //wait for packing to finish
-        CUDA_CHECK(cudaEventSynchronize(evpacking));
+        CC(cudaEventSynchronize(evpacking));
 
         printf("RedistributeParticles::pack RANK %d ...FAILED! Recovering now...\n", myrank);
 
@@ -610,7 +610,7 @@ pack_attempt:
         goto pack_attempt;
     }
 
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 }
 
 void RedistributeParticles::send()
@@ -630,7 +630,7 @@ void RedistributeParticles::send()
                 MPI_CHECK( MPI_Isend(send_sizes + i, 1, MPI_INTEGER, neighbor_ranks[i], basetag + i, cartcomm, sendcountreq + c++) );
     }
 
-    CUDA_CHECK(cudaEventSynchronize(evpacking));
+    CC(cudaEventSynchronize(evpacking));
 
     if (!firstcall)
         _waitall(sendmsgreq, nsendmsgreq);
@@ -658,7 +658,7 @@ void RedistributeParticles::send()
 
 void RedistributeParticles::bulk(const int nparticles, int * const cellstarts, int * const cellcounts, cudaStream_t mystream)
 {
-    CUDA_CHECK(cudaMemsetAsync(cellcounts, 0, sizeof(int) * XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN, mystream));
+    CC(cudaMemsetAsync(cellcounts, 0, sizeof(int) * XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN, mystream));
 
     subindices.resize(nparticles);
 
@@ -666,12 +666,12 @@ void RedistributeParticles::bulk(const int nparticles, int * const cellstarts, i
         subindex_local<false><<< (nparticles + 127) / 128, 128, 0, mystream>>>
             (nparticles, RedistributeParticlesKernels::texparticledata, cellcounts, subindices.D);
 
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 }
 
 int RedistributeParticles::recv_count(cudaStream_t mystream)
 {
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 
     _waitall(recvcountreq, nactiveneighbors);
 
@@ -695,10 +695,10 @@ int RedistributeParticles::recv_count(cudaStream_t mystream)
 
         nhalo_padded = ustart_padded[27];
 
-        CUDA_CHECK(cudaMemcpyToSymbolAsync(RedistributeParticlesKernels::unpack_start, ustart,
+        CC(cudaMemcpyToSymbolAsync(RedistributeParticlesKernels::unpack_start, ustart,
                     sizeof(int) * 28, 0, cudaMemcpyHostToDevice, mystream));
 
-        CUDA_CHECK(cudaMemcpyToSymbolAsync(RedistributeParticlesKernels::unpack_start_padded, ustart_padded,
+        CC(cudaMemcpyToSymbolAsync(RedistributeParticlesKernels::unpack_start_padded, ustart_padded,
                     sizeof(int) * 28, 0, cudaMemcpyHostToDevice, mystream));
     }
 
@@ -722,7 +722,7 @@ void RedistributeParticles::recv_unpack(Particle * const particles, float4 * con
     _adjust_recv_buffers(recv_sizes);
 
     if (haschanged)
-        CUDA_CHECK(cudaMemcpyToSymbolAsync(RedistributeParticlesKernels::unpack_buffers, unpackbuffers,
+        CC(cudaMemcpyToSymbolAsync(RedistributeParticlesKernels::unpack_buffers, unpackbuffers,
                     sizeof(UnpackBuffer) * 27, 0, cudaMemcpyHostToDevice, mystream));
 
     for(int i = 1; i < 27; ++i)
@@ -735,10 +735,10 @@ void RedistributeParticles::recv_unpack(Particle * const particles, float4 * con
                         neighbor_ranks[i], basetag + recv_tags[i] + 666, cartcomm, &status) );
         }
 
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 
 #ifndef NDEBUG
-    CUDA_CHECK(cudaMemset(remote_particles.D, 0xff, sizeof(Particle) * remote_particles.size));
+    CC(cudaMemset(remote_particles.D, 0xff, sizeof(Particle) * remote_particles.size));
 #endif
 
     if (nhalo)
@@ -752,7 +752,7 @@ void RedistributeParticles::recv_unpack(Particle * const particles, float4 * con
     scan(compressed_cellcounts.D, compressed_cellcounts.size, mystream, (uint *)cellstarts);
 
 #ifndef NDEBUG
-    CUDA_CHECK(cudaMemset(scattered_indices.D, 0xff, sizeof(int) * scattered_indices.size));
+    CC(cudaMemset(scattered_indices.D, 0xff, sizeof(int) * scattered_indices.size));
 #endif
 
     if (subindices.size)
@@ -768,7 +768,7 @@ void RedistributeParticles::recv_unpack(Particle * const particles, float4 * con
             (scattered_indices.D, (float2 *)remote_particles.D, nhalo,
              RedistributeParticlesKernels::ntexparticles, nparticles, (float2 *)particles, xyzouvwo, xyzo_half);
 
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 
 #ifndef NDEBUG
     RedistributeParticlesKernels::check<<<(XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN + 127) / 128, 128, 0, mystream>>>(cellstarts, cellcounts, particles, nparticles);
@@ -776,7 +776,7 @@ void RedistributeParticles::recv_unpack(Particle * const particles, float4 * con
 
     _post_recv();
 
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 }
 
 void RedistributeParticles::_cancel_recv()
@@ -819,18 +819,18 @@ void RedistributeParticles::adjust_message_sizes(ExpectedMessageSizes sizes)
 
 RedistributeParticles::~RedistributeParticles()
 {
-    CUDA_CHECK(cudaEventDestroy(evpacking));
-    CUDA_CHECK(cudaEventDestroy(evsizes));
+    CC(cudaEventDestroy(evpacking));
+    CC(cudaEventDestroy(evsizes));
 
     _cancel_recv();
 
     for(int i = 0; i < 27; ++i)
     {
-        CUDA_CHECK(cudaFree(packbuffers[i].scattered_indices));
+        CC(cudaFree(packbuffers[i].scattered_indices));
 
         if (i)
-            CUDA_CHECK(cudaFreeHost(packbuffers[i].buffer));
+            CC(cudaFreeHost(packbuffers[i].buffer));
         else
-            CUDA_CHECK(cudaFree(packbuffers[i].buffer));
+            CC(cudaFree(packbuffers[i].buffer));
     }
 }

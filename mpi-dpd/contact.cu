@@ -61,8 +61,8 @@ namespace KernelsContact
         texCellEntries.mipmapFilterMode = cudaFilterModePoint;
         texCellEntries.normalized = 0;
 
-        CUDA_CHECK(cudaFuncSetCacheConfig(bulk_3tpp, cudaFuncCachePreferL1));
-        CUDA_CHECK(cudaFuncSetCacheConfig(halo, cudaFuncCachePreferL1));
+        CC(cudaFuncSetCacheConfig(bulk_3tpp, cudaFuncCachePreferL1));
+        CC(cudaFuncSetCacheConfig(halo, cudaFuncCachePreferL1));
     }
 }
 
@@ -74,7 +74,7 @@ ComputeContact::ComputeContact(MPI_Comm comm):
 
     local_trunk = Logistic::KISS(7119 - myrank, 187 + myrank, 18278, 15674);
 
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 }
 
 namespace KernelsContact
@@ -127,12 +127,12 @@ namespace KernelsContact
         size_t textureoffset = 0;
 
         if (ncellentries)
-            CUDA_CHECK(cudaBindTexture(&textureoffset, &texCellEntries, cellentries, &texCellEntries.channelDesc,
+            CC(cudaBindTexture(&textureoffset, &texCellEntries, cellentries, &texCellEntries.channelDesc,
                         sizeof(int) * ncellentries));
 
         const int ncells = XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN;
 
-        CUDA_CHECK(cudaBindTexture(&textureoffset, &texCellsStart, cellsstart, &texCellsStart.channelDesc, sizeof(int) * ncells));
+        CC(cudaBindTexture(&textureoffset, &texCellsStart, cellsstart, &texCellsStart.channelDesc, sizeof(int) * ncells));
 
         const int n = wsolutes.size();
 
@@ -147,9 +147,9 @@ namespace KernelsContact
             as[i] = (float * )wsolutes[i].a;
         }
 
-        CUDA_CHECK(cudaMemcpyToSymbolAsync(cnsolutes, ns, sizeof(int) * n, 0, cudaMemcpyHostToDevice, stream));
-        CUDA_CHECK(cudaMemcpyToSymbolAsync(csolutes, ps, sizeof(float2 *) * n, 0, cudaMemcpyHostToDevice, stream));
-        CUDA_CHECK(cudaMemcpyToSymbolAsync(csolutesacc, as, sizeof(float *) * n, 0, cudaMemcpyHostToDevice, stream));
+        CC(cudaMemcpyToSymbolAsync(cnsolutes, ns, sizeof(int) * n, 0, cudaMemcpyHostToDevice, stream));
+        CC(cudaMemcpyToSymbolAsync(csolutes, ps, sizeof(float2 *) * n, 0, cudaMemcpyHostToDevice, stream));
+        CC(cudaMemcpyToSymbolAsync(csolutesacc, as, sizeof(float *) * n, 0, cudaMemcpyHostToDevice, stream));
     }
 }
 
@@ -165,16 +165,16 @@ void ComputeContact::build_cells(std::vector<ParticlesWrap> wsolutes, cudaStream
     subindices.resize(ntotal);
     cellsentries.resize(ntotal);
 
-    CUDA_CHECK(cudaMemsetAsync(cellscount.D, 0, sizeof(int) * cellscount.size, stream));
+    CC(cudaMemsetAsync(cellscount.D, 0, sizeof(int) * cellscount.size, stream));
 
 #ifndef NDEBUG
-    CUDA_CHECK(cudaMemsetAsync(cellsentries.D, 0xff, sizeof(int) * cellsentries.capacity, stream));
-    CUDA_CHECK(cudaMemsetAsync(subindices.D, 0xff, sizeof(int) * subindices.capacity, stream));
-    CUDA_CHECK(cudaMemsetAsync(compressed_cellscount.D, 0xff, sizeof(unsigned char) * compressed_cellscount.capacity, stream));
-    CUDA_CHECK(cudaMemsetAsync(cellsstart.D, 0xff, sizeof(int) * cellsstart.capacity, stream));
+    CC(cudaMemsetAsync(cellsentries.D, 0xff, sizeof(int) * cellsentries.capacity, stream));
+    CC(cudaMemsetAsync(subindices.D, 0xff, sizeof(int) * subindices.capacity, stream));
+    CC(cudaMemsetAsync(compressed_cellscount.D, 0xff, sizeof(unsigned char) * compressed_cellscount.capacity, stream));
+    CC(cudaMemsetAsync(cellsstart.D, 0xff, sizeof(int) * cellsstart.capacity, stream));
 #endif
 
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 
     int ctr = 0;
     for(int i = 0; i < wsolutes.size(); ++i)
@@ -205,7 +205,7 @@ void ComputeContact::build_cells(std::vector<ParticlesWrap> wsolutes, cudaStream
         ctr += it.n;
     }
 
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 
     KernelsContact::bind(cellsstart.D, cellsentries.D, ntotal, wsolutes, stream, cellscount.D);
 }
@@ -343,7 +343,7 @@ void ComputeContact::bulk(std::vector<ParticlesWrap> wsolutes, cudaStream_t stre
             KernelsContact::bulk_3tpp<<< (3 * it.n + 127) / 128, 128, 0, stream >>>
                 ((float2 *)it.p, it.n, cellsentries.size, wsolutes.size(), (float *)it.a, local_trunk.get_float(), i);
 
-        CUDA_CHECK(cudaPeekAtLastError());
+        CC(cudaPeekAtLastError());
     }
 }
 
@@ -495,7 +495,7 @@ void ComputeContact::halo(ParticlesWrap halos[26], cudaStream_t stream)
         for(int i = 0; i < 26; ++i)
             recvpackcount[i] = halos[i].n;
 
-        CUDA_CHECK(cudaMemcpyToSymbolAsync(KernelsContact::packcount, recvpackcount,
+        CC(cudaMemcpyToSymbolAsync(KernelsContact::packcount, recvpackcount,
                     sizeof(recvpackcount), 0, cudaMemcpyHostToDevice, stream));
 
         recvpackstarts_padded[0] = 0;
@@ -504,7 +504,7 @@ void ComputeContact::halo(ParticlesWrap halos[26], cudaStream_t stream)
 
         nremote_padded = recvpackstarts_padded[26];
 
-        CUDA_CHECK(cudaMemcpyToSymbolAsync(KernelsContact::packstarts_padded, recvpackstarts_padded,
+        CC(cudaMemcpyToSymbolAsync(KernelsContact::packstarts_padded, recvpackstarts_padded,
                     sizeof(recvpackstarts_padded), 0, cudaMemcpyHostToDevice, stream));
 
         const Particle * recvpackstates[26];
@@ -512,7 +512,7 @@ void ComputeContact::halo(ParticlesWrap halos[26], cudaStream_t stream)
         for(int i = 0; i < 26; ++i)
             recvpackstates[i] = halos[i].p;
 
-        CUDA_CHECK(cudaMemcpyToSymbolAsync(KernelsContact::packstates, recvpackstates,
+        CC(cudaMemcpyToSymbolAsync(KernelsContact::packstates, recvpackstates,
                     sizeof(recvpackstates), 0, cudaMemcpyHostToDevice, stream));
 
         Acceleration * packresults[26];
@@ -520,7 +520,7 @@ void ComputeContact::halo(ParticlesWrap halos[26], cudaStream_t stream)
         for(int i = 0; i < 26; ++i)
             packresults[i] = halos[i].a;
 
-        CUDA_CHECK(cudaMemcpyToSymbolAsync(KernelsContact::packresults, packresults,
+        CC(cudaMemcpyToSymbolAsync(KernelsContact::packresults, packresults,
                     sizeof(packresults), 0, cudaMemcpyHostToDevice, stream));
     }
 
@@ -528,5 +528,5 @@ void ComputeContact::halo(ParticlesWrap halos[26], cudaStream_t stream)
         KernelsContact::halo<<< (nremote_padded + 127) / 128, 128, 0, stream>>>
             (nremote_padded, cellsentries.size, nsolutes, local_trunk.get_float());
 
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 }

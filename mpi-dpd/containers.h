@@ -24,7 +24,7 @@ struct ParticleArray
   void clear_velocity();
 
   void clear_acc(cudaStream_t stream) {
-    CUDA_CHECK(cudaMemsetAsync(aa.D, 0,
+    CC(cudaMemsetAsync(aa.D, 0,
 			       sizeof(Acceleration) * aa.size, stream));
   }
 };

@@ -29,7 +29,7 @@ extern float tend;
 extern bool walls, pushtheflow, doublepoiseuille, rbcs, hdf5field_dumps, hdf5part_dumps, is_mps_enabled, contactforces;
 extern int steps_per_dump, steps_per_hdf5dump, wall_creation_stepid;
 
-#define CUDA_CHECK(ans) do { cudaAssert((ans), __FILE__, __LINE__); } while(0)
+#define CC(ans) do { cudaAssert((ans), __FILE__, __LINE__); } while(0)
 inline void cudaAssert(cudaError_t code, const char *file, int line)
 {
   if (code != cudaSuccess)
@@ -132,22 +132,22 @@ struct SimpleDeviceBuffer {
   T* D;               /* `D' is for data */
   SimpleDeviceBuffer(int n = 0): capacity(0), size(0), D(NULL) { resize(n);}
   ~SimpleDeviceBuffer() {
-    if (D != NULL) CUDA_CHECK(cudaFree(D));
+    if (D != NULL) CC(cudaFree(D));
     D = NULL;
   }
 
   void dispose() {
-    if (D != NULL) CUDA_CHECK(cudaFree(D));
+    if (D != NULL) CC(cudaFree(D));
     D = NULL;
   }
 
   void resize(int n) {
     size = n;
     if (capacity >= n) return;
-    if (D != NULL)  CUDA_CHECK(cudaFree(D));
+    if (D != NULL)  CC(cudaFree(D));
     int conservative_estimate = (int)ceil(1.1 * n);
     capacity = 128 * ((conservative_estimate + 129) / 128);
-    CUDA_CHECK(cudaMalloc(&D, sizeof(T) * capacity));
+    CC(cudaMalloc(&D, sizeof(T) * capacity));
   }
 
   void preserve_resize(int n) {
@@ -158,10 +158,10 @@ struct SimpleDeviceBuffer {
     if (capacity >= n) return;
     int conservative_estimate = (int)ceil(1.1 * n);
     capacity = 128 * ((conservative_estimate + 129) / 128);
-    CUDA_CHECK(cudaMalloc(&D, sizeof(T) * capacity));
+    CC(cudaMalloc(&D, sizeof(T) * capacity));
     if (old != NULL) {
-      CUDA_CHECK(cudaMemcpy(D, old, sizeof(T) * oldsize, cudaMemcpyDeviceToDevice));
-      CUDA_CHECK(cudaFree(old));
+      CC(cudaMemcpy(D, old, sizeof(T) * oldsize, cudaMemcpyDeviceToDevice));
+      CC(cudaFree(old));
     }
   }
 };
@@ -178,7 +178,7 @@ struct SimpleHostBuffer
   ~SimpleHostBuffer()
   {
     if (data != NULL)
-      CUDA_CHECK(cudaFreeHost(data));
+      CC(cudaFreeHost(data));
 
     data = NULL;
   }
@@ -191,12 +191,12 @@ struct SimpleHostBuffer
       return;
 
     if (data != NULL)
-      CUDA_CHECK(cudaFreeHost(data));
+      CC(cudaFreeHost(data));
 
     const int conservative_estimate = (int)ceil(1.1 * n);
     capacity = 128 * ((conservative_estimate + 129) / 128);
 
-    CUDA_CHECK(cudaHostAlloc(&data, sizeof(T) * capacity, cudaHostAllocDefault));
+    CC(cudaHostAlloc(&data, sizeof(T) * capacity, cudaHostAllocDefault));
   }
 
   void preserve_resize(const int n)
@@ -214,12 +214,12 @@ struct SimpleHostBuffer
     capacity = 128 * ((conservative_estimate + 129) / 128);
 
     data = NULL;
-    CUDA_CHECK(cudaHostAlloc(&data, sizeof(T) * capacity, cudaHostAllocDefault));
+    CC(cudaHostAlloc(&data, sizeof(T) * capacity, cudaHostAllocDefault));
 
     if (old != NULL)
     {
       memcpy(data, old, sizeof(T) * oldsize);
-      CUDA_CHECK(cudaFreeHost(old));
+      CC(cudaFreeHost(old));
     }
   }
 };
@@ -236,7 +236,7 @@ struct PinnedHostBuffer
   ~PinnedHostBuffer()
   {
     if (data != NULL)
-      CUDA_CHECK(cudaFreeHost(data));
+      CC(cudaFreeHost(data));
 
     data = NULL;
   }
@@ -249,14 +249,14 @@ struct PinnedHostBuffer
       return;
 
     if (data != NULL)
-      CUDA_CHECK(cudaFreeHost(data));
+      CC(cudaFreeHost(data));
 
     const int conservative_estimate = (int)ceil(1.1 * n);
     capacity = 128 * ((conservative_estimate + 129) / 128);
 
-    CUDA_CHECK(cudaHostAlloc(&data, sizeof(T) * capacity, cudaHostAllocMapped));
+    CC(cudaHostAlloc(&data, sizeof(T) * capacity, cudaHostAllocMapped));
 
-    CUDA_CHECK(cudaHostGetDevicePointer(&devptr, data, 0));
+    CC(cudaHostGetDevicePointer(&devptr, data, 0));
   }
 
   void preserve_resize(const int n)
@@ -274,15 +274,15 @@ struct PinnedHostBuffer
     capacity = 128 * ((conservative_estimate + 129) / 128);
 
     data = NULL;
-    CUDA_CHECK(cudaHostAlloc(&data, sizeof(T) * capacity, cudaHostAllocMapped));
+    CC(cudaHostAlloc(&data, sizeof(T) * capacity, cudaHostAllocMapped));
 
     if (old != NULL)
     {
-      CUDA_CHECK(cudaMemcpy(data, old, sizeof(T) * oldsize, cudaMemcpyHostToHost));
-      CUDA_CHECK(cudaFreeHost(old));
+      CC(cudaMemcpy(data, old, sizeof(T) * oldsize, cudaMemcpyHostToHost));
+      CC(cudaFreeHost(old));
     }
 
-    CUDA_CHECK(cudaHostGetDevicePointer(&devptr, data, 0));
+    CC(cudaHostGetDevicePointer(&devptr, data, 0));
   }
 };
 
@@ -299,16 +299,16 @@ struct CellLists
   CellLists(const int LX, const int LY, const int LZ):
       ncells(LX * LY * LZ + 1), LX(LX), LY(LY), LZ(LZ)
   {
-    CUDA_CHECK(cudaMalloc(&start, sizeof(int) * ncells));
-    CUDA_CHECK(cudaMalloc(&count, sizeof(int) * ncells));
+    CC(cudaMalloc(&start, sizeof(int) * ncells));
+    CC(cudaMalloc(&count, sizeof(int) * ncells));
   }
 
   void build(Particle * const p, const int n, cudaStream_t stream, int * const order = NULL, const Particle * const src = NULL);
 
   ~CellLists()
   {
-    CUDA_CHECK(cudaFree(start));
-    CUDA_CHECK(cudaFree(count));
+    CC(cudaFree(start));
+    CC(cudaFree(count));
   }
 };
 

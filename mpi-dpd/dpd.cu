@@ -278,12 +278,12 @@ namespace BipsBatch
     {
         if (firstcall)
         {
-            CUDA_CHECK(cudaEventCreate(&evhalodone, cudaEventDisableTiming));
-            CUDA_CHECK(cudaFuncSetCacheConfig(interaction_kernel, cudaFuncCachePreferL1));
+            CC(cudaEventCreate(&evhalodone, cudaEventDisableTiming));
+            CC(cudaFuncSetCacheConfig(interaction_kernel, cudaFuncCachePreferL1));
             firstcall = false;
         }
 
-        CUDA_CHECK(cudaMemcpyToSymbolAsync(batchinfos, infos, sizeof(BatchInfo) * 26, 0, cudaMemcpyHostToDevice, uploadstream));
+        CC(cudaMemcpyToSymbolAsync(batchinfos, infos, sizeof(BatchInfo) * 26, 0, cudaMemcpyHostToDevice, uploadstream));
 
         static unsigned int hstart_padded[27];
 
@@ -291,24 +291,24 @@ namespace BipsBatch
         for(int i = 0; i < 26; ++i)
             hstart_padded[i + 1] = hstart_padded[i] + 16 * (((unsigned int)infos[i].ndst + 15)/ 16) ;
 
-        CUDA_CHECK(cudaMemcpyToSymbolAsync(start, hstart_padded, sizeof(hstart_padded), 0, cudaMemcpyHostToDevice, uploadstream));
+        CC(cudaMemcpyToSymbolAsync(start, hstart_padded, sizeof(hstart_padded), 0, cudaMemcpyHostToDevice, uploadstream));
 
         const int nthreads = 2 * hstart_padded[26];
 
-        CUDA_CHECK(cudaEventRecord(evhalodone, uploadstream));
+        CC(cudaEventRecord(evhalodone, uploadstream));
 
-        CUDA_CHECK(cudaStreamWaitEvent(computestream, evhalodone, 0));
+        CC(cudaStreamWaitEvent(computestream, evhalodone, 0));
 
         if (nthreads)
             interaction_kernel<<< (nthreads + 127) / 128, 128, 0, computestream>>>(nthreads, acc, n);
 
-        CUDA_CHECK(cudaPeekAtLastError());
+        CC(cudaPeekAtLastError());
     }
 }
 
 void ComputeDPD::remote_interactions(const Particle * const p, const int n, Acceleration * const a, cudaStream_t stream, cudaStream_t uploadstream)
 {
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 
     static BipsBatch::BatchInfo infos[26];
 
@@ -336,5 +336,5 @@ void ComputeDPD::remote_interactions(const Particle * const p, const int n, Acce
 
     BipsBatch::interactions(1. / sqrt(dt), infos, stream, uploadstream, (float *)a, n);
 
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 }

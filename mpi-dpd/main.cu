@@ -81,8 +81,8 @@ int main(int argc, char **argv) {
 
   const bool mpi_thread_safe = argp("-mpi_thread_safe").asBool(true);
 
-  CUDA_CHECK(cudaSetDevice(0));
-  CUDA_CHECK(cudaDeviceReset());
+  CC(cudaSetDevice(0));
+  CC(cudaDeviceReset());
 
   {
     is_mps_enabled = false;
@@ -159,6 +159,6 @@ int main(int argc, char **argv) {
   if (activecomm != cartcomm) MPI_CHECK(MPI_Comm_free(&activecomm));
   MPI_CHECK(MPI_Comm_free(&cartcomm));
   MPI_CHECK(MPI_Finalize());
-  CUDA_CHECK(cudaDeviceSynchronize());
-  CUDA_CHECK(cudaDeviceReset());
+  CC(cudaDeviceSynchronize());
+  CC(cudaDeviceReset());
 }

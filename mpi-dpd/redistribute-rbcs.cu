@@ -55,7 +55,7 @@ RedistributeRBCs::RedistributeRBCs(MPI_Comm _cartcomm): nvertices(CudaRBC::get_n
         MPI_CHECK( MPI_Cart_rank(cartcomm, coordsneighbor, anti_rankneighbors + i) );
     }
 
-    CUDA_CHECK(cudaEventCreate(&evextents, cudaEventDisableTiming));
+    CC(cudaEventCreate(&evextents, cudaEventDisableTiming));
 
     _post_recvcount();
 }
@@ -112,8 +112,8 @@ namespace ReorderingRBC
 
         if (nrbcs < cmaxnrbcs)
         {
-            CUDA_CHECK(cudaMemcpyToSymbolAsync(cdestinations, destinations, sizeof(float *) * nrbcs, 0, cudaMemcpyHostToDevice, stream));
-            CUDA_CHECK(cudaMemcpyToSymbolAsync(csources, sources, sizeof(float *) * nrbcs, 0, cudaMemcpyHostToDevice, stream));
+            CC(cudaMemcpyToSymbolAsync(cdestinations, destinations, sizeof(float *) * nrbcs, 0, cudaMemcpyHostToDevice, stream));
+            CC(cudaMemcpyToSymbolAsync(csources, sources, sizeof(float *) * nrbcs, 0, cudaMemcpyHostToDevice, stream));
 
             pack_all_kernel<true><<<(nthreads + 127) / 128, 128, 0, stream>>>(nrbcs, nvertices, NULL, NULL);
         }
@@ -122,13 +122,13 @@ namespace ReorderingRBC
             _ddestinations.resize(nrbcs);
             _dsources.resize(nrbcs);
 
-            CUDA_CHECK(cudaMemcpyAsync(_ddestinations.D, destinations, sizeof(float *) * nrbcs, cudaMemcpyHostToDevice, stream));
-            CUDA_CHECK(cudaMemcpyAsync(_dsources.D, sources, sizeof(float *) * nrbcs, cudaMemcpyHostToDevice, stream));
+            CC(cudaMemcpyAsync(_ddestinations.D, destinations, sizeof(float *) * nrbcs, cudaMemcpyHostToDevice, stream));
+            CC(cudaMemcpyAsync(_dsources.D, sources, sizeof(float *) * nrbcs, cudaMemcpyHostToDevice, stream));
 
             pack_all_kernel<false><<<(nthreads + 127) / 128, 128, 0, stream>>>(nrbcs, nvertices, _dsources.D, _ddestinations.D);
         }
 
-        CUDA_CHECK(cudaPeekAtLastError());
+        CC(cudaPeekAtLastError());
     }
 }
 
@@ -137,18 +137,18 @@ void RedistributeRBCs::extent(const Particle * const xyzuvw, const int nrbcs, cu
     minextents.resize(nrbcs);
     maxextents.resize(nrbcs);
 
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 
     _compute_extents(xyzuvw, nrbcs, stream);
 
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 
-    CUDA_CHECK(cudaEventRecord(evextents, stream));
+    CC(cudaEventRecord(evextents, stream));
 }
 
 void RedistributeRBCs::pack_sendcount(const Particle * const xyzuvw, const int nrbcs, cudaStream_t stream)
 {
-    CUDA_CHECK(cudaEventSynchronize(evextents));
+    CC(cudaEventSynchronize(evextents));
 
     std::vector<int> reordering_indices[27];
 
@@ -199,10 +199,10 @@ void RedistributeRBCs::pack_sendcount(const Particle * const xyzuvw, const int n
 
         ReorderingRBC::pack_all(stream, src.size(), nvertices, &src.front(), &dst.front());
 
-        CUDA_CHECK(cudaPeekAtLastError());
+        CC(cudaPeekAtLastError());
     }
 
-    CUDA_CHECK(cudaStreamSynchronize(stream));
+    CC(cudaStreamSynchronize(stream));
 
     for(int i = 1; i < 27; ++i)
         MPI_CHECK( MPI_Isend(&halo_sendbufs[i].size, 1, MPI_INTEGER, rankneighbors[i], i + 1024, cartcomm, &sendcountreq[i-1]) );
@@ -322,7 +322,7 @@ void RedistributeRBCs::unpack(Particle * const xyzuvw, const int nrbcs, cudaStre
     recvreq.clear();
     sendreq.clear();
 
-    CUDA_CHECK(cudaMemcpyAsync(xyzuvw, bulk.D, notleaving * nvertices * sizeof(Particle),
+    CC(cudaMemcpyAsync(xyzuvw, bulk.D, notleaving * nvertices * sizeof(Particle),
                 cudaMemcpyDeviceToDevice, stream));
 
     for(int i = 1, s = notleaving * nvertices; i < 27; ++i)
@@ -336,7 +336,7 @@ void RedistributeRBCs::unpack(Particle * const xyzuvw, const int nrbcs, cudaStre
         s += halo_recvbufs[i].size;
     }
 
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 
     _post_recvcount();
 }

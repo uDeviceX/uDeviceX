@@ -31,7 +31,7 @@ __device__ int3 decode(int code, int3 ncells)
     return make_int3(ix, iy, iz);
 }
 
-#define CUDA_CHECK(ans) do { cudaAssert((ans), __FILE__, __LINE__); } while(0)
+#define CC(ans) do { cudaAssert((ans), __FILE__, __LINE__); } while(0)
 inline void cudaAssert(cudaError_t code, const char *file, int line, bool abort=true)
 {
     if (code != cudaSuccess)
@@ -142,7 +142,7 @@ void build_clists_vanilla(float * const xyzuvw, int np, const float rc,
             copy(device_ptr<float>(xyzuvw), device_ptr<float>(xyzuvw + 6 * np), tmp.begin());
 
         _gather<<<(6 * np + 127) / 128, 128>>>(_ptr(tmp), _ptr(pids), xyzuvw, 6 * np);
-        CUDA_CHECK(cudaPeekAtLastError());
+        CC(cudaPeekAtLastError());
     }
 
     const int ncells = xcells * ycells * zcells;

@@ -31,8 +31,8 @@ void CellLists::build(Particle * const p, const int n, cudaStream_t stream, int 
       build_clists_vanilla((float * )p, n, 1, LX, LY, LZ, -LX/2, -LY/2, -LZ/2, order, start, count,  NULL, stream, (float *)src);
     else
     {
-        CUDA_CHECK(cudaMemsetAsync(start, 0, sizeof(int) * ncells, stream));
-        CUDA_CHECK(cudaMemsetAsync(count, 0, sizeof(int) * ncells, stream));
+        CC(cudaMemsetAsync(start, 0, sizeof(int) * ncells, stream));
+        CC(cudaMemsetAsync(count, 0, sizeof(int) * ncells, stream));
     }
 }
 

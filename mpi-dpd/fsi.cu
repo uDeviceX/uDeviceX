@@ -29,7 +29,7 @@ ComputeFSI::ComputeFSI(MPI_Comm comm)
 
     local_trunk = Logistic::KISS(1908 - myrank, 1409 + myrank, 290, 12968);
 
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 }
 
 namespace KernelsFSI
@@ -184,7 +184,7 @@ namespace KernelsFSI
             texSolventParticles.mipmapFilterMode = cudaFilterModePoint;
             texSolventParticles.normalized = 0;
 
-            CUDA_CHECK(cudaFuncSetCacheConfig(interactions_3tpp, cudaFuncCachePreferL1));
+            CC(cudaFuncSetCacheConfig(interactions_3tpp, cudaFuncCachePreferL1));
 
             firsttime = false;
         }
@@ -193,15 +193,15 @@ namespace KernelsFSI
 
         if (npsolvent)
         {
-            CUDA_CHECK(cudaBindTexture(&textureoffset, &texSolventParticles, solvent, &texSolventParticles.channelDesc,
+            CC(cudaBindTexture(&textureoffset, &texSolventParticles, solvent, &texSolventParticles.channelDesc,
                         sizeof(float) * 6 * npsolvent));
         }
 
         const int ncells = XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN;
 
-        CUDA_CHECK(cudaBindTexture(&textureoffset, &texCellsStart, cellsstart, &texCellsStart.channelDesc, sizeof(int) * ncells));
+        CC(cudaBindTexture(&textureoffset, &texCellsStart, cellsstart, &texCellsStart.channelDesc, sizeof(int) * ncells));
 
-        CUDA_CHECK(cudaBindTexture(&textureoffset, &texCellsCount, cellscount, &texCellsCount.channelDesc, sizeof(int) * ncells));
+        CC(cudaBindTexture(&textureoffset, &texCellsCount, cellscount, &texCellsCount.channelDesc, sizeof(int) * ncells));
     }
 }
 
@@ -212,14 +212,14 @@ void ComputeFSI::bulk(std::vector<ParticlesWrap> wsolutes, cudaStream_t stream)
 
     KernelsFSI::setup(wsolvent.p, wsolvent.n, wsolvent.cellsstart, wsolvent.cellscount);
 
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 
     for(std::vector<ParticlesWrap>::iterator it = wsolutes.begin(); it != wsolutes.end(); ++it)
         if (it->n)
             KernelsFSI::interactions_3tpp<<< (3 * it->n + 127) / 128, 128, 0, stream >>>
                 ((float2 *)it->p, it->n, wsolvent.n, (float *)it->a, (float *)wsolvent.a, local_trunk.get_float());
 
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 }
 
 namespace KernelsFSI
@@ -367,7 +367,7 @@ void ComputeFSI::halo(ParticlesWrap halos[26], cudaStream_t stream)
 {
     KernelsFSI::setup(wsolvent.p, wsolvent.n, wsolvent.cellsstart, wsolvent.cellscount);
 
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 
     int nremote_padded = 0;
 
@@ -377,7 +377,7 @@ void ComputeFSI::halo(ParticlesWrap halos[26], cudaStream_t stream)
         for(int i = 0; i < 26; ++i)
             recvpackcount[i] = halos[i].n;
 
-        CUDA_CHECK(cudaMemcpyToSymbolAsync(KernelsFSI::packcount, recvpackcount,
+        CC(cudaMemcpyToSymbolAsync(KernelsFSI::packcount, recvpackcount,
                     sizeof(recvpackcount), 0, cudaMemcpyHostToDevice, stream));
 
         recvpackstarts_padded[0] = 0;
@@ -386,7 +386,7 @@ void ComputeFSI::halo(ParticlesWrap halos[26], cudaStream_t stream)
 
         nremote_padded = recvpackstarts_padded[26];
 
-        CUDA_CHECK(cudaMemcpyToSymbolAsync(KernelsFSI::packstarts_padded, recvpackstarts_padded,
+        CC(cudaMemcpyToSymbolAsync(KernelsFSI::packstarts_padded, recvpackstarts_padded,
                     sizeof(recvpackstarts_padded), 0, cudaMemcpyHostToDevice, stream));
     }
 
@@ -396,7 +396,7 @@ void ComputeFSI::halo(ParticlesWrap halos[26], cudaStream_t stream)
         for(int i = 0; i < 26; ++i)
             recvpackstates[i] = halos[i].p;
 
-        CUDA_CHECK(cudaMemcpyToSymbolAsync(KernelsFSI::packstates, recvpackstates,
+        CC(cudaMemcpyToSymbolAsync(KernelsFSI::packstates, recvpackstates,
                     sizeof(recvpackstates), 0, cudaMemcpyHostToDevice, stream));
     }
 
@@ -406,7 +406,7 @@ void ComputeFSI::halo(ParticlesWrap halos[26], cudaStream_t stream)
         for(int i = 0; i < 26; ++i)
             packresults[i] = halos[i].a;
 
-        CUDA_CHECK(cudaMemcpyToSymbolAsync(KernelsFSI::packresults, packresults,
+        CC(cudaMemcpyToSymbolAsync(KernelsFSI::packresults, packresults,
                     sizeof(packresults), 0, cudaMemcpyHostToDevice, stream));
     }
 
@@ -414,5 +414,5 @@ void ComputeFSI::halo(ParticlesWrap halos[26], cudaStream_t stream)
         KernelsFSI::interactions_halo<<< (nremote_padded + 127) / 128, 128, 0, stream>>>
             (nremote_padded, wsolvent.n, (float *)wsolvent.a, local_trunk.get_float());
 
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 }
