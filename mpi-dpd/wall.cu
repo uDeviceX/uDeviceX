@@ -526,7 +526,7 @@ struct FieldSampler {
   ~FieldSampler() { delete[] data; }
 };
 
-ComputeWall::ComputeWall(MPI_Comm cartcomm_, Particle *const p, const int n,
+ComputeWall::ComputeWall(MPI_Comm cartcomm_, Particle *p, int n,
 			 int &nsurvived, ExpectedMessageSizes &new_sizes) {
   cartcomm = cartcomm_;
   arrSDF = NULL; solid4 = NULL; solid_size = 0;
@@ -804,7 +804,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm_, Particle *const p, const int n,
   samples = 0;
 }
 
-void ComputeWall::wall_bounce(Particle *const p, const int n, cudaStream_t stream) {
+void ComputeWall::wall_bounce(Particle *p, int n, cudaStream_t stream) {
   if (n > 0)
     SolidWallsKernel::bounce<<<(n + 127) / 128, 128, 0, stream>>>(
 								  (float2 *)p, n, dt);
@@ -813,11 +813,7 @@ void ComputeWall::wall_bounce(Particle *const p, const int n, cudaStream_t strea
   CUDA_CHECK(cudaPeekAtLastError());
 }
 
-void ComputeWall::wall_interactions(const Particle *const p, const int n,
-			       Acceleration *const acc,
-			       cudaStream_t stream) {
-  // cellsstart and cellscount IGNORED for now
-
+void ComputeWall::wall_interactions(Particle *p, int n, Acceleration *acc, cudaStream_t stream) {
   if (n > 0 && solid_size > 0) {
     size_t textureoffset;
     CUDA_CHECK(cudaBindTexture(&textureoffset,

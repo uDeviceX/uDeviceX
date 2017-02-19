@@ -21,27 +21,19 @@ class ComputeWall
 {
   MPI_Comm cartcomm;
   int myrank, dims[3], periods[3], coords[3];
-
   Logistic::KISS trunk;
 
   int solid_size;
   float4 * solid4;
-
   cudaArray * arrSDF;
-
   CellLists* wall_cells;
 
   SimpleDeviceBuffer<float3> frcs;
   int samples;
 
  public:
-
-  ComputeWall(MPI_Comm cartcomm, Particle* const p, const int n, int& nsurvived, ExpectedMessageSizes& new_sizes);
-
+  ComputeWall(MPI_Comm cartcomm, Particle* p, int n, int& nsurvived, ExpectedMessageSizes& new_sizes);
   ~ComputeWall();
-
-  void wall_bounce(Particle * const p, const int n, cudaStream_t stream);
-
-  void wall_interactions(const Particle * const p, const int n, Acceleration * const acc,
-                    cudaStream_t stream);
+  void wall_bounce(Particle * p, int n, cudaStream_t stream);
+  void wall_interactions(Particle * p, int n, Acceleration * acc, cudaStream_t stream);
 };
