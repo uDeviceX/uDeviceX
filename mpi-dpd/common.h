@@ -130,40 +130,27 @@ template<typename T>
 struct SimpleDeviceBuffer
 {
   int capacity, size;
-
   T * data;
 
   SimpleDeviceBuffer(int n = 0): capacity(0), size(0), data(NULL) { resize(n);}
-
-  ~SimpleDeviceBuffer()
-  {
+  ~SimpleDeviceBuffer() {
     if (data != NULL)
       CUDA_CHECK(cudaFree(data));
-
     data = NULL;
   }
 
-  void dispose()
-  {
+  void dispose() {
     if (data != NULL)
       CUDA_CHECK(cudaFree(data));
-
     data = NULL;
   }
 
-  void resize(const int n)
-  {
+  void resize(int n) {
     size = n;
-
-    if (capacity >= n)
-      return;
-
-    if (data != NULL)
-      CUDA_CHECK(cudaFree(data));
-
-    const int conservative_estimate = (int)ceil(1.1 * n);
+    if (capacity >= n) return;
+    if (data != NULL)  CUDA_CHECK(cudaFree(data));
+    int conservative_estimate = (int)ceil(1.1 * n);
     capacity = 128 * ((conservative_estimate + 129) / 128);
-
     CUDA_CHECK(cudaMalloc(&data, sizeof(T) * capacity));
 
 #ifndef NDEBUG
@@ -171,24 +158,16 @@ struct SimpleDeviceBuffer
 #endif
   }
 
-  void preserve_resize(const int n)
-  {
+  void preserve_resize(int n) {
     T * old = data;
-
-    const int oldsize = size;
+    int oldsize = size;
 
     size = n;
-
-    if (capacity >= n)
-      return;
-
-    const int conservative_estimate = (int)ceil(1.1 * n);
+    if (capacity >= n) return;
+    int conservative_estimate = (int)ceil(1.1 * n);
     capacity = 128 * ((conservative_estimate + 129) / 128);
-
     CUDA_CHECK(cudaMalloc(&data, sizeof(T) * capacity));
-
-    if (old != NULL)
-    {
+    if (old != NULL) {
       CUDA_CHECK(cudaMemcpy(data, old, sizeof(T) * oldsize, cudaMemcpyDeviceToDevice));
       CUDA_CHECK(cudaFree(old));
     }
