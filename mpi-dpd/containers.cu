@@ -226,7 +226,7 @@ void  ParticleArray::upd_stg2_and_1(bool rbcflag, float driving_acceleration, cu
 	   dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
-void ParticleArray::resize(int n) {
+void ParticleArray::pa_resize(int n) {
     S = n;
 
     /* YTANG: need the array to be 32-padded for locally transposed
@@ -239,7 +239,7 @@ void ParticleArray::resize(int n) {
     aa.resize(n);
 }
 
-void ParticleArray::preserve_resize(int n) {
+void ParticleArray::pa_preserve_resize(int n) {
     int oldsize = S;
     S = n;
 
@@ -255,14 +255,14 @@ void ParticleArray::clear_velocity() {
 	ParticleKernels::clear_velocity<<<(pp.S + 127) / 128, 128 >>>(pp.D, pp.S);
 }
 
-void CollectionRBC::resize(int count) {
+void CollectionRBC::rbc_resize(int count) {
     ncells = count;
-    ParticleArray::resize(count*nvertices);
+    ParticleArray::pa_resize(count*nvertices);
 }
 
-void CollectionRBC::preserve_resize(int count) {
+void CollectionRBC::rbc_preserve_resize(int count) {
     ncells = count;
-    ParticleArray::preserve_resize(count*nvertices);
+    ParticleArray::pa_preserve_resize(count*nvertices);
 }
 
 CollectionRBC::CollectionRBC(MPI_Comm cartcomm_) {
@@ -330,7 +330,7 @@ void CollectionRBC::setup(const char *path2ic) {
 	}
     }
 
-    resize(good.size());
+    rbc_resize(good.size());
     for(int i = 0; i < good.size(); ++i)
 	_initialize((float *)(pp.D + nvertices * i), good[i].transform);
 }
@@ -356,14 +356,14 @@ void CollectionRBC::remove(int *entries, int nentries) {
 	CC(cudaMemcpy(survived.D + nvertices * i, pp.D + nvertices * survivors[i],
 		    sizeof(Particle) * nvertices, cudaMemcpyDeviceToDevice));
 
-    resize(nsurvived);
+    rbc_resize(nsurvived);
 
     CC(cudaMemcpy(pp.D, survived.D, sizeof(Particle) * survived.S, cudaMemcpyDeviceToDevice));
 }
 
 static void rbc_dump0(const char *format4ply,
-	   MPI_Comm comm, MPI_Comm cartcomm, int ncells,
-	   Particle *p, Acceleration *a, int n, int iddatadump) {
+		      MPI_Comm comm, MPI_Comm cartcomm, int ncells,
+		      Particle *p, Acceleration *a, int n, int iddatadump) {
     int ctr = iddatadump;
 
     //we fused VV stages so we need to recover the state before stage 1

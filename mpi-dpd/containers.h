@@ -17,8 +17,8 @@ struct ParticleArray
   SimpleDeviceBuffer<Particle>     pp; /* xyzuvw */
   SimpleDeviceBuffer<Acceleration> aa; /* axayaz */
 
-  void resize(int n);
-  void preserve_resize(int n);
+  void pa_resize(int n);
+  void pa_preserve_resize(int n);
   void upd_stg1      (bool rbcflag, float driving_acceleration, cudaStream_t stream);
   void upd_stg2_and_1(bool rbcflag, float driving_acceleration, cudaStream_t stream);
   void clear_velocity();
@@ -42,7 +42,7 @@ class CollectionRBC : public ParticleArray {
   CollectionRBC(MPI_Comm cartcomm);
   void setup(const char *path2ic);
   void remove(int *  entries, int nentries);
-  void resize(int rbcs_count);
-  void preserve_resize(int n);
+  void rbc_resize(int rbcs_count);
+  void rbc_preserve_resize(int n);
   int  pcount() {return ncells * nvertices;}
 };
