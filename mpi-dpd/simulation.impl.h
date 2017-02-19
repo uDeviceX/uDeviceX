@@ -380,8 +380,8 @@ static void sim_datadump_async() {
        if (datadump_idtimestep >= 600/dt) */
     {
       if (rbcscoll)
-	CollectionRBC::dump(myactivecomm, mycartcomm, p + datadump_nsolvent,
-			    a + datadump_nsolvent, datadump_nrbcs, iddatadump);
+	rbc_dump(myactivecomm, mycartcomm, p + datadump_nsolvent,
+		 a + datadump_nsolvent, datadump_nrbcs, iddatadump);
     }
 
     curr_idtimestep = datadump_idtimestep;

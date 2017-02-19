@@ -361,9 +361,9 @@ void CollectionRBC::remove(int *entries, int nentries) {
     CUDA_CHECK(cudaMemcpy(xyzuvw.data, survived.data, sizeof(Particle) * survived.size, cudaMemcpyDeviceToDevice));
 }
 
-void CollectionRBC::_dump(const char *format4ply,
-			  MPI_Comm comm, MPI_Comm cartcomm, int ncells,
-			  Particle *p, Acceleration *a, int n, int iddatadump) {
+void rbc_dump0(const char *format4ply,
+	   MPI_Comm comm, MPI_Comm cartcomm, int ncells,
+	   Particle *p, Acceleration *a, int n, int iddatadump) {
     int ctr = iddatadump;
 
     //we fused VV stages so we need to recover the state before stage 1
@@ -383,4 +383,9 @@ void CollectionRBC::_dump(const char *format4ply,
     if(rank == 0)
       mkdir("ply", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     ply_dump(comm, cartcomm, buf, indices, ncells, ntriangles, p, nvertices, false);
+}
+
+void rbc_dump(MPI_Comm comm, MPI_Comm cartcomm,
+	      Particle* p, Acceleration* a, int n, int iddatadump) {
+  rbc_dump0("ply/rbcs-%05d.ply", comm, cartcomm, n / nvertices, p, a, n, iddatadump);
 }
