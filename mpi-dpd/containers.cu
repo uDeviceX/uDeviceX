@@ -267,7 +267,6 @@ void CollectionRBC::rbc_preserve_resize(int count) {
 
 CollectionRBC::CollectionRBC() {
   ncells = 0;
-  MPI_CHECK(MPI_Comm_rank(cartcomm, &myrank));
   int dims[3], periods[3];
   MPI_CHECK( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
 
@@ -282,7 +281,7 @@ struct TransformedExtent {
 };
 void CollectionRBC::setup(const char *path2ic) {
     vector<TransformedExtent> allrbcs;
-    if (myrank == 0) {
+    if (rank == 0) {
 	//read transformed extent from file
 	FILE *f = fopen(path2ic, "r");
 	printf("READING FROM: <%s>\n", path2ic);

@@ -40,9 +40,10 @@
 /*** from containters.h ****/
 float3 origin, globalextent;
 int    coords[3];
+MPI_Comm cartcomm;
+int nranks, rank;
 
 /**** from wall.h ****/
-MPI_Comm cartcomm;
 Logistic::KISS trunk;
 
 int solid_size = 0;
@@ -80,7 +81,6 @@ cudaStream_t mainstream, uploadstream, downloadstream;
 
 size_t nsteps;
 float driving_acceleration = 0;
-int nranks, rank;
 
 pthread_t thread_datadump;
 pthread_mutex_t mutex_datadump;
