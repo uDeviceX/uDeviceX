@@ -13,7 +13,8 @@ main.o: .conf.h argument-parser.h common.h contact.h containers.h dpd.h fsi.h re
 minmax.o: .conf.h common.h minmax.h
 redistribute-particles.o: .conf.h common-kernels.h common.h redistribute-particles.h scan.h
 redistribute-rbcs.o: .conf.h common.h minmax.h redistribute-particles.h redistribute-rbcs.h
-simulation.o: .conf.h common.h contact.h containers.h dpd-forces.h dpd.h fsi.h io.h last_bit_float.h redistribute-particles.h redistribute-rbcs.h simulation.h simulation.hack.h solute-exchange.h solvent-exchange.h wall.h
+simulation.impl.h: simulation.hack.h
+simulation.o: .conf.h common.h contact.h containers.h dpd-forces.h dpd.h fsi.h io.h last_bit_float.h redistribute-particles.h redistribute-rbcs.h simulation.h simulation.impl.h solute-exchange.h solvent-exchange.h wall.h
 solute-exchange.o: .conf.h common-kernels.h common.h solute-exchange.h
 solvent-exchange.o: .conf.h common.h solvent-exchange.h
 wall.o: .conf.h common.h dpd-forces.h io.h last_bit_float.h wall.h
