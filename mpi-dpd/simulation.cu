@@ -38,7 +38,6 @@
 #include <thrust/sort.h>
 
 MPI_Comm cartcomm;
-int myrank, dims[3], periods[3], coords[3];
 Logistic::KISS trunk;
 
 int solid_size;
