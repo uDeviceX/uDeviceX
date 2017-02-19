@@ -154,7 +154,6 @@ void sim_remove_bodies_from_wall(CollectionRBC *coll) {
 			cudaMemcpyDeviceToHost));
 
   const int nbodies = coll->count();
-  const int nvertices = coll->get_nvertices();
 
   std::vector<int> tokill;
   for (int i = 0; i < nbodies; ++i) {

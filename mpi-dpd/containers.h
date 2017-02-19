@@ -10,11 +10,9 @@
  *  before getting a written permission from the author of this file.
  */
 
-
 struct ParticleArray
 {
   int size;
-
   float3 origin, globalextent;
 
   SimpleDeviceBuffer<Particle> xyzuvw;
@@ -26,37 +24,25 @@ struct ParticleArray
   void upd_stg2_and_1(bool rbcflag, float driving_acceleration, cudaStream_t stream);
   void clear_velocity();
 
-  void clear_acc(cudaStream_t stream)
-  {
-    CUDA_CHECK(cudaMemsetAsync(axayaz.data, 0, sizeof(Acceleration) * axayaz.size, stream));
+  void clear_acc(cudaStream_t stream) {
+    CUDA_CHECK(cudaMemsetAsync(axayaz.data, 0,
+			       sizeof(Acceleration) * axayaz.size, stream));
   }
 };
 
+extern int nvertices;
 class CollectionRBC : public ParticleArray
 {
-  static int (*indices)[3];
-  static int ntriangles;
-  static int nvertices;
-
  protected:
-
   MPI_Comm cartcomm;
+  int ncells, myrank, coords[3];
 
-  int ncells, myrank, dims[3], periods[3], coords[3];
-
-  virtual int _ntriangles() { return ntriangles; }
-
-  virtual void _initialize(float *device_xyzuvw, float (*transform)[4]);
+  void _initialize(float *device_xyzuvw, float (*transform)[4]);
 
   static void _dump(const char * format4ply,
-                    MPI_Comm comm, MPI_Comm cartcomm,  int ntriangles, int ncells,  int nvertices,
-                    int (* const indices)[3],
-                    Particle *  p,  Acceleration *  a,  int n, int iddatadump);
-
+		    MPI_Comm comm, MPI_Comm cartcomm,  int ncells,
+		    Particle *  p,  Acceleration *  a,  int n, int iddatadump);
  public:
-
-  virtual int get_nvertices() { return nvertices; }
-
   CollectionRBC(MPI_Comm cartcomm);
 
   void setup(const char *path2ic);
@@ -68,12 +54,12 @@ class CollectionRBC : public ParticleArray
   void resize(int rbcs_count);
   void preserve_resize(int n);
 
-  int count() { return ncells; }
-  int pcount() { return ncells * get_nvertices(); }
+  int count()  {return ncells; }
+  int pcount() {return ncells * nvertices;}
 
   static void dump(MPI_Comm comm, MPI_Comm cartcomm,
                    Particle * p, Acceleration * a, int n, int iddatadump)
   {
-    _dump("ply/rbcs-%05d.ply", comm, cartcomm, ntriangles, n / nvertices, nvertices, indices, p, a, n, iddatadump);
+    _dump("ply/rbcs-%05d.ply", comm, cartcomm, n / nvertices, p, a, n, iddatadump);
   }
 };

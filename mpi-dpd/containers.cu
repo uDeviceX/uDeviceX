@@ -25,10 +25,11 @@
 #include "last_bit_float.h"
 #include "dpd-forces.h"
 
-int (*CollectionRBC::indices)[3] = NULL, CollectionRBC::ntriangles = -1, CollectionRBC::nvertices = -1;
+int (*indices)[3] = NULL;
+int ntriangles = -1;
+int nvertices = -1;
 
-namespace ParticleKernels
-{
+namespace ParticleKernels {
     __global__ void upd_stg1(bool rbcflag, Particle * p, Acceleration * a, int n, float dt,
 			     float _driving_acceleration, float threshold, bool doublePoiseuille) {
 	int pid = threadIdx.x + blockDim.x * blockIdx.x;
@@ -256,17 +257,18 @@ void ParticleArray::clear_velocity() {
 
 void CollectionRBC::resize(int count) {
     ncells = count;
-    ParticleArray::resize(count * get_nvertices());
+    ParticleArray::resize(count*nvertices);
 }
 
 void CollectionRBC::preserve_resize(int count) {
     ncells = count;
-    ParticleArray::preserve_resize(count * get_nvertices());
+    ParticleArray::preserve_resize(count*nvertices);
 }
 
 CollectionRBC::CollectionRBC(MPI_Comm cartcomm_) {
   cartcomm = cartcomm_; ncells = 0;
   MPI_CHECK(MPI_Comm_rank(cartcomm, &myrank));
+  int dims[3], periods[3];
   MPI_CHECK( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
 
   CudaRBC::get_triangle_indexing(indices, ntriangles);
@@ -294,7 +296,6 @@ void CollectionRBC::setup(const char *path2ic) {
 
 	    if (isgood) {
 		TransformedExtent t;
-
 		for(int c = 0; c < 3; ++c) t.com[c] = tmp[c];
 
 		int ctr = 3;
@@ -316,7 +317,6 @@ void CollectionRBC::setup(const char *path2ic) {
     MPI_CHECK(MPI_Bcast(&allrbcs.front(), nfloats_per_entry * allrbcs_count, MPI_FLOAT, 0, cartcomm));
 
     vector<TransformedExtent> good;
-
     int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
 
     for(vector<TransformedExtent>::iterator it = allrbcs.begin(); it != allrbcs.end(); ++it) {
@@ -332,7 +332,7 @@ void CollectionRBC::setup(const char *path2ic) {
 
     resize(good.size());
     for(int i = 0; i < good.size(); ++i)
-	_initialize((float *)(xyzuvw.data + get_nvertices() * i), good[i].transform);
+	_initialize((float *)(xyzuvw.data + nvertices * i), good[i].transform);
 }
 
 void CollectionRBC::_initialize(float *device_xyzuvw, float (*transform)[4]) {
@@ -351,12 +351,10 @@ void CollectionRBC::remove(int *entries, int nentries) {
 	    survivors.push_back(i);
 
     int nsurvived = survivors.size();
-
-    SimpleDeviceBuffer<Particle> survived(get_nvertices() *nsurvived);
-
+    SimpleDeviceBuffer<Particle> survived(nvertices*nsurvived);
     for(int i = 0; i < nsurvived; ++i)
-	CUDA_CHECK(cudaMemcpy(survived.data + get_nvertices() * i, data() + get_nvertices() * survivors[i],
-		    sizeof(Particle) * get_nvertices(), cudaMemcpyDeviceToDevice));
+	CUDA_CHECK(cudaMemcpy(survived.data + nvertices * i, data() + nvertices * survivors[i],
+		    sizeof(Particle) * nvertices, cudaMemcpyDeviceToDevice));
 
     resize(nsurvived);
 
@@ -364,7 +362,7 @@ void CollectionRBC::remove(int *entries, int nentries) {
 }
 
 void CollectionRBC::_dump(const char *format4ply,
-			  MPI_Comm comm, MPI_Comm cartcomm, int ntriangles, int ncells, int nvertices, int (* const indices)[3],
+			  MPI_Comm comm, MPI_Comm cartcomm, int ncells,
 			  Particle *p, Acceleration *a, int n, int iddatadump) {
     int ctr = iddatadump;
 
