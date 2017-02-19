@@ -3,17 +3,11 @@
  *  Part of uDeviceX/mpi-dpd/
  *
  *  Created and authored by Diego Rossinelli on 2014-12-05.
- *  Copyright 2015. All rights reserved.
- *
- *  Users are NOT authorized
- *  to employ the present software for their own publications
- *  before getting a written permission from the author of this file.
- */
+ *  Copyright 2015. All rights reserved. */
 
 struct ParticleArray
 {
   int S; /* size */
-
   SimpleDeviceBuffer<Particle>     pp; /* xyzuvw */
   SimpleDeviceBuffer<Acceleration> aa; /* axayaz */
 
@@ -34,8 +28,7 @@ void rbc_dump(MPI_Comm comm, MPI_Comm cartcomm,
 extern int nvertices;
 class CollectionRBC : public ParticleArray {
  protected:
-  MPI_Comm cartcomm;
-  int myrank;
+  MPI_Comm cartcomm; int myrank;
   void _initialize(float *device_pp, float (*transform)[4]);
  public:
   int ncells;
