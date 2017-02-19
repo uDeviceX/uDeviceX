@@ -447,11 +447,7 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   xyzo_half = new SimpleDeviceBuffer<ushort4>;
   particles_pingpong[0] = new ParticleArray();
   particles_pingpong[1] = new ParticleArray();
-
-  rbcscoll = NULL;
-  driving_acceleration = 0;
   nsteps = (int)(tend / dt);
-  datadump_pending = false; sim_is_done = false;
   
   MPI_CHECK(MPI_Comm_size(activecomm, &nranks));
   MPI_CHECK(MPI_Comm_rank(activecomm, &rank));
