@@ -22,17 +22,21 @@ struct ParticleArray
   }
 };
 
-void rbc_dump(MPI_Comm comm, MPI_Comm cartcomm,
+void rbc_dump(MPI_Comm comm,
 	      Particle* p, Acceleration* a, int n, int iddatadump);
 
+/*** put in simulation.cu ****/
 extern int nvertices;
+extern MPI_Comm cartcomm;
+/***                      ***/
+
 class CollectionRBC : public ParticleArray {
  protected:
-  MPI_Comm cartcomm; int myrank;
+  int myrank;
   void _initialize(float *device_pp, float (*transform)[4]);
  public:
   int ncells;
-  CollectionRBC(MPI_Comm cartcomm);
+  CollectionRBC();
   void setup(const char *path2ic);
   void remove(int *  entries, int nentries);
   void rbc_resize(int rbcs_count);

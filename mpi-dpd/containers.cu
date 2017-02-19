@@ -265,8 +265,8 @@ void CollectionRBC::rbc_preserve_resize(int count) {
     ParticleArray::pa_preserve_resize(count*nvertices);
 }
 
-CollectionRBC::CollectionRBC(MPI_Comm cartcomm_) {
-  cartcomm = cartcomm_; ncells = 0;
+CollectionRBC::CollectionRBC() {
+  ncells = 0;
   MPI_CHECK(MPI_Comm_rank(cartcomm, &myrank));
   int dims[3], periods[3];
   MPI_CHECK( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
@@ -362,7 +362,7 @@ void CollectionRBC::remove(int *entries, int nentries) {
 }
 
 static void rbc_dump0(const char *format4ply,
-		      MPI_Comm comm, MPI_Comm cartcomm, int ncells,
+		      MPI_Comm comm, int ncells,
 		      Particle *p, Acceleration *a, int n, int iddatadump) {
     int ctr = iddatadump;
 
@@ -385,7 +385,6 @@ static void rbc_dump0(const char *format4ply,
     ply_dump(comm, cartcomm, buf, indices, ncells, ntriangles, p, nvertices, false);
 }
 
-void rbc_dump(MPI_Comm comm, MPI_Comm cartcomm,
-	      Particle* p, Acceleration* a, int n, int iddatadump) {
-  rbc_dump0("ply/rbcs-%05d.ply", comm, cartcomm, n / nvertices, p, a, n, iddatadump);
+void rbc_dump(MPI_Comm comm, Particle* p, Acceleration* a, int n, int iddatadump) {
+  rbc_dump0("ply/rbcs-%05d.ply", comm, n / nvertices, p, a, n, iddatadump);
 }

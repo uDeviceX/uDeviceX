@@ -380,7 +380,7 @@ static void sim_datadump_async() {
        if (datadump_idtimestep >= 600/dt) */
     {
       if (rbcscoll)
-	rbc_dump(myactivecomm, mycartcomm, p + datadump_nsolvent,
+	rbc_dump(myactivecomm, p + datadump_nsolvent,
 		 a + datadump_nsolvent, datadump_nrbcs, iddatadump);
     }
 
@@ -483,7 +483,7 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   CC(cudaStreamCreate(&downloadstream));
 
   if (rbcs) {
-    rbcscoll = new CollectionRBC(cartcomm);
+    rbcscoll = new CollectionRBC();
     rbcscoll->setup("rbcs-ic.txt");
   }
 
