@@ -29,7 +29,7 @@ class ComputeWall
 
   cudaArray * arrSDF;
 
-  CellLists cells;
+  CellLists* wall_cells;
 
   SimpleDeviceBuffer<float3> frcs;
   int samples;

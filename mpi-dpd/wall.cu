@@ -526,14 +526,15 @@ struct FieldSampler {
   ~FieldSampler() { delete[] data; }
 };
 
-ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle *const p, const int n,
-			 int &nsurvived, ExpectedMessageSizes &new_sizes)
-  : cartcomm(cartcomm), arrSDF(NULL), solid4(NULL), solid_size(0),
-    cells(XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL,
-	  YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL,
-	  ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL) {
-  MPI_CHECK(MPI_Comm_rank(cartcomm, &myrank));
+ComputeWall::ComputeWall(MPI_Comm cartcomm_, Particle *const p, const int n,
+			 int &nsurvived, ExpectedMessageSizes &new_sizes) {
+  cartcomm = cartcomm_;
+  arrSDF = NULL; solid4 = NULL; solid_size = 0;
+  wall_cells = new CellLists(XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL,
+			     YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL,
+			     ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL);
 
+  MPI_CHECK(MPI_Comm_rank(cartcomm, &myrank));
   MPI_CHECK(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
 
   float *field = new float[XTEXTURESIZE * YTEXTURESIZE * ZTEXTURESIZE];
@@ -784,7 +785,7 @@ ComputeWall::ComputeWall(MPI_Comm cartcomm, Particle *const p, const int n,
 			sizeof(Particle) * solid_remote.size,
 			cudaMemcpyDeviceToDevice));
 
-  if (solid_size > 0) cells.build(solid, solid_size, 0);
+  if (solid_size > 0) wall_cells->build(solid, solid_size, 0);
 
   CUDA_CHECK(cudaMalloc(&solid4, sizeof(float4) * solid_size));
 
@@ -825,14 +826,14 @@ void ComputeWall::wall_interactions(const Particle *const p, const int n,
 			       sizeof(float4) * solid_size));
 
     CUDA_CHECK(cudaBindTexture(&textureoffset,
-			       &SolidWallsKernel::texWallCellStart, cells.start,
+			       &SolidWallsKernel::texWallCellStart, wall_cells->start,
 			       &SolidWallsKernel::texWallCellStart.channelDesc,
-			       sizeof(int) * cells.ncells));
+			       sizeof(int) * wall_cells->ncells));
 
     CUDA_CHECK(cudaBindTexture(&textureoffset,
-			       &SolidWallsKernel::texWallCellCount, cells.count,
+			       &SolidWallsKernel::texWallCellCount, wall_cells->count,
 			       &SolidWallsKernel::texWallCellCount.channelDesc,
-			       sizeof(int) * cells.ncells));
+			       sizeof(int) * wall_cells->ncells));
 
     SolidWallsKernel::
       interactions_3tpp<<<(3 * n + 127) / 128, 128, 0, stream>>>(
@@ -849,4 +850,5 @@ void ComputeWall::wall_interactions(const Particle *const p, const int n,
 ComputeWall::~ComputeWall() {
   CUDA_CHECK(cudaUnbindTexture(SolidWallsKernel::texSDF));
   CUDA_CHECK(cudaFreeArray(arrSDF));
+  delete wall_cells;
 }
