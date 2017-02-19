@@ -71,7 +71,7 @@
 #       -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=300 -pushtheflow
 # mid_h5.m h5/flowfields-0026.h5 | fhash.awk -v tol=2 > h5.out.txt
 #
-# TEST: flow.around.t1
+# cTEST: flow.around.t1
 # export PATH=../tools:$PATH
 # cp .conf.around.h  .conf.h
 # cp sdf/cyl1/cyl.dat sdf.dat
@@ -81,4 +81,4 @@
 # rm -rf ply h5 diag.txt
 # ./test 1 1 1 -rbcs -tend=4.0 -steps_per_dump=5000 -walls -wall_creation_stepid=1000 \
 #       -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=5000 -pushtheflow
-# mid_h5.m h5/flowfields-0026.h5 | fhash.awk -v tol=2 > h5.out.txt
+# mid_h5.m h5/flowfields-0001.h5 | fhash.awk -v tol=2 > h5.out.txt

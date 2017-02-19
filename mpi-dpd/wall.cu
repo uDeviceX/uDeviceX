@@ -399,7 +399,6 @@ namespace SolidWallsKernel {
 
 #undef uno
 #undef due
-
 #undef tre
 #undef mf3
 
@@ -462,14 +461,20 @@ struct FieldSampler {
 
   void sample(float start[3], float spacing[3], int nsize[3], float amplitude_rescaling,
 	      float *const output) {
+#define X 0
+#define Y 1
+#define Z 2
+#define OOO(ix, iy, iz) (output[ix + nsize[X] * (iy + nsize[Y] * iz)])
+#define DDD(ix, iy, iz) (data  [ix +     N[X] * (iy +     N[Y] * iz)])
+#define i2r(i, d) (start[d] + (i + 0.5f) * spacing[d] - 0.5f)
+#define i2x(i)    i2r(i,X)
+#define i2y(i)    i2r(i,Y)
+#define i2z(i)    i2r(i,Z)
     Bspline<4> bsp;
-
-    for (int iz = 0; iz < nsize[2]; ++iz)
-      for (int iy = 0; iy < nsize[1]; ++iy)
-	for (int ix = 0; ix < nsize[0]; ++ix) {
-	  float x[3] = {start[0] + (ix + 0.5f) * spacing[0] - 0.5f,
-			start[1] + (iy + 0.5f) * spacing[1] - 0.5f,
-			start[2] + (iz + 0.5f) * spacing[2] - 0.5f};
+    for (int iz = 0; iz < nsize[Z]; ++iz)
+      for (int iy = 0; iy < nsize[Y]; ++iy)
+	for (int ix = 0; ix < nsize[X]; ++ix) {
+	  float x[3] = {i2x(ix), i2y(iy), i2z(iz)};
 
 	  int anchor[3];
 	  for (int c = 0; c < 3; ++c) anchor[c] = (int)floor(x[c]);
@@ -491,7 +496,7 @@ struct FieldSampler {
 		for (int c = 0; c < 3; ++c)
 		  g[c] = (l[c] - 1 + anchor[c] + N[c]) % N[c];
 
-		s += w[0][sx] * data[g[0] + N[0] * (g[1] + N[1] * g[2])];
+		s += w[0][sx] * DDD(g[X], g[Y], g[Z]);
 	      }
 
 	      tmp[sz][sy] = s;
@@ -509,9 +514,13 @@ struct FieldSampler {
 	  float val = 0;
 	  for (int sz = 0; sz < 4; ++sz) val += w[2][sz] * partial[sz];
 
-	  output[ix + nsize[0] * (iy + nsize[1] * iz)] =
-	    val * amplitude_rescaling;
+	  OOO(ix, iy, iz) = val * amplitude_rescaling;
 	}
+#undef DDD
+#undef OOO
+#undef X
+#undef Y
+#undef Z
   }
 
   ~FieldSampler() { delete[] data; }

@@ -34,8 +34,6 @@ class Simulation
   bool simulation_is_done;
 
   MPI_Comm activecomm, cartcomm;
-  //LocalComm localcomm;
-
   cudaStream_t mainstream, uploadstream, downloadstream;
 
   const size_t nsteps;
@@ -45,7 +43,7 @@ class Simulation
   void _update_helper_arrays();
 
   void _redistribute();
-  void _create_walls(const bool verbose);
+  void _create_walls();
   void _remove_bodies_from_wall(CollectionRBC * coll);
   void _forces();
   void _datadump(const int idtimestep);
