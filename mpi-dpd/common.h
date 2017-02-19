@@ -126,7 +126,7 @@ struct SolventWrap : ParticlesWrap
 };
 
 /* container for the gpu particles during the simulation */
-template<typename Type>
+template<typename T>
 struct SimpleDeviceBuffer {
   int capacity, size;
   T* D;               /* `D' is for data */
