@@ -72,8 +72,8 @@ namespace ParticleKernels
         int base = 32 * (warpid + 4 * blockIdx.x);
         int nsrc = min(32, nparticles - base);
 
-        float2 * pdata = _pdata + 3 * base;
-        float * adata = _adata + 3 * base;
+        float2 *pdata = _pdata + 3 * base;
+        float *adata = _adata + 3 * base;
 
         int laneid;
         asm volatile ("mov.u32 %0, %%laneid;" : "=r"(laneid));
@@ -209,7 +209,7 @@ namespace ParticleKernels
         }
     }
 
-    __global__ void clear_velocity(Particle * p, int n)
+    __global__ void clear_velocity(Particle *p, int n)
     {
         int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
@@ -308,7 +308,7 @@ void CollectionRBC::setup(const char *path2ic)
     if (myrank == 0)
     {
         //read transformed extent from file
-        FILE * f = fopen(path2ic, "r");
+        FILE *f = fopen(path2ic, "r");
         printf("READING FROM: <%s>\n", path2ic);
         bool isgood = true;
 
@@ -383,7 +383,7 @@ void CollectionRBC::_initialize(float *device_xyzuvw, float (*transform)[4])
     CudaRBC::initialize(device_xyzuvw, transform);
 }
 
-void CollectionRBC::remove(int * entries, int nentries)
+void CollectionRBC::remove(int *entries, int nentries)
 {
     std::vector<bool > marks(ncells, true);
 
@@ -397,7 +397,7 @@ void CollectionRBC::remove(int * entries, int nentries)
 
     int nsurvived = survivors.size();
 
-    SimpleDeviceBuffer<Particle> survived(get_nvertices() * nsurvived);
+    SimpleDeviceBuffer<Particle> survived(get_nvertices() *nsurvived);
 
     for(int i = 0; i < nsurvived; ++i)
         CUDA_CHECK(cudaMemcpy(survived.data + get_nvertices() * i, data() + get_nvertices() * survivors[i],
@@ -408,9 +408,9 @@ void CollectionRBC::remove(int * entries, int nentries)
     CUDA_CHECK(cudaMemcpy(xyzuvw.data, survived.data, sizeof(Particle) * survived.size, cudaMemcpyDeviceToDevice));
 }
 
-void CollectionRBC::_dump(const char * format4ply,
+void CollectionRBC::_dump(const char *format4ply,
         MPI_Comm comm, MPI_Comm cartcomm, int ntriangles, int ncells, int nvertices, int (* const indices)[3],
-        Particle * p, Acceleration * a, int n, int iddatadump)
+        Particle *p, Acceleration *a, int n, int iddatadump)
 {
     int ctr = iddatadump;
 
