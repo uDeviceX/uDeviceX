@@ -5,7 +5,7 @@ cudaError_t cudaMemcpy (void * dst, const void * src, size_t count, enum cudaMem
 */
 
 int nsol = particles->size, szp = sizeof(Particle);
-Particle *sol_dev = particles->xyzuvw.D, *sol_hst = particles_datadump->data;
+Particle *sol_dev = particles->pp.D, *sol_hst = particles_datadump->data;
 
 /* copy from device */
 cudaMemcpy(sol_hst, sol_dev, szp*nsol, cudaMemcpyDeviceToHost);
@@ -13,7 +13,7 @@ cudaMemcpy(sol_hst, sol_dev, szp*nsol, cudaMemcpyDeviceToHost);
 /* process RBCs */
 if (rbcscoll) {
     int nrbc = rbcscoll->pcount();
-    Particle *rbc_dev = rbcscoll->xyzuvw.D, *rbc_hst = sol_hst + nsol;
+    Particle *rbc_dev = rbcscoll->pp.D, *rbc_hst = sol_hst + nsol;
 
     /* copy from device */
     cudaMemcpy(rbc_hst, rbc_dev, szp*nrbc, cudaMemcpyDeviceToHost);

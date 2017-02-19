@@ -213,15 +213,15 @@ namespace ParticleKernels {
 
 void ParticleArray::upd_stg1(bool rbcflag, float driving_acceleration, cudaStream_t stream) {
     if (size)
-	ParticleKernels::upd_stg1<<<(xyzuvw.size + 127) / 128, 128, 0, stream>>>
-	  (rbcflag, xyzuvw.D, axayaz.D, xyzuvw.size,
+	ParticleKernels::upd_stg1<<<(pp.size + 127) / 128, 128, 0, stream>>>
+	  (rbcflag, pp.D, aa.D, pp.size,
 	   dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
 void  ParticleArray::upd_stg2_and_1(bool rbcflag, float driving_acceleration, cudaStream_t stream) {
     if (size)
-	ParticleKernels::upd_stg2_and_1<<<(xyzuvw.size + 127) / 128, 128, 0, stream>>>
-	  (rbcflag, (float2 *)xyzuvw.D, (float *)axayaz.D, xyzuvw.size,
+	ParticleKernels::upd_stg2_and_1<<<(pp.size + 127) / 128, 128, 0, stream>>>
+	  (rbcflag, (float2 *)pp.D, (float *)aa.D, pp.size,
 	   dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
@@ -230,27 +230,27 @@ void ParticleArray::resize(int n) {
 
     // YTANG: need the array to be 32-padded for locally transposed storage of acceleration
     if ( n % 32 ) {
-	xyzuvw.preserve_resize( n - n % 32 + 32 );
-	axayaz.preserve_resize( n - n % 32 + 32 );
+	pp.preserve_resize( n - n % 32 + 32 );
+	aa.preserve_resize( n - n % 32 + 32 );
     }
-    xyzuvw.resize(n);
-    axayaz.resize(n);
+    pp.resize(n);
+    aa.resize(n);
 }
 
 void ParticleArray::preserve_resize(int n) {
     int oldsize = size;
     size = n;
 
-    xyzuvw.preserve_resize(n);
-    axayaz.preserve_resize(n);
+    pp.preserve_resize(n);
+    aa.preserve_resize(n);
 
     if (size > oldsize)
-	CUDA_CHECK(cudaMemset(axayaz.D + oldsize, 0, sizeof(Acceleration) * (size-oldsize)));
+	CUDA_CHECK(cudaMemset(aa.D + oldsize, 0, sizeof(Acceleration) * (size-oldsize)));
 }
 
 void ParticleArray::clear_velocity() {
     if (size)
-	ParticleKernels::clear_velocity<<<(xyzuvw.size + 127) / 128, 128 >>>(xyzuvw.D, xyzuvw.size);
+	ParticleKernels::clear_velocity<<<(pp.size + 127) / 128, 128 >>>(pp.D, pp.size);
 }
 
 void CollectionRBC::resize(int count) {
@@ -330,7 +330,7 @@ void CollectionRBC::setup(const char *path2ic) {
 
     resize(good.size());
     for(int i = 0; i < good.size(); ++i)
-	_initialize((float *)(xyzuvw.D + nvertices * i), good[i].transform);
+	_initialize((float *)(pp.D + nvertices * i), good[i].transform);
 }
 
 void CollectionRBC::_initialize(float *device_xyzuvw, float (*transform)[4]) {
@@ -356,7 +356,7 @@ void CollectionRBC::remove(int *entries, int nentries) {
 
     resize(nsurvived);
 
-    CUDA_CHECK(cudaMemcpy(xyzuvw.D, survived.D, sizeof(Particle) * survived.size, cudaMemcpyDeviceToDevice));
+    CUDA_CHECK(cudaMemcpy(pp.D, survived.D, sizeof(Particle) * survived.size, cudaMemcpyDeviceToDevice));
 }
 
 static void rbc_dump0(const char *format4ply,

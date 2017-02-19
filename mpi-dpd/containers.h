@@ -14,8 +14,8 @@ struct ParticleArray
 {
   int size;
 
-  SimpleDeviceBuffer<Particle> xyzuvw;
-  SimpleDeviceBuffer<Acceleration> axayaz;
+  SimpleDeviceBuffer<Particle>     pp; /* xyzuvw */
+  SimpleDeviceBuffer<Acceleration> aa; /* axayaz */
 
   void resize(int n);
   void preserve_resize(int n);
@@ -24,8 +24,8 @@ struct ParticleArray
   void clear_velocity();
 
   void clear_acc(cudaStream_t stream) {
-    CUDA_CHECK(cudaMemsetAsync(axayaz.D, 0,
-			       sizeof(Acceleration) * axayaz.size, stream));
+    CUDA_CHECK(cudaMemsetAsync(aa.D, 0,
+			       sizeof(Acceleration) * aa.size, stream));
   }
 };
 
@@ -43,8 +43,8 @@ class CollectionRBC : public ParticleArray {
   CollectionRBC(MPI_Comm cartcomm);
   void setup(const char *path2ic);
 
-  Particle * data()    {return xyzuvw.D;}
-  Acceleration * acc() {return axayaz.D;}
+  Particle * data()    {return pp.D;}
+  Acceleration * acc() {return aa.D;}
   void remove(int *  entries, int nentries);
   void resize(int rbcs_count);
   void preserve_resize(int n);
