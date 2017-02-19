@@ -5,8 +5,7 @@
  *  Created and authored by Diego Rossinelli on 2014-12-05.
  *  Copyright 2015. All rights reserved. */
 
-struct ParticleArray
-{
+struct ParticleArray {
   int S; /* size */
   SimpleDeviceBuffer<Particle>     pp; /* xyzuvw */
   SimpleDeviceBuffer<Acceleration> aa; /* axayaz */
