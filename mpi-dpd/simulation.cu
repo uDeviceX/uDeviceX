@@ -472,9 +472,8 @@ void Simulation::_update_and_bounce() {
   CUDA_CHECK(cudaPeekAtLastError());
 }
 
-Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm)
-  :    cartcomm(cartcomm), activecomm(activecomm) {
-
+Simulation::Simulation(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
+  cartcomm = cartcomm_; activecomm = activecomm_;
   redistribute      = new RedistributeParticles(cartcomm);
   redistribute_rbcs = new RedistributeRBCs(cartcomm);
   dpd     = new ComputeDPD(cartcomm);
