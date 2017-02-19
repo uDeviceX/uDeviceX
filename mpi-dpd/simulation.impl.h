@@ -102,13 +102,12 @@ static void sim_redistribute() {
   CC(cudaPeekAtLastError());
 
   if (rbcscoll)
-    redistribute_rbcs->extent(rbcscoll->pp.D, rbcscoll->ncells, mainstream);
+    redistribute_rbcs->extent(rbcscoll->pp.D, ncells, mainstream);
 
   redistribute->send();
 
   if (rbcscoll)
-    redistribute_rbcs->pack_sendcount(rbcscoll->pp.D, rbcscoll->ncells,
-				     mainstream);
+    redistribute_rbcs->pack_sendcount(rbcscoll->pp.D, ncells, mainstream);
 
   redistribute->bulk(particles->S, cells->start, cells->count, mainstream);
 
@@ -137,13 +136,13 @@ static void sim_redistribute() {
   swap(particles, newparticles);
 
   if (rbcscoll)
-    redistribute_rbcs->unpack(rbcscoll->pp.D, rbcscoll->ncells, mainstream);
+    redistribute_rbcs->unpack(rbcscoll->pp.D, ncells, mainstream);
 
   CC(cudaPeekAtLastError());
 }
 
 void sim_remove_bodies_from_wall(CollectionRBC *coll) {
-  if (!coll || !coll->ncells) return;
+  if (!coll || !ncells) return;
   SimpleDeviceBuffer<int> marks(coll->pcount());
 
   SolidWallsKernel::fill_keys<<<(coll->pcount() + 127) / 128, 128>>>(
@@ -153,7 +152,7 @@ void sim_remove_bodies_from_wall(CollectionRBC *coll) {
   CC(cudaMemcpy(tmp.data(), marks.D, sizeof(int) * marks.S,
 			cudaMemcpyDeviceToHost));
 
-  const int nbodies = coll->ncells;
+  const int nbodies = ncells;
 
   std::vector<int> tokill;
   for (int i = 0; i < nbodies; ++i) {
@@ -259,7 +258,7 @@ void sim_forces() {
   CC(cudaPeekAtLastError());
 
   if (rbcscoll)
-    CudaRBC::forces_nohost(mainstream, rbcscoll->ncells,
+    CudaRBC::forces_nohost(mainstream, ncells,
 			   (float *)rbcscoll->pp.D, (float *)rbcscoll->aa.D);
 
   CC(cudaPeekAtLastError());
@@ -556,7 +555,7 @@ static void sim_lockstep() {
   CC(cudaPeekAtLastError());
 
   if (rbcscoll)
-    CudaRBC::forces_nohost(mainstream, rbcscoll->ncells,
+    CudaRBC::forces_nohost(mainstream, ncells,
 			   (float *)rbcscoll->pp.D, (float *)rbcscoll->aa.D);
   CC(cudaPeekAtLastError());
   solutex->post_a();
@@ -577,8 +576,8 @@ static void sim_lockstep() {
   int newnp = redistribute->recv_count(mainstream);
   CC(cudaPeekAtLastError());
   if (rbcscoll) {
-    redistribute_rbcs->extent(rbcscoll->pp.D, rbcscoll->ncells, mainstream);
-    redistribute_rbcs->pack_sendcount(rbcscoll->pp.D, rbcscoll->ncells, mainstream);
+    redistribute_rbcs->extent(rbcscoll->pp.D, ncells, mainstream);
+    redistribute_rbcs->pack_sendcount(rbcscoll->pp.D, ncells, mainstream);
   }
   newparticles->pa_resize(newnp);
   xyzouvwo->resize(newnp * 2);
@@ -594,7 +593,7 @@ static void sim_lockstep() {
   if (rbcscoll) rbcscoll->rbc_resize(nrbcs);
   CC(cudaPeekAtLastError());
   if (rbcscoll)
-    redistribute_rbcs->unpack(rbcscoll->pp.D, rbcscoll->ncells, mainstream);
+    redistribute_rbcs->unpack(rbcscoll->pp.D, ncells, mainstream);
   CC(cudaPeekAtLastError());
 }
 

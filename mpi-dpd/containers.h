@@ -28,13 +28,13 @@ void rbc_dump(MPI_Comm comm,
 extern int nvertices;
 extern MPI_Comm cartcomm;
 extern int rank;
+extern int ncells;
 /***                      ***/
 
 class CollectionRBC : public ParticleArray {
  protected:
   void _initialize(float *device_pp, float (*transform)[4]);
  public:
-  int ncells;
   CollectionRBC();
   void setup(const char *path2ic);
   void remove(int*  entries, int nentries);
