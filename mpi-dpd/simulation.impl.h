@@ -1,4 +1,3 @@
-
 static __global__ void make_texture(float4 *__restrict xyzouvwoo,
 			     ushort4 *__restrict xyzo_half,
 			     const float *__restrict xyzuvw, const uint n) {
@@ -177,8 +176,8 @@ void sim_remove_bodies_from_wall(CollectionRBC *coll) {
 void sim_create_walls() {
   int nsurvived = 0;
   ExpectedMessageSizes new_sizes;
-  wall = new ComputeWall(cartcomm, particles->xyzuvw.data, particles->size,
-			 nsurvived, new_sizes); wall_created = true;
+  wall_init(cartcomm, particles->xyzuvw.data, particles->size,
+	    nsurvived, new_sizes); wall_created = true;
   particles->resize(nsurvived);
   particles->clear_velocity();
   cells->build(particles->xyzuvw.data, particles->size, 0, NULL, NULL);
@@ -236,11 +235,11 @@ void sim_forces() {
   CUDA_CHECK(cudaPeekAtLastError());
 
   if (rbcscoll && wall_created)
-    wall->wall_interactions(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->acc(),
+    wall_interactions(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->acc(),
 		       mainstream);
 
   if (wall_created)
-    wall->wall_interactions(particles->xyzuvw.data, particles->size,
+    wall_interactions(particles->xyzuvw.data, particles->size,
 		       particles->axayaz.data, mainstream);
 
   CUDA_CHECK(cudaPeekAtLastError());
@@ -422,10 +421,10 @@ static void sim_update_and_bounce() {
 
   CUDA_CHECK(cudaPeekAtLastError());
   if (wall_created) {
-    wall->wall_bounce(particles->xyzuvw.data, particles->size, mainstream);
+    wall_bounce(particles->xyzuvw.data, particles->size, mainstream);
 
     if (rbcscoll)
-      wall->wall_bounce(rbcscoll->data(), rbcscoll->pcount(), mainstream);
+      wall_bounce(rbcscoll->data(), rbcscoll->pcount(), mainstream);
   }
 
   CUDA_CHECK(cudaPeekAtLastError());
@@ -449,7 +448,7 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   particles_pingpong[0] = new ParticleArray();
   particles_pingpong[1] = new ParticleArray();
 
-  rbcscoll = NULL; wall = NULL;
+  rbcscoll = NULL;
   driving_acceleration = 0;
   nsteps = (int)(tend / dt);
   datadump_pending = false; sim_is_done = false;
@@ -549,7 +548,7 @@ static void sim_lockstep() {
   CUDA_CHECK(cudaPeekAtLastError());
 
   if (wall_created)
-    wall->wall_interactions(particles->xyzuvw.data, particles->size,
+    wall_interactions(particles->xyzuvw.data, particles->size,
 		       particles->axayaz.data,
 		       mainstream);
 
@@ -571,7 +570,7 @@ static void sim_lockstep() {
   CUDA_CHECK(cudaPeekAtLastError());
   solutex->post_a();
   particles->upd_stg2_and_1(false, driving_acceleration, mainstream);
-  if (wall_created) wall->wall_bounce(particles->xyzuvw.data, particles->size, mainstream);
+  if (wall_created) wall_bounce(particles->xyzuvw.data, particles->size, mainstream);
   CUDA_CHECK(cudaPeekAtLastError());
   redistribute->pack(particles->xyzuvw.data, particles->size, mainstream);
   redistribute->send();
@@ -579,7 +578,7 @@ static void sim_lockstep() {
   CUDA_CHECK(cudaPeekAtLastError());
 
   if (rbcscoll && wall_created)
-    wall->wall_interactions(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->acc(),
+    wall_interactions(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->acc(),
 		       mainstream);
   CUDA_CHECK(cudaPeekAtLastError());
   solutex->recv_a(mainstream);
@@ -658,7 +657,6 @@ void sim_close() {
   CUDA_CHECK(cudaStreamDestroy(uploadstream));
   CUDA_CHECK(cudaStreamDestroy(downloadstream));
 
-  delete wall;
   delete rbcscoll;
   delete contact;
   delete cells;

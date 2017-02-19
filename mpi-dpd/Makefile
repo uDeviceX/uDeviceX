@@ -15,7 +15,7 @@ NVCCFLAGS += -I../cuda-dpd -I../cuda-rbc
 LIBS      += -lcuda-dpd -lcuda-rbc -lcudart
 
 OBJS = \
-containers.o wall.o dpd.o \
+containers.o dpd.o \
 fsi.o contact.o redistribute-particles.o \
 redistribute-rbcs.o solvent-exchange.o solute-exchange.o \
 common.o io.o scan.o \
@@ -51,7 +51,7 @@ dpd.o:            dpd.cu;            $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 fsi.o:            fsi.cu;            $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 last_bit_float.o: last_bit_float.cu; $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 dpd-forces.o:     dpd-forces.cu;     $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
-wall.o:           wall.cu;           $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
+simulation.o:     simulation.cu;     $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 include    Makefile.dep # dependencies
 
 libcuda-dpd:

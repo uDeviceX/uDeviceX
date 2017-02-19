@@ -22,7 +22,6 @@
 #include "containers.h"
 #include "solvent-exchange.h"
 #include "dpd.h"
-#include "wall.h"
 #include "solute-exchange.h"
 #include "fsi.h"
 #include "contact.h"

@@ -23,7 +23,6 @@
 #include "containers.h"
 #include "solvent-exchange.h"
 #include "dpd.h"
-#include "wall.h"
 #include "solute-exchange.h"
 #include "fsi.h"
 #include "contact.h"
@@ -34,6 +33,22 @@
 #include "dpd-forces.h"
 #include "last_bit_float.h"
 #include "geom-wrapper.h"
+
+#include <thrust/device_vector.h>
+#include <thrust/sort.h>
+
+MPI_Comm cartcomm;
+int myrank, dims[3], periods[3], coords[3];
+Logistic::KISS trunk;
+
+int solid_size;
+float4 * solid4;
+cudaArray * arrSDF;
+CellLists* wall_cells;
+
+SimpleDeviceBuffer<float3> *frcs;
+int samples;
+#include "wall.impl.h"
 
 ParticleArray *particles_pingpong[2];
 ParticleArray *particles, *newparticles;
@@ -51,10 +66,10 @@ SoluteExchange* solutex;
 ComputeFSI* fsi;
 ComputeContact* contact;
 
-ComputeWall * wall; bool wall_created = false;
+bool wall_created = false;
 bool sim_is_done;
 
-MPI_Comm activecomm, cartcomm;
+MPI_Comm activecomm;
 cudaStream_t mainstream, uploadstream, downloadstream;
 
 size_t nsteps;
