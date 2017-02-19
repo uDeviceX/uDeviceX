@@ -41,8 +41,6 @@ class CollectionRBC : public ParticleArray {
   int ncells;
   CollectionRBC(MPI_Comm cartcomm);
   void setup(const char *path2ic);
-
-  Particle * data()    {return pp.D;}
   Acceleration * acc() {return aa.D;}
   void remove(int *  entries, int nentries);
   void resize(int rbcs_count);

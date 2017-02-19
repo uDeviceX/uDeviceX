@@ -353,7 +353,7 @@ void CollectionRBC::remove(int *entries, int nentries) {
     int nsurvived = survivors.size();
     SimpleDeviceBuffer<Particle> survived(nvertices*nsurvived);
     for(int i = 0; i < nsurvived; ++i)
-	CC(cudaMemcpy(survived.D + nvertices * i, data() + nvertices * survivors[i],
+	CC(cudaMemcpy(survived.D + nvertices * i, pp.D + nvertices * survivors[i],
 		    sizeof(Particle) * nvertices, cudaMemcpyDeviceToDevice));
 
     resize(nsurvived);

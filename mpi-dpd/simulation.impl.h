@@ -102,12 +102,12 @@ static void sim_redistribute() {
   CC(cudaPeekAtLastError());
 
   if (rbcscoll)
-    redistribute_rbcs->extent(rbcscoll->data(), rbcscoll->ncells, mainstream);
+    redistribute_rbcs->extent(rbcscoll->pp.D, rbcscoll->ncells, mainstream);
 
   redistribute->send();
 
   if (rbcscoll)
-    redistribute_rbcs->pack_sendcount(rbcscoll->data(), rbcscoll->ncells,
+    redistribute_rbcs->pack_sendcount(rbcscoll->pp.D, rbcscoll->ncells,
 				     mainstream);
 
   redistribute->bulk(particles->S, cells->start, cells->count, mainstream);
@@ -137,7 +137,7 @@ static void sim_redistribute() {
   swap(particles, newparticles);
 
   if (rbcscoll)
-    redistribute_rbcs->unpack(rbcscoll->data(), rbcscoll->ncells, mainstream);
+    redistribute_rbcs->unpack(rbcscoll->pp.D, rbcscoll->ncells, mainstream);
 
   CC(cudaPeekAtLastError());
 }
@@ -147,7 +147,7 @@ void sim_remove_bodies_from_wall(CollectionRBC *coll) {
   SimpleDeviceBuffer<int> marks(coll->pcount());
 
   SolidWallsKernel::fill_keys<<<(coll->pcount() + 127) / 128, 128>>>(
-      coll->data(), coll->pcount(), marks.D);
+      coll->pp.D, coll->pcount(), marks.D);
 
   vector<int> tmp(marks.S);
   CC(cudaMemcpy(tmp.data(), marks.D, sizeof(int) * marks.S,
@@ -202,7 +202,7 @@ void sim_forces() {
 
   if (rbcscoll)
     wsolutes.push_back(
-	ParticlesWrap(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->acc()));
+	ParticlesWrap(rbcscoll->pp.D, rbcscoll->pcount(), rbcscoll->acc()));
 
   fsi->bind_solvent(wsolvent);
 
@@ -234,7 +234,7 @@ void sim_forces() {
   CC(cudaPeekAtLastError());
 
   if (rbcscoll && wall_created)
-    wall_interactions(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->acc(),
+    wall_interactions(rbcscoll->pp.D, rbcscoll->pcount(), rbcscoll->acc(),
 		       mainstream);
 
   if (wall_created)
@@ -261,7 +261,7 @@ void sim_forces() {
 
   if (rbcscoll)
     CudaRBC::forces_nohost(mainstream, rbcscoll->ncells,
-			   (float *)rbcscoll->data(), (float *)rbcscoll->acc());
+			   (float *)rbcscoll->pp.D, (float *)rbcscoll->acc());
 
   CC(cudaPeekAtLastError());
 
@@ -424,7 +424,7 @@ static void sim_update_and_bounce() {
     wall_bounce(particles->pp.D, particles->S, mainstream);
 
     if (rbcscoll)
-      wall_bounce(rbcscoll->data(), rbcscoll->pcount(), mainstream);
+      wall_bounce(rbcscoll->pp.D, rbcscoll->pcount(), mainstream);
   }
 
   CC(cudaPeekAtLastError());
@@ -518,7 +518,7 @@ static void sim_lockstep() {
 
   if (rbcscoll)
     wsolutes.push_back(
-	ParticlesWrap(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->acc()));
+	ParticlesWrap(rbcscoll->pp.D, rbcscoll->pcount(), rbcscoll->acc()));
 
   fsi->bind_solvent(wsolvent);
   solutex->bind_solutes(wsolutes);
@@ -558,7 +558,7 @@ static void sim_lockstep() {
 
   if (rbcscoll)
     CudaRBC::forces_nohost(mainstream, rbcscoll->ncells,
-			   (float *)rbcscoll->data(), (float *)rbcscoll->acc());
+			   (float *)rbcscoll->pp.D, (float *)rbcscoll->acc());
   CC(cudaPeekAtLastError());
   solutex->post_a();
   particles->upd_stg2_and_1(false, driving_acceleration, mainstream);
@@ -570,7 +570,7 @@ static void sim_lockstep() {
   CC(cudaPeekAtLastError());
 
   if (rbcscoll && wall_created)
-    wall_interactions(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->acc(),
+    wall_interactions(rbcscoll->pp.D, rbcscoll->pcount(), rbcscoll->acc(),
 		       mainstream);
   CC(cudaPeekAtLastError());
   solutex->recv_a(mainstream);
@@ -578,9 +578,9 @@ static void sim_lockstep() {
   const int newnp = redistribute->recv_count(mainstream);
   CC(cudaPeekAtLastError());
   if (rbcscoll)
-    redistribute_rbcs->extent(rbcscoll->data(), rbcscoll->ncells, mainstream);
+    redistribute_rbcs->extent(rbcscoll->pp.D, rbcscoll->ncells, mainstream);
   if (rbcscoll)
-    redistribute_rbcs->pack_sendcount(rbcscoll->data(), rbcscoll->ncells,
+    redistribute_rbcs->pack_sendcount(rbcscoll->pp.D, rbcscoll->ncells,
 				     mainstream);
   newparticles->resize(newnp);
   xyzouvwo->resize(newnp * 2);
@@ -597,7 +597,7 @@ static void sim_lockstep() {
     rbcscoll->resize(nrbcs);
   CC(cudaPeekAtLastError());
   if (rbcscoll)
-    redistribute_rbcs->unpack(rbcscoll->data(), rbcscoll->ncells, mainstream);
+    redistribute_rbcs->unpack(rbcscoll->pp.D, rbcscoll->ncells, mainstream);
   CC(cudaPeekAtLastError());
 }
 
