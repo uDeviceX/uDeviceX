@@ -175,7 +175,7 @@ void sim_remove_bodies_from_wall(CollectionRBC *coll) {
 void sim_create_walls() {
   int nsurvived = 0;
   ExpectedMessageSizes new_sizes;
-  wall_init(cartcomm, particles->pp.D, particles->S,
+  wall_init(particles->pp.D, particles->S,
 	    nsurvived, new_sizes); wall_created = true;
   particles->pa_resize(nsurvived);
   particles->clear_velocity();
