@@ -359,7 +359,7 @@ void CollectionRBC::remove(int *entries, int nentries) {
     CUDA_CHECK(cudaMemcpy(xyzuvw.D, survived.D, sizeof(Particle) * survived.size, cudaMemcpyDeviceToDevice));
 }
 
-void rbc_dump0(const char *format4ply,
+static void rbc_dump0(const char *format4ply,
 	   MPI_Comm comm, MPI_Comm cartcomm, int ncells,
 	   Particle *p, Acceleration *a, int n, int iddatadump) {
     int ctr = iddatadump;
