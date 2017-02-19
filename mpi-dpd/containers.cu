@@ -204,21 +204,22 @@ namespace ParticleKernels
 	int pid = threadIdx.x + blockDim.x * blockIdx.x;
 	if (pid >= n) return;
 	last_bit_float::Preserver up(p[pid].u[0]);
-	for(int c = 0; c < 3; ++c)
-	    p[pid].u[c] = 0;
+	for(int c = 0; c < 3; ++c) p[pid].u[c] = 0;
     }
-}
+} /* end of ParticleKernels */
 
 void ParticleArray::upd_stg1(bool rbcflag, float driving_acceleration, cudaStream_t stream) {
     if (size)
-	ParticleKernels::upd_stg1<<<(xyzuvw.size + 127) / 128, 128, 0, stream>>>(
-		rbcflag, xyzuvw.data, axayaz.data, xyzuvw.size, dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
+	ParticleKernels::upd_stg1<<<(xyzuvw.size + 127) / 128, 128, 0, stream>>>
+	  (rbcflag, xyzuvw.data, axayaz.data, xyzuvw.size,
+	   dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
 void  ParticleArray::upd_stg2_and_1(bool rbcflag, float driving_acceleration, cudaStream_t stream) {
     if (size)
 	ParticleKernels::upd_stg2_and_1<<<(xyzuvw.size + 127) / 128, 128, 0, stream>>>
-	    (rbcflag, (float2 *)xyzuvw.data, (float *)axayaz.data, xyzuvw.size, dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
+	  (rbcflag, (float2 *)xyzuvw.data, (float *)axayaz.data, xyzuvw.size,
+	   dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
 void ParticleArray::resize(int n) {
@@ -263,8 +264,8 @@ void CollectionRBC::preserve_resize(int count) {
     ParticleArray::preserve_resize(count * get_nvertices());
 }
 
-CollectionRBC::CollectionRBC(MPI_Comm cartcomm):
-  cartcomm(cartcomm), ncells(0) {
+CollectionRBC::CollectionRBC(MPI_Comm cartcomm_) {
+  cartcomm = cartcomm_; ncells = 0;
   MPI_CHECK(MPI_Comm_rank(cartcomm, &myrank));
   MPI_CHECK( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
 
