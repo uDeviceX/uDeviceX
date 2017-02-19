@@ -22,10 +22,10 @@ class Simulation
   CellLists* cells;
   CollectionRBC * rbcscoll;
 
-  RedistributeParticles redistribute;
-  RedistributeRBCs redistribute_rbcs;
+  RedistributeParticles* redistribute;
+  RedistributeRBCs* redistribute_rbcs;
 
-  ComputeDPD dpd;
+  ComputeDPD* dpd;
   SoluteExchange* solutex;
   ComputeFSI* fsi;
   ComputeContact* contact;
