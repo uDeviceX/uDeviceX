@@ -29,20 +29,16 @@ extern float tend;
 extern bool walls, pushtheflow, doublepoiseuille, rbcs, hdf5field_dumps, hdf5part_dumps, is_mps_enabled, contactforces;
 extern int steps_per_dump, steps_per_hdf5dump, wall_creation_stepid;
 
+/* [c]cuda [c]heck */
 #define CC(ans) do { cudaAssert((ans), __FILE__, __LINE__); } while(0)
-inline void cudaAssert(cudaError_t code, const char *file, int line)
-{
-  if (code != cudaSuccess)
-  {
+inline void cudaAssert(cudaError_t code, const char *file, int line) {
+  if (code != cudaSuccess) {
     fprintf(stderr,"GPU assert: %s %s %d\n", cudaGetErrorString(code), file, line);
-
     abort();
   }
 }
 
-
 #define MPI_CHECK(ans) do { mpiAssert((ans), __FILE__, __LINE__); } while(0)
-
 inline void mpiAssert(int code, const char *file, int line)
 {
   if (code != MPI_SUCCESS)
