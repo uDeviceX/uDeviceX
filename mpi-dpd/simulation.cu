@@ -476,9 +476,13 @@ Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm)
     : cartcomm(cartcomm), activecomm(activecomm),
       cells(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN), rbcscoll(NULL),
       wall(NULL), redistribute(cartcomm), redistribute_rbcs(cartcomm),
-      dpd(cartcomm), fsi(cartcomm), contact(cartcomm), solutex(cartcomm),
-      driving_acceleration(0), nsteps((int)(tend / dt)),
-      datadump_pending(false), simulation_is_done(false) {
+      dpd(cartcomm), fsi(cartcomm), contact(cartcomm), solutex(cartcomm) {
+
+  driving_acceleration = 0;
+  nsteps = (int)(tend / dt);
+  datadump_pending = false;
+  simulation_is_done = false;
+  
   
   MPI_CHECK(MPI_Comm_size(activecomm, &nranks));
   MPI_CHECK(MPI_Comm_rank(activecomm, &rank));

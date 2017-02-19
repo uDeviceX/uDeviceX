@@ -36,7 +36,7 @@ class Simulation
   MPI_Comm activecomm, cartcomm;
   cudaStream_t mainstream, uploadstream, downloadstream;
 
-  const size_t nsteps;
+  size_t nsteps;
   float driving_acceleration;
   int nranks, rank;
 
