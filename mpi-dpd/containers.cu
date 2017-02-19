@@ -53,7 +53,7 @@ namespace ParticleKernels {
     }
 
     __global__ void upd_stg2_and_1(bool rbcflag, float2 * _pdata, float * _adata,
-					int nparticles, float dt, float _driving_acceleration, float threshold,
+				   int nparticles, float dt, float _driving_acceleration, float threshold,
 				   bool doublePoiseuille) {
 #if !defined(__CUDA_ARCH__)
 #define _ACCESS(x) __ldg(x)
