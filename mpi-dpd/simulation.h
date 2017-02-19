@@ -19,7 +19,7 @@ class Simulation
   SimpleDeviceBuffer<float4> xyzouvwo;
   SimpleDeviceBuffer<ushort4> xyzo_half;
 
-  CellLists cells;
+  CellLists* cells;
   CollectionRBC * rbcscoll;
 
   RedistributeParticles redistribute;
@@ -28,7 +28,7 @@ class Simulation
   ComputeDPD dpd;
   SoluteExchange solutex;
   ComputeFSI fsi;
-  ComputeContact contact;
+  ComputeContact* contact;
 
   ComputeWall * wall;
   bool simulation_is_done;

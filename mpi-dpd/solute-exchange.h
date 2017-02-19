@@ -203,7 +203,7 @@ class SoluteExchange
 
   void bind_solutes(std::vector<ParticlesWrap> wsolutes) { this->wsolutes = wsolutes; }
 
-  void attach_halocomputation(Visitor& visitor) { visitors.push_back(&visitor); }
+  void attach_halocomputation(Visitor* visitor) { visitors.push_back(visitor); }
 
   void pack_p(cudaStream_t stream);
 
