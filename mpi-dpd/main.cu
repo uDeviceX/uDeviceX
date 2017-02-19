@@ -88,10 +88,10 @@ int main(int argc, char **argv) {
   {
     is_mps_enabled = false;
     const char *mps_variables[] = {"CRAY_CUDA_MPS", "CUDA_MPS",
-                                   "CRAY_CUDA_PROXY", "CUDA_PROXY"};
+				   "CRAY_CUDA_PROXY", "CUDA_PROXY"};
     for (int i = 0; i < 4; ++i)
       is_mps_enabled |= getenv(mps_variables[i]) != NULL &&
-                        atoi(getenv(mps_variables[i])) != 0;
+			atoi(getenv(mps_variables[i])) != 0;
   }
 
   int nranks, rank;
@@ -100,15 +100,15 @@ int main(int argc, char **argv) {
     setenv("MPICH_MAX_THREAD_SAFETY", "multiple", 0);
     int provided_safety_level;
     MPI_CHECK(MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE,
-                              &provided_safety_level));
+			      &provided_safety_level));
     MPI_CHECK(MPI_Comm_size(MPI_COMM_WORLD, &nranks));
     MPI_CHECK(MPI_Comm_rank(MPI_COMM_WORLD, &rank));
 
     if (provided_safety_level != MPI_THREAD_MULTIPLE) {
       if (rank == 0)
-        printf(
-            "ooooooooops MPI thread safety level is just %d. Aborting now.\n",
-            provided_safety_level);
+	printf(
+	    "ooooooooops MPI thread safety level is just %d. Aborting now.\n",
+	    provided_safety_level);
       abort();
     } else if (rank == 0)
       printf("I have set MPICH_MAX_THREAD_SAFETY=multiple\n");
@@ -146,23 +146,18 @@ int main(int argc, char **argv) {
   MPI_Comm cartcomm;
   int periods[] = {1, 1, 1};
   MPI_CHECK(MPI_Cart_create(activecomm, 3, ranks, periods, (int)reordering,
-                            &cartcomm));
+			    &cartcomm));
   activecomm = cartcomm;
-  // RAII
-  {
-    MPI_CHECK(MPI_Barrier(activecomm));
-    if (rank == 0) {
-      argp.print_arguments();
-      fflush(stdout);
-    }
-    localcomm.initialize(activecomm);
-    MPI_CHECK(MPI_Barrier(activecomm));
-    sim_init(cartcomm, activecomm);
-    sim_run();
-    sim_close();
-  }
-  if (activecomm != cartcomm)
-    MPI_CHECK(MPI_Comm_free(&activecomm));
+  MPI_CHECK(MPI_Barrier(activecomm));
+  if (rank == 0) argp.print_arguments();
+  localcomm.initialize(activecomm);
+  MPI_CHECK(MPI_Barrier(activecomm));
+
+  sim_init(cartcomm, activecomm);
+  sim_run();
+  sim_close();
+
+  if (activecomm != cartcomm) MPI_CHECK(MPI_Comm_free(&activecomm));
   MPI_CHECK(MPI_Comm_free(&cartcomm));
   MPI_CHECK(MPI_Finalize());
   CUDA_CHECK(cudaDeviceSynchronize());

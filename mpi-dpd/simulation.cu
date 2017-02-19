@@ -35,10 +35,10 @@
 #include "last_bit_float.h"
 #include "geom-wrapper.h"
 
-ParticleArray particles_pingpong[2];
-ParticleArray * particles, * newparticles;
-SimpleDeviceBuffer<float4> xyzouvwo;
-SimpleDeviceBuffer<ushort4> xyzo_half;
+ParticleArray *particles_pingpong[2];
+ParticleArray *particles, *newparticles;
+SimpleDeviceBuffer<float4 > *xyzouvwo;
+SimpleDeviceBuffer<ushort4> *xyzo_half;
 
 CellLists* cells;
 CollectionRBC * rbcscoll;
@@ -68,8 +68,8 @@ bool datadump_pending;
 int datadump_idtimestep, datadump_nsolvent, datadump_nrbcs;
 bool async_thread_initialized;
 
-PinnedHostBuffer<Particle> particles_datadump;
-PinnedHostBuffer<Acceleration> accelerations_datadump;
+PinnedHostBuffer<Particle>      *particles_datadump;
+PinnedHostBuffer<Acceleration>  *accelerations_datadump;
 
 cudaEvent_t evdownloaded;
 

@@ -1,5 +1,5 @@
 
-static __global__ void make_texture(float4 *__restrict xyzouvwo,
+static __global__ void make_texture(float4 *__restrict xyzouvwoo,
 			     ushort4 *__restrict xyzo_half,
 			     const float *__restrict xyzuvw, const uint n) {
   extern __shared__ volatile float smem[];
@@ -21,12 +21,12 @@ static __global__ void make_texture(float4 *__restrict xyzouvwo,
   // SMEM: XYZUVW XYZUVW ...
   uint pid = lane / 2;
   const uint x_or_v = (lane % 2) * 3;
-  xyzouvwo[i * 2 + lane] =
+  xyzouvwoo[i * 2 + lane] =
       make_float4(smem[warpid * 192 + pid * 6 + x_or_v + 0],
 		  smem[warpid * 192 + pid * 6 + x_or_v + 1],
 		  smem[warpid * 192 + pid * 6 + x_or_v + 2], 0);
   pid += 16;
-  xyzouvwo[i * 2 + lane + 32] =
+  xyzouvwoo[i * 2 + lane + 32] =
       make_float4(smem[warpid * 192 + pid * 6 + x_or_v + 0],
 		  smem[warpid * 192 + pid * 6 + x_or_v + 1],
 		  smem[warpid * 192 + pid * 6 + x_or_v + 2], 0);
@@ -42,12 +42,12 @@ static void sim_update_helper_arrays() {
 
   const int np = particles->size;
 
-  xyzouvwo.resize(2 * np);
-  xyzo_half.resize(np);
+  xyzouvwo->resize(2 * np);
+  xyzo_half->resize(np);
 
   if (np)
     make_texture<<<(np + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>(
-	xyzouvwo.data, xyzo_half.data, (float *)particles->xyzuvw.data, np);
+	xyzouvwo->data, xyzo_half->data, (float *)particles->xyzuvw.data, np);
 
   CUDA_CHECK(cudaPeekAtLastError());
 }
@@ -125,12 +125,13 @@ static void sim_redistribute() {
     rbcscoll->resize(nrbcs);
 
   newparticles->resize(newnp);
-  xyzouvwo.resize(newnp * 2);
-  xyzo_half.resize(newnp);
+  xyzouvwo->resize(newnp * 2);
+  xyzo_half->resize(newnp);
 
-  redistribute->recv_unpack(newparticles->xyzuvw.data, xyzouvwo.data,
-			   xyzo_half.data, newnp, cells->start, cells->count,
-			   mainstream);
+  redistribute->recv_unpack(newparticles->xyzuvw.data,
+			    xyzouvwo->data, xyzo_half->data,
+			    newnp, cells->start, cells->count,
+			    mainstream);
 
   CUDA_CHECK(cudaPeekAtLastError());
 
@@ -143,9 +144,7 @@ static void sim_redistribute() {
 }
 
 void sim_remove_bodies_from_wall(CollectionRBC *coll) {
-  if (!coll || !coll->count())
-    return;
-
+  if (!coll || !coll->count()) return;
   SimpleDeviceBuffer<int> marks(coll->pcount());
 
   SolidWallsKernel::fill_keys<<<(coll->pcount() + 127) / 128, 128>>>(
@@ -226,7 +225,7 @@ void sim_forces() {
   if (contactforces)
     contact->build_cells(wsolutes, mainstream);
 
-  dpd->local_interactions(particles->xyzuvw.data, xyzouvwo.data, xyzo_half.data,
+  dpd->local_interactions(particles->xyzuvw.data, xyzouvwo->data, xyzo_half->data,
 			 particles->size, particles->axayaz.data, cells->start,
 			 cells->count, mainstream);
 
@@ -285,26 +284,26 @@ void sim_datadump(const int idtimestep) {
   if (rbcscoll)
     n += rbcscoll->pcount();
 
-  particles_datadump.resize(n);
-  accelerations_datadump.resize(n);
+  particles_datadump->resize(n);
+  accelerations_datadump->resize(n);
 
 #include "simulation.hack.h"
 
-  CUDA_CHECK(cudaMemcpyAsync(particles_datadump.data, particles->xyzuvw.data,
+  CUDA_CHECK(cudaMemcpyAsync(particles_datadump->data, particles->xyzuvw.data,
 			     sizeof(Particle) * particles->size,
 			     cudaMemcpyDeviceToHost, 0));
   CUDA_CHECK(cudaMemcpyAsync(
-      accelerations_datadump.data, particles->axayaz.data,
+      accelerations_datadump->data, particles->axayaz.data,
       sizeof(Acceleration) * particles->size, cudaMemcpyDeviceToHost, 0));
 
   int start = particles->size;
 
   if (rbcscoll) {
     CUDA_CHECK(cudaMemcpyAsync(
-	particles_datadump.data + start, rbcscoll->xyzuvw.data,
+	particles_datadump->data + start, rbcscoll->xyzuvw.data,
 	sizeof(Particle) * rbcscoll->pcount(), cudaMemcpyDeviceToHost, 0));
     CUDA_CHECK(cudaMemcpyAsync(
-	accelerations_datadump.data + start, rbcscoll->axayaz.data,
+	accelerations_datadump->data + start, rbcscoll->axayaz.data,
 	sizeof(Acceleration) * rbcscoll->pcount(), cudaMemcpyDeviceToHost, 0));
     start += rbcscoll->pcount();
   }
@@ -355,9 +354,9 @@ static void sim_datadump_async() {
 
     CUDA_CHECK(cudaEventSynchronize(evdownloaded));
 
-    const int n = particles_datadump.size;
-    Particle *p = particles_datadump.data;
-    Acceleration *a = accelerations_datadump.data;
+    int n = particles_datadump->size;
+    Particle *p = particles_datadump->data;
+    Acceleration *a = accelerations_datadump->data;
 
     { diagnostics(myactivecomm, mycartcomm, p, n, dt, datadump_idtimestep, a); }
 
@@ -442,7 +441,15 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   solutex = new SoluteExchange(cartcomm);
   contact = new ComputeContact(cartcomm);
   cells   = new CellLists(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
-  
+
+  particles_datadump     = new PinnedHostBuffer<Particle>;
+  accelerations_datadump = new PinnedHostBuffer<Acceleration>;
+
+  xyzouvwo    = new SimpleDeviceBuffer<float4 >;
+  xyzo_half = new SimpleDeviceBuffer<ushort4>;
+  particles_pingpong[0] = new ParticleArray();
+  particles_pingpong[1] = new ParticleArray();
+
   rbcscoll = NULL; wall = NULL;
   driving_acceleration = 0;
   nsteps = (int)(tend / dt);
@@ -458,20 +465,20 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   int dims[3], periods[3], coords[3];
   MPI_CHECK(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
 
-  particles = &particles_pingpong[0];
-  newparticles = &particles_pingpong[1];
+  particles =     particles_pingpong[0];
+  newparticles =  particles_pingpong[1];
 
   vector<Particle> ic = _ic();
 
   for (int c = 0; c < 2; ++c) {
-    particles_pingpong[c].resize(ic.size());
+    particles_pingpong[c]->resize(ic.size());
     
-    particles_pingpong[c].origin =
+    particles_pingpong[c]->origin =
       make_float3((0.5 + coords[0]) * XSIZE_SUBDOMAIN,
 		  (0.5 + coords[1]) * YSIZE_SUBDOMAIN,
 		  (0.5 + coords[2]) * ZSIZE_SUBDOMAIN);
     
-    particles_pingpong[c].globalextent =
+    particles_pingpong[c]->globalextent =
       make_float3(dims[0] * XSIZE_SUBDOMAIN, dims[1] * YSIZE_SUBDOMAIN,
 		  dims[2] * ZSIZE_SUBDOMAIN);
   }
@@ -495,8 +502,8 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   CUDA_CHECK(cudaEventCreate(&evdownloaded,
 			     cudaEventDisableTiming | cudaEventBlockingSync));
 
-  particles_datadump.resize(particles->size * 1.5);
-  accelerations_datadump.resize(particles->size * 1.5);
+  particles_datadump->resize(particles->size * 1.5);
+  accelerations_datadump->resize(particles->size * 1.5);
   
   int rcode = pthread_mutex_init(&mutex_datadump, NULL);
   rcode |= pthread_cond_init(&done_datadump, NULL);
@@ -534,7 +541,7 @@ static void sim_lockstep() {
   dpd->pack(particles->xyzuvw.data, particles->size, cells->start, cells->count,
 	   mainstream);
 
-  dpd->local_interactions(particles->xyzuvw.data, xyzouvwo.data, xyzo_half.data,
+  dpd->local_interactions(particles->xyzuvw.data, xyzouvwo->data, xyzo_half->data,
 			 particles->size, particles->axayaz.data, cells->start,
 			 cells->count, mainstream);
   if (contactforces) contact->build_cells(wsolutes, mainstream);
@@ -586,10 +593,10 @@ static void sim_lockstep() {
     redistribute_rbcs->pack_sendcount(rbcscoll->data(), rbcscoll->count(),
 				     mainstream);
   newparticles->resize(newnp);
-  xyzouvwo.resize(newnp * 2);
-  xyzo_half.resize(newnp);
-  redistribute->recv_unpack(newparticles->xyzuvw.data, xyzouvwo.data,
-			   xyzo_half.data, newnp, cells->start, cells->count,
+  xyzouvwo->resize(newnp * 2);
+  xyzo_half->resize(newnp);
+  redistribute->recv_unpack(newparticles->xyzuvw.data, xyzouvwo->data,
+			   xyzo_half->data, newnp, cells->start, cells->count,
 			   mainstream);
   CUDA_CHECK(cudaPeekAtLastError());
   swap(particles, newparticles);
@@ -652,8 +659,8 @@ void sim_close() {
   CUDA_CHECK(cudaStreamDestroy(uploadstream));
   CUDA_CHECK(cudaStreamDestroy(downloadstream));
 
-  if (wall) delete wall;
-  if (rbcscoll) delete rbcscoll;
+  delete wall;
+  delete rbcscoll;
   delete contact;
   delete cells;
   delete solutex;
@@ -661,4 +668,13 @@ void sim_close() {
   delete dpd;
   delete redistribute_rbcs;
   delete redistribute;
+
+  delete particles_datadump;
+  delete accelerations_datadump;
+
+  delete xyzouvwo;
+  delete xyzo_half;
+
+  delete particles_pingpong[0];
+  delete particles_pingpong[1];
 }
