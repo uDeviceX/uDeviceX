@@ -35,12 +35,50 @@
 #include "last_bit_float.h"
 #include "geom-wrapper.h"
 
+ParticleArray particles_pingpong[2];
+ParticleArray * particles, * newparticles;
+SimpleDeviceBuffer<float4> xyzouvwo;
+SimpleDeviceBuffer<ushort4> xyzo_half;
+
+CellLists* cells;
+CollectionRBC * rbcscoll;
+
+RedistributeParticles* redistribute;
+RedistributeRBCs* redistribute_rbcs;
+
+ComputeDPD* dpd;
+SoluteExchange* solutex;
+ComputeFSI* fsi;
+ComputeContact* contact;
+
+ComputeWall * wall;
+bool simulation_is_done;
+
+MPI_Comm activecomm, cartcomm;
+cudaStream_t mainstream, uploadstream, downloadstream;
+
+size_t nsteps;
+float driving_acceleration;
+int nranks, rank;
+
+pthread_t thread_datadump;
+pthread_mutex_t mutex_datadump;
+pthread_cond_t request_datadump, done_datadump;
+bool datadump_pending;
+int datadump_idtimestep, datadump_nsolvent, datadump_nrbcs;
+bool async_thread_initialized;
+
+PinnedHostBuffer<Particle> particles_datadump;
+PinnedHostBuffer<Acceleration> accelerations_datadump;
+
+cudaEvent_t evdownloaded;
+
 #define NPMAX 5000000 /* TODO: */
 float rbc_xx[NPMAX], rbc_yy[NPMAX], rbc_zz[NPMAX];
 float sol_xx[NPMAX], sol_yy[NPMAX], sol_zz[NPMAX];
 int iotags[NPMAX];
 
-__global__ void make_texture(float4 *__restrict xyzouvwo,
+static __global__ void make_texture(float4 *__restrict xyzouvwo,
 			     ushort4 *__restrict xyzo_half,
 			     const float *__restrict xyzuvw, const uint n) {
   extern __shared__ volatile float smem[];
@@ -78,7 +116,7 @@ __global__ void make_texture(float4 *__restrict xyzouvwo,
 		   __float2half_rn(smem[warpid * 192 + lane * 6 + 2]), 0);
 }
 
-void Simulation::_update_helper_arrays() {
+static void _update_helper_arrays() {
   CUDA_CHECK(cudaFuncSetCacheConfig(make_texture, cudaFuncCachePreferShared));
 
   const int np = particles->size;
@@ -138,7 +176,7 @@ static std::vector<Particle> _ic() { /* initial conditions for position and
   return pp;
 }
 
-void Simulation::_redistribute() {
+static void _redistribute() {
   redistribute->pack(particles->xyzuvw.data, particles->size, mainstream);
 
   CUDA_CHECK(cudaPeekAtLastError());
@@ -183,7 +221,7 @@ void Simulation::_redistribute() {
   CUDA_CHECK(cudaPeekAtLastError());
 }
 
-void Simulation::_remove_bodies_from_wall(CollectionRBC *coll) {
+void _remove_bodies_from_wall(CollectionRBC *coll) {
   if (!coll || !coll->count())
     return;
 
@@ -216,7 +254,7 @@ void Simulation::_remove_bodies_from_wall(CollectionRBC *coll) {
   CUDA_CHECK(cudaPeekAtLastError());
 }
 
-void Simulation::_create_walls() {
+void _create_walls() {
   int nsurvived = 0;
   ExpectedMessageSizes new_sizes;
   wall = new ComputeWall(cartcomm, particles->xyzuvw.data, particles->size,
@@ -238,7 +276,7 @@ void Simulation::_create_walls() {
   delete[] pp;
 }
 
-void Simulation::_forces() {
+void _forces() {
   SolventWrap wsolvent(particles->xyzuvw.data, particles->size,
 		       particles->axayaz.data, cells->start, cells->count);
 
@@ -315,7 +353,7 @@ void Simulation::_forces() {
   CUDA_CHECK(cudaPeekAtLastError());
 }
 
-void Simulation::_datadump(const int idtimestep) {
+void _datadump(const int idtimestep) {
   pthread_mutex_lock(&mutex_datadump);
 
   while (datadump_pending)
@@ -365,7 +403,7 @@ void Simulation::_datadump(const int idtimestep) {
   pthread_mutex_unlock(&mutex_datadump);
 }
 
-void Simulation::_datadump_async() {
+static void _datadump_async() {
   int iddatadump = 0, rank;
   int curr_idtimestep = -1;
 
@@ -453,7 +491,9 @@ void Simulation::_datadump_async() {
   CUDA_CHECK(cudaEventDestroy(evdownloaded));
 }
 
-void Simulation::_update_and_bounce() {
+static void * datadump_trampoline(void*) { _datadump_async(); return NULL; }
+
+static void _update_and_bounce() {
   particles->upd_stg2_and_1(false, driving_acceleration, mainstream);
 
   CUDA_CHECK(cudaPeekAtLastError());
@@ -472,7 +512,7 @@ void Simulation::_update_and_bounce() {
   CUDA_CHECK(cudaPeekAtLastError());
 }
 
-Simulation::Simulation(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
+void simulation_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   cartcomm = cartcomm_; activecomm = activecomm_;
   redistribute      = new RedistributeParticles(cartcomm);
   redistribute_rbcs = new RedistributeRBCs(cartcomm);
@@ -541,7 +581,8 @@ Simulation::Simulation(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   rcode |= pthread_cond_init(&done_datadump, NULL);
   rcode |= pthread_cond_init(&request_datadump, NULL);
   async_thread_initialized = 0;
-  rcode |= pthread_create(&thread_datadump, NULL, datadump_trampoline, this);
+  
+  rcode |= pthread_create(&thread_datadump, NULL, &datadump_trampoline, NULL);
   
   while (true) {
     pthread_mutex_lock(&mutex_datadump);
@@ -552,7 +593,7 @@ Simulation::Simulation(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   if (rcode) {printf("ERROR; return code from pthread_create() is %d\n", rcode); exit(-1);}
 }
 
-void Simulation::_lockstep() {
+static void _lockstep() {
   SolventWrap wsolvent(particles->xyzuvw.data, particles->size,
 		       particles->axayaz.data, cells->start, cells->count);
   std::vector<ParticlesWrap> wsolutes;
@@ -642,7 +683,7 @@ void Simulation::_lockstep() {
   CUDA_CHECK(cudaPeekAtLastError());
 }
 
-void Simulation::run() {
+void simulation_run() {
   if (rank == 0 && !walls) printf("simulation consists of %ll steps\n", nsteps);
   _redistribute();
   _forces();
@@ -679,7 +720,7 @@ void Simulation::run() {
   simulation_is_done = true;
 }
 
-Simulation::~Simulation() {
+void simulation_close() {
   pthread_mutex_lock(&mutex_datadump);
   datadump_pending = true;
   pthread_cond_signal(&request_datadump);
