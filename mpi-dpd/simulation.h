@@ -26,8 +26,8 @@ class Simulation
   RedistributeRBCs redistribute_rbcs;
 
   ComputeDPD dpd;
-  SoluteExchange solutex;
-  ComputeFSI fsi;
+  SoluteExchange* solutex;
+  ComputeFSI* fsi;
   ComputeContact* contact;
 
   ComputeWall * wall;

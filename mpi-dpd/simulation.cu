@@ -248,9 +248,9 @@ void Simulation::_forces() {
     wsolutes.push_back(
 	ParticlesWrap(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->acc()));
 
-  fsi.bind_solvent(wsolvent);
+  fsi->bind_solvent(wsolvent);
 
-  solutex.bind_solutes(wsolutes);
+  solutex->bind_solutes(wsolutes);
 
   particles->clear_acc(mainstream);
 
@@ -260,7 +260,7 @@ void Simulation::_forces() {
   dpd.pack(particles->xyzuvw.data, particles->size, cells->start, cells->count,
 	   mainstream);
 
-  solutex.pack_p(mainstream);
+  solutex->pack_p(mainstream);
 
   CUDA_CHECK(cudaPeekAtLastError());
 
@@ -273,7 +273,7 @@ void Simulation::_forces() {
 
   dpd.post(particles->xyzuvw.data, particles->size, mainstream, downloadstream);
 
-  solutex.post_p(mainstream, downloadstream);
+  solutex->post_p(mainstream, downloadstream);
 
   CUDA_CHECK(cudaPeekAtLastError());
 
@@ -289,14 +289,14 @@ void Simulation::_forces() {
 
   dpd.recv(mainstream, uploadstream);
 
-  solutex.recv_p(uploadstream);
+  solutex->recv_p(uploadstream);
 
-  solutex.halo(uploadstream, mainstream);
+  solutex->halo(uploadstream, mainstream);
 
   dpd.remote_interactions(particles->xyzuvw.data, particles->size,
 			  particles->axayaz.data, mainstream, uploadstream);
 
-  fsi.bulk(wsolutes, mainstream);
+  fsi->bulk(wsolutes, mainstream);
 
   if (contactforces)
     contact->bulk(wsolutes, mainstream);
@@ -309,9 +309,9 @@ void Simulation::_forces() {
 
   CUDA_CHECK(cudaPeekAtLastError());
 
-  solutex.post_a();
+  solutex->post_a();
 
-  solutex.recv_a(mainstream);
+  solutex->recv_a(mainstream);
   CUDA_CHECK(cudaPeekAtLastError());
 }
 
@@ -475,8 +475,10 @@ void Simulation::_update_and_bounce() {
 Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm)
   :    cartcomm(cartcomm), activecomm(activecomm),
        redistribute(cartcomm), redistribute_rbcs(cartcomm),
-       dpd(cartcomm), fsi(cartcomm), solutex(cartcomm) {
+       dpd(cartcomm) {
 
+  fsi     = new ComputeFSI(cartcomm);
+  solutex = new SoluteExchange(cartcomm);
   contact = new ComputeContact(cartcomm);
   cells = new CellLists(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
   rbcscoll = NULL; wall = NULL;
@@ -487,9 +489,9 @@ Simulation::Simulation(MPI_Comm cartcomm, MPI_Comm activecomm)
   MPI_CHECK(MPI_Comm_size(activecomm, &nranks));
   MPI_CHECK(MPI_Comm_rank(activecomm, &rank));
 
-  solutex.attach_halocomputation(&fsi);
+  solutex->attach_halocomputation(fsi);
 
-  if (contactforces) solutex.attach_halocomputation(contact);
+  if (contactforces) solutex->attach_halocomputation(contact);
     
   int dims[3], periods[3], coords[3];
   MPI_CHECK(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
@@ -558,14 +560,14 @@ void Simulation::_lockstep() {
     wsolutes.push_back(
 	ParticlesWrap(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->acc()));
 
-  fsi.bind_solvent(wsolvent);
-  solutex.bind_solutes(wsolutes);
+  fsi->bind_solvent(wsolvent);
+  solutex->bind_solutes(wsolutes);
   particles->clear_acc(mainstream);
 
   if (rbcscoll)
     rbcscoll->clear_acc(mainstream);
 
-  solutex.pack_p(mainstream);
+  solutex->pack_p(mainstream);
   dpd.pack(particles->xyzuvw.data, particles->size, cells->start, cells->count,
 	   mainstream);
 
@@ -573,7 +575,7 @@ void Simulation::_lockstep() {
 			 particles->size, particles->axayaz.data, cells->start,
 			 cells->count, mainstream);
   if (contactforces) contact->build_cells(wsolutes, mainstream);
-  solutex.post_p(mainstream, downloadstream);
+  solutex->post_p(mainstream, downloadstream);
   dpd.post(particles->xyzuvw.data, particles->size, mainstream, downloadstream);
   CUDA_CHECK(cudaPeekAtLastError());
 
@@ -584,12 +586,12 @@ void Simulation::_lockstep() {
 
   CUDA_CHECK(cudaPeekAtLastError());
   dpd.recv(mainstream, uploadstream);
-  solutex.recv_p(uploadstream);
-  solutex.halo(uploadstream, mainstream);
+  solutex->recv_p(uploadstream);
+  solutex->halo(uploadstream, mainstream);
   dpd.remote_interactions(particles->xyzuvw.data, particles->size,
 			  particles->axayaz.data, mainstream, uploadstream);
 
-  fsi.bulk(wsolutes, mainstream);
+  fsi->bulk(wsolutes, mainstream);
 
   if (contactforces) contact->bulk(wsolutes, mainstream);
   CUDA_CHECK(cudaPeekAtLastError());
@@ -598,7 +600,7 @@ void Simulation::_lockstep() {
     CudaRBC::forces_nohost(mainstream, rbcscoll->count(),
 			   (float *)rbcscoll->data(), (float *)rbcscoll->acc());
   CUDA_CHECK(cudaPeekAtLastError());
-  solutex.post_a();
+  solutex->post_a();
   particles->upd_stg2_and_1(false, driving_acceleration, mainstream);
   if (wall) wall->bounce(particles->xyzuvw.data, particles->size, mainstream);
   CUDA_CHECK(cudaPeekAtLastError());
@@ -611,7 +613,7 @@ void Simulation::_lockstep() {
     wall->interactions(rbcscoll->data(), rbcscoll->pcount(), rbcscoll->acc(),
 		       mainstream);
   CUDA_CHECK(cudaPeekAtLastError());
-  solutex.recv_a(mainstream);
+  solutex->recv_a(mainstream);
   if (rbcscoll) rbcscoll->upd_stg2_and_1(true, driving_acceleration, mainstream);
   const int newnp = redistribute.recv_count(mainstream);
   CUDA_CHECK(cudaPeekAtLastError());
@@ -691,4 +693,6 @@ Simulation::~Simulation() {
   if (rbcscoll) delete rbcscoll;
   delete contact;
   delete cells;
+  delete solutex;
+  delete fsi;
 }
