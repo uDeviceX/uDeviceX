@@ -125,50 +125,42 @@ struct SolventWrap : ParticlesWrap
       ParticlesWrap(p, n, a), cellsstart(cellsstart), cellscount(cellscount) {}
 };
 
-//container for the gpu particles during the simulation
-template<typename T>
-struct SimpleDeviceBuffer
-{
+/* container for the gpu particles during the simulation */
+template<typename Type>
+struct SimpleDeviceBuffer {
   int capacity, size;
-  T * data;
-
-  SimpleDeviceBuffer(int n = 0): capacity(0), size(0), data(NULL) { resize(n);}
+  T* D;               /* `D' is for data */
+  SimpleDeviceBuffer(int n = 0): capacity(0), size(0), D(NULL) { resize(n);}
   ~SimpleDeviceBuffer() {
-    if (data != NULL)
-      CUDA_CHECK(cudaFree(data));
-    data = NULL;
+    if (D != NULL) CUDA_CHECK(cudaFree(D));
+    D = NULL;
   }
 
   void dispose() {
-    if (data != NULL)
-      CUDA_CHECK(cudaFree(data));
-    data = NULL;
+    if (D != NULL) CUDA_CHECK(cudaFree(D));
+    D = NULL;
   }
 
   void resize(int n) {
     size = n;
     if (capacity >= n) return;
-    if (data != NULL)  CUDA_CHECK(cudaFree(data));
+    if (D != NULL)  CUDA_CHECK(cudaFree(D));
     int conservative_estimate = (int)ceil(1.1 * n);
     capacity = 128 * ((conservative_estimate + 129) / 128);
-    CUDA_CHECK(cudaMalloc(&data, sizeof(T) * capacity));
-
-#ifndef NDEBUG
-    CUDA_CHECK(cudaMemset(data, 0, sizeof(T) * capacity));
-#endif
+    CUDA_CHECK(cudaMalloc(&D, sizeof(T) * capacity));
   }
 
   void preserve_resize(int n) {
-    T * old = data;
+    T * old = D;
     int oldsize = size;
 
     size = n;
     if (capacity >= n) return;
     int conservative_estimate = (int)ceil(1.1 * n);
     capacity = 128 * ((conservative_estimate + 129) / 128);
-    CUDA_CHECK(cudaMalloc(&data, sizeof(T) * capacity));
+    CUDA_CHECK(cudaMalloc(&D, sizeof(T) * capacity));
     if (old != NULL) {
-      CUDA_CHECK(cudaMemcpy(data, old, sizeof(T) * oldsize, cudaMemcpyDeviceToDevice));
+      CUDA_CHECK(cudaMemcpy(D, old, sizeof(T) * oldsize, cudaMemcpyDeviceToDevice));
       CUDA_CHECK(cudaFree(old));
     }
   }
