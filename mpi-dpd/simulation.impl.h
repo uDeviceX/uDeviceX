@@ -457,24 +457,20 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
     
   int dims[3], periods[3], coords[3];
   MPI_CHECK(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
-
+  origin = make_float3((0.5 + coords[0]) * XSIZE_SUBDOMAIN,
+		       (0.5 + coords[1]) * YSIZE_SUBDOMAIN,
+		       (0.5 + coords[2]) * ZSIZE_SUBDOMAIN);
+  globalextent = make_float3(dims[0] * XSIZE_SUBDOMAIN,
+			     dims[1] * YSIZE_SUBDOMAIN,
+			     dims[2] * ZSIZE_SUBDOMAIN);
   particles =     particles_pingpong[0];
   newparticles =  particles_pingpong[1];
 
   vector<Particle> ic = _ic();
 
-  for (int c = 0; c < 2; ++c) {
+  for (int c = 0; c < 2; ++c)
     particles_pingpong[c]->resize(ic.size());
-    
-    particles_pingpong[c]->origin =
-      make_float3((0.5 + coords[0]) * XSIZE_SUBDOMAIN,
-		  (0.5 + coords[1]) * YSIZE_SUBDOMAIN,
-		  (0.5 + coords[2]) * ZSIZE_SUBDOMAIN);
-    
-    particles_pingpong[c]->globalextent =
-      make_float3(dims[0] * XSIZE_SUBDOMAIN, dims[1] * YSIZE_SUBDOMAIN,
-		  dims[2] * ZSIZE_SUBDOMAIN);
-  }
+
   
   CUDA_CHECK(cudaMemcpy(particles->xyzuvw.data, &ic.front(),
 			sizeof(Particle) * ic.size(),

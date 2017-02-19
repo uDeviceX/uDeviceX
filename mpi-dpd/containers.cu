@@ -28,6 +28,8 @@
 int (*indices)[3] = NULL;
 int ntriangles = -1;
 int nvertices = -1;
+extern float3 globalextent;
+extern float3 origin;
 
 namespace ParticleKernels {
     __global__ void upd_stg1(bool rbcflag, Particle * p, Acceleration * a, int n, float dt,

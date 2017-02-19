@@ -37,6 +37,7 @@
 #include <thrust/device_vector.h>
 #include <thrust/sort.h>
 
+/**** from wall.h ****/
 MPI_Comm cartcomm;
 Logistic::KISS trunk;
 
@@ -49,6 +50,10 @@ SimpleDeviceBuffer<float3> *frcs;
 int samples;
 #include "wall.impl.h"
 
+/*** from containters.h ****/
+float3 origin, globalextent;
+
+/**** from simulation.h ****/
 ParticleArray *particles_pingpong[2];
 ParticleArray *particles, *newparticles;
 CollectionRBC *rbcscoll = NULL;
