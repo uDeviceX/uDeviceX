@@ -240,7 +240,7 @@ int RedistributeRBCs::post()
     }
 
     arriving /= nvertices;
-    notleaving = bulk.size / nvertices;
+    notleaving = bulk.S / nvertices;
 
     MPI_Status statuses[26];
     MPI_CHECK( MPI_Waitall(26, sendcountreq, statuses) );

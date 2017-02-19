@@ -124,9 +124,9 @@ struct SolventWrap : ParticlesWrap
 /* container for the gpu particles during the simulation */
 template<typename T>
 struct SimpleDeviceBuffer {
-  int capacity, size;
+  int capacity, S;    /* `S' is for size */
   T* D;               /* `D' is for data */
-  SimpleDeviceBuffer(int n = 0): capacity(0), size(0), D(NULL) { resize(n);}
+  SimpleDeviceBuffer(int n = 0): capacity(0), S(0), D(NULL) { resize(n);}
   ~SimpleDeviceBuffer() {
     if (D != NULL) CC(cudaFree(D));
     D = NULL;
@@ -138,7 +138,7 @@ struct SimpleDeviceBuffer {
   }
 
   void resize(int n) {
-    size = n;
+    S = n;
     if (capacity >= n) return;
     if (D != NULL)  CC(cudaFree(D));
     int conservative_estimate = (int)ceil(1.1 * n);
@@ -148,9 +148,9 @@ struct SimpleDeviceBuffer {
 
   void preserve_resize(int n) {
     T * old = D;
-    int oldsize = size;
+    int oldsize = S;
 
-    size = n;
+    S = n;
     if (capacity >= n) return;
     int conservative_estimate = (int)ceil(1.1 * n);
     capacity = 128 * ((conservative_estimate + 129) / 128);

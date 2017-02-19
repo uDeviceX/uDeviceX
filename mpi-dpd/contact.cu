@@ -165,7 +165,7 @@ void ComputeContact::build_cells(std::vector<ParticlesWrap> wsolutes, cudaStream
     subindices.resize(ntotal);
     cellsentries.resize(ntotal);
 
-    CC(cudaMemsetAsync(cellscount.D, 0, sizeof(int) * cellscount.size, stream));
+    CC(cudaMemsetAsync(cellscount.D, 0, sizeof(int) * cellscount.S, stream));
 
 #ifndef NDEBUG
     CC(cudaMemsetAsync(cellsentries.D, 0xff, sizeof(int) * cellsentries.capacity, stream));
@@ -188,10 +188,10 @@ void ComputeContact::build_cells(std::vector<ParticlesWrap> wsolutes, cudaStream
         ctr += it.n;
     }
 
-    compress_counts<<< (compressed_cellscount.size + 127) / 128, 128, 0, stream >>>
-        (compressed_cellscount.size, (int4 *)cellscount.D, (uchar4 *)compressed_cellscount.D);
+    compress_counts<<< (compressed_cellscount.S + 127) / 128, 128, 0, stream >>>
+        (compressed_cellscount.S, (int4 *)cellscount.D, (uchar4 *)compressed_cellscount.D);
 
-    scan(compressed_cellscount.D, compressed_cellscount.size, stream, (uint *)cellsstart.D);
+    scan(compressed_cellscount.D, compressed_cellscount.S, stream, (uint *)cellsstart.D);
 
     ctr = 0;
     for(int i = 0; i < wsolutes.size(); ++i)
@@ -341,7 +341,7 @@ void ComputeContact::bulk(std::vector<ParticlesWrap> wsolutes, cudaStream_t stre
 
         if (it.n)
             KernelsContact::bulk_3tpp<<< (3 * it.n + 127) / 128, 128, 0, stream >>>
-                ((float2 *)it.p, it.n, cellsentries.size, wsolutes.size(), (float *)it.a, local_trunk.get_float(), i);
+                ((float2 *)it.p, it.n, cellsentries.S, wsolutes.size(), (float *)it.a, local_trunk.get_float(), i);
 
         CC(cudaPeekAtLastError());
     }
@@ -526,7 +526,7 @@ void ComputeContact::halo(ParticlesWrap halos[26], cudaStream_t stream)
 
     if(nremote_padded)
         KernelsContact::halo<<< (nremote_padded + 127) / 128, 128, 0, stream>>>
-            (nremote_padded, cellsentries.size, nsolutes, local_trunk.get_float());
+            (nremote_padded, cellsentries.S, nsolutes, local_trunk.get_float());
 
     CC(cudaPeekAtLastError());
 }

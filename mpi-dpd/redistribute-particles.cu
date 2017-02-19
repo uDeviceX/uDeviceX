@@ -738,30 +738,30 @@ void RedistributeParticles::recv_unpack(Particle * const particles, float4 * con
     CC(cudaPeekAtLastError());
 
 #ifndef NDEBUG
-    CC(cudaMemset(remote_particles.D, 0xff, sizeof(Particle) * remote_particles.size));
+    CC(cudaMemset(remote_particles.D, 0xff, sizeof(Particle) * remote_particles.S));
 #endif
 
     if (nhalo)
         RedistributeParticlesKernels::subindex_remote<<< (nhalo_padded + 127) / 128, 128, 0, mystream >>>
             (nhalo_padded, nhalo, cellcounts, (float2 *)remote_particles.D, subindices_remote.D);
 
-    if (compressed_cellcounts.size)
-        compress_counts<<< (compressed_cellcounts.size + 127) / 128, 128, 0, mystream >>>
-            (compressed_cellcounts.size, (int4 *)cellcounts, (uchar4 *)compressed_cellcounts.D);
+    if (compressed_cellcounts.S)
+        compress_counts<<< (compressed_cellcounts.S + 127) / 128, 128, 0, mystream >>>
+            (compressed_cellcounts.S, (int4 *)cellcounts, (uchar4 *)compressed_cellcounts.D);
 
-    scan(compressed_cellcounts.D, compressed_cellcounts.size, mystream, (uint *)cellstarts);
+    scan(compressed_cellcounts.D, compressed_cellcounts.S, mystream, (uint *)cellstarts);
 
 #ifndef NDEBUG
-    CC(cudaMemset(scattered_indices.D, 0xff, sizeof(int) * scattered_indices.size));
+    CC(cudaMemset(scattered_indices.D, 0xff, sizeof(int) * scattered_indices.S));
 #endif
 
-    if (subindices.size)
-        RedistributeParticlesKernels::scatter_indices<<< (subindices.size + 127) / 128, 128, 0, mystream>>>
-            (false, subindices.D, subindices.size, cellstarts, scattered_indices.D, scattered_indices.size);
+    if (subindices.S)
+        RedistributeParticlesKernels::scatter_indices<<< (subindices.S + 127) / 128, 128, 0, mystream>>>
+            (false, subindices.D, subindices.S, cellstarts, scattered_indices.D, scattered_indices.S);
 
     if (nhalo)
         RedistributeParticlesKernels::scatter_indices<<< (nhalo + 127) / 128, 128, 0, mystream>>>
-            (true, subindices_remote.D, nhalo, cellstarts, scattered_indices.D, scattered_indices.size);
+            (true, subindices_remote.D, nhalo, cellstarts, scattered_indices.D, scattered_indices.S);
 
     if (nparticles)
         RedistributeParticlesKernels::gather_particles<<< (nparticles + 127) / 128, 128, 0, mystream>>>

@@ -39,7 +39,7 @@ static __global__ void make_texture(float4 *__restrict xyzouvwoo,
 static void sim_update_helper_arrays() {
   CC(cudaFuncSetCacheConfig(make_texture, cudaFuncCachePreferShared));
 
-  const int np = particles->size;
+  const int np = particles->S;
 
   xyzouvwo->resize(2 * np);
   xyzo_half->resize(np);
@@ -97,7 +97,7 @@ static std::vector<Particle> _ic() { /* initial conditions for position and
 }
 
 static void sim_redistribute() {
-  redistribute->pack(particles->pp.D, particles->size, mainstream);
+  redistribute->pack(particles->pp.D, particles->S, mainstream);
 
   CC(cudaPeekAtLastError());
 
@@ -110,7 +110,7 @@ static void sim_redistribute() {
     redistribute_rbcs->pack_sendcount(rbcscoll->data(), rbcscoll->ncells,
 				     mainstream);
 
-  redistribute->bulk(particles->size, cells->start, cells->count, mainstream);
+  redistribute->bulk(particles->S, cells->start, cells->count, mainstream);
 
   CC(cudaPeekAtLastError());
 
@@ -149,8 +149,8 @@ void sim_remove_bodies_from_wall(CollectionRBC *coll) {
   SolidWallsKernel::fill_keys<<<(coll->pcount() + 127) / 128, 128>>>(
       coll->data(), coll->pcount(), marks.D);
 
-  vector<int> tmp(marks.size);
-  CC(cudaMemcpy(tmp.data(), marks.D, sizeof(int) * marks.size,
+  vector<int> tmp(marks.S);
+  CC(cudaMemcpy(tmp.data(), marks.D, sizeof(int) * marks.S,
 			cudaMemcpyDeviceToHost));
 
   const int nbodies = coll->ncells;
@@ -175,27 +175,27 @@ void sim_remove_bodies_from_wall(CollectionRBC *coll) {
 void sim_create_walls() {
   int nsurvived = 0;
   ExpectedMessageSizes new_sizes;
-  wall_init(cartcomm, particles->pp.D, particles->size,
+  wall_init(cartcomm, particles->pp.D, particles->S,
 	    nsurvived, new_sizes); wall_created = true;
   particles->resize(nsurvived);
   particles->clear_velocity();
-  cells->build(particles->pp.D, particles->size, 0, NULL, NULL);
+  cells->build(particles->pp.D, particles->S, 0, NULL, NULL);
   sim_update_helper_arrays();
   CC(cudaPeekAtLastError());
 
   // remove cells touching the wall
   sim_remove_bodies_from_wall(rbcscoll);
   H5PartDump sd("survived-particles.h5part", activecomm, cartcomm);
-  Particle *pp = new Particle[particles->size];
+  Particle *pp = new Particle[particles->S];
   CC(cudaMemcpy(pp, particles->pp.D,
-			sizeof(Particle) * particles->size,
+			sizeof(Particle) * particles->S,
 			cudaMemcpyDeviceToHost));
-  sd.dump(pp, particles->size);
+  sd.dump(pp, particles->S);
   delete[] pp;
 }
 
 void sim_forces() {
-  SolventWrap wsolvent(particles->pp.D, particles->size,
+  SolventWrap wsolvent(particles->pp.D, particles->S,
 		       particles->aa.D, cells->start, cells->count);
 
   std::vector<ParticlesWrap> wsolutes;
@@ -213,7 +213,7 @@ void sim_forces() {
   if (rbcscoll)
     rbcscoll->clear_acc(mainstream);
 
-  dpd->pack(particles->pp.D, particles->size, cells->start, cells->count,
+  dpd->pack(particles->pp.D, particles->S, cells->start, cells->count,
 	   mainstream);
 
   solutex->pack_p(mainstream);
@@ -224,10 +224,10 @@ void sim_forces() {
     contact->build_cells(wsolutes, mainstream);
 
   dpd->local_interactions(particles->pp.D, xyzouvwo->D, xyzo_half->D,
-			 particles->size, particles->aa.D, cells->start,
+			 particles->S, particles->aa.D, cells->start,
 			 cells->count, mainstream);
 
-  dpd->post(particles->pp.D, particles->size, mainstream, downloadstream);
+  dpd->post(particles->pp.D, particles->S, mainstream, downloadstream);
 
   solutex->post_p(mainstream, downloadstream);
 
@@ -238,7 +238,7 @@ void sim_forces() {
 		       mainstream);
 
   if (wall_created)
-    wall_interactions(particles->pp.D, particles->size,
+    wall_interactions(particles->pp.D, particles->S,
 		      particles->aa.D, mainstream);
 
   CC(cudaPeekAtLastError());
@@ -249,7 +249,7 @@ void sim_forces() {
 
   solutex->halo(uploadstream, mainstream);
 
-  dpd->remote_interactions(particles->pp.D, particles->size,
+  dpd->remote_interactions(particles->pp.D, particles->S,
 			   particles->aa.D, mainstream, uploadstream);
 
   fsi->bulk(wsolutes, mainstream);
@@ -277,7 +277,7 @@ void sim_datadump(const int idtimestep) {
   while (datadump_pending)
     pthread_cond_wait(&done_datadump, &mutex_datadump);
 
-  int n = particles->size;
+  int n = particles->S;
 
   if (rbcscoll)
     n += rbcscoll->pcount();
@@ -288,14 +288,14 @@ void sim_datadump(const int idtimestep) {
 #include "simulation.hack.h"
 
   CC(cudaMemcpyAsync(particles_datadump->data, particles->pp.D,
-			     sizeof(Particle) * particles->size,
+			     sizeof(Particle) * particles->S,
 			     cudaMemcpyDeviceToHost, 0));
 
   CC(cudaMemcpyAsync(accelerations_datadump->data, particles->aa.D,
-			     sizeof(Acceleration) * particles->size,
+			     sizeof(Acceleration) * particles->S,
 			     cudaMemcpyDeviceToHost, 0));
 
-  int start = particles->size;
+  int start = particles->S;
 
   if (rbcscoll) {
     CC(cudaMemcpyAsync(
@@ -310,7 +310,7 @@ void sim_datadump(const int idtimestep) {
   CC(cudaEventRecord(evdownloaded, 0));
 
   datadump_idtimestep = idtimestep;
-  datadump_nsolvent = particles->size;
+  datadump_nsolvent = particles->S;
   datadump_nrbcs = rbcscoll ? rbcscoll->pcount() : 0;
   datadump_pending = true;
 
@@ -421,7 +421,7 @@ static void sim_update_and_bounce() {
 
   CC(cudaPeekAtLastError());
   if (wall_created) {
-    wall_bounce(particles->pp.D, particles->size, mainstream);
+    wall_bounce(particles->pp.D, particles->S, mainstream);
 
     if (rbcscoll)
       wall_bounce(rbcscoll->data(), rbcscoll->pcount(), mainstream);
@@ -476,7 +476,7 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   CC(cudaMemcpy(particles->pp.D, &ic.front(),
 			sizeof(Particle) * ic.size(),
 			cudaMemcpyHostToDevice));
-  cells->build(particles->pp.D, particles->size, 0, NULL, NULL);
+  cells->build(particles->pp.D, particles->S, 0, NULL, NULL);
   sim_update_helper_arrays();
 
   CC(cudaStreamCreate(&mainstream));
@@ -492,8 +492,8 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   CC(cudaEventCreate(&evdownloaded,
 			     cudaEventDisableTiming | cudaEventBlockingSync));
 
-  particles_datadump->resize(particles->size * 1.5);
-  accelerations_datadump->resize(particles->size * 1.5);
+  particles_datadump->resize(particles->S * 1.5);
+  accelerations_datadump->resize(particles->S * 1.5);
 
   int rcode = pthread_mutex_init(&mutex_datadump, NULL);
   rcode |= pthread_cond_init(&done_datadump, NULL);
@@ -512,7 +512,7 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
 }
 
 static void sim_lockstep() {
-  SolventWrap wsolvent(particles->pp.D, particles->size,
+  SolventWrap wsolvent(particles->pp.D, particles->S,
 		       particles->aa.D, cells->start, cells->count);
   std::vector<ParticlesWrap> wsolutes;
 
@@ -528,19 +528,19 @@ static void sim_lockstep() {
     rbcscoll->clear_acc(mainstream);
 
   solutex->pack_p(mainstream);
-  dpd->pack(particles->pp.D, particles->size, cells->start, cells->count,
+  dpd->pack(particles->pp.D, particles->S, cells->start, cells->count,
 	   mainstream);
 
   dpd->local_interactions(particles->pp.D, xyzouvwo->D, xyzo_half->D,
-			 particles->size, particles->aa.D, cells->start,
+			 particles->S, particles->aa.D, cells->start,
 			 cells->count, mainstream);
   if (contactforces) contact->build_cells(wsolutes, mainstream);
   solutex->post_p(mainstream, downloadstream);
-  dpd->post(particles->pp.D, particles->size, mainstream, downloadstream);
+  dpd->post(particles->pp.D, particles->S, mainstream, downloadstream);
   CC(cudaPeekAtLastError());
 
   if (wall_created)
-    wall_interactions(particles->pp.D, particles->size,
+    wall_interactions(particles->pp.D, particles->S,
 		       particles->aa.D,
 		       mainstream);
 
@@ -548,7 +548,7 @@ static void sim_lockstep() {
   dpd->recv(mainstream, uploadstream);
   solutex->recv_p(uploadstream);
   solutex->halo(uploadstream, mainstream);
-  dpd->remote_interactions(particles->pp.D, particles->size,
+  dpd->remote_interactions(particles->pp.D, particles->S,
 			  particles->aa.D, mainstream, uploadstream);
 
   fsi->bulk(wsolutes, mainstream);
@@ -562,11 +562,11 @@ static void sim_lockstep() {
   CC(cudaPeekAtLastError());
   solutex->post_a();
   particles->upd_stg2_and_1(false, driving_acceleration, mainstream);
-  if (wall_created) wall_bounce(particles->pp.D, particles->size, mainstream);
+  if (wall_created) wall_bounce(particles->pp.D, particles->S, mainstream);
   CC(cudaPeekAtLastError());
-  redistribute->pack(particles->pp.D, particles->size, mainstream);
+  redistribute->pack(particles->pp.D, particles->S, mainstream);
   redistribute->send();
-  redistribute->bulk(particles->size, cells->start, cells->count, mainstream);
+  redistribute->bulk(particles->S, cells->start, cells->count, mainstream);
   CC(cudaPeekAtLastError());
 
   if (rbcscoll && wall_created)

@@ -359,7 +359,7 @@ void SolventExchange::pack(const Particle * const p, const int n, const int * co
 
             cellpackstarts[0] = 0;
             for(int i = 0, s = 0; i < 26; ++i)
-                cellpackstarts[i + 1] =  (s += sendhalos[i].dcellstarts.size * (sendhalos[i].expected > 0));
+                cellpackstarts[i + 1] =  (s += sendhalos[i].dcellstarts.S * (sendhalos[i].expected > 0));
 
             PackingHalo::ncells = cellpackstarts[26];
 
@@ -375,7 +375,7 @@ void SolventExchange::pack(const Particle * const p, const int n, const int * co
                 cellpacks[i].count = sendhalos[i].tmpcount.D;
                 cellpacks[i].enabled = sendhalos[i].expected > 0;
                 cellpacks[i].scan = sendhalos[i].dcellstarts.D;
-                cellpacks[i].size = sendhalos[i].dcellstarts.size;
+                cellpacks[i].size = sendhalos[i].dcellstarts.S;
             }
 
             CC(cudaMemcpyToSymbol(PackingHalo::cellpacks, cellpacks,
@@ -469,9 +469,9 @@ void SolventExchange::post(const Particle * const p, const int n, cudaStream_t s
         {
             const int nrequired = required_send_bag_size_host[i];
 
-            sendhalos[i].dbuf.size = nrequired;
+            sendhalos[i].dbuf.S = nrequired;
             sendhalos[i].hbuf.resize(nrequired);
-            sendhalos[i].scattered_entries.size = nrequired;
+            sendhalos[i].scattered_entries.S = nrequired;
         }
     }
 
@@ -486,7 +486,7 @@ void SolventExchange::post(const Particle * const p, const int n, cudaStream_t s
     for(int i = 0; i < 26; ++i)
         if (sendhalos[i].expected)
         {
-            const int nd = sendhalos[i].dbuf.size;
+            const int nd = sendhalos[i].dbuf.S;
 
             if (nd > 0)
                 PackingHalo::check_send_particles<<<(nd + 127)/ 128, 128, 0, stream>>>(sendhalos[i].dbuf.D, nd, i);

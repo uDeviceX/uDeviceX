@@ -212,23 +212,24 @@ namespace ParticleKernels {
 } /* end of ParticleKernels */
 
 void ParticleArray::upd_stg1(bool rbcflag, float driving_acceleration, cudaStream_t stream) {
-    if (size)
-	ParticleKernels::upd_stg1<<<(pp.size + 127) / 128, 128, 0, stream>>>
-	  (rbcflag, pp.D, aa.D, pp.size,
+    if (S)
+	ParticleKernels::upd_stg1<<<(pp.S + 127) / 128, 128, 0, stream>>>
+	  (rbcflag, pp.D, aa.D, pp.S,
 	   dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
 void  ParticleArray::upd_stg2_and_1(bool rbcflag, float driving_acceleration, cudaStream_t stream) {
-    if (size)
-	ParticleKernels::upd_stg2_and_1<<<(pp.size + 127) / 128, 128, 0, stream>>>
-	  (rbcflag, (float2 *)pp.D, (float *)aa.D, pp.size,
+    if (S)
+	ParticleKernels::upd_stg2_and_1<<<(pp.S + 127) / 128, 128, 0, stream>>>
+	  (rbcflag, (float2 *)pp.D, (float *)aa.D, pp.S,
 	   dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
 void ParticleArray::resize(int n) {
-    size = n;
+    S = n;
 
-    // YTANG: need the array to be 32-padded for locally transposed storage of acceleration
+    /* YTANG: need the array to be 32-padded for locally transposed
+       storage of acceleration */
     if ( n % 32 ) {
 	pp.preserve_resize( n - n % 32 + 32 );
 	aa.preserve_resize( n - n % 32 + 32 );
@@ -238,19 +239,19 @@ void ParticleArray::resize(int n) {
 }
 
 void ParticleArray::preserve_resize(int n) {
-    int oldsize = size;
-    size = n;
+    int oldsize = S;
+    S = n;
 
     pp.preserve_resize(n);
     aa.preserve_resize(n);
 
-    if (size > oldsize)
-	CC(cudaMemset(aa.D + oldsize, 0, sizeof(Acceleration) * (size-oldsize)));
+    if (S > oldsize)
+	CC(cudaMemset(aa.D + oldsize, 0, sizeof(Acceleration) * (S-oldsize)));
 }
 
 void ParticleArray::clear_velocity() {
-    if (size)
-	ParticleKernels::clear_velocity<<<(pp.size + 127) / 128, 128 >>>(pp.D, pp.size);
+    if (S)
+	ParticleKernels::clear_velocity<<<(pp.S + 127) / 128, 128 >>>(pp.D, pp.S);
 }
 
 void CollectionRBC::resize(int count) {
@@ -356,7 +357,7 @@ void CollectionRBC::remove(int *entries, int nentries) {
 
     resize(nsurvived);
 
-    CC(cudaMemcpy(pp.D, survived.D, sizeof(Particle) * survived.size, cudaMemcpyDeviceToDevice));
+    CC(cudaMemcpy(pp.D, survived.D, sizeof(Particle) * survived.S, cudaMemcpyDeviceToDevice));
 }
 
 static void rbc_dump0(const char *format4ply,

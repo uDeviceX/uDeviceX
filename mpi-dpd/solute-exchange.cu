@@ -260,14 +260,14 @@ void SoluteExchange::_pack_attempt(cudaStream_t stream)
 #endif
     CC(cudaPeekAtLastError());
 
-    if (packscount.size)
-        CC(cudaMemsetAsync(packscount.D, 0, sizeof(int) * packscount.size, stream));
+    if (packscount.S)
+        CC(cudaMemsetAsync(packscount.D, 0, sizeof(int) * packscount.S, stream));
 
-    if (packsoffset.size)
-        CC(cudaMemsetAsync(packsoffset.D, 0, sizeof(int) * packsoffset.size, stream));
+    if (packsoffset.S)
+        CC(cudaMemsetAsync(packsoffset.D, 0, sizeof(int) * packsoffset.S, stream));
 
-    if (packsstart.size)
-        CC(cudaMemsetAsync(packsstart.D, 0, sizeof(int) * packsstart.size, stream));
+    if (packsstart.S)
+        CC(cudaMemsetAsync(packsstart.D, 0, sizeof(int) * packsstart.S, stream));
 
     SolutePUP::init<<< 1, 1, 0, stream >>>();
 
@@ -493,7 +493,7 @@ void SoluteExchange::halo(cudaStream_t uploadstream, cudaStream_t stream)
     ParticlesWrap halos[26];
 
     for(int i = 0; i < 26; ++i)
-        halos[i] = ParticlesWrap(remote[i].dstate.D, remote[i].dstate.size, remote[i].result.devptr);
+        halos[i] = ParticlesWrap(remote[i].dstate.D, remote[i].dstate.S, remote[i].result.devptr);
 
     CC(cudaStreamSynchronize(uploadstream));
 

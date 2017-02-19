@@ -12,7 +12,7 @@
 
 struct ParticleArray
 {
-  int size;
+  int S;
 
   SimpleDeviceBuffer<Particle>     pp; /* xyzuvw */
   SimpleDeviceBuffer<Acceleration> aa; /* axayaz */
@@ -24,8 +24,7 @@ struct ParticleArray
   void clear_velocity();
 
   void clear_acc(cudaStream_t stream) {
-    CC(cudaMemsetAsync(aa.D, 0,
-			       sizeof(Acceleration) * aa.size, stream));
+    CC(cudaMemsetAsync(aa.D, 0, sizeof(Acceleration) * aa.S, stream));
   }
 };
 
