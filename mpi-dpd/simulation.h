@@ -10,7 +10,6 @@
  *  before getting a written permission from the author of this file.
  */
 
-void simulation_init(MPI_Comm cartcomm_, MPI_Comm activecomm_);
-void simulation_run();
-void simulation_close();
-
+void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_);
+void sim_run();
+void sim_close();

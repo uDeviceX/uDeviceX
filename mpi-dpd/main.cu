@@ -157,9 +157,9 @@ int main(int argc, char **argv) {
     }
     localcomm.initialize(activecomm);
     MPI_CHECK(MPI_Barrier(activecomm));
-    simulation_init(cartcomm, activecomm);
-    simulation_run();
-    simulation_close();
+    sim_init(cartcomm, activecomm);
+    sim_run();
+    sim_close();
   }
   if (activecomm != cartcomm)
     MPI_CHECK(MPI_Comm_free(&activecomm));
