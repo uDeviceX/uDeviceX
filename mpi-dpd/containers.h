@@ -12,7 +12,7 @@
 
 struct ParticleArray
 {
-  int S;
+  int S; /* size */
 
   SimpleDeviceBuffer<Particle>     pp; /* xyzuvw */
   SimpleDeviceBuffer<Acceleration> aa; /* axayaz */
