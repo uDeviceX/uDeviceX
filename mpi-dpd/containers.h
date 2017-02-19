@@ -44,35 +44,35 @@ class CollectionRBC : public ParticleArray
 
   int ncells, myrank, dims[3], periods[3], coords[3];
 
-  virtual int _ntriangles() const { return ntriangles; }
+  virtual int _ntriangles() { return ntriangles; }
 
-  virtual void _initialize(float *device_xyzuvw, const float (*transform)[4]);
+  virtual void _initialize(float *device_xyzuvw, float (*transform)[4]);
 
-  static void _dump(const char * const format4ply,
-                    MPI_Comm comm, MPI_Comm cartcomm, const int ntriangles, const int ncells, const int nvertices,
+  static void _dump(const char * format4ply,
+                    MPI_Comm comm, MPI_Comm cartcomm,  int ntriangles, int ncells,  int nvertices,
                     int (* const indices)[3],
-                    Particle * const p, const Acceleration * const a, const int n, const int iddatadump);
+                    Particle *  p,  Acceleration *  a,  int n, int iddatadump);
 
  public:
 
-  virtual int get_nvertices() const { return nvertices; }
+  virtual int get_nvertices() { return nvertices; }
 
   CollectionRBC(MPI_Comm cartcomm);
 
-  void setup(const char * const path2ic);
+  void setup(const char *path2ic);
 
   Particle * data() { return xyzuvw.data; }
   Acceleration * acc() { return axayaz.data; }
 
-  void remove(const int * const entries, const int nentries);
-  void resize(const int rbcs_count);
+  void remove(int *  entries, int nentries);
+  void resize(int rbcs_count);
   void preserve_resize(int n);
 
   int count() { return ncells; }
   int pcount() { return ncells * get_nvertices(); }
 
   static void dump(MPI_Comm comm, MPI_Comm cartcomm,
-                   Particle * const p, const Acceleration * const a, const int n, const int iddatadump)
+                   Particle * p, Acceleration * a, int n, int iddatadump)
   {
     _dump("ply/rbcs-%05d.ply", comm, cartcomm, ntriangles, n / nvertices, nvertices, indices, p, a, n, iddatadump);
   }

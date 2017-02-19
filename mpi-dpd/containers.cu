@@ -34,7 +34,7 @@ namespace ParticleKernels
     __global__ void upd_stg1(bool rbcflag, Particle * p, Acceleration * a, int n, float dt,
 			     float _driving_acceleration, float threshold, bool doublePoiseuille)
     {
-        const int pid = threadIdx.x + blockDim.x * blockIdx.x;
+        int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
         if (pid >= n) return;
 	int type; float driving_acceleration, mass, vx = p[pid].u[0], y = p[pid].x[1];
@@ -55,7 +55,7 @@ namespace ParticleKernels
 
     }
 
-    __global__ void upd_stg2_and_1(bool rbcflag, float2 * const _pdata, const float * const _adata,
+    __global__ void upd_stg2_and_1(bool rbcflag, float2 * _pdata, float * _adata,
 					int nparticles, float dt, float _driving_acceleration, float threshold,
 					bool doublePoiseuille)
     {
@@ -68,17 +68,17 @@ namespace ParticleKernels
 #define _ACCESS(x) (*(x))
 #endif
 
-        const int warpid = threadIdx.x >> 5;
-        const int base = 32 * (warpid + 4 * blockIdx.x);
-        const int nsrc = min(32, nparticles - base);
+        int warpid = threadIdx.x >> 5;
+        int base = 32 * (warpid + 4 * blockIdx.x);
+        int nsrc = min(32, nparticles - base);
 
-        float2 * const pdata = _pdata + 3 * base;
-        const float * const adata = _adata + 3 * base;
+        float2 * pdata = _pdata + 3 * base;
+        float * adata = _adata + 3 * base;
 
         int laneid;
         asm volatile ("mov.u32 %0, %%laneid;" : "=r"(laneid));
 
-        const int nwords = 3 * nsrc;
+        int nwords = 3 * nsrc;
 
         float2 s0, s1, s2;
         float ax, ay, az;
@@ -102,16 +102,16 @@ namespace ParticleKernels
         }
 
         {
-            const int srclane0 = (3 * laneid + 0) & 0x1f;
-            const int srclane1 = (srclane0 + 1) & 0x1f;
-            const int srclane2 = (srclane0 + 2) & 0x1f;
+            int srclane0 = (3 * laneid + 0) & 0x1f;
+            int srclane1 = (srclane0 + 1) & 0x1f;
+            int srclane2 = (srclane0 + 2) & 0x1f;
 
-            const int start = laneid % 3;
+            int start = laneid % 3;
 
             {
-                const float t0 = __shfl(start == 0 ? s0.x : start == 1 ? s1.x : s2.x, srclane0);
-                const float t1 = __shfl(start == 0 ? s2.x : start == 1 ? s0.x : s1.x, srclane1);
-                const float t2 = __shfl(start == 0 ? s1.x : start == 1 ? s2.x : s0.x, srclane2);
+                float t0 = __shfl(start == 0 ? s0.x : start == 1 ? s1.x : s2.x, srclane0);
+                float t1 = __shfl(start == 0 ? s2.x : start == 1 ? s0.x : s1.x, srclane1);
+                float t2 = __shfl(start == 0 ? s1.x : start == 1 ? s2.x : s0.x, srclane2);
 
                 s0.x = t0;
                 s1.x = t1;
@@ -119,9 +119,9 @@ namespace ParticleKernels
             }
 
             {
-                const float t0 = __shfl(start == 0 ? s0.y : start == 1 ? s1.y : s2.y, srclane0);
-                const float t1 = __shfl(start == 0 ? s2.y : start == 1 ? s0.y : s1.y, srclane1);
-                const float t2 = __shfl(start == 0 ? s1.y : start == 1 ? s2.y : s0.y, srclane2);
+                float t0 = __shfl(start == 0 ? s0.y : start == 1 ? s1.y : s2.y, srclane0);
+                float t1 = __shfl(start == 0 ? s2.y : start == 1 ? s0.y : s1.y, srclane1);
+                float t2 = __shfl(start == 0 ? s1.y : start == 1 ? s2.y : s0.y, srclane2);
 
                 s0.y = t0;
                 s1.y = t1;
@@ -129,9 +129,9 @@ namespace ParticleKernels
             }
 
             {
-                const float t0 = __shfl(start == 0 ? ax : start == 1 ? ay : az, srclane0);
-                const float t1 = __shfl(start == 0 ? az : start == 1 ? ax : ay, srclane1);
-                const float t2 = __shfl(start == 0 ? ay : start == 1 ? az : ax, srclane2);
+                float t0 = __shfl(start == 0 ? ax : start == 1 ? ay : az, srclane0);
+                float t1 = __shfl(start == 0 ? az : start == 1 ? ax : ay, srclane1);
+                float t2 = __shfl(start == 0 ? ay : start == 1 ? az : ax, srclane2);
 
                 ax = t0;
                 ay = t1;
@@ -156,16 +156,16 @@ namespace ParticleKernels
         s1.x += s2.y * dt;
 
         {
-            const int srclane0 = (32 * ((laneid) % 3) + laneid) / 3;
-            const int srclane1 = (32 * ((laneid + 1) % 3) + laneid) / 3;
-            const int srclane2 = (32 * ((laneid + 2) % 3) + laneid) / 3;
+            int srclane0 = (32 * ((laneid) % 3) + laneid) / 3;
+            int srclane1 = (32 * ((laneid + 1) % 3) + laneid) / 3;
+            int srclane2 = (32 * ((laneid + 2) % 3) + laneid) / 3;
 
-            const int start = laneid % 3;
+            int start = laneid % 3;
 
             {
-                const float t0 = __shfl(s0.x, srclane0);
-                const float t1 = __shfl(s2.x, srclane1);
-                const float t2 = __shfl(s1.x, srclane2);
+                float t0 = __shfl(s0.x, srclane0);
+                float t1 = __shfl(s2.x, srclane1);
+                float t2 = __shfl(s1.x, srclane2);
 
                 s0.x = start == 0 ? t0 : start == 1 ? t2 : t1;
                 s1.x = start == 0 ? t1 : start == 1 ? t0 : t2;
@@ -173,9 +173,9 @@ namespace ParticleKernels
             }
 
             {
-                const float t0 = __shfl(s0.y, srclane0);
-                const float t1 = __shfl(s2.y, srclane1);
-                const float t2 = __shfl(s1.y, srclane2);
+                float t0 = __shfl(s0.y, srclane0);
+                float t1 = __shfl(s2.y, srclane1);
+                float t2 = __shfl(s1.y, srclane2);
 
                 s0.y = start == 0 ? t0 : start == 1 ? t2 : t1;
                 s1.y = start == 0 ? t1 : start == 1 ? t0 : t2;
@@ -183,9 +183,9 @@ namespace ParticleKernels
             }
 
             {
-                const float t0 = __shfl(ax, srclane0);
-                const float t1 = __shfl(az, srclane1);
-                const float t2 = __shfl(ay, srclane2);
+                float t0 = __shfl(ax, srclane0);
+                float t1 = __shfl(az, srclane1);
+                float t2 = __shfl(ay, srclane2);
 
                 ax = start == 0 ? t0 : start == 1 ? t2 : t1;
                 ay = start == 0 ? t1 : start == 1 ? t0 : t2;
@@ -209,13 +209,12 @@ namespace ParticleKernels
         }
     }
 
-    __global__ void clear_velocity(Particle * const p, const int n)
+    __global__ void clear_velocity(Particle * p, int n)
     {
-        const int pid = threadIdx.x + blockDim.x * blockIdx.x;
+        int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
-        if (pid >= n)
-            return;
-
+        if (pid >= n) return;
+	
         last_bit_float::Preserver up(p[pid].u[0]);
         for(int c = 0; c < 3; ++c)
             p[pid].u[c] = 0;
@@ -271,14 +270,14 @@ void ParticleArray::clear_velocity()
         ParticleKernels::clear_velocity<<<(xyzuvw.size + 127) / 128, 128 >>>(xyzuvw.data, xyzuvw.size);
 }
 
-void CollectionRBC::resize(const int count)
+void CollectionRBC::resize(int count)
 {
     ncells = count;
 
     ParticleArray::resize(count * get_nvertices());
 }
 
-void CollectionRBC::preserve_resize(const int count)
+void CollectionRBC::preserve_resize(int count)
 {
     ncells = count;
 
@@ -302,7 +301,7 @@ CollectionRBC::CollectionRBC(MPI_Comm cartcomm):
     CudaRBC::setup(nvertices, extent);
 }
 
-void CollectionRBC::setup(const char * const path2ic)
+void CollectionRBC::setup(const char *path2ic)
 {
     vector<TransformedExtent> allrbcs;
 
@@ -349,13 +348,13 @@ void CollectionRBC::setup(const char * const path2ic)
 
     allrbcs.resize(allrbcs_count);
 
-    const int nfloats_per_entry = sizeof(TransformedExtent) / sizeof(float);
+    int nfloats_per_entry = sizeof(TransformedExtent) / sizeof(float);
 
     MPI_CHECK(MPI_Bcast(&allrbcs.front(), nfloats_per_entry * allrbcs_count, MPI_FLOAT, 0, cartcomm));
 
     vector<TransformedExtent> good;
 
-    const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
+    int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
 
     for(vector<TransformedExtent>::iterator it = allrbcs.begin(); it != allrbcs.end(); ++it)
     {
@@ -379,12 +378,12 @@ void CollectionRBC::setup(const char * const path2ic)
         _initialize((float *)(xyzuvw.data + get_nvertices() * i), good[i].transform);
 }
 
-void CollectionRBC::_initialize(float *device_xyzuvw, const float (*transform)[4])
+void CollectionRBC::_initialize(float *device_xyzuvw, float (*transform)[4])
 {
     CudaRBC::initialize(device_xyzuvw, transform);
 }
 
-void CollectionRBC::remove(const int * const entries, const int nentries)
+void CollectionRBC::remove(int * entries, int nentries)
 {
     std::vector<bool > marks(ncells, true);
 
@@ -396,7 +395,7 @@ void CollectionRBC::remove(const int * const entries, const int nentries)
         if (marks[i])
             survivors.push_back(i);
 
-    const int nsurvived = survivors.size();
+    int nsurvived = survivors.size();
 
     SimpleDeviceBuffer<Particle> survived(get_nvertices() * nsurvived);
 
@@ -409,9 +408,9 @@ void CollectionRBC::remove(const int * const entries, const int nentries)
     CUDA_CHECK(cudaMemcpy(xyzuvw.data, survived.data, sizeof(Particle) * survived.size, cudaMemcpyDeviceToDevice));
 }
 
-void CollectionRBC::_dump(const char * const format4ply,
-        MPI_Comm comm, MPI_Comm cartcomm, const int ntriangles, const int ncells, const int nvertices, int (* const indices)[3],
-        Particle * const p, const Acceleration * const a, const int n, const int iddatadump)
+void CollectionRBC::_dump(const char * format4ply,
+        MPI_Comm comm, MPI_Comm cartcomm, int ntriangles, int ncells, int nvertices, int (* const indices)[3],
+        Particle * p, Acceleration * a, int n, int iddatadump)
 {
     int ctr = iddatadump;
 
