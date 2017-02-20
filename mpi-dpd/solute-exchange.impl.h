@@ -316,7 +316,7 @@ void halo(cudaStream_t uploadstream, cudaStream_t stream) {
 
   /** here was visitor  **/
   fsi->halo(halos, stream);
-  if (contactforces) contact->halo(halos, stream);
+  if (contactforces) Contact::halo(halos, stream);
   /***********************/
 
   CC(cudaPeekAtLastError());

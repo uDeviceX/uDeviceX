@@ -218,7 +218,7 @@ void sim_forces() {
   CC(cudaPeekAtLastError());
 
   if (contactforces)
-    contact->build_cells(wsolutes, mainstream);
+    Contact::build_cells(wsolutes, mainstream);
 
   dpd->local_interactions(particles->pp.D, xyzouvwo->D, xyzo_half->D,
 			 particles->S, particles->aa.D, cells->start,
@@ -251,7 +251,7 @@ void sim_forces() {
   fsi->bulk(wsolutes, mainstream);
 
   if (contactforces)
-    contact->bulk(wsolutes, mainstream);
+    Contact::bulk(wsolutes, mainstream);
 
   CC(cudaPeekAtLastError());
 
@@ -430,7 +430,7 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   dpd     = new ComputeDPD(cartcomm);
   fsi     = new ComputeFSI(cartcomm);
   SolEx::init(cartcomm);
-  contact = new Contact::ComputeContact(cartcomm);
+  Contact::init(cartcomm);
   cells   = new CellLists(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
 
   particles_datadump     = new PinnedHostBuffer<Particle>;
@@ -524,7 +524,7 @@ static void sim_lockstep() {
   dpd->local_interactions(particles->pp.D, xyzouvwo->D, xyzo_half->D,
 			 particles->S, particles->aa.D, cells->start,
 			 cells->count, mainstream);
-  if (contactforces) contact->build_cells(wsolutes, mainstream);
+  if (contactforces) Contact::build_cells(wsolutes, mainstream);
   SolEx::post_p(mainstream, downloadstream);
   dpd->post(particles->pp.D, particles->S, mainstream, downloadstream);
   CC(cudaPeekAtLastError());
@@ -543,7 +543,7 @@ static void sim_lockstep() {
 
   fsi->bulk(wsolutes, mainstream);
 
-  if (contactforces) contact->bulk(wsolutes, mainstream);
+  if (contactforces) Contact::bulk(wsolutes, mainstream);
   CC(cudaPeekAtLastError());
 
   if (rbcscoll)
@@ -641,7 +641,7 @@ void sim_close() {
 
   if (rbcs) delete rbcscoll;
 
-  delete contact;
+  Contact::close();
   delete cells;
   SolEx::close();
   delete fsi;

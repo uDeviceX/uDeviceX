@@ -1,5 +1,5 @@
 namespace Contact {
-  ComputeContact::ComputeContact(MPI_Comm comm) {
+  void init(MPI_Comm comm) {
   cellsstart = new SimpleDeviceBuffer<int>(KernelsContact::NCELLS + 16);
   cellscount = new SimpleDeviceBuffer<int>(KernelsContact::NCELLS + 16);
   compressed_cellscount = new SimpleDeviceBuffer<unsigned char>(KernelsContact::NCELLS + 16);
@@ -16,8 +16,7 @@ namespace Contact {
   CC(cudaPeekAtLastError());
 }
 
-
-  void ComputeContact::build_cells(std::vector<ParticlesWrap> wsolutes,
+  void build_cells(std::vector<ParticlesWrap> wsolutes,
     cudaStream_t stream) {
   nsolutes = wsolutes.size();
 
@@ -66,7 +65,7 @@ namespace Contact {
     cellscount->D);
 }
 
-  void ComputeContact::bulk(std::vector<ParticlesWrap> wsolutes, cudaStream_t stream) {
+  void bulk(std::vector<ParticlesWrap> wsolutes, cudaStream_t stream) {
   if (wsolutes.size() == 0) return;
 
   for (int i = 0; i < wsolutes.size(); ++i) {
@@ -81,7 +80,7 @@ namespace Contact {
 }
 }
 
-  void ComputeContact::halo(ParticlesWrap halos[26], cudaStream_t stream) {
+  void halo(ParticlesWrap halos[26], cudaStream_t stream) {
   int nremote_padded = 0;
 
   {
@@ -123,7 +122,7 @@ namespace Contact {
   CC(cudaPeekAtLastError());
 }
 
-  void ComputeContact::close() {
+  void close() {
     delete subindices;
     delete compressed_cellscount;
     delete cellsentries;

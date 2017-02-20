@@ -38,7 +38,6 @@ test:   $(OBJS) libcuda-dpd libcuda-rbc
 # some files must be compiled in diferent way (with `-dc' flag) See
 # "Separate Compilation and Linking of CUDA C++ Device Code"
 # http://devblogs.nvidia.com/parallelforall/separate-compilation-linking-cuda-device-code
-contact.o:        contact.cu;        $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 dpd.o:            dpd.cu;            $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 fsi.o:            fsi.cu;            $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 last_bit_float.o: last_bit_float.cu; $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@

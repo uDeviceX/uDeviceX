@@ -1,5 +1,4 @@
 ComputeFSI* fsi;
-Contact::ComputeContact* contact;
 
 enum {
   TAGBASE_C = 113, TAGBASE_P = 365, TAGBASE_A = 668,
