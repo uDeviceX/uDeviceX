@@ -6,6 +6,6 @@ int nranks, rank;
 int ncells = 0;
 struct ParticleArray {
   int S; /* size */
-  SimpleDeviceBuffer<Particle>     pp; /* xyzuvw */
-  SimpleDeviceBuffer<Acceleration> aa; /* axayaz */
+  DeviceBuffer<Particle>     pp; /* xyzuvw */
+  DeviceBuffer<Acceleration> aa; /* axayaz */
 };

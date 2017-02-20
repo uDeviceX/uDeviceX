@@ -10,7 +10,7 @@ void _post_recvcount() {
 }
 
 void redistribute_rbcs_init(MPI_Comm _cartcomm) {
-  bulk = new SimpleDeviceBuffer<Particle>;
+  bulk = new DeviceBuffer<Particle>;
   for (int i = 0; i < HALO_BUF_SIZE; i++) halo_recvbufs[i] = new PinnedHostBuffer<Particle>;
   for (int i = 0; i < HALO_BUF_SIZE; i++) halo_sendbufs[i] = new PinnedHostBuffer<Particle>;
   minextents = new PinnedHostBuffer<float3>;

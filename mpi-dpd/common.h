@@ -109,11 +109,11 @@ struct SolventWrap : ParticlesWrap
 
 /* container for the gpu particles during the simulation */
 template<typename T>
-struct SimpleDeviceBuffer {
+struct DeviceBuffer {
   int capacity, S;    /* `S' is for size */
   T* D;               /* `D' is for data */
-  explicit SimpleDeviceBuffer(int n = 0): capacity(0), S(0), D(NULL) { resize(n);}
-  ~SimpleDeviceBuffer() {
+  explicit DeviceBuffer(int n = 0): capacity(0), S(0), D(NULL) { resize(n);}
+  ~DeviceBuffer() {
     if (D != NULL) CC(cudaFree(D));
     D = NULL;
   }

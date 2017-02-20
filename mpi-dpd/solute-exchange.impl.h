@@ -1,15 +1,15 @@
 namespace SolEx {
 void init(MPI_Comm _cartcomm) {
   iterationcount = -1;
-  packstotalstart = new SimpleDeviceBuffer<int>(27);
+  packstotalstart = new DeviceBuffer<int>(27);
   host_packstotalstart = new PinnedHostBuffer<int>(27);
   host_packstotalcount = new PinnedHostBuffer<int>(26);
 
-  packscount = new SimpleDeviceBuffer<int>;
-  packsstart = new SimpleDeviceBuffer<int>;
-  packsoffset = new SimpleDeviceBuffer<int>;
+  packscount = new DeviceBuffer<int>;
+  packsstart = new DeviceBuffer<int>;
+  packsoffset = new DeviceBuffer<int>;
 
-  packbuf = new SimpleDeviceBuffer<Particle>;
+  packbuf = new DeviceBuffer<Particle>;
   host_packbuf = new PinnedHostBuffer<Particle>;
 
   MPI_CHECK(MPI_Comm_dup(_cartcomm, &cartcomm));

@@ -1,5 +1,5 @@
 namespace RedistRBC {
-  SimpleDeviceBuffer<Particle>* bulk;
+  DeviceBuffer<Particle>* bulk;
 #define HALO_BUF_SIZE 27
   PinnedHostBuffer<Particle> *halo_recvbufs[HALO_BUF_SIZE], *halo_sendbufs[HALO_BUF_SIZE];
   PinnedHostBuffer<float3> *minextents, *maxextents;
@@ -14,6 +14,6 @@ namespace RedistRBC {
   int nvertices, arriving, notleaving;
   cudaEvent_t evextents;
 
-  SimpleDeviceBuffer<float *> _ddestinations;
-  SimpleDeviceBuffer<const float *> _dsources;
+  DeviceBuffer<float *> _ddestinations;
+  DeviceBuffer<const float *> _dsources;
 }

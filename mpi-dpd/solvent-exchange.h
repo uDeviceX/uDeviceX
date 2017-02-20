@@ -21,8 +21,8 @@ public:
 
   struct SendHalo {
     int expected;
-    SimpleDeviceBuffer<int> scattered_entries, tmpstart, tmpcount, dcellstarts;
-    SimpleDeviceBuffer<Particle> dbuf;
+    DeviceBuffer<int> scattered_entries, tmpstart, tmpcount, dcellstarts;
+    DeviceBuffer<Particle> dbuf;
     PinnedHostBuffer<int> hcellstarts;
     PinnedHostBuffer<Particle> hbuf;
     void setup(const int estimate, const int nhalocells) {
@@ -45,8 +45,8 @@ public:
     int expected;
     PinnedHostBuffer<int> hcellstarts;
     PinnedHostBuffer<Particle> hbuf;
-    SimpleDeviceBuffer<Particle> dbuf;
-    SimpleDeviceBuffer<int> dcellstarts;
+    DeviceBuffer<Particle> dbuf;
+    DeviceBuffer<int> dcellstarts;
     void setup(const int estimate, const int nhalocells) {
       adjust(estimate);
       dcellstarts.resize(nhalocells + 1);

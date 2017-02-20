@@ -143,7 +143,7 @@ static void sim_redistribute() {
 
 void sim_remove_bodies_from_wall(ParticleArray *coll) {
   if (!coll || !ncells) return;
-  SimpleDeviceBuffer<int> marks(pcount());
+  DeviceBuffer<int> marks(pcount());
 
   SolidWallsKernel::fill_keys<<<(pcount() + 127) / 128, 128>>>(
       coll->pp.D, pcount(), marks.D);
@@ -436,8 +436,8 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   particles_datadump     = new PinnedHostBuffer<Particle>;
   accelerations_datadump = new PinnedHostBuffer<Acceleration>;
 
-  xyzouvwo    = new SimpleDeviceBuffer<float4 >;
-  xyzo_half = new SimpleDeviceBuffer<ushort4>;
+  xyzouvwo    = new DeviceBuffer<float4 >;
+  xyzo_half = new DeviceBuffer<ushort4>;
   particles_pingpong[0] = new ParticleArray();
   particles_pingpong[1] = new ParticleArray();
   if (rbcs) rbcscoll    = new ParticleArray();

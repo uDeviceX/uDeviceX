@@ -2,8 +2,8 @@ ParticleArray *particles_pingpong[2];
 ParticleArray *particles, *newparticles;
 ParticleArray *rbcscoll;
 
-SimpleDeviceBuffer<float4 > *xyzouvwo;
-SimpleDeviceBuffer<ushort4> *xyzo_half;
+DeviceBuffer<float4 > *xyzouvwo;
+DeviceBuffer<ushort4> *xyzo_half;
 
 CellLists* cells;
 ComputeDPD* dpd;

@@ -316,7 +316,7 @@ void remove(ParticleArray* pa, int *entries, int nentries) {
 	    survivors.push_back(i);
 
     int nsurvived = survivors.size();
-    SimpleDeviceBuffer<Particle> survived(nvertices*nsurvived);
+    DeviceBuffer<Particle> survived(nvertices*nsurvived);
     for(int i = 0; i < nsurvived; ++i)
 	CC(cudaMemcpy(survived.D + nvertices * i, pa->pp.D + nvertices * survivors[i],
 		    sizeof(Particle) * nvertices, cudaMemcpyDeviceToDevice));

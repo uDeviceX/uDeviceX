@@ -29,8 +29,8 @@ namespace RedistPart {
 
   PinnedHostBuffer<bool> *failure;
   PinnedHostBuffer<int> *packsizes;
-  SimpleDeviceBuffer<unsigned char> *compressed_cellcounts;
-  SimpleDeviceBuffer<Particle> *remote_particles;
-  SimpleDeviceBuffer<uint> *scattered_indices;
-  SimpleDeviceBuffer<uchar4> *subindices, *subindices_remote;
+  DeviceBuffer<unsigned char> *compressed_cellcounts;
+  DeviceBuffer<Particle> *remote_particles;
+  DeviceBuffer<uint> *scattered_indices;
+  DeviceBuffer<uchar4> *subindices, *subindices_remote;
 }

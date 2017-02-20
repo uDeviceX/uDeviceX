@@ -615,13 +615,13 @@ void wall_init(Particle *const p, const int n,
 
   /*
     can't use halo-exchanger class because of MARGIN HaloExchanger
-    halo(cartcomm, L, 666); SimpleDeviceBuffer<Particle> solid_remote;
+    halo(cartcomm, L, 666); DeviceBuffer<Particle> solid_remote;
     halo.exchange(thrust::raw_pointer_cast(&solid_local[0]),
     solid_local.size(), solid_remote);
   */
   if (myrank == 0) printf("fetching remote wall particles...\n");
 
-  SimpleDeviceBuffer<Particle> solid_remote;
+  DeviceBuffer<Particle> solid_remote;
 
   {
     thrust::host_vector<Particle> local = solid_local;

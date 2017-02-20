@@ -1,11 +1,11 @@
 namespace Contact {
   void init(MPI_Comm comm) {
-    cellsstart = new SimpleDeviceBuffer<int>(KernelsContact::NCELLS + 16);
-    cellscount = new SimpleDeviceBuffer<int>(KernelsContact::NCELLS + 16);
-    compressed_cellscount = new SimpleDeviceBuffer<unsigned char>(KernelsContact::NCELLS + 16);
+    cellsstart = new DeviceBuffer<int>(KernelsContact::NCELLS + 16);
+    cellscount = new DeviceBuffer<int>(KernelsContact::NCELLS + 16);
+    compressed_cellscount = new DeviceBuffer<unsigned char>(KernelsContact::NCELLS + 16);
 
-    cellsentries = new SimpleDeviceBuffer<int>;
-    subindices = new SimpleDeviceBuffer<uchar4>;
+    cellsentries = new DeviceBuffer<int>;
+    subindices = new DeviceBuffer<uchar4>;
     local_trunk = new Logistic::KISS;
   
     int myrank;

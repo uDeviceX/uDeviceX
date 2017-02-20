@@ -21,7 +21,7 @@ public:
 class RemoteHalo {
   TimeSeriesWindow history;
 public:
-  SimpleDeviceBuffer<Particle> dstate;
+  DeviceBuffer<Particle> dstate;
   PinnedHostBuffer<Particle> hstate;
   PinnedHostBuffer<Acceleration> result;
   std::vector<Particle> pmessage;
@@ -38,7 +38,7 @@ public:
 class LocalHalo {
   TimeSeriesWindow history;
 public:
-  SimpleDeviceBuffer<int> scattered_indices;
+  DeviceBuffer<int> scattered_indices;
   PinnedHostBuffer<Acceleration> result;
   void resize(int n) {
     scattered_indices.resize(n);
@@ -55,9 +55,9 @@ namespace SolEx {
   int nranks, dstranks[26], dims[3], periods[3], coords[3], myrank,
     recv_tags[26], recv_counts[26], send_counts[26];
   cudaEvent_t evPpacked, evAcomputed;
-  SimpleDeviceBuffer<int> *packscount, *packsstart, *packsoffset, *packstotalstart;
+  DeviceBuffer<int> *packscount, *packsstart, *packsoffset, *packstotalstart;
   PinnedHostBuffer<int> *host_packstotalstart, *host_packstotalcount;
-  SimpleDeviceBuffer<Particle> *packbuf;
+  DeviceBuffer<Particle> *packbuf;
   PinnedHostBuffer<Particle> *host_packbuf;
   
   std::vector<ParticlesWrap> wsolutes;

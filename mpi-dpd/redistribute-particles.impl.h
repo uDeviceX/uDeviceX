@@ -246,15 +246,15 @@ void _waitall(MPI_Request * reqs, int n) {
 void redist_part_init(MPI_Comm _cartcomm)  {
   failure = new PinnedHostBuffer<bool>(1);
   packsizes = new PinnedHostBuffer<int>(27);
-  compressed_cellcounts = new SimpleDeviceBuffer<unsigned char>
+  compressed_cellcounts = new DeviceBuffer<unsigned char>
     (XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN);
-  remote_particles = new SimpleDeviceBuffer<Particle>;
-  subindices_remote= new SimpleDeviceBuffer<uchar4>
+  remote_particles = new DeviceBuffer<Particle>;
+  subindices_remote= new DeviceBuffer<uchar4>
     (1.5 * numberdensity * (XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN -
 			    (XSIZE_SUBDOMAIN - 2) * (YSIZE_SUBDOMAIN - 2) * (ZSIZE_SUBDOMAIN - 2)));
-  subindices = new SimpleDeviceBuffer<uchar4>
+  subindices = new DeviceBuffer<uchar4>
     (1.5 * numberdensity * XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN);
-  scattered_indices = new SimpleDeviceBuffer<uint>;
+  scattered_indices = new DeviceBuffer<uint>;
   
   nactiveneighbors  = 26; firstcall = true;
   int dims[3], periods[3], coords[3];
