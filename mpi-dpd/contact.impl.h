@@ -1,24 +1,11 @@
-#include <dpd-rng.h>
-
-#include <vector>
-#include <cstdio>
-#include <mpi.h>
-#include ".conf.h" /* configuration file (copy from .conf.test.h) */
-#include "common.h"
-#include "common-kernels.h"
-#include "scan.h"
-#include "contact.h"
-#include "dpd-forces.h"
-#include "last_bit_float.h"
-
-#include "kernelscontact.decl.h"
-#include "kernelscontact.impl.h"
-
 namespace Contact {
 ComputeContact::ComputeContact(MPI_Comm comm)
     : cellsstart(KernelsContact::NCELLS + 16),
       cellscount(KernelsContact::NCELLS + 16),
-      compressed_cellscount(KernelsContact::NCELLS + 16) {
+      compressed_cellscount(KernelsContact::NCELLS + 16)
+{
+
+  
   int myrank;
   MPI_CHECK(MPI_Comm_rank(comm, &myrank));
 
@@ -30,7 +17,7 @@ ComputeContact::ComputeContact(MPI_Comm comm)
 
 void ComputeContact::build_cells(std::vector<ParticlesWrap> wsolutes,
                                  cudaStream_t stream) {
-  this->nsolutes = wsolutes.size();
+  nsolutes = wsolutes.size();
 
   int ntotal = 0;
 
@@ -94,7 +81,6 @@ void ComputeContact::bulk(std::vector<ParticlesWrap> wsolutes,
     CC(cudaPeekAtLastError());
   }
 }
-
 
 void ComputeContact::halo(ParticlesWrap halos[26], cudaStream_t stream) {
   int nremote_padded = 0;

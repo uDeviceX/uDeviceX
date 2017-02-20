@@ -11,7 +11,6 @@
 #include "solvent-exchange.h"
 #include "dpd.h"
 #include "fsi.h"
-#include "contact.h"
 #include "io.h"
 #include "simulation.h"
 #include "dpd-forces.h"
@@ -38,6 +37,12 @@
 
 #include "solutepup.decl.h"
 #include "solutepup.impl.h"
+
+#include "kernelscontact.decl.h"
+#include "kernelscontact.impl.h"
+
+#include "contact.decl.h"
+#include "contact.impl.h"
 
 #include "solute-exchange.decl.h"
 #include "solute-exchange.impl.h"

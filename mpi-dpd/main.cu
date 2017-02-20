@@ -10,7 +10,6 @@
 #include "solvent-exchange.h"
 #include "dpd.h"
 #include "fsi.h"
-#include "contact.h"
 #include "simulation.h"
 
 float tend;

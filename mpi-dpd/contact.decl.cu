@@ -1,7 +1,6 @@
 namespace Contact {
 class ComputeContact {
  public:
-  int nsolutes;
   SimpleDeviceBuffer<uchar4> subindices;
   SimpleDeviceBuffer<unsigned char> compressed_cellscount;
   SimpleDeviceBuffer<int> cellsentries, cellsstart, cellscount;

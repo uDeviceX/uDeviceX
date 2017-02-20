@@ -213,7 +213,7 @@ struct PinnedHostBuffer
 
   T * data, * devptr;
 
-  PinnedHostBuffer(int n = 0): capacity(0), size(0), data(NULL), devptr(NULL) { resize(n);}
+  explicit PinnedHostBuffer(int n = 0): capacity(0), size(0), data(NULL), devptr(NULL) { resize(n);}
 
   ~PinnedHostBuffer()
   {
