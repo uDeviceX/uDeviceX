@@ -32,6 +32,7 @@ SoluteExchange::SoluteExchange(MPI_Comm _cartcomm) {
   packsoffset = new SimpleDeviceBuffer<int>;
 
   packbuf = new SimpleDeviceBuffer<Particle>;
+  host_packbuf = new PinnedHostBuffer<Particle>;
 
   MPI_CHECK(MPI_Comm_dup(_cartcomm, &cartcomm));
   MPI_CHECK(MPI_Comm_size(cartcomm, &nranks));
@@ -238,7 +239,7 @@ void SoluteExchange::_pack_attempt(cudaStream_t stream) {
 #ifndef NDEBUG
   CC(cudaMemsetAsync(packbuf->D, 0xff, sizeof(Particle) * packbuf->capacity,
 		     stream));
-  memset(host_packbuf.data, 0xff, sizeof(Particle) * packbuf->capacity);
+  memset(host_packbuf->data, 0xff, sizeof(Particle) * packbuf->capacity);
 
   for (int i = 0; i < 26; ++i) {
     CC(cudaMemsetAsync(local[i].scattered_indices.D, 0x8f,
@@ -388,7 +389,7 @@ void SoluteExchange::post_p(cudaStream_t stream, cudaStream_t downloadstream) {
       _wait(reqsendP);
 
     if (host_packstotalstart->data[26]) {
-      CC(cudaMemcpyAsync(host_packbuf.data, packbuf->D,
+      CC(cudaMemcpyAsync(host_packbuf->data, packbuf->D,
 			 sizeof(Particle) * host_packstotalstart->data[26],
 			 cudaMemcpyDeviceToHost, downloadstream));
     }
@@ -411,13 +412,13 @@ void SoluteExchange::post_p(cudaStream_t stream, cudaStream_t downloadstream) {
 
       MPI_Request reqP;
 
-      _not_nan((float *)(host_packbuf.data + start), count * 6);
+      _not_nan((float *)(host_packbuf->data + start), count * 6);
 
 #ifdef _DUMBCRAY_
       MPI_CHECK(MPI_Isend(host_packbuf.data + start, count * 6, MPI_FLOAT,
 			  dstranks[i], TAGBASE_P + i, cartcomm, &reqP));
 #else
-      MPI_CHECK(MPI_Isend(host_packbuf.data + start, expected * 6, MPI_FLOAT,
+      MPI_CHECK(MPI_Isend(host_packbuf->data + start, expected * 6, MPI_FLOAT,
 			  dstranks[i], TAGBASE_P + i, cartcomm, &reqP));
 #endif
 
@@ -426,7 +427,7 @@ void SoluteExchange::post_p(cudaStream_t stream, cudaStream_t downloadstream) {
 #ifndef _DUMBCRAY_
       if (count > expected) {
 	MPI_Request reqP2;
-	MPI_CHECK(MPI_Isend(host_packbuf.data + start + expected,
+	MPI_CHECK(MPI_Isend(host_packbuf->data + start + expected,
 			    (count - expected) * 6, MPI_FLOAT, dstranks[i],
 			    TAGBASE_P2 + i, cartcomm, &reqP2));
 
@@ -613,4 +614,5 @@ SoluteExchange::~SoluteExchange() {
   delete packsstart;
   delete packsoffset;
   delete packbuf;
+  delete host_packbuf;
 }

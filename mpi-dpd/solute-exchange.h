@@ -64,7 +64,7 @@ public:
   SimpleDeviceBuffer<int> *packscount, *packsstart, *packsoffset, *packstotalstart;
   PinnedHostBuffer<int> *host_packstotalstart, *host_packstotalcount;
   SimpleDeviceBuffer<Particle> *packbuf;
-  PinnedHostBuffer<Particle> host_packbuf;
+  PinnedHostBuffer<Particle> *host_packbuf;
   
   std::vector<ParticlesWrap> wsolutes;
   std::vector<MPI_Request> reqsendC, reqrecvC, reqsendP, reqrecvP, reqsendA,
@@ -76,7 +76,7 @@ public:
     int s = 0;
     for (int i = 0; i < 26; ++i) s += 32 * ((local[i].capacity() + 31) / 32);
     packbuf->resize(s);
-    host_packbuf.resize(s);
+    host_packbuf->resize(s);
   }
 
   void _wait(std::vector<MPI_Request> &v) {
