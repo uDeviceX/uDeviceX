@@ -15,6 +15,7 @@
 #endif
 
 namespace RedistributeParticlesKernels {
+  using namespace RedistPart;
     __constant__ PackBuffer pack_buffers[27];
     __constant__ UnpackBuffer unpack_buffers[27];
     __device__ int pack_count[27], pack_start_padded[28];
@@ -252,46 +253,10 @@ namespace RedistributeParticlesKernels {
 
         write_AOS6f(dstbuf + 3 * base, nsrc, data0, data1, data2);
     }
-
-#ifndef NDEBUG
-    __global__ void check(int * starts, int * counts, Particle * p, int np)
-    {
-        int gid = threadIdx.x + blockDim.x * blockIdx.x;
-
-        if (gid >= XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN* ZSIZE_SUBDOMAIN)
-            return;
-
-        int count = counts[gid];
-        int start = starts[gid];
-
-
-        int xcid = gid % XSIZE_SUBDOMAIN;
-        int ycid = (gid / XSIZE_SUBDOMAIN) % YSIZE_SUBDOMAIN;
-        int zcid = gid / XSIZE_SUBDOMAIN / YSIZE_SUBDOMAIN ;
-
-        float xmin[3] = { xcid - XSIZE_SUBDOMAIN / 2,
-            ycid - YSIZE_SUBDOMAIN / 2,
-            zcid - ZSIZE_SUBDOMAIN / 2 };
-
-        for(int i = 0; i < count; ++i)
-        {
-            int pid = start + i;
-
-            for(int c = 0; c < 3; ++c)
-            {
-                if (!(p[pid].x[c] >= xmin[c] && p[pid].x[c] < xmin[c] + 1))
-                {
-                    printf("oooops pid %d c %d is %f of cell %d with count %d at entry %d not win [%f, %f[\n", pid, c, p[pid].x[c], gid, count, i,
-                            xmin[c], xmin[c] + 1);
-                }
-            }
-        }
-    }
-#endif
-
 #undef _ACCESS
 }
 
+namespace RedistPart {
 int pack_size(int code) { return send_sizes[code]; }
 float pinned_data(int code, int entry) {return pinnedhost_sendbufs[code][entry]; }
 
@@ -642,10 +607,6 @@ void recv_unpack(Particle * particles, float4 * xyzouvwo, ushort4 * xyzo_half, i
 
     CC(cudaPeekAtLastError());
 
-#ifndef NDEBUG
-    RedistributeParticlesKernels::check<<<(XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN + 127) / 128, 128, 0, mystream>>>(cellstarts, cellcounts, particles, nparticles);
-#endif
-
     _post_recv();
 
     CC(cudaPeekAtLastError());
@@ -704,4 +665,5 @@ void redist_part_close() {
     delete subindices_remote;
     delete subindices;
     delete scattered_indices;
+}
 }
