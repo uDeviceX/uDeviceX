@@ -162,7 +162,7 @@ protected:
     }
   }
 
-  void _not_nan(const float *const, const int) const {}
+  void _not_nan(float*, int) const {}
 
   void _pack_attempt(cudaStream_t stream);
 
