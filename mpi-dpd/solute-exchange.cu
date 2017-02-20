@@ -1,16 +1,7 @@
 /*
  *  solute-exchange.cu
  *  Part of uDeviceX/mpi-dpd/
- *
- *  Created and authored by Diego Rossinelli on 2014-12-02.
- *  Copyright 2015. All rights reserved.
- *
- *  Users are NOT authorized
- *  to employ the present software for their own publications
- *  before getting a written permission from the author of this file.
  */
-
-//#define _DUMBCRAY_
 
 #include <dpd-rng.h>
 #include <vector>
@@ -23,23 +14,19 @@
 #include "fsi.h"
 #include "contact.h"
 
-/**
-  solutex->attach_halocomputation(fsi);
-  if (contactforces) solutex->attach_halocomputation(contact);
-
-*/
 extern ComputeFSI* fsi;
 extern ComputeContact* contact;
 
 namespace SolutePUP {
-__constant__ int ccapacities[26], *scattered_indices[26];
+  __constant__ int ccapacities[26], *scattered_indices[26];
 }
 
-SoluteExchange::SoluteExchange(MPI_Comm _cartcomm)
-    : iterationcount(-1),
-      packstotalstart(27),
-      host_packstotalstart(27),
-      host_packstotalcount(26) {
+SoluteExchange::SoluteExchange(MPI_Comm _cartcomm) {
+  iterationcount = -1;
+  packstotalstart = 27;
+  host_packstotalstart = 27;
+  host_packstotalcount = 26;
+  
   MPI_CHECK(MPI_Comm_dup(_cartcomm, &cartcomm));
   MPI_CHECK(MPI_Comm_size(cartcomm, &nranks));
   MPI_CHECK(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
