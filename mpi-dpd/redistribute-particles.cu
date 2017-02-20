@@ -310,8 +310,7 @@ RedistributeParticles::RedistributeParticles(MPI_Comm _cartcomm):
     subindices(1.5 * numberdensity * XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN),
     subindices_remote(1.5 * numberdensity * (XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN -
                 (XSIZE_SUBDOMAIN - 2) * (YSIZE_SUBDOMAIN - 2) * (ZSIZE_SUBDOMAIN - 2))) {
-    safety_factor = getenv("RDP_COMM_FACTOR") ? atof(getenv("RDP_COMM_FACTOR")) : 1.2;
-
+    int dims[3], periods[3], coords[3];
     MPI_CHECK(MPI_Comm_dup(_cartcomm, &cartcomm) );
     MPI_CHECK( MPI_Comm_rank(cartcomm, &myrank) );
     MPI_CHECK( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );

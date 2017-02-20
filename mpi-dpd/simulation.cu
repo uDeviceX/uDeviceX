@@ -36,6 +36,22 @@
 #include <thrust/device_vector.h>
 #include <thrust/sort.h>
 
+/*** from redistribute-particles.h ***/
+int basetag = 950;
+float safety_factor = 1.2;
+
+struct UnpackBuffer {
+  float2 * buffer;
+  int capacity;
+};
+
+struct PackBuffer {
+  float2 * buffer;
+  int capacity;
+  int * scattered_indices;
+};
+
+
 /*** from containters.h ****/
 float3 origin, globalextent;
 int    coords[3];
