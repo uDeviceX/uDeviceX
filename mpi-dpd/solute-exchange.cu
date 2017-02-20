@@ -31,6 +31,8 @@ SoluteExchange::SoluteExchange(MPI_Comm _cartcomm) {
   packsstart = new SimpleDeviceBuffer<int>;
   packsoffset = new SimpleDeviceBuffer<int>;
 
+  packbuf = new SimpleDeviceBuffer<Particle>;
+
   MPI_CHECK(MPI_Comm_dup(_cartcomm, &cartcomm));
   MPI_CHECK(MPI_Comm_size(cartcomm, &nranks));
   MPI_CHECK(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
@@ -234,9 +236,9 @@ __global__ void pack(float2 *particles, int nparticles,
 
 void SoluteExchange::_pack_attempt(cudaStream_t stream) {
 #ifndef NDEBUG
-  CC(cudaMemsetAsync(packbuf.D, 0xff, sizeof(Particle) * packbuf.capacity,
+  CC(cudaMemsetAsync(packbuf->D, 0xff, sizeof(Particle) * packbuf->capacity,
 		     stream));
-  memset(host_packbuf.data, 0xff, sizeof(Particle) * packbuf.capacity);
+  memset(host_packbuf.data, 0xff, sizeof(Particle) * packbuf->capacity);
 
   for (int i = 0; i < 26; ++i) {
     CC(cudaMemsetAsync(local[i].scattered_indices.D, 0x8f,
@@ -308,7 +310,7 @@ void SoluteExchange::_pack_attempt(cudaStream_t stream) {
 				 cudaMemcpyDeviceToDevice, stream));
 
       SolutePUP::pack<<<14 * 16, 128, 0, stream>>>(
-	  (float2 *)it.p, it.n, (float2 *)packbuf.D, packbuf.capacity, i);
+	  (float2 *)it.p, it.n, (float2 *)packbuf->D, packbuf->capacity, i);
     }
   }
 
@@ -386,7 +388,7 @@ void SoluteExchange::post_p(cudaStream_t stream, cudaStream_t downloadstream) {
       _wait(reqsendP);
 
     if (host_packstotalstart->data[26]) {
-      CC(cudaMemcpyAsync(host_packbuf.data, packbuf.D,
+      CC(cudaMemcpyAsync(host_packbuf.data, packbuf->D,
 			 sizeof(Particle) * host_packstotalstart->data[26],
 			 cudaMemcpyDeviceToHost, downloadstream));
     }
@@ -610,4 +612,5 @@ SoluteExchange::~SoluteExchange() {
   delete packscount;
   delete packsstart;
   delete packsoffset;
+  delete packbuf;
 }

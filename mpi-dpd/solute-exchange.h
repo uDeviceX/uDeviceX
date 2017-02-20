@@ -63,8 +63,9 @@ public:
   cudaEvent_t evPpacked, evAcomputed;
   SimpleDeviceBuffer<int> *packscount, *packsstart, *packsoffset, *packstotalstart;
   PinnedHostBuffer<int> *host_packstotalstart, *host_packstotalcount;
-  SimpleDeviceBuffer<Particle> packbuf;
+  SimpleDeviceBuffer<Particle> *packbuf;
   PinnedHostBuffer<Particle> host_packbuf;
+  
   std::vector<ParticlesWrap> wsolutes;
   std::vector<MPI_Request> reqsendC, reqrecvC, reqsendP, reqrecvP, reqsendA,
     reqrecvA;
@@ -74,7 +75,7 @@ public:
   void _adjust_packbuffers() {
     int s = 0;
     for (int i = 0; i < 26; ++i) s += 32 * ((local[i].capacity() + 31) / 32);
-    packbuf.resize(s);
+    packbuf->resize(s);
     host_packbuf.resize(s);
   }
 
