@@ -78,9 +78,7 @@ namespace RedistributeParticlesKernels {
 
         if (tid < 27) {
             myval = mycount = pack_count[threadIdx.x];
-            if (tid > 0)
-                packsizes[tid] = mycount;
-
+            if (tid > 0) packsizes[tid] = mycount;
             if (mycount > pack_buffers[tid].capacity) {
                 failed = true;
                 *failureflag = true;
@@ -311,25 +309,18 @@ RedistributeParticles::RedistributeParticles(MPI_Comm _cartcomm):
     compressed_cellcounts(XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN),
     subindices(1.5 * numberdensity * XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN),
     subindices_remote(1.5 * numberdensity * (XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN -
-                (XSIZE_SUBDOMAIN - 2) * (YSIZE_SUBDOMAIN - 2) * (ZSIZE_SUBDOMAIN - 2)))
-{
+                (XSIZE_SUBDOMAIN - 2) * (YSIZE_SUBDOMAIN - 2) * (ZSIZE_SUBDOMAIN - 2))) {
     safety_factor = getenv("RDP_COMM_FACTOR") ? atof(getenv("RDP_COMM_FACTOR")) : 1.2;
 
     MPI_CHECK(MPI_Comm_dup(_cartcomm, &cartcomm) );
-
     MPI_CHECK( MPI_Comm_rank(cartcomm, &myrank) );
     MPI_CHECK( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
 
-    for(int i = 0; i < 27; ++i)
-    {
+    for(int i = 0; i < 27; ++i) {
         int d[3] = { (i + 1) % 3 - 1, (i / 3 + 1) % 3 - 1, (i / 9 + 1) % 3 - 1 };
-
         recv_tags[i] = (3 - d[0]) % 3 + 3 * ((3 - d[1]) % 3 + 3 * ((3 - d[2]) % 3));
-
         int coordsneighbor[3];
-        for(int c = 0; c < 3; ++c)
-            coordsneighbor[c] = coords[c] + d[c];
-
+        for(int c = 0; c < 3; ++c) coordsneighbor[c] = coords[c] + d[c];
         MPI_CHECK( MPI_Cart_rank(cartcomm, coordsneighbor, neighbor_ranks + i) );
 
         int nhalodir[3] =  {
@@ -339,28 +330,21 @@ RedistributeParticles::RedistributeParticles(MPI_Comm _cartcomm):
         };
 
         int nhalocells = nhalodir[0] * nhalodir[1] * nhalodir[2];
-
         int estimate = numberdensity * safety_factor * nhalocells;
-
         CC(cudaMalloc(&packbuffers[i].scattered_indices, sizeof(int) * estimate));
 
-        if (i && estimate)
-        {
+        if (i && estimate) {
             CC(cudaHostAlloc(&pinnedhost_sendbufs[i], sizeof(float) * 6 * estimate, cudaHostAllocMapped));
             CC(cudaHostGetDevicePointer(&packbuffers[i].buffer, pinnedhost_sendbufs[i], 0));
 
             CC(cudaHostAlloc(&pinnedhost_recvbufs[i], sizeof(float) * 6 * estimate, cudaHostAllocMapped));
             CC(cudaHostGetDevicePointer(&unpackbuffers[i].buffer, pinnedhost_recvbufs[i], 0));
-        }
-        else
-        {
+        } else {
             CC(cudaMalloc(&packbuffers[i].buffer, sizeof(float) * 6 * estimate));
             unpackbuffers[i].buffer = packbuffers[i].buffer;
-
             pinnedhost_sendbufs[i] = NULL;
             pinnedhost_recvbufs[i] = NULL;
         }
-
         packbuffers[i].capacity = estimate;
         unpackbuffers[i].capacity = estimate;
         default_message_sizes[i] = estimate;
@@ -379,7 +363,7 @@ RedistributeParticles::RedistributeParticles(MPI_Comm _cartcomm):
     CC(cudaEventCreate(&evpacking, cudaEventDisableTiming));
     CC(cudaEventCreate(&evsizes, cudaEventDisableTiming));
 
-    CC( cudaFuncSetCacheConfig( RedistributeParticlesKernels::gather_particles, cudaFuncCachePreferL1 ) );
+    CC(cudaFuncSetCacheConfig( RedistributeParticlesKernels::gather_particles, cudaFuncCachePreferL1 ) );
 }
 
 void RedistributeParticles::_post_recv()
@@ -601,7 +585,6 @@ int RedistributeParticles::recv_count(cudaStream_t mystream) {
     }
 
     firstcall = false;
-
     return nexpected;
 }
 
