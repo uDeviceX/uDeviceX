@@ -49,7 +49,7 @@
 #include "wall.impl.h"
 
 #include "solute-exchange.decl.h"
-#include "solute-exchange.cu"
+#include "solute-exchange.impl.h"
 
 #include "simulation.decl.h"
 #include "simulation.impl.h"
