@@ -4,24 +4,19 @@ enum {
   ZSIZE_WALLCELLS = 2 * ZMARGIN_WALL + ZSIZE_SUBDOMAIN,
 
   XTEXTURESIZE = 256,
-
   _YTEXTURESIZE = ((YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL) * XTEXTURESIZE +
 		   XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL - 1) /
   (XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL),
 
   YTEXTURESIZE = 16 * ((_YTEXTURESIZE + 15) / 16),
-
   _ZTEXTURESIZE = ((ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL) * XTEXTURESIZE +
 		   XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL - 1) /
   (XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL),
-
   ZTEXTURESIZE = 16 * ((_ZTEXTURESIZE + 15) / 16),
-
 };
 
 namespace SolidWallsKernel {
   texture<float, 3, cudaReadModeElementType> texSDF;
-
   texture<float4, 1, cudaReadModeElementType> texWallParticles;
   texture<int, 1, cudaReadModeElementType> texWallCellStart, texWallCellCount;
 
@@ -87,11 +82,8 @@ namespace SolidWallsKernel {
     return szyx;
   }
 
-  __device__ float cheap_sdf(float x, float y, float z) // within the
-							// rescaled
-							// texel width
-							// error
-  {
+  /* within the rescaled texel width error */  
+  __device__ float cheap_sdf(float x, float y, float z)  {
     int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
     int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
     int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
@@ -223,7 +215,7 @@ namespace SolidWallsKernel {
       dphi = v . grad(sdf). Newton step is t_new = t_old - phi/dphi
 
       Give up if dsdf is small. Cap `t' to [-dt, 0].
-     */
+    */
 #define rr(t) make_float3(x + vx*t, y + vy*t, z + vz*t)
 #define small(phi) (fabs(phi) < 1e-6)
     float3 r, dsdf; float phi, dphi, t = 0;
@@ -241,10 +233,10 @@ namespace SolidWallsKernel {
   giveup:
     /* Bounce back (stage II)
        change particle position and velocity
-     */
+    */
     float xw = x + t*vx, yw = y + t*vy, zw = z + t*vz; /* wall */
     x += 2*t*vx; y += 2*t*vy; z += 2*t*vz; /* bouncing relatively to
-					       wall */
+					      wall */
     bounce_vel(xw, yw, zw, &vx, &vy, &vz);
     if (sdf(x, y, z) >= 0) {x = x0; y = y0; z = z0;}
   }
@@ -373,7 +365,6 @@ namespace SolidWallsKernel {
 #undef due
 #undef tre
 #undef mf3
-
     atomicAdd(acc + 3 * pid + 0, xforce);
     atomicAdd(acc + 3 * pid + 1, yforce);
     atomicAdd(acc + 3 * pid + 2, zforce);
@@ -396,7 +387,6 @@ template <> struct Bspline<1> {
 struct FieldSampler {
   float *data,  extent[3];
   int N[3];
-
   FieldSampler(const char *path, MPI_Comm comm) { /* read sdf file */
     size_t CHUNKSIZE = 1 << 25; int rank;
     MPI_CHECK(MPI_Comm_rank(comm, &rank));
@@ -460,32 +450,24 @@ struct FieldSampler {
 	  for (int sz = 0; sz < 4; ++sz)
 	    for (int sy = 0; sy < 4; ++sy) {
 	      float s = 0;
-
 	      for (int sx = 0; sx < 4; ++sx) {
 		int l[3] = {sx, sy, sz};
-
 		int g[3];
 		for (int c = 0; c < 3; ++c)
 		  g[c] = (l[c] - 1 + anchor[c] + N[c]) % N[c];
-
+		
 		s += w[0][sx] * DDD(g[X], g[Y], g[Z]);
 	      }
-
 	      tmp[sz][sy] = s;
 	    }
-
 	  float partial[4];
 	  for (int sz = 0; sz < 4; ++sz) {
 	    float s = 0;
-
 	    for (int sy = 0; sy < 4; ++sy) s += w[1][sy] * tmp[sz][sy];
-
 	    partial[sz] = s;
 	  }
-
 	  float val = 0;
 	  for (int sz = 0; sz < 4; ++sz) val += w[2][sz] * partial[sz];
-
 	  OOO(ix, iy, iz) = val * amplitude_rescaling;
 	}
 #undef DDD
@@ -494,7 +476,6 @@ struct FieldSampler {
 #undef Y
 #undef Z
   }
-
   ~FieldSampler() { delete[] data; }
 };
 
@@ -506,17 +487,12 @@ void wall_init(Particle *const p, const int n,
   int myrank, dims[3], periods[3];
   MPI_CHECK(MPI_Comm_rank(cartcomm, &myrank));
   MPI_CHECK(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
-
   float *field = new float[XTEXTURESIZE * YTEXTURESIZE * ZTEXTURESIZE];
-
   FieldSampler sampler("sdf.dat", cartcomm);
-
   int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
   int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
   int TEXTURESIZE[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
-
   if (myrank == 0) printf("sampling the geometry file...\n");
-
   {
     float start[3], spacing[3];
     for (int c = 0; c < 3; ++c) {
@@ -525,10 +501,8 @@ void wall_init(Particle *const p, const int n,
       spacing[c] = sampler.N[c] * (L[c] + 2 * MARGIN[c]) /
 	(float)(dims[c] * L[c]) / (float)TEXTURESIZE[c];
     }
-
     float amplitude_rescaling = (XSIZE_SUBDOMAIN /*+ 2 * XMARGIN_WALL*/) /
       (sampler.extent[0] / dims[0]);
-
     sampler.sample(start, spacing, TEXTURESIZE, amplitude_rescaling, field);
   }
 
@@ -539,11 +513,9 @@ void wall_init(Particle *const p, const int n,
 	for (int dx = -1; dx <= 1; ++dx) {
 	  int d[3] = {dx, dy, dz};
 	  int entry = (dx + 1) + 3 * ((dy + 1) + 3 * (dz + 1));
-
 	  int local_start[3] = {d[0] + (d[0] == 1) * (XSIZE_SUBDOMAIN - 2),
 				d[1] + (d[1] == 1) * (YSIZE_SUBDOMAIN - 2),
 				d[2] + (d[2] == 1) * (ZSIZE_SUBDOMAIN - 2)};
-
 	  int local_extent[3] = {1 * (d[0] != 0 ? 2 : XSIZE_SUBDOMAIN),
 				 1 * (d[1] != 0 ? 2 : YSIZE_SUBDOMAIN),
 				 1 * (d[2] != 0 ? 2 : ZSIZE_SUBDOMAIN)};
@@ -554,12 +526,9 @@ void wall_init(Particle *const p, const int n,
 	      (float)(dims[c] * L[c]) * sampler.N[c];
 	    spacing[c] = sampler.N[c] / (float)(dims[c] * L[c]);
 	  }
-
 	  int nextent = local_extent[0] * local_extent[1] * local_extent[2];
 	  float *data = new float[nextent];
-
 	  sampler.sample(start, spacing, local_extent, 1, data);
-
 	  int s = 0;
 	  for (int i = 0; i < nextent; ++i) s += (data[i] < 0);
 
@@ -567,7 +536,6 @@ void wall_init(Particle *const p, const int n,
 	  double avgsize =
 	    ceil(s * numberdensity /
 		 (double)pow(2, abs(d[0]) + abs(d[1]) + abs(d[2])));
-
 	  new_sizes.msgsizes[entry] = (int)avgsize;
 	}
   }
@@ -585,26 +553,22 @@ void wall_init(Particle *const p, const int n,
     }
 
     int size[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
-
     float amplitude_rescaling = L[0] / (sampler.extent[0] / dims[0]);
     sampler.sample(start, spacing, size, amplitude_rescaling, walldata);
-
     H5FieldDump dump(cartcomm);
     dump.dump_scalarfield(cartcomm, walldata, "wall");
-
     delete[] walldata;
   }
 
   CC(cudaPeekAtLastError());
-
   cudaChannelFormatDesc fmt = cudaCreateChannelDesc<float>();
-  CC(cudaMalloc3DArray(
-			       &arrSDF, &fmt,
-			       make_cudaExtent(XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE)));
-
+  CC(cudaMalloc3DArray
+     (&arrSDF, &fmt, make_cudaExtent(XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE)));
+      
   cudaMemcpy3DParms copyParams = {0};
-  copyParams.srcPtr = make_cudaPitchedPtr(
-					  (void *)field, XTEXTURESIZE * sizeof(float), XTEXTURESIZE, YTEXTURESIZE);
+  copyParams.srcPtr = make_cudaPitchedPtr
+    ((void *)field, XTEXTURESIZE * sizeof(float), XTEXTURESIZE, YTEXTURESIZE);
+  
   copyParams.dstArray = arrSDF;
   copyParams.extent = make_cudaExtent(XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE);
   copyParams.kind = cudaMemcpyHostToDevice;
@@ -619,8 +583,9 @@ void wall_init(Particle *const p, const int n,
 
   thrust::device_vector<int> keys(n);
 
-  SolidWallsKernel::fill_keys<<<(n + 127) / 128, 128>>>(
-							p, n, thrust::raw_pointer_cast(&keys[0]));
+  SolidWallsKernel::fill_keys<<<(n + 127) / 128, 128>>>
+    (p, n, thrust::raw_pointer_cast(&keys[0]));
+  
   CC(cudaPeekAtLastError());
 
   thrust::sort_by_key(keys.begin(), keys.end(),
@@ -630,9 +595,9 @@ void wall_init(Particle *const p, const int n,
 
   int nbelt = thrust::count(keys.begin() + nsurvived, keys.end(), 1);
 
-  thrust::device_vector<Particle> solid_local(
-					      thrust::device_ptr<Particle>(p + nsurvived),
-					      thrust::device_ptr<Particle>(p + nsurvived + nbelt));
+  thrust::device_vector<Particle> solid_local
+    (thrust::device_ptr<Particle>(p + nsurvived),
+     thrust::device_ptr<Particle>(p + nsurvived + nbelt));
 
   if (hdf5part_dumps) {
     int n = solid_local.size();
@@ -640,7 +605,7 @@ void wall_init(Particle *const p, const int n,
     Particle *phost = new Particle[n];
 
     CC(cudaMemcpy(phost, thrust::raw_pointer_cast(&solid_local[0]),
-			  sizeof(Particle) * n, cudaMemcpyDeviceToHost));
+		  sizeof(Particle) * n, cudaMemcpyDeviceToHost));
 
     H5PartDump solid_dump("solid-walls.h5part", cartcomm, cartcomm);
     solid_dump.dump(phost, n);
@@ -649,10 +614,10 @@ void wall_init(Particle *const p, const int n,
   }
 
   /*
-   can't use halo-exchanger class because of MARGIN HaloExchanger
-   halo(cartcomm, L, 666); SimpleDeviceBuffer<Particle> solid_remote;
-   halo.exchange(thrust::raw_pointer_cast(&solid_local[0]),
-   solid_local.size(), solid_remote);
+    can't use halo-exchanger class because of MARGIN HaloExchanger
+    halo(cartcomm, L, 666); SimpleDeviceBuffer<Particle> solid_remote;
+    halo.exchange(thrust::raw_pointer_cast(&solid_local[0]),
+    solid_local.size(), solid_remote);
   */
   if (myrank == 0) printf("fetching remote wall particles...\n");
 
@@ -739,8 +704,8 @@ void wall_init(Particle *const p, const int n,
 
     solid_remote.resize(selected.size());
     CC(cudaMemcpy(solid_remote.D, selected.data(),
-			  sizeof(Particle) * solid_remote.S,
-			  cudaMemcpyHostToDevice));
+		  sizeof(Particle) * solid_remote.S,
+		  cudaMemcpyHostToDevice));
   }
 
   solid_size = solid_local.size() + solid_remote.S;
@@ -748,11 +713,11 @@ void wall_init(Particle *const p, const int n,
   Particle *solid;
   CC(cudaMalloc(&solid, sizeof(Particle) * solid_size));
   CC(cudaMemcpy(solid, thrust::raw_pointer_cast(&solid_local[0]),
-			sizeof(Particle) * solid_local.size(),
-			cudaMemcpyDeviceToDevice));
+		sizeof(Particle) * solid_local.size(),
+		cudaMemcpyDeviceToDevice));
   CC(cudaMemcpy(solid + solid_local.size(), solid_remote.D,
-			sizeof(Particle) * solid_remote.S,
-			cudaMemcpyDeviceToDevice));
+		sizeof(Particle) * solid_remote.S,
+		cudaMemcpyDeviceToDevice));
 
   if (solid_size > 0) wall_cells->build(solid, solid_size, 0);
 
@@ -761,8 +726,8 @@ void wall_init(Particle *const p, const int n,
   if (myrank == 0) printf("consolidating wall particles...\n");
 
   if (solid_size > 0)
-    SolidWallsKernel::strip_solid4<<<(solid_size + 127) / 128, 128>>>(
-								      solid, solid_size, solid4);
+    SolidWallsKernel::strip_solid4<<<(solid_size + 127) / 128, 128>>>
+      (solid, solid_size, solid4);
 
   CC(cudaFree(solid));
 
@@ -771,36 +736,37 @@ void wall_init(Particle *const p, const int n,
 
 void wall_bounce(Particle *const p, const int n, cudaStream_t stream) {
   if (n > 0)
-    SolidWallsKernel::bounce<<<(n + 127) / 128, 128, 0, stream>>>(
-								  (float2 *)p, n, dt);
+    SolidWallsKernel::bounce<<<(n + 127) / 128, 128, 0, stream>>>
+      ((float2 *)p, n, dt);
+  
   CC(cudaPeekAtLastError());
 }
 
 void wall_interactions(const Particle *const p, const int n,
-			       Acceleration *const acc,
-			       cudaStream_t stream) {
+		       Acceleration *const acc,
+		       cudaStream_t stream) {
   // cellsstart and cellscount IGNORED for now
 
   if (n > 0 && solid_size > 0) {
     size_t textureoffset;
     CC(cudaBindTexture(&textureoffset,
-			       &SolidWallsKernel::texWallParticles, solid4,
-			       &SolidWallsKernel::texWallParticles.channelDesc,
-			       sizeof(float4) * solid_size));
+		       &SolidWallsKernel::texWallParticles, solid4,
+		       &SolidWallsKernel::texWallParticles.channelDesc,
+		       sizeof(float4) * solid_size));
 
     CC(cudaBindTexture(&textureoffset,
-			       &SolidWallsKernel::texWallCellStart, wall_cells->start,
-			       &SolidWallsKernel::texWallCellStart.channelDesc,
-			       sizeof(int) * wall_cells->ncells));
+		       &SolidWallsKernel::texWallCellStart, wall_cells->start,
+		       &SolidWallsKernel::texWallCellStart.channelDesc,
+		       sizeof(int) * wall_cells->ncells));
 
     CC(cudaBindTexture(&textureoffset,
-			       &SolidWallsKernel::texWallCellCount, wall_cells->count,
-			       &SolidWallsKernel::texWallCellCount.channelDesc,
-			       sizeof(int) * wall_cells->ncells));
+		       &SolidWallsKernel::texWallCellCount, wall_cells->count,
+		       &SolidWallsKernel::texWallCellCount.channelDesc,
+		       sizeof(int) * wall_cells->ncells));
 
     SolidWallsKernel::
-      interactions_3tpp<<<(3 * n + 127) / 128, 128, 0, stream>>>(
-								 (float2 *)p, n, solid_size, (float *)acc, trunk->get_float());
+      interactions_3tpp<<<(3 * n + 127) / 128, 128, 0, stream>>>
+      ((float2 *)p, n, solid_size, (float *)acc, trunk->get_float());
 
     CC(cudaUnbindTexture(SolidWallsKernel::texWallParticles));
     CC(cudaUnbindTexture(SolidWallsKernel::texWallCellStart));
