@@ -61,8 +61,8 @@ public:
   int nranks, dstranks[26], dims[3], periods[3], coords[3], myrank,
     recv_tags[26], recv_counts[26], send_counts[26];
   cudaEvent_t evPpacked, evAcomputed;
-  SimpleDeviceBuffer<int> packscount, packsstart, packsoffset, packstotalstart;
-  PinnedHostBuffer<int> host_packstotalstart, host_packstotalcount;
+  SimpleDeviceBuffer<int> *packscount, *packsstart, *packsoffset, *packstotalstart;
+  PinnedHostBuffer<int> *host_packstotalstart, *host_packstotalcount;
   SimpleDeviceBuffer<Particle> packbuf;
   PinnedHostBuffer<Particle> host_packbuf;
   std::vector<ParticlesWrap> wsolutes;
