@@ -1,0 +1,53 @@
+#!/bin/bash
+# A wrapper script to run visit as python library
+
+die () {
+    exit 2
+}
+
+usage () {
+    echo "Usage: vpython    <script>" > /dev/stderr
+    echo "       vpython -i <script>" > /dev/stderr
+    echo "       vpython -t"          > /dev/stderr
+    die
+}
+
+template () {
+    echo 'OpenDatabase("globe.silo")'
+    echo 'AddPlot("Pseudocolor", "u", 0, 0)'
+    echo 'atts = PseudocolorAttributes()'
+    echo 'SetPlotOptions(atts)'
+    echo 'DrawPlots()'
+    echo 'sw("image")'
+    exit
+}
+
+log () {
+    echo '(vpython) visit_bin: ' "$visit_bin" > /dev/stderr
+    echo '(vpython) visit_lib: ' "$visit_lib" > /dev/stderr
+}
+
+if test  $#  -eq  0; then usage; fi
+if test "$1"   = -t; then template; fi
+
+PYTHON=python
+visit_bin=`which visit`
+visit_bin=`dirname "$visit_bin"`
+
+visit_lib=`dirname "$visit_bin"`
+visit_lib=`echo  "$visit_lib"/*/*/lib | head -n 1`
+
+log
+
+export PATH="$visit_bin":$PATH
+export VISIT_LIB_PATH="$visit_lib"
+export LD_LIBRARY_PATH="$VISIT_LIB_PATH":$LD_LIBRARY_PATH
+export PYTHONPATH=$PYTHONPATH:$VISIT_LIB_PATH/site-packages:$HOME/.vpython
+
+if test "$1" = -i
+then
+    shift
+    "$PYTHON" -i -m vcustom "$@"
+else
+    "$PYTHON"    -m vcustom "$@"
+fi

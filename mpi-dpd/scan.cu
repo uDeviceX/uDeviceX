@@ -247,7 +247,7 @@ void *myCudaMalloc(size_t sz) {
 
     void *ptr;
 
-    MY_CUDA_CHECK( cudaMalloc(&ptr, sz) );
+    MY_CC( cudaMalloc(&ptr, sz) );
     return ptr;
 }
 
@@ -270,9 +270,9 @@ int main(int argc, char **argv) {
     }
     fprintf(stdout, "Computing exclusive scan of %d (%d^3) uchars\n", SIZE, SIDE);
 
-    MY_CUDA_CHECK(cudaSetDevice(0));
+    MY_CC(cudaSetDevice(0));
     d_vin = (unsigned char *)myCudaMalloc(SIZE*sizeof(*d_vin));
-    MY_CUDA_CHECK( cudaMemcpy(d_vin, h_vin, SIZE*sizeof(*d_vin), cudaMemcpyHostToDevice) );
+    MY_CC( cudaMemcpy(d_vin, h_vin, SIZE*sizeof(*d_vin), cudaMemcpyHostToDevice) );
 
     dsol = (unsigned int *)Malloc(SIZE*sizeof(*dsol));
     hsol = (unsigned int *)Malloc(SIZE*sizeof(*hsol));
@@ -287,25 +287,25 @@ int main(int argc, char **argv) {
     d_vout = (unsigned int *)myCudaMalloc(SIZE*sizeof(*d_vout));
 
     int nblocks = ((SIZE/16)+THREADS-1)/THREADS;
-    MY_CUDA_CHECK( cudaEventCreate(&start) );
-    MY_CUDA_CHECK( cudaEventCreate(&stop) );
+    MY_CC( cudaEventCreate(&start) );
+    MY_CC( cudaEventCreate(&stop) );
 
     // to avoid overhead of first kernel lauch from exscan timing
     nullk<<<1,1>>>();
 
     // Computes the exscan of "uchar d_vin[SIDE**3]" into "uint d_vout[SIDE**3]"
-    MY_CUDA_CHECK( cudaEventRecord(start, 0) );
+    MY_CC( cudaEventRecord(start, 0) );
     breduce<THREADS/32><<<nblocks, THREADS>>>((uint4 *)d_vin, d_buf, SIZE/16);
     bexscan<THREADS><<<1, THREADS, nblocks*sizeof(*d_buf)>>>(d_buf, nblocks);
     gexscan<THREADS/32><<<nblocks, THREADS>>>((uint4 *)d_vin, d_buf, (uint4 *)d_vout, SIZE/16);
-    MY_CUDA_CHECK( cudaEventRecord(stop, 0) );
+    MY_CC( cudaEventRecord(stop, 0) );
     MY_CHECK_ERROR("KERNEL ERROR");
 
-    MY_CUDA_CHECK( cudaEventSynchronize(stop) );
-    MY_CUDA_CHECK( cudaEventElapsedTime(&et, start, stop) );
+    MY_CC( cudaEventSynchronize(stop) );
+    MY_CC( cudaEventElapsedTime(&et, start, stop) );
     fprintf(stderr, "Device execution time: %E ms\n", et);
 
-    MY_CUDA_CHECK( cudaMemcpy(dsol, d_vout, SIZE*sizeof(*dsol), cudaMemcpyDeviceToHost) );
+    MY_CC( cudaMemcpy(dsol, d_vout, SIZE*sizeof(*dsol), cudaMemcpyDeviceToHost) );
     for(i = 0; i < SIZE; i++) {
         if (dsol[i] != hsol[i]) {
             fprintf(stderr, "Error: dsol[%d]=%d AND d_vout[%d]=%d\n", i, hsol[i], i, dsol[i]);
@@ -318,9 +318,9 @@ int main(int argc, char **argv) {
     free(h_vin);
     free(dsol);
     free(hsol);
-    MY_CUDA_CHECK(cudaFree(d_vin));
-    MY_CUDA_CHECK(cudaFree(d_vout));
-    MY_CUDA_CHECK(cudaFree(d_buf));
+    MY_CC(cudaFree(d_vin));
+    MY_CC(cudaFree(d_vout));
+    MY_CC(cudaFree(d_buf));
 
     return 0;
 }

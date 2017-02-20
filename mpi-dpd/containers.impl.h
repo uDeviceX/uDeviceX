@@ -10,25 +10,14 @@
  *  before getting a written permission from the author of this file.
  */
 
-#include <sys/stat.h>
+int (*indices)[3] = NULL;
+int ntriangles = -1;
+int nvertices = -1;
+extern float3 globalextent;
+extern float3 origin;
+extern int coords[3];
 
-#include <rbc-cuda.h>
-#include <vector>
-#include <string>
-
-#include <cstdio>
-#include <mpi.h>
-#include ".conf.h" /* configuration file (copy from .conf.test.h) */
-#include "common.h"
-#include "containers.h"
-#include "io.h"
-#include "last_bit_float.h"
-#include "dpd-forces.h"
-
-int (*CollectionRBC::indices)[3] = NULL, CollectionRBC::ntriangles = -1, CollectionRBC::nvertices = -1;
-
-namespace ParticleKernels
-{
+namespace ParticleKernels {
     __global__ void upd_stg1(bool rbcflag, Particle * p, Acceleration * a, int n, float dt,
 			     float _driving_acceleration, float threshold, bool doublePoiseuille) {
 	int pid = threadIdx.x + blockDim.x * blockIdx.x;
@@ -50,7 +39,7 @@ namespace ParticleKernels
     }
 
     __global__ void upd_stg2_and_1(bool rbcflag, float2 * _pdata, float * _adata,
-					int nparticles, float dt, float _driving_acceleration, float threshold,
+				   int nparticles, float dt, float _driving_acceleration, float threshold,
 				   bool doublePoiseuille) {
 #if !defined(__CUDA_ARCH__)
 #define _ACCESS(x) __ldg(x)
@@ -208,65 +197,61 @@ namespace ParticleKernels
     }
 } /* end of ParticleKernels */
 
-void ParticleArray::upd_stg1(bool rbcflag, float driving_acceleration, cudaStream_t stream) {
-    if (size)
-	ParticleKernels::upd_stg1<<<(xyzuvw.size + 127) / 128, 128, 0, stream>>>
-	  (rbcflag, xyzuvw.data, axayaz.data, xyzuvw.size,
-	   dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
+void upd_stg1(ParticleArray* pa, bool rbcflag, float driving_acceleration, cudaStream_t stream) {
+  if (pa->S)
+    ParticleKernels::upd_stg1<<<(pa->pp.S + 127) / 128, 128, 0, stream>>>
+      (rbcflag, pa->pp.D, pa->aa.D, pa->pp.S,
+       dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
-void  ParticleArray::upd_stg2_and_1(bool rbcflag, float driving_acceleration, cudaStream_t stream) {
-    if (size)
-	ParticleKernels::upd_stg2_and_1<<<(xyzuvw.size + 127) / 128, 128, 0, stream>>>
-	  (rbcflag, (float2 *)xyzuvw.data, (float *)axayaz.data, xyzuvw.size,
-	   dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
+void  upd_stg2_and_1(ParticleArray* pa, bool rbcflag, float driving_acceleration, cudaStream_t stream) {
+  if (pa->S)
+    ParticleKernels::upd_stg2_and_1<<<(pa->pp.S + 127) / 128, 128, 0, stream>>>
+      (rbcflag, (float2 *)pa->pp.D, (float *)pa->aa.D, pa->pp.S,
+       dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
-void ParticleArray::resize(int n) {
-    size = n;
-
-    // YTANG: need the array to be 32-padded for locally transposed storage of acceleration
+void pa_resize(ParticleArray* pa, int n) {
+    pa->S = n;
+    /* YTANG: need the array to be 32-padded for locally transposed
+       storage of acceleration */
     if ( n % 32 ) {
-	xyzuvw.preserve_resize( n - n % 32 + 32 );
-	axayaz.preserve_resize( n - n % 32 + 32 );
+	pa->pp.preserve_resize( n - n % 32 + 32 );
+	pa->aa.preserve_resize( n - n % 32 + 32 );
     }
-    xyzuvw.resize(n);
-    axayaz.resize(n);
-
-#ifndef NDEBUG
-    CUDA_CHECK(cudaMemset(axayaz.data, 0, sizeof(Acceleration) * size));
-#endif
+    pa->pp.resize(n);
+    pa->aa.resize(n);
 }
 
-void ParticleArray::preserve_resize(int n) {
-    int oldsize = size;
-    size = n;
+void pa_preserve_resize(ParticleArray* pa, int n) {
+    int oldsize = pa->S;
+    pa->S = n;
 
-    xyzuvw.preserve_resize(n);
-    axayaz.preserve_resize(n);
+    pa->pp.preserve_resize(n);
+    pa->aa.preserve_resize(n);
 
-    if (size > oldsize)
-	CUDA_CHECK(cudaMemset(axayaz.data + oldsize, 0, sizeof(Acceleration) * (size-oldsize)));
+    if (pa->S > oldsize)
+	CC(cudaMemset(pa->aa.D + oldsize, 0, sizeof(Acceleration) * (pa->S-oldsize)));
 }
 
-void ParticleArray::clear_velocity() {
-    if (size)
-	ParticleKernels::clear_velocity<<<(xyzuvw.size + 127) / 128, 128 >>>(xyzuvw.data, xyzuvw.size);
+void clear_velocity(ParticleArray* pa) {
+  if (pa->S)
+    ParticleKernels::clear_velocity<<<(pa->pp.S + 127) / 128, 128 >>>(pa->pp.D, pa->pp.S);
 }
 
-void CollectionRBC::resize(int count) {
+void rbc_resize(ParticleArray* pa, int count) {
     ncells = count;
-    ParticleArray::resize(count * get_nvertices());
+    pa_resize(pa, count*nvertices);
 }
 
-void CollectionRBC::preserve_resize(int count) {
+void rbc_preserve_resize(ParticleArray* pa, int count) {
     ncells = count;
-    ParticleArray::preserve_resize(count * get_nvertices());
+    pa_preserve_resize(pa, count*nvertices);
 }
 
-CollectionRBC::CollectionRBC(MPI_Comm cartcomm_) {
-  cartcomm = cartcomm_; ncells = 0;
-  MPI_CHECK(MPI_Comm_rank(cartcomm, &myrank));
+void rbc_init() {
+  ncells = 0;
+  int dims[3], periods[3];
   MPI_CHECK( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
 
   CudaRBC::get_triangle_indexing(indices, ntriangles);
@@ -278,9 +263,14 @@ struct TransformedExtent {
     float com[3];
     float transform[4][4];
 };
-void CollectionRBC::setup(const char *path2ic) {
+
+void _initialize(float *device_pp, float (*transform)[4]) {
+  CudaRBC::initialize(device_pp, transform);
+}
+
+void setup(ParticleArray* pa, const char *path2ic) {
     vector<TransformedExtent> allrbcs;
-    if (myrank == 0) {
+    if (rank == 0) {
 	//read transformed extent from file
 	FILE *f = fopen(path2ic, "r");
 	printf("READING FROM: <%s>\n", path2ic);
@@ -294,7 +284,6 @@ void CollectionRBC::setup(const char *path2ic) {
 
 	    if (isgood) {
 		TransformedExtent t;
-
 		for(int c = 0; c < 3; ++c) t.com[c] = tmp[c];
 
 		int ctr = 3;
@@ -316,7 +305,6 @@ void CollectionRBC::setup(const char *path2ic) {
     MPI_CHECK(MPI_Bcast(&allrbcs.front(), nfloats_per_entry * allrbcs_count, MPI_FLOAT, 0, cartcomm));
 
     vector<TransformedExtent> good;
-
     int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
 
     for(vector<TransformedExtent>::iterator it = allrbcs.begin(); it != allrbcs.end(); ++it) {
@@ -330,16 +318,12 @@ void CollectionRBC::setup(const char *path2ic) {
 	}
     }
 
-    resize(good.size());
+    rbc_resize(pa, good.size());
     for(int i = 0; i < good.size(); ++i)
-	_initialize((float *)(xyzuvw.data + get_nvertices() * i), good[i].transform);
+      _initialize((float *)(pa->pp.D + nvertices * i), good[i].transform);
 }
 
-void CollectionRBC::_initialize(float *device_xyzuvw, float (*transform)[4]) {
-    CudaRBC::initialize(device_xyzuvw, transform);
-}
-
-void CollectionRBC::remove(int *entries, int nentries) {
+void remove(ParticleArray* pa, int *entries, int nentries) {
     std::vector<bool > marks(ncells, true);
 
     for(int i = 0; i < nentries; ++i)
@@ -351,21 +335,20 @@ void CollectionRBC::remove(int *entries, int nentries) {
 	    survivors.push_back(i);
 
     int nsurvived = survivors.size();
-
-    SimpleDeviceBuffer<Particle> survived(get_nvertices() *nsurvived);
-
+    SimpleDeviceBuffer<Particle> survived(nvertices*nsurvived);
     for(int i = 0; i < nsurvived; ++i)
-	CUDA_CHECK(cudaMemcpy(survived.data + get_nvertices() * i, data() + get_nvertices() * survivors[i],
-		    sizeof(Particle) * get_nvertices(), cudaMemcpyDeviceToDevice));
-
-    resize(nsurvived);
-
-    CUDA_CHECK(cudaMemcpy(xyzuvw.data, survived.data, sizeof(Particle) * survived.size, cudaMemcpyDeviceToDevice));
+	CC(cudaMemcpy(survived.D + nvertices * i, pa->pp.D + nvertices * survivors[i],
+		    sizeof(Particle) * nvertices, cudaMemcpyDeviceToDevice));
+    rbc_resize(pa, nsurvived);
+    CC(cudaMemcpy(pa->pp.D, survived.D,
+		  sizeof(Particle) * survived.S, cudaMemcpyDeviceToDevice));
 }
 
-void CollectionRBC::_dump(const char *format4ply,
-			  MPI_Comm comm, MPI_Comm cartcomm, int ntriangles, int ncells, int nvertices, int (* const indices)[3],
-			  Particle *p, Acceleration *a, int n, int iddatadump) {
+int  pcount() {return ncells * nvertices;}
+void clear_acc(ParticleArray* pa, cudaStream_t stream) {CC(cudaMemsetAsync(pa->aa.D, 0, sizeof(Acceleration) * pa->aa.S, stream));}
+static void rbc_dump0(const char *format4ply,
+		      MPI_Comm comm, int ncells,
+		      Particle *p, Acceleration *a, int n, int iddatadump) {
     int ctr = iddatadump;
 
     //we fused VV stages so we need to recover the state before stage 1
@@ -385,4 +368,8 @@ void CollectionRBC::_dump(const char *format4ply,
     if(rank == 0)
       mkdir("ply", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     ply_dump(comm, cartcomm, buf, indices, ncells, ntriangles, p, nvertices, false);
+}
+
+void rbc_dump(MPI_Comm comm, Particle* p, Acceleration* a, int n, int iddatadump) {
+  rbc_dump0("ply/rbcs-%05d.ply", comm, n / nvertices, p, a, n, iddatadump);
 }

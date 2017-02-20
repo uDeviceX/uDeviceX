@@ -22,7 +22,7 @@ using namespace std;
 extern float RBCx0, RBCp, RBCka, RBCkb, RBCkd, RBCkv, RBCgammaC,
        RBCtotArea, RBCtotVolume, RBCscale;
 
-#define CUDA_CHECK(ans) do { cudaAssert((ans), __FILE__, __LINE__); } while(0)
+#define CC(ans) do { cudaAssert((ans), __FILE__, __LINE__); } while(0)
 inline void cudaAssert(cudaError_t code, const char *file, int line)
 {
     if (code != cudaSuccess)
@@ -95,7 +95,7 @@ namespace CudaRBC
         texAdjVert.normalized = 0;
 
         size_t textureoffset;
-        CUDA_CHECK(cudaBindTexture(&textureoffset, &texAdjVert, data,
+        CC(cudaBindTexture(&textureoffset, &texAdjVert, data,
                     &texAdjVert.channelDesc, sizeof(int) * nentries));
 
         texAdjVert2.channelDesc = cudaCreateChannelDesc<int>();
@@ -103,7 +103,7 @@ namespace CudaRBC
         texAdjVert2.mipmapFilterMode = cudaFilterModePoint;
         texAdjVert2.normalized = 0;
 
-        CUDA_CHECK(cudaBindTexture(&textureoffset, &texAdjVert2, data2,
+        CC(cudaBindTexture(&textureoffset, &texAdjVert2, data2,
                     &texAdjVert.channelDesc, sizeof(int) * nentries));
     }
 
@@ -267,8 +267,8 @@ namespace CudaRBC
             hAddfrc[tmp[nvertices - 1 - i].second] = +stretchingForce / strVerts;
         }
 
-        CUDA_CHECK( cudaMalloc(&addfrc, nvertices*sizeof(float)) );
-        CUDA_CHECK( cudaMemcpy(addfrc, hAddfrc, nvertices*sizeof(float), cudaMemcpyHostToDevice) );
+        CC( cudaMalloc(&addfrc, nvertices*sizeof(float)) );
+        CC( cudaMemcpy(addfrc, hAddfrc, nvertices*sizeof(float), cudaMemcpyHostToDevice) );
 
         float* xyzuvw_host = new float[6*nvertices * sizeof(float)];
         for (int i=0; i<nvertices; i++)
@@ -281,22 +281,22 @@ namespace CudaRBC
             xyzuvw_host[6*i+5] = 0;
         }
 
-        CUDA_CHECK( cudaMalloc(&orig_xyzuvw, nvertices * 6 * sizeof(float)) );
-        CUDA_CHECK( cudaMemcpy(orig_xyzuvw, xyzuvw_host, nvertices * 6 * sizeof(float), cudaMemcpyHostToDevice) );
+        CC( cudaMalloc(&orig_xyzuvw, nvertices * 6 * sizeof(float)) );
+        CC( cudaMemcpy(orig_xyzuvw, xyzuvw_host, nvertices * 6 * sizeof(float), cudaMemcpyHostToDevice) );
         delete[] xyzuvw_host;
 
-        CUDA_CHECK( cudaMalloc(&devtrs4, params.ntriangles * 4 * sizeof(int)) );
-        CUDA_CHECK( cudaMemcpy(devtrs4, trs4, params.ntriangles * 4 * sizeof(int), cudaMemcpyHostToDevice) );
+        CC( cudaMalloc(&devtrs4, params.ntriangles * 4 * sizeof(int)) );
+        CC( cudaMemcpy(devtrs4, trs4, params.ntriangles * 4 * sizeof(int), cudaMemcpyHostToDevice) );
         delete[] trs4;
 
         const int nentries = adjVert.size();
 
         int * ptr, * ptr2;
-        CUDA_CHECK(cudaMalloc(&ptr, sizeof(int) * nentries));
-        CUDA_CHECK(cudaMemcpy(ptr, &adjVert.front(), sizeof(int) * nentries, cudaMemcpyHostToDevice));
+        CC(cudaMalloc(&ptr, sizeof(int) * nentries));
+        CC(cudaMemcpy(ptr, &adjVert.front(), sizeof(int) * nentries, cudaMemcpyHostToDevice));
 
-        CUDA_CHECK(cudaMalloc(&ptr2, sizeof(int) * nentries));
-        CUDA_CHECK(cudaMemcpy(ptr2, &adjVert2.front(), sizeof(int) * nentries, cudaMemcpyHostToDevice));
+        CC(cudaMalloc(&ptr2, sizeof(int) * nentries));
+        CC(cudaMemcpy(ptr2, &adjVert2.front(), sizeof(int) * nentries, cudaMemcpyHostToDevice));
 
         setup_support(ptr, ptr2, nentries);
 
@@ -311,14 +311,14 @@ namespace CudaRBC
         texVertices.normalized = 0;
 
         size_t textureoffset;
-        CUDA_CHECK( cudaBindTexture(&textureoffset, &texTriangles4, devtrs4, &texTriangles4.channelDesc, params.ntriangles * 4 * sizeof(int)) );
+        CC( cudaBindTexture(&textureoffset, &texTriangles4, devtrs4, &texTriangles4.channelDesc, params.ntriangles * 4 * sizeof(int)) );
 
         maxCells = 0;
-        CUDA_CHECK( cudaMalloc(&host_av, 1 * 2 * sizeof(float)) );
+        CC( cudaMalloc(&host_av, 1 * 2 * sizeof(float)) );
 
         unitsSetup(RBCx0, RBCp, RBCka, RBCkb, RBCkd, RBCkv, RBCgammaC,
                 RBCtotArea, RBCtotVolume, 1e-6, -1 /* not used */, -1 /* not used */, report);
-        CUDA_CHECK( cudaFuncSetCacheConfig(fall_kernel<498>, cudaFuncCachePreferL1) );
+        CC( cudaFuncSetCacheConfig(fall_kernel<498>, cudaFuncCachePreferL1) );
     }
 
     void unitsSetup(float x0, float p, float ka, float kb, float kd, float kv,
@@ -361,7 +361,7 @@ namespace CudaRBC
         params.ka			= params.ka / params.totArea0;
         params.kv			= params.kv / (6 * params.totVolume0);
 
-        CUDA_CHECK( cudaMemcpyToSymbol  (devParams, &params, sizeof(Params)) );
+        CC( cudaMemcpyToSymbol  (devParams, &params, sizeof(Params)) );
 
         if (prn)
         {
@@ -412,10 +412,10 @@ namespace CudaRBC
         const int threads = 128;
         const int blocks  = (params.nvertices + threads - 1) / threads;
 
-        CUDA_CHECK( cudaMemcpyToSymbol(A, transform, 16 * sizeof(float)) );
-        CUDA_CHECK( cudaMemcpy(device_xyzuvw, orig_xyzuvw, 6*params.nvertices * sizeof(float), cudaMemcpyDeviceToDevice) );
+        CC( cudaMemcpyToSymbol(A, transform, 16 * sizeof(float)) );
+        CC( cudaMemcpy(device_xyzuvw, orig_xyzuvw, 6*params.nvertices * sizeof(float), cudaMemcpyDeviceToDevice) );
         transformKernel<<<blocks, threads>>>(device_xyzuvw, params.nvertices);
-        CUDA_CHECK( cudaPeekAtLastError() );
+        CC( cudaPeekAtLastError() );
     }
 
 
@@ -681,20 +681,20 @@ namespace CudaRBC
         if (ncells > maxCells)
         {
             maxCells = 2*ncells;
-            CUDA_CHECK( cudaFree(host_av) );
-            CUDA_CHECK( cudaMalloc(&host_av, maxCells * 2 * sizeof(float)) );
+            CC( cudaFree(host_av) );
+            CC( cudaMalloc(&host_av, maxCells * 2 * sizeof(float)) );
         }
 
         size_t textureoffset;
-        CUDA_CHECK( cudaBindTexture(&textureoffset, &texVertices, (float2 *)device_xyzuvw,
+        CC( cudaBindTexture(&textureoffset, &texVertices, (float2 *)device_xyzuvw,
                     &texVertices.channelDesc, ncells * params.nvertices * sizeof(float) * 6) );
 
         dim3 avThreads(256, 1);
         dim3 avBlocks( 1, ncells );
 
-        CUDA_CHECK( cudaMemsetAsync(host_av, 0, ncells * 2 * sizeof(float), stream) );
+        CC( cudaMemsetAsync(host_av, 0, ncells * 2 * sizeof(float), stream) );
         areaAndVolumeKernel<<<avBlocks, avThreads, 0, stream>>>(host_av);
-        CUDA_CHECK( cudaPeekAtLastError() );
+        CC( cudaPeekAtLastError() );
 
         int threads = 128;
         int blocks  = (ncells*params.nvertices*7 + threads-1) / threads;

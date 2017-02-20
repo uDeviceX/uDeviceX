@@ -20,76 +20,34 @@
 #include <mpi.h>
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */
 #include "common.h"
-#include "containers.h"
 #include "solvent-exchange.h"
 #include "dpd.h"
 #include "solute-exchange.h"
 #include "fsi.h"
 #include "contact.h"
-#include "redistribute-particles.h"
-#include "redistribute-rbcs.h"
 #include "io.h"
 #include "simulation.h"
 #include "dpd-forces.h"
 #include "last_bit_float.h"
 #include "geom-wrapper.h"
+#include "common-kernels.h"
+#include "scan.h"
+#include "minmax.h"
 
 #include <thrust/device_vector.h>
 #include <thrust/sort.h>
 
-MPI_Comm cartcomm;
-Logistic::KISS trunk;
+#include "redistribute-rbcs.decl.h"
+#include "redistribute-rbcs.impl.h"
 
-int solid_size = 0;
-float4 *solid4 = NULL;
-cudaArray *arrSDF = NULL;
-CellLists *wall_cells;
+#include "redistribute-particles.decl.h"
+#include "redistribute-particles.impl.h"
 
-SimpleDeviceBuffer<float3> *frcs;
-int samples;
+#include "containers.decl.h"
+#include "containers.impl.h"
+
+#include "wall.decl.h"
 #include "wall.impl.h"
 
-ParticleArray *particles_pingpong[2];
-ParticleArray *particles, *newparticles;
-SimpleDeviceBuffer<float4 > *xyzouvwo;
-SimpleDeviceBuffer<ushort4> *xyzo_half;
-
-CellLists* cells;
-CollectionRBC * rbcscoll = NULL;
-
-RedistributeParticles* redistribute;
-RedistributeRBCs* redistribute_rbcs;
-
-ComputeDPD* dpd;
-SoluteExchange* solutex;
-ComputeFSI* fsi;
-ComputeContact* contact;
-
-bool wall_created = false;
-bool sim_is_done = false;
-
-MPI_Comm activecomm;
-cudaStream_t mainstream, uploadstream, downloadstream;
-
-size_t nsteps;
-float driving_acceleration = 0;
-int nranks, rank;
-
-pthread_t thread_datadump;
-pthread_mutex_t mutex_datadump;
-pthread_cond_t request_datadump, done_datadump;
-bool datadump_pending = false;
-int datadump_idtimestep, datadump_nsolvent, datadump_nrbcs;
-bool async_thread_initialized;
-
-PinnedHostBuffer<Particle>      *particles_datadump;
-PinnedHostBuffer<Acceleration>  *accelerations_datadump;
-
-cudaEvent_t evdownloaded;
-
-#define NPMAX 5000000 /* TODO: */
-float rbc_xx[NPMAX], rbc_yy[NPMAX], rbc_zz[NPMAX];
-float sol_xx[NPMAX], sol_yy[NPMAX], sol_zz[NPMAX];
-int iotags[NPMAX];
-
+#include "simulation.decl.h"
 #include "simulation.impl.h"

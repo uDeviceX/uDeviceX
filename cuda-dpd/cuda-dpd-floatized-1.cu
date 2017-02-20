@@ -421,12 +421,12 @@ void forces_dpd_cuda_nohost( const float * const xyzuvw, const float4 * const xy
         texParticlesH4.mipmapFilterMode = cudaFilterModePoint;
         texParticlesH4.normalized = 0;
 
-        CUDA_CHECK( cudaFuncSetCacheConfig( _dpd_forces_symm_merged, cudaFuncCachePreferEqual ) );
+        CC( cudaFuncSetCacheConfig( _dpd_forces_symm_merged, cudaFuncCachePreferEqual ) );
 
 
 #ifdef _TIME_PROFILE_
-        CUDA_CHECK( cudaEventCreate( &evstart ) );
-        CUDA_CHECK( cudaEventCreate( &evstop ) );
+        CC( cudaEventCreate( &evstart ) );
+        CC( cudaEventCreate( &evstop ) );
 #endif
 
 	{
@@ -460,10 +460,10 @@ void forces_dpd_cuda_nohost( const float * const xyzuvw, const float4 * const xy
         last_nc = ncells;
     }
 
-    CUDA_CHECK( cudaBindTexture( &textureoffset, &texParticlesF4, xyzouvwo,  &texParticlesF4.channelDesc, sizeof( float ) * 8 * np ) );
-    CUDA_CHECK( cudaBindTexture( &textureoffset, &texParticlesH4, xyzo_half, &texParticlesH4.channelDesc, sizeof( ushort4 ) * np ) );
+    CC( cudaBindTexture( &textureoffset, &texParticlesF4, xyzouvwo,  &texParticlesF4.channelDesc, sizeof( float ) * 8 * np ) );
+    CC( cudaBindTexture( &textureoffset, &texParticlesH4, xyzo_half, &texParticlesH4.channelDesc, sizeof( ushort4 ) * np ) );
     make_texture2 <<< 64, 512, 0, stream>>>( start_and_count, cellsstart, cellscount, ncells );
-    CUDA_CHECK( cudaBindTexture( &textureoffset, &texStartAndCount, start_and_count, &texStartAndCount.channelDesc, sizeof( uint2 ) * ncells ) );
+    CC( cudaBindTexture( &textureoffset, &texStartAndCount, start_and_count, &texStartAndCount.channelDesc, sizeof( uint2 ) * ncells ) );
 
     c.ncells = make_int3( nx, ny, nz );
     c.nxyz = nx * ny * nz;
@@ -475,22 +475,22 @@ void forces_dpd_cuda_nohost( const float * const xyzuvw, const float4 * const xy
     c.seed = seed;
 
     if (!is_mps_enabled)
-	CUDA_CHECK( cudaMemcpyToSymbolAsync( info, &c, sizeof( c ), 0, cudaMemcpyHostToDevice, stream ) );
+	CC( cudaMemcpyToSymbolAsync( info, &c, sizeof( c ), 0, cudaMemcpyHostToDevice, stream ) );
     else
-	CUDA_CHECK( cudaMemcpyToSymbol( info, &c, sizeof( c ), 0, cudaMemcpyHostToDevice ) );
+	CC( cudaMemcpyToSymbol( info, &c, sizeof( c ), 0, cudaMemcpyHostToDevice ) );
 
     static int cetriolo = 0;
     cetriolo++;
 
 #ifdef _TIME_PROFILE_
     if( cetriolo % 500 == 0 )
-        CUDA_CHECK( cudaEventRecord( evstart ) );
+        CC( cudaEventRecord( evstart ) );
 #endif
 
     // YUHANG: fixed bug: not using stream
     int np32 = np;
     if( np32 % 32 ) np32 += 32 - np32 % 32;
-    CUDA_CHECK( cudaMemsetAsync( axayaz, 0, sizeof( float )* np32 * 3, stream ) );
+    CC( cudaMemsetAsync( axayaz, 0, sizeof( float )* np32 * 3, stream ) );
 
     if( c.ncells.x % MYCPBX == 0 && c.ncells.y % MYCPBY == 0 && c.ncells.z % MYCPBZ == 0 ) {
         _dpd_forces_symm_merged <<< dim3( c.ncells.x / MYCPBX, c.ncells.y / MYCPBY, c.ncells.z / MYCPBZ ), dim3( 32, MYWPB ), 0, stream >>> ();
@@ -503,22 +503,22 @@ void forces_dpd_cuda_nohost( const float * const xyzuvw, const float4 * const xy
 
 #ifdef ONESTEP
     check_acc <<< 1, 1, 0, stream>>>( np );
-    CUDA_CHECK( cudaDeviceSynchronize() );
-    CUDA_CHECK( cudaDeviceReset() );
+    CC( cudaDeviceSynchronize() );
+    CC( cudaDeviceReset() );
     MPI_Finalize();
     exit( 0 );
 #endif
 
 #ifdef _TIME_PROFILE_
     if( cetriolo % 500 == 0 ) {
-        CUDA_CHECK( cudaEventRecord( evstop ) );
-        CUDA_CHECK( cudaEventSynchronize( evstop ) );
+        CC( cudaEventRecord( evstop ) );
+        CC( cudaEventSynchronize( evstop ) );
 
         float tms;
-        CUDA_CHECK( cudaEventElapsedTime( &tms, evstart, evstop ) );
+        CC( cudaEventElapsedTime( &tms, evstart, evstop ) );
         printf( "elapsed time for DPD-BULK kernel: %.2f ms\n", tms );
     }
 #endif
 
-    CUDA_CHECK( cudaPeekAtLastError() );
+    CC( cudaPeekAtLastError() );
 }

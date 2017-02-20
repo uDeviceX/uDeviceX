@@ -57,11 +57,11 @@ SolventExchange::SolventExchange(MPI_Comm _cartcomm, const int basetag):  baseta
         sendhalos[i].setup(estimate, nhalocells);
     }
 
-    CUDA_CHECK(cudaHostAlloc((void **)&required_send_bag_size_host, sizeof(int) * 26, cudaHostAllocMapped));
-    CUDA_CHECK(cudaHostGetDevicePointer(&required_send_bag_size, required_send_bag_size_host, 0));
+    CC(cudaHostAlloc((void **)&required_send_bag_size_host, sizeof(int) * 26, cudaHostAllocMapped));
+    CC(cudaHostGetDevicePointer(&required_send_bag_size, required_send_bag_size_host, 0));
 
-    CUDA_CHECK(cudaEventCreateWithFlags(&evfillall, cudaEventDisableTiming));
-    CUDA_CHECK(cudaEventCreateWithFlags(&evdownloaded, cudaEventDisableTiming | cudaEventBlockingSync));
+    CC(cudaEventCreateWithFlags(&evfillall, cudaEventDisableTiming));
+    CC(cudaEventCreateWithFlags(&evdownloaded, cudaEventDisableTiming | cudaEventBlockingSync));
 }
 
 namespace PackingHalo
@@ -327,27 +327,27 @@ void SolventExchange::_pack_all(const Particle * const p, const int n, const boo
 
         for(int i = 0; i < 26; ++i)
         {
-            baginfos[i].start_src = sendhalos[i].tmpstart.data;
-            baginfos[i].count_src = sendhalos[i].tmpcount.data;
-            baginfos[i].start_dst = sendhalos[i].dcellstarts.data;
+            baginfos[i].start_src = sendhalos[i].tmpstart.D;
+            baginfos[i].count_src = sendhalos[i].tmpcount.D;
+            baginfos[i].start_dst = sendhalos[i].dcellstarts.D;
             baginfos[i].bagsize = sendhalos[i].dbuf.capacity;
-            baginfos[i].scattered_entries = sendhalos[i].scattered_entries.data;
-            baginfos[i].dbag = sendhalos[i].dbuf.data;
+            baginfos[i].scattered_entries = sendhalos[i].scattered_entries.D;
+            baginfos[i].dbag = sendhalos[i].dbuf.D;
             baginfos[i].hbag = sendhalos[i].hbuf.data;
         }
 
-        CUDA_CHECK(cudaMemcpyToSymbolAsync(PackingHalo::baginfos, baginfos, sizeof(baginfos), 0, cudaMemcpyHostToDevice, stream)); // peh: added stream
+        CC(cudaMemcpyToSymbolAsync(PackingHalo::baginfos, baginfos, sizeof(baginfos), 0, cudaMemcpyHostToDevice, stream)); // peh: added stream
     }
 
     if (PackingHalo::ncells)
         PackingHalo::fill_all<<< (PackingHalo::ncells + 1) / 2, 32, 0, stream>>>(p, n, required_send_bag_size);
 
-    CUDA_CHECK(cudaEventRecord(evfillall, stream));
+    CC(cudaEventRecord(evfillall, stream));
 }
 
 void SolventExchange::pack(const Particle * const p, const int n, const int * const cellsstart, const int * const cellscount, cudaStream_t stream)
 {
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 
     nlocal = n;
 
@@ -359,11 +359,11 @@ void SolventExchange::pack(const Particle * const p, const int n, const int * co
 
             cellpackstarts[0] = 0;
             for(int i = 0, s = 0; i < 26; ++i)
-                cellpackstarts[i + 1] =  (s += sendhalos[i].dcellstarts.size * (sendhalos[i].expected > 0));
+                cellpackstarts[i + 1] =  (s += sendhalos[i].dcellstarts.S * (sendhalos[i].expected > 0));
 
             PackingHalo::ncells = cellpackstarts[26];
 
-            CUDA_CHECK(cudaMemcpyToSymbol(PackingHalo::cellpackstarts, cellpackstarts,
+            CC(cudaMemcpyToSymbol(PackingHalo::cellpackstarts, cellpackstarts,
                         sizeof(cellpackstarts), 0, cudaMemcpyHostToDevice));
         }
 
@@ -371,14 +371,14 @@ void SolventExchange::pack(const Particle * const p, const int n, const int * co
             static PackingHalo::CellPackSOA cellpacks[26];
             for(int i = 0; i < 26; ++i)
             {
-                cellpacks[i].start = sendhalos[i].tmpstart.data;
-                cellpacks[i].count = sendhalos[i].tmpcount.data;
+                cellpacks[i].start = sendhalos[i].tmpstart.D;
+                cellpacks[i].count = sendhalos[i].tmpcount.D;
                 cellpacks[i].enabled = sendhalos[i].expected > 0;
-                cellpacks[i].scan = sendhalos[i].dcellstarts.data;
-                cellpacks[i].size = sendhalos[i].dcellstarts.size;
+                cellpacks[i].scan = sendhalos[i].dcellstarts.D;
+                cellpacks[i].size = sendhalos[i].dcellstarts.S;
             }
 
-            CUDA_CHECK(cudaMemcpyToSymbol(PackingHalo::cellpacks, cellpacks,
+            CC(cudaMemcpyToSymbol(PackingHalo::cellpacks, cellpacks,
                         sizeof(cellpacks), 0, cudaMemcpyHostToDevice));
         }
     }
@@ -388,7 +388,7 @@ void SolventExchange::pack(const Particle * const p, const int n, const int * co
 
     PackingHalo::scan_diego< 32 ><<< 26, 32 * 32, 0, stream>>>();
 
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 
     if (firstpost)
         post_expected_recv();
@@ -405,15 +405,15 @@ void SolventExchange::pack(const Particle * const p, const int n, const int * co
         {
             static int * srccells[26];
             for(int i = 0; i < 26; ++i)
-                srccells[i] = sendhalos[i].dcellstarts.data;
+                srccells[i] = sendhalos[i].dcellstarts.D;
 
-            CUDA_CHECK(cudaMemcpyToSymbol(PackingHalo::srccells, srccells, sizeof(srccells), 0, cudaMemcpyHostToDevice));
+            CC(cudaMemcpyToSymbol(PackingHalo::srccells, srccells, sizeof(srccells), 0, cudaMemcpyHostToDevice));
 
             static int * dstcells[26];
             for(int i = 0; i < 26; ++i)
                 dstcells[i] = sendhalos[i].hcellstarts.devptr;
 
-            CUDA_CHECK(cudaMemcpyToSymbol(PackingHalo::dstcells, dstcells, sizeof(dstcells), 0, cudaMemcpyHostToDevice));
+            CC(cudaMemcpyToSymbol(PackingHalo::dstcells, dstcells, sizeof(dstcells), 0, cudaMemcpyHostToDevice));
         }
 
         {
@@ -421,13 +421,13 @@ void SolventExchange::pack(const Particle * const p, const int n, const int * co
             for(int i = 0; i < 26; ++i)
                 srccells[i] = recvhalos[i].hcellstarts.devptr;
 
-            CUDA_CHECK(cudaMemcpyToSymbol(PackingHalo::srccells, srccells, sizeof(srccells), sizeof(srccells), cudaMemcpyHostToDevice));
+            CC(cudaMemcpyToSymbol(PackingHalo::srccells, srccells, sizeof(srccells), sizeof(srccells), cudaMemcpyHostToDevice));
 
             static int * dstcells[26];
             for(int i = 0; i < 26; ++i)
-                dstcells[i] = recvhalos[i].dcellstarts.data;
+                dstcells[i] = recvhalos[i].dcellstarts.D;
 
-            CUDA_CHECK(cudaMemcpyToSymbol(PackingHalo::dstcells, dstcells, sizeof(dstcells), sizeof(dstcells), cudaMemcpyHostToDevice));
+            CC(cudaMemcpyToSymbol(PackingHalo::dstcells, dstcells, sizeof(dstcells), sizeof(dstcells), cudaMemcpyHostToDevice));
         }
     }
 
@@ -435,13 +435,13 @@ void SolventExchange::pack(const Particle * const p, const int n, const int * co
         PackingHalo::copycells<0><<< (PackingHalo::ncells + 127) / 128, 128, 0, stream>>>(PackingHalo::ncells);
 
     _pack_all(p, n, firstpost, stream);
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 }
 
 void SolventExchange::post(const Particle * const p, const int n, cudaStream_t stream, cudaStream_t downloadstream)
 {
     {
-        CUDA_CHECK(cudaEventSynchronize(evfillall));
+        CC(cudaEventSynchronize(evfillall));
 
         bool succeeded = true;
         for(int i = 0; i < 26; ++i)
@@ -462,42 +462,42 @@ void SolventExchange::post(const Particle * const p, const int n, cudaStream_t s
         {
             _pack_all(p, n, true, stream);
 
-            CUDA_CHECK(cudaEventSynchronize(evfillall));
+            CC(cudaEventSynchronize(evfillall));
         }
 
         for(int i = 0; i < 26; ++i)
         {
             const int nrequired = required_send_bag_size_host[i];
 
-            sendhalos[i].dbuf.size = nrequired;
+            sendhalos[i].dbuf.S = nrequired;
             sendhalos[i].hbuf.resize(nrequired);
-            sendhalos[i].scattered_entries.size = nrequired;
+            sendhalos[i].scattered_entries.S = nrequired;
         }
     }
 
     for(int i = 0; i < 26; ++i)
         if (sendhalos[i].hbuf.size)
-            CUDA_CHECK(cudaMemcpyAsync(sendhalos[i].hbuf.data, sendhalos[i].dbuf.data, sizeof(Particle) * sendhalos[i].hbuf.size,
+            CC(cudaMemcpyAsync(sendhalos[i].hbuf.data, sendhalos[i].dbuf.D, sizeof(Particle) * sendhalos[i].hbuf.size,
                         cudaMemcpyDeviceToHost, downloadstream));
 
 #ifndef NDEBUG
-    CUDA_CHECK(cudaStreamSynchronize(0));
+    CC(cudaStreamSynchronize(0));
 
     for(int i = 0; i < 26; ++i)
         if (sendhalos[i].expected)
         {
-            const int nd = sendhalos[i].dbuf.size;
+            const int nd = sendhalos[i].dbuf.S;
 
             if (nd > 0)
-                PackingHalo::check_send_particles<<<(nd + 127)/ 128, 128, 0, stream>>>(sendhalos[i].dbuf.data, nd, i);
+                PackingHalo::check_send_particles<<<(nd + 127)/ 128, 128, 0, stream>>>(sendhalos[i].dbuf.D, nd, i);
         }
 
-    CUDA_CHECK(cudaStreamSynchronize(0));
+    CC(cudaStreamSynchronize(0));
 
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 #endif
 
-    CUDA_CHECK(cudaStreamSynchronize(downloadstream));
+    CC(cudaStreamSynchronize(downloadstream));
     {
         for(int i = 0, c = 0; i < 26; ++i)
             if (sendhalos[i].expected)
@@ -568,7 +568,7 @@ void SolventExchange::post_expected_recv()
 
 void SolventExchange::recv(cudaStream_t stream, cudaStream_t uploadstream)
 {
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 
     {
         MPI_Status statuses[26];
@@ -605,14 +605,14 @@ void SolventExchange::recv(cudaStream_t stream, cudaStream_t uploadstream)
     }
 
     for(int i = 0; i < 26; ++i)
-        CUDA_CHECK(cudaMemcpyAsync(recvhalos[i].dbuf.data, recvhalos[i].hbuf.data,
+        CC(cudaMemcpyAsync(recvhalos[i].dbuf.D, recvhalos[i].hbuf.data,
                     sizeof(Particle) * recvhalos[i].hbuf.size, cudaMemcpyHostToDevice, uploadstream));
 
     for(int i = 0; i < 26; ++i)
-        CUDA_CHECK(cudaMemcpyAsync(recvhalos[i].dcellstarts.data, recvhalos[i].hcellstarts.data,
+        CC(cudaMemcpyAsync(recvhalos[i].dcellstarts.D, recvhalos[i].hcellstarts.data,
                     sizeof(int) * recvhalos[i].hcellstarts.size, cudaMemcpyHostToDevice, uploadstream));
 
-    CUDA_CHECK(cudaPeekAtLastError());
+    CC(cudaPeekAtLastError());
 
     post_expected_recv();
 }
@@ -673,12 +673,12 @@ void SolventExchange::adjust_message_sizes(ExpectedMessageSizes sizes)
 
 SolventExchange::~SolventExchange()
 {
-    CUDA_CHECK(cudaFreeHost(required_send_bag_size));
+    CC(cudaFreeHost(required_send_bag_size));
 
     MPI_CHECK(MPI_Comm_free(&cartcomm));
 
     _cancel_recv();
 
-    CUDA_CHECK(cudaEventDestroy(evfillall));
-    CUDA_CHECK(cudaEventDestroy(evdownloaded));
+    CC(cudaEventDestroy(evfillall));
+    CC(cudaEventDestroy(evdownloaded));
 }

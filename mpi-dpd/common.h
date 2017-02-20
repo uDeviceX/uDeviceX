@@ -29,20 +29,16 @@ extern float tend;
 extern bool walls, pushtheflow, doublepoiseuille, rbcs, hdf5field_dumps, hdf5part_dumps, is_mps_enabled, contactforces;
 extern int steps_per_dump, steps_per_hdf5dump, wall_creation_stepid;
 
-#define CUDA_CHECK(ans) do { cudaAssert((ans), __FILE__, __LINE__); } while(0)
-inline void cudaAssert(cudaError_t code, const char *file, int line)
-{
-  if (code != cudaSuccess)
-  {
+/* [c]cuda [c]heck */
+#define CC(ans) do { cudaAssert((ans), __FILE__, __LINE__); } while(0)
+inline void cudaAssert(cudaError_t code, const char *file, int line) {
+  if (code != cudaSuccess) {
     fprintf(stderr,"GPU assert: %s %s %d\n", cudaGetErrorString(code), file, line);
-
     abort();
   }
 }
 
-
 #define MPI_CHECK(ans) do { mpiAssert((ans), __FILE__, __LINE__); } while(0)
-
 inline void mpiAssert(int code, const char *file, int line)
 {
   if (code != MPI_SUCCESS)
@@ -125,72 +121,43 @@ struct SolventWrap : ParticlesWrap
       ParticlesWrap(p, n, a), cellsstart(cellsstart), cellscount(cellscount) {}
 };
 
-//container for the gpu particles during the simulation
+/* container for the gpu particles during the simulation */
 template<typename T>
-struct SimpleDeviceBuffer
-{
-  int capacity, size;
-
-  T * data;
-
-  SimpleDeviceBuffer(int n = 0): capacity(0), size(0), data(NULL) { resize(n);}
-
-  ~SimpleDeviceBuffer()
-  {
-    if (data != NULL)
-      CUDA_CHECK(cudaFree(data));
-
-    data = NULL;
+struct SimpleDeviceBuffer {
+  int capacity, S;    /* `S' is for size */
+  T* D;               /* `D' is for data */
+  SimpleDeviceBuffer(int n = 0): capacity(0), S(0), D(NULL) { resize(n);}
+  ~SimpleDeviceBuffer() {
+    if (D != NULL) CC(cudaFree(D));
+    D = NULL;
   }
 
-  void dispose()
-  {
-    if (data != NULL)
-      CUDA_CHECK(cudaFree(data));
-
-    data = NULL;
+  void dispose() {
+    if (D != NULL) CC(cudaFree(D));
+    D = NULL;
   }
 
-  void resize(const int n)
-  {
-    size = n;
-
-    if (capacity >= n)
-      return;
-
-    if (data != NULL)
-      CUDA_CHECK(cudaFree(data));
-
-    const int conservative_estimate = (int)ceil(1.1 * n);
+  void resize(int n) {
+    S = n;
+    if (capacity >= n) return;
+    if (D != NULL)  CC(cudaFree(D));
+    int conservative_estimate = (int)ceil(1.1 * n);
     capacity = 128 * ((conservative_estimate + 129) / 128);
-
-    CUDA_CHECK(cudaMalloc(&data, sizeof(T) * capacity));
-
-#ifndef NDEBUG
-    CUDA_CHECK(cudaMemset(data, 0, sizeof(T) * capacity));
-#endif
+    CC(cudaMalloc(&D, sizeof(T) * capacity));
   }
 
-  void preserve_resize(const int n)
-  {
-    T * old = data;
+  void preserve_resize(int n) {
+    T * old = D;
+    int oldsize = S;
 
-    const int oldsize = size;
-
-    size = n;
-
-    if (capacity >= n)
-      return;
-
-    const int conservative_estimate = (int)ceil(1.1 * n);
+    S = n;
+    if (capacity >= n) return;
+    int conservative_estimate = (int)ceil(1.1 * n);
     capacity = 128 * ((conservative_estimate + 129) / 128);
-
-    CUDA_CHECK(cudaMalloc(&data, sizeof(T) * capacity));
-
-    if (old != NULL)
-    {
-      CUDA_CHECK(cudaMemcpy(data, old, sizeof(T) * oldsize, cudaMemcpyDeviceToDevice));
-      CUDA_CHECK(cudaFree(old));
+    CC(cudaMalloc(&D, sizeof(T) * capacity));
+    if (old != NULL) {
+      CC(cudaMemcpy(D, old, sizeof(T) * oldsize, cudaMemcpyDeviceToDevice));
+      CC(cudaFree(old));
     }
   }
 };
@@ -207,7 +174,7 @@ struct SimpleHostBuffer
   ~SimpleHostBuffer()
   {
     if (data != NULL)
-      CUDA_CHECK(cudaFreeHost(data));
+      CC(cudaFreeHost(data));
 
     data = NULL;
   }
@@ -220,12 +187,12 @@ struct SimpleHostBuffer
       return;
 
     if (data != NULL)
-      CUDA_CHECK(cudaFreeHost(data));
+      CC(cudaFreeHost(data));
 
     const int conservative_estimate = (int)ceil(1.1 * n);
     capacity = 128 * ((conservative_estimate + 129) / 128);
 
-    CUDA_CHECK(cudaHostAlloc(&data, sizeof(T) * capacity, cudaHostAllocDefault));
+    CC(cudaHostAlloc(&data, sizeof(T) * capacity, cudaHostAllocDefault));
   }
 
   void preserve_resize(const int n)
@@ -243,12 +210,12 @@ struct SimpleHostBuffer
     capacity = 128 * ((conservative_estimate + 129) / 128);
 
     data = NULL;
-    CUDA_CHECK(cudaHostAlloc(&data, sizeof(T) * capacity, cudaHostAllocDefault));
+    CC(cudaHostAlloc(&data, sizeof(T) * capacity, cudaHostAllocDefault));
 
     if (old != NULL)
     {
       memcpy(data, old, sizeof(T) * oldsize);
-      CUDA_CHECK(cudaFreeHost(old));
+      CC(cudaFreeHost(old));
     }
   }
 };
@@ -265,7 +232,7 @@ struct PinnedHostBuffer
   ~PinnedHostBuffer()
   {
     if (data != NULL)
-      CUDA_CHECK(cudaFreeHost(data));
+      CC(cudaFreeHost(data));
 
     data = NULL;
   }
@@ -278,14 +245,14 @@ struct PinnedHostBuffer
       return;
 
     if (data != NULL)
-      CUDA_CHECK(cudaFreeHost(data));
+      CC(cudaFreeHost(data));
 
     const int conservative_estimate = (int)ceil(1.1 * n);
     capacity = 128 * ((conservative_estimate + 129) / 128);
 
-    CUDA_CHECK(cudaHostAlloc(&data, sizeof(T) * capacity, cudaHostAllocMapped));
+    CC(cudaHostAlloc(&data, sizeof(T) * capacity, cudaHostAllocMapped));
 
-    CUDA_CHECK(cudaHostGetDevicePointer(&devptr, data, 0));
+    CC(cudaHostGetDevicePointer(&devptr, data, 0));
   }
 
   void preserve_resize(const int n)
@@ -303,22 +270,23 @@ struct PinnedHostBuffer
     capacity = 128 * ((conservative_estimate + 129) / 128);
 
     data = NULL;
-    CUDA_CHECK(cudaHostAlloc(&data, sizeof(T) * capacity, cudaHostAllocMapped));
+    CC(cudaHostAlloc(&data, sizeof(T) * capacity, cudaHostAllocMapped));
 
     if (old != NULL)
     {
-      CUDA_CHECK(cudaMemcpy(data, old, sizeof(T) * oldsize, cudaMemcpyHostToHost));
-      CUDA_CHECK(cudaFreeHost(old));
+      CC(cudaMemcpy(data, old, sizeof(T) * oldsize, cudaMemcpyHostToHost));
+      CC(cudaFreeHost(old));
     }
 
-    CUDA_CHECK(cudaHostGetDevicePointer(&devptr, data, 0));
+    CC(cudaHostGetDevicePointer(&devptr, data, 0));
   }
 };
 
-//container for the cell lists, which contains only two integer vectors of size ncells.
-//the start[cell-id] array gives the entry in the particle array associated to first particle belonging to cell-id
-//count[cell-id] tells how many particles are inside cell-id.
-//building the cell lists involve a reordering of the particle array (!)
+/* container for the cell lists, which contains only two integer
+vectors of size ncells.  the start[cell-id] array gives the entry in
+the particle array associated to first particle belonging to cell-id
+count[cell-id] tells how many particles are inside cell-id.  building
+the cell lists involve a reordering of the particle array (!) */
 struct CellLists
 {
   const int ncells, LX, LY, LZ;
@@ -328,16 +296,16 @@ struct CellLists
   CellLists(const int LX, const int LY, const int LZ):
       ncells(LX * LY * LZ + 1), LX(LX), LY(LY), LZ(LZ)
   {
-    CUDA_CHECK(cudaMalloc(&start, sizeof(int) * ncells));
-    CUDA_CHECK(cudaMalloc(&count, sizeof(int) * ncells));
+    CC(cudaMalloc(&start, sizeof(int) * ncells));
+    CC(cudaMalloc(&count, sizeof(int) * ncells));
   }
 
   void build(Particle * const p, const int n, cudaStream_t stream, int * const order = NULL, const Particle * const src = NULL);
 
   ~CellLists()
   {
-    CUDA_CHECK(cudaFree(start));
-    CUDA_CHECK(cudaFree(count));
+    CC(cudaFree(start));
+    CC(cudaFree(count));
   }
 };
 

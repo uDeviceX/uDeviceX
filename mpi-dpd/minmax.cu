@@ -237,11 +237,11 @@ void minmax(const Particle * const rbc, int size, int n, float3 *minrbc, float3 
             }
 
             if (ptoblockds != NULL)
-                CUDA_CHECK(cudaFree(ptoblockds));
+                CC(cudaFree(ptoblockds));
 
-            CUDA_CHECK(cudaMalloc((void **)&ptoblockds,sizeof(sblockds_t) * n));
+            CC(cudaMalloc((void **)&ptoblockds,sizeof(sblockds_t) * n));
 
-            CUDA_CHECK(cudaMemcpy(ptoblockds, h_ptoblockds, sizeof(sblockds_t) * n, cudaMemcpyHostToDevice));
+            CC(cudaMemcpy(ptoblockds, h_ptoblockds, sizeof(sblockds_t) * n, cudaMemcpyHostToDevice));
 
             delete [] h_ptoblockds;
         }

@@ -14,8 +14,8 @@
 #include <unistd.h>
 #include <cstdio>
 
-#ifndef CUDA_CHECK
-#define CUDA_CHECK(ans) do { cudaAssert((ans), __FILE__, __LINE__); } while(0)
+#ifndef CC
+#define CC(ans) do { cudaAssert((ans), __FILE__, __LINE__); } while(0)
 inline void cudaAssert(cudaError_t code, const char *file, int line, bool abort=true)
 {
   if (code != cudaSuccess)
@@ -57,12 +57,12 @@ TextureWrap(ElementType * data, const int n):
     texDesc.normalizedCoords = 0;
 
     texObj = 0;
-    CUDA_CHECK(cudaCreateTextureObject(&texObj, &resDesc, &texDesc, NULL));
+    CC(cudaCreateTextureObject(&texObj, &resDesc, &texDesc, NULL));
   }
 
   ~TextureWrap()
   {
-    CUDA_CHECK(cudaDestroyTextureObject(texObj));
+    CC(cudaDestroyTextureObject(texObj));
   }
 };
 

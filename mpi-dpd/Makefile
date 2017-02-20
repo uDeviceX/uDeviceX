@@ -4,8 +4,7 @@ NVCC     ?= nvcc
 ARCH_VAL ?= compute_35
 CODE_VAL ?= sm_35
 OPT ?= -O3 -use_fast_math -g
-# for cuda-gdb
-# OPT      ?= -O0 -g --device-debug
+# for cuda-gdb: OPT=-O0 -g --device-debug
 
 slevel   ?= -2
 
@@ -14,14 +13,10 @@ LDFLAGS   += -L../cuda-dpd -L../cuda-rbc
 NVCCFLAGS += -I../cuda-dpd -I../cuda-rbc
 LIBS      += -lcuda-dpd -lcuda-rbc -lcudart
 
-OBJS = \
-containers.o dpd.o \
-fsi.o contact.o redistribute-particles.o \
-redistribute-rbcs.o solvent-exchange.o solute-exchange.o \
+OBJS = dpd.o fsi.o contact.o solvent-exchange.o solute-exchange.o \
 common.o io.o scan.o \
 minmax.o last_bit_float.o \
 dpd-forces.o simulation.o main.o
-
 
 ifeq ($(h5part),0)
 NVCCFLAGS += -DNO_H5PART
@@ -46,7 +41,6 @@ test:   $(OBJS) libcuda-dpd libcuda-rbc
 # "Separate Compilation and Linking of CUDA C++ Device Code"
 # http://devblogs.nvidia.com/parallelforall/separate-compilation-linking-cuda-device-code
 contact.o:        contact.cu;        $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
-containers.o:     containers.cu;     $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 dpd.o:            dpd.cu;            $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 fsi.o:            fsi.cu;            $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 last_bit_float.o: last_bit_float.cu; $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@

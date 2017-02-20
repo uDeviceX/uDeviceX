@@ -122,7 +122,7 @@ void directforces_dpd_cuda_bipartite_nohost(
     _bipartite_dpd_directforces_floatized <<< ( np + 127 ) / 128, 128, 0, stream >>> ( axayaz, np, np_src, seed, mask,
             xyzuvw, xyzuvw_src, 1);
 
-    CUDA_CHECK( cudaPeekAtLastError() );
+    CC( cudaPeekAtLastError() );
 }
 
 __global__
@@ -249,7 +249,7 @@ void forces_dpd_cuda_bipartite_nohost( cudaStream_t stream, const float2 * const
     static bool fbip_init = false;
 
     if( !fbip_init ) {
-        CUDA_CHECK( cudaFuncSetCacheConfig( _dpd_bipforces_floatized, cudaFuncCachePreferL1 ) );
+        CC( cudaFuncSetCacheConfig( _dpd_bipforces_floatized, cudaFuncCachePreferL1 ) );
 
         fbip_init = true;
     }
