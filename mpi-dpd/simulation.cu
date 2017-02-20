@@ -36,6 +36,9 @@
 #include "wall.decl.h"
 #include "wall.impl.h"
 
+#include "solutepup.decl.h"
+#include "solutepup.impl.h"
+
 #include "solute-exchange.decl.h"
 #include "solute-exchange.impl.h"
 
