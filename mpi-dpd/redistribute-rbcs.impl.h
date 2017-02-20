@@ -20,8 +20,10 @@ void _post_recvcount() {
     recvcountreq.push_back(req);
   }
 }
-  
+
 void redistribute_rbcs_init(MPI_Comm _cartcomm) {
+
+
   nvertices = CudaRBC::get_nvertices();
   CudaRBC::Extent host_extent;
   CudaRBC::setup(nvertices, host_extent);
@@ -54,7 +56,7 @@ void redistribute_rbcs_init(MPI_Comm _cartcomm) {
 void _compute_extents(Particle *xyzuvw,
 					int nrbcs, cudaStream_t stream) {
   if (nrbcs)
-    minmax(xyzuvw, nvertices, nrbcs, minextents.devptr, maxextents.devptr,
+    minmax(xyzuvw, nvertices, nrbcs, minextents->devptr, maxextents->devptr,
 	   stream);
 }
 
@@ -111,8 +113,8 @@ void pack_all(cudaStream_t stream, const int nrbcs, const int nvertices,
 
 void extent(Particle *xyzuvw, int nrbcs,
 			      cudaStream_t stream) {
-  minextents.resize(nrbcs);
-  maxextents.resize(nrbcs);
+  minextents->resize(nrbcs);
+  maxextents->resize(nrbcs);
   CC(cudaPeekAtLastError());
   _compute_extents(xyzuvw, nrbcs, stream);
   CC(cudaPeekAtLastError());
@@ -125,8 +127,8 @@ void pack_sendcount(Particle *xyzuvw,
   std::vector<int> reordering_indices[27];
 
   for (int i = 0; i < nrbcs; ++i) {
-    float3 minext = minextents.data[i];
-    float3 maxext = maxextents.data[i];
+    float3 minext = minextents->data[i];
+    float3 maxext = maxextents->data[i];
     float p[3] = {0.5 * (minext.x + maxext.x), 0.5 * (minext.y + maxext.y),
 		  0.5 * (minext.z + maxext.z)};
     int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
@@ -137,9 +139,9 @@ void pack_sendcount(Particle *xyzuvw,
     reordering_indices[code].push_back(i);
   }
 
-  bulk.resize(reordering_indices[0].size() * nvertices);
+  bulk->resize(reordering_indices[0].size() * nvertices);
   for (int i = 1; i < 27; ++i)
-    halo_sendbufs[i].resize(reordering_indices[i].size() * nvertices);
+    halo_sendbufs[i]->resize(reordering_indices[i].size() * nvertices);
   {
     static std::vector<const float *> src;
     static std::vector<float *> dst;
@@ -150,9 +152,9 @@ void pack_sendcount(Particle *xyzuvw,
 	src.push_back((float *)(xyzuvw + nvertices * reordering_indices[i][j]));
 
 	if (i)
-	  dst.push_back((float *)(halo_sendbufs[i].devptr + nvertices * j));
+	  dst.push_back((float *)(halo_sendbufs[i]->devptr + nvertices * j));
 	else
-	  dst.push_back((float *)(bulk.D + nvertices * j));
+	  dst.push_back((float *)(bulk->D + nvertices * j));
       }
     ReorderingRBC::pack_all(stream, src.size(), nvertices, &src.front(),
 			    &dst.front());
@@ -160,7 +162,7 @@ void pack_sendcount(Particle *xyzuvw,
   }
   CC(cudaStreamSynchronize(stream));
   for (int i = 1; i < 27; ++i)
-    MPI_CHECK(MPI_Isend(&halo_sendbufs[i].size, 1, MPI_INTEGER,
+    MPI_CHECK(MPI_Isend(&halo_sendbufs[i]->size, 1, MPI_INTEGER,
 			rankneighbors[i], i + 1024, cartcomm,
 			&sendcountreq[i - 1]));
 }
@@ -176,28 +178,28 @@ int post() {
   for (int i = 1; i < 27; ++i) {
     int count = recv_counts[i];
     arriving += count;
-    halo_recvbufs[i].resize(count);
+    halo_recvbufs[i]->resize(count);
   }
 
   arriving /= nvertices;
-  notleaving = bulk.S / nvertices;
+  notleaving = bulk->S / nvertices;
 
   MPI_Status statuses[26];
   MPI_CHECK(MPI_Waitall(26, sendcountreq, statuses));
 
   for (int i = 1; i < 27; ++i)
-    if (halo_recvbufs[i].size > 0) {
+    if (halo_recvbufs[i]->size > 0) {
       MPI_Request request;
-      MPI_CHECK(MPI_Irecv(halo_recvbufs[i].data, halo_recvbufs[i].size,
+      MPI_CHECK(MPI_Irecv(halo_recvbufs[i]->data, halo_recvbufs[i]->size,
 			  Particle::datatype(), anti_rankneighbors[i], i + 1155,
 			  cartcomm, &request));
       recvreq.push_back(request);
     }
 
   for (int i = 1; i < 27; ++i)
-    if (halo_sendbufs[i].size > 0) {
+    if (halo_sendbufs[i]->size > 0) {
       MPI_Request request;
-      MPI_CHECK(MPI_Isend(halo_sendbufs[i].data, halo_sendbufs[i].size,
+      MPI_CHECK(MPI_Isend(halo_sendbufs[i]->data, halo_sendbufs[i]->size,
 			  Particle::datatype(), rankneighbors[i], i + 1155,
 			  cartcomm, &request));
 
@@ -227,15 +229,15 @@ void unpack(Particle *xyzuvw, int nrbcs,
   MPI_CHECK(MPI_Waitall(sendreq.size(), &sendreq.front(), statuses));
   recvreq.clear();
   sendreq.clear();
-  CC(cudaMemcpyAsync(xyzuvw, bulk.D, notleaving * nvertices * sizeof(Particle),
+  CC(cudaMemcpyAsync(xyzuvw, bulk->D, notleaving * nvertices * sizeof(Particle),
 		     cudaMemcpyDeviceToDevice, stream));
 
   for (int i = 1, s = notleaving * nvertices; i < 27; ++i) {
-    int count = halo_recvbufs[i].size;
+    int count = halo_recvbufs[i]->size;
     if (count > 0)
       ParticleReorderingRBC::shift<<<(count + 127) / 128, 128, 0, stream>>>(
-	  halo_recvbufs[i].devptr, count, i, myrank, false, xyzuvw + s);
-    s += halo_recvbufs[i].size;
+	  halo_recvbufs[i]->devptr, count, i, myrank, false, xyzuvw + s);
+    s += halo_recvbufs[i]->size;
   }
 
   CC(cudaPeekAtLastError());
