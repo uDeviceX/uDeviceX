@@ -136,26 +136,6 @@ template <int slot> __global__ void copycells(const int n) {
   dstcells[idpack + 26 * slot][offset] = srccells[idpack + 26 * slot][offset];
 }
 
-#ifndef NDEBUG
-__device__ void halo_particle_check(const Particle p, const int pid,
-                                    const int code) {
-  const int d[3] = {(code + 2) % 3 - 1, (code / 3 + 2) % 3 - 1,
-                    (code / 9 + 2) % 3 - 1};
-  const int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
-
-  for (int c = 0; c < 3; ++c) {
-    const float halo_start = max(d[c] * L[c] - L[c] / 2 - 1, -L[c] / 2);
-    const float halo_end = min(d[c] * L[c] + L[c] / 2 + 1, L[c] / 2);
-    const float eps = 1e-5;
-    if (!(p.x[c] >= halo_start - eps && p.x[c] < halo_end + eps)) {
-      printf("fill particles (pack) oooops particle %d: %e %e %e component %d "
-             "not within %f , %f eps %e\n",
-             pid, p.x[0], p.x[1], p.x[2], c, halo_start, halo_end, eps);
-    }
-  }
-}
-#endif
-
 template <int NWARPS> __global__ void scan_diego() {
   __shared__ int shdata[32];
 
@@ -253,9 +233,6 @@ __global__ void fill_all(const Particle *const particles, const int np,
     float2 word = *(float2 *)&particles[spid].x[c];
     *(float2 *)&baginfos[code].dbag[dpid].x[c] = word;
 
-#ifndef NDEBUG
-    halo_particle_check(particles[spid], spid, code);
-#endif
   }
 
   for (int lpid = tid; lpid < nsrc; lpid += warpSize / 2) {
@@ -267,29 +244,6 @@ __global__ void fill_all(const Particle *const particles, const int np,
 
   if (gcid + 1 == cellpackstarts[code + 1]) required_bag_size[code] = base_dst;
 }
-
-#ifndef NDEBUG
-__global__ void check_send_particles(Particle *p, int n, int code) {
-  const int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
-  const int pid = threadIdx.x + blockDim.x * blockIdx.x;
-
-  if (pid >= n) return;
-
-  const int d[3] = {(code + 2) % 3 - 1, (code / 3 + 2) % 3 - 1,
-                    (code / 9 + 2) % 3 - 1};
-
-  for (int c = 0; c < 3; ++c) {
-    const float halo_start = max(d[c] * L[c] - L[c] / 2 - 1, -L[c] / 2);
-    const float halo_end = min(d[c] * L[c] + L[c] / 2 + 1, L[c] / 2);
-    const float eps = 1e-5;
-    if (!(p[pid].x[c] >= halo_start - eps && p[pid].x[c] < halo_end + eps))
-      printf("oooops particle %d: %e %e %e component %d not within %f , %f eps "
-             "%f\n",
-             pid, p[pid].x[0], p[pid].x[1], p[pid].x[2], c, halo_start,
-             halo_end, eps);
-  }
-}
-#endif
 }
 
 void SolventExchange::_pack_all(const Particle *const p, const int n,
@@ -457,23 +411,6 @@ void SolventExchange::post(const Particle *const p, const int n,
       CC(cudaMemcpyAsync(sendhalos[i].hbuf.data, sendhalos[i].dbuf.D,
                          sizeof(Particle) * sendhalos[i].hbuf.size,
                          cudaMemcpyDeviceToHost, downloadstream));
-
-#ifndef NDEBUG
-  CC(cudaStreamSynchronize(0));
-
-  for (int i = 0; i < 26; ++i)
-    if (sendhalos[i].expected) {
-      const int nd = sendhalos[i].dbuf.S;
-
-      if (nd > 0)
-        PackingHalo::check_send_particles<<<(nd + 127) / 128, 128, 0, stream>>>(
-            sendhalos[i].dbuf.D, nd, i);
-    }
-
-  CC(cudaStreamSynchronize(0));
-
-  CC(cudaPeekAtLastError());
-#endif
 
   CC(cudaStreamSynchronize(downloadstream));
   {
