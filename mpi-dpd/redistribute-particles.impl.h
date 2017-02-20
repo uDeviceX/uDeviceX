@@ -14,15 +14,6 @@ namespace RedistributeParticlesKernels {
     float2 * texparticledata;
     texture<float, cudaTextureType1D> texAllParticles;
     texture<float2, cudaTextureType1D> texAllParticlesFloat2;
-
-#if !defined(__CUDA_ARCH__)
-#define _ACCESS(x) __ldg(x)
-#elif __CUDA_ARCH__ >= 350
-#define _ACCESS(x) __ldg(x)
-#else
-#define _ACCESS(x) (*(x))
-#endif
-
     __global__ void setup() {
         if (threadIdx.x == 0) failed = false;
         if (threadIdx.x < 27) pack_count[threadIdx.x] = 0;
@@ -95,7 +86,7 @@ namespace RedistributeParticlesKernels {
     if (slot >= start[27]) return;
             
     int offset = slot - start[idpack];
-    int pid = _ACCESS(pack_buffers[idpack].scattered_indices + offset);
+    int pid = __ldg(pack_buffers[idpack].scattered_indices + offset);
 
     int c = gid % 3;
      int d = c + 3 * offset;
@@ -151,7 +142,7 @@ namespace RedistributeParticlesKernels {
 
         if (subindex != 255) {
             int cid = entry.x + XSIZE_SUBDOMAIN * (entry.y + YSIZE_SUBDOMAIN * entry.z);
-	    int base = _ACCESS(starts + cid);
+	    int base = __ldg(starts + cid);
 
             pid |= remote << 31;
             scattered_indices[base + subindex] = pid;
@@ -197,9 +188,9 @@ namespace RedistributeParticlesKernels {
             bool remote = (spid >> 31) & 1;
             spid &= ~(1 << 31);
             if (remote) {
-                data0 = _ACCESS(remoteparticles + 0 + 3 * spid);
-                data1 = _ACCESS(remoteparticles + 1 + 3 * spid);
-                data2 = _ACCESS(remoteparticles + 2 + 3 * spid);
+                data0 = __ldg(remoteparticles + 0 + 3 * spid);
+                data1 = __ldg(remoteparticles + 1 + 3 * spid);
+                data2 = __ldg(remoteparticles + 2 + 3 * spid);
             } else {
                 if (spid >= noldparticles)
 		  cuda_printf("ooops pid %d spid %d noldp%d\n", pid, spid, noldparticles);
@@ -241,7 +232,6 @@ namespace RedistributeParticlesKernels {
 
         write_AOS6f(dstbuf + 3 * base, nsrc, data0, data1, data2);
     }
-#undef _ACCESS
 }
 
 namespace RedistPart {

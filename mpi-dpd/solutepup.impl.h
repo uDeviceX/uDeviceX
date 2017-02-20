@@ -92,14 +92,6 @@ __global__ void tiny_scan(int *counts,
 __global__ void pack(float2 *particles, int nparticles,
 		     float2 *buffer, int nbuffer,
 		     int soluteid) {
-#if !defined(__CUDA_ARCH__)
-#define _ACCESS(x) __ldg(x)
-#elif __CUDA_ARCH__ >= 350
-#define _ACCESS(x) __ldg(x)
-#else
-#define _ACCESS(x) (*(x))
-#endif
-
   if (failed) return;
 
   int warpid = threadIdx.x >> 5;
@@ -127,13 +119,13 @@ __global__ void pack(float2 *particles, int nparticles,
 
     if (lane < npack) {
       int entry = coffsets[code] + packbase + lane;
-      int pid = _ACCESS(scattered_indices[code] + entry);
+      int pid = __ldg(scattered_indices[code] + entry);
 
       int entry2 = 3 * pid;
 
-      s0 = _ACCESS(particles + entry2);
-      s1 = _ACCESS(particles + entry2 + 1);
-      s2 = _ACCESS(particles + entry2 + 2);
+      s0 = __ldg(particles + entry2);
+      s1 = __ldg(particles + entry2 + 1);
+      s2 = __ldg(particles + entry2 + 2);
 
       s0.x -= ((code + 2) % 3 - 1) * XSIZE_SUBDOMAIN;
       s0.y -= ((code / 3 + 2) % 3 - 1) * YSIZE_SUBDOMAIN;
@@ -170,8 +162,8 @@ __global__ void unpack(float *accelerations, int nparticles) {
     int component = gid % 3;
 
     int entry = coffsets[code] + lpid;
-    float myval = _ACCESS(recvbags[code] + component + 3 * entry);
-    int dpid = _ACCESS(scattered_indices[code] + entry);
+    float myval = __ldg(recvbags[code] + component + 3 * entry);
+    int dpid = __ldg(scattered_indices[code] + entry);
 
     atomicAdd(accelerations + 3 * dpid + component, myval);
   }

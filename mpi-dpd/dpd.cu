@@ -96,15 +96,6 @@ namespace BipsBatch
     __global__ void
         interaction_kernel(const int ndstall, float * const adst, const int sizeadst)
         {
-#if !defined(__CUDA_ARCH__)
-#warning __CUDA_ARCH__ not defined! assuming 350
-#define _ACCESS(x) __ldg(x)
-#elif __CUDA_ARCH__ >= 350
-#define _ACCESS(x) __ldg(x)
-#else
-#define _ACCESS(x) (*(x))
-#endif
-
             BatchInfo info;
 
             uint code, dpid;
@@ -190,21 +181,21 @@ namespace BipsBatch
                 else if (info.halotype == HALO_EDGE)
                     colstencilsize = max(xstencilsize, max(ystencilsize, zstencilsize));
 
-                spidbase = _ACCESS(info.cellstarts + basecid);
-                const int count0 = _ACCESS(info.cellstarts + basecid + colstencilsize) - spidbase;
+                spidbase = __ldg(info.cellstarts + basecid);
+                const int count0 = __ldg(info.cellstarts + basecid + colstencilsize) - spidbase;
 
                 int count1 = 0, count2 = 0;
 
                 if (rowstencilsize > 1)
                 {
-                    deltaspid1 = _ACCESS(info.cellstarts + basecid + ncols);
-                    count1 = _ACCESS(info.cellstarts + basecid + ncols + colstencilsize) - deltaspid1;
+                    deltaspid1 = __ldg(info.cellstarts + basecid + ncols);
+                    count1 = __ldg(info.cellstarts + basecid + ncols + colstencilsize) - deltaspid1;
                 }
 
                 if (rowstencilsize > 2)
                 {
-                    deltaspid2 = _ACCESS(info.cellstarts + basecid + 2 * ncols);
-                    count2 = _ACCESS(info.cellstarts + basecid + 2 * ncols + colstencilsize) - deltaspid2;
+                    deltaspid2 = __ldg(info.cellstarts + basecid + 2 * ncols);
+                    count2 = __ldg(info.cellstarts + basecid + 2 * ncols + colstencilsize) - deltaspid2;
                 }
 
                 scan1 = count0;
@@ -228,9 +219,9 @@ namespace BipsBatch
                 const int m2 = (int)(i >= scan2);
                 const uint spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
 
-                const float2 s0 = _ACCESS(xsrc + 0 + spid * 3);
-                const float2 s1 = _ACCESS(xsrc + 1 + spid * 3);
-                const float2 s2 = _ACCESS(xsrc + 2 + spid * 3);
+                const float2 s0 = __ldg(xsrc + 0 + spid * 3);
+                const float2 s1 = __ldg(xsrc + 1 + spid * 3);
+                const float2 s2 = __ldg(xsrc + 2 + spid * 3);
 
                 const uint arg1 = mask ? dpid : spid;
                 const uint arg2 = mask ? spid : dpid;
@@ -252,8 +243,6 @@ namespace BipsBatch
             atomicAdd(adst + dstbase + 0, xforce);
             atomicAdd(adst + dstbase + 1, yforce);
             atomicAdd(adst + dstbase + 2, zforce);
-
-#undef _ACCESS
         }
 
     bool firstcall = true;

@@ -29,13 +29,6 @@ namespace ParticleKernels {
     __global__ void upd_stg2_and_1(bool rbcflag, float2 * _pdata, float * _adata,
 				   int nparticles, float dt, float _driving_acceleration, float threshold,
 				   bool doublePoiseuille) {
-#if !defined(__CUDA_ARCH__)
-#define _ACCESS(x) __ldg(x)
-#elif __CUDA_ARCH__ >= 350
-#define _ACCESS(x) __ldg(x)
-#else
-#define _ACCESS(x) (*(x))
-#endif
 	int warpid = threadIdx.x >> 5;
 	int base = 32 * (warpid + 4 * blockIdx.x);
 	int nsrc = min(32, nparticles - base);
@@ -53,20 +46,20 @@ namespace ParticleKernels {
 
 	if (laneid < nwords)
 	{
-	    s0 = _ACCESS(pdata + laneid);
-	    ax = _ACCESS(adata + laneid);
+	    s0 = __ldg(pdata + laneid);
+	    ax = __ldg(adata + laneid);
 	}
 
 	if (laneid + 32 < nwords)
 	{
-	    s1 = _ACCESS(pdata + laneid + 32);
-	    ay = _ACCESS(adata + laneid + 32);
+	    s1 = __ldg(pdata + laneid + 32);
+	    ay = __ldg(adata + laneid + 32);
 	}
 
 	if (laneid + 64 < nwords)
 	{
-	    s2 = _ACCESS(pdata + laneid + 64);
-	    az = _ACCESS(adata + laneid + 64);
+	    s2 = __ldg(pdata + laneid + 64);
+	    az = __ldg(adata + laneid + 64);
 	}
 
 	{

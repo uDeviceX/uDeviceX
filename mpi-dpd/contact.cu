@@ -195,9 +195,9 @@ __global__ void halo(int nparticles_padded, int ncellentries,
       int spid = ce.pid;
 
       int sentry = 3 * spid;
-      float2 stmp0 = _ACCESS(csolutes[soluteid] + sentry);
-      float2 stmp1 = _ACCESS(csolutes[soluteid] + sentry + 1);
-      float2 stmp2 = _ACCESS(csolutes[soluteid] + sentry + 2);
+      float2 stmp0 = __ldg(csolutes[soluteid] + sentry);
+      float2 stmp1 = __ldg(csolutes[soluteid] + sentry + 1);
+      float2 stmp2 = __ldg(csolutes[soluteid] + sentry + 2);
 
       float myrandnr = Logistic::mean0var1(seed, pid, spid);
 

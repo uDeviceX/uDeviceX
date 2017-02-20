@@ -26,15 +26,6 @@ __global__ void populate(uchar4 *subindices,
                          int *cellstart, int nparticles,
                          int soluteid, int ntotalparticles,
                          CellEntry *entrycells) {
-#if !defined(__CUDA_ARCH__)
-#warning __CUDA_ARCH__ not defined! assuming 350
-#define _ACCESS(x) __ldg(x)
-#elif __CUDA_ARCH__ >= 350
-#define _ACCESS(x) __ldg(x)
-#else
-#define _ACCESS(x) (*(x))
-#endif
-
   int warpid = threadIdx.x >> 5;
   int tid = threadIdx.x & 0x1f;
 
@@ -48,7 +39,7 @@ __global__ void populate(uchar4 *subindices,
   if (subindex.x == 0xff && subindex.y == 0xff && subindex.z == 0xff) return;
 
   int cellid = subindex.x + XCELLS * (subindex.y + YCELLS * subindex.z);
-  int mystart = _ACCESS(cellstart + cellid);
+  int mystart = __ldg(cellstart + cellid);
   int slot = mystart + subindex.w;
 
   CellEntry myentrycell;
@@ -100,9 +91,9 @@ __global__ void bulk_3tpp(float2 *particles, int np,
 
   if (pid >= np) return;
 
-  float2 dst0 = _ACCESS(particles + 3 * pid + 0);
-  float2 dst1 = _ACCESS(particles + 3 * pid + 1);
-  float2 dst2 = _ACCESS(particles + 3 * pid + 2);
+  float2 dst0 = __ldg(particles + 3 * pid + 0);
+  float2 dst1 = __ldg(particles + 3 * pid + 1);
+  float2 dst2 = __ldg(particles + 3 * pid + 2);
 
   int scan1, scan2, ncandidates, spidbase;
   int deltaspid1, deltaspid2;
@@ -168,9 +159,9 @@ __global__ void bulk_3tpp(float2 *particles, int np,
       continue;
 
     int sentry = 3 * spid;
-    float2 stmp0 = _ACCESS(csolutes[soluteid] + sentry);
-    float2 stmp1 = _ACCESS(csolutes[soluteid] + sentry + 1);
-    float2 stmp2 = _ACCESS(csolutes[soluteid] + sentry + 2);
+    float2 stmp0 = __ldg(csolutes[soluteid] + sentry);
+    float2 stmp1 = __ldg(csolutes[soluteid] + sentry + 1);
+    float2 stmp2 = __ldg(csolutes[soluteid] + sentry + 2);
 
     float myrandnr = Logistic::mean0var1(seed, pid, spid);
 

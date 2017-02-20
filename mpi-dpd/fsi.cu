@@ -32,15 +32,6 @@ namespace KernelsFSI
         void interactions_3tpp(const float2 * const particles, const int np, const int nsolvent,
                 float * const acc, float * const accsolvent, const float seed)
         {
-#if !defined(__CUDA_ARCH__)
-#warning __CUDA_ARCH__ not defined! assuming 350
-#define _ACCESS(x) __ldg(x)
-#elif __CUDA_ARCH__ >= 350
-#define _ACCESS(x) __ldg(x)
-#else
-#define _ACCESS(x) (*(x))
-#endif
-
             const int gid = threadIdx.x + blockDim.x * blockIdx.x;
             const int pid = gid / 3;
             const int zplane = gid % 3;
@@ -48,9 +39,9 @@ namespace KernelsFSI
             if (pid >= np)
                 return;
 
-            const float2 dst0 = _ACCESS(particles + 3 * pid + 0);
-            const float2 dst1 = _ACCESS(particles + 3 * pid + 1);
-            const float2 dst2 = _ACCESS(particles + 3 * pid + 2);
+            const float2 dst0 = __ldg(particles + 3 * pid + 0);
+            const float2 dst1 = __ldg(particles + 3 * pid + 1);
+            const float2 dst2 = __ldg(particles + 3 * pid + 2);
 
             int scan1, scan2, ncandidates, spidbase;
             int deltaspid1, deltaspid2;
