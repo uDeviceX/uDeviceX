@@ -10,16 +10,20 @@
  *  before getting a written permission from the author of this file.
  */
 
-#include <mpi.h>
-#include <rbc-cuda.h>
-#include <vector>
-#include <mpi.h>
-#include ".conf.h" /* configuration file (copy from .conf.test.h) */
-#include "common.h"
-#include "redistribute-rbcs.h"
-#include "minmax.h"
-#include "geom-wrapper.h"
-
+namespace RedistRBC {
+  
+class RedistributeRBCs {
+public:
+  void _compute_extents(Particle *xyzuvw, int nrbcs, cudaStream_t stream);
+  void _post_recvcount();
+  RedistributeRBCs(MPI_Comm comm);
+  void extent(Particle *xyzuvw, int nrbcs, cudaStream_t stream);
+  void pack_sendcount(Particle *xyzuvw, int nrbcs, cudaStream_t stream);
+  int post();
+  void unpack(Particle *xyzuvw, int nrbcs, cudaStream_t stream);
+  ~RedistributeRBCs();
+};
+  
 RedistributeRBCs::RedistributeRBCs(MPI_Comm _cartcomm) {
   nvertices = CudaRBC::get_nvertices();
   CudaRBC::Extent host_extent;
@@ -33,6 +37,7 @@ RedistributeRBCs::RedistributeRBCs(MPI_Comm _cartcomm) {
 		1, 1, 1);
   MPI_CHECK(MPI_Comm_dup(_cartcomm, &cartcomm));
   MPI_CHECK(MPI_Comm_rank(cartcomm, &myrank));
+  int dims[3];
   MPI_CHECK(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
 
   rankneighbors[0] = myrank;
@@ -254,4 +259,5 @@ void RedistributeRBCs::unpack(Particle *xyzuvw, int nrbcs,
   _post_recvcount();
 }
 
-RedistributeRBCs::~RedistributeRBCs() { MPI_CHECK(MPI_Comm_free(&cartcomm)); }
+RedistributeRBCs::~RedistributeRBCs() {MPI_CHECK(MPI_Comm_free(&cartcomm));}
+}

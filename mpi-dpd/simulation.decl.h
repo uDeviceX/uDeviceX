@@ -7,7 +7,7 @@ SimpleDeviceBuffer<float4 > *xyzouvwo;
 SimpleDeviceBuffer<ushort4> *xyzo_half;
 
 CellLists* cells;
-RedistributeRBCs* redistribute_rbcs;
+RedistRBC::RedistributeRBCs* redistribute_rbcs;
 
 ComputeDPD* dpd;
 SoluteExchange* solutex;

@@ -25,7 +25,6 @@
 #include "solute-exchange.h"
 #include "fsi.h"
 #include "contact.h"
-#include "redistribute-rbcs.h"
 #include "io.h"
 #include "simulation.h"
 #include "dpd-forces.h"
@@ -33,9 +32,13 @@
 #include "geom-wrapper.h"
 #include "common-kernels.h"
 #include "scan.h"
+#include "minmax.h"
 
 #include <thrust/device_vector.h>
 #include <thrust/sort.h>
+
+#include "redistribute-rbcs.decl.h"
+#include "redistribute-rbcs.impl.h"
 
 #include "redistribute-particles.decl.h"
 #include "redistribute-particles.impl.h"

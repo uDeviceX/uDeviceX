@@ -427,7 +427,7 @@ static void sim_update_and_bounce() {
 
 void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   cartcomm = cartcomm_; activecomm = activecomm_;
-  redistribute_rbcs = new RedistributeRBCs(cartcomm);
+  redistribute_rbcs = new RedistRBC::RedistributeRBCs(cartcomm);
   dpd     = new ComputeDPD(cartcomm);
   fsi     = new ComputeFSI(cartcomm);
   solutex = new SoluteExchange(cartcomm);
