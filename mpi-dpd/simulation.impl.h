@@ -441,8 +441,6 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   xyzo_half = new SimpleDeviceBuffer<ushort4>;
   particles_pingpong[0] = new ParticleArray();
   particles_pingpong[1] = new ParticleArray();
-  //  particles             = new ParticleArray();
-  //  newparticles          = new ParticleArray();
   if (rbcs) rbcscoll    = new ParticleArray();
 
   trunk = new Logistic::KISS;
@@ -455,7 +453,6 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   MPI_CHECK(MPI_Comm_rank(activecomm, &rank));
 
   solutex->attach_halocomputation(fsi);
-
   if (contactforces) solutex->attach_halocomputation(contact);
 
   int dims[3], periods[3]; /* `coords' is global */
