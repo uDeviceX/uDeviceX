@@ -102,12 +102,12 @@ static void sim_redistribute() {
   CC(cudaPeekAtLastError());
 
   if (rbcscoll)
-    redistribute_rbcs->extent(rbcscoll->pp.D, ncells, mainstream);
+    RedistRBC::extent(rbcscoll->pp.D, ncells, mainstream);
 
   RedistPart::send();
 
   if (rbcscoll)
-    redistribute_rbcs->pack_sendcount(rbcscoll->pp.D, ncells, mainstream);
+    RedistRBC::pack_sendcount(rbcscoll->pp.D, ncells, mainstream);
 
   RedistPart::bulk(particles->S, cells->start, cells->count, mainstream);
 
@@ -117,7 +117,7 @@ static void sim_redistribute() {
 
   int nrbcs;
   if (rbcs)
-    nrbcs = redistribute_rbcs->post();
+    nrbcs = RedistRBC::post();
 
   if (rbcs)
     rbc_resize(rbcscoll, nrbcs);
@@ -136,7 +136,7 @@ static void sim_redistribute() {
   swap(particles, newparticles);
 
   if (rbcs)
-    redistribute_rbcs->unpack(rbcscoll->pp.D, ncells, mainstream);
+    RedistRBC::unpack(rbcscoll->pp.D, ncells, mainstream);
 
   CC(cudaPeekAtLastError());
 }
@@ -427,7 +427,7 @@ static void sim_update_and_bounce() {
 
 void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   cartcomm = cartcomm_; activecomm = activecomm_;
-  redistribute_rbcs = new RedistRBC::RedistributeRBCs(cartcomm);
+  RedistRBC::redistribute_rbcs_init(cartcomm);
   dpd     = new ComputeDPD(cartcomm);
   fsi     = new ComputeFSI(cartcomm);
   solutex = new SoluteExchange(cartcomm);
@@ -575,8 +575,8 @@ static void sim_lockstep() {
   int newnp = RedistPart::recv_count(mainstream);
   CC(cudaPeekAtLastError());
   if (rbcscoll) {
-    redistribute_rbcs->extent(rbcscoll->pp.D, ncells, mainstream);
-    redistribute_rbcs->pack_sendcount(rbcscoll->pp.D, ncells, mainstream);
+    RedistRBC::extent(rbcscoll->pp.D, ncells, mainstream);
+    RedistRBC::pack_sendcount(rbcscoll->pp.D, ncells, mainstream);
   }
   pa_resize(newparticles, newnp);
   xyzouvwo->resize(newnp * 2);
@@ -587,12 +587,12 @@ static void sim_lockstep() {
   CC(cudaPeekAtLastError());
   swap(particles, newparticles);
   int nrbcs;
-  if (rbcscoll) nrbcs = redistribute_rbcs->post();
+  if (rbcscoll) nrbcs = RedistRBC::post();
 
   if (rbcscoll) rbc_resize(rbcscoll, nrbcs);
   CC(cudaPeekAtLastError());
   if (rbcscoll)
-    redistribute_rbcs->unpack(rbcscoll->pp.D, ncells, mainstream);
+    RedistRBC::unpack(rbcscoll->pp.D, ncells, mainstream);
   CC(cudaPeekAtLastError());
 }
 
@@ -653,7 +653,7 @@ void sim_close() {
   delete solutex;
   delete fsi;
   delete dpd;
-  delete redistribute_rbcs;
+  if (rbcs) RedistRBC::redistribute_rbcs_close();
 
   delete particles_datadump;
   delete accelerations_datadump;

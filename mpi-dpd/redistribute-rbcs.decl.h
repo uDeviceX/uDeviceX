@@ -12,4 +12,7 @@ namespace RedistRBC {
 
   int nvertices, arriving, notleaving;
   cudaEvent_t evextents;
+
+  SimpleDeviceBuffer<float *> _ddestinations;
+  SimpleDeviceBuffer<const float *> _dsources;
 }

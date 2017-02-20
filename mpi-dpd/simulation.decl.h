@@ -7,8 +7,6 @@ SimpleDeviceBuffer<float4 > *xyzouvwo;
 SimpleDeviceBuffer<ushort4> *xyzo_half;
 
 CellLists* cells;
-RedistRBC::RedistributeRBCs* redistribute_rbcs;
-
 ComputeDPD* dpd;
 SoluteExchange* solutex;
 ComputeFSI* fsi;

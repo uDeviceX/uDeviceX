@@ -11,20 +11,17 @@
  */
 
 namespace RedistRBC {
+void _post_recvcount() {
+  recv_counts[0] = 0;
+  for (int i = 1; i < 27; ++i) {
+    MPI_Request req;
+    MPI_CHECK(MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, anti_rankneighbors[i],
+			i + 1024, cartcomm, &req));
+    recvcountreq.push_back(req);
+  }
+}
   
-class RedistributeRBCs {
-public:
-  void _compute_extents(Particle *xyzuvw, int nrbcs, cudaStream_t stream);
-  void _post_recvcount();
-  RedistributeRBCs(MPI_Comm comm);
-  void extent(Particle *xyzuvw, int nrbcs, cudaStream_t stream);
-  void pack_sendcount(Particle *xyzuvw, int nrbcs, cudaStream_t stream);
-  int post();
-  void unpack(Particle *xyzuvw, int nrbcs, cudaStream_t stream);
-  ~RedistributeRBCs();
-};
-  
-RedistributeRBCs::RedistributeRBCs(MPI_Comm _cartcomm) {
+void redistribute_rbcs_init(MPI_Comm _cartcomm) {
   nvertices = CudaRBC::get_nvertices();
   CudaRBC::Extent host_extent;
   CudaRBC::setup(nvertices, host_extent);
@@ -54,7 +51,7 @@ RedistributeRBCs::RedistributeRBCs(MPI_Comm _cartcomm) {
   _post_recvcount();
 }
 
-void RedistributeRBCs::_compute_extents(Particle *xyzuvw,
+void _compute_extents(Particle *xyzuvw,
 					int nrbcs, cudaStream_t stream) {
   if (nrbcs)
     minmax(xyzuvw, nvertices, nrbcs, minextents.devptr, maxextents.devptr,
@@ -85,9 +82,6 @@ __global__ void pack_all_kernel(const int nrbcs, const int nvertices,
 
 }
 
-SimpleDeviceBuffer<float *> _ddestinations;
-SimpleDeviceBuffer<const float *> _dsources;
-
 void pack_all(cudaStream_t stream, const int nrbcs, const int nvertices,
 	      const float **const sources, float **const destinations) {
   if (nrbcs == 0) return;
@@ -115,7 +109,7 @@ void pack_all(cudaStream_t stream, const int nrbcs, const int nvertices,
 }
 }
 
-void RedistributeRBCs::extent(Particle *xyzuvw, int nrbcs,
+void extent(Particle *xyzuvw, int nrbcs,
 			      cudaStream_t stream) {
   minextents.resize(nrbcs);
   maxextents.resize(nrbcs);
@@ -125,7 +119,7 @@ void RedistributeRBCs::extent(Particle *xyzuvw, int nrbcs,
   CC(cudaEventRecord(evextents, stream));
 }
 
-void RedistributeRBCs::pack_sendcount(Particle *xyzuvw,
+void pack_sendcount(Particle *xyzuvw,
 				      int nrbcs, cudaStream_t stream) {
   CC(cudaEventSynchronize(evextents));
   std::vector<int> reordering_indices[27];
@@ -171,17 +165,7 @@ void RedistributeRBCs::pack_sendcount(Particle *xyzuvw,
 			&sendcountreq[i - 1]));
 }
 
-void RedistributeRBCs::_post_recvcount() {
-  recv_counts[0] = 0;
-  for (int i = 1; i < 27; ++i) {
-    MPI_Request req;
-    MPI_CHECK(MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, anti_rankneighbors[i],
-			i + 1024, cartcomm, &req));
-    recvcountreq.push_back(req);
-  }
-}
-
-int RedistributeRBCs::post() {
+int post() {
   {
     MPI_Status statuses[recvcountreq.size()];
     MPI_CHECK(MPI_Waitall(recvcountreq.size(), &recvcountreq.front(), statuses));
@@ -236,7 +220,7 @@ __global__ void shift(const Particle *const psrc, const int np, const int code,
 }
 }
 
-void RedistributeRBCs::unpack(Particle *xyzuvw, int nrbcs,
+void unpack(Particle *xyzuvw, int nrbcs,
 			      cudaStream_t stream) {
   MPI_Status statuses[26];
   MPI_CHECK(MPI_Waitall(recvreq.size(), &recvreq.front(), statuses));
@@ -259,5 +243,5 @@ void RedistributeRBCs::unpack(Particle *xyzuvw, int nrbcs,
   _post_recvcount();
 }
 
-RedistributeRBCs::~RedistributeRBCs() {MPI_CHECK(MPI_Comm_free(&cartcomm));}
+void redistribute_rbcs_close() {MPI_CHECK(MPI_Comm_free(&cartcomm));}
 }
