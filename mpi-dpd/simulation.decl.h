@@ -8,8 +8,6 @@ SimpleDeviceBuffer<ushort4> *xyzo_half;
 CellLists* cells;
 ComputeDPD* dpd;
 SoluteExchange* solutex;
-ComputeFSI* fsi;
-ComputeContact* contact;
 
 bool wall_created = false;
 bool sim_is_done = false;

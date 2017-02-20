@@ -1,6 +1,3 @@
-extern ComputeFSI* fsi;
-extern ComputeContact* contact;
-
 namespace SolutePUP {
   __constant__ int ccapacities[26], *scattered_indices[26];
 }
