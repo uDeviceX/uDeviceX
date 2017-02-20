@@ -1,6 +1,7 @@
 namespace RedistRBC {
   SimpleDeviceBuffer<Particle>* bulk;
-  PinnedHostBuffer<Particle> *halo_recvbufs[27], *halo_sendbufs[27];
+#define HALO_BUF_SIZE 27
+  PinnedHostBuffer<Particle> *halo_recvbufs[HALO_BUF_SIZE], *halo_sendbufs[HALO_BUF_SIZE];
   PinnedHostBuffer<float3> *minextents, *maxextents;
 
   MPI_Comm cartcomm;

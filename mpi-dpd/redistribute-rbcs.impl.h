@@ -1,3 +1,4 @@
+
 /*
  *  redistribute-rbcs.cu
  *  Part of uDeviceX/mpi-dpd/
@@ -22,8 +23,12 @@ void _post_recvcount() {
 }
 
 void redistribute_rbcs_init(MPI_Comm _cartcomm) {
-
-
+  bulk = new SimpleDeviceBuffer<Particle>;
+  for (int i = 0; i < HALO_BUF_SIZE; i++) halo_recvbufs[i] = new PinnedHostBuffer<Particle>;
+  for (int i = 0; i < HALO_BUF_SIZE; i++) halo_sendbufs[i] = new PinnedHostBuffer<Particle>;
+  minextents = new PinnedHostBuffer<float3>;
+  maxextents = new PinnedHostBuffer<float3>;
+    
   nvertices = CudaRBC::get_nvertices();
   CudaRBC::Extent host_extent;
   CudaRBC::setup(nvertices, host_extent);
@@ -245,5 +250,13 @@ void unpack(Particle *xyzuvw, int nrbcs,
   _post_recvcount();
 }
 
-void redistribute_rbcs_close() {MPI_CHECK(MPI_Comm_free(&cartcomm));}
+void redistribute_rbcs_close() {
+  MPI_CHECK(MPI_Comm_free(&cartcomm));
+  delete bulk;
+  for (int i = 0; i < HALO_BUF_SIZE; i++) delete halo_recvbufs[i];
+  for (int i = 0; i < HALO_BUF_SIZE; i++) delete halo_sendbufs[i];
+  delete minextents;
+  delete maxextents;
+}
+
 }
