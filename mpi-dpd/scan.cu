@@ -185,7 +185,7 @@ __global__ void gexscan(uint4 *vin, unsigned int *offs, uint4 *vout, int n) {
     return;
 }
 
-void scan(const unsigned char * const input, const int size, cudaStream_t stream, uint * const output)
+void scan(unsigned char *input, int size, cudaStream_t stream, uint *output)
 {
     enum { THREADS = 128 } ;
 

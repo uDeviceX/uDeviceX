@@ -14,9 +14,7 @@ NVCCFLAGS += -I../cuda-dpd -I../cuda-rbc
 LIBS      += -lcuda-dpd -lcuda-rbc -lcudart
 
 OBJS = dpd.o fsi.o contact.o solvent-exchange.o \
-common.o io.o scan.o \
-minmax.o last_bit_float.o \
-dpd-forces.o simulation.o main.o
+common.o io.o scan.o minmax.o last_bit_float.o dpd-forces.o simulation.o main.o
 
 ifeq ($(h5part),0)
 NVCCFLAGS += -DNO_H5PART

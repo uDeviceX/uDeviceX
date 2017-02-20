@@ -1,4 +1,2 @@
-
-
-void scan(const unsigned char * const input, const int size, cudaStream_t stream, uint * const output);
+void scan(unsigned char *input, int size, cudaStream_t stream, uint *output);
 
