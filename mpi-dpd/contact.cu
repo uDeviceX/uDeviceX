@@ -40,18 +40,6 @@ void ComputeContact::build_cells(std::vector<ParticlesWrap> wsolutes,
 
   CC(cudaMemsetAsync(cellscount.D, 0, sizeof(int) * cellscount.S, stream));
 
-#ifndef NDEBUG
-  CC(cudaMemsetAsync(cellsentries.D, 0xff, sizeof(int) * cellsentries.capacity,
-                     stream));
-  CC(cudaMemsetAsync(subindices.D, 0xff, sizeof(int) * subindices.capacity,
-                     stream));
-  CC(cudaMemsetAsync(compressed_cellscount.D, 0xff,
-                     sizeof(unsigned char) * compressed_cellscount.capacity,
-                     stream));
-  CC(cudaMemsetAsync(cellsstart.D, 0xff, sizeof(int) * cellsstart.capacity,
-                     stream));
-#endif
-
   CC(cudaPeekAtLastError());
 
   int ctr = 0;
