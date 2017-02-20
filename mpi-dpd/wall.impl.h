@@ -82,7 +82,7 @@ namespace SolidWallsKernel {
     return szyx;
   }
 
-  /* within the rescaled texel width error */  
+  /* within the rescaled texel width error */
   __device__ float cheap_sdf(float x, float y, float z)  {
     int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
     int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
@@ -455,7 +455,7 @@ struct FieldSampler {
 		int g[3];
 		for (int c = 0; c < 3; ++c)
 		  g[c] = (l[c] - 1 + anchor[c] + N[c]) % N[c];
-		
+
 		s += w[0][sx] * DDD(g[X], g[Y], g[Z]);
 	      }
 	      tmp[sz][sy] = s;
@@ -564,11 +564,11 @@ void wall_init(Particle *const p, const int n,
   cudaChannelFormatDesc fmt = cudaCreateChannelDesc<float>();
   CC(cudaMalloc3DArray
      (&arrSDF, &fmt, make_cudaExtent(XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE)));
-      
+
   cudaMemcpy3DParms copyParams = {0};
   copyParams.srcPtr = make_cudaPitchedPtr
     ((void *)field, XTEXTURESIZE * sizeof(float), XTEXTURESIZE, YTEXTURESIZE);
-  
+
   copyParams.dstArray = arrSDF;
   copyParams.extent = make_cudaExtent(XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE);
   copyParams.kind = cudaMemcpyHostToDevice;
@@ -585,7 +585,7 @@ void wall_init(Particle *const p, const int n,
 
   SolidWallsKernel::fill_keys<<<(n + 127) / 128, 128>>>
     (p, n, thrust::raw_pointer_cast(&keys[0]));
-  
+
   CC(cudaPeekAtLastError());
 
   thrust::sort_by_key(keys.begin(), keys.end(),
@@ -738,7 +738,7 @@ void wall_bounce(Particle *const p, const int n, cudaStream_t stream) {
   if (n > 0)
     SolidWallsKernel::bounce<<<(n + 127) / 128, 128, 0, stream>>>
       ((float2 *)p, n, dt);
-  
+
   CC(cudaPeekAtLastError());
 }
 
