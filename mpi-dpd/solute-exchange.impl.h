@@ -1,3 +1,4 @@
+namespace SolEx {
 SoluteExchange::SoluteExchange(MPI_Comm _cartcomm) {
   iterationcount = -1;
   packstotalstart = new SimpleDeviceBuffer<int>(27);
@@ -341,43 +342,6 @@ void SoluteExchange::post_a() {
 			&reqsendA[i]));
 }
 
-namespace SolutePUP {
-__constant__ float *recvbags[26];
-
-__global__ void unpack(float *accelerations, int nparticles) {
-  int npack_padded = cpaddedstarts[26];
-
-  for (int gid = threadIdx.x + blockDim.x * blockIdx.x; gid < 3 * npack_padded;
-       gid += blockDim.x * gridDim.x) {
-    int pid = gid / 3;
-
-    if (pid >= npack_padded) return;
-
-    int key9 =
-	9 * ((int)(pid >= cpaddedstarts[9]) + (int)(pid >= cpaddedstarts[18]));
-
-    int key3 = 3 * ((int)(pid >= cpaddedstarts[key9 + 3]) +
-			  (int)(pid >= cpaddedstarts[key9 + 6]));
-
-    int key1 = (int)(pid >= cpaddedstarts[key9 + key3 + 1]) +
-		     (int)(pid >= cpaddedstarts[key9 + key3 + 2]);
-
-    int code = key9 + key3 + key1;
-    int lpid = pid - cpaddedstarts[code];
-
-    if (lpid >= ccounts[code]) continue;
-
-    int component = gid % 3;
-
-    int entry = coffsets[code] + lpid;
-    float myval = _ACCESS(recvbags[code] + component + 3 * entry);
-    int dpid = _ACCESS(scattered_indices[code] + entry);
-
-    atomicAdd(accelerations + 3 * dpid + component, myval);
-  }
-}
-}
-
 void SoluteExchange::recv_a(cudaStream_t stream) {
   CC(cudaPeekAtLastError());
 
@@ -429,4 +393,5 @@ SoluteExchange::~SoluteExchange() {
   delete packsoffset;
   delete packbuf;
   delete host_packbuf;
+}
 }

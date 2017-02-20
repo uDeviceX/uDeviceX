@@ -50,6 +50,7 @@ public:
   int capacity() const { return scattered_indices.capacity;}
 };
 
+namespace SolEx {
 class SoluteExchange {
 public:
   MPI_Comm cartcomm;
@@ -124,3 +125,4 @@ public:
   void recv_a(cudaStream_t stream);
   ~SoluteExchange();
 };
+}

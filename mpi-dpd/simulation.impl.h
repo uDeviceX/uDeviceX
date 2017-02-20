@@ -430,7 +430,7 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   RedistRBC::redistribute_rbcs_init(cartcomm);
   dpd     = new ComputeDPD(cartcomm);
   fsi     = new ComputeFSI(cartcomm);
-  solutex = new SoluteExchange(cartcomm);
+  solutex = new SolEx::SoluteExchange(cartcomm);
   contact = new ComputeContact(cartcomm);
   cells   = new CellLists(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
 

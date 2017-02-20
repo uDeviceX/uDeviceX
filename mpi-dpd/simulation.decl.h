@@ -7,7 +7,7 @@ SimpleDeviceBuffer<ushort4> *xyzo_half;
 
 CellLists* cells;
 ComputeDPD* dpd;
-SoluteExchange* solutex;
+SolEx::SoluteExchange* solutex;
 
 bool wall_created = false;
 bool sim_is_done = false;
