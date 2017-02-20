@@ -22,7 +22,6 @@
 #include "common.h"
 #include "solvent-exchange.h"
 #include "dpd.h"
-#include "solute-exchange.h"
 #include "fsi.h"
 #include "contact.h"
 #include "io.h"
@@ -48,6 +47,9 @@
 
 #include "wall.decl.h"
 #include "wall.impl.h"
+
+#include "solute-exchange.decl.h"
+#include "solute-exchange.cu"
 
 #include "simulation.decl.h"
 #include "simulation.impl.h"

@@ -17,7 +17,6 @@
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */
 #include "common.h"
 #include "common-kernels.h"
-#include "solute-exchange.h"
 #include "fsi.h"
 #include "dpd-forces.h"
 #include "last_bit_float.h"

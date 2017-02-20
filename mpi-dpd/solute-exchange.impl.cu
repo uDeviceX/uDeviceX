@@ -1,19 +1,3 @@
-/*
- *  solute-exchange.cu
- *  Part of uDeviceX/mpi-dpd/
- */
-
-#include <dpd-rng.h>
-#include <vector>
-#include <cstdio>
-#include <mpi.h>
-#include ".conf.h" /* configuration file (copy from .conf.test.h) */
-#include "common.h"
-#include "common-kernels.h"
-#include "solute-exchange.h"
-#include "fsi.h"
-#include "contact.h"
-
 extern ComputeFSI* fsi;
 extern ComputeContact* contact;
 

@@ -19,7 +19,6 @@
 #include "common.h"
 #include "common-kernels.h"
 #include "scan.h"
-#include "solute-exchange.h"
 #include "contact.h"
 #include "dpd-forces.h"
 #include "last_bit_float.h"

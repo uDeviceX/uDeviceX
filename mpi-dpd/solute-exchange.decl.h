@@ -1,10 +1,3 @@
-/*
- *  solute-exchange.h
- *  Part of uDeviceX/mpi-dpd/
- *
- *  Created and authored by Diego Rossinelli on 2014-12-02.
- *  Copyright 2015. All rights reserved. */
-
 enum {
   TAGBASE_C = 113, TAGBASE_P = 365, TAGBASE_A = 668,
   TAGBASE_P2 = 1055, TAGBASE_A2 = 1501
