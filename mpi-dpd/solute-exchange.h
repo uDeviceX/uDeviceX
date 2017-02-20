@@ -26,11 +26,42 @@ public:
   void update(int val) { data[count++ % N] = ::max(0, val); }
   int max() const {
     int retval = 0;
-
     for (int i = 0; i < min(N, count); ++i) retval = ::max(data[i], retval);
-
     return retval;
   }
+};
+
+class RemoteHalo {
+  TimeSeriesWindow history;
+public:
+  SimpleDeviceBuffer<Particle> dstate;
+  PinnedHostBuffer<Particle> hstate;
+  PinnedHostBuffer<Acceleration> result;
+  std::vector<Particle> pmessage;
+
+  void preserve_resize(int n) {
+    dstate.resize(n);
+    hstate.preserve_resize(n);
+    result.resize(n);
+    history.update(n);
+  }
+  int expected() const {return (int)ceil(history.max() * 1.1);}
+  int capacity() const {return dstate.capacity; }
+};
+
+class LocalHalo {
+  TimeSeriesWindow history;
+public:
+  SimpleDeviceBuffer<int> scattered_indices;
+  PinnedHostBuffer<Acceleration> result;
+
+  void resize(int n) {
+    scattered_indices.resize(n);
+    result.resize(n);
+  }
+  void update() { history.update(result.size);}
+  int expected() const { return (int)ceil(history.max() * 1.1);}
+  int capacity() const { return scattered_indices.capacity;}
 };
 
 class SoluteExchange {
@@ -48,43 +79,8 @@ public:
   std::vector<MPI_Request> reqsendC, reqrecvC, reqsendP, reqrecvP, reqsendA,
       reqrecvA;
 
-  class RemoteHalo {
-    TimeSeriesWindow history;
-  public:
-    SimpleDeviceBuffer<Particle> dstate;
-    PinnedHostBuffer<Particle> hstate;
-    PinnedHostBuffer<Acceleration> result;
-    std::vector<Particle> pmessage;
-
-    void preserve_resize(int n) {
-      dstate.resize(n);
-      hstate.preserve_resize(n);
-      result.resize(n);
-      history.update(n);
-    }
-    int expected() const { return (int)ceil(history.max() * 1.1); }
-    int capacity() const { return dstate.capacity; }
-  } remote[26];
-
-  class LocalHalo {
-    TimeSeriesWindow history;
-
-  public:
-    SimpleDeviceBuffer<int> scattered_indices;
-    PinnedHostBuffer<Acceleration> result;
-
-    void resize(int n) {
-      scattered_indices.resize(n);
-      result.resize(n);
-    }
-
-    void update() { history.update(result.size); }
-
-    int expected() const { return (int)ceil(history.max() * 1.1); }
-
-    int capacity() const { return scattered_indices.capacity; }
-
-  } local[26];
+  RemoteHalo remote[26];
+  LocalHalo  local[26];
 
   void _adjust_packbuffers() {
     int s = 0;
