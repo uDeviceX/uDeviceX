@@ -1,3 +1,4 @@
+namespace Contact {
 class ComputeContact {
  public:
   int nsolutes;
@@ -11,3 +12,4 @@ class ComputeContact {
   void bulk(std::vector<ParticlesWrap> wsolutes, cudaStream_t stream);
   void halo(ParticlesWrap solutes[26], cudaStream_t stream);
 };
+}

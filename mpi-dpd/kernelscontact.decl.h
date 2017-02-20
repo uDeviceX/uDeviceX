@@ -17,4 +17,8 @@ namespace KernelsContact {
   __constant__ int cnsolutes[maxsolutes];
   __constant__ const float2 *csolutes[maxsolutes];
   __constant__ float *csolutesacc[maxsolutes];
+
+  __constant__ int packstarts_padded[27], packcount[26];
+  __constant__ Particle *packstates[26];
+  __constant__ Acceleration *packresults[26];
 }
