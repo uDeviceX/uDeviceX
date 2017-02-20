@@ -282,10 +282,11 @@ struct PinnedHostBuffer
   }
 };
 
-//container for the cell lists, which contains only two integer vectors of size ncells.
-//the start[cell-id] array gives the entry in the particle array associated to first particle belonging to cell-id
-//count[cell-id] tells how many particles are inside cell-id.
-//building the cell lists involve a reordering of the particle array (!)
+/* container for the cell lists, which contains only two integer
+vectors of size ncells.  the start[cell-id] array gives the entry in
+the particle array associated to first particle belonging to cell-id
+count[cell-id] tells how many particles are inside cell-id.  building
+the cell lists involve a reordering of the particle array (!) */
 struct CellLists
 {
   const int ncells, LX, LY, LZ;
