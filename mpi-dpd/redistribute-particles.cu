@@ -24,11 +24,9 @@
 #define WARPSIZE 32
 #endif
 
-using namespace std;
-
 namespace RedistributeParticlesKernels {
-    __constant__ RedistributeParticles::PackBuffer pack_buffers[27];
-    __constant__ RedistributeParticles::UnpackBuffer unpack_buffers[27];
+    __constant__ PackBuffer pack_buffers[27];
+    __constant__ UnpackBuffer unpack_buffers[27];
     __device__ int pack_count[27], pack_start_padded[28];
     __constant__ int unpack_start[28], unpack_start_padded[28];
     __device__ bool failed;

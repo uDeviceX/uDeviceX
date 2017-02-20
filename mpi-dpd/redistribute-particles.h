@@ -13,19 +13,19 @@
 extern int basetag;
 extern float safety_factor;
 extern MPI_Comm cartcomm;
+struct UnpackBuffer {
+  float2 * buffer;
+  int capacity;
+};
+
+struct PackBuffer {
+    float2 * buffer;
+  int capacity;
+  int * scattered_indices;
+};
 
 class RedistributeParticles {
 public:
-  struct UnpackBuffer {
-    float2 * buffer;
-    int capacity;
-  };
-
-  struct PackBuffer {
-    float2 * buffer;
-    int capacity;
-    int * scattered_indices;
-  };
 
   void pack(Particle * p, int n, cudaStream_t stream);
   void send();
