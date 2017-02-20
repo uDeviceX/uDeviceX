@@ -1,4 +1,3 @@
-/**** from simulation.h ****/
 ParticleArray *particles_pingpong[2];
 ParticleArray *particles, *newparticles;
 ParticleArray *rbcscoll;

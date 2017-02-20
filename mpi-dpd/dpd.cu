@@ -1,17 +1,4 @@
-/*
- *  dpd-interactions.cu
- *  Part of uDeviceX/mpi-dpd/
- *
- *  Created and authored by Diego Rossinelli on 2015-03-04.
- *  Copyright 2015. All rights reserved.
- *
- *  Users are NOT authorized
- *  to employ the present software for their own publications
- *  before getting a written permission from the author of this file.
- */
-
 #include <algorithm>
-
 #include <cuda-dpd.h>
 #include <string>
 #include <dpd-rng.h>
