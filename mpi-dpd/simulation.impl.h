@@ -591,7 +591,7 @@ static void sim_lockstep() {
 }
 
 void sim_run() {
-  if (rank == 0 && !walls) printf("simulation consists of %ll steps\n", nsteps);
+  if (rank == 0 && !walls) printf("simulation consists of %ld steps\n", nsteps);
   sim_redistribute();
   sim_forces();
   if (!walls && pushtheflow) driving_acceleration = hydrostatic_a;
