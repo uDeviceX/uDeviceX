@@ -1,0 +1,12 @@
+A wrapper for python to use with visit
+
+* Installation
+#+BEGIN_SRC sh
+./install.sh
+#+END_SRC
+
+* Usage
+#+BEGIN_SRC sh
+cd examples
+vpython.sh -i examples/simple.py
+#+END_SRC

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Convert a list of files in stdin to .visit file [1]
+# [1] http://visitusers.org/index.php?title=.visit_file
+
+clear () {
+    echo "run clear"
+    rm -f $f
+}
+trap "clear; exit" 0 1 2 13 15
+
+f=/tmp/l2v.$$
+cat - > $f
+nf=`awk 'END {print NR}' $f` # number of files
+echo "!NBLOCKS" $nf
+cat $f
