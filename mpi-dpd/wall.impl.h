@@ -503,8 +503,6 @@ void wall_init(Particle *const p, const int n,
   wall_cells = new CellLists(XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL,
 			     YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL,
 			     ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL);
-  //frcs = new SimpleDeviceBuffer<float3>;
-
   int myrank, dims[3], periods[3];
   MPI_CHECK(MPI_Comm_rank(cartcomm, &myrank));
   MPI_CHECK(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
