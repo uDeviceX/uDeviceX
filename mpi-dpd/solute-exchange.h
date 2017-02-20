@@ -20,38 +20,25 @@ class SoluteExchange {
   };
 
 public:
-  
-protected:
   MPI_Comm cartcomm;
-
   int iterationcount;
-
   int nranks, dstranks[26], dims[3], periods[3], coords[3], myrank,
       recv_tags[26], recv_counts[26], send_counts[26];
-
   cudaEvent_t evPpacked, evAcomputed;
-
   SimpleDeviceBuffer<int> packscount, packsstart, packsoffset, packstotalstart;
   PinnedHostBuffer<int> host_packstotalstart, host_packstotalcount;
-
   SimpleDeviceBuffer<Particle> packbuf;
   PinnedHostBuffer<Particle> host_packbuf;
-
   std::vector<ParticlesWrap> wsolutes;
-
   std::vector<MPI_Request> reqsendC, reqrecvC, reqsendP, reqrecvP, reqsendA,
       reqrecvA;
 
   class TimeSeriesWindow {
     static const int N = 200;
-
     int count, data[N];
-
   public:
     TimeSeriesWindow() : count(0) {}
-
     void update(int val) { data[count++ % N] = ::max(0, val); }
-
     int max() const {
       int retval = 0;
 
