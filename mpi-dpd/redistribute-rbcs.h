@@ -28,16 +28,12 @@ public:
   int nvertices, arriving, notleaving;
   cudaEvent_t evextents;
 
-  void _compute_extents(const Particle *const xyzuvw, const int nrbcs,
-                        cudaStream_t stream);
+  void _compute_extents(Particle *xyzuvw, int nrbcs, cudaStream_t stream);
   void _post_recvcount();
-
   RedistributeRBCs(MPI_Comm comm);
-  void extent(const Particle *const xyzuvw, const int nrbcs,
-              cudaStream_t stream);
-  void pack_sendcount(const Particle *const xyzuvw, const int nrbcs,
-                      cudaStream_t stream);
+  void extent(Particle *xyzuvw, int nrbcs, cudaStream_t stream);
+  void pack_sendcount(Particle *xyzuvw, int nrbcs, cudaStream_t stream);
   int post();
-  void unpack(Particle *const xyzuvw, const int nrbcs, cudaStream_t stream);
+  void unpack(Particle *xyzuvw, int nrbcs, cudaStream_t stream);
   ~RedistributeRBCs();
 };

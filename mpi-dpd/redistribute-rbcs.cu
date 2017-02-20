@@ -56,8 +56,8 @@ RedistributeRBCs::RedistributeRBCs(MPI_Comm _cartcomm)
   _post_recvcount();
 }
 
-void RedistributeRBCs::_compute_extents(const Particle *const xyzuvw,
-                                        const int nrbcs, cudaStream_t stream) {
+void RedistributeRBCs::_compute_extents(Particle *xyzuvw,
+                                        int nrbcs, cudaStream_t stream) {
   if (nrbcs)
     minmax(xyzuvw, nvertices, nrbcs, minextents.devptr, maxextents.devptr,
            stream);
@@ -129,7 +129,7 @@ void pack_all(cudaStream_t stream, const int nrbcs, const int nvertices,
 }
 }
 
-void RedistributeRBCs::extent(const Particle *const xyzuvw, const int nrbcs,
+void RedistributeRBCs::extent(Particle *xyzuvw, int nrbcs,
                               cudaStream_t stream) {
   minextents.resize(nrbcs);
   maxextents.resize(nrbcs);
@@ -143,8 +143,8 @@ void RedistributeRBCs::extent(const Particle *const xyzuvw, const int nrbcs,
   CC(cudaEventRecord(evextents, stream));
 }
 
-void RedistributeRBCs::pack_sendcount(const Particle *const xyzuvw,
-                                      const int nrbcs, cudaStream_t stream) {
+void RedistributeRBCs::pack_sendcount(Particle *xyzuvw,
+                                      int nrbcs, cudaStream_t stream) {
   CC(cudaEventSynchronize(evextents));
 
   std::vector<int> reordering_indices[27];
@@ -272,10 +272,6 @@ __global__ void shift(const Particle *const psrc, const int np, const int code,
               (code / 9 + 1) % 3 - 1};
 
   if (pid >= np) return;
-
-#ifndef NDEBUG
-  Particle old = psrc[pid];
-#endif
   Particle pnew = psrc[pid];
 
   const int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
@@ -283,26 +279,10 @@ __global__ void shift(const Particle *const psrc, const int np, const int code,
   for (int c = 0; c < 3; ++c) pnew.x[c] -= d[c] * L[c];
 
   pdst[pid] = pnew;
-
-#ifndef NDEBUG
-  if (check) {
-    int vcode[3];
-    for (int c = 0; c < 3; ++c)
-      vcode[c] = (2 + (pnew.x[c] >= -L[c] / 2) + (pnew.x[c] >= L[c] / 2)) % 3;
-
-    int newcode = vcode[0] + 3 * (vcode[1] + 3 * vcode[2]);
-
-    if (newcode != 0)
-      printf("rank %d) particle %d: ouch: new code is %d %d %d arriving from "
-             "code %d -> %d %d %d \np: %f %f %f (before: %f %f %f)\n",
-             rank, pid, vcode[0], vcode[1], vcode[2], code, d[0], d[1], d[2],
-             pnew.x[0], pnew.x[1], pnew.x[2], old.x[0], old.x[1], old.x[2]);
-  }
-#endif
 }
 }
 
-void RedistributeRBCs::unpack(Particle *const xyzuvw, const int nrbcs,
+void RedistributeRBCs::unpack(Particle *xyzuvw, int nrbcs,
                               cudaStream_t stream) {
   MPI_Status statuses[26];
   MPI_CHECK(MPI_Waitall(recvreq.size(), &recvreq.front(), statuses));
