@@ -51,8 +51,6 @@ public:
 };
 
 namespace SolEx {
-class SoluteExchange {
-public:
   MPI_Comm cartcomm;
   int iterationcount;
   int nranks, dstranks[26], dims[3], periods[3], coords[3], myrank,
@@ -69,6 +67,8 @@ public:
   RemoteHalo remote[26];
   LocalHalo  local[26];
 
+class SoluteExchange {
+public:
   void _adjust_packbuffers() {
     int s = 0;
     for (int i = 0; i < 26; ++i) s += 32 * ((local[i].capacity() + 31) / 32);
@@ -116,7 +116,7 @@ public:
   void _not_nan(float*, int) const {}
   void _pack_attempt(cudaStream_t stream);
   SoluteExchange(MPI_Comm cartcomm);
-  void bind_solutes(std::vector<ParticlesWrap> wsolutes) {this->wsolutes = wsolutes;}
+  void bind_solutes(std::vector<ParticlesWrap> wsolutes_) {wsolutes = wsolutes_;}
   void pack_p(cudaStream_t stream);
   void post_p(cudaStream_t stream, cudaStream_t downloadstream);
   void recv_p(cudaStream_t uploadstream);
