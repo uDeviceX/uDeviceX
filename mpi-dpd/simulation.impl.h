@@ -452,9 +452,6 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   MPI_CHECK(MPI_Comm_size(activecomm, &nranks));
   MPI_CHECK(MPI_Comm_rank(activecomm, &rank));
 
-  solutex->attach_halocomputation(fsi);
-  if (contactforces) solutex->attach_halocomputation(contact);
-
   int dims[3], periods[3]; /* `coords' is global */
   MPI_CHECK(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
   origin = make_float3((0.5 + coords[0]) * XSIZE_SUBDOMAIN,

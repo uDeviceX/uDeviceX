@@ -20,6 +20,16 @@
 #include "common.h"
 #include "common-kernels.h"
 #include "solute-exchange.h"
+#include "fsi.h"
+#include "contact.h"
+
+/**
+  solutex->attach_halocomputation(fsi);
+  if (contactforces) solutex->attach_halocomputation(contact);
+
+*/
+extern ComputeFSI* fsi;
+extern ComputeContact* contact;
 
 namespace SolutePUP {
 __constant__ int ccapacities[26], *scattered_indices[26];
@@ -495,7 +505,10 @@ void SoluteExchange::halo(cudaStream_t uploadstream, cudaStream_t stream) {
 
   CC(cudaStreamSynchronize(uploadstream));
 
-  for (int i = 0; i < visitors.size(); ++i) visitors[i]->halo(halos, stream);
+  /** here was visitor  **/
+  fsi->halo(halos, stream);
+  if (contactforces) contact->halo(halos, stream);
+  /***********************/
 
   CC(cudaPeekAtLastError());
 

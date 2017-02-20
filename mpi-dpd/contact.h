@@ -11,10 +11,7 @@
  */
 
 
-class ComputeContact : public SoluteExchange::Visitor
-{
-  //cudaEvent_t evuploaded;
-
+class ComputeContact {
   int nsolutes;
 
   SimpleDeviceBuffer<uchar4> subindices;

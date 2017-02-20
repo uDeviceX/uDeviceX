@@ -20,10 +20,7 @@ class SoluteExchange {
   };
 
 public:
-  struct Visitor {
-    virtual void halo(ParticlesWrap solutehalos[26], cudaStream_t stream) = 0;
-  };
-
+  
 protected:
   MPI_Comm cartcomm;
 
@@ -44,8 +41,6 @@ protected:
 
   std::vector<MPI_Request> reqsendC, reqrecvC, reqsendP, reqrecvP, reqsendA,
       reqrecvA;
-
-  std::vector<Visitor *> visitors;
 
   class TimeSeriesWindow {
     static const int N = 200;
@@ -172,8 +167,6 @@ public:
   void bind_solutes(std::vector<ParticlesWrap> wsolutes) {
     this->wsolutes = wsolutes;
   }
-
-  void attach_halocomputation(Visitor *visitor) { visitors.push_back(visitor); }
 
   void pack_p(cudaStream_t stream);
 
