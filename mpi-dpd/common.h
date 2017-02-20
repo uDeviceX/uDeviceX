@@ -126,7 +126,7 @@ template<typename T>
 struct SimpleDeviceBuffer {
   int capacity, S;    /* `S' is for size */
   T* D;               /* `D' is for data */
-  SimpleDeviceBuffer(int n = 0): capacity(0), S(0), D(NULL) { resize(n);}
+  explicit SimpleDeviceBuffer(int n = 0): capacity(0), S(0), D(NULL) { resize(n);}
   ~SimpleDeviceBuffer() {
     if (D != NULL) CC(cudaFree(D));
     D = NULL;
@@ -169,7 +169,7 @@ struct SimpleHostBuffer
 
   T * data;
 
-  SimpleHostBuffer(int n = 0): capacity(0), size(0), data(NULL) { resize(n);}
+  explicit SimpleHostBuffer(int n = 0): capacity(0), size(0), data(NULL) { resize(n);}
 
   ~SimpleHostBuffer()
   {
