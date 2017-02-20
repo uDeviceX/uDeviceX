@@ -58,8 +58,6 @@ float4 *solid4;
 cudaArray *arrSDF;
 CellLists *wall_cells;
 
-SimpleDeviceBuffer<float3> *frcs;
-int samples;
 #include "wall.impl.h"
 
 /**** from simulation.h ****/

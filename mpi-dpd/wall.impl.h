@@ -503,7 +503,7 @@ void wall_init(Particle *const p, const int n,
   wall_cells = new CellLists(XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL,
 			     YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL,
 			     ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL);
-  frcs = new SimpleDeviceBuffer<float3>;
+  //frcs = new SimpleDeviceBuffer<float3>;
 
   int myrank, dims[3], periods[3];
   MPI_CHECK(MPI_Comm_rank(cartcomm, &myrank));
@@ -769,18 +769,12 @@ void wall_init(Particle *const p, const int n,
   CC(cudaFree(solid));
 
   CC(cudaPeekAtLastError());
-
-  frcs->resize(round(1.2 * n / 32.0));
-  CC(cudaMemset(frcs->D, 0, frcs->S * sizeof(float3)));
-  samples = 0;
 }
 
 void wall_bounce(Particle *const p, const int n, cudaStream_t stream) {
   if (n > 0)
     SolidWallsKernel::bounce<<<(n + 127) / 128, 128, 0, stream>>>(
 								  (float2 *)p, n, dt);
-
-  samples++;
   CC(cudaPeekAtLastError());
 }
 
@@ -822,6 +816,5 @@ void wall_close () {
   CC(cudaUnbindTexture(SolidWallsKernel::texSDF));
   CC(cudaFreeArray(arrSDF));
 
-  delete frcs;
   delete wall_cells;
 }
