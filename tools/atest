@@ -5,10 +5,13 @@
 
 function init () {
     VERBOSE=1
-    EXIT_ON_FAIL=1
+    EXIT_ON_FAIL=0
 
     # where the reference data for the tests are stored
     REF_DIR="test_data"
+    RES_FILE = REF_DIR "/" "atest.res" # file with status of the test format
+    # testID PASSED
+    # testID FAILED
 }
 
 # format a error message
@@ -123,12 +126,15 @@ $1 == "TEST:" {
     if (!rc)  {
 	ipass++
 	msg(1, " PASSED : " tname)
+	print tname, "PASSED" > RES_FILE
     } else {
 	ifail++
 	msg(0, " FAILED : " tname)
 	msg(0, " Test body:\n\n" body "\n" cmp_command "\n")
 	write_failed_script()
 	msg(0, " Files : `" out_file "` and `" ref_file "` are different")
+	
+	print tname, "FAILED" > RES_FILE
 	if (VERBOSE>=2)
 	    system("diff " out_file " " ref_file)
 	if (EXIT_ON_FAIL)
@@ -139,6 +145,6 @@ $1 == "TEST:" {
 END {
     # output summary
     msg(0, sprintf(" %d/%d test(s) passed", ipass, ipass+ifail))
-    if (icreated)
-	msg(0, sprintf("   %d test(s) created", icreated))
+    if (icreated) msg(0, sprintf("   %d test(s) created", icreated))
+    msg(0, sprintf(" status is in %s"   , RES_FILE))
 }
