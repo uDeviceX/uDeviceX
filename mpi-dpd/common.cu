@@ -33,19 +33,19 @@ void diagnostics(MPI_Comm comm, MPI_Comm cartcomm, Particle * particles, int n, 
             p[c] += particles[i].u[c];
 
     int rank;
-    MPI_CHECK( MPI_Comm_rank(comm, &rank) );
+    MC( MPI_Comm_rank(comm, &rank) );
 
     int dims[3], periods[3], coords[3];
-    MPI_CHECK( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
+    MC( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
 
-    MPI_CHECK( MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &p, rank == 0 ? &p : NULL, 3, MPI_DOUBLE, MPI_SUM, 0, comm) );
+    MC( MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &p, rank == 0 ? &p : NULL, 3, MPI_DOUBLE, MPI_SUM, 0, comm) );
 
     double ke = 0;
     for(int i = 0; i < n; ++i)
         ke += pow(particles[i].u[0], 2) + pow(particles[i].u[1], 2) + pow(particles[i].u[2], 2);
 
-    MPI_CHECK( MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &ke, &ke, 1, MPI_DOUBLE, MPI_SUM, 0, comm) );
-    MPI_CHECK( MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &n, &n, 1, MPI_INT, MPI_SUM, 0, comm) );
+    MC( MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &ke, &ke, 1, MPI_DOUBLE, MPI_SUM, 0, comm) );
+    MC( MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &n, &n, 1, MPI_INT, MPI_SUM, 0, comm) );
 
     double kbt = 0.5 * ke / (n * 3. / 2);
 
@@ -104,5 +104,5 @@ void LocalComm::barrier()
 {
     if (!is_mps_enabled || local_nranks == 1) return;
 
-    MPI_CHECK(MPI_Barrier(local_comm));
+    MC(MPI_Barrier(local_comm));
 }

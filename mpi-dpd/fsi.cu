@@ -12,7 +12,7 @@
 ComputeFSI::ComputeFSI(MPI_Comm comm)
 {
     int myrank;
-    MPI_CHECK( MPI_Comm_rank(comm, &myrank));
+    MC( MPI_Comm_rank(comm, &myrank));
 
     local_trunk = Logistic::KISS(1908 - myrank, 1409 + myrank, 290, 12968);
 

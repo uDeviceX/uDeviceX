@@ -9,7 +9,7 @@ namespace Contact {
     local_trunk = new Logistic::KISS;
   
     int myrank;
-    MPI_CHECK(MPI_Comm_rank(comm, &myrank));
+    MC(MPI_Comm_rank(comm, &myrank));
 
     *local_trunk = Logistic::KISS(7119 - myrank, 187 + myrank, 18278, 15674);
 

@@ -389,7 +389,7 @@ struct FieldSampler {
   int N[3];
   FieldSampler(const char *path, MPI_Comm comm) { /* read sdf file */
     size_t CHUNKSIZE = 1 << 25; int rank;
-    MPI_CHECK(MPI_Comm_rank(comm, &rank));
+    MC(MPI_Comm_rank(comm, &rank));
     if (rank == 0) {
       FILE *fh = fopen(path, "r");
       char line[2048];
@@ -398,8 +398,8 @@ struct FieldSampler {
       fgets(line, sizeof(line), fh);
       sscanf(line, "%d %d %d", &N[0], &N[1], &N[2]);
 
-      MPI_CHECK(MPI_Bcast(N, 3, MPI_INT, 0, comm));
-      MPI_CHECK(MPI_Bcast(extent, 3, MPI_FLOAT, 0, comm));
+      MC(MPI_Bcast(N, 3, MPI_INT, 0, comm));
+      MC(MPI_Bcast(extent, 3, MPI_FLOAT, 0, comm));
 
       int nvoxels = N[0] * N[1] * N[2];
       data = new float[nvoxels];
@@ -407,16 +407,16 @@ struct FieldSampler {
       fclose(fh);
       for (size_t i = 0; i < nvoxels; i += CHUNKSIZE) {
 	size_t s = (i + CHUNKSIZE <= nvoxels) ? CHUNKSIZE : (nvoxels - i);
-	MPI_CHECK(MPI_Bcast(data + i, s, MPI_FLOAT, 0, comm));
+	MC(MPI_Bcast(data + i, s, MPI_FLOAT, 0, comm));
       }
     } else {
-      MPI_CHECK(MPI_Bcast(N, 3, MPI_INT, 0, comm));
-      MPI_CHECK(MPI_Bcast(extent, 3, MPI_FLOAT, 0, comm));
+      MC(MPI_Bcast(N, 3, MPI_INT, 0, comm));
+      MC(MPI_Bcast(extent, 3, MPI_FLOAT, 0, comm));
       int nvoxels = N[0] * N[1] * N[2];
       data = new float[nvoxels];
       for (size_t i = 0; i < nvoxels; i += CHUNKSIZE) {
 	size_t s = (i + CHUNKSIZE <= nvoxels) ? CHUNKSIZE : (nvoxels - i);
-	MPI_CHECK(MPI_Bcast(data + i, s, MPI_FLOAT, 0, comm));
+	MC(MPI_Bcast(data + i, s, MPI_FLOAT, 0, comm));
       }
     }
   }
@@ -485,8 +485,8 @@ void wall_init(Particle *const p, const int n,
 			     YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL,
 			     ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL);
   int myrank, dims[3], periods[3];
-  MPI_CHECK(MPI_Comm_rank(cartcomm, &myrank));
-  MPI_CHECK(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
+  MC(MPI_Comm_rank(cartcomm, &myrank));
+  MC(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
   float *field = new float[XTEXTURESIZE * YTEXTURESIZE * ZTEXTURESIZE];
   FieldSampler sampler("sdf.dat", cartcomm);
   int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
@@ -636,7 +636,7 @@ void wall_init(Particle *const p, const int n,
       int coordsneighbor[3];
       for (int c = 0; c < 3; ++c) coordsneighbor[c] = coords[c] + d[c];
 
-      MPI_CHECK(MPI_Cart_rank(cartcomm, coordsneighbor, dstranks + i));
+      MC(MPI_Cart_rank(cartcomm, coordsneighbor, dstranks + i));
     }
 
     // send local counts - receive remote counts
@@ -645,19 +645,19 @@ void wall_init(Particle *const p, const int n,
 
       MPI_Request reqrecv[26];
       for (int i = 0; i < 26; ++i)
-	MPI_CHECK(MPI_Irecv(remsizes + i, 1, MPI_INTEGER, dstranks[i],
+	MC(MPI_Irecv(remsizes + i, 1, MPI_INTEGER, dstranks[i],
 			    123 + recv_tags[i], cartcomm, reqrecv + i));
 
       int localsize = local.size();
 
       MPI_Request reqsend[26];
       for (int i = 0; i < 26; ++i)
-	MPI_CHECK(MPI_Isend(&localsize, 1, MPI_INTEGER, dstranks[i], 123 + i,
+	MC(MPI_Isend(&localsize, 1, MPI_INTEGER, dstranks[i], 123 + i,
 			    cartcomm, reqsend + i));
 
       MPI_Status statuses[26];
-      MPI_CHECK(MPI_Waitall(26, reqrecv, statuses));
-      MPI_CHECK(MPI_Waitall(26, reqsend, statuses));
+      MC(MPI_Waitall(26, reqrecv, statuses));
+      MC(MPI_Waitall(26, reqsend, statuses));
     }
 
     std::vector<Particle> remote[26];
@@ -668,18 +668,18 @@ void wall_init(Particle *const p, const int n,
 
       MPI_Request reqrecv[26];
       for (int i = 0; i < 26; ++i)
-	MPI_CHECK(MPI_Irecv(remote[i].data(), remote[i].size() * 6, MPI_FLOAT,
+	MC(MPI_Irecv(remote[i].data(), remote[i].size() * 6, MPI_FLOAT,
 			    dstranks[i], 321 + recv_tags[i], cartcomm,
 			    reqrecv + i));
 
       MPI_Request reqsend[26];
       for (int i = 0; i < 26; ++i)
-	MPI_CHECK(MPI_Isend(local.data(), local.size() * 6, MPI_FLOAT,
+	MC(MPI_Isend(local.data(), local.size() * 6, MPI_FLOAT,
 			    dstranks[i], 321 + i, cartcomm, reqsend + i));
 
       MPI_Status statuses[26];
-      MPI_CHECK(MPI_Waitall(26, reqrecv, statuses));
-      MPI_CHECK(MPI_Waitall(26, reqsend, statuses));
+      MC(MPI_Waitall(26, reqrecv, statuses));
+      MC(MPI_Waitall(26, reqsend, statuses));
     }
 
     // select particles within my region [-L / 2 - MARGIN, +L / 2 + MARGIN]

@@ -24,7 +24,8 @@ inline void cudaAssert(cudaError_t code, const char *file, int line) {
   }
 }
 
-#define MPI_CHECK(ans) do { mpiAssert((ans), __FILE__, __LINE__); } while(0)
+/* [m]pi [c]heck */
+#define MC(ans) do { mpiAssert((ans), __FILE__, __LINE__); } while(0)
 inline void mpiAssert(int code, const char *file, int line)
 {
   if (code != MPI_SUCCESS)
@@ -32,9 +33,7 @@ inline void mpiAssert(int code, const char *file, int line)
     char error_string[2048];
     int length_of_error_string = sizeof(error_string);
     MPI_Error_string(code, error_string, &length_of_error_string);
-
     printf("mpiAssert: %s %d %s\n", file, line, error_string);
-
     MPI_Abort(MPI_COMM_WORLD, code);
   }
 }
@@ -52,9 +51,9 @@ struct Particle
   {
     if (!initialized)
     {
-      MPI_CHECK( MPI_Type_contiguous(6, MPI_FLOAT, &mytype));
+      MC( MPI_Type_contiguous(6, MPI_FLOAT, &mytype));
 
-      MPI_CHECK(MPI_Type_commit(&mytype));
+      MC(MPI_Type_commit(&mytype));
 
       initialized = true;
     }
@@ -74,9 +73,9 @@ struct Acceleration
   {
     if (!initialized)
     {
-      MPI_CHECK( MPI_Type_contiguous(3, MPI_FLOAT, &mytype));
+      MC( MPI_Type_contiguous(3, MPI_FLOAT, &mytype));
 
-      MPI_CHECK(MPI_Type_commit(&mytype));
+      MC(MPI_Type_commit(&mytype));
 
       initialized = true;
     }

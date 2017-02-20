@@ -16,7 +16,7 @@ using namespace std;
 ComputeDPD::ComputeDPD(MPI_Comm cartcomm): SolventExchange(cartcomm, 0), local_trunk(0, 0, 0, 0)
 {
     int myrank;
-    MPI_CHECK(MPI_Comm_rank(cartcomm, &myrank));
+    MC(MPI_Comm_rank(cartcomm, &myrank));
 
     for(int i = 0; i < 26; ++i)
     {

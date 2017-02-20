@@ -13,17 +13,17 @@ SolventExchange::SolventExchange(MPI_Comm _cartcomm, const int basetag)
   safety_factor =
       getenv("HEX_COMM_FACTOR") ? atof(getenv("HEX_COMM_FACTOR")) : 1.2;
 
-  MPI_CHECK(MPI_Comm_dup(_cartcomm, &cartcomm));
-  MPI_CHECK(MPI_Comm_rank(cartcomm, &myrank));
-  MPI_CHECK(MPI_Comm_size(cartcomm, &nranks));
-  MPI_CHECK(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
+  MC(MPI_Comm_dup(_cartcomm, &cartcomm));
+  MC(MPI_Comm_rank(cartcomm, &myrank));
+  MC(MPI_Comm_size(cartcomm, &nranks));
+  MC(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
 
   for (int i = 0; i < 26; ++i) {
     int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
     recv_tags[i] = (2 - d[0]) % 3 + 3 * ((2 - d[1]) % 3 + 3 * ((2 - d[2]) % 3));
     int coordsneighbor[3];
     for (int c = 0; c < 3; ++c) coordsneighbor[c] = coords[c] + d[c];
-    MPI_CHECK(MPI_Cart_rank(cartcomm, coordsneighbor, dstranks + i));
+    MC(MPI_Cart_rank(cartcomm, coordsneighbor, dstranks + i));
     halosize[i].x = d[0] != 0 ? 1 : XSIZE_SUBDOMAIN;
     halosize[i].y = d[1] != 0 ? 1 : YSIZE_SUBDOMAIN;
     halosize[i].z = d[2] != 0 ? 1 : ZSIZE_SUBDOMAIN;
@@ -281,9 +281,9 @@ void SolventExchange::pack(const Particle *const p, const int n,
   if (firstpost) post_expected_recv();
   else {
     MPI_Status statuses[26 * 2];
-    MPI_CHECK(MPI_Waitall(nactive, sendcellsreq, statuses));
-    MPI_CHECK(MPI_Waitall(nsendreq, sendreq, statuses));
-    MPI_CHECK(MPI_Waitall(nactive, sendcountreq, statuses));
+    MC(MPI_Waitall(nactive, sendcellsreq, statuses));
+    MC(MPI_Waitall(nsendreq, sendreq, statuses));
+    MC(MPI_Waitall(nactive, sendcountreq, statuses));
   }
 
   if (firstpost) {
@@ -373,14 +373,14 @@ void SolventExchange::post(const Particle *const p, const int n,
   {
     for (int i = 0, c = 0; i < 26; ++i)
       if (sendhalos[i].expected)
-        MPI_CHECK(MPI_Isend(sendhalos[i].hcellstarts.data,
+        MC(MPI_Isend(sendhalos[i].hcellstarts.data,
                             sendhalos[i].hcellstarts.size, MPI_INTEGER,
                             dstranks[i], basetag + i + 350, cartcomm,
                             sendcellsreq + c++));
 
     for (int i = 0, c = 0; i < 26; ++i)
       if (sendhalos[i].expected)
-        MPI_CHECK(MPI_Isend(&sendhalos[i].hbuf.size, 1, MPI_INTEGER,
+        MC(MPI_Isend(&sendhalos[i].hbuf.size, 1, MPI_INTEGER,
                             dstranks[i], basetag + i + 150, cartcomm,
                             sendcountreq + c++));
 
@@ -393,7 +393,7 @@ void SolventExchange::post(const Particle *const p, const int n,
 
       const int count = sendhalos[i].hbuf.size;
 
-      MPI_CHECK(MPI_Isend(sendhalos[i].hbuf.data, expected,
+      MC(MPI_Isend(sendhalos[i].hbuf.data, expected,
                           Particle::datatype(), dstranks[i], basetag + i,
                           cartcomm, sendreq + nsendreq));
 
@@ -408,7 +408,7 @@ void SolventExchange::post(const Particle *const p, const int n,
                "%d %d! difference %d, expected is %d\n",
                myrank, dstranks[i], d[0], d[1], d[2], difference, expected);
 
-        MPI_CHECK(MPI_Isend(sendhalos[i].hbuf.data + expected, difference,
+        MC(MPI_Isend(sendhalos[i].hbuf.data + expected, difference,
                             Particle::datatype(), dstranks[i],
                             basetag + i + 555, cartcomm, sendreq + nsendreq));
         ++nsendreq;
@@ -421,20 +421,20 @@ void SolventExchange::post(const Particle *const p, const int n,
 void SolventExchange::post_expected_recv() {
   for (int i = 0, c = 0; i < 26; ++i) {
     if (recvhalos[i].expected)
-      MPI_CHECK(MPI_Irecv(recvhalos[i].hbuf.data, recvhalos[i].expected,
+      MC(MPI_Irecv(recvhalos[i].hbuf.data, recvhalos[i].expected,
                           Particle::datatype(), dstranks[i],
                           basetag + recv_tags[i], cartcomm, recvreq + c++));
   }
   for (int i = 0, c = 0; i < 26; ++i)
     if (recvhalos[i].expected)
-      MPI_CHECK(MPI_Irecv(recvhalos[i].hcellstarts.data,
+      MC(MPI_Irecv(recvhalos[i].hcellstarts.data,
                           recvhalos[i].hcellstarts.size, MPI_INTEGER,
                           dstranks[i], basetag + recv_tags[i] + 350, cartcomm,
                           recvcellsreq + c++));
 
   for (int i = 0, c = 0; i < 26; ++i)
     if (recvhalos[i].expected)
-      MPI_CHECK(MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, dstranks[i],
+      MC(MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, dstranks[i],
                           basetag + recv_tags[i] + 150, cartcomm,
                           recvcountreq + c++));
     else
@@ -446,9 +446,9 @@ void SolventExchange::recv(cudaStream_t stream, cudaStream_t uploadstream) {
   {
     MPI_Status statuses[26];
 
-    MPI_CHECK(MPI_Waitall(nactive, recvreq, statuses));
-    MPI_CHECK(MPI_Waitall(nactive, recvcellsreq, statuses));
-    MPI_CHECK(MPI_Waitall(nactive, recvcountreq, statuses));
+    MC(MPI_Waitall(nactive, recvreq, statuses));
+    MC(MPI_Waitall(nactive, recvcellsreq, statuses));
+    MC(MPI_Waitall(nactive, recvcountreq, statuses));
   }
 
   for (int i = 0; i < 26; ++i) {
@@ -497,16 +497,16 @@ void SolventExchange::_cancel_recv() {
   if (!firstpost) {
     {
       MPI_Status statuses[26 * 2];
-      MPI_CHECK(MPI_Waitall(nactive, sendcellsreq, statuses));
-      MPI_CHECK(MPI_Waitall(nsendreq, sendreq, statuses));
-      MPI_CHECK(MPI_Waitall(nactive, sendcountreq, statuses));
+      MC(MPI_Waitall(nactive, sendcellsreq, statuses));
+      MC(MPI_Waitall(nsendreq, sendreq, statuses));
+      MC(MPI_Waitall(nactive, sendcountreq, statuses));
     }
 
-    for (int i = 0; i < nactive; ++i) MPI_CHECK(MPI_Cancel(recvreq + i));
+    for (int i = 0; i < nactive; ++i) MC(MPI_Cancel(recvreq + i));
 
-    for (int i = 0; i < nactive; ++i) MPI_CHECK(MPI_Cancel(recvcellsreq + i));
+    for (int i = 0; i < nactive; ++i) MC(MPI_Cancel(recvcellsreq + i));
 
-    for (int i = 0; i < nactive; ++i) MPI_CHECK(MPI_Cancel(recvcountreq + i));
+    for (int i = 0; i < nactive; ++i) MC(MPI_Cancel(recvcountreq + i));
 
     firstpost = true;
   }
@@ -529,7 +529,7 @@ void SolventExchange::adjust_message_sizes(ExpectedMessageSizes sizes) {
 
 SolventExchange::~SolventExchange() {
   CC(cudaFreeHost(required_send_bag_size));
-  MPI_CHECK(MPI_Comm_free(&cartcomm));
+  MC(MPI_Comm_free(&cartcomm));
   _cancel_recv();
   CC(cudaEventDestroy(evfillall));
   CC(cudaEventDestroy(evdownloaded));

@@ -322,15 +322,15 @@ static void sim_datadump_async() {
 
   MPI_Comm myactivecomm, mycartcomm;
 
-  MPI_CHECK(MPI_Comm_dup(activecomm, &myactivecomm));
-  MPI_CHECK(MPI_Comm_dup(cartcomm, &mycartcomm));
+  MC(MPI_Comm_dup(activecomm, &myactivecomm));
+  MC(MPI_Comm_dup(cartcomm, &mycartcomm));
 
   H5PartDump dump_part("allparticles.h5part", activecomm, cartcomm),
       *dump_part_solvent = NULL;
   H5FieldDump dump_field(cartcomm);
 
-  MPI_CHECK(MPI_Comm_rank(myactivecomm, &rank));
-  MPI_CHECK(MPI_Barrier(myactivecomm));
+  MC(MPI_Comm_rank(myactivecomm, &rank));
+  MC(MPI_Barrier(myactivecomm));
 
   while (true) {
     pthread_mutex_lock(&mutex_datadump);
@@ -448,11 +448,11 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   
   nsteps = (int)(tend / dt);
 
-  MPI_CHECK(MPI_Comm_size(activecomm, &nranks));
-  MPI_CHECK(MPI_Comm_rank(activecomm, &rank));
+  MC(MPI_Comm_size(activecomm, &nranks));
+  MC(MPI_Comm_rank(activecomm, &rank));
 
   int dims[3], periods[3]; /* `coords' is global */
-  MPI_CHECK(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
+  MC(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
   origin = make_float3((0.5 + coords[0]) * XSIZE_SUBDOMAIN,
 		       (0.5 + coords[1]) * YSIZE_SUBDOMAIN,
 		       (0.5 + coords[2]) * ZSIZE_SUBDOMAIN);

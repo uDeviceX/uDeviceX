@@ -75,14 +75,14 @@ namespace SolEx {
 
   void _wait(std::vector<MPI_Request> &v) {
     MPI_Status statuses[v.size()];
-    if (v.size()) MPI_CHECK(MPI_Waitall(v.size(), &v.front(), statuses));
+    if (v.size()) MC(MPI_Waitall(v.size(), &v.front(), statuses));
     v.clear();
   }
 
   void _postrecvC() {
     for (int i = 0; i < 26; ++i) {
       MPI_Request reqC;
-      MPI_CHECK(MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, dstranks[i],
+      MC(MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, dstranks[i],
 			  TAGBASE_C + recv_tags[i], cartcomm, &reqC));
       reqrecvC.push_back(reqC);
     }
@@ -92,7 +92,7 @@ namespace SolEx {
     for (int i = 0; i < 26; ++i) {
       MPI_Request reqP;
       remote[i].pmessage.resize(remote[i].expected());
-      MPI_CHECK(MPI_Irecv(&remote[i].pmessage.front(), remote[i].expected() * 6,
+      MC(MPI_Irecv(&remote[i].pmessage.front(), remote[i].expected() * 6,
 			  MPI_FLOAT, dstranks[i], TAGBASE_P + recv_tags[i],
 			  cartcomm, &reqP));
       reqrecvP.push_back(reqP);
@@ -103,7 +103,7 @@ namespace SolEx {
     for (int i = 0; i < 26; ++i) {
       MPI_Request reqA;
 
-      MPI_CHECK(MPI_Irecv(local[i].result.data, local[i].result.size * 3,
+      MC(MPI_Irecv(local[i].result.data, local[i].result.size * 3,
 			  MPI_FLOAT, dstranks[i], TAGBASE_A + recv_tags[i],
 			  cartcomm, &reqA));
       reqrecvA.push_back(reqA);

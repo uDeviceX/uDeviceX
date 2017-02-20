@@ -240,7 +240,7 @@ float pinned_data(int code, int entry) {return pinnedhost_sendbufs[code][entry];
 
 void _waitall(MPI_Request * reqs, int n) {
   MPI_Status statuses[n];
-  MPI_CHECK( MPI_Waitall(n, reqs, statuses) );
+  MC( MPI_Waitall(n, reqs, statuses) );
 }
 
 void redist_part_init(MPI_Comm _cartcomm)  {
@@ -258,16 +258,16 @@ void redist_part_init(MPI_Comm _cartcomm)  {
   
   nactiveneighbors  = 26; firstcall = true;
   int dims[3], periods[3], coords[3];
-  MPI_CHECK(MPI_Comm_dup(_cartcomm, &cartcomm_rdst) );
-  MPI_CHECK( MPI_Comm_rank(cartcomm_rdst, &myrank) );
-  MPI_CHECK( MPI_Cart_get(cartcomm_rdst, 3, dims, periods, coords) );
+  MC(MPI_Comm_dup(_cartcomm, &cartcomm_rdst) );
+  MC( MPI_Comm_rank(cartcomm_rdst, &myrank) );
+  MC( MPI_Cart_get(cartcomm_rdst, 3, dims, periods, coords) );
 
     for(int i = 0; i < 27; ++i) {
         int d[3] = { (i + 1) % 3 - 1, (i / 3 + 1) % 3 - 1, (i / 9 + 1) % 3 - 1 };
         recv_tags[i] = (3 - d[0]) % 3 + 3 * ((3 - d[1]) % 3 + 3 * ((3 - d[2]) % 3));
         int coordsneighbor[3];
         for(int c = 0; c < 3; ++c) coordsneighbor[c] = coords[c] + d[c];
-        MPI_CHECK( MPI_Cart_rank(cartcomm_rdst, coordsneighbor, neighbor_ranks + i) );
+        MC( MPI_Cart_rank(cartcomm_rdst, coordsneighbor, neighbor_ranks + i) );
 
         int nhalodir[3] =  {
             d[0] != 0 ? 1 : XSIZE_SUBDOMAIN,
@@ -315,13 +315,13 @@ void redist_part_init(MPI_Comm _cartcomm)  {
 void _post_recv() {
     for(int i = 1, c = 0; i < 27; ++i)
         if (default_message_sizes[i])
-            MPI_CHECK( MPI_Irecv(recv_sizes + i, 1, MPI_INTEGER, neighbor_ranks[i], basetag + recv_tags[i], cartcomm_rdst, recvcountreq + c++) );
+            MC( MPI_Irecv(recv_sizes + i, 1, MPI_INTEGER, neighbor_ranks[i], basetag + recv_tags[i], cartcomm_rdst, recvcountreq + c++) );
         else
             recv_sizes[i] = 0;
 
     for(int i = 1, c = 0; i < 27; ++i)
         if (default_message_sizes[i])
-            MPI_CHECK( MPI_Irecv(pinnedhost_recvbufs[i], default_message_sizes[i] * 6, MPI_FLOAT,
+            MC( MPI_Irecv(pinnedhost_recvbufs[i], default_message_sizes[i] * 6, MPI_FLOAT,
                         neighbor_ranks[i], basetag + recv_tags[i] + 333, cartcomm_rdst, recvmsgreq + c++) );
 }
 
@@ -451,7 +451,7 @@ void send() {
       int c = 0;
       for(int i = 1; i < 27; ++i)
 	if (default_message_sizes[i])
-	  MPI_CHECK( MPI_Isend(send_sizes + i, 1, MPI_INTEGER, neighbor_ranks[i], basetag + i, cartcomm_rdst, sendcountreq + c++) );
+	  MC( MPI_Isend(send_sizes + i, 1, MPI_INTEGER, neighbor_ranks[i], basetag + i, cartcomm_rdst, sendcountreq + c++) );
     }
     
     CC(cudaEventSynchronize(evpacking));
@@ -462,7 +462,7 @@ void send() {
     nsendmsgreq = 0;
     for(int i = 1; i < 27; ++i)
       if (default_message_sizes[i]) {
-            MPI_CHECK( MPI_Isend(pinnedhost_sendbufs[i], default_message_sizes[i] * 6, MPI_FLOAT, neighbor_ranks[i], basetag + i + 333,
+            MC( MPI_Isend(pinnedhost_sendbufs[i], default_message_sizes[i] * 6, MPI_FLOAT, neighbor_ranks[i], basetag + i + 333,
                         cartcomm_rdst, sendmsgreq + nsendmsgreq) );
             ++nsendmsgreq;
       }
@@ -471,7 +471,7 @@ void send() {
       if (default_message_sizes[i] && send_sizes[i] > default_message_sizes[i]) {
 	int count = send_sizes[i] - default_message_sizes[i];
 
-	MPI_CHECK( MPI_Isend(pinnedhost_sendbufs[i] + default_message_sizes[i] * 6, count * 6, MPI_FLOAT,
+	MC( MPI_Isend(pinnedhost_sendbufs[i] + default_message_sizes[i] * 6, count * 6, MPI_FLOAT,
 			     neighbor_ranks[i], basetag + i + 666, cartcomm_rdst, sendmsgreq + nsendmsgreq) );
 	++nsendmsgreq;
       }
@@ -547,7 +547,7 @@ void recv_unpack(Particle * particles, float4 * xyzouvwo, ushort4 * xyzo_half, i
 	int count = recv_sizes[i] - default_message_sizes[i];
 	
 	MPI_Status status;
-	MPI_CHECK( MPI_Recv(pinnedhost_recvbufs[i] + default_message_sizes[i] * 6, count * 6, MPI_FLOAT,
+	MC( MPI_Recv(pinnedhost_recvbufs[i] + default_message_sizes[i] * 6, count * 6, MPI_FLOAT,
 			    neighbor_ranks[i], basetag + recv_tags[i] + 666, cartcomm_rdst, &status) );
       }
     CC(cudaPeekAtLastError());
@@ -596,10 +596,10 @@ void _cancel_recv() {
     _waitall(sendmsgreq, nsendmsgreq);
     
     for(int i = 0; i < nactiveneighbors; ++i)
-      MPI_CHECK( MPI_Cancel(recvcountreq + i) );
+      MC( MPI_Cancel(recvcountreq + i) );
     
     for(int i = 0; i < nactiveneighbors; ++i)
-      MPI_CHECK( MPI_Cancel(recvmsgreq + i) );
+      MC( MPI_Cancel(recvmsgreq + i) );
     
     firstcall = true;
   }

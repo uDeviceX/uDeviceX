@@ -12,10 +12,10 @@ void init(MPI_Comm _cartcomm) {
   packbuf = new DeviceBuffer<Particle>;
   host_packbuf = new PinnedHostBuffer<Particle>;
 
-  MPI_CHECK(MPI_Comm_dup(_cartcomm, &cartcomm));
-  MPI_CHECK(MPI_Comm_size(cartcomm, &nranks));
-  MPI_CHECK(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
-  MPI_CHECK(MPI_Comm_rank(cartcomm, &myrank));
+  MC(MPI_Comm_dup(_cartcomm, &cartcomm));
+  MC(MPI_Comm_size(cartcomm, &nranks));
+  MC(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
+  MC(MPI_Comm_rank(cartcomm, &myrank));
 
   for (int i = 0; i < 26; ++i) {
     int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
@@ -25,7 +25,7 @@ void init(MPI_Comm _cartcomm) {
     int coordsneighbor[3];
     for (int c = 0; c < 3; ++c) coordsneighbor[c] = coords[c] + d[c];
 
-    MPI_CHECK(MPI_Cart_rank(cartcomm, coordsneighbor, dstranks + i));
+    MC(MPI_Cart_rank(cartcomm, coordsneighbor, dstranks + i));
 
     int estimate = 1;
     remote[i].preserve_resize(estimate);
@@ -217,7 +217,7 @@ void post_p(cudaStream_t stream, cudaStream_t downloadstream) {
     reqsendC.resize(26);
 
     for (int i = 0; i < 26; ++i)
-      MPI_CHECK(MPI_Isend(send_counts + i, 1, MPI_INTEGER, dstranks[i],
+      MC(MPI_Isend(send_counts + i, 1, MPI_INTEGER, dstranks[i],
 			  TAGBASE_C + i, cartcomm, &reqsendC[i]));
 
     for (int i = 0; i < 26; ++i) {
@@ -230,10 +230,10 @@ void post_p(cudaStream_t stream, cudaStream_t downloadstream) {
       _not_nan((float *)(host_packbuf->data + start), count * 6);
 
 #ifdef _DUMBCRAY_
-      MPI_CHECK(MPI_Isend(host_packbuf.data + start, count * 6, MPI_FLOAT,
+      MC(MPI_Isend(host_packbuf.data + start, count * 6, MPI_FLOAT,
 			  dstranks[i], TAGBASE_P + i, cartcomm, &reqP));
 #else
-      MPI_CHECK(MPI_Isend(host_packbuf->data + start, expected * 6, MPI_FLOAT,
+      MC(MPI_Isend(host_packbuf->data + start, expected * 6, MPI_FLOAT,
 			  dstranks[i], TAGBASE_P + i, cartcomm, &reqP));
 #endif
 
@@ -242,7 +242,7 @@ void post_p(cudaStream_t stream, cudaStream_t downloadstream) {
 #ifndef _DUMBCRAY_
       if (count > expected) {
 	MPI_Request reqP2;
-	MPI_CHECK(MPI_Isend(host_packbuf->data + start + expected,
+	MC(MPI_Isend(host_packbuf->data + start + expected,
 			    (count - expected) * 6, MPI_FLOAT, dstranks[i],
 			    TAGBASE_P2 + i, cartcomm, &reqP2));
 
@@ -278,11 +278,11 @@ void recv_p(cudaStream_t uploadstream) {
     MPI_Status status;
 
 #ifdef _DUMBCRAY_
-    MPI_CHECK(MPI_Recv(remote[i].hstate.data, count * 6, MPI_FLOAT, dstranks[i],
+    MC(MPI_Recv(remote[i].hstate.data, count * 6, MPI_FLOAT, dstranks[i],
 		       TAGBASE_P + recv_tags[i], cartcomm, &status));
 #else
     if (count > expected)
-      MPI_CHECK(MPI_Recv(&remote[i].pmessage.front() + expected,
+      MC(MPI_Recv(&remote[i].pmessage.front() + expected,
 			 (count - expected) * 6, MPI_FLOAT, dstranks[i],
 			 TAGBASE_P2 + recv_tags[i], cartcomm, &status));
 
@@ -337,7 +337,7 @@ void post_a() {
 
   reqsendA.resize(26);
   for (int i = 0; i < 26; ++i)
-    MPI_CHECK(MPI_Isend(remote[i].result.data, remote[i].result.size * 3,
+    MC(MPI_Isend(remote[i].result.data, remote[i].result.size * 3,
 			MPI_FLOAT, dstranks[i], TAGBASE_A + i, cartcomm,
 			&reqsendA[i]));
 }
@@ -379,7 +379,7 @@ void recv_a(cudaStream_t stream) {
 }
 
 void close() {
-  MPI_CHECK(MPI_Comm_free(&cartcomm));
+  MC(MPI_Comm_free(&cartcomm));
 
   CC(cudaEventDestroy(evPpacked));
   CC(cudaEventDestroy(evAcomputed));

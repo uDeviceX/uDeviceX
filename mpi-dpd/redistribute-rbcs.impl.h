@@ -3,7 +3,7 @@ void _post_recvcount() {
   recv_counts[0] = 0;
   for (int i = 1; i < 27; ++i) {
     MPI_Request req;
-    MPI_CHECK(MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, anti_rankneighbors[i],
+    MC(MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, anti_rankneighbors[i],
 			i + 1024, cartcomm, &req));
     recvcountreq.push_back(req);
   }
@@ -26,19 +26,19 @@ void redistribute_rbcs_init(MPI_Comm _cartcomm) {
   iotags_domain(0, 0, 0,
 		XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN,
 		1, 1, 1);
-  MPI_CHECK(MPI_Comm_dup(_cartcomm, &cartcomm));
-  MPI_CHECK(MPI_Comm_rank(cartcomm, &myrank));
+  MC(MPI_Comm_dup(_cartcomm, &cartcomm));
+  MC(MPI_Comm_rank(cartcomm, &myrank));
   int dims[3];
-  MPI_CHECK(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
+  MC(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
 
   rankneighbors[0] = myrank;
   for (int i = 1; i < 27; ++i) {
     int d[3] = {(i + 1) % 3 - 1, (i / 3 + 1) % 3 - 1, (i / 9 + 1) % 3 - 1};
     int coordsneighbor[3];
     for (int c = 0; c < 3; ++c) coordsneighbor[c] = coords[c] + d[c];
-    MPI_CHECK(MPI_Cart_rank(cartcomm, coordsneighbor, rankneighbors + i));
+    MC(MPI_Cart_rank(cartcomm, coordsneighbor, rankneighbors + i));
     for (int c = 0; c < 3; ++c) coordsneighbor[c] = coords[c] - d[c];
-    MPI_CHECK(MPI_Cart_rank(cartcomm, coordsneighbor, anti_rankneighbors + i));
+    MC(MPI_Cart_rank(cartcomm, coordsneighbor, anti_rankneighbors + i));
   }
 
   CC(cudaEventCreate(&evextents, cudaEventDisableTiming));
@@ -154,7 +154,7 @@ void pack_sendcount(Particle *xyzuvw,
   }
   CC(cudaStreamSynchronize(stream));
   for (int i = 1; i < 27; ++i)
-    MPI_CHECK(MPI_Isend(&halo_sendbufs[i]->size, 1, MPI_INTEGER,
+    MC(MPI_Isend(&halo_sendbufs[i]->size, 1, MPI_INTEGER,
 			rankneighbors[i], i + 1024, cartcomm,
 			&sendcountreq[i - 1]));
 }
@@ -162,7 +162,7 @@ void pack_sendcount(Particle *xyzuvw,
 int post() {
   {
     MPI_Status statuses[recvcountreq.size()];
-    MPI_CHECK(MPI_Waitall(recvcountreq.size(), &recvcountreq.front(), statuses));
+    MC(MPI_Waitall(recvcountreq.size(), &recvcountreq.front(), statuses));
     recvcountreq.clear();
   }
 
@@ -177,12 +177,12 @@ int post() {
   notleaving = bulk->S / nvertices;
 
   MPI_Status statuses[26];
-  MPI_CHECK(MPI_Waitall(26, sendcountreq, statuses));
+  MC(MPI_Waitall(26, sendcountreq, statuses));
 
   for (int i = 1; i < 27; ++i)
     if (halo_recvbufs[i]->size > 0) {
       MPI_Request request;
-      MPI_CHECK(MPI_Irecv(halo_recvbufs[i]->data, halo_recvbufs[i]->size,
+      MC(MPI_Irecv(halo_recvbufs[i]->data, halo_recvbufs[i]->size,
 			  Particle::datatype(), anti_rankneighbors[i], i + 1155,
 			  cartcomm, &request));
       recvreq.push_back(request);
@@ -191,7 +191,7 @@ int post() {
   for (int i = 1; i < 27; ++i)
     if (halo_sendbufs[i]->size > 0) {
       MPI_Request request;
-      MPI_CHECK(MPI_Isend(halo_sendbufs[i]->data, halo_sendbufs[i]->size,
+      MC(MPI_Isend(halo_sendbufs[i]->data, halo_sendbufs[i]->size,
 			  Particle::datatype(), rankneighbors[i], i + 1155,
 			  cartcomm, &request));
 
@@ -217,8 +217,8 @@ __global__ void shift(const Particle *const psrc, const int np, const int code,
 void unpack(Particle *xyzuvw, int nrbcs,
 			      cudaStream_t stream) {
   MPI_Status statuses[26];
-  MPI_CHECK(MPI_Waitall(recvreq.size(), &recvreq.front(), statuses));
-  MPI_CHECK(MPI_Waitall(sendreq.size(), &sendreq.front(), statuses));
+  MC(MPI_Waitall(recvreq.size(), &recvreq.front(), statuses));
+  MC(MPI_Waitall(sendreq.size(), &sendreq.front(), statuses));
   recvreq.clear();
   sendreq.clear();
   CC(cudaMemcpyAsync(xyzuvw, bulk->D, notleaving * nvertices * sizeof(Particle),
@@ -238,7 +238,7 @@ void unpack(Particle *xyzuvw, int nrbcs,
 }
 
 void redistribute_rbcs_close() {
-  MPI_CHECK(MPI_Comm_free(&cartcomm));
+  MC(MPI_Comm_free(&cartcomm));
   delete bulk;
   for (int i = 0; i < HALO_BUF_SIZE; i++) delete halo_recvbufs[i];
   for (int i = 0; i < HALO_BUF_SIZE; i++) delete halo_sendbufs[i];
