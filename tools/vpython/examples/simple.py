@@ -1,0 +1,3 @@
+OpenGUI("-nosplash", "-noconfig")
+
+
