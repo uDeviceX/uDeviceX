@@ -204,7 +204,7 @@ void sim_forces() {
 
   fsi->bind_solvent(wsolvent);
 
-  solutex->bind_solutes(wsolutes);
+  SolEx::bind_solutes(wsolutes);
 
   clear_acc(particles, mainstream);
 
@@ -213,7 +213,7 @@ void sim_forces() {
   dpd->pack(particles->pp.D, particles->S, cells->start, cells->count,
 	   mainstream);
 
-  solutex->pack_p(mainstream);
+  SolEx::pack_p(mainstream);
 
   CC(cudaPeekAtLastError());
 
@@ -226,7 +226,7 @@ void sim_forces() {
 
   dpd->post(particles->pp.D, particles->S, mainstream, downloadstream);
 
-  solutex->post_p(mainstream, downloadstream);
+  SolEx::post_p(mainstream, downloadstream);
 
   CC(cudaPeekAtLastError());
 
@@ -242,9 +242,8 @@ void sim_forces() {
 
   dpd->recv(mainstream, uploadstream);
 
-  solutex->recv_p(uploadstream);
-
-  solutex->halo(uploadstream, mainstream);
+  SolEx::recv_p(uploadstream);
+  SolEx::halo(uploadstream, mainstream);
 
   dpd->remote_interactions(particles->pp.D, particles->S,
 			   particles->aa.D, mainstream, uploadstream);
@@ -262,9 +261,9 @@ void sim_forces() {
 
   CC(cudaPeekAtLastError());
 
-  solutex->post_a();
+  SolEx::post_a();
 
-  solutex->recv_a(mainstream);
+  SolEx::recv_a(mainstream);
   CC(cudaPeekAtLastError());
 }
 
@@ -430,7 +429,7 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   RedistRBC::redistribute_rbcs_init(cartcomm);
   dpd     = new ComputeDPD(cartcomm);
   fsi     = new ComputeFSI(cartcomm);
-  solutex = new SolEx::SoluteExchange(cartcomm);
+  SolEx::init(cartcomm);
   contact = new ComputeContact(cartcomm);
   cells   = new CellLists(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
 
@@ -513,12 +512,12 @@ static void sim_lockstep() {
 	ParticlesWrap(rbcscoll->pp.D, pcount(), rbcscoll->aa.D));
 
   fsi->bind_solvent(wsolvent);
-  solutex->bind_solutes(wsolutes);
+  SolEx::bind_solutes(wsolutes);
   clear_acc(particles, mainstream);
 
   if (rbcscoll) clear_acc(rbcscoll, mainstream);
 
-  solutex->pack_p(mainstream);
+  SolEx::pack_p(mainstream);
   dpd->pack(particles->pp.D, particles->S, cells->start, cells->count,
 	   mainstream);
 
@@ -526,7 +525,7 @@ static void sim_lockstep() {
 			 particles->S, particles->aa.D, cells->start,
 			 cells->count, mainstream);
   if (contactforces) contact->build_cells(wsolutes, mainstream);
-  solutex->post_p(mainstream, downloadstream);
+  SolEx::post_p(mainstream, downloadstream);
   dpd->post(particles->pp.D, particles->S, mainstream, downloadstream);
   CC(cudaPeekAtLastError());
 
@@ -537,8 +536,8 @@ static void sim_lockstep() {
 
   CC(cudaPeekAtLastError());
   dpd->recv(mainstream, uploadstream);
-  solutex->recv_p(uploadstream);
-  solutex->halo(uploadstream, mainstream);
+  SolEx::recv_p(uploadstream);
+  SolEx::halo(uploadstream, mainstream);
   dpd->remote_interactions(particles->pp.D, particles->S,
 			  particles->aa.D, mainstream, uploadstream);
 
@@ -551,7 +550,7 @@ static void sim_lockstep() {
     CudaRBC::forces_nohost(mainstream, ncells,
 			   (float *)rbcscoll->pp.D, (float *)rbcscoll->aa.D);
   CC(cudaPeekAtLastError());
-  solutex->post_a();
+  SolEx::post_a();
   upd_stg2_and_1(particles, false, driving_acceleration, mainstream);
   if (wall_created) wall_bounce(particles->pp.D, particles->S, mainstream);
   CC(cudaPeekAtLastError());
@@ -564,7 +563,7 @@ static void sim_lockstep() {
     wall_interactions(rbcscoll->pp.D, pcount(), rbcscoll->aa.D,
 		       mainstream);
   CC(cudaPeekAtLastError());
-  solutex->recv_a(mainstream);
+  SolEx::recv_a(mainstream);
   if (rbcscoll) upd_stg2_and_1(rbcscoll, true, driving_acceleration, mainstream);
   int newnp = RedistPart::recv_count(mainstream);
   CC(cudaPeekAtLastError());
@@ -644,7 +643,7 @@ void sim_close() {
 
   delete contact;
   delete cells;
-  delete solutex;
+  SolEx::close();
   delete fsi;
   delete dpd;
   if (rbcs) RedistRBC::redistribute_rbcs_close();

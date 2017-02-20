@@ -1,5 +1,5 @@
 namespace SolEx {
-SoluteExchange::SoluteExchange(MPI_Comm _cartcomm) {
+void init(MPI_Comm _cartcomm) {
   iterationcount = -1;
   packstotalstart = new SimpleDeviceBuffer<int>(27);
   host_packstotalstart = new PinnedHostBuffer<int>(27);
@@ -50,7 +50,7 @@ SoluteExchange::SoluteExchange(MPI_Comm _cartcomm) {
   CC(cudaPeekAtLastError());
 }
 
-void SoluteExchange::_pack_attempt(cudaStream_t stream) {
+void _pack_attempt(cudaStream_t stream) {
 #ifndef NDEBUG
   CC(cudaMemsetAsync(packbuf->D, 0xff, sizeof(Particle) * packbuf->capacity,
 		     stream));
@@ -135,7 +135,7 @@ void SoluteExchange::_pack_attempt(cudaStream_t stream) {
   CC(cudaPeekAtLastError());
 }
 
-void SoluteExchange::pack_p(cudaStream_t stream) {
+void pack_p(cudaStream_t stream) {
   if (wsolutes.size() == 0) return;
 
   ++iterationcount;
@@ -147,7 +147,7 @@ void SoluteExchange::pack_p(cudaStream_t stream) {
   _pack_attempt(stream);
 }
 
-void SoluteExchange::post_p(cudaStream_t stream, cudaStream_t downloadstream) {
+void post_p(cudaStream_t stream, cudaStream_t downloadstream) {
   if (wsolutes.size() == 0) return;
 
   CC(cudaPeekAtLastError());
@@ -253,7 +253,7 @@ void SoluteExchange::post_p(cudaStream_t stream, cudaStream_t downloadstream) {
   }
 }
 
-void SoluteExchange::recv_p(cudaStream_t uploadstream) {
+void recv_p(cudaStream_t uploadstream) {
   if (wsolutes.size() == 0) return;
 
   _wait(reqrecvC);
@@ -301,7 +301,7 @@ void SoluteExchange::recv_p(cudaStream_t uploadstream) {
 		       cudaMemcpyHostToDevice, uploadstream));
 }
 
-void SoluteExchange::halo(cudaStream_t uploadstream, cudaStream_t stream) {
+void halo(cudaStream_t uploadstream, cudaStream_t stream) {
   if (wsolutes.size() == 0) return;
 
   if (iterationcount) _wait(reqsendA);
@@ -330,7 +330,7 @@ void SoluteExchange::halo(cudaStream_t uploadstream, cudaStream_t stream) {
 #endif
 }
 
-void SoluteExchange::post_a() {
+void post_a() {
   if (wsolutes.size() == 0) return;
 
   CC(cudaEventSynchronize(evAcomputed));
@@ -342,7 +342,7 @@ void SoluteExchange::post_a() {
 			&reqsendA[i]));
 }
 
-void SoluteExchange::recv_a(cudaStream_t stream) {
+void recv_a(cudaStream_t stream) {
   CC(cudaPeekAtLastError());
 
   if (wsolutes.size() == 0) return;
@@ -378,7 +378,7 @@ void SoluteExchange::recv_a(cudaStream_t stream) {
   }
 }
 
-SoluteExchange::~SoluteExchange() {
+void close() {
   MPI_CHECK(MPI_Comm_free(&cartcomm));
 
   CC(cudaEventDestroy(evPpacked));
