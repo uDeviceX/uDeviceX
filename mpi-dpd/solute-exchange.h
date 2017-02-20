@@ -10,15 +10,30 @@
  *  before getting a written permission from the author of this file.
  */
 
-class SoluteExchange {
-  enum {
-    TAGBASE_C = 113,
-    TAGBASE_P = 365,
-    TAGBASE_A = 668,
-    TAGBASE_P2 = 1055,
-    TAGBASE_A2 = 1501
-  };
+enum {
+  TAGBASE_C = 113,
+  TAGBASE_P = 365,
+  TAGBASE_A = 668,
+  TAGBASE_P2 = 1055,
+  TAGBASE_A2 = 1501
+};
 
+class TimeSeriesWindow {
+  static const int N = 200;
+  int count, data[N];
+public:
+  TimeSeriesWindow() : count(0) {}
+  void update(int val) { data[count++ % N] = ::max(0, val); }
+  int max() const {
+    int retval = 0;
+
+    for (int i = 0; i < min(N, count); ++i) retval = ::max(data[i], retval);
+
+    return retval;
+  }
+};
+
+class SoluteExchange {
 public:
   MPI_Comm cartcomm;
   int iterationcount;
@@ -33,24 +48,8 @@ public:
   std::vector<MPI_Request> reqsendC, reqrecvC, reqsendP, reqrecvP, reqsendA,
       reqrecvA;
 
-  class TimeSeriesWindow {
-    static const int N = 200;
-    int count, data[N];
-  public:
-    TimeSeriesWindow() : count(0) {}
-    void update(int val) { data[count++ % N] = ::max(0, val); }
-    int max() const {
-      int retval = 0;
-
-      for (int i = 0; i < min(N, count); ++i) retval = ::max(data[i], retval);
-
-      return retval;
-    }
-  };
-
   class RemoteHalo {
     TimeSeriesWindow history;
-
   public:
     SimpleDeviceBuffer<Particle> dstate;
     PinnedHostBuffer<Particle> hstate;
@@ -63,11 +62,8 @@ public:
       result.resize(n);
       history.update(n);
     }
-
     int expected() const { return (int)ceil(history.max() * 1.1); }
-
     int capacity() const { return dstate.capacity; }
-
   } remote[26];
 
   class LocalHalo {
@@ -112,7 +108,7 @@ public:
       MPI_Request reqC;
 
       MPI_CHECK(MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, dstranks[i],
-                          TAGBASE_C + recv_tags[i], cartcomm, &reqC));
+			  TAGBASE_C + recv_tags[i], cartcomm, &reqC));
 
       reqrecvC.push_back(reqC);
     }
@@ -125,8 +121,8 @@ public:
       remote[i].pmessage.resize(remote[i].expected());
 
       MPI_CHECK(MPI_Irecv(&remote[i].pmessage.front(), remote[i].expected() * 6,
-                          MPI_FLOAT, dstranks[i], TAGBASE_P + recv_tags[i],
-                          cartcomm, &reqP));
+			  MPI_FLOAT, dstranks[i], TAGBASE_P + recv_tags[i],
+			  cartcomm, &reqP));
 
       reqrecvP.push_back(reqP);
     }
@@ -137,8 +133,8 @@ public:
       MPI_Request reqA;
 
       MPI_CHECK(MPI_Irecv(local[i].result.data, local[i].result.size * 3,
-                          MPI_FLOAT, dstranks[i], TAGBASE_A + recv_tags[i],
-                          cartcomm, &reqA));
+			  MPI_FLOAT, dstranks[i], TAGBASE_A + recv_tags[i],
+			  cartcomm, &reqA));
 
       reqrecvA.push_back(reqA);
     }
@@ -148,7 +144,6 @@ public:
 
   void _pack_attempt(cudaStream_t stream);
 
-public:
   SoluteExchange(MPI_Comm cartcomm);
 
   void bind_solutes(std::vector<ParticlesWrap> wsolutes) {
