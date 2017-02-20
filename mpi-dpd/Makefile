@@ -14,7 +14,7 @@ NVCCFLAGS += -I../cuda-dpd -I../cuda-rbc
 LIBS      += -lcuda-dpd -lcuda-rbc -lcudart
 
 OBJS = dpd.o \
-fsi.o contact.o redistribute-particles.o \
+fsi.o contact.o \
 redistribute-rbcs.o solvent-exchange.o solute-exchange.o \
 common.o io.o scan.o \
 minmax.o last_bit_float.o \

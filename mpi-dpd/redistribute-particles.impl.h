@@ -10,16 +10,6 @@
  *  before getting a written permission from the author of this file.
  */
 
-#include <vector>
-#include <algorithm>
-#include <cstdio>
-#include <mpi.h>
-#include ".conf.h" /* configuration file (copy from .conf.test.h) */
-#include "common.h"
-#include "common-kernels.h"
-#include "scan.h"
-#include "redistribute-particles.h"
-
 #ifndef WARPSIZE
 #define WARPSIZE 32
 #endif
@@ -302,23 +292,39 @@ namespace RedistributeParticlesKernels {
 #undef _ACCESS
 }
 
-RedistributeParticles::RedistributeParticles(MPI_Comm _cartcomm):
-    failure(1), packsizes(27), nactiveneighbors(26), firstcall(true),
-    compressed_cellcounts(XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN),
-    subindices(1.5 * numberdensity * XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN),
-    subindices_remote(1.5 * numberdensity * (XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN -
-                (XSIZE_SUBDOMAIN - 2) * (YSIZE_SUBDOMAIN - 2) * (ZSIZE_SUBDOMAIN - 2))) {
-    int dims[3], periods[3], coords[3];
-    MPI_CHECK(MPI_Comm_dup(_cartcomm, &cartcomm) );
-    MPI_CHECK( MPI_Comm_rank(cartcomm, &myrank) );
-    MPI_CHECK( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
+int pack_size(int code) { return send_sizes[code]; }
+float pinned_data(int code, int entry) {return pinnedhost_sendbufs[code][entry]; }
+
+void _waitall(MPI_Request * reqs, int n) {
+  MPI_Status statuses[n];
+  MPI_CHECK( MPI_Waitall(n, reqs, statuses) );
+}
+
+void redist_part_init(MPI_Comm _cartcomm)  {
+  failure = new PinnedHostBuffer<bool>(1);
+  packsizes = new PinnedHostBuffer<int>(27);
+  compressed_cellcounts = new SimpleDeviceBuffer<unsigned char>
+    (XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN);
+  remote_particles = new SimpleDeviceBuffer<Particle>;
+  subindices_remote= new SimpleDeviceBuffer<uchar4>
+    (1.5 * numberdensity * (XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN -
+			    (XSIZE_SUBDOMAIN - 2) * (YSIZE_SUBDOMAIN - 2) * (ZSIZE_SUBDOMAIN - 2)));
+  subindices = new SimpleDeviceBuffer<uchar4>
+    (1.5 * numberdensity * XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN);
+  scattered_indices = new SimpleDeviceBuffer<uint>;
+  
+  nactiveneighbors  = 26; firstcall = true;
+  int dims[3], periods[3], coords[3];
+  MPI_CHECK(MPI_Comm_dup(_cartcomm, &cartcomm_rdst) );
+  MPI_CHECK( MPI_Comm_rank(cartcomm_rdst, &myrank) );
+  MPI_CHECK( MPI_Cart_get(cartcomm_rdst, 3, dims, periods, coords) );
 
     for(int i = 0; i < 27; ++i) {
         int d[3] = { (i + 1) % 3 - 1, (i / 3 + 1) % 3 - 1, (i / 9 + 1) % 3 - 1 };
         recv_tags[i] = (3 - d[0]) % 3 + 3 * ((3 - d[1]) % 3 + 3 * ((3 - d[2]) % 3));
         int coordsneighbor[3];
         for(int c = 0; c < 3; ++c) coordsneighbor[c] = coords[c] + d[c];
-        MPI_CHECK( MPI_Cart_rank(cartcomm, coordsneighbor, neighbor_ranks + i) );
+        MPI_CHECK( MPI_Cart_rank(cartcomm_rdst, coordsneighbor, neighbor_ranks + i) );
 
         int nhalodir[3] =  {
             d[0] != 0 ? 1 : XSIZE_SUBDOMAIN,
@@ -363,22 +369,20 @@ RedistributeParticles::RedistributeParticles(MPI_Comm _cartcomm):
     CC(cudaFuncSetCacheConfig( RedistributeParticlesKernels::gather_particles, cudaFuncCachePreferL1 ) );
 }
 
-void RedistributeParticles::_post_recv()
-{
+void _post_recv() {
     for(int i = 1, c = 0; i < 27; ++i)
         if (default_message_sizes[i])
-            MPI_CHECK( MPI_Irecv(recv_sizes + i, 1, MPI_INTEGER, neighbor_ranks[i], basetag + recv_tags[i], cartcomm, recvcountreq + c++) );
+            MPI_CHECK( MPI_Irecv(recv_sizes + i, 1, MPI_INTEGER, neighbor_ranks[i], basetag + recv_tags[i], cartcomm_rdst, recvcountreq + c++) );
         else
             recv_sizes[i] = 0;
 
     for(int i = 1, c = 0; i < 27; ++i)
         if (default_message_sizes[i])
             MPI_CHECK( MPI_Irecv(pinnedhost_recvbufs[i], default_message_sizes[i] * 6, MPI_FLOAT,
-                        neighbor_ranks[i], basetag + recv_tags[i] + 333, cartcomm, recvmsgreq + c++) );
+                        neighbor_ranks[i], basetag + recv_tags[i] + 333, cartcomm_rdst, recvmsgreq + c++) );
 }
 
-void RedistributeParticles::_adjust_send_buffers(int requested_capacities[27])
-{
+void _adjust_send_buffers(int requested_capacities[27]) {
   for(int i = 0; i < 27; ++i) {
     if (requested_capacities[i] <= packbuffers[i].capacity)
       continue;
@@ -408,7 +412,7 @@ void RedistributeParticles::_adjust_send_buffers(int requested_capacities[27])
   }
 }
 
-bool RedistributeParticles::_adjust_recv_buffers(int requested_capacities[27]) {
+bool _adjust_recv_buffers(int requested_capacities[27]) {
     bool haschanged = false;
     for(int i = 0; i < 27; ++i) {
         if (requested_capacities[i] <= unpackbuffers[i].capacity) continue;
@@ -428,7 +432,7 @@ bool RedistributeParticles::_adjust_recv_buffers(int requested_capacities[27]) {
             CC(cudaFreeHost(old));
         }
         else {
-            printf("RedistributeParticles::_adjust_recv_buffers i==0 ooooooooooooooops %d , req %d!!\n", unpackbuffers[i].capacity, capacity);
+            printf("_adjust_recv_buffers i==0 ooooooooooooooops %d , req %d!!\n", unpackbuffers[i].capacity, capacity);
             abort();
         }
 
@@ -437,7 +441,7 @@ bool RedistributeParticles::_adjust_recv_buffers(int requested_capacities[27]) {
     return haschanged;
 }
 
-void RedistributeParticles::pack(Particle * particles, int nparticles, cudaStream_t mystream) {
+void pack(Particle * particles, int nparticles, cudaStream_t mystream) {
     bool secondchance = false;
     if (firstcall) _post_recv();
     size_t textureoffset;
@@ -457,13 +461,13 @@ pack_attempt:
     CC(cudaMemcpyToSymbolAsync(RedistributeParticlesKernels::pack_buffers, packbuffers,
                 sizeof(PackBuffer) * 27, 0, cudaMemcpyHostToDevice, mystream));
 
-    *failure.data = false;
+    (*failure->data) = false;
     RedistributeParticlesKernels::setup<<<1, 32, 0, mystream>>>();
 
     if (nparticles)
         RedistributeParticlesKernels::scatter_halo_indices_pack<<< (nparticles + 127) / 128, 128, 0, mystream>>>(nparticles);
 
-    RedistributeParticlesKernels::tiny_scan<<<1, 32, 0, mystream>>>(nparticles, packbuffers[0].capacity, packsizes.devptr, failure.devptr);
+    RedistributeParticlesKernels::tiny_scan<<<1, 32, 0, mystream>>>(nparticles, packbuffers[0].capacity, packsizes->devptr, failure->devptr);
 
     CC(cudaEventRecord(evsizes, mystream));
 
@@ -474,17 +478,17 @@ pack_attempt:
 
     CC(cudaEventSynchronize(evsizes));
 
-    if (*failure.data) {
+    if (*failure->data) {
         //wait for packing to finish
         CC(cudaEventSynchronize(evpacking));
 
-        printf("RedistributeParticles::pack RANK %d ...FAILED! Recovering now...\n", myrank);
+        printf("pack RANK %d ...FAILED! Recovering now...\n", myrank);
 
-        _adjust_send_buffers(packsizes.data);
+        _adjust_send_buffers(packsizes->data);
 
         if (myrank == 0)
             for(int i = 0; i < 27; ++i)
-                printf("ASD: %d\n", packsizes.data[i]);
+                printf("ASD: %d\n", packsizes->data[i]);
 
         if (secondchance) {
             printf("...non siamo qui a far la ceretta allo yeti.\n");
@@ -496,16 +500,15 @@ pack_attempt:
     CC(cudaPeekAtLastError());
 }
 
-void RedistributeParticles::send()
-{
+void send() {
     if (!firstcall) _waitall(sendcountreq, nactiveneighbors);
-    for(int i = 0; i < 27; ++i) send_sizes[i] = packsizes.data[i];
+    for(int i = 0; i < 27; ++i) send_sizes[i] = packsizes->data[i];
     nbulk = recv_sizes[0] = send_sizes[0];
     {
       int c = 0;
       for(int i = 1; i < 27; ++i)
 	if (default_message_sizes[i])
-	  MPI_CHECK( MPI_Isend(send_sizes + i, 1, MPI_INTEGER, neighbor_ranks[i], basetag + i, cartcomm, sendcountreq + c++) );
+	  MPI_CHECK( MPI_Isend(send_sizes + i, 1, MPI_INTEGER, neighbor_ranks[i], basetag + i, cartcomm_rdst, sendcountreq + c++) );
     }
     
     CC(cudaEventSynchronize(evpacking));
@@ -517,7 +520,7 @@ void RedistributeParticles::send()
     for(int i = 1; i < 27; ++i)
       if (default_message_sizes[i]) {
             MPI_CHECK( MPI_Isend(pinnedhost_sendbufs[i], default_message_sizes[i] * 6, MPI_FLOAT, neighbor_ranks[i], basetag + i + 333,
-                        cartcomm, sendmsgreq + nsendmsgreq) );
+                        cartcomm_rdst, sendmsgreq + nsendmsgreq) );
             ++nsendmsgreq;
       }
     
@@ -526,24 +529,24 @@ void RedistributeParticles::send()
 	int count = send_sizes[i] - default_message_sizes[i];
 
 	MPI_CHECK( MPI_Isend(pinnedhost_sendbufs[i] + default_message_sizes[i] * 6, count * 6, MPI_FLOAT,
-			     neighbor_ranks[i], basetag + i + 666, cartcomm, sendmsgreq + nsendmsgreq) );
+			     neighbor_ranks[i], basetag + i + 666, cartcomm_rdst, sendmsgreq + nsendmsgreq) );
 	++nsendmsgreq;
       }
 }
 
-void RedistributeParticles::bulk(int nparticles, int * cellstarts, int * cellcounts, cudaStream_t mystream) {
+void bulk(int nparticles, int * cellstarts, int * cellcounts, cudaStream_t mystream) {
     CC(cudaMemsetAsync(cellcounts, 0, sizeof(int) * XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN, mystream));
 
-    subindices.resize(nparticles);
+    subindices->resize(nparticles);
 
     if (nparticles)
         subindex_local<false><<< (nparticles + 127) / 128, 128, 0, mystream>>>
-            (nparticles, RedistributeParticlesKernels::texparticledata, cellcounts, subindices.D);
+            (nparticles, RedistributeParticlesKernels::texparticledata, cellcounts, subindices->D);
 
     CC(cudaPeekAtLastError());
 }
 
-int RedistributeParticles::recv_count(cudaStream_t mystream) {
+int recv_count(cudaStream_t mystream) {
     CC(cudaPeekAtLastError());
 
     _waitall(recvcountreq, nactiveneighbors);
@@ -576,16 +579,16 @@ int RedistributeParticles::recv_count(cudaStream_t mystream) {
     }
 
     {
-        remote_particles.resize(nhalo);
-        subindices_remote.resize(nhalo);
-        scattered_indices.resize(nexpected);
+        remote_particles->resize(nhalo);
+        subindices_remote->resize(nhalo);
+        scattered_indices->resize(nexpected);
     }
 
     firstcall = false;
     return nexpected;
 }
 
-void RedistributeParticles::recv_unpack(Particle * particles, float4 * xyzouvwo, ushort4 * xyzo_half, int nparticles,
+void recv_unpack(Particle * particles, float4 * xyzouvwo, ushort4 * xyzo_half, int nparticles,
 					int * cellstarts, int * cellcounts, cudaStream_t mystream) {
     _waitall(recvmsgreq, nactiveneighbors);
 
@@ -602,39 +605,39 @@ void RedistributeParticles::recv_unpack(Particle * particles, float4 * xyzouvwo,
 	
 	MPI_Status status;
 	MPI_CHECK( MPI_Recv(pinnedhost_recvbufs[i] + default_message_sizes[i] * 6, count * 6, MPI_FLOAT,
-			    neighbor_ranks[i], basetag + recv_tags[i] + 666, cartcomm, &status) );
+			    neighbor_ranks[i], basetag + recv_tags[i] + 666, cartcomm_rdst, &status) );
       }
     CC(cudaPeekAtLastError());
 
 #ifndef NDEBUG
-    CC(cudaMemset(remote_particles.D, 0xff, sizeof(Particle) * remote_particles.S));
+    CC(cudaMemset(remote_particles->D, 0xff, sizeof(Particle) * remote_particles->S));
 #endif
 
     if (nhalo)
         RedistributeParticlesKernels::subindex_remote<<< (nhalo_padded + 127) / 128, 128, 0, mystream >>>
-            (nhalo_padded, nhalo, cellcounts, (float2 *)remote_particles.D, subindices_remote.D);
+            (nhalo_padded, nhalo, cellcounts, (float2 *)remote_particles->D, subindices_remote->D);
 
-    if (compressed_cellcounts.S)
-        compress_counts<<< (compressed_cellcounts.S + 127) / 128, 128, 0, mystream >>>
-            (compressed_cellcounts.S, (int4 *)cellcounts, (uchar4 *)compressed_cellcounts.D);
+    if (compressed_cellcounts->S)
+        compress_counts<<< (compressed_cellcounts->S + 127) / 128, 128, 0, mystream >>>
+            (compressed_cellcounts->S, (int4 *)cellcounts, (uchar4 *)compressed_cellcounts->D);
 
-    scan(compressed_cellcounts.D, compressed_cellcounts.S, mystream, (uint *)cellstarts);
+    scan(compressed_cellcounts->D, compressed_cellcounts->S, mystream, (uint *)cellstarts);
 
 #ifndef NDEBUG
-    CC(cudaMemset(scattered_indices.D, 0xff, sizeof(int) * scattered_indices.S));
+    CC(cudaMemset(scattered_indices->D, 0xff, sizeof(int) * scattered_indices->S));
 #endif
 
-    if (subindices.S)
-        RedistributeParticlesKernels::scatter_indices<<< (subindices.S + 127) / 128, 128, 0, mystream>>>
-            (false, subindices.D, subindices.S, cellstarts, scattered_indices.D, scattered_indices.S);
+    if (subindices->S)
+        RedistributeParticlesKernels::scatter_indices<<< (subindices->S + 127) / 128, 128, 0, mystream>>>
+            (false, subindices->D, subindices->S, cellstarts, scattered_indices->D, scattered_indices->S);
 
     if (nhalo)
         RedistributeParticlesKernels::scatter_indices<<< (nhalo + 127) / 128, 128, 0, mystream>>>
-            (true, subindices_remote.D, nhalo, cellstarts, scattered_indices.D, scattered_indices.S);
+            (true, subindices_remote->D, nhalo, cellstarts, scattered_indices->D, scattered_indices->S);
 
     if (nparticles)
         RedistributeParticlesKernels::gather_particles<<< (nparticles + 127) / 128, 128, 0, mystream>>>
-            (scattered_indices.D, (float2 *)remote_particles.D, nhalo,
+            (scattered_indices->D, (float2 *)remote_particles->D, nhalo,
              RedistributeParticlesKernels::ntexparticles, nparticles, (float2 *)particles, xyzouvwo, xyzo_half);
 
     CC(cudaPeekAtLastError());
@@ -648,7 +651,7 @@ void RedistributeParticles::recv_unpack(Particle * particles, float4 * xyzouvwo,
     CC(cudaPeekAtLastError());
 }
 
-void RedistributeParticles::_cancel_recv() {
+void _cancel_recv() {
   if (!firstcall) {
     _waitall(sendcountreq, nactiveneighbors);
     _waitall(sendmsgreq, nsendmsgreq);
@@ -663,7 +666,7 @@ void RedistributeParticles::_cancel_recv() {
   }
 }
 
-void RedistributeParticles::adjust_message_sizes(ExpectedMessageSizes sizes) {
+void adjust_message_sizes(ExpectedMessageSizes sizes) {
     _cancel_recv();
 
     nactiveneighbors = 0;
@@ -682,7 +685,7 @@ void RedistributeParticles::adjust_message_sizes(ExpectedMessageSizes sizes) {
     _adjust_recv_buffers(default_message_sizes);
 }
 
-RedistributeParticles::~RedistributeParticles() {
+void redist_part_close() {
     CC(cudaEventDestroy(evpacking));
     CC(cudaEventDestroy(evsizes));
 
@@ -693,4 +696,12 @@ RedistributeParticles::~RedistributeParticles() {
         if (i) CC(cudaFreeHost(packbuffers[i].buffer));
         else   CC(cudaFree(packbuffers[i].buffer));
     }
+
+    delete failure;
+    delete packsizes;
+    delete compressed_cellcounts;
+    delete remote_particles;
+    delete subindices_remote;
+    delete subindices;
+    delete scattered_indices;
 }

@@ -25,20 +25,53 @@
 #include "solute-exchange.h"
 #include "fsi.h"
 #include "contact.h"
-#include "redistribute-particles.h"
 #include "redistribute-rbcs.h"
 #include "io.h"
 #include "simulation.h"
 #include "dpd-forces.h"
 #include "last_bit_float.h"
 #include "geom-wrapper.h"
+#include "common-kernels.h"
+#include "scan.h"
 
 #include <thrust/device_vector.h>
 #include <thrust/sort.h>
 
 /*** from redistribute-particles.h ***/
 int basetag = 950;
+MPI_Comm cartcomm_rdst;
 float safety_factor = 1.2;
+int neighbor_ranks[27], recv_tags[27],
+  default_message_sizes[27], send_sizes[27], recv_sizes[27],
+  nsendmsgreq, nexpected, nbulk, nhalo, nhalo_padded, myrank;
+bool firstcall;
+int nactiveneighbors;
+MPI_Request sendcountreq[27], recvcountreq[27],
+  sendmsgreq[27 * 2], recvmsgreq[27 * 2];
+cudaEvent_t evpacking, evsizes;
+
+float * pinnedhost_sendbufs[27], * pinnedhost_recvbufs[27];
+struct UnpackBuffer {
+  float2 * buffer;
+  int capacity;
+};
+
+struct PackBuffer {
+  float2 * buffer;
+  int capacity;
+  int * scattered_indices;
+};
+
+PackBuffer packbuffers[27];
+UnpackBuffer unpackbuffers[27];
+
+PinnedHostBuffer<bool> *failure;
+PinnedHostBuffer<int> *packsizes;
+SimpleDeviceBuffer<unsigned char> *compressed_cellcounts;
+SimpleDeviceBuffer<Particle> *remote_particles;
+SimpleDeviceBuffer<uint> *scattered_indices;
+SimpleDeviceBuffer<uchar4> *subindices, *subindices_remote;
+#include "redistribute-particles.impl.h"
 
 /*** from containters.h ****/
 float3 origin, globalextent;
@@ -61,7 +94,6 @@ int solid_size;
 float4 *solid4;
 cudaArray *arrSDF;
 CellLists *wall_cells;
-
 #include "wall.impl.h"
 
 /**** from simulation.h ****/
@@ -73,8 +105,6 @@ SimpleDeviceBuffer<float4 > *xyzouvwo;
 SimpleDeviceBuffer<ushort4> *xyzo_half;
 
 CellLists* cells;
-
-RedistributeParticles* redistribute;
 RedistributeRBCs* redistribute_rbcs;
 
 ComputeDPD* dpd;

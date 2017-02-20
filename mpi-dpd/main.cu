@@ -24,7 +24,6 @@
 #include "solute-exchange.h"
 #include "fsi.h"
 #include "contact.h"
-#include "redistribute-particles.h"
 #include "redistribute-rbcs.h"
 #include "simulation.h"
 

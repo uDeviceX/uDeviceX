@@ -97,23 +97,23 @@ static std::vector<Particle> _ic() { /* initial conditions for position and
 }
 
 static void sim_redistribute() {
-  redistribute->pack(particles->pp.D, particles->S, mainstream);
+  pack(particles->pp.D, particles->S, mainstream);
 
   CC(cudaPeekAtLastError());
 
   if (rbcscoll)
     redistribute_rbcs->extent(rbcscoll->pp.D, ncells, mainstream);
 
-  redistribute->send();
+  send();
 
   if (rbcscoll)
     redistribute_rbcs->pack_sendcount(rbcscoll->pp.D, ncells, mainstream);
 
-  redistribute->bulk(particles->S, cells->start, cells->count, mainstream);
+  bulk(particles->S, cells->start, cells->count, mainstream);
 
   CC(cudaPeekAtLastError());
 
-  const int newnp = redistribute->recv_count(mainstream);
+  const int newnp = recv_count(mainstream);
 
   int nrbcs;
   if (rbcs)
@@ -126,10 +126,10 @@ static void sim_redistribute() {
   xyzouvwo->resize(newnp * 2);
   xyzo_half->resize(newnp);
 
-  redistribute->recv_unpack(newparticles->pp.D,
-			    xyzouvwo->D, xyzo_half->D,
-			    newnp, cells->start, cells->count,
-			    mainstream);
+  recv_unpack(newparticles->pp.D,
+	      xyzouvwo->D, xyzo_half->D,
+	      newnp, cells->start, cells->count,
+	      mainstream);
 
   CC(cudaPeekAtLastError());
 
@@ -427,7 +427,6 @@ static void sim_update_and_bounce() {
 
 void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   cartcomm = cartcomm_; activecomm = activecomm_;
-  redistribute      = new RedistributeParticles(cartcomm);
   redistribute_rbcs = new RedistributeRBCs(cartcomm);
   dpd     = new ComputeDPD(cartcomm);
   fsi     = new ComputeFSI(cartcomm);
@@ -447,6 +446,8 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   if (rbcs) rbcscoll    = new ParticleArray();
 
   trunk = new Logistic::KISS;
+
+  redist_part_init(cartcomm);
   
   nsteps = (int)(tend / dt);
 
@@ -560,9 +561,9 @@ static void sim_lockstep() {
   upd_stg2_and_1(particles, false, driving_acceleration, mainstream);
   if (wall_created) wall_bounce(particles->pp.D, particles->S, mainstream);
   CC(cudaPeekAtLastError());
-  redistribute->pack(particles->pp.D, particles->S, mainstream);
-  redistribute->send();
-  redistribute->bulk(particles->S, cells->start, cells->count, mainstream);
+  pack(particles->pp.D, particles->S, mainstream);
+  send();
+  bulk(particles->S, cells->start, cells->count, mainstream);
   CC(cudaPeekAtLastError());
 
   if (rbcscoll && wall_created)
@@ -571,7 +572,7 @@ static void sim_lockstep() {
   CC(cudaPeekAtLastError());
   solutex->recv_a(mainstream);
   if (rbcscoll) upd_stg2_and_1(rbcscoll, true, driving_acceleration, mainstream);
-  int newnp = redistribute->recv_count(mainstream);
+  int newnp = recv_count(mainstream);
   CC(cudaPeekAtLastError());
   if (rbcscoll) {
     redistribute_rbcs->extent(rbcscoll->pp.D, ncells, mainstream);
@@ -580,7 +581,7 @@ static void sim_lockstep() {
   pa_resize(newparticles, newnp);
   xyzouvwo->resize(newnp * 2);
   xyzo_half->resize(newnp);
-  redistribute->recv_unpack(newparticles->pp.D, xyzouvwo->D,
+  recv_unpack(newparticles->pp.D, xyzouvwo->D,
 			   xyzo_half->D, newnp, cells->start, cells->count,
 			   mainstream);
   CC(cudaPeekAtLastError());
@@ -643,6 +644,8 @@ void sim_close() {
   CC(cudaStreamDestroy(uploadstream));
   CC(cudaStreamDestroy(downloadstream));
 
+  redist_part_close();
+
   if (rbcs) delete rbcscoll;
 
   delete contact;
@@ -651,7 +654,6 @@ void sim_close() {
   delete fsi;
   delete dpd;
   delete redistribute_rbcs;
-  delete redistribute;
 
   delete particles_datadump;
   delete accelerations_datadump;
