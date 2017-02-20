@@ -2,7 +2,7 @@
 # (do not include '*.h' files in other '*.h' files)
 
 common.o: .conf.h common.h
-contact.o: .conf.h common-kernels.h common.h contact.h dpd-forces.h last_bit_float.h scan.h
+contact.o: .conf.h common-kernels.h common.h contact.h dpd-forces.h kernelscontact.decl.h kernelscontact.impl.h last_bit_float.h scan.h
 dpd-forces.o: .conf.h common.h dpd-forces.h
 dpd.o: .conf.h common.h dpd-forces.h dpd.h last_bit_float.h solvent-exchange.h
 fsi.o: .conf.h common-kernels.h common.h dpd-forces.h fsi.h last_bit_float.h
