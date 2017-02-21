@@ -99,8 +99,9 @@ struct SolventWrap : ParticlesWrap {
 
 /* container for the gpu particles during the simulation */
 template <typename T> struct DeviceBuffer {
-  int C, S; /* `C': capacity; `S': size; `D' is for data*/
-  T *D;
+  /* `C': capacity; `S': size; `D' is for data*/  
+  int C, S; T *D;
+  
   explicit DeviceBuffer(int n = 0) : C(0), S(0), D(NULL) { resize(n); }
   ~DeviceBuffer() {
     if (D != NULL) CC(cudaFree(D));
@@ -138,19 +139,21 @@ template <typename T> struct DeviceBuffer {
 };
 
 template <typename T> struct PinnedHostBuffer {
-  int capacity, size;
-
-  T *data, *devptr;
+private:
+  int capacity;
+public:  
+  /* `S': size; `D' is for data; `DP' device pointer */
+  int size;  T *D, *DP;
 
   explicit PinnedHostBuffer(int n = 0)
-    : capacity(0), size(0), data(NULL), devptr(NULL) {
+    : capacity(0), size(0), D(NULL), DP(NULL) {
     resize(n);
   }
 
   ~PinnedHostBuffer() {
-    if (data != NULL) CC(cudaFreeHost(data));
+    if (D != NULL) CC(cudaFreeHost(D));
 
-    data = NULL;
+    D = NULL;
   }
 
   void resize(const int n) {
@@ -158,18 +161,18 @@ template <typename T> struct PinnedHostBuffer {
 
     if (capacity >= n) return;
 
-    if (data != NULL) CC(cudaFreeHost(data));
+    if (D != NULL) CC(cudaFreeHost(D));
 
     const int conservative_estimate = (int)ceil(1.1 * n);
     capacity = 128 * ((conservative_estimate + 129) / 128);
 
-    CC(cudaHostAlloc(&data, sizeof(T) * capacity, cudaHostAllocMapped));
+    CC(cudaHostAlloc(&D, sizeof(T) * capacity, cudaHostAllocMapped));
 
-    CC(cudaHostGetDevicePointer(&devptr, data, 0));
+    CC(cudaHostGetDevicePointer(&DP, D, 0));
   }
 
   void preserve_resize(const int n) {
-    T *old = data;
+    T *old = D;
 
     const int oldsize = size;
 
@@ -180,15 +183,15 @@ template <typename T> struct PinnedHostBuffer {
     const int conservative_estimate = (int)ceil(1.1 * n);
     capacity = 128 * ((conservative_estimate + 129) / 128);
 
-    data = NULL;
-    CC(cudaHostAlloc(&data, sizeof(T) * capacity, cudaHostAllocMapped));
+    D = NULL;
+    CC(cudaHostAlloc(&D, sizeof(T) * capacity, cudaHostAllocMapped));
 
     if (old != NULL) {
-      CC(cudaMemcpy(data, old, sizeof(T) * oldsize, cudaMemcpyHostToHost));
+      CC(cudaMemcpy(D, old, sizeof(T) * oldsize, cudaMemcpyHostToHost));
       CC(cudaFreeHost(old));
     }
 
-    CC(cudaHostGetDevicePointer(&devptr, data, 0));
+    CC(cudaHostGetDevicePointer(&DP, D, 0));
   }
 };
 

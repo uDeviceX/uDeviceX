@@ -164,14 +164,14 @@ namespace RedistPart {
     CC(cudaMemcpyToSymbolAsync(RedistPartKernels::pack_buffers, packbuffers,
 			       sizeof(PackBuffer) * 27, 0, cudaMemcpyHostToDevice, mystream));
 
-    (*failure->data) = false;
+    (*failure->D) = false;
     RedistPartKernels::setup<<<1, 32, 0, mystream>>>();
 
     if (nparticles)
       RedistPartKernels::scatter_halo_indices_pack<<<(nparticles + 127) / 128, 128, 0, mystream>>>(nparticles);
     
     RedistPartKernels::tiny_scan<<<1, 32, 0, mystream>>>
-      (nparticles, packbuffers[0].capacity, packsizes->devptr, failure->devptr);
+      (nparticles, packbuffers[0].capacity, packsizes->DP, failure->DP);
 
     CC(cudaEventRecord(evsizes, mystream));
     if (nparticles)
@@ -182,17 +182,17 @@ namespace RedistPart {
 
     CC(cudaEventSynchronize(evsizes));
 
-    if (*failure->data) {
+    if (*failure->D) {
       //wait for packing to finish
       CC(cudaEventSynchronize(evpacking));
 
       printf("pack RANK %d ...FAILED! Recovering now...\n", myrank);
 
-      _adjust_send_buffers(packsizes->data);
+      _adjust_send_buffers(packsizes->D);
 
       if (myrank == 0)
 	for(int i = 0; i < 27; ++i)
-	  printf("ASD: %d\n", packsizes->data[i]);
+	  printf("ASD: %d\n", packsizes->D[i]);
 
       if (secondchance) {
 	printf("...non siamo qui a far la ceretta allo yeti.\n");
@@ -206,7 +206,7 @@ namespace RedistPart {
 
   void send() {
     if (!firstcall) _waitall(sendcountreq, nactiveneighbors);
-    for(int i = 0; i < 27; ++i) send_sizes[i] = packsizes->data[i];
+    for(int i = 0; i < 27; ++i) send_sizes[i] = packsizes->D[i];
     nbulk = recv_sizes[0] = send_sizes[0];
     {
       int c = 0;

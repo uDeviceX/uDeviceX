@@ -276,11 +276,11 @@ void sim_datadump(const int idtimestep) {
 
 #include "simulation.hack.h"
 
-  CC(cudaMemcpyAsync(particles_datadump->data, particles->pp.D,
+  CC(cudaMemcpyAsync(particles_datadump->D, particles->pp.D,
 			     sizeof(Particle) * particles->S,
 			     cudaMemcpyDeviceToHost, 0));
 
-  CC(cudaMemcpyAsync(accelerations_datadump->data, particles->aa.D,
+  CC(cudaMemcpyAsync(accelerations_datadump->D, particles->aa.D,
 			     sizeof(Acceleration) * particles->S,
 			     cudaMemcpyDeviceToHost, 0));
 
@@ -288,10 +288,10 @@ void sim_datadump(const int idtimestep) {
 
   if (rbcs) {
     CC(cudaMemcpyAsync(
-	particles_datadump->data + start, rbcscoll->pp.D,
+	particles_datadump->D + start, rbcscoll->pp.D,
 	sizeof(Particle) * Cont::pcount(), cudaMemcpyDeviceToHost, 0));
     CC(cudaMemcpyAsync(
-	accelerations_datadump->data + start, rbcscoll->aa.D,
+	accelerations_datadump->D + start, rbcscoll->aa.D,
 	sizeof(Acceleration) * Cont::pcount(), cudaMemcpyDeviceToHost, 0));
     start += Cont::pcount();
   }
@@ -343,8 +343,8 @@ static void sim_datadump_async() {
     CC(cudaEventSynchronize(evdownloaded));
 
     int n = particles_datadump->size;
-    Particle *p = particles_datadump->data;
-    Acceleration *a = accelerations_datadump->data;
+    Particle *p = particles_datadump->D;
+    Acceleration *a = accelerations_datadump->D;
 
     { diagnostics(myactivecomm, mycartcomm, p, n, dt, datadump_idtimestep, a); }
 

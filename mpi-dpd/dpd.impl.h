@@ -160,7 +160,7 @@ void _pack_all(Particle *p, int n, bool update_baginfos, cudaStream_t stream) {
       baginfos[i].bagsize = sendhalos[i]->dbuf->C;
       baginfos[i].scattered_entries = sendhalos[i]->scattered_entries->D;
       baginfos[i].dbag = sendhalos[i]->dbuf->D;
-      baginfos[i].hbag = sendhalos[i]->hbuf->data;
+      baginfos[i].hbag = sendhalos[i]->hbuf->D;
     }
     CC(cudaMemcpyToSymbolAsync(PackingHalo::baginfos, baginfos,
                                sizeof(baginfos), 0, cudaMemcpyHostToDevice,
@@ -176,13 +176,13 @@ void _pack_all(Particle *p, int n, bool update_baginfos, cudaStream_t stream) {
 void post_expected_recv() {
   for (int i = 0, c = 0; i < 26; ++i) {
     if (recvhalos[i]->expected)
-      MC(MPI_Irecv(recvhalos[i]->hbuf->data, recvhalos[i]->expected,
+      MC(MPI_Irecv(recvhalos[i]->hbuf->D, recvhalos[i]->expected,
                    Particle::datatype(), dstranks[i], basetag + recv_tags[i],
                    cartcomm, recvreq + c++));
   }
   for (int i = 0, c = 0; i < 26; ++i)
     if (recvhalos[i]->expected)
-      MC(MPI_Irecv(recvhalos[i]->hcellstarts->data,
+      MC(MPI_Irecv(recvhalos[i]->hcellstarts->D,
                    recvhalos[i]->hcellstarts->size, MPI_INTEGER, dstranks[i],
                    basetag + recv_tags[i] + 350, cartcomm, recvcellsreq + c++));
 
@@ -250,7 +250,7 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount,
 
       static int *dstcells[26];
       for (int i = 0; i < 26; ++i)
-        dstcells[i] = sendhalos[i]->hcellstarts->devptr;
+        dstcells[i] = sendhalos[i]->hcellstarts->DP;
 
       CC(cudaMemcpyToSymbol(PackingHalo::dstcells, dstcells, sizeof(dstcells),
                             0, cudaMemcpyHostToDevice));
@@ -258,15 +258,12 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount,
 
     {
       static int *srccells[26];
-      for (int i = 0; i < 26; ++i)
-        srccells[i] = recvhalos[i]->hcellstarts->devptr;
-
+      for (int i = 0; i < 26; ++i) srccells[i] = recvhalos[i]->hcellstarts->DP;
       CC(cudaMemcpyToSymbol(PackingHalo::srccells, srccells, sizeof(srccells),
                             sizeof(srccells), cudaMemcpyHostToDevice));
-
+      
       static int *dstcells[26];
       for (int i = 0; i < 26; ++i) dstcells[i] = recvhalos[i]->dcellstarts->D;
-
       CC(cudaMemcpyToSymbol(PackingHalo::dstcells, dstcells, sizeof(dstcells),
                             sizeof(dstcells), cudaMemcpyHostToDevice));
     }
@@ -316,7 +313,7 @@ void post(Particle *p, int n, cudaStream_t stream,
 
   for (int i = 0; i < 26; ++i)
     if (sendhalos[i]->hbuf->size)
-      cudaMemcpyAsync(sendhalos[i]->hbuf->data, sendhalos[i]->dbuf->D,
+      cudaMemcpyAsync(sendhalos[i]->hbuf->D, sendhalos[i]->dbuf->D,
                       sizeof(Particle) * sendhalos[i]->hbuf->size,
                       cudaMemcpyDeviceToHost, downloadstream);
 
@@ -324,7 +321,7 @@ void post(Particle *p, int n, cudaStream_t stream,
   {
     for (int i = 0, c = 0; i < 26; ++i)
       if (sendhalos[i]->expected)
-        MC(MPI_Isend(sendhalos[i]->hcellstarts->data,
+        MC(MPI_Isend(sendhalos[i]->hcellstarts->D,
                      sendhalos[i]->hcellstarts->size, MPI_INTEGER, dstranks[i],
                      basetag + i + 350, cartcomm, sendcellsreq + c++));
 
@@ -342,7 +339,7 @@ void post(Particle *p, int n, cudaStream_t stream,
 
       int count = sendhalos[i]->hbuf->size;
 
-      MC(MPI_Isend(sendhalos[i]->hbuf->data, expected, Particle::datatype(),
+      MC(MPI_Isend(sendhalos[i]->hbuf->D, expected, Particle::datatype(),
                    dstranks[i], basetag + i, cartcomm, sendreq + nsendreq));
 
       ++nsendreq;
@@ -356,7 +353,7 @@ void post(Particle *p, int n, cudaStream_t stream,
                "%d %d! difference %d, expected is %d\n",
                myrank, dstranks[i], d[0], d[1], d[2], difference, expected);
 
-        MC(MPI_Isend(sendhalos[i]->hbuf->data + expected, difference,
+        MC(MPI_Isend(sendhalos[i]->hbuf->D + expected, difference,
                      Particle::datatype(), dstranks[i], basetag + i + 555,
                      cartcomm, sendreq + nsendreq));
         ++nsendreq;
@@ -391,20 +388,20 @@ void recv(cudaStream_t stream, cudaStream_t uploadstream) {
       recvhalos[i]->hbuf->preserve_resize(count);
       recvhalos[i]->dbuf->resize(count);
       MPI_Status status;
-      MPI_Recv(recvhalos[i]->hbuf->data + expected, difference,
+      MPI_Recv(recvhalos[i]->hbuf->D + expected, difference,
                Particle::datatype(), dstranks[i], basetag + recv_tags[i] + 555,
                cartcomm, &status);
     }
   }
 
   for (int i = 0; i < 26; ++i)
-    CC(cudaMemcpyAsync(recvhalos[i]->dbuf->D, recvhalos[i]->hbuf->data,
+    CC(cudaMemcpyAsync(recvhalos[i]->dbuf->D, recvhalos[i]->hbuf->D,
                        sizeof(Particle) * recvhalos[i]->hbuf->size,
                        cudaMemcpyHostToDevice, uploadstream));
 
   for (int i = 0; i < 26; ++i)
     CC(cudaMemcpyAsync(recvhalos[i]->dcellstarts->D,
-                       recvhalos[i]->hcellstarts->data,
+                       recvhalos[i]->hcellstarts->D,
                        sizeof(int) * recvhalos[i]->hcellstarts->size,
                        cudaMemcpyHostToDevice, uploadstream));
 

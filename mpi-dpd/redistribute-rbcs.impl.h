@@ -50,7 +50,7 @@ void redistribute_rbcs_init(MPI_Comm _cartcomm) {
 void _compute_extents(Particle *xyzuvw,
 					int nrbcs, cudaStream_t stream) {
   if (nrbcs)
-    minmax(xyzuvw, nvertices, nrbcs, minextents->devptr, maxextents->devptr,
+    minmax(xyzuvw, nvertices, nrbcs, minextents->DP, maxextents->DP,
 	   stream);
 }
 
@@ -121,8 +121,8 @@ void pack_sendcount(Particle *xyzuvw,
   std::vector<int> reordering_indices[27];
 
   for (int i = 0; i < nrbcs; ++i) {
-    float3 minext = minextents->data[i];
-    float3 maxext = maxextents->data[i];
+    float3 minext = minextents->D[i];
+    float3 maxext = maxextents->D[i];
     float p[3] = {0.5 * (minext.x + maxext.x), 0.5 * (minext.y + maxext.y),
 		  0.5 * (minext.z + maxext.z)};
     int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
@@ -146,7 +146,7 @@ void pack_sendcount(Particle *xyzuvw,
 	src.push_back((float *)(xyzuvw + nvertices * reordering_indices[i][j]));
 
 	if (i)
-	  dst.push_back((float *)(halo_sendbufs[i]->devptr + nvertices * j));
+	  dst.push_back((float *)(halo_sendbufs[i]->DP + nvertices * j));
 	else
 	  dst.push_back((float *)(bulk->D + nvertices * j));
       }
@@ -184,7 +184,7 @@ int post() {
   for (int i = 1; i < 27; ++i)
     if (halo_recvbufs[i]->size > 0) {
       MPI_Request request;
-      MC(MPI_Irecv(halo_recvbufs[i]->data, halo_recvbufs[i]->size,
+      MC(MPI_Irecv(halo_recvbufs[i]->D, halo_recvbufs[i]->size,
 			  Particle::datatype(), anti_rankneighbors[i], i + 1155,
 			  cartcomm, &request));
       recvreq.push_back(request);
@@ -193,7 +193,7 @@ int post() {
   for (int i = 1; i < 27; ++i)
     if (halo_sendbufs[i]->size > 0) {
       MPI_Request request;
-      MC(MPI_Isend(halo_sendbufs[i]->data, halo_sendbufs[i]->size,
+      MC(MPI_Isend(halo_sendbufs[i]->D, halo_sendbufs[i]->size,
 			  Particle::datatype(), rankneighbors[i], i + 1155,
 			  cartcomm, &request));
 
@@ -230,7 +230,7 @@ void unpack(Particle *xyzuvw, int nrbcs,
     int count = halo_recvbufs[i]->size;
     if (count > 0)
       ParticleReorderingRBC::shift<<<(count + 127) / 128, 128, 0, stream>>>(
-	  halo_recvbufs[i]->devptr, count, i, myrank, false, xyzuvw + s);
+	  halo_recvbufs[i]->DP, count, i, myrank, false, xyzuvw + s);
     s += halo_recvbufs[i]->size;
   }
 

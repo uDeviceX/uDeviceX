@@ -92,7 +92,7 @@ namespace SolEx {
     for (int i = 0; i < 26; ++i) {
       MPI_Request reqA;
 
-      MC(MPI_Irecv(local[i]->result->data, local[i]->result->size * 3,
+      MC(MPI_Irecv(local[i]->result->D, local[i]->result->size * 3,
 		   MPI_FLOAT, dstranks[i], TAGBASE_A + recv_tags[i],
 		   cartcomm, &reqA));
       reqrecvA.push_back(reqA);
@@ -132,14 +132,14 @@ namespace SolEx {
       CC(cudaPeekAtLastError());
     }
 
-    CC(cudaMemcpyAsync(host_packstotalcount->data,
+    CC(cudaMemcpyAsync(host_packstotalcount->D,
 		       packsoffset->D + 26 * wsolutes.size(), sizeof(int) * 26,
 		       cudaMemcpyDeviceToHost, stream));
 
     SolutePUP::tiny_scan<<<1, 32, 0, stream>>>(
 					       packsoffset->D + 26 * wsolutes.size(), NULL, NULL, packstotalstart->D);
 
-    CC(cudaMemcpyAsync(host_packstotalstart->data, packstotalstart->D,
+    CC(cudaMemcpyAsync(host_packstotalstart->D, packstotalstart->D,
 		       sizeof(int) * 27, cudaMemcpyDeviceToHost, stream));
 
     CC(cudaMemcpyToSymbolAsync(SolutePUP::cbases, packstotalstart->D,
@@ -196,7 +196,7 @@ namespace SolEx {
       else
 	_wait(reqsendC);
 
-      for (int i = 0; i < 26; ++i) send_counts[i] = host_packstotalcount->data[i];
+      for (int i = 0; i < 26; ++i) send_counts[i] = host_packstotalcount->D[i];
 
       bool packingfailed = false;
 
@@ -238,9 +238,9 @@ namespace SolEx {
       } else
 	_wait(reqsendP);
 
-      if (host_packstotalstart->data[26]) {
-	CC(cudaMemcpyAsync(host_packbuf->data, packbuf->D,
-			   sizeof(Particle) * host_packstotalstart->data[26],
+      if (host_packstotalstart->D[26]) {
+	CC(cudaMemcpyAsync(host_packbuf->D, packbuf->D,
+			   sizeof(Particle) * host_packstotalstart->D[26],
 			   cudaMemcpyDeviceToHost, downloadstream));
       }
 
@@ -256,19 +256,19 @@ namespace SolEx {
 		     TAGBASE_C + i, cartcomm, &reqsendC[i]));
 
       for (int i = 0; i < 26; ++i) {
-	int start = host_packstotalstart->data[i];
+	int start = host_packstotalstart->D[i];
 	int count = send_counts[i];
 	int expected = local[i]->expected();
 
 	MPI_Request reqP;
 
-	_not_nan((float *)(host_packbuf->data + start), count * 6);
+	_not_nan((float *)(host_packbuf->D + start), count * 6);
 
 #ifdef _DUMBCRAY_
 	MC(MPI_Isend(host_packbuf.data + start, count * 6, MPI_FLOAT,
 		     dstranks[i], TAGBASE_P + i, cartcomm, &reqP));
 #else
-	MC(MPI_Isend(host_packbuf->data + start, expected * 6, MPI_FLOAT,
+	MC(MPI_Isend(host_packbuf->D + start, expected * 6, MPI_FLOAT,
 		     dstranks[i], TAGBASE_P + i, cartcomm, &reqP));
 #endif
 
@@ -277,7 +277,7 @@ namespace SolEx {
 #ifndef _DUMBCRAY_
 	if (count > expected) {
 	  MPI_Request reqP2;
-	  MC(MPI_Isend(host_packbuf->data + start + expected,
+	  MC(MPI_Isend(host_packbuf->D + start + expected,
 		       (count - expected) * 6, MPI_FLOAT, dstranks[i],
 		       TAGBASE_P2 + i, cartcomm, &reqP2));
 
@@ -311,17 +311,17 @@ namespace SolEx {
 		    (count - expected) * 6, MPI_FLOAT, dstranks[i],
 		    TAGBASE_P2 + recv_tags[i], cartcomm, &status));
 
-      memcpy(remote[i]->hstate.data, &remote[i]->pmessage.front(),
+      memcpy(remote[i]->hstate.D, &remote[i]->pmessage.front(),
 	     sizeof(Particle) * count);
 #endif
 
-      _not_nan((float *)remote[i]->hstate.data, count * 6);
+      _not_nan((float *)remote[i]->hstate.D, count * 6);
     }
 
     _postrecvC();
 
     for (int i = 0; i < 26; ++i)
-      CC(cudaMemcpyAsync(remote[i]->dstate.D, remote[i]->hstate.data,
+      CC(cudaMemcpyAsync(remote[i]->dstate.D, remote[i]->hstate.D,
 			 sizeof(Particle) * remote[i]->hstate.size,
 			 cudaMemcpyHostToDevice, uploadstream));
   }
@@ -335,7 +335,7 @@ namespace SolEx {
 
     for (int i = 0; i < 26; ++i)
       halos[i] = ParticlesWrap(remote[i]->dstate.D, remote[i]->dstate.S,
-			       remote[i]->result.devptr);
+			       remote[i]->result.DP);
 
     CC(cudaStreamSynchronize(uploadstream));
 
@@ -362,7 +362,7 @@ namespace SolEx {
 
     reqsendA.resize(26);
     for (int i = 0; i < 26; ++i)
-      MC(MPI_Isend(remote[i]->result.data, remote[i]->result.size * 3,
+      MC(MPI_Isend(remote[i]->result.D, remote[i]->result.size * 3,
 		   MPI_FLOAT, dstranks[i], TAGBASE_A + i, cartcomm,
 		   &reqsendA[i]));
   }
@@ -375,7 +375,7 @@ namespace SolEx {
     {
       float *recvbags[26];
 
-      for (int i = 0; i < 26; ++i) recvbags[i] = (float *)local[i]->result->devptr;
+      for (int i = 0; i < 26; ++i) recvbags[i] = (float *)local[i]->result->DP;
 
       CC(cudaMemcpyToSymbolAsync(SolutePUP::recvbags, recvbags, sizeof(recvbags),
 				 0, cudaMemcpyHostToDevice, stream));
