@@ -1,3 +1,4 @@
+namespace Sim {
 ParticleArray *particles_pingpong[2];
 ParticleArray *particles, *newparticles;
 ParticleArray *rbcscoll;
@@ -32,3 +33,4 @@ cudaEvent_t evdownloaded;
 float rbc_xx[NPMAX], rbc_yy[NPMAX], rbc_zz[NPMAX];
 float sol_xx[NPMAX], sol_yy[NPMAX], sol_zz[NPMAX];
 int iotags[NPMAX];
+}

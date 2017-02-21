@@ -120,9 +120,9 @@ int main(int argc, char **argv) {
   localcomm.initialize(activecomm);
   MC(MPI_Barrier(activecomm));
 
-  sim_init(cartcomm, activecomm);
-  sim_run();
-  sim_close();
+  Sim::sim_init(cartcomm, activecomm);
+  Sim::sim_run();
+  Sim::sim_close();
 
   if (activecomm != cartcomm) MC(MPI_Comm_free(&activecomm));
   MC(MPI_Comm_free(&cartcomm));

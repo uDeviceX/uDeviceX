@@ -36,6 +36,7 @@ static __global__ void make_texture(float4 *__restrict xyzouvwoo,
 		   __float2half_rn(smem[warpid * 192 + lane * 6 + 2]), 0);
 }
 
+namespace Sim {
 static void sim_update_helper_arrays() {
   CC(cudaFuncSetCacheConfig(make_texture, cudaFuncCachePreferShared));
 
@@ -647,4 +648,5 @@ void sim_close() {
   delete particles_pingpong[1];
 
   delete Wall::trunk;
+}
 }
