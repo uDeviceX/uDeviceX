@@ -26,6 +26,8 @@
 #include "redistribute-rbcs.impl.h"
 
 #include "redistribute-particles.decl.h"
+#include "redisparticleskernels.decl.h"
+#include "redisparticleskernels.impl.h"
 #include "redistribute-particles.impl.h"
 
 #include "containers.decl.h"
