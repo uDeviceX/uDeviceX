@@ -8,7 +8,6 @@
 #include <mpi.h>
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */
 #include "common.h"
-#include "solvent-exchange.h"
 #include "dpd.h"
 #include "io.h"
 #include "simulation.h"
