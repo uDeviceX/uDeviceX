@@ -11,6 +11,7 @@
 #include "last_bit_float.h"
 
 #include "bipsbatch.decl.h"
+#include "bipsbatch.impl.h"
 
 ComputeDPD::ComputeDPD(MPI_Comm cartcomm)
     : SolventExchange(cartcomm, 0), local_trunk(0, 0, 0, 0) {
