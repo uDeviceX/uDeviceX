@@ -28,42 +28,74 @@ namespace DPD {
   int basetag;
 
   struct SendHalo {
+    SendHalo() {
+      dbuf = new DeviceBuffer<Particle>;
+      hbuf = new PinnedHostBuffer<Particle>;
+      
+      scattered_entries = new DeviceBuffer<int>;
+      tmpstart = new DeviceBuffer<int>;
+      tmpcount = new DeviceBuffer<int>;
+      dcellstarts = new DeviceBuffer<int>;
+    };
+
+    ~SendHalo() {
+      delete dbuf;
+      delete hbuf;
+      delete scattered_entries;
+      delete tmpstart;
+      delete tmpcount;
+      delete dcellstarts;
+    }
+    
+    DeviceBuffer<int> *scattered_entries, *tmpstart, *tmpcount, *dcellstarts;
+    DeviceBuffer<Particle>* dbuf;
+    PinnedHostBuffer<Particle>* hbuf;
+    
     int expected;
-    DeviceBuffer<int> scattered_entries, tmpstart, tmpcount, dcellstarts;
-    DeviceBuffer<Particle> dbuf;
     PinnedHostBuffer<int> hcellstarts;
-    PinnedHostBuffer<Particle> hbuf;
     void setup(int estimate, int nhalocells) {
       adjust(estimate);
-      dcellstarts.resize(nhalocells + 1);
+      dcellstarts->resize(nhalocells + 1);
       hcellstarts.resize(nhalocells + 1);
-      tmpcount.resize(nhalocells + 1);
-      tmpstart.resize(nhalocells + 1);
+      tmpcount->resize(nhalocells + 1);
+      tmpstart->resize(nhalocells + 1);
     }
 
     void adjust(int estimate) {
       expected = estimate;
-      hbuf.resize(estimate);
-      dbuf.resize(estimate);
-      scattered_entries.resize(estimate);
+      hbuf->resize(estimate);
+      dbuf->resize(estimate);
+      scattered_entries->resize(estimate);
     }
   } sendhalos[26];
 
   struct RecvHalo {
+    RecvHalo() {
+      hcellstarts = new PinnedHostBuffer<int>;
+      hbuf = new PinnedHostBuffer<Particle>;
+      dbuf = new DeviceBuffer<Particle>;
+      dcellstarts = new DeviceBuffer<int>;
+    }
+    ~RecvHalo() {
+      delete hcellstarts;
+      delete hbuf;
+      delete dbuf;
+      delete dcellstarts;
+    }
     int expected;
-    PinnedHostBuffer<int> hcellstarts;
-    PinnedHostBuffer<Particle> hbuf;
-    DeviceBuffer<Particle> dbuf;
-    DeviceBuffer<int> dcellstarts;
+    PinnedHostBuffer<int>* hcellstarts;
+    PinnedHostBuffer<Particle>* hbuf;
+    DeviceBuffer<Particle>* dbuf;
+    DeviceBuffer<int>* dcellstarts;
     void setup(int estimate, int nhalocells) {
       adjust(estimate);
-      dcellstarts.resize(nhalocells + 1);
-      hcellstarts.resize(nhalocells + 1);
+      dcellstarts->resize(nhalocells + 1);
+      hcellstarts->resize(nhalocells + 1);
     }
     void adjust(int estimate) {
       expected = estimate;
-      hbuf.resize(estimate);
-      dbuf.resize(estimate);
+      hbuf->resize(estimate);
+      dbuf->resize(estimate);
     }
 
   } recvhalos[26];
