@@ -66,6 +66,7 @@ public:
   int nof_sent_particles();
   void _cancel_recv();
   SolventExchange(MPI_Comm cartcomm, int basetag);
+  void init0(MPI_Comm cartcomm, int basetag);
   void pack(Particle *p, int n, int *cellsstart,
 	    int *cellscount, cudaStream_t stream);
   void post(Particle *p, int n, cudaStream_t stream,
