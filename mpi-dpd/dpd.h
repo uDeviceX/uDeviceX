@@ -16,4 +16,5 @@ public:
                           ushort4 *xyzo_half, int n, Acceleration *a,
                           int *cellsstart, int *cellscount,
                           cudaStream_t stream);
+  void init1(MPI_Comm cartcomm);
 };

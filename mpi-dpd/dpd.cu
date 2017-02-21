@@ -15,7 +15,11 @@
 
 ComputeDPD::ComputeDPD(MPI_Comm cartcomm)
     : SolventExchange(cartcomm, 0), local_trunk(0, 0, 0, 0) {
-  int myrank;
+  init1(cartcomm);
+}
+
+void ComputeDPD::init1(MPI_Comm cartcomm) {
+    int myrank;
   MC(MPI_Comm_rank(cartcomm, &myrank));
 
   for (int i = 0; i < 26; ++i) {
