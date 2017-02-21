@@ -40,7 +40,7 @@ namespace Sim {
 static void sim_update_helper_arrays() {
   CC(cudaFuncSetCacheConfig(make_texture, cudaFuncCachePreferShared));
 
-  const int np = particles->pp.S;
+  int np = particles->pp.S;
 
   xyzouvwo->resize(2 * np);
   xyzo_half->resize(np);
@@ -102,12 +102,12 @@ static void sim_redistribute() {
 
   CC(cudaPeekAtLastError());
 
-  if (rbcscoll)
+  if (Cont::ncells)
     RedistRBC::extent(rbcscoll->pp.D, Cont::ncells, mainstream);
 
   RedistPart::send();
 
-  if (rbcscoll)
+  if (Cont::ncells)
     RedistRBC::pack_sendcount(rbcscoll->pp.D, Cont::ncells, mainstream);
 
   RedistPart::bulk(particles->pp.S, cells->start, cells->count, mainstream);
@@ -500,7 +500,7 @@ static void sim_lockstep() {
 		       particles->aa.D, cells->start, cells->count);
   std::vector<ParticlesWrap> wsolutes;
 
-  if (rbcscoll)
+  if (Cont::ncells)
     wsolutes.push_back(
 	ParticlesWrap(rbcscoll->pp.D, Cont::pcount(), rbcscoll->aa.D));
 
@@ -508,7 +508,7 @@ static void sim_lockstep() {
   SolEx::bind_solutes(wsolutes);
   Cont::clear_acc(particles, mainstream);
 
-  if (rbcscoll) Cont::clear_acc(rbcscoll, mainstream);
+  if (Cont::ncells) Cont::clear_acc(rbcscoll, mainstream);
 
   SolEx::pack_p(mainstream);
   DPD::pack(particles->pp.D, particles->pp.S, cells->start, cells->count,
@@ -538,7 +538,7 @@ static void sim_lockstep() {
   if (contactforces) Contact::bulk(wsolutes, mainstream);
   CC(cudaPeekAtLastError());
 
-  if (rbcscoll)
+  if (Cont::ncells)
     CudaRBC::forces_nohost(mainstream, Cont::ncells,
 			   (float *)rbcscoll->pp.D, (float *)rbcscoll->aa.D);
   CC(cudaPeekAtLastError());
@@ -556,10 +556,10 @@ static void sim_lockstep() {
 		       mainstream);
   CC(cudaPeekAtLastError());
   SolEx::recv_a(mainstream);
-  if (rbcscoll) Cont::upd_stg2_and_1(rbcscoll, true, driving_acceleration, mainstream);
+  if (Cont::ncells) Cont::upd_stg2_and_1(rbcscoll, true, driving_acceleration, mainstream);
   int newnp = RedistPart::recv_count(mainstream);
   CC(cudaPeekAtLastError());
-  if (rbcscoll) {
+  if (Cont::ncells) {
     RedistRBC::extent(rbcscoll->pp.D, Cont::ncells, mainstream);
     RedistRBC::pack_sendcount(rbcscoll->pp.D, Cont::ncells, mainstream);
   }
@@ -572,11 +572,11 @@ static void sim_lockstep() {
   CC(cudaPeekAtLastError());
   swap(particles, newparticles);
   int nrbcs;
-  if (rbcscoll) nrbcs = RedistRBC::post();
+  if (Cont::ncells) nrbcs = RedistRBC::post();
 
-  if (rbcscoll) Cont::rbc_resize(rbcscoll, nrbcs);
+  if (Cont::ncells) Cont::rbc_resize(rbcscoll, nrbcs);
   CC(cudaPeekAtLastError());
-  if (rbcscoll)
+  if (Cont::ncells)
     RedistRBC::unpack(rbcscoll->pp.D, Cont::ncells, mainstream);
   CC(cudaPeekAtLastError());
 }
@@ -587,7 +587,7 @@ void sim_run() {
   sim_forces();
   if (!walls && pushtheflow) driving_acceleration = hydrostatic_a;
   Cont::upd_stg1(particles, false, driving_acceleration, mainstream);
-  if (rbcscoll) Cont::upd_stg1(rbcscoll, true, driving_acceleration, mainstream);
+  if (Cont::ncells) Cont::upd_stg1(rbcscoll, true, driving_acceleration, mainstream);
 
   int it;
   for (it = 0; it < nsteps; ++it) {
