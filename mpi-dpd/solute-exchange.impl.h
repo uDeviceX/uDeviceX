@@ -232,9 +232,7 @@ namespace SolEx {
       _postrecvA();
 
       if (iterationcount == 0) {
-#ifndef _DUMBCRAY_
 	_postrecvP();
-#endif
       } else
 	_wait(reqsendP);
 
