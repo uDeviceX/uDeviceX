@@ -266,7 +266,6 @@ namespace SolEx {
 		     dstranks[i], TAGBASE_P + i, cartcomm, &reqP));
 	reqsendP.push_back(reqP);
 
-#ifndef _DUMBCRAY_
 	if (count > expected) {
 	  MPI_Request reqP2;
 	  MC(MPI_Isend(host_packbuf->D + start + expected,
@@ -275,7 +274,6 @@ namespace SolEx {
 
 	  reqsendP.push_back(reqP2);
 	}
-#endif
       }
     }
   }
@@ -294,10 +292,6 @@ namespace SolEx {
       remote[i]->preserve_resize(count);
       MPI_Status status;
 
-#ifdef _DUMBCRAY_
-      MC(MPI_Recv(remote[i].hstate.data, count * 6, MPI_FLOAT, dstranks[i],
-		  TAGBASE_P + recv_tags[i], cartcomm, &status));
-#else
       if (count > expected)
 	MC(MPI_Recv(&remote[i]->pmessage.front() + expected,
 		    (count - expected) * 6, MPI_FLOAT, dstranks[i],
@@ -305,8 +299,6 @@ namespace SolEx {
 
       memcpy(remote[i]->hstate.D, &remote[i]->pmessage.front(),
 	     sizeof(Particle) * count);
-#endif
-
       _not_nan((float *)remote[i]->hstate.D, count * 6);
     }
 
