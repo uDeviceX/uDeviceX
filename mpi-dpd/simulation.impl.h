@@ -441,8 +441,6 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   RedistPart::redist_part_init(Cont::cartcomm);
 
   nsteps = (int)(tend / dt);
-
-  MC(MPI_Comm_size(activecomm, &Cont::nranks));
   MC(MPI_Comm_rank(activecomm, &Cont::rank));
 
   int dims[3], periods[3]; /* `coords' is global */

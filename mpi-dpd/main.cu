@@ -59,14 +59,13 @@ int main(int argc, char **argv) {
 
   CC(cudaSetDevice(0));
   CC(cudaDeviceReset());
-  int nranks, rank;
+  int rank;
   if (mpi_thread_safe) {
     // needed for the asynchronous data dumps
     setenv("MPICH_MAX_THREAD_SAFETY", "multiple", 0);
     int provided_safety_level;
     MC(MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE,
 			      &provided_safety_level));
-    MC(MPI_Comm_size(MPI_COMM_WORLD, &nranks));
     MC(MPI_Comm_rank(MPI_COMM_WORLD, &rank));
 
     if (provided_safety_level != MPI_THREAD_MULTIPLE) {
@@ -79,7 +78,6 @@ int main(int argc, char **argv) {
       printf("I have set MPICH_MAX_THREAD_SAFETY=multiple\n");
   } else {
     MC(MPI_Init(&argc, &argv));
-    MC(MPI_Comm_size(MPI_COMM_WORLD, &nranks));
     MC(MPI_Comm_rank(MPI_COMM_WORLD, &rank));
     const char *env_thread_safety = getenv("MPICH_MAX_THREAD_SAFETY");
     if (rank == 0 && env_thread_safety)
