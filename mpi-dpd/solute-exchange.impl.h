@@ -262,14 +262,8 @@ namespace SolEx {
 
 	_not_nan((float *)(host_packbuf->D + start), count * 6);
 
-#ifdef _DUMBCRAY_
-	MC(MPI_Isend(host_packbuf.data + start, count * 6, MPI_FLOAT,
-		     dstranks[i], TAGBASE_P + i, cartcomm, &reqP));
-#else
 	MC(MPI_Isend(host_packbuf->D + start, expected * 6, MPI_FLOAT,
 		     dstranks[i], TAGBASE_P + i, cartcomm, &reqP));
-#endif
-
 	reqsendP.push_back(reqP);
 
 #ifndef _DUMBCRAY_
