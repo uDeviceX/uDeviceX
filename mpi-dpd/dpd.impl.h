@@ -1,39 +1,5 @@
-#include <utility>
-#include <cell-lists.h>
-#include <cuda-dpd.h>
-#include <dpd-rng.h>
-#include <mpi.h>
-#include ".conf.h" /* configuration file (copy from .conf.test.h) */
-#include "common.h"
-#include "dpd.h"
-#include "dpd-forces.h"
-#include "last_bit_float.h"
-
-#include "packinghalo.decl.h"
-#include "packinghalo.impl.h"
-
-#include "bipsbatch.decl.h"
-#include "bipsbatch.impl.h"
-
 namespace DPD {
-ComputeDPD::ComputeDPD(MPI_Comm _cartcomm) {
-  init0(_cartcomm, 0);
-  local_trunk = new Logistic::KISS(0, 0, 0, 0);
-  init1(_cartcomm);
-}
-
-ComputeDPD::~ComputeDPD() {
-  CC(cudaFreeHost(required_send_bag_size));
-  MC(MPI_Comm_free(&cartcomm));
-  _cancel_recv();
-  CC(cudaEventDestroy(evfillall));
-  CC(cudaEventDestroy(evdownloaded));
-  
-  for (int i = 1; i < 26; i++) delete interrank_trunks[i];
-  delete local_trunk;
-}
-
-void ComputeDPD::init1(MPI_Comm cartcomm) {
+void init1(MPI_Comm cartcomm) {
     int myrank;
   MC(MPI_Comm_rank(cartcomm, &myrank));
 
@@ -84,7 +50,7 @@ void ComputeDPD::init1(MPI_Comm cartcomm) {
   }
 }
 
-void ComputeDPD::local_interactions(Particle *xyzuvw, float4 *xyzouvwo,
+void local_interactions(Particle *xyzuvw, float4 *xyzouvwo,
                                     ushort4 *xyzo_half, int n, Acceleration *a,
                                     int *cellsstart, int *cellscount,
                                     cudaStream_t stream) {
@@ -94,7 +60,7 @@ void ComputeDPD::local_interactions(Particle *xyzuvw, float4 *xyzouvwo,
       1. / sqrt(dt), local_trunk->get_float(), stream);
 }
 
-void ComputeDPD::remote_interactions(Particle *p, int n, Acceleration *a,
+void remote_interactions(Particle *p, int n, Acceleration *a,
                                      cudaStream_t stream,
                                      cudaStream_t uploadstream) {
   CC(cudaPeekAtLastError());
@@ -136,7 +102,7 @@ void ComputeDPD::remote_interactions(Particle *p, int n, Acceleration *a,
   CC(cudaPeekAtLastError());
 }
 
-void ComputeDPD::init0(MPI_Comm _cartcomm, int _basetag) {
+void init0(MPI_Comm _cartcomm, int _basetag) {
     basetag = _basetag; firstpost = true; nactive = 26;
   safety_factor =
     getenv("HEX_COMM_FACTOR") ? atof(getenv("HEX_COMM_FACTOR")) : 1.2;
@@ -174,8 +140,13 @@ void ComputeDPD::init0(MPI_Comm _cartcomm, int _basetag) {
                               cudaEventDisableTiming | cudaEventBlockingSync));
 }
 
+void init(MPI_Comm _cartcomm) {
+  init0(_cartcomm, 0);
+  local_trunk = new Logistic::KISS(0, 0, 0, 0);
+  init1(_cartcomm);
+}
 
-void ComputeDPD::_pack_all(Particle *p, int n,
+void _pack_all(Particle *p, int n,
                                 bool update_baginfos,
                                 cudaStream_t stream) {
   if (update_baginfos) {
@@ -200,7 +171,30 @@ void ComputeDPD::_pack_all(Particle *p, int n,
   CC(cudaEventRecord(evfillall, stream));
 }
 
-void ComputeDPD::pack(Particle *p, int n,
+  void post_expected_recv() {
+  for (int i = 0, c = 0; i < 26; ++i) {
+    if (recvhalos[i].expected)
+      MC(MPI_Irecv(recvhalos[i].hbuf.data, recvhalos[i].expected,
+		   Particle::datatype(), dstranks[i],
+		   basetag + recv_tags[i], cartcomm, recvreq + c++));
+  }
+  for (int i = 0, c = 0; i < 26; ++i)
+    if (recvhalos[i].expected)
+      MC(MPI_Irecv(recvhalos[i].hcellstarts.data,
+		   recvhalos[i].hcellstarts.size, MPI_INTEGER,
+		   dstranks[i], basetag + recv_tags[i] + 350, cartcomm,
+		   recvcellsreq + c++));
+
+  for (int i = 0, c = 0; i < 26; ++i)
+    if (recvhalos[i].expected)
+      MC(MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, dstranks[i],
+		   basetag + recv_tags[i] + 150, cartcomm,
+		   recvcountreq + c++));
+    else
+      recv_counts[i] = 0;
+}
+
+void pack(Particle *p, int n,
                            int *cellsstart,
                            int *cellscount, cudaStream_t stream) {
   CC(cudaPeekAtLastError());
@@ -287,7 +281,7 @@ void ComputeDPD::pack(Particle *p, int n,
   CC(cudaPeekAtLastError());
 }
 
-void ComputeDPD::post(Particle *p, int n,
+void post(Particle *p, int n,
                            cudaStream_t stream, cudaStream_t downloadstream) {
   {
     CC(cudaEventSynchronize(evfillall));
@@ -378,30 +372,7 @@ void ComputeDPD::post(Particle *p, int n,
   firstpost = false;
 }
 
-void ComputeDPD::post_expected_recv() {
-  for (int i = 0, c = 0; i < 26; ++i) {
-    if (recvhalos[i].expected)
-      MC(MPI_Irecv(recvhalos[i].hbuf.data, recvhalos[i].expected,
-		   Particle::datatype(), dstranks[i],
-		   basetag + recv_tags[i], cartcomm, recvreq + c++));
-  }
-  for (int i = 0, c = 0; i < 26; ++i)
-    if (recvhalos[i].expected)
-      MC(MPI_Irecv(recvhalos[i].hcellstarts.data,
-		   recvhalos[i].hcellstarts.size, MPI_INTEGER,
-		   dstranks[i], basetag + recv_tags[i] + 350, cartcomm,
-		   recvcellsreq + c++));
-
-  for (int i = 0, c = 0; i < 26; ++i)
-    if (recvhalos[i].expected)
-      MC(MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, dstranks[i],
-		   basetag + recv_tags[i] + 150, cartcomm,
-		   recvcountreq + c++));
-    else
-      recv_counts[i] = 0;
-}
-
-void ComputeDPD::recv(cudaStream_t stream, cudaStream_t uploadstream) {
+void recv(cudaStream_t stream, cudaStream_t uploadstream) {
   CC(cudaPeekAtLastError());
   {
     MPI_Status statuses[26];
@@ -447,13 +418,13 @@ void ComputeDPD::recv(cudaStream_t stream, cudaStream_t uploadstream) {
   post_expected_recv();
 }
 
-int ComputeDPD::nof_sent_particles() {
+int nof_sent_particles() {
   int s = 0;
   for (int i = 0; i < 26; ++i) s += sendhalos[i].hbuf.size;
   return s;
 }
 
-void ComputeDPD::_cancel_recv() {
+void _cancel_recv() {
   if (!firstpost) {
     {
       MPI_Status statuses[26 * 2];
@@ -469,7 +440,7 @@ void ComputeDPD::_cancel_recv() {
   }
 }
 
-void ComputeDPD::adjust_message_sizes(ExpectedMessageSizes sizes) {
+void adjust_message_sizes(ExpectedMessageSizes sizes) {
   _cancel_recv();
   nactive = 0;
   for (int i = 0; i < 26; ++i) {
@@ -482,5 +453,16 @@ void ComputeDPD::adjust_message_sizes(ExpectedMessageSizes sizes) {
     if (estimate == 0) required_send_bag_size_host[i] = 0;
     nactive += (int)(estimate > 0);
   }
+}
+
+  void close() {
+  CC(cudaFreeHost(required_send_bag_size));
+  MC(MPI_Comm_free(&cartcomm));
+  _cancel_recv();
+  CC(cudaEventDestroy(evfillall));
+  CC(cudaEventDestroy(evdownloaded));
+  
+  for (int i = 1; i < 26; i++) delete interrank_trunks[i];
+  delete local_trunk;
 }
 }

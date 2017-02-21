@@ -7,7 +7,6 @@
 #include "argument-parser.h"
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */
 #include "common.h"
-#include "dpd.h"
 #include "simulation.h"
 
 float tend;

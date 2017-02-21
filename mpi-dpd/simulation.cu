@@ -1,3 +1,4 @@
+#include <cuda-dpd.h>
 #include <sys/stat.h>
 #include <map>
 #include <string>
@@ -8,7 +9,6 @@
 #include <mpi.h>
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */
 #include "common.h"
-#include "dpd.h"
 #include "io.h"
 #include "simulation.h"
 #include "dpd-forces.h"
@@ -52,6 +52,15 @@
 
 #include "solute-exchange.decl.h"
 #include "solute-exchange.impl.h"
+
+#include "packinghalo.decl.h"
+#include "packinghalo.impl.h"
+
+#include "bipsbatch.decl.h"
+#include "bipsbatch.impl.h"
+
+#include "dpd.decl.h"
+#include "dpd.impl.h"
 
 #include "simulation.decl.h"
 #include "simulation.impl.h"

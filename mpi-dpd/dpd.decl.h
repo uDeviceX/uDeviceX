@@ -67,31 +67,4 @@ namespace DPD {
     }
 
   } recvhalos[26];
-class ComputeDPD {
-public:
-  ComputeDPD(MPI_Comm cartcomm);
-  ~ComputeDPD();
-
-  void remote_interactions(Particle *p, int n, Acceleration *a,
-                           cudaStream_t stream, cudaStream_t uploadstream);
-
-  void local_interactions(Particle *xyzuvw, float4 *xyzouvwo,
-                          ushort4 *xyzo_half, int n, Acceleration *a,
-                          int *cellsstart, int *cellscount,
-                          cudaStream_t stream);
-  void init1(MPI_Comm cartcomm);
-
-  void post_expected_recv();
-  void _pack_all(Particle *p, int n,
-		 bool update_baginfos, cudaStream_t stream);
-  int nof_sent_particles();
-  void _cancel_recv();
-  void init0(MPI_Comm cartcomm, int basetag);
-  void pack(Particle *p, int n, int *cellsstart,
-	    int *cellscount, cudaStream_t stream);
-  void post(Particle *p, int n, cudaStream_t stream,
-	    cudaStream_t downloadstream);
-  void recv(cudaStream_t stream, cudaStream_t uploadstream);
-  void adjust_message_sizes(ExpectedMessageSizes sizes);
-};
 }

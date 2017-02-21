@@ -13,7 +13,7 @@ LDFLAGS   += -L../cuda-dpd -L../cuda-rbc
 NVCCFLAGS += -I../cuda-dpd -I../cuda-rbc
 LIBS      += -lcuda-dpd -lcuda-rbc -lcudart
 
-OBJS = 	dpd.o common.o io.o scan.o minmax.o last_bit_float.o dpd-forces.o simulation.o main.o
+OBJS = 	common.o io.o scan.o minmax.o last_bit_float.o dpd-forces.o simulation.o main.o
 
 ifeq ($(h5part),0)
 NVCCFLAGS += -DNO_H5PART
@@ -37,7 +37,6 @@ test:   $(OBJS) libcuda-dpd libcuda-rbc
 # some files must be compiled in diferent way (with `-dc' flag) See
 # "Separate Compilation and Linking of CUDA C++ Device Code"
 # http://devblogs.nvidia.com/parallelforall/separate-compilation-linking-cuda-device-code
-dpd.o:            dpd.cu;            $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 fsi.o:            fsi.cu;            $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 last_bit_float.o: last_bit_float.cu; $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 dpd-forces.o:     dpd-forces.cu;     $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
