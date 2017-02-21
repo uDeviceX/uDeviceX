@@ -1,8 +1,6 @@
 // see the vanilla version of this code for details about how this class
 // operates
 namespace DPD {
-class ComputeDPD {
-public:
   Logistic::KISS *local_trunk;
 
   /* allocated inside init1 */
@@ -69,8 +67,8 @@ public:
     }
 
   } recvhalos[26];
-
-  
+class ComputeDPD {
+public:
   ComputeDPD(MPI_Comm cartcomm);
   ~ComputeDPD();
 
