@@ -15,7 +15,6 @@
 #include "common.h"
 #include "io.h"
 #include "last_bit_float.h"
-
 using namespace std;
 
 void _write_bytes(const void * const ptr, const int nbytes32, MPI_File f, MPI_Comm comm) {

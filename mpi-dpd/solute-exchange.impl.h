@@ -45,7 +45,7 @@ namespace SolEx {
       local[i]->update();
 
       CC(cudaMemcpyToSymbol(SolutePUP::ccapacities,
-			    &local[i]->scattered_indices->capacity, sizeof(int),
+			    &local[i]->scattered_indices->C, sizeof(int),
 			    sizeof(int) * i, cudaMemcpyHostToDevice));
       CC(cudaMemcpyToSymbol(SolutePUP::scattered_indices,
 			    &local[i]->scattered_indices->D, sizeof(int *),
@@ -160,8 +160,8 @@ namespace SolEx {
 				   packsstart->D + 27 * i, sizeof(int) * 27, 0,
 				   cudaMemcpyDeviceToDevice, stream));
 
-	SolutePUP::pack<<<14 * 16, 128, 0, stream>>>(
-						     (float2 *)it.p, it.n, (float2 *)packbuf->D, packbuf->capacity, i);
+	SolutePUP::pack<<<14 * 16, 128, 0, stream>>>
+	  ((float2 *)it.p, it.n, (float2 *)packbuf->D, packbuf->C, i);
       }
     }
 

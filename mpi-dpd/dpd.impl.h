@@ -157,7 +157,7 @@ void _pack_all(Particle *p, int n, bool update_baginfos, cudaStream_t stream) {
       baginfos[i].start_src = sendhalos[i]->tmpstart->D;
       baginfos[i].count_src = sendhalos[i]->tmpcount->D;
       baginfos[i].start_dst = sendhalos[i]->dcellstarts->D;
-      baginfos[i].bagsize = sendhalos[i]->dbuf->capacity;
+      baginfos[i].bagsize = sendhalos[i]->dbuf->C;
       baginfos[i].scattered_entries = sendhalos[i]->scattered_entries->D;
       baginfos[i].dbag = sendhalos[i]->dbuf->D;
       baginfos[i].hbag = sendhalos[i]->hbuf->data;
@@ -289,7 +289,7 @@ void post(Particle *p, int n, cudaStream_t stream,
     bool succeeded = true;
     for (int i = 0; i < 26; ++i) {
       int nrequired = required_send_bag_size_host[i];
-      bool failed_entry = nrequired > sendhalos[i]->dbuf->capacity;
+      bool failed_entry = nrequired > sendhalos[i]->dbuf->C;
 
       if (failed_entry) {
         sendhalos[i]->dbuf->resize(nrequired);

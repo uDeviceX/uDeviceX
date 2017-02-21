@@ -2,28 +2,30 @@ const float dt            = _dt;
 const float rbc_mass      = _rbc_mass;
 const float gamma_dot     = _gamma_dot;
 const float hydrostatic_a = _hydrostatic_a / rc;
-const float kBT           = _kBT           / (rc*rc);
-const int numberdensity   = _numberdensity * (rc*rc*rc);
+const float kBT           = _kBT / (rc * rc);
+const int   numberdensity = _numberdensity * (rc * rc * rc);
 
 extern float tend;
-extern bool walls, pushtheflow, doublepoiseuille, rbcs, hdf5field_dumps, hdf5part_dumps, contactforces;
+extern bool walls, pushtheflow, doublepoiseuille, rbcs, hdf5field_dumps,
+  hdf5part_dumps, contactforces;
 extern int steps_per_dump, steps_per_hdf5dump, wall_creation_stepid;
 
 /* [c]cuda [c]heck */
-#define CC(ans) do { cudaAssert((ans), __FILE__, __LINE__); } while(0)
+#define CC(ans)							\
+  do { cudaAssert((ans), __FILE__, __LINE__); } while (0)
 inline void cudaAssert(cudaError_t code, const char *file, int line) {
   if (code != cudaSuccess) {
-    fprintf(stderr,"GPU assert: %s %s %d\n", cudaGetErrorString(code), file, line);
+    fprintf(stderr, "GPU assert: %s %s %d\n", cudaGetErrorString(code), file,
+            line);
     abort();
   }
 }
 
 /* [m]pi [c]heck */
-#define MC(ans) do { mpiAssert((ans), __FILE__, __LINE__); } while(0)
-inline void mpiAssert(int code, const char *file, int line)
-{
-  if (code != MPI_SUCCESS)
-  {
+#define MC(ans)							\
+  do { mpiAssert((ans), __FILE__, __LINE__); } while (0)
+inline void mpiAssert(int code, const char *file, int line) {
+  if (code != MPI_SUCCESS) {
     char error_string[2048];
     int length_of_error_string = sizeof(error_string);
     MPI_Error_string(code, error_string, &length_of_error_string);
@@ -32,20 +34,17 @@ inline void mpiAssert(int code, const char *file, int line)
   }
 }
 
-//AoS is the currency for dpd simulations (because of the spatial locality).
-//AoS - SoA conversion might be performed within the hpc kernels.
-struct Particle
-{
+// AoS is the currency for dpd simulations (because of the spatial locality).
+// AoS - SoA conversion might be performed within the hpc kernels.
+struct Particle {
   float x[3], u[3];
 
   static bool initialized;
   static MPI_Datatype mytype;
 
-  static MPI_Datatype datatype()
-  {
-    if (!initialized)
-    {
-      MC( MPI_Type_contiguous(6, MPI_FLOAT, &mytype));
+  static MPI_Datatype datatype() {
+    if (!initialized) {
+      MC(MPI_Type_contiguous(6, MPI_FLOAT, &mytype));
 
       MC(MPI_Type_commit(&mytype));
 
@@ -56,18 +55,15 @@ struct Particle
   }
 };
 
-struct Acceleration
-{
+struct Acceleration {
   float a[3];
 
   static bool initialized;
   static MPI_Datatype mytype;
 
-  static MPI_Datatype datatype()
-  {
-    if (!initialized)
-    {
-      MC( MPI_Type_contiguous(3, MPI_FLOAT, &mytype));
+  static MPI_Datatype datatype() {
+    if (!initialized) {
+      MC(MPI_Type_contiguous(3, MPI_FLOAT, &mytype));
 
       MC(MPI_Type_commit(&mytype));
 
@@ -78,34 +74,34 @@ struct Acceleration
   }
 };
 
-struct ParticlesWrap
-{
-  const Particle * p;
-  Acceleration * a;
+struct ParticlesWrap {
+  const Particle *p;
+  Acceleration *a;
   int n;
 
-  ParticlesWrap() : p(NULL), a(NULL), n(0){}
+  ParticlesWrap() : p(NULL), a(NULL), n(0) {}
 
-  ParticlesWrap(const Particle * const p, const int n, Acceleration * a):
-      p(p), n(n), a(a) {}
+  ParticlesWrap(const Particle *const p, const int n, Acceleration *a)
+    : p(p), n(n), a(a) {}
 };
 
-struct SolventWrap : ParticlesWrap
-{
-  const int * cellsstart, * cellscount;
+struct SolventWrap : ParticlesWrap {
+  const int *cellsstart, *cellscount;
 
-  SolventWrap(): cellsstart(NULL), cellscount(NULL), ParticlesWrap() {}
+  SolventWrap() : cellsstart(NULL), cellscount(NULL), ParticlesWrap() {}
 
-  SolventWrap(const Particle * const p, const int n, Acceleration * a, const int * const cellsstart, const int * const cellscount):
-      ParticlesWrap(p, n, a), cellsstart(cellsstart), cellscount(cellscount) {}
+  SolventWrap(const Particle *const p, const int n, Acceleration *a,
+              const int *const cellsstart, const int *const cellscount)
+    : ParticlesWrap(p, n, a),
+      cellsstart(cellsstart),
+      cellscount(cellscount) {}
 };
 
 /* container for the gpu particles during the simulation */
-template<typename T>
-struct DeviceBuffer {
-  int capacity, S;    /* `S' is for size */
-  T* D;               /* `D' is for data */
-  explicit DeviceBuffer(int n = 0): capacity(0), S(0), D(NULL) { resize(n);}
+template <typename T> struct DeviceBuffer {
+  int C, S; /* `C': capacity; `S': size; `D' is for data*/
+  T *D;
+  explicit DeviceBuffer(int n = 0) : C(0), S(0), D(NULL) { resize(n); }
   ~DeviceBuffer() {
     if (D != NULL) CC(cudaFree(D));
     D = NULL;
@@ -118,22 +114,22 @@ struct DeviceBuffer {
 
   void resize(int n) {
     S = n;
-    if (capacity >= n) return;
-    if (D != NULL)  CC(cudaFree(D));
+    if (C >= n) return;
+    if (D != NULL) CC(cudaFree(D));
     int conservative_estimate = (int)ceil(1.1 * n);
-    capacity = 128 * ((conservative_estimate + 129) / 128);
-    CC(cudaMalloc(&D, sizeof(T) * capacity));
+    C = 128 * ((conservative_estimate + 129) / 128);
+    CC(cudaMalloc(&D, sizeof(T) * C));
   }
 
   void preserve_resize(int n) {
-    T * old = D;
+    T *old = D;
     int oldsize = S;
 
     S = n;
-    if (capacity >= n) return;
+    if (C >= n) return;
     int conservative_estimate = (int)ceil(1.1 * n);
-    capacity = 128 * ((conservative_estimate + 129) / 128);
-    CC(cudaMalloc(&D, sizeof(T) * capacity));
+    C = 128 * ((conservative_estimate + 129) / 128);
+    CC(cudaMalloc(&D, sizeof(T) * C));
     if (old != NULL) {
       CC(cudaMemcpy(D, old, sizeof(T) * oldsize, cudaMemcpyDeviceToDevice));
       CC(cudaFree(old));
@@ -141,32 +137,28 @@ struct DeviceBuffer {
   }
 };
 
-template<typename T>
-struct PinnedHostBuffer
-{
+template <typename T> struct PinnedHostBuffer {
   int capacity, size;
 
-  T * data, * devptr;
+  T *data, *devptr;
 
-  explicit PinnedHostBuffer(int n = 0): capacity(0), size(0), data(NULL), devptr(NULL) { resize(n);}
+  explicit PinnedHostBuffer(int n = 0)
+    : capacity(0), size(0), data(NULL), devptr(NULL) {
+    resize(n);
+  }
 
-  ~PinnedHostBuffer()
-  {
-    if (data != NULL)
-      CC(cudaFreeHost(data));
+  ~PinnedHostBuffer() {
+    if (data != NULL) CC(cudaFreeHost(data));
 
     data = NULL;
   }
 
-  void resize(const int n)
-  {
+  void resize(const int n) {
     size = n;
 
-    if (capacity >= n)
-      return;
+    if (capacity >= n) return;
 
-    if (data != NULL)
-      CC(cudaFreeHost(data));
+    if (data != NULL) CC(cudaFreeHost(data));
 
     const int conservative_estimate = (int)ceil(1.1 * n);
     capacity = 128 * ((conservative_estimate + 129) / 128);
@@ -176,16 +168,14 @@ struct PinnedHostBuffer
     CC(cudaHostGetDevicePointer(&devptr, data, 0));
   }
 
-  void preserve_resize(const int n)
-  {
-    T * old = data;
+  void preserve_resize(const int n) {
+    T *old = data;
 
     const int oldsize = size;
 
     size = n;
 
-    if (capacity >= n)
-      return;
+    if (capacity >= n) return;
 
     const int conservative_estimate = (int)ceil(1.1 * n);
     capacity = 128 * ((conservative_estimate + 129) / 128);
@@ -193,8 +183,7 @@ struct PinnedHostBuffer
     data = NULL;
     CC(cudaHostAlloc(&data, sizeof(T) * capacity, cudaHostAllocMapped));
 
-    if (old != NULL)
-    {
+    if (old != NULL) {
       CC(cudaMemcpy(data, old, sizeof(T) * oldsize, cudaMemcpyHostToHost));
       CC(cudaFreeHost(old));
     }
@@ -204,53 +193,49 @@ struct PinnedHostBuffer
 };
 
 /* container for the cell lists, which contains only two integer
-vectors of size ncells.  the start[cell-id] array gives the entry in
-the particle array associated to first particle belonging to cell-id
-count[cell-id] tells how many particles are inside cell-id.  building
-the cell lists involve a reordering of the particle array (!) */
-struct CellLists
-{
+   vectors of size ncells.  the start[cell-id] array gives the entry in
+   the particle array associated to first particle belonging to cell-id
+   count[cell-id] tells how many particles are inside cell-id.  building
+   the cell lists involve a reordering of the particle array (!) */
+struct CellLists {
   const int ncells, LX, LY, LZ;
 
-  int * start, * count;
+  int *start, *count;
 
-  CellLists(const int LX, const int LY, const int LZ):
-      ncells(LX * LY * LZ + 1), LX(LX), LY(LY), LZ(LZ)
-  {
+  CellLists(const int LX, const int LY, const int LZ)
+    : ncells(LX * LY * LZ + 1), LX(LX), LY(LY), LZ(LZ) {
     CC(cudaMalloc(&start, sizeof(int) * ncells));
     CC(cudaMalloc(&count, sizeof(int) * ncells));
   }
 
-  void build(Particle * const p, const int n, cudaStream_t stream, int * const order = NULL, const Particle * const src = NULL);
+  void build(Particle *const p, const int n, cudaStream_t stream,
+             int *const order = NULL, const Particle *const src = NULL);
 
-  ~CellLists()
-  {
+  ~CellLists() {
     CC(cudaFree(start));
     CC(cudaFree(count));
   }
 };
 
-struct ExpectedMessageSizes
-{
+struct ExpectedMessageSizes {
   int msgsizes[27];
 };
 
-void diagnostics(MPI_Comm comm, MPI_Comm cartcomm, Particle * _particles, int n,
-		 float dt, int idstep, Acceleration * _acc);
+void diagnostics(MPI_Comm comm, MPI_Comm cartcomm, Particle *_particles, int n,
+                 float dt, int idstep, Acceleration *_acc);
 
-class LocalComm
-{
+class LocalComm {
   MPI_Comm local_comm, active_comm;
   int local_rank, local_nranks;
   int rank, nranks;
   char name[MPI_MAX_PROCESSOR_NAME];
   int len;
 
- public:
+public:
   LocalComm();
   void initialize(MPI_Comm active_comm);
   void barrier();
   int get_size() { return local_nranks; }
   int get_rank() { return local_rank; }
-  MPI_Comm get_comm() { return local_comm;  }
+  MPI_Comm get_comm() { return local_comm; }
 };
