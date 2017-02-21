@@ -141,12 +141,12 @@ static void sim_redistribute() {
   CC(cudaPeekAtLastError());
 }
 
-void sim_remove_bodies_from_wall(ParticleArray *coll) {
-  if (!coll || !Cont::ncells) return;
+void sim_remove_bodies_from_wall() {
+  if (!rbcscoll || !Cont::ncells) return;
   DeviceBuffer<int> marks(Cont::pcount());
 
   WallKernels::fill_keys<<<(Cont::pcount() + 127) / 128, 128>>>
-    (coll->pp.D, Cont::pcount(), marks.D);
+    (rbcscoll->pp.D, Cont::pcount(), marks.D);
 
   vector<int> tmp(marks.S);
   CC(cudaMemcpy(tmp.data(), marks.D, sizeof(int) * marks.S, cudaMemcpyDeviceToHost));
@@ -162,8 +162,8 @@ void sim_remove_bodies_from_wall(ParticleArray *coll) {
     if (!valid) tokill.push_back(i);
   }
 
-  Cont::remove(coll, &tokill.front(), tokill.size());
-  Cont::clear_velocity(coll);
+  Cont::remove(rbcscoll, &tokill.front(), tokill.size());
+  Cont::clear_velocity(rbcscoll);
 
   CC(cudaPeekAtLastError());
 }
@@ -180,7 +180,7 @@ void sim_create_walls() {
   CC(cudaPeekAtLastError());
 
   // remove cells touching the wall
-  sim_remove_bodies_from_wall(rbcscoll);
+  sim_remove_bodies_from_wall();
   H5PartDump sd("survived-particles.h5part", activecomm, Cont::cartcomm);
   Particle *pp = new Particle[particles->pp.S];
   CC(cudaMemcpy(pp, particles->pp.D,
