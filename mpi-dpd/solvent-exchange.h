@@ -2,7 +2,7 @@ class SolventExchange {
 public:
   MPI_Comm cartcomm;
   MPI_Request sendreq[26 * 2], recvreq[26], sendcellsreq[26], recvcellsreq[26],
-      sendcountreq[26], recvcountreq[26];
+    sendcountreq[26], recvcountreq[26];
   int recv_tags[26], recv_counts[26], nlocal, nactive;
   bool firstpost;
   int myrank, nranks, dims[3], periods[3], coords[3], dstranks[26];
@@ -17,7 +17,7 @@ public:
   int3 halosize[26];
   float safety_factor;
   cudaEvent_t evfillall, evuploaded, evdownloaded;
-  const int basetag;
+  int basetag;
 
   struct SendHalo {
     int expected;
@@ -25,7 +25,7 @@ public:
     DeviceBuffer<Particle> dbuf;
     PinnedHostBuffer<int> hcellstarts;
     PinnedHostBuffer<Particle> hbuf;
-    void setup(const int estimate, const int nhalocells) {
+    void setup(int estimate, int nhalocells) {
       adjust(estimate);
       dcellstarts.resize(nhalocells + 1);
       hcellstarts.resize(nhalocells + 1);
@@ -33,7 +33,7 @@ public:
       tmpstart.resize(nhalocells + 1);
     }
 
-    void adjust(const int estimate) {
+    void adjust(int estimate) {
       expected = estimate;
       hbuf.resize(estimate);
       dbuf.resize(estimate);
@@ -47,12 +47,12 @@ public:
     PinnedHostBuffer<Particle> hbuf;
     DeviceBuffer<Particle> dbuf;
     DeviceBuffer<int> dcellstarts;
-    void setup(const int estimate, const int nhalocells) {
+    void setup(int estimate, int nhalocells) {
       adjust(estimate);
       dcellstarts.resize(nhalocells + 1);
       hcellstarts.resize(nhalocells + 1);
     }
-    void adjust(const int estimate) {
+    void adjust(int estimate) {
       expected = estimate;
       hbuf.resize(estimate);
       dbuf.resize(estimate);
@@ -61,14 +61,14 @@ public:
   } recvhalos[26];
 
   void post_expected_recv();
-  void _pack_all(const Particle *const p, const int n,
-		 const bool update_baginfos, cudaStream_t stream);
+  void _pack_all(Particle *p, int n,
+		 bool update_baginfos, cudaStream_t stream);
   int nof_sent_particles();
   void _cancel_recv();
-  SolventExchange(MPI_Comm cartcomm, const int basetag);
-  void pack(const Particle *const p, const int n, const int *const cellsstart,
-	    const int *const cellscount, cudaStream_t stream);
-  void post(const Particle *const p, const int n, cudaStream_t stream,
+  SolventExchange(MPI_Comm cartcomm, int basetag);
+  void pack(Particle *p, int n, int *cellsstart,
+	    int *cellscount, cudaStream_t stream);
+  void post(Particle *p, int n, cudaStream_t stream,
 	    cudaStream_t downloadstream);
   void recv(cudaStream_t stream, cudaStream_t uploadstream);
   void adjust_message_sizes(ExpectedMessageSizes sizes);

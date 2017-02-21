@@ -8,10 +8,10 @@
 
 using namespace std;
 
-SolventExchange::SolventExchange(MPI_Comm _cartcomm, const int basetag)
-    : basetag(basetag), firstpost(true), nactive(26) {
+SolventExchange::SolventExchange(MPI_Comm _cartcomm, int basetag)
+  : basetag(basetag), firstpost(true), nactive(26) {
   safety_factor =
-      getenv("HEX_COMM_FACTOR") ? atof(getenv("HEX_COMM_FACTOR")) : 1.2;
+    getenv("HEX_COMM_FACTOR") ? atof(getenv("HEX_COMM_FACTOR")) : 1.2;
 
   MC(MPI_Comm_dup(_cartcomm, &cartcomm));
   MC(MPI_Comm_rank(cartcomm, &myrank));
@@ -28,7 +28,7 @@ SolventExchange::SolventExchange(MPI_Comm _cartcomm, const int basetag)
     halosize[i].y = d[1] != 0 ? 1 : YSIZE_SUBDOMAIN;
     halosize[i].z = d[2] != 0 ? 1 : ZSIZE_SUBDOMAIN;
 
-    const int nhalocells = halosize[i].x * halosize[i].y * halosize[i].z;
+    int nhalocells = halosize[i].x * halosize[i].y * halosize[i].z;
 
     int estimate = numberdensity * safety_factor * nhalocells;
     estimate = 32 * ((estimate + 31) / 32);
@@ -47,176 +47,176 @@ SolventExchange::SolventExchange(MPI_Comm _cartcomm, const int basetag)
 }
 
 namespace PackingHalo {
-int ncells;
+  int ncells;
 
-__constant__ int cellpackstarts[27];
+  __constant__ int cellpackstarts[27];
 
-struct CellPackSOA {
-  int *start, *count, *scan, size;
-  bool enabled;
-};
+  struct CellPackSOA {
+    int *start, *count, *scan, size;
+    bool enabled;
+  };
 
-__constant__ CellPackSOA cellpacks[26];
+  __constant__ CellPackSOA cellpacks[26];
 
-__global__ void count_all(const int *const cellsstart,
-                          const int *const cellscount, const int ntotalcells) {
-  const int gid = threadIdx.x + blockDim.x * blockIdx.x;
+  __global__ void count_all(int *cellsstart,
+			    int *cellscount, int ntotalcells) {
+    int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
-  if (gid >= cellpackstarts[26]) return;
+    if (gid >= cellpackstarts[26]) return;
 
-  const int key9 =
+    int key9 =
       9 * ((gid >= cellpackstarts[9]) + (gid >= cellpackstarts[18]));
-  const int key3 = 3 * ((gid >= cellpackstarts[key9 + 3]) +
-                        (gid >= cellpackstarts[key9 + 6]));
-  const int key1 = (gid >= cellpackstarts[key9 + key3 + 1]) +
-                   (gid >= cellpackstarts[key9 + key3 + 2]);
-  const int code = key9 + key3 + key1;
-  const int d[3] = {(code + 2) % 3 - 1, (code / 3 + 2) % 3 - 1,
-                    (code / 9 + 2) % 3 - 1};
-  const int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
+    int key3 = 3 * ((gid >= cellpackstarts[key9 + 3]) +
+		    (gid >= cellpackstarts[key9 + 6]));
+    int key1 = (gid >= cellpackstarts[key9 + key3 + 1]) +
+      (gid >= cellpackstarts[key9 + key3 + 2]);
+    int code = key9 + key3 + key1;
+    int d[3] = {(code + 2) % 3 - 1, (code / 3 + 2) % 3 - 1,
+		(code / 9 + 2) % 3 - 1};
+    int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
 
-  int halo_start[3];
-  for (int c = 0; c < 3; ++c)
-    halo_start[c] = max(d[c] * L[c] - L[c] / 2 - 1, -L[c] / 2);
-
-  int halo_size[3];
-  for (int c = 0; c < 3; ++c)
-    halo_size[c] = min(d[c] * L[c] + L[c] / 2 + 1, L[c] / 2) - halo_start[c];
-
-  const int ndstcells = halo_size[0] * halo_size[1] * halo_size[2];
-  const int dstcid = gid - cellpackstarts[code];
-
-  if (dstcid < ndstcells) {
-    const int dstcellpos[3] = {dstcid % halo_size[0],
-                               (dstcid / halo_size[0]) % halo_size[1],
-                               dstcid / (halo_size[0] * halo_size[1])};
-
-    int srccellpos[3];
+    int halo_start[3];
     for (int c = 0; c < 3; ++c)
-      srccellpos[c] = halo_start[c] + dstcellpos[c] + L[c] / 2;
+      halo_start[c] = max(d[c] * L[c] - L[c] / 2 - 1, -L[c] / 2);
 
-    const int srcentry =
+    int halo_size[3];
+    for (int c = 0; c < 3; ++c)
+      halo_size[c] = min(d[c] * L[c] + L[c] / 2 + 1, L[c] / 2) - halo_start[c];
+
+    int ndstcells = halo_size[0] * halo_size[1] * halo_size[2];
+    int dstcid = gid - cellpackstarts[code];
+
+    if (dstcid < ndstcells) {
+      int dstcellpos[3] = {dstcid % halo_size[0],
+			   (dstcid / halo_size[0]) % halo_size[1],
+			   dstcid / (halo_size[0] * halo_size[1])};
+
+      int srccellpos[3];
+      for (int c = 0; c < 3; ++c)
+	srccellpos[c] = halo_start[c] + dstcellpos[c] + L[c] / 2;
+
+      int srcentry =
         srccellpos[0] +
         XSIZE_SUBDOMAIN * (srccellpos[1] + YSIZE_SUBDOMAIN * srccellpos[2]);
-    const int enabled = cellpacks[code].enabled;
+      int enabled = cellpacks[code].enabled;
 
-    cellpacks[code].start[dstcid] = enabled * cellsstart[srcentry];
-    cellpacks[code].count[dstcid] = enabled * cellscount[srcentry];
-  } else if (dstcid == ndstcells) {
-    cellpacks[code].start[dstcid] = 0;
-    cellpacks[code].count[dstcid] = 0;
-  }
-}
-
-__constant__ int *srccells[26 * 2], *dstcells[26 * 2];
-template <int slot> __global__ void copycells(const int n) {
-  const int gid = threadIdx.x + blockDim.x * blockIdx.x;
-
-  if (gid >= cellpackstarts[26]) return;
-
-  const int key9 =
-      9 * ((gid >= cellpackstarts[9]) + (gid >= cellpackstarts[18]));
-  const int key3 = 3 * ((gid >= cellpackstarts[key9 + 3]) +
-                        (gid >= cellpackstarts[key9 + 6]));
-  const int key1 = (gid >= cellpackstarts[key9 + key3 + 1]) +
-                   (gid >= cellpackstarts[key9 + key3 + 2]);
-
-  const int idpack = key9 + key3 + key1;
-
-  const int offset = gid - cellpackstarts[idpack];
-
-  dstcells[idpack + 26 * slot][offset] = srccells[idpack + 26 * slot][offset];
-}
-
-template <int NWARPS> __global__ void scan_diego() {
-  __shared__ int shdata[32];
-
-  const int code = blockIdx.x;
-  const int *const count = cellpacks[code].count;
-  int *const start = cellpacks[code].scan;
-  const int n = cellpacks[code].size;
-
-  const int tid = threadIdx.x;
-  const int laneid = threadIdx.x & 0x1f;
-  const int warpid = threadIdx.x >> 5;
-
-  int lastval = 0;
-  for (int sourcebase = 0; sourcebase < n; sourcebase += 32 * NWARPS) {
-    const int sourceid = sourcebase + tid;
-    int mycount = 0, myscan = 0;
-    if (sourceid < n) myscan = mycount = count[sourceid];
-    if (tid == 0) myscan += lastval;
-
-    for (int L = 1; L < 32; L <<= 1) {
-      const int val = __shfl_up(myscan, L);
-      if (laneid >= L) myscan += val;
+      cellpacks[code].start[dstcid] = enabled * cellsstart[srcentry];
+      cellpacks[code].count[dstcid] = enabled * cellscount[srcentry];
+    } else if (dstcid == ndstcells) {
+      cellpacks[code].start[dstcid] = 0;
+      cellpacks[code].count[dstcid] = 0;
     }
+  }
 
-    if (laneid == 31) shdata[warpid] = myscan;
-    __syncthreads();
-    if (warpid == 0) {
-      int gs = 0;
-      if (laneid < NWARPS) gs = shdata[tid];
+  __constant__ int *srccells[26 * 2], *dstcells[26 * 2];
+  template <int slot> __global__ void copycells(int n) {
+    int gid = threadIdx.x + blockDim.x * blockIdx.x;
+
+    if (gid >= cellpackstarts[26]) return;
+
+    int key9 =
+      9 * ((gid >= cellpackstarts[9]) + (gid >= cellpackstarts[18]));
+    int key3 = 3 * ((gid >= cellpackstarts[key9 + 3]) +
+		    (gid >= cellpackstarts[key9 + 6]));
+    int key1 = (gid >= cellpackstarts[key9 + key3 + 1]) +
+      (gid >= cellpackstarts[key9 + key3 + 2]);
+
+    int idpack = key9 + key3 + key1;
+
+    int offset = gid - cellpackstarts[idpack];
+
+    dstcells[idpack + 26 * slot][offset] = srccells[idpack + 26 * slot][offset];
+  }
+
+  template <int NWARPS> __global__ void scan_diego() {
+    __shared__ int shdata[32];
+
+    int code = blockIdx.x;
+    int *count = cellpacks[code].count;
+    int *start = cellpacks[code].scan;
+    int n = cellpacks[code].size;
+
+    int tid = threadIdx.x;
+    int laneid = threadIdx.x & 0x1f;
+    int warpid = threadIdx.x >> 5;
+
+    int lastval = 0;
+    for (int sourcebase = 0; sourcebase < n; sourcebase += 32 * NWARPS) {
+      int sourceid = sourcebase + tid;
+      int mycount = 0, myscan = 0;
+      if (sourceid < n) myscan = mycount = count[sourceid];
+      if (tid == 0) myscan += lastval;
+
       for (int L = 1; L < 32; L <<= 1) {
-        const int val = __shfl_up(gs, L);
-        if (laneid >= L) gs += val;
+	int val = __shfl_up(myscan, L);
+	if (laneid >= L) myscan += val;
       }
 
-      shdata[tid] = gs;
-      lastval = __shfl(gs, 31);
+      if (laneid == 31) shdata[warpid] = myscan;
+      __syncthreads();
+      if (warpid == 0) {
+	int gs = 0;
+	if (laneid < NWARPS) gs = shdata[tid];
+	for (int L = 1; L < 32; L <<= 1) {
+	  int val = __shfl_up(gs, L);
+	  if (laneid >= L) gs += val;
+	}
+
+	shdata[tid] = gs;
+	lastval = __shfl(gs, 31);
+      }
+      __syncthreads();
+      if (warpid) myscan += shdata[warpid - 1];
+      __syncthreads();
+      if (sourceid < n) start[sourceid] = myscan - mycount;
     }
-    __syncthreads();
-    if (warpid) myscan += shdata[warpid - 1];
-    __syncthreads();
-    if (sourceid < n) start[sourceid] = myscan - mycount;
   }
-}
 
-struct SendBagInfo {
-  const int *start_src, *count_src, *start_dst;
-  int bagsize, *scattered_entries;
-  Particle *dbag, *hbag;
-};
+  struct SendBagInfo {
+    int *start_src, *count_src, *start_dst;
+    int bagsize, *scattered_entries;
+    Particle *dbag, *hbag;
+  };
 
-__constant__ SendBagInfo baginfos[26];
+  __constant__ SendBagInfo baginfos[26];
 
-__global__ void fill_all(const Particle *const particles, const int np,
-                         int *const required_bag_size) {
-  const int gcid = (threadIdx.x >> 4) + 2 * blockIdx.x;
-  if (gcid >= cellpackstarts[26]) return;
-  const int key9 =
-      9 * ((gcid >= cellpackstarts[9]) + (gcid >= cellpackstarts[18]));
-  const int key3 = 3 * ((gcid >= cellpackstarts[key9 + 3]) +
-                        (gcid >= cellpackstarts[key9 + 6]));
-  const int key1 = (gcid >= cellpackstarts[key9 + key3 + 1]) +
-                   (gcid >= cellpackstarts[key9 + key3 + 2]);
-  const int code = key9 + key3 + key1;
-  const int cellid = gcid - cellpackstarts[code];
-  const int tid = threadIdx.x & 0xf;
-  const int base_src = baginfos[code].start_src[cellid];
-  const int base_dst = baginfos[code].start_dst[cellid];
-  const int nsrc =
+  __global__ void fill_all(Particle *particles, int np,
+			   int *required_bag_size) {
+    int gcid = (threadIdx.x >> 4) + 2 * blockIdx.x;
+    if (gcid >= cellpackstarts[26]) return;
+    int key9 =
+			  9 * ((gcid >= cellpackstarts[9]) + (gcid >= cellpackstarts[18]));
+    int key3 = 3 * ((gcid >= cellpackstarts[key9 + 3]) +
+		    (gcid >= cellpackstarts[key9 + 6]));
+    int key1 = (gcid >= cellpackstarts[key9 + key3 + 1]) +
+      (gcid >= cellpackstarts[key9 + key3 + 2]);
+    int code = key9 + key3 + key1;
+    int cellid = gcid - cellpackstarts[code];
+    int tid = threadIdx.x & 0xf;
+    int base_src = baginfos[code].start_src[cellid];
+    int base_dst = baginfos[code].start_dst[cellid];
+    int nsrc =
       min(baginfos[code].count_src[cellid], baginfos[code].bagsize - base_dst);
-  const int nfloats = nsrc * 6;
-  for (int i = 2 * tid; i < nfloats; i += warpSize) {
-    const int lpid = i / 6;
-    const int dpid = base_dst + lpid;
-    const int spid = base_src + lpid;
-    const int c = i % 6;
-    float2 word = *(float2 *)&particles[spid].x[c];
-    *(float2 *)&baginfos[code].dbag[dpid].x[c] = word;
+    int nfloats = nsrc * 6;
+    for (int i = 2 * tid; i < nfloats; i += warpSize) {
+      int lpid = i / 6;
+      int dpid = base_dst + lpid;
+      int spid = base_src + lpid;
+      int c = i % 6;
+      float2 word = *(float2 *)&particles[spid].x[c];
+      *(float2 *)&baginfos[code].dbag[dpid].x[c] = word;
+    }
+    for (int lpid = tid; lpid < nsrc; lpid += warpSize / 2) {
+      int dpid = base_dst + lpid;
+      int spid = base_src + lpid;
+      baginfos[code].scattered_entries[dpid] = spid;
+    }
+    if (gcid + 1 == cellpackstarts[code + 1]) required_bag_size[code] = base_dst;
   }
-  for (int lpid = tid; lpid < nsrc; lpid += warpSize / 2) {
-    const int dpid = base_dst + lpid;
-    const int spid = base_src + lpid;
-    baginfos[code].scattered_entries[dpid] = spid;
-  }
-  if (gcid + 1 == cellpackstarts[code + 1]) required_bag_size[code] = base_dst;
-}
 }
 
-void SolventExchange::_pack_all(const Particle *const p, const int n,
-                                const bool update_baginfos,
+void SolventExchange::_pack_all(Particle *p, int n,
+                                bool update_baginfos,
                                 cudaStream_t stream) {
   if (update_baginfos) {
     static PackingHalo::SendBagInfo baginfos[26];
@@ -236,13 +236,13 @@ void SolventExchange::_pack_all(const Particle *const p, const int n,
 
   if (PackingHalo::ncells)
     PackingHalo::fill_all<<<(PackingHalo::ncells + 1) / 2, 32, 0, stream>>>(
-        p, n, required_send_bag_size);
+									    p, n, required_send_bag_size);
   CC(cudaEventRecord(evfillall, stream));
 }
 
-void SolventExchange::pack(const Particle *const p, const int n,
-                           const int *const cellsstart,
-                           const int *const cellscount, cudaStream_t stream) {
+void SolventExchange::pack(Particle *p, int n,
+                           int *cellsstart,
+                           int *cellscount, cudaStream_t stream) {
   CC(cudaPeekAtLastError());
   nlocal = n;
   if (firstpost) {
@@ -251,7 +251,7 @@ void SolventExchange::pack(const Particle *const p, const int n,
       cellpackstarts[0] = 0;
       for (int i = 0, s = 0; i < 26; ++i)
         cellpackstarts[i + 1] =
-            (s += sendhalos[i].dcellstarts.S * (sendhalos[i].expected > 0));
+	  (s += sendhalos[i].dcellstarts.S * (sendhalos[i].expected > 0));
       PackingHalo::ncells = cellpackstarts[26];
       CC(cudaMemcpyToSymbol(PackingHalo::cellpackstarts, cellpackstarts,
                             sizeof(cellpackstarts), 0, cudaMemcpyHostToDevice));
@@ -273,8 +273,8 @@ void SolventExchange::pack(const Particle *const p, const int n,
 
   if (PackingHalo::ncells)
     PackingHalo::
-        count_all<<<(PackingHalo::ncells + 127) / 128, 128, 0, stream>>>(
-            cellsstart, cellscount, PackingHalo::ncells);
+      count_all<<<(PackingHalo::ncells + 127) / 128, 128, 0, stream>>>(
+								       cellsstart, cellscount, PackingHalo::ncells);
 
   PackingHalo::scan_diego<32><<<26, 32 * 32, 0, stream>>>();
   CC(cudaPeekAtLastError());
@@ -320,25 +320,25 @@ void SolventExchange::pack(const Particle *const p, const int n,
 
   if (PackingHalo::ncells)
     PackingHalo::copycells<
-        0><<<(PackingHalo::ncells + 127) / 128, 128, 0, stream>>>(
-        PackingHalo::ncells);
+      0><<<(PackingHalo::ncells + 127) / 128, 128, 0, stream>>>(
+								PackingHalo::ncells);
 
   _pack_all(p, n, firstpost, stream);
   CC(cudaPeekAtLastError());
 }
 
-void SolventExchange::post(const Particle *const p, const int n,
+void SolventExchange::post(Particle *p, int n,
                            cudaStream_t stream, cudaStream_t downloadstream) {
   {
     CC(cudaEventSynchronize(evfillall));
 
     bool succeeded = true;
     for (int i = 0; i < 26; ++i) {
-      const int nrequired = required_send_bag_size_host[i];
-      const bool failed_entry =
-          nrequired >
-          sendhalos[i]
-              .dbuf.capacity; // || nrequired > sendhalos[i].hbuf.capacity;
+      int nrequired = required_send_bag_size_host[i];
+      bool failed_entry =
+	nrequired >
+	sendhalos[i]
+	.dbuf.capacity; // || nrequired > sendhalos[i].hbuf.capacity;
 
       if (failed_entry) {
         sendhalos[i].dbuf.resize(nrequired);
@@ -355,7 +355,7 @@ void SolventExchange::post(const Particle *const p, const int n,
     }
 
     for (int i = 0; i < 26; ++i) {
-      const int nrequired = required_send_bag_size_host[i];
+      int nrequired = required_send_bag_size_host[i];
 
       sendhalos[i].dbuf.S = nrequired;
       sendhalos[i].hbuf.resize(nrequired);
@@ -374,34 +374,34 @@ void SolventExchange::post(const Particle *const p, const int n,
     for (int i = 0, c = 0; i < 26; ++i)
       if (sendhalos[i].expected)
         MC(MPI_Isend(sendhalos[i].hcellstarts.data,
-                            sendhalos[i].hcellstarts.size, MPI_INTEGER,
-                            dstranks[i], basetag + i + 350, cartcomm,
-                            sendcellsreq + c++));
+		     sendhalos[i].hcellstarts.size, MPI_INTEGER,
+		     dstranks[i], basetag + i + 350, cartcomm,
+		     sendcellsreq + c++));
 
     for (int i = 0, c = 0; i < 26; ++i)
       if (sendhalos[i].expected)
         MC(MPI_Isend(&sendhalos[i].hbuf.size, 1, MPI_INTEGER,
-                            dstranks[i], basetag + i + 150, cartcomm,
-                            sendcountreq + c++));
+		     dstranks[i], basetag + i + 150, cartcomm,
+		     sendcountreq + c++));
 
     nsendreq = 0;
 
     for (int i = 0; i < 26; ++i) {
-      const int expected = sendhalos[i].expected;
+      int expected = sendhalos[i].expected;
 
       if (expected == 0) continue;
 
-      const int count = sendhalos[i].hbuf.size;
+      int count = sendhalos[i].hbuf.size;
 
       MC(MPI_Isend(sendhalos[i].hbuf.data, expected,
-                          Particle::datatype(), dstranks[i], basetag + i,
-                          cartcomm, sendreq + nsendreq));
+		   Particle::datatype(), dstranks[i], basetag + i,
+		   cartcomm, sendreq + nsendreq));
 
       ++nsendreq;
 
       if (count > expected) {
 
-        const int difference = count - expected;
+        int difference = count - expected;
 
         int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
         printf("extra message from rank %d to rank %d in the direction of %d "
@@ -409,8 +409,8 @@ void SolventExchange::post(const Particle *const p, const int n,
                myrank, dstranks[i], d[0], d[1], d[2], difference, expected);
 
         MC(MPI_Isend(sendhalos[i].hbuf.data + expected, difference,
-                            Particle::datatype(), dstranks[i],
-                            basetag + i + 555, cartcomm, sendreq + nsendreq));
+		     Particle::datatype(), dstranks[i],
+		     basetag + i + 555, cartcomm, sendreq + nsendreq));
         ++nsendreq;
       }
     }
@@ -422,21 +422,21 @@ void SolventExchange::post_expected_recv() {
   for (int i = 0, c = 0; i < 26; ++i) {
     if (recvhalos[i].expected)
       MC(MPI_Irecv(recvhalos[i].hbuf.data, recvhalos[i].expected,
-                          Particle::datatype(), dstranks[i],
-                          basetag + recv_tags[i], cartcomm, recvreq + c++));
+		   Particle::datatype(), dstranks[i],
+		   basetag + recv_tags[i], cartcomm, recvreq + c++));
   }
   for (int i = 0, c = 0; i < 26; ++i)
     if (recvhalos[i].expected)
       MC(MPI_Irecv(recvhalos[i].hcellstarts.data,
-                          recvhalos[i].hcellstarts.size, MPI_INTEGER,
-                          dstranks[i], basetag + recv_tags[i] + 350, cartcomm,
-                          recvcellsreq + c++));
+		   recvhalos[i].hcellstarts.size, MPI_INTEGER,
+		   dstranks[i], basetag + recv_tags[i] + 350, cartcomm,
+		   recvcellsreq + c++));
 
   for (int i = 0, c = 0; i < 26; ++i)
     if (recvhalos[i].expected)
       MC(MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, dstranks[i],
-                          basetag + recv_tags[i] + 150, cartcomm,
-                          recvcountreq + c++));
+		   basetag + recv_tags[i] + 150, cartcomm,
+		   recvcountreq + c++));
     else
       recv_counts[i] = 0;
 }
@@ -452,9 +452,9 @@ void SolventExchange::recv(cudaStream_t stream, cudaStream_t uploadstream) {
   }
 
   for (int i = 0; i < 26; ++i) {
-    const int count = recv_counts[i];
-    const int expected = recvhalos[i].expected;
-    const int difference = count - expected;
+    int count = recv_counts[i];
+    int expected = recvhalos[i].expected;
+    int difference = count - expected;
 
     if (count <= expected) {
       recvhalos[i].hbuf.resize(count);
@@ -516,8 +516,8 @@ void SolventExchange::adjust_message_sizes(ExpectedMessageSizes sizes) {
   _cancel_recv();
   nactive = 0;
   for (int i = 0; i < 26; ++i) {
-    const int d[3] = {(i + 2) % 3, (i / 3 + 2) % 3, (i / 9 + 2) % 3};
-    const int entry = d[0] + 3 * (d[1] + 3 * d[2]);
+    int d[3] = {(i + 2) % 3, (i / 3 + 2) % 3, (i / 9 + 2) % 3};
+    int entry = d[0] + 3 * (d[1] + 3 * d[2]);
     int estimate = sizes.msgsizes[entry] * safety_factor;
     estimate = 64 * ((estimate + 63) / 64);
     recvhalos[i].adjust(estimate);
