@@ -1,8 +1,5 @@
-#include <algorithm>
 #include <cuda-dpd.h>
-#include <string>
 #include <dpd-rng.h>
-#include <cstdio>
 #include <mpi.h>
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */
 #include "common.h"
@@ -10,8 +7,6 @@
 #include "dpd.h"
 #include "dpd-forces.h"
 #include "last_bit_float.h"
-
-using namespace std;
 
 ComputeDPD::ComputeDPD(MPI_Comm cartcomm)
     : SolventExchange(cartcomm, 0), local_trunk(0, 0, 0, 0) {
