@@ -3,8 +3,8 @@
 #include "common.h"
 #include "solvent-exchange.h"
 
-SolventExchange::SolventExchange(MPI_Comm _cartcomm, int basetag)
-  : basetag(basetag), firstpost(true), nactive(26) {
+SolventExchange::SolventExchange(MPI_Comm _cartcomm, int basetag) {
+  basetag = basetag; firstpost = true; nactive = 26;
   safety_factor =
     getenv("HEX_COMM_FACTOR") ? atof(getenv("HEX_COMM_FACTOR")) : 1.2;
 
