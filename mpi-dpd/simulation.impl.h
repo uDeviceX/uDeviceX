@@ -145,7 +145,7 @@ void sim_remove_bodies_from_wall(ParticleArray *coll) {
   if (!coll || !ncells) return;
   DeviceBuffer<int> marks(pcount());
 
-  SolidWallsKernel::fill_keys<<<(pcount() + 127) / 128, 128>>>(
+  WallKernels::fill_keys<<<(pcount() + 127) / 128, 128>>>(
       coll->pp.D, pcount(), marks.D);
 
   vector<int> tmp(marks.S);

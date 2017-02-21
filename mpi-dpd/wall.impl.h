@@ -1,4 +1,4 @@
-namespace SolidWallsKernel {
+namespace WallKernels {
   texture<float, 3, cudaReadModeElementType> texSDF;
   texture<float4, 1, cudaReadModeElementType> texWallParticles;
   texture<int, 1, cudaReadModeElementType> texWallCellStart, texWallCellCount;
@@ -558,15 +558,15 @@ void wall_init(Particle *const p, const int n,
   CC(cudaMemcpy3D(&copyParams));
   delete[] field;
 
-  SolidWallsKernel::setup();
+  WallKernels::setup();
 
-  CC(cudaBindTextureToArray(SolidWallsKernel::texSDF, arrSDF, fmt));
+  CC(cudaBindTextureToArray(WallKernels::texSDF, arrSDF, fmt));
 
   if (myrank == 0) printf("carving out wall particles...\n");
 
   thrust::device_vector<int> keys(n);
 
-  SolidWallsKernel::fill_keys<<<(n + 127) / 128, 128>>>
+  WallKernels::fill_keys<<<(n + 127) / 128, 128>>>
     (p, n, thrust::raw_pointer_cast(&keys[0]));
 
   CC(cudaPeekAtLastError());
@@ -709,7 +709,7 @@ void wall_init(Particle *const p, const int n,
   if (myrank == 0) printf("consolidating wall particles...\n");
 
   if (solid_size > 0)
-    SolidWallsKernel::strip_solid4<<<(solid_size + 127) / 128, 128>>>
+    WallKernels::strip_solid4<<<(solid_size + 127) / 128, 128>>>
       (solid, solid_size, solid4);
 
   CC(cudaFree(solid));
@@ -719,7 +719,7 @@ void wall_init(Particle *const p, const int n,
 
 void wall_bounce(Particle *const p, const int n, cudaStream_t stream) {
   if (n > 0)
-    SolidWallsKernel::bounce<<<(n + 127) / 128, 128, 0, stream>>>
+    WallKernels::bounce<<<(n + 127) / 128, 128, 0, stream>>>
       ((float2 *)p, n, dt);
 
   CC(cudaPeekAtLastError());
@@ -733,34 +733,34 @@ void wall_interactions(const Particle *const p, const int n,
   if (n > 0 && solid_size > 0) {
     size_t textureoffset;
     CC(cudaBindTexture(&textureoffset,
-		       &SolidWallsKernel::texWallParticles, solid4,
-		       &SolidWallsKernel::texWallParticles.channelDesc,
+		       &WallKernels::texWallParticles, solid4,
+		       &WallKernels::texWallParticles.channelDesc,
 		       sizeof(float4) * solid_size));
 
     CC(cudaBindTexture(&textureoffset,
-		       &SolidWallsKernel::texWallCellStart, wall_cells->start,
-		       &SolidWallsKernel::texWallCellStart.channelDesc,
+		       &WallKernels::texWallCellStart, wall_cells->start,
+		       &WallKernels::texWallCellStart.channelDesc,
 		       sizeof(int) * wall_cells->ncells));
 
     CC(cudaBindTexture(&textureoffset,
-		       &SolidWallsKernel::texWallCellCount, wall_cells->count,
-		       &SolidWallsKernel::texWallCellCount.channelDesc,
+		       &WallKernels::texWallCellCount, wall_cells->count,
+		       &WallKernels::texWallCellCount.channelDesc,
 		       sizeof(int) * wall_cells->ncells));
 
-    SolidWallsKernel::
+    WallKernels::
       interactions_3tpp<<<(3 * n + 127) / 128, 128, 0, stream>>>
       ((float2 *)p, n, solid_size, (float *)acc, trunk->get_float());
 
-    CC(cudaUnbindTexture(SolidWallsKernel::texWallParticles));
-    CC(cudaUnbindTexture(SolidWallsKernel::texWallCellStart));
-    CC(cudaUnbindTexture(SolidWallsKernel::texWallCellCount));
+    CC(cudaUnbindTexture(WallKernels::texWallParticles));
+    CC(cudaUnbindTexture(WallKernels::texWallCellStart));
+    CC(cudaUnbindTexture(WallKernels::texWallCellCount));
   }
 
   CC(cudaPeekAtLastError());
 }
 
 void wall_close () {
-  CC(cudaUnbindTexture(SolidWallsKernel::texSDF));
+  CC(cudaUnbindTexture(WallKernels::texSDF));
   CC(cudaFreeArray(arrSDF));
 
   delete wall_cells;
