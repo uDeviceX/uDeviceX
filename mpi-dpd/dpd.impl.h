@@ -1,6 +1,6 @@
 namespace DPD {
 void init1(MPI_Comm cartcomm) {
-    int myrank;
+  int myrank;
   MC(MPI_Comm_rank(cartcomm, &myrank));
 
   for (int i = 0; i < 26; ++i) {
@@ -35,8 +35,8 @@ void init1(MPI_Comm cartcomm) {
 
     int interrank_seed = interrank_seed_base + interrank_seed_offset;
 
-    interrank_trunks[i] = new Logistic::KISS(390 + interrank_seed,
-					     interrank_seed + 615, 12309, 23094);
+    interrank_trunks[i] = new Logistic::KISS(
+        390 + interrank_seed, interrank_seed + 615, 12309, 23094);
 
     int dstrank = dstranks[i];
 
@@ -50,19 +50,18 @@ void init1(MPI_Comm cartcomm) {
   }
 }
 
-void local_interactions(Particle *xyzuvw, float4 *xyzouvwo,
-                                    ushort4 *xyzo_half, int n, Acceleration *a,
-                                    int *cellsstart, int *cellscount,
-                                    cudaStream_t stream) {
-  if (n > 0) forces_dpd_cuda_nohost(
-      (float *)xyzuvw, xyzouvwo, xyzo_half, (float *)a, n, cellsstart,
-      cellscount, 1, XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN,
-      1. / sqrt(dt), local_trunk->get_float(), stream);
+void local_interactions(Particle *xyzuvw, float4 *xyzouvwo, ushort4 *xyzo_half,
+                        int n, Acceleration *a, int *cellsstart,
+                        int *cellscount, cudaStream_t stream) {
+  if (n > 0)
+    forces_dpd_cuda_nohost((float *)xyzuvw, xyzouvwo, xyzo_half, (float *)a, n,
+                           cellsstart, cellscount, 1, XSIZE_SUBDOMAIN,
+                           YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN, 1. / sqrt(dt),
+                           local_trunk->get_float(), stream);
 }
 
 void remote_interactions(Particle *p, int n, Acceleration *a,
-                                     cudaStream_t stream,
-                                     cudaStream_t uploadstream) {
+                         cudaStream_t stream, cudaStream_t uploadstream) {
   CC(cudaPeekAtLastError());
 
   static BipsBatch::BatchInfo infos[26];
@@ -103,9 +102,11 @@ void remote_interactions(Particle *p, int n, Acceleration *a,
 }
 
 void init0(MPI_Comm _cartcomm, int _basetag) {
-    basetag = _basetag; firstpost = true; nactive = 26;
+  basetag = _basetag;
+  firstpost = true;
+  nactive = 26;
   safety_factor =
-    getenv("HEX_COMM_FACTOR") ? atof(getenv("HEX_COMM_FACTOR")) : 1.2;
+      getenv("HEX_COMM_FACTOR") ? atof(getenv("HEX_COMM_FACTOR")) : 1.2;
 
   MC(MPI_Comm_dup(_cartcomm, &cartcomm));
   MC(MPI_Comm_rank(cartcomm, &myrank));
@@ -149,9 +150,7 @@ void init(MPI_Comm _cartcomm) {
   init1(_cartcomm);
 }
 
-void _pack_all(Particle *p, int n,
-                                bool update_baginfos,
-                                cudaStream_t stream) {
+void _pack_all(Particle *p, int n, bool update_baginfos, cudaStream_t stream) {
   if (update_baginfos) {
     static PackingHalo::SendBagInfo baginfos[26];
     for (int i = 0; i < 26; ++i) {
@@ -170,36 +169,33 @@ void _pack_all(Particle *p, int n,
 
   if (PackingHalo::ncells)
     PackingHalo::fill_all<<<(PackingHalo::ncells + 1) / 2, 32, 0, stream>>>(
-									    p, n, required_send_bag_size);
+        p, n, required_send_bag_size);
   CC(cudaEventRecord(evfillall, stream));
 }
 
-  void post_expected_recv() {
+void post_expected_recv() {
   for (int i = 0, c = 0; i < 26; ++i) {
     if (recvhalos[i]->expected)
       MC(MPI_Irecv(recvhalos[i]->hbuf->data, recvhalos[i]->expected,
-		   Particle::datatype(), dstranks[i],
-		   basetag + recv_tags[i], cartcomm, recvreq + c++));
+                   Particle::datatype(), dstranks[i], basetag + recv_tags[i],
+                   cartcomm, recvreq + c++));
   }
   for (int i = 0, c = 0; i < 26; ++i)
     if (recvhalos[i]->expected)
       MC(MPI_Irecv(recvhalos[i]->hcellstarts->data,
-		   recvhalos[i]->hcellstarts->size, MPI_INTEGER,
-		   dstranks[i], basetag + recv_tags[i] + 350, cartcomm,
-		   recvcellsreq + c++));
+                   recvhalos[i]->hcellstarts->size, MPI_INTEGER, dstranks[i],
+                   basetag + recv_tags[i] + 350, cartcomm, recvcellsreq + c++));
 
   for (int i = 0, c = 0; i < 26; ++i)
     if (recvhalos[i]->expected)
       MC(MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, dstranks[i],
-		   basetag + recv_tags[i] + 150, cartcomm,
-		   recvcountreq + c++));
+                   basetag + recv_tags[i] + 150, cartcomm, recvcountreq + c++));
     else
       recv_counts[i] = 0;
 }
 
-void pack(Particle *p, int n,
-                           int *cellsstart,
-                           int *cellscount, cudaStream_t stream) {
+void pack(Particle *p, int n, int *cellsstart, int *cellscount,
+          cudaStream_t stream) {
   CC(cudaPeekAtLastError());
   nlocal = n;
   if (firstpost) {
@@ -208,7 +204,7 @@ void pack(Particle *p, int n,
       cellpackstarts[0] = 0;
       for (int i = 0, s = 0; i < 26; ++i)
         cellpackstarts[i + 1] =
-	  (s += sendhalos[i]->dcellstarts->S * (sendhalos[i]->expected > 0));
+            (s += sendhalos[i]->dcellstarts->S * (sendhalos[i]->expected > 0));
       PackingHalo::ncells = cellpackstarts[26];
       CC(cudaMemcpyToSymbol(PackingHalo::cellpackstarts, cellpackstarts,
                             sizeof(cellpackstarts), 0, cudaMemcpyHostToDevice));
@@ -230,12 +226,13 @@ void pack(Particle *p, int n,
 
   if (PackingHalo::ncells)
     PackingHalo::
-      count_all<<<(PackingHalo::ncells + 127) / 128, 128, 0, stream>>>(
-								       cellsstart, cellscount, PackingHalo::ncells);
+        count_all<<<(PackingHalo::ncells + 127) / 128, 128, 0, stream>>>(
+            cellsstart, cellscount, PackingHalo::ncells);
 
   PackingHalo::scan_diego<32><<<26, 32 * 32, 0, stream>>>();
   CC(cudaPeekAtLastError());
-  if (firstpost) post_expected_recv();
+  if (firstpost)
+    post_expected_recv();
   else {
     MPI_Status statuses[26 * 2];
     MC(MPI_Waitall(nactive, sendcellsreq, statuses));
@@ -277,23 +274,22 @@ void pack(Particle *p, int n,
 
   if (PackingHalo::ncells)
     PackingHalo::copycells<
-      0><<<(PackingHalo::ncells + 127) / 128, 128, 0, stream>>>(
-								PackingHalo::ncells);
+        0><<<(PackingHalo::ncells + 127) / 128, 128, 0, stream>>>(
+        PackingHalo::ncells);
 
   _pack_all(p, n, firstpost, stream);
   CC(cudaPeekAtLastError());
 }
 
-void post(Particle *p, int n,
-                           cudaStream_t stream, cudaStream_t downloadstream) {
+void post(Particle *p, int n, cudaStream_t stream,
+          cudaStream_t downloadstream) {
   {
     CC(cudaEventSynchronize(evfillall));
 
     bool succeeded = true;
     for (int i = 0; i < 26; ++i) {
       int nrequired = required_send_bag_size_host[i];
-      bool failed_entry =
-	nrequired > sendhalos[i]->dbuf->capacity;
+      bool failed_entry = nrequired > sendhalos[i]->dbuf->capacity;
 
       if (failed_entry) {
         sendhalos[i]->dbuf->resize(nrequired);
@@ -321,23 +317,21 @@ void post(Particle *p, int n,
   for (int i = 0; i < 26; ++i)
     if (sendhalos[i]->hbuf->size)
       cudaMemcpyAsync(sendhalos[i]->hbuf->data, sendhalos[i]->dbuf->D,
-                         sizeof(Particle) * sendhalos[i]->hbuf->size,
-                         cudaMemcpyDeviceToHost, downloadstream);
+                      sizeof(Particle) * sendhalos[i]->hbuf->size,
+                      cudaMemcpyDeviceToHost, downloadstream);
 
   CC(cudaStreamSynchronize(downloadstream));
   {
     for (int i = 0, c = 0; i < 26; ++i)
       if (sendhalos[i]->expected)
         MC(MPI_Isend(sendhalos[i]->hcellstarts->data,
-		     sendhalos[i]->hcellstarts->size, MPI_INTEGER,
-		     dstranks[i], basetag + i + 350, cartcomm,
-		     sendcellsreq + c++));
+                     sendhalos[i]->hcellstarts->size, MPI_INTEGER, dstranks[i],
+                     basetag + i + 350, cartcomm, sendcellsreq + c++));
 
     for (int i = 0, c = 0; i < 26; ++i)
       if (sendhalos[i]->expected)
-        MC(MPI_Isend(&sendhalos[i]->hbuf->size, 1, MPI_INTEGER,
-		     dstranks[i], basetag + i + 150, cartcomm,
-		     sendcountreq + c++));
+        MC(MPI_Isend(&sendhalos[i]->hbuf->size, 1, MPI_INTEGER, dstranks[i],
+                     basetag + i + 150, cartcomm, sendcountreq + c++));
 
     nsendreq = 0;
 
@@ -348,9 +342,8 @@ void post(Particle *p, int n,
 
       int count = sendhalos[i]->hbuf->size;
 
-      MC(MPI_Isend(sendhalos[i]->hbuf->data, expected,
-		   Particle::datatype(), dstranks[i], basetag + i,
-		   cartcomm, sendreq + nsendreq));
+      MC(MPI_Isend(sendhalos[i]->hbuf->data, expected, Particle::datatype(),
+                   dstranks[i], basetag + i, cartcomm, sendreq + nsendreq));
 
       ++nsendreq;
 
@@ -364,8 +357,8 @@ void post(Particle *p, int n,
                myrank, dstranks[i], d[0], d[1], d[2], difference, expected);
 
         MC(MPI_Isend(sendhalos[i]->hbuf->data + expected, difference,
-		     Particle::datatype(), dstranks[i],
-		     basetag + i + 555, cartcomm, sendreq + nsendreq));
+                     Particle::datatype(), dstranks[i], basetag + i + 555,
+                     cartcomm, sendreq + nsendreq));
         ++nsendreq;
       }
     }
@@ -456,13 +449,13 @@ void adjust_message_sizes(ExpectedMessageSizes sizes) {
   }
 }
 
-  void close() {
+void close() {
   CC(cudaFreeHost(required_send_bag_size));
   MC(MPI_Comm_free(&cartcomm));
   _cancel_recv();
   CC(cudaEventDestroy(evfillall));
   CC(cudaEventDestroy(evdownloaded));
-  
+
   for (int i = 1; i < 26; i++) delete interrank_trunks[i];
   delete local_trunk;
   for (int i = 0; i < 26; i++) delete recvhalos[i];
