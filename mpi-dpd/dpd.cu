@@ -14,8 +14,13 @@
 #include "bipsbatch.impl.h"
 
 ComputeDPD::ComputeDPD(MPI_Comm cartcomm)
-    : SolventExchange(cartcomm, 0), local_trunk(0, 0, 0, 0) {
+    : SolventExchange(cartcomm, 0) {
+  local_trunk = new Logistic::KISS(0, 0, 0, 0);
   init1(cartcomm);
+}
+
+ComputeDPD::~ComputeDPD() {
+  delete local_trunk;
 }
 
 void ComputeDPD::init1(MPI_Comm cartcomm) {
@@ -76,7 +81,7 @@ void ComputeDPD::local_interactions(Particle *xyzuvw, float4 *xyzouvwo,
   if (n > 0) forces_dpd_cuda_nohost(
       (float *)xyzuvw, xyzouvwo, xyzo_half, (float *)a, n, cellsstart,
       cellscount, 1, XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN,
-      1. / sqrt(dt), local_trunk.get_float(), stream);
+      1. / sqrt(dt), local_trunk->get_float(), stream);
 }
 
 void ComputeDPD::remote_interactions(Particle *p, int n, Acceleration *a,
