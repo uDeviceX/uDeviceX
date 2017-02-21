@@ -5,12 +5,12 @@
 #include "packinghalo.decl.h"
 #include "packinghalo.impl.h"
 
-SolventExchange::SolventExchange(MPI_Comm _cartcomm, int basetag) {
-  init0(cartcomm, basetag);
+SolventExchange::SolventExchange(MPI_Comm _cartcomm, int _basetag) {
+  init0(_cartcomm, _basetag);
 }
 
-void SolventExchange::init0(MPI_Comm _cartcomm, int basetag) {
-    basetag = basetag; firstpost = true; nactive = 26;
+void SolventExchange::init0(MPI_Comm _cartcomm, int _basetag) {
+    basetag = _basetag; firstpost = true; nactive = 26;
   safety_factor =
     getenv("HEX_COMM_FACTOR") ? atof(getenv("HEX_COMM_FACTOR")) : 1.2;
 
