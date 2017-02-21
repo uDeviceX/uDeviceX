@@ -3,7 +3,7 @@
 
 common.o: .conf.h common.h
 dpd-forces.o: .conf.h common.h dpd-forces.h
-dpd.o: .conf.h common.h dpd-forces.h dpd.h last_bit_float.h solvent-exchange.h
+dpd.o: .conf.h bipsbatch.decl.h bipsbatch.impl.h common.h dpd-forces.h dpd.h last_bit_float.h solvent-exchange.h
 io.o: .conf.h common.h io.h last_bit_float.h
 last_bit_float.o: last_bit_float.h
 main.o: .conf.h argument-parser.h common.h dpd.h simulation.h solvent-exchange.h
