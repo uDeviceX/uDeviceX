@@ -24,20 +24,19 @@ void CellLists::build(Particle * const p, const int n, cudaStream_t stream, int 
 }
 
 
-void diagnostics(MPI_Comm comm, MPI_Comm cartcomm, Particle * particles, int n, float dt, int idstep, Acceleration * acc)
-{
+void diagnostics(MPI_Comm comm, MPI_Comm cartcomm, Particle * particles, int n, float dt, int idstep) {
     double p[] = {0, 0, 0};
     for(int i = 0; i < n; ++i)
         for(int c = 0; c < 3; ++c)
             p[c] += particles[i].u[c];
 
     int rank;
-    MC( MPI_Comm_rank(comm, &rank) );
+    MC(MPI_Comm_rank(comm, &rank) );
 
     int dims[3], periods[3], coords[3];
-    MC( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
+    MC(MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
 
-    MC( MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &p, rank == 0 ? &p : NULL, 3, MPI_DOUBLE, MPI_SUM, 0, comm) );
+    MC(MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &p, rank == 0 ? &p : NULL, 3, MPI_DOUBLE, MPI_SUM, 0, comm) );
 
     double ke = 0;
     for(int i = 0; i < n; ++i)

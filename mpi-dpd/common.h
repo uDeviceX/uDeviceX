@@ -193,4 +193,4 @@ struct ExpectedMessageSizes {
 };
 
 void diagnostics(MPI_Comm comm, MPI_Comm cartcomm, Particle *_particles, int n,
-                 float dt, int idstep, Acceleration *_acc);
+                 float dt, int idstep);

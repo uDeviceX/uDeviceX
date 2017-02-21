@@ -347,7 +347,7 @@ static void sim_datadump_async() {
     Particle *p = particles_datadump->D;
     Acceleration *a = accelerations_datadump->D;
 
-    { diagnostics(myactivecomm, mycartcomm, p, n, dt, datadump_idtimestep, a); }
+    { diagnostics(myactivecomm, mycartcomm, p, n, dt, datadump_idtimestep); }
 
     if (hdf5part_dumps) {
       if (!dump_part_solvent && walls && datadump_idtimestep >= wall_creation_stepid) {
