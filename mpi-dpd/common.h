@@ -38,38 +38,28 @@ inline void mpiAssert(int code, const char *file, int line) {
 // AoS - SoA conversion might be performed within the hpc kernels.
 struct Particle {
   float x[3], u[3];
-
   static bool initialized;
   static MPI_Datatype mytype;
-
   static MPI_Datatype datatype() {
     if (!initialized) {
       MC(MPI_Type_contiguous(6, MPI_FLOAT, &mytype));
-
       MC(MPI_Type_commit(&mytype));
-
       initialized = true;
     }
-
     return mytype;
   }
 };
 
 struct Acceleration {
   float a[3];
-
   static bool initialized;
   static MPI_Datatype mytype;
-
   static MPI_Datatype datatype() {
     if (!initialized) {
       MC(MPI_Type_contiguous(3, MPI_FLOAT, &mytype));
-
       MC(MPI_Type_commit(&mytype));
-
       initialized = true;
     }
-
     return mytype;
   }
 };
@@ -78,18 +68,14 @@ struct ParticlesWrap {
   const Particle *p;
   Acceleration *a;
   int n;
-
   ParticlesWrap() : p(NULL), a(NULL), n(0) {}
-
   ParticlesWrap(const Particle *const p, const int n, Acceleration *a)
     : p(p), n(n), a(a) {}
 };
 
 struct SolventWrap : ParticlesWrap {
   const int *cellsstart, *cellscount;
-
-  SolventWrap() : cellsstart(NULL), cellscount(NULL), ParticlesWrap() {}
-
+  explicit SolventWrap() : cellsstart(NULL), cellscount(NULL), ParticlesWrap() {}
   SolventWrap(const Particle *const p, const int n, Acceleration *a,
               const int *const cellsstart, const int *const cellscount)
     : ParticlesWrap(p, n, a),
@@ -186,9 +172,7 @@ public:
    the cell lists involve a reordering of the particle array (!) */
 struct CellLists {
   const int ncells, LX, LY, LZ;
-
   int *start, *count;
-
   CellLists(const int LX, const int LY, const int LZ)
     : ncells(LX * LY * LZ + 1), LX(LX), LY(LY), LZ(LZ) {
     CC(cudaMalloc(&start, sizeof(int) * ncells));
@@ -210,19 +194,3 @@ struct ExpectedMessageSizes {
 
 void diagnostics(MPI_Comm comm, MPI_Comm cartcomm, Particle *_particles, int n,
                  float dt, int idstep, Acceleration *_acc);
-
-class LocalComm {
-  MPI_Comm local_comm, active_comm;
-  int local_rank, local_nranks;
-  int rank, nranks;
-  char name[MPI_MAX_PROCESSOR_NAME];
-  int len;
-
-public:
-  LocalComm();
-  void initialize(MPI_Comm active_comm);
-  void barrier();
-  int get_size() { return local_nranks; }
-  int get_rank() { return local_rank; }
-  MPI_Comm get_comm() { return local_comm; }
-};

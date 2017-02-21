@@ -76,29 +76,3 @@ inline size_t hash_string(const char *buf)
 
     return result;
 }
-
-
-LocalComm::LocalComm()
-{
-    local_comm = MPI_COMM_NULL;
-    local_rank = 0;
-    local_nranks = 1;
-}
-
-void LocalComm::initialize(MPI_Comm _active_comm)
-{
-    active_comm = _active_comm;
-    MPI_Comm_rank(active_comm, &rank);
-    MPI_Comm_size(active_comm, &nranks);
-
-    local_comm = active_comm;
-
-    MPI_Get_processor_name(name, &len);
-    size_t id = hash_string(name);
-
-    MPI_Comm_split(active_comm, id, rank, &local_comm) ;
-
-    MPI_Comm_rank(local_comm, &local_rank);
-    MPI_Comm_size(local_comm, &local_nranks);
-}
-

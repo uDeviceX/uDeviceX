@@ -30,7 +30,6 @@ public:
     history.update(n);
   }
   int expected() const {return (int)ceil(history.max() * 1.1);}
-  int capacity() const {return dstate.C; }
 };
 
 class LocalHalo {

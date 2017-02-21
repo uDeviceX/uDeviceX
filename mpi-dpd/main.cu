@@ -17,8 +17,6 @@ int steps_per_dump, steps_per_hdf5dump, wall_creation_stepid;
 float RBCx0, RBCp, RBCcq, RBCkb, RBCka, RBCkv, RBCgammaC, RBCkd, RBCtotArea,
     RBCtotVolume, RBCscale;
 
-LocalComm localcomm;
-
 int main(int argc, char **argv) {
   int ranks[3];
 
@@ -117,7 +115,6 @@ int main(int argc, char **argv) {
   activecomm = cartcomm;
   MC(MPI_Barrier(activecomm));
   if (rank == 0) argp.print_arguments();
-  localcomm.initialize(activecomm);
   MC(MPI_Barrier(activecomm));
 
   Sim::sim_init(cartcomm, activecomm);
