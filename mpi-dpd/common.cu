@@ -8,11 +8,8 @@
 #include "common.h"
 
 bool Particle::initialized = false;
-
 MPI_Datatype Particle::mytype;
-
 bool Acceleration::initialized = false;
-
 MPI_Datatype Acceleration::mytype;
 
 void CellLists::build(Particle * const p, const int n, cudaStream_t stream, int * const order, const Particle * const src)
