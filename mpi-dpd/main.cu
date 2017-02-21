@@ -9,7 +9,6 @@
 #include "common.h"
 #include "solvent-exchange.h"
 #include "dpd.h"
-#include "fsi.h"
 #include "simulation.h"
 
 float tend;

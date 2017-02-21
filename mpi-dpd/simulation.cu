@@ -10,7 +10,6 @@
 #include "common.h"
 #include "solvent-exchange.h"
 #include "dpd.h"
-#include "fsi.h"
 #include "io.h"
 #include "simulation.h"
 #include "dpd-forces.h"
@@ -43,6 +42,12 @@
 
 #include "contact.decl.h"
 #include "contact.impl.h"
+
+#include "kernelsfsi.decl.h"
+#include "kernelsfsi.impl.h"
+
+#include "fsi.decl.h"
+#include "fsi.impl.h"
 
 #include "solute-exchange.decl.h"
 #include "solute-exchange.impl.h"

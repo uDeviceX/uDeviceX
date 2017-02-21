@@ -340,7 +340,7 @@ namespace SolEx {
     CC(cudaStreamSynchronize(uploadstream));
 
     /** here was visitor  **/
-    fsi->halo(halos, stream);
+    FSI::halo(halos, stream);
     if (contactforces) Contact::halo(halos, stream);
     /***********************/
 

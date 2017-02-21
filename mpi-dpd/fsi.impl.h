@@ -1,36 +1,27 @@
-#include <dpd-rng.h>
-#include <vector>
-#include <cstdio>
-#include <mpi.h>
-#include ".conf.h" /* configuration file (copy from .conf.test.h) */
-#include "common.h"
-#include "common-kernels.h"
-#include "fsi.h"
-#include "dpd-forces.h"
-#include "last_bit_float.h"
-
-#include "kernelsfsi.decl.h"
-#include "kernelsfsi.impl.h"
-
 namespace FSI {
-  ComputeFSI::ComputeFSI(MPI_Comm comm) {
+  void bind_solvent(SolventWrap wrap) {*wsolvent = wrap;}
+  void init(MPI_Comm comm) {
     int myrank;
     MC(MPI_Comm_rank(comm, &myrank));
+    
     local_trunk = new Logistic::KISS;
+    wsolvent    = new SolventWrap;
+    
     *local_trunk = Logistic::KISS(1908 - myrank, 1409 + myrank, 290, 12968);
     CC(cudaPeekAtLastError());
   }
 
-  ComputeFSI::~ComputeFSI() {
+  void close() {
     delete local_trunk;
+    delete wsolvent;
   }
 
-void ComputeFSI::bulk(std::vector<ParticlesWrap> wsolutes,
+void bulk(std::vector<ParticlesWrap> wsolutes,
                       cudaStream_t stream) {
   if (wsolutes.size() == 0) return;
 
-  KernelsFSI::setup(wsolvent.p, wsolvent.n, wsolvent.cellsstart,
-                    wsolvent.cellscount);
+  KernelsFSI::setup(wsolvent->p, wsolvent->n, wsolvent->cellsstart,
+                    wsolvent->cellscount);
 
   CC(cudaPeekAtLastError());
 
@@ -39,15 +30,15 @@ void ComputeFSI::bulk(std::vector<ParticlesWrap> wsolutes,
     if (it->n)
       KernelsFSI::
 	interactions_3tpp<<<(3 * it->n + 127) / 128, 128, 0, stream>>>
-	((float2 *)it->p, it->n, wsolvent.n, (float *)it->a,
-	 (float *)wsolvent.a, local_trunk->get_float());
+	((float2 *)it->p, it->n, wsolvent->n, (float *)it->a,
+	 (float *)wsolvent->a, local_trunk->get_float());
 
   CC(cudaPeekAtLastError());
 }
 
-void ComputeFSI::halo(ParticlesWrap halos[26], cudaStream_t stream) {
-  KernelsFSI::setup(wsolvent.p, wsolvent.n, wsolvent.cellsstart,
-                    wsolvent.cellscount);
+void halo(ParticlesWrap halos[26], cudaStream_t stream) {
+  KernelsFSI::setup(wsolvent->p, wsolvent->n, wsolvent->cellsstart,
+                    wsolvent->cellscount);
 
   CC(cudaPeekAtLastError());
 
@@ -96,7 +87,7 @@ void ComputeFSI::halo(ParticlesWrap halos[26], cudaStream_t stream) {
   if (nremote_padded)
     KernelsFSI::
       interactions_halo<<<(nremote_padded + 127) / 128, 128, 0, stream>>>
-      (nremote_padded, wsolvent.n, (float *)wsolvent.a,
+      (nremote_padded, wsolvent->n, (float *)wsolvent->a,
        local_trunk->get_float());
 
   CC(cudaPeekAtLastError());
