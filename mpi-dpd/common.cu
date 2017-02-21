@@ -66,13 +66,3 @@ void diagnostics(MPI_Comm comm, MPI_Comm cartcomm, Particle * particles, int n, 
         fclose(f);
     }
 }
-
-inline size_t hash_string(const char *buf)
-{
-    size_t result = 0;
-    while( *buf != 0 ) {
-        result = result * 31 + *buf++;
-    }
-
-    return result;
-}
