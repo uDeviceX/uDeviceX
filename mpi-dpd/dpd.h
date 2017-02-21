@@ -3,7 +3,7 @@
 class ComputeDPD : public SolventExchange {
   Logistic::KISS *local_trunk;
 
-  /* shall not be allocated it is a copy */
+  /* allocated inside init1 */
   Logistic::KISS *interrank_trunks[26]; 
 
   bool interrank_masks[26];

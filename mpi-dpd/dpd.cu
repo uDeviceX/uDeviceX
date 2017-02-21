@@ -20,6 +20,7 @@ ComputeDPD::ComputeDPD(MPI_Comm cartcomm)
 }
 
 ComputeDPD::~ComputeDPD() {
+  for (int i = 1; i < 26; i++) delete interrank_trunks[i];
   delete local_trunk;
 }
 
@@ -59,8 +60,8 @@ void ComputeDPD::init1(MPI_Comm cartcomm) {
 
     int interrank_seed = interrank_seed_base + interrank_seed_offset;
 
-    *interrank_trunks[i] = Logistic::KISS(390 + interrank_seed,
-                                         interrank_seed + 615, 12309, 23094);
+    interrank_trunks[i] = new Logistic::KISS(390 + interrank_seed,
+					     interrank_seed + 615, 12309, 23094);
 
     int dstrank = dstranks[i];
 
