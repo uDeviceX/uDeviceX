@@ -15,6 +15,8 @@ void redistribute_rbcs_init(MPI_Comm _cartcomm) {
   for (int i = 0; i < HALO_BUF_SIZE; i++) halo_sendbufs[i] = new PinnedHostBuffer<Particle>;
   minextents = new PinnedHostBuffer<float3>;
   maxextents = new PinnedHostBuffer<float3>;
+  _ddestinations = new DeviceBuffer<float *>;
+  _dsources = new DeviceBuffer<const float *>;
     
   nvertices = CudaRBC::get_nvertices();
   CudaRBC::Extent host_extent;
@@ -90,14 +92,14 @@ void pack_all(cudaStream_t stream, const int nrbcs, const int nvertices,
     pack_all_kernel<true><<<(nthreads + 127) / 128, 128, 0, stream>>>(
 	nrbcs, nvertices, NULL, NULL);
   } else {
-    _ddestinations.resize(nrbcs);
-    _dsources.resize(nrbcs);
-    CC(cudaMemcpyAsync(_ddestinations.D, destinations, sizeof(float *) * nrbcs,
+    _ddestinations->resize(nrbcs);
+    _dsources->resize(nrbcs);
+    CC(cudaMemcpyAsync(_ddestinations->D, destinations, sizeof(float *) * nrbcs,
 		       cudaMemcpyHostToDevice, stream));
-    CC(cudaMemcpyAsync(_dsources.D, sources, sizeof(float *) * nrbcs,
+    CC(cudaMemcpyAsync(_dsources->D, sources, sizeof(float *) * nrbcs,
 		       cudaMemcpyHostToDevice, stream));
     pack_all_kernel<false><<<(nthreads + 127) / 128, 128, 0, stream>>>(
-	nrbcs, nvertices, _dsources.D, _ddestinations.D);
+	nrbcs, nvertices, _dsources->D, _ddestinations->D);
   }
   CC(cudaPeekAtLastError());
 }
@@ -244,6 +246,9 @@ void redistribute_rbcs_close() {
   for (int i = 0; i < HALO_BUF_SIZE; i++) delete halo_sendbufs[i];
   delete minextents;
   delete maxextents;
+
+  delete _ddestinations;
+  delete _dsources;
 }
 
 }
