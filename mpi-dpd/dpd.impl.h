@@ -183,7 +183,7 @@ void post_expected_recv() {
   for (int i = 0, c = 0; i < 26; ++i)
     if (recvhalos[i]->expected)
       MC(MPI_Irecv(recvhalos[i]->hcellstarts->D,
-                   recvhalos[i]->hcellstarts->size, MPI_INTEGER, dstranks[i],
+                   recvhalos[i]->hcellstarts->S, MPI_INTEGER, dstranks[i],
                    basetag + recv_tags[i] + 350, cartcomm, recvcellsreq + c++));
 
   for (int i = 0, c = 0; i < 26; ++i)
@@ -312,9 +312,9 @@ void post(Particle *p, int n, cudaStream_t stream,
   }
 
   for (int i = 0; i < 26; ++i)
-    if (sendhalos[i]->hbuf->size)
+    if (sendhalos[i]->hbuf->S)
       cudaMemcpyAsync(sendhalos[i]->hbuf->D, sendhalos[i]->dbuf->D,
-                      sizeof(Particle) * sendhalos[i]->hbuf->size,
+                      sizeof(Particle) * sendhalos[i]->hbuf->S,
                       cudaMemcpyDeviceToHost, downloadstream);
 
   CC(cudaStreamSynchronize(downloadstream));
@@ -322,12 +322,12 @@ void post(Particle *p, int n, cudaStream_t stream,
     for (int i = 0, c = 0; i < 26; ++i)
       if (sendhalos[i]->expected)
         MC(MPI_Isend(sendhalos[i]->hcellstarts->D,
-                     sendhalos[i]->hcellstarts->size, MPI_INTEGER, dstranks[i],
+                     sendhalos[i]->hcellstarts->S, MPI_INTEGER, dstranks[i],
                      basetag + i + 350, cartcomm, sendcellsreq + c++));
 
     for (int i = 0, c = 0; i < 26; ++i)
       if (sendhalos[i]->expected)
-        MC(MPI_Isend(&sendhalos[i]->hbuf->size, 1, MPI_INTEGER, dstranks[i],
+        MC(MPI_Isend(&sendhalos[i]->hbuf->S, 1, MPI_INTEGER, dstranks[i],
                      basetag + i + 150, cartcomm, sendcountreq + c++));
 
     nsendreq = 0;
@@ -337,7 +337,7 @@ void post(Particle *p, int n, cudaStream_t stream,
 
       if (expected == 0) continue;
 
-      int count = sendhalos[i]->hbuf->size;
+      int count = sendhalos[i]->hbuf->S;
 
       MC(MPI_Isend(sendhalos[i]->hbuf->D, expected, Particle::datatype(),
                    dstranks[i], basetag + i, cartcomm, sendreq + nsendreq));
@@ -396,13 +396,13 @@ void recv(cudaStream_t stream, cudaStream_t uploadstream) {
 
   for (int i = 0; i < 26; ++i)
     CC(cudaMemcpyAsync(recvhalos[i]->dbuf->D, recvhalos[i]->hbuf->D,
-                       sizeof(Particle) * recvhalos[i]->hbuf->size,
+                       sizeof(Particle) * recvhalos[i]->hbuf->S,
                        cudaMemcpyHostToDevice, uploadstream));
 
   for (int i = 0; i < 26; ++i)
     CC(cudaMemcpyAsync(recvhalos[i]->dcellstarts->D,
                        recvhalos[i]->hcellstarts->D,
-                       sizeof(int) * recvhalos[i]->hcellstarts->size,
+                       sizeof(int) * recvhalos[i]->hcellstarts->S,
                        cudaMemcpyHostToDevice, uploadstream));
 
   CC(cudaPeekAtLastError());
@@ -411,7 +411,7 @@ void recv(cudaStream_t stream, cudaStream_t uploadstream) {
 
 int nof_sent_particles() {
   int s = 0;
-  for (int i = 0; i < 26; ++i) s += sendhalos[i]->hbuf->size;
+  for (int i = 0; i < 26; ++i) s += sendhalos[i]->hbuf->S;
   return s;
 }
 

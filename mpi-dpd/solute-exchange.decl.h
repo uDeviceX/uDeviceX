@@ -50,7 +50,7 @@ public:
     scattered_indices->resize(n);
     result->resize(n);
   }
-  void update() { history.update(result->size);}
+  void update() { history.update(result->S);}
   int expected() const { return (int)ceil(history.max() * 1.1);}
   int capacity() const { return scattered_indices->C;}
 };

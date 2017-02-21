@@ -124,7 +124,7 @@ template <typename T> struct DeviceBuffer {
 
   void preserve_resize(int n) {
     T *old = D;
-    int oldsize = S;
+    int oldS = S;
 
     S = n;
     if (C >= n) return;
@@ -132,7 +132,7 @@ template <typename T> struct DeviceBuffer {
     C = 128 * ((conservative_estimate + 129) / 128);
     CC(cudaMalloc(&D, sizeof(T) * C));
     if (old != NULL) {
-      CC(cudaMemcpy(D, old, sizeof(T) * oldsize, cudaMemcpyDeviceToDevice));
+      CC(cudaMemcpy(D, old, sizeof(T) * oldS, cudaMemcpyDeviceToDevice));
       CC(cudaFree(old));
     }
   }
@@ -143,10 +143,10 @@ private:
   int capacity;
 public:  
   /* `S': size; `D' is for data; `DP' device pointer */
-  int size;  T *D, *DP;
+  int S;  T *D, *DP;
 
   explicit PinnedHostBuffer(int n = 0)
-    : capacity(0), size(0), D(NULL), DP(NULL) {
+    : capacity(0), S(0), D(NULL), DP(NULL) {
     resize(n);
   }
 
@@ -157,7 +157,7 @@ public:
   }
 
   void resize(const int n) {
-    size = n;
+    S = n;
 
     if (capacity >= n) return;
 
@@ -174,9 +174,9 @@ public:
   void preserve_resize(const int n) {
     T *old = D;
 
-    const int oldsize = size;
+    const int oldS = S;
 
-    size = n;
+    S = n;
 
     if (capacity >= n) return;
 
@@ -187,7 +187,7 @@ public:
     CC(cudaHostAlloc(&D, sizeof(T) * capacity, cudaHostAllocMapped));
 
     if (old != NULL) {
-      CC(cudaMemcpy(D, old, sizeof(T) * oldsize, cudaMemcpyHostToHost));
+      CC(cudaMemcpy(D, old, sizeof(T) * oldS, cudaMemcpyHostToHost));
       CC(cudaFreeHost(old));
     }
 

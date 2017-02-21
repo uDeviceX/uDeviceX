@@ -92,7 +92,7 @@ namespace SolEx {
     for (int i = 0; i < 26; ++i) {
       MPI_Request reqA;
 
-      MC(MPI_Irecv(local[i]->result->D, local[i]->result->size * 3,
+      MC(MPI_Irecv(local[i]->result->D, local[i]->result->S * 3,
 		   MPI_FLOAT, dstranks[i], TAGBASE_A + recv_tags[i],
 		   cartcomm, &reqA));
       reqrecvA.push_back(reqA);
@@ -322,7 +322,7 @@ namespace SolEx {
 
     for (int i = 0; i < 26; ++i)
       CC(cudaMemcpyAsync(remote[i]->dstate.D, remote[i]->hstate.D,
-			 sizeof(Particle) * remote[i]->hstate.size,
+			 sizeof(Particle) * remote[i]->hstate.S,
 			 cudaMemcpyHostToDevice, uploadstream));
   }
 
@@ -362,7 +362,7 @@ namespace SolEx {
 
     reqsendA.resize(26);
     for (int i = 0; i < 26; ++i)
-      MC(MPI_Isend(remote[i]->result.D, remote[i]->result.size * 3,
+      MC(MPI_Isend(remote[i]->result.D, remote[i]->result.S * 3,
 		   MPI_FLOAT, dstranks[i], TAGBASE_A + i, cartcomm,
 		   &reqsendA[i]));
   }

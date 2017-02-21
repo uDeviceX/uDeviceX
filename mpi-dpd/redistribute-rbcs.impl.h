@@ -156,7 +156,7 @@ void pack_sendcount(Particle *xyzuvw,
   }
   CC(cudaStreamSynchronize(stream));
   for (int i = 1; i < 27; ++i)
-    MC(MPI_Isend(&halo_sendbufs[i]->size, 1, MPI_INTEGER,
+    MC(MPI_Isend(&halo_sendbufs[i]->S, 1, MPI_INTEGER,
 			rankneighbors[i], i + 1024, cartcomm,
 			&sendcountreq[i - 1]));
 }
@@ -182,18 +182,18 @@ int post() {
   MC(MPI_Waitall(26, sendcountreq, statuses));
 
   for (int i = 1; i < 27; ++i)
-    if (halo_recvbufs[i]->size > 0) {
+    if (halo_recvbufs[i]->S > 0) {
       MPI_Request request;
-      MC(MPI_Irecv(halo_recvbufs[i]->D, halo_recvbufs[i]->size,
+      MC(MPI_Irecv(halo_recvbufs[i]->D, halo_recvbufs[i]->S,
 			  Particle::datatype(), anti_rankneighbors[i], i + 1155,
 			  cartcomm, &request));
       recvreq.push_back(request);
     }
 
   for (int i = 1; i < 27; ++i)
-    if (halo_sendbufs[i]->size > 0) {
+    if (halo_sendbufs[i]->S > 0) {
       MPI_Request request;
-      MC(MPI_Isend(halo_sendbufs[i]->D, halo_sendbufs[i]->size,
+      MC(MPI_Isend(halo_sendbufs[i]->D, halo_sendbufs[i]->S,
 			  Particle::datatype(), rankneighbors[i], i + 1155,
 			  cartcomm, &request));
 
@@ -227,11 +227,11 @@ void unpack(Particle *xyzuvw, int nrbcs,
 		     cudaMemcpyDeviceToDevice, stream));
 
   for (int i = 1, s = notleaving * nvertices; i < 27; ++i) {
-    int count = halo_recvbufs[i]->size;
+    int count = halo_recvbufs[i]->S;
     if (count > 0)
       ParticleReorderingRBC::shift<<<(count + 127) / 128, 128, 0, stream>>>(
 	  halo_recvbufs[i]->DP, count, i, myrank, false, xyzuvw + s);
-    s += halo_recvbufs[i]->size;
+    s += halo_recvbufs[i]->S;
   }
 
   CC(cudaPeekAtLastError());

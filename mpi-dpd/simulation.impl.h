@@ -342,7 +342,7 @@ static void sim_datadump_async() {
 
     CC(cudaEventSynchronize(evdownloaded));
 
-    int n = particles_datadump->size;
+    int n = particles_datadump->S;
     Particle *p = particles_datadump->D;
     Acceleration *a = accelerations_datadump->D;
 
