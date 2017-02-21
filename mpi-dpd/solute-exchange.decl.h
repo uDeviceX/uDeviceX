@@ -71,62 +71,7 @@ namespace SolEx {
   std::vector<ParticlesWrap> wsolutes;
   std::vector<MPI_Request> reqsendC, reqrecvC, reqsendP, reqrecvP, reqsendA,
     reqrecvA;
-  RemoteHalo remote[26];
-  LocalHalo  local[26];
-
-  void _adjust_packbuffers() {
-    int s = 0;
-    for (int i = 0; i < 26; ++i) s += 32 * ((local[i].capacity() + 31) / 32);
-    packbuf->resize(s);
-    host_packbuf->resize(s);
-  }
-
-  void _wait(std::vector<MPI_Request> &v) {
-    MPI_Status statuses[v.size()];
-    if (v.size()) MC(MPI_Waitall(v.size(), &v.front(), statuses));
-    v.clear();
-  }
-
-  void _postrecvC() {
-    for (int i = 0; i < 26; ++i) {
-      MPI_Request reqC;
-      MC(MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, dstranks[i],
-			  TAGBASE_C + recv_tags[i], cartcomm, &reqC));
-      reqrecvC.push_back(reqC);
-    }
-  }
-
-  void _postrecvP() {
-    for (int i = 0; i < 26; ++i) {
-      MPI_Request reqP;
-      remote[i].pmessage.resize(remote[i].expected());
-      MC(MPI_Irecv(&remote[i].pmessage.front(), remote[i].expected() * 6,
-			  MPI_FLOAT, dstranks[i], TAGBASE_P + recv_tags[i],
-			  cartcomm, &reqP));
-      reqrecvP.push_back(reqP);
-    }
-  }
-
-  void _postrecvA() {
-    for (int i = 0; i < 26; ++i) {
-      MPI_Request reqA;
-
-      MC(MPI_Irecv(local[i].result->data, local[i].result->size * 3,
-			  MPI_FLOAT, dstranks[i], TAGBASE_A + recv_tags[i],
-			  cartcomm, &reqA));
-      reqrecvA.push_back(reqA);
-    }
-  }
-
-  void _not_nan(float*, int) {};
-  void _pack_attempt(cudaStream_t stream);
-  void init(MPI_Comm cartcomm);
-  void bind_solutes(std::vector<ParticlesWrap> wsolutes_) {wsolutes = wsolutes_;}
-  void pack_p(cudaStream_t stream);
-  void post_p(cudaStream_t stream, cudaStream_t downloadstream);
-  void recv_p(cudaStream_t uploadstream);
-  void halo(cudaStream_t uploadstream, cudaStream_t stream);
-  void post_a();
-  void recv_a(cudaStream_t stream);
-  void close();
+#define SE_HALO_SIZE 26
+  RemoteHalo *remote[SE_HALO_SIZE];
+  LocalHalo  *local[SE_HALO_SIZE];
 }
