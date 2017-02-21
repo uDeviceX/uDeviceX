@@ -198,17 +198,6 @@ void pa_resize(ParticleArray* pa, int n) {
     pa->aa.resize(n);
 }
 
-void pa_preserve_resize(ParticleArray* pa, int n) {
-    int oldsize = pa->S;
-    pa->S = n;
-
-    pa->pp.preserve_resize(n);
-    pa->aa.preserve_resize(n);
-
-    if (pa->S > oldsize)
-	CC(cudaMemset(pa->aa.D + oldsize, 0, sizeof(Acceleration) * (pa->S-oldsize)));
-}
-
 void clear_velocity(ParticleArray* pa) {
   if (pa->S)
     ParticleKernels::clear_velocity<<<(pa->pp.S + 127) / 128, 128 >>>(pa->pp.D, pa->pp.S);
@@ -217,11 +206,6 @@ void clear_velocity(ParticleArray* pa) {
 void rbc_resize(ParticleArray* pa, int count) {
     ncells = count;
     pa_resize(pa, count*nvertices);
-}
-
-void rbc_preserve_resize(ParticleArray* pa, int count) {
-    ncells = count;
-    pa_preserve_resize(pa, count*nvertices);
 }
 
 void rbc_init() {
