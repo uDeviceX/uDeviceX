@@ -59,7 +59,7 @@ void ComputeDPD::init1(MPI_Comm cartcomm) {
 
     int interrank_seed = interrank_seed_base + interrank_seed_offset;
 
-    interrank_trunks[i] = Logistic::KISS(390 + interrank_seed,
+    *interrank_trunks[i] = Logistic::KISS(390 + interrank_seed,
                                          interrank_seed + 615, 12309, 23094);
 
     int dstrank = dstranks[i];
@@ -103,7 +103,7 @@ void ComputeDPD::remote_interactions(Particle *p, int n, Acceleration *a,
     BipsBatch::BatchInfo entry = {
         (float *)sendhalos[i].dbuf.D,
         (float2 *)recvhalos[i].dbuf.D,
-        interrank_trunks[i].get_float(),
+        interrank_trunks[i]->get_float(),
         sendhalos[i].dbuf.S,
         recvhalos[i].dbuf.S,
         interrank_masks[i],

@@ -1,8 +1,10 @@
 // see the vanilla version of this code for details about how this class
 // operates
 class ComputeDPD : public SolventExchange {
-  Logistic::KISS* local_trunk;
-  Logistic::KISS interrank_trunks[26];
+  Logistic::KISS *local_trunk;
+
+  /* shall not be allocated it is a copy */
+  Logistic::KISS *interrank_trunks[26]; 
 
   bool interrank_masks[26];
 
