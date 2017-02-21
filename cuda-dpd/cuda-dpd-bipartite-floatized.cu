@@ -1,6 +1,7 @@
 #include "dpd-rng.h"
-#include "cuda-dpd.h"
 #include "../mpi-dpd/last_bit_float.h"
+#include "hacks.h"
+#include "../mpi-dpd/dpd-forces.h"
 
 struct BipartiteInfoDPD {
     int3 ncells;
@@ -10,16 +11,9 @@ struct BipartiteInfoDPD {
 
 __constant__ BipartiteInfoDPD bipart_info;
 
-#ifndef NDEBUG
-//#define _CHECK_
-#endif
-
 const static uint COLS = 8;
 const static uint ROWS = (32 / COLS);
 const static uint CPB = 4;
-
-#include "hacks.h"
-#include "../mpi-dpd/dpd-forces.h"
 
 __global__
 void _bipartite_dpd_directforces_floatized( float * const axayaz, const int np, const int np_src,
