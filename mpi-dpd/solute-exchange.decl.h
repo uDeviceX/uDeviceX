@@ -1,4 +1,4 @@
-ComputeFSI* fsi;
+FSI::ComputeFSI* fsi;
 
 enum {
   TAGBASE_C = 113, TAGBASE_P = 365, TAGBASE_A = 668,

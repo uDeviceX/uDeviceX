@@ -1,3 +1,4 @@
+namespace FSI {
 class ComputeFSI {
   SolventWrap wsolvent;
   Logistic::KISS local_trunk;
@@ -8,3 +9,4 @@ public:
   /*override of SoluteExchange::Visitor::halo*/
   void halo(ParticlesWrap solutes[26], cudaStream_t stream);
 };
+}

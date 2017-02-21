@@ -12,13 +12,13 @@
 #include "kernelsfsi.decl.h"
 #include "kernelsfsi.impl.h"
 
+namespace FSI {
 ComputeFSI::ComputeFSI(MPI_Comm comm) {
   int myrank;
   MC(MPI_Comm_rank(comm, &myrank));
   local_trunk = Logistic::KISS(1908 - myrank, 1409 + myrank, 290, 12968);
   CC(cudaPeekAtLastError());
 }
-
 
 void ComputeFSI::bulk(std::vector<ParticlesWrap> wsolutes,
                       cudaStream_t stream) {
@@ -95,4 +95,5 @@ void ComputeFSI::halo(ParticlesWrap halos[26], cudaStream_t stream) {
        local_trunk.get_float());
 
   CC(cudaPeekAtLastError());
+}
 }
