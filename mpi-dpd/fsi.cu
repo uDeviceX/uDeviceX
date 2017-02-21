@@ -13,12 +13,17 @@
 #include "kernelsfsi.impl.h"
 
 namespace FSI {
-ComputeFSI::ComputeFSI(MPI_Comm comm) {
-  int myrank;
-  MC(MPI_Comm_rank(comm, &myrank));
-  local_trunk = Logistic::KISS(1908 - myrank, 1409 + myrank, 290, 12968);
-  CC(cudaPeekAtLastError());
-}
+  ComputeFSI::ComputeFSI(MPI_Comm comm) {
+    int myrank;
+    MC(MPI_Comm_rank(comm, &myrank));
+    local_trunk = new Logistic::KISS;
+    *local_trunk = Logistic::KISS(1908 - myrank, 1409 + myrank, 290, 12968);
+    CC(cudaPeekAtLastError());
+  }
+
+  ComputeFSI::~ComputeFSI() {
+    delete local_trunk;
+  }
 
 void ComputeFSI::bulk(std::vector<ParticlesWrap> wsolutes,
                       cudaStream_t stream) {
@@ -35,7 +40,7 @@ void ComputeFSI::bulk(std::vector<ParticlesWrap> wsolutes,
       KernelsFSI::
 	interactions_3tpp<<<(3 * it->n + 127) / 128, 128, 0, stream>>>
 	((float2 *)it->p, it->n, wsolvent.n, (float *)it->a,
-	 (float *)wsolvent.a, local_trunk.get_float());
+	 (float *)wsolvent.a, local_trunk->get_float());
 
   CC(cudaPeekAtLastError());
 }
@@ -92,7 +97,7 @@ void ComputeFSI::halo(ParticlesWrap halos[26], cudaStream_t stream) {
     KernelsFSI::
       interactions_halo<<<(nremote_padded + 127) / 128, 128, 0, stream>>>
       (nremote_padded, wsolvent.n, (float *)wsolvent.a,
-       local_trunk.get_float());
+       local_trunk->get_float());
 
   CC(cudaPeekAtLastError());
 }
