@@ -171,6 +171,7 @@ namespace ParticleKernels {
     }
 } /* end of ParticleKernels */
 
+namespace Cont {
 void upd_stg1(ParticleArray* pa, bool rbcflag, float driving_acceleration, cudaStream_t stream) {
   if (pa->S)
     ParticleKernels::upd_stg1<<<(pa->pp.S + 127) / 128, 128, 0, stream>>>
@@ -232,11 +233,6 @@ void rbc_init() {
   CudaRBC::Extent extent;
   CudaRBC::setup(nvertices, extent);
 }
-
-struct TransformedExtent {
-    float com[3];
-    float transform[4][4];
-};
 
 void _initialize(float *device_pp, float (*transform)[4]) {
   CudaRBC::initialize(device_pp, transform);
@@ -346,4 +342,6 @@ static void rbc_dump0(const char *format4ply,
 
 void rbc_dump(MPI_Comm comm, Particle* p, Acceleration* a, int n, int iddatadump) {
   rbc_dump0("ply/rbcs-%05d.ply", comm, n / nvertices, p, a, n, iddatadump);
+}
+
 }

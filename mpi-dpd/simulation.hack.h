@@ -12,7 +12,7 @@ cudaMemcpy(sol_hst, sol_dev, szp*nsol, cudaMemcpyDeviceToHost);
 
 /* process RBCs */
 if (rbcscoll) {
-    int nrbc = pcount();
+    int nrbc = Cont::pcount();
     Particle *rbc_dev = rbcscoll->pp.D, *rbc_hst = sol_hst + nsol;
 
     /* copy from device */

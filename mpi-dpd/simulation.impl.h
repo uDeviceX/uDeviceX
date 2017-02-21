@@ -102,12 +102,12 @@ static void sim_redistribute() {
   CC(cudaPeekAtLastError());
 
   if (rbcscoll)
-    RedistRBC::extent(rbcscoll->pp.D, ncells, mainstream);
+    RedistRBC::extent(rbcscoll->pp.D, Cont::ncells, mainstream);
 
   RedistPart::send();
 
   if (rbcscoll)
-    RedistRBC::pack_sendcount(rbcscoll->pp.D, ncells, mainstream);
+    RedistRBC::pack_sendcount(rbcscoll->pp.D, Cont::ncells, mainstream);
 
   RedistPart::bulk(particles->S, cells->start, cells->count, mainstream);
 
@@ -116,13 +116,12 @@ static void sim_redistribute() {
   const int newnp = RedistPart::recv_count(mainstream);
 
   int nrbcs;
-  if (rbcs)
+  if (rbcs) {
     nrbcs = RedistRBC::post();
+    Cont::rbc_resize(rbcscoll, nrbcs);
+  }
 
-  if (rbcs)
-    rbc_resize(rbcscoll, nrbcs);
-
-  pa_resize(newparticles, newnp);
+  Cont::pa_resize(newparticles, newnp);
   xyzouvwo->resize(newnp * 2);
   xyzo_half->resize(newnp);
 
@@ -136,37 +135,34 @@ static void sim_redistribute() {
   swap(particles, newparticles);
 
   if (rbcs)
-    RedistRBC::unpack(rbcscoll->pp.D, ncells, mainstream);
+    RedistRBC::unpack(rbcscoll->pp.D, Cont::ncells, mainstream);
 
   CC(cudaPeekAtLastError());
 }
 
 void sim_remove_bodies_from_wall(ParticleArray *coll) {
-  if (!coll || !ncells) return;
-  DeviceBuffer<int> marks(pcount());
+  if (!coll || !Cont::ncells) return;
+  DeviceBuffer<int> marks(Cont::pcount());
 
-  WallKernels::fill_keys<<<(pcount() + 127) / 128, 128>>>(
-      coll->pp.D, pcount(), marks.D);
+  WallKernels::fill_keys<<<(Cont::pcount() + 127) / 128, 128>>>
+    (coll->pp.D, Cont::pcount(), marks.D);
 
   vector<int> tmp(marks.S);
-  CC(cudaMemcpy(tmp.data(), marks.D, sizeof(int) * marks.S,
-			cudaMemcpyDeviceToHost));
-
-  const int nbodies = ncells;
-
+  CC(cudaMemcpy(tmp.data(), marks.D, sizeof(int) * marks.S, cudaMemcpyDeviceToHost));
+  
+  int nbodies = Cont::ncells;
   std::vector<int> tokill;
   for (int i = 0; i < nbodies; ++i) {
     bool valid = true;
 
-    for (int j = 0; j < nvertices && valid; ++j)
-      valid &= 0 == tmp[j + nvertices * i];
+    for (int j = 0; j < Cont::nvertices && valid; ++j)
+      valid &= 0 == tmp[j + Cont::nvertices * i];
 
-    if (!valid)
-      tokill.push_back(i);
+    if (!valid) tokill.push_back(i);
   }
 
-  remove(coll, &tokill.front(), tokill.size());
-  clear_velocity(coll);
+  Cont::remove(coll, &tokill.front(), tokill.size());
+  Cont::clear_velocity(coll);
 
   CC(cudaPeekAtLastError());
 }
@@ -176,15 +172,15 @@ void sim_create_walls() {
   ExpectedMessageSizes new_sizes;
   Wall::init(particles->pp.D, particles->S,
 	    nsurvived, new_sizes); wall_created = true;
-  pa_resize(particles, nsurvived);
-  clear_velocity(particles);
+  Cont::pa_resize(particles, nsurvived);
+  Cont::clear_velocity(particles);
   cells->build(particles->pp.D, particles->S, 0, NULL, NULL);
   sim_update_helper_arrays();
   CC(cudaPeekAtLastError());
 
   // remove cells touching the wall
   sim_remove_bodies_from_wall(rbcscoll);
-  H5PartDump sd("survived-particles.h5part", activecomm, cartcomm);
+  H5PartDump sd("survived-particles.h5part", activecomm, Cont::cartcomm);
   Particle *pp = new Particle[particles->S];
   CC(cudaMemcpy(pp, particles->pp.D,
 			sizeof(Particle) * particles->S,
@@ -200,15 +196,15 @@ void sim_forces() {
   std::vector<ParticlesWrap> wsolutes;
 
   if (rbcs)
-    wsolutes.push_back(ParticlesWrap(rbcscoll->pp.D, pcount(), rbcscoll->aa.D));
+    wsolutes.push_back(ParticlesWrap(rbcscoll->pp.D, Cont::pcount(), rbcscoll->aa.D));
 
   FSI::bind_solvent(wsolvent);
 
   SolEx::bind_solutes(wsolutes);
 
-  clear_acc(particles, mainstream);
+  Cont::clear_acc(particles, mainstream);
 
-  if (rbcs) clear_acc(rbcscoll, mainstream);
+  if (rbcs) Cont::clear_acc(rbcscoll, mainstream);
 
   DPD::pack(particles->pp.D, particles->S, cells->start, cells->count,
 	    mainstream);
@@ -231,8 +227,7 @@ void sim_forces() {
   CC(cudaPeekAtLastError());
 
   if (rbcs && wall_created)
-    Wall::interactions(rbcscoll->pp.D, pcount(), rbcscoll->aa.D,
-		       mainstream);
+    Wall::interactions(rbcscoll->pp.D, Cont::pcount(), rbcscoll->aa.D, mainstream);
 
   if (wall_created)
     Wall::interactions(particles->pp.D, particles->S,
@@ -256,7 +251,7 @@ void sim_forces() {
   CC(cudaPeekAtLastError());
 
   if (rbcs)
-    CudaRBC::forces_nohost(mainstream, ncells,
+    CudaRBC::forces_nohost(mainstream, Cont::ncells,
 			   (float *)rbcscoll->pp.D, (float *)rbcscoll->aa.D);
 
   CC(cudaPeekAtLastError());
@@ -274,7 +269,7 @@ void sim_datadump(const int idtimestep) {
     pthread_cond_wait(&done_datadump, &mutex_datadump);
 
   int n = particles->S;
-  if (rbcs) n += pcount();
+  if (rbcs) n += Cont::pcount();
 
   particles_datadump->resize(n);
   accelerations_datadump->resize(n);
@@ -294,18 +289,18 @@ void sim_datadump(const int idtimestep) {
   if (rbcs) {
     CC(cudaMemcpyAsync(
 	particles_datadump->data + start, rbcscoll->pp.D,
-	sizeof(Particle) * pcount(), cudaMemcpyDeviceToHost, 0));
+	sizeof(Particle) * Cont::pcount(), cudaMemcpyDeviceToHost, 0));
     CC(cudaMemcpyAsync(
 	accelerations_datadump->data + start, rbcscoll->aa.D,
-	sizeof(Acceleration) * pcount(), cudaMemcpyDeviceToHost, 0));
-    start += pcount();
+	sizeof(Acceleration) * Cont::pcount(), cudaMemcpyDeviceToHost, 0));
+    start += Cont::pcount();
   }
 
   CC(cudaEventRecord(evdownloaded, 0));
 
   datadump_idtimestep = idtimestep;
   datadump_nsolvent = particles->S;
-  datadump_nrbcs = rbcs ? pcount() : 0;
+  datadump_nrbcs = rbcs ? Cont::pcount() : 0;
   datadump_pending = true;
 
   pthread_cond_signal(&request_datadump);
@@ -323,11 +318,11 @@ static void sim_datadump_async() {
   MPI_Comm myactivecomm, mycartcomm;
 
   MC(MPI_Comm_dup(activecomm, &myactivecomm));
-  MC(MPI_Comm_dup(cartcomm, &mycartcomm));
+  MC(MPI_Comm_dup(Cont::cartcomm, &mycartcomm));
 
-  H5PartDump dump_part("allparticles.h5part", activecomm, cartcomm),
+  H5PartDump dump_part("allparticles.h5part", activecomm, Cont::cartcomm),
       *dump_part_solvent = NULL;
-  H5FieldDump dump_field(cartcomm);
+  H5FieldDump dump_field(Cont::cartcomm);
 
   MC(MPI_Comm_rank(myactivecomm, &rank));
   MC(MPI_Barrier(myactivecomm));
@@ -358,7 +353,7 @@ static void sim_datadump_async() {
 	dump_part.close();
 
 	dump_part_solvent =
-	    new H5PartDump("solvent-particles.h5part", activecomm, cartcomm);
+	    new H5PartDump("solvent-particles.h5part", activecomm, Cont::cartcomm);
       }
 
       if (dump_part_solvent)
@@ -375,7 +370,7 @@ static void sim_datadump_async() {
        if (datadump_idtimestep >= 600/dt) */
     {
       if (rbcs)
-	rbc_dump(myactivecomm, p + datadump_nsolvent,
+	Cont::rbc_dump(myactivecomm, p + datadump_nsolvent,
 		 a + datadump_nsolvent, datadump_nrbcs, iddatadump);
     }
 
@@ -406,31 +401,31 @@ static void sim_datadump_async() {
 static void * datadump_trampoline(void*) { sim_datadump_async(); return NULL; }
 
 static void sim_update_and_bounce() {
-  upd_stg2_and_1(particles, false, driving_acceleration, mainstream);
+  Cont::upd_stg2_and_1(particles, false, driving_acceleration, mainstream);
 
   CC(cudaPeekAtLastError());
 
   if (rbcs)
-    upd_stg2_and_1(rbcscoll, true, driving_acceleration, mainstream);
+    Cont::upd_stg2_and_1(rbcscoll, true, driving_acceleration, mainstream);
 
   CC(cudaPeekAtLastError());
   if (wall_created) {
     Wall::bounce(particles->pp.D, particles->S, mainstream);
 
     if (rbcs)
-      Wall::bounce(rbcscoll->pp.D, pcount(), mainstream);
+      Wall::bounce(rbcscoll->pp.D, Cont::pcount(), mainstream);
   }
 
   CC(cudaPeekAtLastError());
 }
 
 void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
-  cartcomm = cartcomm_; activecomm = activecomm_;
-  RedistRBC::redistribute_rbcs_init(cartcomm);
-  DPD::init(cartcomm);
-  FSI::init(cartcomm);
-  SolEx::init(cartcomm);
-  Contact::init(cartcomm);
+  Cont::cartcomm = cartcomm_; activecomm = activecomm_;
+  RedistRBC::redistribute_rbcs_init(Cont::cartcomm);
+  DPD::init(Cont::cartcomm);
+  FSI::init(Cont::cartcomm);
+  SolEx::init(Cont::cartcomm);
+  Contact::init(Cont::cartcomm);
   cells   = new CellLists(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
 
   particles_datadump     = new PinnedHostBuffer<Particle>;
@@ -444,29 +439,27 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
 
   Wall::trunk = new Logistic::KISS;
 
-  RedistPart::redist_part_init(cartcomm);
+  RedistPart::redist_part_init(Cont::cartcomm);
   
   nsteps = (int)(tend / dt);
 
-  MC(MPI_Comm_size(activecomm, &nranks));
-  MC(MPI_Comm_rank(activecomm, &rank));
+  MC(MPI_Comm_size(activecomm, &Cont::nranks));
+  MC(MPI_Comm_rank(activecomm, &Cont::rank));
 
   int dims[3], periods[3]; /* `coords' is global */
-  MC(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
-  origin = make_float3((0.5 + coords[0]) * XSIZE_SUBDOMAIN,
-		       (0.5 + coords[1]) * YSIZE_SUBDOMAIN,
-		       (0.5 + coords[2]) * ZSIZE_SUBDOMAIN);
-  globalextent = make_float3(dims[0] * XSIZE_SUBDOMAIN,
-			     dims[1] * YSIZE_SUBDOMAIN,
-			     dims[2] * ZSIZE_SUBDOMAIN);
+  MC(MPI_Cart_get(Cont::cartcomm, 3, dims, periods, Cont::coords));
+  Cont::origin = make_float3((0.5 + Cont::coords[0]) * XSIZE_SUBDOMAIN,
+			     (0.5 + Cont::coords[1]) * YSIZE_SUBDOMAIN,
+			     (0.5 + Cont::coords[2]) * ZSIZE_SUBDOMAIN);
+  Cont::globalextent = make_float3(dims[0] * XSIZE_SUBDOMAIN,
+				   dims[1] * YSIZE_SUBDOMAIN,
+				   dims[2] * ZSIZE_SUBDOMAIN);
   particles =     particles_pingpong[0];
   newparticles =  particles_pingpong[1];
 
   vector<Particle> ic = _ic();
-
-  for (int c = 0; c < 2; ++c)
-    pa_resize(particles_pingpong[c], ic.size());
-
+  for (int c = 0; c < 2; ++c) Cont::pa_resize(particles_pingpong[c], ic.size());
+  
   CC(cudaMemcpy(particles->pp.D, &ic.front(),
 			sizeof(Particle) * ic.size(),
 			cudaMemcpyHostToDevice));
@@ -477,7 +470,7 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   CC(cudaStreamCreate(&uploadstream));
   CC(cudaStreamCreate(&downloadstream));
 
-  if (rbcs) {rbc_init(); setup(rbcscoll, "rbcs-ic.txt");}
+  if (rbcs) {Cont::rbc_init(); Cont::setup(rbcscoll, "rbcs-ic.txt");}
 
   // setting up the asynchronous data dumps
   CC(cudaEventCreate(&evdownloaded,
@@ -509,13 +502,13 @@ static void sim_lockstep() {
 
   if (rbcscoll)
     wsolutes.push_back(
-	ParticlesWrap(rbcscoll->pp.D, pcount(), rbcscoll->aa.D));
+	ParticlesWrap(rbcscoll->pp.D, Cont::pcount(), rbcscoll->aa.D));
 
   FSI::bind_solvent(wsolvent);
   SolEx::bind_solutes(wsolutes);
-  clear_acc(particles, mainstream);
+  Cont::clear_acc(particles, mainstream);
 
-  if (rbcscoll) clear_acc(rbcscoll, mainstream);
+  if (rbcscoll) Cont::clear_acc(rbcscoll, mainstream);
 
   SolEx::pack_p(mainstream);
   DPD::pack(particles->pp.D, particles->S, cells->start, cells->count,
@@ -546,11 +539,11 @@ static void sim_lockstep() {
   CC(cudaPeekAtLastError());
 
   if (rbcscoll)
-    CudaRBC::forces_nohost(mainstream, ncells,
+    CudaRBC::forces_nohost(mainstream, Cont::ncells,
 			   (float *)rbcscoll->pp.D, (float *)rbcscoll->aa.D);
   CC(cudaPeekAtLastError());
   SolEx::post_a();
-  upd_stg2_and_1(particles, false, driving_acceleration, mainstream);
+  Cont::upd_stg2_and_1(particles, false, driving_acceleration, mainstream);
   if (wall_created) Wall::bounce(particles->pp.D, particles->S, mainstream);
   CC(cudaPeekAtLastError());
   RedistPart::pack(particles->pp.D, particles->S, mainstream);
@@ -559,18 +552,18 @@ static void sim_lockstep() {
   CC(cudaPeekAtLastError());
 
   if (rbcscoll && wall_created)
-    Wall::interactions(rbcscoll->pp.D, pcount(), rbcscoll->aa.D,
+    Wall::interactions(rbcscoll->pp.D, Cont::pcount(), rbcscoll->aa.D,
 		       mainstream);
   CC(cudaPeekAtLastError());
   SolEx::recv_a(mainstream);
-  if (rbcscoll) upd_stg2_and_1(rbcscoll, true, driving_acceleration, mainstream);
+  if (rbcscoll) Cont::upd_stg2_and_1(rbcscoll, true, driving_acceleration, mainstream);
   int newnp = RedistPart::recv_count(mainstream);
   CC(cudaPeekAtLastError());
   if (rbcscoll) {
-    RedistRBC::extent(rbcscoll->pp.D, ncells, mainstream);
-    RedistRBC::pack_sendcount(rbcscoll->pp.D, ncells, mainstream);
+    RedistRBC::extent(rbcscoll->pp.D, Cont::ncells, mainstream);
+    RedistRBC::pack_sendcount(rbcscoll->pp.D, Cont::ncells, mainstream);
   }
-  pa_resize(newparticles, newnp);
+  Cont::pa_resize(newparticles, newnp);
   xyzouvwo->resize(newnp * 2);
   xyzo_half->resize(newnp);
   RedistPart::recv_unpack(newparticles->pp.D, xyzouvwo->D,
@@ -581,20 +574,20 @@ static void sim_lockstep() {
   int nrbcs;
   if (rbcscoll) nrbcs = RedistRBC::post();
 
-  if (rbcscoll) rbc_resize(rbcscoll, nrbcs);
+  if (rbcscoll) Cont::rbc_resize(rbcscoll, nrbcs);
   CC(cudaPeekAtLastError());
   if (rbcscoll)
-    RedistRBC::unpack(rbcscoll->pp.D, ncells, mainstream);
+    RedistRBC::unpack(rbcscoll->pp.D, Cont::ncells, mainstream);
   CC(cudaPeekAtLastError());
 }
 
 void sim_run() {
-  if (rank == 0 && !walls) printf("simulation consists of %ld steps\n", nsteps);
+  if (Cont::rank == 0 && !walls) printf("simulation consists of %ld steps\n", nsteps);
   sim_redistribute();
   sim_forces();
   if (!walls && pushtheflow) driving_acceleration = hydrostatic_a;
-  upd_stg1(particles, false, driving_acceleration, mainstream);
-  if (rbcscoll) upd_stg1(rbcscoll, true, driving_acceleration, mainstream);
+  Cont::upd_stg1(particles, false, driving_acceleration, mainstream);
+  if (rbcscoll) Cont::upd_stg1(rbcscoll, true, driving_acceleration, mainstream);
 
   int it;
   for (it = 0; it < nsteps; ++it) {
@@ -612,14 +605,11 @@ void sim_run() {
       sim_create_walls();
       sim_redistribute();
       if (pushtheflow) driving_acceleration = hydrostatic_a;
-      if (rank == 0)
+      if (Cont::rank == 0)
 	fprintf(stderr, "the simulation consists of %ld steps\n", nsteps - it);
     }
     sim_forces();
-
     if (it % steps_per_dump == 0) sim_datadump(it);
-
-
     sim_update_and_bounce();
   }
   sim_is_done = true;
