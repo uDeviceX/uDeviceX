@@ -173,21 +173,20 @@ namespace ParticleKernels {
 
 namespace Cont {
 void upd_stg1(ParticleArray* pa, bool rbcflag, float driving_acceleration, cudaStream_t stream) {
-  if (pa->S)
+  if (pa->pp.S)
     ParticleKernels::upd_stg1<<<(pa->pp.S + 127) / 128, 128, 0, stream>>>
       (rbcflag, pa->pp.D, pa->aa.D, pa->pp.S,
        dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
 void  upd_stg2_and_1(ParticleArray* pa, bool rbcflag, float driving_acceleration, cudaStream_t stream) {
-  if (pa->S)
+  if (pa->pp.S)
     ParticleKernels::upd_stg2_and_1<<<(pa->pp.S + 127) / 128, 128, 0, stream>>>
       (rbcflag, (float2 *)pa->pp.D, (float *)pa->aa.D, pa->pp.S,
        dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
 void pa_resize(ParticleArray* pa, int n) {
-    pa->S = n;
     /* YTANG: need the array to be 32-padded for locally transposed
        storage of acceleration */
     if ( n % 32 ) {
@@ -199,7 +198,7 @@ void pa_resize(ParticleArray* pa, int n) {
 }
 
 void clear_velocity(ParticleArray* pa) {
-  if (pa->S)
+  if (pa->pp.S)
     ParticleKernels::clear_velocity<<<(pa->pp.S + 127) / 128, 128 >>>(pa->pp.D, pa->pp.S);
 }
 

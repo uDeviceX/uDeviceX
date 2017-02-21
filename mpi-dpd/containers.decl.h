@@ -1,5 +1,4 @@
 struct ParticleArray {
-  int S; /* size */
   DeviceBuffer<Particle>     pp; /* xyzuvw */
   DeviceBuffer<Acceleration> aa; /* axayaz */
 };
