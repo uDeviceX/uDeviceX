@@ -1,5 +1,4 @@
 #include <sys/stat.h>
-#include <sys/time.h>
 
 #ifndef NO_H5
 #include <hdf5.h>
@@ -10,21 +9,16 @@
 #include <H5Part.h>
 #endif
 
-#include <string>
 #include <sstream>
 #include <vector>
-#include <mpi.h>
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */
 #include "common.h"
-#include <string>
 #include "io.h"
 #include "last_bit_float.h"
-#include "dpd-forces.h"
 
 using namespace std;
 
-void _write_bytes(const void * const ptr, const int nbytes32, MPI_File f, MPI_Comm comm)
-{
+void _write_bytes(const void * const ptr, const int nbytes32, MPI_File f, MPI_Comm comm) {
     MPI_Offset base;
     MC( MPI_File_get_position(f, &base));
 
