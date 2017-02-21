@@ -8,11 +8,11 @@
 #define ZMARGIN_WALL      6
 
 #define _numberdensity    3
-#define _kBT              1e-3
+#define _kBT              1e-7
 #define _dt               5e-4  /* timestep */
 #define _rbc_mass         0.5   /* ratio of RBC particle mass to solvent particle mass */
 #define _gamma_dot        0.0   /* shear rate */
-#define _hydrostatic_a    0.025  /* flow acceleration for Poiseuille setup */
+#define _hydrostatic_a    2.5   /* flow acceleration for Poiseuille setup */
 
 #define _aij_out          4.0  /* aij for the solvent outside the RBC */
 #define _aij_in           4.0  /* aij for the solvent inside the RBC */
