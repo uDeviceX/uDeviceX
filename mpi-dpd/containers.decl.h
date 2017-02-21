@@ -1,4 +1,7 @@
 /*** from containters.h ****/
+int (*indices)[3] = NULL;
+int ntriangles = -1;
+int nvertices = -1;
 float3 origin, globalextent;
 int    coords[3];
 MPI_Comm cartcomm;
