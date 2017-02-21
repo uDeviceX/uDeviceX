@@ -1,5 +1,6 @@
 // see the vanilla version of this code for details about how this class
 // operates
+namespace DPD {
 class ComputeDPD {
 public:
   Logistic::KISS *local_trunk;
@@ -95,3 +96,4 @@ public:
   void recv(cudaStream_t stream, cudaStream_t uploadstream);
   void adjust_message_sizes(ExpectedMessageSizes sizes);
 };
+}

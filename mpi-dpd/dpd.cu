@@ -15,6 +15,7 @@
 #include "bipsbatch.decl.h"
 #include "bipsbatch.impl.h"
 
+namespace DPD {
 ComputeDPD::ComputeDPD(MPI_Comm _cartcomm) {
   init0(_cartcomm, 0);
   local_trunk = new Logistic::KISS(0, 0, 0, 0);
@@ -482,4 +483,4 @@ void ComputeDPD::adjust_message_sizes(ExpectedMessageSizes sizes) {
     nactive += (int)(estimate > 0);
   }
 }
-
+}

@@ -427,7 +427,7 @@ static void sim_update_and_bounce() {
 void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   cartcomm = cartcomm_; activecomm = activecomm_;
   RedistRBC::redistribute_rbcs_init(cartcomm);
-  dpd     = new ComputeDPD(cartcomm);
+  dpd     = new DPD::ComputeDPD(cartcomm);
   FSI::init(cartcomm);
   SolEx::init(cartcomm);
   Contact::init(cartcomm);

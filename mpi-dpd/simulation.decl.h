@@ -6,7 +6,7 @@ DeviceBuffer<float4 > *xyzouvwo;
 DeviceBuffer<ushort4> *xyzo_half;
 
 CellLists* cells;
-ComputeDPD* dpd;
+DPD::ComputeDPD* dpd;
 
 bool wall_created = false;
 bool sim_is_done = false;
