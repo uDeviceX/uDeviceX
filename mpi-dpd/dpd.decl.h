@@ -36,6 +36,7 @@ namespace DPD {
       tmpstart = new DeviceBuffer<int>;
       tmpcount = new DeviceBuffer<int>;
       dcellstarts = new DeviceBuffer<int>;
+      hcellstarts = new PinnedHostBuffer<int>;
     };
 
     ~SendHalo() {
@@ -45,18 +46,19 @@ namespace DPD {
       delete tmpstart;
       delete tmpcount;
       delete dcellstarts;
+      delete hcellstarts;
     }
     
     DeviceBuffer<int> *scattered_entries, *tmpstart, *tmpcount, *dcellstarts;
     DeviceBuffer<Particle>* dbuf;
     PinnedHostBuffer<Particle>* hbuf;
+    PinnedHostBuffer<int>* hcellstarts;
     
     int expected;
-    PinnedHostBuffer<int> hcellstarts;
     void setup(int estimate, int nhalocells) {
       adjust(estimate);
       dcellstarts->resize(nhalocells + 1);
-      hcellstarts.resize(nhalocells + 1);
+      hcellstarts->resize(nhalocells + 1);
       tmpcount->resize(nhalocells + 1);
       tmpstart->resize(nhalocells + 1);
     }
@@ -67,7 +69,7 @@ namespace DPD {
       dbuf->resize(estimate);
       scattered_entries->resize(estimate);
     }
-  } sendhalos[26];
+  } *sendhalos[26];
 
   struct RecvHalo {
     RecvHalo() {
@@ -98,5 +100,5 @@ namespace DPD {
       dbuf->resize(estimate);
     }
 
-  } recvhalos[26];
+  } *recvhalos[26];
 }
