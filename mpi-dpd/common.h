@@ -1,9 +1,3 @@
-#ifdef NDEBUG
-#define cuda_printf(...)
-#else
-#define cuda_printf(...) do { printf(__VA_ARGS__); } while(0)
-#endif
-
 const float dt            = _dt;
 const float rbc_mass      = _rbc_mass;
 const float gamma_dot     = _gamma_dot;
@@ -12,7 +6,7 @@ const float kBT           = _kBT           / (rc*rc);
 const int numberdensity   = _numberdensity * (rc*rc*rc);
 
 extern float tend;
-extern bool walls, pushtheflow, doublepoiseuille, rbcs, hdf5field_dumps, hdf5part_dumps, is_mps_enabled, contactforces;
+extern bool walls, pushtheflow, doublepoiseuille, rbcs, hdf5field_dumps, hdf5part_dumps, contactforces;
 extern int steps_per_dump, steps_per_hdf5dump, wall_creation_stepid;
 
 /* [c]cuda [c]heck */
@@ -148,64 +142,6 @@ struct DeviceBuffer {
 };
 
 template<typename T>
-struct SimpleHostBuffer
-{
-  int capacity, size;
-
-  T * data;
-
-  explicit SimpleHostBuffer(int n = 0): capacity(0), size(0), data(NULL) { resize(n);}
-
-  ~SimpleHostBuffer()
-  {
-    if (data != NULL)
-      CC(cudaFreeHost(data));
-
-    data = NULL;
-  }
-
-  void resize(const int n)
-  {
-    size = n;
-
-    if (capacity >= n)
-      return;
-
-    if (data != NULL)
-      CC(cudaFreeHost(data));
-
-    const int conservative_estimate = (int)ceil(1.1 * n);
-    capacity = 128 * ((conservative_estimate + 129) / 128);
-
-    CC(cudaHostAlloc(&data, sizeof(T) * capacity, cudaHostAllocDefault));
-  }
-
-  void preserve_resize(const int n)
-  {
-    T * old = data;
-
-    const int oldsize = size;
-
-    size = n;
-
-    if (capacity >= n)
-      return;
-
-    const int conservative_estimate = (int)ceil(1.1 * n);
-    capacity = 128 * ((conservative_estimate + 129) / 128);
-
-    data = NULL;
-    CC(cudaHostAlloc(&data, sizeof(T) * capacity, cudaHostAllocDefault));
-
-    if (old != NULL)
-    {
-      memcpy(data, old, sizeof(T) * oldsize);
-      CC(cudaFreeHost(old));
-    }
-  }
-};
-
-template<typename T>
 struct PinnedHostBuffer
 {
   int capacity, size;
@@ -299,29 +235,22 @@ struct ExpectedMessageSizes
   int msgsizes[27];
 };
 
-void diagnostics(MPI_Comm comm, MPI_Comm cartcomm, Particle * _particles, int n, float dt, int idstep, Acceleration * _acc);
+void diagnostics(MPI_Comm comm, MPI_Comm cartcomm, Particle * _particles, int n,
+		 float dt, int idstep, Acceleration * _acc);
 
 class LocalComm
 {
   MPI_Comm local_comm, active_comm;
   int local_rank, local_nranks;
   int rank, nranks;
-
   char name[MPI_MAX_PROCESSOR_NAME];
   int len;
 
  public:
   LocalComm();
-
   void initialize(MPI_Comm active_comm);
-
   void barrier();
-
-  void print_particles(int np);
-
   int get_size() { return local_nranks; }
-
   int get_rank() { return local_rank; }
-
   MPI_Comm get_comm() { return local_comm;  }
 };

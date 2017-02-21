@@ -100,9 +100,3 @@ void LocalComm::initialize(MPI_Comm _active_comm)
     MPI_Comm_size(local_comm, &local_nranks);
 }
 
-void LocalComm::barrier()
-{
-    if (!is_mps_enabled || local_nranks == 1) return;
-
-    MC(MPI_Barrier(local_comm));
-}

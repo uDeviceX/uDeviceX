@@ -25,9 +25,6 @@ __global__ void minmaxob(const Particle * const d_data, float3 *d_min, float3 *d
     float3 mintemp1, maxtemp1;
     float3 mindef, maxdef;
     float temp2;
-    if(blockDim.x>MAXTHREADS) {
-        cuda_printf("Invalid number of threads per block: %d, must be <=%d\n",blockDim.x,MAXTHREADS);
-    }
     mindef.x=MAXV;   mindef.y=MAXV;   mindef.z=MAXV;
     maxdef.x=MINV;   maxdef.y=MINV;   maxdef.z=MINV;
     __syncthreads();
@@ -106,9 +103,6 @@ __global__ void minmaxmba(const Particle  *d_data, float3 *d_min, float3 *d_max,
     float3 mintemp1, maxtemp1;
     float3 mindef, maxdef;
     float temp2;
-    if(blockDim.x > MAXTHREADS) {
-        cuda_printf("Invalid number of threads per block: %d, must be <=%d\n",blockDim.x,MAXTHREADS);
-    }
     if (threadIdx.x==0) {
         my_blockId = atomicAdd( &(ptoblockds[which].g_block_id), 1 );
     }

@@ -31,6 +31,9 @@ namespace RedistPart {
   PinnedHostBuffer<int> *packsizes;
   DeviceBuffer<unsigned char> *compressed_cellcounts;
   DeviceBuffer<Particle> *remote_particles;
-  DeviceBuffer<uint> *scattered_indices;
-  DeviceBuffer<uchar4> *subindices, *subindices_remote;
+  
+  DeviceBuffer<uchar4>   *subindices_remote;
+  DeviceBuffer<uchar4>   *subindices;
+  DeviceBuffer<uint>     *scattered_indices;
+
 }

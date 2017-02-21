@@ -13,7 +13,7 @@
 
 float tend;
 bool walls, pushtheflow, doublepoiseuille, rbcs, hdf5field_dumps,
-    hdf5part_dumps, is_mps_enabled, adjust_message_sizes, contactforces;
+    hdf5part_dumps, contactforces;
 int steps_per_dump, steps_per_hdf5dump, wall_creation_stepid;
 
 float RBCx0, RBCp, RBCcq, RBCkb, RBCka, RBCkv, RBCgammaC, RBCkd, RBCtotArea,
@@ -44,11 +44,9 @@ int main(int argc, char **argv) {
   steps_per_dump = argp("-steps_per_dump").asInt(1000);
   steps_per_hdf5dump = argp("-steps_per_hdf5dump").asInt(2000);
   wall_creation_stepid = argp("-wall_creation_stepid").asInt(5000);
-  adjust_message_sizes = argp("-adjust_message_sizes").asBool(false);
   contactforces = argp("-contactforces").asBool(false);
   hdf5field_dumps = argp("-hdf5field_dumps").asBool(false);
 
-  // desired shear rate in DPD units
   RBCx0 = argp("-RBCx0").asDouble(0.5);
   RBCp = argp("-RBCp").asDouble(0.0045);
   RBCka = argp("-RBCka").asDouble(4900);
@@ -65,16 +63,6 @@ int main(int argc, char **argv) {
 
   CC(cudaSetDevice(0));
   CC(cudaDeviceReset());
-
-  {
-    is_mps_enabled = false;
-    const char *mps_variables[] = {"CRAY_CUDA_MPS", "CUDA_MPS",
-				   "CRAY_CUDA_PROXY", "CUDA_PROXY"};
-    for (int i = 0; i < 4; ++i)
-      is_mps_enabled |= getenv(mps_variables[i]) != NULL &&
-			atoi(getenv(mps_variables[i])) != 0;
-  }
-
   int nranks, rank;
   if (mpi_thread_safe) {
     // needed for the asynchronous data dumps
