@@ -1,5 +1,7 @@
 #include <mpi.h>
 #include <sys/resource.h>
+#include <utility>
+#include <cell-lists.h>
 #include <cuda-dpd.h>
 #include <cstdio>
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */

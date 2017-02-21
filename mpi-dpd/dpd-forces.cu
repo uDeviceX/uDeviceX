@@ -1,6 +1,8 @@
 #include "dpd-forces.h"
 #include <cstdio>
 #include <mpi.h>
+#include <utility>
+#include <cell-lists.h>
 #include <cuda-dpd.h>
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */
 #include "common.h"
