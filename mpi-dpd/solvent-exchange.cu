@@ -1,12 +1,7 @@
-#include <cstring>
-#include <algorithm>
-#include <cstdio>
 #include <mpi.h>
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */
 #include "common.h"
 #include "solvent-exchange.h"
-
-using namespace std;
 
 SolventExchange::SolventExchange(MPI_Comm _cartcomm, int basetag)
   : basetag(basetag), firstpost(true), nactive(26) {
@@ -503,11 +498,8 @@ void SolventExchange::_cancel_recv() {
     }
 
     for (int i = 0; i < nactive; ++i) MC(MPI_Cancel(recvreq + i));
-
     for (int i = 0; i < nactive; ++i) MC(MPI_Cancel(recvcellsreq + i));
-
     for (int i = 0; i < nactive; ++i) MC(MPI_Cancel(recvcountreq + i));
-
     firstpost = true;
   }
 }
