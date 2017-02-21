@@ -174,7 +174,7 @@ void sim_remove_bodies_from_wall(ParticleArray *coll) {
 void sim_create_walls() {
   int nsurvived = 0;
   ExpectedMessageSizes new_sizes;
-  wall_init(particles->pp.D, particles->S,
+  Wall::init(particles->pp.D, particles->S,
 	    nsurvived, new_sizes); wall_created = true;
   pa_resize(particles, nsurvived);
   clear_velocity(particles);
@@ -231,11 +231,11 @@ void sim_forces() {
   CC(cudaPeekAtLastError());
 
   if (rbcs && wall_created)
-    wall_interactions(rbcscoll->pp.D, pcount(), rbcscoll->aa.D,
+    Wall::interactions(rbcscoll->pp.D, pcount(), rbcscoll->aa.D,
 		       mainstream);
 
   if (wall_created)
-    wall_interactions(particles->pp.D, particles->S,
+    Wall::interactions(particles->pp.D, particles->S,
 		      particles->aa.D, mainstream);
 
   CC(cudaPeekAtLastError());
@@ -415,10 +415,10 @@ static void sim_update_and_bounce() {
 
   CC(cudaPeekAtLastError());
   if (wall_created) {
-    wall_bounce(particles->pp.D, particles->S, mainstream);
+    Wall::bounce(particles->pp.D, particles->S, mainstream);
 
     if (rbcs)
-      wall_bounce(rbcscoll->pp.D, pcount(), mainstream);
+      Wall::bounce(rbcscoll->pp.D, pcount(), mainstream);
   }
 
   CC(cudaPeekAtLastError());
@@ -442,7 +442,7 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   particles_pingpong[1] = new ParticleArray();
   if (rbcs) rbcscoll    = new ParticleArray();
 
-  trunk = new Logistic::KISS;
+  Wall::trunk = new Logistic::KISS;
 
   RedistPart::redist_part_init(cartcomm);
   
@@ -530,7 +530,7 @@ static void sim_lockstep() {
   CC(cudaPeekAtLastError());
 
   if (wall_created)
-    wall_interactions(particles->pp.D, particles->S,
+    Wall::interactions(particles->pp.D, particles->S,
 		       particles->aa.D,
 		       mainstream);
 
@@ -551,7 +551,7 @@ static void sim_lockstep() {
   CC(cudaPeekAtLastError());
   SolEx::post_a();
   upd_stg2_and_1(particles, false, driving_acceleration, mainstream);
-  if (wall_created) wall_bounce(particles->pp.D, particles->S, mainstream);
+  if (wall_created) Wall::bounce(particles->pp.D, particles->S, mainstream);
   CC(cudaPeekAtLastError());
   RedistPart::pack(particles->pp.D, particles->S, mainstream);
   RedistPart::send();
@@ -559,7 +559,7 @@ static void sim_lockstep() {
   CC(cudaPeekAtLastError());
 
   if (rbcscoll && wall_created)
-    wall_interactions(rbcscoll->pp.D, pcount(), rbcscoll->aa.D,
+    Wall::interactions(rbcscoll->pp.D, pcount(), rbcscoll->aa.D,
 		       mainstream);
   CC(cudaPeekAtLastError());
   SolEx::recv_a(mainstream);
@@ -656,5 +656,5 @@ void sim_close() {
   delete particles_pingpong[0];
   delete particles_pingpong[1];
 
-  delete trunk;
+  delete Wall::trunk;
 }

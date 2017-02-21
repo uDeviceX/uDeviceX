@@ -1,3 +1,20 @@
+enum {
+  XSIZE_WALLCELLS = 2 * XMARGIN_WALL + XSIZE_SUBDOMAIN,
+  YSIZE_WALLCELLS = 2 * YMARGIN_WALL + YSIZE_SUBDOMAIN,
+  ZSIZE_WALLCELLS = 2 * ZMARGIN_WALL + ZSIZE_SUBDOMAIN,
+
+  XTEXTURESIZE = 256,
+  _YTEXTURESIZE = ((YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL) * XTEXTURESIZE +
+		   XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL - 1) /
+  (XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL),
+
+  YTEXTURESIZE = 16 * ((_YTEXTURESIZE + 15) / 16),
+  _ZTEXTURESIZE = ((ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL) * XTEXTURESIZE +
+		   XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL - 1) /
+  (XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL),
+  ZTEXTURESIZE = 16 * ((_ZTEXTURESIZE + 15) / 16),
+};
+
 namespace WallKernels {
   texture<float, 3, cudaReadModeElementType> texSDF;
   texture<float4, 1, cudaReadModeElementType> texWallParticles;
@@ -145,7 +162,7 @@ namespace WallKernels {
     dst[pid] = make_float4(p.x[0], p.x[1], p.x[2], 0);
   }
 
-  __device__ void wall_vell(float x, float y, float z,
+  __device__ void vell(float x, float y, float z,
 			    float *vxw, float *vyw, float *vzw) {
     *vxw = gamma_dot * z; *vyw = 0; *vzw = 0; /* velocity of the wall;
 						 TODO: works only for
@@ -156,7 +173,7 @@ namespace WallKernels {
 			     float* vxp, float* vyp, float* vzp) {
     float vx = *vxp,  vy = *vyp, vz = *vzp;
 
-    float vxw, vyw, vzw; wall_vell(xw, yw, zw, &vxw, &vyw, &vzw);
+    float vxw, vyw, vzw; vell(xw, yw, zw, &vxw, &vyw, &vzw);
 
     vx -= vxw; vx = -vx; vx += vxw;
     vy -= vyw; vy = -vy; vy += vyw;
@@ -331,7 +348,7 @@ namespace WallKernels {
       float4 stmp0 = tex1Dfetch(texWallParticles, spid);
 
       float  xw = stmp0.uno,  yw = stmp0.due,  zw = stmp0.tre; /* wall particle */
-      float vxw, vyw, vzw; wall_vell(xw, yw, zw, &vxw, &vyw, &vzw);
+      float vxw, vyw, vzw; vell(xw, yw, zw, &vxw, &vyw, &vzw);
       float rnd = Logistic::mean0var1(seed, pid, spid);
 
       // check for particle types and compute the DPD force
@@ -462,306 +479,308 @@ struct FieldSampler {
   ~FieldSampler() { delete[] data; }
 };
 
-void wall_init(Particle *const p, const int n,
-	       int &nsurvived, ExpectedMessageSizes &new_sizes) {
-  wall_cells = new CellLists(XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL,
-			     YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL,
-			     ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL);
-  int myrank, dims[3], periods[3];
-  MC(MPI_Comm_rank(cartcomm, &myrank));
-  MC(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
-  float *field = new float[XTEXTURESIZE * YTEXTURESIZE * ZTEXTURESIZE];
-  FieldSampler sampler("sdf.dat", cartcomm);
-  int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
-  int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
-  int TEXTURESIZE[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
-  if (myrank == 0) printf("sampling the geometry file...\n");
-  {
-    float start[3], spacing[3];
-    for (int c = 0; c < 3; ++c) {
-      start[c] = sampler.N[c] * (coords[c] * L[c] - MARGIN[c]) /
-	(float)(dims[c] * L[c]);
-      spacing[c] = sampler.N[c] * (L[c] + 2 * MARGIN[c]) /
-	(float)(dims[c] * L[c]) / (float)TEXTURESIZE[c];
-    }
-    float amplitude_rescaling = (XSIZE_SUBDOMAIN /*+ 2 * XMARGIN_WALL*/) /
-      (sampler.extent[0] / dims[0]);
-    sampler.sample(start, spacing, TEXTURESIZE, amplitude_rescaling, field);
-  }
-
-  if (myrank == 0) printf("estimating geometry-based message sizes...\n");
-  {
-    for (int dz = -1; dz <= 1; ++dz)
-      for (int dy = -1; dy <= 1; ++dy)
-	for (int dx = -1; dx <= 1; ++dx) {
-	  int d[3] = {dx, dy, dz};
-	  int entry = (dx + 1) + 3 * ((dy + 1) + 3 * (dz + 1));
-	  int local_start[3] = {d[0] + (d[0] == 1) * (XSIZE_SUBDOMAIN - 2),
-				d[1] + (d[1] == 1) * (YSIZE_SUBDOMAIN - 2),
-				d[2] + (d[2] == 1) * (ZSIZE_SUBDOMAIN - 2)};
-	  int local_extent[3] = {1 * (d[0] != 0 ? 2 : XSIZE_SUBDOMAIN),
-				 1 * (d[1] != 0 ? 2 : YSIZE_SUBDOMAIN),
-				 1 * (d[2] != 0 ? 2 : ZSIZE_SUBDOMAIN)};
-
-	  float start[3], spacing[3];
-	  for (int c = 0; c < 3; ++c) {
-	    start[c] = (coords[c] * L[c] + local_start[c]) /
-	      (float)(dims[c] * L[c]) * sampler.N[c];
-	    spacing[c] = sampler.N[c] / (float)(dims[c] * L[c]);
-	  }
-	  int nextent = local_extent[0] * local_extent[1] * local_extent[2];
-	  float *data = new float[nextent];
-	  sampler.sample(start, spacing, local_extent, 1, data);
-	  int s = 0;
-	  for (int i = 0; i < nextent; ++i) s += (data[i] < 0);
-
-	  delete[] data;
-	  double avgsize =
-	    ceil(s * numberdensity /
-		 (double)pow(2, abs(d[0]) + abs(d[1]) + abs(d[2])));
-	  new_sizes.msgsizes[entry] = (int)avgsize;
-	}
-  }
-
-  if (hdf5field_dumps) {
-    if (myrank == 0) printf("H5 data dump of the geometry...\n");
-
-    float *walldata =
-      new float[XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN];
-
-    float start[3], spacing[3];
-    for (int c = 0; c < 3; ++c) {
-      start[c] = coords[c] * L[c] / (float)(dims[c] * L[c]) * sampler.N[c];
-      spacing[c] = sampler.N[c] / (float)(dims[c] * L[c]);
-    }
-
-    int size[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
-    float amplitude_rescaling = L[0] / (sampler.extent[0] / dims[0]);
-    sampler.sample(start, spacing, size, amplitude_rescaling, walldata);
-    H5FieldDump dump(cartcomm);
-    dump.dump_scalarfield(cartcomm, walldata, "wall");
-    delete[] walldata;
-  }
-
-  CC(cudaPeekAtLastError());
-  cudaChannelFormatDesc fmt = cudaCreateChannelDesc<float>();
-  CC(cudaMalloc3DArray
-     (&arrSDF, &fmt, make_cudaExtent(XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE)));
-
-  cudaMemcpy3DParms copyParams = {0};
-  copyParams.srcPtr = make_cudaPitchedPtr
-    ((void *)field, XTEXTURESIZE * sizeof(float), XTEXTURESIZE, YTEXTURESIZE);
-
-  copyParams.dstArray = arrSDF;
-  copyParams.extent = make_cudaExtent(XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE);
-  copyParams.kind = cudaMemcpyHostToDevice;
-  CC(cudaMemcpy3D(&copyParams));
-  delete[] field;
-
-  WallKernels::setup();
-
-  CC(cudaBindTextureToArray(WallKernels::texSDF, arrSDF, fmt));
-
-  if (myrank == 0) printf("carving out wall particles...\n");
-
-  thrust::device_vector<int> keys(n);
-
-  WallKernels::fill_keys<<<(n + 127) / 128, 128>>>
-    (p, n, thrust::raw_pointer_cast(&keys[0]));
-
-  CC(cudaPeekAtLastError());
-
-  thrust::sort_by_key(keys.begin(), keys.end(),
-		      thrust::device_ptr<Particle>(p));
-
-  nsurvived = thrust::count(keys.begin(), keys.end(), 0);
-
-  int nbelt = thrust::count(keys.begin() + nsurvived, keys.end(), 1);
-
-  thrust::device_vector<Particle> solid_local
-    (thrust::device_ptr<Particle>(p + nsurvived),
-     thrust::device_ptr<Particle>(p + nsurvived + nbelt));
-
-  if (hdf5part_dumps) {
-    int n = solid_local.size();
-
-    Particle *phost = new Particle[n];
-
-    CC(cudaMemcpy(phost, thrust::raw_pointer_cast(&solid_local[0]),
-		  sizeof(Particle) * n, cudaMemcpyDeviceToHost));
-
-    H5PartDump solid_dump("solid-walls.h5part", cartcomm, cartcomm);
-    solid_dump.dump(phost, n);
-
-    delete[] phost;
-  }
-
-  /*
-    can't use halo-exchanger class because of MARGIN HaloExchanger
-    halo(cartcomm, L, 666); DeviceBuffer<Particle> solid_remote;
-    halo.exchange(thrust::raw_pointer_cast(&solid_local[0]),
-    solid_local.size(), solid_remote);
-  */
-  if (myrank == 0) printf("fetching remote wall particles...\n");
-
-  DeviceBuffer<Particle> solid_remote;
-
-  {
-    thrust::host_vector<Particle> local = solid_local;
-
-    int dstranks[26], remsizes[26], recv_tags[26];
-    for (int i = 0; i < 26; ++i) {
-      int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
-
-      recv_tags[i] =
-	(2 - d[0]) % 3 + 3 * ((2 - d[1]) % 3 + 3 * ((2 - d[2]) % 3));
-
-      int coordsneighbor[3];
-      for (int c = 0; c < 3; ++c) coordsneighbor[c] = coords[c] + d[c];
-
-      MC(MPI_Cart_rank(cartcomm, coordsneighbor, dstranks + i));
-    }
-
-    // send local counts - receive remote counts
+namespace Wall {
+  void init(Particle *const p, const int n,
+		 int &nsurvived, ExpectedMessageSizes &new_sizes) {
+    wall_cells = new CellLists(XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL,
+			       YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL,
+			       ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL);
+    int myrank, dims[3], periods[3];
+    MC(MPI_Comm_rank(cartcomm, &myrank));
+    MC(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
+    float *field = new float[XTEXTURESIZE * YTEXTURESIZE * ZTEXTURESIZE];
+    FieldSampler sampler("sdf.dat", cartcomm);
+    int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
+    int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
+    int TEXTURESIZE[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
+    if (myrank == 0) printf("sampling the geometry file...\n");
     {
-      for (int i = 0; i < 26; ++i) remsizes[i] = -1;
-
-      MPI_Request reqrecv[26];
-      for (int i = 0; i < 26; ++i)
-	MC(MPI_Irecv(remsizes + i, 1, MPI_INTEGER, dstranks[i],
-			    123 + recv_tags[i], cartcomm, reqrecv + i));
-
-      int localsize = local.size();
-
-      MPI_Request reqsend[26];
-      for (int i = 0; i < 26; ++i)
-	MC(MPI_Isend(&localsize, 1, MPI_INTEGER, dstranks[i], 123 + i,
-			    cartcomm, reqsend + i));
-
-      MPI_Status statuses[26];
-      MC(MPI_Waitall(26, reqrecv, statuses));
-      MC(MPI_Waitall(26, reqsend, statuses));
-    }
-
-    std::vector<Particle> remote[26];
-
-    // send local data - receive remote data
-    {
-      for (int i = 0; i < 26; ++i) remote[i].resize(remsizes[i]);
-
-      MPI_Request reqrecv[26];
-      for (int i = 0; i < 26; ++i)
-	MC(MPI_Irecv(remote[i].data(), remote[i].size() * 6, MPI_FLOAT,
-			    dstranks[i], 321 + recv_tags[i], cartcomm,
-			    reqrecv + i));
-
-      MPI_Request reqsend[26];
-      for (int i = 0; i < 26; ++i)
-	MC(MPI_Isend(local.data(), local.size() * 6, MPI_FLOAT,
-			    dstranks[i], 321 + i, cartcomm, reqsend + i));
-
-      MPI_Status statuses[26];
-      MC(MPI_Waitall(26, reqrecv, statuses));
-      MC(MPI_Waitall(26, reqsend, statuses));
-    }
-
-    // select particles within my region [-L / 2 - MARGIN, +L / 2 + MARGIN]
-    std::vector<Particle> selected;
-    for (int i = 0; i < 26; ++i) {
-      int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
-
-      for (int j = 0; j < remote[i].size(); ++j) {
-	Particle p = remote[i][j];
-
-	for (int c = 0; c < 3; ++c) p.x[c] += d[c] * L[c];
-
-	bool inside = true;
-
-	for (int c = 0; c < 3; ++c)
-	  inside &=
-	    p.x[c] >= -L[c] / 2 - MARGIN[c] && p.x[c] < L[c] / 2 + MARGIN[c];
-
-	if (inside) selected.push_back(p);
+      float start[3], spacing[3];
+      for (int c = 0; c < 3; ++c) {
+	start[c] = sampler.N[c] * (coords[c] * L[c] - MARGIN[c]) /
+	  (float)(dims[c] * L[c]);
+	spacing[c] = sampler.N[c] * (L[c] + 2 * MARGIN[c]) /
+	  (float)(dims[c] * L[c]) / (float)TEXTURESIZE[c];
       }
+      float amplitude_rescaling = (XSIZE_SUBDOMAIN /*+ 2 * XMARGIN_WALL*/) /
+	(sampler.extent[0] / dims[0]);
+      sampler.sample(start, spacing, TEXTURESIZE, amplitude_rescaling, field);
     }
 
-    solid_remote.resize(selected.size());
-    CC(cudaMemcpy(solid_remote.D, selected.data(),
+    if (myrank == 0) printf("estimating geometry-based message sizes...\n");
+    {
+      for (int dz = -1; dz <= 1; ++dz)
+	for (int dy = -1; dy <= 1; ++dy)
+	  for (int dx = -1; dx <= 1; ++dx) {
+	    int d[3] = {dx, dy, dz};
+	    int entry = (dx + 1) + 3 * ((dy + 1) + 3 * (dz + 1));
+	    int local_start[3] = {d[0] + (d[0] == 1) * (XSIZE_SUBDOMAIN - 2),
+				  d[1] + (d[1] == 1) * (YSIZE_SUBDOMAIN - 2),
+				  d[2] + (d[2] == 1) * (ZSIZE_SUBDOMAIN - 2)};
+	    int local_extent[3] = {1 * (d[0] != 0 ? 2 : XSIZE_SUBDOMAIN),
+				   1 * (d[1] != 0 ? 2 : YSIZE_SUBDOMAIN),
+				   1 * (d[2] != 0 ? 2 : ZSIZE_SUBDOMAIN)};
+
+	    float start[3], spacing[3];
+	    for (int c = 0; c < 3; ++c) {
+	      start[c] = (coords[c] * L[c] + local_start[c]) /
+		(float)(dims[c] * L[c]) * sampler.N[c];
+	      spacing[c] = sampler.N[c] / (float)(dims[c] * L[c]);
+	    }
+	    int nextent = local_extent[0] * local_extent[1] * local_extent[2];
+	    float *data = new float[nextent];
+	    sampler.sample(start, spacing, local_extent, 1, data);
+	    int s = 0;
+	    for (int i = 0; i < nextent; ++i) s += (data[i] < 0);
+
+	    delete[] data;
+	    double avgsize =
+	      ceil(s * numberdensity /
+		   (double)pow(2, abs(d[0]) + abs(d[1]) + abs(d[2])));
+	    new_sizes.msgsizes[entry] = (int)avgsize;
+	  }
+    }
+
+    if (hdf5field_dumps) {
+      if (myrank == 0) printf("H5 data dump of the geometry...\n");
+
+      float *walldata =
+	new float[XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN];
+
+      float start[3], spacing[3];
+      for (int c = 0; c < 3; ++c) {
+	start[c] = coords[c] * L[c] / (float)(dims[c] * L[c]) * sampler.N[c];
+	spacing[c] = sampler.N[c] / (float)(dims[c] * L[c]);
+      }
+
+      int size[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
+      float amplitude_rescaling = L[0] / (sampler.extent[0] / dims[0]);
+      sampler.sample(start, spacing, size, amplitude_rescaling, walldata);
+      H5FieldDump dump(cartcomm);
+      dump.dump_scalarfield(cartcomm, walldata, "wall");
+      delete[] walldata;
+    }
+
+    CC(cudaPeekAtLastError());
+    cudaChannelFormatDesc fmt = cudaCreateChannelDesc<float>();
+    CC(cudaMalloc3DArray
+       (&arrSDF, &fmt, make_cudaExtent(XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE)));
+
+    cudaMemcpy3DParms copyParams = {0};
+    copyParams.srcPtr = make_cudaPitchedPtr
+      ((void *)field, XTEXTURESIZE * sizeof(float), XTEXTURESIZE, YTEXTURESIZE);
+
+    copyParams.dstArray = arrSDF;
+    copyParams.extent = make_cudaExtent(XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE);
+    copyParams.kind = cudaMemcpyHostToDevice;
+    CC(cudaMemcpy3D(&copyParams));
+    delete[] field;
+
+    WallKernels::setup();
+
+    CC(cudaBindTextureToArray(WallKernels::texSDF, arrSDF, fmt));
+
+    if (myrank == 0) printf("carving out wall particles...\n");
+
+    thrust::device_vector<int> keys(n);
+
+    WallKernels::fill_keys<<<(n + 127) / 128, 128>>>
+      (p, n, thrust::raw_pointer_cast(&keys[0]));
+
+    CC(cudaPeekAtLastError());
+
+    thrust::sort_by_key(keys.begin(), keys.end(),
+			thrust::device_ptr<Particle>(p));
+
+    nsurvived = thrust::count(keys.begin(), keys.end(), 0);
+
+    int nbelt = thrust::count(keys.begin() + nsurvived, keys.end(), 1);
+
+    thrust::device_vector<Particle> solid_local
+      (thrust::device_ptr<Particle>(p + nsurvived),
+       thrust::device_ptr<Particle>(p + nsurvived + nbelt));
+
+    if (hdf5part_dumps) {
+      int n = solid_local.size();
+
+      Particle *phost = new Particle[n];
+
+      CC(cudaMemcpy(phost, thrust::raw_pointer_cast(&solid_local[0]),
+		    sizeof(Particle) * n, cudaMemcpyDeviceToHost));
+
+      H5PartDump solid_dump("solid-walls.h5part", cartcomm, cartcomm);
+      solid_dump.dump(phost, n);
+
+      delete[] phost;
+    }
+
+    /*
+      can't use halo-exchanger class because of MARGIN HaloExchanger
+      halo(cartcomm, L, 666); DeviceBuffer<Particle> solid_remote;
+      halo.exchange(thrust::raw_pointer_cast(&solid_local[0]),
+      solid_local.size(), solid_remote);
+    */
+    if (myrank == 0) printf("fetching remote wall particles...\n");
+
+    DeviceBuffer<Particle> solid_remote;
+
+    {
+      thrust::host_vector<Particle> local = solid_local;
+
+      int dstranks[26], remsizes[26], recv_tags[26];
+      for (int i = 0; i < 26; ++i) {
+	int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
+
+	recv_tags[i] =
+	  (2 - d[0]) % 3 + 3 * ((2 - d[1]) % 3 + 3 * ((2 - d[2]) % 3));
+
+	int coordsneighbor[3];
+	for (int c = 0; c < 3; ++c) coordsneighbor[c] = coords[c] + d[c];
+
+	MC(MPI_Cart_rank(cartcomm, coordsneighbor, dstranks + i));
+      }
+
+      // send local counts - receive remote counts
+      {
+	for (int i = 0; i < 26; ++i) remsizes[i] = -1;
+
+	MPI_Request reqrecv[26];
+	for (int i = 0; i < 26; ++i)
+	  MC(MPI_Irecv(remsizes + i, 1, MPI_INTEGER, dstranks[i],
+		       123 + recv_tags[i], cartcomm, reqrecv + i));
+
+	int localsize = local.size();
+
+	MPI_Request reqsend[26];
+	for (int i = 0; i < 26; ++i)
+	  MC(MPI_Isend(&localsize, 1, MPI_INTEGER, dstranks[i], 123 + i,
+		       cartcomm, reqsend + i));
+
+	MPI_Status statuses[26];
+	MC(MPI_Waitall(26, reqrecv, statuses));
+	MC(MPI_Waitall(26, reqsend, statuses));
+      }
+
+      std::vector<Particle> remote[26];
+
+      // send local data - receive remote data
+      {
+	for (int i = 0; i < 26; ++i) remote[i].resize(remsizes[i]);
+
+	MPI_Request reqrecv[26];
+	for (int i = 0; i < 26; ++i)
+	  MC(MPI_Irecv(remote[i].data(), remote[i].size() * 6, MPI_FLOAT,
+		       dstranks[i], 321 + recv_tags[i], cartcomm,
+		       reqrecv + i));
+
+	MPI_Request reqsend[26];
+	for (int i = 0; i < 26; ++i)
+	  MC(MPI_Isend(local.data(), local.size() * 6, MPI_FLOAT,
+		       dstranks[i], 321 + i, cartcomm, reqsend + i));
+
+	MPI_Status statuses[26];
+	MC(MPI_Waitall(26, reqrecv, statuses));
+	MC(MPI_Waitall(26, reqsend, statuses));
+      }
+
+      // select particles within my region [-L / 2 - MARGIN, +L / 2 + MARGIN]
+      std::vector<Particle> selected;
+      for (int i = 0; i < 26; ++i) {
+	int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
+
+	for (int j = 0; j < remote[i].size(); ++j) {
+	  Particle p = remote[i][j];
+
+	  for (int c = 0; c < 3; ++c) p.x[c] += d[c] * L[c];
+
+	  bool inside = true;
+
+	  for (int c = 0; c < 3; ++c)
+	    inside &=
+	      p.x[c] >= -L[c] / 2 - MARGIN[c] && p.x[c] < L[c] / 2 + MARGIN[c];
+
+	  if (inside) selected.push_back(p);
+	}
+      }
+
+      solid_remote.resize(selected.size());
+      CC(cudaMemcpy(solid_remote.D, selected.data(),
+		    sizeof(Particle) * solid_remote.S,
+		    cudaMemcpyHostToDevice));
+    }
+
+    solid_size = solid_local.size() + solid_remote.S;
+
+    Particle *solid;
+    CC(cudaMalloc(&solid, sizeof(Particle) * solid_size));
+    CC(cudaMemcpy(solid, thrust::raw_pointer_cast(&solid_local[0]),
+		  sizeof(Particle) * solid_local.size(),
+		  cudaMemcpyDeviceToDevice));
+    CC(cudaMemcpy(solid + solid_local.size(), solid_remote.D,
 		  sizeof(Particle) * solid_remote.S,
-		  cudaMemcpyHostToDevice));
+		  cudaMemcpyDeviceToDevice));
+
+    if (solid_size > 0) wall_cells->build(solid, solid_size, 0);
+
+    CC(cudaMalloc(&solid4, sizeof(float4) * solid_size));
+
+    if (myrank == 0) printf("consolidating wall particles...\n");
+
+    if (solid_size > 0)
+      WallKernels::strip_solid4<<<(solid_size + 127) / 128, 128>>>
+	(solid, solid_size, solid4);
+
+    CC(cudaFree(solid));
+
+    CC(cudaPeekAtLastError());
   }
 
-  solid_size = solid_local.size() + solid_remote.S;
+  void bounce(Particle *const p, const int n, cudaStream_t stream) {
+    if (n > 0)
+      WallKernels::bounce<<<(n + 127) / 128, 128, 0, stream>>>
+	((float2 *)p, n, dt);
 
-  Particle *solid;
-  CC(cudaMalloc(&solid, sizeof(Particle) * solid_size));
-  CC(cudaMemcpy(solid, thrust::raw_pointer_cast(&solid_local[0]),
-		sizeof(Particle) * solid_local.size(),
-		cudaMemcpyDeviceToDevice));
-  CC(cudaMemcpy(solid + solid_local.size(), solid_remote.D,
-		sizeof(Particle) * solid_remote.S,
-		cudaMemcpyDeviceToDevice));
-
-  if (solid_size > 0) wall_cells->build(solid, solid_size, 0);
-
-  CC(cudaMalloc(&solid4, sizeof(float4) * solid_size));
-
-  if (myrank == 0) printf("consolidating wall particles...\n");
-
-  if (solid_size > 0)
-    WallKernels::strip_solid4<<<(solid_size + 127) / 128, 128>>>
-      (solid, solid_size, solid4);
-
-  CC(cudaFree(solid));
-
-  CC(cudaPeekAtLastError());
-}
-
-void wall_bounce(Particle *const p, const int n, cudaStream_t stream) {
-  if (n > 0)
-    WallKernels::bounce<<<(n + 127) / 128, 128, 0, stream>>>
-      ((float2 *)p, n, dt);
-
-  CC(cudaPeekAtLastError());
-}
-
-void wall_interactions(const Particle *const p, const int n,
-		       Acceleration *const acc,
-		       cudaStream_t stream) {
-  // cellsstart and cellscount IGNORED for now
-
-  if (n > 0 && solid_size > 0) {
-    size_t textureoffset;
-    CC(cudaBindTexture(&textureoffset,
-		       &WallKernels::texWallParticles, solid4,
-		       &WallKernels::texWallParticles.channelDesc,
-		       sizeof(float4) * solid_size));
-
-    CC(cudaBindTexture(&textureoffset,
-		       &WallKernels::texWallCellStart, wall_cells->start,
-		       &WallKernels::texWallCellStart.channelDesc,
-		       sizeof(int) * wall_cells->ncells));
-
-    CC(cudaBindTexture(&textureoffset,
-		       &WallKernels::texWallCellCount, wall_cells->count,
-		       &WallKernels::texWallCellCount.channelDesc,
-		       sizeof(int) * wall_cells->ncells));
-
-    WallKernels::
-      interactions_3tpp<<<(3 * n + 127) / 128, 128, 0, stream>>>
-      ((float2 *)p, n, solid_size, (float *)acc, trunk->get_float());
-
-    CC(cudaUnbindTexture(WallKernels::texWallParticles));
-    CC(cudaUnbindTexture(WallKernels::texWallCellStart));
-    CC(cudaUnbindTexture(WallKernels::texWallCellCount));
+    CC(cudaPeekAtLastError());
   }
 
-  CC(cudaPeekAtLastError());
-}
+  void interactions(const Particle *const p, const int n,
+			 Acceleration *const acc,
+			 cudaStream_t stream) {
+    // cellsstart and cellscount IGNORED for now
 
-void wall_close () {
-  CC(cudaUnbindTexture(WallKernels::texSDF));
-  CC(cudaFreeArray(arrSDF));
+    if (n > 0 && solid_size > 0) {
+      size_t textureoffset;
+      CC(cudaBindTexture(&textureoffset,
+			 &WallKernels::texWallParticles, solid4,
+			 &WallKernels::texWallParticles.channelDesc,
+			 sizeof(float4) * solid_size));
 
-  delete wall_cells;
+      CC(cudaBindTexture(&textureoffset,
+			 &WallKernels::texWallCellStart, wall_cells->start,
+			 &WallKernels::texWallCellStart.channelDesc,
+			 sizeof(int) * wall_cells->ncells));
+
+      CC(cudaBindTexture(&textureoffset,
+			 &WallKernels::texWallCellCount, wall_cells->count,
+			 &WallKernels::texWallCellCount.channelDesc,
+			 sizeof(int) * wall_cells->ncells));
+
+      WallKernels::
+	interactions_3tpp<<<(3 * n + 127) / 128, 128, 0, stream>>>
+	((float2 *)p, n, solid_size, (float *)acc, trunk->get_float());
+
+      CC(cudaUnbindTexture(WallKernels::texWallParticles));
+      CC(cudaUnbindTexture(WallKernels::texWallCellStart));
+      CC(cudaUnbindTexture(WallKernels::texWallCellCount));
+    }
+
+    CC(cudaPeekAtLastError());
+  }
+
+  void close () {
+    CC(cudaUnbindTexture(WallKernels::texSDF));
+    CC(cudaFreeArray(arrSDF));
+
+    delete wall_cells;
+  }
 }
