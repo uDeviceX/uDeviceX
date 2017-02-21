@@ -152,17 +152,13 @@ public:
 
   ~PinnedHostBuffer() {
     if (D != NULL) CC(cudaFreeHost(D));
-
     D = NULL;
   }
 
   void resize(const int n) {
     S = n;
-
     if (capacity >= n) return;
-
     if (D != NULL) CC(cudaFreeHost(D));
-
     const int conservative_estimate = (int)ceil(1.1 * n);
     capacity = 128 * ((conservative_estimate + 129) / 128);
 
@@ -173,24 +169,17 @@ public:
 
   void preserve_resize(const int n) {
     T *old = D;
-
     const int oldS = S;
-
     S = n;
-
     if (capacity >= n) return;
-
     const int conservative_estimate = (int)ceil(1.1 * n);
     capacity = 128 * ((conservative_estimate + 129) / 128);
-
     D = NULL;
     CC(cudaHostAlloc(&D, sizeof(T) * capacity, cudaHostAllocMapped));
-
     if (old != NULL) {
       CC(cudaMemcpy(D, old, sizeof(T) * oldS, cudaMemcpyHostToHost));
       CC(cudaFreeHost(old));
     }
-
     CC(cudaHostGetDevicePointer(&DP, D, 0));
   }
 };
