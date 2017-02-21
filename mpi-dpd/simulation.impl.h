@@ -434,14 +434,12 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
 
   xyzouvwo    = new DeviceBuffer<float4 >;
   xyzo_half = new DeviceBuffer<ushort4>;
-  particles_pingpong[0] = new ParticleArray();
-  particles_pingpong[1] = new ParticleArray();
   if (rbcs) rbcscoll    = new ParticleArray();
 
   Wall::trunk = new Logistic::KISS;
 
   RedistPart::redist_part_init(Cont::cartcomm);
-  
+
   nsteps = (int)(tend / dt);
 
   MC(MPI_Comm_size(activecomm, &Cont::nranks));
@@ -455,12 +453,13 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   Cont::globalextent = make_float3(dims[0] * XSIZE_SUBDOMAIN,
 				   dims[1] * YSIZE_SUBDOMAIN,
 				   dims[2] * ZSIZE_SUBDOMAIN);
-  particles =     particles_pingpong[0];
-  newparticles =  particles_pingpong[1];
+  particles =     new ParticleArray;
+  newparticles =  new ParticleArray;
 
   vector<Particle> ic = _ic();
-  for (int c = 0; c < 2; ++c) Cont::pa_resize(particles_pingpong[c], ic.size());
-  
+  Cont::pa_resize(particles   , ic.size());
+  Cont::pa_resize(newparticles, ic.size());
+
   CC(cudaMemcpy(particles->pp.D, &ic.front(),
 			sizeof(Particle) * ic.size(),
 			cudaMemcpyHostToDevice));
@@ -644,9 +643,9 @@ void sim_close() {
   delete xyzouvwo;
   delete xyzo_half;
 
-  delete particles_pingpong[0];
-  delete particles_pingpong[1];
-
   delete Wall::trunk;
+
+  delete particles;
+  delete newparticles;
 }
 }
