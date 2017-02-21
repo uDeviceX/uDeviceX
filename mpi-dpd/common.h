@@ -108,11 +108,6 @@ template <typename T> struct DeviceBuffer {
     D = NULL;
   }
 
-  void dispose() {
-    if (D != NULL) CC(cudaFree(D));
-    D = NULL;
-  }
-
   void resize(int n) {
     S = n;
     if (C >= n) return;
