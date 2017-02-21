@@ -33,10 +33,10 @@ void init(MPI_Comm _cartcomm) {
     local[i].update();
 
     CC(cudaMemcpyToSymbol(SolutePUP::ccapacities,
-			  &local[i].scattered_indices.capacity, sizeof(int),
+			  &local[i].scattered_indices->capacity, sizeof(int),
 			  sizeof(int) * i, cudaMemcpyHostToDevice));
     CC(cudaMemcpyToSymbol(SolutePUP::scattered_indices,
-			  &local[i].scattered_indices.D, sizeof(int *),
+			  &local[i].scattered_indices->D, sizeof(int *),
 			  sizeof(int *) * i, cudaMemcpyHostToDevice));
   }
 
@@ -51,20 +51,6 @@ void init(MPI_Comm _cartcomm) {
 }
 
 void _pack_attempt(cudaStream_t stream) {
-#ifndef NDEBUG
-  CC(cudaMemsetAsync(packbuf->D, 0xff, sizeof(Particle) * packbuf->capacity,
-		     stream));
-  memset(host_packbuf->data, 0xff, sizeof(Particle) * packbuf->capacity);
-
-  for (int i = 0; i < 26; ++i) {
-    CC(cudaMemsetAsync(local[i].scattered_indices.D, 0x8f,
-		       sizeof(int) * local[i].scattered_indices.capacity,
-		       stream));
-    CC(cudaMemsetAsync(local[i].result.data, 0xff,
-		       sizeof(Acceleration) * local[i].result.capacity,
-		       stream));
-  }
-#endif
   CC(cudaPeekAtLastError());
 
   if (packscount->S)
@@ -179,7 +165,7 @@ void post_p(cudaStream_t stream, cudaStream_t downloadstream) {
 				 cudaMemcpyHostToDevice, stream));
 
       int *newindices[26];
-      for (int i = 0; i < 26; ++i) newindices[i] = local[i].scattered_indices.D;
+      for (int i = 0; i < 26; ++i) newindices[i] = local[i].scattered_indices->D;
 
       CC(cudaMemcpyToSymbolAsync(SolutePUP::scattered_indices, newindices,
 				 sizeof(newindices), 0, cudaMemcpyHostToDevice,
@@ -265,16 +251,6 @@ void recv_p(cudaStream_t uploadstream) {
 
     remote[i].pmessage.resize(max(1, count));
     remote[i].preserve_resize(count);
-
-#ifndef NDEBUG
-    CC(cudaMemsetAsync(remote[i].dstate.D, 0xff,
-		       sizeof(Particle) * remote[i].dstate.capacity,
-		       uploadstream));
-    CC(cudaMemsetAsync(remote[i].result.data, 0xff,
-		       sizeof(Acceleration) * remote[i].result.capacity,
-		       uploadstream));
-#endif
-
     MPI_Status status;
 
 #ifdef _DUMBCRAY_
@@ -350,7 +326,7 @@ void recv_a(cudaStream_t stream) {
   {
     float *recvbags[26];
 
-    for (int i = 0; i < 26; ++i) recvbags[i] = (float *)local[i].result.devptr;
+    for (int i = 0; i < 26; ++i) recvbags[i] = (float *)local[i].result->devptr;
 
     CC(cudaMemcpyToSymbolAsync(SolutePUP::recvbags, recvbags, sizeof(recvbags),
 			       0, cudaMemcpyHostToDevice, stream));

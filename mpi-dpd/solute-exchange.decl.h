@@ -38,15 +38,23 @@ public:
 class LocalHalo {
   TimeSeriesWindow history;
 public:
-  DeviceBuffer<int> scattered_indices;
-  PinnedHostBuffer<Acceleration> result;
-  void resize(int n) {
-    scattered_indices.resize(n);
-    result.resize(n);
+  LocalHalo() {
+    scattered_indices = new DeviceBuffer<int>;
+    result            = new PinnedHostBuffer<Acceleration>;
   }
-  void update() { history.update(result.size);}
+  ~LocalHalo() {
+    delete scattered_indices;
+    delete result;
+  }
+  DeviceBuffer<int>* scattered_indices;
+  PinnedHostBuffer<Acceleration>* result;
+  void resize(int n) {
+    scattered_indices->resize(n);
+    result->resize(n);
+  }
+  void update() { history.update(result->size);}
   int expected() const { return (int)ceil(history.max() * 1.1);}
-  int capacity() const { return scattered_indices.capacity;}
+  int capacity() const { return scattered_indices->capacity;}
 };
 
 namespace SolEx {
@@ -103,7 +111,7 @@ namespace SolEx {
     for (int i = 0; i < 26; ++i) {
       MPI_Request reqA;
 
-      MC(MPI_Irecv(local[i].result.data, local[i].result.size * 3,
+      MC(MPI_Irecv(local[i].result->data, local[i].result->size * 3,
 			  MPI_FLOAT, dstranks[i], TAGBASE_A + recv_tags[i],
 			  cartcomm, &reqA));
       reqrecvA.push_back(reqA);
