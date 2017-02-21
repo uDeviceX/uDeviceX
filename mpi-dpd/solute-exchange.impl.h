@@ -334,9 +334,7 @@ namespace SolEx {
 
     for (int i = 0; i < 26; ++i) local[i]->update();
 
-#ifndef _DUMBCRAY_
     _postrecvP();
-#endif
   }
 
   void post_a() {
