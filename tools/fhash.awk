@@ -9,7 +9,7 @@
 
 BEGIN {
     if (length(tol) == 0) tol = 3 # default level of tolerance
-    fmt =  "%." tol "g"
+    fmt =  "%." tol "f"
 }
 
 function hash(e,  h, ftm) {
