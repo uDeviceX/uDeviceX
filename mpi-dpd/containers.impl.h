@@ -266,9 +266,9 @@ void setup(ParticleArray* pa, const char *path2ic) {
 void remove(ParticleArray* pa, int *e, int ne) {
   /* remove RBCs with indexes in `e' */
   bool GO = false, STAY = true;
-  int ip, i0, i1, nv = nvertices;
-  vector<bool> m(ncells, STAY);
-  for (ip = 0; ip < ne; ip++) m[e[ip]] = GO;
+  int ie, i0, i1, nv = nvertices;
+  vector<bool> m(Cont::ncells, STAY);
+  for (ie = 0; ie < ne; ie++) m[e[ie]] = GO;
 
   for (i0 = i1 = 0; i0 < ncells; i0++)
     if (m[i0] == STAY) {
