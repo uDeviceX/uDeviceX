@@ -264,6 +264,8 @@ void setup(ParticleArray* pa, const char *path2ic) {
       _initialize((float *)(pa->pp.D + nvertices * i), good[i].transform);
 }
 
+/* NB: preserves `pp' but messes up `aa' */
+#define rbc_remove_resize(pp, aa, e, ne) Cont::rbc_remove(pp, e, ne), rbc_resize(aa, Cont::ncells)
 void remove(ParticleArray* pa, int *e, int ne) {
   /* remove RBCs with indexes in `e' */
   bool GO = false, STAY = true;
