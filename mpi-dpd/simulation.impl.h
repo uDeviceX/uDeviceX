@@ -102,12 +102,12 @@ static void sim_redistribute() {
 
   CC(cudaPeekAtLastError());
 
-  if (Cont::ncells)
+  if (rbcs)
     RedistRBC::extent(rbcscoll->pp.D, Cont::ncells, mainstream);
 
   RedistPart::send();
 
-  if (Cont::ncells)
+  if (rbcs)
     RedistRBC::pack_sendcount(rbcscoll->pp.D, Cont::ncells, mainstream);
 
   RedistPart::bulk(particles->pp.S, cells->start, cells->count, mainstream);
@@ -142,7 +142,8 @@ static void sim_redistribute() {
 }
 
 void sim_remove_bodies_from_wall() {
-  if (!rbcscoll || !Cont::ncells) return;
+  if (!rbcs)         return;
+  if (!Cont::ncells) return;
   DeviceBuffer<int> marks(Cont::pcount());
 
   WallKernels::fill_keys<<<(Cont::pcount() + 127) / 128, 128>>>
@@ -434,7 +435,7 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
 
   xyzouvwo    = new DeviceBuffer<float4 >;
   xyzo_half = new DeviceBuffer<ushort4>;
-  if (rbcs) rbcscoll    = new ParticleArray();
+  if (rbcs) rbcscoll    = new ParticleArray;
 
   Wall::trunk = new Logistic::KISS;
 
@@ -498,7 +499,7 @@ static void sim_lockstep() {
 		       particles->aa.D, cells->start, cells->count);
   std::vector<ParticlesWrap> wsolutes;
 
-  if (Cont::ncells)
+  if (rbcs)
     wsolutes.push_back(
 	ParticlesWrap(rbcscoll->pp.D, Cont::pcount(), rbcscoll->aa.D));
 
@@ -506,7 +507,7 @@ static void sim_lockstep() {
   SolEx::bind_solutes(wsolutes);
   Cont::clear_acc(particles, mainstream);
 
-  if (Cont::ncells) Cont::clear_acc(rbcscoll, mainstream);
+  if (rbcs) Cont::clear_acc(rbcscoll, mainstream);
 
   SolEx::pack_p(mainstream);
   DPD::pack(particles->pp.D, particles->pp.S, cells->start, cells->count,
@@ -536,7 +537,7 @@ static void sim_lockstep() {
   if (contactforces) Contact::bulk(wsolutes, mainstream);
   CC(cudaPeekAtLastError());
 
-  if (Cont::ncells)
+  if (rbcs)
     CudaRBC::forces_nohost(mainstream, Cont::ncells,
 			   (float *)rbcscoll->pp.D, (float *)rbcscoll->aa.D);
   CC(cudaPeekAtLastError());
@@ -549,15 +550,15 @@ static void sim_lockstep() {
   RedistPart::bulk(particles->pp.S, cells->start, cells->count, mainstream);
   CC(cudaPeekAtLastError());
 
-  if (rbcscoll && wall_created)
+  if (rbcs && wall_created)
     Wall::interactions(rbcscoll->pp.D, Cont::pcount(), rbcscoll->aa.D,
 		       mainstream);
   CC(cudaPeekAtLastError());
   SolEx::recv_a(mainstream);
-  if (Cont::ncells) Cont::upd_stg2_and_1(rbcscoll, true, driving_acceleration, mainstream);
+  if (rbcs) Cont::upd_stg2_and_1(rbcscoll, true, driving_acceleration, mainstream);
   int newnp = RedistPart::recv_count(mainstream);
   CC(cudaPeekAtLastError());
-  if (Cont::ncells) {
+  if (rbcs) {
     RedistRBC::extent(rbcscoll->pp.D, Cont::ncells, mainstream);
     RedistRBC::pack_sendcount(rbcscoll->pp.D, Cont::ncells, mainstream);
   }
@@ -570,12 +571,11 @@ static void sim_lockstep() {
   CC(cudaPeekAtLastError());
   swap(particles, newparticles);
   int nrbcs;
-  if (Cont::ncells) nrbcs = RedistRBC::post();
-
-  if (Cont::ncells) Cont::rbc_resize(rbcscoll, nrbcs);
+  if (rbcs) nrbcs = RedistRBC::post();
+  if (nrbcs) Cont::rbc_resize(rbcscoll, nrbcs);
   CC(cudaPeekAtLastError());
-  if (Cont::ncells)
-    RedistRBC::unpack(rbcscoll->pp.D, Cont::ncells, mainstream);
+  if (rbcs) RedistRBC::unpack(rbcscoll->pp.D, Cont::ncells, mainstream);
+    
   CC(cudaPeekAtLastError());
 }
 
@@ -585,7 +585,7 @@ void sim_run() {
   sim_forces();
   if (!walls && pushtheflow) driving_acceleration = hydrostatic_a;
   Cont::upd_stg1(particles, false, driving_acceleration, mainstream);
-  if (Cont::ncells) Cont::upd_stg1(rbcscoll, true, driving_acceleration, mainstream);
+  if (rbcs) Cont::upd_stg1(rbcscoll, true, driving_acceleration, mainstream);
 
   int it;
   for (it = 0; it < nsteps; ++it) {
@@ -625,15 +625,13 @@ void sim_close() {
   CC(cudaStreamDestroy(downloadstream));
 
   RedistPart::redist_part_close();
-
-  if (rbcs) delete rbcscoll;
-
+  delete rbcscoll;
   Contact::close();
   delete cells;
   SolEx::close();
   FSI::close();
   DPD::close();
-  if (rbcs) RedistRBC::redistribute_rbcs_close();
+  RedistRBC::redistribute_rbcs_close();
 
   delete particles_datadump;
   delete accelerations_datadump;
