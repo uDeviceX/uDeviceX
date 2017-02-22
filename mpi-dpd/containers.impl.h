@@ -191,8 +191,8 @@ void clear_velocity(ParticleArray* pa) {
     ParticleKernels::clear_velocity<<<(pa->pp.S + 127) / 128, 128 >>>(pa->pp.D, pa->pp.S);
 }
 
-#define     resize2(b1, b2, n) b1.resize(n), b2.resize(n)
-#define rbc_resize2(b1, b2, n) resize2(b1, b2, Cont::nvertices*n)
+#define     resize2(b1, b2, n) b1.resize(n), (b2).resize(n)
+#define rbc_resize2(b1, b2, n) Cont::ncells = (n), resize2(b1, b2, Cont::nvertices*(n))
 
 void rbc_init() {
   ncells = 0;
@@ -258,8 +258,8 @@ void setup(ParticleArray* pa, const char *path2ic) {
 	}
     }
 
-    ncells = good.size(); rbc_resize2(pa->pp, pa->aa, ncells);
-    for(int i = 0; i < ncells; ++i)
+    rbc_resize2(pa->pp, pa->aa, good.size());
+    for(int i = 0; i < good.size(); ++i)
       _initialize((float *)(pa->pp.D + nvertices * i), good[i].transform);
 }
 
