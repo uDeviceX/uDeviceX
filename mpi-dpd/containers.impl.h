@@ -266,7 +266,7 @@ void setup(ParticleArray* pa, const char *path2ic) {
 
 /* NB: preserves order of `pp' but messes up `aa' */
 #define rbc_remove_resize(pp, aa, e, ne) Cont::rbc_remove(pp, e, ne), rbc_resize(aa, Cont::ncells)
-void rbc_remove(ParticleArray* pa, int *e, int ne) {
+  void rbc_remove(DeviceBuffer<Particle>*  pp, DeviceBuffer<Acceleration>* aa, int *e, int ne) {
   /* remove RBCs with indexes in `e' */
   bool GO = false, STAY = true;
   int ie, i0, i1, nv = nvertices;
@@ -275,15 +275,15 @@ void rbc_remove(ParticleArray* pa, int *e, int ne) {
 
   for (i0 = i1 = 0; i0 < ncells; i0++)
     if (m[i0] == STAY) {
-      CC(cudaMemcpy(pa->pp.D + nv * i1,
-		    pa->pp.D + nv * i0,
+      CC(cudaMemcpy(pp->D + nv * i1,
+		    pp->D + nv * i0,
 		    sizeof(Particle) * nv,
 		    cudaMemcpyDeviceToDevice));
       i1++;
     }
   int nstay = i1;
-  rbc_resize(pa->pp, nstay);
-  rbc_resize(pa->aa, nstay);
+  rbc_resize(*pp, nstay);
+  rbc_resize(*aa, nstay);
 }
 
 int  pcount() {return ncells * nvertices;}

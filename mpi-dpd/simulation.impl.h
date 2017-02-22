@@ -162,7 +162,7 @@ void sim_remove_bodies_from_wall() {
     if (!valid) tokill.push_back(i);
   }
 
-  Cont::rbc_remove(rbcscoll, &tokill.front(), tokill.size());
+  Cont::rbc_remove(&rbcscoll->pp, &rbcscoll->aa, &tokill.front(), tokill.size());
   Cont::clear_velocity(rbcscoll);
 
   CC(cudaPeekAtLastError());
