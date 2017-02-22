@@ -265,21 +265,18 @@ void setup(ParticleArray* pa, const char *path2ic) {
 
 void remove(ParticleArray* pa, int *entries, int nentries) {
     std::vector<bool > marks(ncells, true);
-
-    for(int i = 0; i < nentries; ++i)
-	marks[entries[i]] = false;
-
     std::vector< int > survivors;
-    for(int i = 0; i < ncells; ++i)
-	if (marks[i])
-	    survivors.push_back(i);
+
+    for(int i = 0; i < nentries; ++i) marks[entries[i]] = false;
+    for(int i = 0; i < ncells  ; ++i) if (marks[i]) survivors.push_back(i);
 
     int nsurvived = survivors.size();
     DeviceBuffer<Particle> survived(nvertices*nsurvived);
     for(int i = 0; i < nsurvived; ++i)
 	CC(cudaMemcpy(survived.D + nvertices * i, pa->pp.D + nvertices * survivors[i],
-		    sizeof(Particle) * nvertices, cudaMemcpyDeviceToDevice));
-    ncells = nsurvived; rbc_resize2(pa->pp, pa->aa, ncells);
+		      sizeof(Particle) * nvertices, cudaMemcpyDeviceToDevice));
+
+    rbc_resize2(pa->pp, pa->aa, nsurvived);
     CC(cudaMemcpy(pa->pp.D, survived.D,
 		  sizeof(Particle) * survived.S, cudaMemcpyDeviceToDevice));
 }

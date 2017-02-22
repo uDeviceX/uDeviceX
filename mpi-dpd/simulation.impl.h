@@ -567,14 +567,12 @@ static void sim_lockstep() {
   RedistPart::recv_unpack(newparticles->pp.D, xyzouvwo->D,
 			  xyzo_half->D, newnp, cells->start, cells->count,
 			  mainstream);
-  CC(cudaPeekAtLastError());
   swap(particles, newparticles);
   if (rbcs) {
     Cont::ncells = RedistRBC::post();
     rbc_resize2(rbcscoll->pp, rbcscoll->aa, Cont::ncells);
     RedistRBC::unpack(rbcscoll->pp.D, Cont::ncells, mainstream);
   }
-  CC(cudaPeekAtLastError());
 }
 
 void sim_run() {
