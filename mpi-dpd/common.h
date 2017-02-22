@@ -85,6 +85,7 @@ struct SolventWrap : ParticlesWrap {
 
 /* container for the gpu particles during the simulation */
 template <typename T> struct DeviceBuffer {
+  typedef T value_type;
   /* `C': capacity; `S': size; `D' is for data*/  
   int C, S; T *D;
   
@@ -122,7 +123,8 @@ template <typename T> struct DeviceBuffer {
 template <typename T> struct PinnedHostBuffer {
 private:
   int capacity;
-public:  
+public:
+  typedef T value_type;
   /* `S': size; `D' is for data; `DP' device pointer */
   int S;  T *D, *DP;
 
