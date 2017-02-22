@@ -186,20 +186,14 @@ void  upd_stg2_and_1(ParticleArray* pa, bool rbcflag, float driving_acceleration
        dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
-void pa_resize(ParticleArray* pa, int n) {
-    /* YTANG: need the array to be 32-padded for locally transposed
-       storage of acceleration */
-    if ( n % 32 ) {
-	pa->pp.preserve_resize( n - n % 32 + 32 );
-	pa->aa.preserve_resize( n - n % 32 + 32 );
-    }
-    pa->pp.resize(n);
-    pa->aa.resize(n);
-}
-
 void clear_velocity(ParticleArray* pa) {
   if (pa->pp.S)
     ParticleKernels::clear_velocity<<<(pa->pp.S + 127) / 128, 128 >>>(pa->pp.D, pa->pp.S);
+}
+
+void pa_resize(ParticleArray* pa, int n) {
+    pa->pp.resize(n);
+    pa->aa.resize(n);
 }
 
 void rbc_resize(ParticleArray* pa, int count) {
