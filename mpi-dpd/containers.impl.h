@@ -191,15 +191,8 @@ void clear_velocity(ParticleArray* pa) {
     ParticleKernels::clear_velocity<<<(pa->pp.S + 127) / 128, 128 >>>(pa->pp.D, pa->pp.S);
 }
 
-void pa_resize(ParticleArray* pa, int n) {
-    pa->pp.resize(n);
-    pa->aa.resize(n);
-}
-
-void rbc_resize(ParticleArray* pa, int count) {
-    ncells = count;
-    pa_resize(pa, count*nvertices);
-}
+#define     resize2(b1, b2, n) b1.resize(n), b2.resize(n)
+#define rbc_resize2(b1, b2, n) resize2(b1, b2, Cont::nvertices*n)
 
 void rbc_init() {
   ncells = 0;
@@ -265,7 +258,7 @@ void setup(ParticleArray* pa, const char *path2ic) {
 	}
     }
 
-    rbc_resize(pa, good.size());
+    rbc_resize2(pa->pp, pa->aa, good.size());
     for(int i = 0; i < good.size(); ++i)
       _initialize((float *)(pa->pp.D + nvertices * i), good[i].transform);
 }
@@ -286,7 +279,7 @@ void remove(ParticleArray* pa, int *entries, int nentries) {
     for(int i = 0; i < nsurvived; ++i)
 	CC(cudaMemcpy(survived.D + nvertices * i, pa->pp.D + nvertices * survivors[i],
 		    sizeof(Particle) * nvertices, cudaMemcpyDeviceToDevice));
-    rbc_resize(pa, nsurvived);
+    rbc_resize2(pa->pp, pa->aa, nsurvived);
     CC(cudaMemcpy(pa->pp.D, survived.D,
 		  sizeof(Particle) * survived.S, cudaMemcpyDeviceToDevice));
 }

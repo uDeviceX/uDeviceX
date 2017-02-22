@@ -173,7 +173,7 @@ void sim_create_walls() {
   ExpectedMessageSizes new_sizes;
   Wall::init(particles->pp.D, particles->pp.S,
 	    nsurvived, new_sizes); wall_created = true;
-  Cont::pa_resize(particles, nsurvived);
+  resize2(particles->pp, particles->aa, nsurvived);
   Cont::clear_velocity(particles);
   cells->build(particles->pp.D, particles->pp.S, 0, NULL, NULL);
   sim_update_helper_arrays();
@@ -455,8 +455,8 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   newparticles =  new ParticleArray;
 
   vector<Particle> ic = _ic();
-  Cont::pa_resize(particles   , ic.size());
-  Cont::pa_resize(newparticles, ic.size());
+  resize2(particles->pp, particles->aa  , ic.size());
+  resize2(newparticles->pp, particles->aa, ic.size());
 
   CC(cudaMemcpy(particles->pp.D, &ic.front(),
 			sizeof(Particle) * ic.size(),
@@ -561,7 +561,7 @@ static void sim_lockstep() {
     RedistRBC::extent(rbcscoll->pp.D, Cont::ncells, mainstream);
     RedistRBC::pack_sendcount(rbcscoll->pp.D, Cont::ncells, mainstream);
   }
-  Cont::pa_resize(newparticles, newnp);
+  resize2(newparticles->pp, newparticles->aa, newnp);
   xyzouvwo->resize(newnp * 2);
   xyzo_half->resize(newnp);
   RedistPart::recv_unpack(newparticles->pp.D, xyzouvwo->D,
@@ -571,7 +571,7 @@ static void sim_lockstep() {
   swap(particles, newparticles);
   int nrbcs;
   if (rbcs) nrbcs = RedistRBC::post();
-  if (nrbcs) Cont::rbc_resize(rbcscoll, nrbcs);
+  if (nrbcs) rbc_resize2(rbcscoll->pp, rbcscoll->aa, nrbcs);
   CC(cudaPeekAtLastError());
   if (rbcs) RedistRBC::unpack(rbcscoll->pp.D, Cont::ncells, mainstream);
     
