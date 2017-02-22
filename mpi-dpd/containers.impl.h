@@ -263,22 +263,23 @@ void setup(ParticleArray* pa, const char *path2ic) {
       _initialize((float *)(pa->pp.D + nvertices * i), good[i].transform);
 }
 
-void remove(ParticleArray* pa, int *entries, int nentries) {
-    std::vector<bool > marks(ncells, true);
-    std::vector< int > survivors;
+void remove(ParticleArray* pa, int *e, int ne) {
+  /* remove RBCs with indexes in `e' */
+  bool GO = false, STAY = true;
+  int ip, i0, i1, nv = nvertices;
+  vector<bool> m(ncells, STAY);
+  for (ip = 0; ip < ne; ip++) m[e[ip]] = GO;
 
-    for(int i = 0; i < nentries; ++i) marks[entries[i]] = false;
-    for(int i = 0; i < ncells  ; ++i) if (marks[i]) survivors.push_back(i);
-
-    int nsurvived = survivors.size();
-    DeviceBuffer<Particle> survived(nvertices*nsurvived);
-    for(int i = 0; i < nsurvived; ++i)
-	CC(cudaMemcpy(survived.D + nvertices * i, pa->pp.D + nvertices * survivors[i],
-		      sizeof(Particle) * nvertices, cudaMemcpyDeviceToDevice));
-
-    rbc_resize2(pa->pp, pa->aa, nsurvived);
-    CC(cudaMemcpy(pa->pp.D, survived.D,
-		  sizeof(Particle) * survived.S, cudaMemcpyDeviceToDevice));
+  for (i0 = i1 = 0; i0 < ncells; i0++)
+    if (m[i0] == STAY) {
+      CC(cudaMemcpy(pa->pp.D + nv * i1,
+		    pa->pp.D + nv * i0,
+		    sizeof(Particle) * nv,
+		    cudaMemcpyDeviceToDevice));
+      i1++;
+    }
+  int nstay = i1;
+  rbc_resize2(pa->pp, pa->aa, nstay);
 }
 
 int  pcount() {return ncells * nvertices;}
