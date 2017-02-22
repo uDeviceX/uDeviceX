@@ -30,18 +30,17 @@ int main(int argc, char **argv) {
 
   ArgumentParser argp(vector<string>(argv + 4, argv + argc));
 
-  tend = argp("-tend").asDouble(50);
-  walls = argp("-walls").asBool(false);
-  pushtheflow = argp("-pushtheflow").asBool(false);
+  contactforces = argp("-contactforces").asBool(false);
   doublepoiseuille = argp("-doublepoiseuille").asBool(false);
-  rbcs = argp("-rbcs").asBool(false);
   hdf5field_dumps = argp("-hdf5field_dumps").asBool(false);
   hdf5part_dumps = argp("-hdf5part_dumps").asBool(false);
+  pushtheflow = argp("-pushtheflow").asBool(false);
+  rbcs = argp("-rbcs").asBool(false);
   steps_per_dump = argp("-steps_per_dump").asInt(1000);
   steps_per_hdf5dump = argp("-steps_per_hdf5dump").asInt(2000);
+  tend = argp("-tend").asDouble(50);
   wall_creation_stepid = argp("-wall_creation_stepid").asInt(5000);
-  contactforces = argp("-contactforces").asBool(false);
-  hdf5field_dumps = argp("-hdf5field_dumps").asBool(false);
+  walls = argp("-walls").asBool(false);
 
   RBCx0 = argp("-RBCx0").asDouble(0.5);
   RBCp = argp("-RBCp").asDouble(0.0045);
