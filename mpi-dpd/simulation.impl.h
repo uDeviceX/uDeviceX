@@ -569,9 +569,8 @@ static void sim_lockstep() {
 			  mainstream);
   CC(cudaPeekAtLastError());
   swap(particles, newparticles);
-  int nrbcs;
-  if (rbcs) nrbcs = RedistRBC::post();
-  if (nrbcs) rbc_resize2(rbcscoll->pp, rbcscoll->aa, nrbcs);
+  if (rbcs) Cont::ncells = RedistRBC::post();
+  rbc_resize2(rbcscoll->pp, rbcscoll->aa, Cont::ncells);
   CC(cudaPeekAtLastError());
   if (rbcs) RedistRBC::unpack(rbcscoll->pp.D, Cont::ncells, mainstream);
     

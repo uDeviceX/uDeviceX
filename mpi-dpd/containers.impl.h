@@ -258,8 +258,8 @@ void setup(ParticleArray* pa, const char *path2ic) {
 	}
     }
 
-    rbc_resize2(pa->pp, pa->aa, good.size());
-    for(int i = 0; i < good.size(); ++i)
+    ncells = good.size(); rbc_resize2(pa->pp, pa->aa, ncells);
+    for(int i = 0; i < ncells; ++i)
       _initialize((float *)(pa->pp.D + nvertices * i), good[i].transform);
 }
 
@@ -279,7 +279,7 @@ void remove(ParticleArray* pa, int *entries, int nentries) {
     for(int i = 0; i < nsurvived; ++i)
 	CC(cudaMemcpy(survived.D + nvertices * i, pa->pp.D + nvertices * survivors[i],
 		    sizeof(Particle) * nvertices, cudaMemcpyDeviceToDevice));
-    rbc_resize2(pa->pp, pa->aa, nsurvived);
+    ncells = nsurvived; rbc_resize2(pa->pp, pa->aa, ncells);
     CC(cudaMemcpy(pa->pp.D, survived.D,
 		  sizeof(Particle) * survived.S, cudaMemcpyDeviceToDevice));
 }
