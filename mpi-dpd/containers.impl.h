@@ -192,7 +192,8 @@ void clear_velocity(ParticleArray* pa) {
 }
 
 #define     resize2(b1, b2, n) b1.resize(n), (b2).resize(n)
-#define rbc_resize2(b1, b2, n) Cont::ncells = (n), resize2(b1, b2, Cont::nvertices*(n))
+#define  rbc_resize(b , n)     Cont::ncells = (n),  (b).resize(Cont::nvertices*(n))
+#define rbc_resize2(b1, b2, n)                      rbc_resize(b1, n), rbc_resize(b2, n)
 
 void rbc_init() {
   ncells = 0;
