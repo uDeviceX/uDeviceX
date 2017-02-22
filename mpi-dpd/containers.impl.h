@@ -264,9 +264,9 @@ void setup(ParticleArray* pa, const char *path2ic) {
       _initialize((float *)(pa->pp.D + nvertices * i), good[i].transform);
 }
 
-/* NB: preserves `pp' but messes up `aa' */
+/* NB: preserves order of `pp' but messes up `aa' */
 #define rbc_remove_resize(pp, aa, e, ne) Cont::rbc_remove(pp, e, ne), rbc_resize(aa, Cont::ncells)
-void remove(ParticleArray* pa, int *e, int ne) {
+void rbc_remove(ParticleArray* pa, int *e, int ne) {
   /* remove RBCs with indexes in `e' */
   bool GO = false, STAY = true;
   int ie, i0, i1, nv = nvertices;
@@ -282,7 +282,8 @@ void remove(ParticleArray* pa, int *e, int ne) {
       i1++;
     }
   int nstay = i1;
-  rbc_resize2(pa->pp, pa->aa, nstay);
+  rbc_resize(pa->pp, nstay);
+  rbc_resize(pa->aa, nstay);
 }
 
 int  pcount() {return ncells * nvertices;}
