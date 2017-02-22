@@ -116,13 +116,12 @@ static void sim_redistribute() {
 
   const int newnp = RedistPart::recv_count(mainstream);
 
-  int nrbcs;
   if (rbcs) {
-    nrbcs = RedistRBC::post();
-    Cont::rbc_resize(rbcscoll, nrbcs);
+    Cont::ncells = RedistRBC::post();
+    rbcscoll->pp.resize(Cont::ncells*Cont::nvertices); rbcscoll->aa.resize(Cont::ncells*Cont::nvertices);
   }
 
-  Cont::pa_resize(newparticles, newnp);
+  newparticles->pp.resize(newnp); newparticles->aa.resize(newnp);
   xyzouvwo->resize(newnp * 2);
   xyzo_half->resize(newnp);
 
