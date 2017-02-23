@@ -152,7 +152,7 @@ namespace ParticleKernels {
 } /* end of ParticleKernels */
 
 namespace Cont {
-void  upd_stg2_and_1(DeviceBuffer<Particle>* pp, DeviceBuffer<Acceleration>* aa,
+void  upd_stg2_and_1(StaticDeviceBuffer<Particle>* pp, StaticDeviceBuffer<Acceleration>* aa,
 		     bool rbcflag, float driving_acceleration) {
   if (pp->S)
     ParticleKernels::upd_stg2_and_1<<<(pp->S + 127) / 128, 128, 0>>>
@@ -160,7 +160,7 @@ void  upd_stg2_and_1(DeviceBuffer<Particle>* pp, DeviceBuffer<Acceleration>* aa,
        dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
-void clear_velocity(DeviceBuffer<Particle>* pp) {
+void clear_velocity(StaticDeviceBuffer<Particle>* pp) {
   if (pp->S)
     ParticleKernels::clear_velocity<<<(pp->S + 127) / 128, 128 >>>(pp->D, pp->S);
 }
@@ -183,7 +183,7 @@ void _initialize(float *device_pp, float (*transform)[4]) {
   CudaRBC::initialize(device_pp, transform);
 }
   
-void setup(DeviceBuffer<Particle>* pp, DeviceBuffer<Acceleration>* aa,
+void setup(StaticDeviceBuffer<Particle>* pp, StaticDeviceBuffer<Acceleration>* aa,
 	   const char *path2ic) {
     vector<TransformedExtent> allrbcs;
     if (rank == 0) {
@@ -241,7 +241,7 @@ void setup(DeviceBuffer<Particle>* pp, DeviceBuffer<Acceleration>* aa,
 
 /* NB: preserves order of `pp' but messes up `aa' */
 #define rbc_remove_resize(pp, aa, e, ne) Cont::rbc_remove(pp, e, ne), rbc_resize(aa, Cont::ncells)
-  void rbc_remove(DeviceBuffer<Particle>* pp, int *e, int ne) {
+  void rbc_remove(StaticDeviceBuffer<Particle>* pp, int *e, int ne) {
   /* remove RBCs with indexes in `e' */
   bool GO = false, STAY = true;
   int ie, i0, i1, nv = nvertices;
@@ -262,7 +262,7 @@ void setup(DeviceBuffer<Particle>* pp, DeviceBuffer<Acceleration>* aa,
 
 int  pcount() {return ncells * nvertices;}
 
-void clear_acc(DeviceBuffer<Acceleration>* aa) {
+void clear_acc(StaticDeviceBuffer<Acceleration>* aa) {
   CC(cudaMemsetAsync(aa->D, 0, sizeof(Acceleration) * aa->S));
 }
 static void rbc_dump0(const char *format4ply,

@@ -191,10 +191,8 @@ static void sim_datadump_async(int idtimestep) {
       else                   dump_part->dump(p, n);
     }
 
-    if (hdf5field_dumps && (datadump_idtimestep % steps_per_hdf5dump == 0)) {
-      printf("inside hdf5field_dumps ... \n");
+    if (hdf5field_dumps && (datadump_idtimestep % steps_per_hdf5dump == 0))
       dump_field->dump(activecomm, p, datadump_nsolvent, datadump_idtimestep);
-    }
 
     if (rbcs)
       Cont::rbc_dump(myactivecomm, p + datadump_nsolvent,
@@ -255,8 +253,8 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   xyzouvwo    = new DeviceBuffer<float4>;
   xyzo_half = new DeviceBuffer<ushort4>;
   if (rbcs) {
-    r_pp = new DeviceBuffer<Particle>;
-    r_aa = new DeviceBuffer<Acceleration>;
+    r_pp = new StaticDeviceBuffer<Particle>;
+    r_aa = new StaticDeviceBuffer<Acceleration>;
   }
 
   Wall::trunk = new Logistic::KISS;
@@ -272,10 +270,10 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   Cont::globalextent = make_float3(dims[0] * XSIZE_SUBDOMAIN,
 				   dims[1] * YSIZE_SUBDOMAIN,
 				   dims[2] * ZSIZE_SUBDOMAIN);
-  s_pp  = new DeviceBuffer<Particle>;
-  s_aa  = new DeviceBuffer<Acceleration>;
-  s_pp0 = new DeviceBuffer<Particle>;
-  s_aa0 = new DeviceBuffer<Acceleration>;
+  s_pp  = new StaticDeviceBuffer<Particle>;
+  s_aa  = new StaticDeviceBuffer<Acceleration>;
+  s_pp0 = new StaticDeviceBuffer<Particle>;
+  s_aa0 = new StaticDeviceBuffer<Acceleration>;
 
   vector<Particle> ic = _ic();
   resize2(s_pp, s_aa  , ic.size());
