@@ -9,7 +9,7 @@ BEGIN {
     img_templ = "<img src=\"%s\" width=\"%d\" height=\"%d\">"
     img_templ = "<p>" img_templ "</p>"
     img_templ = "\n" img_templ "\n"
-    suc = "success.txt"
+    s = "success.txt"
 
     system("mkdir -p " dir)
 }
@@ -23,11 +23,13 @@ $1 ~ /^#include/ {
     read_file(desc)
 
     # check the status and react accordingly
-    if (!fail(suc)) {
+    if (exists(s)) {
         print "<font color=\"green\">SUCCESS</font>" > idx
-        imgA0 = "img1.png"; imgB0 = "img2.png"
-        if (!fail(imgA0)) process_img(imgA0)
-        if (!fail(imgB0)) process_img(imgB0)
+        for (id = 1; 1; id++) {
+            img = sprintf("img%d.png", id)
+            if (exists(img)) process_img(img)
+            else             break
+        }
     } else {
         print "<font color=\"red\">FAIL</font>" > idx
     }
@@ -56,7 +58,7 @@ function read_file(file,  x) {
     close(file)
 }
 
-function fail(f) {
+function exists(f) {
     cmd = sprintf("test -f %s/%s", d, f)
-    return system(cmd)
+    return !system(cmd)
 }
