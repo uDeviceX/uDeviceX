@@ -1,5 +1,5 @@
 /*** from redistribute-particles.h ***/
-namespace RedistPart {
+namespace sdist {
   int basetag = 950;
   MPI_Comm cartcomm_rdst;
   float safety_factor = 1.2;

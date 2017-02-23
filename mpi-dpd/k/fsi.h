@@ -1,4 +1,4 @@
-namespace k { namespace fsi {
+namespace k_fsi {
   texture<float2, cudaTextureType1D> texSolventParticles;
   texture<int, cudaTextureType1D> texCellsStart, texCellsCount;
   bool firsttime = true;
@@ -307,4 +307,4 @@ namespace k { namespace fsi {
 
     write_AOS3f(dst, nunpack, xforce, yforce, zforce);
   }
-}}
+}

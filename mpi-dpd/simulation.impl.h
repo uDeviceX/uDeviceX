@@ -57,12 +57,12 @@ static std::vector<Particle> _ic() { /* initial conditions for position and
 }
 
 static void sim_redistribute() {
-  RedistPart::pack(s_pp->D, s_pp->S);
+  sdist::pack(s_pp->D, s_pp->S);
   if (rbcs) rdist::extent(r_pp->D, Cont::ncells);
-  RedistPart::send();
+  sdist::send();
   if (rbcs) rdist::pack_sendcount(r_pp->D, Cont::ncells);
-  RedistPart::bulk(s_pp->S, cells->start, cells->count);
-  const int newnp = RedistPart::recv_count();
+  sdist::bulk(s_pp->S, cells->start, cells->count);
+  const int newnp = sdist::recv_count();
   if (rbcs) {
     Cont::ncells = rdist::post();
     r_pp->resize(Cont::ncells*Cont::nvertices); r_aa->resize(Cont::ncells*Cont::nvertices);
@@ -70,7 +70,7 @@ static void sim_redistribute() {
   s_pp0->resize(newnp); s_aa0->resize(newnp);
   xyzouvwo->resize(newnp * 2);
   xyzo_half->resize(newnp);
-  RedistPart::recv_unpack(s_pp0->D,
+  sdist::recv_unpack(s_pp0->D,
 			  xyzouvwo->D, xyzo_half->D,
 			  newnp, cells->start, cells->count);
   
@@ -82,7 +82,7 @@ void sim_remove_bodies_from_wall() {
   if (!rbcs)         return;
   if (!Cont::ncells) return;
   DeviceBuffer<int> marks(Cont::pcount());
-  k::wall::fill_keys<<<(Cont::pcount() + 127) / 128, 128>>>
+  k_wall::fill_keys<<<(Cont::pcount() + 127) / 128, 128>>>
     (r_pp->D, Cont::pcount(), marks.D);
 
   vector<int> tmp(marks.S);
@@ -258,7 +258,7 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   }
 
   wall::trunk = new Logistic::KISS;
-  RedistPart::redist_part_init(Cont::cartcomm);
+  sdist::redist_part_init(Cont::cartcomm);
   nsteps = (int)(tend / dt);
   MC(MPI_Comm_rank(activecomm, &Cont::rank));
 
@@ -323,7 +323,7 @@ void sim_run() {
 void sim_close() {
 
   sim_tmp_final();
-  RedistPart::redist_part_close();
+  sdist::redist_part_close();
 
   delete r_pp; delete r_aa;
   

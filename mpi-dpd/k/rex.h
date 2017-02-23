@@ -1,4 +1,4 @@
-namespace k {namespace rex {
+namespace k_rex {
   __constant__ int ccapacities[26], *scattered_indices[26];
   __device__ bool failed;
   __constant__ int coffsets[26];
@@ -175,4 +175,4 @@ __global__ void unpack(float *accelerations, int nparticles) {
     atomicAdd(accelerations + 3 * dpid + component, myval);
   }
 }
-}}
+}

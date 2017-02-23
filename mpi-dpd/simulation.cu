@@ -27,9 +27,9 @@
 #include "k/rdist.h"
 #include "rdist.impl.h"
 
-#include "redistribute-particles.decl.h"
+#include "sdist.decl.h"
 #include "k/sdist.h"
-#include "redistribute-particles.impl.h"
+#include "sdist.impl.h"
 
 #include "containers.decl.h"
 #include "containers.impl.h"

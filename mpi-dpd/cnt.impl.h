@@ -1,8 +1,8 @@
 namespace cnt {
   void init(MPI_Comm comm) {
-    cellsstart = new DeviceBuffer<int>(k::cnt::NCELLS + 16);
-    cellscount = new DeviceBuffer<int>(k::cnt::NCELLS + 16);
-    compressed_cellscount = new DeviceBuffer<unsigned char>(k::cnt::NCELLS + 16);
+    cellsstart = new DeviceBuffer<int>(k_cnt::NCELLS + 16);
+    cellscount = new DeviceBuffer<int>(k_cnt::NCELLS + 16);
+    compressed_cellscount = new DeviceBuffer<unsigned char>(k_cnt::NCELLS + 16);
 
     cellsentries = new DeviceBuffer<int>;
     subindices = new DeviceBuffer<uchar4>;
@@ -49,13 +49,13 @@ namespace cnt {
       ParticlesWrap it = wsolutes[i];
 
       if (it.n)
-	k::cnt::populate<<<(it.n + 127) / 128, 128, 0>>>
+	k_cnt::populate<<<(it.n + 127) / 128, 128, 0>>>
 	  (subindices->D + ctr, cellsstart->D, it.n, i, ntotal,
-	   (k::cnt::CellEntry *)cellsentries->D);
+	   (k_cnt::CellEntry *)cellsentries->D);
       ctr += it.n;
     }
 
-    k::cnt::bind(cellsstart->D, cellsentries->D, ntotal, wsolutes,
+    k_cnt::bind(cellsstart->D, cellsentries->D, ntotal, wsolutes,
 			 cellscount->D);
   }
 
@@ -65,7 +65,7 @@ namespace cnt {
     for (int i = 0; i < wsolutes.size(); ++i) {
       ParticlesWrap it = wsolutes[i];
       if (it.n)
-	k::cnt::bulk_3tpp<<<(3 * it.n + 127) / 128, 128, 0>>>
+	k_cnt::bulk_3tpp<<<(3 * it.n + 127) / 128, 128, 0>>>
 	  ((float2 *)it.p, it.n, cellsentries->S, wsolutes.size(), (float *)it.a,
 	   local_trunk->get_float(), i);
 
@@ -79,30 +79,30 @@ namespace cnt {
 
       for (int i = 0; i < 26; ++i) recvpackcount[i] = halos[i].n;
 
-      CC(cudaMemcpyToSymbolAsync(k::cnt::packcount, recvpackcount,
+      CC(cudaMemcpyToSymbolAsync(k_cnt::packcount, recvpackcount,
 				 sizeof(recvpackcount), 0, cudaMemcpyHostToDevice));
       recvpackstarts_padded[0] = 0;
       for (int i = 0, s = 0; i < 26; ++i)
 	recvpackstarts_padded[i + 1] = (s += 32 * ((halos[i].n + 31) / 32));
       nremote_padded = recvpackstarts_padded[26];
       CC(cudaMemcpyToSymbolAsync
-	 (k::cnt::packstarts_padded, recvpackstarts_padded,
+	 (k_cnt::packstarts_padded, recvpackstarts_padded,
 	  sizeof(recvpackstarts_padded), 0, cudaMemcpyHostToDevice));
 
       const Particle *recvpackstates[26];
       for (int i = 0; i < 26; ++i) recvpackstates[i] = halos[i].p;
 
-      CC(cudaMemcpyToSymbolAsync(k::cnt::packstates, recvpackstates,
+      CC(cudaMemcpyToSymbolAsync(k_cnt::packstates, recvpackstates,
 				 sizeof(recvpackstates), 0,
 				 cudaMemcpyHostToDevice));
       Acceleration *packresults[26];
       for (int i = 0; i < 26; ++i) packresults[i] = halos[i].a;
-      CC(cudaMemcpyToSymbolAsync(k::cnt::packresults, packresults,
+      CC(cudaMemcpyToSymbolAsync(k_cnt::packresults, packresults,
 				 sizeof(packresults), 0, cudaMemcpyHostToDevice));
     }
 
     if (nremote_padded)
-      k::cnt::halo<<<(nremote_padded + 127) / 128, 128, 0>>>
+      k_cnt::halo<<<(nremote_padded + 127) / 128, 128, 0>>>
 	(nremote_padded, cellsentries->S, nsolutes, local_trunk->get_float());
 
 

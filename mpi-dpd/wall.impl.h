@@ -203,15 +203,15 @@ namespace wall {
     CC(cudaMemcpy3D(&copyParams));
     delete[] field;
 
-    k::wall::setup();
+    k_wall::setup();
 
-    CC(cudaBindTextureToArray(k::wall::texSDF, arrSDF, fmt));
+    CC(cudaBindTextureToArray(k_wall::texSDF, arrSDF, fmt));
 
     if (myrank == 0) printf("carving out wall particles...\n");
 
     thrust::device_vector<int> keys(n);
 
-    k::wall::fill_keys<<<(n + 127) / 128, 128>>>
+    k_wall::fill_keys<<<(n + 127) / 128, 128>>>
       (p, n, thrust::raw_pointer_cast(&keys[0]));
 
 
@@ -355,7 +355,7 @@ namespace wall {
     if (myrank == 0) printf("consolidating wall particles...\n");
 
     if (solid_size > 0)
-      k::wall::strip_solid4<<<(solid_size + 127) / 128, 128>>>
+      k_wall::strip_solid4<<<(solid_size + 127) / 128, 128>>>
 	(solid, solid_size, solid4);
 
     CC(cudaFree(solid));
@@ -365,7 +365,7 @@ namespace wall {
 
   void bounce(Particle *const p, const int n) {
     if (n > 0)
-      k::wall::bounce<<<(n + 127) / 128, 128, 0>>>
+      k_wall::bounce<<<(n + 127) / 128, 128, 0>>>
 	((float2 *)p, n, dt);
 
 
@@ -378,34 +378,34 @@ namespace wall {
     if (n > 0 && solid_size > 0) {
       size_t textureoffset;
       CC(cudaBindTexture(&textureoffset,
-			 &k::wall::texWallParticles, solid4,
-			 &k::wall::texWallParticles.channelDesc,
+			 &k_wall::texWallParticles, solid4,
+			 &k_wall::texWallParticles.channelDesc,
 			 sizeof(float4) * solid_size));
 
       CC(cudaBindTexture(&textureoffset,
-			 &k::wall::texWallCellStart, wall_cells->start,
-			 &k::wall::texWallCellStart.channelDesc,
+			 &k_wall::texWallCellStart, wall_cells->start,
+			 &k_wall::texWallCellStart.channelDesc,
 			 sizeof(int) * wall_cells->ncells));
 
       CC(cudaBindTexture(&textureoffset,
-			 &k::wall::texWallCellCount, wall_cells->count,
-			 &k::wall::texWallCellCount.channelDesc,
+			 &k_wall::texWallCellCount, wall_cells->count,
+			 &k_wall::texWallCellCount.channelDesc,
 			 sizeof(int) * wall_cells->ncells));
 
-      k::wall::
+      k_wall::
 	interactions_3tpp<<<(3 * n + 127) / 128, 128, 0>>>
 	((float2 *)p, n, solid_size, (float *)acc, trunk->get_float());
 
-      CC(cudaUnbindTexture(k::wall::texWallParticles));
-      CC(cudaUnbindTexture(k::wall::texWallCellStart));
-      CC(cudaUnbindTexture(k::wall::texWallCellCount));
+      CC(cudaUnbindTexture(k_wall::texWallParticles));
+      CC(cudaUnbindTexture(k_wall::texWallCellStart));
+      CC(cudaUnbindTexture(k_wall::texWallCellCount));
     }
 
 
   }
 
   void close () {
-    CC(cudaUnbindTexture(k::wall::texSDF));
+    CC(cudaUnbindTexture(k_wall::texSDF));
     CC(cudaFreeArray(arrSDF));
 
     delete wall_cells;

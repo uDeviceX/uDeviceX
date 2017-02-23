@@ -1,4 +1,4 @@
-namespace k { namespace wall {
+namespace k_wall {
   texture<float, 3, cudaReadModeElementType> texSDF;
   texture<float4, 1, cudaReadModeElementType> texWallParticles;
   texture<int, 1, cudaReadModeElementType> texWallCellStart, texWallCellCount;
@@ -352,4 +352,4 @@ namespace k { namespace wall {
     atomicAdd(acc + 3 * pid + 1, yforce);
     atomicAdd(acc + 3 * pid + 2, zforce);
   }
-}}
+}

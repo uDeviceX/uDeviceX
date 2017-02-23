@@ -1,4 +1,4 @@
-namespace k { namespace cnt {
+namespace k_cnt {
   static const int maxsolutes = 32;
   enum {
     XCELLS = XSIZE_SUBDOMAIN,
@@ -346,4 +346,4 @@ __global__ void halo(int nparticles_padded, int ncellentries,
 
   write_AOS3f(dst, nunpack, xforce, yforce, zforce);
 }
-}}
+}

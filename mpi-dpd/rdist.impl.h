@@ -58,14 +58,14 @@ void pack_all(const int nrbcs, const int nvertices,
   if (nrbcs == 0) return;
   int nthreads = nrbcs * nvertices * 6;
 
-  if (nrbcs < k::rdist::cmaxnrbcs) {
-    CC(cudaMemcpyToSymbolAsync(k::rdist::cdestinations, destinations,
+  if (nrbcs < k_rdist::cmaxnrbcs) {
+    CC(cudaMemcpyToSymbolAsync(k_rdist::cdestinations, destinations,
 			       sizeof(float *) * nrbcs, 0,
 			       cudaMemcpyHostToDevice));
-    CC(cudaMemcpyToSymbolAsync(k::rdist::csources,
+    CC(cudaMemcpyToSymbolAsync(k_rdist::csources,
 			       sources, sizeof(float *) * nrbcs, 0,
 			       cudaMemcpyHostToDevice));
-    k::rdist::pack_all_kernel<true><<<(nthreads + 127) / 128, 128, 0>>>(
+    k_rdist::pack_all_kernel<true><<<(nthreads + 127) / 128, 128, 0>>>(
 	nrbcs, nvertices, NULL, NULL);
   } else {
     _ddestinations->resize(nrbcs);
@@ -74,7 +74,7 @@ void pack_all(const int nrbcs, const int nvertices,
 		       cudaMemcpyHostToDevice));
     CC(cudaMemcpyAsync(_dsources->D, sources, sizeof(float *) * nrbcs,
 		       cudaMemcpyHostToDevice));
-    k::rdist::pack_all_kernel<false><<<(nthreads + 127) / 128, 128, 0>>>(
+    k_rdist::pack_all_kernel<false><<<(nthreads + 127) / 128, 128, 0>>>(
 	nrbcs, nvertices, _dsources->D, _ddestinations->D);
   }
 
@@ -189,7 +189,7 @@ void unpack(Particle *xyzuvw, int nrbcs) {
   for (int i = 1, s = notleaving * nvertices; i < 27; ++i) {
     int count = halo_recvbufs[i]->S;
     if (count > 0)
-      k::rdist::shift<<<(count + 127) / 128, 128, 0>>>(
+      k_rdist::shift<<<(count + 127) / 128, 128, 0>>>(
 	  halo_recvbufs[i]->DP, count, i, myrank, false, xyzuvw + s);
     s += halo_recvbufs[i]->S;
   }

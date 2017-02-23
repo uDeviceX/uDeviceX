@@ -1,6 +1,6 @@
-namespace k {namespace sdist {
-  __constant__ RedistPart::PackBuffer pack_buffers[27];
-  __constant__ RedistPart::UnpackBuffer unpack_buffers[27];
+namespace k_sdist {
+  __constant__ sdist::PackBuffer pack_buffers[27];
+  __constant__ sdist::UnpackBuffer unpack_buffers[27];
   __device__   int pack_count[27], pack_start_padded[28];
   __constant__ int unpack_start[28], unpack_start_padded[28];
   __device__ bool failed;
@@ -220,4 +220,4 @@ namespace k {namespace sdist {
     }
     write_AOS6f(dstbuf + 3 * base, nsrc, data0, data1, data2);
   }
-}}
+}
