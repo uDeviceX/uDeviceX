@@ -8,3 +8,5 @@ The uDeviceX folders is organized into:
 
 Former dpd.cu and solvent-exchange.cu kernals:
 packinghalo.decl.h and bipsbatch.decl.h
+
+![alt text](img2.png "Logo Title Text 1")
