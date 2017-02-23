@@ -1,24 +1,4 @@
 namespace ParticleKernels {
-    __global__ void upd_stg1(bool rbcflag, Particle * p, Acceleration * a, int n, float dt,
-			     float _driving_acceleration, float threshold, bool doublePoiseuille) {
-	int pid = threadIdx.x + blockDim.x * blockIdx.x;
-	if (pid >= n) return;
-
-	int type; float driving_acceleration, mass, vx = p[pid].u[0], y = p[pid].x[1];
-	if      ( rbcflag                            ) type = MEMB_TYPE;
-	else if (!rbcflag &&  last_bit_float::get(vx)) type =   IN_TYPE;
-	else if (!rbcflag && !last_bit_float::get(vx)) type =  OUT_TYPE;
-	mass                 = (type == MEMB_TYPE) ? rbc_mass : 1;
-	driving_acceleration = (type ==   IN_TYPE) ? 0        : _driving_acceleration;
-	if (doublePoiseuille && y <= threshold) driving_acceleration *= -1;
-
-	for(int c = 0; c < 3; ++c) {
-	  last_bit_float::Preserver up0(p[pid].u[0]);
-	  p[pid].u[c] += (a[pid].a[c]/mass + (c == 0 ? driving_acceleration : 0)) * dt * 0.5;
-	}
-	for(int c = 0; c < 3; ++c) p[pid].x[c] += p[pid].u[c] * dt;
-    }
-
     __global__ void upd_stg2_and_1(bool rbcflag, float2 * _pdata, float * _adata,
 				   int nparticles, float dt, float _driving_acceleration, float threshold,
 				   bool doublePoiseuille) {
@@ -172,14 +152,6 @@ namespace ParticleKernels {
 } /* end of ParticleKernels */
 
 namespace Cont {
-  void upd_stg1(DeviceBuffer<Particle>* pp, DeviceBuffer<Acceleration>* aa,
-		bool rbcflag, float driving_acceleration) {
-    if (pp->S)
-      ParticleKernels::upd_stg1<<<(pp->S + 127) / 128, 128, 0>>>
-	(rbcflag, pp->D, aa->D, pp->S,
-	 dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
-}
-
 void  upd_stg2_and_1(DeviceBuffer<Particle>* pp, DeviceBuffer<Acceleration>* aa,
 		     bool rbcflag, float driving_acceleration) {
   if (pp->S)
