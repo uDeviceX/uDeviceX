@@ -1,4 +1,4 @@
-<img src="success.jpg" width="50" height="50" /> Poiseuille velocity profile
+<p><img src="success.jpg" width="50" height="50" /> Poiseuille velocity profile</p>
 
 <p><img src="test_poiseuille_single.img1.png" width="500" height="500"></p>
 ## Double Poiseuille with the same viscosity
