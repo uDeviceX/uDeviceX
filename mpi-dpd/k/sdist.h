@@ -1,4 +1,16 @@
-namespace RedistPartKernels {
+namespace k {namespace sdist {
+  __constant__ RedistPart::PackBuffer pack_buffers[27];
+  __constant__ RedistPart::UnpackBuffer unpack_buffers[27];
+  __device__   int pack_count[27], pack_start_padded[28];
+  __constant__ int unpack_start[28], unpack_start_padded[28];
+  __device__ bool failed;
+
+  int ntexparticles = 0;
+  float2 * texparticledata;
+  texture<float, cudaTextureType1D> texAllParticles;
+  texture<float2, cudaTextureType1D> texAllParticlesFloat2;
+
+
   __global__ void setup() {
     if (threadIdx.x == 0) failed = false;
     if (threadIdx.x < 27) pack_count[threadIdx.x] = 0;
@@ -68,7 +80,7 @@ namespace RedistPartKernels {
     int idpack = key9 + key3 + key1;
 
     if (slot >= start[27]) return;
-            
+
     int offset = slot - start[idpack];
     int pid = __ldg(pack_buffers[idpack].scattered_indices + offset);
 
@@ -208,4 +220,4 @@ namespace RedistPartKernels {
     }
     write_AOS6f(dstbuf + 3 * base, nsrc, data0, data1, data2);
   }
-}
+}}

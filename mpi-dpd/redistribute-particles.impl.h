@@ -61,19 +61,19 @@ namespace RedistPart {
       default_message_sizes[i] = estimate;
     }
 
-    RedistPartKernels::texAllParticles.channelDesc = cudaCreateChannelDesc<float>();
-    RedistPartKernels::texAllParticles.filterMode = cudaFilterModePoint;
-    RedistPartKernels::texAllParticles.mipmapFilterMode = cudaFilterModePoint;
-    RedistPartKernels::texAllParticles.normalized = 0;
+    k::sdist::texAllParticles.channelDesc = cudaCreateChannelDesc<float>();
+    k::sdist::texAllParticles.filterMode = cudaFilterModePoint;
+    k::sdist::texAllParticles.mipmapFilterMode = cudaFilterModePoint;
+    k::sdist::texAllParticles.normalized = 0;
 
-    RedistPartKernels::texAllParticlesFloat2.channelDesc = cudaCreateChannelDesc<float2>();
-    RedistPartKernels::texAllParticlesFloat2.filterMode = cudaFilterModePoint;
-    RedistPartKernels::texAllParticlesFloat2.mipmapFilterMode = cudaFilterModePoint;
-    RedistPartKernels::texAllParticlesFloat2.normalized = 0;
+    k::sdist::texAllParticlesFloat2.channelDesc = cudaCreateChannelDesc<float2>();
+    k::sdist::texAllParticlesFloat2.filterMode = cudaFilterModePoint;
+    k::sdist::texAllParticlesFloat2.mipmapFilterMode = cudaFilterModePoint;
+    k::sdist::texAllParticlesFloat2.normalized = 0;
 
     CC(cudaEventCreate(&evpacking, cudaEventDisableTiming));
     CC(cudaEventCreate(&evsizes, cudaEventDisableTiming));
-    CC(cudaFuncSetCacheConfig(RedistPartKernels::gather_particles, cudaFuncCachePreferL1));
+    CC(cudaFuncSetCacheConfig(k::sdist::gather_particles, cudaFuncCachePreferL1));
   }
 
   void _post_recv() {
@@ -149,33 +149,33 @@ namespace RedistPart {
     if (firstcall) _post_recv();
     size_t textureoffset;
     if (nparticles)
-      CC(cudaBindTexture(&textureoffset, &RedistPartKernels::texAllParticles, particles,
-			 &RedistPartKernels::texAllParticles.channelDesc,
+      CC(cudaBindTexture(&textureoffset, &k::sdist::texAllParticles, particles,
+			 &k::sdist::texAllParticles.channelDesc,
 			 sizeof(float) * 6 * nparticles));
 
     if (nparticles)
-      CC(cudaBindTexture(&textureoffset, &RedistPartKernels::texAllParticlesFloat2, particles,
-			 &RedistPartKernels::texAllParticlesFloat2.channelDesc,
+      CC(cudaBindTexture(&textureoffset, &k::sdist::texAllParticlesFloat2, particles,
+			 &k::sdist::texAllParticlesFloat2.channelDesc,
 			 sizeof(float) * 6 * nparticles));
 
-    RedistPartKernels::ntexparticles = nparticles;
-    RedistPartKernels::texparticledata = (float2 *)particles;
+    k::sdist::ntexparticles = nparticles;
+    k::sdist::texparticledata = (float2 *)particles;
   pack_attempt:
-    CC(cudaMemcpyToSymbolAsync(RedistPartKernels::pack_buffers, packbuffers,
+    CC(cudaMemcpyToSymbolAsync(k::sdist::pack_buffers, packbuffers,
 			       sizeof(PackBuffer) * 27, 0, cudaMemcpyHostToDevice));
 
     (*failure->D) = false;
-    RedistPartKernels::setup<<<1, 32, 0>>>();
+    k::sdist::setup<<<1, 32, 0>>>();
 
     if (nparticles)
-      RedistPartKernels::scatter_halo_indices_pack<<<(nparticles + 127) / 128, 128, 0>>>(nparticles);
+      k::sdist::scatter_halo_indices_pack<<<(nparticles + 127) / 128, 128, 0>>>(nparticles);
 
-    RedistPartKernels::tiny_scan<<<1, 32, 0>>>
+    k::sdist::tiny_scan<<<1, 32, 0>>>
       (nparticles, packbuffers[0].capacity, packsizes->DP, failure->DP);
 
     CC(cudaEventRecord(evsizes));
     if (nparticles)
-      RedistPartKernels::pack<<<(3 * nparticles + 127) / 128, 128, 0>>>
+      k::sdist::pack<<<(3 * nparticles + 127) / 128, 128, 0>>>
 	(nparticles, nparticles * 3);
 
     CC(cudaEventRecord(evpacking));
@@ -245,7 +245,7 @@ namespace RedistPart {
 
     if (nparticles)
       subindex_local<false><<< (nparticles + 127) / 128, 128, 0>>>
-	(nparticles, RedistPartKernels::texparticledata, cellcounts, subindices->D);
+	(nparticles, k::sdist::texparticledata, cellcounts, subindices->D);
 
 
   }
@@ -275,10 +275,10 @@ namespace RedistPart {
 
       nhalo_padded = ustart_padded[27];
 
-      CC(cudaMemcpyToSymbolAsync(RedistPartKernels::unpack_start, ustart,
+      CC(cudaMemcpyToSymbolAsync(k::sdist::unpack_start, ustart,
 				 sizeof(int) * 28, 0, cudaMemcpyHostToDevice));
 
-      CC(cudaMemcpyToSymbolAsync(RedistPartKernels::unpack_start_padded, ustart_padded,
+      CC(cudaMemcpyToSymbolAsync(k::sdist::unpack_start_padded, ustart_padded,
 				 sizeof(int) * 28, 0, cudaMemcpyHostToDevice));
     }
 
@@ -300,7 +300,7 @@ namespace RedistPart {
     _adjust_recv_buffers(recv_sizes);
 
     if (haschanged)
-      CC(cudaMemcpyToSymbolAsync(RedistPartKernels::unpack_buffers, unpackbuffers,
+      CC(cudaMemcpyToSymbolAsync(k::sdist::unpack_buffers, unpackbuffers,
 				 sizeof(UnpackBuffer) * 27, 0, cudaMemcpyHostToDevice));
 
     for(int i = 1; i < 27; ++i)
@@ -318,7 +318,7 @@ namespace RedistPart {
 #endif
 
     if (nhalo)
-      RedistPartKernels::subindex_remote<<< (nhalo_padded + 127) / 128, 128, 0 >>>
+      k::sdist::subindex_remote<<< (nhalo_padded + 127) / 128, 128, 0 >>>
 	(nhalo_padded, nhalo, cellcounts, (float2 *)remote_particles->D, subindices_remote->D);
 
     if (compressed_cellcounts->S)
@@ -332,17 +332,17 @@ namespace RedistPart {
 #endif
 
     if (subindices->S)
-      RedistPartKernels::scatter_indices<<< (subindices->S + 127) / 128, 128, 0>>>
+      k::sdist::scatter_indices<<< (subindices->S + 127) / 128, 128, 0>>>
 	(false, subindices->D, subindices->S, cellstarts, scattered_indices->D, scattered_indices->S);
 
     if (nhalo)
-      RedistPartKernels::scatter_indices<<< (nhalo + 127) / 128, 128, 0>>>
+      k::sdist::scatter_indices<<< (nhalo + 127) / 128, 128, 0>>>
 	(true, subindices_remote->D, nhalo, cellstarts, scattered_indices->D, scattered_indices->S);
 
     if (nparticles)
-      RedistPartKernels::gather_particles<<< (nparticles + 127) / 128, 128, 0>>>
+      k::sdist::gather_particles<<< (nparticles + 127) / 128, 128, 0>>>
 	(scattered_indices->D, (float2 *)remote_particles->D, nhalo,
-	 RedistPartKernels::ntexparticles, nparticles, (float2 *)particles, xyzouvwo, xyzo_half);
+	 k::sdist::ntexparticles, nparticles, (float2 *)particles, xyzouvwo, xyzo_half);
 
 
 
