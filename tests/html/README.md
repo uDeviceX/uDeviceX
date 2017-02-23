@@ -8,3 +8,4 @@
 ![alt text](success.jpg){:height="50px" width="50px"}
 ## RBC in shear flow
 ![alt text](fail.jpg){:height="50px" width="50px"}
+<img src="fail.jpg" width="50" height="50" />
