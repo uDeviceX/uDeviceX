@@ -49,8 +49,8 @@
 #include "fsi.decl.h"
 #include "fsi.impl.h"
 
-#include "solute-exchange.decl.h"
-#include "solute-exchange.impl.h"
+#include "sex.decl.h"
+#include "sex.impl.h"
 
 #include "packinghalo.decl.h"
 #include "packinghalo.impl.h"

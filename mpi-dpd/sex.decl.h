@@ -1,3 +1,4 @@
+namespace SolEx {
 enum {
   TAGBASE_C = 113, TAGBASE_P = 365, TAGBASE_A = 668,
   TAGBASE_P2 = 1055, TAGBASE_A2 = 1501
@@ -54,7 +55,6 @@ public:
   int capacity() const { return scattered_indices->C;}
 };
 
-namespace SolEx {
   MPI_Comm cartcomm;
   int iterationcount;
   int nranks, dstranks[26], dims[3], periods[3], coords[3], myrank,
