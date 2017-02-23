@@ -16,7 +16,6 @@ BEGIN {
 
 $1 ~ /^#include/ {
     d = $2
-    id = $2
     print "Processing test " d
 
     # generate test description
@@ -24,13 +23,11 @@ $1 ~ /^#include/ {
     read_file(desc)
 
     # check the status and react accordingly
-    fail = get_status(d)
-    if (!fail) {
+    if (!fail(suc)) {
         print "<font color=\"green\">SUCCESS</font>" > idx
         imgA0 = "img1.png"; imgB0 = "img2.png"
-        imgA1 = rename_img(imgA0); imgB1 = rename_img(imgB0)
-        copy_img(imgA0, imgA1); copy_img(imgB0, imgB1)
-        gen_img_desc(imgA1); gen_img_desc(imgB1)
+        if (!fail(imgA0)) process_img(imgA0)
+        if (!fail(imgB0)) process_img(imgB0)
     } else {
         print "<font color=\"red\">FAIL</font>" > idx
     }
@@ -42,13 +39,16 @@ $1 ~ /^#include/ {
     print > idx
 }
 
-function rename_img(img) {
-    return id "." img
-}
-
-function copy_img(img0, img1,  cmd) {
+function process_img(img0) {
+    # rename
+    img1 = d "." img0
+    
+    # copy
     cmd = sprintf("cp %s/%s %s/%s", d, img0, dir, img1)
     system(cmd)
+
+    # generate description
+    printf img_templ, img1, w, h > idx
 }
 
 function read_file(file,  x) {
@@ -56,11 +56,7 @@ function read_file(file,  x) {
     close(file)
 }
 
-function gen_img_desc(img) {
-    printf img_templ, img, w, h > idx
-}
-
-function get_status(d) {
-    cmd = sprintf("test -f %s/%s", d, suc)
+function fail(f) {
+    cmd = sprintf("test -f %s/%s", d, f)
     return system(cmd)
 }
