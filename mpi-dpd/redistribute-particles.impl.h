@@ -144,7 +144,7 @@ namespace RedistPart {
     return haschanged;
   }
 
-  void pack(Particle * particles, int nparticles, cudaStream_t mystream) {
+  void pack(Particle * particles, int nparticles) {
     bool secondchance = false;
     if (firstcall) _post_recv();
     size_t textureoffset;
@@ -162,23 +162,23 @@ namespace RedistPart {
     RedistPartKernels::texparticledata = (float2 *)particles;
   pack_attempt:
     CC(cudaMemcpyToSymbolAsync(RedistPartKernels::pack_buffers, packbuffers,
-			       sizeof(PackBuffer) * 27, 0, cudaMemcpyHostToDevice, mystream));
+			       sizeof(PackBuffer) * 27, 0, cudaMemcpyHostToDevice));
 
     (*failure->D) = false;
-    RedistPartKernels::setup<<<1, 32, 0, mystream>>>();
+    RedistPartKernels::setup<<<1, 32, 0>>>();
 
     if (nparticles)
-      RedistPartKernels::scatter_halo_indices_pack<<<(nparticles + 127) / 128, 128, 0, mystream>>>(nparticles);
+      RedistPartKernels::scatter_halo_indices_pack<<<(nparticles + 127) / 128, 128, 0>>>(nparticles);
     
-    RedistPartKernels::tiny_scan<<<1, 32, 0, mystream>>>
+    RedistPartKernels::tiny_scan<<<1, 32, 0>>>
       (nparticles, packbuffers[0].capacity, packsizes->DP, failure->DP);
 
-    CC(cudaEventRecord(evsizes, mystream));
+    CC(cudaEventRecord(evsizes));
     if (nparticles)
-      RedistPartKernels::pack<<<(3 * nparticles + 127) / 128, 128, 0, mystream>>>
+      RedistPartKernels::pack<<<(3 * nparticles + 127) / 128, 128, 0>>>
 	(nparticles, nparticles * 3);
 
-    CC(cudaEventRecord(evpacking, mystream));
+    CC(cudaEventRecord(evpacking));
 
     CC(cudaEventSynchronize(evsizes));
 
@@ -238,19 +238,19 @@ namespace RedistPart {
       }
   }
 
-  void bulk(int nparticles, int * cellstarts, int * cellcounts, cudaStream_t mystream) {
-    CC(cudaMemsetAsync(cellcounts, 0, sizeof(int) * XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN, mystream));
+  void bulk(int nparticles, int * cellstarts, int * cellcounts) {
+    CC(cudaMemsetAsync(cellcounts, 0, sizeof(int) * XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN));
 
     subindices->resize(nparticles);
 
     if (nparticles)
-      subindex_local<false><<< (nparticles + 127) / 128, 128, 0, mystream>>>
+      subindex_local<false><<< (nparticles + 127) / 128, 128, 0>>>
 	(nparticles, RedistPartKernels::texparticledata, cellcounts, subindices->D);
 
     CC(cudaPeekAtLastError());
   }
 
-  int recv_count(cudaStream_t mystream) {
+  int recv_count() {
     CC(cudaPeekAtLastError());
 
     _waitall(recvcountreq, nactiveneighbors);
@@ -276,10 +276,10 @@ namespace RedistPart {
       nhalo_padded = ustart_padded[27];
 
       CC(cudaMemcpyToSymbolAsync(RedistPartKernels::unpack_start, ustart,
-				 sizeof(int) * 28, 0, cudaMemcpyHostToDevice, mystream));
+				 sizeof(int) * 28, 0, cudaMemcpyHostToDevice));
 
       CC(cudaMemcpyToSymbolAsync(RedistPartKernels::unpack_start_padded, ustart_padded,
-				 sizeof(int) * 28, 0, cudaMemcpyHostToDevice, mystream));
+				 sizeof(int) * 28, 0, cudaMemcpyHostToDevice));
     }
 
     {
@@ -293,7 +293,7 @@ namespace RedistPart {
   }
 
   void recv_unpack(Particle * particles, float4 * xyzouvwo, ushort4 * xyzo_half, int nparticles,
-		   int * cellstarts, int * cellcounts, cudaStream_t mystream) {
+		   int * cellstarts, int * cellcounts) {
     _waitall(recvmsgreq, nactiveneighbors);
 
     bool haschanged = true;
@@ -301,7 +301,7 @@ namespace RedistPart {
 
     if (haschanged)
       CC(cudaMemcpyToSymbolAsync(RedistPartKernels::unpack_buffers, unpackbuffers,
-				 sizeof(UnpackBuffer) * 27, 0, cudaMemcpyHostToDevice, mystream));
+				 sizeof(UnpackBuffer) * 27, 0, cudaMemcpyHostToDevice));
 
     for(int i = 1; i < 27; ++i)
       if (default_message_sizes[i] && recv_sizes[i] > default_message_sizes[i]) {
@@ -318,29 +318,29 @@ namespace RedistPart {
 #endif
 
     if (nhalo)
-      RedistPartKernels::subindex_remote<<< (nhalo_padded + 127) / 128, 128, 0, mystream >>>
+      RedistPartKernels::subindex_remote<<< (nhalo_padded + 127) / 128, 128, 0 >>>
 	(nhalo_padded, nhalo, cellcounts, (float2 *)remote_particles->D, subindices_remote->D);
 
     if (compressed_cellcounts->S)
-      compress_counts<<< (compressed_cellcounts->S + 127) / 128, 128, 0, mystream >>>
+      compress_counts<<< (compressed_cellcounts->S + 127) / 128, 128, 0 >>>
 	(compressed_cellcounts->S, (int4 *)cellcounts, (uchar4 *)compressed_cellcounts->D);
 
-    scan(compressed_cellcounts->D, compressed_cellcounts->S, mystream, (uint *)cellstarts);
+    scan(compressed_cellcounts->D, compressed_cellcounts->S, (uint *)cellstarts);
 
 #ifndef NDEBUG
     CC(cudaMemset(scattered_indices->D, 0xff, sizeof(int) * scattered_indices->S));
 #endif
 
     if (subindices->S)
-      RedistPartKernels::scatter_indices<<< (subindices->S + 127) / 128, 128, 0, mystream>>>
+      RedistPartKernels::scatter_indices<<< (subindices->S + 127) / 128, 128, 0>>>
 	(false, subindices->D, subindices->S, cellstarts, scattered_indices->D, scattered_indices->S);
 
     if (nhalo)
-      RedistPartKernels::scatter_indices<<< (nhalo + 127) / 128, 128, 0, mystream>>>
+      RedistPartKernels::scatter_indices<<< (nhalo + 127) / 128, 128, 0>>>
 	(true, subindices_remote->D, nhalo, cellstarts, scattered_indices->D, scattered_indices->S);
 
     if (nparticles)
-      RedistPartKernels::gather_particles<<< (nparticles + 127) / 128, 128, 0, mystream>>>
+      RedistPartKernels::gather_particles<<< (nparticles + 127) / 128, 128, 0>>>
 	(scattered_indices->D, (float2 *)remote_particles->D, nhalo,
 	 RedistPartKernels::ntexparticles, nparticles, (float2 *)particles, xyzouvwo, xyzo_half);
 

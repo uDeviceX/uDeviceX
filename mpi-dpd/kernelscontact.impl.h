@@ -51,7 +51,7 @@ __global__ void populate(uchar4 *subindices,
 
 void bind(const int *const cellsstart, const int *const cellentries,
           const int ncellentries, std::vector<ParticlesWrap> wsolutes,
-          cudaStream_t stream, const int *const cellscount) {
+          const int *const cellscount) {
   size_t textureoffset = 0;
 
   if (ncellentries)
@@ -74,11 +74,11 @@ void bind(const int *const cellsstart, const int *const cellentries,
   }
 
   CC(cudaMemcpyToSymbolAsync(cnsolutes, ns, sizeof(int) * n, 0,
-                             cudaMemcpyHostToDevice, stream));
+                             cudaMemcpyHostToDevice));
   CC(cudaMemcpyToSymbolAsync(csolutes, ps, sizeof(float2 *) * n, 0,
-                             cudaMemcpyHostToDevice, stream));
+                             cudaMemcpyHostToDevice));
   CC(cudaMemcpyToSymbolAsync(csolutesacc, as, sizeof(float *) * n, 0,
-                             cudaMemcpyHostToDevice, stream));
+                             cudaMemcpyHostToDevice));
 }
 
 __global__ void bulk_3tpp(float2 *particles, int np,

@@ -381,7 +381,7 @@ void forces_dpd_cuda_nohost( const float * const xyzuvw, const float4 * const xy
                              const float rc,
                              const float XL, const float YL, const float ZL,
                              const float invsqrtdt,
-                             const float seed, cudaStream_t stream )
+                             const float seed)
 {
     if( np == 0 ) {
         printf( "WARNING: forces_dpd_cuda_nohost called with np = %d\n", np );
@@ -450,7 +450,7 @@ void forces_dpd_cuda_nohost( const float * const xyzuvw, const float4 * const xy
 
     CC( cudaBindTexture( &textureoffset, &texParticlesF4, xyzouvwo,  &texParticlesF4.channelDesc, sizeof( float ) * 8 * np ) );
     CC( cudaBindTexture( &textureoffset, &texParticlesH4, xyzo_half, &texParticlesH4.channelDesc, sizeof( ushort4 ) * np ) );
-    make_texture2 <<< 64, 512, 0, stream>>>( start_and_count, cellsstart, cellscount, ncells );
+    make_texture2 <<< 64, 512, 0>>>( start_and_count, cellsstart, cellscount, ncells );
     CC( cudaBindTexture( &textureoffset, &texStartAndCount, start_and_count, &texStartAndCount.channelDesc, sizeof( uint2 ) * ncells ) );
 
     c.ncells = make_int3( nx, ny, nz );
@@ -463,7 +463,7 @@ void forces_dpd_cuda_nohost( const float * const xyzuvw, const float4 * const xy
     c.seed = seed;
 
     if (!is_mps_enabled)
-	CC( cudaMemcpyToSymbolAsync( info, &c, sizeof( c ), 0, cudaMemcpyHostToDevice, stream ) );
+	CC( cudaMemcpyToSymbolAsync( info, &c, sizeof( c ), 0, cudaMemcpyHostToDevice) );
     else
 	CC( cudaMemcpyToSymbol( info, &c, sizeof( c ), 0, cudaMemcpyHostToDevice ) );
 
@@ -475,22 +475,21 @@ void forces_dpd_cuda_nohost( const float * const xyzuvw, const float4 * const xy
         CC( cudaEventRecord( evstart ) );
 #endif
 
-    // YUHANG: fixed bug: not using stream
     int np32 = np;
     if( np32 % 32 ) np32 += 32 - np32 % 32;
-    CC( cudaMemsetAsync( axayaz, 0, sizeof( float )* np32 * 3, stream ) );
+    CC( cudaMemsetAsync( axayaz, 0, sizeof( float )* np32 * 3) );
 
     if( c.ncells.x % MYCPBX == 0 && c.ncells.y % MYCPBY == 0 && c.ncells.z % MYCPBZ == 0 ) {
-        _dpd_forces_symm_merged <<< dim3( c.ncells.x / MYCPBX, c.ncells.y / MYCPBY, c.ncells.z / MYCPBZ ), dim3( 32, MYWPB ), 0, stream >>> ();
+        _dpd_forces_symm_merged <<< dim3( c.ncells.x / MYCPBX, c.ncells.y / MYCPBY, c.ncells.z / MYCPBZ ), dim3( 32, MYWPB ), 0>>> ();
 #ifdef TRANSPOSED_ATOMICS
-        transpose_acc <<< 28, 1024, 0, stream>>>( np );
+        transpose_acc <<< 28, 1024, 0>>>( np );
 #endif
     } else {
         fprintf( stderr, "Incompatible grid config\n" );
     }
 
 #ifdef ONESTEP
-    check_acc <<< 1, 1, 0, stream>>>( np );
+    check_acc <<< 1, 1, 0>>>( np );
     CC( cudaDeviceSynchronize() );
     CC( cudaDeviceReset() );
     MPI_Finalize();

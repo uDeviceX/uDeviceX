@@ -16,8 +16,7 @@ namespace FSI {
     delete wsolvent;
   }
 
-void bulk(std::vector<ParticlesWrap> wsolutes,
-                      cudaStream_t stream) {
+  void bulk(std::vector<ParticlesWrap> wsolutes) {
   if (wsolutes.size() == 0) return;
 
   KernelsFSI::setup(wsolvent->p, wsolvent->n, wsolvent->cellsstart,
@@ -29,14 +28,14 @@ void bulk(std::vector<ParticlesWrap> wsolutes,
        it != wsolutes.end(); ++it)
     if (it->n)
       KernelsFSI::
-	interactions_3tpp<<<(3 * it->n + 127) / 128, 128, 0, stream>>>
+	interactions_3tpp<<<(3 * it->n + 127) / 128, 128, 0>>>
 	((float2 *)it->p, it->n, wsolvent->n, (float *)it->a,
 	 (float *)wsolvent->a, local_trunk->get_float());
 
   CC(cudaPeekAtLastError());
 }
 
-void halo(ParticlesWrap halos[26], cudaStream_t stream) {
+void halo(ParticlesWrap halos[26]) {
   KernelsFSI::setup(wsolvent->p, wsolvent->n, wsolvent->cellsstart,
                     wsolvent->cellscount);
 
@@ -50,8 +49,7 @@ void halo(ParticlesWrap halos[26], cudaStream_t stream) {
     for (int i = 0; i < 26; ++i) recvpackcount[i] = halos[i].n;
 
     CC(cudaMemcpyToSymbolAsync(KernelsFSI::packcount, recvpackcount,
-                               sizeof(recvpackcount), 0, cudaMemcpyHostToDevice,
-                               stream));
+                               sizeof(recvpackcount), 0, cudaMemcpyHostToDevice));
 
     recvpackstarts_padded[0] = 0;
     for (int i = 0, s = 0; i < 26; ++i)
@@ -61,7 +59,7 @@ void halo(ParticlesWrap halos[26], cudaStream_t stream) {
 
     CC(cudaMemcpyToSymbolAsync(
 			       KernelsFSI::packstarts_padded, recvpackstarts_padded,
-			       sizeof(recvpackstarts_padded), 0, cudaMemcpyHostToDevice, stream));
+			       sizeof(recvpackstarts_padded), 0, cudaMemcpyHostToDevice));
   }
 
   {
@@ -71,7 +69,7 @@ void halo(ParticlesWrap halos[26], cudaStream_t stream) {
 
     CC(cudaMemcpyToSymbolAsync(KernelsFSI::packstates, recvpackstates,
                                sizeof(recvpackstates), 0,
-                               cudaMemcpyHostToDevice, stream));
+                               cudaMemcpyHostToDevice));
   }
 
   {
@@ -80,16 +78,13 @@ void halo(ParticlesWrap halos[26], cudaStream_t stream) {
     for (int i = 0; i < 26; ++i) packresults[i] = halos[i].a;
 
     CC(cudaMemcpyToSymbolAsync(KernelsFSI::packresults, packresults,
-                               sizeof(packresults), 0, cudaMemcpyHostToDevice,
-                               stream));
+                               sizeof(packresults), 0, cudaMemcpyHostToDevice));
   }
 
   if (nremote_padded)
     KernelsFSI::
-      interactions_halo<<<(nremote_padded + 127) / 128, 128, 0, stream>>>
+      interactions_halo<<<(nremote_padded + 127) / 128, 128, 0>>>
       (nremote_padded, wsolvent->n, (float *)wsolvent->a,
        local_trunk->get_float());
-
-  CC(cudaPeekAtLastError());
 }
 }

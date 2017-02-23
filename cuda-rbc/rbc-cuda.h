@@ -38,10 +38,10 @@ int get_nvertices();
 void initialize(float *device_xyzuvw, const float (*transform)[4]);
 
 /* non-synchronizing */
-void forces_nohost(cudaStream_t stream, int ncells, const float * const device_xyzuvw, float * const device_axayaz);
+void forces_nohost(int ncells, const float * const device_xyzuvw, float * const device_axayaz);
 
 /*non-synchronizing, extent not initialized */
-void extent_nohost(cudaStream_t stream, int ncells, const float * const xyzuvw, Extent * device_extent, int n = -1);
+void extent_nohost(int ncells, const float * const xyzuvw, Extent * device_extent, int n = -1);
 
 /* get me a pointer to YOUR plain array - no allocation on my side */
 void get_triangle_indexing(int (*&host_triplets_ptr)[3], int& ntriangles);

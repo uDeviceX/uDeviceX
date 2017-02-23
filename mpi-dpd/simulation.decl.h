@@ -11,7 +11,6 @@ namespace Sim {
   bool sim_is_done = false;
 
   MPI_Comm activecomm;
-  cudaStream_t mainstream, uploadstream, downloadstream;
 
   size_t nsteps;
   float driving_acceleration = 0;

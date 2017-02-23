@@ -674,7 +674,7 @@ namespace CudaRBC
 
     // **************************************************************************************************
 
-    void forces_nohost(cudaStream_t stream, int ncells, const float * const device_xyzuvw, float * const device_axayaz)
+    void forces_nohost(int ncells, const float * const device_xyzuvw, float * const device_axayaz)
     {
         if (ncells == 0) return;
 
@@ -692,15 +692,15 @@ namespace CudaRBC
         dim3 avThreads(256, 1);
         dim3 avBlocks( 1, ncells );
 
-        CC( cudaMemsetAsync(host_av, 0, ncells * 2 * sizeof(float), stream) );
-        areaAndVolumeKernel<<<avBlocks, avThreads, 0, stream>>>(host_av);
+        CC( cudaMemsetAsync(host_av, 0, ncells * 2 * sizeof(float)) );
+        areaAndVolumeKernel<<<avBlocks, avThreads, 0>>>(host_av);
         CC( cudaPeekAtLastError() );
 
         int threads = 128;
         int blocks  = (ncells*params.nvertices*7 + threads-1) / threads;
 
-        fall_kernel<498><<<blocks, threads, 0, stream>>>(ncells, host_av, device_axayaz);
-        addKernel<<<(params.nvertices + 127) / 128, 128, 0, stream>>>(device_axayaz, addfrc, params.nvertices);
+        fall_kernel<498><<<blocks, threads, 0>>>(ncells, host_av, device_axayaz);
+        addKernel<<<(params.nvertices + 127) / 128, 128, 0>>>(device_axayaz, addfrc, params.nvertices);
     }
 
     void get_triangle_indexing(int (*&host_triplets_ptr)[3], int& ntriangles)
@@ -714,7 +714,7 @@ namespace CudaRBC
         return orig_xyzuvw;
     }
 
-    void extent_nohost(cudaStream_t stream, int ncells, const float * const xyzuvw, Extent * device_extent, int n)
+    void extent_nohost(int ncells, const float * const xyzuvw, Extent * device_extent, int n)
     { }
 
 

@@ -736,17 +736,16 @@ namespace Wall {
     CC(cudaPeekAtLastError());
   }
 
-  void bounce(Particle *const p, const int n, cudaStream_t stream) {
+  void bounce(Particle *const p, const int n) {
     if (n > 0)
-      WallKernels::bounce<<<(n + 127) / 128, 128, 0, stream>>>
+      WallKernels::bounce<<<(n + 127) / 128, 128, 0>>>
 	((float2 *)p, n, dt);
 
     CC(cudaPeekAtLastError());
   }
 
   void interactions(const Particle *const p, const int n,
-			 Acceleration *const acc,
-			 cudaStream_t stream) {
+		    Acceleration *const acc) {
     // cellsstart and cellscount IGNORED for now
 
     if (n > 0 && solid_size > 0) {
@@ -767,7 +766,7 @@ namespace Wall {
 			 sizeof(int) * wall_cells->ncells));
 
       WallKernels::
-	interactions_3tpp<<<(3 * n + 127) / 128, 128, 0, stream>>>
+	interactions_3tpp<<<(3 * n + 127) / 128, 128, 0>>>
 	((float2 *)p, n, solid_size, (float *)acc, trunk->get_float());
 
       CC(cudaUnbindTexture(WallKernels::texWallParticles));

@@ -185,7 +185,7 @@ __global__ void gexscan(uint4 *vin, unsigned int *offs, uint4 *vout, int n) {
     return;
 }
 
-void scan(unsigned char *input, int size, cudaStream_t stream, uint *output)
+void scan(unsigned char *input, int size, uint *output)
 {
     enum { THREADS = 128 } ;
 
@@ -196,9 +196,9 @@ void scan(unsigned char *input, int size, cudaStream_t stream, uint *output)
 
     int nblocks = ((size / 16) + THREADS - 1 ) / THREADS;
 
-    breduce< THREADS / 32 ><<<nblocks, THREADS, 0, stream>>>((uint4 *)input, tmp, size / 16);
+    breduce< THREADS / 32 ><<<nblocks, THREADS, 0>>>((uint4 *)input, tmp, size / 16);
 
-    bexscan< THREADS ><<<1, THREADS, nblocks*sizeof(uint), stream>>>(tmp, nblocks);
+    bexscan< THREADS ><<<1, THREADS, nblocks*sizeof(uint)>>>(tmp, nblocks);
 
-    gexscan< THREADS / 32 ><<<nblocks, THREADS, 0, stream>>>((uint4 *)input, tmp, (uint4 *)output, size / 16);
+    gexscan< THREADS / 32 ><<<nblocks, THREADS, 0>>>((uint4 *)input, tmp, (uint4 *)output, size / 16);
 }

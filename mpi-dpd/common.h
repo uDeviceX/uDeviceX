@@ -181,7 +181,7 @@ struct CellLists {
     CC(cudaMalloc(&count, sizeof(int) * ncells));
   }
 
-  void build(Particle *const p, const int n, cudaStream_t stream,
+  void build(Particle *const p, const int n,
              int *const order = NULL, const Particle *const src = NULL);
 
   ~CellLists() {

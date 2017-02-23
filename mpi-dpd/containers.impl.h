@@ -172,16 +172,16 @@ namespace ParticleKernels {
 } /* end of ParticleKernels */
 
 namespace Cont {
-void upd_stg1(ParticleArray* pa, bool rbcflag, float driving_acceleration, cudaStream_t stream) {
+void upd_stg1(ParticleArray* pa, bool rbcflag, float driving_acceleration) {
   if (pa->pp.S)
-    ParticleKernels::upd_stg1<<<(pa->pp.S + 127) / 128, 128, 0, stream>>>
+    ParticleKernels::upd_stg1<<<(pa->pp.S + 127) / 128, 128, 0>>>
       (rbcflag, pa->pp.D, pa->aa.D, pa->pp.S,
        dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
-void  upd_stg2_and_1(ParticleArray* pa, bool rbcflag, float driving_acceleration, cudaStream_t stream) {
+void  upd_stg2_and_1(ParticleArray* pa, bool rbcflag, float driving_acceleration) {
   if (pa->pp.S)
-    ParticleKernels::upd_stg2_and_1<<<(pa->pp.S + 127) / 128, 128, 0, stream>>>
+    ParticleKernels::upd_stg2_and_1<<<(pa->pp.S + 127) / 128, 128, 0>>>
       (rbcflag, (float2 *)pa->pp.D, (float *)pa->aa.D, pa->pp.S,
        dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
@@ -287,7 +287,7 @@ void setup(ParticleArray* pa, const char *path2ic) {
 }
 
 int  pcount() {return ncells * nvertices;}
-void clear_acc(ParticleArray* pa, cudaStream_t stream) {CC(cudaMemsetAsync(pa->aa.D, 0, sizeof(Acceleration) * pa->aa.S, stream));}
+void clear_acc(ParticleArray* pa) {CC(cudaMemsetAsync(pa->aa.D, 0, sizeof(Acceleration) * pa->aa.S));}
 static void rbc_dump0(const char *format4ply,
 		      MPI_Comm comm, int ncells,
 		      Particle *p, Acceleration *a, int n, int iddatadump) {

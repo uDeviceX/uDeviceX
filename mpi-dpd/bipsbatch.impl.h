@@ -143,7 +143,6 @@ namespace BipsBatch {
   }
 
   void interactions(float invsqrtdt, BatchInfo infos[20],
-		    cudaStream_t computestream, cudaStream_t uploadstream,
 		    float *acc, int n) {
     if (firstcall) {
       CC(cudaEventCreate(&evhalodone, cudaEventDisableTiming));
@@ -152,7 +151,7 @@ namespace BipsBatch {
     }
 
     CC(cudaMemcpyToSymbolAsync(batchinfos, infos, sizeof(BatchInfo) * 26, 0,
-			       cudaMemcpyHostToDevice, uploadstream));
+			       cudaMemcpyHostToDevice));
 
     static unsigned int hstart_padded[27];
 
@@ -162,16 +161,14 @@ namespace BipsBatch {
         hstart_padded[i] + 16 * (((unsigned int)infos[i].ndst + 15) / 16);
 
     CC(cudaMemcpyToSymbolAsync(start, hstart_padded, sizeof(hstart_padded), 0,
-			       cudaMemcpyHostToDevice, uploadstream));
+			       cudaMemcpyHostToDevice));
 
     int nthreads = 2 * hstart_padded[26];
 
-    CC(cudaEventRecord(evhalodone, uploadstream));
-
-    CC(cudaStreamWaitEvent(computestream, evhalodone, 0));
+    CC(cudaEventRecord(evhalodone));
 
     if (nthreads)
-      interaction_kernel<<<(nthreads + 127) / 128, 128, 0, computestream>>>
+      interaction_kernel<<<(nthreads + 127) / 128, 128, 0>>>
 	(nthreads, acc, n);
 
     CC(cudaPeekAtLastError());

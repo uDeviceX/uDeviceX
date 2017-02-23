@@ -94,14 +94,14 @@ void directforces_dpd_cuda_bipartite_nohost(
     const float * const xyzuvw, float * const axayaz, const int np,
     const float * const xyzuvw_src, const int np_src,
     const float invsqrtdt,
-    const float seed, const int mask, cudaStream_t stream )
+    const float seed, const int mask)
 {
     if( np == 0 || np_src == 0 ) {
         printf( "warning: directforces_dpd_cuda_bipartite_nohost called with ZERO!\n" );
         return;
     }
 
-    _bipartite_dpd_directforces_floatized <<< ( np + 127 ) / 128, 128, 0, stream >>> ( axayaz, np, np_src, seed, mask,
+    _bipartite_dpd_directforces_floatized <<< ( np + 127 ) / 128, 128, 0 >>> ( axayaz, np, np_src, seed, mask,
             xyzuvw, xyzuvw_src, 1);
 
     CC( cudaPeekAtLastError() );
@@ -221,7 +221,7 @@ void _dpd_bipforces_floatized( const float2 * const xyzuvw, const int np, cudaTe
     }
 }
 
-void forces_dpd_cuda_bipartite_nohost( cudaStream_t stream, const float2 * const xyzuvw, const int np, cudaTextureObject_t texDstStart,
+void forces_dpd_cuda_bipartite_nohost( const float2 * const xyzuvw, const int np, cudaTextureObject_t texDstStart,
                                        cudaTextureObject_t texSrcStart, cudaTextureObject_t texSrcParticles, const int np_src,
                                        const int3 halo_ncells,
                                        const float seed, const int mask, float * const axayaz )
@@ -236,7 +236,7 @@ void forces_dpd_cuda_bipartite_nohost( cudaStream_t stream, const float2 * const
         fbip_init = true;
     }
 
-    _dpd_bipforces_floatized <<< ( ncells + CPB - 1 ) / CPB, dim3( 32, CPB ), 0, stream >>> (
+    _dpd_bipforces_floatized <<< ( ncells + CPB - 1 ) / CPB, dim3( 32, CPB ), 0>>> (
         xyzuvw, np, texDstStart, texSrcStart, texSrcParticles, np_src,
         halo_ncells, seed, mask,
         axayaz );

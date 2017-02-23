@@ -13,7 +13,7 @@ void forces_dpd_cuda_nohost(const float * const xyzuvw, const float4 * const xyz
                             const float rc,
                             const float XL, const float YL, const float ZL,
                             const float invsqrtdt,
-                            const float seed, cudaStream_t stream);
+                            const float seed);
 
 void forces_dpd_cuda(const float * const xp, const float * const yp, const float * const zp,
                      const float * const xv, const float * const yv, const float * const zv,
@@ -28,9 +28,9 @@ void directforces_dpd_cuda_bipartite_nohost(
     const float * const xyzuvw, float * const axayaz, const int np,
     const float * const xyzuvw_src, const int np_src,
     const float invsqrtdt,
-    const float seed, const int mask, cudaStream_t stream);
+    const float seed, const int mask);
 
-void forces_dpd_cuda_bipartite_nohost(cudaStream_t stream, const float2 * const xyzuvw, const int np, cudaTextureObject_t texDstStart,
+void forces_dpd_cuda_bipartite_nohost(const float2 * const xyzuvw, const int np, cudaTextureObject_t texDstStart,
                                       cudaTextureObject_t texSrcStart, cudaTextureObject_t texSrcParticles, const int np_src,
                                       const int3 halo_ncells,
                                       const float seed, const int mask, float * const axayaz);

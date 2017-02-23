@@ -12,14 +12,14 @@ MPI_Datatype Particle::mytype;
 bool Acceleration::initialized = false;
 MPI_Datatype Acceleration::mytype;
 
-void CellLists::build(Particle * const p, const int n, cudaStream_t stream, int * const order, const Particle * const src)
+void CellLists::build(Particle * const p, const int n, int * const order, const Particle * const src)
 {
     if (n > 0)
-      build_clists_vanilla((float * )p, n, 1, LX, LY, LZ, -LX/2, -LY/2, -LZ/2, order, start, count,  NULL, stream, (float *)src);
+      build_clists_vanilla((float * )p, n, 1, LX, LY, LZ, -LX/2, -LY/2, -LZ/2, order, start, count,  NULL, (float *)src);
     else
     {
-        CC(cudaMemsetAsync(start, 0, sizeof(int) * ncells, stream));
-        CC(cudaMemsetAsync(count, 0, sizeof(int) * ncells, stream));
+        CC(cudaMemsetAsync(start, 0, sizeof(int) * ncells));
+        CC(cudaMemsetAsync(count, 0, sizeof(int) * ncells));
     }
 }
 

@@ -1,13 +1,13 @@
 namespace SolEx {
   void _not_nan(float*, int) {};
-  void bind_solutes(std::vector<ParticlesWrap> wsolutes_) {wsolutes = wsolutes_;}  
+  void bind_solutes(std::vector<ParticlesWrap> wsolutes_) {wsolutes = wsolutes_;}
   void _adjust_packbuffers() {
     int s = 0;
     for (int i = 0; i < 26; ++i) s += 32 * ((local[i]->capacity() + 31) / 32);
     packbuf->resize(s);
     host_packbuf->resize(s);
   }
-  
+
   void init(MPI_Comm _cartcomm) {
     iterationcount = -1;
     packstotalstart = new DeviceBuffer<int>(27);
@@ -22,7 +22,7 @@ namespace SolEx {
     host_packbuf = new PinnedHostBuffer<Particle>;
 
     for (int i = 0; i < SE_HALO_SIZE; i++) local[i] = new LocalHalo;
-    for (int i = 0; i < SE_HALO_SIZE; i++) remote[i] = new RemoteHalo;    
+    for (int i = 0; i < SE_HALO_SIZE; i++) remote[i] = new RemoteHalo;
 
     MC(MPI_Comm_dup(_cartcomm, &cartcomm));
     MC(MPI_Comm_size(cartcomm, &nranks));
@@ -99,33 +99,32 @@ namespace SolEx {
     }
   }
 
-  void _pack_attempt(cudaStream_t stream) {
+  void _pack_attempt() {
     CC(cudaPeekAtLastError());
 
     if (packscount->S)
-      CC(cudaMemsetAsync(packscount->D, 0, sizeof(int) * packscount->S, stream));
+      CC(cudaMemsetAsync(packscount->D, 0, sizeof(int) * packscount->S));
 
     if (packsoffset->S)
-      CC(cudaMemsetAsync(packsoffset->D, 0, sizeof(int) * packsoffset->S, stream));
+      CC(cudaMemsetAsync(packsoffset->D, 0, sizeof(int) * packsoffset->S));
 
     if (packsstart->S)
-      CC(cudaMemsetAsync(packsstart->D, 0, sizeof(int) * packsstart->S, stream));
+      CC(cudaMemsetAsync(packsstart->D, 0, sizeof(int) * packsstart->S));
 
-    SolutePUP::init<<<1, 1, 0, stream>>>();
+    SolutePUP::init<<<1, 1, 0>>>();
 
     for (int i = 0; i < wsolutes.size(); ++i) {
       ParticlesWrap it = wsolutes[i];
 
       if (it.n) {
 	CC(cudaMemcpyToSymbolAsync(SolutePUP::coffsets, packsoffset->D + 26 * i,
-				   sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice,
-				   stream));
+				   sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice));
 
-	SolutePUP::scatter_indices<<<(it.n + 127) / 128, 128, 0, stream>>>(
+	SolutePUP::scatter_indices<<<(it.n + 127) / 128, 128, 0>>>(
 									   (float2 *)it.p, it.n, packscount->D + i * 26);
       }
 
-      SolutePUP::tiny_scan<<<1, 32, 0, stream>>>(
+      SolutePUP::tiny_scan<<<1, 32, 0>>>(
 						 packscount->D + i * 26, packsoffset->D + 26 * i,
 						 packsoffset->D + 26 * (i + 1), packsstart->D + i * 27);
 
@@ -134,43 +133,41 @@ namespace SolEx {
 
     CC(cudaMemcpyAsync(host_packstotalcount->D,
 		       packsoffset->D + 26 * wsolutes.size(), sizeof(int) * 26,
-		       cudaMemcpyDeviceToHost, stream));
+		       cudaMemcpyDeviceToHost));
 
-    SolutePUP::tiny_scan<<<1, 32, 0, stream>>>(
+    SolutePUP::tiny_scan<<<1, 32, 0>>>(
 					       packsoffset->D + 26 * wsolutes.size(), NULL, NULL, packstotalstart->D);
 
     CC(cudaMemcpyAsync(host_packstotalstart->D, packstotalstart->D,
-		       sizeof(int) * 27, cudaMemcpyDeviceToHost, stream));
+		       sizeof(int) * 27, cudaMemcpyDeviceToHost));
 
     CC(cudaMemcpyToSymbolAsync(SolutePUP::cbases, packstotalstart->D,
-			       sizeof(int) * 27, 0, cudaMemcpyDeviceToDevice,
-			       stream));
+			       sizeof(int) * 27, 0, cudaMemcpyDeviceToDevice));
+
 
     for (int i = 0; i < wsolutes.size(); ++i) {
       ParticlesWrap it = wsolutes[i];
 
       if (it.n) {
 	CC(cudaMemcpyToSymbolAsync(SolutePUP::coffsets, packsoffset->D + 26 * i,
-				   sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice,
-				   stream));
+				   sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice));
 	CC(cudaMemcpyToSymbolAsync(SolutePUP::ccounts, packscount->D + 26 * i,
-				   sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice,
-				   stream));
+				   sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice));
 	CC(cudaMemcpyToSymbolAsync(SolutePUP::cpaddedstarts,
 				   packsstart->D + 27 * i, sizeof(int) * 27, 0,
-				   cudaMemcpyDeviceToDevice, stream));
+				   cudaMemcpyDeviceToDevice));
 
-	SolutePUP::pack<<<14 * 16, 128, 0, stream>>>
+	SolutePUP::pack<<<14 * 16, 128, 0>>>
 	  ((float2 *)it.p, it.n, (float2 *)packbuf->D, packbuf->C, i);
       }
     }
 
-    CC(cudaEventRecord(evPpacked, stream));
+    CC(cudaEventRecord(evPpacked));
 
     CC(cudaPeekAtLastError());
   }
 
-  void pack_p(cudaStream_t stream) {
+  void pack_p() {
     if (wsolutes.size() == 0) return;
 
     ++iterationcount;
@@ -179,10 +176,10 @@ namespace SolEx {
     packsoffset->resize(26 * (wsolutes.size() + 1));
     packsstart->resize(27 * wsolutes.size());
 
-    _pack_attempt(stream);
+    _pack_attempt();
   }
 
-  void post_p(cudaStream_t stream, cudaStream_t downloadstream) {
+  void post_p() {
     if (wsolutes.size() == 0) return;
 
     CC(cudaPeekAtLastError());
@@ -211,20 +208,19 @@ namespace SolEx {
 
 	CC(cudaMemcpyToSymbolAsync(SolutePUP::ccapacities, newcapacities,
 				   sizeof(newcapacities), 0,
-				   cudaMemcpyHostToDevice, stream));
+				   cudaMemcpyHostToDevice));
 
 	int *newindices[26];
 	for (int i = 0; i < 26; ++i) newindices[i] = local[i]->scattered_indices->D;
 
 	CC(cudaMemcpyToSymbolAsync(SolutePUP::scattered_indices, newindices,
-				   sizeof(newindices), 0, cudaMemcpyHostToDevice,
-				   stream));
+				   sizeof(newindices), 0, cudaMemcpyHostToDevice));
 
 	_adjust_packbuffers();
 
-	_pack_attempt(stream);
+	_pack_attempt();
 
-	CC(cudaStreamSynchronize(stream));
+	CC(cudaDeviceSynchronize()); /* was CC(cudaStreamSynchronize(stream)); */
       }
 
       for (int i = 0; i < 26; ++i) local[i]->resize(send_counts[i]);
@@ -239,10 +235,9 @@ namespace SolEx {
       if (host_packstotalstart->D[26]) {
 	CC(cudaMemcpyAsync(host_packbuf->D, packbuf->D,
 			   sizeof(Particle) * host_packstotalstart->D[26],
-			   cudaMemcpyDeviceToHost, downloadstream));
+			   cudaMemcpyDeviceToHost));
       }
-
-      CC(cudaStreamSynchronize(downloadstream));
+      CC(cudaDeviceSynchronize()); /* was CC(cudaStreamSynchronize(downloadstream)); */
     }
 
     // post the sending of the packs
@@ -278,7 +273,7 @@ namespace SolEx {
     }
   }
 
-  void recv_p(cudaStream_t uploadstream) {
+  void recv_p() {
     if (wsolutes.size() == 0) return;
 
     _wait(reqrecvC);
@@ -307,10 +302,10 @@ namespace SolEx {
     for (int i = 0; i < 26; ++i)
       CC(cudaMemcpyAsync(remote[i]->dstate.D, remote[i]->hstate.D,
 			 sizeof(Particle) * remote[i]->hstate.S,
-			 cudaMemcpyHostToDevice, uploadstream));
+			 cudaMemcpyHostToDevice));
   }
 
-  void halo(cudaStream_t uploadstream, cudaStream_t stream) {
+  void halo() {
     if (wsolutes.size() == 0) return;
 
     if (iterationcount) _wait(reqsendA);
@@ -321,16 +316,16 @@ namespace SolEx {
       halos[i] = ParticlesWrap(remote[i]->dstate.D, remote[i]->dstate.S,
 			       remote[i]->result.DP);
 
-    CC(cudaStreamSynchronize(uploadstream));
+    CC(cudaDeviceSynchronize()); /* was CC(cudaStreamSynchronize(uploadstream)); */
 
     /** here was visitor  **/
-    FSI::halo(halos, stream);
-    if (contactforces) Contact::halo(halos, stream);
+    FSI::halo(halos);
+    if (contactforces) Contact::halo(halos);
     /***********************/
 
     CC(cudaPeekAtLastError());
 
-    CC(cudaEventRecord(evAcomputed, stream));
+    CC(cudaEventRecord(evAcomputed));
 
     for (int i = 0; i < 26; ++i) local[i]->update();
 
@@ -349,7 +344,7 @@ namespace SolEx {
 		   &reqsendA[i]));
   }
 
-  void recv_a(cudaStream_t stream) {
+  void recv_a() {
     CC(cudaPeekAtLastError());
 
     if (wsolutes.size() == 0) return;
@@ -360,7 +355,7 @@ namespace SolEx {
       for (int i = 0; i < 26; ++i) recvbags[i] = (float *)local[i]->result->DP;
 
       CC(cudaMemcpyToSymbolAsync(SolutePUP::recvbags, recvbags, sizeof(recvbags),
-				 0, cudaMemcpyHostToDevice, stream));
+				 0, cudaMemcpyHostToDevice));
     }
 
     _wait(reqrecvA);
@@ -371,15 +366,13 @@ namespace SolEx {
       if (it.n) {
 	CC(cudaMemcpyToSymbolAsync(SolutePUP::cpaddedstarts,
 				   packsstart->D + 27 * i, sizeof(int) * 27, 0,
-				   cudaMemcpyDeviceToDevice, stream));
+				   cudaMemcpyDeviceToDevice));
 	CC(cudaMemcpyToSymbolAsync(SolutePUP::ccounts, packscount->D + 26 * i,
-				   sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice,
-				   stream));
+				   sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice));
 	CC(cudaMemcpyToSymbolAsync(SolutePUP::coffsets, packsoffset->D + 26 * i,
-				   sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice,
-				   stream));
+				   sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice));
 
-	SolutePUP::unpack<<<16 * 14, 128, 0, stream>>>((float *)it.a, it.n);
+	SolutePUP::unpack<<<16 * 14, 128, 0>>>((float *)it.a, it.n);
       }
       CC(cudaPeekAtLastError());
     }
