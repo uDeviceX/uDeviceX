@@ -53,42 +53,19 @@ void _compute_extents(Particle *xyzuvw,
     minmax(xyzuvw, nvertices, nrbcs, minextents->DP, maxextents->DP);
 }
 
-namespace ReorderingRBC {
-static const int cmaxnrbcs = 64 * 4;
-__constant__ float *csources[cmaxnrbcs], *cdestinations[cmaxnrbcs];
-
-template <bool from_cmem>
-__global__ void pack_all_kernel(const int nrbcs, const int nvertices,
-				const float **const dsources,
-				float **const ddestinations) {
-  if (nrbcs == 0) return;
-  const int nfloats_per_rbc = 6 * nvertices;
-  const int gid = threadIdx.x + blockDim.x * blockIdx.x;
-  if (gid >= nfloats_per_rbc * nrbcs) return;
-  const int idrbc = gid / nfloats_per_rbc;
-  const int offset = gid % nfloats_per_rbc;
-
-  float val;
-  if (from_cmem) val = csources[idrbc][offset];
-  else           val = dsources[idrbc][offset];
-
-  if (from_cmem) cdestinations[idrbc][offset] = val;
-  else           ddestinations[idrbc][offset] = val;
-
-}
-
 void pack_all(const int nrbcs, const int nvertices,
 	      const float **const sources, float **const destinations) {
   if (nrbcs == 0) return;
   int nthreads = nrbcs * nvertices * 6;
 
-  if (nrbcs < cmaxnrbcs) {
-    CC(cudaMemcpyToSymbolAsync(cdestinations, destinations,
+  if (nrbcs < ReorderingRBC::cmaxnrbcs) {
+    CC(cudaMemcpyToSymbolAsync(ReorderingRBC::cdestinations, destinations,
 			       sizeof(float *) * nrbcs, 0,
 			       cudaMemcpyHostToDevice));
-    CC(cudaMemcpyToSymbolAsync(csources, sources, sizeof(float *) * nrbcs, 0,
+    CC(cudaMemcpyToSymbolAsync(ReorderingRBC::csources,
+			       sources, sizeof(float *) * nrbcs, 0,
 			       cudaMemcpyHostToDevice));
-    pack_all_kernel<true><<<(nthreads + 127) / 128, 128, 0>>>(
+    ReorderingRBC::pack_all_kernel<true><<<(nthreads + 127) / 128, 128, 0>>>(
 	nrbcs, nvertices, NULL, NULL);
   } else {
     _ddestinations->resize(nrbcs);
@@ -97,11 +74,10 @@ void pack_all(const int nrbcs, const int nvertices,
 		       cudaMemcpyHostToDevice));
     CC(cudaMemcpyAsync(_dsources->D, sources, sizeof(float *) * nrbcs,
 		       cudaMemcpyHostToDevice));
-    pack_all_kernel<false><<<(nthreads + 127) / 128, 128, 0>>>(
+    ReorderingRBC::pack_all_kernel<false><<<(nthreads + 127) / 128, 128, 0>>>(
 	nrbcs, nvertices, _dsources->D, _ddestinations->D);
   }
 
-}
 }
 
 void extent(Particle *xyzuvw, int nrbcs) {
@@ -112,6 +88,7 @@ void extent(Particle *xyzuvw, int nrbcs) {
 
   CC(cudaEventRecord(evextents));
 }
+
 
 void pack_sendcount(Particle *xyzuvw,
 				      int nrbcs) {
@@ -148,8 +125,8 @@ void pack_sendcount(Particle *xyzuvw,
 	else
 	  dst.push_back((float *)(bulk->D + nvertices * j));
       }
-    ReorderingRBC::pack_all(src.size(), nvertices, &src.front(),
-			    &dst.front());
+    pack_all(src.size(), nvertices, &src.front(),
+	     &dst.front());
 
   }
   CC(cudaDeviceSynchronize()); /* was CC(cudaStreamSynchronize(stream)); */
@@ -200,18 +177,6 @@ int post() {
   return notleaving + arriving;
 }
 
-__global__ void shift(const Particle *const psrc, const int np, const int code,
-		      const int rank, const bool check, Particle *const pdst) {
-  int pid = threadIdx.x + blockDim.x * blockIdx.x;
-  int d[3] = {(code + 1) % 3 - 1, (code / 3 + 1) % 3 - 1,
-	      (code / 9 + 1) % 3 - 1};
-  if (pid >= np) return;
-  Particle pnew = psrc[pid];
-  int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
-  for (int c = 0; c < 3; ++c) pnew.x[c] -= d[c] * L[c];
-  pdst[pid] = pnew;
-}
-
 void unpack(Particle *xyzuvw, int nrbcs) {
   MPI_Status statuses[26];
   MC(MPI_Waitall(recvreq.size(), &recvreq.front(), statuses));
@@ -224,13 +189,10 @@ void unpack(Particle *xyzuvw, int nrbcs) {
   for (int i = 1, s = notleaving * nvertices; i < 27; ++i) {
     int count = halo_recvbufs[i]->S;
     if (count > 0)
-      shift<<<(count + 127) / 128, 128, 0>>>(
+      ReorderingRBC::shift<<<(count + 127) / 128, 128, 0>>>(
 	  halo_recvbufs[i]->DP, count, i, myrank, false, xyzuvw + s);
     s += halo_recvbufs[i]->S;
   }
-
-
-
   _post_recvcount();
 }
 
@@ -245,5 +207,5 @@ void redistribute_rbcs_close() {
   delete _ddestinations;
   delete _dsources;
 }
+}  
 
-}
