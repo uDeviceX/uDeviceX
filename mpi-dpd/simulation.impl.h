@@ -159,6 +159,7 @@ void sim_tmp_init() {
   MC(MPI_Comm_dup(Cont::cartcomm, &mycartcomm));
   dump_part = new H5PartDump("allparticles.h5part", activecomm, Cont::cartcomm);
   dump_field = new H5FieldDump (Cont::cartcomm);
+
   int rank;
   MC(MPI_Comm_rank(myactivecomm, &rank));
   MC(MPI_Barrier(myactivecomm));
@@ -291,7 +292,7 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   }
 
   CC(cudaEventCreate(&evdownloaded,
-		     cudaEventDisableTiming m| cudaEventBlockingSync));
+			     cudaEventDisableTiming | cudaEventBlockingSync));
   particles_datadump->resize(s_pp->S * 1.5);
   accelerations_datadump->resize(s_pp->S * 1.5);
 

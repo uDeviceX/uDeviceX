@@ -21,6 +21,8 @@
 #include <thrust/device_vector.h>
 #include <thrust/sort.h>
 
+#include "common.tmp.h"
+
 #include "redistribute-rbcs.decl.h"
 #include "redistribute-rbcs.impl.h"
 
