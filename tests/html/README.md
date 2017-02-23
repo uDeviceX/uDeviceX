@@ -1,12 +1,10 @@
-uDeviceX
-===
-The uDeviceX folders is organized into:
-* cuda-dpd: code for the DPD interactions
-* cuda-rbc: code for the RBC model
-* mpi-dpd: the simulation code
-* tools: various tools
-
-Former dpd.cu and solvent-exchange.cu kernals:
-packinghalo.decl.h and bipsbatch.decl.h
-
-![alt text](img2.png "Logo Title Text 1")
+## Poiseuille velocity profile
+SUCCESS
+## Double Poiseuille with the same viscosity
+SUCCESS
+## Double Poiseuille velocity profile with different viscosities
+SUCCESS
+## Shear flow velocity profile
+SUCCESS
+## RBC in shear flow
+FAIL

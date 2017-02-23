@@ -4,7 +4,7 @@
 
 BEGIN {
     dir = "html"
-    idx = dir "/index.html"
+    idx = dir "/README.md"
     w = 500; h = 500
     img_templ = "<img src=\"%s\" width=\"%d\" height=\"%d\">"
     img_templ = "<p>" img_templ "</p>"
@@ -23,15 +23,17 @@ $1 ~ /^#include/ {
     read_file(desc)
 
     # check the status and react accordingly
-    if (exists(s)) print "<font color=\"green\">SUCCESS</font>" > idx
-    else           print "<font color=\"red\">FAIL</font>"      > idx
+    if (exists(s)) print "SUCCESS" > idx
+    else           print "FAIL"    > idx
 
-    # always shows images
-    for (id = 1; 1; id++) {
-        img = sprintf("img%d.png", id)
-        if (exists(img)) process_img(img)
-        else             break
-    }
+    # # always shows images
+    # for (id = 1; 1; id++) {
+    #     img = sprintf("img%d.png", id)
+    #     if (exists(img)) process_img(img)
+    #     else             break
+    # }
+
+    # ![alt text](img2.png "Logo Title Text 1")
 
     next
 }
