@@ -133,7 +133,7 @@ void sim_forces() {
   if (rbcs) Cont::clear_acc(r_aa);
   DPD::pack(s_pp->D, s_pp->S, cells->start, cells->count);
   SolEx::pack_p();
-  if (contactforces) Contact::build_cells(wsolutes);
+  if (contactforces) cnt::build_cells(wsolutes);
   DPD::local_interactions(s_pp->D, xyzouvwo->D, xyzo_half->D,
 			 s_pp->S, s_aa->D, cells->start,
 			 cells->count);
@@ -146,7 +146,7 @@ void sim_forces() {
   SolEx::halo();
   DPD::remote_interactions(s_pp->D, s_pp->S, s_aa->D);
   FSI::bulk(wsolutes);
-  if (contactforces) Contact::bulk(wsolutes);
+  if (contactforces) cnt::bulk(wsolutes);
   if (rbcs)
     CudaRBC::forces_nohost(Cont::ncells,
 			   (float *)r_pp->D, (float *)r_aa->D);
@@ -245,7 +245,7 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   DPD::init(Cont::cartcomm);
   FSI::init(Cont::cartcomm);
   SolEx::init(Cont::cartcomm);
-  Contact::init(Cont::cartcomm);
+  cnt::init(Cont::cartcomm);
   cells   = new CellLists(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
   particles_datadump     = new PinnedHostBuffer<Particle>;
   accelerations_datadump = new PinnedHostBuffer<Acceleration>;
@@ -327,7 +327,7 @@ void sim_close() {
 
   delete r_pp; delete r_aa;
   
-  Contact::close();
+  cnt::close();
   delete cells;
   SolEx::close();
   FSI::close();

@@ -318,7 +318,7 @@ namespace SolEx {
 
     /** here was visitor  **/
     FSI::halo(halos);
-    if (contactforces) Contact::halo(halos);
+    if (contactforces) cnt::halo(halos);
     /***********************/
 
 

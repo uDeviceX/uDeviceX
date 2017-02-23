@@ -1,4 +1,4 @@
-namespace Contact {
+namespace cnt {
   void init(MPI_Comm comm) {
     cellsstart = new DeviceBuffer<int>(k::cnt::NCELLS + 16);
     cellscount = new DeviceBuffer<int>(k::cnt::NCELLS + 16);

@@ -40,9 +40,9 @@
 
 #include "k/rex.h"
 
+#include "cnt.decl.h"
 #include "k/cnt.h"
-#include "contact.decl.h"
-#include "contact.impl.h"
+#include "cnt.impl.h"
 
 #include "k/fsi.h"
 

@@ -1,4 +1,4 @@
-namespace Contact {
+namespace cnt {
   int nsolutes;
   DeviceBuffer<uchar4> *subindices;
   DeviceBuffer<unsigned char> *compressed_cellscount;
