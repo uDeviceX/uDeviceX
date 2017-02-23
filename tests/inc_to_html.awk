@@ -23,8 +23,8 @@ $1 ~ /^#include/ {
     read_file(desc)
 
     # check the status and react accordingly
-    if (exists(s)) print sprintf(img_templ, "success.jpg", 50, 50) > idx
-    else           print sprintf(img_templ, "fail.jpg", 50, 50)    > idx
+    if (exists(s)) print sprintf(img_templ, "success.jpg", 80, 80) > idx
+    else           print sprintf(img_templ, "fail.jpg", 80, 80)    > idx
 
     # always shows images
     for (id = 1; 1; id++) {
