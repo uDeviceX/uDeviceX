@@ -297,62 +297,6 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   sim_tmp_init();
 }
 
-static void sim_lockstep() {
-  SolventWrap wsolvent(s_pp->D, s_pp->S,
-		       s_aa->D, cells->start, cells->count);
-  std::vector<ParticlesWrap> wsolutes;
-
-  if (rbcs) wsolutes.push_back(ParticlesWrap(r_pp->D, Cont::pcount(), r_aa->D));
-  
-  FSI::bind_solvent(wsolvent);
-  SolEx::bind_solutes(wsolutes);
-  Cont::clear_acc(s_aa);
-  if (rbcs) Cont::clear_acc(r_aa);
-  SolEx::pack_p();
-  DPD::pack(s_pp->D, s_pp->S, cells->start, cells->count);
-  DPD::local_interactions(s_pp->D, xyzouvwo->D, xyzo_half->D,
-			 s_pp->S, s_aa->D, cells->start,
-			 cells->count);
-  if (contactforces) Contact::build_cells(wsolutes);
-  SolEx::post_p();
-  DPD::post(s_pp->D, s_pp->S);
-  if (wall_created) Wall::interactions(s_pp->D, s_pp->S, s_aa->D);
-  DPD::recv();
-  SolEx::recv_p();
-  SolEx::halo();
-  DPD::remote_interactions(s_pp->D, s_pp->S, s_aa->D);
-  FSI::bulk(wsolutes);
-  if (contactforces) Contact::bulk(wsolutes);
-  if (rbcs)
-    CudaRBC::forces_nohost(Cont::ncells,
-			   (float *)r_pp->D, (float *)r_aa->D);
-  SolEx::post_a();
-  Cont::upd_stg2_and_1(s_pp, s_aa, false, driving_acceleration);
-  if (wall_created) Wall::bounce(s_pp->D, s_pp->S);
-  RedistPart::pack(s_pp->D, s_pp->S);
-  RedistPart::send();
-  RedistPart::bulk(s_pp->S, cells->start, cells->count);
-  if (rbcs && wall_created) Wall::interactions(r_pp->D, Cont::pcount(), r_aa->D);
-  SolEx::recv_a();
-  if (rbcs) Cont::upd_stg2_and_1(r_pp, r_aa, true, driving_acceleration);
-  int newnp = RedistPart::recv_count();
-  if (rbcs) {
-    RedistRBC::extent(r_pp->D, Cont::ncells);
-    RedistRBC::pack_sendcount(r_pp->D, Cont::ncells);
-  }
-  resize2(s_pp0, s_aa0, newnp);
-  xyzouvwo->resize(newnp * 2);
-  xyzo_half->resize(newnp);
-  RedistPart::recv_unpack(s_pp0->D, xyzouvwo->D, xyzo_half->D,
-			  newnp, cells->start, cells->count);
-  swap(s_pp, s_pp0); swap(s_aa, s_aa0);  
-  if (rbcs) {
-    Cont::ncells = RedistRBC::post();
-    rbc_resize2(r_pp, r_aa, Cont::ncells);
-    RedistRBC::unpack(r_pp->D, Cont::ncells);
-  }
-}
-
 void sim_run() {
   if (Cont::rank == 0 && !walls) printf("will take %ld steps\n", nsteps);
   sim_redistribute();
@@ -361,14 +305,6 @@ void sim_run() {
   int it;
   for (it = 0; it < nsteps; ++it) {
     sim_redistribute();
-    while (true) {
-      const bool lockstep_OK =
-	  !(walls && it >= wall_creation_stepid && !wall_created) &&
-	  !(it % steps_per_dump == 0) && !(it + 1 == nsteps);
-      if (!lockstep_OK) break;
-      sim_lockstep();
-      ++it;
-    }
     if (walls && it >= wall_creation_stepid && !wall_created) {
       CC(cudaDeviceSynchronize());
       sim_create_walls();
