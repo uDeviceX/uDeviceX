@@ -317,7 +317,7 @@ namespace SolEx {
     CC(cudaDeviceSynchronize()); /* was CC(cudaStreamSynchronize(uploadstream)); */
 
     /** here was visitor  **/
-    FSI::halo(halos);
+    fsi::halo(halos);
     if (contactforces) cnt::halo(halos);
     /***********************/
 

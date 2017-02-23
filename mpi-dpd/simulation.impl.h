@@ -127,7 +127,7 @@ void sim_forces() {
   if (rbcs)
     wsolutes.push_back(ParticlesWrap(r_pp->D,
 				     Cont::pcount(), r_aa->D));
-  FSI::bind_solvent(wsolvent);
+  fsi::bind_solvent(wsolvent);
   SolEx::bind_solutes(wsolutes);
   Cont::clear_acc(s_aa);
   if (rbcs) Cont::clear_acc(r_aa);
@@ -145,7 +145,7 @@ void sim_forces() {
   SolEx::recv_p();
   SolEx::halo();
   DPD::remote_interactions(s_pp->D, s_pp->S, s_aa->D);
-  FSI::bulk(wsolutes);
+  fsi::bulk(wsolutes);
   if (contactforces) cnt::bulk(wsolutes);
   if (rbcs)
     CudaRBC::forces_nohost(Cont::ncells,
@@ -243,7 +243,7 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   Cont::cartcomm = cartcomm_; activecomm = activecomm_;
   RedistRBC::redistribute_rbcs_init(Cont::cartcomm);
   DPD::init(Cont::cartcomm);
-  FSI::init(Cont::cartcomm);
+  fsi::init(Cont::cartcomm);
   SolEx::init(Cont::cartcomm);
   cnt::init(Cont::cartcomm);
   cells   = new CellLists(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
@@ -330,7 +330,7 @@ void sim_close() {
   cnt::close();
   delete cells;
   SolEx::close();
-  FSI::close();
+  fsi::close();
   DPD::close();
   RedistRBC::redistribute_rbcs_close();
 

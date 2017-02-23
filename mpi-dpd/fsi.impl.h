@@ -1,4 +1,4 @@
-namespace FSI {
+namespace fsi {
   void bind_solvent(SolventWrap wrap) {*wsolvent = wrap;}
   void init(MPI_Comm comm) {
     int myrank;
