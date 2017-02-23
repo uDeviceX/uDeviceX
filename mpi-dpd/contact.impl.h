@@ -13,7 +13,7 @@ namespace Contact {
 
     *local_trunk = Logistic::KISS(7119 - myrank, 187 + myrank, 18278, 15674);
 
-    CC(cudaPeekAtLastError());
+
   }
 
   void build_cells(std::vector<ParticlesWrap> wsolutes) {
@@ -26,7 +26,7 @@ namespace Contact {
     cellsentries->resize(ntotal);
 
     CC(cudaMemsetAsync(cellscount->D, 0, sizeof(int) * cellscount->S));
-    CC(cudaPeekAtLastError());
+
 
     int ctr = 0;
     for (int i = 0; i < wsolutes.size(); ++i) {
@@ -54,7 +54,7 @@ namespace Contact {
 	   (KernelsContact::CellEntry *)cellsentries->D);
       ctr += it.n;
     }
-    CC(cudaPeekAtLastError());
+
     KernelsContact::bind(cellsstart->D, cellsentries->D, ntotal, wsolutes,
 			 cellscount->D);
   }
@@ -68,7 +68,7 @@ namespace Contact {
 	KernelsContact::bulk_3tpp<<<(3 * it.n + 127) / 128, 128, 0>>>
 	  ((float2 *)it.p, it.n, cellsentries->S, wsolutes.size(), (float *)it.a,
 	   local_trunk->get_float(), i);
-      CC(cudaPeekAtLastError());
+
     }
   }
 
@@ -105,7 +105,7 @@ namespace Contact {
       KernelsContact::halo<<<(nremote_padded + 127) / 128, 128, 0>>>
 	(nremote_padded, cellsentries->S, nsolutes, local_trunk->get_float());
 
-    CC(cudaPeekAtLastError());
+
   }
 
   void close() {
