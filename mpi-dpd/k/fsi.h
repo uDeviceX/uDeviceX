@@ -1,4 +1,14 @@
-namespace KernelsFSI {
+namespace k { namespace fsi {
+  texture<float2, cudaTextureType1D> texSolventParticles;
+  texture<int, cudaTextureType1D> texCellsStart, texCellsCount;
+  bool firsttime = true;
+  static const int NCELLS = XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN;
+  __constant__ int packstarts_padded[27], packcount[26];
+  __constant__ Particle *packstates[26];
+  __constant__ Acceleration *packresults[26];
+
+
+
   __global__ void interactions_3tpp(const float2 *const particles, const int np,
 				    const int nsolvent, float *const acc,
 				    float *const accsolvent, const float seed) {
@@ -297,4 +307,4 @@ namespace KernelsFSI {
 
     write_AOS3f(dst, nunpack, xforce, yforce, zforce);
   }
-}
+}}

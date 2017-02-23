@@ -45,8 +45,7 @@
 #include "contact.decl.h"
 #include "contact.impl.h"
 
-#include "kernelsfsi.decl.h"
-#include "kernelsfsi.impl.h"
+#include "k/fsi.h"
 
 #include "fsi.decl.h"
 #include "fsi.impl.h"
