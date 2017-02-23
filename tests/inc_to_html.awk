@@ -23,15 +23,14 @@ $1 ~ /^#include/ {
     read_file(desc)
 
     # check the status and react accordingly
-    if (exists(s)) {
-        print "<font color=\"green\">SUCCESS</font>" > idx
-        for (id = 1; 1; id++) {
-            img = sprintf("img%d.png", id)
-            if (exists(img)) process_img(img)
-            else             break
-        }
-    } else {
-        print "<font color=\"red\">FAIL</font>" > idx
+    if (exists(s)) print "<font color=\"green\">SUCCESS</font>" > idx
+    else           print "<font color=\"red\">FAIL</font>"      > idx
+
+    # always shows images
+    for (id = 1; 1; id++) {
+        img = sprintf("img%d.png", id)
+        if (exists(img)) process_img(img)
+        else             break
     }
 
     next
