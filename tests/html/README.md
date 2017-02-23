@@ -1,11 +1,10 @@
 ## Poiseuille velocity profile
-![alt text](success.jpg){:height="50px" width="50px"}
+<img src="success.jpg" width="50" height="50" />
 ## Double Poiseuille with the same viscosity
-![alt text](success.jpg){:height="50px" width="50px"}
+<img src="success.jpg" width="50" height="50" />
 ## Double Poiseuille velocity profile with different viscosities
-![alt text](success.jpg){:height="50px" width="50px"}
+<img src="success.jpg" width="50" height="50" />
 ## Shear flow velocity profile
-![alt text](success.jpg){:height="50px" width="50px"}
+<img src="success.jpg" width="50" height="50" />
 ## RBC in shear flow
-![alt text](fail.jpg){:height="50px" width="50px"}
 <img src="fail.jpg" width="50" height="50" />
