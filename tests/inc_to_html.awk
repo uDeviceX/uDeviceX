@@ -23,8 +23,8 @@ $1 ~ /^#include/ {
     read_file(desc)
 
     # check the status and react accordingly
-    if (exists(s)) print "![alt text](success.jpg =50x50)" > idx
-    else           print "![alt text](fail.jpg =50x50)"    > idx
+    if (exists(s)) print "![alt text](success.jpg){:height=\"50px\" width=\"50px\"}" > idx
+    else           print "![alt text](fail.jpg){:height=\"50px\" width=\"50px\"}"    > idx
 
     # # always shows images
     # for (id = 1; 1; id++) {
