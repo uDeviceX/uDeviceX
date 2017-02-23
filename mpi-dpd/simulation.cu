@@ -38,8 +38,7 @@
 #include "k/wall.h"
 #include "wall.impl.h"
 
-#include "solutepup.decl.h"
-#include "solutepup.impl.h"
+#include "k/rex.h"
 
 #include "k/cnt.h"
 #include "contact.decl.h"

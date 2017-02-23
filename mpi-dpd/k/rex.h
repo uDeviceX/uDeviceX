@@ -1,4 +1,11 @@
-namespace SolutePUP {
+namespace k {namespace rex {
+  __constant__ int ccapacities[26], *scattered_indices[26];
+  __device__ bool failed;
+  __constant__ int coffsets[26];
+  __constant__ int ccounts[26], cbases[27], cpaddedstarts[27];
+  __constant__ float *recvbags[26];
+
+
 __global__ void init() { failed = false; }
 __global__ void scatter_indices(float2 *particles,
 				int nparticles, int *counts) {
@@ -168,4 +175,4 @@ __global__ void unpack(float *accelerations, int nparticles) {
     atomicAdd(accelerations + 3 * dpid + component, myval);
   }
 }
-}
+}}
