@@ -62,5 +62,6 @@
 #include "dpd.decl.h"
 #include "dpd.impl.h"
 
+#include "simulation.krn.h"
 #include "simulation.decl.h"
 #include "simulation.impl.h"
