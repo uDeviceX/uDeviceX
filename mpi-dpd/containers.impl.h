@@ -172,27 +172,29 @@ namespace ParticleKernels {
 } /* end of ParticleKernels */
 
 namespace Cont {
-void upd_stg1(ParticleArray* pa, bool rbcflag, float driving_acceleration) {
-  if (pa->pp.S)
-    ParticleKernels::upd_stg1<<<(pa->pp.S + 127) / 128, 128, 0>>>
-      (rbcflag, pa->pp.D, pa->aa.D, pa->pp.S,
+  void upd_stg1(DeviceBuffer<Particle>* pp, DeviceBuffer<Acceleration>* aa,
+		bool rbcflag, float driving_acceleration) {
+    if (pp->S)
+      ParticleKernels::upd_stg1<<<(pp->S + 127) / 128, 128, 0>>>
+	(rbcflag, pp->D, aa->D, pp->S,
+	 dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
+}
+
+void  upd_stg2_and_1(DeviceBuffer<Particle>* pp, DeviceBuffer<Acceleration>* aa,
+		     bool rbcflag, float driving_acceleration) {
+  if (pp->S)
+    ParticleKernels::upd_stg2_and_1<<<(pp->S + 127) / 128, 128, 0>>>
+      (rbcflag, (float2 *)pp->D, (float *)aa->D, pp->S,
        dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
-void  upd_stg2_and_1(ParticleArray* pa, bool rbcflag, float driving_acceleration) {
-  if (pa->pp.S)
-    ParticleKernels::upd_stg2_and_1<<<(pa->pp.S + 127) / 128, 128, 0>>>
-      (rbcflag, (float2 *)pa->pp.D, (float *)pa->aa.D, pa->pp.S,
-       dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
+void clear_velocity(DeviceBuffer<Particle>* pp) {
+  if (pp->S)
+    ParticleKernels::clear_velocity<<<(pp->S + 127) / 128, 128 >>>(pp->D, pp->S);
 }
 
-void clear_velocity(ParticleArray* pa) {
-  if (pa->pp.S)
-    ParticleKernels::clear_velocity<<<(pa->pp.S + 127) / 128, 128 >>>(pa->pp.D, pa->pp.S);
-}
-
-#define     resize2(b1, b2, n) b1.resize(n), (b2).resize(n)
-#define  rbc_resize(b , n)     Cont::ncells = (n),  (b).resize(Cont::nvertices*(n))
+#define     resize2(b1, b2, n) (b1)->resize(n), (b2)->resize(n)
+#define  rbc_resize(b , n)     Cont::ncells = (n),  (b)->resize(Cont::nvertices*(n))
 #define rbc_resize2(b1, b2, n)                      rbc_resize(b1, n), rbc_resize(b2, n)
 
 void rbc_init() {
@@ -208,8 +210,9 @@ void rbc_init() {
 void _initialize(float *device_pp, float (*transform)[4]) {
   CudaRBC::initialize(device_pp, transform);
 }
-
-void setup(ParticleArray* pa, const char *path2ic) {
+  
+void setup(DeviceBuffer<Particle>* pp, DeviceBuffer<Acceleration>* aa,
+	   const char *path2ic) {
     vector<TransformedExtent> allrbcs;
     if (rank == 0) {
 	//read transformed extent from file
@@ -259,14 +262,14 @@ void setup(ParticleArray* pa, const char *path2ic) {
 	}
     }
 
-    rbc_resize2(pa->pp, pa->aa, good.size());
+    rbc_resize2(pp, aa, good.size());
     for(int i = 0; i < good.size(); ++i)
-      _initialize((float *)(pa->pp.D + nvertices * i), good[i].transform);
+      _initialize((float *)(pp->D + nvertices * i), good[i].transform);
 }
 
 /* NB: preserves order of `pp' but messes up `aa' */
 #define rbc_remove_resize(pp, aa, e, ne) Cont::rbc_remove(pp, e, ne), rbc_resize(aa, Cont::ncells)
-  void rbc_remove(DeviceBuffer<Particle>*  pp, DeviceBuffer<Acceleration>* aa, int *e, int ne) {
+  void rbc_remove(DeviceBuffer<Particle>* pp, int *e, int ne) {
   /* remove RBCs with indexes in `e' */
   bool GO = false, STAY = true;
   int ie, i0, i1, nv = nvertices;
@@ -282,12 +285,14 @@ void setup(ParticleArray* pa, const char *path2ic) {
       i1++;
     }
   int nstay = i1;
-  rbc_resize(*pp, nstay);
-  rbc_resize(*aa, nstay);
+  rbc_resize(pp, nstay);
 }
 
 int  pcount() {return ncells * nvertices;}
-void clear_acc(ParticleArray* pa) {CC(cudaMemsetAsync(pa->aa.D, 0, sizeof(Acceleration) * pa->aa.S));}
+
+void clear_acc(DeviceBuffer<Acceleration>* aa) {
+  CC(cudaMemsetAsync(aa->D, 0, sizeof(Acceleration) * aa->S));
+}
 static void rbc_dump0(const char *format4ply,
 		      MPI_Comm comm, int ncells,
 		      Particle *p, Acceleration *a, int n, int iddatadump) {

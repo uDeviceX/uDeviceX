@@ -1,6 +1,6 @@
 struct ParticleArray {
-  DeviceBuffer<Particle>     pp; /* xyzuvw */
-  DeviceBuffer<Acceleration> aa; /* axayaz */
+  DeviceBuffer<Particle>*     pp; /* xyzuvw */
+  DeviceBuffer<Acceleration>* aa; /* axayaz */
 };
 
 namespace Cont {
