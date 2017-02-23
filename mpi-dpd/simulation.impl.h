@@ -154,9 +154,54 @@ void sim_forces() {
   SolEx::recv_a();
 }
 
+void sim_tmp_init() {
+  MC(MPI_Comm_dup(activecomm, &myactivecomm));
+  MC(MPI_Comm_dup(Cont::cartcomm, &mycartcomm));
+  dump_part = new H5PartDump("allparticles.h5part", activecomm, Cont::cartcomm);
+  dump_field = new H5FieldDump (Cont::cartcomm);
+  int rank;
+  MC(MPI_Comm_rank(myactivecomm, &rank));
+  MC(MPI_Barrier(myactivecomm));
+}
+
+void sim_tmp_final() {
+  delete dump_part;
+  delete dump_field;
+  if (dump_part_solvent) delete dump_part_solvent;
+  CC(cudaEventDestroy(evdownloaded));
+}
+
+static void sim_datadump_async(int idtimestep) {
+  static int iddatadump = 0;
+    CC(cudaEventSynchronize(evdownloaded));
+
+    int n = particles_datadump->S;
+    Particle *p = particles_datadump->D;
+    Acceleration *a = accelerations_datadump->D;
+
+    diagnostics(myactivecomm, mycartcomm, p, n, dt, datadump_idtimestep);
+    if (hdf5part_dumps) {
+      if (!dump_part_solvent && walls && datadump_idtimestep >= wall_creation_stepid) {
+	dump_part->close();
+	dump_part_solvent =
+	    new H5PartDump("solvent-particles.h5part", activecomm, Cont::cartcomm);
+      }
+      if (dump_part_solvent) dump_part_solvent->dump(p, n);
+      else                   dump_part->dump(p, n);
+    }
+
+    if (hdf5field_dumps && (datadump_idtimestep % steps_per_hdf5dump == 0)) {
+      printf("inside hdf5field_dumps ... \n");
+      dump_field->dump(activecomm, p, datadump_nsolvent, datadump_idtimestep);
+    }
+
+    if (rbcs)
+      Cont::rbc_dump(myactivecomm, p + datadump_nsolvent,
+		     a + datadump_nsolvent, datadump_nrbcs, iddatadump);
+    ++iddatadump;
+}
+
 void sim_datadump(const int idtimestep) {
-  pthread_mutex_lock(&mutex_datadump);
-  while (datadump_pending) pthread_cond_wait(&done_datadump, &mutex_datadump);
   int n = s_pp->S;
   if (rbcs) n += Cont::pcount();
   particles_datadump->resize(n);
@@ -183,77 +228,8 @@ void sim_datadump(const int idtimestep) {
   datadump_idtimestep = idtimestep;
   datadump_nsolvent = s_pp->S;
   datadump_nrbcs = rbcs ? Cont::pcount() : 0;
-  datadump_pending = true;
-
-  pthread_cond_signal(&request_datadump);
-  while (datadump_pending) pthread_cond_wait(&done_datadump, &mutex_datadump);
-  pthread_mutex_unlock(&mutex_datadump);
+  sim_datadump_async(idtimestep);
 }
-
-static void sim_datadump_async() {
-  int iddatadump = 0, rank;
-  int curr_idtimestep = -1;
-
-  MPI_Comm myactivecomm, mycartcomm;
-
-  MC(MPI_Comm_dup(activecomm, &myactivecomm));
-  MC(MPI_Comm_dup(Cont::cartcomm, &mycartcomm));
-
-  H5PartDump dump_part("allparticles.h5part", activecomm, Cont::cartcomm),
-      *dump_part_solvent = NULL;
-  H5FieldDump dump_field(Cont::cartcomm);
-
-  MC(MPI_Comm_rank(myactivecomm, &rank));
-  MC(MPI_Barrier(myactivecomm));
-  while (true) {
-    pthread_mutex_lock(&mutex_datadump);
-    async_thread_initialized = 1;
-    while (!datadump_pending)
-      pthread_cond_wait(&request_datadump, &mutex_datadump);
-    pthread_mutex_unlock(&mutex_datadump);
-    if (curr_idtimestep == datadump_idtimestep)
-      if (sim_is_done)
-	break;
-    CC(cudaEventSynchronize(evdownloaded));
-
-    int n = particles_datadump->S;
-    Particle *p = particles_datadump->D;
-    Acceleration *a = accelerations_datadump->D;
-
-    diagnostics(myactivecomm, mycartcomm, p, n, dt, datadump_idtimestep);
-    if (hdf5part_dumps) {
-      if (!dump_part_solvent && walls && datadump_idtimestep >= wall_creation_stepid) {
-	dump_part.close();
-	dump_part_solvent =
-	    new H5PartDump("solvent-particles.h5part", activecomm, Cont::cartcomm);
-      }
-      if (dump_part_solvent) dump_part_solvent->dump(p, n);
-      else                   dump_part.dump(p, n);
-    }
-
-    if (hdf5field_dumps && (datadump_idtimestep % steps_per_hdf5dump == 0))
-      dump_field.dump(activecomm, p, datadump_nsolvent, datadump_idtimestep);
-
-    if (rbcs)
-      Cont::rbc_dump(myactivecomm, p + datadump_nsolvent,
-		     a + datadump_nsolvent, datadump_nrbcs, iddatadump);
-    curr_idtimestep = datadump_idtimestep;
-    pthread_mutex_lock(&mutex_datadump);
-    if (sim_is_done) {
-      pthread_mutex_unlock(&mutex_datadump); break;
-    }
-
-    datadump_pending = false;
-    pthread_cond_signal(&done_datadump);
-    pthread_mutex_unlock(&mutex_datadump);
-    ++iddatadump;
-  }
-
-  if (dump_part_solvent) delete dump_part_solvent;
-  CC(cudaEventDestroy(evdownloaded));
-}
-
-static void * datadump_trampoline(void*) { sim_datadump_async(); return NULL; }
 
 static void sim_update_and_bounce() {
   Cont::upd_stg2_and_1(s_pp, s_aa, false, driving_acceleration);
@@ -314,26 +290,12 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
     Cont::setup(r_pp, r_aa, "rbcs-ic.txt");
   }
 
-  // setting up the asynchronous data dumps
   CC(cudaEventCreate(&evdownloaded,
-			     cudaEventDisableTiming | cudaEventBlockingSync));
+		     cudaEventDisableTiming m| cudaEventBlockingSync));
   particles_datadump->resize(s_pp->S * 1.5);
   accelerations_datadump->resize(s_pp->S * 1.5);
 
-  int rcode = pthread_mutex_init(&mutex_datadump, NULL);
-  rcode |= pthread_cond_init(&done_datadump, NULL);
-  rcode |= pthread_cond_init(&request_datadump, NULL);
-  async_thread_initialized = 0;
-
-  rcode |= pthread_create(&thread_datadump, NULL, &datadump_trampoline, NULL);
-
-  while (true) {
-    pthread_mutex_lock(&mutex_datadump);
-    int done = async_thread_initialized;
-    pthread_mutex_unlock(&mutex_datadump);
-    if (done) break;
-  }
-  if (rcode) {printf("ERROR; return code from pthread_create() is %d\n", rcode); exit(-1);}
+  sim_tmp_init();
 }
 
 static void sim_lockstep() {
@@ -424,12 +386,8 @@ void sim_run() {
 }
 
 void sim_close() {
-  pthread_mutex_lock(&mutex_datadump);
-  datadump_pending = true;
-  pthread_cond_signal(&request_datadump);
-  pthread_mutex_unlock(&mutex_datadump);
-  pthread_join(thread_datadump, NULL);
 
+  sim_tmp_final();
   RedistPart::redist_part_close();
 
   delete r_pp; delete r_aa;
