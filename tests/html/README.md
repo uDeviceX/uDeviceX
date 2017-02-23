@@ -7,4 +7,4 @@
 ## Shear flow velocity profile
 ![alt text](success.jpg "SUCCESS")
 ## RBC in shear flow
-![alt text](success.jpg "FAIL")
+![alt text](fail.jpg "FAIL")
