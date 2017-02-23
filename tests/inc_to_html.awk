@@ -4,19 +4,18 @@
 
 BEGIN {
     dir = "html"
-    idx = dir "/index.html"
+    idx = dir "/README.md"
     w = 500; h = 500
     img_templ = "<img src=\"%s\" width=\"%d\" height=\"%d\">"
     img_templ = "<p>" img_templ "</p>"
     img_templ = "\n" img_templ "\n"
-    suc = "success.txt"
+    s = "success.txt"
 
     system("mkdir -p " dir)
 }
 
 $1 ~ /^#include/ {
     d = $2
-    id = $2
     print "Processing test " d
 
     # generate test description
@@ -24,16 +23,17 @@ $1 ~ /^#include/ {
     read_file(desc)
 
     # check the status and react accordingly
-    fail = get_status(d)
-    if (!fail) {
-        print "<font color=\"green\">SUCCESS</font>" > idx
-        imgA0 = "img1.png"; imgB0 = "img2.png"
-        imgA1 = rename_img(imgA0); imgB1 = rename_img(imgB0)
-        copy_img(imgA0, imgA1); copy_img(imgB0, imgB1)
-        gen_img_desc(imgA1); gen_img_desc(imgB1)
-    } else {
-        print "<font color=\"red\">FAIL</font>" > idx
-    }
+    if (exists(s)) print "![alt text](success.jpg){:height=\"50px\" width=\"50px\"}" > idx
+    else           print "![alt text](fail.jpg){:height=\"50px\" width=\"50px\"}"    > idx
+
+    # # always shows images
+    # for (id = 1; 1; id++) {
+    #     img = sprintf("img%d.png", id)
+    #     if (exists(img)) process_img(img)
+    #     else             break
+    # }
+
+    # ![alt text](img2.png "Logo Title Text 1")
 
     next
 }
@@ -42,13 +42,16 @@ $1 ~ /^#include/ {
     print > idx
 }
 
-function rename_img(img) {
-    return id "." img
-}
-
-function copy_img(img0, img1,  cmd) {
+function process_img(img0) {
+    # rename
+    img1 = d "." img0
+    
+    # copy
     cmd = sprintf("cp %s/%s %s/%s", d, img0, dir, img1)
     system(cmd)
+
+    # generate description
+    printf img_templ, img1, w, h > idx
 }
 
 function read_file(file,  x) {
@@ -56,11 +59,7 @@ function read_file(file,  x) {
     close(file)
 }
 
-function gen_img_desc(img) {
-    printf img_templ, img, w, h > idx
-}
-
-function get_status(d) {
-    cmd = sprintf("test -f %s/%s", d, suc)
-    return system(cmd)
+function exists(f) {
+    cmd = sprintf("test -f %s/%s", d, f)
+    return !system(cmd)
 }
