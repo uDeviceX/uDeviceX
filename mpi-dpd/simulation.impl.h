@@ -102,7 +102,7 @@ void sim_remove_bodies_from_wall() {
 void sim_create_walls() {
   int nsurvived = 0;
   ExpectedMessageSizes new_sizes;
-  Wall::init(s_pp->D, s_pp->S,
+  wall::init(s_pp->D, s_pp->S,
 	    nsurvived, new_sizes); wall_created = true;
   resize2(s_pp, s_aa, nsurvived);
   Cont::clear_velocity(s_pp);
@@ -139,8 +139,8 @@ void sim_forces() {
 			 cells->count);
   DPD::post(s_pp->D, s_pp->S);
   SolEx::post_p();
-  if (rbcs && wall_created) Wall::interactions(r_pp->D, Cont::pcount(), r_aa->D);
-  if (wall_created)         Wall::interactions(s_pp->D, s_pp->S, s_aa->D);
+  if (rbcs && wall_created) wall::interactions(r_pp->D, Cont::pcount(), r_aa->D);
+  if (wall_created)         wall::interactions(s_pp->D, s_pp->S, s_aa->D);
   DPD::recv();
   SolEx::recv_p();
   SolEx::halo();
@@ -234,8 +234,8 @@ static void sim_update_and_bounce() {
   Cont::upd_stg2_and_1(s_pp, s_aa, false, driving_acceleration);
   if (rbcs) Cont::upd_stg2_and_1(r_pp, r_aa, true, driving_acceleration);
   if (wall_created) {
-    Wall::bounce(s_pp->D, s_pp->S);
-    if (rbcs) Wall::bounce(r_pp->D, Cont::pcount());
+    wall::bounce(s_pp->D, s_pp->S);
+    if (rbcs) wall::bounce(r_pp->D, Cont::pcount());
   }
 }
 
@@ -257,7 +257,7 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
     r_aa = new StaticDeviceBuffer<Acceleration>;
   }
 
-  Wall::trunk = new Logistic::KISS;
+  wall::trunk = new Logistic::KISS;
   RedistPart::redist_part_init(Cont::cartcomm);
   nsteps = (int)(tend / dt);
   MC(MPI_Comm_rank(activecomm, &Cont::rank));
@@ -338,7 +338,7 @@ void sim_close() {
   delete accelerations_datadump;
   delete xyzouvwo;
   delete xyzo_half;
-  delete Wall::trunk;
+  delete wall::trunk;
   delete s_pp; delete s_aa;
   delete s_pp0; delete s_aa0;  
 }

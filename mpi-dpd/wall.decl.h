@@ -15,7 +15,7 @@ enum {
   ZTEXTURESIZE = 16 * ((_ZTEXTURESIZE + 15) / 16),
 };
 
-namespace Wall {
+namespace wall {
   Logistic::KISS* trunk;
 
   int solid_size;

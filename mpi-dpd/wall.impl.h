@@ -106,7 +106,7 @@ struct FieldSampler {
   ~FieldSampler() { delete[] data; }
 };
 
-namespace Wall {
+namespace wall {
   void init(Particle *const p, const int n,
 		 int &nsurvived, ExpectedMessageSizes &new_sizes) {
     wall_cells = new CellLists(XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL,
