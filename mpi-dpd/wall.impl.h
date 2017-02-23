@@ -561,7 +561,7 @@ namespace Wall {
       delete[] walldata;
     }
 
-    CC(cudaPeekAtLastError());
+
     cudaChannelFormatDesc fmt = cudaCreateChannelDesc<float>();
     CC(cudaMalloc3DArray
        (&arrSDF, &fmt, make_cudaExtent(XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE)));
@@ -587,7 +587,7 @@ namespace Wall {
     WallKernels::fill_keys<<<(n + 127) / 128, 128>>>
       (p, n, thrust::raw_pointer_cast(&keys[0]));
 
-    CC(cudaPeekAtLastError());
+
 
     thrust::sort_by_key(keys.begin(), keys.end(),
 			thrust::device_ptr<Particle>(p));
@@ -733,7 +733,7 @@ namespace Wall {
 
     CC(cudaFree(solid));
 
-    CC(cudaPeekAtLastError());
+
   }
 
   void bounce(Particle *const p, const int n) {
@@ -741,7 +741,7 @@ namespace Wall {
       WallKernels::bounce<<<(n + 127) / 128, 128, 0>>>
 	((float2 *)p, n, dt);
 
-    CC(cudaPeekAtLastError());
+
   }
 
   void interactions(const Particle *const p, const int n,
@@ -774,7 +774,7 @@ namespace Wall {
       CC(cudaUnbindTexture(WallKernels::texWallCellCount));
     }
 
-    CC(cudaPeekAtLastError());
+
   }
 
   void close () {

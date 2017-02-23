@@ -13,14 +13,14 @@ namespace RedistPart {
     compressed_cellcounts = new DeviceBuffer<unsigned char>
       (XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN);
     remote_particles = new DeviceBuffer<Particle>;
-  
+
     subindices_remote= new DeviceBuffer<uchar4>
       (1.5 * numberdensity * (XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN -
 			      (XSIZE_SUBDOMAIN - 2) * (YSIZE_SUBDOMAIN - 2) * (ZSIZE_SUBDOMAIN - 2)));
     subindices = new DeviceBuffer<uchar4>
       (1.5 * numberdensity * XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN);
     scattered_indices = new DeviceBuffer<uint>;
-  
+
     nactiveneighbors  = 26; firstcall = true;
     int dims[3], periods[3], coords[3];
     MC(MPI_Comm_dup(_cartcomm, &cartcomm_rdst) );
@@ -39,15 +39,15 @@ namespace RedistPart {
 	d[1] != 0 ? 1 : YSIZE_SUBDOMAIN,
 	d[2] != 0 ? 1 : ZSIZE_SUBDOMAIN
       };
-    
+
       int nhalocells = nhalodir[0] * nhalodir[1] * nhalodir[2];
       int estimate = numberdensity * safety_factor * nhalocells;
       CC(cudaMalloc(&packbuffers[i].scattered_indices, sizeof(int) * estimate));
-    
+
       if (i && estimate) {
 	CC(cudaHostAlloc(&pinnedhost_sendbufs[i], sizeof(float) * 6 * estimate, cudaHostAllocMapped));
 	CC(cudaHostGetDevicePointer(&packbuffers[i].buffer, pinnedhost_sendbufs[i], 0));
-      
+
 	CC(cudaHostAlloc(&pinnedhost_recvbufs[i], sizeof(float) * 6 * estimate, cudaHostAllocMapped));
 	CC(cudaHostGetDevicePointer(&unpackbuffers[i].buffer, pinnedhost_recvbufs[i], 0));
       } else {
@@ -65,12 +65,12 @@ namespace RedistPart {
     RedistPartKernels::texAllParticles.filterMode = cudaFilterModePoint;
     RedistPartKernels::texAllParticles.mipmapFilterMode = cudaFilterModePoint;
     RedistPartKernels::texAllParticles.normalized = 0;
-  
+
     RedistPartKernels::texAllParticlesFloat2.channelDesc = cudaCreateChannelDesc<float2>();
     RedistPartKernels::texAllParticlesFloat2.filterMode = cudaFilterModePoint;
     RedistPartKernels::texAllParticlesFloat2.mipmapFilterMode = cudaFilterModePoint;
     RedistPartKernels::texAllParticlesFloat2.normalized = 0;
-  
+
     CC(cudaEventCreate(&evpacking, cudaEventDisableTiming));
     CC(cudaEventCreate(&evsizes, cudaEventDisableTiming));
     CC(cudaFuncSetCacheConfig(RedistPartKernels::gather_particles, cudaFuncCachePreferL1));
@@ -94,26 +94,26 @@ namespace RedistPart {
     for(int i = 0; i < 27; ++i) {
       if (requested_capacities[i] <= packbuffers[i].capacity)
 	continue;
-    
+
       int capacity = requested_capacities[i];
-    
+
       CC(cudaFree(packbuffers[i].scattered_indices));
       CC(cudaMalloc(&packbuffers[i].scattered_indices, sizeof(int) * capacity));
-    
+
       if (i) {
 	CC(cudaFreeHost(pinnedhost_sendbufs[i]));
-      
+
 	CC(cudaHostAlloc(&pinnedhost_sendbufs[i], sizeof(float) * 6 * capacity, cudaHostAllocMapped));
 	CC(cudaHostGetDevicePointer(&packbuffers[i].buffer, pinnedhost_sendbufs[i], 0));
-      
+
 	packbuffers[i].capacity = capacity;
       }
       else {
 	CC(cudaFree(packbuffers[i].buffer));
-      
+
 	CC(cudaMalloc(&packbuffers[i].buffer, sizeof(float) * 6 * capacity));
 	unpackbuffers[i].buffer = packbuffers[i].buffer;
-      
+
 	packbuffers[i].capacity = capacity;
 	unpackbuffers[i].capacity = capacity;
       }
@@ -169,7 +169,7 @@ namespace RedistPart {
 
     if (nparticles)
       RedistPartKernels::scatter_halo_indices_pack<<<(nparticles + 127) / 128, 128, 0>>>(nparticles);
-    
+
     RedistPartKernels::tiny_scan<<<1, 32, 0>>>
       (nparticles, packbuffers[0].capacity, packsizes->DP, failure->DP);
 
@@ -201,7 +201,7 @@ namespace RedistPart {
       if (!secondchance) secondchance = true;
       goto pack_attempt;
     }
-    CC(cudaPeekAtLastError());
+
   }
 
   void send() {
@@ -217,17 +217,17 @@ namespace RedistPart {
     }
     CC(cudaEventSynchronize(evpacking));
     if (!firstcall) _waitall(sendmsgreq, nsendmsgreq);
-    
+
     nsendmsgreq = 0;
     for(int i = 1; i < 27; ++i)
       if (default_message_sizes[i]) {
 	MC(MPI_Isend(pinnedhost_sendbufs[i], default_message_sizes[i] * 6, MPI_FLOAT,
 		     neighbor_ranks[i], basetag + i + 333,
 		     cartcomm_rdst, sendmsgreq + nsendmsgreq) );
-	
+
 	++nsendmsgreq;
       }
-    
+
     for(int i = 1; i < 27; ++i)
       if (default_message_sizes[i] && send_sizes[i] > default_message_sizes[i]) {
 	int count = send_sizes[i] - default_message_sizes[i];
@@ -247,11 +247,11 @@ namespace RedistPart {
       subindex_local<false><<< (nparticles + 127) / 128, 128, 0>>>
 	(nparticles, RedistPartKernels::texparticledata, cellcounts, subindices->D);
 
-    CC(cudaPeekAtLastError());
+
   }
 
   int recv_count() {
-    CC(cudaPeekAtLastError());
+
 
     _waitall(recvcountreq, nactiveneighbors);
 
@@ -306,12 +306,12 @@ namespace RedistPart {
     for(int i = 1; i < 27; ++i)
       if (default_message_sizes[i] && recv_sizes[i] > default_message_sizes[i]) {
 	int count = recv_sizes[i] - default_message_sizes[i];
-	
+
 	MPI_Status status;
 	MC( MPI_Recv(pinnedhost_recvbufs[i] + default_message_sizes[i] * 6, count * 6, MPI_FLOAT,
 		     neighbor_ranks[i], basetag + recv_tags[i] + 666, cartcomm_rdst, &status) );
       }
-    CC(cudaPeekAtLastError());
+
 
 #ifndef NDEBUG
     CC(cudaMemset(remote_particles->D, 0xff, sizeof(Particle) * remote_particles->S));
@@ -344,24 +344,24 @@ namespace RedistPart {
 	(scattered_indices->D, (float2 *)remote_particles->D, nhalo,
 	 RedistPartKernels::ntexparticles, nparticles, (float2 *)particles, xyzouvwo, xyzo_half);
 
-    CC(cudaPeekAtLastError());
+
 
     _post_recv();
 
-    CC(cudaPeekAtLastError());
+
   }
 
   void _cancel_recv() {
     if (!firstcall) {
       _waitall(sendcountreq, nactiveneighbors);
       _waitall(sendmsgreq, nsendmsgreq);
-    
+
       for(int i = 0; i < nactiveneighbors; ++i)
 	MC( MPI_Cancel(recvcountreq + i) );
-    
+
       for(int i = 0; i < nactiveneighbors; ++i)
 	MC( MPI_Cancel(recvmsgreq + i) );
-    
+
       firstcall = true;
     }
   }

@@ -61,8 +61,6 @@ void local_interactions(Particle *xyzuvw, float4 *xyzouvwo, ushort4 *xyzo_half,
 }
 
 void remote_interactions(Particle *p, int n, Acceleration *a) {
-  CC(cudaPeekAtLastError());
-
   static BipsBatch::BatchInfo infos[26];
 
   for (int i = 0; i < 26; ++i) {
@@ -97,7 +95,7 @@ void remote_interactions(Particle *p, int n, Acceleration *a) {
   BipsBatch::interactions(1. / sqrt(dt), infos,
 			  (float *)a, n);
 
-  CC(cudaPeekAtLastError());
+
 }
 
 void init0(MPI_Comm _cartcomm, int _basetag) {
@@ -193,7 +191,7 @@ void post_expected_recv() {
 }
 
 void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
-  CC(cudaPeekAtLastError());
+
   nlocal = n;
   if (firstpost) {
     {
@@ -227,7 +225,7 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
 	    cellsstart, cellscount, PackingHalo::ncells);
 
   PackingHalo::scan_diego<32><<<26, 32 * 32, 0>>>();
-  CC(cudaPeekAtLastError());
+
   if (firstpost)
     post_expected_recv();
   else {
@@ -272,7 +270,7 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
 	PackingHalo::ncells);
 
   _pack_all(p, n, firstpost);
-  CC(cudaPeekAtLastError());
+
 }
 
   void post(Particle *p, int n) {
@@ -360,7 +358,7 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
 }
 
 void recv() {
-  CC(cudaPeekAtLastError());
+
   {
     MPI_Status statuses[26];
 
@@ -401,7 +399,7 @@ void recv() {
 		       sizeof(int) * recvhalos[i]->hcellstarts->S,
 		       cudaMemcpyHostToDevice));
 
-  CC(cudaPeekAtLastError());
+
   post_expected_recv();
 }
 

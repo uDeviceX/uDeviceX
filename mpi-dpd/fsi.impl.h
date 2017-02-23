@@ -3,12 +3,12 @@ namespace FSI {
   void init(MPI_Comm comm) {
     int myrank;
     MC(MPI_Comm_rank(comm, &myrank));
-    
+
     local_trunk = new Logistic::KISS;
     wsolvent    = new SolventWrap;
-    
+
     *local_trunk = Logistic::KISS(1908 - myrank, 1409 + myrank, 290, 12968);
-    CC(cudaPeekAtLastError());
+
   }
 
   void close() {
@@ -20,9 +20,9 @@ namespace FSI {
   if (wsolutes.size() == 0) return;
 
   KernelsFSI::setup(wsolvent->p, wsolvent->n, wsolvent->cellsstart,
-                    wsolvent->cellscount);
+		    wsolvent->cellscount);
 
-  CC(cudaPeekAtLastError());
+
 
   for (std::vector<ParticlesWrap>::iterator it = wsolutes.begin();
        it != wsolutes.end(); ++it)
@@ -32,14 +32,14 @@ namespace FSI {
 	((float2 *)it->p, it->n, wsolvent->n, (float *)it->a,
 	 (float *)wsolvent->a, local_trunk->get_float());
 
-  CC(cudaPeekAtLastError());
+
 }
 
 void halo(ParticlesWrap halos[26]) {
   KernelsFSI::setup(wsolvent->p, wsolvent->n, wsolvent->cellsstart,
-                    wsolvent->cellscount);
+		    wsolvent->cellscount);
 
-  CC(cudaPeekAtLastError());
+
 
   int nremote_padded = 0;
 
@@ -49,7 +49,7 @@ void halo(ParticlesWrap halos[26]) {
     for (int i = 0; i < 26; ++i) recvpackcount[i] = halos[i].n;
 
     CC(cudaMemcpyToSymbolAsync(KernelsFSI::packcount, recvpackcount,
-                               sizeof(recvpackcount), 0, cudaMemcpyHostToDevice));
+			       sizeof(recvpackcount), 0, cudaMemcpyHostToDevice));
 
     recvpackstarts_padded[0] = 0;
     for (int i = 0, s = 0; i < 26; ++i)
@@ -68,8 +68,8 @@ void halo(ParticlesWrap halos[26]) {
     for (int i = 0; i < 26; ++i) recvpackstates[i] = halos[i].p;
 
     CC(cudaMemcpyToSymbolAsync(KernelsFSI::packstates, recvpackstates,
-                               sizeof(recvpackstates), 0,
-                               cudaMemcpyHostToDevice));
+			       sizeof(recvpackstates), 0,
+			       cudaMemcpyHostToDevice));
   }
 
   {
@@ -78,7 +78,7 @@ void halo(ParticlesWrap halos[26]) {
     for (int i = 0; i < 26; ++i) packresults[i] = halos[i].a;
 
     CC(cudaMemcpyToSymbolAsync(KernelsFSI::packresults, packresults,
-                               sizeof(packresults), 0, cudaMemcpyHostToDevice));
+			       sizeof(packresults), 0, cudaMemcpyHostToDevice));
   }
 
   if (nremote_padded)

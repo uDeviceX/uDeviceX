@@ -58,8 +58,6 @@ namespace SolEx {
 				cudaEventDisableTiming | cudaEventBlockingSync));
     CC(cudaEventCreateWithFlags(&evAcomputed,
 				cudaEventDisableTiming | cudaEventBlockingSync));
-
-    CC(cudaPeekAtLastError());
   }
 
   void _wait(std::vector<MPI_Request> &v) {
@@ -100,7 +98,7 @@ namespace SolEx {
   }
 
   void _pack_attempt() {
-    CC(cudaPeekAtLastError());
+
 
     if (packscount->S)
       CC(cudaMemsetAsync(packscount->D, 0, sizeof(int) * packscount->S));
@@ -128,7 +126,7 @@ namespace SolEx {
 						 packscount->D + i * 26, packsoffset->D + 26 * i,
 						 packsoffset->D + 26 * (i + 1), packsstart->D + i * 27);
 
-      CC(cudaPeekAtLastError());
+
     }
 
     CC(cudaMemcpyAsync(host_packstotalcount->D,
@@ -164,7 +162,7 @@ namespace SolEx {
 
     CC(cudaEventRecord(evPpacked));
 
-    CC(cudaPeekAtLastError());
+
   }
 
   void pack_p() {
@@ -182,7 +180,7 @@ namespace SolEx {
   void post_p() {
     if (wsolutes.size() == 0) return;
 
-    CC(cudaPeekAtLastError());
+
 
     // consolidate the packing
     {
@@ -323,7 +321,7 @@ namespace SolEx {
     if (contactforces) Contact::halo(halos);
     /***********************/
 
-    CC(cudaPeekAtLastError());
+
 
     CC(cudaEventRecord(evAcomputed));
 
@@ -345,7 +343,7 @@ namespace SolEx {
   }
 
   void recv_a() {
-    CC(cudaPeekAtLastError());
+
 
     if (wsolutes.size() == 0) return;
 
@@ -374,7 +372,7 @@ namespace SolEx {
 
 	SolutePUP::unpack<<<16 * 14, 128, 0>>>((float *)it.a, it.n);
       }
-      CC(cudaPeekAtLastError());
+
     }
   }
 

@@ -7,7 +7,7 @@ namespace Contact {
     cellsentries = new DeviceBuffer<int>;
     subindices = new DeviceBuffer<uchar4>;
     local_trunk = new Logistic::KISS;
-  
+
     int myrank;
     MC(MPI_Comm_rank(comm, &myrank));
 
@@ -36,7 +36,7 @@ namespace Contact {
 	  (it.n, (float2 *)it.p, cellscount->D, subindices->D + ctr);
       ctr += it.n;
     }
-    
+
     compress_counts<<<(compressed_cellscount->S + 127) / 128, 128, 0>>>
       (compressed_cellscount->S, (int4 *)cellscount->D,
        (uchar4 *)compressed_cellscount->D);
@@ -104,7 +104,7 @@ namespace Contact {
     if (nremote_padded)
       KernelsContact::halo<<<(nremote_padded + 127) / 128, 128, 0>>>
 	(nremote_padded, cellsentries->S, nsolutes, local_trunk->get_float());
-    
+
     CC(cudaPeekAtLastError());
   }
 

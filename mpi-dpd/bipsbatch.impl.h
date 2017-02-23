@@ -170,8 +170,6 @@ namespace BipsBatch {
     if (nthreads)
       interaction_kernel<<<(nthreads + 127) / 128, 128, 0>>>
 	(nthreads, acc, n);
-
-    CC(cudaPeekAtLastError());
   }
 
 }

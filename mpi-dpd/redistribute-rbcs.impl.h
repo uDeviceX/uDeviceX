@@ -100,16 +100,16 @@ void pack_all(const int nrbcs, const int nvertices,
     pack_all_kernel<false><<<(nthreads + 127) / 128, 128, 0>>>(
 	nrbcs, nvertices, _dsources->D, _ddestinations->D);
   }
-  CC(cudaPeekAtLastError());
+
 }
 }
 
 void extent(Particle *xyzuvw, int nrbcs) {
   minextents->resize(nrbcs);
   maxextents->resize(nrbcs);
-  CC(cudaPeekAtLastError());
+
   _compute_extents(xyzuvw, nrbcs);
-  CC(cudaPeekAtLastError());
+
   CC(cudaEventRecord(evextents));
 }
 
@@ -150,7 +150,7 @@ void pack_sendcount(Particle *xyzuvw,
       }
     ReorderingRBC::pack_all(src.size(), nvertices, &src.front(),
 			    &dst.front());
-    CC(cudaPeekAtLastError());
+
   }
   CC(cudaDeviceSynchronize()); /* was CC(cudaStreamSynchronize(stream)); */
   for (int i = 1; i < 27; ++i)
@@ -231,7 +231,7 @@ void unpack(Particle *xyzuvw, int nrbcs) {
     s += halo_recvbufs[i]->S;
   }
 
-  CC(cudaPeekAtLastError());
+
 
   _post_recvcount();
 }

@@ -1,27 +1,24 @@
 namespace Sim {
 static void sim_update_helper_arrays() {
   CC(cudaFuncSetCacheConfig(make_texture, cudaFuncCachePreferShared));
-
   int np = particles->pp->S;
-
   xyzouvwo->resize(2 * np);
   xyzo_half->resize(np);
-
   if (np)
     make_texture<<<(np + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>(
 	xyzouvwo->D, xyzo_half->D, (float *)particles->pp->D, np);
-
   CC(cudaPeekAtLastError());
 }
 
 /* set initial velocity of a particle */
-static void sim_ic_vel0(float x, float y, float z, float *vx, float *vy, float *vz) {
+static void sim_ic_vel0(float x, float y, float z,
+			float *vx, float *vy, float *vz) {
   *vx = gamma_dot * z; *vy = 0; *vz = 0; /* TODO: works only for one
 					    processor */
 }
 
-static void sim_ic_vel(Particle* pp, int np) { /* assign particle velocity based
-					on position */
+static void sim_ic_vel(Particle* pp, int np) { /* assign particle
+					velocity based on position */
   for (int ip = 0; ip < np; ip++) {
     Particle p = pp[ip];
     float x = p.x[0], y = p.x[1], z = p.x[2], vx, vy, vz;
@@ -111,7 +108,7 @@ void sim_remove_bodies_from_wall() {
 
   vector<int> tmp(marks.S);
   CC(cudaMemcpy(tmp.data(), marks.D, sizeof(int) * marks.S, cudaMemcpyDeviceToHost));
-  
+
   int nbodies = Cont::ncells;
   std::vector<int> tokill;
   for (int i = 0; i < nbodies; ++i) {
