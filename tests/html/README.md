@@ -32,3 +32,11 @@
 <p><img src="test_shear_rbc.img1.png" width="500" height="500"></p>
 
 <p><img src="test_shear_rbc.img2.png" width="500" height="500"></p>
+## RBC around a post
+
+<p><img src="fail.jpg" width="80" height="80"></p>
+
+
+<p><img src="test_rbc_post.img1.png" width="500" height="500"></p>
+
+<p><img src="test_rbc_post.img2.png" width="500" height="500"></p>
