@@ -200,7 +200,6 @@ int post() {
   return notleaving + arriving;
 }
 
-namespace ParticleReorderingRBC {
 __global__ void shift(const Particle *const psrc, const int np, const int code,
 		      const int rank, const bool check, Particle *const pdst) {
   int pid = threadIdx.x + blockDim.x * blockIdx.x;
@@ -211,7 +210,6 @@ __global__ void shift(const Particle *const psrc, const int np, const int code,
   int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
   for (int c = 0; c < 3; ++c) pnew.x[c] -= d[c] * L[c];
   pdst[pid] = pnew;
-}
 }
 
 void unpack(Particle *xyzuvw, int nrbcs) {
@@ -226,7 +224,7 @@ void unpack(Particle *xyzuvw, int nrbcs) {
   for (int i = 1, s = notleaving * nvertices; i < 27; ++i) {
     int count = halo_recvbufs[i]->S;
     if (count > 0)
-      ParticleReorderingRBC::shift<<<(count + 127) / 128, 128, 0>>>(
+      shift<<<(count + 127) / 128, 128, 0>>>(
 	  halo_recvbufs[i]->DP, count, i, myrank, false, xyzuvw + s);
     s += halo_recvbufs[i]->S;
   }
