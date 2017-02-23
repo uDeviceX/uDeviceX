@@ -123,9 +123,7 @@ void sim_create_walls() {
 void sim_forces() {
   SolventWrap wsolvent(s_pp->D, s_pp->S,
 		       s_aa->D, cells->start, cells->count);
-
   std::vector<ParticlesWrap> wsolutes;
-
   if (rbcs)
     wsolutes.push_back(ParticlesWrap(r_pp->D,
 				     Cont::pcount(), r_aa->D));
@@ -141,19 +139,14 @@ void sim_forces() {
 			 cells->count);
   DPD::post(s_pp->D, s_pp->S);
   SolEx::post_p();
-  if (rbcs && wall_created)
-    Wall::interactions(r_pp->D, Cont::pcount(), r_aa->D);
-  if (wall_created)
-    Wall::interactions(s_pp->D, s_pp->S,
-		      s_aa->D);
+  if (rbcs && wall_created) Wall::interactions(r_pp->D, Cont::pcount(), r_aa->D);
+  if (wall_created)         Wall::interactions(s_pp->D, s_pp->S, s_aa->D);
   DPD::recv();
   SolEx::recv_p();
   SolEx::halo();
-  DPD::remote_interactions(s_pp->D, s_pp->S,
-			   s_aa->D);
+  DPD::remote_interactions(s_pp->D, s_pp->S, s_aa->D);
   FSI::bulk(wsolutes);
-  if (contactforces)
-    Contact::bulk(wsolutes);
+  if (contactforces) Contact::bulk(wsolutes);
   if (rbcs)
     CudaRBC::forces_nohost(Cont::ncells,
 			   (float *)r_pp->D, (float *)r_aa->D);
@@ -193,10 +186,7 @@ void sim_datadump(const int idtimestep) {
   datadump_pending = true;
 
   pthread_cond_signal(&request_datadump);
-#if defined(_SYNC_DUMPS_)
-  while (datadump_pending)
-    pthread_cond_wait(&done_datadump, &mutex_datadump);
-#endif
+  while (datadump_pending) pthread_cond_wait(&done_datadump, &mutex_datadump);
   pthread_mutex_unlock(&mutex_datadump);
 }
 
@@ -267,12 +257,10 @@ static void * datadump_trampoline(void*) { sim_datadump_async(); return NULL; }
 
 static void sim_update_and_bounce() {
   Cont::upd_stg2_and_1(s_pp, s_aa, false, driving_acceleration);
-  if (rbcs)
-    Cont::upd_stg2_and_1(r_pp, r_aa, true, driving_acceleration);
+  if (rbcs) Cont::upd_stg2_and_1(r_pp, r_aa, true, driving_acceleration);
   if (wall_created) {
     Wall::bounce(s_pp->D, s_pp->S);
-    if (rbcs)
-      Wall::bounce(r_pp->D, Cont::pcount());
+    if (rbcs) Wall::bounce(r_pp->D, Cont::pcount());
   }
 }
 
@@ -287,7 +275,7 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   particles_datadump     = new PinnedHostBuffer<Particle>;
   accelerations_datadump = new PinnedHostBuffer<Acceleration>;
 
-  xyzouvwo    = new DeviceBuffer<float4 >;
+  xyzouvwo    = new DeviceBuffer<float4>;
   xyzo_half = new DeviceBuffer<ushort4>;
   if (rbcs) {
     r_pp = new DeviceBuffer<Particle>;
@@ -307,14 +295,14 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   Cont::globalextent = make_float3(dims[0] * XSIZE_SUBDOMAIN,
 				   dims[1] * YSIZE_SUBDOMAIN,
 				   dims[2] * ZSIZE_SUBDOMAIN);
-  s_pp = new DeviceBuffer<Particle>;
-  s_aa = new DeviceBuffer<Acceleration>;
+  s_pp  = new DeviceBuffer<Particle>;
+  s_aa  = new DeviceBuffer<Acceleration>;
   s_pp0 = new DeviceBuffer<Particle>;
   s_aa0 = new DeviceBuffer<Acceleration>;
 
   vector<Particle> ic = _ic();
   resize2(s_pp, s_aa  , ic.size());
-  resize2(s_pp0, s_aa, ic.size());
+  resize2(s_pp0, s_aa , ic.size());
   CC(cudaMemcpy(s_pp->D, &ic.front(),
 			sizeof(Particle) * ic.size(),
 			cudaMemcpyHostToDevice));
@@ -353,10 +341,8 @@ static void sim_lockstep() {
 		       s_aa->D, cells->start, cells->count);
   std::vector<ParticlesWrap> wsolutes;
 
-  if (rbcs)
-    wsolutes.push_back(
-	ParticlesWrap(r_pp->D, Cont::pcount(), r_aa->D));
-
+  if (rbcs) wsolutes.push_back(ParticlesWrap(r_pp->D, Cont::pcount(), r_aa->D));
+  
   FSI::bind_solvent(wsolvent);
   SolEx::bind_solutes(wsolutes);
   Cont::clear_acc(s_aa);
@@ -369,14 +355,11 @@ static void sim_lockstep() {
   if (contactforces) Contact::build_cells(wsolutes);
   SolEx::post_p();
   DPD::post(s_pp->D, s_pp->S);
-  if (wall_created)
-    Wall::interactions(s_pp->D, s_pp->S,
-		       s_aa->D);
+  if (wall_created) Wall::interactions(s_pp->D, s_pp->S, s_aa->D);
   DPD::recv();
   SolEx::recv_p();
   SolEx::halo();
-  DPD::remote_interactions(s_pp->D, s_pp->S,
-			  s_aa->D);
+  DPD::remote_interactions(s_pp->D, s_pp->S, s_aa->D);
   FSI::bulk(wsolutes);
   if (contactforces) Contact::bulk(wsolutes);
   if (rbcs)
@@ -388,13 +371,10 @@ static void sim_lockstep() {
   RedistPart::pack(s_pp->D, s_pp->S);
   RedistPart::send();
   RedistPart::bulk(s_pp->S, cells->start, cells->count);
-  if (rbcs && wall_created)
-    Wall::interactions(r_pp->D, Cont::pcount(), r_aa->D);
+  if (rbcs && wall_created) Wall::interactions(r_pp->D, Cont::pcount(), r_aa->D);
   SolEx::recv_a();
-  if (rbcs) Cont::upd_stg2_and_1(r_pp, r_aa,
-				 true, driving_acceleration);
+  if (rbcs) Cont::upd_stg2_and_1(r_pp, r_aa, true, driving_acceleration);
   int newnp = RedistPart::recv_count();
-
   if (rbcs) {
     RedistRBC::extent(r_pp->D, Cont::ncells);
     RedistRBC::pack_sendcount(r_pp->D, Cont::ncells);
@@ -402,8 +382,8 @@ static void sim_lockstep() {
   resize2(s_pp0, s_aa0, newnp);
   xyzouvwo->resize(newnp * 2);
   xyzo_half->resize(newnp);
-  RedistPart::recv_unpack(s_pp0->D, xyzouvwo->D,
-			  xyzo_half->D, newnp, cells->start, cells->count);
+  RedistPart::recv_unpack(s_pp0->D, xyzouvwo->D, xyzo_half->D,
+			  newnp, cells->start, cells->count);
   swap(s_pp, s_pp0); swap(s_aa, s_aa0);  
   if (rbcs) {
     Cont::ncells = RedistRBC::post();
@@ -417,8 +397,6 @@ void sim_run() {
   sim_redistribute();
   sim_forces();
   if (!walls && pushtheflow) driving_acceleration = hydrostatic_a;
-  Cont::upd_stg1(s_pp, s_aa, false, driving_acceleration);
-  if (rbcs) Cont::upd_stg1(r_pp, r_aa, true, driving_acceleration);
   int it;
   for (it = 0; it < nsteps; ++it) {
     sim_redistribute();
