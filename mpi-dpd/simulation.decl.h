@@ -20,14 +20,13 @@ namespace Sim {
 
   size_t nsteps;
   float driving_acceleration = 0;
+  MPI_Comm myactivecomm, mycartcomm;
 
-  pthread_t thread_datadump;
-  pthread_mutex_t mutex_datadump;
-  pthread_cond_t request_datadump, done_datadump;
-  bool datadump_pending = false;
+  H5PartDump *dump_part_solvent = NULL;
+  H5PartDump *dump_part;
+  H5FieldDump *dump_field;
+
   int datadump_idtimestep, datadump_nsolvent, datadump_nrbcs;
-  bool async_thread_initialized;
-
   PinnedHostBuffer<Particle>      *particles_datadump;
   PinnedHostBuffer<Acceleration>  *accelerations_datadump;
 
