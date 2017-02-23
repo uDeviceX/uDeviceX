@@ -1,8 +1,3 @@
-struct ParticleArray {
-  DeviceBuffer<Particle>*     pp; /* xyzuvw */
-  DeviceBuffer<Acceleration>* aa; /* axayaz */
-};
-
 namespace Cont {
   int (*indices)[3] = NULL;
   int ntriangles = -1;

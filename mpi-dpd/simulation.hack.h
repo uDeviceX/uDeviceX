@@ -4,16 +4,16 @@ cudaError_t cudaMemcpy (void * dst, const void * src, size_t count, enum cudaMem
 
 */
 
-int nsol = particles->pp->S, szp = sizeof(Particle);
-Particle *sol_dev = particles->pp->D, *sol_hst = particles_datadump->D;
+int nsol = s_pp->S, szp = sizeof(Particle);
+Particle *sol_dev = s_pp->D, *sol_hst = particles_datadump->D;
 
 /* copy from device */
 cudaMemcpy(sol_hst, sol_dev, szp*nsol, cudaMemcpyDeviceToHost);
 
 /* process RBCs */
-if (rbcscoll) {
+if (rbcs) {
     int nrbc = Cont::pcount();
-    Particle *rbc_dev = rbcscoll->pp->D, *rbc_hst = sol_hst + nsol;
+    Particle *rbc_dev = r_pp->D, *rbc_hst = sol_hst + nsol;
 
     /* copy from device */
     cudaMemcpy(rbc_hst, rbc_dev, szp*nrbc, cudaMemcpyDeviceToHost);

@@ -1,6 +1,12 @@
 namespace Sim {
-  ParticleArray *particles, *newparticles;
-  ParticleArray *rbcscoll;
+  DeviceBuffer<Particle>     *s_pp; /* Solvent */
+  DeviceBuffer<Acceleration> *s_aa;
+
+  DeviceBuffer<Particle>     *s_pp0; /* Solvent (temporal buffer) */
+  DeviceBuffer<Acceleration> *s_aa0;
+
+  DeviceBuffer<Particle>     *r_pp; /* RBC */
+  DeviceBuffer<Acceleration> *r_aa;
 
   DeviceBuffer<float4 > *xyzouvwo;
   DeviceBuffer<ushort4> *xyzo_half;
