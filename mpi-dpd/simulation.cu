@@ -35,14 +35,13 @@
 #include "containers.impl.h"
 
 #include "wall.decl.h"
+#include "k/wall.h"
 #include "wall.impl.h"
 
 #include "solutepup.decl.h"
 #include "solutepup.impl.h"
 
-#include "kernelscontact.decl.h"
-#include "kernelscontact.impl.h"
-
+#include "k/cnt.h"
 #include "contact.decl.h"
 #include "contact.impl.h"
 

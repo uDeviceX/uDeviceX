@@ -1,4 +1,29 @@
-namespace KernelsContact {
+namespace k { namespace cnt {
+  static const int maxsolutes = 32;
+  enum {
+    XCELLS = XSIZE_SUBDOMAIN,
+    YCELLS = YSIZE_SUBDOMAIN,
+    ZCELLS = ZSIZE_SUBDOMAIN,
+    XOFFSET = XCELLS / 2,
+    YOFFSET = YCELLS / 2,
+    ZOFFSET = ZCELLS / 2
+  };
+  static const int NCELLS = XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN;
+  union CellEntry {
+    int pid;
+    uchar4 code;
+  };
+  texture<int, cudaTextureType1D> texCellsStart, texCellEntries;
+  __constant__ int cnsolutes[maxsolutes];
+  __constant__ const float2 *csolutes[maxsolutes];
+  __constant__ float *csolutesacc[maxsolutes];
+
+  __constant__ int packstarts_padded[27], packcount[26];
+  __constant__ Particle *packstates[26];
+  __constant__ Acceleration *packresults[26];
+
+    
+    
 __global__ void bulk_3tpp(float2 *particles, int np,
                           int ncellentries, int nsolutes,
                           float *acc, float seed,
@@ -321,4 +346,4 @@ __global__ void halo(int nparticles_padded, int ncellentries,
 
   write_AOS3f(dst, nunpack, xforce, yforce, zforce);
 }
-}
+}}

@@ -82,7 +82,7 @@ void sim_remove_bodies_from_wall() {
   if (!rbcs)         return;
   if (!Cont::ncells) return;
   DeviceBuffer<int> marks(Cont::pcount());
-  WallKernels::fill_keys<<<(Cont::pcount() + 127) / 128, 128>>>
+  k::wall::fill_keys<<<(Cont::pcount() + 127) / 128, 128>>>
     (r_pp->D, Cont::pcount(), marks.D);
 
   vector<int> tmp(marks.S);
