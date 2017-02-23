@@ -58,13 +58,13 @@ static std::vector<Particle> _ic() { /* initial conditions for position and
 
 static void sim_redistribute() {
   RedistPart::pack(s_pp->D, s_pp->S);
-  if (rbcs) RedistRBC::extent(r_pp->D, Cont::ncells);
+  if (rbcs) rdist::extent(r_pp->D, Cont::ncells);
   RedistPart::send();
-  if (rbcs) RedistRBC::pack_sendcount(r_pp->D, Cont::ncells);
+  if (rbcs) rdist::pack_sendcount(r_pp->D, Cont::ncells);
   RedistPart::bulk(s_pp->S, cells->start, cells->count);
   const int newnp = RedistPart::recv_count();
   if (rbcs) {
-    Cont::ncells = RedistRBC::post();
+    Cont::ncells = rdist::post();
     r_pp->resize(Cont::ncells*Cont::nvertices); r_aa->resize(Cont::ncells*Cont::nvertices);
   }
   s_pp0->resize(newnp); s_aa0->resize(newnp);
@@ -75,7 +75,7 @@ static void sim_redistribute() {
 			  newnp, cells->start, cells->count);
   
   swap(s_pp, s_pp0); swap(s_aa, s_aa0);
-  if (rbcs) RedistRBC::unpack(r_pp->D, Cont::ncells);
+  if (rbcs) rdist::unpack(r_pp->D, Cont::ncells);
 }
 
 void sim_remove_bodies_from_wall() {
@@ -241,7 +241,7 @@ static void sim_update_and_bounce() {
 
 void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   Cont::cartcomm = cartcomm_; activecomm = activecomm_;
-  RedistRBC::redistribute_rbcs_init(Cont::cartcomm);
+  rdist::redistribute_rbcs_init(Cont::cartcomm);
   DPD::init(Cont::cartcomm);
   fsi::init(Cont::cartcomm);
   SolEx::init(Cont::cartcomm);
@@ -332,7 +332,7 @@ void sim_close() {
   SolEx::close();
   fsi::close();
   DPD::close();
-  RedistRBC::redistribute_rbcs_close();
+  rdist::redistribute_rbcs_close();
 
   delete particles_datadump;
   delete accelerations_datadump;

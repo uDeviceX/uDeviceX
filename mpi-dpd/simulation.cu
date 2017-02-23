@@ -23,9 +23,9 @@
 
 #include "common.tmp.h"
 
-#include "redistribute-rbcs.decl.h"
+#include "rdist.decl.h"
 #include "k/rdist.h"
-#include "redistribute-rbcs.impl.h"
+#include "rdist.impl.h"
 
 #include "redistribute-particles.decl.h"
 #include "k/sdist.h"

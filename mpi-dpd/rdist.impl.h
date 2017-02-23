@@ -1,4 +1,4 @@
-namespace RedistRBC {
+namespace rdist {
 void _post_recvcount() {
   recv_counts[0] = 0;
   for (int i = 1; i < 27; ++i) {
@@ -207,5 +207,5 @@ void redistribute_rbcs_close() {
   delete _ddestinations;
   delete _dsources;
 }
-}  
+}
 
