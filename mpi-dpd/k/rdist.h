@@ -1,4 +1,4 @@
-namespace ReorderingRBC {
+namespace k {namespace rdist {
 static const int cmaxnrbcs = 64 * 4;
 __constant__ float *csources[cmaxnrbcs], *cdestinations[cmaxnrbcs];
 
@@ -32,4 +32,4 @@ __global__ void shift(const Particle *const psrc, const int np, const int code,
   for (int c = 0; c < 3; ++c) pnew.x[c] -= d[c] * L[c];
   pdst[pid] = pnew;
 }
-}
+}}
