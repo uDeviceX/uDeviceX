@@ -1,10 +1,10 @@
 ## Poiseuille velocity profile
-SUCCESS
+![alt text](success.png "SUCCESS")
 ## Double Poiseuille with the same viscosity
-SUCCESS
+![alt text](success.png "SUCCESS")
 ## Double Poiseuille velocity profile with different viscosities
-SUCCESS
+![alt text](success.png "SUCCESS")
 ## Shear flow velocity profile
-SUCCESS
+![alt text](success.png "SUCCESS")
 ## RBC in shear flow
-FAIL
+![alt text](success.png "FAIL")
