@@ -15,7 +15,6 @@
 #include "common.h"
 #include "io.h"
 #include "last_bit_float.h"
-using namespace std;
 
 void _write_bytes(const void * const ptr, const int nbytes32, MPI_File f, MPI_Comm comm) {
     MPI_Offset base;
@@ -75,7 +74,7 @@ void ply_dump(MPI_Comm comm, MPI_Comm cartcomm, const char * filename,
         ss <<  "end_header\n";
     }
 
-    string content = ss.str();
+    std::string content = ss.str();
 
     _write_bytes(content.c_str(), content.size(), f, comm);
 
@@ -109,7 +108,7 @@ void ply_dump(MPI_Comm comm, MPI_Comm cartcomm, const char * filename,
     MC( MPI_File_close(&f));
 }
 
-H5PartDump::H5PartDump(const string fname, MPI_Comm comm, MPI_Comm cartcomm): tstamp(0), disposed(false)
+H5PartDump::H5PartDump(const std::string fname, MPI_Comm comm, MPI_Comm cartcomm): tstamp(0), disposed(false)
 {
     _initialize(fname, comm, cartcomm);
 }
@@ -146,7 +145,7 @@ void H5PartDump::dump(Particle * P, int n)
 
     int i,  c ; /* dimension */
     const char* rlbl[] = {"x", "y", "z"};
-    vector<h5part_float32_t> FD(n); /* float data */
+    std::vector<h5part_float32_t> FD(n); /* float data */
     for (c = 0; c < 3; c++) {
       for (i = 0; i < n; i++) FD[i] = P[i].x[c] + origin[c];
       H5PartWriteDataFloat32(f, rlbl[c], &FD.front());
@@ -158,7 +157,7 @@ void H5PartDump::dump(Particle * P, int n)
       H5PartWriteDataFloat32(f, vlbl[c], &FD.front());
     }
 
-    vector <h5part_int64_t> ID(n); /* integer data */
+    std::vector <h5part_int64_t> ID(n); /* integer data */
     for (i = 0; i < n; i++) {
       int type = last_bit_float::get(P[i].u[0]); /* TODO: */
       ID[i] = type;
@@ -290,12 +289,13 @@ void H5FieldDump::_write_fields(const char * const path2h5,
     if (!rankscalar)
     {
         char wrapper[256];
-        sprintf(wrapper, "%s.xmf", string(path2h5).substr(0, string(path2h5).find_last_of(".h5") - 2).data());
+        sprintf(wrapper, "%s.xmf", std::string(path2h5).substr(0, std::string(path2h5).find_last_of(".h5") - 2).data());
 
         FILE * xmf = fopen(wrapper, "w");
 
         _xdmf_header(xmf);
-        _xdmf_grid(xmf, time, string(path2h5).substr(string(path2h5).find_last_of("/") + 1).c_str(), channelnames, nchannels);
+        _xdmf_grid(xmf, time, std::string(path2h5).substr(std::string(path2h5).find_last_of("/") + 1).c_str(),
+		   channelnames, nchannels);
         _xdmf_epilogue(xmf);
 
         fclose(xmf);
@@ -329,7 +329,7 @@ void H5FieldDump::dump(MPI_Comm comm, const Particle * const p, const int n, int
 
     const int ncells = XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN;
 
-    vector<float> rho(ncells), u[3];
+    std::vector<float> rho(ncells), u[3];
 
     for(int c = 0; c < 3; ++c)
         u[c].resize(ncells);
@@ -397,7 +397,7 @@ H5FieldDump::~H5FieldDump()
         char filepath[512];
         sprintf(filepath, "h5/flowfields-%04d.h5", it / steps_per_dump);
 
-        _xdmf_grid(xmf, it * dt,  string(filepath).substr(string(filepath).find_last_of("/") + 1).c_str(), channelnames, 4);
+        _xdmf_grid(xmf, it * dt,  std::string(filepath).substr(std::string(filepath).find_last_of("/") + 1).c_str(), channelnames, 4);
     }
 
     fprintf(xmf, "   </Grid>\n");
