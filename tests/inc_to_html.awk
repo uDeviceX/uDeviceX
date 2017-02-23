@@ -26,14 +26,12 @@ $1 ~ /^#include/ {
     if (exists(s)) print "<img src=\"success.jpg\" width=\"50\" height=\"50\" />" > idx
     else           print "<img src=\"fail.jpg\" width=\"50\" height=\"50\" />"    > idx
 
-    # # always shows images
-    # for (id = 1; 1; id++) {
-    #     img = sprintf("img%d.png", id)
-    #     if (exists(img)) process_img(img)
-    #     else             break
-    # }
-
-    # ![alt text](img2.png "Logo Title Text 1")
+    # always shows images
+    for (id = 1; 1; id++) {
+        img = sprintf("img%d.png", id)
+        if (exists(img)) process_img(img)
+        else             break
+    }
 
     next
 }
