@@ -1,12 +1,12 @@
 namespace sim {
   StaticDeviceBuffer<Particle> *s_pp; /* Solvent */
-  StaticDeviceBuffer<Force>    *s_aa;
+  StaticDeviceBuffer<Force>    *s_ff;
 
   StaticDeviceBuffer<Particle> *s_pp0; /* Solvent (temporal buffer) */
-  StaticDeviceBuffer<Force>    *s_aa0;
+  StaticDeviceBuffer<Force>    *s_ff0;
 
   StaticDeviceBuffer<Particle> *r_pp; /* RBC */
-  StaticDeviceBuffer<Force>    *r_aa;
+  StaticDeviceBuffer<Force>    *r_ff;
 
   StaticDeviceBuffer<float4 > *xyzouvwo;
   StaticDeviceBuffer<ushort4> *xyzo_half;

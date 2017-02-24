@@ -152,11 +152,11 @@ namespace ParticleKernels {
 } /* end of ParticleKernels */
 
 namespace Cont {
-void  upd_stg2_and_1(StaticDeviceBuffer<Particle>* pp, StaticDeviceBuffer<Force>* aa,
+void  upd_stg2_and_1(StaticDeviceBuffer<Particle>* pp, StaticDeviceBuffer<Force>* ff,
 		     bool rbcflag, float driving_force) {
   if (pp->S)
     ParticleKernels::upd_stg2_and_1<<<(pp->S + 127) / 128, 128, 0>>>
-      (rbcflag, (float2 *)pp->D, (float *)aa->D, pp->S,
+      (rbcflag, (float2 *)pp->D, (float *)ff->D, pp->S,
        dt, driving_force, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
@@ -183,7 +183,7 @@ void _initialize(float *device_pp, float (*transform)[4]) {
   CudaRBC::initialize(device_pp, transform);
 }
   
-void setup(StaticDeviceBuffer<Particle>* pp, StaticDeviceBuffer<Force>* aa,
+void setup(StaticDeviceBuffer<Particle>* pp, StaticDeviceBuffer<Force>* ff,
 	   const char *path2ic) {
     vector<TransformedExtent> allrbcs;
     if (rank == 0) {
@@ -234,12 +234,12 @@ void setup(StaticDeviceBuffer<Particle>* pp, StaticDeviceBuffer<Force>* aa,
 	}
     }
 
-    rbc_resize2(pp, aa, good.size());
+    rbc_resize2(pp, ff, good.size());
     for(int i = 0; i < good.size(); ++i)
       _initialize((float *)(pp->D + nvertices * i), good[i].transform);
 }
 
-/* NB: preserves order of `pp' but messes up `aa' */
+/* NB: preserves order of `pp' but messes up `ff' */
 #define rbc_remove_resize(pp, aa, e, ne) Cont::rbc_remove(pp, e, ne), rbc_resize(aa, Cont::ncells)
   void rbc_remove(StaticDeviceBuffer<Particle>* pp, int *e, int ne) {
   /* remove RBCs with indexes in `e' */
@@ -262,12 +262,12 @@ void setup(StaticDeviceBuffer<Particle>* pp, StaticDeviceBuffer<Force>* aa,
 
 int  pcount() {return ncells * nvertices;}
 
-void clear_forces(StaticDeviceBuffer<Force>* aa) {
-  CC(cudaMemsetAsync(aa->D, 0, sizeof(Force) * aa->S));
+void clear_forces(StaticDeviceBuffer<Force>* ff) {
+  CC(cudaMemsetAsync(ff->D, 0, sizeof(Force) * ff->S));
 }
 static void rbc_dump0(const char *format4ply,
 		      MPI_Comm comm, int ncells,
-		      Particle *p, Force *a, int n, int iddatadump) {
+		      Particle *p, Force *f, int n, int iddatadump) {
     int ctr = iddatadump;
 
     //we fused VV stages so we need to recover the state before stage 1
@@ -275,7 +275,7 @@ static void rbc_dump0(const char *format4ply,
 	lastbit::Preserver up(p[i].v[0]);
 	for(int c = 0; c < 3; ++c) {
 	    p[i].r[c] -= dt * p[i].v[c];
-	    p[i].v[c] -= 0.5 * dt * a[i].a[c];
+	    p[i].v[c] -= 0.5 * dt * f[i].a[c];
 	}
     }
     char buf[200];
