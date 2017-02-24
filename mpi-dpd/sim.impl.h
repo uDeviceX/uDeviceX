@@ -177,7 +177,7 @@ static void datadump_async(int idtimestep) {
 
     int n = particles_datadump->S;
     Particle *p = particles_datadump->D;
-    Acceleration *a = accelerations_datadump->D;
+    Force *a = accelerations_datadump->D;
 
     diagnostics(myactivecomm, mycartcomm, p, n, dt, datadump_idtimestep);
     if (hdf5part_dumps) {
@@ -209,7 +209,7 @@ void datadump(const int idtimestep) {
 			     sizeof(Particle) * s_pp->S,
 			     cudaMemcpyDeviceToHost, 0));
   CC(cudaMemcpyAsync(accelerations_datadump->D, s_aa->D,
-			     sizeof(Acceleration) * s_pp->S,
+			     sizeof(Force) * s_pp->S,
 			     cudaMemcpyDeviceToHost, 0));
   int start = s_pp->S;
   if (rbcs) {
@@ -218,7 +218,7 @@ void datadump(const int idtimestep) {
 	sizeof(Particle) * Cont::pcount(), cudaMemcpyDeviceToHost, 0));
     CC(cudaMemcpyAsync(
 	accelerations_datadump->D + start, r_aa->D,
-	sizeof(Acceleration) * Cont::pcount(), cudaMemcpyDeviceToHost, 0));
+	sizeof(Force) * Cont::pcount(), cudaMemcpyDeviceToHost, 0));
     start += Cont::pcount();
   }
   CC(cudaEventRecord(evdownloaded, 0));
@@ -247,13 +247,13 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   cnt::init(Cont::cartcomm);
   cells   = new CellLists(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
   particles_datadump     = new PinnedHostBuffer<Particle>;
-  accelerations_datadump = new PinnedHostBuffer<Acceleration>;
+  accelerations_datadump = new PinnedHostBuffer<Force>;
 
   xyzouvwo    = new DeviceBuffer<float4>;
   xyzo_half = new DeviceBuffer<ushort4>;
   if (rbcs) {
     r_pp = new StaticDeviceBuffer<Particle>;
-    r_aa = new StaticDeviceBuffer<Acceleration>;
+    r_aa = new StaticDeviceBuffer<Force>;
   }
 
   wall::trunk = new Logistic::KISS;
@@ -270,9 +270,9 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
 				   dims[1] * YSIZE_SUBDOMAIN,
 				   dims[2] * ZSIZE_SUBDOMAIN);
   s_pp  = new StaticDeviceBuffer<Particle>;
-  s_aa  = new StaticDeviceBuffer<Acceleration>;
+  s_aa  = new StaticDeviceBuffer<Force>;
   s_pp0 = new StaticDeviceBuffer<Particle>;
-  s_aa0 = new StaticDeviceBuffer<Acceleration>;
+  s_aa0 = new StaticDeviceBuffer<Force>;
 
   vector<Particle> ic = _ic();
   resize2(s_pp, s_aa  , ic.size());

@@ -73,7 +73,7 @@ void halo(ParticlesWrap halos[26]) {
   }
 
   {
-    Acceleration *packresults[26];
+    Force *packresults[26];
 
     for (int i = 0; i < 26; ++i) packresults[i] = halos[i].a;
 

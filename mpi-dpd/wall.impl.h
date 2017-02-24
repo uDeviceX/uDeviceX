@@ -372,7 +372,7 @@ namespace wall {
   }
 
   void interactions(const Particle *const p, const int n,
-		    Acceleration *const acc) {
+		    Force *const acc) {
     // cellsstart and cellscount IGNORED for now
 
     if (n > 0 && solid_size > 0) {

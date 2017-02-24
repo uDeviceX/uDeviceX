@@ -22,7 +22,7 @@ class RemoteHalo {
 public:
   DeviceBuffer<Particle> dstate;
   PinnedHostBuffer<Particle> hstate;
-  PinnedHostBuffer<Acceleration> result;
+  PinnedHostBuffer<Force> result;
   std::vector<Particle> pmessage;
   void preserve_resize(int n) {
     dstate.resize(n);
@@ -38,14 +38,14 @@ class LocalHalo {
 public:
   LocalHalo() {
     scattered_indices = new DeviceBuffer<int>;
-    result            = new PinnedHostBuffer<Acceleration>;
+    result            = new PinnedHostBuffer<Force>;
   }
   ~LocalHalo() {
     delete scattered_indices;
     delete result;
   }
   DeviceBuffer<int>* scattered_indices;
-  PinnedHostBuffer<Acceleration>* result;
+  PinnedHostBuffer<Force>* result;
   void resize(int n) {
     scattered_indices->resize(n);
     result->resize(n);

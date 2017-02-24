@@ -152,7 +152,7 @@ namespace ParticleKernels {
 } /* end of ParticleKernels */
 
 namespace Cont {
-void  upd_stg2_and_1(StaticDeviceBuffer<Particle>* pp, StaticDeviceBuffer<Acceleration>* aa,
+void  upd_stg2_and_1(StaticDeviceBuffer<Particle>* pp, StaticDeviceBuffer<Force>* aa,
 		     bool rbcflag, float driving_acceleration) {
   if (pp->S)
     ParticleKernels::upd_stg2_and_1<<<(pp->S + 127) / 128, 128, 0>>>
@@ -183,7 +183,7 @@ void _initialize(float *device_pp, float (*transform)[4]) {
   CudaRBC::initialize(device_pp, transform);
 }
   
-void setup(StaticDeviceBuffer<Particle>* pp, StaticDeviceBuffer<Acceleration>* aa,
+void setup(StaticDeviceBuffer<Particle>* pp, StaticDeviceBuffer<Force>* aa,
 	   const char *path2ic) {
     vector<TransformedExtent> allrbcs;
     if (rank == 0) {
@@ -262,12 +262,12 @@ void setup(StaticDeviceBuffer<Particle>* pp, StaticDeviceBuffer<Acceleration>* a
 
 int  pcount() {return ncells * nvertices;}
 
-void clear_acc(StaticDeviceBuffer<Acceleration>* aa) {
-  CC(cudaMemsetAsync(aa->D, 0, sizeof(Acceleration) * aa->S));
+void clear_acc(StaticDeviceBuffer<Force>* aa) {
+  CC(cudaMemsetAsync(aa->D, 0, sizeof(Force) * aa->S));
 }
 static void rbc_dump0(const char *format4ply,
 		      MPI_Comm comm, int ncells,
-		      Particle *p, Acceleration *a, int n, int iddatadump) {
+		      Particle *p, Force *a, int n, int iddatadump) {
     int ctr = iddatadump;
 
     //we fused VV stages so we need to recover the state before stage 1
@@ -289,7 +289,7 @@ static void rbc_dump0(const char *format4ply,
     ply_dump(comm, cartcomm, buf, indices, ncells, ntriangles, p, nvertices, false);
 }
 
-void rbc_dump(MPI_Comm comm, Particle* p, Acceleration* a, int n, int iddatadump) {
+void rbc_dump(MPI_Comm comm, Particle* p, Force* a, int n, int iddatadump) {
   rbc_dump0("ply/rbcs-%05d.ply", comm, n / nvertices, p, a, n, iddatadump);
 }
 

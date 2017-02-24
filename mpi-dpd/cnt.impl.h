@@ -95,7 +95,7 @@ namespace cnt {
       CC(cudaMemcpyToSymbolAsync(k_cnt::packstates, recvpackstates,
 				 sizeof(recvpackstates), 0,
 				 cudaMemcpyHostToDevice));
-      Acceleration *packresults[26];
+      Force *packresults[26];
       for (int i = 0; i < 26; ++i) packresults[i] = halos[i].a;
       CC(cudaMemcpyToSymbolAsync(k_cnt::packresults, packresults,
 				 sizeof(packresults), 0, cudaMemcpyHostToDevice));

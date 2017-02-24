@@ -1,12 +1,12 @@
 namespace sim {
-  StaticDeviceBuffer<Particle>     *s_pp; /* Solvent */
-  StaticDeviceBuffer<Acceleration> *s_aa;
+  StaticDeviceBuffer<Particle> *s_pp; /* Solvent */
+  StaticDeviceBuffer<Force>    *s_aa;
 
-  StaticDeviceBuffer<Particle>     *s_pp0; /* Solvent (temporal buffer) */
-  StaticDeviceBuffer<Acceleration> *s_aa0;
+  StaticDeviceBuffer<Particle> *s_pp0; /* Solvent (temporal buffer) */
+  StaticDeviceBuffer<Force>    *s_aa0;
 
-  StaticDeviceBuffer<Particle>     *r_pp; /* RBC */
-  StaticDeviceBuffer<Acceleration> *r_aa;
+  StaticDeviceBuffer<Particle> *r_pp; /* RBC */
+  StaticDeviceBuffer<Force>    *r_aa;
 
   DeviceBuffer<float4 > *xyzouvwo;
   DeviceBuffer<ushort4> *xyzo_half;
@@ -26,7 +26,7 @@ namespace sim {
 
   int datadump_idtimestep, datadump_nsolvent, datadump_nrbcs;
   PinnedHostBuffer<Particle>      *particles_datadump;
-  PinnedHostBuffer<Acceleration>  *accelerations_datadump;
+  PinnedHostBuffer<Force>  *accelerations_datadump;
 
   cudaEvent_t evdownloaded;
 

@@ -50,23 +50,23 @@ struct Particle {
   }
 };
 
-struct Acceleration {
+struct Force {
   float a[3];
 };
 
 struct ParticlesWrap {
   const Particle *p;
-  Acceleration *a;
+  Force *a;
   int n;
   ParticlesWrap() : p(NULL), a(NULL), n(0) {}
-  ParticlesWrap(const Particle *const p, const int n, Acceleration *a)
+  ParticlesWrap(const Particle *const p, const int n, Force *a)
     : p(p), n(n), a(a) {}
 };
 
 struct SolventWrap : ParticlesWrap {
   const int *cellsstart, *cellscount;
   explicit SolventWrap() : cellsstart(NULL), cellscount(NULL), ParticlesWrap() {}
-  SolventWrap(const Particle *const p, const int n, Acceleration *a,
+  SolventWrap(const Particle *const p, const int n, Force *a,
               const int *const cellsstart, const int *const cellscount)
     : ParticlesWrap(p, n, a),
       cellsstart(cellsstart),

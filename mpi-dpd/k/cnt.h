@@ -20,7 +20,7 @@ namespace k_cnt {
 
   __constant__ int packstarts_padded[27], packcount[26];
   __constant__ Particle *packstates[26];
-  __constant__ Acceleration *packresults[26];
+  __constant__ Force *packresults[26];
 
     
     

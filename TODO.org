@@ -29,16 +29,16 @@ dpd_ss
     input: s_pp
    output: s_ff
 
-clfor_ss
+clfor_s
     input: s_ff
     ouput: s_ff
 
-clvel_ss
+clvel_s
     input: s_pp
    output: s_pp
 
 cnt_rr
-     input: r_rr
+     input: r_pp
     output: r_ff
 
 fsi_sr
@@ -52,3 +52,8 @@ bounce_sr
 bounce_sw
     input: s_pp, w_pp
    output: s_pp, w_ff
+
+memb_rr:
+    input: r_pp
+    input: r_ff
+

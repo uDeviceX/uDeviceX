@@ -51,7 +51,7 @@ void init1(MPI_Comm cartcomm) {
 }
 
 void local_interactions(Particle *xyzuvw, float4 *xyzouvwo, ushort4 *xyzo_half,
-			int n, Acceleration *a, int *cellsstart,
+			int n, Force *a, int *cellsstart,
 			int *cellscount) {
   if (n > 0)
     forces_dpd_cuda_nohost((float *)xyzuvw, xyzouvwo, xyzo_half, (float *)a, n,
@@ -60,7 +60,7 @@ void local_interactions(Particle *xyzuvw, float4 *xyzouvwo, ushort4 *xyzo_half,
 			   local_trunk->get_float());
 }
 
-void remote_interactions(Particle *p, int n, Acceleration *a) {
+void remote_interactions(Particle *p, int n, Force *a) {
   static BipsBatch::BatchInfo infos[26];
 
   for (int i = 0; i < 26; ++i) {
