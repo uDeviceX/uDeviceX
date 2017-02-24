@@ -29,8 +29,8 @@ namespace sim {
 
   cudaEvent_t evdownloaded;
 
-#define NPMAX 5000000 /* TODO: */
-  float rbc_xx[NPMAX], rbc_yy[NPMAX], rbc_zz[NPMAX];
-  float sol_xx[NPMAX], sol_yy[NPMAX], sol_zz[NPMAX];
-  int iotags[NPMAX];
+/* TODO: */
+  float rbc_xx[MAX_PART_NUM], rbc_yy[MAX_PART_NUM], rbc_zz[MAX_PART_NUM];
+  float sol_xx[MAX_PART_NUM], sol_yy[MAX_PART_NUM], sol_zz[MAX_PART_NUM];
+  int   iotags[MAX_PART_NUM];
 }
