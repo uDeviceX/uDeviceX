@@ -13,7 +13,7 @@ LDFLAGS   += -L../cuda-dpd -L../cuda-rbc -L../last-bit
 NVCCFLAGS += -I../cuda-dpd -I../cuda-rbc -I../last-bit -I../argument-parser
 LIBS      += -lcuda-dpd -lcuda-rbc -llast-bit -lcudart
 
-OBJS = 	common.o io.o scan.o minmax.o dpd-forces.o simulation.o main.o
+OBJS = 	common.o io.o scan.o minmax.o dpd-forces.o bund.o main.o
 
 ifeq ($(h5part),0)
 NVCCFLAGS += -DNO_H5PART
@@ -40,7 +40,7 @@ test:   $(OBJS) libcuda-dpd libcuda-rbc liblast-bit
 # http://devblogs.nvidia.com/parallelforall/separate-compilation-linking-cuda-device-code
 fsi.o:            fsi.cu;            $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 dpd-forces.o:     dpd-forces.cu;     $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
-simulation.o:     simulation.cu;     $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
+bund.o:           bund.cu;     $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 include    Makefile.dep # dependencies
 
 libcuda-dpd:; make -C ../cuda-dpd \

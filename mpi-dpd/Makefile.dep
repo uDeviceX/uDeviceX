@@ -1,9 +1,9 @@
 # Generated with by ../tools/deps.awk *.cu *.h
 # (do not include '*.h' files in other '*.h' files)
 
+bund.o: .conf.h bipsbatch.decl.h bipsbatch.impl.h bund.h cnt.decl.h cnt.impl.h common.h common.tmp.h containers.decl.h containers.impl.h dpd-forces.h dpd.decl.h dpd.impl.h fsi.decl.h fsi.impl.h io.h k/cnt.h k/common.h k/fsi.h k/rdist.h k/sdist.h k/sex.h k/sim.h k/wall.h minmax.h packinghalo.decl.h packinghalo.impl.h rdist.decl.h rdist.impl.h scan.h sdist.decl.h sdist.impl.h sex.decl.h sex.impl.h sim.decl.h sim.impl.h wall.decl.h wall.impl.h
 common.o: .conf.h common.h
 dpd-forces.o: .conf.h common.h dpd-forces.h
 io.o: .conf.h common.h io.h
-main.o: .conf.h common.h simulation.h
+main.o: .conf.h bund.h common.h
 minmax.o: .conf.h common.h minmax.h
-simulation.o: .conf.h bipsbatch.decl.h bipsbatch.impl.h cnt.decl.h cnt.impl.h common.h common.tmp.h containers.decl.h containers.impl.h dpd-forces.h dpd.decl.h dpd.impl.h fsi.decl.h fsi.impl.h io.h k/cnt.h k/common.h k/fsi.h k/rdist.h k/sdist.h k/sex.h k/sim.h k/wall.h minmax.h packinghalo.decl.h packinghalo.impl.h rdist.decl.h rdist.impl.h scan.h sdist.decl.h sdist.impl.h sex.decl.h sex.impl.h sim.decl.h sim.impl.h simulation.h wall.decl.h wall.impl.h

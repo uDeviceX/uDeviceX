@@ -7,7 +7,7 @@
 #include "argument-parser.h"
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */
 #include "common.h"
-#include "simulation.h"
+#include "bund.h"
 
 float tend;
 bool walls, pushtheflow, doublepoiseuille, rbcs, hdf5field_dumps,
