@@ -197,7 +197,7 @@ static void datadump_async(int idtimestep) {
 
     int n = particles_datadump->S;
     Particle *p = particles_datadump->D;
-    Force *a = accelerations_datadump->D;
+    Force *a = forces_datadump->D;
 
     diagnostics(myactivecomm, mycartcomm, p, n, dt, datadump_idtimestep);
     if (hdf5part_dumps) {
@@ -221,12 +221,12 @@ void datadump(const int idtimestep) {
   int n = s_pp->S;
   if (rbcs) n += Cont::pcount();
   particles_datadump->resize(n);
-  accelerations_datadump->resize(n);
+  forces_datadump->resize(n);
 #include "sim.hack.h"
   CC(cudaMemcpyAsync(particles_datadump->D, s_pp->D,
 			     sizeof(Particle) * s_pp->S,
 			     cudaMemcpyDeviceToHost, 0));
-  CC(cudaMemcpyAsync(accelerations_datadump->D, s_aa->D,
+  CC(cudaMemcpyAsync(forces_datadump->D, s_aa->D,
 			     sizeof(Force) * s_pp->S,
 			     cudaMemcpyDeviceToHost, 0));
   int start = s_pp->S;
@@ -235,7 +235,7 @@ void datadump(const int idtimestep) {
 	particles_datadump->D + start, r_pp->D,
 	sizeof(Particle) * Cont::pcount(), cudaMemcpyDeviceToHost, 0));
     CC(cudaMemcpyAsync(
-	accelerations_datadump->D + start, r_aa->D,
+	forces_datadump->D + start, r_aa->D,
 	sizeof(Force) * Cont::pcount(), cudaMemcpyDeviceToHost, 0));
     start += Cont::pcount();
   }
@@ -265,7 +265,7 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   cnt::init(Cont::cartcomm);
   cells   = new CellLists(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
   particles_datadump     = new PinnedHostBuffer<Particle>;
-  accelerations_datadump = new PinnedHostBuffer<Force>;
+  forces_datadump = new PinnedHostBuffer<Force>;
 
   xyzouvwo    = new StaticDeviceBuffer<float4>;
   xyzo_half = new StaticDeviceBuffer<ushort4>;
@@ -309,7 +309,7 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   CC(cudaEventCreate(&evdownloaded,
 			     cudaEventDisableTiming | cudaEventBlockingSync));
   particles_datadump->resize(s_pp->S * 1.5);
-  accelerations_datadump->resize(s_pp->S * 1.5);
+  forces_datadump->resize(s_pp->S * 1.5);
 
   dump_init();
 }
@@ -347,7 +347,7 @@ void close() {
   rdstr::redistribute_rbcs_close();
 
   delete particles_datadump;
-  delete accelerations_datadump;
+  delete forces_datadump;
   delete xyzouvwo;
   delete xyzo_half;
   delete wall::trunk;

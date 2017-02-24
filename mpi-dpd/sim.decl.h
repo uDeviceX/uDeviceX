@@ -25,7 +25,7 @@ namespace sim {
 
   int datadump_idtimestep, datadump_nsolvent, datadump_nrbcs;
   PinnedHostBuffer<Particle>      *particles_datadump;
-  PinnedHostBuffer<Force>  *accelerations_datadump;
+  PinnedHostBuffer<Force>         *forces_datadump;
 
   cudaEvent_t evdownloaded;
 
