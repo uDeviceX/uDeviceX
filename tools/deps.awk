@@ -8,7 +8,7 @@
 BEGIN {
     asplit("cuda.h stdlib.h stdio.h errno.h mpi.h H5Part.h hdf5.h pthread.h " \
 	   "cuda_runtime.h stdint.h unistd.h math.h math_functions.h " \
-	   "geom-wrapper.h helper_math.h", sys_hdr)
+	   "geom-wrapper.h helper_math.h argument-parser.h", sys_hdr)
 }
 
 function dep_list(d, f, n,   i, ans, sep) { # return dep as a string
