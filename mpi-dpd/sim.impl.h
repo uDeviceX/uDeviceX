@@ -11,7 +11,7 @@ static void update_helper_arrays() {
 
 /* set initial velocity of a particle */
 static void ic_vel0(float x, float y, float z,
-			float *vx, float *vy, float *vz) {
+		    float *vx, float *vy, float *vz) {
   *vx = gamma_dot * z; *vy = 0; *vz = 0; /* TODO: works only for one
 					    processor */
 }
@@ -330,15 +330,14 @@ void run() {
   if (!walls && pushtheflow) driving_acceleration = hydrostatic_a;
   int it;
   for (it = 0; it < nsteps; ++it) {
-    redistribute();
     if (walls && it >= wall_creation_stepid && !wall_created) {
       CC(cudaDeviceSynchronize());
       create_walls();
-      redistribute();
       if (pushtheflow) driving_acceleration = hydrostatic_a;
       if (Cont::rank == 0)
 	fprintf(stderr, "the simulation consists of %ld steps\n", nsteps - it);
     }
+    redistribute();
     forces();
     if (it % steps_per_dump == 0) datadump(it);
     update_and_bounce();
@@ -346,7 +345,6 @@ void run() {
 }
 
 void close() {
-
   dump_final();
   sdstr::redist_part_close();
 
