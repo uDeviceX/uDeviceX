@@ -14,7 +14,7 @@
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */
 #include "common.h"
 #include "io.h"
-#include "last_bit_float.h"
+#include "last-bit.h"
 
 void _write_bytes(const void * const ptr, const int nbytes32, MPI_File f, MPI_Comm comm) {
     MPI_Offset base;
@@ -159,7 +159,7 @@ void H5PartDump::dump(Particle * P, int n)
 
     std::vector <h5part_int64_t> ID(n); /* integer data */
     for (i = 0; i < n; i++) {
-      int type = last_bit_float::get(P[i].u[0]); /* TODO: */
+      int type = lastbit::get(P[i].u[0]); /* TODO: */
       ID[i] = type;
     }
     H5PartWriteDataInt64(f, "type", &ID.front());

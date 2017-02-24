@@ -1,7 +1,7 @@
 #include <bitset>
-#include "last_bit_float.h"
+#include "last-bit.h"
 
-namespace last_bit_float {
+namespace lastbit {
     __host__ __device__ bool get(const float f) {
         unsigned char const *c = reinterpret_cast<unsigned char const*>(&f);
         return c[0] & 1;

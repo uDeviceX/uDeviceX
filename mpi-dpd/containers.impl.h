@@ -75,8 +75,8 @@ namespace ParticleKernels {
 
 	int type; float driving_acceleration, mass, vx = s1.y, y = s0.y;
 	if      (rbcflag                             ) type = MEMB_TYPE;
-	else if (!rbcflag &&  last_bit_float::get(vx)) type =  IN_TYPE;
-	else if (!rbcflag && !last_bit_float::get(vx)) type = OUT_TYPE;
+	else if (!rbcflag &&  lastbit::get(vx)) type =  IN_TYPE;
+	else if (!rbcflag && !lastbit::get(vx)) type = OUT_TYPE;
 	mass                 = (type == MEMB_TYPE) ? rbc_mass : 1;
 	driving_acceleration = (type ==   IN_TYPE) ? 0        : _driving_acceleration;
 	if (doublePoiseuille && y <= threshold) driving_acceleration *= -1;
@@ -128,17 +128,17 @@ namespace ParticleKernels {
 	}
 
 	if (laneid < nwords) {
-	    last_bit_float::Preserver up1(pdata[laneid].y);
+	    lastbit::Preserver up1(pdata[laneid].y);
 	    pdata[laneid] = s0;
 	}
 
 	if (laneid + 32 < nwords) {
-	    last_bit_float::Preserver up1(pdata[laneid + 32].y);
+	    lastbit::Preserver up1(pdata[laneid + 32].y);
 	    pdata[laneid + 32] = s1;
 	}
 
 	if (laneid + 64 < nwords) {
-	    last_bit_float::Preserver up1(pdata[laneid + 64].y);
+	    lastbit::Preserver up1(pdata[laneid + 64].y);
 	    pdata[laneid + 64] = s2;
 	}
     }
@@ -146,7 +146,7 @@ namespace ParticleKernels {
     __global__ void clear_velocity(Particle *p, int n)  {
 	int pid = threadIdx.x + blockDim.x * blockIdx.x;
 	if (pid >= n) return;
-	last_bit_float::Preserver up(p[pid].u[0]);
+	lastbit::Preserver up(p[pid].u[0]);
 	for(int c = 0; c < 3; ++c) p[pid].u[c] = 0;
     }
 } /* end of ParticleKernels */
@@ -272,7 +272,7 @@ static void rbc_dump0(const char *format4ply,
 
     //we fused VV stages so we need to recover the state before stage 1
     for(int i = 0; i < n; ++i) {
-	last_bit_float::Preserver up(p[i].u[0]);
+	lastbit::Preserver up(p[i].u[0]);
 	for(int c = 0; c < 3; ++c) {
 	    p[i].x[c] -= dt * p[i].u[c];
 	    p[i].u[c] -= 0.5 * dt * a[i].a[c];

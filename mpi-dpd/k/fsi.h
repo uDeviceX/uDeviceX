@@ -104,7 +104,7 @@ namespace k_fsi {
       float3 vel1 = make_float3(dst1.y, dst2.x, dst2.y),
 	vel2 = make_float3(stmp1.y, stmp2.x, stmp2.y);
       int type1 = MEMB_TYPE; // RBC membrane
-      int type2 = last_bit_float::get(vel2.x) ? IN_TYPE : OUT_TYPE;
+      int type2 = lastbit::get(vel2.x) ? IN_TYPE : OUT_TYPE;
       const float3 strength = compute_dpd_force_traced(type1, type2, pos1, pos2,
 						       vel1, vel2, myrandnr);
 
@@ -287,7 +287,7 @@ namespace k_fsi {
 	float3 vel1 = make_float3(dst1.y, dst2.x, dst2.y),
 	  vel2 = make_float3(stmp1.y, stmp2.x, stmp2.y);
 	int type1 = MEMB_TYPE; // RBC membrane
-	int type2 = last_bit_float::get(vel2.x) ? IN_TYPE : OUT_TYPE;
+	int type2 = lastbit::get(vel2.x) ? IN_TYPE : OUT_TYPE;
 	const float3 strength = compute_dpd_force_traced(type1, type2, pos1, pos2,
 							 vel1, vel2, myrandnr);
 

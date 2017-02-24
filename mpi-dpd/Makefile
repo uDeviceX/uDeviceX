@@ -9,11 +9,11 @@ OPT      ?= -O3 -use_fast_math -g
 slevel   ?= -2
 
 NVCCFLAGS += -arch $(ARCH_VAL) -code $(CODE_VAL)
-LDFLAGS   += -L../cuda-dpd -L../cuda-rbc
-NVCCFLAGS += -I../cuda-dpd -I../cuda-rbc -I../argument-parser
-LIBS      += -lcuda-dpd -lcuda-rbc -lcudart
+LDFLAGS   += -L../cuda-dpd -L../cuda-rbc -L../last-bit
+NVCCFLAGS += -I../cuda-dpd -I../cuda-rbc -I../last-bit -I../argument-parser
+LIBS      += -lcuda-dpd -lcuda-rbc -llast-bit -lcudart
 
-OBJS = 	common.o io.o scan.o minmax.o last_bit_float.o dpd-forces.o simulation.o main.o
+OBJS = 	common.o io.o scan.o minmax.o dpd-forces.o simulation.o main.o
 
 ifeq ($(h5part),0)
 NVCCFLAGS += -DNO_H5PART
@@ -27,8 +27,9 @@ NVCCFLAGS += -D_SYNC_DUMPS_
 NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel)
 
 # I have some device code in OBJS. I have to link it separatly
-test:   $(OBJS) libcuda-dpd libcuda-rbc
-	$(NVCC) $(NVCCFLAGS) $(OPT) -dlink -L../cuda-dpd -L../cuda-rbc $(OBJS) $(LIBS) -o gpuCode.o
+test:   $(OBJS) libcuda-dpd libcuda-rbc liblast-bit
+	$(NVCC) $(NVCCFLAGS) $(OPT) -dlink \
+		-L../cuda-dpd -L../cuda-rbc -L../last-bit $(OBJS) $(LIBS) -o gpuCode.o
 	$(LINK)  $(LDFLAGS) gpuCode.o $(OBJS) $(LIBS) -o test
 
 # a rule for the most of *.cu files
@@ -38,23 +39,23 @@ test:   $(OBJS) libcuda-dpd libcuda-rbc
 # "Separate Compilation and Linking of CUDA C++ Device Code"
 # http://devblogs.nvidia.com/parallelforall/separate-compilation-linking-cuda-device-code
 fsi.o:            fsi.cu;            $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
-last_bit_float.o: last_bit_float.cu; $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 dpd-forces.o:     dpd-forces.cu;     $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 simulation.o:     simulation.cu;     $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 include    Makefile.dep # dependencies
 
-libcuda-dpd:
-	make -C ../cuda-dpd libcuda-dpd.a \
+libcuda-dpd:; make -C ../cuda-dpd libcuda-dpd.a \
 	LINK="$(LINK)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
 
-libcuda-rbc:
-	make -C ../cuda-rbc libcuda-rbc.a \
+libcuda-rbc:; make -C ../cuda-rbc libcuda-rbc.a \
+	LINK="$(LINK)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
+
+liblast-bit:; make -C ../last-bit \
 	LINK="$(LINK)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
 
 clean   : cleanall
-cleanall:
-	rm -f test *.o
-	make -C ../cuda-rbc     clean
-	make -C ../cuda-dpd     clean
+cleanall:; rm -f test *.o
+	make -C ../cuda-rbc clean
+	make -C ../cuda-dpd clean
+	make -C ../last-bit clean
 
-.PHONY = clean cleanall libcuda-dpd libcuda-rbc
+.PHONY = clean cleanall libcuda-dpd libcuda-rbc liblast-bit

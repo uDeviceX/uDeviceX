@@ -5,7 +5,7 @@
 #include "cuda-dpd.h"
 #include "dpd-rng.h"
 #include "../mpi-dpd/dpd-forces.h"
-#include "../mpi-dpd/last_bit_float.h"
+#include "../last-bit/last-bit.h"
 
 struct InfoDPD {
     int3 ncells;
@@ -40,8 +40,8 @@ __device__ float3 _dpd_interaction( const int dpid, const float4 xdest, const fl
     // check for particle types and compute the DPD force
     float3 pos1 = make_float3(xdest.x, xdest.y, xdest.z), pos2 = make_float3(xsrc.x, xsrc.y, xsrc.z);
     float3 vel1 = make_float3(udest.x, udest.y, udest.z), vel2 = make_float3(usrc.x, usrc.y, usrc.z);
-    int type1 = last_bit_float::get(vel1.x);
-    int type2 = last_bit_float::get(vel2.x);
+    int type1 = lastbit::get(vel1.x);
+    int type2 = lastbit::get(vel2.x);
 
     const float3 strength = compute_dpd_force_traced(type1, type2,
             pos1, pos2, vel1, vel2, myrandnr);

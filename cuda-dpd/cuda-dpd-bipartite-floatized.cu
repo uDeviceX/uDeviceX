@@ -1,5 +1,5 @@
 #include "dpd-rng.h"
-#include "../mpi-dpd/last_bit_float.h"
+#include "../last-bit/last-bit.h"
 #include "hacks.h"
 #include "../mpi-dpd/dpd-forces.h"
 
@@ -69,8 +69,8 @@ void _bipartite_dpd_directforces_floatized( float * const axayaz, const int np, 
                 // check for particle types and compute the DPD force
                 float3 pos1 = make_float3(xp, yp, zp), pos2 = make_float3(xq, yq, zq);
                 float3 vel1 = make_float3(up, vp, wp), vel2 = make_float3(uq, vq, wq);
-                int type1 = last_bit_float::get(vel1.x);
-                int type2 = last_bit_float::get(vel2.x);
+                int type1 = lastbit::get(vel1.x);
+                int type2 = lastbit::get(vel2.x);
                 const float3 strength = compute_dpd_force_traced(type1, type2,
                         pos1, pos2, vel1, vel2, myrandnr);
 
@@ -191,8 +191,8 @@ void _dpd_bipforces_floatized( const float2 * const xyzuvw, const int np, cudaTe
                 // check for particle types and compute the DPD force
                 float3 pos1 = make_float3(dtmp0.x, dtmp0.y, dtmp1.x), pos2 = make_float3(stmp0.x, stmp0.y, stmp1.x);
                 float3 vel1 = make_float3(dtmp1.y, dtmp2.x, dtmp2.y), vel2 = make_float3(stmp1.y, stmp2.x, stmp2.y);
-                int type1 = last_bit_float::get(vel1.x);
-                int type2 = last_bit_float::get(vel2.x);
+                int type1 = lastbit::get(vel1.x);
+                int type2 = lastbit::get(vel2.x);
                 const float3 strength = compute_dpd_force_traced(type1, type2,
                         pos1, pos2, vel1, vel2, myrandnr);
 

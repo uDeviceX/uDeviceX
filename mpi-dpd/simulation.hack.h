@@ -38,7 +38,7 @@ if (rbcs) {
     /* collect statistics */
     int in2out = 0, out2in = 0, cnt_in = 0;
     for (i = 0; i < nsol; i++) {
-      bool was_in = last_bit_float::get(SUU), was_out = !was_in;
+      bool was_in = lastbit::get(SUU), was_out = !was_in;
       bool now_in = iotags[i] != -1         , now_out = !now_in;
 
       if (was_in  && now_out) in2out ++;
@@ -46,7 +46,7 @@ if (rbcs) {
       if (now_in            ) cnt_in ++;
     }
     /* set the last bit to 1 for tagged particles */
-    for (i = 0; i < nsol; i++) last_bit_float::set(SUU, iotags[i] != -1);
+    for (i = 0; i < nsol; i++) lastbit::set(SUU, iotags[i] != -1);
     fprintf(stderr, "(simulation.hack.h) in2out, out2in, cnt_in: %d  %d  %d\n",
 	    in2out, out2in, cnt_in);
 
@@ -54,7 +54,7 @@ if (rbcs) {
     cudaMemcpy(rbc_dev, rbc_hst, szp*nrbc, cudaMemcpyHostToDevice);
  } else {
   /* set the last bit to 0 for all particles */
-  for (int i = 0; i < nsol; i++) last_bit_float::set(SUU, false);
+  for (int i = 0; i < nsol; i++) lastbit::set(SUU, false);
  }
 
 /* copy to device */

@@ -12,7 +12,7 @@
 #include "io.h"
 #include "simulation.h"
 #include "dpd-forces.h"
-#include "last_bit_float.h"
+#include "last-bit.h"
 #include "geom-wrapper.h"
 #include "common-kernels.h"
 #include "scan.h"

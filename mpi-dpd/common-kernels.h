@@ -1,6 +1,3 @@
-
-
-
 __device__ __forceinline__
 void read_AOS6f(const float2 * const data, const int nparticles, float2& s0, float2& s1, float2& s2)
 {
