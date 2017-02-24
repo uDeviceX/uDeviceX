@@ -43,14 +43,14 @@ dpd-forces.o:     dpd-forces.cu;     $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 simulation.o:     simulation.cu;     $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 include    Makefile.dep # dependencies
 
-libcuda-dpd:; make -C ../cuda-dpd libcuda-dpd.a \
-	LINK="$(LINK)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
+libcuda-dpd:; make -C ../cuda-dpd \
+	NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
 
-libcuda-rbc:; make -C ../cuda-rbc libcuda-rbc.a \
-	LINK="$(LINK)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
+libcuda-rbc:; make -C ../cuda-rbc \
+	NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
 
 liblast-bit:; make -C ../last-bit \
-	LINK="$(LINK)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
+	NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
 
 clean   : cleanall
 cleanall:; rm -f test *.o

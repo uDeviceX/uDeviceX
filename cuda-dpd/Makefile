@@ -13,16 +13,10 @@ cuda-dpd-bipartite.o: cuda-dpd-bipartite-floatized.cu cuda-dpd.h
 OPT_LOCAL=-O3 -g # I have to overwrite the optimization because this	\
                  # file fails to link with -O0 --device-debug
 
-cell-lists.o: cell-lists.cu cell-lists.h
+cell-lists.o: cell-lists.h
+cell-lists.o: cell-lists.cu
 	$(NVCC) $(NVCCFLAGS) $(OPT_LOCAL) -c $< -o $@
 
-../%.o:
-	make -C ..
-	LINK="$(LINK)" NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
+.PHONY = clean
+clean:; rm -f *.o *.a
 
-clean:
-	rm -f *.o *.a
-
-subclean: clean
-
-.PHONY = clean subclean celllists
