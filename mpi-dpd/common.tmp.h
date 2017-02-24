@@ -1,5 +1,3 @@
-#define MAX_PARTICLE_NUMBER 5000000
-
 /* TODO: in-transition structure to static allocation */
 template <typename T> struct StaticDeviceBuffer {
   /* `S': size; `D': data */

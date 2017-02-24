@@ -49,7 +49,7 @@ void halo(ParticlesWrap halos[26]) {
     for (int i = 0; i < 26; ++i) recvpackcount[i] = halos[i].n;
 
     CC(cudaMemcpyToSymbolAsync(k_fsi::packcount, recvpackcount,
-			       sizeof(recvpackcount), 0, cudaMemcpyHostToDevice));
+			       sizeof(recvpackcount), 0, H2D));
 
     recvpackstarts_padded[0] = 0;
     for (int i = 0, s = 0; i < 26; ++i)
@@ -59,7 +59,7 @@ void halo(ParticlesWrap halos[26]) {
 
     CC(cudaMemcpyToSymbolAsync(
 			       k_fsi::packstarts_padded, recvpackstarts_padded,
-			       sizeof(recvpackstarts_padded), 0, cudaMemcpyHostToDevice));
+			       sizeof(recvpackstarts_padded), 0, H2D));
   }
 
   {
@@ -69,7 +69,7 @@ void halo(ParticlesWrap halos[26]) {
 
     CC(cudaMemcpyToSymbolAsync(k_fsi::packstates, recvpackstates,
 			       sizeof(recvpackstates), 0,
-			       cudaMemcpyHostToDevice));
+			       H2D));
   }
 
   {
@@ -78,7 +78,7 @@ void halo(ParticlesWrap halos[26]) {
     for (int i = 0; i < 26; ++i) packresults[i] = halos[i].f;
 
     CC(cudaMemcpyToSymbolAsync(k_fsi::packresults, packresults,
-			       sizeof(packresults), 0, cudaMemcpyHostToDevice));
+			       sizeof(packresults), 0, H2D));
   }
 
   if (nremote_padded)

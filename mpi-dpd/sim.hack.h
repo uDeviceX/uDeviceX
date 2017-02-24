@@ -8,7 +8,7 @@ int nsol = s_pp->S, szp = sizeof(Particle);
 Particle *sol_dev = s_pp->D, *sol_hst = particles_datadump->D;
 
 /* copy from device */
-cudaMemcpy(sol_hst, sol_dev, szp*nsol, cudaMemcpyDeviceToHost);
+cudaMemcpy(sol_hst, sol_dev, szp*nsol, H2H);
 
 /* process RBCs */
 if (rbcs) {
@@ -16,7 +16,7 @@ if (rbcs) {
     Particle *rbc_dev = r_pp->D, *rbc_hst = sol_hst + nsol;
 
     /* copy from device */
-    cudaMemcpy(rbc_hst, rbc_dev, szp*nrbc, cudaMemcpyDeviceToHost);
+    cudaMemcpy(rbc_hst, rbc_dev, szp*nrbc, H2H);
 
 #define SXX sol_hst[i].r[0]
 #define SYY sol_hst[i].r[1]
@@ -51,11 +51,11 @@ if (rbcs) {
 	    in2out, out2in, cnt_in);
 
     /* copy to device */
-    cudaMemcpy(rbc_dev, rbc_hst, szp*nrbc, cudaMemcpyHostToDevice);
+    cudaMemcpy(rbc_dev, rbc_hst, szp*nrbc, H2D);
  } else {
   /* set the last bit to 0 for all particles */
   for (int i = 0; i < nsol; i++) lastbit::set(SUU, false);
  }
 
 /* copy to device */
-cudaMemcpy(sol_dev, sol_hst, szp*nsol, cudaMemcpyHostToDevice);
+cudaMemcpy(sol_dev, sol_hst, szp*nsol, H2D);

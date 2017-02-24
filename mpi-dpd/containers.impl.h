@@ -253,7 +253,7 @@ void setup(StaticDeviceBuffer<Particle>* pp, StaticDeviceBuffer<Force>* ff,
       CC(cudaMemcpy(pp->D + nv * i1,
 		    pp->D + nv * i0,
 		    sizeof(Particle) * nv,
-		    cudaMemcpyDeviceToDevice));
+		    D2D));
       i1++;
     }
   int nstay = i1;

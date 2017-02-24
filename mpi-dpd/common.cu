@@ -6,6 +6,7 @@
 #include <cstdio>
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */
 #include "common.h"
+#include "common.tmp.h"
 
 bool Particle::initialized = false;
 MPI_Datatype Particle::mytype;

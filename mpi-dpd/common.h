@@ -10,6 +10,12 @@ extern bool walls, pushtheflow, doublepoiseuille, rbcs, hdf5field_dumps,
   hdf5part_dumps, contactforces;
 extern int steps_per_dump, steps_per_hdf5dump, wall_creation_stepid;
 
+#define MAX_PARTICLE_NUMBER 5000000
+#define D2D cudaMemcpyDeviceToDevice
+#define D2H cudaMemcpyDeviceToHost
+#define H2D cudaMemcpyHostToDevice
+#define H2H cudaMemcpyHostToHost
+
 /* [c]cuda [c]heck */
 #define CC(ans)							\
   do { cudaAssert((ans), __FILE__, __LINE__); } while (0)
@@ -103,7 +109,7 @@ template <typename T> struct DeviceBuffer {
     C = 128 * ((conservative_estimate + 129) / 128);
     CC(cudaMalloc(&D, sizeof(T) * C));
     if (old != NULL) {
-      CC(cudaMemcpy(D, old, sizeof(T) * oldS, cudaMemcpyDeviceToDevice));
+      CC(cudaMemcpy(D, old, sizeof(T) * oldS, D2D));
       CC(cudaFree(old));
     }
   }
@@ -148,7 +154,7 @@ public:
     D = NULL;
     CC(cudaHostAlloc(&D, sizeof(T) * capacity, cudaHostAllocMapped));
     if (old != NULL) {
-      CC(cudaMemcpy(D, old, sizeof(T) * oldS, cudaMemcpyHostToHost));
+      CC(cudaMemcpy(D, old, sizeof(T) * oldS, H2H));
       CC(cudaFreeHost(old));
     }
     CC(cudaHostGetDevicePointer(&DP, D, 0));

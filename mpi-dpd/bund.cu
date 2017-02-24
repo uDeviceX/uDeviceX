@@ -9,6 +9,7 @@
 #include <mpi.h>
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */
 #include "common.h"
+#include "common.tmp.h"
 #include "io.h"
 #include "bund.h"
 #include "dpd-forces.h"
@@ -22,7 +23,6 @@
 #include "k/scan.h"
 
 #include "k/common.h"
-#include "common.tmp.h"
 
 #include "rdstr.decl.h"
 #include "k/rdstr.h"

@@ -2,6 +2,7 @@
 #include <mpi.h>
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */
 #include "common.h"
+#include "common.tmp.h"
 #include "minmax.h"
 
 #define MAXTHREADS 1024
@@ -223,7 +224,7 @@ void minmax(const Particle * const rbc, int size, int n, float3 *minrbc, float3 
 
             CC(cudaMalloc((void **)&ptoblockds,sizeof(sblockds_t) * n));
 
-            CC(cudaMemcpy(ptoblockds, h_ptoblockds, sizeof(sblockds_t) * n, cudaMemcpyHostToDevice));
+            CC(cudaMemcpy(ptoblockds, h_ptoblockds, sizeof(sblockds_t) * n, H2D));
 
             delete [] h_ptoblockds;
         }

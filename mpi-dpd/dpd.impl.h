@@ -160,7 +160,7 @@ void _pack_all(Particle *p, int n, bool update_baginfos) {
       baginfos[i].hbag = sendhalos[i]->hbuf->D;
     }
     CC(cudaMemcpyToSymbolAsync(PackingHalo::baginfos, baginfos,
-			       sizeof(baginfos), 0, cudaMemcpyHostToDevice));
+			       sizeof(baginfos), 0, H2D));
   }
 
   if (PackingHalo::ncells)
@@ -202,7 +202,7 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
 	    (s += sendhalos[i]->dcellstarts->S * (sendhalos[i]->expected > 0));
       PackingHalo::ncells = cellpackstarts[26];
       CC(cudaMemcpyToSymbol(PackingHalo::cellpackstarts, cellpackstarts,
-			    sizeof(cellpackstarts), 0, cudaMemcpyHostToDevice));
+			    sizeof(cellpackstarts), 0, H2D));
     }
 
     {
@@ -215,7 +215,7 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
 	cellpacks[i].size = sendhalos[i]->dcellstarts->S;
       }
       CC(cudaMemcpyToSymbol(PackingHalo::cellpacks, cellpacks,
-			    sizeof(cellpacks), 0, cudaMemcpyHostToDevice));
+			    sizeof(cellpacks), 0, H2D));
     }
   }
 
@@ -241,26 +241,26 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
       for (int i = 0; i < 26; ++i) srccells[i] = sendhalos[i]->dcellstarts->D;
 
       CC(cudaMemcpyToSymbol(PackingHalo::srccells, srccells, sizeof(srccells),
-			    0, cudaMemcpyHostToDevice));
+			    0, H2D));
 
       static int *dstcells[26];
       for (int i = 0; i < 26; ++i)
 	dstcells[i] = sendhalos[i]->hcellstarts->DP;
 
       CC(cudaMemcpyToSymbol(PackingHalo::dstcells, dstcells, sizeof(dstcells),
-			    0, cudaMemcpyHostToDevice));
+			    0, H2D));
     }
 
     {
       static int *srccells[26];
       for (int i = 0; i < 26; ++i) srccells[i] = recvhalos[i]->hcellstarts->DP;
       CC(cudaMemcpyToSymbol(PackingHalo::srccells, srccells, sizeof(srccells),
-			    sizeof(srccells), cudaMemcpyHostToDevice));
+			    sizeof(srccells), H2D));
 
       static int *dstcells[26];
       for (int i = 0; i < 26; ++i) dstcells[i] = recvhalos[i]->dcellstarts->D;
       CC(cudaMemcpyToSymbol(PackingHalo::dstcells, dstcells, sizeof(dstcells),
-			    sizeof(dstcells), cudaMemcpyHostToDevice));
+			    sizeof(dstcells), H2D));
     }
   }
 
@@ -309,7 +309,7 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
     if (sendhalos[i]->hbuf->S)
       cudaMemcpyAsync(sendhalos[i]->hbuf->D, sendhalos[i]->dbuf->D,
 		      sizeof(Particle) * sendhalos[i]->hbuf->S,
-		      cudaMemcpyDeviceToHost);
+		      H2H);
   CC(cudaDeviceSynchronize()); /* was CC(cudaStreamSynchronize(downloadstream)); */
 
   {
@@ -391,13 +391,13 @@ void recv() {
   for (int i = 0; i < 26; ++i)
     CC(cudaMemcpyAsync(recvhalos[i]->dbuf->D, recvhalos[i]->hbuf->D,
 		       sizeof(Particle) * recvhalos[i]->hbuf->S,
-		       cudaMemcpyHostToDevice));
+		       H2D));
 
   for (int i = 0; i < 26; ++i)
     CC(cudaMemcpyAsync(recvhalos[i]->dcellstarts->D,
 		       recvhalos[i]->hcellstarts->D,
 		       sizeof(int) * recvhalos[i]->hcellstarts->S,
-		       cudaMemcpyHostToDevice));
+		       H2D));
 
 
   post_expected_recv();

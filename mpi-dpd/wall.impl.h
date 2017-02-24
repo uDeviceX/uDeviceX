@@ -199,7 +199,7 @@ namespace wall {
 
     copyParams.dstArray = arrSDF;
     copyParams.extent = make_cudaExtent(XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE);
-    copyParams.kind = cudaMemcpyHostToDevice;
+    copyParams.kind = H2D;
     CC(cudaMemcpy3D(&copyParams));
     delete[] field;
 
@@ -319,7 +319,7 @@ namespace wall {
       solid_remote.resize(selected.size());
       CC(cudaMemcpy(solid_remote.D, selected.data(),
 		    sizeof(Particle) * solid_remote.S,
-		    cudaMemcpyHostToDevice));
+		    H2D));
     }
 
     solid_size = solid_local.size() + solid_remote.S;
@@ -328,10 +328,10 @@ namespace wall {
     CC(cudaMalloc(&solid, sizeof(Particle) * solid_size));
     CC(cudaMemcpy(solid, thrust::raw_pointer_cast(&solid_local[0]),
 		  sizeof(Particle) * solid_local.size(),
-		  cudaMemcpyDeviceToDevice));
+		  D2D));
     CC(cudaMemcpy(solid + solid_local.size(), solid_remote.D,
 		  sizeof(Particle) * solid_remote.S,
-		  cudaMemcpyDeviceToDevice));
+		  D2D));
 
     if (solid_size > 0) wall_cells->build(solid, solid_size, 0);
 

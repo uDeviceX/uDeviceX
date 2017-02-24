@@ -132,7 +132,7 @@ namespace sdstr {
 	CC(cudaHostAlloc(&pinnedhost_recvbufs[i], sizeof(float) * 6 * capacity, cudaHostAllocMapped));
 	CC(cudaHostGetDevicePointer(&unpackbuffers[i].buffer, pinnedhost_recvbufs[i], 0));
 	CC(cudaMemcpy(pinnedhost_recvbufs[i], old, sizeof(float) * 6 * unpackbuffers[i].capacity,
-		      cudaMemcpyHostToHost));
+		      H2H));
 	CC(cudaFreeHost(old));
       }
       else {
@@ -162,7 +162,7 @@ namespace sdstr {
     k_sdstr::texparticledata = (float2 *)particles;
   pack_attempt:
     CC(cudaMemcpyToSymbolAsync(k_sdstr::pack_buffers, packbuffers,
-			       sizeof(PackBuffer) * 27, 0, cudaMemcpyHostToDevice));
+			       sizeof(PackBuffer) * 27, 0, H2D));
 
     (*failure->D) = false;
     k_sdstr::setup<<<1, 32, 0>>>();
@@ -276,10 +276,10 @@ namespace sdstr {
       nhalo_padded = ustart_padded[27];
 
       CC(cudaMemcpyToSymbolAsync(k_sdstr::unpack_start, ustart,
-				 sizeof(int) * 28, 0, cudaMemcpyHostToDevice));
+				 sizeof(int) * 28, 0, H2D));
 
       CC(cudaMemcpyToSymbolAsync(k_sdstr::unpack_start_padded, ustart_padded,
-				 sizeof(int) * 28, 0, cudaMemcpyHostToDevice));
+				 sizeof(int) * 28, 0, H2D));
     }
 
     {
@@ -301,7 +301,7 @@ namespace sdstr {
 
     if (haschanged)
       CC(cudaMemcpyToSymbolAsync(k_sdstr::unpack_buffers, unpackbuffers,
-				 sizeof(UnpackBuffer) * 27, 0, cudaMemcpyHostToDevice));
+				 sizeof(UnpackBuffer) * 27, 0, H2D));
 
     for(int i = 1; i < 27; ++i)
       if (default_message_sizes[i] && recv_sizes[i] > default_message_sizes[i]) {

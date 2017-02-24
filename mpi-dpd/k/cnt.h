@@ -99,11 +99,11 @@ void bind(const int *const cellsstart, const int *const cellentries,
   }
 
   CC(cudaMemcpyToSymbolAsync(cnsolutes, ns, sizeof(int) * n, 0,
-                             cudaMemcpyHostToDevice));
+                             H2D));
   CC(cudaMemcpyToSymbolAsync(csolutes, ps, sizeof(float2 *) * n, 0,
-                             cudaMemcpyHostToDevice));
+                             H2D));
   CC(cudaMemcpyToSymbolAsync(csolutesacc, fs, sizeof(float *) * n, 0,
-                             cudaMemcpyHostToDevice));
+                             H2D));
 }
 
 __global__ void bulk_3tpp(float2 *particles, int np,

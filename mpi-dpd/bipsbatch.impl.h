@@ -151,7 +151,7 @@ namespace BipsBatch {
     }
 
     CC(cudaMemcpyToSymbolAsync(batchinfos, infos, sizeof(BatchInfo) * 26, 0,
-			       cudaMemcpyHostToDevice));
+			       H2D));
 
     static unsigned int hstart_padded[27];
 
@@ -161,7 +161,7 @@ namespace BipsBatch {
         hstart_padded[i] + 16 * (((unsigned int)infos[i].ndst + 15) / 16);
 
     CC(cudaMemcpyToSymbolAsync(start, hstart_padded, sizeof(hstart_padded), 0,
-			       cudaMemcpyHostToDevice));
+			       H2D));
 
     int nthreads = 2 * hstart_padded[26];
 

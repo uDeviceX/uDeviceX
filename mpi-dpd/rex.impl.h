@@ -46,10 +46,10 @@ namespace rex {
 
       CC(cudaMemcpyToSymbol(k_rex::ccapacities,
 			    &local[i]->scattered_indices->C, sizeof(int),
-			    sizeof(int) * i, cudaMemcpyHostToDevice));
+			    sizeof(int) * i, H2D));
       CC(cudaMemcpyToSymbol(k_rex::scattered_indices,
 			    &local[i]->scattered_indices->D, sizeof(int *),
-			    sizeof(int *) * i, cudaMemcpyHostToDevice));
+			    sizeof(int *) * i, H2D));
     }
 
     _adjust_packbuffers();
@@ -116,7 +116,7 @@ namespace rex {
 
       if (it.n) {
 	CC(cudaMemcpyToSymbolAsync(k_rex::coffsets, packsoffset->D + 26 * i,
-				   sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice));
+				   sizeof(int) * 26, 0, D2D));
 
 	k_rex::scatter_indices<<<(it.n + 127) / 128, 128, 0>>>(
 									   (float2 *)it.p, it.n, packscount->D + i * 26);
@@ -131,16 +131,16 @@ namespace rex {
 
     CC(cudaMemcpyAsync(host_packstotalcount->D,
 		       packsoffset->D + 26 * wsolutes.size(), sizeof(int) * 26,
-		       cudaMemcpyDeviceToHost));
+		       H2H));
 
     k_rex::tiny_scan<<<1, 32, 0>>>(
 					       packsoffset->D + 26 * wsolutes.size(), NULL, NULL, packstotalstart->D);
 
     CC(cudaMemcpyAsync(host_packstotalstart->D, packstotalstart->D,
-		       sizeof(int) * 27, cudaMemcpyDeviceToHost));
+		       sizeof(int) * 27, H2H));
 
     CC(cudaMemcpyToSymbolAsync(k_rex::cbases, packstotalstart->D,
-			       sizeof(int) * 27, 0, cudaMemcpyDeviceToDevice));
+			       sizeof(int) * 27, 0, D2D));
 
 
     for (int i = 0; i < wsolutes.size(); ++i) {
@@ -148,12 +148,12 @@ namespace rex {
 
       if (it.n) {
 	CC(cudaMemcpyToSymbolAsync(k_rex::coffsets, packsoffset->D + 26 * i,
-				   sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice));
+				   sizeof(int) * 26, 0, D2D));
 	CC(cudaMemcpyToSymbolAsync(k_rex::ccounts, packscount->D + 26 * i,
-				   sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice));
+				   sizeof(int) * 26, 0, D2D));
 	CC(cudaMemcpyToSymbolAsync(k_rex::cpaddedstarts,
 				   packsstart->D + 27 * i, sizeof(int) * 27, 0,
-				   cudaMemcpyDeviceToDevice));
+				   D2D));
 
 	k_rex::pack<<<14 * 16, 128, 0>>>
 	  ((float2 *)it.p, it.n, (float2 *)packbuf->D, packbuf->C, i);
@@ -206,13 +206,13 @@ namespace rex {
 
 	CC(cudaMemcpyToSymbolAsync(k_rex::ccapacities, newcapacities,
 				   sizeof(newcapacities), 0,
-				   cudaMemcpyHostToDevice));
+				   H2D));
 
 	int *newindices[26];
 	for (int i = 0; i < 26; ++i) newindices[i] = local[i]->scattered_indices->D;
 
 	CC(cudaMemcpyToSymbolAsync(k_rex::scattered_indices, newindices,
-				   sizeof(newindices), 0, cudaMemcpyHostToDevice));
+				   sizeof(newindices), 0, H2D));
 
 	_adjust_packbuffers();
 
@@ -233,7 +233,7 @@ namespace rex {
       if (host_packstotalstart->D[26]) {
 	CC(cudaMemcpyAsync(host_packbuf->D, packbuf->D,
 			   sizeof(Particle) * host_packstotalstart->D[26],
-			   cudaMemcpyDeviceToHost));
+			   H2H));
       }
       CC(cudaDeviceSynchronize()); /* was CC(cudaStreamSynchronize(downloadstream)); */
     }
@@ -300,7 +300,7 @@ namespace rex {
     for (int i = 0; i < 26; ++i)
       CC(cudaMemcpyAsync(remote[i]->dstate.D, remote[i]->hstate.D,
 			 sizeof(Particle) * remote[i]->hstate.S,
-			 cudaMemcpyHostToDevice));
+			 H2D));
   }
 
   void halo() {
@@ -351,7 +351,7 @@ namespace rex {
       for (int i = 0; i < 26; ++i) recvbags[i] = (float *)local[i]->result->DP;
 
       CC(cudaMemcpyToSymbolAsync(k_rex::recvbags, recvbags, sizeof(recvbags),
-				 0, cudaMemcpyHostToDevice));
+				 0, H2D));
     }
 
     _wait(reqrecvA);
@@ -362,11 +362,11 @@ namespace rex {
       if (it.n) {
 	CC(cudaMemcpyToSymbolAsync(k_rex::cpaddedstarts,
 				   packsstart->D + 27 * i, sizeof(int) * 27, 0,
-				   cudaMemcpyDeviceToDevice));
+				   D2D));
 	CC(cudaMemcpyToSymbolAsync(k_rex::ccounts, packscount->D + 26 * i,
-				   sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice));
+				   sizeof(int) * 26, 0, D2D));
 	CC(cudaMemcpyToSymbolAsync(k_rex::coffsets, packsoffset->D + 26 * i,
-				   sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice));
+				   sizeof(int) * 26, 0, D2D));
 
 	k_rex::unpack<<<16 * 14, 128, 0>>>((float *)it.f, it.n);
       }
