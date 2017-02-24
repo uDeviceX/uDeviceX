@@ -1,13 +1,12 @@
-namespace Sim {
+namespace sim {
 static void sim_update_helper_arrays() {
-  CC(cudaFuncSetCacheConfig(make_texture, cudaFuncCachePreferShared));
+  CC(cudaFuncSetCacheConfig(k_sim::make_texture, cudaFuncCachePreferShared));
   int np = s_pp->S;
   xyzouvwo->resize(2 * np);
   xyzo_half->resize(np);
   if (np)
-    make_texture<<<(np + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>(
+    k_sim::make_texture<<<(np + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>(
 	xyzouvwo->D, xyzo_half->D, (float *)s_pp->D, np);
-
 }
 
 /* set initial velocity of a particle */
@@ -128,30 +127,30 @@ void sim_forces() {
     wsolutes.push_back(ParticlesWrap(r_pp->D,
 				     Cont::pcount(), r_aa->D));
   fsi::bind_solvent(wsolvent);
-  SolEx::bind_solutes(wsolutes);
+  sex::bind_solutes(wsolutes);
   Cont::clear_acc(s_aa);
   if (rbcs) Cont::clear_acc(r_aa);
   DPD::pack(s_pp->D, s_pp->S, cells->start, cells->count);
-  SolEx::pack_p();
+  sex::pack_p();
   if (contactforces) cnt::build_cells(wsolutes);
   DPD::local_interactions(s_pp->D, xyzouvwo->D, xyzo_half->D,
 			 s_pp->S, s_aa->D, cells->start,
 			 cells->count);
   DPD::post(s_pp->D, s_pp->S);
-  SolEx::post_p();
+  sex::post_p();
   if (rbcs && wall_created) wall::interactions(r_pp->D, Cont::pcount(), r_aa->D);
   if (wall_created)         wall::interactions(s_pp->D, s_pp->S, s_aa->D);
   DPD::recv();
-  SolEx::recv_p();
-  SolEx::halo();
+  sex::recv_p();
+  sex::halo();
   DPD::remote_interactions(s_pp->D, s_pp->S, s_aa->D);
   fsi::bulk(wsolutes);
   if (contactforces) cnt::bulk(wsolutes);
   if (rbcs)
     CudaRBC::forces_nohost(Cont::ncells,
 			   (float *)r_pp->D, (float *)r_aa->D);
-  SolEx::post_a();
-  SolEx::recv_a();
+  sex::post_a();
+  sex::recv_a();
 }
 
 void sim_tmp_init() {
@@ -244,7 +243,7 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   rdist::redistribute_rbcs_init(Cont::cartcomm);
   DPD::init(Cont::cartcomm);
   fsi::init(Cont::cartcomm);
-  SolEx::init(Cont::cartcomm);
+  sex::init(Cont::cartcomm);
   cnt::init(Cont::cartcomm);
   cells   = new CellLists(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
   particles_datadump     = new PinnedHostBuffer<Particle>;
@@ -329,7 +328,7 @@ void sim_close() {
   
   cnt::close();
   delete cells;
-  SolEx::close();
+  sex::close();
   fsi::close();
   DPD::close();
   rdist::redistribute_rbcs_close();

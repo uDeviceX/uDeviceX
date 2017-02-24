@@ -1,3 +1,4 @@
+namespace k_sim {
 static __global__ void make_texture(float4 *__restrict xyzouvwoo,
 			     ushort4 *__restrict xyzo_half,
 			     const float *__restrict xyzuvw, const uint n) {
@@ -34,4 +35,5 @@ static __global__ void make_texture(float4 *__restrict xyzouvwoo,
       make_ushort4(__float2half_rn(smem[warpid * 192 + lane * 6 + 0]),
 		   __float2half_rn(smem[warpid * 192 + lane * 6 + 1]),
 		   __float2half_rn(smem[warpid * 192 + lane * 6 + 2]), 0);
+}
 }

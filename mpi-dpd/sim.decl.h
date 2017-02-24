@@ -1,4 +1,4 @@
-namespace Sim {
+namespace sim {
   StaticDeviceBuffer<Particle>     *s_pp; /* Solvent */
   StaticDeviceBuffer<Acceleration> *s_aa;
 

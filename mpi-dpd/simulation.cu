@@ -38,8 +38,6 @@
 #include "k/wall.h"
 #include "wall.impl.h"
 
-#include "k/rex.h"
-
 #include "cnt.decl.h"
 #include "k/cnt.h"
 #include "cnt.impl.h"
@@ -50,6 +48,7 @@
 #include "fsi.impl.h"
 
 #include "sex.decl.h"
+#include "k/sex.h"
 #include "sex.impl.h"
 
 #include "packinghalo.decl.h"
@@ -61,6 +60,6 @@
 #include "dpd.decl.h"
 #include "dpd.impl.h"
 
-#include "simulation.krn.h"
-#include "simulation.decl.h"
-#include "simulation.impl.h"
+#include "k/sim.h"
+#include "sim.decl.h"
+#include "sim.impl.h"

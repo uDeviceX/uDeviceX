@@ -114,9 +114,9 @@ int main(int argc, char **argv) {
   if (rank == 0) argp.print_arguments();
   MC(MPI_Barrier(activecomm));
 
-  Sim::sim_init(cartcomm, activecomm);
-  Sim::sim_run();
-  Sim::sim_close();
+  sim::sim_init(cartcomm, activecomm);
+  sim::sim_run();
+  sim::sim_close();
 
   if (activecomm != cartcomm) MC(MPI_Comm_free(&activecomm));
   MC(MPI_Comm_free(&cartcomm));

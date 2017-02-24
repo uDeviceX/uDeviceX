@@ -1,4 +1,4 @@
-namespace k_rex {
+namespace k_sex {
   __constant__ int ccapacities[26], *scattered_indices[26];
   __device__ bool failed;
   __constant__ int coffsets[26];
