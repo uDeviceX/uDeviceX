@@ -1,6 +1,3 @@
-simulation -> bund
-*dist      -> dstr
-
 Cont::rbc_dump, Cont::rbc_dump0 -> goes to io
 
 rbc_remove -> goes to wall
@@ -8,52 +5,60 @@ wall::init freezes `s' inside the wall
 
 cnt -> cont
 
-Acceleration -> f
-
 r[3]: [rx, ry, rz]
 v[3]: [vx, vy, vz]
 
+Struct RV {
+  float r[3], v[3]
+}  rv
 
-p = pp[0]
-p.r = r[3]
-p.v = v[3]
+Struct Force {
+  float f[3]
+}
 
-s_pp, s_ff: solvent
-r_pp, r_ff: rbc
+fx = s_ff[idx].f[0]; fx = s_f[idx].f[1]; fx = s_f[idx].f[2]
+RV s_rv[100]
+
+s_*: array; r_*: array; c_*: array
+
+s_rv, s_ff: solvent
+r_rv, r_ff: rbc
 
 dstr_s
-   input: s_pp
-  output: s_pp
+   input: s_rv
+  output: s_rv
 
 dpd_ss
-    input: s_pp
+    input: s_rv
    output: s_ff
 
-clfor_s
+clfor(s_ff)
     input: s_ff
     ouput: s_ff
 
 clvel_s
-    input: s_pp
-   output: s_pp
+    input: s_rv
+   output: s_rv
 
 cnt_rr
-     input: r_pp
+     input: r_rv
     output: r_ff
 
-fsi_sr
-    input: s_pp, r_pp
+fsi::pre()
+fsi::fsi(s_rv, r_rv,    s_ff, r_ff)
+    input: s_rv, r_rv
    output: s_ff, r_ff
+fsi::post()
 
 bounce_sr
-    input: s_pp, r_pp
-   output: s_pp, r_ff
+    input: s_rv, r_rv
+   output: s_rv, r_ff
 
 bounce_sw
-    input: s_pp, w_pp
-   output: s_pp, w_ff
+    input: s_rv, w_rv
+   output: s_rv
 
 memb_rr:
-    input: r_pp
+    input: r_rv
     input: r_ff
 
