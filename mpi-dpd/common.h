@@ -52,16 +52,6 @@ struct Particle {
 
 struct Acceleration {
   float a[3];
-  static bool initialized;
-  static MPI_Datatype mytype;
-  static MPI_Datatype datatype() {
-    if (!initialized) {
-      MC(MPI_Type_contiguous(3, MPI_FLOAT, &mytype));
-      MC(MPI_Type_commit(&mytype));
-      initialized = true;
-    }
-    return mytype;
-  }
 };
 
 struct ParticlesWrap {
