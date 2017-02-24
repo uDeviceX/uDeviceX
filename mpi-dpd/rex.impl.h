@@ -1,4 +1,4 @@
-namespace sex {
+namespace rex {
   void _not_nan(float*, int) {};
   void bind_solutes(std::vector<ParticlesWrap> wsolutes_) {wsolutes = wsolutes_;}
   void _adjust_packbuffers() {
@@ -44,10 +44,10 @@ namespace sex {
       local[i]->resize(estimate);
       local[i]->update();
 
-      CC(cudaMemcpyToSymbol(k_sex::ccapacities,
+      CC(cudaMemcpyToSymbol(k_rex::ccapacities,
 			    &local[i]->scattered_indices->C, sizeof(int),
 			    sizeof(int) * i, cudaMemcpyHostToDevice));
-      CC(cudaMemcpyToSymbol(k_sex::scattered_indices,
+      CC(cudaMemcpyToSymbol(k_rex::scattered_indices,
 			    &local[i]->scattered_indices->D, sizeof(int *),
 			    sizeof(int *) * i, cudaMemcpyHostToDevice));
     }
@@ -109,20 +109,20 @@ namespace sex {
     if (packsstart->S)
       CC(cudaMemsetAsync(packsstart->D, 0, sizeof(int) * packsstart->S));
 
-    k_sex::init<<<1, 1, 0>>>();
+    k_rex::init<<<1, 1, 0>>>();
 
     for (int i = 0; i < wsolutes.size(); ++i) {
       ParticlesWrap it = wsolutes[i];
 
       if (it.n) {
-	CC(cudaMemcpyToSymbolAsync(k_sex::coffsets, packsoffset->D + 26 * i,
+	CC(cudaMemcpyToSymbolAsync(k_rex::coffsets, packsoffset->D + 26 * i,
 				   sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice));
 
-	k_sex::scatter_indices<<<(it.n + 127) / 128, 128, 0>>>(
+	k_rex::scatter_indices<<<(it.n + 127) / 128, 128, 0>>>(
 									   (float2 *)it.p, it.n, packscount->D + i * 26);
       }
 
-      k_sex::tiny_scan<<<1, 32, 0>>>(
+      k_rex::tiny_scan<<<1, 32, 0>>>(
 						 packscount->D + i * 26, packsoffset->D + 26 * i,
 						 packsoffset->D + 26 * (i + 1), packsstart->D + i * 27);
 
@@ -133,13 +133,13 @@ namespace sex {
 		       packsoffset->D + 26 * wsolutes.size(), sizeof(int) * 26,
 		       cudaMemcpyDeviceToHost));
 
-    k_sex::tiny_scan<<<1, 32, 0>>>(
+    k_rex::tiny_scan<<<1, 32, 0>>>(
 					       packsoffset->D + 26 * wsolutes.size(), NULL, NULL, packstotalstart->D);
 
     CC(cudaMemcpyAsync(host_packstotalstart->D, packstotalstart->D,
 		       sizeof(int) * 27, cudaMemcpyDeviceToHost));
 
-    CC(cudaMemcpyToSymbolAsync(k_sex::cbases, packstotalstart->D,
+    CC(cudaMemcpyToSymbolAsync(k_rex::cbases, packstotalstart->D,
 			       sizeof(int) * 27, 0, cudaMemcpyDeviceToDevice));
 
 
@@ -147,15 +147,15 @@ namespace sex {
       ParticlesWrap it = wsolutes[i];
 
       if (it.n) {
-	CC(cudaMemcpyToSymbolAsync(k_sex::coffsets, packsoffset->D + 26 * i,
+	CC(cudaMemcpyToSymbolAsync(k_rex::coffsets, packsoffset->D + 26 * i,
 				   sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice));
-	CC(cudaMemcpyToSymbolAsync(k_sex::ccounts, packscount->D + 26 * i,
+	CC(cudaMemcpyToSymbolAsync(k_rex::ccounts, packscount->D + 26 * i,
 				   sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice));
-	CC(cudaMemcpyToSymbolAsync(k_sex::cpaddedstarts,
+	CC(cudaMemcpyToSymbolAsync(k_rex::cpaddedstarts,
 				   packsstart->D + 27 * i, sizeof(int) * 27, 0,
 				   cudaMemcpyDeviceToDevice));
 
-	k_sex::pack<<<14 * 16, 128, 0>>>
+	k_rex::pack<<<14 * 16, 128, 0>>>
 	  ((float2 *)it.p, it.n, (float2 *)packbuf->D, packbuf->C, i);
       }
     }
@@ -204,14 +204,14 @@ namespace sex {
 	int newcapacities[26];
 	for (int i = 0; i < 26; ++i) newcapacities[i] = local[i]->capacity();
 
-	CC(cudaMemcpyToSymbolAsync(k_sex::ccapacities, newcapacities,
+	CC(cudaMemcpyToSymbolAsync(k_rex::ccapacities, newcapacities,
 				   sizeof(newcapacities), 0,
 				   cudaMemcpyHostToDevice));
 
 	int *newindices[26];
 	for (int i = 0; i < 26; ++i) newindices[i] = local[i]->scattered_indices->D;
 
-	CC(cudaMemcpyToSymbolAsync(k_sex::scattered_indices, newindices,
+	CC(cudaMemcpyToSymbolAsync(k_rex::scattered_indices, newindices,
 				   sizeof(newindices), 0, cudaMemcpyHostToDevice));
 
 	_adjust_packbuffers();
@@ -352,7 +352,7 @@ namespace sex {
 
       for (int i = 0; i < 26; ++i) recvbags[i] = (float *)local[i]->result->DP;
 
-      CC(cudaMemcpyToSymbolAsync(k_sex::recvbags, recvbags, sizeof(recvbags),
+      CC(cudaMemcpyToSymbolAsync(k_rex::recvbags, recvbags, sizeof(recvbags),
 				 0, cudaMemcpyHostToDevice));
     }
 
@@ -362,15 +362,15 @@ namespace sex {
       ParticlesWrap it = wsolutes[i];
 
       if (it.n) {
-	CC(cudaMemcpyToSymbolAsync(k_sex::cpaddedstarts,
+	CC(cudaMemcpyToSymbolAsync(k_rex::cpaddedstarts,
 				   packsstart->D + 27 * i, sizeof(int) * 27, 0,
 				   cudaMemcpyDeviceToDevice));
-	CC(cudaMemcpyToSymbolAsync(k_sex::ccounts, packscount->D + 26 * i,
+	CC(cudaMemcpyToSymbolAsync(k_rex::ccounts, packscount->D + 26 * i,
 				   sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice));
-	CC(cudaMemcpyToSymbolAsync(k_sex::coffsets, packsoffset->D + 26 * i,
+	CC(cudaMemcpyToSymbolAsync(k_rex::coffsets, packsoffset->D + 26 * i,
 				   sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice));
 
-	k_sex::unpack<<<16 * 14, 128, 0>>>((float *)it.a, it.n);
+	k_rex::unpack<<<16 * 14, 128, 0>>>((float *)it.a, it.n);
       }
 
     }

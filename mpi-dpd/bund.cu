@@ -48,9 +48,9 @@
 #include "fsi.decl.h"
 #include "fsi.impl.h"
 
-#include "sex.decl.h"
-#include "k/sex.h"
-#include "sex.impl.h"
+#include "rex.decl.h"
+#include "k/rex.h"
+#include "rex.impl.h"
 
 #include "packinghalo.decl.h"
 #include "packinghalo.impl.h"

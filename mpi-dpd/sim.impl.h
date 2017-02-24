@@ -127,30 +127,30 @@ void forces() {
     wsolutes.push_back(ParticlesWrap(r_pp->D,
 				     Cont::pcount(), r_aa->D));
   fsi::bind_solvent(wsolvent);
-  sex::bind_solutes(wsolutes);
+  rex::bind_solutes(wsolutes);
   Cont::clear_acc(s_aa);
   if (rbcs) Cont::clear_acc(r_aa);
   DPD::pack(s_pp->D, s_pp->S, cells->start, cells->count);
-  sex::pack_p();
+  rex::pack_p();
   if (contactforces) cnt::build_cells(wsolutes);
   DPD::local_interactions(s_pp->D, xyzouvwo->D, xyzo_half->D,
 			 s_pp->S, s_aa->D, cells->start,
 			 cells->count);
   DPD::post(s_pp->D, s_pp->S);
-  sex::post_p();
+  rex::post_p();
   if (rbcs && wall_created) wall::interactions(r_pp->D, Cont::pcount(), r_aa->D);
   if (wall_created)         wall::interactions(s_pp->D, s_pp->S, s_aa->D);
   DPD::recv();
-  sex::recv_p();
-  sex::halo();
+  rex::recv_p();
+  rex::halo();
   DPD::remote_interactions(s_pp->D, s_pp->S, s_aa->D);
   fsi::bulk(wsolutes);
   if (contactforces) cnt::bulk(wsolutes);
   if (rbcs)
     CudaRBC::forces_nohost(Cont::ncells,
 			   (float *)r_pp->D, (float *)r_aa->D);
-  sex::post_a();
-  sex::recv_a();
+  rex::post_a();
+  rex::recv_a();
 }
 
 void dump_init() {
@@ -243,7 +243,7 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   rdstr::redistribute_rbcs_init(Cont::cartcomm);
   DPD::init(Cont::cartcomm);
   fsi::init(Cont::cartcomm);
-  sex::init(Cont::cartcomm);
+  rex::init(Cont::cartcomm);
   cnt::init(Cont::cartcomm);
   cells   = new CellLists(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
   particles_datadump     = new PinnedHostBuffer<Particle>;
@@ -325,7 +325,7 @@ void close() {
   
   cnt::close();
   delete cells;
-  sex::close();
+  rex::close();
   fsi::close();
   DPD::close();
   rdstr::redistribute_rbcs_close();
