@@ -2,7 +2,7 @@
 
 /* container for the gpu particles during the simulation */
 template <typename T> struct StaticDeviceBuffer {
-  /* `S': size; `D' is for data*/
+  /* `S': size; `D': data */
   int S; T *D;
   StaticDeviceBuffer() : S(0) {CC(cudaMalloc(&D, sizeof(T) * MAX_PARTICLE_NUMBER));}
   ~StaticDeviceBuffer() {      CC(cudaFree(D));}

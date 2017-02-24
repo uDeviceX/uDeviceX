@@ -16,7 +16,7 @@ extern int steps_per_dump, steps_per_hdf5dump, wall_creation_stepid;
 inline void cudaAssert(cudaError_t code, const char *file, int line) {
   if (code != cudaSuccess) {
     fprintf(stderr, "GPU assert: %s %s %d\n", cudaGetErrorString(code), file,
-            line);
+	    line);
     abort();
   }
 }
@@ -67,7 +67,7 @@ struct SolventWrap : ParticlesWrap {
   const int *cellsstart, *cellscount;
   explicit SolventWrap() : cellsstart(NULL), cellscount(NULL), ParticlesWrap() {}
   SolventWrap(const Particle *const p, const int n, Force *a,
-              const int *const cellsstart, const int *const cellscount)
+	      const int *const cellsstart, const int *const cellscount)
     : ParticlesWrap(p, n, a),
       cellsstart(cellsstart),
       cellscount(cellscount) {}
@@ -76,9 +76,9 @@ struct SolventWrap : ParticlesWrap {
 /* container for the gpu particles during the simulation */
 template <typename T> struct DeviceBuffer {
   typedef T value_type;
-  /* `C': capacity; `S': size; `D' is for data*/  
+  /* `C': capacity; `S': size; `D' : data*/
   int C, S; T *D;
-  
+
   explicit DeviceBuffer(int n = 0) : C(0), S(0), D(NULL) { resize(n); }
   ~DeviceBuffer() {
     if (D != NULL) CC(cudaFree(D));
@@ -172,7 +172,7 @@ struct CellLists {
   }
 
   void build(Particle *const p, const int n,
-             int *const order = NULL, const Particle *const src = NULL);
+	     int *const order = NULL, const Particle *const src = NULL);
 
   ~CellLists() {
     CC(cudaFree(start));
@@ -185,4 +185,4 @@ struct ExpectedMessageSizes {
 };
 
 void diagnostics(MPI_Comm comm, MPI_Comm cartcomm, Particle *_particles, int n,
-                 float dt, int idstep);
+		 float dt, int idstep);
