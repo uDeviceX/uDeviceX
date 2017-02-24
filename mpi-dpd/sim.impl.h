@@ -204,7 +204,7 @@ void datadump(const int idtimestep) {
   if (rbcs) n += Cont::pcount();
   particles_datadump->resize(n);
   accelerations_datadump->resize(n);
-#include "simulation.hack.h"
+#include "sim.hack.h"
   CC(cudaMemcpyAsync(particles_datadump->D, s_pp->D,
 			     sizeof(Particle) * s_pp->S,
 			     cudaMemcpyDeviceToHost, 0));
