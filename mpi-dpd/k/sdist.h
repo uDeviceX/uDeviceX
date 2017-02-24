@@ -105,7 +105,7 @@ namespace k_sdist {
     if (nunpack == 0) return;
     float2 data0, data1, data2;
 
-    read_AOS6f(unpack_buffers[code].buffer + 3 * unpackbase, nunpack, data0, data1, data2);
+    k_common::read_AOS6f(unpack_buffers[code].buffer + 3 * unpackbase, nunpack, data0, data1, data2);
 
     uint laneid = threadIdx.x & 0x1f;
 
@@ -125,7 +125,7 @@ namespace k_sdist {
 
     uint dstbase = unpack_start[code] + unpackbase;
 
-    write_AOS6f(dstbuf + 3 * dstbase, nunpack, data0, data1, data2);
+    k_common::write_AOS6f(dstbuf + 3 * dstbase, nunpack, data0, data1, data2);
     if (laneid < nunpack) subindices[dstbase + laneid] = make_uchar4(xcid, ycid, zcid, subindex);
   }
 
@@ -218,6 +218,6 @@ namespace k_sdist {
 					     __float2half_rn(data0.y),
 					     __float2half_rn(data1.x), 0);
     }
-    write_AOS6f(dstbuf + 3 * base, nsrc, data0, data1, data2);
+    k_common::write_AOS6f(dstbuf + 3 * base, nsrc, data0, data1, data2);
   }
 }

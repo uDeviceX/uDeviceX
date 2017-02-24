@@ -244,7 +244,7 @@ namespace sdist {
     subindices->resize(nparticles);
 
     if (nparticles)
-      subindex_local<false><<< (nparticles + 127) / 128, 128, 0>>>
+      k_common::subindex_local<false><<< (nparticles + 127) / 128, 128, 0>>>
 	(nparticles, k_sdist::texparticledata, cellcounts, subindices->D);
 
 
@@ -322,7 +322,7 @@ namespace sdist {
 	(nhalo_padded, nhalo, cellcounts, (float2 *)remote_particles->D, subindices_remote->D);
 
     if (compressed_cellcounts->S)
-      compress_counts<<< (compressed_cellcounts->S + 127) / 128, 128, 0 >>>
+      k_common::compress_counts<<< (compressed_cellcounts->S + 127) / 128, 128, 0 >>>
 	(compressed_cellcounts->S, (int4 *)cellcounts, (uchar4 *)compressed_cellcounts->D);
 
     scan(compressed_cellcounts->D, compressed_cellcounts->S, (uint *)cellstarts);

@@ -1,3 +1,4 @@
+namespace k_common {
 __device__ __forceinline__
 void read_AOS6f(const float2 * const data, const int nparticles, float2& s0, float2& s1, float2& s2)
 {
@@ -310,4 +311,5 @@ __global__ static void compress_counts(const int nentries, const int4 * const co
   const int4 entry = counts[gid];
 
   output[gid] = make_uchar4(entry.x, entry.y, entry.z, entry.w);
+}
 }

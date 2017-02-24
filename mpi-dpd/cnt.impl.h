@@ -32,12 +32,12 @@ namespace cnt {
     for (int i = 0; i < wsolutes.size(); ++i) {
       ParticlesWrap it = wsolutes[i];
       if (it.n)
-	subindex_local<true><<<(it.n + 127) / 128, 128, 0>>>
+	k_common::subindex_local<true><<<(it.n + 127) / 128, 128, 0>>>
 	  (it.n, (float2 *)it.p, cellscount->D, subindices->D + ctr);
       ctr += it.n;
     }
 
-    compress_counts<<<(compressed_cellscount->S + 127) / 128, 128, 0>>>
+    k_common::compress_counts<<<(compressed_cellscount->S + 127) / 128, 128, 0>>>
       (compressed_cellscount->S, (int4 *)cellscount->D,
        (uchar4 *)compressed_cellscount->D);
 

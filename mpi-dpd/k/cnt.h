@@ -245,14 +245,14 @@ __global__ void halo(int nparticles_padded, int ncellentries,
 
     if (nunpack == 0) return;
 
-    read_AOS6f((float2 *)(packstates[code] + unpackbase), nunpack, dst0, dst1,
+    k_common::read_AOS6f((float2 *)(packstates[code] + unpackbase), nunpack, dst0, dst1,
                dst2);
 
     dst = (float *)(packresults[code] + unpackbase);
   }
 
   float xforce, yforce, zforce;
-  read_AOS3f(dst, nunpack, xforce, yforce, zforce);
+  k_common::read_AOS3f(dst, nunpack, xforce, yforce, zforce);
 
   int nzplanes = laneid < nunpack ? 3 : 0;
 
@@ -344,6 +344,6 @@ __global__ void halo(int nparticles_padded, int ncellentries,
     }
   }
 
-  write_AOS3f(dst, nunpack, xforce, yforce, zforce);
+  k_common::write_AOS3f(dst, nunpack, xforce, yforce, zforce);
 }
 }

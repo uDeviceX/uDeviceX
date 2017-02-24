@@ -195,7 +195,7 @@ namespace k_fsi {
 
       if (nunpack == 0) return;
 
-      read_AOS6f((float2 *)(packstates[code] + unpackbase), nunpack, dst0, dst1,
+      k_common::read_AOS6f((float2 *)(packstates[code] + unpackbase), nunpack, dst0, dst1,
 		 dst2);
 
       dst = (float *)(packresults[code] + unpackbase);
@@ -305,6 +305,6 @@ namespace k_fsi {
       }
     }
 
-    write_AOS3f(dst, nunpack, xforce, yforce, zforce);
+    k_common::write_AOS3f(dst, nunpack, xforce, yforce, zforce);
   }
 }
