@@ -262,7 +262,7 @@ void setup(StaticDeviceBuffer<Particle>* pp, StaticDeviceBuffer<Force>* aa,
 
 int  pcount() {return ncells * nvertices;}
 
-void clear_acc(StaticDeviceBuffer<Force>* aa) {
+void clear_forces(StaticDeviceBuffer<Force>* aa) {
   CC(cudaMemsetAsync(aa->D, 0, sizeof(Force) * aa->S));
 }
 static void rbc_dump0(const char *format4ply,

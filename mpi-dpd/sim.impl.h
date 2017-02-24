@@ -122,22 +122,22 @@ void create_walls() {
 void forces_rbc() {
   if (rbcs)
     CudaRBC::forces_nohost(Cont::ncells,
-			   (float *)r_pp->D, (float *)r_aa->D);
+			   (float*)r_pp->D, (float*)r_aa->D);
 }
 
 void forces_dpd() {
   DPD::pack(s_pp->D, s_pp->S, cells->start, cells->count);
   DPD::local_interactions(s_pp->D, xyzouvwo->D, xyzo_half->D,
-			 s_pp->S, s_aa->D, cells->start,
-			 cells->count);
+			  s_pp->S, s_aa->D, cells->start,
+			  cells->count);
   DPD::post(s_pp->D, s_pp->S);
   DPD::recv();
   DPD::remote_interactions(s_pp->D, s_pp->S, s_aa->D);
 }
 
-void clear_acc() {
-  Cont::clear_acc(s_aa);
-  if (rbcs) Cont::clear_acc(r_aa);
+void clear_forces() {
+  Cont::clear_forces(s_aa);
+  if (rbcs) Cont::clear_forces(r_aa);
 }
 
 void forces_wall() {
@@ -145,27 +145,39 @@ void forces_wall() {
   if (wall_created)         wall::interactions(s_pp->D, s_pp->S, s_aa->D);
 }
 
-void forces() {
-  SolventWrap wsolvent(s_pp->D, s_pp->S,
-		       s_aa->D, cells->start, cells->count);
-  std::vector<ParticlesWrap> wsolutes;
-  if (rbcs)
-    wsolutes.push_back(ParticlesWrap(r_pp->D,
-				     Cont::pcount(), r_aa->D));
-  fsi::bind_solvent(wsolvent);
-  rex::bind_solutes(wsolutes);
-  clear_acc();
-  forces_dpd();
-  rex::pack_p();
-  if (contactforces) cnt::build_cells(wsolutes);
-  rex::post_p();
-  forces_wall();
+void forces_cnt(std::vector<ParticlesWrap> *w_r) {
+  if (contactforces) {
+    cnt::build_cells(*w_r);
+    cnt::bulk(*w_r);
+  }
+}
 
-  rex::recv_p();
-  rex::halo(); /* fsi::halo(); cnt::halo() */
-  fsi::bulk(wsolutes);
-  if (contactforces) cnt::bulk(wsolutes);
+void forces_fsi(SolventWrap *w_s, std::vector<ParticlesWrap> *w_r) {
+  fsi::bind_solvent(*w_s);
+  fsi::bulk(*w_r);
+}
+
+void forces() {
+  SolventWrap w_s(s_pp->D, s_pp->S, s_aa->D, cells->start, cells->count);
+  std::vector<ParticlesWrap> w_r;
+  if (rbcs) w_r.push_back(ParticlesWrap(r_pp->D, Cont::pcount(), r_aa->D));
+
+  clear_forces();
+
+  forces_dpd();
+  forces_wall();
   forces_rbc();
+
+  forces_cnt(&w_r);
+  forces_fsi(&w_s, &w_r);
+
+  rex::bind_solutes(w_r);
+  rex::pack_p();
+  rex::post_p();
+  rex::recv_p();
+
+  rex::halo(); /* fsi::halo(); cnt::halo() */
+
   rex::post_a();
   rex::recv_a();
 }
@@ -339,7 +351,7 @@ void close() {
   sdstr::redist_part_close();
 
   delete r_pp; delete r_aa;
-  
+
   cnt::close();
   delete cells;
   rex::close();
@@ -353,6 +365,6 @@ void close() {
   delete xyzo_half;
   delete wall::trunk;
   delete s_pp; delete s_aa;
-  delete s_pp0; delete s_aa0;  
+  delete s_pp0; delete s_aa0;
 }
 }
