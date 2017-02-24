@@ -188,13 +188,10 @@ void dump_init() {
 void dump_final() {
   delete dump_field;
   delete dump_part_solvent;
-  CC(cudaEventDestroy(evdownloaded));
 }
 
 static void datadump_async(int idtimestep) {
   static int iddatadump = 0;
-    CC(cudaEventSynchronize(evdownloaded));
-
     int n = particles_datadump->S;
     Particle *p = particles_datadump->D;
     Force *a = forces_datadump->D;
@@ -239,7 +236,6 @@ void datadump(const int idtimestep) {
 	sizeof(Force) * Cont::pcount(), cudaMemcpyDeviceToHost, 0));
     start += Cont::pcount();
   }
-  CC(cudaEventRecord(evdownloaded, 0));
 
   datadump_idtimestep = idtimestep;
   datadump_nsolvent = s_pp->S;
@@ -306,8 +302,6 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
     Cont::setup(r_pp, r_ff, "rbcs-ic.txt");
   }
 
-  CC(cudaEventCreate(&evdownloaded,
-			     cudaEventDisableTiming | cudaEventBlockingSync));
   particles_datadump->resize(s_pp->S * 1.5);
   forces_datadump->resize(s_pp->S * 1.5);
 

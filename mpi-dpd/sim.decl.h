@@ -27,8 +27,6 @@ namespace sim {
   StaticHostBuffer<Particle>      *particles_datadump;
   StaticHostBuffer<Force>         *forces_datadump;
 
-  cudaEvent_t evdownloaded;
-
 /* TODO: */
   float rbc_xx[MAX_PART_NUM], rbc_yy[MAX_PART_NUM], rbc_zz[MAX_PART_NUM];
   float sol_xx[MAX_PART_NUM], sol_yy[MAX_PART_NUM], sol_zz[MAX_PART_NUM];
