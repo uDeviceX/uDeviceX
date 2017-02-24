@@ -1,5 +1,5 @@
 namespace sim {
-static void sim_update_helper_arrays() {
+static void update_helper_arrays() {
   CC(cudaFuncSetCacheConfig(k_sim::make_texture, cudaFuncCachePreferShared));
   int np = s_pp->S;
   xyzouvwo->resize(2 * np);
@@ -10,18 +10,18 @@ static void sim_update_helper_arrays() {
 }
 
 /* set initial velocity of a particle */
-static void sim_ic_vel0(float x, float y, float z,
+static void ic_vel0(float x, float y, float z,
 			float *vx, float *vy, float *vz) {
   *vx = gamma_dot * z; *vy = 0; *vz = 0; /* TODO: works only for one
 					    processor */
 }
 
-static void sim_ic_vel(Particle* pp, int np) { /* assign particle
+static void ic_vel(Particle* pp, int np) { /* assign particle
 					velocity based on position */
   for (int ip = 0; ip < np; ip++) {
     Particle p = pp[ip];
     float x = p.x[0], y = p.x[1], z = p.x[2], vx, vy, vz;
-    sim_ic_vel0(x, y, z, &vx, &vy, &vz);
+    ic_vel0(x, y, z, &vx, &vy, &vz);
     p.u[0] = vx; p.u[1] = vy; p.u[2] = vz;
   }
 }
@@ -51,11 +51,11 @@ static std::vector<Particle> _ic_pos() { /* generate particle position */
 static std::vector<Particle> _ic() { /* initial conditions for position and
 				 velocity */
   std::vector<Particle> pp = _ic_pos();
-  sim_ic_vel(&pp.front(), pp.size());
+  ic_vel(&pp.front(), pp.size());
   return pp;
 }
 
-static void sim_redistribute() {
+static void redistribute() {
   sdist::pack(s_pp->D, s_pp->S);
   if (rbcs) rdist::extent(r_pp->D, Cont::ncells);
   sdist::send();
@@ -77,7 +77,7 @@ static void sim_redistribute() {
   if (rbcs) rdist::unpack(r_pp->D, Cont::ncells);
 }
 
-void sim_remove_bodies_from_wall() {
+void remove_bodies_from_wall() {
   if (!rbcs)         return;
   if (!Cont::ncells) return;
   DeviceBuffer<int> marks(Cont::pcount());
@@ -98,7 +98,7 @@ void sim_remove_bodies_from_wall() {
   Cont::clear_velocity(r_pp);
 }
 
-void sim_create_walls() {
+void create_walls() {
   int nsurvived = 0;
   ExpectedMessageSizes new_sizes;
   wall::init(s_pp->D, s_pp->S,
@@ -106,10 +106,10 @@ void sim_create_walls() {
   resize2(s_pp, s_aa, nsurvived);
   Cont::clear_velocity(s_pp);
   cells->build(s_pp->D, s_pp->S, NULL, NULL);
-  sim_update_helper_arrays();
+  update_helper_arrays();
 
   // remove cells touching the wall
-  sim_remove_bodies_from_wall();
+  remove_bodies_from_wall();
   H5PartDump sd("survived-particles.h5part", activecomm, Cont::cartcomm);
   Particle *pp = new Particle[s_pp->S];
   CC(cudaMemcpy(pp, s_pp->D,
@@ -119,7 +119,7 @@ void sim_create_walls() {
   delete[] pp;
 }
 
-void sim_forces() {
+void forces() {
   SolventWrap wsolvent(s_pp->D, s_pp->S,
 		       s_aa->D, cells->start, cells->count);
   std::vector<ParticlesWrap> wsolutes;
@@ -153,7 +153,7 @@ void sim_forces() {
   sex::recv_a();
 }
 
-void sim_tmp_init() {
+void dump_init() {
   MC(MPI_Comm_dup(activecomm, &myactivecomm));
   MC(MPI_Comm_dup(Cont::cartcomm, &mycartcomm));
   dump_part = new H5PartDump("allparticles.h5part", activecomm, Cont::cartcomm);
@@ -164,14 +164,14 @@ void sim_tmp_init() {
   MC(MPI_Barrier(myactivecomm));
 }
 
-void sim_tmp_final() {
+void dump_final() {
   delete dump_part;
   delete dump_field;
   if (dump_part_solvent) delete dump_part_solvent;
   CC(cudaEventDestroy(evdownloaded));
 }
 
-static void sim_datadump_async(int idtimestep) {
+static void datadump_async(int idtimestep) {
   static int iddatadump = 0;
     CC(cudaEventSynchronize(evdownloaded));
 
@@ -199,7 +199,7 @@ static void sim_datadump_async(int idtimestep) {
     ++iddatadump;
 }
 
-void sim_datadump(const int idtimestep) {
+void datadump(const int idtimestep) {
   int n = s_pp->S;
   if (rbcs) n += Cont::pcount();
   particles_datadump->resize(n);
@@ -226,10 +226,10 @@ void sim_datadump(const int idtimestep) {
   datadump_idtimestep = idtimestep;
   datadump_nsolvent = s_pp->S;
   datadump_nrbcs = rbcs ? Cont::pcount() : 0;
-  sim_datadump_async(idtimestep);
+  datadump_async(idtimestep);
 }
 
-static void sim_update_and_bounce() {
+static void update_and_bounce() {
   Cont::upd_stg2_and_1(s_pp, s_aa, false, driving_acceleration);
   if (rbcs) Cont::upd_stg2_and_1(r_pp, r_aa, true, driving_acceleration);
   if (wall_created) {
@@ -238,7 +238,7 @@ static void sim_update_and_bounce() {
   }
 }
 
-void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
+void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   Cont::cartcomm = cartcomm_; activecomm = activecomm_;
   rdist::redistribute_rbcs_init(Cont::cartcomm);
   DPD::init(Cont::cartcomm);
@@ -281,7 +281,7 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
 			sizeof(Particle) * ic.size(),
 			cudaMemcpyHostToDevice));
   cells->build(s_pp->D, s_pp->S, NULL, NULL);
-  sim_update_helper_arrays();
+  update_helper_arrays();
 
   if (rbcs) {
     Cont::rbc_init();
@@ -293,35 +293,35 @@ void sim_init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   particles_datadump->resize(s_pp->S * 1.5);
   accelerations_datadump->resize(s_pp->S * 1.5);
 
-  sim_tmp_init();
+  dump_init();
 }
 
-void sim_run() {
+void run() {
   if (Cont::rank == 0 && !walls) printf("will take %ld steps\n", nsteps);
-  sim_redistribute();
-  sim_forces();
+  redistribute();
+  forces();
   if (!walls && pushtheflow) driving_acceleration = hydrostatic_a;
   int it;
   for (it = 0; it < nsteps; ++it) {
-    sim_redistribute();
+    redistribute();
     if (walls && it >= wall_creation_stepid && !wall_created) {
       CC(cudaDeviceSynchronize());
-      sim_create_walls();
-      sim_redistribute();
+      create_walls();
+      redistribute();
       if (pushtheflow) driving_acceleration = hydrostatic_a;
       if (Cont::rank == 0)
 	fprintf(stderr, "the simulation consists of %ld steps\n", nsteps - it);
     }
-    sim_forces();
-    if (it % steps_per_dump == 0) sim_datadump(it);
-    sim_update_and_bounce();
+    forces();
+    if (it % steps_per_dump == 0) datadump(it);
+    update_and_bounce();
   }
-  sim_is_done = true;
+  is_done = true;
 }
 
-void sim_close() {
+void close() {
 
-  sim_tmp_final();
+  dump_final();
   sdist::redist_part_close();
 
   delete r_pp; delete r_aa;

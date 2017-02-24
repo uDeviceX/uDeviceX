@@ -54,69 +54,24 @@ int main(int argc, char **argv) {
 
   RBCscale = 1 / rc;
 
-  const bool mpi_thread_safe = argp("-mpi_thread_safe").asBool(true);
-
   CC(cudaSetDevice(0));
   CC(cudaDeviceReset());
   int rank;
-  if (mpi_thread_safe) {
-    // needed for the asynchronous data dumps
-    setenv("MPICH_MAX_THREAD_SAFETY", "multiple", 0);
-    int provided_safety_level;
-    MC(MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE,
-			      &provided_safety_level));
-    MC(MPI_Comm_rank(MPI_COMM_WORLD, &rank));
-
-    if (provided_safety_level != MPI_THREAD_MULTIPLE) {
-      if (rank == 0)
-	printf(
-	    "ooooooooops MPI thread safety level is just %d. Aborting now.\n",
-	    provided_safety_level);
-      abort();
-    } else if (rank == 0)
-      printf("I have set MPICH_MAX_THREAD_SAFETY=multiple\n");
-  } else {
-    MC(MPI_Init(&argc, &argv));
-    MC(MPI_Comm_rank(MPI_COMM_WORLD, &rank));
-    const char *env_thread_safety = getenv("MPICH_MAX_THREAD_SAFETY");
-    if (rank == 0 && env_thread_safety)
-      printf("I read MPICH_MAX_THREAD_SAFETY=%s", env_thread_safety);
-  }
-
+  MC(MPI_Init(&argc, &argv));
+  MC(MPI_Comm_rank(MPI_COMM_WORLD, &rank));
   MPI_Comm activecomm = MPI_COMM_WORLD;
-
-  bool reordering = true;
-  const char *env_reorder = getenv("MPICH_RANK_REORDER_METHOD");
-  // reordering of the ranks according to the computational domain and
-  // environment variables
-  if (atoi(env_reorder ? env_reorder : "-1") == atoi("3")) {
-    reordering = false;
-    const bool usefulrank = rank < ranks[0] * ranks[1] * ranks[2];
-    MC(MPI_Comm_split(MPI_COMM_WORLD, usefulrank, rank, &activecomm));
-    MC(MPI_Barrier(activecomm));
-    if (!usefulrank) {
-      printf("rank %d has been thrown away\n", rank);
-      fflush(stdout);
-      MC(MPI_Barrier(activecomm));
-      MPI_Finalize();
-      return 0;
-    }
-
-    MC(MPI_Barrier(activecomm));
-  }
-
   MPI_Comm cartcomm;
   int periods[] = {1, 1, 1};
-  MC(MPI_Cart_create(activecomm, 3, ranks, periods, (int)reordering,
+  MC(MPI_Cart_create(activecomm, 3, ranks, periods, 0,
 			    &cartcomm));
   activecomm = cartcomm;
   MC(MPI_Barrier(activecomm));
   if (rank == 0) argp.print_arguments();
   MC(MPI_Barrier(activecomm));
 
-  sim::sim_init(cartcomm, activecomm);
-  sim::sim_run();
-  sim::sim_close();
+  sim::init(cartcomm, activecomm);
+  sim::run();
+  sim::close();
 
   if (activecomm != cartcomm) MC(MPI_Comm_free(&activecomm));
   MC(MPI_Comm_free(&cartcomm));
