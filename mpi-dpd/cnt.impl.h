@@ -66,7 +66,7 @@ namespace cnt {
       ParticlesWrap it = wsolutes[i];
       if (it.n)
 	k_cnt::bulk_3tpp<<<(3 * it.n + 127) / 128, 128, 0>>>
-	  ((float2 *)it.p, it.n, cellsentries->S, wsolutes.size(), (float *)it.a,
+	  ((float2 *)it.p, it.n, cellsentries->S, wsolutes.size(), (float *)it.f,
 	   local_trunk->get_float(), i);
 
     }
@@ -96,7 +96,7 @@ namespace cnt {
 				 sizeof(recvpackstates), 0,
 				 cudaMemcpyHostToDevice));
       Force *packresults[26];
-      for (int i = 0; i < 26; ++i) packresults[i] = halos[i].a;
+      for (int i = 0; i < 26; ++i) packresults[i] = halos[i].f;
       CC(cudaMemcpyToSymbolAsync(k_cnt::packresults, packresults,
 				 sizeof(packresults), 0, cudaMemcpyHostToDevice));
     }

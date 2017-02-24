@@ -29,8 +29,8 @@ namespace fsi {
     if (it->n)
       k_fsi::
 	interactions_3tpp<<<(3 * it->n + 127) / 128, 128, 0>>>
-	((float2 *)it->p, it->n, wsolvent->n, (float *)it->a,
-	 (float *)wsolvent->a, local_trunk->get_float());
+	((float2 *)it->p, it->n, wsolvent->n, (float *)it->f,
+	 (float *)wsolvent->f, local_trunk->get_float());
 
 
 }
@@ -75,7 +75,7 @@ void halo(ParticlesWrap halos[26]) {
   {
     Force *packresults[26];
 
-    for (int i = 0; i < 26; ++i) packresults[i] = halos[i].a;
+    for (int i = 0; i < 26; ++i) packresults[i] = halos[i].f;
 
     CC(cudaMemcpyToSymbolAsync(k_fsi::packresults, packresults,
 			       sizeof(packresults), 0, cudaMemcpyHostToDevice));
@@ -84,7 +84,7 @@ void halo(ParticlesWrap halos[26]) {
   if (nremote_padded)
     k_fsi::
       interactions_halo<<<(nremote_padded + 127) / 128, 128, 0>>>
-      (nremote_padded, wsolvent->n, (float *)wsolvent->a,
+      (nremote_padded, wsolvent->n, (float *)wsolvent->f,
        local_trunk->get_float());
 }
 }

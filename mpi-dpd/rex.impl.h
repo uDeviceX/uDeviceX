@@ -368,7 +368,7 @@ namespace rex {
 	CC(cudaMemcpyToSymbolAsync(k_rex::coffsets, packsoffset->D + 26 * i,
 				   sizeof(int) * 26, 0, cudaMemcpyDeviceToDevice));
 
-	k_rex::unpack<<<16 * 14, 128, 0>>>((float *)it.a, it.n);
+	k_rex::unpack<<<16 * 14, 128, 0>>>((float *)it.f, it.n);
       }
 
     }

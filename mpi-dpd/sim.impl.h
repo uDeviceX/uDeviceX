@@ -264,8 +264,8 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   rex::init(Cont::cartcomm);
   cnt::init(Cont::cartcomm);
   cells   = new CellLists(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
-  particles_datadump     = new PinnedHostBuffer<Particle>;
-  forces_datadump = new PinnedHostBuffer<Force>;
+  particles_datadump     = new StaticHostBuffer<Particle>;
+  forces_datadump = new StaticHostBuffer<Force>;
 
   xyzouvwo    = new StaticDeviceBuffer<float4>;
   xyzo_half = new StaticDeviceBuffer<ushort4>;

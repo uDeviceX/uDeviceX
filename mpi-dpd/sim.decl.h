@@ -24,8 +24,8 @@ namespace sim {
   H5FieldDump *dump_field;
 
   int datadump_idtimestep, datadump_nsolvent, datadump_nrbcs;
-  PinnedHostBuffer<Particle>      *particles_datadump;
-  PinnedHostBuffer<Force>         *forces_datadump;
+  StaticHostBuffer<Particle>      *particles_datadump;
+  StaticHostBuffer<Force>         *forces_datadump;
 
   cudaEvent_t evdownloaded;
 

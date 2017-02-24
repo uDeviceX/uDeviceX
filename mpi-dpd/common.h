@@ -56,19 +56,19 @@ struct Force {
 
 struct ParticlesWrap {
   const Particle *p;
-  Force *a;
+  Force *f;
   int n;
-  ParticlesWrap() : p(NULL), a(NULL), n(0) {}
-  ParticlesWrap(const Particle *const p, const int n, Force *a)
-    : p(p), n(n), a(a) {}
+  ParticlesWrap() : p(NULL), f(NULL), n(0) {}
+  ParticlesWrap(const Particle *const p, const int n, Force *f)
+    : p(p), n(n), f(f) {}
 };
 
 struct SolventWrap : ParticlesWrap {
   const int *cellsstart, *cellscount;
   SolventWrap() : cellsstart(NULL), cellscount(NULL), ParticlesWrap() {}
-  SolventWrap(const Particle *const p, const int n, Force *a,
+  SolventWrap(const Particle *const p, const int n, Force *f,
 	      const int *const cellsstart, const int *const cellscount)
-    : ParticlesWrap(p, n, a),
+    : ParticlesWrap(p, n, f),
       cellsstart(cellsstart),
       cellscount(cellscount) {}
 };

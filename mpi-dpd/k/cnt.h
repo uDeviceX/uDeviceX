@@ -90,19 +90,19 @@ void bind(const int *const cellsstart, const int *const cellentries,
 
   int ns[n];
   float2 *ps[n];
-  float *as[n];
+  float *fs[n];
 
   for (int i = 0; i < n; ++i) {
     ns[i] = wsolutes[i].n;
     ps[i] = (float2 *)wsolutes[i].p;
-    as[i] = (float *)wsolutes[i].a;
+    fs[i] = (float *)wsolutes[i].f;
   }
 
   CC(cudaMemcpyToSymbolAsync(cnsolutes, ns, sizeof(int) * n, 0,
                              cudaMemcpyHostToDevice));
   CC(cudaMemcpyToSymbolAsync(csolutes, ps, sizeof(float2 *) * n, 0,
                              cudaMemcpyHostToDevice));
-  CC(cudaMemcpyToSymbolAsync(csolutesacc, as, sizeof(float *) * n, 0,
+  CC(cudaMemcpyToSymbolAsync(csolutesacc, fs, sizeof(float *) * n, 0,
                              cudaMemcpyHostToDevice));
 }
 
