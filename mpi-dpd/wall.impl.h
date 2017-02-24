@@ -227,21 +227,6 @@ namespace wall {
       (thrust::device_ptr<Particle>(p + nsurvived),
        thrust::device_ptr<Particle>(p + nsurvived + nbelt));
 
-    if (hdf5part_dumps) {
-      int n = solid_local.size();
-
-      Particle *phost = new Particle[n];
-
-      CC(cudaMemcpy(phost, thrust::raw_pointer_cast(&solid_local[0]),
-		    sizeof(Particle) * n, cudaMemcpyDeviceToHost));
-
-      H5PartDump solid_dump("solid-walls.h5part", Cont::cartcomm, Cont::cartcomm); /* (!)
-										      sic */
-      solid_dump.dump(phost, n);
-
-      delete[] phost;
-    }
-
     /*
       can't use halo-exchanger class because of MARGIN HaloExchanger
       halo(cartcomm, L, 666); DeviceBuffer<Particle> solid_remote;
