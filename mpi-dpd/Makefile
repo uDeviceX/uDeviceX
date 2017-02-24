@@ -23,7 +23,6 @@ ifeq ($(h5),0)
 NVCCFLAGS += -DNO_H5
 endif
 
-NVCCFLAGS += -D_SYNC_DUMPS_
 NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel)
 
 # I have some device code in OBJS. I have to link it separatly
