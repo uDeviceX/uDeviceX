@@ -175,21 +175,6 @@ void forces() {
   rex::recv_f();
 }
 
-void dump_init() {
-  MC(MPI_Comm_dup(activecomm, &myactivecomm));
-  MC(MPI_Comm_dup(Cont::cartcomm, &mycartcomm));
-  dump_field = new H5FieldDump (Cont::cartcomm);
-
-  int rank;
-  MC(MPI_Comm_rank(myactivecomm, &rank));
-  MC(MPI_Barrier(myactivecomm));
-}
-
-void dump_final() {
-  delete dump_field;
-  delete dump_part_solvent;
-}
-
 static void datadump_async(int idtimestep) {
   static int iddatadump = 0;
     int n = particles_datadump->S;
@@ -305,7 +290,13 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   particles_datadump->resize(s_pp->S * 1.5);
   forces_datadump->resize(s_pp->S * 1.5);
 
-  dump_init();
+  MC(MPI_Comm_dup(activecomm, &myactivecomm));
+  MC(MPI_Comm_dup(Cont::cartcomm, &mycartcomm));
+  dump_field = new H5FieldDump (Cont::cartcomm);
+
+  int rank;
+  MC(MPI_Comm_rank(myactivecomm, &rank));
+  MC(MPI_Barrier(myactivecomm));  
 }
 
 void run() {
@@ -328,7 +319,8 @@ void run() {
 }
 
 void close() {
-  dump_final();
+  delete dump_field;
+  delete dump_part_solvent;
   sdstr::redist_part_close();
 
   delete r_pp; delete r_ff;
