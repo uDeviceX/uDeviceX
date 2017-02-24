@@ -64,15 +64,15 @@ static void redistribute() {
   const int newnp = sdist::recv_count();
   if (rbcs) {
     Cont::ncells = rdist::post();
-    r_pp->resize(Cont::ncells*Cont::nvertices); r_aa->resize(Cont::ncells*Cont::nvertices);
+    r_pp->resize(Cont::ncells*Cont::nvertices);
+    r_aa->resize(Cont::ncells*Cont::nvertices);
   }
   s_pp0->resize(newnp); s_aa0->resize(newnp);
   xyzouvwo->resize(newnp * 2);
   xyzo_half->resize(newnp);
   sdist::recv_unpack(s_pp0->D,
-			  xyzouvwo->D, xyzo_half->D,
-			  newnp, cells->start, cells->count);
-  
+		     xyzouvwo->D, xyzo_half->D,
+		     newnp, cells->start, cells->count);
   swap(s_pp, s_pp0); swap(s_aa, s_aa0);
   if (rbcs) rdist::unpack(r_pp->D, Cont::ncells);
 }
@@ -316,7 +316,6 @@ void run() {
     if (it % steps_per_dump == 0) datadump(it);
     update_and_bounce();
   }
-  is_done = true;
 }
 
 void close() {

@@ -14,8 +14,6 @@ namespace sim {
   CellLists* cells;
 
   bool wall_created = false;
-  bool is_done = false;
-
   MPI_Comm activecomm;
 
   size_t nsteps;
