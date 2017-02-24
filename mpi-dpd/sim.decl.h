@@ -20,8 +20,7 @@ namespace sim {
   float driving_acceleration = 0;
   MPI_Comm myactivecomm, mycartcomm;
 
-  H5PartDump *dump_part_solvent = NULL;
-  H5PartDump *dump_part;
+  H5PartDump *dump_part_solvent;
   H5FieldDump *dump_field;
 
   int datadump_idtimestep, datadump_nsolvent, datadump_nrbcs;

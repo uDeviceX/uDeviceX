@@ -178,7 +178,6 @@ void forces() {
 void dump_init() {
   MC(MPI_Comm_dup(activecomm, &myactivecomm));
   MC(MPI_Comm_dup(Cont::cartcomm, &mycartcomm));
-  dump_part = new H5PartDump("allparticles.h5part", activecomm, Cont::cartcomm);
   dump_field = new H5FieldDump (Cont::cartcomm);
 
   int rank;
@@ -187,9 +186,8 @@ void dump_init() {
 }
 
 void dump_final() {
-  delete dump_part;
   delete dump_field;
-  if (dump_part_solvent) delete dump_part_solvent;
+  delete dump_part_solvent;
   CC(cudaEventDestroy(evdownloaded));
 }
 
@@ -204,12 +202,10 @@ static void datadump_async(int idtimestep) {
     diagnostics(myactivecomm, mycartcomm, p, n, dt, datadump_idtimestep);
     if (hdf5part_dumps) {
       if (!dump_part_solvent && walls && datadump_idtimestep >= wall_creation_stepid) {
-	dump_part->close();
 	dump_part_solvent =
 	    new H5PartDump("solvent-particles.h5part", activecomm, Cont::cartcomm);
       }
       if (dump_part_solvent) dump_part_solvent->dump(p, n);
-      else                   dump_part->dump(p, n);
     }
 
     if (hdf5field_dumps && (datadump_idtimestep % steps_per_hdf5dump == 0))
