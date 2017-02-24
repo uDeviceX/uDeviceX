@@ -330,7 +330,7 @@ namespace rex {
     _postrecvP();
   }
 
-  void post_a() {
+  void post_f() {
     if (wsolutes.size() == 0) return;
 
     CC(cudaEventSynchronize(evAcomputed));
@@ -342,9 +342,7 @@ namespace rex {
 		   &reqsendA[i]));
   }
 
-  void recv_a() {
-
-
+  void recv_f() {
     if (wsolutes.size() == 0) return;
 
     {

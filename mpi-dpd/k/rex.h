@@ -143,7 +143,7 @@ __global__ void pack(float2 *particles, int nparticles,
   }
 }
 
-__global__ void unpack(float *accelerations, int nparticles) {
+__global__ void unpack(float *forces, int nparticles) {
   int npack_padded = cpaddedstarts[26];
 
   for (int gid = threadIdx.x + blockDim.x * blockIdx.x; gid < 3 * npack_padded;
@@ -172,7 +172,7 @@ __global__ void unpack(float *accelerations, int nparticles) {
     float myval = __ldg(recvbags[code] + component + 3 * entry);
     int dpid = __ldg(scattered_indices[code] + entry);
 
-    atomicAdd(accelerations + 3 * dpid + component, myval);
+    atomicAdd(forces + 3 * dpid + component, myval);
   }
 }
 }

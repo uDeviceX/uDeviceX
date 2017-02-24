@@ -1,6 +1,6 @@
 namespace ParticleKernels {
     __global__ void upd_stg2_and_1(bool rbcflag, float2 * _pdata, float * _adata,
-				   int nparticles, float dt, float _driving_acceleration, float threshold,
+				   int nparticles, float dt, float _driving_force, float threshold,
 				   bool doublePoiseuille) {
 	int warpid = threadIdx.x >> 5;
 	int base = 32 * (warpid + 4 * blockIdx.x);
@@ -73,15 +73,15 @@ namespace ParticleKernels {
 	    }
 	}
 
-	int type; float driving_acceleration, mass, vx = s1.y, y = s0.y;
+	int type; float driving_force, mass, vx = s1.y, y = s0.y;
 	if      (rbcflag                             ) type = MEMB_TYPE;
 	else if (!rbcflag &&  lastbit::get(vx)) type =  IN_TYPE;
 	else if (!rbcflag && !lastbit::get(vx)) type = OUT_TYPE;
-	mass                 = (type == MEMB_TYPE) ? rbc_mass : 1;
-	driving_acceleration = (type ==   IN_TYPE) ? 0        : _driving_acceleration;
-	if (doublePoiseuille && y <= threshold) driving_acceleration *= -1;
+	mass          = (type == MEMB_TYPE) ? rbc_mass : 1;
+	driving_force = (type ==   IN_TYPE) ? 0        : _driving_force;
+	if (doublePoiseuille && y <= threshold) driving_force *= -1;
 
-	s1.y += (ax/mass + driving_acceleration) * dt;
+	s1.y += (ax/mass + driving_force) * dt;
 	s2.x += ay/mass * dt;
 	s2.y += az/mass * dt;
 
@@ -153,11 +153,11 @@ namespace ParticleKernels {
 
 namespace Cont {
 void  upd_stg2_and_1(StaticDeviceBuffer<Particle>* pp, StaticDeviceBuffer<Force>* aa,
-		     bool rbcflag, float driving_acceleration) {
+		     bool rbcflag, float driving_force) {
   if (pp->S)
     ParticleKernels::upd_stg2_and_1<<<(pp->S + 127) / 128, 128, 0>>>
       (rbcflag, (float2 *)pp->D, (float *)aa->D, pp->S,
-       dt, driving_acceleration, globalextent.y * 0.5 - origin.y, doublepoiseuille);
+       dt, driving_force, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
 void clear_velocity(StaticDeviceBuffer<Particle>* pp) {

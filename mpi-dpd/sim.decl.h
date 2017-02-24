@@ -17,7 +17,7 @@ namespace sim {
   MPI_Comm activecomm;
 
   size_t nsteps;
-  float driving_acceleration = 0;
+  float driving_force = 0;
   MPI_Comm myactivecomm, mycartcomm;
 
   H5PartDump *dump_part_solvent;

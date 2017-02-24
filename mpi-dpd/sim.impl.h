@@ -171,8 +171,8 @@ void forces() {
 
   rex::halo(); /* fsi::halo(); cnt::halo() */
 
-  rex::post_a();
-  rex::recv_a();
+  rex::post_f();
+  rex::recv_f();
 }
 
 void dump_init() {
@@ -248,8 +248,8 @@ void datadump(const int idtimestep) {
 }
 
 static void update_and_bounce() {
-  Cont::upd_stg2_and_1(s_pp, s_aa, false, driving_acceleration);
-  if (rbcs) Cont::upd_stg2_and_1(r_pp, r_aa, true, driving_acceleration);
+  Cont::upd_stg2_and_1(s_pp, s_aa, false, driving_force);
+  if (rbcs) Cont::upd_stg2_and_1(r_pp, r_aa, true, driving_force);
   if (wall_created) {
     wall::bounce(s_pp->D, s_pp->S);
     if (rbcs) wall::bounce(r_pp->D, Cont::pcount());
@@ -316,13 +316,13 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
 
 void run() {
   if (Cont::rank == 0 && !walls) printf("will take %ld steps\n", nsteps);
-  if (!walls && pushtheflow) driving_acceleration = hydrostatic_a;
+  if (!walls && pushtheflow) driving_force = hydrostatic_a;
   int it;
   for (it = 0; it < nsteps; ++it) {
     if (walls && it >= wall_creation_stepid && !wall_created) {
       CC(cudaDeviceSynchronize());
       create_walls();
-      if (pushtheflow) driving_acceleration = hydrostatic_a;
+      if (pushtheflow) driving_force = hydrostatic_a;
       if (Cont::rank == 0)
 	fprintf(stderr, "the simulation consists of %ld steps\n", nsteps - it);
     }
