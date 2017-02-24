@@ -18,15 +18,15 @@ if (rbcs) {
     /* copy from device */
     cudaMemcpy(rbc_hst, rbc_dev, szp*nrbc, cudaMemcpyDeviceToHost);
 
-#define SXX sol_hst[i].x[0]
-#define SYY sol_hst[i].x[1]
-#define SZZ sol_hst[i].x[2]
+#define SXX sol_hst[i].r[0]
+#define SYY sol_hst[i].r[1]
+#define SZZ sol_hst[i].r[2]
 
-#define RXX rbc_hst[i].x[0]
-#define RYY rbc_hst[i].x[1]
-#define RZZ rbc_hst[i].x[2]
+#define RXX rbc_hst[i].r[0]
+#define RYY rbc_hst[i].r[1]
+#define RZZ rbc_hst[i].r[2]
 
-#define SUU sol_hst[i].u[0]
+#define SUU sol_hst[i].v[0]
     int i;
     for (i = 0; i < nsol; i++) {sol_xx[i] = SXX; sol_yy[i] = SYY; sol_zz[i] = SZZ;}
     for (i = 0; i < nrbc; i++) {rbc_xx[i] = RXX; rbc_yy[i] = RYY; rbc_zz[i] = RZZ;}

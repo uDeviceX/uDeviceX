@@ -134,8 +134,8 @@ namespace PackingHalo {
       int dpid = base_dst + lpid;
       int spid = base_src + lpid;
       int c = i % 6;
-      float2 word = *(float2 *)&particles[spid].x[c];
-      *(float2 *)&baginfos[code].dbag[dpid].x[c] = word;
+      float2 word = *(float2 *)&particles[spid].r[c];
+      *(float2 *)&baginfos[code].dbag[dpid].r[c] = word;
     }
     for (int lpid = tid; lpid < nsrc; lpid += warpSize / 2) {
       int dpid = base_dst + lpid;

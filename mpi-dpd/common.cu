@@ -28,7 +28,7 @@ void diagnostics(MPI_Comm comm, MPI_Comm cartcomm, Particle * particles, int n, 
     double p[] = {0, 0, 0};
     for(int i = 0; i < n; ++i)
         for(int c = 0; c < 3; ++c)
-            p[c] += particles[i].u[c];
+            p[c] += particles[i].v[c];
 
     int rank;
     MC(MPI_Comm_rank(comm, &rank) );
@@ -40,7 +40,7 @@ void diagnostics(MPI_Comm comm, MPI_Comm cartcomm, Particle * particles, int n, 
 
     double ke = 0;
     for(int i = 0; i < n; ++i)
-        ke += pow(particles[i].u[0], 2) + pow(particles[i].u[1], 2) + pow(particles[i].u[2], 2);
+        ke += pow(particles[i].v[0], 2) + pow(particles[i].v[1], 2) + pow(particles[i].v[2], 2);
 
     MC( MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &ke, &ke, 1, MPI_DOUBLE, MPI_SUM, 0, comm) );
     MC( MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &n, &n, 1, MPI_INT, MPI_SUM, 0, comm) );

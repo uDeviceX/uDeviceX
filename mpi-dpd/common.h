@@ -37,7 +37,7 @@ inline void mpiAssert(int code, const char *file, int line) {
 // AoS is the currency for dpd simulations (because of the spatial locality).
 // AoS - SoA conversion might be performed within the hpc kernels.
 struct Particle {
-  float x[3], u[3];
+  float r[3], v[3];
   static bool initialized;
   static MPI_Datatype mytype;
   static MPI_Datatype datatype() {

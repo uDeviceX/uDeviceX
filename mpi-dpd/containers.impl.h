@@ -146,8 +146,8 @@ namespace ParticleKernels {
     __global__ void clear_velocity(Particle *p, int n)  {
 	int pid = threadIdx.x + blockDim.x * blockIdx.x;
 	if (pid >= n) return;
-	lastbit::Preserver up(p[pid].u[0]);
-	for(int c = 0; c < 3; ++c) p[pid].u[c] = 0;
+	lastbit::Preserver up(p[pid].v[0]);
+	for(int c = 0; c < 3; ++c) p[pid].v[c] = 0;
     }
 } /* end of ParticleKernels */
 
@@ -272,10 +272,10 @@ static void rbc_dump0(const char *format4ply,
 
     //we fused VV stages so we need to recover the state before stage 1
     for(int i = 0; i < n; ++i) {
-	lastbit::Preserver up(p[i].u[0]);
+	lastbit::Preserver up(p[i].v[0]);
 	for(int c = 0; c < 3; ++c) {
-	    p[i].x[c] -= dt * p[i].u[c];
-	    p[i].u[c] -= 0.5 * dt * a[i].a[c];
+	    p[i].r[c] -= dt * p[i].v[c];
+	    p[i].v[c] -= 0.5 * dt * a[i].a[c];
 	}
     }
     char buf[200];

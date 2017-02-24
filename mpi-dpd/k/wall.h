@@ -134,7 +134,7 @@ namespace k_wall {
 
     Particle p = pp[pid];
 
-    float sdf0 = sdf(p.x[0], p.x[1], p.x[2]);
+    float sdf0 = sdf(p.r[0], p.r[1], p.r[2]);
     key[pid] = (int)(sdf0 >= 0) + (int)(sdf0 > 2);
   }
 
@@ -142,7 +142,7 @@ namespace k_wall {
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
     Particle p = src[pid];
-    dst[pid] = make_float4(p.x[0], p.x[1], p.x[2], 0);
+    dst[pid] = make_float4(p.r[0], p.r[1], p.r[2], 0);
   }
 
   __device__ void vell(float x, float y, float z,

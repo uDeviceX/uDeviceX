@@ -319,13 +319,13 @@ namespace wall {
 	for (int j = 0; j < remote[i].size(); ++j) {
 	  Particle p = remote[i][j];
 
-	  for (int c = 0; c < 3; ++c) p.x[c] += d[c] * L[c];
+	  for (int c = 0; c < 3; ++c) p.r[c] += d[c] * L[c];
 
 	  bool inside = true;
 
 	  for (int c = 0; c < 3; ++c)
 	    inside &=
-	      p.x[c] >= -L[c] / 2 - MARGIN[c] && p.x[c] < L[c] / 2 + MARGIN[c];
+	      p.r[c] >= -L[c] / 2 - MARGIN[c] && p.r[c] < L[c] / 2 + MARGIN[c];
 
 	  if (inside) selected.push_back(p);
 	}

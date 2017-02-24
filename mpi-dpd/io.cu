@@ -82,7 +82,7 @@ void ply_dump(MPI_Comm comm, MPI_Comm cartcomm, const char * filename,
 
     for(int i = 0; i < n; ++i)
         for(int c = 0; c < 3; ++c)
-            particles[i].x[c] += L[c] / 2 + coords[c] * L[c];
+            particles[i].r[c] += L[c] / 2 + coords[c] * L[c];
 
     _write_bytes(&particles.front(), sizeof(Particle) * n, f, comm);
 
@@ -147,19 +147,19 @@ void H5PartDump::dump(Particle * P, int n)
     const char* rlbl[] = {"x", "y", "z"};
     std::vector<h5part_float32_t> FD(n); /* float data */
     for (c = 0; c < 3; c++) {
-      for (i = 0; i < n; i++) FD[i] = P[i].x[c] + origin[c];
+      for (i = 0; i < n; i++) FD[i] = P[i].r[c] + origin[c];
       H5PartWriteDataFloat32(f, rlbl[c], &FD.front());
     }
 
     const char* vlbl[] = {"u", "v", "w"};
     for (c = 0; c < 3; c++) {
-      for (i = 0; i < n; i++) FD[i] = P[i].u[c];
+      for (i = 0; i < n; i++) FD[i] = P[i].v[c];
       H5PartWriteDataFloat32(f, vlbl[c], &FD.front());
     }
 
     std::vector <h5part_int64_t> ID(n); /* integer data */
     for (i = 0; i < n; i++) {
-      int type = lastbit::get(P[i].u[0]); /* TODO: */
+      int type = lastbit::get(P[i].v[0]); /* TODO: */
       ID[i] = type;
     }
     H5PartWriteDataInt64(f, "type", &ID.front());
@@ -337,9 +337,9 @@ void H5FieldDump::dump(MPI_Comm comm, const Particle * const p, const int n, int
     for(int i = 0; i < n; ++i)
     {
         const int cellindex[3] = {
-            max(0, min(XSIZE_SUBDOMAIN - 1, (int)(floor(p[i].x[0])) + XSIZE_SUBDOMAIN / 2)),
-            max(0, min(YSIZE_SUBDOMAIN - 1, (int)(floor(p[i].x[1])) + YSIZE_SUBDOMAIN / 2)),
-            max(0, min(ZSIZE_SUBDOMAIN - 1, (int)(floor(p[i].x[2])) + ZSIZE_SUBDOMAIN / 2))
+            max(0, min(XSIZE_SUBDOMAIN - 1, (int)(floor(p[i].r[0])) + XSIZE_SUBDOMAIN / 2)),
+            max(0, min(YSIZE_SUBDOMAIN - 1, (int)(floor(p[i].r[1])) + YSIZE_SUBDOMAIN / 2)),
+            max(0, min(ZSIZE_SUBDOMAIN - 1, (int)(floor(p[i].r[2])) + ZSIZE_SUBDOMAIN / 2))
         };
 
         const int entry = cellindex[0] + XSIZE_SUBDOMAIN * (cellindex[1] + YSIZE_SUBDOMAIN * cellindex[2]);
@@ -347,7 +347,7 @@ void H5FieldDump::dump(MPI_Comm comm, const Particle * const p, const int n, int
         rho[entry] += 1;
 
         for(int c = 0; c < 3; ++c)
-            u[c][entry] += p[i].u[c];
+            u[c][entry] += p[i].v[c];
     }
 
     for(int c = 0; c < 3; ++c)

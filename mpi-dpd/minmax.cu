@@ -32,7 +32,7 @@ __global__ void minmaxob(const Particle * const d_data, float3 *d_min, float3 *d
     int xyz;
     for(int i=tid; i<3*blockDim.x; i+=blockDim.x) {
         xyz=i%3;
-        shrtmp[xyz][i/3] = (i/3<size)?d_data[i/3+blockIdx.x*size].x[xyz]:MINV;
+        shrtmp[xyz][i/3] = (i/3<size)?d_data[i/3+blockIdx.x*size].r[xyz]:MINV;
     }
     __syncthreads();
     mintemp1.x = (tid<size)?shrtmp[0][tid]:MAXV;
@@ -113,7 +113,7 @@ __global__ void minmaxmba(const Particle  *d_data, float3 *d_min, float3 *d_max,
     int xyz;
     for(int i=tid; i<3*blockDim.x; i+=blockDim.x) {
         xyz=i%3;
-        shrtmp[xyz][i/3] = (i/3+my_blockId*blockDim.x<size)?d_data[i/3+my_blockId*blockDim.x+which*size].x[xyz]:MINV;
+        shrtmp[xyz][i/3] = (i/3+my_blockId*blockDim.x<size)?d_data[i/3+my_blockId*blockDim.x+which*size].r[xyz]:MINV;
     }
     __syncthreads();
     mintemp1.x = (tid+my_blockId*blockDim.x<size)?shrtmp[0][tid]:MAXV;

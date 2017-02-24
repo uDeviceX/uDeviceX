@@ -20,9 +20,9 @@ static void ic_vel(Particle* pp, int np) { /* assign particle
 					velocity based on position */
   for (int ip = 0; ip < np; ip++) {
     Particle p = pp[ip];
-    float x = p.x[0], y = p.x[1], z = p.x[2], vx, vy, vz;
+    float x = p.r[0], y = p.r[1], z = p.r[2], vx, vy, vz;
     ic_vel0(x, y, z, &vx, &vy, &vz);
-    p.u[0] = vx; p.u[1] = vy; p.u[2] = vz;
+    p.v[0] = vx; p.v[1] = vy; p.v[2] = vz;
   }
 }
 
@@ -40,7 +40,7 @@ static std::vector<Particle> _ic_pos() { /* generate particle position */
 	for (l = 0; l < nd; l++) {
 	  Particle p = Particle();
 	  x = xlo + dr * drand48(), y = ylo + dr * drand48(), z = zlo + dr * drand48();
-	  p.x[0] = x; p.x[1] = y; p.x[2] = z;
+	  p.r[0] = x; p.r[1] = y; p.r[2] = z;
 	  pp.push_back(p);
 	}
       }
