@@ -125,6 +125,26 @@ void forces_rbc() {
 			   (float *)r_pp->D, (float *)r_aa->D);
 }
 
+void forces_dpd() {
+  DPD::pack(s_pp->D, s_pp->S, cells->start, cells->count);
+  DPD::local_interactions(s_pp->D, xyzouvwo->D, xyzo_half->D,
+			 s_pp->S, s_aa->D, cells->start,
+			 cells->count);
+  DPD::post(s_pp->D, s_pp->S);
+  DPD::recv();
+  DPD::remote_interactions(s_pp->D, s_pp->S, s_aa->D);
+}
+
+void clear_acc() {
+  Cont::clear_acc(s_aa);
+  if (rbcs) Cont::clear_acc(r_aa);
+}
+
+void forces_wall() {
+  if (rbcs && wall_created) wall::interactions(r_pp->D, Cont::pcount(), r_aa->D);
+  if (wall_created)         wall::interactions(s_pp->D, s_pp->S, s_aa->D);
+}
+
 void forces() {
   SolventWrap wsolvent(s_pp->D, s_pp->S,
 		       s_aa->D, cells->start, cells->count);
@@ -134,22 +154,15 @@ void forces() {
 				     Cont::pcount(), r_aa->D));
   fsi::bind_solvent(wsolvent);
   rex::bind_solutes(wsolutes);
-  Cont::clear_acc(s_aa);
-  if (rbcs) Cont::clear_acc(r_aa);
-  DPD::pack(s_pp->D, s_pp->S, cells->start, cells->count);
+  clear_acc();
+  forces_dpd();
   rex::pack_p();
   if (contactforces) cnt::build_cells(wsolutes);
-  DPD::local_interactions(s_pp->D, xyzouvwo->D, xyzo_half->D,
-			 s_pp->S, s_aa->D, cells->start,
-			 cells->count);
-  DPD::post(s_pp->D, s_pp->S);
   rex::post_p();
-  if (rbcs && wall_created) wall::interactions(r_pp->D, Cont::pcount(), r_aa->D);
-  if (wall_created)         wall::interactions(s_pp->D, s_pp->S, s_aa->D);
-  DPD::recv();
+  forces_wall();
+
   rex::recv_p();
   rex::halo(); /* fsi::halo(); cnt::halo() */
-  DPD::remote_interactions(s_pp->D, s_pp->S, s_aa->D);
   fsi::bulk(wsolutes);
   if (contactforces) cnt::bulk(wsolutes);
   forces_rbc();
