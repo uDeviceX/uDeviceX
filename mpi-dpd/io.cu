@@ -49,8 +49,7 @@ void ply_dump(MPI_Comm comm, MPI_Comm cartcomm, const char * filename,
     if (!append) MC( MPI_File_set_size (f, 0));
 
     std::stringstream ss;
-    if (rank == 0)
-    {
+    if (rank == 0) {
         ss <<  "ply\n";
         ss <<  "format binary_little_endian 1.0\n";
         ss <<  "element vertex " << NPOINTS << "\n";
@@ -60,13 +59,9 @@ void ply_dump(MPI_Comm comm, MPI_Comm cartcomm, const char * filename,
         ss <<  "property list int int vertex_index\n";
         ss <<  "end_header\n";
     }
-
     std::string content = ss.str();
-
     _write_bytes(content.c_str(), content.size(), f, comm);
-
     const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
-
     for(int i = 0; i < n; ++i)
         for(int c = 0; c < 3; ++c)
             particles[i].r[c] += L[c] / 2 + coords[c] * L[c];
@@ -185,9 +180,7 @@ void H5FieldDump::_xdmf_grid(FILE * xmf, float time,
         fprintf(xmf, "     <Attribute Name=\"%s\" AttributeType=\"Scalar\" Center=\"Cell\">\n", channelnames[ichannel]);
         fprintf(xmf, "       <DataItem Dimensions=\"%d %d %d 1\" NumberType=\"Float\" Precision=\"4\" Format=\"HDF\">\n",
                 (int)globalsize[2], (int)globalsize[1], (int)globalsize[0]);
-
         fprintf(xmf, "        %s:/%s\n", h5path, channelnames[ichannel]);
-
         fprintf(xmf, "       </DataItem>\n");
         fprintf(xmf, "     </Attribute>\n");
     }
