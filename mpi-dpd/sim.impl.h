@@ -298,8 +298,6 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
 
 void run() {
   if (Cont::rank == 0 && !walls) printf("will take %ld steps\n", nsteps);
-  redistribute();
-  forces();
   if (!walls && pushtheflow) driving_acceleration = hydrostatic_a;
   int it;
   for (it = 0; it < nsteps; ++it) {
