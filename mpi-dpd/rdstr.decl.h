@@ -1,4 +1,4 @@
-namespace rdist {
+namespace rdstr {
   DeviceBuffer<Particle>* bulk;
 #define HALO_BUF_SIZE 27
   PinnedHostBuffer<Particle> *halo_recvbufs[HALO_BUF_SIZE], *halo_sendbufs[HALO_BUF_SIZE];

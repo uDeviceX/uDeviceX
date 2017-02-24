@@ -24,13 +24,13 @@
 #include "k/common.h"
 #include "common.tmp.h"
 
-#include "rdist.decl.h"
-#include "k/rdist.h"
-#include "rdist.impl.h"
+#include "rdstr.decl.h"
+#include "k/rdstr.h"
+#include "rdstr.impl.h"
 
-#include "sdist.decl.h"
-#include "k/sdist.h"
-#include "sdist.impl.h"
+#include "sdstr.decl.h"
+#include "k/sdstr.h"
+#include "sdstr.impl.h"
 
 #include "containers.decl.h"
 #include "containers.impl.h"

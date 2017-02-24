@@ -1,7 +1,7 @@
 # Generated with by ../tools/deps.awk *.cu *.h
 # (do not include '*.h' files in other '*.h' files)
 
-bund.o: .conf.h bipsbatch.decl.h bipsbatch.impl.h bund.h cnt.decl.h cnt.impl.h common.h common.tmp.h containers.decl.h containers.impl.h dpd-forces.h dpd.decl.h dpd.impl.h fsi.decl.h fsi.impl.h io.h k/cnt.h k/common.h k/fsi.h k/rdist.h k/scan.h k/sdist.h k/sex.h k/sim.h k/wall.h minmax.h packinghalo.decl.h packinghalo.impl.h rdist.decl.h rdist.impl.h sdist.decl.h sdist.impl.h sex.decl.h sex.impl.h sim.decl.h sim.impl.h wall.decl.h wall.impl.h
+bund.o: .conf.h bipsbatch.decl.h bipsbatch.impl.h bund.h cnt.decl.h cnt.impl.h common.h common.tmp.h containers.decl.h containers.impl.h dpd-forces.h dpd.decl.h dpd.impl.h fsi.decl.h fsi.impl.h io.h k/cnt.h k/common.h k/fsi.h k/rdstr.h k/scan.h k/sdstr.h k/sex.h k/sim.h k/wall.h minmax.h packinghalo.decl.h packinghalo.impl.h rdstr.decl.h rdstr.impl.h sdstr.decl.h sdstr.impl.h sex.decl.h sex.impl.h sim.decl.h sim.impl.h wall.decl.h wall.impl.h
 common.o: .conf.h common.h
 dpd-forces.o: .conf.h common.h dpd-forces.h
 io.o: .conf.h common.h io.h

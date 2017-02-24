@@ -1,4 +1,4 @@
-namespace k_rdist {
+namespace k_rdstr {
 static const int cmaxnrbcs = 64 * 4;
 __constant__ float *csources[cmaxnrbcs], *cdestinations[cmaxnrbcs];
 

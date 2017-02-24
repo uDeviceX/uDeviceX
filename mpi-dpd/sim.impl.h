@@ -56,25 +56,25 @@ static std::vector<Particle> _ic() { /* initial conditions for position and
 }
 
 static void redistribute() {
-  sdist::pack(s_pp->D, s_pp->S);
-  if (rbcs) rdist::extent(r_pp->D, Cont::ncells);
-  sdist::send();
-  if (rbcs) rdist::pack_sendcount(r_pp->D, Cont::ncells);
-  sdist::bulk(s_pp->S, cells->start, cells->count);
-  const int newnp = sdist::recv_count();
+  sdstr::pack(s_pp->D, s_pp->S);
+  if (rbcs) rdstr::extent(r_pp->D, Cont::ncells);
+  sdstr::send();
+  if (rbcs) rdstr::pack_sendcount(r_pp->D, Cont::ncells);
+  sdstr::bulk(s_pp->S, cells->start, cells->count);
+  const int newnp = sdstr::recv_count();
   if (rbcs) {
-    Cont::ncells = rdist::post();
+    Cont::ncells = rdstr::post();
     r_pp->resize(Cont::ncells*Cont::nvertices);
     r_aa->resize(Cont::ncells*Cont::nvertices);
   }
   s_pp0->resize(newnp); s_aa0->resize(newnp);
   xyzouvwo->resize(newnp * 2);
   xyzo_half->resize(newnp);
-  sdist::recv_unpack(s_pp0->D,
+  sdstr::recv_unpack(s_pp0->D,
 		     xyzouvwo->D, xyzo_half->D,
 		     newnp, cells->start, cells->count);
   swap(s_pp, s_pp0); swap(s_aa, s_aa0);
-  if (rbcs) rdist::unpack(r_pp->D, Cont::ncells);
+  if (rbcs) rdstr::unpack(r_pp->D, Cont::ncells);
 }
 
 void remove_bodies_from_wall() {
@@ -240,7 +240,7 @@ static void update_and_bounce() {
 
 void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   Cont::cartcomm = cartcomm_; activecomm = activecomm_;
-  rdist::redistribute_rbcs_init(Cont::cartcomm);
+  rdstr::redistribute_rbcs_init(Cont::cartcomm);
   DPD::init(Cont::cartcomm);
   fsi::init(Cont::cartcomm);
   sex::init(Cont::cartcomm);
@@ -257,7 +257,7 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   }
 
   wall::trunk = new Logistic::KISS;
-  sdist::redist_part_init(Cont::cartcomm);
+  sdstr::redist_part_init(Cont::cartcomm);
   nsteps = (int)(tend / dt);
   MC(MPI_Comm_rank(activecomm, &Cont::rank));
 
@@ -321,7 +321,7 @@ void run() {
 void close() {
 
   dump_final();
-  sdist::redist_part_close();
+  sdstr::redist_part_close();
 
   delete r_pp; delete r_aa;
   
@@ -330,7 +330,7 @@ void close() {
   sex::close();
   fsi::close();
   DPD::close();
-  rdist::redistribute_rbcs_close();
+  rdstr::redistribute_rbcs_close();
 
   delete particles_datadump;
   delete accelerations_datadump;

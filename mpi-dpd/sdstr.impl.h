@@ -1,4 +1,4 @@
-namespace sdist {
+namespace sdstr {
   int pack_size(int code) { return send_sizes[code]; }
   float pinned_data(int code, int entry) {return pinnedhost_sendbufs[code][entry]; }
 
@@ -61,19 +61,19 @@ namespace sdist {
       default_message_sizes[i] = estimate;
     }
 
-    k_sdist::texAllParticles.channelDesc = cudaCreateChannelDesc<float>();
-    k_sdist::texAllParticles.filterMode = cudaFilterModePoint;
-    k_sdist::texAllParticles.mipmapFilterMode = cudaFilterModePoint;
-    k_sdist::texAllParticles.normalized = 0;
+    k_sdstr::texAllParticles.channelDesc = cudaCreateChannelDesc<float>();
+    k_sdstr::texAllParticles.filterMode = cudaFilterModePoint;
+    k_sdstr::texAllParticles.mipmapFilterMode = cudaFilterModePoint;
+    k_sdstr::texAllParticles.normalized = 0;
 
-    k_sdist::texAllParticlesFloat2.channelDesc = cudaCreateChannelDesc<float2>();
-    k_sdist::texAllParticlesFloat2.filterMode = cudaFilterModePoint;
-    k_sdist::texAllParticlesFloat2.mipmapFilterMode = cudaFilterModePoint;
-    k_sdist::texAllParticlesFloat2.normalized = 0;
+    k_sdstr::texAllParticlesFloat2.channelDesc = cudaCreateChannelDesc<float2>();
+    k_sdstr::texAllParticlesFloat2.filterMode = cudaFilterModePoint;
+    k_sdstr::texAllParticlesFloat2.mipmapFilterMode = cudaFilterModePoint;
+    k_sdstr::texAllParticlesFloat2.normalized = 0;
 
     CC(cudaEventCreate(&evpacking, cudaEventDisableTiming));
     CC(cudaEventCreate(&evsizes, cudaEventDisableTiming));
-    CC(cudaFuncSetCacheConfig(k_sdist::gather_particles, cudaFuncCachePreferL1));
+    CC(cudaFuncSetCacheConfig(k_sdstr::gather_particles, cudaFuncCachePreferL1));
   }
 
   void _post_recv() {
@@ -149,33 +149,33 @@ namespace sdist {
     if (firstcall) _post_recv();
     size_t textureoffset;
     if (nparticles)
-      CC(cudaBindTexture(&textureoffset, &k_sdist::texAllParticles, particles,
-			 &k_sdist::texAllParticles.channelDesc,
+      CC(cudaBindTexture(&textureoffset, &k_sdstr::texAllParticles, particles,
+			 &k_sdstr::texAllParticles.channelDesc,
 			 sizeof(float) * 6 * nparticles));
 
     if (nparticles)
-      CC(cudaBindTexture(&textureoffset, &k_sdist::texAllParticlesFloat2, particles,
-			 &k_sdist::texAllParticlesFloat2.channelDesc,
+      CC(cudaBindTexture(&textureoffset, &k_sdstr::texAllParticlesFloat2, particles,
+			 &k_sdstr::texAllParticlesFloat2.channelDesc,
 			 sizeof(float) * 6 * nparticles));
 
-    k_sdist::ntexparticles = nparticles;
-    k_sdist::texparticledata = (float2 *)particles;
+    k_sdstr::ntexparticles = nparticles;
+    k_sdstr::texparticledata = (float2 *)particles;
   pack_attempt:
-    CC(cudaMemcpyToSymbolAsync(k_sdist::pack_buffers, packbuffers,
+    CC(cudaMemcpyToSymbolAsync(k_sdstr::pack_buffers, packbuffers,
 			       sizeof(PackBuffer) * 27, 0, cudaMemcpyHostToDevice));
 
     (*failure->D) = false;
-    k_sdist::setup<<<1, 32, 0>>>();
+    k_sdstr::setup<<<1, 32, 0>>>();
 
     if (nparticles)
-      k_sdist::scatter_halo_indices_pack<<<(nparticles + 127) / 128, 128, 0>>>(nparticles);
+      k_sdstr::scatter_halo_indices_pack<<<(nparticles + 127) / 128, 128, 0>>>(nparticles);
 
-    k_sdist::tiny_scan<<<1, 32, 0>>>
+    k_sdstr::tiny_scan<<<1, 32, 0>>>
       (nparticles, packbuffers[0].capacity, packsizes->DP, failure->DP);
 
     CC(cudaEventRecord(evsizes));
     if (nparticles)
-      k_sdist::pack<<<(3 * nparticles + 127) / 128, 128, 0>>>
+      k_sdstr::pack<<<(3 * nparticles + 127) / 128, 128, 0>>>
 	(nparticles, nparticles * 3);
 
     CC(cudaEventRecord(evpacking));
@@ -245,7 +245,7 @@ namespace sdist {
 
     if (nparticles)
       k_common::subindex_local<false><<< (nparticles + 127) / 128, 128, 0>>>
-	(nparticles, k_sdist::texparticledata, cellcounts, subindices->D);
+	(nparticles, k_sdstr::texparticledata, cellcounts, subindices->D);
 
 
   }
@@ -275,10 +275,10 @@ namespace sdist {
 
       nhalo_padded = ustart_padded[27];
 
-      CC(cudaMemcpyToSymbolAsync(k_sdist::unpack_start, ustart,
+      CC(cudaMemcpyToSymbolAsync(k_sdstr::unpack_start, ustart,
 				 sizeof(int) * 28, 0, cudaMemcpyHostToDevice));
 
-      CC(cudaMemcpyToSymbolAsync(k_sdist::unpack_start_padded, ustart_padded,
+      CC(cudaMemcpyToSymbolAsync(k_sdstr::unpack_start_padded, ustart_padded,
 				 sizeof(int) * 28, 0, cudaMemcpyHostToDevice));
     }
 
@@ -300,7 +300,7 @@ namespace sdist {
     _adjust_recv_buffers(recv_sizes);
 
     if (haschanged)
-      CC(cudaMemcpyToSymbolAsync(k_sdist::unpack_buffers, unpackbuffers,
+      CC(cudaMemcpyToSymbolAsync(k_sdstr::unpack_buffers, unpackbuffers,
 				 sizeof(UnpackBuffer) * 27, 0, cudaMemcpyHostToDevice));
 
     for(int i = 1; i < 27; ++i)
@@ -318,7 +318,7 @@ namespace sdist {
 #endif
 
     if (nhalo)
-      k_sdist::subindex_remote<<< (nhalo_padded + 127) / 128, 128, 0 >>>
+      k_sdstr::subindex_remote<<< (nhalo_padded + 127) / 128, 128, 0 >>>
 	(nhalo_padded, nhalo, cellcounts, (float2 *)remote_particles->D, subindices_remote->D);
 
     if (compressed_cellcounts->S)
@@ -332,17 +332,17 @@ namespace sdist {
 #endif
 
     if (subindices->S)
-      k_sdist::scatter_indices<<< (subindices->S + 127) / 128, 128, 0>>>
+      k_sdstr::scatter_indices<<< (subindices->S + 127) / 128, 128, 0>>>
 	(false, subindices->D, subindices->S, cellstarts, scattered_indices->D, scattered_indices->S);
 
     if (nhalo)
-      k_sdist::scatter_indices<<< (nhalo + 127) / 128, 128, 0>>>
+      k_sdstr::scatter_indices<<< (nhalo + 127) / 128, 128, 0>>>
 	(true, subindices_remote->D, nhalo, cellstarts, scattered_indices->D, scattered_indices->S);
 
     if (nparticles)
-      k_sdist::gather_particles<<< (nparticles + 127) / 128, 128, 0>>>
+      k_sdstr::gather_particles<<< (nparticles + 127) / 128, 128, 0>>>
 	(scattered_indices->D, (float2 *)remote_particles->D, nhalo,
-	 k_sdist::ntexparticles, nparticles, (float2 *)particles, xyzouvwo, xyzo_half);
+	 k_sdstr::ntexparticles, nparticles, (float2 *)particles, xyzouvwo, xyzo_half);
 
 
 
