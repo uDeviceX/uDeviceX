@@ -325,7 +325,7 @@ namespace sdist {
       k_common::compress_counts<<< (compressed_cellcounts->S + 127) / 128, 128, 0 >>>
 	(compressed_cellcounts->S, (int4 *)cellcounts, (uchar4 *)compressed_cellcounts->D);
 
-    scan(compressed_cellcounts->D, compressed_cellcounts->S, (uint *)cellstarts);
+    k_scan::scan(compressed_cellcounts->D, compressed_cellcounts->S, (uint *)cellstarts);
 
 #ifndef NDEBUG
     CC(cudaMemset(scattered_indices->D, 0xff, sizeof(int) * scattered_indices->S));

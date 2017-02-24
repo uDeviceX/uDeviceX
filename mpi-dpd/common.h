@@ -65,7 +65,7 @@ struct ParticlesWrap {
 
 struct SolventWrap : ParticlesWrap {
   const int *cellsstart, *cellscount;
-  explicit SolventWrap() : cellsstart(NULL), cellscount(NULL), ParticlesWrap() {}
+  SolventWrap() : cellsstart(NULL), cellscount(NULL), ParticlesWrap() {}
   SolventWrap(const Particle *const p, const int n, Force *a,
 	      const int *const cellsstart, const int *const cellscount)
     : ParticlesWrap(p, n, a),

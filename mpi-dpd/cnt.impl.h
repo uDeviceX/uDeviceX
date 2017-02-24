@@ -41,7 +41,7 @@ namespace cnt {
       (compressed_cellscount->S, (int4 *)cellscount->D,
        (uchar4 *)compressed_cellscount->D);
 
-    scan(compressed_cellscount->D, compressed_cellscount->S,
+    k_scan::scan(compressed_cellscount->D, compressed_cellscount->S,
 	 (uint *)cellsstart->D);
 
     ctr = 0;

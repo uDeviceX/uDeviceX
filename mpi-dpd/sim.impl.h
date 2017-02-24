@@ -249,8 +249,8 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   particles_datadump     = new PinnedHostBuffer<Particle>;
   accelerations_datadump = new PinnedHostBuffer<Force>;
 
-  xyzouvwo    = new DeviceBuffer<float4>;
-  xyzo_half = new DeviceBuffer<ushort4>;
+  xyzouvwo    = new StaticDeviceBuffer<float4>;
+  xyzo_half = new StaticDeviceBuffer<ushort4>;
   if (rbcs) {
     r_pp = new StaticDeviceBuffer<Particle>;
     r_aa = new StaticDeviceBuffer<Force>;

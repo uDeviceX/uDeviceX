@@ -1,3 +1,4 @@
+namespace k_scan {
 template <int NWARP>
 __global__ void breduce(uint4 *vin, unsigned int *vout, int n) {
 
@@ -201,4 +202,5 @@ void scan(unsigned char *input, int size, uint *output)
     bexscan< THREADS ><<<1, THREADS, nblocks*sizeof(uint)>>>(tmp, nblocks);
 
     gexscan< THREADS / 32 ><<<nblocks, THREADS, 0>>>((uint4 *)input, tmp, (uint4 *)output, size / 16);
+}
 }

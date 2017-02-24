@@ -8,8 +8,8 @@ namespace sim {
   StaticDeviceBuffer<Particle> *r_pp; /* RBC */
   StaticDeviceBuffer<Force>    *r_aa;
 
-  DeviceBuffer<float4 > *xyzouvwo;
-  DeviceBuffer<ushort4> *xyzo_half;
+  StaticDeviceBuffer<float4 > *xyzouvwo;
+  StaticDeviceBuffer<ushort4> *xyzo_half;
 
   CellLists* cells;
 

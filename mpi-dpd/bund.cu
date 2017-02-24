@@ -14,11 +14,12 @@
 #include "dpd-forces.h"
 #include "last-bit.h"
 #include "geom-wrapper.h"
-#include "scan.h"
 #include "minmax.h"
 
 #include <thrust/device_vector.h>
 #include <thrust/sort.h>
+
+#include "k/scan.h"
 
 #include "k/common.h"
 #include "common.tmp.h"
