@@ -1,0 +1,54 @@
+simulation -> bund
+*dist      -> dstr
+
+Cont::rbc_dump, Cont::rbc_dump0 -> goes to io
+
+rbc_remove -> goes to wall
+wall::init freezes `s' inside the wall
+
+cnt -> cont
+
+Acceleration -> f
+
+r[3]: [rx, ry, rz]
+v[3]: [vx, vy, vz]
+
+
+p = pp[0]
+p.r = r[3]
+p.v = v[3]
+
+s_pp, s_ff: solvent
+r_pp, r_ff: rbc
+
+dstr_s
+   input: s_pp
+  output: s_pp
+
+dpd_ss
+    input: s_pp
+   output: s_ff
+
+clfor_ss
+    input: s_ff
+    ouput: s_ff
+
+clvel_ss
+    input: s_pp
+   output: s_pp
+
+cnt_rr
+     input: r_rr
+    output: r_ff
+
+fsi_sr
+    input: s_pp, r_pp
+   output: s_ff, r_ff
+
+bounce_sr
+    input: s_pp, r_pp
+   output: s_pp, r_ff
+
+bounce_sw
+    input: s_pp, w_pp
+   output: s_pp, w_ff
