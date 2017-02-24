@@ -110,13 +110,6 @@ void create_walls() {
 
   // remove cells touching the wall
   remove_bodies_from_wall();
-  H5PartDump sd("survived-particles.h5part", activecomm, Cont::cartcomm);
-  Particle *pp = new Particle[s_pp->S];
-  CC(cudaMemcpy(pp, s_pp->D,
-			sizeof(Particle) * s_pp->S,
-			cudaMemcpyDeviceToHost));
-  sd.dump(pp, s_pp->S);
-  delete[] pp;
 }
 
 void forces_rbc() {
