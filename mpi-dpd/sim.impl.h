@@ -296,7 +296,7 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
 
   int rank;
   MC(MPI_Comm_rank(myactivecomm, &rank));
-  MC(MPI_Barrier(myactivecomm));  
+  MC(MPI_Barrier(myactivecomm));
 }
 
 void run() {
