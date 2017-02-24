@@ -119,6 +119,12 @@ void create_walls() {
   delete[] pp;
 }
 
+void forces_rbc() {
+  if (rbcs)
+    CudaRBC::forces_nohost(Cont::ncells,
+			   (float *)r_pp->D, (float *)r_aa->D);
+}
+
 void forces() {
   SolventWrap wsolvent(s_pp->D, s_pp->S,
 		       s_aa->D, cells->start, cells->count);
@@ -142,13 +148,11 @@ void forces() {
   if (wall_created)         wall::interactions(s_pp->D, s_pp->S, s_aa->D);
   DPD::recv();
   rex::recv_p();
-  rex::halo();
+  rex::halo(); /* fsi::halo(); cnt::halo() */
   DPD::remote_interactions(s_pp->D, s_pp->S, s_aa->D);
   fsi::bulk(wsolutes);
   if (contactforces) cnt::bulk(wsolutes);
-  if (rbcs)
-    CudaRBC::forces_nohost(Cont::ncells,
-			   (float *)r_pp->D, (float *)r_aa->D);
+  forces_rbc();
   rex::post_a();
   rex::recv_a();
 }
