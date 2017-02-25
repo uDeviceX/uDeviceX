@@ -4,7 +4,7 @@ static void update_helper_arrays() {
   int np = s_pp->S;
   if (np)
     k_sim::make_texture<<<(np + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>(
-	s_zip0, s_zip1, (float *)s_pp->D, np);
+	s_zip0, s_zip1, (float*)s_pp->D, np);
 }
 
 static std::vector<Particle> ic_pos() { /* generate particle position */
