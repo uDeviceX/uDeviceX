@@ -5,7 +5,7 @@ cudaError_t cudaMemcpy (void * dst, const void * src, size_t count, enum cudaMem
 */
 
 int szp = sizeof(Particle);
-Particle *sol_dev = s_pp->D, *sol_hst = sr_pp;
+Particle *sol_dev = s_pp, *sol_hst = sr_pp;
 
 /* copy from device */
 cudaMemcpy(sol_hst, sol_dev, szp*s_n, H2H);

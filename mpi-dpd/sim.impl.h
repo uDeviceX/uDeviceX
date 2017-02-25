@@ -23,18 +23,14 @@ static std::vector<Particle> ic_pos() { /* generate particle position */
 }
 
 static void redistribute() {
-  sdstr::pack(s_pp->D, s_n);
+  sdstr::pack(s_pp, s_n);
   if (rbcs) rdstr::extent(r_pp->D, Cont::ncells);
   sdstr::send();
   if (rbcs) rdstr::pack_sendcount(r_pp->D, Cont::ncells);
   sdstr::bulk(s_n, cells->start, cells->count);
   s_n = sdstr::recv_count();
-  if (rbcs) {
-    Cont::ncells = rdstr::post();
-    r_pp->resize(Cont::ncells*Cont::nvertices);
-    r_ff->resize(Cont::ncells*Cont::nvertices);
-  }
-  sdstr::recv_unpack(s_pp0->D, s_zip0, s_zip1, s_n, cells->start, cells->count);
+  if (rbcs) Cont::ncells = rdstr::post();
+  sdstr::recv_unpack(s_pp0, s_zip0, s_zip1, s_n, cells->start, cells->count);
   swap(s_pp, s_pp0); swap(s_ff, s_ff0);
   if (rbcs) rdstr::unpack(r_pp->D, Cont::ncells);
 }
@@ -64,17 +60,17 @@ void remove_bodies_from_wall() {
 static void update_helper_arrays() {
   CC(cudaFuncSetCacheConfig(k_sim::make_texture, cudaFuncCachePreferShared));
   k_sim::make_texture<<<(s_n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>
-    (s_zip0, s_zip1, (float*)s_pp->D, s_n);
+    (s_zip0, s_zip1, (float*)s_pp, s_n);
 }
 
 void create_walls() {
   CC(cudaDeviceSynchronize());
   int nsurvived = 0;
-  wall::init(s_pp->D, s_n, nsurvived); s_n = nsurvived;
+  wall::init(s_pp, s_n, nsurvived); s_n = nsurvived;
   wall_created = true;
 
-  Cont::clear_velocity(s_pp->D, s_n);
-  cells->build(s_pp->D, s_n, NULL, NULL);
+  Cont::clear_velocity(s_pp, s_n);
+  cells->build(s_pp, s_n, NULL, NULL);
   update_helper_arrays();
 
   // remove cells touching the wall
@@ -88,11 +84,11 @@ void forces_rbc() {
 }
 
 void forces_dpd() {
-  DPD::pack(s_pp->D, s_n, cells->start, cells->count);
-  DPD::local_interactions(s_pp->D, s_zip0, s_zip1,
+  DPD::pack(s_pp, s_n, cells->start, cells->count);
+  DPD::local_interactions(s_pp, s_zip0, s_zip1,
 			  s_n, s_ff, cells->start,
 			  cells->count);
-  DPD::post(s_pp->D, s_n);
+  DPD::post(s_pp, s_n);
   DPD::recv();
   DPD::remote_interactions(s_n, s_ff);
 }
@@ -104,7 +100,7 @@ void clear_forces() {
 
 void forces_wall() {
   if (rbcs && wall_created) wall::interactions(r_pp->D, Cont::pcount(), r_ff->D);
-  if (wall_created)         wall::interactions(s_pp->D, s_n, s_ff);
+  if (wall_created)         wall::interactions(s_pp, s_n, s_ff);
 }
 
 void forces_cnt(std::vector<ParticlesWrap> *w_r) {
@@ -120,7 +116,7 @@ void forces_fsi(SolventWrap *w_s, std::vector<ParticlesWrap> *w_r) {
 }
 
 void forces() {
-  SolventWrap w_s(s_pp->D, s_n, s_ff, cells->start, cells->count);
+  SolventWrap w_s(s_pp, s_n, s_ff, cells->start, cells->count);
   std::vector<ParticlesWrap> w_r;
   if (rbcs) w_r.push_back(ParticlesWrap(r_pp->D, Cont::pcount(), r_ff->D));
 
@@ -149,7 +145,7 @@ void in_out() {
 }
 
 void dev2hst() { /* device2host  */
-  CC(cudaMemcpyAsync(sr_pp, s_pp->D,
+  CC(cudaMemcpyAsync(sr_pp, s_pp,
 		     sizeof(Particle) * s_n, D2H, 0));
   if (rbcs)
     CC(cudaMemcpyAsync(&sr_pp[s_n], r_pp->D,
@@ -182,11 +178,11 @@ void diag(int it) {
 }
 
 static void update_and_bounce() {
-  Cont::upd_stg2_and_1(s_pp->D, s_ff, s_n, false, driving_force);
+  Cont::upd_stg2_and_1(s_pp, s_ff, s_n, false, driving_force);
   if (rbcs)
     Cont::upd_stg2_and_1(r_pp->D, r_ff->D, s_n, true, driving_force);
   if (wall_created) {
-    wall::bounce(s_pp->D, s_n);
+    wall::bounce(s_pp, s_n);
     if (rbcs) wall::bounce(r_pp->D, Cont::pcount());
   }
 }
@@ -223,17 +219,16 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   Cont::globalextent = make_float3(dims[0] * XSIZE_SUBDOMAIN,
 				   dims[1] * YSIZE_SUBDOMAIN,
 				   dims[2] * ZSIZE_SUBDOMAIN);
-  s_pp  = new StaticDeviceBuffer0<Particle>;
-  s_pp0 = new StaticDeviceBuffer0<Particle>;
+  mpDeviceMalloc(&s_pp); mpDeviceMalloc(&s_pp0);  
   mpDeviceMalloc(&s_ff); mpDeviceMalloc(&s_ff0);
 
   vector<Particle> ic = ic_pos();
   s_n  = ic.size();
 
-  CC(cudaMemcpy(s_pp->D, &ic.front(),
+  CC(cudaMemcpy(s_pp, &ic.front(),
 			sizeof(Particle) * ic.size(),
 			H2D));
-  cells->build(s_pp->D, s_n, NULL, NULL);
+  cells->build(s_pp, s_n, NULL, NULL);
   update_helper_arrays();
 
   if (rbcs) {
@@ -292,9 +287,7 @@ void close() {
   CC(cudaFree(s_zip1));
 
   delete wall::trunk;
-  delete s_pp; delete s_ff;
-
-  CC(cudaFree(s_ff )); CC(cudaFree(s_ff0));
-
+  CC(cudaFree(s_pp)); CC(cudaFree(s_pp0));
+  CC(cudaFree(s_ff)); CC(cudaFree(s_ff0));
 }
 }

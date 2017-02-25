@@ -1,15 +1,15 @@
 namespace sim {
   int s_n;
-  StaticDeviceBuffer0<Particle> *s_pp; /* Solvent */
+  Particle *s_pp; /* Solvent */
   Force    *s_ff;
 
-  StaticDeviceBuffer0<Particle> *s_pp0; /* Solvent (temporal buffer) */
+  Particle *s_pp0; /* Solvent (temporal buffer) */
   Force    *s_ff0;
 
   StaticDeviceBuffer<Particle> *r_pp; /* RBC */
   StaticDeviceBuffer<Force>    *r_ff;
 
-  float4  *s_zip0;                   /* "zipped" version of Solvent array */
+  float4  *s_zip0; /* "zipped" version of Solvent array */
   ushort4 *s_zip1;
 
   CellLists* cells;
@@ -24,7 +24,7 @@ namespace sim {
   H5PartDump *dump_part_solvent;
   H5FieldDump *dump_field;
 
-  /* solvent + RBC data on a host */
+  /* solvent + RBC data on host */
   Particle      sr_pp[MAX_PART_NUM];
 
 /* TODO: */
