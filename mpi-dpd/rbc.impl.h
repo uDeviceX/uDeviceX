@@ -1,13 +1,41 @@
-/*
- *  rbc-cuda.cu
- *
- *  Created by Dmitry Alexeev on Nov 3, 2014
- *  Completely rewritten by Dmitry Alexeev and Diego Rossinelli since April 1, 2015.
- *
- */
+using namespace std;
 
+namespace CudaRBC
+{
+struct Params
+{
+  float kbT, p, lmax, kp, mpow, Area0, totArea0, totVolume0,
+        kd, ka, kv, gammaT, gammaC,  sinTheta0, cosTheta0, kb, l0;
+  float sint0kb, cost0kb, kbToverp;
+  int  nvertices, ntriangles;
+};
 
-#include "rbc-cuda.h"
+struct Extent
+{
+  float xmin, ymin, zmin;
+  float xmax, ymax, zmax;
+};
+
+static Params params;
+static __constant__ Params devParams;
+
+/* blocking, initializes params */
+void setup(int& nvertices, Extent& host_extent);
+
+int get_nvertices();
+
+/* A * (x, 1) */
+void initialize(float *device_xyzuvw, const float (*transform)[4]);
+
+/* non-synchronizing */
+void forces_nohost(int ncells, const float * const device_xyzuvw, float * const device_axayaz);
+
+/*non-synchronizing, extent not initialized */
+void extent_nohost(int ncells, const float * const xyzuvw, Extent * device_extent, int n = -1);
+
+/* get me a pointer to YOUR plain array - no allocation on my side */
+void get_triangle_indexing(int (*&host_triplets_ptr)[3], int& ntriangles);
+};
 
 #include <cstdio>
 #include <map>
@@ -21,17 +49,6 @@ using namespace std;
 
 extern float RBCx0, RBCp, RBCka, RBCkb, RBCkd, RBCkv, RBCgammaC,
        RBCtotArea, RBCtotVolume, RBCscale;
-
-#define CC(ans) do { cudaAssert((ans), __FILE__, __LINE__); } while(0)
-inline void cudaAssert(cudaError_t code, const char *file, int line)
-{
-    if (code != cudaSuccess)
-    {
-        fprintf(stderr,"GPU assert: %s %s %d\n", cudaGetErrorString(code), file, line);
-
-        abort();
-    }
-}
 
 namespace CudaRBC
 {

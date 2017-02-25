@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 #include <dpd-rng.h>
-#include <rbc-cuda.h>
 #include <cstdio>
 #include <mpi.h>
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */
@@ -23,6 +22,8 @@
 #include "k/scan.h"
 
 #include "k/common.h"
+
+#include "rbc.impl.h"
 
 #include "rdstr.decl.h"
 #include "k/rdstr.h"
