@@ -67,7 +67,8 @@ void remove_bodies_from_wall() {
       valid &= 0 == tmp[j + Cont::nvertices * i];
     if (!valid) tokill.push_back(i);
   }
-  rbc_remove_resize(r_pp, r_ff, &tokill.front(), tokill.size());
+  Cont::rbc_remove(r_pp->D, &tokill.front(), tokill.size()); /* updates
+								Cont::ncells */
   Cont::clear_velocity(r_pp->D, r_pp->S);
 }
 
@@ -77,8 +78,8 @@ void create_walls() {
   int nsurvived = 0;
   wall::init(s_pp->D, s_pp->S, nsurvived);
   wall_created = true;
+  s_pp->S = s_ff->S = nsurvived;
 
-  resize2(s_pp, s_ff, nsurvived);
   Cont::clear_velocity(s_pp->D, s_pp->S);
   cells->build(s_pp->D, s_pp->S, NULL, NULL);
   update_helper_arrays();
@@ -188,8 +189,9 @@ void diag(int it) {
 }
 
 static void update_and_bounce() {
-  Cont::upd_stg2_and_1(s_pp, s_ff, false, driving_force);
-  if (rbcs) Cont::upd_stg2_and_1(r_pp, r_ff, true, driving_force);
+  Cont::upd_stg2_and_1(s_pp->D, s_ff->D, s_pp->S, false, driving_force);
+  if (rbcs)
+    Cont::upd_stg2_and_1(r_pp->D, r_ff->D, s_pp->S, true, driving_force);
   if (wall_created) {
     wall::bounce(s_pp->D, s_pp->S);
     if (rbcs) wall::bounce(r_pp->D, Cont::pcount());
@@ -208,8 +210,7 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
 
   cells   = new CellLists(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
 
-  mpDeviceMalloc(&s_zip0);
-  mpDeviceMalloc(&s_zip1);
+  mpDeviceMalloc(&s_zip0); mpDeviceMalloc(&s_zip1);
 
   if (rbcs) {
     r_pp = new StaticDeviceBuffer<Particle>;
@@ -235,8 +236,9 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   s_ff0 = new StaticDeviceBuffer<Force>;
 
   vector<Particle> ic = ic_pos();
-  resize2(s_pp, s_ff  , ic.size());
-  resize2(s_pp0, s_ff , ic.size());
+  s_pp->S  = s_ff->S = ic.size();
+  s_pp0->S = s_ff0->S = ic.size();
+
   CC(cudaMemcpy(s_pp->D, &ic.front(),
 			sizeof(Particle) * ic.size(),
 			H2D));

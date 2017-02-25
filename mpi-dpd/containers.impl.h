@@ -152,22 +152,18 @@ namespace ParticleKernels {
 } /* end of ParticleKernels */
 
 namespace Cont {
-void  upd_stg2_and_1(StaticDeviceBuffer<Particle>* pp, StaticDeviceBuffer<Force>* ff,
+void  upd_stg2_and_1(Particle* pp, Force* ff, int n,
 		     bool rbcflag, float driving_force) {
-  if (pp->S)
-    ParticleKernels::upd_stg2_and_1<<<(pp->S + 127) / 128, 128, 0>>>
-      (rbcflag, (float2 *)pp->D, (float *)ff->D, pp->S,
-       dt, driving_force, globalextent.y * 0.5 - origin.y, doublepoiseuille);
+  if (!n) return;
+  ParticleKernels::upd_stg2_and_1<<<(n + 127) / 128, 128, 0>>>
+    (rbcflag, (float2 *)pp, (float *)ff, n,
+     dt, driving_force, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
 void clear_velocity(Particle* pp, int n) {
   if (n)
     ParticleKernels::clear_velocity<<<(n + 127) / 128, 128 >>>(pp, n);
 }
-
-#define     resize2(b1, b2, n) (b1)->resize(n), (b2)->resize(n)
-#define  rbc_resize(b , n)     Cont::ncells = (n),  (b)->resize(Cont::nvertices*(n))
-#define rbc_resize2(b1, b2, n)                      rbc_resize(b1, n), rbc_resize(b2, n)
 
 void rbc_init() {
   ncells = 0;
@@ -185,63 +181,61 @@ void _initialize(float *device_pp, float (*transform)[4]) {
   
 void setup(StaticDeviceBuffer<Particle>* pp, StaticDeviceBuffer<Force>* ff,
 	   const char *path2ic) {
-    vector<TransformedExtent> allrbcs;
-    if (rank == 0) {
-	//read transformed extent from file
-	FILE *f = fopen(path2ic, "r");
-	printf("READING FROM: <%s>\n", path2ic);
-	bool isgood = true;
-	while(isgood) {
-	    float tmp[19];
-	    for(int c = 0; c < 19; ++c) {
-		int retval = fscanf(f, "%f", tmp + c);
-		isgood &= retval == 1;
-	    }
+  vector<TransformedExtent> allrbcs;
+  if (rank == 0) {
+    //read transformed extent from file
+    FILE *f = fopen(path2ic, "r");
+    printf("READING FROM: <%s>\n", path2ic);
+    bool isgood = true;
+    while(isgood) {
+      float tmp[19];
+      for(int c = 0; c < 19; ++c) {
+	int retval = fscanf(f, "%f", tmp + c);
+	isgood &= retval == 1;
+      }
 
-	    if (isgood) {
-		TransformedExtent t;
-		for(int c = 0; c < 3; ++c) t.com[c] = tmp[c];
+      if (isgood) {
+	TransformedExtent t;
+	for(int c = 0; c < 3; ++c) t.com[c] = tmp[c];
 
-		int ctr = 3;
-		for(int c = 0; c < 16; ++c, ++ctr) t.transform[c / 4][c % 4] = tmp[ctr];
-		allrbcs.push_back(t);
-	    }
-	}
-	fclose(f);
-	printf("Instantiating %d CELLs from...<%s>\n", (int)allrbcs.size(), path2ic);
-    } /* end of myrank == 0 */
-
-    int allrbcs_count = allrbcs.size();
-    MC(MPI_Bcast(&allrbcs_count, 1, MPI_INT, 0, cartcomm));
-
-    allrbcs.resize(allrbcs_count);
-
-    int nfloats_per_entry = sizeof(TransformedExtent) / sizeof(float);
-
-    MC(MPI_Bcast(&allrbcs.front(), nfloats_per_entry * allrbcs_count, MPI_FLOAT, 0, cartcomm));
-
-    vector<TransformedExtent> good;
-    int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
-
-    for(vector<TransformedExtent>::iterator it = allrbcs.begin(); it != allrbcs.end(); ++it) {
-	bool inside = true;
-	for(int c = 0; c < 3; ++c)
-	    inside &= it->com[c] >= coords[c] * L[c] && it->com[c] < (coords[c] + 1) * L[c];
-	if (inside) {
-	    for(int c = 0; c < 3; ++c)
-		it->transform[c][3] -= (coords[c] + 0.5) * L[c];
-	    good.push_back(*it);
-	}
+	int ctr = 3;
+	for(int c = 0; c < 16; ++c, ++ctr) t.transform[c / 4][c % 4] = tmp[ctr];
+	allrbcs.push_back(t);
+      }
     }
+    fclose(f);
+    printf("Instantiating %d CELLs from...<%s>\n", (int)allrbcs.size(), path2ic);
+  } /* end of myrank == 0 */
 
-    rbc_resize2(pp, ff, good.size());
-    for(int i = 0; i < good.size(); ++i)
-      _initialize((float *)(pp->D + nvertices * i), good[i].transform);
+  int allrbcs_count = allrbcs.size();
+  MC(MPI_Bcast(&allrbcs_count, 1, MPI_INT, 0, cartcomm));
+
+  allrbcs.resize(allrbcs_count);
+
+  int nfloats_per_entry = sizeof(TransformedExtent) / sizeof(float);
+
+  MC(MPI_Bcast(&allrbcs.front(), nfloats_per_entry * allrbcs_count, MPI_FLOAT, 0, cartcomm));
+
+  vector<TransformedExtent> good;
+  int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
+
+  for(vector<TransformedExtent>::iterator it = allrbcs.begin(); it != allrbcs.end(); ++it) {
+    bool inside = true;
+    for(int c = 0; c < 3; ++c)
+      inside &= it->com[c] >= coords[c] * L[c] && it->com[c] < (coords[c] + 1) * L[c];
+    if (inside) {
+      for(int c = 0; c < 3; ++c)
+	it->transform[c][3] -= (coords[c] + 0.5) * L[c];
+      good.push_back(*it);
+    }
+  }
+
+  Cont::ncells = good.size();
+  for(int i = 0; i < Cont::ncells; ++i)
+    _initialize((float *)(pp->D + nvertices * i), good[i].transform);
 }
 
-/* NB: preserves order of `pp' but messes up `ff' */
-#define rbc_remove_resize(pp, aa, e, ne) Cont::rbc_remove(pp, e, ne), rbc_resize(aa, Cont::ncells)
-  void rbc_remove(StaticDeviceBuffer<Particle>* pp, int *e, int ne) {
+void rbc_remove(Particle* pp, int *e, int ne) {
   /* remove RBCs with indexes in `e' */
   bool GO = false, STAY = true;
   int ie, i0, i1, nv = nvertices;
@@ -250,14 +244,14 @@ void setup(StaticDeviceBuffer<Particle>* pp, StaticDeviceBuffer<Force>* ff,
 
   for (i0 = i1 = 0; i0 < ncells; i0++)
     if (m[i0] == STAY) {
-      CC(cudaMemcpy(pp->D + nv * i1,
-		    pp->D + nv * i0,
+      CC(cudaMemcpy(pp + nv * i1,
+		    pp + nv * i0,
 		    sizeof(Particle) * nv,
 		    D2D));
       i1++;
     }
   int nstay = i1;
-  rbc_resize(pp, nstay);
+  Cont::ncells = nstay;
 }
 
 int  pcount() {return ncells * nvertices;}
