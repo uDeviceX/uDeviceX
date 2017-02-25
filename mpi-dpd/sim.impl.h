@@ -182,9 +182,8 @@ void datadump(const int idtimestep) {
   CC(cudaMemcpyAsync(particles_datadump, s_pp->D,
 		     sizeof(Particle) * s_pp->S,
 		     D2H, 0));
-  int start = s_pp->S;
   if (rbcs)
-    CC(cudaMemcpyAsync(&particles_datadump[start], r_pp->D,
+    CC(cudaMemcpyAsync(&particles_datadump[s_pp->S], r_pp->D,
 		       sizeof(Particle) * Cont::pcount(), D2H, 0));
   diagnostics(myactivecomm, mycartcomm, particles_datadump, n, dt, idtimestep);
   if (hdf5part_dumps) {
