@@ -30,5 +30,4 @@ public:
   H5FieldDump(MPI_Comm cartcomm);
   void dump(MPI_Comm comm, const Particle * const p, const int n, int idtimestep);
   void dump_scalarfield(MPI_Comm comm, const float * const data, const char * channelname);
-  ~H5FieldDump();
 };
