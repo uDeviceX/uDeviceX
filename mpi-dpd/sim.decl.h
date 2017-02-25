@@ -1,8 +1,9 @@
 namespace sim {
-  StaticDeviceBuffer<Particle> *s_pp; /* Solvent */
+  int s_n;
+  StaticDeviceBuffer0<Particle> *s_pp; /* Solvent */
   StaticDeviceBuffer<Force>    *s_ff;
 
-  StaticDeviceBuffer<Particle> *s_pp0; /* Solvent (temporal buffer) */
+  StaticDeviceBuffer0<Particle> *s_pp0; /* Solvent (temporal buffer) */
   StaticDeviceBuffer<Force>    *s_ff0;
 
   StaticDeviceBuffer<Particle> *r_pp; /* RBC */

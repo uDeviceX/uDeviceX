@@ -4,16 +4,16 @@ cudaError_t cudaMemcpy (void * dst, const void * src, size_t count, enum cudaMem
 
 */
 
-int nsol = s_pp->S, szp = sizeof(Particle);
+int szp = sizeof(Particle);
 Particle *sol_dev = s_pp->D, *sol_hst = sr_pp;
 
 /* copy from device */
-cudaMemcpy(sol_hst, sol_dev, szp*nsol, H2H);
+cudaMemcpy(sol_hst, sol_dev, szp*s_n, H2H);
 
 /* process RBCs */
 if (rbcs) {
     int nrbc = Cont::pcount();
-    Particle *rbc_dev = r_pp->D, *rbc_hst = sol_hst + nsol;
+    Particle *rbc_dev = r_pp->D, *rbc_hst = sol_hst + s_n;
 
     /* copy from device */
     cudaMemcpy(rbc_hst, rbc_dev, szp*nrbc, H2H);
@@ -28,16 +28,16 @@ if (rbcs) {
 
 #define SUU sol_hst[i].v[0]
     int i;
-    for (i = 0; i < nsol; i++) {sol_xx[i] = SXX; sol_yy[i] = SYY; sol_zz[i] = SZZ;}
+    for (i = 0; i < s_n; i++) {sol_xx[i] = SXX; sol_yy[i] = SYY; sol_zz[i] = SZZ;}
     for (i = 0; i < nrbc; i++) {rbc_xx[i] = RXX; rbc_yy[i] = RYY; rbc_zz[i] = RZZ;}
 
     iotags_all(nrbc, rbc_xx, rbc_yy, rbc_zz,
-               nsol, sol_xx, sol_yy, sol_zz,
+               s_n, sol_xx, sol_yy, sol_zz,
                iotags);
 
     /* collect statistics */
     int in2out = 0, out2in = 0, cnt_in = 0;
-    for (i = 0; i < nsol; i++) {
+    for (i = 0; i < s_n; i++) {
       bool was_in = lastbit::get(SUU), was_out = !was_in;
       bool now_in = iotags[i] != -1         , now_out = !now_in;
 
@@ -46,7 +46,7 @@ if (rbcs) {
       if (now_in            ) cnt_in ++;
     }
     /* set the last bit to 1 for tagged particles */
-    for (i = 0; i < nsol; i++) lastbit::set(SUU, iotags[i] != -1);
+    for (i = 0; i < s_n; i++) lastbit::set(SUU, iotags[i] != -1);
     fprintf(stderr, "(simulation.hack.h) in2out, out2in, cnt_in: %d  %d  %d\n",
 	    in2out, out2in, cnt_in);
 
@@ -54,8 +54,8 @@ if (rbcs) {
     cudaMemcpy(rbc_dev, rbc_hst, szp*nrbc, H2D);
  } else {
   /* set the last bit to 0 for all particles */
-  for (int i = 0; i < nsol; i++) lastbit::set(SUU, false);
+  for (int i = 0; i < s_n; i++) lastbit::set(SUU, false);
  }
 
 /* copy to device */
-cudaMemcpy(sol_dev, sol_hst, szp*nsol, H2D);
+cudaMemcpy(sol_dev, sol_hst, szp*s_n, H2D);
