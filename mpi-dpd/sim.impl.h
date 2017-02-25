@@ -85,7 +85,7 @@ void remove_bodies_from_wall() {
     (r_pp->D, Cont::pcount(), marks.D);
 
   vector<int> tmp(marks.S);
-  CC(cudaMemcpy(tmp.data(), marks.D, sizeof(int) * marks.S, cudaMemcpyDeviceToHost));
+  CC(cudaMemcpy(tmp.data(), marks.D, sizeof(int) * marks.S, D2H));
   int nbodies = Cont::ncells;
   std::vector<int> tokill;
   for (int i = 0; i < nbodies; ++i) {
@@ -207,18 +207,18 @@ void datadump(const int idtimestep) {
 #include "sim.hack.h"
   CC(cudaMemcpyAsync(particles_datadump->D, s_pp->D,
 			     sizeof(Particle) * s_pp->S,
-			     cudaMemcpyDeviceToHost, 0));
+			     D2H, 0));
   CC(cudaMemcpyAsync(forces_datadump->D, s_ff->D,
 			     sizeof(Force) * s_pp->S,
-			     cudaMemcpyDeviceToHost, 0));
+			     D2H, 0));
   int start = s_pp->S;
   if (rbcs) {
     CC(cudaMemcpyAsync(
 	particles_datadump->D + start, r_pp->D,
-	sizeof(Particle) * Cont::pcount(), cudaMemcpyDeviceToHost, 0));
+	sizeof(Particle) * Cont::pcount(), D2H, 0));
     CC(cudaMemcpyAsync(
 	forces_datadump->D + start, r_ff->D,
-	sizeof(Force) * Cont::pcount(), cudaMemcpyDeviceToHost, 0));
+	sizeof(Force) * Cont::pcount(), D2H, 0));
     start += Cont::pcount();
   }
 
