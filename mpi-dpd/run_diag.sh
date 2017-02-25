@@ -108,8 +108,7 @@
 # mid_h5.m h5/flowfields-0001.h5 | fhash.awk -v tol=1 > h5.out.txt
 
 
-####
-# a test case with two RBCs around cylinder
+### a test case with two RBCs around cylinder
 # TEST: flow.around.t2
 # export PATH=../tools:$PATH
 # cp .conf.around.h  .conf.h
@@ -123,8 +122,7 @@
 # ply2punto ply/rbcs-00001.ply | fhash.awk -v tol=1 > ply.out.txt
 
 
-####
-## a test case with two RBCs around cylinder with one RBC removed by the wall
+### two RBCs around cylinder with one RBC removed by the wall
 # TEST: flow.around.t3
 # export PATH=../tools:$PATH
 # cp .conf.around.h  .conf.h

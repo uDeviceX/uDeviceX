@@ -8,7 +8,6 @@ template <typename T> struct StaticDeviceBuffer {
 };
 
 template <typename T> struct StaticHostBuffer {
-  /* `S': size; `D': data */
-  int S; T D[MAX_PART_NUM];
-  void resize(int n)  {S = n;}
+  /* `D': data */
+  T D[MAX_PART_NUM];
 };
