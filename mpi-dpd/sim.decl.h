@@ -25,7 +25,6 @@ namespace sim {
 
   int datadump_idtimestep, datadump_nsolvent, datadump_nrbcs;
   StaticHostBuffer<Particle>      *particles_datadump;
-  StaticHostBuffer<Force>         *forces_datadump;
 
 /* TODO: */
   float rbc_xx[MAX_PART_NUM], rbc_yy[MAX_PART_NUM], rbc_zz[MAX_PART_NUM];

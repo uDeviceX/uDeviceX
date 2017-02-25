@@ -267,17 +267,8 @@ void clear_forces(StaticDeviceBuffer<Force>* ff) {
 }
 static void rbc_dump0(const char *format4ply,
 		      MPI_Comm comm, int ncells,
-		      Particle *p, Force *f, int n, int iddatadump) {
+		      Particle *p, int n, int iddatadump) {
     int ctr = iddatadump;
-
-    //we fused VV stages so we need to recover the state before stage 1
-    for(int i = 0; i < n; ++i) {
-	lastbit::Preserver up(p[i].v[0]);
-	for(int c = 0; c < 3; ++c) {
-	    p[i].r[c] -= dt * p[i].v[c];
-	    p[i].v[c] -= 0.5 * dt * f[i].a[c];
-	}
-    }
     char buf[200];
     sprintf(buf, format4ply, ctr);
 
@@ -289,8 +280,8 @@ static void rbc_dump0(const char *format4ply,
     ply_dump(comm, cartcomm, buf, indices, ncells, ntriangles, p, nvertices, false);
 }
 
-void rbc_dump(MPI_Comm comm, Particle* p, Force* a, int n, int iddatadump) {
-  rbc_dump0("ply/rbcs-%05d.ply", comm, n / nvertices, p, a, n, iddatadump);
+void rbc_dump(MPI_Comm comm, Particle* p, int n, int iddatadump) {
+  rbc_dump0("ply/rbcs-%05d.ply", comm, n / nvertices, p, n, iddatadump);
 }
 
 }

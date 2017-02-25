@@ -179,7 +179,6 @@ static void datadump_async() {
   static int iddatadump = 0;
     int n = particles_datadump->S;
     Particle *p = particles_datadump->D;
-    Force *a = forces_datadump->D;
 
     diagnostics(myactivecomm, mycartcomm, p, n, dt, datadump_idtimestep);
     if (hdf5part_dumps) {
@@ -195,7 +194,7 @@ static void datadump_async() {
 
     if (rbcs)
       Cont::rbc_dump(myactivecomm, p + datadump_nsolvent,
-		     a + datadump_nsolvent, datadump_nrbcs, iddatadump);
+		     datadump_nrbcs, iddatadump);
     ++iddatadump;
 }
 
@@ -203,24 +202,15 @@ void datadump(const int idtimestep) {
   int n = s_pp->S;
   if (rbcs) n += Cont::pcount();
   particles_datadump->resize(n);
-  forces_datadump->resize(n);
 #include "sim.hack.h"
   CC(cudaMemcpyAsync(particles_datadump->D, s_pp->D,
 			     sizeof(Particle) * s_pp->S,
 			     D2H, 0));
-  CC(cudaMemcpyAsync(forces_datadump->D, s_ff->D,
-			     sizeof(Force) * s_pp->S,
-			     D2H, 0));
   int start = s_pp->S;
-  if (rbcs) {
-    CC(cudaMemcpyAsync(
-	particles_datadump->D + start, r_pp->D,
-	sizeof(Particle) * Cont::pcount(), D2H, 0));
-    CC(cudaMemcpyAsync(
-	forces_datadump->D + start, r_ff->D,
-	sizeof(Force) * Cont::pcount(), D2H, 0));
-    start += Cont::pcount();
-  }
+  if (rbcs)
+    CC(cudaMemcpyAsync(particles_datadump->D + start, r_pp->D,
+		       sizeof(Particle) * Cont::pcount(), D2H, 0));
+
 
   datadump_idtimestep = idtimestep;
   datadump_nsolvent = s_pp->S;
@@ -246,7 +236,6 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   cnt::init(Cont::cartcomm);
   cells   = new CellLists(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
   particles_datadump     = new StaticHostBuffer<Particle>;
-  forces_datadump = new StaticHostBuffer<Force>;
 
   xyzouvwo    = new StaticDeviceBuffer<float4>;
   xyzo_half = new StaticDeviceBuffer<ushort4>;
@@ -286,9 +275,6 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
     Cont::rbc_init();
     Cont::setup(r_pp, r_ff, "rbcs-ic.txt");
   }
-
-  particles_datadump->resize(s_pp->S * 1.5);
-  forces_datadump->resize(s_pp->S * 1.5);
 
   MC(MPI_Comm_dup(activecomm, &myactivecomm));
   MC(MPI_Comm_dup(Cont::cartcomm, &mycartcomm));
@@ -333,7 +319,6 @@ void close() {
   rdstr::redistribute_rbcs_close();
 
   delete particles_datadump;
-  delete forces_datadump;
   delete xyzouvwo;
   delete xyzo_half;
   delete wall::trunk;
