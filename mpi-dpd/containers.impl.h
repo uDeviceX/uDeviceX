@@ -180,7 +180,7 @@ void _initialize(float *device_pp, float (*transform)[4]) {
 }
   
 void setup(Particle* pp, const char *path2ic) {
-  vector<TransformedExtent> allrbcs;
+  std::vector<TransformedExtent> allrbcs;
   if (rank == 0) {
     //read transformed extent from file
     FILE *f = fopen(path2ic, "r");
@@ -215,10 +215,10 @@ void setup(Particle* pp, const char *path2ic) {
 
   MC(MPI_Bcast(&allrbcs.front(), nfloats_per_entry * allrbcs_count, MPI_FLOAT, 0, cartcomm));
 
-  vector<TransformedExtent> good;
+  std::vector<TransformedExtent> good;
   int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
 
-  for(vector<TransformedExtent>::iterator it = allrbcs.begin(); it != allrbcs.end(); ++it) {
+  for(std::vector<TransformedExtent>::iterator it = allrbcs.begin(); it != allrbcs.end(); ++it) {
     bool inside = true;
     for(int c = 0; c < 3; ++c)
       inside &= it->com[c] >= coords[c] * L[c] && it->com[c] < (coords[c] + 1) * L[c];
@@ -238,7 +238,7 @@ void rbc_remove(Particle* pp, int *e, int ne) {
   /* remove RBCs with indexes in `e' */
   bool GO = false, STAY = true;
   int ie, i0, i1, nv = nvertices;
-  vector<bool> m(Cont::ncells, STAY);
+  std::vector<bool> m(Cont::ncells, STAY);
   for (ie = 0; ie < ne; ie++) m[e[ie]] = GO;
 
   for (i0 = i1 = 0; i0 < ncells; i0++)

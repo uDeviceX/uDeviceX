@@ -35,7 +35,7 @@ static void redistribute() {
     r_ff->S = Cont::ncells*Cont::nvertices;
   }
   sdstr::recv_unpack(s_pp0, s_zip0, s_zip1, s_n, cells->start, cells->count);
-  swap(s_pp, s_pp0); swap(s_ff, s_ff0);
+  std::swap(s_pp, s_pp0); std::swap(s_ff, s_ff0);
   if (rbcs) rdstr::unpack(r_pp->D, Cont::ncells);
 }
 
@@ -46,7 +46,7 @@ void remove_bodies_from_wall() {
   k_wall::fill_keys<<<(Cont::pcount() + 127) / 128, 128>>>
     (r_pp->D, Cont::pcount(), marks.D);
 
-  vector<int> tmp(marks.S);
+  std::vector<int> tmp(marks.S);
   CC(cudaMemcpy(tmp.data(), marks.D, sizeof(int) * marks.S, D2H));
   int nbodies = Cont::ncells;
   std::vector<int> tokill;
@@ -226,7 +226,7 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   mpDeviceMalloc(&s_pp); mpDeviceMalloc(&s_pp0);  
   mpDeviceMalloc(&s_ff); mpDeviceMalloc(&s_ff0);
 
-  vector<Particle> ic = ic_pos();
+  std::vector<Particle> ic = ic_pos();
   s_n  = ic.size();
 
   CC(cudaMemcpy(s_pp, &ic.front(),
