@@ -20,7 +20,7 @@
 #
 
 #### Double poiseuille
-# TEST: double.poiseuille
+# sTEST: double.poiseuille
 # set -x
 # export PATH=../tools:$PATH
 # cp .conf.double.poiseuille.h .conf.h

@@ -29,7 +29,11 @@ static void redistribute() {
   if (rbcs) rdstr::pack_sendcount(r_pp->D, Cont::ncells);
   sdstr::bulk(s_n, cells->start, cells->count);
   s_n = sdstr::recv_count();
-  if (rbcs) Cont::ncells = rdstr::post();
+  if (rbcs) {
+    Cont::ncells = rdstr::post();
+    r_pp->S = Cont::ncells*Cont::nvertices;
+    r_ff->S = Cont::ncells*Cont::nvertices;
+  }
   sdstr::recv_unpack(s_pp0, s_zip0, s_zip1, s_n, cells->start, cells->count);
   swap(s_pp, s_pp0); swap(s_ff, s_ff0);
   if (rbcs) rdstr::unpack(r_pp->D, Cont::ncells);
