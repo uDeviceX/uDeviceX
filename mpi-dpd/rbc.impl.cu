@@ -171,7 +171,7 @@ namespace CudaRBC
         const float scale = RBCscale;
         const bool report = false;
 
-        FILE * f = fopen("../cuda-rbc/rbc.dat", "r");
+        FILE * f = fopen("rbc.dat", "r");
         if (!f)
         {
             printf("Error in cuda-rbc: data file not found!\n");
