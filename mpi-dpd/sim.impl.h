@@ -174,31 +174,38 @@ void forces() {
   rex::recv_f();
 }
 
+void in_out() {
+#include "sim.hack.h"
+}
+
+void dump_d2h(int* n) {
+  *n = s_pp->S;
+  if (rbcs) *n += Cont::pcount();
+  CC(cudaMemcpyAsync(sr_pp, s_pp->D,
+		     sizeof(Particle) * s_pp->S, D2H, 0));
+  if (rbcs)
+    CC(cudaMemcpyAsync(&sr_pp[s_pp->S], r_pp->D,
+		       sizeof(Particle) * Cont::pcount(), D2H, 0));
+}
+
 void datadump(const int idtimestep) {
   static int iddatadump = 0;
-  int n = s_pp->S;
-  if (rbcs) n += Cont::pcount();
-#include "sim.hack.h"
-  CC(cudaMemcpyAsync(particles_datadump, s_pp->D,
-		     sizeof(Particle) * s_pp->S,
-		     D2H, 0));
-  if (rbcs)
-    CC(cudaMemcpyAsync(&particles_datadump[s_pp->S], r_pp->D,
-		       sizeof(Particle) * Cont::pcount(), D2H, 0));
-  diagnostics(myactivecomm, mycartcomm, particles_datadump, n, dt, idtimestep);
+  int n; dump_d2h(&n);
+  diagnostics(myactivecomm, mycartcomm, sr_pp, n, dt, idtimestep);
+
   if (hdf5part_dumps) {
     if (!dump_part_solvent && walls && idtimestep >= wall_creation_stepid) {
       dump_part_solvent =
-	new H5PartDump("solvent-particles.h5part", activecomm, Cont::cartcomm);
+	new H5PartDump("s.h5part", activecomm, Cont::cartcomm);
     }
-    if (dump_part_solvent) dump_part_solvent->dump(particles_datadump, n);
+    if (dump_part_solvent) dump_part_solvent->dump(sr_pp, n);
   }
 
   if (hdf5field_dumps && (idtimestep % steps_per_hdf5dump == 0))
-    dump_field->dump(activecomm, particles_datadump, s_pp->S);
+    dump_field->dump(activecomm, sr_pp, s_pp->S);
 
   if (rbcs)
-    Cont::rbc_dump(myactivecomm, &particles_datadump[s_pp->S],
+    Cont::rbc_dump(myactivecomm, &sr_pp[s_pp->S],
 		   Cont::pcount(), iddatadump);
   ++iddatadump;
 }
@@ -283,6 +290,7 @@ void run() {
     }
     redistribute();
     forces();
+    if (it % steps_per_dump == 0)   in_out();
     if (it % steps_per_dump == 0) datadump(it);
     update_and_bounce();
   }

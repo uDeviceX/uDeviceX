@@ -23,8 +23,8 @@ namespace sim {
   H5PartDump *dump_part_solvent;
   H5FieldDump *dump_field;
 
-  //int datadump_idtimestep, datadump_nsolvent, datadump_nrbcs;
-  Particle      particles_datadump[MAX_PART_NUM];
+  /* solvent + RBC data on a host */
+  Particle      sr_pp[MAX_PART_NUM];
 
 /* TODO: */
   float rbc_xx[MAX_PART_NUM], rbc_yy[MAX_PART_NUM], rbc_zz[MAX_PART_NUM];
