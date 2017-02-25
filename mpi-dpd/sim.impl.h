@@ -4,7 +4,7 @@ static void update_helper_arrays() {
   int np = s_pp->S;
   if (np)
     k_sim::make_texture<<<(np + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>(
-	xyzouvwo->D, xyzo_half->D, (float *)s_pp->D, np);
+	s_zip0, s_zip1, (float *)s_pp->D, np);
 }
 
 static std::vector<Particle> ic_pos() { /* generate particle position */
@@ -44,7 +44,7 @@ static void redistribute() {
   }
   s_pp0->resize(newnp); s_ff0->resize(newnp);
   sdstr::recv_unpack(s_pp0->D,
-		     xyzouvwo->D, xyzo_half->D,
+		     s_zip0, s_zip1,
 		     newnp, cells->start, cells->count);
   swap(s_pp, s_pp0); swap(s_ff, s_ff0);
   if (rbcs) rdstr::unpack(r_pp->D, Cont::ncells);
@@ -95,7 +95,7 @@ void forces_rbc() {
 
 void forces_dpd() {
   DPD::pack(s_pp->D, s_pp->S, cells->start, cells->count);
-  DPD::local_interactions(s_pp->D, xyzouvwo->D, xyzo_half->D,
+  DPD::local_interactions(s_pp->D, s_zip0, s_zip1,
 			  s_pp->S, s_ff->D, cells->start,
 			  cells->count);
   DPD::post(s_pp->D, s_pp->S);
@@ -208,8 +208,9 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
 
   cells   = new CellLists(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
 
-  xyzouvwo    = new StaticDeviceBuffer0<float4>;
-  xyzo_half = new StaticDeviceBuffer0<ushort4>;
+  mpDeviceMalloc(&s_zip0);
+  mpDeviceMalloc(&s_zip1);
+
   if (rbcs) {
     r_pp = new StaticDeviceBuffer<Particle>;
     r_ff = new StaticDeviceBuffer<Force>;
@@ -294,8 +295,9 @@ void close() {
   DPD::close();
   rdstr::redistribute_rbcs_close();
 
-  delete xyzouvwo;
-  delete xyzo_half;
+  CC(cudaFree(s_zip0));
+  CC(cudaFree(s_zip1));
+
   delete wall::trunk;
   delete s_pp; delete s_ff;
   delete s_pp0; delete s_ff0;
