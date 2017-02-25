@@ -247,7 +247,7 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
 
   if (rbcs) {
     Cont::rbc_init();
-    Cont::setup(r_pp, r_ff, "rbcs-ic.txt");
+    Cont::setup(r_pp->D, "rbcs-ic.txt");
   }
 
   MC(MPI_Comm_dup(activecomm, &myactivecomm));

@@ -179,8 +179,7 @@ void _initialize(float *device_pp, float (*transform)[4]) {
   CudaRBC::initialize(device_pp, transform);
 }
   
-void setup(StaticDeviceBuffer<Particle>* pp, StaticDeviceBuffer<Force>* ff,
-	   const char *path2ic) {
+void setup(Particle* pp, const char *path2ic) {
   vector<TransformedExtent> allrbcs;
   if (rank == 0) {
     //read transformed extent from file
@@ -232,7 +231,7 @@ void setup(StaticDeviceBuffer<Particle>* pp, StaticDeviceBuffer<Force>* ff,
 
   Cont::ncells = good.size();
   for(int i = 0; i < Cont::ncells; ++i)
-    _initialize((float *)(pp->D + nvertices * i), good[i].transform);
+    _initialize((float *)(pp + nvertices * i), good[i].transform);
 }
 
 void rbc_remove(Particle* pp, int *e, int ne) {
