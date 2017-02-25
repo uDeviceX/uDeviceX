@@ -26,8 +26,8 @@
 
 #include "k/common.h"
 
-#include "k/rbc.h"
 #include "rbc.decl.h"
+#include "k/rbc.h"
 #include "rbc.impl.h"
 
 #include "rdstr.decl.h"
