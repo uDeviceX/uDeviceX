@@ -125,7 +125,7 @@ void forces_dpd() {
 			  cells->count);
   DPD::post(s_pp->D, s_pp->S);
   DPD::recv();
-  DPD::remote_interactions(s_pp->D, s_pp->S, s_ff->D);
+  DPD::remote_interactions(s_pp->S, s_ff->D);
 }
 
 void clear_forces() {
@@ -175,7 +175,7 @@ void forces() {
   rex::recv_f();
 }
 
-static void datadump_async(int idtimestep) {
+static void datadump_async() {
   static int iddatadump = 0;
     int n = particles_datadump->S;
     Particle *p = particles_datadump->D;
@@ -225,7 +225,7 @@ void datadump(const int idtimestep) {
   datadump_idtimestep = idtimestep;
   datadump_nsolvent = s_pp->S;
   datadump_nrbcs = rbcs ? Cont::pcount() : 0;
-  datadump_async(idtimestep);
+  datadump_async();
 }
 
 static void update_and_bounce() {

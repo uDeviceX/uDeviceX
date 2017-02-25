@@ -60,7 +60,7 @@ void local_interactions(Particle *xyzuvw, float4 *xyzouvwo, ushort4 *xyzo_half,
 			   local_trunk->get_float());
 }
 
-void remote_interactions(Particle *p, int n, Force *a) {
+void remote_interactions(int n, Force *a) {
   static BipsBatch::BatchInfo infos[26];
 
   for (int i = 0; i < 26; ++i) {
