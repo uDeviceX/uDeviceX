@@ -23,7 +23,7 @@ namespace sim {
   H5PartDump *dump_part_solvent;
   H5FieldDump *dump_field;
 
-  int datadump_idtimestep, datadump_nsolvent, datadump_nrbcs;
+  //int datadump_idtimestep, datadump_nsolvent, datadump_nrbcs;
   StaticHostBuffer<Particle>      *particles_datadump;
 
 /* TODO: */

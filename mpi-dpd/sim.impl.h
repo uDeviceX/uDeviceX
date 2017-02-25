@@ -175,47 +175,36 @@ void forces() {
   rex::recv_f();
 }
 
-static void datadump_async() {
-  static int iddatadump = 0;
-    int n = particles_datadump->S;
-    Particle *p = particles_datadump->D;
-
-    diagnostics(myactivecomm, mycartcomm, p, n, dt, datadump_idtimestep);
-    if (hdf5part_dumps) {
-      if (!dump_part_solvent && walls && datadump_idtimestep >= wall_creation_stepid) {
-	dump_part_solvent =
-	    new H5PartDump("solvent-particles.h5part", activecomm, Cont::cartcomm);
-      }
-      if (dump_part_solvent) dump_part_solvent->dump(p, n);
-    }
-
-    if (hdf5field_dumps && (datadump_idtimestep % steps_per_hdf5dump == 0))
-      dump_field->dump(activecomm, p, datadump_nsolvent, datadump_idtimestep);
-
-    if (rbcs)
-      Cont::rbc_dump(myactivecomm, p + datadump_nsolvent,
-		     datadump_nrbcs, iddatadump);
-    ++iddatadump;
-}
-
 void datadump(const int idtimestep) {
+  static int iddatadump = 0;
   int n = s_pp->S;
   if (rbcs) n += Cont::pcount();
   particles_datadump->resize(n);
 #include "sim.hack.h"
   CC(cudaMemcpyAsync(particles_datadump->D, s_pp->D,
-			     sizeof(Particle) * s_pp->S,
-			     D2H, 0));
+		     sizeof(Particle) * s_pp->S,
+		     D2H, 0));
   int start = s_pp->S;
   if (rbcs)
     CC(cudaMemcpyAsync(particles_datadump->D + start, r_pp->D,
 		       sizeof(Particle) * Cont::pcount(), D2H, 0));
+  Particle *p = particles_datadump->D;
+  diagnostics(myactivecomm, mycartcomm, p, n, dt, idtimestep);
+  if (hdf5part_dumps) {
+    if (!dump_part_solvent && walls && idtimestep >= wall_creation_stepid) {
+      dump_part_solvent =
+	new H5PartDump("solvent-particles.h5part", activecomm, Cont::cartcomm);
+    }
+    if (dump_part_solvent) dump_part_solvent->dump(p, n);
+  }
 
+  if (hdf5field_dumps && (idtimestep % steps_per_hdf5dump == 0))
+    dump_field->dump(activecomm, p, s_pp->S, idtimestep);
 
-  datadump_idtimestep = idtimestep;
-  datadump_nsolvent = s_pp->S;
-  datadump_nrbcs = rbcs ? Cont::pcount() : 0;
-  datadump_async();
+  if (rbcs)
+    Cont::rbc_dump(myactivecomm, p + s_pp->S,
+		   Cont::pcount(), iddatadump);
+  ++iddatadump;
 }
 
 static void update_and_bounce() {
