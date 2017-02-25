@@ -160,9 +160,9 @@ void  upd_stg2_and_1(StaticDeviceBuffer<Particle>* pp, StaticDeviceBuffer<Force>
        dt, driving_force, globalextent.y * 0.5 - origin.y, doublepoiseuille);
 }
 
-void clear_velocity(StaticDeviceBuffer<Particle>* pp) {
-  if (pp->S)
-    ParticleKernels::clear_velocity<<<(pp->S + 127) / 128, 128 >>>(pp->D, pp->S);
+void clear_velocity(Particle* pp, int n) {
+  if (n)
+    ParticleKernels::clear_velocity<<<(n + 127) / 128, 128 >>>(pp, n);
 }
 
 #define     resize2(b1, b2, n) (b1)->resize(n), (b2)->resize(n)
@@ -262,8 +262,8 @@ void setup(StaticDeviceBuffer<Particle>* pp, StaticDeviceBuffer<Force>* ff,
 
 int  pcount() {return ncells * nvertices;}
 
-void clear_forces(StaticDeviceBuffer<Force>* ff) {
-  CC(cudaMemsetAsync(ff->D, 0, sizeof(Force) * ff->S));
+void clear_forces(Force* ff, int n) {
+  CC(cudaMemsetAsync(ff, 0, sizeof(Force) * n));
 }
 static void rbc_dump0(const char *format4ply,
 		      MPI_Comm comm, int ncells,

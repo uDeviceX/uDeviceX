@@ -68,7 +68,7 @@ void remove_bodies_from_wall() {
     if (!valid) tokill.push_back(i);
   }
   rbc_remove_resize(r_pp, r_ff, &tokill.front(), tokill.size());
-  Cont::clear_velocity(r_pp);
+  Cont::clear_velocity(r_pp->D, r_pp->S);
 }
 
 void create_walls() {
@@ -79,7 +79,7 @@ void create_walls() {
   wall_created = true;
 
   resize2(s_pp, s_ff, nsurvived);
-  Cont::clear_velocity(s_pp);
+  Cont::clear_velocity(s_pp->D, s_pp->S);
   cells->build(s_pp->D, s_pp->S, NULL, NULL);
   update_helper_arrays();
 
@@ -104,8 +104,8 @@ void forces_dpd() {
 }
 
 void clear_forces() {
-  Cont::clear_forces(s_ff);
-  if (rbcs) Cont::clear_forces(r_ff);
+  Cont::clear_forces(s_ff->D, s_ff->S);
+  if (rbcs) Cont::clear_forces(r_ff->D, r_ff->S);
 }
 
 void forces_wall() {
