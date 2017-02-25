@@ -90,21 +90,21 @@ void forces_rbc() {
 void forces_dpd() {
   DPD::pack(s_pp->D, s_n, cells->start, cells->count);
   DPD::local_interactions(s_pp->D, s_zip0, s_zip1,
-			  s_n, s_ff->D, cells->start,
+			  s_n, s_ff, cells->start,
 			  cells->count);
   DPD::post(s_pp->D, s_n);
   DPD::recv();
-  DPD::remote_interactions(s_n, s_ff->D);
+  DPD::remote_interactions(s_n, s_ff);
 }
 
 void clear_forces() {
-  Cont::clear_forces(s_ff->D, s_n);
+  Cont::clear_forces(s_ff, s_n);
   if (rbcs) Cont::clear_forces(r_ff->D, r_ff->S);
 }
 
 void forces_wall() {
   if (rbcs && wall_created) wall::interactions(r_pp->D, Cont::pcount(), r_ff->D);
-  if (wall_created)         wall::interactions(s_pp->D, s_n, s_ff->D);
+  if (wall_created)         wall::interactions(s_pp->D, s_n, s_ff);
 }
 
 void forces_cnt(std::vector<ParticlesWrap> *w_r) {
@@ -120,7 +120,7 @@ void forces_fsi(SolventWrap *w_s, std::vector<ParticlesWrap> *w_r) {
 }
 
 void forces() {
-  SolventWrap w_s(s_pp->D, s_n, s_ff->D, cells->start, cells->count);
+  SolventWrap w_s(s_pp->D, s_n, s_ff, cells->start, cells->count);
   std::vector<ParticlesWrap> w_r;
   if (rbcs) w_r.push_back(ParticlesWrap(r_pp->D, Cont::pcount(), r_ff->D));
 
@@ -182,7 +182,7 @@ void diag(int it) {
 }
 
 static void update_and_bounce() {
-  Cont::upd_stg2_and_1(s_pp->D, s_ff->D, s_n, false, driving_force);
+  Cont::upd_stg2_and_1(s_pp->D, s_ff, s_n, false, driving_force);
   if (rbcs)
     Cont::upd_stg2_and_1(r_pp->D, r_ff->D, s_n, true, driving_force);
   if (wall_created) {
@@ -224,9 +224,8 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
 				   dims[1] * YSIZE_SUBDOMAIN,
 				   dims[2] * ZSIZE_SUBDOMAIN);
   s_pp  = new StaticDeviceBuffer0<Particle>;
-  s_ff  = new StaticDeviceBuffer0<Force>;
   s_pp0 = new StaticDeviceBuffer0<Particle>;
-  s_ff0 = new StaticDeviceBuffer0<Force>;
+  mpDeviceMalloc(&s_ff); mpDeviceMalloc(&s_ff0);
 
   vector<Particle> ic = ic_pos();
   s_n  = ic.size();
@@ -294,6 +293,8 @@ void close() {
 
   delete wall::trunk;
   delete s_pp; delete s_ff;
-  delete s_pp0; delete s_ff0;
+
+  CC(cudaFree(s_ff )); CC(cudaFree(s_ff0));
+
 }
 }
