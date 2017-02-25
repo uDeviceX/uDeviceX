@@ -2,31 +2,12 @@ namespace sim {
 static void update_helper_arrays() {
   CC(cudaFuncSetCacheConfig(k_sim::make_texture, cudaFuncCachePreferShared));
   int np = s_pp->S;
-  xyzouvwo->resize(2 * np);
-  xyzo_half->resize(np);
   if (np)
     k_sim::make_texture<<<(np + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>(
 	xyzouvwo->D, xyzo_half->D, (float *)s_pp->D, np);
 }
 
-/* set initial velocity of a particle */
-static void ic_vel0(float x, float y, float z,
-		    float *vx, float *vy, float *vz) {
-  *vx = gamma_dot * z; *vy = 0; *vz = 0; /* TODO: works only for one
-					    processor */
-}
-
-static void ic_vel(Particle* pp, int np) { /* assign particle
-					velocity based on position */
-  for (int ip = 0; ip < np; ip++) {
-    Particle p = pp[ip];
-    float x = p.r[0], y = p.r[1], z = p.r[2], vx, vy, vz;
-    ic_vel0(x, y, z, &vx, &vy, &vz);
-    p.v[0] = vx; p.v[1] = vy; p.v[2] = vz;
-  }
-}
-
-static std::vector<Particle> _ic_pos() { /* generate particle position */
+static std::vector<Particle> ic_pos() { /* generate particle position */
   srand48(0);
   std::vector<Particle> pp;
   int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
@@ -41,17 +22,11 @@ static std::vector<Particle> _ic_pos() { /* generate particle position */
 	  Particle p = Particle();
 	  x = xlo + dr * drand48(), y = ylo + dr * drand48(), z = zlo + dr * drand48();
 	  p.r[0] = x; p.r[1] = y; p.r[2] = z;
+	  p.v[0] = 0; p.v[1] = 0; p.v[2] = 0;
 	  pp.push_back(p);
 	}
       }
   fprintf(stderr, "(simulation) generated %d particles\n", pp.size());
-  return pp;
-}
-
-static std::vector<Particle> _ic() { /* initial conditions for position and
-				 velocity */
-  std::vector<Particle> pp = _ic_pos();
-  ic_vel(&pp.front(), pp.size());
   return pp;
 }
 
@@ -68,8 +43,6 @@ static void redistribute() {
     r_ff->resize(Cont::ncells*Cont::nvertices);
   }
   s_pp0->resize(newnp); s_ff0->resize(newnp);
-  xyzouvwo->resize(newnp * 2);
-  xyzo_half->resize(newnp);
   sdstr::recv_unpack(s_pp0->D,
 		     xyzouvwo->D, xyzo_half->D,
 		     newnp, cells->start, cells->count);
@@ -235,8 +208,8 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
 
   cells   = new CellLists(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
 
-  xyzouvwo    = new StaticDeviceBuffer<float4>;
-  xyzo_half = new StaticDeviceBuffer<ushort4>;
+  xyzouvwo    = new StaticDeviceBuffer0<float4>;
+  xyzo_half = new StaticDeviceBuffer0<ushort4>;
   if (rbcs) {
     r_pp = new StaticDeviceBuffer<Particle>;
     r_ff = new StaticDeviceBuffer<Force>;
@@ -260,7 +233,7 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   s_pp0 = new StaticDeviceBuffer<Particle>;
   s_ff0 = new StaticDeviceBuffer<Force>;
 
-  vector<Particle> ic = _ic();
+  vector<Particle> ic = ic_pos();
   resize2(s_pp, s_ff  , ic.size());
   resize2(s_pp0, s_ff , ic.size());
   CC(cudaMemcpy(s_pp->D, &ic.front(),
