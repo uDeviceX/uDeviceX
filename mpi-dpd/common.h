@@ -184,9 +184,5 @@ struct CellLists {
   }
 };
 
-struct ExpectedMessageSizes {
-  int msgsizes[27];
-};
-
 void diagnostics(MPI_Comm comm, MPI_Comm cartcomm, Particle *_particles, int n,
 		 float dt, int idstep);

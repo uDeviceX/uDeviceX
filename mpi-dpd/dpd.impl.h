@@ -425,21 +425,6 @@ void _cancel_recv() {
   }
 }
 
-void adjust_message_sizes(ExpectedMessageSizes sizes) {
-  _cancel_recv();
-  nactive = 0;
-  for (int i = 0; i < 26; ++i) {
-    int d[3] = {(i + 2) % 3, (i / 3 + 2) % 3, (i / 9 + 2) % 3};
-    int entry = d[0] + 3 * (d[1] + 3 * d[2]);
-    int estimate = sizes.msgsizes[entry] * safety_factor;
-    estimate = 64 * ((estimate + 63) / 64);
-    recvhalos[i]->adjust(estimate);
-    sendhalos[i]->adjust(estimate);
-    if (estimate == 0) required_send_bag_size_host[i] = 0;
-    nactive += (int)(estimate > 0);
-  }
-}
-
 void close() {
   CC(cudaFreeHost(required_send_bag_size));
   MC(MPI_Comm_free(&cartcomm));

@@ -100,9 +100,8 @@ void remove_bodies_from_wall() {
 
 void create_walls() {
   int nsurvived = 0;
-  ExpectedMessageSizes new_sizes;
   wall::init(s_pp->D, s_pp->S,
-	    nsurvived, new_sizes); wall_created = true;
+	    nsurvived); wall_created = true;
   resize2(s_pp, s_ff, nsurvived);
   Cont::clear_velocity(s_pp);
   cells->build(s_pp->D, s_pp->S, NULL, NULL);

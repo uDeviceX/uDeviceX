@@ -108,7 +108,7 @@ struct FieldSampler {
 
 namespace wall {
   void init(Particle *const p, const int n,
-		 int &nsurvived, ExpectedMessageSizes &new_sizes) {
+		 int &nsurvived) {
     wall_cells = new CellLists(XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL,
 			       YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL,
 			       ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL);
@@ -140,7 +140,6 @@ namespace wall {
 	for (int dy = -1; dy <= 1; ++dy)
 	  for (int dx = -1; dx <= 1; ++dx) {
 	    int d[3] = {dx, dy, dz};
-	    int entry = (dx + 1) + 3 * ((dy + 1) + 3 * (dz + 1));
 	    int local_start[3] = {d[0] + (d[0] == 1) * (XSIZE_SUBDOMAIN - 2),
 				  d[1] + (d[1] == 1) * (YSIZE_SUBDOMAIN - 2),
 				  d[2] + (d[2] == 1) * (ZSIZE_SUBDOMAIN - 2)};
@@ -164,7 +163,6 @@ namespace wall {
 	    double avgsize =
 	      ceil(s * numberdensity /
 		   (double)pow(2, abs(d[0]) + abs(d[1]) + abs(d[2])));
-	    new_sizes.msgsizes[entry] = (int)avgsize;
 	  }
     }
 

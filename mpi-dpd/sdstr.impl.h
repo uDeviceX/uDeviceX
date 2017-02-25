@@ -366,24 +366,6 @@ namespace sdstr {
     }
   }
 
-  void adjust_message_sizes(ExpectedMessageSizes sizes) {
-    _cancel_recv();
-
-    nactiveneighbors = 0;
-    for (int i = 1; i < 27; ++i) {
-      int d[3] = { (i + 1) % 3, (i / 3 + 1) % 3, (i / 9 + 1) % 3 };
-      int entry = d[0] + 3 * (d[1] + 3 * d[2]);
-
-      int estimate = (int)ceil(safety_factor * sizes.msgsizes[entry]);
-      estimate = 32 * ((estimate + 31) / 32);
-
-      default_message_sizes[i] = estimate;
-      nactiveneighbors += (estimate > 0);
-    }
-
-    _adjust_send_buffers(default_message_sizes);
-    _adjust_recv_buffers(default_message_sizes);
-  }
 
   void redist_part_close() {
     CC(cudaEventDestroy(evpacking));
