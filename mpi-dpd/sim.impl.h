@@ -98,7 +98,7 @@ void forces_dpd() {
 }
 
 void clear_forces() {
-  Cont::clear_forces(s_ff->D, s_ff->S);
+  Cont::clear_forces(s_ff->D, s_n);
   if (rbcs) Cont::clear_forces(r_ff->D, r_ff->S);
 }
 
@@ -224,12 +224,12 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
 				   dims[1] * YSIZE_SUBDOMAIN,
 				   dims[2] * ZSIZE_SUBDOMAIN);
   s_pp  = new StaticDeviceBuffer0<Particle>;
-  s_ff  = new StaticDeviceBuffer<Force>;
+  s_ff  = new StaticDeviceBuffer0<Force>;
   s_pp0 = new StaticDeviceBuffer0<Particle>;
-  s_ff0 = new StaticDeviceBuffer<Force>;
+  s_ff0 = new StaticDeviceBuffer0<Force>;
 
   vector<Particle> ic = ic_pos();
-  s_n  = s_ff->S = ic.size();
+  s_n  = ic.size();
 
   CC(cudaMemcpy(s_pp->D, &ic.front(),
 			sizeof(Particle) * ic.size(),
