@@ -221,7 +221,7 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   nsteps = (int)(tend / dt);
   MC(MPI_Comm_rank(activecomm, &Cont::rank));
 
-  int dims[3], periods[3]; /* `coords' is global */
+  int dims[3], periods[3];
   MC(MPI_Cart_get(Cont::cartcomm, 3, dims, periods, Cont::coords));
   Cont::origin = make_float3((0.5 + Cont::coords[0]) * XSIZE_SUBDOMAIN,
 			     (0.5 + Cont::coords[1]) * YSIZE_SUBDOMAIN,
@@ -239,7 +239,7 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   resize2(s_pp0, s_ff , ic.size());
   CC(cudaMemcpy(s_pp->D, &ic.front(),
 			sizeof(Particle) * ic.size(),
-			cudaMemcpyHostToDevice));
+			H2D));
   cells->build(s_pp->D, s_pp->S, NULL, NULL);
   update_helper_arrays();
 
