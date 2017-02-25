@@ -1,10 +1,10 @@
 #!/usr/bin/awk -f
 #
-# Round and sort numbers in first column
+# Round numbers in a first column
 #
 # Usage:
-# awk '{print $2}' diag.txt | fhash.awk
-# awk '{print $2}' diag.txt | fhash.awk -v tol=6
+# awk '{print $2}' diag.txt | fround.awk
+# awk '{print $2}' diag.txt | fround.awk -v tol=6
 #
 
 BEGIN {
@@ -18,5 +18,5 @@ function hash(e,  h, ftm) {
 }
 
 {
-    print hash($1) | "sort -g"
+    print hash($1)
 }
