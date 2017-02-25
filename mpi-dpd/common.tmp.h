@@ -6,8 +6,3 @@ template <typename T> struct StaticDeviceBuffer {
   ~StaticDeviceBuffer() {      CC(cudaFree(D));}
   void resize(int n) {S = n;}
 };
-
-template <typename T> struct StaticHostBuffer {
-  /* `D': data */
-  T D[MAX_PART_NUM];
-};

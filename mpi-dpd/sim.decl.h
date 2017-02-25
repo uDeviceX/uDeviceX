@@ -24,7 +24,7 @@ namespace sim {
   H5FieldDump *dump_field;
 
   //int datadump_idtimestep, datadump_nsolvent, datadump_nrbcs;
-  StaticHostBuffer<Particle>      *particles_datadump;
+  Particle      particles_datadump[MAX_PART_NUM];
 
 /* TODO: */
   float rbc_xx[MAX_PART_NUM], rbc_yy[MAX_PART_NUM], rbc_zz[MAX_PART_NUM];

@@ -180,28 +180,27 @@ void datadump(const int idtimestep) {
   int n = s_pp->S;
   if (rbcs) n += Cont::pcount();
 #include "sim.hack.h"
-  CC(cudaMemcpyAsync(particles_datadump->D, s_pp->D,
+  CC(cudaMemcpyAsync(particles_datadump, s_pp->D,
 		     sizeof(Particle) * s_pp->S,
 		     D2H, 0));
   int start = s_pp->S;
   if (rbcs)
-    CC(cudaMemcpyAsync(particles_datadump->D + start, r_pp->D,
+    CC(cudaMemcpyAsync(&particles_datadump[start], r_pp->D,
 		       sizeof(Particle) * Cont::pcount(), D2H, 0));
-  Particle *p = particles_datadump->D;
-  diagnostics(myactivecomm, mycartcomm, p, n, dt, idtimestep);
+  diagnostics(myactivecomm, mycartcomm, particles_datadump, n, dt, idtimestep);
   if (hdf5part_dumps) {
     if (!dump_part_solvent && walls && idtimestep >= wall_creation_stepid) {
       dump_part_solvent =
 	new H5PartDump("solvent-particles.h5part", activecomm, Cont::cartcomm);
     }
-    if (dump_part_solvent) dump_part_solvent->dump(p, n);
+    if (dump_part_solvent) dump_part_solvent->dump(particles_datadump, n);
   }
 
   if (hdf5field_dumps && (idtimestep % steps_per_hdf5dump == 0))
-    dump_field->dump(activecomm, p, s_pp->S);
+    dump_field->dump(activecomm, particles_datadump, s_pp->S);
 
   if (rbcs)
-    Cont::rbc_dump(myactivecomm, p + s_pp->S,
+    Cont::rbc_dump(myactivecomm, &particles_datadump[s_pp->S],
 		   Cont::pcount(), iddatadump);
   ++iddatadump;
 }
@@ -223,7 +222,6 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   rex::init(Cont::cartcomm);
   cnt::init(Cont::cartcomm);
   cells   = new CellLists(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
-  particles_datadump     = new StaticHostBuffer<Particle>;
 
   xyzouvwo    = new StaticDeviceBuffer<float4>;
   xyzo_half = new StaticDeviceBuffer<ushort4>;
@@ -306,7 +304,6 @@ void close() {
   DPD::close();
   rdstr::redistribute_rbcs_close();
 
-  delete particles_datadump;
   delete xyzouvwo;
   delete xyzo_half;
   delete wall::trunk;
