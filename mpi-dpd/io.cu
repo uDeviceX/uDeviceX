@@ -308,24 +308,3 @@ void H5FieldDump::dump(MPI_Comm comm, const Particle * const p, const int n, int
     _write_fields(filepath, data, names, 4, comm, idtimestep * dt);
 #endif // NO_H5
 }
-
-H5FieldDump::~H5FieldDump() {
-#ifndef NO_H5
-    if (last_idtimestep == 0)
-        return;
-
-    FILE * xmf = fopen("h5/flowfields-sequence.xmf", "w");
-    _xdmf_header(xmf);
-    fprintf(xmf, "   <Grid Name=\"TimeSeries\" GridType=\"Collection\" CollectionType=\"Temporal\">\n");
-    const char * channelnames[] = { "density", "u", "v", "w" };
-    for(int it = 0; it <= last_idtimestep; it += steps_per_dump) {
-        char filepath[512];
-        sprintf(filepath, "h5/flowfields-%04d.h5", it / steps_per_dump);
-        _xdmf_grid(xmf, it * dt,  std::string(filepath).substr(std::string(filepath).find_last_of("/") + 1).c_str(), channelnames, 4);
-    }
-
-    fprintf(xmf, "   </Grid>\n");
-    _xdmf_epilogue(xmf);
-    fclose(xmf);
-#endif //NO_H5
-}
