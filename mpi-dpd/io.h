@@ -22,12 +22,12 @@ class H5FieldDump {
   MPI_Comm cartcomm;
   void _write_fields(const char * const path2h5,
                      const float * const channeldata[], const char * const * const channelnames, const int nchannels,
-                     MPI_Comm comm, const float time);
+                     MPI_Comm comm);
   void _xdmf_header(FILE * xmf);
-  void _xdmf_grid(FILE * xmf, float time, const char * const h5path, const char * const * channelnames, int nchannels);
+  void _xdmf_grid(FILE * xmf, const char * const h5path, const char * const * channelnames, int nchannels);
   void _xdmf_epilogue(FILE * xmf);
 public:
   H5FieldDump(MPI_Comm cartcomm);
-  void dump(MPI_Comm comm, const Particle * const p, const int n, int idtimestep);
-  void dump_scalarfield(MPI_Comm comm, const float * const data, const char * channelname);
+  void dump(MPI_Comm comm, Particle * p, int n);
+  void dump_scalarfield(MPI_Comm comm, float * data, const char *channelname);
 };

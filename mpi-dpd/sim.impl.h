@@ -199,7 +199,7 @@ void datadump(const int idtimestep) {
   }
 
   if (hdf5field_dumps && (idtimestep % steps_per_hdf5dump == 0))
-    dump_field->dump(activecomm, p, s_pp->S, idtimestep);
+    dump_field->dump(activecomm, p, s_pp->S);
 
   if (rbcs)
     Cont::rbc_dump(myactivecomm, p + s_pp->S,

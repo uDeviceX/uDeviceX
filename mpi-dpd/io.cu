@@ -159,10 +159,9 @@ void H5FieldDump::_xdmf_header(FILE * xmf) {
     fprintf(xmf, " <Domain>\n");
 }
 
-void H5FieldDump::_xdmf_grid(FILE * xmf, float time,
+void H5FieldDump::_xdmf_grid(FILE * xmf,
 			     const char * const h5path, const char * const *channelnames, int nchannels) {
     fprintf(xmf, "   <Grid Name=\"mesh\" GridType=\"Uniform\">\n");
-    fprintf(xmf, "     <Time Value=\"%.f\"/>\n", time);
     fprintf(xmf, "     <Topology TopologyType=\"3DCORECTMesh\" Dimensions=\"%d %d %d\"/>\n",
             1 + (int)globalsize[2], 1 + (int)globalsize[1], 1 + (int)globalsize[0]);
 
@@ -195,7 +194,7 @@ void H5FieldDump::_xdmf_epilogue(FILE * xmf) {
 
 void H5FieldDump::_write_fields(const char * const path2h5,
         const float * const channeldata[], const char * const * const channelnames, const int nchannels,
-        MPI_Comm comm, const float time) {
+        MPI_Comm comm) {
 #ifndef NO_H5
     int nranks[3], periods[3], myrank[3];
     MC( MPI_Cart_get(cartcomm, 3, nranks, periods, myrank) );
@@ -245,7 +244,7 @@ void H5FieldDump::_write_fields(const char * const path2h5,
         FILE * xmf = fopen(wrapper, "w");
 
         _xdmf_header(xmf);
-        _xdmf_grid(xmf, time, std::string(path2h5).substr(std::string(path2h5).find_last_of("/") + 1).c_str(),
+        _xdmf_grid(xmf, std::string(path2h5).substr(std::string(path2h5).find_last_of("/") + 1).c_str(),
 		   channelnames, nchannels);
         _xdmf_epilogue(xmf);
 
@@ -264,15 +263,17 @@ H5FieldDump::H5FieldDump(MPI_Comm cartcomm): cartcomm(cartcomm), last_idtimestep
         globalsize[c] = L[c] * dims[c];
 }
 
-void H5FieldDump::dump_scalarfield(MPI_Comm comm, const float * const data, const char * channelname) {
+void H5FieldDump::dump_scalarfield(MPI_Comm comm, float *data,
+				   const char *channelname) {
     char path2h5[512];
     sprintf(path2h5, "h5/%s.h5", channelname);
-    _write_fields(path2h5, &data, &channelname, 1, comm, 0);
+    _write_fields(path2h5, &data, &channelname, 1, comm);
 }
 
-void H5FieldDump::dump(MPI_Comm comm, const Particle * const p, const int n, int idtimestep) {
+void H5FieldDump::dump(MPI_Comm comm, Particle *p, int n) {
 #ifndef NO_H5
-    last_idtimestep = idtimestep;
+    static int id = 0; /* dump id */
+     
     const int ncells = XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN;
     std::vector<float> rho(ncells), u[3];
     for(int c = 0; c < 3; ++c)
@@ -303,8 +304,8 @@ void H5FieldDump::dump(MPI_Comm comm, const Particle * const p, const int n, int
     }
 
     char filepath[512];
-    sprintf(filepath, "h5/flowfields-%04d.h5", idtimestep / steps_per_dump);
+    sprintf(filepath, "h5/flowfields-%04d.h5", id++);
     float * data[] = { rho.data(), u[0].data(), u[1].data(), u[2].data() };
-    _write_fields(filepath, data, names, 4, comm, idtimestep * dt);
+    _write_fields(filepath, data, names, 4, comm);
 #endif // NO_H5
 }
