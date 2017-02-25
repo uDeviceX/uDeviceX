@@ -99,9 +99,12 @@ void remove_bodies_from_wall() {
 }
 
 void create_walls() {
+  CC(cudaDeviceSynchronize());
+
   int nsurvived = 0;
-  wall::init(s_pp->D, s_pp->S,
-	    nsurvived); wall_created = true;
+  wall::init(s_pp->D, s_pp->S, nsurvived);
+  wall_created = true;
+
   resize2(s_pp, s_ff, nsurvived);
   Cont::clear_velocity(s_pp);
   cells->build(s_pp->D, s_pp->S, NULL, NULL);
@@ -178,9 +181,7 @@ void in_out() {
 #include "sim.hack.h"
 }
 
-void dump_d2h(int* n) {
-  *n = s_pp->S;
-  if (rbcs) *n += Cont::pcount();
+void dev2hst() { /* device2host  */
   CC(cudaMemcpyAsync(sr_pp, s_pp->D,
 		     sizeof(Particle) * s_pp->S, D2H, 0));
   if (rbcs)
@@ -188,26 +189,29 @@ void dump_d2h(int* n) {
 		       sizeof(Particle) * Cont::pcount(), D2H, 0));
 }
 
-void datadump(const int idtimestep) {
-  static int iddatadump = 0;
-  int n; dump_d2h(&n);
-  diagnostics(myactivecomm, mycartcomm, sr_pp, n, dt, idtimestep);
+void dump_part() {
+  if (!hdf5part_dumps) return;
+  dev2hst(); /* TODO: do not need `r' */
+  int n = s_pp->S + Cont::pcount();
+  dump_part_solvent->dump(sr_pp, n);
+}
 
-  if (hdf5part_dumps) {
-    if (!dump_part_solvent && walls && idtimestep >= wall_creation_stepid) {
-      dump_part_solvent =
-	new H5PartDump("s.h5part", activecomm, Cont::cartcomm);
-    }
-    if (dump_part_solvent) dump_part_solvent->dump(sr_pp, n);
-  }
+void dump_rbcs() {
+  if (!rbcs) return;
+  static int id = 0;
+  dev2hst();  /* TODO: do not need `s' */
+  Cont::rbc_dump(myactivecomm, &sr_pp[s_pp->S], Cont::pcount(), id++);
+}
 
-  if (hdf5field_dumps && (idtimestep % steps_per_hdf5dump == 0))
-    dump_field->dump(activecomm, sr_pp, s_pp->S);
+void dump_grid() {
+  if (!hdf5field_dumps) return;
+  dev2hst();  /* TODO: do not need `r' */
+  dump_field->dump(activecomm, sr_pp, s_pp->S);
+}
 
-  if (rbcs)
-    Cont::rbc_dump(myactivecomm, &sr_pp[s_pp->S],
-		   Cont::pcount(), iddatadump);
-  ++iddatadump;
+void diag(int it) {
+  int n = s_pp->S + Cont::pcount(); dev2hst();
+  diagnostics(myactivecomm, mycartcomm, sr_pp, n, dt, it);
 }
 
 static void update_and_bounce() {
@@ -226,6 +230,9 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   fsi::init(Cont::cartcomm);
   rex::init(Cont::cartcomm);
   cnt::init(Cont::cartcomm);
+  if (hdf5part_dumps)
+    dump_part_solvent = new H5PartDump("s.h5part", activecomm, Cont::cartcomm);
+
   cells   = new CellLists(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
 
   xyzouvwo    = new StaticDeviceBuffer<float4>;
@@ -276,22 +283,26 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   MC(MPI_Barrier(myactivecomm));
 }
 
+void dumps_diags(int it) {
+  if (it % steps_per_dump == 0)     in_out();
+  if (it % steps_per_dump == 0)     dump_rbcs();
+  if (it % steps_per_dump == 0)     dump_part();
+  if (it % steps_per_hdf5dump == 0) dump_grid();
+  if (it % steps_per_dump == 0)     diag(it);
+}
+
 void run() {
   if (Cont::rank == 0 && !walls) printf("will take %ld steps\n", nsteps);
   if (!walls && pushtheflow) driving_force = hydrostatic_a;
   int it;
   for (it = 0; it < nsteps; ++it) {
-    if (walls && it >= wall_creation_stepid && !wall_created) {
-      CC(cudaDeviceSynchronize());
+    if (walls && it == wall_creation_stepid) {
       create_walls();
       if (pushtheflow) driving_force = hydrostatic_a;
-      if (Cont::rank == 0)
-	fprintf(stderr, "the simulation consists of %ld steps\n", nsteps - it);
     }
     redistribute();
     forces();
-    if (it % steps_per_dump == 0)   in_out();
-    if (it % steps_per_dump == 0) datadump(it);
+    dumps_diags(it);
     update_and_bounce();
   }
 }
