@@ -1,1 +1,9 @@
-#!/usr/bin/awk -f
+#!/bin/bash
+
+# arg-parser replacement
+# tools/argp.awk should be on the PATH
+#
+# Usage:
+# argp .conf.test.h -rbcs -wall_creation_stepid=5.0     > .conf.h
+
+argp.awk -- "$@"
