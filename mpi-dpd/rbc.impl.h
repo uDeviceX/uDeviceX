@@ -5,9 +5,9 @@ void unitsSetup() {
   float x0 = RBCx0, p = RBCp, ka = RBCka, kb = RBCkb,
     kd = RBCkd, kv = RBCkv,
     gammaC = RBCgammaC, totArea0 = RBCtotArea,
-    totVolume0 = RBCtotVolume, RBCscale = 1.0/rc;
+    totVolume0 = RBCtotVolume;
 
-  float ll = 1 / RBCscale;
+  float ll = rc;
 
   float kBT2D3D = 1;
   float phi = 6.97 / 180.0 * M_PI; /* theta_0 */
