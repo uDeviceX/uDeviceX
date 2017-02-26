@@ -2,9 +2,7 @@ namespace CudaRBC {
 
 void unitsSetup() {
 #include "params/rbc.inc0.h"
-  const float x0 = RBCx0, kb = RBCkb,
-    kd = RBCkd, gammaC = RBCgammaC, totArea0 = RBCtotArea,
-    totVolume0 = RBCtotVolume;
+  const float x0 = RBCx0, kb = RBCkb, totArea0 = RBCtotArea;
 
   float phi = RBCphi / 180.0 * M_PI; /* theta_0 */
 
@@ -14,18 +12,18 @@ void unitsSetup() {
   params.mpow = RBCmpow; /* WLC-POW */
 
   /* units conversion: Fedosov -> uDeviceX */
-  params.gammaC = gammaC;
-  params.kd = kd;
+  params.gammaC = RBCgammaC;
+  params.kd = RBCkd;
   params.p = RBCp ;
   params.totArea0 = totArea0;
   params.kb = kb ;
-  params.totVolume0 = totVolume0;
+  params.totVolume0 = RBCtotVolume;
 
   // derived parameters
   params.Area0 = params.totArea0 / (2.0 * RBCnv - 4.);
   params.l0 = sqrt(params.Area0 * 4.0 / sqrt(3.0));
   params.lmax = params.l0 / x0;
-  params.gammaT = 3.0 * params.gammaC;
+  params.gammaT = 3.0 * RBCgammaC;
   params.kbToverp = params.kbT / params.p;
   params.sint0kb = params.sinTheta0 * params.kb;
   params.cost0kb = params.cosTheta0 * params.kb;
