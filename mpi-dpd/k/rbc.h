@@ -14,17 +14,19 @@ __device__ __forceinline__ float3 _fangle(float3 v1, float3 v2,
   float3 normal = cross(x21, x31);
 
   float Ak, A0, n_2, coefArea, coeffVol,
-        r, xx, IbforceI_wcl, kp, mpow, IbforceI_pow;
+        r, xx, IbforceI_wcl, kp, mpow, IbforceI_pow, ka0, kv0;
 
   Ak = 0.5 * sqrtf(dot(normal, normal));
 
   A0 = RBCtotArea / (2.0 * RBCnv - 4.);
   n_2 = 1.0 / Ak;
+  ka0 = RBCka / RBCtotArea;
   coefArea =
-      -0.25f * (devParams.ka0 * (area - RBCtotArea) * n_2) -
+      -0.25f * (ka0 * (area - RBCtotArea) * n_2) -
       RBCkd * (Ak - A0) / (4. * A0 * Ak);
 
-  coeffVol = devParams.kv0 * (volume - RBCtotVolume);
+  kv0 = RBCkv / (6 * RBCtotVolume);
+  coeffVol = kv0 * (volume - RBCtotVolume);
   float3 addFArea = coefArea * cross(normal, x32);
   float3 addFVolume = coeffVol * cross(v3, v2);
 
