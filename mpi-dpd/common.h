@@ -5,11 +5,6 @@ const float hydrostatic_a = _hydrostatic_a / rc;
 const float kBT           = _kBT / (rc * rc);
 const int   numberdensity = _numberdensity * (rc * rc * rc);
 
-extern float tend;
-extern bool walls, pushtheflow, doublepoiseuille, rbcs, hdf5field_dumps,
-  hdf5part_dumps, contactforces;
-extern int steps_per_dump, steps_per_hdf5dump, wall_creation_stepid;
-
 #define MAX_PART_NUM 5000000
 #define D2D cudaMemcpyDeviceToDevice
 #define D2H cudaMemcpyDeviceToHost

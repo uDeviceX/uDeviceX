@@ -7,15 +7,15 @@
 #  > atest run_diag.sh
 # add crap from test_data/* to git
 
-#### Solvent in a periodic box
-# TEST: diag.t1
+#### RBC in a periodic box
+# sTEST: diag.t1
 # set -x
 # export PATH=../tools:$PATH
-# cp .conf.test.h .conf.h
 # echo 0 0 0  1 0 0 8  0 1 0 8  0 0 1 8  0 0 0 1 > rbcs-ic.txt
-# make clean && make -j && make -C ../tools
 # rm -rf ply h5 diag.txt
-# ./test 1 1 1 -rbcs -tend=0.5 -steps_per_dump=100
+# argp .conf.test.h -rbcs -tend=0.5 -steps_per_dump=100 > .conf.h
+# make clean && make -j && make -C ../tools
+# ./test 1 1 1
 # awk '{print 100*$2}' diag.txt    | fhash.awk -v tol=2 > diag.out.txt
 #
 
@@ -23,29 +23,31 @@
 # sTEST: double.poiseuille
 # set -x
 # export PATH=../tools:$PATH
-# cp .conf.double.poiseuille.h .conf.h
-# make clean && make -j && make -C ../tools
 # rm -rf ply h5 diag.txt
-# ./test 1 1 1 -tend=2.0 -steps_per_dump=100  -pushtheflow -doublepoiseuille \
-#              -hdf5field_dumps -hdf5part_dumps \
-#              -steps_per_hdf5dump=300 -pushtheflow
+# argp .conf.double.poiseuille.h     \
+#   -tend=2.0 -steps_per_dump=100    \
+#   -pushtheflow -doublepoiseuille   \
+#   -hdf5field_dumps -hdf5part_dumps \
+#   -steps_per_hdf5dump=300 -pushtheflow > .conf.h
+# make clean && make -j && make -C ../tools
+# ./test 1 1 1
 # avg_h52.m h5/flowfields-0013.h5 | fround.awk -v tol=2 > h5.out.txt
 
 
 #### RBC in a periodic box
 # TEST: diag.t2
 # export PATH=../tools:$PATH
-# cp .conf.test.h .conf.h
+# rm -rf ply h5 diag.txt
 # x=0.75 y=8 z=12
 # echo 0 0 0  1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
+# argp .conf.test.h -rbcs -tend=0.5 -steps_per_dump=300 > .conf.h
 # make clean && make -j && make -C ../tools
-# rm -rf ply h5 diag.txt
-# ./test 1 1 1 -rbcs -tend=0.5 -steps_per_dump=300
+# ./test 1 1 1
 # ply2punto ply/rbcs-00003.ply | fround.awk -v tol=1 > ply.out.txt
 
 
 #### RBC with a wall
-# TEST: diag.t3
+# sTEST: diag.t3
 # export PATH=../tools:$PATH
 # cp .conf.test.h .conf.h
 # cp sdf/wall1/wall.dat                               sdf.dat
@@ -59,7 +61,7 @@
 
 
 ####
-# TEST: diag.t4
+# sTEST: diag.t4
 # export PATH=../tools:$PATH
 # cp .conf.test.h .conf.h
 # cp sdf/wall1/wall.dat sdf.dat
@@ -71,7 +73,7 @@
 
 
 ####
-# TEST: diag.t5
+# sTEST: diag.t5
 # export PATH=../tools:$PATH
 # cp .conf.poiseuille.h .conf.h
 # cp sdf/wall1/wall.dat sdf.dat
@@ -83,7 +85,7 @@
 
 
 ####
-# TEST: diag.t6
+# sTEST: diag.t6
 # export PATH=../tools:$PATH
 # cp .conf.poiseuille.h .conf.h
 # cp sdf/cyl1/cyl.dat sdf.dat
@@ -95,7 +97,7 @@
 
 
 ####
-# TEST: flow.around.t1
+# sTEST: flow.around.t1
 # export PATH=../tools:$PATH
 # cp .conf.around.h  .conf.h
 # cp sdf/cyl1/cyl.dat sdf.dat
@@ -109,7 +111,7 @@
 
 
 ### a test case with two RBCs around cylinder
-# TEST: flow.around.t2
+# sTEST: flow.around.t2
 # export PATH=../tools:$PATH
 # cp .conf.around.h  .conf.h
 # cp sdf/cyl1/cyl.dat sdf.dat
@@ -123,7 +125,7 @@
 
 
 ### two RBCs around cylinder with one RBC removed by the wall
-# TEST: flow.around.t3
+# sTEST: flow.around.t3
 # export PATH=../tools:$PATH
 # cp .conf.around.h  .conf.h
 # cp sdf/cyl1/cyl.dat sdf.dat

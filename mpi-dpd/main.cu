@@ -10,11 +10,6 @@
 #include "common.tmp.h"
 #include "bund.h"
 
-float tend;
-bool walls, pushtheflow, doublepoiseuille, rbcs, hdf5field_dumps,
-    hdf5part_dumps, contactforces;
-int steps_per_dump, steps_per_hdf5dump, wall_creation_stepid;
-
 int main(int argc, char **argv) {
   int ranks[3];
 
@@ -25,20 +20,6 @@ int main(int argc, char **argv) {
   } else
     for (int i = 0; i < 3; ++i)
       ranks[i] = atoi(argv[1 + i]);
-
-  ArgumentParser argp(vector<string>(argv + 4, argv + argc));
-
-  contactforces = argp("-contactforces").asBool(false);
-  doublepoiseuille = argp("-doublepoiseuille").asBool(false);
-  hdf5field_dumps = argp("-hdf5field_dumps").asBool(false);
-  hdf5part_dumps = argp("-hdf5part_dumps").asBool(false);
-  pushtheflow = argp("-pushtheflow").asBool(false);
-  rbcs = argp("-rbcs").asBool(false);
-  steps_per_dump = argp("-steps_per_dump").asInt(1000);
-  steps_per_hdf5dump = argp("-steps_per_hdf5dump").asInt(2000);
-  tend = argp("-tend").asDouble(50);
-  wall_creation_stepid = argp("-wall_creation_stepid").asInt(5000);
-  walls = argp("-walls").asBool(false);
 
   CC(cudaSetDevice(0));
   CC(cudaDeviceReset());
@@ -52,7 +33,6 @@ int main(int argc, char **argv) {
 			    &cartcomm));
   activecomm = cartcomm;
   MC(MPI_Barrier(activecomm));
-  if (rank == 0) argp.print_arguments();
   MC(MPI_Barrier(activecomm));
 
   sim::init(cartcomm, activecomm);
