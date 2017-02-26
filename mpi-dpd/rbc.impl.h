@@ -44,7 +44,7 @@ void setup_support(const int *data, const int *data2, const int nentries) {
 		     &texAdjVert.channelDesc, sizeof(int) * nentries));
 }
 
-void setup(int &nvertices, Extent &host_extent) {
+void setup(int &nvertices) {
   FILE *f = fopen("rbc.dat", "r");
   if (!f) {
     printf("Error in cuda-rbc: data file not found!\n");

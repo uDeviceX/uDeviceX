@@ -171,8 +171,7 @@ void rbc_init() {
   MC( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
 
   CudaRBC::get_triangle_indexing(indices, ntriangles);
-  CudaRBC::Extent extent;
-  CudaRBC::setup(nvertices, extent);
+  CudaRBC::setup(nvertices);
 }
 
 void _initialize(float *device_pp, float (*transform)[4]) {
