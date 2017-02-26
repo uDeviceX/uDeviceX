@@ -239,18 +239,19 @@ __global__ void areaAndVolumeKernel(float *totA_V) {
   float2 a_v = make_float2(0.0f, 0.0f);
   int cid = blockIdx.y;
 
-  for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < devParams.ntriangles;
+  for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < RBCnt;
        i += blockDim.x * gridDim.x) {
     int4 ids = tex1Dfetch(texTriangles4, i);
 
-    float3 v0(tex2vec(3 * (ids.x + cid * devParams.nvertices)));
-    float3 v1(tex2vec(3 * (ids.y + cid * devParams.nvertices)));
-    float3 v2(tex2vec(3 * (ids.z + cid * devParams.nvertices)));
+    float3 v0(tex2vec(3 * (ids.x + cid * RBCnv)));
+    float3 v1(tex2vec(3 * (ids.y + cid * RBCnv)));
+    float3 v2(tex2vec(3 * (ids.z + cid * RBCnv)));
 
     a_v.x += 0.5f * length(cross(v1 - v0, v2 - v0));
     a_v.y += 0.1666666667f *
-	     (-v0.z * v1.y * v2.x + v0.z * v1.x * v2.y + v0.y * v1.z * v2.x -
-	      v0.x * v1.z * v2.y - v0.y * v1.x * v2.z + v0.x * v1.y * v2.z);
+      ((v0.x*v1.y-v0.y*v1.x)*v2.z +
+       (v0.z*v1.x-v0.x*v1.z)*v2.y +
+       (v0.y*v1.z-v0.z*v1.y)*v2.x);
   }
 
   a_v = warpReduceSum(a_v);
