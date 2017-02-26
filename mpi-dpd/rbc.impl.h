@@ -22,9 +22,9 @@ void unitsSetup() {
   params.gammaC = gammaC;
   params.ka = ka;
   params.kd = kd;
-  params.p = p / ll;
-  params.totArea0 = totArea0 / (ll * ll);
-  params.kb = kb / (ll * ll);
+  params.p = p ;
+  params.totArea0 = totArea0;
+  params.kb = kb ;
   params.kbT = params.kbT / (ll * ll);
   params.totVolume0 = totVolume0 / (ll * ll * ll);
 
