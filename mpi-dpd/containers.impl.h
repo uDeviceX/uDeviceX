@@ -171,7 +171,7 @@ void rbc_init() {
   MC( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
 
   rbc::get_triangle_indexing(indices, ntriangles);
-  rbc::setup(nvertices);
+  nvertices = rbc::setup();
 }
 
 void _initialize(float *device_pp, float (*transform)[4]) {

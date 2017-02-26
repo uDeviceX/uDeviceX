@@ -44,7 +44,7 @@ void setup_support(const int *data, const int *data2, const int nentries) {
 		     &texAdjVert.channelDesc, sizeof(int) * nentries));
 }
 
-void setup(int &nvertices) {
+int setup() { /* returns `nv' */
   FILE *f = fopen("rbc.dat", "r");
   if (!f) {
     printf("Error in cuda-rbc: data file not found!\n");
@@ -93,8 +93,7 @@ void setup(int &nvertices) {
     trs4[4 * i + 3] = 0;
   }
 
-  nvertices = rv.size();
-  std::vector<std::map<int, int> > adjacentPairs(nvertices);
+  std::vector<std::map<int, int> > adjacentPairs(RBCnv);
 
   for (int i = 0; i < triangles.size(); ++i) {
     const int tri[3] = {triangles[i].x, triangles[i].y, triangles[i].z};
@@ -104,11 +103,11 @@ void setup(int &nvertices) {
   }
 
   std::vector<int> maxldeg;
-  for (int i = 0; i < nvertices; ++i)
+  for (int i = 0; i < RBCnv; ++i)
     maxldeg.push_back(adjacentPairs[i].size());
   const int degreemax = *max_element(maxldeg.begin(), maxldeg.end());
-  std::vector<int> adjVert(nvertices * degreemax, -1);
-  for (int v = 0; v < nvertices; ++v) {
+  std::vector<int> adjVert(RBCnv * degreemax, -1);
+  for (int v = 0; v < RBCnv; ++v) {
     std::map<int, int> l = adjacentPairs[v];
 
     adjVert[0 + degreemax * v] = l.begin()->first;
@@ -120,9 +119,9 @@ void setup(int &nvertices) {
     }
   }
 
-  std::vector<int> adjVert2(degreemax * nvertices, -1);
+  std::vector<int> adjVert2(degreemax * RBCnv, -1);
 
-  for (int v = 0; v < nvertices; ++v) {
+  for (int v = 0; v < RBCnv; ++v) {
     std::vector<int> myneighbors = extract_neighbors(adjVert, degreemax, v);
 
     for (int i = 0; i < myneighbors.size(); ++i) {
@@ -148,27 +147,26 @@ void setup(int &nvertices) {
 
   // Find stretching points
   float stretchingForce = 0;
-  std::vector<std::pair<float, int> > tmp(nvertices);
-  for (int i = 0; i < nvertices; i++) {
+  std::vector<std::pair<float, int> > tmp(RBCnv);
+  for (int i = 0; i < RBCnv; i++) {
     tmp[i].first = rv[i].r[0];
     tmp[i].second = i;
   }
   sort(tmp.begin(), tmp.end());
 
-  float *hAddfrc = new float[nvertices];
-  memset(hAddfrc, 0, nvertices * sizeof(float));
+  float hAddfrc[RBCnv];
+  memset(hAddfrc, 0, RBCnv * sizeof(float));
   const int strVerts = 3; // 10
   for (int i = 0; i < strVerts; i++) {
     hAddfrc[tmp[i].second] = -stretchingForce / strVerts;
-    hAddfrc[tmp[nvertices - 1 - i].second] = +stretchingForce / strVerts;
+    hAddfrc[tmp[RBCnv - 1 - i].second] = +stretchingForce / strVerts;
   }
 
-  CC(cudaMalloc(&addfrc, nvertices * sizeof(float)));
-  CC(cudaMemcpy(addfrc, hAddfrc, nvertices * sizeof(float),
-		H2D));
+  CC(cudaMalloc(&addfrc, RBCnv * sizeof(float)));
+  CC(cudaMemcpy(addfrc, hAddfrc, RBCnv * sizeof(float), H2D));
 
-  float *xyzuvw_host = new float[6 * nvertices * sizeof(float)];
-  for (int i = 0; i < nvertices; i++) {
+  float *xyzuvw_host = new float[6 * RBCnv * sizeof(float)];
+  for (int i = 0; i < RBCnv; i++) {
     xyzuvw_host[6 * i + 0] = rv[i].r[0];
     xyzuvw_host[6 * i + 1] = rv[i].r[1];
     xyzuvw_host[6 * i + 2] = rv[i].r[2];
@@ -177,8 +175,8 @@ void setup(int &nvertices) {
     xyzuvw_host[6 * i + 5] = 0;
   }
 
-  CC(cudaMalloc(&orig_xyzuvw, nvertices * 6 * sizeof(float)));
-  CC(cudaMemcpy(orig_xyzuvw, xyzuvw_host, nvertices * 6 * sizeof(float),
+  CC(cudaMalloc(&orig_xyzuvw, RBCnv * 6 * sizeof(float)));
+  CC(cudaMemcpy(orig_xyzuvw, xyzuvw_host, RBCnv * 6 * sizeof(float),
 		H2D));
   delete[] xyzuvw_host;
 
@@ -218,6 +216,8 @@ void setup(int &nvertices) {
   maxCells = 0;
   CC(cudaMalloc(&host_av, 1 * 2 * sizeof(float)));
   CC(cudaFuncSetCacheConfig(fall_kernel<RBCnv>, cudaFuncCachePreferL1));
+
+  return RBCnv;
 }
 
 int get_nvertices() { return RBCnv; }

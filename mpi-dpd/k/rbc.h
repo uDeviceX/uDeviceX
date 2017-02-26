@@ -5,6 +5,11 @@ texture<int, 1, cudaReadModeElementType> texAdjVert2;
 texture<int4, cudaTextureType1D> texTriangles4;
 __constant__ float A[4][4];
 
+#define cross(a, b) make_float3 \
+  ((a).y*(b).z - (a).z*(b).y, \
+   (a).z*(b).x - (a).x*(b).z, \
+   (a).x*(b).y - (a).y*(b).x)
+  
 __device__ __forceinline__ float3 _fangle(float3 v1, float3 v2,
 					  float3 v3, float area,
 					  float volume) {
@@ -237,9 +242,9 @@ __device__ __forceinline__ float2 warpReduceSum(float2 val) {
 __global__ void areaAndVolumeKernel(float *totA_V) {
 #define sq(a) (a)*(a)
 #define abscross2(a, b) \
-    sq((a).y*(b).z - (a).z*(b).y) + \
-    sq((a).z*(b).x - (a).x*(b).z) + \
-    sq((a).x*(b).y - (a).y*(b).x)
+  (sq((a).y*(b).z - (a).z*(b).y) +  \
+   sq((a).z*(b).x - (a).x*(b).z) +  \
+   sq((a).x*(b).y - (a).y*(b).x))
 #define abscross(a, b) sqrtf(abscross2(a, b)) /* |a x b| */
 
   float2 a_v = make_float2(0.0f, 0.0f);
