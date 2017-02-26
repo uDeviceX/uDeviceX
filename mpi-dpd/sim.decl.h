@@ -3,8 +3,8 @@ namespace sim {
   Particle *s_pp; /* Solvent */
   Force    *s_ff;
 
-  StaticDeviceBuffer<Particle> *r_pp; /* RBC */
-  StaticDeviceBuffer<Force>    *r_ff;
+  StaticDeviceBuffer0<Particle> *r_pp; /* RBC */
+  StaticDeviceBuffer0<Force>    *r_ff;
 
   float4  *s_zip0; /* "zipped" version of Solvent array */
   ushort4 *s_zip1;

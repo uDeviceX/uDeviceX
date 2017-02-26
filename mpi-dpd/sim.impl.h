@@ -207,8 +207,8 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   mpDeviceMalloc(&s_zip0); mpDeviceMalloc(&s_zip1);
 
   if (rbcs) {
-    r_pp = new StaticDeviceBuffer<Particle>;
-    r_ff = new StaticDeviceBuffer<Force>;
+    r_pp = new StaticDeviceBuffer0<Particle>;
+    r_ff = new StaticDeviceBuffer0<Force>;
   }
 
   wall::trunk = new Logistic::KISS;
