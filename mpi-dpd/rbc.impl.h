@@ -2,11 +2,6 @@ namespace CudaRBC {
 
 void unitsSetup() {
 #include "params/rbc.inc0.h"
-  const float x0 = RBCx0, totArea0 = RBCtotArea;
-  const float phi = RBCphi / 180.0 * M_PI; /* theta_0 */
-
-  params.sinTheta0 = sin(phi);
-  params.cosTheta0 = cos(phi);
   params.kbT = RBCkbT;
   params.mpow = RBCmpow; /* WLC-POW */
 
@@ -14,25 +9,35 @@ void unitsSetup() {
   params.gammaC = RBCgammaC;
   params.kd = RBCkd;
   params.p = RBCp ;
-  params.totArea0 = totArea0;
+  params.totArea0 = RBCtotArea;
   params.kb = RBCkb ;
   params.totVolume0 = RBCtotVolume;
 
   // derived parameters
-  params.Area0 = params.totArea0 / (2.0 * RBCnv - 4.);
-  params.l0 = sqrt(params.Area0 * 4.0 / sqrt(3.0));
-  params.lmax = params.l0 / x0;
+  float Area0, phi, x0, l0;
+  Area0 = RBCtotArea / (2.0 * RBCnv - 4.);
+  params.Area0 = RBCtotArea / (2.0 * RBCnv - 4.);
+  params.l0 = sqrt(Area0 * 4.0 / sqrt(3.0));
+  params.lmax = params.l0 / RBCx0;
   params.gammaT = 3.0 * RBCgammaC;
-  params.kbToverp = params.kbT / RBCp;
-  params.sint0kb = params.sinTheta0 * params.kb;
-  params.cost0kb = params.cosTheta0 * params.kb;
+  params.kbToverp = RBCkbT / RBCp;
+
+  phi = RBCphi / 180.0 * M_PI; /* theta_0 */
+  params.sinTheta0 = sin(phi);
+  params.cosTheta0 = cos(phi);
+  params.sint0kb = sin(phi) * RBCkb;
+  params.cost0kb = cos(phi) * RBCkb;
+
+  Area0 = RBCtotArea / (2.0 * RBCnv - 4.);
+  x0 = RBCx0;
+  l0 = sqrt(Area0 * 4.0 / sqrt(3.0));
   params.kp =
-      (params.kbT * x0 * (4 * x0 * x0 - 9 * x0 + 6) * params.l0 * params.l0) /
-      (4 * params.p * (x0 - 1) * (x0 - 1));
+      (RBCkbT * x0 * (4 * x0 * x0 - 9 * x0 + 6) * l0 * l0) /
+      (4 * RBCp * (x0 - 1) * (x0 - 1));
 
   /* to simplify further computations */
-  params.ka0 = RBCka / params.totArea0;
-  params.kv0 = RBCkv / (6 * params.totVolume0);
+  params.ka0 = RBCka / RBCtotArea;
+  params.kv0 = RBCkv / (6 * RBCtotVolume);
 
   CC(cudaMemcpyToSymbol(devParams, &params, sizeof(Params)));
 }
