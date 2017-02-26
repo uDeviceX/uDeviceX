@@ -7,8 +7,6 @@ void unitsSetup() {
     gammaC = RBCgammaC, totArea0 = RBCtotArea,
     totVolume0 = RBCtotVolume;
 
-  float ll = rc;
-
   float phi = RBCphi / 180.0 * M_PI; /* theta_0 */
 
   params.sinTheta0 = sin(phi);
@@ -17,18 +15,17 @@ void unitsSetup() {
   params.mpow = RBCmpow; /* WLC-POW */
 
   /* units conversion: Fedosov -> uDeviceX */
-  params.kv = kv * ll;
+  params.kv = kv ;
   params.gammaC = gammaC;
   params.ka = ka;
   params.kd = kd;
   params.p = p ;
   params.totArea0 = totArea0;
   params.kb = kb ;
-  params.kbT = params.kbT / (ll * ll);
   params.totVolume0 = totVolume0;
 
   // derived parameters
-  params.Area0 = params.totArea0 / (2.0 * params.nvertices - 4.);
+  params.Area0 = params.totArea0 / (2.0 * RBCnv - 4.);
   params.l0 = sqrt(params.Area0 * 4.0 / sqrt(3.0));
   params.lmax = params.l0 / x0;
   params.gammaT = 3.0 * params.gammaC;
