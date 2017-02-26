@@ -198,6 +198,7 @@ void close() {
 
   delete _ddestinations;
   delete _dsources;
-}
-}
 
+  CC(cudaFree(bulk));
+}
+}
