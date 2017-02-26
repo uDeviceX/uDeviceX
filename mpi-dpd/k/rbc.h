@@ -26,7 +26,7 @@ __device__ __forceinline__ float3 _fangle(float3 v1, float3 v2,
       -0.25f * (ka0 * (area - RBCtotArea) * n_2) -
       RBCkd * (Ak - A0) / (4. * A0 * Ak);
 
-  kv0 = RBCkv / (6 * RBCtotVolume);
+  kv0 = RBCkv / (6.0 * RBCtotVolume);
   coeffVol = kv0 * (volume - RBCtotVolume);
   float3 addFArea = coefArea * cross(nn, x32);
   float3 addFVolume = coeffVol * cross(v3, v2);
@@ -53,11 +53,11 @@ __device__ __forceinline__ float3 _fangle(float3 v1, float3 v2,
 
 __device__ __forceinline__ float3 _fvisc(float3 v1, float3 v2,
 					 float3 u1, float3 u2) {
-  float3 du = u2 - u1;
-  float3 dr = v1 - v2;
+  float3 du = u2 - u1, dr = v1 - v2;
+  float gammaC = RBCgammaC, gammaT = 3.0 * RBCgammaC;
 
-  return du * devParams.gammaT +
-	 dr * devParams.gammaC * dot(du, dr) / dot(dr, dr);
+  return du * gammaT +
+	 dr * gammaC * dot(du, dr) / dot(dr, dr);
 }
 
 template <int update>
