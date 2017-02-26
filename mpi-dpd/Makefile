@@ -11,7 +11,7 @@ slevel   ?= -2
 NVCCFLAGS += -arch $(ARCH_VAL) -code $(CODE_VAL)
 LDFLAGS   += -L../cuda-dpd -L../last-bit
 NVCCFLAGS += -I../cuda-dpd -I../last-bit
-NVCCFLAGS += -I../argument-parser -I../helper-math
+NVCCFLAGS += -I../argument-parser -I../helper-math -I.
 LIBS      += -lcuda-dpd -llast-bit -lcudart
 
 OBJS = 	common.o io.o minmax.o dpd-forces.o bund.o main.o
