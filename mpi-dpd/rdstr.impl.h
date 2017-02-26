@@ -19,8 +19,6 @@ void init(MPI_Comm _cartcomm) {
   _ddestinations = new DeviceBuffer<float *>;
   _dsources = new DeviceBuffer<const float *>;
 
-  nvertices = rbc::get_nvertices();
-  rbc::setup();
   MC(MPI_Comm_dup(_cartcomm, &cartcomm));
   MC(MPI_Comm_rank(cartcomm, &myrank));
   int dims[3];
@@ -41,7 +39,7 @@ void init(MPI_Comm _cartcomm) {
 }
 
 void _compute_extents(Particle *xyzuvw,
-					int nrbcs) {
+		      int nrbcs, int nvertices) {
   if (nrbcs)
     minmax(xyzuvw, nvertices, nrbcs, minextents->DP, maxextents->DP);
 }
@@ -73,18 +71,18 @@ void pack_all(const int nrbcs, const int nvertices,
 
 }
 
-void extent(Particle *xyzuvw, int nrbcs) {
+void extent(Particle *xyzuvw, int nrbcs, int nvertices) {
   minextents->resize(nrbcs);
   maxextents->resize(nrbcs);
 
-  _compute_extents(xyzuvw, nrbcs);
+  _compute_extents(xyzuvw, nrbcs, nvertices);
 
   CC(cudaEventRecord(evextents));
 }
 
 
 void pack_sendcount(Particle *xyzuvw,
-				      int nrbcs) {
+		    int nrbcs, int nvertices) {
   CC(cudaEventSynchronize(evextents));
   std::vector<int> reordering_indices[27];
 
@@ -129,7 +127,7 @@ void pack_sendcount(Particle *xyzuvw,
 			&sendcountreq[i - 1]));
 }
 
-int post() {
+  int post(int nvertices) {
   {
     MPI_Status statuses[recvcountreq.size()];
     MC(MPI_Waitall(recvcountreq.size(), &recvcountreq.front(), statuses));
@@ -170,7 +168,7 @@ int post() {
   return notleaving + arriving;
 }
 
-void unpack(Particle *xyzuvw, int nrbcs) {
+  void unpack(Particle *xyzuvw, int nrbcs, int nvertices) {
   MPI_Status statuses[26];
   MC(MPI_Waitall(recvreq.size(), &recvreq.front(), statuses));
   MC(MPI_Waitall(sendreq.size(), &sendreq.front(), statuses));

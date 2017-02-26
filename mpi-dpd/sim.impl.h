@@ -24,19 +24,19 @@ static std::vector<Particle> ic_pos() { /* generate particle position */
 
 static void redistribute() {
   sdstr::pack(s_pp, s_n);
-  if (rbcs) rdstr::extent(r_pp->D, Cont::ncells);
+  if (rbcs) rdstr::extent(r_pp->D, Cont::ncells, Cont::nvertices);
   sdstr::send();
-  if (rbcs) rdstr::pack_sendcount(r_pp->D, Cont::ncells);
+  if (rbcs) rdstr::pack_sendcount(r_pp->D, Cont::ncells, Cont::nvertices);
   sdstr::bulk(s_n, cells->start, cells->count);
   s_n = sdstr::recv_count();
   if (rbcs) {
-    Cont::ncells = rdstr::post();
+    Cont::ncells = rdstr::post(Cont::nvertices);
     r_pp->S = Cont::ncells*Cont::nvertices;
     r_ff->S = Cont::ncells*Cont::nvertices;
   }
   sdstr::recv_unpack(s_pp0, s_zip0, s_zip1, s_n, cells->start, cells->count);
   std::swap(s_pp, s_pp0); std::swap(s_ff, s_ff0);
-  if (rbcs) rdstr::unpack(r_pp->D, Cont::ncells);
+  if (rbcs) rdstr::unpack(r_pp->D, Cont::ncells, Cont::nvertices);
 }
 
 void remove_bodies_from_wall() {
@@ -195,6 +195,7 @@ static void update_and_bounce() {
 
 void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   Cont::cartcomm = cartcomm_; activecomm = activecomm_;
+  rbc::setup();
   rdstr::init(Cont::cartcomm);
   DPD::init(Cont::cartcomm);
   fsi::init(Cont::cartcomm);

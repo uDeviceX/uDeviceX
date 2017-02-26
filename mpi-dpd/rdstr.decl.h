@@ -13,7 +13,7 @@ namespace rdstr {
       anti_rankneighbors[27];
   int recv_counts[27];
 
-  int nvertices, arriving, notleaving;
+  int arriving, notleaving;
   cudaEvent_t evextents;
 
   DeviceBuffer<float*> *_ddestinations;
