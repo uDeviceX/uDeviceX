@@ -14,7 +14,6 @@ namespace rdstr {
   int recv_counts[27];
 
   int arriving, notleaving;
-  cudaEvent_t evextents;
 
   DeviceBuffer<float*> *_ddestinations;
   DeviceBuffer<const float*> *_dsources;

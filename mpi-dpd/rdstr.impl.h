@@ -36,7 +36,6 @@ void init(MPI_Comm _cartcomm) {
     MC(MPI_Cart_rank(cartcomm, coordsneighbor, anti_rankneighbors + i));
   }
 
-  CC(cudaEventCreate(&evextents, cudaEventDisableTiming));
   _post_recvcount();
 }
 
@@ -78,14 +77,11 @@ void extent(Particle *xyzuvw, int nrbcs, int nvertices) {
   maxextents->resize(nrbcs);
 
   _compute_extents(xyzuvw, nrbcs, nvertices);
-
-  CC(cudaEventRecord(evextents));
 }
 
 
 void pack_sendcount(Particle *xyzuvw,
 		    int nrbcs, int nvertices) {
-  CC(cudaEventSynchronize(evextents));
   std::vector<int> reordering_indices[27];
 
   for (int i = 0; i < nrbcs; ++i) {
