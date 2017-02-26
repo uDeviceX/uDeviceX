@@ -9,13 +9,12 @@ void unitsSetup() {
 
   float ll = rc;
 
-  float kBT2D3D = 1;
-  float phi = 6.97 / 180.0 * M_PI; /* theta_0 */
+  float phi = RBCphi / 180.0 * M_PI; /* theta_0 */
 
   params.sinTheta0 = sin(phi);
   params.cosTheta0 = cos(phi);
-  params.kbT = 0.1 * kBT2D3D;
-  params.mpow = 2; /* WLC-POW */
+  params.kbT = RBCkbT;
+  params.mpow = RBCmpow; /* WLC-POW */
 
   /* units conversion: Fedosov -> uDeviceX */
   params.kv = kv * ll;
@@ -26,7 +25,7 @@ void unitsSetup() {
   params.totArea0 = totArea0;
   params.kb = kb ;
   params.kbT = params.kbT / (ll * ll);
-  params.totVolume0 = totVolume0 / (ll * ll * ll);
+  params.totVolume0 = totVolume0;
 
   // derived parameters
   params.Area0 = params.totArea0 / (2.0 * params.nvertices - 4.);
