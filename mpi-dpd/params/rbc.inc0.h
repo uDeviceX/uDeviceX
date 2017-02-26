@@ -12,4 +12,4 @@
 #define        RBCphi (    6.97             )
 
 #define         RBCnv (    498              )
-#define         RBCnt (    1488             )
+#define         RBCnt (    992              )

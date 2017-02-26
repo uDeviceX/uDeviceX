@@ -1,47 +1,5 @@
 namespace CudaRBC {
 
-void unitsSetup() {
-#include "params/rbc.inc0.h"
-  params.kbT = RBCkbT;
-  params.mpow = RBCmpow; /* WLC-POW */
-
-  /* units conversion: Fedosov -> uDeviceX */
-  params.gammaC = RBCgammaC;
-  params.kd = RBCkd;
-  params.p = RBCp ;
-  params.totArea0 = RBCtotArea;
-  params.kb = RBCkb ;
-  params.totVolume0 = RBCtotVolume;
-
-  // derived parameters
-  float Area0, phi, x0, l0;
-  Area0 = RBCtotArea / (2.0 * RBCnv - 4.);
-  params.Area0 = RBCtotArea / (2.0 * RBCnv - 4.);
-  params.l0 = sqrt(Area0 * 4.0 / sqrt(3.0));
-  params.lmax = params.l0 / RBCx0;
-  params.gammaT = 3.0 * RBCgammaC;
-  params.kbToverp = RBCkbT / RBCp;
-
-  phi = RBCphi / 180.0 * M_PI; /* theta_0 */
-  params.sinTheta0 = sin(phi);
-  params.cosTheta0 = cos(phi);
-  params.sint0kb = sin(phi) * RBCkb;
-  params.cost0kb = cos(phi) * RBCkb;
-
-  Area0 = RBCtotArea / (2.0 * RBCnv - 4.);
-  x0 = RBCx0;
-  l0 = sqrt(Area0 * 4.0 / sqrt(3.0));
-  params.kp =
-      (RBCkbT * x0 * (4 * x0 * x0 - 9 * x0 + 6) * l0 * l0) /
-      (4 * RBCp * (x0 - 1) * (x0 - 1));
-
-  /* to simplify further computations */
-  params.ka0 = RBCka / RBCtotArea;
-  params.kv0 = RBCkv / (6 * RBCtotVolume);
-
-  CC(cudaMemcpyToSymbol(devParams, &params, sizeof(Params)));
-}
-
 void eat_until(FILE *f, std::string target) {
   while (!feof(f)) {
     char buf[2048];
@@ -188,8 +146,6 @@ void setup(int &nvertices, Extent &host_extent) {
     }
   }
 
-  params.ntriangles = triangles.size();
-
   // Find stretching points
   float stretchingForce = 0;
   std::vector<std::pair<float, int> > tmp(nvertices);
@@ -226,8 +182,8 @@ void setup(int &nvertices, Extent &host_extent) {
 		H2D));
   delete[] xyzuvw_host;
 
-  CC(cudaMalloc(&devtrs4, params.ntriangles * 4 * sizeof(int)));
-  CC(cudaMemcpy(devtrs4, trs4, params.ntriangles * 4 * sizeof(int),
+  CC(cudaMalloc(&devtrs4, RBCnt * 4 * sizeof(int)));
+  CC(cudaMemcpy(devtrs4, trs4, RBCnt * 4 * sizeof(int),
 		H2D));
   delete[] trs4;
 
@@ -257,13 +213,11 @@ void setup(int &nvertices, Extent &host_extent) {
   size_t textureoffset;
   CC(cudaBindTexture(&textureoffset, &texTriangles4, devtrs4,
 		     &texTriangles4.channelDesc,
-		     params.ntriangles * 4 * sizeof(int)));
+		     RBCnt * 4 * sizeof(int)));
 
   maxCells = 0;
   CC(cudaMalloc(&host_av, 1 * 2 * sizeof(float)));
-
-  unitsSetup();
-  CC(cudaFuncSetCacheConfig(fall_kernel<498>, cudaFuncCachePreferL1));
+  CC(cudaFuncSetCacheConfig(fall_kernel<RBCnv>, cudaFuncCachePreferL1));
 }
 
 int get_nvertices() { return RBCnv; }
@@ -318,13 +272,13 @@ void forces_nohost(int ncells, const float *const device_xyzuvw,
   int threads = 128;
   int blocks = (ncells * RBCnv * 7 + threads - 1) / threads;
 
-  fall_kernel<498><<<blocks, threads, 0>>>(ncells, host_av, device_axayaz);
+  fall_kernel<RBCnv><<<blocks, threads, 0>>>(ncells, host_av, device_axayaz);
   addKernel<<<(RBCnv + 127) / 128, 128, 0>>>(device_axayaz, addfrc,
 							RBCnv);
 }
 
 void get_triangle_indexing(int (*&host_triplets_ptr)[3], int &ntriangles) {
   host_triplets_ptr = (int(*)[3])triplets;
-  ntriangles = params.ntriangles;
+  ntriangles = RBCnt;
 }
 }

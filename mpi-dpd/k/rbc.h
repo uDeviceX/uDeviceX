@@ -1,5 +1,4 @@
 namespace CudaRBC {
-static __constant__ Params devParams;
 texture<float2, 1, cudaReadModeElementType> texVertices;
 texture<int, 1, cudaReadModeElementType> texAdjVert;
 texture<int, 1, cudaReadModeElementType> texAdjVert2;
