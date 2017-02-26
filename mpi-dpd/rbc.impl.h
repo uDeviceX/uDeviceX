@@ -3,11 +3,13 @@ extern float RBCx0, RBCp, RBCka, RBCkb, RBCkd, RBCkv, RBCgammaC, RBCtotArea,
 
 namespace CudaRBC {
 
-void unitsSetup(float x0, float p, float ka, float kb, float kd, float kv,
-                float gammaC, float totArea0, float totVolume0, float lunit,
-                float tunit, int ndens, bool prn) {
-  const float lrbc = 1.000000e-06;
-  float ll = (lunit / lrbc) / RBCscale;
+void unitsSetup() {
+  float x0 = RBCx0, p = RBCp, ka = RBCka, kb = RBCkb,
+    kd = RBCkd, kv = RBCkv,
+    gammaC = RBCgammaC, totArea0 = RBCtotArea,
+    totVolume0 = RBCtotVolume;
+
+  float ll = 1 / RBCscale;
 
   float kBT2D3D = 1;
   float phi = 6.97 / 180.0 * M_PI; /* theta_0 */
@@ -60,7 +62,7 @@ void eat_until(FILE *f, std::string target) {
 }
 
 std::vector<int> extract_neighbors(std::vector<int> adjVert,
-                                   const int degreemax, const int v) {
+				   const int degreemax, const int v) {
   std::vector<int> myneighbors;
   for (int c = 0; c < degreemax; ++c) {
     const int val = adjVert[c + degreemax * v];
@@ -80,7 +82,7 @@ void setup_support(const int *data, const int *data2, const int nentries) {
 
   size_t textureoffset;
   CC(cudaBindTexture(&textureoffset, &texAdjVert, data, &texAdjVert.channelDesc,
-                     sizeof(int) * nentries));
+		     sizeof(int) * nentries));
 
   texAdjVert2.channelDesc = cudaCreateChannelDesc<int>();
   texAdjVert2.filterMode = cudaFilterModePoint;
@@ -88,17 +90,10 @@ void setup_support(const int *data, const int *data2, const int nentries) {
   texAdjVert2.normalized = 0;
 
   CC(cudaBindTexture(&textureoffset, &texAdjVert2, data2,
-                     &texAdjVert.channelDesc, sizeof(int) * nentries));
+		     &texAdjVert.channelDesc, sizeof(int) * nentries));
 }
 
-struct Particle {
-  float x[3], u[3];
-};
-
 void setup(int &nvertices, Extent &host_extent) {
-  const float scale = RBCscale;
-  const bool report = false;
-
   FILE *f = fopen("rbc.dat", "r");
   if (!f) {
     printf("Error in cuda-rbc: data file not found!\n");
@@ -107,21 +102,15 @@ void setup(int &nvertices, Extent &host_extent) {
 
   eat_until(f, "Atoms\n");
 
-  std::vector<Particle> particles;
+  std::vector<Particle> rv;
   while (!feof(f)) {
     Particle p = {0, 0, 0, 0, 0, 0};
     int dummy[3];
-
     const int retval = fscanf(f, "%d %d %d %e %e %e\n", dummy + 0, dummy + 1,
-                              dummy + 2, p.x, p.x + 1, p.x + 2);
-
-    p.x[0] *= scale;
-    p.x[1] *= scale;
-    p.x[2] *= scale;
-
+			      dummy + 2, p.r, p.r + 1, p.r + 2);
+    p.r[0] *= RBCscale; p.r[1] *= RBCscale; p.r[2] *= RBCscale;
     if (retval != 6) break;
-
-    particles.push_back(p);
+    rv.push_back(p);
   }
 
   eat_until(f, "Angles\n");
@@ -132,17 +121,14 @@ void setup(int &nvertices, Extent &host_extent) {
     int dummy[2];
     int3 tri;
     const int retval = fscanf(f, "%d %d %d %d %d\n", dummy + 0, dummy + 1,
-                              &tri.x, &tri.y, &tri.z);
-
+			      &tri.x, &tri.y, &tri.z);
     if (retval != 5) break;
-
     triangles.push_back(tri);
   }
   fclose(f);
 
   triplets = new int[3 * triangles.size()];
   int *trs4 = new int[4 * triangles.size()];
-
   for (int i = 0; i < triangles.size(); i++) {
     int3 tri = triangles[i];
     triplets[3 * i + 0] = tri.x;
@@ -155,12 +141,11 @@ void setup(int &nvertices, Extent &host_extent) {
     trs4[4 * i + 3] = 0;
   }
 
-  nvertices = particles.size();
+  nvertices = rv.size();
   std::vector<std::map<int, int> > adjacentPairs(nvertices);
 
   for (int i = 0; i < triangles.size(); ++i) {
     const int tri[3] = {triangles[i].x, triangles[i].y, triangles[i].z};
-
     for (int d = 0; d < 3; ++d) {
       adjacentPairs[tri[d]][tri[(d + 1) % 3]] = tri[(d + 2) % 3];
     }
@@ -169,11 +154,8 @@ void setup(int &nvertices, Extent &host_extent) {
   std::vector<int> maxldeg;
   for (int i = 0; i < nvertices; ++i)
     maxldeg.push_back(adjacentPairs[i].size());
-
   const int degreemax = *max_element(maxldeg.begin(), maxldeg.end());
-
   std::vector<int> adjVert(nvertices * degreemax, -1);
-
   for (int v = 0; v < nvertices; ++v) {
     std::map<int, int> l = adjacentPairs[v];
 
@@ -193,18 +175,18 @@ void setup(int &nvertices, Extent &host_extent) {
 
     for (int i = 0; i < myneighbors.size(); ++i) {
       std::vector<int> s1 =
-          extract_neighbors(adjVert, degreemax, myneighbors[i]);
+	  extract_neighbors(adjVert, degreemax, myneighbors[i]);
       std::sort(s1.begin(), s1.end());
 
       std::vector<int> s2 = extract_neighbors(
-          adjVert, degreemax, myneighbors[(i + 1) % myneighbors.size()]);
+	  adjVert, degreemax, myneighbors[(i + 1) % myneighbors.size()]);
       std::sort(s2.begin(), s2.end());
 
       std::vector<int> result(s1.size() + s2.size());
 
       const int nterms = set_intersection(s1.begin(), s1.end(), s2.begin(),
-                                          s2.end(), result.begin()) -
-                         result.begin();
+					  s2.end(), result.begin()) -
+			 result.begin();
 
       const int myguy = result[0] == v;
 
@@ -219,7 +201,7 @@ void setup(int &nvertices, Extent &host_extent) {
   float stretchingForce = 0;
   std::vector<std::pair<float, int> > tmp(nvertices);
   for (int i = 0; i < nvertices; i++) {
-    tmp[i].first = particles[i].x[0];
+    tmp[i].first = rv[i].r[0];
     tmp[i].second = i;
   }
   sort(tmp.begin(), tmp.end());
@@ -234,13 +216,13 @@ void setup(int &nvertices, Extent &host_extent) {
 
   CC(cudaMalloc(&addfrc, nvertices * sizeof(float)));
   CC(cudaMemcpy(addfrc, hAddfrc, nvertices * sizeof(float),
-                cudaMemcpyHostToDevice));
+		H2D));
 
   float *xyzuvw_host = new float[6 * nvertices * sizeof(float)];
   for (int i = 0; i < nvertices; i++) {
-    xyzuvw_host[6 * i + 0] = particles[i].x[0];
-    xyzuvw_host[6 * i + 1] = particles[i].x[1];
-    xyzuvw_host[6 * i + 2] = particles[i].x[2];
+    xyzuvw_host[6 * i + 0] = rv[i].r[0];
+    xyzuvw_host[6 * i + 1] = rv[i].r[1];
+    xyzuvw_host[6 * i + 2] = rv[i].r[2];
     xyzuvw_host[6 * i + 3] = 0;
     xyzuvw_host[6 * i + 4] = 0;
     xyzuvw_host[6 * i + 5] = 0;
@@ -248,12 +230,12 @@ void setup(int &nvertices, Extent &host_extent) {
 
   CC(cudaMalloc(&orig_xyzuvw, nvertices * 6 * sizeof(float)));
   CC(cudaMemcpy(orig_xyzuvw, xyzuvw_host, nvertices * 6 * sizeof(float),
-                cudaMemcpyHostToDevice));
+		H2D));
   delete[] xyzuvw_host;
 
   CC(cudaMalloc(&devtrs4, params.ntriangles * 4 * sizeof(int)));
   CC(cudaMemcpy(devtrs4, trs4, params.ntriangles * 4 * sizeof(int),
-                cudaMemcpyHostToDevice));
+		H2D));
   delete[] trs4;
 
   const int nentries = adjVert.size();
@@ -261,11 +243,11 @@ void setup(int &nvertices, Extent &host_extent) {
   int *ptr, *ptr2;
   CC(cudaMalloc(&ptr, sizeof(int) * nentries));
   CC(cudaMemcpy(ptr, &adjVert.front(), sizeof(int) * nentries,
-                cudaMemcpyHostToDevice));
+		H2D));
 
   CC(cudaMalloc(&ptr2, sizeof(int) * nentries));
   CC(cudaMemcpy(ptr2, &adjVert2.front(), sizeof(int) * nentries,
-                cudaMemcpyHostToDevice));
+		H2D));
 
   setup_support(ptr, ptr2, nentries);
 
@@ -281,20 +263,17 @@ void setup(int &nvertices, Extent &host_extent) {
 
   size_t textureoffset;
   CC(cudaBindTexture(&textureoffset, &texTriangles4, devtrs4,
-                     &texTriangles4.channelDesc,
-                     params.ntriangles * 4 * sizeof(int)));
+		     &texTriangles4.channelDesc,
+		     params.ntriangles * 4 * sizeof(int)));
 
   maxCells = 0;
   CC(cudaMalloc(&host_av, 1 * 2 * sizeof(float)));
 
-  unitsSetup(RBCx0, RBCp, RBCka, RBCkb, RBCkd, RBCkv, RBCgammaC, RBCtotArea,
-             RBCtotVolume, 1e-6, -1 /* not used */, -1 /* not used */, report);
+  unitsSetup();
   CC(cudaFuncSetCacheConfig(fall_kernel<498>, cudaFuncCachePreferL1));
 }
 
 int get_nvertices() { return params.nvertices; }
-
-Params &get_params() { return params; }
 
 __global__ void transformKernel(float *xyzuvw, int n) {
   int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -315,53 +294,14 @@ void initialize(float *device_xyzuvw, const float (*transform)[4]) {
 
   CC(cudaMemcpyToSymbol(A, transform, 16 * sizeof(float)));
   CC(cudaMemcpy(device_xyzuvw, orig_xyzuvw,
-                6 * params.nvertices * sizeof(float),
-                cudaMemcpyDeviceToDevice));
+		6 * params.nvertices * sizeof(float),
+		D2D));
   transformKernel<<<blocks, threads>>>(device_xyzuvw, params.nvertices);
   CC(cudaPeekAtLastError());
 }
 
-__device__ __forceinline__ float3 tex2vec(int id) {
-  float2 tmp0 = tex1Dfetch(texVertices, id + 0);
-  float2 tmp1 = tex1Dfetch(texVertices, id + 1);
-  return make_float3(tmp0.x, tmp0.y, tmp1.x);
-}
-
-__device__ __forceinline__ float2 warpReduceSum(float2 val) {
-  for (int offset = warpSize / 2; offset > 0; offset /= 2) {
-    val.x += __shfl_down(val.x, offset);
-    val.y += __shfl_down(val.y, offset);
-  }
-  return val;
-}
-
-__global__ void areaAndVolumeKernel(float *totA_V) {
-  float2 a_v = make_float2(0.0f, 0.0f);
-  const int cid = blockIdx.y;
-
-  for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < devParams.ntriangles;
-       i += blockDim.x * gridDim.x) {
-    int4 ids = tex1Dfetch(texTriangles4, i);
-
-    float3 v0(tex2vec(3 * (ids.x + cid * devParams.nvertices)));
-    float3 v1(tex2vec(3 * (ids.y + cid * devParams.nvertices)));
-    float3 v2(tex2vec(3 * (ids.z + cid * devParams.nvertices)));
-
-    a_v.x += 0.5f * length(cross(v1 - v0, v2 - v0));
-    a_v.y += 0.1666666667f *
-             (-v0.z * v1.y * v2.x + v0.z * v1.x * v2.y + v0.y * v1.z * v2.x -
-              v0.x * v1.z * v2.y - v0.y * v1.x * v2.z + v0.x * v1.y * v2.z);
-  }
-
-  a_v = warpReduceSum(a_v);
-  if ((threadIdx.x & (warpSize - 1)) == 0) {
-    atomicAdd(&totA_V[2 * cid + 0], a_v.x);
-    atomicAdd(&totA_V[2 * cid + 1], a_v.y);
-  }
-}
-
 void forces_nohost(int ncells, const float *const device_xyzuvw,
-                   float *const device_axayaz) {
+		   float *const device_axayaz) {
   if (ncells == 0) return;
 
   if (ncells > maxCells) {
@@ -372,8 +312,8 @@ void forces_nohost(int ncells, const float *const device_xyzuvw,
 
   size_t textureoffset;
   CC(cudaBindTexture(&textureoffset, &texVertices, (float2 *)device_xyzuvw,
-                     &texVertices.channelDesc,
-                     ncells * params.nvertices * sizeof(float) * 6));
+		     &texVertices.channelDesc,
+		     ncells * params.nvertices * sizeof(float) * 6));
 
   dim3 avThreads(256, 1);
   dim3 avBlocks(1, ncells);
@@ -387,16 +327,11 @@ void forces_nohost(int ncells, const float *const device_xyzuvw,
 
   fall_kernel<498><<<blocks, threads, 0>>>(ncells, host_av, device_axayaz);
   addKernel<<<(params.nvertices + 127) / 128, 128, 0>>>(device_axayaz, addfrc,
-                                                        params.nvertices);
+							params.nvertices);
 }
 
 void get_triangle_indexing(int (*&host_triplets_ptr)[3], int &ntriangles) {
   host_triplets_ptr = (int(*)[3])triplets;
   ntriangles = params.ntriangles;
 }
-
-float *get_orig_xyzuvw() { return orig_xyzuvw; }
-
-void extent_nohost(int ncells, const float *const xyzuvw, Extent *device_extent,
-                   int n) {}
 }

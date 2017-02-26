@@ -7,8 +7,8 @@ texture<int4, cudaTextureType1D> texTriangles4;
 __constant__ float A[4][4];
 
 __device__ __forceinline__ float3 _fangle(const float3 v1, const float3 v2,
-                                          const float3 v3, const float area,
-                                          const float volume) {
+					  const float3 v3, const float area,
+					  const float volume) {
   const float3 x21 = v2 - v1;
   const float3 x32 = v3 - v2;
   const float3 x31 = v3 - v1;
@@ -40,17 +40,17 @@ __device__ __forceinline__ float3 _fangle(const float3 v1, const float3 v2,
 }
 
 __device__ __forceinline__ float3 _fvisc(const float3 v1, const float3 v2,
-                                         const float3 u1, const float3 u2) {
+					 const float3 u1, const float3 u2) {
   const float3 du = u2 - u1;
   const float3 dr = v1 - v2;
 
   return du * devParams.gammaT +
-         dr * devParams.gammaC * dot(du, dr) / dot(dr, dr);
+	 dr * devParams.gammaC * dot(du, dr) / dot(dr, dr);
 }
 
 template <int update>
 __device__ __forceinline__ float3 _fdihedral(float3 v1, float3 v2, float3 v3,
-                                             float3 v4) {
+					     float3 v4) {
   const float3 ksi = cross(v1 - v2, v1 - v3);
   const float3 dzeta = cross(v3 - v4, v2 - v4);
 
@@ -73,15 +73,15 @@ __device__ __forceinline__ float3 _fdihedral(float3 v1, float3 v2, float3 v3,
     return cross(ksi, v3 - v2) * b11 + cross(dzeta, v3 - v2) * b12;
   else if (update == 2)
     return cross(ksi, v1 - v3) * b11 +
-           (cross(ksi, v3 - v4) + cross(dzeta, v1 - v3)) * b12 +
-           cross(dzeta, v3 - v4) * b22;
+	   (cross(ksi, v3 - v4) + cross(dzeta, v1 - v3)) * b12 +
+	   cross(dzeta, v3 - v4) * b22;
   else
     return make_float3(0, 0, 0);
 }
 
 template <int nvertices>
 __device__ float3 _fangle_device(const float2 tmp0, const float2 tmp1,
-                                 float *av) {
+				 float *av) {
   const int degreemax = 7;
   const int pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
   const int lid = pid % nvertices;
@@ -130,12 +130,12 @@ __device__ float3 _fdihedral_device(const float2 tmp0, const float2 tmp1) {
   const float3 v0 = make_float3(tmp0.x, tmp0.y, tmp1.x);
 
   /*
-         v4
+	 v4
        /   \
      v1 --> v2 --> v3
        \   /
-         V
-         v0
+	 V
+	 v0
 
    dihedrals: 0124, 0123
   */
@@ -151,7 +151,7 @@ __device__ float3 _fdihedral_device(const float2 tmp0, const float2 tmp1) {
     idv3 = tex1Dfetch(texAdjVert, 1 + degreemax * lid);
   } else {
     idv3 =
-        tex1Dfetch(texAdjVert, ((neighid + 2) % degreemax) + degreemax * lid);
+	tex1Dfetch(texAdjVert, ((neighid + 2) % degreemax) + degreemax * lid);
     if (idv3 == -1 && valid) idv3 = tex1Dfetch(texAdjVert, 0 + degreemax * lid);
   }
 
@@ -179,7 +179,7 @@ __device__ float3 _fdihedral_device(const float2 tmp0, const float2 tmp1) {
 
 template <int nvertices>
 __global__ void fall_kernel(const int nrbcs, float *const __restrict__ av,
-                            float *const acc) {
+			    float *const acc) {
   const int degreemax = 7;
   const int pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
 
@@ -198,9 +198,49 @@ __global__ void fall_kernel(const int nrbcs, float *const __restrict__ av,
   }
 }
 
-__global__ void addKernel(float *axayaz, float *const __restrict__ addfrc,
-                          int n) {
+ __global__ void addKernel(float* axayaz, float* const __restrict__ addfrc, int n)
+{
   uint pid = threadIdx.x + blockIdx.x * blockDim.x;
-  if (pid < n) axayaz[3 * pid + 0] += addfrc[pid];
+  if (pid < n) axayaz[3*pid + 0] += addfrc[pid];
 }
+
+__device__ __forceinline__ float3 tex2vec(int id) {
+  float2 tmp0 = tex1Dfetch(texVertices, id + 0);
+  float2 tmp1 = tex1Dfetch(texVertices, id + 1);
+  return make_float3(tmp0.x, tmp0.y, tmp1.x);
+}
+
+__device__ __forceinline__ float2 warpReduceSum(float2 val) {
+  for (int offset = warpSize / 2; offset > 0; offset /= 2) {
+    val.x += __shfl_down(val.x, offset);
+    val.y += __shfl_down(val.y, offset);
+  }
+  return val;
+}
+
+__global__ void areaAndVolumeKernel(float *totA_V) {
+  float2 a_v = make_float2(0.0f, 0.0f);
+  const int cid = blockIdx.y;
+
+  for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < devParams.ntriangles;
+       i += blockDim.x * gridDim.x) {
+    int4 ids = tex1Dfetch(texTriangles4, i);
+
+    float3 v0(tex2vec(3 * (ids.x + cid * devParams.nvertices)));
+    float3 v1(tex2vec(3 * (ids.y + cid * devParams.nvertices)));
+    float3 v2(tex2vec(3 * (ids.z + cid * devParams.nvertices)));
+
+    a_v.x += 0.5f * length(cross(v1 - v0, v2 - v0));
+    a_v.y += 0.1666666667f *
+	     (-v0.z * v1.y * v2.x + v0.z * v1.x * v2.y + v0.y * v1.z * v2.x -
+	      v0.x * v1.z * v2.y - v0.y * v1.x * v2.z + v0.x * v1.y * v2.z);
+  }
+
+  a_v = warpReduceSum(a_v);
+  if ((threadIdx.x & (warpSize - 1)) == 0) {
+    atomicAdd(&totA_V[2 * cid + 0], a_v.x);
+    atomicAdd(&totA_V[2 * cid + 1], a_v.y);
+  }
+}
+
 }
