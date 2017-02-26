@@ -1,13 +1,11 @@
-extern float RBCx0, RBCp, RBCka, RBCkb, RBCkd, RBCkv, RBCgammaC, RBCtotArea,
-    RBCtotVolume, RBCscale;
-
 namespace CudaRBC {
 
 void unitsSetup() {
+#include "params/rbc.inc0.h"
   float x0 = RBCx0, p = RBCp, ka = RBCka, kb = RBCkb,
     kd = RBCkd, kv = RBCkv,
     gammaC = RBCgammaC, totArea0 = RBCtotArea,
-    totVolume0 = RBCtotVolume;
+    totVolume0 = RBCtotVolume, RBCscale = 1.0/rc;
 
   float ll = 1 / RBCscale;
 
@@ -108,6 +106,7 @@ void setup(int &nvertices, Extent &host_extent) {
     int dummy[3];
     const int retval = fscanf(f, "%d %d %d %e %e %e\n", dummy + 0, dummy + 1,
 			      dummy + 2, p.r, p.r + 1, p.r + 2);
+    float RBCscale = 1.0/rc;
     p.r[0] *= RBCscale; p.r[1] *= RBCscale; p.r[2] *= RBCscale;
     if (retval != 6) break;
     rv.push_back(p);
