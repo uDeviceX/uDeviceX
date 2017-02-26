@@ -19,10 +19,10 @@ __device__ __forceinline__ float3 _fangle(float3 v1, float3 v2,
   float A0 = devParams.Area0;
   float n_2 = 1.0 / Ak;
   float coefArea =
-      -0.25f * (devParams.ka * (area - devParams.totArea0) * n_2) -
+      -0.25f * (devParams.ka0 * (area - devParams.totArea0) * n_2) -
       devParams.kd * (Ak - A0) / (4. * A0 * Ak);
 
-  float coeffVol = devParams.kv * (volume - devParams.totVolume0);
+  float coeffVol = devParams.kv0 * (volume - devParams.totVolume0);
   float3 addFArea = coefArea * cross(normal, x32);
   float3 addFVolume = coeffVol * cross(v3, v2);
 

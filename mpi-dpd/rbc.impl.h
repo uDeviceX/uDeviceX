@@ -2,9 +2,8 @@ namespace CudaRBC {
 
 void unitsSetup() {
 #include "params/rbc.inc0.h"
-  float x0 = RBCx0, p = RBCp, ka = RBCka, kb = RBCkb,
-    kd = RBCkd, kv = RBCkv,
-    gammaC = RBCgammaC, totArea0 = RBCtotArea,
+  float x0 = RBCx0, p = RBCp, kb = RBCkb,
+    kd = RBCkd, gammaC = RBCgammaC, totArea0 = RBCtotArea,
     totVolume0 = RBCtotVolume;
 
   float phi = RBCphi / 180.0 * M_PI; /* theta_0 */
@@ -15,9 +14,7 @@ void unitsSetup() {
   params.mpow = RBCmpow; /* WLC-POW */
 
   /* units conversion: Fedosov -> uDeviceX */
-  params.kv = kv ;
   params.gammaC = gammaC;
-  params.ka = ka;
   params.kd = kd;
   params.p = p ;
   params.totArea0 = totArea0;
@@ -37,8 +34,8 @@ void unitsSetup() {
       (4 * params.p * (x0 - 1) * (x0 - 1));
 
   /* to simplify further computations */
-  params.ka = params.ka / params.totArea0;
-  params.kv = params.kv / (6 * params.totVolume0);
+  params.ka0 = RBCka / params.totArea0;
+  params.kv0 = RBCkv / (6 * params.totVolume0);
 
   CC(cudaMemcpyToSymbol(devParams, &params, sizeof(Params)));
 }
