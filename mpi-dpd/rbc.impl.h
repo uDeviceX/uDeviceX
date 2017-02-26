@@ -188,7 +188,6 @@ void setup(int &nvertices, Extent &host_extent) {
     }
   }
 
-  params.nvertices = nvertices;
   params.ntriangles = triangles.size();
 
   // Find stretching points
@@ -267,7 +266,7 @@ void setup(int &nvertices, Extent &host_extent) {
   CC(cudaFuncSetCacheConfig(fall_kernel<498>, cudaFuncCachePreferL1));
 }
 
-int get_nvertices() { return params.nvertices; }
+int get_nvertices() { return RBCnv; }
 
 __global__ void transformKernel(float *xyzuvw, int n) {
   int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -284,13 +283,13 @@ __global__ void transformKernel(float *xyzuvw, int n) {
 
 void initialize(float *device_xyzuvw, const float (*transform)[4]) {
   const int threads = 128;
-  const int blocks = (params.nvertices + threads - 1) / threads;
+  const int blocks = (RBCnv + threads - 1) / threads;
 
   CC(cudaMemcpyToSymbol(A, transform, 16 * sizeof(float)));
   CC(cudaMemcpy(device_xyzuvw, orig_xyzuvw,
-		6 * params.nvertices * sizeof(float),
+		6 * RBCnv * sizeof(float),
 		D2D));
-  transformKernel<<<blocks, threads>>>(device_xyzuvw, params.nvertices);
+  transformKernel<<<blocks, threads>>>(device_xyzuvw, RBCnv);
   CC(cudaPeekAtLastError());
 }
 
@@ -307,7 +306,7 @@ void forces_nohost(int ncells, const float *const device_xyzuvw,
   size_t textureoffset;
   CC(cudaBindTexture(&textureoffset, &texVertices, (float2 *)device_xyzuvw,
 		     &texVertices.channelDesc,
-		     ncells * params.nvertices * sizeof(float) * 6));
+		     ncells * RBCnv * sizeof(float) * 6));
 
   dim3 avThreads(256, 1);
   dim3 avBlocks(1, ncells);
@@ -317,11 +316,11 @@ void forces_nohost(int ncells, const float *const device_xyzuvw,
   CC(cudaPeekAtLastError());
 
   int threads = 128;
-  int blocks = (ncells * params.nvertices * 7 + threads - 1) / threads;
+  int blocks = (ncells * RBCnv * 7 + threads - 1) / threads;
 
   fall_kernel<498><<<blocks, threads, 0>>>(ncells, host_av, device_axayaz);
-  addKernel<<<(params.nvertices + 127) / 128, 128, 0>>>(device_axayaz, addfrc,
-							params.nvertices);
+  addKernel<<<(RBCnv + 127) / 128, 128, 0>>>(device_axayaz, addfrc,
+							RBCnv);
 }
 
 void get_triangle_indexing(int (*&host_triplets_ptr)[3], int &ntriangles) {
