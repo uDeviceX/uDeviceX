@@ -11,8 +11,8 @@ __device__ __forceinline__ float3 _fangle(float3 v1, float3 v2,
 					  float volume) {
 #include "params/rbc.inc0.h"
   float Ak, A0, n_2, coefArea, coeffVol,
-        r, xx, IbforceI_wcl, kp, IbforceI_pow, ka0, kv0, x0, l0, lmax,
-        kbToverp;
+	r, xx, IbforceI_wcl, kp, IbforceI_pow, ka0, kv0, x0, l0, lmax,
+	kbToverp;
 
   float3 x21 = v2 - v1, x32 = v3 - v2, x31 = v3 - v1;
   float3 nn = cross(x21, x31); /* normal */
@@ -236,6 +236,13 @@ __device__ __forceinline__ float2 warpReduceSum(float2 val) {
 }
 
 __global__ void areaAndVolumeKernel(float *totA_V) {
+#define sq(a) (a)*(a)
+#define abscross2(a, b) \
+    sq((a).y*(b).z - (a).z*(b).y) + \
+    sq((a).z*(b).x - (a).x*(b).z) + \
+    sq((a).x*(b).y - (a).y*(b).x)
+#define abscross(a, b) sqrtf(abscross2(a, b)) /* |a x b| */
+
   float2 a_v = make_float2(0.0f, 0.0f);
   int cid = blockIdx.y;
 
@@ -247,18 +254,20 @@ __global__ void areaAndVolumeKernel(float *totA_V) {
     float3 v1(tex2vec(3 * (ids.y + cid * RBCnv)));
     float3 v2(tex2vec(3 * (ids.z + cid * RBCnv)));
 
-    a_v.x += 0.5f * length(cross(v1 - v0, v2 - v0));
+    a_v.x += 0.5f * abscross(v1 - v0, v2 - v0);
     a_v.y += 0.1666666667f *
       ((v0.x*v1.y-v0.y*v1.x)*v2.z +
        (v0.z*v1.x-v0.x*v1.z)*v2.y +
        (v0.y*v1.z-v0.z*v1.y)*v2.x);
   }
-
   a_v = warpReduceSum(a_v);
   if ((threadIdx.x & (warpSize - 1)) == 0) {
     atomicAdd(&totA_V[2 * cid + 0], a_v.x);
     atomicAdd(&totA_V[2 * cid + 1], a_v.y);
   }
+#undef sq
+#undef abscross2
+#undef abscross
 }
 
 }
