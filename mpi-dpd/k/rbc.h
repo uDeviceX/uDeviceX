@@ -10,13 +10,13 @@ __device__ __forceinline__ float3 _fangle(float3 v1, float3 v2,
 					  float3 v3, float area,
 					  float volume) {
 #include "params/rbc.inc0.h"
-  float3 x21 = v2 - v1, x32 = v3 - v2, x31 = v3 - v1;
-  float3 normal = cross(x21, x31);
-
   float Ak, A0, n_2, coefArea, coeffVol,
-        r, xx, IbforceI_wcl, kp, mpow, IbforceI_pow, ka0, kv0;
+        r, xx, IbforceI_wcl, kp, IbforceI_pow, ka0, kv0, x0, l0;
 
-  Ak = 0.5 * sqrtf(dot(normal, normal));
+  float3 x21 = v2 - v1, x32 = v3 - v2, x31 = v3 - v1;
+  float3 nn = cross(x21, x31); /* normal */
+
+  Ak = 0.5 * sqrtf(dot(nn, nn));
 
   A0 = RBCtotArea / (2.0 * RBCnv - 4.);
   n_2 = 1.0 / Ak;
@@ -27,7 +27,7 @@ __device__ __forceinline__ float3 _fangle(float3 v1, float3 v2,
 
   kv0 = RBCkv / (6 * RBCtotVolume);
   coeffVol = kv0 * (volume - RBCtotVolume);
-  float3 addFArea = coefArea * cross(normal, x32);
+  float3 addFArea = coefArea * cross(nn, x32);
   float3 addFVolume = coeffVol * cross(v3, v2);
 
   r = length(v2 - v1);
@@ -36,9 +36,13 @@ __device__ __forceinline__ float3 _fangle(float3 v1, float3 v2,
   IbforceI_wcl =
       devParams.kbToverp * (0.25f / ((1.0f - xx) * (1.0f - xx)) - 0.25f + xx) /
       r;
-  kp = devParams.kp;
-  mpow = RBCmpow;
-  IbforceI_pow = -kp / powf(r, mpow) / r;
+
+  x0 = RBCx0;
+  l0 = sqrt(A0 * 4.0 / sqrt(3.0));
+  kp =
+      (RBCkbT * x0 * (4 * x0 * x0 - 9 * x0 + 6) * l0 * l0) /
+      (4 * RBCp * (x0 - 1) * (x0 - 1));
+  IbforceI_pow = -kp / powf(r, RBCmpow) / r;
 
   return addFArea + addFVolume + (IbforceI_wcl + IbforceI_pow) * x21;
 }
