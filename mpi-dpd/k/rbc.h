@@ -269,4 +269,17 @@ __global__ void areaAndVolumeKernel(float *totA_V) {
 #undef abscross
 }
 
+__global__ void transformKernel(float *xyzuvw, int n) {
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (i >= n) return;
+
+  float x = xyzuvw[6 * i + 0];
+  float y = xyzuvw[6 * i + 1];
+  float z = xyzuvw[6 * i + 2];
+
+  xyzuvw[6 * i + 0] = A[0][0] * x + A[0][1] * y + A[0][2] * z + A[0][3];
+  xyzuvw[6 * i + 1] = A[1][0] * x + A[1][1] * y + A[1][2] * z + A[1][3];
+  xyzuvw[6 * i + 2] = A[2][0] * x + A[2][1] * y + A[2][2] * z + A[2][3];
 }
+
+} /* namespace CudaRBC */
