@@ -1,7 +1,6 @@
 namespace ParticleKernels {
     __global__ void upd_stg2_and_1(bool rbcflag, float2 * _pdata, float * _adata,
-				   int nparticles, float dt, float _driving_force, float threshold,
-				   bool doublePoiseuille) {
+				   int nparticles, float dt, float _driving_force, float threshold) {
 	int warpid = threadIdx.x >> 5;
 	int base = 32 * (warpid + 4 * blockIdx.x);
 	int nsrc = min(32, nparticles - base);
@@ -78,8 +77,9 @@ namespace ParticleKernels {
 	else if (!rbcflag &&  lastbit::get(vx)) type =  IN_TYPE;
 	else if (!rbcflag && !lastbit::get(vx)) type = OUT_TYPE;
 	mass          = (type == MEMB_TYPE) ? rbc_mass : 1;
+	/* TODO: no driving force on "inner" particles */
 	driving_force = (type ==   IN_TYPE) ? 0        : _driving_force;
-	if (doublePoiseuille && y <= threshold) driving_force *= -1;
+	if (doublepoiseuille && y <= threshold) driving_force *= -1;
 
 	s1.y += (ax/mass + driving_force) * dt;
 	s2.x += ay/mass * dt;
@@ -157,7 +157,7 @@ void  upd_stg2_and_1(Particle* pp, Force* ff, int n,
   if (!n) return;
   ParticleKernels::upd_stg2_and_1<<<(n + 127) / 128, 128, 0>>>
     (rbcflag, (float2 *)pp, (float *)ff, n,
-     dt, driving_force, globalextent.y * 0.5 - origin.y, doublepoiseuille);
+     dt, driving_force, globalextent.y * 0.5 - origin.y);
 }
 
 void clear_velocity(Particle* pp, int n) {
