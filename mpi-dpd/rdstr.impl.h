@@ -10,7 +10,8 @@ void _post_recvcount() {
 }
 
 void redistribute_rbcs_init(MPI_Comm _cartcomm) {
-  bulk = new DeviceBuffer<Particle>;
+  mpDeviceMalloc(&bulk);
+
   for (int i = 0; i < HALO_BUF_SIZE; i++) halo_recvbufs[i] = new PinnedHostBuffer<Particle>;
   for (int i = 0; i < HALO_BUF_SIZE; i++) halo_sendbufs[i] = new PinnedHostBuffer<Particle>;
   minextents = new PinnedHostBuffer<float3>;
@@ -100,7 +101,7 @@ void pack_sendcount(Particle *xyzuvw,
     reordering_indices[code].push_back(i);
   }
 
-  bulk->resize(reordering_indices[0].size() * nvertices);
+  n_bulk  = reordering_indices[0].size() * nvertices;
   for (int i = 1; i < 27; ++i)
     halo_sendbufs[i]->resize(reordering_indices[i].size() * nvertices);
   {
@@ -115,7 +116,7 @@ void pack_sendcount(Particle *xyzuvw,
 	if (i)
 	  dst.push_back((float *)(halo_sendbufs[i]->DP + nvertices * j));
 	else
-	  dst.push_back((float *)(bulk->D + nvertices * j));
+	  dst.push_back((float *)(bulk + nvertices * j));
       }
     pack_all(src.size(), nvertices, &src.front(),
 	     &dst.front());
@@ -143,7 +144,7 @@ int post() {
   }
 
   arriving /= nvertices;
-  notleaving = bulk->S / nvertices;
+  notleaving = n_bulk / nvertices;
 
   MPI_Status statuses[26];
   MC(MPI_Waitall(26, sendcountreq, statuses));
@@ -175,7 +176,7 @@ void unpack(Particle *xyzuvw, int nrbcs) {
   MC(MPI_Waitall(sendreq.size(), &sendreq.front(), statuses));
   recvreq.clear();
   sendreq.clear();
-  CC(cudaMemcpyAsync(xyzuvw, bulk->D, notleaving * nvertices * sizeof(Particle),
+  CC(cudaMemcpyAsync(xyzuvw, bulk, notleaving * nvertices * sizeof(Particle),
 		     D2D));
 
   for (int i = 1, s = notleaving * nvertices; i < 27; ++i) {
