@@ -3,8 +3,8 @@ namespace rdstr {
   Particle* bulk;
 
 #define HALO_BUF_SIZE 27
-  PinnedHostBuffer<Particle> *halo_recvbufs[HALO_BUF_SIZE], *halo_sendbufs[HALO_BUF_SIZE];
-  PinnedHostBuffer<float3> *minextents, *maxextents;
+  PinnedHostBuffer1<Particle> *halo_recvbufs[HALO_BUF_SIZE], *halo_sendbufs[HALO_BUF_SIZE];
+  PinnedHostBuffer1<float3> *minextents, *maxextents;
 
   MPI_Comm cartcomm;
   MPI_Request sendcountreq[26];

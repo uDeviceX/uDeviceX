@@ -12,10 +12,12 @@ void _post_recvcount() {
 void init(MPI_Comm _cartcomm) {
   mpDeviceMalloc(&bulk);
 
-  for (int i = 0; i < HALO_BUF_SIZE; i++) halo_recvbufs[i] = new PinnedHostBuffer<Particle>;
-  for (int i = 0; i < HALO_BUF_SIZE; i++) halo_sendbufs[i] = new PinnedHostBuffer<Particle>;
-  minextents = new PinnedHostBuffer<float3>;
-  maxextents = new PinnedHostBuffer<float3>;
+  for (int i = 0; i < HALO_BUF_SIZE; i++) halo_recvbufs[i] =
+					    new PinnedHostBuffer1<Particle>;
+  for (int i = 0; i < HALO_BUF_SIZE; i++) halo_sendbufs[i] =
+					    new PinnedHostBuffer1<Particle>;
+  minextents = new PinnedHostBuffer1<float3>;
+  maxextents = new PinnedHostBuffer1<float3>;
   _ddestinations = new DeviceBuffer<float *>;
   _dsources = new DeviceBuffer<const float *>;
 
