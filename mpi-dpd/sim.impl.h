@@ -195,7 +195,7 @@ static void update_and_bounce() {
 
 void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   Cont::cartcomm = cartcomm_; activecomm = activecomm_;
-  rdstr::redistribute_rbcs_init(Cont::cartcomm);
+  rdstr::init(Cont::cartcomm);
   DPD::init(Cont::cartcomm);
   fsi::init(Cont::cartcomm);
   rex::init(Cont::cartcomm);
@@ -290,7 +290,7 @@ void close() {
   rex::close();
   fsi::close();
   DPD::close();
-  rdstr::redistribute_rbcs_close();
+  rdstr::close();
 
   CC(cudaFree(s_zip0));
   CC(cudaFree(s_zip1));

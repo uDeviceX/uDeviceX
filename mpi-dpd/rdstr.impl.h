@@ -9,7 +9,7 @@ void _post_recvcount() {
   }
 }
 
-void redistribute_rbcs_init(MPI_Comm _cartcomm) {
+void init(MPI_Comm _cartcomm) {
   mpDeviceMalloc(&bulk);
 
   for (int i = 0; i < HALO_BUF_SIZE; i++) halo_recvbufs[i] = new PinnedHostBuffer<Particle>;
@@ -189,9 +189,8 @@ void unpack(Particle *xyzuvw, int nrbcs) {
   _post_recvcount();
 }
 
-void redistribute_rbcs_close() {
+void close() {
   MC(MPI_Comm_free(&cartcomm));
-  delete bulk;
   for (int i = 0; i < HALO_BUF_SIZE; i++) delete halo_recvbufs[i];
   for (int i = 0; i < HALO_BUF_SIZE; i++) delete halo_sendbufs[i];
   delete minextents;
