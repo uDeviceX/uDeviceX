@@ -1,4 +1,4 @@
-namespace CudaRBC {
+namespace rbc {
 struct Extent {
   float xmin, ymin, zmin;
   float xmax, ymax, zmax;

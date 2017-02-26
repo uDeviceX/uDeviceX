@@ -170,12 +170,12 @@ void rbc_init() {
   int dims[3], periods[3];
   MC( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
 
-  CudaRBC::get_triangle_indexing(indices, ntriangles);
-  CudaRBC::setup(nvertices);
+  rbc::get_triangle_indexing(indices, ntriangles);
+  rbc::setup(nvertices);
 }
 
 void _initialize(float *device_pp, float (*transform)[4]) {
-  CudaRBC::initialize(device_pp, transform);
+  rbc::initialize(device_pp, transform);
 }
   
 void setup(Particle* pp, const char *path2ic) {

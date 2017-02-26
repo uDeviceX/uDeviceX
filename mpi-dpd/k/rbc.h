@@ -1,4 +1,4 @@
-namespace CudaRBC {
+namespace rbc {
 texture<float2, 1, cudaReadModeElementType> texVertices;
 texture<int, 1, cudaReadModeElementType> texAdjVert;
 texture<int, 1, cudaReadModeElementType> texAdjVert2;
@@ -282,4 +282,4 @@ __global__ void transformKernel(float *xyzuvw, int n) {
   xyzuvw[6 * i + 2] = A[2][0] * x + A[2][1] * y + A[2][2] * z + A[2][3];
 }
 
-} /* namespace CudaRBC */
+} /* namespace rbc */

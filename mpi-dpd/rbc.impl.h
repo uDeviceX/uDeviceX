@@ -1,4 +1,4 @@
-namespace CudaRBC {
+namespace rbc {
 
 void eat_until(FILE *f, std::string target) {
   while (!feof(f)) {

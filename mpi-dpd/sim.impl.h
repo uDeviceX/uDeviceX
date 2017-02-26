@@ -83,7 +83,7 @@ void create_walls() {
 
 void forces_rbc() {
   if (rbcs)
-    CudaRBC::forces_nohost(Cont::ncells,
+    rbc::forces_nohost(Cont::ncells,
 			   (float*)r_pp->D, (float*)r_ff->D);
 }
 

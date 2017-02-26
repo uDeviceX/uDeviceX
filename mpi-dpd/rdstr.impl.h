@@ -18,8 +18,8 @@ void redistribute_rbcs_init(MPI_Comm _cartcomm) {
   _ddestinations = new DeviceBuffer<float *>;
   _dsources = new DeviceBuffer<const float *>;
 
-  nvertices = CudaRBC::get_nvertices();
-  CudaRBC::setup(nvertices);
+  nvertices = rbc::get_nvertices();
+  rbc::setup(nvertices);
   /* TODO: move it to a better place; [xyz]lo, [xyz]hi pbc[xyz] (9
      arguments for iotags_domain, pbc: 1: for periods boundary
      conditions) */
