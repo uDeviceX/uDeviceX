@@ -16,7 +16,11 @@
 #include "bund.h"
 #include "dpd-forces.h"
 #include "last-bit.h"
+
+#ifdef GWRP
 #include "geom-wrapper.h"
+#endif
+
 #include "minmax.h"
 
 #include <thrust/device_vector.h>

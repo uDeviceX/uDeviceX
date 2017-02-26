@@ -23,6 +23,10 @@ ifeq ($(h5),0)
 NVCCFLAGS += -DNO_H5
 endif
 
+ifeq ($(gwrp),1) # geom-wrapper uses CGAL
+NVCCFLAGS += -DGWRP
+endif
+
 NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel)
 
 # I have some device code in OBJS. I have to link it separatly

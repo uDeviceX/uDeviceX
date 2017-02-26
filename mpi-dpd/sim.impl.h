@@ -145,7 +145,9 @@ void forces() {
 }
 
 void in_out() {
+#ifdef GWRP
 #include "sim.hack.h"
+#endif
 }
 
 void dev2hst() { /* device2host  */
@@ -221,7 +223,7 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   Cont::globalextent = make_float3(dims[0] * XSIZE_SUBDOMAIN,
 				   dims[1] * YSIZE_SUBDOMAIN,
 				   dims[2] * ZSIZE_SUBDOMAIN);
-  mpDeviceMalloc(&s_pp); mpDeviceMalloc(&s_pp0);  
+  mpDeviceMalloc(&s_pp); mpDeviceMalloc(&s_pp0);
   mpDeviceMalloc(&s_ff); mpDeviceMalloc(&s_ff0);
 
   std::vector<Particle> ic = ic_pos();
@@ -234,10 +236,12 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   if (rbcs) {
     Cont::rbc_init();
     Cont::setup(r_pp->D, "rbcs-ic.txt");
+#ifdef GWRP
     iotags_init_file("rbc.dat");
     iotags_domain(0, 0, 0,
 		  XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN,
 		  periods[0], periods[1], periods[0]);
+#endif
   }
 
   MC(MPI_Comm_dup(activecomm, &myactivecomm));
