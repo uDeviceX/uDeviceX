@@ -5,7 +5,9 @@ const float hydrostatic_a = _hydrostatic_a / rc;
 const float kBT           = _kBT / (rc * rc);
 const int   numberdensity = _numberdensity * (rc * rc * rc);
 
+/* maximum particle number per one processor for static allocation */
 #define MAX_PART_NUM 5000000
+
 #define D2D cudaMemcpyDeviceToDevice
 #define D2H cudaMemcpyDeviceToHost
 #define H2D cudaMemcpyHostToDevice
@@ -50,6 +52,13 @@ struct Particle {
     return mytype;
   }
 };
+
+template <typename T>
+void mpDeviceMalloc(T **D) { /* a "[m]ax [p]article number" device
+			       allocation (takes a pointer to
+			       pointer!) */
+  CC(cudaMalloc(D, sizeof(T) * MAX_PART_NUM));
+}
 
 struct Force {
   float a[3];

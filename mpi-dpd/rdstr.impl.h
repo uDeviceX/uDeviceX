@@ -20,13 +20,6 @@ void redistribute_rbcs_init(MPI_Comm _cartcomm) {
 
   nvertices = rbc::get_nvertices();
   rbc::setup();
-  /* TODO: move it to a better place; [xyz]lo, [xyz]hi pbc[xyz] (9
-     arguments for iotags_domain, pbc: 1: for periods boundary
-     conditions) */
-  iotags_init_file("rbc.dat");
-  iotags_domain(0, 0, 0,
-		XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN,
-		1, 1, 1);
   MC(MPI_Comm_dup(_cartcomm, &cartcomm));
   MC(MPI_Comm_rank(cartcomm, &myrank));
   int dims[3];

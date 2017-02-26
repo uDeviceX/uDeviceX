@@ -10,28 +10,24 @@
 #include "bund.h"
 
 int main(int argc, char **argv) {
-  int ranks[3];
-
-  // parsing of the positional arguments
   if (argc < 4) {
     printf("usage: ./mpi-dpd <xranks> <yranks> <zranks>\n");
     exit(-1);
-  } else
-    for (int i = 0; i < 3; ++i)
-      ranks[i] = atoi(argv[1 + i]);
+  }
+
+  int rank, ranks[3];
+  for (int i = 0; i < 3; ++i) ranks[i] = atoi(argv[1 + i]);
 
   CC(cudaSetDevice(0));
   CC(cudaDeviceReset());
-  int rank;
+
   MC(MPI_Init(&argc, &argv));
   MC(MPI_Comm_rank(MPI_COMM_WORLD, &rank));
-  MPI_Comm activecomm = MPI_COMM_WORLD;
-  MPI_Comm cartcomm;
+
+  MPI_Comm cartcomm, activecomm = MPI_COMM_WORLD;
   int periods[] = {1, 1, 1};
-  MC(MPI_Cart_create(activecomm, 3, ranks, periods, 0,
-			    &cartcomm));
+  MC(MPI_Cart_create(activecomm, 3, ranks, periods, 0, &cartcomm));
   activecomm = cartcomm;
-  MC(MPI_Barrier(activecomm));
   MC(MPI_Barrier(activecomm));
 
   sim::init(cartcomm, activecomm);

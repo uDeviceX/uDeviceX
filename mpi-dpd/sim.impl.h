@@ -202,7 +202,6 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
     dump_part_solvent = new H5PartDump("s.h5part", activecomm, Cont::cartcomm);
 
   cells   = new CellLists(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
-
   mpDeviceMalloc(&s_zip0); mpDeviceMalloc(&s_zip1);
 
   if (rbcs) {
@@ -212,7 +211,6 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
 
   wall::trunk = new Logistic::KISS;
   sdstr::redist_part_init(Cont::cartcomm);
-  nsteps = (int)(tend / dt);
   MC(MPI_Comm_rank(activecomm, &Cont::rank));
 
   int dims[3], periods[3];
@@ -229,15 +227,17 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   std::vector<Particle> ic = ic_pos();
   s_n  = ic.size();
 
-  CC(cudaMemcpy(s_pp, &ic.front(),
-			sizeof(Particle) * ic.size(),
-			H2D));
+  CC(cudaMemcpy(s_pp, &ic.front(), sizeof(Particle) * ic.size(), H2D));
   cells->build(s_pp, s_n, NULL, NULL);
   update_helper_arrays();
 
   if (rbcs) {
     Cont::rbc_init();
     Cont::setup(r_pp->D, "rbcs-ic.txt");
+    iotags_init_file("rbc.dat");
+    iotags_domain(0, 0, 0,
+		  XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN,
+		  periods[0], periods[1], periods[0]);
   }
 
   MC(MPI_Comm_dup(activecomm, &myactivecomm));
@@ -258,6 +258,7 @@ void dumps_diags(int it) {
 }
 
 void run() {
+  int nsteps = (int)(tend / dt);
   if (Cont::rank == 0 && !walls) printf("will take %ld steps\n", nsteps);
   if (!walls && pushtheflow) driving_force = hydrostatic_a;
   int it;
