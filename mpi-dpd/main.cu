@@ -15,9 +15,6 @@ bool walls, pushtheflow, doublepoiseuille, rbcs, hdf5field_dumps,
     hdf5part_dumps, contactforces;
 int steps_per_dump, steps_per_hdf5dump, wall_creation_stepid;
 
-float RBCx0, RBCp, RBCcq, RBCkb, RBCka, RBCkv, RBCgammaC, RBCkd, RBCtotArea,
-    RBCtotVolume, RBCscale;
-
 int main(int argc, char **argv) {
   int ranks[3];
 
@@ -42,18 +39,6 @@ int main(int argc, char **argv) {
   tend = argp("-tend").asDouble(50);
   wall_creation_stepid = argp("-wall_creation_stepid").asInt(5000);
   walls = argp("-walls").asBool(false);
-
-  RBCx0 = argp("-RBCx0").asDouble(0.5);
-  RBCp = argp("-RBCp").asDouble(0.0045);
-  RBCka = argp("-RBCka").asDouble(4900);
-  RBCkb = argp("-RBCkb").asDouble(40);
-  RBCkd = argp("-RBCkd").asDouble(100);
-  RBCkv = argp("-RBCkv").asDouble(5000);
-  RBCgammaC = argp("-RBCgammaC").asDouble(30);
-  RBCtotArea = argp("-RBCtotArea").asDouble(124);
-  RBCtotVolume = argp("-RBCtotVolume").asDouble(90);
-
-  RBCscale = 1 / rc;
 
   CC(cudaSetDevice(0));
   CC(cudaDeviceReset());
