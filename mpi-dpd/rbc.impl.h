@@ -2,7 +2,7 @@ namespace CudaRBC {
 
 void unitsSetup() {
 #include "params/rbc.inc0.h"
-  float x0 = RBCx0, p = RBCp, kb = RBCkb,
+  const float x0 = RBCx0, kb = RBCkb,
     kd = RBCkd, gammaC = RBCgammaC, totArea0 = RBCtotArea,
     totVolume0 = RBCtotVolume;
 
@@ -16,7 +16,7 @@ void unitsSetup() {
   /* units conversion: Fedosov -> uDeviceX */
   params.gammaC = gammaC;
   params.kd = kd;
-  params.p = p ;
+  params.p = RBCp ;
   params.totArea0 = totArea0;
   params.kb = kb ;
   params.totVolume0 = totVolume0;
