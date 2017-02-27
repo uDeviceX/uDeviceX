@@ -1,24 +1,24 @@
 namespace k_rdstr {
-static const int cmaxnrbcs = 64 * 4;
-__constant__ float *csources[cmaxnrbcs], *cdestinations[cmaxnrbcs];
+static const int cmaxnc = 64 * 4;
+__constant__ float *csrc[cmaxnc], *cdst[cmaxnc];
 
 template <bool from_cmem>
-__global__ void pack_all_kernel(const int nrbcs, const int nvertices,
-				const float **const dsources,
-				float **const ddestinations) {
-  if (nrbcs == 0) return;
-  const int nfloats_per_rbc = 6 * nvertices;
-  const int gid = threadIdx.x + blockDim.x * blockIdx.x;
-  if (gid >= nfloats_per_rbc * nrbcs) return;
-  const int idrbc = gid / nfloats_per_rbc;
-  const int offset = gid % nfloats_per_rbc;
+__global__ void pack_all_kernel(int nc, int nv,
+				const float **const dsrc,
+				float **const ddst) {
+  if (nc == 0) return;
+  int nfloats_per_rbc = 6 * nv;
+  int gid = threadIdx.x + blockDim.x * blockIdx.x;
+  if (gid >= nfloats_per_rbc * nc) return;
+  int idrbc = gid / nfloats_per_rbc;
+  int offset = gid % nfloats_per_rbc;
 
   float val;
-  if (from_cmem) val = csources[idrbc][offset];
-  else           val = dsources[idrbc][offset];
+  if (from_cmem) val = csrc[idrbc][offset];
+  else           val = dsrc[idrbc][offset];
 
-  if (from_cmem) cdestinations[idrbc][offset] = val;
-  else           ddestinations[idrbc][offset] = val;
+  if (from_cmem) cdst[idrbc][offset] = val;
+  else           ddst[idrbc][offset] = val;
 }
 
 __global__ void shift(const Particle *const psrc, const int np, const int code,

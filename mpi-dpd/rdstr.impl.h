@@ -1,200 +1,190 @@
 namespace rdstr {
-void _post_recvcount() {
-  recv_counts[0] = 0;
+
+/* decode neighbors linear index to "delta"
+     0 -> { 0, 0, 0}
+     1 -> { 1, 0, 0}
+     ...
+    20 -> {-1, 0, -1}
+     ...
+    26 -> {-1, -1, -1}
+*/
+#define i2del(i) {((i) + 1) % 3 - 1, \
+		  ((i) / 3 + 1) % 3 - 1, \
+		  ((i) / 9 + 1) % 3 - 1}
+#define pb push_back
+
+void _post_recvcnt() {
+  recv_cnts[0] = 0;
   for (int i = 1; i < 27; ++i) {
     MPI_Request req;
-    MC(MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, anti_rankneighbors[i],
-			i + 1024, cartcomm, &req));
-    recvcountreq.push_back(req);
+    MC(MPI_Irecv(&recv_cnts[i], 1, MPI_INTEGER, ank_ne[i],
+		 i + 1024, ccom, &req));
+    recvcntreq.pb(req);
   }
 }
 
-void init(MPI_Comm _cartcomm) {
+/* generate ranks and anti-ranks of the neighbors */
+void gen_ne(MPI_Comm ccom, /* */ int* rnk_ne, int* ank_ne) {
+  MC(MPI_Comm_rank(ccom, &myrank));
+  int dims[3]; MC(MPI_Cart_get(ccom, 3, dims, periods, co));
+
+  rnk_ne[0] = myrank;
+  for (int i = 1; i < 27; ++i) {
+    int d[3] = i2del(i); /* index to delta */
+    int co_ne[3];
+    for (int c = 0; c < 3; ++c) co_ne[c] = co[c] + d[c];
+    MC(MPI_Cart_rank(ccom, co_ne, &rnk_ne[i]));
+    for (int c = 0; c < 3; ++c) co_ne[c] = co[c] - d[c];
+    MC(MPI_Cart_rank(ccom, co_ne, &ank_ne[i]));
+  }
+}
+
+void init(MPI_Comm _ccom) {
   mpDeviceMalloc(&bulk);
 
-  for (int i = 0; i < HALO_BUF_SIZE; i++) halo_recvbufs[i] =
-					    new PinnedHostBuffer1<Particle>;
-  for (int i = 0; i < HALO_BUF_SIZE; i++) halo_sendbufs[i] =
-					    new PinnedHostBuffer1<Particle>;
-  minextents = new PinnedHostBuffer1<float3>;
-  maxextents = new PinnedHostBuffer1<float3>;
-  _ddestinations = new DeviceBuffer<float *>;
-  _dsources = new DeviceBuffer<const float *>;
+  for (int i = 0; i < 27; i++) rbuf[i] = new PinnedHostBuffer1<Particle>;
+  for (int i = 0; i < 27; i++) sbuf[i] = new PinnedHostBuffer1<Particle>;
 
-  MC(MPI_Comm_dup(_cartcomm, &cartcomm));
-  MC(MPI_Comm_rank(cartcomm, &myrank));
-  int dims[3];
-  MC(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
+  llo = new PinnedHostBuffer2<float3>;
+  hhi = new PinnedHostBuffer2<float3>;
+  _ddst = new DeviceBuffer<float *>;
+  _dsrc = new DeviceBuffer<const float *>;
 
-  rankneighbors[0] = myrank;
-  for (int i = 1; i < 27; ++i) {
-    int d[3] = {(i + 1) % 3 - 1, (i / 3 + 1) % 3 - 1, (i / 9 + 1) % 3 - 1};
-    int coordsneighbor[3];
-    for (int c = 0; c < 3; ++c) coordsneighbor[c] = coords[c] + d[c];
-    MC(MPI_Cart_rank(cartcomm, coordsneighbor, rankneighbors + i));
-    for (int c = 0; c < 3; ++c) coordsneighbor[c] = coords[c] - d[c];
-    MC(MPI_Cart_rank(cartcomm, coordsneighbor, anti_rankneighbors + i));
-  }
+  MC(MPI_Comm_dup(_ccom, &ccom));
+  gen_ne(ccom,   rnk_ne, ank_ne); /* generate ranks and anti-ranks */
 
-  _post_recvcount();
+  _post_recvcnt();
 }
 
-void _compute_extents(Particle *xyzuvw,
-		      int nrbcs, int nvertices) {
-  if (nrbcs)
-    minmax(xyzuvw, nvertices, nrbcs, minextents->DP, maxextents->DP);
-}
+void pack_all(int nc, int nv,
+	      const float **const src, float **const dst) {
+  if (nc == 0) return;
+  int nth = nc * nv * 6; /* number of threads */
 
-void pack_all(const int nrbcs, const int nvertices,
-	      const float **const sources, float **const destinations) {
-  if (nrbcs == 0) return;
-  int nthreads = nrbcs * nvertices * 6;
-
-  if (nrbcs < k_rdstr::cmaxnrbcs) {
-    CC(cudaMemcpyToSymbolAsync(k_rdstr::cdestinations, destinations,
-			       sizeof(float *) * nrbcs, 0,
-			       H2D));
-    CC(cudaMemcpyToSymbolAsync(k_rdstr::csources,
-			       sources, sizeof(float *) * nrbcs, 0,
-			       H2D));
-    k_rdstr::pack_all_kernel<true><<<(nthreads + 127) / 128, 128, 0>>>(
-	nrbcs, nvertices, NULL, NULL);
+  if (nc < k_rdstr::cmaxnc) {
+    CC(cudaMemcpyToSymbolAsync(k_rdstr::cdst, dst, sizeof(float*) * nc, 0, H2D));
+    CC(cudaMemcpyToSymbolAsync(k_rdstr::csrc, src, sizeof(float*) * nc, 0, H2D));
+    k_rdstr::pack_all_kernel<true><<<(nth + 127) / 128, 128, 0>>>
+      (nc, nv, NULL, NULL);
   } else {
-    _ddestinations->resize(nrbcs);
-    _dsources->resize(nrbcs);
-    CC(cudaMemcpyAsync(_ddestinations->D, destinations, sizeof(float *) * nrbcs,
-		       H2D));
-    CC(cudaMemcpyAsync(_dsources->D, sources, sizeof(float *) * nrbcs,
-		       H2D));
-    k_rdstr::pack_all_kernel<false><<<(nthreads + 127) / 128, 128, 0>>>(
-	nrbcs, nvertices, _dsources->D, _ddestinations->D);
+    _ddst->resize(nc);
+    _dsrc->resize(nc);
+    CC(cudaMemcpyAsync(_ddst->D, dst, sizeof(float*) * nc, H2D));
+    CC(cudaMemcpyAsync(_dsrc->D, src, sizeof(float*) * nc, H2D));
+    k_rdstr::pack_all_kernel<false><<<(nth + 127) / 128, 128, 0>>>
+      (nc, nv, _dsrc->D, _ddst->D);
   }
-
 }
 
-void extent(Particle *xyzuvw, int nrbcs, int nvertices) {
-  minextents->resize(nrbcs);
-  maxextents->resize(nrbcs);
-
-  _compute_extents(xyzuvw, nrbcs, nvertices);
+void extent(Particle *pp, int nc, int nv) {
+  llo->resize(nc); hhi->resize(nc);
+  if (nc) minmax(pp, nv, nc, llo->DP, hhi->DP);
 }
 
-
-void pack_sendcount(Particle *xyzuvw,
-		    int nrbcs, int nvertices) {
-  std::vector<int> reordering_indices[27];
-
-  for (int i = 0; i < nrbcs; ++i) {
-    float3 minext = minextents->D[i];
-    float3 maxext = maxextents->D[i];
-    float p[3] = {0.5 * (minext.x + maxext.x), 0.5 * (minext.y + maxext.y),
-		  0.5 * (minext.z + maxext.z)};
+/* build `ord' structure --- who goes where */
+void reord(float3* llo, float3* hhi, int nrbcs, /* */ std::vector<int>* ord) {
+  int i, vcode[3], c, code;
+  for (i = 0; i < nrbcs; ++i) {
+    float3 lo = llo[i], hi = hhi[i];
+    float p[3] = {0.5 * (lo.x + hi.x), 0.5 * (lo.y + hi.y),
+		  0.5 * (lo.z + hi.z)};
     int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
-    int vcode[3];
-    for (int c = 0; c < 3; ++c)
+    for (c = 0; c < 3; ++c)
       vcode[c] = (2 + (p[c] >= -L[c] / 2) + (p[c] >= L[c] / 2)) % 3;
-    int code = vcode[0] + 3 * (vcode[1] + 3 * vcode[2]);
-    reordering_indices[code].push_back(i);
+    code = vcode[0] + 3 * (vcode[1] + 3 * vcode[2]);
+    ord[code].pb(i);
   }
+}
 
-  n_bulk  = reordering_indices[0].size() * nvertices;
-  for (int i = 1; i < 27; ++i)
-    halo_sendbufs[i]->resize(reordering_indices[i].size() * nvertices);
-  {
-    static std::vector<const float *> src;
-    static std::vector<float *> dst;
-    src.clear();
-    dst.clear();
-    for (int i = 0; i < 27; ++i)
-      for (int j = 0; j < reordering_indices[i].size(); ++j) {
-	src.push_back((float *)(xyzuvw + nvertices * reordering_indices[i][j]));
+void pack_sendcnt(Particle *pp, int nc, int nv) {
+  std::vector<int> ord[27];
+  reord(llo->D, hhi->D, nc, ord); /* build `ord' */
+  n_bulk  = ord[0].size() * nv;
 
-	if (i)
-	  dst.push_back((float *)(halo_sendbufs[i]->DP + nvertices * j));
-	else
-	  dst.push_back((float *)(bulk + nvertices * j));
-      }
-    pack_all(src.size(), nvertices, &src.front(),
-	     &dst.front());
+  static std::vector<const float*> src;
+  static std::vector<      float*> dst;
+  src.clear(); dst.clear();
+  for (int i = 1; i < 27; ++i) sbuf[i]->resize(ord[i].size() * nv);
 
-  }
+  for (int i = 0; i < 27; ++i)
+    for (int j = 0; j < ord[i].size(); ++j) {
+      src.pb((float*)(pp + nv * ord[i][j]));
+      if (i) dst.pb((float*)(sbuf[i]->DP + nv * j));
+      else   dst.pb((float*)(       bulk + nv * j));
+    }
+  pack_all(src.size(), nv, &src.front(), &dst.front());
   CC(cudaDeviceSynchronize()); /* was CC(cudaStreamSynchronize(stream)); */
   for (int i = 1; i < 27; ++i)
-    MC(MPI_Isend(&halo_sendbufs[i]->S, 1, MPI_INTEGER,
-			rankneighbors[i], i + 1024, cartcomm,
-			&sendcountreq[i - 1]));
+    MC(MPI_Isend(&sbuf[i]->S, 1, MPI_INTEGER,
+		 rnk_ne[i], i + 1024, ccom,
+		 &sendcntreq[i - 1]));
 }
 
-  int post(int nvertices) {
+int post(int nv) {
   {
-    MPI_Status statuses[recvcountreq.size()];
-    MC(MPI_Waitall(recvcountreq.size(), &recvcountreq.front(), statuses));
-    recvcountreq.clear();
+    MPI_Status statuses[recvcntreq.size()];
+    MC(MPI_Waitall(recvcntreq.size(), &recvcntreq.front(), statuses));
+    recvcntreq.clear();
   }
 
-  arriving = 0;
+  ncome = 0;
   for (int i = 1; i < 27; ++i) {
-    int count = recv_counts[i];
-    arriving += count;
-    halo_recvbufs[i]->resize(count);
+    int cnt = recv_cnts[i];
+    ncome += cnt;
+    rbuf[i]->resize(cnt);
   }
 
-  arriving /= nvertices;
-  notleaving = n_bulk / nvertices;
+  ncome /= nv;
+  nstay = n_bulk / nv;
 
   MPI_Status statuses[26];
-  MC(MPI_Waitall(26, sendcountreq, statuses));
+  MC(MPI_Waitall(26, sendcntreq, statuses));
 
   for (int i = 1; i < 27; ++i)
-    if (halo_recvbufs[i]->S > 0) {
+    if (rbuf[i]->S > 0) {
       MPI_Request request;
-      MC(MPI_Irecv(halo_recvbufs[i]->D, halo_recvbufs[i]->S,
-			  Particle::datatype(), anti_rankneighbors[i], i + 1155,
-			  cartcomm, &request));
-      recvreq.push_back(request);
+      MC(MPI_Irecv(rbuf[i]->D, rbuf[i]->S,
+		   Particle::datatype(), ank_ne[i], i + 1155,
+		   ccom, &request));
+      recvreq.pb(request);
     }
 
   for (int i = 1; i < 27; ++i)
-    if (halo_sendbufs[i]->S > 0) {
+    if (sbuf[i]->S > 0) {
       MPI_Request request;
-      MC(MPI_Isend(halo_sendbufs[i]->D, halo_sendbufs[i]->S,
-			  Particle::datatype(), rankneighbors[i], i + 1155,
-			  cartcomm, &request));
-
-      sendreq.push_back(request);
+      MC(MPI_Isend(sbuf[i]->D, sbuf[i]->S,
+		   Particle::datatype(), rnk_ne[i], i + 1155,
+		   ccom, &request));
+      sendreq.pb(request);
     }
-  return notleaving + arriving;
+  return nstay + ncome;
 }
 
-  void unpack(Particle *xyzuvw, int nrbcs, int nvertices) {
+void unpack(Particle *pp, int nrbcs, int nv) {
   MPI_Status statuses[26];
   MC(MPI_Waitall(recvreq.size(), &recvreq.front(), statuses));
   MC(MPI_Waitall(sendreq.size(), &sendreq.front(), statuses));
   recvreq.clear();
   sendreq.clear();
-  CC(cudaMemcpyAsync(xyzuvw, bulk, notleaving * nvertices * sizeof(Particle),
-		     D2D));
+  CC(cudaMemcpyAsync(pp, bulk, nstay * nv * sizeof(Particle), D2D));
 
-  for (int i = 1, s = notleaving * nvertices; i < 27; ++i) {
-    int count = halo_recvbufs[i]->S;
-    if (count > 0)
-      k_rdstr::shift<<<(count + 127) / 128, 128, 0>>>(
-	  halo_recvbufs[i]->DP, count, i, myrank, false, xyzuvw + s);
-    s += halo_recvbufs[i]->S;
+  for (int i = 1, s = nstay * nv; i < 27; ++i) {
+    int cnt = rbuf[i]->S;
+    if (cnt > 0)
+      k_rdstr::shift<<<(cnt + 127) / 128, 128, 0>>>
+	(rbuf[i]->DP, cnt, i, myrank, false, &pp[s]);
+    s += rbuf[i]->S;
   }
-  _post_recvcount();
+  _post_recvcnt();
 }
 
 void close() {
-  MC(MPI_Comm_free(&cartcomm));
-  for (int i = 0; i < HALO_BUF_SIZE; i++) delete halo_recvbufs[i];
-  for (int i = 0; i < HALO_BUF_SIZE; i++) delete halo_sendbufs[i];
-  delete minextents;
-  delete maxextents;
-
-  delete _ddestinations;
-  delete _dsources;
-
+  MC(MPI_Comm_free(&ccom));
+  for (int i = 0; i < 27; i++) delete rbuf[i];
+  for (int i = 0; i < 27; i++) delete sbuf[i];
+  delete   llo; delete   hhi;
+  delete _ddst; delete _dsrc;
   CC(cudaFree(bulk));
 }
+#undef pb
 }

@@ -24,40 +24,40 @@ static std::vector<Particle> ic_pos() { /* generate particle position */
 
 static void redistribute() {
   sdstr::pack(s_pp, s_n);
-  if (rbcs) rdstr::extent(r_pp->D, Cont::ncells, Cont::nvertices);
+  if (rbcs) rdstr::extent(r_pp->D, Cont::nc, Cont::nv);
   sdstr::send();
-  if (rbcs) rdstr::pack_sendcount(r_pp->D, Cont::ncells, Cont::nvertices);
+  if (rbcs) rdstr::pack_sendcnt(r_pp->D, Cont::nc, Cont::nv);
   sdstr::bulk(s_n, cells->start, cells->count);
   s_n = sdstr::recv_count();
   if (rbcs) {
-    Cont::ncells = rdstr::post(Cont::nvertices);
-    r_pp->S = Cont::ncells*Cont::nvertices;
-    r_ff->S = Cont::ncells*Cont::nvertices;
+    Cont::nc = rdstr::post(Cont::nv);
+    r_pp->S = Cont::nc*Cont::nv;
+    r_ff->S = Cont::nc*Cont::nv;
   }
   sdstr::recv_unpack(s_pp0, s_zip0, s_zip1, s_n, cells->start, cells->count);
   std::swap(s_pp, s_pp0); std::swap(s_ff, s_ff0);
-  if (rbcs) rdstr::unpack(r_pp->D, Cont::ncells, Cont::nvertices);
+  if (rbcs) rdstr::unpack(r_pp->D, Cont::nc, Cont::nv);
 }
 
 void remove_bodies_from_wall() {
   if (!rbcs)         return;
-  if (!Cont::ncells) return;
+  if (!Cont::nc) return;
   DeviceBuffer<int> marks(Cont::pcount());
   k_wall::fill_keys<<<(Cont::pcount() + 127) / 128, 128>>>
     (r_pp->D, Cont::pcount(), marks.D);
 
   std::vector<int> tmp(marks.S);
   CC(cudaMemcpy(tmp.data(), marks.D, sizeof(int) * marks.S, D2H));
-  int nbodies = Cont::ncells;
+  int nbodies = Cont::nc;
   std::vector<int> tokill;
   for (int i = 0; i < nbodies; ++i) {
     bool valid = true;
-    for (int j = 0; j < Cont::nvertices && valid; ++j)
-      valid &= 0 == tmp[j + Cont::nvertices * i];
+    for (int j = 0; j < Cont::nv && valid; ++j)
+      valid &= 0 == tmp[j + Cont::nv * i];
     if (!valid) tokill.push_back(i);
   }
-  Cont::rbc_remove(r_pp->D, &tokill.front(), tokill.size()); /* updates
-								Cont::ncells */
+  Cont::rbc_remove(r_pp->D, Cont::nv, &tokill.front(), tokill.size()); /* updates
+									  Cont::nc */
   Cont::clear_velocity(r_pp->D, r_pp->S);
 }
 
@@ -83,7 +83,7 @@ void create_walls() {
 
 void forces_rbc() {
   if (rbcs)
-    rbc::forces_nohost(Cont::ncells,
+    rbc::forces_nohost(Cont::nc,
 			   (float*)r_pp->D, (float*)r_ff->D);
 }
 

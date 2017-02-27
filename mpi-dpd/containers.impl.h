@@ -166,12 +166,12 @@ void clear_velocity(Particle* pp, int n) {
 }
 
 void rbc_init() {
-  ncells = 0;
+  nc = 0;
   int dims[3], periods[3];
   MC( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
 
-  rbc::get_triangle_indexing(indices, ntriangles);
-  nvertices = rbc::setup();
+  rbc::get_triangle_indexing(indices, nt);
+  nv = rbc::setup();
 }
 
 void _initialize(float *device_pp, float (*transform)[4]) {
@@ -228,19 +228,19 @@ void setup(Particle* pp, const char *path2ic) {
     }
   }
 
-  Cont::ncells = good.size();
-  for(int i = 0; i < Cont::ncells; ++i)
-    _initialize((float *)(pp + nvertices * i), good[i].transform);
+  Cont::nc = good.size();
+  for(int i = 0; i < Cont::nc; ++i)
+    _initialize((float *)(pp + nv * i), good[i].transform);
 }
 
-void rbc_remove(Particle* pp, int *e, int ne) {
+void rbc_remove(Particle* pp, int nv, int *e, int ne) {
   /* remove RBCs with indexes in `e' */
   bool GO = false, STAY = true;
-  int ie, i0, i1, nv = nvertices;
-  std::vector<bool> m(Cont::ncells, STAY);
+  int ie, i0, i1;
+  std::vector<bool> m(Cont::nc, STAY);
   for (ie = 0; ie < ne; ie++) m[e[ie]] = GO;
 
-  for (i0 = i1 = 0; i0 < ncells; i0++)
+  for (i0 = i1 = 0; i0 < nc; i0++)
     if (m[i0] == STAY) {
       CC(cudaMemcpy(pp + nv * i1,
 		    pp + nv * i0,
@@ -249,16 +249,16 @@ void rbc_remove(Particle* pp, int *e, int ne) {
       i1++;
     }
   int nstay = i1;
-  Cont::ncells = nstay;
+  Cont::nc = nstay;
 }
 
-int  pcount() {return ncells * nvertices;}
+int  pcount() {return nc * nv;}
 
 void clear_forces(Force* ff, int n) {
   CC(cudaMemsetAsync(ff, 0, sizeof(Force) * n));
 }
 static void rbc_dump0(const char *format4ply,
-		      MPI_Comm comm, int ncells,
+		      MPI_Comm comm, int nc,
 		      Particle *p, int n, int iddatadump) {
     int ctr = iddatadump;
     char buf[200];
@@ -269,11 +269,11 @@ static void rbc_dump0(const char *format4ply,
 
     if(rank == 0)
       mkdir("ply", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-    ply_dump(comm, cartcomm, buf, indices, ncells, ntriangles, p, nvertices, false);
+    ply_dump(comm, cartcomm, buf, indices, nc, nt, p, nv, false);
 }
 
 void rbc_dump(MPI_Comm comm, Particle* p, int n, int iddatadump) {
-  rbc_dump0("ply/rbcs-%05d.ply", comm, n / nvertices, p, n, iddatadump);
+  rbc_dump0("ply/rbcs-%05d.ply", comm, n / nv, p, n, iddatadump);
 }
 
 }
