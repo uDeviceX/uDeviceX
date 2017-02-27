@@ -17,7 +17,7 @@ namespace rdstr {
   int ank_ne[27]; /* anti-rank of the neighbor */
   int recv_cnts[27];
 
-  int ncome, nstay;
+  int nstay;
 
   DeviceBuffer<      float*> *_ddst;
   DeviceBuffer<const float*> *_dsrc;

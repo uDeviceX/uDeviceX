@@ -178,7 +178,7 @@ void _initialize(float *device_pp, float (*transform)[4]) {
   rbc::initialize(device_pp, transform);
 }
   
-void setup(Particle* pp, const char *path2ic) {
+int setup(Particle* pp, const char *path2ic) {
   std::vector<TransformedExtent> allrbcs;
   if (rank == 0) {
     //read transformed extent from file
@@ -228,12 +228,13 @@ void setup(Particle* pp, const char *path2ic) {
     }
   }
 
-  Cont::nc = good.size();
-  for(int i = 0; i < Cont::nc; ++i)
+  int gs = good.size();
+  for(int i = 0; i < gs; ++i)
     _initialize((float *)(pp + nv * i), good[i].transform);
+  return gs; /* number of cells */
 }
 
-void rbc_remove(Particle* pp, int nv, int *e, int ne) {
+int rbc_remove(Particle* pp, int nv, int *e, int ne) {
   /* remove RBCs with indexes in `e' */
   bool GO = false, STAY = true;
   int ie, i0, i1;
@@ -249,10 +250,8 @@ void rbc_remove(Particle* pp, int nv, int *e, int ne) {
       i1++;
     }
   int nstay = i1;
-  Cont::nc = nstay;
+  return nstay;
 }
-
-int  pcount() {return nc * nv;}
 
 void clear_forces(Force* ff, int n) {
   CC(cudaMemsetAsync(ff, 0, sizeof(Force) * n));

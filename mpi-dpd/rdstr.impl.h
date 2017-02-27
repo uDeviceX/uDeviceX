@@ -17,8 +17,7 @@ void _post_recvcnt() {
   recv_cnts[0] = 0;
   for (int i = 1; i < 27; ++i) {
     MPI_Request req;
-    MC(MPI_Irecv(&recv_cnts[i], 1, MPI_INTEGER, ank_ne[i],
-		 i + 1024, ccom, &req));
+    MC(MPI_Irecv(&recv_cnts[i], 1, MPI_INTEGER, ank_ne[i], i + 1024, ccom, &req));
     recvcntreq.pb(req);
   }
 }
@@ -83,12 +82,11 @@ void extent(Particle *pp, int nc, int nv) {
 
 /* build `ord' structure --- who goes where */
 void reord(float3* llo, float3* hhi, int nrbcs, /* */ std::vector<int>* ord) {
-  int i, vcode[3], c, code;
+  int i, vcode[3], c, code,
+    L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
   for (i = 0; i < nrbcs; ++i) {
     float3 lo = llo[i], hi = hhi[i];
-    float p[3] = {0.5 * (lo.x + hi.x), 0.5 * (lo.y + hi.y),
-		  0.5 * (lo.z + hi.z)};
-    int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
+    float p[3] = {0.5 * (lo.x + hi.x), 0.5 * (lo.y + hi.y), 0.5 * (lo.z + hi.z)};
     for (c = 0; c < 3; ++c)
       vcode[c] = (2 + (p[c] >= -L[c] / 2) + (p[c] >= L[c] / 2)) % 3;
     code = vcode[0] + 3 * (vcode[1] + 3 * vcode[2]);
@@ -127,13 +125,12 @@ int post(int nv) {
     recvcntreq.clear();
   }
 
-  ncome = 0;
+  int ncome = 0;
   for (int i = 1; i < 27; ++i) {
     int cnt = recv_cnts[i];
     ncome += cnt;
     rbuf[i]->resize(cnt);
   }
-
   ncome /= nv;
   nstay = n_bulk / nv;
 
