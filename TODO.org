@@ -1,3 +1,9 @@
+bipsbatch: biparty batch
+
+nv: number of vertices
+nc: number of cells
+r_nv * r_nc == r_n
+
 Cont::rbc_dump, Cont::rbc_dump0 -> goes to io
 
 rbc_remove -> goes to wall
@@ -41,7 +47,7 @@ clvel_s
    output: s_rv
 
 cnt_rr
-     input: r_rv
+     input: r_pp
     output: r_ff
 
 fsi::pre()
@@ -61,4 +67,3 @@ bounce_sw
 memb_rr:
     input: r_rv
     input: r_ff
-
