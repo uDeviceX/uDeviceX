@@ -18,8 +18,8 @@ int main(int argc, char **argv) {
   int rank, ranks[3];
   for (int i = 0; i < 3; ++i) ranks[i] = atoi(argv[1 + i]);
 
-  CC(cudaSetDevice(0));
-  CC(cudaDeviceReset());
+  int device = 0;
+  CC(cudaSetDevice(device));
 
   MC(MPI_Init(&argc, &argv));
   MC(MPI_Comm_rank(MPI_COMM_WORLD, &rank));
@@ -37,6 +37,4 @@ int main(int argc, char **argv) {
   if (activecomm != cartcomm) MC(MPI_Comm_free(&activecomm));
   MC(MPI_Comm_free(&cartcomm));
   MC(MPI_Finalize());
-  CC(cudaDeviceSynchronize());
-  CC(cudaDeviceReset());
 }
