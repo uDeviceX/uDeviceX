@@ -47,6 +47,7 @@
 
 #include "wall.decl.h"
 #include "k/wall.h"
+#include "field.impl.h"
 #include "wall.impl.h"
 
 #include "cnt.decl.h"
