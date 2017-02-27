@@ -22,7 +22,7 @@ namespace sdstr {
     scattered_indices = new DeviceBuffer<uint>;
 
     nactiveneighbors  = 26; firstcall = true;
-    int dims[3], periods[3], coords[3];
+    int dims[3], coords[3];
     MC(MPI_Comm_dup(_cartcomm, &cartcomm_rdst) );
     MC( MPI_Comm_rank(cartcomm_rdst, &myrank) );
     MC( MPI_Cart_get(cartcomm_rdst, 3, dims, periods, coords) );

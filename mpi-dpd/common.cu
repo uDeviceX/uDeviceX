@@ -32,7 +32,7 @@ void diagnostics(MPI_Comm comm, MPI_Comm cartcomm, Particle * particles, int n, 
     int rank;
     MC(MPI_Comm_rank(comm, &rank) );
 
-    int dims[3], periods[3], coords[3];
+    int dims[3], coords[3];
     MC(MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
 
     MC(MPI_Reduce(rank == 0 ? MPI_IN_PLACE : &p, rank == 0 ? &p : NULL, 3, MPI_DOUBLE, MPI_SUM, 0, comm) );

@@ -167,7 +167,7 @@ void clear_velocity(Particle* pp, int n) {
 
 void rbc_init() {
   nc = 0;
-  int dims[3], periods[3];
+  int dims[3];
   MC( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
 
   rbc::get_triangle_indexing(indices, nt);

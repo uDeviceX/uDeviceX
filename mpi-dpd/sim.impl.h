@@ -213,7 +213,7 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
   sdstr::redist_part_init(Cont::cartcomm);
   MC(MPI_Comm_rank(activecomm, &Cont::rank));
 
-  int dims[3], periods[3];
+  int dims[3];
   MC(MPI_Cart_get(Cont::cartcomm, 3, dims, periods, Cont::coords));
   Cont::origin = make_float3((0.5 + Cont::coords[0]) * XSIZE_SUBDOMAIN,
 			     (0.5 + Cont::coords[1]) * YSIZE_SUBDOMAIN,

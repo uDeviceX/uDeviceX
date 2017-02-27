@@ -37,7 +37,7 @@ void ply_dump(MPI_Comm comm, MPI_Comm cartcomm, const char * filename,
     std::vector<Particle> particles(_particles, _particles + ninstances * nvertices_per_instance);
     int rank;
     MC(MPI_Comm_rank(comm, &rank) );
-    int dims[3], periods[3], coords[3];
+    int dims[3], coords[3];
     MC(MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
     int NPOINTS = 0;
     const int n = particles.size();
@@ -91,7 +91,7 @@ H5PartDump::H5PartDump(const std::string fname, MPI_Comm comm, MPI_Comm cartcomm
 void H5PartDump::_initialize(const std::string filename, MPI_Comm comm, MPI_Comm cartcomm)
 {
 #ifndef NO_H5PART
-    int dims[3], periods[3], coords[3];
+    int dims[3], coords[3];
     MC( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
 
     const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
@@ -196,7 +196,7 @@ void H5FieldDump::_write_fields(const char * const path2h5,
         const float * const channeldata[], const char * const * const channelnames, const int nchannels,
         MPI_Comm comm) {
 #ifndef NO_H5
-    int nranks[3], periods[3], myrank[3];
+    int nranks[3], myrank[3];
     MC( MPI_Cart_get(cartcomm, 3, nranks, periods, myrank) );
 
     hid_t plist_id_access = H5Pcreate(H5P_FILE_ACCESS);
@@ -254,7 +254,7 @@ void H5FieldDump::_write_fields(const char * const path2h5,
 }
 
 H5FieldDump::H5FieldDump(MPI_Comm cartcomm): cartcomm(cartcomm), last_idtimestep(0) {
-    int dims[3], periods[3], coords[3];
+    int dims[3], coords[3];
     MC( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
 
     const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };

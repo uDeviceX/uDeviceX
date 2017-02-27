@@ -112,7 +112,7 @@ namespace wall {
     wall_cells = new CellLists(XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL,
 			       YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL,
 			       ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL);
-    int myrank, dims[3], periods[3];
+    int myrank, dims[3];
     MC(MPI_Comm_rank(Cont::cartcomm, &myrank));
     MC(MPI_Cart_get(Cont::cartcomm, 3, dims, periods, Cont::coords));
     float *field = new float[XTEXTURESIZE * YTEXTURESIZE * ZTEXTURESIZE];
