@@ -14,7 +14,7 @@ namespace PackingHalo {
     int code = key9 + key3 + key1;
     int d[3] = {(code + 2) % 3 - 1, (code / 3 + 2) % 3 - 1,
 		(code / 9 + 2) % 3 - 1};
-    int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
+    int L[3] = {XS, YS, ZS};
 
     int halo_start[3];
     for (int c = 0; c < 3; ++c)
@@ -38,7 +38,7 @@ namespace PackingHalo {
 
       int srcentry =
         srccellpos[0] +
-        XSIZE_SUBDOMAIN * (srccellpos[1] + YSIZE_SUBDOMAIN * srccellpos[2]);
+        XS * (srccellpos[1] + YS * srccellpos[2]);
       int enabled = cellpacks[code].enabled;
 
       cellpacks[code].start[dstcid] = enabled * cellsstart[srcentry];

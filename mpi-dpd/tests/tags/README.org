@@ -1,6 +1,0 @@
-I run the simulation with
-    > ./test 1 1 1 -rbcs -hdf5field_dumps -tend=10e-4 -steps_per_dump=200 -steps_per_hdf5dump=200 -hdf5part_dumps -shrate=8 | awk '/CDFT/{print $1, $2, $3, $4}' > cdft.txt
-
-And plot in gnuplot with
-    > plot "<awk '$4==0' cdft.txt" w p pt 6 , "<awk '$4==1' cdft.txt" w p pt 6
-    > plot "<awk '$4==1' cdft.txt" w p pt 6 , "<awk '$4==2' cdft.txt" w p pt 6

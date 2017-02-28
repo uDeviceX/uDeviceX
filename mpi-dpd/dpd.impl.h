@@ -52,8 +52,8 @@ void local_interactions(Particle *xyzuvw, float4 *xyzouvwo, ushort4 *xyzo_half,
 			int *cellscount) {
   if (n > 0)
     forces_dpd_cuda_nohost((float *)xyzuvw, xyzouvwo, xyzo_half, (float *)a, n,
-			   cellsstart, cellscount, 1, XSIZE_SUBDOMAIN,
-			   YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN, 1. / sqrt(dt),
+			   cellsstart, cellscount, 1, XS,
+			   YS, ZS, 1. / sqrt(dt),
 			   local_trunk->get_float());
 }
 
@@ -81,9 +81,9 @@ void remote_interactions(int n, Force *a) {
 	dx,
 	dy,
 	dz,
-	1 + m0 * (XSIZE_SUBDOMAIN - 1),
-	1 + m1 * (YSIZE_SUBDOMAIN - 1),
-	1 + m2 * (ZSIZE_SUBDOMAIN - 1),
+	1 + m0 * (XS - 1),
+	1 + m1 * (YS - 1),
+	1 + m2 * (ZS - 1),
 	(BipsBatch::HaloType)(abs(dx) + abs(dy) + abs(dz))};
 
     infos[i] = entry;
@@ -110,9 +110,9 @@ void init0(int _basetag) {
     int coordsneighbor[3];
     for (int c = 0; c < 3; ++c) coordsneighbor[c] = m::coords[c] + d[c];
     MC(MPI_Cart_rank(cart, coordsneighbor, dstranks + i));
-    halosize[i].x = d[0] != 0 ? 1 : XSIZE_SUBDOMAIN;
-    halosize[i].y = d[1] != 0 ? 1 : YSIZE_SUBDOMAIN;
-    halosize[i].z = d[2] != 0 ? 1 : ZSIZE_SUBDOMAIN;
+    halosize[i].x = d[0] != 0 ? 1 : XS;
+    halosize[i].y = d[1] != 0 ? 1 : YS;
+    halosize[i].z = d[2] != 0 ? 1 : ZS;
 
     int nhalocells = halosize[i].x * halosize[i].y * halosize[i].z;
 

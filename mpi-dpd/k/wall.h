@@ -33,7 +33,7 @@ namespace k_wall {
   }
 
   __device__ float sdf(float x, float y, float z) {
-    int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
+    int L[3] = {XS, YS, ZS};
     int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
     int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
 
@@ -67,7 +67,7 @@ namespace k_wall {
 
   /* within the rescaled texel width error */
   __device__ float cheap_sdf(float x, float y, float z)  {
-    int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
+    int L[3] = {XS, YS, ZS};
     int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
     int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
 
@@ -81,7 +81,7 @@ namespace k_wall {
   }
 
   __device__ float3 ugrad_sdf(float x, float y, float z) {
-    int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
+    int L[3] = {XS, YS, ZS};
     int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
     int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
 
@@ -102,7 +102,7 @@ namespace k_wall {
   }
 
   __device__ float3 grad_sdf(float x, float y, float z) {
-    int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
+    int L[3] = {XS, YS, ZS};
     int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
     int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
 
@@ -276,14 +276,14 @@ namespace k_wall {
     int deltaspid1, deltaspid2;
 
     {
-      int xbase = (int)(dst0.x - (-XSIZE_SUBDOMAIN / 2 - XMARGIN_WALL));
-      int ybase = (int)(dst0.y - (-YSIZE_SUBDOMAIN / 2 - YMARGIN_WALL));
-      int zbase = (int)(dst1.x - (-ZSIZE_SUBDOMAIN / 2 - ZMARGIN_WALL));
+      int xbase = (int)(dst0.x - (-XS / 2 - XMARGIN_WALL));
+      int ybase = (int)(dst0.y - (-YS / 2 - YMARGIN_WALL));
+      int zbase = (int)(dst1.x - (-ZS / 2 - ZMARGIN_WALL));
 
       enum {
-	XCELLS = XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL,
-	YCELLS = YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL,
-	ZCELLS = ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL,
+	XCELLS = XS + 2 * XMARGIN_WALL,
+	YCELLS = YS + 2 * YMARGIN_WALL,
+	ZCELLS = ZS + 2 * ZMARGIN_WALL,
 	NCELLS = XCELLS * YCELLS * ZCELLS
       };
 

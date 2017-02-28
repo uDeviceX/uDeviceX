@@ -215,7 +215,7 @@ int setup(Particle* pp, const char *path2ic) {
   MC(MPI_Bcast(&allrbcs.front(), nfloats_per_entry * allrbcs_count, MPI_FLOAT, 0, m::cart));
 
   std::vector<TransformedExtent> good;
-  int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
+  int L[3] = { XS, YS, ZS };
 
   for(std::vector<TransformedExtent>::iterator it = allrbcs.begin(); it != allrbcs.end(); ++it) {
     bool inside = true;

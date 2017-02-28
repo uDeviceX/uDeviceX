@@ -61,7 +61,7 @@ void ply_dump(const char * filename,
     }
     std::string content = ss.str();
     _write_bytes(content.c_str(), content.size(), f);
-    const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
+    const int L[3] = { XS, YS, ZS };
     for(int i = 0; i < n; ++i)
         for(int c = 0; c < 3; ++c)
 	  particles[i].r[c] += L[c] / 2 + m::coords[c] * L[c];
@@ -90,7 +90,7 @@ H5PartDump::H5PartDump(const std::string fname): tstamp(0), disposed(false)
 void H5PartDump::_initialize(const std::string filename)
 {
 #ifndef NO_H5PART
-    const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
+    const int L[3] = { XS, YS, ZS };
     for(int c = 0; c < 3; ++c) origin[c] = L[c] / 2 + m::coords[c] * L[c];
       
     mkdir("h5", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
@@ -198,7 +198,7 @@ void H5FieldDump::_write_fields(const char * const path2h5,
     hid_t file_id = H5Fcreate(path2h5, H5F_ACC_TRUNC, H5P_DEFAULT, plist_id_access);
     H5Pclose(plist_id_access);
 
-    const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
+    const int L[3] = { XS, YS, ZS };
     hsize_t globalsize[4] = {m::dims[2] * L[2], m::dims[1] * L[1], m::dims[0] * L[0], 1};
     hid_t filespace_simple = H5Screate_simple(4, globalsize, NULL);
 
@@ -245,7 +245,7 @@ void H5FieldDump::_write_fields(const char * const path2h5,
 }
 
 H5FieldDump::H5FieldDump() : last_idtimestep(0) {
-    const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
+    const int L[3] = { XS, YS, ZS };
 
     for(int c = 0; c < 3; ++c)
       globalsize[c] = L[c] * m::dims[c];
@@ -262,17 +262,17 @@ void H5FieldDump::dump(Particle *p, int n) {
 #ifndef NO_H5
     static int id = 0; /* dump id */
      
-    const int ncells = XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN;
+    const int ncells = XS * YS * ZS;
     std::vector<float> rho(ncells), u[3];
     for(int c = 0; c < 3; ++c)
         u[c].resize(ncells);
     for(int i = 0; i < n; ++i) {
         const int cellindex[3] = {
-            max(0, min(XSIZE_SUBDOMAIN - 1, (int)(floor(p[i].r[0])) + XSIZE_SUBDOMAIN / 2)),
-            max(0, min(YSIZE_SUBDOMAIN - 1, (int)(floor(p[i].r[1])) + YSIZE_SUBDOMAIN / 2)),
-            max(0, min(ZSIZE_SUBDOMAIN - 1, (int)(floor(p[i].r[2])) + ZSIZE_SUBDOMAIN / 2))
+            max(0, min(XS - 1, (int)(floor(p[i].r[0])) + XS / 2)),
+            max(0, min(YS - 1, (int)(floor(p[i].r[1])) + YS / 2)),
+            max(0, min(ZS - 1, (int)(floor(p[i].r[2])) + ZS / 2))
         };
-        const int entry = cellindex[0] + XSIZE_SUBDOMAIN * (cellindex[1] + YSIZE_SUBDOMAIN * cellindex[2]);
+        const int entry = cellindex[0] + XS * (cellindex[1] + YS * cellindex[2]);
         rho[entry] += 1;
         for(int c = 0; c < 3; ++c) u[c][entry] += p[i].v[c];
     }

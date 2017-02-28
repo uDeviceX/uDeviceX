@@ -1,14 +1,14 @@
 namespace k_cnt {
   static const int maxsolutes = 32;
   enum {
-    XCELLS = XSIZE_SUBDOMAIN,
-    YCELLS = YSIZE_SUBDOMAIN,
-    ZCELLS = ZSIZE_SUBDOMAIN,
+    XCELLS = XS,
+    YCELLS = YS,
+    ZCELLS = ZS,
     XOFFSET = XCELLS / 2,
     YOFFSET = YCELLS / 2,
     ZOFFSET = ZCELLS / 2
   };
-  static const int NCELLS = XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN;
+  static const int NCELLS = XS * YS * ZS;
   union CellEntry {
     int pid;
     uchar4 code;
@@ -83,7 +83,7 @@ void bind(const int *const cellsstart, const int *const cellentries,
     CC(cudaBindTexture(&textureoffset, &texCellEntries, cellentries,
                        &texCellEntries.channelDesc,
                        sizeof(int) * ncellentries));
-  int ncells = XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN;
+  int ncells = XS * YS * ZS;
   CC(cudaBindTexture(&textureoffset, &texCellsStart, cellsstart,
                      &texCellsStart.channelDesc, sizeof(int) * ncells));
   int n = wsolutes.size();

@@ -2,7 +2,7 @@ namespace k_fsi {
   texture<float2, cudaTextureType1D> texSolventParticles;
   texture<int, cudaTextureType1D> texCellsStart, texCellsCount;
   bool firsttime = true;
-  static const int NCELLS = XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN;
+  static const int NCELLS = XS * YS * ZS;
   __constant__ int packstarts_padded[27], packcount[26];
   __constant__ Particle *packstates[26];
   __constant__ Force *packresults[26];
@@ -26,9 +26,9 @@ namespace k_fsi {
 
     {
       enum {
-	XCELLS = XSIZE_SUBDOMAIN,
-	YCELLS = YSIZE_SUBDOMAIN,
-	ZCELLS = ZSIZE_SUBDOMAIN,
+	XCELLS = XS,
+	YCELLS = YS,
+	ZCELLS = ZS,
 	XOFFSET = XCELLS / 2,
 	YOFFSET = YCELLS / 2,
 	ZOFFSET = ZCELLS / 2
@@ -157,7 +157,7 @@ namespace k_fsi {
 			 sizeof(float) * 6 * npsolvent));
     }
 
-    const int ncells = XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN;
+    const int ncells = XS * YS * ZS;
 
     CC(cudaBindTexture(&textureoffset, &texCellsStart, cellsstart,
 		       &texCellsStart.channelDesc, sizeof(int) * ncells));
@@ -211,15 +211,15 @@ namespace k_fsi {
 
       {
 	enum {
-	  XCELLS = XSIZE_SUBDOMAIN,
-	  YCELLS = YSIZE_SUBDOMAIN,
-	  ZCELLS = ZSIZE_SUBDOMAIN,
+	  XCELLS = XS,
+	  YCELLS = YS,
+	  ZCELLS = ZS,
 	  XOFFSET = XCELLS / 2,
 	  YOFFSET = YCELLS / 2,
 	  ZOFFSET = ZCELLS / 2
 	};
 
-	const int NCELLS = XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN;
+	const int NCELLS = XS * YS * ZS;
 	const int xcenter = XOFFSET + (int)floorf(dst0.x);
 	const int xstart = max(0, xcenter - 1);
 	const int xcount = min(XCELLS, xcenter + 2) - xstart;

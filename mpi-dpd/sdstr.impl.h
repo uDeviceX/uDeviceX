@@ -11,14 +11,14 @@ namespace sdstr {
     failure = new PinnedHostBuffer<bool>(1);
     packsizes = new PinnedHostBuffer<int>(27);
     compressed_cellcounts = new DeviceBuffer<unsigned char>
-      (XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN);
+      (XS * YS * ZS);
     remote_particles = new DeviceBuffer<Particle>;
 
     subindices_remote= new DeviceBuffer<uchar4>
-      (1.5 * numberdensity * (XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN -
-			      (XSIZE_SUBDOMAIN - 2) * (YSIZE_SUBDOMAIN - 2) * (ZSIZE_SUBDOMAIN - 2)));
+      (1.5 * numberdensity * (XS * YS * ZS -
+			      (XS - 2) * (YS - 2) * (ZS - 2)));
     subindices = new DeviceBuffer<uchar4>
-      (1.5 * numberdensity * XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN);
+      (1.5 * numberdensity * XS * YS * ZS);
     scattered_indices = new DeviceBuffer<uint>;
 
     nactiveneighbors  = 26; firstcall = true;
@@ -32,9 +32,9 @@ namespace sdstr {
       MC( MPI_Cart_rank(cart, coordsneighbor, neighbor_ranks + i) );
 
       int nhalodir[3] =  {
-	d[0] != 0 ? 1 : XSIZE_SUBDOMAIN,
-	d[1] != 0 ? 1 : YSIZE_SUBDOMAIN,
-	d[2] != 0 ? 1 : ZSIZE_SUBDOMAIN
+	d[0] != 0 ? 1 : XS,
+	d[1] != 0 ? 1 : YS,
+	d[2] != 0 ? 1 : ZS
       };
 
       int nhalocells = nhalodir[0] * nhalodir[1] * nhalodir[2];
@@ -236,7 +236,7 @@ namespace sdstr {
   }
 
   void bulk(int nparticles, int * cellstarts, int * cellcounts) {
-    CC(cudaMemsetAsync(cellcounts, 0, sizeof(int) * XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN));
+    CC(cudaMemsetAsync(cellcounts, 0, sizeof(int) * XS * YS * ZS));
 
     subindices->resize(nparticles);
 

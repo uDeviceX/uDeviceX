@@ -188,27 +188,27 @@ __global__  void subindex_local(const int nparticles, const float2 * particles, 
     read_AOS6f(particles + 3 * base, nsrc, data0, data1, data2);
 
     const bool inside = project ||
-        (data0.x >= -XSIZE_SUBDOMAIN / 2 && data0.x < XSIZE_SUBDOMAIN / 2 &&
-         data0.y >= -YSIZE_SUBDOMAIN / 2 && data0.y < YSIZE_SUBDOMAIN / 2 &&
-         data1.x >= -ZSIZE_SUBDOMAIN / 2 && data1.x < ZSIZE_SUBDOMAIN / 2 );
+        (data0.x >= -XS / 2 && data0.x < XS / 2 &&
+         data0.y >= -YS / 2 && data0.y < YS / 2 &&
+         data1.x >= -ZS / 2 && data1.x < ZS / 2 );
 
     if (lane < nsrc && inside)
     {
       if (project)
       {
-        const int xcid = min(XSIZE_SUBDOMAIN - 1, max(0, (int)floor((double)data0.x + XSIZE_SUBDOMAIN / 2)));
-        const int ycid = min(YSIZE_SUBDOMAIN - 1, max(0, (int)floor((double)data0.y + YSIZE_SUBDOMAIN / 2)));
-        const int zcid = min(ZSIZE_SUBDOMAIN - 1, max(0, (int)floor((double)data1.x + ZSIZE_SUBDOMAIN / 2)));
+        const int xcid = min(XS - 1, max(0, (int)floor((double)data0.x + XS / 2)));
+        const int ycid = min(YS - 1, max(0, (int)floor((double)data0.y + YS / 2)));
+        const int zcid = min(ZS - 1, max(0, (int)floor((double)data1.x + ZS / 2)));
 
-        cid = xcid + XSIZE_SUBDOMAIN * (ycid + YSIZE_SUBDOMAIN * zcid);
+        cid = xcid + XS * (ycid + YS * zcid);
       }
       else
       {
-        const int xcid = (int)floor((double)data0.x + XSIZE_SUBDOMAIN / 2);
-        const int ycid = (int)floor((double)data0.y + YSIZE_SUBDOMAIN / 2);
-        const int zcid = (int)floor((double)data1.x + ZSIZE_SUBDOMAIN / 2);
+        const int xcid = (int)floor((double)data0.x + XS / 2);
+        const int ycid = (int)floor((double)data0.y + YS / 2);
+        const int zcid = (int)floor((double)data1.x + ZS / 2);
 
-        cid = xcid + XSIZE_SUBDOMAIN * (ycid + YSIZE_SUBDOMAIN * zcid);
+        cid = xcid + XS * (ycid + YS * zcid);
       }
     }
   }
@@ -289,9 +289,9 @@ __global__  void subindex_local(const int nparticles, const float2 * particles, 
 
     if (cid >= 0)
     {
-      const int xcid = cid % XSIZE_SUBDOMAIN;
-      const int ycid = (cid / XSIZE_SUBDOMAIN) % YSIZE_SUBDOMAIN;
-      const int zcid = cid / (XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN);
+      const int xcid = cid % XS;
+      const int ycid = (cid / XS) % YS;
+      const int zcid = cid / (XS * YS);
 
       entry = make_uchar4(xcid, ycid, zcid, subindex);
     }

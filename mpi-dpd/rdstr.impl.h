@@ -80,7 +80,7 @@ void extent(Particle *pp, int nc, int nv) {
 /* build `ord' structure --- who goes where */
 void reord(float3* llo, float3* hhi, int nrbcs, /* */ std::vector<int>* ord) {
   int i, vcode[3], c, code,
-    L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
+    L[3] = {XS, YS, ZS};
   for (i = 0; i < nrbcs; ++i) {
     float3 lo = llo[i], hi = hhi[i];
     float p[3] = {0.5 * (lo.x + hi.x), 0.5 * (lo.y + hi.y), 0.5 * (lo.z + hi.z)};

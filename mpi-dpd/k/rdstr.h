@@ -28,7 +28,7 @@ __global__ void shift(const Particle *const psrc, const int np, const int code,
 	      (code / 9 + 1) % 3 - 1};
   if (pid >= np) return;
   Particle pnew = psrc[pid];
-  int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
+  int L[3] = {XS, YS, ZS};
   for (int c = 0; c < 3; ++c) pnew.r[c] -= d[c] * L[c];
   pdst[pid] = pnew;
 }

@@ -2,7 +2,7 @@ namespace sim {
 static std::vector<Particle> ic_pos() { /* generate particle position */
   srand48(0);
   std::vector<Particle> pp;
-  int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
+  int L[3] = {XS, YS, ZS};
   int iz, iy, ix, l, nd = numberdensity;
   float x, y, z, dr = 0.99;
   for (iz = 0; iz < L[2]; iz++)
@@ -199,7 +199,7 @@ void init() {
   if (hdf5part_dumps)
     dump_part_solvent = new H5PartDump("s.h5part");
 
-  cells   = new CellLists(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
+  cells   = new CellLists(XS, YS, ZS);
   mpDeviceMalloc(&s_zip0); mpDeviceMalloc(&s_zip1);
 
   if (rbcs) {
@@ -208,12 +208,12 @@ void init() {
 
   wall::trunk = new Logistic::KISS;
   sdstr::init();
-  Cont::origin = make_float3((0.5 + m::coords[0]) * XSIZE_SUBDOMAIN,
-			     (0.5 + m::coords[1]) * YSIZE_SUBDOMAIN,
-			     (0.5 + m::coords[2]) * ZSIZE_SUBDOMAIN);
-  Cont::globalextent = make_float3(m::dims[0] * XSIZE_SUBDOMAIN,
-				   m::dims[1] * YSIZE_SUBDOMAIN,
-				   m::dims[2] * ZSIZE_SUBDOMAIN);
+  Cont::origin = make_float3((0.5 + m::coords[0]) * XS,
+			     (0.5 + m::coords[1]) * YS,
+			     (0.5 + m::coords[2]) * ZS);
+  Cont::globalextent = make_float3(m::dims[0] * XS,
+				   m::dims[1] * YS,
+				   m::dims[2] * ZS);
   mpDeviceMalloc(&s_pp); mpDeviceMalloc(&s_pp0);
   mpDeviceMalloc(&s_ff); mpDeviceMalloc(&s_ff0);
   mpDeviceMalloc(&r_ff); mpDeviceMalloc(&r_ff);
@@ -232,7 +232,7 @@ void init() {
 #ifdef GWRP
     iotags_init_file("rbc.dat");
     iotags_domain(0, 0, 0,
-		  XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN,
+		  XS, YS, ZS,
 		  periods[0], periods[1], periods[0]);
 #endif
   }

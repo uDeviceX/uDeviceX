@@ -21,7 +21,7 @@ namespace k_sdstr {
     if (pid < np) {
 	float xp[3];
 	for(int c = 0; c < 3; ++c)  xp[c] = tex1Dfetch(texAllParticles, 6 * pid + c);
-	int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
+	int L[3] = { XS, YS, ZS };
 
 	int vcode[3];
 	for(int c = 0; c < 3; ++c)
@@ -111,15 +111,15 @@ namespace k_sdstr {
 
     int xcid, ycid, zcid, subindex;
     if (laneid < nunpack) {
-      data0.x += XSIZE_SUBDOMAIN * ((code + 1) % 3 - 1);
-      data0.y += YSIZE_SUBDOMAIN * ((code / 3 + 1) % 3 - 1);
-      data1.x += ZSIZE_SUBDOMAIN * ((code / 9 + 1) % 3 - 1);
+      data0.x += XS * ((code + 1) % 3 - 1);
+      data0.y += YS * ((code / 3 + 1) % 3 - 1);
+      data1.x += ZS * ((code / 9 + 1) % 3 - 1);
 
-      xcid = (int)floor((double)data0.x + XSIZE_SUBDOMAIN / 2);
-      ycid = (int)floor((double)data0.y + YSIZE_SUBDOMAIN / 2);
-      zcid = (int)floor((double)data1.x + ZSIZE_SUBDOMAIN / 2);
+      xcid = (int)floor((double)data0.x + XS / 2);
+      ycid = (int)floor((double)data0.y + YS / 2);
+      zcid = (int)floor((double)data1.x + ZS / 2);
 
-      int cid = xcid + XSIZE_SUBDOMAIN * (ycid + YSIZE_SUBDOMAIN * zcid);
+      int cid = xcid + XS * (ycid + YS * zcid);
       subindex = atomicAdd(partials + cid, 1);
     }
 
@@ -137,7 +137,7 @@ namespace k_sdstr {
     int subindex = entry.w;
 
     if (subindex != 255) {
-      int cid = entry.x + XSIZE_SUBDOMAIN * (entry.y + YSIZE_SUBDOMAIN * entry.z);
+      int cid = entry.x + XS * (entry.y + YS * entry.z);
       int base = __ldg(starts + cid);
 
       pid |= remote << 31;

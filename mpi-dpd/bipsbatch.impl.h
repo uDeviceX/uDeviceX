@@ -41,7 +41,7 @@ namespace BipsBatch {
 
       {
 	if (info.dz == 0) {
-	  int zcid = (int)(zp + ZSIZE_SUBDOMAIN / 2);
+	  int zcid = (int)(zp + ZS / 2);
 	  int zbasecid = max(0, -1 + zcid);
 	  basecid = zbasecid;
 	  zstencilsize = min(info.zcells, zcid + 2) - zbasecid;
@@ -50,7 +50,7 @@ namespace BipsBatch {
 	basecid *= info.ycells;
 
 	if (info.dy == 0) {
-	  int ycid = (int)(yp + YSIZE_SUBDOMAIN / 2);
+	  int ycid = (int)(yp + YS / 2);
 	  int ybasecid = max(0, -1 + ycid);
 	  basecid += ybasecid;
 	  ystencilsize = min(info.ycells, ycid + 2) - ybasecid;
@@ -59,15 +59,15 @@ namespace BipsBatch {
 	basecid *= info.xcells;
 
 	if (info.dx == 0) {
-	  int xcid = (int)(xp + XSIZE_SUBDOMAIN / 2);
+	  int xcid = (int)(xp + XS / 2);
 	  int xbasecid = max(0, -1 + xcid);
 	  basecid += xbasecid;
 	  xstencilsize = min(info.xcells, xcid + 2) - xbasecid;
 	}
 
-	xp -= info.dx * XSIZE_SUBDOMAIN;
-	yp -= info.dy * YSIZE_SUBDOMAIN;
-	zp -= info.dz * ZSIZE_SUBDOMAIN;
+	xp -= info.dx * XS;
+	yp -= info.dy * YS;
+	zp -= info.dz * ZS;
       }
 
       int rowstencilsize = 1, colstencilsize = 1, ncols = 1;

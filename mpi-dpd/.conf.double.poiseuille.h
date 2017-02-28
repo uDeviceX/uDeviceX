@@ -1,8 +1,8 @@
 #define rc                1.5  /* cutoff radius */
 
-#define XSIZE_SUBDOMAIN   16
-#define YSIZE_SUBDOMAIN   32
-#define ZSIZE_SUBDOMAIN   16
+#define XS   16
+#define YS   32
+#define ZS   16
 #define XMARGIN_WALL      6
 #define YMARGIN_WALL      6
 #define ZMARGIN_WALL      6

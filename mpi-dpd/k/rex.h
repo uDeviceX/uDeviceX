@@ -18,9 +18,9 @@ __global__ void scatter_indices(float2 *particles,
   int pid = base + lane;
   if (lane >= nsrc) return;
   enum {
-    HXSIZE = XSIZE_SUBDOMAIN / 2,
-    HYSIZE = YSIZE_SUBDOMAIN / 2,
-    HZSIZE = ZSIZE_SUBDOMAIN / 2
+    HXSIZE = XS / 2,
+    HYSIZE = YS / 2,
+    HZSIZE = ZS / 2
   };
   int halocode[3] = {
       -1 + (int)(s0.x >= -HXSIZE + 1) + (int)(s0.x >= HXSIZE - 1),
@@ -134,9 +134,9 @@ __global__ void pack(float2 *particles, int nparticles,
       s1 = __ldg(particles + entry2 + 1);
       s2 = __ldg(particles + entry2 + 2);
 
-      s0.x -= ((code + 2) % 3 - 1) * XSIZE_SUBDOMAIN;
-      s0.y -= ((code / 3 + 2) % 3 - 1) * YSIZE_SUBDOMAIN;
-      s1.x -= ((code / 9 + 2) % 3 - 1) * ZSIZE_SUBDOMAIN;
+      s0.x -= ((code + 2) % 3 - 1) * XS;
+      s0.y -= ((code / 3 + 2) % 3 - 1) * YS;
+      s1.x -= ((code / 9 + 2) % 3 - 1) * ZS;
     }
     k_common::write_AOS6f(buffer + 3 * (cbases[code] + coffsets[code] + packbase), npack,
 			  s0, s1, s2);

@@ -1,11 +1,11 @@
 namespace wall {
   int init(Particle *pp, int n) {
-    wall_cells = new CellLists(XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL,
-			       YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL,
-			       ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL);
+    wall_cells = new CellLists(XS + 2 * XMARGIN_WALL,
+			       YS + 2 * YMARGIN_WALL,
+			       ZS + 2 * ZMARGIN_WALL);
     float *field = new float[XTEXTURESIZE * YTEXTURESIZE * ZTEXTURESIZE];
     FieldSampler sampler("sdf.dat");
-    int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
+    int L[3] = {XS, YS, ZS};
     int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
     int TEXTURESIZE[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
     if (m::rank == 0) printf("sampling the geometry file...\n");
@@ -17,7 +17,7 @@ namespace wall {
 	spacing[c] = sampler.N[c] * (L[c] + 2 * MARGIN[c]) /
 	  (float)(m::dims[c] * L[c]) / (float)TEXTURESIZE[c];
       }
-      float amplitude_rescaling = (XSIZE_SUBDOMAIN /*+ 2 * XMARGIN_WALL*/) /
+      float amplitude_rescaling = (XS /*+ 2 * XMARGIN_WALL*/) /
 	(sampler.extent[0] / m::dims[0]);
       sampler.sample(start, spacing, TEXTURESIZE, amplitude_rescaling, field);
     }
@@ -28,12 +28,12 @@ namespace wall {
 	for (int dy = -1; dy <= 1; ++dy)
 	  for (int dx = -1; dx <= 1; ++dx) {
 	    int d[3] = {dx, dy, dz};
-	    int local_start[3] = {d[0] + (d[0] == 1) * (XSIZE_SUBDOMAIN - 2),
-				  d[1] + (d[1] == 1) * (YSIZE_SUBDOMAIN - 2),
-				  d[2] + (d[2] == 1) * (ZSIZE_SUBDOMAIN - 2)};
-	    int local_extent[3] = {1 * (d[0] != 0 ? 2 : XSIZE_SUBDOMAIN),
-				   1 * (d[1] != 0 ? 2 : YSIZE_SUBDOMAIN),
-				   1 * (d[2] != 0 ? 2 : ZSIZE_SUBDOMAIN)};
+	    int local_start[3] = {d[0] + (d[0] == 1) * (XS - 2),
+				  d[1] + (d[1] == 1) * (YS - 2),
+				  d[2] + (d[2] == 1) * (ZS - 2)};
+	    int local_extent[3] = {1 * (d[0] != 0 ? 2 : XS),
+				   1 * (d[1] != 0 ? 2 : YS),
+				   1 * (d[2] != 0 ? 2 : ZS)};
 
 	    float start[3], spacing[3];
 	    for (int c = 0; c < 3; ++c) {
@@ -58,7 +58,7 @@ namespace wall {
       if (m::rank == 0) printf("H5 data dump of the geometry...\n");
 
       float *walldata =
-	new float[XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN];
+	new float[XS * YS * ZS];
 
       float start[3], spacing[3];
       for (int c = 0; c < 3; ++c) {
@@ -66,7 +66,7 @@ namespace wall {
 	spacing[c] = sampler.N[c] / (float)(m::dims[c] * L[c]);
       }
 
-      int size[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
+      int size[3] = {XS, YS, ZS};
       float amplitude_rescaling = L[0] / (sampler.extent[0] / m::dims[0]);
       sampler.sample(start, spacing, size, amplitude_rescaling, walldata);
       H5FieldDump dump;
