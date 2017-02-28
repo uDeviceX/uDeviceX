@@ -7,13 +7,7 @@ namespace cnt {
     cellsentries = new DeviceBuffer<int>;
     subindices = new DeviceBuffer<uchar4>;
     local_trunk = new Logistic::KISS;
-
-    int myrank;
-    MC(MPI_Comm_rank(m::cart, &myrank));
-
-    *local_trunk = Logistic::KISS(7119 - myrank, 187 + myrank, 18278, 15674);
-
-
+    *local_trunk = Logistic::KISS(7119 - m::rank, 187 + m::rank, 18278, 15674);
   }
 
   void build_cells(std::vector<ParticlesWrap> wsolutes) {

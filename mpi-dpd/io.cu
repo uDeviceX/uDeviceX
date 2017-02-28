@@ -90,12 +90,9 @@ H5PartDump::H5PartDump(const std::string fname): tstamp(0), disposed(false)
 void H5PartDump::_initialize(const std::string filename)
 {
 #ifndef NO_H5PART
-    int dims[3], coords[3];
-    MC(MPI_Cart_get(m::cart, 3, dims, periods, coords) );
-
     const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
-    for(int c = 0; c < 3; ++c)
-        origin[c] = L[c] / 2 + coords[c] * L[c];
+    for(int c = 0; c < 3; ++c) origin[c] = L[c] / 2 + m::coords[c] * L[c];
+      
     mkdir("h5", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     char path[1024];
     sprintf(path, "h5/%s", filename.c_str());
@@ -195,8 +192,8 @@ void H5FieldDump::_write_fields(const char * const path2h5,
 				const float * const channeldata[],
 				const char * const * const channelnames, const int nchannels) {
 #ifndef NO_H5
-    int nranks[3], myrank[3];
-    MC( MPI_Cart_get(m::cart, 3, nranks, periods, myrank) );
+    int dims[3], myrank[3];
+    MC( MPI_Cart_get(m::cart, 3, dims, periods, myrank) );
 
     hid_t plist_id_access = H5Pcreate(H5P_FILE_ACCESS);
     H5Pset_fapl_mpio(plist_id_access, m::cart, MPI_INFO_NULL);
@@ -205,7 +202,7 @@ void H5FieldDump::_write_fields(const char * const path2h5,
     H5Pclose(plist_id_access);
 
     const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
-    hsize_t globalsize[4] = {nranks[2] * L[2], nranks[1] * L[1], nranks[0] * L[0], 1};
+    hsize_t globalsize[4] = {dims[2] * L[2], dims[1] * L[1], dims[0] * L[0], 1};
     hid_t filespace_simple = H5Screate_simple(4, globalsize, NULL);
 
     for(int ichannel = 0; ichannel < nchannels; ++ichannel)
