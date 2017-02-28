@@ -24,8 +24,8 @@ namespace sdstr {
     nactiveneighbors  = 26; firstcall = true;
     int dims[3], coords[3];
     MC(MPI_Comm_dup(m::cart, &cartcomm_rdst) );
-    MC( MPI_Comm_rank(cartcomm_rdst, &myrank) );
-    MC( MPI_Cart_get(cartcomm_rdst, 3, dims, periods, coords) );
+    MC(MPI_Comm_rank(cartcomm_rdst, &myrank) );
+    MC(MPI_Cart_get(cartcomm_rdst, 3, dims, periods, coords) );
 
     for(int i = 0; i < 27; ++i) {
       int d[3] = { (i + 1) % 3 - 1, (i / 3 + 1) % 3 - 1, (i / 9 + 1) % 3 - 1 };

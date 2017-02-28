@@ -192,9 +192,6 @@ void H5FieldDump::_write_fields(const char * const path2h5,
 				const float * const channeldata[],
 				const char * const * const channelnames, const int nchannels) {
 #ifndef NO_H5
-    int dims[3], myrank[3];
-    MC( MPI_Cart_get(m::cart, 3, dims, periods, myrank) );
-
     hid_t plist_id_access = H5Pcreate(H5P_FILE_ACCESS);
     H5Pset_fapl_mpio(plist_id_access, m::cart, MPI_INFO_NULL);
 
@@ -202,17 +199,18 @@ void H5FieldDump::_write_fields(const char * const path2h5,
     H5Pclose(plist_id_access);
 
     const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
-    hsize_t globalsize[4] = {dims[2] * L[2], dims[1] * L[1], dims[0] * L[0], 1};
+    hsize_t globalsize[4] = {m::dims[2] * L[2], m::dims[1] * L[1], m::dims[0] * L[0], 1};
     hid_t filespace_simple = H5Screate_simple(4, globalsize, NULL);
 
     for(int ichannel = 0; ichannel < nchannels; ++ichannel)
     {
-        hid_t dset_id = H5Dcreate(file_id, channelnames[ichannel], H5T_NATIVE_FLOAT, filespace_simple, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+        hid_t dset_id = H5Dcreate(file_id, channelnames[ichannel], H5T_NATIVE_FLOAT, filespace_simple,
+				  H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
         hid_t plist_id = H5Pcreate(H5P_DATASET_XFER);
 
         H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
 
-        hsize_t start[4] = { myrank[2] * L[2], myrank[1] * L[1], myrank[0] * L[0], 0};
+        hsize_t start[4] = { m::coords[2] * L[2], m::coords[1] * L[1], m::coords[0] * L[0], 0};
         hsize_t extent[4] = { L[2], L[1], L[0],  1};
         hid_t filespace = H5Dget_space(dset_id);
         H5Sselect_hyperslab(filespace, H5S_SELECT_SET, start, NULL, extent, NULL);
@@ -250,13 +248,10 @@ void H5FieldDump::_write_fields(const char * const path2h5,
 }
 
 H5FieldDump::H5FieldDump() : last_idtimestep(0) {
-    int dims[3], coords[3];
-    MC( MPI_Cart_get(m::cart, 3, dims, periods, coords) );
-
     const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
 
     for(int c = 0; c < 3; ++c)
-        globalsize[c] = L[c] * dims[c];
+      globalsize[c] = L[c] * m::dims[c];
 }
 
 void H5FieldDump::dump_scalarfield(float *data,
