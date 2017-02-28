@@ -176,7 +176,7 @@ void dump_grid() {
 
 void diag(int it) {
   int n = s_n + r_n; dev2hst();
-  diagnostics(m::cart, m::cart, sr_pp, n, dt, it);
+  diagnostics(sr_pp, n, dt, it);
 }
 
 static void update_and_bounce() {
@@ -208,16 +208,12 @@ void init() {
 
   wall::trunk = new Logistic::KISS;
   sdstr::init();
-  MC(MPI_Comm_rank(m::cart, &Cont::rank));
-
-  int dims[3];
-  MC(MPI_Cart_get(m::cart, 3, dims, periods, Cont::coords));
-  Cont::origin = make_float3((0.5 + Cont::coords[0]) * XSIZE_SUBDOMAIN,
-			     (0.5 + Cont::coords[1]) * YSIZE_SUBDOMAIN,
-			     (0.5 + Cont::coords[2]) * ZSIZE_SUBDOMAIN);
-  Cont::globalextent = make_float3(dims[0] * XSIZE_SUBDOMAIN,
-				   dims[1] * YSIZE_SUBDOMAIN,
-				   dims[2] * ZSIZE_SUBDOMAIN);
+  Cont::origin = make_float3((0.5 + m::coords[0]) * XSIZE_SUBDOMAIN,
+			     (0.5 + m::coords[1]) * YSIZE_SUBDOMAIN,
+			     (0.5 + m::coords[2]) * ZSIZE_SUBDOMAIN);
+  Cont::globalextent = make_float3(m::dims[0] * XSIZE_SUBDOMAIN,
+				   m::dims[1] * YSIZE_SUBDOMAIN,
+				   m::dims[2] * ZSIZE_SUBDOMAIN);
   mpDeviceMalloc(&s_pp); mpDeviceMalloc(&s_pp0);
   mpDeviceMalloc(&s_ff); mpDeviceMalloc(&s_ff0);
   mpDeviceMalloc(&r_ff); mpDeviceMalloc(&r_ff);
