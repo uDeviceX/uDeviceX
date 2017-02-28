@@ -67,8 +67,7 @@ static void update_helper_arrays() {
 
 void create_walls() {
   CC(cudaDeviceSynchronize());
-  int nsurvived = 0;
-  wall::init(s_pp, s_n, nsurvived); s_n = nsurvived;
+  s_n = wall::init(s_pp, s_n); /* number of survived particles */
   wall_created = true;
 
   Cont::clear_velocity(s_pp, s_n);
@@ -81,8 +80,7 @@ void create_walls() {
 
 void forces_rbc() {
   if (rbcs)
-    rbc::forces_nohost(Cont::nc,
-			   (float*)r_pp, (float*)r_ff);
+    rbc::forces_nohost(Cont::nc, (float*)r_pp, (float*)r_ff);
 }
 
 void forces_dpd() {

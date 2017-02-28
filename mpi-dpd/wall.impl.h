@@ -1,6 +1,5 @@
 namespace wall {
-  void init(Particle *const p, const int n,
-		 int &nsurvived) {
+  int init(Particle *pp, int n) {
     wall_cells = new CellLists(XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL,
 			       YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL,
 			       ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL);
@@ -102,27 +101,19 @@ namespace wall {
     thrust::device_vector<int> keys(n);
 
     k_wall::fill_keys<<<(n + 127) / 128, 128>>>
-      (p, n, thrust::raw_pointer_cast(&keys[0]));
-
-
+      (pp, n, thrust::raw_pointer_cast(&keys[0]));
 
     thrust::sort_by_key(keys.begin(), keys.end(),
-			thrust::device_ptr<Particle>(p));
+			thrust::device_ptr<Particle>(pp));
 
-    nsurvived = thrust::count(keys.begin(), keys.end(), 0);
-
+    int nsurvived = thrust::count(keys.begin(), keys.end(), 0);
     int nbelt = thrust::count(keys.begin() + nsurvived, keys.end(), 1);
 
     thrust::device_vector<Particle> solid_local
-      (thrust::device_ptr<Particle>(p + nsurvived),
-       thrust::device_ptr<Particle>(p + nsurvived + nbelt));
+      (thrust::device_ptr<Particle>(pp + nsurvived),
+       thrust::device_ptr<Particle>(pp + nsurvived + nbelt));
 
-    /*
-      can't use halo-exchanger class because of MARGIN HaloExchanger
-      halo(cartcomm, L, 666); DeviceBuffer<Particle> solid_remote;
-      halo.exchange(thrust::raw_pointer_cast(&solid_local[0]),
-      solid_local.size(), solid_remote);
-    */
+    /* can't use halo-exchanger class because of MARGIN */
     if (myrank == 0) printf("fetching remote wall particles...\n");
 
     DeviceBuffer<Particle> solid_remote;
@@ -234,22 +225,19 @@ namespace wall {
 	(solid, solid_size, solid4);
 
     CC(cudaFree(solid));
-
-
+    
+    return nsurvived;
   }
 
   void bounce(Particle *const p, const int n) {
     if (n > 0)
       k_wall::bounce<<<(n + 127) / 128, 128, 0>>>
 	((float2 *)p, n, dt);
-
-
   }
 
   void interactions(const Particle *const p, const int n,
 		    Force *const acc) {
     // cellsstart and cellscount IGNORED for now
-
     if (n > 0 && solid_size > 0) {
       size_t textureoffset;
       CC(cudaBindTexture(&textureoffset,
