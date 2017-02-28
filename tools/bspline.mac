@@ -1,10 +1,6 @@
 load("format") $
 load("cgrind") $
 
-evl(k, i, x):= if k = 1 then I(i, i+1, x) else
-         (x - i) / (k - 1) * evl(k - 1, i, x) +
-         (i + k - x) / (k - 1) * evl(k - 1, i + 1, x);
-
 evl(k, i, x):= if k = 1 then I[i,i+1] else
          (x - i) / (k - 1) * evl(k - 1, i, x) +
          (i + k - x) / (k - 1) * evl(k - 1, i + 1, x);
@@ -15,6 +11,6 @@ e: format(e, %poly(I[0,1], I[1,2], I[2,3], I[3, 4]));
 
 foo(i):=float(horner(coeff(e, i)));
 
-for i thru 4 do grind(i, i+1, foo(I[i, i+1]))$
+for i thru 4 do grind([i-1, i, foo(I[i-1, i])])$
 
 /* draw2d(explicit(f(x), x, 0, 4)); */
