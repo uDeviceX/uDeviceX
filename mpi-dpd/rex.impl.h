@@ -8,7 +8,7 @@ namespace rex {
     host_packbuf->resize(s);
   }
 
-  void init(MPI_Comm _cartcomm) {
+  void init() {
     iterationcount = -1;
     packstotalstart = new DeviceBuffer<int>(27);
     host_packstotalstart = new PinnedHostBuffer<int>(27);
@@ -24,7 +24,7 @@ namespace rex {
     for (int i = 0; i < SE_HALO_SIZE; i++) local[i] = new LocalHalo;
     for (int i = 0; i < SE_HALO_SIZE; i++) remote[i] = new RemoteHalo;
 
-    MC(MPI_Comm_dup(_cartcomm, &cartcomm));
+    MC(MPI_Comm_dup(m::cart, &cartcomm));
     MC(MPI_Comm_size(cartcomm, &nranks));
     MC(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
     MC(MPI_Comm_rank(cartcomm, &myrank));

@@ -1,5 +1,5 @@
 namespace cnt {
-  void init(MPI_Comm comm) {
+  void init() {
     cellsstart = new DeviceBuffer<int>(k_cnt::NCELLS + 16);
     cellscount = new DeviceBuffer<int>(k_cnt::NCELLS + 16);
     compressed_cellscount = new DeviceBuffer<unsigned char>(k_cnt::NCELLS + 16);
@@ -9,7 +9,7 @@ namespace cnt {
     local_trunk = new Logistic::KISS;
 
     int myrank;
-    MC(MPI_Comm_rank(comm, &myrank));
+    MC(MPI_Comm_rank(m::cart, &myrank));
 
     *local_trunk = Logistic::KISS(7119 - myrank, 187 + myrank, 18278, 15674);
 

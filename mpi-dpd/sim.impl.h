@@ -192,11 +192,11 @@ static void update_and_bounce() {
 void init() {
   Cont::cartcomm = m::cart;
   rbc::setup();
-  rdstr::init(m::cart);
+  rdstr::init();
   DPD::init();
-  fsi::init(m::cart);
-  rex::init(m::cart);
-  cnt::init(m::cart);
+  fsi::init();
+  rex::init();
+  cnt::init();
   if (hdf5part_dumps)
     dump_part_solvent = new H5PartDump("s.h5part", m::cart, m::cart);
 
@@ -208,7 +208,7 @@ void init() {
   }
 
   wall::trunk = new Logistic::KISS;
-  sdstr::redist_part_init(Cont::cartcomm);
+  sdstr::init();
   MC(MPI_Comm_rank(m::cart, &Cont::rank));
 
   int dims[3];

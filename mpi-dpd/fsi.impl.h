@@ -1,8 +1,8 @@
 namespace fsi {
   void bind_solvent(SolventWrap wrap) {*wsolvent = wrap;}
-  void init(MPI_Comm comm) {
+  void init() {
     int myrank;
-    MC(MPI_Comm_rank(comm, &myrank));
+    MC(MPI_Comm_rank(m::cart, &myrank));
 
     local_trunk = new Logistic::KISS;
     wsolvent    = new SolventWrap;

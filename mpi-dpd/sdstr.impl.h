@@ -7,7 +7,7 @@ namespace sdstr {
     MC( MPI_Waitall(n, reqs, statuses) );
   }
 
-  void redist_part_init(MPI_Comm _cartcomm)  {
+  void init()  {
     failure = new PinnedHostBuffer<bool>(1);
     packsizes = new PinnedHostBuffer<int>(27);
     compressed_cellcounts = new DeviceBuffer<unsigned char>
@@ -23,7 +23,7 @@ namespace sdstr {
 
     nactiveneighbors  = 26; firstcall = true;
     int dims[3], coords[3];
-    MC(MPI_Comm_dup(_cartcomm, &cartcomm_rdst) );
+    MC(MPI_Comm_dup(m::cart, &cartcomm_rdst) );
     MC( MPI_Comm_rank(cartcomm_rdst, &myrank) );
     MC( MPI_Cart_get(cartcomm_rdst, 3, dims, periods, coords) );
 

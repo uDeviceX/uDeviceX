@@ -38,7 +38,7 @@ void gen_ne(MPI_Comm ccom, /* */ int* rnk_ne, int* ank_ne) {
   }
 }
 
-void init(MPI_Comm _ccom) {
+void init() {
   mpDeviceMalloc(&bulk);
 
   for (int i = 0; i < 27; i++) rbuf[i] = new PinnedHostBuffer1<Particle>;
@@ -49,7 +49,7 @@ void init(MPI_Comm _ccom) {
   _ddst = new DeviceBuffer<float *>;
   _dsrc = new DeviceBuffer<const float *>;
 
-  MC(MPI_Comm_dup(_ccom, &ccom));
+  MC(MPI_Comm_dup(m::cart, &ccom));
   gen_ne(ccom,   rnk_ne, ank_ne); /* generate ranks and anti-ranks */
 
   _post_recvcnt();
