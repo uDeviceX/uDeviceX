@@ -165,13 +165,13 @@ void dump_rbcs() {
   if (!rbcs) return;
   static int id = 0;
   dev2hst();  /* TODO: do not need `s' */
-  Cont::rbc_dump(m::cart, &sr_pp[s_n], r_n, id++);
+  Cont::rbc_dump(&sr_pp[s_n], r_n, id++);
 }
 
 void dump_grid() {
   if (!hdf5field_dumps) return;
   dev2hst();  /* TODO: do not need `r' */
-  dump_field->dump(m::cart, sr_pp, s_n);
+  dump_field->dump(sr_pp, s_n);
 }
 
 void diag(int it) {
@@ -197,7 +197,7 @@ void init() {
   rex::init();
   cnt::init();
   if (hdf5part_dumps)
-    dump_part_solvent = new H5PartDump("s.h5part", m::cart, m::cart);
+    dump_part_solvent = new H5PartDump("s.h5part");
 
   cells   = new CellLists(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
   mpDeviceMalloc(&s_zip0); mpDeviceMalloc(&s_zip1);
@@ -237,7 +237,7 @@ void init() {
 #endif
   }
 
-  dump_field = new H5FieldDump (m::cart);
+  dump_field = new H5FieldDump;
   MC(MPI_Barrier(m::cart));
 }
 

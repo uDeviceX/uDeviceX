@@ -20,38 +20,36 @@
 
 bool H5FieldDump::directory_exists = false;
 
-void _write_bytes(const void * const ptr, const int nbytes32, MPI_File f, MPI_Comm comm) {
+void _write_bytes(const void * const ptr, const int nbytes32, MPI_File f) {
     MPI_Offset base;
     MC(MPI_File_get_position(f, &base));
     MPI_Offset offset = 0, nbytes = nbytes32;
-    MC(MPI_Exscan(&nbytes, &offset, 1, MPI_OFFSET, MPI_SUM, comm));
+    MC(MPI_Exscan(&nbytes, &offset, 1, MPI_OFFSET, MPI_SUM, m::cart));
     MPI_Status status;
     MC(MPI_File_write_at_all(f, base + offset, ptr, nbytes, MPI_CHAR, &status));
     MPI_Offset ntotal = 0;
-    MC(MPI_Allreduce(&nbytes, &ntotal, 1, MPI_OFFSET, MPI_SUM, comm) );
+    MC(MPI_Allreduce(&nbytes, &ntotal, 1, MPI_OFFSET, MPI_SUM, m::cart) );
     MC(MPI_File_seek(f, ntotal, MPI_SEEK_CUR));
 }
 
-void ply_dump(MPI_Comm comm, MPI_Comm cartcomm, const char * filename,
+void ply_dump(const char * filename,
         int (*mesh_indices)[3], const int ninstances, const int ntriangles_per_instance,
         Particle * _particles, int nvertices_per_instance, bool append) {
     std::vector<Particle> particles(_particles, _particles + ninstances * nvertices_per_instance);
-    int rank;
-    MC(MPI_Comm_rank(comm, &rank) );
-    int dims[3], coords[3];
-    MC(MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
     int NPOINTS = 0;
     const int n = particles.size();
-    MC(MPI_Reduce(&n, &NPOINTS, 1, MPI_INT, MPI_SUM, 0, comm) );
+    MC(MPI_Reduce(&n, &NPOINTS, 1, MPI_INT, MPI_SUM, 0, m::cart) );
     const int ntriangles = ntriangles_per_instance * ninstances;
     int NTRIANGLES = 0;
-    MC(MPI_Reduce(&ntriangles, &NTRIANGLES, 1, MPI_INT, MPI_SUM, 0, comm) );
+    MC(MPI_Reduce(&ntriangles, &NTRIANGLES, 1, MPI_INT, MPI_SUM, 0, m::cart) );
     MPI_File f;
-    MC(MPI_File_open(comm, filename , MPI_MODE_WRONLY | (append ? MPI_MODE_APPEND : MPI_MODE_CREATE), MPI_INFO_NULL, &f) );
-    if (!append) MC( MPI_File_set_size (f, 0));
+    MC(MPI_File_open(m::cart, filename,
+		     MPI_MODE_WRONLY | (append ? MPI_MODE_APPEND : MPI_MODE_CREATE),
+		     MPI_INFO_NULL, &f) );
+    if (!append) MC(MPI_File_set_size (f, 0));
 
     std::stringstream ss;
-    if (rank == 0) {
+    if (m::rank == 0) {
         ss <<  "ply\n";
         ss <<  "format binary_little_endian 1.0\n";
         ss <<  "element vertex " << NPOINTS << "\n";
@@ -62,15 +60,15 @@ void ply_dump(MPI_Comm comm, MPI_Comm cartcomm, const char * filename,
         ss <<  "end_header\n";
     }
     std::string content = ss.str();
-    _write_bytes(content.c_str(), content.size(), f, comm);
+    _write_bytes(content.c_str(), content.size(), f);
     const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
     for(int i = 0; i < n; ++i)
         for(int c = 0; c < 3; ++c)
-            particles[i].r[c] += L[c] / 2 + coords[c] * L[c];
+	  particles[i].r[c] += L[c] / 2 + m::coords[c] * L[c];
 
-    _write_bytes(&particles.front(), sizeof(Particle) * n, f, comm);
+    _write_bytes(&particles.front(), sizeof(Particle) * n, f);
     int poffset = 0;
-    MC(MPI_Exscan(&n, &poffset, 1, MPI_INTEGER, MPI_SUM, comm));
+    MC(MPI_Exscan(&n, &poffset, 1, MPI_INTEGER, MPI_SUM, m::cart));
     std::vector<int> buf;
     for(int j = 0; j < ninstances; ++j)
       for(int i = 0; i < ntriangles_per_instance; ++i) {
@@ -80,20 +78,20 @@ void ply_dump(MPI_Comm comm, MPI_Comm cartcomm, const char * filename,
 			     poffset + nvertices_per_instance * j + mesh_indices[i][2] };
             buf.insert(buf.end(), primitive, primitive + 4);
       }
-    _write_bytes(&buf.front(), sizeof(int) * buf.size(), f, comm);
+    _write_bytes(&buf.front(), sizeof(int) * buf.size(), f);
     MC(MPI_File_close(&f));
 }
 
-H5PartDump::H5PartDump(const std::string fname, MPI_Comm comm, MPI_Comm cartcomm): tstamp(0), disposed(false)
+H5PartDump::H5PartDump(const std::string fname): tstamp(0), disposed(false)
 {
-    _initialize(fname, comm, cartcomm);
+    _initialize(fname);
 }
 
-void H5PartDump::_initialize(const std::string filename, MPI_Comm comm, MPI_Comm cartcomm)
+void H5PartDump::_initialize(const std::string filename)
 {
 #ifndef NO_H5PART
     int dims[3], coords[3];
-    MC( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
+    MC(MPI_Cart_get(m::cart, 3, dims, periods, coords) );
 
     const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
     for(int c = 0; c < 3; ++c)
@@ -102,7 +100,7 @@ void H5PartDump::_initialize(const std::string filename, MPI_Comm comm, MPI_Comm
     char path[1024];
     sprintf(path, "h5/%s", filename.c_str());
     fflush(stdout);
-    H5PartFile * f = H5PartOpenFileParallel(path, H5PART_WRITE, comm);
+    H5PartFile * f = H5PartOpenFileParallel(path, H5PART_WRITE, m::cart);
     handler = f;
 #endif
 }
@@ -194,14 +192,14 @@ void H5FieldDump::_xdmf_epilogue(FILE * xmf) {
 }
 
 void H5FieldDump::_write_fields(const char * const path2h5,
-        const float * const channeldata[], const char * const * const channelnames, const int nchannels,
-        MPI_Comm comm) {
+				const float * const channeldata[],
+				const char * const * const channelnames, const int nchannels) {
 #ifndef NO_H5
     int nranks[3], myrank[3];
-    MC( MPI_Cart_get(cartcomm, 3, nranks, periods, myrank) );
+    MC( MPI_Cart_get(m::cart, 3, nranks, periods, myrank) );
 
     hid_t plist_id_access = H5Pcreate(H5P_FILE_ACCESS);
-    H5Pset_fapl_mpio(plist_id_access, comm, MPI_INFO_NULL);
+    H5Pset_fapl_mpio(plist_id_access, m::cart, MPI_INFO_NULL);
 
     hid_t file_id = H5Fcreate(path2h5, H5F_ACC_TRUNC, H5P_DEFAULT, plist_id_access);
     H5Pclose(plist_id_access);
@@ -235,7 +233,7 @@ void H5FieldDump::_write_fields(const char * const path2h5,
     H5Fclose(file_id);
 
     int rankscalar;
-    MC(MPI_Comm_rank(comm, &rankscalar));
+    MC(MPI_Comm_rank(m::cart, &rankscalar));
 
     if (!rankscalar)
     {
@@ -254,9 +252,9 @@ void H5FieldDump::_write_fields(const char * const path2h5,
 #endif // NO_H5
 }
 
-H5FieldDump::H5FieldDump(MPI_Comm cartcomm): cartcomm(cartcomm), last_idtimestep(0) {
+H5FieldDump::H5FieldDump() : last_idtimestep(0) {
     int dims[3], coords[3];
-    MC( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
+    MC( MPI_Cart_get(m::cart, 3, dims, periods, coords) );
 
     const int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
 
@@ -264,14 +262,14 @@ H5FieldDump::H5FieldDump(MPI_Comm cartcomm): cartcomm(cartcomm), last_idtimestep
         globalsize[c] = L[c] * dims[c];
 }
 
-void H5FieldDump::dump_scalarfield(MPI_Comm comm, float *data,
+void H5FieldDump::dump_scalarfield(float *data,
 				   const char *channelname) {
     char path2h5[512];
     sprintf(path2h5, "h5/%s.h5", channelname);
-    _write_fields(path2h5, &data, &channelname, 1, comm);
+    _write_fields(path2h5, &data, &channelname, 1);
 }
 
-void H5FieldDump::dump(MPI_Comm comm, Particle *p, int n) {
+void H5FieldDump::dump(Particle *p, int n) {
 #ifndef NO_H5
     static int id = 0; /* dump id */
      
@@ -296,17 +294,15 @@ void H5FieldDump::dump(MPI_Comm comm, Particle *p, int n) {
 
     const char * names[] = { "density", "u", "v", "w" };
     if (!directory_exists) {
-        int rank;
-        MC(MPI_Comm_rank(comm, &rank));
-        if (rank == 0)
-            mkdir("h5", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-        directory_exists = true;
-        MC(MPI_Barrier(comm));
+      if (m::rank == 0)
+	mkdir("h5", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+      directory_exists = true;
+      MC(MPI_Barrier(m::cart));
     }
 
     char filepath[512];
     sprintf(filepath, "h5/flowfields-%04d.h5", id++);
     float * data[] = { rho.data(), u[0].data(), u[1].data(), u[2].data() };
-    _write_fields(filepath, data, names, 4, comm);
+    _write_fields(filepath, data, names, 4);
 #endif // NO_H5
 }

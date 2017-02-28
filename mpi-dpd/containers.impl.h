@@ -257,22 +257,18 @@ void clear_forces(Force* ff, int n) {
   CC(cudaMemsetAsync(ff, 0, sizeof(Force) * n));
 }
 static void rbc_dump0(const char *format4ply,
-		      MPI_Comm comm, int nc,
-		      Particle *p, int n, int iddatadump) {
+		      int nc, Particle *p, int n, int iddatadump) {
     int ctr = iddatadump;
     char buf[200];
     sprintf(buf, format4ply, ctr);
 
-    int rank;
-    MC(MPI_Comm_rank(comm, &rank));
-
-    if(rank == 0)
+    if(m::rank == 0)
       mkdir("ply", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-    ply_dump(comm, m::cart, buf, indices, nc, nt, p, nv, false);
+    ply_dump(buf, indices, nc, nt, p, nv, false);
 }
 
-void rbc_dump(MPI_Comm comm, Particle* p, int n, int iddatadump) {
-  rbc_dump0("ply/rbcs-%05d.ply", comm, n / nv, p, n, iddatadump);
+void rbc_dump(Particle* p, int n, int iddatadump) {
+  rbc_dump0("ply/rbcs-%05d.ply", n / nv, p, n, iddatadump);
 }
 
 }

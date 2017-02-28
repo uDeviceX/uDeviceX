@@ -72,8 +72,8 @@ namespace wall {
       int size[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
       float amplitude_rescaling = L[0] / (sampler.extent[0] / dims[0]);
       sampler.sample(start, spacing, size, amplitude_rescaling, walldata);
-      H5FieldDump dump(m::cart);
-      dump.dump_scalarfield(m::cart, walldata, "wall");
+      H5FieldDump dump;
+      dump.dump_scalarfield(walldata, "wall");
       delete[] walldata;
     }
 
