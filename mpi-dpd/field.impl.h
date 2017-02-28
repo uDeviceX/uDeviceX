@@ -28,21 +28,21 @@ struct FieldSampler {
       MC(MPI_Bcast(N, 3, MPI_INT, 0, comm));
       MC(MPI_Bcast(extent, 3, MPI_FLOAT, 0, comm));
 
-      int nvoxels = N[0] * N[1] * N[2];
-      data = new float[nvoxels];
-      fread(data, sizeof(float), nvoxels, fh);
+      int np = N[0] * N[1] * N[2];
+      data = new float[np];
+      fread(data, sizeof(float), np, fh);
       fclose(fh);
-      for (size_t i = 0; i < nvoxels; i += CHUNKSIZE) {
-	size_t s = (i + CHUNKSIZE <= nvoxels) ? CHUNKSIZE : (nvoxels - i);
+      for (size_t i = 0; i < np; i += CHUNKSIZE) {
+	size_t s = (i + CHUNKSIZE <= np) ? CHUNKSIZE : (np - i);
 	MC(MPI_Bcast(data + i, s, MPI_FLOAT, 0, comm));
       }
     } else {
       MC(MPI_Bcast(N, 3, MPI_INT, 0, comm));
       MC(MPI_Bcast(extent, 3, MPI_FLOAT, 0, comm));
-      int nvoxels = N[0] * N[1] * N[2];
-      data = new float[nvoxels];
-      for (size_t i = 0; i < nvoxels; i += CHUNKSIZE) {
-	size_t s = (i + CHUNKSIZE <= nvoxels) ? CHUNKSIZE : (nvoxels - i);
+      int np = N[0] * N[1] * N[2];
+      data = new float[np];
+      for (size_t i = 0; i < np; i += CHUNKSIZE) {
+	size_t s = (i + CHUNKSIZE <= np) ? CHUNKSIZE : (np - i);
 	MC(MPI_Bcast(data + i, s, MPI_FLOAT, 0, comm));
       }
     }
