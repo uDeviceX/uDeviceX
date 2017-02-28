@@ -3,10 +3,6 @@ const float hydrostatic_a = _hydrostatic_a / rc;
 const float kBT           = _kBT / (rc * rc);
 const int   numberdensity = _numberdensity * (rc * rc * rc);
 
-/* grid is periodic in each dimension (used in MPI_Cart_* calls) */
-static int periods[] = {1, 1, 1};
-
-
 /* maximum particle number per one processor for static allocation */
 #define MAX_PART_NUM 5000000
 
