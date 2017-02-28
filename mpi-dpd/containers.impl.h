@@ -168,7 +168,7 @@ void clear_velocity(Particle* pp, int n) {
 void rbc_init() {
   nc = 0;
   int dims[3];
-  MC( MPI_Cart_get(cartcomm, 3, dims, periods, coords) );
+  MC(MPI_Cart_get(m::cart, 3, dims, periods, coords) );
 
   rbc::get_triangle_indexing(indices, nt);
   nv = rbc::setup();
@@ -206,13 +206,13 @@ int setup(Particle* pp, const char *path2ic) {
   } /* end of myrank == 0 */
 
   int allrbcs_count = allrbcs.size();
-  MC(MPI_Bcast(&allrbcs_count, 1, MPI_INT, 0, cartcomm));
+  MC(MPI_Bcast(&allrbcs_count, 1, MPI_INT, 0, m::cart));
 
   allrbcs.resize(allrbcs_count);
 
   int nfloats_per_entry = sizeof(TransformedExtent) / sizeof(float);
 
-  MC(MPI_Bcast(&allrbcs.front(), nfloats_per_entry * allrbcs_count, MPI_FLOAT, 0, cartcomm));
+  MC(MPI_Bcast(&allrbcs.front(), nfloats_per_entry * allrbcs_count, MPI_FLOAT, 0, m::cart));
 
   std::vector<TransformedExtent> good;
   int L[3] = { XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN };
@@ -268,7 +268,7 @@ static void rbc_dump0(const char *format4ply,
 
     if(rank == 0)
       mkdir("ply", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-    ply_dump(comm, cartcomm, buf, indices, nc, nt, p, nv, false);
+    ply_dump(comm, m::cart, buf, indices, nc, nt, p, nv, false);
 }
 
 void rbc_dump(MPI_Comm comm, Particle* p, int n, int iddatadump) {

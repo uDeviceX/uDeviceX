@@ -4,7 +4,6 @@ namespace Cont {
   int nv = -1;
   float3 origin, globalextent;
   int    coords[3];
-  MPI_Comm cartcomm;
   int nranks, rank;
   int nc = 0;
   struct TransformedExtent {

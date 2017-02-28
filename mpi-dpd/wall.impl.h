@@ -4,10 +4,10 @@ namespace wall {
 			       YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL,
 			       ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL);
     int myrank, dims[3];
-    MC(MPI_Comm_rank(Cont::cartcomm, &myrank));
-    MC(MPI_Cart_get(Cont::cartcomm, 3, dims, periods, Cont::coords));
+    MC(MPI_Comm_rank(m::cart, &myrank));
+    MC(MPI_Cart_get(m::cart, 3, dims, periods, Cont::coords));
     float *field = new float[XTEXTURESIZE * YTEXTURESIZE * ZTEXTURESIZE];
-    FieldSampler sampler("sdf.dat", Cont::cartcomm);
+    FieldSampler sampler("sdf.dat", m::cart);
     int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
     int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
     int TEXTURESIZE[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
@@ -72,8 +72,8 @@ namespace wall {
       int size[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
       float amplitude_rescaling = L[0] / (sampler.extent[0] / dims[0]);
       sampler.sample(start, spacing, size, amplitude_rescaling, walldata);
-      H5FieldDump dump(Cont::cartcomm);
-      dump.dump_scalarfield(Cont::cartcomm, walldata, "wall");
+      H5FieldDump dump(m::cart);
+      dump.dump_scalarfield(m::cart, walldata, "wall");
       delete[] walldata;
     }
 
@@ -131,7 +131,7 @@ namespace wall {
 	int coordsneighbor[3];
 	for (int c = 0; c < 3; ++c) coordsneighbor[c] = Cont::coords[c] + d[c];
 
-	MC(MPI_Cart_rank(Cont::cartcomm, coordsneighbor, dstranks + i));
+	MC(MPI_Cart_rank(m::cart, coordsneighbor, dstranks + i));
       }
 
       // send local counts - receive remote counts
@@ -141,14 +141,14 @@ namespace wall {
 	MPI_Request reqrecv[26];
 	for (int i = 0; i < 26; ++i)
 	  MC(MPI_Irecv(remsizes + i, 1, MPI_INTEGER, dstranks[i],
-		       123 + recv_tags[i], Cont::cartcomm, reqrecv + i));
+		       123 + recv_tags[i], m::cart, reqrecv + i));
 
 	int localsize = local.size();
 
 	MPI_Request reqsend[26];
 	for (int i = 0; i < 26; ++i)
 	  MC(MPI_Isend(&localsize, 1, MPI_INTEGER, dstranks[i], 123 + i,
-		       Cont::cartcomm, reqsend + i));
+		       m::cart, reqsend + i));
 
 	MPI_Status statuses[26];
 	MC(MPI_Waitall(26, reqrecv, statuses));
@@ -164,13 +164,13 @@ namespace wall {
 	MPI_Request reqrecv[26];
 	for (int i = 0; i < 26; ++i)
 	  MC(MPI_Irecv(remote[i].data(), remote[i].size() * 6, MPI_FLOAT,
-		       dstranks[i], 321 + recv_tags[i], Cont::cartcomm,
+		       dstranks[i], 321 + recv_tags[i], m::cart,
 		       reqrecv + i));
 
 	MPI_Request reqsend[26];
 	for (int i = 0; i < 26; ++i)
 	  MC(MPI_Isend(local.data(), local.size() * 6, MPI_FLOAT,
-		       dstranks[i], 321 + i, Cont::cartcomm, reqsend + i));
+		       dstranks[i], 321 + i, m::cart, reqsend + i));
 
 	MPI_Status statuses[26];
 	MC(MPI_Waitall(26, reqrecv, statuses));

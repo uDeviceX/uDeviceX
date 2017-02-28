@@ -190,7 +190,6 @@ static void update_and_bounce() {
 }
 
 void init() {
-  Cont::cartcomm = m::cart;
   rbc::setup();
   rdstr::init();
   DPD::init();
