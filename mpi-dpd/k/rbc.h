@@ -199,12 +199,12 @@ __device__ float3 _fdihedral_device(float2 tmp0, float2 tmp1) {
 }
 
 template <int nvertices>
-__global__ void fall_kernel(int nrbcs, float *__restrict__ av,
+__global__ void fall_kernel(int nc, float *__restrict__ av,
 			    float *acc) {
   int degreemax = 7;
   int pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
 
-  if (pid < nrbcs * nvertices) {
+  if (pid < nc * nvertices) {
     float2 tmp0 = tex1Dfetch(texVertices, pid * 3 + 0);
     float2 tmp1 = tex1Dfetch(texVertices, pid * 3 + 1);
 
@@ -219,8 +219,7 @@ __global__ void fall_kernel(int nrbcs, float *__restrict__ av,
   }
 }
 
- __global__ void addKernel(float* axayaz, float* __restrict__ addfrc, int n)
-{
+__global__ void addKernel(float* axayaz, float* __restrict__ addfrc, int n) {
   uint pid = threadIdx.x + blockIdx.x * blockDim.x;
   if (pid < n) axayaz[3*pid + 0] += addfrc[pid];
 }
