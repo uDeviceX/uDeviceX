@@ -251,7 +251,7 @@ void dumps_diags(int it) {
 
 void run() {
   int nsteps = (int)(tend / dt);
-  if (Cont::rank == 0 && !walls) printf("will take %ld steps\n", nsteps);
+  if (m::rank == 0 && !walls) printf("will take %ld steps\n", nsteps);
   if (!walls && pushtheflow) driving_force = hydrostatic_a;
   int it;
   for (it = 0; it < nsteps; ++it) {

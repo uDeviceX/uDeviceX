@@ -177,7 +177,7 @@ void _initialize(float *device_pp, float (*transform)[4]) {
   
 int setup(Particle* pp, const char *path2ic) {
   std::vector<TransformedExtent> allrbcs;
-  if (rank == 0) {
+  if (m::rank == 0) {
     //read transformed extent from file
     FILE *f = fopen(path2ic, "r");
     printf("READING FROM: <%s>\n", path2ic);
@@ -217,10 +217,10 @@ int setup(Particle* pp, const char *path2ic) {
   for(std::vector<TransformedExtent>::iterator it = allrbcs.begin(); it != allrbcs.end(); ++it) {
     bool inside = true;
     for(int c = 0; c < 3; ++c)
-      inside &= it->com[c] >= coords[c] * L[c] && it->com[c] < (coords[c] + 1) * L[c];
+      inside &= it->com[c] >= m::coords[c] * L[c] && it->com[c] < (m::coords[c] + 1) * L[c];
     if (inside) {
       for(int c = 0; c < 3; ++c)
-	it->transform[c][3] -= (coords[c] + 0.5) * L[c];
+	it->transform[c][3] -= (m::coords[c] + 0.5) * L[c];
       good.push_back(*it);
     }
   }

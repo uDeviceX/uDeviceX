@@ -12,7 +12,7 @@ namespace wall {
     {
       float start[3], spacing[3];
       for (int c = 0; c < 3; ++c) {
-	start[c] = sampler.N[c] * (Cont::coords[c] * L[c] - MARGIN[c]) /
+	start[c] = sampler.N[c] * (m::coords[c] * L[c] - MARGIN[c]) /
 	  (float)(m::dims[c] * L[c]);
 	spacing[c] = sampler.N[c] * (L[c] + 2 * MARGIN[c]) /
 	  (float)(m::dims[c] * L[c]) / (float)TEXTURESIZE[c];
@@ -37,7 +37,7 @@ namespace wall {
 
 	    float start[3], spacing[3];
 	    for (int c = 0; c < 3; ++c) {
-	      start[c] = (Cont::coords[c] * L[c] + local_start[c]) /
+	      start[c] = (m::coords[c] * L[c] + local_start[c]) /
 		(float)(m::dims[c] * L[c]) * sampler.N[c];
 	      spacing[c] = sampler.N[c] / (float)(m::dims[c] * L[c]);
 	    }
@@ -62,7 +62,7 @@ namespace wall {
 
       float start[3], spacing[3];
       for (int c = 0; c < 3; ++c) {
-	start[c] = Cont::coords[c] * L[c] / (float)(m::dims[c] * L[c]) * sampler.N[c];
+	start[c] = m::coords[c] * L[c] / (float)(m::dims[c] * L[c]) * sampler.N[c];
 	spacing[c] = sampler.N[c] / (float)(m::dims[c] * L[c]);
       }
 
@@ -126,7 +126,7 @@ namespace wall {
 	  (2 - d[0]) % 3 + 3 * ((2 - d[1]) % 3 + 3 * ((2 - d[2]) % 3));
 
 	int coordsneighbor[3];
-	for (int c = 0; c < 3; ++c) coordsneighbor[c] = Cont::coords[c] + d[c];
+	for (int c = 0; c < 3; ++c) coordsneighbor[c] = m::coords[c] + d[c];
 
 	MC(MPI_Cart_rank(m::cart, coordsneighbor, dstranks + i));
       }
