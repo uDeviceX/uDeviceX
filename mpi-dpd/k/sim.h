@@ -3,12 +3,13 @@ static __global__ void make_texture(float4 *__restrict xyzouvwoo,
 			     ushort4 *__restrict xyzo_half,
 			     const float *__restrict xyzuvw, const uint n) {
   extern __shared__ volatile float smem[];
-  const uint warpid = threadIdx.x / 32;
-  const uint lane = threadIdx.x % 32;
 
-  const uint i = (blockIdx.x * blockDim.x + threadIdx.x) & 0xFFFFFFE0U;
+  uint warpid = threadIdx.x / 32;
+  uint lane = threadIdx.x % 32;
 
-  const float2 *base = (float2 *)(xyzuvw + i * 6);
+  uint i = (blockIdx.x * blockDim.x + threadIdx.x) & 0xFFFFFFE0U;
+
+  float2 *base = (float2 *)(xyzuvw + i * 6);
 #pragma unroll 3
   for (uint j = lane; j < 96; j += 32) {
     float2 u = base[j];

@@ -283,7 +283,7 @@ void close() {
   CC(cudaFree(s_zip1));
 
   delete wall::trunk;
-  CC(cudaFree(r_pp )); CC(cudaFree(r_ff));
+  CC(cudaFree(r_pp )); CC(cudaFree(r_ff ));
   CC(cudaFree(s_pp )); CC(cudaFree(s_ff ));
   CC(cudaFree(s_pp0)); CC(cudaFree(s_ff0));
 }

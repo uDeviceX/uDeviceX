@@ -5,6 +5,7 @@
 #include "m.h"     /* MPI */
 #include "common.h"
 #include "bund.h"
+#include "glb.h"
 
 void mpi_init(int argc, char **argv) {
   MC(MPI_Init(&argc, &argv));
@@ -23,6 +24,7 @@ int main(int argc, char **argv) {
   CC(cudaSetDevice(device));
 
   mpi_init(argc, argv);
+  glb::sim();
 
   sim::init();
   sim::run();

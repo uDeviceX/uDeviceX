@@ -26,9 +26,9 @@
 
 #include <thrust/device_vector.h>
 #include <thrust/sort.h>
+#include "glb.h"
 
 #include "k/scan.h"
-
 #include "k/common.h"
 
 #include "rbc.decl.h"
