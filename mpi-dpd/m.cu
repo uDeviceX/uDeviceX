@@ -3,10 +3,9 @@
 
 namespace m { /* MPI (man MPI_Cart_get) */
   const int d = 3;
-  const bool reorder = false;
-  int periods[3] = {true, true, true};
+  int periods[d] = {true, true, true};
   /* set in main */
-  int  rank, coords[3], dims[3];
-
+  int  rank, coords[d], dims[d];
+  const bool reorder = false;
   extern MPI_Comm cart;
 }

@@ -13,7 +13,7 @@ LDFLAGS   += -L../cuda-dpd -L../last-bit
 NVCCFLAGS += -I../cuda-dpd -I../last-bit -I../helper-math -I.
 LIBS      += -lcuda-dpd -llast-bit -lcudart
 
-OBJS = 	common.o io.o minmax.o dpd-forces.o bund.o main.o
+OBJS = 	bund.o common.o dpd-forces.o io.o main.o minmax.o m.o
 
 ifeq ($(h5part),0)
 NVCCFLAGS += -DNO_H5PART
