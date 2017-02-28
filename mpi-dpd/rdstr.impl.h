@@ -17,24 +17,21 @@ void _post_recvcnt() {
   recv_cnts[0] = 0;
   for (int i = 1; i < 27; ++i) {
     MPI_Request req;
-    MC(MPI_Irecv(&recv_cnts[i], 1, MPI_INTEGER, ank_ne[i], i + 1024, ccom, &req));
+    MC(MPI_Irecv(&recv_cnts[i], 1, MPI_INTEGER, ank_ne[i], i + 1024, cart, &req));
     recvcntreq.pb(req);
   }
 }
 
 /* generate ranks and anti-ranks of the neighbors */
-void gen_ne(MPI_Comm ccom, /* */ int* rnk_ne, int* ank_ne) {
-  MC(MPI_Comm_rank(ccom, &myrank));
-  int dims[3]; MC(MPI_Cart_get(ccom, 3, dims, periods, co));
-
-  rnk_ne[0] = myrank;
+void gen_ne(MPI_Comm cart, /* */ int* rnk_ne, int* ank_ne) {
+  rnk_ne[0] = m::rank;
   for (int i = 1; i < 27; ++i) {
     int d[3] = i2del(i); /* index to delta */
     int co_ne[3];
-    for (int c = 0; c < 3; ++c) co_ne[c] = co[c] + d[c];
-    MC(MPI_Cart_rank(ccom, co_ne, &rnk_ne[i]));
-    for (int c = 0; c < 3; ++c) co_ne[c] = co[c] - d[c];
-    MC(MPI_Cart_rank(ccom, co_ne, &ank_ne[i]));
+    for (int c = 0; c < 3; ++c) co_ne[c] = m::coords[c] + d[c];
+    MC(MPI_Cart_rank(cart, co_ne, &rnk_ne[i]));
+    for (int c = 0; c < 3; ++c) co_ne[c] = m::coords[c] - d[c];
+    MC(MPI_Cart_rank(cart, co_ne, &ank_ne[i]));
   }
 }
 
@@ -49,8 +46,8 @@ void init() {
   _ddst = new DeviceBuffer<float *>;
   _dsrc = new DeviceBuffer<const float *>;
 
-  MC(MPI_Comm_dup(m::cart, &ccom));
-  gen_ne(ccom,   rnk_ne, ank_ne); /* generate ranks and anti-ranks */
+  MC(MPI_Comm_dup(m::cart, &cart));
+  gen_ne(cart,   rnk_ne, ank_ne); /* generate ranks and anti-ranks */
 
   _post_recvcnt();
 }
@@ -114,7 +111,7 @@ void pack_sendcnt(Particle *pp, int nc, int nv) {
   CC(cudaDeviceSynchronize()); /* was CC(cudaStreamSynchronize(stream)); */
   for (int i = 1; i < 27; ++i)
     MC(MPI_Isend(&sbuf[i]->S, 1, MPI_INTEGER,
-		 rnk_ne[i], i + 1024, ccom,
+		 rnk_ne[i], i + 1024, cart,
 		 &sendcntreq[i - 1]));
 }
 
@@ -142,7 +139,7 @@ int post(int nv) {
       MPI_Request request;
       MC(MPI_Irecv(rbuf[i]->D, rbuf[i]->S,
 		   Particle::datatype(), ank_ne[i], i + 1155,
-		   ccom, &request));
+		   cart, &request));
       recvreq.pb(request);
     }
 
@@ -151,7 +148,7 @@ int post(int nv) {
       MPI_Request request;
       MC(MPI_Isend(sbuf[i]->D, sbuf[i]->S,
 		   Particle::datatype(), rnk_ne[i], i + 1155,
-		   ccom, &request));
+		   cart, &request));
       sendreq.pb(request);
     }
   return nstay + ncome;
@@ -169,14 +166,14 @@ void unpack(Particle *pp, int nrbcs, int nv) {
     int cnt = rbuf[i]->S;
     if (cnt > 0)
       k_rdstr::shift<<<(cnt + 127) / 128, 128, 0>>>
-	(rbuf[i]->DP, cnt, i, myrank, false, &pp[s]);
+	(rbuf[i]->DP, cnt, i, m::rank, false, &pp[s]);
     s += rbuf[i]->S;
   }
   _post_recvcnt();
 }
 
 void close() {
-  MC(MPI_Comm_free(&ccom));
+  MC(MPI_Comm_free(&cart));
   for (int i = 0; i < 27; i++) delete rbuf[i];
   for (int i = 0; i < 27; i++) delete sbuf[i];
   delete   llo; delete   hhi;

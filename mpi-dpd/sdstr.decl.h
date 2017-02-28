@@ -6,7 +6,7 @@ namespace sdstr {
   float safety_factor = 1.2;
   int neighbor_ranks[27], recv_tags[27],
     default_message_sizes[27], send_sizes[27], recv_sizes[27],
-    nsendmsgreq, nexpected, nbulk, nhalo, nhalo_padded, myrank;
+    nsendmsgreq, nexpected, nbulk, nhalo, nhalo_padded;
   bool firstcall;
   int nactiveneighbors;
   MPI_Request sendcountreq[27], recvcountreq[27],

@@ -183,11 +183,11 @@ namespace sdstr {
       //wait for packing to finish
       CC(cudaEventSynchronize(evpacking));
 
-      printf("pack RANK %d ...FAILED! Recovering now...\n", myrank);
+      printf("pack RANK %d ...FAILED! Recovering now...\n", m::rank);
 
       _adjust_send_buffers(packsizes->D);
 
-      if (myrank == 0)
+      if (m::rank == 0)
 	for(int i = 0; i < 27; ++i)
 	  printf("ASD: %d\n", packsizes->D[i]);
 
