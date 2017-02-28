@@ -1,5 +1,3 @@
-const float dt            = _dt;
-const float rbc_mass      = _rbc_mass;
 const float gamma_dot     = _gamma_dot;
 const float hydrostatic_a = _hydrostatic_a / rc;
 const float kBT           = _kBT / (rc * rc);
@@ -192,5 +190,4 @@ struct CellLists {
   }
 };
 
-void diagnostics(Particle *_particles, int n,
-		 float dt, int idstep);
+void diagnostics(Particle *_particles, int n, int idstep);

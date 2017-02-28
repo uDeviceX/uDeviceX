@@ -9,7 +9,7 @@
 
 #define _numberdensity    3
 #define _kBT              1e-7
-#define _dt               5e-4  /* timestep */
+#define  dt               5e-4  /* timestep */
 #define _rbc_mass         0.5   /* ratio of RBC particle mass to solvent particle mass */
 #define _gamma_dot        0.0   /* shear rate */
 #define _hydrostatic_a    2.5   /* flow acceleration for Poiseuille setup */

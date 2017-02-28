@@ -176,7 +176,7 @@ void dump_grid() {
 
 void diag(int it) {
   int n = s_n + r_n; dev2hst();
-  diagnostics(sr_pp, n, dt, it);
+  diagnostics(sr_pp, n, it);
 }
 
 static void update_and_bounce() {

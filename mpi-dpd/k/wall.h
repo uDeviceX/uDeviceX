@@ -168,8 +168,7 @@ namespace k_wall {
 
   __device__ void handle_collision(float currsdf,
 				   float &x, float &y, float &z,
-				   float &vx, float &vy, float &vz,
-				   float dt) {
+				   float &vx, float &vy, float &vz) {
     float x0 = x - vx*dt, y0 = y - vy*dt, z0 = z - vz*dt;
     if (sdf(x0, y0, z0) >= 0) { /* this is the worst case - 0 position
 				   was bad already we need to search
@@ -224,7 +223,7 @@ namespace k_wall {
     if (sdf(x, y, z) >= 0) {x = x0; y = y0; z = z0;}
   }
 
-  __global__ void bounce(float2 *const pp, int nparticles, float dt) {
+  __global__ void bounce(float2 *const pp, int nparticles) {
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
     if (pid >= nparticles) return;
@@ -244,7 +243,7 @@ namespace k_wall {
 
 	if (currsdf >= 0) {
 	  handle_collision(currsdf, data0.x, data0.y, data1.x, data1.y, data2.x,
-			   data2.y, dt);
+			   data2.y);
 
 	  pp[3 * pid] = data0;
 	  pp[3 * pid + 1] = data1;

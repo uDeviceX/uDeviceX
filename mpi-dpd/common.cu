@@ -12,19 +12,19 @@
 bool Particle::initialized = false;
 MPI_Datatype Particle::mytype;
 
-void CellLists::build(Particle * const p, const int n, int * const order, const Particle * const src)
-{
+void CellLists::build(Particle * const p, const int n, int * const order, const Particle * const src) {
     if (n > 0)
-      build_clists_vanilla((float * )p, n, 1, LX, LY, LZ, -LX/2, -LY/2, -LZ/2, order, start, count,  NULL, (float *)src);
-    else
-    {
+      build_clists_vanilla((float * )p, n, 1,
+			   LX, LY, LZ,
+			   -LX/2, -LY/2, -LZ/2,
+			   order, start, count,  NULL, (float *)src);
+    else {
         CC(cudaMemsetAsync(start, 0, sizeof(int) * ncells));
         CC(cudaMemsetAsync(count, 0, sizeof(int) * ncells));
     }
 }
 
-
-void diagnostics(Particle * particles, int n, float dt, int idstep) {
+void diagnostics(Particle * particles, int n, int idstep) {
     double p[] = {0, 0, 0};
     for(int i = 0; i < n; ++i)
         for(int c = 0; c < 3; ++c)
@@ -44,8 +44,7 @@ void diagnostics(Particle * particles, int n, float dt, int idstep) {
 		  &n, 1, MPI_INT, MPI_SUM, 0, m::cart));
 
     double kbt = 0.5 * ke / (n * 3. / 2);
-    if (m::rank == 0)
-    {
+    if (m::rank == 0) {
         static bool firsttime = true;
         FILE * f = fopen("diag.txt", firsttime ? "w" : "a");
         firsttime = false;
