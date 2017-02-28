@@ -1,5 +1,5 @@
 namespace DPD {
-void init1(MPI_Comm cartcomm) {
+void init1() {
   int myrank;
   MC(MPI_Comm_rank(cartcomm, &myrank));
 
@@ -98,14 +98,14 @@ void remote_interactions(int n, Force *a) {
 
 }
 
-void init0(MPI_Comm _cartcomm, int _basetag) {
+void init0(int _basetag) {
   basetag = _basetag;
   firstpost = true;
   nactive = 26;
   safety_factor =
       getenv("HEX_COMM_FACTOR") ? atof(getenv("HEX_COMM_FACTOR")) : 1.2;
 
-  MC(MPI_Comm_dup(_cartcomm, &cartcomm));
+  MC(MPI_Comm_dup(m::cart, &cartcomm));
   MC(MPI_Comm_rank(cartcomm, &myrank));
   MC(MPI_Comm_size(cartcomm, &nranks));
   MC(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
@@ -138,13 +138,13 @@ void init0(MPI_Comm _cartcomm, int _basetag) {
 			      cudaEventDisableTiming | cudaEventBlockingSync));
 }
 
-void init(MPI_Comm _cartcomm) {
+void init() {
   local_trunk = new Logistic::KISS(0, 0, 0, 0);
   for (int i = 0; i < 26; i++) recvhalos[i] = new RecvHalo;
   for (int i = 0; i < 26; i++) sendhalos[i] = new SendHalo;
 
-  init0(_cartcomm, 0);
-  init1(_cartcomm);
+  init0(0);
+  init1();
 }
 
 void _pack_all(Particle *p, int n, bool update_baginfos) {

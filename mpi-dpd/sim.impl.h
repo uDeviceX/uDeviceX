@@ -193,7 +193,7 @@ void init() {
   Cont::cartcomm = m::cart;
   rbc::setup();
   rdstr::init(m::cart);
-  DPD::init(m::cart);
+  DPD::init();
   fsi::init(m::cart);
   rex::init(m::cart);
   cnt::init(m::cart);
