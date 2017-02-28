@@ -55,16 +55,16 @@ public:
   int capacity() const { return scattered_indices->C;}
 };
 
-  MPI_Comm cartcomm;
+  MPI_Comm cart;
   int iterationcount;
-  int nranks, dstranks[26], dims[3], periods[3], coords[3], myrank,
-    recv_tags[26], recv_counts[26], send_counts[26];
+  int dstranks[26], recv_tags[26], recv_counts[26], send_counts[26];
+
   cudaEvent_t evPpacked, evAcomputed;
   DeviceBuffer<int> *packscount, *packsstart, *packsoffset, *packstotalstart;
   PinnedHostBuffer<int> *host_packstotalstart, *host_packstotalcount;
   DeviceBuffer<Particle> *packbuf;
   PinnedHostBuffer<Particle> *host_packbuf;
-  
+
   std::vector<ParticlesWrap> wsolutes;
   std::vector<MPI_Request> reqsendC, reqrecvC, reqsendP, reqrecvP, reqsendA,
     reqrecvA;

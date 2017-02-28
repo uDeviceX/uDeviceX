@@ -1,22 +1,19 @@
 namespace DPD {
 void init1() {
-  int myrank;
-  MC(MPI_Comm_rank(cartcomm, &myrank));
-
   for (int i = 0; i < 26; ++i) {
     int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
 
     int coordsneighbor[3];
     for (int c = 0; c < 3; ++c)
-      coordsneighbor[c] = (coords[c] + d[c] + dims[c]) % dims[c];
+      coordsneighbor[c] = (m::coords[c] + d[c] + m::dims[c]) % m::dims[c];
 
     int indx[3];
     for (int c = 0; c < 3; ++c)
-      indx[c] = min(coords[c], coordsneighbor[c]) * dims[c] +
-		max(coords[c], coordsneighbor[c]);
+      indx[c] = min(m::coords[c], coordsneighbor[c]) * m::dims[c] +
+	max(m::coords[c], coordsneighbor[c]);
 
     int interrank_seed_base =
-	indx[0] + dims[0] * dims[0] * (indx[1] + dims[1] * dims[1] * indx[2]);
+      indx[0] + m::dims[0] * m::dims[0] * (indx[1] + m::dims[1] * m::dims[1] * indx[2]);
 
     int interrank_seed_offset;
 
@@ -40,8 +37,8 @@ void init1() {
 
     int dstrank = dstranks[i];
 
-    if (dstrank != myrank)
-      interrank_masks[i] = min(dstrank, myrank) == myrank;
+    if (dstrank != m::rank)
+      interrank_masks[i] = min(dstrank, m::rank) == m::rank;
     else {
       int alter_ego =
 	  (2 - d[0]) % 3 + 3 * ((2 - d[1]) % 3 + 3 * ((2 - d[2]) % 3));
@@ -105,17 +102,14 @@ void init0(int _basetag) {
   safety_factor =
       getenv("HEX_COMM_FACTOR") ? atof(getenv("HEX_COMM_FACTOR")) : 1.2;
 
-  MC(MPI_Comm_dup(m::cart, &cartcomm));
-  MC(MPI_Comm_rank(cartcomm, &myrank));
-  MC(MPI_Comm_size(cartcomm, &nranks));
-  MC(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
-
+  MC(MPI_Comm_dup(m::cart, &cart));
+  
   for (int i = 0; i < 26; ++i) {
     int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
     recv_tags[i] = (2 - d[0]) % 3 + 3 * ((2 - d[1]) % 3 + 3 * ((2 - d[2]) % 3));
     int coordsneighbor[3];
-    for (int c = 0; c < 3; ++c) coordsneighbor[c] = coords[c] + d[c];
-    MC(MPI_Cart_rank(cartcomm, coordsneighbor, dstranks + i));
+    for (int c = 0; c < 3; ++c) coordsneighbor[c] = m::coords[c] + d[c];
+    MC(MPI_Cart_rank(cart, coordsneighbor, dstranks + i));
     halosize[i].x = d[0] != 0 ? 1 : XSIZE_SUBDOMAIN;
     halosize[i].y = d[1] != 0 ? 1 : YSIZE_SUBDOMAIN;
     halosize[i].z = d[2] != 0 ? 1 : ZSIZE_SUBDOMAIN;
@@ -174,18 +168,18 @@ void post_expected_recv() {
     if (recvhalos[i]->expected)
       MC(MPI_Irecv(recvhalos[i]->hbuf->D, recvhalos[i]->expected,
 		   Particle::datatype(), dstranks[i], basetag + recv_tags[i],
-		   cartcomm, recvreq + c++));
+		   cart, recvreq + c++));
   }
   for (int i = 0, c = 0; i < 26; ++i)
     if (recvhalos[i]->expected)
       MC(MPI_Irecv(recvhalos[i]->hcellstarts->D,
 		   recvhalos[i]->hcellstarts->S, MPI_INTEGER, dstranks[i],
-		   basetag + recv_tags[i] + 350, cartcomm, recvcellsreq + c++));
+		   basetag + recv_tags[i] + 350, cart, recvcellsreq + c++));
 
   for (int i = 0, c = 0; i < 26; ++i)
     if (recvhalos[i]->expected)
       MC(MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, dstranks[i],
-		   basetag + recv_tags[i] + 150, cartcomm, recvcountreq + c++));
+		   basetag + recv_tags[i] + 150, cart, recvcountreq + c++));
     else
       recv_counts[i] = 0;
 }
@@ -317,12 +311,12 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
       if (sendhalos[i]->expected)
 	MC(MPI_Isend(sendhalos[i]->hcellstarts->D,
 		     sendhalos[i]->hcellstarts->S, MPI_INTEGER, dstranks[i],
-		     basetag + i + 350, cartcomm, sendcellsreq + c++));
+		     basetag + i + 350, cart, sendcellsreq + c++));
 
     for (int i = 0, c = 0; i < 26; ++i)
       if (sendhalos[i]->expected)
 	MC(MPI_Isend(&sendhalos[i]->hbuf->S, 1, MPI_INTEGER, dstranks[i],
-		     basetag + i + 150, cartcomm, sendcountreq + c++));
+		     basetag + i + 150, cart, sendcountreq + c++));
 
     nsendreq = 0;
 
@@ -334,7 +328,7 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
       int count = sendhalos[i]->hbuf->S;
 
       MC(MPI_Isend(sendhalos[i]->hbuf->D, expected, Particle::datatype(),
-		   dstranks[i], basetag + i, cartcomm, sendreq + nsendreq));
+		   dstranks[i], basetag + i, cart, sendreq + nsendreq));
 
       ++nsendreq;
 
@@ -345,11 +339,11 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
 	int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
 	printf("extra message from rank %d to rank %d in the direction of %d "
 	       "%d %d! difference %d, expected is %d\n",
-	       myrank, dstranks[i], d[0], d[1], d[2], difference, expected);
+	       m::rank, dstranks[i], d[0], d[1], d[2], difference, expected);
 
 	MC(MPI_Isend(sendhalos[i]->hbuf->D + expected, difference,
 		     Particle::datatype(), dstranks[i], basetag + i + 555,
-		     cartcomm, sendreq + nsendreq));
+		     cart, sendreq + nsendreq));
 	++nsendreq;
       }
     }
@@ -378,13 +372,13 @@ void recv() {
     } else {
       printf("RANK %d waiting for RECV-extra message: count %d expected %d "
 	     "(difference %d) from rank %d\n",
-	     myrank, count, expected, difference, dstranks[i]);
+	     m::rank, count, expected, difference, dstranks[i]);
       recvhalos[i]->hbuf->preserve_resize(count);
       recvhalos[i]->dbuf->resize(count);
       MPI_Status status;
       MPI_Recv(recvhalos[i]->hbuf->D + expected, difference,
 	       Particle::datatype(), dstranks[i], basetag + recv_tags[i] + 555,
-	       cartcomm, &status);
+	       cart, &status);
     }
   }
 
@@ -427,7 +421,7 @@ void _cancel_recv() {
 
 void close() {
   CC(cudaFreeHost(required_send_bag_size));
-  MC(MPI_Comm_free(&cartcomm));
+  MC(MPI_Comm_free(&cart));
   _cancel_recv();
   CC(cudaEventDestroy(evfillall));
   CC(cudaEventDestroy(evdownloaded));

@@ -227,10 +227,7 @@ void H5FieldDump::_write_fields(const char * const path2h5,
     H5Sclose(filespace_simple);
     H5Fclose(file_id);
 
-    int rankscalar;
-    MC(MPI_Comm_rank(m::cart, &rankscalar));
-
-    if (!rankscalar)
+    if (!m::rank)
     {
         char wrapper[256];
         sprintf(wrapper, "%s.xmf", std::string(path2h5).substr(0, std::string(path2h5).find_last_of(".h5") - 2).data());

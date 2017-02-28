@@ -22,17 +22,14 @@ namespace sdstr {
     scattered_indices = new DeviceBuffer<uint>;
 
     nactiveneighbors  = 26; firstcall = true;
-    int dims[3], coords[3];
-    MC(MPI_Comm_dup(m::cart, &cartcomm_rdst) );
-    MC(MPI_Comm_rank(cartcomm_rdst, &myrank) );
-    MC(MPI_Cart_get(cartcomm_rdst, 3, dims, periods, coords) );
+    MC(MPI_Comm_dup(m::cart, &cart));
 
     for(int i = 0; i < 27; ++i) {
       int d[3] = { (i + 1) % 3 - 1, (i / 3 + 1) % 3 - 1, (i / 9 + 1) % 3 - 1 };
       recv_tags[i] = (3 - d[0]) % 3 + 3 * ((3 - d[1]) % 3 + 3 * ((3 - d[2]) % 3));
       int coordsneighbor[3];
-      for(int c = 0; c < 3; ++c) coordsneighbor[c] = coords[c] + d[c];
-      MC( MPI_Cart_rank(cartcomm_rdst, coordsneighbor, neighbor_ranks + i) );
+      for(int c = 0; c < 3; ++c) coordsneighbor[c] = m::coords[c] + d[c];
+      MC( MPI_Cart_rank(cart, coordsneighbor, neighbor_ranks + i) );
 
       int nhalodir[3] =  {
 	d[0] != 0 ? 1 : XSIZE_SUBDOMAIN,
@@ -80,14 +77,14 @@ namespace sdstr {
     for(int i = 1, c = 0; i < 27; ++i)
       if (default_message_sizes[i])
 	MC(MPI_Irecv(recv_sizes + i, 1, MPI_INTEGER, neighbor_ranks[i],
-		     basetag + recv_tags[i], cartcomm_rdst, recvcountreq + c++));
+		     basetag + recv_tags[i], cart, recvcountreq + c++));
       else
 	recv_sizes[i] = 0;
 
     for(int i = 1, c = 0; i < 27; ++i)
       if (default_message_sizes[i])
 	MC( MPI_Irecv(pinnedhost_recvbufs[i], default_message_sizes[i] * 6, MPI_FLOAT,
-		      neighbor_ranks[i], basetag + recv_tags[i] + 333, cartcomm_rdst, recvmsgreq + c++) );
+		      neighbor_ranks[i], basetag + recv_tags[i] + 333, cart, recvmsgreq + c++) );
   }
 
   void _adjust_send_buffers(int requested_capacities[27]) {
@@ -213,7 +210,7 @@ namespace sdstr {
       for(int i = 1; i < 27; ++i)
 	if (default_message_sizes[i])
 	  MC(MPI_Isend(send_sizes + i, 1, MPI_INTEGER, neighbor_ranks[i],
-		       basetag + i, cartcomm_rdst, sendcountreq + c++));
+		       basetag + i, cart, sendcountreq + c++));
     }
     CC(cudaEventSynchronize(evpacking));
     if (!firstcall) _waitall(sendmsgreq, nsendmsgreq);
@@ -223,7 +220,7 @@ namespace sdstr {
       if (default_message_sizes[i]) {
 	MC(MPI_Isend(pinnedhost_sendbufs[i], default_message_sizes[i] * 6, MPI_FLOAT,
 		     neighbor_ranks[i], basetag + i + 333,
-		     cartcomm_rdst, sendmsgreq + nsendmsgreq) );
+		     cart, sendmsgreq + nsendmsgreq) );
 
 	++nsendmsgreq;
       }
@@ -233,7 +230,7 @@ namespace sdstr {
 	int count = send_sizes[i] - default_message_sizes[i];
 
 	MC( MPI_Isend(pinnedhost_sendbufs[i] + default_message_sizes[i] * 6, count * 6, MPI_FLOAT,
-		      neighbor_ranks[i], basetag + i + 666, cartcomm_rdst, sendmsgreq + nsendmsgreq) );
+		      neighbor_ranks[i], basetag + i + 666, cart, sendmsgreq + nsendmsgreq) );
 	++nsendmsgreq;
       }
   }
@@ -309,7 +306,7 @@ namespace sdstr {
 
 	MPI_Status status;
 	MC( MPI_Recv(pinnedhost_recvbufs[i] + default_message_sizes[i] * 6, count * 6, MPI_FLOAT,
-		     neighbor_ranks[i], basetag + recv_tags[i] + 666, cartcomm_rdst, &status) );
+		     neighbor_ranks[i], basetag + recv_tags[i] + 666, cart, &status) );
       }
 
 

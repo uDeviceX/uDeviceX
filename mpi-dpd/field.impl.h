@@ -14,10 +14,9 @@ template <> struct Bspline<1> {
 struct FieldSampler {
   float *data,  extent[3];
   int N[3];
-  FieldSampler(const char *path, MPI_Comm comm) { /* read sdf file */
-    size_t CHUNKSIZE = 1 << 25; int rank;
-    MC(MPI_Comm_rank(comm, &rank));
-    if (rank == 0) {
+  FieldSampler(const char *path) { /* read sdf file */
+    size_t CHUNKSIZE = 1 << 25;
+    if (m::rank == 0) {
       FILE *fh = fopen(path, "r");
       char line[2048];
       fgets(line, sizeof(line), fh);
@@ -25,8 +24,8 @@ struct FieldSampler {
       fgets(line, sizeof(line), fh);
       sscanf(line, "%d %d %d", &N[0], &N[1], &N[2]);
 
-      MC(MPI_Bcast(N, 3, MPI_INT, 0, comm));
-      MC(MPI_Bcast(extent, 3, MPI_FLOAT, 0, comm));
+      MC(MPI_Bcast(N, 3, MPI_INT, 0, m::cart));
+      MC(MPI_Bcast(extent, 3, MPI_FLOAT, 0, m::cart));
 
       int np = N[0] * N[1] * N[2];
       data = new float[np];
@@ -34,16 +33,16 @@ struct FieldSampler {
       fclose(fh);
       for (size_t i = 0; i < np; i += CHUNKSIZE) {
 	size_t s = (i + CHUNKSIZE <= np) ? CHUNKSIZE : (np - i);
-	MC(MPI_Bcast(data + i, s, MPI_FLOAT, 0, comm));
+	MC(MPI_Bcast(data + i, s, MPI_FLOAT, 0, m::cart));
       }
     } else {
-      MC(MPI_Bcast(N, 3, MPI_INT, 0, comm));
-      MC(MPI_Bcast(extent, 3, MPI_FLOAT, 0, comm));
+      MC(MPI_Bcast(N, 3, MPI_INT, 0, m::cart));
+      MC(MPI_Bcast(extent, 3, MPI_FLOAT, 0, m::cart));
       int np = N[0] * N[1] * N[2];
       data = new float[np];
       for (size_t i = 0; i < np; i += CHUNKSIZE) {
 	size_t s = (i + CHUNKSIZE <= np) ? CHUNKSIZE : (np - i);
-	MC(MPI_Bcast(data + i, s, MPI_FLOAT, 0, comm));
+	MC(MPI_Bcast(data + i, s, MPI_FLOAT, 0, m::cart));
       }
     }
   }

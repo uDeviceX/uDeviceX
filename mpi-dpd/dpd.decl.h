@@ -8,12 +8,12 @@ Logistic::KISS *interrank_trunks[26];
 
 bool interrank_masks[26];
 
-MPI_Comm cartcomm;
+MPI_Comm cart;
 MPI_Request sendreq[26 * 2], recvreq[26], sendcellsreq[26], recvcellsreq[26],
     sendcountreq[26], recvcountreq[26];
 int recv_tags[26], recv_counts[26], nlocal, nactive;
 bool firstpost;
-int myrank, nranks, dims[3], coords[3], dstranks[26];
+int dstranks[26];
 
 // zero-copy allocation for acquiring the message offsets in the gpu send
 // buffer

@@ -1,7 +1,8 @@
 /*** from redistribute-particles.h ***/
 namespace sdstr {
   int basetag = 950;
-  MPI_Comm cartcomm_rdst;
+  MPI_Comm cart;
+
   float safety_factor = 1.2;
   int neighbor_ranks[27], recv_tags[27],
     default_message_sizes[27], send_sizes[27], recv_sizes[27],
@@ -31,7 +32,7 @@ namespace sdstr {
   PinnedHostBuffer<int> *packsizes;
   DeviceBuffer<unsigned char> *compressed_cellcounts;
   DeviceBuffer<Particle> *remote_particles;
-  
+
   DeviceBuffer<uchar4>   *subindices_remote;
   DeviceBuffer<uchar4>   *subindices;
   DeviceBuffer<uint>     *scattered_indices;

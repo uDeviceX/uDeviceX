@@ -3,29 +3,26 @@ namespace wall {
     wall_cells = new CellLists(XSIZE_SUBDOMAIN + 2 * XMARGIN_WALL,
 			       YSIZE_SUBDOMAIN + 2 * YMARGIN_WALL,
 			       ZSIZE_SUBDOMAIN + 2 * ZMARGIN_WALL);
-    int myrank, dims[3];
-    MC(MPI_Comm_rank(m::cart, &myrank));
-    MC(MPI_Cart_get(m::cart, 3, dims, periods, Cont::coords));
     float *field = new float[XTEXTURESIZE * YTEXTURESIZE * ZTEXTURESIZE];
-    FieldSampler sampler("sdf.dat", m::cart);
+    FieldSampler sampler("sdf.dat");
     int L[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
     int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
     int TEXTURESIZE[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
-    if (myrank == 0) printf("sampling the geometry file...\n");
+    if (m::rank == 0) printf("sampling the geometry file...\n");
     {
       float start[3], spacing[3];
       for (int c = 0; c < 3; ++c) {
 	start[c] = sampler.N[c] * (Cont::coords[c] * L[c] - MARGIN[c]) /
-	  (float)(dims[c] * L[c]);
+	  (float)(m::dims[c] * L[c]);
 	spacing[c] = sampler.N[c] * (L[c] + 2 * MARGIN[c]) /
-	  (float)(dims[c] * L[c]) / (float)TEXTURESIZE[c];
+	  (float)(m::dims[c] * L[c]) / (float)TEXTURESIZE[c];
       }
       float amplitude_rescaling = (XSIZE_SUBDOMAIN /*+ 2 * XMARGIN_WALL*/) /
-	(sampler.extent[0] / dims[0]);
+	(sampler.extent[0] / m::dims[0]);
       sampler.sample(start, spacing, TEXTURESIZE, amplitude_rescaling, field);
     }
 
-    if (myrank == 0) printf("estimating geometry-based message sizes...\n");
+    if (m::rank == 0) printf("estimating geometry-based message sizes...\n");
     {
       for (int dz = -1; dz <= 1; ++dz)
 	for (int dy = -1; dy <= 1; ++dy)
@@ -41,8 +38,8 @@ namespace wall {
 	    float start[3], spacing[3];
 	    for (int c = 0; c < 3; ++c) {
 	      start[c] = (Cont::coords[c] * L[c] + local_start[c]) /
-		(float)(dims[c] * L[c]) * sampler.N[c];
-	      spacing[c] = sampler.N[c] / (float)(dims[c] * L[c]);
+		(float)(m::dims[c] * L[c]) * sampler.N[c];
+	      spacing[c] = sampler.N[c] / (float)(m::dims[c] * L[c]);
 	    }
 	    int nextent = local_extent[0] * local_extent[1] * local_extent[2];
 	    float *data = new float[nextent];
@@ -58,19 +55,19 @@ namespace wall {
     }
 
     if (hdf5field_dumps) {
-      if (myrank == 0) printf("H5 data dump of the geometry...\n");
+      if (m::rank == 0) printf("H5 data dump of the geometry...\n");
 
       float *walldata =
 	new float[XSIZE_SUBDOMAIN * YSIZE_SUBDOMAIN * ZSIZE_SUBDOMAIN];
 
       float start[3], spacing[3];
       for (int c = 0; c < 3; ++c) {
-	start[c] = Cont::coords[c] * L[c] / (float)(dims[c] * L[c]) * sampler.N[c];
-	spacing[c] = sampler.N[c] / (float)(dims[c] * L[c]);
+	start[c] = Cont::coords[c] * L[c] / (float)(m::dims[c] * L[c]) * sampler.N[c];
+	spacing[c] = sampler.N[c] / (float)(m::dims[c] * L[c]);
       }
 
       int size[3] = {XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN};
-      float amplitude_rescaling = L[0] / (sampler.extent[0] / dims[0]);
+      float amplitude_rescaling = L[0] / (sampler.extent[0] / m::dims[0]);
       sampler.sample(start, spacing, size, amplitude_rescaling, walldata);
       H5FieldDump dump;
       dump.dump_scalarfield(walldata, "wall");
@@ -96,7 +93,7 @@ namespace wall {
 
     CC(cudaBindTextureToArray(k_wall::texSDF, arrSDF, fmt));
 
-    if (myrank == 0) printf("carving out wall particles...\n");
+    if (m::rank == 0) printf("carving out wall particles...\n");
 
     thrust::device_vector<int> keys(n);
 
@@ -114,7 +111,7 @@ namespace wall {
        thrust::device_ptr<Particle>(pp + nsurvived + nbelt));
 
     /* can't use halo-exchanger class because of MARGIN */
-    if (myrank == 0) printf("fetching remote wall particles...\n");
+    if (m::rank == 0) printf("fetching remote wall particles...\n");
 
     DeviceBuffer<Particle> solid_remote;
 
@@ -218,7 +215,7 @@ namespace wall {
 
     CC(cudaMalloc(&solid4, sizeof(float4) * solid_size));
 
-    if (myrank == 0) printf("consolidating wall particles...\n");
+    if (m::rank == 0) printf("consolidating wall particles...\n");
 
     if (solid_size > 0)
       k_wall::strip_solid4<<<(solid_size + 127) / 128, 128>>>

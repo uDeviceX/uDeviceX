@@ -203,7 +203,7 @@ int setup(Particle* pp, const char *path2ic) {
     }
     fclose(f);
     printf("Instantiating %d CELLs from...<%s>\n", (int)allrbcs.size(), path2ic);
-  } /* end of myrank == 0 */
+  } /* end of m::rank == 0 */
 
   int allrbcs_count = allrbcs.size();
   MC(MPI_Bcast(&allrbcs_count, 1, MPI_INT, 0, m::cart));

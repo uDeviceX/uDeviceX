@@ -24,20 +24,16 @@ namespace rex {
     for (int i = 0; i < SE_HALO_SIZE; i++) local[i] = new LocalHalo;
     for (int i = 0; i < SE_HALO_SIZE; i++) remote[i] = new RemoteHalo;
 
-    MC(MPI_Comm_dup(m::cart, &cartcomm));
-    MC(MPI_Comm_size(cartcomm, &nranks));
-    MC(MPI_Cart_get(cartcomm, 3, dims, periods, coords));
-    MC(MPI_Comm_rank(cartcomm, &myrank));
-
+    MC(MPI_Comm_dup(m::cart, &cart));
     for (int i = 0; i < 26; ++i) {
       int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
 
       recv_tags[i] = (2 - d[0]) % 3 + 3 * ((2 - d[1]) % 3 + 3 * ((2 - d[2]) % 3));
 
       int coordsneighbor[3];
-      for (int c = 0; c < 3; ++c) coordsneighbor[c] = coords[c] + d[c];
+      for (int c = 0; c < 3; ++c) coordsneighbor[c] = m::coords[c] + d[c];
 
-      MC(MPI_Cart_rank(cartcomm, coordsneighbor, dstranks + i));
+      MC(MPI_Cart_rank(cart, coordsneighbor, dstranks + i));
 
       int estimate = 1;
       remote[i]->preserve_resize(estimate);
@@ -70,7 +66,7 @@ namespace rex {
     for (int i = 0; i < 26; ++i) {
       MPI_Request reqC;
       MC(MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, dstranks[i],
-		   TAGBASE_C + recv_tags[i], cartcomm, &reqC));
+		   TAGBASE_C + recv_tags[i], cart, &reqC));
       reqrecvC.push_back(reqC);
     }
   }
@@ -81,7 +77,7 @@ namespace rex {
       remote[i]->pmessage.resize(remote[i]->expected());
       MC(MPI_Irecv(&remote[i]->pmessage.front(), remote[i]->expected() * 6,
 		   MPI_FLOAT, dstranks[i], TAGBASE_P + recv_tags[i],
-		   cartcomm, &reqP));
+		   cart, &reqP));
       reqrecvP.push_back(reqP);
     }
   }
@@ -92,7 +88,7 @@ namespace rex {
 
       MC(MPI_Irecv(local[i]->result->D, local[i]->result->S * 3,
 		   MPI_FLOAT, dstranks[i], TAGBASE_A + recv_tags[i],
-		   cartcomm, &reqA));
+		   cart, &reqA));
       reqrecvA.push_back(reqA);
     }
   }
@@ -244,7 +240,7 @@ namespace rex {
 
       for (int i = 0; i < 26; ++i)
 	MC(MPI_Isend(send_counts + i, 1, MPI_INTEGER, dstranks[i],
-		     TAGBASE_C + i, cartcomm, &reqsendC[i]));
+		     TAGBASE_C + i, cart, &reqsendC[i]));
 
       for (int i = 0; i < 26; ++i) {
 	int start = host_packstotalstart->D[i];
@@ -256,14 +252,14 @@ namespace rex {
 	_not_nan((float *)(host_packbuf->D + start), count * 6);
 
 	MC(MPI_Isend(host_packbuf->D + start, expected * 6, MPI_FLOAT,
-		     dstranks[i], TAGBASE_P + i, cartcomm, &reqP));
+		     dstranks[i], TAGBASE_P + i, cart, &reqP));
 	reqsendP.push_back(reqP);
 
 	if (count > expected) {
 	  MPI_Request reqP2;
 	  MC(MPI_Isend(host_packbuf->D + start + expected,
 		       (count - expected) * 6, MPI_FLOAT, dstranks[i],
-		       TAGBASE_P2 + i, cartcomm, &reqP2));
+		       TAGBASE_P2 + i, cart, &reqP2));
 
 	  reqsendP.push_back(reqP2);
 	}
@@ -288,7 +284,7 @@ namespace rex {
       if (count > expected)
 	MC(MPI_Recv(&remote[i]->pmessage.front() + expected,
 		    (count - expected) * 6, MPI_FLOAT, dstranks[i],
-		    TAGBASE_P2 + recv_tags[i], cartcomm, &status));
+		    TAGBASE_P2 + recv_tags[i], cart, &status));
 
       memcpy(remote[i]->hstate.D, &remote[i]->pmessage.front(),
 	     sizeof(Particle) * count);
@@ -338,7 +334,7 @@ namespace rex {
     reqsendA.resize(26);
     for (int i = 0; i < 26; ++i)
       MC(MPI_Isend(remote[i]->result.D, remote[i]->result.S * 3,
-		   MPI_FLOAT, dstranks[i], TAGBASE_A + i, cartcomm,
+		   MPI_FLOAT, dstranks[i], TAGBASE_A + i, cart,
 		   &reqsendA[i]));
   }
 
@@ -375,7 +371,7 @@ namespace rex {
   }
 
   void close() {
-    MC(MPI_Comm_free(&cartcomm));
+    MC(MPI_Comm_free(&cart));
 
     CC(cudaEventDestroy(evPpacked));
     CC(cudaEventDestroy(evAcomputed));
