@@ -16,10 +16,7 @@ namespace sim {
   CellLists* cells;
 
   bool wall_created = false;
-  MPI_Comm activecomm;
-
   float driving_force = 0;
-  MPI_Comm myactivecomm, mycartcomm;
 
   H5PartDump *dump_part_solvent;
   H5FieldDump *dump_field;

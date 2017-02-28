@@ -165,18 +165,18 @@ void dump_rbcs() {
   if (!rbcs) return;
   static int id = 0;
   dev2hst();  /* TODO: do not need `s' */
-  Cont::rbc_dump(myactivecomm, &sr_pp[s_n], r_n, id++);
+  Cont::rbc_dump(m::cart, &sr_pp[s_n], r_n, id++);
 }
 
 void dump_grid() {
   if (!hdf5field_dumps) return;
   dev2hst();  /* TODO: do not need `r' */
-  dump_field->dump(activecomm, sr_pp, s_n);
+  dump_field->dump(m::cart, sr_pp, s_n);
 }
 
 void diag(int it) {
   int n = s_n + r_n; dev2hst();
-  diagnostics(myactivecomm, mycartcomm, sr_pp, n, dt, it);
+  diagnostics(m::cart, m::cart, sr_pp, n, dt, it);
 }
 
 static void update_and_bounce() {
@@ -189,16 +189,16 @@ static void update_and_bounce() {
   }
 }
 
-void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
-  Cont::cartcomm = cartcomm_; activecomm = activecomm_;
+void init() {
+  Cont::cartcomm = m::cart;
   rbc::setup();
-  rdstr::init(Cont::cartcomm);
-  DPD::init(Cont::cartcomm);
-  fsi::init(Cont::cartcomm);
-  rex::init(Cont::cartcomm);
-  cnt::init(Cont::cartcomm);
+  rdstr::init(m::cart);
+  DPD::init(m::cart);
+  fsi::init(m::cart);
+  rex::init(m::cart);
+  cnt::init(m::cart);
   if (hdf5part_dumps)
-    dump_part_solvent = new H5PartDump("s.h5part", activecomm, Cont::cartcomm);
+    dump_part_solvent = new H5PartDump("s.h5part", m::cart, m::cart);
 
   cells   = new CellLists(XSIZE_SUBDOMAIN, YSIZE_SUBDOMAIN, ZSIZE_SUBDOMAIN);
   mpDeviceMalloc(&s_zip0); mpDeviceMalloc(&s_zip1);
@@ -209,10 +209,10 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
 
   wall::trunk = new Logistic::KISS;
   sdstr::redist_part_init(Cont::cartcomm);
-  MC(MPI_Comm_rank(activecomm, &Cont::rank));
+  MC(MPI_Comm_rank(m::cart, &Cont::rank));
 
   int dims[3];
-  MC(MPI_Cart_get(Cont::cartcomm, 3, dims, periods, Cont::coords));
+  MC(MPI_Cart_get(m::cart, 3, dims, periods, Cont::coords));
   Cont::origin = make_float3((0.5 + Cont::coords[0]) * XSIZE_SUBDOMAIN,
 			     (0.5 + Cont::coords[1]) * YSIZE_SUBDOMAIN,
 			     (0.5 + Cont::coords[2]) * ZSIZE_SUBDOMAIN);
@@ -242,13 +242,8 @@ void init(MPI_Comm cartcomm_, MPI_Comm activecomm_) {
 #endif
   }
 
-  MC(MPI_Comm_dup(activecomm, &myactivecomm));
-  MC(MPI_Comm_dup(Cont::cartcomm, &mycartcomm));
-  dump_field = new H5FieldDump (Cont::cartcomm);
-
-  int rank;
-  MC(MPI_Comm_rank(myactivecomm, &rank));
-  MC(MPI_Barrier(myactivecomm));
+  dump_field = new H5FieldDump (m::cart);
+  MC(MPI_Barrier(m::cart));
 }
 
 void dumps_diags(int it) {
