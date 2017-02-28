@@ -19,14 +19,13 @@ int main(int argc, char **argv) {
   CC(cudaSetDevice(device));
   
   MC(MPI_Init(&argc, &argv));
-  MC(MPI_Comm_rank(MPI_COMM_WORLD, &m::rank));
-  MC(MPI_Cart_create(MPI_COMM_WORLD, m::d, m::dims, m::periods, 0, &m::cart));
-  MC(MPI_Cart_coords(m::cart, m::rank, m::d,    m::coords));
+  MC(MPI_Comm_rank(MPI_COMM_WORLD,   &m::rank));
+  MC(MPI_Cart_create(MPI_COMM_WORLD, m::d, m::dims, m::periods, m::reorder,   &m::cart));
+  MC(MPI_Cart_coords(m::cart, m::rank, m::d,   m::coords));
 
   sim::init();
   sim::run();
   sim::close();
   
-  MC(MPI_Comm_free(&m::cart));
   MC(MPI_Finalize());
 }
