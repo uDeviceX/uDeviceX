@@ -120,10 +120,8 @@ int setup() { /* returns `nv' */
   }
 
   std::vector<int> adjVert2(degreemax * RBCnv, -1);
-
   for (int v = 0; v < RBCnv; ++v) {
     std::vector<int> myneighbors = extract_neighbors(adjVert, degreemax, v);
-
     for (int i = 0; i < myneighbors.size(); ++i) {
       std::vector<int> s1 =
 	  extract_neighbors(adjVert, degreemax, myneighbors[i]);
@@ -176,10 +174,11 @@ int setup() { /* returns `nv' */
   }
 
   CC(cudaMalloc(&orig_xyzuvw, RBCnv * 6 * sizeof(float)));
-  CC(cudaMemcpy(orig_xyzuvw, xyzuvw_host, RBCnv * 6 * sizeof(float),
-		H2D));
+  CC(cudaMemcpy(orig_xyzuvw, xyzuvw_host, RBCnv * 6 * sizeof(float), H2D));
+
   delete[] xyzuvw_host;
 
+  float *devtrs4;
   CC(cudaMalloc(&devtrs4, RBCnt * 4 * sizeof(int)));
   CC(cudaMemcpy(devtrs4, trs4, RBCnt * 4 * sizeof(int),
 		H2D));
@@ -234,32 +233,33 @@ void initialize(float *device_xyzuvw, const float (*transform)[4]) {
   CC(cudaPeekAtLastError());
 }
 
-void forces_nohost(int ncells, const float *const device_xyzuvw,
+void forces_nohost(int nc, const float *const device_xyzuvw,
 		   float *const device_axayaz) {
-  if (ncells == 0) return;
+  if (nc == 0) return;
 
-  if (ncells > maxCells) {
-    maxCells = 2 * ncells;
+  if (nc > maxCells) {
+    maxCells = 2 * nc;
     CC(cudaFree(host_av));
     CC(cudaMalloc(&host_av, maxCells * 2 * sizeof(float)));
   }
 
   size_t textureoffset;
-  CC(cudaBindTexture(&textureoffset, &texVertices, (float2 *)device_xyzuvw,
+  CC(cudaBindTexture(&textureoffset, &texVertices,
+		     (float2 *)device_xyzuvw,
 		     &texVertices.channelDesc,
-		     ncells * RBCnv * sizeof(float) * 6));
+		     nc * RBCnv * sizeof(float) * 6));
 
   dim3 avThreads(256, 1);
-  dim3 avBlocks(1, ncells);
+  dim3 avBlocks(1, nc);
 
-  CC(cudaMemsetAsync(host_av, 0, ncells * 2 * sizeof(float)));
+  CC(cudaMemsetAsync(host_av, 0, nc * 2 * sizeof(float)));
   areaAndVolumeKernel<<<avBlocks, avThreads, 0>>>(host_av);
   CC(cudaPeekAtLastError());
 
   int threads = 128;
-  int blocks = (ncells * RBCnv * 7 + threads - 1) / threads;
+  int blocks = (nc * RBCnv * 7 + threads - 1) / threads;
 
-  fall_kernel<RBCnv><<<blocks, threads, 0>>>(ncells, host_av, device_axayaz);
+  fall_kernel<RBCnv><<<blocks, threads, 0>>>(nc, host_av, device_axayaz);
   addKernel<<<(RBCnv + 127) / 128, 128, 0>>>(device_axayaz, addfrc,
 							RBCnv);
 }
