@@ -12,6 +12,7 @@
 #include <sstream>
 #include <vector>
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */
+#include "m.h"     /* MPI */
 #include "common.h"
 #include "common.tmp.h"
 #include "io.h"
