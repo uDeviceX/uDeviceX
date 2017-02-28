@@ -16,7 +16,7 @@ OPT_LOCAL=-O3 -g # I have to overwrite the flags because this	\
                  # ptxas fatal   : Unresolved extern function 'cudaDeviceSynchronize'
 cell-lists.o: cell-lists.h
 cell-lists.o: cell-lists.cu
-	$(NVCC) $(NVCCFLAGS) $(OPT) -c $< -o $@
+	$(NVCC) $(NVCCFLAGS) $(OPT_LOCAL) -c $< -o $@
 
 .PHONY = clean
 clean:; rm -f *.o *.a
