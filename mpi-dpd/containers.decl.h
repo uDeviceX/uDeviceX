@@ -1,5 +1,5 @@
 namespace Cont {
-  int (*indices)[3] = NULL;
+  int indices[99999];
   struct TransformedExtent {
     float com[3];
     float transform[4][4];

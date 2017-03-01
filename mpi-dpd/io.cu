@@ -33,7 +33,7 @@ void _write_bytes(const void * const ptr, const int nbytes32, MPI_File f) {
 }
 
 void ply_dump(const char * filename,
-        int (*mesh_indices)[3], const int ninstances, const int ntriangles_per_instance,
+        int *mesh_indices, const int ninstances, const int ntriangles_per_instance,
         Particle * _particles, int nvertices_per_instance, bool append) {
     std::vector<Particle> particles(_particles, _particles + ninstances * nvertices_per_instance);
     int NPOINTS = 0;
@@ -73,9 +73,9 @@ void ply_dump(const char * filename,
     for(int j = 0; j < ninstances; ++j)
       for(int i = 0; i < ntriangles_per_instance; ++i) {
 	int primitive[4] = { 3,
-			     poffset + nvertices_per_instance * j + mesh_indices[i][0],
-			     poffset + nvertices_per_instance * j + mesh_indices[i][1],
-			     poffset + nvertices_per_instance * j + mesh_indices[i][2] };
+			     poffset + nvertices_per_instance * j + mesh_indices[3 * i + 0],
+			     poffset + nvertices_per_instance * j + mesh_indices[3 * i + 1],
+			     poffset + nvertices_per_instance * j + mesh_indices[3 * i + 2] };
             buf.insert(buf.end(), primitive, primitive + 4);
       }
     _write_bytes(&buf.front(), sizeof(int) * buf.size(), f);
