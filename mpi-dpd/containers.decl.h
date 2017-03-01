@@ -1,6 +1,6 @@
 namespace Cont {
-  struct TransformedExtent {
+  struct Geom {
     float com[3];
-    float transform[4][4];
+    float mat[4][4];
   };
 }

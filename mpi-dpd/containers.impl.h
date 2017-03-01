@@ -168,60 +168,55 @@ void clear_velocity(Particle* pp, int n) {
 void _initialize(float *device_pp, float (*transform)[4], float* orig_xyzuvw) {
   rbc::initialize(device_pp, transform, orig_xyzuvw);
 }
-  
+
 int setup(Particle* pp, const char *path2ic, int nv, float* orig_xyzuvw) {
-  std::vector<TransformedExtent> allrbcs;
+  std::vector<Geom> tt;
   if (m::rank == 0) {
-    //read transformed extent from file
+    //read mated extent from file
     FILE *f = fopen(path2ic, "r");
     printf("READING FROM: <%s>\n", path2ic);
-    bool isgood = true;
-    while(isgood) {
+
+    while (true) {
       float tmp[19];
-      for(int c = 0; c < 19; ++c) {
-	int retval = fscanf(f, "%f", tmp + c);
-	isgood &= retval == 1;
-      }
-
-      if (isgood) {
-	TransformedExtent t;
-	for(int c = 0; c < 3; ++c) t.com[c] = tmp[c];
-
-	int ctr = 3;
-	for(int c = 0; c < 16; ++c, ++ctr) t.transform[c / 4][c % 4] = tmp[ctr];
-	allrbcs.push_back(t);
-      }
+      Geom t;
+      int c, rcode, ctr = 0;
+      for(c = 0; c < 19; ++c)
+	if (fscanf(f, "%f", tmp + c) != 1) goto done;
+      
+      t.com[0] = tmp[ctr++]; t.com[1] = tmp[ctr++]; t.com[2] = tmp[ctr++];
+      for(c = 0; c < 16; ++c) t.mat[c / 4][c % 4] = tmp[ctr++];
+      tt.push_back(t);
     }
+done:
     fclose(f);
-    printf("Instantiating %d CELLs from...<%s>\n", (int)allrbcs.size(), path2ic);
+    printf("Instantiating %d CELLs from...<%s>\n", (int)tt.size(), path2ic);
   } /* end of m::rank == 0 */
 
-  int allrbcs_count = allrbcs.size();
-  MC(MPI_Bcast(&allrbcs_count, 1, MPI_INT, 0, m::cart));
+  int tt_count = tt.size();
+  MC(MPI_Bcast(&tt_count, 1, MPI_INT, 0, m::cart));
 
-  allrbcs.resize(allrbcs_count);
+  tt.resize(tt_count);
 
-  int nfloats_per_entry = sizeof(TransformedExtent) / sizeof(float);
+  int nfloats_per_entry = sizeof(Geom) / sizeof(float);
+  MC(MPI_Bcast(&tt.front(), nfloats_per_entry * tt_count, MPI_FLOAT, 0, m::cart));
 
-  MC(MPI_Bcast(&allrbcs.front(), nfloats_per_entry * allrbcs_count, MPI_FLOAT, 0, m::cart));
-
-  std::vector<TransformedExtent> good;
+  std::vector<Geom> good;
   int L[3] = { XS, YS, ZS };
 
-  for(std::vector<TransformedExtent>::iterator it = allrbcs.begin(); it != allrbcs.end(); ++it) {
+  for(std::vector<Geom>::iterator it = tt.begin(); it != tt.end(); ++it) {
     bool inside = true;
     for(int c = 0; c < 3; ++c)
       inside &= it->com[c] >= m::coords[c] * L[c] && it->com[c] < (m::coords[c] + 1) * L[c];
     if (inside) {
       for(int c = 0; c < 3; ++c)
-	it->transform[c][3] -= (m::coords[c] + 0.5) * L[c];
+	it->mat[c][3] -= (m::coords[c] + 0.5) * L[c];
       good.push_back(*it);
     }
   }
 
   int gs = good.size();
   for(int i = 0; i < gs; ++i)
-    _initialize((float *)(pp + nv * i), good[i].transform, orig_xyzuvw);
+    _initialize((float *)(pp + nv * i), good[i].mat, orig_xyzuvw);
   return gs; /* number of cells */
 }
 
@@ -243,7 +238,7 @@ int rbc_remove(Particle* pp, int nv, int nc, int *e, int ne) {
 void clear_forces(Force* ff, int n) {
   CC(cudaMemsetAsync(ff, 0, sizeof(Force) * n));
 }
-  
+
 void rbc_dump(int nc, Particle *p, int* triplets,
 	      int n, int nv, int nt, int id) {
     const char *format4ply = "ply/rbcs-%05d.ply";
