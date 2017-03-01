@@ -177,14 +177,15 @@ void diag(int it) {
   diagnostics(sr_pp, n, it);
 }
 
-static void update_and_bounce() {
+void update() {
   Cont::update(s_pp, s_ff, s_n, false, driving_force);
-  if (rbcs)
-    Cont::update(r_pp, r_ff, r_n, true, driving_force);
-  if (wall_created) {
-    wall::bounce(s_pp, s_n);
-    if (rbcs) wall::bounce(r_pp, r_n);
-  }
+  if (rbcs) Cont::update(r_pp, r_ff, r_n, true, driving_force);
+}
+
+void bounce() {
+  if (!wall_created) return;
+  wall::bounce(s_pp, s_n);
+  if (rbcs) wall::bounce(r_pp, r_n);
 }
 
 void init() {
@@ -255,7 +256,8 @@ void run() {
     redistribute();
     forces();
     dumps_diags(it);
-    update_and_bounce();
+    update();
+    bounce();
   }
 }
 
