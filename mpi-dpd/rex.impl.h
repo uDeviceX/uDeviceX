@@ -214,7 +214,7 @@ namespace rex {
 
 	_pack_attempt();
 
-	CC(cudaDeviceSynchronize()); /* was CC(cudaStreamSynchronize(stream)); */
+	dSync(); /* was CC(cudaStreamSynchronize(stream)); */
       }
 
       for (int i = 0; i < 26; ++i) local[i]->resize(send_counts[i]);
@@ -231,7 +231,7 @@ namespace rex {
 			   sizeof(Particle) * host_packstotalstart->D[26],
 			   H2H));
       }
-      CC(cudaDeviceSynchronize()); /* was CC(cudaStreamSynchronize(downloadstream)); */
+      dSync(); /* was CC(cudaStreamSynchronize(downloadstream)); */
     }
 
     // post the sending of the packs
@@ -310,7 +310,7 @@ namespace rex {
       halos[i] = ParticlesWrap(remote[i]->dstate.D, remote[i]->dstate.S,
 			       remote[i]->result.DP);
 
-    CC(cudaDeviceSynchronize()); /* was CC(cudaStreamSynchronize(uploadstream)); */
+    dSync(); /* was CC(cudaStreamSynchronize(uploadstream)); */
 
     /** here was visitor  **/
     fsi::halo(halos);

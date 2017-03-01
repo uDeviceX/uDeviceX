@@ -108,7 +108,7 @@ void pack_sendcnt(Particle *pp, int nc, int nv) {
       else   dst.pb((float*)(       bulk + nv * j));
     }
   pack_all(src.size(), nv, &src.front(), &dst.front());
-  CC(cudaDeviceSynchronize()); /* was CC(cudaStreamSynchronize(stream)); */
+  dSync(); /* was CC(cudaStreamSynchronize(stream)); */
   for (int i = 1; i < 27; ++i)
     MC(MPI_Isend(&sbuf[i]->S, 1, MPI_INTEGER,
 		 rnk_ne[i], i + 1024, cart,

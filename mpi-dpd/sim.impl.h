@@ -66,7 +66,7 @@ static void update_helper_arrays() {
 }
 
 void create_walls() {
-  CC(cudaDeviceSynchronize());
+  dSync();
   s_n = wall::init(s_pp, s_n); /* number of survived particles */
   wall_created = true;
 
