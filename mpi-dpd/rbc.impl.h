@@ -1,5 +1,7 @@
 namespace rbc {
 
+#define MAX_CELLS_NUM 100000
+
 void eat_until(FILE *f, std::string target) {
   while (!feof(f)) {
     char buf[2048];
@@ -44,7 +46,7 @@ void setup_support(const int *data, const int *data2, const int nentries) {
 		     &texAdjVert.channelDesc, sizeof(int) * nentries));
 }
 
-void setup(int* triplets) {
+void setup(int* triplets, float* orig_xyzuvw) {
   FILE *f = fopen("rbc.dat", "r");
   if (!f) {
     printf("Error in cuda-rbc: data file not found!\n");
@@ -172,7 +174,6 @@ void setup(int* triplets) {
     xyzuvw_host[6 * i + 5] = 0;
   }
 
-  CC(cudaMalloc(&orig_xyzuvw, RBCnv * 6 * sizeof(float)));
   CC(cudaMemcpy(orig_xyzuvw, xyzuvw_host, RBCnv * 6 * sizeof(float), H2D));
 
   delete[] xyzuvw_host;
@@ -211,12 +212,13 @@ void setup(int* triplets) {
 		     &texTriangles4.channelDesc,
 		     RBCnt * 4 * sizeof(int)));
 
-  maxCells = 0;
-  CC(cudaMalloc(&host_av, 1 * 2 * sizeof(float)));
+  CC(cudaMalloc(&host_av, MAX_CELLS_NUM));
   CC(cudaFuncSetCacheConfig(fall_kernel<RBCnv>, cudaFuncCachePreferL1));
 }
 
-void initialize(float *device_xyzuvw, const float (*transform)[4]) {
+void initialize(float *device_xyzuvw,
+		const float (*transform)[4],
+		float *orig_xyzuvw) {
   const int threads = 128;
   const int blocks = (RBCnv + threads - 1) / threads;
 
@@ -232,11 +234,6 @@ void forces_nohost(int nc, const float *const device_xyzuvw,
 		   float *const device_axayaz) {
   if (nc == 0) return;
 
-  if (nc > maxCells) {
-    maxCells = 2 * nc;
-    CC(cudaFree(host_av));
-    CC(cudaMalloc(&host_av, maxCells * 2 * sizeof(float)));
-  }
 
   size_t textureoffset;
   CC(cudaBindTexture(&textureoffset, &texVertices,

@@ -189,7 +189,8 @@ void bounce() {
 }
 
 void init() {
-  rbc::setup(triplets);
+  CC(cudaMalloc(&r_orig_xyzuvw, RBCnv * 6 * sizeof(float)));
+  rbc::setup(triplets, r_orig_xyzuvw);
   rdstr::init();
   DPD::init();
   fsi::init();
@@ -211,6 +212,7 @@ void init() {
   mpDeviceMalloc(&s_ff); mpDeviceMalloc(&s_ff0);
   mpDeviceMalloc(&r_ff); mpDeviceMalloc(&r_ff);
 
+
   std::vector<Particle> ic = ic_pos();
   s_n  = ic.size();
 
@@ -219,7 +221,7 @@ void init() {
   update_helper_arrays();
 
   if (rbcs) {
-    r_nc = Cont::setup(r_pp, "rbcs-ic.txt", r_nv);
+    r_nc = Cont::setup(r_pp, "rbcs-ic.txt", r_nv, r_orig_xyzuvw);
     r_n = r_nc * r_nv;
 #ifdef GWRP
     iotags_init_file("rbc.dat");
@@ -274,6 +276,8 @@ void close() {
 
   CC(cudaFree(s_zip0));
   CC(cudaFree(s_zip1));
+
+  CC(cudaFree(r_orig_xyzuvw));
 
   delete wall::trunk;
   CC(cudaFree(r_pp )); CC(cudaFree(r_ff ));

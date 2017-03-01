@@ -166,11 +166,11 @@ void clear_velocity(Particle* pp, int n) {
     ParticleKernels::clear_velocity<<<(n + 127) / 128, 128 >>>(pp, n);
 }
 
-void _initialize(float *device_pp, float (*transform)[4]) {
-  rbc::initialize(device_pp, transform);
+void _initialize(float *device_pp, float (*transform)[4], float* orig_xyzuvw) {
+  rbc::initialize(device_pp, transform, orig_xyzuvw);
 }
   
-int setup(Particle* pp, const char *path2ic, int nv) {
+int setup(Particle* pp, const char *path2ic, int nv, float* orig_xyzuvw) {
   std::vector<TransformedExtent> allrbcs;
   if (m::rank == 0) {
     //read transformed extent from file
@@ -222,7 +222,7 @@ int setup(Particle* pp, const char *path2ic, int nv) {
 
   int gs = good.size();
   for(int i = 0; i < gs; ++i)
-    _initialize((float *)(pp + nv * i), good[i].transform);
+    _initialize((float *)(pp + nv * i), good[i].transform, orig_xyzuvw);
   return gs; /* number of cells */
 }
 
