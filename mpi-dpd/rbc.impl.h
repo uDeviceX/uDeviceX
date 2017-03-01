@@ -46,7 +46,7 @@ void setup_support(const int *data, const int *data2, const int nentries) {
 		     &texAdjVert.channelDesc, sizeof(int) * nentries));
 }
 
-void setup(int* triplets, float* orig_xyzuvw) {
+  void setup(int* triplets, float* orig_xyzuvw, float* addfrc) {
   FILE *f = fopen("rbc.dat", "r");
   if (!f) {
     printf("Error in cuda-rbc: data file not found!\n");
@@ -161,7 +161,6 @@ void setup(int* triplets, float* orig_xyzuvw) {
     hAddfrc[tmp[RBCnv - 1 - i].second] = +stretchingForce / strVerts;
   }
 
-  CC(cudaMalloc(&addfrc, RBCnv * sizeof(float)));
   CC(cudaMemcpy(addfrc, hAddfrc, RBCnv * sizeof(float), H2D));
 
   float *xyzuvw_host = new float[6 * RBCnv * sizeof(float)];
@@ -212,7 +211,7 @@ void setup(int* triplets, float* orig_xyzuvw) {
 		     &texTriangles4.channelDesc,
 		     RBCnt * 4 * sizeof(int)));
 
-  CC(cudaMalloc(&host_av, MAX_CELLS_NUM));
+
   CC(cudaFuncSetCacheConfig(fall_kernel<RBCnv>, cudaFuncCachePreferL1));
 }
 
@@ -230,11 +229,10 @@ void initialize(float *device_xyzuvw,
   CC(cudaPeekAtLastError());
 }
 
-void forces_nohost(int nc, const float *const device_xyzuvw,
-		   float *const device_axayaz) {
+void forces_nohost(int nc, float *device_xyzuvw,
+		   float *device_axayaz, float* host_av, float* addfrc) {
   if (nc == 0) return;
-
-
+  
   size_t textureoffset;
   CC(cudaBindTexture(&textureoffset, &texVertices,
 		     (float2 *)device_xyzuvw,

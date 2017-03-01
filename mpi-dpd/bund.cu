@@ -31,7 +31,6 @@
 #include "k/scan.h"
 #include "k/common.h"
 
-#include "rbc.decl.h"
 #include "k/rbc.h"
 #include "rbc.impl.h"
 

@@ -78,7 +78,8 @@ void create_walls() {
 }
 
 void forces_rbc() {
-  if (rbcs) rbc::forces_nohost(r_nc, (float*)r_pp, (float*)r_ff);
+  if (rbcs) rbc::forces_nohost(r_nc, (float*)r_pp, (float*)r_ff,
+			       r_host_av, r_addfrc);
 }
 
 void forces_dpd() {
@@ -190,7 +191,11 @@ void bounce() {
 
 void init() {
   CC(cudaMalloc(&r_orig_xyzuvw, RBCnv * 6 * sizeof(float)));
-  rbc::setup(triplets, r_orig_xyzuvw);
+  CC(cudaMalloc(&r_host_av, MAX_CELLS_NUM));
+  CC(cudaMalloc(&r_addfrc, RBCnv * sizeof(float)));
+
+  
+  rbc::setup(triplets, r_orig_xyzuvw, r_addfrc);
   rdstr::init();
   DPD::init();
   fsi::init();
@@ -278,6 +283,7 @@ void close() {
   CC(cudaFree(s_zip1));
 
   CC(cudaFree(r_orig_xyzuvw));
+  CC(cudaFree(r_host_av));
 
   delete wall::trunk;
   CC(cudaFree(r_pp )); CC(cudaFree(r_ff ));
