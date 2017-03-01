@@ -167,7 +167,7 @@ void clear_velocity(Particle* pp, int n) {
 }
 
 void rbc_init() {
-  rbc::get_triangle_indexing(indices, nt);
+  rbc::get_triangle_indexing(indices);
   rbc::setup();
 }
 
@@ -253,8 +253,9 @@ int rbc_remove(Particle* pp, int nv, int nc, int *e, int ne) {
 void clear_forces(Force* ff, int n) {
   CC(cudaMemsetAsync(ff, 0, sizeof(Force) * n));
 }
-static void rbc_dump0(const char *format4ply,
-		      int nc, Particle *p, int n, int nv, int iddatadump) {
+  
+void rbc_dump0(const char *format4ply,
+	       int nc, Particle *p, int n, int nv, int nt, int iddatadump) {
     int ctr = iddatadump;
     char buf[200];
     sprintf(buf, format4ply, ctr);
@@ -264,8 +265,8 @@ static void rbc_dump0(const char *format4ply,
     ply_dump(buf, indices, nc, nt, p, nv, false);
 }
 
-void rbc_dump(Particle* p, int n, int nv, int iddatadump) {
-  rbc_dump0("ply/rbcs-%05d.ply", n / nv, p, n, nv, iddatadump);
+void rbc_dump(Particle* p, int n, int nv, int nt, int iddatadump) {
+  rbc_dump0("ply/rbcs-%05d.ply", n / nv, p, n, nv, nt, iddatadump);
 }
 
 }

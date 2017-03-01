@@ -260,8 +260,8 @@ void forces_nohost(int nc, const float *const device_xyzuvw,
 							RBCnv);
 }
 
-void get_triangle_indexing(int (*&host_triplets_ptr)[3], int &ntriangles) {
+void get_triangle_indexing(int (*&host_triplets_ptr)[3]) {
   host_triplets_ptr = (int(*)[3])triplets;
-  ntriangles = RBCnt;
 }
+
 }

@@ -163,7 +163,7 @@ void dump_rbcs() {
   if (!rbcs) return;
   static int id = 0;
   dev2hst();  /* TODO: do not need `s' */
-  Cont::rbc_dump(&sr_pp[s_n], r_n, r_nv, id++);
+  Cont::rbc_dump(&sr_pp[s_n], r_n, r_nv, r_nt, id++);
 }
 
 void dump_grid() {
