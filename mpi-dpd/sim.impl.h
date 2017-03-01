@@ -24,39 +24,38 @@ static std::vector<Particle> ic_pos() { /* generate particle position */
 
 static void redistribute() {
   sdstr::pack(s_pp, s_n);
-  if (rbcs) rdstr::extent(r_pp, Cont::nc, r_nv);
+  if (rbcs) rdstr::extent(r_pp, r_nc, r_nv);
   sdstr::send();
-  if (rbcs) rdstr::pack_sendcnt(r_pp, Cont::nc, r_nv);
+  if (rbcs) rdstr::pack_sendcnt(r_pp, r_nc, r_nv);
   sdstr::bulk(s_n, cells->start, cells->count);
   s_n = sdstr::recv_count();
   if (rbcs) {
-    Cont::nc = rdstr::post(r_nv); r_n = Cont::nc * r_nv;
+    r_nc = rdstr::post(r_nv); r_n = r_nc * r_nv;
   }
   sdstr::recv_unpack(s_pp0, s_zip0, s_zip1, s_n, cells->start, cells->count);
   std::swap(s_pp, s_pp0); std::swap(s_ff, s_ff0);
-  if (rbcs) rdstr::unpack(r_pp, Cont::nc, r_nv);
+  if (rbcs) rdstr::unpack(r_pp, r_nc, r_nv);
 }
 
 void remove_bodies_from_wall() {
-  if (!rbcs)         return;
-  if (!Cont::nc) return;
+  if (!rbcs) return;
+  if (!r_nc) return;
   DeviceBuffer<int> marks(r_n);
   k_wall::fill_keys<<<(r_n + 127) / 128, 128>>>
     (r_pp, r_n, marks.D);
 
   std::vector<int> tmp(marks.S);
   CC(cudaMemcpy(tmp.data(), marks.D, sizeof(int) * marks.S, D2H));
-  int nbodies = Cont::nc;
   std::vector<int> tokill;
-  for (int i = 0; i < nbodies; ++i) {
+  for (int i = 0; i < r_nc; ++i) {
     bool valid = true;
     for (int j = 0; j < r_nv && valid; ++j)
       valid &= 0 == tmp[j + r_nv * i];
     if (!valid) tokill.push_back(i);
   }
 
-  Cont::nc = Cont::rbc_remove(r_pp, r_nv, &tokill.front(), tokill.size());
-  r_n = Cont::nc * r_nv;
+  r_nc = Cont::rbc_remove(r_pp, r_nv, r_nc, &tokill.front(), tokill.size());
+  r_n = r_nc * r_nv;
 }
 
 static void update_helper_arrays() {
@@ -79,8 +78,7 @@ void create_walls() {
 }
 
 void forces_rbc() {
-  if (rbcs)
-    rbc::forces_nohost(Cont::nc, (float*)r_pp, (float*)r_ff);
+  if (rbcs) rbc::forces_nohost(r_nc, (float*)r_pp, (float*)r_ff);
 }
 
 void forces_dpd() {
@@ -146,7 +144,7 @@ void in_out() {
 #endif
 }
 
-void dev2hst() { /* device2host  */
+void dev2hst() { /* device to host  data transfer */
   CC(cudaMemcpyAsync(sr_pp, s_pp,
 		     sizeof(Particle) * s_n, D2H, 0));
   if (rbcs)
@@ -221,8 +219,8 @@ void init() {
 
   if (rbcs) {
     Cont::rbc_init();
-    Cont::nc = Cont::setup(r_pp, "rbcs-ic.txt", r_nv);
-    r_n = Cont::nc * r_nv;
+    r_nc = Cont::setup(r_pp, "rbcs-ic.txt", r_nv);
+    r_n = r_nc * r_nv;
 #ifdef GWRP
     iotags_init_file("rbc.dat");
     iotags_domain(0, 0, 0,

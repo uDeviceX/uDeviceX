@@ -167,7 +167,6 @@ void clear_velocity(Particle* pp, int n) {
 }
 
 void rbc_init() {
-  nc = 0;
   rbc::get_triangle_indexing(indices, nt);
   rbc::setup();
 }
@@ -232,11 +231,11 @@ int setup(Particle* pp, const char *path2ic, int nv) {
   return gs; /* number of cells */
 }
 
-int rbc_remove(Particle* pp, int nv, int *e, int ne) {
+int rbc_remove(Particle* pp, int nv, int nc, int *e, int ne) {
   /* remove RBCs with indexes in `e' */
   bool GO = false, STAY = true;
   int ie, i0, i1;
-  std::vector<bool> m(Cont::nc, STAY);
+  std::vector<bool> m(nc, STAY);
   for (ie = 0; ie < ne; ie++) m[e[ie]] = GO;
 
   for (i0 = i1 = 0; i0 < nc; i0++)
