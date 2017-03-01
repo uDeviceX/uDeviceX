@@ -3,7 +3,7 @@ namespace sim {
   Particle *s_pp; /* Solvent */
   Force    *s_ff;
 
-  int r_n;
+  int r_n, r_nv = RBCnv;
   Particle *r_pp; /* RBC */
   Force    *r_ff;
 

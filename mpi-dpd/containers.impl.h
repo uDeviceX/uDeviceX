@@ -169,14 +169,14 @@ void clear_velocity(Particle* pp, int n) {
 void rbc_init() {
   nc = 0;
   rbc::get_triangle_indexing(indices, nt);
-  nv = rbc::setup();
+  rbc::setup();
 }
 
 void _initialize(float *device_pp, float (*transform)[4]) {
   rbc::initialize(device_pp, transform);
 }
   
-int setup(Particle* pp, const char *path2ic) {
+int setup(Particle* pp, const char *path2ic, int nv) {
   std::vector<TransformedExtent> allrbcs;
   if (m::rank == 0) {
     //read transformed extent from file
@@ -255,7 +255,7 @@ void clear_forces(Force* ff, int n) {
   CC(cudaMemsetAsync(ff, 0, sizeof(Force) * n));
 }
 static void rbc_dump0(const char *format4ply,
-		      int nc, Particle *p, int n, int iddatadump) {
+		      int nc, Particle *p, int n, int nv, int iddatadump) {
     int ctr = iddatadump;
     char buf[200];
     sprintf(buf, format4ply, ctr);
@@ -265,8 +265,8 @@ static void rbc_dump0(const char *format4ply,
     ply_dump(buf, indices, nc, nt, p, nv, false);
 }
 
-void rbc_dump(Particle* p, int n, int iddatadump) {
-  rbc_dump0("ply/rbcs-%05d.ply", n / nv, p, n, iddatadump);
+void rbc_dump(Particle* p, int n, int nv, int iddatadump) {
+  rbc_dump0("ply/rbcs-%05d.ply", n / nv, p, n, nv, iddatadump);
 }
 
 }

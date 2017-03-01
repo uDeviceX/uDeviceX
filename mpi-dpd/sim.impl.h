@@ -24,17 +24,17 @@ static std::vector<Particle> ic_pos() { /* generate particle position */
 
 static void redistribute() {
   sdstr::pack(s_pp, s_n);
-  if (rbcs) rdstr::extent(r_pp, Cont::nc, Cont::nv);
+  if (rbcs) rdstr::extent(r_pp, Cont::nc, r_nv);
   sdstr::send();
-  if (rbcs) rdstr::pack_sendcnt(r_pp, Cont::nc, Cont::nv);
+  if (rbcs) rdstr::pack_sendcnt(r_pp, Cont::nc, r_nv);
   sdstr::bulk(s_n, cells->start, cells->count);
   s_n = sdstr::recv_count();
   if (rbcs) {
-    Cont::nc = rdstr::post(Cont::nv); r_n = Cont::nc * Cont::nv;
+    Cont::nc = rdstr::post(r_nv); r_n = Cont::nc * r_nv;
   }
   sdstr::recv_unpack(s_pp0, s_zip0, s_zip1, s_n, cells->start, cells->count);
   std::swap(s_pp, s_pp0); std::swap(s_ff, s_ff0);
-  if (rbcs) rdstr::unpack(r_pp, Cont::nc, Cont::nv);
+  if (rbcs) rdstr::unpack(r_pp, Cont::nc, r_nv);
 }
 
 void remove_bodies_from_wall() {
@@ -50,13 +50,13 @@ void remove_bodies_from_wall() {
   std::vector<int> tokill;
   for (int i = 0; i < nbodies; ++i) {
     bool valid = true;
-    for (int j = 0; j < Cont::nv && valid; ++j)
-      valid &= 0 == tmp[j + Cont::nv * i];
+    for (int j = 0; j < r_nv && valid; ++j)
+      valid &= 0 == tmp[j + r_nv * i];
     if (!valid) tokill.push_back(i);
   }
 
-  Cont::nc = Cont::rbc_remove(r_pp, Cont::nv, &tokill.front(), tokill.size());
-  r_n = Cont::nc * Cont::nv;
+  Cont::nc = Cont::rbc_remove(r_pp, r_nv, &tokill.front(), tokill.size());
+  r_n = Cont::nc * r_nv;
 }
 
 static void update_helper_arrays() {
@@ -165,7 +165,7 @@ void dump_rbcs() {
   if (!rbcs) return;
   static int id = 0;
   dev2hst();  /* TODO: do not need `s' */
-  Cont::rbc_dump(&sr_pp[s_n], r_n, id++);
+  Cont::rbc_dump(&sr_pp[s_n], r_n, r_nv, id++);
 }
 
 void dump_grid() {
@@ -221,8 +221,8 @@ void init() {
 
   if (rbcs) {
     Cont::rbc_init();
-    Cont::nc = Cont::setup(r_pp, "rbcs-ic.txt");
-    r_n = Cont::nc * Cont::nv;
+    Cont::nc = Cont::setup(r_pp, "rbcs-ic.txt", r_nv);
+    r_n = Cont::nc * r_nv;
 #ifdef GWRP
     iotags_init_file("rbc.dat");
     iotags_domain(0, 0, 0,

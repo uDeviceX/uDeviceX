@@ -44,7 +44,7 @@ void setup_support(const int *data, const int *data2, const int nentries) {
 		     &texAdjVert.channelDesc, sizeof(int) * nentries));
 }
 
-int setup() { /* returns `nv' */
+void setup() {
   FILE *f = fopen("rbc.dat", "r");
   if (!f) {
     printf("Error in cuda-rbc: data file not found!\n");
@@ -215,11 +215,7 @@ int setup() { /* returns `nv' */
   maxCells = 0;
   CC(cudaMalloc(&host_av, 1 * 2 * sizeof(float)));
   CC(cudaFuncSetCacheConfig(fall_kernel<RBCnv>, cudaFuncCachePreferL1));
-
-  return RBCnv;
 }
-
-int get_nvertices() { return RBCnv; }
 
 void initialize(float *device_xyzuvw, const float (*transform)[4]) {
   const int threads = 128;
