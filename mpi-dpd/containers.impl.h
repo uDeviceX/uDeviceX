@@ -154,11 +154,10 @@ namespace ParticleKernels {
 
 namespace Cont {
 void  update(Particle* pp, Force* ff, int n,
-		     bool rbcflag, float driving_force) {
+	     bool rbcflag, float driving_force) {
   if (!n) return;
   ParticleKernels::update<<<(n + 127) / 128, 128, 0>>>
-    (rbcflag, (float2 *)pp, (float *)ff, n,
-     driving_force);
+    (rbcflag, (float2*)pp, (float*)ff, n, driving_force);
 }
 
 void clear_velocity(Particle* pp, int n) {
@@ -234,13 +233,9 @@ int rbc_remove(Particle* pp, int nv, int nc, int *e, int ne) {
   for (ie = 0; ie < ne; ie++) m[e[ie]] = GO;
 
   for (i0 = i1 = 0; i0 < nc; i0++)
-    if (m[i0] == STAY) {
-      CC(cudaMemcpy(pp + nv * i1,
-		    pp + nv * i0,
-		    sizeof(Particle) * nv,
-		    D2D));
-      i1++;
-    }
+    if (m[i0] == STAY)
+      CC(cudaMemcpy(pp + nv * (i1++), pp + nv * i0,
+		    sizeof(Particle) * nv, D2D));
   int nstay = i1;
   return nstay;
 }
@@ -249,20 +244,13 @@ void clear_forces(Force* ff, int n) {
   CC(cudaMemsetAsync(ff, 0, sizeof(Force) * n));
 }
   
-void rbc_dump0(const char *format4ply,
-	       int nc, Particle *p, int* triplets,
-	       int n, int nv, int nt, int iddatadump) {
-    int ctr = iddatadump;
+void rbc_dump(int nc, Particle *p, int* triplets,
+	      int n, int nv, int nt, int id) {
+    const char *format4ply = "ply/rbcs-%05d.ply";
     char buf[200];
-    sprintf(buf, format4ply, ctr);
-
-    if(m::rank == 0)
-      mkdir("ply", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-    ply_dump(buf, triplets, nc, nt, p, nv, false);
-}
-
-void rbc_dump(Particle* p, int* triplets, int n, int nv, int nt, int iddatadump) {
-  rbc_dump0("ply/rbcs-%05d.ply", n / nv, p, triplets, n, nv, nt, iddatadump);
+    sprintf(buf, format4ply, id);
+    if (m::rank == 0) mkdir("ply", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    ply_dump(buf, triplets, nc, nt, p, nv);
 }
 
 }

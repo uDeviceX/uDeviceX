@@ -1,6 +1,6 @@
 void ply_dump(const char * filename,
               int *mesh_indices, const int ninstances, const int ntriangles_per_instance, Particle * _particles,
-              int nvertices_per_instance, bool append);
+              int nvertices_per_instance);
 
 class H5PartDump {
   float origin[3];
