@@ -1,6 +1,6 @@
 namespace ParticleKernels {
     __global__ void update(bool rbcflag, float2 * _pdata, float * _adata,
-				   int nparticles, float _driving_force, float threshold) {
+				   int nparticles, float _driving_force) {
 	int warpid = threadIdx.x >> 5;
 	int base = 32 * (warpid + 4 * blockIdx.x);
 	int nsrc = min(32, nparticles - base);
@@ -79,7 +79,8 @@ namespace ParticleKernels {
 	mass          = (type == MEMB_TYPE) ? rbc_mass : 1;
 	/* TODO: no driving force on "inner" particles */
 	driving_force = (type ==   IN_TYPE) ? 0        : _driving_force;
-	if (doublepoiseuille && y <= threshold) driving_force *= -1;
+	float y0 = glb::r0[1]; /* domain center in local coordinates */
+	if (doublepoiseuille && y <= y0) driving_force *= -1;
 
 	s1.y += (ax/mass + driving_force) * dt;
 	s2.x += ay/mass * dt;
@@ -157,7 +158,7 @@ void  update(Particle* pp, Force* ff, int n,
   if (!n) return;
   ParticleKernels::update<<<(n + 127) / 128, 128, 0>>>
     (rbcflag, (float2 *)pp, (float *)ff, n,
-     driving_force, globalextent.y * 0.5 - origin.y);
+     driving_force);
 }
 
 void clear_velocity(Particle* pp, int n) {

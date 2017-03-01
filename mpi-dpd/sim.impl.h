@@ -208,12 +208,6 @@ void init() {
 
   wall::trunk = new Logistic::KISS;
   sdstr::init();
-  Cont::origin = make_float3((0.5 + m::coords[0]) * XS,
-			     (0.5 + m::coords[1]) * YS,
-			     (0.5 + m::coords[2]) * ZS);
-  Cont::globalextent = make_float3(m::dims[0] * XS,
-				   m::dims[1] * YS,
-				   m::dims[2] * ZS);
   mpDeviceMalloc(&s_pp); mpDeviceMalloc(&s_pp0);
   mpDeviceMalloc(&s_ff); mpDeviceMalloc(&s_ff0);
   mpDeviceMalloc(&r_ff); mpDeviceMalloc(&r_ff);
