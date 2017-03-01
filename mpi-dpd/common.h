@@ -6,6 +6,9 @@ const int   numberdensity = _numberdensity * (rc * rc * rc);
 /* maximum particle number per one processor for static allocation */
 #define MAX_PART_NUM 5000000
 
+/* maximum number of faces per one RBC */
+#define MAX_FACE_NUM 5000000
+
 #define dSync() CC(cudaDeviceSynchronize())
 #define D2D cudaMemcpyDeviceToDevice
 #define D2H cudaMemcpyDeviceToHost

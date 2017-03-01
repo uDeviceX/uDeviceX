@@ -163,7 +163,7 @@ void dump_rbcs() {
   if (!rbcs) return;
   static int id = 0;
   dev2hst();  /* TODO: do not need `s' */
-  Cont::rbc_dump(&sr_pp[s_n], r_n, r_nv, r_nt, id++);
+  Cont::rbc_dump(&sr_pp[s_n], triplets, r_n, r_nv, r_nt, id++);
 }
 
 void dump_grid() {
@@ -189,7 +189,7 @@ void bounce() {
 }
 
 void init() {
-  rbc::setup();
+  rbc::setup(triplets);
   rdstr::init();
   DPD::init();
   fsi::init();
@@ -219,7 +219,6 @@ void init() {
   update_helper_arrays();
 
   if (rbcs) {
-    Cont::rbc_init();
     r_nc = Cont::setup(r_pp, "rbcs-ic.txt", r_nv);
     r_n = r_nc * r_nv;
 #ifdef GWRP

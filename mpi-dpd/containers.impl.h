@@ -166,11 +166,6 @@ void clear_velocity(Particle* pp, int n) {
     ParticleKernels::clear_velocity<<<(n + 127) / 128, 128 >>>(pp, n);
 }
 
-void rbc_init() {
-  rbc::get_triangle_indexing(indices);
-  rbc::setup();
-}
-
 void _initialize(float *device_pp, float (*transform)[4]) {
   rbc::initialize(device_pp, transform);
 }
@@ -255,18 +250,19 @@ void clear_forces(Force* ff, int n) {
 }
   
 void rbc_dump0(const char *format4ply,
-	       int nc, Particle *p, int n, int nv, int nt, int iddatadump) {
+	       int nc, Particle *p, int* triplets,
+	       int n, int nv, int nt, int iddatadump) {
     int ctr = iddatadump;
     char buf[200];
     sprintf(buf, format4ply, ctr);
 
     if(m::rank == 0)
       mkdir("ply", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-    ply_dump(buf, indices, nc, nt, p, nv, false);
+    ply_dump(buf, triplets, nc, nt, p, nv, false);
 }
 
-void rbc_dump(Particle* p, int n, int nv, int nt, int iddatadump) {
-  rbc_dump0("ply/rbcs-%05d.ply", n / nv, p, n, nv, nt, iddatadump);
+void rbc_dump(Particle* p, int* triplets, int n, int nv, int nt, int iddatadump) {
+  rbc_dump0("ply/rbcs-%05d.ply", n / nv, p, triplets, n, nv, nt, iddatadump);
 }
 
 }

@@ -44,7 +44,7 @@ void setup_support(const int *data, const int *data2, const int nentries) {
 		     &texAdjVert.channelDesc, sizeof(int) * nentries));
 }
 
-void setup() {
+void setup(int* triplets) {
   FILE *f = fopen("rbc.dat", "r");
   if (!f) {
     printf("Error in cuda-rbc: data file not found!\n");
@@ -79,7 +79,6 @@ void setup() {
   }
   fclose(f);
 
-  triplets = new int[3 * triangles.size()];
   int *trs4 = new int[4 * triangles.size()];
   for (int i = 0; i < triangles.size(); i++) {
     int3 tri = triangles[i];
@@ -257,16 +256,7 @@ void forces_nohost(int nc, const float *const device_xyzuvw,
 
   fall_kernel<RBCnv><<<blocks, threads, 0>>>(nc, host_av, device_axayaz);
   addKernel<<<(RBCnv + 127) / 128, 128, 0>>>(device_axayaz, addfrc,
-							RBCnv);
-}
-
-void get_triangle_indexing(int* indices) {
-  int i = 0, ib = 0;
-  for (  ; i < RBCnt; i ++) {
-    indices[ib++] =  triplets[3 * i + 0];
-    indices[ib++] =  triplets[3 * i + 1];
-    indices[ib++] =  triplets[3 * i + 2];
-  }
+					     RBCnv);
 }
 
 }

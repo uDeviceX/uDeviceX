@@ -6,6 +6,7 @@ namespace sim {
   int r_n, r_nc, r_nt = RBCnt, r_nv = RBCnv;
   Particle *r_pp; /* RBC */
   Force    *r_ff;
+  int      triplets[MAX_FACE_NUM];
 
   float4  *s_zip0; /* "zipped" version of Solvent array */
   ushort4 *s_zip1;
