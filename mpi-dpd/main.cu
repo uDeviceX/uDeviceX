@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
   CC(cudaSetDevice(device));
 
   mpi_init(argc, argv);
-  glb::sim();
+  glb::sim(); /* simulation level globals */
 
   sim::init();
   sim::run();
