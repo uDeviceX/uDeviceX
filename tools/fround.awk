@@ -1,6 +1,6 @@
 #!/usr/bin/awk -f
 #
-# Round numbers in a first column
+# Rounds numbers in input
 #
 # Usage:
 # awk '{print $2}' diag.txt | fround.awk
@@ -18,5 +18,11 @@ function hash(e,  h, ftm) {
 }
 
 {
-    print hash($1)
+    l = "" # output line
+    for (i = 1; i <= NF; i++) {
+	f = hash($i)
+	sep = (i == 1) ? "" : " "
+	l = l sep f 
+    }
+    print l
 }

@@ -5,7 +5,7 @@
 
 function init () {
     VERBOSE=1
-    EXIT_ON_FAIL=1
+    EXIT_ON_FAIL=0
 
     # where the reference data for the tests are stored
     REF_DIR="test_data"
