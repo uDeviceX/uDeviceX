@@ -147,9 +147,8 @@ namespace k_wall {
 
   __device__ void vell(float x, float y, float z,
 			    float *vxw, float *vyw, float *vzw) {
-    *vxw = gamma_dot * z; *vyw = 0; *vzw = 0; /* velocity of the wall;
-						 TODO: works only for
-						 one processor */
+    float z0 = glb::r0[2];
+    *vxw = gamma_dot * (z - z0); *vyw = 0; *vzw = 0; /* velocity of the wall; */
   }
 
   __device__ void bounce_vel(float   xw, float   yw, float   zw, /* wall */
