@@ -1,8 +1,5 @@
 namespace wall {
   int init(Particle *pp, int n) {
-    wall_cells = new CellLists(XS + 2 * XMARGIN_WALL,
-			       YS + 2 * YMARGIN_WALL,
-			       ZS + 2 * ZMARGIN_WALL);
     float *field = new float[XTEXTURESIZE * YTEXTURESIZE * ZTEXTURESIZE];
     FieldSampler sampler("sdf.dat");
     int L[3] = {XS, YS, ZS};
@@ -211,6 +208,9 @@ namespace wall {
 		  sizeof(Particle) * solid_remote.S,
 		  D2D));
 
+    wall_cells = new CellLists(XS + 2 * XMARGIN_WALL,
+			       YS + 2 * YMARGIN_WALL,
+			       ZS + 2 * ZMARGIN_WALL);
     if (solid_size > 0) wall_cells->build(solid, solid_size, 0);
 
     CC(cudaMalloc(&solid4, sizeof(float4) * solid_size));
