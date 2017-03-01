@@ -180,9 +180,9 @@ void diag(int it) {
 }
 
 static void update_and_bounce() {
-  Cont::upd_stg2_and_1(s_pp, s_ff, s_n, false, driving_force);
+  Cont::update(s_pp, s_ff, s_n, false, driving_force);
   if (rbcs)
-    Cont::upd_stg2_and_1(r_pp, r_ff, r_n, true, driving_force);
+    Cont::update(r_pp, r_ff, r_n, true, driving_force);
   if (wall_created) {
     wall::bounce(s_pp, s_n);
     if (rbcs) wall::bounce(r_pp, r_n);

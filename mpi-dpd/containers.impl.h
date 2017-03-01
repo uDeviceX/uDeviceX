@@ -1,5 +1,5 @@
 namespace ParticleKernels {
-    __global__ void upd_stg2_and_1(bool rbcflag, float2 * _pdata, float * _adata,
+    __global__ void update(bool rbcflag, float2 * _pdata, float * _adata,
 				   int nparticles, float _driving_force, float threshold) {
 	int warpid = threadIdx.x >> 5;
 	int base = 32 * (warpid + 4 * blockIdx.x);
@@ -152,10 +152,10 @@ namespace ParticleKernels {
 } /* end of ParticleKernels */
 
 namespace Cont {
-void  upd_stg2_and_1(Particle* pp, Force* ff, int n,
+void  update(Particle* pp, Force* ff, int n,
 		     bool rbcflag, float driving_force) {
   if (!n) return;
-  ParticleKernels::upd_stg2_and_1<<<(n + 127) / 128, 128, 0>>>
+  ParticleKernels::update<<<(n + 127) / 128, 128, 0>>>
     (rbcflag, (float2 *)pp, (float *)ff, n,
      driving_force, globalextent.y * 0.5 - origin.y);
 }
