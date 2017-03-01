@@ -179,7 +179,7 @@ int setup(Particle* pp, const char *path2ic, int nv, float* orig_xyzuvw) {
     while (true) {
       float tmp[19];
       Geom t;
-      int c, rcode, ctr = 0;
+      int c, ctr = 0;
       for(c = 0; c < 19; ++c)
 	if (fscanf(f, "%f", tmp + c) != 1) goto done;
       
