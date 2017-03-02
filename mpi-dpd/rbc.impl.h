@@ -14,11 +14,10 @@ void eat_until(FILE *f, std::string target) {
   }
 }
 
-std::vector<int> extract_neighbors(std::vector<int> adjVert,
-				   const int degreemax, const int v) {
+std::vector<int> extract_neighbors(std::vector<int> adjVert, int degreemax, int v) {
   std::vector<int> myneighbors;
   for (int c = 0; c < degreemax; ++c) {
-    const int val = adjVert[c + degreemax * v];
+    int val = adjVert[c + degreemax * v];
     if (val == -1) break;
 
     myneighbors.push_back(val);
@@ -27,7 +26,7 @@ std::vector<int> extract_neighbors(std::vector<int> adjVert,
   return myneighbors;
 }
 
-void setup_support(const int *data, const int *data2, const int nentries) {
+void setup_support(int *data, int *data2, int nentries) {
   texAdjVert.channelDesc = cudaCreateChannelDesc<int>();
   texAdjVert.filterMode = cudaFilterModePoint;
   texAdjVert.mipmapFilterMode = cudaFilterModePoint;
@@ -46,7 +45,7 @@ void setup_support(const int *data, const int *data2, const int nentries) {
 		     &texAdjVert.channelDesc, sizeof(int) * nentries));
 }
 
-  void setup(int* triplets, float* orig_xyzuvw, float* addfrc) {
+void setup(int* triplets, float* orig_xyzuvw, float* addfrc) {
   FILE *f = fopen("rbc.dat", "r");
   if (!f) {
     printf("Error in cuda-rbc: data file not found!\n");
@@ -59,8 +58,8 @@ void setup_support(const int *data, const int *data2, const int nentries) {
   while (!feof(f)) {
     Particle p = {0, 0, 0, 0, 0, 0};
     int dummy[3];
-    const int retval = fscanf(f, "%d %d %d %e %e %e\n", dummy + 0, dummy + 1,
-			      dummy + 2, p.r, p.r + 1, p.r + 2);
+    int retval = fscanf(f, "%d %d %d %e %e %e\n", dummy + 0, dummy + 1,
+			dummy + 2, p.r, p.r + 1, p.r + 2);
     float RBCscale = 1.0/rc;
     p.r[0] *= RBCscale; p.r[1] *= RBCscale; p.r[2] *= RBCscale;
     if (retval != 6) break;
@@ -74,7 +73,7 @@ void setup_support(const int *data, const int *data2, const int nentries) {
   while (!feof(f)) {
     int dummy[2];
     int3 tri;
-    const int retval = fscanf(f, "%d %d %d %d %d\n", dummy + 0, dummy + 1,
+    int retval = fscanf(f, "%d %d %d %d %d\n", dummy + 0, dummy + 1,
 			      &tri.x, &tri.y, &tri.z);
     if (retval != 5) break;
     triangles.push_back(tri);
@@ -97,7 +96,7 @@ void setup_support(const int *data, const int *data2, const int nentries) {
   std::vector<std::map<int, int> > adjacentPairs(RBCnv);
 
   for (int i = 0; i < triangles.size(); ++i) {
-    const int tri[3] = {triangles[i].x, triangles[i].y, triangles[i].z};
+    int tri[3] = {triangles[i].x, triangles[i].y, triangles[i].z};
     for (int d = 0; d < 3; ++d) {
       adjacentPairs[tri[d]][tri[(d + 1) % 3]] = tri[(d + 2) % 3];
     }
@@ -106,7 +105,7 @@ void setup_support(const int *data, const int *data2, const int nentries) {
   std::vector<int> maxldeg;
   for (int i = 0; i < RBCnv; ++i)
     maxldeg.push_back(adjacentPairs[i].size());
-  const int degreemax = *max_element(maxldeg.begin(), maxldeg.end());
+  int degreemax = *max_element(maxldeg.begin(), maxldeg.end());
   std::vector<int> adjVert(RBCnv * degreemax, -1);
   for (int v = 0; v < RBCnv; ++v) {
     std::map<int, int> l = adjacentPairs[v];
@@ -134,11 +133,11 @@ void setup_support(const int *data, const int *data2, const int nentries) {
 
       std::vector<int> result(s1.size() + s2.size());
 
-      const int nterms = set_intersection(s1.begin(), s1.end(), s2.begin(),
-					  s2.end(), result.begin()) -
-			 result.begin();
+      int nterms = set_intersection(s1.begin(), s1.end(), s2.begin(),
+				    s2.end(), result.begin()) -
+	result.begin();
 
-      const int myguy = result[0] == v;
+      int myguy = result[0] == v;
 
       adjVert2[i + degreemax * v] = result[myguy];
     }
@@ -155,7 +154,7 @@ void setup_support(const int *data, const int *data2, const int nentries) {
 
   float hAddfrc[RBCnv];
   memset(hAddfrc, 0, RBCnv * sizeof(float));
-  const int strVerts = 3; // 10
+  int strVerts = 3; // 10
   for (int i = 0; i < strVerts; i++) {
     hAddfrc[tmp[i].second] = -stretchingForce / strVerts;
     hAddfrc[tmp[RBCnv - 1 - i].second] = +stretchingForce / strVerts;
@@ -183,7 +182,7 @@ void setup_support(const int *data, const int *data2, const int nentries) {
 		H2D));
   delete[] trs4;
 
-  const int nentries = adjVert.size();
+  int nentries = adjVert.size();
 
   int *ptr, *ptr2;
   CC(cudaMalloc(&ptr, sizeof(int) * nentries));
@@ -216,10 +215,10 @@ void setup_support(const int *data, const int *data2, const int nentries) {
 }
 
 void initialize(float *device_xyzuvw,
-		const float *transform,
+		float *transform,
 		float *orig_xyzuvw) {
-  const int threads = 128;
-  const int blocks = (RBCnv + threads - 1) / threads;
+  int threads = 128;
+  int blocks = (RBCnv + threads - 1) / threads;
 
   CC(cudaMemcpyToSymbol(A, transform, 16 * sizeof(float)));
   CC(cudaMemcpy(device_xyzuvw, orig_xyzuvw,
