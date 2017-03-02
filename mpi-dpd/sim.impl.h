@@ -226,7 +226,7 @@ void init() {
   update_helper_arrays();
 
   if (rbcs) {
-    r_nc = Cont::setup(r_pp, "rbcs-ic.txt", r_nv, r_orig_xyzuvw);
+    r_nc = Cont::setup(r_pp, r_nv, "rbcs-ic.txt", r_orig_xyzuvw);
     r_n = r_nc * r_nv;
 #ifdef GWRP
     iotags_init_file("rbc.dat");

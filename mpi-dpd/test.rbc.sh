@@ -8,7 +8,7 @@
 # add crap from test_data/* to git
 
 #### RBC in a periodic box
-# sTEST: diag.t2
+# TEST: diag.t2
 # export PATH=../tools:$PATH
 # rm -rf ply h5 diag.txt
 # x=0.75 y=8 z=12
@@ -33,7 +33,7 @@
 # ply2punto ply/rbcs-00003.ply | fround.awk -v tol=1 > ply.out.txt
 
 #### RBC with wall
-# sTEST: diag.t3
+# TEST: diag.t3
 # export PATH=../tools:$PATH
 # cp sdf/wall1/wall.dat                               sdf.dat
 # x=0.75 y=8 z=12; echo 0 0 0  1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
@@ -46,7 +46,7 @@
 # ply2punto ply/rbcs-00003.ply | fround.awk -v tol=1 > ply.out.txt
 
 #### one RBC around cylinder
-# sTEST: flow.around.t1
+# TEST: flow.around.t1
 # export PATH=../tools:$PATH
 # rm -rf ply h5 diag.txt
 # cp sdf/cyl1/cyl.dat sdf.dat
@@ -59,7 +59,7 @@
 # ply2punto ply/rbcs-00001.ply | fround.awk -v tol=1 > ply.out.txt
 
 ### two RBCs around cylinder
-# sTEST: flow.around.t2
+# TEST: flow.around.t2
 # export PATH=../tools:$PATH
 # rm -rf ply h5 diag.txt
 # x=0.75  y=3 z=9; echo 0 0 0  1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
@@ -74,7 +74,7 @@
 # ply2punto ply/rbcs-00001.ply | fround.awk -v tol=0 > ply.out.txt
 
 ### two RBCs around cylinder with one RBC removed by the wall
-# sTEST: flow.around.t3
+# TEST: flow.around.t3
 # export PATH=../tools:$PATH
 # rm -rf ply h5 diag.txt
 # cp sdf/cyl1/cyl.dat sdf.dat

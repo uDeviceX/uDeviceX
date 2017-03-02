@@ -216,7 +216,7 @@ void setup_support(const int *data, const int *data2, const int nentries) {
 }
 
 void initialize(float *device_xyzuvw,
-		const float (*transform)[4],
+		const float *transform,
 		float *orig_xyzuvw) {
   const int threads = 128;
   const int blocks = (RBCnv + threads - 1) / threads;
