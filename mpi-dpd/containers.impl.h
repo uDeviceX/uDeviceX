@@ -173,12 +173,9 @@ std::vector<Geom> setup_read(const char *path2ic) {
   printf("READING FROM: <%s>\n", path2ic);
 
   while (true) {
-    float tmp[19];
     Geom t;
-    int c, i = 0;
-    for (c = 0; c < 19; ++c) if (fscanf(f, "%f", &tmp[c]) != 1) goto done;
-    for (c = 0; c <  3; ++c) t.com[c] = tmp[i++];
-    for (c = 0; c < 16; ++c) t.mat[c] = tmp[i++];
+    float *mat = t.mat;
+    for (int i = 0; i < 4*4; i++) if (fscanf(f, "%f", &mat[i]) != 1) goto done;
     tt.push_back(t);
   }
  done:
