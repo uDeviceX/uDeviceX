@@ -58,15 +58,14 @@ void setup(int* faces, float* orig_xyzuvw) {
     printf("(rbc.impl.h) nf = %d and RBCnt = %d\n", nf, RBCnt); exit(1);
   };
 
-  int ib;
   float *pp_h = new float[6 * RBCnv * sizeof(float)];
   for (int iv = 0; iv < RBCnv; iv ++) {
     float x, y, z;
     fscanf(f, "%e %e %e", &x, &y, &z);
     float RBCscale = 1.0/rc;
     x *= RBCscale; y *= RBCscale; z *= RBCscale;
-    ib = 6*iv; pp_h[ib++] = x; pp_h[ib++] = y; pp_h[ib++] = z;
-               pp_h[ib++] = 0; pp_h[ib++] = 0; pp_h[ib++] = 0;
+    int ib = 6*iv; pp_h[ib++] = x; pp_h[ib++] = y; pp_h[ib++] = z;
+		   pp_h[ib++] = 0; pp_h[ib++] = 0; pp_h[ib++] = 0;
   }
   CC(cudaMemcpy(orig_xyzuvw, pp_h, RBCnv * 6 * sizeof(float), H2D));
   delete[] pp_h;
@@ -77,23 +76,29 @@ void setup(int* faces, float* orig_xyzuvw) {
     fscanf(f, "%*d %d %d %d", &f0, &f1, &f2);
     ib = 3*ifa; faces[ib++] = f0; faces[ib++] = f1; faces[ib++] = f2;
     ib = 4*ifa; trs4 [ib++] = f0; trs4 [ib++] = f1; trs4 [ib++] = f2;
-                trs4 [ib++] =  0;
+		trs4 [ib++] =  0;
   }
   fclose(f);
+  float *devtrs4;
+  CC(cudaMalloc(&devtrs4,       RBCnt * 4 * sizeof(int)));
+  CC(cudaMemcpy( devtrs4, trs4, RBCnt * 4 * sizeof(int), H2D));
+  delete[] trs4;
 
   std::vector<std::map<int, int> > adjacentPairs(RBCnv);
   for (int ifa = 0; ifa < RBCnt; ifa++) {
     int ib = 3*ifa;
-    int tri[3] = {faces[ib++], faces[ib++], faces[ib++]};
-    for (int d = 0; d < 3; ++d) {
-      adjacentPairs[tri[d]][tri[(d + 1) % 3]] = tri[(d + 2) % 3];
-    }
+    int f0 = faces[ib++], f1 = faces[ib++], f2 = faces[ib++];
+    adjacentPairs[f0][f1] = f2;
+    adjacentPairs[f2][f0] = f1;
+    adjacentPairs[f1][f2] = f0;
   }
 
-  std::vector<int> maxldeg;
-  for (int i = 0; i < RBCnv; ++i)
-    maxldeg.push_back(adjacentPairs[i].size());
-  int degreemax = *max_element(maxldeg.begin(), maxldeg.end());
+  int degreemax = 0;
+  for (int i = 0; i < RBCnv; i++) {
+    int d = adjacentPairs[i].size();
+    if (d > degreemax) degreemax = d;
+  }
+
   std::vector<int> adjVert(RBCnv * degreemax, -1);
   for (int v = 0; v < RBCnv; ++v) {
     std::map<int, int> l = adjacentPairs[v];
@@ -131,11 +136,14 @@ void setup(int* faces, float* orig_xyzuvw) {
     }
   }
 
-  float *devtrs4;
-  CC(cudaMalloc(&devtrs4, RBCnt * 4 * sizeof(int)));
-  CC(cudaMemcpy(devtrs4, trs4, RBCnt * 4 * sizeof(int),
-		H2D));
-  delete[] trs4;
+  /*
+  for (int i = 0; i < adjVert.size(); i++) {
+    printf("f: %d %d\n", i, adjVert[i]);
+  }
+  for (int i = 0; i < adjVert2.size(); i++) {
+    printf("s: %d %d\n", i, adjVert2[i]);
+  }
+  exit(-1); */
 
   int nentries = adjVert.size();
 
@@ -165,7 +173,6 @@ void setup(int* faces, float* orig_xyzuvw) {
 		     &k_rbc::texTriangles4.channelDesc,
 		     RBCnt * 4 * sizeof(int)));
 
-
   CC(cudaFuncSetCacheConfig(k_rbc::fall_kernel<RBCnv>, cudaFuncCachePreferL1));
 }
 
@@ -186,7 +193,7 @@ void initialize(float *device_xyzuvw,
 void forces_nohost(int nc, float *device_xyzuvw,
 		   float *device_axayaz, float* host_av) {
   if (nc == 0) return;
-  
+
   size_t textureoffset;
   CC(cudaBindTexture(&textureoffset, &k_rbc::texVertices,
 		     (float2 *)device_xyzuvw,
