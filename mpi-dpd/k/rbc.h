@@ -219,11 +219,6 @@ __global__ void fall_kernel(int nc, float *__restrict__ av,
   }
 }
 
-__global__ void addKernel(float* axayaz, float* __restrict__ addfrc, int n) {
-  uint pid = threadIdx.x + blockIdx.x * blockDim.x;
-  if (pid < n) axayaz[3*pid + 0] += addfrc[pid];
-}
-
 __device__ __forceinline__ float3 tex2vec(int id) {
   float2 tmp0 = tex1Dfetch(texVertices, id + 0);
   float2 tmp1 = tex1Dfetch(texVertices, id + 1);

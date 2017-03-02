@@ -45,7 +45,7 @@ void setup_support(int *data, int *data2, int nentries) {
 		     &texAdjVert.channelDesc, sizeof(int) * nentries));
 }
 
-void setup(int* triplets, float* orig_xyzuvw, float* addfrc) {
+void setup(int* triplets, float* orig_xyzuvw) {
   FILE *f = fopen("rbc.dat", "r");
   if (!f) {
     printf("Error in cuda-rbc: data file not found!\n");
@@ -142,26 +142,7 @@ void setup(int* triplets, float* orig_xyzuvw, float* addfrc) {
       adjVert2[i + degreemax * v] = result[myguy];
     }
   }
-
-  // Find stretching points
-  float stretchingForce = 0;
-  std::vector<std::pair<float, int> > tmp(RBCnv);
-  for (int i = 0; i < RBCnv; i++) {
-    tmp[i].first = rv[i].r[0];
-    tmp[i].second = i;
-  }
-  sort(tmp.begin(), tmp.end());
-
-  float hAddfrc[RBCnv];
-  memset(hAddfrc, 0, RBCnv * sizeof(float));
-  int strVerts = 3; // 10
-  for (int i = 0; i < strVerts; i++) {
-    hAddfrc[tmp[i].second] = -stretchingForce / strVerts;
-    hAddfrc[tmp[RBCnv - 1 - i].second] = +stretchingForce / strVerts;
-  }
-
-  CC(cudaMemcpy(addfrc, hAddfrc, RBCnv * sizeof(float), H2D));
-
+  
   float *xyzuvw_host = new float[6 * RBCnv * sizeof(float)];
   for (int i = 0; i < RBCnv; i++) {
     xyzuvw_host[6 * i + 0] = rv[i].r[0];
@@ -229,7 +210,7 @@ void initialize(float *device_xyzuvw,
 }
 
 void forces_nohost(int nc, float *device_xyzuvw,
-		   float *device_axayaz, float* host_av, float* addfrc) {
+		   float *device_axayaz, float* host_av) {
   if (nc == 0) return;
   
   size_t textureoffset;
@@ -249,8 +230,6 @@ void forces_nohost(int nc, float *device_xyzuvw,
   int blocks = (nc * RBCnv * 7 + threads - 1) / threads;
 
   fall_kernel<RBCnv><<<blocks, threads, 0>>>(nc, host_av, device_axayaz);
-  addKernel<<<(RBCnv + 127) / 128, 128, 0>>>(device_axayaz, addfrc,
-					     RBCnv);
 }
 
 }
