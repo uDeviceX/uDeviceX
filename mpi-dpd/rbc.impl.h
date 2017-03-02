@@ -2,27 +2,13 @@ namespace rbc {
 
 #define MAX_CELLS_NUM 100000
 
-void eat_until(FILE *f, std::string target) {
-  while (!feof(f)) {
-    char buf[2048];
-    fgets(buf, 2048, f);
-
-    if (std::string(buf) == target) {
-      fgets(buf, 2048, f);
-      break;
-    }
-  }
-}
-
 std::vector<int> extract_neighbors(std::vector<int> adjVert, int degreemax, int v) {
   std::vector<int> myneighbors;
   for (int c = 0; c < degreemax; ++c) {
     int val = adjVert[c + degreemax * v];
     if (val == -1) break;
-
     myneighbors.push_back(val);
   }
-
   return myneighbors;
 }
 
@@ -33,7 +19,10 @@ void setup_support(int *data, int *data2, int nentries) {
   k_rbc::texAdjVert.normalized = 0;
 
   size_t textureoffset;
-  CC(cudaBindTexture(&textureoffset, &k_rbc::texAdjVert, data, &k_rbc::texAdjVert.channelDesc,
+  CC(cudaBindTexture(&textureoffset,
+		     &k_rbc::texAdjVert,
+		     data,
+		     &k_rbc::texAdjVert.channelDesc,
 		     sizeof(int) * nentries));
 
   k_rbc::texAdjVert2.channelDesc = cudaCreateChannelDesc<int>();
@@ -136,17 +125,7 @@ void setup(int* faces, float* orig_xyzuvw) {
     }
   }
 
-  /*
-  for (int i = 0; i < adjVert.size(); i++) {
-    printf("f: %d %d\n", i, adjVert[i]);
-  }
-  for (int i = 0; i < adjVert2.size(); i++) {
-    printf("s: %d %d\n", i, adjVert2[i]);
-  }
-  exit(-1); */
-
   int nentries = adjVert.size();
-
   int *ptr, *ptr2;
   CC(cudaMalloc(&ptr, sizeof(int) * nentries));
   CC(cudaMemcpy(ptr, &adjVert.front(), sizeof(int) * nentries,
@@ -173,7 +152,7 @@ void setup(int* faces, float* orig_xyzuvw) {
 		     &k_rbc::texTriangles4.channelDesc,
 		     RBCnt * 4 * sizeof(int)));
 
-  CC(cudaFuncSetCacheConfig(k_rbc::fall_kernel<RBCnv>, cudaFuncCachePreferL1));
+  CC(cudaFuncSetCacheConfig(k_rbc::fall_kernel, cudaFuncCachePreferL1));
 }
 
 void initialize(float *device_xyzuvw,
@@ -210,7 +189,7 @@ void forces_nohost(int nc, float *device_xyzuvw,
   int threads = 128;
   int blocks = (nc * RBCnv * 7 + threads - 1) / threads;
 
-  k_rbc::fall_kernel<RBCnv><<<blocks, threads, 0>>>(nc, host_av, device_axayaz);
+  k_rbc::fall_kernel<<<blocks, threads, 0>>>(nc, host_av, device_axayaz);
 }
 
 }

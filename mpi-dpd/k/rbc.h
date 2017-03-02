@@ -9,7 +9,7 @@ __constant__ float A[4][4];
   ((a).y*(b).z - (a).z*(b).y, \
    (a).z*(b).x - (a).x*(b).z, \
    (a).x*(b).y - (a).y*(b).x)
-  
+
 __device__ __forceinline__ float3 _fangle(float3 v1, float3 v2,
 					  float3 v3, float area,
 					  float volume) {
@@ -100,14 +100,13 @@ __device__ __forceinline__ float3 _fdihedral(float3 v1, float3 v2, float3 v3,
     return make_float3(0, 0, 0);
 }
 
-template <int nvertices>
 __device__ float3 _fangle_device(float2 tmp0, float2 tmp1,
 				 float *av) {
   int degreemax = 7;
   int pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
-  int lid = pid % nvertices;
-  int idrbc = pid / nvertices;
-  int offset = idrbc * nvertices * 3;
+  int lid = pid % RBCnv;
+  int idrbc = pid / RBCnv;
+  int offset = idrbc * RBCnv * 3;
   int neighid = (threadIdx.x + blockDim.x * blockIdx.x) % degreemax;
 
   float2 tmp2 = tex1Dfetch(texVertices, pid * 3 + 2);
@@ -117,8 +116,8 @@ __device__ float3 _fangle_device(float2 tmp0, float2 tmp1,
   int idv2 = tex1Dfetch(texAdjVert, neighid + degreemax * lid);
   bool valid = idv2 != -1;
 
-  int idv3 =
-      tex1Dfetch(texAdjVert, ((neighid + 1) % degreemax) + degreemax * lid);
+  int idv3 = tex1Dfetch(texAdjVert, ((neighid + 1) % degreemax) + degreemax * lid);
+
 
   if (idv3 == -1 && valid) idv3 = tex1Dfetch(texAdjVert, 0 + degreemax * lid);
 
@@ -140,12 +139,11 @@ __device__ float3 _fangle_device(float2 tmp0, float2 tmp1,
   return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
 }
 
-template <int nvertices>
 __device__ float3 _fdihedral_device(float2 tmp0, float2 tmp1) {
   int degreemax = 7;
   int pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
-  int lid = pid % nvertices;
-  int offset = (pid / nvertices) * nvertices * 3;
+  int lid = pid % RBCnv;
+  int offset = (pid / RBCnv) * RBCnv * 3;
   int neighid = (threadIdx.x + blockDim.x * blockIdx.x) % degreemax;
 
   float3 v0 = make_float3(tmp0.x, tmp0.y, tmp1.x);
@@ -198,18 +196,17 @@ __device__ float3 _fdihedral_device(float2 tmp0, float2 tmp1) {
   return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
 }
 
-template <int nvertices>
 __global__ void fall_kernel(int nc, float *__restrict__ av,
 			    float *acc) {
   int degreemax = 7;
   int pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
 
-  if (pid < nc * nvertices) {
+  if (pid < nc * RBCnv) {
     float2 tmp0 = tex1Dfetch(texVertices, pid * 3 + 0);
     float2 tmp1 = tex1Dfetch(texVertices, pid * 3 + 1);
 
-    float3 f = _fangle_device<nvertices>(tmp0, tmp1, av);
-    f += _fdihedral_device<nvertices>(tmp0, tmp1);
+    float3 f = _fangle_device(tmp0, tmp1, av);
+    f += _fdihedral_device(tmp0, tmp1);
 
     if (f.x > -1.0e9f) {
       atomicAdd(&acc[3 * pid + 0], f.x);
@@ -281,4 +278,4 @@ __global__ void transformKernel(float *xyzuvw, int n) {
   xyzuvw[6 * i + 2] = A[2][0] * x + A[2][1] * y + A[2][2] * z + A[2][3];
 }
 
-} /* namespace rbc */
+} /* namespace k_rbc */
