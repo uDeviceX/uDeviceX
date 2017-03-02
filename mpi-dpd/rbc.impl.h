@@ -45,7 +45,7 @@ void setup_support(int *data, int *data2, int nentries) {
 		     &k_rbc::texAdjVert.channelDesc, sizeof(int) * nentries));
 }
 
-void setup(int* triplets, float* orig_xyzuvw) {
+void setup(int* faces, float* orig_xyzuvw) {
   FILE *f = fopen("rbc.dat", "r");
   if (!f) {
     printf("Error in cuda-rbc: data file not found!\n");
@@ -81,9 +81,9 @@ void setup(int* triplets, float* orig_xyzuvw) {
   int *trs4 = new int[4 * triangles.size()];
   for (int i = 0; i < triangles.size(); i++) {
     int3 tri = triangles[i];
-    triplets[3 * i + 0] = tri.x;
-    triplets[3 * i + 1] = tri.y;
-    triplets[3 * i + 2] = tri.z;
+    faces[3 * i + 0] = tri.x;
+    faces[3 * i + 1] = tri.y;
+    faces[3 * i + 2] = tri.z;
 
     trs4[4 * i + 0] = tri.x;
     trs4[4 * i + 1] = tri.y;

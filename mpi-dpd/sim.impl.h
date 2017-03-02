@@ -164,7 +164,7 @@ void dump_rbcs() {
   if (!rbcs) return;
   static int id = 0;
   dev2hst();  /* TODO: do not need `s' */
-  Cont::rbc_dump(r_nc, &sr_pp[s_n], triplets, r_n, r_nv, r_nt, id++);
+  Cont::rbc_dump(r_nc, &sr_pp[s_n], r_faces, r_n, r_nv, r_nt, id++);
 }
 
 void dump_grid() {
@@ -193,7 +193,7 @@ void init() {
   CC(cudaMalloc(&r_orig_xyzuvw, RBCnv * 6 * sizeof(float)));
   CC(cudaMalloc(&r_host_av, MAX_CELLS_NUM));
   
-  rbc::setup(triplets, r_orig_xyzuvw);
+  rbc::setup(r_faces, r_orig_xyzuvw);
   rdstr::init();
   DPD::init();
   fsi::init();
