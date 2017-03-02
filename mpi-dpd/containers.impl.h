@@ -150,6 +150,15 @@ namespace ParticleKernels {
 	lastbit::Preserver up(p[pid].v[0]);
 	for(int c = 0; c < 3; ++c) p[pid].v[c] = 0;
     }
+
+    __global__ void ic_shear_velocity(Particle *p, int n)  {
+	int pid = threadIdx.x + blockDim.x * blockIdx.x;
+	if (pid >= n) return;
+	lastbit::Preserver up(p[pid].v[0]);
+    float z = p[pid].r[2] - glb::r0[2];
+    float vx = gamma_dot*z, vy = 0, vz = 0;
+    p[pid].v[0] = vx; p[pid].v[1] = vy; p[pid].v[2] = vz;
+    }
 } /* end of ParticleKernels */
 
 namespace Cont {
@@ -163,6 +172,11 @@ void  update(Particle* pp, Force* ff, int n,
 void clear_velocity(Particle* pp, int n) {
   if (n)
     ParticleKernels::clear_velocity<<<(n + 127) / 128, 128 >>>(pp, n);
+}
+
+void ic_shear_velocity(Particle* pp, int n) {
+  if (n)
+    ParticleKernels::ic_shear_velocity<<<(n + 127) / 128, 128 >>>(pp, n);
 }
 
 void _initialize(float *device_pp, float (*transform)[4], float* orig_xyzuvw) {
