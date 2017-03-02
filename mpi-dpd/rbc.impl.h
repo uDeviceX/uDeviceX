@@ -55,7 +55,7 @@ void setup(int* triplets, float* orig_xyzuvw) {
   eat_until(f, "Atoms\n");
 
   std::vector<Particle> rv;
-  while (!feof(f)) {
+  while (true) {
     Particle p = {0, 0, 0, 0, 0, 0};
     int dummy[3];
     int retval = fscanf(f, "%d %d %d %e %e %e\n", dummy + 0, dummy + 1,
@@ -67,10 +67,8 @@ void setup(int* triplets, float* orig_xyzuvw) {
   }
 
   eat_until(f, "Angles\n");
-
   std::vector<int3> triangles;
-
-  while (!feof(f)) {
+  while (true) {
     int dummy[2];
     int3 tri;
     int retval = fscanf(f, "%d %d %d %d %d\n", dummy + 0, dummy + 1,
