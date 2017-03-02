@@ -46,55 +46,45 @@ void setup_support(int *data, int *data2, int nentries) {
 }
 
 void setup(int* faces, float* orig_xyzuvw) {
-  FILE *f = fopen("rbc.dat", "r");
-  if (!f) {
-    printf("Error in cuda-rbc: data file not found!\n");
-    exit(1);
-  }
+  char buf[1024];
+  FILE *f = fopen("rbc.off", "r");
+  fgets(buf, sizeof buf, f); /* skip OFF */
+  int nv, ne, nf;
+  fscanf(f, "%d %d %d", &nv, &nf, &ne);
+  if (nv != RBCnv) {
+    printf("(rbc.impl.h) nv = %d and RBCnv = %d\n", nv, RBCnv); exit(1);
+  };
+  if (nf != RBCnt) {
+    printf("(rbc.impl.h) nf = %d and RBCnt = %d\n", nf, RBCnt); exit(1);
+  };
 
-  eat_until(f, "Atoms\n");
-
-  std::vector<Particle> rv;
-  while (true) {
-    Particle p = {0, 0, 0, 0, 0, 0};
-    int dummy[3];
-    int retval = fscanf(f, "%d %d %d %e %e %e\n", dummy + 0, dummy + 1,
-			dummy + 2, p.r, p.r + 1, p.r + 2);
+  int ib;
+  float *pp_h = new float[6 * RBCnv * sizeof(float)];
+  for (int iv = 0; iv < RBCnv; iv ++) {
+    float x, y, z;
+    fscanf(f, "%e %e %e", &x, &y, &z);
     float RBCscale = 1.0/rc;
-    p.r[0] *= RBCscale; p.r[1] *= RBCscale; p.r[2] *= RBCscale;
-    if (retval != 6) break;
-    rv.push_back(p);
+    x *= RBCscale; y *= RBCscale; z *= RBCscale;
+    ib = 6*iv; pp_h[ib++] = x; pp_h[ib++] = y; pp_h[ib++] = z;
+               pp_h[ib++] = 0; pp_h[ib++] = 0; pp_h[ib++] = 0;
   }
+  CC(cudaMemcpy(orig_xyzuvw, pp_h, RBCnv * 6 * sizeof(float), H2D));
+  delete[] pp_h;
 
-  eat_until(f, "Angles\n");
-  std::vector<int3> triangles;
-  while (true) {
-    int dummy[2];
-    int3 tri;
-    int retval = fscanf(f, "%d %d %d %d %d\n", dummy + 0, dummy + 1,
-			      &tri.x, &tri.y, &tri.z);
-    if (retval != 5) break;
-    triangles.push_back(tri);
+  int   *trs4 = new int  [4 * RBCnt];
+  for (int ifa = 0; ifa < RBCnt; ifa++) {
+    int f0, f1, f2, ib;
+    fscanf(f, "%*d %d %d %d", &f0, &f1, &f2);
+    ib = 3*ifa; faces[ib++] = f0; faces[ib++] = f1; faces[ib++] = f2;
+    ib = 4*ifa; trs4 [ib++] = f0; trs4 [ib++] = f1; trs4 [ib++] = f2;
+                trs4 [ib++] =  0;
   }
   fclose(f);
 
-  int *trs4 = new int[4 * triangles.size()];
-  for (int i = 0; i < triangles.size(); i++) {
-    int3 tri = triangles[i];
-    faces[3 * i + 0] = tri.x;
-    faces[3 * i + 1] = tri.y;
-    faces[3 * i + 2] = tri.z;
-
-    trs4[4 * i + 0] = tri.x;
-    trs4[4 * i + 1] = tri.y;
-    trs4[4 * i + 2] = tri.z;
-    trs4[4 * i + 3] = 0;
-  }
-
   std::vector<std::map<int, int> > adjacentPairs(RBCnv);
-
-  for (int i = 0; i < triangles.size(); ++i) {
-    int tri[3] = {triangles[i].x, triangles[i].y, triangles[i].z};
+  for (int ifa = 0; ifa < RBCnt; ifa++) {
+    int ib = 3*ifa;
+    int tri[3] = {faces[ib++], faces[ib++], faces[ib++]};
     for (int d = 0; d < 3; ++d) {
       adjacentPairs[tri[d]][tri[(d + 1) % 3]] = tri[(d + 2) % 3];
     }
@@ -140,20 +130,6 @@ void setup(int* faces, float* orig_xyzuvw) {
       adjVert2[i + degreemax * v] = result[myguy];
     }
   }
-  
-  float *xyzuvw_host = new float[6 * RBCnv * sizeof(float)];
-  for (int i = 0; i < RBCnv; i++) {
-    xyzuvw_host[6 * i + 0] = rv[i].r[0];
-    xyzuvw_host[6 * i + 1] = rv[i].r[1];
-    xyzuvw_host[6 * i + 2] = rv[i].r[2];
-    xyzuvw_host[6 * i + 3] = 0;
-    xyzuvw_host[6 * i + 4] = 0;
-    xyzuvw_host[6 * i + 5] = 0;
-  }
-
-  CC(cudaMemcpy(orig_xyzuvw, xyzuvw_host, RBCnv * 6 * sizeof(float), H2D));
-
-  delete[] xyzuvw_host;
 
   float *devtrs4;
   CC(cudaMalloc(&devtrs4, RBCnt * 4 * sizeof(int)));
