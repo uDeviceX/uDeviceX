@@ -232,7 +232,7 @@ void init() {
     iotags_init_file("rbc.dat");
     iotags_domain(0, 0, 0,
 		  XS, YS, ZS,
-		  periods[0], periods[1], periods[0]);
+		  m::periods[0], m::periods[1], m::periods[0]);
 #endif
   }
 

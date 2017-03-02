@@ -12,11 +12,10 @@ cudaMemcpy(sol_hst, sol_dev, szp*s_n, H2H);
 
 /* process RBCs */
 if (rbcs) {
-    int nrbc = Cont::pcount();
-    Particle *rbc_dev = r_pp->D, *rbc_hst = sol_hst + s_n;
+    Particle *rbc_dev = r_pp, *rbc_hst = sol_hst + s_n;
 
     /* copy from device */
-    cudaMemcpy(rbc_hst, rbc_dev, szp*nrbc, H2H);
+    cudaMemcpy(rbc_hst, rbc_dev, szp*r_n, H2H);
 
 #define SXX sol_hst[i].r[0]
 #define SYY sol_hst[i].r[1]
@@ -29,9 +28,9 @@ if (rbcs) {
 #define SUU sol_hst[i].v[0]
     int i;
     for (i = 0; i < s_n; i++) {sol_xx[i] = SXX; sol_yy[i] = SYY; sol_zz[i] = SZZ;}
-    for (i = 0; i < nrbc; i++) {rbc_xx[i] = RXX; rbc_yy[i] = RYY; rbc_zz[i] = RZZ;}
+    for (i = 0; i < r_n; i++) {rbc_xx[i] = RXX; rbc_yy[i] = RYY; rbc_zz[i] = RZZ;}
 
-    iotags_all(nrbc, rbc_xx, rbc_yy, rbc_zz,
+    iotags_all(r_n, rbc_xx, rbc_yy, rbc_zz,
                s_n, sol_xx, sol_yy, sol_zz,
                iotags);
 
@@ -51,7 +50,7 @@ if (rbcs) {
 	    in2out, out2in, cnt_in);
 
     /* copy to device */
-    cudaMemcpy(rbc_dev, rbc_hst, szp*nrbc, H2D);
+    cudaMemcpy(rbc_dev, rbc_hst, szp*r_n, H2D);
  } else {
   /* set the last bit to 0 for all particles */
   for (int i = 0; i < s_n; i++) lastbit::set(SUU, false);

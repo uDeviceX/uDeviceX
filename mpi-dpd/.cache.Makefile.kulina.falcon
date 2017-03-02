@@ -5,6 +5,7 @@
 
 h5part = 1
 h5 = 1
+gwrp = 1
 
 LINK = g++
 NVCC_DIR = /usr/local/cuda-8.0
