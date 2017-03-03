@@ -15,9 +15,9 @@ data ()  { # get Athena's data
     d=/scratch/snx3000/eceva/2_tcflow/tc2_192x32x192_Ht15_cons/uDevX_omega_0.05
     if test -f "$sol"; then return; fi
 
-    scp daint:"$d"/mpi-dpd/ply/rbcs-1000.ply .
-    scp daint:"$d"/mpi-dpd/dpd-data/"$sol" .
-    scp daint:"$d"/mpi-dpd/rbc-data/"$rbc" .
+    scp daint:"$d"/src/ply/rbcs-1000.ply .
+    scp daint:"$d"/src/dpd-data/"$sol" .
+    scp daint:"$d"/src/rbc-data/"$rbc" .
 }
 
 build () {

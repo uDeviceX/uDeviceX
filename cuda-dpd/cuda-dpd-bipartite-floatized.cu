@@ -1,7 +1,7 @@
 #include "dpd-rng.h"
 #include "../last-bit/last-bit.h"
 #include "hacks.h"
-#include "../mpi-dpd/dpd-forces.h"
+#include "../src/dpd-forces.h"
 
 struct BipartiteInfoDPD {
     int3 ncells;

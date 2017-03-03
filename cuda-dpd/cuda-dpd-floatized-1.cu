@@ -4,7 +4,7 @@
 #include "cell-lists.h"
 #include "cuda-dpd.h"
 #include "dpd-rng.h"
-#include "../mpi-dpd/dpd-forces.h"
+#include "../src/dpd-forces.h"
 #include "../last-bit/last-bit.h"
 
 struct InfoDPD {

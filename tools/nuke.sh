@@ -13,7 +13,7 @@ compile () { # compile uD silently
 	cd geom-wrapper
 	(. ~/.cgal.bashrc ; cmake . ) 1>/dev/null
 	make -j                       1>/dev/null
-	cd ../mpi-dpd
+	cd ../src
 	cp .cache.Makefile.lisergey.falcon .cache.Makefile
 	make -j                        >/dev/null 2>/dev/null
     )
