@@ -33,7 +33,8 @@ void setup_support(int *data, int *data2, int nentries) {
 
 void setup(int* faces, float* orig_xyzuvw) {
   char buf[1024];
-  FILE *f = fopen("rbc.off", "r");
+  const char* fn = "rbc.off";
+  FILE *f = fopen(fn, "r");
   fgets(buf, sizeof buf, f); /* skip OFF */
   int nv, ne, nf;
   fscanf(f, "%d %d %d", &nv, &nf, &ne);
