@@ -30,10 +30,10 @@ endif
 NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel)
 
 # I have some device code in OBJS. I have to link it separatly
-test:   $(OBJS) libcuda-dpd liblast-bit
+udx:   $(OBJS) libcuda-dpd liblast-bit
 	$(NVCC) $(NVCCFLAGS) $(OPT) -dlink \
 		-L../cuda-dpd -L../last-bit $(OBJS) $(LIBS) -o gpuCode.o
-	$(LINK)  $(LDFLAGS) gpuCode.o $(OBJS) $(LIBS) -o test
+	$(LINK)  $(LDFLAGS) gpuCode.o $(OBJS) $(LIBS) -o $@
 
 # a rule for the most of *.cu files
 %.o:              %.cu;              $(NVCC) $(NVCCFLAGS) $(OPT)     $< -c -o $@
@@ -53,9 +53,8 @@ libcuda-dpd:; make -C ../cuda-dpd \
 liblast-bit:; make -C ../last-bit \
 	NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
 
-clean   : cleanall
-cleanall:; rm -f test *.o
+clean:  ; rm -f udx *.o
 	make -C ../cuda-dpd clean
 	make -C ../last-bit clean
 
-.PHONY = clean cleanall libcuda-dpd liblast-bit
+.PHONY = clean libcuda-dpd liblast-bit
