@@ -28,6 +28,8 @@
 #include <thrust/sort.h>
 #include "glb.h"
 
+#include "off.impl.h"
+
 #include "k/scan.h"
 #include "k/common.h"
 
