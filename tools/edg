@@ -7,11 +7,11 @@
 #   set  args  1 1 1 -rbcs -hdf5field_dumps -tend=1 -steps_per_dump=200 -steps_per_hdf5dump=200 -hdf5part_dumps
 
 # Usage:
-# ../tools/edg ./test 1 1 1 -rbcs -hdf5field_dumps -tend=1  -steps_per_dump=200 -steps_per_hdf5dump=200 -hdf5part_dumps
+# ../tools/edg ./udx 1 1 1 -rbcs -hdf5field_dumps -tend=1  -steps_per_dump=200 -steps_per_hdf5dump=200 -hdf5part_dumps
 #   `C-x C-e' at the end of the command
 
 # TEST: edg.t1
-# ../tools/edg ./test 1 1 1 -rbcs \
+# ../tools/edg ./udx 1 1 1 -rbcs \
 #   -hdf5field_dumps -tend=1  -steps_per_dump=200 -steps_per_hdf5dump=200 -hdf5part_dumps | \
 #       awk '{gsub("[0-9]", "X"); print}' >  emacs.out.txt
 #

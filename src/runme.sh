@@ -16,9 +16,9 @@ module load cudatoolkit
 
 export HEX_COMM_FACTOR=2
 
-#srun --ntasks 1 --export ALL ./test 1 1 1 -rbcs -tend=10000 -steps_per_dump=1000 -shrate=1e-1 -RBCx0=0.4 -RBCp=5e-3 -RBCkb=40 -RBCka=4900 -RBCkd=100 -RBCkv=5000 -RBCgammaC=30 -RBCtotArea=124 -RBCtotVolume=90 -RBCfk=0
+#srun --ntasks 1 --export ALL ./udx 1 1 1 -rbcs -tend=10000 -steps_per_dump=1000 -shrate=1e-1 -RBCx0=0.4 -RBCp=5e-3 -RBCkb=40 -RBCka=4900 -RBCkd=100 -RBCkv=5000 -RBCgammaC=30 -RBCtotArea=124 -RBCtotVolume=90 -RBCfk=0
 
 rm -rf h5 ply
-srun --ntasks 1 --export ALL ./test 1 1 1
+srun --ntasks 1 --export ALL ./udx 1 1 1
 
 #=====END====

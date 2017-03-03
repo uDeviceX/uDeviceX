@@ -1,1 +1,1 @@
-(gud-gdb "/usr/local/cuda-X.X/bin/cuda-gdb --fullname /ssh:falcon:/home/lisergey/work/uD/kulina/hack.rbc_shear/tools/./test -x /tmp/edg.XXXXX.gdb")
+(gud-gdb "/usr/local/cuda-X.X/bin/cuda-gdb --fullname /ssh:falcon:/home/lisergey/work/uD/kulina/hack.rbc_shear/tools/./udx -x /tmp/edg.XXXXX.gdb")

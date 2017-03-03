@@ -11,7 +11,7 @@
 #        -pushtheflow -doublepoiseuille \
 #        -contactforces > .conf.h
 # make clean && make -j && make -C ../tools
-# ./test
+# ./udx
 # ply2punto ply/rbcs-00002.ply | fhash.awk -v tol=1 > ply.out.txt
 
 ### no contact force: two RBCs in double Poiseuille
@@ -25,5 +25,5 @@
 #        -pushtheflow -doublepoiseuille \
 #                      > .conf.h
 # make clean && make -j && make -C ../tools
-# ./test
+# ./udx
 # ply2punto ply/rbcs-00002.ply | fhash.awk -v tol=1 > ply.out.txt

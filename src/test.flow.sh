@@ -18,7 +18,7 @@
 #   -hdf5field_dumps -hdf5part_dumps \
 #   -steps_per_hdf5dump=4000 -pushtheflow > .conf.h
 # make clean && make -j && make -C ../tools
-# ./test
+# ./udx
 # avg_h52.m h5/flowfields-0001.h5 | fround.awk -v tol=1 > h5.out.txt
 
 ####
@@ -30,7 +30,7 @@
 #   -tend=1.0 -steps_per_dump=300 -walls -wall_creation_stepid=100 \
 #   -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=300 > .conf.h
 # make clean && make -j && make -C ../tools
-# ./test
+# ./udx
 # avg_h5.m h5/flowfields-0003.h5 | fround.awk -v tol=1 > h5.out.txt
 
 ####
@@ -42,7 +42,7 @@
 #   -tend=2.0 -steps_per_dump=300 -walls -wall_creation_stepid=100 \
 #   -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=300 -pushtheflow > .conf.h
 # make clean && make -j && make -C ../tools
-# ./test
+# ./udx
 # avg_h5.m h5/flowfields-0013.h5 | fround.awk -v tol=2 > h5.out.txt
 
 ####
@@ -54,7 +54,7 @@
 #   -tend=4.0 -steps_per_dump=300 -walls -wall_creation_stepid=100 \
 #   -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=300 -pushtheflow > .conf.h
 # make clean && make -j && make -C ../tools
-# ./test
+# ./udx
 # mid_h5.m h5/flowfields-0026.h5 | fhash.awk -v tol=2 > h5.out.txt
 
 

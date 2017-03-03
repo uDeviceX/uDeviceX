@@ -8,7 +8,7 @@
 #
 #   salloc --nodes=2 -C gpu bash
 #   module load cray-hdf5-parallel cray-mpich cudatoolkit
-#   srun ./test 1 1 2
+#   srun ./udx 1 1 2
 
 h5part = 1
 h5 = 1

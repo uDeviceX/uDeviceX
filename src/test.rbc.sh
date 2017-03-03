@@ -15,7 +15,7 @@
 # echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 # argp .conf.test.h -rbcs -tend=0.5 -steps_per_dump=300 > .conf.h
 # make clean && make -j && make -C ../tools
-# ./test
+# ./udx
 # ply2punto ply/rbcs-00003.ply | fround.awk -v tol=1 > ply.out.txt
 
 #### RBC initialy rotated
@@ -29,7 +29,7 @@
 #          0  0   0  1 > rbcs-ic.txt
 # argp .conf.test.h -rbcs -tend=0.5 -steps_per_dump=300 > .conf.h
 # make clean && make -j && make -C ../tools
-# ./test
+# ./udx
 # ply2punto ply/rbcs-00003.ply | fround.awk -v tol=1 > ply.out.txt
 
 #### RBC with wall
@@ -42,7 +42,7 @@
 #   -rbcs -tend=0.5 -steps_per_dump=300  -walls  -wall_creation_stepid=100 \
 #   -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=300 > .conf.h
 # make clean && make -j && make -C ../tools
-# ./test 
+# ./udx 
 # ply2punto ply/rbcs-00003.ply | fround.awk -v tol=1 > ply.out.txt
 
 #### one RBC around cylinder
@@ -55,7 +55,7 @@
 #    -rbcs -tend=3.0 -steps_per_dump=5000 -walls -wall_creation_stepid=1000 \
 #    -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=5000 -pushtheflow > .conf.h
 # make clean && make -j && make -C ../tools
-# ./test
+# ./udx
 # ply2punto ply/rbcs-00001.ply | fround.awk -v tol=1 > ply.out.txt
 
 ### two RBCs around cylinder
@@ -70,7 +70,7 @@
 #        -hdf5field_dumps -hdf5part_dumps  \
 #        -steps_per_hdf5dump=5000 -pushtheflow > .conf.h
 # make clean && make -j && make -C ../tools
-# ./test 
+# ./udx 
 # ply2punto ply/rbcs-00001.ply | fround.awk -v tol=0 > ply.out.txt
 
 ### two RBCs around cylinder with one RBC removed by the wall
@@ -85,5 +85,5 @@
 #     -hdf5field_dumps -hdf5part_dumps  \
 #     -steps_per_hdf5dump=5000 -pushtheflow > .conf.h
 # make clean && make -j && make -C ../tools
-# ./test
+# ./udx
 # ply2punto ply/rbcs-00001.ply | fround.awk -v tol=1 > ply.out.txt
