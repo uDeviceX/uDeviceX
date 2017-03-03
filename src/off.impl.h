@@ -26,4 +26,22 @@ namespace off {
     fclose(fd);
   }
 
+  /* return faces: xx[0] yy[1] zz[0]   xx[1] yy[1] ... */
+  void f2vert(const char *f, int* vert) {
+    char buf[1024];
+    FILE *fd = fopen(f, "r");
+    fgets(buf, sizeof buf, fd); /* skip OFF */
+
+    int nv;
+    fscanf(fd, "%d %*d %*d", &nv); /* skip `nf' and `ne' */
+    int iv = 0, ib = 0;
+    for (/*   */ ; iv < nv;  iv++) {
+      float x, y, z;
+      fscanf(fd, "%e %e %e", &x, &y, &z);
+      vert[ib++] = x; vert[ib++] = y; vert[ib++] = z;
+    }
+
+    fclose(fd);
+  }
+
 } /* namespace off */
