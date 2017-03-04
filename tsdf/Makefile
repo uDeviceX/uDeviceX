@@ -1,5 +1,4 @@
-CXX? = g++
-CXXFLAGS? = -O2 -g -Wall -Wextra
+CPPFLAGS = -O2 -g -Wall -Wextra
 
 all: sdf2volume sdf2volume2 sdf2vtk mergesdf
 
@@ -12,4 +11,4 @@ install_bin: ;  cp tsdf tsdf.awk sdf2volume sdf2volume2 sdf2vtk mergesdf    $(BI
 install_conf: ; mkdir -p $(CONF) && \
 	        cp processor.tmp.cpp                               $(CONF)
 
-clean: ; -rm sdf2volume sdf2volume sdf2vtk mergesdf
+clean: ; -rm sdf2volume sdf2vtk mergesdf
