@@ -2,7 +2,13 @@ extent     20 20 20
 N          30
 obj_margin 3.0
 
+# rotate the next object around the center
+# `xo', `yo', `zo' are replaced by the center of the next object
+#                  for block it is a center of a block
+# phix, phiy, phiz are angles of rotation around OX, OY, and OZ
+
+rot center xo yo zo angles 0.4 0.8 0
+
 # bounds of block in all directions (xlo xhi ylo yhi zlo zhi)
-rot center xo yo zo angles 90 45 0
 block xc x34   y14 y34   z14 z34
 

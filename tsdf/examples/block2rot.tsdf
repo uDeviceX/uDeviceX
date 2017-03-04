@@ -1,0 +1,12 @@
+extent     20 20 20
+N          30
+obj_margin 3.0
+
+# rotate the block around domain center
+rot center xc yc zc angles 0 0 0.8
+
+# normal goes from inside wall to outside
+# bounds of block in all directions (xlo xhi ylo yhi zlo zhi)
+# it void inside the block
+!block x14 x34 y14 y34 z14 z34
+

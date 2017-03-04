@@ -49,6 +49,10 @@
 #
 # TEST: tsdf16
 # tsdf examples/cylinder1rot.tsdf  sdf.dat sdf.out.vti
+#
+# TEST: tsdf17
+# tsdf examples/rot2.tsdf  sdf.dat sdf.out.vti
+
 
 function randint(n) { return int(rand()*n)+1 }
 
@@ -127,10 +131,10 @@ function add_rot(   e, m) {
     return m
 }
 
-function add_rc_plane(e, m) { # add block center of rotation
-    e[++m] = upd_def(xo, "xo", "xo = xc")
-    e[++m] = upd_def(yo, "yo", "yo = yc")
-    e[++m] = upd_def(zo, "zo", "zo = zc")
+function add_rc_plane(e, m) { # add plane center of rotation
+    e[++m] = "xo = " upd_def(xo, "xo", "xc")
+    e[++m] = "yo = " upd_def(yo, "yo", "yc")
+    e[++m] = "zo = " upd_def(zo, "zo", "zc")
     return m
 }
 function expr_plane(     nx, ny, nz, x0, y0, z0,     m, e) {
@@ -149,9 +153,9 @@ function expr_plane(     nx, ny, nz, x0, y0, z0,     m, e) {
 }
 
 function add_rc_cylinder(e, m) { # add block center of rotation
-    e[++m] = upd_def(xo, "xo", "xo = xp")
-    e[++m] = upd_def(yo, "yo", "yo = yp")
-    e[++m] = upd_def(zo, "zo", "zo = zp")
+    e[++m] = "xo = " upd_def(xo, "xo", "xp")
+    e[++m] = "yo = " upd_def(yo, "yo", "yp")
+    e[++m] = "zo = " upd_def(zo, "zo", "zp")
     return m
 }
 function expr_cylinder(     ) {
@@ -313,12 +317,12 @@ function upd_def(k, def, val) { # update if k == def
 }
 
 function add_rc_block(e, m) { # add block center of rotation
-    e[++m] = upd_def(xo, "xo",
-		     sprintf("xo = 0.5*((%s) + (%s))", xlo, xhi))
-    e[++m] = upd_def(yo, "yo",
-		     sprintf("yo = 0.5*((%s) + (%s))", ylo, yhi))
-    e[++m] = upd_def(zo, "zo",
-		     sprintf("zo = 0.5*((%s) + (%s))", zlo, zhi))
+    e[++m] = "xo = " upd_def(xo, "xo",
+			     sprintf("0.5*((%s) + (%s))", xlo, xhi))
+    e[++m] = "yo = " upd_def(yo, "yo",
+			     sprintf("0.5*((%s) + (%s))", ylo, yhi))
+    e[++m] = "zo = " upd_def(zo, "zo",
+			     sprintf("0.5*((%s) + (%s))", zlo, zhi))
     return m
 }
 function expr_block(     m, e) {

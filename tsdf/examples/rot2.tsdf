@@ -1,0 +1,14 @@
+extent     20 20 20
+N          30
+obj_margin 3.0
+
+# rotate the block around its center
+rot center xo yo zo angles 0 0 0.8
+
+# bounds of block in all directions (xlo xhi ylo yhi zlo zhi)
+# it void inside the block
+block x34 xhi y14 y34 z14 z34
+
+rot center xo yo zo angles 0 0 -0.8
+block x14 xc y14 y34 z14 z34
+
