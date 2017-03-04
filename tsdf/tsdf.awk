@@ -46,8 +46,9 @@ function randint(n) { return int(rand()*n)+1 }
 function init() {
     srand()
 
-    "us processor.tmp.cpp" | getline processor_file
-    "us sdf2vtk.cpp"       | getline SDF2VTK
+    HOME = ENVIRON["HOME"]
+    processor_file = HOME "/" ".udx/processor.tmp.cpp"
+    SDF2VTK        = HOME "/" ".udx/sdf2vtk.cpp"
 
     CXX="g++"
     CPPFLAGS="-O2 -g"

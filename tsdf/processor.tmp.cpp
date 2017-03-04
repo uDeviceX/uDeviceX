@@ -46,9 +46,9 @@ const float MINF = - std::numeric_limits<float>::max();
 using namespace std;
 
 //int   wrap(int i, int n) {return i == n - 1 ? 0 : i;}
-float i2x (int i)  {return i*xextent/NX;}
-float i2y (int i)  {return i*yextent/NY;}
-float i2z (int i)  {return i*zextent/NZ;}
+float i2x (int i)  {return xextent/(float)(NX-1)*i;}
+float i2y (int i)  {return yextent/(float)(NY-1)*i;}
+float i2z (int i)  {return zextent/(float)(NZ-1)*i;}
 
 float in_interval(float d, float dlo, float dhi) {
   return
