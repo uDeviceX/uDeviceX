@@ -1,0 +1,6 @@
+extent     32 56 28
+N          64 112 56
+obj_margin 3.0
+
+plane point xc yc 0.95*Lz normal 0 0 1
+|cylinder axis 0 0 1 point xc yc zc radius 10

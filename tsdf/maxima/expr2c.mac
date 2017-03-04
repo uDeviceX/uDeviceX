@@ -1,0 +1,21 @@
+/* convert maxima expression to c */
+
+load("opsubst");
+load("simplifying.lisp");
+nary("##");
+declare("##", nary);
+ns_exp(a):= apply('simpfuncall, ['exp, a]);
+expr2c_tpower(a, b):=
+if     numberp(b) and b<0 then 1/expr2c_tpower(a, -b)
+elseif a=%e then    ns_exp(b)
+elseif b=1/2 then sqrt(a)
+elseif b=1 then a
+elseif b=2 then a##a
+elseif b=3 then a##a##a
+else pow(a, b);
+expr2c_rpower(expr):=opsubst("^"=lambda([a, b], expr2c_tpower(a, b)), expr);
+expr2c(expr):=block([grind: true], ssubst("*", " ## ", string(expr2c_rpower(expr))));
+
+n2float(n) := if numberp(n) then float(n) else n;
+expr2float(e) := scanmap('n2float, e);
+

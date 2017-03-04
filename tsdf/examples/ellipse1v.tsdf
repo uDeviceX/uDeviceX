@@ -1,0 +1,18 @@
+extent     20 20 20
+N          50
+obj_margin 3.0
+
+# Volume of the wall
+# (%i1) a: Lx/4 $
+# (%i2) b: Lx/16 $
+# (%i3) S: %pi*a*b $
+# (%i4) Stot: Lx*Lx $
+# (%i5) Vtot: Lx^3 $
+# (%i6) V: S/Stot * Vtot, Lx=20, numer;
+# (%o6)                          392.6990816987241
+#
+# cat test_data/sdf2volume.ref.sdf2volume2.txt
+# 7622.4 377.6
+
+# area of an ellips: %pi*a*b = %pi * Lx/4 * Lx/16
+ellipse axis XY point xc yc  zc radius Lx/4.0 Lx/16.0 angle pi/20

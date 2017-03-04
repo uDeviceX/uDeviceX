@@ -1,0 +1,7 @@
+extent     20 20 20
+N          20
+obj_margin 2.0
+
+# normal goes from inside wall to outside
+sphere ceneter xc yc z14 radius Lx/4
+sphere ceneter xc yc z34 radius Lx/4

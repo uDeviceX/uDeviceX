@@ -1,0 +1,9 @@
+extent     32 56 56
+N          64 112 112
+obj_margin 3.0
+
+plane point xc yc 0.70*Lz normal 0 0 1
+
+# possible values for axis: XY, XZ, YZ
+# 1    2  3     4  5  6  7      8      9      10    11    12      13  14
+|egg axis XY point xc yc zc radius     8.50*1.1   12*1.1    angle 0   eggness 0.3

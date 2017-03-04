@@ -1,0 +1,7 @@
+# 2D cylinder
+extent     20 20 20
+N          15 15 1
+obj_margin 3.0
+
+# normal goes from inside wall to outside
+cylinder axis 0 0 1 point xc yc zc radius Lx/8.0

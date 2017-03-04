@@ -1,0 +1,8 @@
+extent     48 48 24
+N          96 96 48
+obj_margin 3.0
+
+cylinder axis 0 0 1 point xc yc zc radius Lx/5
+
+block   0.1*Lx 0.9*Lx     -0.1*Ly 0.1*Ly    -Lz 2*Lz
+block   0.1*Lx 0.9*Lx      0.9*Ly 1.1*Ly    -Lz 2*Lz

@@ -1,0 +1,11 @@
+extent     80 20 20
+N          80
+obj_margin 3.0
+
+# normal goes from inside wall to outside
+# bounds of block in all directions (xlo xhi ylo yhi zlo zhi)
+block x14 x34 ylo y14 zlo zhi
+block x14 x34 y34 yhi zlo zhi
+
+block xlo xhi ylo-Ly   0.05*ylo zlo zhi
+block xlo xhi 0.95*yhi yhi+Ly   zlo zhi

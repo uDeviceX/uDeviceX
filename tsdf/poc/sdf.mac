@@ -1,0 +1,13 @@
+display2d: false;
+
+eq1: x[c] = start[c] + (ix  + 1/2) * spacing[c] - 1/2;
+eq2: start[c] = coords[c] * L[c] / (dims[c] * L[c]) * sampler%N[c];
+eq3: spacing[c] = sampler%N[c] / (dims[c] * L[c]) ;
+eq4: amplitude_rescaling = L[c] / (sampler%extent[c] / dims[c]);
+eq5: anchor[c] = x[c];
+
+so: solve([eq1, eq2, eq3], [start[c], spacing[c], x[c]]);
+so: expand(so);
+
+sb: [sampler%N[c]=Nx, dims[c]=1, coords[c]=0, L[c]=Lx];
+expand(subst(sb, so));

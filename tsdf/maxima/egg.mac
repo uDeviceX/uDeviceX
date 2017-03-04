@@ -1,0 +1,29 @@
+/* generate an approximate SDF expression of ellipse */
+
+load("utils.mac");
+load("expr2c.mac");
+
+assume(rx>0, ry>0);
+
+r_fun: make_egg(rx, ry, eg);
+
+/* input: xc, yc, ang */
+R0: [x, y]  - [xp, yp];
+
+M: block([p: -ang],
+  matrix([cos(p), -sin(p)], [sin(p), cos(p)]));
+
+x0: (M.R0)[1, 1];
+y0: (M.R0)[2, 1];
+
+e: factor(edist(r_fun));
+
+grind: true;
+s2t(s):=printf(true, "    e[++m] = ~a~%", s);
+
+mfloat(e):=scanmap('float, e);
+
+with_stdout("egg.templ.awk", 
+  s2t('x0 = expr2c(x0)),
+  s2t('y0 = expr2c(y0)),
+  s2t(expr2c(mfloat(e))) );

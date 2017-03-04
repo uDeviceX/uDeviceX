@@ -1,0 +1,27 @@
+load("expr2c.mac");
+load ("scifac");
+vabs(r):= sqrt(lsum(e^2, e, r));
+
+/* vector --- axis of a cylinder (not normalized) */
+a  : [ax, ay, az];
+a0 : a / sqrt(a2);
+
+/* a point in space */
+r0 : [x, y, z];
+
+/* any point on the axis */
+p0:  [xp, yp, zp];
+
+dr : r0 - p0;
+
+/* projection on vector `a' */
+dr_proj  : (dr . a0) * a0;
+
+dr_perp:   dr - dr_proj;
+D      : vabs(dr_perp);
+
+expr2c('a2 = vabs(a)^2);
+
+/* a distance from the axis to point `r0' */
+expr2c('D = gcfac(D));
+

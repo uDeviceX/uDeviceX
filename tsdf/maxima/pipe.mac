@@ -1,0 +1,34 @@
+load("utils.mac");
+load("oc.mac");
+
+/* h_expr: H/vabs(P1-P0); */
+
+R0: ['x ,  'r, 0];
+R1: [ 'p,   0, 0];
+
+v1: vsq(R0 - R1);
+
+assume('rc>0);
+
+%level%: 100;
+
+I  : 2*integrate(exp(-v1/'rc^2),  'p,    p0,    p1);
+I0 : 2*integrate(exp(-v1/'rc^2),  'p, -inf, +inf);
+
+rc_val: rhs(solve(diff(I0, 'r, 2) = 0, rc)[2]);
+rc_val: subst('r = 'h, rc_val);
+
+A0   : %level%/subst(['r='h, 'rc=rc_val], ratexpand(I0));
+expr_v: subst(['rc=rc_val, 'r=sqrt('y^2+'z^2), 'h=h_expr], A0*ratexpand(I));
+
+dexpr: vabs([diff(expr_v, 'x), diff(expr_v, 'y), diff(expr_v, 'z)]);
+
+expr_r: %level% - expr_v;
+
+d: expr_r/dexpr;
+
+
+P0: [x0, y0, z0];
+P1: [x1, y1, z1];
+
+[F, B]: fullb(P0, P1);

@@ -1,0 +1,62 @@
+load("expr2c.mac");
+load ("scifac");
+
+/*
+
+YSIZE_SUBDOMAIN: subdomain size [length]
+dims[Y]        : number of subdomains
+coords[Y]      : index of current subdomain
+x[Y]           : coordinate relative to the center of the domain [length]
+y              : absolute coordinate [length]
+y0             : absolute coordinate of a subdomain center [length]
+
+yl, yh         : absolute coordinate of the domain ends
+*/
+
+Y : 1;
+eq: [Ly = YSIZE_SUBDOMAIN*dims[Y],
+     Ly = yh - yl,
+     (yl + yh)/2 = 0,                   /* assume the center of the domain is at `0' */
+     y0      = yl + 1/2*YSIZE_SUBDOMAIN + coords[Y]*YSIZE_SUBDOMAIN, /* assuming coords[Y]=0 is the first subdomain */
+     y       = y0 + x[Y],           /* global to relative */
+     y       = 0 ];                 /* trash-hold value in absolut coordinates */
+
+so: linsolve(eq, [Ly, y0, y, yl, yh, x[Y]]);
+/* trashhold value in relative coordinates */
+ans: assoc(x[Y], so);
+
+/* check the formula for 1, 2, and 3 subdomains */
+subst([dims[Y]=1, coords[Y]=0], ans);
+/*
+
+ |*****|
+    ^
+
+*/
+
+subst([dims[Y]=2, coords[Y]=0], ans);
+subst([dims[Y]=2, coords[Y]=1], ans);
+/*
+
+ |*****|*****|
+       ^
+
+*/
+
+subst([dims[Y]=3, coords[Y]=0], ans);
+subst([dims[Y]=3, coords[Y]=1], ans);
+subst([dims[Y]=3, coords[Y]=2], ans);
+/*
+
+ |*****|*****|*****|
+          ^
+
+*/
+
+/*  output the answer ... */
+gcfac(float(ans));
+grind(%);
+
+gcfac(expand(fullratsimp(ans - YSIZE_SUBDOMAIN*dims[Y]/2)));
+grind(%);
+

@@ -1,0 +1,19 @@
+load("expr2c.mac");
+vabs(r):= sqrt(lsum(e^2, e, r));
+
+/* normal vector (not normalized) */
+n  : [nx, ny, nz];
+n0 : n / n_abs;
+
+/* a point on the plane */
+p0: [x, y, z];
+
+/* a point in space */
+r0 : [x0, y0, z0];
+
+dr : r0 - p0;
+
+D  : dr . n0;
+
+expr2c('n_abs = vabs(n));
+expr2c(D);

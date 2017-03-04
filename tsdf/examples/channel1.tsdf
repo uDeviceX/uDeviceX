@@ -1,0 +1,9 @@
+extent     20 20 20
+N          30
+obj_margin 3.0
+
+# normal goes from inside wall to outside
+!cylinder axis 1 0 0 point xc yc zc radius Lx/8
+
+# "void wins" and we can dig a hole
+!|cylinder axis 0 1 0 point xc yc zc radius Lx/8

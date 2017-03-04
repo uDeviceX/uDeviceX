@@ -1,0 +1,32 @@
+A generator for SDF (signed distance function) files
+
+Usage:
+./tsdf.awk examples/sphere2.tsdf  sdf.dat sdf.vti
+
+# TEST: sdf2volume1
+# make
+# ur tsdf.awk examples/box1.tsdf box1.dat box1.vtk
+# ur sdf2volume box1.dat         > sdf2volume.out.txt
+# rm -rf box1.dat
+#
+# TEST: sdf2volume2
+# make
+# ur tsdf.awk examples/ellipse1v.tsdf ellipse1v.dat box1.vtk
+# ur sdf2volume ellipse1v.dat         > sdf2volume.out.txt
+# rm -rf ellipse1v.dat
+
+# TEST: mergesdf1
+# make
+# ur tsdf.awk examples/ywall_bottom.tsdf b.sdf
+# ur tsdf.awk examples/ywall_top.tsdf    t.sdf
+# ur mergesdf b.sdf t.sdf                o.sdf
+# ur sdf2vtk                             o.sdf  o.out.vti
+# rm b.sdf t.sdf o.sdf
+
+# TEST: mergesdf2
+# make
+# ur tsdf.awk examples/xwall_bottom.tsdf b.sdf
+# ur tsdf.awk examples/cylinder1.tsdf    t.sdf
+# ur mergesdf b.sdf t.sdf                o.sdf
+# ur sdf2vtk                             o.sdf  o.out.vti
+# rm b.sdf t.sdf o.sdf

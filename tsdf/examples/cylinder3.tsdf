@@ -1,0 +1,7 @@
+# cylinder partialy outside of the domain
+extent     20 20 20
+N          15 15 15
+obj_margin 3.0
+
+# normal goes from inside wall to outside
+cylinder axis 0 0 1 point Lx yc zc radius Lx/8

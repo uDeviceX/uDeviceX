@@ -1,0 +1,6 @@
+extent     20 20 20
+N          30
+obj_margin 3.0
+
+# possible values for axis: XY, XZ, YZ
+ellipse axis XY point xc yc  zc radius Lx/4.0 Lx/16.0 angle pi/20
