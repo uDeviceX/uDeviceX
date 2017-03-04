@@ -1,45 +1,45 @@
 #!/usr/bin/awk -f
 
 # tsdf - tiny sdf generator
-#   usage: ./tsdf.awk def_file sdf_file [vtk_file]
+#   usage: tsdf def_file sdf_file [vtk_file]
 # TEST: tsdf1
-# ./tsdf.awk examples/ywall1.tsdf sdf.dat sdf.out.vti
+# tsdf examples/ywall1.tsdf sdf.dat sdf.out.vti
 #
 # TEST: tsdf2
-# ./tsdf.awk examples/ywall2.tsdf sdf.dat sdf.out.vti
+# tsdf examples/ywall2.tsdf sdf.dat sdf.out.vti
 #
 # TEST: tsdf3
-# ./tsdf.awk examples/sphere1.tsdf sdf.dat sdf.out.vti
+# tsdf examples/sphere1.tsdf sdf.dat sdf.out.vti
 #
 # TEST: tsdf4
-# ./tsdf.awk examples/sphere2.tsdf sdf.dat sdf.out.vti
+# tsdf examples/sphere2.tsdf sdf.dat sdf.out.vti
 #
 # TEST: tsdf5
-# ./tsdf.awk examples/cylinder1.tsdf sdf.dat sdf.out.vti
+# tsdf examples/cylinder1.tsdf sdf.dat sdf.out.vti
 #
 # TEST: tsdf6
-# ./tsdf.awk examples/cylinder2.tsdf sdf.dat sdf.out.vti
+# tsdf examples/cylinder2.tsdf sdf.dat sdf.out.vti
 #
 # TEST: tsdf7
-# ./tsdf.awk examples/out_sphere1.tsdf sdf.dat sdf.out.vti
+# tsdf examples/out_sphere1.tsdf sdf.dat sdf.out.vti
 #
 # TEST: tsdf8
-# ./tsdf.awk examples/out_cylinder1.tsdf sdf.dat sdf.out.vti
+# tsdf examples/out_cylinder1.tsdf sdf.dat sdf.out.vti
 #
 # TEST: tsdf9
-# ./tsdf.awk examples/channel1.tsdf sdf.dat sdf.out.vti
+# tsdf examples/channel1.tsdf sdf.dat sdf.out.vti
 #
 # TEST: tsdf10
-# ./tsdf.awk examples/block1.tsdf sdf.dat sdf.out.vti
+# tsdf examples/block1.tsdf sdf.dat sdf.out.vti
 #
 # TEST: tsdf11
-# ./tsdf.awk examples/block2.tsdf sdf.dat sdf.out.vti
+# tsdf examples/block2.tsdf sdf.dat sdf.out.vti
 #
 # TEST: tsdf12
-# ./tsdf.awk examples/ellipse1.tsdf sdf.dat sdf.out.vti
+# tsdf examples/ellipse1.tsdf sdf.dat sdf.out.vti
 #
 # TEST: tsdf13
-# ./tsdf.awk examples/egg1.tsdf sdf.dat sdf.out.vti
+# tsdf examples/egg1.tsdf sdf.dat sdf.out.vti
 
 function randint(n) { return int(rand()*n)+1 }
 
@@ -48,7 +48,6 @@ function init() {
 
     HOME = ENVIRON["HOME"]
     processor_file = HOME "/" ".udx/processor.tmp.cpp"
-    SDF2VTK        = HOME "/" ".udx/sdf2vtk.cpp"
 
     CXX="g++"
     CPPFLAGS="-O2 -g"
@@ -78,7 +77,7 @@ function esage() {
 
 function usage () {
     printf "tsdf - tiny sdf generator\n"
-    printf "   usage: ./tsdf.awk def_file sdf_file [vtk_file]\n"
+    printf "   usage: tsdf def_file sdf_file [vtk_file]\n"
 }
 
 function gensp(i) {
@@ -334,8 +333,7 @@ function set_invert() {
 
 function set_void_or_wall() {
     VOID_WINS = (match($1, /\|/) == 1)
-    if (VOID_WINS)
-	sub(/\|/, "", $1)
+    if (VOID_WINS) sub(/\|/, "", $1)
 }
 
 {
@@ -391,7 +389,7 @@ function basename(s) {
 }
 
 function psystem(s) {
-    printf "(tsdf.awk) exec: %s\n", s > "/dev/stderr"
+    printf "(tsdf) exec: %s\n", s > "/dev/stderr"
     system(s)
 }
 
@@ -405,9 +403,7 @@ function compile_and_run(f, args,      exec_name, c, r) {
 }
 
 END {
-
-    if (EXIT_FAILURE)
-	exit
+    if (EXIT_FAILURE) exit
 
     processor_code = sprintf("%s/processor.cpp", TMPDIR)
     printf "%s\n", processor > processor_code
@@ -420,9 +416,7 @@ END {
     wsystem(run_cmd)
 
     if (vtk_file) {
-	compile_sdf2vtk = sprintf("%s %s %s -o %s/sdf2vtk", CXX, CPPFLAGS, SDF2VTK, TMPDIR)
-	wsystem(compile_sdf2vtk)
-	sdf2vtk_cmd     = sprintf("%s/sdf2vtk %s %s", TMPDIR, sdf_file, vtk_file)
+	sdf2vtk_cmd     = sprintf("sdf2vtk %s %s", sdf_file, vtk_file)
 	wsystem(sdf2vtk_cmd)
     }
 }
