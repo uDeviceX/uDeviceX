@@ -115,6 +115,7 @@ function format_line(expr, tab, ans, update_fun) {
 function expr_plane(     nx, ny, nz, x0, y0, z0,     m, e) {
     x0=$3; y0=$4; z0=$5
     nx=$7;  ny=$8;  nz=$9
+    e[++m] =         "x  = xorg, y = yorg, z = zorg"
     e[++m] = sprintf("nx = %s, ny = %s, nz = %s", nx, ny, nz)
     e[++m] = sprintf("x0 = %s, y0 = %s, z0 = %s", x0, y0, z0)     
     e[++m] = "n_abs = sqrt(nz*nz+ny*ny+nx*nx)"
@@ -126,6 +127,7 @@ function expr_cylinder(     nx, ny, nz, xp, yp, zp, R,     m, e) {
     ax=$3;  ay=$4;  az=$5
     xp=$7;  yp=$8;  zp=$9
     R = $11
+    e[++m] =         "x  = xorg, y = yorg, z = zorg"
     e[++m] = sprintf("ax = %s, ay = %s, az = %s", ax, ay, az)
     e[++m] = sprintf("xp = %s, yp = %s, zp = %s", xp, yp, zp)    
     e[++m] = "a2 = az*az+ay*ay+ax*ax"
@@ -144,6 +146,7 @@ function expr_ellipse(     ax, xp, yp, zp, rx, ry, ang) {
     xp=$5;  yp=$6;  zp=$7
     rx = $9; ry = $10
     ang = $12
+    e[++m] =         "x  = xorg, y = yorg, z = zorg"
     e[++m] = sprintf("xp = %s, yp = %s, zp = %s", xp, yp, zp)
     e[++m] = sprintf("rx = %s, ry = %s", rx, ry)
     e[++m] = sprintf("ang = %s", ang)
@@ -183,6 +186,7 @@ function expr_egg(     ax, xp, yp, zp, rx, ry, ang, eg) {
     rx = $9; ry = $10
     ang = $12
     eg  = $14
+    e[++m] =         "x  = xorg, y = yorg, z = zorg"        
     e[++m] = sprintf("xp = %s, yp = %s, zp = %s", xp, yp, zp)
     e[++m] = sprintf("rx = %s, ry = %s", rx, ry)
     e[++m] = sprintf("ang = %s", ang)
@@ -253,7 +257,9 @@ function expr_egg(     ax, xp, yp, zp, rx, ry, ang, eg) {
 
 function expr_sphere(m, xc, yc, zc, R, e) {
     xc = $3; yc=$4; zc=$5; R=$7
-    e[++m] = sprintf("r2 = (x-%s)*(x-%s) + (y-%s)*(y-%s) + (z-%s)*(z-%s)", xc, xc, yc, yc, zc, zc)
+    e[++m] =         "x  = xorg, y = yorg, z = zorg"    
+    e[++m] = sprintf("r2 = (x-%s)*(x-%s) + (y-%s)*(y-%s) + (z-%s)*(z-%s)",
+		     xc, xc, yc, yc, zc, zc)
     e[++m] = sprintf("r0 = sqrt(r2)")
     e[++m] = sprintf("%s - r0", R)
     return format_expr(e)    
@@ -264,6 +270,7 @@ function expr_block(     xlo, xhi, ylo, yhi, zlo, zhi,     m, e) {
     xlo = $2; xhi=$3
     ylo = $4; yhi=$5
     zlo = $6; zhi=$7
+    e[++m] =         "x  = xorg, y = yorg, z = zorg"
     e[++m] = sprintf("dX2 = sq(de(x, %s, %s)) + sq(di(y, %s, %s)) + sq(di(z, %s, %s))", \
 		     xlo, xhi, ylo, yhi, zlo, zhi)
     e[++m] = sprintf("dY2 = sq(di(x, %s, %s)) + sq(de(y, %s, %s)) + sq(di(z, %s, %s))", \

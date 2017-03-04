@@ -158,13 +158,16 @@ int main(int /*argc */, char **argv) {
   float D, rx, ry, ang;
   float eg;
 
+  float xorg, yorg, zorg, s;
+
   for (int i = 0; i < NX; i++) {
-    float x = i2x(i);
+    xorg = i2x(i);
     for (int j = 0; j < NY; j++) {
-      float y = i2y(j);
+      yorg = i2y(j);
       for (int k = 0; k < NZ; k++) {
-	float z = i2z(k);
-	float s = MINF; // assume we are very far from the walls (sdf = -inf)
+	zorg = i2z(k);
+	s = MINF; // assume we are very far from the walls (sdf =
+		  // -inf)
 	//%update_sdf%
 
 	s = in_range(s);
