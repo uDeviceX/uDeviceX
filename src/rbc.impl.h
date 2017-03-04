@@ -32,40 +32,28 @@ void setup_support(int *data, int *data2, int nentries) {
 }
 
 void setup(int* faces, float* orig_xyzuvw) {
-  char buf[1024];
   const char* fn = "rbc.off";
-  FILE *f = fopen(fn, "r");
-  fgets(buf, sizeof buf, f); /* skip OFF */
-  int nv, ne, nf;
-  fscanf(f, "%d %d %d", &nv, &nf, &ne);
-  if (nv != RBCnv) {
-    printf("(rbc.impl.h) nv = %d and RBCnv = %d\n", nv, RBCnv); exit(1);
-  };
-  if (nf != RBCnt) {
-    printf("(rbc.impl.h) nf = %d and RBCnt = %d\n", nf, RBCnt); exit(1);
-  };
 
-  float *pp_h = new float[6 * RBCnv * sizeof(float)];
-  for (int iv = 0; iv < RBCnv; iv ++) {
-    float x, y, z;
-    fscanf(f, "%e %e %e", &x, &y, &z);
+  float vert[3 * RBCnv];
+  off::f2vert(fn, vert);
+  float *pp_h = new float[6 * RBCnv];
+  for (int iv = 0, i0 = 0, i1 = 0; iv < RBCnv; iv ++) {
     float RBCscale = 1.0/rc;
+    float x = vert[i0++], y = vert[i0++], z = vert[i0++];
     x *= RBCscale; y *= RBCscale; z *= RBCscale;
-    int ib = 6*iv; pp_h[ib++] = x; pp_h[ib++] = y; pp_h[ib++] = z;
-		   pp_h[ib++] = 0; pp_h[ib++] = 0; pp_h[ib++] = 0;
+    pp_h[i1++] = x; pp_h[i1++] = y; pp_h[i1++] = z;
+    pp_h[i1++] = 0; pp_h[i1++] = 0; pp_h[i1++] = 0;
   }
   CC(cudaMemcpy(orig_xyzuvw, pp_h, RBCnv * 6 * sizeof(float), H2D));
   delete[] pp_h;
 
+  off::f2faces(fn, faces);
   int   *trs4 = new int  [4 * RBCnt];
-  for (int ifa = 0; ifa < RBCnt; ifa++) {
-    int f0, f1, f2, ib;
-    fscanf(f, "%*d %d %d %d", &f0, &f1, &f2);
-    ib = 3*ifa; faces[ib++] = f0; faces[ib++] = f1; faces[ib++] = f2;
-    ib = 4*ifa; trs4 [ib++] = f0; trs4 [ib++] = f1; trs4 [ib++] = f2;
-		trs4 [ib++] =  0;
+  for (int ifa = 0, i0 = 0, i1 = 0; ifa < RBCnt; ifa++) {
+    trs4 [i0++] = faces[i1++]; trs4[i0++] = faces[i1++]; trs4[i0++] = faces[i1++];
+    trs4 [i0++] = 0;
   }
-  fclose(f);
+
   float *devtrs4;
   CC(cudaMalloc(&devtrs4,       RBCnt * 4 * sizeof(int)));
   CC(cudaMemcpy( devtrs4, trs4, RBCnt * 4 * sizeof(int), H2D));
