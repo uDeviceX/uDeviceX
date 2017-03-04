@@ -5,7 +5,7 @@ namespace off {
 
   */
 
-  /* return faces: f0[0] f1[1] f2[0]   f0[1] f1[1] ... */
+  /* return faces: f0[0] f1[0] f2[0]   f0[1] f1[1] ... */
   void f2faces(const char *f, int* faces) {
     char buf[1024];
     FILE *fd = fopen(f, "r");
@@ -13,21 +13,19 @@ namespace off {
 
     int nv, nf;
     fscanf(fd, "%d %d %*d", &nv, &nf); /* skip `ne' and all vertices */
-    for (int iv = 0; iv < nv;  iv++) fgets(buf, sizeof buf, fd);
+    for (int iv = 0; iv < nv;  iv++) fscanf(fd, "%*e %*e %*e");
 
     int ifa = 0, ib = 0;
     for (/*   */ ; ifa < nf; ifa++) {
       int f0, f1, f2;
       fscanf(fd, "%*d %d %d %d", &f0, &f1, &f2);
-      faces[ib++] = f0;
-      faces[ib++] = f1;
-      faces[ib++] = f2;
+      faces[ib++] = f0; faces[ib++] = f1; faces[ib++] = f2;
     }
     fclose(fd);
   }
 
-  /* return faces: xx[0] yy[1] zz[0]   xx[1] yy[1] ... */
-  void f2vert(const char *f, int* vert) {
+  /* return vertices */
+  void f2vert(const char *f, float* vert) {
     char buf[1024];
     FILE *fd = fopen(f, "r");
     fgets(buf, sizeof buf, fd); /* skip OFF */
