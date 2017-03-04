@@ -13,7 +13,6 @@ namespace sim {
   ushort4 *s_zip1;
 
   Particle *s_pp0; /* Solvent (temporal buffer) */
-  Force    *s_ff0;
 
   CellLists* cells;
 

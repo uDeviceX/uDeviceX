@@ -12,6 +12,7 @@
 /* global variables visible for every kernel */
 namespace glb {
   __constant__ float r0[ndim];
+  __constant__ float lg[ndim];
 
   void sim() {
     /* all coordinates are relative to the center of the sub-domain;
@@ -29,6 +30,12 @@ namespace glb {
     r0_h[Y] = YS*(m::dims[Y]-2*m::coords[Y]-1)/2;
     r0_h[Z] = ZS*(m::dims[Z]-2*m::coords[Z]-1)/2;
     cudaMemcpyToSymbol(r0, r0_h, ndim*sizeof(float));
+
+    float lg_h[3]; /* domain size */
+	lg_h[X] = m::dims[X] * XS;
+	lg_h[Y] = m::dims[Y] * YS;
+	lg_h[Z] = m::dims[Z] * ZS;
+    cudaMemcpyToSymbol(lg, lg_h, ndim*sizeof(float));
   }
 }
 #undef X

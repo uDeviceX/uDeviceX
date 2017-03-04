@@ -22,19 +22,20 @@ static std::vector<Particle> ic_pos() { /* generate particle position */
   return pp;
 }
 
-static void redistribute() {
+static void distr_s() {
   sdstr::pack(s_pp, s_n);
-  if (rbcs) rdstr::extent(r_pp, r_nc, r_nv);
   sdstr::send();
-  if (rbcs) rdstr::pack_sendcnt(r_pp, r_nc, r_nv);
   sdstr::bulk(s_n, cells->start, cells->count);
   s_n = sdstr::recv_count();
-  if (rbcs) {
-    r_nc = rdstr::post(r_nv); r_n = r_nc * r_nv;
-  }
   sdstr::recv_unpack(s_pp0, s_zip0, s_zip1, s_n, cells->start, cells->count);
-  std::swap(s_pp, s_pp0); std::swap(s_ff, s_ff0);
-  if (rbcs) rdstr::unpack(r_pp, r_nc, r_nv);
+  std::swap(s_pp, s_pp0);
+}
+
+static void distr_r() {
+  rdstr::extent(r_pp, r_nc, r_nv);
+  rdstr::pack_sendcnt(r_pp, r_nc, r_nv);
+  r_nc = rdstr::post(r_nv); r_n = r_nc * r_nv;
+  rdstr::unpack(r_pp, r_nc, r_nv);
 }
 
 void remove_bodies_from_wall() {
@@ -212,7 +213,7 @@ void init() {
   wall::trunk = new Logistic::KISS;
   sdstr::init();
   mpDeviceMalloc(&s_pp); mpDeviceMalloc(&s_pp0);
-  mpDeviceMalloc(&s_ff); mpDeviceMalloc(&s_ff0);
+  mpDeviceMalloc(&s_ff);
   mpDeviceMalloc(&r_ff); mpDeviceMalloc(&r_ff);
 
 
@@ -257,7 +258,8 @@ void run() {
       Cont::clear_velocity(r_pp, r_n);
       if (pushtheflow) driving_force = hydrostatic_a;
     }
-    redistribute();
+    distr_s();
+    if (rbcs) distr_r();
     forces();
     dumps_diags(it);
     update();
@@ -286,6 +288,6 @@ void close() {
   delete wall::trunk;
   CC(cudaFree(r_pp )); CC(cudaFree(r_ff ));
   CC(cudaFree(s_pp )); CC(cudaFree(s_ff ));
-  CC(cudaFree(s_pp0)); CC(cudaFree(s_ff0));
+  CC(cudaFree(s_pp0));
 }
 }
