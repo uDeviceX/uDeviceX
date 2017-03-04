@@ -321,46 +321,14 @@ function expr2code(expr) {
 
 # decide if we should invert the object
 function set_invert() {
-    INVERT = (match($1, /!/) == 1)
-    if (INVERT)
-	sub(/!/, "", $1)
+    INVERT = match($1, /^[\t ]*!/)
+    if (INVERT) sub(/^[\t ]*!/, "", $1)
 }
 
-{
-    set_invert()
-}
 
 function set_void_or_wall() {
-    VOID_WINS = (match($1, /\|/) == 1)
-    if (VOID_WINS) sub(/\|/, "", $1)
-}
-
-{
-    set_void_or_wall()
-}
-
-$1 == "plane" {
-    expr2code(expr_plane())
-}
-
-$1 == "sphere" {
-    expr2code(expr_sphere())
-}
-
-$1 == "cylinder" {
-    expr2code(expr_cylinder())
-}
-
-$1 == "block" {
-    expr2code(expr_block())
-}
-
-$1 == "ellipse" {
-    expr2code(expr_ellipse())
-}
-
-$1 == "egg" {
-    expr2code(expr_egg())
+    VOID_WINS = match($1, /^[\t ]*\|/)
+    if (VOID_WINS) sub(/^[\t ]*\|/, "", $1)
 }
 
 BEGIN {
@@ -419,3 +387,37 @@ END {
 	wsystem(sdf2vtk_cmd)
     }
 }
+
+########### process config file ###########
+{
+    set_invert()
+}
+
+{
+    set_void_or_wall()
+}
+
+$1 == "plane" {
+    expr2code(expr_plane())
+}
+
+$1 == "sphere" {
+    expr2code(expr_sphere())
+}
+
+$1 == "cylinder" {
+    expr2code(expr_cylinder())
+}
+
+$1 == "block" {
+    expr2code(expr_block())
+}
+
+$1 == "ellipse" {
+    expr2code(expr_ellipse())
+}
+
+$1 == "egg" {
+    expr2code(expr_egg())
+}
+
