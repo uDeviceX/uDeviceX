@@ -2,7 +2,6 @@
 #include <cstdlib>
 #include <cmath>
 #include <limits>
-#include <assert.h>
 
 const int NX = %NX%;
 const int NY = %NY%;
@@ -44,6 +43,40 @@ const float OBJ_MARGIN = %OBJ_MARGIN%;
 const float MINF = - std::numeric_limits<float>::max();
 
 using namespace std;
+
+/* local variables */
+float sdf[NZ][NY][NX];
+float x, y, z;
+float h, r0, r2, R2, xp, yp, zp;
+float nx, ny, nz, n_abs;
+float ax, ay, az, a2;
+float dX2, dY2, dZ2, dR2, dR;
+float D, rx, ry, ang;
+float eg;
+float xo, yo, zo; /* center of rotation */
+
+float xorg, yorg, zorg, s;
+
+void rotX(float* x, float* y, float al) {
+  float x0 = *x, y0 = *y;
+  *x = x0*cos(al) - y0*sin(al);
+  *y = x0*sin(al) + y0*cos(al);
+}
+
+void rot0(float xo, float yo, float zo, float phix, float phiy, float phiz) {
+  x += xo; y += yo; z += yo;
+
+  rotX(&x, &y, phiz);
+  rotX(&x, &z, phiy);
+  rotX(&y, &z, phix);
+
+  x -= xo; y -= yo; z -= yo;
+}
+
+void rot(float phix, float phiy, float phiz) {
+  /* update `x', `y', `z' */
+  rot0(-xo, -yo, -zo, -phix, -phiy, -phiz);
+}
 
 //int   wrap(int i, int n) {return i == n - 1 ? 0 : i;}
 float i2x (int i)  {return xextent/(float)(NX-1)*i;}
@@ -141,30 +174,18 @@ float void_wins(float so, float sn) {
   return so < sn ? sn : so;
 }
 
-float sdf[NZ][NY][NX];
-
 int main(int /*argc */, char **argv) {
   
   FILE * f = fopen(argv[1], "w");
-  assert(f != 0);
   fprintf(f, "%f %f %f\n", xextent, yextent, zextent);
   fprintf(f, "%d %d %d\n", NX, NY, NZ);
-
-  float x, y, z;
-  float h, r0, r2, R2, x0, y0, z0, xp, yp, zp;
-  float nx, ny, nz, n_abs;
-  float ax, ay, az, a2;
-  float dX2, dY2, dZ2, dR2, dR;
-  float D, rx, ry, ang;
-  float eg;
-
-  float xorg, yorg, zorg, s;
 
   for (int i = 0; i < NX; i++) {
     xorg = i2x(i);
     for (int j = 0; j < NY; j++) {
       yorg = i2y(j);
       for (int k = 0; k < NZ; k++) {
+	float x0, y0, z0;
 	zorg = i2z(k);
 	s = MINF; // assume we are very far from the walls (sdf =
 		  // -inf)

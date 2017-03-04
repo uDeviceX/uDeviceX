@@ -1,0 +1,7 @@
+extent     20 20 20
+N          15
+obj_margin 3.0
+
+# normal goes from inside wall to outside
+rot center xo yo zo angles 0.5 0.5 0.5
+plane point 0.2*Lx yc zc normal 1 0 0

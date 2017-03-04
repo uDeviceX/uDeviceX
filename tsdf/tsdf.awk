@@ -40,6 +40,15 @@
 #
 # TEST: tsdf13
 # tsdf examples/egg1.tsdf sdf.dat sdf.out.vti
+#
+# TEST: tsdf14
+# tsdf examples/block1rot.tsdf sdf.dat sdf.out.vti
+#
+# TEST: tsdf15
+# tsdf examples/egg1rot.tsdf   sdf.dat sdf.out.vti
+#
+# TEST: tsdf16
+# tsdf examples/cylinder1rot.tsdf  sdf.dat sdf.out.vti
 
 function randint(n) { return int(rand()*n)+1 }
 
@@ -61,6 +70,7 @@ function init() {
     ARGV[3] = ""
 
     TD  = ENVIRON["TD"]
+
 }
 
 function wsystem(cmd) {
@@ -112,10 +122,25 @@ function format_line(expr, tab, ans, update_fun) {
     return tab ans
 }
 
+function add_rot(   e, m) {
+    e[++m] = sprintf("rot(%s, %s, %s)", phix, phiy, phiz)
+    return m
+}
+
+function add_rc_plane(e, m) { # add block center of rotation
+    e[++m] = upd_def(xo, "xo", "xo = xc")
+    e[++m] = upd_def(yo, "yo", "yo = yc")
+    e[++m] = upd_def(zo, "zo", "zo = zc")
+    return m
+}
 function expr_plane(     nx, ny, nz, x0, y0, z0,     m, e) {
     x0=$3; y0=$4; z0=$5
     nx=$7;  ny=$8;  nz=$9
     e[++m] =         "x  = xorg, y = yorg, z = zorg"
+    if (prev_rot) {
+	m = add_rc_plane(e, m)
+	m = add_rot(e, m)
+    }
     e[++m] = sprintf("nx = %s, ny = %s, nz = %s", nx, ny, nz)
     e[++m] = sprintf("x0 = %s, y0 = %s, z0 = %s", x0, y0, z0)     
     e[++m] = "n_abs = sqrt(nz*nz+ny*ny+nx*nx)"
@@ -123,11 +148,21 @@ function expr_plane(     nx, ny, nz, x0, y0, z0,     m, e) {
     return format_expr(e)
 }
 
-function expr_cylinder(     nx, ny, nz, xp, yp, zp, R,     m, e) {
+function add_rc_cylinder(e, m) { # add block center of rotation
+    e[++m] = upd_def(xo, "xo", "xo = xp")
+    e[++m] = upd_def(yo, "yo", "yo = yp")
+    e[++m] = upd_def(zo, "zo", "zo = zp")
+    return m
+}
+function expr_cylinder(     ) {
     ax=$3;  ay=$4;  az=$5
     xp=$7;  yp=$8;  zp=$9
     R = $11
     e[++m] =         "x  = xorg, y = yorg, z = zorg"
+    if (prev_rot) {
+	m = add_rc_cylinder(e, m)
+	m = add_rot(e, m)
+    }
     e[++m] = sprintf("ax = %s, ay = %s, az = %s", ax, ay, az)
     e[++m] = sprintf("xp = %s, yp = %s, zp = %s", xp, yp, zp)    
     e[++m] = "a2 = az*az+ay*ay+ax*ax"
@@ -147,6 +182,10 @@ function expr_ellipse(     ax, xp, yp, zp, rx, ry, ang) {
     rx = $9; ry = $10
     ang = $12
     e[++m] =         "x  = xorg, y = yorg, z = zorg"
+    if (prev_rot) {
+	m = add_rc_cylinder(e, m) # like a cylinder
+	m = add_rot(e, m)
+    }
     e[++m] = sprintf("xp = %s, yp = %s, zp = %s", xp, yp, zp)
     e[++m] = sprintf("rx = %s, ry = %s", rx, ry)
     e[++m] = sprintf("ang = %s", ang)
@@ -186,7 +225,11 @@ function expr_egg(     ax, xp, yp, zp, rx, ry, ang, eg) {
     rx = $9; ry = $10
     ang = $12
     eg  = $14
-    e[++m] =         "x  = xorg, y = yorg, z = zorg"        
+    e[++m] =         "x  = xorg, y = yorg, z = zorg"
+    if (prev_rot) {
+	m = add_rc_cylinder(e, m) # like a cylinder
+	m = add_rot(e, m)
+    }
     e[++m] = sprintf("xp = %s, yp = %s, zp = %s", xp, yp, zp)
     e[++m] = sprintf("rx = %s, ry = %s", rx, ry)
     e[++m] = sprintf("ang = %s", ang)
@@ -265,12 +308,28 @@ function expr_sphere(m, xc, yc, zc, R, e) {
     return format_expr(e)    
 }
 
+function upd_def(k, def, val) { # update if k == def
+    return (k == def) ? val : k
+}
 
-function expr_block(     xlo, xhi, ylo, yhi, zlo, zhi,     m, e) {
+function add_rc_block(e, m) { # add block center of rotation
+    e[++m] = upd_def(xo, "xo",
+		     sprintf("xo = 0.5*((%s) + (%s))", xlo, xhi))
+    e[++m] = upd_def(yo, "yo",
+		     sprintf("yo = 0.5*((%s) + (%s))", ylo, yhi))
+    e[++m] = upd_def(zo, "zo",
+		     sprintf("zo = 0.5*((%s) + (%s))", zlo, zhi))
+    return m
+}
+function expr_block(     m, e) {
     xlo = $2; xhi=$3
     ylo = $4; yhi=$5
     zlo = $6; zhi=$7
     e[++m] =         "x  = xorg, y = yorg, z = zorg"
+    if (prev_rot) {
+	m = add_rc_block(e, m)
+	m = add_rot(e, m)
+    }
     e[++m] = sprintf("dX2 = sq(de(x, %s, %s)) + sq(di(y, %s, %s)) + sq(di(z, %s, %s))", \
 		     xlo, xhi, ylo, yhi, zlo, zhi)
     e[++m] = sprintf("dY2 = sq(di(x, %s, %s)) + sq(de(y, %s, %s)) + sq(di(z, %s, %s))", \
@@ -366,6 +425,15 @@ END {
     }
 }
 
+function parse_rot(   i) { # fills the center [xyz]r and angels
+			   # phi[xyz] of rotation
+    i = 1;
+    i++; i++ # skip "rot center"
+    xo   = $(i++); yo = $(i++); zo = $(i++) # center of rotation
+    i++;     # skip "angles"
+    phix = $(i++); phiy = $(i++); phiz = $(i++)
+}
+
 ########### process config file ###########
 {
     sub(/#.*/, "")         # strip comments
@@ -400,10 +468,17 @@ $1=="obj_margin" {
     next
 }
 
+$1 == "rot" {
+    prev_rot = 1
+    parse_rot()
+    next
+}
+
 {
     set_invert()
     set_void_or_wall()
 }
+
 
 $1 == "plane" {
     expr2code(expr_plane())
@@ -429,3 +504,6 @@ $1 == "egg" {
     expr2code(expr_egg())
 }
 
+{
+    prev_rot = 0 # previous command is not rotation
+}
