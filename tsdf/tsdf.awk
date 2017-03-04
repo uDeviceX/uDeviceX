@@ -86,37 +86,6 @@ function gensp(i) {
 function psub(r, t) { gsub("%" r "%", t, processor) }
 
 function csub(r, t) { gsub("//%" r "%", t, processor) } # subst in comments
-
-{
-    sub(/#.*/, "")         # strip comments
-}
-
-!NF {
-    # skip empty lines
-    next
-}
-
-$1=="extent" {
-    xextent=$2; yextent=$3; zextent=$4
-    psub("xextent", xextent)
-    psub("yextent", yextent)
-    psub("zextent", zextent)    
-}
-
-$1=="N" {
-    NX = $2
-    # if not given guess it from extents
-    NY = NF < 3 ? yextent * (NX / xextent) : $3
-    NZ = NF < 4 ? zextent * (NX / xextent) : $4
-
-    psub("NX", NX); psub("NY", NY); psub("NZ", NZ);
-}
-
-$1=="obj_margin" {
-    obj_margin = $2
-    psub("OBJ_MARGIN", obj_margin)
-}
-
 function format_expr( e,     i, n, ans, tab, sep) {
     n = length(e)
     if (n==1)
@@ -320,15 +289,17 @@ function expr2code(expr) {
 }
 
 # decide if we should invert the object
-function set_invert() {
-    INVERT = match($1, /^[\t ]*!/)
-    if (INVERT) sub(/^[\t ]*!/, "", $1)
+function set_invert(   fst) {
+    fst = substr($1, 1, 1)
+    INVERT = (fst == "!")
+    if (INVERT) $1 = substr($1, 2) # cut a first charachter
 }
 
 
-function set_void_or_wall() {
-    VOID_WINS = match($1, /^[\t ]*\|/)
-    if (VOID_WINS) sub(/^[\t ]*\|/, "", $1)
+function set_void_or_wall(  fst) {
+    fst = substr($1, 1, 1)
+    VOID_WINS = (fst == "|")
+    if (VOID_WINS) $1 = substr($1, 2) # cut a first charachter
 }
 
 BEGIN {
@@ -390,10 +361,40 @@ END {
 
 ########### process config file ###########
 {
-    set_invert()
+    sub(/#.*/, "")         # strip comments
+}
+
+!NF {
+    # skip empty lines
+    next
+}
+
+$1=="extent" {
+    xextent=$2; yextent=$3; zextent=$4
+    psub("xextent", xextent)
+    psub("yextent", yextent)
+    psub("zextent", zextent)
+    next
+    
+}
+
+$1=="N" {
+    NX = $2
+    # if not given guess it from extents
+    NY = NF < 3 ? yextent * (NX / xextent) : $3
+    NZ = NF < 4 ? zextent * (NX / xextent) : $4
+    psub("NX", NX); psub("NY", NY); psub("NZ", NZ);
+    next
+}
+
+$1=="obj_margin" {
+    obj_margin = $2
+    psub("OBJ_MARGIN", obj_margin)
+    next
 }
 
 {
+    set_invert()
     set_void_or_wall()
 }
 

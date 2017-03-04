@@ -150,18 +150,20 @@ int main(int /*argc */, char **argv) {
   fprintf(f, "%f %f %f\n", xextent, yextent, zextent);
   fprintf(f, "%d %d %d\n", NX, NY, NZ);
 
+  float x, y, z;
+  float h, r0, r2, R2, x0, y0, z0, xp, yp, zp;
+  float nx, ny, nz, n_abs;
+  float ax, ay, az, a2;
+  float dX2, dY2, dZ2, dR2, dR;
+  float D, rx, ry, ang;
+  float eg;
+
   for (int i = 0; i < NX; i++) {
     float x = i2x(i);
     for (int j = 0; j < NY; j++) {
       float y = i2y(j);
       for (int k = 0; k < NZ; k++) {
 	float z = i2z(k);
-	float h, r0, r2, R2, x0, y0, z0, xp, yp, zp;
-	float nx, ny, nz, n_abs;
-	float ax, ay, az, a2;
-	float dX2, dY2, dZ2, dR2, dR;
-	float D, rx, ry, ang;
-	float eg;
 	float s = MINF; // assume we are very far from the walls (sdf = -inf)
 	//%update_sdf%
 
