@@ -70,7 +70,7 @@ void create_walls() {
   s_n = wall::init(s_pp, s_n); /* number of survived particles */
   wall_created = true;
 
-  Cont::clear_velocity(s_pp, s_n);
+  k_sim::clear_velocity<<<k_cnf(s_n)>>>(s_pp, s_n);
   cells->build(s_pp, s_n, NULL, NULL);
   update_helper_arrays();
 
@@ -180,8 +180,11 @@ void diag(int it) {
 }
 
 void update() {
-  Cont::update(s_pp, s_ff, s_n, false, driving_force);
-  if (rbcs) Cont::update(r_pp, r_ff, r_n, true, driving_force);
+  k_sim::update<<<k_cnf(s_n)>>>
+    (false, (float2*)s_pp, (float*)s_ff, s_n, driving_force);
+  if (!rbcs) return;
+  k_sim::update<<<k_cnf(r_n)>>>
+    ( true, (float2*)r_pp, (float*)r_ff, r_n, driving_force);
 }
 
 void bounce() {
@@ -255,7 +258,7 @@ void run() {
   for (it = 0; it < nsteps; ++it) {
     if (walls && it == wall_creation_stepid) {
       create_walls();
-      Cont::clear_velocity(r_pp, r_n);
+      if (rbcs) k_sim::clear_velocity<<<k_cnf(r_n)>>>(r_pp, r_n);
       if (pushtheflow) driving_force = hydrostatic_a;
     }
     distr_s();
