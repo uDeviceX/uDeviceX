@@ -196,8 +196,8 @@ void init() {
   mpDeviceMalloc(&s_ff);
   mpDeviceMalloc(&r_ff); mpDeviceMalloc(&r_ff);
 
-  s_n = ic::gen(s_pp);
-  CC(cudaMemcpy(s_pp, s_pp, sizeof(Particle) * s_n, H2D));
+  s_n = ic::gen(s_pp_hst);
+  CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
   cells->build(s_pp, s_n, NULL, NULL);
   update_helper_arrays();
 
