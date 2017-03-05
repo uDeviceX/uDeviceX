@@ -228,7 +228,7 @@ namespace wall {
 
   void bounce(Particle *const p, const int n) {
     if (n > 0)
-      k_wall::bounce<<<(n + 127) / 128, 128, 0>>>
+      k_wall::bounce<<<(n + 127) / 128, 128>>>
 	((float2 *)p, n);
   }
 
@@ -253,7 +253,7 @@ namespace wall {
 			 sizeof(int) * wall_cells->ncells));
 
       k_wall::
-	interactions_3tpp<<<(3 * n + 127) / 128, 128, 0>>>
+	interactions_3tpp<<<(3 * n + 127) / 128, 128>>>
 	((float2 *)p, n, solid_size, (float *)acc, trunk->get_float());
 
       CC(cudaUnbindTexture(k_wall::texWallParticles));

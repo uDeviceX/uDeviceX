@@ -197,10 +197,10 @@ void scan(unsigned char *input, int size, uint *output)
 
     int nblocks = ((size / 16) + THREADS - 1 ) / THREADS;
 
-    breduce< THREADS / 32 ><<<nblocks, THREADS, 0>>>((uint4 *)input, tmp, size / 16);
+    breduce< THREADS / 32 ><<<nblocks, THREADS>>>((uint4 *)input, tmp, size / 16);
 
     bexscan< THREADS ><<<1, THREADS, nblocks*sizeof(uint)>>>(tmp, nblocks);
 
-    gexscan< THREADS / 32 ><<<nblocks, THREADS, 0>>>((uint4 *)input, tmp, (uint4 *)output, size / 16);
+    gexscan< THREADS / 32 ><<<nblocks, THREADS>>>((uint4 *)input, tmp, (uint4 *)output, size / 16);
 }
 }

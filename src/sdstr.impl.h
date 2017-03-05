@@ -162,17 +162,17 @@ namespace sdstr {
 			       sizeof(PackBuffer) * 27, 0, H2D));
 
     (*failure->D) = false;
-    k_sdstr::setup<<<1, 32, 0>>>();
+    k_sdstr::setup<<<1, 32>>>();
 
     if (nparticles)
-      k_sdstr::scatter_halo_indices_pack<<<(nparticles + 127) / 128, 128, 0>>>(nparticles);
+      k_sdstr::scatter_halo_indices_pack<<<(nparticles + 127) / 128, 128>>>(nparticles);
 
-    k_sdstr::tiny_scan<<<1, 32, 0>>>
+    k_sdstr::tiny_scan<<<1, 32>>>
       (nparticles, packbuffers[0].capacity, packsizes->DP, failure->DP);
 
     CC(cudaEventRecord(evsizes));
     if (nparticles)
-      k_sdstr::pack<<<(3 * nparticles + 127) / 128, 128, 0>>>
+      k_sdstr::pack<<<(3 * nparticles + 127) / 128, 128>>>
 	(nparticles, nparticles * 3);
 
     CC(cudaEventRecord(evpacking));
@@ -241,7 +241,7 @@ namespace sdstr {
     subindices->resize(nparticles);
 
     if (nparticles)
-      k_common::subindex_local<false><<< (nparticles + 127) / 128, 128, 0>>>
+      k_common::subindex_local<false><<<(nparticles + 127) / 128, 128>>>
 	(nparticles, k_sdstr::texparticledata, cellcounts, subindices->D);
 
 
@@ -315,11 +315,11 @@ namespace sdstr {
 #endif
 
     if (nhalo)
-      k_sdstr::subindex_remote<<< (nhalo_padded + 127) / 128, 128, 0 >>>
+      k_sdstr::subindex_remote<<<(nhalo_padded + 127) / 128, 128>>>
 	(nhalo_padded, nhalo, cellcounts, (float2 *)remote_particles->D, subindices_remote->D);
 
     if (compressed_cellcounts->S)
-      k_common::compress_counts<<< (compressed_cellcounts->S + 127) / 128, 128, 0 >>>
+      k_common::compress_counts<<<(compressed_cellcounts->S + 127) / 128, 128>>>
 	(compressed_cellcounts->S, (int4 *)cellcounts, (uchar4 *)compressed_cellcounts->D);
 
     k_scan::scan(compressed_cellcounts->D, compressed_cellcounts->S, (uint *)cellstarts);
@@ -329,15 +329,15 @@ namespace sdstr {
 #endif
 
     if (subindices->S)
-      k_sdstr::scatter_indices<<< (subindices->S + 127) / 128, 128, 0>>>
+      k_sdstr::scatter_indices<<<(subindices->S + 127) / 128, 128>>>
 	(false, subindices->D, subindices->S, cellstarts, scattered_indices->D, scattered_indices->S);
 
     if (nhalo)
-      k_sdstr::scatter_indices<<< (nhalo + 127) / 128, 128, 0>>>
+      k_sdstr::scatter_indices<<<(nhalo + 127) / 128, 128>>>
 	(true, subindices_remote->D, nhalo, cellstarts, scattered_indices->D, scattered_indices->S);
 
     if (nparticles)
-      k_sdstr::gather_particles<<< (nparticles + 127) / 128, 128, 0>>>
+      k_sdstr::gather_particles<<<(nparticles + 127) / 128, 128>>>
 	(scattered_indices->D, (float2 *)remote_particles->D, nhalo,
 	 k_sdstr::ntexparticles, nparticles, (float2 *)particles, xyzouvwo, xyzo_half);
 

@@ -26,12 +26,12 @@ namespace cnt {
     for (int i = 0; i < wsolutes.size(); ++i) {
       ParticlesWrap it = wsolutes[i];
       if (it.n)
-	k_common::subindex_local<true><<<(it.n + 127) / 128, 128, 0>>>
+	k_common::subindex_local<true><<<(it.n + 127) / 128, 128>>>
 	  (it.n, (float2 *)it.p, cellscount->D, subindices->D + ctr);
       ctr += it.n;
     }
 
-    k_common::compress_counts<<<(compressed_cellscount->S + 127) / 128, 128, 0>>>
+    k_common::compress_counts<<<(compressed_cellscount->S + 127) / 128, 128>>>
       (compressed_cellscount->S, (int4 *)cellscount->D,
        (uchar4 *)compressed_cellscount->D);
 
@@ -43,7 +43,7 @@ namespace cnt {
       ParticlesWrap it = wsolutes[i];
 
       if (it.n)
-	k_cnt::populate<<<(it.n + 127) / 128, 128, 0>>>
+	k_cnt::populate<<<(it.n + 127) / 128, 128>>>
 	  (subindices->D + ctr, cellsstart->D, it.n, i, ntotal,
 	   (k_cnt::CellEntry *)cellsentries->D);
       ctr += it.n;
@@ -59,7 +59,7 @@ namespace cnt {
     for (int i = 0; i < wsolutes.size(); ++i) {
       ParticlesWrap it = wsolutes[i];
       if (it.n)
-	k_cnt::bulk_3tpp<<<(3 * it.n + 127) / 128, 128, 0>>>
+	k_cnt::bulk_3tpp<<<(3 * it.n + 127) / 128, 128>>>
 	  ((float2 *)it.p, it.n, cellsentries->S, wsolutes.size(), (float *)it.f,
 	   local_trunk->get_float(), i);
 
@@ -96,7 +96,7 @@ namespace cnt {
     }
 
     if (nremote_padded)
-      k_cnt::halo<<<(nremote_padded + 127) / 128, 128, 0>>>
+      k_cnt::halo<<<(nremote_padded + 127) / 128, 128>>>
 	(nremote_padded, cellsentries->S, nsolutes, local_trunk->get_float());
 
 

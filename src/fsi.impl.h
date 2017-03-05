@@ -23,7 +23,7 @@ namespace fsi {
        it != wsolutes.end(); ++it)
     if (it->n)
       k_fsi::
-	interactions_3tpp<<<(3 * it->n + 127) / 128, 128, 0>>>
+	interactions_3tpp<<<(3 * it->n + 127) / 128, 128>>>
 	((float2 *)it->p, it->n, wsolvent->n, (float *)it->f,
 	 (float *)wsolvent->f, local_trunk->get_float());
 
@@ -78,7 +78,7 @@ void halo(ParticlesWrap halos[26]) {
 
   if (nremote_padded)
     k_fsi::
-      interactions_halo<<<(nremote_padded + 127) / 128, 128, 0>>>
+      interactions_halo<<<(nremote_padded + 127) / 128, 128>>>
       (nremote_padded, wsolvent->n, (float *)wsolvent->f,
        local_trunk->get_float());
 }

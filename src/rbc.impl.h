@@ -150,13 +150,13 @@ void forces_nohost(int nc, float *device_xyzuvw,
   dim3 avBlocks(1, nc);
 
   CC(cudaMemsetAsync(host_av, 0, nc * 2 * sizeof(float)));
-  k_rbc::areaAndVolumeKernel<<<avBlocks, avThreads, 0>>>(host_av);
+  k_rbc::areaAndVolumeKernel<<<avBlocks, avThreads>>>(host_av);
   CC(cudaPeekAtLastError());
 
   int threads = 128;
   int blocks = (nc * RBCnv * 7 + threads - 1) / threads;
 
-  k_rbc::fall_kernel<<<blocks, threads, 0>>>(nc, host_av, device_axayaz);
+  k_rbc::fall_kernel<<<blocks, threads>>>(nc, host_av, device_axayaz);
 }
 
 }

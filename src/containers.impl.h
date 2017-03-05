@@ -165,7 +165,7 @@ namespace Cont {
 void  update(Particle* pp, Force* ff, int n,
 	     bool rbcflag, float driving_force) {
   if (!n) return;
-  ParticleKernels::update<<<(n + 127) / 128, 128, 0>>>
+  ParticleKernels::update<<<(n + 127) / 128, 128>>>
     (rbcflag, (float2*)pp, (float*)ff, n, driving_force);
 }
 

@@ -158,7 +158,7 @@ void _pack_all(Particle *p, int n, bool update_baginfos) {
   }
 
   if (PackingHalo::ncells)
-    PackingHalo::fill_all<<<(PackingHalo::ncells + 1) / 2, 32, 0>>>(
+    PackingHalo::fill_all<<<(PackingHalo::ncells + 1) / 2, 32>>>(
 	p, n, required_send_bag_size);
   CC(cudaEventRecord(evfillall));
 }
@@ -215,10 +215,10 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
 
   if (PackingHalo::ncells)
     PackingHalo::
-	count_all<<<(PackingHalo::ncells + 127) / 128, 128, 0>>>(
+	count_all<<<(PackingHalo::ncells + 127) / 128, 128>>>(
 	    cellsstart, cellscount, PackingHalo::ncells);
 
-  PackingHalo::scan_diego<32><<<26, 32 * 32, 0>>>();
+  PackingHalo::scan_diego<32><<<26, 32 * 32>>>();
 
   if (firstpost)
     post_expected_recv();
@@ -259,7 +259,7 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
   }
 
   if (PackingHalo::ncells)
-    PackingHalo::copycells<0><<<(PackingHalo::ncells + 127) / 128, 128, 0>>>
+    PackingHalo::copycells<0><<<(PackingHalo::ncells + 127) / 128, 128>>>
       (PackingHalo::ncells);
 
   _pack_all(p, n, firstpost);

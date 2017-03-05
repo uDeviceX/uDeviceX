@@ -105,7 +105,7 @@ namespace rex {
     if (packsstart->S)
       CC(cudaMemsetAsync(packsstart->D, 0, sizeof(int) * packsstart->S));
 
-    k_rex::init<<<1, 1, 0>>>();
+    k_rex::init<<<1, 1>>>();
 
     for (int i = 0; i < wsolutes.size(); ++i) {
       ParticlesWrap it = wsolutes[i];
@@ -114,11 +114,11 @@ namespace rex {
 	CC(cudaMemcpyToSymbolAsync(k_rex::coffsets, packsoffset->D + 26 * i,
 				   sizeof(int) * 26, 0, D2D));
 
-	k_rex::scatter_indices<<<(it.n + 127) / 128, 128, 0>>>(
+	k_rex::scatter_indices<<<(it.n + 127) / 128, 128>>>(
 									   (float2 *)it.p, it.n, packscount->D + i * 26);
       }
 
-      k_rex::tiny_scan<<<1, 32, 0>>>(
+      k_rex::tiny_scan<<<1, 32>>>(
 						 packscount->D + i * 26, packsoffset->D + 26 * i,
 						 packsoffset->D + 26 * (i + 1), packsstart->D + i * 27);
 
@@ -129,7 +129,7 @@ namespace rex {
 		       packsoffset->D + 26 * wsolutes.size(), sizeof(int) * 26,
 		       H2H));
 
-    k_rex::tiny_scan<<<1, 32, 0>>>(
+    k_rex::tiny_scan<<<1, 32>>>(
 					       packsoffset->D + 26 * wsolutes.size(), NULL, NULL, packstotalstart->D);
 
     CC(cudaMemcpyAsync(host_packstotalstart->D, packstotalstart->D,
@@ -151,7 +151,7 @@ namespace rex {
 				   packsstart->D + 27 * i, sizeof(int) * 27, 0,
 				   D2D));
 
-	k_rex::pack<<<14 * 16, 128, 0>>>
+	k_rex::pack<<<14 * 16, 128>>>
 	  ((float2 *)it.p, it.n, (float2 *)packbuf->D, packbuf->C, i);
       }
     }
@@ -364,7 +364,7 @@ namespace rex {
 	CC(cudaMemcpyToSymbolAsync(k_rex::coffsets, packsoffset->D + 26 * i,
 				   sizeof(int) * 26, 0, D2D));
 
-	k_rex::unpack<<<16 * 14, 128, 0>>>((float *)it.f, it.n);
+	k_rex::unpack<<<16 * 14, 128>>>((float *)it.f, it.n);
       }
 
     }

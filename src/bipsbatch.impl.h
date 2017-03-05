@@ -168,7 +168,7 @@ namespace BipsBatch {
     CC(cudaEventRecord(evhalodone));
 
     if (nthreads)
-      interaction_kernel<<<(nthreads + 127) / 128, 128, 0>>>
+      interaction_kernel<<<(nthreads + 127) / 128, 128>>>
 	(nthreads, acc, n);
   }
 

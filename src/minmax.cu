@@ -196,7 +196,7 @@ void minmax(const Particle * const rbc, int size, int n, float3 *minrbc, float3 
     const int size32 = ((size + 31) / 32) * 32;
 
     if (size32 < MAXTHREADS)
-        minmaxob<<<n, size32, 0>>>(rbc, minrbc, maxrbc, size);
+        minmaxob<<<n, size32>>>(rbc, minrbc, maxrbc, size);
     else
     {
         static int nctc = -1;
@@ -231,6 +231,6 @@ void minmax(const Particle * const rbc, int size, int n, float3 *minrbc, float3 
 
         int nblocks= n * ((size + MAXTHREADS - 1) / MAXTHREADS);
 
-        minmaxmba<<<nblocks, MAXTHREADS, 0>>>(rbc, minrbc, maxrbc, size, ptoblockds);
+        minmaxmba<<<nblocks, MAXTHREADS>>>(rbc, minrbc, maxrbc, size, ptoblockds);
     }
 }
