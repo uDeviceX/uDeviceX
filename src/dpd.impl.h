@@ -259,9 +259,8 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
   }
 
   if (PackingHalo::ncells)
-    PackingHalo::copycells<
-	0><<<(PackingHalo::ncells + 127) / 128, 128, 0>>>(
-	PackingHalo::ncells);
+    PackingHalo::copycells<0><<<(PackingHalo::ncells + 127) / 128, 128, 0>>>
+      (PackingHalo::ncells);
 
   _pack_all(p, n, firstpost);
 
