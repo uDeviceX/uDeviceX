@@ -11,8 +11,8 @@ const int   numberdensity = _numberdensity * (rc * rc * rc);
 
 #define dSync() CC(cudaDeviceSynchronize())
 
-/* a common kernel configuration */
-#define k_cnf(n) ((n) + 127) / 128, 128
+/* a common kernel execution configuration */
+#define k_cnf(n) ((n) + 127)/128, 128
 
 #define D2D cudaMemcpyDeviceToDevice
 #define D2H cudaMemcpyDeviceToHost
