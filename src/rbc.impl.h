@@ -127,12 +127,9 @@ void setup(int* faces, float* orig_xyzuvw) {
 void initialize(float *device_xyzuvw,
 		float *transform,
 		float *orig_xyzuvw) {
-  int threads = 128;
-  int blocks = (RBCnv + threads - 1) / threads;
-
   CC(cudaMemcpyToSymbol(k_rbc::A, transform, 16 * sizeof(float)));
   CC(cudaMemcpy(device_xyzuvw, orig_xyzuvw, 6 * RBCnv * sizeof(float), D2D));
-  k_rbc::transformKernel<<<blocks, threads>>>(device_xyzuvw, RBCnv);
+  k_rbc::transformKernel<<<k_cnf(RBCnv)>>>(device_xyzuvw, RBCnv);
   CC(cudaPeekAtLastError());
 }
 
@@ -153,10 +150,8 @@ void forces_nohost(int nc, float *device_xyzuvw,
   k_rbc::areaAndVolumeKernel<<<avBlocks, avThreads>>>(host_av);
   CC(cudaPeekAtLastError());
 
-  int threads = 128;
-  int blocks = (nc * RBCnv * 7 + threads - 1) / threads;
-
-  k_rbc::fall_kernel<<<blocks, threads>>>(nc, host_av, device_axayaz);
+  int degreemax = 7;
+  k_rbc::fall_kernel<<<k_cnf(nc*RBCnv*degreemax)>>>(nc, host_av, device_axayaz);
 }
 
 }
