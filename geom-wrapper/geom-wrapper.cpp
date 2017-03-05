@@ -141,8 +141,7 @@ void iotags_all(long  nrbc , float* rbc_xx, float* rbc_yy, float* rbc_zz,
   for (long isol = 0; isol < nsol; isol++) iotags[isol] = -1; /* .. means not inside */
   for (long io = 0; io < no; io++) { /* for every RBC */
     auto x0 = rbc_xx[0], y0 = rbc_yy[0], z0 = rbc_zz[0]; /* any vertex of RBC*/
-    if (io % 100 == 0) fprintf(stderr,
-			       "(geom-wrapper) rbc: %ld of %ld\n", io + 1, no);
+    fprintf(stderr, "(geom-wrapper) rbc: %ld of %ld\n", io + 1, no);
     iotags_recenter(sol_xx, sol_yy, sol_zz,
     		    x0, y0, z0); /* recenter solvent using periodic BC */
     iotags_single(io,
