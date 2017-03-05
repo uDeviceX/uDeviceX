@@ -29,6 +29,12 @@ void setup_bcast(std::vector<Geom> *tt)  {
 
 int setup_select(Particle* pp, int nv,
 		 std::vector<Geom> *tt, float *orig_xyzuvw) {
+  float rr[3*MAX_VERT_NUM]; /* rbc vertices from the file */
+  const char* fn = "rbc.off";
+  off::f2vert(fn, rr);
+
+  Particle pp_hst[MAX_PART_NUM];
+
   int c, mi[3], L[3] = {XS, YS, ZS};
   for (c = 0; c < 3; ++c) mi[c] = (m::coords[c] + 0.5) * L[c];
   int nc = 0;
@@ -41,6 +47,7 @@ int setup_select(Particle* pp, int nv,
     }
     for (c = 0; c < 3; ++c) mat[4*c + 3] = com[c];
     rbc::initialize((float*)(pp + nv * i), mat, orig_xyzuvw);
+    //    rot(&pp[nv*i], mat, rr);
     nc ++;
   next: ;
   }
@@ -70,7 +77,7 @@ int rbc_remove(Particle* pp, int nv, int nc, int *e, int ne) {
 }
 
 void rbc_dump(int nc, Particle *p, int* triplets,
-	      int n, int nv, int nt, int id) {
+	      int nv, int nt, int id) {
     const char *format4ply = "ply/rbcs-%05d.ply";
     char buf[200];
     sprintf(buf, format4ply, id);

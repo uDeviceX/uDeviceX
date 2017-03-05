@@ -8,6 +8,7 @@ const int   numberdensity = _numberdensity * (rc * rc * rc);
 
 /* maximum number of faces per one RBC */
 #define MAX_FACE_NUM 5000000
+#define MAX_VERT_NUM 100000
 
 #define dSync() CC(cudaDeviceSynchronize())
 
