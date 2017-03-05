@@ -1,0 +1,13 @@
+* To driving force on "inner" particles
+
+  int type; float driving_force, mass, vx = s1.y, y = s0.y;
+  if      (rbcflag                      ) type = MEMB_TYPE;
+  else if (!rbcflag &&  lastbit::get(vx)) type =  IN_TYPE;
+  else if (!rbcflag && !lastbit::get(vx)) type = OUT_TYPE;
+  mass  = (type == MEMB_TYPE) ? rbc_mass : 1;
+#ifdef GWRP
+  /* TODO: no driving force on "inner" particles */
+  driving_force = (type ==   IN_TYPE) ? 0 : _driving_force;
+#else
+  driving_force = _driving_force;
+#endif
