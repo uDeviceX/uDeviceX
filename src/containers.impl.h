@@ -69,10 +69,6 @@ int rbc_remove(Particle* pp, int nv, int nc, int *e, int ne) {
   return nstay;
 }
 
-void clear_forces(Force* ff, int n) {
-  CC(cudaMemsetAsync(ff, 0, sizeof(Force) * n));
-}
-
 void rbc_dump(int nc, Particle *p, int* triplets,
 	      int n, int nv, int nt, int id) {
     const char *format4ply = "ply/rbcs-%05d.ply";

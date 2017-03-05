@@ -68,9 +68,8 @@ void forces_dpd() {
   DPD::remote_interactions(s_n, s_ff);
 }
 
-void clear_forces() {
-  Cont::clear_forces(s_ff, s_n);
-  if (rbcs) Cont::clear_forces(r_ff, r_n);
+void clear_forces(Force* ff, int n) {
+  CC(cudaMemsetAsync(ff, 0, sizeof(Force) * n));
 }
 
 void forces_wall() {
@@ -95,7 +94,8 @@ void forces() {
   std::vector<ParticlesWrap> w_r;
   if (rbcs) w_r.push_back(ParticlesWrap(r_pp, r_n, r_ff));
 
-  clear_forces();
+  clear_forces(s_ff, s_n);
+  if (rbcs) clear_forces(r_ff, r_n);
 
   forces_dpd();
   forces_wall();
