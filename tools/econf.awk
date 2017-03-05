@@ -42,6 +42,10 @@ kernp($0) {
     m = removeNs(m)
 
     l = b "<<<" m ">>>" a
-    print "==", l0
-    print "  ", l
+    print l
+    next
+}
+
+{
+    print
 }
