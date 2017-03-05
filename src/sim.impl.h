@@ -198,7 +198,8 @@ void init() {
   update_helper_arrays();
 
   if (rbcs) {
-    r_nc = Cont::setup(r_pp, r_nv, "rbcs-ic.txt", r_orig_xyzuvw);
+    r_nc = Cont::setup(r_pp, r_nv, "rbcs-ic.txt",
+		       r_orig_xyzuvw, /* storage */ r_pp_hst);
     r_n = r_nc * r_nv;
 #ifdef GWRP
     iotags_init(r_nv, r_nt, r_faces);

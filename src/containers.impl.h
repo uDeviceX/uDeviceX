@@ -27,17 +27,37 @@ void setup_bcast(std::vector<Geom> *tt)  {
   MC(MPI_Bcast( D, sz, MPI_FLOAT, root, m::cart));
 }
 
-int setup_select(Particle* pp, int nv,
-		 std::vector<Geom> *tt, float *orig_xyzuvw) {
-  float rr[3*MAX_VERT_NUM]; /* rbc vertices from the file */
-  const char* fn = "rbc.off";
-  off::f2vert(fn, rr);
+void transform0(float* rr0, int nv, float *A, /* output */ Particle* pp) {
+  for (int iv = 0; iv < nv; iv++) {
+    float  *r = pp[iv].r, *v = pp[iv].v;
+    float *r0 = &rr0[3*iv];
+    float RBCscale = 1.0/rc;
+    
+    for (int c = 0, i = 0; c < 3; c++) {
+      r[c] += A[i++]*r0[0]*RBCscale; /* matrix transformation */
+      r[c] += A[i++]*r0[1]*RBCscale;
+      r[c] += A[i++]*r0[2]*RBCscale;
+      r[c] += A[i++];
 
-  Particle pp_hst[MAX_PART_NUM];
+      v[c] = 0;
+    }
+  }
+}
+
+int setup_select(Particle* pp, int nv,
+		 std::vector<Geom> *tt, float *orig_xyzuvw, Particle *pp_hst) {
+  float rr0[3*MAX_VERT_NUM]; /* rbc template */
+  int root = 0;
+  if (m::rank == root) {
+    const char* fn = "rbc.off";
+    off::f2vert(fn, rr0);
+  }
+  MC(MPI_Bcast(rr0, 3*nv, MPI_FLOAT, root, m::cart));
 
   int c, mi[3], L[3] = {XS, YS, ZS};
   for (c = 0; c < 3; ++c) mi[c] = (m::coords[c] + 0.5) * L[c];
-  int nc = 0;
+  
+  int ic = 0;
   for (int i = 0; i < tt->size(); i++) {
     Geom t = (*tt)[i];
     float *mat = t.mat, com[3];
@@ -46,18 +66,24 @@ int setup_select(Particle* pp, int nv,
       if (2*com[c] < -L[c] || 2*com[c] > L[c]) goto next;
     }
     for (c = 0; c < 3; ++c) mat[4*c + 3] = com[c];
-    rbc::initialize((float*)(pp + nv * i), mat, orig_xyzuvw);
-    //    rot(&pp[nv*i], mat, rr);
-    nc ++;
+    //    rbc::initialize((float*)(pp + nv*ic), mat, orig_xyzuvw);
+    transform0(rr0, nv, mat, &pp_hst[nv*ic]);
+    ic++;
   next: ;
   }
+  int nc = ic;
+  CC(cudaMemcpy(pp, pp_hst, sizeof(Particle) * nv * nc, H2D));
   return nc;
 }
 
-int setup(Particle* pp, int nv, const char *path2ic, float *orig_xyzuvw) {
+int setup(Particle* pp, int nv, const char *path2ic,
+	  float *orig_xyzuvw, Particle *pp_hst) {
   std::vector<Geom> tt = setup_read(path2ic);
   setup_bcast(&tt); /* MPI */
-  int nc = setup_select(pp, nv, &tt, orig_xyzuvw); /* cells for this subdomain */
+  int nc = setup_select(pp, nv, &tt, orig_xyzuvw, pp_hst);
+  /* cells for this subdomain */
+
+  MC(MPI_Barrier(m::cart));
   return nc;
 }
 
@@ -73,6 +99,7 @@ int rbc_remove(Particle* pp, int nv, int nc, int *e, int ne) {
       CC(cudaMemcpy(pp + nv * (i1++), pp + nv * i0,
 		    sizeof(Particle) * nv, D2D));
   int nstay = i1;
+  
   return nstay;
 }
 

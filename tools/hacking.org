@@ -11,3 +11,21 @@
 #else
   driving_force = _driving_force;
 #endif
+
+
+* Matrix transfrom on a host
+void transform0(float* rr0, int nv, float *A, /* output */ Particle* pp) {
+  for (int iv = 0; iv < nv; iv++) {
+    float *r =    pp[iv].r, *v = pp[iv].v;
+    float *r0 = &rr0[3*iv];
+    for (int c = 0, i = 0; c < 3; c++) {
+      r[c] += A[i++]*r0[0]; /* matrix transformation */
+      r[c] += A[i++]*r0[1];
+      r[c] += A[i++]*r0[2];
+      r[c] += A[i++];
+
+      v[c] = 0;
+    }
+  }
+}
+
