@@ -74,6 +74,8 @@
 #include "dpd.decl.h"
 #include "dpd.impl.h"
 
+#include "ic.impl.h"
+
 #include "k/sim.h"
 #include "sim.decl.h"
 #include "sim.impl.h"
