@@ -6,7 +6,7 @@ namespace ic { /* initial conditions */
 
 int gen(Particle* pp) { /* generate particle positions and velocities */
   fprintf(stderr, "(ic::gen) IC\n");
-  srand48(0);
+  srand48(123456);
   int iz, iy, ix, l, nd = numberdensity;
   int ip = 0; /* particle index */
   float x, y, z, dr = 0.99;
