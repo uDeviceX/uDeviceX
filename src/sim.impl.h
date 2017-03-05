@@ -54,8 +54,8 @@ void create_walls() {
 }
 
 void forces_rbc() {
-  if (rbcs) rbc::forces_nohost(r_nc, (float*)r_pp, (float*)r_ff,
-			       r_host_av);
+  if (rbcs) rbc::forces(r_nc, (float*)r_pp, (float*)r_ff,
+			r_host_av);
 }
 
 void forces_dpd() {
@@ -140,7 +140,7 @@ void dump_rbcs() {
   if (!rbcs) return;
   static int id = 0;
   dev2hst();  /* TODO: do not need `s' */
-  Cont::rbc_dump(r_nc, &sr_pp[s_n], r_faces, r_n, r_nv, r_nt, id++);
+  Cont::rbc_dump(r_nc, &sr_pp[s_n], r_faces, r_nv, r_nt, id++);
 }
 
 void dump_grid() {

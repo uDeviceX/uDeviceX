@@ -133,7 +133,7 @@ void initialize(float *device_xyzuvw,
   CC(cudaPeekAtLastError());
 }
 
-void forces_nohost(int nc, float *device_xyzuvw,
+void forces(int nc, float *device_xyzuvw,
 		   float *device_axayaz, float* host_av) {
   if (nc == 0) return;
 
