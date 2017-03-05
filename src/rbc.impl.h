@@ -31,23 +31,10 @@ void setup_support(int *data, int *data2, int nentries) {
 		     &k_rbc::texAdjVert.channelDesc, sizeof(int) * nentries));
 }
 
-void setup(int* faces, float* orig_xyzuvw) {
-  const char* fn = "rbc.off";
+void setup(int* faces) {
+  const char* r_templ = "rbc.off";
+  off::f2faces(r_templ, faces);
 
-  float vert[3 * RBCnv];
-  off::f2vert(fn, vert);
-  float *pp_h = new float[6 * RBCnv];
-  for (int iv = 0, i0 = 0, i1 = 0; iv < RBCnv; iv ++) {
-    float RBCscale = 1.0/rc;
-    float x = vert[i0++], y = vert[i0++], z = vert[i0++];
-    x *= RBCscale; y *= RBCscale; z *= RBCscale;
-    pp_h[i1++] = x; pp_h[i1++] = y; pp_h[i1++] = z;
-    pp_h[i1++] = 0; pp_h[i1++] = 0; pp_h[i1++] = 0;
-  }
-  CC(cudaMemcpy(orig_xyzuvw, pp_h, RBCnv * 6 * sizeof(float), H2D));
-  delete[] pp_h;
-
-  off::f2faces(fn, faces);
   int   *trs4 = new int  [4 * RBCnt];
   for (int ifa = 0, i0 = 0, i1 = 0; ifa < RBCnt; ifa++) {
     trs4 [i0++] = faces[i1++]; trs4[i0++] = faces[i1++]; trs4[i0++] = faces[i1++];
@@ -122,15 +109,6 @@ void setup(int* faces, float* orig_xyzuvw) {
 		     RBCnt * 4 * sizeof(int)));
 
   CC(cudaFuncSetCacheConfig(k_rbc::fall_kernel, cudaFuncCachePreferL1));
-}
-
-void initialize(float *device_xyzuvw,
-		float *transform,
-		float *orig_xyzuvw) {
-  CC(cudaMemcpyToSymbol(k_rbc::A, transform, 16 * sizeof(float)));
-  CC(cudaMemcpy(device_xyzuvw, orig_xyzuvw, 6 * RBCnv * sizeof(float), D2D));
-  k_rbc::transformKernel<<<k_cnf(RBCnv)>>>(device_xyzuvw, RBCnv);
-  CC(cudaPeekAtLastError());
 }
 
 void forces(int nc, float *device_xyzuvw,

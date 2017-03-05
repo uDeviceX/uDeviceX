@@ -44,7 +44,6 @@
 #include "k/sdstr.h"
 #include "sdstr.impl.h"
 
-#include "containers.decl.h"
 #include "containers.impl.h"
 
 #include "wall.decl.h"

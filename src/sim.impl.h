@@ -168,10 +168,9 @@ void bounce() {
 }
 
 void init() {
-  CC(cudaMalloc(&r_orig_xyzuvw, RBCnv * 6 * sizeof(float)));
   CC(cudaMalloc(&r_host_av, MAX_CELLS_NUM));
-  
-  rbc::setup(r_faces, r_orig_xyzuvw);
+
+  rbc::setup(r_faces);
   rdstr::init();
   DPD::init();
   fsi::init();
@@ -198,8 +197,8 @@ void init() {
   update_helper_arrays();
 
   if (rbcs) {
-    r_nc = Cont::setup(r_pp, r_nv, "rbcs-ic.txt",
-		       r_orig_xyzuvw, /* storage */ r_pp_hst);
+    r_nc = Cont::setup(r_pp, r_nv, /* storage */ r_pp_hst);
+
     r_n = r_nc * r_nv;
 #ifdef GWRP
     iotags_init(r_nv, r_nt, r_faces);
@@ -256,7 +255,6 @@ void close() {
   CC(cudaFree(s_zip0));
   CC(cudaFree(s_zip1));
 
-  CC(cudaFree(r_orig_xyzuvw));
   CC(cudaFree(r_host_av));
 
   delete wall::trunk;
