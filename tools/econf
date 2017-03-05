@@ -1,0 +1,7 @@
+#!/bin/bash
+
+for f
+do
+    awk -f ../tools/econf.awk "$f" > /tmp/t.$$ &&
+	mv /tmp/t.$$              "$f"
+done
