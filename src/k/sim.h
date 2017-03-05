@@ -1,7 +1,7 @@
 namespace k_sim {
 
 __global__ void update(bool rbcflag, float2 * _pdata, float * _adata,
-		       int nparticles, float _driving_force) {
+		       int nparticles, float driving_force) {
   int warpid = threadIdx.x >> 5;
   int base = 32 * (warpid + 4 * blockIdx.x);
   int nsrc = min(32, nparticles - base);
@@ -73,16 +73,11 @@ __global__ void update(bool rbcflag, float2 * _pdata, float * _adata,
     }
   }
 
-  int type; float driving_force, mass, vx = s1.y, y = s0.y;
-  if      (rbcflag                             ) type = MEMB_TYPE;
-  else if (!rbcflag &&  lastbit::get(vx)) type =  IN_TYPE;
-  else if (!rbcflag && !lastbit::get(vx)) type = OUT_TYPE;
-  mass          = (type == MEMB_TYPE) ? rbc_mass : 1;
-  /* TODO: no driving force on "inner" particles */
-  driving_force = (type ==   IN_TYPE) ? 0        : _driving_force;
-  float y0 = glb::r0[1]; /* domain center in local coordinates */
-  if (doublepoiseuille && y <= y0) driving_force *= -1;
+  float dy = s0.y -  glb::r0[1]; /* coordinate relative to domain
+				    center */
+  if (doublepoiseuille && dy <= 0) driving_force *= -1;
 
+  float mass = rbcflag ? rbc_mass : 1;
   s1.y += (ax/mass + driving_force) * dt;
   s2.x += ay/mass * dt;
   s2.y += az/mass * dt;
