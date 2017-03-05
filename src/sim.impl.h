@@ -20,8 +20,7 @@ void remove_bodies_from_wall() {
   if (!rbcs) return;
   if (!r_nc) return;
   DeviceBuffer<int> marks(r_n);
-  k_wall::fill_keys<<<k_cnf(r_n)>>>
-    (r_pp, r_n, marks.D);
+  k_wall::fill_keys<<<k_cnf(r_n)>>>(r_pp, r_n, marks.D);
 
   std::vector<int> tmp(marks.S);
   CC(cudaMemcpy(tmp.data(), marks.D, sizeof(int) * marks.S, D2H));
@@ -51,8 +50,6 @@ void create_walls() {
   k_sim::clear_velocity<<<k_cnf(s_n)>>>(s_pp, s_n);
   cells->build(s_pp, s_n, NULL, NULL);
   update_helper_arrays();
-
-  // remove cells touching the wall
   remove_bodies_from_wall();
 }
 
@@ -186,9 +183,8 @@ void init() {
   cells   = new CellLists(XS, YS, ZS);
   mpDeviceMalloc(&s_zip0); mpDeviceMalloc(&s_zip1);
 
-  if (rbcs) {
+  if (rbcs)
       mpDeviceMalloc(&r_pp); mpDeviceMalloc(&r_ff);
-  }
 
   wall::trunk = new Logistic::KISS;
   sdstr::init();
@@ -205,7 +201,7 @@ void init() {
     r_nc = Cont::setup(r_pp, r_nv, "rbcs-ic.txt", r_orig_xyzuvw);
     r_n = r_nc * r_nv;
 #ifdef GWRP
-    iotags_init_file("rbc.dat");
+    iotags_init(r_nv, r_nt, r_faces);
     iotags_domain(0, 0, 0,
 		  XS, YS, ZS,
 		  m::periods[0], m::periods[1], m::periods[0]);

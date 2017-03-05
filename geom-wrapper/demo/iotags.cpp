@@ -137,9 +137,11 @@ int main(int argc, const char** argv) {
 
   rbc::init_rbc_file(rbc_fn);
 
-  //iotags_init(rbc::nb, rbc::nf, rbc::ff1.data(), rbc::ff2.data(), rbc::ff3.data());
   iotags_domain(xl, yl, zl,    xh, yh, zh,    pbcx, pbcy, pbcz);
-  iotags_init_file("test_data/rbc.org.ud");
+  /*  iotags_init_file("test_data/rbc.org.ud");
+      TODO: add reading from a off file
+   */
+  
   rbc::read_vertices();
   vector<int> iotags(sol::nv, 0);
   iotags_all(rbc::nv, rbc::xx.data(), rbc::yy.data(), rbc::zz.data(),

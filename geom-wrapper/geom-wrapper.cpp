@@ -44,10 +44,25 @@ public:
   }
 };
 
-void iotags_init(long nb_, long  nf_, int*   rbc_f1, int*   rbc_f2, int* rbc_f3) {
+/* init using faces as one array */
+void iotags_init(long nb_, long nf_, int* faces) {
   nb = nb_;
-  nf = nf_; ff1 = rbc_f1; ff2 = rbc_f2; ff3 = rbc_f3; /* set static
-							  variables */
+  nf = nf_;
+
+  auto szi = sizeof(int);
+  ff1 = (int*)malloc(nf*szi);
+  ff2 = (int*)malloc(nf*szi);
+  ff3 = (int*)malloc(nf*szi);
+
+  for (int ifa = 0, ib = 0; ifa < nf; ifa++) {
+    ff1[ifa] = faces[ib++];
+    ff2[ifa] = faces[ib++];
+    ff3[ifa] = faces[ib++];
+  }
+}
+
+void iotags_fin() {
+  free(ff1); free(ff2); free(ff3);
 }
 
 void iotags_wrap(float* r, float r0, float L) { /* among periodic
@@ -58,64 +73,6 @@ void iotags_wrap(float* r, float r0, float L) { /* among periodic
   else if (2*dr < -L) *r += L;
 }
 
-namespace ud2f { /* [uD]eviceX rbc definition file [to] [f]aces */
-  void ok(ssize_t rc) { /* input file status check */
-    if (rc == -1) {
-      printf("(ud2faces) ERROR: cannot read uDeviceX file\n");
-      exit(EXIT_FAILURE);
-    }
-  }
-
-  /* nl() realted global variables */
-  static char* line; static size_t len; static ssize_t read;
-#define nl() ok(read = getline(&line, &len, fd)), line = trim(line) /* [n]ext [l]ine and trim */
-  void read_header(FILE* fd) {
-    nl(); sscanf(line, "%ld\n", &nb); /* number of vertices in one RBC  */
-    nl();                            /* number of edges  */
-    nl(); sscanf(line, "%ld\n", &nf);
-  }
-  bool s_eq(const char* s1, const char* s2) { /* true if `s1' is equal `s2' */
-    return std::strcmp(s1, s2) == 0;
-  }
-
-  void check_nf(int ifa, int nf) {
-    if (ifa != nf) {
-      printf("(iotags_init) ERROR: in a header it says: %d faces; I found %d faces\n", nf, ifa);
-      exit(EXIT_FAILURE);
-    }
-  }
-
-  void read_faces(FILE* fd) { /* acclocats and fills `ff1', `ff2',
-				 `ff3' */
-    auto szi = sizeof(int);
-    ff1 = (int*)malloc(nf*szi); ff2 = (int*)malloc(nf*szi); ff3 = (int*)malloc(nf*szi);
-
-    do nl(); while (!s_eq(line, "Angles"));
-    do nl(); while ( s_eq(line, ""));
-    int iangle, tangle; /* id and type of an `angle'; unused */
-    int f1, f2, f3, ifa = 0;
-    do {
-      sscanf(line, "%d %d %d %d %d\n", &iangle, &tangle, &f1, &f2, &f3);
-      ff1[ifa] = f1; ff2[ifa] = f2; ff3[ifa] = f3; ifa++;
-      nl();
-    } while (read != -1 && !s_eq(line, ""));
-    check_nf(ifa, nf);
-  }
-
-  void read_file(const char* fn) {
-    fprintf(stderr, "(iotags) reading: %s\n", fn);
-    auto fd = safe_fopen(fn, "r");
-    read_header(fd);
-    read_faces(fd);
-    fclose(fd);
-  }
-}
-
-void iotags_init_file(const char* fn) { /* like `iotags_init' but read
-					   uDeviceX file */
-  ud2f::read_file(fn); /* sets `nb', `nf'; allocates and fills: `ff1',
-			  `ff2', `ff3' */
-}
 
 void iotags_domain(float xlo, float ylo, float zlo,
 		   float xhi, float yhi, float zhi,
