@@ -94,7 +94,7 @@ namespace wall {
 
     thrust::device_vector<int> keys(n);
 
-    k_wall::fill_keys<<<(n + 127) / 128, 128>>>
+    k_wall::fill_keys<<<k_cnf(n)>>>
       (pp, n, thrust::raw_pointer_cast(&keys[0]));
 
     thrust::sort_by_key(keys.begin(), keys.end(),
@@ -218,7 +218,7 @@ namespace wall {
     if (m::rank == 0) printf("consolidating wall particles...\n");
 
     if (solid_size > 0)
-      k_wall::strip_solid4<<<(solid_size + 127) / 128, 128>>>
+      k_wall::strip_solid4<<<k_cnf(solid_size)>>>
 	(solid, solid_size, solid4);
 
     CC(cudaFree(solid));
@@ -228,7 +228,7 @@ namespace wall {
 
   void bounce(Particle *const p, const int n) {
     if (n > 0)
-      k_wall::bounce<<<(n + 127) / 128, 128>>>
+      k_wall::bounce<<<k_cnf(n)>>>
 	((float2 *)p, n);
   }
 
@@ -253,7 +253,7 @@ namespace wall {
 			 sizeof(int) * wall_cells->ncells));
 
       k_wall::
-	interactions_3tpp<<<(3 * n + 127) / 128, 128>>>
+	interactions_3tpp<<<k_cnf(3 * n)>>>
 	((float2 *)p, n, solid_size, (float *)acc, trunk->get_float());
 
       CC(cudaUnbindTexture(k_wall::texWallParticles));

@@ -165,18 +165,18 @@ namespace Cont {
 void  update(Particle* pp, Force* ff, int n,
 	     bool rbcflag, float driving_force) {
   if (!n) return;
-  ParticleKernels::update<<<(n + 127) / 128, 128>>>
+  ParticleKernels::update<<<k_cnf(n)>>>
     (rbcflag, (float2*)pp, (float*)ff, n, driving_force);
 }
 
 void clear_velocity(Particle* pp, int n) {
   if (n)
-    ParticleKernels::clear_velocity<<<(n + 127) / 128, 128 >>>(pp, n);
+    ParticleKernels::clear_velocity<<<k_cnf(n)>>>(pp, n);
 }
 
 void ic_shear_velocity(Particle* pp, int n) {
   if (n)
-    ParticleKernels::ic_shear_velocity<<<(n + 127) / 128, 128 >>>(pp, n);
+    ParticleKernels::ic_shear_velocity<<<k_cnf(n)>>>(pp, n);
 }
 
 std::vector<Geom> setup_read(const char *path2ic) {

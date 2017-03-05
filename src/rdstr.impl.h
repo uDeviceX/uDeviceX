@@ -60,14 +60,14 @@ void pack_all(int nc, int nv,
   if (nc < k_rdstr::cmaxnc) {
     CC(cudaMemcpyToSymbolAsync(k_rdstr::cdst, dst, sizeof(float*) * nc, 0, H2D));
     CC(cudaMemcpyToSymbolAsync(k_rdstr::csrc, src, sizeof(float*) * nc, 0, H2D));
-    k_rdstr::pack_all_kernel<true><<<(nth + 127) / 128, 128>>>
+    k_rdstr::pack_all_kernel<true><<<k_cnf(nth)>>>
       (nc, nv, NULL, NULL);
   } else {
     _ddst->resize(nc);
     _dsrc->resize(nc);
     CC(cudaMemcpyAsync(_ddst->D, dst, sizeof(float*) * nc, H2D));
     CC(cudaMemcpyAsync(_dsrc->D, src, sizeof(float*) * nc, H2D));
-    k_rdstr::pack_all_kernel<false><<<(nth + 127) / 128, 128>>>
+    k_rdstr::pack_all_kernel<false><<<k_cnf(nth)>>>
       (nc, nv, _dsrc->D, _ddst->D);
   }
 }
@@ -165,7 +165,7 @@ void unpack(Particle *pp, int nrbcs, int nv) {
   for (int i = 1, s = nstay * nv; i < 27; ++i) {
     int cnt = rbuf[i]->S;
     if (cnt > 0)
-      k_rdstr::shift<<<(cnt + 127) / 128, 128>>>
+      k_rdstr::shift<<<k_cnf(cnt)>>>
 	(rbuf[i]->DP, cnt, i, m::rank, false, &pp[s]);
     s += rbuf[i]->S;
   }

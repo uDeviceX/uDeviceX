@@ -215,7 +215,7 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
 
   if (PackingHalo::ncells)
     PackingHalo::
-	count_all<<<(PackingHalo::ncells + 127) / 128, 128>>>(
+	count_all<<<k_cnf(PackingHalo::ncells)>>>(
 	    cellsstart, cellscount, PackingHalo::ncells);
 
   PackingHalo::scan_diego<32><<<26, 32 * 32>>>();
@@ -259,7 +259,7 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
   }
 
   if (PackingHalo::ncells)
-    PackingHalo::copycells<0><<<(PackingHalo::ncells + 127) / 128, 128>>>
+    PackingHalo::copycells<0><<<k_cnf(PackingHalo::ncells)>>>
       (PackingHalo::ncells);
 
   _pack_all(p, n, firstpost);

@@ -114,13 +114,13 @@ namespace rex {
 	CC(cudaMemcpyToSymbolAsync(k_rex::coffsets, packsoffset->D + 26 * i,
 				   sizeof(int) * 26, 0, D2D));
 
-	k_rex::scatter_indices<<<(it.n + 127) / 128, 128>>>(
-									   (float2 *)it.p, it.n, packscount->D + i * 26);
+	k_rex::scatter_indices<<<k_cnf(it.n)>>>
+	  ((float2 *)it.p, it.n, packscount->D + i * 26);
       }
 
-      k_rex::tiny_scan<<<1, 32>>>(
-						 packscount->D + i * 26, packsoffset->D + 26 * i,
-						 packsoffset->D + 26 * (i + 1), packsstart->D + i * 27);
+      k_rex::tiny_scan<<<1, 32>>>
+	(packscount->D + i * 26, packsoffset->D + 26 * i,
+	 packsoffset->D + 26 * (i + 1), packsstart->D + i * 27);
 
 
     }
@@ -129,8 +129,8 @@ namespace rex {
 		       packsoffset->D + 26 * wsolutes.size(), sizeof(int) * 26,
 		       H2H));
 
-    k_rex::tiny_scan<<<1, 32>>>(
-					       packsoffset->D + 26 * wsolutes.size(), NULL, NULL, packstotalstart->D);
+    k_rex::tiny_scan<<<1, 32>>>
+      (packsoffset->D + 26 * wsolutes.size(), NULL, NULL, packstotalstart->D);
 
     CC(cudaMemcpyAsync(host_packstotalstart->D, packstotalstart->D,
 		       sizeof(int) * 27, H2H));

@@ -42,7 +42,7 @@ void remove_bodies_from_wall() {
   if (!rbcs) return;
   if (!r_nc) return;
   DeviceBuffer<int> marks(r_n);
-  k_wall::fill_keys<<<(r_n + 127) / 128, 128>>>
+  k_wall::fill_keys<<<k_cnf(r_n)>>>
     (r_pp, r_n, marks.D);
 
   std::vector<int> tmp(marks.S);
