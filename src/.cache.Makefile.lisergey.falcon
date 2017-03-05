@@ -9,7 +9,7 @@ h5 = 1
 LINK = g++
 NVCC_DIR = /usr/local/cuda-8.0
 NVCC_BIN = ${NVCC_DIR}/bin/nvcc
-OPT      = -O0 -g --device-debug
+#OPT      = -O0 -g --device-debug
 
 # how to get the flags: mpicxx -show
 #                     : pkg-config --libs mpich
@@ -36,9 +36,11 @@ NVCC_LDFALGS = -L${NVCC_DIR}/lib64 -Wl,-rpath -Wl,${NVCC_DIR}/lib64
 
 # geom-wrapper libraries
 # cd ../geom-wrapper && cmake . && make
+ifeq ($(gwrp),1)
 GWRP_CXXFLAGS = -I../geom-wrapper
 GWRP_LDFLAGS = -L${HOME}/prefix/cgal/lib64 -Wl,-rpath,${HOME}/prefix/cgal/lib64:${HOME}/prefix/pkgsrc/lib
 GWRP_LIBS = ../geom-wrapper/libgeom-wrapper.a -lgmp -lCGAL
+endif
 
 NVCC = ${NVCC_BIN} ${GWRP_CXXFLAGS} ${H5PART_CXXFLAGS} ${HDF5_CXXFLAGS} ${MPI_CXXFLAGS}
 LDFLAGS = ${GWRP_LDFLAGS} ${H5PART_LDFLAGS} ${HDF5_LDFLAGS} ${MPI_LDFLAGS} ${NVCC_LDFALGS} # (sic) passed to a linker in uDeviceX
