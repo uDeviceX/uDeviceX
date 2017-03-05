@@ -182,9 +182,8 @@ void diag(int it) {
 void update() {
   k_sim::update<<<k_cnf(s_n)>>>
     (false, (float2*)s_pp, (float*)s_ff, s_n, driving_force);
-  if (!rbcs) return;
-  k_sim::update<<<k_cnf(r_n)>>>
-    ( true, (float2*)r_pp, (float*)r_ff, r_n, driving_force);
+  if (rbcs && r_n) k_sim::update<<<k_cnf(r_n)>>>
+		     (true, (float2*)r_pp, (float*)r_ff, r_n, driving_force);
 }
 
 void bounce() {
@@ -258,7 +257,7 @@ void run() {
   for (it = 0; it < nsteps; ++it) {
     if (walls && it == wall_creation_stepid) {
       create_walls();
-      if (rbcs) k_sim::clear_velocity<<<k_cnf(r_n)>>>(r_pp, r_n);
+      if (rbcs && r_n) k_sim::clear_velocity<<<k_cnf(r_n)>>>(r_pp, r_n);
       if (pushtheflow) driving_force = hydrostatic_a;
     }
     distr_s();
