@@ -67,7 +67,7 @@ void mpDeviceMalloc(T **D) { /* a "[m]ax [p]article number" device
 }
 
 struct Force {
-  float a[3];
+  float f[3];
 };
 
 struct ParticlesWrap {

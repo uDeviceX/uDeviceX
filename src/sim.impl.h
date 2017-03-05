@@ -156,9 +156,9 @@ void diag(int it) {
 
 void update() {
   k_sim::update<<<k_cnf(s_n)>>>
-    (false, (float2*)s_pp, (float*)s_ff, s_n, driving_force);
+    (false, s_pp, s_ff, s_n, driving_force);
   if (rbcs && r_n) k_sim::update<<<k_cnf(r_n)>>>
-		     (true, (float2*)r_pp, (float*)r_ff, r_n, driving_force);
+		     (true, r_pp, r_ff, r_n, driving_force);
 }
 
 void bounce() {
