@@ -26,10 +26,15 @@ Usage:
 #include <vector>
 #include "geom-wrapper.h"
 #include "rbc_utils.h"
+#include "off.impl.h"
+
 using std::vector;
 
+#define MAX_FACE_NUM 1000
+#define MAX_PART_NUM 1000
 #define NV_PER_FACE 3
 
+int faces[3*MAX_FACE_NUM];
 static int   nvar; /* number of variables in one line of input file
 		      x, y, z (3, default), x, y, z, vx, vy, vz (6) */
 
@@ -138,9 +143,9 @@ int main(int argc, const char** argv) {
   rbc::init_rbc_file(rbc_fn);
 
   iotags_domain(xl, yl, zl,    xh, yh, zh,    pbcx, pbcy, pbcz);
-  /*  iotags_init_file("test_data/rbc.org.ud");
-      TODO: add reading from a off file
-   */
+  int nv, nf;
+  off::f2faces("test_data/rbc.off", faces, &nv, &nf);
+  iotags_init(nv, nf, faces);
   
   rbc::read_vertices();
   vector<int> iotags(sol::nv, 0);
