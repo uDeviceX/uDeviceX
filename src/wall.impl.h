@@ -243,8 +243,7 @@ namespace wall {
 
   void bounce(Particle *const p, const int n) {
     if (n > 0)
-      k_wall::bounce<<<k_cnf(n)>>>
-	((float2 *)p, n);
+      k_wall::bounce<<<k_cnf(n)>>> ((float2 *)p, n);
   }
 
   void interactions(const Particle *const p, const int n,
