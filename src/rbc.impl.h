@@ -12,13 +12,6 @@ std::vector<int> extract_neighbors(std::vector<int> adjVert, int degreemax, int 
   return myneighbors;
 }
 
-#define setup_texture(T, TYPE) do {		     \
-    (T).channelDesc = cudaCreateChannelDesc<TYPE>(); \
-    (T).filterMode = cudaFilterModePoint;	     \
-    (T).mipmapFilterMode = cudaFilterModePoint;	     \
-    (T).normalized = 0;				     \
-} while (false)
-
 void setup_support(int *data, int *data2, int nentries) {
   setup_texture(k_rbc::texAdjVert, int);
 

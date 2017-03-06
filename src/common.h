@@ -15,6 +15,14 @@ const int   numberdensity = _numberdensity * (rc * rc * rc);
 /* a common kernel execution configuration */
 #define k_cnf(n) ((n) + 127)/128, 128
 
+/* a common textrue setup */
+#define setup_texture(T, TYPE) do {		     \
+    (T).channelDesc = cudaCreateChannelDesc<TYPE>(); \
+    (T).filterMode = cudaFilterModePoint;	     \
+    (T).mipmapFilterMode = cudaFilterModePoint;	     \
+    (T).normalized = 0;				     \
+} while (false)
+
 #define D2D cudaMemcpyDeviceToDevice
 #define D2H cudaMemcpyDeviceToHost
 #define H2D cudaMemcpyHostToDevice

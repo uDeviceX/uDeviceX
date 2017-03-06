@@ -7,20 +7,9 @@ namespace wall {
     k_wall::texSDF.addressMode[1] = cudaAddressModeWrap;
     k_wall::texSDF.addressMode[2] = cudaAddressModeWrap;
 
-    k_wall::texWallParticles.channelDesc = cudaCreateChannelDesc<float4>();
-    k_wall::texWallParticles.filterMode = cudaFilterModePoint;
-    k_wall::texWallParticles.mipmapFilterMode = cudaFilterModePoint;
-    k_wall::texWallParticles.normalized = 0;
-
-    k_wall::texWallCellStart.channelDesc = cudaCreateChannelDesc<int>();
-    k_wall::texWallCellStart.filterMode = cudaFilterModePoint;
-    k_wall::texWallCellStart.mipmapFilterMode = cudaFilterModePoint;
-    k_wall::texWallCellStart.normalized = 0;
-
-    k_wall::texWallCellCount.channelDesc = cudaCreateChannelDesc<int>();
-    k_wall::texWallCellCount.filterMode = cudaFilterModePoint;
-    k_wall::texWallCellCount.mipmapFilterMode = cudaFilterModePoint;
-    k_wall::texWallCellCount.normalized = 0;
+    setup_texture(k_wall::texWallParticles, float4);
+    setup_texture(k_wall::texWallCellStart, int);
+    setup_texture(k_wall::texWallCellCount, int);
 
     CC(cudaFuncSetCacheConfig(k_wall::interactions_3tpp, cudaFuncCachePreferL1));
   }
