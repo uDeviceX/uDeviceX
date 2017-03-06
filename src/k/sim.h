@@ -1,22 +1,32 @@
 namespace k_sim {
 
-__global__ void update(bool rbcflag, Particle* pp, Force* ff,
-		       int n, float driving_force) {
+__global__ void update(bool rbcflag, Particle* pp, Force* ff, int n) {
   int pid = threadIdx.x + blockDim.x * blockIdx.x;
   if (pid >= n) return;
 
   float *v = pp[pid].v, *r = pp[pid].r, *f = ff[pid].f;
 
   float mass = rbcflag ? rbc_mass : 1;
-  float dy = r[1] -  glb::r0[1]; /* coordinate relative to domain
-				    center */
-  if (doublepoiseuille && dy <= 0) driving_force *= -1;
   lastbit::Preserver up(v[0]);
-  v[0] += (f[0]/mass + driving_force) * dt;
-  v[1] +=  f[1]/mass                  * dt;
-  v[2] +=  f[2]/mass                  * dt;
+  v[0] += f[0]/mass*dt;
+  v[1] += f[1]/mass*dt;
+  v[2] += f[2]/mass*dt;
 
   r[0] += v[0]*dt; r[1] += v[1]*dt; r[2] += v[2]*dt;
+}
+
+__global__ void body_force(bool rbcflag, Particle* pp, Force* ff, int n, float driving_force) {
+  int pid = threadIdx.x + blockDim.x * blockIdx.x;
+  if (pid >= n) return;
+
+  float *r = pp[pid].r, *f = ff[pid].f;
+
+  float mass = rbcflag ? rbc_mass : 1;
+
+  float dy = r[1] - glb::r0[1]; /* coordinate relative to domain
+				    center */
+  if (doublepoiseuille && dy <= 0) driving_force *= -1;
+  f[0] += mass*driving_force;
 }
 
  __global__ void clear_velocity(Particle *pp, int n)  {
