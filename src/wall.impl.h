@@ -1,4 +1,30 @@
 namespace wall {
+  void setup() {
+    k_wall::texSDF.normalized = 0;
+    k_wall::texSDF.filterMode = cudaFilterModePoint;
+    k_wall::texSDF.mipmapFilterMode = cudaFilterModePoint;
+    k_wall::texSDF.addressMode[0] = cudaAddressModeWrap;
+    k_wall::texSDF.addressMode[1] = cudaAddressModeWrap;
+    k_wall::texSDF.addressMode[2] = cudaAddressModeWrap;
+
+    k_wall::texWallParticles.channelDesc = cudaCreateChannelDesc<float4>();
+    k_wall::texWallParticles.filterMode = cudaFilterModePoint;
+    k_wall::texWallParticles.mipmapFilterMode = cudaFilterModePoint;
+    k_wall::texWallParticles.normalized = 0;
+
+    k_wall::texWallCellStart.channelDesc = cudaCreateChannelDesc<int>();
+    k_wall::texWallCellStart.filterMode = cudaFilterModePoint;
+    k_wall::texWallCellStart.mipmapFilterMode = cudaFilterModePoint;
+    k_wall::texWallCellStart.normalized = 0;
+
+    k_wall::texWallCellCount.channelDesc = cudaCreateChannelDesc<int>();
+    k_wall::texWallCellCount.filterMode = cudaFilterModePoint;
+    k_wall::texWallCellCount.mipmapFilterMode = cudaFilterModePoint;
+    k_wall::texWallCellCount.normalized = 0;
+
+    CC(cudaFuncSetCacheConfig(k_wall::interactions_3tpp, cudaFuncCachePreferL1));
+  }
+  
   int init(Particle *pp, int n) {
     float *field = new float[XTEXTURESIZE * YTEXTURESIZE * ZTEXTURESIZE];
     FieldSampler sampler("sdf.dat");
@@ -86,7 +112,7 @@ namespace wall {
     CC(cudaMemcpy3D(&copyParams));
     delete[] field;
 
-    k_wall::setup();
+    setup();
 
     CC(cudaBindTextureToArray(k_wall::texSDF, arrSDF, fmt));
 
@@ -270,4 +296,5 @@ namespace wall {
 
     delete wall_cells;
   }
+
 }

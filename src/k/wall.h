@@ -3,35 +3,6 @@ namespace k_wall {
   texture<float4, 1, cudaReadModeElementType> texWallParticles;
   texture<int, 1, cudaReadModeElementType> texWallCellStart, texWallCellCount;
 
-  __global__ void interactions_3tpp(const float2 *const pp, const int np,
-				    const int nsolid, float *const acc,
-				    const float seed);
-  void setup() {
-    texSDF.normalized = 0;
-    texSDF.filterMode = cudaFilterModePoint;
-    texSDF.mipmapFilterMode = cudaFilterModePoint;
-    texSDF.addressMode[0] = cudaAddressModeWrap;
-    texSDF.addressMode[1] = cudaAddressModeWrap;
-    texSDF.addressMode[2] = cudaAddressModeWrap;
-
-    texWallParticles.channelDesc = cudaCreateChannelDesc<float4>();
-    texWallParticles.filterMode = cudaFilterModePoint;
-    texWallParticles.mipmapFilterMode = cudaFilterModePoint;
-    texWallParticles.normalized = 0;
-
-    texWallCellStart.channelDesc = cudaCreateChannelDesc<int>();
-    texWallCellStart.filterMode = cudaFilterModePoint;
-    texWallCellStart.mipmapFilterMode = cudaFilterModePoint;
-    texWallCellStart.normalized = 0;
-
-    texWallCellCount.channelDesc = cudaCreateChannelDesc<int>();
-    texWallCellCount.filterMode = cudaFilterModePoint;
-    texWallCellCount.mipmapFilterMode = cudaFilterModePoint;
-    texWallCellCount.normalized = 0;
-
-    CC(cudaFuncSetCacheConfig(interactions_3tpp, cudaFuncCachePreferL1));
-  }
-
   __device__ float sdf(float x, float y, float z) {
     int L[3] = {XS, YS, ZS};
     int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
