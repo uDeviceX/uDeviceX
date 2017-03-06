@@ -16,7 +16,7 @@ namespace wall {
   
   int init(Particle *pp, int n) {
     float *field = new float[XTEXTURESIZE * YTEXTURESIZE * ZTEXTURESIZE];
-    field::FieldSampler sampler("sdf.dat");
+    field::ini("sdf.dat");
     int L[3] = {XS, YS, ZS};
     int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
     int TEXTURESIZE[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
@@ -24,14 +24,14 @@ namespace wall {
     {
       float start[3], spacing[3];
       for (int c = 0; c < 3; ++c) {
-	start[c] = sampler.N[c] * (m::coords[c] * L[c] - MARGIN[c]) /
+	start[c] = field::N[c] * (m::coords[c] * L[c] - MARGIN[c]) /
 	  (float)(m::dims[c] * L[c]);
-	spacing[c] = sampler.N[c] * (L[c] + 2 * MARGIN[c]) /
+	spacing[c] = field::N[c] * (L[c] + 2 * MARGIN[c]) /
 	  (float)(m::dims[c] * L[c]) / (float)TEXTURESIZE[c];
       }
       float amplitude_rescaling = (XS /*+ 2 * XMARGIN_WALL*/) /
-	(sampler.extent[0] / m::dims[0]);
-      sampler.sample(start, spacing, TEXTURESIZE, amplitude_rescaling, field);
+	(field::extent[0] / m::dims[0]);
+      field::sample(start, spacing, TEXTURESIZE, amplitude_rescaling, field);
     }
 
     if (m::rank == 0) printf("estimating geometry-based message sizes...\n");
@@ -50,12 +50,12 @@ namespace wall {
 	    float start[3], spacing[3];
 	    for (int c = 0; c < 3; ++c) {
 	      start[c] = (m::coords[c] * L[c] + local_start[c]) /
-		(float)(m::dims[c] * L[c]) * sampler.N[c];
-	      spacing[c] = sampler.N[c] / (float)(m::dims[c] * L[c]);
+		(float)(m::dims[c] * L[c]) * field::N[c];
+	      spacing[c] = field::N[c] / (float)(m::dims[c] * L[c]);
 	    }
 	    int nextent = local_extent[0] * local_extent[1] * local_extent[2];
 	    float *data = new float[nextent];
-	    sampler.sample(start, spacing, local_extent, 1, data);
+	    field::sample(start, spacing, local_extent, 1, data);
 	    int s = 0;
 	    for (int i = 0; i < nextent; ++i) s += (data[i] < 0);
 
@@ -74,13 +74,13 @@ namespace wall {
 
       float start[3], spacing[3];
       for (int c = 0; c < 3; ++c) {
-	start[c] = m::coords[c] * L[c] / (float)(m::dims[c] * L[c]) * sampler.N[c];
-	spacing[c] = sampler.N[c] / (float)(m::dims[c] * L[c]);
+	start[c] = m::coords[c] * L[c] / (float)(m::dims[c] * L[c]) * field::N[c];
+	spacing[c] = field::N[c] / (float)(m::dims[c] * L[c]);
       }
 
       int size[3] = {XS, YS, ZS};
-      float amplitude_rescaling = L[0] / (sampler.extent[0] / m::dims[0]);
-      sampler.sample(start, spacing, size, amplitude_rescaling, walldata);
+      float amplitude_rescaling = L[0] / (field::extent[0] / m::dims[0]);
+      field::sample(start, spacing, size, amplitude_rescaling, walldata);
       H5FieldDump dump;
       dump.dump_scalarfield(walldata, "wall");
       delete[] walldata;
@@ -237,9 +237,11 @@ namespace wall {
 	(solid, solid_size, solid4);
 
     CC(cudaFree(solid));
+
+    field::fin();
     
     return nsurvived;
-  }
+  } /* end of ini */
 
   void bounce(Particle *const p, const int n) {
     if (n > 0)

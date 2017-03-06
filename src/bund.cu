@@ -48,6 +48,7 @@
 
 #include "wall.decl.h"
 #include "k/wall.h"
+#include "field.decl.h"
 #include "field.impl.h"
 #include "wall.impl.h"
 
