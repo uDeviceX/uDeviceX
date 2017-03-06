@@ -1,5 +1,5 @@
 namespace field {
-  void ini(const char *path) { /* read sdf file */
+  void ini(const char *path, int N[3]) { /* read sdf file */
     size_t CHUNKSIZE = 1 << 25;
     if (m::rank == 0) {
       FILE *fh = fopen(path, "r");
@@ -32,7 +32,7 @@ namespace field {
     }
   }
 
-  void sample(float start[3], float spacing[3], int nsize[3], float amplitude_rescaling,
+  void sample(float start[3], float spacing[3], int nsize[3], float amplitude_rescaling, int N[3],
 	      float *const output) {
 #define X 0
 #define Y 1
