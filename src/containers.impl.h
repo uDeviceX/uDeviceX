@@ -1,5 +1,7 @@
 namespace Cont {
-void transform0(float* rr0, int nv, float *A, /* output */ Particle* pp) {
+void transform(float* rr0, int nv, float *A, /* output */ Particle* pp) {
+  /* rr0: vertices of RBC template
+     A: affice transfromation matrix */
   for (int iv = 0; iv < nv; iv++) {
     float  *r = pp[iv].r, *v = pp[iv].v;
     float *r0 = &rr0[3*iv];
@@ -16,11 +18,9 @@ void transform0(float* rr0, int nv, float *A, /* output */ Particle* pp) {
   }
 }
 
-int setup(Particle* pp, int nv, /* storage */ Particle *pp_hst) {
-  /* fills `pp' with RBCs for this processor */
-
-  const char* r_templ = "rbc.off";
-  const char* r_state = "rbcs-ic.txt";
+int setup_hst(int nv, Particle *pp_hst) {
+  /* fills `pp_hst' with RBCs for this processor on host */
+  const char *r_templ = "rbc.off", *r_state = "rbcs-ic.txt";;
 
   float rr0[3*MAX_VERT_NUM]; /* rbc template */
   off::f2vert(r_templ, rr0);
@@ -38,12 +38,18 @@ int setup(Particle* pp, int nv, /* storage */ Particle *pp_hst) {
       A[j] -= mi[c]; /* in local coordinates */
       if (2*A[j] < -L[c] || 2*A[j] > L[c]) goto next; /* not my RBC */
     }
-    transform0(rr0, nv, A, &pp_hst[nv*(ic++)]);
+    transform(rr0, nv, A, &pp_hst[nv*(ic++)]);
     next: ;
   }
  done:
   fclose(f);
   int nc = ic;
+  return nc;
+}
+
+int setup(Particle* pp, int nv, /* storage */ Particle *pp_hst) {
+  /* fills `pp' with RBCs for this processor */
+  int nc = setup_hst(nv, pp_hst);
   CC(cudaMemcpy(pp, pp_hst, sizeof(Particle) * nv * nc, H2D));
   MPI_Barrier(m::cart);
   return nc;
@@ -58,8 +64,8 @@ int rbc_remove(Particle* pp, int nv, int nc, int *e, int ne) {
 
   for (i0 = i1 = 0; i0 < nc; i0++)
     if (m[i0] == STAY)
-      CC(cudaMemcpy(pp + nv * (i1++), pp + nv * i0,
-		    sizeof(Particle) * nv, D2D));
+      CC(cudaMemcpy(&pp[nv*(i1++)], pp + nv*i0,
+		    sizeof(Particle)*nv, D2D));
   int nstay = i1;
 
   return nstay;
