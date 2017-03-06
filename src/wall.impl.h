@@ -33,7 +33,7 @@ namespace wall {
       }
       float amplitude_rescaling = (XS /*+ 2 * XMARGIN_WALL*/) /
 	(extent[0] / m::dims[0]);
-      field::sample(start, spacing, TEXTURESIZE, amplitude_rescaling, N, field);
+      field::sample(start, spacing, TEXTURESIZE, N, amplitude_rescaling, field);
     }
 
     if (hdf5field_dumps) {
@@ -50,7 +50,7 @@ namespace wall {
 
       int size[3] = {XS, YS, ZS};
       float amplitude_rescaling = L[0] / (extent[0] / m::dims[0]);
-      field::sample(start, spacing, size, amplitude_rescaling, N, walldata);
+      field::sample(start, spacing, size, N, amplitude_rescaling, walldata);
       H5FieldDump dump;
       dump.dump_scalarfield(walldata, "wall");
       delete[] walldata;
