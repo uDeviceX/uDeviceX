@@ -1,7 +1,5 @@
 namespace field {
   void ini(const char *path, int N[3], float extent[3]) { /* read sdf file */
-    size_t CHUNKSIZE = 1 << 25;
-    if (m::rank == 0) {
       FILE *fh = fopen(path, "r");
       char line[2048];
       fgets(line, sizeof(line), fh);
@@ -16,20 +14,7 @@ namespace field {
       data = new float[np];
       fread(data, sizeof(float), np, fh);
       fclose(fh);
-      for (size_t i = 0; i < np; i += CHUNKSIZE) {
-	size_t s = (i + CHUNKSIZE <= np) ? CHUNKSIZE : (np - i);
-	MC(MPI_Bcast(data + i, s, MPI_FLOAT, 0, m::cart));
-      }
-    } else {
-      MC(MPI_Bcast(N, 3, MPI_INT, 0, m::cart));
-      MC(MPI_Bcast(extent, 3, MPI_FLOAT, 0, m::cart));
-      int np = N[0] * N[1] * N[2];
-      data = new float[np];
-      for (size_t i = 0; i < np; i += CHUNKSIZE) {
-	size_t s = (i + CHUNKSIZE <= np) ? CHUNKSIZE : (np - i);
-	MC(MPI_Bcast(data + i, s, MPI_FLOAT, 0, m::cart));
-      }
-    }
+      MPI_Barrier(m::cart);
   }
 
   void sample(float start[3], float spacing[3], int nsize[3], float amplitude_rescaling, int N[3],
