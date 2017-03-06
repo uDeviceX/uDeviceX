@@ -1,3 +1,5 @@
+namespace field {
+
 template <int k> struct Bspline {
   template <int i> static float eval(float x) {
     return (x - i) / (k - 1) * Bspline<k - 1>::template eval<i>(x) +
@@ -105,3 +107,4 @@ struct FieldSampler {
   ~FieldSampler() { delete[] data; }
 };
 
+} /* namespace field */

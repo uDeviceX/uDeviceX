@@ -16,7 +16,7 @@ namespace wall {
   
   int init(Particle *pp, int n) {
     float *field = new float[XTEXTURESIZE * YTEXTURESIZE * ZTEXTURESIZE];
-    FieldSampler sampler("sdf.dat");
+    field::FieldSampler sampler("sdf.dat");
     int L[3] = {XS, YS, ZS};
     int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
     int TEXTURESIZE[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
