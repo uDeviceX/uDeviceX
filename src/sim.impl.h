@@ -154,11 +154,18 @@ void diag(int it) {
   diagnostics(sr_pp, n, it);
 }
 
+void body_force() {
+  k_sim::body_force<<<k_cnf(s_n)>>> (false, s_pp, s_ff, s_n, driving_force);
+
+  if (!rbcs || !r_n) return;
+  k_sim::body_force<<<k_cnf(r_n)>>> (true, r_pp, r_ff, r_n, driving_force);
+}
+
 void update() {
-  k_sim::update<<<k_cnf(s_n)>>>
-    (false, s_pp, s_ff, s_n, driving_force);
-  if (rbcs && r_n) k_sim::update<<<k_cnf(r_n)>>>
-		     (true, r_pp, r_ff, r_n, driving_force);
+  k_sim::update<<<k_cnf(s_n)>>> (false, s_pp, s_ff, s_n);
+
+  if (!rbcs || !r_n) return;
+  k_sim::update<<<k_cnf(r_n)>>> (true,  r_pp, r_ff, r_n);
 }
 
 void bounce() {
@@ -235,6 +242,7 @@ void run() {
     if (rbcs) distr_r();
     forces();
     dumps_diags(it);
+    body_force();
     update();
     bounce();
   }
