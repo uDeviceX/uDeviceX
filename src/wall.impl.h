@@ -17,7 +17,8 @@ namespace wall {
   int init(Particle *pp, int n) {
     float *field = new float[XTEXTURESIZE * YTEXTURESIZE * ZTEXTURESIZE];
     int N[3];
-    field::ini("sdf.dat", N);
+    float extent[3];
+    field::ini("sdf.dat", N, extent);
     int L[3] = {XS, YS, ZS};
     int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
     int TEXTURESIZE[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
@@ -31,40 +32,8 @@ namespace wall {
 	  (float)(m::dims[c] * L[c]) / (float)TEXTURESIZE[c];
       }
       float amplitude_rescaling = (XS /*+ 2 * XMARGIN_WALL*/) /
-	(field::extent[0] / m::dims[0]);
+	(extent[0] / m::dims[0]);
       field::sample(start, spacing, TEXTURESIZE, amplitude_rescaling, N, field);
-    }
-
-    if (m::rank == 0) printf("estimating geometry-based message sizes...\n");
-    {
-      for (int dz = -1; dz <= 1; ++dz)
-	for (int dy = -1; dy <= 1; ++dy)
-	  for (int dx = -1; dx <= 1; ++dx) {
-	    int d[3] = {dx, dy, dz};
-	    int local_start[3] = {d[0] + (d[0] == 1) * (XS - 2),
-				  d[1] + (d[1] == 1) * (YS - 2),
-				  d[2] + (d[2] == 1) * (ZS - 2)};
-	    int local_extent[3] = {1 * (d[0] != 0 ? 2 : XS),
-				   1 * (d[1] != 0 ? 2 : YS),
-				   1 * (d[2] != 0 ? 2 : ZS)};
-
-	    float start[3], spacing[3];
-	    for (int c = 0; c < 3; ++c) {
-	      start[c] = (m::coords[c] * L[c] + local_start[c]) /
-		(float)(m::dims[c] * L[c]) * N[c];
-	      spacing[c] = N[c] / (float)(m::dims[c] * L[c]);
-	    }
-	    int nextent = local_extent[0] * local_extent[1] * local_extent[2];
-	    float *data = new float[nextent];
-	    field::sample(start, spacing, local_extent, 1, N, data);
-	    int s = 0;
-	    for (int i = 0; i < nextent; ++i) s += (data[i] < 0);
-
-	    delete[] data;
-	    double avgsize =
-	      ceil(s * numberdensity /
-		   (double)pow(2, abs(d[0]) + abs(d[1]) + abs(d[2])));
-	  }
     }
 
     if (hdf5field_dumps) {
@@ -80,13 +49,12 @@ namespace wall {
       }
 
       int size[3] = {XS, YS, ZS};
-      float amplitude_rescaling = L[0] / (field::extent[0] / m::dims[0]);
+      float amplitude_rescaling = L[0] / (extent[0] / m::dims[0]);
       field::sample(start, spacing, size, amplitude_rescaling, N, walldata);
       H5FieldDump dump;
       dump.dump_scalarfield(walldata, "wall");
       delete[] walldata;
     }
-
 
     cudaChannelFormatDesc fmt = cudaCreateChannelDesc<float>();
     CC(cudaMalloc3DArray

@@ -1,5 +1,5 @@
 namespace field {
-  void ini(const char *path, int N[3]) { /* read sdf file */
+  void ini(const char *path, int N[3], float extent[3]) { /* read sdf file */
     size_t CHUNKSIZE = 1 << 25;
     if (m::rank == 0) {
       FILE *fh = fopen(path, "r");

@@ -1,5 +1,5 @@
 namespace field {
-  float *data,  extent[3];
+  float *data;
 
   template <int k> struct Bspline {
   template <int i> static float eval(float x) {
