@@ -116,25 +116,6 @@ namespace k_wall {
     dst[pid] = make_float4(p.r[0], p.r[1], p.r[2], 0);
   }
 
-  __device__ void vell(float x, float y, float z,
-		       float *vxw, float *vyw, float *vzw) {
-    float z0 = glb::r0[2];
-    *vxw = gamma_dot * (z - z0); *vyw = 0; *vzw = 0; /* velocity of the wall; */
-  }
-
-  __device__ void bounce_vel(float   xw, float   yw, float   zw, /* wall */
-			     float* vxp, float* vyp, float* vzp) {
-    float vx = *vxp, vy = *vyp, vz = *vzp;
-    float vxw, vyw, vzw; vell(xw, yw, zw, &vxw, &vyw, &vzw);
-    /* go to velocity relative to the wall; bounce; and go back */
-    vx -= vxw; vx = -vx; vx += vxw;
-    vy -= vyw; vy = -vy; vy += vyw;
-    vz -= vzw; vz = -vz; vz += vzw;
-
-    lastbit::Preserver up1(*vxp);
-    *vxp = vx; *vyp = vy; *vzp = vz;
-  }
-
   __device__ void handle_collision(float currsdf,
 				   float &x, float &y, float &z,
 				   float &vx, float &vy, float &vz) {
@@ -148,7 +129,7 @@ namespace k_wall {
 	if (sdf(x, y, z) < 0) {
 	  /* we are confused anyway! use particle position as wall
 	     position */
-	  bounce_vel(x, y, z, &vx, &vy, &vz); return;
+	  k_wvel::bounce_vel(x, y, z, &vx, &vy, &vz); return;
 	}
 	float jump = 1.1f * sdf0 / (1 << l);
 	x -= jump * dsdf.x; y -= jump * dsdf.y; z -= jump * dsdf.z;
@@ -188,7 +169,7 @@ namespace k_wall {
     float xw = x + t*vx, yw = y + t*vy, zw = z + t*vz; /* wall */
     x += 2*t*vx; y += 2*t*vy; z += 2*t*vz; /* bouncing relatively to
 					      wall */
-    bounce_vel(xw, yw, zw, &vx, &vy, &vz);
+    k_wvel::bounce_vel(xw, yw, zw, &vx, &vy, &vz);
     if (sdf(x, y, z) >= 0) {x = x0; y = y0; z = z0;}
   }
 
@@ -298,8 +279,9 @@ namespace k_wall {
       int spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
       float4 stmp0 = tex1Dfetch(texWallParticles, spid);
 
-      float  xw = stmp0.uno,  yw = stmp0.due,  zw = stmp0.tre; /* wall particle */
-      float vxw, vyw, vzw; vell(xw, yw, zw, &vxw, &vyw, &vzw);
+      float  xw = stmp0.uno, yw = stmp0.due, zw = stmp0.tre; /* wall particle */
+      float vxw, vyw, vzw;
+      k_wvel::vell(xw, yw, zw, &vxw, &vyw, &vzw);
       float rnd = Logistic::mean0var1(seed, pid, spid);
 
       // check for particle types and compute the DPD force
