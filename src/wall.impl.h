@@ -6,12 +6,6 @@ namespace wall {
     k_sdf::texSDF.addressMode[0] = cudaAddressModeWrap;
     k_sdf::texSDF.addressMode[1] = cudaAddressModeWrap;
     k_sdf::texSDF.addressMode[2] = cudaAddressModeWrap;
-
-    setup_texture(k_wall::texWallParticles, float4);
-    setup_texture(k_wall::texWallCellStart, int);
-    setup_texture(k_wall::texWallCellCount, int);
-
-    CC(cudaFuncSetCacheConfig(k_wall::interactions_3tpp, cudaFuncCachePreferL1));
   }
   
   int init(Particle *pp, int n) {
@@ -55,6 +49,10 @@ namespace wall {
     delete[] field;
 
     setup();
+    setup_texture(k_wall::texWallParticles, float4);
+    setup_texture(k_wall::texWallCellStart, int);
+    setup_texture(k_wall::texWallCellCount, int);
+    CC(cudaFuncSetCacheConfig(k_wall::interactions_3tpp, cudaFuncCachePreferL1));
 
     CC(cudaBindTextureToArray(k_sdf::texSDF, arrSDF, fmt));
 
@@ -195,8 +193,7 @@ namespace wall {
   } /* end of ini */
 
   void bounce(Particle *const p, const int n) {
-    if (n > 0)
-      k_sdf::bounce<<<k_cnf(n)>>> ((float2 *)p, n);
+    if (n > 0) k_sdf::bounce<<<k_cnf(n)>>>((float2 *)p, n);
   }
 
   void interactions(const Particle *const p, const int n,
@@ -219,23 +216,18 @@ namespace wall {
 			 &k_wall::texWallCellCount.channelDesc,
 			 sizeof(int) * wall_cells->ncells));
 
-      k_wall::
-	interactions_3tpp<<<k_cnf(3 * n)>>>
+      k_wall::interactions_3tpp<<<k_cnf(3 * n)>>>
 	((float2 *)p, n, w_n, (float *)acc, trunk->get_float());
 
       CC(cudaUnbindTexture(k_wall::texWallParticles));
       CC(cudaUnbindTexture(k_wall::texWallCellStart));
       CC(cudaUnbindTexture(k_wall::texWallCellCount));
     }
-
-
   }
 
   void close () {
     CC(cudaUnbindTexture(k_sdf::texSDF));
     CC(cudaFreeArray(arrSDF));
-
     delete wall_cells;
   }
-
 }
