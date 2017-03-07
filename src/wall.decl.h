@@ -20,6 +20,5 @@ namespace wall {
 
   int w_n;
   float4 *w_pp;
-  cudaArray *arrSDF;
   CellLists *wall_cells;
 }

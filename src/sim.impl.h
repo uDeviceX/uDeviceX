@@ -44,6 +44,7 @@ static void update_helper_arrays() {
 
 void create_walls() {
   dSync();
+  sdf::init();
   s_n = wall::init(s_pp, s_n); /* number of survived particles */
   wall_created = true;
 
