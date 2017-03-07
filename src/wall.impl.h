@@ -165,10 +165,10 @@ namespace wall {
 		    H2D));
     }
 
-    solid_size = solid_local.size() + solid_remote.S;
+    w_n = solid_local.size() + solid_remote.S;
 
     Particle *solid;
-    CC(cudaMalloc(&solid, sizeof(Particle) * solid_size));
+    CC(cudaMalloc(&solid, sizeof(Particle) * w_n));
     CC(cudaMemcpy(solid, thrust::raw_pointer_cast(&solid_local[0]),
 		  sizeof(Particle) * solid_local.size(),
 		  D2D));
@@ -179,15 +179,15 @@ namespace wall {
     wall_cells = new CellLists(XS + 2 * XMARGIN_WALL,
 			       YS + 2 * YMARGIN_WALL,
 			       ZS + 2 * ZMARGIN_WALL);
-    if (solid_size > 0) wall_cells->build(solid, solid_size, 0);
+    if (w_n > 0) wall_cells->build(solid, w_n, 0);
 
-    CC(cudaMalloc(&solid4, sizeof(float4) * solid_size));
+    CC(cudaMalloc(&w_pp, sizeof(float4) * w_n));
 
     if (m::rank == 0) printf("consolidating wall particles...\n");
 
-    if (solid_size > 0)
-      k_wall::strip_solid4<<<k_cnf(solid_size)>>>
-	(solid, solid_size, solid4);
+    if (w_n > 0)
+      k_wall::strip_solid4<<<k_cnf(w_n)>>>
+	(solid, w_n, w_pp);
 
     CC(cudaFree(solid));
 
@@ -202,12 +202,12 @@ namespace wall {
   void interactions(const Particle *const p, const int n,
 		    Force *const acc) {
     // cellsstart and cellscount IGNORED for now
-    if (n > 0 && solid_size > 0) {
+    if (n > 0 && w_n > 0) {
       size_t textureoffset;
       CC(cudaBindTexture(&textureoffset,
-			 &k_wall::texWallParticles, solid4,
+			 &k_wall::texWallParticles, w_pp,
 			 &k_wall::texWallParticles.channelDesc,
-			 sizeof(float4) * solid_size));
+			 sizeof(float4) * w_n));
 
       CC(cudaBindTexture(&textureoffset,
 			 &k_wall::texWallCellStart, wall_cells->start,
@@ -221,7 +221,7 @@ namespace wall {
 
       k_wall::
 	interactions_3tpp<<<k_cnf(3 * n)>>>
-	((float2 *)p, n, solid_size, (float *)acc, trunk->get_float());
+	((float2 *)p, n, w_n, (float *)acc, trunk->get_float());
 
       CC(cudaUnbindTexture(k_wall::texWallParticles));
       CC(cudaUnbindTexture(k_wall::texWallCellStart));
