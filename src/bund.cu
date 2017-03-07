@@ -53,6 +53,8 @@
 #include "k/wvel.h" /* wall velocity used by sdf and wall */
 
 #include "k/sdf.h"
+#include "sdf.decl.h"
+#include "sdf.impl.h"
 
 #include "k/wall.h"
 #include "wall.impl.h"
