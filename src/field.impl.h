@@ -1,5 +1,5 @@
 namespace field {
-  void ini(const char *path, int N[3], float extent[3]) { /* read sdf file */
+  void ini(const char *path, int N[3], float extent[3], float* grid_data) { /* read sdf file */
       FILE *fh = fopen(path, "r");
       char line[2048];
       fgets(line, sizeof(line), fh);
@@ -11,18 +11,17 @@ namespace field {
       MC(MPI_Bcast(extent, 3, MPI_FLOAT, 0, m::cart));
 
       int np = N[0] * N[1] * N[2];
-      data = new float[np];
-      fread(data, sizeof(float), np, fh);
+      fread(grid_data, sizeof(float), np, fh);
       fclose(fh);
       MPI_Barrier(m::cart);
   }
 
-  void sample(float rlo[3], float dr[3], int nsize[3], int N[3], float ampl, float *out) {
+  void sample(float rlo[3], float dr[3], int nsize[3], int N[3], float ampl, float* grid_data, float *out) {
 #define X 0
 #define Y 1
 #define Z 2
-#define OOO(ix, iy, iz) (out[ix + nsize[X] * (iy + nsize[Y] * iz)])
-#define DDD(ix, iy, iz) (data  [ix +     N[X] * (iy +     N[Y] * iz)])
+#define OOO(ix, iy, iz) (      out[ix + nsize[X] * (iy + nsize[Y] * iz)])
+#define DDD(ix, iy, iz) (grid_data [ix +     N[X] * (iy +     N[Y] * iz)])
 #define i2r(i, d) (rlo[d] + (i + 0.5) * dr[d] - 0.5)
 #define i2x(i)    i2r(i,X)
 #define i2y(i)    i2r(i,Y)
@@ -73,7 +72,23 @@ namespace field {
 #undef Y
 #undef Z
   }
+
+
+  void dump(int N[3], float extent[3], float* grid_data) {
+    int c, L[3] = {XS, YS, ZS};
+    float walldata[MAX_SUBDOMAIN_VOLUME];
+
+    float rlo[3], dr[3], ampl;
+    for (c = 0; c < 3; ++c) {
+      rlo[c] = m::coords[c] * L[c] / (float)(m::dims[c] * L[c]) * N[c];
+      dr[c] = N[c] / (float)(m::dims[c] * L[c]);
+    }
+    ampl = L[0] / (extent[0] / (float) m::dims[0]);
+    field::sample(rlo, dr, L, N, ampl, grid_data, walldata);
+    H5FieldDump dump;
+    dump.dump_scalarfield(walldata, "wall");
+  }
   
-  void fin() { delete[] data; }
+
 
 } /* namespace field */
