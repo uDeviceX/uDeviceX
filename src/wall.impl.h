@@ -1,11 +1,11 @@
 namespace wall {
   void setup() {
-    k_wall::texSDF.normalized = 0;
-    k_wall::texSDF.filterMode = cudaFilterModePoint;
-    k_wall::texSDF.mipmapFilterMode = cudaFilterModePoint;
-    k_wall::texSDF.addressMode[0] = cudaAddressModeWrap;
-    k_wall::texSDF.addressMode[1] = cudaAddressModeWrap;
-    k_wall::texSDF.addressMode[2] = cudaAddressModeWrap;
+    k_sdf::texSDF.normalized = 0;
+    k_sdf::texSDF.filterMode = cudaFilterModePoint;
+    k_sdf::texSDF.mipmapFilterMode = cudaFilterModePoint;
+    k_sdf::texSDF.addressMode[0] = cudaAddressModeWrap;
+    k_sdf::texSDF.addressMode[1] = cudaAddressModeWrap;
+    k_sdf::texSDF.addressMode[2] = cudaAddressModeWrap;
 
     setup_texture(k_wall::texWallParticles, float4);
     setup_texture(k_wall::texWallCellStart, int);
@@ -56,13 +56,13 @@ namespace wall {
 
     setup();
 
-    CC(cudaBindTextureToArray(k_wall::texSDF, arrSDF, fmt));
+    CC(cudaBindTextureToArray(k_sdf::texSDF, arrSDF, fmt));
 
     if (m::rank == 0) printf("carving out wall particles...\n");
 
     thrust::device_vector<int> keys(n);
 
-    k_wall::fill_keys<<<k_cnf(n)>>>
+    k_sdf::fill_keys<<<k_cnf(n)>>>
       (pp, n, thrust::raw_pointer_cast(&keys[0]));
 
     thrust::sort_by_key(keys.begin(), keys.end(),
@@ -186,7 +186,7 @@ namespace wall {
     if (m::rank == 0) printf("consolidating wall particles...\n");
 
     if (w_n > 0)
-      k_wall::strip_solid4<<<k_cnf(w_n)>>>
+      k_sdf::strip_solid4<<<k_cnf(w_n)>>>
 	(solid, w_n, w_pp);
 
     CC(cudaFree(solid));
@@ -196,7 +196,7 @@ namespace wall {
 
   void bounce(Particle *const p, const int n) {
     if (n > 0)
-      k_wall::bounce<<<k_cnf(n)>>> ((float2 *)p, n);
+      k_sdf::bounce<<<k_cnf(n)>>> ((float2 *)p, n);
   }
 
   void interactions(const Particle *const p, const int n,
@@ -232,7 +232,7 @@ namespace wall {
   }
 
   void close () {
-    CC(cudaUnbindTexture(k_wall::texSDF));
+    CC(cudaUnbindTexture(k_sdf::texSDF));
     CC(cudaFreeArray(arrSDF));
 
     delete wall_cells;

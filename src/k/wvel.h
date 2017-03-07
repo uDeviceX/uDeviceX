@@ -8,7 +8,8 @@ namespace k_wvel { /* wall velocity */
   __device__ void bounce_vel(float   xw, float   yw, float   zw, /* wall */
 			     float* vxp, float* vyp, float* vzp) {
     float vx = *vxp, vy = *vyp, vz = *vzp;
-    float vxw, vyw, vzw; vell(xw, yw, zw, &vxw, &vyw, &vzw);
+    float vxw, vyw, vzw;
+    vell(xw, yw, zw, &vxw, &vyw, &vzw);
     /* go to velocity relative to the wall; bounce; and go back */
     vx -= vxw; vx = -vx; vx += vxw;
     vy -= vyw; vy = -vy; vy += vyw;
