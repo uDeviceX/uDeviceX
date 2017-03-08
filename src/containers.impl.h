@@ -79,13 +79,4 @@ void rbc_dump(int nc, Particle *p, int* triplets,
     if (m::rank == 0) mkdir("ply", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     ply_dump(buf, triplets, nc, nt, p, nv);
 }
-
-void update_solid(int n, Particle *pp, Force *ff,
-    /* storage */ Particle *pp_hst, Force *ff_hst) {
-    CC(cudaMemcpy(pp_hst, pp, sizeof(Particle) * n, D2H));
-    CC(cudaMemcpy(pp, pp_hst, sizeof(Particle) * n, H2D));
-    CC(cudaMemcpy(ff_hst, ff, sizeof(Force) * n, D2H));
-    CC(cudaMemcpy(ff, ff_hst, sizeof(Force) * n, H2D));
-    k_sim::update<<<k_cnf(n)>>> (true,  pp, ff, n);
-}
 }

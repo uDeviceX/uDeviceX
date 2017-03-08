@@ -162,13 +162,52 @@ void body_force() {
   k_sim::body_force<<<k_cnf(r_n)>>> (true, r_pp, r_ff, r_n, driving_force);
 }
 
-void update_s() {
-  k_sim::update<<<k_cnf(s_n)>>> (false, s_pp, s_ff, s_n);
+void init_solid() {
+    r_m = rbc_mass*r_n;
+    r_v[0] = 0; r_v[1] = 0; r_v[2] = 0; 
+}
+
+void update_solid() {
+    CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
+    CC(cudaMemcpy(r_ff_hst, r_ff, sizeof(Force) * r_n, D2H));
+
+    int ip;
+    float *r0, *v0, *f0;
+
+    /* update force */
+    r_f[0] = 0; r_f[1] = 0; r_f[2] = 0; 
+    for (ip = 0; ip < r_n; ++ip) {
+        f0 = r_ff_hst[ip].f;
+        r_f[0] += f0[0]; r_f[1] += f0[1]; r_f[2] += f0[2];
+    }
+
+    /* update linear velocity */
+    float sc = 1./r_m*dt;
+    r_v[0] += r_f[0]*sc; r_v[1] += r_f[1]*sc; r_v[2] += r_f[2]*sc;
+
+    for (ip = 0; ip < r_n; ++ip) {
+        v0 = r_pp_hst[ip].v;
+        v0[0] = r_v[0]; v0[1] = r_v[1]; v0[2] = r_v[2];
+    }
+
+    for (ip = 0; ip < r_n; ++ip) {
+        r0 = r_pp_hst[ip].r;
+        v0 = r_pp_hst[ip].v;
+        r0[0] += v0[0]*dt; r0[1] += v0[1]*dt; r0[2] += v0[2]*dt;
+    }
+
+    CC(cudaMemcpy(r_pp, r_pp_hst, sizeof(Particle) * r_n, H2D));
+    //CC(cudaMemcpy(r_ff, r_ff_hst, sizeof(Force) * r_n, H2D));
+    
+    //k_sim::update<<<k_cnf(r_n)>>> (true,  r_pp, r_ff, r_n);
 }
 
 void update_r() {
-  if (r_n) Cont::update_solid(r_n, r_pp, r_ff,
-                              /* storage */ r_pp_hst, r_ff_hst);
+  if (r_n) update_solid();
+}
+
+void update_s() {
+  k_sim::update<<<k_cnf(s_n)>>> (false, s_pp, s_ff, s_n);
 }
 
 void bounce() {
@@ -207,15 +246,14 @@ void init() {
   update_helper_arrays();
 
   if (rbcs) {
-    r_nc = Cont::setup(r_pp, r_nv, /* storage */ r_pp_hst);
-
-    r_n = r_nc * r_nv;
+    r_nc = Cont::setup(r_pp, r_nv, /* storage */ r_pp_hst); r_n = r_nc * r_nv;
 #ifdef GWRP
     iotags_init(r_nv, r_nt, r_faces);
     iotags_domain(0, 0, 0,
 		  XS, YS, ZS,
 		  m::periods[0], m::periods[1], m::periods[0]);
 #endif
+    init_solid();
   }
 
   dump_field = new H5FieldDump;
