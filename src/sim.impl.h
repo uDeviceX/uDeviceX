@@ -148,7 +148,6 @@ void body_force() {
   k_sim::body_force<<<k_cnf(r_n)>>> (true, r_pp, r_ff, r_n, driving_force);
 }
 
-void init_I() {
 #define X 0
 #define Y 1
 #define Z 2
@@ -159,6 +158,7 @@ void init_I() {
 #define YZ 4
 #define ZZ 5
 
+void init_I() {
     CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
 
     int ip, c;
@@ -197,28 +197,48 @@ void update_solid() {
     CC(cudaMemcpy(r_ff_hst, r_ff, sizeof(Force) * r_n, D2H));
 
     int ip;
-    float *r0, *v0, *f0;
+    float *r0, *v0, *f0, x, y, z, fx, fy, fz;
 
     /* update force */
-    r_f[0] = 0; r_f[1] = 0; r_f[2] = 0; 
-    for (ip = 0; ip < r_n; ++ip) {
+    r_f[X] = X; r_f[Y] = X; r_f[Z] = X; 
+    for (ip = X; ip < r_n; ++ip) {
         f0 = r_ff_hst[ip].f;
-        r_f[0] += f0[0]; r_f[1] += f0[1]; r_f[2] += f0[2];
+        r_f[X] += f0[X]; r_f[Y] += f0[Y]; r_f[Z] += f0[Z];
+    }
+
+    /* compute COM */
+    float com[3] = {0, 0, 0};
+    for (ip = 0; ip < r_n; ++ip) {
+        r0 = r_pp_hst[ip].r;
+        com[X] += r0[X]; com[Y] += r0[Y]; com[Z] += r0[Z];
+    }
+    com[X] /= r_n; com[Y] /= r_n; com[Z] /= r_n;
+    printf("COM: %g %g %g\n", com[X], com[Y], com[Z]);
+
+    /* update torque */
+    r_to[X] = r_to[Y] = r_to[Z] = 0;
+    for (ip = 0; ip < r_n; ++ip) {
+        r0 = r_pp_hst[ip].r; f0 = r_ff_hst[ip].f;
+        x = r0[X]-com[X]; y = r0[Y]-com[Y]; z = r0[Z]-com[Z];
+        fx = f0[X]; fy = f0[Y]; fz = f0[Z];
+        r_to[X] += y*fz - z*fy;
+        r_to[Y] += z*fx - x*fz;
+        r_to[Z] += x*fy - y*fx;
     }
 
     /* update linear velocity */
     float sc = 1./r_m*dt;
-    r_v[0] += r_f[0]*sc; r_v[1] += r_f[1]*sc; r_v[2] += r_f[2]*sc;
+    r_v[X] += r_f[X]*sc; r_v[Y] += r_f[Y]*sc; r_v[Z] += r_f[Z]*sc;
 
     for (ip = 0; ip < r_n; ++ip) {
         v0 = r_pp_hst[ip].v;
-        v0[0] = r_v[0]; v0[1] = r_v[1]; v0[2] = r_v[2];
+        v0[X] = r_v[X]; v0[Y] = r_v[Y]; v0[Z] = r_v[Z];
     }
 
     for (ip = 0; ip < r_n; ++ip) {
         r0 = r_pp_hst[ip].r;
         v0 = r_pp_hst[ip].v;
-        r0[0] += v0[0]*dt; r0[1] += v0[1]*dt; r0[2] += v0[2]*dt;
+        r0[X] += v0[X]*dt; r0[Y] += v0[Y]*dt; r0[Z] += v0[Z]*dt;
     }
 
     CC(cudaMemcpy(r_pp, r_pp_hst, sizeof(Particle) * r_n, H2D));
