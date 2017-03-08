@@ -5,12 +5,11 @@ void transform(float* rr0, int nv, float *A, /* output */ Particle* pp) {
   for (int iv = 0; iv < nv; iv++) {
     float  *r = pp[iv].r, *v = pp[iv].v;
     float *r0 = &rr0[3*iv];
-    float RBCscale = 1.0/rc;
 
     for (int c = 0, i = 0; c < 3; c++) {
-      r[c] += A[i++]*r0[0]*RBCscale; /* matrix transformation */
-      r[c] += A[i++]*r0[1]*RBCscale;
-      r[c] += A[i++]*r0[2]*RBCscale;
+      r[c] += A[i++]*r0[0]; /* matrix transformation */
+      r[c] += A[i++]*r0[1];
+      r[c] += A[i++]*r0[2];
       r[c] += A[i++];
 
       v[c] = 0;
