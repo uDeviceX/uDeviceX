@@ -193,8 +193,7 @@ void init_I() {
 void init_solid() {
     r_v[X] = r_v[Y] = r_v[Z] = 0; 
     r_om[X] = r_om[Y] = r_om[Z] = 0; 
-    init_I();
-    gsl::inv3x3(r_I, r_Iinv);
+    init_I(); gsl::inv3x3(r_I, r_Iinv);
 }
 
 void update_solid() {
@@ -203,13 +202,6 @@ void update_solid() {
 
     int ip;
     float *r0, *v0, *f0, x, y, z, fx, fy, fz;
-
-    /* update force */
-    r_f[X] = X; r_f[Y] = X; r_f[Z] = X; 
-    for (ip = X; ip < r_n; ++ip) {
-        f0 = r_ff_hst[ip].f;
-        r_f[X] += f0[X]; r_f[Y] += f0[Y]; r_f[Z] += f0[Z];
-    }
 
     /* compute COM */
     float com[3] = {0, 0, 0};
@@ -231,13 +223,21 @@ void update_solid() {
     }
 
     /* get domega */
-    float *A = r_Iinv, *b = r_to;
+    float *A = r_Iinv, *b = r_to, r_dom[3];
     r_dom[X] = A[XX]*b[X] + A[XY]*b[Y] + A[XZ]*b[Z];
     r_dom[Y] = A[YX]*b[X] + A[YY]*b[Y] + A[YZ]*b[Z];
     r_dom[Z] = A[ZX]*b[X] + A[ZY]*b[Y] + A[ZZ]*b[Z];
 
     /* update angular velocity */
     r_om[X] += r_dom[X]*dt; r_om[Y] += r_dom[Y]*dt; r_om[Z] += r_dom[Z]*dt;
+
+    /* update force */
+    float r_f[3];
+    r_f[X] = r_f[Y] = r_f[Z] = 0; 
+    for (ip = X; ip < r_n; ++ip) {
+        f0 = r_ff_hst[ip].f;
+        r_f[X] += f0[X]; r_f[Y] += f0[Y]; r_f[Z] += f0[Z];
+    }
 
     /* update linear velocity from forces */
     float sc = dt/(rbc_mass*r_n);
@@ -273,9 +273,6 @@ void update_solid() {
     }
 
     CC(cudaMemcpy(r_pp, r_pp_hst, sizeof(Particle) * r_n, H2D));
-    //CC(cudaMemcpy(r_ff, r_ff_hst, sizeof(Force) * r_n, H2D));
-    
-    //k_sim::update<<<k_cnf(r_n)>>> (true,  r_pp, r_ff, r_n);
 }
 
 void update_r() {

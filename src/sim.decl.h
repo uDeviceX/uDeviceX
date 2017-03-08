@@ -29,8 +29,8 @@ namespace sim {
   Particle      sr_pp[MAX_PART_NUM];    /* solvent + RBC on host */
 
 
-  float r_v[3], r_f[3];  /* linear velocity, force */
-  float r_om[3], r_dom[3], r_I[6], r_Iinv[6], r_to[3];  /* angular velocity, moment of inertia, torque */
+  float r_v[3];  /* linear velocity */
+  float r_om[3], r_I[6], r_Iinv[6], r_to[3];  /* angular velocity, moment of inertia, torque */
 
 #ifdef GWRP  
 float rbc_xx[MAX_PART_NUM], rbc_yy[MAX_PART_NUM], rbc_zz[MAX_PART_NUM];
