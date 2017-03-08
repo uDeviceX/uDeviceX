@@ -163,23 +163,14 @@ void body_force() {
 #define ZY YZ
 
 void init_I() {
-    CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
-
     int ip, c;
     float *r0, x, y, z;
-
-    float com[3] = {0, 0, 0};
-    for (ip = 0; ip < r_n; ++ip) {
-        r0 = r_pp_hst[ip].r;
-        com[X] += r0[X]; com[Y] += r0[Y]; com[Z] += r0[Z];
-    }
-    com[X] /= r_n; com[Y] /= r_n; com[Z] /= r_n;
-
     float *I = r_I;
+
     for (c = 0; c < 6; ++c) I[c] = 0;
     for (ip = 0; ip < r_n; ++ip) {
         r0 = r_pp_hst[ip].r;
-        x = r0[X]-com[X]; y = r0[Y]-com[Y]; z = r0[Z]-com[Z];
+        x = r0[X]-r_com[X]; y = r0[Y]-r_com[Y]; z = r0[Z]-r_com[Z];
         I[XX] += y*y + z*z;
         I[YY] += z*z + x*x;
         I[ZZ] += x*x + y*y;
@@ -190,13 +181,33 @@ void init_I() {
     for (c = 0; c < 6; ++c) I[c] *= rbc_mass;
 }
 
+void init_com_r(Particle *pp) {
+    r_com[X] = r_com[Y] = r_com[Z] = 0;
+    for (int ip = 0; ip < r_n; ++ip) {
+        float *r0 = pp[ip].r;
+        r_com[X] += r0[X]; r_com[Y] += r0[Y]; r_com[Z] += r0[Z];
+    }
+    r_com[X] /= r_n; r_com[Y] /= r_n; r_com[Z] /= r_n;
+}
+
 void init_solid() {
     r_v[X] = r_v[Y] = r_v[Z] = 0; 
     r_om[X] = r_om[Y] = r_om[Z] = 0; 
-    init_I(); gsl::inv3x3(r_I, r_Iinv);
+
+    /* init basis vectors */
     r_e0[X] = 1; r_e0[Y] = 0; r_e0[Z] = 0;
     r_e1[X] = 0; r_e1[Y] = 1; r_e1[Z] = 0;
     r_e2[X] = 0; r_e2[Y] = 0; r_e2[Z] = 1;
+
+    /* init inertia tensor */
+    init_I(); gsl::inv3x3(r_I, r_Iinv);
+
+    /* initial positions */
+    for (int ip = 0; ip < r_n; ++ip) {
+        float *ro = &r_rr0[3*ip];
+        float *r0 = r_pp_hst[ip].r;
+        ro[X] = r0[X]-r_com[X]; ro[Y] = r0[Y]-r_com[Y]; ro[Z] = r0[Z]-r_com[Z];
+    }
 }
 
 float dot(float *v, float *u) {
@@ -243,22 +254,14 @@ void update_solid() {
     CC(cudaMemcpy(r_ff_hst, r_ff, sizeof(Force) * r_n, D2H));
 
     int ip;
-    float *r0, *v0, *f0, x, y, z, fx, fy, fz;
-
-    /* compute COM */
-    float com[3] = {0, 0, 0};
-    for (ip = 0; ip < r_n; ++ip) {
-        r0 = r_pp_hst[ip].r;
-        com[X] += r0[X]; com[Y] += r0[Y]; com[Z] += r0[Z];
-    }
-    com[X] /= r_n; com[Y] /= r_n; com[Z] /= r_n;
+    float *r0, *v0, *f0, x, y, z;
 
     /* update torque */
     r_to[X] = r_to[Y] = r_to[Z] = 0;
     for (ip = 0; ip < r_n; ++ip) {
         r0 = r_pp_hst[ip].r; f0 = r_ff_hst[ip].f;
-        x = r0[X]-com[X]; y = r0[Y]-com[Y]; z = r0[Z]-com[Z];
-        fx = f0[X]; fy = f0[Y]; fz = f0[Z];
+        x = r0[X]-r_com[X]; y = r0[Y]-r_com[Y]; z = r0[Z]-r_com[Z];
+        float fx = f0[X], fy = f0[Y], fz = f0[Z];
         r_to[X] += y*fz - z*fy;
         r_to[Y] += z*fx - x*fz;
         r_to[Z] += x*fy - y*fx;
@@ -301,22 +304,29 @@ void update_solid() {
     float omx = r_om[X], omy = r_om[Y], omz = r_om[Z];
     for (ip = 0; ip < r_n; ++ip) {
         r0 = r_pp_hst[ip].r; v0 = r_pp_hst[ip].v;
-        x = r0[X]-com[X]; y = r0[Y]-com[Y]; z = r0[Z]-com[Z];
+        x = r0[X]-r_com[X]; y = r0[Y]-r_com[Y]; z = r0[Z]-r_com[Z];
         v0[X] += omy*z - omz*y;
         v0[Y] += omz*x - omx*z;
         v0[Z] += omx*y - omy*x;
     }
 
-    update_e(r_e0, r_om);
-    update_e(r_e1, r_om);
-    update_e(r_e2, r_om);
+    update_e(r_e0, r_om); update_e(r_e1, r_om); update_e(r_e2, r_om);
     gram_schmidt(r_e0, r_e1, r_e2);
 
-    /* uodate positions */
+    /* update COM */
+    r_com[X] += r_v[X]*dt; r_com[Y] += r_v[Y]*dt; r_com[Z] += r_v[Z]*dt;
+
+    /* update positions */
     for (ip = 0; ip < r_n; ++ip) {
         r0 = r_pp_hst[ip].r;
-        v0 = r_pp_hst[ip].v;
-        r0[X] += v0[X]*dt; r0[Y] += v0[Y]*dt; r0[Z] += v0[Z]*dt;
+        float *ro0 = &r_rr0[3*ip];
+        x = ro0[X]; y = ro0[Y]; z = ro0[Z];
+        float *e0 = r_e0, *e1 = r_e1, *e2 = r_e2;
+        r0[X] = x*e0[X] + y*e1[X] + z*e2[X];
+        r0[Y] = x*e0[Y] + y*e1[Y] + z*e2[Y];
+        r0[Z] = x*e0[Z] + y*e1[Z] + z*e2[Z];
+
+        r0[X] += r_com[X]; r0[Y] += r_com[Y]; r0[Z] += r_com[Z];
     }
 
     CC(cudaMemcpy(r_pp, r_pp_hst, sizeof(Particle) * r_n, H2D));
@@ -339,7 +349,6 @@ void bounce() {
 void init() {
   CC(cudaMalloc(&r_host_av, MAX_CELLS_NUM));
 
-  off::f2faces("rbc.off", r_faces);
   rdstr::init();
   DPD::init();
   fsi::init();
@@ -372,6 +381,9 @@ void init() {
 		  XS, YS, ZS,
 		  m::periods[0], m::periods[1], m::periods[0]);
 #endif
+    off::f2faces("rbc.off", r_faces);
+    CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
+    init_com_r(r_pp_hst);
     init_solid();
   }
 
