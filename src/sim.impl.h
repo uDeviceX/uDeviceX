@@ -158,6 +158,10 @@ void body_force() {
 #define YZ 4
 #define ZZ 5
 
+#define YX XY
+#define ZX XZ
+#define ZY YZ
+
 void init_I() {
     CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
 
@@ -183,15 +187,14 @@ void init_I() {
         I[XZ] -= z*x;
         I[YZ] -= y*z;
     }
-    for (c = 0; c < 6; ++c) I[c] /= r_m;
+    for (c = 0; c < 6; ++c) I[c] *= rbc_mass;
 }
 
 void init_solid() {
-    r_m = rbc_mass*r_n;
-    r_v[0] = 0; r_v[1] = 0; r_v[2] = 0; 
+    r_v[X] = r_v[Y] = r_v[Z] = 0; 
+    r_om[X] = r_om[Y] = r_om[Z] = 0; 
     init_I();
     gsl::inv3x3(r_I, r_Iinv);
-    exit(0);
 }
 
 void update_solid() {
@@ -215,7 +218,6 @@ void update_solid() {
         com[X] += r0[X]; com[Y] += r0[Y]; com[Z] += r0[Z];
     }
     com[X] /= r_n; com[Y] /= r_n; com[Z] /= r_n;
-    printf("COM: %g %g %g\n", com[X], com[Y], com[Z]);
 
     /* update torque */
     r_to[X] = r_to[Y] = r_to[Z] = 0;
@@ -228,15 +230,42 @@ void update_solid() {
         r_to[Z] += x*fy - y*fx;
     }
 
-    /* update linear velocity */
-    float sc = 1./r_m*dt;
+    /* get domega */
+    float *A = r_Iinv, *b = r_to;
+    r_dom[X] = A[XX]*b[X] + A[XY]*b[Y] + A[XZ]*b[Z];
+    r_dom[Y] = A[YX]*b[X] + A[YY]*b[Y] + A[YZ]*b[Z];
+    r_dom[Z] = A[ZX]*b[X] + A[ZY]*b[Y] + A[ZZ]*b[Z];
+
+    /* update angular velocity */
+    r_om[X] += r_dom[X]*dt; r_om[Y] += r_dom[Y]*dt; r_om[Z] += r_dom[Z]*dt;
+
+    /* update linear velocity from forces */
+    float sc = dt/(rbc_mass*r_n);
     r_v[X] += r_f[X]*sc; r_v[Y] += r_f[Y]*sc; r_v[Z] += r_f[Z]*sc;
 
+    /* clear velocity */
     for (ip = 0; ip < r_n; ++ip) {
         v0 = r_pp_hst[ip].v;
-        v0[X] = r_v[X]; v0[Y] = r_v[Y]; v0[Z] = r_v[Z];
+        v0[X] = v0[Y] = v0[Z] = 0;
     }
 
+    /* add linear velocity */
+    for (ip = 0; ip < r_n; ++ip) {
+        v0 = r_pp_hst[ip].v;
+        v0[X] += r_v[X]; v0[Y] += r_v[Y]; v0[Z] += r_v[Z];
+    }
+
+    /* add angular velocity */
+    float omx = r_om[X], omy = r_om[Y], omz = r_om[Z];
+    for (ip = 0; ip < r_n; ++ip) {
+        r0 = r_pp_hst[ip].r; v0 = r_pp_hst[ip].v;
+        x = r0[X]-com[X]; y = r0[Y]-com[Y]; z = r0[Z]-com[Z];
+        v0[X] += omy*z - omz*y;
+        v0[Y] += omz*x - omx*z;
+        v0[Z] += omx*y - omy*x;
+    }
+
+    /* uodate positions */
     for (ip = 0; ip < r_n; ++ip) {
         r0 = r_pp_hst[ip].r;
         v0 = r_pp_hst[ip].v;
