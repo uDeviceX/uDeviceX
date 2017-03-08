@@ -262,6 +262,9 @@ void bounce() {
 }
 
 void init() {
+  invert_matrix();
+  exit(0);
+
   CC(cudaMalloc(&r_host_av, MAX_CELLS_NUM));
 
   off::f2faces("rbc.off", r_faces);

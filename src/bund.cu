@@ -73,6 +73,8 @@
 
 #include "ic.impl.h"
 
+#include "gsl.impl.h"
+
 #include "k/sim.h"
 #include "containers.impl.h"
 #include "sim.decl.h"
