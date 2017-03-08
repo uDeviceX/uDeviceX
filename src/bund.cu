@@ -44,8 +44,6 @@
 #include "k/sdstr.h"
 #include "sdstr.impl.h"
 
-#include "containers.impl.h"
-
 #include "wall.decl.h"
 #include "k/wall.h"
 #include "field.decl.h"
@@ -77,5 +75,6 @@
 #include "ic.impl.h"
 
 #include "k/sim.h"
+#include "containers.impl.h"
 #include "sim.decl.h"
 #include "sim.impl.h"

@@ -161,11 +161,13 @@ void body_force() {
   k_sim::body_force<<<k_cnf(r_n)>>> (true, r_pp, r_ff, r_n, driving_force);
 }
 
-void update() {
+void update_s() {
   k_sim::update<<<k_cnf(s_n)>>> (false, s_pp, s_ff, s_n);
+}
 
-  if (!rbcs || !r_n) return;
-  k_sim::update<<<k_cnf(r_n)>>> (true,  r_pp, r_ff, r_n);
+void update_r() {
+  if (r_n) Cont::update_solid(r_n, r_pp, r_ff,
+                              /* storage */ r_pp_hst, r_ff_hst);
 }
 
 void bounce() {
@@ -243,7 +245,8 @@ void run() {
     forces();
     dumps_diags(it);
     body_force();
-    update();
+    update_s();
+    if (rbcs) update_r();
     bounce();
   }
 }
