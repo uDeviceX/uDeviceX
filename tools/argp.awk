@@ -3,7 +3,8 @@
 function init() {
     # default values (change here)
     defs = \
-	"contactforces false "			\
+	"RBCnv 498 "                    \
+	"RBCnt 992 "                    \
 	"doublepoiseuille false "		\
 	"hdf5field_dumps false "		\
 	"hdf5part_dumps false "			\

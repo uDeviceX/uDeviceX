@@ -3,7 +3,6 @@
 #include <map>
 
 #include "helper_math.h"
-#include <algorithm> /* sort in rbc.impl.h */
 #include <string>
 #include <vector>
 #include <dpd-rng.h>
@@ -33,9 +32,6 @@
 #include "k/scan.h"
 #include "k/common.h"
 
-#include "k/rbc.h"
-#include "rbc.impl.h"
-
 #include "rdstr.decl.h"
 #include "k/rdstr.h"
 #include "rdstr.impl.h"
@@ -56,10 +52,6 @@
 
 #include "k/wall.h"
 #include "wall.impl.h"
-
-#include "cnt.decl.h"
-#include "k/cnt.h"
-#include "cnt.impl.h"
 
 #include "k/fsi.h"
 

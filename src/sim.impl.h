@@ -54,11 +54,6 @@ void create_walls() {
   remove_bodies_from_wall();
 }
 
-void forces_rbc() {
-  if (rbcs) rbc::forces(r_nc, (float*)r_pp, (float*)r_ff,
-			r_host_av);
-}
-
 void forces_dpd() {
   DPD::pack(s_pp, s_n, cells->start, cells->count);
   DPD::local_interactions(s_pp, s_zip0, s_zip1,
@@ -78,13 +73,6 @@ void forces_wall() {
   if (wall_created)         wall::interactions(s_pp, s_n, s_ff);
 }
 
-void forces_cnt(std::vector<ParticlesWrap> *w_r) {
-  if (contactforces) {
-    cnt::build_cells(*w_r);
-    cnt::bulk(*w_r);
-  }
-}
-
 void forces_fsi(SolventWrap *w_s, std::vector<ParticlesWrap> *w_r) {
   fsi::bind_solvent(*w_s);
   fsi::bulk(*w_r);
@@ -100,9 +88,7 @@ void forces() {
 
   forces_dpd();
   forces_wall();
-  forces_rbc();
 
-  forces_cnt(&w_r);
   forces_fsi(&w_s, &w_r);
 
   rex::bind_solutes(w_r);
@@ -110,7 +96,7 @@ void forces() {
   rex::post_p();
   rex::recv_p();
 
-  rex::halo(); /* fsi::halo(); cnt::halo() */
+  rex::halo(); /* fsi::halo(); */
 
   rex::post_f();
   rex::recv_f();
@@ -258,12 +244,11 @@ void bounce() {
 void init() {
   CC(cudaMalloc(&r_host_av, MAX_CELLS_NUM));
 
-  rbc::setup(r_faces);
+  off::f2faces("rbc.off", r_faces);
   rdstr::init();
   DPD::init();
   fsi::init();
   rex::init();
-  cnt::init();
   if (hdf5part_dumps)
     dump_part_solvent = new H5PartDump("s.h5part");
 
@@ -334,7 +319,6 @@ void close() {
   delete dump_part_solvent;
   sdstr::redist_part_close();
 
-  cnt::close();
   delete cells;
   rex::close();
   fsi::close();
