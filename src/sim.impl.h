@@ -190,6 +190,8 @@ void init_solid() {
     r_m = rbc_mass*r_n;
     r_v[0] = 0; r_v[1] = 0; r_v[2] = 0; 
     init_I();
+    gsl::inv3x3(r_I, r_Iinv);
+    exit(0);
 }
 
 void update_solid() {
@@ -262,9 +264,6 @@ void bounce() {
 }
 
 void init() {
-  gsl::invert_matrix();
-  exit(0);
-
   CC(cudaMalloc(&r_host_av, MAX_CELLS_NUM));
 
   off::f2faces("rbc.off", r_faces);

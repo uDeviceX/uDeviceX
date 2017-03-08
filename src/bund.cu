@@ -1,6 +1,7 @@
 #include <cuda-dpd.h>
 #include <sys/stat.h>
 #include <map>
+#include <gsl/gsl_linalg.h>
 
 #include "helper_math.h"
 #include <string>
