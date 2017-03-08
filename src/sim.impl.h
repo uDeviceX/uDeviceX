@@ -194,6 +194,48 @@ void init_solid() {
     r_v[X] = r_v[Y] = r_v[Z] = 0; 
     r_om[X] = r_om[Y] = r_om[Z] = 0; 
     init_I(); gsl::inv3x3(r_I, r_Iinv);
+    r_e0[X] = 1; r_e0[Y] = 0; r_e0[Z] = 0;
+    r_e1[X] = 0; r_e1[Y] = 1; r_e1[Z] = 0;
+    r_e2[X] = 0; r_e2[Y] = 0; r_e2[Z] = 1;
+}
+
+float dot(float *v, float *u) {
+    return v[X]*u[X] + v[Y]*u[Y] + v[Z]*u[Z];
+}
+
+float norm(float *v) {
+    return sqrt(v[X]*v[X]+v[Y]*v[Y]+v[Z]*v[Z]);
+}
+
+void normalize(float *v) {
+    float nrm = norm(v);
+    v[X] /= nrm; v[Y] /= nrm; v[Z] /= nrm;
+}
+
+void reject(float *v, float *u) {
+    float d = dot(v, u);
+    v[X] -= d*u[X]; v[Y] -= d*u[Y]; v[Z] -= d*u[Z];
+}
+
+void gram_schmidt(float *e0, float *e1, float *e2) {
+    normalize(e0);
+
+    reject(e1, e0);
+    normalize(e1);
+
+    reject(e2, e0);
+    reject(e2, e1);
+    normalize(e2);
+}
+
+void update_e(float *e, float *om) {
+    float omx = om[X], omy = om[Y], omz = om[Z];
+    float ex = e[X], ey = e[Y], ez = e[Z];
+    float vx, vy, vz;
+    vx = omy*ez - omz*ey;
+    vy = omz*ex - omx*ez;
+    vz = omx*ey - omy*ex;
+    e[X] += vx*dt; e[Y] += vy*dt; e[Z] += vz*dt;
 }
 
 void update_solid() {
@@ -264,6 +306,11 @@ void update_solid() {
         v0[Y] += omz*x - omx*z;
         v0[Z] += omx*y - omy*x;
     }
+
+    update_e(r_e0, r_om);
+    update_e(r_e1, r_om);
+    update_e(r_e2, r_om);
+    gram_schmidt(r_e0, r_e1, r_e2);
 
     /* uodate positions */
     for (ip = 0; ip < r_n; ++ip) {
