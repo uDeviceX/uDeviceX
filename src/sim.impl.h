@@ -262,7 +262,7 @@ void bounce() {
 }
 
 void init() {
-  invert_matrix();
+  gsl::invert_matrix();
   exit(0);
 
   CC(cudaMalloc(&r_host_av, MAX_CELLS_NUM));
