@@ -5,7 +5,7 @@
 
 h5part = 1
 h5 = 1
-gwrp = 1
+gwrp = 0
 
 LINK = g++
 NVCC_DIR = /usr/local/cuda-8.0
@@ -36,9 +36,11 @@ NVCC_LDFALGS = -L${NVCC_DIR}/lib64 -Wl,-rpath -Wl,${NVCC_DIR}/lib64
 
 # geom-wrapper libraries
 # (cd ../geom-wrapper && cmake . && make)
+ifeq ($(gwrp),1)
 GWRP_CXXFLAGS = -I../geom-wrapper
 GWRP_LDFLAGS = -L${HOME}/usr/cgal/lib64 -Wl,-rpath,${HOME}/usr/cgal/lib64:${HOME}/usr/pkgsrc/lib
 GWRP_LIBS = ../geom-wrapper/libgeom-wrapper.a -lgmp -lCGAL
+endif
 
 NVCC = ${NVCC_BIN} ${GWRP_CXXFLAGS} ${H5PART_CXXFLAGS} ${HDF5_CXXFLAGS} ${MPI_CXXFLAGS}
 LDFLAGS =          ${GWRP_LDFLAGS}  ${H5PART_LDFLAGS}  ${HDF5_LDFLAGS}  ${MPI_LDFLAGS} ${NVCC_LDFALGS} # (sic)
