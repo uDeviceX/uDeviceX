@@ -162,9 +162,48 @@ void body_force() {
   k_sim::body_force<<<k_cnf(r_n)>>> (true, r_pp, r_ff, r_n, driving_force);
 }
 
+void init_I() {
+#define X 0
+#define Y 1
+#define Z 2
+#define XX 0
+#define XY 1
+#define XZ 2
+#define YY 3
+#define YZ 4
+#define ZZ 5
+
+    CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
+
+    int ip, c;
+    float *r0, x, y, z;
+
+    float com[3] = {0, 0, 0};
+    for (ip = 0; ip < r_n; ++ip) {
+        r0 = r_pp_hst[ip].r;
+        com[X] += r0[X]; com[Y] += r0[Y]; com[Z] += r0[Z];
+    }
+    com[X] /= r_n; com[Y] /= r_n; com[Z] /= r_n;
+
+    float *I = r_I;
+    for (c = 0; c < 6; ++c) I[c] = 0;
+    for (ip = 0; ip < r_n; ++ip) {
+        r0 = r_pp_hst[ip].r;
+        x = r0[X]-com[X]; y = r0[Y]-com[Y]; z = r0[Z]-com[Z];
+        I[XX] += y*y + z*z;
+        I[YY] += z*z + x*x;
+        I[ZZ] += x*x + y*y;
+        I[XY] -= x*y;
+        I[XZ] -= z*x;
+        I[YZ] -= y*z;
+    }
+    for (c = 0; c < 6; ++c) I[c] /= r_m;
+}
+
 void init_solid() {
     r_m = rbc_mass*r_n;
     r_v[0] = 0; r_v[1] = 0; r_v[2] = 0; 
+    init_I();
 }
 
 void update_solid() {

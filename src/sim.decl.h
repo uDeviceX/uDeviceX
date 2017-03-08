@@ -30,7 +30,7 @@ namespace sim {
 
 
   float r_v[3], r_m, r_f[3];  /* linear velocity, mass, force */
-  float r_om[3], r_I[3][3], r_to[3];  /* angular velocity, moment of inertia, torque */
+  float r_om[3], r_I[6], r_to[3];  /* angular velocity, moment of inertia, torque */
 
 #ifdef GWRP  
 float rbc_xx[MAX_PART_NUM], rbc_yy[MAX_PART_NUM], rbc_zz[MAX_PART_NUM];
