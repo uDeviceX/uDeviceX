@@ -18,8 +18,7 @@ enum {
 namespace wall {
   Logistic::KISS* trunk;
 
-  int solid_size;
-  float4 *solid4;
-  cudaArray *arrSDF;
+  int w_n;
+  float4 *w_pp;
   CellLists *wall_cells;
 }

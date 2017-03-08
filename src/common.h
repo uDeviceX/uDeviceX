@@ -10,6 +10,9 @@ const int   numberdensity = _numberdensity * (rc * rc * rc);
 #define MAX_FACE_NUM 50000
 #define MAX_VERT_NUM 10000
 
+/* used in field */
+#define MAX_SUBDOMAIN_VOLUME 100*100*100
+
 #define dSync() CC(cudaDeviceSynchronize())
 
 /* a common kernel execution configuration */

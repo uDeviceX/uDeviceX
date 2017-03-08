@@ -20,7 +20,7 @@ void remove_bodies_from_wall() {
   if (!rbcs) return;
   if (!r_nc) return;
   DeviceBuffer<int> marks(r_n);
-  k_wall::fill_keys<<<k_cnf(r_n)>>>(r_pp, r_n, marks.D);
+  k_sdf::fill_keys<<<k_cnf(r_n)>>>(r_pp, r_n, marks.D);
 
   std::vector<int> tmp(marks.S);
   CC(cudaMemcpy(tmp.data(), marks.D, sizeof(int) * marks.S, D2H));
@@ -44,6 +44,7 @@ static void update_helper_arrays() {
 
 void create_walls() {
   dSync();
+  sdf::init();
   s_n = wall::init(s_pp, s_n); /* number of survived particles */
   wall_created = true;
 
