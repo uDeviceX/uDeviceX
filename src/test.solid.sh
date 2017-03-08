@@ -16,7 +16,7 @@
 # :
 # make clean && make -j && make -C ../tools
 # ./udx
-# avg_h52.m h5/flowfields-0001.h5 | fround.awk -v tol=1 > h5.out.txt
+# ply2punto ply/rbcs-00004.ply | fround.awk -v tol=1 > ply.out.txt
 #
 #### Double poiseuille sphere
 # TEST: solid.t2
@@ -36,4 +36,4 @@
 # :
 # make clean && make -j && make -C ../tools
 # ./udx
-# avg_h52.m h5/flowfields-0001.h5 | fround.awk -v tol=1 > h5.out.txt
+# ply2punto ply/rbcs-00004.ply | fround.awk -v tol=1 > ply.out.txt
