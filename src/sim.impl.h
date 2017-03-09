@@ -155,25 +155,6 @@ void body_force() {
 #define ZX XZ
 #define ZY YZ
 
-void init_I() {
-    int ip, c;
-    float *r0, x, y, z;
-    float *I = r_I;
-
-    for (c = 0; c < 6; ++c) I[c] = 0;
-    for (ip = 0; ip < r_n; ++ip) {
-        r0 = r_pp_hst[ip].r;
-        x = r0[X]-r_com[X]; y = r0[Y]-r_com[Y]; z = r0[Z]-r_com[Z];
-        I[XX] += y*y + z*z;
-        I[YY] += z*z + x*x;
-        I[ZZ] += x*x + y*y;
-        I[XY] -= x*y;
-        I[XZ] -= z*x;
-        I[YZ] -= y*z;
-    }
-    for (c = 0; c < 6; ++c) I[c] *= rbc_mass;
-}
-
 void init_solid() {
     r_v[X] = r_v[Y] = r_v[Z] = 0; 
     r_om[X] = r_om[Y] = r_om[Z] = 0; 
@@ -184,7 +165,7 @@ void init_solid() {
     r_e2[X] = 0; r_e2[Y] = 0; r_e2[Z] = 1;
 
     /* init inertia tensor */
-    init_I(); gsl::inv3x3(r_I, r_Iinv);
+    solid::init_I(r_pp_hst, r_n, r_com, /**/ r_I); gsl::inv3x3(r_I, r_Iinv);
 
     /* initial positions */
     for (int ip = 0; ip < r_n; ++ip) {
