@@ -174,17 +174,6 @@ void init_I() {
     for (c = 0; c < 6; ++c) I[c] *= rbc_mass;
 }
 
-/* wrap COM to the domain; TODO: many processes */
-void pbc_solid(float *com) {
-    float lo[3] = {-0.5*XS, -0.5*YS, -0.5*ZS};
-    float hi[3] = { 0.5*XS,  0.5*YS,  0.5*ZS};
-    float L[3] = {XS, YS, ZS};
-    for (int c = 0; c < 3; ++c) {
-        while (com[c] <  lo[c]) com[c] += L[c];
-        while (com[c] >= hi[c]) com[c] -= L[c];
-    }
-}
-
 void init_com_r(Particle *pp) {
     r_com[X] = r_com[Y] = r_com[Z] = 0;
     for (int ip = 0; ip < r_n; ++ip) {
@@ -192,7 +181,7 @@ void init_com_r(Particle *pp) {
         r_com[X] += r0[X]; r_com[Y] += r0[Y]; r_com[Z] += r0[Z];
     }
     r_com[X] /= r_n; r_com[Y] /= r_n; r_com[Z] /= r_n;
-    pbc_solid(r_com);
+    solid::pbc_solid(r_com);
 }
 
 void init_solid() {
@@ -215,45 +204,6 @@ void init_solid() {
     }
 }
 
-float dot(float *v, float *u) {
-    return v[X]*u[X] + v[Y]*u[Y] + v[Z]*u[Z];
-}
-
-float norm(float *v) {
-    return sqrt(v[X]*v[X]+v[Y]*v[Y]+v[Z]*v[Z]);
-}
-
-void normalize(float *v) {
-    float nrm = norm(v);
-    v[X] /= nrm; v[Y] /= nrm; v[Z] /= nrm;
-}
-
-void reject(float *v, float *u) {
-    float d = dot(v, u);
-    v[X] -= d*u[X]; v[Y] -= d*u[Y]; v[Z] -= d*u[Z];
-}
-
-void gram_schmidt(float *e0, float *e1, float *e2) {
-    normalize(e0);
-
-    reject(e1, e0);
-    normalize(e1);
-
-    reject(e2, e0);
-    reject(e2, e1);
-    normalize(e2);
-}
-
-void update_e(float *e, float *om) {
-    float omx = om[X], omy = om[Y], omz = om[Z];
-    float ex = e[X], ey = e[Y], ez = e[Z];
-    float vx, vy, vz;
-    vx = omy*ez - omz*ey;
-    vy = omz*ex - omx*ez;
-    vz = omx*ey - omy*ex;
-    e[X] += vx*dt; e[Y] += vy*dt; e[Z] += vz*dt;
-}
-
 void update_solid() {
     CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
     CC(cudaMemcpy(r_ff_hst, r_ff, sizeof(Force) * r_n, D2H));
@@ -261,16 +211,7 @@ void update_solid() {
     int ip;
     float *r0, *v0, *f0, x, y, z;
 
-    /* update torque */
-    r_to[X] = r_to[Y] = r_to[Z] = 0;
-    for (ip = 0; ip < r_n; ++ip) {
-        r0 = r_pp_hst[ip].r; f0 = r_ff_hst[ip].f;
-        x = r0[X]-r_com[X]; y = r0[Y]-r_com[Y]; z = r0[Z]-r_com[Z];
-        float fx = f0[X], fy = f0[Y], fz = f0[Z];
-        r_to[X] += y*fz - z*fy;
-        r_to[Y] += z*fx - x*fz;
-        r_to[Z] += x*fy - y*fx;
-    }
+    solid::compute_torque(r_pp_hst, r_ff_hst, r_n, r_com, /**/ r_to);
 
     /* get domega */
     float *A = r_Iinv, *b = r_to, r_dom[3];
@@ -315,12 +256,12 @@ void update_solid() {
         v0[Z] += omx*y - omy*x;
     }
 
-    update_e(r_e0, r_om); update_e(r_e1, r_om); update_e(r_e2, r_om);
-    gram_schmidt(r_e0, r_e1, r_e2);
+    solid::rotate_e(r_e0, r_om); solid::rotate_e(r_e1, r_om); solid::rotate_e(r_e2, r_om);
+    solid::gram_schmidt(r_e0, r_e1, r_e2);
 
     /* update COM */
     r_com[X] += r_v[X]*dt; r_com[Y] += r_v[Y]*dt; r_com[Z] += r_v[Z]*dt;
-    pbc_solid(r_com);
+    solid::pbc_solid(r_com);
 
     /* update positions */
     for (ip = 0; ip < r_n; ++ip) {
