@@ -213,14 +213,7 @@ void update_solid() {
 
     solid::compute_torque(r_pp_hst, r_ff_hst, r_n, r_com, /**/ r_to);
 
-    /* get domega */
-    float *A = r_Iinv, *b = r_to, r_dom[3];
-    r_dom[X] = A[XX]*b[X] + A[XY]*b[Y] + A[XZ]*b[Z];
-    r_dom[Y] = A[YX]*b[X] + A[YY]*b[Y] + A[YZ]*b[Z];
-    r_dom[Z] = A[ZX]*b[X] + A[ZY]*b[Y] + A[ZZ]*b[Z];
-
-    /* update angular velocity */
-    r_om[X] += r_dom[X]*dt; r_om[Y] += r_dom[Y]*dt; r_om[Z] += r_dom[Z]*dt;
+    solid::update_omega(r_Iinv, r_to, /**/ r_om);
 
     /* update force */
     float r_f[3];

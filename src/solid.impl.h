@@ -75,4 +75,13 @@ void compute_torque(Particle *pp, Force *ff, int n, float *com, /**/ float *to) 
         to[Z] += x*fy - y*fx;
     }
 }
+
+void update_omega(float *Iinv, float *to, /**/ float *om) {
+    float *A = Iinv, *b = to, dom[3];
+    dom[X] = A[XX]*b[X] + A[XY]*b[Y] + A[XZ]*b[Z];
+    dom[Y] = A[YX]*b[X] + A[YY]*b[Y] + A[YZ]*b[Z];
+    dom[Z] = A[ZX]*b[X] + A[ZY]*b[Y] + A[ZZ]*b[Z];
+
+    om[X] += dom[X]*dt; om[Y] += dom[Y]*dt; om[Z] += dom[Z]*dt;
+}
 }
