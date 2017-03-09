@@ -33,10 +33,6 @@
 #include "k/scan.h"
 #include "k/common.h"
 
-#include "rdstr.decl.h"
-#include "k/rdstr.h"
-#include "rdstr.impl.h"
-
 #include "sdstr.decl.h"
 #include "k/sdstr.h"
 #include "sdstr.impl.h"
