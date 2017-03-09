@@ -9,26 +9,6 @@ static void distr_s() {
   std::swap(s_pp, s_pp0);
 }
 
-void remove_bodies_from_wall() {
-  if (!rbcs) return;
-  if (!r_nc) return;
-  DeviceBuffer<int> marks(r_n);
-  k_sdf::fill_keys<<<k_cnf(r_n)>>>(r_pp, r_n, marks.D);
-
-  std::vector<int> tmp(marks.S);
-  CC(cudaMemcpy(tmp.data(), marks.D, sizeof(int) * marks.S, D2H));
-  std::vector<int> tokill;
-  for (int i = 0; i < r_nc; ++i) {
-    bool valid = true;
-    for (int j = 0; j < r_nv && valid; ++j)
-      valid &= 0 == tmp[j + r_nv * i];
-    if (!valid) tokill.push_back(i);
-  }
-
-  r_nc = Cont::rbc_remove(r_pp, r_nv, r_nc, &tokill.front(), tokill.size());
-  r_n = r_nc * r_nv;
-}
-
 static void update_helper_arrays() {
   CC(cudaFuncSetCacheConfig(k_sim::make_texture, cudaFuncCachePreferShared));
   k_sim::make_texture<<<(s_n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>
@@ -43,7 +23,6 @@ void create_walls() {
   k_sim::clear_velocity<<<k_cnf(s_n)>>>(s_pp, s_n);
   cells->build(s_pp, s_n, NULL, NULL);
   update_helper_arrays();
-  remove_bodies_from_wall();
 }
 
 void forces_dpd() {
