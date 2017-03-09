@@ -9,13 +9,6 @@ static void distr_s() {
   std::swap(s_pp, s_pp0);
 }
 
-static void distr_r() {
-  rdstr::extent(r_pp, r_nc, r_nv);
-  rdstr::pack_sendcnt(r_pp, r_nc, r_nv);
-  r_nc = rdstr::post(r_nv); r_n = r_nc * r_nv;
-  rdstr::unpack(r_pp, r_nc, r_nv);
-}
-
 void remove_bodies_from_wall() {
   if (!rbcs) return;
   if (!r_nc) return;
@@ -362,7 +355,6 @@ void bounce() {
 void init() {
   CC(cudaMalloc(&r_host_av, MAX_CELLS_NUM));
 
-  rdstr::init();
   DPD::init();
   fsi::init();
   rex::init();
@@ -424,7 +416,6 @@ void run() {
       if (pushtheflow) driving_force = hydrostatic_a;
     }
     distr_s();
-    if (rbcs) distr_r();
     forces();
     dumps_diags(it);
     body_force();
@@ -443,7 +434,6 @@ void close() {
   rex::close();
   fsi::close();
   DPD::close();
-  rdstr::close();
 
   CC(cudaFree(s_zip0));
   CC(cudaFree(s_zip1));
