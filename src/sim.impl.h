@@ -155,26 +155,6 @@ void body_force() {
 #define ZX XZ
 #define ZY YZ
 
-void init_solid() {
-    r_v[X] = r_v[Y] = r_v[Z] = 0; 
-    r_om[X] = r_om[Y] = r_om[Z] = 0; 
-
-    /* init basis vectors */
-    r_e0[X] = 1; r_e0[Y] = 0; r_e0[Z] = 0;
-    r_e1[X] = 0; r_e1[Y] = 1; r_e1[Z] = 0;
-    r_e2[X] = 0; r_e2[Y] = 0; r_e2[Z] = 1;
-
-    /* init inertia tensor */
-    solid::init_I(r_pp_hst, r_n, r_com, /**/ r_I); gsl::inv3x3(r_I, r_Iinv);
-
-    /* initial positions */
-    for (int ip = 0; ip < r_n; ++ip) {
-        float *ro = &r_rr0[3*ip];
-        float *r0 = r_pp_hst[ip].r;
-        ro[X] = r0[X]-r_com[X]; ro[Y] = r0[Y]-r_com[Y]; ro[Z] = r0[Z]-r_com[Z];
-    }
-}
-
 void update_solid() {
     CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
     CC(cudaMemcpy(r_ff_hst, r_ff, sizeof(Force) * r_n, D2H));
@@ -250,7 +230,7 @@ void init() {
     off::f2faces("rbc.off", r_faces);
     CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
     solid::init_com(r_pp_hst, r_n, /**/ r_com);
-    init_solid();
+    solid::init(r_pp_hst, r_rr0, r_n, r_com, /**/ r_v, r_om, r_I, r_Iinv, r_e0, r_e1, r_e2);
   }
 
   dump_field = new H5FieldDump;
