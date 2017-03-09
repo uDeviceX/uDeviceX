@@ -97,4 +97,11 @@ void update_v(Force *ff, int n, /**/ float *v) {
     float sc = dt/(rbc_mass*n);
     v[X] += f[X]*sc; v[Y] += f[Y]*sc; v[Z] += f[Z]*sc;
 }
+
+void add_v(Particle *pp, int n, float *v) {
+    for (int ip = 0; ip < n; ++ip) {
+        float *v0 = pp[ip].v;
+        v0[X] += v[X]; v0[Y] += v[Y]; v0[Z] += v[Z];
+    }
+}
 }

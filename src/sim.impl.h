@@ -223,11 +223,7 @@ void update_solid() {
         v0[X] = v0[Y] = v0[Z] = 0;
     }
 
-    /* add linear velocity */
-    for (ip = 0; ip < r_n; ++ip) {
-        v0 = r_pp_hst[ip].v;
-        v0[X] += r_v[X]; v0[Y] += r_v[Y]; v0[Z] += r_v[Z];
-    }
+    solid::add_v(r_pp_hst, r_n, r_v);
 
     /* add angular velocity */
     float omx = r_om[X], omy = r_om[Y], omz = r_om[Z];
