@@ -93,8 +93,8 @@ void init_I(Particle *pp, int n, float *com, /**/float *I) {
     for (c = 0; c < 6; ++c) I[c] *= rbc_mass;
 }
 
-void init(Particle *pp, float *rr0, int n, float *com,
-		/**/ float *v, float *om, float *I, float *Iinv,
+void init(Particle *pp, int n,
+		/**/ float *rr0, float *com, float *v, float *om, float *I, float *Iinv,
 		     float *e0, float *e1, float *e2) {
     v[X] = v[Y] = v[Z] = 0; 
     om[X] = om[Y] = om[Z] = 0; 
