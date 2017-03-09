@@ -115,4 +115,8 @@ void add_omega(Particle *pp, int n, float *om, float *com) {
         v0[Z] += omx*y - omy*x;
     }
 }
+
+void update_com(float *v, /**/ float *com) {
+    com[X] += v[X]*dt; com[Y] += v[Y]*dt; com[Z] += v[Z]*dt;
+}
 }

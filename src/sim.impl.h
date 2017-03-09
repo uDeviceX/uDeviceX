@@ -230,8 +230,7 @@ void update_solid() {
     solid::rotate_e(r_e0, r_om); solid::rotate_e(r_e1, r_om); solid::rotate_e(r_e2, r_om);
     solid::gram_schmidt(r_e0, r_e1, r_e2);
 
-    /* update COM */
-    r_com[X] += r_v[X]*dt; r_com[Y] += r_v[Y]*dt; r_com[Z] += r_v[Z]*dt;
+    solid::update_com(r_v, /**/ r_com);
     solid::pbc_solid(r_com);
 
     /* update positions */
