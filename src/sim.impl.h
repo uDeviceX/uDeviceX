@@ -40,7 +40,7 @@ void clear_forces(Force* ff, int n) {
 }
 
 void forces_wall() {
-  if (rbcs) wall::interactions(r_pp, r_n, r_ff);
+  if (rbcs0) wall::interactions(r_pp, r_n, r_ff);
   wall::interactions(s_pp, s_n, s_ff);
 }
 
@@ -52,25 +52,27 @@ void forces_fsi(SolventWrap *w_s, std::vector<ParticlesWrap> *w_r) {
 void forces(bool wall_created) {
   SolventWrap w_s(s_pp, s_n, s_ff, cells->start, cells->count);
   std::vector<ParticlesWrap> w_r;
-  if (rbcs) w_r.push_back(ParticlesWrap(r_pp, r_n, r_ff));
+  if (rbcs0) w_r.push_back(ParticlesWrap(r_pp, r_n, r_ff));
 
   clear_forces(s_ff, s_n);
-  if (rbcs) clear_forces(r_ff, r_n);
+  if (rbcs0) clear_forces(r_ff, r_n);
 
   forces_dpd();
   if (wall_created) forces_wall();
 
-  forces_fsi(&w_s, &w_r);
+  if (rbcs0) {
+    forces_fsi(&w_s, &w_r);
 
-  rex::bind_solutes(w_r);
-  rex::pack_p();
-  rex::post_p();
-  rex::recv_p();
+    rex::bind_solutes(w_r);
+    rex::pack_p();
+    rex::post_p();
+    rex::recv_p();
 
-  rex::halo(); /* fsi::halo(); */
+    rex::halo(); /* fsi::halo(); */
 
-  rex::post_f();
-  rex::recv_f();
+    rex::post_f();
+    rex::recv_f();
+  }
 }
 
 void in_out() {
@@ -82,7 +84,7 @@ void in_out() {
 void dev2hst() { /* device to host  data transfer */
   CC(cudaMemcpyAsync(sr_pp, s_pp,
 		     sizeof(Particle) * s_n, D2H, 0));
-  if (rbcs)
+  if (rbcs0)
     CC(cudaMemcpyAsync(&sr_pp[s_n], r_pp,
 		       sizeof(Particle) * r_n, D2H, 0));
 }
@@ -95,7 +97,7 @@ void dump_part() {
 }
 
 void dump_rbcs() {
-  if (!rbcs) return;
+  if (!rbcs0) return;
   static int id = 0;
   dev2hst();  /* TODO: do not need `s' */
   Cont::rbc_dump(r_nc, &sr_pp[s_n], r_faces, r_nv, r_nt, id++);
@@ -115,7 +117,7 @@ void diag(int it) {
 void body_force(float driving_force) {
   k_sim::body_force<<<k_cnf(s_n)>>> (false, s_pp, s_ff, s_n, driving_force);
 
-  if (!rbcs || !r_n) return;
+  if (!rbcs0 || !r_n) return;
   k_sim::body_force<<<k_cnf(r_n)>>> (true, r_pp, r_ff, r_n, driving_force);
 }
 
@@ -139,7 +141,7 @@ void update_s() {
 
 void bounce() {
   wall::bounce(s_pp, s_n);
-  if (rbcs) wall::bounce(r_pp, r_n);
+  if (rbcs0) wall::bounce(r_pp, r_n);
 }
 
 void init() {
@@ -147,15 +149,11 @@ void init() {
 
   DPD::init();
   fsi::init();
-  rex::init();
   if (hdf5part_dumps)
     dump_part_solvent = new H5PartDump("s.h5part");
 
   cells   = new CellLists(XS, YS, ZS);
   mpDeviceMalloc(&s_zip0); mpDeviceMalloc(&s_zip1);
-
-  if (rbcs)
-      mpDeviceMalloc(&r_pp); mpDeviceMalloc(&r_ff);
 
   wall::trunk = new Logistic::KISS;
   sdstr::init();
@@ -168,7 +166,13 @@ void init() {
   cells->build(s_pp, s_n, NULL, NULL);
   update_helper_arrays();
 
-  if (rbcs) {
+  dump_field = new H5FieldDump;
+
+  rbcs0 = rbcs;
+  if (rbcs0) {
+    rex::init();
+    mpDeviceMalloc(&r_pp); mpDeviceMalloc(&r_ff);
+
     r_nc = Cont::setup(r_pp, r_nv, /* storage */ r_pp_hst); r_n = r_nc * r_nv;
 #ifdef GWRP
     iotags_init(r_nv, r_nt, r_faces);
@@ -181,7 +185,6 @@ void init() {
     solid::init(r_pp_hst, r_n, r_mass, /**/ r_rr0, r_Iinv, r_com, r_e0, r_e1, r_e2, r_v, r_om);
   }
 
-  dump_field = new H5FieldDump;
   MC(MPI_Barrier(m::cart));
 }
 
@@ -199,7 +202,7 @@ void run0(float driving_force, bool wall_created, int it) {
     dumps_diags(it);
     body_force(driving_force);
     update_s();
-    if (rbcs) update_r();
+    if (rbcs0) update_r();
     if (wall_created) bounce();
 }
 
@@ -217,9 +220,11 @@ void run_wall() {
   bool wall_created = false;
   int it = 0;
   for (/**/; it < wall_creation_stepid; ++it) run0(driving_force, wall_created, it);
+
   create_walls(); wall_created = true;
-  if (rbcs && r_n) k_sim::clear_velocity<<<k_cnf(r_n)>>>(r_pp, r_n);
+  if (rbcs0 && r_n) k_sim::clear_velocity<<<k_cnf(r_n)>>>(r_pp, r_n);
   if (pushtheflow) driving_force = hydrostatic_a;
+
   for (/**/; it < nsteps; ++it) run0(driving_force, wall_created, it);
 }
 
@@ -234,8 +239,10 @@ void close() {
   sdstr::redist_part_close();
 
   delete cells;
-  rex::close();
-  fsi::close();
+  if (rbcs0) {
+    rex::close();
+    fsi::close();
+  }
   DPD::close();
 
   CC(cudaFree(s_zip0));
