@@ -16,9 +16,6 @@ namespace sim {
 
   CellLists* cells;
 
-  bool wall_created = false;
-  float driving_force = 0;
-
   H5PartDump *dump_part_solvent;
   H5FieldDump *dump_field;
 
