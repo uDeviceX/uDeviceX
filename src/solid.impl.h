@@ -104,6 +104,8 @@ void init(Particle *pp, float *rr0, int n, float *com,
     e1[X] = 0; e1[Y] = 1; e1[Z] = 0;
     e2[X] = 0; e2[Y] = 0; e2[Z] = 1;
 
+    init_com(pp, n, /**/ com);
+
     /* init inertia tensor */
     solid::init_I(pp, n, com, /**/ I);
 	gsl::inv3x3(I, /**/ Iinv);
