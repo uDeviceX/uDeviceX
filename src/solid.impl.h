@@ -94,7 +94,7 @@ void init_I(Particle *pp, int n, float *com, /**/float *I) {
 }
 
 void init(Particle *pp, int n,
-		/**/ float *rr0, float *com, float *v, float *om, float *I, float *Iinv,
+		/**/ float *rr0, float *com, float *v, float *om, float *Iinv,
 		     float *e0, float *e1, float *e2) {
     v[X] = v[Y] = v[Z] = 0; 
     om[X] = om[Y] = om[Z] = 0; 
@@ -107,8 +107,8 @@ void init(Particle *pp, int n,
     init_com(pp, n, /**/ com);
 
     /* init inertia tensor */
-    solid::init_I(pp, n, com, /**/ I);
-	gsl::inv3x3(I, /**/ Iinv);
+    float I[6]; solid::init_I(pp, n, com, /**/ I);
+    gsl::inv3x3(I, /**/ Iinv);
 
     /* initial positions */
     for (int ip = 0; ip < n; ++ip) {

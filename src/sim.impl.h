@@ -201,7 +201,7 @@ void init() {
 #endif
     off::f2faces("rbc.off", r_faces);
     CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
-    solid::init(r_pp_hst, r_n, /**/ r_rr0, r_com, r_v, r_om, r_I, r_Iinv, r_e0, r_e1, r_e2);
+    solid::init(r_pp_hst, r_n, /**/ r_rr0, r_com, r_v, r_om, r_Iinv, r_e0, r_e1, r_e2);
   }
 
   dump_field = new H5FieldDump;

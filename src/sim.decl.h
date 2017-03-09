@@ -30,7 +30,7 @@ namespace sim {
 
 
   float r_v[3], r_com[3];  /* linear velocity, COM */
-  float r_om[3], r_I[6], r_Iinv[6], r_to[3];  /* angular velocity, moment of inertia, torque */
+  float r_om[3], r_Iinv[6], r_to[3];  /* angular velocity, moment of inertia, torque */
   float r_rr0[3*MAX_VERT_NUM];  /* initial positions */
   float r_e0[3], r_e1[3], r_e2[3];  /* basis vectors of the body */
 
