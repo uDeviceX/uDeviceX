@@ -22,8 +22,6 @@
 #include "geom-wrapper.h"
 #endif
 
-#include "minmax.h"
-
 #include <thrust/device_vector.h>
 #include <thrust/sort.h>
 #include "glb.h"
