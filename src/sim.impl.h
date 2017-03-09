@@ -209,23 +209,13 @@ void update_solid() {
     CC(cudaMemcpy(r_ff_hst, r_ff, sizeof(Force) * r_n, D2H));
 
     int ip;
-    float *r0, *v0, *f0, x, y, z;
+    float *r0, *v0, x, y, z;
 
     solid::compute_torque(r_pp_hst, r_ff_hst, r_n, r_com, /**/ r_to);
 
     solid::update_omega(r_Iinv, r_to, /**/ r_om);
 
-    /* update force */
-    float r_f[3];
-    r_f[X] = r_f[Y] = r_f[Z] = 0; 
-    for (ip = X; ip < r_n; ++ip) {
-        f0 = r_ff_hst[ip].f;
-        r_f[X] += f0[X]; r_f[Y] += f0[Y]; r_f[Z] += f0[Z];
-    }
-
-    /* update linear velocity from forces */
-    float sc = dt/(rbc_mass*r_n);
-    r_v[X] += r_f[X]*sc; r_v[Y] += r_f[Y]*sc; r_v[Z] += r_f[Z]*sc;
+    solid::update_v(r_ff_hst, r_n, /**/ r_v);
 
     /* clear velocity */
     for (ip = 0; ip < r_n; ++ip) {

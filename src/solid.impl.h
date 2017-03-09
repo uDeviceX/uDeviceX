@@ -84,4 +84,17 @@ void update_omega(float *Iinv, float *to, /**/ float *om) {
 
     om[X] += dom[X]*dt; om[Y] += dom[Y]*dt; om[Z] += dom[Z]*dt;
 }
+
+void update_v(Force *ff, int n, /**/ float *v) {
+    /* update force */
+    float f[3] = {0, 0, 0};
+    for (int ip = X; ip < n; ++ip) {
+        float *f0 = ff[ip].f;
+        f[X] += f0[X]; f[Y] += f0[Y]; f[Z] += f0[Z];
+    }
+
+    /* update linear velocity from forces */
+    float sc = dt/(rbc_mass*n);
+    v[X] += f[X]*sc; v[Y] += f[Y]*sc; v[Z] += f[Z]*sc;
+}
 }
