@@ -208,9 +208,6 @@ void update_solid() {
     CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
     CC(cudaMemcpy(r_ff_hst, r_ff, sizeof(Force) * r_n, D2H));
 
-    int ip;
-    float *r0, *v0, x, y, z;
-
     solid::compute_torque(r_pp_hst, r_ff_hst, r_n, r_com, /**/ r_to);
 
     solid::update_omega(r_Iinv, r_to, /**/ r_om);
@@ -218,8 +215,8 @@ void update_solid() {
     solid::update_v(r_ff_hst, r_n, /**/ r_v);
 
     /* clear velocity */
-    for (ip = 0; ip < r_n; ++ip) {
-        v0 = r_pp_hst[ip].v;
+    for (int ip = 0; ip < r_n; ++ip) {
+        float *v0 = r_pp_hst[ip].v;
         v0[X] = v0[Y] = v0[Z] = 0;
     }
 
@@ -233,18 +230,7 @@ void update_solid() {
     solid::update_com(r_v, /**/ r_com);
     solid::pbc_solid(r_com);
 
-    /* update positions */
-    for (ip = 0; ip < r_n; ++ip) {
-        r0 = r_pp_hst[ip].r;
-        float *ro0 = &r_rr0[3*ip];
-        x = ro0[X]; y = ro0[Y]; z = ro0[Z];
-        float *e0 = r_e0, *e1 = r_e1, *e2 = r_e2;
-        r0[X] = x*e0[X] + y*e1[X] + z*e2[X];
-        r0[Y] = x*e0[Y] + y*e1[Y] + z*e2[Y];
-        r0[Z] = x*e0[Z] + y*e1[Z] + z*e2[Z];
-
-        r0[X] += r_com[X]; r0[Y] += r_com[Y]; r0[Z] += r_com[Z];
-    }
+    solid::update_r(r_rr0, r_n, r_e0, r_e1, r_e2, r_com, /**/ r_pp_hst);
 
     CC(cudaMemcpy(r_pp, r_pp_hst, sizeof(Particle) * r_n, H2D));
 }

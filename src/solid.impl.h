@@ -119,4 +119,16 @@ void add_omega(Particle *pp, int n, float *om, float *com) {
 void update_com(float *v, /**/ float *com) {
     com[X] += v[X]*dt; com[Y] += v[Y]*dt; com[Z] += v[Z]*dt;
 }
+
+void update_r(float *rr0, int n, float *e0, float *e1, float *e2, float *com, /**/ Particle *pp) {
+    for (int ip = 0; ip < n; ++ip) {
+        float *r0 = pp[ip].r, *ro = &rr0[3*ip];
+        float x = ro[X], y = ro[Y], z = ro[Z];
+        r0[X] = x*e0[X] + y*e1[X] + z*e2[X];
+        r0[Y] = x*e0[Y] + y*e1[Y] + z*e2[Y];
+        r0[Z] = x*e0[Z] + y*e1[Z] + z*e2[Z];
+
+        r0[X] += com[X]; r0[Y] += com[Y]; r0[Z] += com[Z];
+    }
+}
 }
