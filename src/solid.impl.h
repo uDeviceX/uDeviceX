@@ -64,7 +64,7 @@ void pbc_solid(float *com) {
     }
 }
 
-void compute_torque(Particle *pp, Force *ff, int n, float *com, /**/ float *to) {
+void compute_to(Particle *pp, Force *ff, int n, float *com, /**/ float *to) {
     to[X] = to[Y] = to[Z] = 0;
     for (int ip = 0; ip < n; ++ip) {
         float *r0 = pp[ip].r, *f0 = ff[ip].f;
@@ -76,7 +76,7 @@ void compute_torque(Particle *pp, Force *ff, int n, float *com, /**/ float *to) 
     }
 }
 
-void update_omega(float *Iinv, float *to, /**/ float *om) {
+void update_om(float *Iinv, float *to, /**/ float *om) {
     float *A = Iinv, *b = to, dom[3];
     dom[X] = A[XX]*b[X] + A[XY]*b[Y] + A[XZ]*b[Z];
     dom[Y] = A[YX]*b[X] + A[YY]*b[Y] + A[YZ]*b[Z];
@@ -105,7 +105,7 @@ void add_v(Particle *pp, int n, float *v) {
     }
 }
 
-void add_omega(Particle *pp, int n, float *om, float *com) {
+void add_om(Particle *pp, int n, float *om, float *com) {
     float omx = om[X], omy = om[Y], omz = om[Z];
     for (int ip = 0; ip < n; ++ip) {
         float *r0 = pp[ip].r, *v0 = pp[ip].v;

@@ -208,28 +208,21 @@ void update_solid() {
     CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
     CC(cudaMemcpy(r_ff_hst, r_ff, sizeof(Force) * r_n, D2H));
 
-    solid::compute_torque(r_pp_hst, r_ff_hst, r_n, r_com, /**/ r_to);
-
-    solid::update_omega(r_Iinv, r_to, /**/ r_om);
-
-    solid::update_v(r_ff_hst, r_n, /**/ r_v);
-
     /* clear velocity */
     for (int ip = 0; ip < r_n; ++ip) {
         float *v0 = r_pp_hst[ip].v;
         v0[X] = v0[Y] = v0[Z] = 0;
     }
 
+    solid::compute_to(r_pp_hst, r_ff_hst, r_n, r_com, /**/ r_to);
+    solid::update_om(r_Iinv, r_to, /**/ r_om);
+    solid::update_v(r_ff_hst, r_n, /**/ r_v);
     solid::add_v(r_pp_hst, r_n, r_v);
-
-    solid::add_omega(r_pp_hst, r_n, r_om, r_com);
-
+    solid::add_om(r_pp_hst, r_n, r_om, r_com);
     solid::rotate_e(r_e0, r_om); solid::rotate_e(r_e1, r_om); solid::rotate_e(r_e2, r_om);
     solid::gram_schmidt(r_e0, r_e1, r_e2);
-
     solid::update_com(r_v, /**/ r_com);
     solid::pbc_solid(r_com);
-
     solid::update_r(r_rr0, r_n, r_e0, r_e1, r_e2, r_com, /**/ r_pp_hst);
 
     CC(cudaMemcpy(r_pp, r_pp_hst, sizeof(Particle) * r_n, H2D));
