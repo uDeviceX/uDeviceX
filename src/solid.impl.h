@@ -43,7 +43,7 @@ void gram_schmidt(/**/ float *e0, float *e1, float *e2) {
     normalize(e2);
 }
 
-void rotate_e(float *om, /**/ float *e) {
+void rot_e(float *om, /**/ float *e) {
     float omx = om[X], omy = om[Y], omz = om[Z];
     float ex = e[X], ey = e[Y], ez = e[Z];
     float vx, vy, vz;
@@ -74,7 +74,7 @@ void init_com(Particle *pp, int n, /**/ float *com) {
     pbc_solid(com);
 }
 
-void init_I(Particle *pp, int n, float *com, /**/float *I) {
+void init_I(Particle *pp, int n, float *com, float mass, /**/float *I) {
 	int c;
 
     for (int c = 0; c < 6; ++c) I[c] = 0;
@@ -90,10 +90,10 @@ void init_I(Particle *pp, int n, float *com, /**/float *I) {
         I[YZ] -= y*z;
     }
 
-    for (c = 0; c < 6; ++c) I[c] *= rbc_mass;
+    for (c = 0; c < 6; ++c) I[c] *= mass;
 }
 
-void init(Particle *pp, int n,
+void init(Particle *pp, int n, float mass,
 		/**/ float *rr0, float *com, float *v, float *om, float *Iinv,
 		     float *e0, float *e1, float *e2) {
     v[X] = v[Y] = v[Z] = 0; 
@@ -107,7 +107,7 @@ void init(Particle *pp, int n,
     init_com(pp, n, /**/ com);
 
     /* init inertia tensor */
-    float I[6]; solid::init_I(pp, n, com, /**/ I);
+    float I[6]; solid::init_I(pp, n, com, mass, /**/ I);
     gsl::inv3x3(I, /**/ Iinv);
 
     /* initial positions */
@@ -115,6 +115,14 @@ void init(Particle *pp, int n,
         float *ro = &rr0[3*ip];
         float *r0 = pp[ip].r;
         ro[X] = r0[X]-com[X]; ro[Y] = r0[Y]-com[Y]; ro[Z] = r0[Z]-com[Z];
+    }
+}
+
+void compute_f(Force *ff, int n, /**/ float *f) {
+    f[X] = f[Y] = f[Z] = 0;
+    for (int ip = 0; ip < n; ++ip) {
+        float *f0 = ff[ip].f;
+        f[X] += f0[X]; f[Y] += f0[Y]; f[Z] += f0[Z];
     }
 }
 
@@ -139,16 +147,8 @@ void update_om(float *Iinv, float *to, /**/ float *om) {
     om[X] += dom[X]*dt; om[Y] += dom[Y]*dt; om[Z] += dom[Z]*dt;
 }
 
-void update_v(Force *ff, int n, /**/ float *v) {
-    /* update force */
-    float f[3] = {0, 0, 0};
-    for (int ip = X; ip < n; ++ip) {
-        float *f0 = ff[ip].f;
-        f[X] += f0[X]; f[Y] += f0[Y]; f[Z] += f0[Z];
-    }
-
-    /* update linear velocity from forces */
-    float sc = dt/(rbc_mass*n);
+void update_v(float *f, int n, float mass, /**/ float *v) {
+    float sc = dt/(mass*n);
     v[X] += f[X]*sc; v[Y] += f[Y]*sc; v[Z] += f[Z]*sc;
 }
 
@@ -187,23 +187,27 @@ void update_r(float *rr0, int n, float *e0, float *e1, float *e2, float *com, /*
     }
 }
 
-void update(float *rr0, Force *ff, int n,
+void update(float *rr0, Force *ff, int n, float mass,
 		/**/ Particle *pp, float *com, float *to, float *om, float *v, float *Iinv,
-		float *e0, float *e1, float *e2) {
+		float *e0, float *e1, float *e2, float *f) {
     /* clear velocity */
     for (int ip = 0; ip < n; ++ip) {
         float *v0 = pp[ip].v;
         v0[X] = v0[Y] = v0[Z] = 0;
     }
 
+	compute_f(ff, n, /**/ f);
     compute_to(pp, ff, n, com, /**/ to);
+
+    update_v(f, n, mass, /**/ v);
     update_om(Iinv, to, /**/ om);
-    update_v(ff, n, /**/ v);
+
     add_v(n, v, /**/ pp);
     add_om(n, om, com, /**/ pp);
-    rotate_e(om, /**/ e0); rotate_e(om, /**/ e1); rotate_e(om, /**/ e2);
-    gram_schmidt(/**/ e0, e1, e2);
+
     update_com(v, /**/ com);
+    rot_e(om, /**/ e0); rot_e(om, /**/ e1); rot_e(om, /**/ e2); gram_schmidt(/**/ e0, e1, e2);
+
     update_r(rr0, n, e0, e1, e2, com, /**/ pp);
 }
 }
