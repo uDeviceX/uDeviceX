@@ -104,4 +104,15 @@ void add_v(Particle *pp, int n, float *v) {
         v0[X] += v[X]; v0[Y] += v[Y]; v0[Z] += v[Z];
     }
 }
+
+void add_omega(Particle *pp, int n, float *om, float *com) {
+    float omx = om[X], omy = om[Y], omz = om[Z];
+    for (int ip = 0; ip < n; ++ip) {
+        float *r0 = pp[ip].r, *v0 = pp[ip].v;
+        float x = r0[X]-com[X], y = r0[Y]-com[Y], z = r0[Z]-com[Z];
+        v0[X] += omy*z - omz*y;
+        v0[Y] += omz*x - omx*z;
+        v0[Z] += omx*y - omy*x;
+    }
+}
 }

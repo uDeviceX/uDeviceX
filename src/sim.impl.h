@@ -225,15 +225,7 @@ void update_solid() {
 
     solid::add_v(r_pp_hst, r_n, r_v);
 
-    /* add angular velocity */
-    float omx = r_om[X], omy = r_om[Y], omz = r_om[Z];
-    for (ip = 0; ip < r_n; ++ip) {
-        r0 = r_pp_hst[ip].r; v0 = r_pp_hst[ip].v;
-        x = r0[X]-r_com[X]; y = r0[Y]-r_com[Y]; z = r0[Z]-r_com[Z];
-        v0[X] += omy*z - omz*y;
-        v0[Y] += omz*x - omx*z;
-        v0[Z] += omx*y - omy*x;
-    }
+    solid::add_omega(r_pp_hst, r_n, r_om, r_com);
 
     solid::rotate_e(r_e0, r_om); solid::rotate_e(r_e1, r_om); solid::rotate_e(r_e2, r_om);
     solid::gram_schmidt(r_e0, r_e1, r_e2);
