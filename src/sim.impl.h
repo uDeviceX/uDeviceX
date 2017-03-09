@@ -181,6 +181,17 @@ void init_I() {
     for (c = 0; c < 6; ++c) I[c] *= rbc_mass;
 }
 
+/* wrap COM to the domain; TODO: many processes */
+void pbc_solid(float *com) {
+    float lo[3] = {-0.5*XS, -0.5*YS, -0.5*ZS};
+    float hi[3] = { 0.5*XS,  0.5*YS,  0.5*ZS};
+    float L[3] = {XS, YS, ZS};
+    for (int c = 0; c < 3; ++c) {
+        while (com[c] <  lo[c]) com[c] += L[c];
+        while (com[c] >= hi[c]) com[c] -= L[c];
+    }
+}
+
 void init_com_r(Particle *pp) {
     r_com[X] = r_com[Y] = r_com[Z] = 0;
     for (int ip = 0; ip < r_n; ++ip) {
@@ -188,6 +199,7 @@ void init_com_r(Particle *pp) {
         r_com[X] += r0[X]; r_com[Y] += r0[Y]; r_com[Z] += r0[Z];
     }
     r_com[X] /= r_n; r_com[Y] /= r_n; r_com[Z] /= r_n;
+    pbc_solid(r_com);
 }
 
 void init_solid() {
@@ -315,6 +327,7 @@ void update_solid() {
 
     /* update COM */
     r_com[X] += r_v[X]*dt; r_com[Y] += r_v[Y]*dt; r_com[Z] += r_v[Z]*dt;
+    pbc_solid(r_com);
 
     /* update positions */
     for (ip = 0; ip < r_n; ++ip) {
