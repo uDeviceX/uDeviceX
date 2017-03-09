@@ -152,14 +152,14 @@ void update_v(Force *ff, int n, /**/ float *v) {
     v[X] += f[X]*sc; v[Y] += f[Y]*sc; v[Z] += f[Z]*sc;
 }
 
-void add_v(Particle *pp, int n, float *v) {
+void add_v(int n, float *v, Particle *pp) {
     for (int ip = 0; ip < n; ++ip) {
         float *v0 = pp[ip].v;
         v0[X] += v[X]; v0[Y] += v[Y]; v0[Z] += v[Z];
     }
 }
 
-void add_om(Particle *pp, int n, float *om, float *com) {
+void add_om(int n, float *om, float *com, Particle *pp) {
     float omx = om[X], omy = om[Y], omz = om[Z];
     for (int ip = 0; ip < n; ++ip) {
         float *r0 = pp[ip].r, *v0 = pp[ip].v;
@@ -199,8 +199,8 @@ void update(float *rr0, Force *ff, int n,
     compute_to(pp, ff, n, com, /**/ to);
     update_om(Iinv, to, /**/ om);
     update_v(ff, n, /**/ v);
-    add_v(pp, n, v);
-    add_om(pp, n, om, com);
+    add_v(n, v, /**/ pp);
+    add_om(n, om, com, /**/ pp);
     rotate_e(om, /**/ e0); rotate_e(om, /**/ e1); rotate_e(om, /**/ e2);
     gram_schmidt(/**/ e0, e1, e2);
     update_com(v, /**/ com);
