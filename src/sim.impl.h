@@ -174,16 +174,6 @@ void init_I() {
     for (c = 0; c < 6; ++c) I[c] *= rbc_mass;
 }
 
-void init_com_r(Particle *pp) {
-    r_com[X] = r_com[Y] = r_com[Z] = 0;
-    for (int ip = 0; ip < r_n; ++ip) {
-        float *r0 = pp[ip].r;
-        r_com[X] += r0[X]; r_com[Y] += r0[Y]; r_com[Z] += r0[Z];
-    }
-    r_com[X] /= r_n; r_com[Y] /= r_n; r_com[Z] /= r_n;
-    solid::pbc_solid(r_com);
-}
-
 void init_solid() {
     r_v[X] = r_v[Y] = r_v[Z] = 0; 
     r_om[X] = r_om[Y] = r_om[Z] = 0; 
@@ -278,7 +268,7 @@ void init() {
 #endif
     off::f2faces("rbc.off", r_faces);
     CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
-    init_com_r(r_pp_hst);
+    solid::init_com(r_pp_hst, r_n, /**/ r_com);
     init_solid();
   }
 

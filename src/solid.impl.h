@@ -64,6 +64,16 @@ void pbc_solid(float *com) {
     }
 }
 
+void init_com(Particle *pp, int n, /**/ float *com) {
+    com[X] = com[Y] = com[Z] = 0;
+    for (int ip = 0; ip < n; ++ip) {
+        float *r0 = pp[ip].r;
+        com[X] += r0[X]; com[Y] += r0[Y]; com[Z] += r0[Z];
+    }
+    com[X] /= n; com[Y] /= n; com[Z] /= n;
+    pbc_solid(com);
+}
+
 void compute_to(Particle *pp, Force *ff, int n, float *com, /**/ float *to) {
     to[X] = to[Y] = to[Z] = 0;
     for (int ip = 0; ip < n; ++ip) {
