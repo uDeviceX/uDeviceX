@@ -18,7 +18,7 @@ float dot(float *v, float *u) {
     return v[X]*u[X] + v[Y]*u[Y] + v[Z]*u[Z];
 }
 
-void reject(float *v, float *u) {
+void reject(/**/ float *v, float *u) {
     float d = dot(v, u);
     v[X] -= d*u[X]; v[Y] -= d*u[Y]; v[Z] -= d*u[Z];
 }
@@ -27,12 +27,12 @@ float norm(float *v) {
     return sqrt(v[X]*v[X]+v[Y]*v[Y]+v[Z]*v[Z]);
 }
 
-void normalize(float *v) {
+void normalize(/**/ float *v) {
     float nrm = norm(v);
     v[X] /= nrm; v[Y] /= nrm; v[Z] /= nrm;
 }
 
-void gram_schmidt(float *e0, float *e1, float *e2) {
+void gram_schmidt(/**/ float *e0, float *e1, float *e2) {
     normalize(e0);
 
     reject(e1, e0);
@@ -43,7 +43,7 @@ void gram_schmidt(float *e0, float *e1, float *e2) {
     normalize(e2);
 }
 
-void rotate_e(float *e, float *om) {
+void rotate_e(float *om, /**/ float *e) {
     float omx = om[X], omy = om[Y], omz = om[Z];
     float ex = e[X], ey = e[Y], ez = e[Z];
     float vx, vy, vz;
@@ -54,7 +54,7 @@ void rotate_e(float *e, float *om) {
 }
 
 /* wrap COM to the domain; TODO: many processes */
-void pbc_solid(float *com) {
+void pbc_solid(/**/ float *com) {
     float lo[3] = {-0.5*XS, -0.5*YS, -0.5*ZS};
     float hi[3] = { 0.5*XS,  0.5*YS,  0.5*ZS};
     float L[3] = {XS, YS, ZS};
@@ -172,6 +172,7 @@ void add_om(Particle *pp, int n, float *om, float *com) {
 
 void update_com(float *v, /**/ float *com) {
     com[X] += v[X]*dt; com[Y] += v[Y]*dt; com[Z] += v[Z]*dt;
+    pbc_solid(/**/ com);
 }
 
 void update_r(float *rr0, int n, float *e0, float *e1, float *e2, float *com, /**/ Particle *pp) {
@@ -184,5 +185,25 @@ void update_r(float *rr0, int n, float *e0, float *e1, float *e2, float *com, /*
 
         r0[X] += com[X]; r0[Y] += com[Y]; r0[Z] += com[Z];
     }
+}
+
+void update(float *rr0, Force *ff, int n,
+		/**/ Particle *pp, float *com, float *to, float *om, float *v, float *Iinv,
+		float *e0, float *e1, float *e2) {
+    /* clear velocity */
+    for (int ip = 0; ip < n; ++ip) {
+        float *v0 = pp[ip].v;
+        v0[X] = v0[Y] = v0[Z] = 0;
+    }
+
+    compute_to(pp, ff, n, com, /**/ to);
+    update_om(Iinv, to, /**/ om);
+    update_v(ff, n, /**/ v);
+    add_v(pp, n, v);
+    add_om(pp, n, om, com);
+    rotate_e(om, /**/ e0); rotate_e(om, /**/ e1); rotate_e(om, /**/ e2);
+    gram_schmidt(/**/ e0, e1, e2);
+    update_com(v, /**/ com);
+    update_r(rr0, n, e0, e1, e2, com, /**/ pp);
 }
 }
