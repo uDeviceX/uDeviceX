@@ -144,6 +144,24 @@ void bounce() {
   if (rbcs0) wall::bounce(r_pp, r_n);
 }
 
+void init_r() {
+  rex::init();
+  mpDeviceMalloc(&r_pp); mpDeviceMalloc(&r_ff);
+
+  r_nc = Cont::setup(r_pp, r_nv, /* storage */ r_pp_hst); r_n = r_nc * r_nv;
+#ifdef GWRP
+  iotags_init(r_nv, r_nt, r_faces);
+  iotags_domain(0, 0, 0,
+  	  XS, YS, ZS,
+  	  m::periods[0], m::periods[1], m::periods[0]);
+#endif
+  off::f2faces("rbc.off", r_faces);
+  CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
+  solid::init(r_pp_hst, r_n, r_mass, /**/ r_rr0, r_Iinv, r_com, r_e0, r_e1, r_e2, r_v, r_om);
+
+  MC(MPI_Barrier(m::cart));
+}
+
 void init() {
   CC(cudaMalloc(&r_host_av, MAX_CELLS_NUM));
 
@@ -167,23 +185,6 @@ void init() {
   update_helper_arrays();
 
   dump_field = new H5FieldDump;
-
-  rbcs0 = rbcs;
-  if (rbcs0) {
-    rex::init();
-    mpDeviceMalloc(&r_pp); mpDeviceMalloc(&r_ff);
-
-    r_nc = Cont::setup(r_pp, r_nv, /* storage */ r_pp_hst); r_n = r_nc * r_nv;
-#ifdef GWRP
-    iotags_init(r_nv, r_nt, r_faces);
-    iotags_domain(0, 0, 0,
-		  XS, YS, ZS,
-		  m::periods[0], m::periods[1], m::periods[0]);
-#endif
-    off::f2faces("rbc.off", r_faces);
-    CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
-    solid::init(r_pp_hst, r_n, r_mass, /**/ r_rr0, r_Iinv, r_com, r_e0, r_e1, r_e2, r_v, r_om);
-  }
 
   MC(MPI_Barrier(m::cart));
 }
@@ -211,6 +212,8 @@ void run_nowall() {
   if (m::rank == 0) printf("will take %ld steps\n", nsteps);
   float driving_force = pushtheflow ? hydrostatic_a : 0;
   bool wall_created = false;
+  rbcs0 = rbcs;
+  if (rbcs0) init_r();
   for (int it = 0; it < nsteps; ++it) run0(driving_force, wall_created, it);
 }
 
@@ -219,8 +222,11 @@ void run_wall() {
   float driving_force = 0;
   bool wall_created = false;
   int it = 0;
+  rbcs0 = false;
   for (/**/; it < wall_creation_stepid; ++it) run0(driving_force, wall_created, it);
 
+  rbcs0 = rbcs;
+  if (rbcs0) init_r();
   create_walls(); wall_created = true;
   if (rbcs0 && r_n) k_sim::clear_velocity<<<k_cnf(r_n)>>>(r_pp, r_n);
   if (pushtheflow) driving_force = hydrostatic_a;
