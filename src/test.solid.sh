@@ -1,5 +1,5 @@
 #### Double poiseuille rbc
-# TEST: solid.t1
+# sTEST: solid.t1
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf ply h5 diag.txt
@@ -36,10 +36,10 @@
 # :
 # make clean && make -j && make -C ../tools
 # ./udx
-# ply2punto ply/rbcs-00004.ply | fround.awk -v tol=1 > ply.out.txt
+# read_h5part.m h5/s.h5part | fround.awk -v tol=1 > h5part.out.txt
 #
 #### Double poiseuille rbc rotated crossing domain
-# TEST: solid.t3
+# sTEST: solid.t3
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf ply h5 diag.txt
