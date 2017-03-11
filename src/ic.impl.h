@@ -21,6 +21,7 @@ int gen(Particle* pp) { /* generate particle positions and velocities */
 	  p.r[X] = x; p.r[Y] = y; p.r[Z] = z;
 	  p.v[X] = 0; p.v[Y] = 0; p.v[Z] = 0;
 	  pp[ip++] = p;
+      lastbit::set(p.v[X], false);
 	}
       }
 

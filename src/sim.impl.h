@@ -149,14 +149,17 @@ void init_r() {
   mpDeviceMalloc(&r_pp); mpDeviceMalloc(&r_ff);
 
   r_nc = Cont::setup(r_pp, r_nv, /* storage */ r_pp_hst); r_n = r_nc * r_nv;
-#ifdef GWRP
-  iotags_init(r_nv, r_nt, r_faces);
-  iotags_domain(0, 0, 0,
-  	  XS, YS, ZS,
-  	  m::periods[0], m::periods[1], m::periods[0]);
-#endif
+
   off::f2faces("rbc.off", r_faces);
+
   CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
+  /* fo be removed */
+  for (int ip = 0; ip < r_n; ++ip) {
+    float *v0 = r_pp_hst[ip].v;
+    lastbit::set(v0[0], true);
+  }
+  CC(cudaMemcpy(r_pp, r_pp_hst, sizeof(Particle) * r_n, H2D));
+  /* end to be removed */
   solid::init(r_pp_hst, r_n, r_mass, /**/ r_rr0, r_Iinv, r_com, r_e0, r_e1, r_e2, r_v, r_om);
 
   MC(MPI_Barrier(m::cart));

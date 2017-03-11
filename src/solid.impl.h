@@ -154,6 +154,7 @@ void update_v(float mass, float *f, int n, /**/ float *v) {
 void add_v(float *v, int n, /**/ Particle *pp) {
     for (int ip = 0; ip < n; ++ip) {
         float *v0 = pp[ip].v;
+        lastbit::Preserver up(v0[X]);
         v0[X] += v[X]; v0[Y] += v[Y]; v0[Z] += v[Z];
     }
 }
@@ -163,6 +164,7 @@ void add_om(float *com, float *om, int n, /**/ Particle *pp) {
     for (int ip = 0; ip < n; ++ip) {
         float *r0 = pp[ip].r, *v0 = pp[ip].v;
         float x = r0[X]-com[X], y = r0[Y]-com[Y], z = r0[Z]-com[Z];
+        lastbit::Preserver up(v0[X]);
         v0[X] += omy*z - omz*y;
         v0[Y] += omz*x - omx*z;
         v0[Z] += omx*y - omy*x;
@@ -193,6 +195,7 @@ void update(Force *ff, float *rr0, int n, float mass,
     /* clear velocity */
     for (int ip = 0; ip < n; ++ip) {
         float *v0 = pp[ip].v;
+        lastbit::Preserver up(v0[X]);
         v0[X] = v0[Y] = v0[Z] = 0;
     }
 
