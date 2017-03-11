@@ -64,6 +64,11 @@ void pbc_solid(/**/ float *com) {
     }
 }
 
+bool inside(float x, float y, float z) {
+    float r = 5.;
+    return x*x + y*y + z*z < r*r;
+}
+
 void init_com(Particle *pp, int n, /**/ float *com) {
     com[X] = com[Y] = com[Z] = 0;
     for (int ip = 0; ip < n; ++ip) {

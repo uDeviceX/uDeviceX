@@ -140,18 +140,24 @@ void bounce() {
 void init_r() {
   rex::init();
   mpDeviceMalloc(&r_pp); mpDeviceMalloc(&r_ff);
+  int ip, is, ir;
 
-  r_nc = Cont::setup(r_pp, r_nv, /* storage */ r_pp_hst); r_n = r_nc * r_nv;
+  CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
+  for (ip = is = ir = 0; ip < s_n; ++ip) {
+    Particle p = s_pp_hst[ip]; float *r0 = p.r;
+    if (solid::inside(r0[X], r0[Y], r0[Z])) r_pp_hst[ir++] = p;
+    else                                    s_pp_hst[is++] = p;
+  }
+  r_n = ir; s_n = is;
 
-  CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
-  /* fo be removed */
-  for (int ip = 0; ip < r_n; ++ip) {
+  for (ip = 0; ip < r_n; ++ip) {
     float *v0 = r_pp_hst[ip].v;
     lastbit::set(v0[0], true);
   }
-  CC(cudaMemcpy(r_pp, r_pp_hst, sizeof(Particle) * r_n, H2D));
-  /* end to be removed */
   solid::init(r_pp_hst, r_n, r_mass, /**/ r_rr0, r_Iinv, r_com, r_e0, r_e1, r_e2, r_v, r_om);
+
+  CC(cudaMemcpy(r_pp, r_pp_hst, sizeof(Particle) * r_n, H2D));
+  CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
 
   MC(MPI_Barrier(m::cart));
 }
