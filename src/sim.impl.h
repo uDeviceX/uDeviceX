@@ -166,8 +166,6 @@ void init_r() {
 }
 
 void init() {
-  CC(cudaMalloc(&r_host_av, MAX_CELLS_NUM));
-
   DPD::init();
   fsi::init();
   if (hdf5part_dumps)
@@ -256,8 +254,6 @@ void close() {
 
   CC(cudaFree(s_zip0));
   CC(cudaFree(s_zip1));
-
-  CC(cudaFree(r_host_av));
 
   delete wall::trunk;
   CC(cudaFree(r_pp )); CC(cudaFree(r_ff ));
