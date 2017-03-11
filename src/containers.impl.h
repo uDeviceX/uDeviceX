@@ -53,13 +53,4 @@ int setup(Particle* pp, int nv, /* storage */ Particle *pp_hst) {
   MPI_Barrier(m::cart);
   return nc;
 }
-
-void rbc_dump(int nc, Particle *p, int* triplets,
-	      int nv, int nt, int id) {
-    const char *format4ply = "ply/rbcs-%05d.ply";
-    char buf[200];
-    sprintf(buf, format4ply, id);
-    if (m::rank == 0) mkdir("ply", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-    ply_dump(buf, triplets, nc, nt, p, nv);
-}
 }

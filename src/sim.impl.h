@@ -96,13 +96,6 @@ void dump_part() {
   dump_part_solvent->dump(sr_pp, n);
 }
 
-void dump_rbcs() {
-  if (!rbcs0) return;
-  static int id = 0;
-  dev2hst();  /* TODO: do not need `s' */
-  Cont::rbc_dump(r_nc, &sr_pp[s_n], r_faces, r_nv, r_nt, id++);
-}
-
 void dump_grid() {
   if (!hdf5field_dumps) return;
   dev2hst();  /* TODO: do not need `r' */
@@ -150,8 +143,6 @@ void init_r() {
 
   r_nc = Cont::setup(r_pp, r_nv, /* storage */ r_pp_hst); r_n = r_nc * r_nv;
 
-  off::f2faces("rbc.off", r_faces);
-
   CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
   /* fo be removed */
   for (int ip = 0; ip < r_n; ++ip) {
@@ -192,7 +183,6 @@ void init() {
 
 void dumps_diags(int it) {
   if (it % steps_per_dump == 0)     in_out();
-  if (it % steps_per_dump == 0)     dump_rbcs();
   if (it % steps_per_dump == 0)     dump_part();
   if (it % steps_per_hdf5dump == 0) dump_grid();
   if (it % steps_per_dump == 0)     diag(it);
