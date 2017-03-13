@@ -190,6 +190,7 @@ void init() {
 void dumps_diags(int it) {
   if (it % steps_per_dump == 0)     in_out();
   if (it % steps_per_dump == 0)     dump_part();
+  if (it % steps_per_dump == 0)     solid::dump(it, r_com, r_v, r_om, r_to);
   if (it % steps_per_hdf5dump == 0) dump_grid();
   if (it % steps_per_dump == 0)     diag(it);
 }

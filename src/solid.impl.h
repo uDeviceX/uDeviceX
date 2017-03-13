@@ -65,8 +65,7 @@ void pbc_solid(/**/ float *com) {
 }
 
 bool inside(float x, float y, float z) {
-    float r = 5.;
-    return x*x + y*y + z*z < r*r;
+    return x*x + y*y + z*z < rsph*rsph;
 }
 
 void init_com(Particle *pp, int n, /**/ float *com) {
@@ -210,12 +209,29 @@ void update(Force *ff, float *rr0, int n, float mass,
     update_v(mass, f, n, /**/ v);
     update_om(Iinv, to, /**/ om);
 
-    add_v(v, n, /**/ pp);
+    if (!pin_sph) add_v(v, n, /**/ pp);
     add_om(com, om, n, /**/ pp);
 
-    update_com(v, /**/ com);
+    if (!pin_sph) update_com(v, /**/ com);
     rot_e(om, /**/ e0); rot_e(om, /**/ e1); rot_e(om, /**/ e2); gram_schmidt(/**/ e0, e1, e2);
 
     update_r(rr0, n, com, e0, e1, e2, /**/ pp);
+}
+
+void dump(int it, float *com, float *v, float *om, float *to) {
+    static bool first = true;
+    const char *fname = "solid_diag.txt";
+    FILE *fp;
+    if (first) fp = fopen(fname, "w");
+    else       fp = fopen(fname, "a");
+    first = false;
+
+    fprintf(fp, "%g ", dt*it);
+    fprintf(fp, "%g %g %g ", com[X], com[Y], com[Z]);
+    fprintf(fp, "%g %g %g ", v[X], v[Y], v[Z]);
+    fprintf(fp, "%g %g %g ", om[X], om[Y], om[Z]);
+    fprintf(fp, "%g %g %g\n", to[X], to[Y], to[Z]);
+
+    fclose(fp);
 }
 }
