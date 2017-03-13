@@ -1,14 +1,14 @@
 #define rc                1.5  /* cutoff radius */
 
-#define XS   16
-#define YS   16
-#define ZS   16
+#define XS   32
+#define YS   32
+#define ZS   32
 #define XMARGIN_WALL      6
 #define YMARGIN_WALL      6
 #define ZMARGIN_WALL      6
 
 #define _numberdensity    3
-#define _kBT              1e-7
+#define _kBT              0.1
 #define  dt               5e-4  /* timestep */
 #define  rbc_mass         0.5   /* ratio of RBC particle mass to solvent particle mass */
 #define _gamma_dot        5.0   /* shear rate */
