@@ -1,19 +1,32 @@
 #### Double poiseuille sphere
-# TEST: solid.t2
+# sTEST: solid.t2
 # set -x
 # export PATH=../tools:$PATH
-# rm -rf ply h5 diag.txt
-# x=8 y=17 z=8
-# echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
+# rm -rf h5 diag.txt
 # cp bodies/sphere.off rbc.off
 # :
 # argp .conf.double.poiseuille.h     \
-#   -rbcs -RBCnv=5220 -RBCnt=10436   \
-#   -tend=1.0 -steps_per_dump=400    \
+#   -rbcs -rsph=4 -pin_sph=true      \
+#   -tend=2.0 -steps_per_dump=100   \
 #   -pushtheflow -doublepoiseuille   \
 #   -hdf5field_dumps -hdf5part_dumps \
-#   -steps_per_hdf5dump=400 > .conf.h
+#   -steps_per_hdf5dump=100 > .conf.h
 # :
 # make clean && make -j && make -C ../tools
 # ./udx
 # read_h5part.m h5/s.h5part | fround.awk -v tol=1 > h5part.out.txt
+#
+####
+# TEST: solid.t1
+# export PATH=../tools:$PATH
+# rm -rf h5 diag.txt
+# cp sdf/wall1/wall.dat sdf.dat
+# :
+# argp .conf.test.h  \
+#   -tend=100.0 -steps_per_dump=400 -walls -wall_creation_stepid=100 \
+#   -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=400       \
+#   -rbcs -rsph=5 -pin_sph=true -dt=1e-3 > .conf.h
+# :
+# make clean && make -j && make -C ../tools
+# ./udx
+# avg_h5.m h5/flowfields-0003.h5 | fround.awk -v tol=1 > h5.out.txt
