@@ -29,6 +29,11 @@ void bounce_vel(float* V0, float* Vw, /**/ float* V1) {
   }
 }
 
+/* angular velocity and position to linear velocity */
+void om2lin(float* om, float* r, /**/ float* v) {
+  cross(om, r, /**/ v);
+}
+
 int main() {
   enum {X, Y, Z};  
   float a[] = {0, 1, 0};

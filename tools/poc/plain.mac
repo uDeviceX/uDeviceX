@@ -1,2 +1,28 @@
 /* Intersection with a plain centered at (0, 0, 0) */
 
+load("format")$
+load("cgrind")$
+alias(c, cgrind);
+
+/* make a vector */
+mv(P)::=buildq([l: P,
+  r: create_list(concat(P, d), d,  ['x, 'y, 'z])],
+  l: r) $
+
+mv(P0)$ mv(P1)$ /* Initial and final positions of a point */
+P : P0*(1-t) + P1*t; /* Point at time t */
+
+mv(n)$ /* normal */
+
+eq: P . [nx, ny, nz] $
+eq: format(eq, %poly(t)) $
+
+so: linsolve(eq, t)$
+t_ex: rhs(so[1])   $
+
+nu: num(t_ex)  $
+de: denom(t_ex)$
+
+ratexpand(nu/de - t_ex) $
+
+(c('nu = nu), c('de = de), c(' t = 'nu/'de))$
