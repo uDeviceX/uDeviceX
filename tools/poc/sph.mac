@@ -1,0 +1,29 @@
+load("format") $
+load("cgrind") $
+
+/* make a vector */
+mv(P)::=buildq([l: P,
+  r: create_list(concat(P, d), d,  ['x, 'y, 'z])],
+  l: r) $
+
+alias(c, cgrind)$
+
+mv(P0)$ mv(P1)$
+
+eq_s: x^2 + y^2 + z^2 - 1;
+P : P0*(1-t) + P1*t;
+eq_p: [x, y, z] - P;
+eq: flatten([eq_p, eq_s]);
+
+xyz: linsolve([eq[1], eq[2], eq[3]], [x, y, z]);
+
+eq_t: subst(xyz, eq[4]);
+eq_t: format(eq_t, %poly(t));
+
+c('a=coeff(eq_t, t, 2));
+c('b=coeff(eq_t, t, 1));
+c('c=coeff(eq_t, t, 0));
+
+c('D=b^2 - 4*a*c);
+grind('t0=(-b + sqrt(D))/(2*a));
+grind('t1=(-b - sqrt(D))/(2*a));

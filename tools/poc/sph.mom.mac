@@ -1,0 +1,39 @@
+load ("vect")$
+load ("cgrind");
+
+/* make a vector */
+mv(P)::=buildq([l: P,
+  r: create_list(concat(P, d), d,  ['x, 'y, 'z])],
+  l: r) $
+
+alias(c, cgrind)$
+
+[X, Y, Z]: [1, 2, 3] $
+aa: [a[X], a[Y], a[Z]] $
+bb: [b[X], b[Y], b[Z]] $
+define(cross(a, b), express(aa ~ bb));
+
+mv(R0)$ mv(R1)$
+mv(V0)$ mv(V1)$
+
+P0: m*V0; /* linear moment */
+P1: m*V1;
+
+dP: P0 - P1;
+f :  dP/dt;
+f : factor(f); /* resulting force to apply to the sphere */
+
+L0: cross(R0, m*V0); /* angular moment */
+L1: cross(R1, m*V1);
+
+dL : L0 - L1;       /* torque to apply to the sphere */
+to : dL/dt;
+to: factor(to);
+
+c('fx = f[X])$
+c('fy = f[Y])$
+c('fz = f[Z])$
+
+c('tox = to[X])$
+c('toy = to[Y])$
+c('toz = to[Z])$
