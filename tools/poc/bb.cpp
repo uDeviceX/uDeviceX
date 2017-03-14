@@ -55,12 +55,11 @@ int main() {
   
   float t; /* parameter of the intersection [0, 1] */
   
-
   int c;
   float R0[3];
   for (c = 0; c < 3; c++) R0[c] = R1[c] - dt*V0[c];
 
-  bool ok = intersect(R0, R1, radius, &t);
+  bool ok = intersect(R0, R1, radius, /**/ &t);
   if (!ok) return 0;
 
   float Rt[3];
