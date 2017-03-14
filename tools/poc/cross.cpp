@@ -54,4 +54,10 @@ int main() {
   float V1[3];
   bounce_vel(V0, Vw, /**/ V1);
   printf("V1: %g %g %g\n", V1[X], V1[Y], V1[Z]);
+
+  float om[] = { 0,   0,  10};
+  float r[] =  { 0,   1,   0};
+  float v[3];
+  om2lin(om, r, v);
+  printf("v: %g %g %g\n", v[X], v[Y], v[Z]);
 }
