@@ -1,0 +1,5 @@
+load("format");
+Rw: R0*(1-t) + R1*t;
+Rn: Rw - (R1 - Rw);
+
+format(Rn, %poly(t), %factor);

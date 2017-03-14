@@ -17,7 +17,7 @@ void wavg(float* R0, float* R1, float t, /**/ float* Rt) {
   Rt[Z] = R0[Z]*(1-t) + R1[Z]*t;
 }
 
-/* bounce velocity of the partices
+/* bounce velocity of the particles
    V0: initial velocity,
    Vw: wall velocity */
 void bounce_vel(float* V0, float* Vw, /**/ float* V1) {
@@ -30,6 +30,12 @@ void bounce_vel(float* V0, float* Vw, /**/ float* V1) {
   }
 }
 
+void  bounce_pos(float* R0, float* R1, float t,
+		 /**/ float* Rn) {
+  for (int c = 0; c < 3; c++)
+    Rn[c] = 2*(R1[c]-R0[c])*t-R1[c]+2*R0[c];
+}
+
 /* angular velocity and position to linear velocity */
 void om2lin(float* om, float* r, /**/ float* v) {
   cross(om, r, /**/ v);
@@ -38,18 +44,22 @@ void om2lin(float* om, float* r, /**/ float* v) {
 int main() {
 /*float* R1 = &pp.r[ip];
   float* V0 = &pp.v[ip]; */
-  float R1[] = {0, 0, 0};
-  float V0[] = {1, 1, 1};
+  float R1[] = {0, 0, 0}; /* current positon of a particle */
+  float V0[] = {1, 1, 1}; /* current velocity of a particle */
+  
   float om[] = {0, 0, 1};
   float  f[] = {0, 0, 0};
   float to[] = {0, 0, 0};
-  float dt = 0.1;
-  float radius = 1.0;
-  float t;
   
+  float dt = 0.1; /* timestep */
+  float radius = 1.0; /* sphere radius */
   
+  float t; /* parameter of the intersection [0, 1] */
+  
+
+  int c;
   float R0[3];
-  for (int c = 0; c < 3; c++) R0[c] = R1[c] - dt*V0[c];
+  for (c = 0; c < 3; c++) R0[c] = R1[c] - dt*V0[c];
 
   bool ok = intersect(R0, R1, radius, &t);
   if (!ok) return 0;
@@ -63,12 +73,20 @@ int main() {
   float V1[3];
   bounce_vel(V0, Vw, /**/ V1);
 
+  float Rn[3];
+  bounce_pos(R0, R1, t, /**/ Rn);
+
   float f0[3], to0[3];
   bb_lin(        V0, V1, dt, /**/  f0);
   bb_ang(R0, R1, V0, V1, dt, /**/ to0);
 
-  for (int c = 0; c < 3; c++) {
+  for (c = 0; c < 3; c++) {
      f[c] +=  f0[c];
     to[c] += to0[c];
   }
+
+  for (c = 0; c < 3; c++) { /* update velocity and positon */
+    V0[c] = V1[c]; R1[c] = Rn[c];
+  }
+
 }
