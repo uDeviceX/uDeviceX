@@ -30,10 +30,9 @@ void bounce_vel(float* V0, float* Vw, /**/ float* V1) {
   }
 }
 
-void  bounce_pos(float* R0, float* R1, float t,
-		 /**/ float* Rn) {
+void  bounce_pos(float* R1, float* Rt, /**/ float* Rn) {
   for (int c = 0; c < 3; c++)
-    Rn[c] = 2*(R1[c]-R0[c])*t-R1[c]+2*R0[c];
+    Rn[c] = Rt[c]-(R1[c]-Rt[c]);
 }
 
 /* angular velocity and position to linear velocity */
@@ -74,7 +73,7 @@ int main() {
   bounce_vel(V0, Vw, /**/ V1);
 
   float Rn[3];
-  bounce_pos(R0, R1, t, /**/ Rn);
+  bounce_pos(R1, Rt, /**/ Rn);
 
   float f0[3], to0[3];
   bb_lin(        V0, V1, dt, /**/  f0);
