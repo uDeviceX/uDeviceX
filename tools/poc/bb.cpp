@@ -68,7 +68,7 @@ int main() {
   wavg(R0, R1, t, /**/ Rt);
 
   float Vw[3];
-  om2lin(om, Rt, Vw);
+  om2lin(om, Rt, /**/ Vw);
 
   float V1[3];
   bounce_vel(V0, Vw, /**/ V1);
