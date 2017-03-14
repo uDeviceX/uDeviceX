@@ -1,5 +1,12 @@
+/*
+
+Change in linear and angular moments after points went from `R0' to
+`R1' and changed velocity from `R0' to `R1'.
+
+*/
+
 load ("vect")$
-load ("cgrind");
+load ("cgrind") $
 
 /* make a vector */
 mv(P)::=buildq([l: P,

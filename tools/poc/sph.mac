@@ -1,3 +1,10 @@
+/*
+
+Intersection of a point and a sphere. Sphere is centered at (0, 0, 0);
+radius is 1
+
+*/
+
 load("format") $
 load("cgrind") $
 
@@ -8,7 +15,7 @@ mv(P)::=buildq([l: P,
 
 alias(c, cgrind)$
 
-mv(P0)$ mv(P1)$
+mv(P0)$ mv(P1)$ /* Position of a point */
 
 eq_s: x^2 + y^2 + z^2 - 1;
 P : P0*(1-t) + P1*t;
