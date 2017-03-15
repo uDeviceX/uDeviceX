@@ -1,0 +1,31 @@
+/* Intersection with moving moving plain */
+
+load("format")$
+load("cgrind")$
+alias(c, cgrind);
+
+/* make a vector */
+mv(P)::=buildq([l: P,
+  r: create_list(concat(P, d), d,  ['x, 'y, 'z])],
+  l: r) $
+
+/* Initial and final positions */
+mv(R0)$ mv(R1)$ /* point  */
+mv(n0)$ mv(n1)$ /* normal */
+P0: [0, 0, 0]$ mv(P1)$ /* center of a plain */
+
+/* at time `t' */
+R : R0*(1-t) + R1*t;
+n : n0*(1-t) + n1*t;
+P : P0*(1-t) + P1*t;
+
+eq: (R - P) . n $
+eq: format(eq, %poly(t)) ;
+
+c('a=coeff(eq, t, 2));
+c('b=coeff(eq, t, 1));
+c('c=coeff(eq, t, 0));
+
+c('D=b^2 - 4*a*c);
+grind('t0=(-b + sqrt(D))/(2*a));
+grind('t1=(-b - sqrt(D))/(2*a));
