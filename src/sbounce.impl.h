@@ -63,6 +63,17 @@ namespace solidbounce {
         rcol[c] = r0[c] + h * vp[c];
     }
 
+    void vsolid(float * cm, float * vcm, float * omega, float * r, /**/ float * vs)
+    {
+        float dr[3] = {r[X] - cm[X],
+                       r[Y] - cm[Y],
+                       r[Z] - cm[Z]};
+
+        vs[X] = vcm[X]  + omaga[Y]*dr[Z] - omega[Z]*dr[Y];
+        vs[Y] = vcm[Y]  + omaga[Z]*dr[X] - omega[X]*dr[Z];
+        vs[Z] = vcm[Z]  + omaga[X]*dr[Y] - omega[Y]*dr[X];
+    }
+
     void bounce_particle(float * vs, float * rcol, float * v0, float h, /**/ float * r1, float * v1)
     {
         for (int c = 0; c < 3; ++c)
@@ -103,6 +114,8 @@ namespace solidbounce {
 
             // TODO compute solid velocity
             vs[X] = vs[Y] = vs[Z] = 0;
+
+            //vsolid(com, vcm, om, rcol, /**/ vs);
             
             bounce_particle(vs, rcol, p0.v, h, /**/ p1.r, p1.v);
 
