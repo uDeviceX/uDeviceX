@@ -2,11 +2,13 @@ namespace solidbounce {
 
     // for now : stationary sphere
     // TODO add this in test arguments
-#define rsp_bb rsph
-    
-    enum {X, Y, Z};
+#define rsph_bb rsph
 
-    constexpr float eps = 1e-8;
+#define X 0
+#define Y 1
+#define Z 2
+
+    const float eps = 1e-8;
     
     void rprev(float * r1, float * vp, /**/ float * r0)
     {
@@ -57,7 +59,7 @@ namespace solidbounce {
         return false;
     }
 
-    void colpoint(float * r0, float * vp, float h, /**/ float * r1ol)
+    void colpoint(float * r0, float * vp, float h, /**/ float * rcol)
     {
         for (int c = 0; c < 3; ++c)
         rcol[c] = r0[c] + h * vp[c];
@@ -69,16 +71,16 @@ namespace solidbounce {
                        r[Y] - cm[Y],
                        r[Z] - cm[Z]};
 
-        vs[X] = vcm[X]  + omaga[Y]*dr[Z] - omega[Z]*dr[Y];
-        vs[Y] = vcm[Y]  + omaga[Z]*dr[X] - omega[X]*dr[Z];
-        vs[Z] = vcm[Z]  + omaga[X]*dr[Y] - omega[Y]*dr[X];
+        vs[X] = vcm[X] + omega[Y]*dr[Z] - omega[Z]*dr[Y];
+        vs[Y] = vcm[Y] + omega[Z]*dr[X] - omega[X]*dr[Z];
+        vs[Z] = vcm[Z] + omega[X]*dr[Y] - omega[Y]*dr[X];
     }
 
     void bounce_particle(float * vs, float * rcol, float * v0, float h, /**/ float * r1, float * v1)
     {
         for (int c = 0; c < 3; ++c)
         {
-            v1[c] = 2 * vs[d] - v0[c];
+            v1[c] = 2 * vs[c] - v0[c];
             r1[c] = rcol[c] + h * v1[c];
         }
     }
@@ -96,18 +98,17 @@ namespace solidbounce {
         to[Z] -= (r1[X] * v1[Y] - r1[Y] * v1[X] - r0[X] * v0[Y] + r0[Y] * v0[X]) / dt;
     }
     
-    void bounce(Particle *pp, Force *ff, int n, float * r_fo, float * r_to)
+    void bounce(Force *ff, int np, float * cm, float * vcm, float * om, /**/ Particle *pp, float * r_fo, float * r_to)
     {
         Particle p0, p1;
         float rcol[3], vs[3];
         float t;
         
-        for (int ip = 0; ip < n; ++ip)
+        for (int ip = 0; ip < np; ++ip)
         {
-            p1 = pp[i];
+            p1 = pp[ip];
             
-            float * vc = pp[i].v;
-            float * fp = ff[i].f;
+            float * fp = ff[ip].f;
             
             /* previous position and velocity */
 
@@ -125,10 +126,7 @@ namespace solidbounce {
             
             /* handle collision for particle */
 
-            // TODO compute solid velocity
-            vs[X] = vs[Y] = vs[Z] = 0;
-
-            //vsolid(com, vcm, om, rcol, /**/ vs);
+            vsolid(cm, vcm, om, rcol, /**/ vs);
             
             bounce_particle(vs, rcol, p0.v, h, /**/ p1.r, p1.v);
 
