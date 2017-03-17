@@ -82,6 +82,19 @@ namespace solidbounce {
             r1[c] = rcol[c] + h * v1[c];
         }
     }
+
+    void lin_mom_solid(float * v0, float * v1, /**/ float * fo)
+    {
+        for (int c = 0; c < 3; ++c)
+        fo[c] -= (v1[c] - v0[c]) / dt;
+    }
+
+    void ang_mom_solid(float * r0, float * r1, float * v0, float * v1, /**/ float * to)
+    {
+        to[X] -= (r1[Y] * v1[Z] - r1[Z] * v1[Y] - r0[Y] * v0[Z] + r0[Z] * v0[Y]) / dt;
+        to[Y] -= (r1[Z] * v1[X] - r1[X] * v1[Z] - r0[Z] * v0[X] + r0[X] * v0[Z]) / dt;
+        to[Z] -= (r1[X] * v1[Y] - r1[Y] * v1[X] - r0[X] * v0[Y] + r0[Y] * v0[X]) / dt;
+    }
     
     void bounce(Particle *pp, Force *ff, int n, float * r_fo, float * r_to)
     {
@@ -121,7 +134,9 @@ namespace solidbounce {
 
             /* transfer momentum */
 
-            // TODO
+            lin_mom_solid(p0.v, p1.v, /**/ r_fo);
+
+            ang_mom_solid(p0.r, p1.r, p0.v, p1.v, /**/ r_fo);
         }
     }
 }
