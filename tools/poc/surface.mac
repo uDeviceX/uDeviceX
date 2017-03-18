@@ -1,0 +1,26 @@
+/* Intersection with surface */
+
+/* [m]ake [v]ector */
+mv(P)::=buildq([l: P,
+  r: create_list(concat(P, d), d,  ['x, 'y, 'z])],
+  l: r) $
+
+co (e)     ::=buildq([%S%, e], concat(%S%, e)*e);
+co2(e0, e1)::=buildq([%S%, e0, e1], concat(%S%, e0, e1)*e0*e1);
+
+/* taylor in 'u and 'v (second order) */
+tuv2(S)::=buildq([S],
+  (%S%: S, co('u) + co('v) + co2('v, 'v) + co2('u, 'u) + co2('u, 'v)));
+
+/* taylor in 'u and 'v (first order) */
+tuv1(S)::=buildq([S],
+  (%S%: S, co('u) + co('v)));
+
+mv(R0)$ mv(R1)$ /* point  */
+R : R0*(1-t) + R1*t;
+
+/* surface is a taylor seria in `u' and `v'
+   S(u = 0, v = 0) = [0, 0, 0] */
+S: [tuv2(Sx), tuv2(Sy), tuv2(Sz)];
+
+eq: S - R;
