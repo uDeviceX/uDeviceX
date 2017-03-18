@@ -23,4 +23,5 @@ R : R0*(1-t) + R1*t;
    S(u = 0, v = 0) = [0, 0, 0] */
 S: [tuv2(Sx), tuv2(Sy), tuv2(Sz)];
 
+/* a system of equation for `u', `v', and `t' */
 eq: S - R;
