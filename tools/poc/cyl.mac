@@ -15,7 +15,7 @@ mv(P)::=buildq([l: P,
   r: create_list(concat(P, d), d,  ['x, 'y, 'z])],
   l: r) $
 
-alias(c, cgrind)$
+alias(cg, cgrind)$
 
 mv(P0)$ mv(P1)$ /* Position of a point */
 
@@ -23,12 +23,11 @@ P : P0*(1-t) + P1*t;
 x : P[X];
 z : P[Z];
 eq_t: x^2 + z^2 - 1; /* cylinder */
-eq_t: format(eq_t, %poly(t));
+eq_t: format(eq_t, %poly(t))$
 
-c('a=coeff(eq_t, t, 2));
-c('b=coeff(eq_t, t, 1));
-c('c=coeff(eq_t, t, 0));
-
-c('D=b^2 - 4*a*c);
-grind('t0=(-b + sqrt(D))/(2*a));
-grind('t1=(-b - sqrt(D))/(2*a));
+(cg('a=coeff(eq_t, t, 2)),
+  cg('b=coeff(eq_t, t, 1)),
+  cg('c=coeff(eq_t, t, 0)),
+  cg('D=b^2 - 4*a*c),
+  grind('t0=(-b + sqrt(D))/(2*a)),
+  grind('t1=(-b - sqrt(D))/(2*a))) $

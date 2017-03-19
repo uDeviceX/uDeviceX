@@ -1,8 +1,8 @@
-/* Intersection with a plain centered at (0, 0, 0) */
+/* Intersection with a plain centered at (0, 0, 0) and normal `nz' */
 
 load("format")$
 load("cgrind")$
-alias(c, cgrind);
+alias(cg, cgrind);
 
 /* make a vector */
 mv(P)::=buildq([l: P,
@@ -13,6 +13,7 @@ mv(R0)$ mv(R1)$ /* Initial and final positions of a point */
 R : R0*(1-t) + R1*t; /* Point at time t */
 
 mv(n)$ /* normal */
+nx: ny: 0; /* only nz */
 
 eq: R . [nx, ny, nz] $
 eq: format(eq, %poly(t)) $
@@ -25,4 +26,4 @@ de: denom(t_ex)$
 
 ratexpand(nu/de - t_ex) $
 
-(cg('nu = nu), cg('de = de), cg(' t = 'nu/'de))$
+cg(' t = t_ex)$
