@@ -17,11 +17,11 @@ mv(P)::=buildq([l: P,
 
 alias(cg, cgrind)$
 
-mv(P0)$ mv(P1)$ /* Position of a point */
+mv(R0)$ mv(R1)$ /* Position of a point */
 
-P : P0*(1-t) + P1*t;
-x : P[X];
-z : P[Z];
+R : R0*(1-t) + R1*t;
+x : R[X];
+z : R[Z];
 eq_t: x^2 + z^2 - 1; /* cylinder */
 eq_t: format(eq_t, %poly(t))$
 
