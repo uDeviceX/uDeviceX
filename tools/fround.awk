@@ -12,8 +12,12 @@ BEGIN {
     fmt =  "%." tol "f"
 }
 
+function format(e) {return sprintf(fmt, e)}
+function fn(e)     {return e + 0}
+
 function hash(e,  h, ftm) {
-    h = sprintf(fmt, e)
+    h = format(e)
+    if (fn(h) == 0) h = format(0)
     return h
 }
 
