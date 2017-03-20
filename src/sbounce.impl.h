@@ -1,9 +1,5 @@
 namespace solidbounce {
 
-    // for now : stationary sphere
-    // TODO add this in test arguments
-#define rsph_bb rsph
-
 #define X 0
 #define Y 1
 #define Z 2
@@ -22,41 +18,90 @@ namespace solidbounce {
         vp[c] = vc[c] - dt * fp[c];
     }
 
-    bool intersect(float * r0, float * r1, /**/ float * t)
+    namespace sphere
     {
-        float r0x = r0[X], r0y = r0[Y], r0z = r0[Z];
-        float r1x = r1[X], r1y = r1[Y], r1z = r1[Z];
+        // for now : stationary sphere
+        // TODO add this in test arguments
 
-        const float inv_r = 1.f / rsph_bb;
+        #define rsph_bb rsph
 
-        r0x *= inv_r; r0y *= inv_r; r0z *= inv_r;
-        r1x *= inv_r; r1y *= inv_r; r1z *= inv_r;
+        bool intersect(float * r0, float * r1, /**/ float * t)
+        {
+            float r0x = r0[X], r0y = r0[Y], r0z = r0[Z];
+            float r1x = r1[X], r1y = r1[Y], r1z = r1[Z];
+            
+            const float inv_r = 1.f / rsph_bb;
+            
+            r0x *= inv_r; r0y *= inv_r; r0z *= inv_r;
+            r1x *= inv_r; r1y *= inv_r; r1z *= inv_r;
+            
+            const float a = pow(r1x - r0x, 2) + pow(r1y - r0y, 2) + pow(r1z - r0z, 2);
+            
+            if (a < eps)
+            return false;
+            
+            const float b =
+                2 * r0z * (r1z - r0z) +
+                2 * r0y * (r1y - r0y) +
+                2 * r0x * (r1x - r0x);
+            
+            const float c = r0x * r0x + r0y * r0y + r0z * r0z - 1.f;
+            
+            const float D = b*b - 4*a*c;
+            
+            if (D < 0) return false;
+            
+            const float sqrtD = sqrt(D);
+            
+            const float t0 = (-b - sqrtD) / (2 * a);
+            if (t0 > 0 && t0 < 1) {*t = t0; return true;}
+            
+            const float t1 = (-b + sqrtD) / (2 * a);
+            if (t1 > 0 && t1 < 1) {*t = t1; return true;}
+            
+            return false;
+        }
+    }
 
-        const float a = pow(r1x - r0x, 2) + pow(r1y - r0y, 2) + pow(r1z - r0z, 2);
+    namespace cylinder
+    {
+        #define rcyl_bb rcyl
 
-        if (a < eps)
-        return false;
-
-        const float b =
-            2 * r0z * (r1z - r0z) +
-            2 * r0y * (r1y - r0y) +
-            2 * r0x * (r1x - r0x);
-        
-        const float c = r0x * r0x + r0y * r0y + r0z * r0z - 1.f;
-
-        const float D = b*b - 4*a*c;
-
-        if (D < 0) return false;
-
-        const float sqrtD = sqrt(D);
-
-        const float t0 = (-b - sqrtD) / (2 * a);
-        if (t0 > 0 && t0 < 1) {*t = t0; return true;}
-
-        const float t1 = (-b + sqrtD) / (2 * a);
-        if (t1 > 0 && t1 < 1) {*t = t1; return true;}
-
-        return false;
+        bool intersect(float * r0, float * r1, /**/ float * t)
+        {
+            float r0x = r0[X], r0z = r0[Z];
+            float r1x = r1[X], r1z = r1[Z];
+            
+            const float inv_r = 1.f / rcyl_bb;
+            
+            r0x *= inv_r; r0z *= inv_r;
+            r1x *= inv_r; r1z *= inv_r;
+            
+            const float a = pow(r1x - r0x, 2) + pow(r1z - r0z, 2);
+            
+            if (a < eps)
+            return false;
+            
+            const float b =
+                2 * r0z * (r1z - r0z) +
+                2 * r0x * (r1x - r0x);
+            
+            const float c = r0x * r0x + r0z * r0z - 1.f;
+            
+            const float D = b*b - 4*a*c;
+            
+            if (D < 0) return false;
+            
+            const float sqrtD = sqrt(D);
+            
+            const float t0 = (-b - sqrtD) / (2 * a);
+            if (t0 > 0 && t0 < 1) {*t = t0; return true;}
+            
+            const float t1 = (-b + sqrtD) / (2 * a);
+            if (t1 > 0 && t1 < 1) {*t = t1; return true;}
+            
+            return false;
+        }
     }
 
     void colpoint(float * r0, float * vp, float h, /**/ float * rcol)
@@ -117,7 +162,7 @@ namespace solidbounce {
 
             /* find collision point */
             
-            if (!intersect(p0.r, p1.r, /**/ &t))
+            if (!sphere::intersect(p0.r, p1.r, /**/ &t))
             continue;
 
             const float h = t * dt;
