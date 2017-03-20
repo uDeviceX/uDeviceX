@@ -1,0 +1,6 @@
+Emacs indention
+
+(setq c-old-style-variable-behavior t)
+(setq  c++-default-style "k&r"
+       c-basic-offset 2
+       indent-tabs-mode         nil)
