@@ -76,7 +76,15 @@ END {
 
     # dump output
     printf "\n/* Part II (added by tools/argp) */\n\n", FILENAME
+    u_tmpl = sprintf("#undef  %%%ss", sk)
     d_tmpl = sprintf("#define %%%ss %%%ss", sk, sv + 2) # with brackets
+
+    for (k in kv) {
+	line = sprintf(u_tmpl, k)
+	print line | "sort"
+    }
+    close("sort")
+    printf "\n"
 
     for (k in kv) {
 	v = kv[k]; vd = kv_default[k]; vp = "(" v ")"
@@ -85,4 +93,5 @@ END {
 					     # value
 	print line | "sort"
     }
+    close("sort")
 }
