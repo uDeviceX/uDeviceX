@@ -135,6 +135,8 @@ namespace solidbounce {
             lin_mom_solid(p0.v, p1.v, /**/ r_fo);
 
             ang_mom_solid(p0.r, p1.r, p0.v, p1.v, /**/ r_fo);
+
+            pp[ip] = p1;
         }
     }
 }
