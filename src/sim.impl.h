@@ -118,6 +118,8 @@ void update_solid() {
     CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
     CC(cudaMemcpy(r_ff_hst, r_ff, sizeof(Force) * r_n, D2H));
 
+    solid::reinit_f_to(/**/ r_f, r_to);
+    
     solid::update(r_ff_hst, r_rr0, r_n, r_mass,
 		r_pp_hst, /**/ r_Iinv, r_com, r_e0, r_e1, r_e2, r_v, r_om, r_f, r_to);
 

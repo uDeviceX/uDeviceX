@@ -5,7 +5,8 @@ namespace solidbounce {
 #define Z 2
 
     const float eps = 1e-8;
-    
+
+    // from forward Euler
     void rprev(float * r1, float * vp, /**/ float * r0)
     {
         for (int c = 0; c < 3; ++c)
@@ -65,7 +66,8 @@ namespace solidbounce {
 
     namespace cylinder
     {
-        #define rcyl_bb rcyl
+        //#define rcyl_bb rcyl
+        #define rcyl_bb rsph
 
         bool intersect(float * r0, float * r1, /**/ float * t)
         {

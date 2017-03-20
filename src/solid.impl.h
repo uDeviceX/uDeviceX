@@ -120,17 +120,15 @@ void init(Particle *pp, int n, float mass,
         ro[X] = r0[X]-com[X]; ro[Y] = r0[Y]-com[Y]; ro[Z] = r0[Z]-com[Z];
     }
 }
-
-void compute_f(Force *ff, int n, /**/ float *f) {
-    f[X] = f[Y] = f[Z] = 0;
+    
+void add_f(Force *ff, int n, /**/ float *f) {
     for (int ip = 0; ip < n; ++ip) {
         float *f0 = ff[ip].f;
         f[X] += f0[X]; f[Y] += f0[Y]; f[Z] += f0[Z];
     }
 }
 
-void compute_to(Particle *pp, Force *ff, int n, float *com, /**/ float *to) {
-    to[X] = to[Y] = to[Z] = 0;
+void add_to(Particle *pp, Force *ff, int n, float *com, /**/ float *to) {
     for (int ip = 0; ip < n; ++ip) {
         float *r0 = pp[ip].r, *f0 = ff[ip].f;
         float x = r0[X]-com[X], y = r0[Y]-com[Y], z = r0[Z]-com[Z];
@@ -192,6 +190,12 @@ void update_r(float *rr0, int n, float *com, float *e0, float *e1, float *e2, /*
     }
 }
 
+void reinit_f_to(/**/ float * f, float * to)
+{
+    f[X] = f[Y] = f[Z] = 0;
+    to[X] = to[Y] = to[Z] = 0;
+}
+
 void update(Force *ff, float *rr0, int n, float mass,
         Particle *pp,
         /**/ float *Iinv, float *com, float *e0, float *e1, float *e2,
@@ -203,8 +207,8 @@ void update(Force *ff, float *rr0, int n, float mass,
         v0[X] = v0[Y] = v0[Z] = 0;
     }
 
-    compute_f(ff, n, /**/ f);
-    compute_to(pp, ff, n, com, /**/ to);
+    add_f(ff, n, /**/ f);
+    add_to(pp, ff, n, com, /**/ to);
 
     update_v(mass, f, n, /**/ v);
     update_om(Iinv, to, /**/ om);
