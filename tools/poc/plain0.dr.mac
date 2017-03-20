@@ -1,0 +1,27 @@
+/* Intersection with a plain centered at (0, 0, 0) and normal `nz' */
+
+load("format")$
+load("cgrind")$
+alias(cg, cgrind);
+
+/* make a vector */
+mv(P)::=buildq([l: P,
+  r: create_list(concat(P, d), d,  ['x, 'y, 'z])],
+  l: r) $
+
+mv(R1)$ mv(V)$ /* Position and velocity of a point */
+R0: R1 - V*dt;
+
+R : R0*(1-t/dt) + R1*t/dt;
+
+mv(n)$ /* normal */
+nx: ny: 0; /* only nz */
+
+eq: R . [nx, ny, nz] $
+eq: format(eq, %poly(t)) $
+
+so: linsolve(eq, t)$
+t_ex: rhs(so[1])   $
+t_ex: expand(t_ex) ;
+
+cg(' t = t_ex)$
