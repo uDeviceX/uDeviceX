@@ -1,5 +1,5 @@
 #### Double poiseuille sphere
-# sTEST: solid.t2
+# TEST: solid.t2
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt
@@ -16,7 +16,6 @@
 # ./udx
 # read_h5part.m h5/s.h5part | fround.awk -v tol=1 > h5part.out.txt
 #
-
 ####
 # TEST: solid.t1
 # export PATH=../tools:$PATH
@@ -24,10 +23,10 @@
 # cp sdf/wall1/wall.dat sdf.dat
 # :
 # argp .conf.test.h  \
-#   -tend=100.0 -steps_per_dump=400 -walls -wall_creation_stepid=100 \
-#   -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=400       \
+#   -tend=2.0 -steps_per_dump=1000 -walls -wall_creation_stepid=100 \
+#   -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=1000       \
 #   -rbcs -rsph=5 -pin_sph=true -dt=1e-3 > .conf.h
 # :
 # make clean && make -j && make -C ../tools
 # ./udx
-# avg_h5.m h5/flowfields-0003.h5 | fround.awk -v tol=1 > h5.out.txt
+# avg_h5.m h5/flowfields-0002.h5 | fround.awk -v tol=1 > h5.out.txt
