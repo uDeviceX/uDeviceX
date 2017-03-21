@@ -1,5 +1,5 @@
 #### Double poiseuille sphere
-# TEST: solid.t2
+# sTEST: solid.t2
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt
@@ -29,4 +29,4 @@
 # :
 # make clean && make -j && make -C ../tools
 # ./udx
-# avg_h5.m h5/flowfields-0002.h5 | fround.awk -v tol=1 > h5.out.txt
+# avg_h5.m h5/flowfields-0001.h5 | fround.awk -v tol=1 > h5.out.txt
