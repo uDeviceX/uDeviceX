@@ -154,45 +154,45 @@ namespace solidbounce {
         to[Z] -= (r1[X] * v1[Y] - r1[Y] * v1[X] - r0[X] * v0[Y] + r0[Y] * v0[X]) / dt;
     }
 
-    void bounce(Force *ff, int np, float *cm, float *vcm, float *om, /**/ Particle *pp, float *r_fo, float *r_to)
+    void bounce_part(float *fp, float *cm, float *vcm, float *om, /*o*/ Particle *p1, float *r_fo, float *r_to, /*w*/ Particle *p0)
     {
-        Particle p0, p1;
         float rcol[3], vs[3];
         float t;
-        float *fp;
+
+        lastbit::Preserver up(p1->v[X]);
+            
+        /* previous position and velocity */
+
+        vprev(p1->v, fp,    /**/ p0->v);
+        rprev(p1->r, p0->v, /**/ p0->r);
+        
+        /* find collision point */
+        
+        if (!sphere::intersect(p0->r, p1->r, /**/ &t))
+        return;
+        
+        t = t * dt;
+        
+        colpoint(p0->r, p0->v, t, /**/ rcol);
+        
+        /* handle collision for particle */
+        
+        vsolid(cm, vcm, om, rcol, /**/ vs);
+        
+        bounce_particle(vs, rcol, p0->v, t, /**/ p1->r, p1->v);
+        
+        /* transfer momentum */
+        
+        lin_mom_solid(p0->v, p1->v, /**/ r_fo);
+        
+        ang_mom_solid(p0->r, p1->r, p0->v, p1->v, /**/ r_fo);
+    }
+    
+    void bounce(Force *ff, int np, float *cm, float *vcm, float *om, /**/ Particle *pp, float *r_fo, float *r_to)
+    {
+        Particle p0;
         
         for (int ip = 0; ip < np; ++ip)
-        {
-            p1 = pp[ip];
-            fp = ff[ip].f;
-            
-            /* previous position and velocity */
-
-            vprev(p1.v, fp ,  /**/ p0.v);
-            rprev(p1.r, p0.v, /**/ p0.r);
-        
-            /* find collision point */
-        
-            if (!sphere::intersect(p0.r, p1.r, /**/ &t))
-            continue;
-        
-            t = t * dt;
-        
-            colpoint(p0.r, p0.v, t, /**/ rcol);
-        
-            /* handle collision for particle */
-        
-            vsolid(cm, vcm, om, rcol, /**/ vs);
-        
-            bounce_particle(vs, rcol, p0.v, t, /**/ p1.r, p1.v);
-        
-            /* transfer momentum */
-        
-            lin_mom_solid(p0.v, p1.v, /**/ r_fo);
-        
-            ang_mom_solid(p0.r, p1.r, p0.v, p1.v, /**/ r_fo);
-            
-            pp[ip] = p1;
-        }
+        bounce_part(ff[ip].f, cm, vcm, om, /*o*/ pp + ip, r_fo, r_to, /*w*/ &p0);
     }
 }
