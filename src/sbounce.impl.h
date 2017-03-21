@@ -77,6 +77,12 @@ namespace solidbounce {
         
             return robust_quadratic_roots(a, b, c, t);
         }
+
+        bool inside(float *r)
+        {
+            return r[X] * r[X] + r[Y] * r[Y] + r[Z] * r[Z] < rsph * rsph;
+        }
+
     }
 #endif
 
@@ -104,12 +110,18 @@ namespace solidbounce {
             return false;
             
             const float b =
-                2 * r0y * (r1y - r0y) +
-                2 * r0x * (r1x - r0x);
+                2 * r0x * (r1x - r0x) +
+                2 * r0y * (r1y - r0y);
+                
             
             const float c = r0x * r0x + r0y * r0y - 1.f;
 
             return robust_quadratic_roots(a, b, c, t);
+        }
+
+        bool inside(float *r)
+        {
+            return r[X] * r[X] + r[Y] * r[Y] < rcyl * rcyl;
         }
     }
 #endif
@@ -158,8 +170,11 @@ namespace solidbounce {
         float rcol[3], vs[3];
         float t;
 
+        if (!shape::inside(p1->r))
+        return;
+        
         lastbit::Preserver up(p1->v[X]);
-            
+        
         /* previous position and velocity */
 
         vprev(p1->v, fp,    /**/ p0->v);
@@ -168,7 +183,11 @@ namespace solidbounce {
         /* find collision point */
         
         if (!shape::intersect(p0->r, p1->r, /**/ &t))
-        return;
+        {
+            //printf("need to rescue the particle\n");
+            // need to rescue the particle
+            return;
+        }
         
         t = t * dt;
         
