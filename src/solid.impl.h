@@ -190,7 +190,7 @@ void update_r(float *rr0, int n, float *com, float *e0, float *e1, float *e2, /*
     }
 }
 
-void reinit_f_to(/**/ float * f, float * to)
+void reinit_f_to(/**/ float *f, float *to)
 {
     f[X] = f[Y] = f[Z] = 0;
     to[X] = to[Y] = to[Z] = 0;

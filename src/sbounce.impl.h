@@ -3,22 +3,55 @@ namespace solidbounce {
 #define X 0
 #define Y 1
 #define Z 2
+    
+    const float eps = 1e-8;
+    
+    // from forward Euler
+    void rprev(float *r1, float *vp, /**/ float *r0)
+    {
+        for (int c = 0; c < 3; ++c)
+        r0[c] = r1[c] - dt * vp[c];
+    }
+    
+    void vprev(float *vc, float *fp, /**/ float *vp)
+    {
+        for (int c = 0; c < 3; ++c)
+        vp[c] = vc[c] - dt * fp[c];
+    }
 
-  const float eps = 1e-8;
-  
-  // from forward Euler
-  void rprev(float *r1, float *vp, /**/ float *r0)
-  {
-    for (int c = 0; c < 3; ++c)
-      r0[c] = r1[c] - dt * vp[c];
-  }
-  
-  void vprev(float *vc, float *fp, /**/ float *vp)
-  {
-    for (int c = 0; c < 3; ++c)
-      vp[c] = vc[c] - dt * fp[c];
-  }
-  
+    /*
+      return true if a root t lies in [0, 1] (output t), false otherwise
+      smallest root t is returned
+    */
+    bool robust_quadratic_roots(float a, float b, float c, /**/ float *t)
+    {
+        float D, t0, t1;
+        int sgnb;
+
+        sgnb = b > 0 ? 1 : -1;
+        D = b*b - 4*a*c;
+
+        if (D < 0) return false;
+        
+        if (sgnb > 0)
+        {
+            t0 = (-b - sgnb * sqrt(D)) / (2 * a);
+            t1 = c / (a * t0);
+        }
+        else
+        {
+            t1 = (-b - sgnb * sqrt(D)) / (2 * a);
+            t0 = c / (a * t1);
+        }
+
+        assert(t0 <= t1);
+
+        if (t0 > 0 && t0 < 1) {*t = t0; return true;}
+        if (t1 > 0 && t1 < 1) {*t = t1; return true;}
+
+        return false;
+    }
+    
     namespace sphere
     {
         // for now : stationary sphere
@@ -47,20 +80,8 @@ namespace solidbounce {
                 2 * r0x * (r1x - r0x);
             
             const float c = r0x * r0x + r0y * r0y + r0z * r0z - 1.f;
-            
-            const float D = b*b - 4*a*c;
-            
-            if (D < 0) return false;
-            
-            const float sqrtD = sqrt(D);
-            
-            const float t0 = (-b - sqrtD) / (2 * a);
-            if (t0 > 0 && t0 < 1) {*t = t0; return true;}
-            
-            const float t1 = (-b + sqrtD) / (2 * a);
-            if (t1 > 0 && t1 < 1) {*t = t1; return true;}
-            
-            return false;
+        
+            return robust_quadratic_roots(a, b, c, t);
         }
     }
 
@@ -89,20 +110,8 @@ namespace solidbounce {
                 2 * r0x * (r1x - r0x);
             
             const float c = r0x * r0x + r0z * r0z - 1.f;
-            
-            const float D = b*b - 4*a*c;
-            
-            if (D < 0) return false;
-            
-            const float sqrtD = sqrt(D);
-            
-            const float t0 = (-b - sqrtD) / (2 * a);
-            if (t0 > 0 && t0 < 1) {*t = t0; return true;}
-            
-            const float t1 = (-b + sqrtD) / (2 * a);
-            if (t1 > 0 && t1 < 1) {*t = t1; return true;}
-            
-            return false;
+
+            return robust_quadratic_roots(a, b, c, t);
         }
     }
 
