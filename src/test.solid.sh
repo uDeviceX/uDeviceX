@@ -1,5 +1,5 @@
 #### Double poiseuille sphere
-# sTEST: solid.t2
+# TEST: solid.t2
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt

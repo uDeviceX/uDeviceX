@@ -117,12 +117,12 @@ void body_force(float driving_force) {
 void update_solid() {
     CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
     CC(cudaMemcpy(r_ff_hst, r_ff, sizeof(Force) * r_n, D2H));
-
-    solid::reinit_f_to(/**/ r_f, r_to);
     
     solid::update(r_ff_hst, r_rr0, r_n, r_mass,
 		r_pp_hst, /**/ r_Iinv, r_com, r_e0, r_e1, r_e2, r_v, r_om, r_f, r_to);
 
+    solid::reinit_f_to(/**/ r_f, r_to);
+    
     CC(cudaMemcpy(r_pp, r_pp_hst, sizeof(Particle) * r_n, H2D));
 }
 
@@ -137,6 +137,15 @@ void update_s() {
 void bounce() {
   wall::bounce(s_pp, s_n);
   if (rbcs0) wall::bounce(r_pp, r_n);
+}
+
+void bounce_solid() {
+    CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
+    CC(cudaMemcpy(s_ff_hst, s_ff, sizeof(Force)    * s_n, D2H));
+
+    solidbounce::bounce(s_ff_hst, s_n, r_com, r_v, r_om, /**/ s_pp_hst, r_f, r_to);
+
+    CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
 }
 
 void init_r() {
@@ -158,6 +167,8 @@ void init_r() {
   }
   solid::init(r_pp_hst, r_n, r_mass, /**/ r_rr0, r_Iinv, r_com, r_e0, r_e1, r_e2, r_v, r_om);
 
+  solid::reinit_f_to(/**/ r_f, r_to);
+  
   CC(cudaMemcpy(r_pp, r_pp_hst, sizeof(Particle) * r_n, H2D));
   CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
 
@@ -205,6 +216,7 @@ void run0(float driving_force, bool wall_created, int it) {
     update_s();
     if (rbcs0) update_r();
     if (wall_created) bounce();
+    if (rbcs0) bounce_solid();
 }
 
 void run_nowall() {

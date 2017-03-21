@@ -19,9 +19,10 @@ namespace sim {
   H5PartDump *dump_part_solvent;
   H5FieldDump *dump_field;
 
-  Particle      s_pp_hst[MAX_PART_NUM]; /* solvent on host */
-  Particle      r_pp_hst[MAX_PART_NUM]; /* RBC on host */
-  Force         r_ff_hst[MAX_PART_NUM]; /* RBC force on host */
+  Particle      s_pp_hst[MAX_PART_NUM]; /* solvent on host       */
+  Force         s_ff_hst[MAX_PART_NUM]; /* solvent force on host */
+  Particle      r_pp_hst[MAX_PART_NUM]; /* RBC on host           */
+  Force         r_ff_hst[MAX_PART_NUM]; /* RBC force on host     */
   
   Particle      sr_pp[MAX_PART_NUM];    /* solvent + RBC on host */
 

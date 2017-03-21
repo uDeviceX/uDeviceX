@@ -8,7 +8,7 @@
 # add crap from test_data/* to git
 
 #### Double poiseuille
-# sTEST: double.poiseuille
+# TEST: double.poiseuille
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf ply h5 diag.txt
@@ -36,7 +36,7 @@
 # avg_h5.m h5/flowfields-0003.h5 | fround.awk -v tol=1 > h5.out.txt
 
 ####
-# sTEST: diag.t5
+# TEST: diag.t5
 # export PATH=../tools:$PATH
 # rm -rf ply h5 diag.txt
 # cp sdf/wall1/wall.dat sdf.dat
@@ -49,7 +49,7 @@
 # avg_h5.m h5/flowfields-0013.h5 | fround.awk -v tol=2 > h5.out.txt
 
 ####
-# sTEST: diag.t6
+# TEST: diag.t6
 # export PATH=../tools:$PATH
 # rm -rf ply h5 diag.txt
 # cp sdf/cyl1/cyl.dat sdf.dat

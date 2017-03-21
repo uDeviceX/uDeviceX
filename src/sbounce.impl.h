@@ -4,21 +4,21 @@ namespace solidbounce {
 #define Y 1
 #define Z 2
 
-    const float eps = 1e-8;
-
-    // from forward Euler
-    void rprev(float * r1, float * vp, /**/ float * r0)
-    {
-        for (int c = 0; c < 3; ++c)
-        r0[c] = r1[c] - dt * vp[c];
-    }
-    
-    void vprev(float * vc, float * fp, /**/ float * vp)
-    {
-        for (int c = 0; c < 3; ++c)
-        vp[c] = vc[c] - dt * fp[c];
-    }
-
+  const float eps = 1e-8;
+  
+  // from forward Euler
+  void rprev(float *r1, float *vp, /**/ float *r0)
+  {
+    for (int c = 0; c < 3; ++c)
+      r0[c] = r1[c] - dt * vp[c];
+  }
+  
+  void vprev(float *vc, float *fp, /**/ float *vp)
+  {
+    for (int c = 0; c < 3; ++c)
+      vp[c] = vc[c] - dt * fp[c];
+  }
+  
     namespace sphere
     {
         // for now : stationary sphere
@@ -26,7 +26,7 @@ namespace solidbounce {
 
         #define rsph_bb rsph
 
-        bool intersect(float * r0, float * r1, /**/ float * t)
+        bool intersect(float *r0, float *r1, /**/ float *t)
         {
             float r0x = r0[X], r0y = r0[Y], r0z = r0[Z];
             float r1x = r1[X], r1y = r1[Y], r1z = r1[Z];
@@ -69,7 +69,7 @@ namespace solidbounce {
         //#define rcyl_bb rcyl
         #define rcyl_bb rsph
 
-        bool intersect(float * r0, float * r1, /**/ float * t)
+        bool intersect(float *r0, float *r1, /**/ float *t)
         {
             float r0x = r0[X], r0z = r0[Z];
             float r1x = r1[X], r1z = r1[Z];
@@ -106,13 +106,13 @@ namespace solidbounce {
         }
     }
 
-    void colpoint(float * r0, float * vp, float h, /**/ float * rcol)
+    void colpoint(float *r0, float *vp, float h, /**/ float *rcol)
     {
         for (int c = 0; c < 3; ++c)
         rcol[c] = r0[c] + h * vp[c];
     }
 
-    void vsolid(float * cm, float * vcm, float * omega, float * r, /**/ float * vs)
+    void vsolid(float *cm, float *vcm, float *omega, float *r, /**/ float *vs)
     {
         float dr[3] = {r[X] - cm[X],
                        r[Y] - cm[Y],
@@ -123,7 +123,7 @@ namespace solidbounce {
         vs[Z] = vcm[Z] + omega[X]*dr[Y] - omega[Y]*dr[X];
     }
 
-    void bounce_particle(float * vs, float * rcol, float * v0, float h, /**/ float * r1, float * v1)
+    void bounce_particle(float *vs, float *rcol, float *v0, float h, /**/ float *r1, float *v1)
     {
         for (int c = 0; c < 3; ++c)
         {
@@ -132,57 +132,57 @@ namespace solidbounce {
         }
     }
 
-    void lin_mom_solid(float * v0, float * v1, /**/ float * fo)
+    void lin_mom_solid(float *v0, float *v1, /**/ float *fo)
     {
         for (int c = 0; c < 3; ++c)
         fo[c] -= (v1[c] - v0[c]) / dt;
     }
 
-    void ang_mom_solid(float * r0, float * r1, float * v0, float * v1, /**/ float * to)
+    void ang_mom_solid(float *r0, float *r1, float *v0, float *v1, /**/ float *to)
     {
         to[X] -= (r1[Y] * v1[Z] - r1[Z] * v1[Y] - r0[Y] * v0[Z] + r0[Z] * v0[Y]) / dt;
         to[Y] -= (r1[Z] * v1[X] - r1[X] * v1[Z] - r0[Z] * v0[X] + r0[X] * v0[Z]) / dt;
         to[Z] -= (r1[X] * v1[Y] - r1[Y] * v1[X] - r0[X] * v0[Y] + r0[Y] * v0[X]) / dt;
     }
-    
-    void bounce(Force *ff, int np, float * cm, float * vcm, float * om, /**/ Particle *pp, float * r_fo, float * r_to)
+
+    void bounce(Force *ff, int np, float *cm, float *vcm, float *om, /**/ Particle *pp, float *r_fo, float *r_to)
     {
         Particle p0, p1;
         float rcol[3], vs[3];
         float t;
+        float *fp;
         
         for (int ip = 0; ip < np; ++ip)
         {
             p1 = pp[ip];
-            
-            float * fp = ff[ip].f;
+            fp = ff[ip].f;
             
             /* previous position and velocity */
 
-            vprev(p1.v, fp,   /**/ p0.v);
+            vprev(p1.v, fp ,  /**/ p0.v);
             rprev(p1.r, p0.v, /**/ p0.r);
-
+        
             /* find collision point */
-            
+        
             if (!sphere::intersect(p0.r, p1.r, /**/ &t))
             continue;
-
-            const float h = t * dt;
-            
-            colpoint(p0.r, p0.v, h, /**/ rcol);
-            
+        
+            t = t * dt;
+        
+            colpoint(p0.r, p0.v, t, /**/ rcol);
+        
             /* handle collision for particle */
-
+        
             vsolid(cm, vcm, om, rcol, /**/ vs);
-            
-            bounce_particle(vs, rcol, p0.v, h, /**/ p1.r, p1.v);
-
+        
+            bounce_particle(vs, rcol, p0.v, t, /**/ p1.r, p1.v);
+        
             /* transfer momentum */
-
+        
             lin_mom_solid(p0.v, p1.v, /**/ r_fo);
-
+        
             ang_mom_solid(p0.r, p1.r, p0.v, p1.v, /**/ r_fo);
-
+            
             pp[ip] = p1;
         }
     }
