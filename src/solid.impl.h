@@ -64,8 +64,34 @@ void pbc_solid(/**/ float *com) {
     }
 }
 
+#if defined(rsph)
+
+#define shape sphere
+#define pin_axis (false)
+
+namespace sphere
+{
+    bool inside(float x, float y, float z) {
+        return x*x + y*y + z*z < rsph*rsph;
+    }
+}
+#endif
+
+#if defined(rcyl)
+
+#define shape cylinder
+#define pin_axis (true)
+
+namespace cylinder
+{
+    bool inside(float x, float y, float z) {
+        return x*x + y*y < rcyl * rcyl;
+    }
+}
+#endif
+
 bool inside(float x, float y, float z) {
-    return x*x + y*y + z*z < rsph*rsph;
+    return shape::inside(x, y, z);
 }
 
 void init_com(Particle *pp, int n, /**/ float *com) {
@@ -173,6 +199,10 @@ void add_om(float *com, float *om, int n, /**/ Particle *pp) {
     }
 }
 
+void constrain_om(/**/ float *om) {
+    om[X] = om[Y] = 0;
+}
+
 void update_com(float *v, /**/ float *com) {
     com[X] += v[X]*dt; com[Y] += v[Y]*dt; com[Z] += v[Z]*dt;
     pbc_solid(/**/ com);
@@ -213,10 +243,11 @@ void update(Force *ff, float *rr0, int n, float mass,
     update_v(mass, f, n, /**/ v);
     update_om(Iinv, to, /**/ om);
 
-    if (!pin_sph) add_v(v, n, /**/ pp);
+    if (!pin_com) add_v(v, n, /**/ pp);
     add_om(com, om, n, /**/ pp);
+    if (pin_axis) constrain_om(/**/ om);
 
-    if (!pin_sph) update_com(v, /**/ com);
+    if (!pin_com) update_com(v, /**/ com);
     rot_e(om, /**/ e0); rot_e(om, /**/ e1); rot_e(om, /**/ e2); gram_schmidt(/**/ e0, e1, e2);
 
     update_r(rr0, n, com, e0, e1, e2, /**/ pp);

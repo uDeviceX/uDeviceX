@@ -44,12 +44,13 @@ namespace solidbounce {
 
         return false;
     }
-    
+
+#if defined(rsph)
+
+#define shape sphere
+
     namespace sphere
     {
-        // for now : stationary sphere
-        // TODO add this in test arguments
-
         #define rsph_bb rsph
 
         bool intersect(float *r0, float *r1, /**/ float *t)
@@ -77,37 +78,42 @@ namespace solidbounce {
             return robust_quadratic_roots(a, b, c, t);
         }
     }
+#endif
 
+#if defined(rcyl)
+
+#define shape cylinder
+    
     namespace cylinder
     {
-        //#define rcyl_bb rcyl
-        #define rcyl_bb rsph
+        #define rcyl_bb rcyl
 
         bool intersect(float *r0, float *r1, /**/ float *t)
         {
-            float r0x = r0[X], r0z = r0[Z];
-            float r1x = r1[X], r1z = r1[Z];
+            float r0x = r0[X], r0y = r0[Y];
+            float r1x = r1[X], r1y = r1[Y];
             
             const float inv_r = 1.f / rcyl_bb;
             
-            r0x *= inv_r; r0z *= inv_r;
-            r1x *= inv_r; r1z *= inv_r;
+            r0x *= inv_r; r0y *= inv_r;
+            r1x *= inv_r; r1y *= inv_r;
             
-            const float a = pow(r1x - r0x, 2) + pow(r1z - r0z, 2);
+            const float a = pow(r1x - r0x, 2) + pow(r1y - r0y, 2);
             
             if (a < eps)
             return false;
             
             const float b =
-                2 * r0z * (r1z - r0z) +
+                2 * r0y * (r1y - r0y) +
                 2 * r0x * (r1x - r0x);
             
-            const float c = r0x * r0x + r0z * r0z - 1.f;
+            const float c = r0x * r0x + r0y * r0y - 1.f;
 
             return robust_quadratic_roots(a, b, c, t);
         }
     }
-
+#endif
+    
     void colpoint(float *r0, float *vp, float h, /**/ float *rcol)
     {
         for (int c = 0; c < 3; ++c)
@@ -161,7 +167,7 @@ namespace solidbounce {
         
         /* find collision point */
         
-        if (!sphere::intersect(p0->r, p1->r, /**/ &t))
+        if (!shape::intersect(p0->r, p1->r, /**/ &t))
         return;
         
         t = t * dt;
