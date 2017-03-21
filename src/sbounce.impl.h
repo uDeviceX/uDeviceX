@@ -33,18 +33,11 @@ namespace solidbounce {
 
         if (D < 0) return false;
         
-        if (sgnb > 0)
-        {
-            t0 = (-b - sgnb * sqrt(D)) / (2 * a);
-            t1 = c / (a * t0);
-        }
-        else
-        {
-            t1 = (-b - sgnb * sqrt(D)) / (2 * a);
-            t0 = c / (a * t1);
-        }
-
-        assert(t0 <= t1);
+        t0 = (-b - sgnb * sqrt(D)) / (2 * a);
+        t1 = c / (a * t0);
+        
+        if (t0 > t1)
+        std::swap(t0, t1);
 
         if (t0 > 0 && t0 < 1) {*t = t0; return true;}
         if (t1 > 0 && t1 < 1) {*t = t1; return true;}
