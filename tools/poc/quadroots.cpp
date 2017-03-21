@@ -32,7 +32,7 @@ int main()
 
     Real t0 = 0, t1 = 0;
     
-    if (robust_quadratic_roots(a, b, c, /**/ &t0, &t1));
+    if (robust_quadratic_roots(a, b, c, /**/ &t0, &t1))
     {
         printf("t0 = %.15g, f(t0) = %.15g\n", t0, (a * t0 + b) * t0 + c);
         printf("t1 = %.15g, f(t1) = %.15g\n", t1, (a * t1 + b) * t1 + c);
