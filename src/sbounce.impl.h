@@ -40,7 +40,7 @@ namespace solidbounce {
         if (h0 >= 0 && h0 <= dt) {*h = h0; return true;}
         if (h1 >= 0 && h1 <= dt) {*h = h1; return true;}
 
-        printf("failed : h0 = %.6e, h1 = %.6e (dt = %.6e)\n", h0, h1, dt);
+        //printf("failed : h0 = %.6e, h1 = %.6e (dt = %.6e)\n", h0, h1, dt);
         
         return false;
     }
@@ -137,7 +137,7 @@ namespace solidbounce {
         float dr[3] = {r[X] - cm[X],
                        r[Y] - cm[Y],
                        r[Z] - cm[Z]};
-
+       
         vs[X] = vcm[X] + omega[Y]*dr[Z] - omega[Z]*dr[Y];
         vs[Y] = vcm[Y] + omega[Z]*dr[X] - omega[X]*dr[Z];
         vs[Z] = vcm[Z] + omega[X]*dr[Y] - omega[Y]*dr[X];
@@ -148,8 +148,19 @@ namespace solidbounce {
         for (int c = 0; c < 3; ++c)
         {
             vn[c] = 2 * vs[c] - v0[c];
-            rn[c] = rcol[c] + (dt - h) * vn[c];
+            //rn[c] = rcol[c] + (dt - h) * vn[c];
+            rn[c] = rcol[c] - (dt - h) * v0[c];
         }
+    }
+
+    void rescue_particle(float *cm, float *vcm, float *om, /**/ float *r, float *v)
+    {
+        shape::rescue(/**/ r);
+        //vsolid(cm, vcm, om, r, /**/ v);
+
+#ifndef NDEBUG
+        assert(!shape::inside(r));
+#endif
     }
 
     void lin_mom_solid(float *v1, float *vn, /**/ float *dF)
@@ -177,8 +188,9 @@ namespace solidbounce {
         
         lastbit::Preserver up(p1->v[X]);
         
-        /* previous position and velocity */
-
+        /* previous position and velocity                        */
+        /* this step should be dependant on the time scheme only */
+        
         rvprev(p1->r, p1->v, fp, /**/ p0->r, p0->v);
 
         /* rescue particles which were already in the solid   */
@@ -186,13 +198,8 @@ namespace solidbounce {
 
         if (shape::inside(p0->r))
         {
-            shape::rescue(p1->r);
-
-            vsolid(cm, vcm, om, p1->r, /**/ p1->v);
+            rescue_particle(cm, vcm, om, /**/ p1->r, p1->v);
             
-#ifndef NDEBUG
-            assert(!shape::inside(p1->r));
-#endif
             ++nrescued;
             return;
         }
