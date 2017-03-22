@@ -12,7 +12,8 @@ namespace solidbounce {
         for (int c = 0; c < 3; ++c)
         {
             r0[c] = r1[c] - v1[c] * dt;
-            v0[c] = v1[c] - f0[c] * dt;
+            //v0[c] = v1[c] - f0[c] * dt;
+            v0[c] = v1[c];
         }
     }
     
@@ -39,6 +40,8 @@ namespace solidbounce {
         if (h0 >= 0 && h0 <= dt) {*h = h0; return true;}
         if (h1 >= 0 && h1 <= dt) {*h = h1; return true;}
 
+        printf("failed : h0 = %.6e, h1 = %.6e (dt = %.6e)\n", h0, h1, dt);
+        
         return false;
     }
 
@@ -57,14 +60,6 @@ namespace solidbounce {
 
         bool intersect(float *r0, float *v0, /**/ float *h)
         {
-// #ifndef NDEBUG
-//             {
-//                 float r1[] = {r0[X] + dt * v0[X], r0[Y] + dt * v0[Y], r0[Z] + dt * v0[Z]};
-//                 assert( inside(r1));
-//                 assert(!inside(r0));
-//             }
-// #endif
-
             float r0x = r0[X], r0y = r0[Y], r0z = r0[Z];
             float v0x = v0[X], v0y = v0[Y], v0z = v0[Z];
                         
@@ -95,7 +90,7 @@ namespace solidbounce {
 #define shape cylinder
     
     namespace cylinder
-    {
+    {   
         #define rcyl_bb rcyl
 
         bool inside(float *r)
@@ -106,14 +101,6 @@ namespace solidbounce {
         /* output h between 0 and dt */
         bool intersect(float *r0, float *v0, /**/ float *h)
         {
-// #ifndef NDEBUG
-//             {
-//                 float r1[] = {r0[X] + dt * v0[X], r0[Y] + dt * v0[Y], r0[Z] + dt * v0[Z]};
-//                 assert( inside(r1));
-//                 assert(!inside(r0));
-//             }
-// #endif
-            
             float r0x = r0[X], r0y = r0[Y];
             float v0x = v0[X], v0y = v0[Y];
 
@@ -178,7 +165,7 @@ namespace solidbounce {
         dL[Z] = -(rn[X] * vn[Y] - rn[Y] * vn[X] - r1[X] * v1[Y] + r1[Y] * v1[X]) / dt;
     }
 
-    int nrescued, nbounced, still_in, step = 0;
+    int nrescued, nbounced, still_in, failed, step = 0;
     
     void bounce_part(float *fp, float *cm, float *vcm, float *om, /*o*/ Particle *p1, /*w*/ Particle *p0)
     {
@@ -194,11 +181,15 @@ namespace solidbounce {
 
         rvprev(p1->r, p1->v, fp, /**/ p0->r, p0->v);
 
-        /* rescue particles which were already in the solid */
-        
+        /* rescue particles which were already in the solid   */
+        /* put them back on the surface with surface velocity */
+
         if (shape::inside(p0->r))
         {
             shape::rescue(p1->r);
+
+            vsolid(cm, vcm, om, p1->r, /**/ p1->v);
+            
 #ifndef NDEBUG
             assert(!shape::inside(p1->r));
 #endif
@@ -211,6 +202,7 @@ namespace solidbounce {
         if (!shape::intersect(p0->r, p0->v, /**/ &h))
         {
             // particle will be rescued at next timestep
+            ++failed;
             return;
         }
         
@@ -234,7 +226,7 @@ namespace solidbounce {
         float dF[3], dL[3];
 
         if (step % 100 == 0)
-        nbounced = nrescued = still_in = 0;
+        nbounced = nrescued = still_in = failed = 0;
         
         for (int ip = 0; ip < np; ++ip)
         {
@@ -261,7 +253,7 @@ namespace solidbounce {
             pp[ip] = pn;
         }
 
-        if ((step++) % 100 == 0)
-        printf("%d rescued, %d boounced, %d still in\n", nrescued, nbounced, still_in);
+        if ((++step) % 100 == 0)
+        printf("%d rescued, %d boounced, %d still in, %d failed\n", nrescued, nbounced, still_in, failed);
     }
 }
