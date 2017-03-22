@@ -12,8 +12,7 @@ namespace solidbounce {
         for (int c = 0; c < 3; ++c)
         {
             v0[c] = v1[c] - f0[c] * dt;
-            r0[c] = r1[c] - v1[c] * dt;
-            //v0[c] = v1[c];
+            r0[c] = r1[c] - v0[c] * dt;
         }
     }
     
@@ -65,9 +64,6 @@ namespace solidbounce {
                         
             const float a = v0x*v0x + v0y*v0y + v0z*v0z;
             
-            // if (a < eps)
-            // return false;
-            
             const float b = 2 * (r0x * v0x + r0y * v0y + r0z * v0z);
             const float c = r0x * r0x + r0y * r0y + r0z * r0z - rsph_bb * rsph_bb;
         
@@ -104,9 +100,6 @@ namespace solidbounce {
 
             const float a = v0x * v0x + v0y * v0y;
             
-            // if (a < eps)
-            // return false;
-            
             const float b = 2 * (r0x * v0x + r0y * v0y);
                         
             const float c = r0x * r0x + r0y * r0y - rcyl_bb * rcyl_bb;
@@ -129,16 +122,24 @@ namespace solidbounce {
     {
         bool inside(float *r)
         {
+            printf("solidbounce: not implemented\n");
+            exit(1);
+
             return false;
         }
 
         bool intersect(float *r0, float *v0, /**/ float *h)
         {
+            printf("solidbounce: not implemented\n");
+            exit(1);
+
             return false;
         }
 
         void rescue(float *r)
         {
+            printf("solidbounce: not implemented\n");
+            exit(1);
         }
     }
     
@@ -155,7 +156,7 @@ namespace solidbounce {
         float dr[3] = {r[X] - cm[X],
                        r[Y] - cm[Y],
                        r[Z] - cm[Z]};
-       
+        
         vs[X] = vcm[X] + omega[Y]*dr[Z] - omega[Z]*dr[Y];
         vs[Y] = vcm[Y] + omega[Z]*dr[X] - omega[X]*dr[Z];
         vs[Z] = vcm[Z] + omega[X]*dr[Y] - omega[Y]*dr[X];
@@ -163,22 +164,24 @@ namespace solidbounce {
 
     void bounce_particle(float *vs, float *rcol, float *v0, float h, /**/ float *rn, float *vn)
     {
+        assert(h >= 0);
+        assert(h <= dt);
+        
         for (int c = 0; c < 3; ++c)
         {
             vn[c] = 2 * vs[c] - v0[c];
             rn[c] = rcol[c] + (dt - h) * vn[c];
             //rn[c] = rcol[c] - (dt - h) * v0[c];
+            //rn[c] = rcol[c] + dt * vn[c];
         }
     }
 
     void rescue_particle(float *cm, float *vcm, float *om, /**/ float *r, float *v)
     {
         shape::rescue(/**/ r);
-        //vsolid(cm, vcm, om, r, /**/ v);
+        vsolid(cm, vcm, om, r, /**/ v);
 
-#ifndef NDEBUG
         assert(!shape::inside(r));
-#endif
     }
 
     void lin_mom_solid(float *v1, float *vn, /**/ float *dF)
@@ -194,7 +197,10 @@ namespace solidbounce {
         dL[Z] = -(rn[X] * vn[Y] - rn[Y] * vn[X] - r1[X] * v1[Y] + r1[Y] * v1[X]) / dt;
     }
 
+#define debug_output
+
     int nrescued, nbounced, still_in, failed, step = 0;
+    FILE * fdebug;
     
     void bounce_part(float *fp, float *cm, float *vcm, float *om, /*o*/ Particle *p1, /*w*/ Particle *p0)
     {
@@ -231,17 +237,39 @@ namespace solidbounce {
             return;
         }
         
+        assert(h >= 0 );
+        assert(h <= dt);
+        
         collision_point(p0->r, p0->v, h, /**/ rcol);
         
         /* handle collision for particle */
         
         vsolid(cm, vcm, om, rcol, /**/ vs);
+
+
+
+#ifdef debug_output
+
+        // before (r, v)
+        fprintf(fdebug, "%.10f %.10f %.10f %.10f %.10f %.10f ", p0->r[X], p0->r[Y], p0->r[Z], p0->v[X], p0->v[Y], p0->v[Z]);
         
+        // before (r, v)
+        //fprintf(fdebug, "%.10f %.10f %.10f %.10f %.10f %.10f ", p1->r[X], p1->r[Y], p1->r[Z], p1->v[X], p1->v[Y], p1->v[Z]);
+
+        // vs
+        fprintf(fdebug, "%.10f %.10f %.10f ", vs[X], vs[Y], vs[Z]);
+        // rcol
+        fprintf(fdebug, "%.10f %.10f %.10f ", rcol[X], rcol[Y], rcol[Z]);
+#endif        
         bounce_particle(vs, rcol, p0->v, h, /**/ p1->r, p1->v);
+#ifdef debug_output
+        // after (r, v)
+        fprintf(fdebug, "%.10f %.10f %.10f %.10f %.10f %.10f\n", p1->r[X], p1->r[Y], p1->r[Z], p1->v[X], p1->v[Y], p1->v[Z]);
+#endif
 
         if (shape::inside(p1->r))
         ++still_in;
-        
+        else
         ++nbounced;
     }
     
@@ -250,6 +278,9 @@ namespace solidbounce {
         Particle p0, p1, pn;
         float dF[3], dL[3];
 
+#ifdef debug_output
+        fdebug = fopen("debug.txt", "a");
+#endif
         if (step % 100 == 0)
         nbounced = nrescued = still_in = failed = 0;
         
@@ -280,5 +311,10 @@ namespace solidbounce {
 
         if ((++step) % 100 == 0)
         printf("%d rescued, %d boounced, %d still in, %d failed\n", nrescued, nbounced, still_in, failed);
+
+#ifdef debug_output
+        fclose(fdebug);
+#endif
+
     }
 }

@@ -245,7 +245,9 @@ void update(Force *ff, float *rr0, int n, float mass,
 
     if (!pin_com) add_v(v, n, /**/ pp);
     add_om(com, om, n, /**/ pp);
+
     if (pin_axis) constrain_om(/**/ om);
+    if (pin_com) v[X] = v[Y] = v[Z] = 0;
 
     if (!pin_com) update_com(v, /**/ com);
     rot_e(om, /**/ e0); rot_e(om, /**/ e1); rot_e(om, /**/ e2); gram_schmidt(/**/ e0, e1, e2);
