@@ -7,25 +7,22 @@ namespace solidbounce {
     const float eps = 1e-8;
     
     // from forward Euler
-    void rprev(float *r1, float *v0, /**/ float *r0)
+    void rvprev(float *r1, float *v1, float *f0, /**/ float *r0, float *v0)
     {
         for (int c = 0; c < 3; ++c)
-        r0[c] = r1[c] - dt * v0[c];
+        {
+            r0[c] = r1[c] - v1[c] * dt;
+            v0[c] = v1[c] - f0[c] * dt;
+        }
     }
     
-    void vprev(float *v1, float *f0, /**/ float *v0)
-    {
-        for (int c = 0; c < 3; ++c)
-        v0[c] = v1[c] - dt * f0[c];
-    }
-
     /*
-      return true if a root t lies in [0, 1] (output t), false otherwise
-      smallest root t is returned
+      return true if a root h lies in [0, dt] (output h), false otherwise
+      if 2 roots, smallest root h0 is returned (first collision)
     */
-    bool robust_quadratic_roots(float a, float b, float c, /**/ float *t)
+    bool robust_quadratic_roots(float a, float b, float c, /**/ float *h)
     {
-        float D, t0, t1;
+        float D, h0, h1;
         int sgnb;
 
         sgnb = b > 0 ? 1 : -1;
@@ -33,14 +30,14 @@ namespace solidbounce {
 
         if (D < 0) return false;
         
-        t0 = (-b - sgnb * sqrt(D)) / (2 * a);
-        t1 = c / (a * t0);
+        h0 = (-b - sgnb * sqrt(D)) / (2 * a);
+        h1 = c / (a * h0);
         
-        if (t0 > t1)
-        std::swap(t0, t1);
+        if (h0 > h1)
+        std::swap(h0, h1);
 
-        if (t0 >= 0 && t0 <= 1) {*t = t0; return true;}
-        if (t1 >= 0 && t1 <= 1) {*t = t1; return true;}
+        if (h0 >= 0 && h0 <= dt) {*h = h0; return true;}
+        if (h1 >= 0 && h1 <= dt) {*h = h1; return true;}
 
         return false;
     }
@@ -58,34 +55,28 @@ namespace solidbounce {
             return r[X] * r[X] + r[Y] * r[Y] + r[Z] * r[Z] < rsph_bb * rsph_bb;
         }
 
-        bool intersect(float *r0, float *r1, /**/ float *t)
+        bool intersect(float *r0, float *v0, /**/ float *h)
         {
-#ifndef NDEBUG
-            assert(inside(r1));
-            assert(!inside(r0));
-#endif
+// #ifndef NDEBUG
+//             {
+//                 float r1[] = {r0[X] + dt * v0[X], r0[Y] + dt * v0[Y], r0[Z] + dt * v0[Z]};
+//                 assert( inside(r1));
+//                 assert(!inside(r0));
+//             }
+// #endif
 
             float r0x = r0[X], r0y = r0[Y], r0z = r0[Z];
-            float r1x = r1[X], r1y = r1[Y], r1z = r1[Z];
+            float v0x = v0[X], v0y = v0[Y], v0z = v0[Z];
+                        
+            const float a = v0x*v0x + v0y*v0y + v0z*v0z;
             
-            const float inv_r = 1.f / rsph_bb;
+            // if (a < eps)
+            // return false;
             
-            r0x *= inv_r; r0y *= inv_r; r0z *= inv_r;
-            r1x *= inv_r; r1y *= inv_r; r1z *= inv_r;
-            
-            const float a = pow(r1x - r0x, 2) + pow(r1y - r0y, 2) + pow(r1z - r0z, 2);
-            
-            if (a < eps)
-            return false;
-            
-            const float b =
-                2 * r0z * (r1z - r0z) +
-                2 * r0y * (r1y - r0y) +
-                2 * r0x * (r1x - r0x);
-            
-            const float c = r0x * r0x + r0y * r0y + r0z * r0z - 1.f;
+            const float b = 2 * (r0x * v0x + r0y * v0y + r0z * v0z);
+            const float c = r0x * r0x + r0y * r0y + r0z * r0z - rsp_bb * rsp_bb;
         
-            return robust_quadratic_roots(a, b, c, t);
+            return robust_quadratic_roots(a, b, c, h);
         }
 
         void rescue(float *r)
@@ -112,35 +103,30 @@ namespace solidbounce {
             return r[X] * r[X] + r[Y] * r[Y] < rcyl_bb * rcyl_bb;
         }
 
-        /* output t between 0 and 1 */
-        bool intersect(float *r0, float *r1, /**/ float *t)
+        /* output h between 0 and dt */
+        bool intersect(float *r0, float *v0, /**/ float *h)
         {
-#ifndef NDEBUG
-            assert(inside(r1));
-            assert(!inside(r0));
-#endif
+// #ifndef NDEBUG
+//             {
+//                 float r1[] = {r0[X] + dt * v0[X], r0[Y] + dt * v0[Y], r0[Z] + dt * v0[Z]};
+//                 assert( inside(r1));
+//                 assert(!inside(r0));
+//             }
+// #endif
             
             float r0x = r0[X], r0y = r0[Y];
-            float r1x = r1[X], r1y = r1[Y];
-            
-            const float inv_r = 1.f / rcyl_bb;
-            
-            r0x *= inv_r; r0y *= inv_r;
-            r1x *= inv_r; r1y *= inv_r;
-            
-            const float a = pow(r1x - r0x, 2) + pow(r1y - r0y, 2);
-            
-            if (a < eps)
-            return false;
-            
-            const float b =
-                2 * r0x * (r1x - r0x) +
-                2 * r0y * (r1y - r0y);
-                
-            
-            const float c = r0x * r0x + r0y * r0y - 1.f;
+            float v0x = v0[X], v0y = v0[Y];
 
-            return robust_quadratic_roots(a, b, c, t);
+            const float a = v0x * v0x + v0y * v0y;
+            
+            // if (a < eps)
+            // return false;
+            
+            const float b = 2 * (r0x * v0x + r0y * v0y);
+                        
+            const float c = r0x * r0x + r0y * r0y - rcyl_bb * rcyl_bb;
+
+            return robust_quadratic_roots(a, b, c, h);
         }
 
         void rescue(float *r)
@@ -170,32 +156,34 @@ namespace solidbounce {
         vs[Z] = vcm[Z] + omega[X]*dr[Y] - omega[Y]*dr[X];
     }
 
-    void bounce_particle(float *vs, float *rcol, float *v0, float h, /**/ float *r1, float *v1)
+    void bounce_particle(float *vs, float *rcol, float *v0, float h, /**/ float *rn, float *vn)
     {
         for (int c = 0; c < 3; ++c)
         {
-            v1[c] = 2 * vs[c] - v0[c];
-            r1[c] = rcol[c] + (dt - h) * v1[c];
+            vn[c] = 2 * vs[c] - v0[c];
+            rn[c] = rcol[c] + (dt - h) * vn[c];
         }
     }
 
-    void lin_mom_solid(float *v0, float *v1, /**/ float *fo)
+    void lin_mom_solid(float *v1, float *vn, /**/ float *dF)
     {
         for (int c = 0; c < 3; ++c)
-        fo[c] -= (v1[c] - v0[c]) / dt;
+        dF[c] = -(vn[c] - v1[c]) / dt;
     }
 
-    void ang_mom_solid(float *r0, float *r1, float *v0, float *v1, /**/ float *to)
+    void ang_mom_solid(float *r1, float *rn, float *v1, float *vn, /**/ float *dL)
     {
-        to[X] -= (r1[Y] * v1[Z] - r1[Z] * v1[Y] - r0[Y] * v0[Z] + r0[Z] * v0[Y]) / dt;
-        to[Y] -= (r1[Z] * v1[X] - r1[X] * v1[Z] - r0[Z] * v0[X] + r0[X] * v0[Z]) / dt;
-        to[Z] -= (r1[X] * v1[Y] - r1[Y] * v1[X] - r0[X] * v0[Y] + r0[Y] * v0[X]) / dt;
+        dL[X] = -(rn[Y] * vn[Z] - rn[Z] * vn[Y] - r1[Y] * v1[Z] + r1[Z] * v1[Y]) / dt;
+        dL[Y] = -(rn[Z] * vn[X] - rn[X] * vn[Z] - r1[Z] * v1[X] + r1[X] * v1[Z]) / dt;
+        dL[Z] = -(rn[X] * vn[Y] - rn[Y] * vn[X] - r1[X] * v1[Y] + r1[Y] * v1[X]) / dt;
     }
 
-    void bounce_part(float *fp, float *cm, float *vcm, float *om, /*o*/ Particle *p1, float *r_fo, float *r_to, /*w*/ Particle *p0)
+    int nrescued, nbounced, still_in, step = 0;
+    
+    void bounce_part(float *fp, float *cm, float *vcm, float *om, /*o*/ Particle *p1, /*w*/ Particle *p0)
     {
         float rcol[3], vs[3];
-        float t;
+        float h;
 
         if (!shape::inside(p1->r))
         return;
@@ -204,55 +192,76 @@ namespace solidbounce {
         
         /* previous position and velocity */
 
-        vprev(p1->v, fp,    /**/ p0->v);
-        rprev(p1->r, p0->v, /**/ p0->r);
+        rvprev(p1->r, p1->v, fp, /**/ p0->r, p0->v);
 
+        /* rescue particles which were already in the solid */
+        
         if (shape::inside(p0->r))
         {
             shape::rescue(p1->r);
 #ifndef NDEBUG
             assert(!shape::inside(p1->r));
 #endif
-            //printf("solidbounce: rescued one particle\n");
+            ++nrescued;
             return;
         }
         
         /* find collision point */
         
-        if (!shape::intersect(p0->r, p1->r, /**/ &t))
+        if (!shape::intersect(p0->r, p0->v, /**/ &h))
         {
             // particle will be rescued at next timestep
             return;
         }
         
-        t = t * dt;
-        
-        collision_point(p0->r, p0->v, t, /**/ rcol);
+        collision_point(p0->r, p0->v, h, /**/ rcol);
         
         /* handle collision for particle */
         
         vsolid(cm, vcm, om, rcol, /**/ vs);
         
-        bounce_particle(vs, rcol, p0->v, t, /**/ p1->r, p1->v);
+        bounce_particle(vs, rcol, p0->v, h, /**/ p1->r, p1->v);
+
+        if (shape::inside(p1->r))
+        ++still_in;
         
-        /* transfer momentum */
-        
-        lin_mom_solid(p0->v, p1->v, /**/ r_fo);
-        
-        ang_mom_solid(p0->r, p1->r, p0->v, p1->v, /**/ r_fo);
+        ++nbounced;
     }
     
     void bounce(Force *ff, int np, float *cm, float *vcm, float *om, /**/ Particle *pp, float *r_fo, float *r_to)
     {
-        Particle p0, p1;
+        Particle p0, p1, pn;
+        float dF[3], dL[3];
+
+        if (step % 100 == 0)
+        nbounced = nrescued = still_in = 0;
         
         for (int ip = 0; ip < np; ++ip)
         {
             p1 = pp[ip];
-
-            bounce_part(ff[ip].f, cm, vcm, om, /*o*/ &p1, r_fo, r_to, /*w*/ &p0);
+            pn = p1;
             
-            pp[ip] = p1;
+            bounce_part(ff[ip].f, cm, vcm, om, /*o*/ &pn, /*w*/ &p0);
+
+            /* transfer momentum */
+            
+            dF[X] = dF[Y] = dF[Z] = 0;
+            dL[X] = dL[Y] = dL[Z] = 0;
+
+            lin_mom_solid(p1.v, pn.v, /**/ dF);
+            
+            ang_mom_solid(p1.r, pn.r, p1.v, pn.v, /**/ dL);
+
+            for (int d = 0; d < 3; ++d)
+            {
+                r_fo[d] += dF[d];
+                r_to[d] += dL[d];
+            }
+            
+            pp[ip] = pn;
         }
+
+        if ((step++) % 100 == 0)
+        printf("%d rescued, %d boounced, %d still in\n", nrescued, nbounced, still_in);
     }
 }
