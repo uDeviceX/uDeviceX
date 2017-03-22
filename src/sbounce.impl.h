@@ -11,9 +11,9 @@ namespace solidbounce {
     {
         for (int c = 0; c < 3; ++c)
         {
+            v0[c] = v1[c] - f0[c] * dt;
             r0[c] = r1[c] - v1[c] * dt;
-            //v0[c] = v1[c] - f0[c] * dt;
-            v0[c] = v1[c];
+            //v0[c] = v1[c];
         }
     }
     
@@ -69,7 +69,7 @@ namespace solidbounce {
             // return false;
             
             const float b = 2 * (r0x * v0x + r0y * v0y + r0z * v0z);
-            const float c = r0x * r0x + r0y * r0y + r0z * r0z - rsp_bb * rsp_bb;
+            const float c = r0x * r0x + r0y * r0y + r0z * r0z - rsph_bb * rsph_bb;
         
             return robust_quadratic_roots(a, b, c, h);
         }
@@ -83,9 +83,7 @@ namespace solidbounce {
             r[Z] *= scale;
         }
     }
-#endif
-
-#if defined(rcyl)
+#elif defined(rcyl)
 
 #define shape cylinder
     
@@ -124,6 +122,26 @@ namespace solidbounce {
             r[Y] *= scale;
         }
     }
+#else
+
+#define shape none
+    namespace none
+    {
+        bool inside(float *r)
+        {
+            return false;
+        }
+
+        bool intersect(float *r0, float *v0, /**/ float *h)
+        {
+            return false;
+        }
+
+        void rescue(float *r)
+        {
+        }
+    }
+    
 #endif
     
     void collision_point(float *r0, float *v0, float h, /**/ float *rcol)
@@ -148,8 +166,8 @@ namespace solidbounce {
         for (int c = 0; c < 3; ++c)
         {
             vn[c] = 2 * vs[c] - v0[c];
-            //rn[c] = rcol[c] + (dt - h) * vn[c];
-            rn[c] = rcol[c] - (dt - h) * v0[c];
+            rn[c] = rcol[c] + (dt - h) * vn[c];
+            //rn[c] = rcol[c] - (dt - h) * v0[c];
         }
     }
 
@@ -256,7 +274,7 @@ namespace solidbounce {
                 r_fo[d] += dF[d];
                 r_to[d] += dL[d];
             }
-            
+
             pp[ip] = pn;
         }
 
