@@ -20,8 +20,8 @@ mv(P)::=buildq([l: P,
 g(e):=gcfac(fullratsimp(e))$ /* simplify */
 alias(cg, cgrind)$
 
-mv(R0)$ mv(V)$ /* Position of a point */
-R1: R0 + V*dt;
+mv(R0)$ mv(V0)$ /* Position of a point */
+R1: R0 + V0*dt;
 
 mv(Vc0)$
 Rc1: Vc0*dt;
@@ -37,7 +37,7 @@ p : om * t;
 x0 : cos(p) * x - sin(p) * z;
 z0 : sin(p) * x + cos(p) * z;
 
-tt(ex) := expand(taylor(ex, t, 0, 2));
+tt(ex) := expand(taylor(ex, t, 0, 1));
 
 tt(x0);
 

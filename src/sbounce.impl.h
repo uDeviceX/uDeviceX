@@ -77,6 +77,7 @@ namespace solidbounce {
             r[Z] *= scale;
         }
     }
+    
 #elif defined(rcyl)
 
 #define shape cylinder
@@ -113,6 +114,47 @@ namespace solidbounce {
             r[Y] *= scale;
         }
     }
+
+#elif defined(a2_ellipse)
+
+#define shape ellipse // "extruded" ellipse x^2/2^ + y^2/b^2 = 1
+    
+    namespace ellipse
+    {
+#define rcyl_bb rcyl
+
+#define a2_bb a2_ellipse 
+#define b2_bb b2_ellipse
+        
+        bool inside(float *r)
+        {
+            return r[X] * r[X] / a2_bb + r[Y] * r[Y] / b2_bb < 1;
+        }
+
+        /* output h between 0 and dt */
+        bool intersect(float *r0, float *v0, /**/ float *h)
+        {
+            float r0x = r0[X], r0y = r0[Y];
+            float v0x = v0[X], v0y = v0[Y];
+
+            const float a = v0x * v0x / a2_bb + v0y * v0y / b2_bb;
+            
+            const float b = 2 * (r0x * v0x / a2_bb + r0y * v0y / b2_bb);
+                        
+            const float c = r0x * r0x / a2_bb + r0y * r0y / b2_bb - 1;
+
+            return robust_quadratic_roots(a, b, c, h);
+        }
+
+        void rescue(float *r) // cheap rescue
+        {
+            float scale = (1 + 1e-6) / sqrt(r[X] * r[X] / a2_bb + r[Y] * r[Y] / b2_bb);
+
+            r[X] *= scale;
+            r[Y] *= scale;
+        }
+    }
+    
 #else
 
 #define shape none
@@ -169,8 +211,6 @@ namespace solidbounce {
         {
             vn[c] = 2 * vs[c] - v0[c];
             rn[c] = rcol[c] + (dt - h) * vn[c];
-            //rn[c] = rcol[c] - (dt - h) * v0[c];
-            //rn[c] = rcol[c] + dt * vn[c];
         }
     }
 

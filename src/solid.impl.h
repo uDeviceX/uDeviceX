@@ -75,9 +75,8 @@ namespace sphere
         return x*x + y*y + z*z < rsph*rsph;
     }
 }
-#endif
 
-#if defined(rcyl)
+#elif defined(rcyl)
 
 #define shape cylinder
 #define pin_axis (true)
@@ -88,8 +87,24 @@ namespace cylinder
         return x*x + y*y < rcyl * rcyl;
     }
 }
+
+#elif defined(a2_ellipse)
+
+#define shape ellipse
+#define pin_axis (true)
+
+namespace ellipse
+{
+#define a2 a2_ellipse 
+#define b2 b2_ellipse
+        
+    bool inside(float x, float y, float z) {
+        return x*x / a2 + y*y / b2 < 1;
+    }
+}
 #endif
 
+    
 bool inside(float x, float y, float z) {
     return shape::inside(x, y, z);
 }
@@ -201,9 +216,7 @@ void add_om(float *com, float *om, int n, /**/ Particle *pp) {
 }
 
 void constrain_om(/**/ float *om) {
-    //om[X] = om[Y] = om[Z] = 0;
     om[X] = om[Y] = 0;
-    // om[Z] = 0.1;
 }
 
 void update_com(float *v, /**/ float *com) {
