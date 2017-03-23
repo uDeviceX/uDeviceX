@@ -208,7 +208,7 @@ namespace solidbounce {
         if (!shape::inside(p1->r))
         return;
         
-        //lastbit::Preserver up(p1->v[X]);
+        lastbit::Preserver up(p1->v[X]);
         
         /* previous position and velocity                        */
         /* this step should be dependant on the time scheme only */
