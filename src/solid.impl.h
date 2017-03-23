@@ -133,7 +133,8 @@ void init(Particle *pp, int n, float mass,
     e1[X] = 0; e1[Y] = 1; e1[Z] = 0;
     e2[X] = 0; e2[Y] = 0; e2[Z] = 1;
 
-    init_com(pp, n, /**/ com);
+    if (!pin_com) init_com(pp, n, /**/ com);
+    else com[X] = com[Y] = com[Z] = 0;
 
     /* init inertia tensor */
     float I[6]; solid::init_I(pp, n, mass, com, /**/ I);
@@ -200,7 +201,9 @@ void add_om(float *com, float *om, int n, /**/ Particle *pp) {
 }
 
 void constrain_om(/**/ float *om) {
+    //om[X] = om[Y] = om[Z] = 0;
     om[X] = om[Y] = 0;
+    // om[Z] = 0.1;
 }
 
 void update_com(float *v, /**/ float *com) {

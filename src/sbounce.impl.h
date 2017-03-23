@@ -18,7 +18,7 @@ namespace solidbounce {
     
     /*
       return true if a root h lies in [0, dt] (output h), false otherwise
-      if 2 roots, smallest root h0 is returned (first collision)
+      if 2 roots in [0, dt], smallest root h0 is returned (first collision)
     */
     bool robust_quadratic_roots(float a, float b, float c, /**/ float *h)
     {
@@ -151,15 +151,15 @@ namespace solidbounce {
         rcol[c] = r0[c] + h * v0[c];
     }
 
-    void vsolid(float *cm, float *vcm, float *omega, float *r, /**/ float *vs)
+    void vsolid(float *cm, float *vcm, float *om, float *r, /**/ float *vs)
     {
         float dr[3] = {r[X] - cm[X],
                        r[Y] - cm[Y],
                        r[Z] - cm[Z]};
-        
-        vs[X] = vcm[X] + omega[Y]*dr[Z] - omega[Z]*dr[Y];
-        vs[Y] = vcm[Y] + omega[Z]*dr[X] - omega[X]*dr[Z];
-        vs[Z] = vcm[Z] + omega[X]*dr[Y] - omega[Y]*dr[X];
+
+        vs[X] = vcm[X] + om[Y]*dr[Z] - om[Z]*dr[Y];
+        vs[Y] = vcm[Y] + om[Z]*dr[X] - om[X]*dr[Z];
+        vs[Z] = vcm[Z] + om[X]*dr[Y] - om[Y]*dr[X];
     }
 
     void bounce_particle(float *vs, float *rcol, float *v0, float h, /**/ float *rn, float *vn)
@@ -179,7 +179,7 @@ namespace solidbounce {
     void rescue_particle(float *cm, float *vcm, float *om, /**/ float *r, float *v)
     {
         shape::rescue(/**/ r);
-        vsolid(cm, vcm, om, r, /**/ v);
+        //vsolid(cm, vcm, om, r, /**/ v);
 
         assert(!shape::inside(r));
     }
@@ -204,13 +204,13 @@ namespace solidbounce {
     
     void bounce_part(float *fp, float *cm, float *vcm, float *om, /*o*/ Particle *p1, /*w*/ Particle *p0)
     {
-        float rcol[3], vs[3];
+        float rcol[3] = {0, 0, 0}, vs[3] = {0, 0, 0};
         float h;
 
         if (!shape::inside(p1->r))
         return;
         
-        lastbit::Preserver up(p1->v[X]);
+        //lastbit::Preserver up(p1->v[X]);
         
         /* previous position and velocity                        */
         /* this step should be dependant on the time scheme only */
@@ -246,31 +246,39 @@ namespace solidbounce {
         
         vsolid(cm, vcm, om, rcol, /**/ vs);
 
-
-
 #ifdef debug_output
 
-        // before (r, v)
-        fprintf(fdebug, "%.10f %.10f %.10f %.10f %.10f %.10f ", p0->r[X], p0->r[Y], p0->r[Z], p0->v[X], p0->v[Y], p0->v[Z]);
+        #define db(...) fprintf (fdebug, __VA_ARGS__)
         
-        // before (r, v)
-        //fprintf(fdebug, "%.10f %.10f %.10f %.10f %.10f %.10f ", p1->r[X], p1->r[Y], p1->r[Z], p1->v[X], p1->v[Y], p1->v[Z]);
+        // (r0, v0)
+        db("%+.10e %+.10e %+.10e %+.10e %+.10e %+.10e ", p0->r[X], p0->r[Y], p0->r[Z], p0->v[X], p0->v[Y], p0->v[Z]);
+        
+        // (r1, v1)
+        db("%+.10e %+.10e %+.10e %+.10e %+.10e %+.10e ", p1->r[X], p1->r[Y], p1->r[Z], p1->v[X], p1->v[Y], p1->v[Z]);
 
         // vs
-        fprintf(fdebug, "%.10f %.10f %.10f ", vs[X], vs[Y], vs[Z]);
+        db("%+.10e %+.10e %+.10e ", vs[X], vs[Y], vs[Z]);
         // rcol
-        fprintf(fdebug, "%.10f %.10f %.10f ", rcol[X], rcol[Y], rcol[Z]);
+        db("%+.10e %+.10e %+.10e ", rcol[X], rcol[Y], rcol[Z]);
 #endif        
+
         bounce_particle(vs, rcol, p0->v, h, /**/ p1->r, p1->v);
+
 #ifdef debug_output
         // after (r, v)
-        fprintf(fdebug, "%.10f %.10f %.10f %.10f %.10f %.10f\n", p1->r[X], p1->r[Y], p1->r[Z], p1->v[X], p1->v[Y], p1->v[Z]);
+        db("%+.10e %+.10e %+.10e %+.10e %+.10e %+.10e ", p1->r[X], p1->r[Y], p1->r[Z], p1->v[X], p1->v[Y], p1->v[Z]);
 #endif
 
         if (shape::inside(p1->r))
-        ++still_in;
+        {
+            ++still_in;
+            db(":inside:\n");
+        }
         else
-        ++nbounced;
+        {
+            ++nbounced;
+            db(":success:\n");
+        }
     }
     
     void bounce(Force *ff, int np, float *cm, float *vcm, float *om, /**/ Particle *pp, float *r_fo, float *r_to)
@@ -310,7 +318,7 @@ namespace solidbounce {
         }
 
         if ((++step) % 100 == 0)
-        printf("%d rescued, %d boounced, %d still in, %d failed\n", nrescued, nbounced, still_in, failed);
+        printf("%d rescued, %d boounced, %d still in, %d failed\n\n", nrescued, nbounced, still_in, failed);
 
 #ifdef debug_output
         fclose(fdebug);
