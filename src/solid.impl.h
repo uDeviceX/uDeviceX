@@ -243,10 +243,11 @@ void update(Force *ff, float *rr0, int n, float mass,
     update_v(mass, f, n, /**/ v);
     update_om(Iinv, to, /**/ om);
 
+    if (pin_axis) constrain_om(/**/ om);
+    
     if (!pin_com) add_v(v, n, /**/ pp);
     add_om(com, om, n, /**/ pp);
 
-    if (pin_axis) constrain_om(/**/ om);
     if (pin_com) v[X] = v[Y] = v[Z] = 0;
 
     if (!pin_com) update_com(v, /**/ com);
