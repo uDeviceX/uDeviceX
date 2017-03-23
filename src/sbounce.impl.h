@@ -38,8 +38,6 @@ namespace solidbounce {
 
         if (h0 >= 0 && h0 <= dt) {*h = h0; return true;}
         if (h1 >= 0 && h1 <= dt) {*h = h1; return true;}
-
-        //printf("failed : h0 = %.6e, h1 = %.6e (dt = %.6e)\n", h0, h1, dt);
         
         return false;
     }
@@ -197,7 +195,7 @@ namespace solidbounce {
         dL[Z] = -(rn[X] * vn[Y] - rn[Y] * vn[X] - r1[X] * v1[Y] + r1[Y] * v1[X]) / dt;
     }
 
-#define debug_output
+    //#define debug_output
 
     int nrescued, nbounced, still_in, failed, step = 0;
     FILE * fdebug;
@@ -272,12 +270,16 @@ namespace solidbounce {
         if (shape::inside(p1->r))
         {
             ++still_in;
+#ifdef debug_output
             db(":inside:\n");
+#endif
         }
         else
         {
             ++nbounced;
+#ifdef debug_output
             db(":success:\n");
+#endif
         }
     }
     
