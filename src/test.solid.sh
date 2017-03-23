@@ -3,7 +3,6 @@
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt
-# cp bodies/sphere.off rbc.off
 # :
 # argp .conf.double.poiseuille.h     \
 #   -rbcs -rsph=4 -pin_com=true      \
@@ -36,8 +35,7 @@
 # TEST: solid.t3
 # set -x
 # export PATH=../tools:$PATH
-# rm -rf h5 diag.txt solid_diag.txt
-# cp bodies/sphere.off rbc.off
+# rm -rf h5 diag.txt solid_diag.txt debug.txt
 # :
 # argp .conf.double.poiseuille.h     \
 #   -rbcs -rcyl=4 -pin_com=true      \
