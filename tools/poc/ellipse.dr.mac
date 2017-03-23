@@ -1,0 +1,48 @@
+/*
+
+Intersection of a point and a cylinder Cylinder is centered at (x=0,
+z=0), infinite in `y' and radius is 1
+
+*/
+kill(all);
+
+load("format") $
+load("cgrind") $
+load("scifac") $
+
+[X, Y, Z]: [1, 2, 3]$
+
+/* make a vector */
+mv(P)::=buildq([l: P,
+  r: create_list(concat(P, d), d,  ['x, 'y, 'z])],
+  l: r) $
+
+g(e):=gcfac(fullratsimp(e))$ /* simplify */
+alias(cg, cgrind)$
+
+mv(R0)$ mv(V)$ /* Position of a point */
+R1: R0 + V*dt;
+
+mv(Vc0)$
+Rc1: Vc0*dt;
+Rc1: [0, 0, 0];
+
+R : R0*(1-t/dt) + R1*t/dt;
+Rc : Rc1*t/dt;
+
+x : g(R[X] - Rc[X]); z : g(R[Z] - Rc[Z]);
+
+p : om * t;
+
+x0 : cos(p) * x - sin(p) * z;
+z0 : sin(p) * x + cos(p) * z;
+
+tt(ex) := expand(taylor(ex, t, 0, 2));
+
+tt(x0);
+
+eq: tt(x0)^2/a2 + tt(z0)^2/b2 - 1; /* cylinder */
+
+eq: format(eq, %poly(t));
+
+
