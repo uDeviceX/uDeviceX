@@ -236,9 +236,10 @@ namespace solidbounce {
     }
 
     //#define debug_output
-
+#ifdef debug_output
     int nrescued, nbounced, still_in, failed, step = 0;
     FILE * fdebug;
+#endif
     
     void bounce_part(float *fp, float *cm, float *vcm, float *om, /*o*/ Particle *p1, /*w*/ Particle *p0)
     {
@@ -261,8 +262,9 @@ namespace solidbounce {
         if (shape::inside(p0->r))
         {
             rescue_particle(cm, vcm, om, /**/ p1->r, p1->v);
-            
+#ifdef debug_output
             ++nrescued;
+#endif
             return;
         }
         
@@ -271,7 +273,9 @@ namespace solidbounce {
         if (!shape::intersect(p0->r, p0->v, /**/ &h))
         {
             // particle will be rescued at next timestep
+#ifdef debug_output
             ++failed;
+#endif
             return;
         }
         
@@ -288,39 +292,60 @@ namespace solidbounce {
 
         #define db(...) fprintf (fdebug, __VA_ARGS__)
         
-        // (r0, v0)
         db("%+.10e %+.10e %+.10e %+.10e %+.10e %+.10e ", p0->r[X], p0->r[Y], p0->r[Z], p0->v[X], p0->v[Y], p0->v[Z]);
-        
-        // (r1, v1)
         db("%+.10e %+.10e %+.10e %+.10e %+.10e %+.10e ", p1->r[X], p1->r[Y], p1->r[Z], p1->v[X], p1->v[Y], p1->v[Z]);
-
-        // vs
         db("%+.10e %+.10e %+.10e ", vs[X], vs[Y], vs[Z]);
-        // rcol
         db("%+.10e %+.10e %+.10e ", rcol[X], rcol[Y], rcol[Z]);
 #endif        
 
         bounce_particle(vs, rcol, p0->v, h, /**/ p1->r, p1->v);
 
 #ifdef debug_output
-        // after (r, v)
         db("%+.10e %+.10e %+.10e %+.10e %+.10e %+.10e ", p1->r[X], p1->r[Y], p1->r[Z], p1->v[X], p1->v[Y], p1->v[Z]);
-#endif
-
+        
         if (shape::inside(p1->r))
         {
             ++still_in;
-#ifdef debug_output
             db(":inside:\n");
-#endif
         }
         else
         {
             ++nbounced;
-#ifdef debug_output
             db(":success:\n");
-#endif
         }
+#endif
+    }
+
+    void r2local(float *e0, float *e1, float *e2, float *com, float *rg, /**/ float *rl)
+    {
+        float x = rg[X] - com[X];
+        float y = rg[Y] - com[Y];
+        float z = rg[Z] - com[Z];
+        
+        rl[X] = x*e0[X] + y*e0[Y] + z*e0[Z];
+        rl[Y] = x*e1[X] + y*e1[Y] + z*e1[Z];
+        rl[Z] = x*e2[X] + y*e2[Y] + z*e2[Z];
+    }
+
+    void r2global(float *e0, float *e1, float *e2, float *com, float *rl, /**/ float *rg)
+    {
+        rg[X] = com[X] + rl[X] * e0[X] + rl[Y] * e1[X] + rl[Z] * e2[X];
+        rg[Y] = com[X] + rl[X] * e0[Y] + rl[Y] * e1[Y] + rl[Z] * e2[Y];
+        rg[Z] = com[X] + rl[X] * e0[Z] + rl[Y] * e1[Z] + rl[Z] * e2[Z];
+    }
+
+    void v2local(float *e0, float *e1, float *e2, float *vg, /**/ float *vl)
+    {
+        vl[X] = vg[X]*e0[X] + vg[Y]*e0[Y] + vg[Z]*e0[Z];
+        vl[Y] = vg[X]*e1[X] + vg[Y]*e1[Y] + vg[Z]*e1[Z];
+        vl[Z] = vg[X]*e2[X] + vg[Y]*e2[Y] + vg[Z]*e2[Z];
+    }
+
+    void v2global(float *e0, float *e1, float *e2, float *vl, /**/ float *vg)
+    {
+        vg[X] = vl[X] * e0[X] + vl[Y] * e1[X] + vl[Z] * e2[X];
+        vg[Y] = vl[X] * e0[Y] + vl[Y] * e1[Y] + vl[Z] * e2[Y];
+        vg[Z] = vl[X] * e0[Z] + vl[Y] * e1[Z] + vl[Z] * e2[Z];
     }
     
     void bounce(Force *ff, int np, float *cm, float *vcm, float *om, /**/ Particle *pp, float *r_fo, float *r_to)
@@ -330,9 +355,10 @@ namespace solidbounce {
 
 #ifdef debug_output
         fdebug = fopen("debug.txt", "a");
-#endif
+
         if (step % 100 == 0)
         nbounced = nrescued = still_in = failed = 0;
+#endif
         
         for (int ip = 0; ip < np; ++ip)
         {
@@ -358,11 +384,10 @@ namespace solidbounce {
 
             pp[ip] = pn;
         }
-
+#ifdef debug_output
         if ((++step) % 100 == 0)
         printf("%d rescued, %d boounced, %d still in, %d failed\n\n", nrescued, nbounced, still_in, failed);
 
-#ifdef debug_output
         fclose(fdebug);
 #endif
 
