@@ -9,9 +9,9 @@ OPT      ?= -O3 -use_fast_math -g
 slevel   ?= -2
 
 NVCCFLAGS += -arch $(ARCH_VAL) -code $(CODE_VAL)
-LDFLAGS   += -L../cuda-dpd -L../last-bit
-NVCCFLAGS += -I../cuda-dpd -I../last-bit -I.
-LIBS      += -lcuda-dpd -llast-bit -lcudart
+LDFLAGS   += -L../cuda-dpd -L../last-bit -L./bounce-back
+NVCCFLAGS += -I../cuda-dpd -I../last-bit -I./bounce-back -I.
+LIBS      += -lcuda-dpd -llast-bit -lbounce-back -lcudart
 
 OBJS = 	bund.o common.o dpd-forces.o glb.o io.o main.o m.o
 
@@ -30,9 +30,9 @@ endif
 NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel)
 
 # I have some device code in OBJS. I have to link it separatly
-udx:   $(OBJS) libcuda-dpd liblast-bit
+udx:   $(OBJS) libcuda-dpd liblast-bit libbounce-back
 	$(NVCC) $(NVCCFLAGS) $(OPT) -dlink \
-		-L../cuda-dpd -L../last-bit $(OBJS) $(LIBS) -o gpuCode.o
+		-L../cuda-dpd -L../last-bit -L./bounce-back $(OBJS) $(LIBS) -o gpuCode.o
 	$(LINK)  $(LDFLAGS) gpuCode.o $(OBJS) $(LIBS) -o $@
 
 # a rule for the most of *.cu files
@@ -53,8 +53,12 @@ libcuda-dpd:; make -C ../cuda-dpd \
 liblast-bit:; make -C ../last-bit \
 	NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
 
+libbounce-back:; make -C ./bounce-back \
+	NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
+
 clean:  ; rm -f udx *.o
 	make -C ../cuda-dpd clean
 	make -C ../last-bit clean
+	make -C ./bounce-back clean
 
-.PHONY = clean libcuda-dpd liblast-bit
+.PHONY = clean libcuda-dpd liblast-bit libbounce-back

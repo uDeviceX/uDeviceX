@@ -68,7 +68,7 @@
 #include "gsl.impl.h"
 
 #include "solid.impl.h"
-#include "sbounce.impl.h"
+#include "sbounce.h"
 
 #include "k/sim.h"
 #include "sim.decl.h"

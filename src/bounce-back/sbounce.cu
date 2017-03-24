@@ -1,11 +1,13 @@
+#include "sbounce.h"
+#include "../../last-bit/last-bit.h"
+#include <cassert>
+
 namespace solidbounce {
 
 #define X 0
 #define Y 1
 #define Z 2
-    
-    const float eps = 1e-8;
-    
+        
     // from forward Euler
     void rvprev(float *r1, float *v1, float *f0, /**/ float *r0, float *v0)
     {
@@ -34,7 +36,10 @@ namespace solidbounce {
         h1 = c / (a * h0);
         
         if (h0 > h1)
-        std::swap(h0, h1);
+        {
+            float htmp = h1;
+            h1 = h0; h0 = htmp;
+        }
 
         if (h0 >= 0 && h0 <= dt) {*h = h0; return true;}
         if (h1 >= 0 && h1 <= dt) {*h = h1; return true;}
@@ -390,6 +395,5 @@ namespace solidbounce {
 
         fclose(fdebug);
 #endif
-
     }
 }

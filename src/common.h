@@ -3,6 +3,10 @@ const float hydrostatic_a = _hydrostatic_a / rc;
 const float kBT           = _kBT / (rc * rc);
 const int   numberdensity = _numberdensity * (rc * rc * rc);
 
+#include <mpi.h>
+
+#pragma once
+
 /* maximum particle number per one processor for static allocation */
 #define MAX_PART_NUM 1000000
 #define MAX_CELLS_NUM 100000
