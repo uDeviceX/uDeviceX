@@ -4,9 +4,7 @@
 
 namespace solidbounce {
 
-#define X 0
-#define Y 1
-#define Z 2
+    enum {X, Y, Z};
         
     // from forward Euler
     void rvprev(float *r1, float *v1, float *f0, /**/ float *r0, float *v0)
