@@ -32,12 +32,12 @@ Rc : Rc1*t/dt;
 
 x : g(R[X] - Rc[X]); z : g(R[Z] - Rc[Z]);
 
-p : om * t;
+p : -om * (dt-t);
 
 x0 : cos(p) * x - sin(p) * z;
 z0 : sin(p) * x + cos(p) * z;
 
-tt(ex) := expand(taylor(ex, t, 0, 1));
+tt(ex) := expand(taylor(ex, t, dt, 1));
 
 tt(x0);
 

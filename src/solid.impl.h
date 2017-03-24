@@ -280,11 +280,11 @@ void dump(int it, float *com, float *v, float *om, float *to) {
     else       fp = fopen(fname, "a");
     first = false;
 
-    fprintf(fp, "%g ", dt*it);
-    fprintf(fp, "%g %g %g ", com[X], com[Y], com[Z]);
-    fprintf(fp, "%g %g %g ", v[X], v[Y], v[Z]);
-    fprintf(fp, "%g %g %g ", om[X], om[Y], om[Z]);
-    fprintf(fp, "%g %g %g\n", to[X], to[Y], to[Z]);
+    fprintf(fp, "%+.6e ", dt*it);
+    fprintf(fp, "%+.6e %+.6e %+.6e ", com[X], com[Y], com[Z]);
+    fprintf(fp, "%+.6e %+.6e %+.6e ", v[X], v[Y], v[Z]);
+    fprintf(fp, "%+.6e %+.6e %+.6e ", om[X], om[Y], om[Z]);
+    fprintf(fp, "%+.6e %+.6e %+.6e\n", to[X], to[Y], to[Z]);
 
     fclose(fp);
 }
