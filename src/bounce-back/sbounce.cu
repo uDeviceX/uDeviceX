@@ -335,8 +335,8 @@ namespace solidbounce {
     void r2global(float *e0, float *e1, float *e2, float *com, float *rl, /**/ float *rg)
     {
         rg[X] = com[X] + rl[X] * e0[X] + rl[Y] * e1[X] + rl[Z] * e2[X];
-        rg[Y] = com[X] + rl[X] * e0[Y] + rl[Y] * e1[Y] + rl[Z] * e2[Y];
-        rg[Z] = com[X] + rl[X] * e0[Z] + rl[Y] * e1[Z] + rl[Z] * e2[Z];
+        rg[Y] = com[Y] + rl[X] * e0[Y] + rl[Y] * e1[Y] + rl[Z] * e2[Y];
+        rg[Z] = com[Z] + rl[X] * e0[Z] + rl[Y] * e1[Z] + rl[Z] * e2[Z];
     }
 
     void v2local(float *e0, float *e1, float *e2, float *vg, /**/ float *vl)
