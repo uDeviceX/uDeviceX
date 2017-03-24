@@ -143,7 +143,7 @@ void bounce_solid() {
     CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
     CC(cudaMemcpy(s_ff_hst, s_ff, sizeof(Force)    * s_n, D2H));
 
-    solidbounce::bounce(s_ff_hst, s_n, r_com, r_v, r_om, /**/ s_pp_hst, r_f, r_to);
+    solidbounce::bounce(r_e0, r_e1, r_e2, s_ff_hst, s_n, r_com, r_v, r_om, /**/ s_pp_hst, r_f, r_to);
 
     CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
 }

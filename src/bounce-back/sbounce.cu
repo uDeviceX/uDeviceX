@@ -194,15 +194,11 @@ namespace solidbounce {
         rcol[c] = r0[c] + h * v0[c];
     }
 
-    void vsolid(float *cm, float *vcm, float *om, float *r, /**/ float *vs)
+    void vsolid(float *vcm, float *om, float *r, /**/ float *vs)
     {
-        float dr[3] = {r[X] - cm[X],
-                       r[Y] - cm[Y],
-                       r[Z] - cm[Z]};
-
-        vs[X] = vcm[X] + om[Y]*dr[Z] - om[Z]*dr[Y];
-        vs[Y] = vcm[Y] + om[Z]*dr[X] - om[X]*dr[Z];
-        vs[Z] = vcm[Z] + om[X]*dr[Y] - om[Y]*dr[X];
+        vs[X] = vcm[X] + om[Y]*r[Z] - om[Z]*r[Y];
+        vs[Y] = vcm[Y] + om[Z]*r[X] - om[X]*r[Z];
+        vs[Z] = vcm[Z] + om[X]*r[Y] - om[Y]*r[X];
     }
 
     void bounce_particle(float *vs, float *rcol, float *v0, float h, /**/ float *rn, float *vn)
@@ -217,10 +213,10 @@ namespace solidbounce {
         }
     }
 
-    void rescue_particle(float *cm, float *vcm, float *om, /**/ float *r, float *v)
+    void rescue_particle(float *vcm, float *om, /**/ float *r, float *v)
     {
         shape::rescue(/**/ r);
-        //vsolid(cm, vcm, om, r, /**/ v);
+        //vsolid(vcm, om, r, /**/ v);
 
         assert(!shape::inside(r));
     }
@@ -238,22 +234,20 @@ namespace solidbounce {
         dL[Z] = -(rn[X] * vn[Y] - rn[Y] * vn[X] - r1[X] * v1[Y] + r1[Y] * v1[X]) / dt;
     }
 
-    //#define debug_output
+#define debug_output
 #ifdef debug_output
     int nrescued, nbounced, still_in, failed, step = 0;
     FILE * fdebug;
 #endif
     
-    void bounce_part(float *fp, float *cm, float *vcm, float *om, /*o*/ Particle *p1, /*w*/ Particle *p0)
+    void bounce_part_local(float *fp, float *vcm, float *om, /*o*/ Particle *p1, /*w*/ Particle *p0)
     {
         float rcol[3] = {0, 0, 0}, vs[3] = {0, 0, 0};
         float h;
-
+        
         if (!shape::inside(p1->r))
         return;
-        
-        lastbit::Preserver up(p1->v[X]);
-        
+
         /* previous position and velocity                        */
         /* this step should be dependant on the time scheme only */
         
@@ -264,7 +258,7 @@ namespace solidbounce {
 
         if (shape::inside(p0->r))
         {
-            rescue_particle(cm, vcm, om, /**/ p1->r, p1->v);
+            rescue_particle(vcm, om, /**/ p1->r, p1->v);
 #ifdef debug_output
             ++nrescued;
 #endif
@@ -289,7 +283,7 @@ namespace solidbounce {
         
         /* handle collision for particle */
         
-        vsolid(cm, vcm, om, rcol, /**/ vs);
+        vsolid(vcm, om, rcol, /**/ vs);
 
 #ifdef debug_output
 
@@ -351,10 +345,10 @@ namespace solidbounce {
         vg[Z] = vl[X] * e0[Z] + vl[Y] * e1[Z] + vl[Z] * e2[Z];
     }
     
-    void bounce(Force *ff, int np, float *cm, float *vcm, float *om, /**/ Particle *pp, float *r_fo, float *r_to)
+    void bounce(float *e0, float *e1, float *e2, Force *ff, int np, float *cm, float *vcm, float *om, /**/ Particle *pp, float *r_fo, float *r_to)
     {
-        Particle p0, p1, pn;
-        float dF[3], dL[3];
+        Particle p0l, p1, pn, pnl;
+        float dF[3], dL[3], vcml[3], oml[3], fl[3];
 
 #ifdef debug_output
         fdebug = fopen("debug.txt", "a");
@@ -367,18 +361,31 @@ namespace solidbounce {
         {
             p1 = pp[ip];
             pn = p1;
-            
-            bounce_part(ff[ip].f, cm, vcm, om, /*o*/ &pn, /*w*/ &p0);
 
-            /* transfer momentum */
+            lastbit::Preserver up(pp[ip].v[X]);
+                
+            r2local(e0, e1, e2, cm, pn.r, /**/ pnl.r);
+            v2local(e0, e1, e2,     pn.v, /**/ pnl.v);
+                
+            v2local(e0, e1, e2, vcm, /**/ vcml);
+            v2local(e0, e1, e2,  om, /**/  oml);
+                
+            v2local(e0, e1, e2, ff[ip].f, /**/ fl);
             
+            bounce_part_local(fl, vcml, oml, /*o*/ &pnl, /*w*/ &p0l);
+                
+            r2global(e0, e1, e2, cm, pnl.r, /**/ pn.r);
+            v2global(e0, e1, e2,     pnl.v, /**/ pn.v); 
+                
+            /* transfer momentum */
+                
             dF[X] = dF[Y] = dF[Z] = 0;
             dL[X] = dL[Y] = dL[Z] = 0;
-
+                
             lin_mom_solid(p1.v, pn.v, /**/ dF);
-            
+                
             ang_mom_solid(p1.r, pn.r, p1.v, pn.v, /**/ dL);
-
+                
             for (int d = 0; d < 3; ++d)
             {
                 r_fo[d] += dF[d];

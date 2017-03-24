@@ -22,7 +22,7 @@ namespace solidbounce {
     void v2global(float *e0, float *e1, float *e2, float *vl, /**/ float *vg);
 
     
-    void bounce_part(float *fp, float *cm, float *vcm, float *om, /*o*/ Particle *p1, /*w*/ Particle *p0);
+    void bounce_part_local(float *fp, float *vcm, float *om, /*o*/ Particle *p1, /*w*/ Particle *p0);
 
-    void bounce(Force *ff, int np, float *cm, float *vcm, float *om, /**/ Particle *pp, float *r_fo, float *r_to);
+    void bounce(float *e0, float *e1, float *e2, Force *ff, int np, float *cm, float *vcm, float *om, /**/ Particle *pp, float *r_fo, float *r_to);
 }
