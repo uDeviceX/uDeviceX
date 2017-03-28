@@ -7,7 +7,7 @@ namespace solidbounce {
     enum {X, Y, Z};
         
     // from forward Euler
-    void rvprev(float *r1, float *v1, float *f0, /**/ float *r0, float *v0)
+    _DH_ void rvprev(const float *r1, const float *v1, const float *f0, /**/ float *r0, float *v0)
     {
         for (int c = 0; c < 3; ++c)
         {
@@ -20,7 +20,7 @@ namespace solidbounce {
       return true if a root h lies in [0, dt] (output h), false otherwise
       if 2 roots in [0, dt], smallest root h0 is returned (first collision)
     */
-    bool robust_quadratic_roots(float a, float b, float c, /**/ float *h)
+    _DH_ bool robust_quadratic_roots(const float a, const float b, const float c, /**/ float *h)
     {
         float D, h0, h1;
         int sgnb;
@@ -53,12 +53,12 @@ namespace solidbounce {
     {
         #define rsph_bb rsph
 
-        bool inside(float *r)
+        _DH_ bool inside(const float *r)
         {
             return r[X] * r[X] + r[Y] * r[Y] + r[Z] * r[Z] < rsph_bb * rsph_bb;
         }
 
-        bool intersect(float *r0, float *v0, float *om0, /**/ float *h)
+        _DH_ bool intersect(const float *r0, const float *v0, const float *om0, /**/ float *h)
         {
             float r0x = r0[X], r0y = r0[Y], r0z = r0[Z];
             float v0x = v0[X], v0y = v0[Y], v0z = v0[Z];
@@ -71,7 +71,7 @@ namespace solidbounce {
             return robust_quadratic_roots(a, b, c, h);
         }
 
-        void rescue(float *r)
+        _DH_ void rescue(float *r)
         {
             float scale = (rsph_bb + 1e-6) / sqrt(r[X] * r[X] + r[Y] * r[Y] + r[Z] * r[Z]);
 
@@ -89,13 +89,13 @@ namespace solidbounce {
     {   
         #define rcyl_bb rcyl
 
-        bool inside(float *r)
+        _DH_ bool inside(const float *r)
         {
             return r[X] * r[X] + r[Y] * r[Y] < rcyl_bb * rcyl_bb;
         }
 
         /* output h between 0 and dt */
-        bool intersect(float *r0, float *v0, float *om0, /**/ float *h)
+        _DH_ bool intersect(const float *r0, const float *v0, const float *om0, /**/ float *h)
         {
             float r0x = r0[X], r0y = r0[Y];
             float v0x = v0[X], v0y = v0[Y];
@@ -109,7 +109,7 @@ namespace solidbounce {
             return robust_quadratic_roots(a, b, c, h);
         }
 
-        void rescue(float *r)
+        _DH_ void rescue(float *r)
         {
             float scale = (rcyl_bb + 1e-6) / sqrt(r[X] * r[X] + r[Y] * r[Y]);
 
@@ -129,7 +129,7 @@ namespace solidbounce {
 #define a2_bb a2_ellipse 
 #define b2_bb b2_ellipse
 
-        bool inside(float *r)
+        _DH_ bool inside(const float *r)
         {
             const float x = r[X];
             const float y = r[Y];
@@ -139,7 +139,7 @@ namespace solidbounce {
         
         /* output h between 0 and dt */
         // for now: assume vcm = 0
-        bool intersect(float *r0, float *v0, float *om0, /**/ float *h)
+        _DH_ bool intersect(const float *r0, const float *v0, const float *om0, /**/ float *h)
         {
             const float r0x = r0[X], r0y = r0[Y];
             const float v0x = v0[X], v0y = v0[Y];
@@ -161,7 +161,7 @@ namespace solidbounce {
             return robust_quadratic_roots(a, b, c, h);
         }
 
-        void rescue(float *r) // cheap rescue
+        _DH_ void rescue(float *r) // cheap rescue
         {
             float scale = (1 + 1e-6) / sqrt(r[X] * r[X] / a2_bb + r[Y] * r[Y] / b2_bb);
 
@@ -175,7 +175,7 @@ namespace solidbounce {
 #define shape none
     namespace none
     {
-        bool inside(float *r)
+        _DH_ bool inside(const float *r)
         {
             printf("solidbounce: not implemented\n");
             exit(1);
@@ -183,7 +183,7 @@ namespace solidbounce {
             return false;
         }
 
-        bool intersect(float *r0, float *v0, float *om0, /**/ float *h)
+        _DH_ bool intersect(const float *r0, const float *v0, const float *om0, /**/ float *h)
         {
             printf("solidbounce: not implemented\n");
             exit(1);
@@ -191,7 +191,7 @@ namespace solidbounce {
             return false;
         }
 
-        void rescue(float *r)
+        _DH_ void rescue(float *r)
         {
             printf("solidbounce: not implemented\n");
             exit(1);
@@ -200,7 +200,7 @@ namespace solidbounce {
     
 #endif
 
-    bool inside_prev(float *r, float *om0)
+    _DH_ bool inside_prev(const float *r, const float *om0)
     {
         float rl[3] = {r[X] + dt * (om0[Y] * r[Z] - om0[Z] * r[Y]),
                        r[Y] + dt * (om0[Z] * r[X] - om0[X] * r[Z]),
@@ -210,20 +210,20 @@ namespace solidbounce {
     }
 
     
-    void collision_point(float *r0, float *v0, float h, /**/ float *rcol)
+    _DH_ void collision_point(const float *r0, const float *v0, const float h, /**/ float *rcol)
     {
         for (int c = 0; c < 3; ++c)
         rcol[c] = r0[c] + h * v0[c];
     }
 
-    void vsolid(float *vcm, float *om, float *r, /**/ float *vs)
+    _DH_ void vsolid(const float *vcm, const float *om, const float *r, /**/ float *vs)
     {
         vs[X] = vcm[X] + om[Y]*r[Z] - om[Z]*r[Y];
         vs[Y] = vcm[Y] + om[Z]*r[X] - om[X]*r[Z];
         vs[Z] = vcm[Z] + om[X]*r[Y] - om[Y]*r[X];
     }
 
-    void bounce_particle(float *vs, float *rcol, float *v0, float h, /**/ float *rn, float *vn)
+    _DH_ void bounce_particle(const float *vs, const float *rcol, const float *v0, const float h, /**/ float *rn, float *vn)
     {
         assert(h >= 0);
         assert(h <= dt);
@@ -235,7 +235,7 @@ namespace solidbounce {
         }
     }
 
-    void rescue_particle(float *vcm, float *om, /**/ float *r, float *v)
+    _DH_ void rescue_particle(const float *vcm, const float *om, /**/ float *r, float *v)
     {
         shape::rescue(/**/ r);
         //vsolid(vcm, om, r, /**/ v);
@@ -243,13 +243,13 @@ namespace solidbounce {
         assert(!shape::inside(r));
     }
 
-    void lin_mom_solid(float *v1, float *vn, /**/ float *dF)
+    _DH_ void lin_mom_solid(const float *v1, const float *vn, /**/ float *dF)
     {
         for (int c = 0; c < 3; ++c)
         dF[c] = -(vn[c] - v1[c]) / dt;
     }
 
-    void ang_mom_solid(float *r1, float *rn, float *v1, float *vn, /**/ float *dL)
+    _DH_ void ang_mom_solid(const float *r1, const float *rn, const float *v1, const float *vn, /**/ float *dL)
     {
         dL[X] = -(rn[Y] * vn[Z] - rn[Z] * vn[Y] - r1[Y] * v1[Z] + r1[Z] * v1[Y]) / dt;
         dL[Y] = -(rn[Z] * vn[X] - rn[X] * vn[Z] - r1[Z] * v1[X] + r1[X] * v1[Z]) / dt;
@@ -262,7 +262,7 @@ namespace solidbounce {
     FILE * fdebug;
 #endif
     
-    void bounce_part_local(float *fp, float *vcm, float *om, /*o*/ Particle *p1, /*w*/ Particle *p0)
+    __host__ void bounce_part_local(const float *fp, const float *vcm, const float *om, /*o*/ Particle *p1, /*w*/ Particle *p0)
     {
         float rcol[3] = {0, 0, 0}, vs[3] = {0, 0, 0};
         float h;
@@ -335,7 +335,48 @@ namespace solidbounce {
 #endif
     }
 
-    void r2local(float *e0, float *e1, float *e2, float *com, float *rg, /**/ float *rl)
+    _DH_ void bb_part_local(const float *fp, const float *vcm, const float *om, /*o*/ Particle *p1, /*w*/ Particle *p0)
+    {
+        float rcol[3] = {0, 0, 0}, vs[3] = {0, 0, 0};
+        float h;
+        
+        if (!shape::inside(p1->r))
+        return;
+
+        /* previous position and velocity                        */
+        /* this step should be dependant on the time scheme only */
+        
+        rvprev(p1->r, p1->v, fp, /**/ p0->r, p0->v);
+
+        /* rescue particles which were already in the solid   */
+        /* put them back on the surface with surface velocity */
+
+        if (inside_prev(p0->r, om))
+        {
+            rescue_particle(vcm, om, /**/ p1->r, p1->v);
+            return;
+        }
+        
+        /* find collision point */
+        
+        if (!shape::intersect(p0->r, p0->v, om, /**/ &h))
+        {
+            return;
+        }
+        
+        assert(h >= 0 );
+        assert(h <= dt);
+        
+        collision_point(p0->r, p0->v, h, /**/ rcol);
+        
+        /* handle collision for particle */
+        
+        vsolid(vcm, om, rcol, /**/ vs);
+
+        bounce_particle(vs, rcol, p0->v, h, /**/ p1->r, p1->v);
+    }
+    
+    _DH_ void r2local (const float *e0, const float *e1, const float *e2, const float *com, const float *rg, /**/ float *rl)
     {
         float x = rg[X] - com[X];
         float y = rg[Y] - com[Y];
@@ -346,28 +387,28 @@ namespace solidbounce {
         rl[Z] = x*e2[X] + y*e2[Y] + z*e2[Z];
     }
 
-    void r2global(float *e0, float *e1, float *e2, float *com, float *rl, /**/ float *rg)
+    _DH_ void r2global(const float *e0, const float *e1, const float *e2, const float *com, const float *rl, /**/ float *rg)
     {
         rg[X] = com[X] + rl[X] * e0[X] + rl[Y] * e1[X] + rl[Z] * e2[X];
         rg[Y] = com[Y] + rl[X] * e0[Y] + rl[Y] * e1[Y] + rl[Z] * e2[Y];
         rg[Z] = com[Z] + rl[X] * e0[Z] + rl[Y] * e1[Z] + rl[Z] * e2[Z];
     }
 
-    void v2local(float *e0, float *e1, float *e2, float *vg, /**/ float *vl)
+    _DH_ void v2local (const float *e0, const float *e1, const float *e2, const float *vg, /**/ float *vl)
     {
         vl[X] = vg[X]*e0[X] + vg[Y]*e0[Y] + vg[Z]*e0[Z];
         vl[Y] = vg[X]*e1[X] + vg[Y]*e1[Y] + vg[Z]*e1[Z];
         vl[Z] = vg[X]*e2[X] + vg[Y]*e2[Y] + vg[Z]*e2[Z];
     }
 
-    void v2global(float *e0, float *e1, float *e2, float *vl, /**/ float *vg)
+    _DH_ void v2global(const float *e0, const float *e1, const float *e2, const float *vl, /**/ float *vg)
     {
         vg[X] = vl[X] * e0[X] + vl[Y] * e1[X] + vl[Z] * e2[X];
         vg[Y] = vl[X] * e0[Y] + vl[Y] * e1[Y] + vl[Z] * e2[Y];
         vg[Z] = vl[X] * e0[Z] + vl[Y] * e1[Z] + vl[Z] * e2[Z];
     }
     
-    void bounce(float *e0, float *e1, float *e2, Force *ff, int np, float *cm, float *vcm, float *om, /**/ Particle *pp, float *r_fo, float *r_to)
+    void bounce(const Force *ff, const int np, /**/ Particle *pp, Solid *shst)
     {
         Particle p0l, p1, pn, pnl;
         float dF[3], dL[3], vcml[3], oml[3], fl[3];
@@ -386,18 +427,18 @@ namespace solidbounce {
 
             lastbit::Preserver up(pp[ip].v[X]);
                 
-            r2local(e0, e1, e2, cm, pn.r, /**/ pnl.r);
-            v2local(e0, e1, e2,     pn.v, /**/ pnl.v);
+            r2local(shst->e0, shst->e1, shst->e2, shst->com, pn.r, /**/ pnl.r);
+            v2local(shst->e0, shst->e1, shst->e2,            pn.v, /**/ pnl.v);
                 
-            v2local(e0, e1, e2, vcm, /**/ vcml);
-            v2local(e0, e1, e2,  om, /**/  oml);
+            v2local(shst->e0, shst->e1, shst->e2,  shst->v, /**/ vcml);
+            v2local(shst->e0, shst->e1, shst->e2, shst->om, /**/  oml);
                 
-            v2local(e0, e1, e2, ff[ip].f, /**/ fl);
+            v2local(shst->e0, shst->e1, shst->e2, ff[ip].f, /**/ fl);
             
             bounce_part_local(fl, vcml, oml, /*o*/ &pnl, /*w*/ &p0l);
                 
-            r2global(e0, e1, e2, cm, pnl.r, /**/ pn.r);
-            v2global(e0, e1, e2,     pnl.v, /**/ pn.v); 
+            r2global(shst->e0, shst->e1, shst->e2, shst->com, pnl.r, /**/ pn.r);
+            v2global(shst->e0, shst->e1, shst->e2,            pnl.v, /**/ pn.v); 
             
             /* transfer momentum */
             
@@ -410,8 +451,8 @@ namespace solidbounce {
                 
             for (int d = 0; d < 3; ++d)
             {
-                r_fo[d] += dF[d];
-                r_to[d] += dL[d];
+                shst->fo[d] += dF[d];
+                shst->to[d] += dL[d];
             }
 
             pp[ip] = pn;
@@ -422,5 +463,78 @@ namespace solidbounce {
 
         fclose(fdebug);
 #endif
+    }
+
+    __device__ void warpReduceSumf3(float *x)
+    {
+        for (int offset = warpSize>>1; offset > 0; offset >>= 1)
+        {
+            x[X] += __shfl_down(x[X], offset);
+            x[Y] += __shfl_down(x[Y], offset);
+            x[Z] += __shfl_down(x[Z], offset);
+        }
+    }
+
+    __global__ void bounce_kernel(const Force *ff, const int np, /**/ Particle *pp, Solid *sdev)
+    {
+        const int pid = threadIdx.x + blockDim.x * blockIdx.x;
+
+        float dF[3], dL[3];
+
+        if (pid < np)
+        {
+            Particle p0l, p1, pn, pnl;
+            float vcml[3], oml[3], fl[3];
+            
+            p1 = pp[pid];
+            pn = p1;
+            
+            lastbit::Preserver up(pp[pid].v[X]);
+            
+            r2local(sdev->e0, sdev->e1, sdev->e2, sdev->com, pn.r, /**/ pnl.r);
+            v2local(sdev->e0, sdev->e1, sdev->e2,            pn.v, /**/ pnl.v);
+        
+            v2local(sdev->e0, sdev->e1, sdev->e2,  sdev->v, /**/ vcml);
+            v2local(sdev->e0, sdev->e1, sdev->e2, sdev->om, /**/  oml);
+        
+            v2local(sdev->e0, sdev->e1, sdev->e2, ff[pid].f, /**/ fl);
+        
+            bb_part_local(fl, vcml, oml, /*o*/ &pnl, /*w*/ &p0l);
+        
+            r2global(sdev->e0, sdev->e1, sdev->e2, sdev->com, pnl.r, /**/ pn.r);
+            v2global(sdev->e0, sdev->e1, sdev->e2,            pnl.v, /**/ pn.v); 
+        
+            /* transfer momentum */
+        
+            dF[X] = dF[Y] = dF[Z] = 0;
+            dL[X] = dL[Y] = dL[Z] = 0;
+        
+            lin_mom_solid(p1.v, pn.v, /**/ dF);
+        
+            ang_mom_solid(p1.r, pn.r, p1.v, pn.v, /**/ dL);
+            
+            pp[pid] = pn;
+        }
+
+        /* momentum reduction */
+        
+        warpReduceSumf3(dF);
+        warpReduceSumf3(dL);
+
+        if (threadIdx.x & (warpSize - 1) == 0)
+        {
+            atomicAdd(sdev->fo + X, dF[X]);
+            atomicAdd(sdev->fo + Y, dF[Y]);
+            atomicAdd(sdev->fo + Z, dF[Z]);
+
+            atomicAdd(sdev->to + X, dL[X]);
+            atomicAdd(sdev->to + Y, dL[Y]);
+            atomicAdd(sdev->to + Z, dL[Z]);
+        }
+    }
+
+    void bounce_nohost(const Force *ff, const int np, /**/ Particle *pp, Solid *sdev)
+    {
+        bounce_kernel <<<k_cnf(np)>>> (ff, np, /**/ pp, sdev);
     }
 }
