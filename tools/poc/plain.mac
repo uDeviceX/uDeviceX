@@ -2,7 +2,7 @@
 
 load("format")$
 load("cgrind")$
-alias(c, cgrind);
+alias(cg, cgrind);
 
 /* make a vector */
 mv(P)::=buildq([l: P,
@@ -12,9 +12,10 @@ mv(P)::=buildq([l: P,
 mv(R0)$ mv(R1)$ /* Initial and final positions of a point */
 R : R0*(1-t) + R1*t; /* Point at time t */
 
+mv(P)$ /* any point on the wall */
 mv(n)$ /* normal */
 
-eq: R . [nx, ny, nz] $
+eq: (R - P). [nx, ny, nz] $
 eq: format(eq, %poly(t)) $
 
 so: linsolve(eq, t)$
