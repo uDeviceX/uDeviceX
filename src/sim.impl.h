@@ -119,14 +119,28 @@ void body_force(float driving_force) {
 }
 
 void update_solid() {
+#if 0 // Host only
+    
     CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
     CC(cudaMemcpy(r_ff_hst, r_ff, sizeof(Force) * r_n, D2H));
     
-    solid::update(r_ff_hst, r_rr0, r_n, /**/ r_pp_hst, &solid_hst);
+    solid::update(r_ff_hst, r_rr0_hst, r_n, /**/ r_pp_hst, &solid_hst);
 
     solid::reinit_f_to(/**/ solid_hst.fo, solid_hst.to);
     
     CC(cudaMemcpy(r_pp, r_pp_hst, sizeof(Particle) * r_n, H2D));
+    
+#else
+
+    CC(cudaMemcpy(solid_dev, &solid_hst, sizeof(Solid), H2D));
+    
+    solid::update_nohost(r_ff, r_rr0, r_n, /**/ r_pp, solid_dev);
+
+    k_solid::reinit_ft <<<1, 1>>> (solid_dev->fo, solid_dev->to);
+
+    CC(cudaMemcpy(&solid_hst, solid_dev, sizeof(Solid), D2H));
+    
+#endif
 }
 
 void update_r() {
@@ -143,12 +157,20 @@ void bounce() {
 }
 
 void bounce_solid() {
+#if 0 // Host only
     CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
     CC(cudaMemcpy(s_ff_hst, s_ff, sizeof(Force)    * s_n, D2H));
 
     solidbounce::bounce(s_ff_hst, s_n, /**/ s_pp_hst, &solid_hst);
 
     CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
+#else
+
+    solidbounce::bounce_nohost(s_ff, s_n, /**/ s_pp, solid_dev);
+
+    CC(cudaMemcpy(&solid_hst, solid_dev, sizeof(Solid), D2H));
+    
+#endif
 }
 
 void init_r() {
@@ -172,7 +194,10 @@ void init_r() {
 
   solid_hst.mass = rbc_mass;
   
-  solid::init(r_pp_hst, r_n, solid_hst.mass, /**/ r_rr0, solid_hst.Iinv, solid_hst.com, solid_hst.e0, solid_hst.e1, solid_hst.e2, solid_hst.v, solid_hst.om);
+  solid::init(r_pp_hst, r_n, solid_hst.mass, /**/ r_rr0_hst, solid_hst.Iinv, solid_hst.com, solid_hst.e0, solid_hst.e1, solid_hst.e2, solid_hst.v, solid_hst.om);
+
+  CC(cudaMemcpy(solid_dev, &solid_hst, sizeof(Solid), H2D));
+  CC(cudaMemcpy(r_rr0, r_rr0_hst, 3 * r_n * sizeof(float), H2D));
 
   solid::reinit_f_to(/**/ solid_hst.fo, solid_hst.to);
   
@@ -196,6 +221,7 @@ void init() {
   mpDeviceMalloc(&s_pp); mpDeviceMalloc(&s_pp0);
   mpDeviceMalloc(&s_ff);
   mpDeviceMalloc(&r_ff); mpDeviceMalloc(&r_ff);
+  mpDeviceMalloc(&r_rr0);
 
   s_n = ic::gen(s_pp_hst);
   CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
@@ -279,6 +305,7 @@ void close() {
   CC(cudaFree(r_pp )); CC(cudaFree(r_ff ));
   CC(cudaFree(s_pp )); CC(cudaFree(s_ff ));
   CC(cudaFree(s_pp0));
+  CC(cudaFree(r_rr0));
 
   CC(cudaFree(solid_dev));
 }

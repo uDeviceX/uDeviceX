@@ -143,7 +143,7 @@ namespace k_solid
         const int gid = blockIdx.x * blockDim.x + threadIdx.x;
 
         Force    f = {0, 0, 0};
-        Particle p;
+        Particle p = {0, 0, 0, 0, 0, 0};
 
         if (gid < n)
         {
@@ -162,7 +162,7 @@ namespace k_solid
         warpReduceSumf3(f.f);
         warpReduceSumf3(to);
 
-        if (threadIdx.x & (warpSize - 1) == 0)
+        if ((threadIdx.x & (warpSize - 1)) == 0)
         {
             atomicAdd(&ftot[X], f.f[X]);
             atomicAdd(&ftot[Y], f.f[Y]);

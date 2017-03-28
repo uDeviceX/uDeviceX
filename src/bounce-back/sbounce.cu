@@ -521,7 +521,7 @@ namespace solidbounce {
         warpReduceSumf3(dF);
         warpReduceSumf3(dL);
 
-        if (threadIdx.x & (warpSize - 1) == 0)
+        if ((threadIdx.x & (warpSize - 1)) == 0)
         {
             atomicAdd(sdev->fo + X, dF[X]);
             atomicAdd(sdev->fo + Y, dF[Y]);

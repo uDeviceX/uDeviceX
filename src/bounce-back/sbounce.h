@@ -29,4 +29,6 @@ namespace solidbounce {
     _DH_ void bb_part_local(const float *fp, const float *vcm, const float *om, /*o*/ Particle *p1, /*w*/ Particle *p0);
     
     void bounce(const Force *ff, const int np, /**/ Particle *pp, Solid *shst);
+
+    void bounce_nohost(const Force *ff, const int np, /**/ Particle *pp, Solid *sdev);
 }

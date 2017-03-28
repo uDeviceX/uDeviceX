@@ -154,7 +154,7 @@ namespace solid {
         to[X] = to[Y] = to[Z] = 0;
     }
 
-    void update(Force *ff, float *rr0, int n, /**/ Particle *pp, Solid * shst)
+    void update(Force *ff, float *rr0, int n, /**/ Particle *pp, Solid *shst)
     {
         /* clear velocity */
         for (int ip = 0; ip < n; ++ip) {
@@ -186,20 +186,20 @@ namespace solid {
         update_r(rr0, n, shst->com, shst->e0, shst->e1, shst->e2, /**/ pp);
     }
 
-    void update_nohost(const Force *ff, const float *rr0, const int n, const float mass, Particle *pp,
-                       const float *Iinv, float *com, float *e0, float *e1, float *e2, float *v, float *om, float *f, float *to)
+    void update_nohost(const Force *ff, const float *rr0, const int n, /**/ Particle *pp, Solid *sdev)
     {
-        k_solid::add_f_to <<<k_cnf(n)>>> (pp, ff, n, com, /**/ f, to);
+        k_solid::add_f_to <<<k_cnf(n)>>> (pp, ff, n, sdev->com, /**/ sdev->fo, sdev->to);
 
-        k_solid::update_om_v <<<1, 1>>> (mass, Iinv, f, to, /**/ om, v);
+        //TODO mass
+        k_solid::update_om_v <<<1, 1>>> (rbc_mass, sdev->Iinv, sdev->fo, sdev->to, /**/ sdev->om, sdev->v);
 
-        k_solid::compute_velocity <<<k_cnf(n)>>> (v, com, om, n, /**/ pp);
+        k_solid::compute_velocity <<<k_cnf(n)>>> (sdev->v, sdev->com, sdev->om, n, /**/ pp);
         
-        if (!pin_com) k_solid::update_com <<<1, 1>>> (v, /**/ com);
+        if (!pin_com) k_solid::update_com <<<1, 1>>> (sdev->v, /**/ sdev->com);
 
-        k_solid::rot_referential <<<1, 1>>> (om, /**/ e0, e1, e2);
+        k_solid::rot_referential <<<1, 1>>> (sdev->om, /**/ sdev->e0, sdev->e1, sdev->e2);
 
-        k_solid::update_r <<<k_cnf(n)>>> (rr0, n, com, e0, e1, e2, /**/ pp);
+        k_solid::update_r <<<k_cnf(n)>>> (rr0, n, sdev->com, sdev->e0, sdev->e1, sdev->e2, /**/ pp);
     }
 
     void dump(const int it, const float *com, const float *v, const float *om, const float *to) {
