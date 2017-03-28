@@ -32,7 +32,7 @@
 #
 
 #### Double poiseuille pinned cylinder
-# TEST: solid.t3
+# sTEST: solid.t3
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt debug.txt
@@ -65,7 +65,7 @@
 # avg_h5.m h5/flowfields-0001.h5 | fround.awk -v tol=1 > h5.out.txt
 
 #### Double poiseuille pinned ellipse
-# sTEST: solid.t5
+# TEST: solid.t5
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt debug.txt
