@@ -76,6 +76,15 @@ struct Particle {
   }
 };
 
+struct Solid {
+    float mass,               /* total mass of solid         */
+        Iinv[6],              /* moment of inertia           */
+        com[3],               /* [c]enter [o]f [m]ass        */
+        v[3], om[3],          /* linear and angular velocity */
+        e0[3], e1[3], e2[3],  /* local referential           */
+        fo[3], to[3];         /* force, torque               */
+};
+
 template <typename T>
 void mpDeviceMalloc(T **D) { /* a "[m]ax [p]article number" device
 			       allocation (takes a pointer to

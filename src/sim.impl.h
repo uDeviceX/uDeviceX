@@ -122,10 +122,9 @@ void update_solid() {
     CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
     CC(cudaMemcpy(r_ff_hst, r_ff, sizeof(Force) * r_n, D2H));
     
-    solid::update(r_ff_hst, r_rr0, r_n, r_mass,
-		r_pp_hst, /**/ r_Iinv, r_com, r_e0, r_e1, r_e2, r_v, r_om, r_f, r_to);
+    solid::update(r_ff_hst, r_rr0, r_n, /**/ r_pp_hst, &solid_hst);
 
-    solid::reinit_f_to(/**/ r_f, r_to);
+    solid::reinit_f_to(/**/ solid_hst.fo, solid_hst.to);
     
     CC(cudaMemcpy(r_pp, r_pp_hst, sizeof(Particle) * r_n, H2D));
 }
@@ -147,7 +146,8 @@ void bounce_solid() {
     CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
     CC(cudaMemcpy(s_ff_hst, s_ff, sizeof(Force)    * s_n, D2H));
 
-    solidbounce::bounce(r_e0, r_e1, r_e2, s_ff_hst, s_n, r_com, r_v, r_om, /**/ s_pp_hst, r_f, r_to);
+    solidbounce::bounce(solid_hst.e0, solid_hst.e1, solid_hst.e2, s_ff_hst, s_n, solid_hst.com, solid_hst.v, solid_hst.om,
+                        /**/ s_pp_hst, solid_hst.fo, solid_hst.to);
 
     CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
 }
@@ -158,6 +158,7 @@ void init_r() {
   int ip, is, ir;
 
   CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
+  
   for (ip = is = ir = 0; ip < s_n; ++ip) {
     Particle p = s_pp_hst[ip]; float *r0 = p.r;
     if (solid::inside(r0[X], r0[Y], r0[Z])) r_pp_hst[ir++] = p;
@@ -169,9 +170,12 @@ void init_r() {
     float *v0 = r_pp_hst[ip].v;
     lastbit::set(v0[0], true);
   }
-  solid::init(r_pp_hst, r_n, r_mass, /**/ r_rr0, r_Iinv, r_com, r_e0, r_e1, r_e2, r_v, r_om);
 
-  solid::reinit_f_to(/**/ r_f, r_to);
+  solid_hst.mass = rbc_mass;
+  
+  solid::init(r_pp_hst, r_n, solid_hst.mass, /**/ r_rr0, solid_hst.Iinv, solid_hst.com, solid_hst.e0, solid_hst.e1, solid_hst.e2, solid_hst.v, solid_hst.om);
+
+  solid::reinit_f_to(/**/ solid_hst.fo, solid_hst.to);
   
   CC(cudaMemcpy(r_pp, r_pp_hst, sizeof(Particle) * r_n, H2D));
   CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
@@ -201,13 +205,15 @@ void init() {
 
   dump_field = new H5FieldDump;
 
+  CC(cudaMalloc(&solid_dev, sizeof(Solid)));
+  
   MC(MPI_Barrier(m::cart));
 }
 
 void dumps_diags(int it) {
   if (it % steps_per_dump == 0)     in_out();
   if (it % steps_per_dump == 0)     dump_part();
-  if (it % steps_per_dump == 0)     solid::dump(it, r_com, r_v, r_om, r_to);
+  if (it % steps_per_dump == 0)     solid::dump(it, solid_hst.com, solid_hst.v, solid_hst.om, solid_hst.to);
   if (it % steps_per_hdf5dump == 0) dump_grid();
   if (it % steps_per_dump == 0)     diag(it);
 }
@@ -274,6 +280,8 @@ void close() {
   CC(cudaFree(r_pp )); CC(cudaFree(r_ff ));
   CC(cudaFree(s_pp )); CC(cudaFree(s_ff ));
   CC(cudaFree(s_pp0));
+
+  CC(cudaFree(solid_dev));
 }
 #undef X
 #undef Y

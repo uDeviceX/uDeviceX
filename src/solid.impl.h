@@ -154,10 +154,8 @@ namespace solid {
         to[X] = to[Y] = to[Z] = 0;
     }
 
-    void update(Force *ff, float *rr0, int n, float mass,
-                Particle *pp,
-                /**/ float *Iinv, float *com, float *e0, float *e1, float *e2,
-                float *v, float *om, float *f, float *to) {
+    void update(Force *ff, float *rr0, int n, /**/ Particle *pp, Solid * shst)
+    {
         /* clear velocity */
         for (int ip = 0; ip < n; ++ip) {
             float *v0 = pp[ip].v;
@@ -165,23 +163,27 @@ namespace solid {
             v0[X] = v0[Y] = v0[Z] = 0;
         }
 
-        add_f(ff, n, /**/ f);
-        add_to(pp, ff, n, com, /**/ to);
+        add_f(ff, n, /**/ shst->fo);
+        add_to(pp, ff, n, shst->com, /**/ shst->to);
 
-        update_v(mass, f, n, /**/ v);
-        update_om(Iinv, to, /**/ om);
+        update_v(shst->mass, shst->fo, n, /**/ shst->v);
+        update_om(shst->Iinv, shst->to, /**/ shst->om);
 
-        if (pin_axis) constrain_om(/**/ om);
+        if (pin_axis) constrain_om(/**/ shst->om);
     
-        if (!pin_com) add_v(v, n, /**/ pp);
-        add_om(com, om, n, /**/ pp);
+        if (!pin_com) add_v(shst->v, n, /**/ pp);
+        add_om(shst->com, shst->om, n, /**/ pp);
 
-        if (pin_com) v[X] = v[Y] = v[Z] = 0;
+        if (pin_com) shst->v[X] = shst->v[Y] = shst->v[Z] = 0;
 
-        if (!pin_com) update_com(v, /**/ com);
-        k_solid::rot_e(om, /**/ e0); k_solid::rot_e(om, /**/ e1); k_solid::rot_e(om, /**/ e2); k_solid::gram_schmidt(/**/ e0, e1, e2);
+        if (!pin_com) update_com(shst->v, /**/ shst->com);
 
-        update_r(rr0, n, com, e0, e1, e2, /**/ pp);
+        k_solid::rot_e(shst->om, /**/ shst->e0);
+        k_solid::rot_e(shst->om, /**/ shst->e1);
+        k_solid::rot_e(shst->om, /**/ shst->e2);
+        k_solid::gram_schmidt(/**/ shst->e0, shst->e1, shst->e2);
+
+        update_r(rr0, n, shst->com, shst->e0, shst->e1, shst->e2, /**/ pp);
     }
 
     void update_nohost(const Force *ff, const float *rr0, const int n, const float mass, Particle *pp,
@@ -210,9 +212,9 @@ namespace solid {
 
         fprintf(fp, "%+.6e ", dt*it);
         fprintf(fp, "%+.6e %+.6e %+.6e ", com[X], com[Y], com[Z]);
-        fprintf(fp, "%+.6e %+.6e %+.6e ", v[X], v[Y], v[Z]);
-        fprintf(fp, "%+.6e %+.6e %+.6e ", om[X], om[Y], om[Z]);
-        fprintf(fp, "%+.6e %+.6e %+.6e\n", to[X], to[Y], to[Z]);
+        fprintf(fp, "%+.6e %+.6e %+.6e ",   v[X],   v[Y],   v[Z]);
+        fprintf(fp, "%+.6e %+.6e %+.6e ",  om[X],  om[Y],  om[Z]);
+        fprintf(fp, "%+.6e %+.6e %+.6e\n", to[X],  to[Y],  to[Z]);
 
         fclose(fp);
     }
