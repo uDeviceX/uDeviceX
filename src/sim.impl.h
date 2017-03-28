@@ -1,5 +1,9 @@
 namespace sim {
 
+#define X 0
+#define Y 1
+#define Z 2
+    
 static void distr_s() {
   sdstr::pack(s_pp, s_n);
   sdstr::send();
@@ -271,4 +275,7 @@ void close() {
   CC(cudaFree(s_pp )); CC(cudaFree(s_ff ));
   CC(cudaFree(s_pp0));
 }
+#undef X
+#undef Y
+#undef Z
 }
