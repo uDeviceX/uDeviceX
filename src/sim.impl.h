@@ -1,5 +1,7 @@
 namespace sim {
 
+#define NOHOST_SOLID
+    
 #define X 0
 #define Y 1
 #define Z 2
@@ -119,7 +121,7 @@ void body_force(float driving_force) {
 }
 
 void update_solid() {
-#if 0 // Host only
+#ifndef NOHOST_SOLID
     
     CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
     CC(cudaMemcpy(r_ff_hst, r_ff, sizeof(Force) * r_n, D2H));
@@ -132,7 +134,7 @@ void update_solid() {
     
 #else
 
-    CC(cudaMemcpy(solid_dev, &solid_hst, sizeof(Solid), H2D));
+    //CC(cudaMemcpy(solid_dev, &solid_hst, sizeof(Solid), H2D));
     
     solid::update_nohost(r_ff, r_rr0, r_n, /**/ r_pp, solid_dev);
 
@@ -157,7 +159,7 @@ void bounce() {
 }
 
 void bounce_solid() {
-#if 0 // Host only
+#ifndef NOHOST_SOLID
     CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
     CC(cudaMemcpy(s_ff_hst, s_ff, sizeof(Force)    * s_n, D2H));
 
