@@ -1,5 +1,6 @@
 #### pinned sphere, only bb and momentum conservation
 #### No DPD forces
+#### Note: must modify ic.impl.h manually
 # TEST: solidbb.t1
 # set -x
 # export PATH=../tools:$PATH
@@ -21,6 +22,7 @@
 
 #### pinned ellipse, only bb ans momentum conservation
 #### No DPD forces
+#### Note: must modify ic.impl.h manually
 # sTEST: solidbb.t2
 # set -x
 # export PATH=../tools:$PATH

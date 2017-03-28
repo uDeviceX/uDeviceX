@@ -398,9 +398,9 @@ namespace solidbounce {
                 
             r2global(e0, e1, e2, cm, pnl.r, /**/ pn.r);
             v2global(e0, e1, e2,     pnl.v, /**/ pn.v); 
-                
+            
             /* transfer momentum */
-                
+            
             dF[X] = dF[Y] = dF[Z] = 0;
             dL[X] = dL[Y] = dL[Z] = 0;
                 
