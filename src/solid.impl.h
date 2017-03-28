@@ -1,3 +1,5 @@
+#include "k/solid.h"
+
 namespace solid {
 
 #define X 0
@@ -15,99 +17,8 @@ namespace solid {
 #define ZY YZ
 
     
-    float dot(float *v, float *u) {
-        return v[X]*u[X] + v[Y]*u[Y] + v[Z]*u[Z];
-    }
-
-    void reject(/**/ float *v, float *u) {
-        float d = dot(v, u);
-        v[X] -= d*u[X]; v[Y] -= d*u[Y]; v[Z] -= d*u[Z];
-    }
-
-    float norm(float *v) {
-        return sqrt(v[X]*v[X]+v[Y]*v[Y]+v[Z]*v[Z]);
-    }
-
-    void normalize(/**/ float *v) {
-        float nrm = norm(v);
-        v[X] /= nrm; v[Y] /= nrm; v[Z] /= nrm;
-    }
-
-    void gram_schmidt(/**/ float *e0, float *e1, float *e2) {
-        normalize(e0);
-
-        reject(e1, e0);
-        normalize(e1);
-
-        reject(e2, e0);
-        reject(e2, e1);
-        normalize(e2);
-    }
-
-    void rot_e(float *om, /**/ float *e) {
-        float omx = om[X], omy = om[Y], omz = om[Z];
-        float ex = e[X], ey = e[Y], ez = e[Z];
-        float vx, vy, vz;
-        vx = omy*ez - omz*ey;
-        vy = omz*ex - omx*ez;
-        vz = omx*ey - omy*ex;
-        e[X] += vx*dt; e[Y] += vy*dt; e[Z] += vz*dt;
-    }
-
-    /* wrap COM to the domain; TODO: many processes */
-    void pbc_solid(/**/ float *com) {
-        float lo[3] = {-0.5*XS, -0.5*YS, -0.5*ZS};
-        float hi[3] = { 0.5*XS,  0.5*YS,  0.5*ZS};
-        float L[3] = {XS, YS, ZS};
-        for (int c = 0; c < 3; ++c) {
-            while (com[c] <  lo[c]) com[c] += L[c];
-            while (com[c] >= hi[c]) com[c] -= L[c];
-        }
-    }
-
-#if defined(rsph)
-
-#define shape sphere
-#define pin_axis (false)
-
-    namespace sphere
-    {
-        bool inside(float x, float y, float z) {
-            return x*x + y*y + z*z < rsph*rsph;
-        }
-    }
-
-#elif defined(rcyl)
-
-#define shape cylinder
-#define pin_axis (true)
-
-    namespace cylinder
-    {
-        bool inside(float x, float y, float z) {
-            return x*x + y*y < rcyl * rcyl;
-        }
-    }
-
-#elif defined(a2_ellipse)
-
-#define shape ellipse
-#define pin_axis (true)
-
-    namespace ellipse
-    {
-#define a2 a2_ellipse 
-#define b2 b2_ellipse
-        
-        bool inside(float x, float y, float z) {
-            return x*x / a2 + y*y / b2 < 1;
-        }
-    }
-#endif
-
-    
     bool inside(float x, float y, float z) {
-        return shape::inside(x, y, z);
+        return k_solid::shape::inside(x, y, z);
     }
 
     void init_com(Particle *pp, int n, /**/ float *com) {
@@ -117,7 +28,7 @@ namespace solid {
             com[X] += r0[X]; com[Y] += r0[Y]; com[Z] += r0[Z];
         }
         com[X] /= n; com[Y] /= n; com[Z] /= n;
-        pbc_solid(com);
+        k_solid::pbc_solid(com);
     }
 
     void init_I(Particle *pp, int n, float mass, float *com, /**/ float *I) {
@@ -222,7 +133,7 @@ namespace solid {
 
     void update_com(float *v, /**/ float *com) {
         com[X] += v[X]*dt; com[Y] += v[Y]*dt; com[Z] += v[Z]*dt;
-        pbc_solid(/**/ com);
+        k_solid::pbc_solid(/**/ com);
     }
 
     void update_r(float *rr0, int n, float *com, float *e0, float *e1, float *e2, /**/ Particle *pp) {
@@ -268,12 +179,28 @@ namespace solid {
         if (pin_com) v[X] = v[Y] = v[Z] = 0;
 
         if (!pin_com) update_com(v, /**/ com);
-        rot_e(om, /**/ e0); rot_e(om, /**/ e1); rot_e(om, /**/ e2); gram_schmidt(/**/ e0, e1, e2);
+        k_solid::rot_e(om, /**/ e0); k_solid::rot_e(om, /**/ e1); k_solid::rot_e(om, /**/ e2); k_solid::gram_schmidt(/**/ e0, e1, e2);
 
         update_r(rr0, n, com, e0, e1, e2, /**/ pp);
     }
 
-    void dump(int it, float *com, float *v, float *om, float *to) {
+    void update_nohost(const Force *ff, const float *rr0, const int n, const float mass, Particle *pp,
+                       const float *Iinv, float *com, float *e0, float *e1, float *e2, float *v, float *om, float *f, float *to)
+    {
+        k_solid::add_f_to <<<k_cnf(n)>>> (pp, ff, n, com, /**/ f, to);
+
+        k_solid::update_om_v <<<1, 1>>> (mass, Iinv, f, to, /**/ om, v);
+
+        k_solid::compute_velocity <<<k_cnf(n)>>> (v, com, om, n, /**/ pp);
+        
+        if (!pin_com) k_solid::update_com <<<1, 1>>> (v, /**/ com);
+
+        k_solid::rot_referential <<<1, 1>>> (om, /**/ e0, e1, e2);
+
+        k_solid::update_r <<<k_cnf(n)>>> (rr0, n, com, e0, e1, e2, /**/ pp);
+    }
+
+    void dump(const int it, const float *com, const float *v, const float *om, const float *to) {
         static bool first = true;
         const char *fname = "solid_diag.txt";
         FILE *fp;
