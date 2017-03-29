@@ -488,30 +488,33 @@ namespace solidbounce {
             
             p1 = pp[pid];
             pn = p1;
-            
-            lastbit::Preserver up(pp[pid].v[X]);
-            
-            r2local(sdev->e0, sdev->e1, sdev->e2, sdev->com, pn.r, /**/ pnl.r);
-            v2local(sdev->e0, sdev->e1, sdev->e2,            pn.v, /**/ pnl.v);
-        
-            v2local(sdev->e0, sdev->e1, sdev->e2,  sdev->v, /**/ vcml);
-            v2local(sdev->e0, sdev->e1, sdev->e2, sdev->om, /**/  oml);
-        
-            v2local(sdev->e0, sdev->e1, sdev->e2, ff[pid].f, /**/ fl);
-        
-            bb_part_local(fl, vcml, oml, /*o*/ &pnl, /*w*/ &p0l);
-        
-            r2global(sdev->e0, sdev->e1, sdev->e2, sdev->com, pnl.r, /**/ pn.r);
-            v2global(sdev->e0, sdev->e1, sdev->e2,            pnl.v, /**/ pn.v); 
-        
-            /* transfer momentum */
-        
-            dF[X] = dF[Y] = dF[Z] = 0;
-            dL[X] = dL[Y] = dL[Z] = 0;
-        
-            lin_mom_solid(p1.v, pn.v, /**/ dF);
-        
-            ang_mom_solid(p1.r, pn.r, p1.v, pn.v, /**/ dL);
+
+            /* scope for last-bit preserver */
+            {
+                lastbit::Preserver up(pn.v[X]);
+                
+                r2local(sdev->e0, sdev->e1, sdev->e2, sdev->com, pn.r, /**/ pnl.r);
+                v2local(sdev->e0, sdev->e1, sdev->e2,            pn.v, /**/ pnl.v);
+                
+                v2local(sdev->e0, sdev->e1, sdev->e2,  sdev->v, /**/ vcml);
+                v2local(sdev->e0, sdev->e1, sdev->e2, sdev->om, /**/  oml);
+                
+                v2local(sdev->e0, sdev->e1, sdev->e2, ff[pid].f, /**/ fl);
+                
+                bb_part_local(fl, vcml, oml, /*o*/ &pnl, /*w*/ &p0l);
+                
+                r2global(sdev->e0, sdev->e1, sdev->e2, sdev->com, pnl.r, /**/ pn.r);
+                v2global(sdev->e0, sdev->e1, sdev->e2,            pnl.v, /**/ pn.v); 
+                
+                /* transfer momentum */
+                
+                dF[X] = dF[Y] = dF[Z] = 0;
+                dL[X] = dL[Y] = dL[Z] = 0;
+                
+                lin_mom_solid(p1.v, pn.v, /**/ dF);
+                
+                ang_mom_solid(p1.r, pn.r, p1.v, pn.v, /**/ dL);
+            }
             
             pp[pid] = pn;
         }
@@ -521,7 +524,12 @@ namespace solidbounce {
         warpReduceSumf3(dF);
         warpReduceSumf3(dL);
 
-        if ((threadIdx.x & (warpSize - 1)) == 0)
+        const float normdF = fmaxf(fmaxf(fabsf(dF[X]), fabsf(dF[Y])), fabsf(dF[Z]));
+        const float normdL = fmaxf(fmaxf(fabsf(dL[X]), fabsf(dL[Y])), fabsf(dL[Z]));
+
+        const bool warp_contribute = (normdF > 1e-12) && (normdL > 1e-12);
+        
+        if (warp_contribute && ((threadIdx.x & (warpSize - 1)) == 0))
         {
             atomicAdd(sdev->fo + X, dF[X]);
             atomicAdd(sdev->fo + Y, dF[Y]);
