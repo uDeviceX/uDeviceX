@@ -1,0 +1,11 @@
+kill(all)$
+
+phi : atan(a/b * tan(gm * a * b * t / (a^2 + b^2)) );
+om : diff(phi, t);
+
+aval : 2;
+bval : 4;
+gmval : 0.1;
+
+wxplot2d(ev(om, a=aval, b=bval, gm=gmval), [t, 0, 100]);
+
