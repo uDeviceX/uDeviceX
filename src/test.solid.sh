@@ -7,7 +7,7 @@
 # argp .conf.test.h  \
 #   -tend=2.0 -steps_per_dump=1000 -walls -wall_creation_stepid=100 \
 #   -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=1000       \
-#   -rbcs -rsph=5 -pin_com=true -dt=1e-3 > .conf.h
+#   -rbcs -rsph=5 -pin_com=true -dt=1e-3 -shear_z > .conf.h
 # :
 # make clean && make -j && make -C ../tools
 # ./udx
@@ -50,7 +50,7 @@
 #
 
 #### Couette pinned cylinder
-# sTEST: solid.t4
+# TEST: solid.t4
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt
 # cp sdf/yplates1/yplates.dat sdf.dat
@@ -58,14 +58,14 @@
 # argp .conf.test.h  \
 #   -tend=2.0 -steps_per_dump=1000 -walls -wall_creation_stepid=100 \
 #   -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=1000       \
-#   -rbcs -rcyl=5 -pin_com=true -dt=1e-3 > .conf.h
+#   -rbcs -rcyl=5 -pin_com=true -dt=1e-3 -shear_y > .conf.h
 # :
 # make clean && make -j && make -C ../tools
 # ./udx
 # avg_h5.m h5/flowfields-0001.h5 | fround.awk -v tol=1 > h5.out.txt
 
 #### Double poiseuille pinned ellipse
-# TEST: solid.t5
+# sTEST: solid.t5
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt debug.txt
