@@ -10,7 +10,7 @@ argp .conf.test.h                                                        \
      -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=1000           \
      -walls -wall_creation_stepid=5000                                   \
      -dt=1e-3 -shear_y -_numberdensity=3 -rc=1.5                         \
-     -_gamma_dot=0.05 -rbcs -a2_ellipse=16 -b2_ellipse=4 -pin_com=true   \
+     -gamma_dot=0.05 -rbcs -a2_ellipse=16 -b2_ellipse=4 -pin_com=true    \
      > .conf.h
 
 make clean && make -j && make -C ../tools
@@ -22,7 +22,7 @@ cd ${RUNDIR}
 
 rm -rf h5 diag.txt solid_diag.txt
 
-cat run.sh > conf.sh
+cat run.sh > run.back.sh
 
 ./udx
 
