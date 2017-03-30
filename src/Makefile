@@ -8,7 +8,7 @@ OPT      ?= -O3 -use_fast_math -g
 
 slevel   ?= -2
 
-NVCCFLAGS += -arch $(ARCH_VAL) -code $(CODE_VAL)
+NVCCFLAGS += -arch $(ARCH_VAL) -code $(CODE_VAL) -std=c++11
 LDFLAGS   += -L../cuda-dpd -L../last-bit -L./bounce-back
 NVCCFLAGS += -I../cuda-dpd -I../last-bit -I./bounce-back -I.
 LIBS      += -lcuda-dpd -llast-bit -lbounce-back -lcudart

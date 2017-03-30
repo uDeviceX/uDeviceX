@@ -149,7 +149,7 @@ void H5FieldDump::_write_fields(const char * const path2h5,
     H5Pclose(plist_id_access);
 
     const int L[3] = { XS, YS, ZS };
-    hsize_t globalsize[4] = {m::dims[2] * L[2], m::dims[1] * L[1], m::dims[0] * L[0], 1};
+    hsize_t globalsize[4] = {(hsize_t) m::dims[2] * L[2], (hsize_t) m::dims[1] * L[1], (hsize_t) m::dims[0] * L[0], 1};
     hid_t filespace_simple = H5Screate_simple(4, globalsize, NULL);
 
     for(int ichannel = 0; ichannel < nchannels; ++ichannel)
@@ -160,8 +160,8 @@ void H5FieldDump::_write_fields(const char * const path2h5,
 
         H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
 
-        hsize_t start[4] = { m::coords[2] * L[2], m::coords[1] * L[1], m::coords[0] * L[0], 0};
-        hsize_t extent[4] = { L[2], L[1], L[0],  1};
+        hsize_t start[4]  = { (hsize_t) m::coords[2] * L[2], (hsize_t) m::coords[1] * L[1], (hsize_t) m::coords[0] * L[0], 0};
+        hsize_t extent[4] = { (hsize_t) L[2], (hsize_t) L[1], (hsize_t) L[0],  1};
         hid_t filespace = H5Dget_space(dset_id);
         H5Sselect_hyperslab(filespace, H5S_SELECT_SET, start, NULL, extent, NULL);
 

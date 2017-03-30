@@ -32,7 +32,7 @@ namespace field {
     for (iz = 0; iz < nsize[Z]; ++iz)
       for (iy = 0; iy < nsize[Y]; ++iy)
 	for (ix = 0; ix < nsize[X]; ++ix) {
-	  float r[3] = {i2x(ix), i2y(iy), i2z(iz)};
+      float r[3] = {(float) i2x(ix), (float) i2y(iy), (float) i2z(iz)};
 
 	  int anchor[3];
 	  for (c = 0; c < 3; ++c) anchor[c] = (int)floor(r[c]);

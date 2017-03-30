@@ -238,7 +238,7 @@ void init() {
 void dumps_diags(int it) {
   if (it % steps_per_dump == 0)     in_out();
   if (it % steps_per_dump == 0)     dump_part();
-  if (it % steps_per_dump == 0)     solid::dump(it, solid_hst.com, solid_hst.v, solid_hst.om, solid_hst.to);
+  if (it % steps_per_dump == 0)     solid::dump(it, &solid_hst);
   if (it % steps_per_hdf5dump == 0) dump_grid();
   if (it % steps_per_dump == 0)     diag(it);
 }

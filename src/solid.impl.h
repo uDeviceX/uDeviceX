@@ -201,20 +201,44 @@ namespace solid {
         k_solid::update_r <<<k_cnf(n)>>> (rr0, n, sdev->com, sdev->e0, sdev->e1, sdev->e2, /**/ pp);
     }
 
-    void dump(const int it, const float *com, const float *v, const float *om, const float *to) {
+    void dump(const int it, const Solid *s)
+    {
         static bool first = true;
         const char *fname = "solid_diag.txt";
         FILE *fp;
         if (first) fp = fopen(fname, "w");
         else       fp = fopen(fname, "a");
+
+        if (first)
+        {
+            FILE *f = fopen("solid_Iinv.txt", "w");
+
+            fprintf(f, "%+.6e %+.6e %+.6e\n", s->Iinv[XX], s->Iinv[XY], s->Iinv[XZ]);
+            fprintf(f, "%+.6e %+.6e %+.6e\n", s->Iinv[YX], s->Iinv[YY], s->Iinv[YZ]);
+            fprintf(f, "%+.6e %+.6e %+.6e\n", s->Iinv[ZX], s->Iinv[ZY], s->Iinv[ZZ]);
+            
+            fclose(f);
+        }
+        
         first = false;
 
         fprintf(fp, "%+.6e ", dt*it);
-        fprintf(fp, "%+.6e %+.6e %+.6e ", com[X], com[Y], com[Z]);
-        fprintf(fp, "%+.6e %+.6e %+.6e ",   v[X],   v[Y],   v[Z]);
-        fprintf(fp, "%+.6e %+.6e %+.6e ",  om[X],  om[Y],  om[Z]);
-        fprintf(fp, "%+.6e %+.6e %+.6e\n", to[X],  to[Y],  to[Z]);
 
+        auto write_v = [fp] (const float *v) {
+            fprintf(fp, "%+.6e %+.6e %+.6e ", v[X], v[Y], v[Z]);
+        };
+
+        write_v(s->com);
+        write_v(s->v  );
+        write_v(s->om );
+        write_v(s->fo );
+        write_v(s->to );
+        write_v(s->e0 );
+        write_v(s->e1 );
+        write_v(s->e2 );
+
+        fprintf(fp, "\n");
+        
         fclose(fp);
     }
 

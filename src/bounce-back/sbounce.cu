@@ -202,9 +202,9 @@ namespace solidbounce {
 
     _DH_ bool inside_prev(const float *r, const float *om0)
     {
-        float rl[3] = {r[X] + dt * (om0[Y] * r[Z] - om0[Z] * r[Y]),
-                       r[Y] + dt * (om0[Z] * r[X] - om0[X] * r[Z]),
-                       r[Z] + dt * (om0[X] * r[Y] - om0[Y] * r[X])};
+        float rl[3] = {float(r[X] + dt * (om0[Y] * r[Z] - om0[Z] * r[Y])),
+                       float(r[Y] + dt * (om0[Z] * r[X] - om0[X] * r[Z])),
+                       float(r[Z] + dt * (om0[X] * r[Y] - om0[Y] * r[X]))};
         
         return shape::inside(rl);
     }
