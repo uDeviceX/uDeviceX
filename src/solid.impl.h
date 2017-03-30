@@ -166,7 +166,7 @@ namespace solid {
         add_f(ff, n, /**/ shst->fo);
         add_to(pp, ff, n, shst->com, /**/ shst->to);
 
-        update_v(shst->mass, shst->fo, n, /**/ shst->v);
+        update_v(rbc_mass, shst->fo, n, /**/ shst->v);
         update_om(shst->Iinv, shst->to, /**/ shst->om);
 
         if (pin_axis) constrain_om(/**/ shst->om);

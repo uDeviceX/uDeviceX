@@ -193,10 +193,8 @@ void init_r() {
     float *v0 = r_pp_hst[ip].v;
     lastbit::set(v0[0], true);
   }
-
-  solid_hst.mass = rbc_mass;
   
-  solid::init(r_pp_hst, r_n, solid_hst.mass, /**/ r_rr0_hst, solid_hst.Iinv, solid_hst.com, solid_hst.e0, solid_hst.e1, solid_hst.e2, solid_hst.v, solid_hst.om);
+  solid::init(r_pp_hst, r_n, rbc_mass, /**/ r_rr0_hst, solid_hst.Iinv, solid_hst.com, solid_hst.e0, solid_hst.e1, solid_hst.e2, solid_hst.v, solid_hst.om);
 
   CC(cudaMemcpy(solid_dev, &solid_hst, sizeof(Solid), H2D));
   CC(cudaMemcpy(r_rr0, r_rr0_hst, 3 * r_n * sizeof(float), H2D));

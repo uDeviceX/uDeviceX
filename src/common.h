@@ -72,8 +72,7 @@ struct Particle {
 };
 
 struct Solid {
-    float mass,               /* total mass of solid         */
-        Iinv[6],              /* moment of inertia           */
+    float Iinv[6],            /* moment of inertia           */
         com[3],               /* [c]enter [o]f [m]ass        */
         v[3], om[3],          /* linear and angular velocity */
         e0[3], e1[3], e2[3],  /* local referential           */
