@@ -124,8 +124,6 @@ namespace solidbounce {
     
     namespace ellipse
     {
-#define rcyl_bb rcyl
-
 #define a2_bb a2_ellipse 
 #define b2_bb b2_ellipse
 
@@ -164,9 +162,68 @@ namespace solidbounce {
         _DH_ void rescue(float *r) // cheap rescue
         {
             float scale = (1 + 1e-6) / sqrt(r[X] * r[X] / a2_bb + r[Y] * r[Y] / b2_bb);
+            
+            r[X] *= scale;
+            r[Y] *= scale;
+        }
+    }
+
+#elif defined(a2_ellipsoid)
+
+#define shape ellipsoid
+    
+    namespace ellipsoid
+    {
+#define a2_bb a2_ellipsoid
+#define b2_bb b2_ellipsoid
+#define c2_bb c2_ellipsoid
+
+        __DH__ bool inside(const float *r)
+        {
+            const float x = r[X];
+            const float y = r[Y];
+            const float z = r[Z];
+            
+            return x*x / a2_bb + y*y / c2_bb + z*z / c2_bb < 1;
+        }
+
+        /* output h between 0 and dt */
+        // for now: assume vcm = 0
+        _DH_ bool intersect(const float *r0, const float *v0, const float *om0, /**/ float *h)
+        {
+            const float r0x  =  r0[X], r0   =  r0[Y], r0z  =  r0[Z];
+            const float v0x  =  v0[X], v0   =  v0[Y], v0z  =  vo[Z];
+            const float om0x = om0[X], om0y = om0[Y], om0z = om0[Z];
+
+            const float r1x = r0x + dt * v0x;
+            const float r1y = r0y + dt * v0y;
+            const float r1z = r0z + dt * v0z;
+            
+            const float v0x_ = v0x + om0y * r1z - om0z * r1y;
+            const float v0y_ = v0y + om0z * r1x - om0x * r1z;
+            const float v0z_ = v0z + om0x * r1y - om0y * r1x;
+
+            const float r0x_ = r0x - dt * (om0z * r1z - om0z * r1y);
+            const float r0y_ = r0y - dt * (om0z * r1x - om0x * r1z);
+            const float r0z_ = r0z - dt * (om0x * r1y - om0y * r1x);
+                
+            
+            const float a = v0x_*v0x_ / a2_bb + v0y_*v0y_ / b2_bb + v0z_*v0z_ / c2_bb;
+            
+            const float b = 2 * (r0x_*v0x_ / a2_bb + r0y_*v0y_ / b2_bb + r0z_*v0z_ / c2_bb);
+                        
+            const float c = r0x_*r0x_ / a2_bb + r0y_*r0y_ / b2_bb + r0z_*r0z_ / c2_bb - 1;
+
+            return robust_quadratic_roots(a, b, c, h);
+        }
+
+        _DH_ void rescue(float *r) // cheap rescue
+        {
+            float scale = (1 + 1e-6) / sqrt(r[X] * r[X] / a2_bb + r[Y] * r[Y] / b2_bb + r[Z] * r[Z] / c2_bb);
 
             r[X] *= scale;
             r[Y] *= scale;
+            r[Z] *= scale;
         }
     }
     
