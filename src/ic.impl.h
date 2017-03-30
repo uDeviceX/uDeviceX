@@ -6,6 +6,9 @@ namespace ic { /* initial conditions */
 
 int gen(Particle* pp) { /* generate particle positions and velocities */
   fprintf(stderr, "(ic::gen) IC\n");
+
+  assert(XS * YS * ZS * numberdensity < MAX_PART_NUM);
+  
   srand48(123456);
   int iz, iy, ix, l, nd = numberdensity;
   int ip = 0; /* particle index */
@@ -26,7 +29,7 @@ int gen(Particle* pp) { /* generate particle positions and velocities */
       p.v[X] = y < 0 ? -1.f : 1.f;
       p.v[Y] = 0; p.v[Z] = 0;
 #endif
-      
+          
 	  pp[ip++] = p;
       lastbit::set(p.v[X], false);
 	}

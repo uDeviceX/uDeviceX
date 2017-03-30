@@ -1,8 +1,3 @@
-const float gamma_dot     = _gamma_dot;
-const float hydrostatic_a = _hydrostatic_a / rc;
-const float kBT           = _kBT / (rc * rc);
-const int   numberdensity = _numberdensity * (rc * rc * rc);
-
 #include <mpi.h>
 
 #pragma once
