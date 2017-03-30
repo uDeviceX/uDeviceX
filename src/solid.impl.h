@@ -190,7 +190,6 @@ namespace solid {
     {
         k_solid::add_f_to <<<k_cnf(n)>>> (pp, ff, n, sdev->com, /**/ sdev->fo, sdev->to);
 
-        //TODO mass
         k_solid::update_om_v <<<1, 1>>> (rbc_mass, sdev->Iinv, sdev->fo, sdev->to, /**/ sdev->om, sdev->v);
 
         k_solid::compute_velocity <<<k_cnf(n)>>> (sdev->v, sdev->com, sdev->om, n, /**/ pp);
