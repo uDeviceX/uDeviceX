@@ -5,9 +5,9 @@ cd ${SRCDIR}
 
 export PATH=../tools:$PATH
 
-XS=32
+XS=128
 YS=32
-ZS=32
+ZS=8
 
 argp .conf.test.h                                                       \
      -tend=100.0 -steps_per_dump=1000 -walls -wall_creation_stepid=5000 \
@@ -24,15 +24,15 @@ cd ${RUNDIR}
 
 rm -rf h5 diag.txt solid_diag.txt sdf.dat
 
-cat "extent ${XS} ${YS} ${ZS}
-    N          32
-    obj_margin 3.0
+echo "extent ${XS} ${YS} ${ZS}
+N          32
+obj_margin 3.0
 
-    # normal goes from inside wall to outside
-    plane point xc 0.9*Ly zc normal 0 -1 0
-    plane point xc 0.1*Ly zc normal 0  1 0" > yplates.tsdf
+# normal goes from inside wall to outside
+plane point xc 0.9*Ly zc normal 0 -1 0
+plane point xc 0.1*Ly zc normal 0  1 0" > yplates.tsdf
 
-tsdf tplates.tsdf sdf.dat
+tsdf yplates.tsdf sdf.dat
 
 cat run.sh > run.back.sh
 
