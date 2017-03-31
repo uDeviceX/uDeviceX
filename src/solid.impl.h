@@ -67,6 +67,16 @@ namespace solid {
         float I[6]; solid::init_I(pp, n, mass, com, /**/ I);
         gsl::inv3x3(I, /**/ Iinv);
 
+        {
+            FILE *f = fopen("solid_Iinv.txt", "w");
+
+            fprintf(f, "%+.6e %+.6e %+.6e\n", Iinv[XX], Iinv[XY], Iinv[XZ]);
+            fprintf(f, "%+.6e %+.6e %+.6e\n", Iinv[YX], Iinv[YY], Iinv[YZ]);
+            fprintf(f, "%+.6e %+.6e %+.6e\n", Iinv[ZX], Iinv[ZY], Iinv[ZZ]);
+            
+            fclose(f);
+        }
+        
         /* initial positions */
         for (int ip = 0; ip < n; ++ip) {
             float *ro = &rr0[3*ip];
@@ -208,17 +218,6 @@ namespace solid {
         FILE *fp;
         if (first) fp = fopen(fname, "w");
         else       fp = fopen(fname, "a");
-
-        if (first)
-        {
-            FILE *f = fopen("solid_Iinv.txt", "w");
-
-            fprintf(f, "%+.6e %+.6e %+.6e\n", s->Iinv[XX], s->Iinv[XY], s->Iinv[XZ]);
-            fprintf(f, "%+.6e %+.6e %+.6e\n", s->Iinv[YX], s->Iinv[YY], s->Iinv[YZ]);
-            fprintf(f, "%+.6e %+.6e %+.6e\n", s->Iinv[ZX], s->Iinv[ZY], s->Iinv[ZZ]);
-            
-            fclose(f);
-        }
         
         first = false;
 
