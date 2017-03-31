@@ -1,5 +1,5 @@
 
-fg1 = "< sed -n '30,200p' solid_diag.txt"
+fg1 = "< sed -n '30,200p' results/Gh/solid_diag.txt"
 fg2 = "< sed -n '30,200p' results/unit_mass/solid_diag.txt"
 
 set xlabel "t * gammadot"

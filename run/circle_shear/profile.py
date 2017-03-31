@@ -30,33 +30,36 @@ vx = np.mean(vx, (0))
 vy = np.mean(vy, (0))
 
 def plot_at_x(v, i):
-    #select border only (x = 0)
     v_ = v[:,i]
-    
+
     yy = np.array(range(len(v_)))
-    
+    yy = yy / float(YS)
+
+    #remove wall regions
     yy = yy[np.abs(v_) > 1e-8]
     v_ = v_[np.abs(v_) > 1e-8]
     
     # remove end points
-    #v_ = v_[1:-2]
-    #yy = yy[1:-2]
-    
-    #pol = np.polyfit(yy, v_, deg=1)
-    
-    #print "shear rate =", pol[0]
+    # v_ = v_[1:-2]
+    # yy = yy[1:-2]
 
+    if ix == 0:
+        pol = np.polyfit(yy, v_, deg=1)
+        print "shear rate =", pol[0] / float(YS)
+        plt.plot(yy, np.polyval(pol, yy), '-')
+        
     plt.plot(yy, v_, '-+', label='x = '+str(ix))
-    #plt.plot(yy, np.polyval(pol, yy), '-')
     
 plt.figure()
 
 indices = [0, XS/4-1, XS/2-1]
+#indices = [0]
+#indices = [0, 3*XS/8, 7*XS/16, XS/2-1]
 
 for ix in indices:
      plot_at_x(vx, ix)
 
-plt.xlabel('y')
+plt.xlabel('y/H')
 plt.ylabel('vx')
-plt.legend()
+plt.legend(loc='best')
 plt.show()
