@@ -536,7 +536,8 @@ namespace solidbounce {
     {
         const int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
-        float dF[3], dL[3];
+        float dF[3] = {0.f, 0.f, 0.f};
+        float dL[3] = {0.f, 0.f, 0.f};
 
         if (pid < np)
         {
@@ -564,10 +565,7 @@ namespace solidbounce {
                 v2global(sdev->e0, sdev->e1, sdev->e2,            pnl.v, /**/ pn.v); 
                 
                 /* transfer momentum */
-                
-                dF[X] = dF[Y] = dF[Z] = 0;
-                dL[X] = dL[Y] = dL[Z] = 0;
-                
+
                 lin_mom_solid(p1.v, pn.v, /**/ dF);
                 
                 ang_mom_solid(p1.r, pn.r, p1.v, pn.v, /**/ dL);
