@@ -1,8 +1,7 @@
 
 
 fhm = "< sed -n '30,200p' results/half_mass/solid_diag.txt"
-#fum = "< cat results/unit_mass/solid_diag.txt"
-fum = "< sed -n '30,200p' solid_diag.txt"
+fum = "< sed -n '30,200p' results/unit_mass/solid_diag.txt"
 
 set xlabel "t * gammadot"
 set ylabel "\omega_z / gammadot"

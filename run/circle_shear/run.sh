@@ -5,21 +5,34 @@ cd ${SRCDIR}
 
 export PATH=../tools:$PATH
 
+XS=32
+YS=32
+ZS=32
+
 argp .conf.test.h                                                       \
-     -tend=200.0 -steps_per_dump=1000 -walls -wall_creation_stepid=5000 \
+     -tend=100.0 -steps_per_dump=1000 -walls -wall_creation_stepid=5000 \
      -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=1000          \
-     -gamma_dot=0.05 -rbcs -rcyl=5 -pin_com=true -dt=1e-3 -shear_y      \
-     -rbc_mass=1.f                                                      \
+     -gamma_dot=0.025 -rbcs -rcyl=5 -pin_com=true -dt=1e-3 -shear_y     \
+     -rbc_mass=1.f -XS=${XS} -YS=${YS} -ZS=${ZS}                        \
      > .conf.h
 
 make clean && make -j && make -C ../tools
 
 cp udx ${RUNDIR}
-cp sdf/yplates1/yplates.dat ${RUNDIR}/sdf.dat
 
 cd ${RUNDIR}
 
-rm -rf h5 diag.txt solid_diag.txt
+rm -rf h5 diag.txt solid_diag.txt sdf.dat
+
+cat "extent ${XS} ${YS} ${ZS}
+    N          32
+    obj_margin 3.0
+
+    # normal goes from inside wall to outside
+    plane point xc 0.9*Ly zc normal 0 -1 0
+    plane point xc 0.1*Ly zc normal 0  1 0" > yplates.tsdf
+
+tsdf tplates.tsdf sdf.dat
 
 cat run.sh > run.back.sh
 

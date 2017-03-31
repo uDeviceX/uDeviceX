@@ -3,4 +3,5 @@ h5/
 results/
 *.txt
 *.dat
+*.tsdf
 fit.log
