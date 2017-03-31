@@ -184,7 +184,7 @@ namespace solidbounce {
             const float y = r[Y];
             const float z = r[Z];
             
-            return x*x / a2_bb + y*y / c2_bb + z*z / c2_bb < 1;
+            return x*x / a2_bb + y*y / b2_bb + z*z / c2_bb < 1;
         }
 
         /* output h between 0 and dt */

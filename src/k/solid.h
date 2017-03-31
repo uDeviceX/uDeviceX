@@ -121,6 +121,21 @@ namespace k_solid
             return x*x / a2 + y*y / b2 < 1;
         }
     }
+
+#elif defined(a2_ellipsoid)
+
+#define shape ellipsoid
+    
+    namespace ellipsoid
+    {
+#define a2 a2_ellipsoid
+#define b2 b2_ellipsoid
+#define c2 c2_ellipsoid
+
+        __DH__ bool inside(float x, float y, float z) {
+            return x*x / a2 + y*y / b2 + z*z / c2 < 1;
+        }
+    }
 #endif
 
     
