@@ -1,0 +1,33 @@
+kill(all)$
+
+x : a*r*cos(t)$
+y : b*r*sin(t)$
+
+J : r * a*b$
+
+xx : y^2 + z^2$
+xy : -x*y$
+xz : -x*z$
+yy : x^2 + z^2$
+yz : -y*z$
+zz : x^2 + y^2$
+
+I(e) := rho*integrate(integrate(integrate(J*e, t, 0, 2*%pi), r, 0, 1), z, -L/2, L/2)$
+
+Ixx : I(xx);
+Ixy : I(xy);
+Ixz : I(xz);
+Iyy : I(yy);
+Iyz : I(yz);
+Izz : I(zz);
+
+rhoev : 10;
+Lev : 8;
+aev : 4;
+bev : 4;
+
+evinv(e) := float(ev(1/e, L=Lev, rho=rhoev, a=aev, b=bev));
+
+Iinvxx : evinv(Ixx);
+Iinvyy : evinv(Iyy);
+Iinvzz : evinv(Izz);

@@ -1,0 +1,30 @@
+kill(all)$
+
+x : r*cos(t)*sin(p)$
+y : r*sin(t)*sin(p)$
+z : r*cos(p)$
+
+xx : y^2 + z^2$
+xy : -x*y$
+xz : -x*z$
+yy : x^2 + z^2$
+yz : -y*z$
+zz : x^2 + y^2$
+
+I(e) := rho*integrate(integrate(integrate(r^2 * sin(p) * e, t, 0, 2*%pi), p, 0, %pi), r, 0, R)$
+
+Ixx : I(xx);
+Ixy : I(xy);
+Ixz : I(xz);
+Iyy : I(yy);
+Iyz : I(yz);
+Izz : I(zz);
+
+rhoev : 10$
+Rev : 5$
+
+evinv(e) := float(ev(1/e, R=Rev, rho=rhoev))$
+
+Iinvxx : evinv(Ixx);
+Iinvyy : evinv(Iyy);
+Iinvzz : evinv(Izz);
