@@ -300,17 +300,20 @@ namespace solidbounce {
         assert(!shape::inside(r));
     }
 
-    _DH_ void lin_mom_solid(const float *v1, const float *vn, /**/ float *dF)
+    _DH_ void lin_mom_solid(const float *v1, const float *vn, /**/ float *dP)
     {
         for (int c = 0; c < 3; ++c)
-        dF[c] = -(vn[c] - v1[c]) / dt;
+        dP[c] = -(vn[c] - v1[c]) / dt;
     }
 
-    _DH_ void ang_mom_solid(const float *r1, const float *rn, const float *v1, const float *vn, /**/ float *dL)
+    _DH_ void ang_mom_solid(const float *com, const float *r1, const float *rn, const float *v1, const float *vn, /**/ float *dL)
     {
-        dL[X] = -(rn[Y] * vn[Z] - rn[Z] * vn[Y] - r1[Y] * v1[Z] + r1[Z] * v1[Y]) / dt;
-        dL[Y] = -(rn[Z] * vn[X] - rn[X] * vn[Z] - r1[Z] * v1[X] + r1[X] * v1[Z]) / dt;
-        dL[Z] = -(rn[X] * vn[Y] - rn[Y] * vn[X] - r1[X] * v1[Y] + r1[Y] * v1[X]) / dt;
+        const float drn[3] = {rn[X] - com[X], rn[Y] - com[Y], rn[Z] - com[Z]};
+        const float dr1[3] = {r1[X] - com[X], r1[Y] - com[Y], r1[Z] - com[Z]};
+        
+        dL[X] = -(drn[Y] * vn[Z] - drn[Z] * vn[Y] - dr1[Y] * v1[Z] + dr1[Z] * v1[Y]) / dt;
+        dL[Y] = -(drn[Z] * vn[X] - drn[X] * vn[Z] - dr1[Z] * v1[X] + dr1[X] * v1[Z]) / dt;
+        dL[Z] = -(drn[X] * vn[Y] - drn[Y] * vn[X] - dr1[X] * v1[Y] + dr1[Y] * v1[X]) / dt;
     }
 
 #define debug_output
@@ -468,7 +471,7 @@ namespace solidbounce {
     void bounce(const Force *ff, const int np, /**/ Particle *pp, Solid *shst)
     {
         Particle p0l, p1, pn, pnl;
-        float dF[3], dL[3], vcml[3], oml[3], fl[3];
+        float dP[3], dL[3], vcml[3], oml[3], fl[3];
 
 #ifdef debug_output
         fdebug = fopen("debug.txt", "a");
@@ -499,16 +502,16 @@ namespace solidbounce {
             
             /* transfer momentum */
             
-            dF[X] = dF[Y] = dF[Z] = 0;
+            dP[X] = dP[Y] = dP[Z] = 0;
             dL[X] = dL[Y] = dL[Z] = 0;
                 
-            lin_mom_solid(p1.v, pn.v, /**/ dF);
+            lin_mom_solid(p1.v, pn.v, /**/ dP);
                 
-            ang_mom_solid(p1.r, pn.r, p1.v, pn.v, /**/ dL);
+            ang_mom_solid(shst->com, p1.r, pn.r, p1.v, pn.v, /**/ dL);
                 
             for (int d = 0; d < 3; ++d)
             {
-                shst->fo[d] += dF[d];
+                shst->fo[d] += dP[d];
                 shst->to[d] += dL[d];
             }
 
@@ -536,7 +539,7 @@ namespace solidbounce {
     {
         const int pid = threadIdx.x + blockDim.x * blockIdx.x;
 
-        float dF[3] = {0.f, 0.f, 0.f};
+        float dP[3] = {0.f, 0.f, 0.f};
         float dL[3] = {0.f, 0.f, 0.f};
 
         if (pid < np)
@@ -566,9 +569,9 @@ namespace solidbounce {
                 
                 /* transfer momentum */
 
-                lin_mom_solid(p1.v, pn.v, /**/ dF);
+                lin_mom_solid(p1.v, pn.v, /**/ dP);
                 
-                ang_mom_solid(p1.r, pn.r, p1.v, pn.v, /**/ dL);
+                ang_mom_solid(sdev->com, p1.r, pn.r, p1.v, pn.v, /**/ dL);
             }
             
             pp[pid] = pn;
@@ -576,19 +579,19 @@ namespace solidbounce {
 
         /* momentum reduction */
         
-        warpReduceSumf3(dF);
+        warpReduceSumf3(dP);
         warpReduceSumf3(dL);
 
-        const float normdF = fmaxf(fmaxf(fabsf(dF[X]), fabsf(dF[Y])), fabsf(dF[Z]));
+        const float normdP = fmaxf(fmaxf(fabsf(dP[X]), fabsf(dP[Y])), fabsf(dP[Z]));
         const float normdL = fmaxf(fmaxf(fabsf(dL[X]), fabsf(dL[Y])), fabsf(dL[Z]));
 
-        const bool warp_contribute = (normdF > 1e-12) && (normdL > 1e-12);
+        const bool warp_contribute = (normdP > 1e-12) && (normdL > 1e-12);
         
         if (warp_contribute && ((threadIdx.x & (warpSize - 1)) == 0))
         {
-            atomicAdd(sdev->fo + X, dF[X]);
-            atomicAdd(sdev->fo + Y, dF[Y]);
-            atomicAdd(sdev->fo + Z, dF[Z]);
+            atomicAdd(sdev->fo + X, dP[X]);
+            atomicAdd(sdev->fo + Y, dP[Y]);
+            atomicAdd(sdev->fo + Z, dP[Z]);
 
             atomicAdd(sdev->to + X, dL[X]);
             atomicAdd(sdev->to + Y, dL[Y]);
