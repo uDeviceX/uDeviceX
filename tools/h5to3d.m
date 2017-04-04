@@ -44,5 +44,3 @@ for ts=0:nt-1 % loop over timesteps
   
   fprintf(stderr(), '(h5to3d.m) writing %s\n', ou(ts));
 end
-
-
