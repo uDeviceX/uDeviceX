@@ -40,6 +40,22 @@ int gen(Particle* pp) { /* generate particle positions and velocities */
   return n;
 }
 
+    // hack for faster equilibration; TODO remove that!
+    __global__ void k_init_v(const int n, Particle *pp)
+    {
+        const int pid = threadIdx.x + blockIdx.x * blockDim.x;
+
+        if (pid >= n)
+        return;
+
+        Particle p = pp[pid];
+        
+        p.v[X] = gamma_dot * p.r[Y];
+
+        pp[pid] = p;
+    }
+
+    
 #undef X
 #undef Y
 #undef Z

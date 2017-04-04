@@ -278,6 +278,12 @@ void run_wall() {
   if (rbcs0 && r_n) k_sim::clear_velocity<<<k_cnf(r_n)>>>(r_pp, r_n);
   if (pushtheflow) driving_force = hydrostatic_a;
 
+#if 1 // hack for faster equilibration; TODO remove that!
+  ic::k_init_v <<<k_cnf(s_n)>>> (s_n, s_pp);
+
+  
+#endif
+  
   for (/**/; it < nsteps; ++it) run0(driving_force, wall_created, it);
 }
 
