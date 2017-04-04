@@ -15,7 +15,7 @@ fn = argv(){1}; % file name
 d = argv(){2};
 % d  = '3d'                   ; % output directory
 
-fmt = '%s/%04d.3d'          ; % format of output file
+fmt = '%s/%04d.3D'          ; % format of output file
 D   = load('-hdf5', fn);
 
 % number of timesteps
