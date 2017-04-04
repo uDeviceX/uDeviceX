@@ -1,9 +1,9 @@
 #!/usr/bin/env octave-qf
 
-% Usage (octave-qf wrapper should be on the PATH):
-% > ./hello_h5part.m test_data/all.h5part
-
 % convert h5part file to several 3D files
+
+% Usage (octave-qf wrapper should be on the PATH):
+% > ./h5to3d.m test_data/all.h5part 3d
 
 # TEST: h5to3d.t1
 # ./h5to3d.m test_data/all.h5part 3d
@@ -29,7 +29,7 @@ ou = @(ts)     sprintf(fmt, d, ts);
 mkdir(d)
 for ts=0:nt-1 % loop over timesteps
   xx = gf(ts, 'x'); yy = gf(ts, 'y'); zz = gf(ts, 'z'); type = gf(ts, 'type');
-  idx = (type == 1);
+  idx = (type == 1); % extract solid
   xx = fi(xx, idx); yy = fi(yy, idx); zz = fi(zz, idx);
   dlmwrite(ou(ts), [xx', yy', zz'], ' ');
   fprintf(stderr(), '(h5to3d.m) writing %s\n', ou(ts))
