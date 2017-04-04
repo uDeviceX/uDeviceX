@@ -138,7 +138,7 @@ void update_solid() {
     
     solid::update_nohost(r_ff, r_rr0, r_n, /**/ r_pp, solid_dev);
 
-    k_solid::reinit_ft <<<1, 1>>> (solid_dev->fo, solid_dev->to);
+    k_solid::reinit_ft <<<1, 1>>> (/**/ solid_dev->fo, solid_dev->to);
 
     CC(cudaMemcpy(&solid_hst, solid_dev, sizeof(Solid), D2H));
     
