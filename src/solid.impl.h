@@ -47,6 +47,10 @@ namespace solid {
             I[YZ] -= y*z;
         }
 
+#if 1
+        I[XY] = I[XZ] = I[YZ] = 0;
+#endif
+
         for (c = 0; c < 6; ++c) I[c] *= mass;
     }
 
