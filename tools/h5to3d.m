@@ -6,8 +6,9 @@
 % > ./h5to3d.m test_data/all.h5part 3d
 
 # TEST: h5to3d.t1
+# rm -rf 3d
 # ./h5to3d.m test_data/all.h5part 3d
-# cat 3d/000[01].3d  > h5to3d.out.txt
+# cat 3d/000[01].3D  > h5to3d.out.txt
 
 fn = argv(){1}; % file name
 % fn = 'test_data/all.h5part'; % input file
