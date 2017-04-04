@@ -78,10 +78,9 @@ void rot(float phix, float phiy, float phiz) {
   rot0(-xo, -yo, -zo, -phix, -phiy, -phiz);
 }
 
-//int   wrap(int i, int n) {return i == n - 1 ? 0 : i;}
-float i2x (int i)  {return xextent/(float)(NX-1)*i;}
-float i2y (int i)  {return yextent/(float)(NY-1)*i;}
-float i2z (int i)  {return zextent/(float)(NZ-1)*i;}
+float i2x (int i)  {return xextent/(float)(NX)*(i+0.5);}
+float i2y (int i)  {return yextent/(float)(NY)*(i+0.5);}
+float i2z (int i)  {return zextent/(float)(NZ)*(i+0.5);}
 
 float in_interval(float d, float dlo, float dhi) {
   return
