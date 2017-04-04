@@ -22,9 +22,9 @@ Iyz : I(yz);
 Izz : I(zz);
 
 rhoev : 10;
-Lev : 8;
+Lev : 16;
 aev : 4;
-bev : 4;
+bev : 2;
 
 evinv(e) := float(ev(1/e, L=Lev, rho=rhoev, a=aev, b=bev));
 
