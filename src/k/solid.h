@@ -241,8 +241,6 @@ namespace k_solid
         {
             float *r0 = pp[pid].r, *v0 = pp[pid].v;
 
-            lastbit::Preserver up(v0[X]);
-            
             const float x = r0[X]-com[X];
             const float y = r0[Y]-com[Y];
             const float z = r0[Z]-com[Z];

@@ -124,7 +124,6 @@ namespace solid {
     void add_v(float *v, int n, /**/ Particle *pp) {
         for (int ip = 0; ip < n; ++ip) {
             float *v0 = pp[ip].v;
-            lastbit::Preserver up(v0[X]);
             v0[X] += v[X]; v0[Y] += v[Y]; v0[Z] += v[Z];
         }
     }
@@ -134,7 +133,6 @@ namespace solid {
         for (int ip = 0; ip < n; ++ip) {
             float *r0 = pp[ip].r, *v0 = pp[ip].v;
             float x = r0[X]-com[X], y = r0[Y]-com[Y], z = r0[Z]-com[Z];
-            lastbit::Preserver up(v0[X]);
             v0[X] += omy*z - omz*y;
             v0[Y] += omz*x - omx*z;
             v0[Z] += omx*y - omy*x;
@@ -173,7 +171,6 @@ namespace solid {
         /* clear velocity */
         for (int ip = 0; ip < n; ++ip) {
             float *v0 = pp[ip].v;
-            lastbit::Preserver up(v0[X]);
             v0[X] = v0[Y] = v0[Z] = 0;
         }
 

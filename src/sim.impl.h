@@ -97,9 +97,9 @@ void dev2hst() { /* device to host  data transfer */
 
 void dump_part() {
   if (!hdf5part_dumps) return;
-  dev2hst(); /* TODO: do not need `r' */
-  int n = s_n + r_n;
-  dump_part_solvent->dump(sr_pp, n);
+  dev2hst();
+  int sizes[2] = {s_n, r_n};
+  dump_part_solvent->dump(sr_pp, sizes, 2);
 }
 
 void dump_grid() {
@@ -188,11 +188,6 @@ void init_r() {
     else                                    s_pp_hst[is++] = p;
   }
   r_n = ir; s_n = is;
-
-  for (ip = 0; ip < r_n; ++ip) {
-    float *v0 = r_pp_hst[ip].v;
-    lastbit::set(v0[0], true);
-  }
   
   solid::init(r_pp_hst, r_n, rbc_mass, /**/ r_rr0_hst, solid_hst.Iinv, solid_hst.com, solid_hst.e0, solid_hst.e1, solid_hst.e2, solid_hst.v, solid_hst.om);
 

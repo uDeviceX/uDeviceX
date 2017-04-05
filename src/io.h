@@ -12,7 +12,7 @@ class H5PartDump {
  public:
   H5PartDump(const std::string filename);
   void close() { _dispose(); }
-  void dump(Particle * host_particles, int n);
+  void dump(Particle * host_particles, int *sizes, int ntypes);
   ~H5PartDump();
 };
 

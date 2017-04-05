@@ -15,7 +15,6 @@
 #include "io.h"
 #include "bund.h"
 #include "dpd-forces.h"
-#include "last-bit.h"
 
 #ifdef GWRP
 #include "geom-wrapper.h"

@@ -10,8 +10,8 @@
 #   -rbcs -rcyl=4 -pin_com=true                             \
 #   -tend=5.0 -steps_per_dump=100                           \
 #   -hdf5field_dumps -hdf5part_dumps                        \
-#   -_aij_out=0.0  -_aij_in=0.0 -_aij_rbc=0.0               \
-#   -_gammadpd_out=0.0 -_gammadpd_in=0.0 -_gammadpd_rbc=0.0 \
+#   -aij_solv=0.0 -_aij_rbc=0.0                             \
+#   -gammadpd_solv=0.0 -gammadpd_rbc=0.0                    \
 #   -_hydrostatic_a=0.0                                     \
 #   -steps_per_hdf5dump=100 > .conf.h
 # :
@@ -33,9 +33,9 @@
 #   -a2_ellipse=16 -b2_ellipse=4                            \
 #   -tend=5.0 -steps_per_dump=100                           \
 #   -hdf5field_dumps -hdf5part_dumps                        \
-#   -_aij_out=0.0  -_aij_in=0.0 -_aij_rbc=0.0               \
-#   -_gammadpd_out=0.0 -_gammadpd_in=0.0 -_gammadpd_rbc=0.0 \
-#   -_hydrostatic_a=0.0                                     \
+#   -aij_solv=0.0 -aij_rbc=0.0                              \
+#   -gammadpd_solv=0.0 -gammadpd_rbc=0.0                    \
+#   -hydrostatic_a=0.0                                      \
 #   -steps_per_hdf5dump=100 > .conf.h
 # :
 # make clean && make -j && make -C ../tools

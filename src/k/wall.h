@@ -84,8 +84,8 @@ namespace k_wall {
       float rnd = Logistic::mean0var1(seed, pid, spid);
 
       // check for particle types and compute the DPD force
-      int type_bulk = lastbit::get(vx) ? IN_TYPE : OUT_TYPE;
-      float3 strength = compute_dpd_force_traced(type_bulk      , WALL_TYPE,
+
+      float3 strength = compute_dpd_force_traced(SOLVENT_TYPE, WALL_TYPE,
 						 mf3(x ,  y,  z), mf3( xw,  yw,  zw),
 						 mf3(vx, vy, vz), mf3(vxw, vyw, vzw), rnd);
       xforce += strength.x; yforce += strength.y; zforce += strength.z;

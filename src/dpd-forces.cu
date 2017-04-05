@@ -13,8 +13,8 @@ __device__ float3 compute_dpd_force_traced(int type1, int type2,
     /* return the DPD interaction force based on particle types
      * type: 0 -- outer solvent, 1 -- inner solvent, 2 -- membrane, 3 -- wall */
 
-    const float gammadpd[4] = {gammadpd_out, gammadpd_in, gammadpd_rbc, gammadpd_wall};
-    const float aij[4] = {aij_out, aij_in, aij_rbc, aij_wall};
+    const float gammadpd[3] = {gammadpd_solv, gammadpd_rbc, gammadpd_wall};
+    const float aij[3] = {aij_solv, aij_rbc, aij_wall};
 
     const float _xr = pos1.x - pos2.x;
     const float _yr = pos1.y - pos2.y;
@@ -41,7 +41,7 @@ __device__ float3 compute_dpd_force_traced(int type1, int type2,
     const float gammadpd_pair = 0.5 * (gammadpd[type1] + gammadpd[type2]);
     const float sigmaf_pair = sqrt(2*gammadpd_pair*kBT / dt);
     float strength = (-gammadpd_pair * wr * rdotv + sigmaf_pair * myrandnr) * wr;
-    if (type1 == MEMB_TYPE && type2 == MEMB_TYPE) {  // membrane contact
+    if (type1 == SOLID_TYPE && type2 == SOLID_TYPE) {  // membrane contact
         const float invr2 = invrij * invrij;
         const float t2 = ljsigma * ljsigma * invr2;
         const float t4 = t2 * t2;

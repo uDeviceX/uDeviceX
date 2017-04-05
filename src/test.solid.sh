@@ -50,7 +50,7 @@
 #
 
 #### Couette pinned cylinder
-# TEST: solid.t4
+# sTEST: solid.t4
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt
 # cp sdf/yplates1/yplates.dat sdf.dat

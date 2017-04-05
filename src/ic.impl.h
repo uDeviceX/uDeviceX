@@ -31,7 +31,6 @@ int gen(Particle* pp) { /* generate particle positions and velocities */
 #endif
           
 	  pp[ip++] = p;
-      lastbit::set(p.v[X], false);
 	}
       }
 
@@ -49,12 +48,7 @@ int gen(Particle* pp) { /* generate particle positions and velocities */
         return;
 
         Particle p = pp[pid];
-        
-        {
-            lastbit::Preserver up(p.v[X]);
-            p.v[X] = gamma_dot * p.r[Y];
-        }
-
+        p.v[X] = gamma_dot * p.r[Y];
         pp[pid] = p;
     }
 

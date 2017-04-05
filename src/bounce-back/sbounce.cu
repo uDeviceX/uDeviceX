@@ -1,5 +1,4 @@
 #include "sbounce.h"
-#include "../../last-bit/last-bit.h"
 #include <cassert>
 
 namespace solidbounce {
@@ -485,8 +484,6 @@ namespace solidbounce {
             p1 = pp[ip];
             pn = p1;
 
-            lastbit::Preserver up(pp[ip].v[X]);
-                
             r2local(shst->e0, shst->e1, shst->e2, shst->com, pn.r, /**/ pnl.r);
             v2local(shst->e0, shst->e1, shst->e2,            pn.v, /**/ pnl.v);
                 
@@ -550,29 +547,24 @@ namespace solidbounce {
             p1 = pp[pid];
             pn = p1;
 
-            /* scope for last-bit preserver */
-            {
-                lastbit::Preserver up(pn.v[X]);
+            r2local(sdev->e0, sdev->e1, sdev->e2, sdev->com, pn.r, /**/ pnl.r);
+            v2local(sdev->e0, sdev->e1, sdev->e2,            pn.v, /**/ pnl.v);
                 
-                r2local(sdev->e0, sdev->e1, sdev->e2, sdev->com, pn.r, /**/ pnl.r);
-                v2local(sdev->e0, sdev->e1, sdev->e2,            pn.v, /**/ pnl.v);
+            v2local(sdev->e0, sdev->e1, sdev->e2,  sdev->v, /**/ vcml);
+            v2local(sdev->e0, sdev->e1, sdev->e2, sdev->om, /**/  oml);
                 
-                v2local(sdev->e0, sdev->e1, sdev->e2,  sdev->v, /**/ vcml);
-                v2local(sdev->e0, sdev->e1, sdev->e2, sdev->om, /**/  oml);
+            v2local(sdev->e0, sdev->e1, sdev->e2, ff[pid].f, /**/ fl);
                 
-                v2local(sdev->e0, sdev->e1, sdev->e2, ff[pid].f, /**/ fl);
+            bb_part_local(fl, vcml, oml, /*o*/ &pnl, /*w*/ &p0l);
                 
-                bb_part_local(fl, vcml, oml, /*o*/ &pnl, /*w*/ &p0l);
+            r2global(sdev->e0, sdev->e1, sdev->e2, sdev->com, pnl.r, /**/ pn.r);
+            v2global(sdev->e0, sdev->e1, sdev->e2,            pnl.v, /**/ pn.v); 
                 
-                r2global(sdev->e0, sdev->e1, sdev->e2, sdev->com, pnl.r, /**/ pn.r);
-                v2global(sdev->e0, sdev->e1, sdev->e2,            pnl.v, /**/ pn.v); 
-                
-                /* transfer momentum */
+            /* transfer momentum */
 
-                lin_mom_solid(p1.v, pn.v, /**/ dP);
+            lin_mom_solid(p1.v, pn.v, /**/ dP);
                 
-                ang_mom_solid(sdev->com, p1.r, pn.r, p1.v, pn.v, /**/ dL);
-            }
+            ang_mom_solid(sdev->com, p1.r, pn.r, p1.v, pn.v, /**/ dL);
             
             pp[pid] = pn;
         }

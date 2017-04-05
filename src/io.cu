@@ -16,7 +16,6 @@
 #include "common.h"
 #include "common.tmp.h"
 #include "io.h"
-#include "last-bit.h"
 
 bool H5FieldDump::directory_exists = false;
 
@@ -52,9 +51,12 @@ void H5PartDump::_initialize(const std::string filename)
 #endif
 }
 
-void H5PartDump::dump(Particle * P, int n)
+void H5PartDump::dump(Particle * P, int *sizes, int ntypes)
 {
 #ifndef NO_H5PART
+    int n = 0;
+    for (int d = 0; d < ntypes; ++d) n += sizes[d];
+    
     if (disposed) return;
     H5PartFile * f = (H5PartFile*)handler;
     H5PartSetStep(f, tstamp); H5PartSetNumParticles(f, n);
@@ -74,10 +76,11 @@ void H5PartDump::dump(Particle * P, int n)
     }
 
     std::vector <h5part_int64_t> ID(n); /* integer data */
-    for (i = 0; i < n; i++) {
-      int type = lastbit::get(P[i].v[0]); /* TODO: */
-      ID[i] = type;
-    }
+    int gid = 0;
+    for (int d = 0; d < ntypes; ++d)
+    for (int i = 0; i < sizes[d]; i++)
+    ID[gid++] = d;
+    
     H5PartWriteDataInt64(f, "type", &ID.front());
     tstamp++;
 #endif
