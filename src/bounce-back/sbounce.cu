@@ -320,14 +320,23 @@ namespace solidbounce {
     int nrescued, nbounced, still_in, failed, step = 0;
     FILE * fdebug;
 #endif
+
+    enum BBState
+    {
+        BB_SUCCESS,
+        BB_RESCUED,
+        BB_FAILED,
+        BB_INSIDE,
+        BB_NOBOUNCE
+    };
     
-    __host__ void bounce_part_local(const float *fp, const float *vcm, const float *om, /*o*/ Particle *p1, /*w*/ Particle *p0)
+    
+    _DH_ BBState bb_part_local(const float *fp, const float *vcm, const float *om, /*o*/ Particle *p1, float *rw, float *vw, /*w*/ Particle *p0)
     {
-        float rcol[3] = {0, 0, 0}, vs[3] = {0, 0, 0};
         float h;
         
         if (!shape::inside(p1->r))
-        return;
+        return BB_NOBOUNCE;
 
         /* previous position and velocity                        */
         /* this step should be dependant on the time scheme only */
@@ -340,99 +349,31 @@ namespace solidbounce {
         if (inside_prev(p0->r, om))
         {
             rescue_particle(vcm, om, /**/ p1->r, p1->v);
-#ifdef debug_output
-            ++nrescued;
-#endif
-            return;
+            return BB_RESCUED;
         }
         
         /* find collision point */
         
         if (!shape::intersect(p0->r, p0->v, om, /**/ &h))
         {
-            // particle will be rescued at next timestep
-#ifdef debug_output
-            ++failed;
-#endif
-            return;
+            return BB_FAILED;
         }
         
         assert(h >= 0 );
         assert(h <= dt);
         
-        collision_point(p0->r, p0->v, h, /**/ rcol);
+        collision_point(p0->r, p0->v, h, /**/ rw);
         
         /* handle collision for particle */
         
-        vsolid(vcm, om, rcol, /**/ vs);
+        vsolid(vcm, om, rw, /**/ vw);
 
-#ifdef debug_output
+        bounce_particle(vw, rw, p0->v, h, /**/ p1->r, p1->v);
 
-        #define db(...) fprintf (fdebug, __VA_ARGS__)
-        
-        db("%+.10e %+.10e %+.10e %+.10e %+.10e %+.10e ", p0->r[X], p0->r[Y], p0->r[Z], p0->v[X], p0->v[Y], p0->v[Z]);
-        db("%+.10e %+.10e %+.10e %+.10e %+.10e %+.10e ", p1->r[X], p1->r[Y], p1->r[Z], p1->v[X], p1->v[Y], p1->v[Z]);
-        db("%+.10e %+.10e %+.10e ", vs[X], vs[Y], vs[Z]);
-        db("%+.10e %+.10e %+.10e ", rcol[X], rcol[Y], rcol[Z]);
-#endif        
-
-        bounce_particle(vs, rcol, p0->v, h, /**/ p1->r, p1->v);
-
-#ifdef debug_output
-        db("%+.10e %+.10e %+.10e %+.10e %+.10e %+.10e ", p1->r[X], p1->r[Y], p1->r[Z], p1->v[X], p1->v[Y], p1->v[Z]);
-        
         if (shape::inside(p1->r))
-        {
-            ++still_in;
-            db(":inside:\n");
-        }
-        else
-        {
-            ++nbounced;
-            db(":success:\n");
-        }
-#endif
-    }
+        return BB_INSIDE;
 
-    _DH_ void bb_part_local(const float *fp, const float *vcm, const float *om, /*o*/ Particle *p1, /*w*/ Particle *p0)
-    {
-        float rcol[3] = {0, 0, 0}, vs[3] = {0, 0, 0};
-        float h;
-        
-        if (!shape::inside(p1->r))
-        return;
-
-        /* previous position and velocity                        */
-        /* this step should be dependant on the time scheme only */
-        
-        rvprev(p1->r, p1->v, fp, /**/ p0->r, p0->v);
-
-        /* rescue particles which were already in the solid   */
-        /* put them back on the surface with surface velocity */
-
-        if (inside_prev(p0->r, om))
-        {
-            rescue_particle(vcm, om, /**/ p1->r, p1->v);
-            return;
-        }
-        
-        /* find collision point */
-        
-        if (!shape::intersect(p0->r, p0->v, om, /**/ &h))
-        {
-            return;
-        }
-        
-        assert(h >= 0 );
-        assert(h <= dt);
-        
-        collision_point(p0->r, p0->v, h, /**/ rcol);
-        
-        /* handle collision for particle */
-        
-        vsolid(vcm, om, rcol, /**/ vs);
-
-        bounce_particle(vs, rcol, p0->v, h, /**/ p1->r, p1->v);
+        return BB_SUCCESS;
     }
     
     _DH_ void r2local (const float *e0, const float *e1, const float *e2, const float *com, const float *rg, /**/ float *rl)
@@ -470,7 +411,7 @@ namespace solidbounce {
     void bounce(const Force *ff, const int np, /**/ Particle *pp, Solid *shst)
     {
         Particle p0l, p1, pn, pnl;
-        float dP[3], dL[3], vcml[3], oml[3], fl[3];
+        float dP[3], dL[3], vcml[3], oml[3], fl[3], rw[3], vw[3];
 
 #ifdef debug_output
         fdebug = fopen("debug.txt", "a");
@@ -491,9 +432,41 @@ namespace solidbounce {
             v2local(shst->e0, shst->e1, shst->e2, shst->om, /**/  oml);
                 
             v2local(shst->e0, shst->e1, shst->e2, ff[ip].f, /**/ fl);
+
+#ifdef debug_output
+            Particle p1l = pnl;
+#endif
             
-            bounce_part_local(fl, vcml, oml, /*o*/ &pnl, /*w*/ &p0l);
-                
+            BBState bbstate = bb_part_local(fl, vcml, oml, /*o*/ &pnl, rw, vw, /*w*/ &p0l);
+
+#ifdef debug_output
+            if (bbstate != BB_NOBOUNCE)
+            {
+#define db(...) fprintf (fdebug, __VA_ARGS__)
+                db("%+.10e %+.10e %+.10e %+.10e %+.10e %+.10e ", p0l.r[X], p0l.r[Y], p0l.r[Z], p0l.v[X], p0l.v[Y], p0l.v[Z]);
+                db("%+.10e %+.10e %+.10e %+.10e %+.10e %+.10e ", p1l.r[X], p1l.r[Y], p1l.r[Z], p1l.v[X], p1l.v[Y], p1l.v[Z]);
+                db("%+.10e %+.10e %+.10e %+.10e %+.10e %+.10e ", rw[X], rw[Y], rw[Z], vw[X], vw[Y], vw[Z]);
+                db("%+.10e %+.10e %+.10e %+.10e %+.10e %+.10e ", pnl.r[X], pnl.r[Y], pnl.r[Z], pnl.v[X], pnl.v[Y], pnl.v[Z]);
+
+                switch (bbstate)
+                {
+                case BB_SUCCESS:
+                    ++nbounced; db(":success:\n");
+                    break;
+                case BB_RESCUED:
+                    ++nrescued; db(":rescued:\n");
+                    break;
+                case BB_INSIDE:
+                    ++still_in; db(":inside:\n");
+                    break;
+                case BB_FAILED:
+                    ++failed;   db(":failed:\n");
+                    break;
+                }
+            }
+#endif
+
+            
             r2global(shst->e0, shst->e1, shst->e2, shst->com, pnl.r, /**/ pn.r);
             v2global(shst->e0, shst->e1, shst->e2,            pnl.v, /**/ pn.v); 
             
@@ -542,7 +515,7 @@ namespace solidbounce {
         if (pid < np)
         {
             Particle p0l, p1, pn, pnl;
-            float vcml[3], oml[3], fl[3];
+            float vcml[3], oml[3], fl[3], rw[3], vw[3];
             
             p1 = pp[pid];
             pn = p1;
@@ -555,7 +528,7 @@ namespace solidbounce {
                 
             v2local(sdev->e0, sdev->e1, sdev->e2, ff[pid].f, /**/ fl);
                 
-            bb_part_local(fl, vcml, oml, /*o*/ &pnl, /*w*/ &p0l);
+            bb_part_local(fl, vcml, oml, /*o*/ &pnl, rw, vw, /*w*/ &p0l);
                 
             r2global(sdev->e0, sdev->e1, sdev->e2, sdev->com, pnl.r, /**/ pn.r);
             v2global(sdev->e0, sdev->e1, sdev->e2,            pnl.v, /**/ pn.v); 
