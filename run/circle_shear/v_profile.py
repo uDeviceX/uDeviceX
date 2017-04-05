@@ -47,14 +47,34 @@ def avg(x, y, t, x0, field):
 
     return sums / np.maximum(1, counts)
 
+def rhoavg(x, y, t, x0):
+
+    # select solvent
+    #mask = (t == 0)
+
+    # or select all particles
+    mask = len(x)*[True]
+
+    dxh = 0.5 * dx
+    
+    mask = np.logical_and(np.logical_and(mask, (x > x0 - dxh)), (x <= x0 + dxh))
+
+    y = y[mask]
+    
+    bins = np.linspace(-0.5*YS, 0.5*YS, N, True)
+    counts = np.histogram(y, bins=N, range=(0., YS))[0]
+    
+    return counts / (dx * dy * ZS)
+
 (XS, YS, ZS) = domainsizes()
 print "Domain size:", XS, YS, ZS
 
 N = int( YS / dy )
 
-plt.figure(0)
 uavg0 = np.zeros(N)
 uavg1 = np.zeros(N)
+rhoavg0 = np.zeros(N)
+rhoavg1 = np.zeros(N)
 yavg = np.linspace(-0.5*YS, 0.5*YS, N)
 nsteps = 0
 
@@ -63,7 +83,7 @@ for n in f:
     data = f[n]
     
     if step >= start:
-        print "processing step", step
+        #print "processing step", step
 
         x = np.array(data["x"])
         y = np.array(data["y"])
@@ -77,15 +97,27 @@ for n in f:
 
         uavg0 += avg(x, y, t, dx*0.5, u)
         uavg1 += avg(x, y, t, XS*0.5, u)
+
+        rhoavg0 += rhoavg(x, y, t, dx*0.5)
+        rhoavg1 += rhoavg(x, y, t, XS*0.5)
         
         nsteps += 1
         
 uavg0 = (1.0 / nsteps) * uavg0
 uavg1 = (1.0 / nsteps) * uavg1
 
+rhoavg0 = (1.0 / nsteps) * rhoavg0
+rhoavg1 = (1.0 / nsteps) * rhoavg1
+
+plt.figure(0)
 plt.plot(yavg, uavg0, '-+')
 plt.plot(yavg, uavg1, '-+')
 plt.plot(yavg, yavg*0.05, '-')
-#plt.plot(yavg, yavg*0.1, '-')
+plt.plot(yavg, yavg*0.025, '-')
+
+if 0:
+    plt.figure(1)
+    plt.plot(yavg, rhoavg0, '-+')
+    plt.plot(yavg, rhoavg1, '-+')
 
 plt.show()
