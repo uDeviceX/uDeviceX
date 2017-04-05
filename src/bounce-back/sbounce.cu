@@ -57,10 +57,10 @@ namespace solidbounce {
             return r[X] * r[X] + r[Y] * r[Y] + r[Z] * r[Z] < rsph_bb * rsph_bb;
         }
 
-        _DH_ bool intersect(const float *r0, const float *v0, const float *om0, /**/ float *h)
+        _DH_ bool intersect(const float *r0, const float *v0, const float *vcm, const float *om0, /**/ float *h)
         {
-            float r0x = r0[X], r0y = r0[Y], r0z = r0[Z];
-            float v0x = v0[X], v0y = v0[Y], v0z = v0[Z];
+            float r0x = r0[X],          r0y = r0[Y],          r0z = r0[Z];
+            float v0x = v0[X] - vcm[X], v0y = v0[Y] - vcm[Y], v0z = v0[Z] - vcm[Z];
                         
             const float a = v0x*v0x + v0y*v0y + v0z*v0z;
             
@@ -94,10 +94,10 @@ namespace solidbounce {
         }
 
         /* output h between 0 and dt */
-        _DH_ bool intersect(const float *r0, const float *v0, const float *om0, /**/ float *h)
+        _DH_ bool intersect(const float *r0, const float *v0, const float *vcm, const float *om0, /**/ float *h)
         {
-            float r0x = r0[X], r0y = r0[Y];
-            float v0x = v0[X], v0y = v0[Y];
+            float r0x = r0[X],          r0y = r0[Y];
+            float v0x = v0[X] - vcm[X], v0y = v0[Y] - vcm[Y];
 
             const float a = v0x * v0x + v0y * v0y;
             
@@ -136,10 +136,10 @@ namespace solidbounce {
         
         /* output h between 0 and dt */
         // for now: assume vcm = 0
-        _DH_ bool intersect(const float *r0, const float *v0, const float *om0, /**/ float *h)
+        _DH_ bool intersect(const float *r0, const float *v0, const float *vcm, const float *om0, /**/ float *h)
         {
-            const float r0x = r0[X], r0y = r0[Y];
-            const float v0x = v0[X], v0y = v0[Y];
+            const float r0x = r0[X],          r0y = r0[Y];
+            const float v0x = v0[X] - vcm[X], v0y = v0[Y] - vcm[Y];
 
             const float om0z = -om0[Z];
             
@@ -186,13 +186,11 @@ namespace solidbounce {
             return x*x / a2_bb + y*y / b2_bb + z*z / c2_bb < 1;
         }
 
-        /* output h between 0 and dt */
-        // for now: assume vcm = 0
-        _DH_ bool intersect(const float *r0, const float *v0, const float *om0, /**/ float *h)
+        _DH_ bool intersect(const float *r0, const float *v0, const float *vcm, const float *om0, /**/ float *h)
         {
-            const float r0x  =  r0[X], r0   =  r0[Y], r0z  =  r0[Z];
-            const float v0x  =  v0[X], v0   =  v0[Y], v0z  =  vo[Z];
-            const float om0x = om0[X], om0y = om0[Y], om0z = om0[Z];
+            const float r0x  = r0[X],          r0   = r0[Y],          r0z  = r0[Z];
+            const float v0x  = v0[X] - vcm[X], v0   = v0[Y] - vcm[Y], v0z  = v0[Z] - vcm[Z];
+            const float om0x = om0[X],         om0y = om0[Y],         om0z = om0[Z];
 
             const float r1x = r0x + dt * v0x;
             const float r1y = r0y + dt * v0y;
@@ -239,7 +237,7 @@ namespace solidbounce {
             return false;
         }
 
-        _DH_ bool intersect(const float *r0, const float *v0, const float *om0, /**/ float *h)
+        _DH_ bool intersect(const float *r0, const float *v0, const float *vcm, const float *om0, /**/ float *h)
         {
             printf("solidbounce: not implemented\n");
             exit(1);
@@ -355,7 +353,7 @@ namespace solidbounce {
         
         /* find collision point */
         
-        if (!shape::intersect(p0->r, p0->v, om, /**/ &h))
+        if (!shape::intersect(p0->r, p0->v, vcm, om, /**/ &h))
         return BB_FAILED;
         
         assert(h >= 0 );

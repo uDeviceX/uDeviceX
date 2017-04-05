@@ -273,9 +273,14 @@ void run_wall() {
   if (rbcs0 && r_n) k_sim::clear_velocity<<<k_cnf(r_n)>>>(r_pp, r_n);
   if (pushtheflow) driving_force = hydrostatic_a;
 
-#if 1 // hack for faster equilibration; TODO remove that!
+#if 0 // hack for faster equilibration; TODO remove that!
   ic::k_init_v <<<k_cnf(s_n)>>> (s_n, s_pp);
 
+  CC(cudaMemcpy(&solid_hst, solid_dev, 1*sizeof(Solid), D2H));
+
+  solid_hst.om[Z] = -gamma_dot*0.5;
+  
+  CC(cudaMemcpy(solid_dev, &solid_hst, 1*sizeof(Solid), H2D));
   
 #endif
   

@@ -39,6 +39,7 @@ int gen(Particle* pp) { /* generate particle positions and velocities */
   return n;
 }
 
+#if 0
     // hack for faster equilibration; TODO remove that!
     __global__ void k_init_v(const int n, Particle *pp)
     {
@@ -62,7 +63,7 @@ int gen(Particle* pp) { /* generate particle positions and velocities */
 
         pp[pid] = p;
     }
-
+#endif
     
 #undef X
 #undef Y

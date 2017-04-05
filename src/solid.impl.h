@@ -64,8 +64,9 @@ namespace solid {
         e1[X] = 0; e1[Y] = 1; e1[Z] = 0;
         e2[X] = 0; e2[Y] = 0; e2[Z] = 1;
 
-        if (!pin_com) init_com(pp, n, /**/ com);
-        else com[X] = com[Y] = com[Z] = 0;
+        //if (!pin_com) init_com(pp, n, /**/ com);
+        //else com[X] = com[Y] = com[Z] = 0;
+        com[X] = com[Y] = com[Z] = 0;
 
         /* init inertia tensor */
         float I[6]; solid::init_I(pp, n, mass, com, /**/ I);
@@ -201,7 +202,7 @@ namespace solid {
     {
         k_solid::add_f_to <<<k_cnf(n)>>> (pp, ff, n, sdev->com, /**/ sdev->fo, sdev->to);
 
-        k_solid::update_om_v <<<1, 1>>> (rbc_mass, sdev->Iinv, sdev->fo, sdev->to, /**/ sdev->om, sdev->v);
+        k_solid::update_om_v <<<1, 1>>> (rbc_mass * n, sdev->Iinv, sdev->fo, sdev->to, /**/ sdev->om, sdev->v);
 
         k_solid::compute_velocity <<<k_cnf(n)>>> (sdev->v, sdev->com, sdev->om, n, /**/ pp);
         
