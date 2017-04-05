@@ -48,7 +48,18 @@ int gen(Particle* pp) { /* generate particle positions and velocities */
         return;
 
         Particle p = pp[pid];
-        p.v[X] = gamma_dot * p.r[Y];
+
+        const float x = p.r[X], y = p.r[Y];
+        
+        const float vc[3] = {(float) (-gamma_dot*0.5*y), (float) (gamma_dot*0.5*x), 0.f};
+        const float vs[3] = {(float) (gamma_dot * y), 0.f, 0.f};
+
+        const float w = exp(-(x*x+y*y - rcyl*rcyl)*0.5);
+        
+        p.v[X] = w * vc[X] + (1.f - w) * vs[X];
+        p.v[Y] = w * vc[Y] + (1.f - w) * vs[Y];
+        p.v[Z] = w * vc[Z] + (1.f - w) * vs[Z];
+
         pp[pid] = p;
     }
 

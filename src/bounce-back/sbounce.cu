@@ -294,7 +294,7 @@ namespace solidbounce {
     _DH_ void rescue_particle(const float *vcm, const float *om, /**/ float *r, float *v)
     {
         shape::rescue(/**/ r);
-        //vsolid(vcm, om, r, /**/ v);
+        vsolid(vcm, om, r, /**/ v);
 
         assert(!shape::inside(r));
     }
@@ -318,6 +318,7 @@ namespace solidbounce {
 #define debug_output
 #ifdef debug_output
     int nrescued, nbounced, still_in, failed, step = 0;
+    __device__ int bbinfosdev[5];
     FILE * fdebug;
 #endif
 
@@ -355,9 +356,7 @@ namespace solidbounce {
         /* find collision point */
         
         if (!shape::intersect(p0->r, p0->v, om, /**/ &h))
-        {
-            return BB_FAILED;
-        }
+        return BB_FAILED;
         
         assert(h >= 0 );
         assert(h <= dt);
@@ -416,7 +415,7 @@ namespace solidbounce {
 #ifdef debug_output
         fdebug = fopen("debug.txt", "a");
 
-        if (step % 100 == 0)
+        if (step % steps_per_dump == 0)
         nbounced = nrescued = still_in = failed = 0;
 #endif
         
@@ -488,7 +487,7 @@ namespace solidbounce {
             pp[ip] = pn;
         }
 #ifdef debug_output
-        if ((++step) % 100 == 0)
+        if ((++step) % steps_per_dump == 0)
         printf("%d rescued, %d boounced, %d still in, %d failed\n\n", nrescued, nbounced, still_in, failed);
 
         fclose(fdebug);
@@ -528,8 +527,12 @@ namespace solidbounce {
                 
             v2local(sdev->e0, sdev->e1, sdev->e2, ff[pid].f, /**/ fl);
                 
-            bb_part_local(fl, vcml, oml, /*o*/ &pnl, rw, vw, /*w*/ &p0l);
-                
+            BBState bbstate = bb_part_local(fl, vcml, oml, /*o*/ &pnl, rw, vw, /*w*/ &p0l);
+
+#ifdef debug_output
+            if (bbstate != BB_NOBOUNCE) atomicAdd(bbinfosdev + bbstate, 1);
+#endif
+            
             r2global(sdev->e0, sdev->e1, sdev->e2, sdev->com, pnl.r, /**/ pn.r);
             v2global(sdev->e0, sdev->e1, sdev->e2,            pnl.v, /**/ pn.v); 
                 
@@ -566,6 +569,25 @@ namespace solidbounce {
 
     void bounce_nohost(const Force *ff, const int np, /**/ Particle *pp, Solid *sdev)
     {
+#ifdef debug_output
+        if (step % steps_per_dump == 0)
+        {
+            const int zeros[5] = {0, 0, 0, 0, 0};
+            CC(cudaMemcpyToSymbol(bbinfosdev, zeros, 5*sizeof(int)));
+        }
+#endif
+
         bounce_kernel <<<k_cnf(np)>>> (ff, np, /**/ pp, sdev);
+
+#ifdef debug_output
+        if ((++step) % steps_per_dump == 0)
+        {
+            int bbinfos[5];
+            CC(cudaMemcpyFromSymbol(bbinfos, bbinfosdev, 5*sizeof(int)));
+            
+            printf("%d rescued, %d boounced, %d still in, %d failed\n\n", bbinfos[BB_RESCUED], bbinfos[BB_SUCCESS], bbinfos[BB_INSIDE], bbinfos[BB_FAILED]);
+        }
+#endif
+
     }
 }
