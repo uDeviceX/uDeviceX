@@ -443,7 +443,7 @@ namespace solidbounce {
 #define db(...) fprintf (fdebug, __VA_ARGS__)
                 db("%+.10e %+.10e %+.10e %+.10e %+.10e %+.10e ", p0l.r[X], p0l.r[Y], p0l.r[Z], p0l.v[X], p0l.v[Y], p0l.v[Z]);
                 db("%+.10e %+.10e %+.10e %+.10e %+.10e %+.10e ", p1l.r[X], p1l.r[Y], p1l.r[Z], p1l.v[X], p1l.v[Y], p1l.v[Z]);
-                db("%+.10e %+.10e %+.10e %+.10e %+.10e %+.10e ", rw[X], rw[Y], rw[Z], vw[X], vw[Y], vw[Z]);
+                db("%+.10e %+.10e %+.10e %+.10e %+.10e %+.10e ",   rwl[X],   rwl[Y],   rwl[Z],   vwl[X],   vwl[Y],   vwl[Z]);
                 db("%+.10e %+.10e %+.10e %+.10e %+.10e %+.10e ", pnl.r[X], pnl.r[Y], pnl.r[Z], pnl.v[X], pnl.v[Y], pnl.v[Z]);
 
                 switch (bbstate)
@@ -478,11 +478,11 @@ namespace solidbounce {
             {
                 float rw[3], v0[3];
                 
-                r2global(sdev->e0, sdev->e1, sdev->e2, sdev->com, rwl, /**/ rw);
-                v2global(sdev->e0, sdev->e1, sdev->e2,          p0l.v, /**/ v0); 
+                r2global(shst->e0, shst->e1, shst->e2, shst->com, rwl, /**/ rw);
+                v2global(shst->e0, shst->e1, shst->e2,          p0l.v, /**/ v0); 
                 
                 lin_mom_solid(v0, pn.v, /**/ dP);
-                ang_mom_solid(sdev->com, rw, rw, v0, pn.v, /**/ dL);
+                ang_mom_solid(shst->com, rw, rw, v0, pn.v, /**/ dL);
             }
 #else
             lin_mom_solid(p1.v, pn.v, /**/ dP);
