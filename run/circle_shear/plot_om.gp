@@ -1,12 +1,14 @@
-f = "< cat solid_diag.txt"
-favg = "< sed -n '15,$p' solid_diag.txt"
+set macro
+
+fname = "solid_diag.txt"
+
+f = "< cat $1".fname
+favg = "< sed -n '15,$p' $1".fname
 
 set xlabel "t * gammadot"
 set ylabel "\omega_z / gammadot"
 
 gammadot=0.05
-
-set macro
 
 rescale_om(om) = -om / gammadot
 rescale_t (t ) =   t * gammadot
