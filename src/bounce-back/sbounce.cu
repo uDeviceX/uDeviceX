@@ -3,8 +3,10 @@
 
 namespace solidbounce {
 
+#define POINTWISE_BB_MOMENTUM
+
     enum {X, Y, Z};
-        
+    
     // from forward Euler
     _DH_ void rvprev(const float *r1, const float *v1, const float *f0, /**/ float *r0, float *v0)
     {
@@ -135,7 +137,6 @@ namespace solidbounce {
         }
         
         /* output h between 0 and dt */
-        // for now: assume vcm = 0
         _DH_ bool intersect(const float *r0, const float *v0, const float *vcm, const float *om0, /**/ float *h)
         {
             const float r0x = r0[X],          r0y = r0[Y];
@@ -408,7 +409,7 @@ namespace solidbounce {
     void bounce(const Force *ff, const int np, /**/ Particle *pp, Solid *shst)
     {
         Particle p0l, p1, pn, pnl;
-        float dP[3], dL[3], vcml[3], oml[3], fl[3], rw[3], vw[3];
+        float dP[3], dL[3], vcml[3], oml[3], fl[3], rwl[3], vwl[3];
 
 #ifdef debug_output
         fdebug = fopen("debug.txt", "a");
@@ -434,7 +435,7 @@ namespace solidbounce {
             Particle p1l = pnl;
 #endif
             
-            BBState bbstate = bb_part_local(fl, vcml, oml, /*o*/ &pnl, rw, vw, /*w*/ &p0l);
+            BBState bbstate = bb_part_local(fl, vcml, oml, /*o*/ &pnl, rwl, vwl, /*w*/ &p0l);
 
 #ifdef debug_output
             if (bbstate != BB_NOBOUNCE)
@@ -471,10 +472,22 @@ namespace solidbounce {
             
             dP[X] = dP[Y] = dP[Z] = 0;
             dL[X] = dL[Y] = dL[Z] = 0;
+
+#ifdef POINTWISE_BB_MOMENTUM
+            if (bbstate == BB_SUCCESS)
+            {
+                float rw[3], v0[3];
                 
+                r2global(sdev->e0, sdev->e1, sdev->e2, sdev->com, rwl, /**/ rw);
+                v2global(sdev->e0, sdev->e1, sdev->e2,          p0l.v, /**/ v0); 
+                
+                lin_mom_solid(v0, pn.v, /**/ dP);
+                ang_mom_solid(sdev->com, rw, rw, v0, pn.v, /**/ dL);
+            }
+#else
             lin_mom_solid(p1.v, pn.v, /**/ dP);
-                
             ang_mom_solid(shst->com, p1.r, pn.r, p1.v, pn.v, /**/ dL);
+#endif
                 
             for (int d = 0; d < 3; ++d)
             {
@@ -512,7 +525,7 @@ namespace solidbounce {
         if (pid < np)
         {
             Particle p0l, p1, pn, pnl;
-            float vcml[3], oml[3], fl[3], rw[3], vw[3];
+            float vcml[3], oml[3], fl[3], rwl[3], vwl[3];
             
             p1 = pp[pid];
             pn = p1;
@@ -525,7 +538,7 @@ namespace solidbounce {
                 
             v2local(sdev->e0, sdev->e1, sdev->e2, ff[pid].f, /**/ fl);
                 
-            BBState bbstate = bb_part_local(fl, vcml, oml, /*o*/ &pnl, rw, vw, /*w*/ &p0l);
+            BBState bbstate = bb_part_local(fl, vcml, oml, /*o*/ &pnl, rwl, vwl, /*w*/ &p0l);
 
 #ifdef debug_output
             if (bbstate != BB_NOBOUNCE) atomicAdd(bbinfosdev + bbstate, 1);
@@ -536,10 +549,21 @@ namespace solidbounce {
                 
             /* transfer momentum */
 
-            lin_mom_solid(p1.v, pn.v, /**/ dP);
+#ifdef POINTWISE_BB_MOMENTUM
+            if (bbstate == BB_SUCCESS)
+            {
+                float rw[3], v0[3];
                 
+                r2global(sdev->e0, sdev->e1, sdev->e2, sdev->com, rwl, /**/ rw);
+                v2global(sdev->e0, sdev->e1, sdev->e2,          p0l.v, /**/ v0); 
+                                
+                lin_mom_solid(v0, pn.v, /**/ dP);
+                ang_mom_solid(sdev->com, rw, rw, v0, pn.v, /**/ dL);
+            }
+#else
+            lin_mom_solid(p1.v, pn.v, /**/ dP);
             ang_mom_solid(sdev->com, p1.r, pn.r, p1.v, pn.v, /**/ dL);
-            
+#endif       
             pp[pid] = pn;
         }
 
