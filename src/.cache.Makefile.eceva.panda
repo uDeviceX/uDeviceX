@@ -27,7 +27,7 @@ HDF5_LDFLAGS  = -L${HDF5_DIR}/lib -Wl,-rpath -Wl,${HDF5_DIR}/lib
 HDF5_LIBS = -lhdf5
 
 # link: https://codeforge.lbl.gov/frs/download.php/file/387/H5Part-1.6.6.tar.gz
-# conf: --prefix=$HOME/prefix/h5part --enable-parallel --with-hdf5path=$HOME/prefix/hdf5 CXX=/usr/lib64/mpich/bin/mpic++ CC=/usr/lib64/mpich/bin/mpicc
+# conf: --prefix=$HOME/prefix/h5part --enable-parallel --with-hdf5=$HOME/prefix/hdf5 CXX=/usr/lib64/mpich/bin/mpic++ CC=/usr/lib64/mpich/bin/mpicc
 H5PART_CXXFLAGS = -I${HOME}/prefix/h5part/include
 H5PART_LDFLAGS =  -L${HOME}/prefix/h5part/lib
 H5PART_LIBS = -lH5Part
