@@ -13,9 +13,10 @@ rescale_t (t ) =   t * gammadot
 
 omvst = 'u (rescale_t($1)):(rescale_om($10))'
 
-
+mu = 0.5
 mean(x) = mu
 
 fit mean(x) favg @omvst via mu
 
-plot f @omvst, 0.5, mu
+set key right bottom
+plot f @omvst w lp, 0.5, mu t sprintf("mu = %f", mu)

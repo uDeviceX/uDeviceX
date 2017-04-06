@@ -7,7 +7,7 @@ cd ${SRCDIR}
 export PATH=../tools:$PATH
 
 XS=64
-YS=32
+YS=64
 ZS=8
 
 argp .conf.test.h                                                       \
