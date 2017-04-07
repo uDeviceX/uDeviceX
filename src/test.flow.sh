@@ -11,7 +11,7 @@
 # TEST: double.poiseuille
 # set -x
 # export PATH=../tools:$PATH
-# rm -rf ply h5 diag.txt
+# rm -rf h5 diag.txt
 # :
 # argp .conf.double.poiseuille.h      \
 #    -rsph=4 -pin_com=true            \
@@ -27,7 +27,7 @@
 #### Plates : shear
 # TEST: diag.t4
 # export PATH=../tools:$PATH
-# rm -rf ply h5 diag.txt
+# rm -rf h5 diag.txt
 # cp sdf/wall1/wall.dat sdf.dat
 # :
 # argp .conf.test.h  \
@@ -43,7 +43,7 @@
 #### Plates : poiseuille
 # TEST: diag.t5
 # export PATH=../tools:$PATH
-# rm -rf ply h5 diag.txt
+# rm -rf h5 diag.txt
 # cp sdf/wall1/wall.dat sdf.dat
 # :
 # argp .conf.poiseuille.h \
@@ -59,7 +59,7 @@
 #### Cylinder
 # TEST: diag.t6
 # export PATH=../tools:$PATH
-# rm -rf ply h5 diag.txt
+# rm -rf h5 diag.txt
 # cp sdf/cyl1/cyl.dat sdf.dat
 # :
 # argp .conf.poiseuille.h \
