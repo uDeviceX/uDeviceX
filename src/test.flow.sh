@@ -15,7 +15,7 @@
 # :
 # argp .conf.double.poiseuille.h      \
 #    -rsph=4 -pin_com=true            \
-#    -tend=2.0 -steps_per_dump=4000   \
+#    -tend=2.01 -steps_per_dump=4000  \
 #    -pushtheflow -doublepoiseuille   \
 #    -hdf5field_dumps -hdf5part_dumps \
 #    -steps_per_hdf5dump=4000 -pushtheflow > .conf.h
