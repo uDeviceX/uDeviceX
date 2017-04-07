@@ -1,5 +1,5 @@
 #### Couette pinned sphere
-# sTEST: solid.t1
+# TEST: solid.t1
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt
 # cp sdf/wall1/wall.dat sdf.dat
@@ -14,7 +14,7 @@
 # avg_h5.m h5/flowfields-0001.h5 | fround.awk -v tol=1 > h5.out.txt
 
 #### Double poiseuille pinned sphere
-# sTEST: solid.t2
+# TEST: solid.t2
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt
@@ -32,7 +32,7 @@
 #
 
 #### Double poiseuille pinned cylinder
-# sTEST: solid.t3
+# TEST: solid.t3
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt debug.txt
@@ -50,7 +50,7 @@
 #
 
 #### Couette pinned cylinder
-# sTEST: solid.t4
+# TEST: solid.t4
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt
 # cp sdf/yplates1/yplates.dat sdf.dat
@@ -65,7 +65,7 @@
 # avg_h5.m h5/flowfields-0001.h5 | fround.awk -v tol=1 > h5.out.txt
 
 #### Double poiseuille pinned ellipse
-# sTEST: solid.t5
+# TEST: solid.t5
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt debug.txt

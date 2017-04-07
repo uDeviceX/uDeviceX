@@ -23,7 +23,7 @@
 #### pinned ellipse, only bb ans momentum conservation
 #### No DPD forces
 #### Note: must modify ic.impl.h manually
-# sTEST: solidbb.t2
+# TEST: solidbb.t2
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt
