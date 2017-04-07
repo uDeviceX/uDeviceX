@@ -23,7 +23,7 @@ NVCC_BIN = nvcc
 
 # how to get the flags: mpicxx -show
 #                     : pkg-config --libs mpich
-MPI_CXXFLAGS =
+MPI_CXXFLAGS = -I${MPICH_DIR}/include
 MPI_LDFLAGS  = 
 MPI_LIBS     =
 
