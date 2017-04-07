@@ -81,12 +81,6 @@ void forces(bool wall_created) {
   }
 }
 
-void in_out() {
-#ifdef GWRP
-#include "sim.hack.h"
-#endif
-}
-
 void dev2hst() { /* device to host  data transfer */
   CC(cudaMemcpyAsync(sr_pp, s_pp,
 		     sizeof(Particle) * s_n, D2H, 0));
@@ -231,7 +225,6 @@ void init() {
 }
 
 void dumps_diags(int it) {
-  if (it % steps_per_dump == 0)     in_out();
   if (it % steps_per_dump == 0)     dump_part();
   if (it % steps_per_dump == 0)     solid::dump(it, &solid_hst);
   if (it % steps_per_hdf5dump == 0) dump_grid();

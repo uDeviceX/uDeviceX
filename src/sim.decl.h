@@ -33,10 +33,4 @@ namespace sim {
   Solid  solid_hst;
   Solid *solid_dev;
     
-#ifdef GWRP  
-float rbc_xx[MAX_PART_NUM], rbc_yy[MAX_PART_NUM], rbc_zz[MAX_PART_NUM];
-float sol_xx[MAX_PART_NUM], sol_yy[MAX_PART_NUM], sol_zz[MAX_PART_NUM];
-int   iotags[MAX_PART_NUM];
-#endif  
-  
 }

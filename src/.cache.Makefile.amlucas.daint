@@ -12,7 +12,6 @@
 
 h5part = 1
 h5 = 1
-gwrp = 0
 
 ARCH_VAL = compute_60
 CODE_VAL = sm_60
@@ -48,6 +47,6 @@ GSL_CXXFLAGS = `gsl-config --cflags`
 GSL_LDFLAGS  =
 GSL_LIBS     = `gsl-config --libs`
 
-NVCC = ${NVCC_BIN} ${GWRP_CXXFLAGS} ${H5PART_CXXFLAGS} ${HDF5_CXXFLAGS} ${MPI_CXXFLAGS} ${GSL_CXXFLAGS}
-LDFLAGS =          ${GWRP_LDFLAGS}  ${H5PART_LDFLAGS}  ${HDF5_LDFLAGS}  ${MPI_LDFLAGS}  ${GSL_LDFLAGS} ${NVCC_LDFALGS} # (sic)
-LIBS =             ${GWRP_LIBS}     ${H5PART_LIBS}     ${HDF5_LIBS}     ${MPI_LIBS}     ${GSL_LIBS}    
+NVCC = ${NVCC_BIN} ${H5PART_CXXFLAGS} ${HDF5_CXXFLAGS} ${MPI_CXXFLAGS} ${GSL_CXXFLAGS}
+LDFLAGS =          ${H5PART_LDFLAGS}  ${HDF5_LDFLAGS}  ${MPI_LDFLAGS}  ${GSL_LDFLAGS} ${NVCC_LDFALGS} # (sic)
+LIBS =             ${H5PART_LIBS}     ${HDF5_LIBS}     ${MPI_LIBS}     ${GSL_LIBS}    

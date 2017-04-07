@@ -12,7 +12,6 @@
 
 h5part = 1
 h5 = 1
-gwrp = 0
 
 ARCH_VAL = compute_60
 CODE_VAL = sm_60
@@ -42,12 +41,6 @@ H5PART_LDFLAGS =  -L${HOME}/prefix/h5part/lib
 H5PART_LIBS = -lH5Part
 
 NVCC_LDFALGS = -L${CRAY_CUDATOOLKIT_DIR}/lib64 -Wl,-rpath -Wl,${CRAY_CUDATOOLKIT_DIR}/lib64
-
-# geom-wrapper libraries
-# cd ../geom-wrapper && cmake . && make
-GWRP_CXXFLAGS = -I../geom-wrapper
-GWRP_LDFLAGS = -L${HOME}/prefix/cgal/lib64 -Wl,-rpath,${HOME}/prefix/cgal/lib64:${HOME}/prefix/pkgsrc/lib
-GWRP_LIBS = ../geom-wrapper/libgeom-wrapper.a -lgmp -lCGAL
 
 NVCC = ${NVCC_BIN} ${H5PART_CXXFLAGS} ${HDF5_CXXFLAGS} ${MPI_CXXFLAGS}
 LDFLAGS =          ${H5PART_LDFLAGS}  ${HDF5_LDFLAGS}  ${MPI_LDFLAGS} ${NVCC_LDFALGS}

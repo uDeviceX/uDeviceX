@@ -35,12 +35,6 @@ H5PART_LIBS = -lH5Part
 
 NVCC_LDFALGS = -L${NVCC_DIR}/lib64 -Wl,-rpath -Wl,${NVCC_DIR}/lib64
 
-# geom-wrapper libraries
-# cd ../geom-wrapper && cmake . && make
-GWRP_CXXFLAGS = -I../geom-wrapper
-GWRP_LDFLAGS = -L${HOME}/prefix/cgal/lib64 -Wl,-rpath,${HOME}/prefix/cgal/lib64:${HOME}/prefix/pkgsrc/lib
-GWRP_LIBS = ../geom-wrapper/libgeom-wrapper.a -lgmp -lCGAL
-
 NVCC = ${NVCC_BIN} ${H5PART_CXXFLAGS} ${HDF5_CXXFLAGS} ${MPI_CXXFLAGS}
 LDFLAGS = ${H5PART_LDFLAGS} ${HDF5_LDFLAGS} ${MPI_LDFLAGS} ${NVCC_LDFALGS}
 LIBS = ${H5PART_LIBS} ${HDF5_LIBS} ${MPI_LIBS}

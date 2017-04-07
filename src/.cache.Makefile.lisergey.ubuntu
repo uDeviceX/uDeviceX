@@ -31,12 +31,6 @@ H5PART_LIBS = -lH5Part
 # Ubuntu 16.04: https://github.com/BVLC/caffe/issues/4046
 NVCC_CXXFLAGS = --compiler-options=-D_FORCE_INLINES
 
-# geom-wrapper libraries
-# cd ../geom-wrapper && cmake . && make
-GWRP_LIBS = ../geom-wrapper/libgeom-wrapper.a -lgmp -lCGAL -lboost_system
-GWRP_CXXFLAGS = -I../geom-wrapper
-GWRP_LDFLAGS =
-
-NVCC = ${NVCC_BIN} ${GWRP_CXXFLAGS} ${H5PART_CXXFLAGS} ${HDF5_CXXFLAGS} ${MPI_CXXFLAGS} ${NVCC_CXXFLAGS}
-LDFLAGS = ${GWRP_LDFLAGS} ${H5PART_LDFLAGS} ${HDF5_LDFLAGS} ${MPI_LDFLAGS} ${NVCC_LDFALGS} # (sic) passed to a linker in uDeviceX
-LIBS = ${GWRP_LIBS} ${H5PART_LIBS} ${HDF5_LIBS} ${MPI_LIBS}
+NVCC = ${NVCC_BIN} ${H5PART_CXXFLAGS} ${HDF5_CXXFLAGS} ${MPI_CXXFLAGS} ${NVCC_CXXFLAGS}
+LDFLAGS = ${H5PART_LDFLAGS} ${HDF5_LDFLAGS} ${MPI_LDFLAGS} ${NVCC_LDFALGS} # (sic) passed to a linker in uDeviceX
+LIBS = ${H5PART_LIBS} ${HDF5_LIBS} ${MPI_LIBS}
