@@ -5,7 +5,7 @@
 /* maximum particle number per one processor for static allocation */
 #define MAX_PART_NUM 1000000
 
-/* maximum number of vertices RBC */
+/* maximum number of vertices per one RBC */
 #define MAX_VERT_NUM 10000
 
 /* used in field */
