@@ -4,11 +4,6 @@
 
 /* maximum particle number per one processor for static allocation */
 #define MAX_PART_NUM 1000000
-#define MAX_CELLS_NUM 100000
-
-/* maximum number of faces per one RBC */
-#define MAX_FACE_NUM 50000
-#define MAX_VERT_NUM 10000
 
 /* used in field */
 #define MAX_SUBDOMAIN_VOLUME 100*100*100
