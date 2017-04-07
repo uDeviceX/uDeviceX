@@ -23,7 +23,7 @@ NVCC_BIN = nvcc
 
 # how to get the flags: mpicxx -show
 #                     : pkg-config --libs mpich
-MPI_CXXFLAGS = -I${MPICH_DIR}/include
+MPI_CXXFLAGS =
 MPI_LDFLAGS  = 
 MPI_LIBS     =
 
@@ -42,14 +42,6 @@ H5PART_LDFLAGS =  -L${HOME}/lib/h5part/lib
 H5PART_LIBS = -lH5Part
 
 NVCC_LDFALGS = -L${CRAY_CUDATOOLKIT_DIR}/lib64 -Wl,-rpath -Wl,${CRAY_CUDATOOLKIT_DIR}/lib64
-
-# geom-wrapper libraries
-# (cd ../geom-wrapper && cmake . && make)
-ifeq ($(gwrp),1)
-GWRP_CXXFLAGS = -I../geom-wrapper
-GWRP_LDFLAGS  = -L${HOME}/usr/cgal/lib64 -Wl,-rpath,${HOME}/usr/cgal/lib64:${HOME}/usr/pkgsrc/lib
-GWRP_LIBS     = ../geom-wrapper/libgeom-wrapper.a -lgmp -lCGAL
-endif
 
 # gsl
 GSL_CXXFLAGS = `gsl-config --cflags`
