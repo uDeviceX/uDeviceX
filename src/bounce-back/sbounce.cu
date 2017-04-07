@@ -3,7 +3,8 @@
 
 namespace solidbounce {
 
-#define POINTWISE_BB_MOMENTUM
+    #define POINTWISE_BB_MOMENTUM
+    //#define FULL_BB_MOMENTUM
 
     enum {X, Y, Z};
     
@@ -314,7 +315,7 @@ namespace solidbounce {
         dL[Z] = -(drn[X] * vn[Y] - drn[Y] * vn[X] - dr1[X] * v1[Y] + dr1[Y] * v1[X]) / dt;
     }
 
-#define debug_output
+    //#define debug_output
 #ifdef debug_output
     int nrescued, nbounced, still_in, failed, step = 0;
     __device__ int bbinfosdev[5];
@@ -473,7 +474,7 @@ namespace solidbounce {
             dP[X] = dP[Y] = dP[Z] = 0;
             dL[X] = dL[Y] = dL[Z] = 0;
 
-#ifdef POINTWISE_BB_MOMENTUM
+#if defined(POINTWISE_BB_MOMENTUM)
             if (bbstate == BB_SUCCESS)
             {
                 float rw[3], v0[3];
@@ -484,7 +485,7 @@ namespace solidbounce {
                 lin_mom_solid(v0, pn.v, /**/ dP);
                 ang_mom_solid(shst->com, rw, rw, v0, pn.v, /**/ dL);
             }
-#else
+#elif defined(FULL_BB_MOMENTUM)
             lin_mom_solid(p1.v, pn.v, /**/ dP);
             ang_mom_solid(shst->com, p1.r, pn.r, p1.v, pn.v, /**/ dL);
 #endif
@@ -549,7 +550,7 @@ namespace solidbounce {
                 
             /* transfer momentum */
 
-#ifdef POINTWISE_BB_MOMENTUM
+#if defined(POINTWISE_BB_MOMENTUM)
             if (bbstate == BB_SUCCESS)
             {
                 float rw[3], v0[3];
@@ -560,7 +561,7 @@ namespace solidbounce {
                 lin_mom_solid(v0, pn.v, /**/ dP);
                 ang_mom_solid(sdev->com, rw, rw, v0, pn.v, /**/ dL);
             }
-#else
+#elif defined(FULL_BB_MOMENTUM)
             lin_mom_solid(p1.v, pn.v, /**/ dP);
             ang_mom_solid(sdev->com, p1.r, pn.r, p1.v, pn.v, /**/ dL);
 #endif       
