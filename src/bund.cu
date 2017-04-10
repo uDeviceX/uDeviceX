@@ -16,10 +16,6 @@
 #include "bund.h"
 #include "dpd-forces.h"
 
-#ifdef GWRP
-#include "geom-wrapper.h"
-#endif
-
 #include <thrust/device_vector.h>
 #include <thrust/sort.h>
 #include "glb.h"

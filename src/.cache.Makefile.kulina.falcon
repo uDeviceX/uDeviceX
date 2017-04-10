@@ -5,7 +5,6 @@
 
 h5part = 1
 h5 = 1
-gwrp = 0
 
 LINK = g++
 NVCC_DIR = /usr/local/cuda-8.0
@@ -34,20 +33,11 @@ H5PART_LIBS = -lH5Part
 
 NVCC_LDFALGS = -L${NVCC_DIR}/lib64 -Wl,-rpath -Wl,${NVCC_DIR}/lib64
 
-# geom-wrapper libraries
-# (cd ../geom-wrapper && cmake . && make)
-ifeq ($(gwrp),1)
-GWRP_CXXFLAGS = -I../geom-wrapper
-GWRP_LDFLAGS = -L${HOME}/usr/cgal/lib64 -Wl,-rpath,${HOME}/usr/cgal/lib64:${HOME}/usr/pkgsrc/lib
-GWRP_LIBS = ../geom-wrapper/libgeom-wrapper.a -lgmp -lCGAL
-endif
-
 # gsl
 GSL_CXXFLAGS = `gsl-config --cflags`
 GSL_LDFLAGS =
 GSL_LIBS = `gsl-config --libs`
 
-
-NVCC = ${NVCC_BIN} ${GWRP_CXXFLAGS} ${H5PART_CXXFLAGS} ${HDF5_CXXFLAGS} ${MPI_CXXFLAGS} ${GSL_CXXFLAGS}
-LDFLAGS =          ${GWRP_LDFLAGS}  ${H5PART_LDFLAGS}  ${HDF5_LDFLAGS}  ${MPI_LDFLAGS}  ${GSL_LDFLAGS} ${NVCC_LDFALGS} # (sic)
-LIBS =             ${GWRP_LIBS}     ${H5PART_LIBS}     ${HDF5_LIBS}     ${MPI_LIBS}     ${GSL_LIBS}    
+NVCC = ${NVCC_BIN}${H5PART_CXXFLAGS} ${HDF5_CXXFLAGS} ${MPI_CXXFLAGS} ${GSL_CXXFLAGS}
+LDFLAGS =         ${H5PART_LDFLAGS}  ${HDF5_LDFLAGS}  ${MPI_LDFLAGS}  ${GSL_LDFLAGS} ${NVCC_LDFALGS} # (sic)
+LIBS =            ${H5PART_LIBS}     ${HDF5_LIBS}     ${MPI_LIBS}     ${GSL_LIBS}    
