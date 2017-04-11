@@ -71,7 +71,7 @@ namespace bbshapes {
 #elif defined(thrbc)
 
 #define shape rbcshape
-#define pin_axis (false)
+#define pin_axis (true)
     
     namespace rbcshape
     {
@@ -93,51 +93,57 @@ namespace bbshapes {
             return z > -zrbc && z < zrbc;
         }
 
+        _DH_ inline float min2(float a, float b) {return a < b ? a : b;}
+        _DH_ inline float max2(float a, float b) {return a < b ? b : a;}
+        
         _DH_ bool intersect(const float *r0, const float *v0, const float *vcm, const float *om0, /**/ float *h)
         {
             const float r0x  = thrbc *  r0[X],           r0y  = thrbc * r0[Y],            r0z  = thrbc * r0[Z];
             const float v0x  = thrbc * (v0[X] - vcm[X]), v0y  = thrbc * (v0[Y] - vcm[Y]), v0z  = thrbc * (v0[Z] - vcm[Z]);
             const float om0x = om0[X],                   om0y = om0[Y],                   om0z = om0[Z];
 
-            const float r1x = r0x + dt * v0x;
-            const float r1y = r0y + dt * v0y;
-            const float r1z = r0z + dt * v0z;
+            const float omcrx = om0y * r0z - om0z * r0y;
+            const float omcry = om0z * r0x - om0x * r0z;
+            const float omcrz = om0x * r0y - om0y * r0x;
+
+            const float omcvx = om0y * v0z - om0z * v0y;
+            const float omcvy = om0z * v0x - om0x * v0z;
+            const float omcvz = om0x * v0y - om0y * v0x;
             
-            const float v0x_ = v0x + om0y * r1z - om0z * r1y;
-            const float v0y_ = v0y + om0z * r1x - om0x * r1z;
-            const float v0z_ = v0z + om0x * r1y - om0y * r1x;
-
-            const float r0x_ = r0x - dt * (om0z * r1z - om0z * r1y);
-            const float r0y_ = r0y - dt * (om0z * r1x - om0x * r1z);
-            const float r0z_ = r0z - dt * (om0x * r1y - om0y * r1x);
-
             // first guess
-            float hn = 0;
-            float x = r0x_, y = r0y_, z = r0z_;
-
+            float hn = dt*0.5, f = 1.f;
+            
             // newton steps
-            for (int step = 0; step < 5; ++step)
+            for (int step = 0; step < 10; ++step)
             {
-                x = r0x_ + hn * v0x_;
-                y = r0y_ + hn * v0y_;
-                z = r0z_ + hn * v0z_;
+                const float x = r0x + hn * (v0x - omcrx - hn * omcvx);
+                const float y = r0y + hn * (v0y - omcry - hn * omcvy);
+                const float z = r0z + hn * (v0z - omcrz - hn * omcvz);
+
+                const float dxdt = v0x - omcrx - 2 * hn * omcvx;
+                const float dydt = v0y - omcry - 2 * hn * omcvy;
+                const float dzdt = v0z - omcrz - 2 * hn * omcvz;
                 
                 const float rho = (x*x + y*y) / (D0*D0);
                 const float s = 1 - 4 * rho;
                 const float subg = (a0 + a1*rho + a2*rho*rho);
 
-                const float f = D0*D0 * s * subg * subg - z*z;
+                f = D0*D0 * s * subg * subg - z*z;
 
                 const float dgdrho = 2 * (1 - 4*rho) * (a1 + 2*a2*rho) * subg - 4 * subg * subg;
 
-                const float df = 2 * ((v0x_ * x + v0y_ * y) * dgdrho - v0z_ * z);
+                const float df = 2 * ((dxdt * x + dydt * y) * dgdrho - dzdt * z);
 
-                hn = hn - f / df;
+                //printf("%f %f %f\n", hn, f, df);
+                
+                hn = max2(0, min2(dt-1e-8, hn - f / df));
             }
 
             *h = hn;
+
+            //printf("h = %f, f = %f\n", *h, f);
             
-            return 0.f <= hn && hn <= dt;
+            return fabs(f) < 1e-4;
         }
 
         _DH_ void rescue(float *r)
