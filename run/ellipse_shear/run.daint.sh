@@ -6,11 +6,14 @@ GDOT=$1
 BB=$2
 DT=$3
 
+# cheap trick for keeping Peclet number fixed
+kBT=`awk "BEGIN{ printf \"%.6e\n\", 0.27925268 * $GDOT }"`
+
 export CRAY_CUDA_MPS=1
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 SCRIPT=`pwd`/$0
-RUNDIR=/scratch/snx3000/amlucas/ellipse/${BB}/gdot+${GDOT}_dt+${DT}
+RUNDIR=/scratch/snx3000/amlucas/ellipse_cstPe/${BB}/gdot+${GDOT}_dt+${DT}
 GITROOT=`git rev-parse --show-toplevel`
 SRCDIR=${GITROOT}/src
 
@@ -27,7 +30,7 @@ argp .conf.test.h                                                        \
      -hdf5field_dumps=false -hdf5part_dumps -steps_per_hdf5dump=1000     \
      -gamma_dot=${GDOT} -dt=${DT} -shear_y                               \
      -rbcs -rbc_mass=1.f -a2_ellipse=16 -b2_ellipse=4 -pin_com=true      \
-     -XS=${XS} -YS=${YS} -ZS=${ZS}                                       \
+     -XS=${XS} -YS=${YS} -ZS=${ZS}  -kBT=$kBT                            \
      > .conf.h
 
 make clean && make -j && make -C ../tools
