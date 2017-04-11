@@ -4,12 +4,16 @@
 #BB=nobounce
 GDOT=$1
 BB=$2
+DT=$3
+
+# cheap trick for keeping Peclet number fixed
+kBT=`awk "BEGIN{ printf \"%.6e\n\", 0.27925268 * $GDOT }"`
 
 export CRAY_CUDA_MPS=1
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 SCRIPT=`pwd`/$0
-RUNDIR=/scratch/snx3000/amlucas/${BB}/gdot-${GDOT}
+RUNDIR=/scratch/snx3000/amlucas/circle_cstPe/${BB}/gdot+${GDOT}_dt+${DT}
 GITROOT=`git rev-parse --show-toplevel`
 SRCDIR=${GITROOT}/src
 
@@ -22,10 +26,10 @@ YS=64
 ZS=8
 
 argp .conf.test.h                                                        \
-     -tend=1000.0 -steps_per_dump=1000 -walls -wall_creation_stepid=5000 \
+     -tend=5000.0 -steps_per_dump=1000 -walls -wall_creation_stepid=5000 \
      -hdf5field_dumps=false -hdf5part_dumps -steps_per_hdf5dump=1000     \
      -gamma_dot=${GDOT} -rbcs -rcyl=5 -pin_com=true -dt=1e-3 -shear_y    \
-     -rbc_mass=1.f -XS=${XS} -YS=${YS} -ZS=${ZS}                         \
+     -rbc_mass=1.f -XS=${XS} -YS=${YS} -ZS=${ZS} -kBT=$kBT               \
      > .conf.h
 
 make clean && make -j && make -C ../tools
@@ -64,12 +68,9 @@ sbatch <<EOF
 #!/bin/bash -l
 #SBATCH --job-name="${BB}-${GDOT}"
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=1
-#SBATCH --ntasks-per-core=1
-#SBATCH --cpus-per-task=${ncpus}
 #SBATCH --constraint=gpu
-#SBATCH --time=03:00:00
+#SBATCH --time=13:00:00
 #SBATCH --partition=normal
 
-srun -C gpu -n ${nnodes} --ntasks-per-node=${ntasks} -c ${ncpus} ./udx
+srun -C gpu -n ${nnodes} ./udx 1 1 1
 EOF
