@@ -114,7 +114,7 @@ namespace k_solid
              if (s < 0)
              return false;
              
-             const float zrbc = D0 * sqrt(s) * (a0 + a1*rho + a2*rho*rho));
+             const float zrbc = D0 * sqrt(s) * (a0 + a1*rho + a2*rho*rho);
              
              return z > -zrbc && z < zrbc;
         }

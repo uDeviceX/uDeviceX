@@ -67,6 +67,93 @@ namespace bbshapes {
             r[Z] *= scale;
         }
     }
+
+#elif defined(thrbc)
+
+#define shape rbcshape
+#define pin_axis (false)
+    
+    namespace rbcshape
+    {
+        const float a0 = 0.0518, a1 = 2.0026, a2 = -4.491;
+        const float D0 = 7.82;
+                
+        _DH_ bool inside(const float *r) {
+            
+            const float x = r[X] * thrbc, y = r[Y] * thrbc, z = r[Z] * thrbc;
+               
+            const float rho = (x*x+y*y)/(D0*D0);
+            const float s = 1 - 4*rho;
+            
+            if (s < 0)
+            return false;
+            
+            const float zrbc = D0 * sqrt(s) * (a0 + a1*rho + a2*rho*rho);
+            
+            return z > -zrbc && z < zrbc;
+        }
+
+        _DH_ bool intersect(const float *r0, const float *v0, const float *vcm, const float *om0, /**/ float *h)
+        {
+            const float r0x  = thrbc *  r0[X],           r0y  = thrbc * r0[Y],            r0z  = thrbc * r0[Z];
+            const float v0x  = thrbc * (v0[X] - vcm[X]), v0y  = thrbc * (v0[Y] - vcm[Y]), v0z  = thrbc * (v0[Z] - vcm[Z]);
+            const float om0x = om0[X],                   om0y = om0[Y],                   om0z = om0[Z];
+
+            const float r1x = r0x + dt * v0x;
+            const float r1y = r0y + dt * v0y;
+            const float r1z = r0z + dt * v0z;
+            
+            const float v0x_ = v0x + om0y * r1z - om0z * r1y;
+            const float v0y_ = v0y + om0z * r1x - om0x * r1z;
+            const float v0z_ = v0z + om0x * r1y - om0y * r1x;
+
+            const float r0x_ = r0x - dt * (om0z * r1z - om0z * r1y);
+            const float r0y_ = r0y - dt * (om0z * r1x - om0x * r1z);
+            const float r0z_ = r0z - dt * (om0x * r1y - om0y * r1x);
+
+            // first guess
+            float hn = 0;
+            float x = r0x_, y = r0y_, z = r0z_;
+
+            // newton steps
+            for (int step = 0; step < 5; ++step)
+            {
+                x = r0x_ + hn * v0x_;
+                y = r0y_ + hn * v0y_;
+                z = r0z_ + hn * v0z_;
+                
+                const float rho = (x*x + y*y) / (D0*D0);
+                const float s = 1 - 4 * rho;
+                const float subg = (a0 + a1*rho + a2*rho*rho);
+
+                const float f = D0*D0 * s * subg * subg - z*z;
+
+                const float dgdrho = 2 * (1 - 4*rho) * (a1 + 2*a2*rho) * subg - 4 * subg * subg;
+
+                const float df = 2 * ((v0x_ * x + v0y_ * y) * dgdrho - v0z_ * z);
+
+                hn = hn - f / df;
+            }
+
+            *h = hn;
+            
+            return 0.f <= hn && hn <= dt;
+        }
+
+        _DH_ void rescue(float *r)
+        {
+            const float x = r[X] * thrbc, y = r[Y] * thrbc;
+            const float rho = (x*x + y*y) / (D0*D0);
+            const float s = 1 - 4*rho;
+            assert(s >= 0);
+            
+            const float zrbc = D0 * sqrt(s) * (a0 + a1*rho + a2*rho*rho);
+            
+            r[Z] = r[Z] < 0 ? -(zrbc + 1e-6) : zrbc + 1e-6;
+            r[Z] /= thrbc;
+        } 
+    }
+
     
 #elif defined(rcyl)
 
