@@ -10,11 +10,16 @@ XS=64
 YS=64
 ZS=8
 
+G=0.05
+
+# cheap trick for keeping Peclet number fixed
+kBT=`awk "BEGIN{ printf \"%.6e\n\", 0.27925268 * $G }"`
+
 argp .conf.test.h                                                       \
      -tend=300.0 -steps_per_dump=1000 -walls -wall_creation_stepid=5000 \
      -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=1000          \
-     -gamma_dot=0.05 -rbcs -rcyl=5 -pin_com=true -dt=1e-3 -shear_y      \
-     -rbc_mass=1.f -XS=${XS} -YS=${YS} -ZS=${ZS}                        \
+     -gamma_dot=$G -rbcs -rcyl=5 -pin_com=true -dt=1e-3 -shear_y      \
+     -rbc_mass=1.f -XS=${XS} -YS=${YS} -ZS=${ZS} -kBT=$kBT              \
      > .conf.h
 
 make clean && make -j && make -C ../tools
