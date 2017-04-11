@@ -11,7 +11,7 @@ const real D0 = 7.82;
 real frbc(const real x, const real y)
 {
     const real rho = (x*x+y*y)/(D0*D0);
-    const real s = 1 - 4*rho;
+    const real s = 1 - 4 * rho;
     const real subg = (a0 + a1*rho + a2*rho*rho);
     
     return D0*D0 * s * subg * subg;
@@ -21,7 +21,7 @@ void dfrbc(const real x, const real y, real *gradxy)
 {
     const real rho = (x*x+y*y)/(D0*D0);
     const real subg = a0 + a1 * rho + a2 * rho * rho;
-    const real dgdrho = (2 * (1 - 4*rho) * (a1 + 2*a2*rho) * subg - 4 * subg * subg);
+    const real dgdrho = 2 * (1 - 4*rho) * (a1 + 2*a2*rho) * subg - 4 * subg * subg;
     
     gradxy[0] = 2 * x * dgdrho;
     gradxy[1] = 2 * y * dgdrho;
@@ -30,8 +30,8 @@ void dfrbc(const real x, const real y, real *gradxy)
 int main()
 {
 
-    real r0[3] = {0, 2, 1.1};
-    real r1[3] = {0, 1.5, 0.5};
+    real r0[3] = {4, 0, 0};
+    real r1[3] = {3.5, 0, 0};
     real v0[3] = {r1[X] - r0[X], r1[Y] - r0[Y], r1[Z] - r0[Z]};
     
     real h = 0;
@@ -56,7 +56,7 @@ int main()
                 
         const real df = dxdh * gradxy[X] + dydh * gradxy[Y] - 2 * dzdh * z;
 
-        printf("df = %.6e\n", df);
+        printf("f = %f, df = %.6e\n", f, df);
         
         h = h - f / df;
     };

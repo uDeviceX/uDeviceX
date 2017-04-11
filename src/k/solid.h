@@ -95,6 +95,31 @@ namespace k_solid
         }
     }
 
+#elif defined(thrbc)
+
+#define shape rbcshape
+#define pin_axis (false)
+
+    namespace rbcshape
+    {
+        _HD_ bool inside(float x, float y, float z) {
+             x *= thrbc; y *= thrbc; z *= thrbc;
+
+             const float a0 = 0.0518, a1 = 2.0026, a2 = -4.491;
+             const float D0 = 7.82;
+             
+             const float rho = (x*x+y*y)/(D0*D0);
+             const float s = 1 - 4*rho;
+
+             if (s < 0)
+             return false;
+             
+             const float zrbc = D0 * sqrt(s) * (a0 + a1*rho + a2*rho*rho));
+             
+             return z > -zrbc && z < zrbc;
+        }
+    }
+
 #elif defined(rcyl)
 
 #define shape cylinder

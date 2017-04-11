@@ -1,0 +1,17 @@
+kill(all);
+
+z(r) := D0^2 * (1 - 4*r) * (a0 + a1 * r + a2 * r^2)^2;
+
+rho : (x^2 + y^2)/D0^2;
+zrbc : z(rho);
+
+diff(z(r), r);
+
+
+D : 7.82;
+
+z : ev(sqrt(zrbc), a0 = 0.0518, a1 = 2.0026, a2 = -4.491, D0 = D, y=0);
+
+wxplot2d(z, [x, 0, D/2]);
+
+
