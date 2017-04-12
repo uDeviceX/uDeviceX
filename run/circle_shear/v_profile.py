@@ -3,6 +3,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 
+if len(sys.argv) != 2:
+    print "usage:", sys.argv[0], "<file.h5part>"
+    exit(1)
+
 fname = sys.argv[1]
 
 f = h5py.File(fname, "r")
@@ -13,8 +17,8 @@ XS = 64.
 YS = 32.
 ZS = 16.
 
-dx = 0.25
-dy = 0.25
+dx = 0.5
+dy = 2.
 
 def name2step(n):
     return int (n.split("#")[1]) 
@@ -109,11 +113,34 @@ uavg1 = (1.0 / nsteps) * uavg1
 rhoavg0 = (1.0 / nsteps) * rhoavg0
 rhoavg1 = (1.0 / nsteps) * rhoavg1
 
+
+yavg = yavg[uavg0 != 0]
+uavg1 = uavg1[uavg0 != 0]
+uavg0 = uavg0[uavg0 != 0]
+
+pshear = np.polyfit(yavg, uavg0, 1)
+
+yavg /= YS
+uavg0 /= YS*pshear[0]
+uavg1 /= YS*pshear[0]
+
+
 plt.figure(0)
-plt.plot(yavg, uavg0, '-+')
-plt.plot(yavg, uavg1, '-+')
-plt.plot(yavg, yavg*0.05, '-')
-plt.plot(yavg, yavg*0.025, '-')
+
+plt.plot(yavg, uavg0, 'ob', label = "boundary")
+plt.plot(yavg, uavg1, 'og', label = "object")
+
+pshear = np.polyfit(yavg, uavg0, 1)
+plt.plot(yavg, np.polyval(pshear, yavg), '--k', label = "analytic")
+
+plt.xlabel(r"$y/W$")
+plt.ylabel(r"$u/\dot{\gamma}W$")
+plt.grid()
+plt.legend(loc='best')
+
+plt.savefig("vprofile.pdf", transparent=True)
+#plt.savefig("vprofile.pgf")
+
 
 if 0:
     plt.figure(1)

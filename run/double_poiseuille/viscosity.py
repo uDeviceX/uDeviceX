@@ -3,40 +3,52 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
-assert len(sys.argv) == 2
+nfiles = len(sys.argv)-1
 
-filename = sys.argv[1]
+assert nfiles >= 1
 
-f = h5py.File(filename, "r")
+mu = [0.] * nfiles
+t = range(nfiles)
 
-vx = np.array(f['u'])
+for filename in sys.argv[1:]:
 
-# average in x and z directions
-vx = np.mean(vx, (0, 2))
-vx = vx.reshape((-1,))
+    f = h5py.File(filename, "r")
+    
+    vx = np.array(f['u'])
 
-yy = np.array(range(len(vx)))
+    # average in x and z directions
+    vx = np.mean(vx, (0, 2))
+    vx = vx.reshape((-1,))
+    
+    yy = np.array(range(len(vx)))
+    
+    vxl = vx[:len(vx)/2]
+    yyl = yy[:len(yy)/2]
 
-vxl = vx[:len(vx)/2]
-yyl = yy[:len(yy)/2]
+    poll = np.polyfit(yyl, vxl, deg=2)
+    
+    vxr = vx[len(vx)/2:]
+    yyr = yy[len(yy)/2:]
+    
+    polr = np.polyfit(yyr, vxr, deg=2)
+    
+    if 0:
+        plt.figure(0)
+        plt.plot(yyl, vxl, '+')
+        plt.plot(yyr, vxr, '+')
+        plt.plot(yyl, np.polyval(poll, yyl), '-')
+        plt.plot(yyr, np.polyval(polr, yyr), '-')
 
-poll = np.polyfit(yyl, vxl, deg=2)
+    def visc(coeff):
+        hydrostatic_a = 0.002
+        return hydrostatic_a / (2*coeff)
 
-vxr = vx[len(vx)/2:]
-yyr = yy[len(yy)/2:]
+    mu[c] = 0.5 * (visc(poll[0]) + visc(-polr[0]))
 
-polr = np.polyfit(yyr, vxr, deg=2)
+    c += 1
 
-if 0:
-    plt.figure()
-    plt.plot(yyl, vxl, '+')
-    plt.plot(yyr, vxr, '+')
-    plt.plot(yyl, np.polyval(poll, yyl), '-')
-    plt.plot(yyr, np.polyval(polr, yyr), '-')
-    plt.show()
+plt.figure(1)
+plt.plot(t, mu)
+plt.show()
 
-def visc(coeff):
-    hydrostatic_a = 0.02
-    return hydrostatic_a / (2*coeff)
-
-print 0.5 * (visc(poll[0]) + visc(-polr[0]))
+print mu[-1]
