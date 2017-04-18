@@ -3,14 +3,18 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
-nfiles = len(sys.argv)-1
+hydrostatic_a = float(sys.argv[1])
+
+nfiles = len(sys.argv)-2
 
 assert nfiles >= 1
 
 mu = [0.] * nfiles
 t = range(nfiles)
 
-for filename in sys.argv[1:]:
+c = 0
+
+for filename in sys.argv[2:]:
 
     f = h5py.File(filename, "r")
     
@@ -40,14 +44,14 @@ for filename in sys.argv[1:]:
         plt.plot(yyr, np.polyval(polr, yyr), '-')
 
     def visc(coeff):
-        hydrostatic_a = 0.002
-        return hydrostatic_a / (2*coeff)
+        rho = 10.
+        return rho * hydrostatic_a / (2*coeff)
 
     mu[c] = 0.5 * (visc(poll[0]) + visc(-polr[0]))
 
     c += 1
 
-plt.figure(1)
+plt.figure(0)
 plt.plot(t, mu)
 plt.show()
 
