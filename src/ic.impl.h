@@ -38,32 +38,6 @@ int gen(Particle* pp) { /* generate particle positions and velocities */
   fprintf(stderr, "(ic::gen) generated %d particles\n", n);
   return n;
 }
-
-#if 0
-    // hack for faster equilibration; TODO remove that!
-    __global__ void k_init_v(const int n, Particle *pp)
-    {
-        const int pid = threadIdx.x + blockIdx.x * blockDim.x;
-
-        if (pid >= n)
-        return;
-
-        Particle p = pp[pid];
-
-        const float x = p.r[X], y = p.r[Y];
-        
-        const float vc[3] = {(float) (-gamma_dot*0.5*y), (float) (gamma_dot*0.5*x), 0.f};
-        const float vs[3] = {(float) (gamma_dot * y), 0.f, 0.f};
-
-        const float w = exp(-(x*x+y*y - rcyl*rcyl)*0.5);
-        
-        p.v[X] = w * vc[X] + (1.f - w) * vs[X];
-        p.v[Y] = w * vc[Y] + (1.f - w) * vs[Y];
-        p.v[Z] = w * vc[Z] + (1.f - w) * vs[Z];
-
-        pp[pid] = p;
-    }
-#endif
     
 #undef X
 #undef Y
