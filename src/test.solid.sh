@@ -3,6 +3,7 @@
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt
 # cp sdf/wall1/wall.dat sdf.dat
+# cp ic_solid_center.txt ic_solid.txt
 # :
 # argp .conf.test.h  \
 #   -tend=2.0 -steps_per_dump=1000 -walls -wall_creation_stepid=100 \
@@ -18,9 +19,10 @@
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt
+# cp ic_solid_center.txt ic_solid.txt
 # :
 # argp .conf.double.poiseuille.h     \
-#   -rbcs -rsph=4 -pin_com=true      \
+#   -rbcs -rsph=4 -pin_com=false      \
 #   -tend=2.0 -steps_per_dump=100   \
 #   -pushtheflow -doublepoiseuille   \
 #   -hdf5field_dumps -hdf5part_dumps \
@@ -36,6 +38,7 @@
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt debug.txt
+# cp ic_solid_center.txt ic_solid.txt
 # :
 # argp .conf.double.poiseuille.h     \
 #   -rbcs -rcyl=4 -pin_com=true      \
@@ -54,6 +57,7 @@
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt
 # cp sdf/yplates1/yplates.dat sdf.dat
+# cp ic_solid_center.txt ic_solid.txt
 # :
 # argp .conf.test.h  \
 #   -tend=2.0 -steps_per_dump=1000 -walls -wall_creation_stepid=100 \
@@ -69,6 +73,7 @@
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt debug.txt
+# cp ic_solid_center.txt ic_solid.txt
 # :
 # argp .conf.double.poiseuille.h     \
 #   -rbcs  -pin_com=true             \
