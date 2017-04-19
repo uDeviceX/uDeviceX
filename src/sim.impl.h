@@ -171,20 +171,45 @@ void bounce_solid() {
 }
 #endif
 
+#define MAX_SOLIDS 1024
+
+int read_coms(float* coms)
+{
+    FILE *f = fopen("ic_solid.txt", "r"); 
+
+    if (f == NULL)
+    {
+        fprintf(stderr, "Could not open ic_solid.txt. aborting.\n");
+        exit(1);
+    }
+    
+    float x, y, z;
+    int i = 0;
+    
+    while (fscanf(f, "%f %f %f\n", &x, &y, &z) == 3)
+    {
+        coms[3*i + 0] = x;
+        coms[3*i + 1] = y;
+        coms[3*i + 2] = z;
+
+        i++;
+        assert(i < MAX_SOLIDS);
+    }
+    
+    return i;
+}
+
 void init_r()
 {
     rex::init();
     mpDeviceMalloc(&r_pp); mpDeviceMalloc(&r_ff);
 
-    // TMP positions of coms
-    nsolid = 0;
-    // float coms[2*3] = {-5.5, 0, 0,
-    //                    5.5, 0, 0};
+    float coms[MAX_SOLIDS * 3];
 
-    float coms[2*3] = {0, -5.5, 0,
-                       0, 5.5, 0};
+    nsolid = read_coms(coms);
 
-
+    assert(nsolid > 0);
+    
     ss_hst = new Solid[nsolid];
     CC(cudaMalloc(&ss_dev, nsolid * sizeof(Solid)));
 
