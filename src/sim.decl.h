@@ -32,6 +32,6 @@ namespace sim {
   Solid *ss_hst;  /* solid infos on host           */
   Solid *ss_dev;  /* solid infos on device         */
 
-  float r_rr0_hst[3*MAX_VERT_NUM];      /* initial positions; same for all solids */
+  float r_rr0_hst[3*MAX_PSOLID_NUM];      /* initial positions; same for all solids */
   float *r_rr0;
 }

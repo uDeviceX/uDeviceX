@@ -177,8 +177,6 @@ void bounce() {
 // #endif
 // }
 
-#define MAX_SOLIDS 1024
-
 int read_coms(float* coms)
 {
     FILE *f = fopen("ic_solid.txt", "r"); 

@@ -5,8 +5,11 @@
 /* maximum particle number per one processor for static allocation */
 #define MAX_PART_NUM 1000000
 
-/* maximum number of vertices per one RBC */
-#define MAX_VERT_NUM 10000
+/* maximum number of particles per solid */
+#define MAX_PSOLID_NUM 10000
+
+/* maximum number of solids per node */
+#define MAX_SOLIDS 1024
 
 /* used in field */
 #define MAX_SUBDOMAIN_VOLUME 100*100*100
