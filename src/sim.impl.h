@@ -212,7 +212,7 @@ void init_r()
 
     nsolid = read_coms(coms);
 
-    if (nsolid < 0)
+    if (nsolid == 0)
     {
         fprintf(stderr, "No solid provided. Aborting...\n");
         exit (1);
@@ -265,7 +265,15 @@ void init_r()
     
     solid::init(r_pp_hst, npsolid, rbc_mass, ss_hst[0].com, /**/ r_rr0_hst, ss_hst[0].Iinv, ss_hst[0].e0, ss_hst[0].e1, ss_hst[0].e2, ss_hst[0].v, ss_hst[0].om);
 
-    solid::generate(nsolid, npsolid, r_rr0_hst, coms, /**/ r_pp_hst, ss_hst);
+    for (int j = 1; j < nsolid; ++j)
+    {
+        ss_hst[j] = ss_hst[0];
+
+        for (int d = 0; d < 3; ++d)
+        ss_hst[j].com[d] = coms[3*j + d];
+    }
+    
+    solid::generate_host(ss_hst, nsolid, r_rr0_hst, npsolid, /**/ r_pp_hst);
 
     for (int j = 0; j < nsolid; ++j) ss_hst[j].id = j;
     

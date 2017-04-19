@@ -72,33 +72,6 @@ namespace solid {
         }
     }
 
-    void generate(const int nsolid, const int npsolid, const float *rr0, const float *coms, /**/ Particle *pp, Solid *ss_hst)
-    {
-        Solid sbase = ss_hst[0];
-        
-        for (int j = 1; j < nsolid; ++j)
-        {
-            Solid s = sbase;
-            for (int d = 0; d < 3; ++d)
-            s.com[d] = coms[3*j + d];
-
-            Particle *ppj = pp + j*npsolid;
-            
-            for (int i = 0; i < npsolid; ++i)
-            {
-                Particle p;
-                for (int d = 0; d < 3; ++d)
-                {
-                    p.r[d] = s.com[d] + rr0[3*i + d];
-                    p.v[d] = 0;
-                }
-                ppj[i] = p;
-            }
-
-            ss_hst[j] = s;
-        }
-    }
-
     void add_f(Force *ff, int n, /**/ float *f) {
         for (int ip = 0; ip < n; ++ip) {
             float *f0 = ff[ip].f;
