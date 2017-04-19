@@ -76,6 +76,19 @@ struct Solid {
         e0[3], e1[3], e2[3],  /* local referential           */
         fo[3], to[3],         /* force, torque               */
         id;                   /* id of the solid             */
+
+    static bool initialized;
+    static MPI_Datatype mytype;
+    static MPI_Datatype datatype()
+    {
+        if (!initialized)
+        {
+            MC (MPI_Type_contiguous(31, MPI_FLOAT, &mytype));
+            MC (MPI_Type_commit(&mytype));
+            initialized = true;
+        }
+        return mytype;
+    }
 };
 
 template <typename T>
