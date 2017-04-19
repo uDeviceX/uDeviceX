@@ -1,5 +1,5 @@
-namespace rdstr {
-
+namespace rdstr
+{
     /* decode neighbors linear index to "delta"
        0 -> { 0, 0, 0}
        1 -> { 1, 0, 0}
@@ -123,7 +123,6 @@ namespace rdstr {
             ss_dst[j] = snew;
         }
     }
-
 
     void unpack(const int ns, /**/ Solid *ss_hst)
     {

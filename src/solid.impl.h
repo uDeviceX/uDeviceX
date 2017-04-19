@@ -158,8 +158,10 @@ namespace solid {
         k_solid::pbc_solid(/**/ com);
     }
 
-    void update_r(float *rr0, int n, float *com, float *e0, float *e1, float *e2, /**/ Particle *pp) {
-        for (int ip = 0; ip < n; ++ip) {
+    void update_r(const float *rr0, const int n, const float *com, const float *e0, const float *e1, const float *e2, /**/ Particle *pp)
+    {
+        for (int ip = 0; ip < n; ++ip)
+        {
             float *r0 = pp[ip].r, *ro = &rr0[3*ip];
             float x = ro[X], y = ro[Y], z = ro[Z];
             r0[X] = x*e0[X] + y*e1[X] + z*e2[X];
@@ -249,6 +251,26 @@ namespace solid {
         for (int i = 0; i < nsolid; ++i)
         {
             update_nohost_1s(ff + start, rr0, nps, /**/ pp + start, sdev + i);
+            start += nps;
+        }
+    }
+
+    void generate_host(const Solid *ss_hst, const int ns, const float *rr0, const int nps, /**/ Particle *pp)
+    {
+        int start = 0;
+        for (int j = 0; j < ns; ++j)
+        {
+            update_r(rr0, nps, ss_hst[j].com, ss_hst[j].e0, ss_hst[j].e1, ss_hst[j].e2, /**/ pp + start);
+            start += nps;
+        }
+    }
+
+    void generate_nohost(const Solid *ss_dev, const int ns, const float *rr0_dev, const int nps, /**/ Particle *pp)
+    {
+        int start = 0;
+        for (int j = 0; j < ns; ++j)
+        {
+            k_solid::update_r <<< k_cnf(nps) >>> (rr0_dev, nps, ss_dev[j].com, ss_dev[j].e0, ss_dev[j].e1, ss_dev[j].e2, /**/ pp + start);
             start += nps;
         }
     }
