@@ -50,6 +50,13 @@ void forces_wall() {
   wall::interactions(s_pp, s_n, s_ff);
 }
 
+void forces_cnt(std::vector<ParticlesWrap> *w_r) {
+  if (contactforces) {
+    cnt::build_cells(*w_r);
+    cnt::bulk(*w_r);
+  }
+}
+
 void forces_fsi(SolventWrap *w_s, std::vector<ParticlesWrap> *w_r) {
   fsi::bind_solvent(*w_s);
   fsi::bulk(*w_r);
@@ -67,6 +74,7 @@ void forces(bool wall_created) {
   if (wall_created) forces_wall();
 
   if (rbcs0) {
+    forces_cnt(&w_r);
     forces_fsi(&w_s, &w_r);
 
     rex::bind_solutes(w_r);
@@ -277,6 +285,7 @@ void init_r()
 void init() {
   DPD::init();
   fsi::init();
+  cnt::init();
   if (hdf5part_dumps)
     dump_part_solvent = new H5PartDump("s.h5part");
 
@@ -358,6 +367,7 @@ void close() {
   delete dump_part_solvent;
   sdstr::redist_part_close();
 
+  cnt::close();
   delete cells;
   if (rbcs0) {
     rex::close();

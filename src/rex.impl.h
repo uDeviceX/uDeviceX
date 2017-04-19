@@ -314,6 +314,7 @@ namespace rex {
 
     /** here was visitor  **/
     fsi::halo(halos);
+    if (contactforces) cnt::halo(halos);
     /***********************/
 
 
