@@ -179,34 +179,51 @@ void bounce() {
 
 int read_coms(float* coms)
 {
-    FILE *f = fopen("ic_solid.txt", "r"); 
-
-    if (f == NULL)
+    const int L[3] = {XS, YS, ZS};
+    int mi[3], nsolids = 0;
+    for (int c = 0; c < 3; ++c) mi[c] = (m::coords[c] + 0.5) * L[c];
+    
+    if (m::rank == 0)
     {
-        fprintf(stderr, "Could not open ic_solid.txt. aborting.\n");
-        exit(1);
-    }
-    
-    float x, y, z;
-    int i = 0;
-    
-    while (fscanf(f, "%f %f %f\n", &x, &y, &z) == 3)
-    {
-        coms[3*i + 0] = x;
-        coms[3*i + 1] = y;
-        coms[3*i + 2] = z;
+        FILE *f = fopen("ic_solid.txt", "r"); 
 
-        i++;
-        assert(i < MAX_SOLIDS);
-    }
+        if (f == NULL)
+        {
+            fprintf(stderr, "Could not open ic_solid.txt. aborting.\n");
+            exit(1);
+        }
     
-    return i;
+        float x, y, z;
+        int i = 0;
+        
+        while (fscanf(f, "%f %f %f\n", &x, &y, &z) == 3)
+        {
+            coms[3*i + X] = x;
+            coms[3*i + Y] = y;
+            coms[3*i + Z] = z;
+
+            i++;
+            assert(i < MAX_SOLIDS);
+        }
+        nsolids = i;
+    }
+
+    MC( MPI_Bcast(&nsolids, 1,     MPI_INT,   0, m::cart) );
+    MC( MPI_Bcast(coms, 3*nsolids, MPI_FLOAT, 0, m::cart) );
+
+    // place coms in local coordinates
+    for (int j = 0; j < nsolids; ++j)
+    for (int d = 0; d < 3; ++d)
+    coms[3*j +d] -= mi[d];
+    
+    return nsolids;
 }
 
 void init_r()
 {
     rex::init();
-    mpDeviceMalloc(&r_pp); mpDeviceMalloc(&r_ff);
+    mpDeviceMalloc(&r_pp);
+    mpDeviceMalloc(&r_ff);
 
     float coms[MAX_SOLIDS * 3];
 
@@ -218,8 +235,8 @@ void init_r()
         exit (1);
     }
     
-    ss_hst = new Solid[nsolid];
-    CC(cudaMalloc(&ss_dev, nsolid * sizeof(Solid)));
+    ss_hst = new Solid[MAX_SOLIDS];
+    CC(cudaMalloc(&ss_dev, MAX_SOLIDS * sizeof(Solid)));
 
     int scount = 0;
 
@@ -228,7 +245,7 @@ void init_r()
 
     CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
 
-    // assume same solid repeated: keep same particles
+    // count particles per solid and per solvent
     for (int ip = 0; ip < s_n; ++ip)
     {
         Particle p = s_pp_hst[ip]; float *r0 = p.r;
@@ -241,8 +258,57 @@ void init_r()
             if (solid::inside(r0[X]-com[X], r0[Y]-com[Y], r0[Z]-com[Z]))
             {
                 assert(!is_solid);
-                if (j == 0) r_pp_hst[rcounts[j]++] = p;
-                else        ++rcounts[j];
+                ++rcounts[j];
+                is_solid = true;
+            }
+        }
+        
+        if (!is_solid)
+        ++scount;
+    }
+
+    if (m::rank == 0)
+    {
+        for (int j = 0; j < nsolid; ++j)
+        printf("Found %d particles in solid %d\n", rcounts[j], j);
+        printf("Found %d particles in solvent\n", scount);
+    }
+
+    delete[] rcounts;
+
+    // select rank which has the largest solid, hopefully it is fully contained in the domain
+    
+    int localmax[2] = {0, m::rank}, globalmax[2] = {0, m::rank}, idmax = 0;
+
+    for (int j = 0; j < nsolid; ++j)
+    if (localmax[0] < rcounts[j])
+    {
+        localmax[0] = rcounts[j];
+        idmax = j;
+    }
+
+    MPI_Allreduce(localmax, globalmax, 1, MPI_2INT, MPI_MAXLOC, m::cart);
+
+    const int root = globalmax[1];
+
+    // kill solvent inside solids
+
+    scount = 0;
+    int rcount = 0;
+    
+    for (int ip = 0; ip < s_n; ++ip)
+    {
+        Particle p = s_pp_hst[ip]; float *r0 = p.r;
+
+        bool is_solid = false;
+        for (int j = 0; j < nsolid; ++j)
+        {
+            float *com = coms + 3*j;
+
+            if (solid::inside(r0[X]-com[X], r0[Y]-com[Y], r0[Z]-com[Z]))
+            {
+                if ((m::rank == root) && (j == idmax))
+                r_pp_hst[rcount++] = p;
                 is_solid = true;
             }
         }
@@ -250,34 +316,57 @@ void init_r()
         if (!is_solid)
         s_pp_hst[scount++] = p;
     }
-    s_n = scount;
-    npsolid = rcounts[0];
-    r_n = nsolid * npsolid;
-
-    for (int j = 0; j < nsolid; ++j)
-    printf("Found %d particles in solid %d\n", rcounts[j], j);
-    printf("Found %d particles in solvent\n", scount);
-
-    delete[] rcounts;
-
-    for (int d = 0; d < 3; ++d)
-    ss_hst[0].com[d] = coms[d];
     
-    solid::init(r_pp_hst, npsolid, rbc_mass, ss_hst[0].com, /**/ r_rr0_hst, ss_hst[0].Iinv, ss_hst[0].e0, ss_hst[0].e1, ss_hst[0].e2, ss_hst[0].v, ss_hst[0].om);
+    s_n = scount;
 
-    for (int j = 1; j < nsolid; ++j)
+    Solid model;
+
+    // share model to everyone
+    
+    if (m::rank == root)
     {
-        ss_hst[j] = ss_hst[0];
-
+        npsolid = rcount;
+            
         for (int d = 0; d < 3; ++d)
-        ss_hst[j].com[d] = coms[3*j + d];
+        model.com[d] = coms[idmax*3 + d];
+    
+        solid::init(r_pp_hst, npsolid, rbc_mass, model.com, /**/ r_rr0_hst, model.Iinv, model.e0, model.e1, model.e2, model.v, model.om);
     }
+
+    MC( MPI_Bcast(&npsolid,            1,   MPI_INT, root, m::cart) );
+    MC( MPI_Bcast(r_rr0_hst, 3 * npsolid, MPI_FLOAT, root, m::cart) );
+    MC( MPI_Bcast(&model,    1,   Solid::datatype(), root, m::cart) );
+
+    // filter coms to keep only the ones in my domain
+    int id = 0;
+    for (int j = 0; j < nsolid; ++j)
+    {
+        const float *com = coms + 3*j;
+
+        if (-XS/2 <= com[X] && com[X] < XS/2 &&
+            -YS/2 <= com[Y] && com[Y] < YS/2 &&
+            -ZS/2 <= com[Z] && com[Z] < ZS/2 )
+        {
+            ss_hst[id] = model;
+            
+            for (int d = 0; d < 3; ++d)
+            ss_hst[id].com[d] = com[d];
+
+            ++id;
+        }
+    }
+
+    nsolid = id;
+    
+    // generate the solid particles
     
     solid::generate_host(ss_hst, nsolid, r_rr0_hst, npsolid, /**/ r_pp_hst);
 
     for (int j = 0; j < nsolid; ++j) ss_hst[j].id = j;
     
     solid::reinit_f_to(nsolid, /**/ ss_hst);
+
+    r_n = nsolid * npsolid;
     
     CC(cudaMemcpy(ss_dev, ss_hst, nsolid * sizeof(Solid), H2D));
     CC(cudaMemcpy(r_rr0, r_rr0_hst, 3 * npsolid * sizeof(float), H2D));
