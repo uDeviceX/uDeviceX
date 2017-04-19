@@ -206,7 +206,11 @@ void init_r()
 
     nsolid = read_coms(coms);
 
-    assert(nsolid > 0);
+    if (nsolid < 0)
+    {
+        fprintf(stderr, "No solid provided. Aborting...\n");
+        exit (1);
+    }
     
     ss_hst = new Solid[nsolid];
     CC(cudaMalloc(&ss_dev, nsolid * sizeof(Solid)));
@@ -253,7 +257,7 @@ void init_r()
     for (int d = 0; d < 3; ++d)
     ss_hst[0].com[d] = coms[d];
     
-    solid::init(r_pp_hst, npsolid, rbc_mass, /**/ r_rr0_hst, ss_hst[0].Iinv, ss_hst[0].com, ss_hst[0].e0, ss_hst[0].e1, ss_hst[0].e2, ss_hst[0].v, ss_hst[0].om);
+    solid::init(r_pp_hst, npsolid, rbc_mass, ss_hst[0].com, /**/ r_rr0_hst, ss_hst[0].Iinv, ss_hst[0].e0, ss_hst[0].e1, ss_hst[0].e2, ss_hst[0].v, ss_hst[0].om);
 
     solid::generate(nsolid, npsolid, r_rr0_hst, coms, /**/ r_pp_hst, ss_hst);
 

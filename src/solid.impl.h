@@ -21,16 +21,6 @@ namespace solid {
         return k_solid::shape::inside(x, y, z);
     }
 
-    void init_com(Particle *pp, int n, /**/ float *com) {
-        com[X] = com[Y] = com[Z] = 0;
-        for (int ip = 0; ip < n; ++ip) {
-            float *r0 = pp[ip].r;
-            com[X] += r0[X]; com[Y] += r0[Y]; com[Z] += r0[Z];
-        }
-        com[X] /= n; com[Y] /= n; com[Z] /= n;
-        k_solid::pbc_solid(com);
-    }
-
     void init_I(Particle *pp, int n, float pmass, float *com, /**/ float *I) {
         int c;
 
@@ -50,8 +40,8 @@ namespace solid {
         for (c = 0; c < 6; ++c) I[c] *= pmass;
     }
 
-    void init(Particle *pp, int n, float pmass,
-              /**/ float *rr0, float *Iinv, float *com, float *e0, float *e1, float *e2, float *v, float *om) {
+    void init(Particle *pp, int n, float pmass, float *com,
+              /**/ float *rr0, float *Iinv, float *e0, float *e1, float *e2, float *v, float *om) {
         v[X] = v[Y] = v[Z] = 0; 
         om[X] = om[Y] = om[Z] = 0; 
 
@@ -59,9 +49,6 @@ namespace solid {
         e0[X] = 1; e0[Y] = 0; e0[Z] = 0;
         e1[X] = 0; e1[Y] = 1; e1[Z] = 0;
         e2[X] = 0; e2[Y] = 0; e2[Z] = 1;
-
-        //if (!pin_com) init_com(pp, n, /**/ com);
-        //else com[X] = com[Y] = com[Z] = 0;
 
         /* init inertia tensor */
         float I[6]; solid::init_I(pp, n, pmass, com, /**/ I);
