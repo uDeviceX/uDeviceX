@@ -1,6 +1,6 @@
 namespace sim {
 
-    //#define NOHOST_SOLID
+#define NOHOST_SOLID
     
 #define X 0
 #define Y 1
@@ -128,13 +128,13 @@ void update_solid() {
     
 #else
 
-    //CC(cudaMemcpy(solid_dev, &solid_hst, sizeof(Solid), H2D));
+    //CC(cudaMemcpy(ss_dev, ss_hst, nsolid * sizeof(Solid), H2D));
     
-    solid::update_nohost(r_ff, r_rr0, r_n, /**/ r_pp, solid_dev);
+    solid::update_nohost(r_ff, r_rr0, r_n, nsolid, /**/ r_pp, ss_dev);
 
-    k_solid::reinit_ft <<<1, 1>>> (/**/ solid_dev->fo, solid_dev->to);
+    k_solid::reinit_ft <<< k_cnf(nsolid) >>> (nsolid, /**/ ss_dev);
 
-    CC(cudaMemcpy(&solid_hst, solid_dev, sizeof(Solid), D2H));
+    CC(cudaMemcpy(ss_hst, ss_dev, sizeof(Solid), D2H));
     
 #endif
 }
@@ -177,9 +177,16 @@ void init_r()
     mpDeviceMalloc(&r_pp); mpDeviceMalloc(&r_ff);
 
     // TMP positions of coms
-    nsolid = 2;
-    float coms[2*3] = {-5.5, 0, 0,
-                       5.5, 0, 0};
+    nsolid = 0;
+    // float coms[2*3] = {-5.5, 0, 0,
+    //                    5.5, 0, 0};
+
+    float coms[2*3] = {0, -5.5, 0,
+                       0, 5.5, 0};
+
+
+    ss_hst = new Solid[nsolid];
+    CC(cudaMalloc(&ss_dev, nsolid * sizeof(Solid)));
 
     int scount = 0;
 
@@ -263,14 +270,12 @@ void init() {
 
   dump_field = new H5FieldDump;
 
-  nsolid = 2;
-  
-  ss_hst = new Solid[nsolid];
-  CC(cudaMalloc(&ss_dev, nsolid * sizeof(Solid)));
+  ss_hst = NULL;
+  ss_dev = NULL;
   
   MC(MPI_Barrier(m::cart));
-}
-
+}    
+    
 void dumps_diags(int it) {
   if (it % steps_per_dump == 0)     dump_part();
   if (it % steps_per_dump == 0)     solid::dump(it, ss_hst, nsolid);
@@ -342,8 +347,8 @@ void close() {
   CC(cudaFree(s_pp0));
   CC(cudaFree(r_rr0));
 
-  delete[] ss_hst;
-  CC(cudaFree(ss_dev));
+  if (ss_hst) delete[] ss_hst;
+  if (ss_dev) CC(cudaFree(ss_dev));
 }
 #undef X
 #undef Y

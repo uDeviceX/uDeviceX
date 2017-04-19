@@ -253,7 +253,7 @@ namespace solid {
         k_solid::update_r <<<k_cnf(n)>>> (rr0, n, sdev->com, sdev->e0, sdev->e1, sdev->e2, /**/ pp);
     }
 
-    void update_no_host(Force *ff, float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *shst)
+    void update_nohost(Force *ff, float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *sdev)
     {
         int start = 0;
         const int nps = n / nsolid; /* number of particles per solid */
@@ -261,7 +261,7 @@ namespace solid {
         
         for (int i = 0; i < nsolid; ++i)
         {
-            update_nohost_1s(ff + start, rr0, nps, /**/ pp + start, shst + i);
+            update_nohost_1s(ff + start, rr0, nps, /**/ pp + start, sdev + i);
             start += nps;
         }
     }

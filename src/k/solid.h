@@ -214,12 +214,15 @@ namespace k_solid
         }
     }
 
-    __global__ void reinit_ft(float *fo, float *to)
+    __global__ void reinit_ft(const int nsolid, Solid *ss)
     {
-        if (threadIdx.x == 0)
+        const int gid = blockIdx.x * blockDim.x + threadIdx.x;
+
+        if (gid < nsolid)
         {
-            fo[X] = fo[Y] = fo[Z] = 0.f;
-            to[X] = to[Y] = to[Z] = 0.f;
+            Solid *s = ss + gid;
+            s->fo[X] = s->fo[Y] = s->fo[Z] = 0.f;
+            s->to[X] = s->to[Y] = s->to[Z] = 0.f;
         }
     }
 
