@@ -27,10 +27,11 @@ namespace sim {
   Particle      sr_pp[MAX_PART_NUM];    /* solvent + solid pp on host */
 
 
-  float r_rr0_hst[3*MAX_VERT_NUM];                 /* initial positions */
+  int nsolid;     /* number of solid objects       */
+  int npsolid;    /* number of particles per solid */
+  Solid *ss_hst;  /* solid infos on host           */
+  Solid *ss_dev;  /* solid infos on device         */
+
+  float r_rr0_hst[3*MAX_VERT_NUM];      /* initial positions; same for all solids */
   float *r_rr0;
-    
-  Solid  solid_hst;
-  Solid *solid_dev;
-    
 }

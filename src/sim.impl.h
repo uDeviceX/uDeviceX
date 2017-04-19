@@ -1,6 +1,6 @@
 namespace sim {
 
-#define NOHOST_SOLID
+    //#define NOHOST_SOLID
     
 #define X 0
 #define Y 1
@@ -120,9 +120,9 @@ void update_solid() {
     CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
     CC(cudaMemcpy(r_ff_hst, r_ff, sizeof(Force) * r_n, D2H));
     
-    solid::update(r_ff_hst, r_rr0_hst, r_n, /**/ r_pp_hst, &solid_hst);
+    solid::update_host(r_ff_hst, r_rr0_hst, r_n, nsolid, /**/ r_pp_hst, ss_hst);
 
-    solid::reinit_f_to(/**/ solid_hst.fo, solid_hst.to);
+    solid::reinit_f_to(nsolid, /**/ ss_hst);
     
     CC(cudaMemcpy(r_pp, r_pp_hst, sizeof(Particle) * r_n, H2D));
     
@@ -152,6 +152,7 @@ void bounce() {
   if (rbcs0) wall::bounce(r_pp, r_n);
 }
 
+#if 0
 void bounce_solid() {
 #ifndef NOHOST_SOLID
     CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
@@ -168,32 +169,75 @@ void bounce_solid() {
     
 #endif
 }
+#endif
 
-void init_r() {
-  rex::init();
-  mpDeviceMalloc(&r_pp); mpDeviceMalloc(&r_ff);
-  int ip, is, ir;
+void init_r()
+{
+    rex::init();
+    mpDeviceMalloc(&r_pp); mpDeviceMalloc(&r_ff);
 
-  CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
+    // TMP positions of coms
+    nsolid = 2;
+    float coms[2*3] = {-5.5, 0, 0,
+                       5.5, 0, 0};
+
+    int scount = 0;
+
+    int *rcounts = new int[nsolid];
+    for (int j = 0; j < nsolid; ++j) rcounts[j] = 0;
+
+    CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
+
+    // assume same solid repeated: keep same particles
+    for (int ip = 0; ip < s_n; ++ip)
+    {
+        Particle p = s_pp_hst[ip]; float *r0 = p.r;
+
+        bool is_solid = false;
+        for (int j = 0; j < nsolid; ++j)
+        {
+            float *com = coms + 3*j;
+
+            if (solid::inside(r0[X]-com[X], r0[Y]-com[Y], r0[Z]-com[Z]))
+            {
+                assert(!is_solid);
+                if (j == 0) r_pp_hst[rcounts[j]++] = p;
+                else        ++rcounts[j];
+                is_solid = true;
+            }
+        }
+        
+        if (!is_solid)
+        s_pp_hst[scount++] = p;
+    }
+    s_n = scount;
+    npsolid = rcounts[0];
+    r_n = nsolid * npsolid;
+
+    for (int j = 0; j < nsolid; ++j)
+    printf("Found %d particles in solid %d\n", rcounts[j], j);
+    printf("Found %d particles in solvent\n", scount);
+
+    delete[] rcounts;
+
+    for (int d = 0; d < 3; ++d)
+    ss_hst[0].com[d] = coms[d];
+    
+    solid::init(r_pp_hst, npsolid, rbc_mass, /**/ r_rr0_hst, ss_hst[0].Iinv, ss_hst[0].com, ss_hst[0].e0, ss_hst[0].e1, ss_hst[0].e2, ss_hst[0].v, ss_hst[0].om);
+
+    solid::generate(nsolid, npsolid, r_rr0_hst, coms, /**/ r_pp_hst, ss_hst);
+
+    for (int j = 0; j < nsolid; ++j) ss_hst[j].id = j;
+    
+    solid::reinit_f_to(nsolid, /**/ ss_hst);
+    
+    CC(cudaMemcpy(ss_dev, ss_hst, nsolid * sizeof(Solid), H2D));
+    CC(cudaMemcpy(r_rr0, r_rr0_hst, 3 * npsolid * sizeof(float), H2D));
   
-  for (ip = is = ir = 0; ip < s_n; ++ip) {
-    Particle p = s_pp_hst[ip]; float *r0 = p.r;
-    if (solid::inside(r0[X], r0[Y], r0[Z])) r_pp_hst[ir++] = p;
-    else                                    s_pp_hst[is++] = p;
-  }
-  r_n = ir; s_n = is;
-  
-  solid::init(r_pp_hst, r_n, rbc_mass, /**/ r_rr0_hst, solid_hst.Iinv, solid_hst.com, solid_hst.e0, solid_hst.e1, solid_hst.e2, solid_hst.v, solid_hst.om);
+    CC(cudaMemcpy(r_pp, r_pp_hst, sizeof(Particle) * r_n, H2D));
+    CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
 
-  CC(cudaMemcpy(solid_dev, &solid_hst, sizeof(Solid), H2D));
-  CC(cudaMemcpy(r_rr0, r_rr0_hst, 3 * r_n * sizeof(float), H2D));
-
-  solid::reinit_f_to(/**/ solid_hst.fo, solid_hst.to);
-  
-  CC(cudaMemcpy(r_pp, r_pp_hst, sizeof(Particle) * r_n, H2D));
-  CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
-
-  MC(MPI_Barrier(m::cart));
+    MC(MPI_Barrier(m::cart));
 }
 
 void init() {
@@ -219,14 +263,17 @@ void init() {
 
   dump_field = new H5FieldDump;
 
-  CC(cudaMalloc(&solid_dev, sizeof(Solid)));
+  nsolid = 2;
+  
+  ss_hst = new Solid[nsolid];
+  CC(cudaMalloc(&ss_dev, nsolid * sizeof(Solid)));
   
   MC(MPI_Barrier(m::cart));
 }
 
 void dumps_diags(int it) {
   if (it % steps_per_dump == 0)     dump_part();
-  if (it % steps_per_dump == 0)     solid::dump(it, &solid_hst);
+  if (it % steps_per_dump == 0)     solid::dump(it, ss_hst, nsolid);
   if (it % steps_per_hdf5dump == 0) dump_grid();
   if (it % steps_per_dump == 0)     diag(it);
 }
@@ -239,7 +286,7 @@ void run0(float driving_force, bool wall_created, int it) {
     update_s();
     if (rbcs0) update_r();
     if (wall_created) bounce();
-    if (rbcs0) bounce_solid();
+    //if (rbcs0) bounce_solid();
 }
 
 void run_nowall() {
@@ -295,7 +342,8 @@ void close() {
   CC(cudaFree(s_pp0));
   CC(cudaFree(r_rr0));
 
-  CC(cudaFree(solid_dev));
+  delete[] ss_hst;
+  CC(cudaFree(ss_dev));
 }
 #undef X
 #undef Y

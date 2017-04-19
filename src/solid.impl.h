@@ -31,7 +31,7 @@ namespace solid {
         k_solid::pbc_solid(com);
     }
 
-    void init_I(Particle *pp, int n, float mass, float *com, /**/ float *I) {
+    void init_I(Particle *pp, int n, float pmass, float *com, /**/ float *I) {
         int c;
 
         for (int c = 0; c < 6; ++c) I[c] = 0;
@@ -47,10 +47,10 @@ namespace solid {
             I[YZ] -= y*z;
         }
 
-        for (c = 0; c < 6; ++c) I[c] *= mass;
+        for (c = 0; c < 6; ++c) I[c] *= pmass;
     }
 
-    void init(Particle *pp, int n, float mass,
+    void init(Particle *pp, int n, float pmass,
               /**/ float *rr0, float *Iinv, float *com, float *e0, float *e1, float *e2, float *v, float *om) {
         v[X] = v[Y] = v[Z] = 0; 
         om[X] = om[Y] = om[Z] = 0; 
@@ -62,10 +62,9 @@ namespace solid {
 
         //if (!pin_com) init_com(pp, n, /**/ com);
         //else com[X] = com[Y] = com[Z] = 0;
-        com[X] = com[Y] = com[Z] = 0;
 
         /* init inertia tensor */
-        float I[6]; solid::init_I(pp, n, mass, com, /**/ I);
+        float I[6]; solid::init_I(pp, n, pmass, com, /**/ I);
         gsl::inv3x3(I, /**/ Iinv);
 
         {
@@ -85,7 +84,34 @@ namespace solid {
             ro[X] = r0[X]-com[X]; ro[Y] = r0[Y]-com[Y]; ro[Z] = r0[Z]-com[Z];
         }
     }
-    
+
+    void generate(const int nsolid, const int npsolid, const float *rr0, const float *coms, /**/ Particle *pp, Solid *ss_hst)
+    {
+        Solid sbase = ss_hst[0];
+        
+        for (int j = 1; j < nsolid; ++j)
+        {
+            Solid s = sbase;
+            for (int d = 0; d < 3; ++d)
+            s.com[d] = coms[3*j + d];
+
+            Particle *ppj = pp + j*npsolid;
+            
+            for (int i = 0; i < npsolid; ++i)
+            {
+                Particle p;
+                for (int d = 0; d < 3; ++d)
+                {
+                    p.r[d] = s.com[d] + rr0[3*i + d];
+                    p.v[d] = 0;
+                }
+                ppj[i] = p;
+            }
+
+            ss_hst[j] = s;
+        }
+    }
+
     void add_f(Force *ff, int n, /**/ float *f) {
         for (int ip = 0; ip < n; ++ip) {
             float *f0 = ff[ip].f;
@@ -157,13 +183,18 @@ namespace solid {
         }
     }
 
-    void reinit_f_to(/**/ float *f, float *to)
+    void reinit_f_to(const int nsolid, /**/ Solid *ss_hst)
     {
-        f[X] = f[Y] = f[Z] = 0;
-        to[X] = to[Y] = to[Z] = 0;
+        for (int i = 0; i < nsolid; ++i)
+        {
+            Solid *s = ss_hst + i;
+            
+            s->fo[X] = s->fo[Y] = s->fo[Z] = 0;
+            s->to[X] = s->to[Y] = s->to[Z] = 0;
+        }
     }
 
-    void update(Force *ff, float *rr0, int n, /**/ Particle *pp, Solid *shst)
+    void update_host_1s(Force *ff, float *rr0, int n, /**/ Particle *pp, Solid *shst)
     {
         /* clear velocity */
         for (int ip = 0; ip < n; ++ip) {
@@ -194,7 +225,20 @@ namespace solid {
         update_r(rr0, n, shst->com, shst->e0, shst->e1, shst->e2, /**/ pp);
     }
 
-    void update_nohost(const Force *ff, const float *rr0, const int n, /**/ Particle *pp, Solid *sdev)
+    void update_host(Force *ff, float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *shst)
+    {
+        int start = 0;
+        const int nps = n / nsolid; /* number of particles per solid */
+        assert (n % nsolid == 0);
+        
+        for (int i = 0; i < nsolid; ++i)
+        {
+            update_host_1s(ff + start, rr0, nps, /**/ pp + start, shst + i);
+            start += nps;
+        }
+    }
+    
+    void update_nohost_1s(const Force *ff, const float *rr0, const int n, /**/ Particle *pp, Solid *sdev)
     {
         k_solid::add_f_to <<<k_cnf(n)>>> (pp, ff, n, sdev->com, /**/ sdev->fo, sdev->to);
 
@@ -209,34 +253,54 @@ namespace solid {
         k_solid::update_r <<<k_cnf(n)>>> (rr0, n, sdev->com, sdev->e0, sdev->e1, sdev->e2, /**/ pp);
     }
 
-    void dump(const int it, const Solid *s)
+    void update_no_host(Force *ff, float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *shst)
+    {
+        int start = 0;
+        const int nps = n / nsolid; /* number of particles per solid */
+        assert (n % nsolid == 0);
+        
+        for (int i = 0; i < nsolid; ++i)
+        {
+            update_nohost_1s(ff + start, rr0, nps, /**/ pp + start, shst + i);
+            start += nps;
+        }
+    }
+
+    void dump(const int it, const Solid *ss, int nsolid)
     {
         static bool first = true;
-        const char *fname = "solid_diag.txt";
-        FILE *fp;
-        if (first) fp = fopen(fname, "w");
-        else       fp = fopen(fname, "a");
+        char fname[256];
+
+        for (int j = 0; j < nsolid; ++j)
+        {
+            const Solid *s = ss + j;
+            
+            sprintf(fname, "solid_diag_%04d.txt", (int) s->id);
+            FILE *fp;
+            if (first) fp = fopen(fname, "w");
+            else       fp = fopen(fname, "a");
         
-        first = false;
+            first = false;
 
-        fprintf(fp, "%+.6e ", dt*it);
+            fprintf(fp, "%+.6e ", dt*it);
 
-        auto write_v = [fp] (const float *v) {
-            fprintf(fp, "%+.6e %+.6e %+.6e ", v[X], v[Y], v[Z]);
-        };
+            auto write_v = [fp] (const float *v) {
+                fprintf(fp, "%+.6e %+.6e %+.6e ", v[X], v[Y], v[Z]);
+            };
 
-        write_v(s->com);
-        write_v(s->v  );
-        write_v(s->om );
-        write_v(s->fo );
-        write_v(s->to );
-        write_v(s->e0 );
-        write_v(s->e1 );
-        write_v(s->e2 );
+            write_v(s->com);
+            write_v(s->v  );
+            write_v(s->om );
+            write_v(s->fo );
+            write_v(s->to );
+            write_v(s->e0 );
+            write_v(s->e1 );
+            write_v(s->e2 );
 
-        fprintf(fp, "\n");
+            fprintf(fp, "\n");
         
-        fclose(fp);
+            fclose(fp);
+        }
     }
 
 #undef X

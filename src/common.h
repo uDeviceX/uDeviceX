@@ -74,7 +74,8 @@ struct Solid {
         com[3],               /* [c]enter [o]f [m]ass        */
         v[3], om[3],          /* linear and angular velocity */
         e0[3], e1[3], e2[3],  /* local referential           */
-        fo[3], to[3];         /* force, torque               */
+        fo[3], to[3],         /* force, torque               */
+        id;                   /* id of the solid             */
 };
 
 template <typename T>
