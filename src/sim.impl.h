@@ -134,7 +134,7 @@ void update_solid() {
 
     k_solid::reinit_ft <<< k_cnf(nsolid) >>> (nsolid, /**/ ss_dev);
 
-    CC(cudaMemcpy(ss_hst, ss_dev, sizeof(Solid), D2H));
+    CC(cudaMemcpy(ss_hst, ss_dev, nsolid * sizeof(Solid), D2H));
     
 #endif
 }
@@ -152,24 +152,22 @@ void bounce() {
   if (rbcs0) wall::bounce(r_pp, r_n);
 }
 
-#if 0
-void bounce_solid() {
-#ifndef NOHOST_SOLID
-    CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
-    CC(cudaMemcpy(s_ff_hst, s_ff, sizeof(Force)    * s_n, D2H));
+// void bounce_solid() {
+// #ifndef NOHOST_SOLID
+//     CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
+//     CC(cudaMemcpy(s_ff_hst, s_ff, sizeof(Force)    * s_n, D2H));
 
-    solidbounce::bounce(s_ff_hst, s_n, /**/ s_pp_hst, &solid_hst);
+//     solidbounce::bounce(s_ff_hst, s_n, /**/ s_pp_hst, &solid_hst);
 
-    CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
-#else
+//     CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
+// #else
 
-    solidbounce::bounce_nohost(s_ff, s_n, /**/ s_pp, solid_dev);
+//     solidbounce::bounce_nohost(s_ff, s_n, /**/ s_pp, solid_dev);
 
-    CC(cudaMemcpy(&solid_hst, solid_dev, sizeof(Solid), D2H));
+//     CC(cudaMemcpy(&solid_hst, solid_dev, sizeof(Solid), D2H));
     
-#endif
-}
-#endif
+// #endif
+// }
 
 #define MAX_SOLIDS 1024
 
