@@ -21,6 +21,10 @@ namespace solid {
         return k_solid::shape::inside(x, y, z);
     }
 
+    void get_bbox(/**/ float *bbox) {
+        k_solid::shape::get_bbox(bbox);
+    }
+
     void init_I(Particle *pp, int n, float pmass, float *com, /**/ float *I) {
         int c;
 
@@ -128,7 +132,6 @@ namespace solid {
 
     void update_com(float *v, /**/ float *com) {
         com[X] += v[X]*dt; com[Y] += v[Y]*dt; com[Z] += v[Z]*dt;
-        //k_solid::pbc_solid(/**/ com);
     }
 
     void update_r(const float *rr0, const int n, const float *com, const float *e0, const float *e1, const float *e2, /**/ Particle *pp)

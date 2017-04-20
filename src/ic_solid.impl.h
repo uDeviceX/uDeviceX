@@ -73,7 +73,7 @@ namespace ic_solid
                 duplicate(d, -1);
             }
 
-            // do not reinsert the original
+            // k from 1: do not reinsert the original
             for (int k = 1; k < (int) dupls.size(); ++k)
             {
                 for (int d = 0; d < 3; ++d)
@@ -213,7 +213,9 @@ namespace ic_solid
         int nsolid = read_coms(fname, coms);
         int npsolid = 0;
 
-        float bbox[3] = {2.f*rsph, 2.f*rsph, 2.f*rsph};
+        float bbox[3];
+        solid::get_bbox(bbox);
+
         nsolid = duplicate_PBC(bbox, nsolid, /**/ coms);
 
         make_local(nsolid, coms);

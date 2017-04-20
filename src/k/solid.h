@@ -71,18 +71,6 @@ namespace k_solid
         }
     }
 
-    /* wrap COM to the domain; TODO: many processes */
-    _HD_ void pbc_solid(/**/ float *com)
-    {
-        float lo[3] = {-0.5*XS, -0.5*YS, -0.5*ZS};
-        float hi[3] = { 0.5*XS,  0.5*YS,  0.5*ZS};
-        float L[3] = {XS, YS, ZS};
-        for (int c = 0; c < 3; ++c) {
-            while (com[c] <  lo[c]) com[c] += L[c];
-            while (com[c] >= hi[c]) com[c] -= L[c];
-        }
-    }
-
 #if defined(rsph)
 
 #define shape sphere
@@ -93,6 +81,12 @@ namespace k_solid
         _HD_ bool inside(float x, float y, float z) {
             return x*x + y*y + z*z < rsph*rsph;
         }
+
+        void get_bbox(/**/ float *bbox)
+        {
+            bbox[X] = bbox[Y] = bbox[Z] = rsph;
+        }
+
     }
 
 #elif defined(thrbc)
@@ -118,6 +112,11 @@ namespace k_solid
              
              return z > -zrbc && z < zrbc;
         }
+
+        void get_bbox(/**/ float *bbox)
+        {
+            //TODO
+        }
     }
 
 #elif defined(rcyl)
@@ -129,6 +128,13 @@ namespace k_solid
     {
         _HD_ bool inside(float x, float y, float z) {
             return x*x + y*y < rcyl * rcyl;
+        }
+
+        void get_bbox(/**/ float *bbox)
+        {
+            bbox[X] = 2.f * rcyl;
+            bbox[Y] = 2.f * rcyl;
+            bbox[Z] = 0.f // symmetric
         }
     }
 
@@ -145,6 +151,14 @@ namespace k_solid
         _HD_ bool inside(float x, float y, float z) {
             return x*x / a2 + y*y / b2 < 1;
         }
+
+        void get_bbox(/**/ float *bbox)
+        {
+            bbox[X] = 2.f * sqrt(a2);
+            bbox[Y] = 2.f * sqrt(b2);
+            bbox[Z] = 0.f; // symmetric here
+        }
+
     }
 
 #elif defined(a2_ellipsoid)
@@ -160,14 +174,21 @@ namespace k_solid
         __DH__ bool inside(float x, float y, float z) {
             return x*x / a2 + y*y / b2 + z*z / c2 < 1;
         }
+
+        void get_bbox(/**/ float *bbox)
+        {
+            bbox[X] = 2.f * sqrt(a2);
+            bbox[Y] = 2.f * sqrt(b2);
+            bbox[Z] = 2.f * sqrt(c2);
+        }
     }
 #endif
 
     
     _HD_ bool inside(float x, float y, float z) {
         return shape::inside(x, y, z);
-    }
-
+    }        
+    
     __device__ void warpReduceSumf3(float *x)
     {
         for (int offset = warpSize>>1; offset > 0; offset >>= 1)
@@ -283,8 +304,9 @@ namespace k_solid
     {
         if (threadIdx.x == 0)
         {
-            com[X] += v[X]*dt; com[Y] += v[Y]*dt; com[Z] += v[Z]*dt;
-            //pbc_solid(/**/ com);
+            com[X] += v[X]*dt;
+            com[Y] += v[Y]*dt;
+            com[Z] += v[Z]*dt;
         }
     }
 
