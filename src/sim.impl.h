@@ -15,6 +15,28 @@ static void distr_s() {
   std::swap(s_pp, s_pp0);
 }
 
+static void distr_r()
+{
+#ifdef NOHOST_SOLID
+    CC(cudaMemcpy(ss_hst, ss_dev, nsolid * sizeof(Solid), D2H));
+#endif
+    
+    rdstr::pack_sendcnt(ss_hst, nsolid);
+
+    nsolid = rdstr::post();
+    r_n = nsolid * npsolid;
+
+    rdstr::unpack(nsolid, /**/ ss_hst);
+
+#ifdef NOHOST_SOLID
+    CC(cudaMemcpy(ss_dev, ss_hst, nsolid * sizeof(Solid), H2D));
+    solid::generate_nohost(ss_dev, nsolid, r_rr0, npsolid, /**/ r_pp);
+#else
+    solid::generate_host(ss_hst, nsolid, r_rr0_hst, npsolid, /**/ r_pp_hst);
+    CC(cudaMemcpy(r_pp, r_pp_hst, 3 * r_n * sizeof(float), H2D));
+#endif
+}
+
 static void update_helper_arrays() {
   CC(cudaFuncSetCacheConfig(k_sim::make_texture, cudaFuncCachePreferShared));
   k_sim::make_texture<<<(s_n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>
@@ -380,6 +402,7 @@ void init_r()
 void init() {
   DPD::init();
   fsi::init();
+  rdstr::init();
   cnt::init();
   if (hdf5part_dumps)
     dump_part_solvent = new H5PartDump("s.h5part");
@@ -416,6 +439,7 @@ void dumps_diags(int it) {
 
 void run0(float driving_force, bool wall_created, int it) {
     distr_s();
+    if (rbcs0) distr_r();
     forces(wall_created);
     dumps_diags(it);
     body_force(driving_force);
@@ -461,7 +485,8 @@ void close() {
   delete dump_field;
   delete dump_part_solvent;
   sdstr::redist_part_close();
-
+  rdstr::close();
+  
   cnt::close();
   delete cells;
   if (rbcs0) {

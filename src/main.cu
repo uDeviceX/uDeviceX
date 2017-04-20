@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
   for (int iarg = 1; iarg < argc && iarg <= 3; iarg++)
     m::dims[iarg - 1] = atoi(argv[iarg]);
 
-  int device = 0;
+  int device = 2;
   CC(cudaSetDevice(device));
 
   mpi_init(argc, argv);

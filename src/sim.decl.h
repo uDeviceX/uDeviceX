@@ -21,7 +21,7 @@ namespace sim {
 
   Particle      s_pp_hst[MAX_PART_NUM]; /* solvent on host           */
   Force         s_ff_hst[MAX_PART_NUM]; /* solvent forces on host    */
-  Particle      r_pp_hst[MAX_PART_NUM]; /* Solid pp on hos   t       */
+  Particle      r_pp_hst[MAX_PART_NUM]; /* Solid pp on host          */
   Force         r_ff_hst[MAX_PART_NUM]; /* Solid ff on host          */
   
   Particle      sr_pp[MAX_PART_NUM];    /* solvent + solid pp on host */

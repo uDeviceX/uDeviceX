@@ -8,7 +8,7 @@ namespace rdstr
     std::vector<MPI_Request> sendreq, recvreq, recvcntreq;
     int rnk_ne[27]; /* rank      of the neighbor */
     int ank_ne[27]; /* anti-rank of the neighbor */
-    int recv_cnts[27];
+    int recv_counts[27], send_counts[27];
 
     int nstay;
 }

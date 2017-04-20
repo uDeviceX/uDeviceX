@@ -14,11 +14,11 @@ namespace rdstr
 
     void _post_recvcnt()
     {
-        recv_cnts[0] = 0;
+        recv_counts[0] = 0;
         for (int i = 1; i < 27; ++i)
         {
             MPI_Request req;
-            m::Irecv(&recv_cnts[i], 1, MPI_INTEGER, ank_ne[i], i + 1024, cart, &req);
+            MPI_Irecv(&recv_counts[i], 1, MPI_INTEGER, ank_ne[i], i + 1024, cart, &req);
             recvcntreq.push_back(req);
         }
     }
@@ -32,15 +32,15 @@ namespace rdstr
             int d[3] = i2del(i); /* index to delta */
             int co_ne[3];
             for (int c = 0; c < 3; ++c) co_ne[c] = m::coords[c] + d[c];
-            m::Cart_rank(cart, co_ne, &rnk_ne[i]);
+            MPI_Cart_rank(cart, co_ne, &rnk_ne[i]);
             for (int c = 0; c < 3; ++c) co_ne[c] = m::coords[c] - d[c];
-            m::Cart_rank(cart, co_ne, &ank_ne[i]);
+            MPI_Cart_rank(cart, co_ne, &ank_ne[i]);
         }
     }
 
     void init()
     {        
-        m::Comm_dup(m::cart, &cart);
+        MPI_Comm_dup(m::cart, &cart);
         gen_ne(cart,   rnk_ne, ank_ne); /* generate ranks and anti-ranks */
 
         _post_recvcnt();
@@ -55,7 +55,7 @@ namespace rdstr
         
         for (int i = 0; i < ns; ++i)
         {
-            const float *p[3] = ss_hst[i].com;
+            const float *p = ss_hst[i].com;
             
             for (int c = 0; c < 3; ++c)
             vcode[c] = (2 + (p[c] >= -L[c] / 2) + (p[c] >= L[c] / 2)) % 3;
@@ -64,44 +64,45 @@ namespace rdstr
             sbuf[code].push_back(ss_hst[i]);
         }
 
-        nstay = sbuf[0].size();
+        for (int i = 0; i < 27; ++i) send_counts[i] = sbuf[i].size();
+        nstay = send_counts[0];
         
         for (int i = 1; i < 27; ++i)
-        m::Isend(&sbuf[i].S, 1, MPI_INTEGER, rnk_ne[i], i + 1024, cart, &sendcntreq[i - 1]);
+        MPI_Isend(send_counts + i, 1, MPI_INTEGER, rnk_ne[i], i + 1024, cart, &sendcntreq[i - 1]);
     }
 
     int post()
     {
         {
             MPI_Status statuses[recvcntreq.size()];
-            m::Waitall(recvcntreq.size(), &recvcntreq.front(), statuses);
+            MPI_Waitall(recvcntreq.size(), &recvcntreq.front(), statuses);
             recvcntreq.clear();
         }
 
         int ncome = 0;
         for (int i = 1; i < 27; ++i)
         {
-            int count = recv_cnts[i];
+            int count = recv_counts[i];
             ncome += count;
             rbuf[i].resize(count);
         }
 
         MPI_Status statuses[26];
-        m::Waitall(26, sendcntreq, statuses);
+        MPI_Waitall(26, sendcntreq, statuses);
 
         for (int i = 1; i < 27; ++i)
-        if (rbuf[i].S > 0)
+        if (rbuf[i].size() > 0)
         {
             MPI_Request request;
-            m::Irecv(rbuf[i]->D, rbuf[i]->S, Solid::datatype(), ank_ne[i], i + 1155, cart, &request);
+            MPI_Irecv(rbuf[i].data(), rbuf[i].size(), Solid::datatype(), ank_ne[i], i + 1155, cart, &request);
             recvreq.push_back(request);
         }
 
         for (int i = 1; i < 27; ++i)
-        if (sbuf[i].S > 0)
+        if (sbuf[i].size() > 0)
         {
             MPI_Request request;
-            m::Isend(sbuf[i].D, sbuf[i].S, Solid::datatype(), rnk_ne[i], i + 1155, cart, &request);
+            MPI_Isend(sbuf[i].data(), sbuf[i].size(), Solid::datatype(), rnk_ne[i], i + 1155, cart, &request);
             sendreq.push_back(request);
         }
         
@@ -127,8 +128,8 @@ namespace rdstr
     void unpack(const int ns, /**/ Solid *ss_hst)
     {
         MPI_Status statuses[26];
-        m::Waitall(recvreq.size(), &recvreq.front(), statuses);
-        m::Waitall(sendreq.size(), &sendreq.front(), statuses);
+        MPI_Waitall(recvreq.size(), &recvreq.front(), statuses);
+        MPI_Waitall(sendreq.size(), &sendreq.front(), statuses);
         recvreq.clear();
         sendreq.clear();
 
@@ -138,18 +139,18 @@ namespace rdstr
         // copy and shift halo
         for (int i = 1, start = nstay; i < 27; ++i)
         {
-            const int count = rbuf[i].S;
+            const int count = rbuf[i].size();
 
             if (count > 0)
-            shift_copy(rbuf[i].D, count, i, /**/ ss_hst + start);
+            shift_copy(rbuf[i].data(), count, i, /**/ ss_hst + start);
 
-            s += count;
+            start += count;
         }
         _post_recvcnt();
     }
 
     void close()
     {
-        m::Comm_free(&cart);
+        MPI_Comm_free(&cart);
     }
 }
