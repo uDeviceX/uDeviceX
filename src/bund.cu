@@ -65,12 +65,13 @@
 #include "dpd.decl.h"
 #include "dpd.impl.h"
 
-#include "ic.impl.h"
-
 #include "gsl.impl.h"
 
 #include "solid.impl.h"
 #include "sbounce.h"
+
+#include "ic.impl.h"
+#include "ic_solid.impl.h"
 
 #include "k/sim.h"
 #include "sim.decl.h"
