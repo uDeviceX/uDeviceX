@@ -194,7 +194,8 @@ namespace ic_solid
         
         // set global ids
 
-        MC( MPI_Scan(&nsolid, &id, 1, MPI_INT, MPI_SUM, m::cart) );
+        id = 0;
+        MC( MPI_EXScan(&nsolid, &id, 1, MPI_INT, MPI_SUM, m::cart) );
 
         for (int j = 0; j < nsolid; ++j)
         ss[j].id = id++;
