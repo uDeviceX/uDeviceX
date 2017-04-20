@@ -3,7 +3,7 @@
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt
 # cp sdf/wall1/wall.dat sdf.dat
-# cp ic_solid_center.txt ic_solid.txt
+# echo -e "16 16 16" > ic_solid.txt
 # :
 # argp .conf.test.h  \
 #   -tend=2.0 -steps_per_dump=1000 -walls -wall_creation_stepid=100 \
@@ -15,11 +15,11 @@
 # avg_h5.m h5/flowfields-0001.h5 | fround.awk -v tol=1 > h5.out.txt
 
 #### Double poiseuille pinned sphere
-# TEST: solid.t2
+# sTEST: solid.t2
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt
-# cp ic_solid_center.txt ic_solid.txt
+# echo -e "8 16 8" > ic_solid.txt
 # :
 # argp .conf.double.poiseuille.h     \
 #   -rbcs -rsph=4 -pin_com=false      \
@@ -34,11 +34,11 @@
 #
 
 #### Double poiseuille pinned cylinder
-# TEST: solid.t3
+# sTEST: solid.t3
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt debug.txt
-# cp ic_solid_center.txt ic_solid.txt
+# echo -e "8 16 8" > ic_solid.txt
 # :
 # argp .conf.double.poiseuille.h     \
 #   -rbcs -rcyl=4 -pin_com=true      \
@@ -53,11 +53,11 @@
 #
 
 #### Couette pinned cylinder
-# TEST: solid.t4
+# sTEST: solid.t4
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt
 # cp sdf/yplates1/yplates.dat sdf.dat
-# cp ic_solid_center.txt ic_solid.txt
+# echo -e "16 16 16" > ic_solid.txt
 # :
 # argp .conf.test.h  \
 #   -tend=2.0 -steps_per_dump=1000 -walls -wall_creation_stepid=100 \
@@ -69,11 +69,11 @@
 # avg_h5.m h5/flowfields-0001.h5 | fround.awk -v tol=1 > h5.out.txt
 
 #### Double poiseuille pinned ellipse
-# TEST: solid.t5
+# sTEST: solid.t5
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt debug.txt
-# cp ic_solid_center.txt ic_solid.txt
+# echo -e "8 16 8" > ic_solid.txt
 # :
 # argp .conf.double.poiseuille.h     \
 #   -rbcs  -pin_com=true             \

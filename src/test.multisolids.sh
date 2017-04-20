@@ -3,7 +3,7 @@
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt
-# echo -e "-3.9 5.5 0\n-3.9 -5.5 0\n3.9 0 0" > ic_solid.txt
+# echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > ic_solid.txt
 # :
 # argp .conf.double.poiseuille.h     \
 #   -rbcs -rsph=4 -pin_com=false     \
@@ -19,11 +19,11 @@
 #
 
 #### spheres in double poiseuille, contact
-# sTEST: multisolid.t2
+# TEST: multisolid.t2
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt
-# echo -e "-3.9 5.5 0\n-3.9 -5.5 0\n3.9 0 0" > ic_solid.txt
+# echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > ic_solid.txt
 # :
 # argp .conf.double.poiseuille.h     \
 #   -rbcs -rsph=4 -pin_com=false     \
