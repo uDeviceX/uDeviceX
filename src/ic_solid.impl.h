@@ -120,6 +120,42 @@ namespace ic_solid
         *s_n = scount;
         *r_n = rcount;
     }
+
+    void share_parts(const int root, /**/ Particle *pp, int *n)
+    {
+        // set to global coordinates and then convert back to local
+        const int L[3] = {XS, YS, ZS};
+        int mi[3];
+        for (int c = 0; c < 3; ++c) mi[c] = (m::coords[c] + 0.5) * L[c];
+
+        for (int i = 0; i < *n; ++i)
+        for (int c = 0; c < 3; ++c)
+        pp[i].r[c] += mi[c];
+
+        std::vector<int> counts(m::d), displs(m::d);
+        std::vector<Particle> recvbuf(MAX_PSOLID_NUM);
+
+        MC( MPI_Gather(n, 1, MPI_INT, counts.data(), 1, MPI_INT, root, m::cart) );
+
+        if (m::rank == root)
+        {
+            displs[0] = 0;
+            for (int j = 0; j < m::d-1; ++j)
+            displs[j+1] = displs[j] + counts[j];
+        }
+
+        MC( MPI_Gatherv(pp, *n, Particle::datatype(), recvbuf.data(), counts.data(), displs.data(), Particle::datatype(), root, m::cart) );
+
+        if (m::rank == root)
+        {
+            *n = displs.back() + counts.back();
+            for (int i = 0; i < *n; ++i) pp[i] = recvbuf[i];
+        }
+        
+        for (int i = 0; i < *n; ++i)
+        for (int c = 0; c < 3; ++c)
+        pp[i].r[c] -= mi[c];
+    }
     
     void init(const char * fname, /**/ int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp)
     {
@@ -148,8 +184,8 @@ namespace ic_solid
         
         kill(coms, nsolid, idmax, /**/ s_n, s_pp, &rcount, r_pp);
 
-        // TODO share particles with root
-        // For now I assume the solid is fully contained in domain of root.
+        share_parts(root, /**/ r_pp, &rcount);
+
         // TODO take Periodic BC into account
         
         Solid model;
@@ -195,7 +231,7 @@ namespace ic_solid
         // set global ids
 
         id = 0;
-        MC( MPI_EXScan(&nsolid, &id, 1, MPI_INT, MPI_SUM, m::cart) );
+        MC( MPI_Exscan(&nsolid, &id, 1, MPI_INT, MPI_SUM, m::cart) );
 
         for (int j = 0; j < nsolid; ++j)
         ss[j].id = id++;
