@@ -284,7 +284,7 @@ namespace k_solid
         if (threadIdx.x == 0)
         {
             com[X] += v[X]*dt; com[Y] += v[Y]*dt; com[Z] += v[Z]*dt;
-            pbc_solid(/**/ com);
+            //pbc_solid(/**/ com);
         }
     }
 

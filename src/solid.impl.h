@@ -128,7 +128,7 @@ namespace solid {
 
     void update_com(float *v, /**/ float *com) {
         com[X] += v[X]*dt; com[Y] += v[Y]*dt; com[Z] += v[Z]*dt;
-        k_solid::pbc_solid(/**/ com);
+        //k_solid::pbc_solid(/**/ com);
     }
 
     void update_r(const float *rr0, const int n, const float *com, const float *e0, const float *e1, const float *e2, /**/ Particle *pp)

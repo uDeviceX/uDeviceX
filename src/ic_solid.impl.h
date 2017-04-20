@@ -2,12 +2,12 @@ namespace ic_solid
 {
     enum {X, Y, Z};
 
+    //#define DEBUG_MSG
+    
     int read_coms(const char * fname, /**/ float* coms)
     {
-        const int L[3] = {XS, YS, ZS};
-        int mi[3], nsolids = 0;
-        for (int c = 0; c < 3; ++c) mi[c] = (m::coords[c] + 0.5) * L[c];
-    
+        int nsolids = 0;
+        
         if (m::rank == 0)
         {
             FILE *f = fopen("ic_solid.txt", "r"); 
@@ -36,14 +36,65 @@ namespace ic_solid
         MC( MPI_Bcast(&nsolids, 1,     MPI_INT,   0, m::cart) );
         MC( MPI_Bcast(coms, 3*nsolids, MPI_FLOAT, 0, m::cart) );
 
-        // place coms in local coordinates
-        for (int j = 0; j < nsolids; ++j)
-        for (int d = 0; d < 3; ++d)
-        coms[3*j +d] -= mi[d];
-    
         return nsolids;
     }
 
+    /* bbox contains 3 sizes of bounding box of the solid */
+    int duplicate_PBC(const float *bbox, int n, /**/ float *coms)
+    {
+        const float hbb[3] = {0.5f * bbox[X], 0.5f * bbox[Y], 0.5f * bbox[Z]};
+
+        struct f3 {float x[3];};
+
+        const int Lg[3] = {XS * m::dims[X], YS * m::dims[Y], ZS * m::dims[Z]};
+        
+        int id = n;
+        for (int j = 0; j < n; ++j)
+        {
+            f3 r0 = {coms[3*j + X], coms[3*j + Y], coms[3*j + Z]};
+            
+            std::vector<f3> dupls;
+
+            dupls.push_back(r0);
+
+            auto duplicate = [&](int d, int sign) {
+                auto dupls2 = dupls;
+                for (f3& r : dupls2)
+                r.x[d] += Lg[d] * sign;
+                dupls.insert(dupls.end(), dupls2.begin(), dupls2.end());
+            };
+            
+            for (int d = 0; d < 3; ++d)
+            {
+                if (r0.x[d] - hbb[d] < 0)
+                duplicate(d, +1);
+                
+                if (r0.x[d] + hbb[d] >= Lg[d])
+                duplicate(d, -1);
+            }
+
+            // do not reinsert the original
+            for (int k = 1; k < (int) dupls.size(); ++k)
+            {
+                for (int d = 0; d < 3; ++d)
+                coms[3*id + d] = dupls[k].x[d];
+
+                ++id;
+            }
+        }
+        return id;
+    }
+
+    void make_local(const int n, /**/ float *coms)
+    {
+        const int L[3] = {XS, YS, ZS};
+        int mi[3];
+        for (int c = 0; c < 3; ++c) mi[c] = (m::coords[c] + 0.5) * L[c];
+
+        for (int j = 0; j < n; ++j)
+        for (int d = 0; d < 3; ++d)
+        coms[3*j + d] -= mi[d];
+    }
 
     void count_pp_inside(const Particle *s_pp, const int n, const float *coms, const int ns, /**/ int *rcounts)
     {
@@ -65,12 +116,10 @@ namespace ic_solid
             }
         }
 
-        if (m::rank == 0)
-        {
-            for (int j = 0; j < ns; ++j)
-            printf("Found %d particles in solid %d\n", rcounts[j], j);
-        }
-
+#ifdef DEBUG_MSG
+        for (int j = 0; j < ns; ++j)
+        printf("[%d] Found %d particles in solid %d\n", m::rank, rcounts[j], j);
+#endif
     }
 
     void elect(const int *rcounts, const int ns, /**/ int *root, int *idmax)
@@ -164,6 +213,11 @@ namespace ic_solid
         int nsolid = read_coms(fname, coms);
         int npsolid = 0;
 
+        float bbox[3] = {2.f*rsph, 2.f*rsph, 2.f*rsph};
+        nsolid = duplicate_PBC(bbox, nsolid, /**/ coms);
+
+        make_local(nsolid, coms);
+
         if (nsolid == 0)
         {
             fprintf(stderr, "No solid provided. Aborting...\n");
@@ -185,8 +239,6 @@ namespace ic_solid
         kill(coms, nsolid, idmax, /**/ s_n, s_pp, &rcount, r_pp);
 
         share_parts(root, /**/ r_pp, &rcount);
-
-        // TODO take Periodic BC into account
         
         Solid model;
 
