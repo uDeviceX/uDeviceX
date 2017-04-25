@@ -1,0 +1,32 @@
+/*
+Bounce back on a moving triangle */
+load("format")$ load("cgrind")$ load("scifac")$ alias(cg, cgrind)$
+
+ /* make a vector */
+mv(P)::=buildq([l: P,
+  r: create_list(concat(P, d), d,  ['x, 'y, 'z])],
+  l: r) $
+
+mv(R)$ mv(V)$ /* Position of a point */
+R1: R + V*h;
+
+/* A,   B,  C: positions and velocity of triangle
+   AV, BV, CV:
+
+   Shift the system of coordianates to have
+   A = 0 and AV = 0
+   Use different 'h */
+mv(B)$ mv(BV)$ B1: B + BV*'hh;
+mv(C)$ mv(CV)$ C1: C + CV*'hh;
+
+eq: R1 - (u*B1 + v*C1);
+eq: format(eq, %poly('u, 'v, 'h));
+
+eqh: 'h - assoc('h, linsolve(eq, ['u, 'v, 'h]));
+eqh: radcan(eqh);
+eqh: num(eqh); /* numerator */
+eqh: subst('hh = 'h, eqh);
+eqh: format(eqh, %poly('h), gcfac);
+
+n: hipow(eqh, 'h); /* should be 3 */
+for i: 0 thru n do cgrind(c[i]=coeff(eqh, 'h, i));
