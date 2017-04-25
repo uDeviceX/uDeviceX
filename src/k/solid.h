@@ -134,7 +134,7 @@ namespace k_solid
         {
             bbox[X] = 2.f * rcyl;
             bbox[Y] = 2.f * rcyl;
-            bbox[Z] = 0.f // symmetric
+            bbox[Z] = 0.f; // symmetric
         }
     }
 
