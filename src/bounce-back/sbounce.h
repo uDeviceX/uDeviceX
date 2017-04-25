@@ -23,12 +23,9 @@ namespace solidbounce {
     _DH_ void v2local (const float *e0, const float *e1, const float *e2, const float *vg, /**/ float *vl);
     _DH_ void v2global(const float *e0, const float *e1, const float *e2, const float *vl, /**/ float *vg);
 
-    
-    __host__ void bounce_part_local(const float *fp, const float *vcm, const float *om, /*o*/ Particle *p1, /*w*/ Particle *p0);
-
     _DH_ void bb_part_local(const float *fp, const float *vcm, const float *om, /*o*/ Particle *p1, /*w*/ Particle *p0);
     
-    void bounce(const Force *ff, const int np, /**/ Particle *pp, Solid *shst);
+    void bounce(const Force *ff, const int np, const int ns, /**/ Particle *pp, Solid *shst);
 
-    void bounce_nohost(const Force *ff, const int np, /**/ Particle *pp, Solid *sdev);
+    void bounce_nohost(const Force *ff, const int np, const int ns, /**/ Particle *pp, Solid *sdev);
 }

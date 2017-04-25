@@ -84,7 +84,6 @@ namespace solidbounce {
 #ifdef debug_output
     int nrescued, nbounced, still_in, failed, step = 0;
     __device__ int bbinfosdev[5];
-    FILE * fdebug;
 #endif
 
     enum BBState
@@ -171,18 +170,11 @@ namespace solidbounce {
         vg[Z] = vl[X] * e0[Z] + vl[Y] * e1[Z] + vl[Z] * e2[Z];
     }
     
-    void bounce(const Force *ff, const int np, /**/ Particle *pp, Solid *shst)
+    void bounce_1s(const Force *ff, const int np, /**/ Particle *pp, Solid *shst)
     {
         Particle p0l, p1, pn, pnl;
         float dP[3], dL[3], vcml[3], oml[3], fl[3], rwl[3], vwl[3];
 
-#ifdef debug_output
-        fdebug = fopen("debug.txt", "a");
-
-        if (step % steps_per_dump == 0)
-        nbounced = nrescued = still_in = failed = 0;
-#endif
-        
         for (int ip = 0; ip < np; ++ip)
         {
             p1 = pp[ip];
@@ -195,40 +187,8 @@ namespace solidbounce {
             v2local(shst->e0, shst->e1, shst->e2, shst->om, /**/  oml);
                 
             v2local(shst->e0, shst->e1, shst->e2, ff[ip].f, /**/ fl);
-
-#ifdef debug_output
-            Particle p1l = pnl;
-#endif
             
             BBState bbstate = bb_part_local(fl, vcml, oml, /*o*/ &pnl, rwl, vwl, /*w*/ &p0l);
-
-#ifdef debug_output
-            if (bbstate != BB_NOBOUNCE)
-            {
-#define db(...) fprintf (fdebug, __VA_ARGS__)
-                db("%+.10e %+.10e %+.10e %+.10e %+.10e %+.10e ", p0l.r[X], p0l.r[Y], p0l.r[Z], p0l.v[X], p0l.v[Y], p0l.v[Z]);
-                db("%+.10e %+.10e %+.10e %+.10e %+.10e %+.10e ", p1l.r[X], p1l.r[Y], p1l.r[Z], p1l.v[X], p1l.v[Y], p1l.v[Z]);
-                db("%+.10e %+.10e %+.10e %+.10e %+.10e %+.10e ",   rwl[X],   rwl[Y],   rwl[Z],   vwl[X],   vwl[Y],   vwl[Z]);
-                db("%+.10e %+.10e %+.10e %+.10e %+.10e %+.10e ", pnl.r[X], pnl.r[Y], pnl.r[Z], pnl.v[X], pnl.v[Y], pnl.v[Z]);
-
-                switch (bbstate)
-                {
-                case BB_SUCCESS:
-                    ++nbounced; db(":success:\n");
-                    break;
-                case BB_RESCUED:
-                    ++nrescued; db(":rescued:\n");
-                    break;
-                case BB_INSIDE:
-                    ++still_in; db(":inside:\n");
-                    break;
-                case BB_FAILED:
-                    ++failed;   db(":failed:\n");
-                    break;
-                }
-            }
-#endif
-
             
             r2global(shst->e0, shst->e1, shst->e2, shst->com, pnl.r, /**/ pn.r);
             v2global(shst->e0, shst->e1, shst->e2,            pnl.v, /**/ pn.v); 
@@ -262,11 +222,21 @@ namespace solidbounce {
 
             pp[ip] = pn;
         }
+    }
+
+    void bounce(const Force *ff, const int np, const int ns, /**/ Particle *pp, Solid *shst)
+    {
+#ifdef debug_output
+        if (step % steps_per_dump == 0)
+        nbounced = nrescued = still_in = failed = 0;
+#endif
+
+        for (int j = 0; j < ns; ++j)
+        bounce_1s(ff, np, /**/ pp, shst + j);
+        
 #ifdef debug_output
         if ((++step) % steps_per_dump == 0)
         printf("%d rescued, %d boounced, %d still in, %d failed\n\n", nrescued, nbounced, still_in, failed);
-
-        fclose(fdebug);
 #endif
     }
 
@@ -354,7 +324,7 @@ namespace solidbounce {
         }
     }
 
-    void bounce_nohost(const Force *ff, const int np, /**/ Particle *pp, Solid *sdev)
+    void bounce_nohost(const Force *ff, const int np, const int ns, /**/ Particle *pp, Solid *sdev)
     {
 #ifdef debug_output
         if (step % steps_per_dump == 0)
@@ -364,7 +334,8 @@ namespace solidbounce {
         }
 #endif
 
-        bounce_kernel <<<k_cnf(np)>>> (ff, np, /**/ pp, sdev);
+        for (int j = 0; j < ns; ++j)
+        bounce_kernel <<<k_cnf(np)>>> (ff, np, /**/ pp, sdev + j);
 
 #ifdef debug_output
         if ((++step) % steps_per_dump == 0)
@@ -375,6 +346,5 @@ namespace solidbounce {
             printf("%d rescued, %d boounced, %d still in, %d failed\n\n", bbinfos[BB_RESCUED], bbinfos[BB_SUCCESS], bbinfos[BB_INSIDE], bbinfos[BB_FAILED]);
         }
 #endif
-
     }
 }
