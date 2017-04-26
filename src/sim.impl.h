@@ -182,22 +182,41 @@ void bounce() {
   if (rbcs0) wall::bounce(r_pp, r_n);
 }
 
-// void bounce_solid() {
-// #ifndef NOHOST_SOLID
-//     CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
-//     CC(cudaMemcpy(s_ff_hst, s_ff, sizeof(Force)    * s_n, D2H));
+void bounce_solid() {
 
-//     solidbounce::bounce(s_ff_hst, s_n, /**/ s_pp_hst, &solid_hst);
+    // collect halo
 
-//     CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
-// #else
+#ifdef NOHOST_SOLID
+    CC(cudaMemcpy(ss_hst, ss_dev, nsolid * sizeof(Solid), D2H));
+#endif
 
-//     solidbounce::bounce_nohost(s_ff, s_n, /**/ s_pp, solid_dev);
-
-//     CC(cudaMemcpy(&solid_hst, solid_dev, sizeof(Solid), D2H));
+    float bbox[3];
+    solid::get_bbox(bbox);
     
-// #endif
-// }
+    bbhalo::pack_sendcnt(ss_hst, nsolid, bbox);
+    const int nsbb = bbhalo::post();
+    bbhalo::unpack(nsbb, ss_bbhst);
+
+    // bounce
+    
+#ifndef NOHOST_SOLID
+    CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
+    CC(cudaMemcpy(s_ff_hst, s_ff, sizeof(Force)    * s_n, D2H));
+
+    solidbounce::bounce(s_ff_hst, s_n, nsbb, /**/ s_pp_hst, ss_bbhst);
+
+    CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
+#else
+    CC(cudaMemcpy(ss_bbdev, ss_bbhst, nsbb * sizeof(Solid), H2D));
+
+    solidbounce::bounce_nohost(s_ff, s_n, nsbb, /**/ s_pp, ss_bbdev);
+
+    // for dump
+    CC(cudaMemcpy(ss_hst, ss_dev, nsolid * sizeof(Solid), D2H));
+#endif
+
+    // TODO collect force/torque
+}
 
 
 void init_r()
@@ -208,6 +227,9 @@ void init_r()
     
     ss_hst = new Solid[MAX_SOLIDS];
     CC(cudaMalloc(&ss_dev, MAX_SOLIDS * sizeof(Solid)));
+
+    ss_bbhst = new Solid[MAX_SOLIDS];
+    CC(cudaMalloc(&ss_bbdev, MAX_SOLIDS * sizeof(Solid)));
 
     CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
 
@@ -236,6 +258,7 @@ void init() {
   DPD::init();
   fsi::init();
   rdstr::init();
+  bbhalo::init();
   cnt::init();
   if (hdf5part_dumps)
     dump_part_solvent = new H5PartDump("s.h5part");
@@ -259,6 +282,9 @@ void init() {
 
   ss_hst = NULL;
   ss_dev = NULL;
+
+  ss_bbhst = NULL;
+  ss_bbdev = NULL;
   
   MC(MPI_Barrier(m::cart));
 }    
@@ -279,7 +305,7 @@ void run0(float driving_force, bool wall_created, int it) {
     update_s();
     if (rbcs0) update_r();
     if (wall_created) bounce();
-    //if (rbcs0) bounce_solid();
+    if (rbcs0) bounce_solid();
 }
 
 void run_nowall() {
@@ -319,7 +345,7 @@ void close() {
   delete dump_part_solvent;
   sdstr::redist_part_close();
   rdstr::close();
-  
+  bbhalo::close();
   cnt::close();
   delete cells;
   if (rbcs0) {

@@ -3,7 +3,7 @@ include ../../.cache.Makefile # local settings (see .cache.Makefile.* for exampl
 NVCC     ?= nvcc
 ARCH_VAL ?= compute_35
 CODE_VAL ?= sm_35
-OPT      ?= -O3 -use_fast_math -g
+OPT      ?= -O3 -use_fast_math -g -std=c++11
 # for cuda-gdb: OPT=-O0 -g --device-debug
 
 

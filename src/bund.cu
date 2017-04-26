@@ -70,6 +70,9 @@
 #include "solid.impl.h"
 #include "sbounce.h"
 
+#include "bbhalo.decl.h"
+#include "bbhalo.impl.h"
+
 #include "ic.impl.h"
 #include "ic_solid.impl.h"
 
