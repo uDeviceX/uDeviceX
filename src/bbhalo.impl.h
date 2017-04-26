@@ -106,6 +106,9 @@ namespace bbhalo
             vcontrib(-dx, +dy, -dz);
             vcontrib(-dx, -dy, +dz);
             vcontrib(-dx, -dy, -dz);
+
+            assert(sids[0].back() == sid);
+            assert(sids[0].size() == i+1);
         }
 
         for (int i = 0; i < 27; ++i) send_counts[i] = shalo[i].size();
@@ -152,7 +155,7 @@ namespace bbhalo
         return ncome;
     }
 
-    void unpack(const int n, /**/ Solid *ss_buf)
+    void unpack(/**/ Solid *ss_buf)
     {
         MPI_Status statuses[26];
         MPI_Waitall(recvreq.size(), &recvreq.front(), statuses);
@@ -177,4 +180,107 @@ namespace bbhalo
         }
         _post_recvcnt();
     }
+
+    void pack_back(const Solid *ss_buf)
+    {
+        // prepare recv buffers
+
+        for (int i = 1; i < 27; ++i) rhalo[i].resize(send_counts[i]);
+        
+        // bulk
+
+        const int nbulk = shalo[0].size();
+        rhalo[0].resize(nbulk);
+
+        for (int j = 0; j < nbulk; ++j)
+        rhalo[0][j] = ss_buf[j];
+
+        // halo
+
+        int start = nbulk;
+        
+        for (int i = 1; i < 27; ++i)
+        {
+            const int count = recv_counts[i];
+
+            //printf("[%d] halo %d sending %d\n", m::rank, i, count);
+
+            shalo[i].resize(count);
+
+            for (int j = 0; j < count; ++j)
+            shalo[i][j] = ss_buf[start + j];
+        }
+    }
+
+    void post_back()
+    {
+        for (int i = 1; i < 27; ++i)
+        if (rhalo[i].size() > 0)
+        {
+            MPI_Request request;
+            MPI_Irecv(rhalo[i].data(), rhalo[i].size(), Solid::datatype(), rnk_ne[i], i + 51255, cart, &request);
+            //printf("[%d] halo %d recv %d\n", m::rank, i, rhalo[i].size());
+            recvreq.push_back(request);
+        }
+
+        for (int i = 1; i < 27; ++i)
+        if (shalo[i].size() > 0)
+        {
+            MPI_Request request;
+            MPI_Isend(shalo[i].data(), shalo[i].size(), Solid::datatype(), ank_ne[i], i + 51255, cart, &request);
+            sendreq.push_back(request);
+        }
+    }
+
+    void unpack_back(/**/ Solid *ss_hst)
+    {
+        MPI_Status statuses[26];
+        MPI_Waitall(recvreq.size(), &recvreq.front(), statuses);
+        MPI_Waitall(sendreq.size(), &sendreq.front(), statuses);
+        recvreq.clear();
+        sendreq.clear();
+
+        const int nbulk = shalo[0].size();
+    
+        // copy bulk
+        for (int j = 0; j < nbulk; ++j) ss_hst[j] = shalo[0][j];
+
+        // add forces and torques from halo BB
+        for (int i = 1; i < 27; ++i)
+        {
+            const int count = rhalo[i].size();
+
+            for (int j = 0; j < count; ++j)
+            {
+                const int  my_id = rhalo[i][j].id;
+                const float *sfo = rhalo[i][j].fo;
+                const float *sto = rhalo[i][j].to;
+
+                int k = -1;
+                for (int kk = 0; kk < nbulk; ++kk)
+                {
+                    const int kid = ss_hst[kk].id;
+
+                    if (kid == my_id)
+                    {
+                        float *fo = ss_hst[kk].fo;
+                        float *to = ss_hst[kk].to;
+
+                        fo[X] += sfo[X];
+                        fo[Y] += sfo[Y];
+                        fo[Z] += sfo[Z];
+
+                        to[X] += sto[X];
+                        to[Y] += sto[Y];
+                        to[Z] += sto[Z];
+
+                        k = kk;
+                        break;
+                    }
+                }
+                assert(k != -1);
+            }
+        }
+    }
+    
 }

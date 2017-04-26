@@ -20,10 +20,13 @@ int main(int argc, char **argv) {
   for (int iarg = 1; iarg < argc && iarg <= 3; iarg++)
     m::dims[iarg - 1] = atoi(argv[iarg]);
 
-  int device = 2;
-  CC(cudaSetDevice(device));
-
   mpi_init(argc, argv);
+
+  // panda specific for multi-gpu testing
+  //int device = m::rank % 2 ? 0 : 2;
+  int device = 0;
+  CC(cudaSetDevice(device));
+  
   glb::sim(); /* simulation level globals */
 
   sim::init();

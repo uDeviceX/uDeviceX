@@ -195,7 +195,7 @@ void bounce_solid() {
     
     bbhalo::pack_sendcnt(ss_hst, nsolid, bbox);
     const int nsbb = bbhalo::post();
-    bbhalo::unpack(nsbb, ss_bbhst);
+    bbhalo::unpack(/**/ ss_bbhst);
 
     // bounce
     
@@ -211,11 +211,20 @@ void bounce_solid() {
 
     solidbounce::bounce_nohost(s_ff, s_n, nsbb, /**/ s_pp, ss_bbdev);
 
-    // for dump
-    CC(cudaMemcpy(ss_hst, ss_dev, nsolid * sizeof(Solid), D2H));
+    // for exchanging force/torque
+    CC(cudaMemcpy(ss_bbhst, ss_bbdev, nsbb * sizeof(Solid), D2H));
 #endif
 
-    // TODO collect force/torque
+    // collect force/torque
+
+    bbhalo::pack_back(ss_bbhst);
+    bbhalo::post_back();
+    bbhalo::unpack_back(/**/ ss_hst);
+
+#ifdef NOHOST_SOLID
+    CC(cudaMemcpy(ss_dev, ss_hst, nsolid * sizeof(Solid), H2D));
+#endif
+    
 }
 
 
