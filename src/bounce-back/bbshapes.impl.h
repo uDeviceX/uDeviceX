@@ -84,8 +84,8 @@ namespace bbshapes {
         /* output h between 0 and dt */
         _DH_ bool intersect(const float *r0, const float *v0, const float *vcm, const float *om0, /**/ float *h)
         {
-            float r0x = r0[X],          r0y = r0[Y];
-            float v0x = v0[X] - vcm[X], v0y = v0[Y] - vcm[Y];
+            float r0x = r0[X] + dt * vcm[X], r0y = r0[Y] + dt * vcm[X];
+            float v0x = v0[X] - vcm[X],      v0y = v0[Y] - vcm[Y];
 
             const float a = v0x * v0x + v0y * v0y;
             
@@ -125,8 +125,8 @@ namespace bbshapes {
         /* output h between 0 and dt */
         _DH_ bool intersect(const float *r0, const float *v0, const float *vcm, const float *om0, /**/ float *h)
         {
-            const float r0x = r0[X],          r0y = r0[Y];
-            const float v0x = v0[X] - vcm[X], v0y = v0[Y] - vcm[Y];
+            const float r0x = r0[X] + dt * vcm[X], r0y = r0[Y] + dt * vcm[X];
+            const float v0x = v0[X] - vcm[X],      v0y = v0[Y] - vcm[Y];
 
             const float om0z = -om0[Z];
             
@@ -175,8 +175,11 @@ namespace bbshapes {
 
         _DH_ bool intersect(const float *r0, const float *v0, const float *vcm, const float *om0, /**/ float *h)
         {
-            const float r0x  = r0[X],          r0   = r0[Y],          r0z  = r0[Z];
-            const float v0x  = v0[X] - vcm[X], v0   = v0[Y] - vcm[Y], v0z  = v0[Z] - vcm[Z];
+            const float r0x  = r0[X] + dt * vcm[X];
+            const float r0y  = r0[Y] + dt * vcm[Y];
+            const float r0z  = r0[Z] + dt * vcm[Z];
+
+            const float v0x  = v0[X] - vcm[X], v0y   = v0[Y] - vcm[Y], v0z  = v0[Z] - vcm[Z];
             const float om0x = om0[X],         om0y = om0[Y],         om0z = om0[Z];
 
             const float r1x = r0x + dt * v0x;
