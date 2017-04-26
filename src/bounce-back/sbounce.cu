@@ -6,26 +6,36 @@
 namespace solidbounce {
 
     #define POINTWISE_BB_MOMENTUM
-    //#define FULL_BB_MOMENTUM
-
+    //#define debug_output
+    
     using namespace bbshapes;
     enum {X, Y, Z};
     
-    // from forward Euler
     _DH_ void rvprev(const float *r1, const float *v1, const float *f0, /**/ float *r0, float *v0)
     {
+#ifdef FORWARD_EULER
         for (int c = 0; c < 3; ++c)
         {
             v0[c] = v1[c] - f0[c] * dt;
             r0[c] = r1[c] - v0[c] * dt;
         }
+#else // velocity-verlet
+        for (int c = 0; c < 3; ++c)
+        {
+            r0[c] = r1[c] - v1[c] * dt;
+            //v0[c] = v1[c] - f0[c] * dt;
+
+            // BB assumes r0 + v0 dt = r1 for now
+            v0[c] = v1[c];
+        }
+#endif
     }
     
-    _DH_ bool inside_prev(const float *r, const float *om0)
+    _DH_ bool inside_prev(const float *r, const float *vcm, const float *om0)
     {
-        float rl[3] = {float(r[X] + dt * (om0[Y] * r[Z] - om0[Z] * r[Y])),
-                       float(r[Y] + dt * (om0[Z] * r[X] - om0[X] * r[Z])),
-                       float(r[Z] + dt * (om0[X] * r[Y] - om0[Y] * r[X]))};
+        const float rl[3] = {float(r[X] + dt * (vcm[X] + om0[Y] * r[Z] - om0[Z] * r[Y])),
+                             float(r[Y] + dt * (vcm[Y] + om0[Z] * r[X] - om0[X] * r[Z])),
+                             float(r[Z] + dt * (vcm[Z] + om0[X] * r[Y] - om0[Y] * r[X]))};
         
         return shape::inside(rl);
     }
@@ -80,7 +90,6 @@ namespace solidbounce {
         dL[Z] = -(drn[X] * vn[Y] - drn[Y] * vn[X] - dr1[X] * v1[Y] + dr1[Y] * v1[X]) / dt;
     }
 
-    //#define debug_output
 #ifdef debug_output
     int nrescued, nbounced, still_in, failed, step = 0;
     __device__ int bbinfosdev[5];
@@ -110,7 +119,7 @@ namespace solidbounce {
         /* rescue particles which were already in the solid   */
         /* put them back on the surface with surface velocity */
 
-        if (inside_prev(p0->r, om))
+        if (inside_prev(p0->r, vcm, om))
         {
             rescue_particle(vcm, om, /**/ p1->r, p1->v);
             return BB_RESCUED;
@@ -219,9 +228,6 @@ namespace solidbounce {
                 lin_mom_solid(v0, pn.v, /**/ dP);
                 ang_mom_solid(shst->com, rw, rw, v0, pn.v, /**/ dL);
             }
-#elif defined(FULL_BB_MOMENTUM)
-            lin_mom_solid(p1.v, pn.v, /**/ dP);
-            ang_mom_solid(shst->com, p1.r, pn.r, p1.v, pn.v, /**/ dL);
 #endif
                 
             for (int d = 0; d < 3; ++d)
@@ -246,7 +252,7 @@ namespace solidbounce {
         
 #ifdef debug_output
         if ((++step) % steps_per_dump == 0)
-        printf("%d rescued, %d boounced, %d still in, %d failed\n\n", nrescued, nbounced, still_in, failed);
+        printf("%d rescued, %d boounced, %d still in, %d failed\n", nrescued, nbounced, still_in, failed);
 #endif
     }
 
@@ -305,9 +311,6 @@ namespace solidbounce {
                 lin_mom_solid(v0, pn.v, /**/ dP);
                 ang_mom_solid(sdev->com, rw, rw, v0, pn.v, /**/ dL);
             }
-#elif defined(FULL_BB_MOMENTUM)
-            lin_mom_solid(p1.v, pn.v, /**/ dP);
-            ang_mom_solid(sdev->com, p1.r, pn.r, p1.v, pn.v, /**/ dL);
 #endif       
             pp[pid] = pn;
         }
@@ -353,7 +356,7 @@ namespace solidbounce {
             int bbinfos[5];
             CC(cudaMemcpyFromSymbol(bbinfos, bbinfosdev, 5*sizeof(int)));
             
-            printf("%d rescued, %d boounced, %d still in, %d failed\n\n", bbinfos[BB_RESCUED], bbinfos[BB_SUCCESS], bbinfos[BB_INSIDE], bbinfos[BB_FAILED]);
+            printf("%d rescued, %d boounced, %d still in, %d failed\n", bbinfos[BB_RESCUED], bbinfos[BB_SUCCESS], bbinfos[BB_INSIDE], bbinfos[BB_FAILED]);
         }
 #endif
     }

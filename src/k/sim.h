@@ -6,14 +6,25 @@ __global__ void update(bool rbcflag, Particle* pp, Force* ff, int n) {
 
   float *v = pp[pid].v, *r = pp[pid].r, *f = ff[pid].f;
 
+  float mass = rbcflag ? rbc_mass : 1;
+
+#ifdef FORWARD_EULER
   r[0] += v[0]*dt;
   r[1] += v[1]*dt;
   r[2] += v[2]*dt;
-  
-  float mass = rbcflag ? rbc_mass : 1;
+
   v[0] += f[0]/mass*dt;
   v[1] += f[1]/mass*dt;
   v[2] += f[2]/mass*dt;
+#else // velocity verlet
+  v[0] += f[0]/mass*dt;
+  v[1] += f[1]/mass*dt;
+  v[2] += f[2]/mass*dt;
+
+  r[0] += v[0]*dt;
+  r[1] += v[1]*dt;
+  r[2] += v[2]*dt;
+#endif
 }
 
 __global__ void body_force(bool rbcflag, Particle* pp, Force* ff, int n, float driving_force) {

@@ -47,8 +47,8 @@ namespace bbshapes {
 
         _DH_ bool intersect(const float *r0, const float *v0, const float *vcm, const float *om0, /**/ float *h)
         {
-            float r0x = r0[X],          r0y = r0[Y],          r0z = r0[Z];
-            float v0x = v0[X] - vcm[X], v0y = v0[Y] - vcm[Y], v0z = v0[Z] - vcm[Z];
+            float r0x = r0[X] + dt * vcm[X], r0y = r0[Y] + dt * vcm[Y], r0z = r0[Z] + dt * vcm[Z];
+            float v0x = v0[X] - vcm[X],      v0y = v0[Y] - vcm[Y],      v0z = v0[Z] - vcm[Z];
                         
             const float a = v0x*v0x + v0y*v0y + v0z*v0z;
             
