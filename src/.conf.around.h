@@ -5,6 +5,10 @@
 #define YMARGIN_WALL      6
 #define ZMARGIN_WALL      6
 
+#define XMARGIN_BB 1.f
+#define YMARGIN_BB 1.f
+#define ZMARGIN_BB 1.f
+
 #define numberdensity    10
 #define kBT              4.44302e-8
 #define dt               5e-4       /* timestep */

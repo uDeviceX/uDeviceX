@@ -70,6 +70,8 @@ namespace bbhalo
         std::vector<int> sids[27];
     
         const int L[3] = {XS, YS, ZS};
+        const float M[3] = {XMARGIN_BB, YMARGIN_BB, ZMARGIN_BB};
+
         int vcode[3];
 
         const int dx = bbox[X] * 0.5;
@@ -86,7 +88,7 @@ namespace bbhalo
                 const float r[3] = {r0[X] + dx_, r0[Y] + dy_, r0[Z] + dz_};
 
                 for (int c = 0; c < 3; ++c)
-                vcode[c] = (2 + (r[c] >= -L[c] / 2) + (r[c] >= L[c] / 2)) % 3;
+                vcode[c] = (2 + (r[c] >= -L[c] / 2 + M[c]) + (r[c] >= L[c] / 2 - M[c])) % 3;
 
                 const int code = vcode[0] + 3 * (vcode[1] + 3 * vcode[2]);
 

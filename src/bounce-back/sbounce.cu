@@ -6,7 +6,7 @@
 namespace solidbounce {
 
     #define POINTWISE_BB_MOMENTUM
-    //#define debug_output
+    #define debug_output
     
     using namespace bbshapes;
     enum {X, Y, Z};
