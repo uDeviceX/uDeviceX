@@ -209,6 +209,8 @@ namespace bbhalo
 
             for (int j = 0; j < count; ++j)
             shalo[i][j] = ss_buf[start + j];
+
+            start += count;
         }
     }
 
