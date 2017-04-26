@@ -16,7 +16,9 @@ namespace k_solid
 
 #define _HD_ __host__ __device__
 
-        
+    static inline float max2(float a, float b) {return a > b ? a : b;}
+    static inline float max3(float a, float b, float c) {return max2(max2(a, b), c);}
+    
     _HD_ float dot(float *v, float *u) {
         return v[X]*u[X] + v[Y]*u[Y] + v[Z]*u[Z];
     }
@@ -148,9 +150,8 @@ namespace k_solid
 
         void get_bbox(/**/ float *bbox)
         {
-            bbox[X] = 2.f * sqrt(a2);
-            bbox[Y] = 2.f * sqrt(b2);
-            bbox[Z] = 2.f * sqrt(c2);
+            const float L = 2.f * sqrt(max3(a2, b2, c2));
+            bbox[X] = bbox[Y] = bbox[Z] = L;
         }
     }
 #endif

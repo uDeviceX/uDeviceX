@@ -180,7 +180,7 @@ namespace bbshapes {
             const float r0z  = r0[Z] + dt * vcm[Z];
 
             const float v0x  = v0[X] - vcm[X], v0y   = v0[Y] - vcm[Y], v0z  = v0[Z] - vcm[Z];
-            const float om0x = om0[X],         om0y = om0[Y],         om0z = om0[Z];
+            const float om0x = -om0[X],        om0y = -om0[Y],        om0z = -om0[Z];
 
             const float r1x = r0x + dt * v0x;
             const float r1y = r0y + dt * v0y;
@@ -190,7 +190,7 @@ namespace bbshapes {
             const float v0y_ = v0y + om0z * r1x - om0x * r1z;
             const float v0z_ = v0z + om0x * r1y - om0y * r1x;
 
-            const float r0x_ = r0x - dt * (om0z * r1z - om0z * r1y);
+            const float r0x_ = r0x - dt * (om0y * r1z - om0z * r1y);
             const float r0y_ = r0y - dt * (om0z * r1x - om0x * r1z);
             const float r0z_ = r0z - dt * (om0x * r1y - om0y * r1x);
                 
