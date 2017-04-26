@@ -265,8 +265,6 @@ namespace solid {
             FILE *fp;
             if (first) fp = fopen(fname, "w");
             else       fp = fopen(fname, "a");
-        
-            first = false;
 
             fprintf(fp, "%+.6e ", dt*it);
 
@@ -274,19 +272,30 @@ namespace solid {
                 fprintf(fp, "%+.6e %+.6e %+.6e ", v[X], v[Y], v[Z]);
             };
 
-            write_v(s->com);
-            write_v(s->v  );
-            write_v(s->om );
-            write_v(s->fo );
-            write_v(s->to );
-            write_v(s->e0 );
-            write_v(s->e1 );
-            write_v(s->e2 );
+            // make global coordinates
+            float com[3];
+            {
+                const int L[3] = {XS, YS, ZS};
+                int mi[3];
+                for (int c = 0; c < 3; ++c) mi[c] = (m::coords[c] + 0.5) * L[c];
+                for (int c = 0; c < 3; ++c) com[c] = s->com[c] + mi[c];
+            }
+            
+            write_v(com);
+            write_v(s->v );
+            write_v(s->om);
+            write_v(s->fo);
+            write_v(s->to);
+            write_v(s->e0);
+            write_v(s->e1);
+            write_v(s->e2);
 
             fprintf(fp, "\n");
         
             fclose(fp);
         }
+
+        first = false;
     }
 
 #undef X
