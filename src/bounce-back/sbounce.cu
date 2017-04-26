@@ -192,6 +192,16 @@ namespace solidbounce {
             
             r2global(shst->e0, shst->e1, shst->e2, shst->com, pnl.r, /**/ pn.r);
             v2global(shst->e0, shst->e1, shst->e2,            pnl.v, /**/ pn.v); 
+
+#ifdef debug_output
+            switch(bbstate)
+            {
+            case BB_SUCCESS: ++nbounced; break;
+            case BB_RESCUED: ++nrescued; break;
+            case BB_FAILED:  ++failed;   break;
+            case BB_INSIDE:  ++still_in; break;
+            }
+#endif
             
             /* transfer momentum */
             
