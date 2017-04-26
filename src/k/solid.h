@@ -134,6 +134,7 @@ namespace k_solid
 #elif defined(a2_ellipsoid)
 
 #define shape ellipsoid
+#define pin_axis (false)
     
     namespace ellipsoid
     {
@@ -141,7 +142,7 @@ namespace k_solid
 #define b2 b2_ellipsoid
 #define c2 c2_ellipsoid
 
-        __DH__ bool inside(float x, float y, float z) {
+        _HD_ bool inside(float x, float y, float z) {
             return x*x / a2 + y*y / b2 + z*z / c2 < 1;
         }
 

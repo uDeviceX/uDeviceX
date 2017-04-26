@@ -164,7 +164,7 @@ namespace bbshapes {
 #define b2_bb b2_ellipsoid
 #define c2_bb c2_ellipsoid
 
-        __DH__ bool inside(const float *r)
+        _DH_ bool inside(const float *r)
         {
             const float x = r[X];
             const float y = r[Y];
