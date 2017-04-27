@@ -119,11 +119,14 @@ void dev2hst() { /* device to host  data transfer */
 		       sizeof(Particle) * r_n, D2H, 0));
 }
 
-void dump_part() {
-  if (!hdf5part_dumps) return;
-  dev2hst();
-  int sizes[2] = {s_n, r_n};
-  dump_part_solvent->dump(sr_pp, sizes, 2);
+void dump_part(int step)
+{
+    dump::parts(s_pp_hst, s_n, "solvent", step);
+                
+    if (!hdf5part_dumps) return;
+    dev2hst();
+    int sizes[2] = {s_n, r_n};
+    dump_part_solvent->dump(sr_pp, sizes, 2);
 }
 
 void dump_grid() {
@@ -269,6 +272,8 @@ void init() {
   rdstr::init();
   bbhalo::init();
   cnt::init();
+  
+  dump::init();
   if (hdf5part_dumps)
     dump_part_solvent = new H5PartDump("s.h5part");
 
@@ -299,7 +304,7 @@ void init() {
 }    
     
 void dumps_diags(int it) {
-  if (it % steps_per_dump == 0)     dump_part();
+  if (it % steps_per_dump == 0)     dump_part(it);
   if (it % steps_per_dump == 0)     solid::dump(it, ss_hst, nsolid);
   if (it % steps_per_hdf5dump == 0) dump_grid();
   if (it % steps_per_dump == 0)     diag(it);

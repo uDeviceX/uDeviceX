@@ -76,6 +76,8 @@
 #include "ic.impl.h"
 #include "ic_solid.impl.h"
 
+#include "dump.impl.h"
+
 #include "k/sim.h"
 #include "sim.decl.h"
 #include "sim.impl.h"
