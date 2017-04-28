@@ -66,13 +66,6 @@ namespace dump
         MC( MPI_File_get_position(f, &base) ); 
 
         if (m::rank == 0) header(n, name, step);
-        
-        // if (m::rank == 0)
-        // {
-        //     MC( MPI_File_write (f, &n, 1, MPI_LONG, &status));
-        //     len += sizeof(long);
-        //     base += sizeof(long);
-        // }
 
         MC( MPI_Exscan(&len, &offset, 1, MPI_OFFSET, MPI_SUM, m::cart) );
         
