@@ -10,7 +10,7 @@
 #   -hdf5field_dumps -part_dumps  -steps_per_hdf5dump=1000          \
 #   -rbcs -rsph=5 -pin_com=true -dt=1e-3 -shear_z > .conf.h
 # :
-# make clean && make -j && make -C ../tools
+# (make clean && make -j && make -C ../tools) > /dev/null
 # ./udx
 # avg_h5.m h5/flowfields-0001.h5 | fround.awk -v tol=1 > h5.out.txt
 
@@ -28,7 +28,7 @@
 #   -hdf5field_dumps -part_dumps      \
 #   -steps_per_hdf5dump=100 > .conf.h
 # :
-# make clean && make -j && make -C ../tools
+# (make clean && make -j && make -C ../tools) > /dev/null
 # ./udx
 # bop2test.py bop/solid-00004.bop | fround.awk -v tol=1 > bop.out.txt
 #
@@ -47,7 +47,7 @@
 #   -hdf5field_dumps -part_dumps     \
 #   -steps_per_hdf5dump=100 > .conf.h
 # :
-# make clean && make -j && make -C ../tools
+# (make clean && make -j && make -C ../tools) > /dev/null
 # ./udx
 # bop2test.py bop/solid-00004.bop | fround.awk -v tol=1 > bop.out.txt
 #
@@ -64,7 +64,7 @@
 #   -hdf5field_dumps -part_dumps -steps_per_hdf5dump=1000           \
 #   -rbcs -rcyl=5 -pin_com=true -dt=1e-3 -shear_y > .conf.h
 # :
-# make clean && make -j && make -C ../tools
+# (make clean && make -j && make -C ../tools) > /dev/null
 # ./udx
 # avg_h5.m h5/flowfields-0001.h5 | fround.awk -v tol=1 > h5.out.txt
 
@@ -83,7 +83,7 @@
 #   -hdf5field_dumps -part_dumps     \
 #   -steps_per_hdf5dump=100 > .conf.h
 # :
-# make clean && make -j && make -C ../tools
+# (make clean && make -j && make -C ../tools) > /dev/null
 # ./udx
 # bop2test.py bop/solid-00004.bop | fround.awk -v tol=1 > bop.out.txt
 #
