@@ -121,13 +121,16 @@ void dev2hst() { /* device to host  data transfer */
 
 void dump_part(int step)
 {
-    CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
-    dump::parts(s_pp_hst, s_n, "solvent", step);
-
-    if(rbcs0)
+    if (part_dumps)
     {
-        CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
-        dump::parts(r_pp_hst, r_n, "solid", step);
+        CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
+        dump::parts(s_pp_hst, s_n, "solvent", step);
+
+        if(rbcs0)
+        {
+            CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
+            dump::parts(r_pp_hst, r_n, "solid", step);
+        }
     }
 }
 

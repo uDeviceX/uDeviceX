@@ -1,5 +1,5 @@
 #### Couette pinned sphere
-# TEST: solid.t1
+# sTEST: solid.t1
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt
 # cp sdf/wall1/wall.dat sdf.dat
@@ -7,7 +7,7 @@
 # :
 # argp .conf.test.h  \
 #   -tend=2.0 -steps_per_dump=1000 -walls -wall_creation_stepid=100 \
-#   -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=1000       \
+#   -hdf5field_dumps -part_dumps  -steps_per_hdf5dump=1000          \
 #   -rbcs -rsph=5 -pin_com=true -dt=1e-3 -shear_z > .conf.h
 # :
 # make clean && make -j && make -C ../tools
@@ -21,11 +21,11 @@
 # rm -rf h5 diag.txt solid_diag.txt
 # echo -e "8 16 8" > ic_solid.txt
 # :
-# argp .conf.double.poiseuille.h     \
+# argp .conf.double.poiseuille.h      \
 #   -rbcs -rsph=4 -pin_com=false      \
-#   -tend=2.0 -steps_per_dump=100   \
-#   -pushtheflow -doublepoiseuille   \
-#   -hdf5field_dumps -hdf5part_dumps \
+#   -tend=2.0 -steps_per_dump=100     \
+#   -pushtheflow -doublepoiseuille    \
+#   -hdf5field_dumps --part_dumps     \
 #   -steps_per_hdf5dump=100 > .conf.h
 # :
 # make clean && make -j && make -C ../tools
@@ -42,9 +42,9 @@
 # :
 # argp .conf.double.poiseuille.h     \
 #   -rbcs -rcyl=4 -pin_com=true      \
-#   -tend=2.0 -steps_per_dump=100   \
+#   -tend=2.0 -steps_per_dump=100    \
 #   -pushtheflow -doublepoiseuille   \
-#   -hdf5field_dumps -hdf5part_dumps \
+#   -hdf5field_dumps -part_dumps     \
 #   -steps_per_hdf5dump=100 > .conf.h
 # :
 # make clean && make -j && make -C ../tools
@@ -61,7 +61,7 @@
 # :
 # argp .conf.test.h  \
 #   -tend=2.0 -steps_per_dump=1000 -walls -wall_creation_stepid=100 \
-#   -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=1000       \
+#   -hdf5field_dumps -part_dumps -steps_per_hdf5dump=1000           \
 #   -rbcs -rcyl=5 -pin_com=true -dt=1e-3 -shear_y > .conf.h
 # :
 # make clean && make -j && make -C ../tools
@@ -80,7 +80,7 @@
 #   -a2_ellipse=16 -b2_ellipse=4     \
 #   -tend=2.0 -steps_per_dump=100    \
 #   -pushtheflow -doublepoiseuille   \
-#   -hdf5field_dumps -hdf5part_dumps \
+#   -hdf5field_dumps -part_dumps     \
 #   -steps_per_hdf5dump=100 > .conf.h
 # :
 # make clean && make -j && make -C ../tools
