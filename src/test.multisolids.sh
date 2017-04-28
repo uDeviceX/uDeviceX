@@ -15,7 +15,7 @@
 # :
 # make clean && make -j && make -C ../tools
 # ./udx
-# read_h5part.m h5/s.h5part | fround.awk -v tol=1 > h5part.out.txt
+# bop2test.py bop/solid-00004.bop | fround.awk -v tol=1 > bop.out.txt
 #
 
 #### spheres in double poiseuille, contact
@@ -35,11 +35,11 @@
 # :
 # make clean && make -j && make -C ../tools
 # ./udx
-# read_h5part.m h5/s.h5part | fround.awk -v tol=1 > h5part.out.txt
+# bop2test.py bop/solid-00004.bop | fround.awk -v tol=1 > bop.out.txt
 #
 
 #### ellipsoids in double poiseuille, contact
-# TEST: multisolid.t3
+# cTEST: multisolid.t3
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt
@@ -57,5 +57,5 @@
 # :
 # make clean && make -j && make -C ../tools
 # ./udx
-# read_h5part.m h5/s.h5part | fround.awk -v tol=1 > h5part.out.txt
+# bop2test.py bop/solid-00004.bop | fround.awk -v tol=1 > bop.out.txt
 #
