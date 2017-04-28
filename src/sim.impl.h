@@ -361,6 +361,9 @@ void close() {
   rdstr::close();
   bbhalo::close();
   cnt::close();
+
+  dump::close();
+  
   delete cells;
   if (rbcs0) {
     rex::close();
