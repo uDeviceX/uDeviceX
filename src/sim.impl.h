@@ -129,11 +129,6 @@ void dump_part(int step)
         CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
         dump::parts(r_pp_hst, r_n, "solid", step);
     }
-                
-    if (!hdf5part_dumps) return;
-    dev2hst();
-    int sizes[2] = {s_n, r_n};
-    dump_part_solvent->dump(sr_pp, sizes, 2);
 }
 
 void dump_grid() {
@@ -281,8 +276,6 @@ void init() {
   cnt::init();
   
   dump::init();
-  if (hdf5part_dumps)
-    dump_part_solvent = new H5PartDump("s.h5part");
 
   cells   = new CellLists(XS, YS, ZS);
   mpDeviceMalloc(&s_zip0); mpDeviceMalloc(&s_zip1);
@@ -363,7 +356,6 @@ void run() {
 
 void close() {
   delete dump_field;
-  delete dump_part_solvent;
   sdstr::redist_part_close();
   rdstr::close();
   bbhalo::close();

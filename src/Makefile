@@ -15,10 +15,6 @@ LIBS      += -lcuda-dpd -lbounce-back -lcudart
 
 OBJS = 	bund.o common.o dpd-forces.o glb.o io.o main.o m.o
 
-ifeq ($(h5part),0)
-NVCCFLAGS += -DNO_H5PART
-endif
-
 ifeq ($(h5),0)
 NVCCFLAGS += -DNO_H5
 endif

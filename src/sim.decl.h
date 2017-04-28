@@ -16,7 +16,6 @@ namespace sim {
 
   CellLists* cells;
 
-  H5PartDump *dump_part_solvent;
   H5FieldDump *dump_field;
 
   Particle      s_pp_hst[MAX_PART_NUM]; /* solvent on host           */

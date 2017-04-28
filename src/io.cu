@@ -4,11 +4,6 @@
 #include <hdf5.h>
 #endif
 
-#ifndef NO_H5PART
-#define PARALLEL_IO
-#include <H5Part.h>
-#endif
-
 #include <sstream>
 #include <vector>
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */
@@ -29,76 +24,6 @@ void _write_bytes(const void * const ptr, const int nbytes32, MPI_File f) {
     MPI_Offset ntotal = 0;
     MC(MPI_Allreduce(&nbytes, &ntotal, 1, MPI_OFFSET, MPI_SUM, m::cart) );
     MC(MPI_File_seek(f, ntotal, MPI_SEEK_CUR));
-}
-
-H5PartDump::H5PartDump(const std::string fname): tstamp(0), disposed(false)
-{
-    _initialize(fname);
-}
-
-void H5PartDump::_initialize(const std::string filename)
-{
-#ifndef NO_H5PART
-    const int L[3] = { XS, YS, ZS };
-    for(int c = 0; c < 3; ++c) origin[c] = L[c] / 2 + m::coords[c] * L[c];
-      
-    mkdir("h5", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-    char path[1024];
-    sprintf(path, "h5/%s", filename.c_str());
-    fflush(stdout);
-    H5PartFile * f = H5PartOpenFileParallel(path, H5PART_WRITE, m::cart);
-    handler = f;
-#endif
-}
-
-void H5PartDump::dump(Particle * P, int *sizes, int ntypes)
-{
-#ifndef NO_H5PART
-    int n = 0;
-    for (int d = 0; d < ntypes; ++d) n += sizes[d];
-    
-    if (disposed) return;
-    H5PartFile * f = (H5PartFile*)handler;
-    H5PartSetStep(f, tstamp); H5PartSetNumParticles(f, n);
-
-    int i,  c ; /* dimension */
-    const char* rlbl[] = {"x", "y", "z"};
-    std::vector<h5part_float32_t> FD(n); /* float data */
-    for (c = 0; c < 3; c++) {
-      for (i = 0; i < n; i++) FD[i] = P[i].r[c] + origin[c];
-      H5PartWriteDataFloat32(f, rlbl[c], &FD.front());
-    }
-
-    const char* vlbl[] = {"u", "v", "w"};
-    for (c = 0; c < 3; c++) {
-      for (i = 0; i < n; i++) FD[i] = P[i].v[c];
-      H5PartWriteDataFloat32(f, vlbl[c], &FD.front());
-    }
-
-    std::vector <h5part_int64_t> ID(n); /* integer data */
-    int gid = 0;
-    for (int d = 0; d < ntypes; ++d)
-    for (int i = 0; i < sizes[d]; i++)
-    ID[gid++] = d;
-    
-    H5PartWriteDataInt64(f, "type", &ID.front());
-    tstamp++;
-#endif
-}
-
-void H5PartDump::_dispose() {
-#ifndef NO_H5PART
-    if (!disposed) {
-        H5PartFile * f = (H5PartFile *)handler;
-        H5PartCloseFile(f);
-        disposed = true;
-        handler = NULL;
-    }
-#endif
-}
-
-H5PartDump::~H5PartDump() {
-    _dispose();
 }
 
 void H5FieldDump::_xdmf_header(FILE * xmf) {

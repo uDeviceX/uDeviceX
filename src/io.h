@@ -1,17 +1,3 @@
-class H5PartDump {
-  float origin[3];
-  void * handler;
-  bool disposed;
-  int tstamp;
-  void _initialize(const std::string filename);
-  void _dispose();
- public:
-  H5PartDump(const std::string filename);
-  void close() { _dispose(); }
-  void dump(Particle * host_particles, int *sizes, int ntypes);
-  ~H5PartDump();
-};
-
 class H5FieldDump {
   static bool directory_exists;
   int last_idtimestep, globalsize[3];
