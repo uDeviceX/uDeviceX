@@ -25,13 +25,35 @@ namespace dump
             w[j].v[d] = pp[j].v[d];
         }
     }
+
+#define PATTERN "%s-%05d"
+    
+    static void header(const long n, const char *name, const int step)
+    {
+        char fname[256] = {0};
+        sprintf(fname, "bop/" PATTERN ".bop", name, step);
+        
+        FILE *f = fopen(fname, "w");
+
+        if (f == NULL)
+        {
+            fprintf(stderr, "(dump) could not open <%s>\n", fname);
+            exit(1);
+        }
+
+        fprintf(f, "%ld\n", n);
+        fprintf(f, "DATA_FILE: " PATTERN ".values\n", name, step);
+        fprintf(f, "DATA_FORMAT: float\n");
+        fprintf(f, "VARIABLES: x y z vx vy vz\n");
+        fclose(f);
+    }
     
     void parts(const Particle *pp, const long n, const char *name, const int step)
     {
         copy_shift(pp, n, /**/ w_pp);
         
         char fname[256] = {0};
-        sprintf(fname, "bop/%s-%05d.bop", name, step);
+        sprintf(fname, "bop/" PATTERN ".values", name, step);
 
         MPI_File f;
         MPI_Status status;
@@ -43,12 +65,14 @@ namespace dump
         MC( MPI_File_set_size(f, 0) );
         MC( MPI_File_get_position(f, &base) ); 
 
-        if (m::rank == 0)
-        {
-            MC( MPI_File_write (f, &n, 1, MPI_LONG, &status));
-            len += sizeof(long);
-            base += sizeof(long);
-        }
+        if (m::rank == 0) header(n, name, step);
+        
+        // if (m::rank == 0)
+        // {
+        //     MC( MPI_File_write (f, &n, 1, MPI_LONG, &status));
+        //     len += sizeof(long);
+        //     base += sizeof(long);
+        // }
 
         MC( MPI_Exscan(&len, &offset, 1, MPI_OFFSET, MPI_SUM, m::cart) );
         
@@ -56,4 +80,6 @@ namespace dump
         
         MC( MPI_File_close(&f) );
     }
+
+#undef PATTREN
 }
