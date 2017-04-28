@@ -31,7 +31,7 @@ namespace dump
     static void header(const long n, const char *name, const int step)
     {
         char fname[256] = {0};
-        sprintf(fname, "bop/" PATTERN ".bop", name, step);
+        sprintf(fname, "bop/" PATTERN ".bop", name, step / steps_per_dump);
         
         FILE *f = fopen(fname, "w");
 
@@ -42,9 +42,11 @@ namespace dump
         }
 
         fprintf(f, "%ld\n", n);
-        fprintf(f, "DATA_FILE: " PATTERN ".values\n", name, step);
+        fprintf(f, "DATA_FILE: " PATTERN ".values\n", name, step / steps_per_dump);
         fprintf(f, "DATA_FORMAT: float\n");
         fprintf(f, "VARIABLES: x y z vx vy vz\n");
+        // extra comment
+        fprintf(f, "t = %.6e\n", step * dt);
         fclose(f);
     }
     
@@ -53,7 +55,7 @@ namespace dump
         copy_shift(pp, n, /**/ w_pp);
         
         char fname[256] = {0};
-        sprintf(fname, "bop/" PATTERN ".values", name, step);
+        sprintf(fname, "bop/" PATTERN ".values", name, step / steps_per_dump);
 
         MPI_File f;
         MPI_Status status;
