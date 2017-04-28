@@ -8,7 +8,7 @@
 # add crap from test_data/* to git
 
 #### Double poiseuille
-# TEST: double.poiseuille
+# sTEST: double.poiseuille
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt
@@ -25,7 +25,7 @@
 # avg_h52.m h5/flowfields-0001.h5 | fround.awk -v tol=1 > h5.out.txt
 
 #### Plates : shear
-# TEST: diag.t4
+# sTEST: diag.t4
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt
 # cp sdf/wall1/wall.dat sdf.dat
@@ -41,7 +41,7 @@
 # avg_h5.m h5/flowfields-0003.h5 | fround.awk -v tol=1 > h5.out.txt
 
 #### Plates : poiseuille
-# TEST: diag.t5
+# sTEST: diag.t5
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt
 # cp sdf/wall1/wall.dat sdf.dat
@@ -49,7 +49,7 @@
 # argp .conf.poiseuille.h \
 #    -rsph=4 -pin_com=true                                         \
 #   -tend=2.0 -steps_per_dump=300 -walls -wall_creation_stepid=100 \
-#   -hdf5field_dumps --part_dumps -steps_per_hdf5dump=300          \
+#   -hdf5field_dumps -part_dumps -steps_per_hdf5dump=300          \
 #   -pushtheflow > .conf.h
 # :
 # (make clean && make -j) > /dev/null
@@ -57,7 +57,7 @@
 # avg_h5.m h5/flowfields-0013.h5 | fround.awk -v tol=2 > h5.out.txt
 
 #### Cylinder
-# TEST: diag.t6
+# sTEST: diag.t6
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt
 # cp sdf/cyl1/cyl.dat sdf.dat
