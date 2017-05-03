@@ -10,7 +10,6 @@
 #   module load cray-hdf5-parallel cray-mpich cudatoolkit
 #   srun ./udx 1 1 2
 
-h5part = 1
 h5 = 1
 
 ARCH_VAL = compute_60
@@ -34,12 +33,6 @@ HDF5_CXXFLAGS = -I${HDF5_DIR}/include
 HDF5_LDFLAGS  = -L${HDF5_DIR}/lib -Wl,-rpath -Wl,${HDF5_DIR}/lib
 HDF5_LIBS = -lhdf5
 
-# link: https://codeforge.lbl.gov/frs/download.php/file/387/H5Part-1.6.6.tar.gz
-# conf: --prefix=$HOME/prefix/h5part --enable-parallel --with-hdf5=$HDF5_DIR CC=cc CXX=CC
-H5PART_CXXFLAGS = -I${HOME}/lib/h5part/include
-H5PART_LDFLAGS =  -L${HOME}/lib/h5part/lib
-H5PART_LIBS = -lH5Part
-
 NVCC_LDFALGS = -L${CRAY_CUDATOOLKIT_DIR}/lib64 -Wl,-rpath -Wl,${CRAY_CUDATOOLKIT_DIR}/lib64
 
 # gsl
@@ -47,6 +40,6 @@ GSL_CXXFLAGS = `gsl-config --cflags`
 GSL_LDFLAGS  =
 GSL_LIBS     = `gsl-config --libs`
 
-NVCC = ${NVCC_BIN} ${H5PART_CXXFLAGS} ${HDF5_CXXFLAGS} ${MPI_CXXFLAGS} ${GSL_CXXFLAGS}
-LDFLAGS =          ${H5PART_LDFLAGS}  ${HDF5_LDFLAGS}  ${MPI_LDFLAGS}  ${GSL_LDFLAGS} ${NVCC_LDFALGS} # (sic)
-LIBS =             ${H5PART_LIBS}     ${HDF5_LIBS}     ${MPI_LIBS}     ${GSL_LIBS}    
+NVCC = ${NVCC_BIN} ${HDF5_CXXFLAGS} ${MPI_CXXFLAGS} ${GSL_CXXFLAGS}
+LDFLAGS =          ${HDF5_LDFLAGS}  ${MPI_LDFLAGS}  ${GSL_LDFLAGS} ${NVCC_LDFALGS} # (sic)
+LIBS =             ${HDF5_LIBS}     ${MPI_LIBS}     ${GSL_LIBS}    
