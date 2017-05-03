@@ -242,12 +242,13 @@ void init_solid()
     mpDeviceMalloc(&r_pp);
     mpDeviceMalloc(&r_ff);
     
-    ss_hst = new Solid[MAX_SOLIDS];
+    ss_hst    = new Solid[MAX_SOLIDS];
+    ss_bbhst  = new Solid[MAX_SOLIDS];
+    ss_dmphst = new Solid[MAX_SOLIDS];
+
     CC(cudaMalloc(&ss_dev, MAX_SOLIDS * sizeof(Solid)));
-
-    ss_bbhst = new Solid[MAX_SOLIDS];
     CC(cudaMalloc(&ss_bbdev, MAX_SOLIDS * sizeof(Solid)));
-
+    
     CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
 
     // generate models
@@ -383,6 +384,11 @@ void close() {
 
   if (ss_hst) delete[] ss_hst;
   if (ss_dev) CC(cudaFree(ss_dev));
+
+  if (ss_bbhst) delete[] ss_bbhst;
+  if (ss_bbdev) CC(cudaFree(ss_dev));
+
+  if (ss_dmphst) delete[] ss_dmphst;
 }
 #undef X
 #undef Y
