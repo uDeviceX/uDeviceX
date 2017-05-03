@@ -16,7 +16,7 @@
 # :
 # (make clean && make -j && make -C ../tools) > /dev/null
 # ./udx
-# bop2test.py bop/solid-00004.bop | awk '{print $1, $2}' > bop.out.txt
+# bop2test.py bop/solid-00004.bop | awk '{print $1, $2}' | uscale 10 > bop.out.txt
 #
 
 #### spheres in double poiseuille, contact
@@ -37,7 +37,7 @@
 # :
 # (make clean && make -j && make -C ../tools) > /dev/null
 # ./udx
-# bop2test.py bop/solid-00004.bop | awk '{print $1, $2}' > bop.out.txt
+# bop2test.py bop/solid-00004.bop | awk '{print $1, $2}' | uscale 10 > bop.out.txt
 #
 
 #### ellipsoids in double poiseuille, contact
@@ -60,5 +60,5 @@
 # :
 # (make clean && make -j && make -C ../tools) > /dev/null
 # ./udx
-# bop2test.py bop/solid-00004.bop | awk '{print $1, $2}' > bop.out.txt
+# bop2test.py bop/solid-00004.bop | awk '{print $1, $2}' | uscale 10 > bop.out.txt
 #
