@@ -6,7 +6,7 @@
 #define MAX_PART_NUM 1000000
 
 /* maximum number of particles per solid */
-#define MAX_PSOLID_NUM 10000
+#define MAX_PSOLID_NUM 30000
 
 /* maximum number of solids per node */
 #define MAX_SOLIDS 1024
