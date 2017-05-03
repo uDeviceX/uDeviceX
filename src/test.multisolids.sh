@@ -1,5 +1,5 @@
 #### spheres in double poiseuille, no contact
-# TEST: multisolid.t1
+# nTEST: multisolid.t1
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf bop h5 diag.txt solid_diag.txt
@@ -15,11 +15,11 @@
 # :
 # (make clean && make -j && make -C ../tools) > /dev/null
 # ./udx
-# bop2test.py bop/solid-00004.bop | fround.awk -v tol=1 > bop.out.txt
+# bop2test.py bop/solid-00004.bop | awk '{print $1, $2}' > bop.out.txt
 #
 
 #### spheres in double poiseuille, contact
-# TEST: multisolid.t2
+# nTEST: multisolid.t2
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf bop h5 diag.txt solid_diag.txt
@@ -35,11 +35,11 @@
 # :
 # (make clean && make -j && make -C ../tools) > /dev/null
 # ./udx
-# bop2test.py bop/solid-00004.bop | fround.awk -v tol=1 > bop.out.txt
+# bop2test.py bop/solid-00004.bop | awk '{print $1, $2}' > bop.out.txt
 #
 
 #### ellipsoids in double poiseuille, contact
-# TEST: multisolid.t3
+# nTEST: multisolid.t3
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt
@@ -57,5 +57,5 @@
 # :
 # (make clean && make -j && make -C ../tools) > /dev/null
 # ./udx
-# bop2test.py bop/solid-00004.bop | fround.awk -v tol=1 > bop.out.txt
+# bop2test.py bop/solid-00004.bop | awk '{print $1, $2}' > bop.out.txt
 #
