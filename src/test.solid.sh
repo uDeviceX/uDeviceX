@@ -1,5 +1,5 @@
 #### Couette pinned sphere
-# nTEST: solid.t1
+# sTEST: solid.t1
 # export PATH=../tools:$PATH
 # rm -rf h5 bop diag.txt solid_diag.txt
 # cp sdf/wall1/wall.dat sdf.dat
@@ -31,7 +31,7 @@
 # :
 # (make clean && make -j && make -C ../tools) > /dev/null
 # ./udx
-# bop2txt bop/solid-00004.bop | awk '{print $1, $2}' > bop.out.txt
+# bop2txt bop/solid-00004.bop | awk '{print $1, $2}' | uscale 10 > bop.out.txt
 #
 
 #### Double poiseuille pinned cylinder
@@ -51,11 +51,11 @@
 # :
 # (make clean && make -j && make -C ../tools) > /dev/null
 # ./udx
-# bop2txt bop/solid-00004.bop | awk '{print $1, $2}' > bop.out.txt
+# bop2txt bop/solid-00004.bop | awk '{print $1, $2}' | uscale 10 > bop.out.txt
 #
 
 #### Couette pinned cylinder
-# nTEST: solid.t4
+# sTEST: solid.t4
 # export PATH=../tools:$PATH
 # rm -rf h5 bop diag.txt solid_diag.txt
 # cp sdf/yplates1/yplates.dat sdf.dat
@@ -88,5 +88,5 @@
 # :
 # (make clean && make -j && make -C ../tools) > /dev/null
 # ./udx
-# bop2txt bop/solid-00004.bop | awk '{print $1, $2}' > bop.out.txt
+# bop2txt bop/solid-00004.bop | awk '{print $1, $2}' | uscale 10 > bop.out.txt
 #
