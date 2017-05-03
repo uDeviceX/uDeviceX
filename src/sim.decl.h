@@ -34,7 +34,8 @@ namespace sim {
   Solid *ss_bbhst;  /* solid buffer for bounce back, host   */
   Solid *ss_bbdev;  /* solid buffer for bounce back, device */
 
-  Solid *ss_dmphst; /* buffer of solids for dump; this is needed because we dump the BB F and T separetely*/
+  /* buffers of solids for dump; this is needed because we dump the BB F and T separetely */
+  Solid *ss_dmphst, *ss_dmpbbhst;
 
   float r_rr0_hst[3*MAX_PSOLID_NUM];      /* initial positions; same for all solids */
   float *r_rr0;

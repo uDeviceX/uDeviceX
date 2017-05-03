@@ -1,6 +1,6 @@
 namespace sim {
 
-#define NOHOST_SOLID
+    //#define NOHOST_SOLID
     
 #define X 0
 #define Y 1
@@ -160,20 +160,20 @@ void update_solid() {
     
     solid::update_host(r_ff_hst, r_rr0_hst, r_n, nsolid, /**/ r_pp_hst, ss_hst);
 
+    // for dump
+    memcpy(ss_dmphst, ss_hst, nsolid * sizeof(Solid));
+    
     solid::reinit_f_to(nsolid, /**/ ss_hst);
     
     CC(cudaMemcpy(r_pp, r_pp_hst, sizeof(Particle) * r_n, H2D));
     
-#else
-
-    //CC(cudaMemcpy(ss_dev, ss_hst, nsolid * sizeof(Solid), H2D));
-    
+#else    
     solid::update_nohost(r_ff, r_rr0, r_n, nsolid, /**/ r_pp, ss_dev);
 
-    k_solid::reinit_ft <<< k_cnf(nsolid) >>> (nsolid, /**/ ss_dev);
+    // for dump
+    CC(cudaMemcpy(ss_dmphst, ss_dev, nsolid * sizeof(Solid), D2H));
 
-    CC(cudaMemcpy(ss_hst, ss_dev, nsolid * sizeof(Solid), D2H));
-    
+    k_solid::reinit_ft <<< k_cnf(nsolid) >>> (nsolid, /**/ ss_dev);
 #endif
 }
 
@@ -229,10 +229,12 @@ void bounce_solid() {
     bbhalo::post_back();
     bbhalo::unpack_back(/**/ ss_hst);
 
+    // for dump
+    memcpy(ss_dmpbbhst, ss_hst, nsolid * sizeof(Solid));
+    
 #ifdef NOHOST_SOLID
     CC(cudaMemcpy(ss_dev, ss_hst, nsolid * sizeof(Solid), H2D));
 #endif
-    
 }
 
 
@@ -242,10 +244,11 @@ void init_solid()
     mpDeviceMalloc(&r_pp);
     mpDeviceMalloc(&r_ff);
     
-    ss_hst    = new Solid[MAX_SOLIDS];
-    ss_bbhst  = new Solid[MAX_SOLIDS];
-    ss_dmphst = new Solid[MAX_SOLIDS];
-
+    ss_hst      = new Solid[MAX_SOLIDS];
+    ss_bbhst    = new Solid[MAX_SOLIDS];
+    ss_dmphst   = new Solid[MAX_SOLIDS];
+    ss_dmpbbhst = new Solid[MAX_SOLIDS];
+    
     CC(cudaMalloc(&ss_dev, MAX_SOLIDS * sizeof(Solid)));
     CC(cudaMalloc(&ss_bbdev, MAX_SOLIDS * sizeof(Solid)));
     
@@ -303,13 +306,16 @@ void init() {
 
   ss_bbhst = NULL;
   ss_bbdev = NULL;
+
+  ss_dmphst = NULL;
+  ss_dmpbbhst = NULL;
   
   MC(MPI_Barrier(m::cart));
 }    
     
 void dumps_diags(int it) {
   if (it % steps_per_dump == 0)     dump_part(it);
-  if (it % steps_per_dump == 0)     solid::dump(it, ss_hst, nsolid);
+  if (it % steps_per_dump == 0)     solid::dump(it, ss_dmphst, ss_dmpbbhst, nsolid); /* ss_hst contains BB Force & Torque */
   if (it % steps_per_hdf5dump == 0) dump_grid();
   if (it % steps_per_dump == 0)     diag(it);
 }
@@ -388,7 +394,8 @@ void close() {
   if (ss_bbhst) delete[] ss_bbhst;
   if (ss_bbdev) CC(cudaFree(ss_dev));
 
-  if (ss_dmphst) delete[] ss_dmphst;
+  if (ss_dmphst)   delete[] ss_dmphst;
+  if (ss_dmpbbhst) delete[] ss_dmpbbhst;
 }
 #undef X
 #undef Y

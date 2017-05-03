@@ -252,14 +252,15 @@ namespace solid {
         }
     }
 
-    void dump(const int it, const Solid *ss, int nsolid)
+    void dump(const int it, const Solid *ss, const Solid *ssbb, int nsolid)
     {
         static bool first = true;
         char fname[256];
 
         for (int j = 0; j < nsolid; ++j)
         {
-            const Solid *s = ss + j;
+            const Solid *s   = ss   + j;
+            const Solid *sbb = ssbb + j;
             
             sprintf(fname, "solid_diag_%04d.txt", (int) s->id);
             FILE *fp;
@@ -289,7 +290,8 @@ namespace solid {
             write_v(s->e0);
             write_v(s->e1);
             write_v(s->e2);
-
+            write_v(sbb->fo);
+            write_v(sbb->to);
             fprintf(fp, "\n");
         
             fclose(fp);
