@@ -73,12 +73,12 @@ struct Particle {
 };
 
 struct Solid {
-    float Iinv[6],            /* moment of inertia           */
-        com[3],               /* [c]enter [o]f [m]ass        */
-        v[3], om[3],          /* linear and angular velocity */
-        e0[3], e1[3], e2[3],  /* local referential           */
-        fo[3], to[3],         /* force, torque               */
-        id;                   /* id of the solid             */
+    float Iinv[6],            /* moment of inertia            6        */
+        com[3],               /* [c]enter [o]f [m]ass         9        */
+        v[3], om[3],          /* linear and angular velocity  12 15    */
+        e0[3], e1[3], e2[3],  /* local referential            18 21 24 */
+        fo[3], to[3],         /* force, torque                27 30    */
+        id;                   /* id of the solid              31       */
 
     static bool initialized;
     static MPI_Datatype mytype;
