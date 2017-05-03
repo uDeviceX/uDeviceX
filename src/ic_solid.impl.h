@@ -184,6 +184,12 @@ namespace ic_solid
         std::vector<int> counts(m::d), displs(m::d);
         std::vector<Particle> recvbuf(MAX_PSOLID_NUM);
 
+        if (*n >= MAX_PSOLID_NUM)
+        {
+            fprintf(stderr, "(ic_solid) Number of solid particles too high for the buffer. exiting\n");
+            exit(1);
+        }
+        
         MC( MPI_Gather(n, 1, MPI_INT, counts.data(), 1, MPI_INT, root, m::cart) );
 
         if (m::rank == root)
