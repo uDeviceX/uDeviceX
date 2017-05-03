@@ -23,12 +23,7 @@ int gen(Particle* pp) { /* generate particle positions and velocities */
 	  x = xlo + dr * drand48(), y = ylo + dr * drand48(), z = zlo + dr * drand48();
 	  p.r[X] = x; p.r[Y] = y; p.r[Z] = z;
 
-#if 1
       p.v[X] = 0; p.v[Y] = 0; p.v[Z] = 0;
-#else // just for testing purpose
-      p.v[X] = y < 0 ? -1.f : 1.f;
-      p.v[Y] = 0; p.v[Z] = 0;
-#endif
           
 	  pp[ip++] = p;
 	}
