@@ -236,7 +236,7 @@ void bounce_solid() {
 }
 
 
-void init_r()
+void init_solid()
 {
     rex::init();
     mpDeviceMalloc(&r_pp);
@@ -330,8 +330,7 @@ void run_nowall() {
   if (m::rank == 0) printf("will take %ld steps\n", nsteps);
   float driving_force = pushtheflow ? hydrostatic_a : 0;
   bool wall_created = false;
-  rbcs0 = rbcs;
-  if (rbcs0) init_r();
+  rbcs0 = false;
   for (int it = 0; it < nsteps; ++it) run0(driving_force, wall_created, it);
 }
 
@@ -344,8 +343,8 @@ void run_wall() {
   for (/**/; it < wall_creation_stepid; ++it) run0(driving_force, wall_created, it);
 
   rbcs0 = rbcs;
-  if (rbcs0) init_r();
-  create_walls(); wall_created = true;
+  if (rbcs0) init_solid();
+  if (walls) {create_walls(); wall_created = true;}
   if (rbcs0 && r_n) k_sim::clear_velocity<<<k_cnf(r_n)>>>(r_pp, r_n);
   if (pushtheflow) driving_force = hydrostatic_a;
   
@@ -353,8 +352,8 @@ void run_wall() {
 }
 
 void run() {
-  if (walls) run_wall();
-  else       run_nowall();
+  if (walls || rbcs) run_wall();
+  else               run_nowall();
 }
 
 void close() {
