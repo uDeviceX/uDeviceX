@@ -32,13 +32,15 @@ namespace k_mesh
             same_side(x, D, AB, AC, A);
     }
 
-    __global__ void in_mesh(const float *rr, const int n, const float *vv, const int *tt, const int nt, /**/ int *inout)
+    __global__ void in_mesh(const Particle *pp, const int n, const float *vv, const int *tt, const int nt, /**/ int *inout)
     {
         const int gid = threadIdx.x + blockIdx.x * blockDim.x;
         if (gid >= n) return;
 
         int count = 0;
-        const float r[3] = {rr[3*gid + 0], rr[3*gid + 1], rr[3*gid + 2]};
+
+        const Particle p = pp[gid];
+        const float r[3] = p.r;
         const float origin[3] = {0, 0, 0};
         
         for (int i = 0; i < nt; ++i)
