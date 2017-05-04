@@ -54,8 +54,8 @@ int main(int argc, char **argv)
 
     printf("Extents: %f %f, %f %f, %f %f\n", xlo, xhi, ylo, yhi, zlo, zhi);
 
-    float rr[3*N];
-    int inout[N];
+    float *rr  = new float[3*N];
+    int *inout = new int[N];
 
     for (int i = 0; i < N; ++i)
     {
@@ -97,6 +97,9 @@ int main(int argc, char **argv)
     
     for (int i = 0; i < N; ++i)
     fprintf(inout[i] ? fout : fin, "%.6e %.6e %.6e %e\n", rr[3*i + 0], rr[3*i + 1], rr[3*i + 2], (float) inout[i]);
+
+    delete[] inout;
+    delete[] rr;
     
     fclose(fin);
     fclose(fout);
