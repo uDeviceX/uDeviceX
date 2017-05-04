@@ -70,7 +70,7 @@ int main(int argc, char **argv)
 
 # nTEST: collision.t0
 # make clean && make -j
-# ./test_inmesh data/cow.ply
+# ./inmesh data/cow.ply
 # cat parts_in.3D | sed -n '2,10000p' > parts.out.3D
 
 */

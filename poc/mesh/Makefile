@@ -1,13 +1,19 @@
-CXX=g++
-CXXFLAGS= -Wall -Wpedantic -O3 -std=c++11
+include ../../src/.cache.Makefile
 
-default: test_ply test_inmesh
+NVCC     ?= nvcc
+ARCH_VAL ?= compute_35
+CODE_VAL ?= sm_35
+OPT      ?= -O3 -use_fast_math -g
 
-test_ply: test_ply.cpp mesh.h
-	$(CXX) $(CXXFLAGS) $< -o $@
+NVCCFLAGS += -arch $(ARCH_VAL) -code $(CODE_VAL) -std=c++11
 
-test_inmesh: test_inmesh.cpp mesh.h collision.h
-	$(CXX) $(CXXFLAGS) $< -o $@
+default: ply_io inmesh
+
+ply_io: ply_io.cu mesh.h
+	$(NVCC) $(NVCCFLAGS) $(OPT) $< -o $@
+
+inmesh: inmesh.cu mesh.h collision.h
+	$(NVCC) $(NVCCFLAGS) $(OPT) $< -o $@
 
 clean:
-	rm -rf test_ply test_inmesh
+	rm -rf ply_io inmesh

@@ -13,6 +13,6 @@ int main(int argc, char **argv)
 
 # nTEST: ply.t0
 # make clean && make -j
-# ./test_ply test.out.ply data/cow.ply
+# ./ply_io test.out.ply data/cow.ply
 
 */
