@@ -22,6 +22,12 @@ inline void cudaAssert(cudaError_t code, const char *file, int line) {
 
 int main(int argc, char **argv)
 {
+    if (argc != 2)
+    {
+        fprintf(stderr, "Usage: %s <file.ply>\n", argv[0]);
+        exit(1);
+    }
+    
     srand48(123456);
     
     std::vector<int> tt;
@@ -110,6 +116,11 @@ int main(int argc, char **argv)
 # nTEST: collision.t0
 # make clean && make -j
 # ./inmesh data/cow.ply
+# cat parts_in.3D | sed -n '2,10000p' > parts.out.3D
+
+# nTEST: collision.t1
+# make clean && make -j
+# ./inmesh data/sphere.ply
 # cat parts_in.3D | sed -n '2,10000p' > parts.out.3D
 
 */
