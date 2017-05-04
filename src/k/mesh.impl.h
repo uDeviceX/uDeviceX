@@ -40,7 +40,6 @@ namespace k_mesh
         int count = 0;
 
         const Particle p = pp[gid];
-        const float r[3] = p.r;
         const float origin[3] = {0, 0, 0};
         
         for (int i = 0; i < nt; ++i)
@@ -53,7 +52,7 @@ namespace k_mesh
             const float b[3] = {vv[3*t2 + 0], vv[3*t2 + 1], vv[3*t2 + 2]};
             const float c[3] = {vv[3*t3 + 0], vv[3*t3 + 1], vv[3*t3 + 2]};
                 
-            if (in_tetrahedron(r, a, b, c, origin)) ++count;
+            if (in_tetrahedron(p.r, a, b, c, origin)) ++count;
         }
         
         inout[gid] = (count+1)%2;
