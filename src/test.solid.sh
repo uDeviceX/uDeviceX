@@ -1,5 +1,5 @@
 #### Couette pinned sphere
-# sTEST: solid.t1
+# nTEST: solid.t1
 # export PATH=../tools:$PATH
 # rm -rf h5 bop diag.txt solid_diag.txt
 # cp sdf/wall1/wall.dat sdf.dat
@@ -55,7 +55,7 @@
 #
 
 #### Couette pinned cylinder
-# sTEST: solid.t4
+# nTEST: solid.t4
 # export PATH=../tools:$PATH
 # rm -rf h5 bop diag.txt solid_diag.txt
 # cp sdf/yplates1/yplates.dat sdf.dat
