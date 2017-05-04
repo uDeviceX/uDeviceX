@@ -61,13 +61,16 @@ namespace dump
         MPI_Status status;
         MPI_Offset base, offset = 0;
         MPI_Offset len = n * sizeof(Particle);
-        
+
+        long ntot = 0;
+        MC( MPI_Reduce(&n, &ntot, 1, MPI_LONG, MPI_SUM, 0, m::cart) );
+
         MC( MPI_File_open(m::cart, fname, MPI_MODE_CREATE | MPI_MODE_WRONLY, MPI_INFO_NULL, &f) );
 
         MC( MPI_File_set_size(f, 0) );
         MC( MPI_File_get_position(f, &base) ); 
 
-        if (m::rank == 0) header(n, name, step);
+        if (m::rank == 0) header(ntot, name, step);
 
         MC( MPI_Exscan(&len, &offset, 1, MPI_OFFSET, MPI_SUM, m::cart) );
         
