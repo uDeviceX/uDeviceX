@@ -39,11 +39,9 @@ namespace ic_solid
         return nsolids;
     }
 
-    /* bbox contains 3 sizes of bounding box of the solid */
+    /* bbox: minx, maxx, miny, maxy, minz, maxz */
     int duplicate_PBC(const float *bbox, int n, /**/ float *coms)
     {
-        const float hbb[3] = {0.5f * bbox[X], 0.5f * bbox[Y], 0.5f * bbox[Z]};
-
         struct f3 {float x[3];};
 
         const int Lg[3] = {XS * m::dims[X], YS * m::dims[Y], ZS * m::dims[Z]};
@@ -66,10 +64,10 @@ namespace ic_solid
             
             for (int d = 0; d < 3; ++d)
             {
-                if (r0.x[d] - hbb[d] < 0)
+                if (r0.x[d] + bbox[2*d+0] < 0)
                 duplicate(d, +1);
                 
-                if (r0.x[d] + hbb[d] >= Lg[d])
+                if (r0.x[d] + bbox[2*d+1] >= Lg[d])
                 duplicate(d, -1);
             }
 
@@ -219,8 +217,8 @@ namespace ic_solid
         int nsolid = read_coms(fname, coms);
         int npsolid = 0;
 
-        float bbox[3];
-        solid::get_bbox(bbox);
+        float bbox[6];
+        mesh::bbox(vv, nv, /**/ bbox);
 
         nsolid = duplicate_PBC(bbox, nsolid, /**/ coms);
 
