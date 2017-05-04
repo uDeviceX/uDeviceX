@@ -96,22 +96,30 @@ namespace ic_solid
         coms[3*j + d] -= mi[d];
     }
 
-    void count_pp_inside(const Particle *s_pp, const int n, const float *coms, const int ns, /**/ int *rcounts)
+    void count_pp_inside(const Particle *s_pp, const int n, const float *coms, const int ns,
+                         const int *tt, const float *vv, const int nt, const int nv,
+                         /**/ int *tags, int *rcounts)
     {
+        for (int j = 0; j < ns; ++j) rcounts[j] = 0;
+
         for (int ip = 0; ip < n; ++ip)
         {
             Particle p = s_pp[ip]; float *r0 = p.r;
 
-            bool is_solid = false;
+            int tag = -1;
+            
             for (int j = 0; j < ns; ++j)
             {
                 const float *com = coms + 3*j;
-
-                if (solid::inside(r0[X]-com[X], r0[Y]-com[Y], r0[Z]-com[Z]))
+                const float r[3] = {r0[X]-com[X], r0[Y]-com[Y], r0[Z]-com[Z]};
+                
+                if (mesh::inside_1p(r, vv, tt, nt))
                 {
-                    assert(!is_solid);
+                    if (tag != -1)
+                    printf("%d\n", tag);
+                    //assert(tag == -1);
                     ++rcounts[j];
-                    is_solid = true;
+                    tags[ip] = tag = j;
                 }
             }
         }
@@ -141,31 +149,21 @@ namespace ic_solid
         *idmax = idmax_;
     }
 
-    void kill(const float *coms, const int ns, const int idmax, /**/ int *s_n, Particle *s_pp, int *r_n, Particle *r_pp)
+    void kill(const float *coms, const int ns, const int idmax, const int *tags, /**/ int *s_n, Particle *s_pp, int *r_n, Particle *r_pp)
     {
         int scount = 0, rcount = 0;
-        
+
         for (int ip = 0; ip < *s_n; ++ip)
         {
-            Particle p = s_pp[ip]; float *r0 = p.r;
+            Particle p = s_pp[ip];
+            const int tag = tags[ip];
 
-            bool is_solid = false;
-            for (int j = 0; j < ns; ++j)
-            {
-                const float *com = coms + 3*j;
-
-                if (solid::inside(r0[X]-com[X], r0[Y]-com[Y], r0[Z]-com[Z]))
-                {
-                    if (j == idmax)
-                    r_pp[rcount++] = p;
-                    is_solid = true;
-                }
-            }
-        
-            if (!is_solid)
+            if (tag == -1)         // solvent
             s_pp[scount++] = p;
+            else if (tag == idmax) // elected solid
+            r_pp[rcount++] = p;
         }
-    
+        
         *s_n = scount;
         *r_n = rcount;
     }
@@ -212,7 +210,8 @@ namespace ic_solid
         pp[i].r[c] -= mi[c];
     }
     
-    void init(const char * fname, /**/ int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp)
+    void init(const char * fname, const int *tt, const int nt, const float *vv, const int nv,
+              /**/ int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp)
     {
         float coms[MAX_SOLIDS * 3];
         
@@ -232,10 +231,11 @@ namespace ic_solid
             exit (1);
         }
 
+        const int npp0 = *s_n;
+        int *tags = new int[npp0];
         int *rcounts = new int[nsolid];
-        for (int j = 0; j < nsolid; ++j) rcounts[j] = 0;
-
-        count_pp_inside(s_pp, *s_n, coms, nsolid, /**/ rcounts);
+        
+        count_pp_inside(s_pp, *s_n, coms, nsolid, tt, vv, nt, nv, /**/ tags, rcounts);
 
         int root, idmax;
         elect(rcounts, nsolid, /**/ &root, &idmax);
@@ -244,8 +244,10 @@ namespace ic_solid
 
         int rcount = 0;
         
-        kill(coms, nsolid, idmax, /**/ s_n, s_pp, &rcount, r_pp);
+        kill(coms, nsolid, idmax, tags, /**/ s_n, s_pp, &rcount, r_pp);
 
+        delete[] tags;
+        
         share_parts(root, /**/ r_pp, &rcount);
         
         Solid model;

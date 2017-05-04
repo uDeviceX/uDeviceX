@@ -268,7 +268,8 @@ void init_solid()
 
     // generate models
 
-    ic_solid::init("ic_solid.txt", /**/ &nsolid, &npsolid, r_rr0_hst, ss_hst, &s_n, s_pp_hst, r_pp_hst);
+    ic_solid::init("ic_solid.txt", r_tt_hst, r_nt, r_vv_hst, r_nv,
+                   /**/ &nsolid, &npsolid, r_rr0_hst, ss_hst, &s_n, s_pp_hst, r_pp_hst);
         
     // generate the solid particles
     
@@ -341,7 +342,7 @@ void run0(float driving_force, bool wall_created, int it) {
     update_s();
     if (rbcs0) update_r();
     if (wall_created) bounce();
-    if (rbcs0) bounce_solid();
+    // if (rbcs0) bounce_solid();
 }
 
 void run_nowall() {
