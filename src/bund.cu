@@ -67,6 +67,9 @@
 
 #include "gsl.impl.h"
 
+#include "k/mesh.impl.h"
+#include "mesh.impl.h"
+
 #include "solid.impl.h"
 #include "sbounce.h"
 

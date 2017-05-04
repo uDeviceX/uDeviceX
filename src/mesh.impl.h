@@ -1,6 +1,6 @@
 namespace mesh
 {
-    int in_mesh_1p(const float *r, const float *vv, const int *tt, const int nt)
+    int inside_1p(const float *r, const float *vv, const int *tt, const int nt)
     {
         int c = 0;
 
@@ -16,14 +16,14 @@ namespace mesh
         return (c+1)%2;
     }
 
-    void in_mesh_hst(const Particle *pp, const int n, const float *vv, const int *tt, const int nt, /**/ int *inout)
+    void inside_hst(const Particle *pp, const int n, const float *vv, const int *tt, const int nt, /**/ int *inout)
     {
         for (int i = 0; i < n; ++i)
-        inout[i] = in_mesh_1p(pp[i].r, vv, tt, nt);
+        inout[i] = inside_1p(pp[i].r, vv, tt, nt);
     }
 
-    void in_mesh_dev(const Particle *pp, const int n, const float *vv, const int *tt, const int nt, /**/ int *inout)
+    void inside_dev(const Particle *pp, const int n, const float *vv, const int *tt, const int nt, /**/ int *inout)
     {
-        k_mesh::in_mesh_k <<< k_cnf(n) >>>(rr, n, vv, tt, nt, /**/ inout);
+        k_mesh::inside <<< k_cnf(n) >>>(pp, n, vv, tt, nt, /**/ inout);
     }
 }
