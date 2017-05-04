@@ -1,7 +1,24 @@
 #include "mesh.h"
 #include "collision.h"
+#include <cuda.h>
+#include <cuda_runtime_api.h>
+
+#define CC(ans)                                             \
+    do { cudaAssert((ans), __FILE__, __LINE__); } while (0)
+inline void cudaAssert(cudaError_t code, const char *file, int line) {
+    if (code != cudaSuccess) {
+        fprintf(stderr, "GPU assert: %s %s %d\n", cudaGetErrorString(code), file,
+                line);
+        abort();
+    }
+}
 
 #define N 10000
+
+#define DEVICE
+
+#define H2D cudaMemcpyHostToDevice
+#define D2H cudaMemcpyDeviceToHost
 
 int main(int argc, char **argv)
 {
@@ -49,8 +66,27 @@ int main(int argc, char **argv)
     
     // compute inout
 
-    collision::in_mesh(rr, N, vv.data(), tt.data(), nt, /**/ inout);
+#ifdef DEVICE
+    float *d_vv = NULL, *d_rr = NULL; int *d_tt = NULL, *d_inout = NULL;
+    CC(cudaMalloc(&d_vv, 3 * nv * sizeof(float)));
+    CC(cudaMalloc(&d_tt, 3 * nt * sizeof(int)));
+    CC(cudaMalloc(&d_rr, 3 * N  * sizeof(float)));
+    CC(cudaMalloc(&d_inout, N   * sizeof(int)));
 
+    CC(cudaMemcpy(d_vv, vv.data(), 3 * nv * sizeof(float), H2D));
+    CC(cudaMemcpy(d_tt, tt.data(), 3 * nt * sizeof(int),   H2D));
+    CC(cudaMemcpy(d_rr, rr, 3 * N * sizeof(float), H2D));
+
+    collision::in_mesh_dev(d_rr, N, d_vv, d_tt, nt, /**/ d_inout);
+    
+    CC(cudaMemcpy(inout, d_inout, N * sizeof(int), D2H));
+    
+    CC(cudaFree(d_vv)); CC(cudaFree(d_tt));
+    CC(cudaFree(d_rr)); CC(cudaFree(d_inout));
+#else
+    collision::in_mesh(rr, N, vv.data(), tt.data(), nt, /**/ inout);
+#endif
+    
     // dump
     
     FILE *fin = fopen("parts_in.3D", "w");

@@ -52,10 +52,39 @@ namespace collision
         return (c+1)%2;
     }
 
-    _HD_ void in_mesh(const float *rr, const int n, const float *vv, const int *tt, const int nt, /**/ int *inout)
+    void in_mesh(const float *rr, const int n, const float *vv, const int *tt, const int nt, /**/ int *inout)
     {
         for (int i = 0; i < n; ++i)
         inout[i] = in_mesh_1p(rr + 3*i, vv, tt, nt);
     }
 
+    __global__ void in_mesh_k(const float *rr, const int n, const float *vv, const int *tt, const int nt, /**/ int *inout)
+    {
+        const int gid = threadIdx.x + blockIdx.x * blockDim.x;
+        if (gid >= n) return;
+
+        int count = 0;
+        const float r[3] = {rr[3*gid + 0], rr[3*gid + 1], rr[3*gid + 2]};
+        const float origin[3] = {0, 0, 0};
+        
+        for (int i = 0; i < nt; ++i)
+        {
+            const int t1 = tt[3*i + 0];
+            const int t2 = tt[3*i + 1];
+            const int t3 = tt[3*i + 2];
+
+            const float a[3] = {vv[3*t1 + 0], vv[3*t1 + 1], vv[3*t1 + 2]};
+            const float b[3] = {vv[3*t2 + 0], vv[3*t2 + 1], vv[3*t2 + 2]};
+            const float c[3] = {vv[3*t3 + 0], vv[3*t3 + 1], vv[3*t3 + 2]};
+                
+            if (in_tetrahedron(r, a, b, c, origin)) ++count;
+        }
+        
+        inout[gid] = (count+1)%2;
+    }
+
+    void in_mesh_dev(const float *rr, const int n, const float *vv, const int *tt, const int nt, /**/ int *inout)
+    {
+        in_mesh_k <<< (127 + n) / 128, 128 >>>(rr, n, vv, tt, nt, /**/ inout);
+    }
 }
