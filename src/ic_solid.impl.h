@@ -115,13 +115,14 @@ namespace ic_solid
                 
                 if (mesh::inside_1p(r, vv, tt, nt))
                 {
-                    if (tag != -1)
-                    printf("%d\n", tag);
-                    //assert(tag == -1);
+                    assert(tag == -1);
                     ++rcounts[j];
                     tags[ip] = tag = j;
                 }
             }
+
+            if (tag == -1)
+            tags[ip] = tag;
         }
 
 #ifdef DEBUG_MSG
