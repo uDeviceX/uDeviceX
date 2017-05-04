@@ -237,12 +237,24 @@ void bounce_solid() {
 #endif
 }
 
+void load_solid_mesh(const char *fname)
+{
+    ply::read(fname, &r_tt_hst, &r_vv_hst, &r_nt, &r_nv);
+
+    CC(cudaMalloc(&r_tt_dev, 3 * r_nt * sizeof(int)));
+    CC(cudaMalloc(&r_vv_dev, 3 * r_nv * sizeof(float)));
+
+    CC(cudaMemcpy(r_tt_dev, r_tt_hst, 3 * r_nt * sizeof(int), H2D));
+    CC(cudaMemcpy(r_vv_dev, r_vv_hst, 3 * r_nv * sizeof(float), H2D));
+}
 
 void init_solid()
 {
     rex::init();
     mpDeviceMalloc(&r_pp);
     mpDeviceMalloc(&r_ff);
+
+    load_solid_mesh("data/sphere.ply");
     
     ss_hst      = new Solid[MAX_SOLIDS];
     ss_bbhst    = new Solid[MAX_SOLIDS];
@@ -388,6 +400,11 @@ void close() {
   CC(cudaFree(s_pp0));
   CC(cudaFree(r_rr0));
 
+  if (r_tt_hst) delete[] r_tt_hst;
+  if (r_vv_hst) delete[] r_vv_hst;
+  if (r_tt_dev) CC(cudaFree(r_tt_dev));
+  if (r_vv_dev) CC(cudaFree(r_vv_dev));
+  
   if (ss_hst) delete[] ss_hst;
   if (ss_dev) CC(cudaFree(ss_dev));
 

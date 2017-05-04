@@ -2,7 +2,7 @@
 
 namespace ply
 {
-    void write_ply(const char *fname, const int *tt, const int nt, const float *vv, const int nv)
+    void write(const char *fname, const int *tt, const int nt, const float *vv, const int nv)
     {
 #ifndef WRITE_BINARY
         FILE * f = fopen(fname, "w");
@@ -78,7 +78,7 @@ namespace ply
         return true;
     }
 
-    void read_ply(const char *fname, int **tt, float **vv, int *nt, int *nv)
+    void read(const char *fname, int **tt, float **vv, int *nt, int *nv)
     {
         FILE *f = fopen(fname, "r");
 
@@ -123,7 +123,7 @@ namespace ply
         }
         
         *tt = new int[3 * (*nt)];
-        *vv = new float[3 * (*nv));
+        *vv = new float[3 * (*nv)];
 
         for (int i = 0; i < *nv; ++i)
         fscanf(f, "%f %f %f\n",

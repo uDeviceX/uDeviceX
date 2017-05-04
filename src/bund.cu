@@ -82,6 +82,8 @@
 #include "dump.decl.h"
 #include "dump.impl.h"
 
+#include "ply.impl.h"
+
 #include "k/sim.h"
 #include "sim.decl.h"
 #include "sim.impl.h"

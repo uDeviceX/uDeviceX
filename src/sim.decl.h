@@ -1,42 +1,46 @@
-namespace sim {
-  bool rbcs0;
+namespace sim
+{
+    bool rbcs0;
 
-  int s_n;
-  Particle *s_pp; /* Solvent */
-  Force    *s_ff;
+    int s_n;
+    Particle *s_pp; /* Solvent */
+    Force    *s_ff;
 
-  int r_n;
-  Particle *r_pp; /* RBC */
-  Force    *r_ff;
+    int r_n;
+    Particle *r_pp; /* RBC */
+    Force    *r_ff;
 
-  float4  *s_zip0; /* "zipped" version of Solvent array */
-  ushort4 *s_zip1;
+    float4  *s_zip0; /* "zipped" version of Solvent array */
+    ushort4 *s_zip1;
 
-  Particle *s_pp0; /* Solvent (temporal buffer) */
+    Particle *s_pp0; /* Solvent (temporal buffer) */
 
-  CellLists* cells;
+    CellLists* cells;
 
-  H5FieldDump *dump_field;
+    H5FieldDump *dump_field;
 
-  Particle      s_pp_hst[MAX_PART_NUM]; /* solvent on host           */
-  Force         s_ff_hst[MAX_PART_NUM]; /* solvent forces on host    */
-  Particle      r_pp_hst[MAX_PART_NUM]; /* Solid pp on host          */
-  Force         r_ff_hst[MAX_PART_NUM]; /* Solid ff on host          */
+    Particle      s_pp_hst[MAX_PART_NUM]; /* solvent on host           */
+    Force         s_ff_hst[MAX_PART_NUM]; /* solvent forces on host    */
+    Particle      r_pp_hst[MAX_PART_NUM]; /* Solid pp on host          */
+    Force         r_ff_hst[MAX_PART_NUM]; /* Solid ff on host          */
   
-  Particle      sr_pp[MAX_PART_NUM];    /* solvent + solid pp on host */
+    Particle      sr_pp[MAX_PART_NUM];    /* solvent + solid pp on host */
 
+    int r_nv, r_nt;             /* number of vertices and faces */
+    int *r_tt_hst, *r_tt_dev;;  /* faces of the solid mesh      */
+    float *r_vv_hst, *r_vv_dev; /* vertices of the solid mesh   */
+    
+    int nsolid;     /* number of solid objects       */
+    int npsolid;    /* number of particles per solid */
+    Solid *ss_hst;  /* solid infos on host           */
+    Solid *ss_dev;  /* solid infos on device         */
 
-  int nsolid;     /* number of solid objects       */
-  int npsolid;    /* number of particles per solid */
-  Solid *ss_hst;  /* solid infos on host           */
-  Solid *ss_dev;  /* solid infos on device         */
+    Solid *ss_bbhst;  /* solid buffer for bounce back, host   */
+    Solid *ss_bbdev;  /* solid buffer for bounce back, device */
 
-  Solid *ss_bbhst;  /* solid buffer for bounce back, host   */
-  Solid *ss_bbdev;  /* solid buffer for bounce back, device */
+    /* buffers of solids for dump; this is needed because we dump the BB F and T separetely */
+    Solid *ss_dmphst, *ss_dmpbbhst;
 
-  /* buffers of solids for dump; this is needed because we dump the BB F and T separetely */
-  Solid *ss_dmphst, *ss_dmpbbhst;
-
-  float r_rr0_hst[3*MAX_PSOLID_NUM];      /* initial positions; same for all solids */
-  float *r_rr0;
+    float r_rr0_hst[3*MAX_PSOLID_NUM];      /* initial positions; same for all solids */
+    float *r_rr0;
 }
