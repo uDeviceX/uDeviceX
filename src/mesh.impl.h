@@ -13,7 +13,7 @@ namespace mesh
             if (k_mesh::in_tetrahedron(r, vv + 3*t[0], vv + 3*t[1], vv + 3*t[2], origin)) ++c;
         }
         
-        return (c+1)%2;
+        return c%2;
     }
 
     void inside_hst(const Particle *pp, const int n, const float *vv, const int *tt, const int nt, /**/ int *inout)

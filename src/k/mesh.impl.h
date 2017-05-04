@@ -55,6 +55,6 @@ namespace k_mesh
             if (in_tetrahedron(p.r, a, b, c, origin)) ++count;
         }
         
-        inout[gid] = (count+1)%2;
+        inout[gid] = count % 2;
     }
 }
