@@ -9,7 +9,6 @@
 .DS*
 *.orig
 *.xyz
-*.ply
 *.dcu
 *.cubin
 *.cudaobj
@@ -19,7 +18,6 @@ geom-wrapper/*/Makefile
 geom-wrapper/Makefile
 CMakeCache.txt
 *.xmf
-*.vtk
 *.h5part
 rbcs-*.ply
 *.cmake
