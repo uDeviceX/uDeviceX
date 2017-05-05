@@ -16,14 +16,9 @@ namespace solid {
 #define ZX XZ
 #define ZY YZ
 
-    
-    bool inside(float x, float y, float z) {
-        return k_solid::shape::inside(x, y, z);
-    }
-
-    void get_bbox(/**/ float *bbox) {
-        k_solid::shape::get_bbox(bbox);
-    }
+#ifndef pin_axis
+#define pin_axis (false)
+#endif
 
     void init_I(Particle *pp, int n, float pmass, float *com, /**/ float *I) {
         int c;

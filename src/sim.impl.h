@@ -198,8 +198,9 @@ void bounce_solid() {
     CC(cudaMemcpy(ss_hst, ss_dev, nsolid * sizeof(Solid), D2H));
 #endif
 
-    float bbox[3];
-    solid::get_bbox(bbox);
+    // TODO
+    float bbox[3] = {8, 8, 8};
+    //solid::get_bbox(bbox);
     
     bbhalo::pack_sendcnt(ss_hst, nsolid, bbox);
     const int nsbb = bbhalo::post();

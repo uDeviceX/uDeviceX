@@ -16,8 +16,9 @@ namespace k_solid
 
 #define _HD_ __host__ __device__
 
-    static inline float max2(float a, float b) {return a > b ? a : b;}
-    static inline float max3(float a, float b, float c) {return max2(max2(a, b), c);}
+#ifndef pin_axis
+#define pin_axis (false)
+#endif
     
     _HD_ float dot(float *v, float *u) {
         return v[X]*u[X] + v[Y]*u[Y] + v[Z]*u[Z];
@@ -72,94 +73,6 @@ namespace k_solid
             gram_schmidt(/**/ e0, e1, e2);
         }
     }
-
-#if defined(rsph)
-
-#define shape sphere
-#define pin_axis (false)
-
-    namespace sphere
-    {
-        _HD_ bool inside(float x, float y, float z) {
-            return x*x + y*y + z*z < rsph*rsph;
-        }
-
-        void get_bbox(/**/ float *bbox)
-        {
-            bbox[X] = bbox[Y] = bbox[Z] = rsph;
-        }
-
-    }
-
-#elif defined(rcyl)
-
-#define shape cylinder
-#define pin_axis (true)
-
-    namespace cylinder
-    {
-        _HD_ bool inside(float x, float y, float z) {
-            return x*x + y*y < rcyl * rcyl;
-        }
-
-        void get_bbox(/**/ float *bbox)
-        {
-            bbox[X] = 2.f * rcyl;
-            bbox[Y] = 2.f * rcyl;
-            bbox[Z] = 0.f; // symmetric
-        }
-    }
-
-#elif defined(a2_ellipse)
-
-#define shape ellipse
-#define pin_axis (true)
-
-    namespace ellipse
-    {
-#define a2 a2_ellipse 
-#define b2 b2_ellipse
-        
-        _HD_ bool inside(float x, float y, float z) {
-            return x*x / a2 + y*y / b2 < 1;
-        }
-
-        void get_bbox(/**/ float *bbox)
-        {
-            bbox[X] = 2.f * sqrt(a2);
-            bbox[Y] = 2.f * sqrt(b2);
-            bbox[Z] = 0.f; // symmetric here
-        }
-
-    }
-
-#elif defined(a2_ellipsoid)
-
-#define shape ellipsoid
-#define pin_axis (false)
-    
-    namespace ellipsoid
-    {
-#define a2 a2_ellipsoid
-#define b2 b2_ellipsoid
-#define c2 c2_ellipsoid
-
-        _HD_ bool inside(float x, float y, float z) {
-            return x*x / a2 + y*y / b2 + z*z / c2 < 1;
-        }
-
-        void get_bbox(/**/ float *bbox)
-        {
-            const float L = 2.f * sqrt(max3(a2, b2, c2));
-            bbox[X] = bbox[Y] = bbox[Z] = L;
-        }
-    }
-#endif
-
-    
-    _HD_ bool inside(float x, float y, float z) {
-        return shape::inside(x, y, z);
-    }        
     
     __device__ void warpReduceSumf3(float *x)
     {
