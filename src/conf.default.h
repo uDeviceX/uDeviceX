@@ -29,6 +29,6 @@
 #define pin_com (false)
 #endif
 
-#ifndef bounce_back
-#define bounce_back (false)
+#ifndef sbounce_back
+#define sbounce_back (false)
 #endif

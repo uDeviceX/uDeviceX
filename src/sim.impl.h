@@ -329,7 +329,7 @@ void run0(float driving_force, bool wall_created, int it) {
     update_s();
     if (rbcs0) update_r();
     if (wall_created) bounce();
-    if (rbcs0) bounce_solid();
+    if (sbounce_back && rbcs0) bounce_solid();
 }
 
 void run_nowall() {
