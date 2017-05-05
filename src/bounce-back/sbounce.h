@@ -1,8 +1,3 @@
-#ifndef dt
-#include "../.conf.h"
-#endif
-#include "../common.h"
-
 namespace solidbounce {
 
 #define _DH_ __device__ __host__

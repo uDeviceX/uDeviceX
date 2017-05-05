@@ -1,3 +1,5 @@
+#include "../../common.h"
+
 #include "sbounce.h"
 #include <cstdio>
 

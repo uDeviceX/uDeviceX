@@ -1,6 +1,11 @@
-#include "sbounce.h"
+#ifndef dt
+#include "../.conf.h"
+#endif
+#include "../common.h"
+
 #include <cassert>
 
+#include "sbounce.h"
 #include "bbshapes.impl.h"
 
 namespace solidbounce {
