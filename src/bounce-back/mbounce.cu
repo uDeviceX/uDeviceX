@@ -7,6 +7,7 @@
 
 #include "sbounce.h"
 #include "bbshapes.impl.h"
+#include "roots.h"
 
 namespace mbounce
 {
@@ -43,7 +44,7 @@ namespace mbounce
             b *= sc; c *= sc; d *= sc;
             
             float h1, h2, h3;
-            int nsol = gsl_poly_solve_cubic(b, c, d, &h1, &h2, &h3);
+            int nsol = roots::cubic(b, c, d, &h1, &h2, &h3);
             
             if (nsol == 1)
             {
@@ -61,7 +62,7 @@ namespace mbounce
         else // quadratic
         {
             float h1, h2;
-            if (!quadratic(b, c, d, &h1, &h2)) return false;
+            if (!roots::quadratic(b, c, d, &h1, &h2)) return false;
             if (valid(h1)) {*h = h1; return true;}
             if (valid(h2)) {*h = h2; return true;}
             return false;
