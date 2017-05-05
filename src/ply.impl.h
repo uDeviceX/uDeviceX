@@ -2,7 +2,7 @@
 
 namespace ply
 {
-    void write(const char *fname, const int *tt, const int nt, const float *vv, const int nv)
+    void write(const char *fname, const Mesh m)
     {
 #ifndef WRITE_BINARY
         FILE * f = fopen(fname, "w");
@@ -11,19 +11,19 @@ namespace ply
     
         fprintf(f, "ply\n");
         fprintf(f, "format ascii 1.0\n");
-        fprintf(f, "element vertex %d\n", nv);
+        fprintf(f, "element vertex %d\n", m.nv);
         fprintf(f, "property float x\n");
         fprintf(f, "property float y\n");
         fprintf(f, "property float z\n");
-        fprintf(f, "element face %d\n", nt);
+        fprintf(f, "element face %d\n", m.nt);
         fprintf(f, "property list int int vertex_index\n");
         fprintf(f, "end_header\n");
     
-        for (int i = 0; i < nv; ++i)
-        fprintf(f, "%f %f %f\n", vv[3*i + 0], vv[3*i + 1], vv[3*i + 2]);
+        for (int i = 0; i < m.nv; ++i)
+        fprintf(f, "%f %f %f\n", m.vv[3*i + 0], m.vv[3*i + 1], m.vv[3*i + 2]);
     
-        for (int i = 0; i < nt; ++i)
-        fprintf(f, "3 %d %d %d\n", tt[3*i + 0], tt[3*i + 1], tt[3*i + 2]);
+        for (int i = 0; i < m.nt; ++i)
+        fprintf(f, "3 %d %d %d\n", m.tt[3*i + 0], m.tt[3*i + 1], m.tt[3*i + 2]);
     
         fclose(f);
 #else
@@ -43,24 +43,24 @@ namespace ply
                     "element face %d\n"
                     "property list int int vertex_index\n"
                     "end_header\n",
-                    nv, nt);
+                    m.nv, m.nt);
 
             fwrite(header, sizeof(char), strlen(header), f);
         }
 
-        fwrite(vv, sizeof(float), 3 * nv, f);
+        fwrite(m.vv, sizeof(float), 3 * m.nv, f);
 
-        int *ibuf = new int[4 * nt];
+        int *ibuf = new int[4 * m.nt];
         
-        for (int i = 0; i < nt; ++i)
+        for (int i = 0; i < m.nt; ++i)
         {
             ibuf[4*i + 0] = 3;
-            ibuf[4*i + 1] = tt[3*i + 0];
-            ibuf[4*i + 2] = tt[3*i + 1];
-            ibuf[4*i + 3] = tt[3*i + 2];
+            ibuf[4*i + 1] = m.tt[3*i + 0];
+            ibuf[4*i + 2] = m.tt[3*i + 1];
+            ibuf[4*i + 3] = m.tt[3*i + 2];
         }
         
-        fwrite(ibuf, sizeof(int), 4 * nt, f);
+        fwrite(ibuf, sizeof(int), 4 * m.nt, f);
 
         delete[] ibuf;
     
