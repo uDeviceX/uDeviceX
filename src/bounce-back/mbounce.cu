@@ -120,7 +120,7 @@ namespace mbounce
             const fac = 1.f / (a11*a22 - a12*a12);
             
             const float u = (ga1 * a22 - ga2 * a12) * fac;
-            const float v  = (ga2 * a11 - ga1 * a12) * fac;
+            const float v = (ga2 * a11 - ga1 * a12) * fac;
 
             if (!((u >= 0) && (v >= 0) && (u+v <= 1)))
             return false;
@@ -170,7 +170,7 @@ namespace mbounce
     
     static void bounce_1s1p(const float *f, const Mesh m, Particle *p, Solid *s)
     {
-        float fl[3], v1[3], v2[3], v3[3], h, rw[3], vw[3];
+        float fl[3], v1[3], v2[3], v3[3], h, rwl[3], vwl[3];
         Particle p0l;
         
         for (int it = 0; it < m.nt; ++it)
@@ -191,9 +191,9 @@ namespace mbounce
             get_vl_solid(a2, s->om, /**/ v2);
             get_vl_solid(a3, s->om, /**/ v3);
 
-            if (intersect_triangle(a1, a2, a3, v1, v2, v3, p0l, /**/ &h, rw))
+            if (intersect_triangle(a1, a2, a3, v1, v2, v3, p0l, /**/ &h, rwl))
             {
-                get_vl_solid(rw, s->om, /**/ vw);
+                get_vl_solid(rwl, s->om, /**/ vwl);
 
                 // TODO
                 
