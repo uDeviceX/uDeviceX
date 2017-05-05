@@ -32,11 +32,40 @@ namespace mbounce
         }
 #endif
     }
-
-    bool cubic_root(const float a, const float b, const float c, const float d, float *h)
+    
+    bool cubic_root(float a, float b, float c, float d, /**/ float *h)
     {
-        // TODO
-        return false;
+        #define valid(t) ((t) > 0 && (t) < dt)
+        
+        if (fabs(a) > 1e-6) // cubic
+        {
+            const float sc = 1.f / a;
+            b *= sc; c *= sc; d *= sc;
+            
+            float h1, h2, h3;
+            int nsol = gsl_poly_solve_cubic(b, c, d, &h1, &h2, &h3);
+            
+            if (nsol == 1)
+            {
+                if (valid(h1)) {*h = h1; return true;}
+                return false;
+            }
+            else
+            {
+                if (valid(h1)) {*h = h1; return true;}
+                if (valid(h2)) {*h = h2; return true;}
+                if (valid(h3)) {*h = h3; return true;}
+                return false;
+            }
+        }
+        else // quadratic
+        {
+            float h1, h2;
+            if (!quadratic(b, c, d, &h1, &h2)) return false;
+            if (valid(h1)) {*h = h1; return true;}
+            if (valid(h2)) {*h = h2; return true;}
+            return false;
+        }
     }
     
     /* see Fedosov PhD Thesis */
