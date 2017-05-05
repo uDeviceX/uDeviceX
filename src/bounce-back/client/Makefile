@@ -19,8 +19,8 @@ libbounce-back:; make -C .. \
 
 referential: referential.o libbounce-back
 	$(NVCC) $(NVCCFLAGS) $(OPT) -dlink \
-		-L.. -L../../../last-bit referential.o $(LIBS) -o gpuCode.o
-	$(LINK)  $(LDFLAGS) gpuCode.o referential.o $(LIBS) -o $@
+		-L.. referential.o $(LIBS) -o gpuCode.o
+	$(LINK) $(LDFLAGS) gpuCode.o referential.o $(LIBS) -o $@
 
 %.o:              %.cu;              $(NVCC) $(NVCCFLAGS) $(OPT)     $< -c -o $@
 
