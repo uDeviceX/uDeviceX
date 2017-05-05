@@ -5,6 +5,7 @@
 #include <cell-lists.h>
 #include <cuda-dpd.h>
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */
+#include "conf.default.h"
 #include "common.h"
 #include "common.tmp.h"
 

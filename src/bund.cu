@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <mpi.h>
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */
+#include "conf.default.h"
 #include "m.h"     /* MPI */
 #include "common.h"
 #include "common.tmp.h"
