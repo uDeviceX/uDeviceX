@@ -1,14 +1,29 @@
-/* code copied from gsl library (see end of file for initial header)
+#define SWAP(a,b) do { auto tmp = b ; b = a ; a = tmp ; } while(0)
+
+template<typename real>
+bool quadratic(real a, real b, real c, real *h1, real *h2)
+{
+    const int sgnb = b > 0 ? 1 : -1;
+    const real D = b*b - 4*a*c;
+
+    if (D < 0) return false;
+        
+    *h0 = (-b - sgnb * sqrt(D)) / (2 * a);
+    *h1 = c / (a * h0);
+        
+    if (*h0 > *h1) SWAP(*h0, *h1);
+    return true;
+}
+
+/* code copied from gsl library; gsl_poly_solve_cubic (see end of file for initial header)
    https://www.gnu.org/software/gsl/
    slightly adapted 
  */
 
 template <typename real>
-int gsl_poly_solve_cubic (real a, real b, real c, 
-                          real *x0, real *x1, real *x2)
+int cubic(real a, real b, real c, 
+          real *x0, real *x1, real *x2)
 {
-    #define SWAP(a,b) do { real tmp = b ; b = a ; a = tmp ; } while(0)
-
     real q = (a * a - 3 * b);
     real r = (2 * a * a * a - 9 * a * b + 27 * c);
 
