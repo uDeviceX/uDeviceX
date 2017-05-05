@@ -14,7 +14,7 @@
 # rm -rf bop h5 diag.txt
 # :
 # argp .conf.double.poiseuille.h      \
-#    -rsph=4 -pin_com=true            \
+#    -rsph=4                          \
 #    -tend=2.01 -steps_per_dump=4000  \
 #    -pushtheflow -doublepoiseuille   \
 #    -hdf5field_dumps -part_dumps     \
@@ -30,8 +30,8 @@
 # rm -rf bop h5 diag.txt
 # cp sdf/wall1/wall.dat sdf.dat
 # :
-# argp .conf.test.h  \
-#    -rsph=4 -pin_com=true                                          \
+# argp .conf.test.h                                                 \
+#    -rsph=4                                                        \
 #    -tend=1.0 -steps_per_dump=300 -walls -wall_creation_stepid=100 \
 #    -hdf5field_dumps -part_dumps -steps_per_hdf5dump=300           \
 #    -shear_z > .conf.h
@@ -46,11 +46,11 @@
 # rm -rf bop h5 diag.txt
 # cp sdf/wall1/wall.dat sdf.dat
 # :
-# argp .conf.poiseuille.h \
-#    -rsph=4 -pin_com=true                                         \
-#   -tend=2.0 -steps_per_dump=300 -walls -wall_creation_stepid=100 \
-#   -hdf5field_dumps -part_dumps -steps_per_hdf5dump=300          \
-#   -pushtheflow > .conf.h
+# argp .conf.poiseuille.h                                           \
+#    -rsph=4                                                        \
+#    -tend=2.0 -steps_per_dump=300 -walls -wall_creation_stepid=100 \
+#    -hdf5field_dumps -part_dumps -steps_per_hdf5dump=300           \
+#    -pushtheflow > .conf.h
 # :
 # (make clean && make -j) > /dev/null
 # ./udx
@@ -62,10 +62,10 @@
 # rm -rf bop h5 diag.txt
 # cp sdf/cyl1/cyl.dat sdf.dat
 # :
-# argp .conf.poiseuille.h \
-#    -rsph=4 -pin_com=true                                         \
-#   -tend=4.0 -steps_per_dump=300 -walls -wall_creation_stepid=100 \
-#   -hdf5field_dumps -part_dumps -steps_per_hdf5dump=300 -pushtheflow > .conf.h
+# argp .conf.poiseuille.h                                           \
+#    -rsph=4                                                        \
+#    -tend=4.0 -steps_per_dump=300 -walls -wall_creation_stepid=100 \
+#    -hdf5field_dumps -part_dumps -steps_per_hdf5dump=300 -pushtheflow > .conf.h
 # :
 # (make clean && make -j) > /dev/null
 # ./udx
