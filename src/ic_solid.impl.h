@@ -209,8 +209,7 @@ namespace ic_solid
         pp[i].r[c] -= mi[c];
     }
     
-    void init(const char * fname, const int *tt, const int nt, const float *vv, const int nv,
-              /**/ int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp)
+    void init(const char * fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp)
     {
         float coms[MAX_SOLIDS * 3];
         
@@ -223,7 +222,7 @@ namespace ic_solid
             const float e2[3] = {0, 1, 0};
             const float e3[3] = {0, 0, 1};
             
-            mesh::bbox(vv, nv, e1, e2, e3, /**/ bbox);
+            mesh::bbox(m.vv, m.nv, e1, e2, e3, /**/ bbox);
         }
 
         nsolid = duplicate_PBC(bbox, nsolid, /**/ coms);
@@ -240,7 +239,7 @@ namespace ic_solid
         int *tags = new int[npp0];
         int *rcounts = new int[nsolid];
         
-        count_pp_inside(s_pp, *s_n, coms, nsolid, tt, vv, nt, nv, /**/ tags, rcounts);
+        count_pp_inside(s_pp, *s_n, coms, nsolid, m.tt, m.vv, m.nt, m.nv, /**/ tags, rcounts);
 
         int root, idmax;
         elect(rcounts, nsolid, /**/ &root, &idmax);

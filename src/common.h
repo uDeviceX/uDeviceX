@@ -92,6 +92,12 @@ struct Solid {
     }
 };
 
+struct Mesh {   /* triangle mesh structure                */
+    int nv, nt; /* number of [v]ertices and [t]riangles   */
+    int *tt;    /* triangle indices t1 t2 t3 t1 t2 t3 ... */
+    float *vv;  /* vertices x y z x y z ...               */
+};
+
 template <typename T>
 void mpDeviceMalloc(T **D) { /* a "[m]ax [p]article number" device
 			       allocation (takes a pointer to

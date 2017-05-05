@@ -240,13 +240,16 @@ void bounce_solid() {
 
 void load_solid_mesh(const char *fname)
 {
-    ply::read(fname, &r_tt_hst, &r_vv_hst, &r_nt, &r_nv);
+    ply::read(fname, &m_hst);
 
-    CC(cudaMalloc(&r_tt_dev, 3 * r_nt * sizeof(int)));
-    CC(cudaMalloc(&r_vv_dev, 3 * r_nv * sizeof(float)));
+    m_dev.nv = m_hst.nv;
+    m_dev.nt = m_hst.nt;
+    
+    CC(cudaMalloc(&(m_dev.tt), 3 * m_dev.nt * sizeof(int)));
+    CC(cudaMalloc(&(m_dev.vv), 3 * m_dev.nv * sizeof(float)));
 
-    CC(cudaMemcpy(r_tt_dev, r_tt_hst, 3 * r_nt * sizeof(int), H2D));
-    CC(cudaMemcpy(r_vv_dev, r_vv_hst, 3 * r_nv * sizeof(float), H2D));
+    CC(cudaMemcpy(m_dev.tt, m_hst.tt, 3 * m_dev.nt * sizeof(int), H2D));
+    CC(cudaMemcpy(m_dev.vv, m_hst.vv, 3 * m_dev.nv * sizeof(float), H2D));
 }
 
 void init_solid()
@@ -269,8 +272,7 @@ void init_solid()
 
     // generate models
 
-    ic_solid::init("ic_solid.txt", r_tt_hst, r_nt, r_vv_hst, r_nv,
-                   /**/ &nsolid, &npsolid, r_rr0_hst, ss_hst, &s_n, s_pp_hst, r_pp_hst);
+    ic_solid::init("ic_solid.txt", m_hst, /**/ &nsolid, &npsolid, r_rr0_hst, ss_hst, &s_n, s_pp_hst, r_pp_hst);
         
     // generate the solid particles
     
@@ -402,10 +404,10 @@ void close() {
   CC(cudaFree(s_pp0));
   CC(cudaFree(r_rr0));
 
-  if (r_tt_hst) delete[] r_tt_hst;
-  if (r_vv_hst) delete[] r_vv_hst;
-  if (r_tt_dev) CC(cudaFree(r_tt_dev));
-  if (r_vv_dev) CC(cudaFree(r_vv_dev));
+  if (m_hst.tt) delete[] m_hst.tt;
+  if (m_hst.vv) delete[] m_hst.tt;
+  if (m_dev.tt) CC(cudaFree(m_dev.tt));
+  if (m_dev.vv) CC(cudaFree(m_dev.vv));
   
   if (ss_hst) delete[] ss_hst;
   if (ss_dev) CC(cudaFree(ss_dev));

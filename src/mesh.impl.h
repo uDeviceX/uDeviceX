@@ -18,15 +18,15 @@ namespace mesh
         return c%2;
     }
 
-    void inside_hst(const Particle *pp, const int n, const float *vv, const int *tt, const int nt, /**/ int *inout)
+    void inside_hst(const Particle *pp, const int n, const Mesh m, /**/ int *inout)
     {
         for (int i = 0; i < n; ++i)
-        inout[i] = inside_1p(pp[i].r, vv, tt, nt);
+        inout[i] = inside_1p(pp[i].r, m.vv, m.tt, m.nt);
     }
 
-    void inside_dev(const Particle *pp, const int n, const float *vv, const int *tt, const int nt, /**/ int *inout)
+    void inside_dev(const Particle *pp, const int n, const Mesh m, /**/ int *inout)
     {
-        k_mesh::inside <<< k_cnf(n) >>>(pp, n, vv, tt, nt, /**/ inout);
+        k_mesh::inside <<< k_cnf(n) >>>(pp, n, m.vv, m.tt, m.nt, /**/ inout);
     }
 
     /* bbox: minx, maxx, miny, maxy, minz, maxz */

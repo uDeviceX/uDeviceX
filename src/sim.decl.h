@@ -26,9 +26,8 @@ namespace sim
   
     Particle      sr_pp[MAX_PART_NUM];    /* solvent + solid pp on host */
 
-    int r_nv, r_nt;             /* number of vertices and faces */
-    int *r_tt_hst, *r_tt_dev;;  /* faces of the solid mesh      */
-    float *r_vv_hst, *r_vv_dev; /* vertices of the solid mesh   */
+    Mesh m_hst; /* mesh of solid on host   */
+    Mesh m_dev; /* mesh of solid on device */
     
     int nsolid;     /* number of solid objects       */
     int npsolid;    /* number of particles per solid */

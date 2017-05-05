@@ -78,7 +78,7 @@ namespace ply
         return true;
     }
 
-    void read(const char *fname, int **tt, float **vv, int *nt, int *nv)
+    void read(const char *fname, Mesh *m)
     {
         FILE *f = fopen(fname, "r");
 
@@ -89,7 +89,7 @@ namespace ply
         }
 
         int l = 0;
-        *nt = -1; *nv = -1;
+        m->nt = m->nv = -1;
 
 #define BUFSIZE 256 // max number of chars per line
 #define MAXLINES 64 // max number of line for header
@@ -111,31 +111,31 @@ namespace ply
             }
 
             int ibuf;
-            if (sscanf(cbuf, "element vertex %d", &ibuf) == 1) *nv = ibuf;
-            else if (sscanf(cbuf, "element face %d", &ibuf) == 1) *nt = ibuf;
+            if (sscanf(cbuf, "element vertex %d", &ibuf) == 1) m->nv = ibuf;
+            else if (sscanf(cbuf, "element face %d", &ibuf) == 1) m->nt = ibuf;
             else if (prop("end_header", cbuf)) break;
         }
 
-        if (l >= MAXLINES || *nt == -1 || *nv == -1)
+        if (l >= MAXLINES || m->nt == -1 || m->nv == -1)
         {
             printf("Something went wrong, did not catch end_header\n");
             exit(1);
         }
         
-        *tt = new int[3 * (*nt)];
-        *vv = new float[3 * (*nv)];
+        m->tt = new int[3 * m->nt];
+        m->vv = new float[3 * m->nv];
 
-        for (int i = 0; i < *nv; ++i)
+        for (int i = 0; i < m->nv; ++i)
         fscanf(f, "%f %f %f\n",
-               *vv + 3*i + 0,
-               *vv + 3*i + 1,
-               *vv + 3*i + 2);
+               m->vv + 3*i + 0,
+               m->vv + 3*i + 1,
+               m->vv + 3*i + 2);
 
-        for (int i = 0; i < *nt; ++i)
+        for (int i = 0; i < m->nt; ++i)
         fscanf(f, "%*d %d %d %d\n",
-               *tt + 3*i + 0,
-               *tt + 3*i + 1,
-               *tt + 3*i + 2);
+               m->tt + 3*i + 0,
+               m->tt + 3*i + 1,
+               m->tt + 3*i + 2);
         
         fclose(f);
     }
