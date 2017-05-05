@@ -3,7 +3,7 @@ namespace roots
 #define SWAP(a,b) do { auto tmp = b ; b = a ; a = tmp ; } while(0)
 
     template<typename real>
-    bool quadratic(real a, real b, real c, real *h1, real *h2)
+    bool quadratic(real a, real b, real c, real *h0, real *h1)
     {
         const int sgnb = b > 0 ? 1 : -1;
         const real D = b*b - 4*a*c;
@@ -11,7 +11,7 @@ namespace roots
         if (D < 0) return false;
         
         *h0 = (-b - sgnb * sqrt(D)) / (2 * a);
-        *h1 = c / (a * h0);
+        *h1 = c / (a * *h0);
         
         if (*h0 > *h1) SWAP(*h0, *h1);
         return true;

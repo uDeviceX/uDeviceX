@@ -1,5 +1,6 @@
-libbounce-back.a: sbounce.o; ar rcs $@ $^
+libbounce-back.a: sbounce.o mbounce.o; ar rcs $@ $^
 sbounce.o: sbounce.cu sbounce.h bbshapes.impl.h ../common.h ../.conf.h
+mbounce.o: mbounce.cu mbounce.h roots.h ../common.h ../.conf.h
 
 # -dc flag: "Separate Compilation and Linking of CUDA C++ Device Code"
 %.o:       %.cu;       $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@

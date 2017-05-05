@@ -9,6 +9,9 @@
 #include "bbshapes.impl.h"
 #include "roots.h"
 
+#include "../k/mesh.h"
+#include "../mesh.impl.h"
+
 namespace mbounce
 {
     enum {X, Y, Z};
@@ -76,17 +79,17 @@ namespace mbounce
     {
 #define diff(a, b) {a[X] - b[X], a[Y] - b[Y], a[Z] - b[Z]}
 #define cross(a, b) {a[Y] * b[Z] - a[Z] * b[Y], a[Z] * b[X] - a[X] * b[Z], a[X] * b[Y] - a[Y] * b[X]}
-#define dot(a, b) a[X]*b[X] + a[Y]*b[Y] + a[Z]*b[Z];
-#define apxb(a, x, b) {a[X] + x * b[X], a[Y] + x * b[Y], a[Z] + x * b[Z]} 
+#define dot(a, b) a[X]*b[X] + a[Y]*b[Y] + a[Z]*b[Z]
+#define apxb(a, x, b) {a[X] + (float) x * b[X], a[Y] + (float) x * b[Y], a[Z] + (float) x * b[Z]} 
         
-        const float *r0 = p0.r;
-        const float *v0 = p0.v;
+        const float *r0 = p0->r;
+        const float *v0 = p0->v;
     
         const float a1[3] = diff(s20, s10);
         const float a2[3] = diff(s30, s10);
     
-        const float a1t[3] = diff(vs2, vs1);
-        const float a2t[3] = diff(vs3, vs1);
+        const float at1[3] = diff(vs2, vs1);
+        const float at2[3] = diff(vs3, vs1);
 
         // n(t) = n + t*nt + t^2 * ntt
         const float n[3] = cross(a1, a2);
@@ -102,44 +105,44 @@ namespace mbounce
             const float r1[3] = apxb(r0, dt, v0);
             const float s11[3] = apxb(s10, dt, vs1);
 
-            const float n1[3] = {n[X] + dt * (nt[X] + dt * ntt[X]),
-                                 n[Y] + dt * (nt[Y] + dt * ntt[Y]),
-                                 n[Z] + dt * (nt[Z] + dt * ntt[Z])};
+            const float n1[3] = {n[X] + (float) dt * (nt[X] + (float) dt * ntt[X]),
+                                 n[Y] + (float) dt * (nt[Y] + (float) dt * ntt[Y]),
+                                 n[Z] + (float) dt * (nt[Z] + (float) dt * ntt[Z])};
             
             const float dr1[3] = diff(r1, s11);
 
-            const float b0 = dot(dr0, n0);
+            const float b0 = dot(dr0, n);
             const float b1 = dot(dr1, n1);
 
             if (b0 * b1 > 0)
-            return;
+            return false;
         }
 
         // find intersection with plane
 
-        const float dv[3] = diff(v0, a1t);
+        const float dv[3] = diff(v0, at1);
         
         const float a = dot(ntt, dv);
         const float b = dot(ntt, dr0) + dot(nt, dv);
         const float c = dot(nt, dr0) + dot(n, dv);
         const float d = dot(n, dr0);
         
-        if (!cubic_root(a, b, c, d, &h))
+        if (!cubic_root(a, b, c, d, h))
         return false;
 
-        rw[X] = r0[X] + h * v0[X];
-        rw[Y] = r0[Y] + h * v0[Y];
-        rw[Z] = r0[Z] + h * v0[Z];
+        rw[X] = r0[X] + *h * v0[X];
+        rw[Y] = r0[Y] + *h * v0[Y];
+        rw[Z] = r0[Z] + *h * v0[Z];
 
         // check if inside triangle
 
         {
-            const float g[3] = {rw[X] - s10[X] - h * vs1[X],
-                                rw[Y] - s10[Y] - h * vs1[Y],
-                                rw[Z] - s10[Z] - h * vs1[Z]};
+            const float g[3] = {rw[X] - s10[X] - *h * vs1[X],
+                                rw[Y] - s10[Y] - *h * vs1[Y],
+                                rw[Z] - s10[Z] - *h * vs1[Z]};
 
-            const a1_[3] = apxb(a1, h, a1t);
-            const a2_[3] = apxb(a2, h, a2t);
+            const float a1_[3] = apxb(a1, *h, at1);
+            const float a2_[3] = apxb(a2, *h, at2);
             
             const float ga1 = dot(g, a1_);
             const float ga2 = dot(g, a2_);
@@ -147,7 +150,7 @@ namespace mbounce
             const float a12 = dot(a1_, a2_);
             const float a22 = dot(a2_, a2_);
 
-            const fac = 1.f / (a11*a22 - a12*a12);
+            const float fac = 1.f / (a11*a22 - a12*a12);
             
             const float u = (ga1 * a22 - ga2 * a12) * fac;
             const float v = (ga2 * a11 - ga1 * a12) * fac;
@@ -201,7 +204,7 @@ namespace mbounce
     static void bounce_1s1p(const float *f, const Mesh m, Particle *p, Solid *s)
     {
         float fl[3], v1[3], v2[3], v3[3], h, rwl[3], rw[3], vwl[3];
-        Particle p0l, pnl;
+        Particle p0l, pnl, p1l;
         const Particle p1 = *p;
         
         for (int it = 0; it < m.nt; ++it)
@@ -212,13 +215,13 @@ namespace mbounce
 
             rvprev(p1.r, p1.v, fl, /**/ p0l.r, p0l.v);
             
-            const int t1 = tt[3*it + 0];
-            const int t2 = tt[3*it + 1];
-            const int t3 = tt[3*it + 2];
+            const int t1 = m.tt[3*it + 0];
+            const int t2 = m.tt[3*it + 1];
+            const int t3 = m.tt[3*it + 2];
 
-            float a1[3] = {vv[3*t1+0], vv[3*t1+1], vv[3*t1+2]};
-            float a2[3] = {vv[3*t2+0], vv[3*t2+1], vv[3*t2+2]};
-            float a3[3] = {vv[3*t3+0], vv[3*t3+1], vv[3*t3+2]};
+            float a1[3] = {m.vv[3*t1+0], m.vv[3*t1+1], m.vv[3*t1+2]};
+            float a2[3] = {m.vv[3*t2+0], m.vv[3*t2+1], m.vv[3*t2+2]};
+            float a3[3] = {m.vv[3*t3+0], m.vv[3*t3+1], m.vv[3*t3+2]};
 
             get_vl_solid(a1, s->v, s->om, /**/ v1);
             get_vl_solid(a2, s->v, s->om, /**/ v2);
@@ -234,7 +237,7 @@ namespace mbounce
             revert(a2, v2);
             revert(a3, v3);
 
-            if (intersect_triangle(a1, a2, a3, v1, v2, v3, p0l, /**/ &h, rwl))
+            if (intersect_triangle(a1, a2, a3, v1, v2, v3, &p0l, /**/ &h, rwl))
             {
                 get_vl_solid(rwl, s->v, s->om, /**/ vwl);
 
@@ -273,7 +276,7 @@ namespace mbounce
             {
                 const Force f = ff[i];
                 bounce_1s1p(f.f, m, /**/ &p, shst);
-                pp[i] = pp;
+                pp[i] = p;
             }
         }
     }
@@ -286,7 +289,7 @@ namespace mbounce
         {
             Solid *s = shst + j;
             
-            mesh::bbox(m.vv, m.nt, s->e1, s->e2, s->e3, /**/ bbox);
+            mesh::bbox(m.vv, m.nt, s->e0, s->e1, s->e2, /**/ bbox);
 
             bounce_1s(ff, np, m, bbox, /**/ pp, s);
         }
