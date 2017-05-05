@@ -161,41 +161,66 @@ namespace mbounce
         vg[Z] = vl[X] * e0[Z] + vl[Y] * e1[Z] + vl[Z] * e2[Z];
     }
 
-    static void get_vl_solid(const float *rl, const float *om, /**/ float *vw)
+    static void get_vl_solid(const float *rl, const float *vcm, const float *om, /**/ float *vw)
     {
-        vw[X] = om[Y] * rl[Z] + om[Z] * rl[Y];
-        vw[Y] = om[Z] * rl[X] + om[X] * rl[Z];
-        vw[Z] = om[X] * rl[Y] + om[Y] * rl[X];
+        vw[X] = vcm[X] + om[Y] * rl[Z] + om[Z] * rl[Y];
+        vw[Y] = vcm[Y] + om[Z] * rl[X] + om[X] * rl[Z];
+        vw[Z] = vcm[Z] + om[X] * rl[Y] + om[Y] * rl[X];
     }
     
     static void bounce_1s1p(const float *f, const Mesh m, Particle *p, Solid *s)
     {
-        float fl[3], v1[3], v2[3], v3[3], h, rwl[3], vwl[3];
-        Particle p0l;
+        float fl[3], v1[3], v2[3], v3[3], h, rwl[3], rw[3], vwl[3];
+        Particle p0l, pnl;
+        const Particle p1 = *p;
         
         for (int it = 0; it < m.nt; ++it)
         {            
-            r2local(s->e0, s->e1, s->e2, s->com, p->r, /**/ pl.r);
-            v2local(s->e0, s->e1, s->e2, p->v, /**/ pl.v);
-            v2local(s->e0, s->e1, s->e2,    f, /**/ fl);
+            r2local(s->e0, s->e1, s->e2, s->com, p->r, /**/ p1l.r);
+            v2local(s->e0, s->e1, s->e2, p->v,         /**/ p1l.v);
+            v2local(s->e0, s->e1, s->e2,    f,         /**/ fl);
+
+            rvprev(p1.r, p1.v, fl, /**/ p0l.r, p0l.v);
             
             const int t1 = tt[3*it + 0];
             const int t2 = tt[3*it + 1];
             const int t3 = tt[3*it + 2];
 
-            const float a1[3] = {vv[3*t1+0], vv[3*t1+1], vv[3*t1+2]};
-            const float a2[3] = {vv[3*t2+0], vv[3*t2+1], vv[3*t2+2]};
-            const float a3[3] = {vv[3*t3+0], vv[3*t3+1], vv[3*t3+2]};
+            float a1[3] = {vv[3*t1+0], vv[3*t1+1], vv[3*t1+2]};
+            float a2[3] = {vv[3*t2+0], vv[3*t2+1], vv[3*t2+2]};
+            float a3[3] = {vv[3*t3+0], vv[3*t3+1], vv[3*t3+2]};
 
-            get_vl_solid(a1, s->om, /**/ v1);
-            get_vl_solid(a2, s->om, /**/ v2);
-            get_vl_solid(a3, s->om, /**/ v3);
+            get_vl_solid(a1, s->v, s->om, /**/ v1);
+            get_vl_solid(a2, s->v, s->om, /**/ v2);
+            get_vl_solid(a3, s->v, s->om, /**/ v3);
+
+#define revert(a, v) do {                       \
+                a[X] -= v[X] * dt;              \
+                a[Y] -= v[Y] * dt;              \
+                a[Z] -= v[Z] * dt;              \
+            } while(0)
+
+            revert(a1, v1);
+            revert(a2, v2);
+            revert(a3, v3);
 
             if (intersect_triangle(a1, a2, a3, v1, v2, v3, p0l, /**/ &h, rwl))
             {
-                get_vl_solid(rwl, s->om, /**/ vwl);
+                get_vl_solid(rwl, s->v, s->om, /**/ vwl);
 
-                // TODO
+                pnl.v[X] = 2 * vwl[X] - p0l.v[X];
+                pnl.v[Y] = 2 * vwl[Y] - p0l.v[Y];
+                pnl.v[Z] = 2 * vwl[Z] - p0l.v[Z];
+
+                pnl.r[X] = rwl[X] + (dt - h) * pnl.v[X];
+                pnl.r[Y] = rwl[Y] + (dt - h) * pnl.v[Y];
+                pnl.r[Z] = rwl[Z] + (dt - h) * pnl.v[Z];
+
+                //r2global(s->e0, s->e1, s->e2, s->com, rwl,   /**/ rw);
+                r2global(s->e0, s->e1, s->e2, s->com, pnl.r, /**/ p->r);
+                v2global(s->e0, s->e1, s->e2,         pnl.v, /**/ p->v);
+
+                // TODO momentum cons
                 
                 break;
             }       
