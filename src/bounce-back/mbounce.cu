@@ -11,6 +11,7 @@
 
 #include "../k/mesh.h"
 #include "../mesh.impl.h"
+#include "mbounce.h"
 
 namespace mbounce
 {
@@ -37,7 +38,7 @@ namespace mbounce
 #endif
     }
     
-    bool cubic_root(float a, float b, float c, float d, /**/ float *h)
+    static bool cubic_root(float a, float b, float c, float d, /**/ float *h)
     {
         #define valid(t) ((t) > 0 && (t) < dt)
         
@@ -162,7 +163,7 @@ namespace mbounce
         return true;
     }
     
-    _DH_ void r2local (const float *e0, const float *e1, const float *e2, const float *com, const float *rg, /**/ float *rl)
+    static _DH_ void r2local (const float *e0, const float *e1, const float *e2, const float *com, const float *rg, /**/ float *rl)
     {
         float x = rg[X] - com[X];
         float y = rg[Y] - com[Y];
@@ -173,21 +174,21 @@ namespace mbounce
         rl[Z] = x*e2[X] + y*e2[Y] + z*e2[Z];
     }
 
-    _DH_ void r2global(const float *e0, const float *e1, const float *e2, const float *com, const float *rl, /**/ float *rg)
+    static _DH_ void r2global(const float *e0, const float *e1, const float *e2, const float *com, const float *rl, /**/ float *rg)
     {
         rg[X] = com[X] + rl[X] * e0[X] + rl[Y] * e1[X] + rl[Z] * e2[X];
         rg[Y] = com[Y] + rl[X] * e0[Y] + rl[Y] * e1[Y] + rl[Z] * e2[Y];
         rg[Z] = com[Z] + rl[X] * e0[Z] + rl[Y] * e1[Z] + rl[Z] * e2[Z];
     }
 
-    _DH_ void v2local (const float *e0, const float *e1, const float *e2, const float *vg, /**/ float *vl)
+    static _DH_ void v2local (const float *e0, const float *e1, const float *e2, const float *vg, /**/ float *vl)
     {
         vl[X] = vg[X]*e0[X] + vg[Y]*e0[Y] + vg[Z]*e0[Z];
         vl[Y] = vg[X]*e1[X] + vg[Y]*e1[Y] + vg[Z]*e1[Z];
         vl[Z] = vg[X]*e2[X] + vg[Y]*e2[Y] + vg[Z]*e2[Z];
     }
 
-    _DH_ void v2global(const float *e0, const float *e1, const float *e2, const float *vl, /**/ float *vg)
+    static _DH_ void v2global(const float *e0, const float *e1, const float *e2, const float *vl, /**/ float *vg)
     {
         vg[X] = vl[X] * e0[X] + vl[Y] * e1[X] + vl[Z] * e2[X];
         vg[Y] = vl[X] * e0[Y] + vl[Y] * e1[Y] + vl[Z] * e2[Y];
