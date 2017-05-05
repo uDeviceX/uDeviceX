@@ -6,7 +6,7 @@
 # echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > ic_solid.txt
 # :
 # argp .conf.double.poiseuille.h     \
-#   -rbcs -rsph=4 -pin_com=false     \
+#   -rbcs -rsph=4 -sbounce_back      \
 #   -tend=0.5 -steps_per_dump=100    \
 #   -pushtheflow -doublepoiseuille   \
 #   -hdf5field_dumps -part_dumps     \
@@ -27,7 +27,7 @@
 # echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > ic_solid.txt
 # :
 # argp .conf.double.poiseuille.h     \
-#   -rbcs -rsph=4 -pin_com=false     \
+#   -rbcs -rsph=4 -sbounce_back      \
 #   -tend=0.5 -steps_per_dump=100    \
 #   -pushtheflow -doublepoiseuille   \
 #   -hdf5field_dumps -part_dumps     \
@@ -48,7 +48,7 @@
 # echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > ic_solid.txt
 # :
 # argp .conf.double.poiseuille.h     \
-#   -rbcs -pin_com=false             \
+#   -rbcs -sbounce_back              \
 #   -a2_ellipsoid=16 -b2_ellipsoid=4 \
 #   -c2_ellipsoid=10                 \
 #   -tend=0.5 -steps_per_dump=100    \
