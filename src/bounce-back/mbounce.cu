@@ -103,9 +103,9 @@ namespace mbounce
         // n(t) = n + t*nt + t^2 * ntt
         const float n[3] = cross(a1, a2);
         const float ntt[3] = cross(at1, at2);
-        const float nt[3] = {a1[Y] * at2[Z] - a1[Z] * at2[Y]  +  a2[Y] * at1[Z] - a2[Z] * at1[Y],
-                             a1[Z] * at2[X] - a1[X] * at2[Z]  +  a2[Z] * at1[X] - a2[X] * at1[Z],
-                             a1[X] * at2[Y] - a1[Y] * at2[X]  +  a2[X] * at1[Y] - a2[Y] * at1[X]};
+        const float nt[3] = {a1[Y] * at2[Z] - a1[Z] * at2[Y]  +  at1[Y] * a2[Z] - at1[Z] * a2[Y],
+                             a1[Z] * at2[X] - a1[X] * at2[Z]  +  at1[Z] * a2[X] - at1[X] * a2[Z],
+                             a1[X] * at2[Y] - a1[Y] * at2[X]  +  at1[X] * a2[Y] - at1[Y] * a2[X]};
     
         const float dr0[3] = diff(r0, s10);
         
