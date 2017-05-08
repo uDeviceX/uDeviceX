@@ -129,7 +129,7 @@ namespace mbounce
 
         // find intersection time with plane
 
-        const float dv[3] = diff(v0, at1);
+        const float dv[3] = diff(v0, vs1);
         
         const float a = dot(ntt, dv);
         const float b = dot(ntt, dr0) + dot(nt, dv);
