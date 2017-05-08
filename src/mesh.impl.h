@@ -65,4 +65,13 @@ namespace mesh
             }
         }
     }
+
+    void bboxes(const float *vv, const int nt, const Solid *ss, const int ns, /**/ float *bboxes)
+    {
+        for (int i = 0; i < ns; ++i)
+        {
+            Solid *s = ss + i;
+            bbox(vv, nt, s->e0, s->e1, s->e2, /**/ bboxes + 6 * i);
+        }
+    }
 }
