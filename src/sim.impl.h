@@ -198,30 +198,31 @@ void bounce_solid() {
     CC(cudaMemcpy(ss_hst, ss_dev, nsolid * sizeof(Solid), D2H));
 #endif
 
-    // TODO
-    float bbox[3] = {8, 8, 8};
-    //solid::get_bbox(bbox);
+    mesh::bboxes(m_hst.vv, m_hst.nv, ss_hst, nsolid, /**/ bboxes_hst);
     
-    bbhalo::pack_sendcnt(ss_hst, nsolid, bbox);
+    bbhalo::pack_sendcnt(ss_hst, nsolid, bboxes_hst);
     const int nsbb = bbhalo::post();
     bbhalo::unpack(/**/ ss_bbhst);
 
     // bounce
     
 #ifndef NOHOST_SOLID
+    mesh::bboxes(m_hst.vv, m_hst.nv, ss_bbhst, nsbb, /**/ bboxes_hst);
+    
     CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
     CC(cudaMemcpy(s_ff_hst, s_ff, sizeof(Force)    * s_n, D2H));
 
-    solidbounce::bounce(s_ff_hst, s_n, nsbb, /**/ s_pp_hst, ss_bbhst);
+    mbounce::bounce_hst(s_ff_hst, s_n, nsbb, m_hst, bboxes_hst, /**/ s_pp_hst, ss_bbhst);
 
     CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
 #else
-    CC(cudaMemcpy(ss_bbdev, ss_bbhst, nsbb * sizeof(Solid), H2D));
+    // NOT IMPLEMENTED YET
+    // CC(cudaMemcpy(ss_bbdev, ss_bbhst, nsbb * sizeof(Solid), H2D));
 
-    solidbounce::bounce_nohost(s_ff, s_n, nsbb, /**/ s_pp, ss_bbdev);
+    // solidbounce::bounce_nohost(s_ff, s_n, nsbb, /**/ s_pp, ss_bbdev);
 
-    // for exchanging force/torque
-    CC(cudaMemcpy(ss_bbhst, ss_bbdev, nsbb * sizeof(Solid), D2H));
+    // // for exchanging force/torque
+    // CC(cudaMemcpy(ss_bbhst, ss_bbdev, nsbb * sizeof(Solid), D2H));
 #endif
 
     // collect force/torque
@@ -234,7 +235,7 @@ void bounce_solid() {
     memcpy(ss_dmpbbhst, ss_hst, nsolid * sizeof(Solid));
     
 #ifdef NOHOST_SOLID
-    CC(cudaMemcpy(ss_dev, ss_hst, nsolid * sizeof(Solid), H2D));
+    // CC(cudaMemcpy(ss_dev, ss_hst, nsolid * sizeof(Solid), H2D));
 #endif
 }
 
@@ -258,6 +259,9 @@ void init_solid()
     mpDeviceMalloc(&r_pp);
     mpDeviceMalloc(&r_ff);
 
+    bboxes_hst = new float[6 * MAX_SOLIDS];
+    CC(cudaMalloc(&bboxes_dev, 6 * MAX_SOLIDS * sizeof(float)));
+    
     load_solid_mesh("data/sphere.ply");
     
     ss_hst      = new Solid[MAX_SOLIDS];
@@ -408,6 +412,9 @@ void close() {
   if (m_hst.vv) delete[] m_hst.tt;
   if (m_dev.tt) CC(cudaFree(m_dev.tt));
   if (m_dev.vv) CC(cudaFree(m_dev.vv));
+
+  if (bboxes_hst) delete[] bboxes_hst;
+  if (bboxes_dev) CC(cudaFree(bboxes_dev));
   
   if (ss_hst) delete[] ss_hst;
   if (ss_dev) CC(cudaFree(ss_dev));

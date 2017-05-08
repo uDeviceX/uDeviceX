@@ -28,6 +28,9 @@ namespace sim
 
     Mesh m_hst; /* mesh of solid on host   */
     Mesh m_dev; /* mesh of solid on device */
+
+    float *bboxes_hst; /*[b]ounding boxes of solids on host   */
+    float *bboxes_dev; /*[b]ounding boxes of solids on device */
     
     int nsolid;     /* number of solid objects       */
     int npsolid;    /* number of particles per solid */

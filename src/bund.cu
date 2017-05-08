@@ -72,7 +72,7 @@
 #include "mesh.impl.h"
 
 #include "solid.impl.h"
-#include "sbounce.h"
+#include "mbounce.h"
 
 #include "bbhalo.decl.h"
 #include "bbhalo.impl.h"

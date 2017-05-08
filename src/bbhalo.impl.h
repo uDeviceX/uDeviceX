@@ -63,7 +63,7 @@ namespace bbhalo
     }
 
 
-    void pack_sendcnt(const Solid *ss_hst, const int ns, const float *bbox)
+    void pack_sendcnt(const Solid *ss_hst, const int ns, const float *bboxes)
     {
         for (int i = 0; i < 27; ++i) shalo[i].clear();
 
@@ -73,19 +73,16 @@ namespace bbhalo
         const float M[3] = {XMARGIN_BB, YMARGIN_BB, ZMARGIN_BB};
 
         int vcode[3];
-
-        const int dx = bbox[X] * 0.5;
-        const int dy = bbox[Y] * 0.5;
-        const int dz = bbox[Z] * 0.5;
     
         for (int i = 0; i < ns; ++i)
         {
             const float *r0 = ss_hst[i].com;
             const int sid = ss_hst[i].id;
+            const float *bbox = bboxes + 6*i;
             
-            auto vcontrib = [&](float dx_, float dy_, float dz_) {
+            auto vcontrib = [&](int dx, int dy, int dz) {
             
-                const float r[3] = {r0[X] + dx_, r0[Y] + dy_, r0[Z] + dz_};
+                const float r[3] = {r0[X] + bbox[dx], r0[Y] + bbox[2+dy], r0[Z] + bbox[4+dz]};
 
                 for (int c = 0; c < 3; ++c)
                 vcode[c] = (2 + (r[c] >= -L[c] / 2 + M[c]) + (r[c] >= L[c] / 2 - M[c])) % 3;
@@ -99,15 +96,15 @@ namespace bbhalo
                 }
             };
 
-            vcontrib(+dx, +dy, +dz);
-            vcontrib(+dx, +dy, -dz);
-            vcontrib(+dx, -dy, +dz);
-            vcontrib(+dx, -dy, -dz);
+            vcontrib(0, 0, 0);
+            vcontrib(0, 0, 1);
+            vcontrib(0, 1, 0);
+            vcontrib(0, 1, 1);
 
-            vcontrib(-dx, +dy, +dz);
-            vcontrib(-dx, +dy, -dz);
-            vcontrib(-dx, -dy, +dz);
-            vcontrib(-dx, -dy, -dz);
+            vcontrib(1, 0, 0);
+            vcontrib(1, 0, 1);
+            vcontrib(1, 1, 0);
+            vcontrib(1, 1, 1);
 
             assert(sids[0].back() == sid);
             assert(sids[0].size() == i+1);
