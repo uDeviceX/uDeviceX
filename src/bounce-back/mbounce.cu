@@ -11,8 +11,20 @@
 namespace mbounce
 {
     enum {X, Y, Z};
+
+    enum BBState
+    {
+        BB_SUCCESS,   /* succesfully bounced            */
+        BB_NOCROSS,   /* did not cross the plane        */
+        BB_WTRIANGLE, /* [w]rong triangle               */
+        BB_HFAIL      /* no time solution h             */
+    };
+
 #define _DH_ __device__ __host__
+
 #define BBOX_MARGIN 0.1f
+
+#define debug_output
     
     static void rvprev(const float *r1, const float *v1, const float *f0, /**/ float *r0, float *v0)
     {
@@ -70,9 +82,9 @@ namespace mbounce
     }
     
     /* see Fedosov PhD Thesis */
-    static bool intersect_triangle(const float *s10, const float *s20, const float *s30,
-                                   const float *vs1, const float *vs2, const float *vs3,
-                                   const Particle *p0,  /**/ float *h, float *rw)
+    static BBState intersect_triangle(const float *s10, const float *s20, const float *s30,
+                                      const float *vs1, const float *vs2, const float *vs3,
+                                      const Particle *p0,  /**/ float *h, float *rw)
     {
 #define diff(a, b) {a[X] - b[X], a[Y] - b[Y], a[Z] - b[Z]}
 #define cross(a, b) {a[Y] * b[Z] - a[Z] * b[Y], a[Z] * b[X] - a[X] * b[Z], a[X] * b[Y] - a[Y] * b[X]}
@@ -112,10 +124,10 @@ namespace mbounce
             const float b1 = dot(dr1, n1);
 
             if (b0 * b1 > 0)
-            return false;
+            return BB_NOCROSS;
         }
 
-        // find intersection with plane
+        // find intersection time with plane
 
         const float dv[3] = diff(v0, at1);
         
@@ -125,7 +137,7 @@ namespace mbounce
         const float d = dot(n, dr0);
         
         if (!cubic_root(a, b, c, d, h))
-        return false;
+        return BB_HFAIL;
 
         rw[X] = r0[X] + *h * v0[X];
         rw[Y] = r0[Y] + *h * v0[Y];
@@ -153,10 +165,10 @@ namespace mbounce
             const float v = (ga2 * a11 - ga1 * a12) * fac;
 
             if (!((u >= 0) && (v >= 0) && (u+v <= 1)))
-            return false;
+            return BB_WTRIANGLE;
         }
 
-        return true;
+        return BB_SUCCESS;
     }
     
     static _DH_ void r2local (const float *e0, const float *e1, const float *e2, const float *com, const float *rg, /**/ float *rl)
@@ -251,7 +263,9 @@ namespace mbounce
             revert(a2, v2);
             revert(a3, v3);
 
-            if (intersect_triangle(a1, a2, a3, v1, v2, v3, &p0l, /**/ &h, rwl))
+            const BBState bbstate = intersect_triangle(a1, a2, a3, v1, v2, v3, &p0l, /**/ &h, rwl);
+            
+            if (bbstate == BB_SUCCESS)
             {
                 get_vl_solid(rwl, s->v, s->om, /**/ vwl);
 
@@ -272,7 +286,7 @@ namespace mbounce
                 ang_mom_solid(s->com, rw, v0, p->v, /**/ dL);
                 
                 break;
-            }       
+            }
         }
 
         s->fo[X] += dP[X];
