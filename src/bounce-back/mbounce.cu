@@ -225,6 +225,10 @@ namespace mbounce
         dL[Z] = -(dr[X] * vn[Y] - dr[Y] * vn[X] - dr[X] * v0[Y] + dr[Y] * v0[X]) / dt;
     }
 
+#ifdef debug_output
+    int bbstates[4], dstep = 0;
+#endif
+    
     static void bounce_1s1p(const float *f, const Mesh m, Particle *p, Solid *s)
     {
         float fl[3], v1[3], v2[3], v3[3], h, rwl[3], rw[3], vwl[3], v0[3];
@@ -264,7 +268,10 @@ namespace mbounce
             revert(a3, v3);
 
             const BBState bbstate = intersect_triangle(a1, a2, a3, v1, v2, v3, &p0l, /**/ &h, rwl);
-            
+
+#ifdef debug_output
+            bbstates[bbstate] ++;
+#endif
             if (bbstate == BB_SUCCESS)
             {
                 get_vl_solid(rwl, s->v, s->om, /**/ vwl);
@@ -320,7 +327,12 @@ namespace mbounce
     }
 
     void bounce_hst(const Force *ff, const int np, const int ns, const Mesh m, const float *bboxes, /**/ Particle *pp, Solid *shst)
-    {        
+    {
+#ifdef debug_output
+        if (dstep % steps_per_dump == 0)
+        for (int c = 0; c < 4; ++c) bbstates[c] = 0;
+#endif
+
         for (int j = 0; j < ns; ++j)
         {
             Solid *s = shst + j;
@@ -328,5 +340,11 @@ namespace mbounce
 
             bounce_1s(ff, np, m, bbox, /**/ pp, s);
         }
+
+#ifdef debug_output
+        if ((++dstep) % steps_per_dump == 0)
+        printf("%d success, %d nocross, %d wrong triangle, %d hfailed\n",
+               bbstates[0], bbstates[1], bbstates[2], bbstates[3]);
+#endif
     }
 }
