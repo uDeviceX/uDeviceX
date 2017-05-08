@@ -5,17 +5,13 @@
 
 #include <cassert>
 
-#include "sbounce.h"
-#include "bbshapes.impl.h"
 #include "roots.h"
-
-#include "../k/mesh.h"
-#include "../mesh.impl.h"
 #include "mbounce.h"
 
 namespace mbounce
 {
     enum {X, Y, Z};
+#define _DH_ __device__ __host__
 #define BBOX_MARGIN 0.1f
     
     static void rvprev(const float *r1, const float *v1, const float *f0, /**/ float *r0, float *v0)
@@ -282,15 +278,15 @@ namespace mbounce
         }
     }
 
-    void bounce_hst(const Force *ff, const int np, const int ns, const Mesh m, /**/ Particle *pp, Solid *shst)
+    void bounce_hst(const Force *ff, const int np, const int ns, const Mesh m, const float *bboxes, /**/ Particle *pp, Solid *shst)
     {
         float bbox[6];
         
         for (int j = 0; j < ns; ++j)
         {
             Solid *s = shst + j;
-            
-            mesh::bbox(m.vv, m.nt, s->e0, s->e1, s->e2, /**/ bbox);
+            const float *bbox = bboxes + 6 * j;
+            //mesh::bbox(m.vv, m.nt, s->e0, s->e1, s->e2, /**/ bbox);
 
             bounce_1s(ff, np, m, bbox, /**/ pp, s);
         }
