@@ -409,7 +409,7 @@ void close() {
   CC(cudaFree(r_rr0));
 
   if (m_hst.tt) delete[] m_hst.tt;
-  if (m_hst.vv) delete[] m_hst.tt;
+  if (m_hst.vv) delete[] m_hst.vv;
   if (m_dev.tt) CC(cudaFree(m_dev.tt));
   if (m_dev.vv) CC(cudaFree(m_dev.vv));
 

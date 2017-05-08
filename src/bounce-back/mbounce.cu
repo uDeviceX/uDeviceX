@@ -197,13 +197,30 @@ namespace mbounce
         vw[Y] = vcm[Y] + om[Z] * rl[X] + om[X] * rl[Z];
         vw[Z] = vcm[Z] + om[X] * rl[Y] + om[Y] * rl[X];
     }
-    
+
+    static _DH_ void lin_mom_solid(const float *v1, const float *vn, /**/ float *dP)
+    {
+        for (int c = 0; c < 3; ++c)
+        dP[c] = -(vn[c] - v1[c]) / dt;
+    }
+
+    static _DH_ void ang_mom_solid(const float *com, const float *rw, const float *v0, const float *vn, /**/ float *dL)
+    {
+        const float dr[3] = {rw[X] - com[X], rw[Y] - com[Y], rw[Z] - com[Z]};
+        
+        dL[X] = -(dr[Y] * vn[Z] - dr[Z] * vn[Y] - dr[Y] * v0[Z] + dr[Z] * v0[Y]) / dt;
+        dL[Y] = -(dr[Z] * vn[X] - dr[X] * vn[Z] - dr[Z] * v0[X] + dr[X] * v0[Z]) / dt;
+        dL[Z] = -(dr[X] * vn[Y] - dr[Y] * vn[X] - dr[X] * v0[Y] + dr[Y] * v0[X]) / dt;
+    }
+
     static void bounce_1s1p(const float *f, const Mesh m, Particle *p, Solid *s)
     {
-        float fl[3], v1[3], v2[3], v3[3], h, rwl[3], rw[3], vwl[3];
+        float fl[3], v1[3], v2[3], v3[3], h, rwl[3], rw[3], vwl[3], v0[3];
         Particle p0l, pnl, p1l;
         const Particle p1 = *p;
-        
+
+        float dL[3] = {0}, dP[3] = {0};
+                        
         for (int it = 0; it < m.nt; ++it)
         {            
             r2local(s->e0, s->e1, s->e2, s->com, p->r, /**/ p1l.r);
@@ -211,7 +228,7 @@ namespace mbounce
             v2local(s->e0, s->e1, s->e2,    f,         /**/ fl);
 
             rvprev(p1.r, p1.v, fl, /**/ p0l.r, p0l.v);
-            
+
             const int t1 = m.tt[3*it + 0];
             const int t2 = m.tt[3*it + 1];
             const int t3 = m.tt[3*it + 2];
@@ -246,15 +263,25 @@ namespace mbounce
                 pnl.r[Y] = rwl[Y] + (dt - h) * pnl.v[Y];
                 pnl.r[Z] = rwl[Z] + (dt - h) * pnl.v[Z];
 
-                //r2global(s->e0, s->e1, s->e2, s->com, rwl,   /**/ rw);
+                r2global(s->e0, s->e1, s->e2, s->com, rwl,   /**/ rw);
                 r2global(s->e0, s->e1, s->e2, s->com, pnl.r, /**/ p->r);
                 v2global(s->e0, s->e1, s->e2,         pnl.v, /**/ p->v);
-
-                // TODO momentum cons
+                v2global(s->e0, s->e1, s->e2, p0l.v,         /**/ v0);
+                        
+                lin_mom_solid(v0, p->v, /**/ dP);
+                ang_mom_solid(s->com, rw, v0, p->v, /**/ dL);
                 
                 break;
             }       
         }
+
+        s->fo[X] += dP[X];
+        s->fo[Y] += dP[Y];
+        s->fo[Z] += dP[Z];
+
+        s->to[X] += dL[X];
+        s->to[Y] += dL[Y];
+        s->to[Z] += dL[Z];
     }
     
     static bool in_bbox(const float *r, const float *bbox, const float tol)
@@ -284,7 +311,6 @@ namespace mbounce
         {
             Solid *s = shst + j;
             const float *bbox = bboxes + 6 * j;
-            //mesh::bbox(m.vv, m.nt, s->e0, s->e1, s->e2, /**/ bbox);
 
             bounce_1s(ff, np, m, bbox, /**/ pp, s);
         }
