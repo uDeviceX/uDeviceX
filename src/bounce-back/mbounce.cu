@@ -49,8 +49,9 @@ namespace mbounce
     static bool cubic_root(float a, float b, float c, float d, /**/ float *h)
     {
         #define valid(t) ((t) >= 0 && (t) <= dt)
+        #define eps 1e-8
         
-        if (fabs(a) > 1e-8) // cubic
+        if (fabs(a) > eps) // cubic
         {
             const float sc = 1.f / a;
             b *= sc; c *= sc; d *= sc;
@@ -61,16 +62,21 @@ namespace mbounce
             if (valid(h1))             {*h = h1; return true;}
             if (nsol > 1 && valid(h2)) {*h = h2; return true;}
             if (nsol > 2 && valid(h3)) {*h = h3; return true;}
-            return false;
         }
-        else // quadratic
+        else if(fabs(b) > eps) // quadratic
         {
             float h1, h2;
             if (!roots::quadratic(b, c, d, &h1, &h2)) return false;
             if (valid(h1)) {*h = h1; return true;}
             if (valid(h2)) {*h = h2; return true;}
-            return false;
         }
+        else if (fabs(c) < eps) // linear
+        {
+            const float h1 = -d/c;
+
+            if (valid(h1)) {*h = h1; return true;}
+        }
+        return false;
     }
     
     /* see Fedosov PhD Thesis */
