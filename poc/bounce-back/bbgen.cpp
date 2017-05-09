@@ -89,6 +89,8 @@ int main(int argc, char **argv)
     vel(n, rr0, rr1, dt, rrV);
 
     int idf = 0;
+
+    int states[4] = {0};
     
     for (int i = 0; i < n; ++i)
     {
@@ -108,6 +110,9 @@ int main(int argc, char **argv)
         
         const BBState bbstate = intersect_triangle(A0, B0, C0, AV, BV, CV,
                                                    &p0, dt, /**/ &h, rw);
+
+        ++ states[bbstate];
+        
         if (bbstate == BB_SUCCESS)
         {
             const float Aw[3] = {A0[X] + h * AV[X], A0[Y] + h * AV[Y], A0[Z] + h * AV[Z]};
@@ -129,7 +134,11 @@ int main(int argc, char **argv)
 
             ++idf;
         }
+        
     }
+
+    printf("%d success, %d nocross, %d wrong triangle, %d hfailed\n",
+           states[0], states[1], states[2], states[3]);
     
     delete[] AA0; delete[] BB0; delete[] CC0; delete[] rr0;
     delete[] AA1; delete[] BB1; delete[] CC1; delete[] rr1;
