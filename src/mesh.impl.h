@@ -30,9 +30,9 @@ namespace mesh
     }
 
     /* bbox: minx, maxx, miny, maxy, minz, maxz */
-    void bbox(const float *vv, const int nt, const float *e1, const float *e2, const float *e3, /**/ float *bbox)
+    void bbox(const float *vv, const int nv, const float *e1, const float *e2, const float *e3, /**/ float *bbox)
     {
-        if (nt == 0) return;
+        if (nv == 0) return;
 
         const float *v0 = NULL;
         float v[3] = {0};
@@ -53,7 +53,7 @@ namespace mesh
         auto higher = [](float a, float b) {return a > b ? a : b;};
         auto lower  = [](float a, float b) {return a > b ? b : a;};
 
-        for (int i = 1; i < nt; ++i)
+        for (int i = 1; i < nv; ++i)
         {
             v0 = vv + 3*i;
             transform();
@@ -66,12 +66,12 @@ namespace mesh
         }
     }
 
-    void bboxes(const float *vv, const int nt, const Solid *ss, const int ns, /**/ float *bboxes)
+    void bboxes(const float *vv, const int nv, const Solid *ss, const int ns, /**/ float *bboxes)
     {
         for (int i = 0; i < ns; ++i)
         {
             const Solid *s = ss + i;
-            bbox(vv, nt, s->e0, s->e1, s->e2, /**/ bboxes + 6 * i);
+            bbox(vv, nv, s->e0, s->e1, s->e2, /**/ bboxes + 6 * i);
         }
     }
 }

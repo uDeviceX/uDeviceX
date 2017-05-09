@@ -51,7 +51,7 @@ namespace k_mesh
             const float a[3] = {vv[3*t1 + 0], vv[3*t1 + 1], vv[3*t1 + 2]};
             const float b[3] = {vv[3*t2 + 0], vv[3*t2 + 1], vv[3*t2 + 2]};
             const float c[3] = {vv[3*t3 + 0], vv[3*t3 + 1], vv[3*t3 + 2]};
-                
+            
             if (in_tetrahedron(p.r, a, b, c, origin)) ++count;
         }
         
