@@ -168,45 +168,6 @@ namespace mbounce
 
         return BB_SUCCESS;
     }
-    
-    static _DH_ void r2local (const float *e0, const float *e1, const float *e2, const float *com, const float *rg, /**/ float *rl)
-    {
-        float x = rg[X] - com[X];
-        float y = rg[Y] - com[Y];
-        float z = rg[Z] - com[Z];
-        
-        rl[X] = x*e0[X] + y*e0[Y] + z*e0[Z];
-        rl[Y] = x*e1[X] + y*e1[Y] + z*e1[Z];
-        rl[Z] = x*e2[X] + y*e2[Y] + z*e2[Z];
-    }
-
-    static _DH_ void r2global(const float *e0, const float *e1, const float *e2, const float *com, const float *rl, /**/ float *rg)
-    {
-        rg[X] = com[X] + rl[X] * e0[X] + rl[Y] * e1[X] + rl[Z] * e2[X];
-        rg[Y] = com[Y] + rl[X] * e0[Y] + rl[Y] * e1[Y] + rl[Z] * e2[Y];
-        rg[Z] = com[Z] + rl[X] * e0[Z] + rl[Y] * e1[Z] + rl[Z] * e2[Z];
-    }
-
-    static _DH_ void v2local (const float *e0, const float *e1, const float *e2, const float *vg, /**/ float *vl)
-    {
-        vl[X] = vg[X]*e0[X] + vg[Y]*e0[Y] + vg[Z]*e0[Z];
-        vl[Y] = vg[X]*e1[X] + vg[Y]*e1[Y] + vg[Z]*e1[Z];
-        vl[Z] = vg[X]*e2[X] + vg[Y]*e2[Y] + vg[Z]*e2[Z];
-    }
-
-    static _DH_ void v2global(const float *e0, const float *e1, const float *e2, const float *vl, /**/ float *vg)
-    {
-        vg[X] = vl[X] * e0[X] + vl[Y] * e1[X] + vl[Z] * e2[X];
-        vg[Y] = vl[X] * e0[Y] + vl[Y] * e1[Y] + vl[Z] * e2[Y];
-        vg[Z] = vl[X] * e0[Z] + vl[Y] * e1[Z] + vl[Z] * e2[Z];
-    }
-
-    static void get_vl_solid(const float *rl, const float *vcm, const float *om, /**/ float *vw)
-    {
-        vw[X] = vcm[X] + om[Y] * rl[Z] + om[Z] * rl[Y];
-        vw[Y] = vcm[Y] + om[Z] * rl[X] + om[X] * rl[Z];
-        vw[Z] = vcm[Z] + om[X] * rl[Y] + om[Y] * rl[X];
-    }
 
     static _DH_ void lin_mom_solid(const float *v1, const float *vn, /**/ float *dP)
     {
@@ -229,18 +190,12 @@ namespace mbounce
     
     static void bounce_1s1p(const float *f, const Mesh m, Particle *p, Solid *s)
     {
-        float fl[3], v1[3], v2[3], v3[3], oml[3], vcml[3], h, rwl[3], rw[3], vwl[3], v0[3];
-        Particle p0l, pnl, p1l;
-
         float dL[3] = {0}, dP[3] = {0};
 
-        r2local(s->e0, s->e1, s->e2, s->com, p->r, /**/ p1l.r);
-        v2local(s->e0, s->e1, s->e2,  p->v,        /**/ p1l.v);
-        v2local(s->e0, s->e1, s->e2,     f,        /**/ fl);
-        v2local(s->e0, s->e1, s->e2, s->om,        /**/ oml);
-        v2local(s->e0, s->e1, s->e2,  s->v,        /**/ vcml);
-
-        rvprev(p1l.r, p1l.v, fl, /**/ p0l.r, p0l.v);
+        const Particle p1 = *p;
+        Particle p0;
+        
+        rvprev(p1.r, p1.v, f, /**/ p0.r, p0.v);
 
         for (int it = 0; it < m.nt; ++it)
         {
@@ -287,7 +242,7 @@ namespace mbounce
                 r2global(s->e0, s->e1, s->e2, s->com, pnl.r, /**/ p->r);
                 v2global(s->e0, s->e1, s->e2,         pnl.v, /**/ p->v);
                 v2global(s->e0, s->e1, s->e2, p0l.v,         /**/ v0);
-                        
+                
                 lin_mom_solid(v0, p->v, /**/ dP);
                 ang_mom_solid(s->com, rw, v0, p->v, /**/ dL);
                 

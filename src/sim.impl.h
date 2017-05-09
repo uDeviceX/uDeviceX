@@ -159,6 +159,7 @@ void update_solid() {
     CC(cudaMemcpy(r_ff_hst, r_ff, sizeof(Force) * r_n, D2H));
     
     solid::update_host(r_ff_hst, r_rr0_hst, r_n, nsolid, /**/ r_pp_hst, ss_hst);
+    solid::update_mesh_hst(ss_hst, nsolid, m_hst, /**/ i_pp_hst);
 
     // for dump
     memcpy(ss_dmphst, ss_hst, nsolid * sizeof(Solid));
@@ -212,7 +213,7 @@ void bounce_solid() {
     CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
     CC(cudaMemcpy(s_ff_hst, s_ff, sizeof(Force)    * s_n, D2H));
 
-    mbounce::bounce_hst(s_ff_hst, s_n, nsbb, m_hst, bboxes_hst, /**/ s_pp_hst, ss_bbhst);
+    //mbounce::bounce_hst(s_ff_hst, s_n, nsbb, m_hst, bboxes_hst, /**/ s_pp_hst, ss_bbhst);
 
     CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
 #else
@@ -274,6 +275,9 @@ void init_solid()
     
     CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
 
+    i_pp_hst = new Particle[MAX_PART_NUM];
+    CC(cudaMalloc(&i_pp_dev, MAX_PART_NUM * sizeof(Particle)));
+
     // generate models
 
     ic_solid::init("ic_solid.txt", m_hst, /**/ &nsolid, &npsolid, r_rr0_hst, ss_hst, &s_n, s_pp_hst, r_pp_hst);
@@ -285,6 +289,9 @@ void init_solid()
     solid::reinit_f_to(nsolid, /**/ ss_hst);
 
     r_n = nsolid * npsolid;
+
+    solid::mesh2pp_hst(ss_hst, nsolid, m_hst, /**/ i_pp_hst);
+    CC(cudaMemcpy(i_pp_dev, i_pp_hst, nsolid * m_hst.nv * sizeof(Particle), H2D));
     
     CC(cudaMemcpy(ss_dev, ss_hst, nsolid * sizeof(Solid), H2D));
     CC(cudaMemcpy(r_rr0, r_rr0_hst, 3 * npsolid * sizeof(float), H2D));
