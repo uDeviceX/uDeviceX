@@ -135,7 +135,7 @@ namespace mbounce
         
         if (!cubic_root(a, b, c, d, h))
         {
-            printf("%g %g %g %g\n", a, b, c, d);
+            //printf("%g %g %g %g\n", a, b, c, d);
             return BB_HFAIL;
         }
 
@@ -190,11 +190,15 @@ namespace mbounce
     int bbstates[4], dstep = 0;
 #endif
 
-    static void vsolid(const float *vcm, const float *om, const float *r, /**/ float *vs)
+    static void vsolid(const float *vcm, const float *com, const float *om, const float *r, /**/ float *vs)
     {
-        vs[X] = vcm[X] + om[Y]*r[Z] - om[Z]*r[Y];
-        vs[Y] = vcm[Y] + om[Z]*r[X] - om[X]*r[Z];
-        vs[Z] = vcm[Z] + om[X]*r[Y] - om[Y]*r[X];
+        const float x = r[X] - om[X];
+        const float y = r[Y] - om[Y];
+        const float z = r[Z] - om[Z];
+        
+        vs[X] = vcm[X] + om[Y]*z - om[Z]*y;
+        vs[Y] = vcm[Y] + om[Z]*x - om[X]*z;
+        vs[Z] = vcm[Z] + om[X]*y - om[Y]*x;
     }
     
     static void bounce_1s1p(const float *f, const int *tt, const int nt, const Particle *i_pp, Particle *p, Solid *s)
@@ -235,7 +239,7 @@ namespace mbounce
             if (bbstate == BB_SUCCESS)
             {
                 float vw[3];
-                vsolid(rw, s->v, s->om, /**/ vw);
+                vsolid(rw, s->v, s->com, s->om, /**/ vw);
 
                 pn.v[X] = 2 * vw[X] - p0.v[X];
                 pn.v[Y] = 2 * vw[Y] - p0.v[Y];
