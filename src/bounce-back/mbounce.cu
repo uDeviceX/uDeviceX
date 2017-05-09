@@ -48,16 +48,16 @@ namespace mbounce
     
     static bool cubic_root(float a, float b, float c, float d, /**/ float *h)
     {
-        #define valid(t) ((t) > 0 && (t) < dt)
+        #define valid(t) ((t) >= 0 && (t) <= dt)
         
-        if (fabs(a) > 1e-6) // cubic
+        if (fabs(a) > 1e-12) // cubic
         {
             const float sc = 1.f / a;
             b *= sc; c *= sc; d *= sc;
             
             float h1, h2, h3;
             int nsol = roots::cubic(b, c, d, &h1, &h2, &h3);
-            
+
             if (nsol == 1)
             {
                 if (valid(h1)) {*h = h1; return true;}
@@ -88,7 +88,7 @@ namespace mbounce
     {
 #define diff(a, b) {a[X] - b[X], a[Y] - b[Y], a[Z] - b[Z]}
 #define cross(a, b) {a[Y] * b[Z] - a[Z] * b[Y], a[Z] * b[X] - a[X] * b[Z], a[X] * b[Y] - a[Y] * b[X]}
-#define dot(a, b) a[X]*b[X] + a[Y]*b[Y] + a[Z]*b[Z]
+#define dot(a, b) (a[X]*b[X] + a[Y]*b[Y] + a[Z]*b[Z])
 #define apxb(a, x, b) {a[X] + (float) x * b[X], a[Y] + (float) x * b[Y], a[Z] + (float) x * b[Z]} 
         
         const float *r0 = p0->r;
@@ -101,7 +101,7 @@ namespace mbounce
         const float at2[3] = diff(vs3, vs1);
 
         // n(t) = n + t*nt + t^2 * ntt
-        const float n[3] = cross(a1, a2);
+        const float n0[3] = cross(a1, a2);
         const float ntt[3] = cross(at1, at2);
         const float nt[3] = {a1[Y] * at2[Z] - a1[Z] * at2[Y]  +  at1[Y] * a2[Z] - at1[Z] * a2[Y],
                              a1[Z] * at2[X] - a1[X] * at2[Z]  +  at1[Z] * a2[X] - at1[X] * a2[Z],
@@ -114,13 +114,13 @@ namespace mbounce
             const float r1[3] = apxb(r0, dt, v0);
             const float s11[3] = apxb(s10, dt, vs1);
 
-            const float n1[3] = {n[X] + (float) dt * (nt[X] + (float) dt * ntt[X]),
-                                 n[Y] + (float) dt * (nt[Y] + (float) dt * ntt[Y]),
-                                 n[Z] + (float) dt * (nt[Z] + (float) dt * ntt[Z])};
+            const float n1[3] = {n0[X] + (float) dt * (nt[X] + (float) dt * ntt[X]),
+                                 n0[Y] + (float) dt * (nt[Y] + (float) dt * ntt[Y]),
+                                 n0[Z] + (float) dt * (nt[Z] + (float) dt * ntt[Z])};
             
             const float dr1[3] = diff(r1, s11);
 
-            const float b0 = dot(dr0, n);
+            const float b0 = dot(dr0, n0);
             const float b1 = dot(dr1, n1);
 
             if (b0 * b1 > 0)
@@ -133,8 +133,8 @@ namespace mbounce
         
         const float a = dot(ntt, dv);
         const float b = dot(ntt, dr0) + dot(nt, dv);
-        const float c = dot(nt, dr0) + dot(n, dv);
-        const float d = dot(n, dr0);
+        const float c = dot(nt, dr0) + dot(n0, dv);
+        const float d = dot(n0, dr0);
         
         if (!cubic_root(a, b, c, d, h))
         return BB_HFAIL;
@@ -231,20 +231,21 @@ namespace mbounce
     
     static void bounce_1s1p(const float *f, const Mesh m, Particle *p, Solid *s)
     {
-        float fl[3], v1[3], v2[3], v3[3], h, rwl[3], rw[3], vwl[3], v0[3];
+        float fl[3], v1[3], v2[3], v3[3], oml[3], vcml[3], h, rwl[3], rw[3], vwl[3], v0[3];
         Particle p0l, pnl, p1l;
-        const Particle p1 = *p;
 
         float dL[3] = {0}, dP[3] = {0};
-                        
+
+        r2local(s->e0, s->e1, s->e2, s->com, p->r, /**/ p1l.r);
+        v2local(s->e0, s->e1, s->e2,  p->v,        /**/ p1l.v);
+        v2local(s->e0, s->e1, s->e2,     f,        /**/ fl);
+        v2local(s->e0, s->e1, s->e2, s->om,        /**/ oml);
+        v2local(s->e0, s->e1, s->e2,  s->v,        /**/ vcml);
+
+        rvprev(p1l.r, p1l.v, fl, /**/ p0l.r, p0l.v);
+
         for (int it = 0; it < m.nt; ++it)
-        {            
-            r2local(s->e0, s->e1, s->e2, s->com, p->r, /**/ p1l.r);
-            v2local(s->e0, s->e1, s->e2, p->v,         /**/ p1l.v);
-            v2local(s->e0, s->e1, s->e2,    f,         /**/ fl);
-
-            rvprev(p1.r, p1.v, fl, /**/ p0l.r, p0l.v);
-
+        {
             const int t1 = m.tt[3*it + 0];
             const int t2 = m.tt[3*it + 1];
             const int t3 = m.tt[3*it + 2];
@@ -253,9 +254,9 @@ namespace mbounce
             float a2[3] = {m.vv[3*t2+0], m.vv[3*t2+1], m.vv[3*t2+2]};
             float a3[3] = {m.vv[3*t3+0], m.vv[3*t3+1], m.vv[3*t3+2]};
 
-            get_vl_solid(a1, s->v, s->om, /**/ v1);
-            get_vl_solid(a2, s->v, s->om, /**/ v2);
-            get_vl_solid(a3, s->v, s->om, /**/ v3);
+            get_vl_solid(a1, vcml, oml, /**/ v1);
+            get_vl_solid(a2, vcml, oml, /**/ v2);
+            get_vl_solid(a3, vcml, oml, /**/ v3);
 
 #define revert(a, v) do {                       \
                 a[X] -= v[X] * dt;              \
@@ -274,7 +275,7 @@ namespace mbounce
 #endif
             if (bbstate == BB_SUCCESS)
             {
-                get_vl_solid(rwl, s->v, s->om, /**/ vwl);
+                get_vl_solid(rwl, vcml, oml, /**/ vwl);
 
                 pnl.v[X] = 2 * vwl[X] - p0l.v[X];
                 pnl.v[Y] = 2 * vwl[Y] - p0l.v[Y];
@@ -305,11 +306,13 @@ namespace mbounce
         s->to[Z] += dL[Z];
     }
     
-    static bool in_bbox(const float *r, const float *bbox, const float tol)
+    static bool in_bbox(const float *rg, const float *com, const float *bbox, const float tol)
     {
-        return (r[X] >= bbox[2*X + 0] - tol) && (r[X] < bbox[2*X + 1] + tol) &&
-            (r[Y] >= bbox[2*Y + 0] - tol) && (r[Y] < bbox[2*Y + 1] + tol) &&
-            (r[Z] >= bbox[2*Z + 0] - tol) && (r[Z] < bbox[2*Z + 1] + tol);
+        const float rl[3] = {rg[X] - com[X], rg[Y] - com[Y], rg[Z] - com[Z]};
+        
+        return (rl[X] >= bbox[2*X + 0] - tol) && (rl[X] < bbox[2*X + 1] + tol) &&
+            (rl[Y] >= bbox[2*Y + 0] - tol) && (rl[Y] < bbox[2*Y + 1] + tol) &&
+            (rl[Z] >= bbox[2*Z + 0] - tol) && (rl[Z] < bbox[2*Z + 1] + tol);
     }
     
     static void bounce_1s(const Force *ff, const int np, const Mesh m, const float *bbox, /**/ Particle *pp, Solid *shst)
@@ -317,7 +320,7 @@ namespace mbounce
         for (int i = 0; i < np; ++i)
         {
             Particle p = pp[i];
-            if (in_bbox(p.r, bbox, BBOX_MARGIN))
+            if (in_bbox(p.r, shst->com, bbox, BBOX_MARGIN))
             {
                 const Force f = ff[i];
                 bounce_1s1p(f.f, m, /**/ &p, shst);
