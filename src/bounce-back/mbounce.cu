@@ -187,64 +187,66 @@ namespace mbounce
 #ifdef debug_output
     int bbstates[4], dstep = 0;
 #endif
-    
-    static void bounce_1s1p(const float *f, const Mesh m, Particle *p, Solid *s)
+
+    static void vsolid(const float *vcm, const float *om, const float *r, /**/ float *vs)
     {
-        float dL[3] = {0}, dP[3] = {0};
+        vs[X] = vcm[X] + om[Y]*r[Z] - om[Z]*r[Y];
+        vs[Y] = vcm[Y] + om[Z]*r[X] - om[X]*r[Z];
+        vs[Z] = vcm[Z] + om[X]*r[Y] - om[Y]*r[X];
+    }
+    
+    static void bounce_1s1p(const float *f, const int *tt, const int nt, const Particle *i_pp, Particle *p, Solid *s)
+    {
+        float dL[3] = {0}, dP[3] = {0}, h, rw[3];
 
         const Particle p1 = *p;
-        Particle p0;
+        Particle p0, pn;
         
         rvprev(p1.r, p1.v, f, /**/ p0.r, p0.v);
 
-        for (int it = 0; it < m.nt; ++it)
+        for (int it = 0; it < nt; ++it)
         {
-            const int t1 = m.tt[3*it + 0];
-            const int t2 = m.tt[3*it + 1];
-            const int t3 = m.tt[3*it + 2];
+            const int t1 = tt[3*it + 0];
+            const int t2 = tt[3*it + 1];
+            const int t3 = tt[3*it + 2];
 
-            float a1[3] = {m.vv[3*t1+0], m.vv[3*t1+1], m.vv[3*t1+2]};
-            float a2[3] = {m.vv[3*t2+0], m.vv[3*t2+1], m.vv[3*t2+2]};
-            float a3[3] = {m.vv[3*t3+0], m.vv[3*t3+1], m.vv[3*t3+2]};
+            Particle pA = i_pp[t1];
+            Particle pB = i_pp[t2];
+            Particle pC = i_pp[t3];
 
-            get_vl_solid(a1, vcml, oml, /**/ v1);
-            get_vl_solid(a2, vcml, oml, /**/ v2);
-            get_vl_solid(a3, vcml, oml, /**/ v3);
-
-#define revert(a, v) do {                       \
-                a[X] -= v[X] * dt;              \
-                a[Y] -= v[Y] * dt;              \
-                a[Z] -= v[Z] * dt;              \
+#define revert_r(P) do {                        \
+                P.r[X] -= dt * P.v[X];          \
+                P.r[Y] -= dt * P.v[Y];          \
+                P.r[Z] -= dt * P.v[Z];          \
             } while(0)
-
-            revert(a1, v1);
-            revert(a2, v2);
-            revert(a3, v3);
-
-            const BBState bbstate = intersect_triangle(a1, a2, a3, v1, v2, v3, &p0l, /**/ &h, rwl);
+            
+            revert_r(pA);
+            revert_r(pB);
+            revert_r(pC);
+#undef revert_p
+            
+            const BBState bbstate = intersect_triangle(pA.r, pB.r, pC.r, pA.v, pB.v, pC.v, &p0, /**/ &h, rw);
 
 #ifdef debug_output
             bbstates[bbstate] ++;
 #endif
             if (bbstate == BB_SUCCESS)
             {
-                get_vl_solid(rwl, vcml, oml, /**/ vwl);
+                float vw[3];
+                vsolid(rw, s->v, s->om, /**/ vw);
 
-                pnl.v[X] = 2 * vwl[X] - p0l.v[X];
-                pnl.v[Y] = 2 * vwl[Y] - p0l.v[Y];
-                pnl.v[Z] = 2 * vwl[Z] - p0l.v[Z];
+                pn.v[X] = 2 * vw[X] - p0.v[X];
+                pn.v[Y] = 2 * vw[Y] - p0.v[Y];
+                pn.v[Z] = 2 * vw[Z] - p0.v[Z];
 
-                pnl.r[X] = rwl[X] + (dt - h) * pnl.v[X];
-                pnl.r[Y] = rwl[Y] + (dt - h) * pnl.v[Y];
-                pnl.r[Z] = rwl[Z] + (dt - h) * pnl.v[Z];
+                pn.r[X] = rw[X] + (dt - h) * pn.v[X];
+                pn.r[Y] = rw[Y] + (dt - h) * pn.v[Y];
+                pn.r[Z] = rw[Z] + (dt - h) * pn.v[Z];
 
-                r2global(s->e0, s->e1, s->e2, s->com, rwl,   /**/ rw);
-                r2global(s->e0, s->e1, s->e2, s->com, pnl.r, /**/ p->r);
-                v2global(s->e0, s->e1, s->e2,         pnl.v, /**/ p->v);
-                v2global(s->e0, s->e1, s->e2, p0l.v,         /**/ v0);
+                *p = pn;
                 
-                lin_mom_solid(v0, p->v, /**/ dP);
-                ang_mom_solid(s->com, rw, v0, p->v, /**/ dL);
+                lin_mom_solid(p0.v, p->v, /**/ dP);
+                ang_mom_solid(s->com, rw, p0.v, pn.v, /**/ dL);
                 
                 break;
             }
@@ -268,7 +270,7 @@ namespace mbounce
             (rl[Z] >= bbox[2*Z + 0] - tol) && (rl[Z] < bbox[2*Z + 1] + tol);
     }
     
-    static void bounce_1s(const Force *ff, const int np, const Mesh m, const float *bbox, /**/ Particle *pp, Solid *shst)
+    static void bounce_1s(const Force *ff, const int np, const Mesh m, const Particle *i_pp, const float *bbox, /**/ Particle *pp, Solid *shst)
     {
         for (int i = 0; i < np; ++i)
         {
@@ -276,13 +278,13 @@ namespace mbounce
             if (in_bbox(p.r, shst->com, bbox, BBOX_MARGIN))
             {
                 const Force f = ff[i];
-                bounce_1s1p(f.f, m, /**/ &p, shst);
+                bounce_1s1p(f.f, m.tt, m.nt, i_pp, /**/ &p, shst);
                 pp[i] = p;
             }
         }
     }
 
-    void bounce_hst(const Force *ff, const int np, const int ns, const Mesh m, const float *bboxes, /**/ Particle *pp, Solid *shst)
+    void bounce_hst(const Force *ff, const int np, const int ns, const Mesh m, const Particle *i_pp, const float *bboxes, /**/ Particle *pp, Solid *shst)
     {
 #ifdef debug_output
         if (dstep % steps_per_dump == 0)
@@ -294,7 +296,7 @@ namespace mbounce
             Solid *s = shst + j;
             const float *bbox = bboxes + 6 * j;
 
-            bounce_1s(ff, np, m, bbox, /**/ pp, s);
+            bounce_1s(ff, np, m, i_pp + j * m.nt, bbox, /**/ pp, s);
         }
 
 #ifdef debug_output

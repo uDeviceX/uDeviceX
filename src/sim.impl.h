@@ -193,51 +193,21 @@ void bounce() {
 
 void bounce_solid() {
 
-    // collect halo
-
-#ifdef NOHOST_SOLID
-    CC(cudaMemcpy(ss_hst, ss_dev, nsolid * sizeof(Solid), D2H));
-#endif
-
     mesh::bboxes(m_hst.vv, m_hst.nv, ss_hst, nsolid, /**/ bboxes_hst);
-    
-    bbhalo::pack_sendcnt(ss_hst, nsolid, bboxes_hst);
-    const int nsbb = bbhalo::post();
-    bbhalo::unpack(/**/ ss_bbhst);
 
-    // bounce
+    // bounce on host
     
-#ifndef NOHOST_SOLID
-    mesh::bboxes(m_hst.vv, m_hst.nv, ss_bbhst, nsbb, /**/ bboxes_hst);
+    mesh::bboxes(m_hst.vv, m_hst.nv, ss_hst, nsolid, /**/ bboxes_hst);
     
     CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
     CC(cudaMemcpy(s_ff_hst, s_ff, sizeof(Force)    * s_n, D2H));
 
-    //mbounce::bounce_hst(s_ff_hst, s_n, nsbb, m_hst, bboxes_hst, /**/ s_pp_hst, ss_bbhst);
+    mbounce::bounce_hst(s_ff_hst, s_n, nsolid, m_hst, i_pp_hst, bboxes_hst, /**/ s_pp_hst, ss_bbhst);
 
     CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
-#else
-    // NOT IMPLEMENTED YET
-    // CC(cudaMemcpy(ss_bbdev, ss_bbhst, nsbb * sizeof(Solid), H2D));
-
-    // solidbounce::bounce_nohost(s_ff, s_n, nsbb, /**/ s_pp, ss_bbdev);
-
-    // // for exchanging force/torque
-    // CC(cudaMemcpy(ss_bbhst, ss_bbdev, nsbb * sizeof(Solid), D2H));
-#endif
-
-    // collect force/torque
-
-    bbhalo::pack_back(ss_bbhst);
-    bbhalo::post_back();
-    bbhalo::unpack_back(/**/ ss_hst);
 
     // for dump
     memcpy(ss_dmpbbhst, ss_hst, nsolid * sizeof(Solid));
-    
-#ifdef NOHOST_SOLID
-    // CC(cudaMemcpy(ss_dev, ss_hst, nsolid * sizeof(Solid), H2D));
-#endif
 }
 
 void load_solid_mesh(const char *fname)
@@ -354,7 +324,7 @@ void run0(float driving_force, bool wall_created, int it) {
     dumps_diags(it);
     body_force(driving_force);
     update_s();
-    if (rbcs0) update_r();
+    //if (rbcs0) update_r();
     if (wall_created) bounce();
     if (sbounce_back && rbcs0) bounce_solid();
 }
