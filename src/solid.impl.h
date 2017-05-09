@@ -253,6 +253,12 @@ namespace solid {
         {
             const Solid *s = ss_hst + j;
             update_r(m.vv, m.nv, s->com, s->e0, s->e1, s->e2, /**/ pp + j * m.nv);
+
+            for (int i = 0; i < m.nv; ++i)
+            {
+                float *v = pp[j*m.nv + i].v;
+                v[X] = v[Y] = v[Z] = 0;
+            }
         }
     }
 
@@ -273,7 +279,7 @@ namespace solid {
                 r[X] = x * s->e0[X] + y * s->e1[X] + z * s->e2[X] + s->com[X];
                 r[Y] = x * s->e0[Y] + y * s->e1[Y] + z * s->e2[Y] + s->com[Y];
                 r[Z] = x * s->e0[Z] + y * s->e1[Z] + z * s->e2[Z] + s->com[Z];
-
+                
                 v[X] = (r[X] - p0.r[X]) / dt;
                 v[Y] = (r[Y] - p0.r[Y]) / dt;
                 v[Z] = (r[Z] - p0.r[Z]) / dt;

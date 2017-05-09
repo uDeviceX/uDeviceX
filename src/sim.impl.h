@@ -322,7 +322,7 @@ void run0(float driving_force, bool wall_created, int it) {
     dumps_diags(it);
     body_force(driving_force);
     update_s();
-    //if (rbcs0) update_r();
+    if (rbcs0) update_r();
     if (wall_created) bounce();
     if (sbounce_back && rbcs0) bounce_solid();
 }

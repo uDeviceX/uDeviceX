@@ -70,10 +70,9 @@ namespace mbounce
             if (valid(h1)) {*h = h1; return true;}
             if (valid(h2)) {*h = h2; return true;}
         }
-        else if (fabs(c) < eps) // linear
+        else if (fabs(c) > eps) // linear
         {
             const float h1 = -d/c;
-
             if (valid(h1)) {*h = h1; return true;}
         }
         return false;
@@ -135,7 +134,10 @@ namespace mbounce
         const float d = dot(n0, dr0);
         
         if (!cubic_root(a, b, c, d, h))
-        return BB_HFAIL;
+        {
+            printf("%g %g %g %g\n", a, b, c, d);
+            return BB_HFAIL;
+        }
 
         rw[X] = r0[X] + *h * v0[X];
         rw[Y] = r0[Y] + *h * v0[Y];
