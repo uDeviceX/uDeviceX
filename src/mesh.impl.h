@@ -30,48 +30,57 @@ namespace mesh
     }
 
     /* bbox: minx, maxx, miny, maxy, minz, maxz */
-    void bbox(const float *vv, const int nv, const float *e1, const float *e2, const float *e3, /**/ float *bbox)
+    void bbox(const Particle *pp, const int n, /**/ float *bbox)
     {
-        if (nv == 0) return;
+        if (n == 0) return;
 
-        const float *v0 = NULL;
-        float v[3] = {0};
-
-        auto transform = [&] () {
-            v[X] = v0[X] * e1[X] + v0[Y] * e2[X] + v0[Z] * e3[X];
-            v[Y] = v0[X] * e1[Y] + v0[Y] * e2[Y] + v0[Z] * e3[Y];
-            v[Z] = v0[X] * e1[Z] + v0[Y] * e2[Z] + v0[Z] * e3[Z];
-        };
-
-        v0 = vv;
-        transform();
+        const float *r = pp[0].r;
         
-        bbox[0] = bbox[1] = v[0];
-        bbox[2] = bbox[3] = v[1];
-        bbox[4] = bbox[5] = v[2];
+        bbox[0] = bbox[1] = r[0];
+        bbox[2] = bbox[3] = r[1];
+        bbox[4] = bbox[5] = r[2];
 
         auto higher = [](float a, float b) {return a > b ? a : b;};
         auto lower  = [](float a, float b) {return a > b ? b : a;};
 
-        for (int i = 1; i < nv; ++i)
+        for (int i = 1; i < n; ++i)
         {
-            v0 = vv + 3*i;
-            transform();
-
+            r = pp[i].r;
             for (int d = 0; d < 3; ++d)
             {
-                bbox[2*d + 0] =  lower(bbox[2*d + 0], v[d]);
-                bbox[2*d + 1] = higher(bbox[2*d + 1], v[d]); 
+                bbox[2*d + 0] =  lower(bbox[2*d + 0], r[d]);
+                bbox[2*d + 1] = higher(bbox[2*d + 1], r[d]); 
             }
         }
     }
 
-    void bboxes(const float *vv, const int nv, const Solid *ss, const int ns, /**/ float *bboxes)
+    void bbox(const float *rr, const int n, /**/ float *bbox)
+    {
+        if (n == 0) return;
+
+        const float *r = rr;
+        
+        bbox[0] = bbox[1] = r[0];
+        bbox[2] = bbox[3] = r[1];
+        bbox[4] = bbox[5] = r[2];
+
+        auto higher = [](float a, float b) {return a > b ? a : b;};
+        auto lower  = [](float a, float b) {return a > b ? b : a;};
+
+        for (int i = 1; i < n; ++i)
+        {
+            r = rr + 3 * i;;
+            for (int d = 0; d < 3; ++d)
+            {
+                bbox[2*d + 0] =  lower(bbox[2*d + 0], r[d]);
+                bbox[2*d + 1] = higher(bbox[2*d + 1], r[d]); 
+            }
+        }
+    }
+
+    void bboxes(const Particle *pp, const int np, const int ns, /**/ float *bboxes)
     {
         for (int i = 0; i < ns; ++i)
-        {
-            const Solid *s = ss + i;
-            bbox(vv, nv, s->e0, s->e1, s->e2, /**/ bboxes + 6 * i);
-        }
+        bbox(pp, np, /**/ bboxes + 6 * i);
     }
 }

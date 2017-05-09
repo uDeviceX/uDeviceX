@@ -261,13 +261,11 @@ namespace mbounce
         s->to[Z] += dL[Z];
     }
     
-    static bool in_bbox(const float *rg, const float *com, const float *bbox, const float tol)
-    {
-        const float rl[3] = {rg[X] - com[X], rg[Y] - com[Y], rg[Z] - com[Z]};
-        
-        return (rl[X] >= bbox[2*X + 0] - tol) && (rl[X] < bbox[2*X + 1] + tol) &&
-            (rl[Y] >= bbox[2*Y + 0] - tol) && (rl[Y] < bbox[2*Y + 1] + tol) &&
-            (rl[Z] >= bbox[2*Z + 0] - tol) && (rl[Z] < bbox[2*Z + 1] + tol);
+    static bool in_bbox(const float *r, const float *bbox, const float tol)
+    {        
+        return (r[X] >= bbox[2*X + 0] - tol) && (r[X] < bbox[2*X + 1] + tol) &&
+            (r[Y] >= bbox[2*Y + 0] - tol) && (r[Y] < bbox[2*Y + 1] + tol) &&
+            (r[Z] >= bbox[2*Z + 0] - tol) && (r[Z] < bbox[2*Z + 1] + tol);
     }
     
     static void bounce_1s(const Force *ff, const int np, const Mesh m, const Particle *i_pp, const float *bbox, /**/ Particle *pp, Solid *shst)
@@ -275,7 +273,7 @@ namespace mbounce
         for (int i = 0; i < np; ++i)
         {
             Particle p = pp[i];
-            if (in_bbox(p.r, shst->com, bbox, BBOX_MARGIN))
+            if (in_bbox(p.r, bbox, BBOX_MARGIN))
             {
                 const Force f = ff[i];
                 bounce_1s1p(f.f, m.tt, m.nt, i_pp, /**/ &p, shst);
