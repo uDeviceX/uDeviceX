@@ -78,7 +78,7 @@ namespace mesh
         }
     }
 
-    void bboxes(const Particle *pp, const int np, const int ns, /**/ float *bboxes)
+    void bboxes_hst(const Particle *pp, const int np, const int ns, /**/ float *bboxes)
     {
         for (int i = 0; i < ns; ++i)
         bbox(pp, np, /**/ bboxes + 6 * i);
