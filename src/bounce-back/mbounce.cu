@@ -53,11 +53,13 @@ namespace mbounce
         
         if (fabs(a) > eps) // cubic
         {
-            const float sc = 1.f / a;
-            b *= sc; c *= sc; d *= sc;
+            typedef double real;
+            const real b_ = b /= a;
+            const real c_ = c /= a;
+            const real d_ = d /= a;
             
-            float h1, h2, h3;
-            int nsol = roots::cubic(b, c, d, &h1, &h2, &h3);
+            real h1, h2, h3;
+            int nsol = roots::cubic(b_, c_, d_, &h1, &h2, &h3);
 
             if (valid(h1))             {*h = h1; return true;}
             if (nsol > 1 && valid(h2)) {*h = h2; return true;}

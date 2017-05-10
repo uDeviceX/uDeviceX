@@ -179,7 +179,7 @@ void update_solid() {
 }
 
 void update_r() {
-  if (r_n) update_solid();
+    if (r_n) update_solid();
 }
 
 void update_s() {
