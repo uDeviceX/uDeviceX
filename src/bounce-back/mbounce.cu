@@ -233,7 +233,7 @@ namespace mbounce
             Particle pB = i_pp[t2];
             Particle pC = i_pp[t3];
 
-            if (!near_triangle(pA.r, pB.r, pC.r, p1.r, 2.f)) continue;
+            if (!near_triangle(pA.r, pB.r, pC.r, p1.r, BBOX_MARGIN)) continue;
 
 #define revert_r(P) do {                        \
                 P.r[X] -= dt * P.v[X];          \

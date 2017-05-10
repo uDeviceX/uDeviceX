@@ -1,6 +1,6 @@
 namespace sim {
 
-    //#define NOHOST_SOLID
+    //#define DEVICE_SOLID
     
 #define X 0
 #define Y 1
@@ -17,7 +17,7 @@ static void distr_s() {
 
 static void distr_r()
 {
-#ifdef NOHOST_SOLID
+#ifdef DEVICE_SOLID
     CC(cudaMemcpy(ss_hst, ss_dev, nsolid * sizeof(Solid), D2H));
 #endif
     
@@ -28,7 +28,7 @@ static void distr_r()
 
     rdstr::unpack(nsolid, /**/ ss_hst);
 
-#ifdef NOHOST_SOLID
+#ifdef DEVICE_SOLID
     CC(cudaMemcpy(ss_dev, ss_hst, nsolid * sizeof(Solid), H2D));
     solid::generate_nohost(ss_dev, nsolid, r_rr0, npsolid, /**/ r_pp);
 #else
@@ -153,7 +153,7 @@ void body_force(float driving_force) {
 }
 
 void update_solid() {
-#ifndef NOHOST_SOLID
+#ifndef DEVICE_SOLID
     
     CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
     CC(cudaMemcpy(r_ff_hst, r_ff, sizeof(Force) * r_n, D2H));
