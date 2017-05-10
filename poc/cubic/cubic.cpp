@@ -7,8 +7,8 @@
 typedef float real;
 //typedef double real;
 
-const real lb = -1.0;
-const real ub = 2.0;
+const real lb[3] = {-1e-4, -1e-4, 0.};
+const real ub[3] = {2e-4, 2e-4, 1.0};
 
 // build polynomial knowing given roots h_i: product (x-h_i) = 0
 void build_poly(const real h1, const real h2, const real h3, real *b, real *c, real *d)
@@ -28,11 +28,13 @@ int main(int argc, char **argv)
 
     const int n = atoi(argv[1]);
 
+    real maxe = -1;
+    
     for (int i = 0; i < n; ++i)
     {
-        real h1 = lb + (ub-lb) * drand48();
-        real h2 = lb + (ub-lb) * drand48();
-        real h3 = lb + (ub-lb) * drand48();
+        real h1 = lb[0] + (ub[0]-lb[0]) * drand48();
+        real h2 = lb[1] + (ub[1]-lb[1]) * drand48();
+        real h3 = lb[2] + (ub[2]-lb[2]) * drand48();
 
         // reorder
         #define SWAP(a,b) do { auto tmp = b ; b = a ; a = tmp ; } while(0)
@@ -58,8 +60,11 @@ int main(int argc, char **argv)
         const real err12 = err1 > err2 ? err1 : err2;
         const real e = err12 > err3 ? err12 : err3;
 
-        printf("error = %g\n", e);
+        //printf("error = %g\n", e);
+        maxe = e > maxe ? e : maxe;
     }
+
+    printf("max error = %g\n", maxe);
     
     return 0;
 }
