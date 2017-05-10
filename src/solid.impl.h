@@ -155,7 +155,7 @@ namespace solid {
         }
     }
 
-    void update_host_1s(Force *ff, float *rr0, int n, /**/ Particle *pp, Solid *shst)
+    void update_hst_1s(Force *ff, float *rr0, int n, /**/ Particle *pp, Solid *shst)
     {
         /* clear velocity */
         for (int ip = 0; ip < n; ++ip) {
@@ -186,7 +186,7 @@ namespace solid {
         update_r(rr0, n, shst->com, shst->e0, shst->e1, shst->e2, /**/ pp);
     }
 
-    void update_host(Force *ff, float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *shst)
+    void update_hst(Force *ff, float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *shst)
     {
         int start = 0;
         const int nps = n / nsolid; /* number of particles per solid */
@@ -194,12 +194,12 @@ namespace solid {
         
         for (int i = 0; i < nsolid; ++i)
         {
-            update_host_1s(ff + start, rr0, nps, /**/ pp + start, shst + i);
+            update_hst_1s(ff + start, rr0, nps, /**/ pp + start, shst + i);
             start += nps;
         }
     }
     
-    void update_nohost_1s(const Force *ff, const float *rr0, const int n, /**/ Particle *pp, Solid *sdev)
+    void update_dev_1s(const Force *ff, const float *rr0, const int n, /**/ Particle *pp, Solid *sdev)
     {
         k_solid::add_f_to <<<k_cnf(n)>>> (pp, ff, n, sdev->com, /**/ sdev->fo, sdev->to);
 
@@ -214,7 +214,7 @@ namespace solid {
         k_solid::update_r <<<k_cnf(n)>>> (rr0, n, sdev->com, sdev->e0, sdev->e1, sdev->e2, /**/ pp);
     }
 
-    void update_nohost(Force *ff, float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *sdev)
+    void update_dev(Force *ff, float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *sdev)
     {
         int start = 0;
         const int nps = n / nsolid; /* number of particles per solid */
@@ -222,12 +222,12 @@ namespace solid {
         
         for (int i = 0; i < nsolid; ++i)
         {
-            update_nohost_1s(ff + start, rr0, nps, /**/ pp + start, sdev + i);
+            update_dev_1s(ff + start, rr0, nps, /**/ pp + start, sdev + i);
             start += nps;
         }
     }
 
-    void generate_host(const Solid *ss_hst, const int ns, const float *rr0, const int nps, /**/ Particle *pp)
+    void generate_hst(const Solid *ss_hst, const int ns, const float *rr0, const int nps, /**/ Particle *pp)
     {
         int start = 0;
         for (int j = 0; j < ns; ++j)
@@ -237,7 +237,7 @@ namespace solid {
         }
     }
 
-    void generate_nohost(const Solid *ss_dev, const int ns, const float *rr0_dev, const int nps, /**/ Particle *pp)
+    void generate_dev(const Solid *ss_dev, const int ns, const float *rr0_dev, const int nps, /**/ Particle *pp)
     {
         int start = 0;
         for (int j = 0; j < ns; ++j)

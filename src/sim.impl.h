@@ -30,9 +30,9 @@ static void distr_r()
 
 #ifdef DEVICE_SOLID
     CC(cudaMemcpy(ss_dev, ss_hst, nsolid * sizeof(Solid), H2D));
-    solid::generate_nohost(ss_dev, nsolid, r_rr0, npsolid, /**/ r_pp);
+    solid::generate_dev(ss_dev, nsolid, r_rr0, npsolid, /**/ r_pp);
 #else
-    solid::generate_host(ss_hst, nsolid, r_rr0_hst, npsolid, /**/ r_pp_hst);
+    solid::generate_hst(ss_hst, nsolid, r_rr0_hst, npsolid, /**/ r_pp_hst);
     CC(cudaMemcpy(r_pp, r_pp_hst, 3 * r_n * sizeof(float), H2D));
 #endif
 }
@@ -158,7 +158,7 @@ void update_solid() {
     CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
     CC(cudaMemcpy(r_ff_hst, r_ff, sizeof(Force) * r_n, D2H));
     
-    solid::update_host(r_ff_hst, r_rr0_hst, r_n, nsolid, /**/ r_pp_hst, ss_hst);
+    solid::update_hst(r_ff_hst, r_rr0_hst, r_n, nsolid, /**/ r_pp_hst, ss_hst);
     solid::update_mesh_hst(ss_hst, nsolid, m_hst, /**/ i_pp_hst);
 
     // for dump
@@ -169,7 +169,7 @@ void update_solid() {
     CC(cudaMemcpy(r_pp, r_pp_hst, sizeof(Particle) * r_n, H2D));
     
 #else    
-    solid::update_nohost(r_ff, r_rr0, r_n, nsolid, /**/ r_pp, ss_dev);
+    solid::update_dev(r_ff, r_rr0, r_n, nsolid, /**/ r_pp, ss_dev);
 
     // for dump
     CC(cudaMemcpy(ss_dmphst, ss_dev, nsolid * sizeof(Solid), D2H));
@@ -252,7 +252,7 @@ void init_solid()
         
     // generate the solid particles
     
-    solid::generate_host(ss_hst, nsolid, r_rr0_hst, npsolid, /**/ r_pp_hst);
+    solid::generate_hst(ss_hst, nsolid, r_rr0_hst, npsolid, /**/ r_pp_hst);
     
     solid::reinit_f_to(nsolid, /**/ ss_hst);
 
