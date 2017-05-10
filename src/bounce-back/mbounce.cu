@@ -83,7 +83,7 @@ namespace mbounce
     /* see Fedosov PhD Thesis */
     static BBState intersect_triangle(const float *s10, const float *s20, const float *s30,
                                       const float *vs1, const float *vs2, const float *vs3,
-                                      const Particle *p0,  /**/ float *h, float *rw)
+                                      const Particle *p0,  /**/ float *h, float *rw, float *vw)
     {
 #define diff(a, b) {a[X] - b[X], a[Y] - b[Y], a[Z] - b[Z]}
 #define cross(a, b) {a[Y] * b[Z] - a[Z] * b[Y], a[Z] * b[X] - a[X] * b[Z], a[X] * b[Y] - a[Y] * b[X]}
@@ -168,8 +168,13 @@ namespace mbounce
 
             if (!((u >= 0) && (v >= 0) && (u+v <= 1)))
             return BB_WTRIANGLE;
-        }
 
+            // linear interpolation of velocity vw
+            const float w = 1 - u - v;
+            vw[X] = w * vs1[X] + u * vs2[X] + v * vs3[X];
+            vw[Y] = w * vs1[Y] + u * vs2[Y] + v * vs3[Y];
+            vw[Z] = w * vs1[Z] + u * vs2[Z] + v * vs3[Z];
+        }
         return BB_SUCCESS;
     }
 
@@ -188,24 +193,29 @@ namespace mbounce
         dL[Z] = -(dr[X] * vn[Y] - dr[Y] * vn[X] - dr[X] * v0[Y] + dr[Y] * v0[X]) / dt;
     }
 
+    static bool near_triangle(const float *A, const float *B, const float *C, const float *r, const float tol)
+    {
+#define minmaxtol(d) do {                                                 \
+            float l = A[d] > B[d] ? B[d] : A[d]; l = l > C[d] ? C[d] : l; \
+            float u = A[d] > B[d] ? A[d] : B[d]; u = u > C[d] ? u : C[d]; \
+            if ( (r[d] < l - tol) || (r[d] > u + tol) ) return false;     \
+        } while(0)
+
+        minmaxtol(X);
+        minmaxtol(Y);
+        minmaxtol(Z);
+#undef minmaxtol
+        
+        return true;
+    }
+
 #ifdef debug_output
     int bbstates[4], dstep = 0;
 #endif
-
-    static void vsolid(const float *vcm, const float *com, const float *om, const float *r, /**/ float *vs)
-    {
-        const float x = r[X] - om[X];
-        const float y = r[Y] - om[Y];
-        const float z = r[Z] - om[Z];
-        
-        vs[X] = vcm[X] + om[Y]*z - om[Z]*y;
-        vs[Y] = vcm[Y] + om[Z]*x - om[X]*z;
-        vs[Z] = vcm[Z] + om[X]*y - om[Y]*x;
-    }
     
     static void bounce_1s1p(const float *f, const int *tt, const int nt, const Particle *i_pp, Particle *p, Solid *s)
     {
-        float dL[3] = {0}, dP[3] = {0}, h, rw[3];
+        float dL[3] = {0}, dP[3] = {0}, h, rw[3], vw[3];
 
         const Particle p1 = *p;
         Particle p0, pn;
@@ -222,6 +232,8 @@ namespace mbounce
             Particle pB = i_pp[t2];
             Particle pC = i_pp[t3];
 
+            if (!near_triangle(pA.r, pB.r, pC.r, p1.r, 1.f)) continue;
+
 #define revert_r(P) do {                        \
                 P.r[X] -= dt * P.v[X];          \
                 P.r[Y] -= dt * P.v[Y];          \
@@ -233,16 +245,13 @@ namespace mbounce
             revert_r(pC);
 #undef revert_p
             
-            const BBState bbstate = intersect_triangle(pA.r, pB.r, pC.r, pA.v, pB.v, pC.v, &p0, /**/ &h, rw);
+            const BBState bbstate = intersect_triangle(pA.r, pB.r, pC.r, pA.v, pB.v, pC.v, &p0, /**/ &h, rw, vw);
 
 #ifdef debug_output
             bbstates[bbstate] ++;
 #endif
             if (bbstate == BB_SUCCESS)
             {
-                float vw[3];
-                vsolid(rw, s->v, s->com, s->om, /**/ vw);
-
                 pn.v[X] = 2 * vw[X] - p0.v[X];
                 pn.v[Y] = 2 * vw[Y] - p0.v[Y];
                 pn.v[Z] = 2 * vw[Z] - p0.v[Z];
