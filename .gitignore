@@ -12,13 +12,10 @@
 *.dcu
 *.cubin
 *.cudaobj
-geom-wrapper/CMakeFiles/*
-geom-wrapper/*/CMakeFiles/*
-geom-wrapper/*/Makefile
-geom-wrapper/Makefile
 CMakeCache.txt
 *.xmf
 *.h5part
 rbcs-*.ply
 *.cmake
 /tools/poc/rbcdr
+*.tramp_history
