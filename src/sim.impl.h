@@ -196,7 +196,7 @@ void bounce_solid() {
     mesh::bboxes(i_pp_hst, m_hst.nv, nsolid, /**/ bboxes_hst);
 
     // bounce on host
-        
+    
     CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
     CC(cudaMemcpy(s_ff_hst, s_ff, sizeof(Force)    * s_n, D2H));
 

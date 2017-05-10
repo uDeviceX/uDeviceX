@@ -2,7 +2,7 @@ namespace mesh
 {
     enum {X, Y, Z};
     
-    int inside_1p(const float *r, const float *vv, const int *tt, const int nt)
+    static int inside_1p(const float *r, const float *vv, const int *tt, const int nt)
     {
         int c = 0;
 
@@ -82,5 +82,16 @@ namespace mesh
     {
         for (int i = 0; i < ns; ++i)
         bbox(pp, np, /**/ bboxes + 6 * i);
+    }
+
+    void bboxes_dev(const Particle *pp, const int nps, const int ns, /**/ float *bboxes)
+    {
+        k_mesh::init_bboxes <<< k_cnf(3 * ns) >>> (ns, /**/ (uint2 *) bboxes);
+
+        const dim3 nthrd(128, 1);
+        const dim3 nblck((nps + 127)/128, ns);
+
+        k_mesh::bboxes <<< nthrd, nblck >>> ((uint *) pp, nps, ns, /**/ (uint *) bboxes);
+        k_mesh::decode_bboxes <<< k_cnf(3 * ns) >>> (ns, /**/ (uint2 *) bboxes);
     }
 }
