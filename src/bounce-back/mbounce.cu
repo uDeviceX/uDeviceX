@@ -77,6 +77,7 @@ namespace mbounce
             const float h1 = -d/c;
             if (valid(h1)) {*h = h1; return true;}
         }
+        
         return false;
     }
     
@@ -232,7 +233,7 @@ namespace mbounce
             Particle pB = i_pp[t2];
             Particle pC = i_pp[t3];
 
-            if (!near_triangle(pA.r, pB.r, pC.r, p1.r, 1.f)) continue;
+            if (!near_triangle(pA.r, pB.r, pC.r, p1.r, 2.f)) continue;
 
 #define revert_r(P) do {                        \
                 P.r[X] -= dt * P.v[X];          \
