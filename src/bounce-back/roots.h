@@ -1,9 +1,10 @@
 namespace roots
 {
+#define _DH_ __device__ __host__
 #define SWAP(a,b) do { auto tmp = b ; b = a ; a = tmp ; } while(0)
 
     template<typename real>
-    bool quadratic(real a, real b, real c, real *h0, real *h1)
+    _DH_ bool quadratic(real a, real b, real c, real *h0, real *h1)
     {
         const int sgnb = b > 0 ? 1 : -1;
         const real D = b*b - 4*a*c;
@@ -23,7 +24,7 @@ namespace roots
     */
 
     template <typename real>
-    int cubic(real a, real b, real c, 
+    _DH_ int cubic(real a, real b, real c, 
               real *x0, real *x1, real *x2)
     {
         real q = (a * a - 3 * b);

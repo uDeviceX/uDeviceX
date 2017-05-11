@@ -26,7 +26,7 @@ namespace mbounce
 
 #define debug_output
     
-    static void rvprev(const float *r1, const float *v1, const float *f0, /**/ float *r0, float *v0)
+    static _DH_ void rvprev(const float *r1, const float *v1, const float *f0, /**/ float *r0, float *v0)
     {
 #ifdef FORWARD_EULER
         for (int c = 0; c < 3; ++c)
@@ -46,7 +46,7 @@ namespace mbounce
 #endif
     }
     
-    static bool cubic_root(float a, float b, float c, float d, /**/ float *h)
+    static _DH_ bool cubic_root(float a, float b, float c, float d, /**/ float *h)
     {
         #define valid(t) ((t) >= 0 && (t) <= dt)
         #define eps 1e-8
@@ -82,7 +82,7 @@ namespace mbounce
     }
     
     /* see Fedosov PhD Thesis */
-    static BBState intersect_triangle(const float *s10, const float *s20, const float *s30,
+    static _DH_ BBState intersect_triangle(const float *s10, const float *s20, const float *s30,
                                       const float *vs1, const float *vs2, const float *vs3,
                                       const Particle *p0,  /**/ float *h, float *rw, float *vw)
     {
@@ -300,7 +300,7 @@ namespace mbounce
         }
     }
 
-    void bounce_hst(const Force *ff, const int np, const int ns, const Mesh m, const Particle *i_pp, const float *bboxes, /**/ Particle *pp, Solid *shst)
+    void bounce_hst(const Force *ff, const int np, const int ns, const Mesh m, const Particle *i_pp, const float *bboxes, /**/ Particle *pp, Solid *ss)
     {
 #ifdef debug_output
         if (dstep % steps_per_dump == 0)
@@ -309,7 +309,7 @@ namespace mbounce
 
         for (int j = 0; j < ns; ++j)
         {
-            Solid *s = shst + j;
+            Solid *s = ss + j;
             const float *bbox = bboxes + 6 * j;
 
             bounce_1s(ff, np, m, i_pp + j * m.nt, bbox, /**/ pp, s);
@@ -320,5 +320,11 @@ namespace mbounce
         printf("%d success, %d nocross, %d wrong triangle, %d hfailed\n",
                bbstates[0], bbstates[1], bbstates[2], bbstates[3]);
 #endif
+    }
+
+
+    void bounce_dev(const Force *ff, const int np, const int ns, const Mesh m, const Particle *i_pp, const float *bboxes, /**/ Particle *pp, Solid *ss)
+    {
+        
     }
 }
