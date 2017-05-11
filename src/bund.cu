@@ -24,6 +24,8 @@
 #include "k/scan.h"
 #include "k/common.h"
 
+#include "minmax.h"
+
 #include "sdstr.decl.h"
 #include "k/sdstr.h"
 #include "sdstr.impl.h"
