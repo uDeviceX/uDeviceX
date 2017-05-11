@@ -121,7 +121,7 @@ namespace k_mesh
         
         const int mid = blockIdx.y; // mesh Id
 
-        for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < nps; i += blockIdx.x * blockDim.x)
+        for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < nps; i += blockDim.x * gridDim.x)
         {
             const int base = 6 * (mid * nps + i);
             
