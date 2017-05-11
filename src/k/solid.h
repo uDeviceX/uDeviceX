@@ -211,6 +211,34 @@ namespace k_solid
         }
     }
 
+    __global__ void update_mesh(const Solid *ss_dev, const float *vv, const int nv, /**/ Particle *pp)
+    {
+        const int sid = blockIdx.y; // solid Id
+        const Solid s = ss_dev[sid];
+
+        const int i = threadIdx.x + blockIdx.x * blockDim.x;;
+
+        if (i < nv)
+        {
+            const float x = vv[3*i + X];
+            const float y = vv[3*i + Y];
+            const float z = vv[3*i + Z];
+
+            const Particle p0 = pp[i];
+            Particle p;
+
+            p.r[X] = x * s.e0[X] + y * s.e1[X] + z * s.e2[X] + s.com[X];
+            p.r[Y] = x * s.e0[Y] + y * s.e1[Y] + z * s.e2[Y] + s.com[Y];
+            p.r[Z] = x * s.e0[Z] + y * s.e1[Z] + z * s.e2[Z] + s.com[Z];
+                
+            p.v[X] = (p.r[X] - p0.r[X]) / dt;
+            p.v[Y] = (p.r[Y] - p0.r[Y]) / dt;
+            p.v[Z] = (p.r[Z] - p0.r[Z]) / dt;
+
+            pp[i] = p;
+        }
+    }
+
 #undef X
 #undef Y
 #undef Z

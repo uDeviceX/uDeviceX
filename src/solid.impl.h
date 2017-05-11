@@ -287,6 +287,14 @@ namespace solid {
         }
     }
 
+    void update_mesh_dev(const Solid *ss_dev, const int ns, const Mesh m, /**/ Particle *pp)
+    {
+        const dim3 nthrd(128, 1);
+        const dim3 nblck((m.nv + 127)/128, ns);
+
+        k_solid::update_mesh <<< nthrd, nblck >>> (ss_dev, m.vv, m.nv, /**/ pp);
+    }
+
     void dump(const int it, const Solid *ss, const Solid *ssbb, int nsolid)
     {
         static bool first = true;
