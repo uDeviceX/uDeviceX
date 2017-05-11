@@ -3,8 +3,6 @@
 #endif
 #include "../common.h"
 
-#include <cassert>
-
 #include "roots.h"
 #include "mbounce.h"
 
@@ -25,6 +23,20 @@ namespace mbounce
 #define BBOX_MARGIN 0.1f
 
 #define debug_output
+
+    namespace helpers
+    {
+        template <typename T> _DH_ T min2(T a, T b) {return a < b ? a : b;}
+        template <typename T> _DH_ T max2(T a, T b) {return a < b ? b : a;}
+        template <typename T> _DH_ T min3(T a, T b, T c) {return min2(a, min2(b, c));}
+        template <typename T> _DH_ T max3(T a, T b, T c) {return max2(a, max2(b, c));}
+    }
+#define revert_r(P) do {                        \
+        P.r[X] -= dt * P.v[X];                  \
+        P.r[Y] -= dt * P.v[Y];                  \
+        P.r[Z] -= dt * P.v[Z];                  \
+    } while(0)
+    
     
     static _DH_ void rvprev(const float *r1, const float *v1, const float *f0, /**/ float *r0, float *v0)
     {
@@ -234,18 +246,11 @@ namespace mbounce
             Particle pC = i_pp[t3];
 
             if (!near_triangle(pA.r, pB.r, pC.r, p1.r, BBOX_MARGIN)) continue;
-
-#define revert_r(P) do {                        \
-                P.r[X] -= dt * P.v[X];          \
-                P.r[Y] -= dt * P.v[Y];          \
-                P.r[Z] -= dt * P.v[Z];          \
-            } while(0)
-            
+             
             revert_r(pA);
             revert_r(pB);
             revert_r(pC);
-#undef revert_p
-            
+           
             const BBState bbstate = intersect_triangle(pA.r, pB.r, pC.r, pA.v, pB.v, pC.v, &p0, /**/ &h, rw, vw);
 
 #ifdef debug_output
@@ -322,9 +327,64 @@ namespace mbounce
 #endif
     }
 
+    static __device__ void tbbox(const float *A, const float *B, const float *C, float *bb)
+    {
+        bb[2*X + 0] = helpers::min3(A[X], B[X], C[X]) - BBOX_MARGIN;
+        bb[2*X + 1] = helpers::max3(A[X], B[X], C[X]) + BBOX_MARGIN;
+        bb[2*Y + 0] = helpers::min3(A[Y], B[Y], C[Y]) - BBOX_MARGIN;
+        bb[2*Y + 1] = helpers::max3(A[Y], B[Y], C[Y]) + BBOX_MARGIN;
+        bb[2*Z + 0] = helpers::min3(A[Z], B[Z], C[Z]) - BBOX_MARGIN;
+        bb[2*Z + 1] = helpers::max3(A[Z], B[Z], C[Z]) + BBOX_MARGIN;
+    }
 
-    void bounce_dev(const Force *ff, const int np, const int ns, const Mesh m, const Particle *i_pp, const float *bboxes, /**/ Particle *pp, Solid *ss)
+    static __device__ void bounce_1t(const Particle *pA, const Particle *pB, const Particle *pC, const Force *ff,
+                                     const int *cellstarts, const int *cellcounts, /**/ Particle *pp, float *dL, float *dT)
+    {
+        // go over celllists
+        int startx, starty, startz, endx, endy, endz;
+        {
+            float bbox[6] = {0};
+            tbbox(pA->r, pB->r, pC->r, /**/ bbox);
+
+            startx = helpers::max2(int (bbox[2*X + 0] + XS/2), 0);
+            starty = helpers::max2(int (bbox[2*Y + 0] + YS/2), 0);
+            startz = helpers::max2(int (bbox[2*Z + 0] + ZS/2), 0);
+
+            endx = helpers::min2(int (bbox[2*X + 1] + XS/2) + 1, XS);
+            endy = helpers::min2(int (bbox[2*Y + 1] + YS/2) + 1, YS);
+            endz = helpers::min2(int (bbox[2*Z + 1] + ZS/2) + 1, ZS);
+        }
+
+        // TODO race condition?
+    }
+
+    static __global__ void bounce_dev(const Mesh m, const Particle *i_pp, const Force *ff,
+                                      const int *cellstarts, const int *cellcounts, /**/ Particle *pp, Solid *ss)
+    {
+        const int mid = blockIdx.y;                            // [m]esh id
+        const int tid = threadIdx.x + blockIdx.x * blockDim.x; // [t]riangle id
+
+        const int t1 = m.tt[3 * tid + 0];
+        const int t2 = m.tt[3 * tid + 1];
+        const int t3 = m.tt[3 * tid + 2];
+
+        Particle pA = i_pp[t1]; revert_r(pA);
+        Particle pB = i_pp[t2]; revert_r(pB);
+        Particle pC = i_pp[t3]; revert_r(pC);
+
+        float dL[3] = {0}, dT[3] = {0};
+
+        bounce_1t(&pA, &pB, &pC, ff, cellstarts, cellcounts, /**/ pp, dL, dT);
+
+        //warpReduceSum(dL); warpReduceSum(dT);
+        // TODO atomic
+    }
+
+    void bounce_dev(const Force *ff, const int np, const int ns, const Mesh m, const Particle *i_pp,
+                    const int *cellstarts, const int *cellcounts, /**/ Particle *pp, Solid *ss)
     {
         
     }
+    
+#undef revert_r
 }
