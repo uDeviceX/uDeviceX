@@ -21,7 +21,7 @@ namespace mbounce
 
 #define BBOX_MARGIN 0.1f
 
-#define debug_output
+    //#define debug_output
     
     template <typename T>  T _DH_ min2(T a, T b) {return a < b ? a : b;}
     template <typename T>  T _DH_ max2(T a, T b) {return a < b ? b : a;}
@@ -50,7 +50,7 @@ namespace mbounce
     static _DH_ bool cubic_root(real a, real b, real c, real d, /**/ real *h)
     {
         #define valid(t) ((t) >= 0 && (t) <= dt)
-        #define eps 1e-8
+        #define eps 1e-6
         
         if (fabs(a) > eps) // cubic
         {
@@ -142,7 +142,7 @@ namespace mbounce
         
         if (!cubic_root(a, b, c, d, &hl))
         {
-            printf("failed : %g %g %g %g\n", a, b, c, d);
+            // printf("failed : %g %g %g %g\n", a, b, c, d);
             return BB_HFAIL;
         }
 
