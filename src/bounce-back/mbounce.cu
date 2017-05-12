@@ -207,127 +207,10 @@ namespace mbounce
         dL[Z] = -(dr[X] * vn[Y] - dr[Y] * vn[X] - dr[X] * v0[Y] + dr[Y] * v0[X]) / dt;
     }
 
-    static bool near_triangle(const float *A, const float *B, const float *C, const float *r, const float tol)
-    {
-#define minmaxtol(d) do {                                                 \
-            float l = A[d] > B[d] ? B[d] : A[d]; l = l > C[d] ? C[d] : l; \
-            float u = A[d] > B[d] ? A[d] : B[d]; u = u > C[d] ? u : C[d]; \
-            if ( (r[d] < l - tol) || (r[d] > u + tol) ) return false;     \
-        } while(0)
-
-        minmaxtol(X);
-        minmaxtol(Y);
-        minmaxtol(Z);
-#undef minmaxtol
-        
-        return true;
-    }
-
 #ifdef debug_output
     int bbstates[5], dstep = 0;
 #endif
     
-    static void bounce_1s1p(const float *f, const int *tt, const int nt, const Particle *i_pp, Particle *p, Solid *s)
-    {
-        float dL[3] = {0}, dP[3] = {0}, h = 2*dt, rw[3], vw[3];
-
-        const Particle p1 = *p;
-        Particle p0, pn;
-        
-        rvprev(p1.r, p1.v, f, /**/ p0.r, p0.v);
-
-        for (int it = 0; it < nt; ++it)
-        {
-            const int t1 = tt[3*it + 0];
-            const int t2 = tt[3*it + 1];
-            const int t3 = tt[3*it + 2];
-
-            Particle pA = i_pp[t1];
-            Particle pB = i_pp[t2];
-            Particle pC = i_pp[t3];
-
-            if (!near_triangle(pA.r, pB.r, pC.r, p1.r, BBOX_MARGIN)) continue;
-             
-            revert_r(pA);
-            revert_r(pB);
-            revert_r(pC);
-           
-            const BBState bbstate = intersect_triangle(pA.r, pB.r, pC.r, pA.v, pB.v, pC.v, &p0, /**/ &h, rw, vw);
-
-#ifdef debug_output
-            bbstates[bbstate] ++;
-#endif
-            if (bbstate == BB_SUCCESS)
-            {
-                pn.v[X] = 2 * vw[X] - p0.v[X];
-                pn.v[Y] = 2 * vw[Y] - p0.v[Y];
-                pn.v[Z] = 2 * vw[Z] - p0.v[Z];
-
-                pn.r[X] = rw[X] + (dt - h) * pn.v[X];
-                pn.r[Y] = rw[Y] + (dt - h) * pn.v[Y];
-                pn.r[Z] = rw[Z] + (dt - h) * pn.v[Z];
-
-                *p = pn;
-                
-                lin_mom_solid(p0.v, p->v, /**/ dP);
-                ang_mom_solid(s->com, rw, p0.v, pn.v, /**/ dL);
-                
-                break;
-            }
-        }
-
-        s->fo[X] += dP[X];
-        s->fo[Y] += dP[Y];
-        s->fo[Z] += dP[Z];
-
-        s->to[X] += dL[X];
-        s->to[Y] += dL[Y];
-        s->to[Z] += dL[Z];
-    }
-    
-    static bool in_bbox(const float *r, const float *bbox, const float tol)
-    {        
-        return (r[X] >= bbox[2*X + 0] - tol) && (r[X] < bbox[2*X + 1] + tol) &&
-            (r[Y] >= bbox[2*Y + 0] - tol) && (r[Y] < bbox[2*Y + 1] + tol) &&
-            (r[Z] >= bbox[2*Z + 0] - tol) && (r[Z] < bbox[2*Z + 1] + tol);
-    }
-    
-    static void bounce_1s(const Force *ff, const int nps, const Mesh m, const Particle *i_pp, const float *bbox, /**/ Particle *pp, Solid *shst)
-    {
-        for (int i = 0; i < nps; ++i)
-        {
-            Particle p = pp[i];
-            if (in_bbox(p.r, bbox, BBOX_MARGIN))
-            {
-                const Force f = ff[i];
-                bounce_1s1p(f.f, m.tt, m.nt, i_pp, /**/ &p, shst);
-                pp[i] = p;
-            }
-        }
-    }
-
-    void bounce_hst(const Force *ff, const int nps, const int ns, const Mesh m, const Particle *i_pp, const float *bboxes, /**/ Particle *pp, Solid *ss)
-    {
-#ifdef debug_output
-        if (dstep % steps_per_dump == 0)
-        for (int c = 0; c < 4; ++c) bbstates[c] = 0;
-#endif
-
-        for (int j = 0; j < ns; ++j)
-        {
-            Solid *s = ss + j;
-            const float *bbox = bboxes + 6 * j;
-
-            bounce_1s(ff, nps, m, i_pp + j * m.nt, bbox, /**/ pp, s);
-        }
-
-#ifdef debug_output
-        if ((++dstep) % steps_per_dump == 0)
-        printf("%d success, %d nocross, %d wrong triangle, %d hfailed, %d hnext\n",
-               bbstates[0], bbstates[1], bbstates[2], bbstates[3], bbstates[4]);
-#endif
-    }
-
     static bool find_better_intersection(const int *tt, const int it, const Particle *i_pp, const Particle *p0, /* io */ float *h, /**/ float *rw, float *vw)
     {
         // load data
@@ -419,7 +302,6 @@ namespace mbounce
                 ss[sid].to[Y] += dL[Y];
                 ss[sid].to[Z] += dL[Z];
             }
-
         }
 
 #ifdef debug_output
@@ -427,8 +309,6 @@ namespace mbounce
         printf("%d success, %d nocross, %d wrong triangle, %d hfailed\n",
                bbstates[0], bbstates[1], bbstates[2], bbstates[3]);
 #endif
-    }
-
-    
+    }    
 #undef revert_r
 }
