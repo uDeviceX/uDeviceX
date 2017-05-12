@@ -1,6 +1,4 @@
-#ifndef dt
 #include "../.conf.h"
-#endif
 #include "../common.h"
 
 #include "roots.h"
@@ -9,13 +7,14 @@
 namespace mbounce
 {
     enum {X, Y, Z};
-
+    
     enum BBState
     {
-        BB_SUCCESS,   /* succesfully bounced            */
-        BB_NOCROSS,   /* did not cross the plane        */
-        BB_WTRIANGLE, /* [w]rong triangle               */
-        BB_HFAIL      /* no time solution h             */
+        BB_SUCCESS,   /* succesfully bounced                       */
+        BB_NOCROSS,   /* did not cross the plane                   */
+        BB_WTRIANGLE, /* [w]rong triangle                          */
+        BB_HFAIL,     /* no time solution h                        */
+        BB_HNEXT      /* h triangle is not the first to be crossed */
     };
 
 #define _DH_ __device__ __host__
@@ -30,7 +29,9 @@ namespace mbounce
         P.r[Z] -= dt * P.v[Z];                  \
     } while(0)
     
-    
+    template <typename T>  T min2(T a, T b) {return a < b ? a : b;}
+    template <typename T>  T max2(T a, T b) {return a < b ? b : a;}
+
     static _DH_ void rvprev(const float *r1, const float *v1, const float *f0, /**/ float *r0, float *v0)
     {
 #ifdef FORWARD_EULER
@@ -88,8 +89,8 @@ namespace mbounce
     
     /* see Fedosov PhD Thesis */
     static _DH_ BBState intersect_triangle(const float *s10, const float *s20, const float *s30,
-                                      const float *vs1, const float *vs2, const float *vs3,
-                                      const Particle *p0,  /**/ float *h, float *rw, float *vw)
+                                           const float *vs1, const float *vs2, const float *vs3,
+                                           const Particle *p0,  /*io*/ float *h, /**/ float *rw, float *vw)
     {
 #define diff(a, b) {a[X] - b[X], a[Y] - b[Y], a[Z] - b[Z]}
 #define cross(a, b) {a[Y] * b[Z] - a[Z] * b[Y], a[Z] * b[X] - a[X] * b[Z], a[X] * b[Y] - a[Y] * b[X]}
@@ -140,26 +141,33 @@ namespace mbounce
         const float b = dot(ntt, dr0) + dot(nt, dv);
         const float c = dot(nt, dr0) + dot(n0, dv);
         const float d = dot(n0, dr0);
+
+        float hl;
         
-        if (!cubic_root(a, b, c, d, h))
+        if (!cubic_root(a, b, c, d, &hl))
         {
             //printf("%g %g %g %g\n", a, b, c, d);
             return BB_HFAIL;
         }
 
-        rw[X] = r0[X] + *h * v0[X];
-        rw[Y] = r0[Y] + *h * v0[Y];
-        rw[Z] = r0[Z] + *h * v0[Z];
+        if (hl < *h)
+        *h = hl;
+        else
+        return BB_HNEXT;
+        
+        rw[X] = r0[X] + hl * v0[X];
+        rw[Y] = r0[Y] + hl * v0[Y];
+        rw[Z] = r0[Z] + hl * v0[Z];
 
         // check if inside triangle
 
         {
-            const float g[3] = {rw[X] - s10[X] - *h * vs1[X],
-                                rw[Y] - s10[Y] - *h * vs1[Y],
-                                rw[Z] - s10[Z] - *h * vs1[Z]};
+            const float g[3] = {rw[X] - s10[X] - hl * vs1[X],
+                                rw[Y] - s10[Y] - hl * vs1[Y],
+                                rw[Z] - s10[Z] - hl * vs1[Z]};
 
-            const float a1_[3] = apxb(a1, *h, at1);
-            const float a2_[3] = apxb(a2, *h, at2);
+            const float a1_[3] = apxb(a1, hl, at1);
+            const float a2_[3] = apxb(a2, hl, at2);
             
             const float ga1 = dot(g, a1_);
             const float ga2 = dot(g, a2_);
@@ -216,12 +224,12 @@ namespace mbounce
     }
 
 #ifdef debug_output
-    int bbstates[4], dstep = 0;
+    int bbstates[5], dstep = 0;
 #endif
     
     static void bounce_1s1p(const float *f, const int *tt, const int nt, const Particle *i_pp, Particle *p, Solid *s)
     {
-        float dL[3] = {0}, dP[3] = {0}, h, rw[3], vw[3];
+        float dL[3] = {0}, dP[3] = {0}, h = 2*dt, rw[3], vw[3];
 
         const Particle p1 = *p;
         Particle p0, pn;
@@ -284,9 +292,9 @@ namespace mbounce
             (r[Z] >= bbox[2*Z + 0] - tol) && (r[Z] < bbox[2*Z + 1] + tol);
     }
     
-    static void bounce_1s(const Force *ff, const int np, const Mesh m, const Particle *i_pp, const float *bbox, /**/ Particle *pp, Solid *shst)
+    static void bounce_1s(const Force *ff, const int nps, const Mesh m, const Particle *i_pp, const float *bbox, /**/ Particle *pp, Solid *shst)
     {
-        for (int i = 0; i < np; ++i)
+        for (int i = 0; i < nps; ++i)
         {
             Particle p = pp[i];
             if (in_bbox(p.r, bbox, BBOX_MARGIN))
@@ -298,7 +306,7 @@ namespace mbounce
         }
     }
 
-    void bounce_hst(const Force *ff, const int np, const int ns, const Mesh m, const Particle *i_pp, const float *bboxes, /**/ Particle *pp, Solid *ss)
+    void bounce_hst(const Force *ff, const int nps, const int ns, const Mesh m, const Particle *i_pp, const float *bboxes, /**/ Particle *pp, Solid *ss)
     {
 #ifdef debug_output
         if (dstep % steps_per_dump == 0)
@@ -310,7 +318,108 @@ namespace mbounce
             Solid *s = ss + j;
             const float *bbox = bboxes + 6 * j;
 
-            bounce_1s(ff, np, m, i_pp + j * m.nt, bbox, /**/ pp, s);
+            bounce_1s(ff, nps, m, i_pp + j * m.nt, bbox, /**/ pp, s);
+        }
+
+#ifdef debug_output
+        if ((++dstep) % steps_per_dump == 0)
+        printf("%d success, %d nocross, %d wrong triangle, %d hfailed, %d hnext\n",
+               bbstates[0], bbstates[1], bbstates[2], bbstates[3], bbstates[4]);
+#endif
+    }
+
+    static bool find_better_intersection(const int *tt, const int it, const Particle *i_pp, const Particle *p0, /* io */ float *h, /**/ float *rw, float *vw)
+    {
+        // load data
+        const int t1 = tt[3*it + 0];
+        const int t2 = tt[3*it + 1];
+        const int t3 = tt[3*it + 2];
+
+        Particle pA = i_pp[t1]; revert_r(pA);
+        Particle pB = i_pp[t2]; revert_r(pB);
+        Particle pC = i_pp[t3]; revert_r(pC);
+           
+        const BBState bbstate = intersect_triangle(pA.r, pB.r, pC.r, pA.v, pB.v, pC.v, p0, /* io */ h, /**/ rw, vw);
+#ifdef debug_output
+        bbstates[bbstate] ++;
+#endif
+        return bbstate == BB_SUCCESS;
+    }
+
+    static void bounce_back(const Particle *p0, const float *rw, const float *vw, const float h, /**/ Particle *pn)
+    {
+        pn->v[X] = 2 * vw[X] - p0->v[X];
+        pn->v[Y] = 2 * vw[Y] - p0->v[Y];
+        pn->v[Z] = 2 * vw[Z] - p0->v[Z];
+
+        pn->r[X] = rw[X] + (dt-h) * pn->v[X];
+        pn->r[Y] = rw[Y] + (dt-h) * pn->v[Y];
+        pn->r[Z] = rw[Z] + (dt-h) * pn->v[Z];
+    }
+    
+    /* One node, no periodicity for now */
+    void bounce_tcells_hst(const Force *ff, const int nps, const int ns, const Mesh m, const Particle *i_pp,
+                           const int *tcellstarts, const int *tcellcounts, const int *tids, /**/ Particle *pp, Solid *ss)
+    {
+#ifdef debug_output
+        if (dstep % steps_per_dump == 0)
+        for (int c = 0; c < 4; ++c) bbstates[c] = 0;
+#endif
+        
+        for (int i = 0; i < nps*ns; ++i)
+        {
+            const Particle p1 = pp[i];
+            
+            Particle p0; rvprev(p1.r, p1.v, ff[i].f, /**/ p0.r, p0.v);
+
+            const int xcid_ = int (p1.r[X] + XS/2);
+            const int ycid_ = int (p1.r[Y] + YS/2);
+            const int zcid_ = int (p1.r[Z] + ZS/2);
+
+            float h = 2*dt; // must be higher than any valid result
+            float rw[3], vw[3];
+
+            int sid = -1;
+            
+            for (int zcid = max2(zcid_-1, 0); zcid <= min2(zcid_ + 1, ZS - 1); ++zcid)
+            for (int ycid = max2(ycid_-1, 0); ycid <= min2(ycid_ + 1, YS - 1); ++ycid)
+            for (int xcid = max2(xcid_-1, 0); xcid <= min2(xcid_ + 1, XS - 1); ++xcid)
+            {
+                const int cid = xcid + XS * (ycid + YS * zcid);
+                const int start = tcellstarts[cid];
+                const int count = tcellcounts[cid];
+
+                for (int j = start; j < start + count; ++j)
+                {
+                    const int tid = tids[j];
+                    const int it  = tid % m.nt;
+                    const int mid = tid / m.nt;
+                    
+                    if (find_better_intersection(m.tt, it, i_pp, &p0, /*io*/ &h, /**/ rw, vw))
+                    sid = mid;
+                }
+            }
+
+            if (sid != -1)
+            {
+                Particle pn;
+                bounce_back(&p0, rw, vw, h, /**/ &pn);
+
+                float dP[3], dL[3];
+                lin_mom_solid(p1.v, pn.v, /**/ dP);
+                ang_mom_solid(ss[sid].com, rw, p0.v, pn.v, /**/ dL);
+                
+                pp[i] = pn;
+
+                ss[sid].fo[X] += dP[X];
+                ss[sid].fo[Y] += dP[Y];
+                ss[sid].fo[Z] += dP[Z];
+
+                ss[sid].to[X] += dL[X];
+                ss[sid].to[Y] += dL[Y];
+                ss[sid].to[Z] += dL[Z];
+            }
+
         }
 
 #ifdef debug_output
