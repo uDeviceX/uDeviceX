@@ -3,6 +3,8 @@
 #include <vector>
 #include <cmath>
 
+#include "ply.h"
+
 using std::vector;
 
 void icosahedron(vector<int>& tt, vector<float>& vv)
@@ -57,11 +59,13 @@ void icosahedron(vector<int>& tt, vector<float>& vv)
 #undef pp
 }
 
-
 int main(int argc, char **argv)
 {
     vector<int> tt;
     vector<float> vv;
     icosahedron(tt, vv);
+
+    write_ply("test.ply", tt, vv);
+    
     return 0;
 }
