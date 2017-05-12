@@ -208,10 +208,11 @@ namespace mbounce
     }
 
 #ifdef debug_output
-    int bbstates[5], dstep = 0;
+    int bbstates_hst[5], dstep = 0;
+    __device__ int bbstates_dev[5];
 #endif
     
-    static bool find_better_intersection(const int *tt, const int it, const Particle *i_pp, const Particle *p0, /* io */ float *h, /**/ float *rw, float *vw)
+    static _DH_ bool find_better_intersection(const int *tt, const int it, const Particle *i_pp, const Particle *p0, /* io */ float *h, /**/ float *rw, float *vw)
     {
         // load data
         const int t1 = tt[3*it + 0];
@@ -224,12 +225,16 @@ namespace mbounce
            
         const BBState bbstate = intersect_triangle(pA.r, pB.r, pC.r, pA.v, pB.v, pC.v, p0, /* io */ h, /**/ rw, vw);
 #ifdef debug_output
-        bbstates[bbstate] ++;
+#if (defined (__CUDA_ARCH__) && (__CUDA_ARCH__ > 0))
+        atomicAdd(bbstates_dev + bbstate, 1);
+#else
+        bbstates_hst[bbstate] ++;
+#endif
 #endif
         return bbstate == BB_SUCCESS;
     }
 
-    static void bounce_back(const Particle *p0, const float *rw, const float *vw, const float h, /**/ Particle *pn)
+    static _DH_ void bounce_back(const Particle *p0, const float *rw, const float *vw, const float h, /**/ Particle *pn)
     {
         pn->v[X] = 2 * vw[X] - p0->v[X];
         pn->v[Y] = 2 * vw[Y] - p0->v[Y];
@@ -246,7 +251,7 @@ namespace mbounce
     {
 #ifdef debug_output
         if (dstep % steps_per_dump == 0)
-        for (int c = 0; c < 4; ++c) bbstates[c] = 0;
+        for (int c = 0; c < 4; ++c) bbstates_hst[c] = 0;
 #endif
         
         for (int i = 0; i < n; ++i)
@@ -307,7 +312,7 @@ namespace mbounce
 #ifdef debug_output
         if ((++dstep) % steps_per_dump == 0)
         printf("%d success, %d nocross, %d wrong triangle, %d hfailed\n",
-               bbstates[0], bbstates[1], bbstates[2], bbstates[3]);
+               bbstates_hst[0], bbstates_hst[1], bbstates_hst[2], bbstates_hst[3]);
 #endif
     }    
 #undef revert_r
