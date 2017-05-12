@@ -45,15 +45,15 @@ namespace mbounce
         }
 #endif
     }
-    
-    static _DH_ bool cubic_root(float a, float b, float c, float d, /**/ float *h)
+
+    template <typename real>
+    static _DH_ bool cubic_root(real a, real b, real c, real d, /**/ real *h)
     {
         #define valid(t) ((t) >= 0 && (t) <= dt)
         #define eps 1e-8
         
         if (fabs(a) > eps) // cubic
         {
-            typedef double real;
             const real b_ = b /= a;
             const real c_ = c /= a;
             const real d_ = d /= a;
@@ -67,14 +67,14 @@ namespace mbounce
         }
         else if(fabs(b) > eps) // quadratic
         {
-            float h1, h2;
+            real h1, h2;
             if (!roots::quadratic(b, c, d, &h1, &h2)) return false;
             if (valid(h1)) {*h = h1; return true;}
             if (valid(h2)) {*h = h2; return true;}
         }
         else if (fabs(c) > eps) // linear
         {
-            const float h1 = -d/c;
+            const real h1 = -d/c;
             if (valid(h1)) {*h = h1; return true;}
         }
         
@@ -86,42 +86,44 @@ namespace mbounce
                                            const float *vs1, const float *vs2, const float *vs3,
                                            const Particle *p0,  /*io*/ float *h, /**/ float *rw, float *vw)
     {
+        typedef double real;
+        
 #define diff(a, b) {a[X] - b[X], a[Y] - b[Y], a[Z] - b[Z]}
 #define cross(a, b) {a[Y] * b[Z] - a[Z] * b[Y], a[Z] * b[X] - a[X] * b[Z], a[X] * b[Y] - a[Y] * b[X]}
 #define dot(a, b) (a[X]*b[X] + a[Y]*b[Y] + a[Z]*b[Z])
-#define apxb(a, x, b) {a[X] + (float) x * b[X], a[Y] + (float) x * b[Y], a[Z] + (float) x * b[Z]} 
+#define apxb(a, x, b) {a[X] + (real) x * b[X], a[Y] + (real) x * b[Y], a[Z] + (real) x * b[Z]} 
         
         const float *r0 = p0->r;
         const float *v0 = p0->v;
     
-        const float a1[3] = diff(s20, s10);
-        const float a2[3] = diff(s30, s10);
+        const real a1[3] = diff(s20, s10);
+        const real a2[3] = diff(s30, s10);
     
-        const float at1[3] = diff(vs2, vs1);
-        const float at2[3] = diff(vs3, vs1);
+        const real at1[3] = diff(vs2, vs1);
+        const real at2[3] = diff(vs3, vs1);
 
         // n(t) = n + t*nt + t^2 * ntt
-        const float n0[3] = cross(a1, a2);
-        const float ntt[3] = cross(at1, at2);
-        const float nt[3] = {a1[Y] * at2[Z] - a1[Z] * at2[Y]  +  at1[Y] * a2[Z] - at1[Z] * a2[Y],
+        const real n0[3] = cross(a1, a2);
+        const real ntt[3] = cross(at1, at2);
+        const real nt[3] = {a1[Y] * at2[Z] - a1[Z] * at2[Y]  +  at1[Y] * a2[Z] - at1[Z] * a2[Y],
                              a1[Z] * at2[X] - a1[X] * at2[Z]  +  at1[Z] * a2[X] - at1[X] * a2[Z],
                              a1[X] * at2[Y] - a1[Y] * at2[X]  +  at1[X] * a2[Y] - at1[Y] * a2[X]};
     
-        const float dr0[3] = diff(r0, s10);
+        const real dr0[3] = diff(r0, s10);
         
         // check intersection with plane
         {
-            const float r1[3] = apxb(r0, dt, v0);
-            const float s11[3] = apxb(s10, dt, vs1);
+            const real r1[3] = apxb(r0, dt, v0);
+            const real s11[3] = apxb(s10, dt, vs1);
 
-            const float n1[3] = {n0[X] + (float) dt * (nt[X] + (float) dt * ntt[X]),
-                                 n0[Y] + (float) dt * (nt[Y] + (float) dt * ntt[Y]),
-                                 n0[Z] + (float) dt * (nt[Z] + (float) dt * ntt[Z])};
+            const real n1[3] = {n0[X] + (real) dt * (nt[X] + (real) dt * ntt[X]),
+                                 n0[Y] + (real) dt * (nt[Y] + (real) dt * ntt[Y]),
+                                 n0[Z] + (real) dt * (nt[Z] + (real) dt * ntt[Z])};
             
-            const float dr1[3] = diff(r1, s11);
+            const real dr1[3] = diff(r1, s11);
 
-            const float b0 = dot(dr0, n0);
-            const float b1 = dot(dr1, n1);
+            const real b0 = dot(dr0, n0);
+            const real b1 = dot(dr1, n1);
 
             if (b0 * b1 > 0)
             return BB_NOCROSS;
@@ -129,18 +131,18 @@ namespace mbounce
 
         // find intersection time with plane
 
-        const float dv[3] = diff(v0, vs1);
+        const real dv[3] = diff(v0, vs1);
         
-        const float a = dot(ntt, dv);
-        const float b = dot(ntt, dr0) + dot(nt, dv);
-        const float c = dot(nt, dr0) + dot(n0, dv);
-        const float d = dot(n0, dr0);
+        const real a = dot(ntt, dv);
+        const real b = dot(ntt, dr0) + dot(nt, dv);
+        const real c = dot(nt, dr0) + dot(n0, dv);
+        const real d = dot(n0, dr0);
 
-        float hl;
+        real hl;
         
         if (!cubic_root(a, b, c, d, &hl))
         {
-            //printf("%g %g %g %g\n", a, b, c, d);
+            printf("failed : %g %g %g %g\n", a, b, c, d);
             return BB_HFAIL;
         }
 
@@ -156,29 +158,29 @@ namespace mbounce
         // check if inside triangle
 
         {
-            const float g[3] = {rw[X] - s10[X] - hl * vs1[X],
+            const real g[3] = {rw[X] - s10[X] - hl * vs1[X],
                                 rw[Y] - s10[Y] - hl * vs1[Y],
                                 rw[Z] - s10[Z] - hl * vs1[Z]};
 
-            const float a1_[3] = apxb(a1, hl, at1);
-            const float a2_[3] = apxb(a2, hl, at2);
+            const real a1_[3] = apxb(a1, hl, at1);
+            const real a2_[3] = apxb(a2, hl, at2);
             
-            const float ga1 = dot(g, a1_);
-            const float ga2 = dot(g, a2_);
-            const float a11 = dot(a1_, a1_);
-            const float a12 = dot(a1_, a2_);
-            const float a22 = dot(a2_, a2_);
+            const real ga1 = dot(g, a1_);
+            const real ga2 = dot(g, a2_);
+            const real a11 = dot(a1_, a1_);
+            const real a12 = dot(a1_, a2_);
+            const real a22 = dot(a2_, a2_);
 
-            const float fac = 1.f / (a11*a22 - a12*a12);
+            const real fac = 1.f / (a11*a22 - a12*a12);
             
-            const float u = (ga1 * a22 - ga2 * a12) * fac;
-            const float v = (ga2 * a11 - ga1 * a12) * fac;
+            const real u = (ga1 * a22 - ga2 * a12) * fac;
+            const real v = (ga2 * a11 - ga1 * a12) * fac;
 
             if (!((u >= 0) && (v >= 0) && (u+v <= 1)))
             return BB_WTRIANGLE;
 
             // linear interpolation of velocity vw
-            const float w = 1 - u - v;
+            const real w = 1 - u - v;
             vw[X] = w * vs1[X] + u * vs2[X] + v * vs3[X];
             vw[Y] = w * vs1[Y] + u * vs2[Y] + v * vs3[Y];
             vw[Z] = w * vs1[Z] + u * vs2[Z] + v * vs3[Z];
