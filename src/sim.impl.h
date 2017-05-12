@@ -1,6 +1,6 @@
 namespace sim {
 
-    //#define DEVICE_SOLID
+#define DEVICE_SOLID
     
 #define X 0
 #define Y 1
@@ -170,6 +170,7 @@ void update_solid() {
     
 #else    
     solid::update_dev(r_ff, r_rr0, r_n, nsolid, /**/ r_pp, ss_dev);
+    solid::update_mesh_dev(ss_dev, nsolid, m_dev, /**/ i_pp_dev);
 
     // for dump
     CC(cudaMemcpy(ss_dmphst, ss_dev, nsolid * sizeof(Solid), D2H));
@@ -193,22 +194,27 @@ void bounce() {
 
 void bounce_solid()
 {
-    // bounce on host
+#ifndef DEVICE_SOLID // bounce on host
 
-    // construct cell-lists
-    build_tcells_hst(m_hst, i_pp_hst, nsolid, /**/ tcellstarts, tcellcounts, tctids);
-    
-    // bounce particles
-    
+    build_tcells_hst(m_hst, i_pp_hst, nsolid, /**/ tcellstarts_hst, tcellcounts_hst, tctids_hst);
+        
     CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
     CC(cudaMemcpy(s_ff_hst, s_ff, sizeof(Force)    * s_n, D2H));
 
-    mbounce::bounce_tcells_hst(s_ff_hst, m_hst, i_pp_hst, tcellstarts, tcellcounts, tctids, s_n, /**/ s_pp_hst, ss_hst);
+    mbounce::bounce_tcells_hst(s_ff_hst, m_hst, i_pp_hst, tcellstarts_hst, tcellcounts_hst, tctids_hst, s_n, /**/ s_pp_hst, ss_hst);
     
     CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
 
     // for dump
     memcpy(ss_dmpbbhst, ss_hst, nsolid * sizeof(Solid));
+
+#else
+
+    build_tcells_dev(m_dev, i_pp_dev, nsolid, /**/ tcellstarts_dev, tcellcounts_dev, tctids_dev);
+
+    mbounce::bounce_tcells_dev(s_ff, m_dev, i_pp_dev, tcellstarts_dev, tcellcounts_dev, tctids_dev, s_n, /**/ s_pp, ss_dev);
+    
+#endif
 }
 
 void load_solid_mesh(const char *fname)
@@ -238,9 +244,13 @@ void init_solid()
     ss_dmphst   = new Solid[MAX_SOLIDS];
     ss_dmpbbhst = new Solid[MAX_SOLIDS];
 
-    tcellstarts = new int[XS * YS * ZS];
-    tcellcounts = new int[XS * YS * ZS];
-    tctids      = new int[27 * MAX_SOLIDS * m_hst.nt]; // assume 1 triangle don't overlap more than 27 cells
+    tcellstarts_hst = new int[XS * YS * ZS];
+    tcellcounts_hst = new int[XS * YS * ZS];
+    tctids_hst      = new int[27 * MAX_SOLIDS * m_hst.nt]; // assume 1 triangle don't overlap more than 27 cells
+
+    CC(cudaMalloc(&tcellstarts_dev, XS * YS * ZS * sizeof(int)));
+    CC(cudaMalloc(&tcellcounts_dev, XS * YS * ZS * sizeof(int)));
+    CC(cudaMalloc(&tctids_dev, 27 * MAX_SOLIDS * m_dev.nt * sizeof(int)));
     
     CC(cudaMalloc(&ss_dev, MAX_SOLIDS * sizeof(Solid)));
     CC(cudaMalloc(&ss_bbdev, MAX_SOLIDS * sizeof(Solid)));
@@ -309,7 +319,8 @@ void init() {
   ss_dmphst = NULL;
   ss_dmpbbhst = NULL;
 
-  tcellstarts = tcellcounts = tctids = NULL;
+  tcellstarts_hst = tcellcounts_hst = tctids_hst = NULL;
+  tcellstarts_dev = tcellcounts_dev = tctids_dev = NULL;
   
   MC(MPI_Barrier(m::cart));
 }    
@@ -394,9 +405,13 @@ void close() {
   if (m_dev.tt) CC(cudaFree(m_dev.tt));
   if (m_dev.vv) CC(cudaFree(m_dev.vv));
 
-  if (tcellstarts) delete[] tcellstarts;
-  if (tcellcounts) delete[] tcellcounts;
-  if (tctids)      delete[] tctids;
+  if (tcellstarts_hst) delete[] tcellstarts_hst;
+  if (tcellcounts_hst) delete[] tcellcounts_hst;
+  if (tctids_hst)      delete[] tctids_hst;
+
+  if (tcellstarts_dev) CC(cudaFree(tcellstarts_dev));
+  if (tcellcounts_dev) CC(cudaFree(tcellcounts_dev));
+  if (tctids_dev)      CC(cudaFree(tctids_dev));
   
   if (ss_hst) delete[] ss_hst;
   if (ss_dev) CC(cudaFree(ss_dev));

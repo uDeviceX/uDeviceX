@@ -23,8 +23,8 @@ namespace mbounce
 
 #define debug_output
     
-    template <typename T>  T min2(T a, T b) {return a < b ? a : b;}
-    template <typename T>  T max2(T a, T b) {return a < b ? b : a;}
+    template <typename T>  T _DH_ min2(T a, T b) {return a < b ? a : b;}
+    template <typename T>  T _DH_ max2(T a, T b) {return a < b ? b : a;}
 
     static _DH_ void rvprev(const float *r1, const float *v1, const float *f0, /**/ float *r0, float *v0)
     {
@@ -318,6 +318,93 @@ namespace mbounce
         if ((++dstep) % steps_per_dump == 0)
         printf("%d success, %d nocross, %d wrong triangle, %d hfailed\n",
                bbstates_hst[0], bbstates_hst[1], bbstates_hst[2], bbstates_hst[3]);
+#endif
+    }
+
+    namespace mbkernels
+    {
+        __global__ void bounce_tcells(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
+                                      const int n, /**/ Particle *pp, Solid *ss)
+        {
+            const int i = threadIdx.x + blockDim.x * blockIdx.x;
+
+            if (i >= n) return;
+        
+            const Particle p1 = pp[i];
+            
+            Particle p0; rvprev(p1.r, p1.v, ff[i].f, /**/ p0.r, p0.v);
+
+            const int xcid_ = int (p1.r[X] + XS/2);
+            const int ycid_ = int (p1.r[Y] + YS/2);
+            const int zcid_ = int (p1.r[Z] + ZS/2);
+
+            float h = 2*dt; // must be higher than any valid result
+            float rw[3], vw[3];
+
+            int sid = -1;
+        
+            for (int zcid = max2(zcid_-1, 0); zcid <= min2(zcid_ + 1, ZS - 1); ++zcid)
+            for (int ycid = max2(ycid_-1, 0); ycid <= min2(ycid_ + 1, YS - 1); ++ycid)
+            for (int xcid = max2(xcid_-1, 0); xcid <= min2(xcid_ + 1, XS - 1); ++xcid)
+            {
+                const int cid = xcid + XS * (ycid + YS * zcid);
+                const int start = tcellstarts[cid];
+                const int count = tcellcounts[cid];
+                
+                for (int j = start; j < start + count; ++j)
+                {
+                    const int tid = tids[j];
+                    const int it  = tid % m.nt;
+                    const int mid = tid / m.nt;
+                    
+                    if (find_better_intersection(m.tt, it, i_pp, &p0, /*io*/ &h, /**/ rw, vw))
+                    sid = mid;
+                }
+            }
+
+            if (sid != -1)
+            {
+                Particle pn;
+                bounce_back(&p0, rw, vw, h, /**/ &pn);
+
+                float dP[3], dL[3];
+                lin_mom_solid(p1.v, pn.v, /**/ dP);
+                ang_mom_solid(ss[sid].com, rw, p0.v, pn.v, /**/ dL);
+                
+                pp[i] = pn;
+
+                atomicAdd(ss[sid].fo + X, dP[X]);
+                atomicAdd(ss[sid].fo + Y, dP[Y]);
+                atomicAdd(ss[sid].fo + Z, dP[Z]);
+
+                atomicAdd(ss[sid].to + X, dL[X]);
+                atomicAdd(ss[sid].to + Y, dL[Y]);
+                atomicAdd(ss[sid].to + Z, dL[Z]);
+            }
+        }
+    }
+
+    /* One node, no periodicity for now */
+    void bounce_tcells_dev(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
+                           const int n, /**/ Particle *pp, Solid *ss)
+    {
+#ifdef debug_output
+        if (dstep % steps_per_dump == 0)
+        {
+            const int zeros[5] = {0};
+            CC(cudaMemcpyToSymbol(bbstates_dev, zeros, 5*sizeof(int)));
+        }
+#endif
+
+        mbkernels::bounce_tcells <<< k_cnf(n) >>> (ff, m, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, ss);
+        
+#ifdef debug_output
+        if ((++dstep) % steps_per_dump == 0)
+        {
+            int bbinfos[5];
+            CC(cudaMemcpyFromSymbol(bbinfos, bbstates_dev, 5*sizeof(int)));
+            printf("%d success, %d nocross, %d wrong triangle, %d hfailed\n", bbinfos[0], bbinfos[1], bbinfos[2], bbinfos[3]);
+        }
 #endif
     }
 }
