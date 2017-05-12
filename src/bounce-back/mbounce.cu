@@ -358,15 +358,15 @@ namespace mbounce
     }
     
     /* One node, no periodicity for now */
-    void bounce_tcells_hst(const Force *ff, const int nps, const int ns, const Mesh m, const Particle *i_pp,
-                           const int *tcellstarts, const int *tcellcounts, const int *tids, /**/ Particle *pp, Solid *ss)
+    void bounce_tcells_hst(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
+                           const int n, /**/ Particle *pp, Solid *ss)
     {
 #ifdef debug_output
         if (dstep % steps_per_dump == 0)
         for (int c = 0; c < 4; ++c) bbstates[c] = 0;
 #endif
         
-        for (int i = 0; i < nps*ns; ++i)
+        for (int i = 0; i < n; ++i)
         {
             const Particle p1 = pp[i];
             
@@ -389,6 +389,9 @@ namespace mbounce
                 const int start = tcellstarts[cid];
                 const int count = tcellcounts[cid];
 
+                // printf("x, y, x cids: %d %d %d\n", xcid, ycid, zcid);
+                // printf("start %d count %d\n", start, count);
+                
                 for (int j = start; j < start + count; ++j)
                 {
                     const int tid = tids[j];
