@@ -22,12 +22,6 @@ namespace mbounce
 #define BBOX_MARGIN 0.1f
 
 #define debug_output
-
-#define revert_r(P) do {                        \
-        P.r[X] -= dt * P.v[X];                  \
-        P.r[Y] -= dt * P.v[Y];                  \
-        P.r[Z] -= dt * P.v[Z];                  \
-    } while(0)
     
     template <typename T>  T min2(T a, T b) {return a < b ? a : b;}
     template <typename T>  T max2(T a, T b) {return a < b ? b : a;}
@@ -211,6 +205,8 @@ namespace mbounce
     int bbstates_hst[5], dstep = 0;
     __device__ int bbstates_dev[5];
 #endif
+
+
     
     static _DH_ bool find_better_intersection(const int *tt, const int it, const Particle *i_pp, const Particle *p0, /* io */ float *h, /**/ float *rw, float *vw)
     {
@@ -219,11 +215,20 @@ namespace mbounce
         const int t2 = tt[3*it + 1];
         const int t3 = tt[3*it + 2];
 
+#define revert_r(P) do {                        \
+            P.r[X] -= dt * P.v[X];              \
+            P.r[Y] -= dt * P.v[Y];              \
+            P.r[Z] -= dt * P.v[Z];              \
+        } while(0)
+
         Particle pA = i_pp[t1]; revert_r(pA);
         Particle pB = i_pp[t2]; revert_r(pB);
         Particle pC = i_pp[t3]; revert_r(pC);
-           
+
+#undef revert_r
+        
         const BBState bbstate = intersect_triangle(pA.r, pB.r, pC.r, pA.v, pB.v, pC.v, p0, /* io */ h, /**/ rw, vw);
+
 #ifdef debug_output
 #if (defined (__CUDA_ARCH__) && (__CUDA_ARCH__ > 0))
         atomicAdd(bbstates_dev + bbstate, 1);
@@ -233,7 +238,7 @@ namespace mbounce
 #endif
         return bbstate == BB_SUCCESS;
     }
-
+    
     static _DH_ void bounce_back(const Particle *p0, const float *rw, const float *vw, const float h, /**/ Particle *pn)
     {
         pn->v[X] = 2 * vw[X] - p0->v[X];
@@ -314,6 +319,5 @@ namespace mbounce
         printf("%d success, %d nocross, %d wrong triangle, %d hfailed\n",
                bbstates_hst[0], bbstates_hst[1], bbstates_hst[2], bbstates_hst[3]);
 #endif
-    }    
-#undef revert_r
+    }
 }
