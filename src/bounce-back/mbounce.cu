@@ -388,9 +388,6 @@ namespace mbounce
                 const int cid = xcid + XS * (ycid + YS * zcid);
                 const int start = tcellstarts[cid];
                 const int count = tcellcounts[cid];
-
-                // printf("x, y, x cids: %d %d %d\n", xcid, ycid, zcid);
-                // printf("start %d count %d\n", start, count);
                 
                 for (int j = start; j < start + count; ++j)
                 {

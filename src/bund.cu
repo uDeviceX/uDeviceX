@@ -74,6 +74,7 @@
 #include "mesh.impl.h"
 
 #include "solid.impl.h"
+#include "tcells.h"
 #include "mbounce.h"
 
 #include "bbhalo.decl.h"

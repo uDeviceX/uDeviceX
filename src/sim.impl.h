@@ -194,13 +194,17 @@ void bounce() {
 void bounce_solid()
 {
     // bounce on host
-    mesh::bboxes_hst(i_pp_hst, m_hst.nv, nsolid, /**/ bboxes_hst);
+
+    // construct cell-lists
+    build_tcells_hst(m_hst, i_pp_hst, nsolid, /**/ tcellstarts, tcellcounts, tctids);
+    
+    // bounce particles
     
     CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
     CC(cudaMemcpy(s_ff_hst, s_ff, sizeof(Force)    * s_n, D2H));
 
-    mbounce::bounce_hst(s_ff_hst, s_n, nsolid, m_hst, i_pp_hst, bboxes_hst, /**/ s_pp_hst, ss_bbhst);
-
+    mbounce::bounce_tcells_hst(s_ff_hst, m_hst, i_pp_hst, tcellstarts, tcellcounts, tctids, s_n, /**/ s_pp_hst, ss_hst);
+    
     CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
 
     // for dump
@@ -226,9 +230,6 @@ void init_solid()
     rex::init();
     mpDeviceMalloc(&r_pp);
     mpDeviceMalloc(&r_ff);
-
-    bboxes_hst = new float[6 * MAX_SOLIDS];
-    CC(cudaMalloc(&bboxes_dev, 6 * MAX_SOLIDS * sizeof(float)));
     
     load_solid_mesh("data/sphere.ply");
     
@@ -236,6 +237,10 @@ void init_solid()
     ss_bbhst    = new Solid[MAX_SOLIDS];
     ss_dmphst   = new Solid[MAX_SOLIDS];
     ss_dmpbbhst = new Solid[MAX_SOLIDS];
+
+    tcellstarts = new int[XS * YS * ZS];
+    tcellcounts = new int[XS * YS * ZS];
+    tctids      = new int[27 * MAX_SOLIDS * m_hst.nt]; // assume 1 triangle don't overlap more than 27 cells
     
     CC(cudaMalloc(&ss_dev, MAX_SOLIDS * sizeof(Solid)));
     CC(cudaMalloc(&ss_bbdev, MAX_SOLIDS * sizeof(Solid)));
@@ -303,6 +308,8 @@ void init() {
 
   ss_dmphst = NULL;
   ss_dmpbbhst = NULL;
+
+  tcellstarts = tcellcounts = tctids = NULL;
   
   MC(MPI_Barrier(m::cart));
 }    
@@ -387,8 +394,9 @@ void close() {
   if (m_dev.tt) CC(cudaFree(m_dev.tt));
   if (m_dev.vv) CC(cudaFree(m_dev.vv));
 
-  if (bboxes_hst) delete[] bboxes_hst;
-  if (bboxes_dev) CC(cudaFree(bboxes_dev));
+  if (tcellstarts) delete[] tcellstarts;
+  if (tcellcounts) delete[] tcellcounts;
+  if (tctids)      delete[] tctids;
   
   if (ss_hst) delete[] ss_hst;
   if (ss_dev) CC(cudaFree(ss_dev));
