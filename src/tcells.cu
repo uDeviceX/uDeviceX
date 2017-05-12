@@ -110,7 +110,7 @@ static int scan(const int *counts, int *starts)
     return starts[NCELLS-1] + counts[NCELLS-1];
 }
     
-int build_tcells_hst(const Mesh m, const Particle *i_pp, const int ns, /**/ int *counts, int *starts, int *ids)
+int build_tcells_hst(const Mesh m, const Particle *i_pp, const int ns, /**/ int *starts, int *counts, int *ids)
 {
     countt(m.nt, m.tt, i_pp, ns, /**/ counts);
 
