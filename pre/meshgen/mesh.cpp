@@ -210,3 +210,14 @@ void scale_to_usphere(std::vector<float>& vv)
         x[2] *= sc;
     }
 }
+
+void scale(std::vector<float>& vv, const float sc)
+{
+    for (uint i = 0; i < vv.size()/3; ++i)
+    {
+        float *x = vv.data() + 3*i;
+        x[0] *= sc;
+        x[1] *= sc;
+        x[2] *= sc;
+    }
+}
