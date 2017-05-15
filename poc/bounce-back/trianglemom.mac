@@ -1,16 +1,33 @@
-kill(all);
+kill(all)$
 
-transf(u, v, a, b, c) := (1-u-v) * a + u * b + v * c;
-toGlobal(u,v) := transf(u, v, [xA, yA], [xB, yB], [xC, yC]);
+transf(u, v, a, b, c) := (1-u-v) * a + u * b + v * c$
+toGlobal(u,v) := transf(u, v, [xA, yA, zA], [xB, yB, zB], [xC, yC, zC])$
 
-T : toGlobal(u, v);
-cross(a,b) := a[1] * b[2] - a[2] * b[1];
-Jacobian : cross(diff(T, u), diff(T, v));
+T : toGlobal(u, v)$
+cross(a,b) := [a[3] * b[2] - a[3] * b[2], a[3] * b[1] - a[1] * b[3], a[1] * b[2] - a[2] * b[1]]$
+norm(a) := sqrt(a[1]*a[1] + a[2]*a[2] + a[3]*a[3])$
+
+n : cross(diff(T, u), diff(T, v));
+Jacobian : 1/2 * norm(n);
 
 
-x(u, v) := transf(u, v, xA, xB, xC) - transf(u0, v0, xA, xB, xC);
-y(u, v) := transf(u, v, yA, yB, yC) - transf(u0, v0, yA, yB, yC);
+x(u, v) := transf(u, v, xA, xB, xC) - transf(u0, v0, xA, xB, xC)$
+y(u, v) := transf(u, v, yA, yB, yC) - transf(u0, v0, yA, yB, yC)$
+z(u, v) := transf(u, v, zA, zB, zC) - transf(u0, v0, zA, zB, zC)$
 
+
+/* Inertia tensor */
 Ixx : Jacobian * integrate(integrate(x(u,v) * x(u,v), v, 0, 1-u), u, 0, 1);
-Ixx : Jacobian * integrate(integrate(x(u,v) * y(u,v), v, 0, 1-u), u, 0, 1);
-Ixx : Jacobian * integrate(integrate(y(u,v) * y(u,v), v, 0, 1-u), u, 0, 1);
+Ixy : Jacobian * integrate(integrate(x(u,v) * y(u,v), v, 0, 1-u), u, 0, 1);
+Ixz : Jacobian * integrate(integrate(x(u,v) * z(u,v), v, 0, 1-u), u, 0, 1);
+Iyy : Jacobian * integrate(integrate(y(u,v) * y(u,v), v, 0, 1-u), u, 0, 1);
+Iyz : Jacobian * integrate(integrate(y(u,v) * z(u,v), v, 0, 1-u), u, 0, 1);
+Izz : Jacobian * integrate(integrate(z(u,v) * z(u,v), v, 0, 1-u), u, 0, 1);
+
+Ixx: optimize(Ixx);
+Ixy: optimize(Ixy);
+Ixz: optimize(Ixz);
+Iyy: optimize(Iyy);
+Iyz: optimize(Iyz);
+Izz: optimize(Izz);
+
