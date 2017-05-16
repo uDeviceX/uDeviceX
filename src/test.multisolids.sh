@@ -1,12 +1,12 @@
 #### spheres in double poiseuille, no contact
 # nTEST: multisolid.t1
-# set -x
 # export PATH=../tools:$PATH
 # rm -rf bop h5 diag.txt solid_diag.txt
 # echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > ic_solid.txt
+# cp data/sphere.ply mesh_solid.ply
 # :
 # argp .conf.double.poiseuille.h     \
-#   -rbcs -rsph=4 -sbounce_back      \
+#   -rbcs -sbounce_back              \
 #   -tend=0.5 -steps_per_dump=100    \
 #   -pushtheflow -doublepoiseuille   \
 #   -hdf5field_dumps -part_dumps     \
@@ -21,13 +21,13 @@
 
 #### spheres in double poiseuille, contact
 # nTEST: multisolid.t2
-# set -x
 # export PATH=../tools:$PATH
 # rm -rf bop h5 diag.txt solid_diag.txt
 # echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > ic_solid.txt
+# cp data/sphere.ply mesh_solid.ply
 # :
 # argp .conf.double.poiseuille.h     \
-#   -rbcs -rsph=4 -sbounce_back      \
+#   -rbcs -sbounce_back              \
 #   -tend=0.5 -steps_per_dump=100    \
 #   -pushtheflow -doublepoiseuille   \
 #   -hdf5field_dumps -part_dumps     \
@@ -42,15 +42,13 @@
 
 #### ellipsoids in double poiseuille, contact
 # nTEST: multisolid.t3
-# set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt
 # echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > ic_solid.txt
+# cp data/ellipse.ply mesh_solid.ply
 # :
 # argp .conf.double.poiseuille.h     \
 #   -rbcs -sbounce_back              \
-#   -a2_ellipsoid=16 -b2_ellipsoid=4 \
-#   -c2_ellipsoid=10                 \
 #   -tend=0.5 -steps_per_dump=100    \
 #   -pushtheflow -doublepoiseuille   \
 #   -hdf5field_dumps -part_dumps     \
