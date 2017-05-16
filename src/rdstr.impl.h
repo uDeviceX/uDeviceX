@@ -1,5 +1,7 @@
 namespace rdstr
 {
+    enum {X, Y, Z};
+    
     /* decode neighbors linear index to "delta"
        0 -> { 0, 0, 0}
        1 -> { 1, 0, 0}
@@ -46,29 +48,54 @@ namespace rdstr
         _post_recvcnt();
     }
 
-    void pack_sendcnt(const Solid *ss_hst, const int ns)
+    template <bool hst>
+    void pack_sendcnt(const Solid *ss_hst, const Particle *pp, const int ns, const int nv)
     {
-        for (int i = 0; i < 27; ++i) sbuf[i].clear();
-        
         const int L[3] = {XS, YS, ZS};
         int vcode[3];
+
+        // decide where to put data
+        std::vector<int> dstindices[27];
         
         for (int i = 0; i < ns; ++i)
         {
-            const float *p = ss_hst[i].com;
+            const float *r = ss_hst[i].com;
             
             for (int c = 0; c < 3; ++c)
-            vcode[c] = (2 + (p[c] >= -L[c] / 2) + (p[c] >= L[c] / 2)) % 3;
+            vcode[c] = (2 + (r[c] >= -L[c] / 2) + (r[c] >= L[c] / 2)) % 3;
 
             const int code = vcode[0] + 3 * (vcode[1] + 3 * vcode[2]);
-            sbuf[code].push_back(ss_hst[i]);
+            dstindices[code].push_back(i);
         }
 
-        for (int i = 0; i < 27; ++i) send_counts[i] = sbuf[i].size();
+        // resize buufers
+        
+        for (int i = 0; i < 27; ++i)
+        {
+            const int c = dstindices[i].size();
+            send_counts[i] = c;
+            ssbuf[i].resize(c);
+            psbuf[i].resize(c*nv);
+        }
+        
         nstay = send_counts[0];
+
+        // send counts
         
         for (int i = 1; i < 27; ++i)
         MPI_Isend(send_counts + i, 1, MPI_INTEGER, rnk_ne[i], i + BT_C_RDSTR, cart, &sendcntreq[i - 1]);
+
+        // copy data into buffers
+
+        for (int i = 0; i < 27; ++i)
+        for (int j = 0; j < send_counts[i]; ++j)
+        {
+            const int id = dstindices[i][j];
+            ssbuf[i][j] = ss_hst[id];
+
+            if (hst)    memcpy(psbuf[i].data() + j*nv, pp + id*nv, nv*sizeof(Particle));
+            else CC(cudaMemcpy(psbuf[i].data() + j*nv, pp + id*nv, nv*sizeof(Particle), D2H));
+        }
     }
 
     int post()
@@ -84,32 +111,38 @@ namespace rdstr
         {
             int count = recv_counts[i];
             ncome += count;
-            rbuf[i].resize(count);
+            srbuf[i].resize(count);
         }
 
         MPI_Status statuses[26];
         MPI_Waitall(26, sendcntreq, statuses);
 
         for (int i = 1; i < 27; ++i)
-        if (rbuf[i].size() > 0)
+        if (srbuf[i].size() > 0)
         {
             MPI_Request request;
-            MPI_Irecv(rbuf[i].data(), rbuf[i].size(), Solid::datatype(), ank_ne[i], i + BT_P_RDSTR, cart, &request);
-            recvreq.push_back(request);
+            MPI_Irecv(srbuf[i].data(), srbuf[i].size(), Solid::datatype(), ank_ne[i], i + BT_S_RDSTR, cart, &request);
+            srecvreq.push_back(request);
+
+            MPI_Irecv(prbuf[i].data(), prbuf[i].size(), Particle::datatype(), ank_ne[i], i + BT_P_RDSTR, cart, &request);
+            precvreq.push_back(request);
         }
 
         for (int i = 1; i < 27; ++i)
-        if (sbuf[i].size() > 0)
+        if (ssbuf[i].size() > 0)
         {
             MPI_Request request;
-            MPI_Isend(sbuf[i].data(), sbuf[i].size(), Solid::datatype(), rnk_ne[i], i + BT_P_RDSTR, cart, &request);
-            sendreq.push_back(request);
+            MPI_Isend(ssbuf[i].data(), ssbuf[i].size(), Solid::datatype(), rnk_ne[i], i + BT_S_RDSTR, cart, &request);
+            ssendreq.push_back(request);
+
+            MPI_Isend(psbuf[i].data(), psbuf[i].size(), Particle::datatype(), rnk_ne[i], i + BT_P_RDSTR, cart, &request);
+            psendreq.push_back(request);
         }
         
         return nstay + ncome;
     }
 
-    void shift_copy(const Solid *ss_src, const int n, const int code, /**/ Solid *ss_dst)
+    static void shift_copy_ss(const Solid *ss_src, const int n, const int code, /**/ Solid *ss_dst)
     {
         const int d[3] = {(code + 1) % 3 - 1, (code / 3 + 1) % 3 - 1, (code / 9 + 1) % 3 - 1};
         const int L[3] = {XS, YS, ZS};
@@ -125,24 +158,69 @@ namespace rdstr
         }
     }
 
-    void unpack(const int ns, /**/ Solid *ss_hst)
+    static void shiftpp_hst(const int n, const float3 s, /**/ Particle *pp)
+    {
+        for (int i = 0; i < n; ++i)
+        {
+            float *r = pp[i].r;
+            r[X] += s.x; r[Y] += s.y; r[Z] += s.z;
+        }
+    }
+
+    static __global__ void shiftpp_dev(const int n, const float3 s, /**/ Particle *pp)
+    {
+        const int i = threadIdx.x + blockIdx.x * blockDim.x;
+        float *r = pp[i].r;
+        r[X] += s.x; r[Y] += s.y; r[Z] += s.z;
+    }
+
+    template <bool hst>
+    static void shift_copy_pp(const Particle *pp_src, const int n, const int code, /**/ Particle *pp_dst)
+    {
+        const int d[3] = {(code + 1) % 3 - 1, (code / 3 + 1) % 3 - 1, (code / 9 + 1) % 3 - 1};
+        const float3 shift = make_float3(-d[X] * XS, -d[Y] * YS, -d[Z] * ZS);
+
+        if (hst)
+        {
+            memcpy(pp_dst, pp_src, n*sizeof(Particle));
+            shiftpp_hst(n, shift, /**/ pp_dst);
+        }
+        else
+        {
+            CC(cudaMemcpy(pp_dst, pp_src, n*sizeof(Particle), H2D));
+            shiftpp_dev <<< k_cnf(n) >>>(n, shift, /**/ pp_dst);
+        }
+    }
+
+    template <bool hst>
+    void unpack(const int ns, const int nv, /**/ Solid *ss_hst, Particle *pp)
     {
         MPI_Status statuses[26];
-        MPI_Waitall(recvreq.size(), &recvreq.front(), statuses);
-        MPI_Waitall(sendreq.size(), &sendreq.front(), statuses);
-        recvreq.clear();
-        sendreq.clear();
+        MPI_Waitall(srecvreq.size(), &srecvreq.front(), statuses);
+        MPI_Waitall(ssendreq.size(), &ssendreq.front(), statuses);
+        srecvreq.clear(); ssendreq.clear();
+        
+        MPI_Waitall(precvreq.size(), &precvreq.front(), statuses);
+        MPI_Waitall(psendreq.size(), &psendreq.front(), statuses);
+        precvreq.clear(); psendreq.clear();
 
         // copy bulk
-        for (int j = 0; j < nstay; ++j) ss_hst[j] = sbuf[0][j];
+        for (int j = 0; j < nstay; ++j) ss_hst[j] = ssbuf[0][j];
+
+        if (hst)    memcpy(pp, psbuf[0].data(), nstay*nv*sizeof(Particle));
+        else CC(cudaMemcpy(pp, psbuf[0].data(), nstay*nv*sizeof(Particle), H2D));
+        
 
         // copy and shift halo
         for (int i = 1, start = nstay; i < 27; ++i)
         {
-            const int count = rbuf[i].size();
+            const int count = srbuf[i].size();
 
             if (count > 0)
-            shift_copy(rbuf[i].data(), count, i, /**/ ss_hst + start);
+            {
+                shift_copy_ss       (srbuf[i].data(), count, i, /**/ ss_hst + start);
+                shift_copy_pp <hst> (prbuf[i].data(), count * nv, i, /**/ pp + start * nv);
+            }
 
             start += count;
         }

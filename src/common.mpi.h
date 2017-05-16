@@ -7,7 +7,7 @@
  * CS: [C]ell [S]tart
  */
 
-#define STRIDE (1000)
+#define STRIDE (100)
 enum 
 {
     /* dpd.impl.h */
@@ -34,9 +34,10 @@ enum
     /* rdstr.impl.h */
     BT_C_RDSTR = BT_A_REX   + STRIDE,
     BT_P_RDSTR = BT_C_RDSTR + STRIDE,
+    BT_S_RDSTR = BT_P_RDSTR + STRIDE,
 
     /* bbhalo.impl.h */
-    BT_C_BBHALO = BT_P_RDSTR   + STRIDE,
+    BT_C_BBHALO = BT_S_RDSTR   + STRIDE,
     BT_S_BBHALO = BT_C_BBHALO  + STRIDE,
     BT_P_BBHALO = BT_S_BBHALO  + STRIDE,
     BT_S2_BBHALO = BT_P_BBHALO + STRIDE,

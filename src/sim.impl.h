@@ -18,20 +18,29 @@ static void distr_s() {
 static void distr_r()
 {
 #ifdef DEVICE_SOLID
+
     CC(cudaMemcpy(ss_hst, ss_dev, nsolid * sizeof(Solid), D2H));
-#endif
-    
-    rdstr::pack_sendcnt(ss_hst, nsolid);
+
+    rdstr::pack_sendcnt<false> (ss_hst, i_pp_dev, nsolid, m_dev.nv);
 
     nsolid = rdstr::post();
+
     r_n = nsolid * npsolid;
 
-    rdstr::unpack(nsolid, /**/ ss_hst);
+    rdstr::unpack<false> (nsolid, m_dev.nv, /**/ ss_hst, i_pp_dev);
 
-#ifdef DEVICE_SOLID
     CC(cudaMemcpy(ss_dev, ss_hst, nsolid * sizeof(Solid), H2D));
     solid::generate_dev(ss_dev, nsolid, r_rr0, npsolid, /**/ r_pp);
 #else
+
+    rdstr::pack_sendcnt(ss_hst, i_pp_hst, nsolid, m_hst.nv);
+    
+    nsolid = rdstr::post();
+
+    r_n = nsolid * npsolid;
+
+    rdstr::unpack<hst> (nsolid, m_hst.nv, /**/ ss_hst, i_pp_hst);
+
     solid::generate_hst(ss_hst, nsolid, r_rr0_hst, npsolid, /**/ r_pp_hst);
     CC(cudaMemcpy(r_pp, r_pp_hst, 3 * r_n * sizeof(float), H2D));
 #endif
