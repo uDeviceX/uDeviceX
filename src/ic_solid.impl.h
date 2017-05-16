@@ -217,7 +217,7 @@ namespace ic_solid
         int npsolid = 0;
 
         float bbox[6];
-        mesh::bbox(m.vv, m.nv, /**/ bbox);
+        mesh::get_bbox(m.vv, m.nv, /**/ bbox);
         
         nsolid = duplicate_PBC(bbox, nsolid, /**/ coms);
 

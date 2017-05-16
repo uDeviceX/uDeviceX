@@ -194,25 +194,65 @@ void bounce() {
 
 void bounce_solid()
 {
-#ifndef DEVICE_SOLID // bounce on host
+#ifndef DEVICE_SOLID
 
-    build_tcells_hst(m_hst, i_pp_hst, nsolid, /**/ tcellstarts_hst, tcellcounts_hst, tctids_hst);
+    mesh::get_bboxes_hst(i_pp_hst, m_hst.nv, nsolid, /**/ bboxes_hst);    
+    
+    /* exchange solid meshes with neighbours */
+    
+    bbhalo::pack_sendcnt <true> (ss_hst, nsolid, i_pp_hst, m_hst.nv, bboxes_hst);
+    const int nsbb = bbhalo::post(m_hst.nv);
+    bbhalo::unpack <true> (m_hst.nv, /**/ ss_bb_hst, i_pp_bb_hst);
+        
+    build_tcells_hst(m_hst, i_pp_bb_hst, nsbb, /**/ tcellstarts_hst, tcellcounts_hst, tctids_hst);
         
     CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
     CC(cudaMemcpy(s_ff_hst, s_ff, sizeof(Force)    * s_n, D2H));
 
-    mbounce::bounce_tcells_hst(s_ff_hst, m_hst, i_pp_hst, tcellstarts_hst, tcellcounts_hst, tctids_hst, s_n, /**/ s_pp_hst, ss_hst);
+    mbounce::bounce_tcells_hst(s_ff_hst, m_hst, i_pp_bb_hst, tcellstarts_hst, tcellcounts_hst, tctids_hst, s_n, /**/ s_pp_hst, ss_bb_hst);
     
     CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
 
+    // send back fo, to
+    
+    bbhalo::pack_back(ss_bb_hst);
+    bbhalo::post_back();
+    bbhalo::unpack_back(ss_hst);
+    
     // for dump
     memcpy(ss_dmpbbhst, ss_hst, nsolid * sizeof(Solid));
 
 #else // bounce on device
 
+    mesh::get_bboxes_dev(i_pp_dev, m_dev.nv, nsolid, /**/ bboxes_dev);
+
+    CC(cudaMemcpy(bboxes_hst, bboxes_dev, 6 * nsolid * sizeof(float), D2H));
+    CC(cudaMemcpy(ss_hst, ss_dev, nsolid * sizeof(Solid), D2H));
+
+    /* exchange solid meshes with neighbours */
+    
+    bbhalo::pack_sendcnt <false> (ss_hst, nsolid, i_pp_dev, m_dev.nv, bboxes_hst);
+    const int nsbb = bbhalo::post(m_dev.nv);
+    bbhalo::unpack <false> (m_dev.nv, /**/ ss_bb_hst, i_pp_bb_dev);
+
+    CC(cudaMemcpy(ss_bb_dev, ss_bb_hst, nsbb * sizeof(Solid), H2D));
+    
     build_tcells_dev(m_dev, i_pp_dev, nsolid, /**/ tcellstarts_dev, tcellcounts_dev, tctids_dev);
 
     mbounce::bounce_tcells_dev(s_ff, m_dev, i_pp_dev, tcellstarts_dev, tcellcounts_dev, tctids_dev, s_n, /**/ s_pp, ss_dev);
+
+    // send back fo, to
+
+    CC(cudaMemcpy(ss_bb_hst, ss_bb_dev, nsbb * sizeof(Solid), D2H));
+    
+    bbhalo::pack_back(ss_bb_hst);
+    bbhalo::post_back();
+    bbhalo::unpack_back(ss_hst);
+
+    CC(cudaMemcpy(ss_dev, ss_hst, nsolid * sizeof(Solid), H2D));
+    
+    // for dump
+    memcpy(ss_dmpbbhst, ss_hst, nsolid * sizeof(Solid));
     
 #endif
 }
@@ -240,7 +280,7 @@ void init_solid()
     load_solid_mesh("data/ellipse.ply");
     
     ss_hst      = new Solid[MAX_SOLIDS];
-    ss_bbhst    = new Solid[MAX_SOLIDS];
+    ss_bb_hst    = new Solid[MAX_SOLIDS];
     ss_dmphst   = new Solid[MAX_SOLIDS];
     ss_dmpbbhst = new Solid[MAX_SOLIDS];
 
@@ -253,12 +293,14 @@ void init_solid()
     CC(cudaMalloc(&tctids_dev, 27 * MAX_SOLIDS * m_dev.nt * sizeof(int)));
     
     CC(cudaMalloc(&ss_dev, MAX_SOLIDS * sizeof(Solid)));
-    CC(cudaMalloc(&ss_bbdev, MAX_SOLIDS * sizeof(Solid)));
+    CC(cudaMalloc(&ss_bb_dev, MAX_SOLIDS * sizeof(Solid)));
     
     CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
 
-    i_pp_hst = new Particle[MAX_PART_NUM];
-    CC(cudaMalloc(&i_pp_dev, MAX_PART_NUM * sizeof(Particle)));
+    i_pp_hst    = new Particle[MAX_PART_NUM];
+    i_pp_bb_hst = new Particle[MAX_PART_NUM];
+    CC(cudaMalloc(   &i_pp_dev, MAX_PART_NUM * sizeof(Particle)));
+    CC(cudaMalloc(&i_pp_bb_dev, MAX_PART_NUM * sizeof(Particle)));
 
     bboxes_hst = new float[6*MAX_SOLIDS];
     CC(cudaMalloc(&bboxes_dev, 6*MAX_SOLIDS * sizeof(float)));
@@ -316,8 +358,8 @@ void init() {
   ss_hst = NULL;
   ss_dev = NULL;
 
-  ss_bbhst = NULL;
-  ss_bbdev = NULL;
+  ss_bb_hst = NULL;
+  ss_bb_dev = NULL;
 
   ss_dmphst = NULL;
   ss_dmpbbhst = NULL;
@@ -416,8 +458,10 @@ void close() {
   if (tcellcounts_dev) CC(cudaFree(tcellcounts_dev));
   if (tctids_dev)      CC(cudaFree(tctids_dev));
 
-  if (i_pp_hst) delete[] i_pp_hst;
-  if (i_pp_dev) CC(cudaFree(i_pp_dev));
+  if (i_pp_hst)    delete[] i_pp_hst;
+  if (i_pp_bb_hst) delete[] i_pp_bb_hst;
+  if (i_pp_dev)    CC(cudaFree(i_pp_dev));
+  if (i_pp_bb_dev) CC(cudaFree(i_pp_bb_dev));
 
   if (bboxes_hst) delete[] bboxes_hst;
   if (bboxes_dev) CC(cudaFree(bboxes_dev));    
@@ -425,8 +469,8 @@ void close() {
   if (ss_hst) delete[] ss_hst;
   if (ss_dev) CC(cudaFree(ss_dev));
 
-  if (ss_bbhst) delete[] ss_bbhst;
-  if (ss_bbdev) CC(cudaFree(ss_bbdev));
+  if (ss_bb_hst) delete[] ss_bb_hst;
+  if (ss_bb_dev) CC(cudaFree(ss_bb_dev));
 
   if (ss_dmphst)   delete[] ss_dmphst;
   if (ss_dmpbbhst) delete[] ss_dmpbbhst;

@@ -30,7 +30,7 @@ namespace mesh
     }
 
     /* bbox: minx, maxx, miny, maxy, minz, maxz */
-    void bbox(const Particle *pp, const int n, /**/ float *bbox)
+    void get_bbox(const Particle *pp, const int n, /**/ float *bbox)
     {
         if (n == 0) return;
 
@@ -54,7 +54,7 @@ namespace mesh
         }
     }
 
-    void bbox(const float *rr, const int n, /**/ float *bbox)
+    void get_bbox(const float *rr, const int n, /**/ float *bbox)
     {
         if (n == 0) return;
 
@@ -78,13 +78,13 @@ namespace mesh
         }
     }
 
-    void bboxes_hst(const Particle *pp, const int np, const int ns, /**/ float *bboxes)
+    void get_bboxes_hst(const Particle *pp, const int nps, const int ns, /**/ float *bboxes)
     {
         for (int i = 0; i < ns; ++i)
-        bbox(pp, np, /**/ bboxes + 6 * i);
+        get_bbox(pp, nps, /**/ bboxes + 6 * i);
     }
 
-    void bboxes_dev(const Particle *pp, const int nps, const int ns, /**/ float *bboxes)
+    void get_bboxes_dev(const Particle *pp, const int nps, const int ns, /**/ float *bboxes)
     {
         minmax(pp, nps, ns, /**/ bboxes);
     }

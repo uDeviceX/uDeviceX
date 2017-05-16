@@ -35,16 +35,16 @@ namespace sim
     float *bboxes_hst; /* [b]ounding [b]oxes of solid mesh on host   */
     float *bboxes_dev; /* [b]ounding [b]oxes of solid mesh on device */
     
-    Particle *i_pp_hst; /* particles representing vertices of ALL meshes of solid [i]nterfaces */
-    Particle *i_pp_dev; /* device version of the above */
+    Particle *i_pp_hst, *i_pp_dev; /* particles representing vertices of ALL meshes of solid [i]nterfaces */
+    Particle *i_pp_bb_hst, *i_pp_bb_dev; /* buffers for BB multi-nodes */ 
     
     int nsolid;     /* number of solid objects       */
     int npsolid;    /* number of particles per solid */
     Solid *ss_hst;  /* solid infos on host           */
     Solid *ss_dev;  /* solid infos on device         */
 
-    Solid *ss_bbhst;  /* solid buffer for bounce back, host   */
-    Solid *ss_bbdev;  /* solid buffer for bounce back, device */
+    Solid *ss_bb_hst;  /* solid buffer for bounce back, host   */
+    Solid *ss_bb_dev;  /* solid buffer for bounce back, device */
 
     /* buffers of solids for dump; this is needed because we dump the BB F and T separetely */
     Solid *ss_dmphst, *ss_dmpbbhst;
