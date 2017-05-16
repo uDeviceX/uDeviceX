@@ -114,12 +114,11 @@ namespace bbhalo
     
         for (int i = 0; i < ns; ++i)
         {
-            const float *r0 = ss_hst[i].com;
             const float *bbox = bboxes + 6*i;
             
             auto hhcontrib = [&](int dx, int dy, int dz) {
             
-                const float r[3] = {r0[X] + bbox[dx], r0[Y] + bbox[2+dy], r0[Z] + bbox[4+dz]};
+                const float r[3] = {bbox[dx], bbox[2+dy], bbox[4+dz]};
 
                 for (int c = 0; c < 3; ++c)
                 vcode[c] = (2 + (r[c] >= -L[c] / 2 + M[c]) + (r[c] >= L[c] / 2 - M[c])) % 3;
