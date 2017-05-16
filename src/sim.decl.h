@@ -29,8 +29,11 @@ namespace sim
     Mesh m_hst; /* mesh of solid on host   */
     Mesh m_dev; /* mesh of solid on device */
 
-    int *tcellstarts_hst, *tcellcounts_hst, *tctids_hst; /* [t]riangle cell-lists on host */
-    int *tcellstarts_dev, *tcellcounts_dev, *tctids_dev; /* [t]riangle cell-lists on host */
+    int *tcellstarts_hst, *tcellcounts_hst, *tctids_hst; /* [t]riangle cell-lists on host   */
+    int *tcellstarts_dev, *tcellcounts_dev, *tctids_dev; /* [t]riangle cell-lists on device */
+
+    float *bboxes_hst; /* [b]ounding [b]oxes of solid mesh on host   */
+    float *bboxes_dev; /* [b]ounding [b]oxes of solid mesh on device */
     
     Particle *i_pp_hst; /* particles representing vertices of ALL meshes of solid [i]nterfaces */
     Particle *i_pp_dev; /* device version of the above */

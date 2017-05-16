@@ -208,7 +208,7 @@ void bounce_solid()
     // for dump
     memcpy(ss_dmpbbhst, ss_hst, nsolid * sizeof(Solid));
 
-#else
+#else // bounce on device
 
     build_tcells_dev(m_dev, i_pp_dev, nsolid, /**/ tcellstarts_dev, tcellcounts_dev, tctids_dev);
 
@@ -237,7 +237,7 @@ void init_solid()
     mpDeviceMalloc(&r_pp);
     mpDeviceMalloc(&r_ff);
     
-    load_solid_mesh("data/sphere.ply");
+    load_solid_mesh("data/ellipse.ply");
     
     ss_hst      = new Solid[MAX_SOLIDS];
     ss_bbhst    = new Solid[MAX_SOLIDS];
@@ -260,6 +260,9 @@ void init_solid()
     i_pp_hst = new Particle[MAX_PART_NUM];
     CC(cudaMalloc(&i_pp_dev, MAX_PART_NUM * sizeof(Particle)));
 
+    bboxes_hst = new float[6*MAX_SOLIDS];
+    CC(cudaMalloc(&bboxes_dev, 6*MAX_SOLIDS * sizeof(float)));
+    
     // generate models
 
     ic_solid::init("ic_solid.txt", m_hst, /**/ &nsolid, &npsolid, r_rr0_hst, ss_hst, &s_n, s_pp_hst, r_pp_hst);
@@ -412,6 +415,12 @@ void close() {
   if (tcellstarts_dev) CC(cudaFree(tcellstarts_dev));
   if (tcellcounts_dev) CC(cudaFree(tcellcounts_dev));
   if (tctids_dev)      CC(cudaFree(tctids_dev));
+
+  if (i_pp_hst) delete[] i_pp_hst;
+  if (i_pp_dev) CC(cudaFree(i_pp_dev));
+
+  if (bboxes_hst) delete[] bboxes_hst;
+  if (bboxes_dev) CC(cudaFree(bboxes_dev));    
   
   if (ss_hst) delete[] ss_hst;
   if (ss_dev) CC(cudaFree(ss_dev));
