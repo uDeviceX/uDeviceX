@@ -277,7 +277,7 @@ void init_solid()
     mpDeviceMalloc(&r_pp);
     mpDeviceMalloc(&r_ff);
     
-    load_solid_mesh("data/ellipse.ply");
+    load_solid_mesh("mesh_solid.ply");
     
     ss_hst      = new Solid[MAX_SOLIDS];
     ss_bb_hst    = new Solid[MAX_SOLIDS];

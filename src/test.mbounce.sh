@@ -3,6 +3,7 @@
 # export PATH=../tools:$PATH
 # rm -rf h5 bop diag.txt solid_diag.txt
 # echo -e "8 16 8" > ic_solid.txt
+# cp data/sphere.ply mesh_solid.ply
 # :
 # argp .conf.double.poiseuille.h      \
 #   -rbcs  -sbounce_back              \
