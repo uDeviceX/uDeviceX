@@ -250,9 +250,9 @@ void bounce_solid()
 
     CC(cudaMemcpy(ss_bb_dev, ss_bb_hst, nsbb * sizeof(Solid), H2D));
     
-    build_tcells_dev(m_dev, i_pp_dev, nsolid, /**/ tcellstarts_dev, tcellcounts_dev, tctids_dev);
+    build_tcells_dev(m_dev, i_pp_bb_dev, nsolid, /**/ tcellstarts_dev, tcellcounts_dev, tctids_dev);
 
-    mbounce::bounce_tcells_dev(s_ff, m_dev, i_pp_dev, tcellstarts_dev, tcellcounts_dev, tctids_dev, s_n, /**/ s_pp, ss_dev);
+    mbounce::bounce_tcells_dev(s_ff, m_dev, i_pp_bb_dev, tcellstarts_dev, tcellcounts_dev, tctids_dev, s_n, /**/ s_pp, ss_dev);
 
     // send back fo, to
 
