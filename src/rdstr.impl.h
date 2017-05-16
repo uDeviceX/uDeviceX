@@ -14,7 +14,7 @@ namespace rdstr
                   ((i) / 3 + 1) % 3 - 1,        \
                   ((i) / 9 + 1) % 3 - 1}
 
-    void _post_recvcnt()
+    static void _post_recvcnt()
     {
         recv_counts[0] = 0;
         for (int i = 1; i < 27; ++i)
@@ -26,7 +26,7 @@ namespace rdstr
     }
 
     /* generate ranks and anti-ranks of the neighbors */
-    void gen_ne(MPI_Comm cart, /* */ int* rnk_ne, int* ank_ne)
+    static void gen_ne(MPI_Comm cart, /* */ int* rnk_ne, int* ank_ne)
     {
         rnk_ne[0] = m::rank;
         for (int i = 1; i < 27; ++i)
@@ -145,7 +145,7 @@ namespace rdstr
 
     static void shift_copy_ss(const Solid *ss_src, const int n, const int code, /**/ Solid *ss_dst)
     {
-        const int d[3] = {(code + 1) % 3 - 1, (code / 3 + 1) % 3 - 1, (code / 9 + 1) % 3 - 1};
+        const int d[3] = i2del(code);
         const int L[3] = {XS, YS, ZS};
 
         for (int j = 0; j < n; ++j)
@@ -181,7 +181,7 @@ namespace rdstr
     template <bool hst>
     static void shift_copy_pp(const Particle *pp_src, const int n, const int code, /**/ Particle *pp_dst)
     {
-        const int d[3] = {(code + 1) % 3 - 1, (code / 3 + 1) % 3 - 1, (code / 9 + 1) % 3 - 1};
+        const int d[3] = i2del(code);
         const float3 shift = make_float3(-d[X] * XS, -d[Y] * YS, -d[Z] * ZS);
 
         if (hst)
