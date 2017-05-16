@@ -10,6 +10,7 @@
 #include "conf.default.h"
 #include "m.h"     /* MPI */
 #include "common.h"
+#include "common.mpi.h"
 #include "common.tmp.h"
 #include "io.h"
 

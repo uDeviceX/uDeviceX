@@ -18,7 +18,7 @@ namespace rdstr
         for (int i = 1; i < 27; ++i)
         {
             MPI_Request req;
-            MPI_Irecv(&recv_counts[i], 1, MPI_INTEGER, ank_ne[i], i + 1024, cart, &req);
+            MPI_Irecv(&recv_counts[i], 1, MPI_INTEGER, ank_ne[i], i + BT_C_RDSTR, cart, &req);
             recvcntreq.push_back(req);
         }
     }
@@ -68,7 +68,7 @@ namespace rdstr
         nstay = send_counts[0];
         
         for (int i = 1; i < 27; ++i)
-        MPI_Isend(send_counts + i, 1, MPI_INTEGER, rnk_ne[i], i + 1024, cart, &sendcntreq[i - 1]);
+        MPI_Isend(send_counts + i, 1, MPI_INTEGER, rnk_ne[i], i + BT_C_RDSTR, cart, &sendcntreq[i - 1]);
     }
 
     int post()
@@ -94,7 +94,7 @@ namespace rdstr
         if (rbuf[i].size() > 0)
         {
             MPI_Request request;
-            MPI_Irecv(rbuf[i].data(), rbuf[i].size(), Solid::datatype(), ank_ne[i], i + 1155, cart, &request);
+            MPI_Irecv(rbuf[i].data(), rbuf[i].size(), Solid::datatype(), ank_ne[i], i + BT_P_RDSTR, cart, &request);
             recvreq.push_back(request);
         }
 
@@ -102,7 +102,7 @@ namespace rdstr
         if (sbuf[i].size() > 0)
         {
             MPI_Request request;
-            MPI_Isend(sbuf[i].data(), sbuf[i].size(), Solid::datatype(), rnk_ne[i], i + 1155, cart, &request);
+            MPI_Isend(sbuf[i].data(), sbuf[i].size(), Solid::datatype(), rnk_ne[i], i + BT_P_RDSTR, cart, &request);
             sendreq.push_back(request);
         }
         

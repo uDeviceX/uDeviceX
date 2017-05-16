@@ -38,12 +38,12 @@ namespace wall {
 	MPI_Request reqrecv[26];
 	for (int i = 0; i < 26; ++i)
 	  MC(MPI_Irecv(remsizes + i, 1, MPI_INTEGER, dstranks[i],
-		       123 + recv_tags[i], m::cart, reqrecv + i));
+                   BT_C_WALL + recv_tags[i], m::cart, reqrecv + i));
 
 	int localsize = local.size();
 	MPI_Request reqsend[26];
 	for (int i = 0; i < 26; ++i)
-	  MC(MPI_Isend(&localsize, 1, MPI_INTEGER, dstranks[i], 123 + i,
+	  MC(MPI_Isend(&localsize, 1, MPI_INTEGER, dstranks[i], BT_C_WALL + i,
 		       m::cart, reqsend + i));
 	MPI_Status statuses[26];
 	MC(MPI_Waitall(26, reqrecv, statuses));
@@ -58,12 +58,12 @@ namespace wall {
 	MPI_Request reqrecv[26];
 	for (int i = 0; i < 26; ++i)
 	  MC(MPI_Irecv(remote[i].data(), remote[i].size() * 6, MPI_FLOAT,
-		       dstranks[i], 321 + recv_tags[i], m::cart,
+                   dstranks[i], BT_P_WALL + recv_tags[i], m::cart,
 		       reqrecv + i));
 	MPI_Request reqsend[26];
 	for (int i = 0; i < 26; ++i)
 	  MC(MPI_Isend(local.data(), local.size() * 6, MPI_FLOAT,
-		       dstranks[i], 321 + i, m::cart, reqsend + i));
+                   dstranks[i], BT_P_WALL + i, m::cart, reqsend + i));
 
 	MPI_Status statuses[26];
 	MC(MPI_Waitall(26, reqrecv, statuses));

@@ -95,8 +95,7 @@ void remote_interactions(int n, Force *a) {
 
 }
 
-void init0(int _basetag) {
-  basetag = _basetag;
+void init0() {
   firstpost = true;
   nactive = 26;
   safety_factor =
@@ -137,7 +136,7 @@ void init() {
   for (int i = 0; i < 26; i++) recvhalos[i] = new RecvHalo;
   for (int i = 0; i < 26; i++) sendhalos[i] = new SendHalo;
 
-  init0(0);
+  init0();
   init1();
 }
 
@@ -167,19 +166,19 @@ void post_expected_recv() {
   for (int i = 0, c = 0; i < 26; ++i) {
     if (recvhalos[i]->expected)
       MC(MPI_Irecv(recvhalos[i]->hbuf->D, recvhalos[i]->expected,
-		   Particle::datatype(), dstranks[i], basetag + recv_tags[i],
+		   Particle::datatype(), dstranks[i], BT_P_DPD + recv_tags[i],
 		   cart, recvreq + c++));
   }
   for (int i = 0, c = 0; i < 26; ++i)
     if (recvhalos[i]->expected)
       MC(MPI_Irecv(recvhalos[i]->hcellstarts->D,
 		   recvhalos[i]->hcellstarts->S, MPI_INTEGER, dstranks[i],
-		   basetag + recv_tags[i] + 350, cart, recvcellsreq + c++));
+		   BT_CS_DPD + recv_tags[i], cart, recvcellsreq + c++));
 
   for (int i = 0, c = 0; i < 26; ++i)
     if (recvhalos[i]->expected)
       MC(MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, dstranks[i],
-		   basetag + recv_tags[i] + 150, cart, recvcountreq + c++));
+                   BT_C_DPD + recv_tags[i], cart, recvcountreq + c++));
     else
       recv_counts[i] = 0;
 }
@@ -310,12 +309,12 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
       if (sendhalos[i]->expected)
 	MC(MPI_Isend(sendhalos[i]->hcellstarts->D,
 		     sendhalos[i]->hcellstarts->S, MPI_INTEGER, dstranks[i],
-		     basetag + i + 350, cart, sendcellsreq + c++));
+		     BT_CS_DPD + i, cart, sendcellsreq + c++));
 
     for (int i = 0, c = 0; i < 26; ++i)
       if (sendhalos[i]->expected)
 	MC(MPI_Isend(&sendhalos[i]->hbuf->S, 1, MPI_INTEGER, dstranks[i],
-		     basetag + i + 150, cart, sendcountreq + c++));
+                 BT_C_DPD + i, cart, sendcountreq + c++));
 
     nsendreq = 0;
 
@@ -327,7 +326,7 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
       int count = sendhalos[i]->hbuf->S;
 
       MC(MPI_Isend(sendhalos[i]->hbuf->D, expected, Particle::datatype(),
-		   dstranks[i], basetag + i, cart, sendreq + nsendreq));
+		   dstranks[i], BT_P_DPD + i, cart, sendreq + nsendreq));
 
       ++nsendreq;
 
@@ -341,7 +340,7 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
 	       m::rank, dstranks[i], d[0], d[1], d[2], difference, expected);
 
 	MC(MPI_Isend(sendhalos[i]->hbuf->D + expected, difference,
-		     Particle::datatype(), dstranks[i], basetag + i + 555,
+		     Particle::datatype(), dstranks[i], BT_P2_DPD + i,
 		     cart, sendreq + nsendreq));
 	++nsendreq;
       }
@@ -376,7 +375,7 @@ void recv() {
       recvhalos[i]->dbuf->resize(count);
       MPI_Status status;
       MPI_Recv(recvhalos[i]->hbuf->D + expected, difference,
-	       Particle::datatype(), dstranks[i], basetag + recv_tags[i] + 555,
+	       Particle::datatype(), dstranks[i], BT_P2_DPD + recv_tags[i],
 	       cart, &status);
     }
   }

@@ -80,7 +80,7 @@ namespace bbhalo
         for (int i = 1; i < 27; ++i)
         {
             MPI_Request req;
-            MPI_Irecv(&recv_counts[i], 1, MPI_INTEGER, ank_ne[i], i + 51024, cart, &req);
+            MPI_Irecv(&recv_counts[i], 1, MPI_INTEGER, ank_ne[i], i + BT_C_BBHALO, cart, &req);
             recvcntreq.push_back(req);
         }
     }
@@ -166,7 +166,7 @@ namespace bbhalo
         for (int i = 0; i < 27; ++i) send_counts[i] = sshalo[i].size();
 
         for (int i = 1; i < 27; ++i)
-        MPI_Isend(send_counts + i, 1, MPI_INTEGER, rnk_ne[i], i + 51024, cart, &sendcntreq[i - 1]);
+        MPI_Isend(send_counts + i, 1, MPI_INTEGER, rnk_ne[i], i + BT_C_BBHALO, cart, &sendcntreq[i - 1]);
     }
 
     int post(const int nps)
@@ -193,10 +193,10 @@ namespace bbhalo
         if (srhalo[i].size() > 0)
         {
             MPI_Request request;
-            MPI_Irecv(srhalo[i].data(), srhalo[i].size(), Solid::datatype(), ank_ne[i], i + 51155, cart, &request);
+            MPI_Irecv(srhalo[i].data(), srhalo[i].size(), Solid::datatype(), ank_ne[i], i + BT_S_BBHALO, cart, &request);
             srecvreq.push_back(request);
 
-            MPI_Irecv(prhalo[i].data(), prhalo[i].size(), Particle::datatype(), ank_ne[i], i + 61155, cart, &request);
+            MPI_Irecv(prhalo[i].data(), prhalo[i].size(), Particle::datatype(), ank_ne[i], i + BT_P_BBHALO, cart, &request);
             precvreq.push_back(request);
         }
 
@@ -204,10 +204,10 @@ namespace bbhalo
         if (sshalo[i].size() > 0)
         {
             MPI_Request request;
-            MPI_Isend(sshalo[i].data(), sshalo[i].size(), Solid::datatype(), rnk_ne[i], i + 51155, cart, &request);
+            MPI_Isend(sshalo[i].data(), sshalo[i].size(), Solid::datatype(), rnk_ne[i], i + BT_S_BBHALO, cart, &request);
             ssendreq.push_back(request);
 
-            MPI_Isend(pshalo[i].data(), pshalo[i].size(), Particle::datatype(), rnk_ne[i], i + 61155, cart, &request);
+            MPI_Isend(pshalo[i].data(), pshalo[i].size(), Particle::datatype(), rnk_ne[i], i + BT_P_BBHALO, cart, &request);
             psendreq.push_back(request);
         }
         
@@ -292,7 +292,7 @@ namespace bbhalo
         if (srhalo[i].size() > 0)
         {
             MPI_Request request;
-            MPI_Irecv(srhalo[i].data(), srhalo[i].size(), Solid::datatype(), rnk_ne[i], i + 51255, cart, &request);
+            MPI_Irecv(srhalo[i].data(), srhalo[i].size(), Solid::datatype(), rnk_ne[i], i + BT_S2_BBHALO, cart, &request);
             //printf("[%d] halo %d recv %d\n", m::rank, i, srhalo[i].size());
             srecvreq.push_back(request);
         }
@@ -301,7 +301,7 @@ namespace bbhalo
         if (sshalo[i].size() > 0)
         {
             MPI_Request request;
-            MPI_Isend(sshalo[i].data(), sshalo[i].size(), Solid::datatype(), ank_ne[i], i + 51255, cart, &request);
+            MPI_Isend(sshalo[i].data(), sshalo[i].size(), Solid::datatype(), ank_ne[i], i + BT_S2_BBHALO, cart, &request);
             ssendreq.push_back(request);
         }
     }

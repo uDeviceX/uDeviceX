@@ -25,7 +25,6 @@ int nsendreq;
 int3 halosize[26];
 float safety_factor;
 cudaEvent_t evfillall, evuploaded, evdownloaded;
-int basetag;
 
 struct SendHalo {
   SendHalo() {

@@ -1,6 +1,5 @@
 /*** from redistribute-particles.h ***/
 namespace sdstr {
-  int basetag = 950;
   MPI_Comm cart;
 
   float safety_factor = 1.2;

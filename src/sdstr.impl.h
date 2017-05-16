@@ -77,14 +77,14 @@ namespace sdstr {
     for(int i = 1, c = 0; i < 27; ++i)
       if (default_message_sizes[i])
 	MC(MPI_Irecv(recv_sizes + i, 1, MPI_INTEGER, neighbor_ranks[i],
-		     basetag + recv_tags[i], cart, recvcountreq + c++));
+                 BT_C_SDSTR + recv_tags[i], cart, recvcountreq + c++));
       else
 	recv_sizes[i] = 0;
 
     for(int i = 1, c = 0; i < 27; ++i)
       if (default_message_sizes[i])
 	MC( MPI_Irecv(pinnedhost_recvbufs[i], default_message_sizes[i] * 6, MPI_FLOAT,
-		      neighbor_ranks[i], basetag + recv_tags[i] + 333, cart, recvmsgreq + c++) );
+                  neighbor_ranks[i], BT_P_SDSTR + recv_tags[i], cart, recvmsgreq + c++) );
   }
 
   void _adjust_send_buffers(int requested_capacities[27]) {
@@ -210,7 +210,7 @@ namespace sdstr {
       for(int i = 1; i < 27; ++i)
 	if (default_message_sizes[i])
 	  MC(MPI_Isend(send_sizes + i, 1, MPI_INTEGER, neighbor_ranks[i],
-		       basetag + i, cart, sendcountreq + c++));
+                   BT_C_SDSTR + i, cart, sendcountreq + c++));
     }
     CC(cudaEventSynchronize(evpacking));
     if (!firstcall) _waitall(sendmsgreq, nsendmsgreq);
@@ -219,7 +219,7 @@ namespace sdstr {
     for(int i = 1; i < 27; ++i)
       if (default_message_sizes[i]) {
 	MC(MPI_Isend(pinnedhost_sendbufs[i], default_message_sizes[i] * 6, MPI_FLOAT,
-		     neighbor_ranks[i], basetag + i + 333,
+		     neighbor_ranks[i], BT_P_SDSTR + i,
 		     cart, sendmsgreq + nsendmsgreq) );
 
 	++nsendmsgreq;
@@ -230,7 +230,7 @@ namespace sdstr {
 	int count = send_sizes[i] - default_message_sizes[i];
 
 	MC( MPI_Isend(pinnedhost_sendbufs[i] + default_message_sizes[i] * 6, count * 6, MPI_FLOAT,
-		      neighbor_ranks[i], basetag + i + 666, cart, sendmsgreq + nsendmsgreq) );
+		      neighbor_ranks[i], BT_P2_SDSTR + i, cart, sendmsgreq + nsendmsgreq) );
 	++nsendmsgreq;
       }
   }
@@ -306,7 +306,7 @@ namespace sdstr {
 
 	MPI_Status status;
 	MC( MPI_Recv(pinnedhost_recvbufs[i] + default_message_sizes[i] * 6, count * 6, MPI_FLOAT,
-		     neighbor_ranks[i], basetag + recv_tags[i] + 666, cart, &status) );
+		     neighbor_ranks[i], BT_P2_SDSTR + recv_tags[i], cart, &status) );
       }
 
 
