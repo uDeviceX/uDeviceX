@@ -130,25 +130,26 @@ namespace mbounce
         }
 
         // find intersection time with plane
-
-        const real dv[3] = diff(v0, vs1);
-        
-        const real a = dot(ntt, dv);
-        const real b = dot(ntt, dr0) + dot(nt, dv);
-        const real c = dot(nt, dr0) + dot(n0, dv);
-        const real d = dot(n0, dr0);
-
         real hl;
-        
-        if (!cubic_root(a, b, c, d, &hl))
+
         {
-            // printf("failed : %g %g %g %g\n", a, b, c, d);
-            return BB_HFAIL;
+            const real dv[3] = diff(v0, vs1);
+        
+            const real a = dot(ntt, dv);
+            const real b = dot(ntt, dr0) + dot(nt, dv);
+            const real c = dot(nt, dr0) + dot(n0, dv);
+            const real d = dot(n0, dr0);
+
+        
+        
+            if (!cubic_root(a, b, c, d, &hl))
+            {
+                // printf("failed : %g %g %g %g\n", a, b, c, d);
+                return BB_HFAIL;
+            }
         }
 
-        if (hl < *h)
-        *h = hl;
-        else
+        if (hl > *h)
         return BB_HNEXT;
 
         const real rwl[3] = {r0[X] + hl * v0[X],
@@ -156,38 +157,39 @@ namespace mbounce
                               r0[Z] + hl * v0[Z]};
 
         // check if inside triangle
-        {
-            const real g[3] = {rwl[X] - s10[X] - hl * vs1[X],
-                               rwl[Y] - s10[Y] - hl * vs1[Y],
-                               rwl[Z] - s10[Z] - hl * vs1[Z]};
+        const real g[3] = {rwl[X] - s10[X] - hl * vs1[X],
+                           rwl[Y] - s10[Y] - hl * vs1[Y],
+                           rwl[Z] - s10[Z] - hl * vs1[Z]};
 
-            const real a1_[3] = apxb(a1, hl, at1);
-            const real a2_[3] = apxb(a2, hl, at2);
+        const real a1_[3] = apxb(a1, hl, at1);
+        const real a2_[3] = apxb(a2, hl, at2);
             
-            const real ga1 = dot(g, a1_);
-            const real ga2 = dot(g, a2_);
-            const real a11 = dot(a1_, a1_);
-            const real a12 = dot(a1_, a2_);
-            const real a22 = dot(a2_, a2_);
+        const real ga1 = dot(g, a1_);
+        const real ga2 = dot(g, a2_);
+        const real a11 = dot(a1_, a1_);
+        const real a12 = dot(a1_, a2_);
+        const real a22 = dot(a2_, a2_);
 
-            const real fac = 1.f / (a11*a22 - a12*a12);
+        const real fac = 1.f / (a11*a22 - a12*a12);
             
-            const real u = (ga1 * a22 - ga2 * a12) * fac;
-            const real v = (ga2 * a11 - ga1 * a12) * fac;
+        const real u = (ga1 * a22 - ga2 * a12) * fac;
+        const real v = (ga2 * a11 - ga1 * a12) * fac;
 
-            if (!((u >= 0) && (v >= 0) && (u+v <= 1)))
-            return BB_WTRIANGLE;
+        if (!((u >= 0) && (v >= 0) && (u+v <= 1)))
+        return BB_WTRIANGLE;
 
-            rw[X] = rwl[X];
-            rw[Y] = rwl[Y];
-            rw[Z] = rwl[Z];
+        *h = hl;
+        
+        rw[X] = rwl[X];
+        rw[Y] = rwl[Y];
+        rw[Z] = rwl[Z];
 
-            // linear interpolation of velocity vw
-            const real w = 1 - u - v;
-            vw[X] = w * vs1[X] + u * vs2[X] + v * vs3[X];
-            vw[Y] = w * vs1[Y] + u * vs2[Y] + v * vs3[Y];
-            vw[Z] = w * vs1[Z] + u * vs2[Z] + v * vs3[Z];
-        }
+        // linear interpolation of velocity vw
+        const real w = 1 - u - v;
+        vw[X] = w * vs1[X] + u * vs2[X] + v * vs3[X];
+        vw[Y] = w * vs1[Y] + u * vs2[Y] + v * vs3[Y];
+        vw[Z] = w * vs1[Z] + u * vs2[Z] + v * vs3[Z];
+    
         return BB_SUCCESS;
     }
 
