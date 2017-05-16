@@ -98,7 +98,7 @@ namespace rdstr
         }
     }
 
-    int post()
+    int post(const int nv)
     {
         {
             MPI_Status statuses[recvcntreq.size()];
@@ -112,6 +112,7 @@ namespace rdstr
             int count = recv_counts[i];
             ncome += count;
             srbuf[i].resize(count);
+            prbuf[i].resize(count * nv);
         }
 
         MPI_Status statuses[26];

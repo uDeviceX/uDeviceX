@@ -23,7 +23,7 @@ static void distr_r()
 
     rdstr::pack_sendcnt<false> (ss_hst, i_pp_dev, nsolid, m_dev.nv);
 
-    nsolid = rdstr::post();
+    nsolid = rdstr::post(m_dev.nv);
 
     r_n = nsolid * npsolid;
 
@@ -35,7 +35,7 @@ static void distr_r()
 
     rdstr::pack_sendcnt(ss_hst, i_pp_hst, nsolid, m_hst.nv);
     
-    nsolid = rdstr::post();
+    nsolid = rdstr::post(m_hst.nv);
 
     r_n = nsolid * npsolid;
 
