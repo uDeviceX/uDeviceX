@@ -21,7 +21,7 @@ namespace mbounce
 
 #define BBOX_MARGIN 0.1f
 
-    //#define debug_output
+#define debug_output
     
     template <typename T>  T _DH_ min2(T a, T b) {return a < b ? a : b;}
     template <typename T>  T _DH_ max2(T a, T b) {return a < b ? b : a;}
@@ -150,17 +150,16 @@ namespace mbounce
         *h = hl;
         else
         return BB_HNEXT;
-        
-        rw[X] = r0[X] + hl * v0[X];
-        rw[Y] = r0[Y] + hl * v0[Y];
-        rw[Z] = r0[Z] + hl * v0[Z];
+
+        const real rwl[3] = {r0[X] + hl * v0[X],
+                              r0[Y] + hl * v0[Y],
+                              r0[Z] + hl * v0[Z]};
 
         // check if inside triangle
-
         {
-            const real g[3] = {rw[X] - s10[X] - hl * vs1[X],
-                                rw[Y] - s10[Y] - hl * vs1[Y],
-                                rw[Z] - s10[Z] - hl * vs1[Z]};
+            const real g[3] = {rwl[X] - s10[X] - hl * vs1[X],
+                               rwl[Y] - s10[Y] - hl * vs1[Y],
+                               rwl[Z] - s10[Z] - hl * vs1[Z]};
 
             const real a1_[3] = apxb(a1, hl, at1);
             const real a2_[3] = apxb(a2, hl, at2);
@@ -178,6 +177,10 @@ namespace mbounce
 
             if (!((u >= 0) && (v >= 0) && (u+v <= 1)))
             return BB_WTRIANGLE;
+
+            rw[X] = rwl[X];
+            rw[Y] = rwl[Y];
+            rw[Z] = rwl[Z];
 
             // linear interpolation of velocity vw
             const real w = 1 - u - v;
