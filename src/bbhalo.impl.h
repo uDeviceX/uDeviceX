@@ -21,7 +21,7 @@ namespace bbhalo
         }
     }
 
-    void _shift_copy(const Solid *ss_src, const int n, const int code, /**/ Solid *ss_dst)
+    static void _shift_copy_ss(const Solid *ss_src, const int n, const int code, /**/ Solid *ss_dst)
     {
         const int d[3] = {(code + 1) % 3 - 1, (code / 3 + 1) % 3 - 1, (code / 9 + 1) % 3 - 1};
         const int L[3] = {XS, YS, ZS};
@@ -35,6 +35,43 @@ namespace bbhalo
 
             ss_dst[j] = snew;
         }
+    }
+
+    static void _shift_hst(const float3 s, const int n, /**/ Particle *pp)
+    {
+        for (int i = 0; i < n; ++i)
+        {
+            float *r = pp[i].r;
+            r[X] += s.x; r[Y] += s.y; r[Z] += s.z;
+        }
+    }
+
+    static __global__ void _shift_dev(const float3 s, const int n, /**/ Particle *pp)
+    {
+        const int i = threadIdx.x + blockIdx.x * blockDim.x;
+        if (i < n)
+        {
+            float *r = pp[i].r;
+            r[X] += s.x; r[Y] += s.y; r[Z] += s.z;
+        }
+    }
+
+    template <bool tohst>
+    static void _shift_copy_pp(const Particle *ss_src, const int n, const int nps, const int code, /**/ Particle *ss_dst)
+    {
+        const int d[3] = {(code + 1) % 3 - 1, (code / 3 + 1) % 3 - 1, (code / 9 + 1) % 3 - 1};
+        const float3 shift = make_float3(XS * d[X], YS * d[Y], ZS * d[Z]);
+
+        if (tohst)
+        {
+            memcpy(ss_dst, ss_src, n*nps*sizeof(Particle));
+            _shift_hst(shift, n*nps, /**/ ss_dst); 
+        }
+        else
+        {
+            CC(cudaMemcpy(ss_dst, ss_src, n*nps*sizeof(Particle), H2D));
+            _shift_dev <<< k_cnf(n*nps) >>> (shift, n*nps, /**/ ss_dst); 
+        }        
     }
 
     void _post_recvcnt()
@@ -63,11 +100,12 @@ namespace bbhalo
     }
 
 
-    void pack_sendcnt(const Solid *ss_hst, const int ns, const float *bboxes)
+    template <bool fromhst>
+    void pack_sendcnt(const Solid *ss_hst, const int ns, const Particle *pp, const int nps, const float *bboxes)
     {
-        for (int i = 0; i < 27; ++i) shalo[i].clear();
+        for (int i = 0; i < 27; ++i) sshalo[i].clear();
 
-        std::vector<int> sids[27];
+        std::vector<int> hhindices[27]; /* who will be sent in which buffer */
     
         const int L[3] = {XS, YS, ZS};
         const float M[3] = {XMARGIN_BB, YMARGIN_BB, ZMARGIN_BB};
@@ -77,10 +115,9 @@ namespace bbhalo
         for (int i = 0; i < ns; ++i)
         {
             const float *r0 = ss_hst[i].com;
-            const int sid = ss_hst[i].id;
             const float *bbox = bboxes + 6*i;
             
-            auto vcontrib = [&](int dx, int dy, int dz) {
+            auto hhcontrib = [&](int dx, int dy, int dz) {
             
                 const float r[3] = {r0[X] + bbox[dx], r0[Y] + bbox[2+dy], r0[Z] + bbox[4+dz]};
 
@@ -89,34 +126,51 @@ namespace bbhalo
 
                 const int code = vcode[0] + 3 * (vcode[1] + 3 * vcode[2]);
 
-                if (sids[code].size() == 0 || sids[code].back() != sid)
-                {
-                    sids[code].push_back(sid);
-                    shalo[code].push_back(ss_hst[i]);
-                }
+                if (hhindices[code].size() == 0 || hhindices[code].back() != i)
+                hhindices[code].push_back(i);
             };
 
-            vcontrib(0, 0, 0);
-            vcontrib(0, 0, 1);
-            vcontrib(0, 1, 0);
-            vcontrib(0, 1, 1);
+            hhcontrib(0, 0, 0);
+            hhcontrib(0, 0, 1);
+            hhcontrib(0, 1, 0);
+            hhcontrib(0, 1, 1);
 
-            vcontrib(1, 0, 0);
-            vcontrib(1, 0, 1);
-            vcontrib(1, 1, 0);
-            vcontrib(1, 1, 1);
+            hhcontrib(1, 0, 0);
+            hhcontrib(1, 0, 1);
+            hhcontrib(1, 1, 0);
+            hhcontrib(1, 1, 1);
 
-            assert(sids[0].back() == sid);
-            assert(sids[0].size() == i+1);
+            assert(hhindices[0].back() == i);
+            assert(hhindices[0].size() == i+1);
         }
 
-        for (int i = 0; i < 27; ++i) send_counts[i] = shalo[i].size();
+        // resize packs
+        for (int i = 0; i < 27; ++i)
+        {
+            const int sz = hhindices[i].size();
+            sshalo[i].resize(sz);
+            pshalo[i].resize(sz*nps);
+        }
+        
+        // copy data into packs
+        for (int i = 0; i < 27; ++i)
+        for (uint j = 0; j < hhindices[i].size(); ++j)
+        {
+            const int id = hhindices[i][j];
+            sshalo[i][j] = ss_hst[id];
+
+            if (fromhst) memcpy(pshalo[i].data() + j*nps, pp + id*nps, nps*sizeof(Particle));
+            else  CC(cudaMemcpy(pshalo[i].data() + j*nps, pp + id*nps, nps*sizeof(Particle), D2H));
+        }
+
+        // send counts
+        for (int i = 0; i < 27; ++i) send_counts[i] = sshalo[i].size();
 
         for (int i = 1; i < 27; ++i)
         MPI_Isend(send_counts + i, 1, MPI_INTEGER, rnk_ne[i], i + 51024, cart, &sendcntreq[i - 1]);
     }
 
-    int post()
+    int post(const int nps)
     {
         {
             MPI_Status statuses[recvcntreq.size()];
@@ -124,57 +178,77 @@ namespace bbhalo
             recvcntreq.clear();
         }
 
-        int ncome = shalo[0].size(); // bulk
-        for (int i = 1; i < 27; ++i)
+        int ncome = sshalo[0].size(); // bulk
+        for (int i = 1; i < 27; ++i)  // halo
         {
             int count = recv_counts[i];
             ncome += count;
-            rhalo[i].resize(count);
+            srhalo[i].resize(count);
+            prhalo[i].resize(count*nps);
         }
 
         MPI_Status statuses[26];
         MPI_Waitall(26, sendcntreq, statuses);
 
         for (int i = 1; i < 27; ++i)
-        if (rhalo[i].size() > 0)
+        if (srhalo[i].size() > 0)
         {
             MPI_Request request;
-            MPI_Irecv(rhalo[i].data(), rhalo[i].size(), Solid::datatype(), ank_ne[i], i + 51155, cart, &request);
-            recvreq.push_back(request);
+            MPI_Irecv(srhalo[i].data(), srhalo[i].size(), Solid::datatype(), ank_ne[i], i + 51155, cart, &request);
+            srecvreq.push_back(request);
+
+            MPI_Irecv(prhalo[i].data(), prhalo[i].size(), Particle::datatype(), ank_ne[i], i + 61155, cart, &request);
+            precvreq.push_back(request);
         }
 
         for (int i = 1; i < 27; ++i)
-        if (shalo[i].size() > 0)
+        if (sshalo[i].size() > 0)
         {
             MPI_Request request;
-            MPI_Isend(shalo[i].data(), shalo[i].size(), Solid::datatype(), rnk_ne[i], i + 51155, cart, &request);
-            sendreq.push_back(request);
+            MPI_Isend(sshalo[i].data(), sshalo[i].size(), Solid::datatype(), rnk_ne[i], i + 51155, cart, &request);
+            ssendreq.push_back(request);
+
+            MPI_Isend(pshalo[i].data(), pshalo[i].size(), Particle::datatype(), rnk_ne[i], i + 61155, cart, &request);
+            psendreq.push_back(request);
         }
         
         return ncome;
     }
 
-    void unpack(/**/ Solid *ss_buf)
+    template <bool tohst>
+    void unpack(const int nps, /**/ Solid *ss_buf, Particle *pp_buf)
     {
         MPI_Status statuses[26];
-        MPI_Waitall(recvreq.size(), &recvreq.front(), statuses);
-        MPI_Waitall(sendreq.size(), &sendreq.front(), statuses);
-        recvreq.clear();
-        sendreq.clear();
-
-        const int nbulk = shalo[0].size();
+        MPI_Waitall(srecvreq.size(), &srecvreq.front(), statuses);
+        MPI_Waitall(ssendreq.size(), &ssendreq.front(), statuses);
+        srecvreq.clear(); ssendreq.clear();
+        
+        MPI_Waitall(precvreq.size(), &precvreq.front(), statuses);
+        MPI_Waitall(psendreq.size(), &psendreq.front(), statuses);
+        precvreq.clear(); psendreq.clear();
+        
+        const int nbulk = sshalo[0].size();
     
         // copy bulk
-        for (int j = 0; j < nbulk; ++j) ss_buf[j] = shalo[0][j];
+        for (int j = 0; j < nbulk; ++j)
+        {
+            ss_buf[j] = sshalo[0][j];
+
+            if (tohst)  memcpy(pp_buf + j*nps, pshalo[0].data() + j*nps, nps*sizeof(Particle));
+            else CC(cudaMemcpy(pp_buf + j*nps, pshalo[0].data() + j*nps, nps*sizeof(Particle), H2D));
+        }
 
         // copy and shift halo
         for (int i = 1, start = nbulk; i < 27; ++i)
         {
-            const int count = rhalo[i].size();
+            const int count = srhalo[i].size();
 
             if (count > 0)
-            _shift_copy(rhalo[i].data(), count, i, /**/ ss_buf + start);
-
+            {
+                _shift_copy_ss(srhalo[i].data(), count, i, /**/ ss_buf + start);
+                _shift_copy_pp <tohst> (prhalo[i].data(), count, nps, i, /**/ pp_buf + start * nps);
+            }
+            
             start += count;
         }
         _post_recvcnt();
@@ -184,15 +258,15 @@ namespace bbhalo
     {
         // prepare recv buffers
 
-        for (int i = 1; i < 27; ++i) rhalo[i].resize(send_counts[i]);
+        for (int i = 1; i < 27; ++i) srhalo[i].resize(send_counts[i]);
         
         // bulk
 
-        const int nbulk = shalo[0].size();
-        rhalo[0].resize(nbulk);
+        const int nbulk = sshalo[0].size();
+        srhalo[0].resize(nbulk);
 
         for (int j = 0; j < nbulk; ++j)
-        rhalo[0][j] = ss_buf[j];
+        srhalo[0][j] = ss_buf[j];
 
         // halo
 
@@ -204,10 +278,10 @@ namespace bbhalo
 
             //printf("[%d] halo %d sending %d\n", m::rank, i, count);
 
-            shalo[i].resize(count);
+            sshalo[i].resize(count);
 
             for (int j = 0; j < count; ++j)
-            shalo[i][j] = ss_buf[start + j];
+            sshalo[i][j] = ss_buf[start + j];
 
             start += count;
         }
@@ -216,46 +290,46 @@ namespace bbhalo
     void post_back()
     {
         for (int i = 1; i < 27; ++i)
-        if (rhalo[i].size() > 0)
+        if (srhalo[i].size() > 0)
         {
             MPI_Request request;
-            MPI_Irecv(rhalo[i].data(), rhalo[i].size(), Solid::datatype(), rnk_ne[i], i + 51255, cart, &request);
-            //printf("[%d] halo %d recv %d\n", m::rank, i, rhalo[i].size());
-            recvreq.push_back(request);
+            MPI_Irecv(srhalo[i].data(), srhalo[i].size(), Solid::datatype(), rnk_ne[i], i + 51255, cart, &request);
+            //printf("[%d] halo %d recv %d\n", m::rank, i, srhalo[i].size());
+            srecvreq.push_back(request);
         }
 
         for (int i = 1; i < 27; ++i)
-        if (shalo[i].size() > 0)
+        if (sshalo[i].size() > 0)
         {
             MPI_Request request;
-            MPI_Isend(shalo[i].data(), shalo[i].size(), Solid::datatype(), ank_ne[i], i + 51255, cart, &request);
-            sendreq.push_back(request);
+            MPI_Isend(sshalo[i].data(), sshalo[i].size(), Solid::datatype(), ank_ne[i], i + 51255, cart, &request);
+            ssendreq.push_back(request);
         }
     }
 
     void unpack_back(/**/ Solid *ss_hst)
     {
         MPI_Status statuses[26];
-        MPI_Waitall(recvreq.size(), &recvreq.front(), statuses);
-        MPI_Waitall(sendreq.size(), &sendreq.front(), statuses);
-        recvreq.clear();
-        sendreq.clear();
+        MPI_Waitall(srecvreq.size(), &srecvreq.front(), statuses);
+        MPI_Waitall(ssendreq.size(), &ssendreq.front(), statuses);
+        srecvreq.clear();
+        ssendreq.clear();
 
-        const int nbulk = shalo[0].size();
+        const int nbulk = sshalo[0].size();
     
         // copy bulk
-        for (int j = 0; j < nbulk; ++j) ss_hst[j] = shalo[0][j];
+        for (int j = 0; j < nbulk; ++j) ss_hst[j] = sshalo[0][j];
 
         // add forces and torques from halo BB
         for (int i = 1; i < 27; ++i)
         {
-            const int count = rhalo[i].size();
+            const int count = srhalo[i].size();
 
             for (int j = 0; j < count; ++j)
             {
-                const int  my_id = rhalo[i][j].id;
-                const float *sfo = rhalo[i][j].fo;
-                const float *sto = rhalo[i][j].to;
+                const int  my_id = srhalo[i][j].id;
+                const float *sfo = srhalo[i][j].fo;
+                const float *sto = srhalo[i][j].to;
 
                 int k = -1;
                 for (int kk = 0; kk < nbulk; ++kk)
