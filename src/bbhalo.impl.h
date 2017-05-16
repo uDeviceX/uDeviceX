@@ -60,7 +60,7 @@ namespace bbhalo
     static void _shift_copy_pp(const Particle *ss_src, const int n, const int nps, const int code, /**/ Particle *ss_dst)
     {
         const int d[3] = {(code + 1) % 3 - 1, (code / 3 + 1) % 3 - 1, (code / 9 + 1) % 3 - 1};
-        const float3 shift = make_float3(XS * d[X], YS * d[Y], ZS * d[Z]);
+        const float3 shift = make_float3(-XS * d[X], -YS * d[Y], -ZS * d[Z]);
 
         if (tohst)
         {
