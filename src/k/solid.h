@@ -217,14 +217,15 @@ namespace k_solid
         const Solid s = ss_dev[sid];
 
         const int i = threadIdx.x + blockIdx.x * blockDim.x;;
-
+        const int vid = sid * nv + i;
+        
         if (i < nv)
         {
             const float x = vv[3*i + X];
             const float y = vv[3*i + Y];
             const float z = vv[3*i + Z];
 
-            const Particle p0 = pp[i];
+            const Particle p0 = pp[vid];
             Particle p;
 
             p.r[X] = x * s.e0[X] + y * s.e1[X] + z * s.e2[X] + s.com[X];
@@ -235,7 +236,7 @@ namespace k_solid
             p.v[Y] = (p.r[Y] - p0.r[Y]) / dt;
             p.v[Z] = (p.r[Z] - p0.r[Z]) / dt;
 
-            pp[i] = p;
+            pp[vid] = p;
         }
     }
 

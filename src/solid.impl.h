@@ -292,7 +292,7 @@ namespace solid {
         const dim3 nthrd(128, 1);
         const dim3 nblck((m.nv + 127)/128, ns);
 
-        k_solid::update_mesh <<< nthrd, nblck >>> (ss_dev, m.vv, m.nv, /**/ pp);
+        k_solid::update_mesh <<< nblck, nthrd >>> (ss_dev, m.vv, m.nv, /**/ pp);
     }
 
     void dump(const int it, const Solid *ss, const Solid *ssbb, int nsolid)

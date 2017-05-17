@@ -139,11 +139,6 @@ namespace bbhalo
             hhcontrib(1, 1, 0);
             hhcontrib(1, 1, 1);
 
-            if (hhindices[0].back() != i)
-            {
-                printf("%d != %d\n", hhindices[0].back(), i);
-                printf("%g %g %g %g %g %g\n", bbox[0], bbox[1], bbox[2], bbox[3], bbox[4], bbox[5]);
-            }
             assert(hhindices[0].back() == i);
             assert(hhindices[0].size() == i+1);
         }
