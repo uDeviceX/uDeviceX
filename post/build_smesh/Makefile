@@ -1,16 +1,16 @@
 CXX=g++
 CXXFLAGS= -O3 -Wall -Wpedantic -std=c++11
 
-EXECS = rw build
+EXECS = build
 
 default: all
 all: $(EXECS)
 
-rw: rw.o ply.o
-	$(CXX) $(CXXFLAGS) $^ -o $@ -lm
-
 build: build.o ply.o
 	$(CXX) $(CXXFLAGS) $^ -o $@ -lm
+
+build.o: build.cpp ply.h
+ply.o: ply.cpp ply.h
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
