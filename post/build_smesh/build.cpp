@@ -25,19 +25,21 @@ void read_infos(const char *fname, std::vector<float>& com, std::vector<float>& 
 #define V "%g %g %g "
 #define dst(a) a, a + 1, a + 2
 
-        /*              t  com v fo to e0 e1 e2 fo to */
-        sscanf(line, "%*g " V DV DV DV V  V  V  DV DV,
-               dst(r), dst(r1), dst(r2), dst(r3));
+        const int nread = sscanf(line,
+                                 /* t  com v fo to e0 e1 e2 fo to */
+                                 "%*g " V DV DV DV V  V  V  DV DV,
+                                 dst(r), dst(r1), dst(r2), dst(r3));
 #undef DV
 #undef V
 #undef dst
 
-#define pb(V, a) do {                           \
-            V.push_back(a[0]);                  \
-            V.push_back(a[1]);                  \
-            V.push_back(a[2]);                  \
-        } while(0)
+        if (nread != 12)
+        {
+            fprintf(stderr, "%s : wrong format\n", fname);
+            exit(0);
+        }
 
+#define pb(V, a) V.insert(V.end(), a, a + 3)
         pb(com, r);
         pb(e1, r1);
         pb(e2, r2);
@@ -47,6 +49,34 @@ void read_infos(const char *fname, std::vector<float>& com, std::vector<float>& 
         memset(line, 0, sizeof(line));
     }
     fclose(f);
+}
+
+void concatenate(const std::vector<int>& ttn, const std::vector<float>& vvn,
+                 std::vector<int>& tt, std::vector<float>& vv)
+{
+    const uint nv0 = vv.size() / 3;
+    const uint nt0 = tt.size() / 3;
+
+    vv.insert(vv.end(), vvn.begin(), vvn.end());
+    tt.insert(tt.end(), ttn.begin(), ttn.end());
+
+    for (uint i = 3*nt0; i < tt.size(); ++i)
+    tt[i] += nv0;
+}
+
+void gen_vv(const int nv, const float *vv0, const float *com, const float *e1, const float *e2, const float *e3, float *vv)
+{
+    for (int i = 0; i < nv; ++i)
+    {
+        const float x = vv0[3*i + 0];
+        const float y = vv0[3*i + 1];
+        const float z = vv0[3*i + 2];
+        float *r = vv + 3*i;
+
+        r[0] = com[0] + x * e1[0] + y * e2[0] + z * e3[0];
+        r[1] = com[1] + x * e1[1] + y * e2[1] + z * e3[1];
+        r[2] = com[2] + x * e1[2] + y * e2[2] + z * e3[2];
+    }
 }
 
 int main(int argc, char **argv)
