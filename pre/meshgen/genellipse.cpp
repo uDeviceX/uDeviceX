@@ -9,9 +9,9 @@ using std::vector;
 
 int main(int argc, char **argv)
 {
-    if (argc != 6)
+    if (argc != 7)
     {
-        fprintf(stderr, "usage : %s <a> <b> <c> <nsub2> <nsub3>\n", argv[0]);
+        fprintf(stderr, "usage : %s <out.ply> <a> <b> <c> <nsub2> <nsub3>\n", argv[0]);
         exit(1);
     }
     
@@ -19,11 +19,11 @@ int main(int argc, char **argv)
     vector<float> vv;
     icosahedron(tt, vv);
 
-    const float a = atof(argv[1]);
-    const float b = atof(argv[2]);
-    const float c = atof(argv[3]);
-    const int n2 = atoi(argv[4]);
-    const int n3 = atoi(argv[5]);
+    const float a = atof(argv[2]);
+    const float b = atof(argv[3]);
+    const float c = atof(argv[4]);
+    const int n2 = atoi(argv[5]);
+    const int n3 = atoi(argv[6]);
 
     for (int i = 0; i < n2; ++i)
     {
@@ -45,7 +45,7 @@ int main(int argc, char **argv)
         x[2] *= c;
     }
     
-    write_ply("ellipse.ply", tt, vv);
+    write_ply(argv[1], tt, vv);
     
     return 0;
 }

@@ -9,9 +9,9 @@ using std::vector;
 
 int main(int argc, char **argv)
 {
-    if (argc != 4)
+    if (argc != 5)
     {
-        fprintf(stderr, "usage : %s <R> <nsub2> <nsub3>\n", argv[0]);
+        fprintf(stderr, "usage : %s <out.ply> <R> <nsub2> <nsub3>\n", argv[0]);
         exit(1);
     }
     
@@ -19,9 +19,9 @@ int main(int argc, char **argv)
     vector<float> vv;
     icosahedron(tt, vv);
 
-    const float R = atof(argv[1]);
-    const int n2 = atoi(argv[2]);
-    const int n3 = atoi(argv[3]);
+    const float R = atof(argv[2]);
+    const int n2 = atoi(argv[3]);
+    const int n3 = atoi(argv[4]);
 
     for (int i = 0; i < n2; ++i)
     {
@@ -37,7 +37,7 @@ int main(int argc, char **argv)
 
     scale(vv, R);
     
-    write_ply("sphere.ply", tt, vv);
+    write_ply(argv[1], tt, vv);
     
     return 0;
 }
