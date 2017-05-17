@@ -26,8 +26,8 @@ void read_infos(const char *fname, std::vector<float>& com, std::vector<float>& 
 #define dst(a) a, a + 1, a + 2
 
         const int nread = sscanf(line,
-                                 /* t  com v fo to e0 e1 e2 fo to */
-                                 "%*g " V DV DV DV V  V  V  DV DV,
+                                 /* t  com v om fo to e0 e1 e2 fo to */
+                                 "%*g " V DV DV DV DV V  V  V  DV DV,
                                  dst(r), dst(r1), dst(r2), dst(r3));
 #undef DV
 #undef V
@@ -98,7 +98,29 @@ int main(int argc, char **argv)
 
     read_ply(argv[1], tt0, vv0);
 
-    
+    const int nv0 = vv0.size() / 3;
+
+    for (uint step = 0; step < coms[0].size()/3; ++step)
+    {
+        char fname[256]; sprintf(fname, "solid-%05u.ply", step);
+
+        tt.clear();
+        vv.clear();
+
+        for (int i = 0; i < ns; ++i)
+        {
+            concatenate(tt0, vv0, tt, vv);
+            
+            const float *com = coms[i].data() + 3*step;
+            const float *e1 = e1s[i].data() + 3*step;
+            const float *e2 = e2s[i].data() + 3*step;
+            const float *e3 = e3s[i].data() + 3*step;
+            
+            gen_vv(nv0, vv0.data(), com, e1, e2, e3, vv.data() + 3 * nv0 * i);
+        }
+
+        write_ply(fname, tt, vv);
+    }
     
     return 0;
 }
