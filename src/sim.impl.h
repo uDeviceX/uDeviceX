@@ -385,7 +385,8 @@ void init() {
     
 void dumps_diags(int it) {
   if (it % steps_per_dump == 0)     dump_part(it);
-  if (it % steps_per_dump == 0)     solid::dump(it, ss_dmphst, ss_dmpbbhst, nsolid); /* ss_dmpbbhst contains BB Force & Torque */
+  if (it > wall_creation_stepid &&
+      it % steps_per_dump == 0)     solid::dump(it, ss_dmphst, ss_dmpbbhst, nsolid); /* ss_dmpbbhst contains BB Force & Torque */
   if (it % steps_per_hdf5dump == 0) dump_grid();
   if (it % steps_per_dump == 0)     diag(it);
 }
