@@ -83,8 +83,37 @@ namespace collision
         inout[gid] = (count+1)%2;
     }
 
-    #define NTSHARED 128
-    __global__ void in_mesh_k_shared(const float *rr, const int n, const float *vv, const int *tt, const int nt, /**/ int *inout)
+    __global__ void in_mesh_kt(const float *rr, const int n, cudaTextureObject_t vv, cudaTextureObject_t tt, const int nt, /**/ int *inout)
+    {
+        const int gid = threadIdx.x + blockIdx.x * blockDim.x;
+        if (gid >= n) return;
+
+        int count = 0;
+        const float r[3] = {rr[3*gid + 0], rr[3*gid + 1], rr[3*gid + 2]};
+        const float origin[3] = {0, 0, 0};
+        
+        for (int i = 0; i < nt; ++i)
+        {
+            const int t1 = tex1Dfetch<int>(tt, 3*i + 0);
+            const int t2 = tex1Dfetch<int>(tt, 3*i + 1);
+            const int t3 = tex1Dfetch<int>(tt, 3*i + 2);
+
+#define ld1(t, a) tex1Dfetch<float>(vv, 3*t + a)
+#define ld3(t) {ld1(t, 0), ld1(t, 1), ld1(t, 2)}
+
+            const float a[3] = ld3(t1);
+            const float b[3] = ld3(t2);
+            const float c[3] = ld3(t3);
+#undef ld1
+#undef ld3
+            if (in_tetrahedron(r, a, b, c, origin)) ++count;
+        }
+        
+        inout[gid] = (count+1)%2;
+    }
+
+    #define NTSHARED 64
+    __global__ void in_mesh_ks(const float *rr, const int n, const float *vv, const int *tt, const int nt, /**/ int *inout)
     {
         __shared__ float _sdata[9*NTSHARED];
         
@@ -138,9 +167,6 @@ namespace collision
             if (gid < n)
             {
                 const int max = (tb + 1) * NTSHARED <= nt ? NTSHARED : nt % NTSHARED;
-
-                if (gid == 100000)
-                printf("%d %d\n", tb, max);
                 
                 // perform computation on these triangles
                 for (int i = 0; i < max; ++i)
@@ -158,9 +184,127 @@ namespace collision
         if (gid < n) inout[gid] = (count+1)%2;
     }
 
-    void in_mesh_dev(const float *rr, const int n, const float *vv, const int *tt, const int nt, /**/ int *inout)
+    __global__ void in_mesh_kts(const float *rr, const int n, cudaTextureObject_t vv, cudaTextureObject_t tt, const int nt, /**/ int *inout)
     {
+        __shared__ float _sdata[9*NTSHARED];
+        
+        const int gid = threadIdx.x + blockIdx.x * blockDim.x;
+        
+        int count = 0;
+
+        float r[3] = {0};
+        if (gid < n)
+        {
+            r[0] = rr[3*gid + 0];
+            r[1] = rr[3*gid + 1];
+            r[2] = rr[3*gid + 2];
+        }
+
+        const float origin[3] = {0, 0, 0};
+
+        for (int tb = 0; tb < (nt + NTSHARED-1)/NTSHARED; ++tb)
+        {
+            __syncthreads();
+            
+            // load triangles in shared mem
+            if (threadIdx.x < NTSHARED)
+            {
+                const int tid = tb*NTSHARED + threadIdx.x;
+
+                if (tid < nt)
+                {
+                    const int t1 = tex1Dfetch<int>(tt, 3*tid + 0);
+                    const int t2 = tex1Dfetch<int>(tt, 3*tid + 1);
+                    const int t3 = tex1Dfetch<int>(tt, 3*tid + 2);
+
+                    const int base = 9 * threadIdx.x;
+
+                    _sdata[base + 0] = tex1Dfetch<float>(vv, 3*t1 + 0);
+                    _sdata[base + 1] = tex1Dfetch<float>(vv, 3*t1 + 1);
+                    _sdata[base + 2] = tex1Dfetch<float>(vv, 3*t1 + 2);
+
+                    _sdata[base + 3] = tex1Dfetch<float>(vv, 3*t2 + 0);
+                    _sdata[base + 4] = tex1Dfetch<float>(vv, 3*t2 + 1);
+                    _sdata[base + 5] = tex1Dfetch<float>(vv, 3*t2 + 2);
+
+                    _sdata[base + 6] = tex1Dfetch<float>(vv, 3*t3 + 0);
+                    _sdata[base + 7] = tex1Dfetch<float>(vv, 3*t3 + 1);
+                    _sdata[base + 8] = tex1Dfetch<float>(vv, 3*t3 + 2);
+                }
+            }
+
+            __syncthreads();
+
+            if (gid < n)
+            {
+                const int max = (tb + 1) * NTSHARED <= nt ? NTSHARED : nt % NTSHARED;
+                
+                // perform computation on these triangles
+                for (int i = 0; i < max; ++i)
+                {
+                    const int base = 9 * i;
+                    const float a[3] = {_sdata[base + 0], _sdata[base + 1], _sdata[base + 2]};
+                    const float b[3] = {_sdata[base + 3], _sdata[base + 4], _sdata[base + 5]};
+                    const float c[3] = {_sdata[base + 6], _sdata[base + 7], _sdata[base + 8]};
+                
+                    if (in_tetrahedron(r, a, b, c, origin)) ++count;
+                }
+            }
+        }
+        
+        if (gid < n) inout[gid] = (count+1)%2;
+    }
+
+    //#define VANILLA
+    //#define SHARED
+    //#define TEXTURE
+#define TEXTURE_SHARED
+    
+    void in_mesh_dev(const float *rr, const int n, float *vv, const int nv, int *tt, const int nt, /**/ int *inout)
+    {
+#if defined (VANILLA)
+        
         in_mesh_k <<< (127 + n) / 128, 128 >>>(rr, n, vv, tt, nt, /**/ inout);
-        //in_mesh_k_shared <<< (127 + n) / 128, 128 >>>(rr, n, vv, tt, nt, /**/ inout);
+        
+#elif defined (SHARED)
+        
+        in_mesh_ks <<< (127 + n) / 128, 128 >>>(rr, n, vv, tt, nt, /**/ inout);
+        
+#elif defined (TEXTURE) || defined (TEXTURE_SHARED)
+
+        cudaTextureObject_t vvt, ttt;
+        cudaResourceDesc    resDv, resDt;
+        cudaTextureDesc     texDv, texDt;
+
+        memset(&resDv, 0, sizeof(resDv));
+        resDv.resType = cudaResourceTypeLinear;
+        resDv.res.linear.devPtr  = vv;
+        resDv.res.linear.sizeInBytes = 3 * sizeof(float) * nv;
+        resDv.res.linear.desc = cudaCreateChannelDesc<float>();
+
+        memset(&texDv, 0, sizeof(texDv));
+        texDv.normalizedCoords = 0;
+        texDv.readMode = cudaReadModeElementType;
+
+        cudaCreateTextureObject(&vvt, &resDv, &texDv, NULL);
+        
+        memset(&resDt, 0, sizeof(resDt));
+        resDt.resType = cudaResourceTypeLinear;
+        resDt.res.linear.devPtr  = tt;
+        resDt.res.linear.sizeInBytes = 3 * sizeof(int) * nt;
+        resDt.res.linear.desc = cudaCreateChannelDesc<int>();
+
+        memset(&texDt, 0, sizeof(texDt));
+        texDt.normalizedCoords = 0;
+        texDt.readMode = cudaReadModeElementType;
+
+        cudaCreateTextureObject(&ttt, &resDt, &texDt, NULL);
+
+#if defined (TEXTURE)
+        in_mesh_kt <<< (127 + n) / 128, 128 >>>(rr, n, vvt, ttt, nt, /**/ inout);
+#elif defined (TEXTURE_SHARED)
+        in_mesh_kts <<< (127 + n) / 128, 128 >>>(rr, n, vvt, ttt, nt, /**/ inout);
+#endif
+#endif
     }
 }

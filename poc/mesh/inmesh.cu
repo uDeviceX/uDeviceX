@@ -89,7 +89,7 @@ int main(int argc, char **argv)
     CC(cudaMemcpy(d_rr, rr, 3 * N * sizeof(float), H2D));
 
     cudaEventRecord(start);
-    collision::in_mesh_dev(d_rr, N, d_vv, d_tt, nt, /**/ d_inout);
+    collision::in_mesh_dev(d_rr, N, d_vv, nv, d_tt, nt, /**/ d_inout);
     cudaEventRecord(stop);
     
     CC(cudaMemcpy(inout, d_inout, N * sizeof(int), D2H));
