@@ -13,8 +13,6 @@ inline void cudaAssert(cudaError_t code, const char *file, int line) {
     }
 }
 
-#define N 100000
-
 #define DEVICE
 
 #define H2D cudaMemcpyHostToDevice
@@ -22,18 +20,20 @@ inline void cudaAssert(cudaError_t code, const char *file, int line) {
 
 int main(int argc, char **argv)
 {
-    if (argc != 2)
+    if (argc != 3)
     {
-        fprintf(stderr, "Usage: %s <file.ply>\n", argv[0]);
+        fprintf(stderr, "Usage: %s <N> <file.ply>\n", argv[0]);
         exit(1);
     }
+
+    const int N = atoi(argv[1]);
     
     srand48(123456);
     
     std::vector<int> tt;
     std::vector<float> vv;
 
-    mesh::read_ply(argv[1], tt, vv);
+    mesh::read_ply(argv[2], tt, vv);
 
     const int nv = vv.size() / 3;
     const int nt = tt.size() / 3;
@@ -100,7 +100,7 @@ int main(int argc, char **argv)
     cudaEventSynchronize(stop);
     float tms = 0;
     cudaEventElapsedTime(&tms, start, stop);
-    printf("Took %f ms for %d particles\n", tms, N);
+    fprintf(stderr, "Took %f ms for %d particles\n", tms, N);
 #else
     collision::in_mesh(rr, N, vv.data(), tt.data(), nt, /**/ inout);
 #endif
@@ -127,12 +127,12 @@ int main(int argc, char **argv)
 
 # nTEST: collision.t0
 # make clean && make -j
-# ./inmesh data/cow.ply
+# ./inmesh 10000 data/cow.ply
 # cat parts_in.3D | sed -n '2,10000p' > parts.out.3D
 
 # nTEST: collision.t1
 # make clean && make -j
-# ./inmesh data/sphere.ply
+# ./inmesh 10000 data/sphere.ply
 # cat parts_in.3D | sed -n '2,10000p' > parts.out.3D
 
 */
