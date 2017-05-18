@@ -83,8 +83,84 @@ namespace collision
         inout[gid] = (count+1)%2;
     }
 
+    #define NTSHARED 128
+    __global__ void in_mesh_k_shared(const float *rr, const int n, const float *vv, const int *tt, const int nt, /**/ int *inout)
+    {
+        __shared__ float _sdata[9*NTSHARED];
+        
+        const int gid = threadIdx.x + blockIdx.x * blockDim.x;
+        
+        int count = 0;
+
+        float r[3] = {0};
+        if (gid < n)
+        {
+            r[0] = rr[3*gid + 0];
+            r[1] = rr[3*gid + 1];
+            r[2] = rr[3*gid + 2];
+        }
+
+        const float origin[3] = {0, 0, 0};
+
+        for (int tb = 0; tb < (nt + NTSHARED-1)/NTSHARED; ++tb)
+        {
+            __syncthreads();
+            
+            // load triangles in shared mem
+            if (threadIdx.x < NTSHARED)
+            {
+                const int tid = tb*NTSHARED + threadIdx.x;
+
+                if (tid < nt)
+                {
+                    const int t1 = tt[3*tid + 0];
+                    const int t2 = tt[3*tid + 1];
+                    const int t3 = tt[3*tid + 2];
+
+                    const int base = 9 * threadIdx.x;
+
+                    _sdata[base + 0] = vv[3*t1 + 0];
+                    _sdata[base + 1] = vv[3*t1 + 1];
+                    _sdata[base + 2] = vv[3*t1 + 2];
+
+                    _sdata[base + 3] = vv[3*t2 + 0];
+                    _sdata[base + 4] = vv[3*t2 + 1];
+                    _sdata[base + 5] = vv[3*t2 + 2];
+
+                    _sdata[base + 6] = vv[3*t3 + 0];
+                    _sdata[base + 7] = vv[3*t3 + 1];
+                    _sdata[base + 8] = vv[3*t3 + 2];
+                }
+            }
+
+            __syncthreads();
+
+            if (gid < n)
+            {
+                const int max = (tb + 1) * NTSHARED <= nt ? NTSHARED : nt % NTSHARED;
+
+                if (gid == 100000)
+                printf("%d %d\n", tb, max);
+                
+                // perform computation on these triangles
+                for (int i = 0; i < max; ++i)
+                {
+                    const int base = 9 * i;
+                    const float a[3] = {_sdata[base + 0], _sdata[base + 1], _sdata[base + 2]};
+                    const float b[3] = {_sdata[base + 3], _sdata[base + 4], _sdata[base + 5]};
+                    const float c[3] = {_sdata[base + 6], _sdata[base + 7], _sdata[base + 8]};
+                
+                    if (in_tetrahedron(r, a, b, c, origin)) ++count;
+                }
+            }
+        }
+        
+        if (gid < n) inout[gid] = (count+1)%2;
+    }
+
     void in_mesh_dev(const float *rr, const int n, const float *vv, const int *tt, const int nt, /**/ int *inout)
     {
         in_mesh_k <<< (127 + n) / 128, 128 >>>(rr, n, vv, tt, nt, /**/ inout);
+        //in_mesh_k_shared <<< (127 + n) / 128, 128 >>>(rr, n, vv, tt, nt, /**/ inout);
     }
 }
