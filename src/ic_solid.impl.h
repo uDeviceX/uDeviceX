@@ -4,7 +4,7 @@ namespace ic_solid
 
     //#define DEBUG_MSG
     
-    int read_coms(const char * fname, /**/ float* coms)
+    static int read_coms(const char * fname, /**/ float* coms)
     {
         int nsolids = 0;
         
@@ -40,7 +40,7 @@ namespace ic_solid
     }
 
     /* bbox: minx, maxx, miny, maxy, minz, maxz */
-    int duplicate_PBC(const float *bbox, int n, /**/ float *coms)
+    static int duplicate_PBC(const float *bbox, int n, /**/ float *coms)
     {
         struct f3 {float x[3];};
 
@@ -83,7 +83,7 @@ namespace ic_solid
         return id;
     }
 
-    void make_local(const int n, /**/ float *coms)
+    static void make_local(const int n, /**/ float *coms)
     {
         const int L[3] = {XS, YS, ZS};
         int mi[3];
@@ -94,7 +94,7 @@ namespace ic_solid
         coms[3*j + d] -= mi[d];
     }
 
-    void count_pp_inside(const Particle *s_pp, const int n, const float *coms, const int ns,
+    static void count_pp_inside(const Particle *s_pp, const int n, const float *coms, const int ns,
                          const int *tt, const float *vv, const int nt, const int nv,
                          /**/ int *tags, int *rcounts)
     {
@@ -129,7 +129,7 @@ namespace ic_solid
 #endif
     }
 
-    void elect(const int *rcounts, const int ns, /**/ int *root, int *idmax)
+    static void elect(const int *rcounts, const int ns, /**/ int *root, int *idmax)
     {
         int localmax[2] = {0, m::rank}, globalmax[2] = {0, m::rank}, idmax_ = 0;
 
@@ -148,7 +148,7 @@ namespace ic_solid
         *idmax = idmax_;
     }
 
-    void kill(const float *coms, const int ns, const int idmax, const int *tags, /**/ int *s_n, Particle *s_pp, int *r_n, Particle *r_pp)
+    static void kill(const float *coms, const int ns, const int idmax, const int *tags, /**/ int *s_n, Particle *s_pp, int *r_n, Particle *r_pp)
     {
         int scount = 0, rcount = 0;
 
@@ -167,7 +167,7 @@ namespace ic_solid
         *r_n = rcount;
     }
 
-    void share_parts(const int root, /**/ Particle *pp, int *n)
+    static void share_parts(const int root, /**/ Particle *pp, int *n)
     {
         // set to global coordinates and then convert back to local
         const int L[3] = {XS, YS, ZS};
@@ -209,7 +209,7 @@ namespace ic_solid
         pp[i].r[c] -= mi[c];
     }
     
-    void init(const char * fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp)
+    void init(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp)
     {
         float coms[MAX_SOLIDS * 3];
         
