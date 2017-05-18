@@ -13,7 +13,7 @@ inline void cudaAssert(cudaError_t code, const char *file, int line) {
     }
 }
 
-#define N 10000
+#define N 100000
 
 #define DEVICE
 
@@ -73,6 +73,11 @@ int main(int argc, char **argv)
     // compute inout
 
 #ifdef DEVICE
+
+    cudaEvent_t start, stop;
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+    
     float *d_vv = NULL, *d_rr = NULL; int *d_tt = NULL, *d_inout = NULL;
     CC(cudaMalloc(&d_vv, 3 * nv * sizeof(float)));
     CC(cudaMalloc(&d_tt, 3 * nt * sizeof(int)));
@@ -83,12 +88,19 @@ int main(int argc, char **argv)
     CC(cudaMemcpy(d_tt, tt.data(), 3 * nt * sizeof(int),   H2D));
     CC(cudaMemcpy(d_rr, rr, 3 * N * sizeof(float), H2D));
 
+    cudaEventRecord(start);
     collision::in_mesh_dev(d_rr, N, d_vv, d_tt, nt, /**/ d_inout);
+    cudaEventRecord(stop);
     
     CC(cudaMemcpy(inout, d_inout, N * sizeof(int), D2H));
     
     CC(cudaFree(d_vv)); CC(cudaFree(d_tt));
     CC(cudaFree(d_rr)); CC(cudaFree(d_inout));
+
+    cudaEventSynchronize(stop);
+    float tms = 0;
+    cudaEventElapsedTime(&tms, start, stop);
+    printf("Took %f ms for %d particles\n", tms, N);
 #else
     collision::in_mesh(rr, N, vv.data(), tt.data(), nt, /**/ inout);
 #endif
