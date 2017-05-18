@@ -71,8 +71,7 @@
 
 #include "gsl.impl.h"
 
-#include "k/mesh.h"
-#include "mesh.impl.h"
+#include "mesh.h"
 
 #include "solid.impl.h"
 #include "tcells.h"

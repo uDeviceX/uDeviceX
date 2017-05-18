@@ -13,7 +13,7 @@ LDFLAGS   += -L../cuda-dpd -L./bounce-back
 NVCCFLAGS += -I../cuda-dpd -I./bounce-back -I.
 LIBS      += -lcuda-dpd -lbounce-back -lcudart
 
-OBJS = 	bund.o common.o dpd-forces.o glb.o io.o main.o minmax.o tcells.o m.o
+OBJS = 	bund.o common.o dpd-forces.o glb.o io.o main.o minmax.o mesh.o tcells.o m.o
 
 ifeq ($(h5),0)
 NVCCFLAGS += -DNO_H5
@@ -37,6 +37,7 @@ fsi.o:            fsi.cu;        $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 dpd-forces.o:     dpd-forces.cu; $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 bund.o:           bund.cu;       $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 minmax.o:         minmax.cu;     $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
+mesh.o:           mesh.cu;     $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 tcells.o:         tcells.cu;     $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 glb.o:            glb.cu;        $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 include    Makefile.dep # dependencies
