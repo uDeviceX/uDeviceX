@@ -1,5 +1,5 @@
 #### Couette pinned sphere
-# nTEST: solid.t1
+# sTEST: solid.t1
 # export PATH=../tools:$PATH
 # rm -rf h5 bop diag.txt solid_diag.txt
 # cp sdf/wall1/wall.dat sdf.dat
@@ -15,14 +15,14 @@
 # avg_h5.m h5/flowfields-0001.h5 | sed -n '4,29p' | uscale 0.5 > h5.out.txt
 
 #### Double poiseuille non pinned sphere
-# nTEST: solid.t2
+# sTEST: solid.t2
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 bop diag.txt solid_diag.txt
 # echo -e "8 16 8" > ic_solid.txt
 # :
 # argp .conf.double.poiseuille.h      \
-#   -rbcs -rsph=4 -bounce_back        \
+#   -rbcs -rsph=4 -sbounce_back       \
 #   -tend=0.5 -steps_per_dump=100     \
 #   -pushtheflow -doublepoiseuille    \
 #   -hdf5field_dumps -part_dumps      \
@@ -35,7 +35,7 @@
 #
 
 #### Double poiseuille pinned cylinder
-# nTEST: solid.t3
+# sTEST: solid.t3
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 bop diag.txt solid_diag.txt debug.txt
@@ -55,7 +55,7 @@
 #
 
 #### Couette pinned cylinder
-# nTEST: solid.t4
+# sTEST: solid.t4
 # export PATH=../tools:$PATH
 # rm -rf h5 bop diag.txt solid_diag.txt
 # cp sdf/yplates1/yplates.dat sdf.dat
@@ -71,7 +71,7 @@
 # avg_h5.m h5/flowfields-0001.h5 | sed -n '4,29p' | uscale 0.5 > h5.out.txt
 
 #### Double poiseuille pinned ellipse
-# nTEST: solid.t5
+# sTEST: solid.t5
 # set -x
 # export PATH=../tools:$PATH
 # rm -rf h5 bop diag.txt solid_diag.txt debug.txt
