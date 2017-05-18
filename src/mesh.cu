@@ -35,46 +35,16 @@ namespace mesh
             same_side(x, C, AB, BD, D) &&
             same_side(x, D, AB, AC, A);
     }
-
-    static __global__ void inside(const Particle *pp, const int n, const float *vv, const int *tt, const int nt, /**/ int *inout)
-    {
-        const int gid = threadIdx.x + blockIdx.x * blockDim.x;
-        if (gid >= n) return;
-
-        int count = 0;
-
-        const Particle p = pp[gid];
-        const float origin[3] = {0, 0, 0};
-        
-        for (int i = 0; i < nt; ++i)
-        {
-            const int t1 = tt[3*i + 0];
-            const int t2 = tt[3*i + 1];
-            const int t3 = tt[3*i + 2];
-
-            const float a[3] = {vv[3*t1 + 0], vv[3*t1 + 1], vv[3*t1 + 2]};
-            const float b[3] = {vv[3*t2 + 0], vv[3*t2 + 1], vv[3*t2 + 2]};
-            const float c[3] = {vv[3*t3 + 0], vv[3*t3 + 1], vv[3*t3 + 2]};
-            
-            if (in_tetrahedron(p.r, a, b, c, origin)) ++count;
-        }
-        
-        inout[gid] = count % 2;
-    }
     
     int inside_1p(const float *r, const float *vv, const int *tt, const int nt)
     {
         int c = 0;
-
         const float origin[3] = {0, 0, 0};
-        
         for (int i = 0; i < nt; ++i)
         {
             const int *t = tt + 3 * i;
-
             if (in_tetrahedron(r, vv + 3*t[0], vv + 3*t[1], vv + 3*t[2], origin)) ++c;
         }
-        
         return c%2;
     }
 
@@ -84,9 +54,78 @@ namespace mesh
         inout[i] = inside_1p(pp[i].r, m.vv, m.tt, m.nt);
     }
 
-    void inside_dev(const Particle *pp, const int n, const Mesh m, /**/ int *inout)
+    static int inside_1p(const float *r, const Particle *vv, const int *tt, const int nt)
     {
-        inside <<< k_cnf(n) >>>(pp, n, m.vv, m.tt, m.nt, /**/ inout);
+        int c = 0;
+        const float origin[3] = {0, 0, 0};
+        for (int i = 0; i < nt; ++i)
+        {
+            const int *t = tt + 3 * i;
+            if (in_tetrahedron(r, vv[t[0]].r, vv[t[1]].r, vv[t[2]].r, origin)) ++c;
+        }
+        return c%2;
+    }
+    
+    void inside_hst(const Particle *pp, const int n, const Mesh m, const Particle *i_pp, const int ns, /**/ int *tags)
+    {
+        for (int i = 0; i < n; ++i)
+        {
+            tags[i] = -1;
+            for (int sid = 0; sid < ns; ++sid)
+            if (inside_1p(pp[i].r, i_pp + m.nv * sid, m.tt, m.nt))
+            {
+                tags[i] = sid;
+                break;
+            }
+        }
+    }
+
+    namespace kernels
+    {
+        __global__ void init_tags(const int n, /**/ int *tags)
+        {
+            const int gid = threadIdx.x + blockIdx.x * blockDim.x;
+            if (gid < n) tags[gid] = -1;
+        }
+
+        // assume ns blocks along y
+        __global__ void compute_tags(const Particle *pp, const int n, const Particle *vv, const int nv, const int *tt, const int nt, /**/ int *tags)
+        {
+            const int sid = blockIdx.y;
+            const int gid = threadIdx.x + blockIdx.x * blockDim.x;
+            if (gid >= n) return;
+
+            int count = 0;
+
+            const Particle p = pp[gid];
+            const float origin[3] = {0, 0, 0};
+        
+            for (int i = 0; i < nt; ++i)
+            {
+                const int t1 = tt[3*i + 0];
+                const int t2 = tt[3*i + 1];
+                const int t3 = tt[3*i + 2];
+
+                const float a[3] = {vv[t1].r[0], vv[t1].r[1], vv[t1].r[2]};
+                const float b[3] = {vv[t2].r[0], vv[t2].r[1], vv[t2].r[2]};
+                const float c[3] = {vv[t3].r[0], vv[t3].r[1], vv[t3].r[2]};
+            
+                if (in_tetrahedron(p.r, a, b, c, origin)) ++count;
+            }
+
+            // dont consider the case of inside several solids
+            if (count % 2) atomicExch(tags + gid, sid);
+        }
+    }
+    
+    void inside_dev(const Particle *pp, const int n, const Mesh m, const Particle *i_pp, const int ns, /**/ int *tags)
+    {
+        kernels::init_tags <<< k_cnf(n) >>> (n, /**/ tags);
+
+        dim3 thrd(128, 1);
+        dim3 blck((127 + n)/128, ns);
+
+        kernels::compute_tags <<< blck, thrd >>> (pp, n, i_pp, m.nv, m.tt, m.nt, /**/ tags);
     }
 
     /* bbox: minx, maxx, miny, maxy, minz, maxz */
