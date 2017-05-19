@@ -75,7 +75,9 @@
 
 #include "solid.impl.h"
 #include "tcells.h"
+
 #include "mbounce.h"
+#include "mrescue.h"
 
 #include "bbhalo.decl.h"
 #include "bbhalo.impl.h"
