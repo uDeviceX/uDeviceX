@@ -26,7 +26,7 @@ static _HD_ void tbbox(const float *A, const float *B, const float *C, float *bb
     bb[2*Z + 1] = max3(A[Z], B[Z], C[Z]) + BBOX_MARGIN;
 }
     
-static void countt(const int nt, const int *tt, const Particle *pp, const int ns, /**/ int *counts)
+static void countt(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, /**/ int *counts)
 {
     memset(counts, 0, NCELLS * sizeof(int));
         
@@ -37,7 +37,7 @@ static void countt(const int nt, const int *tt, const Particle *pp, const int ns
         const int t2 = tt[3*it + 1];
         const int t3 = tt[3*it + 2];
 
-        const int base = nt * is;
+        const int base = nv * is;
         
 #define loadr(i) {pp[base + i].r[X], pp[base + i].r[Y], pp[base + i].r[Z]}       
         const float A[3] = loadr(t1);
@@ -64,20 +64,20 @@ static void countt(const int nt, const int *tt, const Particle *pp, const int ns
     }
 }
 
-static void fill_ids(const int nt, const int *tt, const Particle *pp, const int ns, const int *starts, /**/ int *counts, int *ids)
+static void fill_ids(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, const int *starts, /**/ int *counts, int *ids)
 {
     memset(counts, 0, NCELLS * sizeof(int));
         
     for (int is = 0; is < ns; ++is)
     for (int it = 0; it < nt; ++it)
     {
-        const int id = ns * nt + it;
+        const int id = is * nt + it;
             
         const int t1 = tt[3*it + 0];
         const int t2 = tt[3*it + 1];
         const int t3 = tt[3*it + 2];
             
-        const int base = nt * is;
+        const int base = nv * is;
         
 #define loadr(i) {pp[base + i].r[X], pp[base + i].r[Y], pp[base + i].r[Z]}       
         const float A[3] = loadr(t1);
@@ -116,16 +116,16 @@ static void exscan(const int *counts, int *starts)
     
 void build_tcells_hst(const Mesh m, const Particle *i_pp, const int ns, /**/ int *starts, int *counts, int *ids)
 {
-    countt(m.nt, m.tt, i_pp, ns, /**/ counts);
+    countt(m.nt, m.tt, m.nv, i_pp, ns, /**/ counts);
 
     exscan(counts, starts);
 
-    fill_ids(m.nt, m.tt, i_pp, ns, starts, /**/ counts, ids);
+    fill_ids(m.nt, m.tt, m.nv, i_pp, ns, starts, /**/ counts, ids);
 }
 
 namespace tckernels
 {
-    __global__ void countt(const int nt, const int *tt, const Particle *pp, const int ns, /**/ int *counts)
+    __global__ void countt(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, /**/ int *counts)
     {
         const int thid = threadIdx.x + blockIdx.x * blockDim.x;
 
@@ -138,7 +138,7 @@ namespace tckernels
         const int t2 = tt[3*tid + 1];
         const int t3 = tt[3*tid + 2];
 
-        const int base = nt * sid;
+        const int base = nv * sid;
         
 #define loadr(i) {pp[base + i].r[X], pp[base + i].r[Y], pp[base + i].r[Z]}       
         const float A[3] = loadr(t1);
@@ -164,7 +164,7 @@ namespace tckernels
         }
     }
 
-    __global__ void fill_ids(const int nt, const int *tt, const Particle *pp, const int ns, const int *starts, /**/ int *counts, int *ids)
+    __global__ void fill_ids(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, const int *starts, /**/ int *counts, int *ids)
     {
         const int thid = threadIdx.x + blockIdx.x * blockDim.x;
 
@@ -177,7 +177,7 @@ namespace tckernels
         const int t2 = tt[3*tid + 1];
         const int t3 = tt[3*tid + 2];
 
-        const int base = nt * sid;
+        const int base = nv * sid;
         
 #define loadr(i) {pp[base + i].r[X], pp[base + i].r[Y], pp[base + i].r[Z]}       
         const float A[3] = loadr(t1);
@@ -214,11 +214,11 @@ void build_tcells_dev(const Mesh m, const Particle *i_pp, const int ns, /**/ int
 {
     CC(cudaMemset(counts, 0, NCELLS * sizeof(int)));
     
-    tckernels::countt <<< k_cnf(ns*m.nt) >>> (m.nt, m.tt, i_pp, ns, /**/ counts);
+    tckernels::countt <<< k_cnf(ns*m.nt) >>> (m.nt, m.tt, m.nv, i_pp, ns, /**/ counts);
 
     thrust::exclusive_scan(thrust::device, counts, counts + NCELLS, starts);
 
     CC(cudaMemset(counts, 0, NCELLS * sizeof(int)));
     
-    tckernels::fill_ids <<< k_cnf(ns*m.nt) >>> (m.nt, m.tt, i_pp, ns, starts, /**/ counts, ids);
+    tckernels::fill_ids <<< k_cnf(ns*m.nt) >>> (m.nt, m.tt, m.nv, i_pp, ns, starts, /**/ counts, ids);
 }
