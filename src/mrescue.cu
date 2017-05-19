@@ -6,9 +6,22 @@
 
 namespace rescue
 {
+    int *tags_hst, *tags_dev;
+    
     static int min2(int a, int b) {return a < b ? a : b;}
     static int max2(int a, int b) {return a < b ? b : a;}
 
+    void init(int n)
+    {
+        tags_hst = new int[n];
+        CC(cudaMalloc(&tags_dev, n*sizeof(int)));
+    }
+
+    void close()
+    {
+        delete[] tags_hst;
+        CC(cudaFree(tags_dev));
+    }
 
     static void project_t(const float *a, const float *b, const float *c, const float *r, /**/ float *rp, float *n)
     {
@@ -140,7 +153,8 @@ namespace rescue
 #undef eps
     }
     
-    void rescue_hst(const Mesh m, const Particle *i_pp, const int ns, const int n, /**/ Particle *pp)
+    void rescue_hst(const Mesh m, const Particle *i_pp, const int ns, const int n,
+                    const int *tcstarts, const int *tccounts, const int *tcids, /**/ Particle *pp)
     {
         mesh::inside_hst(pp, n, m, i_pp, ns, /**/ tags_hst);
         
