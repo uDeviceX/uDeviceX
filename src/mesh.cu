@@ -180,7 +180,7 @@ namespace mesh
     void get_bboxes_hst(const Particle *pp, const int nps, const int ns, /**/ float *bboxes)
     {
         for (int i = 0; i < ns; ++i)
-        get_bbox(pp, nps, /**/ bboxes + 6 * i);
+        get_bbox(pp + i*nps, nps, /**/ bboxes + 6 * i);
     }
 
     void get_bboxes_dev(const Particle *pp, const int nps, const int ns, /**/ float *bboxes)
