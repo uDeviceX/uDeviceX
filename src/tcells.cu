@@ -107,7 +107,7 @@ static void fill_ids(const int nt, const int *tt, const Particle *pp, const int 
     }
 }
 
-static void scan(const int *counts, int *starts)
+static void exscan(const int *counts, int *starts)
 {
     starts[0] = 0;
     for (int i = 1; i < NCELLS; ++i)
@@ -118,7 +118,7 @@ void build_tcells_hst(const Mesh m, const Particle *i_pp, const int ns, /**/ int
 {
     countt(m.nt, m.tt, i_pp, ns, /**/ counts);
 
-    scan(counts, starts);
+    exscan(counts, starts);
 
     fill_ids(m.nt, m.tt, i_pp, ns, starts, /**/ counts, ids);
 }
