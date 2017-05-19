@@ -230,13 +230,11 @@ namespace bbhalo
     
         // copy bulk
         for (int j = 0; j < nbulk; ++j)
-        {
-            ss_buf[j] = sshalo[0][j];
-
-            if (tohst)  memcpy(pp_buf + j*nps, pshalo[0].data() + j*nps, nps*sizeof(Particle));
-            else CC(cudaMemcpy(pp_buf + j*nps, pshalo[0].data() + j*nps, nps*sizeof(Particle), H2D));
-        }
-
+        ss_buf[j] = sshalo[0][j];
+        
+        if (tohst)  memcpy(pp_buf, pshalo[0].data(), nbulk*nps*sizeof(Particle));
+        else CC(cudaMemcpy(pp_buf, pshalo[0].data(), nbulk*nps*sizeof(Particle), H2D));
+        
         // copy and shift halo
         for (int i = 1, start = nbulk; i < 27; ++i)
         {
