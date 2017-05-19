@@ -287,6 +287,8 @@ void load_solid_mesh(const char *fname)
 void init_solid()
 {
     rex::init();
+    mrescue::init(MAX_PART_NUM);
+    
     mpDeviceMalloc(&r_pp);
     mpDeviceMalloc(&r_ff);
     
@@ -446,6 +448,7 @@ void close() {
   delete cells;
   if (rbcs0) {
     rex::close();
+    mrescue::close();
     fsi::close();
   }
   DPD::close();
