@@ -1,4 +1,4 @@
-namespace rescue
+namespace mrescue
 {
     void init(int n);
     void close();

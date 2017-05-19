@@ -4,7 +4,7 @@
 
 #include "mrescue.h"
 
-namespace rescue
+namespace mrescue
 {
     int *tags_hst, *tags_dev;
     
