@@ -114,7 +114,7 @@ int main(int argc, char **argv)
     fprintf(fout, "x y z inout\n");
     
     for (int i = 0; i < N; ++i)
-    fprintf(inout[i] ? fout : fin, "%.6e %.6e %.6e %e\n", rr[3*i + 0], rr[3*i + 1], rr[3*i + 2], (float) inout[i]);
+    fprintf(inout[i] == -1 ? fout : fin, "%.6e %.6e %.6e %e\n", rr[3*i + 0], rr[3*i + 1], rr[3*i + 2], inout[i] == -1 ? 1.f : 0.f);
 
     delete[] inout;
     delete[] rr;

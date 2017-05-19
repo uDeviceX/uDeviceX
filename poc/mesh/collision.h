@@ -49,7 +49,7 @@ namespace collision
             if (in_tetrahedron(r, vv + 3*t[0], vv + 3*t[1], vv + 3*t[2], origin)) ++c;
         }
         
-        return (c+1)%2;
+        return (c%2) ? 0 : -1;
     }
 
     void in_mesh(const float *rr, const int n, const float *vv, const int *tt, const int nt, /**/ int *inout)
@@ -80,7 +80,7 @@ namespace collision
             if (in_tetrahedron(r, a, b, c, origin)) ++count;
         }
         
-        inout[gid] = (count+1)%2;
+        inout[gid] = (count%2) ? 0 : -1;
     }
 
     __global__ void in_mesh_kt(const float *rr, const int n, cudaTextureObject_t vv, cudaTextureObject_t tt, const int nt, /**/ int *inout)
@@ -109,7 +109,7 @@ namespace collision
             if (in_tetrahedron(r, a, b, c, origin)) ++count;
         }
         
-        inout[gid] = (count+1)%2;
+        inout[gid] = (count%2) ? 0 : -1;
     }
 
     #define NTSHARED 64
@@ -181,7 +181,7 @@ namespace collision
             }
         }
         
-        if (gid < n) inout[gid] = (count+1)%2;
+        if (gid < n) inout[gid] = (count%2) ? 0 : -1;
     }
 
     __global__ void in_mesh_kts(const float *rr, const int n, cudaTextureObject_t vv, cudaTextureObject_t tt, const int nt, /**/ int *inout)
@@ -252,7 +252,7 @@ namespace collision
             }
         }
         
-        if (gid < n) inout[gid] = (count+1)%2;
+        if (gid < n) inout[gid] = (count%2) ? 0 : -1;
     }
 
     //#define VANILLA
