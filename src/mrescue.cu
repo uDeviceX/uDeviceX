@@ -123,9 +123,8 @@ namespace mrescue
 
         if (dr2b > 9e4f)
         {
-            const int i = 0; // TODO
+            const int tid = sid * nv + 0; // todo 
 
-            const int tid = tcids[i];
             const int t1 = tt[3*tid + 0], t2 = tt[3*tid + 1], t3 = tt[3*tid + 2];
             const float a[3] = ldv(t1), b[3] = ldv(t2), c[3] = ldv(t3);
 #undef ldv
@@ -177,6 +176,7 @@ namespace mrescue
         const int tag = tags[i];
         if (tag == -1) return;
 
+        printf("rescueing part %d in solid %d\n", i, tag);
         Particle p = pp[i];
         rescue_1p(vv, tt, nt, tag, nv, tcstarts, tccounts, tcids, /**/ &p);
         pp[i] = p;
