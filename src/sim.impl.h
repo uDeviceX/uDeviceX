@@ -224,8 +224,8 @@ void bounce_solid(int it)
 
     mbounce::bounce_tcells_hst(s_ff_hst, m_hst, i_pp_bb_hst, tcellstarts_hst, tcellcounts_hst, tctids_hst, s_n, /**/ s_pp_hst, ss_bb_hst);
 
-    if (it % rescue_freq == 0)
-    mrescue::rescue_hst(m_hst, i_pp_bb_hst, nsbb, s_n, tcellstarts_hst, tcellcounts_hst, tctids_hst, /**/ s_pp_hst);
+    // if (it % rescue_freq == 0)
+    // mrescue::rescue_hst(m_hst, i_pp_bb_hst, nsbb, s_n, tcellstarts_hst, tcellcounts_hst, tctids_hst, /**/ s_pp_hst);
     
     CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
 
@@ -257,8 +257,8 @@ void bounce_solid(int it)
 
     mbounce::bounce_tcells_dev(s_ff, m_dev, i_pp_bb_dev, tcellstarts_dev, tcellcounts_dev, tctids_dev, s_n, /**/ s_pp, ss_dev);
 
-    if (it % rescue_freq == 0)
-    mrescue::rescue_dev(m_dev, i_pp_bb_dev, nsbb, s_n, tcellstarts_dev, tcellcounts_dev, tctids_dev, /**/ s_pp);
+    // if (it % rescue_freq == 0)
+    // mrescue::rescue_dev(m_dev, i_pp_bb_dev, nsbb, s_n, tcellstarts_dev, tcellcounts_dev, tctids_dev, /**/ s_pp);
     
     // send back fo, to
 

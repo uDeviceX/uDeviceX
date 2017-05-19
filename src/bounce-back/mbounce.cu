@@ -295,7 +295,7 @@ namespace mbounce
                     const int it  = tid % m.nt;
                     const int mid = tid / m.nt;
                     
-                    if (find_better_intersection(m.tt, it, i_pp, &p0, /*io*/ &h, /**/ rw, vw))
+                    if (find_better_intersection(m.tt, it, i_pp + mid * m.nv, &p0, /*io*/ &h, /**/ rw, vw))
                     sid = mid;
                 }
             }
@@ -364,7 +364,7 @@ namespace mbounce
                     const int it  = tid % m.nt;
                     const int mid = tid / m.nt;
                     
-                    if (find_better_intersection(m.tt, it, i_pp, &p0, /*io*/ &h, /**/ rw, vw))
+                    if (find_better_intersection(m.tt, it, i_pp + mid * m.nv, &p0, /*io*/ &h, /**/ rw, vw))
                     sid = mid;
                 }
             }
