@@ -6,10 +6,12 @@
 
 namespace mrescue
 {
+#define _DH_ __device__ __host__
+    
     int *tags_hst, *tags_dev;
     
-    static int min2(int a, int b) {return a < b ? a : b;}
-    static int max2(int a, int b) {return a < b ? b : a;}
+    static _DH_ int min2(int a, int b) {return a < b ? a : b;}
+    static _DH_ int max2(int a, int b) {return a < b ? b : a;}
 
     void init(int n)
     {
@@ -23,7 +25,7 @@ namespace mrescue
         CC(cudaFree(tags_dev));
     }
 
-    static void project_t(const float *a, const float *b, const float *c, const float *r, /**/ float *rp, float *n)
+    static _DH_ void project_t(const float *a, const float *b, const float *c, const float *r, /**/ float *rp, float *n)
     {
         const float ab[3] = {b[0]-a[0], b[1]-a[1], b[2]-a[2]};
         const float ac[3] = {c[0]-a[0], c[1]-a[1], c[2]-a[2]};
@@ -80,8 +82,8 @@ namespace mrescue
         rp[2] = a[2] + u * ab[2] + v * ac[2];
     }
     
-    static void rescue_1p(const Particle *vv, const int *tt, const int nt, const int sid, const int nv,
-                          const int *tcstarts, const int *tccounts, const int *tcids, /**/ Particle *p)
+    static _DH_ void rescue_1p(const Particle *vv, const int *tt, const int nt, const int sid, const int nv,
+                               const int *tcstarts, const int *tccounts, const int *tcids, /**/ Particle *p)
     {
         // check around me if there is triangles and select the closest one
 
@@ -164,5 +166,27 @@ namespace mrescue
             if (tag != -1)
             rescue_1p(i_pp, m.tt, m.nt, tag, m.nv, tcstarts, tccounts, tcids, /**/ pp + i);
         }
+    }
+
+    static __global__ void rescue_dev_k(const Particle *vv, const int *tt, const int nt, const int nv,
+                                        const int *tcstarts, const int *tccounts, const int *tcids, const int *tags, const int n, /**/ Particle *pp)
+    {
+        const int i = threadIdx.x + blockIdx.x * blockDim.x;
+        if (i >= n) return;
+        
+        const int tag = tags[i];
+        if (tag == -1) return;
+
+        Particle p = pp[i];
+        rescue_1p(vv, tt, nt, tag, nv, tcstarts, tccounts, tcids, /**/ &p);
+        pp[i] = p;
+    }
+    
+    void rescue_dev(const Mesh m, const Particle *i_pp, const int ns, const int n,
+                    const int *tcstarts, const int *tccounts, const int *tcids, /**/ Particle *pp)
+    {
+        mesh::inside_dev(pp, n, m, i_pp, ns, /**/ tags_dev);
+
+        rescue_dev_k <<< k_cnf(n) >>> (i_pp, m.tt, m.nt, m.nv, tcstarts, tccounts, tcids, tags_dev, n, /**/ pp);
     }
 }
