@@ -102,9 +102,9 @@ namespace mesh
         
             for (int i = 0; i < nt; ++i)
             {
-                const int t1 = tt[3*i + 0];
-                const int t2 = tt[3*i + 1];
-                const int t3 = tt[3*i + 2];
+                const int t1 = sid * nv + tt[3*i + 0];
+                const int t2 = sid * nv + tt[3*i + 1];
+                const int t3 = sid * nv + tt[3*i + 2];
 
                 const float a[3] = {vv[t1].r[0], vv[t1].r[1], vv[t1].r[2]};
                 const float b[3] = {vv[t2].r[0], vv[t2].r[1], vv[t2].r[2]};
