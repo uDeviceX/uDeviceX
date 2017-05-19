@@ -21,7 +21,7 @@ namespace mbounce
 
 #define BBOX_MARGIN 0.1f
 
-#define debug_output
+    // #define debug_output
     
     template <typename T>  T _DH_ min2(T a, T b) {return a < b ? a : b;}
     template <typename T>  T _DH_ max2(T a, T b) {return a < b ? b : a;}
