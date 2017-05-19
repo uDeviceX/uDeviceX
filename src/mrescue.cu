@@ -2,7 +2,7 @@
 #include ".conf.h"
 #include "mesh.h"
 
-#include "rescue.h"
+#include "mrescue.h"
 
 namespace rescue
 {
@@ -46,13 +46,13 @@ namespace rescue
 
         float u, v;
         {
-            const real ga1 = dot(g, ab);
-            const real ga2 = dot(g, ac);
-            const real a11 = dot(ab, ab);
-            const real a12 = dot(ab, ac);
-            const real a22 = dot(ac, ac);
+            const float ga1 = dot(g, ab);
+            const float ga2 = dot(g, ac);
+            const float a11 = dot(ab, ab);
+            const float a12 = dot(ab, ac);
+            const float a22 = dot(ac, ac);
 
-            const real fac = 1.f / (a11*a22 - a12*a12);
+            const float fac = 1.f / (a11*a22 - a12*a12);
             
             u = (ga1 * a22 - ga2 * a12) * fac;
             v = (ga2 * a11 - ga1 * a12) * fac;
@@ -80,16 +80,16 @@ namespace rescue
         rp[2] = a[2] + u * ab[2] + v * ac[2];
     }
     
-    static void rescue_1p(const Particle *vv, const int *tt, const int nt,
+    static void rescue_1p(const Particle *vv, const int *tt, const int nt, const int sid, const int nv,
                           const int *tcstarts, const int *tccounts, const int *tcids, /**/ Particle *p)
     {
         // check around me if there is triangles and select the closest one
 
         float dr2b = 1e5f, rpb[3], nb[3];
         
-        const int xcid = min2(max2(0, int (p.r[0] + XS/2)), XS-1);
-        const int ycid = min2(max2(0, int (p.r[1] + YS/2)), YS-1);
-        const int zcid = min2(max2(0, int (p.r[2] + ZS/2)), ZS-1);
+        const int xcid = min2(max2(0, int (p->r[0] + XS/2)), XS-1);
+        const int ycid = min2(max2(0, int (p->r[1] + YS/2)), YS-1);
+        const int zcid = min2(max2(0, int (p->r[2] + ZS/2)), ZS-1);
         const int cid = xcid + XS * (ycid + YS * zcid);
 
         const int start = tcstarts[cid];
@@ -100,9 +100,9 @@ namespace rescue
             const int tid = tcids[i];
             const int t1 = tt[3*tid + 0], t2 = tt[3*tid + 1], t3 = tt[3*tid + 2];
 
-#define ldv(t) {vv[3*t + 0], vv[3*t + 1], vv[3*t + 2]}
+#define ldv(t) {vv[3*t].r[0], vv[3*t].r[1], vv[3*t].r[2]}
             const float a[3] = ldv(t1), b[3] = ldv(t2), c[3] = ldv(t3);
-#undef ldv
+
             float rp[3], n[3];
             project_t(a, b, c, p->r, /**/ rp, n);
 
@@ -125,7 +125,6 @@ namespace rescue
 
             const int tid = tcids[i];
             const int t1 = tt[3*tid + 0], t2 = tt[3*tid + 1], t3 = tt[3*tid + 2];
-#define ldv(t) {vv[3*t + 0], vv[3*t + 1], vv[3*t + 2]}
             const float a[3] = ldv(t1), b[3] = ldv(t2), c[3] = ldv(t3);
 #undef ldv
             rpb[0] = (a[0] + b[0] + c[0]) * 0.333333f;
@@ -157,6 +156,13 @@ namespace rescue
                     const int *tcstarts, const int *tccounts, const int *tcids, /**/ Particle *pp)
     {
         mesh::inside_hst(pp, n, m, i_pp, ns, /**/ tags_hst);
-        
+
+        for (int i = 0; i < n; ++i)
+        {
+            const int tag = tags_hst[i];
+            
+            if (tag != -1)
+            rescue_1p(i_pp, m.tt, m.nt, tag, m.nv, tcstarts, tccounts, tcids, /**/ pp + i);
+        }
     }
 }

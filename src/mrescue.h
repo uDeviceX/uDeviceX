@@ -1,6 +1,6 @@
 namespace rescue
 {
-    void init(int n)
+    void init(int n);
     void close();
 
     void rescue_hst(const int *tt, const int nt, const Particle *ipp, const int n, /**/ Particle *pp);
