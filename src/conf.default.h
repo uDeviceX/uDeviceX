@@ -32,3 +32,7 @@
 #ifndef sbounce_back
 #define sbounce_back (false)
 #endif
+
+#ifndef rescue_freq
+#define rescue_freq (100)
+#endif

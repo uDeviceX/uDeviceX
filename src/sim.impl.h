@@ -205,7 +205,7 @@ void bounce() {
   if (rbcs0) wall::bounce(r_pp, r_n);
 }
 
-void bounce_solid()
+void bounce_solid(int it)
 {
 #ifndef DEVICE_SOLID
 
@@ -223,6 +223,9 @@ void bounce_solid()
     CC(cudaMemcpy(s_ff_hst, s_ff, sizeof(Force)    * s_n, D2H));
 
     mbounce::bounce_tcells_hst(s_ff_hst, m_hst, i_pp_bb_hst, tcellstarts_hst, tcellcounts_hst, tctids_hst, s_n, /**/ s_pp_hst, ss_bb_hst);
+
+    if (it % rescue_freq == 0)
+    mrescue::rescue_hst(m_hst, i_pp_hst, nsbb, s_n, tcellstarts_hst, tcellcounts_hst, tctids_hst, /**/ s_pp_hst);
     
     CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
 
@@ -254,6 +257,9 @@ void bounce_solid()
 
     mbounce::bounce_tcells_dev(s_ff, m_dev, i_pp_bb_dev, tcellstarts_dev, tcellcounts_dev, tctids_dev, s_n, /**/ s_pp, ss_dev);
 
+    if (it % rescue_freq == 0)
+    mrescue::rescue_dev(m_dev, i_pp_hst, nsbb, s_n, tcellstarts_dev, tcellcounts_dev, tctids_dev, /**/ s_pp);
+    
     // send back fo, to
 
     CC(cudaMemcpy(ss_bb_hst, ss_bb_dev, nsbb * sizeof(Solid), D2H));
@@ -402,7 +408,7 @@ void run0(float driving_force, bool wall_created, int it) {
     update_s();
     if (rbcs0) update_r();
     if (wall_created) bounce();
-    if (sbounce_back && rbcs0) bounce_solid();
+    if (sbounce_back && rbcs0) bounce_solid(it);
 }
 
 void run_nowall() {
