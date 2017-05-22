@@ -2,7 +2,7 @@
 # (do not include '*.h' files in other '*.h' files)
 
 bund.o: .conf.h  conf.default.h bipsbatch.decl.h bipsbatch.impl.h bund.h common.h common.tmp.h dpd-forces.h dpd.decl.h dpd.impl.h field.decl.h field.impl.h fsi.decl.h fsi.impl.h glb.h gsl.impl.h ic.impl.h io.h k/common.h k/fsi.h k/rex.h k/scan.h k/sdf.h k/sdstr.h k/sim.h k/wall.h k/wvel.h m.h common.mpi.h packinghalo.decl.h packinghalo.impl.h rex.decl.h rex.impl.h sdf.decl.h sdf.impl.h sdstr.decl.h sdstr.impl.h sim.decl.h sim.impl.h solid.impl.h k/solid.h wall.decl.h wall.impl.h cnt.decl.h cnt.impl.h k/cnt.h rdstr.decl.h rdstr.impl.h dump.decl.h dump.impl.h ply.impl.h mesh.h ic_solid.impl.h mrescue.h mbounce.h bbhalo.decl.h bbhalo.impl.h minmax.h tcells.h
-common.o: .conf.h common.h common.tmp.h m.h
+common.o: .conf.h common.h m.h
 dpd-forces.o: .conf.h conf.default.h common.h common.tmp.h dpd-forces.h
 glb.o: .conf.h conf.default.h common.h glb.h m.h
 io.o: .conf.h conf.default.h common.h common.mpi.h common.tmp.h io.h m.h
