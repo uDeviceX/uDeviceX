@@ -119,9 +119,6 @@ namespace mesh
             else if (prop("end_header", cbuf)) break;
         }
 
-        printf("nt = %d\n", nt);
-        printf("nv = %d\n", nv);
-
         if (l >= MAXLINES)
         {
             printf("Something went wrong, did not catch end_header\n");

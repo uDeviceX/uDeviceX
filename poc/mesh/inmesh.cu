@@ -65,7 +65,7 @@ int main(int argc, char **argv)
         lowest(zlo, z); highest(zhi, z);
     }
 
-    printf("Extents: %f %f, %f %f, %f %f\n", xlo, xhi, ylo, yhi, zlo, zhi);
+    //printf("Extents: %f %f, %f %f, %f %f\n", xlo, xhi, ylo, yhi, zlo, zhi);
 
     float *rr  = new float[3*N];
     int *inout = new int[N];
@@ -162,12 +162,12 @@ int main(int argc, char **argv)
 /*
 
 # nTEST: collision.t0
-# make clean && make -j
+# (make clean && make -j) > /dev/null
 # ./inmesh 10000 data/cow.ply
 # cat parts_in.3D | sed -n '2,10000p' > parts.out.3D
 
 # nTEST: collision.t1
-# make clean && make -j
+# (make clean && make -j) > /dev/null
 # ./inmesh 10000 data/sphere.ply
 # cat parts_in.3D | sed -n '2,10000p' > parts.out.3D
 
