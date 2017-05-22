@@ -36,11 +36,6 @@ udx:   $(OBJS) libcuda-dpd
 fsi.o:            fsi.cu;        $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 dpd-forces.o:     dpd-forces.cu; $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 bund.o:           bund.cu;       $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
-minmax.o:         minmax.cu;     $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
-mesh.o:           mesh.cu;       $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
-tcells.o:         tcells.cu;     $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
-mrescue.o:        mrescue.cu;    $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
-mbounce.o:        mbounce.cu;    $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 glb.o:            glb.cu;        $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 include    Makefile.dep # dependencies
 
