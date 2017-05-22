@@ -107,7 +107,7 @@ namespace rex {
 
     k_rex::init<<<1, 1>>>();
 
-    for (int i = 0; i < wsolutes.size(); ++i) {
+    for (int i = 0; i < (int) wsolutes.size(); ++i) {
       ParticlesWrap it = wsolutes[i];
 
       if (it.n) {
@@ -139,7 +139,7 @@ namespace rex {
 			       sizeof(int) * 27, 0, D2D));
 
 
-    for (int i = 0; i < wsolutes.size(); ++i) {
+    for (int i = 0; i < (int) wsolutes.size(); ++i) {
       ParticlesWrap it = wsolutes[i];
 
       if (it.n) {
@@ -352,7 +352,7 @@ namespace rex {
 
     _wait(reqrecvA);
 
-    for (int i = 0; i < wsolutes.size(); ++i) {
+    for (int i = 0; i < (int) wsolutes.size(); ++i) {
       ParticlesWrap it = wsolutes[i];
 
       if (it.n) {

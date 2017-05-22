@@ -96,7 +96,7 @@ namespace mrescue
     static _DH_ void rescue_1p(const Particle *vv, const int *tt, const int nt, const int sid, const int nv,
                                const int *tcstarts, const int *tccounts, const int *tcids, unsigned long seed, /**/ Particle *p)
     {        
-        float dr2b = 1000.f, rpb[3], vpb[3], nb[3];
+        float dr2b = 1000.f, rpb[3] = {0}, vpb[3] = {0}, nb[3] = {0};
 
         // check around me if there is triangles and select the closest one
         
@@ -117,10 +117,6 @@ namespace mrescue
             const int t1 = mid * nv + tt[3*tid + 0];
             const int t2 = mid * nv + tt[3*tid + 1];
             const int t3 = mid * nv + tt[3*tid + 2];
-
-            if (t1 >= nv * 6) printf("t1 = %d!!!!!!!\n", t1);
-            if (t2 >= nv * 6) printf("t2 = %d!!!!!!!\n", t2);
-            if (t3 >= nv * 6) printf("t3 = %d!!!!!!!\n", t3);
             
             const Particle pa = vv[t1];
             const Particle pb = vv[t2];

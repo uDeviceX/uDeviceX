@@ -14,7 +14,7 @@ namespace cnt {
     nsolutes = wsolutes.size();
 
     int ntotal = 0;
-    for (int i = 0; i < wsolutes.size(); ++i) ntotal += wsolutes[i].n;
+    for (int i = 0; i < (int) wsolutes.size(); ++i) ntotal += wsolutes[i].n;
 
     subindices->resize(ntotal);
     cellsentries->resize(ntotal);
@@ -23,7 +23,7 @@ namespace cnt {
 
 
     int ctr = 0;
-    for (int i = 0; i < wsolutes.size(); ++i) {
+    for (int i = 0; i < (int) wsolutes.size(); ++i) {
       ParticlesWrap it = wsolutes[i];
       if (it.n)
 	k_common::subindex_local<true><<<k_cnf(it.n)>>>
@@ -39,7 +39,7 @@ namespace cnt {
 	 (uint *)cellsstart->D);
 
     ctr = 0;
-    for (int i = 0; i < wsolutes.size(); ++i) {
+    for (int i = 0; i < (int) wsolutes.size(); ++i) {
       ParticlesWrap it = wsolutes[i];
 
       if (it.n)
@@ -56,7 +56,7 @@ namespace cnt {
   void bulk(std::vector<ParticlesWrap> wsolutes) {
     if (wsolutes.size() == 0) return;
 
-    for (int i = 0; i < wsolutes.size(); ++i) {
+    for (int i = 0; i < (int) wsolutes.size(); ++i) {
       ParticlesWrap it = wsolutes[i];
       if (it.n)
 	k_cnt::bulk_3tpp<<<k_cnf(3 * it.n)>>>

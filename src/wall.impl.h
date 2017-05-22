@@ -77,7 +77,7 @@ namespace wall {
 
       for (int i = 0; i < 26; ++i) {
 	int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
-	for (int j = 0; j < remote[i].size(); ++j) {
+	for (int j = 0; j < (int) remote[i].size(); ++j) {
 	  Particle p = remote[i][j];
 	  for (int c = 0; c < 3; ++c) p.r[c] += d[c] * L[c];
 	  bool inside = true;

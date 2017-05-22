@@ -412,19 +412,19 @@ void run0(float driving_force, bool wall_created, int it) {
 }
 
 void run_nowall() {
-  int nsteps = (int)(tend / dt);
+  long nsteps = (int)(tend / dt);
   if (m::rank == 0) printf("will take %ld steps\n", nsteps);
   float driving_force = pushtheflow ? hydrostatic_a : 0;
   bool wall_created = false;
   rbcs0 = false;
-  for (int it = 0; it < nsteps; ++it) run0(driving_force, wall_created, it);
+  for (long it = 0; it < nsteps; ++it) run0(driving_force, wall_created, it);
 }
 
 void run_wall() {
-  int nsteps = (int)(tend / dt);
+  long nsteps = (int)(tend / dt);
   float driving_force = 0;
   bool wall_created = false;
-  int it = 0;
+  long it = 0;
   rbcs0 = false;
   for (/**/; it < wall_creation_stepid; ++it) run0(driving_force, wall_created, it);
 
