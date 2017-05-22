@@ -5,7 +5,7 @@ bund.o: .conf.h  conf.default.h bipsbatch.decl.h bipsbatch.impl.h bund.h common.
 common.o: .conf.h common.h m.h
 dpd-forces.o: .conf.h conf.default.h dpd-forces.h
 glb.o: .conf.h conf.default.h common.h glb.h m.h
-io.o: .conf.h conf.default.h common.h common.mpi.h common.tmp.h io.h m.h
+io.o: .conf.h conf.default.h common.h io.h m.h
 main.o: .conf.h conf.default.h bund.h common.h glb.h m.h
 m.o: m.h
 minmax.o: .conf.h common.h m.h minmax.h
