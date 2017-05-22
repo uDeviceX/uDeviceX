@@ -41,9 +41,6 @@ include    Makefile.dep # dependencies
 libcuda-dpd:; make -C ../cuda-dpd \
 	NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
 
-libbounce-back:; make -C ./bounce-back \
-	NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
-
 clean:  ; rm -f udx *.o
 	make -C ../cuda-dpd clean
 
