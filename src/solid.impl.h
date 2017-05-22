@@ -1,20 +1,10 @@
 #include "k/solid.h"
 
-namespace solid {
-
-#define X 0
-#define Y 1
-#define Z 2
-#define XX 0
-#define XY 1
-#define XZ 2
-#define YY 3
-#define YZ 4
-#define ZZ 5
-
-#define YX XY
-#define ZX XZ
-#define ZY YZ
+namespace solid
+{
+    enum {X, Y, Z};
+    enum {XX, XY, XZ, YY, YZ, ZZ};
+    enum {YX = XY, ZX = XZ, ZY = YZ};
 
 #ifndef pin_axis
 #define pin_axis (false)
@@ -342,18 +332,4 @@ namespace solid {
 
         first = false;
     }
-
-#undef X
-#undef Y
-#undef Z
-#undef XX
-#undef XY
-#undef XZ
-#undef YY
-#undef YZ
-#undef ZZ
-
-#undef YX
-#undef ZX
-#undef ZY
 }

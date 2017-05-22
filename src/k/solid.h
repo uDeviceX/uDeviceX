@@ -1,18 +1,8 @@
 namespace k_solid
 {
-#define X 0
-#define Y 1
-#define Z 2
-#define XX 0
-#define XY 1
-#define XZ 2
-#define YY 3
-#define YZ 4
-#define ZZ 5
-
-#define YX XY
-#define ZX XZ
-#define ZY YZ
+    enum {X, Y, Z};
+    enum {XX, XY, XZ, YY, YZ, ZZ};
+    enum {YX = XY, ZX = XZ, ZY = YZ};
 
 #define _HD_ __host__ __device__
 
@@ -238,20 +228,5 @@ namespace k_solid
 
             pp[vid] = p;
         }
-    }
-
-#undef X
-#undef Y
-#undef Z
-#undef XX
-#undef XY
-#undef XZ
-#undef YY
-#undef YZ
-#undef ZZ
-
-#undef YX
-#undef ZX
-#undef ZY
-    
+    }    
 } /* namespace k_solid */

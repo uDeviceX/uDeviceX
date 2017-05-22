@@ -1,15 +1,7 @@
-namespace gsl {
-
-#define XX 0
-#define XY 1
-#define XZ 2
-#define YY 3
-#define YZ 4
-#define ZZ 5
-
-#define YX XY
-#define ZX XZ
-#define ZY YZ
+namespace gsl
+{
+    enum {XX, XY, XZ, YY, YZ, ZZ};
+    enum {YX = XY, ZX = XZ, ZY = YZ};
 
 #define DIM 3
 
