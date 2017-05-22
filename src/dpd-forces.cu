@@ -2,12 +2,9 @@
 #include <cstdio>
 #include <mpi.h>
 #include <utility>
-#include <cell-lists.h>
 #include <cuda-dpd.h>
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */
 #include "conf.default.h"
-#include "common.h"
-#include "common.tmp.h"
 
 __device__ float3 compute_dpd_force_traced(int type1, int type2,
         float3 pos1, float3 pos2, float3 vel1, float3 vel2, float myrandnr) {
