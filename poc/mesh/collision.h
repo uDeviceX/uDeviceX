@@ -94,19 +94,13 @@ namespace collision
         
         for (int i = 0; i < nt; ++i)
         {
-            const int t1 = tex1Dfetch<int>(tt, 3*i + 0);
-            const int t2 = tex1Dfetch<int>(tt, 3*i + 1);
-            const int t3 = tex1Dfetch<int>(tt, 3*i + 2);
+            const int4 t = tex1Dfetch<int4>(tt, i);
 
-#define ld1(t, a) tex1Dfetch<float>(vv, 3*t + a)
-#define ld3(t) {ld1(t, 0), ld1(t, 1), ld1(t, 2)}
+            const float4 a4 = tex1Dfetch<float4>(vv, t.x);
+            const float4 b4 = tex1Dfetch<float4>(vv, t.y);
+            const float4 c4 = tex1Dfetch<float4>(vv, t.z);
 
-            const float a[3] = ld3(t1);
-            const float b[3] = ld3(t2);
-            const float c[3] = ld3(t3);
-#undef ld1
-#undef ld3
-            if (in_tetrahedron(r, a, b, c, origin)) ++count;
+            if (in_tetrahedron(r, &a4.x, &b4.x, &c4.x, origin)) ++count;
         }
         
         inout[gid] = (count%2) ? 0 : -1;
@@ -213,23 +207,25 @@ namespace collision
 
                 if (tid < nt)
                 {
-                    const int t1 = tex1Dfetch<int>(tt, 3*tid + 0);
-                    const int t2 = tex1Dfetch<int>(tt, 3*tid + 1);
-                    const int t3 = tex1Dfetch<int>(tt, 3*tid + 2);
+                    const int4 t = tex1Dfetch<int4>(tt, tid);
+
+                    const float4 a4 = tex1Dfetch<float4>(vv, t.x);
+                    const float4 b4 = tex1Dfetch<float4>(vv, t.y);
+                    const float4 c4 = tex1Dfetch<float4>(vv, t.z);
 
                     const int base = 9 * threadIdx.x;
 
-                    _sdata[base + 0] = tex1Dfetch<float>(vv, 3*t1 + 0);
-                    _sdata[base + 1] = tex1Dfetch<float>(vv, 3*t1 + 1);
-                    _sdata[base + 2] = tex1Dfetch<float>(vv, 3*t1 + 2);
+                    _sdata[base + 0] = a4.x;
+                    _sdata[base + 1] = a4.y;
+                    _sdata[base + 2] = a4.z;
 
-                    _sdata[base + 3] = tex1Dfetch<float>(vv, 3*t2 + 0);
-                    _sdata[base + 4] = tex1Dfetch<float>(vv, 3*t2 + 1);
-                    _sdata[base + 5] = tex1Dfetch<float>(vv, 3*t2 + 2);
+                    _sdata[base + 3] = b4.x;
+                    _sdata[base + 4] = b4.y;
+                    _sdata[base + 5] = b4.z;
 
-                    _sdata[base + 6] = tex1Dfetch<float>(vv, 3*t3 + 0);
-                    _sdata[base + 7] = tex1Dfetch<float>(vv, 3*t3 + 1);
-                    _sdata[base + 8] = tex1Dfetch<float>(vv, 3*t3 + 2);
+                    _sdata[base + 6] = c4.x;
+                    _sdata[base + 7] = c4.y;
+                    _sdata[base + 8] = c4.z;
                 }
             }
 
@@ -255,56 +251,23 @@ namespace collision
         if (gid < n) inout[gid] = (count%2) ? 0 : -1;
     }
 
-    //#define VANILLA
-    //#define SHARED
-    //#define TEXTURE
-#define TEXTURE_SHARED
-    
     void in_mesh_dev(const float *rr, const int n, float *vv, const int nv, int *tt, const int nt, /**/ int *inout)
     {
-#if defined (VANILLA)
-        
         in_mesh_k <<< (127 + n) / 128, 128 >>>(rr, n, vv, tt, nt, /**/ inout);
-        
-#elif defined (SHARED)
-        
+    }
+
+    void in_mesh_dev_shared(const float *rr, const int n, float *vv, const int nv, int *tt, const int nt, /**/ int *inout)
+    {
         in_mesh_ks <<< (127 + n) / 128, 128 >>>(rr, n, vv, tt, nt, /**/ inout);
-        
-#elif defined (TEXTURE) || defined (TEXTURE_SHARED)
+    }
 
-        cudaTextureObject_t vvt, ttt;
-        cudaResourceDesc    resDv, resDt;
-        cudaTextureDesc     texDv, texDt;
+    void in_mesh_dev_tex(const float *rr, const int n, const cudaTextureObject_t vv, const int nv, const cudaTextureObject_t tt, const int nt, /**/ int *inout)
+    {
+        in_mesh_kt <<< (127 + n) / 128, 128 >>>(rr, n, vv, tt, nt, /**/ inout);
+    }
 
-        memset(&resDv, 0, sizeof(resDv));
-        resDv.resType = cudaResourceTypeLinear;
-        resDv.res.linear.devPtr  = vv;
-        resDv.res.linear.sizeInBytes = 3 * sizeof(float) * nv;
-        resDv.res.linear.desc = cudaCreateChannelDesc<float>();
-
-        memset(&texDv, 0, sizeof(texDv));
-        texDv.normalizedCoords = 0;
-        texDv.readMode = cudaReadModeElementType;
-
-        cudaCreateTextureObject(&vvt, &resDv, &texDv, NULL);
-        
-        memset(&resDt, 0, sizeof(resDt));
-        resDt.resType = cudaResourceTypeLinear;
-        resDt.res.linear.devPtr  = tt;
-        resDt.res.linear.sizeInBytes = 3 * sizeof(int) * nt;
-        resDt.res.linear.desc = cudaCreateChannelDesc<int>();
-
-        memset(&texDt, 0, sizeof(texDt));
-        texDt.normalizedCoords = 0;
-        texDt.readMode = cudaReadModeElementType;
-
-        cudaCreateTextureObject(&ttt, &resDt, &texDt, NULL);
-
-#if defined (TEXTURE)
-        in_mesh_kt <<< (127 + n) / 128, 128 >>>(rr, n, vvt, ttt, nt, /**/ inout);
-#elif defined (TEXTURE_SHARED)
-        in_mesh_kts <<< (127 + n) / 128, 128 >>>(rr, n, vvt, ttt, nt, /**/ inout);
-#endif
-#endif
+    void in_mesh_dev_tex_shared(const float *rr, const int n, const cudaTextureObject_t vv, const int nv, const cudaTextureObject_t tt, const int nt, /**/ int *inout)
+    {
+        in_mesh_kts <<< (127 + n) / 128, 128 >>>(rr, n, vv, tt, nt, /**/ inout);
     }
 }

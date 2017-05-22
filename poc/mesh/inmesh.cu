@@ -18,6 +18,13 @@ inline void cudaAssert(cudaError_t code, const char *file, int line) {
 #define H2D cudaMemcpyHostToDevice
 #define D2H cudaMemcpyDeviceToHost
 
+// #define VANILLA
+// #define SHARED
+// #define TEXTURE
+#define TEXTURE_SHARED
+
+#include "tex.h"
+
 int main(int argc, char **argv)
 {
     if (argc != 3)
@@ -83,13 +90,38 @@ int main(int argc, char **argv)
     CC(cudaMalloc(&d_tt, 3 * nt * sizeof(int)));
     CC(cudaMalloc(&d_rr, 3 * N  * sizeof(float)));
     CC(cudaMalloc(&d_inout, N   * sizeof(int)));
-
+    
     CC(cudaMemcpy(d_vv, vv.data(), 3 * nv * sizeof(float), H2D));
     CC(cudaMemcpy(d_tt, tt.data(), 3 * nt * sizeof(int),   H2D));
     CC(cudaMemcpy(d_rr, rr, 3 * N * sizeof(float), H2D));
 
+#if defined( TEXTURE ) || defined( TEXTURE_SHARED )
+    float4 *vvzip; int4 *ttzip;
+    CC(cudaMalloc(&vvzip, nv * sizeof(float4)));
+    CC(cudaMalloc(&ttzip, nt * sizeof(int4)));
+
+    tex::zip4(d_tt, nt, /**/ ttzip);
+    tex::zip4(d_vv, nv, /**/ vvzip);
+
+    cudaTextureObject_t ttto, vvto;
+
+    tex::maketexzip(ttzip, nt, /**/ &ttto);
+    tex::maketexzip(vvzip, nv, /**/ &vvto);
+    
+#endif
+    
     cudaEventRecord(start);
+
+#if defined( VANILLA )
     collision::in_mesh_dev(d_rr, N, d_vv, nv, d_tt, nt, /**/ d_inout);
+#elif defined( SHARED )
+    collision::in_mesh_dev_shared(d_rr, N, d_vv, nv, d_tt, nt, /**/ d_inout);
+#elif defined( TEXTURE )
+    collision::in_mesh_dev_tex(d_rr, N, vvto, nv, ttto, nt, /**/ d_inout);
+#elif defined( TEXTURE_SHARED )
+    collision::in_mesh_dev_tex_shared(d_rr, N, vvto, nv, ttto, nt, /**/ d_inout);
+#endif
+
     cudaEventRecord(stop);
     
     CC(cudaMemcpy(inout, d_inout, N * sizeof(int), D2H));
@@ -97,6 +129,10 @@ int main(int argc, char **argv)
     CC(cudaFree(d_vv)); CC(cudaFree(d_tt));
     CC(cudaFree(d_rr)); CC(cudaFree(d_inout));
 
+#if defined( TEXTURE ) || defined( TEXTURE_SHARED )
+    CC(cudaFree(vvzip)); CC(cudaFree(ttzip));
+#endif
+    
     cudaEventSynchronize(stop);
     float tms = 0;
     cudaEventElapsedTime(&tms, start, stop);
