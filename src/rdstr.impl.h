@@ -20,7 +20,7 @@ namespace rdstr
         for (int i = 1; i < 27; ++i)
         {
             MPI_Request req;
-            MPI_Irecv(&recv_counts[i], 1, MPI_INTEGER, ank_ne[i], i + BT_C_RDSTR, cart, &req);
+            MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, ank_ne[i], i + BT_C_RDSTR, cart, &req);
             recvcntreq.push_back(req);
         }
     }
@@ -101,7 +101,7 @@ namespace rdstr
     int post(const int nv)
     {
         {
-            MPI_Status statuses[recvcntreq.size()];
+            MPI_Status statuses[27];
             MPI_Waitall(recvcntreq.size(), &recvcntreq.front(), statuses);
             recvcntreq.clear();
         }
@@ -218,7 +218,7 @@ namespace rdstr
         // copy and shift halo
         for (int i = 1, start = nstay; i < 27; ++i)
         {
-            const int count = srbuf[i].size();
+            const int count = recv_counts[i];
 
             if (count > 0)
             {
