@@ -9,11 +9,11 @@ OPT      ?= -O3 -use_fast_math -g
 slevel   ?= -2
 
 NVCCFLAGS += -arch $(ARCH_VAL) -code $(CODE_VAL) -std=c++11
-LDFLAGS   += -L../cuda-dpd -L./bounce-back
-NVCCFLAGS += -I../cuda-dpd -I./bounce-back -I.
-LIBS      += -lcuda-dpd -lbounce-back -lcudart
+LDFLAGS   += -L../cuda-dpd
+NVCCFLAGS += -I../cuda-dpd -I.
+LIBS      += -lcuda-dpd -lcudart
 
-OBJS = 	bund.o common.o dpd-forces.o glb.o io.o main.o minmax.o mesh.o tcells.o mrescue.o m.o
+OBJS = 	bund.o common.o dpd-forces.o glb.o io.o main.o minmax.o mesh.o tcells.o mrescue.o mbounce.o m.o
 
 ifeq ($(h5),0)
 NVCCFLAGS += -DNO_H5
@@ -22,9 +22,9 @@ endif
 NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel)
 
 # I have some device code in OBJS. I have to link it separatly
-udx:   $(OBJS) libcuda-dpd libbounce-back
+udx:   $(OBJS) libcuda-dpd
 	$(NVCC) $(NVCCFLAGS) $(OPT) -dlink \
-		-L../cuda-dpd -L./bounce-back $(OBJS) $(LIBS) -o gpuCode.o
+		-L../cuda-dpd $(OBJS) $(LIBS) -o gpuCode.o
 	$(LINK)  $(LDFLAGS) gpuCode.o $(OBJS) $(LIBS) -o $@
 
 # a rule for the most of *.cu files
@@ -40,6 +40,7 @@ minmax.o:         minmax.cu;     $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 mesh.o:           mesh.cu;       $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 tcells.o:         tcells.cu;     $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 mrescue.o:        mrescue.cu;    $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
+mbounce.o:        mbounce.cu;    $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 glb.o:            glb.cu;        $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 include    Makefile.dep # dependencies
 
@@ -51,6 +52,5 @@ libbounce-back:; make -C ./bounce-back \
 
 clean:  ; rm -f udx *.o
 	make -C ../cuda-dpd clean
-	make -C ./bounce-back clean
 
-.PHONY = clean libcuda-dpd libbounce-back
+.PHONY = clean libcuda-dpd

@@ -1,7 +1,7 @@
-#include "../.conf.h"
-#include "../common.h"
+#include ".conf.h"
+#include "common.h"
 
-#include "roots.h"
+#include "roots.impl.h"
 #include "mbounce.h"
 
 namespace mbounce
