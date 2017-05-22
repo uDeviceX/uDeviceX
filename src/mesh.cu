@@ -120,6 +120,8 @@ namespace mesh
     
     void inside_dev(const Particle *pp, const int n, const Mesh m, const Particle *i_pp, const int ns, /**/ int *tags)
     {
+        if (ns == 0 || n == 0) return;
+        
         kernels::init_tags <<< k_cnf(n) >>> (n, /**/ tags);
 
         dim3 thrd(128, 1);
@@ -185,6 +187,7 @@ namespace mesh
 
     void get_bboxes_dev(const Particle *pp, const int nps, const int ns, /**/ float *bboxes)
     {
+        if (ns == 0) return;
         minmax(pp, nps, ns, /**/ bboxes);
     }
 }

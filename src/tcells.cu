@@ -213,6 +213,12 @@ namespace tckernels
 void build_tcells_dev(const Mesh m, const Particle *i_pp, const int ns, /**/ int *starts, int *counts, int *ids)
 {
     CC(cudaMemset(counts, 0, NCELLS * sizeof(int)));
+
+    if (ns == 0)
+    {
+        CC(cudaMemset(starts, 0, NCELLS * sizeof(int)));
+        return;
+    }
     
     tckernels::countt <<< k_cnf(ns*m.nt) >>> (m.nt, m.tt, m.nv, i_pp, ns, /**/ counts);
 

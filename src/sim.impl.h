@@ -241,7 +241,7 @@ void bounce_solid(int it)
 #else // bounce on device
 
     mesh::get_bboxes_dev(i_pp_dev, m_dev.nv, nsolid, /**/ bboxes_dev);
-
+    
     CC(cudaMemcpy(bboxes_hst, bboxes_dev, 6 * nsolid * sizeof(float), D2H));
     CC(cudaMemcpy(ss_hst, ss_dev, nsolid * sizeof(Solid), D2H));
 
