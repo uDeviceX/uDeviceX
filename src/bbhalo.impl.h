@@ -139,8 +139,13 @@ namespace bbhalo
             hhcontrib(1, 1, 0);
             hhcontrib(1, 1, 1);
 
-            assert(hhindices[0].back() == i);
-            assert(hhindices[0].size() == i+1);
+            if (hhindices[0].back() != i)
+            {
+                printf("rank %d: %d should be %d\n", m::rank, hhindices[0].back(), i);
+                printf("rank %d: %d solids, \n", m::rank, ns);
+            }
+            // assert(hhindices[0].back() == i);
+            // assert(hhindices[0].size() == i+1);
         }
 
         // resize packs
