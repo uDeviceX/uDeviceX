@@ -1,9 +1,11 @@
 include ../../src/.cache.Makefile
 
+DEFS=
+
 NVCC     ?= nvcc
 ARCH_VAL ?= compute_35
 CODE_VAL ?= sm_35
-OPT      ?= -O3 -use_fast_math -g
+OPT      ?= -O3 -use_fast_math -g $(DEFS)
 
 NVCCFLAGS += -arch $(ARCH_VAL) -code $(CODE_VAL) -std=c++11
 

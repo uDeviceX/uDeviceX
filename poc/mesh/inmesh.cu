@@ -171,4 +171,9 @@ int main(int argc, char **argv)
 # ./inmesh 10000 data/sphere.ply
 # cat parts_in.3D | sed -n '2,10000p' > parts.out.3D
 
+# nTEST: collision.t2
+# (make clean && make -j DEFS=-DPdir=2) > /dev/null
+# ./inmesh 10000 data/cyl.ply
+# cat parts_in.3D | sed -n '2,10000p' > parts.out.3D
+
 */
