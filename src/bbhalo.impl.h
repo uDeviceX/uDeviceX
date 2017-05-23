@@ -115,6 +115,9 @@ namespace bbhalo
         for (int i = 0; i < ns; ++i)
         {
             const float *bbox = bboxes + 6*i;
+
+            // i contributes to my node
+            hhindices[0].push_back(i);
             
             auto hhcontrib = [&](int dx, int dy, int dz) {
             
@@ -128,26 +131,18 @@ namespace bbhalo
                 if (hhindices[code].size() == 0 || hhindices[code].back() != i)
                 hhindices[code].push_back(i);
             };
-
+            
             hhcontrib(0, 0, 0);
             hhcontrib(0, 0, 1);
             hhcontrib(0, 1, 0);
             hhcontrib(0, 1, 1);
-
+            
             hhcontrib(1, 0, 0);
             hhcontrib(1, 0, 1);
             hhcontrib(1, 1, 0);
             hhcontrib(1, 1, 1);
-
-            if (hhindices[0].back() != i)
-            {
-                printf("rank %d: %d should be %d\n", m::rank, hhindices[0].back(), i);
-                printf("rank %d: %d solids, \n", m::rank, ns);
-            }
-            // assert(hhindices[0].back() == i);
-            // assert(hhindices[0].size() == i+1);
         }
-
+        
         // resize packs
         for (int i = 0; i < 27; ++i)
         {
