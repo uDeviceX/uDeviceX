@@ -73,15 +73,14 @@
 # avg_h5.m h5/flowfields-0001.h5 | sed -n '4,29p' | uscale 0.5 > h5.out.txt
 
 #### Double poiseuille pinned ellipse
-# sTEST: solid.t5
-# set -x
+# nTEST: solid.t5
 # export PATH=../tools:$PATH
 # rm -rf h5 bop diag.txt solid_diag.txt debug.txt
 # echo -e "8 16 8" > ic_solid.txt
+# cp data/ellipse.ply mesh_solid.ply
 # :
 # argp .conf.double.poiseuille.h     \
-#   -rbcs -pin_com -sbounce_back     \
-#   -a2_ellipse=16 -b2_ellipse=4     \
+#   -rbcs -spdir=2 -sbounce_back     \
 #   -tend=0.5 -steps_per_dump=100    \
 #   -pushtheflow -doublepoiseuille   \
 #   -hdf5field_dumps -part_dumps     \
