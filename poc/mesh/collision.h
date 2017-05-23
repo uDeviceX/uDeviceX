@@ -4,6 +4,9 @@
 #pragma once
 #define _HD_ __host__ __device__
 
+//#define Pdir 2
+#define ORIGIN {0, 0, 0}
+
 namespace collision
 {
     enum {X, Y, Z};
@@ -40,7 +43,10 @@ namespace collision
     {
         int c = 0;
 
-        const float origin[3] = {0, 0, 0};
+        float origin[3] = ORIGIN;
+#ifdef Pdir
+        origin[Pdir] = r[Pdir];
+#endif
         
         for (int i = 0; i < nt; ++i)
         {
@@ -65,7 +71,10 @@ namespace collision
 
         int count = 0;
         const float r[3] = {rr[3*gid + 0], rr[3*gid + 1], rr[3*gid + 2]};
-        const float origin[3] = {0, 0, 0};
+        float origin[3] = ORIGIN;
+#ifdef Pdir
+        origin[Pdir] = r[Pdir];
+#endif
         
         for (int i = 0; i < nt; ++i)
         {
@@ -90,7 +99,10 @@ namespace collision
 
         int count = 0;
         const float r[3] = {rr[3*gid + 0], rr[3*gid + 1], rr[3*gid + 2]};
-        const float origin[3] = {0, 0, 0};
+        float origin[3] = ORIGIN;
+#ifdef Pdir
+        origin[Pdir] = r[Pdir];
+#endif
         
         for (int i = 0; i < nt; ++i)
         {
@@ -123,7 +135,10 @@ namespace collision
             r[2] = rr[3*gid + 2];
         }
 
-        const float origin[3] = {0, 0, 0};
+        float origin[3] = ORIGIN;
+#ifdef Pdir
+        origin[Pdir] = r[Pdir];
+#endif
 
         for (int tb = 0; tb < (nt + NTSHARED-1)/NTSHARED; ++tb)
         {
@@ -194,7 +209,10 @@ namespace collision
             r[2] = rr[3*gid + 2];
         }
 
-        const float origin[3] = {0, 0, 0};
+        float origin[3] = ORIGIN;
+#ifdef Pdir
+        origin[Pdir] = r[Pdir];
+#endif
 
         for (int tb = 0; tb < (nt + NTSHARED-1)/NTSHARED; ++tb)
         {
