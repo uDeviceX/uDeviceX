@@ -27,3 +27,12 @@ Usage:
 ./genellipse <out.ply> <a> <b> <c> <nsub2> <nsub3>
 ```
 - `a`, `b`, `c`: principal axes in x, y, z directions
+
+Cylinder (open)
+---------------
+Usage:
+```sh
+./gencylinder <out.ply> <R> <nr> <H> <nh>
+```
+- `R`, `H`: radius and height
+- `nr`, `nh`: number of subdivision along radial direction and z direction
