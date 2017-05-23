@@ -6,10 +6,6 @@ namespace solid
     enum {XX, XY, XZ, YY, YZ, ZZ};
     enum {YX = XY, ZX = XZ, ZY = YZ};
 
-#ifndef pin_axis
-#define pin_axis (false)
-#endif
-
     void init_I(Particle *pp, int n, float pmass, float *com, /**/ float *I) {
         int c;
 

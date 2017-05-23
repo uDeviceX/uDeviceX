@@ -25,8 +25,8 @@
 #define pin_com (false)
 #endif
 
-#ifndef pin_com
-#define pin_com (false)
+#ifndef pin_axis
+#define pin_axis (false)
 #endif
 
 #ifndef sbounce_back

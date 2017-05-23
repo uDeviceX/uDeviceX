@@ -5,10 +5,6 @@ namespace k_solid
     enum {YX = XY, ZX = XZ, ZY = YZ};
 
 #define _HD_ __host__ __device__
-
-#ifndef pin_axis
-#define pin_axis (false)
-#endif
     
     _HD_ float dot(float *v, float *u) {
         return v[X]*u[X] + v[Y]*u[Y] + v[Z]*u[Z];
