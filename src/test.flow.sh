@@ -9,7 +9,6 @@
 
 #### Double poiseuille
 # nTEST: flow.t1
-# set -x
 # export PATH=../tools:$PATH
 # rm -rf bop h5 diag.txt
 # :
