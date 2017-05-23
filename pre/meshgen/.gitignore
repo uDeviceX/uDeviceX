@@ -1,4 +1,5 @@
 gensphere
-genellipse
+genellipsoid
 gencylinder
+genellipse
 *.ply
