@@ -45,7 +45,7 @@
 # export PATH=../tools:$PATH
 # rm -rf h5 diag.txt solid_diag.txt
 # echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > ic_solid.txt
-# cp data/ellipse.ply mesh_solid.ply
+# cp data/ellipsoid.ply mesh_solid.ply
 # :
 # argp .conf.double.poiseuille.h     \
 #   -rbcs -sbounce_back              \
