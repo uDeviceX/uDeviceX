@@ -24,7 +24,7 @@ Ellipsoid
 ---------
 Usage:
 ```sh
-./genellipse <out.ply> <a> <b> <c> <nsub2> <nsub3>
+./genellipsoid <out.ply> <a> <b> <c> <nsub2> <nsub3>
 ```
 - `a`, `b`, `c`: principal axes in x, y, z directions
 
