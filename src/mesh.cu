@@ -2,6 +2,7 @@
 #include "minmax.h"
 
 #include "mesh.h"
+#include ".conf.h"
 
 namespace mesh
 {
@@ -39,7 +40,11 @@ namespace mesh
     int inside_1p(const float *r, const float *vv, const int *tt, const int nt)
     {
         int c = 0;
-        const float origin[3] = {0, 0, 0};
+        float origin[3] = {0, 0, 0};
+#ifdef spdir
+        origin[spdir] = r[spdir];
+#endif
+        
         for (int i = 0; i < nt; ++i)
         {
             const int *t = tt + 3 * i;
@@ -57,7 +62,11 @@ namespace mesh
     static int inside_1p(const float *r, const Particle *vv, const int *tt, const int nt)
     {
         int c = 0;
-        const float origin[3] = {0, 0, 0};
+        float origin[3] = {0, 0, 0};
+#ifdef spdir
+        origin[spdir] = r[spdir];
+#endif
+
         for (int i = 0; i < nt; ++i)
         {
             const int *t = tt + 3 * i;
@@ -98,7 +107,11 @@ namespace mesh
             int count = 0;
 
             const Particle p = pp[gid];
-            const float origin[3] = {0, 0, 0};
+            float origin[3] = {0, 0, 0};
+#ifdef spdir
+            origin[spdir] = p.r[spdir];
+#endif
+
         
             for (int i = 0; i < nt; ++i)
             {
