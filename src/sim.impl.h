@@ -27,7 +27,7 @@ static void distr_r()
 
     r_n = nsolid * npsolid;
 
-    rdstr::unpack <false> (nsolid, m_dev.nv, /**/ ss_hst, i_pp_dev);
+    rdstr::unpack <false> (m_dev.nv, /**/ ss_hst, i_pp_dev);
 
     CC(cudaMemcpy(ss_dev, ss_hst, nsolid * sizeof(Solid), H2D));
 
@@ -41,7 +41,7 @@ static void distr_r()
 
     r_n = nsolid * npsolid;
 
-    rdstr::unpack <true> (nsolid, m_hst.nv, /**/ ss_hst, i_pp_hst);
+    rdstr::unpack <true> (m_hst.nv, /**/ ss_hst, i_pp_hst);
 
     solid::generate_hst(ss_hst, nsolid, r_rr0_hst, npsolid, /**/ r_pp_hst);
 

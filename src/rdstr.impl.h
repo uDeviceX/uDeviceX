@@ -197,7 +197,7 @@ namespace rdstr
     }
 
     template <bool hst>
-    void unpack(const int ns, const int nv, /**/ Solid *ss_hst, Particle *pp)
+    void unpack(const int nv, /**/ Solid *ss_hst, Particle *pp)
     {
         MPI_Status statuses[26];
         MPI_Waitall(srecvreq.size(), &srecvreq.front(), statuses);
