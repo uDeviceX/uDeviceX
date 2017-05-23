@@ -10,11 +10,11 @@ namespace ic_solid
         
         if (m::rank == 0)
         {
-            FILE *f = fopen("ic_solid.txt", "r"); 
+            FILE *f = fopen(fname, "r"); 
 
             if (f == NULL)
             {
-                fprintf(stderr, "Could not open ic_solid.txt. aborting.\n");
+                fprintf(stderr, "Could not %s. aborting.\n", fname);
                 exit(1);
             }
     
@@ -95,8 +95,8 @@ namespace ic_solid
     }
 
     static void count_pp_inside(const Particle *s_pp, const int n, const float *coms, const int ns,
-                         const int *tt, const float *vv, const int nt, const int nv,
-                         /**/ int *tags, int *rcounts)
+                                const int *tt, const float *vv, const int nt,
+                                /**/ int *tags, int *rcounts)
     {
         for (int j = 0; j < ns; ++j) rcounts[j] = 0;
 
@@ -148,7 +148,7 @@ namespace ic_solid
         *idmax = idmax_;
     }
 
-    static void kill(const float *coms, const int ns, const int idmax, const int *tags, /**/ int *s_n, Particle *s_pp, int *r_n, Particle *r_pp)
+    static void kill(const int idmax, const int *tags, /**/ int *s_n, Particle *s_pp, int *r_n, Particle *r_pp)
     {
         int scount = 0, rcount = 0;
 
@@ -233,7 +233,7 @@ namespace ic_solid
         int *tags = new int[npp0];
         int *rcounts = new int[nsolid];
         
-        count_pp_inside(s_pp, *s_n, coms, nsolid, m.tt, m.vv, m.nt, m.nv, /**/ tags, rcounts);
+        count_pp_inside(s_pp, *s_n, coms, nsolid, m.tt, m.vv, m.nt, /**/ tags, rcounts);
 
         int root, idmax;
         elect(rcounts, nsolid, /**/ &root, &idmax);
@@ -242,7 +242,7 @@ namespace ic_solid
 
         int rcount = 0;
         
-        kill(coms, nsolid, idmax, tags, /**/ s_n, s_pp, &rcount, r_pp);
+        kill(idmax, tags, /**/ s_n, s_pp, &rcount, r_pp);
 
         delete[] tags;
         
