@@ -1,6 +1,6 @@
 set macro
 
-fname = "solid_diag.txt"
+fname = "solid_diag_0000.txt"
 
 f = "< cat $1".fname
 favg = "< sed -n '15,$p' $1".fname
