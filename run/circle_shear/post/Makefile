@@ -13,7 +13,8 @@ CXXFLAGS += -I$(BOP)
 all: $(PROGS)
 %: %.o; $(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $< $(LIBS)
 
-bop2field.o: bop2field.cpp libbop
+bop2field: bop2field.o libbop
+bop2field.o: bop2field.cpp
 
 libbop:; make -C $(BOP)
 

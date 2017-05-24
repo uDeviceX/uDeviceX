@@ -24,7 +24,7 @@ void radial_v(const float *com, const float Rmin, const float Rmax, const int nR
         const float r[3] = {ro[0] - com[0], ro[1] - com[1], ro[2] - com[2]};
         const float r_ = sqrt(r[0]*r[0] + r[1]*r[1]); // suppose cylinder in z direction
 
-        const int ir = (int) floor( (r_-Rmin) * dr );
+        const int ir = (int) floor( (r_-Rmin) / dr );
 
         if (ir < 0 || ir >= nR) continue;
 
@@ -79,18 +79,30 @@ int main(int argc, char **argv)
     }
     summary(&d);
 
-    const int nr = 100;
+    const int nr = 50;
     const float rmin = 5.f;
-    const float rmax = 10.f;
-    const float com[3] = {32, 16, 8};
+    const float rmax = 6.f;
+    const float com[3] = {32, 32, 4};
 
+    const int nf = d.nvars - 3;
+    
     int *counts = new int[nr];
-    float *av = new float[nr * (d.nvars-3)];
+    float *av = new float[nr * nf];
     
     radial_v(com, rmin, rmax, nr, d.fdata, d.n, d.nvars, /**/ av, counts);
         
     FILE *f = fopen(argv[1], "w");
-    
+
+    const float dr = (rmax - rmin) / nr;
+
+    for (int i = 0; i < nr; ++i)
+    {
+        fprintf(f, "%.6e %d", rmin + i*dr, counts[i]);
+        for (int j = 0; j < nf; ++j)
+        fprintf(f, " %.6e", av[i * nf + j]);
+        fprintf(f, "\n");
+    }
+
     fclose(f);
 
     finalize(&d);
