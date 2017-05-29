@@ -14,7 +14,9 @@ void v_r(const float *com, const float Rmin, const float Rmax, const int nR,
     memset(counts, 0, nR*sizeof(int));
 
     const float dr = (Rmax - Rmin) / nR;
-    
+
+    float *f = new float[nf];
+
     for (long i = 0; i < n; ++i)
     {
         const long base = i*nvars;
@@ -32,7 +34,6 @@ void v_r(const float *com, const float Rmin, const float Rmax, const int nR,
 
         // transform velocity to polar coords
 
-        float f[nf];
         memcpy(f, fo, nf*sizeof(float));
         
         if (nf >= 3)
@@ -47,6 +48,8 @@ void v_r(const float *com, const float Rmin, const float Rmax, const int nR,
         av[ir * nf + j] += f[j];
     }
 
+    delete[] f;
+    
     for (int i = 0; i < nR; ++i)
     for (int j = 0; j < nf; ++j)
     av[i * nf + j] /= counts[i] > 0 ? counts[i] : 1;
@@ -60,6 +63,8 @@ void v_th(const float *com, const float Rmin, const float Rmax, const int nth,
     memset(counts, 0, nth*sizeof(int));
 
     const float dth = 2*M_PI / nth;
+
+    float *f = new float[nf];
     
     for (long i = 0; i < n; ++i)
     {
@@ -81,7 +86,6 @@ void v_th(const float *com, const float Rmin, const float Rmax, const int nth,
 
         // transform velocity to radial coords
 
-        float f[nf];
         memcpy(f, fo, nf*sizeof(float));
         
         if (nf >= 3)
@@ -96,6 +100,8 @@ void v_th(const float *com, const float Rmin, const float Rmax, const int nth,
         av[it * nf + j] += f[j];
     }
 
+    delete[] f;
+    
     for (int i = 0; i < nth; ++i)
     for (int j = 0; j < nf; ++j)
     av[i * nf + j] /= counts[i] > 0 ? counts[i] : 1;
