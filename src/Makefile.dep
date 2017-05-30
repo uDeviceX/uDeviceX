@@ -10,6 +10,7 @@ main.o: .conf.h conf.default.h bund.h common.h glb.h m.h
 m.o: m.h
 minmax.o: .conf.h common.h m.h minmax.h
 collision.o: common.h collision.h minmax.h
+mesh.o: common.h mesh.h
 tcells.o: .conf.h common.h m.h tcells.h
 mrescue.o: .conf.h common.h mrescue.h
 mbounce.o: .conf.h common.h roots.impl.h mbounce.h
