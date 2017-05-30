@@ -74,8 +74,7 @@ namespace mesh
 
     void center_of_mass(const Mesh mesh, /**/ float *com)
     {
-        float Vtot, M1tot[3] = {0};
-        float V, M1[3];
+        float Vtot = 0, M1tot[3] = {0};
         
         for (int it = 0; it < mesh.nt; ++it)
         {
@@ -86,8 +85,10 @@ namespace mesh
             const float A[3] = load_t(mesh, t1);
             const float B[3] = load_t(mesh, t2);
             const float C[3] = load_t(mesh, t3);
+
+            float V = 0, M1[3];
             
-            M_0(A, B, C, /**/ V);
+            M_0(A, B, C, /**/ &V);
             M_1(A, B, C, /**/ M1);
 
             Vtot += V;
@@ -96,9 +97,9 @@ namespace mesh
             M1tot[Z] += M1[Z];
         }
 
-        com[X] = m1tot[X] / V;
-        com[Y] = m1tot[Y] / V;
-        com[Z] = m1tot[Z] / V;
+        com[X] = M1tot[X] / Vtot;
+        com[Y] = M1tot[Y] / Vtot;
+        com[Z] = M1tot[Z] / Vtot;
     }
 
 #define shift(a, s) do {A[X] -= s[X]; A[Y] -= s[Y]; A[Z] -= s[Z];} while(0)
@@ -106,8 +107,6 @@ namespace mesh
     void inertia_tensor(const Mesh mesh, const float *com, /**/ float *I)
     {
         memset(I, 0, 6 * sizeof(float));
-
-        float M2[6];
         
         for (int it = 0; it < mesh.nt; ++it)
         {
@@ -122,16 +121,17 @@ namespace mesh
             shift(A, com);
             shift(B, com);
             shift(C, com);
-            
+
+            float M2[6];
             M_2(A, B, C, /**/ M2);
 
-            I[XX] += M_2[YY] + M_2[ZZ];
-            I[YY] += M_2[XX] + M_2[ZZ];
-            I[ZZ] += M_2[XX] + M_2[YY];
+            I[XX] += M2[YY] + M2[ZZ];
+            I[YY] += M2[XX] + M2[ZZ];
+            I[ZZ] += M2[XX] + M2[YY];
 
-            I[XY] -= M_2[XY];
-            I[XZ] -= M_2[XZ];
-            I[YZ] -= M_2[YZ];
+            I[XY] -= M2[XY];
+            I[XZ] -= M2[XZ];
+            I[YZ] -= M2[YZ];
         }
     }
 
