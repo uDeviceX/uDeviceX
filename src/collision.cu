@@ -2,7 +2,6 @@
 #include "minmax.h"
 
 #include "collision.h"
-#include ".conf.h"
 
 namespace collision
 {
