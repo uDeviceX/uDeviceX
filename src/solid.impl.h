@@ -7,7 +7,6 @@ namespace solid
     enum {YX = XY, ZX = XZ, ZY = YZ};
 
     static void init_I(Particle *pp, int n, float pmass, float *com, /**/ float *I) {
-        int c;
 
         for (int c = 0; c < 6; ++c) I[c] = 0;
 
@@ -22,7 +21,7 @@ namespace solid
             I[YZ] -= y*z;
         }
 
-        for (c = 0; c < 6; ++c) I[c] *= pmass;
+        for (int c = 0; c < 6; ++c) I[c] *= pmass;
     }
 
     void init(Particle *pp, int n, float pmass, float *com,
