@@ -104,7 +104,7 @@ namespace mesh
 
 #define shift(a, s) do {A[X] -= s[X]; A[Y] -= s[Y]; A[Z] -= s[Z];} while(0)
     
-    void inertia_tensor(const Mesh mesh, const float *com, /**/ float *I)
+    void inertia_tensor(const Mesh mesh, const float *com, const float density, /**/ float *I)
     {
         memset(I, 0, 6 * sizeof(float));
         
@@ -133,6 +133,9 @@ namespace mesh
             I[XZ] -= M2[XZ];
             I[YZ] -= M2[YZ];
         }
+
+        for (int c = 0; c < 6; ++c)
+        I[c] *= density;
     }
 
 #undef shift
