@@ -6,7 +6,7 @@ namespace solid
     enum {XX, XY, XZ, YY, YZ, ZZ};
     enum {YX = XY, ZX = XZ, ZY = YZ};
 
-    void init_I(Particle *pp, int n, float pmass, float *com, /**/ float *I) {
+    static void init_I(Particle *pp, int n, float pmass, float *com, /**/ float *I) {
         int c;
 
         for (int c = 0; c < 6; ++c) I[c] = 0;
@@ -57,14 +57,14 @@ namespace solid
         }
     }
 
-    void add_f(Force *ff, int n, /**/ float *f) {
+    static void add_f(Force *ff, int n, /**/ float *f) {
         for (int ip = 0; ip < n; ++ip) {
             float *f0 = ff[ip].f;
             f[X] += f0[X]; f[Y] += f0[Y]; f[Z] += f0[Z];
         }
     }
 
-    void add_to(Particle *pp, Force *ff, int n, float *com, /**/ float *to) {
+    static void add_to(Particle *pp, Force *ff, int n, float *com, /**/ float *to) {
         for (int ip = 0; ip < n; ++ip) {
             float *r0 = pp[ip].r, *f0 = ff[ip].f;
             float x = r0[X]-com[X], y = r0[Y]-com[Y], z = r0[Z]-com[Z];
@@ -75,7 +75,7 @@ namespace solid
         }
     }
 
-    void update_om(float *Iinv, float *to, /**/ float *om) {
+    static void update_om(float *Iinv, float *to, /**/ float *om) {
         float *A = Iinv, *b = to, dom[3];
         dom[X] = A[XX]*b[X] + A[XY]*b[Y] + A[XZ]*b[Z];
         dom[Y] = A[YX]*b[X] + A[YY]*b[Y] + A[YZ]*b[Z];
@@ -84,19 +84,19 @@ namespace solid
         om[X] += dom[X]*dt; om[Y] += dom[Y]*dt; om[Z] += dom[Z]*dt;
     }
 
-    void update_v(float mass, float *f, int n, /**/ float *v) {
+    static void update_v(float mass, float *f, int n, /**/ float *v) {
         float sc = dt/(mass*n);
         v[X] += f[X]*sc; v[Y] += f[Y]*sc; v[Z] += f[Z]*sc;
     }
 
-    void add_v(float *v, int n, /**/ Particle *pp) {
+    static void add_v(float *v, int n, /**/ Particle *pp) {
         for (int ip = 0; ip < n; ++ip) {
             float *v0 = pp[ip].v;
             v0[X] += v[X]; v0[Y] += v[Y]; v0[Z] += v[Z];
         }
     }
 
-    void add_om(float *com, float *om, int n, /**/ Particle *pp) {
+    static void add_om(float *com, float *om, int n, /**/ Particle *pp) {
         float omx = om[X], omy = om[Y], omz = om[Z];
         for (int ip = 0; ip < n; ++ip) {
             float *r0 = pp[ip].r, *v0 = pp[ip].v;
@@ -107,15 +107,15 @@ namespace solid
         }
     }
 
-    void constrain_om(/**/ float *om) {
+    static void constrain_om(/**/ float *om) {
         om[X] = om[Y] = 0;
     }
 
-    void update_com(float *v, /**/ float *com) {
+    static void update_com(float *v, /**/ float *com) {
         com[X] += v[X]*dt; com[Y] += v[Y]*dt; com[Z] += v[Z]*dt;
     }
 
-    void update_r(const float *rr0, const int n, const float *com, const float *e0, const float *e1, const float *e2, /**/ Particle *pp)
+    static void update_r(const float *rr0, const int n, const float *com, const float *e0, const float *e1, const float *e2, /**/ Particle *pp)
     {
         for (int ip = 0; ip < n; ++ip)
         {
@@ -141,7 +141,7 @@ namespace solid
         }
     }
 
-    void update_hst_1s(Force *ff, float *rr0, int n, /**/ Particle *pp, Solid *shst)
+    static void update_hst_1s(Force *ff, float *rr0, int n, /**/ Particle *pp, Solid *shst)
     {
         /* clear velocity */
         for (int ip = 0; ip < n; ++ip) {
@@ -185,7 +185,7 @@ namespace solid
         }
     }
     
-    void update_dev_1s(const Force *ff, const float *rr0, const int n, /**/ Particle *pp, Solid *sdev)
+    static void update_dev_1s(const Force *ff, const float *rr0, const int n, /**/ Particle *pp, Solid *sdev)
     {
         k_solid::add_f_to <<<k_cnf(n)>>> (pp, ff, n, sdev->com, /**/ sdev->fo, sdev->to);
 
