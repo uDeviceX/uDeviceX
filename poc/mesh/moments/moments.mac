@@ -1,8 +1,10 @@
 /*
-compute moments of a tetrahedron
+compute moments of a tetrahedron OABC, O = [0,0,0]
 */
 
 kill(all)$
+
+load("cgrind")$
 
 [X, Y, Z]: [1, 2, 3]$
 
@@ -13,15 +15,15 @@ mv(P)::=buildq([l: P,
 
 
 /* vertices of the tetrahedron */
-mv(A)$ mv(B)$ mv(C)$ mv(D)$
+mv(O)$ mv(A)$ mv(B)$ mv(C)$
 
-A:[0,0,0];
+O:[0,0,0];
 
-AB: B-A$
-AC: C-A$
-AD: D-A$
+OA: A-O$
+OB: B-O$
+OC: C-O$
 
-r : A + u*AB + v*AC + w*AD;
+r : O + u*OA + v*OB + w*OC;
 
 Jacobian: matrix(diff(r, u), diff(r, v), diff(r, w));
 J: determinant(Jacobian);
@@ -33,16 +35,14 @@ I(e) := J * integrate(integrate(integrate(e(r), w, 0, 1-u-v), v, 0, 1-u), u, 0, 
 /* Volume */
 m000(r) := 1$
 
-I(m000);
+cgrind(optimize(I(m000)));
 
 /* first moments */
 m100(r) := r[X]^1$
 m010(r) := r[Y]^1$
 m001(r) := r[Z]^1$
 
-I(m100);
-I(m010);
-I(m001);
+cgrind(optimize([I(m100), I(m010), I(m001)]));
 
 /* second moments */
 m200(r) := r[X]^2$
@@ -53,9 +53,4 @@ m110(r) := r[X]*r[Y]$
 m101(r) := r[X]*r[Z]$
 m011(r) := r[Y]*r[Z]$
 
-I(m200);
-I(m020);
-I(m002);
-I(m110);
-I(m101);
-I(m011);
+cgrind(optimize([I(m200), I(m020), I(m002), I(m110), I(m101), I(m011)]));
