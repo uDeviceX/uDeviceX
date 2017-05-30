@@ -30,10 +30,12 @@ J: determinant(Jacobian);
 
 I(e) := J * integrate(integrate(integrate(e(r), w, 0, 1-u-v), v, 0, 1-u), u, 0, 1);
 
+/* Volume */
 m000(r) := 1$
 
 I(m000);
 
+/* first moments */
 m100(r) := r[X]^1$
 m010(r) := r[Y]^1$
 m001(r) := r[Z]^1$
@@ -42,6 +44,7 @@ I(m100);
 I(m010);
 I(m001);
 
+/* second moments */
 m200(r) := r[X]^2$
 m020(r) := r[Y]^2$
 m002(r) := r[Z]^2$
