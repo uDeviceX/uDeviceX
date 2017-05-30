@@ -209,7 +209,7 @@ void bounce_solid(int it)
 {
 #ifndef DEVICE_SOLID
 
-    mesh::get_bboxes_hst(i_pp_hst, m_hst.nv, nsolid, /**/ bboxes_hst);    
+    collision::get_bboxes_hst(i_pp_hst, m_hst.nv, nsolid, /**/ bboxes_hst);    
     
     /* exchange solid meshes with neighbours */
     
@@ -240,7 +240,7 @@ void bounce_solid(int it)
 
 #else // bounce on device
 
-    mesh::get_bboxes_dev(i_pp_dev, m_dev.nv, nsolid, /**/ bboxes_dev);
+    collision::get_bboxes_dev(i_pp_dev, m_dev.nv, nsolid, /**/ bboxes_dev);
     
     CC(cudaMemcpy(bboxes_hst, bboxes_dev, 6 * nsolid * sizeof(float), D2H));
     CC(cudaMemcpy(ss_hst, ss_dev, nsolid * sizeof(Solid), D2H));

@@ -1,4 +1,4 @@
-namespace mesh
+namespace collision
 {
     int inside_1p(const float *r, const float *vv, const int *tt, const int nt);
     void inside_hst(const Particle *pp, const int n, const Mesh m, /**/ int *inout);

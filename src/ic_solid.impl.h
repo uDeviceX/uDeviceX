@@ -111,7 +111,7 @@ namespace ic_solid
                 const float *com = coms + 3*j;
                 const float r[3] = {r0[X]-com[X], r0[Y]-com[Y], r0[Z]-com[Z]};
                 
-                if (mesh::inside_1p(r, vv, tt, nt))
+                if (collision::inside_1p(r, vv, tt, nt))
                 {
                     assert(tag == -1);
                     ++rcounts[j];
@@ -217,7 +217,7 @@ namespace ic_solid
         int npsolid = 0;
 
         float bbox[6];
-        mesh::get_bbox(m.vv, m.nv, /**/ bbox);
+        collision::get_bbox(m.vv, m.nv, /**/ bbox);
         
         nsolid = duplicate_PBC(bbox, nsolid, /**/ coms);
 

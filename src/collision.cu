@@ -1,10 +1,10 @@
 #include "common.h"
 #include "minmax.h"
 
-#include "mesh.h"
+#include "collision.h"
 #include ".conf.h"
 
-namespace mesh
+namespace collision
 {
     enum {X, Y, Z};
     #define _HD_ __host__ __device__

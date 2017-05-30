@@ -1,6 +1,6 @@
 #include "common.h"
 #include ".conf.h"
-#include "mesh.h"
+#include "collision.h"
 
 #include "mrescue.h"
 
@@ -202,7 +202,7 @@ namespace mrescue
     void rescue_hst(const Mesh m, const Particle *i_pp, const int ns, const int n,
                     const int *tcstarts, const int *tccounts, const int *tcids, /**/ Particle *pp)
     {
-        mesh::inside_hst(pp, n, m, i_pp, ns, /**/ tags_hst);
+        collision::inside_hst(pp, n, m, i_pp, ns, /**/ tags_hst);
 
         for (int i = 0; i < n; ++i)
         {
@@ -233,7 +233,7 @@ namespace mrescue
     {
         if (ns == 0 || n == 0) return;
         
-        mesh::inside_dev(pp, n, m, i_pp, ns, /**/ tags_dev);
+        collision::inside_dev(pp, n, m, i_pp, ns, /**/ tags_dev);
         rescue_dev_k <<< k_cnf(n) >>> (i_pp, m.tt, m.nt, m.nv, tcstarts, tccounts, tcids, tags_dev, n, rand(), /**/ pp);
     }
 }

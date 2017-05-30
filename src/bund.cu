@@ -70,7 +70,7 @@
 
 #include "gsl.impl.h"
 
-#include "mesh.h"
+#include "collision.h"
 
 #include "solid.impl.h"
 #include "tcells.h"
