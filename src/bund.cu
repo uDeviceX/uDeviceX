@@ -1,6 +1,5 @@
 #include <cuda-dpd.h>
 #include <sys/stat.h>
-#include <gsl/gsl_linalg.h>
 
 #include <string>
 #include <vector>
@@ -68,11 +67,9 @@
 #include "dpd.decl.h"
 #include "dpd.impl.h"
 
-#include "gsl.impl.h"
-
 #include "collision.h"
 
-#include "solid.impl.h"
+#include "solid.h"
 #include "tcells.h"
 
 #include "mbounce.h"

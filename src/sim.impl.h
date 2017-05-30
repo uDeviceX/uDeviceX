@@ -177,7 +177,7 @@ void update_solid() {
     // for dump
     memcpy(ss_dmphst, ss_hst, nsolid * sizeof(Solid));
     
-    solid::reinit_f_to(nsolid, /**/ ss_hst);
+    solid::reinit_ft_hst(nsolid, /**/ ss_hst);
     
     CC(cudaMemcpy(r_pp, r_pp_hst, sizeof(Particle) * r_n, H2D));
     
@@ -188,7 +188,7 @@ void update_solid() {
     // for dump
     CC(cudaMemcpy(ss_dmphst, ss_dev, nsolid * sizeof(Solid), D2H));
 
-    k_solid::reinit_ft <<< k_cnf(nsolid) >>> (nsolid, /**/ ss_dev);
+    solid::reinit_ft_dev(nsolid, /**/ ss_dev);
 #endif
 }
 
@@ -334,7 +334,7 @@ void init_solid()
     
     solid::generate_hst(ss_hst, nsolid, r_rr0_hst, npsolid, /**/ r_pp_hst);
     
-    solid::reinit_f_to(nsolid, /**/ ss_hst);
+    solid::reinit_ft_hst(nsolid, /**/ ss_hst);
 
     r_n = nsolid * npsolid;
 
@@ -394,7 +394,7 @@ void init() {
 void dumps_diags(int it) {
   if (it % steps_per_dump == 0)     dump_part(it);
   if (it > wall_creation_stepid &&
-      it % steps_per_dump == 0)     solid::dump(it, ss_dmphst, ss_dmpbbhst, nsolid); /* ss_dmpbbhst contains BB Force & Torque */
+      it % steps_per_dump == 0)     solid::dump(it, ss_dmphst, ss_dmpbbhst, nsolid, m::coords); /* ss_dmpbbhst contains BB Force & Torque */
   if (it % steps_per_hdf5dump == 0) dump_grid();
   if (it % steps_per_dump == 0)     diag(it);
 }

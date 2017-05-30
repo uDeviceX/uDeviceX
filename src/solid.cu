@@ -1,3 +1,12 @@
+#include <gsl/gsl_linalg.h>
+#include "gsl.impl.h"
+
+#include "common.h"
+#include ".conf.h"
+#include "conf.default.h"
+
+#include "solid.h"
+
 #include "k/solid.h"
 
 namespace solid
@@ -129,15 +138,20 @@ namespace solid
         }
     }
 
-    void reinit_f_to(const int nsolid, /**/ Solid *ss_hst)
+    void reinit_ft_hst(const int nsolid, /**/ Solid *ss)
     {
         for (int i = 0; i < nsolid; ++i)
         {
-            Solid *s = ss_hst + i;
+            Solid *s = ss + i;
             
             s->fo[X] = s->fo[Y] = s->fo[Z] = 0;
             s->to[X] = s->to[Y] = s->to[Z] = 0;
         }
+    }
+
+    void reinit_ft_dev(const int nsolid, /**/ Solid *ss)
+    {
+        k_solid::reinit_ft <<< k_cnf(nsolid) >>> (nsolid, /**/ ss);
     }
 
     static void update_hst_1s(Force *ff, float *rr0, int n, /**/ Particle *pp, Solid *shst)
@@ -175,7 +189,6 @@ namespace solid
     {
         int start = 0;
         const int nps = n / nsolid; /* number of particles per solid */
-        assert (n % nsolid == 0);
         
         for (int i = 0; i < nsolid; ++i)
         {
@@ -203,7 +216,6 @@ namespace solid
     {
         int start = 0;
         const int nps = n / nsolid; /* number of particles per solid */
-        assert (n % nsolid == 0);
         
         for (int i = 0; i < nsolid; ++i)
         {
@@ -222,12 +234,12 @@ namespace solid
         }
     }
 
-    void generate_dev(const Solid *ss_dev, const int ns, const float *rr0_dev, const int nps, /**/ Particle *pp)
+    void generate_dev(const Solid *ss_dev, const int ns, const float *rr0, const int nps, /**/ Particle *pp)
     {
         int start = 0;
         for (int j = 0; j < ns; ++j)
         {
-            k_solid::update_r <<< k_cnf(nps) >>> (rr0_dev, nps, ss_dev[j].com, ss_dev[j].e0, ss_dev[j].e1, ss_dev[j].e2, /**/ pp + start);
+            k_solid::update_r <<< k_cnf(nps) >>> (rr0, nps, ss_dev[j].com, ss_dev[j].e0, ss_dev[j].e1, ss_dev[j].e2, /**/ pp + start);
             start += nps;
         }
     }
@@ -280,7 +292,7 @@ namespace solid
         k_solid::update_mesh <<< nblck, nthrd >>> (ss_dev, m.vv, m.nv, /**/ pp);
     }
 
-    void dump(const int it, const Solid *ss, const Solid *ssbb, int nsolid)
+    void dump(const int it, const Solid *ss, const Solid *ssbb, int nsolid, const int *mcoords)
     {
         static bool first = true;
         char fname[256];
@@ -306,7 +318,7 @@ namespace solid
             {
                 const int L[3] = {XS, YS, ZS};
                 int mi[3];
-                for (int c = 0; c < 3; ++c) mi[c] = (m::coords[c] + 0.5) * L[c];
+                for (int c = 0; c < 3; ++c) mi[c] = (mcoords[c] + 0.5) * L[c];
                 for (int c = 0; c < 3; ++c) com[c] = s->com[c] + mi[c];
             }
             
