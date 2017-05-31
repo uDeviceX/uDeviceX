@@ -120,7 +120,7 @@ namespace solid
         om[X] = om[Y] = 0;
     }
 
-    static void update_com(float *v, /**/ float *com) {
+    static void update_com(const float *v, /**/ float *com) {
         com[X] += v[X]*dt; com[Y] += v[Y]*dt; com[Z] += v[Z]*dt;
     }
 
@@ -155,7 +155,7 @@ namespace solid
         k_solid::reinit_ft <<< k_cnf(nsolid) >>> (nsolid, /**/ ss);
     }
 
-    static void update_hst_1s(Force *ff, float *rr0, int n, /**/ Particle *pp, Solid *shst)
+    static void update_hst_1s(const Force *ff, const float *rr0, int n, /**/ Particle *pp, Solid *shst)
     {
         /* clear velocity */
         for (int ip = 0; ip < n; ++ip) {
@@ -186,7 +186,7 @@ namespace solid
         update_r(rr0, n, shst->com, shst->e0, shst->e1, shst->e2, /**/ pp);
     }
 
-    void update_hst(Force *ff, float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *shst)
+    void update_hst(const Force *ff, const float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *shst)
     {
         int start = 0;
         const int nps = n / nsolid; /* number of particles per solid */
@@ -213,7 +213,7 @@ namespace solid
         k_solid::update_r <<<k_cnf(n)>>> (rr0, n, sdev->com, sdev->e0, sdev->e1, sdev->e2, /**/ pp);
     }
 
-    void update_dev(Force *ff, float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *sdev)
+    void update_dev(const Force *ff, const float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *sdev)
     {
         int start = 0;
         const int nps = n / nsolid; /* number of particles per solid */

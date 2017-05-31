@@ -6,21 +6,21 @@ namespace k_solid
 
 #define _HD_ __host__ __device__
     
-    _HD_ float dot(float *v, float *u) {
+    _HD_ float dot(const float *v, const float *u) {
         return v[X]*u[X] + v[Y]*u[Y] + v[Z]*u[Z];
     }
 
     _HD_ void reject(/**/ float *v, float *u) {
-        float d = dot(v, u);
+        const float d = dot(v, u);
         v[X] -= d*u[X]; v[Y] -= d*u[Y]; v[Z] -= d*u[Z];
     }
 
-    _HD_ float norm(float *v) {
+    _HD_ float norm(const float *v) {
         return sqrt(v[X]*v[X]+v[Y]*v[Y]+v[Z]*v[Z]);
     }
 
     _HD_ void normalize(/**/ float *v) {
-        float nrm = norm(v);
+        const float nrm = norm(v);
         v[X] /= nrm; v[Y] /= nrm; v[Z] /= nrm;
     }
 

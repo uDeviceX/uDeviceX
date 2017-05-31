@@ -5,8 +5,8 @@ namespace solid
     void reinit_ft_hst(const int nsolid, /**/ Solid *ss);
     void reinit_ft_dev(const int nsolid, /**/ Solid *ss);
 
-    void update_hst(Force *ff, float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *shst);    
-    void update_dev(Force *ff, float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *sdev);
+    void update_hst(const Force *ff, const float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *shst);    
+    void update_dev(const Force *ff, const float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *sdev);
 
     void generate_hst(const Solid *ss_hst, const int ns, const float *rr0, const int nps, /**/ Particle *pp);
     void generate_dev(const Solid *ss_dev, const int ns, const float *rr0, const int nps, /**/ Particle *pp);
