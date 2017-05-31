@@ -42,7 +42,9 @@ namespace mesh
     static void M_2(const float *A, const float *B, const float *C, /**/ float *res)
     {
         /* see /poc/mesh/moments.mac */
-        const float D1 = Ax*(By*Cz-Bz*Cy)-Ay*(Bx*Cz-Bz*Cx)+Az*(Bx*Cy-By*Cx) / 60.f;
+        const float D1 = (+Ax * (By*Cz - Bz*Cy)
+                          -Ay * (Bx*Cz - Bz*Cx)
+                          +Az * (Bx*Cy - By*Cx)) / 60.f;
         const float D2 = By+Ay;
         const float D3 = Bz+Az;
         const float D4 = 2*Bx+Ax;
@@ -102,7 +104,7 @@ namespace mesh
         com[Z] = M1tot[Z] / Vtot;
     }
 
-#define shift(a, s) do {A[X] -= s[X]; A[Y] -= s[Y]; A[Z] -= s[Z];} while(0)
+#define shift(a, s) do {a[X] -= s[X]; a[Y] -= s[Y]; a[Z] -= s[Z];} while(0)
     
     void inertia_tensor(const Mesh mesh, const float *com, const float density, /**/ float *I)
     {
