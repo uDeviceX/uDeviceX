@@ -259,7 +259,7 @@ namespace ic_solid
             for (int d = 0; d < 3; ++d)
             model.com[d] = coms[idmax*3 + d];
     
-            solid::init(r_pp, npsolid, rbc_mass, model.com, /**/ rr0, &model);
+            solid::init(r_pp, npsolid, rbc_mass, model.com, m, /**/ rr0, &model);
         }
 
         MC( MPI_Bcast(&npsolid,       1,   MPI_INT, root, m::cart) );

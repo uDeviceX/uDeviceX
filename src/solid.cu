@@ -6,8 +6,8 @@
 #include "conf.default.h"
 
 #include "solid.h"
-
 #include "k/solid.h"
+#include "mesh.h"
 
 namespace solid
 {
@@ -15,8 +15,9 @@ namespace solid
     enum {XX, XY, XZ, YY, YZ, ZZ};
     enum {YX = XY, ZX = XZ, ZY = YZ};
 
-    static void init_I(const Particle *pp, int n, float pmass, const float *com, /**/ float *I)
+    static void init_I(const Particle *pp, int n, float pmass, const float *com, const Mesh mesh, /**/ float *I)
     {
+#ifdef spdir // open geometry, use particles
         for (int c = 0; c < 6; ++c) I[c] = 0;
 
         for (int ip = 0; ip < n; ++ip) {
@@ -29,11 +30,15 @@ namespace solid
             I[XZ] -= z*x;
             I[YZ] -= y*z;
         }
-
+#else
+        float c[3] = {0};
+        mesh::center_of_mass(mesh, /**/ c);
+        mesh::inertia_tensor(mesh, c, numberdensity, /**/ I);    
+#endif
         for (int c = 0; c < 6; ++c) I[c] *= pmass;
     }
 
-    void init(const Particle *pp, int n, float pmass, const float *com, /**/ float *rr0, Solid *s)
+    void init(const Particle *pp, int n, float pmass, const float *com, const Mesh mesh, /**/ float *rr0, Solid *s)
     {
         s->v[X] = s->v[Y] = s->v[Z] = 0; 
         s->om[X] = s->om[Y] = s->om[Z] = 0; 
@@ -44,7 +49,7 @@ namespace solid
         s->e2[X] = 0; s->e2[Y] = 0; s->e2[Z] = 1;
 
         /* init inertia tensor */
-        float I[6]; solid::init_I(pp, n, pmass, com, /**/ I);
+        float I[6]; solid::init_I(pp, n, pmass, com, mesh, /**/ I);
         gsl::inv3x3(I, /**/ s->Iinv);
 
         {

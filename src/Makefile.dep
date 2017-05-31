@@ -14,4 +14,4 @@ mesh.o: common.h mesh.h
 tcells.o: .conf.h common.h m.h tcells.h
 mrescue.o: .conf.h common.h mrescue.h
 mbounce.o: .conf.h common.h roots.impl.h mbounce.h
-solid.o: solid.h k/solid.h gsl.impl.h .conf.h conf.default.h common.h 
+solid.o: solid.h k/solid.h mesh.h gsl.impl.h .conf.h conf.default.h common.h 
