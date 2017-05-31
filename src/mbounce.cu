@@ -8,7 +8,7 @@ namespace mbounce
 {
     enum {X, Y, Z};
 
-#define debug_output
+    // #define debug_output
 
 #define _DH_ __device__ __host__
 
