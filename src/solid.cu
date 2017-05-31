@@ -31,9 +31,11 @@ namespace solid
             I[YZ] -= y*z;
         }
 #else
-        float c[3] = {0};
-        mesh::center_of_mass(mesh, /**/ c);
-        mesh::inertia_tensor(mesh, c, numberdensity, /**/ I);    
+        {
+            float c[3] = {0};
+            mesh::center_of_mass(mesh, /**/ c);
+            mesh::inertia_tensor(mesh, c, numberdensity, /**/ I);
+        }
 #endif
         for (int c = 0; c < 6; ++c) I[c] *= pmass;
     }
