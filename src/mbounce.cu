@@ -7,23 +7,35 @@
 namespace mbounce
 {
     enum {X, Y, Z};
-    
-    enum BBState
-    {
-        BB_SUCCESS,   /* succesfully bounced                       */
-        BB_NOCROSS,   /* did not cross the plane                   */
-        BB_WTRIANGLE, /* [w]rong triangle                          */
-        BB_HFAIL,     /* no time solution h                        */
-        BB_HNEXT,     /* h triangle is not the first to be crossed */
-        NBBSTATES
-    };
+
+#define debug_output
 
 #define _DH_ __device__ __host__
 
 #define BBOX_MARGIN 0.1f
 
-    // #define debug_output
+#define make_enum(a) a ,
+#define make_str(a) #a ,
+
+#define bbstates(_)                                                     \
+    _(BB_SUCCESS)   /* succesfully bounced                       */     \
+    _(BB_NOCROSS)   /* did not cross the plane                   */     \
+    _(BB_WTRIANGLE) /* [w]rong triangle                          */     \
+    _(BB_HFAIL)     /* no time solution h                        */     \
+    _(BB_HNEXT)     /* h triangle is not the first to be crossed */
     
+    enum BBState
+    {
+        bbstates(make_enum)
+        NBBSTATES
+    };
+#ifdef debug_output
+    static const char *bbstatenames[] = {bbstates(make_str)};
+#endif
+#undef __bbstates
+#undef make_enum
+#undef make_str
+        
     template <typename T>  T _DH_ min2(T a, T b) {return a < b ? a : b;}
     template <typename T>  T _DH_ max2(T a, T b) {return a < b ? b : a;}
 
@@ -324,8 +336,11 @@ namespace mbounce
 
 #ifdef debug_output
         if ((++dstep) % steps_per_dump == 0)
-        printf("%d success, %d nocross, %d wrong triangle, %d hfailed\n",
-               bbstates_hst[0], bbstates_hst[1], bbstates_hst[2], bbstates_hst[3]);
+        {
+            for (int c = 0; c < NBBSTATES; ++c)
+            printf("%d %s, ", bbinfos[c], bbstatenames[c]);
+            printf("\n");
+        }
 #endif
     }
 
@@ -411,7 +426,9 @@ namespace mbounce
         {
             int bbinfos[NBBSTATES];
             CC(cudaMemcpyFromSymbol(bbinfos, bbstates_dev, NBBSTATES*sizeof(int)));
-            printf("%d success, %d nocross, %d wrong triangle, %d hfailed\n", bbinfos[0], bbinfos[1], bbinfos[2], bbinfos[3]);
+            for (int c = 0; c < NBBSTATES; ++c)
+            printf("%d %s, ", bbinfos[c], bbstatenames[c]);
+            printf("\n");
         }
 #endif
     }
