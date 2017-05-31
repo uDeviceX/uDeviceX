@@ -338,7 +338,7 @@ namespace mbounce
         if ((++dstep) % steps_per_dump == 0)
         {
             for (int c = 0; c < NBBSTATES; ++c)
-            printf("%d %s, ", bbinfos[c], bbstatenames[c]);
+            printf("%d %s, ", bbstates_hst[c], bbstatenames[c]);
             printf("\n");
         }
 #endif
