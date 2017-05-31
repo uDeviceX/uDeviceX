@@ -65,26 +65,27 @@ namespace solid
         }
     }
 
-    static void add_f(Force *ff, int n, /**/ float *f) {
+    static void add_f(const Force *ff, int n, /**/ float *f) {
         for (int ip = 0; ip < n; ++ip) {
-            float *f0 = ff[ip].f;
+            const float *f0 = ff[ip].f;
             f[X] += f0[X]; f[Y] += f0[Y]; f[Z] += f0[Z];
         }
     }
 
-    static void add_to(Particle *pp, Force *ff, int n, float *com, /**/ float *to) {
+    static void add_to(const Particle *pp, const Force *ff, int n, const float *com, /**/ float *to) {
         for (int ip = 0; ip < n; ++ip) {
-            float *r0 = pp[ip].r, *f0 = ff[ip].f;
-            float x = r0[X]-com[X], y = r0[Y]-com[Y], z = r0[Z]-com[Z];
-            float fx = f0[X], fy = f0[Y], fz = f0[Z];
+            const float *r0 = pp[ip].r, *f0 = ff[ip].f;
+            const float x = r0[X]-com[X], y = r0[Y]-com[Y], z = r0[Z]-com[Z];
+            const float fx = f0[X], fy = f0[Y], fz = f0[Z];
             to[X] += y*fz - z*fy;
             to[Y] += z*fx - x*fz;
             to[Z] += x*fy - y*fx;
         }
     }
 
-    static void update_om(float *Iinv, float *to, /**/ float *om) {
-        float *A = Iinv, *b = to, dom[3];
+    static void update_om(const float *Iinv, const float *to, /**/ float *om) {
+        const float *A = Iinv, *b = to;
+        float dom[3];
         dom[X] = A[XX]*b[X] + A[XY]*b[Y] + A[XZ]*b[Z];
         dom[Y] = A[YX]*b[X] + A[YY]*b[Y] + A[YZ]*b[Z];
         dom[Z] = A[ZX]*b[X] + A[ZY]*b[Y] + A[ZZ]*b[Z];
@@ -92,12 +93,12 @@ namespace solid
         om[X] += dom[X]*dt; om[Y] += dom[Y]*dt; om[Z] += dom[Z]*dt;
     }
 
-    static void update_v(float mass, float *f, int n, /**/ float *v) {
+    static void update_v(float mass, const float *f, int n, /**/ float *v) {
         float sc = dt/(mass*n);
         v[X] += f[X]*sc; v[Y] += f[Y]*sc; v[Z] += f[Z]*sc;
     }
 
-    static void add_v(float *v, int n, /**/ Particle *pp) {
+    static void add_v(const float *v, int n, /**/ Particle *pp) {
         for (int ip = 0; ip < n; ++ip) {
             float *v0 = pp[ip].v;
             v0[X] += v[X]; v0[Y] += v[Y]; v0[Z] += v[Z];
