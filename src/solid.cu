@@ -222,13 +222,13 @@ namespace solid
 
         k_solid::update_om_v <<<1, 1>>> (sdev);
 
-        k_solid::compute_velocity <<<k_cnf(n)>>> (sdev->v, sdev->com, sdev->om, n, /**/ pp);
+        k_solid::compute_velocity <<<k_cnf(n)>>> (sdev, n, /**/ pp);
         
-        if (!pin_com) k_solid::update_com <<<1, 1>>> (sdev->v, /**/ sdev->com);
+        if (!pin_com) k_solid::update_com <<<1, 3>>> (sdev);
 
         k_solid::rot_referential <<<1, 1>>> (sdev->om, /**/ sdev->e0, sdev->e1, sdev->e2);
 
-        k_solid::update_r <<<k_cnf(n)>>> (rr0, n, sdev->com, sdev->e0, sdev->e1, sdev->e2, /**/ pp);
+        k_solid::update_r <<<k_cnf(n)>>> (rr0, n, sdev, /**/ pp);
     }
 
     void update_dev(const Force *ff, const float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *sdev)
@@ -258,7 +258,7 @@ namespace solid
         int start = 0;
         for (int j = 0; j < ns; ++j)
         {
-            k_solid::update_r <<< k_cnf(nps) >>> (rr0, nps, ss_dev[j].com, ss_dev[j].e0, ss_dev[j].e1, ss_dev[j].e2, /**/ pp + start);
+            k_solid::update_r <<< k_cnf(nps) >>> (rr0, nps, ss_dev + j, /**/ pp + start);
             start += nps;
         }
     }

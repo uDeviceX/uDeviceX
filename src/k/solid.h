@@ -152,37 +152,33 @@ namespace k_solid
         }
     }
 
-    __global__ void compute_velocity(const float *v, const float *com, const float *om, const int n, /**/ Particle *pp)
+    __global__ void compute_velocity(const Solid *s, const int n, /**/ Particle *pp)
     {
         const int pid = threadIdx.x + blockIdx.x * blockDim.x;
 
-        float omx = om[X], omy = om[Y], omz = om[Z];
+        float omx = s->om[X], omy = s->om[Y], omz = s->om[Z];
         
         if (pid < n)
         {
             float *r0 = pp[pid].r, *v0 = pp[pid].v;
 
-            const float x = r0[X]-com[X];
-            const float y = r0[Y]-com[Y];
-            const float z = r0[Z]-com[Z];
+            const float x = r0[X]-s->com[X];
+            const float y = r0[Y]-s->com[Y];
+            const float z = r0[Z]-s->com[Z];
             
-            v0[X] = v[X] + omy*z - omz*y;
-            v0[Y] = v[Y] + omz*x - omx*z;
-            v0[Z] = v[Z] + omx*y - omy*x;
+            v0[X] = s->v[X] + omy*z - omz*y;
+            v0[Y] = s->v[Y] + omz*x - omx*z;
+            v0[Z] = s->v[Z] + omx*y - omy*x;
         }
     }
 
-    __global__ void update_com(const float *v, float *com)
+    __global__ void update_com(Solid *s)
     {
-        if (threadIdx.x == 0)
-        {
-            com[X] += v[X]*dt;
-            com[Y] += v[Y]*dt;
-            com[Z] += v[Z]*dt;
-        }
+        if (threadIdx.x < 3)
+        s->com[threadIdx.x] += s->v[threadIdx.x]*dt;
     }
 
-    __global__ void update_r(const float *rr0, const int n, const float *com, const float *e0, const float *e1, const float *e2, /**/ Particle *pp)
+    __global__ void update_r(const float *rr0, const int n, const Solid *s, /**/ Particle *pp)
     {
         const int pid = threadIdx.x + blockIdx.x * blockDim.x;
 
@@ -192,16 +188,16 @@ namespace k_solid
             const float *ro = &rr0[3*pid];
             float x = ro[X], y = ro[Y], z = ro[Z];
 
-            r0[X] = com[X] + x*e0[X] + y*e1[X] + z*e2[X];
-            r0[Y] = com[Y] + x*e0[Y] + y*e1[Y] + z*e2[Y];
-            r0[Z] = com[Z] + x*e0[Z] + y*e1[Z] + z*e2[Z];
+            r0[X] = s->com[X] + x*s->e0[X] + y*s->e1[X] + z*s->e2[X];
+            r0[Y] = s->com[Y] + x*s->e0[Y] + y*s->e1[Y] + z*s->e2[Y];
+            r0[Z] = s->com[Z] + x*s->e0[Z] + y*s->e1[Z] + z*s->e2[Z];
         }
     }
 
     __global__ void update_mesh(const Solid *ss_dev, const float *vv, const int nv, /**/ Particle *pp)
     {
         const int sid = blockIdx.y; // solid Id
-        const Solid s = ss_dev[sid];
+        const Solid *s = ss_dev + sid;
 
         const int i = threadIdx.x + blockIdx.x * blockDim.x;;
         const int vid = sid * nv + i;
@@ -215,9 +211,9 @@ namespace k_solid
             const Particle p0 = pp[vid];
             Particle p;
 
-            p.r[X] = x * s.e0[X] + y * s.e1[X] + z * s.e2[X] + s.com[X];
-            p.r[Y] = x * s.e0[Y] + y * s.e1[Y] + z * s.e2[Y] + s.com[Y];
-            p.r[Z] = x * s.e0[Z] + y * s.e1[Z] + z * s.e2[Z] + s.com[Z];
+            p.r[X] = x * s->e0[X] + y * s->e1[X] + z * s->e2[X] + s->com[X];
+            p.r[Y] = x * s->e0[Y] + y * s->e1[Y] + z * s->e2[Y] + s->com[Y];
+            p.r[Z] = x * s->e0[Z] + y * s->e1[Z] + z * s->e2[Z] + s->com[Z];
                 
             p.v[X] = (p.r[X] - p0.r[X]) / dt;
             p.v[Y] = (p.r[Y] - p0.r[Y]) / dt;
