@@ -14,7 +14,8 @@ namespace mbounce
         BB_NOCROSS,   /* did not cross the plane                   */
         BB_WTRIANGLE, /* [w]rong triangle                          */
         BB_HFAIL,     /* no time solution h                        */
-        BB_HNEXT      /* h triangle is not the first to be crossed */
+        BB_HNEXT,     /* h triangle is not the first to be crossed */
+        NBBSTATES
     };
 
 #define _DH_ __device__ __host__
@@ -209,8 +210,8 @@ namespace mbounce
     }
 
 #ifdef debug_output
-    int bbstates_hst[5], dstep = 0;
-    __device__ int bbstates_dev[5];
+    int bbstates_hst[NBBSTATES], dstep = 0;
+    __device__ int bbstates_dev[NBBSTATES];
 #endif
 
 
@@ -263,7 +264,7 @@ namespace mbounce
     {
 #ifdef debug_output
         if (dstep % steps_per_dump == 0)
-        for (int c = 0; c < 4; ++c) bbstates_hst[c] = 0;
+        for (int c = 0; c < NBBSTATES; ++c) bbstates_hst[c] = 0;
 #endif
         
         for (int i = 0; i < n; ++i)
@@ -398,8 +399,8 @@ namespace mbounce
 #ifdef debug_output
         if (dstep % steps_per_dump == 0)
         {
-            const int zeros[5] = {0};
-            CC(cudaMemcpyToSymbol(bbstates_dev, zeros, 5*sizeof(int)));
+            const int zeros[NBBSTATES] = {0};
+            CC(cudaMemcpyToSymbol(bbstates_dev, zeros, NBBSTATES*sizeof(int)));
         }
 #endif
 
@@ -408,8 +409,8 @@ namespace mbounce
 #ifdef debug_output
         if ((++dstep) % steps_per_dump == 0)
         {
-            int bbinfos[5];
-            CC(cudaMemcpyFromSymbol(bbinfos, bbstates_dev, 5*sizeof(int)));
+            int bbinfos[NBBSTATES];
+            CC(cudaMemcpyFromSymbol(bbinfos, bbstates_dev, NBBSTATES*sizeof(int)));
             printf("%d success, %d nocross, %d wrong triangle, %d hfailed\n", bbinfos[0], bbinfos[1], bbinfos[2], bbinfos[3]);
         }
 #endif
