@@ -15,9 +15,9 @@ namespace solid
     enum {XX, XY, XZ, YY, YZ, ZZ};
     enum {YX = XY, ZX = XZ, ZY = YZ};
 
-    static void init_I(const Particle *pp, int n, float pmass, const float *com, const Mesh mesh, /**/ float *I)
+#ifdef spdir // open geometry, use particles    
+    static void init_I_frompp(const Particle *pp, int n, float pmass, const float *com, /**/ float *I)
     {
-#ifdef spdir // open geometry, use particles
         for (int c = 0; c < 6; ++c) I[c] = 0;
 
         for (int ip = 0; ip < n; ++ip) {
@@ -30,16 +30,19 @@ namespace solid
             I[XZ] -= z*x;
             I[YZ] -= y*z;
         }
-#else
-        {
-            float c[3] = {0};
-            mesh::center_of_mass(mesh, /**/ c);
-            mesh::inertia_tensor(mesh, c, numberdensity, /**/ I);
-        }
-#endif
         for (int c = 0; c < 6; ++c) I[c] *= pmass;
     }
+#else
+    static void init_I_fromm(float pmass, const Mesh mesh, /**/ float *I)
+    {
+        float com[3] = {0};
+        mesh::center_of_mass(mesh, /**/ com);
+        mesh::inertia_tensor(mesh, com, numberdensity, /**/ I);
 
+        for (int c = 0; c < 6; ++c) I[c] *= pmass;
+    }
+#endif
+    
     void init(const Particle *pp, int n, float pmass, const float *com, const Mesh mesh, /**/ float *rr0, Solid *s)
     {
         s->v[X] = s->v[Y] = s->v[Z] = 0; 
@@ -51,7 +54,15 @@ namespace solid
         s->e2[X] = 0; s->e2[Y] = 0; s->e2[Z] = 1;
 
         /* init inertia tensor */
-        float I[6]; solid::init_I(pp, n, pmass, com, mesh, /**/ I);
+        float I[6]; 
+#ifdef spdir // open geometry, use particles
+        init_I_frompp(pp, n, pmass, com, /**/ I);
+        s->mass = n*pmass;
+#else
+        init_I_fromm(pmass, mesh, /**/ I);
+        s->mass = mesh::volume(mesh) * numberdensity * pmass;
+#endif
+        
         gsl::inv3x3(I, /**/ s->Iinv);
 
         {
@@ -100,8 +111,8 @@ namespace solid
         om[X] += dom[X]*dt; om[Y] += dom[Y]*dt; om[Z] += dom[Z]*dt;
     }
 
-    static void update_v(float mass, const float *f, int n, /**/ float *v) {
-        float sc = dt/(mass*n);
+    static void update_v(float mass, const float *f, /**/ float *v) {
+        float sc = dt/mass;
         v[X] += f[X]*sc; v[Y] += f[Y]*sc; v[Z] += f[Z]*sc;
     }
 
@@ -173,7 +184,7 @@ namespace solid
         add_f(ff, n, /**/ shst->fo);
         add_to(pp, ff, n, shst->com, /**/ shst->to);
 
-        update_v(rbc_mass, shst->fo, n, /**/ shst->v);
+        update_v (shst->mass, shst->fo, /**/ shst->v);
         update_om(shst->Iinv, shst->to, /**/ shst->om);
 
         if (pin_axis) constrain_om(/**/ shst->om);
@@ -207,9 +218,9 @@ namespace solid
     
     static void update_dev_1s(const Force *ff, const float *rr0, const int n, /**/ Particle *pp, Solid *sdev)
     {
-        k_solid::add_f_to <<<k_cnf(n)>>> (pp, ff, n, sdev->com, /**/ sdev->fo, sdev->to);
+        k_solid::add_f_to <<<k_cnf(n)>>> (pp, ff, n, /**/ sdev);
 
-        k_solid::update_om_v <<<1, 1>>> (rbc_mass * n, sdev->Iinv, sdev->fo, sdev->to, /**/ sdev->om, sdev->v);
+        k_solid::update_om_v <<<1, 1>>> (sdev);
 
         k_solid::compute_velocity <<<k_cnf(n)>>> (sdev->v, sdev->com, sdev->om, n, /**/ pp);
         

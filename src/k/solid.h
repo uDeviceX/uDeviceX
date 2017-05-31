@@ -70,10 +70,10 @@ namespace k_solid
         }
     }
 
-    __global__ void add_f_to(const Particle *pp, const Force *ff, const int n, const float *com, float *ftot, float *ttot)
+    __global__ void add_f_to(const Particle *pp, const Force *ff, const int n, Solid *s)
     {
         const int gid = blockIdx.x * blockDim.x + threadIdx.x;
-
+        
         Force    f = {0, 0, 0};
         Particle p = {0, 0, 0, 0, 0, 0};
 
@@ -83,9 +83,9 @@ namespace k_solid
             p = pp[gid];
         }
 
-        const float dr[3] = {p.r[X]- com[X],
-                             p.r[Y]- com[Y],
-                             p.r[Z]- com[Z]};
+        const float dr[3] = {p.r[X] - s->com[X],
+                             p.r[Y] - s->com[Y],
+                             p.r[Z] - s->com[Z]};
         
         float to[3] = {dr[Y] * f.f[Z] - dr[Z] * f.f[Y],
                        dr[Z] * f.f[X] - dr[X] * f.f[Z],
@@ -96,13 +96,13 @@ namespace k_solid
 
         if ((threadIdx.x & (warpSize - 1)) == 0)
         {
-            atomicAdd(&ftot[X], f.f[X]);
-            atomicAdd(&ftot[Y], f.f[Y]);
-            atomicAdd(&ftot[Z], f.f[Z]);
+            atomicAdd(&s->fo[X], f.f[X]);
+            atomicAdd(&s->fo[Y], f.f[Y]);
+            atomicAdd(&s->fo[Z], f.f[Z]);
 
-            atomicAdd(&ttot[X], to[X]);
-            atomicAdd(&ttot[Y], to[Y]);
-            atomicAdd(&ttot[Z], to[Z]);
+            atomicAdd(&s->to[X], to[X]);
+            atomicAdd(&s->to[Y], to[Y]);
+            atomicAdd(&s->to[Z], to[Z]);
         }
     }
 
@@ -118,35 +118,36 @@ namespace k_solid
         }
     }
 
-    __global__ void update_om_v(const float mass, const float *Iinv, const float *fo, const float *to,
-                                /**/ float *om, float *v)
+    __global__ void update_om_v(Solid *s)
     {
         if (threadIdx.x == 0)
         {
-            const float *A = Iinv, *b = to;
+            const float *A = s->Iinv, *b = s->to;
 
             const float dom[3] = {A[XX]*b[X] + A[XY]*b[Y] + A[XZ]*b[Z],
                                   A[YX]*b[X] + A[YY]*b[Y] + A[YZ]*b[Z],
                                   A[ZX]*b[X] + A[ZY]*b[Y] + A[ZZ]*b[Z]};
             
-            om[X] += dom[X]*dt; om[Y] += dom[Y]*dt; om[Z] += dom[Z]*dt;
+            s->om[X] += dom[X]*dt;
+            s->om[Y] += dom[Y]*dt;
+            s->om[Z] += dom[Z]*dt;
 
             if (pin_axis)
             {
-                om[X] = om[Y] = 0.f;
+                s->om[X] = s->om[Y] = 0.f;
             }
 
             if (pin_com)
             {
-                v[X] = v[Y] = v[Z] = 0.f;
+                s->v[X] = s->v[Y] = s->v[Z] = 0.f;
             }
             else
             {
-                const float sc = dt/mass;
+                const float sc = dt/s->mass;
                 
-                v[X] += fo[X] * sc;
-                v[Y] += fo[Y] * sc;
-                v[Z] += fo[Z] * sc;
+                s->v[X] += s->fo[X] * sc;
+                s->v[Y] += s->fo[Y] * sc;
+                s->v[Z] += s->fo[Z] * sc;
             }
         }
     }
