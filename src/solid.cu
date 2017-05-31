@@ -15,13 +15,13 @@ namespace solid
     enum {XX, XY, XZ, YY, YZ, ZZ};
     enum {YX = XY, ZX = XZ, ZY = YZ};
 
-    static void init_I(Particle *pp, int n, float pmass, float *com, /**/ float *I) {
-
+    static void init_I(const Particle *pp, int n, float pmass, const float *com, /**/ float *I)
+    {
         for (int c = 0; c < 6; ++c) I[c] = 0;
 
         for (int ip = 0; ip < n; ++ip) {
-            float *r0 = pp[ip].r;
-            float x = r0[X]-com[X], y = r0[Y]-com[Y], z = r0[Z]-com[Z];
+            const float *r0 = pp[ip].r;
+            const float x = r0[X]-com[X], y = r0[Y]-com[Y], z = r0[Z]-com[Z];
             I[XX] += y*y + z*z;
             I[YY] += z*z + x*x;
             I[ZZ] += x*x + y*y;
@@ -33,26 +33,26 @@ namespace solid
         for (int c = 0; c < 6; ++c) I[c] *= pmass;
     }
 
-    void init(Particle *pp, int n, float pmass, float *com,
-              /**/ float *rr0, float *Iinv, float *e0, float *e1, float *e2, float *v, float *om) {
-        v[X] = v[Y] = v[Z] = 0; 
-        om[X] = om[Y] = om[Z] = 0; 
+    void init(const Particle *pp, int n, float pmass, const float *com, /**/ float *rr0, Solid *s)
+    {
+        s->v[X] = s->v[Y] = s->v[Z] = 0; 
+        s->om[X] = s->om[Y] = s->om[Z] = 0; 
 
         /* init basis vectors */
-        e0[X] = 1; e0[Y] = 0; e0[Z] = 0;
-        e1[X] = 0; e1[Y] = 1; e1[Z] = 0;
-        e2[X] = 0; e2[Y] = 0; e2[Z] = 1;
+        s->e0[X] = 1; s->e0[Y] = 0; s->e0[Z] = 0;
+        s->e1[X] = 0; s->e1[Y] = 1; s->e1[Z] = 0;
+        s->e2[X] = 0; s->e2[Y] = 0; s->e2[Z] = 1;
 
         /* init inertia tensor */
         float I[6]; solid::init_I(pp, n, pmass, com, /**/ I);
-        gsl::inv3x3(I, /**/ Iinv);
+        gsl::inv3x3(I, /**/ s->Iinv);
 
         {
             FILE *f = fopen("solid_Iinv.txt", "w");
 
-            fprintf(f, "%+.6e %+.6e %+.6e\n", Iinv[XX], Iinv[XY], Iinv[XZ]);
-            fprintf(f, "%+.6e %+.6e %+.6e\n", Iinv[YX], Iinv[YY], Iinv[YZ]);
-            fprintf(f, "%+.6e %+.6e %+.6e\n", Iinv[ZX], Iinv[ZY], Iinv[ZZ]);
+            fprintf(f, "%+.6e %+.6e %+.6e\n", s->Iinv[XX], s->Iinv[XY], s->Iinv[XZ]);
+            fprintf(f, "%+.6e %+.6e %+.6e\n", s->Iinv[YX], s->Iinv[YY], s->Iinv[YZ]);
+            fprintf(f, "%+.6e %+.6e %+.6e\n", s->Iinv[ZX], s->Iinv[ZY], s->Iinv[ZZ]);
             
             fclose(f);
         }
@@ -60,7 +60,7 @@ namespace solid
         /* initial positions */
         for (int ip = 0; ip < n; ++ip) {
             float *ro = &rr0[3*ip];
-            float *r0 = pp[ip].r;
+            const float *r0 = pp[ip].r;
             ro[X] = r0[X]-com[X]; ro[Y] = r0[Y]-com[Y]; ro[Z] = r0[Z]-com[Z];
         }
     }
