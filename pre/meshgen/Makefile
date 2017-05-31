@@ -1,7 +1,7 @@
 CXX=g++
 CXXFLAGS= -O3 -Wall -Wpedantic -std=c++11
 
-EXECS = gensphere genellipsoid gencylinder genellipse
+EXECS = gensphere genellipsoid gencylinder genellipse gendisk
 
 default: all
 all: $(EXECS)
@@ -16,6 +16,9 @@ gencylinder: gencylinder.o mesh.o ply.o
 	$(CXX) $(CXXFLAGS) $^ -o $@ -lm
 
 genellipse: genellipse.o mesh.o ply.o
+	$(CXX) $(CXXFLAGS) $^ -o $@ -lm
+
+gendisk: gendisk.o mesh.o ply.o
 	$(CXX) $(CXXFLAGS) $^ -o $@ -lm
 
 %.o: %.cpp
