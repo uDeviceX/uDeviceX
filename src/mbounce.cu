@@ -32,9 +32,9 @@ namespace mbounce
 #ifdef debug_output
     static const char *bbstatenames[] = {bbstates(make_str)};
 
-#define print_states(infos) do {                    \
-    for (int c = 0; c < NBBSTATES; ++c)             \
-    printf("%-12s\t%d\n", bbstatenames[c], infos[c]);  \
+#define print_states(infos) do {                            \
+        for (int c = 0; c < NBBSTATES; ++c)                 \
+        printf("%-12s\t%d\n", bbstatenames[c], infos[c]);   \
     } while(0)
     
 #endif
