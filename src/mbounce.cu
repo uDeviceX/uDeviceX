@@ -31,6 +31,12 @@ namespace mbounce
     };
 #ifdef debug_output
     static const char *bbstatenames[] = {bbstates(make_str)};
+
+#define print_states(infos) do {                    \
+    for (int c = 0; c < NBBSTATES; ++c)             \
+    printf("%-12s\t%d\n", bbstatenames[c], infos[c]);  \
+    } while(0)
+    
 #endif
 #undef __bbstates
 #undef make_enum
@@ -336,11 +342,7 @@ namespace mbounce
 
 #ifdef debug_output
         if ((++dstep) % steps_per_dump == 0)
-        {
-            for (int c = 0; c < NBBSTATES; ++c)
-            printf("%d %s, ", bbstates_hst[c], bbstatenames[c]);
-            printf("\n");
-        }
+        print_states(bbstates_hst);
 #endif
     }
 
@@ -426,9 +428,7 @@ namespace mbounce
         {
             int bbinfos[NBBSTATES];
             CC(cudaMemcpyFromSymbol(bbinfos, bbstates_dev, NBBSTATES*sizeof(int)));
-            for (int c = 0; c < NBBSTATES; ++c)
-            printf("%d %s, ", bbinfos[c], bbstatenames[c]);
-            printf("\n");
+            print_states(bbinfos);
         }
 #endif
     }
