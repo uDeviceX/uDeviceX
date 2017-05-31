@@ -74,6 +74,28 @@ namespace mesh
 
 #define load_t(m, tid) {m.vv[3*tid + 0], m.vv[3*tid + 1], m.vv[3*tid + 2]}
 
+    float volume(const Mesh mesh)
+    {
+        float Vtot = 0;
+        
+        for (int it = 0; it < mesh.nt; ++it)
+        {
+            const int t1 = mesh.tt[3*it + 0];
+            const int t2 = mesh.tt[3*it + 1];
+            const int t3 = mesh.tt[3*it + 2];
+
+            const float A[3] = load_t(mesh, t1);
+            const float B[3] = load_t(mesh, t2);
+            const float C[3] = load_t(mesh, t3);
+
+            float V = 0;            
+            M_0(A, B, C, /**/ &V);
+
+            Vtot += V;
+        }
+        return Vtot;
+    }
+
     void center_of_mass(const Mesh mesh, /**/ float *com)
     {
         float Vtot = 0, M1tot[3] = {0};
