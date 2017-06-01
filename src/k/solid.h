@@ -47,15 +47,17 @@ namespace k_solid
         e[X] += vx*dt; e[Y] += vy*dt; e[Z] += vz*dt;
     }
 
-    __global__ void rot_referential(const float *om, /**/ float *e0, float *e1, float *e2)
+    __global__ void rot_referential(const int ns, Solid *ss)
     {
-        if (threadIdx.x == 0)
+        if (threadIdx.x < ns)
         {
-            rot_e(om, /**/ e0);
-            rot_e(om, /**/ e1);
-            rot_e(om, /**/ e2);
+            Solid s = ss[threadIdx.x];
+            rot_e(s.om, /**/ s.e0);
+            rot_e(s.om, /**/ s.e1);
+            rot_e(s.om, /**/ s.e2);
             
-            gram_schmidt(/**/ e0, e1, e2);
+            gram_schmidt(/**/ s.e0, s.e1, s.e2);
+            ss[threadIdx.x] = s;
         }
     }
     
@@ -69,22 +71,25 @@ namespace k_solid
         }
     }
 
-    __global__ void add_f_to(const Particle *pp, const Force *ff, const int n, Solid *s)
+    __global__ void add_f_to(const Particle *pp, const Force *ff, const int nps, const int ns, Solid *ss)
     {
         const int gid = blockIdx.x * blockDim.x + threadIdx.x;
+        const int sid = blockIdx.y;
+
+        const int i = sid * nps + gid;
         
         Force    f = {0, 0, 0};
         Particle p = {0, 0, 0, 0, 0, 0};
 
-        if (gid < n)
+        if (gid < nps)
         {
-            f = ff[gid];
-            p = pp[gid];
+            f = ff[i];
+            p = pp[i];
         }
 
-        const float dr[3] = {p.r[X] - s->com[X],
-                             p.r[Y] - s->com[Y],
-                             p.r[Z] - s->com[Z]};
+        const float dr[3] = {p.r[X] - ss[sid].com[X],
+                             p.r[Y] - ss[sid].com[Y],
+                             p.r[Z] - ss[sid].com[Z]};
         
         float to[3] = {dr[Y] * f.f[Z] - dr[Z] * f.f[Y],
                        dr[Z] * f.f[X] - dr[X] * f.f[Z],
@@ -95,13 +100,13 @@ namespace k_solid
 
         if ((threadIdx.x & (warpSize - 1)) == 0)
         {
-            atomicAdd(&s->fo[X], f.f[X]);
-            atomicAdd(&s->fo[Y], f.f[Y]);
-            atomicAdd(&s->fo[Z], f.f[Z]);
+            atomicAdd(ss[sid].fo + X, f.f[X]);
+            atomicAdd(ss[sid].fo + Y, f.f[Y]);
+            atomicAdd(ss[sid].fo + Z, f.f[Z]);
 
-            atomicAdd(&s->to[X], to[X]);
-            atomicAdd(&s->to[Y], to[Y]);
-            atomicAdd(&s->to[Z], to[Z]);
+            atomicAdd(ss[sid].to + X, to[X]);
+            atomicAdd(ss[sid].to + Y, to[Y]);
+            atomicAdd(ss[sid].to + Z, to[Z]);
         }
     }
 
@@ -117,79 +122,95 @@ namespace k_solid
         }
     }
 
-    __global__ void update_om_v(Solid *s)
+    __global__ void update_om_v(const int ns, Solid *ss)
     {
-        if (threadIdx.x == 0)
+        if (threadIdx.x < ns)
         {
-            const float *A = s->Iinv, *b = s->to;
+            Solid s = ss[threadIdx.x];
+            const float *A = s.Iinv, *b = s.to;
 
             const float dom[3] = {A[XX]*b[X] + A[XY]*b[Y] + A[XZ]*b[Z],
                                   A[YX]*b[X] + A[YY]*b[Y] + A[YZ]*b[Z],
                                   A[ZX]*b[X] + A[ZY]*b[Y] + A[ZZ]*b[Z]};
             
-            s->om[X] += dom[X]*dt;
-            s->om[Y] += dom[Y]*dt;
-            s->om[Z] += dom[Z]*dt;
+            s.om[X] += dom[X]*dt;
+            s.om[Y] += dom[Y]*dt;
+            s.om[Z] += dom[Z]*dt;
 
             if (pin_axis)
             {
-                s->om[X] = s->om[Y] = 0.f;
+                s.om[X] = s.om[Y] = 0.f;
             }
 
             if (pin_com)
             {
-                s->v[X] = s->v[Y] = s->v[Z] = 0.f;
+                s.v[X] = s.v[Y] = s.v[Z] = 0.f;
             }
             else
             {
-                const float sc = dt/s->mass;
+                const float sc = dt/s.mass;
                 
-                s->v[X] += s->fo[X] * sc;
-                s->v[Y] += s->fo[Y] * sc;
-                s->v[Z] += s->fo[Z] * sc;
+                s.v[X] += s.fo[X] * sc;
+                s.v[Y] += s.fo[Y] * sc;
+                s.v[Z] += s.fo[Z] * sc;
             }
+
+            ss[threadIdx.x] = s;
         }
     }
 
-    __global__ void compute_velocity(const Solid *s, const int n, /**/ Particle *pp)
+    __global__ void compute_velocity(const Solid *ss, const int ns, const int nps, /**/ Particle *pp)
     {
         const int pid = threadIdx.x + blockIdx.x * blockDim.x;
+        const int sid = blockIdx.y;
 
-        float omx = s->om[X], omy = s->om[Y], omz = s->om[Z];
+        const int i = sid * nps + pid;
         
-        if (pid < n)
+        const Solid s = ss[sid];
+        
+        const float omx = s.om[X], omy = s.om[Y], omz = s.om[Z];
+        
+        if (pid < nps)
         {
-            float *r0 = pp[pid].r, *v0 = pp[pid].v;
+            float *r0 = pp[i].r, *v0 = pp[i].v;
 
-            const float x = r0[X]-s->com[X];
-            const float y = r0[Y]-s->com[Y];
-            const float z = r0[Z]-s->com[Z];
+            const float x = r0[X]-s.com[X];
+            const float y = r0[Y]-s.com[Y];
+            const float z = r0[Z]-s.com[Z];
             
-            v0[X] = s->v[X] + omy*z - omz*y;
-            v0[Y] = s->v[Y] + omz*x - omx*z;
-            v0[Z] = s->v[Z] + omx*y - omy*x;
+            v0[X] = s.v[X] + omy*z - omz*y;
+            v0[Y] = s.v[Y] + omz*x - omx*z;
+            v0[Z] = s.v[Z] + omx*y - omy*x;
         }
     }
 
-    __global__ void update_com(Solid *s)
+    __global__ void update_com(const int ns, Solid *ss)
     {
-        if (threadIdx.x < 3)
-        s->com[threadIdx.x] += s->v[threadIdx.x]*dt;
+        const int sid = threadIdx.x / 3;
+        const int c   = threadIdx.x % 3;
+
+        if (sid < ns)
+        ss[sid].com[c] += ss[sid].v[c]*dt;
     }
 
-    __global__ void update_r(const float *rr0, const int n, const Solid *s, /**/ Particle *pp)
+    __global__ void update_r(const float *rr0, const int nps, const Solid *ss, const int nsolid, /**/ Particle *pp)
     {
         const int pid = threadIdx.x + blockIdx.x * blockDim.x;
+        const int sid = blockIdx.y;
 
-        if (pid < n)
+        const int i = sid * nps + pid;
+
+        const Solid s = ss[sid];
+        
+        if (pid < nps)
         {
-            float *r0 = pp[pid].r;
+            float *r0 = pp[i].r;
             const float *ro = &rr0[3*pid];
-            float x = ro[X], y = ro[Y], z = ro[Z];
+            const float x = ro[X], y = ro[Y], z = ro[Z];
 
-            r0[X] = s->com[X] + x*s->e0[X] + y*s->e1[X] + z*s->e2[X];
-            r0[Y] = s->com[Y] + x*s->e0[Y] + y*s->e1[Y] + z*s->e2[Y];
-            r0[Z] = s->com[Z] + x*s->e0[Z] + y*s->e1[Z] + z*s->e2[Z];
+            r0[X] = s.com[X] + x*s.e0[X] + y*s.e1[X] + z*s.e2[X];
+            r0[Y] = s.com[Y] + x*s.e0[Y] + y*s.e1[Y] + z*s.e2[Y];
+            r0[Z] = s.com[Z] + x*s.e0[Z] + y*s.e1[Z] + z*s.e2[Z];
         }
     }
 

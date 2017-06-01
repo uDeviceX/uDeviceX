@@ -216,31 +216,24 @@ namespace solid
         }
     }
     
-    static void update_dev_1s(const Force *ff, const float *rr0, const int n, /**/ Particle *pp, Solid *sdev)
+    void update_dev(const Force *ff, const float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *ss)
     {
-        k_solid::add_f_to <<<k_cnf(n)>>> (pp, ff, n, /**/ sdev);
-
-        k_solid::update_om_v <<<1, 1>>> (sdev);
-
-        k_solid::compute_velocity <<<k_cnf(n)>>> (sdev, n, /**/ pp);
-        
-        if (!pin_com) k_solid::update_com <<<1, 3>>> (sdev);
-
-        k_solid::rot_referential <<<1, 1>>> (sdev->om, /**/ sdev->e0, sdev->e1, sdev->e2);
-
-        k_solid::update_r <<<k_cnf(n)>>> (rr0, n, sdev, /**/ pp);
-    }
-
-    void update_dev(const Force *ff, const float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *sdev)
-    {
-        int start = 0;
         const int nps = n / nsolid; /* number of particles per solid */
+
+        const dim3 nblck ( (127 + nps) / 128, nsolid );
+        const dim3 nthrd ( 128, 1 );
         
-        for (int i = 0; i < nsolid; ++i)
-        {
-            update_dev_1s(ff + start, rr0, nps, /**/ pp + start, sdev + i);
-            start += nps;
-        }
+        k_solid::add_f_to <<< nblck, nthrd >>> (pp, ff, nps, nsolid, /**/ ss);
+
+        k_solid::update_om_v <<<1, nsolid>>> (nsolid, /**/ ss);
+
+        k_solid::compute_velocity <<< nblck, nthrd >>> (ss, nsolid, nps, /**/ pp);
+
+        if (!pin_com) k_solid::update_com <<<1, 3*nsolid >>> (nsolid, /**/ ss);
+        
+        k_solid::rot_referential <<<1, nsolid>>> (nsolid, /**/ ss);
+
+        k_solid::update_r <<< nblck, nthrd >>> (rr0, nps, ss, nsolid, /**/ pp);
     }
 
     void generate_hst(const Solid *ss_hst, const int ns, const float *rr0, const int nps, /**/ Particle *pp)
@@ -255,12 +248,10 @@ namespace solid
 
     void generate_dev(const Solid *ss_dev, const int ns, const float *rr0, const int nps, /**/ Particle *pp)
     {
-        int start = 0;
-        for (int j = 0; j < ns; ++j)
-        {
-            k_solid::update_r <<< k_cnf(nps) >>> (rr0, nps, ss_dev + j, /**/ pp + start);
-            start += nps;
-        }
+        const dim3 nblck ( (127 + nps) / 128, ns );
+        const dim3 nthrd ( 128, 1 );
+
+        k_solid::update_r <<< nblck, nthrd >>> (rr0, nps, ss_dev, ns, /**/ pp);
     }
 
     void mesh2pp_hst(const Solid *ss_hst, const int ns, const Mesh m, /**/ Particle *pp)
