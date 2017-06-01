@@ -216,26 +216,26 @@ namespace solid
         }
     }
     
-    void update_dev(const Force *ff, const float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *ss)
+    void update_dev(const Force *ff, const float *rr0, int n, int ns, /**/ Particle *pp, Solid *ss)
     {
         if (ns < 1) return;
         
-        const int nps = n / nsolid; /* number of particles per solid */
+        const int nps = n / ns; /* number of particles per solid */
 
-        const dim3 nblck ( (127 + nps) / 128, nsolid );
+        const dim3 nblck ( (127 + nps) / 128, ns );
         const dim3 nthrd ( 128, 1 );
         
-        k_solid::add_f_to <<< nblck, nthrd >>> (pp, ff, nps, nsolid, /**/ ss);
+        k_solid::add_f_to <<< nblck, nthrd >>> (pp, ff, nps, ns, /**/ ss);
 
-        k_solid::update_om_v <<<1, nsolid>>> (nsolid, /**/ ss);
+        k_solid::update_om_v <<<1, ns>>> (ns, /**/ ss);
 
-        k_solid::compute_velocity <<< nblck, nthrd >>> (ss, nsolid, nps, /**/ pp);
+        k_solid::compute_velocity <<< nblck, nthrd >>> (ss, ns, nps, /**/ pp);
 
-        if (!pin_com) k_solid::update_com <<<1, 3*nsolid >>> (nsolid, /**/ ss);
+        if (!pin_com) k_solid::update_com <<<1, 3*ns >>> (ns, /**/ ss);
         
-        k_solid::rot_referential <<<1, nsolid>>> (nsolid, /**/ ss);
+        k_solid::rot_referential <<<1, ns>>> (ns, /**/ ss);
 
-        k_solid::update_r <<< nblck, nthrd >>> (rr0, nps, ss, nsolid, /**/ pp);
+        k_solid::update_r <<< nblck, nthrd >>> (rr0, nps, ss, ns, /**/ pp);
     }
 
     void generate_hst(const Solid *ss_hst, const int ns, const float *rr0, const int nps, /**/ Particle *pp)
@@ -306,12 +306,12 @@ namespace solid
         k_solid::update_mesh <<< nblck, nthrd >>> (ss_dev, m.vv, m.nv, /**/ pp);
     }
 
-    void dump(const int it, const Solid *ss, const Solid *ssbb, int nsolid, const int *mcoords)
+    void dump(const int it, const Solid *ss, const Solid *ssbb, int ns, const int *mcoords)
     {
         static bool first = true;
         char fname[256];
 
-        for (int j = 0; j < nsolid; ++j)
+        for (int j = 0; j < ns; ++j)
         {
             const Solid *s   = ss   + j;
             const Solid *sbb = ssbb + j;
