@@ -3,6 +3,7 @@
 
 h5.out.txt
 h5part.out.txt
+bop.out.txt
 h5/
 bop/
 
@@ -14,6 +15,7 @@ solid_Iinv.txt
 diag.txt
 sdf.dat
 
+mesh_solid.ply
 rbc.off
 
 test_data/atest.res
