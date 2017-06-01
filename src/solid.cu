@@ -65,15 +65,15 @@ namespace solid
         
         gsl::inv3x3(I, /**/ s->Iinv);
 
-        {
-            FILE *f = fopen("solid_Iinv.txt", "w");
+        // {
+        //     FILE *f = fopen("solid_Iinv.txt", "w");
 
-            fprintf(f, "%+.6e %+.6e %+.6e\n", s->Iinv[XX], s->Iinv[XY], s->Iinv[XZ]);
-            fprintf(f, "%+.6e %+.6e %+.6e\n", s->Iinv[YX], s->Iinv[YY], s->Iinv[YZ]);
-            fprintf(f, "%+.6e %+.6e %+.6e\n", s->Iinv[ZX], s->Iinv[ZY], s->Iinv[ZZ]);
+        //     fprintf(f, "%+.6e %+.6e %+.6e\n", s->Iinv[XX], s->Iinv[XY], s->Iinv[XZ]);
+        //     fprintf(f, "%+.6e %+.6e %+.6e\n", s->Iinv[YX], s->Iinv[YY], s->Iinv[YZ]);
+        //     fprintf(f, "%+.6e %+.6e %+.6e\n", s->Iinv[ZX], s->Iinv[ZY], s->Iinv[ZZ]);
             
-            fclose(f);
-        }
+        //     fclose(f);
+        // }
         
         /* initial positions */
         for (int ip = 0; ip < n; ++ip) {
