@@ -218,6 +218,8 @@ namespace solid
     
     void update_dev(const Force *ff, const float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *ss)
     {
+        if (ns < 1) return;
+        
         const int nps = n / nsolid; /* number of particles per solid */
 
         const dim3 nblck ( (127 + nps) / 128, nsolid );
@@ -248,6 +250,8 @@ namespace solid
 
     void generate_dev(const Solid *ss_dev, const int ns, const float *rr0, const int nps, /**/ Particle *pp)
     {
+        if (ns < 1) return;
+        
         const dim3 nblck ( (127 + nps) / 128, ns );
         const dim3 nthrd ( 128, 1 );
 
