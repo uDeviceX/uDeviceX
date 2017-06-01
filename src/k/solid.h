@@ -16,12 +16,12 @@ namespace k_solid
     }
 
     _HD_ float norm(const float *v) {
-        return sqrt(v[X]*v[X]+v[Y]*v[Y]+v[Z]*v[Z]);
+        return sqrt(v[X]*v[X] + v[Y]*v[Y] + v[Z]*v[Z]);
     }
 
     _HD_ void normalize(/**/ float *v) {
-        const float nrm = norm(v);
-        v[X] /= nrm; v[Y] /= nrm; v[Z] /= nrm;
+        const float s = 1.f / norm(v);
+        v[X] *= s; v[Y] *= s; v[Z] *= s;
     }
 
     _HD_ void gram_schmidt(/**/ float *e0, float *e1, float *e2) {
@@ -37,13 +37,12 @@ namespace k_solid
 
     _HD_ void rot_e(const float *om, /**/ float *e)
     {
-        float omx = om[X], omy = om[Y], omz = om[Z];
-        float ex = e[X], ey = e[Y], ez = e[Z];
-        float vx, vy, vz;
+        const float omx = om[X], omy = om[Y], omz = om[Z];
+        const float ex = e[X], ey = e[Y], ez = e[Z];
 
-        vx = omy*ez - omz*ey;
-        vy = omz*ex - omx*ez;
-        vz = omx*ey - omy*ex;
+        const float vx = omy*ez - omz*ey;
+        const float vy = omz*ex - omx*ez;
+        const float vz = omx*ey - omy*ex;
 
         e[X] += vx*dt; e[Y] += vy*dt; e[Z] += vz*dt;
     }
