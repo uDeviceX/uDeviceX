@@ -1,3 +1,6 @@
+#include <cassert>
+#include "common.h"
+
 #define WRITE_BINARY
 
 namespace ply
