@@ -57,6 +57,13 @@ int main(int argc, char **argv)
     subdivide2(tt, vv);
 
     map2disk(vv.size()/3, vv.data());
+
+    int c = 1;
+    while(c != 0)
+    {
+        c = flip_edges(tt, vv);
+        printf("flipped %d edges\n", c);
+    }
     
     write_ply(argv[1], tt, vv);
     

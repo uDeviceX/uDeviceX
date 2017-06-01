@@ -12,3 +12,5 @@ void subdivide3(std::vector<int>& tt, std::vector<float>& vv);
 
 void scale_to_usphere(std::vector<float>& vv);
 void scale(std::vector<float>& vv, const float sc);
+
+int flip_edges(std::vector<int>& tt, const std::vector<float>& vv);

@@ -221,3 +221,150 @@ void scale(std::vector<float>& vv, const float sc)
         x[2] *= sc;
     }
 }
+
+static int min2(int a, int b) {return a < b ? a : b;}
+static int max2(int a, int b) {return a < b ? b : a;}
+
+struct Edge
+{
+    Edge() : v {-1, -1} {};
+    Edge(int v1, int v2) : v {min2(v1, v2), max2(v1, v2)} {}
+
+    bool operator< (const Edge o) const {return (v[0] < o.v[0]) || (v[0] == o.v[0] && v[1] < o.v[1]);}
+    
+    int v[2];
+};
+
+static void swap3(int *i) // 1, 2, 3 -> 3, 1, 2
+{
+    const int tmp = i[2];
+    i[2] = i[1]; i[1] = i[0];
+    i[0] = tmp;
+}
+
+static bool ordered(int *t, const Edge e)
+{
+    return (e.v[0] == t[0] && e.v[1] == t[1]) || (e.v[0] == t[1] && e.v[1] == t[0]);
+}
+
+static bool no_need_flip(int a, int b, int c, int d, const float *vv)
+{
+#define load_v(t) {vv[3*t+0], vv[3*t+1]}
+
+    const float A[2] = load_v(a);
+    const float B[2] = load_v(b);
+    const float C[2] = load_v(c);
+    const float D[2] = load_v(d);
+
+    enum {X, Y, Z};
+    
+    const float M[3][3] = {
+        { A[X] - D[X], A[Y] - D[Y], (A[X]*A[X] - D[X]*D[X]) + (A[Y]*A[Y] - D[Y]*D[Y]) },
+        { B[X] - D[X], B[Y] - D[Y], (B[X]*B[X] - D[X]*D[X]) + (B[Y]*B[Y] - D[Y]*D[Y]) },
+        { C[X] - D[X], C[Y] - D[Y], (C[X]*C[X] - D[X]*D[X]) + (C[Y]*C[Y] - D[Y]*D[Y]) } };
+
+    const float detM =
+        + M[X][X] * (M[Y][Y] * M[Z][Z] - M[Y][Z] * M[Z][Y])
+        - M[X][Y] * (M[Y][X] * M[Z][Z] - M[Y][Z] * M[Z][X])
+        + M[X][Z] * (M[Y][X] * M[Z][Y] - M[Y][Y] * M[Z][X]);
+    
+#undef load_v
+
+    return detM < 0;
+}
+    
+
+#include <map>
+
+int flip_edges(std::vector<int>& tt, const std::vector<float>& vv)
+{
+    std::map <Edge, std::vector<int> > adj;
+
+    int c = 0;
+    
+    for (int it = 0; it < (int) tt.size()/3; ++it)
+    {
+        const int t1 = tt[3*it + 0];
+        const int t2 = tt[3*it + 1];
+        const int t3 = tt[3*it + 2];
+
+        adj[Edge(t1, t2)].push_back(it);
+        adj[Edge(t1, t3)].push_back(it);
+        adj[Edge(t3, t2)].push_back(it);
+    }
+           
+    for (auto e = adj.begin(); e != adj.end(); /**/)
+    {
+        if (e->second.size() != 2)
+        e = adj.erase(e);
+        else
+        ++e;
+    }
+
+    for (auto& e : adj)
+    {
+        const int it1 = e.second[0];
+        const int it2 = e.second[1];
+
+#define load_t(it) {tt[3*it + 0], tt[3*it + 1], tt[3*it + 2]}
+
+        int t1[3] = load_t(it1);
+        int t2[3] = load_t(it2);
+
+#undef load_t
+
+        while (!ordered(t1, e.first)) swap3(t1);
+        while (!ordered(t2, e.first)) swap3(t2);
+        
+        if (no_need_flip(t1[0], t1[2], t1[1], t2[2], vv.data()))
+        continue;
+        
+        const int t1n[3] = {t1[2], t1[0], t2[2]};
+        const int t2n[3] = {t1[2], t2[2], t2[0]};
+
+#define write_nt(it, t) do { tt[3*it + 0] = t[0]; tt[3*it + 1] = t[1]; tt[3*it + 2] = t[2]; } while (0)
+
+        write_nt(it1, t1n);
+        write_nt(it2, t2n);
+
+#undef write_nt
+        
+        {
+            const Edge sharede(t1[0], t1[1]);
+            adj.erase(e.first);
+            adj[sharede].push_back(it1);
+            adj[sharede].push_back(it2);
+        }
+
+        {
+            const Edge e1to2(t1[1], t1[2]);
+
+            if (adj.find(e1to2) != adj.end())
+            {
+                auto& ts = adj[e1to2];
+
+                if      (ts[0] == it1) ts[0] = it2;
+                else if (ts[1] == it1) ts[1] = it2;
+
+                if (ts[0] > ts[1]) {int tmp = ts[0]; ts[0] = ts[1]; ts[1] = tmp;}
+            }
+        }
+
+        {
+            const Edge e2to1(t2[1], t2[2]);
+
+            if (adj.find(e2to1) != adj.end())
+            {
+                auto& ts = adj[e2to1];
+
+                if      (ts[0] == it2) ts[0] = it1;
+                else if (ts[1] == it2) ts[1] = it1;
+
+                if (ts[0] > ts[1]) {int tmp = ts[0]; ts[0] = ts[1]; ts[1] = tmp;}
+            }
+        }
+
+        ++c;
+    }
+    return c;
+}
