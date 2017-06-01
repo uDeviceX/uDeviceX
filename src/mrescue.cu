@@ -149,7 +149,7 @@ namespace mrescue
 #if (defined (__CUDA_ARCH__) && (__CUDA_ARCH__ > 0))
             const int tid = curand(&crstate) % nt;
 #else
-            const int tid = seed % nt; // todo
+            const int tid = rand() % nt;
 #endif
 
             const int t1 = sid * nv + tt[3*tid + 0];
