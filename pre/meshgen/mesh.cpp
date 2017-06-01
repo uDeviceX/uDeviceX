@@ -298,26 +298,29 @@ int flip_edges(std::vector<int>& tt, const std::vector<float>& vv)
         if (e->second.size() != 2)
         e = adj.erase(e);
         else
-        ++e;
+        e++;
     }
 
-    for (auto& e : adj)
+    for (auto ite = adj.begin(); ite != adj.end(); /**/)
     {
-        const int it1 = e.second[0];
-        const int it2 = e.second[1];
-
+        const int it1 = ite->second[0];
+        const int it2 = ite->second[1];
+        
 #define load_t(it) {tt[3*it + 0], tt[3*it + 1], tt[3*it + 2]}
 
         int t1[3] = load_t(it1);
         int t2[3] = load_t(it2);
 
 #undef load_t
-
-        while (!ordered(t1, e.first)) swap3(t1);
-        while (!ordered(t2, e.first)) swap3(t2);
+        
+        while (!ordered(t1, ite->first)) swap3(t1);
+        while (!ordered(t2, ite->first)) swap3(t2);
         
         if (no_need_flip(t1[0], t1[2], t1[1], t2[2], vv.data()))
-        continue;
+        {
+            ite ++;
+            continue;
+        }
         
         const int t1n[3] = {t1[2], t1[0], t2[2]};
         const int t2n[3] = {t1[2], t2[2], t2[0]};
@@ -331,7 +334,7 @@ int flip_edges(std::vector<int>& tt, const std::vector<float>& vv)
         
         {
             const Edge sharede(t1[0], t1[1]);
-            adj.erase(e.first);
+            ite = adj.erase(ite);
             adj[sharede].push_back(it1);
             adj[sharede].push_back(it2);
         }

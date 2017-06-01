@@ -53,11 +53,13 @@ int main(int argc, char **argv)
 
     tt.push_back(0); tt.push_back(1); tt.push_back(2);
 
-    for (int i = 0; i < 3; ++i)
+    for (int i = 0; i < 5; ++i)
     subdivide2(tt, vv);
 
     map2disk(vv.size()/3, vv.data());
 
+    printf("flipping edges...\n");
+    
     int c = 1;
     while(c != 0)
     {
