@@ -1,7 +1,7 @@
 #include <cassert>
 #include "common.h"
 
-#define WRITE_BINARY
+#include "ply.h"
 
 namespace ply
 {
