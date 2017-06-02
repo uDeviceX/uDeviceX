@@ -1,4 +1,3 @@
-#include <mpi.h>
 
 /* [B]ase [T]ags for mpi messages
  * C: [c]ounts
@@ -8,39 +7,47 @@
  */
 
 #define STRIDE (100)
-enum 
-{
-    /* dpd.impl.h */
-    BT_P_DPD = 0,
-    BT_P2_DPD = BT_P_DPD  + STRIDE,
-    BT_CS_DPD = BT_P2_DPD + STRIDE,
-    BT_C_DPD = BT_CS_DPD  + STRIDE,
 
-    /* sdstr.impl.h */
-    BT_C_SDSTR = BT_C_DPD    + STRIDE,
-    BT_P_SDSTR = BT_C_SDSTR  + STRIDE,
-    BT_P2_SDSTR = BT_P_SDSTR + STRIDE,
+#define tag_list(_)                                                     \
+    /* dpd.impl.h */                                                    \
+    _(BT_P_DPD)                                                         \
+    _(BT_P2_DPD)                                                        \
+    _(BT_CS_DPD)                                                        \
+    _(BT_C_DPD)                                                         \
+    /* sdstr.impl.h */                                                  \
+    _(BT_C_SDSTR)                                                       \
+    _(BT_P_SDSTR)                                                       \
+    _(BT_P2_SDSTR)                                                      \
+    /* wall.impl.h (init) */                                            \
+    _(BT_C_WALL)                                                        \
+    _(BT_P_WALL)                                                        \
+    /* rex.impl.h */                                                    \
+    _(BT_C_REX)                                                         \
+    _(BT_P_REX)                                                         \
+    _(BT_P2_REX)                                                        \
+    _(BT_A_REX)                                                         \
+    /* rdstr.impl.h */                                                  \
+    _(BT_C_RDSTR)                                                       \
+    _(BT_P_RDSTR)                                                       \
+    _(BT_S_RDSTR)                                                       \
+    /* bbhalo.impl.h */                                                 \
+    _(BT_C_BBHALO)                                                      \
+    _(BT_S_BBHALO)                                                      \
+    _(BT_P_BBHALO)                                                      \
+    _(BT_S2_BBHALO)
 
-    /* wall.impl.h (init) */
-    BT_C_WALL = BT_P2_SDSTR + STRIDE,
-    BT_P_WALL = BT_C_WALL   + STRIDE,
+#define make_id_name(a) a##_ID,
+#define make_tag_val(a) a = STRIDE * a##_ID,
 
-    /* rex.impl.h */
-    BT_C_REX = BT_P_WALL + STRIDE,
-    BT_P_REX = BT_C_REX  + STRIDE,
-    BT_P2_REX = BT_P_REX + STRIDE,
-    BT_A_REX = BT_P2_REX + STRIDE,
-
-    /* rdstr.impl.h */
-    BT_C_RDSTR = BT_A_REX   + STRIDE,
-    BT_P_RDSTR = BT_C_RDSTR + STRIDE,
-    BT_S_RDSTR = BT_P_RDSTR + STRIDE,
-
-    /* bbhalo.impl.h */
-    BT_C_BBHALO = BT_S_RDSTR   + STRIDE,
-    BT_S_BBHALO = BT_C_BBHALO  + STRIDE,
-    BT_P_BBHALO = BT_S_BBHALO  + STRIDE,
-    BT_S2_BBHALO = BT_P_BBHALO + STRIDE,
-    
+enum tag_ids {
+    tag_list(make_id_name)
 };
+
+enum {
+    tag_list(make_tag_val)
+};
+
 #undef STRIDE
+#undef tag_list
+#undef make_id_name
+#undef make_tag_val
