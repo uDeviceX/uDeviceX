@@ -9,7 +9,7 @@
 #include ".conf.h" /* configuration file (copy from .conf.test.h) */
 #include "conf.default.h"
 #include "m.h"     /* MPI */
-#include "common.mpi.h"
+#include "basetags.h"
 #include "common.h"
 #include "common.tmp.h"
 #include "io.h"
