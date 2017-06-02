@@ -8,32 +8,32 @@
 
 #define STRIDE (100)
 
-#define tag_list(_)                                                     \
-    /* dpd.impl.h */                                                    \
-    _(BT_P_DPD)                                                         \
-    _(BT_P2_DPD)                                                        \
-    _(BT_CS_DPD)                                                        \
-    _(BT_C_DPD)                                                         \
-    /* sdstr.impl.h */                                                  \
-    _(BT_C_SDSTR)                                                       \
-    _(BT_P_SDSTR)                                                       \
-    _(BT_P2_SDSTR)                                                      \
-    /* wall.impl.h (init) */                                            \
-    _(BT_C_WALL)                                                        \
-    _(BT_P_WALL)                                                        \
-    /* rex.impl.h */                                                    \
-    _(BT_C_REX)                                                         \
-    _(BT_P_REX)                                                         \
-    _(BT_P2_REX)                                                        \
-    _(BT_A_REX)                                                         \
-    /* rdstr.impl.h */                                                  \
-    _(BT_C_RDSTR)                                                       \
-    _(BT_P_RDSTR)                                                       \
-    _(BT_S_RDSTR)                                                       \
-    /* bbhalo.impl.h */                                                 \
-    _(BT_C_BBHALO)                                                      \
-    _(BT_S_BBHALO)                                                      \
-    _(BT_P_BBHALO)                                                      \
+#define tag_list(_)                             \
+    /* dpd.impl.h */                            \
+    _(BT_P_DPD)                                 \
+    _(BT_P2_DPD)                                \
+    _(BT_CS_DPD)                                \
+    _(BT_C_DPD)                                 \
+    /* sdstr.impl.h */                          \
+    _(BT_C_SDSTR)                               \
+    _(BT_P_SDSTR)                               \
+    _(BT_P2_SDSTR)                              \
+    /* wall.impl.h (init) */                    \
+    _(BT_C_WALL)                                \
+    _(BT_P_WALL)                                \
+    /* rex.impl.h */                            \
+    _(BT_C_REX)                                 \
+    _(BT_P_REX)                                 \
+    _(BT_P2_REX)                                \
+    _(BT_A_REX)                                 \
+    /* rdstr.impl.h */                          \
+    _(BT_C_RDSTR)                               \
+    _(BT_P_RDSTR)                               \
+    _(BT_S_RDSTR)                               \
+    /* bbhalo.impl.h */                         \
+    _(BT_C_BBHALO)                              \
+    _(BT_S_BBHALO)                              \
+    _(BT_P_BBHALO)                              \
     _(BT_S2_BBHALO)
 
 #define make_id_name(a) a##_ID,
