@@ -38,7 +38,7 @@ namespace mbounce
     } while(0)
     
 #endif
-#undef __bbstates
+#undef bbstates
 #undef make_enum
 #undef make_str
         
