@@ -125,8 +125,8 @@ namespace mbounce
         const real n0[3] = cross(a1, a2);
         const real ntt[3] = cross(at1, at2);
         const real nt[3] = {a1[Y] * at2[Z] - a1[Z] * at2[Y]  +  at1[Y] * a2[Z] - at1[Z] * a2[Y],
-                             a1[Z] * at2[X] - a1[X] * at2[Z]  +  at1[Z] * a2[X] - at1[X] * a2[Z],
-                             a1[X] * at2[Y] - a1[Y] * at2[X]  +  at1[X] * a2[Y] - at1[Y] * a2[X]};
+                            a1[Z] * at2[X] - a1[X] * at2[Z]  +  at1[Z] * a2[X] - at1[X] * a2[Z],
+                            a1[X] * at2[Y] - a1[Y] * at2[X]  +  at1[X] * a2[Y] - at1[Y] * a2[X]};
     
         const real dr0[3] = diff(r0, s10);
         
@@ -136,8 +136,8 @@ namespace mbounce
             const real s11[3] = apxb(s10, dt, vs1);
 
             const real n1[3] = {n0[X] + (real) dt * (nt[X] + (real) dt * ntt[X]),
-                                 n0[Y] + (real) dt * (nt[Y] + (real) dt * ntt[Y]),
-                                 n0[Z] + (real) dt * (nt[Z] + (real) dt * ntt[Z])};
+                                n0[Y] + (real) dt * (nt[Y] + (real) dt * ntt[Y]),
+                                n0[Z] + (real) dt * (nt[Z] + (real) dt * ntt[Z])};
             
             const real dr1[3] = diff(r1, s11);
 
@@ -172,8 +172,8 @@ namespace mbounce
         return BB_HNEXT;
 
         const real rwl[3] = {r0[X] + hl * v0[X],
-                              r0[Y] + hl * v0[Y],
-                              r0[Z] + hl * v0[Z]};
+                             r0[Y] + hl * v0[Y],
+                             r0[Z] + hl * v0[Z]};
 
         // check if inside triangle
         const real g[3] = {rwl[X] - s10[X] - hl * vs1[X],
