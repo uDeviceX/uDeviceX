@@ -1,13 +1,13 @@
 .cache.Makefile
 .conf.h
 
-h5.out.txt
-h5part.out.txt
-bop.out.txt
+*.out.txt
 h5/
 bop/
 
 udx
+
+rbcs-ic.txt
 
 ic_solid.txt
 solid_diag*.txt
