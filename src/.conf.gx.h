@@ -1,5 +1,5 @@
-#define XS   52
-#define YS   40
+#define XS   40
+#define YS   52
 #define ZS   20
 #define XMARGIN_WALL      6
 #define YMARGIN_WALL      6
