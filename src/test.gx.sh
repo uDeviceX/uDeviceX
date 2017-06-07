@@ -1,4 +1,4 @@
-#### googleX steady solvent
+#### googleX solvent at rest
 # cTEST: gx.t1
 # export PATH=../tools:$PATH
 # rm -rf diag.txt h5 bop
