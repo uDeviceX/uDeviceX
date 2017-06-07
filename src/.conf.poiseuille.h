@@ -29,4 +29,4 @@
 #define ljsigma          0.3        /* RBC-RBC contact LJ interaction parameters */
 #define ljepsilon        0.44
 
-#define contactforces    (false)
+

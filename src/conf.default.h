@@ -8,6 +8,10 @@
 #define pushflow (false)
 #endif
 
+#ifndef contactforces
+#define contactforces (false)
+#endif
+
 // dump
 
 #ifndef field_dumps
