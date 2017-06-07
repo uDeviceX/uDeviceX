@@ -53,3 +53,10 @@
 #undef  pin_axis
 #define pin_axis (true)
 #endif
+
+
+// rbc
+
+#ifndef rbcs
+#define rbcs (false)
+#endif
