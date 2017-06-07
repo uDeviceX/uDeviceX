@@ -16,14 +16,12 @@
 #define gamma_dot        5.0       /* shear rate */
 #define driving_force    3.333e-2  /* flow acceleration for Poiseuille setup */
 
-#define aij_out          2.667  /* aij for the solvent outside the RBC */
-#define aij_in           2.667  /* aij for the solvent inside the RBC */
+#define aij_solv         2.667  /* aij for the solvent  */
 #define aij_rbc          2.667  /* aij for the RBC membrane */
 #define aij_solid        2.667  /* aij for the solid */
 #define aij_wall         2.667  /* aij for the wall */
 
-#define gammadpd_out     8.0  /* gamma for the solvent outside the RBC */
-#define gammadpd_in      8.0  /* gamma for the solvent inside the RBC */
+#define gammadpd_solv    8.0  /* gamma for the solvent */
 #define gammadpd_rbc     8.0  /* gamma for the RBC membrane */
 #define gammadpd_solid   8.0        /* gamma for the solid */
 #define gammadpd_wall    8.0  /* gamma for the wall */
