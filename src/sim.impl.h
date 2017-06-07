@@ -330,7 +330,6 @@ namespace sim
 
     void init_solid()
     {
-        rex::init();
         mrescue::init(MAX_PART_NUM);
     
         mpDeviceMalloc(&s::pp);
@@ -398,7 +397,8 @@ namespace sim
         sdstr::init();
         bbhalo::init();
         cnt::init();
-  
+        rex::init();
+        
         dump::init();
 
         o::cells   = new CellLists(XS, YS, ZS);
