@@ -5,3 +5,71 @@
 # code: yzx, xyz, ...
 #   if code == yxz: old y becomes x, old x becomes y.
 
+1;
+function read(fn)
+  f = fopen(fn);
+  read_header(f)
+  read_data(f)
+  fclose(f);
+endfunction
+
+function varargout = fscn(f, fmt) # simpler fscanf
+  l = fgets(f);
+  [varargout{1:nargout}] = strread(l, fmt);
+endfunction
+
+function read_header(f)
+  global ex ey ez   nx ny nz
+  [ex, ey, ez] = fscn(f, "%d %d %d");
+  [nx, ny, nz] = fscn(f, "%d %d %d");
+endfunction
+
+function read_data(f)
+  global ex ey ez   nx ny nz D
+  D = fread(f, nx*ny*nz, "float32");
+  D = reshape(D, nx, ny, nz);
+endfunction
+
+function ans = decode(c)
+  ans = zeros(1, 3);
+  for i=1:3; ans(i) = c(i) - 'x' + 1; endfor
+endfunction
+
+function shufle(c)
+  global ex ey ez   nx ny nz   D
+  e = [ex, ey, ez]; e = e(c);
+  n = [nx, ny, nz]; n = n(c);
+  D = permute(D, c);
+endfunction
+
+function write_header(f)
+  global ex ey ez   nx ny nz
+  fprintf(f, "%g %g %g\n", ex, ey, ez);
+  fprintf(f, "%g %g %g\n", nx, ny, nz);
+endfunction
+
+function write_data(f)
+  global D
+  fwrite(f, D, "float32");
+endfunction
+
+function write(fn)
+  global ex ey ez   nx ny nz   D
+  f = fopen(fn, "w");
+  write_header(f)
+  write_data(f)
+  fclose(f);
+endfunction
+
+function msg(s); fputs(stderr, s); endfunction
+function r = eq(a, b); r = strcmp(a, b); endfunction
+if eq(argv(){1}, "-h"); msg("sdf.shufle <yxz> <in.dat> <out.dat>"); exit(); endif
+
+c  = argv(){1};
+fi = argv(){2};
+fo = argv(){3};
+
+read(fi);
+c = decode(c); # xyz -> 123
+shufle(c);
+write(fo);
