@@ -58,6 +58,13 @@ namespace sim
         float rr0_hst[3*MAX_PSOLID_NUM];      /* initial positions; same for all solids */
         float *rr0;
     }
+
+    namespace r /* [r]bc */
+    {
+        int n, nc, nt, nv;
+        Particle *pp;
+        Force    *ff;
+    }
     
     Particle      os_pp[MAX_PART_NUM];    /* solvent + solid pp on host */
 }

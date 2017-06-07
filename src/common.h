@@ -22,6 +22,10 @@ inline void mpiAssert(int code, const char *file, int line) {
 /* maximum number of solids per node */
 #define MAX_SOLIDS 1024
 
+/* maximum number of faces per one RBC */
+#define MAX_FACE_NUM 50000
+#define MAX_VERT_NUM 10000
+
 /* used in field */
 #define MAX_SUBDOMAIN_VOLUME 100*100*100
 
@@ -31,11 +35,11 @@ inline void mpiAssert(int code, const char *file, int line) {
 #define k_cnf(n) ((n) + 127)/128, 128
 
 /* a common textrue setup */
-#define setup_texture(T, TYPE) do {		     \
-    (T).channelDesc = cudaCreateChannelDesc<TYPE>(); \
-    (T).filterMode = cudaFilterModePoint;	     \
-    (T).mipmapFilterMode = cudaFilterModePoint;	     \
-    (T).normalized = 0;				     \
+#define setup_texture(T, TYPE) do {                         \
+        (T).channelDesc = cudaCreateChannelDesc<TYPE>();    \
+        (T).filterMode = cudaFilterModePoint;               \
+        (T).mipmapFilterMode = cudaFilterModePoint;         \
+        (T).normalized = 0;                                 \
 } while (false)
 
 #define D2D cudaMemcpyDeviceToDevice
@@ -44,14 +48,14 @@ inline void mpiAssert(int code, const char *file, int line) {
 #define H2H cudaMemcpyHostToHost
 
 /* [c]cuda [c]heck */
-#define CC(ans)							\
-  do { cudaAssert((ans), __FILE__, __LINE__); } while (0)
+#define CC(ans)                                             \
+    do { cudaAssert((ans), __FILE__, __LINE__); } while (0)
 inline void cudaAssert(cudaError_t code, const char *file, int line) {
-  if (code != cudaSuccess) {
-    fprintf(stderr, "GPU assert: %s %s %d\n", cudaGetErrorString(code), file,
-	    line);
-    abort();
-  }
+    if (code != cudaSuccess) {
+        fprintf(stderr, "GPU assert: %s %s %d\n", cudaGetErrorString(code), file,
+                line);
+        abort();
+    }
 }
 
 // AoS is the currency for dpd simulations (because of the spatial locality).
