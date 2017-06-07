@@ -27,7 +27,7 @@
 # :
 # { make clean && make -j; } > /dev/null
 # mpirun -n 2 ./udx 2 1 1
-# avg_h52.m h5/f.0013.h5 | uscale 10 > h5.out.txt
+# avg_h52.m h5/flowfield.0013.h5 | uscale 10 > h5.out.txt
 
 ####
 # sTEST: mpi.t3
