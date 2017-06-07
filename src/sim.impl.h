@@ -500,8 +500,7 @@ namespace sim
     }
 
     void close() {
-        delete dump_field;
-
+        
         odstr::redist_part_close();
         sdstr::close();
         rdstr::fin();
@@ -516,11 +515,12 @@ namespace sim
         mrescue::close();            
         
         delete o::cells;
-
+        delete dump_field;
+        delete wall::trunk;
+        
         CC(cudaFree(o::zip0));
         CC(cudaFree(o::zip1));
 
-        delete wall::trunk;
         CC(cudaFree(s::pp )); CC(cudaFree(s::ff ));
         CC(cudaFree(o::pp )); CC(cudaFree(o::ff ));
         CC(cudaFree(o::pp0));
@@ -532,35 +532,23 @@ namespace sim
             CC(cudaFree(r::ff));
             CC(cudaFree(r::av));
         }
-        
-        if (s::m_hst.tt) delete[] s::m_hst.tt;
-        if (s::m_hst.vv) delete[] s::m_hst.vv;
-        if (s::m_dev.tt) CC(cudaFree(s::m_dev.tt));
-        if (s::m_dev.vv) CC(cudaFree(s::m_dev.vv));
 
-        if (s::tcs_hst) delete[] s::tcs_hst;
-        if (s::tcc_hst) delete[] s::tcc_hst;
-        if (s::tci_hst) delete[] s::tci_hst;
+        if (solids)
+        {
+            delete[] s::m_hst.tt;    CC(cudaFree(s::m_dev.tt));
+            delete[] s::m_hst.vv;    CC(cudaFree(s::m_dev.vv));
 
-        if (s::tcs_dev) CC(cudaFree(s::tcs_dev));
-        if (s::tcc_dev) CC(cudaFree(s::tcc_dev));
-        if (s::tci_dev)      CC(cudaFree(s::tci_dev));
-
-        if (s::i_pp_hst)    delete[] s::i_pp_hst;
-        if (s::i_pp_bb_hst) delete[] s::i_pp_bb_hst;
-        if (s::i_pp_dev)    CC(cudaFree(s::i_pp_dev));
-        if (s::i_pp_bb_dev) CC(cudaFree(s::i_pp_bb_dev));
-
-        if (s::bboxes_hst) delete[] s::bboxes_hst;
-        if (s::bboxes_dev) CC(cudaFree(s::bboxes_dev));    
-  
-        if (s::ss_hst) delete[] s::ss_hst;
-        if (s::ss_dev) CC(cudaFree(s::ss_dev));
-
-        if (s::ss_bb_hst) delete[] s::ss_bb_hst;
-        if (s::ss_bb_dev) CC(cudaFree(s::ss_bb_dev));
-
-        if (s::ss_dmphst)   delete[] s::ss_dmphst;
-        if (s::ss_dmpbbhst) delete[] s::ss_dmpbbhst;
+            delete[] s::tcs_hst;     CC(cudaFree(s::tcs_dev)); 
+            delete[] s::tcc_hst;     CC(cudaFree(s::tcc_dev));
+            delete[] s::tci_hst;     CC(cudaFree(s::tci_dev));
+            
+            delete[] s::i_pp_hst;      CC(cudaFree(s::i_pp_dev)); 
+            delete[] s::i_pp_bb_hst;   CC(cudaFree(s::i_pp_bb_dev));
+            
+            delete[] s::bboxes_hst;    CC(cudaFree(s::bboxes_dev));
+            delete[] s::ss_hst;        CC(cudaFree(s::ss_dev));
+            delete[] s::ss_bb_hst;     CC(cudaFree(s::ss_bb_dev));
+            delete[] s::ss_dmphst;     delete[] s::ss_dmpbbhst;
+        }
     }
 }
