@@ -5,7 +5,7 @@ function init() {
     defs = \
 	"doublepoiseuille false "		\
 	"field_dumps false "		\
-	"hdf5part_dumps false "			\
+	"part_dumps false "			\
 	"pushflow false "			\
 	"steps_per_dump 1000 "			\
 	"steps_per_hdf5dump 2000 "		\

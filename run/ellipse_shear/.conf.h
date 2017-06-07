@@ -40,7 +40,7 @@
 #undef         _gammadpd_out
 #undef         _gammadpd_rbc
 #undef       field_dumps
-#undef        hdf5part_dumps
+#undef        part_dumps
 #undef        _hydrostatic_a
 #undef               pin_com
 #undef           pushflow
@@ -63,7 +63,7 @@
 #define        _gammadpd_out   (0.0)    /* */
 #define        _gammadpd_rbc   (0.0)    /* */
 #define      field_dumps  (true)    /* */
-#define       hdf5part_dumps  (true)    /* */
+#define       part_dumps  (true)    /* */
 #define       _hydrostatic_a   (0.0)    /* */
 #define              pin_com  (true)    /* */
 #define          pushflow (false)
