@@ -57,7 +57,7 @@
 #   -tend=4.0 -part_freq=600 -walls -wall_creation=100 \
 #   -field_dumps -part_dumps -field_freq=600 -pushflow > .conf.h
 # :
-# { make clean && make ranks x=$x y=$y z=$z && make -j mpi; } > /dev/null
+# { make clean && make -j; } > /dev/null
 # mpirun -n 2 ./udx 1 1 2
 # avg_h5.m h5/flowfields-0013.h5 | uscale 100 > h5.out.txt
 #
