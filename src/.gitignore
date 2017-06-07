@@ -16,7 +16,6 @@ diag.txt
 sdf.dat
 
 mesh_solid.ply
-rbc.off
 
 test_data/atest.res
 fail.*.sh
