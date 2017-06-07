@@ -46,7 +46,7 @@ function write_bov(f, fv) {
 
 function write_val(fi, fo,   cmd) {
     cmd = sprintf("tail -n +3 '%s' > '%s'", fi, fo)
-    print "sdf.2bov: " cmd | "cat >&2"
+    system(cmd)
 }
 
 function shift(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }

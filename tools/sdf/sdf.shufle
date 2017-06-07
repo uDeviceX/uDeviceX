@@ -35,10 +35,15 @@ function ans = decode(c)
   for i=1:3; ans(i) = c(i) - 'x' + 1; endfor
 endfunction
 
+function [x, y, z] = shufle3(x, y, z, c)
+  r = [x, y, z]; r = r(c);
+  x = r(1); y = r(2); z = r(3);
+endfunction
+
 function shufle(c)
   global ex ey ez   nx ny nz   D
-  e = [ex, ey, ez]; e = e(c);
-  n = [nx, ny, nz]; n = n(c);
+  [nx, ny, nz] = shufle3(nx, ny, nz, c);
+  [ex, ey, ez] = shufle3(ex, ey, ez, c);
   D = permute(D, c);
 endfunction
 
