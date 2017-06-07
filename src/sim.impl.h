@@ -130,20 +130,18 @@ namespace sim
         if (wall_created) forces_wall();
         forces_rbc();
         
-        if (solids0) {
-            forces_cnt(&w_r);
-            forces_fsi(&w_s, &w_r);
+        forces_cnt(&w_r);
+        forces_fsi(&w_s, &w_r);
 
-            rex::bind_solutes(w_r);
-            rex::pack_p();
-            rex::post_p();
-            rex::recv_p();
+        rex::bind_solutes(w_r);
+        rex::pack_p();
+        rex::post_p();
+        rex::recv_p();
 
-            rex::halo(); /* fsi::halo(); */
+        rex::halo(); /* fsi::halo(); */
 
-            rex::post_f();
-            rex::recv_f();
-        }
+        rex::post_f();
+        rex::recv_f();
     }
 
     static void dev2hst() { /* device to host  data transfer */
