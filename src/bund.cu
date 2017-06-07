@@ -12,6 +12,7 @@
 #include "basetags.h"
 #include "common.h"
 #include "common.tmp.h"
+#include "common.macro.h"
 #include "io.h"
 #include "bund.h"
 #include "dpd-forces.h"
