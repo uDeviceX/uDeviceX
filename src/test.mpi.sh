@@ -27,26 +27,23 @@
 # :
 # { make clean && make -j; } > /dev/null
 # mpirun -n 2 ./udx 2 1 1
-# avg_h52.m h5/flowfield.0013.h5 | uscale 10 > h5.out.txt
+# avg_h52.m h5/flowfields-0013.h5 | uscale 10 > h5.out.txt
 
 ####
 # sTEST: mpi.t3
 # export PATH=../tools:$PATH
 # export PATH=/usr/lib64/mpich/bin:$PATH
-# rm -rf diag.txt h5 o ply
+# rm -rf diag.txt h5 bop ply
 # cp sdf/cyl1/cyl.dat sdf.dat
 # x=0.75 y=8 z=9; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 # :
 # argp .conf.around.h \
-#    -acyl            \
 #    -rbcs -tend=4.0 -part_freq=5000 -walls -wall_creation=1000 \
 #    -field_dumps -part_dumps -field_freq=5000 -pushflow > .conf.h
 # :
-# x=3 y=1 z=1
-# { make clean && make ranks x=$x y=$y z=$z && make -j mpi; } > /dev/null
-# udirs $x $y $z sr/p
-# sh run
-# mid_h5.m h5/f.0001.h5 > h5.out.txt
+# { make clean && make -j; } > /dev/null
+# mpirun -n 3 ./udx 3 1 1
+# mid_h5.m h5/flowfields-0001.h5 > h5.out.txt
 #
 
 #### Poiseuille
