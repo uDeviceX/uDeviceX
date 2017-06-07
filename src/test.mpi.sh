@@ -14,12 +14,12 @@
 # awk '{print 10000*$2}' diag.txt > diag.out.txt
 
 #### double Poiseuille
-# nTEST: mpi.t2
+# sTEST: mpi.t2
 # export PATH=../tools:$PATH
 # export PATH=/usr/lib64/mpich/bin:$PATH
 # rm -rf diag.txt h5 bop ply
 # :
-# argp .conf.double.poiseuille.h                \
+# argp .conf.double.poiseuille.h -kBT=1e-7      \
 #   -tend=2.1 -part_freq=100  -field_freq=300   \
 #   -pushflow -doublepoiseuille                 \
 #   -field_dumps -part_dumps                    \
@@ -37,7 +37,7 @@
 # cp sdf/cyl1/cyl.dat sdf.dat
 # x=0.75 y=8 z=9; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 # :
-# argp .conf.around.h \
+# argp .conf.around.h -kBT=1e-7 \
 #    -rbcs -tend=4.0 -part_freq=5000 -walls -wall_creation=1000 \
 #    -field_dumps -part_dumps -field_freq=5000 -pushflow > .conf.h
 # :
@@ -47,20 +47,17 @@
 #
 
 #### Poiseuille
-# sTEST: mpi.t4
+# nTEST: mpi.t4
 # export PATH=../tools:$PATH
 # export PATH=/usr/lib64/mpich/bin:$PATH
-# rm -rf diag.txt h5 o ply
+# rm -rf diag.txt h5 bop ply
 # cp sdf/wall1/wall.dat sdf.dat
 # :
 # argp .conf.poiseuille.h \
-#   -awall                \
 #   -tend=4.0 -part_freq=600 -walls -wall_creation=100 \
 #   -field_dumps -part_dumps -field_freq=600 -pushflow > .conf.h
 # :
-# x=1 y=1 z=2
 # { make clean && make ranks x=$x y=$y z=$z && make -j mpi; } > /dev/null
-# udirs $x $y $z sr/p
-# sh run
-# avg_h5.m h5/f.0013.h5 | uscale 100 > h5.out.txt
+# mpirun -n 2 ./udx 1 1 2
+# avg_h5.m h5/flowfields-0013.h5 | uscale 100 > h5.out.txt
 #
