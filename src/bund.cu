@@ -29,8 +29,8 @@
 #include "k/odstr.h"
 #include "odstr.impl.h"
 
-#include "rdstr.decl.h"
-#include "rdstr.impl.h"
+#include "sdstr.decl.h"
+#include "sdstr.impl.h"
 
 #include "field.decl.h"
 #include "field.impl.h"
