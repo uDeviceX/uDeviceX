@@ -25,9 +25,9 @@
 
 #include "minmax.h"
 
-#include "sdstr.decl.h"
-#include "k/sdstr.h"
-#include "sdstr.impl.h"
+#include "odstr.decl.h"
+#include "k/odstr.h"
+#include "odstr.impl.h"
 
 #include "rdstr.decl.h"
 #include "rdstr.impl.h"
