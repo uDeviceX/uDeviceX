@@ -1,4 +1,4 @@
-namespace rdstr
+namespace sdstr
 {
     enum {X, Y, Z};
     
@@ -20,7 +20,7 @@ namespace rdstr
         for (int i = 1; i < 27; ++i)
         {
             MPI_Request req;
-            MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, ank_ne[i], i + BT_C_RDSTR, cart, &req);
+            MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, ank_ne[i], i + BT_C_SDSTR, cart, &req);
             recvcntreq.push_back(req);
         }
     }
@@ -83,7 +83,7 @@ namespace rdstr
         // send counts
         
         for (int i = 1; i < 27; ++i)
-        MPI_Isend(send_counts + i, 1, MPI_INTEGER, rnk_ne[i], i + BT_C_RDSTR, cart, &sendcntreq[i - 1]);
+        MPI_Isend(send_counts + i, 1, MPI_INTEGER, rnk_ne[i], i + BT_C_SDSTR, cart, &sendcntreq[i - 1]);
 
         // copy data into buffers
 
@@ -122,10 +122,10 @@ namespace rdstr
         if (srbuf[i].size() > 0)
         {
             MPI_Request request;
-            MPI_Irecv(srbuf[i].data(), srbuf[i].size(), Solid::datatype(), ank_ne[i], i + BT_S_RDSTR, cart, &request);
+            MPI_Irecv(srbuf[i].data(), srbuf[i].size(), Solid::datatype(), ank_ne[i], i + BT_S_SDSTR, cart, &request);
             srecvreq.push_back(request);
 
-            MPI_Irecv(prbuf[i].data(), prbuf[i].size(), Particle::datatype(), ank_ne[i], i + BT_P_RDSTR, cart, &request);
+            MPI_Irecv(prbuf[i].data(), prbuf[i].size(), Particle::datatype(), ank_ne[i], i + BT_P_SDSTR, cart, &request);
             precvreq.push_back(request);
         }
 
@@ -133,10 +133,10 @@ namespace rdstr
         if (ssbuf[i].size() > 0)
         {
             MPI_Request request;
-            MPI_Isend(ssbuf[i].data(), ssbuf[i].size(), Solid::datatype(), rnk_ne[i], i + BT_S_RDSTR, cart, &request);
+            MPI_Isend(ssbuf[i].data(), ssbuf[i].size(), Solid::datatype(), rnk_ne[i], i + BT_S_SDSTR, cart, &request);
             ssendreq.push_back(request);
 
-            MPI_Isend(psbuf[i].data(), psbuf[i].size(), Particle::datatype(), rnk_ne[i], i + BT_P_RDSTR, cart, &request);
+            MPI_Isend(psbuf[i].data(), psbuf[i].size(), Particle::datatype(), rnk_ne[i], i + BT_P_SDSTR, cart, &request);
             psendreq.push_back(request);
         }
         

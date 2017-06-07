@@ -26,10 +26,10 @@
     _(BT_P_REX)                                 \
     _(BT_P2_REX)                                \
     _(BT_A_REX)                                 \
-    /* rdstr.impl.h */                          \
-    _(BT_C_RDSTR)                               \
-    _(BT_P_RDSTR)                               \
-    _(BT_S_RDSTR)                               \
+    /* sdstr.impl.h */                          \
+    _(BT_C_SDSTR)                               \
+    _(BT_P_SDSTR)                               \
+    _(BT_S_SDSTR)                               \
     /* bbhalo.impl.h */                         \
     _(BT_C_BBHALO)                              \
     _(BT_S_BBHALO)                              \
