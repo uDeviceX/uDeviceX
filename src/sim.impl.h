@@ -36,18 +36,38 @@ namespace sim
 #endif
     }
 
-    // static void distr_rbc()
-    // {
-    //     rdstr::extent(r::pp, r::nc, r::nv);
-    //     rdstr::pack_sendcnt(r::pp, r::nc, r::nv);
-    //     r::nc = rdstr::post(r::nv); r::n = r::nc * r::nv;
-    //     rdstr::unpack(r::pp, r::nv);
-    // }
+    static void distr_rbc()
+    {
+        rdstr::extent(r::pp, r::nc, r::nv);
+        rdstr::pack_sendcnt(r::pp, r::nc, r::nv);
+        r::nc = rdstr::post(r::nv); r::n = r::nc * r::nv;
+        rdstr::unpack(r::pp, r::nv);
+    }
 
     static void update_helper_arrays() {
         CC(cudaFuncSetCacheConfig(k_sim::make_texture, cudaFuncCachePreferShared));
         k_sim::make_texture<<<(o::n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>
             (o::zip0, o::zip1, (float*)o::pp, o::n);
+    }
+
+    void remove_bodies_from_wall() {
+        //if (!rbcs) return;
+        if (r::nc <= 0) return;
+        DeviceBuffer<int> marks(r::n);
+        k_sdf::fill_keys<<<k_cnf(r::n)>>>(r::pp, r::n, marks.D);
+
+        std::vector<int> tmp(marks.S);
+        CC(cudaMemcpy(tmp.data(), marks.D, sizeof(int) * marks.S, D2H));
+        std::vector<int> tokill;
+        for (int i = 0; i < r::nc; ++i) {
+            bool valid = true;
+            for (int j = 0; j < r::nv && valid; ++j)
+            valid &= (tmp[j + r::nv * i] == W_BULK);
+            if (!valid) tokill.push_back(i);
+        }
+
+        r::nc = Cont::rbc_remove(r::pp, r::nv, r::nc, &tokill.front(), tokill.size());
+        r::n = r::nc * r::nv;
     }
 
     void create_walls() {
