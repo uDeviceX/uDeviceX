@@ -2,10 +2,8 @@ namespace sim {
 
 #define DEVICE_SOLID
     
-#define X 0
-#define Y 1
-#define Z 2
-    
+enum {X, Y, Z};
+        
 static void distr_s() {
   sdstr::pack(s_pp, s_n);
   sdstr::send();
@@ -498,7 +496,4 @@ void close() {
   if (ss_dmphst)   delete[] ss_dmphst;
   if (ss_dmpbbhst) delete[] ss_dmpbbhst;
 }
-#undef X
-#undef Y
-#undef Z
 }
