@@ -1,18 +1,16 @@
 #!/bin/bash
 
 #### RBC in a periodic box
-# sTEST: mpi.t1
+# nTEST: mpi.t1
 # export PATH=../tools:$PATH
 # export PATH=/usr/lib64/mpich/bin:$PATH
 # echo 1 0 0 8  0 1 0 8  0 0 1 8  0 0 0 1 > rbcs-ic.txt
-# rm -rf diag.txt h5 o ply
+# rm -rf diag.txt h5 bop ply
 # :
 # argp .conf.couette.h -rbcs -tend=0.5 -part_freq=100 > .conf.h
 # :
-# x=2 y=1 z=1
-# { make clean && make ranks x=$x y=$y z=$z && make -j mpi; } > /dev/null
-# udirs $x $y $z sr/p
-# sh run
+# { make clean && make -j; } > /dev/null
+# mpirun -n 2 ./udx 2 1 1
 # awk '{print 10000*$2}' diag.txt > diag.out.txt
 
 #### double Poiseuille
