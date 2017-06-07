@@ -48,7 +48,7 @@ namespace rdstr
         _ddst = new DeviceBuffer<float *>;
         _dsrc = new DeviceBuffer<const float *>;
 
-        MPI_Comm_dup(cart, &cart);
+        MPI_Comm_dup(m::cart, &cart);
         gen_ne(cart,   rnk_ne, ank_ne); /* generate ranks and anti-ranks */
 
         _post_recvcnt();
