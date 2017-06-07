@@ -370,9 +370,7 @@ namespace sim
         // generate the solid particles
     
         solid::generate_hst(s::ss_hst, s::ns, s::rr0_hst, s::nps, /**/ s::pp_hst);
-    
         solid::reinit_ft_hst(s::ns, /**/ s::ss_hst);
-
         s::npp = s::ns * s::nps;
 
         solid::mesh2pp_hst(s::ss_hst, s::ns, s::m_hst, /**/ s::i_pp_hst);
