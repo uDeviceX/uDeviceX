@@ -1,6 +1,6 @@
-#define XS   16
-#define YS   16
-#define ZS   16
+#define XS   52
+#define YS   40
+#define ZS   20
 #define XMARGIN_WALL      6
 #define YMARGIN_WALL      6
 #define ZMARGIN_WALL      6
