@@ -516,11 +516,9 @@ namespace sim
         CC(cudaFree(o::zip0));
         CC(cudaFree(o::zip1));
 
-        CC(cudaFree(s::pp )); CC(cudaFree(s::ff ));
-        CC(cudaFree(o::pp )); CC(cudaFree(o::ff ));
-        CC(cudaFree(o::pp0));
-        CC(cudaFree(s::rr0));
-
+        CC(cudaFree(s::pp )); CC(cudaFree(s::ff )); CC(cudaFree(s::rr0));
+        CC(cudaFree(o::pp )); CC(cudaFree(o::ff )); CC(cudaFree(o::pp0));
+        
         if (rbcs)
         {
             CC(cudaFree(r::pp));
