@@ -96,8 +96,9 @@ namespace sim
     }
 
     void forces_wall() {
-        if (solids0) wall::interactions(s::pp, s::npp, s::ff);
         wall::interactions(o::pp, o::n, o::ff);
+        if (solids0) wall::interactions(s::pp, s::npp, s::ff);
+        if (rbcs)    wall::interactions(r::pp, r::n  , r::ff);
     }
 
     void forces_cnt(std::vector<ParticlesWrap> *w_r) {
