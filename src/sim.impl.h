@@ -456,26 +456,25 @@ namespace sim
     void run0(float driving_force, bool wall_created, int it) {
         distr_solvent();
         if (solids0) distr_solid();
+        if (rbcs)    distr_rbc();
         forces(wall_created);
         dumps_diags(it);
         body_force(driving_force);
         update_solvent();
         if (solids0) update_solid();
+        if (rbcs)    update_rbc();
         if (wall_created) bounce();
         if (sbounce_back && solids0) bounce_solid(it);
     }
 
-    void run_nowall() {
-        long nsteps = (int)(tend / dt);
-        if (m::rank == 0) printf("will take %ld steps\n", nsteps);
+    void run_nowall(long nsteps) {
         float driving_force = pushtheflow ? hydrostatic_a : 0;
         bool wall_created = false;
         solids0 = false;
         for (long it = 0; it < nsteps; ++it) run0(driving_force, wall_created, it);
     }
 
-    void run_wall() {
-        long nsteps = (int)(tend / dt);
+    void run_wall(long nsteps) {
         float driving_force = 0;
         bool wall_created = false;
         long it = 0;
@@ -486,14 +485,18 @@ namespace sim
         if (solids0) init_solid();
         if (walls) {create_walls(); wall_created = true;}
         if (solids0 && s::npp) k_sim::clear_velocity<<<k_cnf(s::npp)>>>(s::pp, s::npp);
+        if (rbcs && r::n)      k_sim::clear_velocity<<<k_cnf(r::n)  >>>(r::pp, r::n);
         if (pushtheflow) driving_force = hydrostatic_a;
   
         for (/**/; it < nsteps; ++it) run0(driving_force, wall_created, it);
     }
 
     void run() {
-        if (walls || solids) run_wall();
-        else               run_nowall();
+        long nsteps = (int)(tend / dt);
+        if (m::rank == 0) printf("will take %ld steps\n", nsteps);
+
+        if (walls || solids) run_wall(nsteps);
+        else               run_nowall(nsteps);
     }
 
     void close() {
