@@ -15,33 +15,33 @@ static void distr_r()
 {
 #ifdef DEVICE_SOLID
 
-    CC(cudaMemcpy(ss_hst, ss_dev, nsolid * sizeof(Solid), D2H));
+    CC(cudaMemcpy(s::ss_hst, s::ss_dev, s::ns * sizeof(Solid), D2H));
 
-    rdstr::pack_sendcnt <false> (ss_hst, i_pp_dev, nsolid, m_dev.nv);
+    rdstr::pack_sendcnt <false> (s::ss_hst, s::i_pp_dev, s::ns, s::m_dev.nv);
 
-    nsolid = rdstr::post(m_dev.nv);
+    s::ns = rdstr::post(s::m_dev.nv);
 
-    r_n = nsolid * npsolid;
+    s::npp = s::ns * s::nps;
 
-    rdstr::unpack <false> (m_dev.nv, /**/ ss_hst, i_pp_dev);
+    rdstr::unpack <false> (s::m_dev.nv, /**/ s::ss_hst, s::i_pp_dev);
 
-    CC(cudaMemcpy(ss_dev, ss_hst, nsolid * sizeof(Solid), H2D));
+    CC(cudaMemcpy(s::ss_dev, s::ss_hst, s::ns * sizeof(Solid), H2D));
 
-    solid::generate_dev(ss_dev, nsolid, r_rr0, npsolid, /**/ r_pp);
+    solid::generate_dev(s::ss_dev, s::ns, s::rr0, s::nps, /**/ s::pp);
 
 #else
 
-    rdstr::pack_sendcnt <true> (ss_hst, i_pp_hst, nsolid, m_hst.nv);
+    rdstr::pack_sendcnt <true> (s::ss_hst, s::i_pp_hst, s::ns, s::m_hst.nv);
     
-    nsolid = rdstr::post(m_hst.nv);
+    s::ns = rdstr::post(s::m_hst.nv);
 
-    r_n = nsolid * npsolid;
+    s::npp = s::ns * s::nps;
 
-    rdstr::unpack <true> (m_hst.nv, /**/ ss_hst, i_pp_hst);
+    rdstr::unpack <true> (s::m_hst.nv, /**/ s::ss_hst, s::i_pp_hst);
 
-    solid::generate_hst(ss_hst, nsolid, r_rr0_hst, npsolid, /**/ r_pp_hst);
+    solid::generate_hst(s::ss_hst, s::ns, s::rr0_hst, s::nps, /**/ s::pp_hst);
 
-    CC(cudaMemcpy(r_pp, r_pp_hst, 3 * r_n * sizeof(float), H2D));
+    CC(cudaMemcpy(s::pp, s::pp_hst, 3 * s::npp * sizeof(float), H2D));
 
 #endif
 }
@@ -77,7 +77,7 @@ void clear_forces(Force* ff, int n) {
 }
 
 void forces_wall() {
-  if (solids0) wall::interactions(r_pp, r_n, r_ff);
+  if (solids0) wall::interactions(s::pp, s::npp, s::ff);
   wall::interactions(s_pp, s_n, s_ff);
 }
 
@@ -96,10 +96,10 @@ void forces_fsi(SolventWrap *w_s, std::vector<ParticlesWrap> *w_r) {
 void forces(bool wall_created) {
   SolventWrap w_s(s_pp, s_n, s_ff, cells->start, cells->count);
   std::vector<ParticlesWrap> w_r;
-  if (solids0) w_r.push_back(ParticlesWrap(r_pp, r_n, r_ff));
+  if (solids0) w_r.push_back(ParticlesWrap(s::pp, s::npp, s::ff));
 
   clear_forces(s_ff, s_n);
-  if (solids0) clear_forces(r_ff, r_n);
+  if (solids0) clear_forces(s::ff, s::npp);
 
   forces_dpd();
   if (wall_created) forces_wall();
@@ -124,8 +124,8 @@ void dev2hst() { /* device to host  data transfer */
   CC(cudaMemcpyAsync(sr_pp, s_pp,
 		     sizeof(Particle) * s_n, D2H, 0));
   if (solids0)
-    CC(cudaMemcpyAsync(&sr_pp[s_n], r_pp,
-		       sizeof(Particle) * r_n, D2H, 0));
+    CC(cudaMemcpyAsync(&sr_pp[s_n], s::pp,
+		       sizeof(Particle) * s::npp, D2H, 0));
 }
 
 void dump_part(int step)
@@ -137,8 +137,8 @@ void dump_part(int step)
 
         if(solids0)
         {
-            CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
-            dump::parts(r_pp_hst, r_n, "solid", step);
+            CC(cudaMemcpy(s::pp_hst, s::pp, sizeof(Particle) * s::npp, D2H));
+            dump::parts(s::pp_hst, s::npp, "solid", step);
         }
     }
 }
@@ -150,46 +150,46 @@ void dump_grid() {
 }
 
 void diag(int it) {
-  int n = s_n + r_n; dev2hst();
+  int n = s_n + s::npp; dev2hst();
   diagnostics(sr_pp, n, it);
 }
 
 void body_force(float driving_force) {
   k_sim::body_force<<<k_cnf(s_n)>>> (false, s_pp, s_ff, s_n, driving_force);
 
-  if (!solids0 || !r_n) return;
-  k_sim::body_force<<<k_cnf(r_n)>>> (true, r_pp, r_ff, r_n, driving_force);
+  if (!solids0 || !s::npp) return;
+  k_sim::body_force<<<k_cnf(s::npp)>>> (true, s::pp, s::ff, s::npp, driving_force);
 }
 
 void update_solid() {
 #ifndef DEVICE_SOLID
     
-    CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
-    CC(cudaMemcpy(r_ff_hst, r_ff, sizeof(Force) * r_n, D2H));
+    CC(cudaMemcpy(s::pp_hst, s::pp, sizeof(Particle) * s::npp, D2H));
+    CC(cudaMemcpy(s::ff_hst, s::ff, sizeof(Force) * s::npp, D2H));
     
-    solid::update_hst(r_ff_hst, r_rr0_hst, r_n, nsolid, /**/ r_pp_hst, ss_hst);
-    solid::update_mesh_hst(ss_hst, nsolid, m_hst, /**/ i_pp_hst);
+    solid::update_hst(s::ff_hst, s::rr0_hst, s::npp, s::ns, /**/ s::pp_hst, s::ss_hst);
+    solid::update_mesh_hst(s::ss_hst, s::ns, s::m_hst, /**/ s::i_pp_hst);
 
     // for dump
-    memcpy(ss_dmphst, ss_hst, nsolid * sizeof(Solid));
+    memcpy(s::ss_dmphst, s::ss_hst, s::ns * sizeof(Solid));
     
-    solid::reinit_ft_hst(nsolid, /**/ ss_hst);
+    solid::reinit_ft_hst(s::ns, /**/ s::ss_hst);
     
-    CC(cudaMemcpy(r_pp, r_pp_hst, sizeof(Particle) * r_n, H2D));
+    CC(cudaMemcpy(s::pp, s::pp_hst, sizeof(Particle) * s::npp, H2D));
     
 #else    
-    solid::update_dev(r_ff, r_rr0, r_n, nsolid, /**/ r_pp, ss_dev);
-    solid::update_mesh_dev(ss_dev, nsolid, m_dev, /**/ i_pp_dev);
+    solid::update_dev(s::ff, s::rr0, s::npp, s::ns, /**/ s::pp, s::ss_dev);
+    solid::update_mesh_dev(s::ss_dev, s::ns, s::m_dev, /**/ s::i_pp_dev);
 
     // for dump
-    CC(cudaMemcpy(ss_dmphst, ss_dev, nsolid * sizeof(Solid), D2H));
+    CC(cudaMemcpy(s::ss_dmphst, s::ss_dev, s::ns * sizeof(Solid), D2H));
 
-    solid::reinit_ft_dev(nsolid, /**/ ss_dev);
+    solid::reinit_ft_dev(s::ns, /**/ s::ss_dev);
 #endif
 }
 
 void update_r() {
-    if (r_n) update_solid();
+    if (s::npp) update_solid();
 }
 
 void update_s() {
@@ -198,92 +198,92 @@ void update_s() {
 
 void bounce() {
   wall::bounce(s_pp, s_n);
-  if (solids0) wall::bounce(r_pp, r_n);
+  if (solids0) wall::bounce(s::pp, s::npp);
 }
 
 void bounce_solid(int it)
 {
 #ifndef DEVICE_SOLID
 
-    collision::get_bboxes_hst(i_pp_hst, m_hst.nv, nsolid, /**/ bboxes_hst);    
+    collision::get_bboxes_hst(s::i_pp_hst, s::m_hst.nv, s::ns, /**/ s::bboxes_hst);    
     
     /* exchange solid meshes with neighbours */
     
-    bbhalo::pack_sendcnt <true> (ss_hst, nsolid, i_pp_hst, m_hst.nv, bboxes_hst);
-    const int nsbb = bbhalo::post(m_hst.nv);
-    bbhalo::unpack <true> (m_hst.nv, /**/ ss_bb_hst, i_pp_bb_hst);
+    bbhalo::pack_sendcnt <true> (s::ss_hst, s::ns, s::i_pp_hst, s::m_hst.nv, s::bboxes_hst);
+    const int nsbb = bbhalo::post(s::m_hst.nv);
+    bbhalo::unpack <true> (s::m_hst.nv, /**/ s::ss_bb_hst, s::i_pp_bb_hst);
         
-    build_tcells_hst(m_hst, i_pp_bb_hst, nsbb, /**/ tcellstarts_hst, tcellcounts_hst, tctids_hst);
+    build_tcells_hst(s::m_hst, s::i_pp_bb_hst, nsbb, /**/ s::tcs_hst, s::tcc_hst, s::tci_hst);
         
     CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
     CC(cudaMemcpy(s_ff_hst, s_ff, sizeof(Force)    * s_n, D2H));
 
-    mbounce::bounce_tcells_hst(s_ff_hst, m_hst, i_pp_bb_hst, tcellstarts_hst, tcellcounts_hst, tctids_hst, s_n, /**/ s_pp_hst, ss_bb_hst);
+    mbounce::bounce_tcells_hst(s_ff_hst, s::m_hst, s::i_pp_bb_hst, s::tcs_hst, s::tcc_hst, s::tci_hst, s_n, /**/ s_pp_hst, s::ss_bb_hst);
 
     if (it % rescue_freq == 0)
-    mrescue::rescue_hst(m_hst, i_pp_bb_hst, nsbb, s_n, tcellstarts_hst, tcellcounts_hst, tctids_hst, /**/ s_pp_hst);
+    mrescue::rescue_hst(s::m_hst, s::i_pp_bb_hst, nsbb, s_n, s::tcs_hst, s::tcc_hst, s::tci_hst, /**/ s_pp_hst);
     
     CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
 
     // send back fo, to
     
-    bbhalo::pack_back(ss_bb_hst);
+    bbhalo::pack_back(s::ss_bb_hst);
     bbhalo::post_back();
-    bbhalo::unpack_back(ss_hst);
+    bbhalo::unpack_back(s::ss_hst);
     
     // for dump
-    memcpy(ss_dmpbbhst, ss_hst, nsolid * sizeof(Solid));
+    memcpy(s::ss_dmpbbhst, s::ss_hst, s::ns * sizeof(Solid));
 
 #else // bounce on device
 
-    collision::get_bboxes_dev(i_pp_dev, m_dev.nv, nsolid, /**/ bboxes_dev);
+    collision::get_bboxes_dev(s::i_pp_dev, s::m_dev.nv, s::ns, /**/ s::bboxes_dev);
     
-    CC(cudaMemcpy(bboxes_hst, bboxes_dev, 6 * nsolid * sizeof(float), D2H));
-    CC(cudaMemcpy(ss_hst, ss_dev, nsolid * sizeof(Solid), D2H));
+    CC(cudaMemcpy(s::bboxes_hst, s::bboxes_dev, 6 * s::ns * sizeof(float), D2H));
+    CC(cudaMemcpy(s::ss_hst, s::ss_dev, s::ns * sizeof(Solid), D2H));
 
     /* exchange solid meshes with neighbours */
     
-    bbhalo::pack_sendcnt <false> (ss_hst, nsolid, i_pp_dev, m_dev.nv, bboxes_hst);
-    const int nsbb = bbhalo::post(m_dev.nv);
-    bbhalo::unpack <false> (m_dev.nv, /**/ ss_bb_hst, i_pp_bb_dev);
+    bbhalo::pack_sendcnt <false> (s::ss_hst, s::ns, s::i_pp_dev, s::m_dev.nv, s::bboxes_hst);
+    const int nsbb = bbhalo::post(s::m_dev.nv);
+    bbhalo::unpack <false> (s::m_dev.nv, /**/ s::ss_bb_hst, s::i_pp_bb_dev);
 
-    CC(cudaMemcpy(ss_bb_dev, ss_bb_hst, nsbb * sizeof(Solid), H2D));
+    CC(cudaMemcpy(s::ss_bb_dev, s::ss_bb_hst, nsbb * sizeof(Solid), H2D));
     
-    build_tcells_dev(m_dev, i_pp_bb_dev, nsolid, /**/ tcellstarts_dev, tcellcounts_dev, tctids_dev);
+    build_tcells_dev(s::m_dev, s::i_pp_bb_dev, s::ns, /**/ s::tcs_dev, s::tcc_dev, s::tci_dev);
 
-    mbounce::bounce_tcells_dev(s_ff, m_dev, i_pp_bb_dev, tcellstarts_dev, tcellcounts_dev, tctids_dev, s_n, /**/ s_pp, ss_dev);
+    mbounce::bounce_tcells_dev(s_ff, s::m_dev, s::i_pp_bb_dev, s::tcs_dev, s::tcc_dev, s::tci_dev, s_n, /**/ s_pp, s::ss_dev);
 
     if (it % rescue_freq == 0)
-    mrescue::rescue_dev(m_dev, i_pp_bb_dev, nsbb, s_n, tcellstarts_dev, tcellcounts_dev, tctids_dev, /**/ s_pp);
+    mrescue::rescue_dev(s::m_dev, s::i_pp_bb_dev, nsbb, s_n, s::tcs_dev, s::tcc_dev, s::tci_dev, /**/ s_pp);
     
     // send back fo, to
 
-    CC(cudaMemcpy(ss_bb_hst, ss_bb_dev, nsbb * sizeof(Solid), D2H));
+    CC(cudaMemcpy(s::ss_bb_hst, s::ss_bb_dev, nsbb * sizeof(Solid), D2H));
     
-    bbhalo::pack_back(ss_bb_hst);
+    bbhalo::pack_back(s::ss_bb_hst);
     bbhalo::post_back();
-    bbhalo::unpack_back(ss_hst);
+    bbhalo::unpack_back(s::ss_hst);
 
-    CC(cudaMemcpy(ss_dev, ss_hst, nsolid * sizeof(Solid), H2D));
+    CC(cudaMemcpy(s::ss_dev, s::ss_hst, s::ns * sizeof(Solid), H2D));
     
     // for dump
-    memcpy(ss_dmpbbhst, ss_hst, nsolid * sizeof(Solid));
+    memcpy(s::ss_dmpbbhst, s::ss_hst, s::ns * sizeof(Solid));
     
 #endif
 }
 
 void load_solid_mesh(const char *fname)
 {
-    ply::read(fname, &m_hst);
+    ply::read(fname, &s::m_hst);
 
-    m_dev.nv = m_hst.nv;
-    m_dev.nt = m_hst.nt;
+    s::m_dev.nv = s::m_hst.nv;
+    s::m_dev.nt = s::m_hst.nt;
     
-    CC(cudaMalloc(&(m_dev.tt), 3 * m_dev.nt * sizeof(int)));
-    CC(cudaMalloc(&(m_dev.vv), 3 * m_dev.nv * sizeof(float)));
+    CC(cudaMalloc(&(s::m_dev.tt), 3 * s::m_dev.nt * sizeof(int)));
+    CC(cudaMalloc(&(s::m_dev.vv), 3 * s::m_dev.nv * sizeof(float)));
 
-    CC(cudaMemcpy(m_dev.tt, m_hst.tt, 3 * m_dev.nt * sizeof(int), H2D));
-    CC(cudaMemcpy(m_dev.vv, m_hst.vv, 3 * m_dev.nv * sizeof(float), H2D));
+    CC(cudaMemcpy(s::m_dev.tt, s::m_hst.tt, 3 * s::m_dev.nt * sizeof(int), H2D));
+    CC(cudaMemcpy(s::m_dev.vv, s::m_hst.vv, 3 * s::m_dev.nv * sizeof(float), H2D));
 }
 
 void init_solid()
@@ -291,56 +291,56 @@ void init_solid()
     rex::init();
     mrescue::init(MAX_PART_NUM);
     
-    mpDeviceMalloc(&r_pp);
-    mpDeviceMalloc(&r_ff);
+    mpDeviceMalloc(&s::pp);
+    mpDeviceMalloc(&s::ff);
     
     load_solid_mesh("mesh_solid.ply");
     
-    ss_hst      = new Solid[MAX_SOLIDS];
-    ss_bb_hst   = new Solid[MAX_SOLIDS];
-    ss_dmphst   = new Solid[MAX_SOLIDS];
-    ss_dmpbbhst = new Solid[MAX_SOLIDS];
+    s::ss_hst      = new Solid[MAX_SOLIDS];
+    s::ss_bb_hst   = new Solid[MAX_SOLIDS];
+    s::ss_dmphst   = new Solid[MAX_SOLIDS];
+    s::ss_dmpbbhst = new Solid[MAX_SOLIDS];
 
-    tcellstarts_hst = new int[XS * YS * ZS];
-    tcellcounts_hst = new int[XS * YS * ZS];
-    tctids_hst      = new int[27 * MAX_SOLIDS * m_hst.nt]; // assume 1 triangle don't overlap more than 27 cells
+    s::tcs_hst = new int[XS * YS * ZS];
+    s::tcc_hst = new int[XS * YS * ZS];
+    s::tci_hst      = new int[27 * MAX_SOLIDS * s::m_hst.nt]; // assume 1 triangle don't overlap more than 27 cells
 
-    CC(cudaMalloc(&tcellstarts_dev, XS * YS * ZS * sizeof(int)));
-    CC(cudaMalloc(&tcellcounts_dev, XS * YS * ZS * sizeof(int)));
-    CC(cudaMalloc(&tctids_dev, 27 * MAX_SOLIDS * m_dev.nt * sizeof(int)));
+    CC(cudaMalloc(&s::tcs_dev, XS * YS * ZS * sizeof(int)));
+    CC(cudaMalloc(&s::tcc_dev, XS * YS * ZS * sizeof(int)));
+    CC(cudaMalloc(&s::tci_dev, 27 * MAX_SOLIDS * s::m_dev.nt * sizeof(int)));
     
-    CC(cudaMalloc(&ss_dev, MAX_SOLIDS * sizeof(Solid)));
-    CC(cudaMalloc(&ss_bb_dev, MAX_SOLIDS * sizeof(Solid)));
+    CC(cudaMalloc(&s::ss_dev, MAX_SOLIDS * sizeof(Solid)));
+    CC(cudaMalloc(&s::ss_bb_dev, MAX_SOLIDS * sizeof(Solid)));
     
     CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
 
-    i_pp_hst    = new Particle[MAX_PART_NUM];
-    i_pp_bb_hst = new Particle[MAX_PART_NUM];
-    CC(cudaMalloc(   &i_pp_dev, MAX_PART_NUM * sizeof(Particle)));
-    CC(cudaMalloc(&i_pp_bb_dev, MAX_PART_NUM * sizeof(Particle)));
+    s::i_pp_hst    = new Particle[MAX_PART_NUM];
+    s::i_pp_bb_hst = new Particle[MAX_PART_NUM];
+    CC(cudaMalloc(   &s::i_pp_dev, MAX_PART_NUM * sizeof(Particle)));
+    CC(cudaMalloc(&s::i_pp_bb_dev, MAX_PART_NUM * sizeof(Particle)));
 
-    bboxes_hst = new float[6*MAX_SOLIDS];
-    CC(cudaMalloc(&bboxes_dev, 6*MAX_SOLIDS * sizeof(float)));
+    s::bboxes_hst = new float[6*MAX_SOLIDS];
+    CC(cudaMalloc(&s::bboxes_dev, 6*MAX_SOLIDS * sizeof(float)));
     
     // generate models
 
-    ic_solid::init("ic_solid.txt", m_hst, /**/ &nsolid, &npsolid, r_rr0_hst, ss_hst, &s_n, s_pp_hst, r_pp_hst);
+    ic_solid::init("ic_solid.txt", s::m_hst, /**/ &s::ns, &s::nps, s::rr0_hst, s::ss_hst, &s_n, s_pp_hst, s::pp_hst);
         
     // generate the solid particles
     
-    solid::generate_hst(ss_hst, nsolid, r_rr0_hst, npsolid, /**/ r_pp_hst);
+    solid::generate_hst(s::ss_hst, s::ns, s::rr0_hst, s::nps, /**/ s::pp_hst);
     
-    solid::reinit_ft_hst(nsolid, /**/ ss_hst);
+    solid::reinit_ft_hst(s::ns, /**/ s::ss_hst);
 
-    r_n = nsolid * npsolid;
+    s::npp = s::ns * s::nps;
 
-    solid::mesh2pp_hst(ss_hst, nsolid, m_hst, /**/ i_pp_hst);
-    CC(cudaMemcpy(i_pp_dev, i_pp_hst, nsolid * m_hst.nv * sizeof(Particle), H2D));
+    solid::mesh2pp_hst(s::ss_hst, s::ns, s::m_hst, /**/ s::i_pp_hst);
+    CC(cudaMemcpy(s::i_pp_dev, s::i_pp_hst, s::ns * s::m_hst.nv * sizeof(Particle), H2D));
     
-    CC(cudaMemcpy(ss_dev, ss_hst, nsolid * sizeof(Solid), H2D));
-    CC(cudaMemcpy(r_rr0, r_rr0_hst, 3 * npsolid * sizeof(float), H2D));
+    CC(cudaMemcpy(s::ss_dev, s::ss_hst, s::ns * sizeof(Solid), H2D));
+    CC(cudaMemcpy(s::rr0, s::rr0_hst, 3 * s::nps * sizeof(float), H2D));
   
-    CC(cudaMemcpy(r_pp, r_pp_hst, sizeof(Particle) * r_n, H2D));
+    CC(cudaMemcpy(s::pp, s::pp_hst, sizeof(Particle) * s::npp, H2D));
     CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
 
     MC(MPI_Barrier(m::cart));
@@ -362,8 +362,8 @@ void init() {
   sdstr::init();
   mpDeviceMalloc(&s_pp); mpDeviceMalloc(&s_pp0);
   mpDeviceMalloc(&s_ff);
-  mpDeviceMalloc(&r_ff); mpDeviceMalloc(&r_ff);
-  mpDeviceMalloc(&r_rr0);
+  mpDeviceMalloc(&s::ff); mpDeviceMalloc(&s::ff);
+  mpDeviceMalloc(&s::rr0);
 
   s_n = ic::gen(s_pp_hst);
   CC(cudaMemcpy(s_pp, s_pp_hst, sizeof(Particle) * s_n, H2D));
@@ -372,17 +372,17 @@ void init() {
 
   dump_field = new H5FieldDump;
 
-  ss_hst = NULL;
-  ss_dev = NULL;
+  s::ss_hst = NULL;
+  s::ss_dev = NULL;
 
-  ss_bb_hst = NULL;
-  ss_bb_dev = NULL;
+  s::ss_bb_hst = NULL;
+  s::ss_bb_dev = NULL;
 
-  ss_dmphst = NULL;
-  ss_dmpbbhst = NULL;
+  s::ss_dmphst = NULL;
+  s::ss_dmpbbhst = NULL;
 
-  tcellstarts_hst = tcellcounts_hst = tctids_hst = NULL;
-  tcellstarts_dev = tcellcounts_dev = tctids_dev = NULL;
+  s::tcs_hst = s::tcc_hst = s::tci_hst = NULL;
+  s::tcs_dev = s::tcc_dev = s::tci_dev = NULL;
   
   MC(MPI_Barrier(m::cart));
 }    
@@ -390,7 +390,7 @@ void init() {
 void dumps_diags(int it) {
   if (it % steps_per_dump == 0)     dump_part(it);
   if (it > wall_creation_stepid &&
-      it % steps_per_dump == 0)     solid::dump(it, ss_dmphst, ss_dmpbbhst, nsolid, m::coords); /* ss_dmpbbhst contains BB Force & Torque */
+      it % steps_per_dump == 0)     solid::dump(it, s::ss_dmphst, s::ss_dmpbbhst, s::ns, m::coords); /* s::ss_dmpbbhst contains BB Force & Torque */
   if (it % steps_per_hdf5dump == 0) dump_grid();
   if (it % steps_per_dump == 0)     diag(it);
 }
@@ -427,7 +427,7 @@ void run_wall() {
   solids0 = solids;
   if (solids0) init_solid();
   if (walls) {create_walls(); wall_created = true;}
-  if (solids0 && r_n) k_sim::clear_velocity<<<k_cnf(r_n)>>>(r_pp, r_n);
+  if (solids0 && s::npp) k_sim::clear_velocity<<<k_cnf(s::npp)>>>(s::pp, s::npp);
   if (pushtheflow) driving_force = hydrostatic_a;
   
   for (/**/; it < nsteps; ++it) run0(driving_force, wall_created, it);
@@ -459,39 +459,39 @@ void close() {
   CC(cudaFree(s_zip1));
 
   delete wall::trunk;
-  CC(cudaFree(r_pp )); CC(cudaFree(r_ff ));
+  CC(cudaFree(s::pp )); CC(cudaFree(s::ff ));
   CC(cudaFree(s_pp )); CC(cudaFree(s_ff ));
   CC(cudaFree(s_pp0));
-  CC(cudaFree(r_rr0));
+  CC(cudaFree(s::rr0));
 
-  if (m_hst.tt) delete[] m_hst.tt;
-  if (m_hst.vv) delete[] m_hst.vv;
-  if (m_dev.tt) CC(cudaFree(m_dev.tt));
-  if (m_dev.vv) CC(cudaFree(m_dev.vv));
+  if (s::m_hst.tt) delete[] s::m_hst.tt;
+  if (s::m_hst.vv) delete[] s::m_hst.vv;
+  if (s::m_dev.tt) CC(cudaFree(s::m_dev.tt));
+  if (s::m_dev.vv) CC(cudaFree(s::m_dev.vv));
 
-  if (tcellstarts_hst) delete[] tcellstarts_hst;
-  if (tcellcounts_hst) delete[] tcellcounts_hst;
-  if (tctids_hst)      delete[] tctids_hst;
+  if (s::tcs_hst) delete[] s::tcs_hst;
+  if (s::tcc_hst) delete[] s::tcc_hst;
+  if (s::tci_hst) delete[] s::tci_hst;
 
-  if (tcellstarts_dev) CC(cudaFree(tcellstarts_dev));
-  if (tcellcounts_dev) CC(cudaFree(tcellcounts_dev));
-  if (tctids_dev)      CC(cudaFree(tctids_dev));
+  if (s::tcs_dev) CC(cudaFree(s::tcs_dev));
+  if (s::tcc_dev) CC(cudaFree(s::tcc_dev));
+  if (s::tci_dev)      CC(cudaFree(s::tci_dev));
 
-  if (i_pp_hst)    delete[] i_pp_hst;
-  if (i_pp_bb_hst) delete[] i_pp_bb_hst;
-  if (i_pp_dev)    CC(cudaFree(i_pp_dev));
-  if (i_pp_bb_dev) CC(cudaFree(i_pp_bb_dev));
+  if (s::i_pp_hst)    delete[] s::i_pp_hst;
+  if (s::i_pp_bb_hst) delete[] s::i_pp_bb_hst;
+  if (s::i_pp_dev)    CC(cudaFree(s::i_pp_dev));
+  if (s::i_pp_bb_dev) CC(cudaFree(s::i_pp_bb_dev));
 
-  if (bboxes_hst) delete[] bboxes_hst;
-  if (bboxes_dev) CC(cudaFree(bboxes_dev));    
+  if (s::bboxes_hst) delete[] s::bboxes_hst;
+  if (s::bboxes_dev) CC(cudaFree(s::bboxes_dev));    
   
-  if (ss_hst) delete[] ss_hst;
-  if (ss_dev) CC(cudaFree(ss_dev));
+  if (s::ss_hst) delete[] s::ss_hst;
+  if (s::ss_dev) CC(cudaFree(s::ss_dev));
 
-  if (ss_bb_hst) delete[] ss_bb_hst;
-  if (ss_bb_dev) CC(cudaFree(ss_bb_dev));
+  if (s::ss_bb_hst) delete[] s::ss_bb_hst;
+  if (s::ss_bb_dev) CC(cudaFree(s::ss_bb_dev));
 
-  if (ss_dmphst)   delete[] ss_dmphst;
-  if (ss_dmpbbhst) delete[] ss_dmpbbhst;
+  if (s::ss_dmphst)   delete[] s::ss_dmphst;
+  if (s::ss_dmpbbhst) delete[] s::ss_dmpbbhst;
 }
 }
