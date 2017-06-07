@@ -2,7 +2,7 @@
 # cTEST: gx.t1
 # export PATH=../tools:$PATH
 # rm -rf diag.txt h5 bop
-# cp sdf/gx/small.dat sdf.dat ######## see sdf/gx/README.md
+# cp sdf/gx/small.rot.dat sdf.dat ######## see sdf/gx/README.md
 # :
 # argp .conf.gx.h \
 #    -tend=3.0 -part_freq=5000 -walls -wall_creation=1 \
