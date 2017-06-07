@@ -1,4 +1,4 @@
-namespace sdstr {
+namespace odstr {
   int pack_size(int code) { return send_sizes[code]; }
   float pinned_data(int code, int entry) {return pinnedhost_sendbufs[code][entry]; }
 
@@ -58,33 +58,33 @@ namespace sdstr {
       default_message_sizes[i] = estimate;
     }
 
-    k_sdstr::texAllParticles.channelDesc = cudaCreateChannelDesc<float>();
-    k_sdstr::texAllParticles.filterMode = cudaFilterModePoint;
-    k_sdstr::texAllParticles.mipmapFilterMode = cudaFilterModePoint;
-    k_sdstr::texAllParticles.normalized = 0;
+    k_odstr::texAllParticles.channelDesc = cudaCreateChannelDesc<float>();
+    k_odstr::texAllParticles.filterMode = cudaFilterModePoint;
+    k_odstr::texAllParticles.mipmapFilterMode = cudaFilterModePoint;
+    k_odstr::texAllParticles.normalized = 0;
 
-    k_sdstr::texAllParticlesFloat2.channelDesc = cudaCreateChannelDesc<float2>();
-    k_sdstr::texAllParticlesFloat2.filterMode = cudaFilterModePoint;
-    k_sdstr::texAllParticlesFloat2.mipmapFilterMode = cudaFilterModePoint;
-    k_sdstr::texAllParticlesFloat2.normalized = 0;
+    k_odstr::texAllParticlesFloat2.channelDesc = cudaCreateChannelDesc<float2>();
+    k_odstr::texAllParticlesFloat2.filterMode = cudaFilterModePoint;
+    k_odstr::texAllParticlesFloat2.mipmapFilterMode = cudaFilterModePoint;
+    k_odstr::texAllParticlesFloat2.normalized = 0;
 
     CC(cudaEventCreate(&evpacking, cudaEventDisableTiming));
     CC(cudaEventCreate(&evsizes, cudaEventDisableTiming));
-    CC(cudaFuncSetCacheConfig(k_sdstr::gather_particles, cudaFuncCachePreferL1));
+    CC(cudaFuncSetCacheConfig(k_odstr::gather_particles, cudaFuncCachePreferL1));
   }
 
   void _post_recv() {
     for(int i = 1, c = 0; i < 27; ++i)
       if (default_message_sizes[i])
 	MC(MPI_Irecv(recv_sizes + i, 1, MPI_INTEGER, neighbor_ranks[i],
-                 BT_C_SDSTR + recv_tags[i], cart, recvcountreq + c++));
+                 BT_C_ODSTR + recv_tags[i], cart, recvcountreq + c++));
       else
 	recv_sizes[i] = 0;
 
     for(int i = 1, c = 0; i < 27; ++i)
       if (default_message_sizes[i])
 	MC( MPI_Irecv(pinnedhost_recvbufs[i], default_message_sizes[i] * 6, MPI_FLOAT,
-                  neighbor_ranks[i], BT_P_SDSTR + recv_tags[i], cart, recvmsgreq + c++) );
+                  neighbor_ranks[i], BT_P_ODSTR + recv_tags[i], cart, recvmsgreq + c++) );
   }
 
   void _adjust_send_buffers(int requested_capacities[27]) {
@@ -146,33 +146,33 @@ namespace sdstr {
     if (firstcall) _post_recv();
     size_t textureoffset;
     if (nparticles)
-      CC(cudaBindTexture(&textureoffset, &k_sdstr::texAllParticles, particles,
-			 &k_sdstr::texAllParticles.channelDesc,
+      CC(cudaBindTexture(&textureoffset, &k_odstr::texAllParticles, particles,
+			 &k_odstr::texAllParticles.channelDesc,
 			 sizeof(float) * 6 * nparticles));
 
     if (nparticles)
-      CC(cudaBindTexture(&textureoffset, &k_sdstr::texAllParticlesFloat2, particles,
-			 &k_sdstr::texAllParticlesFloat2.channelDesc,
+      CC(cudaBindTexture(&textureoffset, &k_odstr::texAllParticlesFloat2, particles,
+			 &k_odstr::texAllParticlesFloat2.channelDesc,
 			 sizeof(float) * 6 * nparticles));
 
-    k_sdstr::ntexparticles = nparticles;
-    k_sdstr::texparticledata = (float2 *)particles;
+    k_odstr::ntexparticles = nparticles;
+    k_odstr::texparticledata = (float2 *)particles;
   pack_attempt:
-    CC(cudaMemcpyToSymbolAsync(k_sdstr::pack_buffers, packbuffers,
+    CC(cudaMemcpyToSymbolAsync(k_odstr::pack_buffers, packbuffers,
 			       sizeof(PackBuffer) * 27, 0, H2D));
 
     (*failure->D) = false;
-    k_sdstr::setup<<<1, 32>>>();
+    k_odstr::setup<<<1, 32>>>();
 
     if (nparticles)
-      k_sdstr::scatter_halo_indices_pack<<<k_cnf(nparticles)>>>(nparticles);
+      k_odstr::scatter_halo_indices_pack<<<k_cnf(nparticles)>>>(nparticles);
 
-    k_sdstr::tiny_scan<<<1, 32>>>
+    k_odstr::tiny_scan<<<1, 32>>>
       (nparticles, packbuffers[0].capacity, packsizes->DP, failure->DP);
 
     CC(cudaEventRecord(evsizes));
     if (nparticles)
-      k_sdstr::pack<<<k_cnf(3 * nparticles)>>>
+      k_odstr::pack<<<k_cnf(3 * nparticles)>>>
 	(nparticles, nparticles * 3);
 
     CC(cudaEventRecord(evpacking));
@@ -210,7 +210,7 @@ namespace sdstr {
       for(int i = 1; i < 27; ++i)
 	if (default_message_sizes[i])
 	  MC(MPI_Isend(send_sizes + i, 1, MPI_INTEGER, neighbor_ranks[i],
-                   BT_C_SDSTR + i, cart, sendcountreq + c++));
+                   BT_C_ODSTR + i, cart, sendcountreq + c++));
     }
     CC(cudaEventSynchronize(evpacking));
     if (!firstcall) _waitall(sendmsgreq, nsendmsgreq);
@@ -219,7 +219,7 @@ namespace sdstr {
     for(int i = 1; i < 27; ++i)
       if (default_message_sizes[i]) {
 	MC(MPI_Isend(pinnedhost_sendbufs[i], default_message_sizes[i] * 6, MPI_FLOAT,
-		     neighbor_ranks[i], BT_P_SDSTR + i,
+		     neighbor_ranks[i], BT_P_ODSTR + i,
 		     cart, sendmsgreq + nsendmsgreq) );
 
 	++nsendmsgreq;
@@ -230,7 +230,7 @@ namespace sdstr {
 	int count = send_sizes[i] - default_message_sizes[i];
 
 	MC( MPI_Isend(pinnedhost_sendbufs[i] + default_message_sizes[i] * 6, count * 6, MPI_FLOAT,
-		      neighbor_ranks[i], BT_P2_SDSTR + i, cart, sendmsgreq + nsendmsgreq) );
+		      neighbor_ranks[i], BT_P2_ODSTR + i, cart, sendmsgreq + nsendmsgreq) );
 	++nsendmsgreq;
       }
   }
@@ -242,7 +242,7 @@ namespace sdstr {
 
     if (nparticles)
       k_common::subindex_local<false><<<k_cnf(nparticles)>>>
-	(nparticles, k_sdstr::texparticledata, cellcounts, subindices->D);
+	(nparticles, k_odstr::texparticledata, cellcounts, subindices->D);
 
 
   }
@@ -272,10 +272,10 @@ namespace sdstr {
 
       nhalo_padded = ustart_padded[27];
 
-      CC(cudaMemcpyToSymbolAsync(k_sdstr::unpack_start, ustart,
+      CC(cudaMemcpyToSymbolAsync(k_odstr::unpack_start, ustart,
 				 sizeof(int) * 28, 0, H2D));
 
-      CC(cudaMemcpyToSymbolAsync(k_sdstr::unpack_start_padded, ustart_padded,
+      CC(cudaMemcpyToSymbolAsync(k_odstr::unpack_start_padded, ustart_padded,
 				 sizeof(int) * 28, 0, H2D));
     }
 
@@ -297,7 +297,7 @@ namespace sdstr {
     _adjust_recv_buffers(recv_sizes);
 
     if (haschanged)
-      CC(cudaMemcpyToSymbolAsync(k_sdstr::unpack_buffers, unpackbuffers,
+      CC(cudaMemcpyToSymbolAsync(k_odstr::unpack_buffers, unpackbuffers,
 				 sizeof(UnpackBuffer) * 27, 0, H2D));
 
     for(int i = 1; i < 27; ++i)
@@ -306,7 +306,7 @@ namespace sdstr {
 
 	MPI_Status status;
 	MC( MPI_Recv(pinnedhost_recvbufs[i] + default_message_sizes[i] * 6, count * 6, MPI_FLOAT,
-		     neighbor_ranks[i], BT_P2_SDSTR + recv_tags[i], cart, &status) );
+		     neighbor_ranks[i], BT_P2_ODSTR + recv_tags[i], cart, &status) );
       }
 
 
@@ -315,7 +315,7 @@ namespace sdstr {
 #endif
 
     if (nhalo)
-      k_sdstr::subindex_remote<<<k_cnf(nhalo_padded)>>>
+      k_odstr::subindex_remote<<<k_cnf(nhalo_padded)>>>
 	(nhalo_padded, nhalo, cellcounts, (float2 *)remote_particles->D, subindices_remote->D);
 
     if (compressed_cellcounts->S)
@@ -329,23 +329,19 @@ namespace sdstr {
 #endif
 
     if (subindices->S)
-      k_sdstr::scatter_indices<<<k_cnf(subindices->S)>>>
+      k_odstr::scatter_indices<<<k_cnf(subindices->S)>>>
 	(false, subindices->D, subindices->S, cellstarts, scattered_indices->D, scattered_indices->S);
 
     if (nhalo)
-      k_sdstr::scatter_indices<<<k_cnf(nhalo)>>>
+      k_odstr::scatter_indices<<<k_cnf(nhalo)>>>
 	(true, subindices_remote->D, nhalo, cellstarts, scattered_indices->D, scattered_indices->S);
 
     if (nparticles)
-      k_sdstr::gather_particles<<<k_cnf(nparticles)>>>
+      k_odstr::gather_particles<<<k_cnf(nparticles)>>>
 	(scattered_indices->D, (float2 *)remote_particles->D, nhalo,
-	 k_sdstr::ntexparticles, nparticles, (float2 *)particles, xyzouvwo, xyzo_half);
-
-
+	 k_odstr::ntexparticles, nparticles, (float2 *)particles, xyzouvwo, xyzo_half);
 
     _post_recv();
-
-
   }
 
   void _cancel_recv() {

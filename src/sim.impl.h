@@ -2,12 +2,12 @@ namespace sim
 {
 #define DEVICE_SOLID
             
-    static void distr_s() {
-        sdstr::pack(o::pp, o::n);
-        sdstr::send();
-        sdstr::bulk(o::n, o::cells->start, o::cells->count);
-        o::n = sdstr::recv_count();
-        sdstr::recv_unpack(o::pp0, o::zip0, o::zip1, o::n, o::cells->start, o::cells->count);
+    static void distr_solvent() {
+        odstr::pack(o::pp, o::n);
+        odstr::send();
+        odstr::bulk(o::n, o::cells->start, o::cells->count);
+        o::n = odstr::recv_count();
+        odstr::recv_unpack(o::pp0, o::zip0, o::zip1, o::n, o::cells->start, o::cells->count);
         std::swap(o::pp, o::pp0);
     }
 
@@ -110,10 +110,10 @@ namespace sim
     }
 
     void dev2hst() { /* device to host  data transfer */
-        CC(cudaMemcpyAsync(sr_pp, o::pp,
+        CC(cudaMemcpyAsync(os_pp, o::pp,
                            sizeof(Particle) * o::n, D2H, 0));
         if (solids0)
-        CC(cudaMemcpyAsync(&sr_pp[o::n], s::pp,
+        CC(cudaMemcpyAsync(&os_pp[o::n], s::pp,
                            sizeof(Particle) * s::npp, D2H, 0));
     }
 
@@ -135,12 +135,12 @@ namespace sim
     void dump_grid() {
         if (!hdf5field_dumps) return;
         dev2hst();  /* TODO: do not need `r' */
-        dump_field->dump(sr_pp, o::n);
+        dump_field->dump(os_pp, o::n);
     }
 
     void diag(int it) {
         int n = o::n + s::npp; dev2hst();
-        diagnostics(sr_pp, n, it);
+        diagnostics(os_pp, n, it);
     }
 
     void body_force(float driving_force) {
@@ -348,7 +348,7 @@ namespace sim
         mpDeviceMalloc(&o::zip0); mpDeviceMalloc(&o::zip1);
 
         wall::trunk = new Logistic::KISS;
-        sdstr::init();
+        odstr::init();
         mpDeviceMalloc(&o::pp); mpDeviceMalloc(&o::pp0);
         mpDeviceMalloc(&o::ff);
         mpDeviceMalloc(&s::ff); mpDeviceMalloc(&s::ff);
@@ -385,7 +385,7 @@ namespace sim
     }
 
     void run0(float driving_force, bool wall_created, int it) {
-        distr_s();
+        distr_solvent();
         if (solids0) distr_r();
         forces(wall_created);
         dumps_diags(it);
@@ -429,7 +429,7 @@ namespace sim
 
     void close() {
         delete dump_field;
-        sdstr::redist_part_close();
+        odstr::redist_part_close();
         rdstr::close();
         bbhalo::close();
         cnt::close();

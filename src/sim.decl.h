@@ -4,7 +4,7 @@ namespace sim
 
     H5FieldDump *dump_field;
 
-    namespace o /* Solvent */
+    namespace o /* s[o]lvent */
     {
         int       n;
         Particle *pp;
@@ -58,6 +58,6 @@ namespace sim
         float rr0_hst[3*MAX_PSOLID_NUM];      /* initial positions; same for all solids */
         float *rr0;
     }
-
-    Particle      sr_pp[MAX_PART_NUM];    /* solvent + solid pp on host */
+    
+    Particle      os_pp[MAX_PART_NUM];    /* solvent + solid pp on host */
 }

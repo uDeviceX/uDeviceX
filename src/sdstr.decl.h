@@ -1,5 +1,5 @@
 /*** from redistribute-particles.h ***/
-namespace sdstr {
+namespace odstr {
   MPI_Comm cart;
 
   float safety_factor = 1.2;

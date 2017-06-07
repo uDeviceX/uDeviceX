@@ -14,10 +14,10 @@
     _(BT_P2_DPD)                                \
     _(BT_CS_DPD)                                \
     _(BT_C_DPD)                                 \
-    /* sdstr.impl.h */                          \
-    _(BT_C_SDSTR)                               \
-    _(BT_P_SDSTR)                               \
-    _(BT_P2_SDSTR)                              \
+    /* odstr.impl.h */                          \
+    _(BT_C_ODSTR)                               \
+    _(BT_P_ODSTR)                               \
+    _(BT_P2_ODSTR)                              \
     /* wall.impl.h (init) */                    \
     _(BT_C_WALL)                                \
     _(BT_P_WALL)                                \
