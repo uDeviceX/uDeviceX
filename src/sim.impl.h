@@ -1,9 +1,7 @@
 namespace sim {
 
 #define DEVICE_SOLID
-    
-enum {X, Y, Z};
-        
+            
 static void distr_s() {
   sdstr::pack(s_pp, s_n);
   sdstr::send();
