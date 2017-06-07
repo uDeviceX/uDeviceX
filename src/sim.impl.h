@@ -124,7 +124,7 @@ namespace sim
         if (solids0) {
             CC(cudaMemcpy(a::pp_hst + start, s::pp, sizeof(Particle) * s::npp, D2H)); start += s::npp;
         }
-        if (rbcs0) {
+        if (rbcs) {
             CC(cudaMemcpy(a::pp_hst + start, r::pp, sizeof(Particle) * r::n, D2H)); start += r::n;
         }
     }
@@ -158,7 +158,7 @@ namespace sim
     }
 
     void diag(int it) {
-        int n = o::n + s::npp +r::n; dev2hst();
+        int n = o::n + s::npp + r::n; dev2hst();
         diagnostics(a::pp_hst, n, it);
     }
 
@@ -168,7 +168,7 @@ namespace sim
         if (solids0 && s::npp)
         k_sim::body_force<<<k_cnf(s::npp)>>> (solid_mass, s::pp, s::ff, s::npp, driving_force);
 
-        if (rbcs0 && r::n)
+        if (rbcs && r::n)
         k_sim::body_force<<<k_cnf(r::n)>>> (rbc_mass, r::pp, r::ff, r::n, driving_force);
 
     }
@@ -213,8 +213,8 @@ namespace sim
     }
     
     void bounce() {
-        if (o::n)          wall::bounce(o::pp, o::n);
-        if (rbcs0 && r::n) wall::bounce(r::pp, r::n);
+        if (o::n)         wall::bounce(o::pp, o::n);
+        if (rbcs && r::n) wall::bounce(r::pp, r::n);
     }
 
     void bounce_solid(int it)
@@ -365,7 +365,7 @@ namespace sim
     void init() {
         CC(cudaMalloc(&r::av, MAX_CELLS_NUM));
         
-        rbc::setup(r::faces);
+        //rbc::setup(r::faces);
         rdstr::ini();
         DPD::init();
         fsi::init();

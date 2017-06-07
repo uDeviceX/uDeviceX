@@ -1,7 +1,6 @@
 namespace sim
 {
     bool solids0;
-    bool rbcs0;
 
     H5FieldDump *dump_field;
 
@@ -62,7 +61,7 @@ namespace sim
 
     namespace r /* [r]bc */
     {
-        int n, nc, nt = RBCnt, nv = RBCnv;
+        int n = 0, nc = 0, nt = RBCnt, nv = RBCnv;
         Particle *pp;
         Force    *ff;
 
