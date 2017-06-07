@@ -21,6 +21,10 @@
 
 // solid 
 
+#ifndef solids
+#define solids (false)
+#endif
+
 #ifndef pin_com
 #define pin_com (false)
 #endif

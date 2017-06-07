@@ -1,8 +1,8 @@
 namespace sim
 {
-    bool rbcs0;
+    bool solids0;
 
-    int s_n;
+    int       s_n;
     Particle *s_pp; /* Solvent */
     Force    *s_ff;
 

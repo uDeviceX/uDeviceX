@@ -6,7 +6,7 @@
 # cp data/sphere.ply mesh_solid.ply
 # :
 # argp .conf.double.poiseuille.h     \
-#   -rbcs -sbounce_back              \
+#   -solids -sbounce_back            \
 #   -tend=0.5 -steps_per_dump=100    \
 #   -pushtheflow -doublepoiseuille   \
 #   -hdf5field_dumps -part_dumps     \
@@ -27,7 +27,7 @@
 # cp data/sphere.ply mesh_solid.ply
 # :
 # argp .conf.double.poiseuille.h     \
-#   -rbcs -sbounce_back              \
+#   -solids -sbounce_back            \
 #   -tend=0.5 -steps_per_dump=100    \
 #   -pushtheflow -doublepoiseuille   \
 #   -hdf5field_dumps -part_dumps     \
@@ -48,7 +48,7 @@
 # cp data/ellipsoid.ply mesh_solid.ply
 # :
 # argp .conf.double.poiseuille.h     \
-#   -rbcs -sbounce_back              \
+#   -solids -sbounce_back            \
 #   -tend=0.5 -steps_per_dump=100    \
 #   -pushtheflow -doublepoiseuille   \
 #   -hdf5field_dumps -part_dumps     \

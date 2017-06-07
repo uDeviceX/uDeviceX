@@ -81,7 +81,7 @@ void clear_forces(Force* ff, int n) {
 }
 
 void forces_wall() {
-  if (rbcs0) wall::interactions(r_pp, r_n, r_ff);
+  if (solids0) wall::interactions(r_pp, r_n, r_ff);
   wall::interactions(s_pp, s_n, s_ff);
 }
 
@@ -100,15 +100,15 @@ void forces_fsi(SolventWrap *w_s, std::vector<ParticlesWrap> *w_r) {
 void forces(bool wall_created) {
   SolventWrap w_s(s_pp, s_n, s_ff, cells->start, cells->count);
   std::vector<ParticlesWrap> w_r;
-  if (rbcs0) w_r.push_back(ParticlesWrap(r_pp, r_n, r_ff));
+  if (solids0) w_r.push_back(ParticlesWrap(r_pp, r_n, r_ff));
 
   clear_forces(s_ff, s_n);
-  if (rbcs0) clear_forces(r_ff, r_n);
+  if (solids0) clear_forces(r_ff, r_n);
 
   forces_dpd();
   if (wall_created) forces_wall();
 
-  if (rbcs0) {
+  if (solids0) {
     forces_cnt(&w_r);
     forces_fsi(&w_s, &w_r);
 
@@ -127,7 +127,7 @@ void forces(bool wall_created) {
 void dev2hst() { /* device to host  data transfer */
   CC(cudaMemcpyAsync(sr_pp, s_pp,
 		     sizeof(Particle) * s_n, D2H, 0));
-  if (rbcs0)
+  if (solids0)
     CC(cudaMemcpyAsync(&sr_pp[s_n], r_pp,
 		       sizeof(Particle) * r_n, D2H, 0));
 }
@@ -139,7 +139,7 @@ void dump_part(int step)
         CC(cudaMemcpy(s_pp_hst, s_pp, sizeof(Particle) * s_n, D2H));
         dump::parts(s_pp_hst, s_n, "solvent", step);
 
-        if(rbcs0)
+        if(solids0)
         {
             CC(cudaMemcpy(r_pp_hst, r_pp, sizeof(Particle) * r_n, D2H));
             dump::parts(r_pp_hst, r_n, "solid", step);
@@ -161,7 +161,7 @@ void diag(int it) {
 void body_force(float driving_force) {
   k_sim::body_force<<<k_cnf(s_n)>>> (false, s_pp, s_ff, s_n, driving_force);
 
-  if (!rbcs0 || !r_n) return;
+  if (!solids0 || !r_n) return;
   k_sim::body_force<<<k_cnf(r_n)>>> (true, r_pp, r_ff, r_n, driving_force);
 }
 
@@ -202,7 +202,7 @@ void update_s() {
 
 void bounce() {
   wall::bounce(s_pp, s_n);
-  if (rbcs0) wall::bounce(r_pp, r_n);
+  if (solids0) wall::bounce(r_pp, r_n);
 }
 
 void bounce_solid(int it)
@@ -401,14 +401,14 @@ void dumps_diags(int it) {
 
 void run0(float driving_force, bool wall_created, int it) {
     distr_s();
-    if (rbcs0) distr_r();
+    if (solids0) distr_r();
     forces(wall_created);
     dumps_diags(it);
     body_force(driving_force);
     update_s();
-    if (rbcs0) update_r();
+    if (solids0) update_r();
     if (wall_created) bounce();
-    if (sbounce_back && rbcs0) bounce_solid(it);
+    if (sbounce_back && solids0) bounce_solid(it);
 }
 
 void run_nowall() {
@@ -416,7 +416,7 @@ void run_nowall() {
   if (m::rank == 0) printf("will take %ld steps\n", nsteps);
   float driving_force = pushtheflow ? hydrostatic_a : 0;
   bool wall_created = false;
-  rbcs0 = false;
+  solids0 = false;
   for (long it = 0; it < nsteps; ++it) run0(driving_force, wall_created, it);
 }
 
@@ -425,20 +425,20 @@ void run_wall() {
   float driving_force = 0;
   bool wall_created = false;
   long it = 0;
-  rbcs0 = false;
+  solids0 = false;
   for (/**/; it < wall_creation_stepid; ++it) run0(driving_force, wall_created, it);
 
-  rbcs0 = rbcs;
-  if (rbcs0) init_solid();
+  solids0 = solids;
+  if (solids0) init_solid();
   if (walls) {create_walls(); wall_created = true;}
-  if (rbcs0 && r_n) k_sim::clear_velocity<<<k_cnf(r_n)>>>(r_pp, r_n);
+  if (solids0 && r_n) k_sim::clear_velocity<<<k_cnf(r_n)>>>(r_pp, r_n);
   if (pushtheflow) driving_force = hydrostatic_a;
   
   for (/**/; it < nsteps; ++it) run0(driving_force, wall_created, it);
 }
 
 void run() {
-  if (walls || rbcs) run_wall();
+  if (walls || solids) run_wall();
   else               run_nowall();
 }
 
@@ -452,7 +452,7 @@ void close() {
   dump::close();
   
   delete cells;
-  if (rbcs0) {
+  if (solids0) {
     rex::close();
     mrescue::close();
     fsi::close();
