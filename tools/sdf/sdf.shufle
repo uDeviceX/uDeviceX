@@ -1,0 +1,7 @@
+#!/usr/bin/env octave-qf
+
+# usage: sdf.shufle <code> <in.dat> <out.dat>
+# shufle dimensions in sdf file
+# code: yzx, xyz, ...
+#   if code == yxz: old y becomes x, old x becomes y.
+
