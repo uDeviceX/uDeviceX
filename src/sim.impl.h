@@ -2,7 +2,7 @@ namespace sim
 {
 #define DEVICE_SOLID
             
-    static void distr_solvent()
+    void distr_solvent()
     {
         odstr::pack(o::pp, o::n);
         odstr::send();
@@ -12,7 +12,7 @@ namespace sim
         std::swap(o::pp, o::pp0);
     }
 
-    static void distr_solid()
+    void distr_solid()
     {
 #ifdef DEVICE_SOLID
 
@@ -36,7 +36,7 @@ namespace sim
 #endif
     }
 
-    static void distr_rbc()
+    void distr_rbc()
     {
         rdstr::extent(r::pp, r::nc, r::nv);
         rdstr::pack_sendcnt(r::pp, r::nc, r::nv);
@@ -44,7 +44,7 @@ namespace sim
         rdstr::unpack(r::pp, r::nv);
     }
 
-    static void update_helper_arrays() {
+    void update_helper_arrays() {
         CC(cudaFuncSetCacheConfig(k_sim::make_texture, cudaFuncCachePreferShared));
         k_sim::make_texture<<<(o::n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>
             (o::zip0, o::zip1, (float*)o::pp, o::n);
@@ -144,7 +144,7 @@ namespace sim
         rex::recv_f();
     }
 
-    static void dev2hst() { /* device to host  data transfer */
+    void dev2hst() { /* device to host  data transfer */
         int start = 0;
         CC(cudaMemcpy(a::pp_hst + start, o::pp, sizeof(Particle) * o::n, D2H)); start += o::n;
         if (solids0) {
@@ -155,7 +155,7 @@ namespace sim
         }
     }
 
-    static void dump_part(int step) {
+    void dump_part(int step) {
         if (part_dumps) {
             CC(cudaMemcpy(o::pp_hst, o::pp, sizeof(Particle) * o::n, D2H));
             dump::parts(o::pp_hst, o::n, "solvent", step);
@@ -167,7 +167,7 @@ namespace sim
         }
     }
 
-    static void dump_rbcs() {
+    void dump_rbcs() {
         if (rbcs) {
             static int id = 0;
             int start = o::n; if (solids0) start += s::npp;
@@ -199,7 +199,7 @@ namespace sim
 
     }
 
-    static void update_solid0() {
+    void update_solid0() {
 #ifndef DEVICE_SOLID
     
         CC(cudaMemcpy(s::pp_hst, s::pp, sizeof(Particle) * s::npp, D2H));
@@ -314,7 +314,7 @@ namespace sim
 #endif
     }
 
-    static void load_solid_mesh(const char *fname)
+    void load_solid_mesh(const char *fname)
     {
         ply::read(fname, &s::m_hst);
 
@@ -328,7 +328,7 @@ namespace sim
         CC(cudaMemcpy(s::m_dev.vv, s::m_hst.vv, 3 * s::m_dev.nv * sizeof(float), H2D));
     }
 
-    static void init_solid()
+    void init_solid()
     {
         rex::init();
         mrescue::init(MAX_PART_NUM);
