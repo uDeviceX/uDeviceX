@@ -17,7 +17,7 @@ namespace rdstr
         recv_cnts[0] = 0;
         for (int i = 1; i < 27; ++i) {
             MPI_Request req;
-            Irecv(&recv_cnts[i], 1, MPI_INTEGER, ank_ne[i], i + 1024, cart, &req);
+            MPI_Irecv(&recv_cnts[i], 1, MPI_INTEGER, ank_ne[i], i + 1024, cart, &req);
             recvcntreq.pb(req);
         }
     }
@@ -29,9 +29,9 @@ namespace rdstr
             int d[3] = i2del(i); /* index to delta */
             int co_ne[3], ranks[3] = {rankx, ranky, rankz};
             for (int c = 0; c < 3; ++c) co_ne[c] = ranks[c] + d[c];
-            Cart_rank(cart, co_ne, &rnk_ne[i]);
+            MPI_Cart_rank(cart, co_ne, &rnk_ne[i]);
             for (int c = 0; c < 3; ++c) co_ne[c] = ranks[c] - d[c];
-            Cart_rank(cart, co_ne, &ank_ne[i]);
+            MPI_Cart_rank(cart, co_ne, &ank_ne[i]);
         }
     }
 
@@ -46,7 +46,7 @@ namespace rdstr
         _ddst = new DeviceBuffer<float *>;
         _dsrc = new DeviceBuffer<const float *>;
 
-        Comm_dup(cart, &cart);
+        MPI_Comm_dup(cart, &cart);
         gen_ne(cart,   rnk_ne, ank_ne); /* generate ranks and anti-ranks */
 
         _post_recvcnt();
@@ -110,15 +110,15 @@ namespace rdstr
         pack_all(src.size(), nv, &src.front(), &dst.front());
         dSync(); /* was CC(cudaStreamSynchronize(stream)); */
         for (int i = 1; i < 27; ++i)
-        Isend(&sbuf[i]->S, 1, MPI_INTEGER,
-              rnk_ne[i], i + 1024, cart,
-              &sendcntreq[i - 1]);
+        MPI_Isend(&sbuf[i]->S, 1, MPI_INTEGER,
+                  rnk_ne[i], i + 1024, cart,
+                  &sendcntreq[i - 1]);
     }
 
     int post(int nv) {
         {
             MPI_Status statuses[recvcntreq.size()];
-            Waitall(recvcntreq.size(), &recvcntreq.front(), statuses);
+            MPI_Waitall(recvcntreq.size(), &recvcntreq.front(), statuses);
             recvcntreq.clear();
         }
 
@@ -132,23 +132,23 @@ namespace rdstr
         nstay = n_bulk / nv;
 
         MPI_Status statuses[26];
-        Waitall(26, sendcntreq, statuses);
+        MPI_Waitall(26, sendcntreq, statuses);
 
         for (int i = 1; i < 27; ++i)
         if (rbuf[i]->S > 0) {
             MPI_Request request;
-            Irecv(rbuf[i]->D, rbuf[i]->S,
-                  Particle::datatype(), ank_ne[i], i + 1155,
-                  cart, &request);
+            MPI_Irecv(rbuf[i]->D, rbuf[i]->S,
+                      Particle::datatype(), ank_ne[i], i + 1155,
+                      cart, &request);
             recvreq.pb(request);
         }
 
         for (int i = 1; i < 27; ++i)
         if (sbuf[i]->S > 0) {
             MPI_Request request;
-            Isend(sbuf[i]->D, sbuf[i]->S,
-                  Particle::datatype(), rnk_ne[i], i + 1155,
-                  cart, &request);
+            MPI_Isend(sbuf[i]->D, sbuf[i]->S,
+                      Particle::datatype(), rnk_ne[i], i + 1155,
+                      cart, &request);
             sendreq.pb(request);
         }
         return nstay + ncome;
@@ -156,8 +156,8 @@ namespace rdstr
 
     void unpack(Particle *pp, int nv) {
         MPI_Status statuses[26];
-        Waitall(recvreq.size(), &recvreq.front(), statuses);
-        Waitall(sendreq.size(), &sendreq.front(), statuses);
+        MPI_Waitall(recvreq.size(), &recvreq.front(), statuses);
+        MPI_Waitall(sendreq.size(), &sendreq.front(), statuses);
         recvreq.clear();
         sendreq.clear();
         CC(cudaMemcpyAsync(pp, bulk, nstay * nv * sizeof(Particle), D2D));
@@ -173,7 +173,7 @@ namespace rdstr
     }
 
     void fin() {
-        Comm_free(&cart);
+        MPI_Comm_free(&cart);
         for (int i = 0; i < 27; i++) delete rbuf[i];
         for (int i = 0; i < 27; i++) delete sbuf[i];
         delete   llo; delete   hhi;
