@@ -78,7 +78,7 @@ namespace sim
     }
 
     void forces_rbc() {
-        if (rbcs) rbc::forces(r::nc, r::pp, r::ff, r::av);
+        if (rbcs && r::n) rbc::forces(r::nc, r::pp, r::ff, r::av);
     }
 
     void forces_dpd() {
@@ -92,13 +92,13 @@ namespace sim
     }
 
     void clear_forces(Force* ff, int n) {
-        CC(cudaMemsetAsync(ff, 0, sizeof(Force) * n));
+        if (n) CC(cudaMemsetAsync(ff, 0, sizeof(Force) * n));
     }
 
     void forces_wall() {
-        wall::interactions(o::pp, o::n, o::ff);
-        if (solids0) wall::interactions(s::pp, s::npp, s::ff);
-        if (rbcs)    wall::interactions(r::pp, r::n  , r::ff);
+        if (o::n)              wall::interactions(o::pp, o::n, o::ff);
+        if (solids0 && s::npp) wall::interactions(s::pp, s::npp, s::ff);
+        if (rbcs && r::n)      wall::interactions(r::pp, r::n  , r::ff);
     }
 
     void forces_cnt(std::vector<ParticlesWrap> *w_r) {
@@ -116,14 +116,14 @@ namespace sim
     void forces(bool wall_created) {
         SolventWrap w_s(o::pp, o::n, o::ff, o::cells->start, o::cells->count);
         std::vector<ParticlesWrap> w_r;
-        if (solids0) w_r.push_back(ParticlesWrap(s::pp, s::npp, s::ff));
-        if (rbcs)    w_r.push_back(ParticlesWrap(r::pp, r::n  , r::ff));
-
+        if (solids0 && s::npp) w_r.push_back(ParticlesWrap(s::pp, s::npp, s::ff));
+        if (rbcs    && r::n)   w_r.push_back(ParticlesWrap(r::pp, r::n  , r::ff));
+        
         clear_forces(o::ff, o::n);
         if (solids0) clear_forces(s::ff, s::npp);
         if (rbcs)    clear_forces(r::ff, r::n);
-
-        forces_dpd();
+        
+        if (o::n)         forces_dpd();
         if (wall_created) forces_wall();
         forces_rbc();
         
