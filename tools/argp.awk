@@ -7,10 +7,10 @@ function init() {
 	"field_dumps false "		\
 	"part_dumps false "			\
 	"pushflow false "			\
-	"steps_per_dump 1000 "			\
-	"steps_per_hdf5dump 2000 "		\
+	"part_freq 1000 "			\
+	"field_freq 2000 "		\
 	"tend 50 "				\
-	"wall_creation_stepid 5000 "		\
+	"wall_creation 5000 "		\
 	"walls false "
 }
 

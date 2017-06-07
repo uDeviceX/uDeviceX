@@ -184,14 +184,14 @@ namespace sim
         diagnostics(a::pp_hst, n, it);
     }
 
-    void body_force(float driving_force) {
-        k_sim::body_force<<<k_cnf(o::n)>>> (1, o::pp, o::ff, o::n, driving_force);
+    void body_force(float driving_force0) {
+        k_sim::body_force<<<k_cnf(o::n)>>> (1, o::pp, o::ff, o::n, driving_force0);
 
         if (solids0 && s::npp)
-        k_sim::body_force<<<k_cnf(s::npp)>>> (solid_mass, s::pp, s::ff, s::npp, driving_force);
+        k_sim::body_force<<<k_cnf(s::npp)>>> (solid_mass, s::pp, s::ff, s::npp, driving_force0);
 
         if (rbcs && r::n)
-        k_sim::body_force<<<k_cnf(r::n)>>> (rbc_mass, r::pp, r::ff, r::n, driving_force);
+        k_sim::body_force<<<k_cnf(r::n)>>> (rbc_mass, r::pp, r::ff, r::n, driving_force0);
 
     }
 
@@ -439,21 +439,21 @@ namespace sim
     }    
     
     void dumps_diags(int it) {
-        if (it % steps_per_dump == 0)     dump_part(it);
-        if (it % steps_per_dump == 0)     dump_rbcs();
-        if (it > wall_creation_stepid &&
-            it % steps_per_dump == 0)     solid::dump(it, s::ss_dmphst, s::ss_dmpbbhst, s::ns, m::coords); /* s::ss_dmpbbhst contains BB Force & Torque */
-        if (it % steps_per_hdf5dump == 0) dump_grid();
-        if (it % steps_per_dump == 0)     diag(it);
+        if (it % part_freq == 0)     dump_part(it);
+        if (it % part_freq == 0)     dump_rbcs();
+        if (it > wall_creation &&
+            it % part_freq == 0)     solid::dump(it, s::ss_dmphst, s::ss_dmpbbhst, s::ns, m::coords); /* s::ss_dmpbbhst contains BB Force & Torque */
+        if (it % field_freq == 0) dump_grid();
+        if (it % part_freq == 0)     diag(it);
     }
 
-    void run0(float driving_force, bool wall_created, int it) {
+    void run0(float driving_force0, bool wall_created, int it) {
         distr_solvent();
         if (solids0) distr_solid();
         if (rbcs)    distr_rbc();
         forces(wall_created);
         dumps_diags(it);
-        body_force(driving_force);
+        body_force(driving_force0);
         update_solvent();
         if (solids0) update_solid();
         if (rbcs)    update_rbc();
@@ -462,27 +462,27 @@ namespace sim
     }
 
     void run_nowall(long nsteps) {
-        float driving_force = pushflow ? hydrostatic_a : 0;
+        float driving_force0 = pushflow ? driving_force : 0;
         bool wall_created = false;
         solids0 = false;
-        for (long it = 0; it < nsteps; ++it) run0(driving_force, wall_created, it);
+        for (long it = 0; it < nsteps; ++it) run0(driving_force0, wall_created, it);
     }
 
     void run_wall(long nsteps) {
-        float driving_force = 0;
+        float driving_force0 = 0;
         bool wall_created = false;
         long it = 0;
         solids0 = false;
-        for (/**/; it < wall_creation_stepid; ++it) run0(driving_force, wall_created, it);
+        for (/**/; it < wall_creation; ++it) run0(driving_force0, wall_created, it);
 
         solids0 = solids;
         if (solids0) init_solid();
         if (walls) {create_walls(); wall_created = true;}
         if (solids0 && s::npp) k_sim::clear_velocity<<<k_cnf(s::npp)>>>(s::pp, s::npp);
         if (rbcs && r::n)      k_sim::clear_velocity<<<k_cnf(r::n)  >>>(r::pp, r::n);
-        if (pushflow) driving_force = hydrostatic_a;
+        if (pushflow) driving_force0 = driving_force;
   
-        for (/**/; it < nsteps; ++it) run0(driving_force, wall_created, it);
+        for (/**/; it < nsteps; ++it) run0(driving_force0, wall_created, it);
     }
 
     void run() {

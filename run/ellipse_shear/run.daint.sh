@@ -26,8 +26,8 @@ YS=64
 ZS=8
 
 argp .conf.test.h                                                        \
-     -tend=5000.0 -steps_per_dump=1000 -walls -wall_creation_stepid=5000 \
-     -field_dumps=false -part_dumps -steps_per_hdf5dump=1000     \
+     -tend=5000.0 -part_freq=1000 -walls -wall_creation=5000 \
+     -field_dumps=false -part_dumps -field_freq=1000     \
      -gamma_dot=${GDOT} -dt=${DT} -shear_y                               \
      -rbcs -rbc_mass=1.f -a2_ellipse=16 -b2_ellipse=4 -pin_com=true      \
      -XS=${XS} -YS=${YS} -ZS=${ZS}  -kBT=$kBT                            \

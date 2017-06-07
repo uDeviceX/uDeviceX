@@ -16,8 +16,8 @@ G=0.05
 kBT=`awk "BEGIN{ printf \"%.6e\n\", 0.27925268 * $G }"`
 
 argp .conf.test.h                                                       \
-     -tend=300.0 -steps_per_dump=1000 -walls -wall_creation_stepid=5000 \
-     -field_dumps -part_dumps -steps_per_hdf5dump=1000              \
+     -tend=300.0 -part_freq=1000 -walls -wall_creation=5000 \
+     -field_dumps -part_dumps -field_freq=1000              \
      -gamma_dot=$G -rbcs -spdir=2 -sbounce_back -dt=1e-3 -shear_y       \
      -rbc_mass=1.f -XS=${XS} -YS=${YS} -ZS=${ZS} -kBT=$kBT              \
      > .conf.h

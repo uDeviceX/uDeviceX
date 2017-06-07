@@ -3,7 +3,7 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
-hydrostatic_a = float(sys.argv[1])
+driving_force = float(sys.argv[1])
 
 nfiles = len(sys.argv)-2
 
@@ -45,7 +45,7 @@ for filename in sys.argv[2:]:
 
     def visc(coeff):
         rho = 10.
-        return rho * hydrostatic_a / (2*coeff)
+        return rho * driving_force / (2*coeff)
 
     mu[c] = 0.5 * (visc(poll[0]) + visc(-polr[0]))
 

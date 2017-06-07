@@ -7,8 +7,8 @@
 # cp data/sphere.ply mesh_solid.ply
 # :
 # argp .conf.test.h                                                \
-#   -tend=2.01 -steps_per_dump=1000 -walls -wall_creation_stepid=1 \
-#   -field_dumps -part_dumps -steps_per_hdf5dump=1000          \
+#   -tend=2.01 -part_freq=1000 -walls -wall_creation=1 \
+#   -field_dumps -part_dumps -field_freq=1000          \
 #   -solids -sbounce_back -pin_com -dt=1e-3 -shear_z > .conf.h
 # :
 # (make clean && make -j && make -C ../tools) > /dev/null
@@ -24,11 +24,11 @@
 # :
 # argp .conf.double.poiseuille.h      \
 #   -solids -sbounce_back             \
-#   -tend=0.5 -steps_per_dump=100     \
+#   -tend=0.5 -part_freq=100     \
 #   -pushflow -doublepoiseuille    \
 #   -field_dumps -part_dumps      \
-#   -wall_creation_stepid=0           \
-#   -steps_per_hdf5dump=100 > .conf.h
+#   -wall_creation=0           \
+#   -field_freq=100 > .conf.h
 # :
 # (make clean && make -j && make -C ../tools) > /dev/null
 # ./udx
@@ -44,8 +44,8 @@
 # cp data/cyl.ply mesh_solid.ply
 # :
 # argp .conf.test.h  \
-#   -tend=2.01 -steps_per_dump=1000 -walls -wall_creation_stepid=100 \
-#   -field_dumps -part_dumps -steps_per_hdf5dump=1000            \
+#   -tend=2.01 -part_freq=1000 -walls -wall_creation=100 \
+#   -field_dumps -part_dumps -field_freq=1000            \
 #   -solids -spdir=2 -sbounce_back -dt=1e-3 -shear_y > .conf.h
 # :
 # (make clean && make -j && make -C ../tools) > /dev/null

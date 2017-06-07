@@ -14,10 +14,10 @@
 # :
 # argp .conf.double.poiseuille.h      \
 #    -rsph=4                          \
-#    -tend=2.01 -steps_per_dump=4000  \
+#    -tend=2.01 -part_freq=4000  \
 #    -pushflow -doublepoiseuille   \
 #    -field_dumps -part_dumps     \
-#    -steps_per_hdf5dump=4000 -pushflow > .conf.h
+#    -field_freq=4000 -pushflow > .conf.h
 # :
 # (make clean && make -j) > /dev/null
 # ./udx
@@ -31,8 +31,8 @@
 # :
 # argp .conf.test.h                                                 \
 #    -rsph=4                                                        \
-#    -tend=1.0 -steps_per_dump=300 -walls -wall_creation_stepid=100 \
-#    -field_dumps -part_dumps -steps_per_hdf5dump=300           \
+#    -tend=1.0 -part_freq=300 -walls -wall_creation=100 \
+#    -field_dumps -part_dumps -field_freq=300           \
 #    -shear_z > .conf.h
 # :
 # (make clean && make -j) > /dev/null
@@ -47,8 +47,8 @@
 # :
 # argp .conf.poiseuille.h                                           \
 #    -rsph=4                                                        \
-#    -tend=2.0 -steps_per_dump=300 -walls -wall_creation_stepid=100 \
-#    -field_dumps -part_dumps -steps_per_hdf5dump=300           \
+#    -tend=2.0 -part_freq=300 -walls -wall_creation=100 \
+#    -field_dumps -part_dumps -field_freq=300           \
 #    -pushflow > .conf.h
 # :
 # (make clean && make -j) > /dev/null
@@ -63,8 +63,8 @@
 # :
 # argp .conf.poiseuille.h                                           \
 #    -rsph=4                                                        \
-#    -tend=4.0 -steps_per_dump=300 -walls -wall_creation_stepid=100 \
-#    -field_dumps -part_dumps -steps_per_hdf5dump=300 -pushflow > .conf.h
+#    -tend=4.0 -part_freq=300 -walls -wall_creation=100 \
+#    -field_dumps -part_dumps -field_freq=300 -pushflow > .conf.h
 # :
 # (make clean && make -j) > /dev/null
 # ./udx

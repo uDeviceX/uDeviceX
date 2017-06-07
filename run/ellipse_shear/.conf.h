@@ -47,10 +47,10 @@
 #undef                 RBCnt
 #undef                 RBCnv
 #undef                  rbcs
-#undef        steps_per_dump
-#undef    steps_per_hdf5dump
+#undef        part_freq
+#undef    field_freq
 #undef                  tend
-#undef  wall_creation_stepid
+#undef  wall_creation
 #undef                 walls
 
 #define           a2_ellipse    (16)    /* */
@@ -70,8 +70,8 @@
 #define                RBCnt   (992)
 #define                RBCnv   (498)
 #define                 rbcs  (true)    /* */
-#define       steps_per_dump   (100)    /* */
-#define   steps_per_hdf5dump   (100)    /* */
+#define       part_freq   (100)    /* */
+#define   field_freq   (100)    /* */
 #define                 tend   (5.0)    /* */
-#define wall_creation_stepid  (5000)
+#define wall_creation  (5000)
 #define                walls (false)

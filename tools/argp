@@ -4,7 +4,7 @@
 # tools/argp.awk should be on the PATH
 #
 # Usage:
-# argp .conf.test.h -rbcs -wall_creation_stepid=5.0     > .conf.h
+# argp .conf.test.h -rbcs -wall_creation=5.0     > .conf.h
 
 # everything after are arguments to awk program not to awk itself
 argp.awk -- "$@"

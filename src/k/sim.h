@@ -25,7 +25,7 @@ __global__ void update(float mass, Particle* pp, Force* ff, int n) {
 #endif
 }
 
-__global__ void body_force(float mass, Particle* pp, Force* ff, int n, float driving_force) {
+__global__ void body_force(float mass, Particle* pp, Force* ff, int n, float driving_force0) {
   int pid = threadIdx.x + blockDim.x * blockIdx.x;
   if (pid >= n) return;
 
@@ -33,8 +33,8 @@ __global__ void body_force(float mass, Particle* pp, Force* ff, int n, float dri
 
   float dy = r[1] - glb::r0[1]; /* coordinate relative to domain
 				    center */
-  if (doublepoiseuille && dy <= 0) driving_force *= -1;
-  f[0] += mass*driving_force;
+  if (doublepoiseuille && dy <= 0) driving_force0 *= -1;
+  f[0] += mass*driving_force0;
 }
 
  __global__ void clear_velocity(Particle *pp, int n)  {

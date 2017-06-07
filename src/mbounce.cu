@@ -281,7 +281,7 @@ namespace mbounce
                            const int n, /**/ Particle *pp, Solid *ss)
     {
 #ifdef debug_output
-        if (dstep % steps_per_dump == 0)
+        if (dstep % part_freq == 0)
         for (int c = 0; c < NBBSTATES; ++c) bbstates_hst[c] = 0;
 #endif
         
@@ -341,7 +341,7 @@ namespace mbounce
         }
 
 #ifdef debug_output
-        if ((++dstep) % steps_per_dump == 0)
+        if ((++dstep) % part_freq == 0)
         print_states(bbstates_hst);
 #endif
     }
@@ -414,7 +414,7 @@ namespace mbounce
                            const int n, /**/ Particle *pp, Solid *ss)
     {
 #ifdef debug_output
-        if (dstep % steps_per_dump == 0)
+        if (dstep % part_freq == 0)
         {
             const int zeros[NBBSTATES] = {0};
             CC(cudaMemcpyToSymbol(bbstates_dev, zeros, NBBSTATES*sizeof(int)));
@@ -424,7 +424,7 @@ namespace mbounce
         mbkernels::bounce_tcells <<< k_cnf(n) >>> (ff, m, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, ss);
         
 #ifdef debug_output
-        if ((++dstep) % steps_per_dump == 0)
+        if ((++dstep) % part_freq == 0)
         {
             int bbinfos[NBBSTATES];
             CC(cudaMemcpyFromSymbol(bbinfos, bbstates_dev, NBBSTATES*sizeof(int)));

@@ -7,12 +7,12 @@
 # :
 # argp .conf.double.poiseuille.h     \
 #   -solids -sbounce_back            \
-#   -tend=0.5 -steps_per_dump=100    \
+#   -tend=0.5 -part_freq=100    \
 #   -pushflow -doublepoiseuille   \
 #   -field_dumps -part_dumps     \
-#   -wall_creation_stepid=0          \
+#   -wall_creation=0          \
 #   -contactforces=false             \
-#   -steps_per_hdf5dump=100 > .conf.h
+#   -field_freq=100 > .conf.h
 # :
 # (make clean && make -j && make -C ../tools) > /dev/null
 # ./udx
@@ -28,12 +28,12 @@
 # :
 # argp .conf.double.poiseuille.h     \
 #   -solids -sbounce_back            \
-#   -tend=0.5 -steps_per_dump=100    \
+#   -tend=0.5 -part_freq=100    \
 #   -pushflow -doublepoiseuille   \
 #   -field_dumps -part_dumps     \
-#   -wall_creation_stepid=0          \
+#   -wall_creation=0          \
 #   -contactforces=true              \
-#   -steps_per_hdf5dump=100 > .conf.h
+#   -field_freq=100 > .conf.h
 # :
 # (make clean && make -j && make -C ../tools) > /dev/null
 # ./udx
@@ -49,12 +49,12 @@
 # :
 # argp .conf.double.poiseuille.h     \
 #   -solids -sbounce_back            \
-#   -tend=0.5 -steps_per_dump=100    \
+#   -tend=0.5 -part_freq=100    \
 #   -pushflow -doublepoiseuille   \
 #   -field_dumps -part_dumps     \
-#   -wall_creation_stepid=0          \
+#   -wall_creation=0          \
 #   -contactforces=true              \
-#   -steps_per_hdf5dump=100 > .conf.h
+#   -field_freq=100 > .conf.h
 # :
 # (make clean && make -j && make -C ../tools) > /dev/null
 # ./udx
