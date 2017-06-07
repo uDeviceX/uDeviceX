@@ -1,0 +1,53 @@
+#!/usr/bin/awk -f
+
+# usage sdf.2bov <sdf> <file.bov>
+# converts sdf to bov
+
+BEGIN {
+    fi = ARGV[1]; shift()
+    fb = ARGV[1]; shift()
+
+    read_header(fi)
+    ini_grid()
+
+    fv = b2v(fb)
+    write_bov(fb, fv)
+    write_val(fi, fv)
+}
+
+function ini_grid(   sx, sy, sz) {
+    sx = ex/nx; sy = ey/ny; sz = ez/nz # steps
+    ox = sx/2; oy = sy/2; oz = sz/2    # origin
+    lx = ex - sx; ly = ey - sy; lz = ez - sz # size
+}
+
+function b2v(b) { # bov to value
+    sub(/bov$/, "values", b)
+    sub(/.*[/]/, "", b)
+    return b
+}
+
+function read_header(f) {
+    getline < f; ex = $1; ey = $2; ez = $3
+    getline < f; nx = $1; ny = $2; nz = $3
+    close(f)
+}
+
+function write_bov(f, fv) {
+    printf "TIME: 0\n"                            > f
+    printf "DATA_FILE: %s\n", fv                  > f
+    printf "DATA_SIZE: %s %s %s\n", nx, ny, nz    > f
+    printf "DATA_FORMAT: FLOAT\n"                 > f
+    printf "VARIABLE: wall\n"                     > f
+    printf "DATA_ENDIAN: LITTLE\n"                > f
+    printf "BRICK_ORIGIN: %s %s %s\n", ox, oy, oz > f
+    printf "BRICK_SIZE: %s %s %s\n",   lx, ly, lz > f
+}
+
+function write_val(fi, fo,   cmd) {
+    cmd = sprintf("tail -n +3 '%s' > '%s'", fi, fo)
+    print cmd
+    system(cmd)
+}
+
+function shift(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }
