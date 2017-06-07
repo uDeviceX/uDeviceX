@@ -1,13 +1,11 @@
 namespace k_sim {
 
-__global__ void update(bool rbcflag, Particle* pp, Force* ff, int n) {
+__global__ void update(float mass, Particle* pp, Force* ff, int n) {
   int pid = threadIdx.x + blockDim.x * blockIdx.x;
   if (pid >= n) return;
 
   float *v = pp[pid].v, *r = pp[pid].r, *f = ff[pid].f;
-
-  float mass = rbcflag ? rbc_mass : 1;
-
+  
 #ifdef FORWARD_EULER
   r[0] += v[0]*dt;
   r[1] += v[1]*dt;

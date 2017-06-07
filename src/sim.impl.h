@@ -11,7 +11,7 @@ namespace sim
         std::swap(o::pp, o::pp0);
     }
 
-    static void distr_r()
+    static void distr_solid()
     {
 #ifdef DEVICE_SOLID
 
@@ -150,7 +150,7 @@ namespace sim
         k_sim::body_force<<<k_cnf(s::npp)>>> (true, s::pp, s::ff, s::npp, driving_force);
     }
 
-    void update_solid() {
+    static void update_solid0() {
 #ifndef DEVICE_SOLID
     
         CC(cudaMemcpy(s::pp_hst, s::pp, sizeof(Particle) * s::npp, D2H));
@@ -177,12 +177,12 @@ namespace sim
 #endif
     }
 
-    void update_r() {
-        if (s::npp) update_solid();
+    void update_solid() {
+        if (s::npp) update_solid0();
     }
 
-    void update_s() {
-        k_sim::update<<<k_cnf(o::n)>>> (false, o::pp, o::ff, o::n);
+    void update_solvent() {
+        k_sim::update<<<k_cnf(o::n)>>> (1, o::pp, o::ff, o::n);
     }
 
     void bounce() {
@@ -386,12 +386,12 @@ namespace sim
 
     void run0(float driving_force, bool wall_created, int it) {
         distr_solvent();
-        if (solids0) distr_r();
+        if (solids0) distr_solid();
         forces(wall_created);
         dumps_diags(it);
         body_force(driving_force);
-        update_s();
-        if (solids0) update_r();
+        update_solvent();
+        if (solids0) update_solid();
         if (wall_created) bounce();
         if (sbounce_back && solids0) bounce_solid(it);
     }
