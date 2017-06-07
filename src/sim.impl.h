@@ -174,9 +174,10 @@ namespace sim
     }
 
     void dump_grid() {
-        if (!field_dumps) return;
-        dev2hst();  /* TODO: do not need `r' */
-        dump_field->dump(a::pp_hst, o::n);
+        if (field_dumps) {
+            dev2hst();  /* TODO: do not need `r' */
+            dump_field->dump(a::pp_hst, o::n);
+        }
     }
 
     void diag(int it) {
