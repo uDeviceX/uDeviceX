@@ -11,8 +11,8 @@ __device__ float3 compute_dpd_force_traced(int type1, int type2,
     /* return the DPD interaction force based on particle types
      * type: 0 -- outer solvent, 1 -- inner solvent, 2 -- membrane, 3 -- wall */
 
-    const float gammadpd[3] = {gammadpd_solv, gammadpd_rbc, gammadpd_wall};
-    const float aij[3] = {aij_solv, aij_rbc, aij_wall};
+    const float gammadpd[] = {gammadpd_solv, gammadpd_solid, gammadpd_wall, gammadpd_rbc};
+    const float aij[] = {aij_solv, aij_solid, aij_wall, aij_rbc};
 
     const float _xr = pos1.x - pos2.x;
     const float _yr = pos1.y - pos2.y;

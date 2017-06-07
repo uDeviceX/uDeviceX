@@ -200,12 +200,12 @@ __global__ void minmaxmba(const Particle  *d_data, float *bboxes,
 
 }
 
-void minmax(const Particle * const rbc, int size, int n, float *bboxes)
+void minmax(const Particle *const pp, int size, int n, float *bboxes)
 {
     const int size32 = ((size + 31) / 32) * 32;
 
     if (size32 < MAXTHREADS)
-        minmaxob<<<n, size32>>>(rbc, bboxes, size);
+        minmaxob<<<n, size32>>>(pp, bboxes, size);
     else
     {
         static int nctc = -1;
@@ -240,6 +240,6 @@ void minmax(const Particle * const rbc, int size, int n, float *bboxes)
 
         int nblocks= n * ((size + MAXTHREADS - 1) / MAXTHREADS);
 
-        minmaxmba<<<nblocks, MAXTHREADS>>>(rbc, bboxes, size, ptoblockds);
+        minmaxmba<<<nblocks, MAXTHREADS>>>(pp, bboxes, size, ptoblockds);
     }
 }
