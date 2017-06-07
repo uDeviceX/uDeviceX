@@ -43,7 +43,7 @@
 #undef        hdf5part_dumps
 #undef        _hydrostatic_a
 #undef               pin_com
-#undef           pushtheflow
+#undef           pushflow
 #undef                 RBCnt
 #undef                 RBCnv
 #undef                  rbcs
@@ -66,7 +66,7 @@
 #define       hdf5part_dumps  (true)    /* */
 #define       _hydrostatic_a   (0.0)    /* */
 #define              pin_com  (true)    /* */
-#define          pushtheflow (false)
+#define          pushflow (false)
 #define                RBCnt   (992)
 #define                RBCnv   (498)
 #define                 rbcs  (true)    /* */

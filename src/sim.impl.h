@@ -462,7 +462,7 @@ namespace sim
     }
 
     void run_nowall(long nsteps) {
-        float driving_force = pushtheflow ? hydrostatic_a : 0;
+        float driving_force = pushflow ? hydrostatic_a : 0;
         bool wall_created = false;
         solids0 = false;
         for (long it = 0; it < nsteps; ++it) run0(driving_force, wall_created, it);
@@ -480,7 +480,7 @@ namespace sim
         if (walls) {create_walls(); wall_created = true;}
         if (solids0 && s::npp) k_sim::clear_velocity<<<k_cnf(s::npp)>>>(s::pp, s::npp);
         if (rbcs && r::n)      k_sim::clear_velocity<<<k_cnf(r::n)  >>>(r::pp, r::n);
-        if (pushtheflow) driving_force = hydrostatic_a;
+        if (pushflow) driving_force = hydrostatic_a;
   
         for (/**/; it < nsteps; ++it) run0(driving_force, wall_created, it);
     }

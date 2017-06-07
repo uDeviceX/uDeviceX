@@ -4,8 +4,8 @@
 #define doublepoiseuille (false)
 #endif
 
-#ifndef pushtheflow
-#define pushtheflow (false)
+#ifndef pushflow
+#define pushflow (false)
 #endif
 
 // dump

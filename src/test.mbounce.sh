@@ -8,7 +8,7 @@
 # argp .conf.double.poiseuille.h      \
 #   -solids -sbounce_back             \
 #   -tend=0.5 -steps_per_dump=100     \
-#   -pushtheflow -doublepoiseuille    \
+#   -pushflow -doublepoiseuille    \
 #   -hdf5field_dumps -part_dumps      \
 #   -wall_creation_stepid=0           \
 #   -steps_per_hdf5dump=100 > .conf.h

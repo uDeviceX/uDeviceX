@@ -15,9 +15,9 @@
 # argp .conf.double.poiseuille.h      \
 #    -rsph=4                          \
 #    -tend=2.01 -steps_per_dump=4000  \
-#    -pushtheflow -doublepoiseuille   \
+#    -pushflow -doublepoiseuille   \
 #    -hdf5field_dumps -part_dumps     \
-#    -steps_per_hdf5dump=4000 -pushtheflow > .conf.h
+#    -steps_per_hdf5dump=4000 -pushflow > .conf.h
 # :
 # (make clean && make -j) > /dev/null
 # ./udx
@@ -49,7 +49,7 @@
 #    -rsph=4                                                        \
 #    -tend=2.0 -steps_per_dump=300 -walls -wall_creation_stepid=100 \
 #    -hdf5field_dumps -part_dumps -steps_per_hdf5dump=300           \
-#    -pushtheflow > .conf.h
+#    -pushflow > .conf.h
 # :
 # (make clean && make -j) > /dev/null
 # ./udx
@@ -64,7 +64,7 @@
 # argp .conf.poiseuille.h                                           \
 #    -rsph=4                                                        \
 #    -tend=4.0 -steps_per_dump=300 -walls -wall_creation_stepid=100 \
-#    -hdf5field_dumps -part_dumps -steps_per_hdf5dump=300 -pushtheflow > .conf.h
+#    -hdf5field_dumps -part_dumps -steps_per_hdf5dump=300 -pushflow > .conf.h
 # :
 # (make clean && make -j) > /dev/null
 # ./udx

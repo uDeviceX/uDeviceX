@@ -6,7 +6,7 @@ function init() {
 	"doublepoiseuille false "		\
 	"hdf5field_dumps false "		\
 	"hdf5part_dumps false "			\
-	"pushtheflow false "			\
+	"pushflow false "			\
 	"steps_per_dump 1000 "			\
 	"steps_per_hdf5dump 2000 "		\
 	"tend 50 "				\
