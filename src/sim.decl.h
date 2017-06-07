@@ -1,6 +1,7 @@
 namespace sim
 {
     bool solids0;
+    bool rbcs0;
 
     H5FieldDump *dump_field;
 
@@ -64,7 +65,13 @@ namespace sim
         int n, nc, nt = RBCnt, nv = RBCnv;
         Particle *pp;
         Force    *ff;
+
+        int faces[MAX_FACE_NUM];
+        float *av_hst;
     }
-    
-    Particle      os_pp[MAX_PART_NUM];    /* solvent + solid pp on host */
+
+    namespace a /* all */
+    {
+        Particle pp_hst[MAX_PART_NUM]; /* particles on host */
+    }
 }

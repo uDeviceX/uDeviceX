@@ -2,7 +2,8 @@ namespace sim
 {
 #define DEVICE_SOLID
             
-    static void distr_solvent() {
+    static void distr_solvent()
+    {
         odstr::pack(o::pp, o::n);
         odstr::send();
         odstr::bulk(o::n, o::cells->start, o::cells->count);
@@ -34,6 +35,14 @@ namespace sim
 
 #endif
     }
+
+    // static void distr_rbc()
+    // {
+    //     rdstr::extent(r::pp, r::nc, r::nv);
+    //     rdstr::pack_sendcnt(r::pp, r::nc, r::nv);
+    //     r::nc = rdstr::post(r::nv); r::n = r::nc * r::nv;
+    //     rdstr::unpack(r::pp, r::nv);
+    // }
 
     static void update_helper_arrays() {
         CC(cudaFuncSetCacheConfig(k_sim::make_texture, cudaFuncCachePreferShared));
@@ -109,38 +118,48 @@ namespace sim
         }
     }
 
-    void dev2hst() { /* device to host  data transfer */
-        CC(cudaMemcpyAsync(os_pp, o::pp,
-                           sizeof(Particle) * o::n, D2H, 0));
-        if (solids0)
-        CC(cudaMemcpyAsync(&os_pp[o::n], s::pp,
-                           sizeof(Particle) * s::npp, D2H, 0));
+    static void dev2hst() { /* device to host  data transfer */
+        int start = 0;
+        CC(cudaMemcpy(a::pp_hst + start, o::pp, sizeof(Particle) * o::n, D2H)); start += o::n;
+        if (solids0) {
+            CC(cudaMemcpy(a::pp_hst + start, s::pp, sizeof(Particle) * s::npp, D2H)); start += s::npp;
+        }
+        if (rbcs0) {
+            CC(cudaMemcpy(a::pp_hst + start, r::pp, sizeof(Particle) * r::n, D2H)); start += r::n;
+        }
     }
 
-    void dump_part(int step)
-    {
-        if (part_dumps)
-        {
+    static void dump_part(int step) {
+        if (part_dumps) {
             CC(cudaMemcpy(o::pp_hst, o::pp, sizeof(Particle) * o::n, D2H));
             dump::parts(o::pp_hst, o::n, "solvent", step);
 
-            if(solids0)
-            {
+            if(solids0) {
                 CC(cudaMemcpy(s::pp_hst, s::pp, sizeof(Particle) * s::npp, D2H));
                 dump::parts(s::pp_hst, s::npp, "solid", step);
             }
         }
     }
 
+    static void dump_rbcs() {
+        if (rbcs) {
+            static int id = 0;
+            int start = o::n; if (solids0) start += s::npp;
+            
+            dev2hst();  /* TODO: do not need `s' */
+            Cont::rbc_dump(r::nc, a::pp_hst + start, r::faces, r::nv, r::nt, id++);
+        }
+    }
+
     void dump_grid() {
         if (!hdf5field_dumps) return;
         dev2hst();  /* TODO: do not need `r' */
-        dump_field->dump(os_pp, o::n);
+        dump_field->dump(a::pp_hst, o::n);
     }
 
     void diag(int it) {
-        int n = o::n + s::npp; dev2hst();
-        diagnostics(os_pp, n, it);
+        int n = o::n + s::npp +r::n; dev2hst();
+        diagnostics(a::pp_hst, n, it);
     }
 
     void body_force(float driving_force) {
@@ -148,6 +167,10 @@ namespace sim
 
         if (solids0 && s::npp)
         k_sim::body_force<<<k_cnf(s::npp)>>> (solid_mass, s::pp, s::ff, s::npp, driving_force);
+
+        if (rbcs0 && r::n)
+        k_sim::body_force<<<k_cnf(r::n)>>> (rbc_mass, r::pp, r::ff, r::n, driving_force);
+
     }
 
     static void update_solid0() {
