@@ -61,7 +61,7 @@ namespace sim
 
     namespace r /* [r]bc */
     {
-        int n, nc, nt, nv;
+        int n, nc, nt = RBCnt, nv = RBCnv;
         Particle *pp;
         Force    *ff;
     }
