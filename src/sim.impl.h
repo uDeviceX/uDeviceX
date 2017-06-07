@@ -51,7 +51,6 @@ namespace sim
     }
 
     void remove_bodies_from_wall() {
-        //if (!rbcs) return;
         if (r::nc <= 0) return;
         DeviceBuffer<int> marks(r::n);
         k_sdf::fill_keys<<<k_cnf(r::n)>>>(r::pp, r::n, marks.D);
@@ -78,6 +77,12 @@ namespace sim
         k_sim::clear_velocity<<<k_cnf(o::n)>>>(o::pp, o::n);
         o::cells->build(o::pp, o::n, NULL, NULL);
         update_helper_arrays();
+
+        if (rbcs) remove_bodies_from_wall();
+    }
+
+    void forces_rbc() {
+        if (rbcs) rbc::forces(r_nc, r_pp, r_ff, r_host_av);
     }
 
     void forces_dpd() {
@@ -115,6 +120,7 @@ namespace sim
         SolventWrap w_s(o::pp, o::n, o::ff, o::cells->start, o::cells->count);
         std::vector<ParticlesWrap> w_r;
         if (solids0) w_r.push_back(ParticlesWrap(s::pp, s::npp, s::ff));
+        if (rbcs)    w_r.push_back(ParticlesWrap(r::pp, r::n  , r::ff));
 
         clear_forces(o::ff, o::n);
         if (solids0) clear_forces(s::ff, s::npp);
