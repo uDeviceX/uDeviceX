@@ -124,10 +124,12 @@ namespace sim
 
         clear_forces(o::ff, o::n);
         if (solids0) clear_forces(s::ff, s::npp);
+        if (rbcs)    clear_forces(r::ff, r::n);
 
         forces_dpd();
         if (wall_created) forces_wall();
-
+        forces_rbc();
+        
         if (solids0) {
             forces_cnt(&w_r);
             forces_fsi(&w_s, &w_r);
