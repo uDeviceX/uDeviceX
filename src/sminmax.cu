@@ -2,7 +2,7 @@
 #include ".conf.h"
 #include "m.h"
 #include "common.h"
-#include "minmax.h"
+#include "sminmax.h"
 
 #define MAXTHREADS 1024
 #define WARPSIZE     32

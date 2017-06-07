@@ -23,7 +23,10 @@
 #include "k/scan.h"
 #include "k/common.h"
 
-#include "minmax.h"
+// #include "k/rbc.h"
+// #include "rbc.impl.h"
+
+#include "sminmax.h"
 
 #include "odstr.decl.h"
 #include "k/odstr.h"
