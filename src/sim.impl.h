@@ -15,7 +15,6 @@ namespace sim
     void distr_solid()
     {
 #ifdef DEVICE_SOLID
-
         CC(cudaMemcpy(s::ss_hst, s::ss_dev, s::ns * sizeof(Solid), D2H));
         sdstr::pack_sendcnt <false> (s::ss_hst, s::i_pp_dev, s::ns, s::m_dev.nv);
         s::ns = sdstr::post(s::m_dev.nv);
@@ -23,16 +22,13 @@ namespace sim
         sdstr::unpack <false> (s::m_dev.nv, /**/ s::ss_hst, s::i_pp_dev);
         CC(cudaMemcpy(s::ss_dev, s::ss_hst, s::ns * sizeof(Solid), H2D));
         solid::generate_dev(s::ss_dev, s::ns, s::rr0, s::nps, /**/ s::pp);
-
 #else
-
         sdstr::pack_sendcnt <true> (s::ss_hst, s::i_pp_hst, s::ns, s::m_hst.nv);
         s::ns = sdstr::post(s::m_hst.nv);
         s::npp = s::ns * s::nps;
         sdstr::unpack <true> (s::m_hst.nv, /**/ s::ss_hst, s::i_pp_hst);
         solid::generate_hst(s::ss_hst, s::ns, s::rr0_hst, s::nps, /**/ s::pp_hst);
         CC(cudaMemcpy(s::pp, s::pp_hst, 3 * s::npp * sizeof(float), H2D));
-
 #endif
     }
 
