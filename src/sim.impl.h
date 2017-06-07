@@ -208,9 +208,13 @@ namespace sim
         k_sim::update<<<k_cnf(o::n)>>> (1, o::pp, o::ff, o::n);
     }
 
+    void update_rbc() {
+        k_sim::update<<<k_cnf(r::n)>>> (rbc_mass, r::pp, r::ff, r::n);
+    }
+    
     void bounce() {
-        wall::bounce(o::pp, o::n);
-        if (solids0) wall::bounce(s::pp, s::npp);
+        if (o::n)          wall::bounce(o::pp, o::n);
+        if (rbcs0 && r::n) wall::bounce(r::pp, r::n);
     }
 
     void bounce_solid(int it)
