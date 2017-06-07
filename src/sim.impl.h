@@ -82,7 +82,7 @@ namespace sim
     }
 
     void forces_rbc() {
-        if (rbcs) rbc::forces(r_nc, r_pp, r_ff, r_host_av);
+        if (rbcs) rbc::forces(r::nc, r::pp, r::ff, r::av);
     }
 
     void forces_dpd() {
