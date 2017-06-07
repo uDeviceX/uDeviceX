@@ -9,6 +9,12 @@ namespace off {
   void f2faces(const char *f, int* faces) {
     char buf[1024];
     FILE *fd = fopen(f, "r");
+    if (fd == NULL)
+    {
+        fprintf(stderr, "off: Could not open <%s>\n", f);
+        exit(1);
+    }
+
     fgets(buf, sizeof buf, fd); /* skip OFF */
 
     int nv, nf;

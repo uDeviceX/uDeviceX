@@ -365,7 +365,7 @@ namespace sim
     void init() {
         CC(cudaMalloc(&r::av, MAX_CELLS_NUM));
         
-        //rbc::setup(r::faces);
+        rbc::setup(r::faces);
         rdstr::ini();
         DPD::init();
         fsi::init();
