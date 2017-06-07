@@ -2,23 +2,26 @@ namespace sim
 {
     bool solids0;
 
-    int       s_n;
-    Particle *s_pp; /* Solvent */
-    Force    *s_ff;
-
-    float4  *s_zip0; /* "zipped" version of Solvent array */
-    ushort4 *s_zip1;
-
-    Particle *s_pp0; /* Solvent (temporal buffer) */
-
-    Particle      s_pp_hst[MAX_PART_NUM]; /* solvent on host           */
-    Force         s_ff_hst[MAX_PART_NUM]; /* solvent forces on host    */
-
-    CellLists* cells;
-
     H5FieldDump *dump_field;
+
+    namespace o /* Solvent */
+    {
+        int       n;
+        Particle *pp;
+        Force    *ff;
+
+        float4  *zip0; /* "zipped" version of Solvent array */
+        ushort4 *zip1;
+
+        Particle *pp0; /* Solvent (temporal buffer) */
+
+        Particle  pp_hst[MAX_PART_NUM]; /* solvent on host           */
+        Force     ff_hst[MAX_PART_NUM]; /* solvent forces on host    */
+
+        CellLists* cells;
+    }
     
-    namespace s /* solid */
+    namespace s /* [s]olid */
     {
         int npp;          /* number of frozen pp    */ 
         Particle *pp;   /* Solid frozen particles */
