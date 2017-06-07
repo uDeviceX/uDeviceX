@@ -34,7 +34,12 @@
     _(BT_C_BBHALO)                              \
     _(BT_S_BBHALO)                              \
     _(BT_P_BBHALO)                              \
-    _(BT_S2_BBHALO)
+    _(BT_S2_BBHALO)                             \
+    /* rdstr.impl.h */                          \
+    _(BT_C_RDSTR)                               \
+    _(BT_P_RDSTR)                               \
+    _(BT_S_RDSTR)
+
 
 #define make_id_name(a) a##_ID,
 #define make_tag_val(a) a = STRIDE * a##_ID,
