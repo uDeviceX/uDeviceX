@@ -288,7 +288,7 @@ namespace sim
 #endif
     }
 
-    void load_solid_mesh(const char *fname)
+    static void load_solid_mesh(const char *fname)
     {
         ply::read(fname, &s::m_hst);
 
@@ -302,7 +302,7 @@ namespace sim
         CC(cudaMemcpy(s::m_dev.vv, s::m_hst.vv, 3 * s::m_dev.nv * sizeof(float), H2D));
     }
 
-    void init_solid()
+    static void init_solid()
     {
         rex::init();
         mrescue::init(MAX_PART_NUM);
@@ -363,6 +363,10 @@ namespace sim
     }
 
     void init() {
+        CC(cudaMalloc(&r::av, MAX_CELLS_NUM));
+        
+        rbc::setup(r::faces);
+        rdstr::ini();
         DPD::init();
         fsi::init();
         sdstr::init();
@@ -381,10 +385,21 @@ namespace sim
         mpDeviceMalloc(&s::ff); mpDeviceMalloc(&s::ff);
         mpDeviceMalloc(&s::rr0);
 
+        if (rbcs)
+        {
+            mpDeviceMalloc(&r::pp);
+            mpDeviceMalloc(&r::ff);
+        }
+        
         o::n = ic::gen(o::pp_hst);
         CC(cudaMemcpy(o::pp, o::pp_hst, sizeof(Particle) * o::n, H2D));
         o::cells->build(o::pp, o::n, NULL, NULL);
         update_helper_arrays();
+
+        if (rbcs) {
+            r::nc = Cont::setup(r::pp, r::nv, /* storage */ r::pp_hst);
+            r::n = r::nc * r::nv;
+        }
 
         dump_field = new H5FieldDump;
 
@@ -405,6 +420,7 @@ namespace sim
     
     void dumps_diags(int it) {
         if (it % steps_per_dump == 0)     dump_part(it);
+        // if (it % steps_per_dump == 0)     dump_rbcs();
         if (it > wall_creation_stepid &&
             it % steps_per_dump == 0)     solid::dump(it, s::ss_dmphst, s::ss_dmpbbhst, s::ns, m::coords); /* s::ss_dmpbbhst contains BB Force & Torque */
         if (it % steps_per_hdf5dump == 0) dump_grid();
@@ -456,8 +472,10 @@ namespace sim
 
     void close() {
         delete dump_field;
+
         odstr::redist_part_close();
         sdstr::close();
+        rdstr::fin();
         bbhalo::close();
         cnt::close();
 
@@ -480,6 +498,13 @@ namespace sim
         CC(cudaFree(o::pp0));
         CC(cudaFree(s::rr0));
 
+        if (rbcs)
+        {
+            CC(cudaFree(r::pp));
+            CC(cudaFree(r::ff));
+            CC(cudaFree(r::av));
+        }
+        
         if (s::m_hst.tt) delete[] s::m_hst.tt;
         if (s::m_hst.vv) delete[] s::m_hst.vv;
         if (s::m_dev.tt) CC(cudaFree(s::m_dev.tt));

@@ -66,8 +66,9 @@ namespace sim
         Particle *pp;
         Force    *ff;
 
+        Particle pp_hst[MAX_PART_NUM];
         int faces[MAX_FACE_NUM];
-        float *av_hst;
+        float *av;
     }
 
     namespace a /* all */
