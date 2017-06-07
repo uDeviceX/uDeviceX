@@ -446,7 +446,7 @@ namespace sim
     
     void dumps_diags(int it) {
         if (it % steps_per_dump == 0)     dump_part(it);
-        // if (it % steps_per_dump == 0)     dump_rbcs();
+        if (it % steps_per_dump == 0)     dump_rbcs();
         if (it > wall_creation_stepid &&
             it % steps_per_dump == 0)     solid::dump(it, s::ss_dmphst, s::ss_dmpbbhst, s::ns, m::coords); /* s::ss_dmpbbhst contains BB Force & Torque */
         if (it % steps_per_hdf5dump == 0) dump_grid();
