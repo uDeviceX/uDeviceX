@@ -17,7 +17,7 @@ namespace rdstr
         recv_cnts[0] = 0;
         for (int i = 1; i < 27; ++i) {
             MPI_Request req;
-            MPI_Irecv(&recv_cnts[i], 1, MPI_INTEGER, ank_ne[i], i + 1024, cart, &req);
+            MPI_Irecv(&recv_cnts[i], 1, MPI_INTEGER, ank_ne[i], i + BT_C_RDSTR, cart, &req);
             recvcntreq.pb(req);
         }
     }
@@ -111,7 +111,7 @@ namespace rdstr
         dSync(); /* was CC(cudaStreamSynchronize(stream)); */
         for (int i = 1; i < 27; ++i)
         MPI_Isend(&sbuf[i]->S, 1, MPI_INTEGER,
-                  rnk_ne[i], i + 1024, cart,
+                  rnk_ne[i], i + BT_C_RDSTR, cart,
                   &sendcntreq[i - 1]);
     }
 
@@ -138,7 +138,7 @@ namespace rdstr
         if (rbuf[i]->S > 0) {
             MPI_Request request;
             MPI_Irecv(rbuf[i]->D, rbuf[i]->S,
-                      Particle::datatype(), ank_ne[i], i + 1155,
+                      Particle::datatype(), ank_ne[i], i + BT_P_RDSTR,
                       cart, &request);
             recvreq.pb(request);
         }
@@ -147,7 +147,7 @@ namespace rdstr
         if (sbuf[i]->S > 0) {
             MPI_Request request;
             MPI_Isend(sbuf[i]->D, sbuf[i]->S,
-                      Particle::datatype(), rnk_ne[i], i + 1155,
+                      Particle::datatype(), rnk_ne[i], i + BT_C_RDSTR,
                       cart, &request);
             sendreq.pb(request);
         }

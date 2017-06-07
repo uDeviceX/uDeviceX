@@ -37,8 +37,7 @@
     _(BT_S2_BBHALO)                             \
     /* rdstr.impl.h */                          \
     _(BT_C_RDSTR)                               \
-    _(BT_P_RDSTR)                               \
-    _(BT_S_RDSTR)
+    _(BT_P_RDSTR)
 
 
 #define make_id_name(a) a##_ID,
