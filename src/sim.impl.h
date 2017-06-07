@@ -507,16 +507,15 @@ namespace sim
         rdstr::fin();
         bbhalo::close();
         cnt::close();
-
-        dump::close();
-  
-        delete o::cells;
-        if (solids0) {
-            rex::close();
-            mrescue::close();
-            fsi::close();
-        }
         DPD::close();
+        dump::close();
+        rex::close();
+        fsi::close();
+
+        if (solids0)
+        mrescue::close();            
+        
+        delete o::cells;
 
         CC(cudaFree(o::zip0));
         CC(cudaFree(o::zip1));
