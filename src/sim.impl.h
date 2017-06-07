@@ -535,12 +535,12 @@ namespace sim
 
         if (solids)
         {
-            delete[] s::m_hst.tt;    CC(cudaFree(s::m_dev.tt));
-            delete[] s::m_hst.vv;    CC(cudaFree(s::m_dev.vv));
+            delete[] s::m_hst.tt;      CC(cudaFree(s::m_dev.tt));
+            delete[] s::m_hst.vv;      CC(cudaFree(s::m_dev.vv));
 
-            delete[] s::tcs_hst;     CC(cudaFree(s::tcs_dev)); 
-            delete[] s::tcc_hst;     CC(cudaFree(s::tcc_dev));
-            delete[] s::tci_hst;     CC(cudaFree(s::tci_dev));
+            delete[] s::tcs_hst;       CC(cudaFree(s::tcs_dev)); 
+            delete[] s::tcc_hst;       CC(cudaFree(s::tcc_dev));
+            delete[] s::tci_hst;       CC(cudaFree(s::tci_dev));
             
             delete[] s::i_pp_hst;      CC(cudaFree(s::i_pp_dev)); 
             delete[] s::i_pp_bb_hst;   CC(cudaFree(s::i_pp_bb_dev));
