@@ -14,7 +14,7 @@ ZS=16
 
 argp .conf.test.h                                                       \
      -tend=100.0 -steps_per_dump=1000 -walls -wall_creation_stepid=5000 \
-     -hdf5field_dumps -hdf5part_dumps -steps_per_hdf5dump=1000          \
+     -field_dumps -hdf5part_dumps -steps_per_hdf5dump=1000          \
      -pushflow -hydrostatic_a=0.05 -dt=1e-3                          \
      -rbcs -rsph=5 -rbc_mass=1.f  -pin_com=false                        \
      -XS=${XS} -YS=${YS} -ZS=${ZS}                                      \

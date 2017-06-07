@@ -32,7 +32,7 @@ namespace sdf {
 		    field);
     }
 
-    if (hdf5field_dumps) field::dump(N, extent, grid_data);
+    if (field_dumps) field::dump(N, extent, grid_data);
       
     cudaChannelFormatDesc fmt = cudaCreateChannelDesc<float>();
     CC(cudaMalloc3DArray

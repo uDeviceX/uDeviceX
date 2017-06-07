@@ -9,7 +9,7 @@
 #   -solids -sbounce_back            \
 #   -tend=0.5 -steps_per_dump=100    \
 #   -pushflow -doublepoiseuille   \
-#   -hdf5field_dumps -part_dumps     \
+#   -field_dumps -part_dumps     \
 #   -wall_creation_stepid=0          \
 #   -contactforces=false             \
 #   -steps_per_hdf5dump=100 > .conf.h
@@ -30,7 +30,7 @@
 #   -solids -sbounce_back            \
 #   -tend=0.5 -steps_per_dump=100    \
 #   -pushflow -doublepoiseuille   \
-#   -hdf5field_dumps -part_dumps     \
+#   -field_dumps -part_dumps     \
 #   -wall_creation_stepid=0          \
 #   -contactforces=true              \
 #   -steps_per_hdf5dump=100 > .conf.h
@@ -51,7 +51,7 @@
 #   -solids -sbounce_back            \
 #   -tend=0.5 -steps_per_dump=100    \
 #   -pushflow -doublepoiseuille   \
-#   -hdf5field_dumps -part_dumps     \
+#   -field_dumps -part_dumps     \
 #   -wall_creation_stepid=0          \
 #   -contactforces=true              \
 #   -steps_per_hdf5dump=100 > .conf.h

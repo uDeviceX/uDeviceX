@@ -10,8 +10,8 @@
 
 // dump
 
-#ifndef hdf5field_dumps
-#define hdf5field_dumps (false)
+#ifndef field_dumps
+#define field_dumps (false)
 #endif
 
 #ifndef part_dumps

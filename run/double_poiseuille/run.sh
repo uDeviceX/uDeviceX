@@ -7,7 +7,7 @@ export PATH=../tools:$PATH
 
 argp .conf.test.h                                                       \
      -tend=100.0 -steps_per_dump=1000 -pushflow -doublepoiseuille    \
-     -hdf5field_dumps -part_dumps -steps_per_hdf5dump=1000              \
+     -field_dumps -part_dumps -steps_per_hdf5dump=1000              \
      -hydrostatic_a=0.02 -dt=1e-3 > .conf.h
      
 

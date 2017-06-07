@@ -8,7 +8,7 @@
 # :
 # argp .conf.test.h                                                \
 #   -tend=2.01 -steps_per_dump=1000 -walls -wall_creation_stepid=1 \
-#   -hdf5field_dumps -part_dumps -steps_per_hdf5dump=1000          \
+#   -field_dumps -part_dumps -steps_per_hdf5dump=1000          \
 #   -solids -sbounce_back -pin_com -dt=1e-3 -shear_z > .conf.h
 # :
 # (make clean && make -j && make -C ../tools) > /dev/null
@@ -26,7 +26,7 @@
 #   -solids -sbounce_back             \
 #   -tend=0.5 -steps_per_dump=100     \
 #   -pushflow -doublepoiseuille    \
-#   -hdf5field_dumps -part_dumps      \
+#   -field_dumps -part_dumps      \
 #   -wall_creation_stepid=0           \
 #   -steps_per_hdf5dump=100 > .conf.h
 # :
@@ -45,7 +45,7 @@
 # :
 # argp .conf.test.h  \
 #   -tend=2.01 -steps_per_dump=1000 -walls -wall_creation_stepid=100 \
-#   -hdf5field_dumps -part_dumps -steps_per_hdf5dump=1000            \
+#   -field_dumps -part_dumps -steps_per_hdf5dump=1000            \
 #   -solids -spdir=2 -sbounce_back -dt=1e-3 -shear_y > .conf.h
 # :
 # (make clean && make -j && make -C ../tools) > /dev/null

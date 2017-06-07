@@ -174,7 +174,7 @@ namespace sim
     }
 
     void dump_grid() {
-        if (!hdf5field_dumps) return;
+        if (!field_dumps) return;
         dev2hst();  /* TODO: do not need `r' */
         dump_field->dump(a::pp_hst, o::n);
     }
