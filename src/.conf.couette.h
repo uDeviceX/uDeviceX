@@ -9,10 +9,10 @@
 #define YMARGIN_BB 1.f
 #define ZMARGIN_BB 1.f
 
-#define  numberdensity    10
+#define numberdensity    10
 #define kBT              1e-7
-#define  dt               5e-4  /* timestep */
-#define  rbc_mass         0.5   /* ratio of RBC particle mass to solvent particle mass */
+#define dt               5e-4  /* timestep */
+#define rbc_mass         0.5   /* ratio of RBC particle mass to solvent particle mass */
 #define gamma_dot        5.0       /* shear rate */
 #define driving_force    3.333e-2  /* flow acceleration for Poiseuille setup */
 
