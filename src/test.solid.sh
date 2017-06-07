@@ -35,28 +35,8 @@
 # bop2txt bop/solid-00004.bop | awk '{print $1, $2}' | uscale 10 > bop.out.txt
 #
 
-#### Double poiseuille pinned cylinder
-# nTEST: solid.t3
-# export PATH=../tools:$PATH
-# rm -rf h5 bop diag.txt solid_diag.txt
-# echo -e "8 16 8" > ic_solid.txt
-# cp data/cyl.ply mesh_solid.ply
-# :
-# argp .conf.double.poiseuille.h        \
-#   -solids -spdir=2 -sbounce_back      \
-#   -tend=0.5 -steps_per_dump=100       \
-#   -pushtheflow -doublepoiseuille      \
-#   -hdf5field_dumps -part_dumps        \
-#   -wall_creation_stepid=0             \
-#   -steps_per_hdf5dump=100 > .conf.h
-# :
-# (make clean && make -j && make -C ../tools) > /dev/null
-# ./udx
-# bop2txt bop/solid-00004.bop | awk '{print $1, $2}' | uscale 10 > bop.out.txt
-#
-
 #### Couette pinned cylinder
-# nTEST: solid.t4
+# nTEST: solid.t3
 # export PATH=../tools:$PATH
 # rm -rf h5 bop diag.txt solid_diag.txt
 # cp sdf/yplates1/yplates.dat sdf.dat
@@ -71,23 +51,3 @@
 # (make clean && make -j && make -C ../tools) > /dev/null
 # ./udx
 # avg_h5.m h5/flowfields-0001.h5 | sed -n '4,29p' | uscale 0.5 > h5.out.txt
-
-#### Double poiseuille pinned ellipse
-# nTEST: solid.t5
-# export PATH=../tools:$PATH
-# rm -rf h5 bop diag.txt solid_diag.txt debug.txt
-# echo -e "8 16 8" > ic_solid.txt
-# cp data/ellipse.ply mesh_solid.ply
-# :
-# argp .conf.double.poiseuille.h     \
-#   -solids -spdir=2 -sbounce_back   \
-#   -tend=0.5 -steps_per_dump=100    \
-#   -pushtheflow -doublepoiseuille   \
-#   -hdf5field_dumps -part_dumps     \
-#   -wall_creation_stepid=0          \
-#   -steps_per_hdf5dump=100 > .conf.h
-# :
-# (make clean && make -j && make -C ../tools) > /dev/null
-# ./udx
-# bop2txt bop/solid-00004.bop | awk '{print $1, $2}' | uscale 10 > bop.out.txt
-#
