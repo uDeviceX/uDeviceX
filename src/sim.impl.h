@@ -116,13 +116,13 @@ namespace sim
     void forces(bool wall_created) {
         SolventWrap w_s(o::pp, o::n, o::ff, o::cells->start, o::cells->count);
         std::vector<ParticlesWrap> w_r;
-        if (solids0 && s::npp) w_r.push_back(ParticlesWrap(s::pp, s::npp, s::ff));
-        if (rbcs    && r::n)   w_r.push_back(ParticlesWrap(r::pp, r::n  , r::ff));
+        if (solids0) w_r.push_back(ParticlesWrap(s::pp, s::npp, s::ff));
+        if (rbcs   ) w_r.push_back(ParticlesWrap(r::pp, r::n  , r::ff));
         
         clear_forces(o::ff, o::n);
         if (solids0) clear_forces(s::ff, s::npp);
         if (rbcs)    clear_forces(r::ff, r::n);
-        
+
         if (o::n)         forces_dpd();
         if (wall_created) forces_wall();
         forces_rbc();
@@ -228,11 +228,11 @@ namespace sim
     }
 
     void update_solvent() {
-        k_sim::update<<<k_cnf(o::n)>>> (1, o::pp, o::ff, o::n);
+        if (o::n) k_sim::update<<<k_cnf(o::n)>>> (1, o::pp, o::ff, o::n);
     }
 
     void update_rbc() {
-        k_sim::update<<<k_cnf(r::n)>>> (rbc_mass, r::pp, r::ff, r::n);
+        if (r::n) k_sim::update<<<k_cnf(r::n)>>> (rbc_mass, r::pp, r::ff, r::n);
     }
     
     void bounce() {
@@ -459,7 +459,7 @@ namespace sim
         if (solids0) update_solid();
         if (rbcs)    update_rbc();
         if (wall_created) bounce();
-        if (sbounce_back && solids0) bounce_solid(it);
+        if (sbounce_back && solids0 && s::npp) bounce_solid(it);
     }
 
     void run_nowall(long nsteps) {
