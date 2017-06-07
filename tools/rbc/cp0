@@ -3,20 +3,21 @@
 # Converts a list of coordinates "xc, yc, zc" to a list of 4x4
 # transformation matrixes
 
-function cell0(x, y, z, px) {
+function cell(x, y, z, p) {
     f0 = "%+9.3e"
-    f = f0 " " f0 " " f0 "\n"
-    printf f,  0,       0,        0, x
-    printf f,  0, cos(px), -sin(px), y
-    printf f,  0, sin(px),  cos(px), z
-    printf f,  0,       0,        0, 1
+    f = f0 " " f0 " " f0 " " f0 "\n"
+    printf f,  s,        0,         0, x
+    printf f,  0, s*cos(p), -s*sin(p), y
+    printf f,  0, s*sin(p),  s*cos(p), z
+    printf f,  0,        0,         0, 1
 }
 
 BEGIN {
-    px = length(px) ? px : 0.0
+    p = length(p) ? p : 0
+    s = length(s) ? s : 1
 }
 
 {
     x = $1; y = $2; z = $3
-    cell0(x, y, z, px)
+    cell(x, y, z, p)
 }

@@ -7,7 +7,7 @@ function pi() { return 2*asin(1)}
 
 function req_var(v, n) {
     if (length(v)!=0) return
-    printf "(cell-placement-hcp.awk) `%s' should be given as a parameter (-v %s=<value>)\n",
+    printf "(cph.awk) `%s' should be given as a parameter (-v %s=<value>)\n",
 	n, n
     exit 2
 }
@@ -26,14 +26,8 @@ function indomain(x, y, z) {
 }
 
 BEGIN {
-    req_var(A, "A"); req_var(sc, "sc"); req_var(reff, "reff");
-    req_var(Lx, "Lx"); req_var(Lx, "Ly"); req_var(Lx, "Lz");
-
-    # takes surface area `A' and two correction coefficient `reff'
-    # and `sc'
-    r  = sqrt(A)/(2*sqrt(pi()))
-    r *= sc
-    r *= reff
+    req_var(r, "r")
+    req_var(Lx, "Lx"); req_var(Ly, "Ly"); req_var(Lz, "Lz");
 
     nmax = 100  # should be a big number, TODO:
     for (i=0; i<nmax; i++) {
@@ -52,5 +46,5 @@ BEGIN {
 	    }
 	}
     }
-    printf "(cell-placement-hcp.awk) generated: %d cells\n", ngen > "/dev/stderr"
+    printf "cph: generated: %d cells\n", ngen > "/dev/stderr"
 }
