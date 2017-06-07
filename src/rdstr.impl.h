@@ -23,14 +23,16 @@ namespace rdstr
     }
 
     /* generate ranks and anti-ranks of the neighbors */
-    void gen_ne(MPI_Comm cart, /* */ int* rnk_ne, int* ank_ne) {
-        rnk_ne[0] = rankn;
-        for (int i = 1; i < 27; ++i) {
+    static void gen_ne(MPI_Comm cart, /* */ int* rnk_ne, int* ank_ne)
+    {
+        rnk_ne[0] = m::rank;
+        for (int i = 1; i < 27; ++i)
+        {
             int d[3] = i2del(i); /* index to delta */
-            int co_ne[3], ranks[3] = {rankx, ranky, rankz};
-            for (int c = 0; c < 3; ++c) co_ne[c] = ranks[c] + d[c];
+            int co_ne[3];
+            for (int c = 0; c < 3; ++c) co_ne[c] = m::coords[c] + d[c];
             MPI_Cart_rank(cart, co_ne, &rnk_ne[i]);
-            for (int c = 0; c < 3; ++c) co_ne[c] = ranks[c] - d[c];
+            for (int c = 0; c < 3; ++c) co_ne[c] = m::coords[c] - d[c];
             MPI_Cart_rank(cart, co_ne, &ank_ne[i]);
         }
     }
@@ -83,7 +85,7 @@ namespace rdstr
             L[3] = {XS, YS, ZS};
         for (i = 0; i < nrbcs; ++i) {
             float3 lo = llo[i], hi = hhi[i];
-            float p[3] = {0.5 * (lo.x + hi.x), 0.5 * (lo.y + hi.y), 0.5 * (lo.z + hi.z)};
+            float p[3] = {0.5f * (lo.x + hi.x), 0.5f * (lo.y + hi.y), 0.5f * (lo.z + hi.z)};
             for (c = 0; c < 3; ++c)
             vcode[c] = (2 + (p[c] >= -L[c] / 2) + (p[c] >= L[c] / 2)) % 3;
             code = vcode[0] + 3 * (vcode[1] + 3 * vcode[2]);
@@ -102,7 +104,7 @@ namespace rdstr
         for (int i = 1; i < 27; ++i) sbuf[i]->resize(ord[i].size() * nv);
 
         for (int i = 0; i < 27; ++i)
-        for (int j = 0; j < ord[i].size(); ++j) {
+        for (int j = 0; j < (int) ord[i].size(); ++j) {
             src.pb((float*)(pp + nv * ord[i][j]));
             if (i) dst.pb((float*)(sbuf[i]->DP + nv * j));
             else   dst.pb((float*)(       bulk + nv * j));
@@ -166,7 +168,7 @@ namespace rdstr
             int cnt = rbuf[i]->S;
             if (cnt > 0)
             k_rdstr::shift<<<k_cnf(cnt)>>>
-                (rbuf[i]->DP, cnt, i, rankn, false, &pp[s]);
+                (rbuf[i]->DP, cnt, i, false, &pp[s]);
             s += rbuf[i]->S;
         }
         _post_recvcnt();

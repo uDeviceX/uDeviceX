@@ -22,7 +22,7 @@ namespace k_rdstr {
     }
 
     __global__ void shift(const Particle *const psrc, const int np, const int code,
-                          const int rank, const bool check, Particle *const pdst) {
+                          const bool check, Particle *const pdst) {
         int pid = threadIdx.x + blockDim.x * blockIdx.x;
         int d[3] = {(code + 1) % 3 - 1, (code / 3 + 1) % 3 - 1,
                     (code / 9 + 1) % 3 - 1};

@@ -31,6 +31,10 @@
 #include "k/rbc.h"
 #include "rbc.impl.h"
 
+#include "rdstr.decl.h"
+#include "k/rdstr.h"
+#include "rdstr.impl.h"
+
 #include "sminmax.h"
 
 #include "odstr.decl.h"
