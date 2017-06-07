@@ -1,9 +1,8 @@
 #include <mpi.h>
 #include ".conf.h"
 #include "m.h"
-#include "common.macro.h"
 #include "common.h"
-#include "minmax.h"
+#include "rminmax.h"
 
 #define MAXTHREADS 1024
 #define WARPSIZE     32
