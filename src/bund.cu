@@ -20,11 +20,16 @@
 #include <thrust/sort.h>
 #include "glb.h"
 
+#include "helper-math/helper_math.h"
+
 #include "k/scan.h"
 #include "k/common.h"
 
-// #include "k/rbc.h"
-// #include "rbc.impl.h"
+#include "rminmax.h"
+#include "off.impl.h"
+
+#include "k/rbc.h"
+#include "rbc.impl.h"
 
 #include "sminmax.h"
 
