@@ -73,11 +73,8 @@ namespace field {
 #undef Z
   }
 
-
-  void dump(int N[3], float extent[3], float* grid_data) {
+  void dump0(int N[3], float extent[3], float* grid_data, float* walldata) {
     int c, L[3] = {XS, YS, ZS};
-    float walldata[MAX_SUBDOMAIN_VOLUME];
-
     float rlo[3], dr[3], ampl;
     for (c = 0; c < 3; ++c) {
       rlo[c] = m::coords[c] * L[c] / (float)(m::dims[c] * L[c]) * N[c];
@@ -88,7 +85,10 @@ namespace field {
     H5FieldDump dump;
     dump.dump_scalarfield(walldata, "wall");
   }
-  
 
-
+  void dump(int N[], float extent[], float* grid_data) {
+    float *walldata = (float*)malloc(sizeof(walldata[0])*MAX_SUBDOMAIN_VOLUME);
+    dump0(N, extent, grid_data, walldata);
+    free(walldata);
+  }
 } /* namespace field */
