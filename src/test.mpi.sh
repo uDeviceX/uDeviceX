@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #### RBC in a periodic box
-# nTEST: mpi.t1
+# sTEST: mpi.t1
 # export PATH=../tools:$PATH
 # export PATH=/usr/lib64/mpich/bin:$PATH
 # echo 1 0 0 8  0 1 0 8  0 0 1 8  0 0 0 1 > rbcs-ic.txt
@@ -14,10 +14,10 @@
 # awk '{print 10000*$2}' diag.txt > diag.out.txt
 
 #### double Poiseuille
-# sTEST: mpi.t2
+# nTEST: mpi.t2
 # export PATH=../tools:$PATH
 # export PATH=/usr/lib64/mpich/bin:$PATH
-# rm -rf diag.txt h5 o ply
+# rm -rf diag.txt h5 bop ply
 # :
 # argp .conf.double.poiseuille.h                \
 #   -tend=2.1 -part_freq=100  -field_freq=300   \
@@ -25,10 +25,8 @@
 #   -field_dumps -part_dumps                    \
 #   -pushflow > .conf.h
 # :
-# x=2 y=1 z=1
-# { make clean && make ranks x=$x y=$y z=$z && make -j mpi; } > /dev/null
-# udirs $x $y $z sr/p
-# sh run
+# { make clean && make -j; } > /dev/null
+# mpirun -n 2 ./udx 2 1 1
 # avg_h52.m h5/f.0013.h5 | uscale 10 > h5.out.txt
 
 ####
