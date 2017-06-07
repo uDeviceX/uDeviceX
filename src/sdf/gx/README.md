@@ -1,5 +1,8 @@
 # GoogleX project files
 
-# Download
+## sdfs
+panda:/scratch/googleX
+
+## Download
 
     ./copy.sh
