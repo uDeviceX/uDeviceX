@@ -59,7 +59,7 @@
 # ply2punto ply/rbcs-00001.ply | uscale 100 > ply.out.txt
 
 #### two RBCs around cylinder
-# nTEST: flow.around.t2
+# sTEST: flow.around.t2
 # export PATH=../tools:$PATH
 # rm -rf diag.txt h5 bop ply
 # x=0.75  y=3 z=9; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
@@ -74,3 +74,23 @@
 # { make clean && make -j && make -C ../tools; } > /dev/null
 # ./udx
 # ply2punto ply/rbcs-00001.ply | uscale 10 > ply.out.txt
+
+#### two RBCs around cylinder with one RBC removed by the wall
+# nTEST: flow.around.t3
+# export PATH=../tools:$PATH
+# rm -rf diag.txt h5 o ply
+# cp sdf/cyl1/cyl.dat sdf.dat
+# x=0.75 y=3 z=9; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
+# x=8    y=8 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
+# :
+# argp .conf.around.h -rbcs -tend=3.0 -part_freq=5000 \
+#      -acyl                            \
+#     -walls -wall_creation=1000 \
+#     -field_dumps -part_dumps  \
+#     -field_freq=5000 -pushflow > .conf.h
+# :
+# { make clean && make ranks && make -j && make -C ../tools; } > /dev/null
+# udirs sr/p
+# ./u
+# ply2punto ply/rbcs-00001.ply | uscale 100 > ply.out.txt
+#
