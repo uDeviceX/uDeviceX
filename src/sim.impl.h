@@ -64,7 +64,7 @@ namespace sim
 
 	r::nc = Cont::rbc_remove(r::pp, r::nv, r::nc, &tokill.front(), tokill.size());
 	r::n = r::nc * r::nv;
-	fprintf(stderr, "sim.impl: %04d/%04d survived\n", r::nc, nc0);
+	fprintf(stderr, "sim.impl: %04d/%04d RBCs survived\n", r::nc, nc0);
     }
 
     void create_walls() {
