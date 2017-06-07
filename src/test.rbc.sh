@@ -88,6 +88,6 @@
 #     -field_dumps -part_dumps  \
 #     -field_freq=5000 -pushflow > .conf.h
 # :
-# { make clean && && make -j && make -C ../tools; } > /dev/null
+# { make clean && make -j && make -C ../tools; } > /dev/null
 # ./udx
 # ply2punto ply/rbcs-00001.ply | uscale 100 > ply.out.txt
