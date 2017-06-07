@@ -44,6 +44,8 @@
 #include "sdstr.decl.h"
 #include "sdstr.impl.h"
 
+#include "containers.impl.h"
+
 #include "field.decl.h"
 #include "field.impl.h"
 
