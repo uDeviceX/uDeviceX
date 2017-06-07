@@ -19,7 +19,7 @@ namespace Cont {
 
     int setup_hst(int nv, Particle *pp_hst) {
         /* fills `pp_hst' with RBCs for this processor on host */
-        const char *r_templ = "rbc.off", *r_state = "rbcs-ic.txt";;
+        const char *r_templ = "rbc.off", *r_state = "rbcs-ic.txt";
 
         float rr0[3*MAX_VERT_NUM]; /* rbc template */
         off::f2vert(r_templ, rr0);
@@ -30,6 +30,12 @@ namespace Cont {
 
         float A[4*4]; /* 4x4 affice transformation matrix */
         FILE *f = fopen(r_state, "r");
+        if (f == NULL)
+        {
+            fprintf(stderr, "cont: Could not open <%s>\n", r_state);
+            exit(1);
+        }
+        
         while (true) {
             for (i = 0; i < 4*4; i++) if (fscanf(f, "%f", &A[i]) != 1) goto done;
             for (c = 0; c < 3; c++) {
