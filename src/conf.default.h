@@ -25,6 +25,10 @@
 #define solids (false)
 #endif
 
+#ifndef solid_mass
+#define solid_mass (1.f)
+#endif
+
 #ifndef pin_com
 #define pin_com (false)
 #endif

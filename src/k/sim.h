@@ -25,13 +25,11 @@ __global__ void update(float mass, Particle* pp, Force* ff, int n) {
 #endif
 }
 
-__global__ void body_force(bool rbcflag, Particle* pp, Force* ff, int n, float driving_force) {
+__global__ void body_force(float mass, Particle* pp, Force* ff, int n, float driving_force) {
   int pid = threadIdx.x + blockDim.x * blockIdx.x;
   if (pid >= n) return;
 
   float *r = pp[pid].r, *f = ff[pid].f;
-
-  float mass = rbcflag ? rbc_mass : 1;
 
   float dy = r[1] - glb::r0[1]; /* coordinate relative to domain
 				    center */

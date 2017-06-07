@@ -144,10 +144,10 @@ namespace sim
     }
 
     void body_force(float driving_force) {
-        k_sim::body_force<<<k_cnf(o::n)>>> (false, o::pp, o::ff, o::n, driving_force);
+        k_sim::body_force<<<k_cnf(o::n)>>> (1, o::pp, o::ff, o::n, driving_force);
 
-        if (!solids0 || !s::npp) return;
-        k_sim::body_force<<<k_cnf(s::npp)>>> (true, s::pp, s::ff, s::npp, driving_force);
+        if (solids0 && s::npp)
+        k_sim::body_force<<<k_cnf(s::npp)>>> (solid_mass, s::pp, s::ff, s::npp, driving_force);
     }
 
     static void update_solid0() {
