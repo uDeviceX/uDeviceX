@@ -194,7 +194,6 @@ namespace sim
 
         if (rbcs && r::n)
         k_sim::body_force<<<k_cnf(r::n)>>> (rbc_mass, r::pp, r::ff, r::n, driving_force0);
-
     }
 
     void update_solid0() {
@@ -441,12 +440,12 @@ namespace sim
     }    
     
     void dumps_diags(int it) {
-        if (it % part_freq == 0)     dump_part(it);
-        if (it % part_freq == 0)     dump_rbcs();
+        if (it % part_freq == 0)    dump_part(it);
+        if (it % part_freq == 0)    dump_rbcs();
         if (it > wall_creation &&
-            it % part_freq == 0)     solid::dump(it, s::ss_dmphst, s::ss_dmpbbhst, s::ns, m::coords); /* s::ss_dmpbbhst contains BB Force & Torque */
-        if (it % field_freq == 0) dump_grid();
-        if (it % part_freq == 0)     diag(it);
+            it % part_freq == 0)    solid::dump(it, s::ss_dmphst, s::ss_dmpbbhst, s::ns, m::coords); /* s::ss_dmpbbhst contains BB Force & Torque */
+        if (it % field_freq == 0)   dump_grid();
+        if (it % part_freq == 0)    diag(it);
     }
 
     void run0(float driving_force0, bool wall_created, int it) {
