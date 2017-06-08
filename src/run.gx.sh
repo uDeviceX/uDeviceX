@@ -6,19 +6,24 @@ XS=40
 YS=52
 ZS=20
 
-plcmt.ro
+
+D="-XS=$XS -YS=$YS -ZS=$ZS"
+
+radius=5
+fraction=0.1
+sc=1 ang=0
+plcmt.ro $XS $YS $ZS $radius $fraction $sc $ang ic_solid.txt rbcs-ic.txt
 
 rm -rf diag.txt h5 bop
 cp sdf/gx/small.rot.dat sdf.dat
 
 
-argp .conf.gx.h                 \
-   -rbcs                        \
-   -tend=3000.0 -part_freq=5000 \
-   -walls -wall_creation=1000   \
-   -pushflow                   \
+argp .conf.gx.base.h $D                \
+   -rbcs                               \
+   -tend=3000.0 -part_freq=5000        \
+   -walls -wall_creation=1000          \
+   -pushflow                           \
    -field_dumps -part_dumps -field_freq=5000 > .conf.h
 
 { make clean && make -j ; } > /dev/null
 ./udx
-avg_h52.m h5/flowfields-0010.xmf | uscale 0.1 > h5.out.txt
