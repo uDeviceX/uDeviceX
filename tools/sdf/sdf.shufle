@@ -78,3 +78,7 @@ read(fi);
 c = decode(c); # xyz -> 123
 shufle(c);
 write(fo);
+
+# TEST: sdf.shuffle.t0
+# sdf.shufle xzy test_data/yplates.dat s.dat
+# head -n2 s.dat                          > header.out.txt
