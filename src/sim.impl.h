@@ -483,10 +483,13 @@ void init() {
 }
 
 void dumps_diags(int it) {
+    if (it > wall_creation && it % part_freq == 0) {
+        /* s::ss_dmpbbhst contains BB Force & Torque */
+        solid::dump(it, s::ss_dmphst, s::ss_dmpbbhst, s::ns, m::coords);
+        dump_rbcs();
+    }
+
     if (it % part_freq == 0)    dump_part(it);
-    if (it % part_freq == 0)    dump_rbcs();
-    if (it > wall_creation &&
-        it % part_freq == 0)    solid::dump(it, s::ss_dmphst, s::ss_dmpbbhst, s::ns, m::coords); /* s::ss_dmpbbhst contains BB Force & Torque */
     if (it % field_freq == 0)   dump_grid();
     if (it % part_freq == 0)    diag(it);
 }
