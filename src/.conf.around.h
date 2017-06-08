@@ -6,7 +6,7 @@
 #define ZWM      6
 
 #define XBBM 1.f
-#define YMARGIN_BB 1.f
+#define YBBM 1.f
 #define ZMARGIN_BB 1.f
 
 #define numberdensity    10

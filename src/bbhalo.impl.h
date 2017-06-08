@@ -108,7 +108,7 @@ void pack_sendcnt(const Solid *ss_hst, const int ns, const Particle *pp, const i
     std::vector<int> hhindices[27]; /* who will be sent in which buffer */
     
     const int L[3] = {XS, YS, ZS};
-    const float M[3] = {XBBM, YMARGIN_BB, ZMARGIN_BB};
+    const float M[3] = {XBBM, YBBM, ZMARGIN_BB};
 
     int vcode[3];
     
