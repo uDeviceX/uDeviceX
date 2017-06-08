@@ -14,7 +14,7 @@ fraction=0.1
 sc=1 ang=0
 plcmt.ro $XS $YS $ZS $radius $fraction $sc $ang ic_solid.txt rbcs-ic.txt
 
-rm -rf diag.txt h5 bop
+rm -rf diag.txt h5 bop ply
 cp sdf/gx/small.rot.dat sdf.dat
 
 
