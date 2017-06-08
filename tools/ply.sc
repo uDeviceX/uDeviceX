@@ -2,6 +2,11 @@
 
 BEGIN {
     sc = ARGV[1]; shift()
+    f  = ARGC > 2 ? ARGV[1] : "-"
+
+#    read_header()
+#    read_vert()
+#    read_rest()
 }
 
 function vertp() {
@@ -19,5 +24,5 @@ vertp() {
 function shift(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }
 
 # TEST: ply.sc.t0
-# ./ply.sc 2 test_data/rbc.ply  > sc.out.ply
+# ply.sc 2 test_data/rbc.ply  > sc.out.ply
 #
