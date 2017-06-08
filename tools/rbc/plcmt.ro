@@ -1,0 +1,8 @@
+#!/bin/bash
+
+usg () {
+    echo "usage: plcmt.ro <Lx> <Ly> <Lz> <r>     <p>    <sc> <ang>     <rbc.out> <solid.out>"
+    exit
+}
+
+usg
