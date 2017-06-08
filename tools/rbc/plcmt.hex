@@ -1,5 +1,4 @@
 #!/bin/bash
-# generate coordiantes of Hexagonal Close Packing of spehres
 
 awk '
 function usg() {
@@ -30,7 +29,6 @@ BEGIN {
     Ly = ARGV[1]; shift();
     Lz = ARGV[1]; shift();
     r  = ARGV[1]; shift();
-    print Lx, Ly, Lz, r
 
     nmax = 100  # should be a big number, TODO:
     for (i=0; i<nmax; i++) for (j=0; j<nmax; j++) for (k=0; k<nmax; k++) {
