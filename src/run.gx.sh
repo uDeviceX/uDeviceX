@@ -34,8 +34,8 @@ compile() {
     { make clean && make -j ; } > /dev/null
 }
 
-#. gx.panda.sh
-. gx.daint.sh
+. ./gx.panda.sh
+#. ./gx.daint.sh
 
 setup
 pre
