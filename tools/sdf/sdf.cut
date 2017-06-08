@@ -7,8 +7,19 @@
 # [xyz]l:[xyz]h : low and high indices; (lo:hi]
 # :, 0:, :n     : equivalent notation for whole domain
 
-
 # sx, sy, sz: slices
+1;
+function parg()
+  global a
+  a = argv();
+endfunction
+
+function nxt()
+  global a
+
+endfunction
+
+parg();
 # read in.dat
 # parse slices
 ## try to read as  :
