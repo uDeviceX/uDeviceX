@@ -38,8 +38,8 @@
 # :
 # argp .conf.gx.h \
 #    -rbcs                      \
-#    -tend=30.0 -part_freq=5000 \
-#    -walls -wall_creation=1    \
+#    -tend=3000.0 -part_freq=5000 \
+#    -walls -wall_creation=1000   \
 #    -pushflow                  \
 #    -field_dumps -part_dumps -field_freq=5000 > .conf.h
 # :
