@@ -21,7 +21,6 @@ BEGIN {
     if (ARGV[1] == "-h") usg()
     s = ARGC > 1 ? ARGV[1] : 1; shift()
     p = ARGC > 1 ? ARGV[1] : 0; shift()
-    print s, p
 }
 
 {
@@ -40,6 +39,7 @@ function shift(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }
 
 ' "$@"
 
-#TEST: plcmt.p2mat.t0
+# TEST: plcmt.p2mat.t0
 # s=1 ang=0.5
 # (echo 1 2 3; echo 10 20 30) | plcmt.p2mat $s $ang > mat.out.txt
+#

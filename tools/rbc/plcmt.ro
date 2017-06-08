@@ -16,6 +16,19 @@ usg() { usg0 > /dev/stderr; exit; }
 x=$1; shift; y=$1; shift; z=$1; shift; r=$1; shift
 f=$1; shift # fraction
 s=$1; shift; a=$1; shift # rbc parameters
-fo=$1; shift; fr=$1; shift  # s[o]lid and [r]bc
+O=$1; shift; R=$1; shift  # s[o]lid and [r]bc output files
 
-plcmt.hex $x $y $z $r
+pr=/tmp/rbc.$$ # tmp file with points for RBCs
+trap 'rm -rf $pr' 0 1 2 3 15
+
+plcmt.hex $x $y $z $r | plcmt.select $f $O $pr
+plcmt.p2mat $s $a     $pr > $R
+
+# TEST: plcmt.ro.t0
+# x=10 y=20 y=30 radius=1
+# fraction=0.1
+# sc=1 ang=0
+# plcmt.ro 10 20 30 $radius     $fraction    $sc $ang     solid.ic rbc.ic
+# :
+# cat solid.ic rbc.ic             >    test.out.txt
+#
