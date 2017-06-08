@@ -2,7 +2,7 @@
 #define YS   32
 #define ZS   16
 #define XWM     6
-#define YMARGIN_WALL     6
+#define YWM     6
 #define ZMARGIN_WALL     6
 
 #define XMARGIN_BB 1.f

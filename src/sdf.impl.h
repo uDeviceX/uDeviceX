@@ -15,7 +15,7 @@ void init() {
     float extent[3];
     field::ini("sdf.dat", N, extent, grid_data);
     int L[3] = {XS, YS, ZS};
-    int MARGIN[3] = {XWM, YMARGIN_WALL, ZMARGIN_WALL};
+    int MARGIN[3] = {XWM, YWM, ZMARGIN_WALL};
     int TEXTURESIZE[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
     if (m::rank == 0) printf("sampling the geometry file...\n");
     {
