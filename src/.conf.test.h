@@ -5,7 +5,7 @@
 #define YWM     6
 #define ZWM     6
 
-#define XMARGIN_BB 1.f
+#define XBBM 1.f
 #define YMARGIN_BB 1.f
 #define ZMARGIN_BB 1.f
 
