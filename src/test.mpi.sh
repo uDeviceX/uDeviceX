@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #### RBC in a periodic box
-# nTEST: mpi.t1
+# sTEST: mpi.t1
 # export PATH=../tools:$PATH
 # export PATH=/usr/lib64/mpich/bin:$PATH
 # echo 1 0 0 8  0 1 0 8  0 0 1 8  0 0 0 1 > rbcs-ic.txt
@@ -14,7 +14,7 @@
 # awk '{print 10000*$2}' diag.txt > diag.out.txt
 
 #### double Poiseuille
-# sTEST: mpi.t2
+# nTEST: mpi.t2
 # export PATH=../tools:$PATH
 # export PATH=/usr/lib64/mpich/bin:$PATH
 # rm -rf diag.txt h5 bop ply
