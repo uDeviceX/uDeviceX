@@ -1,0 +1,30 @@
+#!/usr/bin/env octave-qf
+
+# usage: sdf.cut xl:xh yl:yh zl:zh <in.dat> <out.dat>
+#        sdf.cut   :xh   :     :   <in.dat> <out.dat>
+#        sdf.cut   :     :     :   <in.dat> <out.dat>
+#
+# [xyz]l:[xyz]h : low and high indices; (lo:hi]
+# :, 0:, :n     : equivalent notation for whole domain
+
+# sx, sy, sz: slices
+1;
+function parg()
+  global a
+  a = argv();
+endfunction
+
+function nxt()
+  global a
+
+endfunction
+
+parg();
+# read in.dat
+# parse slices
+## try to read as  :
+## try to read as l:
+## try to read as  :h
+## read        as l:h
+# slice `D' (NOTE: zero-one glitch)
+# write out.dat

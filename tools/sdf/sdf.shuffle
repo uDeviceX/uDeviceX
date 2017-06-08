@@ -1,7 +1,7 @@
 #!/usr/bin/env octave-qf
 
-# usage: sdf.shufle <code> <in.dat> <out.dat>
-# shufle dimensions in sdf file
+# usage: sdf.shuffle <code> <in.dat> <out.dat>
+# shuffle dimensions in sdf file
 # code: yzx, xyz, ...
 #   if code == yxz: old y becomes x, old x becomes y.
 
@@ -35,15 +35,15 @@ function ans = decode(c)
   for i=1:3; ans(i) = c(i) - 'x' + 1; endfor
 endfunction
 
-function [x, y, z] = shufle3(x, y, z, c)
+function [x, y, z] = shuffle3(x, y, z, c)
   r = [x, y, z]; r = r(c);
   x = r(1); y = r(2); z = r(3);
 endfunction
 
-function shufle(c)
+function shuffle(c)
   global ex ey ez   nx ny nz   D
-  [nx, ny, nz] = shufle3(nx, ny, nz, c);
-  [ex, ey, ez] = shufle3(ex, ey, ez, c);
+  [nx, ny, nz] = shuffle3(nx, ny, nz, c);
+  [ex, ey, ez] = shuffle3(ex, ey, ez, c);
   D = permute(D, c);
 endfunction
 
@@ -68,7 +68,7 @@ endfunction
 
 function msg(s); fputs(stderr, s); endfunction
 function r = eq(a, b); r = strcmp(a, b); endfunction
-if eq(argv(){1}, "-h"); msg("sdf.shufle <yxz> <in.dat> <out.dat>"); exit(); endif
+if eq(argv(){1}, "-h"); msg("sdf.shuffle <yxz> <in.dat> <out.dat>"); exit(); endif
 
 c  = argv(){1};
 fi = argv(){2};
@@ -76,5 +76,10 @@ fo = argv(){3};
 
 read(fi);
 c = decode(c); # xyz -> 123
-shufle(c);
+shuffle(c);
 write(fo);
+
+# TEST: sdf.shuffle.t0
+# sdf.shuffle xzy test_data/yplates.dat s.dat
+# head -n2 s.dat                          > header.out.txt
+#
