@@ -39,7 +39,11 @@ __device__ float3 compute_dpd_force_traced(int type1, int type2,
     const float gammadpd_pair = 0.5 * (gammadpd[type1] + gammadpd[type2]);
     const float sigmaf_pair = sqrt(2*gammadpd_pair*kBT / dt);
     float strength = (-gammadpd_pair * wr * rdotv + sigmaf_pair * myrandnr) * wr;
-    if (type1 == SOLID_TYPE && type2 == SOLID_TYPE) {  // membrane contact
+
+    const bool ss = (type1 == SOLID_TYPE) && (type2 == SOLID_TYPE);
+    const bool sw = (type1 == SOLID_TYPE) && (type2 ==  WALL_TYPE);
+
+    if (ss || sw) {
         const float invr2 = invrij * invrij;
         const float t2 = ljsigma * ljsigma * invr2;
         const float t4 = t2 * t2;
