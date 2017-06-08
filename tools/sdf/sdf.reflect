@@ -1,9 +1,9 @@
 #!/usr/bin/env octave-qf
 
-# usage: sdf.shufle <code> <in.dat> <out.dat>
-# shufle dimensions in sdf file
-# code: yzx, xyz, ...
-#   if code == yxz: old y becomes x, old x becomes y.
+# usage: sdf.reflect <code> <in.dat> <out.dat>
+# reflect domain against the boundary
+# code: xl, xh, yl, yh, zl, zh (high/low)
+#   code of the boundary
 
 1;
 function read(fn)
@@ -30,21 +30,10 @@ function read_data(f)
   D = reshape(D, nx, ny, nz);
 endfunction
 
-function ans = decode(c)
+function ans = decode()
+  global c
   ans = zeros(1, 3);
   for i=1:3; ans(i) = c(i) - 'x' + 1; endfor
-endfunction
-
-function [x, y, z] = shufle3(x, y, z, c)
-  r = [x, y, z]; r = r(c);
-  x = r(1); y = r(2); z = r(3);
-endfunction
-
-function shufle(c)
-  global ex ey ez   nx ny nz   D
-  [nx, ny, nz] = shufle3(nx, ny, nz, c);
-  [ex, ey, ez] = shufle3(ex, ey, ez, c);
-  D = permute(D, c);
 endfunction
 
 function write_header(f)
@@ -66,15 +55,44 @@ function write(fn)
   fclose(f);
 endfunction
 
+function reflect_header()
+  global ex ey ez   nx ny nz c
+  d = c(1);
+  if d == 'x'; ex *= 2; nx *= 2; endif
+  if d == 'y'; ey *= 2; ny *= 2; endif
+  if d == 'z'; ez *= 2; nz *= 2; endif
+endfunction
+
+function reflect_data()
+  global c D
+  d = c(1) - 'x' + 1;
+  low = c(2) == 'l';
+  F = flipdim(D, d);
+  if low; D = cat(d, D, F); else; D = cat(d, F, D); endif
+endfunction
+
+function reflect()
+  reflect_data()
+  reflect_header()
+endfunction
+
 function msg(s); fputs(stderr, s); endfunction
+function usg() ; msg("sdf.reflect <[xyz][lh]> <in.dat> <out.dat>"); exit(); endfunction
 function r = eq(a, b); r = strcmp(a, b); endfunction
-if eq(argv(){1}, "-h"); msg("sdf.shufle <yxz> <in.dat> <out.dat>"); exit(); endif
 
-c  = argv(){1};
-fi = argv(){2};
-fo = argv(){3};
+function [fi, fo] = parg() # parse arguments
+  global c
+  if eq(argv(){1}, "-h"); usg(); endif
+  c  = argv(){1};
+  if numel(c) != 2; usg(); endif
+  d = c(1); l = c(2);
+  if d != 'x' && d != 'y' && d != 'z'; usg(); endif
+  if l != 'l' && l != 'h'              usg(); endif
+  fi = argv(){2};
+  fo = argv(){3};
+endfunction
 
+[fi, fo] = parg();
 read(fi);
-c = decode(c); # xyz -> 123
-shufle(c);
+reflect();
 write(fo);

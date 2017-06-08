@@ -50,3 +50,6 @@ function write_val(fi, fo,   cmd) {
 }
 
 function shift(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }
+
+# TEST: sdf.2bov.t0
+# ./sdf.2bov test_data/yplates.dat yp.out.bov
