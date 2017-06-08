@@ -74,6 +74,7 @@ void remove_solids_from_wall() {
     if (s::npp <= 0) return;
     int ns0 = s::ns;
     DeviceBuffer<int> marks(s::npp);
+
     k_sdf::fill_keys<<<k_cnf(s::npp)>>>(s::pp, s::npp, marks.D);
 
     std::vector<int> marks_hst(marks.S);
@@ -98,12 +99,6 @@ void remove_solids_from_wall() {
 
     s::ns = newns;
     s::npp = s::ns * s::nps;
-
-    if (s::ns)
-    {
-        ic_solid::set_ids(s::ns, s::ss_hst);
-        CC(cudaMemcpy(s::ss_dev, s::ss_hst, s::ns * sizeof(Solid), H2D));
-    }
         
     fprintf(stderr, "sim.impl: %04d/%04d Solids survived\n", s::ns, ns0);
 }
@@ -121,9 +116,16 @@ void create_walls() {
     update_helper_arrays();
 
     CC( cudaPeekAtLastError() );
-    
+
     if (solids) remove_solids_from_wall();
     if (rbcs)   remove_rbcs_from_wall();
+
+    if (solids)
+    {
+        ic_solid::set_ids(s::ns, s::ss_hst);
+        if (s::ns)
+        CC(cudaMemcpy(s::ss_dev, s::ss_hst, s::ns * sizeof(Solid), H2D));
+    }
 
     CC( cudaPeekAtLastError() );
 }
@@ -533,6 +535,7 @@ void run_wall(long nsteps) {
     solids0 = solids;
     if (solids0) init_solid();
     if (walls) {create_walls(); wall_created = true;}
+    printf("%d: done creating walls\n", m::rank);
     if (solids0 && s::npp) k_sim::clear_velocity<<<k_cnf(s::npp)>>>(s::pp, s::npp);
     if (rbcs && r::n)      k_sim::clear_velocity<<<k_cnf(r::n)  >>>(r::pp, r::n);
     if (pushflow) driving_force0 = driving_force;
