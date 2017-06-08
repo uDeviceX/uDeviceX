@@ -64,7 +64,7 @@ void remove_rbcs_from_wall() {
         if (!valid) tokill.push_back(i);
     }
 
-    r::nc = Cont::rbc_remove(r::pp, r::nv, r::nc, &tokill.front(), tokill.size());
+    r::nc = Cont::remove<DEV>(r::pp, r::nv, r::nc, &tokill.front(), tokill.size());
     r::n = r::nc * r::nv;
     fprintf(stderr, "sim.impl: %04d/%04d RBCs survived\n", r::nc, nc0);
 }

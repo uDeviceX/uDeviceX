@@ -60,22 +60,6 @@ int setup(Particle* pp, int nv, /* storage */ Particle *pp_hst) {
     return nc;
 }
 
-int rbc_remove(Particle* pp, int nv, int nc, int *e, int ne) {
-    /* remove RBCs with indexes in `e' */
-    bool GO = false, STAY = true;
-    int ie, i0, i1;
-    std::vector<bool> m(nc, STAY);
-    for (ie = 0; ie < ne; ie++) m[e[ie]] = GO;
-
-    for (i0 = i1 = 0; i0 < nc; i0++)
-    if (m[i0] == STAY)
-    CC(cudaMemcpy(&pp[nv*(i1++)], pp + nv*i0,
-                  sizeof(Particle)*nv, D2D));
-    int nstay = i1;
-
-    return nstay;
-}
-
 template <bool hst, typename T>
 int remove(T* data, const int npb, const int nb, const int *e, const int ne) {
     /* remove data with indexes in `e' */
