@@ -12,11 +12,6 @@ pre() {
 
     D="-XS=$XS -YS=$YS -ZS=$ZS"
 
-    radius=3
-    fraction=0.5
-    sc=1 ang=0
-    plcmt.ro $XS $YS $ZS $radius $fraction $sc $ang ic_solid.txt rbcs-ic.txt
-
     rm -rf diag.txt h5 bop ply solid-ply solid_diag*txt
     cp $HOME/geoms/128.dat      sdf.dat
     cp data/sphere_R1.ply mesh_solid.ply
