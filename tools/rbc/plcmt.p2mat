@@ -42,3 +42,7 @@ function msg(s) { printf "%s\n", s | "cat >&2" }
 function shift(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }
 
 ' "$@"
+
+#TEST: plcmt.p2mat.t0
+# s=1 ang=0.5  
+# (echo 1 2 3; echo 10 20 30) | plcmt.p2mat $s $ang > mat.out.txt
