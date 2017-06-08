@@ -89,6 +89,12 @@ void remove_solids_from_wall() {
     newns = Cont::remove<DEV> (s::pp,     s::nps, s::ns, &tokill.front(), tokill.size());
     newns = Cont::remove<HST> (s::pp_hst, s::nps, s::ns, &tokill.front(), tokill.size());
 
+    newns = Cont::remove<DEV> (s::ss_dev, 1, s::ns, &tokill.front(), tokill.size());
+    newns = Cont::remove<HST> (s::ss_hst, 1, s::ns, &tokill.front(), tokill.size());
+
+    newns = Cont::remove<DEV> (s::i_pp_dev, s::m_dev.nv, s::ns, &tokill.front(), tokill.size());
+    newns = Cont::remove<HST> (s::i_pp_hst, s::m_hst.nv, s::ns, &tokill.front(), tokill.size());
+
     s::ns = newns;
     
     s::npp = s::ns * s::nps;
