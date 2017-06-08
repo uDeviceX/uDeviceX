@@ -18,7 +18,7 @@ pre() {
     sc=1 ang=0
     plcmt.ro $XS $YS $ZS $radius $fraction $sc $ang ic_solid.txt rbcs-ic.txt
 
-    rm -rf diag.txt h5 bop ply solid-ply
+    rm -rf diag.txt h5 bop ply solid-ply solid_diag*txt
     cp sdf/gx/small.rot.dat sdf.dat
     cp data/sphere_R1.ply mesh_solid.ply
 
