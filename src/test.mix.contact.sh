@@ -1,6 +1,6 @@
 
 #### contact force: RBC and sphere in double Poiseuille
-# sTEST: mix.contact.t1
+# nTEST: mix.contact.t1
 # export PATH=../tools:$PATH
 # rm -rf diag.txt h5 bop ply
 #  x=5 y=17 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
@@ -18,7 +18,7 @@
 # ply2punto ply/rbcs-00002.ply | uscale 1 > ply.out.txt
 
 #### no contact force: RBC and sphere in double Poiseuille
-# cTEST: mix.no.contact.t1
+# nTEST: mix.no.contact.t1
 # export PATH=../tools:$PATH
 # rm -rf diag.txt h5 bop ply
 #  x=5 y=17 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
