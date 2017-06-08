@@ -125,86 +125,86 @@ void build_tcells_hst(const Mesh m, const Particle *i_pp, const int ns, /**/ int
 
 namespace tckernels
 {
-    __global__ void countt(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, /**/ int *counts)
-    {
-        const int thid = threadIdx.x + blockIdx.x * blockDim.x;
+__global__ void countt(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, /**/ int *counts)
+{
+    const int thid = threadIdx.x + blockIdx.x * blockDim.x;
 
-        if (thid >= nt * ns) return;
+    if (thid >= nt * ns) return;
         
-        const int tid = thid % nt;
-        const int sid = thid / nt;
+    const int tid = thid % nt;
+    const int sid = thid / nt;
 
-        const int t1 = tt[3*tid + 0];
-        const int t2 = tt[3*tid + 1];
-        const int t3 = tt[3*tid + 2];
+    const int t1 = tt[3*tid + 0];
+    const int t2 = tt[3*tid + 1];
+    const int t3 = tt[3*tid + 2];
 
-        const int base = nv * sid;
+    const int base = nv * sid;
         
 #define loadr(i) {pp[base + i].r[X], pp[base + i].r[Y], pp[base + i].r[Z]}       
-        const float A[3] = loadr(t1);
-        const float B[3] = loadr(t2);
-        const float C[3] = loadr(t3);
+    const float A[3] = loadr(t1);
+    const float B[3] = loadr(t2);
+    const float C[3] = loadr(t3);
 #undef loadr
-        float bbox[6]; tbbox(A, B, C, /**/ bbox);
+    float bbox[6]; tbbox(A, B, C, /**/ bbox);
 
-        const int startx = max2(int (bbox[2*X + 0] + XS/2), 0);
-        const int starty = max2(int (bbox[2*Y + 0] + YS/2), 0);
-        const int startz = max2(int (bbox[2*Z + 0] + ZS/2), 0);
+    const int startx = max2(int (bbox[2*X + 0] + XS/2), 0);
+    const int starty = max2(int (bbox[2*Y + 0] + YS/2), 0);
+    const int startz = max2(int (bbox[2*Z + 0] + ZS/2), 0);
 
-        const int endx = min2(int (bbox[2*X + 1] + XS/2) + 1, XS);
-        const int endy = min2(int (bbox[2*Y + 1] + YS/2) + 1, YS);
-        const int endz = min2(int (bbox[2*Z + 1] + ZS/2) + 1, ZS);
+    const int endx = min2(int (bbox[2*X + 1] + XS/2) + 1, XS);
+    const int endy = min2(int (bbox[2*Y + 1] + YS/2) + 1, YS);
+    const int endz = min2(int (bbox[2*Z + 1] + ZS/2) + 1, ZS);
 
-        for (int iz = startz; iz < endz; ++iz)
-        for (int iy = starty; iy < endy; ++iy)
-        for (int ix = startx; ix < endx; ++ix)
-        {
-            const int cid = ix + XS * (iy + YS * iz);
-            atomicAdd(counts + cid, 1);
-        }
-    }
-
-    __global__ void fill_ids(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, const int *starts, /**/ int *counts, int *ids)
+    for (int iz = startz; iz < endz; ++iz)
+    for (int iy = starty; iy < endy; ++iy)
+    for (int ix = startx; ix < endx; ++ix)
     {
-        const int thid = threadIdx.x + blockIdx.x * blockDim.x;
+        const int cid = ix + XS * (iy + YS * iz);
+        atomicAdd(counts + cid, 1);
+    }
+}
 
-        if (thid >= nt * ns) return;
+__global__ void fill_ids(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, const int *starts, /**/ int *counts, int *ids)
+{
+    const int thid = threadIdx.x + blockIdx.x * blockDim.x;
+
+    if (thid >= nt * ns) return;
         
-        const int tid = thid % nt;
-        const int sid = thid / nt;
+    const int tid = thid % nt;
+    const int sid = thid / nt;
             
-        const int t1 = tt[3*tid + 0];
-        const int t2 = tt[3*tid + 1];
-        const int t3 = tt[3*tid + 2];
+    const int t1 = tt[3*tid + 0];
+    const int t2 = tt[3*tid + 1];
+    const int t3 = tt[3*tid + 2];
 
-        const int base = nv * sid;
+    const int base = nv * sid;
         
 #define loadr(i) {pp[base + i].r[X], pp[base + i].r[Y], pp[base + i].r[Z]}       
-        const float A[3] = loadr(t1);
-        const float B[3] = loadr(t2);
-        const float C[3] = loadr(t3);
+    const float A[3] = loadr(t1);
+    const float B[3] = loadr(t2);
+    const float C[3] = loadr(t3);
 #undef loadr
-        float bbox[6]; tbbox(A, B, C, /**/ bbox);
+    float bbox[6]; tbbox(A, B, C, /**/ bbox);
 
-        const int startx = max2(int (bbox[2*X + 0] + XS/2), 0);
-        const int starty = max2(int (bbox[2*Y + 0] + YS/2), 0);
-        const int startz = max2(int (bbox[2*Z + 0] + ZS/2), 0);
+    const int startx = max2(int (bbox[2*X + 0] + XS/2), 0);
+    const int starty = max2(int (bbox[2*Y + 0] + YS/2), 0);
+    const int startz = max2(int (bbox[2*Z + 0] + ZS/2), 0);
 
-        const int endx = min2(int (bbox[2*X + 1] + XS/2) + 1, XS);
-        const int endy = min2(int (bbox[2*Y + 1] + YS/2) + 1, YS);
-        const int endz = min2(int (bbox[2*Z + 1] + ZS/2) + 1, ZS);
+    const int endx = min2(int (bbox[2*X + 1] + XS/2) + 1, XS);
+    const int endy = min2(int (bbox[2*Y + 1] + YS/2) + 1, YS);
+    const int endz = min2(int (bbox[2*Z + 1] + ZS/2) + 1, ZS);
 
-        for (int iz = startz; iz < endz; ++iz)
-        for (int iy = starty; iy < endy; ++iy)
-        for (int ix = startx; ix < endx; ++ix)
-        {
-            const int cid = ix + XS * (iy + YS * iz);
-            const int subindex = atomicAdd(counts + cid, 1);
-            const int start = starts[cid];
+    for (int iz = startz; iz < endz; ++iz)
+    for (int iy = starty; iy < endy; ++iy)
+    for (int ix = startx; ix < endx; ++ix)
+    {
+        const int cid = ix + XS * (iy + YS * iz);
+        const int subindex = atomicAdd(counts + cid, 1);
+        const int start = starts[cid];
 
-            ids[start + subindex] = thid;
-        }
+        ids[start + subindex] = thid;
     }
+}
 }
 
 #include <thrust/scan.h>
