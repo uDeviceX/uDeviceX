@@ -1,7 +1,7 @@
 #define XS   32
 #define YS   32
 #define ZS   32
-#define XMARGIN_WALL     6
+#define XWM     6
 #define YMARGIN_WALL     6
 #define ZMARGIN_WALL     6
 

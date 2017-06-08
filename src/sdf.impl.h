@@ -15,7 +15,7 @@ void init() {
     float extent[3];
     field::ini("sdf.dat", N, extent, grid_data);
     int L[3] = {XS, YS, ZS};
-    int MARGIN[3] = {XMARGIN_WALL, YMARGIN_WALL, ZMARGIN_WALL};
+    int MARGIN[3] = {XWM, YMARGIN_WALL, ZMARGIN_WALL};
     int TEXTURESIZE[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
     if (m::rank == 0) printf("sampling the geometry file...\n");
     {
@@ -26,7 +26,7 @@ void init() {
             spacing[c] = N[c] * (L[c] + 2 * MARGIN[c]) /
                 (float)(m::dims[c] * L[c]) / (float)TEXTURESIZE[c];
         }
-        float amplitude_rescaling = (XS /*+ 2 * XMARGIN_WALL*/) /
+        float amplitude_rescaling = (XS /*+ 2 * XWM*/) /
             (extent[0] / m::dims[0]);
         field::sample(start, spacing, TEXTURESIZE, N, amplitude_rescaling, grid_data,
                       field);

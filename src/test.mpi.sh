@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #### RBC in a periodic box
-# sTEST: mpi.t1
+# nTEST: mpi.t1
 # export PATH=../tools:$PATH
 # export PATH=/usr/lib64/mpich/bin:$PATH
 # echo 1 0 0 8  0 1 0 8  0 0 1 8  0 0 0 1 > rbcs-ic.txt
@@ -47,7 +47,7 @@
 #
 
 #### Poiseuille
-# nTEST: mpi.t4
+# sTEST: mpi.t4
 # export PATH=../tools:$PATH
 # export PATH=/usr/lib64/mpich/bin:$PATH
 # rm -rf diag.txt h5 bop ply
