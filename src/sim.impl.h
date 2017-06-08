@@ -97,11 +97,14 @@ void remove_solids_from_wall() {
     newns = Cont::remove<HST> (s::i_pp_hst, s::m_hst.nv, s::ns, &tokill.front(), tokill.size());
 
     s::ns = newns;
-    
-    ic_solid::set_ids(s::ns, s::ss_hst);
-    CC(cudaMemcpy(s::ss_dev, s::ss_hst, s::ns * sizeof(Solid), H2D));
-    
     s::npp = s::ns * s::nps;
+
+    if (s::ns)
+    {
+        ic_solid::set_ids(s::ns, s::ss_hst);
+        CC(cudaMemcpy(s::ss_dev, s::ss_hst, s::ns * sizeof(Solid), H2D));
+    }
+        
     fprintf(stderr, "sim.impl: %04d/%04d Solids survived\n", s::ns, ns0);
 }
 
@@ -117,8 +120,12 @@ void create_walls() {
     o::cells->build(o::pp, o::n, NULL, NULL);
     update_helper_arrays();
 
+    CC( cudaPeekAtLastError() );
+    
     if (solids) remove_solids_from_wall();
     if (rbcs)   remove_rbcs_from_wall();
+
+    CC( cudaPeekAtLastError() );
 }
 
 void forces_rbc() {
