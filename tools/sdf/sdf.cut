@@ -7,3 +7,13 @@
 # [xyz]l:[xyz]h : low and high indices; (lo:hi]
 # :, 0:, :n     : equivalent notation for whole domain
 
+
+# sx, sy, sz: slices
+# read in.dat
+# parse slices
+## try to read as  :
+## try to read as l:
+## try to read as  :h
+## read        as l:h
+# slice `D' (NOTE: zero-one glitch)
+# write out.dat
