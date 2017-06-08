@@ -7,6 +7,8 @@ void ini(const char *path, int N[3], float extent[3], float* grid_data) { /* rea
     fgets(line, sizeof(line), fh);
     sscanf(line, "%d %d %d", &N[0], &N[1], &N[2]);
 
+    assert(N[0]*N[1]*N[2] <= MAX_SUBDOMAIN_VOLUME);
+    
     MC(MPI_Bcast(N, 3, MPI_INT, 0, m::cart));
     MC(MPI_Bcast(extent, 3, MPI_FLOAT, 0, m::cart));
 
