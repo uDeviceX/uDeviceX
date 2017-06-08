@@ -120,8 +120,12 @@ void create_walls() {
     o::cells->build(o::pp, o::n, NULL, NULL);
     update_helper_arrays();
 
+    CC( cudaPeekAtLastError() );
+    
     if (solids) remove_solids_from_wall();
     if (rbcs)   remove_rbcs_from_wall();
+
+    CC( cudaPeekAtLastError() );
 }
 
 void forces_rbc() {
