@@ -97,6 +97,9 @@ void remove_solids_from_wall() {
 
     s::ns = newns;
     
+    ic_solid::set_ids(s::ns, s::ss_hst);
+    CC(cudaMemcpy(s::ss_dev, s::ss_hst, s::ns * sizeof(Solid), H2D));
+    
     s::npp = s::ns * s::nps;
     fprintf(stderr, "sim.impl: %04d/%04d Solids survived\n", s::ns, ns0);
 }
