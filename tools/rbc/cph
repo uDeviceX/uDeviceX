@@ -21,7 +21,7 @@ function indomain(x, y, z) {
 
     if (z+r>Lz) return 0
     if (z-r<0 ) return 0
-
+pl
     return 1
 }
 

@@ -43,9 +43,9 @@ function [l, h] = slice0(s, l0, h0)
   s = strsplit(s, ":")
   l = s{1}; h = s{2};
   l = str2num0(l, l0); h = str2num0(l, h0);
-  
+
   # [l, h] = strread(sx, "%d:%d", "returnonerror", 0);
-  
+
 endfunction
 
 function slices(sx, sy, sz)
