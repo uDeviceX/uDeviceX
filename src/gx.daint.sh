@@ -7,7 +7,7 @@ run () {
     
     cat <<-EOF > runme.sh
 	#!/bin/bash -l
-    #SBATCH --partition=low
+	#SBATCH --partition=low
 	#SBATCH --job-name=$n
 	#SBATCH --time=00:10:00
 	#SBATCH --nodes=1
