@@ -342,13 +342,13 @@ void init_solid()
 
     s::tcs_hst = new int[XS * YS * ZS];
     s::tcc_hst = new int[XS * YS * ZS];
-    s::tci_hst      = new int[27 * MAX_SOLIDS * s::m_hst.nt]; // assume 1 triangle don't overlap more than 27 cells
+    s::tci_hst = new int[27 * MAX_SOLIDS * s::m_hst.nt]; // assume 1 triangle don't overlap more than 27 cells
 
     CC(cudaMalloc(&s::tcs_dev, XS * YS * ZS * sizeof(int)));
     CC(cudaMalloc(&s::tcc_dev, XS * YS * ZS * sizeof(int)));
     CC(cudaMalloc(&s::tci_dev, 27 * MAX_SOLIDS * s::m_dev.nt * sizeof(int)));
 
-    CC(cudaMalloc(&s::ss_dev, MAX_SOLIDS * sizeof(Solid)));
+    CC(cudaMalloc(&s::ss_dev,    MAX_SOLIDS * sizeof(Solid)));
     CC(cudaMalloc(&s::ss_bb_dev, MAX_SOLIDS * sizeof(Solid)));
 
     CC(cudaMemcpy(o::pp_hst, o::pp, sizeof(Particle) * o::n, D2H));
