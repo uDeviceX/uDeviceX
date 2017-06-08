@@ -1,0 +1,23 @@
+#!/bin/bash
+
+usg () { echo 'sdf.2per <in.dat> <out.dat>' > /dev/stderr; exit; }
+
+# make domain periodic
+if test $# -eq 0; then usg; fi
+if test $1 = -h;  then usg; fi
+i=$1; shift
+
+if test $# -eq 0; then usg; fi
+o=$1; shift
+
+t=/tmp/sdf.$$.dat
+
+trap 'rm -f $t' 0 1 2 3 15
+
+sdf.reflect xl $i $t   &&   sdf.reflect yl $t $o
+
+
+# TEST: sdf.2per.t0
+# sdf.2per test_data/yplates.dat par.dat
+# head -n2 par.dat  > header.out.dat
+#
