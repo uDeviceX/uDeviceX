@@ -1,5 +1,4 @@
 
-
 #### RBC in a periodic box
 # sTEST: diag.t2
 # export PATH=../tools:$PATH
