@@ -1,5 +1,5 @@
 namespace sim {
-  void init();
-  void run();
-  void close();
+void init();
+void run();
+void close();
 }

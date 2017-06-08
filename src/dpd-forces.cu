@@ -7,7 +7,7 @@
 #include "conf.default.h"
 
 __device__ float3 compute_dpd_force_traced(int type1, int type2,
-        float3 pos1, float3 pos2, float3 vel1, float3 vel2, float myrandnr) {
+                                           float3 pos1, float3 pos2, float3 vel1, float3 vel2, float myrandnr) {
     /* return the DPD interaction force based on particle types
      * type: 0 -- outer solvent, 1 -- inner solvent, 2 -- membrane, 3 -- wall */
 
@@ -22,7 +22,7 @@ __device__ float3 compute_dpd_force_traced(int type1, int type2,
     const float invrij = rsqrtf(rij2);
     const float rij = rij2 * invrij;
     if (rij2 >= 1)
-        return make_float3(0, 0, 0);
+    return make_float3(0, 0, 0);
 
     const float argwr = 1.f - rij;
     const float wr = viscosity_function<-VISCOSITY_S_LEVEL>(argwr);

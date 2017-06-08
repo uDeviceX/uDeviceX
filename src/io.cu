@@ -27,8 +27,8 @@ void _write_bytes(const void * const ptr, const int nbytes32, MPI_File f) {
 }
 
 void ply_dump(const char * filename,
-        int *mesh_indices, const int ninstances, const int ntriangles_per_instance,
-        Particle * _particles, int nvertices_per_instance) {
+              int *mesh_indices, const int ninstances, const int ntriangles_per_instance,
+              Particle * _particles, int nvertices_per_instance) {
     std::vector<Particle> particles(_particles, _particles + ninstances * nvertices_per_instance);
     int NPOINTS = 0;
     const int n = particles.size();
@@ -38,8 +38,8 @@ void ply_dump(const char * filename,
     MPI_Reduce(&ntriangles, &NTRIANGLES, 1, MPI_INT, MPI_SUM, 0, m::cart) ;
     MPI_File f;
     MPI_File_open(m::cart, filename,
-		     MPI_MODE_WRONLY |  MPI_MODE_CREATE,
-		     MPI_INFO_NULL, &f);
+                  MPI_MODE_WRONLY |  MPI_MODE_CREATE,
+                  MPI_INFO_NULL, &f);
     MPI_File_set_size (f, 0);
 
     std::stringstream ss;
@@ -57,21 +57,21 @@ void ply_dump(const char * filename,
     _write_bytes(content.c_str(), content.size(), f);
     int L[3] = { XS, YS, ZS };
     for(int i = 0; i < n; ++i)
-        for(int c = 0; c < 3; ++c)
-        particles[i].r[c] += L[c] / 2 + m::coords[c] * L[c];
+    for(int c = 0; c < 3; ++c)
+    particles[i].r[c] += L[c] / 2 + m::coords[c] * L[c];
 
     _write_bytes(&particles.front(), sizeof(Particle) * n, f);
     int poffset = 0;
     MPI_Exscan(&n, &poffset, 1, MPI_INTEGER, MPI_SUM, m::cart);
     std::vector<int> buf;
     for(int j = 0; j < ninstances; ++j)
-      for(int i = 0; i < ntriangles_per_instance; ++i) {
-	int primitive[4] = { 3,
-			     poffset + nvertices_per_instance * j + mesh_indices[3 * i + 0],
-			     poffset + nvertices_per_instance * j + mesh_indices[3 * i + 1],
-			     poffset + nvertices_per_instance * j + mesh_indices[3 * i + 2] };
-            buf.insert(buf.end(), primitive, primitive + 4);
-      }
+    for(int i = 0; i < ntriangles_per_instance; ++i) {
+        int primitive[4] = { 3,
+                             poffset + nvertices_per_instance * j + mesh_indices[3 * i + 0],
+                             poffset + nvertices_per_instance * j + mesh_indices[3 * i + 1],
+                             poffset + nvertices_per_instance * j + mesh_indices[3 * i + 2] };
+        buf.insert(buf.end(), primitive, primitive + 4);
+    }
     _write_bytes(&buf.front(), sizeof(int) * buf.size(), f);
     MPI_File_close(&f);
 }
@@ -84,7 +84,7 @@ void H5FieldDump::_xdmf_header(FILE * xmf) {
 }
 
 void H5FieldDump::_xdmf_grid(FILE * xmf,
-			     const char * const h5path, const char * const *channelnames, int nchannels) {
+                             const char * const h5path, const char * const *channelnames, int nchannels) {
     fprintf(xmf, "   <Grid Name=\"mesh\" GridType=\"Uniform\">\n");
     fprintf(xmf, "     <Topology TopologyType=\"3DCORECTMesh\" Dimensions=\"%d %d %d\"/>\n",
             1 + (int)globalsize[2], 1 + (int)globalsize[1], 1 + (int)globalsize[0]);
@@ -117,8 +117,8 @@ void H5FieldDump::_xdmf_epilogue(FILE * xmf) {
 }
 
 void H5FieldDump::_write_fields(const char * const path2h5,
-				const float * const channeldata[],
-				const char * const * const channelnames, const int nchannels) {
+                                const float * const channeldata[],
+                                const char * const * const channelnames, const int nchannels) {
 #ifndef NO_H5
     hid_t plist_id_access = H5Pcreate(H5P_FILE_ACCESS);
     H5Pset_fapl_mpio(plist_id_access, m::cart, MPI_INFO_NULL);
@@ -133,7 +133,7 @@ void H5FieldDump::_write_fields(const char * const path2h5,
     for(int ichannel = 0; ichannel < nchannels; ++ichannel)
     {
         hid_t dset_id = H5Dcreate(file_id, channelnames[ichannel], H5T_NATIVE_FLOAT, filespace_simple,
-				  H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+                                  H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
         hid_t plist_id = H5Pcreate(H5P_DATASET_XFER);
 
         H5Pset_dxpl_mpio(plist_id, H5FD_MPIO_COLLECTIVE);
@@ -164,7 +164,7 @@ void H5FieldDump::_write_fields(const char * const path2h5,
 
         _xdmf_header(xmf);
         _xdmf_grid(xmf, std::string(path2h5).substr(std::string(path2h5).find_last_of("/") + 1).c_str(),
-		   channelnames, nchannels);
+                   channelnames, nchannels);
         _xdmf_epilogue(xmf);
 
         fclose(xmf);
@@ -176,11 +176,11 @@ H5FieldDump::H5FieldDump() : last_idtimestep(0) {
     const int L[3] = { XS, YS, ZS };
 
     for(int c = 0; c < 3; ++c)
-      globalsize[c] = L[c] * m::dims[c];
+    globalsize[c] = L[c] * m::dims[c];
 }
 
 void H5FieldDump::dump_scalarfield(float *data,
-				   const char *channelname) {
+                                   const char *channelname) {
     char path2h5[512];
     sprintf(path2h5, "h5/%s.h5", channelname);
     _write_fields(path2h5, &data, &channelname, 1);
@@ -193,7 +193,7 @@ void H5FieldDump::dump(Particle *p, int n) {
     const int ncells = XS * YS * ZS;
     std::vector<float> rho(ncells), u[3];
     for(int c = 0; c < 3; ++c)
-        u[c].resize(ncells);
+    u[c].resize(ncells);
     for(int i = 0; i < n; ++i) {
         const int cellindex[3] = {
             max(0, min(XS - 1, (int)(floor(p[i].r[0])) + XS / 2)),
@@ -206,15 +206,15 @@ void H5FieldDump::dump(Particle *p, int n) {
     }
 
     for(int c = 0; c < 3; ++c)
-        for(int i = 0; i < ncells; ++i)
-            u[c][i] = rho[i] ? u[c][i] / rho[i] : 0;
+    for(int i = 0; i < ncells; ++i)
+    u[c][i] = rho[i] ? u[c][i] / rho[i] : 0;
 
     const char * names[] = { "density", "u", "v", "w" };
     if (!directory_exists) {
-      if (m::rank == 0)
-	mkdir("h5", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-      directory_exists = true;
-      MC(MPI_Barrier(m::cart));
+        if (m::rank == 0)
+        mkdir("h5", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+        directory_exists = true;
+        MC(MPI_Barrier(m::cart));
     }
 
     char filepath[512];

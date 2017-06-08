@@ -92,7 +92,7 @@ __global__ void minmaxob(const Particle * const d_data, float3 *d_min, float3 *d
 
 
 __global__ void minmaxmba(const Particle  *d_data, float3 *d_min, float3 *d_max,
-        int size, sblockds_t *ptoblockds) {
+                          int size, sblockds_t *ptoblockds) {
 
     __shared__ float3 mintemp[32];
     __shared__ float3 maxtemp[32];
@@ -195,7 +195,7 @@ void minmax(const Particle * const rbc, int size, int n, float3 *minrbc, float3 
     const int size32 = ((size + 31) / 32) * 32;
 
     if (size32 < MAXTHREADS)
-        minmaxob<<<n, size32>>>(rbc, minrbc, maxrbc, size);
+    minmaxob<<<n, size32>>>(rbc, minrbc, maxrbc, size);
     else
     {
         static int nctc = -1;
@@ -219,7 +219,7 @@ void minmax(const Particle * const rbc, int size, int n, float3 *minrbc, float3 
             }
 
             if (ptoblockds != NULL)
-                CC(cudaFree(ptoblockds));
+            CC(cudaFree(ptoblockds));
 
             CC(cudaMalloc((void **)&ptoblockds,sizeof(sblockds_t) * n));
 

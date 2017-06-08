@@ -113,7 +113,8 @@ void create_walls() {
     o::cells->build(o::pp, o::n, NULL, NULL);
     update_helper_arrays();
 
-    if (rbcs) remove_rbcs_from_wall();
+    if (solids) remove_solids_from_wall();
+    if (rbcs)   remove_rbcs_from_wall();
 }
 
 void forces_rbc() {

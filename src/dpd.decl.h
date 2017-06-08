@@ -27,76 +27,76 @@ float safety_factor;
 cudaEvent_t evfillall, evuploaded, evdownloaded;
 
 struct SendHalo {
-  SendHalo() {
-    dbuf = new DeviceBuffer<Particle>;
-    hbuf = new PinnedHostBuffer<Particle>;
+    SendHalo() {
+        dbuf = new DeviceBuffer<Particle>;
+        hbuf = new PinnedHostBuffer<Particle>;
 
-    scattered_entries = new DeviceBuffer<int>;
-    tmpstart = new DeviceBuffer<int>;
-    tmpcount = new DeviceBuffer<int>;
-    dcellstarts = new DeviceBuffer<int>;
-    hcellstarts = new PinnedHostBuffer<int>;
-  };
+        scattered_entries = new DeviceBuffer<int>;
+        tmpstart = new DeviceBuffer<int>;
+        tmpcount = new DeviceBuffer<int>;
+        dcellstarts = new DeviceBuffer<int>;
+        hcellstarts = new PinnedHostBuffer<int>;
+    };
 
-  ~SendHalo() {
-    delete dbuf;
-    delete hbuf;
-    delete scattered_entries;
-    delete tmpstart;
-    delete tmpcount;
-    delete dcellstarts;
-    delete hcellstarts;
-  }
+    ~SendHalo() {
+        delete dbuf;
+        delete hbuf;
+        delete scattered_entries;
+        delete tmpstart;
+        delete tmpcount;
+        delete dcellstarts;
+        delete hcellstarts;
+    }
 
-  DeviceBuffer<int> *scattered_entries, *tmpstart, *tmpcount, *dcellstarts;
-  DeviceBuffer<Particle> *dbuf;
-  PinnedHostBuffer<Particle> *hbuf;
-  PinnedHostBuffer<int> *hcellstarts;
+    DeviceBuffer<int> *scattered_entries, *tmpstart, *tmpcount, *dcellstarts;
+    DeviceBuffer<Particle> *dbuf;
+    PinnedHostBuffer<Particle> *hbuf;
+    PinnedHostBuffer<int> *hcellstarts;
 
-  int expected;
-  void setup(int estimate, int nhalocells) {
-    adjust(estimate);
-    dcellstarts->resize(nhalocells + 1);
-    hcellstarts->resize(nhalocells + 1);
-    tmpcount->resize(nhalocells + 1);
-    tmpstart->resize(nhalocells + 1);
-  }
+    int expected;
+    void setup(int estimate, int nhalocells) {
+        adjust(estimate);
+        dcellstarts->resize(nhalocells + 1);
+        hcellstarts->resize(nhalocells + 1);
+        tmpcount->resize(nhalocells + 1);
+        tmpstart->resize(nhalocells + 1);
+    }
 
-  void adjust(int estimate) {
-    expected = estimate;
-    hbuf->resize(estimate);
-    dbuf->resize(estimate);
-    scattered_entries->resize(estimate);
-  }
+    void adjust(int estimate) {
+        expected = estimate;
+        hbuf->resize(estimate);
+        dbuf->resize(estimate);
+        scattered_entries->resize(estimate);
+    }
 } * sendhalos[26];
 
 struct RecvHalo {
-  RecvHalo() {
-    hcellstarts = new PinnedHostBuffer<int>;
-    hbuf = new PinnedHostBuffer<Particle>;
-    dbuf = new DeviceBuffer<Particle>;
-    dcellstarts = new DeviceBuffer<int>;
-  }
-  ~RecvHalo() {
-    delete hcellstarts;
-    delete hbuf;
-    delete dbuf;
-    delete dcellstarts;
-  }
-  int expected;
-  PinnedHostBuffer<int> *hcellstarts;
-  PinnedHostBuffer<Particle> *hbuf;
-  DeviceBuffer<Particle> *dbuf;
-  DeviceBuffer<int> *dcellstarts;
-  void setup(int estimate, int nhalocells) {
-    adjust(estimate);
-    dcellstarts->resize(nhalocells + 1);
-    hcellstarts->resize(nhalocells + 1);
-  }
-  void adjust(int estimate) {
-    expected = estimate;
-    hbuf->resize(estimate);
-    dbuf->resize(estimate);
-  }
+    RecvHalo() {
+        hcellstarts = new PinnedHostBuffer<int>;
+        hbuf = new PinnedHostBuffer<Particle>;
+        dbuf = new DeviceBuffer<Particle>;
+        dcellstarts = new DeviceBuffer<int>;
+    }
+    ~RecvHalo() {
+        delete hcellstarts;
+        delete hbuf;
+        delete dbuf;
+        delete dcellstarts;
+    }
+    int expected;
+    PinnedHostBuffer<int> *hcellstarts;
+    PinnedHostBuffer<Particle> *hbuf;
+    DeviceBuffer<Particle> *dbuf;
+    DeviceBuffer<int> *dcellstarts;
+    void setup(int estimate, int nhalocells) {
+        adjust(estimate);
+        dcellstarts->resize(nhalocells + 1);
+        hcellstarts->resize(nhalocells + 1);
+    }
+    void adjust(int estimate) {
+        expected = estimate;
+        hbuf->resize(estimate);
+        dbuf->resize(estimate);
+    }
 } * recvhalos[26];
 }
