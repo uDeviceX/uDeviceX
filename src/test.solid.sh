@@ -51,3 +51,21 @@
 # (make clean && make -j && make -C ../tools) > /dev/null
 # ./udx
 # avg_h5.m h5/flowfields-0001.h5 | sed -n '4,29p' | uscale 0.5 > h5.out.txt
+
+#### two solids around cylinder with one solid removed by the wall
+# nTEST: solid.t4
+# export PATH=../tools:$PATH
+# rm -rf h5 bop diag.txt solid_diag.txt
+# cp sdf/cyl1/cyl.dat sdf.dat
+# cp data/sphere_R1.ply mesh_solid.ply
+# x=0.75 y=3 z=9; echo $x $y $z >  ic_solid.txt
+# x=8    y=8 z=8; echo $x $y $z >> ic_solid.txt
+# :
+# argp .conf.around.h -solids -tend=1.0 -part_freq=500 \
+#     -walls -wall_creation=100 -kBT=1e-7              \
+#     -field_dumps -part_dumps                         \
+#     -field_freq=500 -pushflow > .conf.h
+# :
+# { make clean && make -j && make -C ../tools; } > /dev/null
+# ./udx
+# bop2txt bop/solid-00001.bop | awk '{print $1, $2}' | uscale 10 > bop.out.txt

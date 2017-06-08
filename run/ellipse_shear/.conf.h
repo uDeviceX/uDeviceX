@@ -5,9 +5,9 @@
 #define XS   16
 #define YS   32
 #define ZS   16
-#define XMARGIN_WALL      6
-#define YMARGIN_WALL      6
-#define ZMARGIN_WALL      6
+#define XWM      6
+#define YWM      6
+#define ZWM      6
 
 #define _numberdensity    3
 #define _kBT              1e-7

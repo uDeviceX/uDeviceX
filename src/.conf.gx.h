@@ -1,13 +1,13 @@
 #define XS   40
 #define YS   52
 #define ZS   20
-#define XMARGIN_WALL      6
-#define YMARGIN_WALL      6
-#define ZMARGIN_WALL      6
+#define XWM      6
+#define YWM      6
+#define ZWM      6
 
-#define XMARGIN_BB 1.f
-#define YMARGIN_BB 1.f
-#define ZMARGIN_BB 1.f
+#define XBBM 1.f
+#define YBBM 1.f
+#define ZBBM 1.f
 
 #define numberdensity    10
 #define kBT              4.44302e-8

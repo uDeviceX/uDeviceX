@@ -14,7 +14,7 @@
 # awk '{print 10000*$2}' diag.txt > diag.out.txt
 
 #### double Poiseuille
-# sTEST: mpi.t2
+# nTEST: mpi.t2
 # export PATH=../tools:$PATH
 # export PATH=/usr/lib64/mpich/bin:$PATH
 # rm -rf diag.txt h5 bop ply
@@ -47,7 +47,7 @@
 #
 
 #### Poiseuille
-# nTEST: mpi.t4
+# sTEST: mpi.t4
 # export PATH=../tools:$PATH
 # export PATH=/usr/lib64/mpich/bin:$PATH
 # rm -rf diag.txt h5 bop ply
