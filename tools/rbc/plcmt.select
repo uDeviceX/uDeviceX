@@ -18,19 +18,19 @@ BEGIN {
 
     if (ARGC     <    2) { msg("plcmt.select: expecting <B.txt>"); usg() }
     fb = ARGV[1]; shift()
-
-    print fr, fa, fb
 }
 
 { F[++n] = $0  } # file
 
 END {
     ### https://en.wikipedia.org/wiki/Reservoir_sampling#Algorithm_R
-    k = fr * n; k = min(k, n)
+    k = int(fr * n); k = min(k, n)
     select(k) # populate R
+
     r2aa(k)    # populate aa: aa[i] == 1 => goes in A.txt
     write(fa, fb)
 }
+
 
 function select(k,   i, j, S) {
     for (i = 1;     i <= n; i++) S[i] = i
@@ -42,7 +42,7 @@ function select(k,   i, j, S) {
 }
 
 function r2aa(k) {
-    for (i = 1;     i <= n; i++) aa[R[i]] = 1
+    for (i = 1;     i <= k; i++) aa[R[i]] = 1
 }
 
 function write(fa, fb) {
@@ -61,3 +61,7 @@ function rand0 (n)    { return int(n * rand())      } # [0; n - 1]
 function random(a, b) { return rand0(b - a + 1) + a} # [a;    b]
 
 ' "$@"
+
+# TEST: plcmt.select.t0
+# seq 101 200 | plcmt.select 0.25 A.txt B.txt
+# { wc -l A.txt; wc -l B.txt; sort A.txt B.txt; } > select.out.txt
