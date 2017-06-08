@@ -1,8 +1,21 @@
 #!/bin/bash
 
-usg () {
-    echo "usage: plcmt.ro <Lx> <Ly> <Lz> <r>     <p>    <sc> <ang>     <rbc.out> <solid.out>"
-    exit
+usg0 () {
+    echo 'usage: plcmt.ro <Lx> <Ly> <Lz> <r>     <f>    <sc> <ang>     <solid.out> <rbc.out>'
+    echo '   ro(`rbc and solid`) : create initial conditons for rbc and solid'
+    echo '   L[xyz]: domain sizes'
+    echo '   r: radious of a sphere for packing'
+    echo '   f: fraction of solids'
+    echo '   sc: scale for RBCs'
+    echo '   ang: angle of rotation around OX ("rnd" for random)'
 }
 
-usg
+usg() { usg0 > /dev/stderr; exit; }
+
+# sphere packing
+x=$1; shift; y=$1; shift; z=$1; shift; r=$1; shift
+f=$1; shift # fraction
+s=$1; shift; a=$1; shift # rbc parameters
+fo=$1; shift; fr=$1; shift  # s[o]lid and [r]bc
+
+echo $fo $fr
