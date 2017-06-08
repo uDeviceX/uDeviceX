@@ -1,0 +1,5 @@
+#!/usr/bin/env octave-qf
+
+# usage: sdf.cut xl:xh yl:yh zl:zh <in.dat> <out.dat>
+#        sdf.cut   :xh   :     :   <in.dat> <out.dat>
+#        sdf.cut   :     :     :   <in.dat> <out.dat>

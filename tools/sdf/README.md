@@ -4,3 +4,5 @@
 * [sdf.reflect](sdf.reflect) reflect against a boundary (">" becomes "><")
 * [sdf.shuffle](sdf.shuffle) shuffle dimensions (xyz -> yxz)
 * [sdf.2per](sdf.2per) make periodic by two reflections
+* [sdf.cut](sdf.cut) cut file using low and high indices in each
+  dimension
