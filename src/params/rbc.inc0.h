@@ -8,7 +8,7 @@
 #define        RBCkbT ( 0.0444 )
 #define       RBCmpow ( 2.0    )
 #define        RBCphi ( 6.97   )
-#define         RBCnv ( 498           )
+#define         RBCnv ( 498    )
 
 #define         RBCnt ( 2*(RBCnv) - 4 )
 #define    RBCtotArea ( 2.240e-4*(RBCnv)*(RBCnv))
