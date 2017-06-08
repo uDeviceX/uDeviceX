@@ -1,13 +1,20 @@
 #!/usr/bin/awk -f
 
 function usg(s) {
-    msg("usage: ply.sc <scale> <ply.in>     >      <ply.out>")
+    msg("usage: ply.sxyz <sx> <sy> <sz> <ply.in>     >      <ply.out>")
+    msg("       scale coordinates")
     exit
 };
 
 BEGIN {
-    s = ARGV[1]; shift()           # scale
-    if (!floatp(s)) { msg("ply.sc: should be a number"); usg() }
+    sx = ARGV[1]; shift()           # scales
+    if (!floatp(sx)) { msg("ply.sxyz: sx should be a number"); usg() }
+
+    sy = ARGV[1]; shift()
+    if (!floatp(sy)) { msg("ply.sxyz: sy should be a number"); usg() }
+
+    sz = ARGV[1]; shift()
+    if (!floatp(sz)) { msg("ply.sxyz: sz should be a number"); usg() }
 
     f  = ARGC > 1 ? ARGV[1] : "-"
     read_header(f)
@@ -32,7 +39,7 @@ function read_vert(f,   rc) {
 
 function read_vert0(   x, y, z) {
     x = $1; y = $2; z = $3
-    print s*x, s*y, s*z
+    print sx*x, sy*y, sz*z
 }
 
 function read_rest(f) {
@@ -43,6 +50,6 @@ function shift(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }
 function floatp(x)  { return length(x) > 0 && x == x + 0 }
 function msg(s)     { printf "%s\n", s | "cat >&2" }
 
-# TEST: ply.sc.t0
-# ply.sc 2 test_data/sphere.ply  > sc.out.ply
+# TEST: ply.sxyz.t0
+# ply.sxyz 1 2 3 test_data/sphere.ply  > sc.out.ply
 #
