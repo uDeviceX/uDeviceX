@@ -1,19 +1,18 @@
-namespace sim
-{
+namespace sim {
 #define DEVICE_SOLID
 
-    void distr_solvent()
-    {
+void distr_solvent()
+{
 	odstr::pack(o::pp, o::n);
 	odstr::send();
 	odstr::bulk(o::n, o::cells->start, o::cells->count);
 	o::n = odstr::recv_count();
 	odstr::recv_unpack(o::pp0, o::zip0, o::zip1, o::n, o::cells->start, o::cells->count);
 	std::swap(o::pp, o::pp0);
-    }
+}
 
-    void distr_solid()
-    {
+void distr_solid()
+{
 #ifdef DEVICE_SOLID
 	CC(cudaMemcpy(s::ss_hst, s::ss_dev, s::ns * sizeof(Solid), D2H));
 	sdstr::pack_sendcnt <false> (s::ss_hst, s::i_pp_dev, s::ns, s::m_dev.nv);
@@ -30,23 +29,23 @@ namespace sim
 	solid::generate_hst(s::ss_hst, s::ns, s::rr0_hst, s::nps, /**/ s::pp_hst);
 	CC(cudaMemcpy(s::pp, s::pp_hst, 3 * s::npp * sizeof(float), H2D));
 #endif
-    }
+}
 
-    void distr_rbc()
-    {
+void distr_rbc()
+{
 	rdstr::extent(r::pp, r::nc, r::nv);
 	rdstr::pack_sendcnt(r::pp, r::nc, r::nv);
 	r::nc = rdstr::post(r::nv); r::n = r::nc * r::nv;
 	rdstr::unpack(r::pp, r::nv);
-    }
+}
 
-    void update_helper_arrays() {
+void update_helper_arrays() {
 	CC(cudaFuncSetCacheConfig(k_sim::make_texture, cudaFuncCachePreferShared));
 	k_sim::make_texture<<<(o::n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>
 	    (o::zip0, o::zip1, (float*)o::pp, o::n);
-    }
+}
 
-    void remove_bodies_from_wall() {
+void remove_bodies_from_wall() {
 	int nc0 = r::nc;
 	if (r::nc <= 0) return;
 	DeviceBuffer<int> marks(r::n);
@@ -65,9 +64,9 @@ namespace sim
 	r::nc = Cont::rbc_remove(r::pp, r::nv, r::nc, &tokill.front(), tokill.size());
 	r::n = r::nc * r::nv;
 	fprintf(stderr, "sim.impl: %04d/%04d RBCs survived\n", r::nc, nc0);
-    }
+}
 
-    void create_walls() {
+void create_walls() {
 	dSync();
 	sdf::init();
 	o::n = wall::init(o::pp, o::n); /* number of survived particles */
@@ -77,45 +76,45 @@ namespace sim
 	update_helper_arrays();
 
 	if (rbcs) remove_bodies_from_wall();
-    }
+}
 
-    void forces_rbc() {
+void forces_rbc() {
 	if (rbcs && r::n) rbc::forces(r::nc, r::pp, r::ff, r::av);
-    }
+}
 
-    void forces_dpd() {
+void forces_dpd() {
 	DPD::pack(o::pp, o::n, o::cells->start, o::cells->count);
 	DPD::local_interactions(o::pp, o::zip0, o::zip1,
-				o::n, o::ff, o::cells->start,
-				o::cells->count);
+                            o::n, o::ff, o::cells->start,
+                            o::cells->count);
 	DPD::post(o::pp, o::n);
 	DPD::recv();
 	DPD::remote_interactions(o::n, o::ff);
-    }
+}
 
-    void clear_forces(Force* ff, int n) {
+void clear_forces(Force* ff, int n) {
 	if (n) CC(cudaMemsetAsync(ff, 0, sizeof(Force) * n));
-    }
+}
 
-    void forces_wall() {
+void forces_wall() {
 	if (o::n)              wall::interactions(o::pp, o::n, o::ff);
 	if (solids0 && s::npp) wall::interactions(s::pp, s::npp, s::ff);
 	if (rbcs && r::n)      wall::interactions(r::pp, r::n  , r::ff);
-    }
+}
 
-    void forces_cnt(std::vector<ParticlesWrap> *w_r) {
+void forces_cnt(std::vector<ParticlesWrap> *w_r) {
 	if (contactforces) {
 	    cnt::build_cells(*w_r);
 	    cnt::bulk(*w_r);
 	}
-    }
+}
 
-    void forces_fsi(SolventWrap *w_s, std::vector<ParticlesWrap> *w_r) {
+void forces_fsi(SolventWrap *w_s, std::vector<ParticlesWrap> *w_r) {
 	fsi::bind_solvent(*w_s);
 	fsi::bulk(*w_r);
-    }
+}
 
-    void forces(bool wall_created) {
+void forces(bool wall_created) {
 	SolventWrap w_s(o::pp, o::n, o::ff, o::cells->start, o::cells->count);
 	std::vector<ParticlesWrap> w_r;
 	if (solids0) w_r.push_back(ParticlesWrap(s::pp, s::npp, s::ff));
@@ -141,9 +140,9 @@ namespace sim
 
 	rex::post_f();
 	rex::recv_f();
-    }
+}
 
-    void dev2hst() { /* device to host  data transfer */
+void dev2hst() { /* device to host  data transfer */
 	int start = 0;
 	CC(cudaMemcpy(a::pp_hst + start, o::pp, sizeof(Particle) * o::n, D2H)); start += o::n;
 	if (solids0) {
@@ -152,21 +151,21 @@ namespace sim
 	if (rbcs) {
 	    CC(cudaMemcpy(a::pp_hst + start, r::pp, sizeof(Particle) * r::n, D2H)); start += r::n;
 	}
-    }
+}
 
-    void dump_part(int step) {
+void dump_part(int step) {
 	if (part_dumps) {
 	    CC(cudaMemcpy(o::pp_hst, o::pp, sizeof(Particle) * o::n, D2H));
 	    dump::parts(o::pp_hst, o::n, "solvent", step);
 
 	    if(solids0) {
-		CC(cudaMemcpy(s::pp_hst, s::pp, sizeof(Particle) * s::npp, D2H));
-		dump::parts(s::pp_hst, s::npp, "solid", step);
+            CC(cudaMemcpy(s::pp_hst, s::pp, sizeof(Particle) * s::npp, D2H));
+            dump::parts(s::pp_hst, s::npp, "solid", step);
 	    }
 	}
-    }
+}
 
-    void dump_rbcs() {
+void dump_rbcs() {
 	if (rbcs) {
 	    static int id = 0;
 	    int start = o::n; if (solids0) start += s::npp;
@@ -174,21 +173,21 @@ namespace sim
 	    dev2hst();  /* TODO: do not need `s' */
 	    Cont::rbc_dump(r::nc, a::pp_hst + start, r::faces, r::nv, r::nt, id++);
 	}
-    }
+}
 
-    void dump_grid() {
+void dump_grid() {
 	if (field_dumps) {
 	    dev2hst();  /* TODO: do not need `r' */
 	    dump_field->dump(a::pp_hst, o::n);
 	}
-    }
+}
 
-    void diag(int it) {
+void diag(int it) {
 	int n = o::n + s::npp + r::n; dev2hst();
 	diagnostics(a::pp_hst, n, it);
-    }
+}
 
-    void body_force(float driving_force0) {
+void body_force(float driving_force0) {
 	k_sim::body_force<<<k_cnf(o::n)>>> (1, o::pp, o::ff, o::n, driving_force0);
 
 	if (solids0 && s::npp)
@@ -196,9 +195,9 @@ namespace sim
 
 	if (rbcs && r::n)
 	k_sim::body_force<<<k_cnf(r::n)>>> (rbc_mass, r::pp, r::ff, r::n, driving_force0);
-    }
+}
 
-    void update_solid0() {
+void update_solid0() {
 #ifndef DEVICE_SOLID
 
 	CC(cudaMemcpy(s::pp_hst, s::pp, sizeof(Particle) * s::npp, D2H));
@@ -223,27 +222,27 @@ namespace sim
 
 	solid::reinit_ft_dev(s::ns, /**/ s::ss_dev);
 #endif
-    }
+}
 
-    void update_solid() {
+void update_solid() {
 	if (s::npp) update_solid0();
-    }
+}
 
-    void update_solvent() {
+void update_solvent() {
 	if (o::n) k_sim::update<<<k_cnf(o::n)>>> (1, o::pp, o::ff, o::n);
-    }
+}
 
-    void update_rbc() {
+void update_rbc() {
 	if (r::n) k_sim::update<<<k_cnf(r::n)>>> (rbc_mass, r::pp, r::ff, r::n);
-    }
+}
 
-    void bounce() {
+void bounce() {
 	if (o::n)         wall::bounce(o::pp, o::n);
 	if (rbcs && r::n) wall::bounce(r::pp, r::n);
-    }
+}
 
-    void bounce_solid(int it)
-    {
+void bounce_solid(int it)
+{
 #ifndef DEVICE_SOLID
 
 	collision::get_bboxes_hst(s::i_pp_hst, s::m_hst.nv, s::ns, /**/ s::bboxes_hst);
@@ -311,10 +310,10 @@ namespace sim
 	memcpy(s::ss_dmpbbhst, s::ss_hst, s::ns * sizeof(Solid));
 
 #endif
-    }
+}
 
-    void load_solid_mesh(const char *fname)
-    {
+void load_solid_mesh(const char *fname)
+{
 	ply::read(fname, &s::m_hst);
 
 	s::m_dev.nv = s::m_hst.nv;
@@ -325,10 +324,10 @@ namespace sim
 
 	CC(cudaMemcpy(s::m_dev.tt, s::m_hst.tt, 3 * s::m_dev.nt * sizeof(int), H2D));
 	CC(cudaMemcpy(s::m_dev.vv, s::m_hst.vv, 3 * s::m_dev.nv * sizeof(float), H2D));
-    }
+}
 
-    void init_solid()
-    {
+void init_solid()
+{
 	mrescue::init(MAX_PART_NUM);
 
 	mpDeviceMalloc(&s::pp);
@@ -382,9 +381,9 @@ namespace sim
 	CC(cudaMemcpy(o::pp, o::pp_hst, sizeof(Particle) * o::n, H2D));
 
 	MC(MPI_Barrier(m::cart));
-    }
+}
 
-    void init() {
+void init() {
 	CC(cudaMalloc(&r::av, MAX_CELLS_NUM));
 
 	rbc::setup(r::faces);
@@ -439,18 +438,18 @@ namespace sim
 	s::tcs_dev = s::tcc_dev = s::tci_dev = NULL;
 
 	MC(MPI_Barrier(m::cart));
-    }
+}
 
-    void dumps_diags(int it) {
+void dumps_diags(int it) {
 	if (it % part_freq == 0)    dump_part(it);
 	if (it % part_freq == 0)    dump_rbcs();
 	if (it > wall_creation &&
 	    it % part_freq == 0)    solid::dump(it, s::ss_dmphst, s::ss_dmpbbhst, s::ns, m::coords); /* s::ss_dmpbbhst contains BB Force & Torque */
 	if (it % field_freq == 0)   dump_grid();
 	if (it % part_freq == 0)    diag(it);
-    }
+}
 
-    void run0(float driving_force0, bool wall_created, int it) {
+void run0(float driving_force0, bool wall_created, int it) {
 	distr_solvent();
 	if (solids0) distr_solid();
 	if (rbcs)    distr_rbc();
@@ -462,16 +461,16 @@ namespace sim
 	if (rbcs)    update_rbc();
 	if (wall_created) bounce();
 	if (sbounce_back && solids0 && s::npp) bounce_solid(it);
-    }
+}
 
-    void run_nowall(long nsteps) {
+void run_nowall(long nsteps) {
 	float driving_force0 = pushflow ? driving_force : 0;
 	bool wall_created = false;
 	solids0 = false;
 	for (long it = 0; it < nsteps; ++it) run0(driving_force0, wall_created, it);
-    }
+}
 
-    void run_wall(long nsteps) {
+void run_wall(long nsteps) {
 	float driving_force0 = 0;
 	bool wall_created = false;
 	long it = 0;
@@ -486,17 +485,17 @@ namespace sim
 	if (pushflow) driving_force0 = driving_force;
 
 	for (/**/; it < nsteps; ++it) run0(driving_force0, wall_created, it);
-    }
+}
 
-    void run() {
+void run() {
 	long nsteps = (int)(tend / dt);
 	if (m::rank == 0) printf("will take %ld steps\n", nsteps);
 
 	if (walls || solids) run_wall(nsteps);
 	else               run_nowall(nsteps);
-    }
+}
 
-    void close() {
+void close() {
 
 	odstr::redist_part_close();
 	sdstr::close();
@@ -545,5 +544,5 @@ namespace sim
 	    delete[] s::ss_bb_hst;     CC(cudaFree(s::ss_bb_dev));
 	    delete[] s::ss_dmphst;     delete[] s::ss_dmpbbhst;
 	}
-    }
+}
 }
