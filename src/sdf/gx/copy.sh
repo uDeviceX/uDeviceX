@@ -1,6 +1,6 @@
 #!/bin/bash
 
-d=panda:/scratch/googleX
+d=panda.ethz.ch:/scratch/googleX
 
 r=vessels_small_mirrored # remote and local name
 l=small                  #
