@@ -1,4 +1,6 @@
 BIN = $(HOME)/bin # where to install
-PROGS = octave-qf sdf.2bov sdf.shuffle sdf.reflect sdf.2per # what to install
+p=sdf
+# what to install
+PROGS = octave-qf $p.2bov $p.shuffle $p.reflect $p.2per $p.cut
 install:; mkdir -p $(BIN) && cp $(PROGS) $(BIN)
 .PHONY: install
