@@ -26,7 +26,6 @@ namespace s /* [s]olid */
 int npp;          /* number of frozen pp    */ 
 Particle *pp;   /* Solid frozen particles */
 Force    *ff;
-
     
 Particle   pp_hst[MAX_PART_NUM]; /* Solid pp on host          */
 Force      ff_hst[MAX_PART_NUM]; /* Solid ff on host          */
