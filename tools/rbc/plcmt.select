@@ -1,0 +1,63 @@
+#!/bin/bash
+
+awk '
+function usg() {
+    msg("usage: <stream> | plcmt.select <f> <A.txt> <B.txt>")
+    msg("  n*f random lines of stream in <A.txt> and n*(1-f) in <B.txt> (f: fraction between 0 and 1)")
+    exit
+}
+
+BEGIN {
+    if (ARGV[1] == "-h") usg()
+    if (ARGC     <    2) usg()
+    fr = ARGV[1]; shift()
+    if (!floatp(p) || p > 1) { msg("plcmt.select: is not a fraction: " fr); usg() }
+
+    if (ARGC     <    2) { msg("plcmt.select: expecting <A.txt>"); usg() }
+    fa = ARGV[1]; shift()
+
+    if (ARGC     <    2) { msg("plcmt.select: expecting <B.txt>"); usg() }
+    fb = ARGV[1]; shift()
+
+    print fr, fa, fb
+}
+
+{ F[++n] = $0  } # file
+
+END {
+    ### https://en.wikipedia.org/wiki/Reservoir_sampling#Algorithm_R
+    k = fr * n; k = min(k, n)
+    select(k) # populate R
+    r2aa(k)    # populate aa: aa[i] == 1 => goes in A.txt
+    write(fa, fb)
+}
+
+function select(k,   i, j, S) {
+    for (i = 1;     i <= n; i++) S[i] = i
+    for (i = 1;     i <= k; i++) R[i] = S[i]
+    for (i = k + 1; i <= n; i++) {
+	j = random(1, i)
+	if (j <= k) R[j] = S[i]
+    }
+}
+
+function r2aa(k) {
+    for (i = 1;     i <= n; i++) aa[R[i]] = 1
+}
+
+function write(fa, fb) {
+    for (i = 1; i <= n; i++) {
+	if (aa[i]) print F[i] > fa
+	else       print F[i] > fb
+    }
+}
+
+function msg(s) { printf "%s\n", s | "cat >&2" }
+function shift(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }
+function floatp(x)  { return x + 0 == x }
+function min(a, b)  { return (a < b) ? a : b }
+
+function rand0 (n)    { return int(n * rand())      } # [0; n - 1]
+function random(a, b) { return rand0(b - a + 1) + a} # [a;    b]
+
+' "$@"
