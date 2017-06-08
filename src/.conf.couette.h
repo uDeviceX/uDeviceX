@@ -23,7 +23,7 @@
 
 #define gammadpd_solv    8.0  /* gamma for the solvent */
 #define gammadpd_rbc     8.0  /* gamma for the RBC membrane */
-#define gammadpd_solid   8.0        /* gamma for the solid */
+#define gammadpd_solid   8.0  /* gamma for the solid */
 #define gammadpd_wall    8.0  /* gamma for the wall */
 
 #define ljsigma          0.3   /* RBC-RBC contact LJ interaction parameters */
