@@ -9,8 +9,8 @@ pwd
 #make -C ${SRCDIR}/post/build_smesh install
 
 # number of ranks
-NX=8
-NY=8
+NX=2
+NY=2
 NZ=1
 NN=$((${NX}*${NY}*${NZ}))
 
@@ -26,12 +26,13 @@ LZ=$((${NZ}*${ZS}))
 #cp ${SRCDIR}/src/sdf/gx/vessels_mirrored.dat sdf.dat
 #cp ${SRCDIR}/src/sdf/gx/vessels_small_mirrored.dat sdf.dat
 cp ${SRCDIR}/src/sdf/gx/small.rot.dat sdf.dat
+#cp ${SRCDIR}/src/sdf/gx/128.dat sdf.dat
 
 # rbc mesh
 cp ${SRCDIR}/src/rbc.off .
 
 # solid mesh
-cp ${SRCDIR}/data/sphere_R1.ply mesh_solid.ply
+cp ${SRCDIR}/src/data/sphere_R1.ply mesh_solid.ply
 
 # rbc+solid placement
 radius=3
@@ -44,7 +45,7 @@ plcmt.ro $LX $LY $LZ $radius $fraction $sc $ang ic_solid.txt rbcs-ic.txt
  echo "#!/bin/bash -l
 #
 #SBATCH --job-name=vessels
-#SBATCH --time=00:10:00
+#SBATCH --time=00:30:00
 #SBATCH --ntasks=${NN}
 #SBATCH --ntasks-per-node=1
 #SBATCH --output=slurm_out.%j.o

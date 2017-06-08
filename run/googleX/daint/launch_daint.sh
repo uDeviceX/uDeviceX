@@ -1,8 +1,8 @@
 # !/bin/bash
 
-module load GSL cray-hdf5-parallel cray-mpich cudatoolkit
+module load GSL cray-hdf5-parallel cudatoolkit
 
-BNAME=testClarge
+BNAME=small_n4
 SRCDIR=$HOME/uDeviceX/uDX_gx
 
 
@@ -22,7 +22,7 @@ cp -r ${SRCDIR}/* ${COMPILEDIR}/
 cd ${COMPILEDIR}/src
     cp ${DEPLOYDIR}/../conf.h .conf.h
     cp ${DEPLOYDIR}/cache.Makefile.daint .cache.Makefile
-#    make clean
+    make clean
     make -j
     make -C ${SRCDIR}/tools
 )
