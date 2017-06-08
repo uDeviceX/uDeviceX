@@ -1,16 +1,16 @@
-#!/usr/bin/awk -f
+#!/bin/bash
 # generate coordiantes of Hexagonal Close Packing of spehres
+
+awk '
+function usg() {
+    msg("usage: plcmt.hex <Lx> <Ly> <Lx> <r>")
+    msg("  prints coordiantes of hexagonal closed packing of spheres")
+    exit
+}
 
 function abs(x)  { return x<0?x*-1:x}
 function asin(x) { return atan2(x, sqrt(abs(1-x*x))) }
 function pi() { return 2*asin(1)}
-
-function req_var(v, n) {
-    if (length(v)!=0) return
-    printf "(cph.awk) `%s' should be given as a parameter (-v %s=<value>)\n",
-	n, n
-    exit 2
-}
 
 function indomain(x, y, z) {
     if (x+r>Lx) return 0
@@ -21,30 +21,35 @@ function indomain(x, y, z) {
 
     if (z+r>Lz) return 0
     if (z-r<0 ) return 0
-pl
     return 1
 }
 
 BEGIN {
-    req_var(r, "r")
-    req_var(Lx, "Lx"); req_var(Ly, "Ly"); req_var(Lz, "Lz");
+    if (ARGV[1] == "-h") usg();
+    Lx = ARGV[1]; shift();
+    Ly = ARGV[1]; shift();
+    Lz = ARGV[1]; shift();
+    r  = ARGV[1]; shift();
+    print Lx, Ly, Lz, r
 
     nmax = 100  # should be a big number, TODO:
-    for (i=0; i<nmax; i++) {
-	for (j=0; j<nmax; j++) {
-	    for (k=0; k<nmax; k++) {
-		# https://en.wikipedia.org/wiki/Close-packing_of_equal_spheres#Simple_hcp_lattice
-		x = 2*i + ((j+k) % 2)
-		y = sqrt(3) * (j + 1/3*(k % 2))
-		z = 2*sqrt(6)/3*k
-		x*=r; y*=r; z*=r
-
-		if (indomain(x, y, z)) {
-		    print x, y, z
-		    ngen++
-		}
-	    }
-	}
+    for (i=0; i<nmax; i++) for (j=0; j<nmax; j++) for (k=0; k<nmax; k++) {
+       # https://en.wikipedia.org/wiki/Close-packing_of_equal_spheres#Simple_hcp_lattice
+       x = 2*i + ((j+k) % 2)
+       y = sqrt(3) * (j + 1/3*(k % 2))
+       z = 2*sqrt(6)/3*k
+       x*=r; y*=r; z*=r
+       if (indomain(x, y, z)) {
+	   print x, y, z
+	   ngen++
+       }
     }
     printf "cph: generated: %d cells\n", ngen > "/dev/stderr"
 }
+
+function msg(s) { printf "%s\n", s | "cat >&2" }
+function shift(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }
+' "$@"
+
+# TEST: plcmt.hex.t0
+#  plcmt.hex 42 52 20 2 > p.out.txt
