@@ -1,0 +1,85 @@
+#!/usr/bin/awk -f
+
+# Transfrom `off' to `ply'
+
+BEGIN {
+    fn = ARGC > 1 ? ARGV[1] : "-"
+    read_off()
+    write_ply()
+}
+
+
+function read_fst() {
+    getline < fn
+    if ($0 != "OFF") {
+	printf "(off2ply.awk) expecting an OFF file\n" | "cat 1>&1"
+	exit
+    }
+}
+
+function read_numbers() { # set `nv', `nf', `ne'
+    while (getline < fn > 0) {
+	strip_comments()
+	if (!emptyp($0)) break
+    }
+    nv=$1; nf=$2; ne=$3 #  number of vertices, number of faces, number of edges
+}
+
+function read_vert(   iv) {
+    iv=0
+    while (getline < fn > 0) {
+	strip_comments()
+	if (emptyp($0)) continue
+	xx[iv]=$1; yy[iv]=$2; zz[iv]=$3; iv++
+	if (iv==nv) break
+    }
+}
+
+function read_faces(   ifa) { # assume triangular faces
+    ifa=0
+    while (getline < fn > 0) {
+	strip_comments()
+	if (emptyp($0)) continue
+	f1[ifa]=$2; f2[ifa]=$3; f3[ifa]=$4; ifa++
+	if (ifa==nf) break
+    }
+}
+
+function emptyp(s) { return $0 ~ /^[ \t]*$/ }
+function strip_comments() {sub(/#.*/, "")}
+
+function read_off() {
+    read_fst()
+    read_numbers()
+    read_vert()
+    read_faces()
+}
+
+function write_header() {
+    printf "ply\n"
+    printf "format ascii 1.0\n"
+    printf "element vertex %d\n", nv
+    printf "property float32 x\n"
+    printf "property float32 y\n"
+    printf "property float32 z\n"
+    printf "element face %d\n", nf
+    printf "property list int32 int32 vertex_index\n"
+    printf "end_header\n"
+}
+
+function write_vert(   iv) {
+    for (iv=0; iv<nv; iv++)
+	printf "%s %s %s\n", xx[iv], yy[iv], zz[iv]
+}
+
+function write_faces(   ifa, number_of_vert) {
+    number_of_vert = 3
+    for (ifa=0; ifa<nf; ifa++)
+	printf "%s %s %s %s\n", number_of_vert, f1[ifa], f2[ifa], f3[ifa]
+}
+
+function write_ply() {
+    write_header()
+    write_vert()
+    write_faces()
+}
