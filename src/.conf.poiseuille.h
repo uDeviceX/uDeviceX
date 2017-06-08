@@ -7,7 +7,7 @@
 
 #define XBBM 1.f
 #define YBBM 1.f
-#define ZMARGIN_BB 1.f
+#define ZBBM 1.f
 
 #define numberdensity    10
 #define kBT              0.0444302
