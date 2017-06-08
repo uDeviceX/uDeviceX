@@ -1,6 +1,6 @@
 
 #### RBC in a periodic box
-# sTEST: diag.t2
+# nTEST: diag.t2
 # export PATH=../tools:$PATH
 # rm -rf diag.txt h5 bop ply
 # x=0.75 y=8 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
@@ -12,7 +12,7 @@
 # ply2punto ply/rbcs-00003.ply | uscale 100 > ply.out.txt
 
 #### RBC initialy rotated
-# sTEST: rotated.t1
+# nTEST: rotated.t1
 # export PATH=../tools:$PATH
 # rm -rf diag.txt h5 bop ply
 # x=0.75 y=8 z=12   c=0.5 s=0.866 # sin() and cos()
@@ -75,7 +75,7 @@
 # ply2punto ply/rbcs-00001.ply | uscale 10 > ply.out.txt
 
 #### two RBCs around cylinder with one RBC removed by the wall
-# nTEST: flow.around.t3
+# sTEST: flow.around.t3
 # export PATH=../tools:$PATH
 # rm -rf diag.txt h5 bop ply
 # cp sdf/cyl1/cyl.dat sdf.dat

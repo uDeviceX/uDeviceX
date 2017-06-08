@@ -23,7 +23,7 @@ CellLists* cells;
     
 namespace s /* [s]olid */
 {
-int npp;          /* number of frozen pp    */ 
+int npp;        /* number of frozen pp    */ 
 Particle *pp;   /* Solid frozen particles */
 Force    *ff;
     
@@ -40,7 +40,7 @@ int *tcs_dev, *tcc_dev, *tci_dev; /* [t]riangle cell-lists on device */
 float *bboxes_hst; /* [b]ounding [b]oxes of solid mesh on host   */
 float *bboxes_dev; /* [b]ounding [b]oxes of solid mesh on device */
     
-Particle *i_pp_hst, *i_pp_dev; /* particles representing vertices of ALL meshes of solid [i]nterfaces */
+Particle *i_pp_hst, *i_pp_dev;       /* particles representing vertices of ALL meshes of solid [i]nterfaces */
 Particle *i_pp_bb_hst, *i_pp_bb_dev; /* buffers for BB multi-nodes */ 
     
 int ns;     /* number of solid objects       */

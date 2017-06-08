@@ -45,7 +45,10 @@ void update_helper_arrays() {
         (o::zip0, o::zip1, (float*)o::pp, o::n);
 }
 
-void remove_bodies_from_wall() {
+#define HST (true)
+#define DEV (false)
+
+void remove_rbcs_from_wall() {
     int nc0 = r::nc;
     if (r::nc <= 0) return;
     DeviceBuffer<int> marks(r::n);
@@ -66,6 +69,35 @@ void remove_bodies_from_wall() {
     fprintf(stderr, "sim.impl: %04d/%04d RBCs survived\n", r::nc, nc0);
 }
 
+void remove_solids_from_wall() {
+    if (s::npp <= 0) return;
+    int ns0 = s::ns;
+    DeviceBuffer<int> marks(s::npp);
+    k_sdf::fill_keys<<<k_cnf(s::npp)>>>(s::pp, s::npp, marks.D);
+
+    std::vector<int> marks_hst(marks.S);
+    CC(cudaMemcpy(marks_hst.data(), marks.D, sizeof(int) * marks.S, D2H));
+    std::vector<int> tokill;
+    for (int i = 0; i < s::ns; ++i) {
+        bool valid = true;
+        for (int j = 0; j < s::nps && valid; ++j)
+        valid &= (marks_hst[j + s::nps * i] == W_BULK);
+        if (!valid) tokill.push_back(i);
+    }
+
+    int newns = 0;
+    newns = Cont::remove<DEV> (s::pp,     s::nps, s::ns, &tokill.front(), tokill.size());
+    newns = Cont::remove<HST> (s::pp_hst, s::nps, s::ns, &tokill.front(), tokill.size());
+
+    s::ns = newns;
+    
+    s::npp = s::ns * s::nps;
+    fprintf(stderr, "sim.impl: %04d/%04d Solids survived\n", s::ns, ns0);
+}
+
+#undef HST
+#undef DEV
+
 void create_walls() {
     dSync();
     sdf::init();
@@ -75,7 +107,7 @@ void create_walls() {
     o::cells->build(o::pp, o::n, NULL, NULL);
     update_helper_arrays();
 
-    if (rbcs) remove_bodies_from_wall();
+    if (rbcs) remove_rbcs_from_wall();
 }
 
 void forces_rbc() {
