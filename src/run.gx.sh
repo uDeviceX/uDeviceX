@@ -1,7 +1,8 @@
 #!/usr/bin/sh
 
 setup() {
-    make -C ../tools/rbc install    
+    make -C ../tools/rbc install
+    make -C ../tools install
 }
 
 pre() {
