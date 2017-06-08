@@ -21,3 +21,5 @@ ply.o: ply.cpp ply.h
 
 clean:
 	rm -rf *.o $(EXECS)
+
+.PHONY: clean all install
