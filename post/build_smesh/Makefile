@@ -2,7 +2,7 @@ CXX=g++
 CXXFLAGS= -O3 -Wall -Wpedantic -std=c++11
 
 BIN=~/bin/
-EXECS = build
+EXECS = build_ply
 
 all: $(EXECS)
 
@@ -10,7 +10,7 @@ install: all
 	mkdir -p $(BIN)
 	cp $(EXECS) $(BIN)
 
-build: build.o ply.o
+build_ply: build.o ply.o
 	$(CXX) $(CXXFLAGS) $^ -o $@ -lm
 
 build.o: build.cpp ply.h
