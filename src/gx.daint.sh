@@ -1,5 +1,5 @@
 ini() {
-    module load cray-hdf5-parallel cray-mpich cudatoolkit
+    module load cray-hdf5-parallel cudatoolkit daint-gpu GSL
 }
 
 run () {
@@ -16,7 +16,7 @@ run () {
 	#SBATCH --error=error.txt
 	#SBATCH --constraint=gpu
 	:
-    module load cray-hdf5-parallel cray-mpich cudatoolkit
+    module cray-hdf5-parallel cudatoolkit daint-gpu GSL
 	srun --export ALL ./udx
 EOF
     sbatch runme.sh
