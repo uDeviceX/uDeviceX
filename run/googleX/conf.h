@@ -2,20 +2,17 @@
 
 
 /* DOMAIN */
-#define XS   64
-#define YS   64
-#define ZS   24
-//#define XS   40
-//#define YS   52
-//#define ZS   20
+#define XS                  64
+#define YS                  64
+#define ZS                  24
 
-#define XWM      6
-#define YWM      6
-#define ZWM      6
+#define XWM                 6
+#define YWM                 6
+#define ZWM                 6
 
-#define XBBM 1.f
-#define YBBM 1.f
-#define ZBBM 1.f
+#define XBBM                1.f
+#define YBBM                1.f
+#define ZBBM                1.f
 
 
 /* DPD */
@@ -49,7 +46,7 @@
 #define gamma_dot           0.0
 
 #define walls               true
-#define wall_creation       1000
+#define wall_creation       500
 
 #define tend                3000
 

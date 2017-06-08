@@ -34,6 +34,7 @@ void distr_solid()
 void distr_rbc()
 {
     rdstr::extent(r::pp, r::nc, r::nv);
+    dSync();
     rdstr::pack_sendcnt(r::pp, r::nc, r::nv);
     r::nc = rdstr::post(r::nv); r::n = r::nc * r::nv;
     rdstr::unpack(r::pp, r::nv);
