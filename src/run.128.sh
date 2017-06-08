@@ -20,14 +20,14 @@ pre() {
     rm -rf diag.txt h5 bop ply solid-ply solid_diag*txt
     cp $HOME/geoms/128.dat      sdf.dat
     cp data/sphere_R1.ply mesh_solid.ply
-    cp data/sphere_R1.ply mesh_solid.ply
     cp cells/rbc.496.off  rbc.off
 
-    argp .conf.gx.base.h $D                  \
-         -rbcs -solids -contactforces        \
-         -tend=3000.0 -part_freq=1000        \
-         -walls -wall_creation=1000          \
-         -pushflow -driving_force=$df        \
+    argp .conf.gx.base.h $D           \
+	 -numberdensity=1             \
+         -rbcs -solids -contactforces \
+         -tend=3000.0 -part_freq=1000 \
+         -walls -wall_creation=1      \
+         -pushflow -driving_force=$df \
          -field_dumps -part_dumps -field_freq=1000 > .conf.h
 }
 
