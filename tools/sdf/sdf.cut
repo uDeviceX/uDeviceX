@@ -9,18 +9,58 @@
 
 # sx, sy, sz: slices
 1;
-function parg()
-  global a
-  a = argv();
+function    parg(); global a; a = argv();               endfunction
+function r = nxt(); global a; r = a{1}; a = {a{2:end}}; endfunction
+
+function varargout = fscn(f, fmt) # simpler fscanf
+  l = fgets(f);
+  [varargout{1:nargout}] = strread(l, fmt);
 endfunction
 
-function nxt()
-  global a
+function read_header(f)
+  global ex ey ez   nx ny nz
+  [ex, ey, ez] = fscn(f, "%f %f %f");
+  [nx, ny, nz] = fscn(f, "%d %d %d");
+endfunction
 
+function read_data(f)
+  global ex ey ez   nx ny nz D
+  D = fread(f, nx*ny*nz, "float32");
+  D = reshape(D, nx, ny, nz);
+endfunction
+
+function read(fn)
+  f = fopen(fn); read_header(f); read_data(f); fclose(f);
+endfunction
+
+function r = emptyp(s); r = numel(s) == 0; endfunction
+
+function s = str2num0(s, d)
+  if emptyp(s); s = d; else s = str2num(s); endif
+endfunction
+
+function [l, h] = slice0(s, l0, h0)
+  s = strsplit(s, ":")
+  l = s{1}; h = s{2};
+  l = str2num0(l, l0); h = str2num0(l, h0);
+  
+  # [l, h] = strread(sx, "%d:%d", "returnonerror", 0);
+  
+endfunction
+
+function slices(sx, sy, sz)
+  global nx ny nz
+  [xl, xh] = slice0(sx, 0, nx);
 endfunction
 
 parg();
-# read in.dat
+sx = nxt(); sy = nxt(); sz = nxt(); # slices as strings
+fi = nxt(); fo = nxt();             # in-/out- files
+
+read(fi)
+slices(sx, sy, sz)
+
+
 # parse slices
 ## try to read as  :
 ## try to read as l:
