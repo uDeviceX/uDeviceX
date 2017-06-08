@@ -1,5 +1,5 @@
-namespace ic_solid
-{
+namespace ic_solid {
+
 enum {X, Y, Z};
 
 //#define DEBUG_MSG
@@ -208,7 +208,15 @@ static void share_parts(const int root, /**/ Particle *pp, int *n)
     for (int c = 0; c < 3; ++c)
     pp[i].r[c] -= mi[c];
 }
-    
+
+void set_ids(const int ns, Solid *ss_hst) {
+    int id = 0;
+    MC( MPI_Exscan(&ns, &id, 1, MPI_INT, MPI_SUM, m::cart) );
+
+    for (int j = 0; j < ns; ++j)
+    ss_hst[j].id = id++;
+}
+
 void init(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp)
 {
     float coms[MAX_SOLIDS * 3];
@@ -288,12 +296,6 @@ void init(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, S
     *ns = nsolid = id;
     *nps = npsolid;
         
-    // set global ids
-
-    id = 0;
-    MC( MPI_Exscan(&nsolid, &id, 1, MPI_INT, MPI_SUM, m::cart) );
-
-    for (int j = 0; j < nsolid; ++j)
-    ss[j].id = id++;
+    set_ids(nsolid, /**/ ss);
 }
 }
