@@ -3,7 +3,8 @@ int init(Particle *pp, int n) {
     setup_texture(k_wall::texWallParticles, float4);
     setup_texture(k_wall::texWallCellStart, int);
     setup_texture(k_wall::texWallCellCount, int);
-    CC(cudaFuncSetCacheConfig(k_wall::interactions_3tpp, cudaFuncCachePreferL1));
+    CC(cudaFuncSetCacheConfig(k_wall::interactions_3tpp<SOLVENT_TYPE>, cudaFuncCachePreferL1));
+    CC(cudaFuncSetCacheConfig(k_wall::interactions_3tpp<SOLID_TYPE>, cudaFuncCachePreferL1));
 
     thrust::device_vector<int> keys(n);
     k_sdf::fill_keys<<<k_cnf(n)>>>(pp, n, thrust::raw_pointer_cast(&keys[0]));
