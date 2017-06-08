@@ -76,6 +76,27 @@ int rbc_remove(Particle* pp, int nv, int nc, int *e, int ne) {
     return nstay;
 }
 
+template <bool hst, typename T>
+int remove(T* data, const int npb, const int nb, const int *e, const int ne) {
+    /* remove data with indexes in `e' */
+    /* data: nb blocks of size npb     */
+    const bool GO = false, STAY = true;
+    int ie, i0, i1;
+    std::vector<bool> m(nb, STAY);
+    for (ie = 0; ie < ne; ie++) m[e[ie]] = GO;
+
+    for (i0 = i1 = 0; i0 < nb; i0++)
+    if (m[i0] == STAY)
+    {
+        if (hst)
+        memcpy(data + npb*(i1++), data + npb*i0, sizeof(T)*npb);
+        else
+        CC(cudaMemcpy(data + npb*(i1++), data + npb*i0, sizeof(T)*npb, D2D));
+    }
+    const int nstay = i1;
+    return nstay;
+}
+
 void rbc_dump(int nc, Particle *p, int* triplets,
               int nv, int nt, int id) {
     const char *format4ply = "ply/rbcs-%05d.ply";
