@@ -140,9 +140,9 @@ void clear_forces(Force* ff, int n) {
 }
 
 void forces_wall() {
-    if (o::n)              wall::interactions(o::pp, o::n, o::ff);
-    if (solids0 && s::npp) wall::interactions(s::pp, s::npp, s::ff);
-    if (rbcs && r::n)      wall::interactions(r::pp, r::n  , r::ff);
+    if (o::n)              wall::interactions <SOLVENT_TYPE> (o::pp, o::n, o::ff);
+    if (solids0 && s::npp) wall::interactions <SOLID_TYPE  > (s::pp, s::npp, s::ff);
+    if (rbcs && r::n)      wall::interactions <SOLID_TYPE  > (r::pp, r::n  , r::ff);
 }
 
 void forces_cnt(std::vector<ParticlesWrap> *w_r) {

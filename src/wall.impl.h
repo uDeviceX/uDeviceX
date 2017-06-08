@@ -124,6 +124,7 @@ void bounce(Particle *const p, const int n) {
     if (n > 0) k_sdf::bounce<<<k_cnf(n)>>>((float2 *)p, n);
 }
 
+template <int TYPE>
 void interactions(const Particle *const p, const int n,
                   Force *const acc) {
     // cellsstart and cellscount IGNORED for now
@@ -144,7 +145,7 @@ void interactions(const Particle *const p, const int n,
                            &k_wall::texWallCellCount.channelDesc,
                            sizeof(int) * wall_cells->ncells));
 
-        k_wall::interactions_3tpp<<<k_cnf(3 * n)>>>
+        k_wall::interactions_3tpp<TYPE> <<<k_cnf(3 * n)>>>
             ((float2 *)p, n, w_n, (float *)acc, trunk->get_float());
         CC(cudaUnbindTexture(k_wall::texWallParticles));
         CC(cudaUnbindTexture(k_wall::texWallCellStart));
