@@ -80,5 +80,6 @@ shuffle(c);
 write(fo);
 
 # TEST: sdf.shuffle.t0
-# sdf.shufle xzy test_data/yplates.dat s.dat
+# sdf.shuffle xzy test_data/yplates.dat s.dat
 # head -n2 s.dat                          > header.out.txt
+#
