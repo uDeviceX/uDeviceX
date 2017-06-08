@@ -1,10 +1,14 @@
 CXX=g++
 CXXFLAGS= -O3 -Wall -Wpedantic -std=c++11
 
+BIN=~/bin/
 EXECS = build
 
-default: all
 all: $(EXECS)
+
+install: all
+	mkdir -p $(BIN)
+	cp $(EXECS) $(BIN)
 
 build: build.o ply.o
 	$(CXX) $(CXXFLAGS) $^ -o $@ -lm

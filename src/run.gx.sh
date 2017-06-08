@@ -9,7 +9,7 @@ df=0.5
 
 D="-XS=$XS -YS=$YS -ZS=$ZS"
 
-radius=5
+radius=3
 fraction=0.5
 sc=1 ang=0
 plcmt.ro $XS $YS $ZS $radius $fraction $sc $ang ic_solid.txt rbcs-ic.txt
@@ -27,3 +27,4 @@ argp .conf.gx.base.h $D                \
 
 { make clean && make -j ; } > /dev/null
 ./udx
+
