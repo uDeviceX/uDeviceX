@@ -1,7 +1,7 @@
 CXXFLAGS+=-std=c++11 -O3 -Wall
 
-BIN=~/bin
-EXS=argp argp.awk ply2punto
+BIN=$(HOME)/bin
+EXS=argp argp.awk ply2punto ply.sc
 
 all: ply2punto
 
