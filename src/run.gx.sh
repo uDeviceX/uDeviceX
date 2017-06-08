@@ -3,6 +3,7 @@
 setup() {
     make -C ../tools/rbc install
     make -C ../tools install
+    make -C ../post/build_smesh install
 }
 
 pre() {
