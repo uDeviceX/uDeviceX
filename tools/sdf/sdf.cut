@@ -40,26 +40,66 @@ function s = str2num0(s, d)
 endfunction
 
 function [l, h] = slice0(s, l0, h0)
-  s = strsplit(s, ":")
+  s = strsplit(s, ":");
   l = s{1}; h = s{2};
-  l = str2num0(l, l0); h = str2num0(l, h0);
-
-  # [l, h] = strread(sx, "%d:%d", "returnonerror", 0);
-
+  l = str2num0(l, l0); h = str2num0(h, h0);
 endfunction
 
 function slices(sx, sy, sz)
   global nx ny nz
+  global xl yl zl   xh yh zh
   [xl, xh] = slice0(sx, 0, nx);
+  [yl, yh] = slice0(sy, 0, ny);
+  [zl, zh] = slice0(sz, 0, nz);
+endfunction
+
+function cut_data0(xl, yl, zl,   xh, yh, zh)
+  # zero-base, exclusive to one-base inclusive
+  global D
+  xl += 1; yl += 1; zl += 1;
+  D = D(xl:xh, yl:yh, zl:zh);
+endfunction
+
+function cut_data()
+  global xl yl zl   xh yh zh
+  cut_data0(xl, yl, zl,   xh, yh, zh)
+endfunction
+
+function cut_header()
+  global ex ey ez   nx ny nz D
+
+  sx = ex/nx; sy = ey/ny; sz = ez/nz; # step size
+  nn = size(D); nx = nn(1); ny = nn(2); nz = nn(3);
+  ex = nx*sx; ey = ny*sy; ez = nz*sz;
+endfunction
+
+function write_header(f)
+  global ex ey ez   nx ny nz
+  fprintf(f, "%g %g %g\n", ex, ey, ez);
+  fprintf(f, "%g %g %g\n", nx, ny, nz);
+endfunction
+
+function write_data(f)
+  global D
+  fwrite(f, D, "float32");
+endfunction
+
+function write(fn)
+  f = fopen(fn, "w");
+  write_header(f)
+  write_data(f)
+  fclose(f);
 endfunction
 
 parg();
 sx = nxt(); sy = nxt(); sz = nxt(); # slices as strings
 fi = nxt(); fo = nxt();             # in-/out- files
 
-read(fi)
-slices(sx, sy, sz)
-
+read(fi);
+slices(sx, sy, sz);
+cut_data();
+cut_header();
+write(fo);
 
 # parse slices
 ## try to read as  :
