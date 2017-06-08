@@ -73,7 +73,7 @@ int init(Particle *pp, int n) {
         // select particles within my region [-L / 2 - MARGIN, +L / 2 + MARGIN]
         std::vector<Particle> selected;
         int L[3] = {XS, YS, ZS};
-        int MARGIN[3] = {XWM, YWM, ZMARGIN_WALL};
+        int MARGIN[3] = {XWM, YWM, ZWM};
 
         for (int i = 0; i < 26; ++i) {
             int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
@@ -107,7 +107,7 @@ int init(Particle *pp, int n) {
 
     wall_cells = new CellLists(XS + 2 * XWM,
                                YS + 2 * YWM,
-                               ZS + 2 * ZMARGIN_WALL);
+                               ZS + 2 * ZWM);
     if (w_n > 0) wall_cells->build(solid, w_n, 0);
 
     CC(cudaMalloc(&w_pp, sizeof(float4) * w_n));

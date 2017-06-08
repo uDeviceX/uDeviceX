@@ -1,7 +1,7 @@
 enum {
     XSIZE_WALLCELLS = 2 * XWM + XS,
     YSIZE_WALLCELLS = 2 * YWM + YS,
-    ZSIZE_WALLCELLS = 2 * ZMARGIN_WALL + ZS,
+    ZSIZE_WALLCELLS = 2 * ZWM + ZS,
 
     XTEXTURESIZE = 256,
     _YTEXTURESIZE = ((YS + 2 * YWM) * XTEXTURESIZE +
@@ -9,7 +9,7 @@ enum {
     (XS + 2 * XWM),
 
     YTEXTURESIZE = 16 * ((_YTEXTURESIZE + 15) / 16),
-    _ZTEXTURESIZE = ((ZS + 2 * ZMARGIN_WALL) * XTEXTURESIZE +
+    _ZTEXTURESIZE = ((ZS + 2 * ZWM) * XTEXTURESIZE +
                      XS + 2 * XWM - 1) /
     (XS + 2 * XWM),
     ZTEXTURESIZE = 16 * ((_ZTEXTURESIZE + 15) / 16),

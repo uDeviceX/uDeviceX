@@ -27,12 +27,12 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
     {
         int xbase = (int)(dst0.x - (-XS / 2 - XWM));
         int ybase = (int)(dst0.y - (-YS / 2 - YWM));
-        int zbase = (int)(dst1.x - (-ZS / 2 - ZMARGIN_WALL));
+        int zbase = (int)(dst1.x - (-ZS / 2 - ZWM));
 
         enum {
             XCELLS = XS + 2 * XWM,
             YCELLS = YS + 2 * YWM,
-            ZCELLS = ZS + 2 * ZMARGIN_WALL,
+            ZCELLS = ZS + 2 * ZWM,
             NCELLS = XCELLS * YCELLS * ZCELLS
         };
 
