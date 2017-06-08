@@ -97,11 +97,14 @@ void remove_solids_from_wall() {
     newns = Cont::remove<HST> (s::i_pp_hst, s::m_hst.nv, s::ns, &tokill.front(), tokill.size());
 
     s::ns = newns;
-    
-    ic_solid::set_ids(s::ns, s::ss_hst);
-    CC(cudaMemcpy(s::ss_dev, s::ss_hst, s::ns * sizeof(Solid), H2D));
-    
     s::npp = s::ns * s::nps;
+
+    if (s::ns)
+    {
+        ic_solid::set_ids(s::ns, s::ss_hst);
+        CC(cudaMemcpy(s::ss_dev, s::ss_hst, s::ns * sizeof(Solid), H2D));
+    }
+        
     fprintf(stderr, "sim.impl: %04d/%04d Solids survived\n", s::ns, ns0);
 }
 
