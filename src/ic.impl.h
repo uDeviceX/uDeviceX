@@ -30,7 +30,6 @@ int gen(Particle* pp) { /* generate particle positions and velocities */
     }
 
     int n = ip;
-    fprintf(stderr, "(ic::gen) generated %d particles\n", n);
     return n;
 }
     

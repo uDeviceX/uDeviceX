@@ -18,7 +18,7 @@ pre() {
     plcmt.ro $XS $YS $ZS $radius $fraction $sc $ang ic_solid.txt rbcs-ic.txt
 
     rm -rf diag.txt h5 bop ply solid-ply solid_diag*txt
-    cp sdf/gx/small.rot.dat sdf.dat
+    cp $HOME/geoms/128.dat      sdf.dat
     cp data/sphere_R1.ply mesh_solid.ply
     cp data/sphere_R1.ply mesh_solid.ply
     cp cells/rbc.496.off  rbc.off
@@ -36,7 +36,8 @@ compile() {
 }
 
 #. ./gx.panda.sh
-. ./gx.daint.sh
+# . ./gx.daint.sh
+. ./gx.interactive.sh
 
 setup
 pre
