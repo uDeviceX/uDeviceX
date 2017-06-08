@@ -18,4 +18,4 @@ f=$1; shift # fraction
 s=$1; shift; a=$1; shift # rbc parameters
 fo=$1; shift; fr=$1; shift  # s[o]lid and [r]bc
 
-echo $fo $fr
+plcmt.hex $x $y $z $r

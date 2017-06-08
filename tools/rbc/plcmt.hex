@@ -25,10 +25,11 @@ function indomain(x, y, z) {
 
 BEGIN {
     if (ARGV[1] == "-h") usg();
-    Lx = ARGV[1]; shift();
-    Ly = ARGV[1]; shift();
-    Lz = ARGV[1]; shift();
-    r  = ARGV[1]; shift();
+    Lx = ARGV[1]; shift()
+    Ly = ARGV[1]; shift()
+    Lz = ARGV[1]; shift()
+    r  = ARGV[1]; shift()
+    if (ARGC == 0) { msg("plcmt.hex: arguments error"); usg() } 
 
     nmax = 100  # should be a big number, TODO:
     for (i=0; i<nmax; i++) for (j=0; j<nmax; j++) for (k=0; k<nmax; k++) {
