@@ -16,6 +16,8 @@ int init(Particle *pp, int n) {
         (thrust::device_ptr<Particle>(pp + nsurvived),
          thrust::device_ptr<Particle>(pp + nsurvived + nbelt));
 
+    dSync();
+    
     DeviceBuffer<Particle> solid_remote;
     {
         thrust::host_vector<Particle> local = solid_local;
