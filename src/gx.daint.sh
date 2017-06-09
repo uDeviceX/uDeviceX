@@ -11,7 +11,7 @@ run () {
 	#SBATCH --job-name=$n
 	#SBATCH --time=00:30:00
 	#SBATCH --ntasks=${NN}
-	#SBATCH --ntasks-per-nodea=1
+	#SBATCH --ntasks-per-nodes=1
 	#SBATCH --output=output.txt
 	#SBATCH --error=error.txt
 	#SBATCH --constraint=gpu
