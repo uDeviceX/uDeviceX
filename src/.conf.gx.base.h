@@ -22,7 +22,7 @@
 #define gammadpd_solid   8.0        /* gamma for the solid */
 #define gammadpd_wall    8.0        /* gamma for the wall */
 
-#define ljsigma          0.3        /* RBC-RBC contact LJ interaction parameters */
+#define ljsigma          0.6        /* RBC-RBC contact LJ interaction parameters */
 #define ljepsilon        0.44
 
 #define contactforces    (false)
