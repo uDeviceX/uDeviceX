@@ -119,6 +119,11 @@ __global__ void subindex_remote(uint nparticles_padded,
         ycid = (int)floor((double)data0.y + YS / 2);
         zcid = (int)floor((double)data1.x + ZS / 2);
 
+        /* hack for avoiding segfaults */
+        xcid = min(XS-1, max(0, xcid));
+        ycid = min(YS-1, max(0, ycid));
+        zcid = min(ZS-1, max(0, zcid));
+
         int cid = xcid + XS * (ycid + YS * zcid);
         subindex = atomicAdd(partials + cid, 1);
     }
