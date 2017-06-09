@@ -74,5 +74,5 @@ function   pack_faces(i) { nnp[i] = np;    ff1[i] =     f1; ff2[i] =     f2; ff3
 function unpack_faces(i) {     np = nnp[i];    f1 = ff1[i];     f2 = ff2[i];     f3 = ff3[i] }
 
 # TEST: ply.2off.t0
-# ./ply.2off test_data/sphere.ply > sph.out.off 
+# ply.2off test_data/sphere.ply > sph.out.off 
 #
