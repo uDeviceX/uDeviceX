@@ -114,7 +114,8 @@ void create_walls() {
     o::n = wall::init(o::pp, o::n);
     fprintf(stderr, "%02d: solvent particles survived: %06d/06%d\n", m::rank, nold, o::n);
 
-    k_sim::clear_velocity<<<k_cnf(o::n)>>>(o::pp, o::n);
+    if (o::n) k_sim::clear_velocity<<<k_cnf(o::n)>>>(o::pp, o::n);
+
     o::cells->build(o::pp, o::n, NULL, NULL);
     update_helper_arrays();
 
