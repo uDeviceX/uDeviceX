@@ -1,6 +1,7 @@
 #!/usr/bin/sh
 
 setup() {
+    export PATH=/usr/lib64/mpich/bin:$PATH
     make -C ../tools/rbc install
     make -C ../tools install
     make -C ../post/build_smesh install
