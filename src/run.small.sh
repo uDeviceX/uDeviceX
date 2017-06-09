@@ -15,18 +15,17 @@ pre() {
     #NX=2  NY=2  NZ=1
     NN=$((${NX}*${NY}*${NZ}))
 
-    XS=40 YS=52 ZS=20
+    XS=20 YS=24 ZS=12
     LX=$((${NX}*${XS}))
     LY=$((${NY}*${YS}))
     LZ=$((${NZ}*${ZS}))
 
-    df=0.1
-
+    df=0
     D="-XS=$XS -YS=$YS -ZS=$ZS"
 
-    radius=2.3
+    radius=2.0
     fraction=0.2
-    sc=0.5 ang=0
+    sc=1.0 ang=0
     plcmt.ro $LX $LY $LZ $radius $fraction $sc $ang ic_solid.txt rbcs-ic.txt
 
     rm -rf diag.txt h5 bop ply solid-ply solid_diag*txt
