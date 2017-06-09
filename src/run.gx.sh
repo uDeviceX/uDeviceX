@@ -8,10 +8,10 @@ setup() {
 
 pre() {
 
-    NX=1  NY=1  NZ=1
+    #NX=1  NY=1  NZ=1
+    NX=2  NY=2  NZ=1
     NN=$((${NX}*${NY}*${NZ}))
     
-    #NX=2  NY=2  NZ=2
     XS=40 YS=52 ZS=20
     LX=$((${NX}*${XS}))
     LY=$((${NY}*${YS}))
@@ -27,7 +27,8 @@ pre() {
     plcmt.ro $LX $LY $LZ $radius $fraction $sc $ang ic_solid.txt rbcs-ic.txt
 
     rm -rf diag.txt h5 bop ply solid-ply solid_diag*txt
-    cp sdf/gx/small.rot.dat sdf.dat
+    #cp sdf/gx/small.rot.dat sdf.dat
+    cp ~/geoms/128.dat sdf.dat
     cp data/sphere_R1.ply mesh_solid.ply
     cp cells/rbc.496.off  rbc.off
 
