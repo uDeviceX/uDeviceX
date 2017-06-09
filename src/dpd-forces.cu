@@ -44,8 +44,9 @@ __device__ float3 compute_dpd_force_traced(int type1, int type2,
     const bool sw = (type1 == SOLID_TYPE) && (type2 ==  WALL_TYPE);
 
     if (ss || sw) {
+        /*hack*/ const float ljsi = ss ? ljsigma : 2 * ljsigma;
         const float invr2 = invrij * invrij;
-        const float t2 = ljsigma * ljsigma * invr2;
+        const float t2 = ljsi * ljsi * invr2;
         const float t4 = t2 * t2;
         const float t6 = t4 * t2;
         const float lj = min(1e4f, max(0.f, ljepsilon * 24.f * invrij * t6 * (2.f * t6 - 1.f)));
