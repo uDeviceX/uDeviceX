@@ -13,12 +13,6 @@ inline void mpiAssert(int code, const char *file, int line) {
     }
 }
 
-enum {  /* used in sorting of bulk particle when wall is created */
-  W_BULK,  /* remains in bulk */
-  W_WALL,  /* becomes wall particle */
-  W_DEEP   /* deep inside the wall */
-};
-
 /* maximum particle number per one processor for static allocation */
 #define MAX_PART_NUM 1000000
 
