@@ -9,8 +9,10 @@
 
 #### Double poiseuille
 # nTEST: flow.t1
-# export PATH=../tools:$PATH
 # rm -rf bop h5 diag.txt
+# :
+# export PATH=../tools:$PATH
+# cp cells/rbc.498.off  rbc.off
 # :
 # argp .conf.double.poiseuille.h      \
 #    -rsph=4                          \
@@ -25,8 +27,10 @@
 
 #### Plates : shear
 # nTEST: flow.t2
-# export PATH=../tools:$PATH
 # rm -rf bop h5 diag.txt
+# :
+# export PATH=../tools:$PATH
+# cp cells/rbc.498.off  rbc.off
 # cp sdf/wall1/wall.dat sdf.dat
 # :
 # argp .conf.test.h                                                 \
@@ -41,8 +45,10 @@
 
 #### Plates : poiseuille
 # nTEST: flow.t3
-# export PATH=../tools:$PATH
 # rm -rf bop h5 diag.txt
+# :
+# export PATH=../tools:$PATH
+# cp cells/rbc.498.off  rbc.off
 # cp sdf/wall1/wall.dat sdf.dat
 # :
 # argp .conf.poiseuille.h                                           \
@@ -57,8 +63,10 @@
 
 #### flow around cylinder
 # nTEST: flow.t4
-# export PATH=../tools:$PATH
 # rm -rf bop h5 diag.txt
+# :
+# export PATH=../tools:$PATH
+# cp cells/rbc.498.off rbc.off
 # cp sdf/cyl1/cyl.dat sdf.dat
 # :
 # argp .conf.poiseuille.h                                           \
