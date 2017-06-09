@@ -17,7 +17,7 @@
 #### double Poiseuille
 # nTEST: mpi.t2
 # rm -rf diag.txt h5 bop ply rbc.off
-:
+# :
 # export PATH=../tools:$PATH
 # export PATH=/usr/lib64/mpich/bin:$PATH
 # :
