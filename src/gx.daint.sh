@@ -16,7 +16,7 @@ run () {
 	#SBATCH --error=error.txt
 	#SBATCH --constraint=gpu
 	:
-    module cray-hdf5-parallel cudatoolkit daint-gpu GSL
+    module load cray-hdf5-parallel cudatoolkit daint-gpu GSL
 	srun --export ALL ./udx
 EOF
     sbatch runme.sh
