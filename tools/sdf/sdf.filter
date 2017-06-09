@@ -1,6 +1,7 @@
 #!/usr/bin/env octave-qf
 
-# usage: <positions stream> | sdf.filter <lo> <hi> <sdf.dat>       > <positions>
+# usage: <positions stream> | sdf.filter <x> <y> <z>   <lo> <hi>   <sdf.dat>       > <positions>
+#        x, y, z: domain size
 #        filters stream of position [x, y, z] based on the level of sdf
 #        if sdf(x, y, z) < level     a position goes into output
 
@@ -41,7 +42,10 @@ function write()
 endfunction
 
 function msg(s); fputs(stderr, s); endfunction
-function usg() ; msg("<positions stream> | sdf.filter <level> <sdf.dat>       > <positions>"); exit(); endfunction
+function usg()
+  msg("<positions stream> | sdf.filter <x> <y> <z> <lo> <hi> <sdf.dat>       > <positions>")
+  exit()
+endfunction
 function r = eq(a, b); r = strcmp(a, b); endfunction
 
 function read_stream()
@@ -62,6 +66,11 @@ function [x, y, z] = isdf(x, y, z) # get indexes
   x = round(x); y = round(y); z = round(z);
 endfunction
 
+function s = sdf_sc(s) # scale sdf
+  global ex Lx
+  s /= ex * Lx
+endfunction
+
 function s = sdf(x, y, z)
   global nx ny nz D
   BIG = 1e10;
@@ -69,7 +78,7 @@ function s = sdf(x, y, z)
   if x < 1 || x > nx; s = BIG; return; endif
   if y < 1 || y > ny; s = BIG; return; endif
   if z < 1 || z > nz; s = BIG; return; endif
-  s =  D(x, y, z);
+  s =  sdf_sc(D(x, y, z));
 endfunction
 
 function filter(lo, hi)
@@ -80,19 +89,23 @@ function filter(lo, hi)
     x = xx(i); y = yy(i); z = zz(i);
     s = sdf(x, y, z);
     if s >= hi; continue; endif
-    if s  < lo; continue; endif    
+    if s  < lo; continue; endif
     m += 1; xx(m) = x; yy(m) = y; zz(m) = z;
   endfor
   xx = xx(1:m); yy = yy(1:m); zz = zz(1:m);
 endfunction
 
+function r = arg2num(i); r = str2num(argv(){i}); endfunction
+
+
 if eq(argv(){1}, "-h"); usg(); endif
-if numel(argv()) != 3;  usg(); endif
 
-lo = str2num(argv(){1});
-hi = str2num(argv(){2});
-fi  = argv(){3};
+k = 1;
+Lx = arg2num(k++); Ly = arg2num(k++); Lz = arg2num(k++);
+lo = arg2num(k++); hi = arg2num(k++);
+fi  = argv(){k++};
 
+set_scale(
 read_stream();
 read(fi); # sdf
 filter(lo, hi);
@@ -101,7 +114,9 @@ write();
 
 # TEST: sdf.filter.t0
 # lo=-1 hi=1
+# x=16 y=16 z=16
+# D="$x $y $z"         # domain
 # sdf=test_data/yplates.dat
 # pos=test_data/hex.pos
-# sdf.filter $lo $hi $sdf    > fi.out.pos      < $pos
+# sdf.filter $D $lo $hi $sdf    > fi.out.pos      < $pos
 #
