@@ -1,5 +1,5 @@
 dhost () ( # dispatch hostname
-    h=`hostname -a`
+    h=`hostname`
     awk '
        BEGIN {
 	   h = ARGV[1]
