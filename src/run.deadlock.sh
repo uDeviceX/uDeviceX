@@ -13,8 +13,9 @@ pre() {
 
     D="-XS=$XS -YS=$YS -ZS=$ZS"
 
+    cp cells/rbc.498.off         rbc.off
     cp sdf/pipe_nocenter/sdf.dat sdf.dat
-    rm -rf diag.txt h5 bop ply solid-ply solid_diag*txt
+    rm -rf diag.txt h5 bop ply rbc.off solid-ply solid_diag*txt
     
     argp .conf.gx.base.h $D                  \
          -tend=3000.0 -part_freq=1000        \
