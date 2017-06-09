@@ -1,0 +1,12 @@
+#!/usr/bin/awk -f
+
+# usage: off.2cm <off>   >   <off>
+#        move central of mass to [0, 0, 0]
+
+function usg(s) {
+    msg("usage: off.2cm <off>     >      <off>")
+    exit
+};
+
+function shift(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }
+function msg(s)     { printf "%s\n", s | "cat >&2" }
