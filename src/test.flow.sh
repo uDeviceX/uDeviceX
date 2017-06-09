@@ -5,7 +5,6 @@
 #
 # To update the test change TEST to cTEST and run
 #  > atest test.flow.sh
-# add crap from test_data/* to git
 
 #### Double poiseuille
 # nTEST: flow.t1
