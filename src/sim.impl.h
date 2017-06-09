@@ -146,7 +146,7 @@ void forces_dpd() {
                             o::cells->count);
     DPD::post(o::pp, o::n);
     DPD::recv();
-    DPD::remote_interactions(o::n, o::ff);
+    DPD::remote_interactions(o::n, o::ff);    
 }
 
 void clear_forces(Force* ff, int n) {
@@ -181,7 +181,7 @@ void forces(bool wall_created) {
     if (solids0) clear_forces(s::ff, s::npp);
     if (rbcs)    clear_forces(r::ff, r::n);
 
-    if (o::n)         forces_dpd();
+    forces_dpd();
     if (wall_created) forces_wall();
     forces_rbc();
 
