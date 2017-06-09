@@ -241,7 +241,7 @@ void bulk(int nparticles, int * cellstarts, int * cellcounts) {
     subindices->resize(nparticles);
 
     if (nparticles)
-    k_common::subindex_local<false><<<k_cnf(nparticles)>>>
+    k_common::subindex_local<true><<<k_cnf(nparticles)>>>
         (nparticles, k_odstr::texparticledata, cellcounts, subindices->D);
 
 
