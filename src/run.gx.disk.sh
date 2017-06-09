@@ -1,5 +1,7 @@
 #!/usr/bin/sh
 
+. $HOME/.udx/u.sh
+
 setup() {
     make -C ../tools/rbc install
     make -C ../tools install
@@ -46,8 +48,7 @@ compile() {
     { make clean && make -j ; } > /dev/null
 }
 
-#. ./gx.panda.sh
-. ./gx.daint.sh
+inc ./gx.HOST.sh # u.sh should be installed; make install -C ../tools
 
 setup
 pre
