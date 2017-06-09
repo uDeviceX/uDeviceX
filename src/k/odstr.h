@@ -119,9 +119,9 @@ __global__ void subindex_remote(uint nparticles_padded,
         data0.y += YS * ((code / 3 + 1) % 3 - 1);
         data1.x += ZS * ((code / 9 + 1) % 3 - 1);
 
-        xcid = (int)floor((double)x + XS / 2);
-        ycid = (int)floor((double)y + YS / 2);
-        zcid = (int)floor((double)z + ZS / 2);
+        xcid = (int)floor((double)data0.x + XS / 2);
+        ycid = (int)floor((double)data0.y + YS / 2);
+        zcid = (int)floor((double)data1.x + ZS / 2);
 
         xcid = mimax(xcid, 0, XS-1);
         ycid = mimax(ycid, 0, YS-1);
