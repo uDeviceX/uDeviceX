@@ -41,6 +41,7 @@ void distr_rbc()
 }
 
 void update_helper_arrays() {
+    if (!o::n) return;
     CC(cudaFuncSetCacheConfig(k_sim::make_texture, cudaFuncCachePreferShared));
     k_sim::make_texture<<<(o::n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>
         (o::zip0, o::zip1, (float*)o::pp, o::n);
@@ -114,7 +115,8 @@ void create_walls() {
     o::n = wall::init(o::pp, o::n);
     MSG("solvent particles survived: %06d/%06d", o::n, nold);
 
-    k_sim::clear_velocity<<<k_cnf(o::n)>>>(o::pp, o::n);
+    if (o::n) k_sim::clear_velocity<<<k_cnf(o::n)>>>(o::pp, o::n);
+
     o::cells->build(o::pp, o::n, NULL, NULL);
     update_helper_arrays();
 
