@@ -10,13 +10,58 @@ function usg(s) {
 
 BEGIN {
     f  = ARGC > 1 ? ARGV[1] : "-"
+    read_header(f)
+    read_verts(f)
+    read_faces(f)
 
-    ne = 0
+    compute_cm()
+
     write_header()
     write_verts()
     write_faces()
 }
 
+function compute_cm(   i) {
+    for (i = 0; i < nv; i++) {
+	unpack_verts()
+	xc += x; yc += y; zc += z
+    }
+    xc /= nv; yc /= nv; zc /= nv
+    print xc, yc, zc
+    exit
+}
+
+function read_header(f,   i) {
+    while (getline < f > 0) {
+	if (skip($0)) continue
+	i++
+	if (i == 1) continue # skip OFF
+	if (i == 2) {nv = $1; nf = $2; ne = $3 }
+	if (i == 2) break
+    }
+}
+
+function read_verts(f,   i) {
+    i = 0
+    while (getline < f > 0) {
+	if (skip($0)) continue
+	x = $1; y = $2; z = $3
+	pack_verts(i)
+	i ++
+	if (i == nv) break
+    }
+}
+
+function read_faces(f,   i, k) {
+    i = 0
+    while (getline < f > 0) {
+	if (skip($0)) continue
+	k = 1; np = $(k++); f1 = $(k++); f2 = $(k++); f3 = $(k++)
+	pack_faces(i)
+	i ++
+	if (i == nf) break
+    }
+}
 
 function write_verts(f,   i) {
     for (i = 0; i < nv; i++) {
@@ -36,6 +81,10 @@ function write_header() {
     print "OFF"
     print nv, nf, ne
 }
+
+function emptyp  (s) { return s ~ /^[ \t]*$/ }
+function commentp(s) { return substr(s, 1, 1) == "#" }
+function skip(s) { return emptyp(s) || commentp(s) }
 
 function shift(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }
 function msg(s)     { printf "%s\n", s | "cat >&2" }
