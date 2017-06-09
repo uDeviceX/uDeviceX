@@ -90,7 +90,7 @@ void setup(int* faces) {
 }
 
 void forces(int nc, Particle *pp, Force *ff, float* host_av) {
-    if (nc == 0) return;
+    if (nc <= 0) return;
 
     size_t textureoffset;
     CC(cudaBindTexture(&textureoffset, &k_rbc::texVertices,
@@ -101,7 +101,7 @@ void forces(int nc, Particle *pp, Force *ff, float* host_av) {
     dim3 avThreads(256, 1);
     dim3 avBlocks(1, nc);
 
-    if (nc) CC(cudaMemsetAsync(host_av, 0, nc * 2 * sizeof(float)));
+    CC(cudaMemsetAsync(host_av, 0, nc * 2 * sizeof(float)));
     k_rbc::areaAndVolumeKernel<<<avBlocks, avThreads>>>(host_av);
     CC(cudaPeekAtLastError());
 
