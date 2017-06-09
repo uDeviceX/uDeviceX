@@ -68,7 +68,7 @@ void remove_rbcs_from_wall() {
 
     r::nc = Cont::remove<DEV>(r::pp, r::nv, r::nc, &tokill.front(), tokill.size());
     r::n = r::nc * r::nv;
-    MSG("%04d/%04d RBCs survived\n", r::nc, nc0);
+    MSG("%d/%d RBCs survived\n", r::nc, nc0);
 }
 
 void remove_solids_from_wall() {
@@ -101,7 +101,7 @@ void remove_solids_from_wall() {
     s::ns = newns;
     s::npp = s::ns * s::nps;
         
-    MSG("sim.impl: %04d/%04d Solids survived", s::ns, ns0);
+    MSG("sim.impl: %d/%d Solids survived", s::ns, ns0);
 }
 
 #undef HST
@@ -113,7 +113,7 @@ void create_walls() {
     dSync();
     sdf::init();
     o::n = wall::init(o::pp, o::n);
-    MSG("solvent particles survived: %06d/%06d", o::n, nold);
+    MSG("solvent particles survived: %d/%d", o::n, nold);
 
     if (o::n) k_sim::clear_velocity<<<k_cnf(o::n)>>>(o::pp, o::n);
 
