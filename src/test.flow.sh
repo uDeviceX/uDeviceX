@@ -8,7 +8,7 @@
 
 #### Double poiseuille
 # nTEST: flow.t1
-# rm -rf bop h5 diag.txt
+# rm -rf bop h5 diag.txt rbc.off
 # :
 # export PATH=../tools:$PATH
 # cp cells/rbc.498.off  rbc.off
@@ -26,7 +26,7 @@
 
 #### Plates : shear
 # nTEST: flow.t2
-# rm -rf bop h5 diag.txt
+# rm -rf bop h5 diag.txt rbc.off
 # :
 # export PATH=../tools:$PATH
 # cp cells/rbc.498.off  rbc.off
@@ -44,7 +44,7 @@
 
 #### Plates : poiseuille
 # nTEST: flow.t3
-# rm -rf bop h5 diag.txt
+# rm -rf bop h5 diag.txt rbc.off
 # :
 # export PATH=../tools:$PATH
 # cp cells/rbc.498.off  rbc.off
@@ -62,7 +62,7 @@
 
 #### flow around cylinder
 # nTEST: flow.t4
-# rm -rf bop h5 diag.txt
+# rm -rf bop h5 diag.txt rbc.off
 # :
 # export PATH=../tools:$PATH
 # cp cells/rbc.498.off rbc.off

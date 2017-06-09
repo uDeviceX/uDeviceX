@@ -2,10 +2,11 @@
 
 #### RBC in a periodic box
 # sTEST: mpi.t1
+# rm -rf diag.txt h5 bop ply rbc.off
+# :
 # export PATH=../tools:$PATH
 # export PATH=/usr/lib64/mpich/bin:$PATH
 # echo 1 0 0 8  0 1 0 8  0 0 1 8  0 0 0 1 > rbcs-ic.txt
-# rm -rf diag.txt h5 bop ply
 # :
 # argp .conf.couette.h -rbcs -tend=0.5 -part_freq=100 > .conf.h
 # :
@@ -15,9 +16,10 @@
 
 #### double Poiseuille
 # nTEST: mpi.t2
+# rm -rf diag.txt h5 bop ply rbc.off
+:
 # export PATH=../tools:$PATH
 # export PATH=/usr/lib64/mpich/bin:$PATH
-# rm -rf diag.txt h5 bop ply
 # :
 # argp .conf.double.poiseuille.h -kBT=1e-7      \
 #   -tend=2.1 -part_freq=100  -field_freq=300   \
@@ -31,9 +33,9 @@
 
 ####
 # sTEST: mpi.t3
+# rm -rf diag.txt h5 bop ply rbc.off
 # export PATH=../tools:$PATH
 # export PATH=/usr/lib64/mpich/bin:$PATH
-# rm -rf diag.txt h5 bop ply
 # cp sdf/cyl1/cyl.dat sdf.dat
 # x=0.75 y=8 z=9; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 # :
