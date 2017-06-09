@@ -90,7 +90,7 @@ void setup(int* faces) {
 }
 
 void forces(int nc, Particle *pp, Force *ff, float* host_av) {
-    if (nc == 0) return;
+    if (nc <= 0) return;
 
     size_t textureoffset;
     CC(cudaBindTexture(&textureoffset, &k_rbc::texVertices,

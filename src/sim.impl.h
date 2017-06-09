@@ -441,7 +441,7 @@ void init_solid()
 }
 
 void init() {
-    CC(cudaMalloc(&r::av, MAX_CELLS_NUM));
+    if (rbcs) CC(cudaMalloc(&r::av, MAX_CELLS_NUM));
 
     rbc::setup(r::faces);
     rdstr::ini();

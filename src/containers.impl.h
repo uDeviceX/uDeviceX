@@ -55,7 +55,7 @@ int setup_hst(int nv, Particle *pp_hst) {
 int setup(Particle* pp, int nv, /* storage */ Particle *pp_hst) {
     /* fills `pp' with RBCs for this processor */
     int nc = setup_hst(nv, pp_hst);
-    CC(cudaMemcpy(pp, pp_hst, sizeof(Particle) * nv * nc, H2D));
+    if (nc) CC(cudaMemcpy(pp, pp_hst, sizeof(Particle) * nv * nc, H2D));
     MPI_Barrier(m::cart);
     return nc;
 }
