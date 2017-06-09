@@ -1,0 +1,101 @@
+#!/usr/bin/env octave-qf
+
+# usage: sdf.2txt <in.dat>   >   <out.txt>
+#        convert to text
+# Output:
+# nx ny nz ex ey ez
+# w[0]
+# ..
+# w[n-1]
+
+1;
+function read(fn)
+  f = fopen(fn);
+  read_header(f)
+  read_data(f)
+  fclose(f);
+endfunction
+
+function varargout = fscn(f, fmt) # simpler fscanf
+  l = fgets(f);
+  [varargout{1:nargout}] = strread(l, fmt);
+endfunction
+
+function read_header(f)
+  global ex ey ez   nx ny nz
+  [ex, ey, ez] = fscn(f, "%f %f %f");
+  [nx, ny, nz] = fscn(f, "%d %d %d");
+endfunction
+
+function read_data(f)
+  global ex ey ez   nx ny nz D
+  D = fread(f, nx*ny*nz, "float32");
+  D = reshape(D, nx, ny, nz);
+endfunction
+
+function ans = decode()
+  global c
+  ans = zeros(1, 3);
+  for i=1:3; ans(i) = c(i) - 'x' + 1; endfor
+endfunction
+
+function write_header(f)
+  global ex ey ez   nx ny nz
+  fprintf(f, "%g %g %g\n", ex, ey, ez);
+  fprintf(f, "%g %g %g\n", nx, ny, nz);
+endfunction
+
+function write_data(f)
+  global D
+  fwrite(f, D, "float32");
+endfunction
+
+function write(fn)
+  global ex ey ez   nx ny nz   D
+  f = fopen(fn, "w");
+  write_header(f)
+  write_data(f)
+  fclose(f);
+endfunction
+
+function reflect_header()
+  global ex ey ez   nx ny nz c
+  d = c(1);
+  if d == 'x'; ex *= 2; nx *= 2; endif
+  if d == 'y'; ey *= 2; ny *= 2; endif
+  if d == 'z'; ez *= 2; nz *= 2; endif
+endfunction
+
+function reflect_data()
+  global c D
+  d = c(1) - 'x' + 1;
+  low = c(2) == 'l';
+  F = flipdim(D, d);
+  if low; D = cat(d, D, F); else; D = cat(d, F, D); endif
+endfunction
+
+function reflect()
+  reflect_data()
+  reflect_header()
+endfunction
+
+function msg(s); fputs(stderr, s); endfunction
+function usg() ; msg("sdf.2txt <in.dat>    >   <out.txt>"); exit(); endfunction
+function r = eq(a, b); r = strcmp(a, b); endfunction
+
+function [fi, fo] = parg() # parse arguments
+  global c
+  if eq(argv(){1}, "-h"); usg(); endif
+  c  = argv(){1};
+  if numel(c) != 2; usg(); endif
+  d = c(1); l = c(2);
+  if d != 'x' && d != 'y' && d != 'z'; usg(); endif
+  if l != 'l' && l != 'h'              usg(); endif
+  fi = argv(){2};
+  fo = argv(){3};
+endfunction
+
+[fi, fo] = parg();
+read(fi);
+reflect();
+write(fo);
