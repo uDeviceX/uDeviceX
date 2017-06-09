@@ -3,14 +3,15 @@
 function init() {
     # default values (change here)
     defs = \
+        "RBCnv 498 "                            \
 	"doublepoiseuille false "		\
-	"field_dumps false "		\
+	"field_dumps false "		        \
 	"part_dumps false "			\
 	"pushflow false "			\
 	"part_freq 1000 "			\
-	"field_freq 2000 "		\
+	"field_freq 2000 "		        \
 	"tend 50 "				\
-	"wall_creation 5000 "		\
+	"wall_creation 5000 "		        \
 	"walls false "
 }
 
