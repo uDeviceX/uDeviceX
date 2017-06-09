@@ -68,7 +68,7 @@ void remove_rbcs_from_wall() {
 
     r::nc = Cont::remove<DEV>(r::pp, r::nv, r::nc, &tokill.front(), tokill.size());
     r::n = r::nc * r::nv;
-    fprintf(stderr, "sim.impl: %04d/%04d RBCs survived\n", r::nc, nc0);
+    MSG("%04d/%04d RBCs survived\n", r::nc, nc0);
 }
 
 void remove_solids_from_wall() {
@@ -101,7 +101,7 @@ void remove_solids_from_wall() {
     s::ns = newns;
     s::npp = s::ns * s::nps;
         
-    fprintf(stderr, "sim.impl: %04d/%04d Solids survived\n", s::ns, ns0);
+    MSG("sim.impl: %04d/%04d Solids survived", s::ns, ns0);
 }
 
 #undef HST
@@ -113,7 +113,7 @@ void create_walls() {
     dSync();
     sdf::init();
     o::n = wall::init(o::pp, o::n);
-    fprintf(stderr, "%02d: solvent particles survived: %06d/06%d\n", m::rank, nold, o::n);
+    MSG("solvent particles survived: %06d/%06d", o::n, nold);
 
     if (o::n) k_sim::clear_velocity<<<k_cnf(o::n)>>>(o::pp, o::n);
 
@@ -540,7 +540,7 @@ void run_wall(long nsteps) {
     solids0 = solids;
     if (solids0) init_solid();
     if (walls) {create_walls(); wall_created = true;}
-    printf("%d: done creating walls\n", m::rank);
+    MSG("done creating walls");
     if (solids0 && s::npp) k_sim::clear_velocity<<<k_cnf(s::npp)>>>(s::pp, s::npp);
     if (rbcs && r::n)      k_sim::clear_velocity<<<k_cnf(r::n)  >>>(r::pp, r::n);
     if (pushflow) driving_force0 = driving_force;
@@ -550,7 +550,7 @@ void run_wall(long nsteps) {
 
 void run() {
     long nsteps = (int)(tend / dt);
-    if (m::rank == 0) printf("will take %ld steps\n", nsteps);
+    if (m::rank == 0) MSG("will take %ld steps", nsteps);
 
     if (walls || solids) run_wall(nsteps);
     else               run_nowall(nsteps);

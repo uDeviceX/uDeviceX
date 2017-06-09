@@ -1,17 +1,12 @@
 namespace ic { /* initial conditions */
 
-#define X 0
-#define Y 1
-#define Z 2
-
 int gen(Particle* pp) { /* generate particle positions and velocities */
-    fprintf(stderr, "(ic::gen) IC\n");
-
+    enum {X, Y, Z};
     assert(XS * YS * ZS * numberdensity < MAX_PART_NUM);
   
     srand48(123456);
     int iz, iy, ix, l, nd = numberdensity;
-    int ip = 0; /* particle index */
+    int n = 0; /* particle index */
     float x, y, z, dr = 0.99;
     for (iz = 0; iz < ZS; iz++)
     for (iy = 0; iy < YS; iy++)
@@ -25,16 +20,12 @@ int gen(Particle* pp) { /* generate particle positions and velocities */
 
             p.v[X] = 0; p.v[Y] = 0; p.v[Z] = 0;
           
-            pp[ip++] = p;
+            pp[n++] = p;
         }
     }
 
-    int n = ip;
+    MSG("ic::gen: created %06d solvent particles", n);
     return n;
 }
-    
-#undef X
-#undef Y
-#undef Z
 
 } /* namespace ic */

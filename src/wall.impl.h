@@ -15,7 +15,7 @@ int init(Particle *pp, int n) {
     thrust::device_vector<Particle> solid_local
         (thrust::device_ptr<Particle>(pp + nsurvived),
          thrust::device_ptr<Particle>(pp + nsurvived + nbelt));
-
+    MSG("nsurvived/nbelt : %d/%d", nsurvived, nbelt);
     dSync();
     
     DeviceBuffer<Particle> solid_remote;
@@ -115,7 +115,7 @@ int init(Particle *pp, int n) {
 
     CC(cudaMalloc(&w_pp, sizeof(float4) * w_n));
 
-    if (m::rank == 0) printf("consolidating wall particles...\n");
+    if (m::rank == 0) MSG("consolidating wall particles");
 
     if (w_n > 0)
     k_sdf::strip_solid4<<<k_cnf(w_n)>>>(solid, w_n, w_pp);

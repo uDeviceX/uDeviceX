@@ -58,6 +58,9 @@ inline void cudaAssert(cudaError_t code, const char *file, int line) {
     }
 }
 
+#define MSG0(fmt, ...) fprintf(stderr, fmt, ##__VA_ARGS__)
+#define MSG(fmt, ...) MSG0("%03d: ", m::rank), MSG0(fmt, ##__VA_ARGS__), MSG0("\n")
+
 // AoS is the currency for dpd simulations (because of the spatial locality).
 // AoS - SoA conversion might be performed within the hpc kernels.
 struct Particle {

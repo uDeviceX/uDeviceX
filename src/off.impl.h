@@ -11,8 +11,8 @@ namespace off {
     FILE *fd = fopen(f, "r");
     if (fd == NULL)
     {
-        fprintf(stderr, "off: Could not open <%s>\n", f);
-        exit(1);
+      MSG("off: Could not open <%s>", f);
+      exit(1);
     }
 
     fgets(buf, sizeof buf, fd); /* skip OFF */
