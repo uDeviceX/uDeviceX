@@ -4,7 +4,7 @@ function usg(s) {
     msg("usage: ply.sxyz <sx> <sy> <sz> <ply.in>     >      <ply.out>")
     msg("       scale coordinates")
     exit
-};
+}
 
 BEGIN {
     sx = ARGV[1]; shift()           # scales

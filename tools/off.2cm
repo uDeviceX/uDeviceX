@@ -1,0 +1,107 @@
+#!/usr/bin/awk -f
+
+# usage: off.2cm <off>   >   <off>
+#        move central of mass to [0, 0, 0]
+
+function usg(s) {
+    msg("usage: off.2cm <off>     >      <off>")
+    exit
+};
+
+BEGIN {
+    f  = ARGC > 1 ? ARGV[1] : "-"
+    read_header(f)
+    read_verts(f)
+    read_faces(f)
+
+    compute_cm()
+    move_cm()
+
+    write_header()
+    write_verts()
+    write_faces()
+}
+
+function compute_cm(   i) { # center of mass
+    for (i = 0; i < nv; i++) {
+	unpack_verts(i)
+	xc += x; yc += y; zc += z
+    }
+    xc /= nv; yc /= nv; zc /= nv
+}
+
+function move_cm(   i) {
+    for (i = 0; i < nv; i++) {
+	unpack_verts(i)
+	x -= xc; y -= yc; z -= zc
+	pack_verts(i)
+    }
+}
+
+function read_header(f,   i) {
+    while (getline < f > 0) {
+	if (skip($0)) continue
+	i++
+	if (i == 1) continue # skip OFF
+	if (i == 2) {nv = $1; nf = $2; ne = $3 }
+	if (i == 2) break
+    }
+}
+
+function read_verts(f,   i) {
+    i = 0
+    while (getline < f > 0) {
+	if (skip($0)) continue
+	x = $1; y = $2; z = $3
+	pack_verts(i)
+	i ++
+	if (i == nv) break
+    }
+}
+
+function read_faces(f,   i, k) {
+    i = 0
+    while (getline < f > 0) {
+	if (skip($0)) continue
+	k = 1; np = $(k++); f1 = $(k++); f2 = $(k++); f3 = $(k++)
+	pack_faces(i)
+	i ++
+	if (i == nf) break
+    }
+}
+
+function write_verts(f,   i) {
+    for (i = 0; i < nv; i++) {
+	unpack_verts(i)
+	print x, y, z
+    }
+}
+
+function write_faces(f,   i) {
+    for (i = 0; i < nf; i++) {
+	unpack_faces(i)
+	print np, f1, f2, f3
+    }
+}
+
+function write_header() {
+    print "OFF"
+    print nv, nf, ne
+}
+
+function emptyp  (s) { return s ~ /^[ \t]*$/ }
+function commentp(s) { return substr(s, 1, 1) == "#" }
+function skip(s) { return emptyp(s) || commentp(s) }
+
+function shift(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }
+function msg(s)     { printf "%s\n", s | "cat >&2" }
+
+function   pack_verts(i) { xx[i] =     x; yy[i] =    y;  zz[i] =     z }
+function unpack_verts(i) {     x = xx[i];     y = yy[i];     z = zz[i] }
+
+function   pack_faces(i) { nnp[i] = np;    ff1[i] =     f1; ff2[i] =     f2; ff3[i] =    f3  }
+function unpack_faces(i) {     np = nnp[i];    f1 = ff1[i];     f2 = ff2[i];     f3 = ff3[i] }
+
+# TEST: off.2cm.t0
+# ./off.2cm test_data/un.498.off > cm.out.off
+#
