@@ -26,7 +26,7 @@ pre() {
 
     radius=2.3
     fraction=0.2
-    sc=0.2 ang=0
+    sc=0.5 ang=0
     plcmt.ro $LX $LY $LZ $radius $fraction $sc $ang ic_solid.txt rbcs-ic.txt
 
     rm -rf diag.txt h5 bop ply solid-ply solid_diag*txt
