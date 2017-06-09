@@ -101,7 +101,7 @@ void remove_solids_from_wall() {
     s::ns = newns;
     s::npp = s::ns * s::nps;
         
-    fprintf(stderr, "sim.impl: %04d/%04d Solids survived\n", s::ns, ns0);
+    MSG("sim.impl: %04d/%04d Solids survived", s::ns, ns0);
 }
 
 #undef HST
@@ -550,7 +550,7 @@ void run_wall(long nsteps) {
 
 void run() {
     long nsteps = (int)(tend / dt);
-    if (m::rank == 0) printf("will take %ld steps\n", nsteps);
+    if (m::rank == 0) MSG("will take %ld steps", nsteps);
 
     if (walls || solids) run_wall(nsteps);
     else               run_nowall(nsteps);

@@ -15,7 +15,7 @@ void init0(float *field, float *grid_data) {
     int L[3] = {XS, YS, ZS};
     int MARGIN[3] = {XWM, YWM, ZWM};
     int TEXTURESIZE[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
-    if (m::rank == 0) printf("sampling the geometry file...\n");
+    if (m::rank == 0) MSG("sampling the geometry file");
     {
         float start[3], spacing[3];
         for (int c = 0; c < 3; ++c) {
