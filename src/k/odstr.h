@@ -93,18 +93,6 @@ __device__ int minmax(int i, int lo, int hi) {
     return min(hi, max(lo, i));
 }
 
-__device__ int get_cid(float x, float y, float z) {
-    int xcid = (int)floor((double)x + XS / 2);
-    int ycid = (int)floor((double)y + YS / 2);
-    int zcid = (int)floor((double)z + ZS / 2);
-
-    xcid = mimax(xcid, 0, XS-1);
-    ycid = mimax(ycid, 0, XY-1);
-    zcid = mimax(zcid, 0, XZ-1);
-    
-    return xcid + XS * (ycid + YS * zcid);
-}
-
 __global__ void subindex_remote(uint nparticles_padded,
                                 uint nparticles, int *partials, float2 *dstbuf, uchar4 *subindices) {
     uint warpid = threadIdx.x >> 5;
@@ -131,7 +119,15 @@ __global__ void subindex_remote(uint nparticles_padded,
         data0.y += YS * ((code / 3 + 1) % 3 - 1);
         data1.x += ZS * ((code / 9 + 1) % 3 - 1);
 
-        int cid = get_cid(data0.x, data0.y, data1.x);
+        xcid = (int)floor((double)x + XS / 2);
+        ycid = (int)floor((double)y + YS / 2);
+        zcid = (int)floor((double)z + ZS / 2);
+
+        xcid = mimax(xcid, 0, XS-1);
+        ycid = mimax(ycid, 0, YS-1);
+        zcid = mimax(zcid, 0, ZS-1);
+        
+        int cid = xcid + XS * (ycid + YS * zcid);
         subindex = atomicAdd(partials + cid, 1);
     }
 
