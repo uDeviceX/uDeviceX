@@ -6,23 +6,24 @@
 #define YBBM 1.f
 #define ZBBM 1.f
 
-#define numberdensity    10
-#define kBT              4.44302e-8
-#define dt               5e-4       /* timestep */
-#define rbc_mass         0.5        /* ratio of RBC particle mass to solvent particle mass */
-#define solid_mass       0.5        /* ratio of solid particle mass to solvent particle mass */
+#define numberdensity       4
+#define kBT                 4.44302e-8
+#define dt                  5e-4
+#define rbc_mass            0.5
+#define solid_mass          0.5
+
 #define gamma_dot        0.0        /* shear rate */
 
-#define aij_solv         2.6666667  /* aij for the solvent */
-#define aij_rbc          2.6666667  /* aij for the RBC membrane */
-#define aij_solid        2.6666667  /* aij for the solid */
-#define aij_wall         2.6666667  /* aij for the wall */
-#define gammadpd_solv    8.0        /* gamma for the solvent */
-#define gammadpd_rbc     8.0        /* gamma for the RBC membrane */
-#define gammadpd_solid   8.0        /* gamma for the solid */
-#define gammadpd_wall    8.0        /* gamma for the wall */
+#define aij_solv            5
+#define aij_rbc             5
+#define aij_solid           5
+#define aij_wall            5
+#define gammadpd_solv       8.0
+#define gammadpd_rbc        8.0
+#define gammadpd_solid      8.0
+#define gammadpd_wall       8.0
 
-#define ljsigma          0.6        /* RBC-RBC contact LJ interaction parameters */
+#define ljsigma          0.3        /* RBC-RBC contact LJ interaction parameters */
 #define ljepsilon        0.44
 
 #define contactforces    (false)
