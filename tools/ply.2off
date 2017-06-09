@@ -5,8 +5,7 @@
 function usg(s) {
     msg("usage: ply.2off <ply>     >      <off>")
     exit
-};
-
+}
 
 BEGIN {
     f  = ARGC > 1 ? ARGV[1] : "-"

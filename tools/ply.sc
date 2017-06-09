@@ -3,7 +3,7 @@
 function usg(s) {
     msg("usage: ply.sc <scale> <ply.in>     >      <ply.out>")
     exit
-};
+}
 
 BEGIN {
     s = ARGV[1]; shift()           # scale
