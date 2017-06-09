@@ -107,9 +107,12 @@ void remove_solids_from_wall() {
 #undef DEV
 
 void create_walls() {
+    int nold = o::n;
+
     dSync();
     sdf::init();
-    o::n = wall::init(o::pp, o::n); /* number of survived particles */
+    o::n = wall::init(o::pp, o::n);
+    fprintf(stderr, "%02d: solvent particles survived: %06d/06%d\n", m::rank, nold, o::n);
 
     k_sim::clear_velocity<<<k_cnf(o::n)>>>(o::pp, o::n);
     o::cells->build(o::pp, o::n, NULL, NULL);
