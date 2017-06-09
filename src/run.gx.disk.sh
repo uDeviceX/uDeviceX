@@ -1,6 +1,7 @@
 #!/usr/bin/sh
 
-. $HOME/.udx/u.sh
+. $HOME/.udx/u.sh # u.sh should be installed; make install -C ../tools
+inc ./gx.HOST.sh
 
 setup() {
     make -C ../tools/rbc install
@@ -9,7 +10,7 @@ setup() {
 }
 
 pre() {
-
+    nv=498
     NX=1  NY=1  NZ=1
     #NX=2  NY=2  NZ=1
     NN=$((${NX}*${NY}*${NZ}))
@@ -32,11 +33,12 @@ pre() {
     cp sdf/gx/small.rot.dat sdf.dat
     #cp ~/geoms/128.dat sdf.dat
     cp data/cylinder.ply mesh_solid.ply
-    cp cells/sph.498.off  rbc.off
+    cp cells/sph.$nv.off  rbc.off
 
     #ply.sxyz xs ys zs in.ply > out.ply
     
     argp .conf.gx.base.h $D                  \
+	 -RBCnv=$nv                          \
          -rbcs -solids -contactforces        \
          -tend=3000.0 -part_freq=500        \
          -walls -wall_creation=1          \
@@ -47,8 +49,6 @@ pre() {
 compile() {
     { make clean && make -j ; } > /dev/null
 }
-
-inc ./gx.HOST.sh # u.sh should be installed; make install -C ../tools
 
 setup
 pre
