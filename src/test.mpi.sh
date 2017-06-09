@@ -6,6 +6,7 @@
 # :
 # export PATH=../tools:$PATH
 # export PATH=/usr/lib64/mpich/bin:$PATH
+# cp cells/rbc.498.off  rbc.off
 # echo 1 0 0 8  0 1 0 8  0 0 1 8  0 0 0 1 > rbcs-ic.txt
 # :
 # argp .conf.couette.h -rbcs -tend=0.5 -part_freq=100 > .conf.h
@@ -34,8 +35,10 @@
 ####
 # sTEST: mpi.t3
 # rm -rf diag.txt h5 bop ply rbc.off
+# :
 # export PATH=../tools:$PATH
 # export PATH=/usr/lib64/mpich/bin:$PATH
+# cp cells/rbc.498.off  rbc.off
 # cp sdf/cyl1/cyl.dat sdf.dat
 # x=0.75 y=8 z=9; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 # :
@@ -50,9 +53,11 @@
 
 #### Poiseuille
 # sTEST: mpi.t4
+# rm -rf diag.txt h5 bop ply
+# :
 # export PATH=../tools:$PATH
 # export PATH=/usr/lib64/mpich/bin:$PATH
-# rm -rf diag.txt h5 bop ply
+# cp cells/rbc.498.off  rbc.off
 # cp sdf/wall1/wall.dat sdf.dat
 # :
 # argp .conf.poiseuille.h \
