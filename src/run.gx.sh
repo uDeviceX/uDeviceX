@@ -7,7 +7,10 @@ setup() {
 }
 
 pre() {
+
     NX=1  NY=1  NZ=1
+    NN=$((${NX}*${NY}*${NZ}))
+    
     #NX=2  NY=2  NZ=2
     XS=40 YS=52 ZS=20
     LX=$((${NX}*${XS}))
