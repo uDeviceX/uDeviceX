@@ -94,9 +94,9 @@ __device__ int minmax(int i, int lo, int hi) {
 }
 
 __device__ int get_cid(float x, float y, float z) {
-    xcid = (int)floor((double)x + XS / 2);
-    ycid = (int)floor((double)y + YS / 2);
-    zcid = (int)floor((double)z + ZS / 2);
+    int xcid = (int)floor((double)x + XS / 2);
+    int ycid = (int)floor((double)y + YS / 2);
+    int zcid = (int)floor((double)z + ZS / 2);
 
     xcid = mimax(xcid, 0, XS-1);
     ycid = mimax(ycid, 0, XY-1);
@@ -130,22 +130,8 @@ __global__ void subindex_remote(uint nparticles_padded,
         data0.x += XS * ((code + 1) % 3 - 1);
         data0.y += YS * ((code / 3 + 1) % 3 - 1);
         data1.x += ZS * ((code / 9 + 1) % 3 - 1);
-<<<<<<< HEAD
-    
+
         int cid = get_cid(data0.x, data0.y, data1.x);
-=======
-
-        xcid = (int)floor((double)data0.x + XS / 2);
-        ycid = (int)floor((double)data0.y + YS / 2);
-        zcid = (int)floor((double)data1.x + ZS / 2);
-
-        // /* hack for avoiding segfaults */
-        // xcid = min(XS-1, max(0, xcid));
-        // ycid = min(YS-1, max(0, ycid));
-        // zcid = min(ZS-1, max(0, zcid));
-
-        int cid = xcid + XS * (ycid + YS * zcid);
->>>>>>> 1fec67ed3a71d1c595d32adb4e21dcee127a722c
         subindex = atomicAdd(partials + cid, 1);
     }
 
