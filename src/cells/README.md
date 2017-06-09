@@ -1,6 +1,10 @@
 # "cell" templates
 
-* [rbc.496.off](rbc.496.off) RBC
-* [sph.162.off](sph.162.off) [sph]ere
+## RBCs
+* [rbc.498.off](rbc.498.off) RBC
 
-* [rbc.498.off](rbc.498.off) RBC with 496 node (TODO: remove it)
+## spheres
+* [sph.162.off](sph.162.off) [sph]eres
+* [sph.498.off](sph.498.off) [sph]eres
+
+* [rbc.496.off](rbc.498.off) RBC with 498 node (TODO: remove it)
