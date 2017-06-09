@@ -21,6 +21,7 @@
 # :
 # export PATH=../tools:$PATH
 # export PATH=/usr/lib64/mpich/bin:$PATH
+# cp cells/rbc.498.off  rbc.off
 # :
 # argp .conf.double.poiseuille.h -kBT=1e-7      \
 #   -tend=2.1 -part_freq=100  -field_freq=300   \
