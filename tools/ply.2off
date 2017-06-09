@@ -63,7 +63,6 @@ function write_faces(f,   i) {
     }
 }
 
-
 function shift(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }
 function msg(s)     { printf "%s\n", s | "cat >&2" }
 
