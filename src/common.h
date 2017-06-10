@@ -20,7 +20,7 @@ inline void mpiAssert(int code, const char *file, int line) {
 #define MAX_PSOLID_NUM 30000
 
 /* maximum number of solids per node */
-#define MAX_SOLIDS 1024
+#define MAX_SOLIDS 20000
 
 /* maximum number of faces per one RBC */
 #define MAX_FACE_NUM 50000
