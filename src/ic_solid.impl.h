@@ -94,24 +94,28 @@ static void make_local(const int n, /**/ float *coms)
     coms[3*j + d] -= mi[d];
 }
 
+#define R 10
+
 static void count_pp_inside(const Particle *s_pp, const int n, const float *coms, const int ns,
                             const int *tt, const float *vv, const int nt,
                             /**/ int *tags, int *rcounts)
 {
     for (int j = 0; j < ns; ++j) rcounts[j] = 0;
-
+    
     for (int ip = 0; ip < n; ++ip)
     {
         Particle p = s_pp[ip]; float *r0 = p.r;
 
         int tag = -1;
-            
+        
         for (int j = 0; j < ns; ++j)
         {
             const float *com = coms + 3*j;
             const float r[3] = {r0[X]-com[X], r0[Y]-com[Y], r0[Z]-com[Z]};
-                
-            if (collision::inside_1p(r, vv, tt, nt))
+
+            const float r2 = r[X]*r[X] + r[Y]*r[Y] + r[Z]*r[Z];     
+
+            if (r2 < R*R && collision::inside_1p(r, vv, tt, nt))
             {
                 assert(tag == -1);
                 ++rcounts[j];
@@ -128,6 +132,8 @@ static void count_pp_inside(const Particle *s_pp, const int n, const float *coms
     printf("[%d] Found %d particles in solid %d\n", m::rank, rcounts[j], j);
 #endif
 }
+
+#undef R
 
 static void elect(const int *rcounts, const int ns, /**/ int *root, int *idmax)
 {
