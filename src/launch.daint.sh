@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if [ "$#" -ne 1 ]; then
+  echo "usage: $0 dirname"
+  exit 1
+fi
+
 # need ri (git@gitlab.ethz.ch:mavt-cse/ri.git)
 
 RUN=run.gx.disk.sh
