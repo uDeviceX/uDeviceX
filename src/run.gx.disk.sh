@@ -46,7 +46,7 @@ pre() {
          -field_dumps -part_dumps -field_freq=100 > .conf.h
 }
 
-Compile() {
+compile() {
     { make clean && make -j ; } > /dev/null
 }
 
