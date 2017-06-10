@@ -3,15 +3,15 @@ ini() {
 }
 
 run () {
-    n=gx
+    n=gx-packed
     
     cat <<-EOF > runme.sh
 	#!/bin/bash -l
 	#SBATCH --partition=low
 	#SBATCH --job-name=$n
-	#SBATCH --time=00:30:00
+	#SBATCH --time=02:00:00
 	#SBATCH --ntasks=${NN}
-	#SBATCH --ntasks-per-nodes=1
+	#SBATCH --ntasks-per-node=1
 	#SBATCH --output=output.txt
 	#SBATCH --error=error.txt
 	#SBATCH --constraint=gpu

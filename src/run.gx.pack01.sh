@@ -34,18 +34,18 @@ pre() {
 
     argp .conf.gx.base.h $D                  \
          -rbcs -solids -contactforces        \
-         -tend=20.0 -part_freq=10        \
+         -tend=3000.0 -part_freq=500        \
          -walls -wall_creation=10          \
          -pushflow -driving_force=$df        \
-         -field_dumps -part_dumps -field_freq=1000 > .conf.h
+         -field_dumps -part_dumps -field_freq=500 > .conf.h
 }
 
 compile() {
     { make clean && make -j ; } > /dev/null
 }
 
-. ./gx.panda.sh
-#. ./gx.daint.sh
+#. ./gx.panda.sh
+. ./gx.daint.sh
 
 setup
 pre
