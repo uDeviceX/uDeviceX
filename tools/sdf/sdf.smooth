@@ -8,6 +8,14 @@
 #        Note: assume domain is periodic
 
 1;
+function r = w(r)
+  global c
+  if r > c; r = 0; return; endif
+
+  r /= c; r *= 2.5;
+  r = exp(-r^2);
+endfunction
+
 function read(fn)
   f = fopen(fn);
   read_header(f)
@@ -55,41 +63,88 @@ endfunction
 function    parg(); global a; a = argv();               endfunction
 function r = nxt(); global a; r = a{1}; a = {a{2:end}}; endfunction
 
-function smooth0(ix, iy, iz)
-
-endfunction
-
 function ini_e()
   global E nx ny nz
   E = zeros(nx, ny, nz);
 endfunction
 
-function ini_ker(c)
+function ini_ker0(c0)
+  global c # cutoff
   global sx sy sz
   global kx ky kz A
+  c = c0;
   kx = fix(c/sx); ky = fix(c/sy); kz = fix(c/sz); # sum over [ix - kx; ix + ky]
-  I  = sum_ker()
-  A  = 1 / I;  # kernel prefactor
 endfunction
+
+function ini_ker1(c)
+  global kx ky kz
+  global ww
+  ww = zeros(2*kx+1,2*ky+1,2*kz+1);
+  for ix=-kx:kx; ix0 = ix + kx + 1; x2 = sqx(ix);
+  for iy=-ky:ky; iy0 = iy + ky + 1; y2 = sqy(iy);
+  for iz=-kz:kz; iz0 = iz + kz + 1; z2 = sqz(iz);
+      r = sqrt(x2 + y2 + z2);
+      ww(ix0,iy0,iz0) = w(r);
+  endfor endfor endfor
+  ww ./= sum(ww(:));
+endfunction
+
+function s = sqx(k); s = gx(k).^2; endfunction
+function s = sqy(k); s = gy(k).^2; endfunction
+function s = sqz(k); s = gz(k).^2; endfunction
+
+function r = gx(k); global sx; r = sx*k; endfunction
+function r = gy(k); global sy; r = sy*k; endfunction
+function r = gz(k); global sz; r = sz*k; endfunction
 
 function e = dbl(e); e = double(e); endfunction
 function ini_grid()
   global ex ey ez   nx ny nz
-  global ox oy oz
   global sx sy sz
   sx = ex/dbl(nx); sy = ey/dbl(ny); sz = ez/dbl(nz); # step
-  ox = sx/2 ; oy = sy/2 ; oz = sz/2;                 # origin
+endfunction
+
+function i = wrap(i, n)
+  if     i < 1; i += n;
+  elseif i > n; i -= n; endif
+endfunction
+
+function r = wx(r); global nx; r = wrap(r, nx); endfunction
+function r = wy(r); global ny; r = wrap(r, ny); endfunction
+function r = wz(r); global nz; r = wrap(r, nz); endfunction
+
+function smooth0(x, y, z, w0)
+  global E # output
+  x = wx(x); y = wy(y); z = wy(z);
+  E(x, y, z) += w0;
+endfunction
+
+function smooth1(x, y, z,   dx, dy, dz,   w0)
+  x += dx; y += dy; z += dz;
+  smooth0(x, y, z, w0);
+endfunction
+
+function smooth2(ixc, iyc, izc)
+  global kx ky kz
+  global ww
+  for ix=-kx:kx; ix0 = ix + kx + 1;
+  for iy=-ky:ky; iy0 = iy + ky + 1;
+  for iz=-kz:kz; iz0 = iz + kz + 1;
+      w0 = ww(ix0,iy0,iz0);
+      smooth1(ixc, iyc, izc,   ix, iy, iz,   w0);
+  endfor endfor endfor
 endfunction
 
 function smooth()
   global nx ny nz
-  for ix = 1:nx; for iy = 1:nz; for iz = 1:nz;
-     smooth0(ix, iy, iz)
-  endfor; endfor; endfor
+  for ix = 1:nx; msg("ix: %03d/%03d", ix, nx);
+  for iy = 1:nz; msg("iy: %03d/%03d", iy, ny);
+  for iz = 1:nz; smooth2(ix, iy, iz);
+  endfor endfor endfor
 endfunction
 
 function msg0(fmt, varargin); fprintf(stderr, fmt, [varargin{:}]); endfunction
-function msg(fmt, varargin); msg0("sdf.filter: "); msg0(fmt, [varargin{:}]); msg0("\n"); endfunction
+function msg(fmt, varargin); msg0("sdf.smooth: "); msg0(fmt, [varargin{:}]); msg0("\n"); endfunction
 
 parg(); # parse args
 t = nxt(); # kernel type
@@ -100,7 +155,8 @@ read(fi);
 
 ini_e(); # init [o]utput buffer
 ini_grid();
-ini_ker(c); # kernel
+ini_ker0(c); # kernel
+ini_ker1(c); # kernel
 
 smooth();
 write(fo);
