@@ -1,8 +1,8 @@
 #!/usr/bin/env octave-qf
 
-# usage: <positions stream> | sdf.filter <x> <y> <z>   <lo> <hi>   <sdf.dat>       > <positions>
+# <positions stream> | sdf.filter <x> <y> <z>   <lo> <hi>   <sdf.dat>       > <positions>
 #        x, y, z: domain size
-#        filters stream of positions [x, y, z] based on the level of sdf
+#        filters stream of positions [x, y, z] based on value
 #        if lo < sdf(x, y, z) <= hi     a position goes into output
 
 1;
@@ -80,10 +80,10 @@ function s = sdf(x, y, z)
   global nx ny nz D
   BIG = 1e10;
   [x, y, z] = isdf(x, y, z);
-  if x < 1 || x > nx; s = BIG; return; endif
-  if y < 1 || y > ny; s = BIG; return; endif
-  if z < 1 || z > nz; s = BIG; return; endif
-  s =  sdf_sc(D(x, y, z));
+  if     x < 1 || x > nx; s = BIG;
+  elseif y < 1 || y > ny; s = BIG;
+  elseif z < 1 || z > nz; s = BIG;
+  else                    s =  sdf_sc(D(x, y, z)); endif
 endfunction
 
 function filter(lo, hi)

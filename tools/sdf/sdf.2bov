@@ -1,7 +1,7 @@
 #!/usr/bin/awk -f
 
-# usage sdf.2bov <sdf> <file.bov>
-# converts sdf to bov
+# sdf.2bov <sdf> <file.bov>
+#    converts sdf to bov
 
 BEGIN {
     fi = ARGV[1]; shift()
