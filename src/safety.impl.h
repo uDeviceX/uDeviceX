@@ -10,10 +10,7 @@ template <int L>
 __device__ void rbound(float *x) {
     treat_nan(x);
 
-    if (*x < -3*L/2 || *x > 3*L/2) {
-        int d = *x / (L/2);
-        *x -= d * L/2;
-    }
+    *x = min((float)L, max(-(float)L, *x));
 }
 
 __device__ void vbound(float *v) {
