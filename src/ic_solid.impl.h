@@ -145,8 +145,6 @@ static void elect(const int *rcounts, const int ns, /**/ int *root, int *idmax)
         localmax[0] = rcounts[j];
         idmax_ = j;
     }
-
-    delete[] rcounts;
     
     MPI_Allreduce(localmax, globalmax, 1, MPI_2INT, MPI_MAXLOC, m::cart);
 
@@ -225,7 +223,7 @@ void set_ids(const int ns, Solid *ss_hst) {
 
 void init(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp)
 {
-    float coms[MAX_SOLIDS * 3];
+    float *coms = new float[MAX_SOLIDS * 3 * 10];
         
     int nsolid = read_coms(fname, coms);
     int npsolid = 0;
@@ -246,22 +244,23 @@ void init(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, S
     const int npp0 = *s_n;
     int *tags = new int[npp0];
     int *rcounts = new int[nsolid];
-        
+
     count_pp_inside(s_pp, *s_n, coms, nsolid, m.tt, m.vv, m.nt, /**/ tags, rcounts);
 
     int root, idmax;
     elect(rcounts, nsolid, /**/ &root, &idmax);
-
+    
     MC( MPI_Bcast(&idmax, 1, MPI_INT, root, m::cart) );
 
     int rcount = 0;
-        
+
     kill(idmax, tags, /**/ s_n, s_pp, &rcount, r_pp);
 
+    delete[] rcounts;
     delete[] tags;
-        
-    share_parts(root, /**/ r_pp, &rcount);
-        
+
+    //share_parts(root, /**/ r_pp, &rcount);
+
     Solid model;
 
     // share model to everyone
@@ -275,11 +274,11 @@ void init(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, S
     
         solid::init(r_pp, npsolid, solid_mass, model.com, m, /**/ rr0, &model);
     }
-
+    
     MC( MPI_Bcast(&npsolid,       1,   MPI_INT, root, m::cart) );
     MC( MPI_Bcast(rr0,  3 * npsolid, MPI_FLOAT, root, m::cart) );
     MC( MPI_Bcast(&model, 1, Solid::datatype(), root, m::cart) );
-        
+    
     // filter coms to keep only the ones in my domain
     int id = 0;
     for (int j = 0; j < nsolid; ++j)
@@ -301,7 +300,9 @@ void init(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, S
 
     *ns = nsolid = id;
     *nps = npsolid;
-        
+
     set_ids(nsolid, /**/ ss);
+
+    delete[] coms;
 }
 }
