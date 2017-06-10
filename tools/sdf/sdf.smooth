@@ -36,7 +36,7 @@ endfunction
 
 function read_data(f)
   global nx ny nz
-  global xx yy zz
+  global D
   D = fread(f, nx*ny*nz, "float32");
   D = reshape(D, nx, ny, nz);
 endfunction
@@ -87,6 +87,7 @@ function ini_ker1(c)
       ww(ix0,iy0,iz0) = w(r);
   endfor endfor endfor
   ww ./= sum(ww(:));
+  msg("numel(ww): %d", numel(ww));
 endfunction
 
 function s = sqx(k); s = gx(k).^2; endfunction
@@ -113,33 +114,38 @@ function r = wx(r); global nx; r = wrap(r, nx); endfunction
 function r = wy(r); global ny; r = wrap(r, ny); endfunction
 function r = wz(r); global nz; r = wrap(r, nz); endfunction
 
-function smooth0(x, y, z, w0)
+function smooth0(x, y, z, f0)
   global E # output
-  x = wx(x); y = wy(y); z = wy(z);
-  E(x, y, z) += w0;
+  x = wx(x); y = wy(y); z = wz(z); # where to add
+  E(x, y, z) += f0;
 endfunction
 
-function smooth1(x, y, z,   dx, dy, dz,   w0)
+function smooth1(x, y, z,   dx, dy, dz,   f0)
   x += dx; y += dy; z += dz;
-  smooth0(x, y, z, w0);
+  smooth0(x, y, z, f0);
 endfunction
 
-function smooth2(ixc, iyc, izc)
+function smooth2(ixc, iyc, izc, v)
   global kx ky kz
   global ww
   for ix=-kx:kx; ix0 = ix + kx + 1;
   for iy=-ky:ky; iy0 = iy + ky + 1;
   for iz=-kz:kz; iz0 = iz + kz + 1;
       w0 = ww(ix0,iy0,iz0);
-      smooth1(ixc, iyc, izc,   ix, iy, iz,   w0);
+      smooth1(ixc, iyc, izc,   ix, iy, iz,   w0*v);
   endfor endfor endfor
+endfunction
+
+function smooth3(x, y, z)
+  global D
+  smooth2(x, y, z, D(x, y, z))
 endfunction
 
 function smooth()
   global nx ny nz
   for ix = 1:nx; msg("ix: %03d/%03d", ix, nx);
-  for iy = 1:nz; msg("iy: %03d/%03d", iy, ny);
-  for iz = 1:nz; smooth2(ix, iy, iz);
+  for iy = 1:ny;
+  for iz = 1:nz; smooth3(ix, iy, iz);
   endfor endfor endfor
 endfunction
 

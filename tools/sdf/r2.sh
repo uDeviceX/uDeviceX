@@ -1,4 +1,8 @@
 #!/bin/bash
 
-c=2.5
-./sdf.smooth cubic $c ./test_data/yplates.dat  o.dat
+c=1.8
+f=~/googlex/
+
+./sdf.smooth cubic $c $f  o.dat
+
+sdf.2bov o.dat o.bov
