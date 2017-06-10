@@ -66,9 +66,14 @@ function [x, y, z] = isdf(x, y, z) # get indexes
   x = round(x); y = round(y); z = round(z);
 endfunction
 
+function set_domain(Lx0, Ly0, Lz0)
+  global Lx Ly Lz
+  Lx = Lx0; Ly = Ly0; Lz = Lz0;
+endfunction
+
 function s = sdf_sc(s) # scale sdf
   global ex Lx
-  s /= ex * Lx
+  s /= ex * Lx;
 endfunction
 
 function s = sdf(x, y, z)
@@ -105,7 +110,7 @@ Lx = arg2num(k++); Ly = arg2num(k++); Lz = arg2num(k++);
 lo = arg2num(k++); hi = arg2num(k++);
 fi  = argv(){k++};
 
-set_scale(
+set_domain(Lx, Ly, Lz);
 read_stream();
 read(fi); # sdf
 filter(lo, hi);
