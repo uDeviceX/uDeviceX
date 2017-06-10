@@ -1,7 +1,9 @@
 #!/bin/bash
 
-c=1.8
-f=~/googlex/
+c=10.0
+#f=~/googlex/small.rot.dat
+#f=~/googlex/128.dat
+f=~/googlex/256.dat
 
 ./sdf.smooth cubic $c $f  o.dat
 

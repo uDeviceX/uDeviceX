@@ -141,7 +141,7 @@ function smooth3(x, y, z)
   smooth2(x, y, z, D(x, y, z))
 endfunction
 
-function smooth()
+function smooth_naive()
   global nx ny nz
   for ix = 1:nx; msg("ix: %03d/%03d", ix, nx);
   for iy = 1:ny;
@@ -151,6 +151,11 @@ endfunction
 
 function msg0(fmt, varargin); fprintf(stderr, fmt, [varargin{:}]); endfunction
 function msg(fmt, varargin); msg0("sdf.smooth: "); msg0(fmt, [varargin{:}]); msg0("\n"); endfunction
+
+function smooth_conv()
+  global E D ww
+  E = convn(D, ww, "same");
+endfunction
 
 parg(); # parse args
 t = nxt(); # kernel type
@@ -164,5 +169,7 @@ ini_grid();
 ini_ker0(c); # kernel
 ini_ker1(c); # kernel
 
-smooth();
+# smooth_naive();
+smooth_conv();
+
 write(fo);
