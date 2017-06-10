@@ -157,6 +157,13 @@ function smooth_conv()
   E = convn(D, ww, "same");
 endfunction
 
+function cap()
+  global D
+  max = 3; min = -3;
+  i = D > max; D(i) = max;
+  i = D < min; D(i) = min;
+endfunction
+
 parg(); # parse args
 t = nxt(); # kernel type
 c = str2num(nxt()); # cutoff
@@ -170,6 +177,7 @@ ini_ker0(c); # kernel
 ini_ker1(c); # kernel
 
 # smooth_naive();
+cap();
 smooth_conv();
 
 write(fo);
