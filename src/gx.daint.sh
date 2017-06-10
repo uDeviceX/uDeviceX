@@ -10,7 +10,7 @@ run () {
 #SBATCH --partition=low
 #SBATCH --job-name=$n
 #SBATCH --time=02:00:00
-#SBATCH --ntasks=${NN}
+#SBATCH --nnode=${NN}
 #SBATCH --ntasks-per-node=1
 #SBATCH --output=output.txt
 #SBATCH --error=error.txt
