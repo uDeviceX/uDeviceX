@@ -20,7 +20,7 @@ pre() {
     LY=$((${NY}*${YS}))
     LZ=$((${NZ}*${ZS}))
 
-    df=0.1
+    df=1.0
 
     D="-XS=$XS -YS=$YS -ZS=$ZS"
 
