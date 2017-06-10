@@ -37,12 +37,12 @@ pre() {
 
     #ply.sxyz xs ys zs in.ply > out.ply
     
-    argp .conf.gx.base.h $D                  \
-	 -RBCnv=$nv                          \
-         -rbcs -solids -contactforces        \
+    argp .conf.gx.base.h $D                 \
+	 -RBCnv=$nv                             \
+         -rbcs -solids -contactforces       \
          -tend=3000.0 -part_freq=100        \
-         -walls -wall_creation=1          \
-         -pushflow -driving_force=$df        \
+         -walls -wall_creation=1            \
+         -pushflow -driving_force=$df       \
          -field_dumps -part_dumps -field_freq=100 > .conf.h
 }
 
