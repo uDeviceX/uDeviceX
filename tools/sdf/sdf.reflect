@@ -1,9 +1,9 @@
 #!/usr/bin/env octave-qf
 
-# usage: sdf.reflect <code> <in.dat> <out.dat>
-# reflect domain against the boundary
-# code: xl, xh, yl, yh, zl, zh (high/low)
-#   code of the boundary
+# sdf.reflect <code> <in.dat> <out.dat>
+#    reflect domain against the boundary
+#    code: xl, xh, yl, yh, zl, zh (high/low)
+#    code of the boundary
 
 1;
 function read(fn)

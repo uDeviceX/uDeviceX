@@ -1,8 +1,8 @@
 #!/usr/bin/env octave-qf
 
-# usage: sdf.2txt <in.dat>   >   <out.txt>
-#        convert to text; x is fastest and z is slowest
-#        for iz {for iy {for ix
+# sdf.2txt <in.dat>   >   <out.txt>
+#    convert to text; x is fastest and z is slowest
+#    for iz {for iy {for ix
 # Output:
 # nx ny nz
 # ex ey ez

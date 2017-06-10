@@ -1,9 +1,9 @@
 #!/usr/bin/env octave-qf
 
-# usage: <positions stream> | sdf.filter <x> <y> <z>   <lo> <hi>   <sdf.dat>       > <positions>
+# <positions stream> | sdf.filter <x> <y> <z>   <lo> <hi>   <sdf.dat>       > <positions>
 #        x, y, z: domain size
-#        filters stream of position [x, y, z] based on the level of sdf
-#        if sdf(x, y, z) < level     a position goes into output
+#        filters stream of positions [x, y, z] based on value
+#        if lo < sdf(x, y, z) <= hi     a position goes into output
 
 1;
 function read(fn)
@@ -66,19 +66,24 @@ function [x, y, z] = isdf(x, y, z) # get indexes
   x = round(x); y = round(y); z = round(z);
 endfunction
 
+function set_sc(Lx) # scale
+  global sc ex
+  sc = Lx / ex;
+endfunction
+
 function s = sdf_sc(s) # scale sdf
-  global ex Lx
-  s /= ex * Lx
+  global sc
+  s *= sc;
 endfunction
 
 function s = sdf(x, y, z)
   global nx ny nz D
   BIG = 1e10;
   [x, y, z] = isdf(x, y, z);
-  if x < 1 || x > nx; s = BIG; return; endif
-  if y < 1 || y > ny; s = BIG; return; endif
-  if z < 1 || z > nz; s = BIG; return; endif
-  s =  sdf_sc(D(x, y, z));
+  if     x < 1 || x > nx; s = BIG;
+  elseif y < 1 || y > ny; s = BIG;
+  elseif z < 1 || z > nz; s = BIG;
+  else                    s =  sdf_sc(D(x, y, z)); endif
 endfunction
 
 function filter(lo, hi)
@@ -96,7 +101,8 @@ function filter(lo, hi)
 endfunction
 
 function r = arg2num(i); r = str2num(argv(){i}); endfunction
-
+function msg0(fmt, varargin); fprintf(stderr, fmt, [varargin{:}]); endfunction
+function msg(fmt, varargin); msg0("sdf.filter: "); msg0(fmt, [varargin{:}]); msg0("\n"); endfunction
 
 if eq(argv(){1}, "-h"); usg(); endif
 
@@ -105,9 +111,9 @@ Lx = arg2num(k++); Ly = arg2num(k++); Lz = arg2num(k++);
 lo = arg2num(k++); hi = arg2num(k++);
 fi  = argv(){k++};
 
-set_scale(
 read_stream();
 read(fi); # sdf
+set_sc(Lx);
 filter(lo, hi);
 
 write();
