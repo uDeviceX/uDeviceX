@@ -1,0 +1,76 @@
+#!/usr/bin/env octave-qf
+
+# sdf.smooth   [type] [cutoff]   [sdf.in]    [sdf.out]
+#        smooth sdf function by radial basis function [type]
+#        types are
+#          cubic : cubic spline
+#          gauss :
+#        Note: assume domain is periodic
+
+1;
+function read(fn)
+  f = fopen(fn);
+  read_header(f)
+  read_data(f)
+  fclose(f);
+endfunction
+
+function varargout = fscn(f, fmt) # simpler fscanf
+  l = fgets(f);
+  [varargout{1:nargout}] = strread(l, fmt);
+endfunction
+
+function read_header(f)
+  global ex ey ez   nx ny nz
+  [ex, ey, ez] = fscn(f, "%f %f %f");
+  [nx, ny, nz] = fscn(f, "%d %d %d");
+endfunction
+
+function read_data(f)
+  global nx ny nz D
+  D = fread(f, nx*ny*nz, "float32");
+  D = reshape(D, nx, ny, nz);
+endfunction
+
+function write_header(f)
+  global ex ey ez   nx ny nz
+  fprintf(f, "%g %g %g\n", ex, ey, ez);
+  fprintf(f, "%g %g %g\n", nx, ny, nz);
+endfunction
+
+function write_data(f)
+  global D
+  fwrite(f, D, "float32");
+endfunction
+
+function write(fn)
+  global ex ey ez   nx ny nz   D
+  f = fopen(fn, "w");
+  write_header(f)
+  write_data(f)
+  fclose(f);
+endfunction
+
+function    parg(); global a; a = argv();               endfunction
+function r = nxt(); global a; r = a{1}; a = {a{2:end}}; endfunction
+
+function smooth0(ix, iy, iz)
+  disp([ix, iy, iz])
+endfunction
+
+function smooth()
+  global nx ny nz
+  [nx ny nz]
+  for ix = 1:nx; for iy = 1:nz; for iz = 1:nz;
+     smooth0(ix, iy, iz)
+  endfor; endfor; endfor
+endfunction
+
+parg(); # parse args
+t = nxt(); # kernel type
+c = nxt(); # cutoff
+fi = nxt(); fo = nxt();
+
+read(fi);
+smooth();
+write(fo);
