@@ -27,7 +27,8 @@ function read_header(f)
 endfunction
 
 function read_data(f)
-  global nx ny nz D
+  global nx ny nz
+  global xx yy zz
   D = fread(f, nx*ny*nz, "float32");
   D = reshape(D, nx, ny, nz);
 endfunction
@@ -39,8 +40,8 @@ function write_header(f)
 endfunction
 
 function write_data(f)
-  global D
-  fwrite(f, D, "float32");
+  global E
+  fwrite(f, E, "float32");
 endfunction
 
 function write(fn)
@@ -55,22 +56,51 @@ function    parg(); global a; a = argv();               endfunction
 function r = nxt(); global a; r = a{1}; a = {a{2:end}}; endfunction
 
 function smooth0(ix, iy, iz)
-  disp([ix, iy, iz])
+
+endfunction
+
+function ini_e()
+  global E nx ny nz
+  E = zeros(nx, ny, nz);
+endfunction
+
+function ini_ker(c)
+  global sx sy sz
+  global kx ky kz A
+  kx = fix(c/sx); ky = fix(c/sy); kz = fix(c/sz); # sum over [ix - kx; ix + ky]
+  I  = sum_ker()
+  A  = 1 / I;  # kernel prefactor
+endfunction
+
+function e = dbl(e); e = double(e); endfunction
+function ini_grid()
+  global ex ey ez   nx ny nz
+  global ox oy oz
+  global sx sy sz
+  sx = ex/dbl(nx); sy = ey/dbl(ny); sz = ez/dbl(nz); # step
+  ox = sx/2 ; oy = sy/2 ; oz = sz/2;                 # origin
 endfunction
 
 function smooth()
   global nx ny nz
-  [nx ny nz]
   for ix = 1:nx; for iy = 1:nz; for iz = 1:nz;
      smooth0(ix, iy, iz)
   endfor; endfor; endfor
 endfunction
 
+function msg0(fmt, varargin); fprintf(stderr, fmt, [varargin{:}]); endfunction
+function msg(fmt, varargin); msg0("sdf.filter: "); msg0(fmt, [varargin{:}]); msg0("\n"); endfunction
+
 parg(); # parse args
 t = nxt(); # kernel type
-c = nxt(); # cutoff
+c = str2num(nxt()); # cutoff
 fi = nxt(); fo = nxt();
 
 read(fi);
+
+ini_e(); # init [o]utput buffer
+ini_grid();
+ini_ker(c); # kernel
+
 smooth();
 write(fo);
