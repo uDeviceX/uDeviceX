@@ -101,6 +101,8 @@
 
 #include "ply.h"
 
+#include "safety.impl.h"
+
 #include "k/sim.h"
 #include "sim.decl.h"
 #include "sim.impl.h"

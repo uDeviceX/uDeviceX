@@ -68,7 +68,7 @@ void remove_rbcs_from_wall() {
 
     r::nc = Cont::remove<DEV>(r::pp, r::nv, r::nc, &tokill.front(), tokill.size());
     r::n = r::nc * r::nv;
-    MSG("%d/%d RBCs survived\n", r::nc, nc0);
+    MSG("%d/%d RBCs survived", r::nc, nc0);
 }
 
 void remove_solids_from_wall() {
@@ -510,6 +510,7 @@ void dumps_diags(int it) {
 }
 
 void run0(float driving_force0, bool wall_created, int it) {
+    safety::bound(o::pp, o::n);
     distr_solvent();
     if (solids0) distr_solid();
     if (rbcs)    distr_rbc();

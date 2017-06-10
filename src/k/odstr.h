@@ -89,6 +89,10 @@ __global__ void pack(int nparticles, int nfloat2s) {
     pack_buffers[idpack].buffer[d] = tex1Dfetch(texAllParticlesFloat2, c + 3 * pid);
 }
 
+__device__ int minmax(int i, int lo, int hi) {
+    return min(hi, max(lo, i));
+}
+
 __global__ void subindex_remote(uint nparticles_padded,
                                 uint nparticles, int *partials, float2 *dstbuf, uchar4 *subindices) {
     uint warpid = threadIdx.x >> 5;
@@ -119,11 +123,10 @@ __global__ void subindex_remote(uint nparticles_padded,
         ycid = (int)floor((double)data0.y + YS / 2);
         zcid = (int)floor((double)data1.x + ZS / 2);
 
-        // /* hack for avoiding segfaults */
-        // xcid = min(XS-1, max(0, xcid));
-        // ycid = min(YS-1, max(0, ycid));
-        // zcid = min(ZS-1, max(0, zcid));
-
+        xcid = minmax(xcid, 0, XS-1);
+        ycid = minmax(ycid, 0, YS-1);
+        zcid = minmax(zcid, 0, ZS-1);
+        
         int cid = xcid + XS * (ycid + YS * zcid);
         subindex = atomicAdd(partials + cid, 1);
     }
