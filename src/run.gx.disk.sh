@@ -4,9 +4,9 @@
 inc ./gx.HOST.sh
 
 setup() {
-    make -C ../tools/rbc install
-    make -C ../tools install
-    make -C ../post/build_smesh install
+    { make -C ../tools/rbc install        } > /dev/null
+    { make -C ../tools install            } > /dev/null
+    { make -C ../post/build_smesh install } > /dev/null
 }
 
 pre() {
