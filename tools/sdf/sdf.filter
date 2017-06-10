@@ -3,7 +3,7 @@
 # usage: <positions stream> | sdf.filter <x> <y> <z>   <lo> <hi>   <sdf.dat>       > <positions>
 #        x, y, z: domain size
 #        filters stream of position [x, y, z] based on the level of sdf
-#        if sdf(x, y, z) < level     a position goes into output
+#        if lo < sdf(x, y, z) <= hi     a position goes into output
 
 1;
 function read(fn)
