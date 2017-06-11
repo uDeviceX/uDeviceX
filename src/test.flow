@@ -13,11 +13,11 @@
 # export PATH=../tools:$PATH
 # cp cells/rbc.498.off  rbc.off
 # :
-# argp .conf.double.poiseuille.h      \
-#    -tend=2.01 -part_freq=4000  \
-#    -pushflow -doublepoiseuille   \
-#    -field_dumps -part_dumps     \
-#    -field_freq=4000 -pushflow > .conf.h
+# argp .conf.double.poiseuille.h    \
+#    tend=2.01 part_freq=4000       \
+#    pushflow doublepoiseuille      \
+#    field_dumps part_dumps         \
+#    field_freq=4000 pushflow > .conf.h
 # :
 # (make clean && make -j) > /dev/null
 # ./udx
@@ -31,10 +31,10 @@
 # cp cells/rbc.498.off  rbc.off
 # cp sdf/wall1/wall.dat sdf.dat
 # :
-# argp .conf.test.h                                                 \
-#    -tend=1.0 -part_freq=300 -walls -wall_creation=100 \
-#    -field_dumps -part_dumps -field_freq=300           \
-#    -shear_z > .conf.h
+# argp .conf.test.h                                 \
+#    tend=1.0 part_freq=300 walls wall_creation=100 \
+#    field_dumps part_dumps field_freq=300          \
+#    shear_z > .conf.h
 # :
 # (make clean && make -j) > /dev/null
 # ./udx
@@ -49,9 +49,9 @@
 # cp sdf/wall1/wall.dat sdf.dat
 # :
 # argp .conf.poiseuille.h                               \
-#    -tend=2.0 -part_freq=300 -walls -wall_creation=100 \
-#    -field_dumps -part_dumps -field_freq=300           \
-#    -pushflow > .conf.h
+#    tend=2.0 part_freq=300 walls wall_creation=100 \
+#    field_dumps part_dumps field_freq=300           \
+#    pushflow > .conf.h
 # :
 # (make clean && make -j) > /dev/null
 # ./udx
@@ -66,8 +66,8 @@
 # cp sdf/cyl1/cyl.dat sdf.dat
 # :
 # argp .conf.poiseuille.h                                           \
-#    -tend=4.0 -part_freq=300 -walls -wall_creation=100 \
-#    -field_dumps -part_dumps -field_freq=300 -pushflow > .conf.h
+#    tend=4.0 part_freq=300 walls wall_creation=100 \
+#    field_dumps part_dumps field_freq=300 pushflow > .conf.h
 # :
 # (make clean && make -j) > /dev/null
 # ./udx
