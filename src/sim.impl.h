@@ -274,11 +274,11 @@ void clear_forces(Force* ff, int n) {
 
 void forces_wall() {
     allsync();
-    if (o::n)              wall::interactions <SOLVENT_TYPE> (o::pp, o::n, o::ff);
+    if (o::n)              wall::interactions(SOLVENT_TYPE, o::pp, o::n, o::ff);
     allsync();
-    if (solids0 && s::npp) wall::interactions <SOLID_TYPE  > (s::pp, s::npp, s::ff);
+    if (solids0 && s::npp) wall::interactions(SOLID_TYPE, s::pp, s::npp, s::ff);
     allsync();
-    if (rbcs && r::n)      wall::interactions <SOLID_TYPE  > (r::pp, r::n  , r::ff);
+    if (rbcs && r::n)      wall::interactions(SOLID_TYPE, r::pp, r::n  , r::ff);
     allsync();
 }
 

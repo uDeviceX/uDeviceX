@@ -2,10 +2,9 @@ namespace k_wall {
 texture<float4, 1, cudaReadModeElementType> texWallParticles;
 texture<int, 1, cudaReadModeElementType> texWallCellStart, texWallCellCount;
 
-template <int TYPE>
 __global__ void interactions_3tpp(const float2 *const pp, const int np,
                                   const int nsolid, float *const acc,
-                                  const float seed) {
+                                  const float seed, const int type) {
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
     int pid = gid / 3;
     int zplane = gid % 3;
@@ -86,7 +85,7 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
 
         // check for particle types and compute the DPD force
 
-        float3 strength = compute_dpd_force_traced(TYPE, WALL_TYPE,
+        float3 strength = compute_dpd_force_traced(type, WALL_TYPE,
                                                    mf3(x ,  y,  z), mf3( xw,  yw,  zw),
                                                    mf3(vx, vy, vz), mf3(vxw, vyw, vzw), rnd);
         xforce += strength.x; yforce += strength.y; zforce += strength.z;

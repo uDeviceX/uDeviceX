@@ -3,8 +3,8 @@ int init(Particle *pp, int n) {
     setup_texture(k_wall::texWallParticles, float4);
     setup_texture(k_wall::texWallCellStart, int);
     setup_texture(k_wall::texWallCellCount, int);
-    CC(cudaFuncSetCacheConfig(k_wall::interactions_3tpp<SOLVENT_TYPE>, cudaFuncCachePreferL1));
-    CC(cudaFuncSetCacheConfig(k_wall::interactions_3tpp<SOLID_TYPE>, cudaFuncCachePreferL1));
+    // CC(cudaFuncSetCacheConfig(k_wall::interactions_3tpp<SOLVENT_TYPE>, cudaFuncCachePreferL1));
+    // CC(cudaFuncSetCacheConfig(k_wall::interactions_3tpp<SOLID_TYPE>, cudaFuncCachePreferL1));
 
     thrust::device_vector<int> keys(n);
     k_sdf::fill_keys<<<k_cnf(n)>>>(pp, n, thrust::raw_pointer_cast(&keys[0]));
@@ -126,8 +126,7 @@ void bounce(Particle *const p, const int n) {
     if (n > 0) k_sdf::bounce<<<k_cnf(n)>>>((float2 *)p, n);
 }
 
-template <int TYPE>
-void interactions(const Particle *const p, const int n,
+void interactions(const int type, const Particle *const p, const int n,
                   Force *const acc) {
     // cellsstart and cellscount IGNORED for now
     if (n > 0 && w_n > 0) {
@@ -147,8 +146,8 @@ void interactions(const Particle *const p, const int n,
                            &k_wall::texWallCellCount.channelDesc,
                            sizeof(int) * wall_cells->ncells));
 
-        k_wall::interactions_3tpp<TYPE> <<<k_cnf(3 * n)>>>
-            ((float2 *)p, n, w_n, (float *)acc, trunk->get_float());
+        k_wall::interactions_3tpp <<<k_cnf(3 * n)>>>
+            ((float2 *)p, n, w_n, (float *)acc, trunk->get_float(), type);
         CC(cudaUnbindTexture(k_wall::texWallParticles));
         CC(cudaUnbindTexture(k_wall::texWallCellStart));
         CC(cudaUnbindTexture(k_wall::texWallCellCount));
