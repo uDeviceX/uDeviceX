@@ -1,10 +1,10 @@
 #!/bin/bash
 
 set -e
-if test "$#" = 0; then echo 0 1 2 4 8 16 32 | xargs -P 4 -n 1 sh r.sh; exit; fi
+if test "$#" = 0; then echo 0 1 2 4 8 16 | xargs -P 4 -n 1 sh r.sh; exit; fi
 
 c=$1 # kernel size
-printf 'running: %s\n' $c
+printf 'running: %s\n' $c > /dev/stderr
 
 f0=$HOME/googlex/big.sdf
 s0=$HOME/googlex/small.sdf
@@ -14,7 +14,7 @@ w=/tmp/w.$$
 
 trap 'rm -f ${w0} ${w}' 0 1 2 3 15
 
-make > /dev/null
+# make > /dev/null
 smooth0 () { cp                  ${w}  $b.sdf;  }
 smooth1 () { sdf.smooth cubic $c ${w}  $b.sdf; }
 smooth () { if test "$c" = 0; then smooth0; else smooth1; fi; }
