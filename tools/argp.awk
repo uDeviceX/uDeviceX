@@ -49,7 +49,6 @@ BEGIN {
 
     while (iarg < ARGC)  {
 	cur = ARGV[iarg++]
-	if (!keyp(cur)) err(cur)
 	k = getk(cur)
 	if (boolp(cur)) kv[k] = "true"
 	else            kv[k] = getv(cur)
