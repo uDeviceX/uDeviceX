@@ -35,11 +35,26 @@ __global__ void bound_k(Particle *pp, int n) {
     rbound<XS>(r + X); rbound<YS>(r + Y); rbound<ZS>(r + Z);
     vbound(v);
 }
+
+__global__ void nullify_nan_k(Force *ff, int n) {
+    int i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i >= n) return;
+
+    float *f = ff[i].f;
+    treat_nan(f + X);
+    treat_nan(f + Y);
+    treat_nan(f + Z);
+}
 }
 
 void bound(Particle *pp, int n) {
     if (n)
     bound_k <<<k_cnf(n)>>> (pp, n);
+}
+
+void nullify_nan(Force *ff, int n) {
+    if (n)
+    nullify_nan_k <<<k_cnf(n)>>> (ff, n);
 }
 
 }

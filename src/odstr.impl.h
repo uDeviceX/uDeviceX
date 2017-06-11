@@ -162,6 +162,7 @@ void pack(Particle * particles, int nparticles) {
                                sizeof(PackBuffer) * 27, 0, H2D));
 
     (*failure->D) = false;
+    dSync();
     k_odstr::setup<<<1, 32>>>();
 
     if (nparticles)

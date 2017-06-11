@@ -71,6 +71,6 @@ float *av;
 
 namespace a /* all */
 {
-Particle pp_hst[MAX_PART_NUM]; /* particles on host */
+Particle pp_hst[3*MAX_PART_NUM]; /* particles on host */
 }
 }

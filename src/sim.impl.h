@@ -7,6 +7,7 @@ void distr_solvent()
     odstr::send();
     odstr::bulk(o::n, o::cells->start, o::cells->count);
     o::n = odstr::recv_count();
+    assert(o::n <= MAX_PART_NUM);
     odstr::recv_unpack(o::pp0, o::zip0, o::zip1, o::n, o::cells->start, o::cells->count);
     std::swap(o::pp, o::pp0);
 }
@@ -271,6 +272,11 @@ void forces(bool wall_created) {
 
     rex::post_f();
     rex::recv_f();
+
+    dSync();
+    safety::nullify_nan(o::ff, o::n);
+    if (rbcs) safety::nullify_nan(r::ff, r::n);
+    if (solids) safety::nullify_nan(s::ff, s::npp);
 }
 
 void dev2hst() { /* device to host  data transfer */
@@ -514,6 +520,7 @@ void dumps_diags(int it) {
 
 void run0(float driving_force0, bool wall_created, int it) {
     safety::bound(o::pp, o::n);
+    assert(r::n <= MAX_PART_NUM);
     distr_solvent();
     if (solids0) distr_solid();
     if (rbcs)    distr_rbc();
