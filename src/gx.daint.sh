@@ -13,7 +13,7 @@ run () {
 #!/bin/bash -l
 #SBATCH --partition=low
 #SBATCH --job-name=$n
-#SBATCH --time=06:00:00
+#SBATCH --time=00:30:00
 #SBATCH --nodes=${NN}
 #SBATCH --ntasks-per-node=1
 #SBATCH --output=output.txt

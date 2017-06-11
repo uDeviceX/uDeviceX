@@ -7,6 +7,8 @@
 
 inc ./gx.HOST.sh
 
+set -e
+
 pre() {
     clean
     nv=498
@@ -14,6 +16,9 @@ pre() {
     rbc=cells/sph.$nv.off
     sld=data/cylinder.ply
     copy $sdf $rbc $sld
+
+    Contactforces=
+    Solids=
 
     NX=2  NY=2  NZ=1
     XS=40 YS=52 ZS=20
@@ -25,7 +30,7 @@ pre() {
 
     argp .conf.gx.base.h $Domain              \
 	 RBCnv=$nv                            \
-	 rbcs solids contactforces            \
+	 rbcs  $Solids $Contactforces         \
 	 tend=3000.0 part_freq=100            \
 	 walls wall_creation=1                \
 	 pushflow     driving_force=$df       \
