@@ -27,7 +27,9 @@
 #include "k/common.h"
 
 namespace x {
-  #include "x/k/sdstr.h"
+#include "x/k/sdstr.h"
+#include "x/common.tmp.h"
+#include "x/sdstr.decl.h"
 }
 
 #include "rminmax.h"
