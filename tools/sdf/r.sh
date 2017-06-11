@@ -2,7 +2,7 @@
 
 make
 
-f=~/googlex/vessels.sdf # 512 512 48
+f=~/googlex/fixed.sdf # 512 512 48
 
 process () {
     sdf.cut :$xh :$yh : $f  o.dat

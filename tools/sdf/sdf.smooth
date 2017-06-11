@@ -41,15 +41,23 @@ function read_data(f)
   D = reshape(D, nx, ny, nz);
 endfunction
 
+function [x, y, z] = nsize(D)
+  n = size(D);
+  x = n(1); y = n(2); z = n(3);
+endfunction
+
+function [x, y, z] = nones(); x = y = z = 1; endfunction
+
 function write_header(f)
-  global ex ey ez   nx ny nz
+  global ex ey ez D
+  [nx, ny, nz] = size(D);
   fprintf(f, "%g %g %g\n", ex, ey, ez);
   fprintf(f, "%g %g %g\n", nx, ny, nz);
 endfunction
 
 function write_data(f)
-  global E
-  fwrite(f, E, "float32");
+  global D
+  fwrite(f, D, "float32");
 endfunction
 
 function write(fn)
@@ -62,11 +70,6 @@ endfunction
 
 function    parg(); global a; a = argv();               endfunction
 function r = nxt(); global a; r = a{1}; a = {a{2:end}}; endfunction
-
-function ini_e()
-  global E nx ny nz
-  E = zeros(nx, ny, nz);
-endfunction
 
 function ini_ker0(c0)
   global c # cutoff
@@ -105,56 +108,9 @@ function ini_grid()
   sx = ex/dbl(nx); sy = ey/dbl(ny); sz = ez/dbl(nz); # step
 endfunction
 
-function i = wrap(i, n)
-  if     i < 1; i += n;
-  elseif i > n; i -= n; endif
-endfunction
-
-function r = wx(r); global nx; r = wrap(r, nx); endfunction
-function r = wy(r); global ny; r = wrap(r, ny); endfunction
-function r = wz(r); global nz; r = wrap(r, nz); endfunction
-
-function smooth0(x, y, z, f0)
-  global E # output
-  x = wx(x); y = wy(y); z = wz(z); # where to add
-  E(x, y, z) += f0;
-endfunction
-
-function smooth1(x, y, z,   dx, dy, dz,   f0)
-  x += dx; y += dy; z += dz;
-  smooth0(x, y, z, f0);
-endfunction
-
-function smooth2(ixc, iyc, izc, v)
-  global kx ky kz
-  global ww
-  for ix=-kx:kx; ix0 = ix + kx + 1;
-  for iy=-ky:ky; iy0 = iy + ky + 1;
-  for iz=-kz:kz; iz0 = iz + kz + 1;
-      w0 = ww(ix0,iy0,iz0);
-      smooth1(ixc, iyc, izc,   ix, iy, iz,   w0*v);
-  endfor endfor endfor
-endfunction
-
-function smooth3(x, y, z)
-  global D
-  smooth2(x, y, z, D(x, y, z))
-endfunction
-
-function smooth_naive()
-  global nx ny nz
-  for ix = 1:nx; msg("ix: %03d/%03d", ix, nx);
-  for iy = 1:ny;
-  for iz = 1:nz; smooth3(ix, iy, iz);
-  endfor endfor endfor
-endfunction
-
-function msg0(fmt, varargin); fprintf(stderr, fmt, [varargin{:}]); endfunction
-function msg(fmt, varargin); msg0("sdf.smooth: "); msg0(fmt, [varargin{:}]); msg0("\n"); endfunction
-
-function smooth_conv()
-  global E D ww
-  E = convn(D, ww, "same");
+function smooth()
+  global D ww
+  D = convn(D, ww, "same");
 endfunction
 
 function cap()
@@ -164,6 +120,53 @@ function cap()
   i = D < min; D(i) = min;
 endfunction
 
+function perx(n, k, DIM)
+  global D
+  l = 1         : k;
+  r = n - k + 1 : n;
+  L = D(l, :, :); R = D(r, :, :);
+  D = cat(DIM, R, D, L);
+endfunction
+
+function pery(n, k, DIM)
+  global D
+  l = 1         : k;
+  r = n - k + 1 : n;
+  L = D(:, l, :); R = D(:, r, :);
+  D = cat(DIM, R, D, L);
+endfunction
+
+function perz(n, k, DIM)
+  global D
+  l = 1         : k;
+  r = n - k + 1 : n;
+  L = D(:, :, l); R = D(:, :, r);
+  D = cat(DIM, R, D, L);
+endfunction
+
+function per() # add periodic parts
+  global D
+  global kx ky kz
+  X = 1; Y = 2; Z = 3;
+  [nx, ny, nz] = nsize(D);
+  perx(nx, kx, X);
+  pery(ny, ky, Y);
+  perz(nz, kz, Z);
+endfunction
+
+function unper() # remove periodic part from `per'
+  global D
+  global kx ky kz
+  X = 1; Y = 2; Z = 3;
+  [nx, ny, nz] = nsize(D);
+  i = kx + 1 : nx - kx; D = D(i, :, :);
+  i = ky + 1 : ny - ky; D = D(:, i, :);
+  i = kz + 1 : nz - kz; D = D(:, :, i);
+endfunction
+
+function msg0(fmt, varargin); fprintf(stderr, fmt, [varargin{:}]); endfunction
+function msg(fmt, varargin); msg0("sdf.smooth: "); msg0(fmt, [varargin{:}]); msg0("\n"); endfunction
+
 parg(); # parse args
 t = nxt(); # kernel type
 c = str2num(nxt()); # cutoff
@@ -171,13 +174,13 @@ fi = nxt(); fo = nxt();
 
 read(fi);
 
-ini_e(); # init [o]utput buffer
 ini_grid();
 ini_ker0(c); # kernel
-ini_ker1(c); # kernel
+ini_ker1(c);
 
-# smooth_naive();
-cap();
-smooth_conv();
+cap();         # cap values
+per();         # extend periodicly
+smooth();
+unper();       # remove periodic extension
 
 write(fo);

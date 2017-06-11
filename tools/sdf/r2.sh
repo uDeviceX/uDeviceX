@@ -1,10 +1,10 @@
 #!/bin/bash
 
 c=10.0
-#f=~/googlex/small.rot.dat
-f=~/googlex/128.dat
-#f=~/googlex/256.dat
+i=mir.sdf
+o=smo.sdf
+b=smo.bov
 
-./sdf.smooth cubic $c $f  o.dat
+./sdf.smooth cubic $c $i  $o
 
-sdf.2bov o.dat o.bov
+sdf.2bov $o $b
