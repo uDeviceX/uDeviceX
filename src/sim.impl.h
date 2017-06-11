@@ -174,8 +174,8 @@ void forces_fsi(SolventWrap *w_s, std::vector<ParticlesWrap> *w_r) {
 void forces(bool wall_created) {
     SolventWrap w_s(o::pp, o::n, o::ff, o::cells->start, o::cells->count);
     std::vector<ParticlesWrap> w_r;
-    if (solids0 && s::npp) w_r.push_back(ParticlesWrap(s::pp, s::npp, s::ff));
-    if (rbcs    && r::n  ) w_r.push_back(ParticlesWrap(r::pp, r::n  , r::ff));
+    if (solids0) w_r.push_back(ParticlesWrap(s::pp, s::npp, s::ff));
+    if (rbcs   ) w_r.push_back(ParticlesWrap(r::pp, r::n  , r::ff));
 
     clear_forces(o::ff, o::n);
     if (solids0) clear_forces(s::ff, s::npp);

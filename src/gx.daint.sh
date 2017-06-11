@@ -4,13 +4,13 @@ ini() {
 }
 
 run () {
-    n=gx-packed
+    n=gx-big
     
     cat <<-EOF > runme.sh
 #!/bin/bash -l
 #SBATCH --partition=low
 #SBATCH --job-name=$n
-#SBATCH --time=02:00:00
+#SBATCH --time=06:00:00
 #SBATCH --nodes=${NN}
 #SBATCH --ntasks-per-node=1
 #SBATCH --output=output.txt
