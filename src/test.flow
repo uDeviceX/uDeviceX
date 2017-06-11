@@ -24,7 +24,7 @@
 # avg_h52.m h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
 
 #### Plates : shear
-# snTEST: flow.t2
+# nTEST: flow.t2
 # rm -rf bop h5 diag.txt rbc.off
 # :
 # export PATH=../tools:$PATH
@@ -41,7 +41,7 @@
 # avg_h5.m h5/flowfields-0003.h5 | uscale 0.1 > h5.out.txt
 
 #### Plates : poiseuille
-# snTEST: flow.t3
+# nTEST: flow.t3
 # rm -rf bop h5 diag.txt rbc.off
 # :
 # export PATH=../tools:$PATH
@@ -58,7 +58,7 @@
 # avg_h5.m h5/flowfields-0013.h5 > h5.out.txt
 
 #### flow around cylinder
-# snTEST: flow.t4
+# nTEST: flow.t4
 # rm -rf bop h5 diag.txt rbc.off
 # :
 # export PATH=../tools:$PATH
