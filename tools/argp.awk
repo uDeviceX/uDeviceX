@@ -8,7 +8,6 @@ function init() {
 	"field_dumps false "		        \
 	"part_dumps false "			\
 	"pushflow false "			\
-        "driving_force 0 "                      \
 	"part_freq 1000 "			\
 	"field_freq 2000 "		        \
 	"tend 50 "				\
