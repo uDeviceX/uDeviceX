@@ -272,6 +272,11 @@ void forces(bool wall_created) {
 
     rex::post_f();
     rex::recv_f();
+
+    dSync();
+    safety::nullify_nan(o::ff, o::n);
+    if (rbcs) safety::nullify_nan(r::ff, r::n);
+    if (solids) safety::nullify_nan(s::ff, s::npp);
 }
 
 void dev2hst() { /* device to host  data transfer */
