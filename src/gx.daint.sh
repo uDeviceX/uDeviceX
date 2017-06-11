@@ -1,5 +1,6 @@
 ini() {
     module load cray-hdf5-parallel cudatoolkit daint-gpu GSL
+    cp .cache.Makefile.amlucas.falcon .cache.Makefile
 }
 
 run () {

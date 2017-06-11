@@ -2,16 +2,20 @@
 
 make
 
-f=~/googlex/vessels.sdf # 512 512 48
+f=~/googlex/fixed.sdf # 512 512 48
+c=12.0
 
 process () {
-    sdf.cut :$xh :$yh : $f  o.dat
-    sdf.2per o.dat      $b.dat
+    sdf.cut :$xh :$yh : $f     w.dat
+    sdf.2per w.dat             w0.dat
+    cp       w0.dat            w.dat
+    sdf.smooth cubic $c w.dat  $b.dat
+
     sdf.2bov $b.dat     $b.bov
 }
 
-xh=128 yh=$xh b=$xh
-process
-
-xh=210 yh=$xh b=$xh
-process
+xh=50  yh=$xh b=$xh; process
+xh=100 yh=$xh b=$xh; process
+xh=150 yh=$xh b=$xh; process
+xh=200 yh=$xh b=$xh; process
+xh=250 yh=$xh b=$xh; process
