@@ -1,4 +1,3 @@
-
 #### contact force: RBC and sphere in double Poiseuille
 # nTEST: mix.contact.t1
 # export PATH=../tools:$PATH
