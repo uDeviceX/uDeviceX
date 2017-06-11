@@ -6,6 +6,6 @@ W_DEEP   /* deep inside the wall */
 };
 
 #define allsync() do { CC(cudaDeviceSynchronize()); MC(MPI_Barrier(m::cart)); \
-    if (m::rank == 0) fprintf(stderr, "%s : l %d\n", __FILE__, __LINE__);
+        if (m::rank == 0) fprintf(stderr, "%s : l %d\n", __FILE__, __LINE__); \
     } while (0)
 //#define allsync() do { CC(cudaDeviceSynchronize()); } while (0)
