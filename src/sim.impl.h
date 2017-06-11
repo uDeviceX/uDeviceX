@@ -458,7 +458,7 @@ void update_rbc() {
 
 void bounce() {
     if (o::n)         wall::bounce(o::pp, o::n);
-    if (rbcs && r::n) wall::bounce(r::pp, r::n);
+    //if (rbcs && r::n) wall::bounce(r::pp, r::n);
 }
 
 void bounce_solid(int it)
