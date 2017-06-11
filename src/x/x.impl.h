@@ -16,16 +16,16 @@ void fin() {
   CC(cudaFree(count_zip));
 }
 
-void distr_s(Particle *s_pp, Particle *s_pp0, float4 *s_zip0, ushort4 *s_zip1,
-	     int *ps_n, CellLists *cells) {
-  int s_n = *ps_n;
+void distr_s(Particle *pp, Particle *pp0, float4 *zip0, ushort4 *zip1,
+	     int *pn, CellLists *cells) {
+  int n = *pn;
 
   int nbulk, nhalo_padded, nhalo;
   sdstr::post_recv(cart, rank, /**/ recv_size_req, recv_mesg_req);
-  if (s_n) {
-    sdstr::halo(s_pp, s_n);
-    sdstr::scan(s_n);
-    sdstr::pack(s_pp, s_n);
+  if (n) {
+    sdstr::halo(pp, n);
+    sdstr::scan(n);
+    sdstr::pack(pp, n);
   }
   if (!first) {
     sdstr::waitall(send_size_req);
@@ -36,9 +36,9 @@ void distr_s(Particle *s_pp, Particle *s_pp0, float4 *s_zip0, ushort4 *s_zip1,
   sdstr::send_msg(cart, rank, send_mesg_req);
 
   CC(cudaMemsetAsync(cells->count, 0, sizeof(int)*XS*YS*ZS));
-  if (s_n)
-    k_common::subindex_local<false><<<k_cnf(s_n)>>>
-      (s_n, (float2*)s_pp, /*io*/ cells->count, /*o*/ subi_lo);
+  if (n)
+    k_common::subindex_local<false><<<k_cnf(n)>>>
+      (n, (float2*)pp, /*io*/ cells->count, /*o*/ subi_lo);
 
   sdstr::waitall(recv_size_req);
   sdstr::recv_count(&nhalo_padded, &nhalo);
@@ -51,21 +51,21 @@ void distr_s(Particle *s_pp, Particle *s_pp0, float4 *s_zip0, ushort4 *s_zip1,
     (XS*YS*ZS, (int4*)cells->count, /**/ (uchar4*)count_zip);
   k_scan::scan(count_zip, XS*YS*ZS, /**/ (uint*)cells->start);
 
-  if (s_n)
-    k_sdstr::scatter<<<k_cnf(s_n)>>>
-      (false, subi_lo,  s_n, cells->start, /**/ iidx);
+  if (n)
+    k_sdstr::scatter<<<k_cnf(n)>>>
+      (false, subi_lo,  n, cells->start, /**/ iidx);
 
   if (nhalo)
     k_sdstr::scatter<<<k_cnf(nhalo)>>>
       (true, subi_re, nhalo, cells->start, /**/ iidx);
 
-  s_n = nbulk + nhalo;
-  if (s_n)
-    k_sdstr::gather<<<k_cnf(s_n)>>>
-      ((float2*)s_pp, (float2*)pp_re, s_n, iidx,
-       /**/ (float2*)s_pp0, s_zip0, s_zip1);
+  n = nbulk + nhalo;
+  if (n)
+    k_sdstr::gather<<<k_cnf(n)>>>
+      ((float2*)pp, (float2*)pp_re, n, iidx,
+       /**/ (float2*)pp0, zip0, zip1);
 
   
-  std::swap(s_pp, s_pp0);
-  *ps_n = s_n;
+  std::swap(pp, pp0);
+  *pn = n;
 }
