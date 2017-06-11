@@ -1,6 +1,9 @@
+# where are googleX geoms?
+googlex=/scratch/snx3000/lisergey/googlex
+
 ini() {
     module load cray-hdf5-parallel cudatoolkit daint-gpu GSL
-    cp .cache.Makefile.amlucas.falcon .cache.Makefile
+    cp .cache.Makefile.amlucas.daint .cache.Makefile
 }
 
 run () {

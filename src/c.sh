@@ -10,7 +10,7 @@ inc ./gx.HOST.sh
 pre() {
     clean
     nv=498
-    sdf=/tmp/googlex/8/150.sdf
+    sdf=$googlex/8/150.sdf # set in gx.*.sh
     rbc=cells/sph.$nv.off
     sld=data/cylinder.ply
     copy $sdf $rbc $sld
