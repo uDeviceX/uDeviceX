@@ -33,10 +33,10 @@ pre() {
     argp .conf.gx.base.h $Domain              \
 	 $Rbcs RBCnv=$nv                      \
 	 $Solids $Contactforces               \
-	 tend=3000.0 part_freq=100            \
-	 $Walls wall_creation=1                \
+	 tend=10.0 part_freq=1000             \
+	 $Walls wall_creation=100             \
 	 pushflow     driving_force=$df       \
-	 field_dumps part_dumps field_freq=100 > .conf.h
+	 field_dumps part_dumps field_freq=99999  > .conf.h
 }
 
 setup

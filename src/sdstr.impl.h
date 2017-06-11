@@ -183,7 +183,6 @@ static void shift_copy_pp(const Particle *pp_src, const int n, const int code, /
 {
     const int d[3] = i2del(code);
     const float3 shift = make_float3(-d[X] * XS, -d[Y] * YS, -d[Z] * ZS);
-    allsync();
 
     if (hst)
     {

@@ -163,28 +163,21 @@ void pack(Particle * particles, int nparticles) {
 
     (*failure->D) = false;
     dSync();
-    allsync();
     k_odstr::setup<<<1, 32>>>();
 
-    allsync();
     if (nparticles)
       k_odstr::scatter_halo_indices_pack<<<k_cnf(nparticles)>>>(nparticles);
 
-    allsync();
     k_odstr::tiny_scan<<<1, 32>>>
         (nparticles, packbuffers[0].capacity, packsizes->DP, failure->DP);
 
     CC(cudaEventRecord(evsizes));
-    allsync();
     if (nparticles)
       k_odstr::pack<<<k_cnf(3 * nparticles)>>>
         (nparticles, nparticles * 3);
-    allsync();
     CC(cudaEventRecord(evpacking));
-    allsync();
 
     CC(cudaEventSynchronize(evsizes));
-    allsync();
 
     if (*failure->D) {
         //wait for packing to finish
@@ -246,7 +239,6 @@ void bulk(int nparticles, int * cellstarts, int * cellcounts) {
     CC(cudaMemsetAsync(cellcounts, 0, sizeof(int) * XS * YS * ZS));
 
     subindices->resize(nparticles);
-    allsync();
     if (nparticles) {
 	  k_common::subindex_local<false><<<k_cnf(nparticles)>>>
 	    (nparticles, k_odstr::texparticledata, cellcounts, subindices->D);
@@ -319,13 +311,11 @@ void recv_unpack(Particle * particles, float4 * xyzouvwo, ushort4 * xyzo_half, i
 #ifndef NDEBUG
     CC(cudaMemset(remote_particles->D, 0xff, sizeof(Particle) * remote_particles->S));
 #endif
-    allsync();
     if (nhalo) {
 	  k_odstr::subindex_remote<<<k_cnf(nhalo_padded)>>>
 	    (nhalo_padded, nhalo, cellcounts, (float2 *)remote_particles->D, subindices_remote->D);
     }
 
-    allsync();
     if (compressed_cellcounts->S) {
       k_common::compress_counts<<<k_cnf(compressed_cellcounts->S)>>>
         (compressed_cellcounts->S, (int4 *)cellcounts, (uchar4 *)compressed_cellcounts->D);
@@ -337,17 +327,14 @@ void recv_unpack(Particle * particles, float4 * xyzouvwo, ushort4 * xyzo_half, i
     CC(cudaMemset(scattered_indices->D, 0xff, sizeof(int) * scattered_indices->S));
 #endif
 
-    allsync();
     if (subindices->S)
       k_odstr::scatter_indices<<<k_cnf(subindices->S)>>>
         (false, subindices->D, subindices->S, cellstarts, scattered_indices->D, scattered_indices->S);
 
-    allsync();
     if (nhalo)
     k_odstr::scatter_indices<<<k_cnf(nhalo)>>>
         (true, subindices_remote->D, nhalo, cellstarts, scattered_indices->D, scattered_indices->S);
 
-    allsync();
     if (nparticles)
     k_odstr::gather_particles<<<k_cnf(nparticles)>>>
         (scattered_indices->D, (float2 *)remote_particles->D, nhalo,

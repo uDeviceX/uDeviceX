@@ -123,16 +123,13 @@ int init(Particle *pp, int n) {
 } /* end of ini */
 
 void bounce(Particle *const p, const int n) {
-    allsync();
     if (n > 0) k_sdf::bounce<<<k_cnf(n)>>>((float2 *)p, n);
-    allsync();
 }
 
 template <int TYPE>
 void interactions(const Particle *const p, const int n,
                   Force *const acc) {
     // cellsstart and cellscount IGNORED for now
-    allsync();
     if (n > 0 && w_n > 0) {
         size_t textureoffset;
         CC(cudaBindTexture(&textureoffset,
@@ -156,7 +153,6 @@ void interactions(const Particle *const p, const int n,
         CC(cudaUnbindTexture(k_wall::texWallCellStart));
         CC(cudaUnbindTexture(k_wall::texWallCellCount));
     }
-    allsync();
 }
 
 void close () {

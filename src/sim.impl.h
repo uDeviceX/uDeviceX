@@ -3,7 +3,7 @@ namespace sim {
 
 void distr_solvent()
 {
-    allsync();
+
     odstr::pack(o::pp, o::n);
     allsync();
     odstr::send();

@@ -58,7 +58,6 @@ void pack_all(int nc, int nv,
               const float **const src, float **const dst) {
     if (nc == 0) return;
     int nth = nc * nv * 6; /* number of threads */
-    allsync();
     
     if (nc < k_rdstr::cmaxnc) {
         CC(cudaMemcpyToSymbolAsync(k_rdstr::cdst, dst, sizeof(float*) * nc, 0, H2D));
@@ -167,11 +166,9 @@ void unpack(Particle *pp, int nv) {
 
     for (int i = 1, s = nstay * nv; i < 27; ++i) {
         int cnt = rbuf[i]->S;
-	allsync();
         if (cnt > 0)
 	  k_rdstr::shift<<<k_cnf(cnt)>>>
             (rbuf[i]->DP, cnt, i, false, &pp[s]);
-	allsync();
         s += rbuf[i]->S;
     }
     _post_recvcnt();
