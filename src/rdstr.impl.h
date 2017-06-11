@@ -58,27 +58,20 @@ void pack_all(int nc, int nv,
               const float **const src, float **const dst) {
     if (nc == 0) return;
     int nth = nc * nv * 6; /* number of threads */
-
+    allsync();
+    
     if (nc < k_rdstr::cmaxnc) {
-      	allsync();
         CC(cudaMemcpyToSymbolAsync(k_rdstr::cdst, dst, sizeof(float*) * nc, 0, H2D));
-      	allsync();	
         CC(cudaMemcpyToSymbolAsync(k_rdstr::csrc, src, sizeof(float*) * nc, 0, H2D));
-	allsync();
         k_rdstr::pack_all_kernel<true><<<k_cnf(nth)>>>
             (nc, nv, NULL, NULL);
-	allsync();
     } else {
         _ddst->resize(nc);
         _dsrc->resize(nc);
-	allsync();
         CC(cudaMemcpyAsync(_ddst->D, dst, sizeof(float*) * nc, H2D));
-	allsync();
         CC(cudaMemcpyAsync(_dsrc->D, src, sizeof(float*) * nc, H2D));
-	allsync();
         k_rdstr::pack_all_kernel<false><<<k_cnf(nth)>>>
             (nc, nv, _dsrc->D, _ddst->D);
-	allsync();
     }
 }
 

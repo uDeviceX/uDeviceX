@@ -105,10 +105,7 @@ void _pack_attempt() {
     if (packsstart->S)
     CC(cudaMemsetAsync(packsstart->D, 0, sizeof(int) * packsstart->S));
 
-    allsync();
     k_rex::init<<<1, 1>>>();
-    allsync();
-
     for (int i = 0; i < (int) wsolutes.size(); ++i) {
         ParticlesWrap it = wsolutes[i];
 	allsync();
@@ -118,7 +115,6 @@ void _pack_attempt() {
             k_rex::scatter_indices<<<k_cnf(it.n)>>>
                 ((float2 *)it.p, it.n, packscount->D + i * 26);
         }
-
 	allsync();
         k_rex::tiny_scan<<<1, 32>>>
             (packscount->D + i * 26, packsoffset->D + 26 * i,
