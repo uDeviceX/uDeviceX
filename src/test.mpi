@@ -1,5 +1,3 @@
-#!/bin/bash
-
 #### RBC in a periodic box
 # sTEST: mpi.t1
 # rm -rf diag.txt h5 bop ply rbc.off

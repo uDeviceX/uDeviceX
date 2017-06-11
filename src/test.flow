@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Run from this directory:
 #  > atest test.flow.sh
 #
@@ -72,5 +70,3 @@
 # (make clean && make -j) > /dev/null
 # ./udx
 # mid_h5.m h5/flowfields-0026.h5 > h5.out.txt
-
-

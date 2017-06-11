@@ -1,4 +1,3 @@
-
 #### contact force: two RBCs in double Poiseuille
 # nTEST: contact.t1
 # export PATH=../tools:$PATH
