@@ -16,11 +16,9 @@ void fin() {
   CC(cudaFree(s_count_zip));
 }
 
-void distr_s(float4 *s_zip0, ushort4 *s_zip1,
-	     Particle *s_pp0, Particle *s_pp,
-	     int* ps_n, CellLists *cells) {
-  int s_n = ps_n;
-
+void distr_s(Particle *s_pp, Particle *s_pp0, float4 *s_zip0, ushort4 *s_zip1,
+	     int *ps_n, CellLists *cells) {
+  int s_n = *ps_n;
 
   int nbulk, nhalo_padded, nhalo;
   sdstr::post_recv(s_cart, s_rank, /**/ s_recv_size_req, s_recv_mesg_req);
@@ -66,8 +64,8 @@ void distr_s(float4 *s_zip0, ushort4 *s_zip1,
     k_sdstr::gather<<<k_cnf(s_n)>>>
       ((float2*)s_pp, (float2*)s_pp_re, s_n, s_iidx,
        /**/ (float2*)s_pp0, s_zip0, s_zip1);
+
+  
   std::swap(s_pp, s_pp0);
-
-
   *ps_n = s_n;
 }

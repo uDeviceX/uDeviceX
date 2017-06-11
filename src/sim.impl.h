@@ -1,9 +1,18 @@
 namespace sim {
 #define DEVICE_SOLID
 
-void distr_solvent()
-{
+void distr_solventX() {
+  x::distr_s(o::pp, o::pp0, o::zip0, o::zip1, &o::n, o::cells);
+  std::swap(o::pp, o::pp0);
+}
 
+void distr_solvent() {
+  /* distr_solvent0(); */
+  distr_solventX();
+}
+
+
+void distr_solvent0() {
     odstr::pack(o::pp, o::n);
     allsync();
     odstr::send();
@@ -531,6 +540,7 @@ void init() {
     DPD::init();
     fsi::init();
     sdstr::init();
+    x::ini();
     bbhalo::init();
     cnt::init();
     rex::init();
@@ -641,9 +651,10 @@ void run() {
 }
 
 void close() {
-
     odstr::redist_part_close();
     sdstr::close();
+    x::fin();
+    
     rdstr::fin();
     bbhalo::close();
     cnt::close();
