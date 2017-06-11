@@ -105,7 +105,9 @@ void _pack_attempt() {
     if (packsstart->S)
     CC(cudaMemsetAsync(packsstart->D, 0, sizeof(int) * packsstart->S));
 
+    allsync();
     k_rex::init<<<1, 1>>>();
+    allsync();
 
     for (int i = 0; i < (int) wsolutes.size(); ++i) {
         ParticlesWrap it = wsolutes[i];
@@ -114,30 +116,35 @@ void _pack_attempt() {
             CC(cudaMemcpyToSymbolAsync(k_rex::coffsets, packsoffset->D + 26 * i,
                                        sizeof(int) * 26, 0, D2D));
 
+	    allsync();
             k_rex::scatter_indices<<<k_cnf(it.n)>>>
                 ((float2 *)it.p, it.n, packscount->D + i * 26);
+	    allsync();
         }
 
+	allsync();
         k_rex::tiny_scan<<<1, 32>>>
             (packscount->D + i * 26, packsoffset->D + 26 * i,
              packsoffset->D + 26 * (i + 1), packsstart->D + i * 27);
-
-
+	allsync();	
     }
 
     CC(cudaMemcpyAsync(host_packstotalcount->D,
                        packsoffset->D + 26 * wsolutes.size(), sizeof(int) * 26,
                        H2H));
 
+    allsync();    
     k_rex::tiny_scan<<<1, 32>>>
         (packsoffset->D + 26 * wsolutes.size(), NULL, NULL, packstotalstart->D);
+    allsync();
 
     CC(cudaMemcpyAsync(host_packstotalstart->D, packstotalstart->D,
                        sizeof(int) * 27, H2H));
+    allsync();    
 
     CC(cudaMemcpyToSymbolAsync(k_rex::cbases, packstotalstart->D,
                                sizeof(int) * 27, 0, D2D));
-
+    allsync();
 
     for (int i = 0; i < (int) wsolutes.size(); ++i) {
         ParticlesWrap it = wsolutes[i];
@@ -151,8 +158,10 @@ void _pack_attempt() {
                                        packsstart->D + 27 * i, sizeof(int) * 27, 0,
                                        D2D));
 
+	    allsync();
             k_rex::pack<<<14 * 16, 128>>>
                 ((float2 *)it.p, it.n, (float2 *)packbuf->D, packbuf->C, i);
+	    allsync();
         }
     }
 
@@ -364,7 +373,9 @@ void recv_f() {
             CC(cudaMemcpyToSymbolAsync(k_rex::coffsets, packsoffset->D + 26 * i,
                                        sizeof(int) * 26, 0, D2D));
 
+	    allsync();
             k_rex::unpack<<<16 * 14, 128>>>((float *)it.f, it.n);
+	    allsync();
         }
 
     }
