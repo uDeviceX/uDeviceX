@@ -16,8 +16,8 @@ void fin() {
   CC(cudaFree(count_zip));
 }
 
-void distr_s(Particle *pp, Particle *pp0, float4 *zip0, ushort4 *zip1,
-	     int *pn, CellLists *cells) {
+void distr(Particle *pp, Particle *pp0, float4 *zip0, ushort4 *zip1,
+	   int *pn, CellLists *cells) {
   int n = *pn;
 
   int nbulk, nhalo_padded, nhalo;

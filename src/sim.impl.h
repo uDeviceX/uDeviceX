@@ -2,7 +2,7 @@ namespace sim {
 #define DEVICE_SOLID
 
 void distr_solventX() {
-  x::distr_s(o::pp, o::pp0, o::zip0, o::zip1, &o::n, o::cells);
+  x::distr(o::pp, o::pp0, o::zip0, o::zip1, &o::n, o::cells);
   std::swap(o::pp, o::pp0);
 }
 
