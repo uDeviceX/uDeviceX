@@ -1,10 +1,12 @@
+namespace sdstr {
+enum {X, Y, Z};
 void ini(MPI_Comm cart, int rank[])  {
   s::size_pin = new PinnedHostBuffer4<int>(27);
 
   for(int i = 0; i < 27; ++i) {
     int d[3] = { (i + 1) % 3 - 1, (i / 3 + 1) % 3 - 1, (i / 9 + 1) % 3 - 1 };
     r::tags[i] = (3 - d[0]) % 3 + 3 * ((3 - d[1]) % 3 + 3 * ((3 - d[2]) % 3));
-    int send_coor[3], ranks[3] = {rankx, ranky, rankz};
+    int send_coor[3], ranks[3] = {::m::coords[X], ::m::coords[Y], ::m::coords[Z]};
     for(int c = 0; c < 3; ++c) send_coor[c] = ranks[c] + d[c];
     m::Cart_rank(cart, send_coor, rank + i) ;
 
@@ -45,4 +47,5 @@ void ini(MPI_Comm cart, int rank[])  {
 
   CC(cudaMalloc(&r::dev, SZ_PTR_ARR(r::hst_)));
   CC(cudaMemcpy(r::dev, r::hst_, sizeof(r::hst_), H2D));
+}
 }

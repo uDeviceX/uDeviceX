@@ -28,8 +28,17 @@
 
 namespace x {
 #include "x/k/sdstr.h"
+#include "x/common.h"
 #include "x/common.tmp.h"
+
+namespace m {
+#include "x/m.impl.h"
+}
+
 #include "x/sdstr.decl.h"
+#include "x/sdstr/ini.h"
+#include "x/sdstr.impl.h"
+#include "x/sdstr/fin.h"
 }
 
 #include "rminmax.h"

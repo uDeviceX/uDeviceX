@@ -1,3 +1,4 @@
+namespace sdstr {
 void fin() {
   for(int i = 0; i < 27; ++i) {
     CC(cudaFree(s::iidx_[i]));
@@ -16,4 +17,5 @@ void fin() {
   CC(cudaFree(r::strt)); CC(cudaFree(r::strt_pa));
 
   delete s::size_pin;
+}
 }
