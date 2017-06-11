@@ -14,7 +14,8 @@ clean () {
 
 cp0() {
     local a=$1 b=$2
-    if test ! -r "$a"; then err 'cannot read %s' $a; exit; fi
+    if test ! -r "$a"; then err 'cannot read %s' "$a"; exit; fi
+    cp -- "$a" "$b"
 }
 
 err () {
