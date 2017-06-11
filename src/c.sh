@@ -3,13 +3,9 @@
 # Sergey's current run
 
 . $HOME/.udx/u.sh
-inc ./gx.HOST.sh
+. gx.generic.sh
 
-setup() {
-    ( make -C ../tools/rbc install        ) > /dev/null
-    ( make -C ../tools install            ) > /dev/null
-    ( make -C ../post/build_smesh install ) > /dev/null
-}
+inc ./gx.HOST.sh
 
 pre() {
     nv=498
@@ -41,10 +37,6 @@ pre() {
 	 walls wall_creation=1                \
 	 pushflow     driving_force=$df       \
 	 field_dumps part_dumps field_freq=100 > .conf.h
-}
-
-compile() {
-    { make clean && make -j ; } > /dev/null
 }
 
 setup
