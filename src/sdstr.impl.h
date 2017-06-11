@@ -192,6 +192,7 @@ static void shift_copy_pp(const Particle *pp_src, const int n, const int code, /
     else
     {
         CC(cudaMemcpy(pp_dst, pp_src, n*sizeof(Particle), H2D));
+	allsync();
         shiftpp_dev <<< k_cnf(n) >>>(n, shift, /**/ pp_dst);
     }
 }
