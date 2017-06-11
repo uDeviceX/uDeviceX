@@ -3,7 +3,7 @@
 # Sergey's current run
 
 . $HOME/.udx/u.sh
-. gx.generic.sh
+. ./gx.generic.sh
 
 inc ./gx.HOST.sh
 
