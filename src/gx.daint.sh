@@ -22,7 +22,7 @@ run () {
 :
 module load cray-hdf5-parallel cudatoolkit daint-gpu GSL
 export HEX_COMM_FACTOR=2
-srun --export=HEX_COMM_FACTOR ./udx ${NX} ${NY} ${NZ}
+srun --export=HEX_COMM_FACTOR -u ./udx ${NX} ${NY} ${NZ}
 EOF
     sbatch runme.sh
 }
