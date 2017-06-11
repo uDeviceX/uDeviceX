@@ -39,6 +39,9 @@ namespace m {
 #include "x/sdstr/ini.h"
 #include "x/sdstr.impl.h"
 #include "x/sdstr/fin.h"
+
+#include "x/x.decl.h" /* an interface */
+#include "x/x.impl.h"
 }
 
 #include "rminmax.h"
