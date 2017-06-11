@@ -7,6 +7,7 @@ void distr_solvent()
     odstr::send();
     odstr::bulk(o::n, o::cells->start, o::cells->count);
     o::n = odstr::recv_count();
+    assert(o::n <= MAX_PART_NUM);
     odstr::recv_unpack(o::pp0, o::zip0, o::zip1, o::n, o::cells->start, o::cells->count);
     std::swap(o::pp, o::pp0);
 }
