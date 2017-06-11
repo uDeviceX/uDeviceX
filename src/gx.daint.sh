@@ -21,7 +21,8 @@ run () {
 #SBATCH --constraint=gpu
 :
 module load cray-hdf5-parallel cudatoolkit daint-gpu GSL
-srun --export ALL -u -n ${NN} ./udx ${NX} ${NY} ${NZ}
+export HEX_COMM_FACTOR=2
+srun --export=HEX_COMM_FACTOR ./udx ${NX} ${NY} ${NZ}
 EOF
     sbatch runme.sh
 }
