@@ -26,6 +26,10 @@
 #include "k/scan.h"
 #include "k/common.h"
 
+namespace x {
+  #include "x/k/sdstr.h"
+}
+
 #include "rminmax.h"
 #include "off.impl.h"
 
