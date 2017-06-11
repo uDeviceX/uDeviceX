@@ -36,8 +36,9 @@ HDF5_LIBS = -lhdf5
 NVCC_LDFALGS = -L${CRAY_CUDATOOLKIT_DIR}/lib64 -Wl,-rpath -Wl,${CRAY_CUDATOOLKIT_DIR}/lib64
 
 # gsl
+GSL_DIR      = `gsl-config --prefix`
 GSL_CXXFLAGS = `gsl-config --cflags`
-GSL_LDFLAGS  =
+GSL_LDFLAGS  = -L${GSL_DIR}/lib -Wl,-rpath -Wl,${GSL_DIR}/lib
 GSL_LIBS     = `gsl-config --libs`
 
 NVCC = ${NVCC_BIN} ${HDF5_CXXFLAGS} ${MPI_CXXFLAGS} ${GSL_CXXFLAGS}
