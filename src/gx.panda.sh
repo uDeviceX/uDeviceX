@@ -1,7 +1,6 @@
 ini() {
+    export PATH=/usr/lib64/mpich/bin:$PATH
     cp .cache.Makefile.amlucas.panda .cache.Makefile
 }
 
-run() {
-    ./udx
-}
+run() { mpiexec -n $NN ./udx $NX $NY $NZ ; }
