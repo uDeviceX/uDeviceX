@@ -19,6 +19,8 @@ pre() {
 
     Contactforces=
     Solids=
+    Rbcs=rbcs
+    Walls=
 
     NX=2  NY=2  NZ=1
     XS=40 YS=52 ZS=20
@@ -29,10 +31,10 @@ pre() {
     plcmt.ro $LX $LY $LZ $radius $fraction $sc $ang ic_solid.txt rbcs-ic.txt
 
     argp .conf.gx.base.h $Domain              \
-	 RBCnv=$nv                            \
-	 rbcs  $Solids $Contactforces         \
+	 $Rbcs RBCnv=$nv                      \
+	 $Solids $Contactforces               \
 	 tend=3000.0 part_freq=100            \
-	 walls wall_creation=1                \
+	 $Walls wall_creation=1                \
 	 pushflow     driving_force=$df       \
 	 field_dumps part_dumps field_freq=100 > .conf.h
 }
