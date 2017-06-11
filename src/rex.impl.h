@@ -111,15 +111,12 @@ void _pack_attempt() {
 
     for (int i = 0; i < (int) wsolutes.size(); ++i) {
         ParticlesWrap it = wsolutes[i];
-
+	allsync();
         if (it.n) {
             CC(cudaMemcpyToSymbolAsync(k_rex::coffsets, packsoffset->D + 26 * i,
                                        sizeof(int) * 26, 0, D2D));
-
-	    allsync();
             k_rex::scatter_indices<<<k_cnf(it.n)>>>
                 ((float2 *)it.p, it.n, packscount->D + i * 26);
-	    allsync();
         }
 
 	allsync();

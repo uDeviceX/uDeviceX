@@ -7,8 +7,11 @@ int init(Particle *pp, int n) {
     CC(cudaFuncSetCacheConfig(k_wall::interactions_3tpp<SOLID_TYPE>, cudaFuncCachePreferL1));
 
     thrust::device_vector<int> keys(n);
+    allsync();
     k_sdf::fill_keys<<<k_cnf(n)>>>(pp, n, thrust::raw_pointer_cast(&keys[0]));
+    allsync();
     thrust::sort_by_key(keys.begin(), keys.end(), thrust::device_ptr<Particle>(pp));
+    allsync();
 
     int nsurvived = thrust::count(keys.begin(), keys.end(), 0);
     int nbelt = thrust::count(keys.begin() + nsurvived, keys.end(), 1);
@@ -116,15 +119,18 @@ int init(Particle *pp, int n) {
     CC(cudaMalloc(&w_pp, sizeof(float4) * w_n));
 
     if (m::rank == 0) MSG("consolidating wall particles");
-
+    allsync();
     if (w_n > 0)
-    k_sdf::strip_solid4<<<k_cnf(w_n)>>>(solid, w_n, w_pp);
+      k_sdf::strip_solid4<<<k_cnf(w_n)>>>(solid, w_n, w_pp);
+    allsync();
     CC(cudaFree(solid));
     return nsurvived;
 } /* end of ini */
 
 void bounce(Particle *const p, const int n) {
+    allsync();
     if (n > 0) k_sdf::bounce<<<k_cnf(n)>>>((float2 *)p, n);
+    allsync();
 }
 
 template <int TYPE>
@@ -148,11 +154,14 @@ void interactions(const Particle *const p, const int n,
                            &k_wall::texWallCellCount.channelDesc,
                            sizeof(int) * wall_cells->ncells));
 
+	allsync();
         k_wall::interactions_3tpp<TYPE> <<<k_cnf(3 * n)>>>
             ((float2 *)p, n, w_n, (float *)acc, trunk->get_float());
+	allsync();
         CC(cudaUnbindTexture(k_wall::texWallParticles));
         CC(cudaUnbindTexture(k_wall::texWallCellStart));
         CC(cudaUnbindTexture(k_wall::texWallCellCount));
+	allsync();
     }
 }
 

@@ -165,6 +165,7 @@ void interactions(float invsqrtdt, BatchInfo infos[20],
 
     CC(cudaEventRecord(evhalodone));
 
+    allsync();
     if (nthreads)
     interaction_kernel<<<k_cnf(nthreads)>>>
         (nthreads, acc, n);

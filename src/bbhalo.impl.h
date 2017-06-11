@@ -61,6 +61,7 @@ static void _shift_copy_pp(const Particle *ss_src, const int n, const int nps, c
 {
     const int d[3] = {(code + 1) % 3 - 1, (code / 3 + 1) % 3 - 1, (code / 9 + 1) % 3 - 1};
     const float3 shift = make_float3(-XS * d[X], -YS * d[Y], -ZS * d[Z]);
+    allsync();
 
     if (tohst)
     {
@@ -69,10 +70,8 @@ static void _shift_copy_pp(const Particle *ss_src, const int n, const int nps, c
     }
     else
     {
-      	allsync();
         CC(cudaMemcpy(ss_dst, ss_src, n*nps*sizeof(Particle), H2D));
         _shift_dev <<< k_cnf(n*nps) >>> (shift, n*nps, /**/ ss_dst);
-	allsync();
     }        
 }
 
