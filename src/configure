@@ -1,0 +1,33 @@
+#!/bin/bash
+
+msg () {
+    printf '%s\n' "$@" | cat >&2
+}
+
+usg () {
+    msg  './configure'
+    msg  'adapts udx to systems : we know who you are'
+    exit
+}
+
+main () {
+    dn=amlucas dh=panda # defaults
+    n=`whoami` h=`hostname`
+
+    case "$h" in
+	daint*) h=daint ;;
+	*)      h=$dh
+    esac
+
+    c=.cache.Makefile.$n.$h
+    if test ! -f $c; then c=.cache.Makefile.$dn.$h   ; fi
+    if test ! -f $c; then c=.cache.Makefile.$dn.$dh; fi
+
+    msg "cp $c .cache.Makefile"
+    cp $c .cache.Makefile
+}
+
+case $# in
+    0) main ;;
+    *) usg
+esac
