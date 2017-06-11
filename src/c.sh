@@ -17,16 +17,16 @@ pre() {
     sld=data/cylinder.ply
     copy $sdf $rbc $sld
 
-    Contactforces=
-    Solids=
+    Contactforces=contactforces
+    Solids=solids
     Rbcs=rbcs
-    Walls=
+    Walls=walls
 
     NX=2  NY=2  NZ=1
     XS=40 YS=52 ZS=20
     geom # set NN, LX, LY, LZ, Domain
 
-    df=10.0
+    df=5.0
     fraction=0.2 radius=2.3 sc=0.2 ang=rnd
     plcmt.ro $LX $LY $LZ $radius $fraction $sc $ang ic_solid.txt rbcs-ic.txt
 
