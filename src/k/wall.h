@@ -2,6 +2,10 @@ namespace k_wall {
 texture<float4, 1, cudaReadModeElementType> texWallParticles;
 texture<int, 1, cudaReadModeElementType> texWallCellStart, texWallCellCount;
 
+__device__ int minmax(int lo, int hi, int a) {
+    return min(hi, max(lo, a));
+}
+
 __global__ void interactions_3tpp(const float2 *const pp, const int np,
                                   const int nsolid, float *const acc,
                                   const float seed, const int type) {
@@ -29,6 +33,10 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
         int ybase = (int)(dst0.y - (-YS / 2 - YWM));
         int zbase = (int)(dst1.x - (-ZS / 2 - ZWM));
 
+        xbase = minmax(-XWM, XS + XWM - 1, xbase);
+        xbase = minmax(-XWM, XS + XWM - 1, xbase);
+        xbase = minmax(-XWM, XS + XWM - 1, xbase);
+                
         enum {
             XCELLS = XS + 2 * XWM,
             YCELLS = YS + 2 * YWM,
