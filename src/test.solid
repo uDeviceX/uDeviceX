@@ -61,8 +61,8 @@
 # x=0.75 y=3 z=9; echo $x $y $z >  ic_solid.txt
 # x=8    y=8 z=8; echo $x $y $z >> ic_solid.txt
 # :
-# argp .conf.around.h -solids -tend=1.0 -part_freq=500 \
-#     walls wall_creation=100 -kBT=1e-7              \
+# argp .conf.around.h solids tend=1.0 part_freq=500 \
+#     walls wall_creation=100 kBT=1e-7              \
 #     field_dumps part_dumps                         \
 #     field_freq=500 pushflow > .conf.h
 # :
