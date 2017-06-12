@@ -603,8 +603,12 @@ void dumps_diags(int it) {
 }
 
 void run0(float driving_force0, bool wall_created, int it) {
+    assert(o::n <= MAX_PART_NUM);
     safety::bound(o::pp, o::n);
+
     assert(r::n <= MAX_PART_NUM);
+    if (rbcs) safety::bound(r::pp, r::n);
+    
     distr_solvent();
     if (solids0) distr_solid();
     if (rbcs)    distr_rbc();
