@@ -6,7 +6,7 @@ msg () {
 
 usg () {
     msg  './configure'
-    msg  'adapts udx to systems : we know who you are'
+    msg  'adapts udx to systems : we know who you are and where do you live'
     exit
 }
 
