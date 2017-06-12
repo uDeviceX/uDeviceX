@@ -17,14 +17,14 @@ void transform(float* rr0, int nv, float *A, /* output */ Particle* pp) {
     }
 }
 
-int setup_hst(int nv, Particle *pp_hst) {
-    /* fills `pp_hst' with RBCs for this processor on host */
+int setup_hst(int nv, Particle *pp) {
+    /* fills `pp' with RBCs for this processor */
     const char *r_templ = "rbc.off", *r_state = "rbcs-ic.txt";
 
     float rr0[3*MAX_VERT_NUM]; /* rbc template */
     off::f2vert(r_templ, rr0);
 
-    int i, j, c, ic = 0;
+    int i, j, c, nc = 0;
     int mi[3], L[3] = {XS, YS, ZS};
     for (c = 0; c < 3; ++c) mi[c] = (m::coords[c] + 0.5) * L[c];
 
@@ -43,12 +43,12 @@ int setup_hst(int nv, Particle *pp_hst) {
             A[j] -= mi[c]; /* in local coordinates */
             if (2*A[j] < -L[c] || 2*A[j] > L[c]) goto next; /* not my RBC */
         }
-        transform(rr0, nv, A, &pp_hst[nv*(ic++)]);
+        transform(rr0, nv, A, &pp[nv*(nc++)]);
     next: ;
     }
  done:
     fclose(f);
-    int nc = ic;
+    MSG("read %d rbcs", nc);
     return nc;
 }
 
