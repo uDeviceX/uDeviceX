@@ -11,7 +11,6 @@ void distr_solvent() {
   distr_solventX();
 }
 
-
 void distr_solvent0() {
     odstr::pack(o::pp, o::n);
     odstr::send();
