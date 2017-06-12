@@ -10,5 +10,3 @@ W_DEEP   /* deep inside the wall */
         if (m::rank == 0)                                               \
         fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);               \
     } while (0)
-    #define allsync() do { CC(cudaDeviceSynchronize()); } while (0)*/
-#define allsync() do {  } while (0)

@@ -14,36 +14,23 @@ void distr_solvent() {
 
 void distr_solvent0() {
     odstr::pack(o::pp, o::n);
-    allsync();
     odstr::send();
-    allsync();
     odstr::bulk(o::n, o::cells->start, o::cells->count);
-    allsync();
     o::n = odstr::recv_count();
-    allsync();
     assert(o::n <= MAX_PART_NUM);
     odstr::recv_unpack(o::pp0, o::zip0, o::zip1, o::n, o::cells->start, o::cells->count);
-    allsync();
     std::swap(o::pp, o::pp0);
-    allsync();
 }
 
 void distr_solid()
 {
 #ifdef DEVICE_SOLID
-    allsync();
     if (s::ns) CC(cudaMemcpy(s::ss_hst, s::ss_dev, s::ns * sizeof(Solid), D2H));
-    allsync();
     sdstr::pack_sendcnt <false> (s::ss_hst, s::i_pp_dev, s::ns, s::m_dev.nv);
-    allsync();
     s::ns = sdstr::post(s::m_dev.nv);
-    allsync();
     s::npp = s::ns * s::nps;
-    allsync();
     sdstr::unpack <false> (s::m_dev.nv, /**/ s::ss_hst, s::i_pp_dev);
-    allsync();
     if (s::ns) CC(cudaMemcpy(s::ss_dev, s::ss_hst, s::ns * sizeof(Solid), H2D));
-    allsync();
     solid::generate_dev(s::ss_dev, s::ns, s::rr0, s::nps, /**/ s::pp);
 #else
     sdstr::pack_sendcnt <true> (s::ss_hst, s::i_pp_hst, s::ns, s::m_hst.nv);
@@ -57,16 +44,11 @@ void distr_solid()
 
 void distr_rbc()
 {
-    allsync();
     rdstr::extent(r::pp, r::nc, r::nv);
     dSync();
-    allsync();
     rdstr::pack_sendcnt(r::pp, r::nc, r::nv);
-    allsync();
     r::nc = rdstr::post(r::nv); r::n = r::nc * r::nv;
-    allsync();
     rdstr::unpack(r::pp, r::nv);
-    allsync();
 }
 
 void update_helper_arrays() {
@@ -214,20 +196,13 @@ void create_walls() {
 
     dSync();
     sdf::init();
-    allsync();
     o::n = wall::init(o::pp, o::n);
-    allsync();
     MSG("solvent particles survived: %d/%d", o::n, nold);
     if (o::n) k_sim::clear_velocity<<<k_cnf(o::n)>>>(o::pp, o::n);
-    allsync();
-
     o::cells->build(o::pp, o::n, NULL, NULL);
-    allsync();
     update_helper_arrays();
-    allsync();
 
     CC( cudaPeekAtLastError() );
-    allsync();
     if (solids0) init_solid();
     CC(cudaPeekAtLastError() );
     if (solids) remove_solids_from_wall();
@@ -240,122 +215,76 @@ void create_walls() {
 	CC(cudaMemcpy(s::ss_dev, s::ss_hst, s::ns * sizeof(Solid), H2D));
     }
 
-    allsync();
     CC(cudaPeekAtLastError());
 }
 
 void forces_rbc() {
-    allsync();
     if (rbcs && r::n) rbc::forces(r::nc, r::pp, r::ff, r::av);
-    allsync();
 }
 
 void forces_dpd() {
-    allsync();
     DPD::pack(o::pp, o::n, o::cells->start, o::cells->count);
-    allsync();
     DPD::local_interactions(o::pp, o::zip0, o::zip1,
 			    o::n, o::ff, o::cells->start,
 			    o::cells->count);
-    allsync();
     DPD::post(o::pp, o::n);
-    allsync();
     DPD::recv();
-    allsync();
     DPD::remote_interactions(o::n, o::ff);
-    allsync();
 }
 
 void clear_forces(Force* ff, int n) {
-    allsync();
     if (n) CC(cudaMemsetAsync(ff, 0, sizeof(Force) * n));
-    allsync();
 }
 
 void forces_wall() {
-    allsync();
     if (o::n)              wall::interactions(SOLVENT_TYPE, o::pp, o::n, o::ff);
-    allsync();
     if (solids0 && s::npp) wall::interactions(SOLID_TYPE, s::pp, s::npp, s::ff);
-    allsync();
     if (rbcs && r::n)      wall::interactions(SOLID_TYPE, r::pp, r::n  , r::ff);
-    allsync();
 }
 
 void forces_cnt(std::vector<ParticlesWrap> *w_r) {
     if (contactforces) {
-	allsync();
 	cnt::build_cells(*w_r);
-	allsync();
 	cnt::bulk(*w_r);
     }
 }
 
 void forces_fsi(SolventWrap *w_s, std::vector<ParticlesWrap> *w_r) {
-    allsync();
     fsi::bind_solvent(*w_s);
-    allsync();
     fsi::bulk(*w_r);
-    allsync();
 }
 
 void forces(bool wall_created) {
-    allsync();
     SolventWrap w_s(o::pp, o::n, o::ff, o::cells->start, o::cells->count);
-    allsync();
     std::vector<ParticlesWrap> w_r;
-    allsync();
     if (solids0) w_r.push_back(ParticlesWrap(s::pp, s::npp, s::ff));
-    allsync();
     if (rbcs   ) w_r.push_back(ParticlesWrap(r::pp, r::n  , r::ff));
-    allsync();
 
     clear_forces(o::ff, o::n);
-    allsync();
     if (solids0) clear_forces(s::ff, s::npp);
-    allsync();
     if (rbcs)    clear_forces(r::ff, r::n);
-    allsync();
 
     forces_dpd();
-    allsync();
     if (wall_created) forces_wall();
-    allsync();
     forces_rbc();
-    allsync();
 
     forces_cnt(&w_r);
-    allsync();
     forces_fsi(&w_s, &w_r);
-    allsync();
 
-    allsync();
     rex::bind_solutes(w_r);
-    allsync();
     rex::pack_p();
-    allsync();
     rex::post_p();
-    allsync();
     rex::recv_p();
-    allsync();
 
     rex::halo(); /* fsi::halo(); */
-    allsync();
 
-    allsync();
     rex::post_f();
-    allsync();
     rex::recv_f();
-    allsync();
 
     dSync();
-    allsync();
     safety::nullify_nan(o::ff, o::n);
-    allsync();
     if (rbcs) safety::nullify_nan(r::ff, r::n);
-    allsync();
     if (solids) safety::nullify_nan(s::ff, s::npp);
-    allsync();
 }
 
 void dev2hst() { /* device to host  data transfer */
@@ -415,16 +344,11 @@ void body_force(float driving_force0) {
 
 void update_solid0() {
 #ifndef DEVICE_SOLID
-    allsync();
     CC(cudaMemcpy(s::pp_hst, s::pp, sizeof(Particle) * s::npp, D2H));
-    allsync();
     CC(cudaMemcpy(s::ff_hst, s::ff, sizeof(Force) * s::npp, D2H));
 
-    allsync();
     solid::update_hst(s::ff_hst, s::rr0_hst, s::npp, s::ns, /**/ s::pp_hst, s::ss_hst);
-    allsync();
     solid::update_mesh_hst(s::ss_hst, s::ns, s::m_hst, /**/ s::i_pp_hst);
-    allsync();
 
     // for dump
     memcpy(s::ss_dmphst, s::ss_hst, s::ns * sizeof(Solid));
