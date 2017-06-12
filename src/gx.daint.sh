@@ -1,5 +1,6 @@
 # where are googleX geoms?
-googlex=/scratch/snx3000/lisergey/googlex
+#googlex=/scratch/snx3000/lisergey/googlex
+googlex=/scratch/snx3000/amlucas/geom
 
 ini() {
     module load cray-hdf5-parallel cudatoolkit daint-gpu GSL
@@ -13,7 +14,7 @@ run () {
 #!/bin/bash -l
 #SBATCH --partition=low
 #SBATCH --job-name=$n
-#SBATCH --time=00:05:00
+#SBATCH --time=06:00:00
 #SBATCH --nodes=${NN}
 #SBATCH --ntasks-per-node=1
 #SBATCH --output=output.txt
