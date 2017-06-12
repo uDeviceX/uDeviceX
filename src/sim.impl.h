@@ -590,16 +590,23 @@ void init() {
     MC(MPI_Barrier(m::cart));
 }
 
-void dumps_diags(int it) {
-    if (it > wall_creation && it % part_freq == 0) {
-	/* s::ss_dmpbbhst contains BB Force & Torque */
-	solid::dump(it, s::ss_dmphst, s::ss_dmpbbhst, s::ns, m::coords);
-	dump_rbcs();
-    }
+void dump_diag_after(int it) { /* after wall */
+  if (it % part_freq)
+    solid::dump(it, s::ss_dmphst, s::ss_dmpbbhst, s::ns, m::coords);
+}
 
-    if (it % part_freq == 0)    dump_part(it);
-    if (it % field_freq == 0)   dump_grid();
-    if (it % part_freq == 0)    diag(it);
+void dump_diag0(int it) { /* generic dump */
+  if (it % part_freq  == 0) {
+    dump_part(it);
+    dump_rbcs();
+    diag(it);
+  }
+  if (it % field_freq == 0) dump_grid();
+}
+
+void dump_diag(int it, bool wall_created) { /* dump and diag */
+  dump_diag0(it);
+  if (wall_created) dump_diag_after(it);
 }
 
 void run0(float driving_force0, bool wall_created, int it) {
@@ -613,7 +620,7 @@ void run0(float driving_force0, bool wall_created, int it) {
     if (solids0) distr_solid();
     if (rbcs)    distr_rbc();
     forces(wall_created);
-    dumps_diags(it);
+    dump_diag(it, wall_created);
     body_force(driving_force0);
     update_solvent();
     if (solids0) update_solid();
