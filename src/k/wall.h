@@ -33,9 +33,9 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
         int ybase = (int)(dst0.y - (-YS / 2 - YWM));
         int zbase = (int)(dst1.x - (-ZS / 2 - ZWM));
 
-        xbase = minmax(-XWM, XS + XWM - 1, xbase);
-        xbase = minmax(-XWM, XS + XWM - 1, xbase);
-        xbase = minmax(-XWM, XS + XWM - 1, xbase);
+        xbase = minmax(-XWM+1, XS + XWM - 2, xbase);
+        ybase = minmax(-YWM+1, YS + YWM - 2, ybase);
+        zbase = minmax(-ZWM+1, ZS + ZWM - 2, zbase);
                 
         enum {
             XCELLS = XS + 2 * XWM,
