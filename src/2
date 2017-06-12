@@ -12,7 +12,9 @@ set -e
 pre() {
     clean
     nv=498
-    sdf=$googlex/vessels-fixed_mirrored.sdf # set in gx.*.sh
+
+    c=1 # geometry smoothing kernel size
+    sdf=$googlex/$c/big.sdf # set in gx.*.sh
     rbc=cells/sph.$nv.off
     sld=data/cylinder.ply
     copy $sdf $rbc $sld
