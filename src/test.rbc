@@ -1,5 +1,5 @@
 #### RBC in a periodic box
-# cTEST: diag.t2
+# nTEST: diag.t2
 # rm -rf bop diag.txt h5 ply rbc.off
 # cp cells/rbc.498.off rbc.off
 # export PATH=../tools:$PATH
@@ -13,7 +13,7 @@
 #
 
 #### RBC initialy rotated
-# cTEST: rotated.t1
+# nTEST: rotated.t1
 # rm -rf bop diag.txt h5 ply rbc.off
 # cp cells/rbc.498.off rbc.off
 # export PATH=../tools:$PATH
@@ -30,7 +30,7 @@
 # ply2punto ply/rbcs-00003.ply | uscale 100 > ply.out.txt
 
 #### RBC with wall
-# cTEST: diag.t3
+# nTEST: diag.t3
 # rm -rf bop diag.txt h5 ply rbc.off
 # cp cells/rbc.498.off rbc.off
 # export PATH=../tools:$PATH
@@ -46,7 +46,7 @@
 # ply2punto ply/rbcs-00003.ply | uscale 100 > ply.out.txt
 
 #### one RBC around cylinder
-# cTEST: flow.around.t1
+# nTEST: flow.around.t1
 # rm -rf bop diag.txt h5 ply rbc.off
 # cp cells/rbc.498.off rbc.off
 # export PATH=../tools:$PATH
@@ -62,7 +62,7 @@
 # ply2punto ply/rbcs-00001.ply | uscale 100 > ply.out.txt
 
 #### two RBCs around cylinder
-# cTEST: flow.around.t2
+# nTEST: flow.around.t2
 # rm -rf bop diag.txt h5 ply rbc.off
 # cp cells/rbc.498.off rbc.off
 # export PATH=../tools:$PATH
@@ -82,7 +82,7 @@
 #
 
 #### two RBCs around cylinder with one RBC removed by the wall
-# cTEST: flow.around.t3
+# nTEST: flow.around.t3
 # rm -rf bop diag.txt h5 ply rbc.off
 # export PATH=../tools:$PATH
 # cp cells/rbc.498.off rbc.off
