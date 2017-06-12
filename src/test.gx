@@ -32,8 +32,9 @@
 
 #### googleX with body force and RBCs
 # cTEST: gx.t2
-# rm -rf bop diag.txt h5 ply rbc.off
+# rm -rf bop diag.txt h5 ply rbc.off rbcs-ic.txt
 # cp cells/rbc.498.off rbc.off
+# x=20 y=36 z=10; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 # export PATH=../tools:$PATH
 # cp sdf/gx/small.rot.dat sdf.dat ######## see sdf/gx/README.md
 # :
