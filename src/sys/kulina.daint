@@ -1,0 +1,15 @@
+h5 = 1
+
+ARCH_VAL = compute_60
+CODE_VAL = sm_60
+
+LINK = CC
+NVCC_BIN = nvcc
+
+MPI_CXXFLAGS = -I${MPICH_DIR}/include
+MPI_LDFLAGS  = -L/${MPICH_DIR}/lib -Wl,-rpath -Wl,${MPICH_DIR}/lib
+MPI_LIBS = -lmpich_gnu_51 -lmpichcxx_gnu_51
+
+HDF5_CXXFLAGS = -I${HDF5_DIR}/include
+HDF5_LDFLAGS  = -L${HDF5_DIR}/lib -Wl,-rpath -Wl,${HDF5_DIR}/lib
+HDF5_LIBS = -lhdf5

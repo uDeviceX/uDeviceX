@@ -1,0 +1,17 @@
+h5 = 1
+
+LINK = g++
+NVCC_DIR = /usr/local/cuda-8.0
+NVCC_BIN = ${NVCC_DIR}/bin/nvcc
+OPT      = -O0 -g --device-debug
+
+MPI_CXXFLAGS = -I/usr/include/mpich-x86_64
+MPI_LDFLAGS  = -L/usr/lib64/mpich/lib -Wl,-rpath -Wl,/usr/lib64/mpich/lib
+MPI_LIBS = -lmpichcxx -lmpich
+
+HDF5_DIR = /scratch/udevicex/nizzeros/prefix/hdf5
+HDF5_CXXFLAGS = -I${HDF5_DIR}/include
+HDF5_LDFLAGS  = -L${HDF5_DIR}/lib -Wl,-rpath -Wl,${HDF5_DIR}/lib
+HDF5_LIBS = -lhdf5
+
+NVCC_LDFALGS = -L${NVCC_DIR}/lib64 -Wl,-rpath -Wl,${NVCC_DIR}/lib64

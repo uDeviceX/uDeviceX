@@ -19,12 +19,12 @@ main () {
 	*)      h=$dh
     esac
 
-    c=.cache.Makefile.$n.$h
-    if test ! -f $c; then c=.cache.Makefile.$dn.$h   ; fi
-    if test ! -f $c; then c=.cache.Makefile.$dn.$dh; fi
+    c=sys/$n.$h
+    if test ! -f $c; then c=sys/$dn.$h   ; fi
+    if test ! -f $c; then c=sys/$dn.$dh; fi
 
-    msg "cp $c .cache.Makefile"
-    cp $c .cache.Makefile
+    msg "cp $c config.mk"
+    cp $c config.mk
 }
 
 case $# in

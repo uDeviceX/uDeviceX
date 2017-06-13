@@ -1,4 +1,6 @@
-include .cache.Makefile # local settings (see .cache.Makefile.* for examples)
+# system settings : see src/configure and src/sys/*
+include sys/common.mk
+include config.mk
 
 NVCC     ?= nvcc
 ARCH_VAL ?= compute_35

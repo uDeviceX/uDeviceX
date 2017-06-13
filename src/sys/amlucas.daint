@@ -1,0 +1,25 @@
+# To compile on daint
+#    module load cray-hdf5-parallel cray-mpich cudatoolkit
+#
+#   salloc --nodes=2 -C gpu bash
+#   module load cray-hdf5-parallel cray-mpich cudatoolkit
+#   srun ./udx 1 1 2
+
+h5 = 1
+
+ARCH_VAL = compute_60
+CODE_VAL = sm_60
+
+LINK = CC
+NVCC_BIN = nvcc
+#OPT      = -O0 -g --device-debug
+
+MPI_CXXFLAGS = -I${MPICH_DIR}/include
+MPI_LDFLAGS  = 
+MPI_LIBS     =
+
+HDF5_CXXFLAGS = -I${HDF5_DIR}/include
+HDF5_LDFLAGS  = -L${HDF5_DIR}/lib -Wl,-rpath -Wl,${HDF5_DIR}/lib
+HDF5_LIBS = -lhdf5
+
+NVCC_LDFALGS = -L${CRAY_CUDATOOLKIT_DIR}/lib64 -Wl,-rpath -Wl,${CRAY_CUDATOOLKIT_DIR}/lib64
