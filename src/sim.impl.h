@@ -25,12 +25,12 @@ void distr_solvent0() {
 
 void distr_solid() {
 #ifdef DEVICE_SOLID
-    if (s::ns) CC(cudaMemcpy(s::ss_hst, s::ss_dev, s::ns * sizeof(Solid), D2H));
+    if (s::ns) cD2H(s::ss_hst, s::ss_dev, s::ns);
     sdstr::pack_sendcnt <DEV> (s::ss_hst, s::i_pp_dev, s::ns, s::m_dev.nv);
     s::ns = sdstr::post(s::m_dev.nv);
     s::npp = s::ns * s::nps;
     sdstr::unpack <DEV> (s::m_dev.nv, /**/ s::ss_hst, s::i_pp_dev);
-    if (s::ns) CC(cudaMemcpy(s::ss_dev, s::ss_hst, s::ns * sizeof(Solid), H2D));
+    if (s::ns) cH2D(s::ss_dev, s::ss_hst, s::ns);
     solid::generate_dev(s::ss_dev, s::ns, s::rr0, s::nps, /**/ s::pp);
 #else
     sdstr::pack_sendcnt <HST> (s::ss_hst, s::i_pp_hst, s::ns, s::m_hst.nv);
