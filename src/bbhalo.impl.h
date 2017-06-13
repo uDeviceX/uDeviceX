@@ -159,7 +159,7 @@ void pack_sendcnt(const Solid *ss_hst, const int ns, const Particle *pp, const i
         sshalo[i][j] = ss_hst[id];
 
         if (fromhst) memcpy(pshalo[i].data() + j*nps, pp + id*nps, nps*sizeof(Particle));
-        else  D2H(pshalo[i].data() + j*nps, pp + id*nps, nps);
+        else  cD2H(pshalo[i].data() + j*nps, pp + id*nps, nps);
     }
 
     // send counts
