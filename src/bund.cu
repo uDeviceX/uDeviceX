@@ -65,8 +65,7 @@ namespace m {
 
 #include "containers.impl.h"
 
-#include "field.decl.h"
-#include "field.impl.h"
+#include "field.h"
 
 #include "wall.decl.h"
 #include "k/wvel.h" /* wall velocity used by sdf and wall */

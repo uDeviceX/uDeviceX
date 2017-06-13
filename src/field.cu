@@ -1,4 +1,23 @@
-namespace field {
+#include "common.h"
+#include "io.h"
+#include "conf.h"
+#include "m.h"
+#include "field.h"
+
+namespace field{
+template <int k> struct Bspline {
+    template <int i> static float eval(float x) {
+        return (x - i) / (k - 1) * Bspline<k - 1>::template eval<i>(x) +
+            (i + k - x) / (k - 1) * Bspline<k - 1>::template eval<i + 1>(x);
+    }
+};
+
+template <> struct Bspline<1> {
+    template <int i> static float eval(float x) {
+        return (float)(i) <= x && x < (float)(i + 1);
+    }
+};
+
 void ini_dims(const char *path, int N[3], float extent[3]) {
     FILE *fh = fopen(path, "r");
     char line[2048];
@@ -33,7 +52,7 @@ void sample(const float rlo[3], const float dr[3], const int nsize[3], const int
     float s;
     for (iz = 0; iz < nsize[Z]; ++iz)
     for (iy = 0; iy < nsize[Y]; ++iy)
-	for (ix = 0; ix < nsize[X]; ++ix) {
+    for (ix = 0; ix < nsize[X]; ++ix) {
         float r[3] = {(float) i2x(ix), (float) i2y(iy), (float) i2z(iz)};
 
         int anchor[3];
@@ -41,12 +60,12 @@ void sample(const float rlo[3], const float dr[3], const int nsize[3], const int
 
         float w[3][4];
         for (c = 0; c < 3; ++c)
-	    for (i = 0; i < 4; ++i)
+        for (i = 0; i < 4; ++i)
         w[c][i] = bsp.eval<0>(r[c] - (anchor[c] - 1 + i) + 2);
 
         float tmp[4][4];
         for (sz = 0; sz < 4; ++sz)
-	    for (sy = 0; sy < 4; ++sy) {
+        for (sy = 0; sy < 4; ++sy) {
             s = 0;
             for (sx = 0; sx < 4; ++sx) {
                 int l[3] = {sx, sy, sz};
@@ -57,7 +76,7 @@ void sample(const float rlo[3], const float dr[3], const int nsize[3], const int
                 s += w[0][sx] * DDD(g[X], g[Y], g[Z]);
             }
             tmp[sz][sy] = s;
-	    }
+        }
         float partial[4];
         for (sz = 0; sz < 4; ++sz) {
             s = 0;
@@ -67,12 +86,12 @@ void sample(const float rlo[3], const float dr[3], const int nsize[3], const int
         float val = 0;
         for (sz = 0; sz < 4; ++sz) val += w[2][sz] * partial[sz];
         OOO(ix, iy, iz) = val * ampl;
-	}
+    }
 #undef DDD
 #undef OOO
 }
 
-void dump0(int N[3], float extent[3], float* grid_data, float* walldata) {
+void dump0(const int N[3], const float extent[3], const float* grid_data, float* walldata) {
     int c, L[3] = {XS, YS, ZS};
     float rlo[3], dr[3], ampl;
     for (c = 0; c < 3; ++c) {
@@ -85,9 +104,9 @@ void dump0(int N[3], float extent[3], float* grid_data, float* walldata) {
     dump.dump_scalarfield(walldata, "wall");
 }
 
-void dump(int N[], float extent[], float* grid_data) {
+void dump(const int N[], const float extent[], const float* grid_data) {
     float *walldata = new float[N[0] * N[1] * N[2]];
     dump0(N, extent, grid_data, walldata);
     delete[] walldata;
 }
-} /* namespace field */
+};

@@ -20,7 +20,7 @@ NVCCFLAGS += -I../cuda-dpd -I.
 LIBS      += -lcuda-dpd -lcudart
 
 OBJS = 	bund.o common.o dpd-forces.o glb.o io.o main.o sminmax.o collision.o tcells.o mrescue.o mbounce.o mesh.o m.o \
-		solid.o ply.o rminmax.o
+		solid.o ply.o rminmax.o field.o
 
 ifeq ($(h5),0)
 NVCCFLAGS += -DNO_H5
