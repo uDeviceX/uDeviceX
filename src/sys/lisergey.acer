@@ -7,9 +7,10 @@ MPI_CXXFLAGS = `pkg-config --cflags mpi`
 MPI_LDFLAGS  = `pkg-config --libs mpi`
 MPI_LIBS =
 
-HDF5_CXXFLAGS = -I/usr/include/hdf5/mpich
+HDF5_VARIANT=hdf5-mpich
+HDF5_CXXFLAGS = `pkg-config  --cflags  ${HDF5_VARIANT}`
 HDF5_LDFLAGS  = -L/usr/lib/x86_64-linux-gnu/hdf5/mpich
-HDF5_LIBS = -lhdf5
+HDF5_LIBS = `pkg-config --libs ${HDF5_VARIANT}`
 
 # Ubuntu 16.04: https://github.com/BVLC/caffe/issues/4046
 CXXFLAGS = -D_FORCE_INLINES
