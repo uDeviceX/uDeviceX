@@ -233,7 +233,7 @@ void minmax(const Particle *const pp, int size, int n, float *bboxes)
 
             CC(cudaMalloc((void **)&ptoblockds,sizeof(sblockds_t) * n));
 
-            CC(cudaMemcpy(ptoblockds, h_ptoblockds, sizeof(sblockds_t) * n, H2D));
+            cH2D(ptoblockds, h_ptoblockds, n);
 
             delete [] h_ptoblockds;
         }
