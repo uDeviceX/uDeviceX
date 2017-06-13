@@ -128,6 +128,9 @@ namespace m {
 
 #include "k/sim.h"
 #include "sim.decl.h"
+
+#define HST (true)
+#define DEV (false)
 #define DEVICE_SOLID
 #ifdef DEVICE_SOLID
   #include "dev/sim.impl.h"
@@ -135,3 +138,5 @@ namespace m {
   #include "hst/sim.impl.h"
 #endif
 #include "sim.impl.h"
+#undef HST
+#undef DEV
