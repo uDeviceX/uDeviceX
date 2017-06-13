@@ -352,7 +352,6 @@ void update_solid0() {
     solid::reinit_ft_hst(s::ns, /**/ s::ss_hst);
 
     CC(cudaMemcpy(s::pp, s::pp_hst, sizeof(Particle) * s::npp, H2D));
-
 #else
     solid::update_dev(s::ff, s::rr0, s::npp, s::ns, /**/ s::pp, s::ss_dev);
     solid::update_mesh_dev(s::ss_dev, s::ns, s::m_dev, /**/ s::i_pp_dev);
