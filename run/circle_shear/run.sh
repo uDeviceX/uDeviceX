@@ -48,4 +48,4 @@ ${GEN} mesh_solid.ply 5 48 ${ZS} 32
 
 cat run.sh > run.back.sh
 
-./udx
+u.run

@@ -38,4 +38,4 @@ tsdf yplates.tsdf sdf.dat
 
 cat run.sh > run.back.sh
 
-./udx
+u.run

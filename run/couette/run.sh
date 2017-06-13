@@ -19,6 +19,6 @@ cd ${RUNDIR}
 
 rm -rf h5 diag.txt solid_diag.txt
 
-./udx
+u.run
 
 
