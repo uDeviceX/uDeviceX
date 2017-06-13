@@ -11,14 +11,9 @@ usg () {
 }
 
 main () {
+    (cd ../cmd ; make) # needs u.host
     dn=amlucas dh=panda dc=conf/default.h # defaults
-    n=`whoami` h=`hostname`
-
-    case "$h" in
-	daint*) h=daint ;;
-	acer)           ;;
-	*)      h=$dh
-    esac
+    n=`whoami` h=`u.host`
 
     c=sys/$n.$h
     if test ! -f $c; then c=sys/$dn.$h   ; fi
