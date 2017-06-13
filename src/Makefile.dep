@@ -2,8 +2,7 @@ bund.o: basetags.h bbhalo.decl.h bbhalo.impl.h bipsbatch.decl.h bipsbatch.impl.h
 collision.o: collision.h common.h sminmax.h
 common.o: common.h conf.common.h conf.h m.h
 dpd/cell-lists.o: cell-lists.h
-dpd/cuda-dpd-bipartite-floatized.o: ../src/dpd-forces.h dpd-rng.h hacks.h
-dpd/cuda-dpd-floatized-1.o: dpd/cuda-dpd.h dpd/dpd-forces.h dpd/dpd-rng.h hacks.h
+dpd/cuda-dpd-floatized-1.o: dpd-forces.h dpd/cuda-dpd.h dpd/dpd-rng.h hacks.h
 dpd/dpd-rng.h: dpd/tiny-float.h
 dpd-forces.o: conf.common.h conf.h dpd-forces.h dpd/cuda-dpd.h
 field.o: common.h conf.h field.h io.h m.h
