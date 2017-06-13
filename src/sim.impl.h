@@ -64,7 +64,7 @@ void remove_rbcs_from_wall() {
     k_sdf::fill_keys<<<k_cnf(r::n)>>>(r::pp, r::n, marks.D);
 
     std::vector<int> tmp(marks.S);
-    CC(cudaMemcpy(tmp.data(), marks.D, sizeof(int) * marks.S, D2H));
+    cD2H(tmp.data(), marks.D, marks.S);
     std::vector<int> tokill;
     for (int i = 0; i < r::nc; ++i) {
 	bool valid = true;
@@ -87,7 +87,7 @@ void remove_solids_from_wall() {
     k_sdf::fill_keys<<<k_cnf(nip)>>>(s::i_pp_dev, nip, marks.D);
 
     std::vector<int> marks_hst(marks.S);
-    CC(cudaMemcpy(marks_hst.data(), marks.D, sizeof(int) * marks.S, D2H));
+    cD2H(marks_hst.data(), marks.D, marks.S);
     std::vector<int> tokill;
     for (int i = 0; i < s::ns; ++i) {
 	bool valid = true;
