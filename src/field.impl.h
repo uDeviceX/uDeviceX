@@ -19,9 +19,7 @@ void ini(const char *path, int N[3], float extent[3], float* grid_data) { /* rea
 }
 
 void sample(float rlo[3], float dr[3], int nsize[3], int N[3], float ampl, float* grid_data, float *out) {
-#define X 0
-#define Y 1
-#define Z 2
+    enum {X, Y, Z};
 #define OOO(ix, iy, iz) (      out[ix + nsize[X] * (iy + nsize[Y] * iz)])
 #define DDD(ix, iy, iz) (grid_data [ix +     N[X] * (iy +     N[Y] * iz)])
 #define i2r(i, d) (rlo[d] + (i + 0.5) * dr[d] - 0.5)
@@ -70,9 +68,6 @@ void sample(float rlo[3], float dr[3], int nsize[3], int N[3], float ampl, float
 	}
 #undef DDD
 #undef OOO
-#undef X
-#undef Y
-#undef Z
 }
 
 void dump0(int N[3], float extent[3], float* grid_data, float* walldata) {
