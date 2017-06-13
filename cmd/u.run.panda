@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# udx commands
+
+# should the path be hardcoded?
+
+./udx "$@"
