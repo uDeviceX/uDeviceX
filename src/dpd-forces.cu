@@ -4,7 +4,7 @@
 #include <utility>
 #include <cuda-dpd.h>
 #include "conf.h"
-#include "conf.default.h"
+#include "conf.common.h"
 
 __device__ float3 compute_dpd_force_traced(int type1, int type2,
                                            float3 pos1, float3 pos2, float3 vel1, float3 vel2, float myrandnr) {

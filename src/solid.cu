@@ -3,7 +3,7 @@
 
 #include "common.h"
 #include "conf.h"
-#include "conf.default.h"
+#include "conf.common.h"
 
 #include "solid.h"
 #include "k/solid.h"

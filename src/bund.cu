@@ -7,7 +7,7 @@
 #include <cstdio>
 #include <mpi.h>
 #include "conf.h"
-#include "conf.default.h"
+#include "conf.common.h"
 #include "m.h"     /* MPI */
 #include "basetags.h"
 #include "common.h"

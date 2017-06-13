@@ -3,7 +3,7 @@
 #include <cell-lists.h>
 #include <cstdio>
 #include "conf.h"
-#include "conf.default.h"
+#include "conf.common.h"
 #include "m.h"     /* MPI */
 #include "common.h"
 
