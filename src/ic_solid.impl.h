@@ -94,7 +94,7 @@ static void make_local(const int n, /**/ float *coms)
     coms[3*j + d] -= mi[d];
 }
 
-#define R 10
+#define R (XS)
 
 static void count_pp_inside(const Particle *s_pp, const int n, const float *coms, const int ns,
                             const int *tt, const float *vv, const int nt,
