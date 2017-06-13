@@ -29,4 +29,16 @@
 #define ljsigma          0.3        /* RBC-RBC contact LJ interaction parameters */
 #define ljepsilon        0.44
 
+#define contactforces    (false)
+#define doublepoiseuille (false)
+#define      field_dumps (false)
+#define       field_freq  (2000)
+#define       part_dumps (false)
+#define        part_freq  (1000)
+#define         pushflow (false)
+#define             tend    (50)
+#define    wall_creation  (5000)
+#define            walls (false)
+#define            RBCnv   (498)
+
 

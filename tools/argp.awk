@@ -1,20 +1,5 @@
 #!/usr/bin/awk -f
 
-function init() {
-    # default values (change here)
-    defs = \
-        "RBCnv 498 "                            \
-	"doublepoiseuille false "		\
-	"field_dumps false "		        \
-	"part_dumps false "			\
-	"pushflow false "			\
-	"part_freq 1000 "			\
-	"field_freq 2000 "		        \
-	"tend 50 "				\
-	"wall_creation 5000 "		        \
-	"walls false "
-}
-
 function kvsplit(s, kv,    n, t, i) { # key-value split of a string
     n = split(s, t)
     for (i = 1; i<=n; i+=2)
@@ -40,10 +25,6 @@ function boolp(k) { # not `=' means boolean
 }
 
 BEGIN {
-    init()
-    kvsplit(defs, kv_default)
-    kvsplit(defs, kv)
-
     iarg = 1 #
     file = ARGV [iarg++]
 
