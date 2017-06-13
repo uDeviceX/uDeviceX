@@ -1,6 +1,5 @@
 #include <mpi.h>
 #include <utility>
-#include <cell-lists.h>
 #include <cstdio>
 #include "conf.h"
 #include "conf.common.h"
@@ -12,18 +11,6 @@ MPI_Datatype Particle::mytype;
 
 bool Solid::initialized = false;
 MPI_Datatype Solid::mytype;
-
-void CellLists::build(Particle * const p, const int n, int * const order, const Particle * const src) {
-    if (n > 0)
-    build_clists_vanilla((float * )p, n, 1,
-                         LX, LY, LZ,
-                         -LX/2, -LY/2, -LZ/2,
-                         order, start, count,  NULL, (float *)src);
-    else {
-        CC(cudaMemsetAsync(start, 0, sizeof(int) * ncells));
-        CC(cudaMemsetAsync(count, 0, sizeof(int) * ncells));
-    }
-}
 
 void diagnostics(Particle * particles, int n, int idstep) {
     double p[] = {0, 0, 0};

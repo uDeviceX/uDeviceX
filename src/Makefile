@@ -14,13 +14,11 @@ ARCH     ?= -arch compute_35 -code sm_35
 
 slevel   ?= -2
 
-NVCCFLAGS += -std=c++11
-LDFLAGS   += -L../cuda-dpd
-NVCCFLAGS += -I../cuda-dpd -I.
-LIBS      += -lcuda-dpd -lcudart
+NVCCFLAGS += -std=c++11 -I.
+LIBS      += -lcudart
 
 OBJS = 	bund.o common.o dpd-forces.o glb.o io.o main.o sminmax.o collision.o tcells.o mrescue.o mbounce.o mesh.o m.o \
-		solid.o ply.o rminmax.o field.o
+		solid.o ply.o rminmax.o field.o cuda-dpd.o cuda-dpd-bipartite.o
 
 ifeq ($(h5),0)
 NVCCFLAGS += -DNO_H5
@@ -29,8 +27,8 @@ endif
 NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel)
 
 # I have some device code in OBJS. I have to link it separatly
-udx:   $(OBJS) libcuda-dpd
-	$(NVCC)  $(ARCH) -dlink -L../cuda-dpd $(OBJS) $(LIBS) -o gpuCode.o
+udx:   $(OBJS)
+	$(NVCC)  $(ARCH) -dlink $(OBJS) $(LIBS) -o gpuCode.o
 	$(LINK)  $(LDFLAGS) gpuCode.o $(OBJS) $(LIBS) -o $@
 
 # a rule for the most of *.cu files
@@ -42,11 +40,9 @@ udx:   $(OBJS) libcuda-dpd
 dpd-forces.o:     dpd-forces.cu; $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 bund.o:           bund.cu;       $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 glb.o:            glb.cu;        $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
+cuda-dpd-bipartite.o: cuda-dpd/cuda-dpd-bipartite-floatized.cu; $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -o $@
+cuda-dpd.o: cuda-dpd/cuda-dpd-floatized-1.cu;                   $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -o $@
 
-libcuda-dpd:; make -C ../cuda-dpd \
-	NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)" ARCH="$(ARCH)"
-
-clean:  ; rm -f udx *.o
-	make -C ../cuda-dpd clean
+clean:; rm -f udx *.o
 
 .PHONY = clean libcuda-dpd all

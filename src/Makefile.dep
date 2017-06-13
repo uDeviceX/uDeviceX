@@ -1,7 +1,11 @@
-bund.o: basetags.h bbhalo.decl.h bbhalo.impl.h bipsbatch.decl.h bipsbatch.impl.h bund.h cnt.decl.h cnt.impl.h collision.h common.h common.macro.h common.tmp.h conf.common.h conf.h containers.impl.h dpd-forces.h dpd.decl.h dpd.impl.h dump.decl.h dump.impl.h field.h fsi.decl.h fsi.impl.h glb.h helper-math/helper_math.h ic.impl.h io.h k/cnt.h k/common.h k/fsi.h k/odstr.h k/rbc.h k/rdstr.h k/rex.h k/scan.h k/sdf.h k/sim.h k/wall.h k/wvel.h m.h mbounce.h mrescue.h odstr.decl.h odstr.impl.h off.impl.h packinghalo.decl.h packinghalo.impl.h ply.h rbc.impl.h rdstr.decl.h rdstr.impl.h rex.decl.h rex.impl.h rminmax.h s/decl.h s/ic.h s/impl.h safety.impl.h sdf.decl.h sdf.impl.h sdstr.decl.h sdstr.impl.h sim.decl.h sim.impl.h sminmax.h solid.h tcells.h wall.decl.h wall.impl.h x/clist.face.h x/clist.impl.h x/common.h x/common.tmp.h x/k/clist.h x/k/sdstr.h x/m.impl.h x/sdstr.decl.h x/sdstr.impl.h x/sdstr/fin.h x/sdstr/ini.h x/x.decl.h x/x.impl.h
+bund.o: basetags.h bbhalo.decl.h bbhalo.impl.h bipsbatch.decl.h bipsbatch.impl.h bund.h cnt.decl.h cnt.impl.h collision.h common.h common.macro.h common.tmp.h conf.common.h conf.h containers.impl.h cuda-dpd/cuda-dpd.h cuda-dpd/dpd-rng.h dpd-forces.h dpd.decl.h dpd.impl.h dump.decl.h dump.impl.h field.h fsi.decl.h fsi.impl.h glb.h helper-math/helper_math.h ic.impl.h io.h k/cnt.h k/common.h k/fsi.h k/odstr.h k/rbc.h k/rdstr.h k/rex.h k/scan.h k/sdf.h k/sim.h k/wall.h k/wvel.h m.h mbounce.h mrescue.h odstr.decl.h odstr.impl.h off.impl.h packinghalo.decl.h packinghalo.impl.h ply.h rbc.impl.h rdstr.decl.h rdstr.impl.h rex.decl.h rex.impl.h rminmax.h s/decl.h s/ic.h s/impl.h safety.impl.h sdf.decl.h sdf.impl.h sdstr.decl.h sdstr.impl.h sim.decl.h sim.impl.h sminmax.h solid.h tcells.h wall.decl.h wall.impl.h x/clist.face.h x/clist.impl.h x/common.h x/common.tmp.h x/k/clist.h x/k/sdstr.h x/m.impl.h x/sdstr.decl.h x/sdstr.impl.h x/sdstr/fin.h x/sdstr/ini.h x/x.decl.h x/x.impl.h
 collision.o: collision.h common.h sminmax.h
 common.o: common.h conf.common.h conf.h m.h
-dpd-forces.o: conf.common.h conf.h dpd-forces.h
+cuda-dpd/cell-lists.o: cell-lists.h
+cuda-dpd/cuda-dpd-bipartite-floatized.o: ../src/dpd-forces.h dpd-rng.h hacks.h
+cuda-dpd/cuda-dpd-floatized-1.o: cuda-dpd.h dpd-forces.h dpd-rng.h hacks.h
+cuda-dpd/dpd-rng.h: cuda-dpd/tiny-float.h
+dpd-forces.o: conf.common.h conf.h cuda-dpd/cuda-dpd.h dpd-forces.h
 field.o: common.h conf.h field.h io.h m.h
 glb.o: common.h conf.common.h conf.h glb.h m.h
 io.o: common.h conf.common.h conf.h io.h m.h

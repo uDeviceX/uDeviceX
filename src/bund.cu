@@ -1,11 +1,13 @@
-#include <cuda-dpd.h>
 #include <sys/stat.h>
 
 #include <string>
 #include <vector>
-#include <dpd-rng.h>
 #include <cstdio>
 #include <mpi.h>
+
+#include "cuda-dpd/cuda-dpd.h"
+#include "cuda-dpd/dpd-rng.h"
+
 #include "conf.h"
 #include "conf.common.h"
 #include "m.h"     /* MPI */

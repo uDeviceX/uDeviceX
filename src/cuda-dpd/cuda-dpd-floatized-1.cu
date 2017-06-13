@@ -1,10 +1,9 @@
 #include <cstdio>
 #include <mpi.h>
 #include <utility>
-#include "cell-lists.h"
 #include "cuda-dpd.h"
 #include "dpd-rng.h"
-#include "../src/dpd-forces.h"
+#include "dpd-forces.h"
 
 struct InfoDPD {
     int3 ncells;
