@@ -94,7 +94,7 @@ void pack_sendcnt(const Solid *ss_hst, const Particle *pp, const int ns, const i
         ssbuf[i][j] = ss_hst[id];
 
         if (hst)    memcpy(psbuf[i].data() + j*nv, pp + id*nv, nv*sizeof(Particle));
-        else CC(cudaMemcpy(psbuf[i].data() + j*nv, pp + id*nv, nv*sizeof(Particle), D2H));
+        else cD2H(psbuf[i].data() + j*nv, pp + id*nv, nv);
     }
 }
 
@@ -191,7 +191,7 @@ static void shift_copy_pp(const Particle *pp_src, const int n, const int code, /
     }
     else
     {
-        CC(cudaMemcpy(pp_dst, pp_src, n*sizeof(Particle), H2D));
+        cH2D(pp_dst, pp_src, n);
         shiftpp_dev <<< k_cnf(n) >>>(n, shift, /**/ pp_dst);
     }
 }
@@ -211,9 +211,8 @@ void unpack(const int nv, /**/ Solid *ss_hst, Particle *pp)
     // copy bulk
     for (int j = 0; j < nstay; ++j) ss_hst[j] = ssbuf[0][j];
 
-    if (hst)    memcpy(pp, psbuf[0].data(), nstay*nv*sizeof(Particle));
-    else CC(cudaMemcpy(pp, psbuf[0].data(), nstay*nv*sizeof(Particle), H2D));
-        
+    if (hst) memcpy(pp, psbuf[0].data(), nstay*nv*sizeof(Particle));
+    else       cH2D(pp, psbuf[0].data(), nstay*nv);
 
     // copy and shift halo
     for (int i = 1, start = nstay; i < 27; ++i)
