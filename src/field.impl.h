@@ -1,19 +1,20 @@
 namespace field {
-void ini(const char *path, int N[3], float extent[3], float *grid_data) { /* read sdf file */
+void ini_dims(const char *path, int N[3], float extent[3]) {
     FILE *fh = fopen(path, "r");
     char line[2048];
     fgets(line, sizeof(line), fh);
     sscanf(line, "%f %f %f", &extent[0], &extent[1], &extent[2]);
     fgets(line, sizeof(line), fh);
     sscanf(line, "%d %d %d", &N[0], &N[1], &N[2]);
+    fclose(fh);
+}
 
-    assert(N[0]*N[1]*N[2] <= MAX_SUBDOMAIN_VOLUME);
-    
-    MC(MPI_Bcast(N, 3, MPI_INT, 0, m::cart));
-    MC(MPI_Bcast(extent, 3, MPI_FLOAT, 0, m::cart));
+void ini_data(const char *path, const int n, float *grid_data) { /* read sdf file */
+    FILE *fh = fopen(path, "r");
+    fscanf(fh, "%*[\n]\n");
+    fscanf(fh, "%*[\n]\n");
 
-    int np = N[0] * N[1] * N[2];
-    fread(grid_data, sizeof(float), np, fh);
+    fread(grid_data, sizeof(float), n, fh);
     fclose(fh);
     MC(MPI_Barrier(m::cart));
 }
@@ -84,8 +85,8 @@ void dump0(int N[3], float extent[3], float* grid_data, float* walldata) {
 }
 
 void dump(int N[], float extent[], float* grid_data) {
-    float *walldata = (float*)malloc(sizeof(walldata[0])*MAX_SUBDOMAIN_VOLUME);
+    float *walldata = new float[N[0] * N[1] * N[2]];
     dump0(N, extent, grid_data, walldata);
-    free(walldata);
+    delete[] walldata;
 }
 } /* namespace field */
