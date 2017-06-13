@@ -23,3 +23,5 @@ HDF5_LDFLAGS  = -L${HDF5_DIR}/lib -Wl,-rpath -Wl,${HDF5_DIR}/lib
 HDF5_LIBS = -lhdf5
 
 NVCC_LDFALGS = -L${CRAY_CUDATOOLKIT_DIR}/lib64 -Wl,-rpath -Wl,${CRAY_CUDATOOLKIT_DIR}/lib64
+
+ARCH         = -arch compute_60 -code sm_60
