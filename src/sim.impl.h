@@ -1,5 +1,7 @@
 namespace sim {
 #define DEVICE_SOLID
+#define HST (true)
+#define DEV (false)
 
 void distr_solventX() {
   x::distr(o::pp, o::pp0, o::zip0, o::zip1, &o::n, o::cells);
@@ -20,9 +22,6 @@ void distr_solvent0() {
     odstr::recv_unpack(o::pp0, o::zip0, o::zip1, o::n, o::cells->start, o::cells->count);
     std::swap(o::pp, o::pp0);
 }
-
-#define HST (true)
-#define DEV (false)
 
 void distr_solid() {
 #ifdef DEVICE_SOLID
@@ -112,9 +111,6 @@ void remove_solids_from_wall() {
 
     MSG("sim.impl: %d/%d Solids survived", s::ns, ns0);
 }
-
-#undef HST
-#undef DEV
 
 void load_solid_mesh(const char *fname) {
     ply::read(fname, &s::m_hst);
@@ -387,9 +383,9 @@ void bounce_solid(int it) {
 
     /* exchange solid meshes with neighbours */
 
-    bbhalo::pack_sendcnt <true> (s::ss_hst, s::ns, s::i_pp_hst, s::m_hst.nv, s::bboxes_hst);
+    bbhalo::pack_sendcnt <HST> (s::ss_hst, s::ns, s::i_pp_hst, s::m_hst.nv, s::bboxes_hst);
     const int nsbb = bbhalo::post(s::m_hst.nv);
-    bbhalo::unpack <true> (s::m_hst.nv, /**/ s::ss_bb_hst, s::i_pp_bb_hst);
+    bbhalo::unpack <HST> (s::m_hst.nv, /**/ s::ss_bb_hst, s::i_pp_bb_hst);
 
     build_tcells_hst(s::m_hst, s::i_pp_bb_hst, nsbb, /**/ s::tcs_hst, s::tcc_hst, s::tci_hst);
 
@@ -421,9 +417,9 @@ void bounce_solid(int it) {
 
     /* exchange solid meshes with neighbours */
 
-    bbhalo::pack_sendcnt <false> (s::ss_hst, s::ns, s::i_pp_dev, s::m_dev.nv, s::bboxes_hst);
+    bbhalo::pack_sendcnt <DEV> (s::ss_hst, s::ns, s::i_pp_dev, s::m_dev.nv, s::bboxes_hst);
     const int nsbb = bbhalo::post(s::m_dev.nv);
-    bbhalo::unpack <false> (s::m_dev.nv, /**/ s::ss_bb_hst, s::i_pp_bb_dev);
+    bbhalo::unpack <DEV> (s::m_dev.nv, /**/ s::ss_bb_hst, s::i_pp_bb_dev);
 
     CC(cudaMemcpy(s::ss_bb_dev, s::ss_bb_hst, nsbb * sizeof(Solid), H2D));
 
@@ -633,4 +629,7 @@ void close() {
 	delete[] s::ss_dmphst;     delete[] s::ss_dmpbbhst;
     }
 }
+
+#undef HST
+#undef DEV
 }
