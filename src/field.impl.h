@@ -18,7 +18,7 @@ void ini(const char *path, int N[3], float extent[3], float* grid_data) { /* rea
     MPI_Barrier(m::cart);
 }
 
-void sample(float rlo[3], float dr[3], int nsize[3], int N[3], float ampl, float* grid_data, float *out) {
+void sample(const float rlo[3], const float dr[3], const int nsize[3], const int N[3], const float ampl, const float *grid_data, float *out) {
     enum {X, Y, Z};
 #define OOO(ix, iy, iz) (      out[ix + nsize[X] * (iy + nsize[Y] * iz)])
 #define DDD(ix, iy, iz) (grid_data [ix +     N[X] * (iy +     N[Y] * iz)])
