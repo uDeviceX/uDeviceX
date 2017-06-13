@@ -53,7 +53,7 @@
 # avg_h5.m h5/flowfields-0001.h5 | sed -n '4,29p' | uscale 0.5 > h5.out.txt
 
 #### two solids around cylinder with one solid removed by the wall
-# nTEST: solid.t4
+# snTEST: solid.t4
 # rm -rf h5 bop diag.txt solid_diag.txt
 # export PATH=../tools:$PATH
 # cp sdf/cyl1/cyl.dat sdf.dat
