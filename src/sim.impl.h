@@ -282,9 +282,9 @@ void forces(bool wall_created) {
     rex::recv_f();
 
     dSync();
-    safety::nullify_nan(o::ff, o::n);
-    if (rbcs) safety::nullify_nan(r::ff, r::n);
-    if (solids) safety::nullify_nan(s::ff, s::npp);
+    // safety::nullify_nan(o::ff, o::n);
+    // if (rbcs) safety::nullify_nan(r::ff, r::n);
+    // if (solids) safety::nullify_nan(s::ff, s::npp);
 }
 
 void dev2hst() { /* device to host  data transfer */
@@ -535,10 +535,10 @@ void dump_diag(int it, bool wall_created) { /* dump and diag */
 
 void run0(float driving_force0, bool wall_created, int it) {
     assert(o::n <= MAX_PART_NUM);
-    safety::bound(o::pp, o::n);
+    // safety::bound(o::pp, o::n);
 
     assert(r::n <= MAX_PART_NUM);
-    if (rbcs) safety::bound(r::pp, r::n);
+    // if (rbcs) safety::bound(r::pp, r::n);
     
     distr_solvent();
     if (solids0) distr_solid();
