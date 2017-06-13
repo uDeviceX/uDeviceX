@@ -14,7 +14,7 @@ inline void mpiAssert(int code, const char *file, int line) {
 }
 
 /* maximum particle number per one processor for static allocation */
-#define MAX_PART_NUM 5000000
+#define MAX_PART_NUM 1000000
 
 /* maximum number of particles per solid */
 #define MAX_PSOLID_NUM 30000
