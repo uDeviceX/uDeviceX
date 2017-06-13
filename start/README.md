@@ -11,7 +11,8 @@ Is there any difference between N and B?  It the same loop with
 following.
 
 I want to have three version of udx: B, M, A. I will change them in
-few steps. D means dumps restart files, R means read restart files.
+few steps. D means dumps restart files, R means read restart files. I
+want to have tests durining the steps.
 
 ## S0
 B, M, A the same. They all have the same states
@@ -25,19 +26,23 @@ B: bD
 M: bma
 A: bma
 
+B dumps and stops. I cannot test.
+
 ## S2
 B: bD
-M: bRm
+M: Rma
 A: bma
 
-b in M is not needed.
+I can connect B and M (M reads dumps from B) and test.
 
 ## S3
 B: bD
 M: RmD
 A: Ra
 
+I can connect B, M, A and test.
+
 ## S4
-M: morphes into **interporcessor**
-B: with b=0 (no `nsteps=0`) morphes into **preprocessor**
-A: RaD will be a **udx** again
+B: with no (`nsteps=0`) morphes into **pre-processor**
+M: morphes into **inter-processor**
+A: RaD will be **udx** and great again
