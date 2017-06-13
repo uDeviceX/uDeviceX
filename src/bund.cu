@@ -128,4 +128,10 @@ namespace m {
 
 #include "k/sim.h"
 #include "sim.decl.h"
+#define DEVICE_SOLID
+#ifdef DEVICE_SOLID
+  #include "dev/sim.impl.h"
+#else
+  #include "hst/sim.impl.h"
+#endif
 #include "sim.impl.h"
