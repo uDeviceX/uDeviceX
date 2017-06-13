@@ -128,8 +128,7 @@ bool _adjust_recv_buffers(int requested_capacities[27]) {
             float * old = pinnedhost_recvbufs[i];
             CC(cudaHostAlloc(&pinnedhost_recvbufs[i], sizeof(float) * 6 * capacity, cudaHostAllocMapped));
             CC(cudaHostGetDevicePointer(&unpackbuffers[i].buffer, pinnedhost_recvbufs[i], 0));
-            CC(cudaMemcpy(pinnedhost_recvbufs[i], old, sizeof(float) * 6 * unpackbuffers[i].capacity,
-                          H2H));
+            cH2H(pinnedhost_recvbufs[i], old, 6 * unpackbuffers[i].capacity);
             CC(cudaFreeHost(old));
         }
         else {

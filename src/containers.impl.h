@@ -55,7 +55,7 @@ int setup_hst(int nv, Particle *pp) {
 int setup(Particle* pp, int nv, /* storage */ Particle *pp_hst) {
     /* fills `pp' with RBCs for this processor */
     int nc = setup_hst(nv, pp_hst);
-    if (nc) CC(cudaMemcpy(pp, pp_hst, sizeof(Particle) * nv * nc, H2D));
+    if (nc) cH2D(pp, pp_hst, nv * nc);
     MPI_Barrier(m::cart);
     return nc;
 }
@@ -72,10 +72,9 @@ int remove(T* data, const int npb, const int nb, const int *e, const int ne) {
     for (i0 = i1 = 0; i0 < nb; i0++)
     if (m[i0] == STAY)
     {
-        if (hst)
-        memcpy(data + npb*(i1++), data + npb*i0, sizeof(T)*npb);
-        else
-        CC(cudaMemcpy(data + npb*(i1++), data + npb*i0, sizeof(T)*npb, D2D));
+        if (hst) memcpy(data + npb*i1, data + npb*i0, sizeof(T)*npb);
+        else cD2D(data + npb*i1, data + npb*i0, npb);
+	i1++;
     }
     const int nstay = i1;
     return nstay;
