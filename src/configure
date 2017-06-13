@@ -11,7 +11,7 @@ usg () {
 }
 
 main () {
-    dn=amlucas dh=panda # defaults
+    dn=amlucas dh=panda dc=conf/default.h # defaults
     n=`whoami` h=`hostname`
 
     case "$h" in
@@ -23,8 +23,9 @@ main () {
     if test ! -f $c; then c=sys/$dn.$h   ; fi
     if test ! -f $c; then c=sys/$dn.$dh; fi
 
-    msg "cp $c config.mk"
-    cp $c config.mk
+    msg "cp $c  config.mk"; cp $c  config.mk
+    msg "cp $dc conf.h"   ; cp $dc conf.h
+
 }
 
 case $# in
