@@ -242,7 +242,7 @@ void dump_rbcs() {
 
 void dump_grid() {
     if (field_dumps) {
-	dev2hst();  /* TODO: do not need `r' */
+        cD2H(a::pp_hst, o::pp, o::n);
 	dump_field->dump(a::pp_hst, o::n);
     }
 }
