@@ -60,6 +60,7 @@ function asplit(str, arr,   temp, i, n) {  # make an assoc array from str
     if ($0 in sys_hdr)               next
 
     fn = FILENAME; hd = $0 # file name and processed header
+    sub(/^[.][/]/, "", fn)
 
     n = ++ndep_be[fn] # `f' depends on fn (shouble be "before")
     if (inc(dep_be, fn, hd, n)) printf "%s:%d:error:\n", fn, FNR | "cat 1>&2"
