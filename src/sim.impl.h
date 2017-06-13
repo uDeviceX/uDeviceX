@@ -168,9 +168,9 @@ void init_solid()
     CC(cudaMalloc(&s::bboxes_dev, 6*MAX_SOLIDS * sizeof(float)));
 
     // generate models
-    MSG("start solid init");
+    MSG0("start solid init");
     ic_solid::init("ic_solid.txt", s::m_hst, /**/ &s::ns, &s::nps, s::rr0_hst, s::ss_hst, &o::n, o::pp_hst, s::pp_hst);
-    MSG("done solid init");
+    MSG0("done solid init");
 
     // generate the solid particles
 
