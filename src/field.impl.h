@@ -1,5 +1,5 @@
 namespace field {
-void ini(const char *path, int N[3], float extent[3], float* grid_data) { /* read sdf file */
+void ini(const char *path, int N[3], float extent[3], float *grid_data) { /* read sdf file */
     FILE *fh = fopen(path, "r");
     char line[2048];
     fgets(line, sizeof(line), fh);
