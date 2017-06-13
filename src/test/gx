@@ -4,7 +4,7 @@
 # rm -rf diag.txt h5 bop
 # cp sdf/gx/small.dat sdf.dat ######## see sdf/gx/README.md
 # :
-# argp .conf.gx.h \
+# argp conf/gx.h \
 #    tend=3.0 part_freq=5000 walls wall_creation=1 \
 #    field_dumps part_dumps field_freq=5000 > conf.h
 # :
@@ -19,7 +19,7 @@
 # export PATH=../tools:$PATH
 # cp sdf/gx/small.rot.dat sdf.dat ######## see sdf/gx/README.md
 # :
-# argp .conf.gx.h \
+# argp conf/gx.h \
 #    tend=30.0 part_freq=5000 \
 #    walls wall_creation=1   \
 #    pushflow                 \
@@ -38,7 +38,7 @@
 # export PATH=../tools:$PATH
 # cp sdf/gx/small.rot.dat sdf.dat ######## see sdf/gx/README.md
 # :
-# argp .conf.gx.h \
+# argp conf/gx.h \
 #    rbcs                      \
 #    tend=3000.0 part_freq=5000 \
 #    walls wall_creation=1000   \

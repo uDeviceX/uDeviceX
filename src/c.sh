@@ -30,7 +30,7 @@ pre() {
     fraction=0.2 radius=2.3 sc=0.2 ang=rnd
     plcmt.ro $LX $LY $LZ $radius $fraction $sc $ang ic_solid.txt rbcs-ic.txt
 
-    argp .conf.gx.base.h $Domain              \
+    argp conf/gx.base.h $Domain              \
 	 $Rbcs RBCnv=$nv                      \
 	 $Solids $Contactforces               \
 	 tend=10.0 part_freq=1000             \

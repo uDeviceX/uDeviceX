@@ -15,7 +15,7 @@ G=0.05
 # cheap trick for keeping Peclet number fixed
 kBT=`awk "BEGIN{ printf \"%.6e\n\", 0.27925268 * $G }"`
 
-argp .conf.test.h                                                       \
+argp conf/test.h                                                       \
      -tend=300.0 -part_freq=1000 -walls -wall_creation=5000 \
      -field_dumps -part_dumps -field_freq=1000              \
      -gamma_dot=$G -rbcs -spdir=2 -sbounce_back -dt=1e-3 -shear_y       \

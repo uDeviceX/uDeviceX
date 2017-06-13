@@ -10,7 +10,7 @@ XS=64
 YS=48
 ZS=16
 
-argp .conf.test.h                                                       \
+argp conf/test.h                                                       \
      -tend=2000.0 -part_freq=1000 -walls -wall_creation=5000\
      -field_dumps -part_dumps -field_freq=1000          \
      -gamma_dot=0.025 -dt=1e-3 -shear_y                                 \

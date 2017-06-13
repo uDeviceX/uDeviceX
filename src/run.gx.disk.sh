@@ -37,7 +37,7 @@ pre() {
 
     #ply.sxyz xs ys zs in.ply > out.ply
     
-    argp .conf.gx.base.h $D                 \
+    argp conf/gx.base.h $D                 \
          -RBCnv=$nv                         \
          -rbcs -solids -contactforces       \
          -tend=3000.0 -part_freq=100        \

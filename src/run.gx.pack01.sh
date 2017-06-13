@@ -32,7 +32,7 @@ pre() {
     cp data/sphere_R0.7.ply mesh_solid.ply
     cp cells/sph.498.off  rbc.off
 
-    argp .conf.gx.base.h $D                  \
+    argp conf/gx.base.h $D                  \
          -rbcs -solids -contactforces        \
          -tend=3000.0 -part_freq=500        \
          -walls -wall_creation=10          \

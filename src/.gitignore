@@ -1,5 +1,5 @@
 .cache.Makefile
-.conf.h
+conf/h
 
 *.out.txt
 h5/

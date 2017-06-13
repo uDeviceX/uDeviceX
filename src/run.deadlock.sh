@@ -17,7 +17,7 @@ pre() {
     cp cells/rbc.498.off         rbc.off
     cp sdf/pipe_nocenter/sdf.dat sdf.dat
     
-    argp .conf.gx.base.h $D                  \
+    argp conf/gx.base.h $D                  \
          -tend=3000.0 -part_freq=1000        \
          -walls -wall_creation=1000          \
          -pushflow -driving_force=$df        \

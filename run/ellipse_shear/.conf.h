@@ -1,4 +1,4 @@
-/* Part I (.conf.double.poiseuille.h) */
+/* Part I (conf/double.poiseuille.h) */
 
 #define rc                1.5  /* cutoff radius */
 

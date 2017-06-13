@@ -25,7 +25,7 @@ XS=64
 YS=64
 ZS=8
 
-argp .conf.test.h                                                        \
+argp conf/test.h                                                        \
      -tend=5000.0 -part_freq=1000 -walls -wall_creation=5000 \
      -field_dumps=false -part_dumps -field_freq=1000     \
      -gamma_dot=${GDOT} -dt=${DT} -shear_y                               \

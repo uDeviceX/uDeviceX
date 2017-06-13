@@ -3,7 +3,7 @@
 #include <mpi.h>
 #include <utility>
 #include <cuda-dpd.h>
-#include "conf.h" /* configuration file (copy from .conf.test.h) */
+#include "conf.h"
 #include "conf.default.h"
 
 __device__ float3 compute_dpd_force_traced(int type1, int type2,

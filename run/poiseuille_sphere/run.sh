@@ -12,7 +12,7 @@ XS=16
 YS=32
 ZS=16
 
-argp .conf.test.h                                                       \
+argp conf/test.h                                                       \
      -tend=100.0 -part_freq=1000 -walls -wall_creation=5000 \
      -field_dumps -part_dumps -field_freq=1000          \
      -pushflow -driving_force=0.05 -dt=1e-3                          \

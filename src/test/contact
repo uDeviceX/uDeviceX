@@ -6,7 +6,7 @@
 #  x=5 y=17 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 # x=11 y=15 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
 # :
-# argp .conf.double.poiseuille.h rbcs tend=2.0 part_freq=1500 \
+# argp conf/double.poiseuille.h rbcs tend=2.0 part_freq=1500 \
 #        part_dumps   field_freq=1500 \
 #        pushflow doublepoiseuille \
 #        contactforces > conf.h
@@ -24,7 +24,7 @@
 # x=4  y=17 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 # x=12 y=15 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
 # :
-# argp .conf.double.poiseuille.h rbcs tend=2.0 part_freq=1500 \
+# argp conf/double.poiseuille.h rbcs tend=2.0 part_freq=1500 \
 #        part_dumps field_freq=1500 \
 #        pushflow doublepoiseuille \
 #                      > conf.h

@@ -12,7 +12,7 @@ ZS=4
 
 G=0.05
 
-argp .conf.test.h                                                       \
+argp conf/test.h                                                       \
      -tend=5.0 -part_freq=100 -walls -wall_creation=0000    \
      -part_dumps                                                    \
      -gamma_dot=$G -rbcs -rcyl=1.5 -pin_com=true -dt=1e-3 -shear_y      \
