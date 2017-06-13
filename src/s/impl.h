@@ -15,21 +15,13 @@ void allocate() {
     mpDeviceMalloc(&s::pp);
     mpDeviceMalloc(&s::ff);
 
+    CC(cudaMalloc(&s::ss_dev,    MAX_SOLIDS * sizeof(Solid)));
+    CC(cudaMalloc(&s::ss_bb_dev, MAX_SOLIDS * sizeof(Solid)));
+
     s::ss_hst      = new Solid[MAX_SOLIDS];
     s::ss_bb_hst   = new Solid[MAX_SOLIDS];
     s::ss_dmphst   = new Solid[MAX_SOLIDS];
     s::ss_dmpbbhst = new Solid[MAX_SOLIDS];
-
-    s::tcs_hst = new int[XS * YS * ZS];
-    s::tcc_hst = new int[XS * YS * ZS];
-    s::tci_hst = new int[27 * MAX_SOLIDS * s::m_hst.nt]; // assume 1 triangle don't overlap more than 27 cells
-
-    CC(cudaMalloc(&s::tcs_dev, XS * YS * ZS * sizeof(int)));
-    CC(cudaMalloc(&s::tcc_dev, XS * YS * ZS * sizeof(int)));
-    CC(cudaMalloc(&s::tci_dev, 27 * MAX_SOLIDS * s::m_dev.nt * sizeof(int)));
-
-    CC(cudaMalloc(&s::ss_dev,    MAX_SOLIDS * sizeof(Solid)));
-    CC(cudaMalloc(&s::ss_bb_dev, MAX_SOLIDS * sizeof(Solid)));
 
     s::i_pp_hst    = new Particle[MAX_PART_NUM];
     s::i_pp_bb_hst = new Particle[MAX_PART_NUM];
@@ -38,6 +30,17 @@ void allocate() {
 
     s::bboxes_hst = new float[6*MAX_SOLIDS];
     CC(cudaMalloc(&s::bboxes_dev, 6*MAX_SOLIDS * sizeof(float)));
+}
+
+void allocate_tcells() {
+    s::tcs_hst = new int[XS * YS * ZS];
+    s::tcc_hst = new int[XS * YS * ZS];
+    s::tci_hst = new int[27 * MAX_SOLIDS * s::m_hst.nt]; // assume 1 triangle don't overlap more than 27 cells
+
+    
+    CC(cudaMalloc(&s::tcs_dev, XS * YS * ZS * sizeof(int)));
+    CC(cudaMalloc(&s::tcc_dev, XS * YS * ZS * sizeof(int)));
+    CC(cudaMalloc(&s::tci_dev, 27 * MAX_SOLIDS * s::m_dev.nt * sizeof(int)));
 }
 
 void deallocate() {
@@ -65,6 +68,8 @@ void create(Particle *opp, int *on) {
     ic::init("ic_solid.txt", s::m_hst, /**/ &s::ns, &s::nps, s::rr0_hst, s::ss_hst, on, opp, s::pp_hst);
     MSG0("done solid init");
 
+    allocate_tcells();
+    
     // generate the solid particles
 
     solid::generate_hst(s::ss_hst, s::ns, s::rr0_hst, s::nps, /**/ s::pp_hst);
@@ -83,6 +88,7 @@ void create(Particle *opp, int *on) {
 }
 
 void ini() {
+    npp = ns = nps = 0;
     allocate();
 }
 
