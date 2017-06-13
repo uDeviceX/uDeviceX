@@ -2,15 +2,14 @@
 
 ## compiler
 
-* `NVCC_BIN`    path
-* `*_CXXFLAGS`  flags
+* `NVCC_BIN`   path
+* `CXXFLAGS` `*_CXXFLAGS`
 
 ## linker
 
 * `LINK`       path
-* `*_LDFLAGS`  flags
+* `*_LDFLAGS`
 * `*_LIBS`
-
 
 ## mpi
 

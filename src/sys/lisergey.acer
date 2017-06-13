@@ -12,4 +12,4 @@ HDF5_LDFLAGS  = -L/usr/lib/x86_64-linux-gnu/hdf5/mpich
 HDF5_LIBS = -lhdf5
 
 # Ubuntu 16.04: https://github.com/BVLC/caffe/issues/4046
-NVCC_CXXFLAGS = --compiler-options=-D_FORCE_INLINES
+CXXFLAGS = -D_FORCE_INLINES
