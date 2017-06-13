@@ -11,7 +11,7 @@ __device__ float mean0var1( float seed, float i, float j );
 #include <limits>
 #include <stdint.h>
 #include <cmath>
-#include "cuda-dpd/tiny-float.h"
+#include "dpd/tiny-float.h"
 
 namespace Logistic
 {

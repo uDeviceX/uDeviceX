@@ -5,8 +5,8 @@
 #include <cstdio>
 #include <mpi.h>
 
-#include "cuda-dpd/cuda-dpd.h"
-#include "cuda-dpd/dpd-rng.h"
+#include "dpd/cuda-dpd.h"
+#include "dpd/dpd-rng.h"
 
 #include "conf.h"
 #include "conf.common.h"

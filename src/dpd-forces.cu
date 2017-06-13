@@ -2,7 +2,7 @@
 #include <cstdio>
 #include <mpi.h>
 #include <utility>
-#include "cuda-dpd/cuda-dpd.h"
+#include "dpd/cuda-dpd.h"
 #include "conf.h"
 #include "conf.common.h"
 

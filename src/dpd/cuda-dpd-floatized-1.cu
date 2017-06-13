@@ -1,8 +1,8 @@
 #include <cstdio>
 #include <mpi.h>
 #include <utility>
-#include "cuda-dpd.h"
-#include "dpd-rng.h"
+#include "dpd/cuda-dpd.h"
+#include "dpd/dpd-rng.h"
 #include "dpd-forces.h"
 
 struct InfoDPD {

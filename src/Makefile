@@ -40,8 +40,8 @@ udx:   $(OBJS)
 dpd-forces.o:     dpd-forces.cu; $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 bund.o:           bund.cu;       $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 glb.o:            glb.cu;        $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
-cuda-dpd-bipartite.o: cuda-dpd/cuda-dpd-bipartite-floatized.cu; $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -o $@
-cuda-dpd.o: cuda-dpd/cuda-dpd-floatized-1.cu;                   $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -o $@
+cuda-dpd-bipartite.o: dpd/cuda-dpd-bipartite-floatized.cu; $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -o $@
+cuda-dpd.o: dpd/cuda-dpd-floatized-1.cu;                   $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -o $@
 
 clean:; rm -f udx *.o
 
