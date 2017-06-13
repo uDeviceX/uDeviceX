@@ -20,5 +20,5 @@ Logistic::KISS* trunk;
 
 int w_n;
 float4 *w_pp;
-CellLists *wall_cells;
+x::Clist *wall_cells;
 }

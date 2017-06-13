@@ -108,10 +108,10 @@ int init(Particle *pp, int n) {
                   sizeof(Particle) * solid_remote.S,
                   D2D));
 
-    wall_cells = new CellLists(XS + 2 * XWM,
-                               YS + 2 * YWM,
-                               ZS + 2 * ZWM);
-    if (w_n > 0) wall_cells->build(solid, w_n, 0);
+    wall_cells = new x::Clist(XS + 2 * XWM,
+			      YS + 2 * YWM,
+			      ZS + 2 * ZWM);
+    if (w_n > 0) wall_cells->build(solid, w_n);
 
     CC(cudaMalloc(&w_pp, sizeof(float4) * w_n));
 

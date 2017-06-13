@@ -17,7 +17,7 @@ void fin() {
 }
 
 void distr(Particle *pp, Particle *pp0, float4 *zip0, ushort4 *zip1,
-	   int *pn, CellLists *cells) {
+	   int *pn, Clist *cells) {
   int n = *pn;
 
   int nbulk, nhalo_padded, nhalo;

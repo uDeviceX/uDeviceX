@@ -120,7 +120,7 @@ void create_walls() {
     o::n = wall::init(o::pp, o::n);
     MSG("solvent particles survived: %d/%d", o::n, nold);
     if (o::n) k_sim::clear_velocity<<<k_cnf(o::n)>>>(o::pp, o::n);
-    o::cells->build(o::pp, o::n, NULL, NULL);
+    o::cells->build(o::pp, o::n);
     update_helper_arrays();
     CC( cudaPeekAtLastError() );
 }
@@ -391,7 +391,7 @@ void init() {
 
     dump::init();
 
-    o::cells   = new CellLists(XS, YS, ZS);
+    o::cells   = new x::Clist(XS, YS, ZS);
     mpDeviceMalloc(&o::zip0); mpDeviceMalloc(&o::zip1);
 
     wall::trunk = new Logistic::KISS;
@@ -413,7 +413,7 @@ void init() {
 
     o::n = ic::gen(o::pp_hst);
     CC(cudaMemcpy(o::pp, o::pp_hst, sizeof(Particle) * o::n, H2D));
-    o::cells->build(o::pp, o::n, NULL, NULL);
+    o::cells->build(o::pp, o::n);
     update_helper_arrays();
 
     if (rbcs) {
