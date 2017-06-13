@@ -8,8 +8,8 @@ void load_solid_mesh(const char *fname) {
     CC(cudaMalloc(&(m_dev.tt), 3 * m_dev.nt * sizeof(int)));
     CC(cudaMalloc(&(m_dev.vv), 3 * m_dev.nv * sizeof(float)));
 
-    CC(cudaMemcpy(m_dev.tt, m_hst.tt, 3 * m_dev.nt * sizeof(int), H2D));
-    CC(cudaMemcpy(m_dev.vv, m_hst.vv, 3 * m_dev.nv * sizeof(float), H2D));
+    cH2D(m_dev.tt, m_hst.tt, 3 * m_dev.nt);
+    cH2D(m_dev.vv, m_hst.vv, 3 * m_dev.nv);
 }
 
 void allocate() {
@@ -78,12 +78,12 @@ void create(Particle *opp, int *on) {
     npp = ns * nps;
 
     solid::mesh2pp_hst(ss_hst, ns, m_hst, /**/ i_pp_hst);
-    CC(cudaMemcpy(i_pp_dev, i_pp_hst, ns * m_hst.nv * sizeof(Particle), H2D));
+    cH2D(i_pp_dev, i_pp_hst, ns * m_hst.nv);
 
-    CC(cudaMemcpy(ss_dev, ss_hst, ns * sizeof(Solid), H2D));
-    CC(cudaMemcpy(rr0, rr0_hst, 3 * nps * sizeof(float), H2D));
+    cH2D(ss_dev, ss_hst, ns);
+    cH2D(rr0, rr0_hst, 3 * nps);
 
-    CC(cudaMemcpy(pp, pp_hst, sizeof(Particle) * npp, H2D));
+    cH2D(pp, pp_hst, npp);
 
     MC(MPI_Barrier(m::cart));
 }
