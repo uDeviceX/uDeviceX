@@ -14,7 +14,7 @@
 #   -contactforces=false             \
 #   -field_freq=100 > conf.h
 # :
-# (make clean && make -j && make -C ../tools) > /dev/null
+# (make clean && u.make -j && make -C ../tools) > /dev/null
 # ./udx
 # bop2test.py bop/solid-00004.bop | awk '{print $1, $2}' | uscale 10 > bop.out.txt
 #
@@ -35,7 +35,7 @@
 #   -contactforces=true              \
 #   -field_freq=100 > conf.h
 # :
-# (make clean && make -j && make -C ../tools) > /dev/null
+# (make clean && u.make -j && make -C ../tools) > /dev/null
 # ./udx
 # bop2test.py bop/solid-00004.bop | awk '{print $1, $2}' | uscale 10 > bop.out.txt
 #
@@ -56,7 +56,7 @@
 #   -contactforces=true              \
 #   -field_freq=100 > conf.h
 # :
-# (make clean && make -j && make -C ../tools) > /dev/null
+# (make clean && u.make -j && make -C ../tools) > /dev/null
 # ./udx
 # bop2test.py bop/solid-00004.bop | awk '{print $1, $2}' | uscale 10 > bop.out.txt
 #

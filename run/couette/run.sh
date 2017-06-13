@@ -10,7 +10,7 @@ argp conf/test.h                                                      \
      -field_dumps -part_dumps -field_freq=1000         \
      -_gamma_dot=0.1 -rcyl=5 -pin_com=true -dt=1e-3 -shear_y > conf.h
 
-make clean && make -j && make -C ../tools
+make clean && u.make -j && make -C ../tools
 
 cp udx ${RUNDIR}
 cp sdf/yplates1/yplates.dat ${RUNDIR}/sdf.dat

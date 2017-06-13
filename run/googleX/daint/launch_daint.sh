@@ -23,7 +23,7 @@ cd ${COMPILEDIR}/src
     cp ${DEPLOYDIR}/../conf.h conf.h
     cp ${DEPLOYDIR}/cache.Makefile.daint .cache.Makefile
     make clean
-    make -j
+    u.make -j
     make -C ${SRCDIR}/tools
 )
 

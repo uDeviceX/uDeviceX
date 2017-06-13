@@ -1,0 +1,14 @@
+#!/bin/bash
+
+msg () { printf '%s\n' "$@" | cat 1>&2; }
+if test $# != 0; then msg 'returns udx hostname'; exit; fi
+
+dh=panda # default host
+h=`hostname`
+case "$h" in
+    daint*) h=daint ;;
+    acer)           ;;
+    *)      h=$dh
+esac
+
+printf '%s\n' "$h"

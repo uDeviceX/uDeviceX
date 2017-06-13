@@ -17,7 +17,7 @@
 #    field_dumps part_dumps         \
 #    field_freq=4000 pushflow > conf.h
 # :
-# (make clean && make -j) > /dev/null
+# (make clean && u.make -j) > /dev/null
 # ./udx
 # avg_h52.m h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
 
@@ -34,7 +34,7 @@
 #    field_dumps part_dumps field_freq=300          \
 #    shear_z > conf.h
 # :
-# (make clean && make -j) > /dev/null
+# (make clean && u.make -j) > /dev/null
 # ./udx
 # avg_h5.m h5/flowfields-0003.h5 | uscale 0.1 > h5.out.txt
 
@@ -51,7 +51,7 @@
 #    field_dumps part_dumps field_freq=300           \
 #    pushflow > conf.h
 # :
-# (make clean && make -j) > /dev/null
+# (make clean && u.make -j) > /dev/null
 # ./udx
 # avg_h5.m h5/flowfields-0013.h5 > h5.out.txt
 
@@ -67,6 +67,6 @@
 #    tend=4.0 part_freq=300 walls wall_creation=100 \
 #    field_dumps part_dumps field_freq=300 pushflow > conf.h
 # :
-# (make clean && make -j) > /dev/null
+# (make clean && u.make -j) > /dev/null
 # ./udx
 # mid_h5.m h5/flowfields-0026.h5 > h5.out.txt
