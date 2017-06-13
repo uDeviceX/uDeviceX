@@ -105,7 +105,7 @@ void dump0(const int N[3], const float extent[3], const float* grid_data, float*
 }
 
 void dump(const int N[], const float extent[], const float* grid_data) {
-    float *walldata = new float[N[0] * N[1] * N[2]];
+    float *walldata = new float[XS * YS * ZS];
     dump0(N, extent, grid_data, walldata);
     delete[] walldata;
 }
