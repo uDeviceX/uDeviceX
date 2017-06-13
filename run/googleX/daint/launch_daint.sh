@@ -20,7 +20,7 @@ COMPILEDIR=$SCRATCH/${tmpname}
 cp -r ${SRCDIR}/* ${COMPILEDIR}/
 (
 cd ${COMPILEDIR}/src
-    cp ${DEPLOYDIR}/../conf.h .conf.h
+    cp ${DEPLOYDIR}/../conf.h conf.h
     cp ${DEPLOYDIR}/cache.Makefile.daint .cache.Makefile
     make clean
     make -j
@@ -33,7 +33,7 @@ mkdir -p ${RUNDIR}
 cd ${RUNDIR}
     cp ${COMPILEDIR}/src/udx .
     cp ${DEPLOYDIR}/run_daint.sh .
-    cp ${COMPILEDIR}/src/.conf.h conf.h
+    cp ${COMPILEDIR}/src/conf.h conf.h
     . run_daint.sh
 )
 

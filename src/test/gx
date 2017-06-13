@@ -6,7 +6,7 @@
 # :
 # argp .conf.gx.h \
 #    tend=3.0 part_freq=5000 walls wall_creation=1 \
-#    field_dumps part_dumps field_freq=5000 > .conf.h
+#    field_dumps part_dumps field_freq=5000 > conf.h
 # :
 # { make clean && make -j ; } > /dev/null
 # ./udx
@@ -23,7 +23,7 @@
 #    tend=30.0 part_freq=5000 \
 #    walls wall_creation=1   \
 #    pushflow                 \
-#    field_dumps part_dumps field_freq=5000 > .conf.h
+#    field_dumps part_dumps field_freq=5000 > conf.h
 # :
 # { make clean && make -j ; } > /dev/null
 # ./udx
@@ -43,7 +43,7 @@
 #    tend=3000.0 part_freq=5000 \
 #    walls wall_creation=1000   \
 #    pushflow                  \
-#    field_dumps part_dumps field_freq=5000 > .conf.h
+#    field_dumps part_dumps field_freq=5000 > conf.h
 # :
 # { make clean && make -j ; } > /dev/null
 # ./udx

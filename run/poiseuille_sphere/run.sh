@@ -18,7 +18,7 @@ argp .conf.test.h                                                       \
      -pushflow -driving_force=0.05 -dt=1e-3                          \
      -rbcs -rsph=5 -rbc_mass=1.f  -pin_com=false                        \
      -XS=${XS} -YS=${YS} -ZS=${ZS}                                      \
-     > .conf.h
+     > conf.h
 
 make clean && make -j && make -C ../tools
 

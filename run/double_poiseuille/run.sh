@@ -8,7 +8,7 @@ export PATH=../tools:$PATH
 argp .conf.test.h                                                       \
      -tend=100.0 -part_freq=1000 -pushflow -doublepoiseuille    \
      -field_dumps -part_dumps -field_freq=1000              \
-     -driving_force=0.02 -dt=1e-3 > .conf.h
+     -driving_force=0.02 -dt=1e-3 > conf.h
      
 
 make clean && make -j && make -C ../tools

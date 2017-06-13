@@ -36,7 +36,7 @@ pre() {
 	 tend=10.0 part_freq=1000             \
 	 $Walls wall_creation=100             \
 	 pushflow     driving_force=$df       \
-	 field_dumps part_dumps field_freq=99999  > .conf.h
+	 field_dumps part_dumps field_freq=99999  > conf.h
 }
 
 setup

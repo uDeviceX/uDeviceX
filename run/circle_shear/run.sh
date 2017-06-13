@@ -20,7 +20,7 @@ argp .conf.test.h                                                       \
      -field_dumps -part_dumps -field_freq=1000              \
      -gamma_dot=$G -rbcs -spdir=2 -sbounce_back -dt=1e-3 -shear_y       \
      -rbc_mass=1.f -XS=${XS} -YS=${YS} -ZS=${ZS} -kBT=$kBT              \
-     > .conf.h
+     > conf.h
 
 (make clean && make -j && make -C ../tools) > /dev/null
 

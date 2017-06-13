@@ -1,5 +1,5 @@
 #include "common.h"
-#include ".conf.h"
+#include "conf.h"
 #include "collision.h"
 
 #include "mrescue.h"

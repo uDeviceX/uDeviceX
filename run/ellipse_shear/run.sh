@@ -16,7 +16,7 @@ argp .conf.test.h                                                       \
      -gamma_dot=0.025 -dt=1e-3 -shear_y                                 \
      -rbcs -rbc_mass=1.f -a2_ellipse=16 -b2_ellipse=4 -pin_com=true     \
      -XS=${XS} -YS=${YS} -ZS=${ZS}                                      \
-     > .conf.h
+     > conf.h
 
 make clean && make -j && make -C ../tools
 

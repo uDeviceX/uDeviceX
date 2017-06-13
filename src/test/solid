@@ -9,7 +9,7 @@
 # argp .conf.test.h                                                \
 #   tend=2.01 part_freq=1000 walls wall_creation=1 \
 #   field_dumps part_dumps field_freq=1000          \
-#   solids sbounce_back pin_com dt=1e-3 shear_z > .conf.h
+#   solids sbounce_back pin_com dt=1e-3 shear_z > conf.h
 # :
 # (make clean && make -j && make -C ../tools) > /dev/null
 # ./udx
@@ -28,7 +28,7 @@
 #   pushflow doublepoiseuille    \
 #   field_dumps part_dumps      \
 #   wall_creation=0           \
-#   field_freq=100 > .conf.h
+#   field_freq=100 > conf.h
 # :
 # (make clean && make -j && make -C ../tools) > /dev/null
 # ./udx
@@ -46,7 +46,7 @@
 # argp .conf.test.h  \
 #   tend=2.01 part_freq=1000 walls wall_creation=100 \
 #   field_dumps part_dumps field_freq=1000            \
-#   solids spdir=2 sbounce_back dt=1e-3 shear_y > .conf.h
+#   solids spdir=2 sbounce_back dt=1e-3 shear_y > conf.h
 # :
 # (make clean && make -j && make -C ../tools) > /dev/null
 # ./udx
@@ -64,7 +64,7 @@
 # argp .conf.around.h solids tend=1.0 part_freq=500 \
 #     walls wall_creation=100 kBT=1e-7              \
 #     field_dumps part_dumps                         \
-#     field_freq=500 pushflow > .conf.h
+#     field_freq=500 pushflow > conf.h
 # :
 # { make clean && make -j && make -C ../tools; } > /dev/null
 # ./udx

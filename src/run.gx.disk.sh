@@ -43,7 +43,7 @@ pre() {
          -tend=3000.0 -part_freq=100        \
          -walls -wall_creation=1            \
          -pushflow -driving_force=$df       \
-         -field_dumps -part_dumps -field_freq=100 > .conf.h
+         -field_dumps -part_dumps -field_freq=100 > conf.h
 }
 
 compile() {

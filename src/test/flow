@@ -15,7 +15,7 @@
 #    tend=2.01 part_freq=4000       \
 #    pushflow doublepoiseuille      \
 #    field_dumps part_dumps         \
-#    field_freq=4000 pushflow > .conf.h
+#    field_freq=4000 pushflow > conf.h
 # :
 # (make clean && make -j) > /dev/null
 # ./udx
@@ -32,7 +32,7 @@
 # argp .conf.test.h                                 \
 #    tend=1.0 part_freq=300 walls wall_creation=100 \
 #    field_dumps part_dumps field_freq=300          \
-#    shear_z > .conf.h
+#    shear_z > conf.h
 # :
 # (make clean && make -j) > /dev/null
 # ./udx
@@ -49,7 +49,7 @@
 # argp .conf.poiseuille.h                               \
 #    tend=2.0 part_freq=300 walls wall_creation=100 \
 #    field_dumps part_dumps field_freq=300           \
-#    pushflow > .conf.h
+#    pushflow > conf.h
 # :
 # (make clean && make -j) > /dev/null
 # ./udx
@@ -65,7 +65,7 @@
 # :
 # argp .conf.poiseuille.h                                           \
 #    tend=4.0 part_freq=300 walls wall_creation=100 \
-#    field_dumps part_dumps field_freq=300 pushflow > .conf.h
+#    field_dumps part_dumps field_freq=300 pushflow > conf.h
 # :
 # (make clean && make -j) > /dev/null
 # ./udx

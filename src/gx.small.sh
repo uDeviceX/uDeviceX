@@ -7,7 +7,7 @@
 # :
 # argp .conf.around.h \
 #    -rbcs -tend=3.0 -part_freq=5000 -walls -wall_creation=1000 \
-#    -field_dumps -part_dumps -field_freq=5000 -pushflow > .conf.h
+#    -field_dumps -part_dumps -field_freq=5000 -pushflow > conf.h
 # :
 # { make clean && make -j && make -C ../tools; } > /dev/null
 # ./udx

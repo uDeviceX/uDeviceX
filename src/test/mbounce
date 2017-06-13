@@ -11,7 +11,7 @@
 #   -pushflow -doublepoiseuille    \
 #   -field_dumps -part_dumps      \
 #   -wall_creation=0           \
-#   -field_freq=100 > .conf.h
+#   -field_freq=100 > conf.h
 # :
 # (make clean && make -j && make -C ../tools) > /dev/null
 # ./udx

@@ -8,7 +8,7 @@ export PATH=../tools:$PATH
 argp .conf.test.h                                                      \
      -tend=200.0 -part_freq=1000 -walls -wall_creation=100 \
      -field_dumps -part_dumps -field_freq=1000         \
-     -_gamma_dot=0.1 -rcyl=5 -pin_com=true -dt=1e-3 -shear_y > .conf.h
+     -_gamma_dot=0.1 -rcyl=5 -pin_com=true -dt=1e-3 -shear_y > conf.h
 
 make clean && make -j && make -C ../tools
 

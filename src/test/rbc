@@ -5,7 +5,7 @@
 # export PATH=../tools:$PATH
 # x=0.75 y=8 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 # :
-# argp .conf.couette.h rbcs tend=0.5 part_freq=300 > .conf.h
+# argp .conf.couette.h rbcs tend=0.5 part_freq=300 > conf.h
 # :
 # { make clean && make -j && make -C ../tools; } > /dev/null
 # ./udx
@@ -23,7 +23,7 @@
 #          0 $s  $c $z              \
 #          0  0   0  1 > rbcs-ic.txt
 # :
-# argp .conf.couette.h rbcs tend=0.5 part_freq=300 > .conf.h
+# argp .conf.couette.h rbcs tend=0.5 part_freq=300 > conf.h
 # :
 # { make clean && make -j && make -C ../tools; } > /dev/null
 # ./udx
@@ -39,7 +39,7 @@
 # :
 # argp .conf.couette.h                                    \
 #   rbcs tend=0.5 part_freq=300  walls  wall_creation=100 \
-#   field_dumps part_dumps field_freq=300 shear_z > .conf.h
+#   field_dumps part_dumps field_freq=300 shear_z > conf.h
 # :
 # { make clean && make -j && make -C ../tools; } > /dev/null
 # ./udx
@@ -55,7 +55,7 @@
 # :
 # argp .conf.around.h -kBT=1e-7 \
 #    -rbcs -tend=3.0 -part_freq=5000 -walls -wall_creation=1000 \
-#    -field_dumps -part_dumps -field_freq=5000 -pushflow > .conf.h
+#    -field_dumps -part_dumps -field_freq=5000 -pushflow > conf.h
 # :
 # { make clean && make -j && make -C ../tools; } > /dev/null
 # ./udx
@@ -74,7 +74,7 @@
 # argp .conf.around.h  rbcs tend=3.0 part_freq=5000 \
 #        walls wall_creation=1000 kBT=1e-7 \
 #        field_dumps part_dumps  \
-#        field_freq=5000 pushflow > .conf.h
+#        field_freq=5000 pushflow > conf.h
 # :
 # { make clean && make -j && make -C ../tools; } > /dev/null
 # ./udx
@@ -93,7 +93,7 @@
 # argp .conf.around.h rbcs tend=3.0 part_freq=5000 \
 #     walls wall_creation=1000 kBT=1e-7 \
 #     field_dumps part_dumps  \
-#     field_freq=5000 pushflow > .conf.h
+#     field_freq=5000 pushflow > conf.h
 # :
 # { make clean && make -j && make -C ../tools; } > /dev/null
 # ./udx

@@ -10,7 +10,7 @@
 #        -solids -sbounce_back -wall_creation=1                  \
 #        -part_dumps -field_freq=1500                            \
 #        -pushflow -doublepoiseuille                             \
-#        -contactforces > .conf.h
+#        -contactforces > conf.h
 # :
 # { make clean &&  make -j && make -C ../tools; } > /dev/null
 # ./udx
@@ -28,7 +28,7 @@
 #        -solids -sbounce_back -wall_creation=1                  \
 #        -part_dumps -field_freq=1500                            \
 #        -pushflow -doublepoiseuille                             \
-#         > .conf.h
+#         > conf.h
 # :
 # { make clean &&  make -j && make -C ../tools; } > /dev/null
 # ./udx

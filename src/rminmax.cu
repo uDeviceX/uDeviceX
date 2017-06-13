@@ -1,5 +1,5 @@
 #include <mpi.h>
-#include ".conf.h"
+#include "conf.h"
 #include "m.h"
 #include "common.h"
 #include "rminmax.h"
