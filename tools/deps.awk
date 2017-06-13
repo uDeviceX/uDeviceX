@@ -43,8 +43,8 @@ function asplit(str, arr,   temp, i, n) {  # make an assoc array from str
     return n
 }
 
-/^#include/ {
-    sub(/^#include/, "")
+/^[ \t]*#include/ {
+    sub(/^[ \t]*#include/, "")
     sub(/^[\t ]*/, ""); sub(/[\t ]*$/, "") # trim spaces and tabs
     sub(/^[^"]*"/, ""); sub(/".*$/, "") # trim `"'
 
