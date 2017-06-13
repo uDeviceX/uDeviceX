@@ -11,8 +11,9 @@ void ini_dims(const char *path, int N[3], float extent[3]) {
 
 void ini_data(const char *path, const int n, float *grid_data) { /* read sdf file */
     FILE *fh = fopen(path, "r");
-    fscanf(fh, "%*[\n]\n");
-    fscanf(fh, "%*[\n]\n");
+    char line[2048];
+    fgets(line, sizeof(line), fh);
+    fgets(line, sizeof(line), fh);
 
     fread(grid_data, sizeof(float), n, fh);
     fclose(fh);
@@ -21,7 +22,7 @@ void ini_data(const char *path, const int n, float *grid_data) { /* read sdf fil
 
 void sample(const float rlo[3], const float dr[3], const int nsize[3], const int N[3], const float ampl, const float *grid_data, float *out) {
     enum {X, Y, Z};
-#define OOO(ix, iy, iz) (      out[ix + nsize[X] * (iy + nsize[Y] * iz)])
+#define OOO(ix, iy, iz) (       out[ix + nsize[X] * (iy + nsize[Y] * iz)])
 #define DDD(ix, iy, iz) (grid_data [ix +     N[X] * (iy +     N[Y] * iz)])
 #define i2r(i, d) (rlo[d] + (i + 0.5) * dr[d] - 0.5)
 #define i2x(i)    i2r(i,X)
