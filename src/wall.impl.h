@@ -92,21 +92,15 @@ int init(Particle *pp, int n) {
         }
 
         solid_remote.resize(selected.size());
-        CC(cudaMemcpy(solid_remote.D, selected.data(),
-                      sizeof(Particle) * solid_remote.S,
-                      H2D));
+        cH2D(solid_remote.D, selected.data(), solid_remote.S);
     }
 
     w_n = solid_local.size() + solid_remote.S;
 
     Particle *solid;
     CC(cudaMalloc(&solid, sizeof(Particle) * w_n));
-    CC(cudaMemcpy(solid, thrust::raw_pointer_cast(&solid_local[0]),
-                  sizeof(Particle) * solid_local.size(),
-                  D2D));
-    CC(cudaMemcpy(solid + solid_local.size(), solid_remote.D,
-                  sizeof(Particle) * solid_remote.S,
-                  D2D));
+    cD2D(solid, thrust::raw_pointer_cast(&solid_local[0]), solid_local.size());
+    cD2D(solid + solid_local.size(), solid_remote.D, solid_remote.S);
 
     wall_cells = new x::Clist(XS + 2 * XWM,
 			      YS + 2 * YWM,
