@@ -44,6 +44,9 @@ inline void mpiAssert(int code, const char *file, int line) {
 #define H2D cudaMemcpyHostToDevice
 #define H2H cudaMemcpyHostToHost
 
+#define cD2H(h, d, n) CC(cudaMemcpy((h), (d), (n) * sizeof((h)[0]), D2H))
+#define cH2D(d, h, n) CC(cudaMemcpy((d), (h), (n) * sizeof((h)[0]), H2D))
+
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cudaAssert((ans), __FILE__, __LINE__); } while (0)
