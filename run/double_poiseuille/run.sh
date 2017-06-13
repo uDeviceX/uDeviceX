@@ -21,6 +21,6 @@ rm -rf h5 diag.txt solid_diag.txt
 
 cat run.sh > run.back.sh
 
-./udx
+u.run
 
 
