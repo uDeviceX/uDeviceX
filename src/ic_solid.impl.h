@@ -259,7 +259,7 @@ void init(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, S
     delete[] rcounts;
     delete[] tags;
 
-    //share_parts(root, /**/ r_pp, &rcount);
+    share_parts(root, /**/ r_pp, &rcount);
 
     Solid model;
 
