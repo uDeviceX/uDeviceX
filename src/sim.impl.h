@@ -582,7 +582,7 @@ void run_wall(long nsteps) {
 
 void run() {
     long nsteps = (int)(tend / dt);
-    if (m::rank == 0) MSG("will take %ld steps", nsteps);
+    MSG0("will take %ld steps", nsteps);
 
     if (walls || solids) run_wall(nsteps);
     else               run_nowall(nsteps);
