@@ -1,15 +1,8 @@
 namespace sim {
-#define HST (true)
-#define DEV (false)
-
-void distr_solventX() {
-  x::distr(o::pp, o::pp0, o::zip0, o::zip1, &o::n, o::cells);
-  std::swap(o::pp, o::pp0);
-}
 
 void distr_solvent() {
-  /* distr_solvent0(); */
-  distr_solventX();
+  x::distr(o::pp, o::pp0, o::zip0, o::zip1, &o::n, o::cells);
+  std::swap(o::pp, o::pp0);
 }
 
 void distr_rbc() {
@@ -411,6 +404,4 @@ void close() {
     if (solids) s::fin();
 }
 
-#undef HST
-#undef DEV
 }
