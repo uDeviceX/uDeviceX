@@ -10,7 +10,7 @@ static int read_coms(const char * fname, /**/ float* coms) {
         FILE *f = fopen(fname, "r"); 
 
         if (f == NULL) 
-        ERR("Could not %s. aborting.\n", fname);
+        ERR("Could not open %s.\n", fname);
     
         float x, y, z;
         int i = 0;
@@ -156,7 +156,7 @@ static void share_parts(const int root, /**/ Particle *pp, int *n) {
     std::vector<Particle> recvbuf(MAX_PSOLID_NUM);
 
     if (*n >= MAX_PSOLID_NUM)
-    ERR("(ic_solid) Number of solid particles too high for the buffer. exiting\n");
+    ERR("Number of solid particles too high for the buffer\n");
         
     MC( MPI_Gather(n, 1, MPI_INT, counts.data(), 1, MPI_INT, root, m::cart) );
 
@@ -202,7 +202,7 @@ void init(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, S
     make_local(nsolid, coms);
 
     if (nsolid == 0)
-    ERR("No solid provided. Aborting...\n");
+    ERR("No solid provided.\n");
 
     const int npp0 = *s_n;
     int *tags = new int[npp0];
