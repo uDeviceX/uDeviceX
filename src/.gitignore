@@ -1,5 +1,5 @@
-.cache.Makefile
-conf/h
+config.mk
+conf.h
 
 *.out.txt
 h5/
@@ -14,6 +14,7 @@ solid_diag*.txt
 solid_Iinv.txt
 diag.txt
 sdf.dat
+rbc.off
 
 mesh_solid.ply
 

@@ -17,5 +17,4 @@ CMakeCache.txt
 *.h5part
 rbcs-*.ply
 *.cmake
-/tools/poc/rbcdr
 *.tramp_history
