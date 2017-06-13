@@ -235,10 +235,8 @@ void dump_part(int step) {
 void dump_rbcs() {
     if (rbcs) {
 	static int id = 0;
-	int start = o::n; if (solids0) start += s::npp;
-
-	dev2hst();  /* TODO: do not need `s' */
-	Cont::rbc_dump(r::nc, a::pp_hst + start, r::faces, r::nv, r::nt, id++);
+	cD2H(a::pp_hst, r::pp, r::n);
+	Cont::rbc_dump(r::nc, a::pp_hst, r::faces, r::nv, r::nt, id++);
     }
 }
 
