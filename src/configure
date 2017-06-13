@@ -16,6 +16,7 @@ main () {
 
     case "$h" in
 	daint*) h=daint ;;
+	acer)           ;;
 	*)      h=$dh
     esac
 
@@ -25,7 +26,6 @@ main () {
 
     msg "cp $c  config.mk"; cp $c  config.mk
     msg "cp $dc conf.h"   ; cp $dc conf.h
-
 }
 
 case $# in
