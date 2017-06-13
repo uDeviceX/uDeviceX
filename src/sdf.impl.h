@@ -8,10 +8,15 @@ void setup() {
     k_sdf::texSDF.addressMode[2] = cudaAddressModeWrap;
 }
 
-void init0(float *field, float *grid_data) {
-    int N[3];
-    float extent[3];
-    field::ini("sdf.dat", N, extent, grid_data);
+void init() {
+    int N[3]; float extent[3];
+    
+    field::ini_dims("sdf.dat", N, extent);
+    const int np = N[0] * N[1] * N[2];
+    float *grid_data = new float[np];
+    float *field     = new float[XTEXTURESIZE * YTEXTURESIZE * ZTEXTURESIZE];
+    field::ini_data("sdf.dat", np, grid_data);    
+    
     int L[3] = {XS, YS, ZS};
     int MARGIN[3] = {XWM, YWM, ZWM};
     int TEXTURESIZE[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
@@ -47,16 +52,9 @@ void init0(float *field, float *grid_data) {
     
     setup();
     CC(cudaBindTextureToArray(k_sdf::texSDF, arrSDF, fmt));
-}
 
-void init() {
-    float *grid_data = new float[MAX_SUBDOMAIN_VOLUME];
-    float *field = new float[XTEXTURESIZE * YTEXTURESIZE * ZTEXTURESIZE];
-
-    init0(field, grid_data);
-
-    delete[] field;
     delete[] grid_data;
+    delete[] field;
 }
 
 void close() {

@@ -26,9 +26,6 @@ inline void mpiAssert(int code, const char *file, int line) {
 #define MAX_FACE_NUM 50000
 #define MAX_VERT_NUM 10000
 
-/* used in field */
-#define MAX_SUBDOMAIN_VOLUME (500*500*100)
-
 #define dSync() CC(cudaDeviceSynchronize())
 
 /* a common kernel execution configuration */

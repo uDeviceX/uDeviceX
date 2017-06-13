@@ -1,28 +1,28 @@
 namespace field {
-void ini(const char *path, int N[3], float extent[3], float* grid_data) { /* read sdf file */
+void ini_dims(const char *path, int N[3], float extent[3]) {
     FILE *fh = fopen(path, "r");
     char line[2048];
     fgets(line, sizeof(line), fh);
     sscanf(line, "%f %f %f", &extent[0], &extent[1], &extent[2]);
     fgets(line, sizeof(line), fh);
     sscanf(line, "%d %d %d", &N[0], &N[1], &N[2]);
-
-    assert(N[0]*N[1]*N[2] <= MAX_SUBDOMAIN_VOLUME);
-    
-    MC(MPI_Bcast(N, 3, MPI_INT, 0, m::cart));
-    MC(MPI_Bcast(extent, 3, MPI_FLOAT, 0, m::cart));
-
-    int np = N[0] * N[1] * N[2];
-    fread(grid_data, sizeof(float), np, fh);
     fclose(fh);
-    MPI_Barrier(m::cart);
 }
 
-void sample(float rlo[3], float dr[3], int nsize[3], int N[3], float ampl, float* grid_data, float *out) {
-#define X 0
-#define Y 1
-#define Z 2
-#define OOO(ix, iy, iz) (      out[ix + nsize[X] * (iy + nsize[Y] * iz)])
+void ini_data(const char *path, const int n, float *grid_data) { /* read sdf file */
+    FILE *fh = fopen(path, "r");
+    char line[2048];
+    fgets(line, sizeof(line), fh);
+    fgets(line, sizeof(line), fh);
+
+    fread(grid_data, sizeof(float), n, fh);
+    fclose(fh);
+    MC(MPI_Barrier(m::cart));
+}
+
+void sample(const float rlo[3], const float dr[3], const int nsize[3], const int N[3], const float ampl, const float *grid_data, float *out) {
+    enum {X, Y, Z};
+#define OOO(ix, iy, iz) (       out[ix + nsize[X] * (iy + nsize[Y] * iz)])
 #define DDD(ix, iy, iz) (grid_data [ix +     N[X] * (iy +     N[Y] * iz)])
 #define i2r(i, d) (rlo[d] + (i + 0.5) * dr[d] - 0.5)
 #define i2x(i)    i2r(i,X)
@@ -70,9 +70,6 @@ void sample(float rlo[3], float dr[3], int nsize[3], int N[3], float ampl, float
 	}
 #undef DDD
 #undef OOO
-#undef X
-#undef Y
-#undef Z
 }
 
 void dump0(int N[3], float extent[3], float* grid_data, float* walldata) {
@@ -89,8 +86,8 @@ void dump0(int N[3], float extent[3], float* grid_data, float* walldata) {
 }
 
 void dump(int N[], float extent[], float* grid_data) {
-    float *walldata = (float*)malloc(sizeof(walldata[0])*MAX_SUBDOMAIN_VOLUME);
+    float *walldata = new float[N[0] * N[1] * N[2]];
     dump0(N, extent, grid_data, walldata);
-    free(walldata);
+    delete[] walldata;
 }
 } /* namespace field */
