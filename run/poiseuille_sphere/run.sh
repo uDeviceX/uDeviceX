@@ -20,7 +20,7 @@ argp conf/test.h                                                       \
      -XS=${XS} -YS=${YS} -ZS=${ZS}                                      \
      > conf.h
 
-make clean && make -j && make -C ../tools
+make clean && u.make -j && make -C ../tools
 
 cp udx ${RUNDIR}
 

@@ -9,7 +9,7 @@
 # :
 # argp conf/couette.h -rbcs -tend=0.5 -part_freq=100 > conf.h
 # :
-# { make clean && make -j; } > /dev/null
+# { make clean && u.make -j; } > /dev/null
 # mpirun -n 2 ./udx 2 1 1
 # awk '{print 10000*$2}' diag.txt > diag.out.txt
 
@@ -27,7 +27,7 @@
 #   -field_dumps -part_dumps                    \
 #   -pushflow > conf.h
 # :
-# { make clean && make -j; } > /dev/null
+# { make clean && u.make -j; } > /dev/null
 # mpirun -n 2 ./udx 2 1 1
 # avg_h52.m h5/flowfields-0013.h5 | uscale 10 > h5.out.txt
 
@@ -45,7 +45,7 @@
 #    -rbcs -tend=4.0 -part_freq=5000 -walls -wall_creation=1000 \
 #    -field_dumps -part_dumps -field_freq=5000 -pushflow > conf.h
 # :
-# { make clean && make -j; } > /dev/null
+# { make clean && u.make -j; } > /dev/null
 # mpirun -n 3 ./udx 3 1 1
 # mid_h5.m h5/flowfields-0001.h5 > h5.out.txt
 #
@@ -63,7 +63,7 @@
 #   -tend=4.0 -part_freq=600 -walls -wall_creation=100 \
 #   -field_dumps -part_dumps -field_freq=600 -pushflow > conf.h
 # :
-# { make clean && make -j; } > /dev/null
+# { make clean && u.make -j; } > /dev/null
 # mpirun -n 2 ./udx 1 1 2
 # avg_h5.m h5/flowfields-0013.h5 | uscale 100 > h5.out.txt
 #

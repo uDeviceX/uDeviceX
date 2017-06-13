@@ -11,7 +11,7 @@ argp conf/test.h                                                       \
      -driving_force=0.02 -dt=1e-3 > conf.h
      
 
-make clean && make -j && make -C ../tools
+make clean && u.make -j && make -C ../tools
 
 cp udx ${RUNDIR}
 

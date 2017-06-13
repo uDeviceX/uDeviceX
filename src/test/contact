@@ -11,7 +11,7 @@
 #        pushflow doublepoiseuille \
 #        contactforces > conf.h
 # :
-# { make clean &&  make -j && make -C ../tools; } > /dev/null
+# { make clean &&  u.make -j && make -C ../tools; } > /dev/null
 # ./udx
 # ply2punto ply/rbcs-00002.ply | uscale 100 > ply.out.txt
 #
@@ -29,7 +29,7 @@
 #        pushflow doublepoiseuille \
 #                      > conf.h
 # :
-# { make clean && make -j && make -C ../tools; } > /dev/null
+# { make clean && u.make -j && make -C ../tools; } > /dev/null
 # ./udx
 # ply2punto ply/rbcs-00002.ply | uscale 100 > ply.out.txt
 #
