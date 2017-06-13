@@ -63,10 +63,6 @@ namespace m {
 
 #include "sminmax.h"
 
-#include "odstr.decl.h"
-#include "k/odstr.h"
-#include "odstr.impl.h"
-
 #include "sdstr.decl.h"
 #include "sdstr.impl.h"
 

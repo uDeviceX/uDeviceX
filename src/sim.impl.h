@@ -13,16 +13,6 @@ void distr_solvent() {
   distr_solventX();
 }
 
-void distr_solvent0() {
-    odstr::pack(o::pp, o::n);
-    odstr::send();
-    odstr::bulk(o::n, o::cells->start, o::cells->count);
-    o::n = odstr::recv_count();
-    assert(o::n <= MAX_PART_NUM);
-    odstr::recv_unpack(o::pp0, o::zip0, o::zip1, o::n, o::cells->start, o::cells->count);
-    std::swap(o::pp, o::pp0);
-}
-
 void distr_solid() {
 #ifdef DEVICE_SOLID
     if (s::ns) cD2H(s::ss_hst, s::ss_dev, s::ns);
@@ -393,7 +383,6 @@ void init() {
     mpDeviceMalloc(&o::zip0); mpDeviceMalloc(&o::zip1);
 
     wall::trunk = new Logistic::KISS;
-    odstr::init();
     mpDeviceMalloc(&o::pp); mpDeviceMalloc(&o::pp0);
     mpDeviceMalloc(&o::ff);
     mpDeviceMalloc(&s::ff); mpDeviceMalloc(&s::ff);
@@ -502,7 +491,6 @@ void run() {
 }
 
 void close() {
-    odstr::redist_part_close();
     sdstr::close();
     x::fin();
     
