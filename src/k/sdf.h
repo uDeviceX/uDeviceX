@@ -40,7 +40,7 @@ __device__ float cheap_sdf(float x, float y, float z)  {
     int MARGIN[3] = {XWM, YWM, ZWM};
     int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
 
-    float tc[3], r[3] = {x, y, z};;
+    float tc[3], r[3] = {x, y, z};
     for (int c = 0; c < 3; ++c)
     tc[c] = (int)(TEXSIZES[c] * (r[c] + L[c] / 2 + MARGIN[c]) /
                   (L[c] + 2 * MARGIN[c]));
