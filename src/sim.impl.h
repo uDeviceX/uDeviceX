@@ -176,7 +176,7 @@ void forces_fsi(SolventWrap *w_s, std::vector<ParticlesWrap> *w_r) {
     fsi::bulk(*w_r);
 }
 
-void forces(bool wall_created) {
+void forces(bool wall0) {
     SolventWrap w_s(o::pp, o::n, o::ff, o::cells->start, o::cells->count);
     std::vector<ParticlesWrap> w_r;
     if (solids0) w_r.push_back(ParticlesWrap(s::pp, s::npp, s::ff));
@@ -187,7 +187,7 @@ void forces(bool wall_created) {
     if (rbcs)    clear_forces(r::ff, r::n);
 
     forces_dpd();
-    if (wall_created) forces_wall();
+    if (wall0) forces_wall();
     forces_rbc();
 
     forces_cnt(&w_r);
@@ -439,12 +439,12 @@ void dump_diag0(int it) { /* generic dump */
   if (it % field_freq == 0) dump_grid();
 }
 
-void dump_diag(int it, bool wall_created) { /* dump and diag */
+void dump_diag(int it, bool wall0) { /* dump and diag */
   dump_diag0(it);
-  if (wall_created) dump_diag_after(it);
+  if (wall0) dump_diag_after(it);
 }
 
-void step(float driving_force0, bool wall_created, int it) {
+void step(float driving_force0, bool wall0, int it) {
     assert(o::n <= MAX_PART_NUM);
     // safety::bound(o::pp, o::n);
 
@@ -454,32 +454,32 @@ void step(float driving_force0, bool wall_created, int it) {
     distr_solvent();
     if (solids0) distr_solid();
     if (rbcs)    distr_rbc();
-    forces(wall_created);
-    dump_diag(it, wall_created);
+    forces(wall0);
+    dump_diag(it, wall0);
     body_force(driving_force0);
     update_solvent();
     if (solids0) update_solid();
     if (rbcs)    update_rbc();
-    if (wall_created) bounce();
+    if (wall0) bounce();
     if (sbounce_back && solids0 && s::npp) bounce_solid(it);
 }
 
 void run_nowall(long nsteps) {
     float driving_force0 = pushflow ? driving_force : 0;
-    bool wall_created = false;
+    bool wall0 = false;
     solids0 = false;
-    for (long it = 0; it < nsteps; ++it) step(driving_force0, wall_created, it);
+    for (long it = 0; it < nsteps; ++it) step(driving_force0, wall0, it);
 }
 
 void run_wall(long nsteps) {
     float driving_force0 = 0;
-    bool wall_created = false;
+    bool wall0 = false;
     long it = 0;
     solids0 = false;
-    for (/**/; it < wall_creation; ++it) step(driving_force0, wall_created, it);
+    for (/**/; it < wall_creation; ++it) step(driving_force0, wall0, it);
 
     solids0 = solids;
-    if (walls) {create_walls(); wall_created = true;}
+    if (walls) {create_walls(); wall0 = true;}
     MSG("done creating walls");
     if (solids0) {
         CC(cudaMemcpy(o::pp_hst, o::pp, sizeof(Particle) * o::n, D2H));
@@ -492,7 +492,7 @@ void run_wall(long nsteps) {
     if (rbcs && r::n)      k_sim::clear_velocity<<<k_cnf(r::n)  >>>(r::pp, r::n);
     if (pushflow) driving_force0 = driving_force;
 
-    for (/**/; it < nsteps; ++it) step(driving_force0, wall_created, it);
+    for (/**/; it < nsteps; ++it) step(driving_force0, wall0, it);
 }
 
 void run() {
