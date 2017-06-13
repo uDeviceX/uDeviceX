@@ -8,14 +8,13 @@ all: udx
 include Makefile.dep
 
 NVCC     ?= nvcc
-ARCH_VAL ?= compute_35
-CODE_VAL ?= sm_35
 OPT      ?= -O3 -use_fast_math -g --compiler-options -Wall
 # for cuda-gdb: OPT=-O0 -g --device-debug
+ARCH     ?= -arch compute_35 -code sm_35
 
 slevel   ?= -2
 
-NVCCFLAGS += -arch $(ARCH_VAL) -code $(CODE_VAL) -std=c++11
+NVCCFLAGS += -std=c++11
 LDFLAGS   += -L../cuda-dpd
 NVCCFLAGS += -I../cuda-dpd -I.
 LIBS      += -lcuda-dpd -lcudart
@@ -31,21 +30,21 @@ NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel)
 
 # I have some device code in OBJS. I have to link it separatly
 udx:   $(OBJS) libcuda-dpd
-	$(NVCC) -dlink -L../cuda-dpd $(OBJS) $(LIBS) -o gpuCode.o
+	$(NVCC)  $(ARCH) -dlink -L../cuda-dpd $(OBJS) $(LIBS) -o gpuCode.o
 	$(LINK)  $(LDFLAGS) gpuCode.o $(OBJS) $(LIBS) -o $@
 
 # a rule for the most of *.cu files
-%.o:              %.cu;          $(NVCC) $(NVCCFLAGS) $(OPT)     $< -c -o $@
+%.o:              %.cu;          $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT)     $< -c -o $@
 
 # some files must be compiled in diferent way (with `-dc' flag) See
 # "Separate Compilation and Linking of CUDA C++ Device Code"
 # http://devblogs.nvidia.com/parallelforall/separate-compilation-linking-cuda-device-code
-dpd-forces.o:     dpd-forces.cu; $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
-bund.o:           bund.cu;       $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
-glb.o:            glb.cu;        $(NVCC) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
+dpd-forces.o:     dpd-forces.cu; $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
+bund.o:           bund.cu;       $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
+glb.o:            glb.cu;        $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 
 libcuda-dpd:; make -C ../cuda-dpd \
-	NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)"
+	NVCC="$(NVCC)" NVCCFLAGS="$(NVCCFLAGS)" OPT="$(OPT)" ARCH="$(ARCH)"
 
 clean:  ; rm -f udx *.o
 	make -C ../cuda-dpd clean
