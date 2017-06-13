@@ -444,7 +444,7 @@ void dump_diag(int it, bool wall_created) { /* dump and diag */
   if (wall_created) dump_diag_after(it);
 }
 
-void run0(float driving_force0, bool wall_created, int it) {
+void step(float driving_force0, bool wall_created, int it) {
     assert(o::n <= MAX_PART_NUM);
     // safety::bound(o::pp, o::n);
 
@@ -468,7 +468,7 @@ void run_nowall(long nsteps) {
     float driving_force0 = pushflow ? driving_force : 0;
     bool wall_created = false;
     solids0 = false;
-    for (long it = 0; it < nsteps; ++it) run0(driving_force0, wall_created, it);
+    for (long it = 0; it < nsteps; ++it) step(driving_force0, wall_created, it);
 }
 
 void run_wall(long nsteps) {
@@ -476,7 +476,7 @@ void run_wall(long nsteps) {
     bool wall_created = false;
     long it = 0;
     solids0 = false;
-    for (/**/; it < wall_creation; ++it) run0(driving_force0, wall_created, it);
+    for (/**/; it < wall_creation; ++it) step(driving_force0, wall_created, it);
 
     solids0 = solids;
     if (walls) {create_walls(); wall_created = true;}
@@ -492,7 +492,7 @@ void run_wall(long nsteps) {
     if (rbcs && r::n)      k_sim::clear_velocity<<<k_cnf(r::n)  >>>(r::pp, r::n);
     if (pushflow) driving_force0 = driving_force;
 
-    for (/**/; it < nsteps; ++it) run0(driving_force0, wall_created, it);
+    for (/**/; it < nsteps; ++it) step(driving_force0, wall_created, it);
 }
 
 void run() {
