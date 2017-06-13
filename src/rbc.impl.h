@@ -55,7 +55,7 @@ void setup(int* faces) {
 
     float *devtrs4;
     CC(cudaMalloc(&devtrs4,       RBCnt * 4 * sizeof(int)));
-    CC(cudaMemcpy( devtrs4, trs4, RBCnt * 4 * sizeof(int), H2D));
+    cH2D(devtrs4, trs4, RBCnt * 4);
     delete[] trs4;
 
     int hx[RBCnv*md], hy[RBCnv*md], a1[RBCnv*md], a2[RBCnv*md];
@@ -73,10 +73,10 @@ void setup(int* faces) {
 
     int *ptr, *ptr2;
     CC(cudaMalloc(&ptr, sizeof(int) * RBCnv*md));
-    CC(cudaMemcpy(ptr, a1, sizeof(int) * RBCnv*md, H2D));
+    cH2D(ptr, a1, RBCnv*md);
 
     CC(cudaMalloc(&ptr2, sizeof(int) * RBCnv*md));
-    CC(cudaMemcpy(ptr2, a2, sizeof(int) * RBCnv*md, H2D));
+    cH2D(ptr2, a2, RBCnv*md);
 
     setup_support(ptr, ptr2, RBCnv*md);
 
