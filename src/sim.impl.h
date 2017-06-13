@@ -38,7 +38,7 @@ void distr_solid() {
     s::npp = s::ns * s::nps;
     sdstr::unpack <HST> (s::m_hst.nv, /**/ s::ss_hst, s::i_pp_hst);
     solid::generate_hst(s::ss_hst, s::ns, s::rr0_hst, s::nps, /**/ s::pp_hst);
-    CC(cudaMemcpy(s::pp, s::pp_hst, 3 * s::npp * sizeof(float), H2D));
+    cH2D(s::pp, s::pp_hst, 3 * s::npp);
 #endif
 }
 
@@ -134,7 +134,7 @@ void set_ids_solids() {
     if (solids) {
         s::ic::set_ids(s::ns, s::ss_hst);
         if (s::ns)
-        CC(cudaMemcpy(s::ss_dev, s::ss_hst, s::ns * sizeof(Solid), H2D));
+        cH2D(s::ss_dev, s::ss_hst, s::ns);
     }
 
     CC(cudaPeekAtLastError());
@@ -211,22 +211,22 @@ void forces(bool wall0) {
 
 void dev2hst() { /* device to host  data transfer */
     int start = 0;
-    CC(cudaMemcpy(a::pp_hst + start, o::pp, sizeof(Particle) * o::n, D2H)); start += o::n;
+    cD2H(a::pp_hst + start, o::pp, o::n); start += o::n;
     if (solids0) {
-	CC(cudaMemcpy(a::pp_hst + start, s::pp, sizeof(Particle) * s::npp, D2H)); start += s::npp;
+	cD2H(a::pp_hst + start, s::pp, s::npp); start += s::npp;
     }
     if (rbcs) {
-	CC(cudaMemcpy(a::pp_hst + start, r::pp, sizeof(Particle) * r::n, D2H)); start += r::n;
+	cD2H(a::pp_hst + start, r::pp, r::n); start += r::n;
     }
 }
 
 void dump_part(int step) {
     if (part_dumps) {
-	CC(cudaMemcpy(o::pp_hst, o::pp, sizeof(Particle) * o::n, D2H));
+	cD2H(o::pp_hst, o::pp, o::n);
 	dump::parts(o::pp_hst, o::n, "solvent", step);
 
 	if(solids0) {
-	    CC(cudaMemcpy(s::pp_hst, s::pp, sizeof(Particle) * s::npp, D2H));
+	    cD2H(s::pp_hst, s::pp, s::npp);
 	    dump::parts(s::pp_hst, s::npp, "solid", step);
 	}
     }
@@ -266,8 +266,8 @@ void body_force(float driving_force0) {
 
 void update_solid0() {
 #ifndef DEVICE_SOLID
-    CC(cudaMemcpy(s::pp_hst, s::pp, sizeof(Particle) * s::npp, D2H));
-    CC(cudaMemcpy(s::ff_hst, s::ff, sizeof(Force) * s::npp, D2H));
+    cD2H(s::pp_hst, s::pp, s::npp);
+    cD2H(s::ff_hst, s::ff, s::npp);
 
     solid::update_hst(s::ff_hst, s::rr0_hst, s::npp, s::ns, /**/ s::pp_hst, s::ss_hst);
     solid::update_mesh_hst(s::ss_hst, s::ns, s::m_hst, /**/ s::i_pp_hst);
@@ -277,13 +277,13 @@ void update_solid0() {
 
     solid::reinit_ft_hst(s::ns, /**/ s::ss_hst);
 
-    CC(cudaMemcpy(s::pp, s::pp_hst, sizeof(Particle) * s::npp, H2D));
+    cH2D(s::pp, s::pp_hst, s::npp);
 #else
     solid::update_dev(s::ff, s::rr0, s::npp, s::ns, /**/ s::pp, s::ss_dev);
     solid::update_mesh_dev(s::ss_dev, s::ns, s::m_dev, /**/ s::i_pp_dev);
 
     // for dump
-    CC(cudaMemcpy(s::ss_dmphst, s::ss_dev, s::ns * sizeof(Solid), D2H));
+    cD2H(s::ss_dmphst, s::ss_dev, s::ns);
 
     solid::reinit_ft_dev(s::ns, /**/ s::ss_dev);
 #endif
@@ -319,15 +319,15 @@ void bounce_solid(int it) {
 
     build_tcells_hst(s::m_hst, s::i_pp_bb_hst, nsbb, /**/ s::tcs_hst, s::tcc_hst, s::tci_hst);
 
-    CC(cudaMemcpy(o::pp_hst, o::pp, sizeof(Particle) * o::n, D2H));
-    CC(cudaMemcpy(o::ff_hst, o::ff, sizeof(Force)    * o::n, D2H));
+    cD2H(o::pp_hst, o::pp, o::n);
+    cD2H(o::ff_hst, o::ff, o::n);
 
     mbounce::bounce_tcells_hst(o::ff_hst, s::m_hst, s::i_pp_bb_hst, s::tcs_hst, s::tcc_hst, s::tci_hst, o::n, /**/ o::pp_hst, s::ss_bb_hst);
 
     if (it % rescue_freq == 0)
     mrescue::rescue_hst(s::m_hst, s::i_pp_bb_hst, nsbb, o::n, s::tcs_hst, s::tcc_hst, s::tci_hst, /**/ o::pp_hst);
 
-    CC(cudaMemcpy(o::pp, o::pp_hst, sizeof(Particle) * o::n, H2D));
+    cH2D(o::pp, o::pp_hst, o::n);
 
     // send back fo, to
 
@@ -342,8 +342,8 @@ void bounce_solid(int it) {
 
     collision::get_bboxes_dev(s::i_pp_dev, s::m_dev.nv, s::ns, /**/ s::bboxes_dev);
 
-    CC(cudaMemcpy(s::bboxes_hst, s::bboxes_dev, 6 * s::ns * sizeof(float), D2H));
-    CC(cudaMemcpy(s::ss_hst, s::ss_dev, s::ns * sizeof(Solid), D2H));
+    cD2H(s::bboxes_hst, s::bboxes_dev, 6 * s::ns);
+    cD2H(s::ss_hst, s::ss_dev, s::ns);
 
     /* exchange solid meshes with neighbours */
 
@@ -351,7 +351,7 @@ void bounce_solid(int it) {
     const int nsbb = bbhalo::post(s::m_dev.nv);
     bbhalo::unpack <DEV> (s::m_dev.nv, /**/ s::ss_bb_hst, s::i_pp_bb_dev);
 
-    CC(cudaMemcpy(s::ss_bb_dev, s::ss_bb_hst, nsbb * sizeof(Solid), H2D));
+    cH2D(s::ss_bb_dev, s::ss_bb_hst, nsbb);
 
     build_tcells_dev(s::m_dev, s::i_pp_bb_dev, s::ns, /**/ s::tcs_dev, s::tcc_dev, s::tci_dev);
 
@@ -362,13 +362,13 @@ void bounce_solid(int it) {
 
     // send back fo, to
 
-    CC(cudaMemcpy(s::ss_bb_hst, s::ss_bb_dev, nsbb * sizeof(Solid), D2H));
+    cD2H(s::ss_bb_hst, s::ss_bb_dev, nsbb);
 
     bbhalo::pack_back(s::ss_bb_hst);
     bbhalo::post_back();
     bbhalo::unpack_back(s::ss_hst);
 
-    CC(cudaMemcpy(s::ss_dev, s::ss_hst, s::ns * sizeof(Solid), H2D));
+    cH2D(s::ss_dev, s::ss_hst, s::ns);
 
     // for dump
     memcpy(s::ss_dmpbbhst, s::ss_hst, s::ns * sizeof(Solid));
@@ -412,7 +412,7 @@ void init() {
     }
 
     o::n = ic::gen(o::pp_hst);
-    CC(cudaMemcpy(o::pp, o::pp_hst, sizeof(Particle) * o::n, H2D));
+    cH2D(o::pp, o::pp_hst, o::n);
     o::cells->build(o::pp, o::n);
     update_helper_arrays();
 
@@ -482,9 +482,9 @@ void run_wall(long nsteps) {
     if (walls) {create_walls(); wall0 = true;}
     MSG("done creating walls");
     if (solids0) {
-        CC(cudaMemcpy(o::pp_hst, o::pp, sizeof(Particle) * o::n, D2H));
+        cD2H(o::pp_hst, o::pp, o::n);
         s::create(o::pp_hst, &o::n);
-        CC(cudaMemcpy(o::pp, o::pp_hst, sizeof(Particle) * o::n, H2D));
+        cH2D(o::pp, o::pp_hst, o::n);
     }
     if (walls) remove_bodies();
     set_ids_solids();
