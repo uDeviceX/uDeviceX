@@ -21,8 +21,7 @@ void distr_solvent0() {
     std::swap(o::pp, o::pp0);
 }
 
-void distr_solid()
-{
+void distr_solid() {
 #ifdef DEVICE_SOLID
     if (s::ns) CC(cudaMemcpy(s::ss_hst, s::ss_dev, s::ns * sizeof(Solid), D2H));
     sdstr::pack_sendcnt <false> (s::ss_hst, s::i_pp_dev, s::ns, s::m_dev.nv);
@@ -41,8 +40,7 @@ void distr_solid()
 #endif
 }
 
-void distr_rbc()
-{
+void distr_rbc() {
     rdstr::extent(r::pp, r::nc, r::nv);
     dSync();
     rdstr::pack_sendcnt(r::pp, r::nc, r::nv);
@@ -118,8 +116,7 @@ void remove_solids_from_wall() {
 #undef HST
 #undef DEV
 
-void load_solid_mesh(const char *fname)
-{
+void load_solid_mesh(const char *fname) {
     ply::read(fname, &s::m_hst);
 
     s::m_dev.nv = s::m_hst.nv;
@@ -132,8 +129,7 @@ void load_solid_mesh(const char *fname)
     CC(cudaMemcpy(s::m_dev.vv, s::m_hst.vv, 3 * s::m_dev.nv * sizeof(float), H2D));
 }
 
-void init_solid()
-{
+void init_solid() {
     mrescue::init(MAX_PART_NUM);
 
     mpDeviceMalloc(&s::pp);
@@ -385,8 +381,7 @@ void bounce() {
     //if (rbcs && r::n) wall::bounce(r::pp, r::n);
 }
 
-void bounce_solid(int it)
-{
+void bounce_solid(int it) {
 #ifndef DEVICE_SOLID
 
     collision::get_bboxes_hst(s::i_pp_hst, s::m_hst.nv, s::ns, /**/ s::bboxes_hst);
