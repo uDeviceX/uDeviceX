@@ -15,7 +15,7 @@ void ini(const char *path, int N[3], float extent[3], float* grid_data) { /* rea
     int np = N[0] * N[1] * N[2];
     fread(grid_data, sizeof(float), np, fh);
     fclose(fh);
-    MPI_Barrier(m::cart);
+    MC(MPI_Barrier(m::cart));
 }
 
 void sample(const float rlo[3], const float dr[3], const int nsize[3], const int N[3], const float ampl, const float *grid_data, float *out) {
