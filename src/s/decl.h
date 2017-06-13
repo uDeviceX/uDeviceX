@@ -1,3 +1,4 @@
+namespace s {
 int npp;        /* number of frozen pp    */ 
 Particle *pp;   /* Solid frozen particles */
 Force    *ff;
@@ -31,3 +32,4 @@ Solid *ss_dmphst, *ss_dmpbbhst;
 
 float rr0_hst[3*MAX_PSOLID_NUM];      /* initial positions; same for all solids */
 float *rr0;
+}

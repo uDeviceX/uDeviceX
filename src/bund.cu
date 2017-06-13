@@ -117,11 +117,9 @@ namespace m {
 
 #include "ply.h"
 
-namespace s {
 #include "s/decl.h"
 #include "s/ic.h"
 #include "s/impl.h"
-}
 
 #include "safety.impl.h"
 

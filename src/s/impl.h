@@ -1,3 +1,4 @@
+namespace s {
 void load_solid_mesh(const char *fname) {
     ply::read(fname, &m_hst);
 
@@ -94,4 +95,5 @@ void ini() {
 
 void fin() {
     deallocate();
+}
 }

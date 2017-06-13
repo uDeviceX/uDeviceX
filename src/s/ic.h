@@ -1,5 +1,5 @@
+namespace s {
 namespace ic {
-
 enum {X, Y, Z};
 
 //#define DEBUG_MSG
@@ -266,4 +266,5 @@ void init(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, S
 
     delete[] coms;
 }
-}
+} // namespace ic
+} // namespace s
