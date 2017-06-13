@@ -69,7 +69,7 @@ static void _shift_copy_pp(const Particle *ss_src, const int n, const int nps, c
     }
     else
     {
-        CC(cudaMemcpy(ss_dst, ss_src, n*nps*sizeof(Particle), H2D));
+        cH2D(ss_dst, ss_src, n*nps);
         _shift_dev <<< k_cnf(n*nps) >>> (shift, n*nps, /**/ ss_dst);
     }        
 }
@@ -233,7 +233,7 @@ void unpack(const int nps, /**/ Solid *ss_buf, Particle *pp_buf)
     ss_buf[j] = sshalo[0][j];
         
     if (tohst)  memcpy(pp_buf, pshalo[0].data(), nbulk*nps*sizeof(Particle));
-    else CC(cudaMemcpy(pp_buf, pshalo[0].data(), nbulk*nps*sizeof(Particle), H2D));
+    else          cH2D(pp_buf, pshalo[0].data(), nbulk*nps);
         
     // copy and shift halo
     for (int i = 1, start = nbulk; i < 27; ++i)
