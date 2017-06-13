@@ -15,7 +15,7 @@
 #   -field_freq=100 > conf.h
 # :
 # (make clean && u.make -j && make -C ../tools) > /dev/null
-# ./udx
+# u.run
 # bop2test.py bop/solid-00004.bop | awk '{print $1, $2}' | uscale 10 > bop.out.txt
 #
 
@@ -36,7 +36,7 @@
 #   -field_freq=100 > conf.h
 # :
 # (make clean && u.make -j && make -C ../tools) > /dev/null
-# ./udx
+# u.run
 # bop2test.py bop/solid-00004.bop | awk '{print $1, $2}' | uscale 10 > bop.out.txt
 #
 
@@ -57,6 +57,6 @@
 #   -field_freq=100 > conf.h
 # :
 # (make clean && u.make -j && make -C ../tools) > /dev/null
-# ./udx
+# u.run
 # bop2test.py bop/solid-00004.bop | awk '{print $1, $2}' | uscale 10 > bop.out.txt
 #

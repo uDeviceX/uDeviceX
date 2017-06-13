@@ -8,7 +8,7 @@
 # argp conf/couette.h rbcs tend=0.5 part_freq=300 > conf.h
 # :
 # { make clean && u.make -j && make -C ../tools; } > /dev/null
-# ./udx
+# u.run
 # ply2punto ply/rbcs-00003.ply | uscale 100 > ply.out.txt
 #
 
@@ -26,7 +26,7 @@
 # argp conf/couette.h rbcs tend=0.5 part_freq=300 > conf.h
 # :
 # { make clean && u.make -j && make -C ../tools; } > /dev/null
-# ./udx
+# u.run
 # ply2punto ply/rbcs-00003.ply | uscale 100 > ply.out.txt
 
 #### RBC with wall
@@ -42,7 +42,7 @@
 #   field_dumps part_dumps field_freq=300 shear_z > conf.h
 # :
 # { make clean && u.make -j && make -C ../tools; } > /dev/null
-# ./udx
+# u.run
 # ply2punto ply/rbcs-00003.ply | uscale 100 > ply.out.txt
 
 #### one RBC around cylinder
@@ -58,7 +58,7 @@
 #    -field_dumps -part_dumps -field_freq=5000 -pushflow > conf.h
 # :
 # { make clean && u.make -j && make -C ../tools; } > /dev/null
-# ./udx
+# u.run
 # ply2punto ply/rbcs-00001.ply | uscale 100 > ply.out.txt
 
 #### two RBCs around cylinder
@@ -77,7 +77,7 @@
 #        field_freq=5000 pushflow > conf.h
 # :
 # { make clean && u.make -j && make -C ../tools; } > /dev/null
-# ./udx
+# u.run
 # ply2punto ply/rbcs-00001.ply | uscale 10 > ply.out.txt
 #
 
@@ -96,6 +96,6 @@
 #     field_freq=5000 pushflow > conf.h
 # :
 # { make clean && u.make -j && make -C ../tools; } > /dev/null
-# ./udx
+# u.run
 # ply2punto ply/rbcs-00001.ply | uscale 100 > ply.out.txt
 #
