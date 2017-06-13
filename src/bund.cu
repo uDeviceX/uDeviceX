@@ -111,12 +111,17 @@ namespace m {
 #include "bbhalo.impl.h"
 
 #include "ic.impl.h"
-#include "ic_solid.impl.h"
 
 #include "dump.decl.h"
 #include "dump.impl.h"
 
 #include "ply.h"
+
+namespace s {
+#include "s/decl.h"
+#include "s/ic.h"
+#include "s/impl.h"
+}
 
 #include "safety.impl.h"
 

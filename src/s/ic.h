@@ -1,4 +1,4 @@
-namespace ic_solid {
+namespace ic {
 
 enum {X, Y, Z};
 
