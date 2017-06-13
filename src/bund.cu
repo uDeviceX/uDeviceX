@@ -17,8 +17,9 @@
 #include "bund.h"
 #include "dpd-forces.h"
 
-#include <thrust/device_vector.h>
+#include <thrust/device_vector.h> /* for clist.impl.h */
 #include <thrust/sort.h>
+#include <thrust/binary_search.h>
 #include "glb.h"
 
 #include "helper-math/helper_math.h"
@@ -27,6 +28,10 @@
 #include "k/common.h"
 
 namespace x {
+#include "x/k/clist.h"
+#include "x/clist.impl.h"
+#include "x/clist.face.h"
+
 #include "x/k/sdstr.h"
 #include "x/common.h"
 #include "x/common.tmp.h"
