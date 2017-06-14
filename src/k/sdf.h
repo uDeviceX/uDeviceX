@@ -104,13 +104,6 @@ __global__ void fill_keys(const Particle *const pp, const int n,
     key[pid] = (int)(sdf0 >= 0) + (int)(sdf0 > 2);
 }
 
-__global__ void strip_solid4(Particle *const src, const int n, float4 *dst) {
-    int pid = threadIdx.x + blockDim.x * blockIdx.x;
-    if (pid >= n) return;
-    Particle p = src[pid];
-    dst[pid] = make_float4(p.r[0], p.r[1], p.r[2], 0);
-}
-
 __device__ void handle_collision(float currsdf,
                                  float &x, float &y, float &z,
                                  float &vx, float &vy, float &vz) {
