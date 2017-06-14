@@ -3,7 +3,7 @@
 #include <utility>
 #include "dpd/cuda-dpd.h"
 #include "dpd/dpd-rng.h"
-#include "dpd-forces.h"
+#include "force.h"
 
 struct InfoDPD {
     int3 ncells;
@@ -39,7 +39,7 @@ __device__ float3 _dpd_interaction( const int dpid, const float4 xdest, const fl
     float3 pos1 = make_float3(xdest.x, xdest.y, xdest.z), pos2 = make_float3(xsrc.x, xsrc.y, xsrc.z);
     float3 vel1 = make_float3(udest.x, udest.y, udest.z), vel2 = make_float3(usrc.x, usrc.y, usrc.z);
     
-    const float3 strength = compute_dpd_force_traced(SOLVENT_TYPE, SOLVENT_TYPE,
+    const float3 strength = force(SOLVENT_TYPE, SOLVENT_TYPE,
             pos1, pos2, vel1, vel2, myrandnr);
 
     return strength;

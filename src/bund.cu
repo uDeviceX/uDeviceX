@@ -17,7 +17,7 @@
 #include "common.macro.h"
 #include "io.h"
 #include "bund.h"
-#include "dpd-forces.h"
+#include "force.h"
 
 #include <thrust/device_vector.h> /* for clist.impl.h */
 #include <thrust/sort.h>

@@ -1,4 +1,4 @@
-#include "dpd-forces.h"
+#include "force.h"
 #include <cstdio>
 #include <mpi.h>
 #include <utility>
@@ -6,8 +6,9 @@
 #include <conf.h>
 #include "conf.common.h"
 
-__device__ float3 compute_dpd_force_traced(int type1, int type2,
-                                           float3 pos1, float3 pos2, float3 vel1, float3 vel2, float myrandnr) {
+__device__ float3 force(int type1, int type2,
+			float3 pos1, float3 pos2,
+			float3 vel1, float3 vel2, float myrandnr) {
     /* return the DPD interaction force based on particle types
      * type: 0 -- outer solvent, 1 -- inner solvent, 2 -- membrane, 3 -- wall */
 

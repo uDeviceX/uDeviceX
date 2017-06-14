@@ -104,7 +104,7 @@ __global__ void interactions_3tpp(const float2 *const particles, const int np,
         float3 vel1 = make_float3(dst1.y, dst2.x, dst2.y),
             vel2 = make_float3(stmp1.y, stmp2.x, stmp2.y);
 
-        const float3 strength = compute_dpd_force_traced(SOLID_TYPE, SOLVENT_TYPE, pos1, pos2,
+        const float3 strength = force(SOLID_TYPE, SOLVENT_TYPE, pos1, pos2,
                                                          vel1, vel2, myrandnr);
 
         const float xinteraction = strength.x;
@@ -286,7 +286,7 @@ __global__ void interactions_halo(const int nparticles_padded,
             float3 vel1 = make_float3(dst1.y, dst2.x, dst2.y),
                 vel2 = make_float3(stmp1.y, stmp2.x, stmp2.y);
 	
-            const float3 strength = compute_dpd_force_traced(SOLID_TYPE, SOLVENT_TYPE, pos1, pos2,
+            const float3 strength = force(SOLID_TYPE, SOLVENT_TYPE, pos1, pos2,
                                                              vel1, vel2, myrandnr);
 
             const float xinteraction = strength.x;
