@@ -40,20 +40,29 @@ does something wired also calls `load_solid_mesh`?
      int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp)`
 
 * [w] : the rest of of variables [src/s/decl.h]
-pp_hst[MAX_PART_NUM]
-ff_hst[MAX_PART_NUM]
-m_hst
-m_dev
-*tcs_hst,
-*tcs_dev,
-*bboxes_hst
-*bboxes_dev
-*i_pp_hst,
-*i_pp_bb_hst,
-*ss_hst
-*ss_dev
-*ss_bb_hst
-*ss_bb_dev
-*ss_dmphst,
-rr0_hst[3*MAX_PSOLID_NUM]
-*rr0
+
+ s {
+ npp /* number of frozen pp */
+ *pp /* Solid frozen particles */
+ *ff
+ pp_hst[MAX_PART_NUM] /* Solid pp on host */
+ ff_hst[MAX_PART_NUM] /* Solid ff on host */
+ m_hst /* mesh of solid on host */
+ m_dev /* mesh of solid on device */
+ [t]riangle [c]ells [s]tarts / [c]ounts / [i]ds */
+ *tcs_hst, *tcc_hst, *tci_hst /* [t]riangle cell-lists on host */
+ *tcs_dev, *tcc_dev, *tci_dev /* [t]riangle cell-lists on device */
+ *bboxes_hst /* [b]ounding [b]oxes of solid mesh on host */
+ *bboxes_dev /* [b]ounding [b]oxes of solid mesh on device */
+ *i_pp_hst, *i_pp_dev /* particles representing vertices of ALL meshes of solid [i]nterfaces */
+ *i_pp_bb_hst, *i_pp_bb_dev /* buffers for BB multi-nodes */
+ ns /* number of solid objects */
+ nps /* number of particles per solid */
+ *ss_hst /* solid infos on host */
+ *ss_dev /* solid infos on device */
+ *ss_bb_hst /* solid buffer for bounce back, host */
+ *ss_bb_dev /* solid buffer for bounce back, device */
+ buffers of solids for dump this is needed because we dump the BB F and T separetely */
+ *ss_dmphst, *ss_dmpbbhst
+ rr0_hst[3*MAX_PSOLID_NUM] /* initial positions same for all solids */
+ *rr0
