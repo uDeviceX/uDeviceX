@@ -30,25 +30,25 @@
 #include "k/common.h"
 
 namespace x {
-#include "x/k/clist.h"
-#include "x/clist.impl.h"
-#include "x/clist.face.h"
+  #include "x/k/clist.h"
+  #include "x/clist.impl.h"
+  #include "x/clist.face.h"
 
-#include "x/k/sdstr.h"
-#include "x/common.h"
-#include "x/common.tmp.h"
+  #include "x/k/sdstr.h"
+  #include "x/common.h"
+  #include "x/common.tmp.h"
 
-namespace m {
-#include "x/m.impl.h"
-}
+  namespace m {
+    #include "x/m.impl.h"
+  }
 
-#include "x/sdstr.decl.h"
-#include "x/sdstr/ini.h"
-#include "x/sdstr.impl.h"
-#include "x/sdstr/fin.h"
+  #include "x/sdstr.decl.h"
+  #include "x/sdstr/ini.h"
+  #include "x/sdstr.impl.h"
+  #include "x/sdstr/fin.h"
 
-#include "x/x.decl.h" /* an interface */
-#include "x/x.impl.h"
+  #include "x/x.decl.h" /* an interface */
+  #include "x/x.impl.h"
 }
 
 #include "rminmax.h"
