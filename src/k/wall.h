@@ -1,6 +1,6 @@
 namespace k_wall {
 
-#define tex1Dfetch000(a, b) (a)[(b)];
+#define tex1Dfetch000(a, b) a[b];
 
 texture<float4, 1, cudaReadModeElementType> texWallParticles;
 
