@@ -1,6 +1,5 @@
 namespace k_wall {
 
-#define tex1Dfetch000(a, i) (tex1Dfetch((a), (i)))
 texture<float4, 1, cudaReadModeElementType> texWallParticles;
 
 __device__ int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
@@ -84,7 +83,7 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
         int m1 = (int)(i >= scan1);
         int m2 = (int)(i >= scan2);
         int spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
-        float4 stmp0 = tex1Dfetch000(texWallParticles, spid);
+        float4 stmp0 = w_pp[spid];
 
         float  xw = stmp0.uno, yw = stmp0.due, zw = stmp0.tre; /* wall particle */
         float vxw, vyw, vzw;
