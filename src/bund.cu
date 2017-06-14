@@ -126,6 +126,8 @@ namespace m {
 
 #include "safety.impl.h"
 
+#include "restart.h"
+
 #include "k/sim.h"
 #include "sim.decl.h"
 
