@@ -8,10 +8,12 @@ enum {X, Y, Z};
 
 // pattern : basename.rank-step
 #define PATTERN "%s.%04d-%05d"
+// buff size
+#define BS (256)
 
 namespace bopwrite {
 void header(const char *name, const long n, const int step) {
-    char fname[256] = {0};
+    char fname[BS] = {0};
     sprintf(fname, "restart/" PATTERN ".bop", name, m::rank, step);
         
     FILE *f = fopen(fname, "w");
@@ -27,7 +29,7 @@ void header(const char *name, const long n, const int step) {
 }
 
 void data(const char *name, const Particle *pp, const long n, const int step) {
-    char fname[256] = {0};
+    char fname[BS] = {0};
     sprintf(fname, "restart/" PATTERN ".values", name, m::rank, step);
 
     FILE *f = fopen(fname, "w");
@@ -57,7 +59,7 @@ void write(const char *basename, const Particle *pp, const long n, const int ste
 
 void read (const char *basename, Particle *pp, int *n) {
     long np = 0;
-    char bop[256] = {0}, val[256] = {0};
+    char bop[BS] = {0}, val[BS] = {0};
     sprintf(bop, "%s.bop", basename);
     sprintf(val, "%s.values", basename);
     
@@ -66,12 +68,27 @@ void read (const char *basename, Particle *pp, int *n) {
     *n = np;
 }
 
-void write(const char *fname, const Solid *ss, const int  n) {
+void write(const char *basename, const Solid *ss, const long n, const int step) {
+    char fname[BS] = {0};
+    sprintf(fname, "restart/" PATTERN ".solid", basename, m::rank, step);
 
+    FILE *f = fopen(fname, "r");
+    fprintf(f, "%ld\n", n);
+    fwrite(ss, sizeof(Solid), n, f);
+    fclose(f);
 }
 
-void read (const char *fname, Solid *ss, int *n) {
+void read (const char *basename, Solid *ss, int *n, const int step) {
+    long ns = 0;
+    char fname[BS] = {0};
+    sprintf(fname, "restart/" PATTERN ".solid", basename, m::rank, step);
+    
+    FILE *f = fopen(fname, "r");
+    fscanf(f, "%ld\n", &ns);
+    fread(ss, sizeof(Solid), ns, f);
+    fclose(f);
 
+    *n = ns;
 }
 
 } // namespace restart
