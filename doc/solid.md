@@ -4,7 +4,7 @@
 
 * `ff`: is a variable in `sim::`
 
-* [p] : `pp[]`, `npp`, `i_pp[]`, `ss[]`
+* [p] : `pp[]`, `npp`, `i_pp[]`, `ss[]`, `ns`
 * [z] : no
 
 If I get [p] from somewhere can I call functions of solid::?
@@ -22,8 +22,6 @@ m_dev
 *bboxes_dev
 *i_pp_hst,
 *i_pp_bb_hst,
-ns
-nps
 *ss_hst
 *ss_dev
 *ss_bb_hst
