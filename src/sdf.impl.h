@@ -19,7 +19,7 @@ void init() {
     
     int L[3] = {XS, YS, ZS};
     int MARGIN[3] = {XWM, YWM, ZWM};
-    int TEXTURESIZE[3] = {XTE, YTE, ZTE};
+    int TE[3] = {XTE, YTE, ZTE};
     MSG0("sampling the geometry file");
     {
         float start[3], spacing[3];
@@ -27,11 +27,11 @@ void init() {
             start[c] = N[c] * (m::coords[c] * L[c] - MARGIN[c]) /
                 (float)(m::dims[c] * L[c]);
             spacing[c] = N[c] * (L[c] + 2 * MARGIN[c]) /
-                (float)(m::dims[c] * L[c]) / (float)TEXTURESIZE[c];
+                (float)(m::dims[c] * L[c]) / (float)TE[c];
         }
         float amplitude_rescaling = (XS /*+ 2 * XWM*/) /
             (extent[0] / m::dims[0]);
-        field::sample(start, spacing, TEXTURESIZE, N, amplitude_rescaling, grid_data,
+        field::sample(start, spacing, TE, N, amplitude_rescaling, grid_data,
                       field);
     }
 
