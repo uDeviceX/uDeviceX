@@ -1,7 +1,5 @@
 namespace k_wall {
 
-texture<float4, 1, cudaReadModeElementType> texWallParticles;
-
 __device__ int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
 
 __global__ void interactions_3tpp(const float2 *const pp, const int np,

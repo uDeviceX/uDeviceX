@@ -1,7 +1,5 @@
 namespace wall {
 int init(Particle *pp, int n) {
-    setup_texture(k_wall::texWallParticles, float4);
-
     thrust::device_vector<int> keys(n);
     k_sdf::fill_keys<<<k_cnf(n)>>>(pp, n, thrust::raw_pointer_cast(&keys[0]));
     thrust::sort_by_key(keys.begin(), keys.end(), thrust::device_ptr<Particle>(pp));
@@ -118,17 +116,9 @@ void bounce(Particle *const p, const int n) {
 
 void interactions(const int type, const Particle *const p, const int n,
                   Force *const acc) {
-    // cellsstart and cellscount IGNORED for now
     if (n > 0 && w_n > 0) {
-        size_t textureoffset;
-        CC(cudaBindTexture(&textureoffset,
-                           &k_wall::texWallParticles, w_pp,
-                           &k_wall::texWallParticles.channelDesc,
-                           sizeof(float4) * w_n));
-
         k_wall::interactions_3tpp <<<k_cnf(3 * n)>>>
 	  ((float2 *)p, n, w_n, (float *)acc, trunk->get_float(), type, wall_cells->start, (float4*)w_pp);
-        CC(cudaUnbindTexture(k_wall::texWallParticles));
     }
 }
 
