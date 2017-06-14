@@ -16,7 +16,7 @@ main () {
     n=`whoami` h=`u.host`
 
     c=sys/$n.$h
-    if test ! -f $c; then c=sys/$dn.$h   ; fi
+    if test ! -f $c; then c=sys/$dn.$h;  fi
     if test ! -f $c; then c=sys/$dn.$dh; fi
 
     msg "cp $c  config.mk"; cp $c  config.mk
