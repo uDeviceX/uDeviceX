@@ -3,7 +3,7 @@
 ## conventions
 
 Variables held by `sim` should be stored into abstract structures to facilitate readibility.
-Wrapper functions take these abstract structures as input and dispatch the variables to finer functions, so one can see the input/output of thes functions.
+Wrapper functions take these abstract structures as arguments and dispatch the variables to finer functions, so one can see the input/output of these functions.
 
 There are 3 kinds of abstract structures:
 
