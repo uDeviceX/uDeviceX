@@ -1,3 +1,5 @@
+S = . # a path to src/ directory
+
 # system settings : see src/configure and src/sys/*
 include sys/common.mk
 include config.mk
@@ -17,8 +19,8 @@ slevel   ?= -2
 NVCCFLAGS += -std=c++11 -I.
 LIBS      += -lcudart
 
-OBJS = 	bund.o common.o dpd-forces.o glb.o io.o main.o sminmax.o collision.o tcells.o mrescue.o mbounce.o mesh.o m.o \
-		solid.o ply.o rminmax.o field.o dpd.o
+OBJS = bund.o collision.o common.o dpd-forces.o dpd.o field.o glb.o io.o main.o \
+	mbounce.o mesh.o m.o mrescue.o ply.o rminmax.o sminmax.o solid.o tcells.o
 
 ifeq ($(h5),0)
 NVCCFLAGS += -DNO_H5
