@@ -1,5 +1,5 @@
 namespace k_wall {
-
+  enum {X, Y, Z};
 __device__ int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
 
 __global__ void interactions_3tpp(const float2 *const pp, const int np,
@@ -84,7 +84,8 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
         int spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
         float4 stmp0 = w_pp[spid];
 
-        float  xw = stmp0.uno, yw = stmp0.due, zw = stmp0.tre; /* wall particle */
+	const float *r  = w_pp000[spid].r;
+        float  xw = r[X], yw = r[Y], zw = r[Z]; /* wall particle */
         float vxw, vyw, vzw;
         k_wvel::vell(xw, yw, zw, &vxw, &vyw, &vzw);
         float rnd = Logistic::mean0var1(seed, pid, spid);
