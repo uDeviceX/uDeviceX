@@ -37,7 +37,7 @@ static void gen_ne(MPI_Comm cart, /* */ int* rnk_ne, int* ank_ne)
     }
 }
 
-void ini() {
+void init() {
     mpDeviceMalloc(&bulk);
 
     for (int i = 0; i < 27; i++) rbuf[i] = new PinnedHostBuffer1<Particle>;
@@ -174,7 +174,7 @@ void unpack(Particle *pp, int nv) {
     _post_recvcnt();
 }
 
-void fin() {
+void close() {
     MPI_Comm_free(&cart);
     for (int i = 0; i < 27; i++) delete rbuf[i];
     for (int i = 0; i < 27; i++) delete sbuf[i];

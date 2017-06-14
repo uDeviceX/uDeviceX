@@ -247,7 +247,7 @@ void init() {
     if (rbcs) CC(cudaMalloc(&r::av, MAX_CELLS_NUM));
 
     rbc::setup(r::faces);
-    rdstr::ini();
+    rdstr::init();
     DPD::init();
     fsi::init();
     sdstr::init();
@@ -255,7 +255,6 @@ void init() {
     bbhalo::init();
     cnt::init();
     rex::init();
-
     dump::init();
 
     o::cells   = new x::Clist(XS, YS, ZS);
@@ -274,7 +273,7 @@ void init() {
 
     if (solids) {
         mrescue::init(MAX_PART_NUM);
-        s::ini();
+        s::init();
     }
 
     o::n = ic::gen(o::pp_hst);
@@ -373,7 +372,7 @@ void close() {
     sdstr::close();
     x::fin();
     
-    rdstr::fin();
+    rdstr::close();
     bbhalo::close();
     cnt::close();
     DPD::close();
@@ -401,7 +400,7 @@ void close() {
 	CC(cudaFree(r::av));
     }
 
-    if (solids) s::fin();
+    if (solids) s::close();
 }
 
 }

@@ -88,12 +88,12 @@ void create(Particle *opp, int *on) {
     MC(MPI_Barrier(m::cart));
 }
 
-void ini() {
+void init() {
     npp = ns = nps = 0;
     allocate();
 }
 
-void fin() {
+void close() {
     deallocate();
 }
 }
