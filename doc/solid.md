@@ -27,6 +27,8 @@ or
    are not allowed to keep anything in [w]
 
 ## sim.impl
+Notation: [+] if it follows conventions.
+
 * `remove_solids_from_wall` [-]
 uses `s::m_dev.nv`
 
