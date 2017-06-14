@@ -1,4 +1,7 @@
 namespace k_wall {
+
+#define tex1Dfetch000(a, b) (tex1Dfetch((a), (b)))
+
 texture<float4, 1, cudaReadModeElementType> texWallParticles;
 texture<int, 1, cudaReadModeElementType> start;
 
@@ -46,18 +49,18 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
 
         int cid0 = xbase - 1 + XCELLS * (ybase - 1 + YCELLS * (zbase - 1 + zplane));
 
-        spidbase = tex1Dfetch(start, cid0);
-        int count0 = tex1Dfetch(start, cid0 + 3) - spidbase;
+        spidbase = tex1Dfetch000(start, cid0);
+        int count0 = tex1Dfetch000(start, cid0 + 3) - spidbase;
 
         int cid1 = cid0 + XCELLS;
-        deltaspid1 = tex1Dfetch(start, cid1);
-        int count1 = tex1Dfetch(start, cid1 + 3) - deltaspid1;
+        deltaspid1 = tex1Dfetch000(start, cid1);
+        int count1 = tex1Dfetch000(start, cid1 + 3) - deltaspid1;
 
         int cid2 = cid0 + XCELLS * 2;
-        deltaspid2 = tex1Dfetch(start, cid2);
+        deltaspid2 = tex1Dfetch000(start, cid2);
         int count2 = cid2 + 3 == NCELLS
             ? w_n
-            : tex1Dfetch(start, cid2 + 3) - deltaspid2;
+            : tex1Dfetch000(start, cid2 + 3) - deltaspid2;
 
         scan1 = count0;
         scan2 = count0 + count1;
