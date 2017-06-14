@@ -11,7 +11,7 @@ enum {X, Y, Z};
 // buff size
 #define BS (256)
 
-// check fprintf
+// check fprintf (BS-1 for \0 character)
 #define CSPR(a) do {                                        \
         int check = a;                                      \
         if (check < 0 || check >= BS-1)                     \
@@ -23,7 +23,7 @@ enum {X, Y, Z};
 namespace bopwrite {
 void header(const char *name, const long n, const int step) {
     char fname[BS] = {0};
-    sprintf(fname, "restart/" PATTERN ".bop", name, m::rank, step);
+    CSPR(sprintf(fname, "restart/" PATTERN ".bop", name, m::rank, step));
     
     FILE *f = fopen(fname, "w"); CF(f);
 
@@ -36,7 +36,7 @@ void header(const char *name, const long n, const int step) {
 
 void data(const char *name, const Particle *pp, const long n, const int step) {
     char fname[BS] = {0};
-    sprintf(fname, "restart/" PATTERN ".values", name, m::rank, step);
+    CSPR(sprintf(fname, "restart/" PATTERN ".values", name, m::rank, step));
      
     FILE *f = fopen(fname, "w"); CF(f);
     fwrite((float *) pp, sizeof(float), sizeof(Particle)/sizeof(float) * n, f);
@@ -66,8 +66,8 @@ void write(const char *basename, const Particle *pp, const long n, const int ste
 void read(const char *basename, Particle *pp, int *n) {
     long np = 0;
     char bop[BS] = {0}, val[BS] = {0};
-    sprintf(bop, "%s.bop", basename);
-    sprintf(val, "%s.values", basename);
+    CSPR(sprintf(bop, "%s.bop", basename));
+    CSPR(sprintf(val, "%s.values", basename));
     
     bopread::header(bop, &np);
     bopread::data(val, np, pp);
@@ -76,7 +76,7 @@ void read(const char *basename, Particle *pp, int *n) {
 
 void write(const char *basename, const Solid *ss, const long n, const int step) {
     char fname[BS] = {0};
-    sprintf(fname, "restart/" PATTERN ".solid", basename, m::rank, step);
+    CSPR(sprintf(fname, "restart/" PATTERN ".solid", basename, m::rank, step));
         
     FILE *f = fopen(fname, "r"); CF(f);
     fprintf(f, "%ld\n", n);
@@ -87,7 +87,7 @@ void write(const char *basename, const Solid *ss, const long n, const int step) 
 void read(const char *basename, Solid *ss, int *n, const int step) {
     long ns = 0;
     char fname[BS] = {0};
-    sprintf(fname, "restart/" PATTERN ".solid", basename, m::rank, step);
+    CSPR(sprintf(fname, "restart/" PATTERN ".solid", basename, m::rank, step));
     
     FILE *f = fopen(fname, "r"); CF(f);
     fscanf(f, "%ld\n", &ns);
