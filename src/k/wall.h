@@ -94,8 +94,8 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
         // check for particle types and compute the DPD force
 
         float3 strength = force(type, WALL_TYPE,
-                                                   mf3(x ,  y,  z), mf3( xw,  yw,  zw),
-                                                   mf3(vx, vy, vz), mf3(vxw, vyw, vzw), rnd);
+				mf3(x ,  y,  z), mf3( xw,  yw,  zw),
+				mf3(vx, vy, vz), mf3(vxw, vyw, vzw), rnd);
         xforce += strength.x; yforce += strength.y; zforce += strength.z;
     }
 #undef zig
