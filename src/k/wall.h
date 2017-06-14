@@ -3,8 +3,6 @@ namespace k_wall {
 #define tex1Dfetch000(a, b) (a)[(b)];
 
 texture<float4, 1, cudaReadModeElementType> texWallParticles;
-texture<int, 1, cudaReadModeElementType> start;
-
 
 __device__ int minmax(int lo, int hi, int a) {
     return min(hi, max(lo, a));
