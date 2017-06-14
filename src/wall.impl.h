@@ -91,22 +91,22 @@ int init(Particle *pp, int n) {
 
     w_n = solid_local.size() + solid_remote.S;
 
-    Particle *solid;
-    CC(cudaMalloc(&solid, sizeof(Particle) * w_n));
-    cD2D(solid, thrust::raw_pointer_cast(&solid_local[0]), solid_local.size());
-    cD2D(solid + solid_local.size(), solid_remote.D, solid_remote.S);
+    Particle *w_pp000;
+    CC(cudaMalloc(&w_pp000, sizeof(Particle) * w_n));
+    cD2D(w_pp000, thrust::raw_pointer_cast(&solid_local[0]), solid_local.size());
+    cD2D(w_pp000 + solid_local.size(), solid_remote.D, solid_remote.S);
 
     cells = new x::Clist(XS + 2 * XWM,
 			      YS + 2 * YWM,
 			      ZS + 2 * ZWM);
-    if (w_n > 0) cells->build(solid, w_n);
+    if (w_n > 0) cells->build(w_pp000, w_n);
 
     CC(cudaMalloc(&w_pp, sizeof(float4) * w_n));
 
     MSG0("consolidating wall particles");
     if (w_n > 0)
-      k_sdf::strip_solid4<<<k_cnf(w_n)>>>(solid, w_n, w_pp);
-    CC(cudaFree(solid));
+      k_sdf::strip_solid4<<<k_cnf(w_n)>>>(w_pp000, w_n, w_pp);
+    CC(cudaFree(w_pp000));
     return nsurvived;
 } /* end of ini */
 
