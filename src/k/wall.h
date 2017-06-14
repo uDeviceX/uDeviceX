@@ -76,8 +76,6 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
         int m1 = (int)(i >= scan1);
         int m2 = (int)(i >= scan2);
         int spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
-        float4 stmp0 = w_pp[spid];
-
 	const float *r  = w_pp000[spid].r;
         float  xw = r[X], yw = r[Y], zw = r[Z]; /* wall particle */
         float vxw, vyw, vzw;

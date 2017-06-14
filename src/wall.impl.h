@@ -98,10 +98,7 @@ int init(Particle *pp, int n) {
     cells = new x::Clist(XS + 2 * XWM, YS + 2 * YWM, ZS + 2 * ZWM);
     if (w_n > 0) cells->build(w_pp000, w_n);
 
-    CC(cudaMalloc(&w_pp, sizeof(float4) * w_n));
-
     MSG0("consolidating wall particles");
-    if (w_n > 0) k_sdf::strip_solid4<<<k_cnf(w_n)>>>(w_pp000, w_n, w_pp);
     return nsurvived;
 } /* end of ini */
 
