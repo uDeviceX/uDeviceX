@@ -1,14 +1,32 @@
-# solid
+# decl
 
-## decl
-
-* `ff`: is a variable in `sim::`
+* `ff`: a usual variable in `sim::`
 
 * [p] : `pp[]`, `npp`, `i_pp[]`, `ss[]`, `ns`
 or
 * [z] : no
+* [w] : all others (see bellow)
 
-### sim.impl
+## plan for sim::
+   [p] = read/create(...)
+   [w] = solid::allocate([p])
+
+   [p] = solid::func([p], [w])
+
+   **read/write**
+   [p] = not_solid::func([p])
+
+   **read**
+   [p] = not_solid::func([p])
+
+   solid::deallocate([w])
+   deallocate([p])
+
+## plan for solid::
+	solid::func([p], [w])
+   are not allowed to keep anything in [w]
+
+## sim.impl
 * `remove_solids_from_wall` [-]
 uses `s::m_dev.nv`
 
@@ -23,7 +41,7 @@ uses [p]
 * `update_solid0()`
 does not use anything ?
 
-### impl
+## impl
 * `load_solid_mesh(const char *fname)` [-]
 allocates `m_dev.tt`, `m_dev.tt`
 
@@ -34,16 +52,17 @@ allocates `m_dev.tt`, `m_dev.tt`
 * `create(Particle *opp, int *on)`
 does something wired also calls `load_solid_mesh`?
 
-### ic
+## ic
 * `set_ids(const int ns, Solid *ss_hst)`
 * `void init(const char *fname, const Mesh m, /**/
-     int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp)`
+	 int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp)`
 
-* [w] : the rest of of variables [src/s/decl.h]
+## [w] variables
+> Not all [p] variables removed.
+> 14:58 if DEVICE_SOLID is not defined, ss_hst is in [p]
+> 14:58 otherwise, it may be in zip or [w] and ss_dev is in [p]
 
- s {
- npp /* number of frozen pp */
- *pp /* Solid frozen particles */
+``` C
  *ff
  pp_hst[MAX_PART_NUM] /* Solid pp on host */
  ff_hst[MAX_PART_NUM] /* Solid ff on host */
@@ -56,7 +75,6 @@ does something wired also calls `load_solid_mesh`?
  *bboxes_dev /* [b]ounding [b]oxes of solid mesh on device */
  *i_pp_hst, *i_pp_dev /* particles representing vertices of ALL meshes of solid [i]nterfaces */
  *i_pp_bb_hst, *i_pp_bb_dev /* buffers for BB multi-nodes */
- ns /* number of solid objects */
  nps /* number of particles per solid */
  *ss_hst /* solid infos on host */
  *ss_dev /* solid infos on device */
@@ -66,3 +84,4 @@ does something wired also calls `load_solid_mesh`?
  *ss_dmphst, *ss_dmpbbhst
  rr0_hst[3*MAX_PSOLID_NUM] /* initial positions same for all solids */
  *rr0
+```
