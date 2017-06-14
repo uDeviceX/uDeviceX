@@ -4,12 +4,29 @@
 
 * `ff`: is a variable in `sim::`
 
-* [p] : `pp[]`, `npp`, `i_pp[]`, `ss[]`, `ns`
+* [p] : `pp[]`, `npp`
+
+* [z] : `i_pp[]`, `ss[]`, `ns`
+or
 * [z] : no
 
-If I get [p] from somewhere can I call functions of solid::?
-I do not see `ss[]` and `i_pp[]` variable.  Is it `ss_hst[]`?
+### sim.impl
+* `remove_solids_from_wall`
+* `set_ids_solids`
+* `k_sim::clear_velocity`
 
+### impl
+* `load_solid_mesh`
+* `allocate`
+* `allocate_tcells`
+* `deallocate`
+* `create(Particle *opp, int *on)`
+* `load_solid_mesh(const char *fname)`
+* `set_ids`
+
+### ic
+* `set_ids(const int ns, Solid *ss_hst)`
+* `void init(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp)`
 
 * [w] : the rest of of variables [src/s/decl.h]
 pp_hst[MAX_PART_NUM]
