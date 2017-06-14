@@ -69,11 +69,6 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
 
 #define zig x
 #define zag y
-
-#define uno x
-#define due y
-#define tre z
-
 #define mf3 make_float3
     float  x = dst0.zig,  y = dst0.zag,  z = dst1.zig; /* bulk particle  */
     float vx = dst1.zag, vy = dst2.zig, vz = dst2.zag;
@@ -99,11 +94,6 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
     }
 #undef zig
 #undef zag
-
-#undef uno
-#undef due
-#undef tre
-#undef mf3
     atomicAdd(acc + 3 * pid + 0, xforce);
     atomicAdd(acc + 3 * pid + 1, yforce);
     atomicAdd(acc + 3 * pid + 2, zforce);
