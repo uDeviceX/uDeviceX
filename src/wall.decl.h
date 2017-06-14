@@ -3,16 +3,16 @@ enum {
     YSIZE_WALLCELLS = 2 * YWM + YS,
     ZSIZE_WALLCELLS = 2 * ZWM + ZS,
 
-    XTEXTURESIZE = 256,
-    _YTEXTURESIZE = ((YS + 2 * YWM) * XTEXTURESIZE +
+    XTE = 256,
+    _YTEXTURESIZE = ((YS + 2 * YWM) * XTE +
                      XS + 2 * XWM - 1) /
     (XS + 2 * XWM),
 
-    YTEXTURESIZE = 16 * ((_YTEXTURESIZE + 15) / 16),
-    _ZTEXTURESIZE = ((ZS + 2 * ZWM) * XTEXTURESIZE +
+    YTE = 16 * ((_YTEXTURESIZE + 15) / 16),
+    _ZTEXTURESIZE = ((ZS + 2 * ZWM) * XTE +
                      XS + 2 * XWM - 1) /
     (XS + 2 * XWM),
-    ZTEXTURESIZE = 16 * ((_ZTEXTURESIZE + 15) / 16),
+    ZTE = 16 * ((_ZTEXTURESIZE + 15) / 16),
 };
 
 namespace wall {

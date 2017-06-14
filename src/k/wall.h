@@ -19,7 +19,7 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
     float2 dst1 = pp[3 * pid + 1];
 
     float interacting_threshold =
-        -1 - 1.7320f * ((float)XSIZE_WALLCELLS / (float)XTEXTURESIZE);
+        -1 - 1.7320f * ((float)XSIZE_WALLCELLS / (float)XTE);
 
     if (k_sdf::cheap_sdf(dst0.x, dst0.y, dst1.x) <= interacting_threshold) return;
 

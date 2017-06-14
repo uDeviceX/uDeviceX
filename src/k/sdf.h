@@ -4,7 +4,7 @@ texture<float, 3, cudaReadModeElementType> texSDF;
 __device__ float sdf(float x, float y, float z) {
     int L[3] = {XS, YS, ZS};
     int MARGIN[3] = {XWM, YWM, ZWM};
-    int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
+    int TEXSIZES[3] = {XTE, YTE, ZTE};
 
     float tc[3], lmbd[3], r[3] = {x, y, z};
     for (int c = 0; c < 3; ++c) {
@@ -38,7 +38,7 @@ __device__ float sdf(float x, float y, float z) {
 __device__ float cheap_sdf(float x, float y, float z)  {
     int L[3] = {XS, YS, ZS};
     int MARGIN[3] = {XWM, YWM, ZWM};
-    int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
+    int TEXSIZES[3] = {XTE, YTE, ZTE};
 
     float tc[3], r[3] = {x, y, z};
     for (int c = 0; c < 3; ++c)
@@ -52,7 +52,7 @@ __device__ float cheap_sdf(float x, float y, float z)  {
 __device__ float3 ugrad_sdf(float x, float y, float z) {
     int L[3] = {XS, YS, ZS};
     int MARGIN[3] = {XWM, YWM, ZWM};
-    int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
+    int TEXSIZES[3] = {XTE, YTE, ZTE};
 
     float tc[3], fcts[3], r[3] = {x, y, z};
     for (int c = 0; c < 3; ++c)
@@ -73,7 +73,7 @@ __device__ float3 ugrad_sdf(float x, float y, float z) {
 __device__ float3 grad_sdf(float x, float y, float z) {
     int L[3] = {XS, YS, ZS};
     int MARGIN[3] = {XWM, YWM, ZWM};
-    int TEXSIZES[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
+    int TEXSIZES[3] = {XTE, YTE, ZTE};
 
     float tc[3], r[3] = {x, y, z};
     for (int c = 0; c < 3; ++c)
@@ -177,7 +177,7 @@ __global__ void bounce(float2 *const pp, int nparticles) {
         float mycheapsdf = cheap_sdf(data0.x, data0.y, data1.x);
 
         if (mycheapsdf >=
-            -1.7320f * ((float)XSIZE_WALLCELLS / (float)XTEXTURESIZE)) {
+            -1.7320f * ((float)XSIZE_WALLCELLS / (float)XTE)) {
             float currsdf = sdf(data0.x, data0.y, data1.x);
 
             float2 data2 = pp[pid * 3 + 2];

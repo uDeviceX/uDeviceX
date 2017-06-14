@@ -14,12 +14,12 @@ void init() {
     field::ini_dims("sdf.dat", N, extent);
     const int np = N[0] * N[1] * N[2];
     float *grid_data = new float[np];
-    float *field     = new float[XTEXTURESIZE * YTEXTURESIZE * ZTEXTURESIZE];
+    float *field     = new float[XTE * YTE * ZTE];
     field::ini_data("sdf.dat", np, grid_data);    
     
     int L[3] = {XS, YS, ZS};
     int MARGIN[3] = {XWM, YWM, ZWM};
-    int TEXTURESIZE[3] = {XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE};
+    int TEXTURESIZE[3] = {XTE, YTE, ZTE};
     MSG0("sampling the geometry file");
     {
         float start[3], spacing[3];
@@ -39,14 +39,14 @@ void init() {
       
     cudaChannelFormatDesc fmt = cudaCreateChannelDesc<float>();
     CC(cudaMalloc3DArray
-       (&arrSDF, &fmt, make_cudaExtent(XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE)));
+       (&arrSDF, &fmt, make_cudaExtent(XTE, YTE, ZTE)));
 
     cudaMemcpy3DParms copyParams = {0};
     copyParams.srcPtr = make_cudaPitchedPtr
-        ((void *)field, XTEXTURESIZE * sizeof(float), XTEXTURESIZE, YTEXTURESIZE);
+        ((void *)field, XTE * sizeof(float), XTE, YTE);
 
     copyParams.dstArray = arrSDF;
-    copyParams.extent = make_cudaExtent(XTEXTURESIZE, YTEXTURESIZE, ZTEXTURESIZE);
+    copyParams.extent = make_cudaExtent(XTE, YTE, ZTE);
     copyParams.kind = H2D;
     CC(cudaMemcpy3D(&copyParams));
     
