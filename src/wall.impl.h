@@ -96,10 +96,10 @@ int init(Particle *pp, int n) {
     cD2D(solid, thrust::raw_pointer_cast(&solid_local[0]), solid_local.size());
     cD2D(solid + solid_local.size(), solid_remote.D, solid_remote.S);
 
-    wall_cells = new x::Clist(XS + 2 * XWM,
+    cells = new x::Clist(XS + 2 * XWM,
 			      YS + 2 * YWM,
 			      ZS + 2 * ZWM);
-    if (w_n > 0) wall_cells->build(solid, w_n);
+    if (w_n > 0) cells->build(solid, w_n);
 
     CC(cudaMalloc(&w_pp, sizeof(float4) * w_n));
 
@@ -118,11 +118,9 @@ void interactions(const int type, const Particle *const p, const int n,
                   Force *const acc) {
     if (n > 0 && w_n > 0) {
         k_wall::interactions_3tpp <<<k_cnf(3 * n)>>>
-	  ((float2 *)p, n, w_n, (float *)acc, trunk->get_float(), type, wall_cells->start, (float4*)w_pp);
+	  ((float2 *)p, n, w_n, (float *)acc, trunk->get_float(), type, cells->start, (float4*)w_pp);
     }
 }
 
-void close () {
-    delete wall_cells;
-}
+void close () { delete cells; }
 }
