@@ -2,7 +2,10 @@
 
 ## conventions
 
-There are 3 kinds of variables:
+Variables held by sim should stored into abstract structures to facilitate readibility.
+Wrapper functions take thes abstract structures as input and dispatch the variables to finer functions, so one can see the input/output of thes functions.
+
+There are 3 kinds of abstract structures:
 
 * [p] : states of the simulation variables such as `pp`, `np` etc.  
    They can be updated by other functions (ex: `[p] = update([p])`)
