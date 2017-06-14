@@ -34,8 +34,21 @@ void data(const char *name, const Particle *pp, const long n, const int step) {
     fwrite((float *) pp, sizeof(float), sizeof(Particle)/sizeof(float) * n, f);
     fclose(f);
 }
-} // namespace write
+} // namespace bopwrite
 
+namespace bopread {
+void header(const char *name, long *n) {
+    FILE *f = fopen(name, "r");
+    if (fscanf(f, "%ld\n", n) != 1) ERR("wrong format\n");
+    fclose(f);
+}
+
+void data(const char *name, const long n, Particle *pp) {
+    FILE *f = fopen(name, "r");
+    fread(pp, sizeof(Particle), n, f);
+    fclose(f);
+}
+} // namespace bopread
 
 void write(const char *basename, const Particle *pp, const long n, const int step) {
     bopwrite::header(basename, n, step);
@@ -43,7 +56,14 @@ void write(const char *basename, const Particle *pp, const long n, const int ste
 }
 
 void read (const char *basename, Particle *pp, int *n) {
+    long np = 0;
+    char bop[256] = {0}, val[256] = {0};
+    sprintf(bop, "%s.bop", basename);
+    sprintf(val, "%s.values", basename);
     
+    bopread::header(bop, &np);
+    bopread::data(val, pp);
+    *n = np;
 }
 
 void write(const char *fname, const Solid *ss, const int  n) {
