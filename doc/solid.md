@@ -8,6 +8,8 @@
 * [z] : no
 
 If I get [p] from somewhere can I call functions of solid::?
+I do not see `ss[]` and `i_pp[]` variable.  Is it `ss_hst[]`?
+
 
 * [w] : the rest of of variables [src/s/decl.h]
 pp_hst[MAX_PART_NUM]
