@@ -8,7 +8,7 @@
 #include "dpd/cuda-dpd.h"
 #include "dpd/dpd-rng.h"
 
-#include "conf.h"
+#include <conf.h>
 #include "conf.common.h"
 #include "m.h"     /* MPI */
 #include "basetags.h"

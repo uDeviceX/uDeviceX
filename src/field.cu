@@ -1,6 +1,6 @@
 #include "common.h"
 #include "io.h"
-#include "conf.h"
+#include <conf.h>
 #include "m.h"
 #include "field.h"
 

@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <mpi.h>
 #include <map>
-#include "conf.h"
+#include <conf.h>
 #include "m.h"     /* MPI */
 #include "common.h"
 #include "bund.h"

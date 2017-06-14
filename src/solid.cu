@@ -2,7 +2,7 @@
 #include "gsl.impl.h"
 
 #include "common.h"
-#include "conf.h"
+#include <conf.h>
 #include "conf.common.h"
 
 #include "solid.h"

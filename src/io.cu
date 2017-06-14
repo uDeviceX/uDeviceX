@@ -6,7 +6,7 @@
 
 #include <sstream>
 #include <vector>
-#include "conf.h"
+#include <conf.h>
 #include "conf.common.h"
 #include "m.h"     /* MPI */
 #include "common.h"
