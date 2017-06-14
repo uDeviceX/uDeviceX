@@ -28,8 +28,8 @@ NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel)
 
 # I have some device code in OBJS. I have to link it separatly
 udx:   $(OBJS)
-	$(NVCC)  $(ARCH) -dlink $(OBJS) $(LIBS) -o gpuCode.o
-	$(LINK)  $(LDFLAGS) gpuCode.o $(OBJS) $(LIBS) -o $@
+	$(NVCC)  $(ARCH) -dlink $(OBJS) $(NVCCLIBS) -o gpuCode.o
+	$(LINK)  gpuCode.o $(OBJS) $(LIBS) -o $@
 
 # a rule for the most of *.cu files
 %.o:              %.cu;          $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT)     $< -c -o $@
