@@ -26,6 +26,10 @@ inline void mpiAssert(int code, const char *file, int line) {
 #define MAX_FACE_NUM 50000
 #define MAX_VERT_NUM 10000
 
+/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less
+   than `m') */
+#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
+
 #define dSync() CC(cudaDeviceSynchronize())
 
 /* a common kernel execution configuration */
