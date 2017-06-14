@@ -20,7 +20,25 @@ There are 3 kinds of abstract structures:
 * [w] : Work variables. ex: exchange buffers in distribute
   functions.
 
-## example
+## example 1
+
+Let `u::` be a namespace with functions which follow the
+conventions above.
+
+sim::pp : solvent coordinates and velocity
+
+sim::ww = upd::allocate_work()
+
+sim::pp = sim::init_solvent()
+sim::zz  = upd::p2z(sim::pp)
+
+sim::ff = upd::get_force(sim::pp, sim::zz) # force  : a local for sim:: it does not have to follow conventions
+
+[sim::pp, sim::zz] = upd::new_pos(sim::pp, sim::zz, sim::ff)   # have to pass and recive also zip
+
+[sim::pp, sim::zz] = upd::distrib(sim::pp, sim::zz, sim::ww) # can be only one call
+
+## example 2
 
 Let `u::` be a namespace with functions which follow the
 conventions above.
