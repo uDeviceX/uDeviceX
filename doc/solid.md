@@ -1,11 +1,31 @@
 # solid
 
-
 ## decl
 
-### used by `sim::`
+* `ff`: is a variable in `sim::`
 
-s::pp
-s::ns
-s::ss_hst
-s::ss_dev
+* [p] : `pp[]`, `npp`, `i_pp[]`, `ss[]`
+* [z] : no
+
+If I get [p] from somewhere can I call functions of solid::?
+
+* [w] : the rest of of variables [src/s/decl.h]
+pp_hst[MAX_PART_NUM]
+ff_hst[MAX_PART_NUM]
+m_hst
+m_dev
+*tcs_hst,
+*tcs_dev,
+*bboxes_hst
+*bboxes_dev
+*i_pp_hst,
+*i_pp_bb_hst,
+ns
+nps
+*ss_hst
+*ss_dev
+*ss_bb_hst
+*ss_bb_dev
+*ss_dmphst,
+rr0_hst[3*MAX_PSOLID_NUM]
+*rr0
