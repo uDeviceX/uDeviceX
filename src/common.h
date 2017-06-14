@@ -30,10 +30,10 @@ inline void mpiAssert(int code, const char *file, int line) {
    than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
-#define dSync() CC(cudaDeviceSynchronize())
-
 /* a common kernel execution configuration */
 #define k_cnf(n) ceiln((n), 128), 128
+
+#define dSync() CC(cudaDeviceSynchronize())
 
 /* a common textrue setup */
 #define setup_texture(T, TYPE) do {                         \
