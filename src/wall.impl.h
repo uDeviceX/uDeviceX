@@ -91,12 +91,12 @@ int init(Particle *pp, int n) {
 
     w_n = solid_local.size() + solid_remote.S;
 
-    CC(cudaMalloc(&w_pp000, sizeof(Particle) * w_n));
-    cD2D(w_pp000, thrust::raw_pointer_cast(&solid_local[0]), solid_local.size());
-    cD2D(w_pp000 + solid_local.size(), solid_remote.D, solid_remote.S);
+    CC(cudaMalloc(&w_pp, sizeof(Particle) * w_n));
+    cD2D(w_pp, thrust::raw_pointer_cast(&solid_local[0]), solid_local.size());
+    cD2D(w_pp + solid_local.size(), solid_remote.D, solid_remote.S);
 
     cells = new x::Clist(XS + 2 * XWM, YS + 2 * YWM, ZS + 2 * ZWM);
-    if (w_n > 0) cells->build(w_pp000, w_n);
+    if (w_n > 0) cells->build(w_pp, w_n);
 
     MSG0("consolidating wall particles");
     return nsurvived;
@@ -106,7 +106,7 @@ void interactions(const int type, const Particle *const p, const int n,
 		  Force *const acc) {
     if (n > 0 && w_n > 0) {
 	k_wall::interactions_3tpp <<<k_cnf(3 * n)>>>
-	  ((float2 *)p, n, w_n, (float *)acc, trunk->get_float(), type, cells->start, w_pp000);
+	  ((float2 *)p, n, w_n, (float *)acc, trunk->get_float(), type, cells->start, w_pp);
     }
 }
 
