@@ -1,29 +1,51 @@
 #!/bin/bash
 
-msg () {
-    printf '%s\n' "$@" | cat >&2
-}
-
+msg () { printf '%s\n' "$@" | cat >&2; }
 usg () {
-    msg  './configure'
-    msg  'adapts udx to systems : we know who you are and where do you live'
+    msg  'adapts udx to systems'
+    msg  './configure [source dir]'
+    msg  '[source dir] : path to ./src : current is default'
     exit
 }
 
-main () {
-    (cd ../cmd ; make) # needs u.host
-    dn=amlucas dh=panda dc=conf/default.h # defaults
+write_make() (
+    d="$1"
+    echo "S = $d"'
+include config.mk
+include $S/make/common.mk
+include $S/make/Makefile
+include $S/make/Makefile.dep' > Makefile
+)
+
+err () { msg "$*"; exit; }
+write_conf () ( # configure
+    d="$1"
+    cmd="$d/../cmd"
+    if test ! -d "$cmd"; then err 'missing cmd dir: '"$cmd"; fi
+    (cd "$cmd" && make)
+    dn=amlucas dh=panda dc="$d"/conf/default.h # defaults
     n=`whoami` h=`u.host`
 
-    c=sys/$n.$h
-    if test ! -f $c; then c=sys/$dn.$h;  fi
-    if test ! -f $c; then c=sys/$dn.$dh; fi
+    c="$d/sys/$n.$h"
+    if test ! -f $c; then c="$d/sys/$dn.$h";  fi
+    if test ! -f $c; then c="$d/sys/$dn.$dh"; fi
+    if test ! -f $c; then err 'missing config file: '"$c"; fi
 
-    msg "cp $c  config.mk"; cp $c  config.mk
-    msg "cp $dc conf.h"   ; cp $dc conf.h
+    msg "cp $c  config.mk"; cp "$c"  config.mk
+    msg "cp $dc conf.h"   ; cp "$dc" conf.h
+)
+
+arg0() { other . ; }
+arg1() { # if one agument
+    if test "$1" = -h; then usg ; fi
+    if test ! -d "$1"; then err 'not a directory'; fi
+    other "$1"
 }
 
+other()   { write_conf "$1"; write_make "$1"; }
+
 case $# in
-    0) main ;;
+    0) arg0      ;;
+    1) arg1 "$1" ;;
     *) usg
 esac

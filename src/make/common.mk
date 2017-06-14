@@ -1,3 +1,4 @@
+# common part of user configs
 GSL_DIR      = `gsl-config --prefix`
 GSL_CXXFLAGS = `gsl-config --cflags`
 GSL_LIBS     = `gsl-config --libs` -L${GSL_DIR}/lib -Wl,-rpath -Wl,${GSL_DIR}/lib
