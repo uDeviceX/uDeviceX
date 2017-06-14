@@ -18,7 +18,7 @@ NVCCFLAGS += -std=c++11 -I.
 LIBS      += -lcudart
 
 OBJS = 	bund.o common.o dpd-forces.o glb.o io.o main.o sminmax.o collision.o tcells.o mrescue.o mbounce.o mesh.o m.o \
-		solid.o ply.o rminmax.o field.o cuda-dpd.o
+		solid.o ply.o rminmax.o field.o dpd.o
 
 ifeq ($(h5),0)
 NVCCFLAGS += -DNO_H5
@@ -40,7 +40,7 @@ udx:   $(OBJS)
 dpd-forces.o:     dpd-forces.cu; $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 bund.o:           bund.cu;       $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 glb.o:            glb.cu;        $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
-cuda-dpd.o: dpd/cuda-dpd-floatized-1.cu; $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -o $@
+dpd.o:            dpd/dpd.cu;    $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 
 clean:; rm -f udx *.o
 
