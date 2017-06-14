@@ -2,7 +2,6 @@ namespace wall {
 int init(Particle *pp, int n) {
     setup_texture(k_wall::texWallParticles, float4);
     setup_texture(k_wall::texWallCellStart, int);
-    setup_texture(k_wall::texWallCellCount, int);
 
     thrust::device_vector<int> keys(n);
     k_sdf::fill_keys<<<k_cnf(n)>>>(pp, n, thrust::raw_pointer_cast(&keys[0]));
@@ -133,16 +132,10 @@ void interactions(const int type, const Particle *const p, const int n,
                            &k_wall::texWallCellStart.channelDesc,
                            sizeof(int) * wall_cells->ncells));
 
-        CC(cudaBindTexture(&textureoffset,
-                           &k_wall::texWallCellCount, wall_cells->count,
-                           &k_wall::texWallCellCount.channelDesc,
-                           sizeof(int) * wall_cells->ncells));
-
         k_wall::interactions_3tpp <<<k_cnf(3 * n)>>>
             ((float2 *)p, n, w_n, (float *)acc, trunk->get_float(), type);
         CC(cudaUnbindTexture(k_wall::texWallParticles));
         CC(cudaUnbindTexture(k_wall::texWallCellStart));
-        CC(cudaUnbindTexture(k_wall::texWallCellCount));
     }
 }
 

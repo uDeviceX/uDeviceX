@@ -1,6 +1,6 @@
 namespace k_wall {
 texture<float4, 1, cudaReadModeElementType> texWallParticles;
-texture<int, 1, cudaReadModeElementType> texWallCellStart, texWallCellCount;
+texture<int, 1, cudaReadModeElementType> texWallCellStart;
 
 __device__ int minmax(int lo, int hi, int a) {
     return min(hi, max(lo, a));
