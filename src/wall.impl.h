@@ -127,7 +127,7 @@ void interactions(const int type, const Particle *const p, const int n,
                            sizeof(float4) * w_n));
 
         k_wall::interactions_3tpp <<<k_cnf(3 * n)>>>
-	  ((float2 *)p, n, w_n, (float *)acc, trunk->get_float(), type, wall_cells->start);
+	  ((float2 *)p, n, w_n, (float *)acc, trunk->get_float(), type, wall_cells->start, (float4*)w_pp);
         CC(cudaUnbindTexture(k_wall::texWallParticles));
     }
 }
