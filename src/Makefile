@@ -17,7 +17,7 @@ ARCH     ?= -arch compute_35 -code sm_35
 
 slevel   ?= -2
 
-NVCCFLAGS += -std=c++11 -I.
+NVCCFLAGS += -std=c++11 -I. -I$S
 LIBS      += -lcudart
 
 OBJS = bund.o collision.o common.o dpd-forces.o dpd.o field.o glb.o io.o main.o \
