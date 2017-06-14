@@ -4,7 +4,7 @@
 #include "restart.h"
 
 namespace restart {
-enum X, Y, Z};
+enum {X, Y, Z};
 
 // pattern : basename.rank-step
 #define PATTERN "%s.%04d-%05d"
@@ -62,7 +62,7 @@ void read (const char *basename, Particle *pp, int *n) {
     sprintf(val, "%s.values", basename);
     
     bopread::header(bop, &np);
-    bopread::data(val, pp);
+    bopread::data(val, np, pp);
     *n = np;
 }
 
