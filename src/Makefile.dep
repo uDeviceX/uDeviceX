@@ -1,20 +1,18 @@
-bund.o: basetags.h bbhalo.decl.h bbhalo.impl.h bipsbatch.decl.h bipsbatch.impl.h bund.h cnt.decl.h cnt.impl.h collision.h common.h common.macro.h common.tmp.h conf.common.h conf.h containers.impl.h dev/sim.impl.h dpd-forces.h dpd.decl.h dpd.impl.h dpd/cuda-dpd.h dpd/dpd-rng.h dump.decl.h dump.impl.h field.h fsi.decl.h fsi.impl.h glb.h helper-math/helper_math.h hst/sim.impl.h ic.impl.h io.h k/cnt.h k/common.h k/fsi.h k/rbc.h k/rdstr.h k/rex.h k/scan.h k/sdf.h k/sim.h k/wall.h k/wvel.h m.h mbounce.h mrescue.h off.impl.h packinghalo.decl.h packinghalo.impl.h ply.h rbc.impl.h rdstr.decl.h rdstr.impl.h rex.decl.h rex.impl.h rminmax.h s/decl.h s/ic.h s/impl.h safety.impl.h sdf.decl.h sdf.impl.h sdstr.decl.h sdstr.impl.h sim.decl.h sim.impl.h sminmax.h solid.h tcells.h wall.decl.h wall.impl.h x/clist.face.h x/clist.impl.h x/common.h x/common.tmp.h x/k/clist.h x/k/sdstr.h x/m.impl.h x/sdstr.decl.h x/sdstr.impl.h x/sdstr/fin.h x/sdstr/ini.h x/x.decl.h x/x.impl.h
-collision.o: collision.h common.h sminmax.h
-common.o: common.h conf.common.h conf.h m.h
-dpd/dpd.o: dpd-forces.h dpd/cuda-dpd.h dpd/dpd-rng.h hacks.h
-dpd/dpd-rng.h: dpd/tiny-float.h
-dpd-forces.o: conf.common.h conf.h dpd-forces.h dpd/cuda-dpd.h
-field.o: common.h conf.h field.h io.h m.h
-glb.o: common.h conf.common.h conf.h glb.h m.h
-io.o: common.h conf.common.h conf.h io.h m.h
-k/rbc.h: params/rbc.inc0.h
-main.o: bund.h common.h conf.h glb.h m.h
-mbounce.o: common.h conf.h mbounce.h roots.impl.h
-mesh.o: common.h mesh.h
-m.o: m.h
-mrescue.o: collision.h common.h conf.h mrescue.h
-ply.o: common.h ply.h
-rminmax.o: common.h conf.h m.h rminmax.h
-sminmax.o: common.h conf.h m.h sminmax.h
-solid.o: common.h conf.common.h conf.h gsl.impl.h k/solid.h mesh.h solid.h
-tcells.o: common.h conf.h m.h tcells.h
+common.o: $S/common.h $S/conf.common.h $S/conf.h $S/m.h
+dpd/dpd.o: $S/dpd-forces.h $S/dpd/cuda-dpd.h $S/dpd/dpd-rng.h $S/hacks.h
+dpd/dpd-rng.h: $S/dpd/tiny-float.h
+dpd-forces.o: $S/conf.common.h $S/conf.h $S/dpd-forces.h $S/dpd/cuda-dpd.h
+field.o: $S/common.h $S/conf.h $S/field.h $S/io.h $S/m.h
+glb.o: $S/common.h $S/conf.common.h $S/conf.h $S/glb.h $S/m.h
+io.o: $S/common.h $S/conf.common.h $S/conf.h $S/io.h $S/m.h
+k/rbc.h: $S/params/rbc.inc0.h
+main.o: $S/bund.h $S/common.h $S/conf.h $S/glb.h $S/m.h
+mbounce.o: $S/common.h $S/conf.h $S/mbounce.h $S/roots.impl.h
+mesh.o: $S/common.h $S/mesh.h
+m.o: $S/m.h
+mrescue.o: $S/collision.h $S/common.h $S/conf.h $S/mrescue.h
+ply.o: $S/common.h $S/ply.h
+rminmax.o: $S/common.h $S/conf.h $S/m.h $S/rminmax.h
+sminmax.o: $S/common.h $S/conf.h $S/m.h $S/sminmax.h
+solid.o: $S/common.h $S/conf.common.h $S/conf.h $S/gsl.impl.h $S/k/solid.h $S/mesh.h $S/solid.h
+tcells.o: $S/common.h $S/conf.h $S/m.h $S/tcells.h
