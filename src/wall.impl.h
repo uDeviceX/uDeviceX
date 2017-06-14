@@ -110,10 +110,6 @@ int init(Particle *pp, int n) {
     return nsurvived;
 } /* end of ini */
 
-void bounce(Particle *const p, const int n) {
-    if (n > 0) k_sdf::bounce<<<k_cnf(n)>>>((float2 *)p, n);
-}
-
 void interactions(const int type, const Particle *const p, const int n,
                   Force *const acc) {
     if (n > 0 && w_n > 0) {

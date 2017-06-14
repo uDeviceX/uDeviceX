@@ -239,8 +239,8 @@ void update_rbc() {
 }
 
 void bounce() {
-    if (o::n)         wall::bounce(o::pp, o::n);
-    //if (rbcs && r::n) wall::bounce(r::pp, r::n);
+  if (o::n) k_sdf::bounce<<<k_cnf(o::n)>>>((float2*)o::pp, o::n);
+  //if (rbcs && r::n) k_sdf::bounce<<<k_cnf(r::n)>>>((float2*)r::pp, r::n);
 }
 
 void init() {
