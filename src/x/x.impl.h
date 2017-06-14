@@ -1,4 +1,4 @@
-void ini() {
+void init() {
   m::Comm_dup(::m::cart, &cart);
   sdstr::ini(cart, rank);
   mpDeviceMalloc(&subi_lo); /* 1.5 * numberdensity * XS * YS * ZS */
@@ -8,7 +8,7 @@ void ini() {
   CC(cudaMalloc(&count_zip, sizeof(count_zip[0])*XS*YS*ZS));
 }
 
-void fin() {
+void close() {
   CC(cudaFree(subi_lo));
   CC(cudaFree(subi_re));
   CC(cudaFree(iidx));

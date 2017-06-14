@@ -251,7 +251,7 @@ void init() {
     DPD::init();
     fsi::init();
     sdstr::init();
-    x::ini();
+    x::init();
     bbhalo::init();
     cnt::init();
     rex::init();
@@ -370,7 +370,7 @@ void run() {
 
 void close() {
     sdstr::close();
-    x::fin();
+    x::close();
     
     rdstr::close();
     bbhalo::close();
