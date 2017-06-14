@@ -102,8 +102,6 @@ int init(Particle *pp, int n) {
 
     MSG0("consolidating wall particles");
     if (w_n > 0) k_sdf::strip_solid4<<<k_cnf(w_n)>>>(w_pp000, w_n, w_pp);
-
-    CC(cudaFree(w_pp000));
     return nsurvived;
 } /* end of ini */
 
