@@ -7,7 +7,7 @@ __device__ int minmax(int lo, int hi, int a) {
 }
 
 __global__ void interactions_3tpp(const float2 *const pp, const int np,
-                                  const int nsolid, float *const acc,
+                                  const int w_n, float *const acc,
                                   const float seed, const int type) {
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
     int pid = gid / 3;
@@ -56,7 +56,7 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
         int cid2 = cid0 + XCELLS * 2;
         deltaspid2 = tex1Dfetch(texWallCellStart, cid2);
         int count2 = cid2 + 3 == NCELLS
-            ? nsolid
+            ? w_n
             : tex1Dfetch(texWallCellStart, cid2 + 3) - deltaspid2;
 
         scan1 = count0;
