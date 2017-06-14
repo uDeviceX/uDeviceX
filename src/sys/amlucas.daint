@@ -11,17 +11,14 @@ ARCH_VAL = compute_60
 CODE_VAL = sm_60
 
 LINK = CC
-NVCC_BIN = nvcc
-#OPT      = -O0 -g --device-debug
+NVCC = nvcc
 
 MPI_CXXFLAGS = -I${MPICH_DIR}/include
-MPI_LDFLAGS  = 
 MPI_LIBS     =
 
 HDF5_CXXFLAGS = -I${HDF5_DIR}/include
-HDF5_LDFLAGS  = -L${HDF5_DIR}/lib -Wl,-rpath -Wl,${HDF5_DIR}/lib
-HDF5_LIBS = -lhdf5
+HDF5_LIBS = -L${HDF5_DIR}/lib -Wl,-rpath -Wl,${HDF5_DIR}/lib -lhdf5
 
-NVCC_LDFALGS = -L${CRAY_CUDATOOLKIT_DIR}/lib64 -Wl,-rpath -Wl,${CRAY_CUDATOOLKIT_DIR}/lib64
+NVCC_LIBS = -L${CRAY_CUDATOOLKIT_DIR}/lib64 -Wl,-rpath -Wl,${CRAY_CUDATOOLKIT_DIR}/lib64
 
 ARCH         = -arch compute_60 -code sm_60
