@@ -53,7 +53,7 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
 
         int cid1 = cid0 + XCELLS;
         deltaspid1 = start[cid1];
-        int count1 = start,[cid1 + 3] - deltaspid1;
+        int count1 = start[cid1 + 3] - deltaspid1;
 
         int cid2 = cid0 + XCELLS * 2;
         deltaspid2 = start[cid2];
