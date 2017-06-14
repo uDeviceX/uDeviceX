@@ -9,8 +9,8 @@ enum X, Y, Z};
 // pattern : basename.rank-step
 #define PATTERN "%s.%04d-%05d"
 
-namespace write {
-static void header(const long n, const char *name, const int step) {
+namespace bopwrite {
+void header(const char *name, const long n, const int step) {
     char fname[256] = {0};
     sprintf(fname, "restart/" PATTERN ".bop", name, m::rank, step);
         
@@ -25,10 +25,21 @@ static void header(const long n, const char *name, const int step) {
     fprintf(f, "VARIABLES: x y z vx vy vz\n");
     fclose(f);
 }
+
+void data(const char *name, const Particle *pp, const long n, const int step) {
+    char fname[256] = {0};
+    sprintf(fname, "restart/" PATTERN ".values", name, m::rank, step);
+
+    FILE *f = fopen(fname, "w");
+    fwrite((float *) pp, sizeof(float), sizeof(Particle)/sizeof(float) * n, f);
+    fclose(f);
+}
 } // namespace write
 
-void write(const char *basename, const Particle *pp, const int n) {
-    
+
+void write(const char *basename, const Particle *pp, const long n, const int step) {
+    bopwrite::header(basename, n, step);
+    bopwrite::data(basename, pp, n, step);
 }
 
 void read (const char *basename, Particle *pp, int *n) {
