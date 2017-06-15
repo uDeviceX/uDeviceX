@@ -106,7 +106,7 @@ void make_texstart(int *start, int n, cudaTextureObject_t *texstart) {
     memset(&resD, 0, sizeof(resD));
     resD.resType = cudaResourceTypeLinear;
     resD.res.linear.devPtr  = start;
-    resD.res.linear.sizeInBytes = n * sizeof(Particle);
+    resD.res.linear.sizeInBytes = n * sizeof(int);
     resD.res.linear.desc = cudaCreateChannelDesc<int>();
 
     memset(&texD, 0, sizeof(texD));
