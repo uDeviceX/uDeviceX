@@ -1,3 +1,1 @@
-namespace sdf {
-cudaArray *arrSDF;
-}
+namespace sdf { cudaArray *arrSDF; }
