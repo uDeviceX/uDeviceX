@@ -102,29 +102,13 @@ int init(Particle *pp, int n) {
     return nsurvived;
 } /* end of ini */
 
-void interactions(const int type, const Particle *const p, const int n,
-		  Force *const acc) {
+void interactions(const int type, const Particle *const pp, const int n,
+		  Force *ff) {
     if (n > 0 && w_n > 0) {
 	k_wall::interactions_3tpp <<<k_cnf(3 * n)>>>
-	  ((float2 *)p, n, w_n, (float *)acc, trunk->get_float(), type, cells->start, w_pp);
+	  ((float2 *)pp, n, w_n, (float *)ff, trunk->get_float(), type, cells->start, w_pp);
     }
 }
 
 void close () { delete cells; }
-}
-
-/* an temporal interface to wall:: follows QWT */
-namespace wall0 {
-  /* this function shell not be in wall */
-  int init(Particle *pp, int n, /**/ Particle **w_pp, int *w_n) {
-    n = wall::init(pp, n);
-    *w_pp = wall::w_pp; /* no '**' in a real call */
-    *w_n = wall::w_n;
-    return n ;
-  };
-
-  void interactions(::wall::Quants q, int type, Particle *const p, int n, Force *const acc) {
-    /* unpack q */
-    wall::interactions(type, p, n, acc);
-  }
 }

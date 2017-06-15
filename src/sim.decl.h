@@ -32,13 +32,9 @@ int faces[MAX_FACE_NUM];
 float *av;
 }
 
-/*** see Q/wall.h ***/
+/*** see int/wall.h ***/
 namespace w {
   wall::Quants q;
-  void alloc();
-  int fillq(Particle*, int);
-  void fillq();
-  void free();
 }
 /***  ***/
 
