@@ -10,6 +10,7 @@ struct Quants {
 void alloc_quants(Quants *q) {
     // allocated in wall::init
     //CC(cudaMalloc(&(q->pp), MAX_PART_NUM * sizeof(Particle)));
+    q->rnd = new Logistic::KISS;
 }
 
 void free_wuants(Quants *q) {

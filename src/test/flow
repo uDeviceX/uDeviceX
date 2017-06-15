@@ -5,7 +5,7 @@
 #  > atest test.flow.sh
 
 #### Double poiseuille
-# nTEST: flow.t1
+# snTEST: flow.t1
 # rm -rf bop h5 diag.txt rbc.off
 # :
 # export PATH=../tools:$PATH
