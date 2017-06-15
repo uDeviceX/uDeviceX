@@ -33,14 +33,13 @@
 #include "clist.impl.h"
 #include "clist.face.h"
 
+#include "k/odstr.h"
+#include "odstr.decl.h"
+#include "odstr/ini.h"
+#include "odstr.impl.h"
+#include "odstr/fin.h"
+
 namespace x {
-
-  #include "x/k/sdstr.h"
-  #include "x/sdstr.decl.h"
-  #include "x/sdstr/ini.h"
-  #include "x/sdstr.impl.h"
-  #include "x/sdstr/fin.h"
-
   #include "x/x.decl.h" /* an interface */
   #include "x/x.impl.h"
 }

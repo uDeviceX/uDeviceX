@@ -1,4 +1,4 @@
-namespace sdstr {
+namespace odstr {
 void fin() {
   for(int i = 0; i < 27; ++i) {
     CC(cudaFree(s::iidx_[i]));

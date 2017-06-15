@@ -1,4 +1,4 @@
-namespace sdstr {
+namespace odstr {
   namespace s { /* [s]end */
     int **iidx; /* indices */
     float2 **dev;   /* buffers */

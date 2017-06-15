@@ -1,4 +1,4 @@
-namespace k_sdstr {
+namespace k_odstr {
 /* which neighboring subdomain `p' belongs to? */
  __device__ int box(Particle *p) {
    enum {X, Y, Z};

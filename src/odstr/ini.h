@@ -1,4 +1,4 @@
-namespace sdstr {
+namespace odstr {
 enum {X, Y, Z};
 void ini(MPI_Comm cart, int rank[])  {
   s::size_pin = new PinnedHostBuffer4<int>(27);
