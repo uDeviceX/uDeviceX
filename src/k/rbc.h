@@ -20,6 +20,7 @@ __device__ void ttt2ru(float2 t1, float2 t2, float2 t3, /**/ float3 *r, float3 *
 }
 
 __device__ float3 angle0(float2 t0i, float2 t1i, float *av) {
+    int nv = RBCnv;
     int degreemax, pid, lid, idrbc, offset, neighid, i2, i3;
     float2 t2i;
     float2 t0, t1, t2, t3, t4;
@@ -28,9 +29,9 @@ __device__ float3 angle0(float2 t0i, float2 t1i, float *av) {
 
     degreemax = 7; /* :TODO: duplicate */
     pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
-    lid = pid % RBCnv;
-    idrbc = pid / RBCnv;
-    offset = idrbc * RBCnv * 3;
+    lid = pid % nv;
+    idrbc = pid / nv;
+    offset = idrbc * nv * 3;
     neighid = (threadIdx.x + blockDim.x * blockIdx.x) % degreemax;
     i2 = tex1Dfetch(Adj0, neighid + degreemax * lid);
     valid = i2 != -1;
@@ -58,6 +59,8 @@ __device__ float3 angle0(float2 t0i, float2 t1i, float *av) {
 }
 
 __device__ float3 dihedral(float2 t0, float2 t1) {
+    int nv = RBCnv;
+
     int degreemax, pid, lid, offset, neighid;
     int i1, i2, i3, i4;
     float2         t2, t3, t4, t5, t6, t7;
@@ -66,8 +69,8 @@ __device__ float3 dihedral(float2 t0, float2 t1) {
 
     degreemax = 7;
     pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
-    lid = pid % RBCnv;
-    offset = (pid / RBCnv) * RBCnv * 3;
+    lid = pid % nv;
+    offset = (pid / nv) * nv * 3;
     neighid = (threadIdx.x + blockDim.x * blockIdx.x) % degreemax;
 
     r0 = make_float3(t0.x, t0.y, t1.x);
@@ -122,10 +125,11 @@ __device__ float3 dihedral(float2 t0, float2 t1) {
 
 __global__ void force(int nc, float *__restrict__ av,
 			    float *acc) {
+    int nv = RBCnv;
     int degreemax = 7;
     int pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
 
-    if (pid < nc * RBCnv) {
+    if (pid < nc * nv) {
 	float2 t0 = tex1Dfetch(Vert, pid * 3 + 0);
 	float2 t1 = tex1Dfetch(Vert, pid * 3 + 1);
 
@@ -155,16 +159,17 @@ __DF__ float2 warpReduceSum(float2 val) {
 }
 
 __global__ void area_volume(float *totA_V) {
+    int nv = RBCnv, nt = RBCnt;
     float2 a_v = make_float2(0.0f, 0.0f);
     int cid = blockIdx.y;
 
-    for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < RBCnt;
+    for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < nt;
 	 i += blockDim.x * gridDim.x) {
 	int4 ids = tex1Dfetch(Tri, i);
 
-	float3 r0(tex2vec(3 * (ids.x + cid * RBCnv)));
-	float3 r1(tex2vec(3 * (ids.y + cid * RBCnv)));
-	float3 r2(tex2vec(3 * (ids.z + cid * RBCnv)));
+	float3 r0(tex2vec(3 * (ids.x + cid * nv)));
+	float3 r1(tex2vec(3 * (ids.y + cid * nv)));
+	float3 r2(tex2vec(3 * (ids.z + cid * nv)));
 
 	a_v.x += area0(r0, r1, r2);
 	a_v.y += volume0(r0, r1, r2);
