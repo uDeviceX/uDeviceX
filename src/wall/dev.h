@@ -1,4 +1,4 @@
-namespace k_wall {
+namespace dev {
   enum {X, Y, Z};
 __device__ int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
 
