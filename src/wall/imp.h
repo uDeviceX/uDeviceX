@@ -94,7 +94,6 @@ int init(Particle *pp, int n) {
     cD2D(w_pp, thrust::raw_pointer_cast(&solid_local[0]), solid_local.size());
     cD2D(w_pp + solid_local.size(), solid_remote.D, solid_remote.S);
 
-    MSG0("consolidating wall particles");
     return nsurvived;
 } /* end of ini */
 
