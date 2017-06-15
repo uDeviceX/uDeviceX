@@ -35,9 +35,5 @@ int create(int n, Particle* pp, Quants *q) {
 }
 
 void interactions(const Quants q, const int type, const Particle *pp, const int n, Force *ff) {
-    /* unpack q TMP */
-    sub::w_pp = q.pp;
-    sub::w_n = q.n;
-        
-    sub::interactions(type, pp, n, q.rnd->get_float(), q.cells, /**/ ff);
+    sub::interactions(type, pp, n, q.rnd->get_float(), q.cells, q.pp, /**/ ff);
 }
