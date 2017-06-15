@@ -22,7 +22,7 @@ __device__ void ttt2ru(float2 t1, float2 t2, float2 t3, /**/ float3 *r, float3 *
 __device__ float3 angle0(float2 t0, float2 t1, float *av) {
     int degreemax, pid, lid, idrbc, offset, neighid, i2, i3;
     float2 t2, t3, t4;
-    float3 v1, u1, v2, u2, v3, f;
+    float3 r1, u1, r2, u2, r3, f;
     bool valid;
 
     degreemax = 7; /* :TODO: duplicate */
@@ -33,7 +33,7 @@ __device__ float3 angle0(float2 t0, float2 t1, float *av) {
     neighid = (threadIdx.x + blockDim.x * blockIdx.x) % degreemax;
 
     t2 = tex1Dfetch(Vert, pid * 3 + 2);
-    v1 = make_float3(t0.x, t0.y, t1.x);
+    r1 = make_float3(t0.x, t0.y, t1.x);
     u1 = make_float3(t1.y, t2.x, t2.y);
 
     i2 = tex1Dfetch(Adj0, neighid + degreemax * lid);
@@ -51,12 +51,12 @@ __device__ float3 angle0(float2 t0, float2 t1, float *av) {
 	t3 = tex1Dfetch(Vert, offset + i3 * 3 + 0);
 	t4 = tex1Dfetch(Vert, offset + i3 * 3 + 1);
 
-	v2 = make_float3(t0.x, t0.y, t1.x);
+	r2 = make_float3(t0.x, t0.y, t1.x);
 	u2 = make_float3(t1.y, t2.x, t2.y);
-	v3 = make_float3(t3.x, t3.y, t4.x);
+	r3 = make_float3(t3.x, t3.y, t4.x);
 
-	f  = angle(v1, v2, v3, av[2 * idrbc], av[2 * idrbc + 1]);
-	f += visc(v1, v2, u1, u2);
+	f  = angle(r1, r2, r3, av[2 * idrbc], av[2 * idrbc + 1]);
+	f += visc(r1, r2, u1, u2);
 	return f;
     }
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
@@ -66,7 +66,7 @@ __device__ float3 dihedral(float2 t0, float2 t1) {
     int degreemax, pid, lid, offset, neighid;
     int i1, i2, i3, i4;
     float2         t2, t3, t4, t5, t6, t7;
-    float3 v0, v1, v2, v3, v4;
+    float3 r0, r1, r2, r3, r4;
     bool valid;
 
     degreemax = 7;
@@ -75,15 +75,15 @@ __device__ float3 dihedral(float2 t0, float2 t1) {
     offset = (pid / RBCnv) * RBCnv * 3;
     neighid = (threadIdx.x + blockDim.x * blockIdx.x) % degreemax;
 
-    v0 = make_float3(t0.x, t0.y, t1.x);
+    r0 = make_float3(t0.x, t0.y, t1.x);
 
     /*
-      v4
+      r4
       /   \
-      v1 --> v2 --> v3
+      r1 --> r2 --> r3
       \   /
       V
-      v0
+      r0
 
       dihedrals: 0124, 0123
     */
@@ -115,12 +115,12 @@ __device__ float3 dihedral(float2 t0, float2 t1) {
 	t6 = tex1Dfetch(Vert, offset + i4 * 3 + 0);
 	t7 = tex1Dfetch(Vert, offset + i4 * 3 + 1);
 
-	v1 = make_float3(t0.x, t0.y, t1.x);
-	v2 = make_float3(t2.x, t2.y, t3.x);
-	v3 = make_float3(t4.x, t4.y, t5.x);
-	v4 = make_float3(t6.x, t6.y, t7.x);
+	r1 = make_float3(t0.x, t0.y, t1.x);
+	r2 = make_float3(t2.x, t2.y, t3.x);
+	r3 = make_float3(t4.x, t4.y, t5.x);
+	r4 = make_float3(t6.x, t6.y, t7.x);
 
-	return dihedral0<1>(v0, v2, v1, v4) + dihedral0<2>(v1, v0, v2, v3);
+	return dihedral0<1>(r0, r2, r1, r4) + dihedral0<2>(r1, r0, r2, r3);
     }
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
 }
@@ -167,12 +167,12 @@ __global__ void area_volume(float *totA_V) {
 	 i += blockDim.x * gridDim.x) {
 	int4 ids = tex1Dfetch(Tri, i);
 
-	float3 v0(tex2vec(3 * (ids.x + cid * RBCnv)));
-	float3 v1(tex2vec(3 * (ids.y + cid * RBCnv)));
-	float3 v2(tex2vec(3 * (ids.z + cid * RBCnv)));
+	float3 r0(tex2vec(3 * (ids.x + cid * RBCnv)));
+	float3 r1(tex2vec(3 * (ids.y + cid * RBCnv)));
+	float3 r2(tex2vec(3 * (ids.z + cid * RBCnv)));
 
-	a_v.x += area0(v0, v1, v2);
-	a_v.y += volume0(v0, v1, v2);
+	a_v.x += area0(r0, r1, r2);
+	a_v.y += volume0(r0, r1, r2);
     }
     a_v = warpReduceSum(a_v);
     if ((threadIdx.x & (warpSize - 1)) == 0) {
