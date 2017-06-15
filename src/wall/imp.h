@@ -94,7 +94,6 @@ int init(Particle *pp, int n) {
     cD2D(w_pp, thrust::raw_pointer_cast(&solid_local[0]), solid_local.size());
     cD2D(w_pp + solid_local.size(), solid_remote.D, solid_remote.S);
 
-    cells = new x::Clist(XS + 2 * XWM, YS + 2 * YWM, ZS + 2 * ZWM);
     if (w_n > 0) cells->build(w_pp, w_n);
 
     MSG0("consolidating wall particles");

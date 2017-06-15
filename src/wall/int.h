@@ -9,6 +9,7 @@ void alloc_quants(Quants *q) {
     // allocated in wall::init
     //CC(cudaMalloc(&(q->pp), MAX_PART_NUM * sizeof(Particle)));
     q->rnd = new Logistic::KISS;
+    q->cells = new x::Clist(XS + 2 * XWM, YS + 2 * YWM, ZS + 2 * ZWM);
 }
 
 void free_quants(Quants *q) {
