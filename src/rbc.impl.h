@@ -44,7 +44,7 @@ void setup0(int *data, int *data2, int nentries) {
 }
 
 void setup(int* faces) {
-    const char* r_templ = "rbc.off";
+    const char r_templ[] = "rbc.off";
     off::f2faces(r_templ, faces);
 
     int   *trs4 = new int  [4 * RBCnt];
