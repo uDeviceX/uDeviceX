@@ -1,5 +1,5 @@
 
-int init(Particle *pp, int n, Particle **w_pp, int *w_n) {
+int init(Particle *pp, int n, Particle *frozen, int *w_n) {
     thrust::device_vector<int> keys(n);
     k_sdf::fill_keys<<<k_cnf(n)>>>(pp, n, thrust::raw_pointer_cast(&keys[0]));
     thrust::sort_by_key(keys.begin(), keys.end(), thrust::device_ptr<Particle>(pp));
@@ -91,9 +91,8 @@ int init(Particle *pp, int n, Particle **w_pp, int *w_n) {
 
     *w_n = solid_local.size() + solid_remote.S;
 
-    CC(cudaMalloc(w_pp, sizeof(Particle) * (*w_n)));
-    cD2D(*w_pp, thrust::raw_pointer_cast(&solid_local[0]), solid_local.size());
-    cD2D(*w_pp + solid_local.size(), solid_remote.D, solid_remote.S);
+    cD2D(frozen, thrust::raw_pointer_cast(&solid_local[0]), solid_local.size());
+    cD2D(frozen + solid_local.size(), solid_remote.D, solid_remote.S);
 
     return nsurvived;
 } /* end of ini */
