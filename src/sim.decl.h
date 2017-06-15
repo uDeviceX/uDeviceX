@@ -32,6 +32,14 @@ int faces[MAX_FACE_NUM];
 float *av;
 }
 
+namespace w /* [w]all : all Q */
+{
+  Particle *pp;
+  int n;
+  Logistic::KISS* rnd;
+  x::Clist *cells;
+}
+
 namespace a /* all */
 {
 Particle pp_hst[3*MAX_PART_NUM]; /* particles on host */
