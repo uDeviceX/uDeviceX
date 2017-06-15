@@ -39,10 +39,17 @@ call functions of `hi`.
 * dev/hi.h : implimentation of [dev]ice functions
 * int/hi.h : [int]erface
 
+* lib/hi.[cu|h] : a [lib]rary of function which are compiled
+  separately, called by imp/hi.h and dev/hi.h
+
 All files are included in [bund.cu](../src/bund.cu).
 
 `int/hi.h` should "unpack/pack" `QWT` structures and path arguments to
 `dec/hi.h`.
+
+# bund.cu
+
+it includes all files of hiwi
 
 # Notation
 * `hi` : is a an example of `hiwi`
