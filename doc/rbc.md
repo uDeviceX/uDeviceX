@@ -13,7 +13,7 @@
 
 from containers.impl.h
 
-	rbc_dump(int nc, Particle *p, int* triplets, int nv, int nt, int id) {
+	rbc_dump(int nc, Particle *p, int* triplets, int nv, int nt, int id)
 
 # function called by sim
 
