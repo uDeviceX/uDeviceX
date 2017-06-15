@@ -116,6 +116,23 @@ void make_texstart(int *start, int n, cudaTextureObject_t *texstart) {
     CC(cudaCreateTextureObject(texstart, &resD, &texD, NULL));
 }
 
+void make_texpp(float4 *pp, int n, cudaTextureObject_t *texpp) {
+    cudaResourceDesc resD;
+    cudaTextureDesc  texD;
+
+    memset(&resD, 0, sizeof(resD));
+    resD.resType = cudaResourceTypeLinear;
+    resD.res.linear.devPtr  = pp;
+    resD.res.linear.sizeInBytes = n * sizeof(float4);
+    resD.res.linear.desc = cudaCreateChannelDesc<float>();
+
+    memset(&texD, 0, sizeof(texD));
+    texD.normalizedCoords = 0;
+    texD.readMode = cudaReadModeElementType;
+
+    CC(cudaCreateTextureObject(texpp, &resD, &texD, NULL));
+}
+
 void interactions(const int type, const Particle *const pp, const int n, const float rnd, const cudaTextureObject_t texstart,
                   const float4 *w_pp000, const int w_n, Force *ff) {
     if (n > 0 && w_n > 0) {
