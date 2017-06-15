@@ -9,7 +9,7 @@ void distr_solid() {
     solid::generate_dev(s::ss_dev, s::ns, s::rr0, s::nps, /**/ s::pp);
 }
 
-  void update_solid0() {
+void update_solid0() {
     solid::update_dev(s::ff, s::rr0, s::npp, s::ns, /**/ s::pp, s::ss_dev);
     solid::update_mesh_dev(s::ss_dev, s::ns, s::m_dev, /**/ s::i_pp_dev);
 

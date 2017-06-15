@@ -4,28 +4,24 @@ enum {X, Y, Z};
 
 //#define DEBUG_MSG
     
-static int read_coms(const char * fname, /**/ float* coms) {
+static int read_coms(const char *fname, /**/ float* coms) {
     int nsolids = 0;
-    if (m::rank == 0) {
-        FILE *f = fopen(fname, "r"); 
+    FILE *f = fopen(fname, "r"); 
 
-        if (f == NULL) 
-        ERR("Could not open %s.\n", fname);
+    if (f == NULL) 
+    ERR("Could not open %s.\n", fname);
     
-        float x, y, z;
-        int i = 0;
+    float x, y, z;
+    int i = 0;
         
-        while (fscanf(f, "%f %f %f\n", &x, &y, &z) == 3) {
-            coms[3*i + X] = x;
-            coms[3*i + Y] = y;
-            coms[3*i + Z] = z;
-            i++;
-            assert(i < MAX_SOLIDS);
-        }
-        nsolids = i;
+    while (fscanf(f, "%f %f %f\n", &x, &y, &z) == 3) {
+        coms[3*i + X] = x;
+        coms[3*i + Y] = y;
+        coms[3*i + Z] = z;
+        i++;
+        assert(i < MAX_SOLIDS);
     }
-    MC( MPI_Bcast(&nsolids, 1,     MPI_INT,   0, m::cart) );
-    MC( MPI_Bcast(coms, 3*nsolids, MPI_FLOAT, 0, m::cart) );
+    nsolids = i;
     return nsolids;
 }
 
