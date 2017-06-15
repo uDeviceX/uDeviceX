@@ -115,7 +115,7 @@ __DF__ float3 dihedral0(float3 v1, float3 v2, float3 v3,
     return make_float3(0, 0, 0);
 }
 
-__device__ float3 _fangle_device(float2 tmp0, float2 tmp1,
+__device__ float3 angle(float2 tmp0, float2 tmp1,
 				 float *av) {
     int degreemax = 7;
     int pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
@@ -220,7 +220,7 @@ __global__ void force(int nc, float *__restrict__ av,
 	float2 tmp0 = tex1Dfetch(texVertices, pid * 3 + 0);
 	float2 tmp1 = tex1Dfetch(texVertices, pid * 3 + 1);
 
-	float3 f = _fangle_device(tmp0, tmp1, av);
+	float3 f = angle(tmp0, tmp1, av);
 	f += dihedral(tmp0, tmp1);
 
 	if (f.x > -1.0e9f) {
