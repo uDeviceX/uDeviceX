@@ -19,14 +19,12 @@ void free_quants(Quants *q) {
 
 int create(int n, Particle* pp, Quants *q) {
     // TMP !!
-    sub::w_pp = q->pp;
     sub::w_n = q->n;
     // !!
     
-    n = sub::init(pp, n);
+    n = sub::init(pp, n, &(q->pp));
 
     // TMP !!
-    q->pp = sub::w_pp;
     q->n  = sub::w_n;
     //    
     sub::build_cells(q->n, /**/ q->pp, q->cells);    
