@@ -1,8 +1,9 @@
 struct Quants {
-  Particle *pp;
-  int n;
-  Logistic::KISS *rnd;
-  x::Clist *cells;
+    Particle *pp;
+    int n;
+    Logistic::KISS *rnd;
+    x::Clist *cells;
+    cudaTextureObject_t texstart;
 };
 
 void alloc_quants(Quants *q) {
