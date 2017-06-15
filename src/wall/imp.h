@@ -1,4 +1,3 @@
-namespace wall {
 int init(Particle *pp, int n) {
     thrust::device_vector<int> keys(n);
     k_sdf::fill_keys<<<k_cnf(n)>>>(pp, n, thrust::raw_pointer_cast(&keys[0]));
@@ -111,4 +110,3 @@ void interactions(const int type, const Particle *const pp, const int n,
 }
 
 void close () { delete cells; }
-}
