@@ -26,7 +26,7 @@ static int read_coms(const char *fname, /**/ float* coms) {
 }
 
 /* bbox: minx, maxx, miny, maxy, minz, maxz */
-static int duplicate_PBC(const float *bbox, int n, /**/ float *coms) {
+static int duplicate_PBC(const float3 minbb, const float3 maxbb, int n, /**/ float *coms) {
     struct f3 {float x[3];};
     const int Lg[3] = {XS * m::dims[X], YS * m::dims[Y], ZS * m::dims[Z]};
     int id = n;
@@ -41,14 +41,14 @@ static int duplicate_PBC(const float *bbox, int n, /**/ float *coms) {
             r.x[d] += Lg[d] * sign;
             dupls.insert(dupls.end(), dupls2.begin(), dupls2.end());
         };
-            
-        for (int d = 0; d < 3; ++d) {
-            if (r0.x[d] + bbox[2*d+0] < 0)
-            duplicate(d, +1);
-                
-            if (r0.x[d] + bbox[2*d+1] >= Lg[d])
-            duplicate(d, -1);
-        }
+
+        if (r0.x[0] + minbb.x < 0) duplicate(0, +1);
+        if (r0.x[1] + minbb.y < 0) duplicate(1, +1);
+        if (r0.x[2] + minbb.z < 0) duplicate(2, +1);
+
+        if (r0.x[0] + maxbb.x >= Lg[0]) duplicate(0, -1);
+        if (r0.x[1] + maxbb.y >= Lg[1]) duplicate(1, -1);
+        if (r0.x[2] + maxbb.z >= Lg[2]) duplicate(2, -1);
 
         // k from 1: do not reinsert the original
         for (int k = 1; k < (int) dupls.size(); ++k) {
@@ -190,10 +190,10 @@ void init(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, S
     int nsolid = read_coms(fname, coms);
     int npsolid = 0;
 
-    float bbox[6];
-    collision::get_bbox(m.vv, m.nv, /**/ bbox);
+    float3 minbb, maxbb;
+    collision::get_bbox(m.vv, m.nv, /**/ &minbb, &maxbb);
         
-    nsolid = duplicate_PBC(bbox, nsolid, /**/ coms);
+    nsolid = duplicate_PBC(minbb, maxbb, nsolid, /**/ coms);
 
     make_local(nsolid, coms);
 
