@@ -12,6 +12,19 @@ texture<int4, cudaTextureType1D> texTriangles4;
      (a).z*(b).x - (a).x*(b).z,                 \
      (a).x*(b).y - (a).y*(b).x)
 
+/* first and second */
+#define fst(t) ( (t).x )
+#define scn(t) ( (t).y )
+
+__device__ void tt2r(float2 t1, float2 t2, /**/ float3 *r) {
+  r->x = fst(t1); r->y = scn(t1); r->z = fst(t2);
+}
+
+__device__ void ttt2ru(float2 t1, float2 t2, float2 t3, /**/ float3 *r, float3 *u) {
+  r->x = fst(t1); r->y = scn(t1); r->z = fst(t2);
+  u->x = scn(t2); u->y = fst(t3); u->z = scn(t3);
+}
+
 __DF__ float3 angle0(float3 v1, float3 v2,
 		     float3 v3, float area,
 		     float volume) {
@@ -102,7 +115,7 @@ __DF__ float3 dihedral0(float3 v1, float3 v2, float3 v3,
     return make_float3(0, 0, 0);
 }
 
-__device__ float3 _fangle_device(float2 tmp0, float2 tmp1,
+__device__ float3 angle(float2 t0, float2 t1,
 				 float *av) {
     int degreemax = 7;
     int pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
@@ -111,9 +124,9 @@ __device__ float3 _fangle_device(float2 tmp0, float2 tmp1,
     int offset = idrbc * RBCnv * 3;
     int neighid = (threadIdx.x + blockDim.x * blockIdx.x) % degreemax;
 
-    float2 tmp2 = tex1Dfetch(texVertices, pid * 3 + 2);
-    float3 v1 = make_float3(tmp0.x, tmp0.y, tmp1.x);
-    float3 u1 = make_float3(tmp1.y, tmp2.x, tmp2.y);
+    float2 t2 = tex1Dfetch(texVertices, pid * 3 + 2);
+    float3 v1 = make_float3(t0.x, t0.y, t1.x);
+    float3 u1 = make_float3(t1.y, t2.x, t2.y);
 
     int idv2 = tex1Dfetch(texAdjVert, neighid + degreemax * lid);
     bool valid = idv2 != -1;
@@ -124,15 +137,15 @@ __device__ float3 _fangle_device(float2 tmp0, float2 tmp1,
     if (idv3 == -1 && valid) idv3 = tex1Dfetch(texAdjVert, 0 + degreemax * lid);
 
     if (valid) {
-	float2 tmp0 = tex1Dfetch(texVertices, offset + idv2 * 3 + 0);
-	float2 tmp1 = tex1Dfetch(texVertices, offset + idv2 * 3 + 1);
-	float2 tmp2 = tex1Dfetch(texVertices, offset + idv2 * 3 + 2);
-	float2 tmp3 = tex1Dfetch(texVertices, offset + idv3 * 3 + 0);
-	float2 tmp4 = tex1Dfetch(texVertices, offset + idv3 * 3 + 1);
+	float2 t0 = tex1Dfetch(texVertices, offset + idv2 * 3 + 0);
+	float2 t1 = tex1Dfetch(texVertices, offset + idv2 * 3 + 1);
+	float2 t2 = tex1Dfetch(texVertices, offset + idv2 * 3 + 2);
+	float2 t3 = tex1Dfetch(texVertices, offset + idv3 * 3 + 0);
+	float2 t4 = tex1Dfetch(texVertices, offset + idv3 * 3 + 1);
 
-	float3 v2 = make_float3(tmp0.x, tmp0.y, tmp1.x);
-	float3 u2 = make_float3(tmp1.y, tmp2.x, tmp2.y);
-	float3 v3 = make_float3(tmp3.x, tmp3.y, tmp4.x);
+	float3 v2 = make_float3(t0.x, t0.y, t1.x);
+	float3 u2 = make_float3(t1.y, t2.x, t2.y);
+	float3 v3 = make_float3(t3.x, t3.y, t4.x);
 
 	float3 f = angle0(v1, v2, v3, av[2 * idrbc], av[2 * idrbc + 1]);
 	f += visc(v1, v2, u1, u2);
@@ -141,14 +154,14 @@ __device__ float3 _fangle_device(float2 tmp0, float2 tmp1,
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
 }
 
-__device__ float3 dihedral(float2 tmp0, float2 tmp1) {
+__device__ float3 dihedral(float2 t0, float2 t1) {
     int degreemax = 7;
     int pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
     int lid = pid % RBCnv;
     int offset = (pid / RBCnv) * RBCnv * 3;
     int neighid = (threadIdx.x + blockDim.x * blockIdx.x) % degreemax;
 
-    float3 v0 = make_float3(tmp0.x, tmp0.y, tmp1.x);
+    float3 v0 = make_float3(t0.x, t0.y, t1.x);
 
     /*
       v4
@@ -179,19 +192,19 @@ __device__ float3 dihedral(float2 tmp0, float2 tmp1) {
     idv4 = tex1Dfetch(texAdjVert2, neighid + degreemax * lid);
 
     if (valid) {
-	float2 tmp0 = tex1Dfetch(texVertices, offset + idv1 * 3 + 0);
-	float2 tmp1 = tex1Dfetch(texVertices, offset + idv1 * 3 + 1);
-	float2 tmp2 = tex1Dfetch(texVertices, offset + idv2 * 3 + 0);
-	float2 tmp3 = tex1Dfetch(texVertices, offset + idv2 * 3 + 1);
-	float2 tmp4 = tex1Dfetch(texVertices, offset + idv3 * 3 + 0);
-	float2 tmp5 = tex1Dfetch(texVertices, offset + idv3 * 3 + 1);
-	float2 tmp6 = tex1Dfetch(texVertices, offset + idv4 * 3 + 0);
-	float2 tmp7 = tex1Dfetch(texVertices, offset + idv4 * 3 + 1);
+	float2 t0 = tex1Dfetch(texVertices, offset + idv1 * 3 + 0);
+	float2 t1 = tex1Dfetch(texVertices, offset + idv1 * 3 + 1);
+	float2 t2 = tex1Dfetch(texVertices, offset + idv2 * 3 + 0);
+	float2 t3 = tex1Dfetch(texVertices, offset + idv2 * 3 + 1);
+	float2 t4 = tex1Dfetch(texVertices, offset + idv3 * 3 + 0);
+	float2 t5 = tex1Dfetch(texVertices, offset + idv3 * 3 + 1);
+	float2 t6 = tex1Dfetch(texVertices, offset + idv4 * 3 + 0);
+	float2 t7 = tex1Dfetch(texVertices, offset + idv4 * 3 + 1);
 
-	float3 v1 = make_float3(tmp0.x, tmp0.y, tmp1.x);
-	float3 v2 = make_float3(tmp2.x, tmp2.y, tmp3.x);
-	float3 v3 = make_float3(tmp4.x, tmp4.y, tmp5.x);
-	float3 v4 = make_float3(tmp6.x, tmp6.y, tmp7.x);
+	float3 v1 = make_float3(t0.x, t0.y, t1.x);
+	float3 v2 = make_float3(t2.x, t2.y, t3.x);
+	float3 v3 = make_float3(t4.x, t4.y, t5.x);
+	float3 v4 = make_float3(t6.x, t6.y, t7.x);
 
 	return dihedral0<1>(v0, v2, v1, v4) + dihedral0<2>(v1, v0, v2, v3);
     }
@@ -204,11 +217,11 @@ __global__ void force(int nc, float *__restrict__ av,
     int pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
 
     if (pid < nc * RBCnv) {
-	float2 tmp0 = tex1Dfetch(texVertices, pid * 3 + 0);
-	float2 tmp1 = tex1Dfetch(texVertices, pid * 3 + 1);
+	float2 t0 = tex1Dfetch(texVertices, pid * 3 + 0);
+	float2 t1 = tex1Dfetch(texVertices, pid * 3 + 1);
 
-	float3 f = _fangle_device(tmp0, tmp1, av);
-	f += dihedral(tmp0, tmp1);
+	float3 f = angle(t0, t1, av);
+	f += dihedral(t0, t1);
 
 	if (f.x > -1.0e9f) {
 	    atomicAdd(&acc[3 * pid + 0], f.x);
@@ -219,9 +232,9 @@ __global__ void force(int nc, float *__restrict__ av,
 }
 
 __DF__ float3 tex2vec(int id) {
-    float2 tmp0 = tex1Dfetch(texVertices, id + 0);
-    float2 tmp1 = tex1Dfetch(texVertices, id + 1);
-    return make_float3(tmp0.x, tmp0.y, tmp1.x);
+    float2 t0 = tex1Dfetch(texVertices, id + 0);
+    float2 t1 = tex1Dfetch(texVertices, id + 1);
+    return make_float3(t0.x, t0.y, t1.x);
 }
 
 __DF__ float2 warpReduceSum(float2 val) {
@@ -266,5 +279,7 @@ __global__ void area_volume(float *totA_V) {
 #undef abscross2
 #undef abscross
 }
+#undef fst
+#undef scn
 #undef __DF__
 } /* namespace k_rbc */
