@@ -118,6 +118,8 @@ __DF__ float3 dihedral0(float3 v1, float3 v2, float3 v3,
 __device__ float3 angle(float2 t0, float2 t1, float *av) {
     int degreemax, pid, lid, idrbc, offset, neighid, idv2, idv3;
     float2 t2, t3, t4;
+    float3 v1, u1, v2, u2, v3, f;
+    bool valid;
 
     degreemax = 7;
     pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
@@ -127,11 +129,11 @@ __device__ float3 angle(float2 t0, float2 t1, float *av) {
     neighid = (threadIdx.x + blockDim.x * blockIdx.x) % degreemax;
 
     t2 = tex1Dfetch(texVertices, pid * 3 + 2);
-    float3 v1 = make_float3(t0.x, t0.y, t1.x);
-    float3 u1 = make_float3(t1.y, t2.x, t2.y);
+    v1 = make_float3(t0.x, t0.y, t1.x);
+    u1 = make_float3(t1.y, t2.x, t2.y);
 
     idv2 = tex1Dfetch(texAdjVert, neighid + degreemax * lid);
-    bool valid = idv2 != -1;
+    valid = idv2 != -1;
 
     idv3 = tex1Dfetch(texAdjVert, ((neighid + 1) % degreemax) + degreemax * lid);
 
@@ -145,11 +147,11 @@ __device__ float3 angle(float2 t0, float2 t1, float *av) {
 	t3 = tex1Dfetch(texVertices, offset + idv3 * 3 + 0);
 	t4 = tex1Dfetch(texVertices, offset + idv3 * 3 + 1);
 
-	float3 v2 = make_float3(t0.x, t0.y, t1.x);
-	float3 u2 = make_float3(t1.y, t2.x, t2.y);
-	float3 v3 = make_float3(t3.x, t3.y, t4.x);
+	v2 = make_float3(t0.x, t0.y, t1.x);
+	u2 = make_float3(t1.y, t2.x, t2.y);
+	v3 = make_float3(t3.x, t3.y, t4.x);
 
-	float3 f = angle0(v1, v2, v3, av[2 * idrbc], av[2 * idrbc + 1]);
+	f  = angle0(v1, v2, v3, av[2 * idrbc], av[2 * idrbc + 1]);
 	f += visc(v1, v2, u1, u2);
 	return f;
     }
