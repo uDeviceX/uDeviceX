@@ -1,8 +1,9 @@
 struct Quants {
-  Particle *pp;
-  int n;
-  Logistic::KISS *rnd;
-  x::Clist *cells;
+    Particle *pp;
+    int n;
+    Logistic::KISS *rnd;
+    x::Clist *cells;
+    cudaTextureObject_t texstart;
 };
 
 void alloc_quants(Quants *q) {
@@ -20,7 +21,8 @@ void free_quants(Quants *q) {
 int create(int n, Particle* pp, Quants *q) {
     n = sub::init(pp, n, &q->pp, &q->n);
     sub::build_cells(q->n, /**/ q->pp, q->cells);    
-    
+
+    sub::make_texstart(q->cells->start, q->cells->ncells, /**/ &q->texstart);
     return n;
 }
 
