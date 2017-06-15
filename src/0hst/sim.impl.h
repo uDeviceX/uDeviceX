@@ -24,11 +24,11 @@ void update_solid0() {
 }
 
 void bounce_solid(int it) {
-    collision::get_bboxes_hst(s::i_pp_hst, s::m_hst.nv, s::ns, /**/ s::bboxes_hst);
+    collision::get_bboxes_hst(s::i_pp_hst, s::m_hst.nv, s::ns, /**/ s::minbb_hst, s::maxbb_hst);
 
     /* exchange solid meshes with neighbours */
 
-    bbhalo::pack_sendcnt <HST> (s::ss_hst, s::ns, s::i_pp_hst, s::m_hst.nv, s::bboxes_hst);
+    bbhalo::pack_sendcnt <HST> (s::ss_hst, s::ns, s::i_pp_hst, s::m_hst.nv, s::minbb_hst, s::maxbb_hst);
     const int nsbb = bbhalo::post(s::m_hst.nv);
     bbhalo::unpack <HST> (s::m_hst.nv, /**/ s::ss_bb_hst, s::i_pp_bb_hst);
 
