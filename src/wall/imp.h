@@ -100,6 +100,23 @@ int init(Particle *pp, int n, Particle **w_pp, int *w_n) {
 
 void build_cells(const int n, Particle *pp, x::Clist *cells) {if (n) cells->build(pp, n);}
 
+void make_texstart(int *start, int n, cudaTextureObject_t *texstart) {
+    cudaResourceDesc resD;
+    cudaTextureDesc  texD;
+
+    memset(&resD, 0, sizeof(resD));
+    resD.resType = cudaResourceTypeLinear;
+    resD.res.linear.devPtr  = start;
+    resD.res.linear.sizeInBytes = n * sizeof(Particle);
+    resD.res.linear.desc = cudaCreateChannelDesc<int>();
+
+    memset(&texD, 0, sizeof(texD));
+    texD.normalizedCoords = 0;
+    texD.readMode = cudaReadModeElementType;
+
+    CC(cudaCreateTextureObject(texstart, &resD, &texD, NULL));
+}
+
 void interactions(const int type, const Particle *const pp, const int n, const float rnd, const x::Clist *cells, const Particle *w_pp000, const int w_n, Force *ff) {
     if (n > 0 && w_n > 0) {
     dev::interactions_3tpp <<<k_cnf(3 * n)>>>
