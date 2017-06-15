@@ -33,7 +33,8 @@ call functions of `hi`.
 
 `hiwi` is scattred in several files
 
-* dec/hi.h : declaration of host variables : good `hiwi` should have none
+* hdr/hi.h : declaration of host variables (header) : good `hiwi`
+  should have none
 * imp/hi.h : implimentation of host functions
 * dev/hi.h : implimentation of device functions
 * int/hi.h : interface
