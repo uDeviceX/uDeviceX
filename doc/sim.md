@@ -1,10 +1,9 @@
-# sim.md
-
+# Intro
 `sim` uses `hiwi`. Interfaces for `hiwi` are in
 [int/](../src/int). One `hiwi` consists of several `struct`s and
 functions. Interface for `hiwi` is in [int](../src/int).
 
-`struct`s are the following:
+`struct`s are the following (`QWT`):
 
 * `Q` : quantities : states variables of the simulation. ex `pp`, `np`.
 
@@ -13,24 +12,37 @@ functions. Interface for `hiwi` is in [int](../src/int).
 
 * `T1, T2`, ... : tickets : ex: `zip` variables for solvent
 
-`sim` defines variables of types `Q`, `W`, `T` and calls functions
-of `hiwi`. `sim` should follows some convention on how the functions
-are called: 
+`sim` defines `w`, `q`, `t` and calls functions of `hiwi`. `sim` is
+rectricted by the following rules:
 
 * `w` is allocated by `hi::alloc_work()`
-* `t` is allocated by `hi::alloc_ticket()`, `hi::alloc_ticket1()`
-* `t` is not modified by `sim`
+* `t` is allocated by `hi::alloc_ticket()`, `hi::alloc_ticket1()` and
+  is not modified by `sim`
 
 Functions of `hi::` can
 * issue ticket : return `t`
 * check ticket : receive `t` as an argument
 * check and invalidate ticket : receive `t` and make it invalid
 
-* modification of `q` by `sim` makes all tickets invalid
+* direct modification of `q` by `sim` makes all tickets invalid
 
 The system of ticket imposes a constrain on the order in whcih sim
 call functions of `hi`.
 
-## Notation
-* `hi` : is a specific type of `hiwi`
-* `w`, `q`, `t` : ariables of the `W`, `Q` and one of `T1`, `T2`, ...
+# `hiwi`
+
+`hiwi` is scattred in several files
+
+* dec/hi.h : declaration of host variables : good `hiwi` should have none
+* imp/hi.h : implimentation of host functions
+* dev/hi.h : implimentation of device functions
+* int/hi.h : interface
+
+All files are included in [bund.cu](../src/bund.cu).
+
+`int/hi.h` should "unpack/pack" `QWT` structures and path arguments to
+`dec/hi.h`.
+
+# Notation
+* `hi` : is a an example of `hiwi`
+* `w`, `q`, `t` : variables of `QWT`
