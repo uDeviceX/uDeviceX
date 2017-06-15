@@ -224,7 +224,7 @@ __global__ void force(int nc, float *__restrict__ av,
 	float2 t0 = tex1Dfetch(texVertices, pid * 3 + 0);
 	float2 t1 = tex1Dfetch(texVertices, pid * 3 + 1);
 
-	float3 f = angle(t0, t1, av);
+	float3 f = angle0(t0, t1, av);
 	f += dihedral(t0, t1);
 
 	if (f.x > -1.0e9f) {
