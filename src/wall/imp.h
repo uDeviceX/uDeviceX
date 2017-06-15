@@ -124,7 +124,7 @@ void make_texpp(float4 *pp, int n, cudaTextureObject_t *texpp) {
     resD.resType = cudaResourceTypeLinear;
     resD.res.linear.devPtr  = pp;
     resD.res.linear.sizeInBytes = n * sizeof(float4);
-    resD.res.linear.desc = cudaCreateChannelDesc<float>();
+    resD.res.linear.desc = cudaCreateChannelDesc<float4>();
 
     memset(&texD, 0, sizeof(texD));
     texD.normalizedCoords = 0;
