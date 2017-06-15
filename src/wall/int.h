@@ -25,13 +25,14 @@ int create(int n, Particle* pp, Quants *q) {
     // !!
     
     n = sub::init(pp, n);
-    sub::build_cells(q->n, /**/ q->pp, q->cells);
-    
+
     // TMP !!
     q->pp = sub::w_pp;
     q->n  = sub::w_n;
-    q->cells = sub::cells;
-    // !!
+    //    
+    sub::build_cells(q->n, /**/ q->pp, q->cells);
+    
+    
     return n;
 }
 
