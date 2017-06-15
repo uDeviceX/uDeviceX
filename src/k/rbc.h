@@ -109,7 +109,7 @@ __DF__ float3 dihedral0(float3 v1, float3 v2, float3 v3,
     return make_float3(0, 0, 0);
 }
 
-__device__ float3 angle_force(float2 t0, float2 t1, float *av) {
+__device__ float3 angle0(float2 t0, float2 t1, float *av) {
     int degreemax, pid, lid, idrbc, offset, neighid, idv2, idv3;
     float2 t2, t3, t4;
     float3 v1, u1, v2, u2, v3, f;
