@@ -21,7 +21,6 @@ int create(int n, Particle* pp, Quants *q) {
     // TMP !!
     sub::w_pp = q->pp;
     sub::w_n = q->n;
-    sub::cells = q->cells;
     // !!
     
     n = sub::init(pp, n);
@@ -30,8 +29,7 @@ int create(int n, Particle* pp, Quants *q) {
     q->pp = sub::w_pp;
     q->n  = sub::w_n;
     //    
-    sub::build_cells(q->n, /**/ q->pp, q->cells);
-    
+    sub::build_cells(q->n, /**/ q->pp, q->cells);    
     
     return n;
 }
@@ -40,7 +38,6 @@ void interactions(const Quants q, const int type, const Particle *pp, const int 
     /* unpack q TMP */
     sub::w_pp = q.pp;
     sub::w_n = q.n;
-    sub::cells = q.cells;
         
-    sub::interactions(type, pp, n, q.rnd->get_float(), /**/ ff);
+    sub::interactions(type, pp, n, q.rnd->get_float(), q.cells, /**/ ff);
 }

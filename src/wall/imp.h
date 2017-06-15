@@ -99,7 +99,7 @@ int init(Particle *pp, int n) {
 
 void build_cells(const int n, Particle *pp, x::Clist *cells) {if (n) cells->build(pp, n);}
 
-void interactions(const int type, const Particle *const pp, const int n, const float rnd, Force *ff) {
+void interactions(const int type, const Particle *const pp, const int n, const float rnd, const x::Clist *cells, Force *ff) {
     if (n > 0 && w_n > 0) {
     dev::interactions_3tpp <<<k_cnf(3 * n)>>>
         ((float2 *)pp, n, w_n, (float *)ff, rnd, type, cells->start, w_pp);
