@@ -33,11 +33,11 @@ call functions of `hi`.
 
 `hiwi` is scattred in several files
 
-* hdr/hi.h : declaration of host variables (header) : good `hiwi`
-  should have none
-* imp/hi.h : implimentation of host functions
-* dev/hi.h : implimentation of device functions
-* int/hi.h : interface
+* hdr/hi.h : declaration of host variables ([h]ea[d]e[r]) : no hdr for
+  good `hiwi`
+* imp/hi.h : [imp]limentation of host functions
+* dev/hi.h : implimentation of [dev]ice functions
+* int/hi.h : [int]erface
 
 All files are included in [bund.cu](../src/bund.cu).
 
