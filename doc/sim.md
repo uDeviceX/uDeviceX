@@ -55,13 +55,14 @@ it includes all files of hiwi
 	  hi/hdr.h
 	  namespace i {
 		hi/lib.h
+		hi/hdr.h
 		hi/imp.h
 		hi/dev.h
 		hi/int.h
 	  }
 	}
 
-   lib.cu looks like this
+   `lib.cu` looks like this
 
 	namespace hi {
 	   namespace i {
