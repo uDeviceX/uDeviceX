@@ -1,14 +1,14 @@
 # Intro
 `sim` uses `hiwi`. Interfaces for `hiwi` are in
 [int/](../src/int). One `hiwi` consists of several `struct`s and
-functions. Interface for `hiwi` is in [int](../src/int).
+functions.
 
-`struct`s are the following (`QWT`):
+`struct`s are the following:
 
-* `Q` : quantities : states variables of the simulation. ex `pp`, `np`.
+* `Q` : quantities : states variables of the simulation. ex `pp`, `np`
 
 * `W` : work : work variables. ex: exchange buffers in distribute
-  functions.
+  functions
 
 * `T1, T2`, ... : tickets : ex: `zip` variables for solvent
 
@@ -59,4 +59,3 @@ it includes all files of hiwi
 # Notation
 * `hi` : is a an example of `hiwi`
 * `w`, `q`, `t` : variables of `QWT`
-
