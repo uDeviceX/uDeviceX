@@ -46,11 +46,9 @@ __device__ float3 angle0(float2 t0i, float2 t1i, float *av) {
 	t3  = tex1Dfetch(Vert, offset + i3 * 3 + 0);
 	t4  = tex1Dfetch(Vert, offset + i3 * 3 + 1);
 
-	r1 = make_float3(t0i.x, t0i.y, t1i.x);
-	u1 = make_float3(t1i.y, t2i.x, t2i.y);
-	r2 = make_float3( t0.x,  t0.y,  t1.x);
-	u2 = make_float3( t1.y,  t2.x,  t2.y);
-	r3 = make_float3( t3.x,  t3.y,  t4.x);
+	ttt2ru(t0i, t1i, t2i, /**/ r1, u1);
+	ttt2ru( t0,  t1,  t2, /**/ r2, u2);
+	tt2r  ( t2,  t3,      /**/ r3);
 
 	f  = angle(r1, r2, r3, av[2 * idrbc], av[2 * idrbc + 1]);
 	f += visc(r1, r2, u1, u2);
