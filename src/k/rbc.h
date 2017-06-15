@@ -1,5 +1,7 @@
 namespace k_rbc
 {
+#define __DF__ __device__ __forceinline__
+  
 texture<float2, 1, cudaReadModeElementType> texVertices;
 texture<int, 1, cudaReadModeElementType> texAdjVert;
 texture<int, 1, cudaReadModeElementType> texAdjVert2;
@@ -10,9 +12,9 @@ texture<int4, cudaTextureType1D> texTriangles4;
      (a).z*(b).x - (a).x*(b).z,                 \
      (a).x*(b).y - (a).y*(b).x)
 
-__device__ __forceinline__ float3 angle0(float3 v1, float3 v2,
-                                          float3 v3, float area,
-                                          float volume) {
+__DF__ float3 angle0(float3 v1, float3 v2,
+		     float3 v3, float area,
+		     float volume) {
 #include "params/rbc.inc0.h"
     float Ak, A0, n_2, coefArea, coeffVol,
         r, xx, IbforceI_wcl, kp, IbforceI_pow, ka0, kv0, x0, l0, lmax,
@@ -55,17 +57,17 @@ __device__ __forceinline__ float3 angle0(float3 v1, float3 v2,
     return addFArea + addFVolume + (IbforceI_wcl + IbforceI_pow) * x21;
 }
 
-__device__ __forceinline__ float3 visc(float3 v1, float3 v2,
+__DF__ float3 visc(float3 v1, float3 v2,
                                          float3 u1, float3 u2) {
     float3 du = u2 - u1, dr = v1 - v2;
     float gammaC = RBCgammaC, gammaT = 3.0 * RBCgammaC;
 
     return gammaT                             * du +
-        gammaC * dot(du, dr) / dot(dr, dr) * dr;
+           gammaC * dot(du, dr) / dot(dr, dr) * dr;
 }
 
 template <int update>
-__device__ __forceinline__ float3 dihedral0(float3 v1, float3 v2, float3 v3,
+__DF__ float3 dihedral0(float3 v1, float3 v2, float3 v3,
                                              float3 v4) {
     float overIksiI, overIdzeI, cosTheta, IsinThetaI2, sinTheta_1,
         beta, b11, b12, phi, sint0kb, cost0kb;
@@ -216,13 +218,13 @@ __global__ void force(int nc, float *__restrict__ av,
     }
 }
 
-__device__ __forceinline__ float3 tex2vec(int id) {
+__DF__ float3 tex2vec(int id) {
     float2 tmp0 = tex1Dfetch(texVertices, id + 0);
     float2 tmp1 = tex1Dfetch(texVertices, id + 1);
     return make_float3(tmp0.x, tmp0.y, tmp1.x);
 }
 
-__device__ __forceinline__ float2 warpReduceSum(float2 val) {
+__DF__ float2 warpReduceSum(float2 val) {
     for (int offset = warpSize / 2; offset > 0; offset /= 2) {
         val.x += __shfl_down(val.x, offset);
         val.y += __shfl_down(val.y, offset);
@@ -264,4 +266,5 @@ __global__ void area_volume(float *totA_V) {
 #undef abscross2
 #undef abscross
 }
+#undef __DF__
 } /* namespace k_rbc */
