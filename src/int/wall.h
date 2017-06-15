@@ -14,7 +14,7 @@ void alloc_quants(Quants *q) {
     q->rnd = new Logistic::KISS;
 }
 
-void free_wuants(Quants *q) {
+void free_quants(Quants *q) {
     CC(cudaFree(q->pp));
     delete q->cells;
 }
