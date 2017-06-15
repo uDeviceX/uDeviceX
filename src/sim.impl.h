@@ -365,7 +365,7 @@ void run_wall(long nsteps) {
     if (walls) remove_bodies();
     set_ids_solids();
     if (solids0 && s::ns) k_sim::clear_velocity<<<k_cnf(s::npp)>>>(s::pp, s::npp);
-    if (rbcs && r::n)     k_sim::clear_velocity<<<k_cnf(r::n)  >>>(r::pp, r::n);
+    if (rbcs    &&  r::n) k_sim::clear_velocity<<<k_cnf(r::n)  >>>(r::pp, r::n);
     if (pushflow) driving_force0 = driving_force;
 
     for (/**/; it < nsteps; ++it) step(driving_force0, wall0, it);
