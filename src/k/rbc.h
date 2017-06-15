@@ -159,11 +159,14 @@ __device__ float3 angle(float2 t0, float2 t1, float *av) {
 }
 
 __device__ float3 dihedral(float2 t0, float2 t1) {
-    int degreemax = 7;
-    int pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
-    int lid = pid % RBCnv;
-    int offset = (pid / RBCnv) * RBCnv * 3;
-    int neighid = (threadIdx.x + blockDim.x * blockIdx.x) % degreemax;
+    int degreemax, pid, lid, offset, neighid;
+    int idv1, idv2, idv3, idv4;
+
+    degreemax = 7;
+    pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
+    lid = pid % RBCnv;
+    offset = (pid / RBCnv) * RBCnv * 3;
+    neighid = (threadIdx.x + blockDim.x * blockIdx.x) % degreemax;
 
     float3 v0 = make_float3(t0.x, t0.y, t1.x);
 
@@ -178,7 +181,7 @@ __device__ float3 dihedral(float2 t0, float2 t1) {
       dihedrals: 0124, 0123
     */
 
-    int idv1, idv2, idv3, idv4;
+
     idv1 = tex1Dfetch(texAdjVert, neighid + degreemax * lid);
     bool valid = idv1 != -1;
 
