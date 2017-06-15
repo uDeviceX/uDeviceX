@@ -6,6 +6,7 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
                                   const int w_n, float *const acc,
                                   const float seed, const int type, const int *const start,
                                   const Particle* const w_pp000) {
+#define start_fetch(i) start[i]
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
     int pid = gid / 3;
     int zplane = gid % 3;
@@ -94,5 +95,6 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
     atomicAdd(acc + 3 * pid + 0, xforce);
     atomicAdd(acc + 3 * pid + 1, yforce);
     atomicAdd(acc + 3 * pid + 2, zforce);
+#undef start_fetch
 }
 } /* namespace k_wall */
