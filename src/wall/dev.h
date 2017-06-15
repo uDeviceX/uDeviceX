@@ -10,11 +10,12 @@ __global__ void strip_solid4(Particle *const src, const int n, float4 *dst) {
 
 __device__ int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
 
-__global__ void interactions_3tpp(const float2 *const pp, const int np,
-                                  const int w_n, float *const acc,
-                                  const float seed, const int type, const cudaTextureObject_t start,
-                                  const float4* const w_pp000) {
-#define start_fetch(i) (tex1Dfetch<int> (start, i))
+__global__ void interactions_3tpp(const float2 *const pp, const int np, const int w_n, float *const acc,
+                                  const float seed, const int type, const cudaTextureObject_t texstart,
+                                  const cudaTextureObject_t texwpp) {
+#define start_fetch(i) (tex1Dfetch<int>  (texstart, i))
+#define   wpp_fetch(i) (tex1Dfetch<float4> (texwpp, i))
+
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
     int pid = gid / 3;
     int zplane = gid % 3;
@@ -86,7 +87,7 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
         int m2 = (int)(i >= scan2);
         int spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
 
-        const float4 rw = w_pp000[spid]; /* wall particle */
+        const float4 rw = wpp_fetch(spid); /* wall particle */
 
         float vxw, vyw, vzw;
         k_wvel::vell(rw.x, rw.y, rw.z, &vxw, &vyw, &vzw);
@@ -105,5 +106,6 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
     atomicAdd(acc + 3 * pid + 1, yforce);
     atomicAdd(acc + 3 * pid + 2, zforce);
 #undef start_fetch
+#undef wpp_fetch
 }
 } /* namespace k_wall */

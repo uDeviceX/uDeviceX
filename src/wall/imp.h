@@ -133,10 +133,11 @@ void make_texpp(float4 *pp, int n, cudaTextureObject_t *texpp) {
     CC(cudaCreateTextureObject(texpp, &resD, &texD, NULL));
 }
 
-void interactions(const int type, const Particle *const pp, const int n, const float rnd, const cudaTextureObject_t texstart,
-                  const float4 *w_pp000, const int w_n, Force *ff) {
+void interactions(const int type, const Particle *const pp, const int n, const float rnd,
+                  const cudaTextureObject_t texstart, const cudaTextureObject_t texpp,
+                  const int w_n, Force *ff) {
     if (n > 0 && w_n > 0) {
     dev::interactions_3tpp <<<k_cnf(3 * n)>>>
-        ((float2 *)pp, n, w_n, (float *)ff, rnd, type, texstart, w_pp000);
+        ((float2 *)pp, n, w_n, (float *)ff, rnd, type, texstart, texpp);
     }
 }
