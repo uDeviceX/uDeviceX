@@ -161,6 +161,9 @@ __device__ float3 angle(float2 t0, float2 t1, float *av) {
 __device__ float3 dihedral(float2 t0, float2 t1) {
     int degreemax, pid, lid, offset, neighid;
     int idv1, idv2, idv3, idv4;
+    float2         t2, t3, t4, t5, t6, t7;
+    float3 v0, v1, v2, v3, v4;
+    bool valid;
 
     degreemax = 7;
     pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
@@ -168,7 +171,7 @@ __device__ float3 dihedral(float2 t0, float2 t1) {
     offset = (pid / RBCnv) * RBCnv * 3;
     neighid = (threadIdx.x + blockDim.x * blockIdx.x) % degreemax;
 
-    float3 v0 = make_float3(t0.x, t0.y, t1.x);
+    v0 = make_float3(t0.x, t0.y, t1.x);
 
     /*
       v4
@@ -183,7 +186,7 @@ __device__ float3 dihedral(float2 t0, float2 t1) {
 
 
     idv1 = tex1Dfetch(texAdjVert, neighid + degreemax * lid);
-    bool valid = idv1 != -1;
+    valid = idv1 != -1;
 
     idv2 = tex1Dfetch(texAdjVert, ((neighid + 1) % degreemax) + degreemax * lid);
 
@@ -199,19 +202,19 @@ __device__ float3 dihedral(float2 t0, float2 t1) {
     idv4 = tex1Dfetch(texAdjVert2, neighid + degreemax * lid);
 
     if (valid) {
-	float2 t0 = tex1Dfetch(texVertices, offset + idv1 * 3 + 0);
-	float2 t1 = tex1Dfetch(texVertices, offset + idv1 * 3 + 1);
-	float2 t2 = tex1Dfetch(texVertices, offset + idv2 * 3 + 0);
-	float2 t3 = tex1Dfetch(texVertices, offset + idv2 * 3 + 1);
-	float2 t4 = tex1Dfetch(texVertices, offset + idv3 * 3 + 0);
-	float2 t5 = tex1Dfetch(texVertices, offset + idv3 * 3 + 1);
-	float2 t6 = tex1Dfetch(texVertices, offset + idv4 * 3 + 0);
-	float2 t7 = tex1Dfetch(texVertices, offset + idv4 * 3 + 1);
+	t0 = tex1Dfetch(texVertices, offset + idv1 * 3 + 0);
+	t1 = tex1Dfetch(texVertices, offset + idv1 * 3 + 1);
+	t2 = tex1Dfetch(texVertices, offset + idv2 * 3 + 0);
+	t3 = tex1Dfetch(texVertices, offset + idv2 * 3 + 1);
+	t4 = tex1Dfetch(texVertices, offset + idv3 * 3 + 0);
+	t5 = tex1Dfetch(texVertices, offset + idv3 * 3 + 1);
+	t6 = tex1Dfetch(texVertices, offset + idv4 * 3 + 0);
+	t7 = tex1Dfetch(texVertices, offset + idv4 * 3 + 1);
 
-	float3 v1 = make_float3(t0.x, t0.y, t1.x);
-	float3 v2 = make_float3(t2.x, t2.y, t3.x);
-	float3 v3 = make_float3(t4.x, t4.y, t5.x);
-	float3 v4 = make_float3(t6.x, t6.y, t7.x);
+	v1 = make_float3(t0.x, t0.y, t1.x);
+	v2 = make_float3(t2.x, t2.y, t3.x);
+	v3 = make_float3(t4.x, t4.y, t5.x);
+	v4 = make_float3(t6.x, t6.y, t7.x);
 
 	return dihedral0<1>(v0, v2, v1, v4) + dihedral0<2>(v1, v0, v2, v3);
     }
