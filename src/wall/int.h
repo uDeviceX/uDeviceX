@@ -22,7 +22,7 @@ int create(int n, Particle* pp, Quants *q) {
     sub::w_n = q->n;
     // !!
     
-    n = sub::init(pp, n, &(q->pp));
+    n = sub::init(pp, n, &q->pp, &q.n);
 
     // TMP !!
     q->n  = sub::w_n;
