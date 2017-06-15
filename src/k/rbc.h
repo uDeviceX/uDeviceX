@@ -19,9 +19,9 @@ __device__ void ttt2ru(float2 t1, float2 t2, float2 t3, /**/ float3 *r, float3 *
   u->x = scn(t2); u->y = fst(t3); u->z = scn(t3);
 }
 
-__device__ float3 angle0(float2 t0, float2 t1, float *av) {
+__device__ float3 angle0(float2 t0i, float2 t1i, float *av) {
     int degreemax, pid, lid, idrbc, offset, neighid, i2, i3;
-    float2 t2, t3, t4;
+    float2 t0, t1, t2, t3, t4;
     float3 r1, u1, r2, u2, r3, f;
     bool valid;
 
@@ -33,8 +33,8 @@ __device__ float3 angle0(float2 t0, float2 t1, float *av) {
     neighid = (threadIdx.x + blockDim.x * blockIdx.x) % degreemax;
 
     t2 = tex1Dfetch(Vert, pid * 3 + 2);
-    r1 = make_float3(t0.x, t0.y, t1.x);
-    u1 = make_float3(t1.y, t2.x, t2.y);
+    r1 = make_float3(t0i.x, t0i.y, t1i.x);
+    u1 = make_float3(t1i.y, t2.x, t2.y);
 
     i2 = tex1Dfetch(Adj0, neighid + degreemax * lid);
     valid = i2 != -1;
