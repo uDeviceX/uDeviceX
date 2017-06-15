@@ -80,8 +80,7 @@ void create_walls() {
 
     dSync();
     sdf::init();
-    wall::alloc_quants(&w::q);
-    o::n = wall::create(o::n, o::pp, &w::q);
+    o::n = i::wall::create(o::n, o::pp, &w::q);
     MSG("solvent particles survived: %d/%d", o::n, nold);
     if (o::n) k_sim::clear_velocity<<<k_cnf(o::n)>>>(o::pp, o::n);
     o::cells->build(o::pp, o::n);
@@ -123,9 +122,9 @@ void clear_forces(Force* ff, int n) {
 }
 
 void forces_wall() {
-    if (o::n)              wall::interactions(SOLVENT_TYPE, o::pp, o::n, o::ff);
-    if (solids0 && s::npp) wall::interactions(SOLID_TYPE, s::pp, s::npp, s::ff);
-    if (rbcs && r::n)      wall::interactions(SOLID_TYPE, r::pp, r::n  , r::ff);
+    if (o::n)              i::wall::interactions(w::q, SOLVENT_TYPE, o::pp, o::n, /**/ o::ff);
+    if (solids0 && s::npp) i::wall::interactions(w::q, SOLID_TYPE, s::pp, s::npp, /**/ s::ff);
+    if (rbcs && r::n)      i::wall::interactions(w::q, SOLID_TYPE, r::pp, r::n  , /**/ r::ff);
 }
 
 void forces_cnt(std::vector<ParticlesWrap> *w_r) {
@@ -258,10 +257,11 @@ void init() {
     rex::init();
     dump::init();
 
+    i::wall::alloc_quants(&w::q);
+
     o::cells   = new x::Clist(XS, YS, ZS);
     mpDeviceMalloc(&o::zip0); mpDeviceMalloc(&o::zip1);
 
-    wall::trunk = new Logistic::KISS;
     mpDeviceMalloc(&o::pp); mpDeviceMalloc(&o::pp0);
     mpDeviceMalloc(&o::ff);
     mpDeviceMalloc(&s::ff); mpDeviceMalloc(&s::ff);
@@ -389,9 +389,10 @@ void close() {
     if (solids0)
     mrescue::close();
 
+    i::wall::free_quants(&w::q);
+    
     delete o::cells;
     delete dump_field;
-    delete wall::trunk;
 
     CC(cudaFree(o::zip0));
     CC(cudaFree(o::zip1));
