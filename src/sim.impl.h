@@ -315,11 +315,9 @@ void dump_diag(int it, bool wall0) { /* dump and diag */
 
 void step(float driving_force0, bool wall0, int it) {
     assert(o::n <= MAX_PART_NUM);
-    // safety::bound(o::pp, o::n);
-
     assert(r::n <= MAX_PART_NUM);
-    // if (rbcs) safety::bound(r::pp, r::n);
-    
+    // safety::bound(o::pp, o::n);
+    // if (rbcs) safety::bound(r::pp, r::n);    
     distr_solvent();
     if (solids0) distr_solid();
     if (rbcs)    distr_rbc();
@@ -330,7 +328,7 @@ void step(float driving_force0, bool wall0, int it) {
     if (solids0) update_solid();
     if (rbcs)    update_rbc();
     if (wall0) bounce();
-    if (sbounce_back && solids0 && s::npp) bounce_solid(it);
+    if (sbounce_back && solids0) bounce_solid(it);
 }
 
 void run_nowall(long nsteps) {
