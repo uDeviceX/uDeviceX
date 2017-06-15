@@ -25,7 +25,7 @@ __device__ void ttt2ru(float2 t1, float2 t2, float2 t3, /**/ float3 *r, float3 *
   u->x = scn(t2); u->y = fst(t3); u->z = scn(t3);
 }
 
-__DF__ float3 angle0(float3 v1, float3 v2,
+__DF__ float3 angle(float3 v1, float3 v2,
 		     float3 v3, float area,
 		     float volume) {
 #include "params/rbc.inc0.h"
@@ -115,7 +115,7 @@ __DF__ float3 dihedral0(float3 v1, float3 v2, float3 v3,
     return make_float3(0, 0, 0);
 }
 
-__device__ float3 angle0(float2 t0, float2 t1, float *av) {
+__device__ float3 angle_force(float2 t0, float2 t1, float *av) {
     int degreemax, pid, lid, idrbc, offset, neighid, idv2, idv3;
     float2 t2, t3, t4;
     float3 v1, u1, v2, u2, v3, f;
@@ -230,7 +230,7 @@ __global__ void force(int nc, float *__restrict__ av,
 	float2 t0 = tex1Dfetch(texVertices, pid * 3 + 0);
 	float2 t1 = tex1Dfetch(texVertices, pid * 3 + 1);
 
-	float3 f = angle0(t0, t1, av);
+	float3 f = angle(t0, t1, av);
 	f += dihedral(t0, t1);
 
 	if (f.x > -1.0e9f) {
