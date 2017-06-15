@@ -142,29 +142,25 @@ void inside_dev(const Particle *pp, const int n, const Mesh m, const Particle *i
     kernels::compute_tags <<< blck, thrd >>> (pp, n, i_pp, m.nv, m.tt, m.nt, /**/ tags);
 }
 
-/* bbox: minx, maxx, miny, maxy, minz, maxz */
-static void get_bbox(const Particle *pp, const int n, /**/ float *bbox)
+static void get_bbox(const Particle *pp, const int n, /**/ float3 *minbb, float3 *maxbb)
 {
     if (n == 0) return;
 
     const float *r = pp[0].r;
-        
-    bbox[0] = bbox[1] = r[0];
-    bbox[2] = bbox[3] = r[1];
-    bbox[4] = bbox[5] = r[2];
 
-    auto higher = [](float a, float b) {return a > b ? a : b;};
-    auto lower  = [](float a, float b) {return a > b ? b : a;};
+    float3 minb = make_float3(r[0], r[1], r[2]);
+    float3 maxb = make_float3(r[0], r[1], r[2]);
 
-    for (int i = 1; i < n; ++i)
-    {
+    auto min = [](float a, float b) {return a > b ? b : a;};
+    auto max = [](float a, float b) {return a > b ? a : b;};
+    
+    for (int i = 1; i < n; ++i) {
         r = pp[i].r;
-        for (int d = 0; d < 3; ++d)
-        {
-            bbox[2*d + 0] =  lower(bbox[2*d + 0], r[d]);
-            bbox[2*d + 1] = higher(bbox[2*d + 1], r[d]); 
-        }
+        minb.x = min(minb.x, r[0]); maxb.x = max(maxb.x, r[0]);
+        minb.y = min(minb.y, r[1]); maxb.y = max(maxb.y, r[1]);
+        minb.z = min(minb.z, r[2]); maxb.z = max(maxb.z, r[2]);
     }
+    *minbb = minb; *maxbb = maxb;
 }
 
 void get_bbox(const float *rr, const int n, /**/ float *bbox)
@@ -191,10 +187,10 @@ void get_bbox(const float *rr, const int n, /**/ float *bbox)
     }
 }
 
-void get_bboxes_hst(const Particle *pp, const int nps, const int ns, /**/ float *bboxes)
+void get_bboxes_hst(const Particle *pp, const int nps, const int ns, /**/ float3 *minbb, float3 *maxbb)
 {
     for (int i = 0; i < ns; ++i)
-    get_bbox(pp + i*nps, nps, /**/ bboxes + 6 * i);
+    get_bbox(pp + i*nps, nps, /**/ minbb + i, maxbb + i);
 }
 
 void get_bboxes_dev(const Particle *pp, const int nps, const int ns, /**/ float3 *minbb, float3 *maxbb)
