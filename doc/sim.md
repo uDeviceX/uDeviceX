@@ -41,8 +41,7 @@ call functions of `hi`.
 
 All files are included in [bund.cu](../src/bund.cu).
 
-`int/hi.h` should "unpack/pack" `QWT` structures and path arguments to
-`dev/hi.h`.
+`int/hi.h` should "unpack/pack" `QWT` structures and call functions of `dev/hi.h`
 
 # bund.cu
 
