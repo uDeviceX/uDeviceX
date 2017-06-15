@@ -107,5 +107,3 @@ void interactions(const int type, const Particle *const pp, const int n, const f
         ((float2 *)pp, n, w_n, (float *)ff, rnd, type, cells->start, w_pp);
     }
 }
-
-void close () { delete cells; }
