@@ -39,8 +39,8 @@ call functions of `hi`.
 * dev/hi.h : implimentation of [dev]ice functions
 * int/hi.h : [int]erface
 
-* lib/hi.cu : a [lib]rary of function which are compiled separately
-* lib/hi.h  : 
+* lib/hi.[cu|h] : a [lib]rary of function which are compiled
+  separately, called by imp/hi.h and dev/hi.h
 
 All files are included in [bund.cu](../src/bund.cu).
 
