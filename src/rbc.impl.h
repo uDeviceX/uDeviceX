@@ -32,15 +32,15 @@ void gen_a12(int i0, int* hx, int* hy, /**/ int* a1, int* a2) {
 }
 
 void setup0(int *data, int *data2, int nentries) {
-    setup_texture(k_rbc::texAdjVert, int);
+    setup_texture(k_rbc::Adj0, int);
 
     size_t offset;
-    CC(cudaBindTexture(&offset, &k_rbc::texAdjVert, data,
-                       &k_rbc::texAdjVert.channelDesc, sizeof(int) * nentries));
+    CC(cudaBindTexture(&offset, &k_rbc::Adj0, data,
+                       &k_rbc::Adj0.channelDesc, sizeof(int) * nentries));
 
-    setup_texture(k_rbc::texAdjVert2, int);
-    CC(cudaBindTexture(&offset, &k_rbc::texAdjVert2, data2,
-                       &k_rbc::texAdjVert.channelDesc, sizeof(int) * nentries));
+    setup_texture(k_rbc::Adj1, int);
+    CC(cudaBindTexture(&offset, &k_rbc::Adj1, data2,
+                       &k_rbc::Adj0.channelDesc, sizeof(int) * nentries));
 }
 
 void setup(int* faces) {
@@ -80,12 +80,12 @@ void setup(int* faces) {
 
     setup0(ptr, ptr2, RBCnv*md);
 
-    setup_texture(k_rbc::texTriangles4, int4);
-    setup_texture(k_rbc::texVertices, float2);
+    setup_texture(k_rbc::Tri, int4);
+    setup_texture(k_rbc::Vert, float2);
 
     size_t offset;
-    CC(cudaBindTexture(&offset, &k_rbc::texTriangles4, devtrs4,
-                       &k_rbc::texTriangles4.channelDesc,
+    CC(cudaBindTexture(&offset, &k_rbc::Tri, devtrs4,
+                       &k_rbc::Tri.channelDesc,
                        RBCnt * 4 * sizeof(int)));
 }
 
@@ -93,9 +93,9 @@ void forces(int nc, Particle *pp, Force *ff, float* host_av) {
     if (nc <= 0) return;
 
     size_t offset;
-    CC(cudaBindTexture(&offset, &k_rbc::texVertices,
+    CC(cudaBindTexture(&offset, &k_rbc::Vert,
                        (float2*)pp,
-                       &k_rbc::texVertices.channelDesc,
+                       &k_rbc::Vert.channelDesc,
                        nc * RBCnv * sizeof(float) * 6));
 
     dim3 avThreads(256, 1);

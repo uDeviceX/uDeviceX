@@ -1,10 +1,10 @@
 namespace k_rbc
 {
 
-texture<float2, 1, cudaReadModeElementType> texVertices;
-texture<int, 1, cudaReadModeElementType> texAdjVert;
-texture<int, 1, cudaReadModeElementType> texAdjVert2;
-texture<int4, cudaTextureType1D> texTriangles4;
+texture<float2, 1, cudaReadModeElementType> Vert;
+texture<int, 1, cudaReadModeElementType> Adj0;
+texture<int, 1, cudaReadModeElementType> Adj1;
+texture<int4, cudaTextureType1D> Tri;
 
 /* first and second */
 #define fst(t) ( (t).x )
@@ -32,24 +32,24 @@ __device__ float3 angle0(float2 t0, float2 t1, float *av) {
     offset = idrbc * RBCnv * 3;
     neighid = (threadIdx.x + blockDim.x * blockIdx.x) % degreemax;
 
-    t2 = tex1Dfetch(texVertices, pid * 3 + 2);
+    t2 = tex1Dfetch(Vert, pid * 3 + 2);
     v1 = make_float3(t0.x, t0.y, t1.x);
     u1 = make_float3(t1.y, t2.x, t2.y);
 
-    idv2 = tex1Dfetch(texAdjVert, neighid + degreemax * lid);
+    idv2 = tex1Dfetch(Adj0, neighid + degreemax * lid);
     valid = idv2 != -1;
 
-    idv3 = tex1Dfetch(texAdjVert, ((neighid + 1) % degreemax) + degreemax * lid);
+    idv3 = tex1Dfetch(Adj0, ((neighid + 1) % degreemax) + degreemax * lid);
 
 
-    if (idv3 == -1 && valid) idv3 = tex1Dfetch(texAdjVert, 0 + degreemax * lid);
+    if (idv3 == -1 && valid) idv3 = tex1Dfetch(Adj0, 0 + degreemax * lid);
 
     if (valid) {
-	t0 = tex1Dfetch(texVertices, offset + idv2 * 3 + 0);
-	t1 = tex1Dfetch(texVertices, offset + idv2 * 3 + 1);
-	t2 = tex1Dfetch(texVertices, offset + idv2 * 3 + 2);
-	t3 = tex1Dfetch(texVertices, offset + idv3 * 3 + 0);
-	t4 = tex1Dfetch(texVertices, offset + idv3 * 3 + 1);
+	t0 = tex1Dfetch(Vert, offset + idv2 * 3 + 0);
+	t1 = tex1Dfetch(Vert, offset + idv2 * 3 + 1);
+	t2 = tex1Dfetch(Vert, offset + idv2 * 3 + 2);
+	t3 = tex1Dfetch(Vert, offset + idv3 * 3 + 0);
+	t4 = tex1Dfetch(Vert, offset + idv3 * 3 + 1);
 
 	v2 = make_float3(t0.x, t0.y, t1.x);
 	u2 = make_float3(t1.y, t2.x, t2.y);
@@ -89,31 +89,31 @@ __device__ float3 dihedral(float2 t0, float2 t1) {
     */
 
 
-    idv1 = tex1Dfetch(texAdjVert, neighid + degreemax * lid);
+    idv1 = tex1Dfetch(Adj0, neighid + degreemax * lid);
     valid = idv1 != -1;
 
-    idv2 = tex1Dfetch(texAdjVert, ((neighid + 1) % degreemax) + degreemax * lid);
+    idv2 = tex1Dfetch(Adj0, ((neighid + 1) % degreemax) + degreemax * lid);
 
     if (idv2 == -1 && valid) {
-	idv2 = tex1Dfetch(texAdjVert, 0 + degreemax * lid);
-	idv3 = tex1Dfetch(texAdjVert, 1 + degreemax * lid);
+	idv2 = tex1Dfetch(Adj0, 0 + degreemax * lid);
+	idv3 = tex1Dfetch(Adj0, 1 + degreemax * lid);
     } else {
 	idv3 =
-	    tex1Dfetch(texAdjVert, ((neighid + 2) % degreemax) + degreemax * lid);
-	if (idv3 == -1 && valid) idv3 = tex1Dfetch(texAdjVert, 0 + degreemax * lid);
+	    tex1Dfetch(Adj0, ((neighid + 2) % degreemax) + degreemax * lid);
+	if (idv3 == -1 && valid) idv3 = tex1Dfetch(Adj0, 0 + degreemax * lid);
     }
 
-    idv4 = tex1Dfetch(texAdjVert2, neighid + degreemax * lid);
+    idv4 = tex1Dfetch(Adj1, neighid + degreemax * lid);
 
     if (valid) {
-	t0 = tex1Dfetch(texVertices, offset + idv1 * 3 + 0);
-	t1 = tex1Dfetch(texVertices, offset + idv1 * 3 + 1);
-	t2 = tex1Dfetch(texVertices, offset + idv2 * 3 + 0);
-	t3 = tex1Dfetch(texVertices, offset + idv2 * 3 + 1);
-	t4 = tex1Dfetch(texVertices, offset + idv3 * 3 + 0);
-	t5 = tex1Dfetch(texVertices, offset + idv3 * 3 + 1);
-	t6 = tex1Dfetch(texVertices, offset + idv4 * 3 + 0);
-	t7 = tex1Dfetch(texVertices, offset + idv4 * 3 + 1);
+	t0 = tex1Dfetch(Vert, offset + idv1 * 3 + 0);
+	t1 = tex1Dfetch(Vert, offset + idv1 * 3 + 1);
+	t2 = tex1Dfetch(Vert, offset + idv2 * 3 + 0);
+	t3 = tex1Dfetch(Vert, offset + idv2 * 3 + 1);
+	t4 = tex1Dfetch(Vert, offset + idv3 * 3 + 0);
+	t5 = tex1Dfetch(Vert, offset + idv3 * 3 + 1);
+	t6 = tex1Dfetch(Vert, offset + idv4 * 3 + 0);
+	t7 = tex1Dfetch(Vert, offset + idv4 * 3 + 1);
 
 	v1 = make_float3(t0.x, t0.y, t1.x);
 	v2 = make_float3(t2.x, t2.y, t3.x);
@@ -131,8 +131,8 @@ __global__ void force(int nc, float *__restrict__ av,
     int pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
 
     if (pid < nc * RBCnv) {
-	float2 t0 = tex1Dfetch(texVertices, pid * 3 + 0);
-	float2 t1 = tex1Dfetch(texVertices, pid * 3 + 1);
+	float2 t0 = tex1Dfetch(Vert, pid * 3 + 0);
+	float2 t1 = tex1Dfetch(Vert, pid * 3 + 1);
 
 	float3 f = angle0(t0, t1, av);
 	f += dihedral(t0, t1);
@@ -146,8 +146,8 @@ __global__ void force(int nc, float *__restrict__ av,
 }
 
 __DF__ float3 tex2vec(int id) {
-    float2 t0 = tex1Dfetch(texVertices, id + 0);
-    float2 t1 = tex1Dfetch(texVertices, id + 1);
+    float2 t0 = tex1Dfetch(Vert, id + 0);
+    float2 t1 = tex1Dfetch(Vert, id + 1);
     return make_float3(t0.x, t0.y, t1.x);
 }
 
@@ -165,7 +165,7 @@ __global__ void area_volume(float *totA_V) {
 
     for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < RBCnt;
 	 i += blockDim.x * gridDim.x) {
-	int4 ids = tex1Dfetch(texTriangles4, i);
+	int4 ids = tex1Dfetch(Tri, i);
 
 	float3 v0(tex2vec(3 * (ids.x + cid * RBCnv)));
 	float3 v1(tex2vec(3 * (ids.y + cid * RBCnv)));
