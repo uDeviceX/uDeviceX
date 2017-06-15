@@ -68,7 +68,6 @@ namespace x {
 
 #include "field.h"
 
-#include "int/wall.h"
 #include "wall.decl.h"
 #include "k/wvel.h" /* wall velocity used by sdf and wall */
 
@@ -82,6 +81,7 @@ namespace x {
 
 #include "k/wall.h"
 #include "wall.impl.h"
+#include "int/wall.h"
 
 #include "k/fsi.h"
 
