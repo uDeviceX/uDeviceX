@@ -54,7 +54,10 @@ namespace x {
 #include "minmax.h"
 #include "off.impl.h"
 
+#define __DF__ __device__ __forceinline__
+#include "k/rbc0.h"
 #include "k/rbc.h"
+#undef __DF__
 #include "rbc.impl.h"
 
 #include "rdstr.decl.h"

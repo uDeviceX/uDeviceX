@@ -1,16 +1,10 @@
 namespace k_rbc
 {
-#define __DF__ __device__ __forceinline__
 
 texture<float2, 1, cudaReadModeElementType> texVertices;
 texture<int, 1, cudaReadModeElementType> texAdjVert;
 texture<int, 1, cudaReadModeElementType> texAdjVert2;
 texture<int4, cudaTextureType1D> texTriangles4;
-
-#define cross(a, b) make_float3                 \
-    ((a).y*(b).z - (a).z*(b).y,                 \
-     (a).z*(b).x - (a).x*(b).z,                 \
-     (a).x*(b).y - (a).y*(b).x)
 
 /* first and second */
 #define fst(t) ( (t).x )
@@ -291,5 +285,5 @@ __global__ void area_volume(float *totA_V) {
 }
 #undef fst
 #undef scn
-#undef __DF__
+
 } /* namespace k_rbc */
