@@ -44,18 +44,18 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
 
         int cid0 = xbase - 1 + XCELLS * (ybase - 1 + YCELLS * (zbase - 1 + zplane));
 
-        spidbase = start[cid0];
+        spidbase = start_fetch(cid0);
         int count0 = start[cid0 + 3] - spidbase;
 
         int cid1 = cid0 + XCELLS;
-        deltaspid1 = start[cid1];
-        int count1 = start[cid1 + 3] - deltaspid1;
+        deltaspid1 = start_fetch(cid1);
+        int count1 = start_fetch(cid1 + 3) - deltaspid1;
 
         int cid2 = cid0 + XCELLS * 2;
-        deltaspid2 = start[cid2];
+        deltaspid2 = start_fetch(cid2);
         int count2 = cid2 + 3 == NCELLS
             ? w_n
-            : start[cid2 + 3] - deltaspid2;
+            : start_fetch(cid2 + 3) - deltaspid2;
 
         scan1 = count0;
         scan2 = count0 + count1;
