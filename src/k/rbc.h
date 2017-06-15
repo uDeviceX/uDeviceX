@@ -230,7 +230,7 @@ __device__ __forceinline__ float2 warpReduceSum(float2 val) {
     return val;
 }
 
-__global__ void areaAndVolumeKernel(float *totA_V) {
+__global__ void area_volume(float *totA_V) {
 #define sq(a) ((a)*(a))
 #define abscross2(a, b)                         \
     (sq((a).y*(b).z - (a).z*(b).y) +            \

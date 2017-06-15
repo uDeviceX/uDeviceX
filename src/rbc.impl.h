@@ -102,7 +102,7 @@ void forces(int nc, Particle *pp, Force *ff, float* host_av) {
     dim3 avBlocks(1, nc);
 
     CC(cudaMemsetAsync(host_av, 0, nc * 2 * sizeof(float)));
-    k_rbc::areaAndVolumeKernel<<<avBlocks, avThreads>>>(host_av);
+    k_rbc::area_volume<<<avBlocks, avThreads>>>(host_av);
     CC(cudaPeekAtLastError());
 
     k_rbc::fall_kernel<<<k_cnf(nc*RBCnv*md)>>>(nc, host_av, (float*)ff);
