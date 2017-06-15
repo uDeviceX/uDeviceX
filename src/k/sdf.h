@@ -188,5 +188,13 @@ __global__ void bounce(float2 *const pp, int nparticles) {
         }
     }
 }
+
+__global__ void strip_solid4(Particle *const src, const int n, float4 *dst) {
+    int pid = threadIdx.x + blockDim.x * blockIdx.x;
+    if (pid >= n) return;
+    Particle p = src[pid];
+    dst[pid] = make_float4(p.r[0], p.r[1], p.r[2], 0);
+}
+
 } /* namespace k_sdf */
 
