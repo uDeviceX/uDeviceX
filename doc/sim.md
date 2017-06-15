@@ -1,22 +1,36 @@
 # sim.md
 
-## conventions
+`sim` uses `hiwi`. Interfaces for `hiwi` are in
+[int/](../src/int). One `hiwi` consists of several `struct`s and
+functions. Interface for `hiwi` is in [int](../src/int).
 
-Variables held by `sim` should be stored into abstract. Wrapper
-functions take these abstract structures as arguments and dispatch the
-variables to finer functions, so one can see the input/output of these
-functions.
+`struct`s are the following:
 
-There are 3 kinds of abstract structures:
+* `Q` : quantities : states variables of the simulation. ex `pp`, `np`.
 
-* Q : quntaties : states of the simulation variables such as `pp`, `np` etc.
-   They can be updated by other functions (ex: `[p] = update([p])`)
-
-* W : work : Work variables. ex: exchange buffers in distribute
+* `W` : work : work variables. ex: exchange buffers in distribute
   functions.
 
-* T : tickets : Helper variables which should be made consistent with
-   the above variables via some function.  ex: `zip` variables for
-   solvent, used in dpd-forces computations: `ff = dpdforces([p],
-   [z])`.  `sim` does not use them directly and should **NOT** modify
-   them between calls
+* `T1, T2`, ... : tickets : ex: `zip` variables for solvent
+
+`sim` defines variables of types `Q`, `W`, `T` and calls functions
+of `hiwi`. `sim` should follows some convention on how the functions
+are called: 
+
+* `w` is allocated by `hi::alloc_work()`
+* `t` is allocated by `hi::alloc_ticket()`, `hi::alloc_ticket1()`
+* `t` is not modified by `sim`
+
+Functions of `hi::` can
+* issue ticket : return `t`
+* check ticket : receive `t` as an argument
+* check and invalidate ticket : receive `t` and make it invalid
+
+* modification of `q` by `sim` makes all tickets invalid
+
+The system of ticket imposes a constrain on the order in whcih sim
+call functions of `hi`.
+
+## Notation
+* `hi` : is a specific type of `hiwi`
+* `w`, `q`, `t` : ariables of the `W`, `Q` and one of `T1`, `T2`, ...
