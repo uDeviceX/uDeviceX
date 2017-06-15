@@ -1,4 +1,5 @@
-int init(Particle *pp, int n) {
+
+int init(Particle *pp, int n, Particle **w_pp, int *w_n) {
     thrust::device_vector<int> keys(n);
     k_sdf::fill_keys<<<k_cnf(n)>>>(pp, n, thrust::raw_pointer_cast(&keys[0]));
     thrust::sort_by_key(keys.begin(), keys.end(), thrust::device_ptr<Particle>(pp));
@@ -88,20 +89,20 @@ int init(Particle *pp, int n) {
 	cH2D(solid_remote.D, selected.data(), solid_remote.S);
     }
 
-    w_n = solid_local.size() + solid_remote.S;
+    *w_n = solid_local.size() + solid_remote.S;
 
-    CC(cudaMalloc(&w_pp, sizeof(Particle) * w_n));
-    cD2D(w_pp, thrust::raw_pointer_cast(&solid_local[0]), solid_local.size());
-    cD2D(w_pp + solid_local.size(), solid_remote.D, solid_remote.S);
+    CC(cudaMalloc(w_pp, sizeof(Particle) * (*w_n)));
+    cD2D(*w_pp, thrust::raw_pointer_cast(&solid_local[0]), solid_local.size());
+    cD2D(*w_pp + solid_local.size(), solid_remote.D, solid_remote.S);
 
     return nsurvived;
 } /* end of ini */
 
 void build_cells(const int n, Particle *pp, x::Clist *cells) {if (n) cells->build(pp, n);}
 
-void interactions(const int type, const Particle *const pp, const int n, const float rnd, Force *ff) {
+void interactions(const int type, const Particle *const pp, const int n, const float rnd, const x::Clist *cells, const Particle *w_pp000, const int w_n, Force *ff) {
     if (n > 0 && w_n > 0) {
     dev::interactions_3tpp <<<k_cnf(3 * n)>>>
-        ((float2 *)pp, n, w_n, (float *)ff, rnd, type, cells->start, w_pp);
+        ((float2 *)pp, n, w_n, (float *)ff, rnd, type, cells->start, w_pp000);
     }
 }
