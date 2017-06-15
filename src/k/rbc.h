@@ -10,7 +10,7 @@ texture<int4, cudaTextureType1D> texTriangles4;
      (a).z*(b).x - (a).x*(b).z,                 \
      (a).x*(b).y - (a).y*(b).x)
 
-__device__ __forceinline__ float3 _fangle(float3 v1, float3 v2,
+__device__ __forceinline__ float3 angle0(float3 v1, float3 v2,
                                           float3 v3, float area,
                                           float volume) {
 #include "params/rbc.inc0.h"
@@ -55,7 +55,7 @@ __device__ __forceinline__ float3 _fangle(float3 v1, float3 v2,
     return addFArea + addFVolume + (IbforceI_wcl + IbforceI_pow) * x21;
 }
 
-__device__ __forceinline__ float3 _fvisc(float3 v1, float3 v2,
+__device__ __forceinline__ float3 visc(float3 v1, float3 v2,
                                          float3 u1, float3 u2) {
     float3 du = u2 - u1, dr = v1 - v2;
     float gammaC = RBCgammaC, gammaT = 3.0 * RBCgammaC;
@@ -65,7 +65,7 @@ __device__ __forceinline__ float3 _fvisc(float3 v1, float3 v2,
 }
 
 template <int update>
-__device__ __forceinline__ float3 _fdihedral(float3 v1, float3 v2, float3 v3,
+__device__ __forceinline__ float3 dihedral0(float3 v1, float3 v2, float3 v3,
                                              float3 v4) {
     float overIksiI, overIdzeI, cosTheta, IsinThetaI2, sinTheta_1,
         beta, b11, b12, phi, sint0kb, cost0kb;
@@ -132,14 +132,14 @@ __device__ float3 _fangle_device(float2 tmp0, float2 tmp1,
         float3 u2 = make_float3(tmp1.y, tmp2.x, tmp2.y);
         float3 v3 = make_float3(tmp3.x, tmp3.y, tmp4.x);
 
-        float3 f = _fangle(v1, v2, v3, av[2 * idrbc], av[2 * idrbc + 1]);
-        f += _fvisc(v1, v2, u1, u2);
+        float3 f = angle0(v1, v2, v3, av[2 * idrbc], av[2 * idrbc + 1]);
+        f += visc(v1, v2, u1, u2);
         return f;
     }
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
 }
 
-__device__ float3 _fdihedral_device(float2 tmp0, float2 tmp1) {
+__device__ float3 dihedral(float2 tmp0, float2 tmp1) {
     int degreemax = 7;
     int pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
     int lid = pid % RBCnv;
@@ -191,7 +191,7 @@ __device__ float3 _fdihedral_device(float2 tmp0, float2 tmp1) {
         float3 v3 = make_float3(tmp4.x, tmp4.y, tmp5.x);
         float3 v4 = make_float3(tmp6.x, tmp6.y, tmp7.x);
 
-        return _fdihedral<1>(v0, v2, v1, v4) + _fdihedral<2>(v1, v0, v2, v3);
+        return dihedral0<1>(v0, v2, v1, v4) + dihedral0<2>(v1, v0, v2, v3);
     }
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
 }
@@ -206,7 +206,7 @@ __global__ void force(int nc, float *__restrict__ av,
         float2 tmp1 = tex1Dfetch(texVertices, pid * 3 + 1);
 
         float3 f = _fangle_device(tmp0, tmp1, av);
-        f += _fdihedral_device(tmp0, tmp1);
+        f += dihedral(tmp0, tmp1);
 
         if (f.x > -1.0e9f) {
             atomicAdd(&acc[3 * pid + 0], f.x);
