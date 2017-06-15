@@ -34,7 +34,7 @@ float *av;
 
 /*** see int/wall.h ***/
 namespace w {
-i::wall::Quants q;
+wall::Quants q;
 }
 /***  ***/
 

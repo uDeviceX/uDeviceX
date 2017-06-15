@@ -1,6 +1,3 @@
-namespace i {
-namespace wall {
-
 struct Quants {
   Particle *pp;
   int n;
@@ -21,32 +18,28 @@ void free_quants(Quants *q) {
 
 int create(int n, Particle* pp, Quants *q) {
     // TMP !!
-    ::wall::w_pp = q->pp;
-    ::wall::w_n = q->n;
-    ::wall::trunk = q->rnd;
-    ::wall::cells = q->cells;
+    sub::w_pp = q->pp;
+    sub::w_n = q->n;
+    sub::trunk = q->rnd;
+    sub::cells = q->cells;
     // !!
     
-    n = ::wall::init(pp, n);
+    n = sub::init(pp, n);
 
     // TMP !!
-    q->pp = ::wall::w_pp;
-    q->n  = ::wall::w_n;
-    q->cells = ::wall::cells;
+    q->pp = sub::w_pp;
+    q->n  = sub::w_n;
+    q->cells = sub::cells;
     // !!
     return n;
 }
 
 void interactions(const Quants q, const int type, const Particle *pp, const int n, Force *ff) {
     /* unpack q TMP */
-    ::wall::w_pp = q.pp;
-    ::wall::w_n = q.n;
-    ::wall::trunk = q.rnd;
-    ::wall::cells = q.cells;
+    sub::w_pp = q.pp;
+    sub::w_n = q.n;
+    sub::trunk = q.rnd;
+    sub::cells = q.cells;
         
-    ::wall::interactions(type, pp, n, ff);
+    sub::interactions(type, pp, n, ff);
 }
-
-
-} /* namespace wall */
-} /* namespace i */
