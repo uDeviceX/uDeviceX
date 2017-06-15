@@ -123,8 +123,7 @@ __device__ float3 dihedral(float2 t0, float2 t1) {
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
 }
 
-__global__ void force(int nc, float *__restrict__ av,
-			    float *acc) {
+__global__ void force(int nc, float *__restrict__ av, float *ff) {
     int nv = RBCnv;
     int degreemax = 7;
     int pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
@@ -137,9 +136,9 @@ __global__ void force(int nc, float *__restrict__ av,
 	f += dihedral(t0, t1);
 
 	if (f.x > -1.0e9f) {
-	    atomicAdd(&acc[3 * pid + 0], f.x);
-	    atomicAdd(&acc[3 * pid + 1], f.y);
-	    atomicAdd(&acc[3 * pid + 2], f.z);
+	    atomicAdd(&ff[3 * pid + 0], f.x);
+	    atomicAdd(&ff[3 * pid + 1], f.y);
+	    atomicAdd(&ff[3 * pid + 2], f.z);
 	}
     }
 }
