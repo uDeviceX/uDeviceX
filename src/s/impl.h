@@ -29,8 +29,10 @@ void allocate() {
     CC(cudaMalloc(   &i_pp_dev, MAX_PART_NUM * sizeof(Particle)));
     CC(cudaMalloc(&i_pp_bb_dev, MAX_PART_NUM * sizeof(Particle)));
 
-    bboxes_hst = new float[6*MAX_SOLIDS];
-    CC(cudaMalloc(&bboxes_dev, 6*MAX_SOLIDS * sizeof(float)));
+    minbb_hst = new float3[MAX_SOLIDS];
+    maxbb_hst = new float3[MAX_SOLIDS];
+    CC(cudaMalloc(&minbb_dev, MAX_SOLIDS * sizeof(float3)));
+    CC(cudaMalloc(&maxbb_dev, MAX_SOLIDS * sizeof(float3)));
 }
 
 void allocate_tcells() {
@@ -55,7 +57,8 @@ void deallocate() {
 	delete[] i_pp_hst;      CC(cudaFree(i_pp_dev));
 	delete[] i_pp_bb_hst;   CC(cudaFree(i_pp_bb_dev));
 
-	delete[] bboxes_hst;    CC(cudaFree(bboxes_dev));
+	delete[] minbb_hst;     CC(cudaFree(minbb_dev));
+    delete[] maxbb_hst;     CC(cudaFree(maxbb_dev));
 	delete[] ss_hst;        CC(cudaFree(ss_dev));
 	delete[] ss_bb_hst;     CC(cudaFree(ss_bb_dev));
 	delete[] ss_dmphst;     delete[] ss_dmpbbhst;

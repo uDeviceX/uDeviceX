@@ -13,8 +13,8 @@ Mesh m_dev; /* mesh of solid on device */
 int *tcs_hst, *tcc_hst, *tci_hst; /* [t]riangle cell-lists on host   */
 int *tcs_dev, *tcc_dev, *tci_dev; /* [t]riangle cell-lists on device */
         
-float *bboxes_hst; /* [b]ounding [b]oxes of solid mesh on host   */
-float *bboxes_dev; /* [b]ounding [b]oxes of solid mesh on device */
+float3 *minbb_hst, *maxbb_hst; /* [b]ounding [b]oxes of solid mesh on host   */
+float3 *minbb_dev, *maxbb_dev; /* [b]ounding [b]oxes of solid mesh on device */
     
 Particle *i_pp_hst, *i_pp_dev;       /* particles representing vertices of ALL meshes of solid [i]nterfaces */
 Particle *i_pp_bb_hst, *i_pp_bb_dev; /* buffers for BB multi-nodes */ 

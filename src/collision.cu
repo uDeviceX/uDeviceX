@@ -1,5 +1,5 @@
 #include "common.h"
-#include "sminmax.h"
+#include "rminmax.h"
 
 #include "collision.h"
 
@@ -197,9 +197,9 @@ void get_bboxes_hst(const Particle *pp, const int nps, const int ns, /**/ float 
     get_bbox(pp + i*nps, nps, /**/ bboxes + 6 * i);
 }
 
-void get_bboxes_dev(const Particle *pp, const int nps, const int ns, /**/ float *bboxes)
+void get_bboxes_dev(const Particle *pp, const int nps, const int ns, /**/ float3 *minbb, float3 *maxbb)
 {
     if (ns == 0) return;
-    minmax(pp, nps, ns, /**/ bboxes);
+    minmax(pp, nps, ns, /**/ minbb, maxbb);
 }
 }

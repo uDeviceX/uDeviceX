@@ -10,5 +10,5 @@ void inside_dev(const Particle *pp, const int n, const Mesh m, const Particle *i
 void get_bbox(const float *rr, const int n, /**/ float *bbox);
 
 void get_bboxes_hst(const Particle *pp, const int nps, const int ns, /**/ float *bboxes);
-void get_bboxes_dev(const Particle *pp, const int nps, const int ns, /**/ float *bboxes);
+void get_bboxes_dev(const Particle *pp, const int nps, const int ns, /**/ float3 *minbb, float3 *maxbb);
 }

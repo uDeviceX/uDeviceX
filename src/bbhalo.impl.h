@@ -101,7 +101,7 @@ void close()
 
 
 template <bool fromhst>
-void pack_sendcnt(const Solid *ss_hst, const int ns, const Particle *pp, const int nps, const float *bboxes)
+void pack_sendcnt(const Solid *ss_hst, const int ns, const Particle *pp, const int nps, const float3 *minbb, const float3 *maxbb)
 {
     for (int i = 0; i < 27; ++i) sshalo[i].clear();
 
@@ -114,14 +114,17 @@ void pack_sendcnt(const Solid *ss_hst, const int ns, const Particle *pp, const i
     
     for (int i = 0; i < ns; ++i)
     {
-        const float *bbox = bboxes + 6*i;
+        const float3 minb = minbb[i];
+        const float3 maxb = maxbb[i];
 
         // i contributes to my node
         hhindices[0].push_back(i);
             
         auto hhcontrib = [&](int dx, int dy, int dz) {
-            
-            const float r[3] = {bbox[dx], bbox[2+dy], bbox[4+dz]};
+
+            const float r[3] = {dx ? minb.x : maxb.x,
+                                dy ? minb.y : maxb.y,
+                                dz ? minb.z : maxb.z};
 
             for (int c = 0; c < 3; ++c)
             vcode[c] = (2 + (r[c] >= -L[c] / 2 + M[c]) + (r[c] >= L[c] / 2 - M[c])) % 3;
