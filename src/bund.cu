@@ -136,9 +136,9 @@ namespace x {
 #define DEV (false)
 #define DEVICE_SOLID
 #ifdef DEVICE_SOLID
-  #include "dev/sim.impl.h"
+  #include "0dev/sim.impl.h"
 #else
-  #include "hst/sim.impl.h"
+  #include "0hst/sim.impl.h"
 #endif
 #include "sim.impl.h"
 #undef HST
