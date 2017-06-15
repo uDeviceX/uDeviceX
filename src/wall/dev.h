@@ -4,9 +4,9 @@ __device__ int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
 
 __global__ void interactions_3tpp(const float2 *const pp, const int np,
                                   const int w_n, float *const acc,
-                                  const float seed, const int type, const int *const start,
+                                  const float seed, const int type, const cudaTextureObject_t start,
                                   const Particle* const w_pp000) {
-#define start_fetch(i) start[i]
+#define start_fetch(i) (tex1Dfetch<int> (start, i))
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
     int pid = gid / 3;
     int zplane = gid % 3;
@@ -45,7 +45,7 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
         int cid0 = xbase - 1 + XCELLS * (ybase - 1 + YCELLS * (zbase - 1 + zplane));
 
         spidbase = start_fetch(cid0);
-        int count0 = start[cid0 + 3] - spidbase;
+        int count0 = start_fetch(cid0 + 3) - spidbase;
 
         int cid1 = cid0 + XCELLS;
         deltaspid1 = start_fetch(cid1);

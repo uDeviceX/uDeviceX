@@ -27,5 +27,5 @@ int create(int n, Particle* pp, Quants *q) {
 }
 
 void interactions(const Quants q, const int type, const Particle *pp, const int n, Force *ff) {
-    sub::interactions(type, pp, n, q.rnd->get_float(), q.cells, q.pp, q.n, /**/ ff);
+    sub::interactions(type, pp, n, q.rnd->get_float(), q.texstart, q.pp, q.n, /**/ ff);
 }
