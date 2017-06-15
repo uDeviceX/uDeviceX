@@ -20,7 +20,7 @@ __device__ void ttt2ru(float2 t1, float2 t2, float2 t3, /**/ float3 *r, float3 *
 }
 
 __device__ float3 angle0(float2 t0, float2 t1, float *av) {
-    int degreemax, pid, lid, idrbc, offset, neighid, idv2, idv3;
+    int degreemax, pid, lid, idrbc, offset, neighid, i2, idv3;
     float2 t2, t3, t4;
     float3 v1, u1, v2, u2, v3, f;
     bool valid;
@@ -36,8 +36,8 @@ __device__ float3 angle0(float2 t0, float2 t1, float *av) {
     v1 = make_float3(t0.x, t0.y, t1.x);
     u1 = make_float3(t1.y, t2.x, t2.y);
 
-    idv2 = tex1Dfetch(Adj0, neighid + degreemax * lid);
-    valid = idv2 != -1;
+    i2 = tex1Dfetch(Adj0, neighid + degreemax * lid);
+    valid = i2 != -1;
 
     idv3 = tex1Dfetch(Adj0, ((neighid + 1) % degreemax) + degreemax * lid);
 
@@ -45,9 +45,9 @@ __device__ float3 angle0(float2 t0, float2 t1, float *av) {
     if (idv3 == -1 && valid) idv3 = tex1Dfetch(Adj0, 0 + degreemax * lid);
 
     if (valid) {
-	t0 = tex1Dfetch(Vert, offset + idv2 * 3 + 0);
-	t1 = tex1Dfetch(Vert, offset + idv2 * 3 + 1);
-	t2 = tex1Dfetch(Vert, offset + idv2 * 3 + 2);
+	t0 = tex1Dfetch(Vert, offset + i2 * 3 + 0);
+	t1 = tex1Dfetch(Vert, offset + i2 * 3 + 1);
+	t2 = tex1Dfetch(Vert, offset + i2 * 3 + 2);
 	t3 = tex1Dfetch(Vert, offset + idv3 * 3 + 0);
 	t4 = tex1Dfetch(Vert, offset + idv3 * 3 + 1);
 
@@ -64,7 +64,7 @@ __device__ float3 angle0(float2 t0, float2 t1, float *av) {
 
 __device__ float3 dihedral(float2 t0, float2 t1) {
     int degreemax, pid, lid, offset, neighid;
-    int idv1, idv2, idv3, idv4;
+    int i1, i2, idv3, idv4;
     float2         t2, t3, t4, t5, t6, t7;
     float3 v0, v1, v2, v3, v4;
     bool valid;
@@ -89,13 +89,13 @@ __device__ float3 dihedral(float2 t0, float2 t1) {
     */
 
 
-    idv1 = tex1Dfetch(Adj0, neighid + degreemax * lid);
-    valid = idv1 != -1;
+    i1 = tex1Dfetch(Adj0, neighid + degreemax * lid);
+    valid = i1 != -1;
 
-    idv2 = tex1Dfetch(Adj0, ((neighid + 1) % degreemax) + degreemax * lid);
+    i2 = tex1Dfetch(Adj0, ((neighid + 1) % degreemax) + degreemax * lid);
 
-    if (idv2 == -1 && valid) {
-	idv2 = tex1Dfetch(Adj0, 0 + degreemax * lid);
+    if (i2 == -1 && valid) {
+	i2 = tex1Dfetch(Adj0, 0 + degreemax * lid);
 	idv3 = tex1Dfetch(Adj0, 1 + degreemax * lid);
     } else {
 	idv3 =
@@ -106,10 +106,10 @@ __device__ float3 dihedral(float2 t0, float2 t1) {
     idv4 = tex1Dfetch(Adj1, neighid + degreemax * lid);
 
     if (valid) {
-	t0 = tex1Dfetch(Vert, offset + idv1 * 3 + 0);
-	t1 = tex1Dfetch(Vert, offset + idv1 * 3 + 1);
-	t2 = tex1Dfetch(Vert, offset + idv2 * 3 + 0);
-	t3 = tex1Dfetch(Vert, offset + idv2 * 3 + 1);
+	t0 = tex1Dfetch(Vert, offset + i1 * 3 + 0);
+	t1 = tex1Dfetch(Vert, offset + i1 * 3 + 1);
+	t2 = tex1Dfetch(Vert, offset + i2 * 3 + 0);
+	t3 = tex1Dfetch(Vert, offset + i2 * 3 + 1);
 	t4 = tex1Dfetch(Vert, offset + idv3 * 3 + 0);
 	t5 = tex1Dfetch(Vert, offset + idv3 * 3 + 1);
 	t6 = tex1Dfetch(Vert, offset + idv4 * 3 + 0);
