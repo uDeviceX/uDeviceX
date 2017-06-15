@@ -51,6 +51,26 @@ All files are included in [bund.cu](../src/bund.cu).
 
 it includes all files of hiwi
 
+	namespace hi {
+	  hi/hdr.h
+	  namespace i {
+		hi/lib.h
+		hi/imp.h
+		hi/dev.h
+		hi/int.h
+	  }
+	}
+
+   lib.cu looks like this
+
+	namespace hi {
+	   namespace i {
+	   hi/lib.h
+
+	   void f(a) { };
+	   ...
+	}
+
 # Notation
 * `hi` : is a an example of `hiwi`
 * `w`, `q`, `t` : variables of `QWT`
