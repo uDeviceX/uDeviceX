@@ -1,5 +1,5 @@
 struct Quants {
-    Particle *pp;
+    float4 *pp;
     int n;
     Logistic::KISS *rnd;
     x::Clist *cells;
@@ -7,7 +7,6 @@ struct Quants {
 };
 
 void alloc_quants(Quants *q) {
-    //CC(cudaMalloc(&(q->pp), MAX_PART_NUM * sizeof(float4)));
     q->rnd   = new Logistic::KISS;
     q->cells = new x::Clist(XS + 2 * XWM, YS + 2 * YWM, ZS + 2 * ZWM);
 }
@@ -24,13 +23,16 @@ int create(int n, Particle* pp, Quants *q) {
     n = sub::init(pp, n, frozen, &q->n);
     sub::build_cells(q->n, /**/ frozen, q->cells);
 
-    CC(cudaMalloc(&q->pp, q->n * sizeof(Particle)));
-    cD2D(q->pp, frozen, q->n);
+    MSG0("consolidating wall particles");
+
+    CC(cudaMalloc(&q->pp, q->n * sizeof(float4)));
+
+    if (q->n > 0)
+    sub::dev::strip_solid4 <<<k_cnf(q->n)>>> (frozen, q->n, /**/ q->pp);
     
     sub::make_texstart(q->cells->start, q->cells->ncells, /**/ &q->texstart);
     
     CC(cudaFree(frozen));
-
     return n;
 }
 

@@ -13,7 +13,7 @@ __device__ int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
 __global__ void interactions_3tpp(const float2 *const pp, const int np,
                                   const int w_n, float *const acc,
                                   const float seed, const int type, const cudaTextureObject_t start,
-                                  const Particle* const w_pp000) {
+                                  const float4* const w_pp000) {
 #define start_fetch(i) (tex1Dfetch<int> (start, i))
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
     int pid = gid / 3;
@@ -85,17 +85,18 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
         int m1 = (int)(i >= scan1);
         int m2 = (int)(i >= scan2);
         int spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
-	const float *r  = w_pp000[spid].r;
-        float  xw = r[X], yw = r[Y], zw = r[Z]; /* wall particle */
+
+        const float4 rw = w_pp000[spid]; /* wall particle */
+
         float vxw, vyw, vzw;
-        k_wvel::vell(xw, yw, zw, &vxw, &vyw, &vzw);
+        k_wvel::vell(rw.x, rw.y, rw.z, &vxw, &vyw, &vzw);
         float rnd = Logistic::mean0var1(seed, pid, spid);
 
         // check for particle types and compute the DPD force
 
         float3 strength = force(type, WALL_TYPE,
-				mf3(x ,  y,  z), mf3( xw,  yw,  zw),
-				mf3(vx, vy, vz), mf3(vxw, vyw, vzw), rnd);
+				mf3(x ,  y,  z), mf3(rw.x, rw.y, rw.z),
+				mf3(vx, vy, vz), mf3( vxw,  vyw,  vzw), rnd);
         xforce += strength.x; yforce += strength.y; zforce += strength.z;
     }
 #undef zig
