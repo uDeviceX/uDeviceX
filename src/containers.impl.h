@@ -80,8 +80,7 @@ int remove(T* data, const int npb, const int nb, const int *e, const int ne) {
     return nstay;
 }
 
-void rbc_dump(int nc, Particle *p, int* triplets,
-              int nv, int nt, int id) {
+void rbc_dump(int nc, Particle *p, int* triplets, int nv, int nt, int id) {
     const char *format4ply = "ply/rbcs-%05d.ply";
     char buf[200];
     sprintf(buf, format4ply, id);
