@@ -64,7 +64,5 @@ void distr(Particle *pp, Particle *pp0, float4 *zip0, ushort4 *zip1,
     k_odstr::gather<<<k_cnf(n)>>>
       ((float2*)pp, (float2*)pp_re, n, iidx,
        /**/ (float2*)pp0, zip0, zip1);
-
-  std::swap(pp, pp0);
   *pn = n;
 }
