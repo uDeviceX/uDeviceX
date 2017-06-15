@@ -110,10 +110,10 @@ __device__ float3 dihedral(float2 t0, float2 t1) {
 	t6 = tex1Dfetch(Vert, offset + i4 * 3 + 0);
 	t7 = tex1Dfetch(Vert, offset + i4 * 3 + 1);
 
-	r1 = make_float3(t0.x, t0.y, t1.x);
-	r2 = make_float3(t2.x, t2.y, t3.x);
-	r3 = make_float3(t4.x, t4.y, t5.x);
-	r4 = make_float3(t6.x, t6.y, t7.x);
+	tt2r(t0, t1, &r1);
+	tt2r(t2, t3, &r2);
+	tt2r(t4, t5, &r3);
+	tt2r(t6, t7, &r4);
 
 	return dihedral0<1>(r0, r2, r1, r4) + dihedral0<2>(r1, r0, r2, r3);
     }
