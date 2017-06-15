@@ -4,8 +4,9 @@ __device__ int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
 
 __global__ void interactions_3tpp(const float2 *const pp, const int np,
                                   const int w_n, float *const acc,
-                                  const float seed, const int type, const int *const start,
+                                  const float seed, const int type, const cudaTextureObject_t start,
                                   const Particle* const w_pp000) {
+#define start_fetch(i) (tex1Dfetch<int> (start, i))
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
     int pid = gid / 3;
     int zplane = gid % 3;
@@ -43,18 +44,18 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
 
         int cid0 = xbase - 1 + XCELLS * (ybase - 1 + YCELLS * (zbase - 1 + zplane));
 
-        spidbase = start[cid0];
-        int count0 = start[cid0 + 3] - spidbase;
+        spidbase = start_fetch(cid0);
+        int count0 = start_fetch(cid0 + 3) - spidbase;
 
         int cid1 = cid0 + XCELLS;
-        deltaspid1 = start[cid1];
-        int count1 = start[cid1 + 3] - deltaspid1;
+        deltaspid1 = start_fetch(cid1);
+        int count1 = start_fetch(cid1 + 3) - deltaspid1;
 
         int cid2 = cid0 + XCELLS * 2;
-        deltaspid2 = start[cid2];
+        deltaspid2 = start_fetch(cid2);
         int count2 = cid2 + 3 == NCELLS
             ? w_n
-            : start[cid2 + 3] - deltaspid2;
+            : start_fetch(cid2 + 3) - deltaspid2;
 
         scan1 = count0;
         scan2 = count0 + count1;
@@ -94,5 +95,6 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np,
     atomicAdd(acc + 3 * pid + 0, xforce);
     atomicAdd(acc + 3 * pid + 1, yforce);
     atomicAdd(acc + 3 * pid + 2, zforce);
+#undef start_fetch
 }
 } /* namespace k_wall */
