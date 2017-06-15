@@ -80,7 +80,6 @@ namespace x {
 
 namespace wall {
 namespace sub {
-#include "wall/hdr.h"
 #include "wall/dev.h"
 #include "wall/imp.h"
 }
