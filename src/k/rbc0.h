@@ -1,4 +1,11 @@
 namespace k_rbc {
+#define sq(a) ((a)*(a))
+#define abscross2(a, b)                         \
+    (sq((a).y*(b).z - (a).z*(b).y) +            \
+     sq((a).z*(b).x - (a).x*(b).z) +            \
+     sq((a).x*(b).y - (a).y*(b).x))
+#define abscross(a, b) sqrtf(abscross2(a, b)) /* |a x b| */
+
 #define cross(a, b) make_float3                 \
     ((a).y*(b).z - (a).z*(b).y,                 \
      (a).z*(b).x - (a).x*(b).z,                 \
@@ -94,4 +101,15 @@ __DF__ float3 dihedral0(float3 v1, float3 v2, float3 v3,
     return make_float3(0, 0, 0);
 }
 
+__DF__ float area0(float3 v0, float3 v1, float3 v2) { return 0.5f * abscross(v1 - v0, v2 - v0); }
+__DF__ float volume0(float3 v0, float3 v1, float3 v2) {
+  return \
+    0.1666666667f *
+    ((v0.x*v1.y-v0.y*v1.x)*v2.z +
+     (v0.z*v1.x-v0.x*v1.z)*v2.y +
+     (v0.y*v1.z-v0.z*v1.y)*v2.x);
+}
+#undef sq
+#undef abscross2
+#undef abscross
 } /* namespace k_rbc */

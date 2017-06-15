@@ -160,13 +160,6 @@ __DF__ float2 warpReduceSum(float2 val) {
 }
 
 __global__ void area_volume(float *totA_V) {
-#define sq(a) ((a)*(a))
-#define abscross2(a, b)                         \
-    (sq((a).y*(b).z - (a).z*(b).y) +            \
-     sq((a).z*(b).x - (a).x*(b).z) +            \
-     sq((a).x*(b).y - (a).y*(b).x))
-#define abscross(a, b) sqrtf(abscross2(a, b)) /* |a x b| */
-
     float2 a_v = make_float2(0.0f, 0.0f);
     int cid = blockIdx.y;
 
@@ -178,20 +171,14 @@ __global__ void area_volume(float *totA_V) {
 	float3 v1(tex2vec(3 * (ids.y + cid * RBCnv)));
 	float3 v2(tex2vec(3 * (ids.z + cid * RBCnv)));
 
-	a_v.x += 0.5f * abscross(v1 - v0, v2 - v0);
-	a_v.y += 0.1666666667f *
-	    ((v0.x*v1.y-v0.y*v1.x)*v2.z +
-	     (v0.z*v1.x-v0.x*v1.z)*v2.y +
-	     (v0.y*v1.z-v0.z*v1.y)*v2.x);
+	a_v.x += area0(v0, v1, v2);
+	a_v.y += volume0(v0, v1, v2);
     }
     a_v = warpReduceSum(a_v);
     if ((threadIdx.x & (warpSize - 1)) == 0) {
 	atomicAdd(&totA_V[2 * cid + 0], a_v.x);
 	atomicAdd(&totA_V[2 * cid + 1], a_v.y);
     }
-#undef sq
-#undef abscross2
-#undef abscross
 }
 #undef fst
 #undef scn
