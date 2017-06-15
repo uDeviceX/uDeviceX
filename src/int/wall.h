@@ -5,4 +5,4 @@ struct Quants {
   Logistic::KISS* rnd;
   x::Clist *cells;
 }; /* should it be in wall ? */
-} /* namespace w */
+} /* namespace wall */
