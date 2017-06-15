@@ -58,4 +58,40 @@ __DF__ float3 visc(float3 v1, float3 v2,
 	   gammaC * dot(du, dr) / dot(dr, dr) * dr;
 }
 
+template <int update>
+__DF__ float3 dihedral0(float3 v1, float3 v2, float3 v3,
+					     float3 v4) {
+    float overIksiI, overIdzeI, cosTheta, IsinThetaI2, sinTheta_1,
+	beta, b11, b12, phi, sint0kb, cost0kb;
+
+    float3 ksi = cross(v1 - v2, v1 - v3), dze = cross(v3 - v4, v2 - v4);
+    overIksiI = rsqrtf(dot(ksi, ksi));
+    overIdzeI = rsqrtf(dot(dze, dze));
+
+    cosTheta = dot(ksi, dze) * overIksiI * overIdzeI;
+    IsinThetaI2 = 1.0f - cosTheta * cosTheta;
+
+    sinTheta_1 = copysignf
+	(rsqrtf(max(IsinThetaI2, 1.0e-6f)),
+	 dot(ksi - dze, v4 - v1)); // ">" because the normals look inside
+
+    phi = RBCphi / 180.0 * M_PI;
+    sint0kb = sin(phi) * RBCkb;
+    cost0kb = cos(phi) * RBCkb;
+    beta = cost0kb - cosTheta * sint0kb * sinTheta_1;
+
+    b11 = -beta *  cosTheta * overIksiI * overIksiI;
+    b12 =  beta * overIksiI * overIdzeI;
+
+    if (update == 1) {
+	return b11 * cross(ksi, v3 - v2) + b12 * cross(dze, v3 - v2);
+    } else if (update == 2) {
+	float b22 = -beta * cosTheta * overIdzeI * overIdzeI;
+	return  b11 *  cross(ksi, v1 - v3) +
+	    b12 * (cross(ksi, v3 - v4) + cross(dze, v1 - v3)) +
+	    b22 *  cross(dze, v3 - v4);
+    } else
+    return make_float3(0, 0, 0);
+}
+
 } /* namespace k_rbc */
