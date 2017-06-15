@@ -65,9 +65,9 @@ void create(Particle *opp, int *on) {
     load_solid_mesh("mesh_solid.ply");
 
     // generate models
-    MSG0("start solid init");
+    MSG("start solid init");
     ic::init("ic_solid.txt", m_hst, /**/ &ns, &nps, rr0_hst, ss_hst, on, opp, pp_hst);
-    MSG0("done solid init");
+    MSG("done solid init");
 
     allocate_tcells();
     

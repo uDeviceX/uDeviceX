@@ -348,12 +348,19 @@ void run_wall(long nsteps) {
     for (/**/; it < wall_creation; ++it) step(driving_force0, wall0, it);
 
     solids0 = solids;
-    if (walls) {create_walls(); wall0 = true;}
-    MSG("done creating walls");
+    if (walls) {
+        create_walls();
+        wall0 = true;
+        MSG("done creating walls");
+    }
+
+    MC(MPI_Barrier(m::cart));
+    
     if (solids0) {
         cD2H(o::pp_hst, o::pp, o::n);
         s::create(o::pp_hst, &o::n);
         cH2D(o::pp, o::pp_hst, o::n);
+        MC(MPI_Barrier(m::cart));
     }
     if (walls) remove_bodies();
     set_ids_solids();
