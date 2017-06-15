@@ -104,7 +104,7 @@ int init(Particle *pp, int n) {
 void interactions(const int type, const Particle *const pp, const int n,
 		  Force *ff) {
     if (n > 0 && w_n > 0) {
-	k_wall::interactions_3tpp <<<k_cnf(3 * n)>>>
+    dev::interactions_3tpp <<<k_cnf(3 * n)>>>
 	  ((float2 *)pp, n, w_n, (float *)ff, trunk->get_float(), type, cells->start, w_pp);
     }
 }
