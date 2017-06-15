@@ -51,7 +51,6 @@ it includes all files of hiwi
 	namespace hi {
 	  hi/int.h
 	  namespace i {
-		hi/lib.h
 		hi/hdr.h
 		hi/imp.h
 		hi/dev.h
