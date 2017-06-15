@@ -36,8 +36,6 @@
 namespace x {
 
   #include "x/k/sdstr.h"
-  #include "x/common.h"
-
   #include "x/sdstr.decl.h"
   #include "x/sdstr/ini.h"
   #include "x/sdstr.impl.h"

@@ -14,6 +14,11 @@ enum {  /* used in sorting of bulk particle when wall is created */
     W_WALL,  /* becomes wall particle */
     W_DEEP   /* deep inside the wall */
 };
+
+/* size of array of pointers to every element in array (used to allocate
+   pointer-to-pointer on device) */
+#define SZ_PTR_ARR(A) (   sizeof(&A[0])*sizeof(A)/sizeof(A[0])   )
+
 /*
   #define allsync() do {                                                  \
   CC(cudaDeviceSynchronize()); MC(MPI_Barrier(m::cart));          \
