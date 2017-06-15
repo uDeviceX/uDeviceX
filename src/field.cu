@@ -4,19 +4,16 @@
 #include "m.h"
 #include "field.h"
 
-namespace field{
-template <int k> struct Bspline {
-    template <int i> static float eval(float x) {
-        return (x - i) / (k - 1) * Bspline<k - 1>::template eval<i>(x) +
-            (i + k - x) / (k - 1) * Bspline<k - 1>::template eval<i + 1>(x);
-    }
-};
-
-template <> struct Bspline<1> {
-    template <int i> static float eval(float x) {
-        return (float)(i) <= x && x < (float)(i + 1);
-    }
-};
+namespace field {
+float spl(float x) { /* b-spline (see tools/bspline.mac) */
+  return  \
+    x <= 0 ? 0.0 :
+    x <= 1 ? x*x*x/6 :
+    x <= 2 ? (x*((12-3*x)*x-12)+4)/6 :
+    x <= 3 ? (x*(x*(3*x-24)+60)-44)/6 :
+    x <= 4 ? (x*((12-x)*x-48)+64)/6 :
+    0.0;
+}
 
 void ini_dims(const char *path, int N[3], float extent[3]) {
     FILE *fh = fopen(path, "r");
@@ -47,7 +44,6 @@ void sample(const float rlo[3], const float dr[3], const int nsize[3], const int
 #define i2x(i)    i2r(i,X)
 #define i2y(i)    i2r(i,Y)
 #define i2z(i)    i2r(i,Z)
-    Bspline<4> bsp;
     int iz, iy, ix, i, c, sx, sy, sz;
     float s;
     for (iz = 0; iz < nsize[Z]; ++iz)
@@ -61,7 +57,7 @@ void sample(const float rlo[3], const float dr[3], const int nsize[3], const int
         float w[3][4];
         for (c = 0; c < 3; ++c)
         for (i = 0; i < 4; ++i)
-        w[c][i] = bsp.eval<0>(r[c] - (anchor[c] - 1 + i) + 2);
+	  w[c][i] = spl(r[c] - (anchor[c] - 1 + i) + 2);
 
         float tmp[4][4];
         for (sz = 0; sz < 4; ++sz)
@@ -109,4 +105,4 @@ void dump(const int N[], const float extent[], const float* grid_data) {
     dump0(N, extent, grid_data, walldata);
     delete[] walldata;
 }
-};
+} /* namespace field */
