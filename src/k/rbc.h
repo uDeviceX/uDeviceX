@@ -40,18 +40,17 @@ __device__ float3 angle0(float2 t0i, float2 t1i, float *av) {
 
     if (valid) {
 	t2i = tex1Dfetch(Vert, pid * 3 + 2);
+	t0  = tex1Dfetch(Vert, offset + i2 * 3 + 0);
+	t1  = tex1Dfetch(Vert, offset + i2 * 3 + 1);
+	t2  = tex1Dfetch(Vert, offset + i2 * 3 + 2);
+	t3  = tex1Dfetch(Vert, offset + i3 * 3 + 0);
+	t4  = tex1Dfetch(Vert, offset + i3 * 3 + 1);
+
 	r1 = make_float3(t0i.x, t0i.y, t1i.x);
 	u1 = make_float3(t1i.y, t2i.x, t2i.y);
-
-	t0 = tex1Dfetch(Vert, offset + i2 * 3 + 0);
-	t1 = tex1Dfetch(Vert, offset + i2 * 3 + 1);
-	t2 = tex1Dfetch(Vert, offset + i2 * 3 + 2);
-	t3 = tex1Dfetch(Vert, offset + i3 * 3 + 0);
-	t4 = tex1Dfetch(Vert, offset + i3 * 3 + 1);
-
-	r2 = make_float3(t0.x, t0.y, t1.x);
-	u2 = make_float3(t1.y, t2.x, t2.y);
-	r3 = make_float3(t3.x, t3.y, t4.x);
+	r2 = make_float3( t0.x,  t0.y,  t1.x);
+	u2 = make_float3( t1.y,  t2.x,  t2.y);
+	r3 = make_float3( t3.x,  t3.y,  t4.x);
 
 	f  = angle(r1, r2, r3, av[2 * idrbc], av[2 * idrbc + 1]);
 	f += visc(r1, r2, u1, u2);
