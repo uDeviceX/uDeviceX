@@ -1,1 +1,1 @@
-# sdistr from master with friends
+# temporal interface to sdistr
