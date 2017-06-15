@@ -115,7 +115,7 @@ __DF__ float3 dihedral0(float3 v1, float3 v2, float3 v3,
     return make_float3(0, 0, 0);
 }
 
-__device__ float3 angle(float2 t0, float2 t1, float *av) {
+__device__ float3 angle0(float2 t0, float2 t1, float *av) {
     int degreemax, pid, lid, idrbc, offset, neighid, idv2, idv3;
     float2 t2, t3, t4;
     float3 v1, u1, v2, u2, v3, f;
@@ -151,7 +151,7 @@ __device__ float3 angle(float2 t0, float2 t1, float *av) {
 	u2 = make_float3(t1.y, t2.x, t2.y);
 	v3 = make_float3(t3.x, t3.y, t4.x);
 
-	f  = angle0(v1, v2, v3, av[2 * idrbc], av[2 * idrbc + 1]);
+	f  = angle(v1, v2, v3, av[2 * idrbc], av[2 * idrbc + 1]);
 	f += visc(v1, v2, u1, u2);
 	return f;
     }
@@ -230,7 +230,7 @@ __global__ void force(int nc, float *__restrict__ av,
 	float2 t0 = tex1Dfetch(texVertices, pid * 3 + 0);
 	float2 t1 = tex1Dfetch(texVertices, pid * 3 + 1);
 
-	float3 f = angle(t0, t1, av);
+	float3 f = angle0(t0, t1, av);
 	f += dihedral(t0, t1);
 
 	if (f.x > -1.0e9f) {
