@@ -94,11 +94,11 @@ int init(Particle *pp, int n) {
     cD2D(w_pp, thrust::raw_pointer_cast(&solid_local[0]), solid_local.size());
     cD2D(w_pp + solid_local.size(), solid_remote.D, solid_remote.S);
 
-    if (w_n > 0) cells->build(w_pp, w_n);
-
     MSG0("consolidating wall particles");
     return nsurvived;
 } /* end of ini */
+
+void build_cells(const int n, Particle *pp, x::Clist *cells) {if (n) cells->build(pp, n);}
 
 void interactions(const int type, const Particle *const pp, const int n, const float rnd, Force *ff) {
     if (n > 0 && w_n > 0) {
