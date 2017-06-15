@@ -21,7 +21,7 @@ __device__ void ttt2ru(float2 t1, float2 t2, float2 t3, /**/ float3 *r, float3 *
 
 __device__ float3 angle0(float2 t0i, float2 t1i, float *av) {
     int degreemax, pid, lid, idrbc, offset, neighid, i2, i3;
-    float2 t0i;
+    float2 t2i;
     float2 t0, t1, t2, t3, t4;
     float3 r1, u1, r2, u2, r3, f;
     bool valid;
@@ -32,20 +32,17 @@ __device__ float3 angle0(float2 t0i, float2 t1i, float *av) {
     idrbc = pid / RBCnv;
     offset = idrbc * RBCnv * 3;
     neighid = (threadIdx.x + blockDim.x * blockIdx.x) % degreemax;
-
-    t2i = tex1Dfetch(Vert, pid * 3 + 2);
-    r1 = make_float3(t0i.x, t0i.y, t1i.x);
-    u1 = make_float3(t1i.y, t2i.x, t2i.y);
-
     i2 = tex1Dfetch(Adj0, neighid + degreemax * lid);
     valid = i2 != -1;
 
     i3 = tex1Dfetch(Adj0, ((neighid + 1) % degreemax) + degreemax * lid);
-
-
     if (i3 == -1 && valid) i3 = tex1Dfetch(Adj0, 0 + degreemax * lid);
 
     if (valid) {
+	t2i = tex1Dfetch(Vert, pid * 3 + 2);
+	r1 = make_float3(t0i.x, t0i.y, t1i.x);
+	u1 = make_float3(t1i.y, t2i.x, t2i.y);
+
 	t0 = tex1Dfetch(Vert, offset + i2 * 3 + 0);
 	t1 = tex1Dfetch(Vert, offset + i2 * 3 + 1);
 	t2 = tex1Dfetch(Vert, offset + i2 * 3 + 2);
