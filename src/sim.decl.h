@@ -32,12 +32,8 @@ int faces[MAX_FACE_NUM];
 float *av;
 }
 
-namespace w /* [w]all : all Q */
-{
-  Particle *pp;
-  int n;
-  Logistic::KISS* rnd;
-  x::Clist *cells;
+namespace w { /* see Q/wall.h */
+  wall::Quants q;
 }
 
 namespace a /* all */

@@ -113,7 +113,7 @@ void interactions(const int type, const Particle *const p, const int n,
 void close () { delete cells; }
 }
 
-/* an temporally interface to wall:: which follows QWT */
+/* an temporal interface to wall:: follows QWT */
 namespace wall0 {
   /* this function shell not be in wall */
   int init(Particle *pp, int n, /**/ Particle **w_pp, int *w_n) {
