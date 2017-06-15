@@ -1,7 +1,7 @@
 namespace k_rbc
 {
 #define __DF__ __device__ __forceinline__
-  
+
 texture<float2, 1, cudaReadModeElementType> texVertices;
 texture<int, 1, cudaReadModeElementType> texAdjVert;
 texture<int, 1, cudaReadModeElementType> texAdjVert2;
@@ -17,8 +17,8 @@ __DF__ float3 angle0(float3 v1, float3 v2,
 		     float volume) {
 #include "params/rbc.inc0.h"
     float Ak, A0, n_2, coefArea, coeffVol,
-        r, xx, IbforceI_wcl, kp, IbforceI_pow, ka0, kv0, x0, l0, lmax,
-        kbToverp;
+	r, xx, IbforceI_wcl, kp, IbforceI_pow, ka0, kv0, x0, l0, lmax,
+	kbToverp;
 
     float3 x21 = v2 - v1, x32 = v3 - v2, x31 = v3 - v1;
     float3 nn = cross(x21, x31); /* normal */
@@ -29,8 +29,8 @@ __DF__ float3 angle0(float3 v1, float3 v2,
     n_2 = 1.0 / Ak;
     ka0 = RBCka / RBCtotArea;
     coefArea =
-        -0.25f * (ka0 * (area - RBCtotArea) * n_2) -
-        RBCkd * (Ak - A0) / (4. * A0 * Ak);
+	-0.25f * (ka0 * (area - RBCtotArea) * n_2) -
+	RBCkd * (Ak - A0) / (4. * A0 * Ak);
 
     kv0 = RBCkv / (6.0 * RBCtotVolume);
     coeffVol = kv0 * (volume - RBCtotVolume);
@@ -45,32 +45,32 @@ __DF__ float3 angle0(float3 v1, float3 v2,
 
     kbToverp = RBCkbT / RBCp;
     IbforceI_wcl =
-            kbToverp * (0.25f / ((1.0f - xx) * (1.0f - xx)) - 0.25f + xx) /
-            r;
+	    kbToverp * (0.25f / ((1.0f - xx) * (1.0f - xx)) - 0.25f + xx) /
+	    r;
 
     x0 = RBCx0;
     kp =
-            (RBCkbT * x0 * (4 * x0 * x0 - 9 * x0 + 6) * l0 * l0) /
-            (4 * RBCp * (x0 - 1) * (x0 - 1));
+	    (RBCkbT * x0 * (4 * x0 * x0 - 9 * x0 + 6) * l0 * l0) /
+	    (4 * RBCp * (x0 - 1) * (x0 - 1));
     IbforceI_pow = -kp / powf(r, RBCmpow) / r;
 
     return addFArea + addFVolume + (IbforceI_wcl + IbforceI_pow) * x21;
 }
 
 __DF__ float3 visc(float3 v1, float3 v2,
-                                         float3 u1, float3 u2) {
+					 float3 u1, float3 u2) {
     float3 du = u2 - u1, dr = v1 - v2;
     float gammaC = RBCgammaC, gammaT = 3.0 * RBCgammaC;
 
     return gammaT                             * du +
-           gammaC * dot(du, dr) / dot(dr, dr) * dr;
+	   gammaC * dot(du, dr) / dot(dr, dr) * dr;
 }
 
 template <int update>
 __DF__ float3 dihedral0(float3 v1, float3 v2, float3 v3,
-                                             float3 v4) {
+					     float3 v4) {
     float overIksiI, overIdzeI, cosTheta, IsinThetaI2, sinTheta_1,
-        beta, b11, b12, phi, sint0kb, cost0kb;
+	beta, b11, b12, phi, sint0kb, cost0kb;
 
     float3 ksi = cross(v1 - v2, v1 - v3), dze = cross(v3 - v4, v2 - v4);
     overIksiI = rsqrtf(dot(ksi, ksi));
@@ -80,8 +80,8 @@ __DF__ float3 dihedral0(float3 v1, float3 v2, float3 v3,
     IsinThetaI2 = 1.0f - cosTheta * cosTheta;
 
     sinTheta_1 = copysignf
-        (rsqrtf(max(IsinThetaI2, 1.0e-6f)),
-         dot(ksi - dze, v4 - v1)); // ">" because the normals look inside
+	(rsqrtf(max(IsinThetaI2, 1.0e-6f)),
+	 dot(ksi - dze, v4 - v1)); // ">" because the normals look inside
 
     phi = RBCphi / 180.0 * M_PI;
     sint0kb = sin(phi) * RBCkb;
@@ -92,18 +92,18 @@ __DF__ float3 dihedral0(float3 v1, float3 v2, float3 v3,
     b12 =  beta * overIksiI * overIdzeI;
 
     if (update == 1) {
-        return b11 * cross(ksi, v3 - v2) + b12 * cross(dze, v3 - v2);
+	return b11 * cross(ksi, v3 - v2) + b12 * cross(dze, v3 - v2);
     } else if (update == 2) {
-        float b22 = -beta * cosTheta * overIdzeI * overIdzeI;
-        return  b11 *  cross(ksi, v1 - v3) +
-            b12 * (cross(ksi, v3 - v4) + cross(dze, v1 - v3)) +
-            b22 *  cross(dze, v3 - v4);
+	float b22 = -beta * cosTheta * overIdzeI * overIdzeI;
+	return  b11 *  cross(ksi, v1 - v3) +
+	    b12 * (cross(ksi, v3 - v4) + cross(dze, v1 - v3)) +
+	    b22 *  cross(dze, v3 - v4);
     } else
     return make_float3(0, 0, 0);
 }
 
 __device__ float3 _fangle_device(float2 tmp0, float2 tmp1,
-                                 float *av) {
+				 float *av) {
     int degreemax = 7;
     int pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
     int lid = pid % RBCnv;
@@ -124,19 +124,19 @@ __device__ float3 _fangle_device(float2 tmp0, float2 tmp1,
     if (idv3 == -1 && valid) idv3 = tex1Dfetch(texAdjVert, 0 + degreemax * lid);
 
     if (valid) {
-        float2 tmp0 = tex1Dfetch(texVertices, offset + idv2 * 3 + 0);
-        float2 tmp1 = tex1Dfetch(texVertices, offset + idv2 * 3 + 1);
-        float2 tmp2 = tex1Dfetch(texVertices, offset + idv2 * 3 + 2);
-        float2 tmp3 = tex1Dfetch(texVertices, offset + idv3 * 3 + 0);
-        float2 tmp4 = tex1Dfetch(texVertices, offset + idv3 * 3 + 1);
+	float2 tmp0 = tex1Dfetch(texVertices, offset + idv2 * 3 + 0);
+	float2 tmp1 = tex1Dfetch(texVertices, offset + idv2 * 3 + 1);
+	float2 tmp2 = tex1Dfetch(texVertices, offset + idv2 * 3 + 2);
+	float2 tmp3 = tex1Dfetch(texVertices, offset + idv3 * 3 + 0);
+	float2 tmp4 = tex1Dfetch(texVertices, offset + idv3 * 3 + 1);
 
-        float3 v2 = make_float3(tmp0.x, tmp0.y, tmp1.x);
-        float3 u2 = make_float3(tmp1.y, tmp2.x, tmp2.y);
-        float3 v3 = make_float3(tmp3.x, tmp3.y, tmp4.x);
+	float3 v2 = make_float3(tmp0.x, tmp0.y, tmp1.x);
+	float3 u2 = make_float3(tmp1.y, tmp2.x, tmp2.y);
+	float3 v3 = make_float3(tmp3.x, tmp3.y, tmp4.x);
 
-        float3 f = angle0(v1, v2, v3, av[2 * idrbc], av[2 * idrbc + 1]);
-        f += visc(v1, v2, u1, u2);
-        return f;
+	float3 f = angle0(v1, v2, v3, av[2 * idrbc], av[2 * idrbc + 1]);
+	f += visc(v1, v2, u1, u2);
+	return f;
     }
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
 }
@@ -168,53 +168,53 @@ __device__ float3 dihedral(float2 tmp0, float2 tmp1) {
     idv2 = tex1Dfetch(texAdjVert, ((neighid + 1) % degreemax) + degreemax * lid);
 
     if (idv2 == -1 && valid) {
-        idv2 = tex1Dfetch(texAdjVert, 0 + degreemax * lid);
-        idv3 = tex1Dfetch(texAdjVert, 1 + degreemax * lid);
+	idv2 = tex1Dfetch(texAdjVert, 0 + degreemax * lid);
+	idv3 = tex1Dfetch(texAdjVert, 1 + degreemax * lid);
     } else {
-        idv3 =
-            tex1Dfetch(texAdjVert, ((neighid + 2) % degreemax) + degreemax * lid);
-        if (idv3 == -1 && valid) idv3 = tex1Dfetch(texAdjVert, 0 + degreemax * lid);
+	idv3 =
+	    tex1Dfetch(texAdjVert, ((neighid + 2) % degreemax) + degreemax * lid);
+	if (idv3 == -1 && valid) idv3 = tex1Dfetch(texAdjVert, 0 + degreemax * lid);
     }
 
     idv4 = tex1Dfetch(texAdjVert2, neighid + degreemax * lid);
 
     if (valid) {
-        float2 tmp0 = tex1Dfetch(texVertices, offset + idv1 * 3 + 0);
-        float2 tmp1 = tex1Dfetch(texVertices, offset + idv1 * 3 + 1);
-        float2 tmp2 = tex1Dfetch(texVertices, offset + idv2 * 3 + 0);
-        float2 tmp3 = tex1Dfetch(texVertices, offset + idv2 * 3 + 1);
-        float2 tmp4 = tex1Dfetch(texVertices, offset + idv3 * 3 + 0);
-        float2 tmp5 = tex1Dfetch(texVertices, offset + idv3 * 3 + 1);
-        float2 tmp6 = tex1Dfetch(texVertices, offset + idv4 * 3 + 0);
-        float2 tmp7 = tex1Dfetch(texVertices, offset + idv4 * 3 + 1);
+	float2 tmp0 = tex1Dfetch(texVertices, offset + idv1 * 3 + 0);
+	float2 tmp1 = tex1Dfetch(texVertices, offset + idv1 * 3 + 1);
+	float2 tmp2 = tex1Dfetch(texVertices, offset + idv2 * 3 + 0);
+	float2 tmp3 = tex1Dfetch(texVertices, offset + idv2 * 3 + 1);
+	float2 tmp4 = tex1Dfetch(texVertices, offset + idv3 * 3 + 0);
+	float2 tmp5 = tex1Dfetch(texVertices, offset + idv3 * 3 + 1);
+	float2 tmp6 = tex1Dfetch(texVertices, offset + idv4 * 3 + 0);
+	float2 tmp7 = tex1Dfetch(texVertices, offset + idv4 * 3 + 1);
 
-        float3 v1 = make_float3(tmp0.x, tmp0.y, tmp1.x);
-        float3 v2 = make_float3(tmp2.x, tmp2.y, tmp3.x);
-        float3 v3 = make_float3(tmp4.x, tmp4.y, tmp5.x);
-        float3 v4 = make_float3(tmp6.x, tmp6.y, tmp7.x);
+	float3 v1 = make_float3(tmp0.x, tmp0.y, tmp1.x);
+	float3 v2 = make_float3(tmp2.x, tmp2.y, tmp3.x);
+	float3 v3 = make_float3(tmp4.x, tmp4.y, tmp5.x);
+	float3 v4 = make_float3(tmp6.x, tmp6.y, tmp7.x);
 
-        return dihedral0<1>(v0, v2, v1, v4) + dihedral0<2>(v1, v0, v2, v3);
+	return dihedral0<1>(v0, v2, v1, v4) + dihedral0<2>(v1, v0, v2, v3);
     }
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
 }
 
 __global__ void force(int nc, float *__restrict__ av,
-                            float *acc) {
+			    float *acc) {
     int degreemax = 7;
     int pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
 
     if (pid < nc * RBCnv) {
-        float2 tmp0 = tex1Dfetch(texVertices, pid * 3 + 0);
-        float2 tmp1 = tex1Dfetch(texVertices, pid * 3 + 1);
+	float2 tmp0 = tex1Dfetch(texVertices, pid * 3 + 0);
+	float2 tmp1 = tex1Dfetch(texVertices, pid * 3 + 1);
 
-        float3 f = _fangle_device(tmp0, tmp1, av);
-        f += dihedral(tmp0, tmp1);
+	float3 f = _fangle_device(tmp0, tmp1, av);
+	f += dihedral(tmp0, tmp1);
 
-        if (f.x > -1.0e9f) {
-            atomicAdd(&acc[3 * pid + 0], f.x);
-            atomicAdd(&acc[3 * pid + 1], f.y);
-            atomicAdd(&acc[3 * pid + 2], f.z);
-        }
+	if (f.x > -1.0e9f) {
+	    atomicAdd(&acc[3 * pid + 0], f.x);
+	    atomicAdd(&acc[3 * pid + 1], f.y);
+	    atomicAdd(&acc[3 * pid + 2], f.z);
+	}
     }
 }
 
@@ -226,8 +226,8 @@ __DF__ float3 tex2vec(int id) {
 
 __DF__ float2 warpReduceSum(float2 val) {
     for (int offset = warpSize / 2; offset > 0; offset /= 2) {
-        val.x += __shfl_down(val.x, offset);
-        val.y += __shfl_down(val.y, offset);
+	val.x += __shfl_down(val.x, offset);
+	val.y += __shfl_down(val.y, offset);
     }
     return val;
 }
@@ -244,23 +244,23 @@ __global__ void area_volume(float *totA_V) {
     int cid = blockIdx.y;
 
     for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < RBCnt;
-         i += blockDim.x * gridDim.x) {
-        int4 ids = tex1Dfetch(texTriangles4, i);
+	 i += blockDim.x * gridDim.x) {
+	int4 ids = tex1Dfetch(texTriangles4, i);
 
-        float3 v0(tex2vec(3 * (ids.x + cid * RBCnv)));
-        float3 v1(tex2vec(3 * (ids.y + cid * RBCnv)));
-        float3 v2(tex2vec(3 * (ids.z + cid * RBCnv)));
+	float3 v0(tex2vec(3 * (ids.x + cid * RBCnv)));
+	float3 v1(tex2vec(3 * (ids.y + cid * RBCnv)));
+	float3 v2(tex2vec(3 * (ids.z + cid * RBCnv)));
 
-        a_v.x += 0.5f * abscross(v1 - v0, v2 - v0);
-        a_v.y += 0.1666666667f *
-            ((v0.x*v1.y-v0.y*v1.x)*v2.z +
-             (v0.z*v1.x-v0.x*v1.z)*v2.y +
-             (v0.y*v1.z-v0.z*v1.y)*v2.x);
+	a_v.x += 0.5f * abscross(v1 - v0, v2 - v0);
+	a_v.y += 0.1666666667f *
+	    ((v0.x*v1.y-v0.y*v1.x)*v2.z +
+	     (v0.z*v1.x-v0.x*v1.z)*v2.y +
+	     (v0.y*v1.z-v0.z*v1.y)*v2.x);
     }
     a_v = warpReduceSum(a_v);
     if ((threadIdx.x & (warpSize - 1)) == 0) {
-        atomicAdd(&totA_V[2 * cid + 0], a_v.x);
-        atomicAdd(&totA_V[2 * cid + 1], a_v.y);
+	atomicAdd(&totA_V[2 * cid + 0], a_v.x);
+	atomicAdd(&totA_V[2 * cid + 1], a_v.y);
     }
 #undef sq
 #undef abscross2
