@@ -121,7 +121,7 @@ __device__ float3 angle(float2 t0, float2 t1, float *av) {
     float3 v1, u1, v2, u2, v3, f;
     bool valid;
 
-    degreemax = 7;
+    degreemax = 7; /* :TODO: duplicate */
     pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
     lid = pid % RBCnv;
     idrbc = pid / RBCnv;
