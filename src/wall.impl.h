@@ -123,7 +123,8 @@ namespace wall0 {
     return n ;
   };
 
-  void interactions(const int type, const Particle *const p, const int n, Force *const acc) {
-    interactions(type, p, n, acc);
+  void interactions(::wall::Quants q, int type, Particle *const p, int n, Force *const acc) {
+    /* unpack q */
+    wall::interactions(type, p, n, acc);
   }
 }
