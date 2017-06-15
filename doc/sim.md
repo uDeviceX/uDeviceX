@@ -52,13 +52,12 @@ All files are included in [bund.cu](../src/bund.cu).
 it includes all files of hiwi
 
 	namespace hi {
-	  hi/hdr.h
+	  hi/int.h
 	  namespace i {
 		hi/lib.h
 		hi/hdr.h
 		hi/imp.h
 		hi/dev.h
-		hi/int.h
 	  }
 	}
 
