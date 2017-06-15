@@ -8,19 +8,19 @@ void distr_solid() {
     cH2D(s::pp, s::pp_hst, 3 * s::npp);
 }
 
-  void update_solid0() {
-    cD2H(s::pp_hst, s::pp, s::npp);
-    cD2H(s::ff_hst, s::ff, s::npp);
-
-    solid::update_hst(s::ff_hst, s::rr0_hst, s::npp, s::ns, /**/ s::pp_hst, s::ss_hst);
-    solid::update_mesh_hst(s::ss_hst, s::ns, s::m_hst, /**/ s::i_pp_hst);
-
-    // for dump
-    memcpy(s::ss_dmphst, s::ss_hst, s::ns * sizeof(Solid));
-
-    solid::reinit_ft_hst(s::ns, /**/ s::ss_hst);
-
-    cH2D(s::pp, s::pp_hst, s::npp);
+void update_solid0() {
+  cD2H(s::pp_hst, s::pp, s::npp);
+  cD2H(s::ff_hst, s::ff, s::npp);
+  
+  solid::update_hst(s::ff_hst, s::rr0_hst, s::npp, s::ns, /**/ s::pp_hst, s::ss_hst);
+  solid::update_mesh_hst(s::ss_hst, s::ns, s::m_hst, /**/ s::i_pp_hst);
+  
+  // for dump
+  memcpy(s::ss_dmphst, s::ss_hst, s::ns * sizeof(Solid));
+  
+  solid::reinit_ft_hst(s::ns, /**/ s::ss_hst);
+  
+  cH2D(s::pp, s::pp_hst, s::npp);
 }
 
 void bounce_solid(int it) {
