@@ -81,6 +81,7 @@ void create_walls() {
     dSync();
     sdf::init();
     o::n = wall::init(o::pp, o::n);
+    //o::n = wall0::init(o::pp, o::n, /**/ &w::pp, &w::n);
     MSG("solvent particles survived: %d/%d", o::n, nold);
     if (o::n) k_sim::clear_velocity<<<k_cnf(o::n)>>>(o::pp, o::n);
     o::cells->build(o::pp, o::n);
