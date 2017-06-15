@@ -61,8 +61,6 @@ namespace x {
 #include "k/rdstr.h"
 #include "rdstr.impl.h"
 
-#include "sminmax.h"
-
 #include "sdstr.decl.h"
 #include "sdstr.impl.h"
 
