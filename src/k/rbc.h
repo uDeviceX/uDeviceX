@@ -12,6 +12,19 @@ texture<int4, cudaTextureType1D> texTriangles4;
      (a).z*(b).x - (a).x*(b).z,                 \
      (a).x*(b).y - (a).y*(b).x)
 
+/* first and second */
+#define fst(t) ( (t).x )
+#define scn(t) ( (t).y )
+
+__device__ void tt2r(float2 t1, float2 t2, /**/ float3 *r) {
+  r->x = fst(t1); r->y = scn(t1); r->z = fst(t2);
+}
+
+__device__ void ttt2ru(float2 t1, float2 t2, float2 t3, /**/ float3 *r, float3 *u) {
+  r->x = fst(t1); r->y = scn(t1); r->z = fst(t2);
+  u->x = scn(t2); u->y = fst(t3); u->z = scn(t3);
+}
+
 __DF__ float3 angle0(float3 v1, float3 v2,
 		     float3 v3, float area,
 		     float volume) {
@@ -266,5 +279,7 @@ __global__ void area_volume(float *totA_V) {
 #undef abscross2
 #undef abscross
 }
+#undef fst
+#undef scn
 #undef __DF__
 } /* namespace k_rbc */
