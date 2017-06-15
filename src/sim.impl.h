@@ -80,7 +80,6 @@ void create_walls() {
 
     dSync();
     sdf::init();
-    i::wall::alloc_quants(&w::q);
     o::n = i::wall::create(o::n, o::pp, &w::q);
     MSG("solvent particles survived: %d/%d", o::n, nold);
     if (o::n) k_sim::clear_velocity<<<k_cnf(o::n)>>>(o::pp, o::n);
@@ -258,10 +257,11 @@ void init() {
     rex::init();
     dump::init();
 
+    i::wall::alloc_quants(&w::q);
+
     o::cells   = new x::Clist(XS, YS, ZS);
     mpDeviceMalloc(&o::zip0); mpDeviceMalloc(&o::zip1);
 
-    wall::trunk = new Logistic::KISS;
     mpDeviceMalloc(&o::pp); mpDeviceMalloc(&o::pp0);
     mpDeviceMalloc(&o::ff);
     mpDeviceMalloc(&s::ff); mpDeviceMalloc(&s::ff);
@@ -389,9 +389,10 @@ void close() {
     if (solids0)
     mrescue::close();
 
+    i::wall::free_quants(&w::q);
+    
     delete o::cells;
     delete dump_field;
-    delete wall::trunk;
 
     CC(cudaFree(o::zip0));
     CC(cudaFree(o::zip1));
