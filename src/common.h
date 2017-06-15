@@ -227,27 +227,4 @@ public:
     }
 };
 
-/* container for the cell lists, which contains only two integer
-   vectors of size ncells.  the start[cell-id] array gives the entry in
-   the particle array associated to first particle belonging to cell-id
-   count[cell-id] tells how many particles are inside cell-id.  building
-   the cell lists involve a reordering of the particle array (!) */
-struct CellLists {
-    const int ncells, LX, LY, LZ;
-    int *start, *count;
-    CellLists(const int LX, const int LY, const int LZ)
-        : ncells(LX * LY * LZ + 1), LX(LX), LY(LY), LZ(LZ) {
-        CC(cudaMalloc(&start, sizeof(int) * ncells));
-        CC(cudaMalloc(&count, sizeof(int) * ncells));
-    }
-
-    void build(Particle *const p, const int n,
-               int *const order = NULL, const Particle *const src = NULL);
-
-    ~CellLists() {
-        CC(cudaFree(start));
-        CC(cudaFree(count));
-    }
-};
-
 void diagnostics(Particle *_particles, int n, int idstep);
