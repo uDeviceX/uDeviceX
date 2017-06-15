@@ -1,5 +1,13 @@
 namespace dev {
   enum {X, Y, Z};
+
+__global__ void strip_solid4(Particle *const src, const int n, float4 *dst) {
+    int pid = threadIdx.x + blockDim.x * blockIdx.x;
+    if (pid >= n) return;
+    Particle p = src[pid];
+    dst[pid] = make_float4(p.r[0], p.r[1], p.r[2], 0);
+}
+
 __device__ int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
 
 __global__ void interactions_3tpp(const float2 *const pp, const int np,
