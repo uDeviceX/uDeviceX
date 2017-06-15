@@ -29,10 +29,11 @@
 #include "k/scan.h"
 #include "k/common.h"
 
+#include "k/clist.h"
+#include "clist.impl.h"
+#include "clist.face.h"
+
 namespace x {
-  #include "x/k/clist.h"
-  #include "x/clist.impl.h"
-  #include "x/clist.face.h"
 
   #include "x/k/sdstr.h"
   #include "x/common.h"

@@ -2,14 +2,14 @@ struct Quants {
     float4 *pp;
     int n;
     Logistic::KISS *rnd;
-    x::Clist *cells;
+    Clist *cells;
     cudaTextureObject_t texstart;
     cudaTextureObject_t texpp;
 };
 
 void alloc_quants(Quants *q) {
     q->rnd   = new Logistic::KISS;
-    q->cells = new x::Clist(XS + 2 * XWM, YS + 2 * YWM, ZS + 2 * ZWM);
+    q->cells = new Clist(XS + 2 * XWM, YS + 2 * YWM, ZS + 2 * ZWM);
 }
 
 void free_quants(Quants *q) {

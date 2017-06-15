@@ -97,7 +97,7 @@ int init(Particle *pp, int n, Particle *frozen, int *w_n) {
     return nsurvived;
 } /* end of ini */
 
-void build_cells(const int n, Particle *pp, x::Clist *cells) {if (n) cells->build(pp, n);}
+void build_cells(const int n, Particle *pp, Clist *cells) {if (n) cells->build(pp, n);}
 
 void make_texstart(int *start, int n, cudaTextureObject_t *texstart) {
     cudaResourceDesc resD;

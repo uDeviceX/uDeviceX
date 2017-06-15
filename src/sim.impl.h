@@ -259,7 +259,7 @@ void init() {
 
     wall::alloc_quants(&w::q);
 
-    o::cells   = new x::Clist(XS, YS, ZS);
+    o::cells   = new Clist(XS, YS, ZS);
     mpDeviceMalloc(&o::zip0); mpDeviceMalloc(&o::zip1);
 
     mpDeviceMalloc(&o::pp); mpDeviceMalloc(&o::pp0);
