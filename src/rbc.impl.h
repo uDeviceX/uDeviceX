@@ -3,7 +3,7 @@ namespace rbc
 #define MAX_CELLS_NUM 100000
 #define md 7
 
-void reg_edg(int f, int x, int y,  int* hx, int* hy) {
+void reg(int f, int x, int y,  int* hx, int* hy) {
     int j = f*md;
     while (hx[j] != -1) j++;
     hx[j] = x; hy[j] = y;
@@ -31,15 +31,15 @@ void gen_a12(int i0, int* hx, int* hy, /**/ int* a1, int* a2) {
     }  while (c != mi);
 }
 
-void setup_support(int *data, int *data2, int nentries) {
+void setup0(int *data, int *data2, int nentries) {
     setup_texture(k_rbc::texAdjVert, int);
 
-    size_t textureoffset;
-    CC(cudaBindTexture(&textureoffset, &k_rbc::texAdjVert, data,
+    size_t offset;
+    CC(cudaBindTexture(&offset, &k_rbc::texAdjVert, data,
                        &k_rbc::texAdjVert.channelDesc, sizeof(int) * nentries));
 
     setup_texture(k_rbc::texAdjVert2, int);
-    CC(cudaBindTexture(&textureoffset, &k_rbc::texAdjVert2, data2,
+    CC(cudaBindTexture(&offset, &k_rbc::texAdjVert2, data2,
                        &k_rbc::texAdjVert.channelDesc, sizeof(int) * nentries));
 }
 
@@ -65,9 +65,9 @@ void setup(int* faces) {
     for (int ifa = 0; ifa < RBCnt; ifa++) {
         i = 3*ifa;
         int f0 = faces[i++], f1 = faces[i++], f2 = faces[i++];
-        reg_edg(f0, f1, f2,   hx, hy); /* register an edge */
-        reg_edg(f1, f2, f0,   hx, hy);
-        reg_edg(f2, f0, f1,   hx, hy);
+        reg(f0, f1, f2,   hx, hy); /* register an edge */
+        reg(f1, f2, f0,   hx, hy);
+        reg(f2, f0, f1,   hx, hy);
     }
     for (i = 0; i < RBCnv; i++) gen_a12(i, hx, hy, /**/ a1, a2);
 
@@ -78,13 +78,13 @@ void setup(int* faces) {
     CC(cudaMalloc(&ptr2, sizeof(int) * RBCnv*md));
     cH2D(ptr2, a2, RBCnv*md);
 
-    setup_support(ptr, ptr2, RBCnv*md);
+    setup0(ptr, ptr2, RBCnv*md);
 
     setup_texture(k_rbc::texTriangles4, int4);
     setup_texture(k_rbc::texVertices, float2);
 
-    size_t textureoffset;
-    CC(cudaBindTexture(&textureoffset, &k_rbc::texTriangles4, devtrs4,
+    size_t offset;
+    CC(cudaBindTexture(&offset, &k_rbc::texTriangles4, devtrs4,
                        &k_rbc::texTriangles4.channelDesc,
                        RBCnt * 4 * sizeof(int)));
 }
@@ -92,8 +92,8 @@ void setup(int* faces) {
 void forces(int nc, Particle *pp, Force *ff, float* host_av) {
     if (nc <= 0) return;
 
-    size_t textureoffset;
-    CC(cudaBindTexture(&textureoffset, &k_rbc::texVertices,
+    size_t offset;
+    CC(cudaBindTexture(&offset, &k_rbc::texVertices,
                        (float2*)pp,
                        &k_rbc::texVertices.channelDesc,
                        nc * RBCnv * sizeof(float) * 6));
@@ -105,6 +105,6 @@ void forces(int nc, Particle *pp, Force *ff, float* host_av) {
     k_rbc::area_volume<<<avBlocks, avThreads>>>(host_av);
     CC(cudaPeekAtLastError());
 
-    k_rbc::fall_kernel<<<k_cnf(nc*RBCnv*md)>>>(nc, host_av, (float*)ff);
+    k_rbc::force<<<k_cnf(nc*RBCnv*md)>>>(nc, host_av, (float*)ff);
 }
 }

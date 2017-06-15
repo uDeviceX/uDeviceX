@@ -196,7 +196,7 @@ __device__ float3 _fdihedral_device(float2 tmp0, float2 tmp1) {
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
 }
 
-__global__ void fall_kernel(int nc, float *__restrict__ av,
+__global__ void force(int nc, float *__restrict__ av,
                             float *acc) {
     int degreemax = 7;
     int pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
