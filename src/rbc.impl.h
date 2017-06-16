@@ -64,8 +64,6 @@ void setup(int* faces) {
     CC(cudaMalloc(&adj1, sizeof(int) * RBCnv*md));
     cH2D(adj1, a2, RBCnv*md);
 
-    setup_texture(k_rbc::Vert, float2);
-
     /* TODO free these arrays */
     /* TODO free the texobjs  */
     texadj0.setup(adj0, RBCnv*md);
