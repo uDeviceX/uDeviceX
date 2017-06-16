@@ -134,7 +134,7 @@ void make_texpp(float4 *pp, int n, cudaTextureObject_t *texpp) {
 }
 
 void interactions(const int type, const Particle *const pp, const int n, const float rnd,
-                  const cudaTextureObject_t texstart, const cudaTextureObject_t texpp,
+                  const Texo<int> texstart, const cudaTextureObject_t texpp,
                   const int w_n, Force *ff) {
     if (n > 0 && w_n > 0) {
     dev::interactions_3tpp <<<k_cnf(3 * n)>>>
