@@ -39,3 +39,21 @@ void create(int *n, Particle* pp, Quants *q, Ticket *t) {
 void interactions(const Quants q, const Ticket t, const int type, const Particle *pp, const int n, Force *ff) {
     sub::interactions(type, pp, n, t.texstart, t.texpp, q.n, /**/ t.rnd, ff);
 }
+
+
+
+/*
+  Imaginary interface
+  
+  restart from particles
+  need conversion to float4
+  
+  create_from_solvent(&q &t);
+  create_from_file(&q &t);
+
+  sub::create_ticket(q, &t);
+
+// sim
+  sim::restart::read/write( (&) q.pp, (&) q.n);
+  
+ */
