@@ -1,6 +1,5 @@
 #include <mpi.h>
-#include <utility>
-#include <cstdio>
+#include <stdio.h>
 #include <conf.h>
 #include "conf.common.h"
 #include "m.h"     /* MPI */
@@ -38,7 +37,6 @@ void diagnostics(Particle * particles, int n, int idstep) {
         firsttime = false;
         if (idstep == 0)
         fprintf(f, "# TSTEP\tKBT\tPX\tPY\tPZ\n");
-
         fprintf(stderr, "%e\t%.10e\t%.10e\t%.10e\t%.10e\n", idstep * dt, kbt, p[0], p[1], p[2]);
         fprintf(f, "%e\t%.10e\t%.10e\t%.10e\t%.10e\n", idstep * dt, kbt, p[0], p[1], p[2]);
         fclose(f);
