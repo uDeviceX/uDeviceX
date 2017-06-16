@@ -12,12 +12,14 @@ struct Quants {
 };
 
 void alloc_quants(Quants *q) {
+    q->n = 0;
+    q->pp = NULL;
     q->rnd   = new Logistic::KISS;
     q->cells = new Clist(XS + 2 * XWM, YS + 2 * YWM, ZS + 2 * ZWM);
 }
 
 void free_quants(Quants *q) {
-    CC(cudaFree(q->pp));
+    if (q->pp) CC(cudaFree(q->pp));
     delete q->cells;
     delete q->rnd;
 }
