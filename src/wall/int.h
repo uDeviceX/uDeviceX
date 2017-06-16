@@ -19,6 +19,7 @@ void alloc_quants(Quants *q) {
 void free_quants(Quants *q) {
     CC(cudaFree(q->pp));
     delete q->cells;
+    delete q->rnd;
 }
 
 int create(int n, Particle* pp, Quants *q) {
