@@ -58,7 +58,7 @@ __device__ float3 adj_faces(float2 t0i, float2 t1i, float *av) {
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
 }
 
-__device__ float3 dihedral(float2 t0, float2 t1) {
+__device__ float3 adj_dihedrals(float2 t0, float2 t1) {
     int nv = RBCnv;
 
     int degreemax, pid, lid, offset, neighid;
@@ -133,7 +133,7 @@ __global__ void force(int nc, float *__restrict__ av, float *ff) {
 	float2 t1 = tex1Dfetch(Vert, pid * 3 + 1);
 
 	float3 f = adj_faces(t0, t1, av);
-	f += dihedral(t0, t1);
+	f += adj_dihedrals(t0, t1);
 
 	if (f.x > -1.0e9f) {
 	    atomicAdd(&ff[3 * pid + 0], f.x);
