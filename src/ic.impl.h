@@ -1,6 +1,6 @@
 namespace ic { /* initial conditions */
 
-int gen(Particle* pp) { /* generate particle positions and velocities */
+int gen(Particle *pp) { /* generate particle positions and velocities */
     enum {X, Y, Z};
     assert(XS * YS * ZS * numberdensity < MAX_PART_NUM);
   

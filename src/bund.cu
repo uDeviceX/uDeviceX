@@ -85,6 +85,15 @@ namespace sub {
 #include "wall/int.h"
 }
 
+namespace o {
+namespace sub {
+#include "o/dev.h"
+#include "o/imp.h"
+}
+#include "o/int.h"
+}
+
+
 #include "k/fsi.h"
 
 #include "fsi.decl.h"
