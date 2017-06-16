@@ -132,7 +132,7 @@ __global__ void force(int nc, float *__restrict__ av, float *ff) {
 	float2 t0 = tex1Dfetch(Vert, pid * 3 + 0);
 	float2 t1 = tex1Dfetch(Vert, pid * 3 + 1);
 
-	float3 f = adj_tris(t0, t1, av);
+	float3 f = adj_tris(t0, t1, av); /* all adjusting triangles and dihedrals */
 	f += adj_dihedrals(t0, t1);
 
 	if (f.x > -1.0e9f) {
