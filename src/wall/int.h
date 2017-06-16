@@ -1,6 +1,8 @@
 struct Quants {
     float4 *pp;
     int n;
+// };
+// struct Ticket {
     Logistic::KISS *rnd;
     Clist *cells;
     Texo<int> texstart0;
