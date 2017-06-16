@@ -26,6 +26,13 @@ struct Work {
   Particle *pp0;
 };
 
+void alloc_ticketZ(/**/ TicketZ t) {
+  float4  *zip0 = t.zip0;
+  ushort4 *zip1 = t.zip1;
+  mpDeviceMalloc(&zip0);
+  mpDeviceMalloc(&zip1);
+}
+
 void create_ticketZ(Quants q, /**/ TicketZ t) {
   Particle  *pp = q.pp;
   int         n = q.n;
