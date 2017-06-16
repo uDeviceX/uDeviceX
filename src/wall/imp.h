@@ -99,40 +99,6 @@ int init(Particle *pp, int n, Particle *frozen, int *w_n) {
 
 void build_cells(const int n, Particle *pp, Clist *cells) {if (n) cells->build(pp, n);}
 
-void make_texstart(int *start, int n, cudaTextureObject_t *texstart) {
-    cudaResourceDesc resD;
-    cudaTextureDesc  texD;
-
-    memset(&resD, 0, sizeof(resD));
-    resD.resType = cudaResourceTypeLinear;
-    resD.res.linear.devPtr  = start;
-    resD.res.linear.sizeInBytes = n * sizeof(int);
-    resD.res.linear.desc = cudaCreateChannelDesc<int>();
-
-    memset(&texD, 0, sizeof(texD));
-    texD.normalizedCoords = 0;
-    texD.readMode = cudaReadModeElementType;
-
-    CC(cudaCreateTextureObject(texstart, &resD, &texD, NULL));
-}
-
-void make_texpp(float4 *pp, int n, cudaTextureObject_t *texpp) {
-    cudaResourceDesc resD;
-    cudaTextureDesc  texD;
-
-    memset(&resD, 0, sizeof(resD));
-    resD.resType = cudaResourceTypeLinear;
-    resD.res.linear.devPtr  = pp;
-    resD.res.linear.sizeInBytes = n * sizeof(float4);
-    resD.res.linear.desc = cudaCreateChannelDesc<float4>();
-
-    memset(&texD, 0, sizeof(texD));
-    texD.normalizedCoords = 0;
-    texD.readMode = cudaReadModeElementType;
-
-    CC(cudaCreateTextureObject(texpp, &resD, &texD, NULL));
-}
-
 void interactions(const int type, const Particle *const pp, const int n, const float rnd,
                   const Texo<int> texstart, const Texo<float4> texpp, const int w_n, Force *ff) {
     if (n > 0 && w_n > 0) {
