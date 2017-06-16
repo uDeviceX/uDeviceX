@@ -18,7 +18,7 @@ __device__ void ttt2ru(float2 t1, float2 t2, float2 t3, /**/ float3 *r, float3 *
     u->x = scn(t2); u->y = fst(t3); u->z = scn(t3);
 }
 
-__device__ float3 adj_tris(float2 t0a, float2 t0b, float *av) {
+__device__ float3 adj_tris(float2 t0a, float2 t0b, const float *av) {
     int nv = RBCnv;
     int degreemax, pid, lid, idrbc, offset, neighid, i2, i3;
     float2 t0c;
@@ -122,7 +122,7 @@ __device__ float3 adj_dihedrals(float2 t0a, float2 t0b) {
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
 }
 
-__global__ void force(int nc, float *__restrict__ av, float *ff) {
+__global__ void force(int nc, const float *__restrict__ av, float *ff) {
     int nv = RBCnv;
     int degreemax = 7;
     int pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
