@@ -87,6 +87,12 @@ void setup(int* faces) {
     CC(cudaBindTexture(&offset, &k_rbc::Tri, devtrs4,
                        &k_rbc::Tri.channelDesc,
                        RBCnt * 4 * sizeof(int)));
+
+    /* TODO free these arrays */
+    /* TODO free the texobjs  */
+    Adj00.setup(ptr,  RBCnv*md);
+    Adj10.setup(ptr2, RBCnv*md);
+    Tri0.setup((int4*)devtrs4, RBCnt);
 }
 
 void forces(int nc, Particle *pp, Force *ff, float* host_av) {
