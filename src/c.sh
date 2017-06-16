@@ -2,6 +2,8 @@
 
 # Sergey's current run
 
+(cd ../tools; make install)
+
 . $HOME/.udx/u.sh
 . ./gx.generic.sh
 
