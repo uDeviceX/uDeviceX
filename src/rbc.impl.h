@@ -82,13 +82,17 @@ void forces(int nc, Particle *pp, Force *ff, float* host_av) {
                        &k_rbc::Vert.channelDesc,
                        nc * RBCnv * sizeof(float) * 6));
 
+    texvert.setup((float2*) pp, 3*nc*RBCnv);
+    
     dim3 avThreads(256, 1);
     dim3 avBlocks(1, nc);
 
     CC(cudaMemsetAsync(host_av, 0, nc * 2 * sizeof(float)));
-    k_rbc::area_volume<<<avBlocks, avThreads>>>(textri, host_av);
+    k_rbc::area_volume<<<avBlocks, avThreads>>>(texvert, textri, host_av);
     CC(cudaPeekAtLastError());
 
-    k_rbc::force<<<k_cnf(nc*RBCnv*md)>>>(texadj0, texadj1, nc, host_av, (float*)ff);
+    k_rbc::force<<<k_cnf(nc*RBCnv*md)>>>(texvert, texadj0, texadj1, nc, host_av, (float*)ff);
+    dSync();
+    texvert.destroy();
 }
 }
