@@ -21,6 +21,6 @@ install() (
     set +x
 )
 
-#cb uDeviceX
+cb uDeviceX
 for r in $l; do c0 $r     ; done
 for r in $l; do install $r; done
