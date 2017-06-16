@@ -106,7 +106,7 @@ void create(int *o_n, Particle *o_pp, int *w_n, float4 **w_pp, Clist *cells,
 
     *o_n = init(o_pp, *o_n, frozen, w_n);
 
-    sub::build_cells(*w_n, /**/ frozen, cells);
+    build_cells(*w_n, /**/ frozen, cells);
 
     MSG0("consolidating wall particles");
 
