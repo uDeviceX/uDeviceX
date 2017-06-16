@@ -59,19 +59,19 @@ void setup(int* faces) {
     }
     for (i = 0; i < RBCnv; i++) gen_a12(i, hx, hy, /**/ a1, a2);
 
-    int *ptr, *ptr2;
-    CC(cudaMalloc(&ptr, sizeof(int) * RBCnv*md));
-    cH2D(ptr, a1, RBCnv*md);
+    int *adj0, *adj1;
+    CC(cudaMalloc(&adj0, sizeof(int) * RBCnv*md));
+    cH2D(adj0, a1, RBCnv*md);
 
-    CC(cudaMalloc(&ptr2, sizeof(int) * RBCnv*md));
-    cH2D(ptr2, a2, RBCnv*md);
+    CC(cudaMalloc(&adj1, sizeof(int) * RBCnv*md));
+    cH2D(adj1, a2, RBCnv*md);
 
     setup_texture(k_rbc::Vert, float2);
 
     /* TODO free these arrays */
     /* TODO free the texobjs  */
-    texadj0.setup(ptr,  RBCnv*md);
-    texadj1.setup(ptr2, RBCnv*md);
+    texadj0.setup(adj0, RBCnv*md);
+    texadj1.setup(adj1, RBCnv*md);
     textri.setup((int4*)devtrs4, RBCnt);
 }
 
