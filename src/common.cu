@@ -39,7 +39,7 @@ void diagnostics(Particle * particles, int n, int idstep) {
         if (idstep == 0)
         fprintf(f, "# TSTEP\tKBT\tPX\tPY\tPZ\n");
 
-        fprintf(stderr, "timestep: %e\t%.10e\t%.10e\t%.10e\t%.10e\n", idstep * dt, kbt, p[0], p[1], p[2]);
+        fprintf(stderr, "%e\t%.10e\t%.10e\t%.10e\t%.10e\n", idstep * dt, kbt, p[0], p[1], p[2]);
         fprintf(f, "%e\t%.10e\t%.10e\t%.10e\t%.10e\n", idstep * dt, kbt, p[0], p[1], p[2]);
         fclose(f);
     }
