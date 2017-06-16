@@ -5,19 +5,19 @@ namespace rbc
 #define nv ( RBCnv )
 #define nt ( RBCnt )
 
-void reg(int f, int x, int y,  int* hx, int* hy) {
+static void reg(int f, int x, int y,  /**/ int *hx, int *hy) { /* register an edge */
     int j = f*md;
     while (hx[j] != -1) j++;
     hx[j] = x; hy[j] = y;
 }
 
-int nxt(int i, int x,   int* hx, int* hy) {
+static int nxt(int i, int x, int *hx, int *hy) { /* next */
     i *= md;
     while (hx[i] != x) i++;
     return hy[i];
 }
 
-void gen_a12(int i0, int* hx, int* hy, /**/ int* a1, int* a2) {
+static void gen_a12(int i0, int *hx, int *hy, /**/ int *a1, int *a2) {
     int lo = i0*md, hi = lo + md, mi = hx[lo];
     int i;
     for (i = lo + 1; (i < hi) && (hx[i] != -1); i++)
@@ -33,7 +33,7 @@ void gen_a12(int i0, int* hx, int* hy, /**/ int* a1, int* a2) {
     }  while (c != mi);
 }
 
-void setup(int* faces) {
+void setup(int *faces) {
     const char r_templ[] = "rbc.off";
     off::f2faces(r_templ, faces);
 
