@@ -7,8 +7,8 @@
 # $ sh bootstrap
 
 l="atest bop clarity off ri vi"
-#p=git@github.com:slitvinov
-p=git@gitlab.ethz.ch:mavt-cse
+p=git@github.com:slitvinov
+#p=git@gitlab.ethz.ch:mavt-cse
 b=solid
 
 c0 () { git clone "$p/$1"; }
