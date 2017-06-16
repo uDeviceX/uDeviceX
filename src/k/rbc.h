@@ -19,7 +19,7 @@ __device__ void ttt2ru(float2 t1, float2 t2, float2 t3, /**/ float3 *r, float3 *
   u->x = scn(t2); u->y = fst(t3); u->z = scn(t3);
 }
 
-__device__ float3 adj_faces(float2 t0i, float2 t1i, float *av) {
+__device__ float3 adj_tris(float2 t0i, float2 t1i, float *av) {
     int nv = RBCnv;
     int degreemax, pid, lid, idrbc, offset, neighid, i2, i3;
     float2 t2i;
@@ -132,7 +132,7 @@ __global__ void force(int nc, float *__restrict__ av, float *ff) {
 	float2 t0 = tex1Dfetch(Vert, pid * 3 + 0);
 	float2 t1 = tex1Dfetch(Vert, pid * 3 + 1);
 
-	float3 f = adj_faces(t0, t1, av);
+	float3 f = adj_tris(t0, t1, av);
 	f += adj_dihedrals(t0, t1);
 
 	if (f.x > -1.0e9f) {
