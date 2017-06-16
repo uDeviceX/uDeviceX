@@ -65,12 +65,13 @@ __device__ float3 adj_dihedrals(const Texo<float2> texvert, const Texo<int> texa
     bool valid;
 
     degreemax = 7;
-    pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
-    lid = pid % nv;
-    offset = (pid / nv) * nv * 3;
+    pid     = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
     neighid = (threadIdx.x + blockDim.x * blockIdx.x) % degreemax;
 
-    r0 = make_float3(t0a.x, t0a.y, t0b.x);
+    offset = (pid / nv) * nv * 3;
+    lid =     pid % nv;
+
+    r0 = make_float3(fst(t0a), scn(t0a), fst(t0b));
 
     /*
       r4
@@ -82,7 +83,6 @@ __device__ float3 adj_dihedrals(const Texo<float2> texvert, const Texo<int> texa
 
       dihedrals: 0124, 0123
     */
-
 
     i1 = texadj0.fetch(neighid + degreemax * lid);
     valid = i1 != -1;
@@ -145,13 +145,13 @@ __global__ void force(const Texo<float2> texvert, const Texo<int> texadj0, const
 __DF__ float3 tex2vec(const Texo<float2> texvert, int id) {
     float2 ta = texvert.fetch(id + 0);
     float2 tb = texvert.fetch(id + 1);
-    return make_float3(ta.x, ta.y, tb.x);
+    return make_float3(fst(ta), scn(ta), fst(tb));
 }
 
 __DF__ float2 warpReduceSum(float2 val) {
     for (int offset = warpSize / 2; offset > 0; offset /= 2) {
-        val.x += __shfl_down(val.x, offset);
-        val.y += __shfl_down(val.y, offset);
+      fst(val) += __shfl_down(fst(val), offset);
+      scn(val) += __shfl_down(scn(val), offset);
     }
     return val;
 }
@@ -169,16 +169,16 @@ __global__ void area_volume(const Texo<float2> texvert, const Texo<int4> textri,
         float3 r1(tex2vec(texvert, 3 * (ids.y + cid * nv)));
         float3 r2(tex2vec(texvert, 3 * (ids.z + cid * nv)));
 
-        a_v.x += area0(r0, r1, r2);
-        a_v.y += volume0(r0, r1, r2);
+        fst(a_v) += area0(r0, r1, r2);
+        scn(a_v) += volume0(r0, r1, r2);
     }
     a_v = warpReduceSum(a_v);
     if ((threadIdx.x & (warpSize - 1)) == 0) {
-        atomicAdd(&totA_V[2 * cid + 0], a_v.x);
-        atomicAdd(&totA_V[2 * cid + 1], a_v.y);
+      atomicAdd(&totA_V[2 * cid + 0], fst(a_v));
+      atomicAdd(&totA_V[2 * cid + 1], scn(a_v));
     }
 }
 #undef fst
 #undef scn
-
+ 
 } /* namespace k_rbc */
