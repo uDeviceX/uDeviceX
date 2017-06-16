@@ -79,6 +79,8 @@ struct Texo {
 
         CC(cudaCreateTextureObject(&to, &resD, &texD, NULL));
     }
+
+    void destroy() {CC(cudaDestroyTextureObject(to));}
 };
 
 #define D2D cudaMemcpyDeviceToDevice
