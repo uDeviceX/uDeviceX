@@ -25,7 +25,6 @@ err () {
     exit 1
 }
 
-
 copy() {
     if test $# = 0; then return; fi
     cp0   $1  sdf.dat               ; shift
