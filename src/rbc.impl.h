@@ -1,6 +1,5 @@
 namespace rbc
 {
-#define MAX_CELLS_NUM 100000
 #define md 7
 
 void reg(int f, int x, int y,  int* hx, int* hy) {
