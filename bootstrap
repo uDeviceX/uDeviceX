@@ -16,8 +16,7 @@ cb () { git clone "$p/$1" --branch "$b" udx ; }
 
 install() (
     set -x
-    cd "$1"
-    make install
+    cd "$1" && make install
     set +x
 )
 
