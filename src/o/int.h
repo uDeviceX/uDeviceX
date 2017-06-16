@@ -4,12 +4,12 @@ struct Quants {
   Clist *cells;
 };
 
-struct TicketZip {
+struct TicketZ { /* zip */
   float4  *zip0;
   ushort4 *zip1;
 };
 
-struct TicketDistr {
+struct TicketD { /* distribution */
   MPI_Comm cart;
   int rank[27];
   MPI_Request send_size_req[27], recv_size_req[27];
@@ -19,9 +19,9 @@ struct TicketDistr {
 };
 
 struct Work {
-  uchar4 *subi_lo, *subi_re;
-  uint   *iidx;
-  Particle *pp_re;
+  uchar4 *subi_lo, *subi_re; /* local remote subindices */
+  uint   *iidx;              /* scatter indices */
+  Particle *pp_re;           /* remote particles */
   unsigned char *count_zip;
   Particle *pp0;
 };
