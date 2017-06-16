@@ -19,11 +19,11 @@ __device__ void ttt2ru(float2 t1, float2 t2, float2 t3, /**/ float3 *r, float3 *
   u->x = scn(t2); u->y = fst(t3); u->z = scn(t3);
 }
 
-__device__ float3 adj_tris(float2 t0i, float2 t1i, float *av) {
+__device__ float3 adj_tris(float2 t0a, float2 t0b, float *av) {
     int nv = RBCnv;
     int degreemax, pid, lid, idrbc, offset, neighid, i2, i3;
-    float2 t2i;
-    float2 t0, t1, t2, t3, t4;
+    float2 t0c;
+    float2 t1a, t1b, t1c, t2a, t2b;
     float3 r1, u1, r2, u2, r3, f;
     bool valid;
 
@@ -40,16 +40,16 @@ __device__ float3 adj_tris(float2 t0i, float2 t1i, float *av) {
     if (i3 == -1 && valid) i3 = tex1Dfetch(Adj0, 0 + degreemax * lid);
 
     if (valid) {
-	t2i = tex1Dfetch(Vert, pid * 3 + 2);
-	t0  = tex1Dfetch(Vert, offset + i2 * 3 + 0);
-	t1  = tex1Dfetch(Vert, offset + i2 * 3 + 1);
-	t2  = tex1Dfetch(Vert, offset + i2 * 3 + 2);
-	t3  = tex1Dfetch(Vert, offset + i3 * 3 + 0);
-	t4  = tex1Dfetch(Vert, offset + i3 * 3 + 1);
+	t0c = tex1Dfetch(Vert,         pid * 3 + 2);
+	t1a = tex1Dfetch(Vert, offset + i2 * 3 + 0);
+	t1b = tex1Dfetch(Vert, offset + i2 * 3 + 1);
+	t1c = tex1Dfetch(Vert, offset + i2 * 3 + 2);
+	t2a = tex1Dfetch(Vert, offset + i3 * 3 + 0);
+	t2b = tex1Dfetch(Vert, offset + i3 * 3 + 1);
 
-	ttt2ru(t0i, t1i, t2i, &r1, &u1);
-	ttt2ru( t0,  t1,  t2, &r2, &u2);
-	tt2r  ( t3,  t4,      &r3);
+	ttt2ru( t0a, t0b, t0c, &r1, &u1);
+	ttt2ru( t1a, t1b, t1c, &r2, &u2);
+	tt2r  ( t2a, t2b,      &r3     );
 
 	f  = tri(r1, r2, r3, av[2 * idrbc], av[2 * idrbc + 1]);
 	f += visc(r1, r2, u1, u2);
