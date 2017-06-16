@@ -157,14 +157,14 @@ __DF__ float2 warpReduceSum(float2 val) {
     return val;
 }
 
-__global__ void area_volume(const Texo<int4> Tri, float *totA_V) {
+__global__ void area_volume(const Texo<int4> textri, float *totA_V) {
     int nv = RBCnv, nt = RBCnt;
     float2 a_v = make_float2(0.0f, 0.0f);
     int cid = blockIdx.y;
 
     for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < nt;
          i += blockDim.x * gridDim.x) {
-        int4 ids = Tri.fetch(i);
+        int4 ids = textri.fetch(i);
 
         float3 r0(tex2vec(3 * (ids.x + cid * nv)));
         float3 r1(tex2vec(3 * (ids.y + cid * nv)));

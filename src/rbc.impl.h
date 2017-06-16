@@ -86,7 +86,7 @@ void setup(int* faces) {
     /* TODO free the texobjs  */
     Adj00.setup(ptr,  RBCnv*md);
     Adj10.setup(ptr2, RBCnv*md);
-    Tri0.setup((int4*)devtrs4, RBCnt);
+    textri.setup((int4*)devtrs4, RBCnt);
 }
 
 void forces(int nc, Particle *pp, Force *ff, float* host_av) {
@@ -102,7 +102,7 @@ void forces(int nc, Particle *pp, Force *ff, float* host_av) {
     dim3 avBlocks(1, nc);
 
     CC(cudaMemsetAsync(host_av, 0, nc * 2 * sizeof(float)));
-    k_rbc::area_volume<<<avBlocks, avThreads>>>(Tri0, host_av);
+    k_rbc::area_volume<<<avBlocks, avThreads>>>(textri, host_av);
     CC(cudaPeekAtLastError());
 
     k_rbc::force<<<k_cnf(nc*RBCnv*md)>>>(nc, host_av, (float*)ff);
