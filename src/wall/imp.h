@@ -6,9 +6,7 @@ int init(Particle *pp, int n, Particle *frozen, int *w_n) {
 
     int nsurvived = thrust::count(keys.begin(), keys.end(), 0);
     int nbelt = thrust::count(keys.begin() + nsurvived, keys.end(), 1);
-    thrust::device_vector<Particle> solid_local
-	(thrust::device_ptr<Particle>(pp + nsurvived),
-	 thrust::device_ptr<Particle>(pp + nsurvived + nbelt));
+    thrust::device_vector<Particle> solid_local(pp + nsurvived, pp + nsurvived + nbelt);
     MSG("nsurvived/nbelt : %d/%d", nsurvived, nbelt);
     dSync();
 
