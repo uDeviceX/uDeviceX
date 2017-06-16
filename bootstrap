@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# clone all udx related repos
+
+l="atest bop clarity off ri vi"
+p=git@github.com:slitvinov
+b=solid
+
+c0 () { git clone "$p/$1"; }
+cb () { git clone "$p/$1" --branch "$b"; }
+
+cb uDeviceX
+for r in $l; do c0 $r; done
