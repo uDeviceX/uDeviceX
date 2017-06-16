@@ -7,7 +7,6 @@ struct Quants {
     Clist *cells;
     Texo<int> texstart0;
     Texo<float4> texpp0;
-    cudaTextureObject_t texpp;
 };
 
 void alloc_quants(Quants *q) {
@@ -39,12 +38,11 @@ int create(int n, Particle* pp, Quants *q) {
 
     q->texstart0.setup(q->cells->start, q->cells->ncells);
     q->texpp0.setup(q->pp, q->n);
-    sub::make_texpp   (q->pp,           q->n,             /**/ &q->texpp);
     
     CC(cudaFree(frozen));
     return n;
 }
 
 void interactions(const Quants q, const int type, const Particle *pp, const int n, Force *ff) {
-    sub::interactions(type, pp, n, q.rnd->get_float(), q.texstart0, q.texpp, q.n, /**/ ff);
+    sub::interactions(type, pp, n, q.rnd->get_float(), q.texstart0, q.texpp0, q.n, /**/ ff);
 }

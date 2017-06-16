@@ -11,10 +11,10 @@ __global__ void strip_solid4(Particle *const src, const int n, float4 *dst) {
 __device__ int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
 
 __global__ void interactions_3tpp(const float2 *const pp, const int np, const int w_n, float *const acc,
-                                  const float seed, const int type, const Texo<int> texstart,
-                                  const cudaTextureObject_t texwpp) {
+                                  const float seed, const int type, const Texo<int> texstart, const Texo<float4> texwpp) {
+                                  
 #define start_fetch(i) (texstart.fetch(i))
-#define   wpp_fetch(i) (tex1Dfetch<float4> (texwpp, i))
+#define   wpp_fetch(i) (texwpp.fetch(i))
 
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
     int pid = gid / 3;
