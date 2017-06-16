@@ -1,4 +1,3 @@
-namespace k_clist {
 __device__ int encode(int ix, int iy, int iz, int3 ncells) {
   return ix + ncells.x * (iy + iz * ncells.y);
 }
@@ -55,4 +54,3 @@ __global__ void count(const int * const start, int * const cnt, const int ncells
   if (tid < ncells)
     cnt[tid] -= start[tid];
 }
-} /* namespace k_clist */

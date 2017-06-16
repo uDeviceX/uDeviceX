@@ -1,5 +1,4 @@
 namespace clist {
-using namespace thrust;
 template<typename T> T * ptr(device_vector<T>& v) { return raw_pointer_cast(v.data()); }
 
 void build(float * const pp, int np,

@@ -19,9 +19,8 @@
 #include "bund.h"
 #include "force.h"
 
-#include <thrust/device_vector.h> /* for clist.impl.h */
+#include <thrust/device_vector.h>
 #include <thrust/sort.h>
-#include <thrust/binary_search.h>
 #include "glb.h"
 
 #include "helper-math/helper_math.h"
@@ -29,8 +28,9 @@
 #include "k/scan.h"
 #include "k/common.h"
 
-#include "k/clist.h"
-#include "clist.impl.h"
+namespace l {
+#include "inc/clist.h"
+}
 #include "clist.face.h"
 
 #include "k/odstr.h"
