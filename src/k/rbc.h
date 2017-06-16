@@ -1,5 +1,4 @@
 namespace k_rbc {
-
 /* [m]aximumd [d]egree, number of vertices, number of triangles */
 #define md ( RBCmd )
 #define nv ( RBCnv )
@@ -20,24 +19,23 @@ __device__ void ttt2ru(float2 t1, float2 t2, float2 t3, /**/ float3 *r, float3 *
 
 __device__ float3 adj_tris(const Texo<float2> texvert, const Texo<int> texadj0,
 			   float2 t0a, float2 t0b, const float *av) {
-    int degreemax, pid, lid, idrbc, offset, neighid, i2, i3;
+    int pid, lid, idrbc, offset, neighid, i2, i3;
     float2 t0c;
     float2 t1a, t1b, t1c, t2a, t2b;
     float3 r1, u1, r2, u2, r3, f;
     bool valid;
 
-    degreemax = 7; /* :TODO: duplicate */
-    pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
+    pid = (threadIdx.x + blockDim.x * blockIdx.x) / md;
     lid = pid % nv;
     idrbc = pid / nv;
     offset = idrbc * nv * 3;
-    neighid = (threadIdx.x + blockDim.x * blockIdx.x) % degreemax;
-    i2 = texadj0.fetch(neighid + degreemax * lid);
+    neighid = (threadIdx.x + blockDim.x * blockIdx.x) % md;
+    i2 = texadj0.fetch(neighid + md * lid);
     valid = i2 != -1;
 
-    i3 = texadj0.fetch(((neighid + 1) % degreemax) + degreemax * lid);
+    i3 = texadj0.fetch(((neighid + 1) % md) + md * lid);
     if (i3 == -1 && valid)
-    i3 = texadj0.fetch(0 + degreemax * lid);
+    i3 = texadj0.fetch(0 + md * lid);
 
     if (valid) {
 	t0c = texvert.fetch(        pid * 3 + 2);
@@ -60,17 +58,14 @@ __device__ float3 adj_tris(const Texo<float2> texvert, const Texo<int> texadj0,
 
 __device__ float3 adj_dihedrals(const Texo<float2> texvert, const Texo<int> texadj0,
 				const Texo<int> texadj1, float2 t0a, float2 t0b) {
-    int nv = nv;
-
-    int degreemax, pid, lid, offset, neighid;
+    int pid, lid, offset, neighid;
     int i1, i2, i3, i4;
     float2 t1a, t1b, t2a, t2b, t3a, t3b, t4a, t4b;
     float3 r0, r1, r2, r3, r4;
     bool valid;
 
-    degreemax = 7;
-    pid     = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
-    neighid = (threadIdx.x + blockDim.x * blockIdx.x) % degreemax;
+    pid     = (threadIdx.x + blockDim.x * blockIdx.x) / md;
+    neighid = (threadIdx.x + blockDim.x * blockIdx.x) % md;
 
     offset = (pid / nv) * nv * 3;
     lid =     pid % nv;
@@ -88,21 +83,21 @@ __device__ float3 adj_dihedrals(const Texo<float2> texvert, const Texo<int> texa
       dihedrals: 0124, 0123
     */
 
-    i1 = texadj0.fetch(neighid + degreemax * lid);
+    i1 = texadj0.fetch(neighid + md * lid);
     valid = i1 != -1;
 
-    i2 = texadj0.fetch(((neighid + 1) % degreemax) + degreemax * lid);
+    i2 = texadj0.fetch(((neighid + 1) % md) + md * lid);
 
     if (i2 == -1 && valid) {
-	i2 = texadj0.fetch(0 + degreemax * lid);
-	i3 = texadj0.fetch(1 + degreemax * lid);
+	i2 = texadj0.fetch(0 + md * lid);
+	i3 = texadj0.fetch(1 + md * lid);
     } else {
 	i3 =
-	    texadj0.fetch(((neighid + 2) % degreemax) + degreemax * lid);
-	if (i3 == -1 && valid) i3 = texadj0.fetch(0 + degreemax * lid);
+	    texadj0.fetch(((neighid + 2) % md) + md * lid);
+	if (i3 == -1 && valid) i3 = texadj0.fetch(0 + md * lid);
     }
 
-    i4 = texadj1.fetch(neighid + degreemax * lid);
+    i4 = texadj1.fetch(neighid + md * lid);
 
     if (valid) {
 	t1a = texvert.fetch(offset + i1 * 3 + 0);
@@ -126,8 +121,7 @@ __device__ float3 adj_dihedrals(const Texo<float2> texvert, const Texo<int> texa
 
 __global__ void force(const Texo<float2> texvert, const Texo<int> texadj0, const Texo<int> texadj1,
 		      int nc, const float *__restrict__ av, float *ff) {
-    int degreemax = 7;
-    int pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
+    int pid = (threadIdx.x + blockDim.x * blockIdx.x) / md;
 
     if (pid < nc * nv) {
 	float2 t0 = texvert.fetch(pid * 3 + 0);

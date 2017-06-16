@@ -18,7 +18,6 @@ int nxt(int i, int x,   int* hx, int* hy) {
 }
 
 void gen_a12(int i0, int* hx, int* hy, /**/ int* a1, int* a2) {
-    int md = md;
     int lo = i0*md, hi = lo + md, mi = hx[lo];
     int i;
     for (i = lo + 1; (i < hi) && (hx[i] != -1); i++)
