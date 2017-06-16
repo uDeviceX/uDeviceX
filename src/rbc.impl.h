@@ -31,18 +31,6 @@ void gen_a12(int i0, int* hx, int* hy, /**/ int* a1, int* a2) {
     }  while (c != mi);
 }
 
-void setup0(int *data, int *data2, int nentries) {
-    setup_texture(k_rbc::Adj0, int);
-
-    size_t offset;
-    CC(cudaBindTexture(&offset, &k_rbc::Adj0, data,
-                       &k_rbc::Adj0.channelDesc, sizeof(int) * nentries));
-
-    setup_texture(k_rbc::Adj1, int);
-    CC(cudaBindTexture(&offset, &k_rbc::Adj1, data2,
-                       &k_rbc::Adj0.channelDesc, sizeof(int) * nentries));
-}
-
 void setup(int* faces) {
     const char r_templ[] = "rbc.off";
     off::f2faces(r_templ, faces);
@@ -77,8 +65,6 @@ void setup(int* faces) {
 
     CC(cudaMalloc(&ptr2, sizeof(int) * RBCnv*md));
     cH2D(ptr2, a2, RBCnv*md);
-
-    setup0(ptr, ptr2, RBCnv*md);
 
     setup_texture(k_rbc::Vert, float2);
 
