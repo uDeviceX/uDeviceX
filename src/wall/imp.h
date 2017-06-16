@@ -99,6 +99,28 @@ int init(Particle *pp, int n, Particle *frozen, int *w_n) {
 
 void build_cells(const int n, Particle *pp, Clist *cells) {if (n) cells->build(pp, n);}
 
+void create(int *o_n, Particle *o_pp, int *w_n, float4 **w_pp, Clist *cells,
+            Texo<int> *texstart, Texo<float4> *texpp) {
+    Particle *frozen;
+    CC(cudaMalloc(&frozen, sizeof(Particle) * MAX_PART_NUM));
+
+    *o_n = init(o_pp, *o_n, frozen, w_n);
+
+    sub::build_cells(*w_n, /**/ frozen, cells);
+
+    MSG0("consolidating wall particles");
+
+    CC(cudaMalloc(w_pp, *w_n * sizeof(float4)));
+
+    if (*w_n > 0)
+    dev::strip_solid4 <<<k_cnf(*w_n)>>> (frozen, *w_n, /**/ *w_pp);
+
+    texstart->setup(cells->start, cells->ncells);
+    texpp->setup(*w_pp, *w_n);
+    
+    CC(cudaFree(frozen));
+}
+
 void interactions(const int type, const Particle *const pp, const int n, const Texo<int> texstart,
                   const Texo<float4> texpp, const int w_n, /**/ Logistic::KISS *rnd, Force *ff) {
     if (n > 0 && w_n > 0) {
