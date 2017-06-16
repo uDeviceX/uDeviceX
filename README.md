@@ -1,9 +1,3 @@
-Installation
-============
-
-download
---------
-
-git@github.com:slitvinov/uDeviceX.git
+# download
 
 see [bootstrap](bootstrap)
