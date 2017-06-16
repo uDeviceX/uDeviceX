@@ -18,7 +18,7 @@ __device__ void ttt2ru(float2 t1, float2 t2, float2 t3, /**/ float3 *r, float3 *
     u->x = scn(t2); u->y = fst(t3); u->z = scn(t3);
 }
 
-__device__ float3 adj_tris(float2 t0a, float2 t0b, const float *av) {
+__device__ float3 adj_tris(const Texo<int> texadj0, float2 t0a, float2 t0b, const float *av) {
     int nv = RBCnv;
     int degreemax, pid, lid, idrbc, offset, neighid, i2, i3;
     float2 t0c;
@@ -32,11 +32,12 @@ __device__ float3 adj_tris(float2 t0a, float2 t0b, const float *av) {
     idrbc = pid / nv;
     offset = idrbc * nv * 3;
     neighid = (threadIdx.x + blockDim.x * blockIdx.x) % degreemax;
-    i2 = tex1Dfetch(Adj0, neighid + degreemax * lid);
+    i2 = texadj0.fetch(neighid + degreemax * lid);
     valid = i2 != -1;
 
-    i3 = tex1Dfetch(Adj0, ((neighid + 1) % degreemax) + degreemax * lid);
-    if (i3 == -1 && valid) i3 = tex1Dfetch(Adj0, 0 + degreemax * lid);
+    i3 = texadj0.fetch(((neighid + 1) % degreemax) + degreemax * lid);
+    if (i3 == -1 && valid)
+    i3 = texadj0.fetch(0 + degreemax * lid);
 
     if (valid) {
         t0c = tex1Dfetch(Vert,         pid * 3 + 2);
@@ -122,7 +123,7 @@ __device__ float3 adj_dihedrals(float2 t0a, float2 t0b) {
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
 }
 
-__global__ void force(int nc, const float *__restrict__ av, float *ff) {
+__global__ void force(const Texo<int> texadj0, int nc, const float *__restrict__ av, float *ff) {
     int nv = RBCnv;
     int degreemax = 7;
     int pid = (threadIdx.x + blockDim.x * blockIdx.x) / degreemax;
@@ -132,7 +133,7 @@ __global__ void force(int nc, const float *__restrict__ av, float *ff) {
         float2 t1 = tex1Dfetch(Vert, pid * 3 + 1);
 
         /* all triangles and dihedrals adjusting to vertex `pid` */
-        float3 f = adj_tris(t0, t1, av);
+        float3 f = adj_tris(texadj0, t0, t1, av);
         f += adj_dihedrals(t0, t1);
 
         if (f.x > -1.0e9f) {

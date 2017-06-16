@@ -105,6 +105,6 @@ void forces(int nc, Particle *pp, Force *ff, float* host_av) {
     k_rbc::area_volume<<<avBlocks, avThreads>>>(textri, host_av);
     CC(cudaPeekAtLastError());
 
-    k_rbc::force<<<k_cnf(nc*RBCnv*md)>>>(nc, host_av, (float*)ff);
+    k_rbc::force<<<k_cnf(nc*RBCnv*md)>>>(texadj0, nc, host_av, (float*)ff);
 }
 }
