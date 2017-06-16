@@ -84,8 +84,8 @@ void setup(int* faces) {
 
     /* TODO free these arrays */
     /* TODO free the texobjs  */
-    Adj00.setup(ptr,  RBCnv*md);
-    Adj10.setup(ptr2, RBCnv*md);
+    texadj0.setup(ptr,  RBCnv*md);
+    texadj1.setup(ptr2, RBCnv*md);
     textri.setup((int4*)devtrs4, RBCnt);
 }
 
