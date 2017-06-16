@@ -145,9 +145,9 @@ __global__ void force(int nc, float *__restrict__ av, float *ff) {
 }
 
 __DF__ float3 tex2vec(int id) {
-    float2 t0 = tex1Dfetch(Vert, id + 0);
-    float2 t1 = tex1Dfetch(Vert, id + 1);
-    return make_float3(t0.x, t0.y, t1.x);
+    float2 ta = tex1Dfetch(Vert, id + 0);
+    float2 tb = tex1Dfetch(Vert, id + 1);
+    return make_float3(ta.x, ta.y, tb.x);
 }
 
 __DF__ float2 warpReduceSum(float2 val) {
