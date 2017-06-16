@@ -14,5 +14,14 @@ b=solid
 c0 () { git clone "$p/$1"; }
 cb () { git clone "$p/$1" --branch "$b" udx ; }
 
-cb uDeviceX
-for r in $l; do c0 $r; done
+clone() {
+    cb uDeviceX
+    for r in $l; do c0 $r; done
+}
+
+install() {
+    cd "$d"
+    make install
+}
+
+for r in $l; do install; done
