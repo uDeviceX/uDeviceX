@@ -2,6 +2,7 @@
 
 # Sergey's current run
 
+./configure
 (cd ../tools; make install)
 
 . $HOME/.udx/u.sh
