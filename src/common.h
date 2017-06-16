@@ -1,5 +1,3 @@
-#include <mpi.h>
-
 /* maximum particle number per one processor for static allocation */
 #define MAX_PART_NUM 1000000
 

@@ -1,3 +1,4 @@
+#include <mpi.h>
 #include "common.h"
 #include "minmax.h"
 

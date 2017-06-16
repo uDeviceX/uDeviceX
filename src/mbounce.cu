@@ -1,3 +1,4 @@
+#include <mpi.h>
 #include <conf.h>
 #include "common.h"
 

@@ -1,6 +1,7 @@
 #include <gsl/gsl_linalg.h>
 #include "gsl.impl.h"
 
+#include <mpi.h>
 #include "common.h"
 #include <conf.h>
 #include "conf.common.h"
