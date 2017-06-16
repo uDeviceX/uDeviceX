@@ -25,3 +25,11 @@ struct Work {
   unsigned char *count_zip;
   Particle *pp0;
 };
+
+void create_ticketZ(Quants q, /**/ TicketZ t) {
+  Particle  *pp = q.pp;
+  int         n = q.n;
+  float4  *zip0 = t.zip0;
+  ushort4 *zip1 = t.zip1;
+  // sub::make_texture<<<(n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>(zip0, zip1, (float*)pp, n);
+}
