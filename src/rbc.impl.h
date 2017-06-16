@@ -80,13 +80,7 @@ void setup(int* faces) {
 
     setup0(ptr, ptr2, RBCnv*md);
 
-    setup_texture(k_rbc::Tri, int4);
     setup_texture(k_rbc::Vert, float2);
-
-    size_t offset;
-    CC(cudaBindTexture(&offset, &k_rbc::Tri, devtrs4,
-                       &k_rbc::Tri.channelDesc,
-                       RBCnt * 4 * sizeof(int)));
 
     /* TODO free these arrays */
     /* TODO free the texobjs  */

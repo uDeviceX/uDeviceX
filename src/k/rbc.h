@@ -4,7 +4,6 @@ namespace k_rbc
 texture<float2, 1, cudaReadModeElementType> Vert; /* vertices */
 texture<int, 1, cudaReadModeElementType> Adj0;    /* adjacency lists */
 texture<int, 1, cudaReadModeElementType> Adj1;
-texture<int4, cudaTextureType1D> Tri;
 
 /* first and second */
 #define fst(t) ( (t).x )
