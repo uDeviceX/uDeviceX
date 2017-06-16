@@ -53,6 +53,7 @@ namespace x {
 
 #include "k/rbc.h"
 #undef __DF__
+#include "rbc.decl.h"
 #include "rbc.impl.h"
 
 #include "rdstr.decl.h"
