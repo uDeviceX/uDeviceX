@@ -64,3 +64,6 @@
 #ifndef rbcs
 #define rbcs (false)
 #endif
+
+/* maximum allowed degree of vertex in triangulated mesh */
+#define RBCmaxdegree 7
