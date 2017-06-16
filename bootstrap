@@ -2,12 +2,25 @@
 
 # clone all udx related repos
 
+# Run commands
+# $ curl https://raw.githubusercontent.com/slitvinov/uDeviceX/solid/bootstrap -o bootstrap
+# $ sh bootstrap
+
 l="atest bop clarity off ri vi"
-p=git@github.com:slitvinov
+#p=git@github.com:slitvinov
+p=git@gitlab.ethz.ch:mavt-cse
 b=solid
 
 c0 () { git clone "$p/$1"; }
-cb () { git clone "$p/$1" --branch "$b"; }
+cb () { git clone "$p/$1" --branch "$b" udx ; }
 
-cb uDeviceX
-for r in $l; do c0 $r; done
+install() (
+    set -x
+    cd "$1"
+    make install
+    set +x
+)
+
+#cb uDeviceX
+for r in $l; do c0 $r     ; done
+for r in $l; do install $r; done
