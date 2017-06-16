@@ -1,9 +1,9 @@
 # hiwi for solvent
 
 # problems
-* `odstr` uses hardcoded tags for MPI
+* in `odstr` tags for MPI are hardcoded
 * `pp0` is swaped with `pp`
-* two layer with own states `x` and `odstr`
+* two layers with states: `x` and `odstr`
 
 # from x/x.decl.h
 
@@ -44,7 +44,7 @@
      }
 
 # T
-zip0, zip1, cells
+`zip0`, `zip1`, `cells`
 
 # Q
-pp, n
+`pp`, `n`
