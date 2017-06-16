@@ -7,7 +7,7 @@
 # $ sh bootstrap
 
 l="atest bop clarity off ri vi"
-p=git@github.com:slitvinov
+p=https://github.com/slitvinov
 #p=git@gitlab.ethz.ch:mavt-cse
 b=solid
 
