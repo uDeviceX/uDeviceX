@@ -12,8 +12,7 @@
 /* maximum number of faces per one RBC */
 #define MAX_FACE_NUM 50000
 #define MAX_VERT_NUM 10000
-
-#define MAX_CELLS_NUM 100000
+#define MAX_CELL_NUM 100000
 
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less
    than `m') */
@@ -89,8 +88,19 @@ struct Texo {
 
 #define ERR(fmt, ...) do { fprintf(stderr, "%03d: ERROR: %s: %d" fmt, m::rank, __FILE__, __LINE__, ##__VA_ARGS__); exit(1); } while(0)
 
-// AoS is the currency for dpd simulations (because of the spatial locality).
-// AoS - SoA conversion might be performed within the hpc kernels.
+/* [m]pi [c]heck */
+#define MC(ans)                                             \
+    do { mpiAssert((ans), __FILE__, __LINE__); } while (0)
+inline void mpiAssert(int code, const char *file, int line) {
+    if (code != MPI_SUCCESS) {
+        char error_string[2048];
+        int length_of_error_string = sizeof(error_string);
+        MPI_Error_string(code, error_string, &length_of_error_string);
+        printf("mpiAssert: %s %d %s\n", file, line, error_string);
+        MPI_Abort(MPI_COMM_WORLD, code);
+    }
+}
+
 struct Particle {
     float r[3], v[3];
     static bool initialized;
@@ -245,18 +255,5 @@ public:
         CC(cudaHostGetDevicePointer(&DP, D, 0));
     }
 };
-
-/* [m]pi [c]heck */
-#define MC(ans)                                             \
-    do { mpiAssert((ans), __FILE__, __LINE__); } while (0)
-inline void mpiAssert(int code, const char *file, int line) {
-    if (code != MPI_SUCCESS) {
-        char error_string[2048];
-        int length_of_error_string = sizeof(error_string);
-        MPI_Error_string(code, error_string, &length_of_error_string);
-        printf("mpiAssert: %s %d %s\n", file, line, error_string);
-        MPI_Abort(MPI_COMM_WORLD, code);
-    }
-}
 
 void diagnostics(Particle *_particles, int n, int idstep);

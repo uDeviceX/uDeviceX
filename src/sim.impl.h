@@ -244,7 +244,7 @@ void bounce() {
 }
 
 void init() {
-    if (rbcs) CC(cudaMalloc(&r::av, MAX_CELLS_NUM));
+    if (rbcs) CC(cudaMalloc(&r::av, MAX_CELL_NUM));
 
     rbc::setup(r::faces);
     rdstr::init();
