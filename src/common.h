@@ -60,7 +60,7 @@ template<typename T>
 struct Texo {
     cudaTextureObject_t to;
 
-    const T fetch(const int i) {return tex1Dfetch<T>(to, i);}
+    __device__ __forceinline__ const T fetch(const int i) const {return tex1Dfetch<T>(to, i);}
     
     void setup(T *data, int n) {
         cudaResourceDesc resD;
