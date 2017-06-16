@@ -26,6 +26,9 @@ struct Work {
   Particle *pp0;
 };
 
+void create_ticketD(/**/ TicketD t) {
+}
+
 void alloc_ticketZ(/**/ TicketZ t) {
   float4  *zip0 = t.zip0;
   ushort4 *zip1 = t.zip1;
