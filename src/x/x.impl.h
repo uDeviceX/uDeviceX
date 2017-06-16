@@ -1,8 +1,8 @@
 void init() {
   m::Comm_dup(::m::cart, &cart);
   odstr::ini(cart, rank);
-  mpDeviceMalloc(&subi_lo); /* 1.5 * numberdensity * XS * YS * ZS */
-  mpDeviceMalloc(&subi_re); /* was 1.5*numberdensity*(XS*YS*ZS-(XS-2)*(YS-2)*(ZS-2)) */
+  mpDeviceMalloc(&subi_lo);
+  mpDeviceMalloc(&subi_re);
   mpDeviceMalloc(&iidx);
   mpDeviceMalloc(&pp_re);
   CC(cudaMalloc(&count_zip, sizeof(count_zip[0])*XS*YS*ZS));
