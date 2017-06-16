@@ -41,9 +41,8 @@ void setup(int* faces) {
         trs4 [i0++] = 0;
     }
 
-    float *devtrs4;
-    CC(cudaMalloc(&devtrs4,       RBCnt * 4 * sizeof(int)));
-    cH2D(devtrs4, trs4, RBCnt * 4);
+    CC(cudaMalloc(&tri, RBCnt * sizeof(int4)));
+    cH2D(tri, (int4*) trs4, RBCnt);
     delete[] trs4;
 
     int hx[RBCnv*md], hy[RBCnv*md], a1[RBCnv*md], a2[RBCnv*md];
@@ -58,8 +57,7 @@ void setup(int* faces) {
         reg(f2, f0, f1,   hx, hy);
     }
     for (i = 0; i < RBCnv; i++) gen_a12(i, hx, hy, /**/ a1, a2);
-
-    int *adj0, *adj1;
+    
     CC(cudaMalloc(&adj0, sizeof(int) * RBCnv*md));
     cH2D(adj0, a1, RBCnv*md);
 
@@ -72,7 +70,7 @@ void setup(int* faces) {
     /* TODO free the texobjs  */
     texadj0.setup(adj0, RBCnv*md);
     texadj1.setup(adj1, RBCnv*md);
-    textri.setup((int4*)devtrs4, RBCnt);
+    textri.setup(tri,   RBCnt);
 }
 
 void forces(int nc, Particle *pp, Force *ff, float* host_av) {
