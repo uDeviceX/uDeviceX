@@ -74,6 +74,7 @@ void setup(int* faces) {
 void forces(int nc, Particle *pp, Force *ff, float* host_av) {
     if (nc <= 0) return;
 
+    /* TODO do this only once (need QuantsTickets for this) */
     texvert.setup((float2*) pp, 3*nc*RBCnv);
     
     dim3 avThreads(256, 1);
@@ -84,6 +85,8 @@ void forces(int nc, Particle *pp, Force *ff, float* host_av) {
     CC(cudaPeekAtLastError());
 
     k_rbc::force<<<k_cnf(nc*RBCnv*md)>>>(texvert, texadj0, texadj1, nc, host_av, (float*)ff);
+
+    /* TODO do this only once (need QuantsTickets for this) */
     dSync();
     texvert.destroy();
 }
