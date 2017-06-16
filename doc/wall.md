@@ -1,12 +1,20 @@
-# preparing wall to [qw]i[t]ification
+# int
+    ``` cpp
+    struct Quants {
+        float4 *pp;
+        int n;
+        Logistic::KISS *rnd;
+        Clist *cells;
+        cudaTextureObject_t texstart;
+        cudaTextureObject_t texpp;
+    }
+    ```
 
-## wall.decl
-Logistic::KISS* trunk
-int w_n
-Particle *w_pp
-x::Clist *wall_cells
-
-## wall functions called by sim::
-wall::interactions(SOLID_TYPE, s::pp, s::npp, /**/ s::ff)
-o::n = wall::init(o::pp, o::n)
-wall:close
+# wall functions called by sim::
+    ```cpp
+    void alloc_quants(Quants *q);
+    void free_quants(Quants *q);
+    int create(int n, Particle* pp, Quants *q);
+    void interactions(const Quants q, const int type, const Particle *pp, const int n, Force *ff);
+    
+    ```
