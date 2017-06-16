@@ -43,15 +43,6 @@ inline void mpiAssert(int code, const char *file, int line) {
         (T).normalized = 0;                                 \
     } while (false)
 
-#define D2D cudaMemcpyDeviceToDevice
-#define D2H cudaMemcpyDeviceToHost
-#define H2D cudaMemcpyHostToDevice
-#define H2H cudaMemcpyHostToHost
-
-#define cD2D(t, f, n) CC(cudaMemcpy((t), (f), (n) * sizeof((f)[0]), D2D))
-#define cH2H(t, f, n) CC(cudaMemcpy((t), (f), (n) * sizeof((f)[0]), H2H))  /* [t]to, [f]rom */
-#define cD2H(h, d, n) CC(cudaMemcpy((h), (d), (n) * sizeof((h)[0]), D2H))
-#define cH2D(d, h, n) CC(cudaMemcpy((d), (h), (n) * sizeof((h)[0]), H2D))
 
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
@@ -63,6 +54,42 @@ inline void cudaAssert(cudaError_t code, const char *file, int line) {
         abort();
     }
 }
+
+/* 1D texture object template */
+template<typename T>
+struct Texo {
+    cudaTextureObject_t to;
+
+    const T fetch(const int i) {return tex1Dfetch<T>(to, i);}
+    
+    void setup(T *data, int n) {
+        cudaResourceDesc resD;
+        cudaTextureDesc  texD;
+
+        memset(&resD, 0, sizeof(resD));
+        resD.resType = cudaResourceTypeLinear;
+        resD.res.linear.devPtr = data;
+        resD.res.linear.sizeInBytes = n * sizeof(T);
+        resD.res.linear.desc = cudaCreateChannelDesc<T>();
+
+        memset(&texD, 0, sizeof(texD));
+        texD.normalizedCoords = 0;
+        texD.readMode = cudaReadModeElementType;
+
+        CC(cudaCreateTextureObject(&to, &resD, &texD, NULL));
+    }
+};
+
+#define D2D cudaMemcpyDeviceToDevice
+#define D2H cudaMemcpyDeviceToHost
+#define H2D cudaMemcpyHostToDevice
+#define H2H cudaMemcpyHostToHost
+
+#define cD2D(t, f, n) CC(cudaMemcpy((t), (f), (n) * sizeof((f)[0]), D2D))
+#define cH2H(t, f, n) CC(cudaMemcpy((t), (f), (n) * sizeof((f)[0]), H2H))  /* [t]to, [f]rom */
+#define cD2H(h, d, n) CC(cudaMemcpy((h), (d), (n) * sizeof((h)[0]), D2H))
+#define cH2D(d, h, n) CC(cudaMemcpy((d), (h), (n) * sizeof((h)[0]), H2D))
+
 
 #define MSG00(fmt, ...) fprintf(stderr, fmt, ##__VA_ARGS__)
 #define MSG(fmt, ...) MSG00("%03d: ", m::rank), MSG00(fmt, ##__VA_ARGS__), MSG00("\n")
