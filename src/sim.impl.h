@@ -15,7 +15,7 @@ void distr_rbc() {
 
 void update_helper_arrays() {
     if (!o::n) return;
-    ::o::sub::make_texture<<<(o::n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>(o::zip0, o::zip1, (float*)o::pp, o::n);
+    ::sol::sub::make_texture<<<(o::n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>(o::zip0, o::zip1, (float*)o::pp, o::n);
 }
 
 void remove_rbcs_from_wall() {

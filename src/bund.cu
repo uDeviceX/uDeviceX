@@ -85,12 +85,12 @@ namespace sub {
 #include "wall/int.h"
 }
 
-namespace o {
+namespace sol {
 namespace sub {
-#include "o/dev.h"
-#include "o/imp.h"
+#include "sol/dev.h"
+#include "sol/imp.h"
 }
-#include "o/int.h"
+#include "sol/int.h"
 }
 
 
