@@ -58,7 +58,7 @@ __device__ float3 adj_tris(const Texo<int> texadj0, float2 t0a, float2 t0b, cons
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
 }
 
-__device__ float3 adj_dihedrals(float2 t0a, float2 t0b) {
+__device__ float3 adj_dihedrals(const Texo<int> texadj0, float2 t0a, float2 t0b) {
     int nv = RBCnv;
 
     int degreemax, pid, lid, offset, neighid;
@@ -87,18 +87,18 @@ __device__ float3 adj_dihedrals(float2 t0a, float2 t0b) {
     */
 
 
-    i1 = tex1Dfetch(Adj0, neighid + degreemax * lid);
+    i1 = texadj0.fetch(neighid + degreemax * lid);
     valid = i1 != -1;
 
-    i2 = tex1Dfetch(Adj0, ((neighid + 1) % degreemax) + degreemax * lid);
+    i2 = texadj0.fetch(((neighid + 1) % degreemax) + degreemax * lid);
 
     if (i2 == -1 && valid) {
-        i2 = tex1Dfetch(Adj0, 0 + degreemax * lid);
-        i3 = tex1Dfetch(Adj0, 1 + degreemax * lid);
+        i2 = texadj0.fetch(0 + degreemax * lid);
+        i3 = texadj0.fetch(1 + degreemax * lid);
     } else {
         i3 =
-            tex1Dfetch(Adj0, ((neighid + 2) % degreemax) + degreemax * lid);
-        if (i3 == -1 && valid) i3 = tex1Dfetch(Adj0, 0 + degreemax * lid);
+            texadj0.fetch(((neighid + 2) % degreemax) + degreemax * lid);
+        if (i3 == -1 && valid) i3 = texadj0.fetch(0 + degreemax * lid);
     }
 
     i4 = tex1Dfetch(Adj1, neighid + degreemax * lid);
@@ -134,7 +134,7 @@ __global__ void force(const Texo<int> texadj0, int nc, const float *__restrict__
 
         /* all triangles and dihedrals adjusting to vertex `pid` */
         float3 f = adj_tris(texadj0, t0, t1, av);
-        f += adj_dihedrals(t0, t1);
+        f += adj_dihedrals(texadj0, t0, t1);
 
         if (f.x > -1.0e9f) {
             atomicAdd(&ff[3 * pid + 0], f.x);
