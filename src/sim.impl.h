@@ -15,7 +15,6 @@ void distr_rbc() {
 
 void update_helper_arrays() {
     if (!o::n) return;
-    CC(cudaFuncSetCacheConfig(k_sim::make_texture, cudaFuncCachePreferShared));
     k_sim::make_texture<<<(o::n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>
 	(o::zip0, o::zip1, (float*)o::pp, o::n);
 }
