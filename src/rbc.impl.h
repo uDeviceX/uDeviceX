@@ -76,12 +76,6 @@ void setup(int* faces) {
 void forces(int nc, Particle *pp, Force *ff, float* host_av) {
     if (nc <= 0) return;
 
-    size_t offset;
-    CC(cudaBindTexture(&offset, &k_rbc::Vert,
-                       (float2*)pp,
-                       &k_rbc::Vert.channelDesc,
-                       nc * RBCnv * sizeof(float) * 6));
-
     texvert.setup((float2*) pp, 3*nc*RBCnv);
     
     dim3 avThreads(256, 1);

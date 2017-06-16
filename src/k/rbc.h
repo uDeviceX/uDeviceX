@@ -1,7 +1,4 @@
-namespace k_rbc
-{
-
-texture<float2, 1, cudaReadModeElementType> Vert; /* vertices */
+namespace k_rbc {
 
 /* first and second */
 #define fst(t) ( (t).x )
