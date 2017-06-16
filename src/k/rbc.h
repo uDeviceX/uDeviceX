@@ -58,12 +58,12 @@ __device__ float3 adj_tris(float2 t0a, float2 t0b, float *av) {
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
 }
 
-__device__ float3 adj_dihedrals(float2 t0, float2 t1) {
+__device__ float3 adj_dihedrals(float2 t0a, float2 t0b) {
     int nv = RBCnv;
 
     int degreemax, pid, lid, offset, neighid;
     int i1, i2, i3, i4;
-    float2         t2, t3, t4, t5, t6, t7;
+    float2 t1a, t1b, t2a, t2b, t3a, t3b, t4a, t4b;
     float3 r0, r1, r2, r3, r4;
     bool valid;
 
@@ -73,7 +73,7 @@ __device__ float3 adj_dihedrals(float2 t0, float2 t1) {
     offset = (pid / nv) * nv * 3;
     neighid = (threadIdx.x + blockDim.x * blockIdx.x) % degreemax;
 
-    r0 = make_float3(t0.x, t0.y, t1.x);
+    r0 = make_float3(t0a.x, t0a.y, t0b.x);
 
     /*
       r4
@@ -104,19 +104,19 @@ __device__ float3 adj_dihedrals(float2 t0, float2 t1) {
     i4 = tex1Dfetch(Adj1, neighid + degreemax * lid);
 
     if (valid) {
-	t0 = tex1Dfetch(Vert, offset + i1 * 3 + 0);
-	t1 = tex1Dfetch(Vert, offset + i1 * 3 + 1);
-	t2 = tex1Dfetch(Vert, offset + i2 * 3 + 0);
-	t3 = tex1Dfetch(Vert, offset + i2 * 3 + 1);
-	t4 = tex1Dfetch(Vert, offset + i3 * 3 + 0);
-	t5 = tex1Dfetch(Vert, offset + i3 * 3 + 1);
-	t6 = tex1Dfetch(Vert, offset + i4 * 3 + 0);
-	t7 = tex1Dfetch(Vert, offset + i4 * 3 + 1);
+	t1a = tex1Dfetch(Vert, offset + i1 * 3 + 0);
+	t1b = tex1Dfetch(Vert, offset + i1 * 3 + 1);
+	t2a = tex1Dfetch(Vert, offset + i2 * 3 + 0);
+	t2b = tex1Dfetch(Vert, offset + i2 * 3 + 1);
+	t3a = tex1Dfetch(Vert, offset + i3 * 3 + 0);
+	t3b = tex1Dfetch(Vert, offset + i3 * 3 + 1);
+	t4a = tex1Dfetch(Vert, offset + i4 * 3 + 0);
+	t4b = tex1Dfetch(Vert, offset + i4 * 3 + 1);
 
-	tt2r(t0, t1, &r1);
-	tt2r(t2, t3, &r2);
-	tt2r(t4, t5, &r3);
-	tt2r(t6, t7, &r4);
+	tt2r(t1a, t1b, &r1);
+	tt2r(t2a, t2b, &r2);
+	tt2r(t3a, t3b, &r3);
+	tt2r(t4a, t4b, &r4);
 
 	return dihedral<1>(r0, r2, r1, r4) + dihedral<2>(r1, r0, r2, r3);
     }
