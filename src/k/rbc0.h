@@ -11,7 +11,7 @@ namespace k_rbc {
      (a).z*(b).x - (a).x*(b).z,                 \
      (a).x*(b).y - (a).y*(b).x)
 
-__DF__ float3 angle(float3 v1, float3 v2,
+__DF__ float3 tri(float3 v1, float3 v2,
 		     float3 v3, float area,
 		     float volume) {
 #include "params/rbc.inc0.h"
@@ -66,7 +66,7 @@ __DF__ float3 visc(float3 v1, float3 v2,
 }
 
 template <int update>
-__DF__ float3 dihedral0(float3 v1, float3 v2, float3 v3,
+__DF__ float3 dihedral(float3 v1, float3 v2, float3 v3,
 					     float3 v4) {
     float overIksiI, overIdzeI, cosTheta, IsinThetaI2, sinTheta_1,
 	beta, b11, b12, phi, sint0kb, cost0kb;

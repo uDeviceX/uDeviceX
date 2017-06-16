@@ -51,7 +51,7 @@ __device__ float3 adj_tris(float2 t0i, float2 t1i, float *av) {
 	ttt2ru( t0,  t1,  t2, &r2, &u2);
 	tt2r  ( t3,  t4,      &r3);
 
-	f  = angle(r1, r2, r3, av[2 * idrbc], av[2 * idrbc + 1]);
+	f  = tri(r1, r2, r3, av[2 * idrbc], av[2 * idrbc + 1]);
 	f += visc(r1, r2, u1, u2);
 	return f;
     }
@@ -118,7 +118,7 @@ __device__ float3 adj_dihedrals(float2 t0, float2 t1) {
 	tt2r(t4, t5, &r3);
 	tt2r(t6, t7, &r4);
 
-	return dihedral0<1>(r0, r2, r1, r4) + dihedral0<2>(r1, r0, r2, r3);
+	return dihedral<1>(r0, r2, r1, r4) + dihedral<2>(r1, r0, r2, r3);
     }
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
 }
