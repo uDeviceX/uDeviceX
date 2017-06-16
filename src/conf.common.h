@@ -66,4 +66,4 @@
 #endif
 
 /* maximum allowed degree of vertex in triangulated mesh */
-#define RBCmaxdegree 7
+#define RBCmd 7

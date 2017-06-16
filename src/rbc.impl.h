@@ -1,20 +1,19 @@
 namespace rbc
 {
-#define md 7
-
 void reg(int f, int x, int y,  int* hx, int* hy) {
-    int j = f*md;
+    int j = f*RBCmd;
     while (hx[j] != -1) j++;
     hx[j] = x; hy[j] = y;
 }
 
 int nxt(int i, int x,   int* hx, int* hy) {
-    i *= md;
+    i *= RBCmd;
     while (hx[i] != x) i++;
     return hy[i];
 }
 
 void gen_a12(int i0, int* hx, int* hy, /**/ int* a1, int* a2) {
+    int md = RBCmd;
     int lo = i0*md, hi = lo + md, mi = hx[lo];
     int i;
     for (i = lo + 1; (i < hi) && (hx[i] != -1); i++)
@@ -23,10 +22,10 @@ void gen_a12(int i0, int* hx, int* hy, /**/ int* a1, int* a2) {
     int c = mi, c0;
     i = lo;
     do {
-        c     = nxt(i0, c0 = c, hx, hy);
-        a1[i] = c0;
-        a2[i] = nxt(c, c0, hx, hy);
-        i++;
+	c     = nxt(i0, c0 = c, hx, hy);
+	a1[i] = c0;
+	a2[i] = nxt(c, c0, hx, hy);
+	i++;
     }  while (c != mi);
 }
 
@@ -44,9 +43,9 @@ void setup(int* faces) {
     cH2D(tri, (int4*) trs4, RBCnt);
     delete[] trs4;
 
-    int hx[RBCnv*md], hy[RBCnv*md], a1[RBCnv*md], a2[RBCnv*md];
+    int hx[RBCnv*RBCmd], hy[RBCnv*RBCmd], a1[RBCnv*RBCmd], a2[RBCnv*RBCmd];
     int i;
-    for (i = 0; i < RBCnv*md; i++) hx[i] = a1[i] = a2[i] = -1;
+    for (i = 0; i < RBCnv*RBCmd; i++) hx[i] = a1[i] = a2[i] = -1;
 
     for (int ifa = 0; ifa < RBCnt; ifa++) {
         i = 3*ifa;
@@ -57,16 +56,16 @@ void setup(int* faces) {
     }
     for (i = 0; i < RBCnv; i++) gen_a12(i, hx, hy, /**/ a1, a2);
     
-    CC(cudaMalloc(&adj0, sizeof(int) * RBCnv*md));
-    cH2D(adj0, a1, RBCnv*md);
+    CC(cudaMalloc(&adj0, sizeof(int) * RBCnv*RBCmd));
+    cH2D(adj0, a1, RBCnv*RBCmd);
 
-    CC(cudaMalloc(&adj1, sizeof(int) * RBCnv*md));
-    cH2D(adj1, a2, RBCnv*md);
+    CC(cudaMalloc(&adj1, sizeof(int) * RBCnv*RBCmd));
+    cH2D(adj1, a2, RBCnv*RBCmd);
 
     /* TODO free these arrays */
     /* TODO free the texobjs  */
-    texadj0.setup(adj0, RBCnv*md);
-    texadj1.setup(adj1, RBCnv*md);
+    texadj0.setup(adj0, RBCnv*RBCmd);
+    texadj1.setup(adj1, RBCnv*RBCmd);
     textri.setup(tri,   RBCnt);
 }
 
@@ -75,7 +74,7 @@ void forces(int nc, Particle *pp, Force *ff, float* host_av) {
 
     /* TODO do this only once (need QuantsTickets for this) */
     texvert.setup((float2*) pp, 3*nc*RBCnv);
-    
+
     dim3 avThreads(256, 1);
     dim3 avBlocks(1, nc);
 
