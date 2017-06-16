@@ -1,6 +1,6 @@
 namespace rbc {
 Texo <float2> Vert0; /* vertices */
-Texo <int>  Adj0;    /* adjacency lists */
-Texo <int>  Adj1;
-Texo <int4> Tri;
+Texo <int>  Adj00;    /* adjacency lists */
+Texo <int>  Adj10;
+Texo <int4> Tri0;
 }
