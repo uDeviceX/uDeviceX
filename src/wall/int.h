@@ -3,6 +3,8 @@ struct Quants {
     int n;
     Logistic::KISS *rnd;
     Clist *cells;
+    Texo<int> texstart0;
+    Texo<float4> texpp0;
     cudaTextureObject_t texstart;
     cudaTextureObject_t texpp;
 };
@@ -30,7 +32,9 @@ int create(int n, Particle* pp, Quants *q) {
 
     if (q->n > 0)
     sub::dev::strip_solid4 <<<k_cnf(q->n)>>> (frozen, q->n, /**/ q->pp);
-    
+
+    q->texstart0.setup(q->cells->start, q->cells->ncells);
+    q->texpp0.setup(q->pp, q->n);
     sub::make_texstart(q->cells->start, q->cells->ncells, /**/ &q->texstart);
     sub::make_texpp   (q->pp,           q->n,             /**/ &q->texpp);
     
