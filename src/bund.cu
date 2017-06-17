@@ -23,7 +23,7 @@
 #include <thrust/sort.h>
 #include "glb.h"
 
-#include "helper-math/helper_math.h"
+#include "inc/float3.h"
 
 #include "k/scan.h"
 #include "k/common.h"
@@ -50,7 +50,6 @@ namespace x {
 #define __DF__ __device__ __forceinline__
 /* physical part of RBC calculations : see also params/rbc.inc0.h */
 #include "k/rbc0.h"
-
 #include "k/rbc.h"
 #undef __DF__
 #include "rbc.decl.h"
