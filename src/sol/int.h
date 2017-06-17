@@ -26,8 +26,11 @@ struct Work {
   Particle *pp0;
 };
 
-void create_ticketD(/**/ TicketD t) {
+void alloc_work(Work *w) {
+
 }
+
+void create_ticketD(/**/ TicketD *t) { t->first = bool; }
 
 void alloc_ticketZ(/**/ TicketZ t) {
   float4  *zip0 = t.zip0;
