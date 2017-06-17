@@ -8,11 +8,6 @@ void distr_rbc() {
     rdstr::unpack(r::pp, r::nv);
 }
 
-void update_helper_arrays() {
-    if (!o::n) return;
-    sol::sub::zip<<<(o::n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>(o::tz.zip0, o::tz.zip1, (float*)o::pp, o::n);
-}
-
 void remove_rbcs_from_wall() {
     int nc0 = r::nc;
     if (r::nc <= 0) return;
@@ -310,8 +305,6 @@ void dump_diag(int it, bool wall0) { /* dump and diag */
 void step(float driving_force0, bool wall0, int it) {
     assert(o::n <= MAX_PART_NUM);
     assert(r::n <= MAX_PART_NUM);
-    // safety::bound(o::pp, o::n);
-    // if (rbcs) safety::bound(r::pp, r::n);
     sol::distr(&o::pp, &o::n, o::cells, &o::td, &o::tz, &o::w);
     if (solids0) distr_solid();
     if (rbcs)    distr_rbc();

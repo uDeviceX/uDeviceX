@@ -40,12 +40,6 @@
 #include "odstr/ini.h"
 #include "odstr.impl.h"
 #include "odstr/fin.h"
-
-namespace x {
-  #include "x/x.decl.h" /* an interface */
-  #include "x/x.impl.h"
-}
-
 #include "minmax.h"
 
 #define __DF__ __device__ __forceinline__
