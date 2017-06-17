@@ -287,74 +287,7 @@ void init() {
     }
 
     dump_field = new H5FieldDump;
-    MC(l::m::Barrier(m::cart));
-}
-
-void dump_diag_after(int it) { /* after wall */
-  if (it % part_freq)
-    solid::dump(it, s::ss_dmphst, s::ss_dmpbbhst, s::ns, m::coords);
-}
-
-void dump_diag0(int it) { /* generic dump */
-  if (it % part_freq  == 0) {
-    dump_part(it);
-    dump_rbcs();
-    diag(it);
-  }
-  if (it % field_freq == 0) dump_grid();
-}
-
-void dump_diag(int it, bool wall0) { /* dump and diag */
-  dump_diag0(it);
-  if (wall0) dump_diag_after(it);
-}
-
-void step(float driving_force0, bool wall0, int it) {
-    assert(o::n <= MAX_PART_NUM);
-    assert(r::n <= MAX_PART_NUM);
-    // safety::bound(o::pp, o::n);
-    // if (rbcs) safety::bound(r::pp, r::n);    
-    distr_solvent();
-    if (solids0) distr_solid();
-    if (rbcs)    distr_rbc();
-    forces(wall0);
-    dump_diag(it, wall0);
-    body_force(driving_force0);
-    update_solvent();
-    if (solids0) update_solid();
-    if (rbcs)    update_rbc();
-    if (wall0) bounce();
-    if (sbounce_back && solids0) bounce_solid(it);
-}
-
-void run_nowall(long nsteps) {
-    float driving_force0 = pushflow ? driving_force : 0;
-    bool wall0 = false;
-    solids0 = false;
-    for (long it = 0; it < nsteps; ++it) step(driving_force0, wall0, it);
-}
-
-void run_wall(long nsteps) {
-    float driving_force0 = 0;
-    bool wall0 = false;
-    long it = 0;
-    solids0 = false;
-    for (/**/; it < wall_creation; ++it) step(driving_force0, wall0, it);
-
-    solids0 = solids;
-    if (walls) {
-        create_walls();
-        wall0 = true;
-        MSG("done creating walls");
-    }
-
-    MC(l::m::Barrier(m::cart));
-    
-    if (solids0) {
-        cD2H(o::pp_hst, o::pp, o::n);
-        s::create(o::pp_hst, &o::n);
-        cH2D(o::pp, o::pp_hst, o::n);
-        MC(l::m::Barrier(m::cart));
+    MC(Barrier(m::cart));
     }
     if (walls) remove_bodies();
     set_ids_solids();

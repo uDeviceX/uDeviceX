@@ -1,7 +1,7 @@
 namespace l { namespace off {
 /* file to faces */
-void off2faces(const char *f, int* faces);
+void faces(const char *f, int* faces);
 
 /* file to vertices */
-void off2vert(const char *f, float* vert);
+void vert(const char *f, float* vert);
 }}

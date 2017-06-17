@@ -3,7 +3,7 @@ namespace l { namespace off {
    [1] https://en.wikipedia.org/wiki/OFF_(file_format) */
 
 /* return faces: f0[0] f1[0] f2[0]   f0[1] f1[1] ... */
-void off2faces(const char *f, int* faces) {
+void faces(const char *f, int* faces) {
   char buf[BUFSIZ];
   FILE *fd = fopen(f, "r");
   if (fd == NULL) {
@@ -26,7 +26,7 @@ void off2faces(const char *f, int* faces) {
 }
 
 /* return vertices */
-void off2vert(const char *f, float* vert) {
+void vert(const char *f, float* vert) {
   char buf[BUFSIZ];
   FILE *fd = fopen(f, "r");
   fgets(buf, sizeof buf, fd); /* skip OFF */
