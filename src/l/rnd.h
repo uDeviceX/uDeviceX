@@ -3,9 +3,19 @@
 #include "dpd/tiny-float.h"
 
 namespace l { namespace rnd { namespace d {
-__device__ float mean0var1uu( float seed, uint i, uint j );
-__device__ float mean0var1ii( float seed, int i, int j );
-__device__ float mean0var1ff( float seed, float i, float j );
+// random number from the ArcSine distribution on [-sqrt(2),sqrt(2)]
+// mean = 0
+// variance = 1
+// can be used directly for DPD
+
+// passes of logistic map
+const static int N = 18;
+// spacing coefficints for low discrepancy numbers
+const static float gold   = 0.6180339887498948482;
+const static float silver = 0.4142135623730950488;
+const static float bronze = 0.00008877875787352212838853023;
+const static float tin    = 0.00004602357186447026756768986;
+const static float sqrt2 = 1.41421356237309514547;
 
 /************************* Trunk generator ***********************
  * Make one global random number per each timestep
@@ -87,23 +97,6 @@ template<> struct __logistic_core_flops_counter<0> {
 const static unsigned long long FLOPS = 0;
 };
 
-// random number from the ArcSine distribution on [-sqrt(2),sqrt(2)]
-// mean = 0
-// variance = 1
-// can be used directly for DPD
-
-// passes of logistic map
-const static int N = 18;
-// spacing coefficints for low discrepancy numbers
-const static float gold   = 0.6180339887498948482;
-const static float hugegold   = 0.6180339887498948482E39;
-const static float silver = 0.4142135623730950488;
-const static float hugesilver = 0.4142135623730950488E39;
-const static float bronze = 0.00008877875787352212838853023;
-const static float tin    = 0.00004602357186447026756768986;
-// square root of 2
-const static float sqrt2 = 1.41421356237309514547;
-
 __inline__ __device__ float mean0var1ii( float seed, int u, int v )
 {
   float p = rem( ( ( u & 0x3FF ) * gold ) + u * bronze + ( ( v & 0x3FF ) * silver ) + v * tin ); // safe for large u or v
@@ -118,16 +111,6 @@ __inline__ __device__ float mean0var1uu( float seed, uint u, uint v )
   // 45+1 FLOPS
   float l = __logistic_core<N>( seed - p );
   // 1 FLOP
-  return l * sqrt2;
-}
-struct mean0var1_flops_counter {
-  const static unsigned long long FLOPS = 9ULL + __logistic_core_flops_counter<N>::FLOPS;
-};
-
-__inline__ __device__ float mean0var1ff( float seed, float u, float v )
-{
-  float p = rem( sqrtf(u) * gold + sqrtf(v) * silver ); // Acknowledging Dmitry for the use of sqrtf
-  float l = __logistic_core<N>( seed - p );
   return l * sqrt2;
 }
 
