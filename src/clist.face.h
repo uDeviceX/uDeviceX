@@ -7,7 +7,7 @@ class Clist {
   const int LX, LY, LZ;
 
   void buildn(Particle *const pp, const int n) {
-    l::clist::clist((float*)pp, n, LX, LY, LZ, -LX/2, -LY/2, -LZ/2, /**/ start, count);
+    l::clist::h((float*)pp, n, LX, LY, LZ, -LX/2, -LY/2, -LZ/2, /**/ start, count);
   }
 
   void build0() {
