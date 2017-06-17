@@ -44,8 +44,15 @@ void free_work(Work *w) {
   /* pp0 shell not be freed? */
 }
 
-/* no alloc_ticketD */
-void create_ticketD(TicketD *t) { t->first = true; }
+void alloc_ticketD(TicketD *t) {
+  l::m::Comm_dup(m::cart, &t->cart);
+  odstr::ini(t->cart, t->rank); /* :TODO: odstr is only one */
+  t->first = true;
+}
+
+void free_ticketD() {
+  odstr::fin();
+}
 
 void alloc_ticketZ(/**/ TicketZ *t) {
   mpDeviceMalloc(&t->zip0);

@@ -262,6 +262,7 @@ void init() {
     o::cells   = new Clist(XS, YS, ZS);
     sol::alloc_ticketZ(&o::tz);
     sol::alloc_work(&o::w);
+    sol::alloc_ticketD(&o::td);
 
     mpDeviceMalloc(&o::pp); mpDeviceMalloc(&o::pp0);
     mpDeviceMalloc(&o::ff);
