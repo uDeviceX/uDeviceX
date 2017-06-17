@@ -143,10 +143,15 @@ struct Mesh {   /* triangle mesh structure                */
 };
 
 template <typename T>
-void mpDeviceMalloc(T **D) { /* a "[m]ax [p]article number" device
-                                allocation (takes a pointer to
-                                pointer!) */
+void mpDeviceMalloc(T **D) { /* a pointer to pointer!) */
     CC(cudaMalloc(D, sizeof(T) * MAX_PART_NUM));
+}
+
+template <typename T>
+void mpHostMalloc(T **D) { /* a pointer to pointer!) */
+  T *p;
+  p = (T*)malloc(sizeof(T) * MAX_PART_NUM);
+  *D = p;
 }
 
 struct Force {
