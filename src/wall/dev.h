@@ -91,7 +91,7 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np, const in
 
         float vxw, vyw, vzw;
         k_wvel::vell(rw.x, rw.y, rw.z, &vxw, &vyw, &vzw);
-        float rnd = l::rnd::d::mean0var1(seed, pid, spid);
+        float rnd = l::rnd::d::mean0var1ii(seed, pid, spid);
 
         // check for particle types and compute the DPD force
 

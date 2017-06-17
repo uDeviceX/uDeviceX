@@ -96,7 +96,7 @@ __global__ void interactions_3tpp(const float2 *const particles, const int np,
         const float2 stmp1 = tex1Dfetch(texSolventParticles, sentry + 1);
         const float2 stmp2 = tex1Dfetch(texSolventParticles, sentry + 2);
 
-        const float myrandnr = l::rnd::d::mean0var1(seed, pid, spid);
+        const float myrandnr = l::rnd::d::mean0var1ii(seed, pid, spid);
 
         // check for particle types and compute the DPD force
         float3 pos1 = make_float3(dst0.x, dst0.y, dst1.x),
@@ -278,7 +278,7 @@ __global__ void interactions_halo(const int nparticles_padded,
             const float2 stmp1 = tex1Dfetch(texSolventParticles, sentry + 1);
             const float2 stmp2 = tex1Dfetch(texSolventParticles, sentry + 2);
 
-            const float myrandnr = l::rnd::d::mean0var1(seed, pid, spid);
+            const float myrandnr = l::rnd::d::mean0var1ii(seed, pid, spid);
 
             // check for particle types and compute the DPD force
             float3 pos1 = make_float3(dst0.x, dst0.y, dst1.x),

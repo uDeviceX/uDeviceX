@@ -185,7 +185,7 @@ __global__ void bulk_3tpp(float2 *particles, int np,
         float2 stmp1 = __ldg(csolutes[soluteid] + sentry + 1);
         float2 stmp2 = __ldg(csolutes[soluteid] + sentry + 2);
 
-        float myrandnr = l::rnd::d::mean0var1(seed, pid, spid);
+        float myrandnr = l::rnd::d::mean0var1ii(seed, pid, spid);
 
         // check for particle types and compute the DPD force
         float3 pos1 = make_float3(dst0.x, dst0.y, dst1.x),
@@ -315,7 +315,7 @@ __global__ void halo(int nparticles_padded, int ncellentries,
             float2 stmp1 = __ldg(csolutes[soluteid] + sentry + 1);
             float2 stmp2 = __ldg(csolutes[soluteid] + sentry + 2);
 
-            float myrandnr = l::rnd::d::mean0var1(seed, pid, spid);
+            float myrandnr = l::rnd::d::mean0var1ii(seed, pid, spid);
 
             // check for particle types and compute the DPD force
             float3 pos1 = make_float3(dst0.x, dst0.y, dst1.x),

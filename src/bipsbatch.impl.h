@@ -122,7 +122,7 @@ __global__ void interaction_kernel(int ndstall, float *adst, int sizeadst) {
 
         uint arg1 = mask ? dpid : spid;
         uint arg2 = mask ? spid : dpid;
-        float myrandnr = l::rnd::d::mean0var1(seed, arg1, arg2);
+        float myrandnr = l::rnd::d::mean0var1uu(seed, arg1, arg2);
 
         // check for particle types and compute the DPD force
         float3 pos1 = make_float3(xp, yp, zp), pos2 = make_float3(s0.x, s0.y, s1.x);

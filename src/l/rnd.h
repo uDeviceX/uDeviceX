@@ -3,9 +3,9 @@
 #include "dpd/tiny-float.h"
 
 namespace l { namespace rnd { namespace d {
-__device__ float mean0var1( float seed, uint i, uint j );
-__device__ float mean0var1( float seed, int i, int j );
-__device__ float mean0var1( float seed, float i, float j );
+__device__ float mean0var1uu( float seed, uint i, uint j );
+__device__ float mean0var1ii( float seed, int i, int j );
+__device__ float mean0var1ff( float seed, float i, float j );
 
 /************************* Trunk generator ***********************
  * Make one global random number per each timestep
@@ -104,14 +104,14 @@ const static float tin    = 0.00004602357186447026756768986;
 // square root of 2
 const static float sqrt2 = 1.41421356237309514547;
 
-__inline__ __device__ float mean0var1( float seed, int u, int v )
+__inline__ __device__ float mean0var1ii( float seed, int u, int v )
 {
   float p = rem( ( ( u & 0x3FF ) * gold ) + u * bronze + ( ( v & 0x3FF ) * silver ) + v * tin ); // safe for large u or v
   float l = __logistic_core<N>( seed - p );
   return l * sqrt2;
 }
 
-__inline__ __device__ float mean0var1( float seed, uint u, uint v )
+__inline__ __device__ float mean0var1uu( float seed, uint u, uint v )
 {
   // 7 FLOPS
   float p = rem( ( ( u & 0x3FFU ) * gold ) + u * bronze + ( ( v & 0x3FFU ) * silver ) + v * tin ); // safe for large u or v
@@ -124,7 +124,7 @@ struct mean0var1_flops_counter {
   const static unsigned long long FLOPS = 9ULL + __logistic_core_flops_counter<N>::FLOPS;
 };
 
-__inline__ __device__ float mean0var1( float seed, float u, float v )
+__inline__ __device__ float mean0var1ff( float seed, float u, float v )
 {
   float p = rem( sqrtf(u) * gold + sqrtf(v) * silver ); // Acknowledging Dmitry for the use of sqrtf
   float l = __logistic_core<N>( seed - p );
