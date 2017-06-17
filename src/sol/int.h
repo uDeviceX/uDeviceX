@@ -26,11 +26,17 @@ struct Work {
   Particle *pp0;
 };
 
-void alloc_work(Work *w) {
-
+void alloc_work(Work w) {
+  uchar4 *subi_lo = w.subi_lo;
+  uchar4 *subi_re = w.subi_re;
+  uint   *iidx = w.iidx;
+  Particle *pp_re = w.pp_re;
+  unsigned char *count_zip = w.count_zip;
+  Particle *pp0 = w.pp0;
 }
 
-void create_ticketD(/**/ TicketD *t) { t->first = bool; }
+/* no alloc_ticketD */
+void create_ticketD(TicketD *t) { t->first = true; }
 
 void alloc_ticketZ(/**/ TicketZ t) {
   float4  *zip0 = t.zip0;
