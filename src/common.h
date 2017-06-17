@@ -105,8 +105,8 @@ struct Particle {
     static MPI_Datatype mytype;
     static MPI_Datatype datatype() {
         if (!initialized) {
-            MC(l::m::Type_contiguous(6, MPI_FLOAT, &mytype));
-            MC(l::m::Type_commit(&mytype));
+            MC(MPI_Type_contiguous(6, MPI_FLOAT, &mytype));
+            MC(MPI_Type_commit(&mytype));
             initialized = true;
         }
         return mytype;
@@ -128,8 +128,8 @@ struct Solid {
     {
         if (!initialized)
         {
-            MC (l::m::Type_contiguous(32, MPI_FLOAT, &mytype));
-            MC (l::m::Type_commit(&mytype));
+            MC (MPI_Type_contiguous(32, MPI_FLOAT, &mytype));
+            MC (MPI_Type_commit(&mytype));
             initialized = true;
         }
         return mytype;
