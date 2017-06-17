@@ -66,7 +66,7 @@ template<> struct __logistic_core_flops_counter<0> {
 const static unsigned long long FLOPS = 0;
 };
 
-__inline__ __device__ float mean0var1ii( float seed, int u, int v )
+__device__ float mean0var1ii( float seed, int u, int v )
 {
   float p = rem( ( ( u & 0x3FF ) * gold ) + u * bronze + ( ( v & 0x3FF ) * silver ) + v * tin ); // safe for large u or v
   float l = __logistic_core<N>( seed - p );
@@ -83,7 +83,7 @@ __device__ float mean0var1uu( float seed, uint u, uint v )
   return l * sqrt2;
 }
 
-__device__ float mean0var1_dual( float seed, float u, float v )
+__inline__ __device__ float mean0var1_dual( float seed, float u, float v )
 {
   float p = rem( sqrtf(u) * gold + sqrtf(v) * silver ); // Acknowledging Dmitry for the use of sqrtf
   float l = __logistic_core<N>( seed - p );
