@@ -336,21 +336,6 @@ __global__ void check_acc( const int np )
     printf( "ACC: %+.7lf %+.7lf %+.7lf\n", sx, sy, sz );
 }
 
-__global__ void check_acc_transposed( const int np )
-{
-    double sx = 0, sy = 0, sz = 0;
-    for( int i = 0; i < np; i++ ) {
-        int base = i / 32;
-        int off = i % 32;
-        int p = base * 96 + off;
-        sx += info.axayaz[p];
-        sy += info.axayaz[p + 32];
-        sz += info.axayaz[p + 64];
-    }
-    printf( "ACC-TRANSPOSED: %+.7lf %+.7lf %+.7lf\n", sx, sy, sz );
-}
-
-
 __global__
 void transpose_acc( const int np )
 {
