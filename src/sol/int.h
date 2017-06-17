@@ -63,10 +63,10 @@ void free_work(Work *w) {
 void create_ticketD(TicketD *t) { t->first = true; }
 
 void alloc_ticketZ(/**/ TicketZ *t) {
-  float4  *zip0 = t->zip0;
-  ushort4 *zip1 = t->zip1;
-  mpDeviceMalloc(&zip0);
-  mpDeviceMalloc(&zip1);
+  float4  **qzip0 = &t->zip0;
+  ushort4 **qzip1 = &t->zip1;
+  mpDeviceMalloc(qzip0);
+  mpDeviceMalloc(qzip1);
 }
 
 void free_ticketZ(/**/ TicketZ *t) {

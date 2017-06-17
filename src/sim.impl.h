@@ -261,7 +261,7 @@ void init() {
     wall::alloc_ticket(&w::t);
 
     o::cells   = new Clist(XS, YS, ZS);
-    mpDeviceMalloc(&o::tz.zip0); mpDeviceMalloc(&o::tz.zip1);
+    sol::alloc_ticketZ(&o::tz);
 
     mpDeviceMalloc(&o::pp); mpDeviceMalloc(&o::pp0);
     mpDeviceMalloc(&o::ff);
