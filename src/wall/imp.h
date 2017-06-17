@@ -98,7 +98,7 @@ void create(int *o_n, Particle *o_pp, int *w_n, float4 **w_pp, Clist *cells,
     CC(cudaMalloc(w_pp, *w_n * sizeof(float4)));
 
     if (*w_n > 0)
-    dev::strip_solid4 <<<k_cnf(*w_n)>>> (frozen, *w_n, /**/ *w_pp);
+    dev::particle2float4 <<<k_cnf(*w_n)>>> (frozen, *w_n, /**/ *w_pp);
 
     texstart->setup(cells->start, cells->ncells);
     texpp->setup(*w_pp, *w_n);
