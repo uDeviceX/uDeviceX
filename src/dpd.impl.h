@@ -108,7 +108,7 @@ void init0() {
         recv_tags[i] = (2 - d[0]) % 3 + 3 * ((2 - d[1]) % 3 + 3 * ((2 - d[2]) % 3));
         int coordsneighbor[3];
         for (int c = 0; c < 3; ++c) coordsneighbor[c] = m::coords[c] + d[c];
-        MC(MPI_Cart_rank(cart, coordsneighbor, dstranks + i));
+        MC(l::m::Cart_rank(cart, coordsneighbor, dstranks + i));
         halosize[i].x = d[0] != 0 ? 1 : XS;
         halosize[i].y = d[1] != 0 ? 1 : YS;
         halosize[i].z = d[2] != 0 ? 1 : ZS;
@@ -165,19 +165,19 @@ void _pack_all(Particle *p, int n, bool update_baginfos) {
 void post_expected_recv() {
     for (int i = 0, c = 0; i < 26; ++i) {
         if (recvhalos[i]->expected)
-        MC(MPI_Irecv(recvhalos[i]->hbuf->D, recvhalos[i]->expected,
+        MC(l::m::Irecv(recvhalos[i]->hbuf->D, recvhalos[i]->expected,
                      Particle::datatype(), dstranks[i], BT_P_DPD + recv_tags[i],
                      cart, recvreq + c++));
     }
     for (int i = 0, c = 0; i < 26; ++i)
     if (recvhalos[i]->expected)
-    MC(MPI_Irecv(recvhalos[i]->hcellstarts->D,
+    MC(l::m::Irecv(recvhalos[i]->hcellstarts->D,
                  recvhalos[i]->hcellstarts->S, MPI_INTEGER, dstranks[i],
                  BT_CS_DPD + recv_tags[i], cart, recvcellsreq + c++));
 
     for (int i = 0, c = 0; i < 26; ++i)
     if (recvhalos[i]->expected)
-    MC(MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, dstranks[i],
+    MC(l::m::Irecv(recv_counts + i, 1, MPI_INTEGER, dstranks[i],
                  BT_C_DPD + recv_tags[i], cart, recvcountreq + c++));
     else
     recv_counts[i] = 0;
@@ -223,9 +223,9 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
     post_expected_recv();
     else {
         MPI_Status statuses[26 * 2];
-        MC(MPI_Waitall(nactive, sendcellsreq, statuses));
-        MC(MPI_Waitall(nsendreq, sendreq, statuses));
-        MC(MPI_Waitall(nactive, sendcountreq, statuses));
+        MC(l::m::Waitall(nactive, sendcellsreq, statuses));
+        MC(l::m::Waitall(nsendreq, sendreq, statuses));
+        MC(l::m::Waitall(nactive, sendcountreq, statuses));
     }
 
     if (firstpost) {
@@ -307,13 +307,13 @@ void post(Particle *p, int n) {
     {
         for (int i = 0, c = 0; i < 26; ++i)
         if (sendhalos[i]->expected)
-        MC(MPI_Isend(sendhalos[i]->hcellstarts->D,
+        MC(l::m::Isend(sendhalos[i]->hcellstarts->D,
                      sendhalos[i]->hcellstarts->S, MPI_INTEGER, dstranks[i],
                      BT_CS_DPD + i, cart, sendcellsreq + c++));
 
         for (int i = 0, c = 0; i < 26; ++i)
         if (sendhalos[i]->expected)
-        MC(MPI_Isend(&sendhalos[i]->hbuf->S, 1, MPI_INTEGER, dstranks[i],
+        MC(l::m::Isend(&sendhalos[i]->hbuf->S, 1, MPI_INTEGER, dstranks[i],
                      BT_C_DPD + i, cart, sendcountreq + c++));
 
         nsendreq = 0;
@@ -325,7 +325,7 @@ void post(Particle *p, int n) {
 
             int count = sendhalos[i]->hbuf->S;
 
-            MC(MPI_Isend(sendhalos[i]->hbuf->D, expected, Particle::datatype(),
+            MC(l::m::Isend(sendhalos[i]->hbuf->D, expected, Particle::datatype(),
                          dstranks[i], BT_P_DPD + i, cart, sendreq + nsendreq));
 
             ++nsendreq;
@@ -339,7 +339,7 @@ void post(Particle *p, int n) {
                        "%d %d! difference %d, expected is %d\n",
                        m::rank, dstranks[i], d[0], d[1], d[2], difference, expected);
 
-                MC(MPI_Isend(sendhalos[i]->hbuf->D + expected, difference,
+                MC(l::m::Isend(sendhalos[i]->hbuf->D + expected, difference,
                              Particle::datatype(), dstranks[i], BT_P2_DPD + i,
                              cart, sendreq + nsendreq));
                 ++nsendreq;
@@ -354,9 +354,9 @@ void recv() {
     {
         MPI_Status statuses[26];
 
-        MC(MPI_Waitall(nactive, recvreq, statuses));
-        MC(MPI_Waitall(nactive, recvcellsreq, statuses));
-        MC(MPI_Waitall(nactive, recvcountreq, statuses));
+        MC(l::m::Waitall(nactive, recvreq, statuses));
+        MC(l::m::Waitall(nactive, recvcellsreq, statuses));
+        MC(l::m::Waitall(nactive, recvcountreq, statuses));
     }
 
     for (int i = 0; i < 26; ++i) {
@@ -405,9 +405,9 @@ void _cancel_recv() {
     if (!firstpost) {
         {
             MPI_Status statuses[26 * 2];
-            MC(MPI_Waitall(nactive, sendcellsreq, statuses));
-            MC(MPI_Waitall(nsendreq, sendreq, statuses));
-            MC(MPI_Waitall(nactive, sendcountreq, statuses));
+            MC(l::m::Waitall(nactive, sendcellsreq, statuses));
+            MC(l::m::Waitall(nsendreq, sendreq, statuses));
+            MC(l::m::Waitall(nactive, sendcountreq, statuses));
         }
 
         for (int i = 0; i < nactive; ++i) MC(MPI_Cancel(recvreq + i));

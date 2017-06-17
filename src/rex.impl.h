@@ -33,7 +33,7 @@ void init() {
         int coordsneighbor[3];
         for (int c = 0; c < 3; ++c) coordsneighbor[c] = m::coords[c] + d[c];
 
-        MC(MPI_Cart_rank(cart, coordsneighbor, dstranks + i));
+        MC(l::m::Cart_rank(cart, coordsneighbor, dstranks + i));
 
         int estimate = 1;
         remote[i]->preserve_resize(estimate);
@@ -58,14 +58,14 @@ void init() {
 
 void _wait(std::vector<MPI_Request> &v) {
     MPI_Status statuses[v.size()];
-    if (v.size()) MC(MPI_Waitall(v.size(), &v.front(), statuses));
+    if (v.size()) MC(l::m::Waitall(v.size(), &v.front(), statuses));
     v.clear();
 }
 
 void _postrecvC() {
     for (int i = 0; i < 26; ++i) {
         MPI_Request reqC;
-        MC(MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, dstranks[i],
+        MC(l::m::Irecv(recv_counts + i, 1, MPI_INTEGER, dstranks[i],
                      BT_C_REX + recv_tags[i], cart, &reqC));
         reqrecvC.push_back(reqC);
     }
@@ -75,7 +75,7 @@ void _postrecvP() {
     for (int i = 0; i < 26; ++i) {
         MPI_Request reqP;
         remote[i]->pmessage.resize(remote[i]->expected());
-        MC(MPI_Irecv(&remote[i]->pmessage.front(), remote[i]->expected() * 6,
+        MC(l::m::Irecv(&remote[i]->pmessage.front(), remote[i]->expected() * 6,
                      MPI_FLOAT, dstranks[i], BT_P_REX + recv_tags[i],
                      cart, &reqP));
         reqrecvP.push_back(reqP);
@@ -86,7 +86,7 @@ void _postrecvA() {
     for (int i = 0; i < 26; ++i) {
         MPI_Request reqA;
 
-        MC(MPI_Irecv(local[i]->result->D, local[i]->result->S * 3,
+        MC(l::m::Irecv(local[i]->result->D, local[i]->result->S * 3,
                      MPI_FLOAT, dstranks[i], BT_A_REX + recv_tags[i],
                      cart, &reqA));
         reqrecvA.push_back(reqA);
@@ -231,7 +231,7 @@ void post_p() {
         reqsendC.resize(26);
 
         for (int i = 0; i < 26; ++i)
-        MC(MPI_Isend(send_counts + i, 1, MPI_INTEGER, dstranks[i],
+        MC(l::m::Isend(send_counts + i, 1, MPI_INTEGER, dstranks[i],
                      BT_C_REX + i, cart, &reqsendC[i]));
 
         for (int i = 0; i < 26; ++i) {
@@ -243,13 +243,13 @@ void post_p() {
 
             _not_nan((float *)(host_packbuf->D + start), count * 6);
 
-            MC(MPI_Isend(host_packbuf->D + start, expected * 6, MPI_FLOAT,
+            MC(l::m::Isend(host_packbuf->D + start, expected * 6, MPI_FLOAT,
                          dstranks[i], BT_P_REX + i, cart, &reqP));
             reqsendP.push_back(reqP);
 
             if (count > expected) {
                 MPI_Request reqP2;
-                MC(MPI_Isend(host_packbuf->D + start + expected,
+                MC(l::m::Isend(host_packbuf->D + start + expected,
                              (count - expected) * 6, MPI_FLOAT, dstranks[i],
                              BT_P2_REX + i, cart, &reqP2));
 
@@ -325,7 +325,7 @@ void post_f() {
 
     reqsendA.resize(26);
     for (int i = 0; i < 26; ++i)
-    MC(MPI_Isend(remote[i]->result.D, remote[i]->result.S * 3,
+    MC(l::m::Isend(remote[i]->result.D, remote[i]->result.S * 3,
                  MPI_FLOAT, dstranks[i], BT_A_REX + i, cart,
                  &reqsendA[i]));
 }

@@ -23,7 +23,7 @@ int init(Particle *pp, int n, Particle *frozen, int *w_n) {
 
 	    int coordsneighbor[3];
 	    for (int c = 0; c < 3; ++c) coordsneighbor[c] = m::coords[c] + d[c];
-	    MC(MPI_Cart_rank(m::cart, coordsneighbor, dstranks + i));
+	    MC(l::m::Cart_rank(m::cart, coordsneighbor, dstranks + i));
 	}
 
 	// send local counts - receive remote counts
@@ -32,17 +32,17 @@ int init(Particle *pp, int n, Particle *frozen, int *w_n) {
 
 	    MPI_Request reqrecv[26];
 	    for (int i = 0; i < 26; ++i)
-	    MC(MPI_Irecv(remsizes + i, 1, MPI_INTEGER, dstranks[i],
+	    MC(l::m::Irecv(remsizes + i, 1, MPI_INTEGER, dstranks[i],
 			 BT_C_WALL + recv_tags[i], m::cart, reqrecv + i));
 
 	    int localsize = local.size();
 	    MPI_Request reqsend[26];
 	    for (int i = 0; i < 26; ++i)
-	    MC(MPI_Isend(&localsize, 1, MPI_INTEGER, dstranks[i], BT_C_WALL + i,
+	    MC(l::m::Isend(&localsize, 1, MPI_INTEGER, dstranks[i], BT_C_WALL + i,
 			 m::cart, reqsend + i));
 	    MPI_Status statuses[26];
-	    MC(MPI_Waitall(26, reqrecv, statuses));
-	    MC(MPI_Waitall(26, reqsend, statuses));
+	    MC(l::m::Waitall(26, reqrecv, statuses));
+	    MC(l::m::Waitall(26, reqsend, statuses));
 	}
 
 	std::vector<Particle> remote[26];
@@ -52,17 +52,17 @@ int init(Particle *pp, int n, Particle *frozen, int *w_n) {
 
 	    MPI_Request reqrecv[26];
 	    for (int i = 0; i < 26; ++i)
-	    MC(MPI_Irecv(remote[i].data(), remote[i].size() * 6, MPI_FLOAT,
+	    MC(l::m::Irecv(remote[i].data(), remote[i].size() * 6, MPI_FLOAT,
 			 dstranks[i], BT_P_WALL + recv_tags[i], m::cart,
 			 reqrecv + i));
 	    MPI_Request reqsend[26];
 	    for (int i = 0; i < 26; ++i)
-	    MC(MPI_Isend(local.data(), local.size() * 6, MPI_FLOAT,
+	    MC(l::m::Isend(local.data(), local.size() * 6, MPI_FLOAT,
 			 dstranks[i], BT_P_WALL + i, m::cart, reqsend + i));
 
 	    MPI_Status statuses[26];
-	    MC(MPI_Waitall(26, reqrecv, statuses));
-	    MC(MPI_Waitall(26, reqsend, statuses));
+	    MC(l::m::Waitall(26, reqrecv, statuses));
+	    MC(l::m::Waitall(26, reqsend, statuses));
 	}
 
 	// select particles within my region [-L / 2 - MARGIN, +L / 2 + MARGIN]

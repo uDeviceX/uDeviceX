@@ -20,7 +20,7 @@ static void _post_recvcnt()
     for (int i = 1; i < 27; ++i)
     {
         MPI_Request req;
-        MPI_Irecv(recv_counts + i, 1, MPI_INTEGER, ank_ne[i], i + BT_C_SDSTR, cart, &req);
+        l::m::Irecv(recv_counts + i, 1, MPI_INTEGER, ank_ne[i], i + BT_C_SDSTR, cart, &req);
         recvcntreq.push_back(req);
     }
 }
@@ -34,9 +34,9 @@ static void gen_ne(MPI_Comm cart, /* */ int* rnk_ne, int* ank_ne)
         int d[3] = i2del(i); /* index to delta */
         int co_ne[3];
         for (int c = 0; c < 3; ++c) co_ne[c] = m::coords[c] + d[c];
-        MPI_Cart_rank(cart, co_ne, &rnk_ne[i]);
+        l::m::Cart_rank(cart, co_ne, &rnk_ne[i]);
         for (int c = 0; c < 3; ++c) co_ne[c] = m::coords[c] - d[c];
-        MPI_Cart_rank(cart, co_ne, &ank_ne[i]);
+        l::m::Cart_rank(cart, co_ne, &ank_ne[i]);
     }
 }
 
@@ -83,7 +83,7 @@ void pack_sendcnt(const Solid *ss_hst, const Particle *pp, const int ns, const i
     // send counts
         
     for (int i = 1; i < 27; ++i)
-    MPI_Isend(send_counts + i, 1, MPI_INTEGER, rnk_ne[i], i + BT_C_SDSTR, cart, &sendcntreq[i - 1]);
+    l::m::Isend(send_counts + i, 1, MPI_INTEGER, rnk_ne[i], i + BT_C_SDSTR, cart, &sendcntreq[i - 1]);
 
     // copy data into buffers
 
@@ -102,7 +102,7 @@ int post(const int nv)
 {
     {
         MPI_Status statuses[27];
-        MPI_Waitall(recvcntreq.size(), &recvcntreq.front(), statuses);
+        l::m::Waitall(recvcntreq.size(), &recvcntreq.front(), statuses);
         recvcntreq.clear();
     }
 
@@ -116,16 +116,16 @@ int post(const int nv)
     }
 
     MPI_Status statuses[26];
-    MPI_Waitall(26, sendcntreq, statuses);
+    l::m::Waitall(26, sendcntreq, statuses);
 
     for (int i = 1; i < 27; ++i)
     if (srbuf[i].size() > 0)
     {
         MPI_Request request;
-        MPI_Irecv(srbuf[i].data(), srbuf[i].size(), Solid::datatype(), ank_ne[i], i + BT_S_SDSTR, cart, &request);
+        l::m::Irecv(srbuf[i].data(), srbuf[i].size(), Solid::datatype(), ank_ne[i], i + BT_S_SDSTR, cart, &request);
         srecvreq.push_back(request);
 
-        MPI_Irecv(prbuf[i].data(), prbuf[i].size(), Particle::datatype(), ank_ne[i], i + BT_P_SDSTR, cart, &request);
+        l::m::Irecv(prbuf[i].data(), prbuf[i].size(), Particle::datatype(), ank_ne[i], i + BT_P_SDSTR, cart, &request);
         precvreq.push_back(request);
     }
 
@@ -133,10 +133,10 @@ int post(const int nv)
     if (ssbuf[i].size() > 0)
     {
         MPI_Request request;
-        MPI_Isend(ssbuf[i].data(), ssbuf[i].size(), Solid::datatype(), rnk_ne[i], i + BT_S_SDSTR, cart, &request);
+        l::m::Isend(ssbuf[i].data(), ssbuf[i].size(), Solid::datatype(), rnk_ne[i], i + BT_S_SDSTR, cart, &request);
         ssendreq.push_back(request);
 
-        MPI_Isend(psbuf[i].data(), psbuf[i].size(), Particle::datatype(), rnk_ne[i], i + BT_P_SDSTR, cart, &request);
+        l::m::Isend(psbuf[i].data(), psbuf[i].size(), Particle::datatype(), rnk_ne[i], i + BT_P_SDSTR, cart, &request);
         psendreq.push_back(request);
     }
         
@@ -200,12 +200,12 @@ template <bool hst>
 void unpack(const int nv, /**/ Solid *ss_hst, Particle *pp)
 {
     MPI_Status statuses[26];
-    MPI_Waitall(srecvreq.size(), &srecvreq.front(), statuses);
-    MPI_Waitall(ssendreq.size(), &ssendreq.front(), statuses);
+    l::m::Waitall(srecvreq.size(), &srecvreq.front(), statuses);
+    l::m::Waitall(ssendreq.size(), &ssendreq.front(), statuses);
     srecvreq.clear(); ssendreq.clear();
         
-    MPI_Waitall(precvreq.size(), &precvreq.front(), statuses);
-    MPI_Waitall(psendreq.size(), &psendreq.front(), statuses);
+    l::m::Waitall(precvreq.size(), &precvreq.front(), statuses);
+    l::m::Waitall(psendreq.size(), &psendreq.front(), statuses);
     precvreq.clear(); psendreq.clear();
 
     // copy bulk
