@@ -1,10 +1,5 @@
 namespace sim {
 
-void distr_solvent() {
-  x::distr(o::pp, o::pp0, o::tz.zip0, o::tz.zip1, &o::n, o::cells);
-  std::swap(o::pp, o::pp0);
-}
-
 void distr_rbc() {
     rdstr::extent(r::pp, r::nc, r::nv);
     dSync();
@@ -260,11 +255,11 @@ void init() {
     wall::alloc_ticket(&w::t);
 
     o::cells   = new Clist(XS, YS, ZS);
+    sol::alloc_ticketD(&o::td);    
     sol::alloc_ticketZ(&o::tz);
     sol::alloc_work(&o::w);
-    sol::alloc_ticketD(&o::td);
 
-    mpDeviceMalloc(&o::pp); mpDeviceMalloc(&o::pp0);
+    mpDeviceMalloc(&o::pp);
     mpDeviceMalloc(&o::ff);
     mpDeviceMalloc(&s::ff); mpDeviceMalloc(&s::ff);
     mpDeviceMalloc(&s::rr0);
@@ -317,7 +312,7 @@ void step(float driving_force0, bool wall0, int it) {
     assert(r::n <= MAX_PART_NUM);
     // safety::bound(o::pp, o::n);
     // if (rbcs) safety::bound(r::pp, r::n);
-    distr_solvent();
+    sol::distr(&o::pp, &o::n, o::cells, &o::td, &o::tz, &o::w);
     if (solids0) distr_solid();
     if (rbcs)    distr_rbc();
     forces(wall0);
@@ -378,7 +373,6 @@ void run() {
 
 void close() {
     sdstr::close();
-    x::close();
 
     rdstr::close();
     bbhalo::close();
@@ -397,9 +391,10 @@ void close() {
     delete o::cells;
     delete dump_field;
     sol::free_ticketZ(&o::tz);
+    sol::free_ticketD();
 
     CC(cudaFree(s::pp )); CC(cudaFree(s::ff )); CC(cudaFree(s::rr0));
-    CC(cudaFree(o::pp )); CC(cudaFree(o::ff )); CC(cudaFree(o::pp0));
+    CC(cudaFree(o::pp )); CC(cudaFree(o::ff ));
 
     if (rbcs)
     {

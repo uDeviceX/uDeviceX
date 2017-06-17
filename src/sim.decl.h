@@ -15,9 +15,7 @@ Clist *cells;
 sol::TicketZ tz;
 sol::TicketD td;
 sol::Work w;
-
 Force    *ff;
-Particle *pp0; /* Solvent (temporal buffer) */
 
 Particle  pp_hst[MAX_PART_NUM]; /* solvent on host           */
 Force     ff_hst[MAX_PART_NUM]; /* solvent forces on host    */

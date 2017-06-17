@@ -74,7 +74,7 @@ void create_ticketZ(Particle *pp, int n, /**/ TicketZ *t) {
   sub::zip<<<(n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>(zip0, zip1, (float*)pp, n);
 }
 
-void distr(Particle *pp, int *qn, Clist *cells, TicketD *td, TicketZ *tz, Work *w) {
+void distr(Particle **qpp, int *qn, Clist *cells, TicketD *td, TicketZ *tz, Work *w) {
   MPI_Comm cart = td->cart; /* can be a copy */
   int *rank = td->rank; /* arrays */
   int *send_size_req = td->send_size_req;
@@ -95,6 +95,7 @@ void distr(Particle *pp, int *qn, Clist *cells, TicketD *td, TicketZ *tz, Work *
 
   int n = *qn;
   bool first = *qfirst;
+  Particle* pp = *qpp;
   
   int nbulk, nhalo_padded, nhalo;
   odstr::post_recv(cart, rank, /**/ recv_size_req, recv_mesg_req);
@@ -143,4 +144,5 @@ void distr(Particle *pp, int *qn, Clist *cells, TicketD *td, TicketZ *tz, Work *
 
   *qn = n;
   *qfirst = first;
+  *qpp = pp0; w->pp0 = pp; /* swap */
 }
