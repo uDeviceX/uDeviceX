@@ -1,5 +1,3 @@
-#pragma once
-
 namespace Logistic
 {
 __device__ float mean0var1( float seed, uint i, uint j );
@@ -7,10 +5,8 @@ __device__ float mean0var1( float seed, int i, int j );
 __device__ float mean0var1( float seed, float i, float j );
 }
 
-#include <cstdlib>
 #include <limits>
 #include <stdint.h>
-#include <cmath>
 #include "dpd/tiny-float.h"
 
 namespace Logistic
