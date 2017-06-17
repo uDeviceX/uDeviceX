@@ -1,4 +1,5 @@
 static void exch(/*io*/ Particle *pp, int *n) { /* exchange pp(hst) between processors */
+  #define isize(v) ((int)(v).size()) /* [i]nteger [size] */
   assert(sizeof(Particle) == 6 * sizeof(float)); /* :TODO: dependencies */
   enum {X, Y, Z};
   int i, j, c;
@@ -33,7 +34,7 @@ static void exch(/*io*/ Particle *pp, int *n) { /* exchange pp(hst) between proc
     MPI_Request reqrecv[26], reqsend[26];
     MPI_Status  statuses[26];
     for (i = 0; i < 26; ++i)
-      l::m::Irecv(remote[i].data(), remote[i].size() * 6, MPI_FLOAT,
+      l::m::Irecv(remote[i].data(), isize(remote[i]) * 6, MPI_FLOAT,
 	       dstranks[i], 321 + recv_tags[i], m::cart,
 	       reqrecv + i);
     for (i = 0; i < 26; ++i)
@@ -53,7 +54,7 @@ static void exch(/*io*/ Particle *pp, int *n) { /* exchange pp(hst) between proc
 
   for (i = 0; i < 26; ++i) {
     int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
-    for (j = 0; j < remote[i].size(); ++j) {
+    for (j = 0; j < isize(remote[i]); ++j) {
       Particle p = remote[i][j];
       for (c = 0; c < 3; ++c) {
 	p.r[c] += d[c] * L[c];
@@ -63,6 +64,7 @@ static void exch(/*io*/ Particle *pp, int *n) { /* exchange pp(hst) between proc
     next: ;
     }
   }
+  #undef isize
 }
 
 static void freeze0(/*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n, /*w*/ Particle *hst) {
