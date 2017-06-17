@@ -35,8 +35,8 @@ void build_cells(std::vector<ParticlesWrap> wsolutes) {
         (compressed_cellscount->S, (int4 *)cellscount->D,
          (uchar4 *)compressed_cellscount->D);
 
-    k_scan::scan(compressed_cellscount->D, compressed_cellscount->S,
-                 (uint *)cellsstart->D);
+    l::d::scan(compressed_cellscount->D, compressed_cellscount->S,
+	       (uint *)cellsstart->D);
 
     ctr = 0;
     for (int i = 0; i < (int) wsolutes.size(); ++i) {
