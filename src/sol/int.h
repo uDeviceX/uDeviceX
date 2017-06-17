@@ -77,6 +77,7 @@ void free_ticketZ(/**/ TicketZ *t) {
 }
 
 void create_ticketZ(Particle *pp, int n, /**/ TicketZ *t) {
+  if (n == 0) return;
   float4  *zip0 = t->zip0;
   ushort4 *zip1 = t->zip1;
   assert(sizeof(Particle) == 6 * sizeof(float)); /* :TODO: implicit dependency */

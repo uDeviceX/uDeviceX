@@ -1,7 +1,7 @@
 namespace sim {
 
 void distr_solvent() {
-  x::distr(o::pp, o::pp0, o::zip0, o::zip1, &o::n, o::cells);
+  x::distr(o::pp, o::pp0, o::tz.zip0, o::tz.zip1, &o::n, o::cells);
   std::swap(o::pp, o::pp0);
 }
 
@@ -15,7 +15,7 @@ void distr_rbc() {
 
 void update_helper_arrays() {
     if (!o::n) return;
-    sol::sub::zip<<<(o::n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>(o::zip0, o::zip1, (float*)o::pp, o::n);
+    sol::sub::zip<<<(o::n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>(o::tz.zip0, o::tz.zip1, (float*)o::pp, o::n);
 }
 
 void remove_rbcs_from_wall() {
@@ -83,6 +83,8 @@ void create_walls() {
     if (o::n) k_sim::clear_velocity<<<k_cnf(o::n)>>>(o::pp, o::n);
     o::cells->build(o::pp, o::n);
     update_helper_arrays();
+    //sol::create_ticketZ(o::pp, o::n, &o::tz);
+
     CC( cudaPeekAtLastError() );
 }
 
@@ -107,7 +109,7 @@ void forces_rbc() {
 
 void forces_dpd() {
     DPD::pack(o::pp, o::n, o::cells->start, o::cells->count);
-    DPD::local_interactions(o::pp, o::zip0, o::zip1,
+    DPD::local_interactions(o::pp, o::tz.zip0, o::tz.zip1,
 			    o::n, o::ff, o::cells->start,
 			    o::cells->count);
     DPD::post(o::pp, o::n);
@@ -259,8 +261,7 @@ void init() {
     wall::alloc_ticket(&w::t);
 
     o::cells   = new Clist(XS, YS, ZS);
-    mpDeviceMalloc(&o::zip0); mpDeviceMalloc(&o::zip1);
-    sol::alloc_ticketZ(&o::tz);
+    mpDeviceMalloc(&o::tz.zip0); mpDeviceMalloc(&o::tz.zip1);
 
     mpDeviceMalloc(&o::pp); mpDeviceMalloc(&o::pp0);
     mpDeviceMalloc(&o::ff);
@@ -394,9 +395,6 @@ void close() {
 
     delete o::cells;
     delete dump_field;
-
-    CC(cudaFree(o::zip0));
-    CC(cudaFree(o::zip1));
     sol::free_ticketZ(&o::tz);
 
     CC(cudaFree(s::pp )); CC(cudaFree(s::ff )); CC(cudaFree(s::rr0));

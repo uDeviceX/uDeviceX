@@ -17,10 +17,6 @@ sol::TicketD td;
 sol::Work w;
 
 Force    *ff;
-
-float4  *zip0; /* "zipped" version of Solvent array */
-ushort4 *zip1;
-
 Particle *pp0; /* Solvent (temporal buffer) */
 
 Particle  pp_hst[MAX_PART_NUM]; /* solvent on host           */
