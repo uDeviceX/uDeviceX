@@ -30,7 +30,6 @@ udx: $(OBJS)
 %.o:     $S/%.cu;         $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT)     $< -c -o $@
 l.%.o:   $S/l/%.cu;       $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT)     $< -c -o $@
 
-
 # dev and hst
 force.o: $S/force.cu;     $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 bund.o:  $S/bund.cu;      $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
