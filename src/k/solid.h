@@ -25,6 +25,7 @@ static _HD_ void normalize(/**/ float *v) {
 }
 
 _HD_ void gram_schmidt(/**/ float *e0, float *e1, float *e2) {
+    /* :TODO: use better more stable version of Gram-Schmidt */
     normalize(e0);
 
     reject(e1, e0);
