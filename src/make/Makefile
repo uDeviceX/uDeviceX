@@ -36,6 +36,9 @@ bund.o:  $S/bund.cu;      $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 glb.o:   $S/glb.cu;       $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 dpd.o:   $S/dpd/dpd.cu;   $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 
+# dev and hst
+l.rnd.o:   $S/l/rnd.cu;   $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
+
 clean:; -rm -f udx $(OBJS) gpuCode.o
 
 .PHONY = clean all

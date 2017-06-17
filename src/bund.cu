@@ -5,6 +5,9 @@
 #include <cstdio>
 #include <mpi.h>
 
+#include <limits> /* for rnd */
+#include <stdint.h>
+
 #include "l/clist.h"
 #include "l/m.h"
 #include "l/off.h"

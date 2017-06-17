@@ -8,10 +8,9 @@ glb.o: $S/common.h $S/conf.common.h conf.h $S/glb.h $S/m.h
 io.o: $S/common.h $S/conf.common.h conf.h $S/io.h $S/l/m.h $S/m.h
 k/rbc0.h: $S/params/rbc.inc0.h
 l.clist.o: $S/common.h $S/l/clist.h $S/l/d/clist.h $S/l/h/clist.h
+l.d/rnd.h: $S/dpd/tiny-float.h
 l.m.o: $S/l/h/m.h $S/l/m.h
 l.off.o: $S/l/h/off.h $S/l/off.h
-l.rnd.h: $S/dpd/tiny-float.h
-l.rnd.o: $S/l/d/rnd.h $S/l/rnd.h
 l.scan.o: $S/l/d/scan.h $S/l/scan.h
 main.o: $S/bund.h $S/common.h conf.h $S/glb.h $S/l/m.h $S/m.h
 mbounce.o: $S/common.h conf.h $S/mbounce.h $S/roots.impl.h
