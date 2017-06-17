@@ -7,7 +7,7 @@
 namespace l {
   #include "inc/clist.h"
   namespace d {
-    #include "dev/clist.h"
+    #include "d/clist.h"
   }
-  #include "hst/clist.h"
+  #include "h/clist.h"
 }
