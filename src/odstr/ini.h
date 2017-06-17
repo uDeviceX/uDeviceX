@@ -6,9 +6,9 @@ void ini(MPI_Comm cart, int rank[])  {
   for(int i = 0; i < 27; ++i) {
     int d[3] = { (i + 1) % 3 - 1, (i / 3 + 1) % 3 - 1, (i / 9 + 1) % 3 - 1 };
     r::tags[i] = (3 - d[0]) % 3 + 3 * ((3 - d[1]) % 3 + 3 * ((3 - d[2]) % 3));
-    int send_coor[3], ranks[3] = {::m::coords[X], ::m::coords[Y], ::m::coords[Z]};
+    int send_coor[3], ranks[3] = {m::coords[X], m::coords[Y], m::coords[Z]};
     for(int c = 0; c < 3; ++c) send_coor[c] = ranks[c] + d[c];
-    m::Cart_rank(cart, send_coor, rank + i) ;
+    l::m::Cart_rank(cart, send_coor, rank + i) ;
 
     int nhalodir[3] =  {
       d[0] != 0 ? 1 : XS,

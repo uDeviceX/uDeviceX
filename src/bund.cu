@@ -28,6 +28,9 @@
 
 namespace l {
   #include "inc/clist.h"
+  namespace m {
+    #include "inc/m.h"
+  }
   #include "inc/off.h"
   namespace d {
     #include "inc/scan.h"

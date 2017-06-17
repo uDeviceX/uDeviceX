@@ -1,5 +1,5 @@
 void init() {
-  m::Comm_dup(::m::cart, &cart);
+  l::m::Comm_dup(m::cart, &cart);
   odstr::ini(cart, rank);
   mpDeviceMalloc(&subi_lo);
   mpDeviceMalloc(&subi_re);
