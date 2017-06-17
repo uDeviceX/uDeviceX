@@ -1,8 +1,8 @@
-struct Quants {
+/* struct Quants {
   Particle *pp;
   int       n;
   Clist *cells;
-};
+  }; */
 
 struct TicketZ { /* zip */
   float4  *zip0;
@@ -76,20 +76,14 @@ void free_ticketZ(/**/ TicketZ *t) {
   cudaFree(zip1);
 }
 
-void create_ticketZ(Quants *q, /**/ TicketZ *t) {
-  Particle  *pp = q->pp;
-  int         n = q->n;
+void create_ticketZ(Particle *pp, int n, /**/ TicketZ *t) {
   float4  *zip0 = t->zip0;
   ushort4 *zip1 = t->zip1;
   assert(sizeof(Particle) == 6 * sizeof(float)); /* :TODO: implicit dependency */
   sub::zip<<<(n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>(zip0, zip1, (float*)pp, n);
 }
 
-void distr(Quants *q, TicketD *td, TicketZ *tz, Work *w) {
-  Particle *pp  =  q->pp;
-  int       *qn = &q->n;
-  Clist *cells  =  q->cells;
-
+void distr(Particle *pp, int *qn, Clist *cells, TicketD *td, TicketZ *tz, Work *w) {
   MPI_Comm cart = td->cart; /* can be a copy */
   int *rank = td->rank; /* arrays */
   int *send_size_req = td->send_size_req;
