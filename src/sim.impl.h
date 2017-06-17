@@ -240,7 +240,6 @@ void init() {
     DPD::init();
     fsi::init();
     sdstr::init();
-    x::init();
     bbhalo::init();
     cnt::init();
     rex::init();
