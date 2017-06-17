@@ -1,5 +1,5 @@
 #include "dpd/cuda-dpd.h"
-#include "dpd/dpd-rng.h"
+#include "l/rnd.h"
 #include "force.h"
 
 struct InfoDPD {

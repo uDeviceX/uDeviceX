@@ -6,7 +6,7 @@ namespace l { namespace rnd { namespace d {
 __device__ float mean0var1( float seed, uint i, uint j );
 __device__ float mean0var1( float seed, int i, int j );
 __device__ float mean0var1( float seed, float i, float j );
-  
+
 /************************* Trunk generator ***********************
  * Make one global random number per each timestep
  * cite G. Marsaglia

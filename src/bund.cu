@@ -11,7 +11,7 @@
 #include "l/scan.h"
 
 #include "dpd/cuda-dpd.h"
-#include "dpd/dpd-rng.h"
+#include "l/rnd.h"
 
 #include <conf.h>
 #include "conf.common.h"
