@@ -35,6 +35,15 @@ void alloc_work(Work *w) {
   Particle *pp0 = w->pp0;
 }
 
+void free_work(Work *w) {
+  uchar4 *subi_lo = w->subi_lo;
+  uchar4 *subi_re = w->subi_re;
+  uint   *iidx = w->iidx;
+  Particle *pp_re = w->pp_re;
+  unsigned char *count_zip = w->count_zip;
+  Particle *pp0 = w->pp0;
+}
+
 /* no alloc_ticketD */
 void create_ticketD(TicketD *t) { t->first = true; }
 
@@ -43,6 +52,13 @@ void alloc_ticketZ(/**/ TicketZ *t) {
   ushort4 *zip1 = t->zip1;
   mpDeviceMalloc(&zip0);
   mpDeviceMalloc(&zip1);
+}
+
+void free_ticketZ(/**/ TicketZ *t) {
+  float4  *zip0 = t->zip0;
+  ushort4 *zip1 = t->zip1;
+  cudaFree(zip0);
+  cudaFree(zip1);
 }
 
 void create_ticketZ(Quants *q, /**/ TicketZ *t) {
