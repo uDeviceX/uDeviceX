@@ -1,4 +1,4 @@
-static void exch(Particle *pp, int *n) { /* excchange pp(hst) between processors */
+static void exch(/*io*/ Particle *pp, int *n) { /* exchange pp(hst) between processors */
   assert(sizeof(Particle) == 6 * sizeof(float)); /* :TODO: dependencies */
   enum {X, Y, Z};
   int i, j, c;
