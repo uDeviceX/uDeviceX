@@ -260,6 +260,7 @@ void init() {
 
     o::cells   = new Clist(XS, YS, ZS);
     mpDeviceMalloc(&o::zip0); mpDeviceMalloc(&o::zip1);
+    sol::alloc_ticketZ(&o::tz);
 
     mpDeviceMalloc(&o::pp); mpDeviceMalloc(&o::pp0);
     mpDeviceMalloc(&o::ff);
@@ -396,6 +397,7 @@ void close() {
 
     CC(cudaFree(o::zip0));
     CC(cudaFree(o::zip1));
+    sol::free_ticketZ(&o::tz);
 
     CC(cudaFree(s::pp )); CC(cudaFree(s::ff )); CC(cudaFree(s::rr0));
     CC(cudaFree(o::pp )); CC(cudaFree(o::ff )); CC(cudaFree(o::pp0));
