@@ -65,16 +65,19 @@ static void exch(/*io*/ Particle *pp, int *n) { /* exchange pp(hst) between proc
   }
 }
 
-static void init0(/*io*/ Particle *pp, int *n, /*o*/ Particle *frozen, int *w_n, /*w*/ Particle* hst) {
-  sdf::bulk_wall(/*io*/ pp, n, /*o*/ frozen, w_n); /* sort into bulk-frozen */
+static void freeze0(/*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n, /*w*/ Particle *hst) {
+  sdf::bulk_wall(/*io*/ pp, n, /*o*/ hst, w_n); /* sort into bulk-frozen */
   MSG("befor exch: bulk/frozen : %d/%d", *n, *w_n);
-  exch(/*io*/ frozen, w_n);
+  exch(/*io*/ hst, w_n);
+  cH2D(dev, hst, *w_n);
   MSG("after exch: bulk/frozen : %d/%d", *n, *w_n);
 }
 
-static void init(/*io*/ Particle *pp, int *n, /*o*/ Particle *frozen, int *w_n) {
+static void freeze(/*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n) {
   Particle *hst;
-  init0(/*io*/ pp, n, /*o*/ frozen, w_n, /*w*/ hst);
+  mpHostMalloc(&hst);
+  freeze0(/*io*/ pp, n, /*o*/ dev, w_n, /*w*/ hst);
+  free(hst);
 }
 
 void build_cells(const int n, Particle *pp, Clist *cells) {if (n) cells->build(pp, n);}
@@ -84,7 +87,7 @@ void create(int *o_n, Particle *o_pp, int *w_n, float4 **w_pp, Clist *cells,
     Particle *frozen;
     CC(cudaMalloc(&frozen, sizeof(Particle) * MAX_PART_NUM));
 
-    init(o_pp, o_n, frozen, w_n);
+    freeze(o_pp, o_n, frozen, w_n);
 
     build_cells(*w_n, /**/ frozen, cells);
 
