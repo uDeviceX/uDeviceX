@@ -7,7 +7,7 @@ static void exch(/*io*/ Particle *pp, int *n) { /* exchange pp(hst) between proc
   for (i = 0; i < 26; ++i) {
     int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
     recv_tags[i] =
-      (2 - d[0]) % 3 + 3 * ((2 - d[1]) % 3 + 3 * ((2 - d[2]) % 3));
+      (2 - d[X]) % 3 + 3 * ((2 - d[Y]) % 3 + 3 * ((2 - d[Z]) % 3));
     int co_ne[3], ranks[3] = {m::coords[X], m::coords[Y], m::coords[Z]};
     for (c = 0; c < 3; ++c) co_ne[c] = ranks[c] + d[c];
     l::m::Cart_rank(m::cart, co_ne, dstranks + i);
