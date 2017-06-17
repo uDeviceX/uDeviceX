@@ -1,6 +1,3 @@
-#include <cstdio>
-#include <mpi.h>
-#include <utility>
 #include "dpd/cuda-dpd.h"
 #include "dpd/dpd-rng.h"
 #include "force.h"
