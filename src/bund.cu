@@ -1,5 +1,6 @@
 #include <sys/stat.h>
 
+#include <assert.h>
 #include <string>
 #include <vector>
 #include <cstdio>
@@ -27,8 +28,6 @@
 #include "bund.h"
 #include "force.h"
 
-#include <thrust/device_vector.h>
-#include <thrust/sort.h>
 #include "glb.h"
 
 #include "l/float3.h"
