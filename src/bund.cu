@@ -5,6 +5,17 @@
 #include <cstdio>
 #include <mpi.h>
 
+namespace l {
+  #include "inc/clist.h"
+  namespace m {
+    #include "inc/m.h"
+  }
+  #include "inc/off.h"
+  namespace d {
+    #include "inc/scan.h"
+  }
+}
+
 #include "dpd/cuda-dpd.h"
 #include "dpd/dpd-rng.h"
 
@@ -25,17 +36,6 @@
 
 #include "inc/float3.h"
 #include "k/common.h"
-
-namespace l {
-  #include "inc/clist.h"
-  namespace m {
-    #include "inc/m.h"
-  }
-  #include "inc/off.h"
-  namespace d {
-    #include "inc/scan.h"
-  }
-}
 
 #include "clist.face.h"
 
