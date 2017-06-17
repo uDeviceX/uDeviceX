@@ -9,6 +9,7 @@
 #include <conf.h>
 #include "conf.common.h"
 #include "m.h"     /* MPI */
+#include "l/m.h"
 #include "common.h"
 #include "io.h"
 

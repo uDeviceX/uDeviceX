@@ -49,7 +49,7 @@ void distr(Particle *pp, Particle *pp0, float4 *zip0, ushort4 *zip1,
 
   k_common::compress_counts<<<k_cnf(XS*YS*ZS)>>>
     (XS*YS*ZS, (int4*)cells->count, /**/ (uchar4*)count_zip);
-  l::d::scan(count_zip, XS*YS*ZS, /**/ (uint*)cells->start);
+  l::scan::d::scan(count_zip, XS*YS*ZS, /**/ (uint*)cells->start);
 
   if (n)
     k_odstr::scatter<<<k_cnf(n)>>>

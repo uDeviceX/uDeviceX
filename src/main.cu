@@ -2,17 +2,18 @@
 #include <mpi.h>
 #include <map>
 #include <conf.h>
-#include "m.h"     /* MPI */
+#include "m.h" /* MPI */
+#include "l/m.h"
 #include "common.h"
 #include "bund.h"
 #include "glb.h"
 
 void mpi_init(int argc, char **argv) {
     MC(MPI_Init(&argc, &argv));
-    MC(l::m::Comm_rank(MPI_COMM_WORLD,   &m::rank));
-    MC(l::m::Cart_create(MPI_COMM_WORLD,
+    MC(MPI_Comm_rank(MPI_COMM_WORLD,   &m::rank));
+    MC(MPI_Cart_create(MPI_COMM_WORLD,
                        m::d, m::dims, m::periods, m::reorder,   &m::cart));
-    MC(l::m::Cart_coords(m::cart, m::rank, m::d,   m::coords));
+    MC(MPI_Cart_coords(m::cart, m::rank, m::d,   m::coords));
 }
 
 int main(int argc, char **argv) {

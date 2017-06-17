@@ -1,3 +1,4 @@
+namespace l { namespace scan { namespace d {
 template <int NWARP>
 __global__ void breduce(uint4 *vin, unsigned int *vout, int n) {
 
@@ -202,3 +203,4 @@ void scan(unsigned char *input, int size, uint *output)
 
     gexscan< THREADS / 32 ><<<nblocks, THREADS>>>((uint4 *)input, tmp, (uint4 *)output, size / 16);
 }
+}}}

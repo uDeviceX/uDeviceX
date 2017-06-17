@@ -1,3 +1,4 @@
+namespace l { namespace m {
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
 int Barrier(MPI_Comm comm);
 int Cancel(MPI_Request *request);
@@ -19,3 +20,4 @@ int Reduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
 int Type_commit(MPI_Datatype *type);
 int Type_contiguous(int count, MPI_Datatype oldtype, MPI_Datatype *newtype);
 int Waitall(int count, MPI_Request array_of_requests[], MPI_Status *array_of_statuses);
+}}

@@ -1,4 +1,6 @@
 #include <mpi.h>
+#include "l/m.h"
+
 #include <stdio.h>
 #include <conf.h>
 #include "m.h"     /* MPI */

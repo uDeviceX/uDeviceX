@@ -35,7 +35,7 @@ static void gen_a12(int i0, int *hx, int *hy, /**/ int *a1, int *a2) {
 
 void setup(int *faces) {
     const char r_templ[] = "rbc.off";
-    l::off2faces(r_templ, faces);
+    l::off::off2faces(r_templ, faces);
 
     int   *trs4 = new int  [4 * nt];
     for (int ifa = 0, i0 = 0, i1 = 0; ifa < nt; ifa++) {

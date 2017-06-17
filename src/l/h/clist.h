@@ -1,3 +1,4 @@
+namespace l { namespace clist {
 namespace t = thrust;
 template<typename T> T * ptr(t::device_vector<T>& v) { return raw_pointer_cast(v.data()); }
 
@@ -32,3 +33,4 @@ void clist(float * const pp, int np,
   /*  if (order != NULL)
       copy(pids.begin(), pids.end(), order); */
 }
+}}

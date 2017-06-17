@@ -4,10 +4,6 @@
 #include <thrust/binary_search.h>
 #include "common.h"
 
-namespace l {
-  #include "inc/clist.h"
-  namespace d {
-    #include "d/clist.h"
-  }
-  #include "h/clist.h"
-}
+#include "clist.h"
+#include "d/clist.h"
+#include "h/clist.h"

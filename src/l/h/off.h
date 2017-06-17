@@ -1,3 +1,4 @@
+namespace l { namespace off {
 /* off files
    [1] https://en.wikipedia.org/wiki/OFF_(file_format) */
 
@@ -41,3 +42,4 @@ void off2vert(const char *f, float* vert) {
 
   fclose(fd);
 }
+}} /* namespace l { namespace off { */

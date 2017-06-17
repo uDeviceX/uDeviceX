@@ -22,7 +22,7 @@ int setup_hst(int nv, Particle *pp) {
     const char *r_templ = "rbc.off", *r_state = "rbcs-ic.txt";
 
     float rr0[3*MAX_VERT_NUM]; /* rbc template */
-    l::off2vert(r_templ, rr0);
+    l::off::off2vert(r_templ, rr0);
 
     int i, j, c, nc = 0;
     int mi[3], L[3] = {XS, YS, ZS};
