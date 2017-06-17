@@ -27,10 +27,13 @@
 #include "k/common.h"
 
 namespace l {
-#include "inc/clist.h"
-#include "inc/off.h"
-#include "inc/scan.h"
+  #include "inc/clist.h"
+  #include "inc/off.h"
+  namespace d {
+    #include "inc/scan.h"
+  }
 }
+
 #include "clist.face.h"
 
 #include "k/odstr.h"
