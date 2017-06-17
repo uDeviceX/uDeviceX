@@ -41,6 +41,6 @@ void create_ticketZ(Quants q, /**/ TicketZ t) {
   int         n = q.n;
   float4  *zip0 = t.zip0;
   ushort4 *zip1 = t.zip1;
-  assert(sizeof(Particle)/sizeof(float) == 6); /* TODO: implicit dependency */
+  assert(sizeof(Particle) == 6 * sizeof(float)); /* :TODO: implicit dependency */
   sub::zip<<<(n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>(zip0, zip1, (float*)pp, n);
 }
