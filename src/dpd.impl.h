@@ -32,7 +32,7 @@ void init1() {
 
         int interrank_seed = interrank_seed_base + interrank_seed_offset;
 
-        interrank_trunks[i] = new Logistic::KISS(
+        interrank_trunks[i] = new l::rnd::d::KISS(
                                                  390 + interrank_seed, interrank_seed + 615, 12309, 23094);
 
         int dstrank = dstranks[i];
@@ -132,7 +132,7 @@ void init0() {
 }
 
 void init() {
-    local_trunk = new Logistic::KISS(0, 0, 0, 0);
+    local_trunk = new l::rnd::d::KISS(0, 0, 0, 0);
     for (int i = 0; i < 26; i++) recvhalos[i] = new RecvHalo;
     for (int i = 0; i < 26; i++) sendhalos[i] = new SendHalo;
 

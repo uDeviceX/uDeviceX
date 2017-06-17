@@ -30,7 +30,7 @@ texture<uint2, cudaTextureType1D> texStartAndCount;
 
 __device__ float3 _dpd_interaction( const int dpid, const float4 xdest, const float4 udest, const float4 xsrc, const float4 usrc, const int spid )
 {
-    const float myrandnr = Logistic::mean0var1( info.seed, xmin( spid, dpid ), xmax( spid, dpid ) );
+    const float myrandnr = l::rnd::d::mean0var1( info.seed, xmin( spid, dpid ), xmax( spid, dpid ) );
 
     // check for particle types and compute the DPD force
     float3 pos1 = make_float3(xdest.x, xdest.y, xdest.z), pos2 = make_float3(xsrc.x, xsrc.y, xsrc.z);

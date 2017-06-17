@@ -6,8 +6,8 @@ void init() {
 
     cellsentries = new DeviceBuffer<int>;
     subindices = new DeviceBuffer<uchar4>;
-    local_trunk = new Logistic::KISS;
-    *local_trunk = Logistic::KISS(7119 - m::rank, 187 + m::rank, 18278, 15674);
+    local_trunk = new l::rnd::d::KISS;
+    *local_trunk = l::rnd::d::KISS(7119 - m::rank, 187 + m::rank, 18278, 15674);
 }
 
 void build_cells(std::vector<ParticlesWrap> wsolutes) {

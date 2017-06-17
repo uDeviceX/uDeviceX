@@ -1,16 +1,12 @@
-namespace Logistic
-{
-__device__ float mean0var1( float seed, uint i, uint j );
-__device__ float mean0var1( float seed, int i, int j );
-__device__ float mean0var1( float seed, float i, float j );
-}
-
 #include <limits>
 #include <stdint.h>
 #include "dpd/tiny-float.h"
 
-namespace Logistic
-{
+namespace l { namespace rnd { namespace d {
+__device__ float mean0var1( float seed, uint i, uint j );
+__device__ float mean0var1( float seed, int i, int j );
+__device__ float mean0var1( float seed, float i, float j );
+  
 /************************* Trunk generator ***********************
  * Make one global random number per each timestep
  * cite G. Marsaglia
@@ -144,4 +140,4 @@ __inline__ __device__ float mean0var1_dual( float seed, float u, float v )
 }
 
 #endif
-}
+}}} /* l:rnd:d */

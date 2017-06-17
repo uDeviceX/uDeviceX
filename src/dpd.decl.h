@@ -1,10 +1,10 @@
 // see the vanilla version of this code for details about how this class
 // operates
 namespace DPD {
-Logistic::KISS *local_trunk;
+l::rnd::d::KISS *local_trunk;
 
 /* allocated inside init1 */
-Logistic::KISS *interrank_trunks[26];
+l::rnd::d::KISS *interrank_trunks[26];
 
 bool interrank_masks[26];
 

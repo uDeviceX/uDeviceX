@@ -120,7 +120,7 @@ void create(int *o_n, Particle *o_pp, int *w_n, float4 **w_pp, Clist *cells,
 }
 
 void interactions(const int type, const Particle *const pp, const int n, const Texo<int> texstart,
-                  const Texo<float4> texpp, const int w_n, /**/ Logistic::KISS *rnd, Force *ff) {
+                  const Texo<float4> texpp, const int w_n, /**/ l::rnd::d::KISS *rnd, Force *ff) {
     if (n > 0 && w_n > 0) {
         dev::interactions_3tpp <<<k_cnf(3 * n)>>>
             ((float2 *)pp, n, w_n, (float *)ff, rnd->get_float(), type, texstart, texpp);
