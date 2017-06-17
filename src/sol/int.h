@@ -27,46 +27,29 @@ struct Work {
 };
 
 void alloc_work(Work *w) {
-  uchar4 *subi_lo = w->subi_lo;
-  uchar4 *subi_re = w->subi_re;
-  uint   *iidx = w->iidx;
-  Particle *pp_re = w->pp_re;
-  unsigned char *count_zip = w->count_zip;
-  Particle *pp0 = w->pp0;
-  /* TODO */
-
-  mpDeviceMalloc(&subi_lo);
-  mpDeviceMalloc(&subi_re);
-  mpDeviceMalloc(&iidx);
-  mpDeviceMalloc(&pp_re);
-  CC(cudaMalloc(&count_zip, sizeof(count_zip[0])*XS*YS*ZS));
-  mpDeviceMalloc(&pp0);
+  mpDeviceMalloc(&w->subi_lo);
+  mpDeviceMalloc(&w->subi_re);
+  mpDeviceMalloc(&w->iidx);
+  mpDeviceMalloc(&w->pp_re);
+  CC(cudaMalloc(&w->count_zip, sizeof(w->count_zip[0])*XS*YS*ZS));
+  mpDeviceMalloc(&w->pp0);
 }
 
 void free_work(Work *w) {
-  uchar4 *subi_lo = w->subi_lo;
-  uchar4 *subi_re = w->subi_re;
-  uint   *iidx = w->iidx;
-  Particle *pp_re = w->pp_re;
-  unsigned char *count_zip = w->count_zip;
-  /* Particle *pp0 = w->pp0;  */
-
-  CC(cudaFree(subi_lo));
-  CC(cudaFree(subi_re));
-  CC(cudaFree(iidx));
-  CC(cudaFree(pp_re));
-  CC(cudaFree(count_zip));
-  /* pp0 shell not be freed */
+  CC(cudaFree(w->subi_lo));
+  CC(cudaFree(w->subi_re));
+  CC(cudaFree(w->iidx));
+  CC(cudaFree(w->pp_re));
+  CC(cudaFree(w->count_zip));
+  /* pp0 shell not be freed? */
 }
 
 /* no alloc_ticketD */
 void create_ticketD(TicketD *t) { t->first = true; }
 
 void alloc_ticketZ(/**/ TicketZ *t) {
-  float4  **qzip0 = &t->zip0;
-  ushort4 **qzip1 = &t->zip1;
-  mpDeviceMalloc(qzip0);
-  mpDeviceMalloc(qzip1);
+  mpDeviceMalloc(&t->zip0);
+  mpDeviceMalloc(&t->zip1);
 }
 
 void free_ticketZ(/**/ TicketZ *t) {

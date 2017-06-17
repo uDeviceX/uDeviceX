@@ -82,8 +82,7 @@ void create_walls() {
     MSG("solvent particles survived: %d/%d", o::n, nold);
     if (o::n) k_sim::clear_velocity<<<k_cnf(o::n)>>>(o::pp, o::n);
     o::cells->build(o::pp, o::n);
-    update_helper_arrays();
-    //sol::create_ticketZ(o::pp, o::n, &o::tz);
+    sol::create_ticketZ(o::pp, o::n, &o::tz);
 
     CC( cudaPeekAtLastError() );
 }
@@ -262,6 +261,7 @@ void init() {
 
     o::cells   = new Clist(XS, YS, ZS);
     sol::alloc_ticketZ(&o::tz);
+    sol::alloc_work(&o::w);
 
     mpDeviceMalloc(&o::pp); mpDeviceMalloc(&o::pp0);
     mpDeviceMalloc(&o::ff);
@@ -281,7 +281,7 @@ void init() {
     o::n = ic::gen(o::pp_hst);
     cH2D(o::pp, o::pp_hst, o::n);
     o::cells->build(o::pp, o::n);
-    update_helper_arrays();
+    create_ticketZ(o::pp, o::n, &o::tz);
 
     if (rbcs) {
 	r::nc = Cont::setup(r::pp, r::nv, /* storage */ r::pp_hst);
@@ -387,11 +387,11 @@ void close() {
     rex::close();
     fsi::close();
 
-    if (solids0)
-    mrescue::close();
+    if (solids0) mrescue::close();
 
     wall::free_quants(&w::q);
     wall::free_ticket(&w::t);
+    sol::free_work(&o::w);
 
     delete o::cells;
     delete dump_field;
