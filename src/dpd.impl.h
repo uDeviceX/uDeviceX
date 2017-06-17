@@ -47,11 +47,11 @@ void init1() {
     }
 }
 
-void local_interactions(Particle *xyzuvw, float4 *xyzouvwo, ushort4 *xyzo_half,
+void local_interactions(float4 *xyzouvwo, ushort4 *xyzo_half,
                         int n, Force *a, int *cellsstart,
                         int *cellscount) {
     if (n > 0)
-    forces_dpd_cuda_nohost((float *)xyzuvw, xyzouvwo, xyzo_half, (float *)a, n,
+    forces_dpd_cuda_nohost(xyzouvwo, xyzo_half, (float *)a, n,
                            cellsstart, cellscount, 1, XS,
                            YS, ZS, 1. / sqrt(dt),
                            local_trunk->get_float());

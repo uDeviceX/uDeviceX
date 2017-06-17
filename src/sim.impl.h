@@ -98,7 +98,7 @@ void forces_rbc() {
 
 void forces_dpd() {
     DPD::pack(o::pp, o::n, o::cells->start, o::cells->count);
-    DPD::local_interactions(o::pp, o::tz.zip0, o::tz.zip1,
+    DPD::local_interactions(o::tz.zip0, o::tz.zip1,
 			    o::n, o::ff, o::cells->start,
 			    o::cells->count);
     DPD::post(o::pp, o::n);
