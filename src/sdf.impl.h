@@ -57,23 +57,25 @@ void init() {
     delete[] field;
 }
 
-/* sort particle into remaining in solvent and turning into wall */
-void bulk_wall(Particle *s_pp, int* s_n, Particle *w_pp_hst, int *w_n,
-	       int* w_key, int* w_key_hst) {
+/* sort solvent particle (dev) into remaining in solvent (dev) and turning into wall (hst)*/
+static void bulk_wall0(/*io*/ Particle *s_pp, int* s_n, /*o*/ Particle *w_pp, int *w_n,
+		       /*w*/ int *keys) {
   int n = *s_n;
-  k_sdf::fill_keys<<<k_cnf(n)>>>(s_pp, n, w_key);
-  CC(cudaMemcpy(w_key_hst, w_key, sizeof(int)*n, D2H));
-
-  int k;
-  int ia = 0, ib = 0, iw = 0; /* all, bulk, wall particles */
-  for (/* */ ; ia < n; ia++) {
-    k = w_key_hst[ia];
-    if      (k == W_BULK)
-      CC(cudaMemcpy(    &s_pp[ib++], &s_pp[ia], sizeof(Particle), D2D));
-    else if (k == W_WALL)
-      CC(cudaMemcpy(&w_pp_hst[iw++], &s_pp[ia], sizeof(Particle), D2H));
+  int k, a = 0, b = 0, w = 0; /* all, bulk, wall */
+  k_sdf::fill_keys<<<k_cnf(n)>>>(s_pp, n, keys);
+  for (/* */ ; a < n; a++) {
+    cD2H(&k, &keys[a], 1);
+    if      (k == W_BULK) {cD2D(&s_pp[b], &s_pp[a], 1); b++;}
+    else if (k == W_WALL) {cD2H(&w_pp[w], &s_pp[a], 1); w++;}
   }
-  *s_n = ib; *w_n = iw;
+  *s_n = b; *w_n = w;
+}
+
+void bulk_wall(/*io*/ Particle *s_pp, int *s_n, /*o*/ Particle *w_pp, int *w_n) {
+  int *w_key;
+  mpDeviceMalloc(&w_key);
+  bulk_wall0(s_pp, s_n, w_pp, w_n, w_key);
+  CC(cudaFree(w_key));
 }
 
 void close() {
