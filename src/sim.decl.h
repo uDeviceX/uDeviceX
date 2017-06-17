@@ -25,8 +25,6 @@ Particle *pp0; /* Solvent (temporal buffer) */
 
 Particle  pp_hst[MAX_PART_NUM]; /* solvent on host           */
 Force     ff_hst[MAX_PART_NUM]; /* solvent forces on host    */
-
-
 }
 
 namespace r /* [r]bc */
