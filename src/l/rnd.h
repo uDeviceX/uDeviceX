@@ -28,5 +28,5 @@ struct KISS {
     return x + y + ( z = t );
   }
 };
-      
+
 }}} /* l::rnd::d */
