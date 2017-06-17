@@ -10,8 +10,8 @@ slevel   ?= -2
 NVCCFLAGS += -std=c++11 -I. -I$S
 LIBS      += -lcudart
 
-OBJS = bund.o clist.o collision.o common.o force.o dpd.o field.o glb.o io.o main.o \
-	mbounce.o mesh.o m.o mrescue.o ply.o minmax.o off.o scan.o solid.o tcells.o restart.o
+OBJS = bund.o clist.o collision.o common.o force.o dpd.o field.o glb.o io.o lm.o m.o main.o \
+	mbounce.o mesh.o mrescue.o ply.o minmax.o loff.o lscan.o solid.o tcells.o restart.o
 
 ifeq ($(h5),0)
 NVCCFLAGS += -DNO_H5
@@ -26,7 +26,8 @@ udx: $(OBJS)
 
 # dev
 %.o:     $S/%.cu;         $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT)     $< -c -o $@
-%.o:     $S/l/%.cu;       $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT)     $< -c -o $@
+l%.o:    $S/l/%.cu;       $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT)     $< -c -o $@
+
 
 # dev and hst
 force.o: $S/force.cu;     $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
