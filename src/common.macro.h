@@ -21,7 +21,7 @@ enum {  /* used in sorting of bulk particle when wall is created */
 
 /*
   #define allsync() do {                                                  \
-  CC(cudaDeviceSynchronize()); MC(MPI_Barrier(m::cart));          \
+  CC(cudaDeviceSynchronize()); MC(l::m::Barrier(m::cart));          \
   if (m::rank == 0)                                               \
   fprintf(stderr, "%s : %d\n", __FILE__, __LINE__);               \
   } while (0)

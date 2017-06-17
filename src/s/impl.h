@@ -88,7 +88,7 @@ void create(Particle *opp, int *on) {
 
     cH2D(pp, pp_hst, npp);
 
-    MC(MPI_Barrier(m::cart));
+    MC(l::m::Barrier(m::cart));
 }
 
 void init() {

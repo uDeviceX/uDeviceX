@@ -56,7 +56,7 @@ int setup(Particle* pp, int nv, /* storage */ Particle *pp_hst) {
     /* fills `pp' with RBCs for this processor */
     int nc = setup_hst(nv, pp_hst);
     if (nc) cH2D(pp, pp_hst, nv * nc);
-    MPI_Barrier(m::cart);
+    l::m::Barrier(m::cart);
     return nc;
 }
 

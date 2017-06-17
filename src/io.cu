@@ -32,10 +32,10 @@ void ply_dump(const char * filename,
     std::vector<Particle> particles(_particles, _particles + ninstances * nvertices_per_instance);
     int NPOINTS = 0;
     const int n = particles.size();
-    MPI_Reduce(&n, &NPOINTS, 1, MPI_INT, MPI_SUM, 0, m::cart) ;
+    l::m::Reduce(&n, &NPOINTS, 1, MPI_INT, MPI_SUM, 0, m::cart) ;
     const int ntriangles = ntriangles_per_instance * ninstances;
     int NTRIANGLES = 0;
-    MPI_Reduce(&ntriangles, &NTRIANGLES, 1, MPI_INT, MPI_SUM, 0, m::cart) ;
+    l::m::Reduce(&ntriangles, &NTRIANGLES, 1, MPI_INT, MPI_SUM, 0, m::cart) ;
     MPI_File f;
     MPI_File_open(m::cart, filename,
                   MPI_MODE_WRONLY |  MPI_MODE_CREATE,
@@ -214,7 +214,7 @@ void H5FieldDump::dump(Particle *p, int n) {
         if (m::rank == 0)
         mkdir("h5", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
         directory_exists = true;
-        MC(MPI_Barrier(m::cart));
+        MC(l::m::Barrier(m::cart));
     }
 
     char filepath[512];

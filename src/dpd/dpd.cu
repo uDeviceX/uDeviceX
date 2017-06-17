@@ -470,7 +470,7 @@ void forces_dpd_cuda_nohost( const float * const xyzuvw, const float4 * const xy
     check_acc <<< 1, 1, 0>>>( np );
     CC( cudaDeviceSynchronize() );
     CC( cudaDeviceReset() );
-    MPI_Finalize();
+    l::m::Finalize();
     exit( 0 );
 #endif
 

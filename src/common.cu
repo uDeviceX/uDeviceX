@@ -16,17 +16,17 @@ void diagnostics(Particle *pp, int n, int idstep) {
     for(int c = 0; c < 3; ++c)
     p[c] += pp[i].v[c];
 
-    MC(MPI_Reduce(m::rank == 0 ? MPI_IN_PLACE : &p,
+    MC(l::m::Reduce(m::rank == 0 ? MPI_IN_PLACE : &p,
                   m::rank == 0 ? &p : NULL, 3,
                   MPI_DOUBLE, MPI_SUM, 0, m::cart) );
     double ke = 0;
     for(int i = 0; i < n; ++i)
     ke += pow(pp[i].v[0], 2) + pow(pp[i].v[1], 2) + pow(pp[i].v[2], 2);
 
-    MC(MPI_Reduce(m::rank == 0 ? MPI_IN_PLACE : &ke,
+    MC(l::m::Reduce(m::rank == 0 ? MPI_IN_PLACE : &ke,
                   &ke,
                   1, MPI_DOUBLE, MPI_SUM, 0, m::cart));
-    MC(MPI_Reduce(m::rank == 0 ? MPI_IN_PLACE : &n,
+    MC(l::m::Reduce(m::rank == 0 ? MPI_IN_PLACE : &n,
                   &n, 1, MPI_INT, MPI_SUM, 0, m::cart));
 
     double kbt = 0.5 * ke / (n * 3. / 2);

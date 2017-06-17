@@ -42,7 +42,7 @@ static void gen_ne(MPI_Comm cart, /* */ int* rnk_ne, int* ank_ne)
 
 void init()
 {        
-    MPI_Comm_dup(m::cart, &cart);
+    l::m::Comm_dup(m::cart, &cart);
     gen_ne(cart,   rnk_ne, ank_ne); /* generate ranks and anti-ranks */
 
     _post_recvcnt();
@@ -232,6 +232,6 @@ void unpack(const int nv, /**/ Solid *ss_hst, Particle *pp)
 
 void close()
 {
-    MPI_Comm_free(&cart);
+    l::m::Comm_free(&cart);
 }
 }

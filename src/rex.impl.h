@@ -24,7 +24,7 @@ void init() {
     for (int i = 0; i < SE_HALO_SIZE; i++) local[i] = new LocalHalo;
     for (int i = 0; i < SE_HALO_SIZE; i++) remote[i] = new RemoteHalo;
 
-    MC(MPI_Comm_dup(m::cart, &cart));
+    MC(l::m::Comm_dup(m::cart, &cart));
     for (int i = 0; i < 26; ++i) {
         int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
 
@@ -363,7 +363,7 @@ void recv_f() {
 }
 
 void close() {
-    MC(MPI_Comm_free(&cart));
+    MC(l::m::Comm_free(&cart));
 
     CC(cudaEventDestroy(evPpacked));
     CC(cudaEventDestroy(evAcomputed));

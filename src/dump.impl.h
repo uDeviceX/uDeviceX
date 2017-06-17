@@ -54,7 +54,7 @@ void parts(const Particle *pp, const long n, const char *name, const int step) {
     MPI_Offset len = n * sizeof(Particle);
 
     long ntot = 0;
-    MC( MPI_Reduce(&n, &ntot, 1, MPI_LONG, MPI_SUM, 0, m::cart) );
+    MC( l::m::Reduce(&n, &ntot, 1, MPI_LONG, MPI_SUM, 0, m::cart) );
     MC( MPI_File_open(m::cart, fname, MPI_MODE_CREATE | MPI_MODE_WRONLY, MPI_INFO_NULL, &f) );
     MC( MPI_File_set_size(f, 0) );
     MC( MPI_File_get_position(f, &base) ); 

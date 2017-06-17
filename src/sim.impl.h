@@ -287,7 +287,7 @@ void init() {
     }
 
     dump_field = new H5FieldDump;
-    MC(MPI_Barrier(m::cart));
+    MC(l::m::Barrier(m::cart));
 }
 
 void dump_diag_after(int it) { /* after wall */
@@ -348,13 +348,13 @@ void run_wall(long nsteps) {
         MSG("done creating walls");
     }
 
-    MC(MPI_Barrier(m::cart));
+    MC(l::m::Barrier(m::cart));
     
     if (solids0) {
         cD2H(o::pp_hst, o::pp, o::n);
         s::create(o::pp_hst, &o::n);
         cH2D(o::pp, o::pp_hst, o::n);
-        MC(MPI_Barrier(m::cart));
+        MC(l::m::Barrier(m::cart));
     }
     if (walls) remove_bodies();
     set_ids_solids();

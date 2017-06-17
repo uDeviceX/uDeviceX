@@ -48,7 +48,7 @@ void init() {
     _ddst = new DeviceBuffer<float *>;
     _dsrc = new DeviceBuffer<const float *>;
 
-    MPI_Comm_dup(m::cart, &cart);
+    l::m::Comm_dup(m::cart, &cart);
     gen_ne(cart,   rnk_ne, ank_ne); /* generate ranks and anti-ranks */
 
     _post_recvcnt();
@@ -175,7 +175,7 @@ void unpack(Particle *pp, int nv) {
 }
 
 void close() {
-    MPI_Comm_free(&cart);
+    l::m::Comm_free(&cart);
     for (int i = 0; i < 27; i++) delete rbuf[i];
     for (int i = 0; i < 27; i++) delete sbuf[i];
     delete   llo; delete   hhi;

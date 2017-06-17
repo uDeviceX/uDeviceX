@@ -101,7 +101,7 @@ void init0() {
     safety_factor =
         getenv("HEX_COMM_FACTOR") ? atof(getenv("HEX_COMM_FACTOR")) : 1.2;
 
-    MC(MPI_Comm_dup(m::cart, &cart));
+    MC(l::m::Comm_dup(m::cart, &cart));
   
     for (int i = 0; i < 26; ++i) {
         int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
@@ -419,7 +419,7 @@ void _cancel_recv() {
 
 void close() {
     CC(cudaFreeHost(required_send_bag_size));
-    MC(MPI_Comm_free(&cart));
+    MC(l::m::Comm_free(&cart));
     _cancel_recv();
     CC(cudaEventDestroy(evfillall));
     CC(cudaEventDestroy(evdownloaded));

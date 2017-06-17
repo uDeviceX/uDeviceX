@@ -10,9 +10,9 @@
 void mpi_init(int argc, char **argv) {
     MC(MPI_Init(&argc, &argv));
     MC(l::m::Comm_rank(MPI_COMM_WORLD,   &m::rank));
-    MC(MPI_Cart_create(MPI_COMM_WORLD,
+    MC(l::m::Cart_create(MPI_COMM_WORLD,
                        m::d, m::dims, m::periods, m::reorder,   &m::cart));
-    MC(MPI_Cart_coords(m::cart, m::rank, m::d,   m::coords));
+    MC(l::m::Cart_coords(m::cart, m::rank, m::d,   m::coords));
 }
 
 int main(int argc, char **argv) {
@@ -33,5 +33,5 @@ int main(int argc, char **argv) {
     sim::run();
     sim::close();
   
-    MC(MPI_Finalize());
+    MC(l::m::Finalize());
 }
