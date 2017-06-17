@@ -33,6 +33,7 @@ void alloc_work(Work *w) {
   Particle *pp_re = w->pp_re;
   unsigned char *count_zip = w->count_zip;
   Particle *pp0 = w->pp0;
+  /* TODO */
 }
 
 void free_work(Work *w) {
@@ -42,6 +43,7 @@ void free_work(Work *w) {
   Particle *pp_re = w->pp_re;
   unsigned char *count_zip = w->count_zip;
   Particle *pp0 = w->pp0;
+  /* TODO */
 }
 
 /* no alloc_ticketD */
@@ -71,14 +73,13 @@ void create_ticketZ(Quants *q, /**/ TicketZ *t) {
 }
 
 void distr(Quants *q, TicketD *t, Work *w) {
-  uchar4 *subi_lo = w->subi_lo; /* arrays */
-  uchar4 *subi_re = w->subi_re;
-  uint   *iidx = w->iidx;
-  Particle *pp_re = w->pp_re;
-  unsigned char *count_zip = w->count_zip;
-  Particle *pp0 = w->pp0;
+  /*** Q ***/
+  Particle *pp  =  q->pp;
+  int       *n  = &q->n;
+  Clist *cells  =  q->cells;
 
-  MPI_Comm cart = t->cart; /* can a copy */
+  /*** T ***/  
+  MPI_Comm cart = t->cart; /* can be a copy */
   
   int *rank = t->rank; /* arrays */
   int *send_size_req = t->send_size_req;
@@ -87,4 +88,15 @@ void distr(Quants *q, TicketD *t, Work *w) {
   MPI_Request *recv_mesg_req = t->recv_mesg_req;
   
   bool *first = &t->first; /* shoud be updated */
+
+  
+  /*** W ***/
+  uchar4 *subi_lo = w->subi_lo; /* arrays */
+  uchar4 *subi_re = w->subi_re;
+  uint   *iidx = w->iidx;
+  Particle *pp_re = w->pp_re;
+  unsigned char *count_zip = w->count_zip;
+  Particle *pp0 = w->pp0;
+
+  /* TODO */
 }
