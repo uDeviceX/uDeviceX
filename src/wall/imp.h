@@ -65,7 +65,7 @@ static void exch(/*io*/ Particle *pp, int *n) { /* exchange pp(hst) between proc
   }
 }
 
-int init(Particle *pp, int n, Particle *frozen, int *w_n) {
+static int init(Particle *pp, int n, Particle *frozen, int *w_n) {
   sdf::bulk_wall(/*io*/ pp, &n, /*o*/ frozen, w_n); /* sort into bulk-frozen */
   exch(/*io*/ frozen, w_n);
   return n;

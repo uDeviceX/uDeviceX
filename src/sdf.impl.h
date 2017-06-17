@@ -72,10 +72,10 @@ static void bulk_wall0(/*io*/ Particle *s_pp, int* s_n, /*o*/ Particle *w_pp, in
 }
 
 void bulk_wall(/*io*/ Particle *s_pp, int *s_n, /*o*/ Particle *w_pp, int *w_n) {
-  int *w_key;
-  mpDeviceMalloc(&w_key);
-  bulk_wall0(s_pp, s_n, w_pp, w_n, w_key);
-  CC(cudaFree(w_key));
+  int *keys;
+  mpDeviceMalloc(&keys);
+  bulk_wall0(s_pp, s_n, w_pp, w_n, keys);
+  CC(cudaFree(keys));
 }
 
 void close() {
