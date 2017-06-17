@@ -1,8 +1,7 @@
-bund.o: $S/0dev/sim.impl.h $S/0hst/sim.impl.h $S/basetags.h $S/bbhalo.decl.h $S/bbhalo.impl.h $S/bipsbatch.decl.h $S/bipsbatch.impl.h $S/bund.h $S/clist.face.h $S/cnt.decl.h $S/cnt.impl.h $S/collision.h $S/common.h $S/common.macro.h $S/common.tmp.h $S/conf.common.h conf.h $S/containers.impl.h $S/dpd.decl.h $S/dpd.impl.h $S/dpd/cuda-dpd.h $S/dpd/dpd-rng.h $S/dump.decl.h $S/dump.impl.h $S/field.h $S/force.h $S/fsi.decl.h $S/fsi.impl.h $S/glb.h $S/ic.impl.h $S/io.h $S/k/cnt.h $S/k/common.h $S/k/fsi.h $S/k/odstr.h $S/k/rbc.h $S/k/rbc0.h $S/k/rdstr.h $S/k/rex.h $S/k/sdf.h $S/k/sim.h $S/k/wvel.h $S/l/clist.h $S/l/float3.h $S/l/m.h $S/l/off.h $S/l/scan.h $S/m.h $S/mbounce.h $S/minmax.h $S/mrescue.h $S/odstr.decl.h $S/odstr.impl.h $S/odstr/fin.h $S/odstr/ini.h $S/packinghalo.decl.h $S/packinghalo.impl.h $S/ply.h $S/rbc.decl.h $S/rbc.impl.h $S/rdstr.decl.h $S/rdstr.impl.h $S/restart.h $S/rex.decl.h $S/rex.impl.h $S/s/decl.h $S/s/ic.h $S/s/impl.h $S/safety.impl.h $S/sdf.decl.h $S/sdf.impl.h $S/sdstr.decl.h $S/sdstr.impl.h $S/sim.decl.h $S/sim.impl.h $S/sol/dev.h $S/sol/imp.h $S/sol/int.h $S/solid.h $S/tcells.h $S/wall/dev.h $S/wall/imp.h $S/wall/int.h $S/x/x.decl.h $S/x/x.impl.h
+bund.o: $S/0dev/sim.impl.h $S/0hst/sim.impl.h $S/basetags.h $S/bbhalo.decl.h $S/bbhalo.impl.h $S/bipsbatch.decl.h $S/bipsbatch.impl.h $S/bund.h $S/clist.face.h $S/cnt.decl.h $S/cnt.impl.h $S/collision.h $S/common.h $S/common.macro.h $S/common.tmp.h $S/conf.common.h conf.h $S/containers.impl.h $S/dpd.decl.h $S/dpd.impl.h $S/dpd/cuda-dpd.h $S/dump.decl.h $S/dump.impl.h $S/field.h $S/force.h $S/fsi.decl.h $S/fsi.impl.h $S/glb.h $S/ic.impl.h $S/io.h $S/k/cnt.h $S/k/common.h $S/k/fsi.h $S/k/odstr.h $S/k/rbc.h $S/k/rbc0.h $S/k/rdstr.h $S/k/rex.h $S/k/sdf.h $S/k/sim.h $S/k/wvel.h $S/l/clist.h $S/l/float3.h $S/l/m.h $S/l/off.h $S/l/rnd.h $S/l/scan.h $S/m.h $S/mbounce.h $S/minmax.h $S/mrescue.h $S/odstr.decl.h $S/odstr.impl.h $S/odstr/fin.h $S/odstr/ini.h $S/packinghalo.decl.h $S/packinghalo.impl.h $S/ply.h $S/rbc.decl.h $S/rbc.impl.h $S/rdstr.decl.h $S/rdstr.impl.h $S/restart.h $S/rex.decl.h $S/rex.impl.h $S/s/decl.h $S/s/ic.h $S/s/impl.h $S/safety.impl.h $S/sdf.decl.h $S/sdf.impl.h $S/sdstr.decl.h $S/sdstr.impl.h $S/sim.decl.h $S/sim.impl.h $S/sol/dev.h $S/sol/imp.h $S/sol/int.h $S/solid.h $S/tcells.h $S/wall/dev.h $S/wall/imp.h $S/wall/int.h $S/x/x.decl.h $S/x/x.impl.h
 collision.o: $S/collision.h $S/common.h $S/minmax.h
 common.o: $S/common.h conf.h $S/l/m.h $S/m.h
-dpd/dpd.o: $S/dpd/cuda-dpd.h $S/dpd/dpd-rng.h $S/force.h $S/hacks.h
-dpd/dpd-rng.h: $S/dpd/tiny-float.h
+dpd/dpd.o: $S/dpd/cuda-dpd.h $S/force.h $S/hacks.h $S/l/rnd.h
 field.o: $S/common.h conf.h $S/field.h $S/io.h $S/l/m.h $S/m.h
 force.o: $S/conf.common.h conf.h $S/dpd/cuda-dpd.h $S/force.h
 glb.o: $S/common.h $S/conf.common.h conf.h $S/glb.h $S/m.h
@@ -11,6 +10,8 @@ k/rbc0.h: $S/params/rbc.inc0.h
 l.clist.o: $S/common.h $S/l/clist.h $S/l/d/clist.h $S/l/h/clist.h
 l.m.o: $S/l/h/m.h $S/l/m.h
 l.off.o: $S/l/h/off.h $S/l/off.h
+l.rnd.h: $S/dpd/tiny-float.h
+l.rnd.o: $S/l/d/rnd.h $S/l/rnd.h
 l.scan.o: $S/l/d/scan.h $S/l/scan.h
 main.o: $S/bund.h $S/common.h conf.h $S/glb.h $S/l/m.h $S/m.h
 mbounce.o: $S/common.h conf.h $S/mbounce.h $S/roots.impl.h
