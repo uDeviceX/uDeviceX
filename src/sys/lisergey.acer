@@ -2,6 +2,7 @@ h5 = 1
 
 LINK = g++
 NVCC = nvcc
+OPT = -O0 -g
 
 MPI_CXXFLAGS = `pkg-config --cflags mpi`
 MPI_LIBS  = `pkg-config --libs mpi`
