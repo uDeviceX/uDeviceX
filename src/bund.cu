@@ -30,6 +30,7 @@
 
 namespace l {
 #include "inc/clist.h"
+#include "inc/off.h"
 }
 #include "clist.face.h"
 
@@ -45,7 +46,6 @@ namespace x {
 }
 
 #include "minmax.h"
-#include "off.impl.h"
 
 #define __DF__ __device__ __forceinline__
 /* physical part of RBC calculations : see also params/rbc.inc0.h */
