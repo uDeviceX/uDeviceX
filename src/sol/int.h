@@ -34,6 +34,13 @@ void alloc_work(Work *w) {
   unsigned char *count_zip = w->count_zip;
   Particle *pp0 = w->pp0;
   /* TODO */
+
+  mpDeviceMalloc(&subi_lo);
+  mpDeviceMalloc(&subi_re);
+  mpDeviceMalloc(&iidx);
+  mpDeviceMalloc(&pp_re);
+  CC(cudaMalloc(&count_zip, sizeof(count_zip[0])*XS*YS*ZS));
+  mpDeviceMalloc(&pp0);
 }
 
 void free_work(Work *w) {
@@ -42,8 +49,14 @@ void free_work(Work *w) {
   uint   *iidx = w->iidx;
   Particle *pp_re = w->pp_re;
   unsigned char *count_zip = w->count_zip;
-  Particle *pp0 = w->pp0;
-  /* TODO */
+  /* Particle *pp0 = w->pp0;  */
+
+  CC(cudaFree(subi_lo));
+  CC(cudaFree(subi_re));
+  CC(cudaFree(iidx));
+  CC(cudaFree(pp_re));
+  CC(cudaFree(count_zip));
+  /* pp0 shell not be freed */
 }
 
 /* no alloc_ticketD */
