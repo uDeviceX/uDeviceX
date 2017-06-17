@@ -25,11 +25,11 @@ __device__ float3 adj_tris(const Texo<float2> texvert, const Texo<int> texadj0,
     float3 r1, u1, r2, u2, r3, f;
     bool valid;
 
-    pid = (threadIdx.x + blockDim.x * blockIdx.x) / md;
-    lid = pid % nv;
+    pid     = (threadIdx.x + blockDim.x * blockIdx.x) / md;
+    neighid = (threadIdx.x + blockDim.x * blockIdx.x) % md;
+    lid   = pid % nv;
     idrbc = pid / nv;
     offset = idrbc * nv * 3;
-    neighid = (threadIdx.x + blockDim.x * blockIdx.x) % md;
     i2 = texadj0.fetch(neighid + md * lid);
     valid = i2 != -1;
 
@@ -132,8 +132,8 @@ __global__ void force(const Texo<float2> texvert, const Texo<int> texadj0, const
 	f += adj_dihedrals(texvert, texadj0, texadj1, t0, t1);
 
 	if (f.x > -1.0e9f) {
-	    atomicAdd(&ff[3 * pid + 0], f.x);
-	    atomicAdd(&ff[3 * pid + 1], f.y);
+            atomicAdd(&ff[3 * pid + 0], f.x);
+            atomicAdd(&ff[3 * pid + 1], f.y);
 	    atomicAdd(&ff[3 * pid + 2], f.z);
 	}
     }
