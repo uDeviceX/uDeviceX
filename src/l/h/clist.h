@@ -2,10 +2,10 @@ namespace l { namespace clist {
 namespace t = thrust;
 template<typename T> T * ptr(t::device_vector<T>& v) { return raw_pointer_cast(v.data()); }
 
-void clist(float * const pp, int np,
-	   const int xcells, const int ycells, const int zcells,
-	   const float xstart, const float ystart, const float zstart,
-	   int* start, int* cnt) {
+void h(float * const pp, int np,
+       const int xcells, const int ycells, const int zcells,
+       const float xstart, const float ystart, const float zstart,
+       int* start, int* cnt) {
   t::device_vector<int> codes(np), pids(np);
   d::pid2code<<<k_cnf(np)>>>
     (ptr(codes), ptr(pids), np, pp, make_int3(xcells, ycells, zcells), make_float3(xstart, ystart, zstart));
