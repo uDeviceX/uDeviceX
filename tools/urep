@@ -3,5 +3,7 @@
 # local wrapper for urep : run from ./src
 
 if test $# -ne 2; then printf 'urep: [A] [B]\n' >&2; fi
+A="$1"; shift
+B="$1"; shift
 
-find . -name '*.cu' -o -name '*.h' | xargs urep
+find . -name '*.cu' -o -name '*.h' | xargs urep "$A" "$B"
