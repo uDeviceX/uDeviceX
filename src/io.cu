@@ -27,7 +27,7 @@ void _write_bytes(const void * const ptr, const int nbytes32, MPI_File f) {
     MC(MPI_File_seek(f, ntotal, MPI_SEEK_CUR));
 }
 
-void ply_dump(const char * filename,
+static void rbc_dump0(const char * filename,
               int *mesh_indices, const int ninstances, const int ntriangles_per_instance,
               Particle * _particles, int nvertices_per_instance) {
     std::vector<Particle> particles(_particles, _particles + ninstances * nvertices_per_instance);

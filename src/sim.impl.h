@@ -188,7 +188,7 @@ void dump_rbcs() {
     if (rbcs) {
 	static int id = 0;
 	cD2H(a::pp_hst, r::pp, r::n);
-	Cont::rbc_dump(r::nc, a::pp_hst, r::faces, r::nv, r::nt, id++);
+	rbc_dump(r::nc, a::pp_hst, r::faces, r::nv, r::nt, id++);
     }
 }
 

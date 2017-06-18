@@ -1,6 +1,4 @@
-void ply_dump(const char * filename,
-              int *mesh_indices, const int ninstances, const int ntriangles_per_instance, Particle * _particles,
-              int nvertices_per_instance);
+void rbc_dump(int nc, Particle *p, int* triplets, int nv, int nt, int id);
 
 class H5FieldDump {
     static bool directory_exists;
