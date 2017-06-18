@@ -2,7 +2,7 @@ namespace l { namespace ply {
 
 void write(const char *fname, const Mesh m)
 {
-#ifndef WRITE_BINARY
+#ifdef PLY_WRITE_ASCII
   FILE * f = fopen(fname, "w");
 
   assert(f != NULL);
