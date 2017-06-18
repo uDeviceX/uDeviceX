@@ -16,16 +16,17 @@ void remove_rbcs_from_wall() {
 
     std::vector<int> tmp(marks.S);
     cD2H(tmp.data(), marks.D, marks.S);
-    std::vector<int> tokill;
+    std::vector<int> stay;
     for (int i = 0; i < r::nc; ++i) {
 	bool valid = true;
 	for (int j = 0; j < r::nv && valid; ++j)
-	valid &= (tmp[j + r::nv * i] == W_BULK);
-	if (!valid) tokill.push_back(i);
+	  valid &= (tmp[j + r::nv * i] == W_BULK);
+	if (valid) stay.push_back(i);
     }
 
-    r::nc = Cont::remove<DEV>(r::pp, r::nv, r::nc, &tokill.front(), tokill.size());
-    r::n = r::nc * r::nv;
+    r::nc = stay.size(); r::n = r::nc * r::nv;
+    Cont::remove<DEV>(r::pp, r::nv, &stay.front(), r::nc);
+
     MSG("%d/%d RBCs survived", r::nc, nc0);
 }
 
@@ -39,27 +40,24 @@ void remove_solids_from_wall() {
 
     std::vector<int> marks_hst(marks.S);
     cD2H(marks_hst.data(), marks.D, marks.S);
-    std::vector<int> tokill;
+    std::vector<int> stay;
     for (int i = 0; i < s::ns; ++i) {
 	bool valid = true;
 	for (int j = 0; j < s::m_dev.nv && valid; ++j)
-	valid &= (marks_hst[j + s::m_dev.nv * i] == W_BULK);
-	if (!valid) tokill.push_back(i);
+	  valid &= (marks_hst[j + s::m_dev.nv * i] == W_BULK);
+	if (valid) stay.push_back(i);
     }
 
-    int newns = 0;
-    newns = Cont::remove<DEV> (s::pp,     s::nps, s::ns, &tokill.front(), tokill.size());
-    newns = Cont::remove<HST> (s::pp_hst, s::nps, s::ns, &tokill.front(), tokill.size());
+    Cont::remove<DEV>(r::pp, r::nv, &stay.front(), r::nc);
+    s::ns = stay.size(); s::npp = s::ns * s::nps;
+    Cont::remove<DEV> (s::pp,     s::nps, &stay.front(), s::ns);
+    Cont::remove<HST> (s::pp_hst, s::nps, &stay.front(), s::ns);
 
-    newns = Cont::remove<DEV> (s::ss_dev, 1, s::ns, &tokill.front(), tokill.size());
-    newns = Cont::remove<HST> (s::ss_hst, 1, s::ns, &tokill.front(), tokill.size());
+    Cont::remove<DEV> (s::ss_dev, 1, &stay.front(), s::ns);
+    Cont::remove<HST> (s::ss_hst, 1, &stay.front(), s::ns);
 
-    newns = Cont::remove<DEV> (s::i_pp_dev, s::m_dev.nv, s::ns, &tokill.front(), tokill.size());
-    newns = Cont::remove<HST> (s::i_pp_hst, s::m_hst.nv, s::ns, &tokill.front(), tokill.size());
-
-    s::ns = newns;
-    s::npp = s::ns * s::nps;
-
+    Cont::remove<DEV> (s::i_pp_dev, s::m_dev.nv, &stay.front(), s::ns);
+    Cont::remove<HST> (s::i_pp_hst, s::m_hst.nv, &stay.front(), s::ns);
     MSG("sim.impl: %d/%d Solids survived", s::ns, ns0);
 }
 
@@ -249,7 +247,7 @@ void ini() {
     wall::alloc_ticket(&w::t);
 
     o::cells   = new Clist(XS, YS, ZS);
-    sol::alloc_ticketD(&o::td);    
+    sol::alloc_ticketD(&o::td);
     sol::alloc_ticketZ(&o::tz);
     sol::alloc_work(&o::w);
 

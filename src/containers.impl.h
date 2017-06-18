@@ -61,22 +61,12 @@ int setup(Particle* pp, int nv, /* storage */ Particle *pp_hst) {
 }
 
 template <bool hst, typename T>
-int remove(T* data, const int npb, const int nb, const int *e, const int ne) {
-    /* remove data with indexes in `e' */
-    /* data: nb blocks of size npb     */
-    const bool GO = false, STAY = true;
-    int ie, i0, i1;
-    std::vector<bool> m(nb, STAY);
-    for (ie = 0; ie < ne; ie++) m[e[ie]] = GO;
-
-    for (i0 = i1 = 0; i0 < nb; i0++)
-    if (m[i0] == STAY)
-    {
-        if (hst) memcpy(data + npb*i1, data + npb*i0, sizeof(T)*npb);
-        else cD2D(data + npb*i1, data + npb*i0, npb);
-	i1++;
-    }
-    const int nstay = i1;
-    return nstay;
+void remove(T* data, const int npb, const int *e, const int n) {
+  int i, j;
+  for (i = 0; i < n; i++) {
+    j = e[i];
+    if (hst) memcpy(data + npb*i, data + npb*j, sizeof(T)*npb);
+    else       cD2D(data + npb*i, data + npb*j,           npb);
+  }
 }
 }
