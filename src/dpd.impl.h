@@ -32,9 +32,7 @@ void init1() {
 
         int interrank_seed = interrank_seed_base + interrank_seed_offset;
 
-        interrank_trunks[i] = new l::rnd::d::KISS(
-                                                 390 + interrank_seed, interrank_seed + 615, 12309, 23094);
-
+        interrank_trunks[i] = new l::rnd::d::KISS(390 + interrank_seed, interrank_seed + 615, 12309, 23094);
         int dstrank = dstranks[i];
 
         if (dstrank != m::rank)
@@ -152,13 +150,11 @@ void _pack_all(Particle *p, int n, bool update_baginfos) {
             baginfos[i].dbag = sendhalos[i]->dbuf->D;
             baginfos[i].hbag = sendhalos[i]->hbuf->D;
         }
-        CC(cudaMemcpyToSymbolAsync(PackingHalo::baginfos, baginfos,
-                                   sizeof(baginfos), 0, H2D));
+        CC(cudaMemcpyToSymbolAsync(PackingHalo::baginfos, baginfos, sizeof(baginfos), 0, H2D));
     }
 
-    if (PackingHalo::ncells)
-    PackingHalo::fill_all<<<(PackingHalo::ncells + 1) / 2, 32>>>(
-                                                                 p, n, required_send_bag_size);
+    if (ncells)
+      PackingHalo::fill_all<<<(ncells + 1) / 2, 32>>>(p, n, required_send_bag_size);
     CC(cudaEventRecord(evfillall));
 }
 
@@ -193,7 +189,7 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
             for (int i = 0, s = 0; i < 26; ++i)
             cellpackstarts[i + 1] =
                 (s += sendhalos[i]->dcellstarts->S * (sendhalos[i]->expected > 0));
-            PackingHalo::ncells = cellpackstarts[26];
+            ncells = cellpackstarts[26];
             CC(cudaMemcpyToSymbol(PackingHalo::cellpackstarts, cellpackstarts,
                                   sizeof(cellpackstarts), 0, H2D));
         }
@@ -212,10 +208,9 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
         }
     }
 
-    if (PackingHalo::ncells)
+    if (ncells)
     PackingHalo::
-        count_all<<<k_cnf(PackingHalo::ncells)>>>(
-                                                  cellsstart, cellscount, PackingHalo::ncells);
+        count_all<<<k_cnf(ncells)>>>(cellsstart, cellscount, ncells);
 
     PackingHalo::scan_diego<32><<<26, 32 * 32>>>();
 
@@ -257,10 +252,7 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
         }
     }
 
-    if (PackingHalo::ncells)
-    PackingHalo::copycells<0><<<k_cnf(PackingHalo::ncells)>>>
-        (PackingHalo::ncells);
-
+    if (ncells) PackingHalo::copycells<0><<<k_cnf(ncells)>>>(ncells);
     _pack_all(p, n, firstpost);
 
 }

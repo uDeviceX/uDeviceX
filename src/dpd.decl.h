@@ -1,6 +1,7 @@
 // see the vanilla version of this code for details about how this class
 // operates
 namespace DPD {
+int ncells;
 l::rnd::d::KISS *local_trunk;
 
 /* allocated inside init1 */

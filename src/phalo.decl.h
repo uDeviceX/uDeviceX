@@ -1,5 +1,4 @@
 namespace PackingHalo {
-int ncells;
 __constant__ int cellpackstarts[27];
 struct CellPackSOA {
     int *start, *count, *scan, size;
