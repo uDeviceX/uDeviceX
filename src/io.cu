@@ -78,10 +78,10 @@ static void rbc_dump0(const char * filename,
 }
 
 void rbc_dump(int nc, Particle *p, int* triplets, int nv, int nt, int id) {
-    const char *format4ply = "ply/rbcs-%05d.ply";
-    char buf[200];
-    sprintf(buf, format4ply, id);
-    if (m::rank == 0) mkdir("ply", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    const char *fmt = "r/%05d.ply";
+    char buf[BUFSIZ];
+    sprintf(buf, fmt, id);
+    if (m::rank == 0) mkdir("r", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     rbc_dump0(buf, triplets, nc, nt, p, nv);
 }
 

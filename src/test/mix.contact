@@ -14,7 +14,7 @@
 # :
 # { make clean &&  u.make -j && make -C ../tools; } > /dev/null
 # u.run
-# ply2punto ply/rbcs-00002.ply | uscale 1 > ply.out.txt
+# ply2punto r/00002.ply | uscale 1 > ply.out.txt
 
 #### no contact force: RBC and sphere in double Poiseuille
 # nTEST: mix.no.contact.t1
@@ -32,5 +32,5 @@
 # :
 # { make clean &&  u.make -j && make -C ../tools; } > /dev/null
 # u.run
-# ply2punto ply/rbcs-00002.ply | uscale 1 > ply.out.txt
+# ply2punto r/00002.ply | uscale 1 > ply.out.txt
 #

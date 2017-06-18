@@ -13,7 +13,7 @@
 # :
 # { make clean &&  u.make -j && make -C ../tools; } > /dev/null
 # u.run
-# ply2punto ply/rbcs-00002.ply | uscale 100 > ply.out.txt
+# ply2punto r/00002.ply | uscale 100 > ply.out.txt
 #
 
 #### no contact force: two RBCs in double Poiseuille
@@ -31,5 +31,5 @@
 # :
 # { make clean && u.make -j && make -C ../tools; } > /dev/null
 # u.run
-# ply2punto ply/rbcs-00002.ply | uscale 100 > ply.out.txt
+# ply2punto r/00002.ply | uscale 100 > ply.out.txt
 #

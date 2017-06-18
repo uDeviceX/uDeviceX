@@ -9,7 +9,7 @@
 # :
 # { make clean && u.make -j && make -C ../tools; } > /dev/null
 # u.run
-# ply2punto ply/rbcs-00003.ply | uscale 100 > ply.out.txt
+# ply2punto r/00003.ply | uscale 100 > ply.out.txt
 #
 
 #### RBC initialy rotated
@@ -27,7 +27,7 @@
 # :
 # { make clean && u.make -j && make -C ../tools; } > /dev/null
 # u.run
-# ply2punto ply/rbcs-00003.ply | uscale 100 > ply.out.txt
+# ply2punto r/00003.ply | uscale 100 > ply.out.txt
 
 #### RBC with wall
 # nTEST: diag.t3
@@ -43,7 +43,7 @@
 # :
 # { make clean && u.make -j && make -C ../tools; } > /dev/null
 # u.run
-# ply2punto ply/rbcs-00003.ply | uscale 100 > ply.out.txt
+# ply2punto r/00003.ply | uscale 100 > ply.out.txt
 
 #### one RBC around cylinder
 # nTEST: flow.around.t1
@@ -59,7 +59,7 @@
 # :
 # { make clean && u.make -j && make -C ../tools; } > /dev/null
 # u.run
-# ply2punto ply/rbcs-00001.ply | uscale 100 > ply.out.txt
+# ply2punto r/00001.ply | uscale 100 > ply.out.txt
 
 #### two RBCs around cylinder
 # nTEST: flow.around.t2
@@ -78,7 +78,7 @@
 # :
 # { make clean && u.make -j && make -C ../tools; } > /dev/null
 # u.run
-# ply2punto ply/rbcs-00001.ply | uscale 10 > ply.out.txt
+# ply2punto r/00001.ply | uscale 10 > ply.out.txt
 #
 
 #### two RBCs around cylinder with one RBC removed by the wall
@@ -97,5 +97,5 @@
 # :
 # { make clean && u.make -j && make -C ../tools; } > /dev/null
 # u.run
-# ply2punto ply/rbcs-00001.ply | uscale 100 > ply.out.txt
+# ply2punto r/00001.ply | uscale 100 > ply.out.txt
 #
