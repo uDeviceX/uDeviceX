@@ -12,7 +12,7 @@ LIBS      += -lcudart
 
 OBJ0 = bund.o  collision.o common.o force.o dpd.o field.o glb.o io.o  m.o main.o \
 	mbounce.o mesh.o mrescue.o minmax.o solid.o tcells.o restart.o
-OBJL = l.clist.o l.m.o l.off.o l.ply.o l.scan.o l.rnd.o
+OBJL = l.clist.o l.gsl.o l.m.o l.off.o l.ply.o l.scan.o l.rnd.o
 OBJS = $(OBJ0) $(OBJL)
 
 ifeq ($(h5),0)

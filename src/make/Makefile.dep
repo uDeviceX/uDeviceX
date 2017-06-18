@@ -8,6 +8,7 @@ glb.o: $S/common.h $S/conf.common.h conf.h $S/glb.h $S/m.h
 io.o: $S/common.h $S/conf.common.h conf.h $S/io.h $S/l/m.h $S/m.h
 k/rbc0.h: $S/params/rbc.inc0.h
 l.clist.o: $S/common.h $S/l/clist.h $S/l/d/clist.h $S/l/h/clist.h
+l.gsl.o: $S/l/gsl.h $S/l/h/gsl.h
 l.m.o: $S/l/h/m.h $S/l/m.h
 l.off.o: $S/l/h/off.h $S/l/off.h
 l.ply.o: $S/common.h $S/l/h/ply.h $S/l/ply.h
@@ -20,5 +21,5 @@ minmax.o: $S/common.h conf.h $S/m.h $S/minmax.h
 m.o: $S/m.h
 mrescue.o: $S/collision.h $S/common.h conf.h $S/mrescue.h
 restart.o: $S/common.h $S/m.h $S/restart.h
-solid.o: $S/common.h $S/conf.common.h conf.h $S/gsl.impl.h $S/k/solid.h $S/mesh.h $S/solid.h
+solid.o: $S/common.h $S/conf.common.h conf.h $S/k/solid.h $S/l/gsl.h $S/mesh.h $S/solid.h
 tcells.o: $S/common.h conf.h $S/m.h $S/tcells.h
