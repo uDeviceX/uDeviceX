@@ -1,4 +1,5 @@
-namespace l { namespace ply {{
+namespace l { namespace ply {
+
 void write(const char *fname, const Mesh m)
 {
   int i;
