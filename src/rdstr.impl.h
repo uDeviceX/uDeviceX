@@ -174,7 +174,7 @@ void unpack(Particle *pp, int nv) {
     _post_recvcnt();
 }
 
-void close() {
+void fin() {
     l::m::Comm_free(&cart);
     for (int i = 0; i < 27; i++) delete rbuf[i];
     for (int i = 0; i < 27; i++) delete sbuf[i];

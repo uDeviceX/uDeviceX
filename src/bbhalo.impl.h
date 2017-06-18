@@ -94,7 +94,7 @@ void ini()
     _post_recvcnt();
 }
 
-void close()
+void fin()
 {
     l::m::Comm_free(&cart);
 }

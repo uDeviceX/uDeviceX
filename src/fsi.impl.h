@@ -6,7 +6,7 @@ void ini() {
     *local_trunk = l::rnd::d::KISS(1908 - m::rank, 1409 + m::rank, 290, 12968);
 }
 
-void close() {
+void fin() {
     delete local_trunk;
     delete wsolvent;
 }

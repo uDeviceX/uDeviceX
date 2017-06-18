@@ -363,18 +363,18 @@ void run() {
     else               run_nowall(nsteps);
 }
 
-void close() {
-    sdstr::close();
+void fin() {
+    sdstr::fin();
 
-    rdstr::close();
-    bbhalo::close();
-    cnt::close();
-    DPD::close();
-    dump::close();
-    rex::close();
-    fsi::close();
+    rdstr::fin();
+    bbhalo::fin();
+    cnt::fin();
+    DPD::fin();
+    dump::fin();
+    rex::fin();
+    fsi::fin();
 
-    if (solids0) mrescue::close();
+    if (solids0) mrescue::fin();
 
     wall::free_quants(&w::q);
     wall::free_ticket(&w::t);
@@ -395,7 +395,7 @@ void close() {
 	CC(cudaFree(r::av));
     }
 
-    if (solids) s::close();
+    if (solids) s::fin();
 }
 
 }

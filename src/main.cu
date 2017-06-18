@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
 
     sim::ini();
     sim::run();
-    sim::close();
+    sim::fin();
   
     MC(l::m::Finalize());
 }

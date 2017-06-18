@@ -20,7 +20,7 @@ void ini(int n)
     CC(cudaMalloc(&tags_dev, n*sizeof(int)));
 }
 
-void close()
+void fin()
 {
     delete[] tags_hst;
     CC(cudaFree(tags_dev));

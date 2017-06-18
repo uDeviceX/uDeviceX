@@ -78,7 +78,7 @@ void bulk_wall(/*io*/ Particle *s_pp, int *s_n, /*o*/ Particle *w_pp, int *w_n) 
   CC(cudaFree(keys));
 }
 
-void close() {
+void fin() {
     CC(cudaUnbindTexture(k_sdf::texSDF));
     CC(cudaFreeArray(arrSDF));
 }

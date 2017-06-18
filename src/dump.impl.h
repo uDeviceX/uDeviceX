@@ -10,7 +10,7 @@ void ini() {
     w_pp = new Particle[MAX_PART_NUM];
 }
 
-void close() {
+void fin() {
     delete[] w_pp;
 }
 

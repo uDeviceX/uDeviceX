@@ -96,7 +96,7 @@ void ini() {
     allocate();
 }
 
-void close() {
+void fin() {
     deallocate();
 }
 }

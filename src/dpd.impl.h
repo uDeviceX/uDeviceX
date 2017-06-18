@@ -409,7 +409,7 @@ void _cancel_recv() {
     }
 }
 
-void close() {
+void fin() {
     CC(cudaFreeHost(required_send_bag_size));
     MC(l::m::Comm_free(&cart));
     _cancel_recv();

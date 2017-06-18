@@ -102,7 +102,7 @@ void halo(ParticlesWrap halos[26]) {
 
 }
 
-void close() {
+void fin() {
     delete subindices;
     delete compressed_cellscount;
     delete cellsentries;

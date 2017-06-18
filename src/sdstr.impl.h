@@ -230,7 +230,7 @@ void unpack(const int nv, /**/ Solid *ss_hst, Particle *pp)
     _post_recvcnt();
 }
 
-void close()
+void fin()
 {
     l::m::Comm_free(&cart);
 }

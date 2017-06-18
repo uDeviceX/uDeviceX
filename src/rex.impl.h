@@ -362,7 +362,7 @@ void recv_f() {
     }
 }
 
-void close() {
+void fin() {
     MC(l::m::Comm_free(&cart));
 
     CC(cudaEventDestroy(evPpacked));
