@@ -97,8 +97,8 @@ namespace sub {
 #include "k/rex.h"
 #include "rex.impl.h"
 
-#include "packinghalo.decl.h"
-#include "packinghalo.impl.h"
+#include "phalo.decl.h"
+#include "phalo.impl.h"
 
 #include "bipsbatch.decl.h"
 #include "bipsbatch.impl.h"
