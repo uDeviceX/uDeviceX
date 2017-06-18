@@ -122,7 +122,7 @@ namespace sub {
 #include "dump.decl.h"
 #include "dump.impl.h"
 
-#include "ply.h"
+#include "l/ply.h"
 
 #include "s/decl.h"
 #include "s/ic.h"

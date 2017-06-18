@@ -1,6 +1,6 @@
 namespace s {
 void load_solid_mesh(const char *fname) {
-    ply::read(fname, &m_hst);
+    l::ply::read(fname, &m_hst);
 
     m_dev.nv = m_hst.nv;
     m_dev.nt = m_hst.nt;
