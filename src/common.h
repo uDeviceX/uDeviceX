@@ -12,6 +12,9 @@
 #define MAX_VERT_NUM 10000
 #define MAX_CELL_NUM 100000
 
+/* write ascii/bin in l/ply.cu */
+#define PLY_WRITE_ASCII
+
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less
    than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
