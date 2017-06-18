@@ -77,6 +77,14 @@ static void rbc_dump0(const char * filename,
     MPI_File_close(&f);
 }
 
+void rbc_dump(int nc, Particle *p, int* triplets, int nv, int nt, int id) {
+    const char *format4ply = "ply/rbcs-%05d.ply";
+    char buf[200];
+    sprintf(buf, format4ply, id);
+    if (m::rank == 0) mkdir("ply", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    rbc_dump0(buf, triplets, nc, nt, p, nv);
+}
+
 void H5FieldDump::_xdmf_header(FILE * xmf) {
     fprintf(xmf, "<?xml version=\"1.0\" ?>\n");
     fprintf(xmf, "<!DOCTYPE Xdmf SYSTEM \"Xdmf.dtd\" []>\n");
