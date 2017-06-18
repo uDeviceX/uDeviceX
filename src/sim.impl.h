@@ -67,7 +67,7 @@ void create_walls() {
     int nold = o::n;
 
     dSync();
-    sdf::init();
+    sdf::ini();
     wall::create(&o::n, o::pp, &w::q, &w::t);
     MSG("solvent particles survived: %d/%d", o::n, nold);
     if (o::n) k_sim::clear_velocity<<<k_cnf(o::n)>>>(o::pp, o::n);
@@ -232,18 +232,18 @@ void bounce() {
   //if (rbcs && r::n) k_sdf::bounce<<<k_cnf(r::n)>>>((float2*)r::pp, r::n);
 }
 
-void init() {
+void ini() {
     if (rbcs) CC(cudaMalloc(&r::av, MAX_CELL_NUM));
 
     rbc::setup(r::faces);
-    rdstr::init();
-    DPD::init();
-    fsi::init();
-    sdstr::init();
-    bbhalo::init();
-    cnt::init();
-    rex::init();
-    dump::init();
+    rdstr::ini();
+    DPD::ini();
+    fsi::ini();
+    sdstr::ini();
+    bbhalo::ini();
+    cnt::ini();
+    rex::ini();
+    dump::ini();
 
     wall::alloc_quants(&w::q);
     wall::alloc_ticket(&w::t);
@@ -264,8 +264,8 @@ void init() {
     }
 
     if (solids) {
-	mrescue::init(MAX_PART_NUM);
-	s::init();
+	mrescue::ini(MAX_PART_NUM);
+	s::ini();
     }
 
     o::n = ic::gen(o::pp_hst);

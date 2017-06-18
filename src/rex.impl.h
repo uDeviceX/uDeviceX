@@ -8,7 +8,7 @@ void _adjust_packbuffers() {
     host_packbuf->resize(s);
 }
 
-void init() {
+void ini() {
     iterationcount = -1;
     packstotalstart = new DeviceBuffer<int>(27);
     host_packstotalstart = new PinnedHostBuffer<int>(27);
@@ -105,7 +105,7 @@ void _pack_attempt() {
     if (packsstart->S)
     CC(cudaMemsetAsync(packsstart->D, 0, sizeof(int) * packsstart->S));
 
-    k_rex::init<<<1, 1>>>();
+    k_rex::ini<<<1, 1>>>();
     for (int i = 0; i < (int) wsolutes.size(); ++i) {
         ParticlesWrap it = wsolutes[i];
         if (it.n) {

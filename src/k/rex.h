@@ -6,7 +6,7 @@ __constant__ int ccounts[26], cbases[27], cpaddedstarts[27];
 __constant__ float *recvbags[26];
 
 
-__global__ void init() { failed = false; }
+__global__ void ini() { failed = false; }
 __global__ void scatter_indices(float2 *particles,
                                 int nparticles, int *counts) {
     int warpid = threadIdx.x >> 5;

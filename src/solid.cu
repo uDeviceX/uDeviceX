@@ -44,17 +44,17 @@ static void init_I_fromm(float pmass, const Mesh mesh, /**/ float *I)
 }
 #endif
     
-void init(const Particle *pp, int n, float pmass, const float *com, const Mesh mesh, /**/ float *rr0, Solid *s)
+void ini(const Particle *pp, int n, float pmass, const float *com, const Mesh mesh, /**/ float *rr0, Solid *s)
 {
     s->v[X] = s->v[Y] = s->v[Z] = 0; 
     s->om[X] = s->om[Y] = s->om[Z] = 0; 
 
-    /* init basis vectors */
+    /* ini basis vectors */
     s->e0[X] = 1; s->e0[Y] = 0; s->e0[Z] = 0;
     s->e1[X] = 0; s->e1[Y] = 1; s->e1[Z] = 0;
     s->e2[X] = 0; s->e2[Y] = 0; s->e2[Z] = 1;
 
-    /* init inertia tensor */
+    /* ini inertia tensor */
     float I[6]; 
 #ifdef spdir // open geometry, use particles
     init_I_frompp(pp, n, pmass, com, /**/ I);

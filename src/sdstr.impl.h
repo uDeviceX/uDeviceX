@@ -40,7 +40,7 @@ static void gen_ne(MPI_Comm cart, /* */ int* rnk_ne, int* ank_ne)
     }
 }
 
-void init()
+void ini()
 {        
     l::m::Comm_dup(m::cart, &cart);
     gen_ne(cart,   rnk_ne, ank_ne); /* generate ranks and anti-ranks */

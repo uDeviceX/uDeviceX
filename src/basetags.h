@@ -14,7 +14,7 @@
     _(BT_P2_DPD)                                \
     _(BT_CS_DPD)                                \
     _(BT_C_DPD)                                 \
-    /* wall.impl.h (init) */                    \
+    /* wall.impl.h (ini) */                    \
     _(BT_C_WALL)                                \
     _(BT_P_WALL)                                \
     /* rex.impl.h */                            \

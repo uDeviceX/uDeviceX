@@ -1,6 +1,6 @@
 namespace solid
 {
-void init(const Particle *pp, int n, float pmass, const float *com, const Mesh mesh, /**/ float *rr0, Solid *s);
+void ini(const Particle *pp, int n, float pmass, const float *com, const Mesh mesh, /**/ float *rr0, Solid *s);
     
 void reinit_ft_hst(const int nsolid, /**/ Solid *ss);
 void reinit_ft_dev(const int nsolid, /**/ Solid *ss);

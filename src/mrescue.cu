@@ -14,7 +14,7 @@ int *tags_hst, *tags_dev;
 static _DH_ int min2(int a, int b) {return a < b ? a : b;}
 static _DH_ int max2(int a, int b) {return a < b ? b : a;}
 
-void init(int n)
+void ini(int n)
 {
     tags_hst = new int[n];
     CC(cudaMalloc(&tags_dev, n*sizeof(int)));

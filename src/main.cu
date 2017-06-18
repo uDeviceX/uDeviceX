@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
   
     glb::sim(); /* simulation level globals */
 
-    sim::init();
+    sim::ini();
     sim::run();
     sim::close();
   

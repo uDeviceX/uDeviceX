@@ -68,9 +68,9 @@ void create(Particle *opp, int *on) {
     load_solid_mesh("mesh_solid.ply");
 
     // generate models
-    MSG("start solid init");
-    ic::init("ic_solid.txt", m_hst, /**/ &ns, &nps, rr0_hst, ss_hst, on, opp, pp_hst);
-    MSG("done solid init");
+    MSG("start solid ini");
+    ic::ini("ic_solid.txt", m_hst, /**/ &ns, &nps, rr0_hst, ss_hst, on, opp, pp_hst);
+    MSG("done solid ini");
 
     allocate_tcells();
     
@@ -91,7 +91,7 @@ void create(Particle *opp, int *on) {
     MC(l::m::Barrier(m::cart));
 }
 
-void init() {
+void ini() {
     npp = ns = nps = 0;
     allocate();
 }

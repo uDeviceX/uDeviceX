@@ -129,7 +129,7 @@ void init0() {
                                 cudaEventDisableTiming | cudaEventBlockingSync));
 }
 
-void init() {
+void ini() {
     local_trunk = new l::rnd::d::KISS(0, 0, 0, 0);
     for (int i = 0; i < 26; i++) recvhalos[i] = new RecvHalo;
     for (int i = 0; i < 26; i++) sendhalos[i] = new SendHalo;

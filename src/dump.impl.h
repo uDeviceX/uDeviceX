@@ -1,6 +1,6 @@
 namespace dump
 {
-void init() {
+void ini() {
     if (m::rank == 0)
     mkdir("bop", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 

@@ -1,6 +1,6 @@
 namespace mrescue
 {
-void init(int n);
+void ini(int n);
 void close();
 
 void rescue_hst(const Mesh m, const Particle *i_pp, const int ns, const int n,

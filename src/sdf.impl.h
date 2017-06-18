@@ -8,7 +8,7 @@ void setup() {
     k_sdf::texSDF.addressMode[2] = cudaAddressModeWrap;
 }
 
-void init() {
+void ini() {
     int N[3]; float extent[3];
 
     field::ini_dims("sdf.dat", N, extent);

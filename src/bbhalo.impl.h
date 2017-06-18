@@ -85,7 +85,7 @@ void _post_recvcnt()
     }
 }
 
-void init()
+void ini()
 {
     l::m::Comm_dup(m::cart, &cart);
     

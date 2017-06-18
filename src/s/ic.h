@@ -183,7 +183,7 @@ void set_ids(const int ns, Solid *ss_hst) {
     ss_hst[j].id = id++;
 }
 
-void init(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp)
+void ini(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp)
 {
     float *coms = new float[MAX_SOLIDS * 3 * 10];
         
@@ -231,7 +231,7 @@ void init(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, S
         for (int d = 0; d < 3; ++d)
         model.com[d] = coms[idmax*3 + d];
     
-        solid::init(r_pp, npsolid, solid_mass, model.com, m, /**/ rr0, &model);
+        solid::ini(r_pp, npsolid, solid_mass, model.com, m, /**/ rr0, &model);
     }
     
     MC( MPI_Bcast(&npsolid,       1,   MPI_INT, root, m::cart) );

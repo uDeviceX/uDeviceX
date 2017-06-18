@@ -1,5 +1,5 @@
 namespace cnt {
-void init() {
+void ini() {
     cellsstart = new DeviceBuffer<int>(k_cnt::NCELLS + 16);
     cellscount = new DeviceBuffer<int>(k_cnt::NCELLS + 16);
     compressed_cellscount = new DeviceBuffer<unsigned char>(k_cnt::NCELLS + 16);
