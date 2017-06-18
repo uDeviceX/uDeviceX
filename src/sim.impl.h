@@ -48,7 +48,6 @@ void remove_solids_from_wall() {
 	if (valid) stay.push_back(i);
     }
 
-    Cont::remove<DEV>(r::pp, r::nv, &stay.front(), r::nc);
     s::ns = stay.size(); s::npp = s::ns * s::nps;
     Cont::remove<DEV> (s::pp,     s::nps, &stay.front(), s::ns);
     Cont::remove<HST> (s::pp_hst, s::nps, &stay.front(), s::ns);
