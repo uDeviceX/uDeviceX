@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# local wrapper for urep : run from ./src
+
+if test $# -ne 2; then printf 'urep: [A] [B]\n' >&2; fi
+
+find . -name '*.cu' -o -name '*.h' | xargs urep
