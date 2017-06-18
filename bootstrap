@@ -1,25 +1,33 @@
 #!/bin/bash
 
-# clone all udx related repos
+# download/update and install udx related projects
 
-# Run commands
+# Run
 # $ curl https://raw.githubusercontent.com/slitvinov/uDeviceX/solid/bootstrap -o bootstrap
 # $ sh bootstrap
 
-l="atest bop clarity off ri vi"
+l="atest bop clarity off ri vi udx"
 p=https://github.com/slitvinov
 #p=git@gitlab.ethz.ch:mavt-cse
 b=solid
 
-c0 () { git clone "$p/$1"; }
-cb () { git clone "$p/$1" --branch "$b" udx ; }
-
-install() (
-    set -x
-    cd "$1" && make install
-    set +x
+git_udx() (
+    n=uDeviceX
+    cmd git -q clone clone "$p/$n" --branch "$b" udx
 )
+git_all()  { cmd git -q clone "$p/$d" "$d"; }
+pull0()    ( cd0 "$d" && cmd git -q pull )
+install0() ( cd0 "$d" && cmd install )
 
-cb uDeviceX
-for r in $l; do c0 $r     ; done
-for r in $l; do install $r; done
+git0()     { if test "$d" = udx; then git_udx; else git_all; fi; }
+installd() { if test -d "$d"; then install0; else err "no dir: $d"; fi; }
+cloned()   { if test -d "$d"; then    pull0; else git0;             fi; }
+
+msg()      { printf 'bstrap: %s\n' "$*" >&2 ; }
+err()      { msg "$@"; exit 1; }
+cmd()      { msg "> $*"; cmd0 "$@"; }
+cmd0()     { (echo "$@"); status; }
+status()   { if test "$?" -eq 0; then msg "  OK"; else msg "  FAILED"; fi; }
+cd0()      { msg ": cd $1"; cd "$1"; }
+for d in $l; do cloned; done
+for d in $l; do installd; done
