@@ -1,6 +1,7 @@
 namespace l { namespace ply {{
 void write(const char *fname, const Mesh m)
 {
+  int i;
   FILE * f = fopen(fname, "w");
 
   assert(f != NULL);
@@ -15,10 +16,10 @@ void write(const char *fname, const Mesh m)
   fprintf(f, "property list int int vertex_index\n");
   fprintf(f, "end_header\n");
 
-  for (int i = 0; i < m.nv; ++i)
+  for (i = 0; i < m.nv; ++i)
     fprintf(f, "%f %f %f\n", m.vv[3*i + 0], m.vv[3*i + 1], m.vv[3*i + 2]);
 
-  for (int i = 0; i < m.nt; ++i)
+  for (i = 0; i < m.nt; ++i)
     fprintf(f, "3 %d %d %d\n", m.tt[3*i + 0], m.tt[3*i + 1], m.tt[3*i + 2]);
 
   fclose(f);
