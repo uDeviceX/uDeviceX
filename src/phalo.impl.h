@@ -1,4 +1,4 @@
-namespace PackingHalo {
+namespace phalo {
 __global__ void count_all(int *cellsstart,
                           int *cellscount, int ntotalcells) {
     int gid = threadIdx.x + blockDim.x * blockIdx.x;

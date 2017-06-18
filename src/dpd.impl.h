@@ -140,7 +140,7 @@ void init() {
 
 void _pack_all(Particle *p, int n, bool update_baginfos) {
     if (update_baginfos) {
-        static PackingHalo::SendBagInfo baginfos[26];
+        static phalo::SendBagInfo baginfos[26];
         for (int i = 0; i < 26; ++i) {
             baginfos[i].start_src = sendhalos[i]->tmpstart->D;
             baginfos[i].count_src = sendhalos[i]->tmpcount->D;
@@ -150,11 +150,11 @@ void _pack_all(Particle *p, int n, bool update_baginfos) {
             baginfos[i].dbag = sendhalos[i]->dbuf->D;
             baginfos[i].hbag = sendhalos[i]->hbuf->D;
         }
-        CC(cudaMemcpyToSymbolAsync(PackingHalo::baginfos, baginfos, sizeof(baginfos), 0, H2D));
+        CC(cudaMemcpyToSymbolAsync(phalo::baginfos, baginfos, sizeof(baginfos), 0, H2D));
     }
 
     if (ncells)
-      PackingHalo::fill_all<<<(ncells + 1) / 2, 32>>>(p, n, required_send_bag_size);
+      phalo::fill_all<<<(ncells + 1) / 2, 32>>>(p, n, required_send_bag_size);
     CC(cudaEventRecord(evfillall));
 }
 
@@ -190,12 +190,12 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
             cellpackstarts[i + 1] =
                 (s += sendhalos[i]->dcellstarts->S * (sendhalos[i]->expected > 0));
             ncells = cellpackstarts[26];
-            CC(cudaMemcpyToSymbol(PackingHalo::cellpackstarts, cellpackstarts,
+            CC(cudaMemcpyToSymbol(phalo::cellpackstarts, cellpackstarts,
                                   sizeof(cellpackstarts), 0, H2D));
         }
 
         {
-            static PackingHalo::CellPackSOA cellpacks[26];
+            static phalo::CellPackSOA cellpacks[26];
             for (int i = 0; i < 26; ++i) {
                 cellpacks[i].start = sendhalos[i]->tmpstart->D;
                 cellpacks[i].count = sendhalos[i]->tmpcount->D;
@@ -203,16 +203,16 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
                 cellpacks[i].scan = sendhalos[i]->dcellstarts->D;
                 cellpacks[i].size = sendhalos[i]->dcellstarts->S;
             }
-            CC(cudaMemcpyToSymbol(PackingHalo::cellpacks, cellpacks,
+            CC(cudaMemcpyToSymbol(phalo::cellpacks, cellpacks,
                                   sizeof(cellpacks), 0, H2D));
         }
     }
 
     if (ncells)
-    PackingHalo::
+    phalo::
         count_all<<<k_cnf(ncells)>>>(cellsstart, cellscount, ncells);
 
-    PackingHalo::scan_diego<32><<<26, 32 * 32>>>();
+    phalo::scan_diego<32><<<26, 32 * 32>>>();
 
     if (firstpost)
     post_expected_recv();
@@ -228,31 +228,31 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
             static int *srccells[26];
             for (int i = 0; i < 26; ++i) srccells[i] = sendhalos[i]->dcellstarts->D;
 
-            CC(cudaMemcpyToSymbol(PackingHalo::srccells, srccells, sizeof(srccells),
+            CC(cudaMemcpyToSymbol(phalo::srccells, srccells, sizeof(srccells),
                                   0, H2D));
 
             static int *dstcells[26];
             for (int i = 0; i < 26; ++i)
             dstcells[i] = sendhalos[i]->hcellstarts->DP;
 
-            CC(cudaMemcpyToSymbol(PackingHalo::dstcells, dstcells, sizeof(dstcells),
+            CC(cudaMemcpyToSymbol(phalo::dstcells, dstcells, sizeof(dstcells),
                                   0, H2D));
         }
 
         {
             static int *srccells[26];
             for (int i = 0; i < 26; ++i) srccells[i] = recvhalos[i]->hcellstarts->DP;
-            CC(cudaMemcpyToSymbol(PackingHalo::srccells, srccells, sizeof(srccells),
+            CC(cudaMemcpyToSymbol(phalo::srccells, srccells, sizeof(srccells),
                                   sizeof(srccells), H2D));
 
             static int *dstcells[26];
             for (int i = 0; i < 26; ++i) dstcells[i] = recvhalos[i]->dcellstarts->D;
-            CC(cudaMemcpyToSymbol(PackingHalo::dstcells, dstcells, sizeof(dstcells),
+            CC(cudaMemcpyToSymbol(phalo::dstcells, dstcells, sizeof(dstcells),
                                   sizeof(dstcells), H2D));
         }
     }
 
-    if (ncells) PackingHalo::copycells<0><<<k_cnf(ncells)>>>(ncells);
+    if (ncells) phalo::copycells<0><<<k_cnf(ncells)>>>(ncells);
     _pack_all(p, n, firstpost);
 
 }
