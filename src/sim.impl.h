@@ -238,7 +238,7 @@ void ini() {
     create_ticketZ(o::pp, o::n, &o::tz);
 
     if (rbcs) {
-        r::q.nc = rbc::ic::setup(r::q.pp, r::q.nv, /* storage */ r::q.pp_hst);
+        r::q.nc = rbc::ic::setup("rbc.off", "rbcs-ic.txt", r::q.pp, r::q.nv, /* storage */ r::q.pp_hst);
         r::q.n = r::q.nc * r::q.nv;
     }
 

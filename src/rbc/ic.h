@@ -16,9 +16,8 @@ void transform(float* rr0, int nv, float *A, /* output */ Particle* pp) {
     }
 }
 
-int setup_hst(int nv, Particle *pp) {
+int setup_hst(const char *r_templ, const char *r_state, int nv, Particle *pp) {
     /* fills `pp' with RBCs for this processor */
-    const char *r_templ = "rbc.off", *r_state = "rbcs-ic.txt";
 
     float rr0[3*MAX_VERT_NUM]; /* rbc template */
     l::off::vert(r_templ, rr0);
@@ -51,7 +50,7 @@ int setup_hst(int nv, Particle *pp) {
     return nc;
 }
 
-int setup(Particle* pp, int nv, /* storage */ Particle *pp_hst) {
+int setup(const char *r_templ, const char *r_state, Particle* pp, int nv, /* storage */ Particle *pp_hst) {
     /* fills `pp' with RBCs for this processor */
     int nc = setup_hst(nv, pp_hst);
     if (nc) cH2D(pp, pp_hst, nv * nc);
