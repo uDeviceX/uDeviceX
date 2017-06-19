@@ -9,6 +9,7 @@ void distr_rbc() {
 }
 
 void remove_rbcs_from_wall() {
+    int i, j;
     int nc0 = r::nc;
     if (r::nc <= 0) return;
     DeviceBuffer<int> marks(r::n);
@@ -17,13 +18,10 @@ void remove_rbcs_from_wall() {
     std::vector<int> tmp(marks.S);
     cD2H(tmp.data(), marks.D, marks.S);
     std::vector<int> stay;
-    for (int i = 0; i < r::nc; ++i) {
-	bool valid = true;
-	for (int j = 0; j < r::nv && valid; ++j)
-	  valid &= (tmp[j + r::nv * i] == W_BULK);
-	if (valid) stay.push_back(i);
+    for (i = j = 0; i < r::nc; ++i) {
+      while (j < r::nv && tmp[j + r::nv * i] == W_BULK) ++j;
+      if    (j == r::nv) stay.push_back(i);
     }
-
     r::nc = stay.size(); r::n = r::nc * r::nv;
     Cont::remove<DEV>(r::pp, r::nv, &stay.front(), r::nc);
 
@@ -31,23 +29,19 @@ void remove_rbcs_from_wall() {
 }
 
 void remove_solids_from_wall() {
+    int i, j;
     if (s::npp <= 0) return;
     int ns0 = s::ns;
     int nip = s::ns * s::m_dev.nv;
     DeviceBuffer<int> marks(nip);
-
     k_sdf::fill_keys<<<k_cnf(nip)>>>(s::i_pp_dev, nip, marks.D);
-
     std::vector<int> marks_hst(marks.S);
     cD2H(marks_hst.data(), marks.D, marks.S);
     std::vector<int> stay;
-    for (int i = 0; i < s::ns; ++i) {
-	bool valid = true;
-	for (int j = 0; j < s::m_dev.nv && valid; ++j)
-	  valid &= (marks_hst[j + s::m_dev.nv * i] == W_BULK);
-	if (valid) stay.push_back(i);
+    for (i = j = 0; i < s::ns; ++i) {
+	while (j < s::m_dev.nv && marks_hst[j + s::m_dev.nv * i] == W_BULK) ++j;
+	if    (j == s::m_dev.nv) stay.push_back(i);
     }
-
     s::ns = stay.size(); s::npp = s::ns * s::nps;
     Cont::remove<DEV> (s::pp,     s::nps, &stay.front(), s::ns);
     Cont::remove<HST> (s::pp_hst, s::nps, &stay.front(), s::ns);
