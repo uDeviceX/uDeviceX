@@ -48,5 +48,5 @@ void free_quants(Quants *q) {
 }
 
 void setup(Quants q) {
-    sub::setup(q->tri_hst);
+    sub::setup(q.tri_hst);
 }
