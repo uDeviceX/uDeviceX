@@ -207,6 +207,8 @@ void bounce() {
 void ini() {
     if (rbcs) CC(cudaMalloc(&r::av, MAX_CELL_NUM));
 
+    if (rbcs) rbc::alloc_quants(&r::q);
+    
     rbc::setup(r::faces);
     rdstr::ini();
     DPD::ini();
@@ -360,6 +362,8 @@ void fin() {
     CC(cudaFree(s::pp )); CC(cudaFree(s::ff )); CC(cudaFree(s::rr0));
     CC(cudaFree(o::pp )); CC(cudaFree(o::ff ));
 
+    if (rbcs) rbc::free_quants(&r::q);
+    
     if (rbcs)
     {
         CC(cudaFree(r::pp));
