@@ -51,6 +51,9 @@ namespace sub {
 #undef __DF__
 #include "rbc/imp.h"
 }
+namespace ic {
+#include "rbc/ic.h"
+}
 #include "rbc/int.h"
 }
 
