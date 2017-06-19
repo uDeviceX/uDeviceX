@@ -64,7 +64,7 @@ void setup(int *faces, int4 *tri, Texo<int4> *textri, int *adj0, Texo<int> *texa
     texadj0->setup(adj0, nv*md);
     texadj1->setup(adj1, nv*md);
     textri->setup(tri,   nt);
-    texvert->setup((float2*) pp, npp);
+    texvert->setup((float2*) pp, 3*npp);
 }
 
 void forces(int nc, const Texo<float2> texvert, const Texo<int4> textri, const Texo<int> texadj0, const Texo<int> texadj1, Force *ff, float* av) {
@@ -78,6 +78,7 @@ void forces(int nc, const Texo<float2> texvert, const Texo<int4> textri, const T
     CC(cudaPeekAtLastError());
 
     k_rbc::force<<<k_cnf(nc*nv*md)>>>(texvert, texadj0, texadj1, nc, av, (float*)ff);
+    dSync();
 }
 
 #undef md
