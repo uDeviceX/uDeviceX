@@ -1,16 +1,18 @@
 struct Quants {
     int n, nc, nt, nv;
-    Particle *pp, *pp_hst;
-    Texo <float2> texvert;       /* vertices */
-
-    int *adj0, *adj1;            /*adjacency lists */
-    Texo <int> texadj0, texadj1;
-
-    int4 *tri;                   /* triangles */
-    Texo <int4> textri;
+    Particle *pp, *pp_hst; /* vertices */
+    int *adj0, *adj1;      /* adjacency lists */
+    int4 *tri;             /* triangles */
 
     int *tri_hst;
     float *av;
+};
+
+/* textures ticket */
+struct TicketT {
+    Texo <float2> texvert;
+    Texo <int> texadj0, texadj1;
+    Texo <int4> textri;
 };
 
 
