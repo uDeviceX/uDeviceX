@@ -16,16 +16,16 @@ void Fluid::post_recv(MPI_Comm cart, int rank[],
 
 void Fluid::halo(Particle *pp, int n) {
   CC(cudaMemset(s.size_dev, 0,  27*sizeof(s.size_dev[0])));
-  k_odstr::halo<<<k_cnf(n)>>>(pp, n, /**/ s.iidx, s.size_dev);
+  dev::halo<<<k_cnf(n)>>>(pp, n, /**/ s.iidx, s.size_dev);
 }
 
 void Fluid::scan(int n) {
-  k_odstr::scan<<<1, 32>>>(n, s.size_dev, /**/ s.strt, s.size_pin->DP);
+  dev::scan<<<1, 32>>>(n, s.size_dev, /**/ s.strt, s.size_pin->DP);
   dSync();
 }
 
 void Fluid::pack(Particle *pp, int n) {
-  k_odstr::pack<<<k_cnf(3*n)>>>((float2*)pp, s.iidx, s.strt, /**/ s.dev);
+  dev::pack<<<k_cnf(3*n)>>>((float2*)pp, s.iidx, s.strt, /**/ s.dev);
   dSync();
 }
 
@@ -61,7 +61,7 @@ void Fluid::unpack(int n_pa,
 	    /*io*/ int *count,
 	    /*o*/ uchar4 *subi, Particle *pp_re) {
   /* n_pa: n padded */
-  k_odstr::unpack<<<k_cnf(n_pa)>>>
+  dev::unpack<<<k_cnf(n_pa)>>>
     (n_pa,  r.dev, r.strt, r.strt_pa,
      /*io*/ count,
      /*o*/ (float2*)pp_re, subi);

@@ -129,16 +129,16 @@ void distr(Particle **qpp, int *qn, Clist *cells, TicketD *td, TicketZ *tz, Work
   l::scan::d::scan(count_zip, XS*YS*ZS, /**/ (uint*)cells->start);
 
   if (n)
-    k_odstr::scatter<<<k_cnf(n)>>>
+    sub::dev::scatter<<<k_cnf(n)>>>
       (false, subi_lo,  n, cells->start, /**/ iidx);
 
   if (nhalo)
-    k_odstr::scatter<<<k_cnf(nhalo)>>>
+    sub::dev::scatter<<<k_cnf(nhalo)>>>
       (true, subi_re, nhalo, cells->start, /**/ iidx);
 
   n = nbulk + nhalo;
   if (n)
-    k_odstr::gather<<<k_cnf(n)>>>((float2*)pp, (float2*)pp_re, n, iidx,
+    sub::dev::gather<<<k_cnf(n)>>>((float2*)pp, (float2*)pp_re, n, iidx,
        /**/ (float2*)pp0, zip0, zip1);
 
   *qn = n;
