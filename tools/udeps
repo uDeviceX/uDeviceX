@@ -2,6 +2,6 @@
 
 # temp. fix for clarity/udeps
 # run from src/
-udeps *.cu *.h */*.cu */*.h */*/*.cu */*/*.h | sed 's,^l/,l.,g' > make/Makefile.dep
+u.deps *.cu *.h */*.cu */*.h */*/*.cu */*/*.h | sed 's,^l/,l.,g' > make/Makefile.dep
 
 echo make/Makefile.dep updated | cat >&2
