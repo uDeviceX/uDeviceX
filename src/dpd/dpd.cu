@@ -20,8 +20,6 @@ texture<float4, cudaTextureType1D> texParticlesF4;
 texture<ushort4, cudaTextureType1D, cudaReadModeNormalizedFloat> texParticlesH4;
 texture<uint2, cudaTextureType1D> texStartAndCount;
 
-#define HALF_FLOAT
-
 #define _XCPB_ 2
 #define _YCPB_ 2
 #define _ZCPB_ 1
