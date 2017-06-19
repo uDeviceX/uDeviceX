@@ -1,4 +1,4 @@
-namespace k_rbc {
+namespace dev {
 #define sq(a) ((a)*(a))
 #define abscross2(a, b)                         \
     (sq((a).y*(b).z - (a).z*(b).y) +            \

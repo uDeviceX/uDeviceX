@@ -1,4 +1,4 @@
-namespace k_rbc {
+namespace dev {
 /* [m]aximumd [d]egree, number of vertices, number of triangles */
 #define md ( RBCmd )
 #define nv ( RBCnv )
