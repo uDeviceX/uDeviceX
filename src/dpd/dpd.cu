@@ -294,10 +294,6 @@ void _dpd_forces_symm_merged()
 bool fdpd_init = false;
 static bool is_mps_enabled = false;
 #include "hacks.h"
-#ifdef _TIME_PROFILE_
-static cudaEvent_t evstart, evstop;
-#endif
-
 
 __global__ void make_texture2( uint2 *start_and_count, const int *start, const int *count, const int n )
 {
@@ -377,11 +373,6 @@ void forces_dpd_cuda_nohost(const float4 * const xyzouvwo, const ushort4 * const
         CC( cudaFuncSetCacheConfig( _dpd_forces_symm_merged, cudaFuncCachePreferEqual ) );
 
 
-#ifdef _TIME_PROFILE_
-        CC( cudaEventCreate( &evstart ) );
-        CC( cudaEventCreate( &evstop ) );
-#endif
-
 	{
 	    is_mps_enabled = false;
 
@@ -435,11 +426,6 @@ void forces_dpd_cuda_nohost(const float4 * const xyzouvwo, const ushort4 * const
     static int cetriolo = 0;
     cetriolo++;
 
-#ifdef _TIME_PROFILE_
-    if( cetriolo % 500 == 0 )
-        CC( cudaEventRecord( evstart ) );
-#endif
-
     int np32 = np;
     if( np32 % 32 ) np32 += 32 - np32 % 32;
     CC( cudaMemsetAsync( axayaz, 0, sizeof( float )* np32 * 3) );
@@ -450,17 +436,6 @@ void forces_dpd_cuda_nohost(const float4 * const xyzouvwo, const ushort4 * const
     } else {
         fprintf( stderr, "Incompatible grid config\n" );
     }
-
-#ifdef _TIME_PROFILE_
-    if( cetriolo % 500 == 0 ) {
-        CC( cudaEventRecord( evstop ) );
-        CC( cudaEventSynchronize( evstop ) );
-
-        float tms;
-        CC( cudaEventElapsedTime( &tms, evstart, evstop ) );
-        printf( "elapsed time for DPD-BULK kernel: %.2f ms\n", tms );
-    }
-#endif
 
     CC( cudaPeekAtLastError() );
 }
