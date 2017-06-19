@@ -1,20 +1,20 @@
 namespace sim {
 
 void distr_rbc() {
-    rdstr::extent(r::pp, r::nc, r::nv);
+    rdstr::extent(r::q.pp, r::q.nc, r::q.nv);
     dSync();
-    rdstr::pack_sendcnt(r::pp, r::nc, r::nv);
-    r::nc = rdstr::post(r::nv); r::n = r::nc * r::nv;
-    rdstr::unpack(r::pp, r::nv);
+    rdstr::pack_sendcnt(r::q.pp, r::q.nc, r::q.nv);
+    r::q.nc = rdstr::post(r::q.nv); r::q.n = r::q.nc * r::q.nv;
+    rdstr::unpack(r::q.pp, r::q.nv);
 }
 
 void remove_rbcs_from_wall() {
   int stay[MAX_CELL_NUM];
   int nc0;
-  r::nc = sdf::who_stays(r::pp, r::n, nc0 = r::nc, r::nv, /**/ stay);
-  r::n = r::nc * r::nv;
-  Cont::remove(r::pp, r::nv, stay, r::nc);
-  MSG("%d/%d RBCs survived", r::nc, nc0);
+  r::q.nc = sdf::who_stays(r::q.pp, r::q.n, nc0 = r::q.nc, r::q.nv, /**/ stay);
+  r::q.n = r::q.nc * r::q.nv;
+  Cont::remove(r::q.pp, r::q.nv, stay, r::q.nc);
+  MSG("%d/%d RBCs survived", r::q.nc, nc0);
 }
 
 void remove_solids_from_wall() {
@@ -65,7 +65,7 @@ void set_ids_solids() {
 }
 
 void forces_rbc() {
-    if (rbcs && r::n) rbc::sub::forces(r::nc, r::pp, r::ff, r::av);
+    if (rbcs && r::q.n) rbc::sub::forces(r::q.nc, r::q.pp, r::ff, r::q.av);
 }
 
 void forces_dpd() {
@@ -85,7 +85,7 @@ void clear_forces(Force* ff, int n) {
 void forces_wall() {
     if (o::n)              wall::interactions(w::q, w::t, SOLVENT_TYPE, o::pp, o::n, /**/ o::ff);
     if (solids0 && s::npp) wall::interactions(w::q, w::t, SOLID_TYPE, s::pp, s::npp, /**/ s::ff);
-    if (rbcs && r::n)      wall::interactions(w::q, w::t, SOLID_TYPE, r::pp, r::n  , /**/ r::ff);
+    if (rbcs && r::q.n)    wall::interactions(w::q, w::t, SOLID_TYPE, r::q.pp, r::q.n  , /**/ r::ff);
 }
 
 void forces_cnt(std::vector<ParticlesWrap> *w_r) {
@@ -104,11 +104,11 @@ void forces(bool wall0) {
     SolventWrap w_s(o::pp, o::n, o::ff, o::cells->start, o::cells->count);
     std::vector<ParticlesWrap> w_r;
     if (solids0) w_r.push_back(ParticlesWrap(s::pp, s::npp, s::ff));
-    if (rbcs   ) w_r.push_back(ParticlesWrap(r::pp, r::n  , r::ff));
+    if (rbcs   ) w_r.push_back(ParticlesWrap(r::q.pp, r::q.n  , r::ff));
 
     clear_forces(o::ff, o::n);
     if (solids0) clear_forces(s::ff, s::npp);
-    if (rbcs)    clear_forces(r::ff, r::n);
+    if (rbcs)    clear_forces(r::ff, r::q.n);
 
     forces_dpd();
     if (wall0) forces_wall();
@@ -140,7 +140,7 @@ void dev2hst() { /* device to host  data transfer */
         cD2H(a::pp_hst + start, s::pp, s::npp); start += s::npp;
     }
     if (rbcs) {
-        cD2H(a::pp_hst + start, r::pp, r::n); start += r::n;
+        cD2H(a::pp_hst + start, r::q.pp, r::q.n); start += r::q.n;
     }
 }
 
@@ -159,8 +159,8 @@ void dump_part(int step) {
 void dump_rbcs() {
     if (rbcs) {
         static int id = 0;
-        cD2H(a::pp_hst, r::pp, r::n);
-        rbc_dump(r::nc, a::pp_hst, r::faces, r::nv, r::nt, id++);
+        cD2H(a::pp_hst, r::q.pp, r::q.n);
+        rbc_dump(r::q.nc, a::pp_hst, r::faces, r::q.nv, r::q.nt, id++);
     }
 }
 
@@ -172,7 +172,7 @@ void dump_grid() {
 }
 
 void diag(int it) {
-    int n = o::n + s::npp + r::n; dev2hst();
+    int n = o::n + s::npp + r::q.n; dev2hst();
     diagnostics(a::pp_hst, n, it);
 }
 
@@ -182,8 +182,8 @@ void body_force(float driving_force0) {
     if (solids0 && s::npp)
     k_sim::body_force<<<k_cnf(s::npp)>>> (solid_mass, s::pp, s::ff, s::npp, driving_force0);
 
-    if (rbcs && r::n)
-    k_sim::body_force<<<k_cnf(r::n)>>> (rbc_mass, r::pp, r::ff, r::n, driving_force0);
+    if (rbcs && r::q.n)
+    k_sim::body_force<<<k_cnf(r::q.n)>>> (rbc_mass, r::q.pp, r::ff, r::q.n, driving_force0);
 }
 
 
@@ -196,7 +196,7 @@ void update_solvent() {
 }
 
 void update_rbc() {
-    if (r::n) k_sim::update<<<k_cnf(r::n)>>> (rbc_mass, r::pp, r::ff, r::n);
+    if (r::q.n) k_sim::update<<<k_cnf(r::q.n)>>> (rbc_mass, r::q.pp, r::ff, r::q.n);
 }
 
 void bounce() {
@@ -232,11 +232,6 @@ void ini() {
     mpDeviceMalloc(&s::ff); mpDeviceMalloc(&s::ff);
     mpDeviceMalloc(&s::rr0);
 
-    if (rbcs) {
-        mpDeviceMalloc(&r::pp);
-        mpDeviceMalloc(&r::ff);
-    }
-
     if (solids) {
         mrescue::ini(MAX_PART_NUM);
         s::ini();
@@ -248,8 +243,8 @@ void ini() {
     create_ticketZ(o::pp, o::n, &o::tz);
 
     if (rbcs) {
-        r::nc = Cont::setup(r::pp, r::nv, /* storage */ r::pp_hst);
-        r::n = r::nc * r::nv;
+        r::q.nc = Cont::setup(r::q.pp, r::q.nv, /* storage */ r::q.pp_hst);
+        r::q.n = r::q.nc * r::q.nv;
     }
 
     dump_field = new H5FieldDump;
@@ -277,7 +272,7 @@ void dump_diag(int it, bool wall0) { /* dump and diag */
 
 void step(float driving_force0, bool wall0, int it) {
     assert(o::n <= MAX_PART_NUM);
-    assert(r::n <= MAX_PART_NUM);
+    assert(r::q.n <= MAX_PART_NUM);
     sol::distr(&o::pp, &o::n, o::cells, &o::td, &o::tz, &o::w);
     if (solids0) distr_solid();
     if (rbcs)    distr_rbc();
@@ -323,7 +318,7 @@ void run_wall(long nsteps) {
     if (walls) remove_bodies();
     set_ids_solids();
     if (solids0 && s::ns) k_sim::clear_velocity<<<k_cnf(s::npp)>>>(s::pp, s::npp);
-    if (rbcs    &&  r::n) k_sim::clear_velocity<<<k_cnf(r::n)  >>>(r::pp, r::n);
+    if (rbcs    && r::q.n) k_sim::clear_velocity<<<k_cnf(r::q.n)  >>>(r::q.pp, r::q.n);
     if (pushflow) driving_force0 = driving_force;
 
     for (/**/; it < nsteps; ++it) step(driving_force0, wall0, it);
@@ -366,7 +361,6 @@ void fin() {
     
     if (rbcs)
     {
-        CC(cudaFree(r::pp));
         CC(cudaFree(r::ff));
         CC(cudaFree(r::av));
     }
