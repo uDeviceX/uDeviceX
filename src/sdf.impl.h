@@ -97,7 +97,7 @@ static int who_stays0(Particle *pp, int n, int nc, int nv, /**/ int *stay, /*w*/
 
 int who_stays(Particle *pp, int n, int nc, int nv, /**/ int *stay) {
   int *keys;
-  CC(cudaMalloc(&keys, sizeof(int) * nc));
+  mpDeviceMalloc(&keys);
   nc = who_stays0(pp, n, nc, nv, /**/ stay, /*w*/ keys);
   CC(cudaFree(keys));
   return nc;
