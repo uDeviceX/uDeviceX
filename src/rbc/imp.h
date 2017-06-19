@@ -32,7 +32,7 @@ static void gen_a12(int i0, int *hx, int *hy, /**/ int *a1, int *a2) {
 }
 
 void setup(int *faces, int4 *tri, Texo<int4> *textri, int *adj0, Texo<int> *texadj0,
-           int *adj1, Texo<int> *texadj1, Particle *pp, Texo<float2> *texpp, int npp) {
+           int *adj1, Texo<int> *texadj1, Particle *pp, Texo<float2> *texvert, int npp) {
     const char r_templ[] = "rbc.off";
     l::off::faces(r_templ, faces);
 
@@ -64,10 +64,10 @@ void setup(int *faces, int4 *tri, Texo<int4> *textri, int *adj0, Texo<int> *texa
     texadj0->setup(adj0, nv*md);
     texadj1->setup(adj1, nv*md);
     textri->setup(tri,   nt);
-    texpp->setup((float2*) pp, npp);
+    texvert->setup((float2*) pp, npp);
 }
 
-void forces(int nc, Particle *pp, Force *ff, float* av) {
+void forces(int nc, const Texo<float2> texvert, const Texo<int4> textri, const Texo<int> texadj0, const Texo<int> texadj1, Force *ff, float* av) {
     if (nc <= 0) return;
 
     dim3 avThreads(256, 1);
