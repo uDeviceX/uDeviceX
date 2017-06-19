@@ -202,6 +202,7 @@ void ini() {
         CC(cudaMalloc(&r::ff, MAX_PART_NUM));
         rbc::alloc_quants(&r::q);
         rbc::setup(&r::q);
+        rbc::setup_textures(r::q, &r::t);
     }
         
     rdstr::ini();
@@ -351,7 +352,10 @@ void fin() {
     CC(cudaFree(s::pp )); CC(cudaFree(s::ff )); CC(cudaFree(s::rr0));
     CC(cudaFree(o::pp )); CC(cudaFree(o::ff ));
 
-    if (rbcs) rbc::free_quants(&r::q);
+    if (rbcs) {
+        rbc::free_quants(&r::q);
+        rbc::destroy_textures(&r::t);
+    }
     
     if (rbcs) CC(cudaFree(r::ff));
     if (solids) s::fin();
