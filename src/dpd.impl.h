@@ -45,15 +45,12 @@ void init1() {
     }
 }
 
-void local_interactions(float4 *xyzouvwo, ushort4 *xyzo_half,
-                        int n, int *cellsstart, int *cellscount, /**/
-
-                        Force *a) {
+void local_interactions(float4 *zip0, ushort4 *zip1, int n, int *start, int *count, /**/
+                        Force *ff) {
     if (n > 0)
-    forces_dpd_cuda_nohost(xyzouvwo, xyzo_half, (float *)a, n,
-                           cellsstart, cellscount, 1, XS,
-                           YS, ZS, 1. / sqrt(dt),
-                           local_trunk->get_float());
+      forces_dpd_cuda_nohost(zip0, zip1, (float*)ff, n,
+			     start, count, 1, XS, YS, ZS, 1. / sqrt(dt),
+			     local_trunk->get_float());
 }
 
 void remote_interactions(int n, Force *a) {
