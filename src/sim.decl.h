@@ -24,7 +24,7 @@ Force     ff_hst[MAX_PART_NUM]; /* solvent forces on host    */
 namespace r /* [r]bc */
 {
 rbc::Quants q;
-Force    *ff;
+Force     *ff;
 }
 
 /*** see int/wall.h ***/

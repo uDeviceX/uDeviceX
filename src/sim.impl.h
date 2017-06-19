@@ -205,10 +205,12 @@ void bounce() {
 }
 
 void ini() {
-    if (rbcs) CC(cudaMalloc(&r::ff, MAX_PART_NUM));
-    if (rbcs) rbc::alloc_quants(&r::q);
-    
-    rbc::setup(r::q);
+    if (rbcs) {
+        CC(cudaMalloc(&r::ff, MAX_PART_NUM));
+        rbc::alloc_quants(&r::q);
+        rbc::setup(&r::q);
+    }
+        
     rdstr::ini();
     DPD::ini();
     fsi::ini();

@@ -78,7 +78,6 @@ void forces(int nc, const Texo<float2> texvert, const Texo<int4> textri, const T
     CC(cudaPeekAtLastError());
 
     k_rbc::force<<<k_cnf(nc*nv*md)>>>(texvert, texadj0, texadj1, nc, av, (float*)ff);
-    dSync();
 }
 
 #undef md

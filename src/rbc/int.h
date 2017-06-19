@@ -17,7 +17,7 @@ struct Quants {
 void alloc_quants(Quants *q) {
     q->n = q->nc = 0;
     mpDeviceMalloc(&q->pp);
-    mpHostMalloc(&q->pp_hst);
+    q->pp_hst = new Particle[MAX_PART_NUM];
 
     q->nt = RBCnt;
     q->nv = RBCnv;
@@ -27,7 +27,7 @@ void alloc_quants(Quants *q) {
     CC(cudaMalloc(&q->adj1, q->nv * RBCmd * sizeof(int)));
                       
     q->tri_hst = new int[MAX_FACE_NUM];
-    CC(cudaMalloc(&q->av, MAX_CELL_NUM));
+    CC(cudaMalloc(&q->av, 2*MAX_CELL_NUM));
 }
 
 void free_quants(Quants *q) {
@@ -44,10 +44,11 @@ void free_quants(Quants *q) {
     q->texvert.destroy();
 
     delete[] q->tri_hst;
+    delete[] q->pp_hst;
 }
 
-void setup(Quants q) {
-    sub::setup(q.tri_hst, q.tri, &q.textri, q.adj0, &q.texadj0, q.adj1, &q.texadj1, q.pp, &q.texvert, q.n); dSync();
+void setup(Quants *q) {
+    sub::setup(q->tri_hst, q->tri, &q->textri, q->adj0, &q->texadj0, q->adj1, &q->texadj1, q->pp, &q->texvert, q->n);
 }
 
 void forces(Quants q, /**/ Force *ff) {
