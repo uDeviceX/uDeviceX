@@ -52,6 +52,10 @@ void setup_from_pos(const char *r_templ, const char *r_state, Quants *q) {
     ic::setup_from_pos(r_templ, r_state, q->nv, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
 }
 
+void setup_from_strt(const int id, Quants *q) {
+    ic::setup_from_strt(id, q->nv, /**/ q->pp, &q->nc, &q->n);
+}
+
 void setup_textures(const Quants q, TicketT *t) {
     sub::setup_textures(q.tri, &t->textri, q.adj0, &t->texadj0, q.adj1, &t->texadj1, q.pp, &t->texvert);
 }
