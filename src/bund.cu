@@ -93,7 +93,7 @@ namespace sub {
 }
 
 namespace flu {
-namespace flu {
+namespace sub {
 #include "flu/dev.h"
 #include "flu/imp.h"
 }
