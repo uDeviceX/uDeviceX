@@ -1,5 +1,5 @@
 namespace sim {
-
+/* see bund.cu for more sim:: functions */
 void distr_rbc() {
     rdstr::extent(r::q.pp, r::q.nc, r::q.nv);
     dSync();
@@ -44,7 +44,7 @@ void create_walls() {
     MSG("solvent particles survived: %d/%d", o::n, nold);
     if (o::n) k_sim::clear_velocity<<<k_cnf(o::n)>>>(o::pp, o::n);
     o::cells->build(o::pp, o::n);
-    sol::create_ticketZ(o::pp, o::n, &o::tz);
+    flu::create_ticketZ(o::pp, o::n, &o::tz);
 
     CC( cudaPeekAtLastError() );
 }
@@ -89,10 +89,8 @@ void forces_wall() {
 }
 
 void forces_cnt(std::vector<ParticlesWrap> *w_r) {
-    if (contactforces) {
-        cnt::build_cells(*w_r);
-        cnt::bulk(*w_r);
-    }
+    cnt::build_cells(*w_r);
+    cnt::bulk(*w_r);
 }
 
 void forces_fsi(SolventWrap *w_s, std::vector<ParticlesWrap> *w_r) {
@@ -114,7 +112,7 @@ void forces(bool wall0) {
     if (wall0) forces_wall();
     forces_rbc();
 
-    forces_cnt(&w_r);
+    if (contactforces) forces_cnt(&w_r);
     forces_fsi(&w_s, &w_r);
 
     rex::bind_solutes(w_r);
@@ -128,9 +126,6 @@ void forces(bool wall0) {
     rex::recv_f();
 
     dSync();
-    // safety::nullify_nan(o::ff, o::n);
-    // if (rbcs) safety::nullify_nan(r::ff, r::n);
-    // if (solids) safety::nullify_nan(s::ff, s::npp);
 }
 
 void dev2hst() { /* device to host  data transfer */
@@ -145,7 +140,6 @@ void dev2hst() { /* device to host  data transfer */
 }
 
 void dump_part(int step) {
-    if (part_dumps) {
         cD2H(o::pp_hst, o::pp, o::n);
         dump::parts(o::pp_hst, o::n, "solvent", step);
 
@@ -153,7 +147,6 @@ void dump_part(int step) {
             cD2H(s::pp_hst, s::pp, s::npp);
             dump::parts(s::pp_hst, s::npp, "solid", step);
         }
-    }
 }
 
 void dump_rbcs() {
@@ -223,10 +216,10 @@ void ini() {
     wall::alloc_quants(&w::q);
     wall::alloc_ticket(&w::t);
 
-    o::cells = new Clist(XS, YS, ZS);
-    sol::alloc_ticketD(&o::td);
-    sol::alloc_ticketZ(&o::tz);
-    sol::alloc_work(&o::w);
+    o::cells   = new Clist(XS, YS, ZS);
+    flu::alloc_ticketD(&o::td);
+    flu::alloc_ticketZ(&o::tz);
+    flu::alloc_work(&o::w);
 
     mpDeviceMalloc(&o::pp);
     mpDeviceMalloc(&o::ff);
@@ -259,7 +252,7 @@ void dump_diag_after(int it) { /* after wall */
 
 void dump_diag0(int it) { /* generic dump */
     if (it % part_freq  == 0) {
-        dump_part(it);
+        if (part_dumps) dump_part(it);
         dump_rbcs();
         diag(it);
     }
@@ -274,7 +267,7 @@ void dump_diag(int it, bool wall0) { /* dump and diag */
 void step(float driving_force0, bool wall0, int it) {
     assert(o::n <= MAX_PART_NUM);
     assert(r::q.n <= MAX_PART_NUM);
-    sol::distr(&o::pp, &o::n, o::cells, &o::td, &o::tz, &o::w);
+    flu::distr(&o::pp, &o::n, o::cells, &o::td, &o::tz, &o::w);
     if (solids0) distr_solid();
     if (rbcs)    distr_rbc();
     forces(wall0);
@@ -348,12 +341,12 @@ void fin() {
 
     wall::free_quants(&w::q);
     wall::free_ticket(&w::t);
-    sol::free_work(&o::w);
+    flu::free_work(&o::w);
 
     delete o::cells;
     delete dump_field;
-    sol::free_ticketZ(&o::tz);
-    sol::free_ticketD();
+    flu::free_ticketZ(&o::tz);
+    flu::free_ticketD();
 
     CC(cudaFree(s::pp )); CC(cudaFree(s::ff )); CC(cudaFree(s::rr0));
     CC(cudaFree(o::pp )); CC(cudaFree(o::ff ));

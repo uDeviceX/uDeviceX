@@ -84,14 +84,13 @@ namespace sub {
 #include "wall/int.h"
 }
 
-namespace sol {
+namespace flu {
 namespace sub {
-#include "sol/dev.h"
-#include "sol/imp.h"
+#include "flu/dev.h"
+#include "flu/imp.h"
 }
-#include "sol/int.h"
+#include "flu/int.h"
 }
-
 
 #include "k/fsi.h"
 
