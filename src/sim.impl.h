@@ -344,7 +344,7 @@ void fin() {
     delete o::cells;
     delete dump_field;
     flu::free_ticketZ(&o::tz);
-    flu::free_ticketD();
+    flu::free_ticketD(&o::td);
 
     CC(cudaFree(s::pp )); CC(cudaFree(s::ff )); CC(cudaFree(s::rr0));
     CC(cudaFree(o::pp )); CC(cudaFree(o::ff ));

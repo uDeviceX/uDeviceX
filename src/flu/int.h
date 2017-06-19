@@ -15,7 +15,7 @@ struct TicketD { /* distribution */
   MPI_Request send_size_req[27], recv_size_req[27];
   MPI_Request send_mesg_req[27], recv_mesg_req[27];
   bool first = true;
-  /* Odstr odstr; */
+  sub::Fluid fluid; /* was odstr; */
 };
 
 struct Work {
@@ -46,12 +46,12 @@ void free_work(Work *w) {
 
 void alloc_ticketD(TicketD *t) {
   l::m::Comm_dup(m::cart, &t->cart);
-  odstr::ini(t->cart, t->rank); /* :TODO: odstr is only one */
+  t->fluid.ini(t->cart, t->rank);
   t->first = true;
 }
 
-void free_ticketD() {
-  odstr::fin();
+void free_ticketD(/**/ TicketD *t) {
+  t->fluid.fin();
 }
 
 void alloc_ticketZ(/**/ TicketZ *t) {
@@ -98,30 +98,30 @@ void distr(Particle **qpp, int *qn, Clist *cells, TicketD *td, TicketZ *tz, Work
   Particle* pp = *qpp;
   
   int nbulk, nhalo_padded, nhalo;
-  odstr::post_recv(cart, rank, /**/ recv_size_req, recv_mesg_req);
+  td->fluid.post_recv(cart, rank, /**/ recv_size_req, recv_mesg_req);
   if (n) {
-    odstr::halo(pp, n);
-    odstr::scan(n);
-    odstr::pack(pp, n);
+    td->fluid.halo(pp, n);
+    td->fluid.scan(n);
+    td->fluid.pack(pp, n);
   }
   if (!first) {
-    odstr::waitall(send_size_req);
-    odstr::waitall(send_mesg_req);
+    td->fluid.waitall(send_size_req);
+    td->fluid.waitall(send_mesg_req);
   }
   first = false;
-  nbulk = odstr::send_sz(cart, rank, send_size_req);
-  odstr::send_msg(cart, rank, send_mesg_req);
+  nbulk = td->fluid.send_sz(cart, rank, send_size_req);
+  td->fluid.send_msg(cart, rank, send_mesg_req);
 
   CC(cudaMemsetAsync(cells->count, 0, sizeof(int)*XS*YS*ZS));
   if (n)
     k_common::subindex_local<false><<<k_cnf(n)>>>
       (n, (float2*)pp, /*io*/ cells->count, /*o*/ subi_lo);
 
-  odstr::waitall(recv_size_req);
-  odstr::recv_count(&nhalo_padded, &nhalo);
-  odstr::waitall(recv_mesg_req);
+  td->fluid.waitall(recv_size_req);
+  td->fluid.recv_count(&nhalo_padded, &nhalo);
+  td->fluid.waitall(recv_mesg_req);
   if (nhalo)
-    odstr::unpack
+    td->fluid.unpack
       (nhalo_padded, /*io*/ cells->count, /*o*/ subi_re, pp_re);
 
   k_common::compress_counts<<<k_cnf(XS*YS*ZS)>>>
@@ -138,8 +138,7 @@ void distr(Particle **qpp, int *qn, Clist *cells, TicketD *td, TicketZ *tz, Work
 
   n = nbulk + nhalo;
   if (n)
-    k_odstr::gather<<<k_cnf(n)>>>
-      ((float2*)pp, (float2*)pp_re, n, iidx,
+    k_odstr::gather<<<k_cnf(n)>>>((float2*)pp, (float2*)pp_re, n, iidx,
        /**/ (float2*)pp0, zip0, zip1);
 
   *qn = n;
