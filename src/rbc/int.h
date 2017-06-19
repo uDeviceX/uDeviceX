@@ -15,18 +15,19 @@ struct Quants {
 
 
 void alloc_quants(Quants *q) {
-    n = nc = 0;
+    q->n = q->nc = 0;
     mpDeviceMalloc(&q->pp);
     mpHostMalloc(&q->pp_hst);
 
-    q->tri = q->adj0 = q->adj1 = NULL;
+    q->tri = NULL;
+    q->adj0 = q->adj1 = NULL;
 
-    nt = RBCnt;
-    nv = RBCnv;
+    q->nt = RBCnt;
+    q->nv = RBCnv;
 
-    // CC(cudaMalloc(&q->tri, nt * sizeof(int4)));
-    // CC(cudaMalloc(&q->adj0, nv*md * sizeof(int)));
-    // CC(cudaMalloc(&q->adj1, nv*md * sizeof(int)));
+    // CC(cudaMalloc(&q->tri, q->nt * sizeof(int4)));
+    // CC(cudaMalloc(&q->adj0, q->nv * RBCmd * sizeof(int)));
+    // CC(cudaMalloc(&q->adj1, q->nv * RBCmd * sizeof(int)));
                       
     q->tri_hst = new int[MAX_FACE_NUM];
     CC(cudaMalloc(&q->av, MAX_CELL_NUM));
@@ -47,5 +48,5 @@ void free_quants(Quants *q) {
 }
 
 void create() {
-
+    
 }
