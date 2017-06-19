@@ -1,4 +1,5 @@
 struct Quants {
+    int n, nc, nt, nv;
     Particle *pp, *pp_hst;
     Texo <float2> texvert;       /* vertices */
 
@@ -14,11 +15,19 @@ struct Quants {
 
 
 void alloc_quants(Quants *q) {
+    n = nc = 0;
     mpDeviceMalloc(&q->pp);
     mpHostMalloc(&q->pp_hst);
 
     q->tri = q->adj0 = q->adj1 = NULL;
-        
+
+    nt = RBCnt;
+    nv = RBCnv;
+
+    // CC(cudaMalloc(&q->tri, nt * sizeof(int4)));
+    // CC(cudaMalloc(&q->adj0, nv*md * sizeof(int)));
+    // CC(cudaMalloc(&q->adj1, nv*md * sizeof(int)));
+                      
     q->tri_hst = new int[MAX_FACE_NUM];
     CC(cudaMalloc(&q->av, MAX_CELL_NUM));
 }
