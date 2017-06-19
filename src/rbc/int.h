@@ -48,6 +48,10 @@ void setup(const char *r_templ, Quants *q) {
     sub::setup(r_templ, /**/ q->tri_hst, q->tri, q->adj0, q->adj1);
 }
 
+int setup_from_states(const char *r_templ, const char *r_state, Quants *q) {
+    return ic::setup_from_states(r_templ, r_state, /**/ q->pp, q->nv, /*w*/ q->pp_hst);
+}
+
 void setup_textures(const Quants q, TicketT *t) {
     sub::setup_textures(q.tri, &t->textri, q.adj0, &t->texadj0, q.adj1, &t->texadj1, q.pp, &t->texvert);
 }
