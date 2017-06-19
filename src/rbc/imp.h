@@ -1,5 +1,3 @@
-namespace rbc
-{
 /* [m]aximumd [d]egree, number of vertices, number of triangles */
 #define md ( RBCmd )
 #define nv ( RBCnv )
@@ -96,4 +94,3 @@ void forces(int nc, Particle *pp, Force *ff, float* host_av) {
 #undef md
 #undef nv
 #undef nt
-}

@@ -18,7 +18,7 @@ void alloc_quants(Quants *q) {
     mpHostMalloc(&q->pp_hst);
 
     q->tri = q->adj0 = q->adj1 = NULL;
-    
+        
     q->tri_hst = new int[MAX_FACE_NUM];
     CC(cudaMalloc(&q->av, MAX_CELL_NUM));
 }
@@ -37,4 +37,6 @@ void free_quants(Quants *q) {
     q->texvert.destroy();
 }
 
+void create() {
 
+}
