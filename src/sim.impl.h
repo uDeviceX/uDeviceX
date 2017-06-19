@@ -18,31 +18,22 @@ void remove_rbcs_from_wall() {
 }
 
 void remove_solids_from_wall() {
-    int i, j;
-    if (s::npp <= 0) return;
-    int ns0 = s::ns;
-    int nip = s::ns * s::m_dev.nv;
-    DeviceBuffer<int> marks(nip);
-    k_sdf::fill_keys<<<k_cnf(nip)>>>(s::i_pp_dev, nip, marks.D);
-    std::vector<int> marks_hst(marks.S);
-    cD2H(marks_hst.data(), marks.D, marks.S);
-    std::vector<int> stay;
-    for (i = 0; i < s::ns; ++i) {
-        j = 0;
-        while (j < s::m_dev.nv && marks_hst[j + s::m_dev.nv * i] == W_BULK) ++j;
-        if    (j == s::m_dev.nv) stay.push_back(i);
-    }
-    s::ns = stay.size(); s::npp = s::ns * s::nps;
-    Cont::remove(s::pp,     s::nps, &stay.front(), s::ns);
-    Cont::remove(s::pp_hst, s::nps, &stay.front(), s::ns);
+  int stay[MAX_CELL_NUM];
+  int ns0;
+  int nip = s::ns * s::m_dev.nv;
+  s::ns = sdf::who_stays(s::pp, nip, ns0 = s::ns, s::nps, /**/ stay);
+  s::npp = s::ns * s::nps;
+  Cont::remove(s::pp,     s::nps, stay, s::ns);
+  Cont::remove(s::pp_hst, s::nps, stay, s::ns);
 
-    Cont::remove(s::ss_dev, 1, &stay.front(), s::ns);
-    Cont::remove(s::ss_hst, 1, &stay.front(), s::ns);
+  Cont::remove(s::ss_dev, 1, stay, s::ns);
+  Cont::remove(s::ss_hst, 1, stay, s::ns);
 
-    Cont::remove(s::i_pp_dev, s::m_dev.nv, &stay.front(), s::ns);
-    Cont::remove(s::i_pp_hst, s::m_hst.nv, &stay.front(), s::ns);
-    MSG("sim.impl: %d/%d Solids survived", s::ns, ns0);
+  Cont::remove(s::i_pp_dev, s::m_dev.nv, stay, s::ns);
+  Cont::remove(s::i_pp_hst, s::m_hst.nv, stay, s::ns);
+  MSG("sim.impl: %d/%d Solids survived", s::ns, ns0);
 }
+ 
 
 void create_walls() {
     int nold = o::n;
