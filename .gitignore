@@ -15,6 +15,6 @@
 CMakeCache.txt
 *.xmf
 *.h5part
-rbcs-*.ply
+src/r/*.ply
 *.cmake
 *.tramp_history
