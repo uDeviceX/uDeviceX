@@ -33,3 +33,20 @@ void free_quants(Quants *q) {
     CC(cudaFree(q->ss));
     CC(cudaFree(q->rr0));
 }
+
+void alloc_ticket(TicketBB *t) {
+    CC(cudaMalloc(&t->minbb_dev, MAX_SOLIDS * sizeof(float3)));
+    CC(cudaMalloc(&t->maxbb_dev, MAX_SOLIDS * sizeof(float3)));
+
+    t->minbb_hst = new float3[MAX_SOLIDS];
+    t->maxbb_hst = new float3[MAX_SOLIDS];
+}
+
+void free_ticket(TicketBB *t) {
+    CC(cudaFree(t->minbb_dev));
+    CC(cudaFree(t->maxbb_dev));
+
+    delete[] t->minbb_hst;
+    delete[] t->maxbb_hst;
+}
+
