@@ -1,5 +1,3 @@
-namespace s {
-namespace ic {
 enum {X, Y, Z};
 
 //#define DEBUG_MSG
@@ -262,5 +260,3 @@ void ini(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, So
 
     delete[] coms;
 }
-} // namespace ic
-} // namespace s
