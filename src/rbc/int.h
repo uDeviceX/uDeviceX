@@ -49,7 +49,7 @@ void setup(const char *r_templ, Quants *q) {
 }
 
 int setup_from_states(const char *r_templ, const char *r_state, Quants *q) {
-    return ic::setup_from_states(r_templ, r_state, /**/ q->pp, q->nv, /*w*/ q->pp_hst);
+    return ic::setup_from_states(r_templ, r_state, q->nv, /**/ q->pp, /*w*/ q->pp_hst);
 }
 
 void setup_textures(const Quants q, TicketT *t) {
