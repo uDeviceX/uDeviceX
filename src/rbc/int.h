@@ -48,5 +48,9 @@ void free_quants(Quants *q) {
 }
 
 void setup(Quants q) {
-    sub::setup(q.tri_hst, q.tri, &q.textri, q.adj0, &q.texadj0, q.adj1, &q.texadj1);
+    sub::setup(q.tri_hst, q.tri, &q.textri, q.adj0, &q.texadj0, q.adj1, &q.texadj1, q.pp, &q.texpp, q.n);
+}
+
+void forces(Quants q, /**/ Force *ff) {
+    sub::forces(q.nc, q.pp, /**/ ff, q.av);
 }
