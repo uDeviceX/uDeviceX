@@ -3,6 +3,7 @@ struct Quants {
     Particle *pp_hst, *pp;
     Solid *ss_hst, *ss;
     float *rr0_hst, *rr0;
+    Mesh m_hst, m_dev;
 };
 
 struct TicketBB {
@@ -32,6 +33,12 @@ void free_quants(Quants *q) {
     CC(cudaFree(q->pp));
     CC(cudaFree(q->ss));
     CC(cudaFree(q->rr0));
+
+    if (m_hst.tt) delete[] m_hst.tt;
+    if (m_hst.vv) delete[] m_hst.vv;
+
+    if (m_dev.tt) CC(cudaFree(m_dev.tt));
+    if (m_dev.vv) CC(cudaFree(m_dev.vv));
 }
 
 void alloc_ticket(TicketBB *t) {
