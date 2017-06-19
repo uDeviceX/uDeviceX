@@ -53,6 +53,10 @@ void setup(Quants *q) {
     sub::setup(q->tri_hst, q->tri, &q->textri, q->adj0, &q->texadj0, q->adj1, &q->texadj1, q->pp, &q->texvert, q->n);
 }
 
+void setup_textures(const Quants *q, TicketT *t) {
+    sub::setup(q->tri, &t->textri, q->adj0, &t->texadj0, q->adj1, &t->texadj1, q->pp, &t->texvert);
+}
+
 void forces(const Quants q, /**/ Force *ff) {
     sub::forces(q.nc, q.texvert, q.textri, q.texadj0, q.texadj1, /**/ ff, q.av);
 }
