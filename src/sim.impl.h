@@ -140,7 +140,6 @@ void dev2hst() { /* device to host  data transfer */
 }
 
 void dump_part(int step) {
-    if (part_dumps) {
         cD2H(o::pp_hst, o::pp, o::n);
         dump::parts(o::pp_hst, o::n, "solvent", step);
 
@@ -148,7 +147,6 @@ void dump_part(int step) {
             cD2H(s::pp_hst, s::pp, s::npp);
             dump::parts(s::pp_hst, s::npp, "solid", step);
         }
-    }
 }
 
 void dump_rbcs() {
@@ -253,7 +251,7 @@ void dump_diag_after(int it) { /* after wall */
 
 void dump_diag0(int it) { /* generic dump */
     if (it % part_freq  == 0) {
-        dump_part(it);
+        if (part_dumps) dump_part(it);
         dump_rbcs();
         diag(it);
     }
