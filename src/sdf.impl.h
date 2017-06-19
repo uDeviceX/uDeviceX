@@ -80,13 +80,13 @@ void bulk_wall(/*io*/ Particle *s_pp, int *s_n, /*o*/ Particle *w_pp, int *w_n) 
 
 /* bulk predicate : is in bulk? */
 static bool bulkp(int *keys, int i) {
-  int k; cD2H(&k, &keys[i], 1); return k;
+  int k; cD2H(&k, &keys[i], 1);
+  return k == W_BULK;
 }
 
-static int who_stays0(Particle *pp, int n, int nc, int nv, /**/ int *stay, /*w*/ int *keys) {
+static int who_stays0(int *keys, int nc, int nv, /*o*/ int *stay) {
   int c, v;  /* cell and vertex */
   int s = 0; /* how many stays? */
-  k_sdf::fill_keys<<<k_cnf(n)>>>(pp, n, keys);
   for (c = 0; c < nc; ++c) {
     v = 0;
     while (v  < nv && bulkp(keys, v + nv * c)) v++;
@@ -95,10 +95,15 @@ static int who_stays0(Particle *pp, int n, int nc, int nv, /**/ int *stay, /*w*/
   return s;
 }
 
+static int who_stays1(Particle *pp, int n, int nc, int nv, /**/ int *stay, /*w*/ int *keys) {
+  k_sdf::fill_keys<<<k_cnf(n)>>>(pp, n, keys);
+  return who_stays0(keys, nc, nv, /*o*/ stay);
+}
+
 int who_stays(Particle *pp, int n, int nc, int nv, /**/ int *stay) {
   int *keys;
   CC(cudaMalloc(&keys, n*sizeof(keys[0])));
-  nc = who_stays0(pp, n, nc, nv, /**/ stay, /*w*/ keys);
+  nc = who_stays1(pp, n, nc, nv, /**/ stay, /*w*/ keys);
   CC(cudaFree(keys));
   return nc;
 }
