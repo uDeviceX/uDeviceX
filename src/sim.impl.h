@@ -19,9 +19,9 @@ void remove_rbcs_from_wall() {
     cD2H(tmp.data(), marks.D, marks.S);
     std::vector<int> stay;
     for (i = 0; i < r::nc; ++i) {
-      j = 0;
-      while (j < r::nv && tmp[j + r::nv * i] == W_BULK) ++j;
-      if    (j == r::nv) stay.push_back(i);
+        j = 0;
+        while (j < r::nv && tmp[j + r::nv * i] == W_BULK) ++j;
+        if    (j == r::nv) stay.push_back(i);
     }
     r::nc = stay.size(); r::n = r::nc * r::nv;
     Cont::remove(r::pp, r::nv, &stay.front(), r::nc);
@@ -39,9 +39,9 @@ void remove_solids_from_wall() {
     cD2H(marks_hst.data(), marks.D, marks.S);
     std::vector<int> stay;
     for (i = 0; i < s::ns; ++i) {
-      j = 0;
-      while (j < s::m_dev.nv && marks_hst[j + s::m_dev.nv * i] == W_BULK) ++j;
-      if    (j == s::m_dev.nv) stay.push_back(i);
+        j = 0;
+        while (j < s::m_dev.nv && marks_hst[j + s::m_dev.nv * i] == W_BULK) ++j;
+        if    (j == s::m_dev.nv) stay.push_back(i);
     }
     s::ns = stay.size(); s::npp = s::ns * s::nps;
     Cont::remove(s::pp,     s::nps, &stay.front(), s::ns);
@@ -76,9 +76,9 @@ void remove_bodies() {
 
 void set_ids_solids() {
     if (solids) {
-	s::ic::set_ids(s::ns, s::ss_hst);
-	if (s::ns)
-	cH2D(s::ss_dev, s::ss_hst, s::ns);
+        s::ic::set_ids(s::ns, s::ss_hst);
+        if (s::ns)
+        cH2D(s::ss_dev, s::ss_hst, s::ns);
     }
 
     CC(cudaPeekAtLastError());
@@ -91,8 +91,8 @@ void forces_rbc() {
 void forces_dpd() {
     DPD::pack(o::pp, o::n, o::cells->start, o::cells->count);
     DPD::local_interactions(o::tz.zip0, o::tz.zip1,
-			    o::n, o::ff, o::cells->start,
-			    o::cells->count);
+                            o::n, o::ff, o::cells->start,
+                            o::cells->count);
     DPD::post(o::pp, o::n);
     DPD::recv();
     DPD::remote_interactions(o::n, o::ff);
@@ -110,8 +110,8 @@ void forces_wall() {
 
 void forces_cnt(std::vector<ParticlesWrap> *w_r) {
     if (contactforces) {
-	cnt::build_cells(*w_r);
-	cnt::bulk(*w_r);
+        cnt::build_cells(*w_r);
+        cnt::bulk(*w_r);
     }
 }
 
@@ -157,37 +157,37 @@ void dev2hst() { /* device to host  data transfer */
     int start = 0;
     cD2H(a::pp_hst + start, o::pp, o::n); start += o::n;
     if (solids0) {
-	cD2H(a::pp_hst + start, s::pp, s::npp); start += s::npp;
+        cD2H(a::pp_hst + start, s::pp, s::npp); start += s::npp;
     }
     if (rbcs) {
-	cD2H(a::pp_hst + start, r::pp, r::n); start += r::n;
+        cD2H(a::pp_hst + start, r::pp, r::n); start += r::n;
     }
 }
 
 void dump_part(int step) {
     if (part_dumps) {
-	cD2H(o::pp_hst, o::pp, o::n);
-	dump::parts(o::pp_hst, o::n, "solvent", step);
+        cD2H(o::pp_hst, o::pp, o::n);
+        dump::parts(o::pp_hst, o::n, "solvent", step);
 
-	if(solids0) {
-	    cD2H(s::pp_hst, s::pp, s::npp);
-	    dump::parts(s::pp_hst, s::npp, "solid", step);
-	}
+        if(solids0) {
+            cD2H(s::pp_hst, s::pp, s::npp);
+            dump::parts(s::pp_hst, s::npp, "solid", step);
+        }
     }
 }
 
 void dump_rbcs() {
     if (rbcs) {
-	static int id = 0;
-	cD2H(a::pp_hst, r::pp, r::n);
-	rbc_dump(r::nc, a::pp_hst, r::faces, r::nv, r::nt, id++);
+        static int id = 0;
+        cD2H(a::pp_hst, r::pp, r::n);
+        rbc_dump(r::nc, a::pp_hst, r::faces, r::nv, r::nt, id++);
     }
 }
 
 void dump_grid() {
     if (field_dumps) {
-	cD2H(a::pp_hst, o::pp, o::n);
-	dump_field->dump(a::pp_hst, o::n);
+        cD2H(a::pp_hst, o::pp, o::n);
+        dump_field->dump(a::pp_hst, o::n);
     }
 }
 
@@ -220,8 +220,8 @@ void update_rbc() {
 }
 
 void bounce() {
-  if (o::n) k_sdf::bounce<<<k_cnf(o::n)>>>((float2*)o::pp, o::n);
-  //if (rbcs && r::n) k_sdf::bounce<<<k_cnf(r::n)>>>((float2*)r::pp, r::n);
+    if (o::n) k_sdf::bounce<<<k_cnf(o::n)>>>((float2*)o::pp, o::n);
+    //if (rbcs && r::n) k_sdf::bounce<<<k_cnf(r::n)>>>((float2*)r::pp, r::n);
 }
 
 void ini() {
@@ -251,13 +251,13 @@ void ini() {
     mpDeviceMalloc(&s::rr0);
 
     if (rbcs) {
-	mpDeviceMalloc(&r::pp);
-	mpDeviceMalloc(&r::ff);
+        mpDeviceMalloc(&r::pp);
+        mpDeviceMalloc(&r::ff);
     }
 
     if (solids) {
-	mrescue::ini(MAX_PART_NUM);
-	s::ini();
+        mrescue::ini(MAX_PART_NUM);
+        s::ini();
     }
 
     o::n = ic::gen(o::pp_hst);
@@ -266,8 +266,8 @@ void ini() {
     create_ticketZ(o::pp, o::n, &o::tz);
 
     if (rbcs) {
-	r::nc = Cont::setup(r::pp, r::nv, /* storage */ r::pp_hst);
-	r::n = r::nc * r::nv;
+        r::nc = Cont::setup(r::pp, r::nv, /* storage */ r::pp_hst);
+        r::n = r::nc * r::nv;
     }
 
     dump_field = new H5FieldDump;
@@ -275,22 +275,22 @@ void ini() {
 }
 
 void dump_diag_after(int it) { /* after wall */
-  if (it % part_freq)
+    if (it % part_freq)
     solid::dump(it, s::ss_dmphst, s::ss_dmpbbhst, s::ns, m::coords);
 }
 
 void dump_diag0(int it) { /* generic dump */
-  if (it % part_freq  == 0) {
-    dump_part(it);
-    dump_rbcs();
-    diag(it);
-  }
-  if (it % field_freq == 0) dump_grid();
+    if (it % part_freq  == 0) {
+        dump_part(it);
+        dump_rbcs();
+        diag(it);
+    }
+    if (it % field_freq == 0) dump_grid();
 }
 
 void dump_diag(int it, bool wall0) { /* dump and diag */
-  dump_diag0(it);
-  if (wall0) dump_diag_after(it);
+    dump_diag0(it);
+    if (wall0) dump_diag_after(it);
 }
 
 void step(float driving_force0, bool wall0, int it) {
@@ -325,18 +325,18 @@ void run_wall(long nsteps) {
 
     solids0 = solids;
     if (walls) {
-	create_walls();
-	wall0 = true;
-	MSG("done creating walls");
+        create_walls();
+        wall0 = true;
+        MSG("done creating walls");
     }
 
     MC(MPI_Barrier(m::cart));
 
     if (solids0) {
-	cD2H(o::pp_hst, o::pp, o::n);
-	s::create(o::pp_hst, &o::n);
-	cH2D(o::pp, o::pp_hst, o::n);
-	MC(MPI_Barrier(m::cart));
+        cD2H(o::pp_hst, o::pp, o::n);
+        s::create(o::pp_hst, &o::n);
+        cH2D(o::pp, o::pp_hst, o::n);
+        MC(MPI_Barrier(m::cart));
     }
     if (walls) remove_bodies();
     set_ids_solids();
@@ -382,9 +382,9 @@ void fin() {
 
     if (rbcs)
     {
-	CC(cudaFree(r::pp));
-	CC(cudaFree(r::ff));
-	CC(cudaFree(r::av));
+        CC(cudaFree(r::pp));
+        CC(cudaFree(r::ff));
+        CC(cudaFree(r::av));
     }
 
     if (solids) s::fin();

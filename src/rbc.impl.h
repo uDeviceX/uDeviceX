@@ -26,10 +26,10 @@ static void gen_a12(int i0, int *hx, int *hy, /**/ int *a1, int *a2) {
     int c = mi, c0;
     i = lo;
     do {
-	c     = nxt(i0, c0 = c, hx, hy);
-	a1[i] = c0;
-	a2[i] = nxt(c, c0, hx, hy);
-	i++;
+        c     = nxt(i0, c0 = c, hx, hy);
+        a1[i] = c0;
+        a2[i] = nxt(c, c0, hx, hy);
+        i++;
     }  while (c != mi);
 }
 
@@ -39,8 +39,8 @@ void setup(int *faces) {
 
     int   *trs4 = new int  [4 * nt];
     for (int ifa = 0, i0 = 0, i1 = 0; ifa < nt; ifa++) {
-	trs4 [i0++] = faces[i1++]; trs4[i0++] = faces[i1++]; trs4[i0++] = faces[i1++];
-	trs4 [i0++] = 0;
+        trs4 [i0++] = faces[i1++]; trs4[i0++] = faces[i1++]; trs4[i0++] = faces[i1++];
+        trs4 [i0++] = 0;
     }
 
     CC(cudaMalloc(&tri, nt * sizeof(int4)));
@@ -52,11 +52,11 @@ void setup(int *faces) {
     for (i = 0; i < nv*md; i++) hx[i] = a1[i] = a2[i] = -1;
 
     for (int ifa = 0; ifa < nt; ifa++) {
-	i = 3*ifa;
-	int f0 = faces[i++], f1 = faces[i++], f2 = faces[i++];
-	reg(f0, f1, f2,   hx, hy); /* register an edge */
-	reg(f1, f2, f0,   hx, hy);
-	reg(f2, f0, f1,   hx, hy);
+        i = 3*ifa;
+        int f0 = faces[i++], f1 = faces[i++], f2 = faces[i++];
+        reg(f0, f1, f2,   hx, hy); /* register an edge */
+        reg(f1, f2, f0,   hx, hy);
+        reg(f2, f0, f1,   hx, hy);
     }
     for (i = 0; i < nv; i++) gen_a12(i, hx, hy, /**/ a1, a2);
 
