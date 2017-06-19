@@ -28,6 +28,8 @@
 #include "bund.h"
 #include "force.h"
 
+#include "restart.h"
+
 #include "glb.h"
 
 #include "l/float3.h"
@@ -135,8 +137,6 @@ namespace sub {
 #include "s/impl.h"
 
 #include "safety.impl.h"
-
-#include "restart.h"
 
 #include "k/sim.h"
 #include "sim.decl.h"
