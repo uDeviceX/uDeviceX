@@ -141,6 +141,16 @@ namespace sub {
 #include "s/ic.h"
 #include "s/impl.h"
 
+namespace rig {
+namespace sub {
+namespace ic {
+#include "rig/ic.h"
+}
+#include "rig/imp.h"
+}
+#include "rig/int.h"
+}
+
 #include "safety.impl.h"
 
 #include "k/sim.h"
