@@ -24,8 +24,6 @@ Force     ff_hst[MAX_PART_NUM]; /* solvent forces on host    */
 namespace r /* [r]bc */
 {
 rbc::Quants q;
-int n = 0, nc = 0, nt = RBCnt, nv = RBCnv;
-Particle *pp;
 Force    *ff;
 
 Particle pp_hst[MAX_PART_NUM];
