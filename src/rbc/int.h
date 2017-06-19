@@ -19,9 +19,6 @@ void alloc_quants(Quants *q) {
     mpDeviceMalloc(&q->pp);
     mpHostMalloc(&q->pp_hst);
 
-    q->tri = NULL;
-    q->adj0 = q->adj1 = NULL;
-
     q->nt = RBCnt;
     q->nv = RBCnv;
 
@@ -37,9 +34,9 @@ void free_quants(Quants *q) {
     CC(cudaFree(q->pp));
     CC(cudaFree(q->av));
 
-    if (q->tri)  CC(cudaFree(q->tri));
-    if (q->adj0) CC(cudaFree(q->adj0));
-    if (q->adj1) CC(cudaFree(q->adj1));
+    CC(cudaFree(q->tri));
+    CC(cudaFree(q->adj0));
+    CC(cudaFree(q->adj1));
 
     q->textri.destroy();
     q->texadj0.destroy();
