@@ -11,11 +11,11 @@ struct TicketBB {
     float3 *minbb_hst, *maxbb_hst; /* [b]ounding [b]oxes of solid mesh on host   */
     float3 *minbb_dev, *maxbb_dev; /* [b]ounding [b]oxes of solid mesh on device */
     Solid *ss_hst, *ss;
-    Particle *i_pp_hst, *i_pp_dev;
+    Particle *i_pp_hst, *i_pp;
 };
 
 void alloc_quants(Quants *q) {
-    n - ns = nps = 0;
+    q->n = q->ns = q->nps = 0;
     
     CC(cudaMalloc(&q->pp ,     MAX_PART_NUM * sizeof(Particle)));
     CC(cudaMalloc(&q->ss ,       MAX_SOLIDS * sizeof(Solid)));
