@@ -20,7 +20,6 @@ texture<float4, cudaTextureType1D> texParticlesF4;
 texture<ushort4, cudaTextureType1D, cudaReadModeNormalizedFloat> texParticlesH4;
 texture<uint2, cudaTextureType1D> texStartAndCount;
 
-#define TRANSPOSED_ATOMICS
 #define LETS_MAKE_IT_MESSY
 #define CRAZY_SMEM
 #define HALF_FLOAT
@@ -102,7 +101,6 @@ __forceinline__ __device__ void core_ytang( const uint dststart, const uint psha
 
     // the overhead of transposition acc back
     // can be completely killed by changing the integration kernel
-#ifdef TRANSPOSED_ATOMICS
     uint off  = dpid & 0x0000001FU;
     uint base = xdiv( dpid, 1 / 32.f );
     float* acc = info.axayaz + xmad( base, 96.f, off );
@@ -118,19 +116,6 @@ __forceinline__ __device__ void core_ytang( const uint dststart, const uint psha
         atomicAdd( acc + 32, -f.y );
         atomicAdd( acc + 64, -f.z );
     }
-#else
-    float* acc = info.axayaz + dpid * 3;
-    atomicAdd( acc    , f.x );
-    atomicAdd( acc + 1, f.y );
-    atomicAdd( acc + 2, f.z );
-
-    if( spid < spidext ) {
-        float* acc = info.axayaz + spid * 3;
-        atomicAdd( acc    , -f.x );
-        atomicAdd( acc + 1, -f.y );
-        atomicAdd( acc + 2, -f.z );
-    }
-#endif
 }
 
 #define MYCPBX  (4)
@@ -461,9 +446,7 @@ void forces_dpd_cuda_nohost(const float4 * const xyzouvwo, const ushort4 * const
 
     if( c.ncells.x % MYCPBX == 0 && c.ncells.y % MYCPBY == 0 && c.ncells.z % MYCPBZ == 0 ) {
         _dpd_forces_symm_merged <<< dim3( c.ncells.x / MYCPBX, c.ncells.y / MYCPBY, c.ncells.z / MYCPBZ ), dim3( 32, MYWPB ), 0>>> ();
-#ifdef TRANSPOSED_ATOMICS
         transpose_acc <<< 28, 1024, 0>>>( np );
-#endif
     } else {
         fprintf( stderr, "Incompatible grid config\n" );
     }
