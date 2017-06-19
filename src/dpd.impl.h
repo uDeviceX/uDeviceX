@@ -46,8 +46,9 @@ void init1() {
 }
 
 void local_interactions(float4 *xyzouvwo, ushort4 *xyzo_half,
-                        int n, Force *a, int *cellsstart,
-                        int *cellscount) {
+                        int n, int *cellsstart, int *cellscount, /**/
+
+                        Force *a) {
     if (n > 0)
     forces_dpd_cuda_nohost(xyzouvwo, xyzo_half, (float *)a, n,
                            cellsstart, cellscount, 1, XS,
