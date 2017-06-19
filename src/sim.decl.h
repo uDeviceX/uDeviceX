@@ -8,13 +8,13 @@ H5FieldDump *dump_field;
 namespace o /* s[o]lvent */
 {
 
-int       n; /* Quants for sol:: */
+int       n; /* Quants for flu:: */
 Particle *pp;
 Clist *cells;
 
-sol::TicketZ tz;
-sol::TicketD td;
-sol::Work w;
+flu::TicketZ tz;
+flu::TicketD td;
+flu::Work w;
 Force    *ff;
 
 Particle  pp_hst[MAX_PART_NUM]; /* solvent on host           */

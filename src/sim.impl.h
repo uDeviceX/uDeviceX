@@ -44,7 +44,7 @@ void create_walls() {
     MSG("solvent particles survived: %d/%d", o::n, nold);
     if (o::n) k_sim::clear_velocity<<<k_cnf(o::n)>>>(o::pp, o::n);
     o::cells->build(o::pp, o::n);
-    sol::create_ticketZ(o::pp, o::n, &o::tz);
+    flu::create_ticketZ(o::pp, o::n, &o::tz);
 
     CC( cudaPeekAtLastError() );
 }
@@ -216,9 +216,9 @@ void ini() {
     wall::alloc_ticket(&w::t);
 
     o::cells   = new Clist(XS, YS, ZS);
-    sol::alloc_ticketD(&o::td);
-    sol::alloc_ticketZ(&o::tz);
-    sol::alloc_work(&o::w);
+    flu::alloc_ticketD(&o::td);
+    flu::alloc_ticketZ(&o::tz);
+    flu::alloc_work(&o::w);
 
     mpDeviceMalloc(&o::pp);
     mpDeviceMalloc(&o::ff);
@@ -266,7 +266,7 @@ void dump_diag(int it, bool wall0) { /* dump and diag */
 void step(float driving_force0, bool wall0, int it) {
     assert(o::n <= MAX_PART_NUM);
     assert(r::q.n <= MAX_PART_NUM);
-    sol::distr(&o::pp, &o::n, o::cells, &o::td, &o::tz, &o::w);
+    flu::distr(&o::pp, &o::n, o::cells, &o::td, &o::tz, &o::w);
     if (solids0) distr_solid();
     if (rbcs)    distr_rbc();
     forces(wall0);
@@ -340,12 +340,12 @@ void fin() {
 
     wall::free_quants(&w::q);
     wall::free_ticket(&w::t);
-    sol::free_work(&o::w);
+    flu::free_work(&o::w);
 
     delete o::cells;
     delete dump_field;
-    sol::free_ticketZ(&o::tz);
-    sol::free_ticketD();
+    flu::free_ticketZ(&o::tz);
+    flu::free_ticketD();
 
     CC(cudaFree(s::pp )); CC(cudaFree(s::ff )); CC(cudaFree(s::rr0));
     CC(cudaFree(o::pp )); CC(cudaFree(o::ff ));
