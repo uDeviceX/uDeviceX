@@ -18,7 +18,8 @@ void remove_rbcs_from_wall() {
     std::vector<int> tmp(marks.S);
     cD2H(tmp.data(), marks.D, marks.S);
     std::vector<int> stay;
-    for (i = j = 0; i < r::nc; ++i) {
+    for (i = 0; i < r::nc; ++i) {
+      j = 0;
       while (j < r::nv && tmp[j + r::nv * i] == W_BULK) ++j;
       if    (j == r::nv) stay.push_back(i);
     }
@@ -37,9 +38,10 @@ void remove_solids_from_wall() {
     std::vector<int> marks_hst(marks.S);
     cD2H(marks_hst.data(), marks.D, marks.S);
     std::vector<int> stay;
-    for (i = j = 0; i < s::ns; ++i) {
-	while (j < s::m_dev.nv && marks_hst[j + s::m_dev.nv * i] == W_BULK) ++j;
-	if    (j == s::m_dev.nv) stay.push_back(i);
+    for (i = 0; i < s::ns; ++i) {
+      j = 0;
+      while (j < s::m_dev.nv && marks_hst[j + s::m_dev.nv * i] == W_BULK) ++j;
+      if    (j == s::m_dev.nv) stay.push_back(i);
     }
     s::ns = stay.size(); s::npp = s::ns * s::nps;
     Cont::remove(s::pp,     s::nps, &stay.front(), s::ns);
