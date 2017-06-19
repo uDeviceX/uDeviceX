@@ -31,8 +31,8 @@ static void gen_a12(int i0, int *hx, int *hy, /**/ int *a1, int *a2) {
     }  while (c != mi);
 }
 
-void setup(int *faces, int4 *tri, Texo<int4> *textri,
-           int *adj0, Texo<int> *texadj0, int *adj1, Texo<int> *texadj1) {
+void setup(int *faces, int4 *tri, Texo<int4> *textri, int *adj0, Texo<int> *texadj0,
+           int *adj1, Texo<int> *texadj1, Particle *pp, Texo<float2> *texpp, int npp) {
     const char r_templ[] = "rbc.off";
     l::off::faces(r_templ, faces);
 
@@ -64,26 +64,20 @@ void setup(int *faces, int4 *tri, Texo<int4> *textri,
     texadj0->setup(adj0, nv*md);
     texadj1->setup(adj1, nv*md);
     textri->setup(tri,   nt);
+    texpp->setup((float2*) pp, npp);
 }
 
-void forces(int nc, Particle *pp, Force *ff, float* host_av) {
+void forces(int nc, Particle *pp, Force *ff, float* av) {
     if (nc <= 0) return;
-
-    /* TODO do this only once (need QuantsTickets for this) */
-    texvert.setup((float2*) pp, 3*nc*nv);
 
     dim3 avThreads(256, 1);
     dim3 avBlocks(1, nc);
 
-    CC(cudaMemsetAsync(host_av, 0, nc * 2 * sizeof(float)));
-    k_rbc::area_volume<<<avBlocks, avThreads>>>(texvert, textri, host_av);
+    CC(cudaMemsetAsync(av, 0, nc * 2 * sizeof(float)));
+    k_rbc::area_volume<<<avBlocks, avThreads>>>(texvert, textri, av);
     CC(cudaPeekAtLastError());
 
-    k_rbc::force<<<k_cnf(nc*nv*md)>>>(texvert, texadj0, texadj1, nc, host_av, (float*)ff);
-
-    /* TODO do this only once (need QuantsTickets for this) */
-    dSync();
-    texvert.destroy();
+    k_rbc::force<<<k_cnf(nc*nv*md)>>>(texvert, texadj0, texadj1, nc, av, (float*)ff);
 }
 
 #undef md
