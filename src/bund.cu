@@ -50,6 +50,7 @@ namespace rbc {
 #undef __DF__
 #include "rbc/hdr.h"
 #include "rbc/imp.h"
+#include "rbc/int.h"
 }
 
 #include "rdstr.decl.h"
