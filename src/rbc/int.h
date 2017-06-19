@@ -48,8 +48,8 @@ void setup(const char *r_templ, Quants *q) {
     sub::setup(r_templ, /**/ q->tri_hst, q->tri, q->adj0, q->adj1);
 }
 
-void setup_from_states(const char *r_templ, const char *r_state, Quants *q) {
-    ic::setup_from_states(r_templ, r_state, q->nv, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
+void setup_from_pos(const char *r_templ, const char *r_state, Quants *q) {
+    ic::setup_from_pos(r_templ, r_state, q->nv, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
 }
 
 void setup_textures(const Quants q, TicketT *t) {

@@ -50,7 +50,7 @@ int setup_hst(const char *r_templ, const char *r_state, int nv, Particle *pp) {
     return nc;
 }
 
-void setup_from_states(const char *r_templ, const char *r_state, int nv, /**/ Particle *pp, int *nc, int *n, /* storage */ Particle *pp_hst) {
+void setup_from_pos(const char *r_templ, const char *r_state, int nv, /**/ Particle *pp, int *nc, int *n, /* storage */ Particle *pp_hst) {
     /* fills `pp' with RBCs for this processor */
     *nc = setup_hst(r_templ, r_state, nv, pp_hst);
     if (*nc) cH2D(pp, pp_hst, nv * *nc);

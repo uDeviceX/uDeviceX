@@ -237,7 +237,7 @@ void ini() {
     o::cells->build(o::pp, o::n);
     create_ticketZ(o::pp, o::n, &o::tz);
 
-    if (rbcs) rbc::setup_from_states("rbc.off", "rbcs-ic.txt", /**/ &r::q);
+    if (rbcs) rbc::setup_from_pos("rbc.off", "rbcs-ic.txt", /**/ &r::q);
     
     dump_field = new H5FieldDump;
     MC(MPI_Barrier(m::cart));
