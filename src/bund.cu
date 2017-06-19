@@ -43,6 +43,7 @@
 #include "minmax.h"
 
 namespace rbc {
+namespace sub {
 #define __DF__ __device__ __forceinline__
 /* physical part of RBC calculations : see also params/rbc.inc0.h */
 #include "rbc/dev0.h"
@@ -50,6 +51,8 @@ namespace rbc {
 #undef __DF__
 #include "rbc/hdr.h"
 #include "rbc/imp.h"
+}
+#include "rbc/int.h"
 }
 
 #include "rdstr.decl.h"

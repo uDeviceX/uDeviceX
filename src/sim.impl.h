@@ -65,7 +65,7 @@ void set_ids_solids() {
 }
 
 void forces_rbc() {
-    if (rbcs && r::n) rbc::forces(r::nc, r::pp, r::ff, r::av);
+    if (rbcs && r::n) rbc::sub::forces(r::nc, r::pp, r::ff, r::av);
 }
 
 void forces_dpd() {
@@ -207,7 +207,9 @@ void bounce() {
 void ini() {
     if (rbcs) CC(cudaMalloc(&r::av, MAX_CELL_NUM));
 
-    rbc::setup(r::faces);
+    if (rbcs) rbc::alloc_quants(&r::q);
+    
+    rbc::sub::setup(r::faces);
     rdstr::ini();
     DPD::ini();
     fsi::ini();
@@ -360,6 +362,8 @@ void fin() {
     CC(cudaFree(s::pp )); CC(cudaFree(s::ff )); CC(cudaFree(s::rr0));
     CC(cudaFree(o::pp )); CC(cudaFree(o::ff ));
 
+    if (rbcs) rbc::free_quants(&r::q);
+    
     if (rbcs)
     {
         CC(cudaFree(r::pp));
