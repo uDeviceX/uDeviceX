@@ -47,6 +47,6 @@ void free_quants(Quants *q) {
     q->texvert.destroy();
 }
 
-void create() {
+void setup(Quants q) {
     
 }

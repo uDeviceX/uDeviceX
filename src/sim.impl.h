@@ -65,7 +65,7 @@ void set_ids_solids() {
 }
 
 void forces_rbc() {
-    if (rbcs && r::n) rbc::forces(r::nc, r::pp, r::ff, r::av);
+    if (rbcs && r::n) rbc::sub::forces(r::nc, r::pp, r::ff, r::av);
 }
 
 void forces_dpd() {
@@ -209,7 +209,7 @@ void ini() {
 
     if (rbcs) rbc::alloc_quants(&r::q);
     
-    rbc::setup(r::faces);
+    rbc::sub::setup(r::faces);
     rdstr::ini();
     DPD::ini();
     fsi::ini();
