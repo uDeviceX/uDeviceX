@@ -23,11 +23,11 @@ void remove_solids_from_wall() {
   int nip = s::ns * s::m_dev.nv;
   s::ns = sdf::who_stays(s::pp, nip, ns0 = s::ns, s::nps, /**/ stay);
   s::npp = s::ns * s::nps;
-  Cont::remove(s::pp,     s::nps, stay, s::ns);
-  Cont::remove(s::pp_hst, s::nps, stay, s::ns);
+  Cont::remove(s::pp,       s::nps,      stay, s::ns);
+  Cont::remove(s::pp_hst,   s::nps,      stay, s::ns);
 
-  Cont::remove(s::ss_dev, 1, stay, s::ns);
-  Cont::remove(s::ss_hst, 1, stay, s::ns);
+  Cont::remove(s::ss_dev,   1,           stay, s::ns);
+  Cont::remove(s::ss_hst,   1,           stay, s::ns);
 
   Cont::remove(s::i_pp_dev, s::m_dev.nv, stay, s::ns);
   Cont::remove(s::i_pp_hst, s::m_hst.nv, stay, s::ns);
