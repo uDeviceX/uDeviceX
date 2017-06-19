@@ -92,6 +92,13 @@ namespace sub {
 #include "sol/int.h"
 }
 
+namespace flu {
+namespace flu {
+#include "flu/dev.h"
+#include "flu/imp.h"
+}
+#include "flu/int.h"
+}
 
 #include "k/fsi.h"
 
