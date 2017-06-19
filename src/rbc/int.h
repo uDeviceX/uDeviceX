@@ -45,11 +45,11 @@ void free_quants(Quants *q) {
 }
 
 void setup(Quants *q) {
-    sub::setup(q->tri_hst, q->tri, &q->textri, q->adj0, &q->texadj0, q->adj1, &q->texadj1, q->pp, &q->texvert, q->n);
+    sub::setup(q->tri_hst, q->tri, q->adj0, q->adj1);
 }
 
-void setup_textures(const Quants *q, TicketT *t) {
-    sub::setup(q->tri, &t->textri, q->adj0, &t->texadj0, q->adj1, &t->texadj1, q->pp, &t->texvert);
+void setup_textures(const Quants q, TicketT *t) {
+    sub::setup_textures(q.tri, &t->textri, q.adj0, &t->texadj0, q.adj1, &t->texadj1, q.pp, &t->texvert);
 }
 
 void destroy_textures(TicketT *t) {

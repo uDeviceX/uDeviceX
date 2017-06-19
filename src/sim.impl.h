@@ -65,7 +65,7 @@ void set_ids_solids() {
 }
 
 void forces_rbc() {
-    if (rbcs) rbc::forces(r::q, /**/ r::ff);
+    if (rbcs) rbc::forces(r::q, r::t, /**/ r::ff);
 }
 
 void forces_dpd() {

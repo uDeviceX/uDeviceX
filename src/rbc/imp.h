@@ -62,7 +62,7 @@ void setup(int *faces, int4 *tri, int *adj0, int *adj1) {
 }
 
 void setup_textures(int4 *tri, Texo<int4> *textri, int *adj0, Texo<int> *texadj0,
-                    int *adj1, Texo<int> *texadj1, Particle *pp, Texo<float2> *texvert, int npp) {
+                    int *adj1, Texo<int> *texadj1, Particle *pp, Texo<float2> *texvert) {
     texadj0->setup(adj0, nv*md);
     texadj1->setup(adj1, nv*md);
     textri->setup(tri,   nt);
