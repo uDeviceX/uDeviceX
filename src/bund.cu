@@ -87,6 +87,7 @@ namespace sub {
 namespace flu {
 namespace sub {
 #include "flu/dev.h"
+#include "flu/hdr.h"
 #include "flu/imp.h"
 }
 #include "flu/int.h"
