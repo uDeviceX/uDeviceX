@@ -32,10 +32,12 @@ void free_quants(Quants *q) {
     delete[] q->pp_hst;
     delete[] q->ss_hst;
     delete[] q->rr0_hst;
-
+    delete[] q->i_pp_hst;
+    
     CC(cudaFree(q->pp));
     CC(cudaFree(q->ss));
     CC(cudaFree(q->rr0));
+    CC(cudaFree(q->i_pp));
 
     if (q->m_hst.tt) delete[] q->m_hst.tt;
     if (q->m_hst.vv) delete[] q->m_hst.vv;
