@@ -20,11 +20,6 @@ texture<float4, cudaTextureType1D> texParticlesF4;
 texture<ushort4, cudaTextureType1D, cudaReadModeNormalizedFloat> texParticlesH4;
 texture<uint2, cudaTextureType1D> texStartAndCount;
 
-#define _XCPB_ 2
-#define _YCPB_ 2
-#define _ZCPB_ 1
-#define CPB (_XCPB_ * _YCPB_ * _ZCPB_)
-
 __device__ float3 _dpd_interaction( const int dpid, const float4 xdest, const float4 udest, const float4 xsrc, const float4 usrc, const int spid )
 {
     const float myrandnr = l::rnd::d::mean0var1ii( info.seed, xmin( spid, dpid ), xmax( spid, dpid ) );
