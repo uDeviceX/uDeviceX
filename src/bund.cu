@@ -36,8 +36,6 @@
 #include "k/common.h"
 
 #include "clist.face.h"
-
-#include "k/odstr.h"
 #include "minmax.h"
 
 namespace rbc {
