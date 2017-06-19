@@ -76,9 +76,12 @@ struct Texo {
 #define D2H cudaMemcpyDeviceToHost
 #define H2D cudaMemcpyHostToDevice
 #define H2H cudaMemcpyHostToHost
+#define A2A cudaMemcpyDefault /* "[a]ll to [a]ll" */
 
 #define cD2D(t, f, n) CC(cudaMemcpy((t), (f), (n) * sizeof((f)[0]), D2D))
 #define cH2H(t, f, n) CC(cudaMemcpy((t), (f), (n) * sizeof((f)[0]), H2H))  /* [t]to, [f]rom */
+#define cA2A(t, f, n) CC(cudaMemcpy((t), (f), (n) * sizeof((f)[0]), A2A))
+
 #define cD2H(h, d, n) CC(cudaMemcpy((h), (d), (n) * sizeof((h)[0]), D2H))
 #define cH2D(d, h, n) CC(cudaMemcpy((d), (h), (n) * sizeof((h)[0]), H2D))
 
