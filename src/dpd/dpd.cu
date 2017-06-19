@@ -20,7 +20,6 @@ texture<float4, cudaTextureType1D> texParticlesF4;
 texture<ushort4, cudaTextureType1D, cudaReadModeNormalizedFloat> texParticlesH4;
 texture<uint2, cudaTextureType1D> texStartAndCount;
 
-#define LETS_MAKE_IT_MESSY
 #define CRAZY_SMEM
 #define HALF_FLOAT
 
