@@ -223,7 +223,7 @@ void ini() {
     wall::alloc_quants(&w::q);
     wall::alloc_ticket(&w::t);
 
-    o::cells   = new Clist(XS, YS, ZS);
+    o::cells = new Clist(XS, YS, ZS);
     sol::alloc_ticketD(&o::td);
     sol::alloc_ticketZ(&o::tz);
     sol::alloc_work(&o::w);

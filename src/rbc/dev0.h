@@ -11,9 +11,10 @@ namespace k_rbc {
      (a).z*(b).x - (a).x*(b).z,                 \
      (a).x*(b).y - (a).y*(b).x)
 
+#include "params/rbc.inc0.h"
+
 /* forces from one triangle */  
 __DF__ float3 tri(float3 r1, float3 r2, float3 r3, float area, float volume) {
-#include "params/rbc.inc0.h"
     float Ak, A0, n_2, coefArea, coeffVol,
 	r, xx, IbforceI_wcl, kp, IbforceI_pow, ka0, kv0, x0, l0, lmax,
 	kbToverp;
