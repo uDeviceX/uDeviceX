@@ -40,11 +40,6 @@ void free_quants(Quants *q) {
     CC(cudaFree(q->adj0));
     CC(cudaFree(q->adj1));
 
-    q->textri.destroy();
-    q->texadj0.destroy();
-    q->texadj1.destroy();
-    q->texvert.destroy();
-
     delete[] q->tri_hst;
     delete[] q->pp_hst;
 }
@@ -57,6 +52,13 @@ void setup_textures(const Quants *q, TicketT *t) {
     sub::setup(q->tri, &t->textri, q->adj0, &t->texadj0, q->adj1, &t->texadj1, q->pp, &t->texvert);
 }
 
-void forces(const Quants q, /**/ Force *ff) {
-    sub::forces(q.nc, q.texvert, q.textri, q.texadj0, q.texadj1, /**/ ff, q.av);
+void destroy_textures(TicketT *t) {
+    t->textri.destroy();
+    t->texadj0.destroy();
+    t->texadj1.destroy();
+    t->texvert.destroy();
+}
+
+void forces(const Quants q, const TicketT t, /**/ Force *ff) {
+    sub::forces(q.nc, t.texvert, t.textri, t.texadj0, t.texadj1, /**/ ff, q.av);
 }
