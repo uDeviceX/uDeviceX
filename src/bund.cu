@@ -87,6 +87,7 @@ namespace sub {
 namespace flu {
 namespace sub {
 #include "flu/dev.h"
+#include "flu/dev.fluid.h" /* Fluid dev functions */
 #include "flu/hdr.h" /* Fluid class decl */
 
 #include "flu/ini.h" /* Fluid class impl */
