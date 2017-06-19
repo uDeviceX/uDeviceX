@@ -23,8 +23,7 @@ void remove_rbcs_from_wall() {
       if    (j == r::nv) stay.push_back(i);
     }
     r::nc = stay.size(); r::n = r::nc * r::nv;
-    Cont::remove<DEV>(r::pp, r::nv, &stay.front(), r::nc);
-
+    Cont::remove(r::pp, r::nv, &stay.front(), r::nc);
     MSG("%d/%d RBCs survived", r::nc, nc0);
 }
 
@@ -43,14 +42,14 @@ void remove_solids_from_wall() {
 	if    (j == s::m_dev.nv) stay.push_back(i);
     }
     s::ns = stay.size(); s::npp = s::ns * s::nps;
-    Cont::remove<DEV> (s::pp,     s::nps, &stay.front(), s::ns);
-    Cont::remove<HST> (s::pp_hst, s::nps, &stay.front(), s::ns);
+    Cont::remove(s::pp,     s::nps, &stay.front(), s::ns);
+    Cont::remove(s::pp_hst, s::nps, &stay.front(), s::ns);
 
-    Cont::remove<DEV> (s::ss_dev, 1, &stay.front(), s::ns);
-    Cont::remove<HST> (s::ss_hst, 1, &stay.front(), s::ns);
+    Cont::remove(s::ss_dev, 1, &stay.front(), s::ns);
+    Cont::remove(s::ss_hst, 1, &stay.front(), s::ns);
 
-    Cont::remove<DEV> (s::i_pp_dev, s::m_dev.nv, &stay.front(), s::ns);
-    Cont::remove<HST> (s::i_pp_hst, s::m_hst.nv, &stay.front(), s::ns);
+    Cont::remove(s::i_pp_dev, s::m_dev.nv, &stay.front(), s::ns);
+    Cont::remove(s::i_pp_hst, s::m_hst.nv, &stay.front(), s::ns);
     MSG("sim.impl: %d/%d Solids survived", s::ns, ns0);
 }
 

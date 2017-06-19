@@ -60,13 +60,9 @@ int setup(Particle* pp, int nv, /* storage */ Particle *pp_hst) {
     return nc;
 }
 
-template <bool hst, typename T>
-void remove(T* data, const int npb, const int *e, const int n) {
-  int i, j;
-  for (i = 0; i < n; i++) {
-    j = e[i];
-    if (hst) memcpy(data + npb*i, data + npb*j, sizeof(T)*npb);
-    else       cD2D(data + npb*i, data + npb*j,           npb);
-  }
+template <typename T>
+void remove(T* data, int npb, int *e, int n) {
+  int i;
+  for (i = 0; i < n; i++) cA2A(data + npb*i, data + npb*e[i], npb);
 }
 }
