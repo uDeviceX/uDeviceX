@@ -158,10 +158,8 @@ void dump_rbcs() {
 }
 
 void dump_grid() {
-    if (field_dumps) {
-        cD2H(a::pp_hst, o::pp, o::n);
-        dump_field->dump(a::pp_hst, o::n);
-    }
+  cD2H(a::pp_hst, o::pp, o::n);
+  dump_field->dump(a::pp_hst, o::n);
 }
 
 void diag(int it) {
@@ -254,7 +252,7 @@ void dump_diag0(int it) { /* generic dump */
         dump_rbcs();
         diag(it);
     }
-    if (it % field_freq == 0) dump_grid();
+    if (field_dumps && it % field_freq == 0) dump_grid();
 }
 
 void dump_diag(int it, bool wall0) { /* dump and diag */
