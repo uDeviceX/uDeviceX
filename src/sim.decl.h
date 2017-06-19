@@ -24,11 +24,8 @@ Force     ff_hst[MAX_PART_NUM]; /* solvent forces on host    */
 namespace r /* [r]bc */
 {
 rbc::Quants q;
-Force    *ff;
-
-Particle pp_hst[MAX_PART_NUM];
-int faces[MAX_FACE_NUM];
-float *av;
+rbc::TicketT tt;
+Force     *ff;
 }
 
 /*** see int/wall.h ***/

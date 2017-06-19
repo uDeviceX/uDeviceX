@@ -31,8 +31,7 @@ static void gen_a12(int i0, int *hx, int *hy, /**/ int *a1, int *a2) {
     }  while (c != mi);
 }
 
-void setup(int *faces) {
-    const char r_templ[] = "rbc.off";
+void setup(const char *r_templ, int *faces, int4 *tri, int *adj0, int *adj1) {
     l::off::faces(r_templ, faces);
 
     int   *trs4 = new int  [4 * nt];
@@ -41,7 +40,6 @@ void setup(int *faces) {
         trs4 [i0++] = 0;
     }
 
-    CC(cudaMalloc(&tri, nt * sizeof(int4)));
     cH2D(tri, (int4*) trs4, nt);
     delete[] trs4;
 
@@ -58,37 +56,29 @@ void setup(int *faces) {
     }
     for (i = 0; i < nv; i++) gen_a12(i, hx, hy, /**/ a1, a2);
 
-    CC(cudaMalloc(&adj0, sizeof(int) * nv*md));
     cH2D(adj0, a1, nv*md);
-
-    CC(cudaMalloc(&adj1, sizeof(int) * nv*md));
     cH2D(adj1, a2, nv*md);
-
-    /* TODO free these arrays */
-    /* TODO free the texobjs  */
-    texadj0.setup(adj0, nv*md);
-    texadj1.setup(adj1, nv*md);
-    textri.setup(tri,   nt);
 }
 
-void forces(int nc, Particle *pp, Force *ff, float* host_av) {
-    if (nc <= 0) return;
+void setup_textures(int4 *tri, Texo<int4> *textri, int *adj0, Texo<int> *texadj0,
+                    int *adj1, Texo<int> *texadj1, Particle *pp, Texo<float2> *texvert) {
+    texadj0->setup(adj0, nv*md);
+    texadj1->setup(adj1, nv*md);
+    textri->setup(tri,   nt);
+    texvert->setup((float2*) pp, 3*MAX_PART_NUM);
+}
 
-    /* TODO do this only once (need QuantsTickets for this) */
-    texvert.setup((float2*) pp, 3*nc*nv);
+void forces(int nc, const Texo<float2> texvert, const Texo<int4> textri, const Texo<int> texadj0, const Texo<int> texadj1, Force *ff, float* av) {
+    if (nc <= 0) return;
 
     dim3 avThreads(256, 1);
     dim3 avBlocks(1, nc);
 
-    CC(cudaMemsetAsync(host_av, 0, nc * 2 * sizeof(float)));
-    k_rbc::area_volume<<<avBlocks, avThreads>>>(texvert, textri, host_av);
+    CC(cudaMemsetAsync(av, 0, nc * 2 * sizeof(float)));
+    dev::area_volume<<<avBlocks, avThreads>>>(texvert, textri, av);
     CC(cudaPeekAtLastError());
 
-    k_rbc::force<<<k_cnf(nc*nv*md)>>>(texvert, texadj0, texadj1, nc, host_av, (float*)ff);
-
-    /* TODO do this only once (need QuantsTickets for this) */
-    dSync();
-    texvert.destroy();
+    dev::force<<<k_cnf(nc*nv*md)>>>(texvert, texadj0, texadj1, nc, av, (float*)ff);
 }
 
 #undef md

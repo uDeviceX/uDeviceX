@@ -65,7 +65,7 @@ void set_ids_solids() {
 }
 
 void forces_rbc() {
-    if (rbcs && r::q.n) rbc::sub::forces(r::q.nc, r::q.pp, r::ff, r::q.av);
+    if (rbcs) rbc::forces(r::q, r::tt, /**/ r::ff);
 }
 
 void forces_dpd() {
@@ -153,7 +153,7 @@ void dump_rbcs() {
     if (rbcs) {
         static int id = 0;
         cD2H(a::pp_hst, r::q.pp, r::q.n);
-        rbc_dump(r::q.nc, a::pp_hst, r::faces, r::q.nv, r::q.nt, id++);
+        rbc_dump(r::q.nc, a::pp_hst, r::q.tri_hst, r::q.nv, r::q.nt, id++);
     }
 }
 
@@ -198,11 +198,13 @@ void bounce() {
 }
 
 void ini() {
-    if (rbcs) CC(cudaMalloc(&r::av, MAX_CELL_NUM));
-    if (rbcs) CC(cudaMalloc(&r::ff, MAX_PART_NUM));
-    if (rbcs) rbc::alloc_quants(&r::q);
-    
-    rbc::sub::setup(r::faces);
+    if (rbcs) {
+        CC(cudaMalloc(&r::ff, MAX_PART_NUM));
+        rbc::alloc_quants(&r::q);
+        rbc::setup("rbc.off", &r::q);
+        rbc::setup_textures(r::q, &r::tt);
+    }
+        
     rdstr::ini();
     DPD::ini();
     fsi::ini();
@@ -235,11 +237,8 @@ void ini() {
     o::cells->build(o::pp, o::n);
     create_ticketZ(o::pp, o::n, &o::tz);
 
-    if (rbcs) {
-        r::q.nc = Cont::setup(r::q.pp, r::q.nv, /* storage */ r::q.pp_hst);
-        r::q.n = r::q.nc * r::q.nv;
-    }
-
+    if (rbcs) rbc::setup_from_states("rbc.off", "rbcs-ic.txt", /**/ &r::q);
+    
     dump_field = new H5FieldDump;
     MC(MPI_Barrier(m::cart));
 }
@@ -350,14 +349,12 @@ void fin() {
     CC(cudaFree(s::pp )); CC(cudaFree(s::ff )); CC(cudaFree(s::rr0));
     CC(cudaFree(o::pp )); CC(cudaFree(o::ff ));
 
-    if (rbcs) rbc::free_quants(&r::q);
-    
-    if (rbcs)
-    {
-        CC(cudaFree(r::ff));
-        CC(cudaFree(r::av));
+    if (rbcs) {
+        rbc::free_quants(&r::q);
+        rbc::destroy_textures(&r::tt);
     }
-
+    
+    if (rbcs) CC(cudaFree(r::ff));
     if (solids) s::fin();
 }
 

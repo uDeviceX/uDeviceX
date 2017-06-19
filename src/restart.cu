@@ -7,8 +7,14 @@
 namespace restart {
 enum {X, Y, Z};
 
-// pattern : basename.rank-step
-#define PATTERN "%s.%04d-%05d"
+/* pattern : 
+   sing processor  : strt/code/id.ext
+   mult processors : strt/code/XXX.YYY.ZZZ/id.ext
+ */
+#define PATTERN0     "%5d.%s"
+#define PATTERN_SING "strt/%s/"             PATTERN0
+#define PATTERN_MULT "strt/%s/%3d.%3d.%3d/" PATTERN0
+
 // buff size
 #define BS (256)
 
@@ -21,25 +27,24 @@ enum {X, Y, Z};
 
 #define CF(f) do {if (f==NULL) ERR("could not open the file\n");} while(0)
 
-namespace bopwrite {
-void header(const char *name, const long n, const int step) {
-    char fname[BS] = {0};
-    CSPR(sprintf(fname, "restart/" PATTERN ".bop", name, m::rank, step));
-    
-    FILE *f = fopen(fname, "w"); CF(f);
+void gen_name(const char *code, const int id, const char *ext, /**/ char *name) {
+    if (m::d == 1) CSPR(sprintf(name, PATTERN_SING, code, id, ext));
+    else           CSPR(sprintf(name, PATTERN_MULT, code, m::coords[X], m::coords[Y], m::coords[Z], id, ext));
+}                
 
+namespace bopwrite {
+void header(const char *bop, const char *rel, const long n) {
+    FILE *f = fopen(bop, "w"); CF(f);
+    
     fprintf(f, "%ld\n", n);
-    fprintf(f, "DATA_FILE: " PATTERN ".values\n", name, m::rank, step);
+    fprintf(f, "DATA_FILE: %s\n", rel);
     fprintf(f, "DATA_FORMAT: float\n");
     fprintf(f, "VARIABLES: x y z vx vy vz\n");
     fclose(f);
 }
 
-void data(const char *name, const Particle *pp, const long n, const int step) {
-    char fname[BS] = {0};
-    CSPR(sprintf(fname, "restart/" PATTERN ".values", name, m::rank, step));
-     
-    FILE *f = fopen(fname, "w"); CF(f);
+void data(const char *val, const Particle *pp, const long n) {
+    FILE *f = fopen(val, "w"); CF(f);
     fwrite((float *) pp, sizeof(float), sizeof(Particle)/sizeof(float) * n, f);
     fclose(f);
 }
@@ -59,25 +64,31 @@ void data(const char *name, const long n, Particle *pp) {
 }
 } // namespace bopread
 
-void write(const char *basename, const Particle *pp, const long n, const int step) {
-    bopwrite::header(basename, n, step);
-    bopwrite::data(basename, pp, n, step);
+void write(const char *code, const int id, const Particle *pp, const long n) {
+    char bop[BS] = {0}, rel[BS] = {0}, val[BS] = {0};
+    gen_name(code, id, "bop"   , /**/ bop);
+    gen_name(code, id, "values", /**/ val);
+
+    CSPR(sprintf(rel, PATTERN0, id, "values"));
+    
+    bopwrite::header(bop, rel, n);
+    bopwrite::data(val, pp, n);
 }
 
-void read(const char *basename, Particle *pp, int *n) {
+void read(const char *code, const int id, Particle *pp, int *n) {
     long np = 0;
     char bop[BS] = {0}, val[BS] = {0};
-    CSPR(sprintf(bop, "%s.bop", basename));
-    CSPR(sprintf(val, "%s.values", basename));
+    gen_name(code, id, "bop"   , /**/ bop);
+    gen_name(code, id, "values", /**/ val);
     
     bopread::header(bop, &np);
     bopread::data(val, np, pp);
     *n = np;
 }
 
-void write(const char *basename, const Solid *ss, const long n, const int step) {
+void write(const char *code, const int id, const Solid *ss, const long n) {
     char fname[BS] = {0};
-    CSPR(sprintf(fname, "restart/" PATTERN ".solid", basename, m::rank, step));
+    gen_name(code, id, "solid", /**/ fname);
         
     FILE *f = fopen(fname, "r"); CF(f);
     fprintf(f, "%ld\n", n);
@@ -85,10 +96,10 @@ void write(const char *basename, const Solid *ss, const long n, const int step) 
     fclose(f);
 }
 
-void read(const char *basename, Solid *ss, int *n, const int step) {
+void read(const char *code, const int id, Solid *ss, int *n) {
     long ns = 0;
     char fname[BS] = {0};
-    CSPR(sprintf(fname, "restart/" PATTERN ".solid", basename, m::rank, step));
+    gen_name(code, id, "solid", /**/ fname);
     
     FILE *f = fopen(fname, "r"); CF(f);
     fscanf(f, "%ld\n", &ns);
