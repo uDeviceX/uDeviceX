@@ -9,23 +9,12 @@ void distr_rbc() {
 }
 
 void remove_rbcs_from_wall() {
-    int i, j;
-    int nc0 = r::nc;
-    if (r::nc <= 0) return;
-    DeviceBuffer<int> marks(r::n);
-    k_sdf::fill_keys<<<k_cnf(r::n)>>>(r::pp, r::n, marks.D);
-
-    std::vector<int> tmp(marks.S);
-    cD2H(tmp.data(), marks.D, marks.S);
-    std::vector<int> stay;
-    for (i = 0; i < r::nc; ++i) {
-        j = 0;
-        while (j < r::nv && tmp[j + r::nv * i] == W_BULK) ++j;
-        if    (j == r::nv) stay.push_back(i);
-    }
-    r::nc = stay.size(); r::n = r::nc * r::nv;
-    Cont::remove(r::pp, r::nv, &stay.front(), r::nc);
-    MSG("%d/%d RBCs survived", r::nc, nc0);
+  int stay[MAX_CELL_NUM];
+  int nc0;
+  r::nc = sdf::who_stays(r::pp, r::n, nc0 = r::nc, r::nv, /**/ stay);
+  r::n = r::nc * r::nv;
+  Cont::remove(r::pp, r::nv, stay, r::nc);
+  MSG("%d/%d RBCs survived", r::nc, nc0);
 }
 
 void remove_solids_from_wall() {

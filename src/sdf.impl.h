@@ -83,7 +83,7 @@ static bool bulkp(int *keys, int i) {
   int k; cD2H(&k, &keys[i], 1); return k;
 }
 
-int who_stays0(Particle *pp, int n, int nc, int nv, /**/ int *stay, /*w*/ int *keys) {
+static int who_stays0(Particle *pp, int n, int nc, int nv, /**/ int *stay, /*w*/ int *keys) {
   int c, v;  /* cell and vertex */
   int s = 0; /* how many stays? */
   k_sdf::fill_keys<<<k_cnf(n)>>>(pp, n, keys);
