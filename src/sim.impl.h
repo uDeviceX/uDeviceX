@@ -18,7 +18,7 @@ void remove_rbcs_from_wall() {
 }
 
 void remove_solids_from_wall() {
-  int stay[MAX_CELL_NUM];
+  int stay[MAX_SOLIDS];
   int ns0;
   int nip = s::ns * s::m_dev.nv;
   s::ns = sdf::who_stays(s::pp, nip, ns0 = s::ns, s::nps, /**/ stay);
