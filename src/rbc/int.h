@@ -42,10 +42,12 @@ void free_quants(Quants *q) {
     q->texadj0.destroy();
     q->texadj1.destroy();
     q->texvert.destroy();
+
+    delete[] q->tri_hst;
 }
 
 void setup(Quants q) {
-    sub::setup(q.tri_hst, q.tri, &q.textri, q.adj0, &q.texadj0, q.adj1, &q.texadj1, q.pp, &q.texvert, q.n);
+    sub::setup(q.tri_hst, q.tri, &q.textri, q.adj0, &q.texadj0, q.adj1, &q.texadj1, q.pp, &q.texvert, q.n); dSync();
 }
 
 void forces(Quants q, /**/ Force *ff) {
