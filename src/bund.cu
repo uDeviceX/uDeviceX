@@ -38,10 +38,6 @@
 #include "clist.face.h"
 
 #include "k/odstr.h"
-#include "odstr.decl.h"
-#include "odstr/ini.h"
-#include "odstr.impl.h"
-#include "odstr/fin.h"
 #include "minmax.h"
 
 namespace rbc {
