@@ -37,12 +37,3 @@ void create(Particle *opp, int *on) {
 
     MC(l::m::Barrier(m::cart));
 }
-
-void ini() {
-    npp = ns = nps = 0;
-    allocate();
-}
-
-void fin() {
-    deallocate();
-}
