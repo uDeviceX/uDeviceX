@@ -42,13 +42,15 @@
 #include "odstr/fin.h"
 #include "minmax.h"
 
+namespace rbc {
 #define __DF__ __device__ __forceinline__
 /* physical part of RBC calculations : see also params/rbc.inc0.h */
-#include "k/rbc0.h"
-#include "k/rbc.h"
+#include "rbc/dev0.h"
+#include "rbc/dev.h"
 #undef __DF__
-#include "rbc.decl.h"
-#include "rbc.impl.h"
+#include "rbc/hdr.h"
+#include "rbc/imp.h"
+}
 
 #include "rdstr.decl.h"
 #include "k/rdstr.h"
