@@ -21,7 +21,6 @@ texture<ushort4, cudaTextureType1D, cudaReadModeNormalizedFloat> texParticlesH4;
 texture<uint2, cudaTextureType1D> texStartAndCount;
 
 #define TRANSPOSED_ATOMICS
-//#define ONESTEP
 #define LETS_MAKE_IT_MESSY
 #define CRAZY_SMEM
 #define HALF_FLOAT
@@ -468,14 +467,6 @@ void forces_dpd_cuda_nohost(const float4 * const xyzouvwo, const ushort4 * const
     } else {
         fprintf( stderr, "Incompatible grid config\n" );
     }
-
-#ifdef ONESTEP
-    check_acc <<< 1, 1, 0>>>( np );
-    CC( cudaDeviceSynchronize() );
-    CC( cudaDeviceReset() );
-    l::m::Finalize();
-    exit( 0 );
-#endif
 
 #ifdef _TIME_PROFILE_
     if( cetriolo % 500 == 0 ) {
