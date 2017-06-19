@@ -61,8 +61,8 @@ int setup(Particle* pp, int nv, /* storage */ Particle *pp_hst) {
 }
 
 template <typename T>
-void remove(T* data, int npb, int *e, int n) {
-  int i;
-  for (i = 0; i < n; i++) cA2A(data + npb*i, data + npb*e[i], npb);
+void remove(T* data, int nv, int *e, int nc) {
+  int c; /* c: cell, v: vertex */
+  for (c = 0; c < nc; c++) cA2A(data + nv*c, data + nv*e[c], nv);
 }
 }
