@@ -17,4 +17,3 @@ void Fluid::fin() {
 
   delete s.size_pin;
 }
-

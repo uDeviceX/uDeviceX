@@ -47,4 +47,4 @@ void Fluid::ini(MPI_Comm cart, int rank[])  {
   CC(cudaMalloc(&r.dev, SZ_PTR_ARR(r.hst_)));
   CC(cudaMemcpy(r.dev, r.hst_, sizeof(r.hst_), H2D));
 }
-}
+
