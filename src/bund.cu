@@ -92,7 +92,11 @@ namespace flu {
 namespace sub {
 #include "flu/dev.h"
 #include "flu/hdr.h"
+
+#include "flu/ini.h"
 #include "flu/imp.h"
+#include "flu/fin.h"
+
 }
 #include "flu/int.h"
 }
