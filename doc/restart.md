@@ -1,6 +1,4 @@
-# restart
-
-##  file format
+#  file format
 
 Restart stores simulation variables of solvent, wall, rbcs and rigid bodies under the following file naming:
 
