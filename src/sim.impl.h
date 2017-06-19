@@ -160,7 +160,7 @@ void dump_rbcs() {
     if (rbcs) {
         static int id = 0;
         cD2H(a::pp_hst, r::q.pp, r::q.n);
-        rbc_dump(r::q.nc, a::pp_hst, r::faces, r::q.nv, r::q.nt, id++);
+        rbc_dump(r::q.nc, a::pp_hst, r::q.tri_hst, r::q.nv, r::q.nt, id++);
     }
 }
 
@@ -209,7 +209,7 @@ void ini() {
     if (rbcs) CC(cudaMalloc(&r::ff, MAX_PART_NUM));
     if (rbcs) rbc::alloc_quants(&r::q);
     
-    rbc::sub::setup(r::faces);
+    rbc::setup(r::q);
     rdstr::ini();
     DPD::ini();
     fsi::ini();

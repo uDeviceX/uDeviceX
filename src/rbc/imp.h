@@ -31,7 +31,8 @@ static void gen_a12(int i0, int *hx, int *hy, /**/ int *a1, int *a2) {
     }  while (c != mi);
 }
 
-void setup(int *faces) {
+void setup(int *faces, int4 *tri, Texo<int4> *textri,
+           int *adj0, Texo<int> *texadj0, int *adj1, Texo<int> *texadj1) {
     const char r_templ[] = "rbc.off";
     l::off::faces(r_templ, faces);
 
@@ -41,7 +42,6 @@ void setup(int *faces) {
         trs4 [i0++] = 0;
     }
 
-    CC(cudaMalloc(&tri, nt * sizeof(int4)));
     cH2D(tri, (int4*) trs4, nt);
     delete[] trs4;
 
@@ -58,17 +58,12 @@ void setup(int *faces) {
     }
     for (i = 0; i < nv; i++) gen_a12(i, hx, hy, /**/ a1, a2);
 
-    CC(cudaMalloc(&adj0, sizeof(int) * nv*md));
     cH2D(adj0, a1, nv*md);
-
-    CC(cudaMalloc(&adj1, sizeof(int) * nv*md));
     cH2D(adj1, a2, nv*md);
 
-    /* TODO free these arrays */
-    /* TODO free the texobjs  */
-    texadj0.setup(adj0, nv*md);
-    texadj1.setup(adj1, nv*md);
-    textri.setup(tri,   nt);
+    texadj0->setup(adj0, nv*md);
+    texadj1->setup(adj1, nv*md);
+    textri->setup(tri,   nt);
 }
 
 void forces(int nc, Particle *pp, Force *ff, float* host_av) {

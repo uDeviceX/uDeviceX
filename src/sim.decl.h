@@ -26,7 +26,6 @@ namespace r /* [r]bc */
 rbc::Quants q;
 Force    *ff;
 
-int faces[MAX_FACE_NUM];
 float *av;
 }
 

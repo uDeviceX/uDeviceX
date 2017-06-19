@@ -25,9 +25,9 @@ void alloc_quants(Quants *q) {
     q->nt = RBCnt;
     q->nv = RBCnv;
 
-    // CC(cudaMalloc(&q->tri, q->nt * sizeof(int4)));
-    // CC(cudaMalloc(&q->adj0, q->nv * RBCmd * sizeof(int)));
-    // CC(cudaMalloc(&q->adj1, q->nv * RBCmd * sizeof(int)));
+    CC(cudaMalloc(&q->tri, q->nt * sizeof(int4)));
+    CC(cudaMalloc(&q->adj0, q->nv * RBCmd * sizeof(int)));
+    CC(cudaMalloc(&q->adj1, q->nv * RBCmd * sizeof(int)));
                       
     q->tri_hst = new int[MAX_FACE_NUM];
     CC(cudaMalloc(&q->av, MAX_CELL_NUM));
@@ -48,5 +48,5 @@ void free_quants(Quants *q) {
 }
 
 void setup(Quants q) {
-    sub::setup(q.tri_hst);
+    sub::setup(q.tri_hst, q.tri, &q.textri, q.adj0, &q.texadj0, q.adj1, &q.texadj1);
 }
