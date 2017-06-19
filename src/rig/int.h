@@ -10,7 +10,7 @@ struct Quants {
 struct TicketBB {
     float3 *minbb_hst, *maxbb_hst; /* [b]ounding [b]oxes of solid mesh on host   */
     float3 *minbb_dev, *maxbb_dev; /* [b]ounding [b]oxes of solid mesh on device */
-    Solid *ss;
+    Solid *ss_hst, *ss;
     Particle *i_pp_hst, *i_pp_dev;
 };
 
@@ -48,9 +48,12 @@ void alloc_ticket(TicketBB *t) {
     CC(cudaMalloc(&t->minbb_dev, MAX_SOLIDS * sizeof(float3)));
     CC(cudaMalloc(&t->maxbb_dev, MAX_SOLIDS * sizeof(float3)));
     CC(cudaMalloc(&t->i_pp,  MAX_PART_NUM * sizeof(Particle)));
+    CC(cudaMalloc(&t->ss ,        MAX_SOLIDS * sizeof(Solid)));
+    
     t->minbb_hst = new float3[MAX_SOLIDS];
     t->maxbb_hst = new float3[MAX_SOLIDS];
-    t->i_pp_hst = new Particle[MAX_PART_NUM];
+    t->ss_hst   = new Solid[MAX_SOLIDS];
+    t->i_pp_hst = new Particle[MAX_PART_NUM];    
 }
 
 void free_ticket(TicketBB *t) {
