@@ -50,10 +50,10 @@ int setup_hst(const char *r_templ, const char *r_state, int nv, Particle *pp) {
     return nc;
 }
 
-int setup_from_states(const char *r_templ, const char *r_state, int nv, Particle* pp, /* storage */ Particle *pp_hst) {
+void setup_from_states(const char *r_templ, const char *r_state, int nv, /**/ Particle* pp, int *nc, int *n, /* storage */ Particle *pp_hst) {
     /* fills `pp' with RBCs for this processor */
-    int nc = setup_hst(r_templ, r_state, nv, pp_hst);
-    if (nc) cH2D(pp, pp_hst, nv * nc);
+    *nc = setup_hst(r_templ, r_state, nv, pp_hst);
+    if (*nc) cH2D(pp, pp_hst, nv * *nc);
     l::m::Barrier(m::cart);
-    return nc;
+    *n = *nc * nv;
 }
