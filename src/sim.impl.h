@@ -70,7 +70,7 @@ void forces_rbc() {
 
 void forces_dpd() {
     DPD::pack(o::pp, o::n, o::cells->start, o::cells->count);
-    /* breaks a contract with hiwi */
+    /* :TODO: breaks a contract with hiwi */
     DPD::local_interactions(o::tz.zip0, o::tz.zip1,
                             o::n, o::cells->start, o::cells->count,
                             /**/ o::ff);
