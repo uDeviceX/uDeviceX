@@ -25,8 +25,6 @@ namespace r /* [r]bc */
 {
 rbc::Quants q;
 Force    *ff;
-
-float *av;
 }
 
 /*** see int/wall.h ***/
