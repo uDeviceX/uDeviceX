@@ -33,18 +33,18 @@ void gen_name(const char *code, const int id, const char *ext, /**/ char *name) 
 }                
 
 namespace bopwrite {
-void header(const char *bopname, const char *datname, const long n) {
-    FILE *f = fopen(fname, "w"); CF(f);
+void header(const char *bop, const char *rel, const long n) {
+    FILE *f = fopen(bop, "w"); CF(f);
     
     fprintf(f, "%ld\n", n);
-    fprintf(f, "DATA_FILE: %s\n", datname);
+    fprintf(f, "DATA_FILE: %s\n", rel);
     fprintf(f, "DATA_FORMAT: float\n");
     fprintf(f, "VARIABLES: x y z vx vy vz\n");
     fclose(f);
 }
 
-void data(const char *name, const Particle *pp, const long n, const int step) {
-    FILE *f = fopen(fname, "w"); CF(f);
+void data(const char *val, const Particle *pp, const long n) {
+    FILE *f = fopen(val, "w"); CF(f);
     fwrite((float *) pp, sizeof(float), sizeof(Particle)/sizeof(float) * n, f);
     fclose(f);
 }
@@ -72,7 +72,7 @@ void write(const char *code, const int id, const Particle *pp, const long n) {
     CSPR(sprintf(rel, PATTERN0, id, "values"));
     
     bopwrite::header(bop, rel, n);
-    bopwrite::data(val, pp, n, step);
+    bopwrite::data(val, pp, n);
 }
 
 void read(const char *code, const int id, Particle *pp, int *n) {
@@ -86,9 +86,9 @@ void read(const char *code, const int id, Particle *pp, int *n) {
     *n = np;
 }
 
-void write(const char *basename, const Solid *ss, const long n, const int step) {
+void write(const char *code, const int id, const Solid *ss, const long n) {
     char fname[BS] = {0};
-    CSPR(sprintf(fname, "restart/" PATTERN ".solid", basename, m::rank, step));
+    gen_name(code, id, "solid", /**/ fname);
         
     FILE *f = fopen(fname, "r"); CF(f);
     fprintf(f, "%ld\n", n);
@@ -96,10 +96,10 @@ void write(const char *basename, const Solid *ss, const long n, const int step) 
     fclose(f);
 }
 
-void read(const char *basename, Solid *ss, int *n, const int step) {
+void read(const char *code, const int id, Solid *ss, int *n) {
     long ns = 0;
     char fname[BS] = {0};
-    CSPR(sprintf(fname, "restart/" PATTERN ".solid", basename, m::rank, step));
+    gen_name(code, id, "solid", /**/ fname);
     
     FILE *f = fopen(fname, "r"); CF(f);
     fscanf(f, "%ld\n", &ns);
