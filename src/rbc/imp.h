@@ -64,7 +64,7 @@ void setup(int *faces, int4 *tri, Texo<int4> *textri, int *adj0, Texo<int> *texa
     texadj0->setup(adj0, nv*md);
     texadj1->setup(adj1, nv*md);
     textri->setup(tri,   nt);
-    texvert->setup((float2*) pp, 3*npp);
+    texvert->setup((float2*) pp, 3*MAX_PART_NUM);
 }
 
 void forces(int nc, const Texo<float2> texvert, const Texo<int4> textri, const Texo<int> texadj0, const Texo<int> texadj1, Force *ff, float* av) {
