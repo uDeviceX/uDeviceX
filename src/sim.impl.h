@@ -206,7 +206,7 @@ void bounce() {
 
 void ini() {
     if (rbcs) CC(cudaMalloc(&r::av, MAX_CELL_NUM));
-
+    if (rbcs) CC(cudaMalloc(&r::ff, MAX_PART_NUM));
     if (rbcs) rbc::alloc_quants(&r::q);
     
     rbc::sub::setup(r::faces);
