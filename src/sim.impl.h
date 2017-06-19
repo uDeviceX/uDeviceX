@@ -65,7 +65,7 @@ void set_ids_solids() {
 }
 
 void forces_rbc() {
-    if (rbcs) rbc::forces(r::q, r::t, /**/ r::ff);
+    if (rbcs) rbc::forces(r::q, r::tt, /**/ r::ff);
 }
 
 void forces_dpd() {
@@ -202,7 +202,7 @@ void ini() {
         CC(cudaMalloc(&r::ff, MAX_PART_NUM));
         rbc::alloc_quants(&r::q);
         rbc::setup(&r::q);
-        rbc::setup_textures(r::q, &r::t);
+        rbc::setup_textures(r::q, &r::tt);
     }
         
     rdstr::ini();
@@ -354,7 +354,7 @@ void fin() {
 
     if (rbcs) {
         rbc::free_quants(&r::q);
-        rbc::destroy_textures(&r::t);
+        rbc::destroy_textures(&r::tt);
     }
     
     if (rbcs) CC(cudaFree(r::ff));
