@@ -1,5 +1,5 @@
 namespace sim {
-
+/* see bund.cu for more sim:: functions */
 void distr_rbc() {
     rdstr::extent(r::q.pp, r::q.nc, r::q.nv);
     dSync();
