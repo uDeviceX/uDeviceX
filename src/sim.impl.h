@@ -89,10 +89,8 @@ void forces_wall() {
 }
 
 void forces_cnt(std::vector<ParticlesWrap> *w_r) {
-    if (contactforces) {
-        cnt::build_cells(*w_r);
-        cnt::bulk(*w_r);
-    }
+    cnt::build_cells(*w_r);
+    cnt::bulk(*w_r);
 }
 
 void forces_fsi(SolventWrap *w_s, std::vector<ParticlesWrap> *w_r) {
@@ -114,7 +112,7 @@ void forces(bool wall0) {
     if (wall0) forces_wall();
     forces_rbc();
 
-    forces_cnt(&w_r);
+    if (contactforces) forces_cnt(&w_r);
     forces_fsi(&w_s, &w_r);
 
     rex::bind_solutes(w_r);
