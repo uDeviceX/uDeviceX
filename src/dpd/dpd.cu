@@ -1,9 +1,11 @@
 #include <limits>
 #include <stdint.h>
+#include <mpi.h>
 #include "dpd/tiny-float.h"
 #include "l/rnd.h"
 #include "dpd/cuda-dpd.h"
 #include "force.h"
+#include "common.h"
 
 struct InfoDPD {
     int3 ncells;
@@ -284,7 +286,6 @@ void _dpd_forces_symm_merged()
 
 bool fdpd_init = false;
 static bool is_mps_enabled = false;
-#include "hacks.h"
 
 __global__ void make_texture2( uint2 *start_and_count, const int *start, const int *count, const int n )
 {
