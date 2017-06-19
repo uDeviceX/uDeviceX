@@ -44,8 +44,8 @@ void free_quants(Quants *q) {
     delete[] q->pp_hst;
 }
 
-void setup(Quants *q) {
-    sub::setup(q->tri_hst, q->tri, q->adj0, q->adj1);
+void setup(const char *r_templ, Quants *q) {
+    sub::setup(r_templ, /**/ q->tri_hst, q->tri, q->adj0, q->adj1);
 }
 
 void setup_textures(const Quants q, TicketT *t) {
