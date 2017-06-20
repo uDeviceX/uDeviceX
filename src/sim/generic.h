@@ -1,10 +1,10 @@
 namespace sim {
 void distr_rbc() {
-    rdstr::extent(r::q.pp, r::q.nc, r::q.nv);
-    dSync();
-    rdstr::pack_sendcnt(r::q.pp, r::q.nc, r::q.nv);
-    r::q.nc = rdstr::post(r::q.nv); r::q.n = r::q.nc * r::q.nv;
-    rdstr::unpack(r::q.pp, r::q.nv);
+  rdstr::extent(r::q.pp, r::q.nc, r::q.nv);
+  dSync();
+  rdstr::pack_sendcnt(r::q.pp, r::q.nc, r::q.nv);
+  r::q.nc = rdstr::post(r::q.nv); r::q.n = r::q.nc * r::q.nv;
+  rdstr::unpack(r::q.pp, r::q.nv);
 }
 
 void remove_rbcs_from_wall() {
@@ -32,5 +32,4 @@ void remove_solids_from_wall() {
   Cont::remove(s::q.i_pp_hst, s::q.m_hst.nv, stay, s::q.ns);
   MSG("sim.impl: %d/%d Solids survived", s::q.ns, ns0);
 }
-
 }
