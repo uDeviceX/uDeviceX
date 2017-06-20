@@ -16,11 +16,6 @@ void create_walls() {
     CC( cudaPeekAtLastError() );
 }
 
-void set_ids_solids() {
-    rig::set_ids(s::q);
-    CC(cudaPeekAtLastError());
-}
-
 void update_solid() {
     if (s::q.n) update_solid0();
 }
@@ -128,7 +123,7 @@ void freeze() {
   if (solids) create_solids();
   if (walls && rbcs  ) remove_rbcs();
   if (walls && solids) remove_solids();
-  if (solids) set_ids_solids();
+  if (solids)          rig::set_ids(s::q);
   if (solids && s::q.n) k_sim::clear_velocity<<<k_cnf(s::q.n)>>>(s::q.pp, s::q.n);
   if (rbcs   && r::q.n) k_sim::clear_velocity<<<k_cnf(r::q.n)>>>(r::q.pp, r::q.n);
 }
@@ -151,6 +146,7 @@ void sim() {
   if (walls || solids) {
     solids0 = false;  /* global */
     gen();
+    dSync();
     solids0 = solids;
     run(wall_creation, nsteps);
   } else {
