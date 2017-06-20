@@ -92,3 +92,11 @@ void free_ticket(TicketBB *t) {
 void create(Particle *opp, int *on, Quants *q) {
     sub::create(opp, on, &q->m_dev, &q->m_hst, &q->ns, &q->nps, &q->n, q->rr0_hst, q->ss_hst, q->pp_hst);
 }
+
+void gen_pp_hst(Quants q) {
+    sub::gen_pp_hst(q.ns, q.rr0_hst, q.nps, /**/ q.ss_hst, q.pp_hst);
+}
+
+void gen_ipp_hst(const Quants q, TicketBB t) {
+    sub::gen_ipp_hst(q.ss_hst, q.ns, q.m_hst, /**/ t.i_pp_hst);
+}
