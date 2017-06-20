@@ -271,14 +271,14 @@ void step(float driving_force0, bool wall0, int it) {
     if (sbounce_back && solids0) bounce_solid(it);
 }
 
-void run_nowall(long nsteps) {
+void run_simple(long nsteps) {
     float driving_force0 = pushflow ? driving_force : 0;
     bool wall0 = false;
     solids0 = false;
     for (long it = 0; it < nsteps; ++it) step(driving_force0, wall0, it);
 }
 
-void run_wall(long nsteps) {
+void run_complex(long nsteps) {
     float driving_force0 = 0;
     bool wall0 = false;
     long it = 0;
@@ -322,8 +322,8 @@ void run() {
     long nsteps = (int)(tend / dt);
     MSG0("will take %ld steps", nsteps);
 
-    if (walls || solids) run_wall(nsteps);
-    else               run_nowall(nsteps);
+    if (walls || solids) run_complex(nsteps);
+    else                 run_simple(nsteps);
 }
 
 void fin() {
