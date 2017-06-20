@@ -119,3 +119,7 @@ void cpy_H2D(Quants q, TicketBB t) {
     cH2D(q.rr0,  q.rr0_hst,  q.nps * 3);
     cH2D(q.pp,   q.pp_hst,   q.n);
 }
+
+void set_ids(Quants q) {
+    sub::ic::set_ids(q.ns, q.ss_hst);
+}
