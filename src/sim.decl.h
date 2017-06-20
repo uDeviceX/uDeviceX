@@ -28,7 +28,7 @@ rbc::TicketT tt;
 Force     *ff;
 }
 
-namespace b /* rigid bodies */
+namespace s /* rigid bodies */
 {
 rig::Quants q;
 rig::TicketBB t;
