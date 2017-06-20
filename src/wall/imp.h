@@ -95,14 +95,11 @@ void build_cells(const int n, float4 *pp4, Clist *cells) {
     CC(cudaFree(pp));
 }
 
-void create(int *o_n, Particle *o_pp, int *w_n, float4 **w_pp, Clist *cells,
-            Texo<int> *texstart, Texo<float4> *texpp) {
+void gen_quants(int *o_n, Particle *o_pp, int *w_n, float4 **w_pp) {
     Particle *frozen;
     CC(cudaMalloc(&frozen, sizeof(Particle) * MAX_PART_NUM));
 
     freeze(o_pp, o_n, frozen, w_n);
-
-    build_cells(*w_n, /**/ frozen, cells);
 
     MSG0("consolidating wall particles");
 
@@ -110,16 +107,20 @@ void create(int *o_n, Particle *o_pp, int *w_n, float4 **w_pp, Clist *cells,
 
     if (*w_n > 0)
     dev::particle2float4 <<<k_cnf(*w_n)>>> (frozen, *w_n, /**/ *w_pp);
-
-    texstart->setup(cells->start, cells->ncells);
-    texpp->setup(*w_pp, *w_n);
     
     CC(cudaFree(frozen));
 }
 
-void create_from_strt(const int id, int *w_n, , float4 **w_pp, Clist *cells,
-                      Texo<int> *texstart, Texo<float4> *texpp) {
-    strt::read(id, );
+void strt_quants(const int id, int *w_n, , float4 **w_pp) {
+    // TODO strt::read(id, );
+}
+
+void gen_ticket(const int w_n, float4 *w_pp, Clist *cells, Texo<int> *texstart, Texo<float4> *texpp) {
+
+    build_cells(w_n, /**/ w_pp, cells);
+    
+    texstart->setup(cells->start, cells->ncells);
+    texpp->setup(*w_pp, *w_n);    
 }
 
 void interactions(const int type, const Particle *const pp, const int n, const Texo<int> texstart,

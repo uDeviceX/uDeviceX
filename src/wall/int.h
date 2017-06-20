@@ -32,8 +32,16 @@ void free_ticket(Ticket *t) {
     t->texpp.destroy();
 }
 
-void create(int *n, Particle* pp, Quants *q, Ticket *t) {
-    sub::create(n, pp, &q->n, &q->pp, t->cells, &t->texstart, &t->texpp);
+void gen_quants(int *n, Particle* pp, Quants *q) {
+    sub::gen_quants(n, pp, &q->n, &q->pp, t->cells, &t->texstart, &t->texpp);
+}
+
+void strt_quants(const int id, Quants *q) {
+    sub::strt_quants(const int id, &q->n, , &q->pp);
+}
+
+void gen_ticket(Quants q, Ticket *t) {
+    sub::gen_ticket(q.n, q.pp, t->cells, &t->texstart, &t->texpp);
 }
 
 void interactions(const Quants q, const Ticket t, const int type, const Particle *pp, const int n, Force *ff) {
@@ -53,7 +61,6 @@ void interactions(const Quants q, const Ticket t, const int type, const Particle
 
   sub::create_ticket(q, &t);
 
-// sim
-  sim::restart::read/write( (&) q.pp, (&) q.n);
+  restart::read/write( (&) q.pp, (&) q.n);
   
  */
