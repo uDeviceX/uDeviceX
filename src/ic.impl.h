@@ -1,6 +1,6 @@
 namespace ic { /* initial conditions */
 
-int gen(Particle *pp) { /* generate particle positions and velocities */
+int gen0(Particle *pp) { /* generate particle positions and velocities */
     enum {X, Y, Z};
     assert(XS * YS * ZS * numberdensity < MAX_PART_NUM);
   
@@ -26,6 +26,12 @@ int gen(Particle *pp) { /* generate particle positions and velocities */
 
     MSG("ic::gen: created %06d solvent particles", n);
     return n;
+}
+
+int gen(Particle *dev, /*w*/ Particle *hst) {
+  int n = gen0(hst);
+  cH2D(dev, hst, n);
+  return n;
 }
 
 } /* namespace ic */

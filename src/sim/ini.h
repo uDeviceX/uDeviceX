@@ -34,8 +34,7 @@ void ini() {
         CC(cudaMalloc(&s::ff, MAX_PART_NUM * sizeof(Force)));
     }
 
-    o::n = ic::gen(o::pp_hst);
-    cH2D(o::pp, o::pp_hst, o::n);
+    o::n = ic::gen(o::pp, /*w*/ o::pp_hst);
     o::cells->build(o::pp, o::n);
     get_ticketZ(o::pp, o::n, &o::tz);
 
