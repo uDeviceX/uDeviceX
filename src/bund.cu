@@ -158,6 +158,7 @@ namespace ic {
 #else
   #include "0hst/sim.impl.h"
 #endif
-#include "sim.impl.h"
 #undef HST
 #undef DEV
+
+#include "sim.impl.h"
