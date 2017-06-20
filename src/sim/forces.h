@@ -1,4 +1,14 @@
 namespace sim {
+void body_force(float driving_force0) {
+    k_sim::body_force<<<k_cnf(o::n)>>> (1, o::pp, o::ff, o::n, driving_force0);
+
+    if (solids0 && s::q.n)
+    k_sim::body_force<<<k_cnf(s::q.n)>>> (solid_mass, s::q.pp, s::ff, s::q.n, driving_force0);
+
+    if (rbcs && r::q.n)
+    k_sim::body_force<<<k_cnf(r::q.n)>>> (rbc_mass, r::q.pp, r::ff, r::q.n, driving_force0);
+}
+  
 void forces_rbc() {
     if (rbcs) rbc::forces(r::q, r::tt, /**/ r::ff);
 }
