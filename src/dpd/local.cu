@@ -16,6 +16,9 @@ struct InfoDPD {
     float seed;
 };
 
+bool fdpd_init = false;
+static bool is_mps_enabled = false;
+
 __constant__ InfoDPD info;
 __device__ char4 tid2ind[32] = {
     { -1, -1, -1, 0}, {0, -1, -1, 0}, {1, -1, -1, 0},
@@ -285,31 +288,11 @@ void _dpd_forces_symm_merged()
     }
 }
 
-bool fdpd_init = false;
-static bool is_mps_enabled = false;
-
 __global__ void make_texture2( uint2 *start_and_count, const int *start, const int *count, const int n )
 {
     for( int i = blockIdx.x * blockDim.x + threadIdx.x; i < n; i += blockDim.x * gridDim.x ) {
         start_and_count[i] = make_uint2( start[i], count[i] );
     }
-}
-
-__global__ void check_acc( const int np )
-{
-    double sx = 0, sy = 0, sz = 0;
-    for( int i = 0; i < np; i++ ) {
-        double ax = info.ff[i * 3 + 0];
-        double ay = info.ff[i * 3 + 1];
-        double az = info.ff[i * 3 + 2];
-        if( ax != ax || ay != ay || az != az ) {
-            printf( "particle %d: %f %f %f\n", i, ax, ay, az );
-        }
-        sx += ax;
-        sy += ay;
-        sz += az;
-    }
-    printf( "ACC: %+.7lf %+.7lf %+.7lf\n", sx, sy, sz );
 }
 
 __global__
