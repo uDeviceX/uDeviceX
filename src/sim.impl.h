@@ -357,10 +357,8 @@ void fin() {
     if (rbcs) {
         rbc::free_quants(&r::q);
         rbc::destroy_textures(&r::tt);
+        CC(cudaFree(r::ff));
     }
-    
-    if (rbcs) CC(cudaFree(r::ff));
-    if (solids) s::q.fin();
 }
 
 }
