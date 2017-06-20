@@ -32,6 +32,7 @@ namespace s /* rigid bodies */
 {
 rig::Quants q;
 rig::TicketBB t;
+Force *ff, *ff_hst;
 }
 
 /*** see int/wall.h ***/
