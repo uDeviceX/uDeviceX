@@ -82,7 +82,18 @@ static void freeze(/*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n) {
   free(hst);
 }
 
-void build_cells(const int n, Particle *pp, Clist *cells) {if (n) cells->build(pp, n);}
+void build_cells(const int n, float4 *pp4, Clist *cells) {
+    if (n == 0) return;
+
+    Particle *pp;
+    CC(cudaMalloc(&pp, n * sizeof(Particle)));
+
+    dev::float42particle <<<k_cnf(n)>>> (pp4, n, /**/ pp);
+    cells->build(pp, n);
+    dev::particle2float4 <<<k_cnf(n)>>> (pp, n, /**/ pp4);
+
+    CC(cudaFree(pp));
+}
 
 void create(int *o_n, Particle *o_pp, int *w_n, float4 **w_pp, Clist *cells,
             Texo<int> *texstart, Texo<float4> *texpp) {
@@ -104,6 +115,11 @@ void create(int *o_n, Particle *o_pp, int *w_n, float4 **w_pp, Clist *cells,
     texpp->setup(*w_pp, *w_n);
     
     CC(cudaFree(frozen));
+}
+
+void create_from_strt(const int id, int *w_n, , float4 **w_pp, Clist *cells,
+                      Texo<int> *texstart, Texo<float4> *texpp) {
+    strt::read(id, );
 }
 
 void interactions(const int type, const Particle *const pp, const int n, const Texo<int> texstart,
