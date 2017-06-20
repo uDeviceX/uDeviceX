@@ -122,7 +122,6 @@ void run_complex(long nsteps) {
         wall0 = true;
         MSG("done creating walls");
     }
-
     MC(MPI_Barrier(m::cart));
 
     if (solids0) {
@@ -159,7 +158,6 @@ void run() {
 
 void fin() {
     sdstr::fin();
-
     rdstr::fin();
     bbhalo::fin();
     cnt::fin();
@@ -168,7 +166,7 @@ void fin() {
     rex::fin();
     fsi::fin();
 
-    if (solids0) mrescue::fin();
+    if (solids) mrescue::fin();
 
     wall::free_quants(&w::q);
     wall::free_ticket(&w::t);
