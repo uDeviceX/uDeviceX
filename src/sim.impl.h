@@ -148,7 +148,7 @@ void run_complex(long ts, long te) {
   for (it = ts; it < te; ++it) step(driving_force0, walls, it);
 }
 
-void run() {
+void sim() {
     long nsteps = (int)(tend / dt);
     MSG0("will take %ld steps", nsteps);
     if (walls || solids) {
