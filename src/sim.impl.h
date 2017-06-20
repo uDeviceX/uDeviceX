@@ -20,18 +20,18 @@ void remove_rbcs_from_wall() {
 void remove_solids_from_wall() {
   int stay[MAX_SOLIDS];
   int ns0;
-  int nip = s::ns * s::m_dev.nv;
-  s::ns = sdf::who_stays(s::i_pp_dev, nip, ns0 = s::ns, s::m_dev.nv, /**/ stay);
-  s::npp = s::ns * s::nps;
-  Cont::remove(s::pp,       s::nps,      stay, s::ns);
-  Cont::remove(s::pp_hst,   s::nps,      stay, s::ns);
+  int nip = s::q.ns * s::q.m_dev.nv;
+  s::q.ns = sdf::who_stays(s::q.i_pp, nip, ns0 = s::q.ns, s::q.m_dev.nv, /**/ stay);
+  s::q.n  = s::q.ns * s::q.nps;
+  Cont::remove(s::q.pp,       s::q.nps,      stay, s::q.ns);
+  Cont::remove(s::q.pp_hst,   s::q.nps,      stay, s::q.ns);
 
-  Cont::remove(s::ss_dev,   1,           stay, s::ns);
-  Cont::remove(s::ss_hst,   1,           stay, s::ns);
+  Cont::remove(s::q.ss,       1,           stay, s::q.ns);
+  Cont::remove(s::q.ss_hst,   1,           stay, s::q.ns);
 
-  Cont::remove(s::i_pp_dev, s::m_dev.nv, stay, s::ns);
-  Cont::remove(s::i_pp_hst, s::m_hst.nv, stay, s::ns);
-  MSG("sim.impl: %d/%d Solids survived", s::ns, ns0);
+  Cont::remove(s::q.i_pp,     s::q.m_dev.nv, stay, s::q.ns);
+  Cont::remove(s::q.i_pp_hst, s::q.m_hst.nv, stay, s::q.ns);
+  MSG("sim.impl: %d/%d Solids survived", s::q.ns, ns0);
 }
  
 
@@ -55,12 +55,7 @@ void remove_bodies() {
 }
 
 void set_ids_solids() {
-    if (solids) {
-        s::ic::set_ids(s::ns, s::ss_hst);
-        if (s::ns)
-        cH2D(s::ss_dev, s::ss_hst, s::ns);
-    }
-
+    if (solids) rig::set_ids(s::q);
     CC(cudaPeekAtLastError());
 }
 
@@ -85,7 +80,7 @@ void clear_forces(Force* ff, int n) {
 
 void forces_wall() {
     if (o::n)              wall::interactions(w::q, w::t, SOLVENT_TYPE, o::pp, o::n, /**/ o::ff);
-    if (solids0 && s::npp) wall::interactions(w::q, w::t, SOLID_TYPE, s::pp, s::npp, /**/ s::ff);
+    if (solids0 && s::q.npp) wall::interactions(w::q, w::t, SOLID_TYPE, s::q.pp, s::q.npp, /**/ s::q.ff);
     if (rbcs && r::q.n)    wall::interactions(w::q, w::t, SOLID_TYPE, r::q.pp, r::q.n  , /**/ r::ff);
 }
 
@@ -102,11 +97,11 @@ void forces_fsi(SolventWrap *w_s, std::vector<ParticlesWrap> *w_r) {
 void forces(bool wall0) {
     SolventWrap w_s(o::pp, o::n, o::ff, o::cells->start, o::cells->count);
     std::vector<ParticlesWrap> w_r;
-    if (solids0) w_r.push_back(ParticlesWrap(s::pp, s::npp, s::ff));
+    if (solids0) w_r.push_back(ParticlesWrap(s::q.pp, s::q.npp, s::q.ff));
     if (rbcs   ) w_r.push_back(ParticlesWrap(r::q.pp, r::q.n  , r::ff));
 
     clear_forces(o::ff, o::n);
-    if (solids0) clear_forces(s::ff, s::npp);
+    if (solids0) clear_forces(s::q.ff, s::q.npp);
     if (rbcs)    clear_forces(r::ff, r::q.n);
 
     forces_dpd();
@@ -133,7 +128,7 @@ void dev2hst() { /* device to host  data transfer */
     int start = 0;
     cD2H(a::pp_hst + start, o::pp, o::n); start += o::n;
     if (solids0) {
-        cD2H(a::pp_hst + start, s::pp, s::npp); start += s::npp;
+        cD2H(a::pp_hst + start, s::q.pp, s::q.npp); start += s::q.npp;
     }
     if (rbcs) {
         cD2H(a::pp_hst + start, r::q.pp, r::q.n); start += r::q.n;
@@ -145,8 +140,8 @@ void dump_part(int step) {
         dump::parts(o::pp_hst, o::n, "solvent", step);
 
         if(solids0) {
-            cD2H(s::pp_hst, s::pp, s::npp);
-            dump::parts(s::pp_hst, s::npp, "solid", step);
+            cD2H(s::q.pp_hst, s::q.pp, s::q.npp);
+            dump::parts(s::q.pp_hst, s::q.npp, "solid", step);
         }
 }
 
@@ -164,15 +159,15 @@ void dump_grid() {
 }
 
 void diag(int it) {
-    int n = o::n + s::npp + r::q.n; dev2hst();
+    int n = o::n + s::q.npp + r::q.n; dev2hst();
     diagnostics(a::pp_hst, n, it);
 }
 
 void body_force(float driving_force0) {
     k_sim::body_force<<<k_cnf(o::n)>>> (1, o::pp, o::ff, o::n, driving_force0);
 
-    if (solids0 && s::npp)
-    k_sim::body_force<<<k_cnf(s::npp)>>> (solid_mass, s::pp, s::ff, s::npp, driving_force0);
+    if (solids0 && s::q.npp)
+    k_sim::body_force<<<k_cnf(s::q.npp)>>> (solid_mass, s::q.pp, s::q.ff, s::q.npp, driving_force0);
 
     if (rbcs && r::q.n)
     k_sim::body_force<<<k_cnf(r::q.n)>>> (rbc_mass, r::q.pp, r::ff, r::q.n, driving_force0);
@@ -180,7 +175,7 @@ void body_force(float driving_force0) {
 
 
 void update_solid() {
-    if (s::npp) update_solid0();
+    if (s::q.npp) update_solid0();
 }
 
 void update_solvent() {
@@ -223,12 +218,12 @@ void ini() {
 
     mpDeviceMalloc(&o::pp);
     mpDeviceMalloc(&o::ff);
-    mpDeviceMalloc(&s::ff); mpDeviceMalloc(&s::ff);
-    mpDeviceMalloc(&s::rr0);
+    mpDeviceMalloc(&s::q.ff); mpDeviceMalloc(&s::q.ff);
+    mpDeviceMalloc(&s::q.rr0);
 
     if (solids) {
         mrescue::ini(MAX_PART_NUM);
-        s::ini();
+        s::q.ini();
     }
 
     o::n = ic::gen(o::pp_hst);
@@ -244,7 +239,7 @@ void ini() {
 
 void dump_diag_after(int it) { /* after wall */
     if (it % part_freq)
-    solid::dump(it, s::ss_dmphst, s::ss_dmpbbhst, s::ns, m::coords);
+    solid::dump(it, s::q.ss_dmphst, s::q.ss_dmpbbhst, s::q.ns, m::coords);
 }
 
 void dump_diag0(int it) { /* generic dump */
@@ -302,13 +297,13 @@ void run_wall(long nsteps) {
 
     if (solids0) {
         cD2H(o::pp_hst, o::pp, o::n);
-        s::create(o::pp_hst, &o::n);
+        s::q.create(o::pp_hst, &o::n);
         cH2D(o::pp, o::pp_hst, o::n);
         MC(MPI_Barrier(m::cart));
     }
     if (walls) remove_bodies();
     set_ids_solids();
-    if (solids0 && s::ns) k_sim::clear_velocity<<<k_cnf(s::npp)>>>(s::pp, s::npp);
+    if (solids0 && s::q.ns) k_sim::clear_velocity<<<k_cnf(s::q.npp)>>>(s::q.pp, s::q.npp);
     if (rbcs    && r::q.n) k_sim::clear_velocity<<<k_cnf(r::q.n)  >>>(r::q.pp, r::q.n);
     if (pushflow) driving_force0 = driving_force;
 
@@ -345,7 +340,7 @@ void fin() {
     flu::free_ticketZ(&o::tz);
     flu::free_ticketD(&o::td);
 
-    CC(cudaFree(s::pp )); CC(cudaFree(s::ff )); CC(cudaFree(s::rr0));
+    CC(cudaFree(s::q.pp )); CC(cudaFree(s::q.ff )); CC(cudaFree(s::q.rr0));
     CC(cudaFree(o::pp )); CC(cudaFree(o::ff ));
 
     if (rbcs) {
@@ -354,7 +349,7 @@ void fin() {
     }
     
     if (rbcs) CC(cudaFree(r::ff));
-    if (solids) s::fin();
+    if (solids) s::q.fin();
 }
 
 }

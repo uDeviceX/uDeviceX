@@ -32,3 +32,8 @@ void gen_pp_hst(const int ns, const float *rr0_hst, const int nps, /**/ Solid *s
 void gen_ipp_hst(const Solid *ss_hst, const int ns, const Mesh m_hst, Particle *i_pp_hst) {
     solid::mesh2pp_hst(ss_hst, ns, m_hst, /**/ i_pp_hst);
 }
+
+void set_ids(const int ns, Solid *ss_hst, Solid *ss_dev) {
+    ic::set_ids(ns, ss_hst);
+    if (ns) cH2D(ss_dev, ss_hst, ns);
+}

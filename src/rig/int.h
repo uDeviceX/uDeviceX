@@ -121,5 +121,5 @@ void cpy_H2D(Quants q, TicketBB t) {
 }
 
 void set_ids(Quants q) {
-    sub::ic::set_ids(q.ns, q.ss_hst);
+    sub::set_ids(q.ns, q.ss_hst, q.ss);
 }
