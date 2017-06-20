@@ -32,4 +32,10 @@ void remove_solids_from_wall() {
   Cont::remove(s::q.i_pp_hst, s::q.m_hst.nv, stay, s::q.ns);
   MSG("sim.impl: %d/%d Solids survived", s::q.ns, ns0);
 }
+
+void remove_bodies() {
+    if (solids) remove_solids_from_wall();
+    if (rbcs)   remove_rbcs_from_wall();
+}
+
 }
