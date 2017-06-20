@@ -1,6 +1,6 @@
 // see the vanilla version of this code for details about how this class
 // operates
-namespace DPD {
+namespace dpd {
 int ncells;
 l::rnd::d::KISS *local_trunk;
 

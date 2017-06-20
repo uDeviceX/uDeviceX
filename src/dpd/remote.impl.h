@@ -1,4 +1,4 @@
-namespace DPD {
+namespace dpd {
 void init1() {
     for (int i = 0; i < 26; ++i) {
         int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};

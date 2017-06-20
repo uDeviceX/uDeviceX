@@ -69,14 +69,14 @@ void forces_rbc() {
 }
 
 void forces_dpd() {
-    DPD::pack(o::pp, o::n, o::cells->start, o::cells->count);
+    dpd::pack(o::pp, o::n, o::cells->start, o::cells->count);
     /* :TODO: breaks a contract with hiwi */
-    DPD::local_interactions(o::tz.zip0, o::tz.zip1,
+    dpd::local_interactions(o::tz.zip0, o::tz.zip1,
                             o::n, o::cells->start, o::cells->count,
                             /**/ o::ff);
-    DPD::post(o::pp, o::n);
-    DPD::recv();
-    DPD::remote_interactions(o::n, o::ff);
+    dpd::post(o::pp, o::n);
+    dpd::recv();
+    dpd::remote_interactions(o::n, o::ff);
 }
 
 void clear_forces(Force* ff, int n) {
@@ -205,7 +205,7 @@ void ini() {
     }
         
     rdstr::ini();
-    DPD::ini();
+    dpd::ini();
     fsi::ini();
     sdstr::ini();
     bbhalo::ini();
@@ -329,7 +329,7 @@ void fin() {
     rdstr::fin();
     bbhalo::fin();
     cnt::fin();
-    DPD::fin();
+    dpd::fin();
     dump::fin();
     rex::fin();
     fsi::fin();
