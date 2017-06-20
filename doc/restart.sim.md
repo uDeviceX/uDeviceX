@@ -6,8 +6,7 @@
 	  fin
 
     sim:
-	  if g:
-	    generate
+	  if Generate:
 	    run_ini
 	    run_eq
 	    freeze
