@@ -31,8 +31,23 @@ void dump_grid() {
   dump_field->dump(a::pp_hst, o::n);
 }
 
+void dump_diag_after(int it) { /* after wall */
+    if (it % part_freq)
+    solid::dump(it, s::q.ss_dmp, s::t.ss_dmp, s::q.ns, m::coords);
+}
+
 void diag(int it) {
     int n = o::n + s::q.n + r::q.n; dev2hst();
     diagnostics(a::pp_hst, n, it);
 }
+
+void dump_diag0(int it) { /* generic dump */
+    if (it % part_freq  == 0) {
+        if (part_dumps) dump_part(it);
+        if (rbcs)       dump_rbcs();
+        diag(it);
+    }
+    if (field_dumps && it % field_freq == 0) dump_grid();
+}
+
 }

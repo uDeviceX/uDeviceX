@@ -85,20 +85,6 @@ void ini() {
     MC(MPI_Barrier(m::cart));
 }
 
-void dump_diag_after(int it) { /* after wall */
-    if (it % part_freq)
-    solid::dump(it, s::q.ss_dmp, s::t.ss_dmp, s::q.ns, m::coords);
-}
-
-void dump_diag0(int it) { /* generic dump */
-    if (it % part_freq  == 0) {
-        if (part_dumps) dump_part(it);
-        if (rbcs)       dump_rbcs();
-        diag(it);
-    }
-    if (field_dumps && it % field_freq == 0) dump_grid();
-}
-
 void step(float driving_force0, bool wall0, int it) {
     assert(o::n <= MAX_PART_NUM);
     assert(r::q.n <= MAX_PART_NUM);
