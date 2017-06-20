@@ -33,11 +33,11 @@ void free_ticket(Ticket *t) {
 }
 
 void gen_quants(int *n, Particle* pp, Quants *q) {
-    sub::gen_quants(n, pp, &q->n, &q->pp, t->cells, &t->texstart, &t->texpp);
+    sub::gen_quants(n, pp, &q->n, &q->pp);
 }
 
 void strt_quants(const int id, Quants *q) {
-    sub::strt_quants(const int id, &q->n, , &q->pp);
+    sub::strt_quants(id, &q->n, &q->pp);
 }
 
 void gen_ticket(Quants q, Ticket *t) {
