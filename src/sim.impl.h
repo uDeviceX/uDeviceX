@@ -21,11 +21,13 @@ void update_solid() {
 }
 
 void update_solvent() {
-    if (o::n) k_sim::update<<<k_cnf(o::n)>>> (1, o::pp, o::ff, o::n);
+    float mass = 1;
+    if (o::n) k_sim::update<<<k_cnf(o::n)>>> (mass, o::pp, o::ff, o::n);
 }
 
 void update_rbc() {
-    if (r::q.n) k_sim::update<<<k_cnf(r::q.n)>>> (rbc_mass, r::q.pp, r::ff, r::q.n);
+    float mass = rbc_mass;
+    if (r::q.n) k_sim::update<<<k_cnf(r::q.n)>>> (mass, r::q.pp, r::ff, r::q.n);
 }
 
 void bounce() {
