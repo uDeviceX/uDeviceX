@@ -21,21 +21,25 @@ void create(/* io */ Particle *opp, int *on,
     ic::ini("ic_solid.txt", *m_hst, /**/ ns, nps, rr0_hst, ss_hst, on, opp, pp_hst);
     MSG("done solid ini");
 
-    // :TODO: allocate_tcells();
-    
-    // generate the solid particles
-
-    // solid::generate_hst(ss_hst, *ns, rr0_hst, *nps, /**/ pp_hst);
-    // solid::reinit_ft_hst(*ns, /**/ ss_hst);
-    // *n = *ns * (*nps);
-
-    // solid::mesh2pp_hst(ss_hst, ns, m_hst, /**/ i_pp_hst);
-    // cH2D(i_pp_dev, i_pp_hst, ns * m_hst.nv);
-
-    // cH2D(ss_dev, ss_hst, *ns);
-    // cH2D(rr0, rr0_hst, 3 * *nps);
-
-    // cH2D(pp, pp_hst, npp);
-
-    // MC(l::m::Barrier(m::cart));
+    *n = *ns * (*nps);
 }
+
+void gen_pp_hst(const int ns, const float *rr0_hst, const int nps, /**/ Solid *ss_hst, Particle *pp_hst) {
+    solid::generate_hst(ss_hst, ns, rr0_hst, nps, /**/ pp_hst);
+    solid::reinit_ft_hst(ns, /**/ ss_hst);
+}
+
+void gen_ipp_hst(const Solid *ss_hst, const int ns, const Mesh m_hst, Particle *i_pp_hst) {
+    solid::mesh2pp_hst(ss_hst, ns, m_hst, /**/ i_pp_hst);
+}
+
+// void cpy_H2D(
+//     cH2D(i_pp_dev, i_pp_hst, ns * m_hst.nv);
+
+//     cH2D(ss_dev, ss_hst, *ns);
+//     cH2D(rr0, rr0_hst, 3 * *nps);
+
+//     cH2D(pp, pp_hst, npp);
+
+//     MC(l::m::Barrier(m::cart));
+// }

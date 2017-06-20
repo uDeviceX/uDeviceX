@@ -89,3 +89,6 @@ void free_ticket(TicketBB *t) {
     delete[] t->tci_hst;
 }
 
+void create(Particle *opp, int *on, Quants *q) {
+    sub::create(opp, on, &q->m_dev, &q->m_hst, &q->ns, &q->nps, &q->n, q->rr0_hst, q->ss_hst, q->pp_hst);
+}
