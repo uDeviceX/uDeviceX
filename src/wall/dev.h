@@ -1,7 +1,7 @@
 namespace dev {
   enum {X, Y, Z};
 
-__global__ void particle2float4(Particle *const src, const int n, float4 *dst) {
+__global__ void particle2float4(const Particle *src, const int n, float4 *dst) {
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
     Particle p = src[pid];
