@@ -69,16 +69,22 @@ void run(long ts, long te) {
 void gen() { /* generate */
   run_eq(wall_creation);
   freeze();
-  wall::gen_ticket(w::q, &w::t);
-  flu::get_ticketZ(o::pp, o::n, &o::tz);
 }
 
 void sim() {
+  o::n = ic::gen(o::pp, /*w*/ o::pp_hst);
+  o::cells->build(o::pp, o::n);
+  get_ticketZ(o::pp, o::n, &o::tz);
+  if (rbcs) rbc::setup_from_pos("rbc.off", "rbcs-ic.txt", /**/ &r::q);
+  MC(MPI_Barrier(m::cart));
+  
   long nsteps = (int)(tend / dt);
   MSG0("will take %ld steps", nsteps);
   if (walls || solids) {
     solids0 = false;  /* global */
     gen();
+    wall::gen_ticket(w::q, &w::t);
+    flu::get_ticketZ(o::pp, o::n, &o::tz);
     dSync();
     solids0 = solids;
     run(wall_creation, nsteps);
