@@ -45,7 +45,7 @@ void init1() {
     }
 }
 
-void local_interactions(float4 *zip0, ushort4 *zip1, int n, int *start, int *count, /**/
+void flocal(float4 *zip0, ushort4 *zip1, int n, int *start, int *count, /**/
                         Force *ff) {
     if (n > 0)
       forces_dpd_cuda_nohost(zip0, zip1, (float*)ff, n,
@@ -53,7 +53,7 @@ void local_interactions(float4 *zip0, ushort4 *zip1, int n, int *start, int *cou
 			     local_trunk->get_float());
 }
 
-void remote_interactions(int n, Force *a) {
+void fremote(int n, Force *a) {
     static BipsBatch::BatchInfo infos[26];
 
     for (int i = 0; i < 26; ++i) {

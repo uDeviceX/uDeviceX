@@ -66,12 +66,12 @@ void forces_rbc() {
 void forces_dpd() {
     dpd::pack(o::pp, o::n, o::cells->start, o::cells->count);
     /* :TODO: breaks a contract with hiwi */
-    dpd::local_interactions(o::tz.zip0, o::tz.zip1,
+    dpd::flocal(o::tz.zip0, o::tz.zip1,
                             o::n, o::cells->start, o::cells->count,
                             /**/ o::ff);
     dpd::post(o::pp, o::n);
     dpd::recv();
-    dpd::remote_interactions(o::n, o::ff);
+    dpd::fremote(o::n, o::ff);
 }
 
 void clear_forces(Force* ff, int n) {
