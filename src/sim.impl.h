@@ -144,11 +144,9 @@ void dump_part(int step) {
 }
 
 void dump_rbcs() {
-    if (rbcs) {
-        static int id = 0;
-        cD2H(a::pp_hst, r::q.pp, r::q.n);
-        rbc_dump(r::q.nc, a::pp_hst, r::q.tri_hst, r::q.nv, r::q.nt, id++);
-    }
+  static int id = 0;
+  cD2H(a::pp_hst, r::q.pp, r::q.n);
+  rbc_dump(r::q.nc, a::pp_hst, r::q.tri_hst, r::q.nv, r::q.nt, id++);
 }
 
 void dump_grid() {
@@ -244,7 +242,7 @@ void dump_diag_after(int it) { /* after wall */
 void dump_diag0(int it) { /* generic dump */
     if (it % part_freq  == 0) {
         if (part_dumps) dump_part(it);
-        dump_rbcs();
+        if (rbcs)       dump_rbcs();
         diag(it);
     }
     if (field_dumps && it % field_freq == 0) dump_grid();
