@@ -28,6 +28,12 @@ rbc::TicketT tt;
 Force     *ff;
 }
 
+namespace b /* rigid bodies */
+{
+rig::Quants q;
+rig::TicketBB t;
+}
+
 /*** see int/wall.h ***/
 namespace w {
 wall::Quants q;
