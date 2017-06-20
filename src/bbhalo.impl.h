@@ -7,7 +7,7 @@ enum {X, Y, Z};
             ((i) / 9 + 1) % 3 - 1}
 
 /* generate ranks and anti-ranks of the neighbors */
-void gen_ne(const MPI_Comm cart, /* */ int* rnk_ne, int* ank_ne)
+static void gen_ne(const MPI_Comm cart, /* */ int* rnk_ne, int* ank_ne)
 {
     rnk_ne[0] = m::rank;
     for (int i = 1; i < 27; ++i)
