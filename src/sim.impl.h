@@ -304,8 +304,8 @@ void run_wall(long nsteps) {
         MC(l::m::Barrier(m::cart));
         
         rig::gen_pp_hst(s::q);
-        rig::gen_ipp_hst(s::q, s::t);
-        rig::cpy_H2D(s::q, s::t);
+        rig::gen_ipp_hst(s::q);
+        rig::cpy_H2D(s::q);
 
         cH2D(o::pp, o::pp_hst, o::n);
         MC(l::m::Barrier(m::cart));
