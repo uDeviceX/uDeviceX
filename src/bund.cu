@@ -148,6 +148,8 @@ namespace ic {
 
 #include "k/sim.h"
 #include "sim.decl.h"
+#include "sim/ini.h"
+#include "sim/fin.h"
 #include "sim/generic.h"
 #include "sim/dump.h"
 #include "sim/forces.h"

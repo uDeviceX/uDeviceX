@@ -33,53 +33,6 @@ void bounce() {
     //if (rbcs && r::n) k_sdf::bounce<<<k_cnf(r::n)>>>((float2*)r::pp, r::n);
 }
 
-void ini() {
-    if (rbcs) {
-        CC(cudaMalloc(&r::ff, MAX_PART_NUM));
-        rbc::alloc_quants(&r::q);
-        rbc::setup("rbc.off", &r::q);
-        rbc::setup_textures(r::q, &r::tt);
-    }
-        
-    rdstr::ini();
-    dpd::ini();
-    fsi::ini();
-    sdstr::ini();
-    bbhalo::ini();
-    cnt::ini();
-    rex::ini();
-    dump::ini();
-
-    wall::alloc_quants(&w::q);
-    wall::alloc_ticket(&w::t);
-
-    o::cells   = new Clist(XS, YS, ZS);
-    flu::alloc_ticketD(&o::td);
-    flu::alloc_ticketZ(&o::tz);
-    flu::alloc_work(&o::w);
-
-    mpDeviceMalloc(&o::pp);
-    mpDeviceMalloc(&o::ff);
-
-    if (solids) {
-        mrescue::ini(MAX_PART_NUM);
-        rig::alloc_quants(&s::q);
-        rig::alloc_ticket(&s::t);
-        s::ff_hst = new Force[MAX_PART_NUM];
-        CC(cudaMalloc(&s::ff, MAX_PART_NUM * sizeof(Force)));
-    }
-
-    o::n = ic::gen(o::pp_hst);
-    cH2D(o::pp, o::pp_hst, o::n);
-    o::cells->build(o::pp, o::n);
-    create_ticketZ(o::pp, o::n, &o::tz);
-
-    if (rbcs) rbc::setup_from_pos("rbc.off", "rbcs-ic.txt", /**/ &r::q);
-    
-    dump_field = new H5FieldDump;
-    MC(MPI_Barrier(m::cart));
-}
-
 void step(float driving_force0, bool wall0, int it) {
     assert(o::n <= MAX_PART_NUM);
     assert(r::q.n <= MAX_PART_NUM);
@@ -153,40 +106,6 @@ void sim() {
     solids0 = solids;
     run(            0, nsteps);
   }
-}
-
-void fin() {
-    sdstr::fin();
-    rdstr::fin();
-    bbhalo::fin();
-    cnt::fin();
-    dpd::fin();
-    dump::fin();
-    rex::fin();
-    fsi::fin();
-
-    if (solids) mrescue::fin();
-
-    wall::free_quants(&w::q);
-    wall::free_ticket(&w::t);
-    flu::free_work(&o::w);
-
-    delete o::cells;
-    delete dump_field;
-    flu::free_ticketZ(&o::tz);
-    flu::free_ticketD(&o::td);
-
-    if (solids) {
-        rig::free_quants(&s::q);
-        rig::free_ticket(&s::t);
-        CC(cudaFree(s::ff)); delete[] s::ff_hst;
-    }
-
-    if (rbcs) {
-        rbc::free_quants(&r::q);
-        rbc::destroy_textures(&r::tt);
-        CC(cudaFree(r::ff));
-    }
 }
 
 }
