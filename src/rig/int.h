@@ -100,3 +100,10 @@ void gen_pp_hst(Quants q) {
 void gen_ipp_hst(const Quants q, TicketBB t) {
     sub::gen_ipp_hst(q.ss_hst, q.ns, q.m_hst, /**/ t.i_pp_hst);
 }
+
+void cpy_H2D(Quants q, TicketBB t) {
+    cH2D(t.i_pp, t.i_pp_hst, q.ns * q.m_hst.nv);
+    cH2D(q.ss,   q.ss_hst,   q.ns);
+    cH2D(q.rr0,  q.rr0_hst,  q.nps * 3);
+    cH2D(q.pp,   q.pp_hst,   q.n);
+}

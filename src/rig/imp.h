@@ -32,14 +32,3 @@ void gen_pp_hst(const int ns, const float *rr0_hst, const int nps, /**/ Solid *s
 void gen_ipp_hst(const Solid *ss_hst, const int ns, const Mesh m_hst, Particle *i_pp_hst) {
     solid::mesh2pp_hst(ss_hst, ns, m_hst, /**/ i_pp_hst);
 }
-
-// void cpy_H2D(
-//     cH2D(i_pp_dev, i_pp_hst, ns * m_hst.nv);
-
-//     cH2D(ss_dev, ss_hst, *ns);
-//     cH2D(rr0, rr0_hst, 3 * *nps);
-
-//     cH2D(pp, pp_hst, npp);
-
-//     MC(l::m::Barrier(m::cart));
-// }
