@@ -48,7 +48,7 @@ Particle pp_hst[3*MAX_PART_NUM]; /* particles on host */
 }
 }
 
-/* functions defined in dev/ and hst/ */
+/* functions defined in 00dev/ and 00hst/ */
 void distr_solid();
 void update_solid0();
 void bounce_solid(int);
