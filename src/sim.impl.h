@@ -102,18 +102,10 @@ void step(float driving_force0, bool wall0, int it) {
     if (sbounce_back && solids0) bounce_solid(it);
 }
 
-void run_simple(long te) {
-  float driving_force0 = pushflow ? driving_force : 0;
-  bool wall0 = false;
-  solids0 = false;
-  for (long it = 0; it < te; ++it) step(driving_force0, wall0, it);
-}
-
 void run_eq(long te) { /* equilibrate */
   long it;
   float driving_force0 = 0;
   bool wall0 = false;
-  solids0 = false;
   for (it = 0; it < te; ++it) step(driving_force0, wall0, it);
 }
 
@@ -141,7 +133,7 @@ void freeze() {
   if (rbcs   && r::q.n) k_sim::clear_velocity<<<k_cnf(r::q.n)>>>(r::q.pp, r::q.n);
 }
 
-void run_complex(long ts, long te) {
+void run(long ts, long te) {
   /* ts, te: time start and end */
   long it;
   float driving_force0 = pushflow ? driving_force : 0;
@@ -149,16 +141,18 @@ void run_complex(long ts, long te) {
 }
 
 void sim() {
-    long nsteps = (int)(tend / dt);
-    MSG0("will take %ld steps", nsteps);
-    if (walls || solids) {
-      run_eq(wall_creation);
-      freeze();
-      solids0 = solids; /* global */
-      run_complex(wall_creation, nsteps);
-    } else {
-      run_simple(nsteps);
-    }
+  long nsteps = (int)(tend / dt);
+  MSG0("will take %ld steps", nsteps);
+  if (walls || solids) {
+    solids0 = false;
+    run_eq(wall_creation);
+    freeze();
+    solids0 = solids; /* global */
+    run(wall_creation, nsteps);
+  } else {
+    solids0 = false;
+    run(            0, nsteps);
+  }
 }
 
 void fin() {

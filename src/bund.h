@@ -1,5 +1,5 @@
 namespace sim {
 void ini();
-void run();
+void sim();
 void fin();
 }
