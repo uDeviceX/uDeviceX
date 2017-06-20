@@ -14,7 +14,7 @@
 #include "l/off.h"
 #include "l/scan.h"
 
-#include "dpd/cuda-dpd.h"
+#include "dpd/dpd.h"
 #include "l/rnd.h"
 
 #include <conf.h>
