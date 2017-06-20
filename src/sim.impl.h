@@ -6,9 +6,11 @@ void create_walls() {
     dSync();
     sdf::ini();
     wall::gen_quants(&o::n, o::pp, &w::q);
+    wall::gen_ticket(w::q, &w::t);
     MSG("solvent particles survived: %d/%d", o::n, nold);
     if (o::n) k_sim::clear_velocity<<<k_cnf(o::n)>>>(o::pp, o::n);
     o::cells->build(o::pp, o::n);
+    flu::get_ticketZ(o::pp, o::n, &o::tz);
 }
 
 void step(float driving_force0, bool wall0, int it) {
@@ -83,8 +85,6 @@ void sim() {
   if (walls || solids) {
     solids0 = false;  /* global */
     gen();
-    wall::gen_ticket(w::q, &w::t);
-    flu::get_ticketZ(o::pp, o::n, &o::tz);
     dSync();
     solids0 = solids;
     run(wall_creation, nsteps);
