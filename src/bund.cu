@@ -77,6 +77,9 @@ namespace ic {
 namespace wall {
 namespace sub {
 #include "wall/dev.h"
+namespace str {
+#include "wall/str.h"
+}
 #include "wall/imp.h"
 }
 #include "wall/int.h"
