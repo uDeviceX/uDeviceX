@@ -140,17 +140,21 @@ void run(long ts, long te) {
   for (it = ts; it < te; ++it) step(driving_force0, walls, it);
 }
 
+void gen() { /* generate */
+  run_eq(wall_creation);
+  freeze();
+}
+
 void sim() {
   long nsteps = (int)(tend / dt);
   MSG0("will take %ld steps", nsteps);
   if (walls || solids) {
-    solids0 = false;
-    run_eq(wall_creation);
-    freeze();
-    solids0 = solids; /* global */
+    solids0 = false;  /* global */
+    gen();
+    solids0 = solids;
     run(wall_creation, nsteps);
   } else {
-    solids0 = false;
+    solids0 = solids;
     run(            0, nsteps);
   }
 }
