@@ -34,7 +34,7 @@ void bounce_solid(int it) {
 
     cH2D(s::t.ss, s::t.ss_hst, nsbb);
 
-    build_tcells_dev(s::q.m_dev, s::t.i_pp, s::q.ns, /**/ s::t.tcs_dev, s::t.tcc_dev, s::t.tci_dev);
+    build_tcells_dev(s::q.m_dev, s::t.i_pp, nsbb, /**/ s::t.tcs_dev, s::t.tcc_dev, s::t.tci_dev);
 
     mbounce::bounce_tcells_dev(o::ff, s::q.m_dev, s::t.i_pp, s::t.tcs_dev, s::t.tcc_dev, s::t.tci_dev, o::n, /**/ o::pp, s::t.ss);
 
