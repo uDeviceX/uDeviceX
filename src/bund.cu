@@ -131,10 +131,6 @@ namespace sub {
 
 #include "l/ply.h"
 
-// #include "s/decl.h"
-// #include "s/ic.h"
-// #include "s/impl.h"
-
 namespace rig {
 namespace sub {
 namespace ic {
