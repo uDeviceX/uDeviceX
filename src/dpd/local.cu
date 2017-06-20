@@ -45,7 +45,7 @@ __device__ float3 _dpd_interaction( const int dpid, const float4 xdest, const fl
   r2 = make_float3(xsrc.x, xsrc.y, xsrc.z);
   v1 = make_float3(udest.x, udest.y, udest.z);
   v2 = make_float3(usrc.x, usrc.y, usrc.z);
-  f = force(SOLVENT_TYPE, SOLVENT_TYPE, pos1, pos2, vel1, vel2, myrandnr);
+  f = force(SOLVENT_TYPE, SOLVENT_TYPE, r1, r2, v1, v2, rnd);
   
   return f;
 }
