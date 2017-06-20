@@ -311,8 +311,8 @@ void run_wall(long nsteps) {
     }
     if (walls) remove_bodies();
     set_ids_solids();
-    if (solids0 && s::q.ns) k_sim::clear_velocity<<<k_cnf(s::q.npp)>>>(s::q.pp, s::q.npp);
-    if (rbcs    && r::q.n) k_sim::clear_velocity<<<k_cnf(r::q.n)  >>>(r::q.pp, r::q.n);
+    if (solids0 && s::q.ns) k_sim::clear_velocity<<<k_cnf(s::q.n)>>>(s::q.pp, s::q.n);
+    if (rbcs    && r::q.n ) k_sim::clear_velocity<<<k_cnf(r::q.n)>>>(r::q.pp, r::q.n);
     if (pushflow) driving_force0 = driving_force;
 
     for (/**/; it < nsteps; ++it) step(driving_force0, wall0, it);
@@ -348,8 +348,11 @@ void fin() {
     flu::free_ticketZ(&o::tz);
     flu::free_ticketD(&o::td);
 
-    CC(cudaFree(s::q.pp )); CC(cudaFree(s::q.ff )); CC(cudaFree(s::q.rr0));
-    CC(cudaFree(o::pp )); CC(cudaFree(o::ff ));
+    if (solids) {
+        rig::free_quants(&s::q);
+        rig::free_ticket(&s::t);
+        CC(cudaFree(s::ff)); delete[] s::ff_hst;
+    }
 
     if (rbcs) {
         rbc::free_quants(&r::q);
