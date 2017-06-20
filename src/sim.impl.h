@@ -250,11 +250,6 @@ void dump_diag0(int it) { /* generic dump */
     if (field_dumps && it % field_freq == 0) dump_grid();
 }
 
-void dump_diag(int it, bool wall0) { /* dump and diag */
-    dump_diag0(it);
-    if (wall0) dump_diag_after(it);
-}
-
 void step(float driving_force0, bool wall0, int it) {
     assert(o::n <= MAX_PART_NUM);
     assert(r::q.n <= MAX_PART_NUM);
@@ -262,7 +257,8 @@ void step(float driving_force0, bool wall0, int it) {
     if (solids0) distr_solid();
     if (rbcs)    distr_rbc();
     forces(wall0);
-    dump_diag(it, wall0);
+    dump_diag0(it);
+    if (wall0) dump_diag_after(it);
     body_force(driving_force0);
     update_solvent();
     if (solids0) update_solid();
