@@ -7,7 +7,7 @@ void distr_rbc() {
   rdstr::unpack(r::q.pp, r::q.nv);
 }
 
-void remove_rbcs_from_wall() {
+void remove_rbcs() {
   int stay[MAX_CELL_NUM];
   int nc0;
   r::q.nc = sdf::who_stays(r::q.pp, r::q.n, nc0 = r::q.nc, r::q.nv, /**/ stay);
@@ -16,7 +16,7 @@ void remove_rbcs_from_wall() {
   MSG("%d/%d RBCs survived", r::q.nc, nc0);
 }
 
-void remove_solids_from_wall() {
+void remove_solids() {
   int stay[MAX_SOLIDS];
   int ns0;
   int nip = s::q.ns * s::q.m_dev.nv;
@@ -31,11 +31,6 @@ void remove_solids_from_wall() {
   Cont::remove(s::q.i_pp,     s::q.m_dev.nv, stay, s::q.ns);
   Cont::remove(s::q.i_pp_hst, s::q.m_hst.nv, stay, s::q.ns);
   MSG("sim.impl: %d/%d Solids survived", s::q.ns, ns0);
-}
-
-void remove_bodies() {
-    if (solids) remove_solids_from_wall();
-    if (rbcs)   remove_rbcs_from_wall();
 }
 
 }
