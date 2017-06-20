@@ -149,6 +149,7 @@ namespace ic {
 #include "k/sim.h"
 #include "sim.decl.h"
 #include "sim/generic.h"
+#include "sim/dump.h"
 #include "sim/forces.h"
 #define HST (true)
 #define DEV (false)
