@@ -1,3 +1,4 @@
+
 all: udx
 
 NVCC     ?= nvcc
@@ -10,7 +11,7 @@ slevel   ?= -2
 NVCCFLAGS += -std=c++11 -I. -I$S
 LIBS      += -lcudart
 
-OBJ0 = bund.o  collision.o common.o force.o dpd.o field.o glb.o io.o  m.o main.o \
+OBJ0 = bund.o  collision.o common.o force.o local.o field.o glb.o io.o  m.o main.o \
 	mbounce.o mesh.o mrescue.o minmax.o solid.o tcells.o restart.o
 OBJL = l.clist.o l.gsl.o l.m.o l.off.o l.ply.o l.scan.o l.rnd.o
 OBJS = $(OBJ0) $(OBJL)
@@ -34,7 +35,7 @@ l.%.o:   $S/l/%.cu;       $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT)     $< -c -o $@
 force.o: $S/force.cu;     $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 bund.o:  $S/bund.cu;      $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 glb.o:   $S/glb.cu;       $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
-dpd.o:   $S/dpd/dpd.cu;   $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
+local.o: $S/dpd/local.cu; $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 
 # dev and hst
 l.rnd.o:   $S/l/rnd.cu;   $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@

@@ -2,9 +2,13 @@
 #include <cstdio>
 #include <mpi.h>
 #include <utility>
-#include "dpd/dpd.h"
 #include <conf.h>
 #include "conf.common.h"
+
+template<int s>
+inline __device__ float viscosity_function(float x) { return sqrtf(viscosity_function<s - 1>(x)); }
+template<> inline __device__ float viscosity_function<1>(float x) { return sqrtf(x); }
+template<> inline __device__ float viscosity_function<0>(float x) { return x;        }
 
 __device__ float3 force(int type1, int type2,
 			float3 pos1, float3 pos2,

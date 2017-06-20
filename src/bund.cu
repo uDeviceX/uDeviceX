@@ -14,7 +14,7 @@
 #include "l/off.h"
 #include "l/scan.h"
 
-#include "dpd/dpd.h"
+#include "dpd/local.h"
 #include "l/rnd.h"
 
 #include <conf.h>
@@ -110,8 +110,8 @@ namespace sub {
 #include "bipsbatch.decl.h"
 #include "bipsbatch.impl.h"
 
-#include "dpd.decl.h"
-#include "dpd.impl.h"
+#include "dpd/remote.decl.h"
+#include "dpd/remote.impl.h"
 
 #include "collision.h"
 

@@ -1,9 +1,9 @@
 #include <limits>
 #include <stdint.h>
 #include <mpi.h>
-#include "dpd/tiny-float.h"
+#include "dpd/float.h"
 #include "l/rnd.h"
-#include "dpd/dpd.h"
+#include "dpd/local.h"
 #include "force.h"
 #include "common.h"
 
