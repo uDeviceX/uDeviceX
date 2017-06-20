@@ -223,7 +223,8 @@ void ini() {
 
     if (solids) {
         mrescue::ini(MAX_PART_NUM);
-        s::q.ini();
+        rig::alloc_quants(&s::q);
+        rig::alloc_ticket(&s::t);
     }
 
     o::n = ic::gen(o::pp_hst);
