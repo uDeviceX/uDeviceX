@@ -5,6 +5,8 @@ struct Quants {
     float *rr0_hst, *rr0;
     Mesh m_hst, m_dev;
     Particle *i_pp_hst, *i_pp;
+
+    Solid *ss_dmp;
 };
 
 struct TicketBB {
@@ -14,6 +16,8 @@ struct TicketBB {
     Particle *i_pp_hst, *i_pp;
     int *tcs_hst, *tcc_hst, *tci_hst; /* [t]riangle cell-lists on host   */
     int *tcs_dev, *tcc_dev, *tci_dev; /* [t]riangle cell-lists on device */
+
+    Solid *ss_dmp;
 };
 
 void alloc_quants(Quants *q) {
@@ -28,6 +32,8 @@ void alloc_quants(Quants *q) {
     q->ss_hst   = new Solid[MAX_SOLIDS];
     q->rr0_hst  = new float[3 * MAX_PART_NUM];
     q->i_pp_hst = new Particle[MAX_PART_NUM];
+
+    q->ss_dmp = new Solid[MAX_SOLIDS];
 }
 
 void free_quants(Quants *q) {
@@ -46,6 +52,8 @@ void free_quants(Quants *q) {
 
     if (q->m_dev.tt) CC(cudaFree(q->m_dev.tt));
     if (q->m_dev.vv) CC(cudaFree(q->m_dev.vv));
+
+    delete[] q->ss_dmp;
 }
 
 void alloc_ticket(TicketBB *t) {
@@ -67,6 +75,8 @@ void alloc_ticket(TicketBB *t) {
     t->tcs_hst = new int[XS * YS * ZS];
     t->tcc_hst = new int[XS * YS * ZS];
     t->tci_hst = new int[27 * MAX_SOLIDS * MAX_FACE_NUM];
+
+    t->ss_dmp = new Solid[MAX_SOLIDS];
 }
 
 void free_ticket(TicketBB *t) {
@@ -87,6 +97,8 @@ void free_ticket(TicketBB *t) {
     delete[] t->tcs_hst;
     delete[] t->tcc_hst;
     delete[] t->tci_hst;
+
+    delete[] t->ss_dmp;
 }
 
 void create(Particle *opp, int *on, Quants *q) {
