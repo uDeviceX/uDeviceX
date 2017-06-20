@@ -1,57 +1,57 @@
 namespace sim {
 void distr_solid() {
-    sdstr::pack_sendcnt <HST> (s::ss_hst, s::i_pp_hst, s::ns, s::m_hst.nv);
-    s::ns = sdstr::post(s::m_hst.nv);
-    s::npp = s::ns * s::nps;
-    sdstr::unpack <HST> (s::m_hst.nv, /**/ s::ss_hst, s::i_pp_hst);
-    solid::generate_hst(s::ss_hst, s::ns, s::rr0_hst, s::nps, /**/ s::pp_hst);
-    cH2D(s::pp, s::pp_hst, 3 * s::npp);
+    sdstr::pack_sendcnt <HST> (s::q.ss_hst, s::q.i_pp_hst, s::q.ns, s::q.m_hst.nv);
+    s::q.ns = sdstr::post(s::q.m_hst.nv);
+    s::q.n = s::q.ns * s::q.nps;
+    sdstr::unpack <HST> (s::q.m_hst.nv, /**/ s::q.ss_hst, s::q.i_pp_hst);
+    solid::generate_hst(s::q.ss_hst, s::q.ns, s::q.rr0_hst, s::q.nps, /**/ s::q.pp_hst);
+    cH2D(s::q.pp, s::q.pp_hst, 3 * s::q.n);
 }
 
 void update_solid0() {
-  cD2H(s::pp_hst, s::pp, s::npp);
-  cD2H(s::ff_hst, s::ff, s::npp);
+  cD2H(s::q.pp_hst, s::q.pp, s::q.n);
+  cD2H(s::ff_hst, s::ff, s::q.n);
   
-  solid::update_hst(s::ff_hst, s::rr0_hst, s::npp, s::ns, /**/ s::pp_hst, s::ss_hst);
-  solid::update_mesh_hst(s::ss_hst, s::ns, s::m_hst, /**/ s::i_pp_hst);
+  solid::update_hst(s::ff_hst, s::q.rr0_hst, s::q.n, s::q.ns, /**/ s::q.pp_hst, s::q.ss_hst);
+  solid::update_mesh_hst(s::q.ss_hst, s::q.ns, s::q.m_hst, /**/ s::q.i_pp_hst);
   
   // for dump
-  memcpy(s::ss_dmphst, s::ss_hst, s::ns * sizeof(Solid));
+  memcpy(s::q.ss_dmp, s::q.ss_hst, s::q.ns * sizeof(Solid));
   
-  solid::reinit_ft_hst(s::ns, /**/ s::ss_hst);
+  solid::reinit_ft_hst(s::q.ns, /**/ s::q.ss_hst);
   
-  cH2D(s::pp, s::pp_hst, s::npp);
+  cH2D(s::q.pp, s::q.pp_hst, s::q.n);
 }
 
 void bounce_solid(int it) {
-    collision::get_bboxes_hst(s::i_pp_hst, s::m_hst.nv, s::ns, /**/ s::minbb_hst, s::maxbb_hst);
+    collision::get_bboxes_hst(s::q.i_pp_hst, s::q.m_hst.nv, s::q.ns, /**/ s::t.minbb_hst, s::t.maxbb_hst);
 
     /* exchange solid meshes with neighbours */
 
-    bbhalo::pack_sendcnt <HST> (s::ss_hst, s::ns, s::i_pp_hst, s::m_hst.nv, s::minbb_hst, s::maxbb_hst);
-    const int nsbb = bbhalo::post(s::m_hst.nv);
-    bbhalo::unpack <HST> (s::m_hst.nv, /**/ s::ss_bb_hst, s::i_pp_bb_hst);
+    bbhalo::pack_sendcnt <HST> (s::q.ss_hst, s::q.ns, s::q.i_pp_hst, s::q.m_hst.nv, s::t.minbb_hst, s::t.maxbb_hst);
+    const int nsbb = bbhalo::post(s::q.m_hst.nv);
+    bbhalo::unpack <HST> (s::q.m_hst.nv, /**/ s::t.ss_hst, s::t.i_pp_hst);
 
-    build_tcells_hst(s::m_hst, s::i_pp_bb_hst, nsbb, /**/ s::tcs_hst, s::tcc_hst, s::tci_hst);
+    build_tcells_hst(s::q.m_hst, s::t.i_pp_hst, nsbb, /**/ s::t.tcs_hst, s::t.tcc_hst, s::t.tci_hst);
 
     cD2H(o::pp_hst, o::pp, o::n);
     cD2H(o::ff_hst, o::ff, o::n);
 
-    mbounce::bounce_tcells_hst(o::ff_hst, s::m_hst, s::i_pp_bb_hst, s::tcs_hst, s::tcc_hst, s::tci_hst, o::n, /**/ o::pp_hst, s::ss_bb_hst);
+    mbounce::bounce_tcells_hst(o::ff_hst, s::q.m_hst, s::t.i_pp_hst, s::t.tcs_hst, s::t.tcc_hst, s::t.tci_hst, o::n, /**/ o::pp_hst, s::t.ss_hst);
 
     if (it % rescue_freq == 0)
-    mrescue::rescue_hst(s::m_hst, s::i_pp_bb_hst, nsbb, o::n, s::tcs_hst, s::tcc_hst, s::tci_hst, /**/ o::pp_hst);
+    mrescue::rescue_hst(s::q.m_hst, s::t.i_pp_hst, nsbb, o::n, s::t.tcs_hst, s::t.tcc_hst, s::t.tci_hst, /**/ o::pp_hst);
 
     cH2D(o::pp, o::pp_hst, o::n);
 
     // send back fo, to
 
-    bbhalo::pack_back(s::ss_bb_hst);
+    bbhalo::pack_back(s::t.ss_hst);
     bbhalo::post_back();
-    bbhalo::unpack_back(s::ss_hst);
+    bbhalo::unpack_back(s::q.ss_hst);
 
     // for dump
-    memcpy(s::ss_dmpbbhst, s::ss_hst, s::ns * sizeof(Solid));
+    memcpy(s::q.ss_dmp, s::q.ss_hst, s::q.ns * sizeof(Solid));
 }
   
 } /* namespace sim */
