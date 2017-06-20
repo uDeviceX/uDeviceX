@@ -134,13 +134,13 @@ void dev2hst() { /* device to host  data transfer */
 }
 
 void dump_part(int step) {
-        cD2H(o::pp_hst, o::pp, o::n);
-        dump::parts(o::pp_hst, o::n, "solvent", step);
+  cD2H(o::pp_hst, o::pp, o::n);
+  dump::parts(o::pp_hst, o::n, "solvent", step);
 
-        if(solids0) {
-            cD2H(s::q.pp_hst, s::q.pp, s::q.n);
-            dump::parts(s::q.pp_hst, s::q.n, "solid", step);
-        }
+  if(solids0) {
+    cD2H(s::q.pp_hst, s::q.pp, s::q.n);
+    dump::parts(s::q.pp_hst, s::q.n, "solid", step);
+  }
 }
 
 void dump_rbcs() {
