@@ -102,58 +102,67 @@ void step(float driving_force0, bool wall0, int it) {
     if (sbounce_back && solids0) bounce_solid(it);
 }
 
-void run_simple(long nsteps) {
+void run_simple(long te) {
     float driving_force0 = pushflow ? driving_force : 0;
     bool wall0 = false;
     solids0 = false;
-    for (long it = 0; it < nsteps; ++it) step(driving_force0, wall0, it);
+    for (long it = 0; it < te; ++it) step(driving_force0, wall0, it);
 }
 
-void run_complex(long nsteps) {
-    float driving_force0 = 0;
-    bool wall0 = false;
-    long it = 0;
-    solids0 = false;
-    for (/**/; it < wall_creation; ++it) step(driving_force0, wall0, it);
+void run_eq(long te) { /* equilibrate */
+  float driving_force0 = 0;
+  long it;
+  bool wall0 = false;
+  solids0 = false;
+  for (it = 0; it < te; ++it) step(driving_force0, wall0, it);
+}
 
-    solids0 = solids;
-    if (walls) {
-        create_walls();
-        wall0 = true;
-        MSG("done creating walls");
-    }
-    MC(MPI_Barrier(m::cart));
+void run_complex(long ts, long te) {
+  /* ts, te: time start and end */
+  long it;
+  float driving_force0 = pushflow ? driving_force : 0;
+  bool  wall0 = walls;
+  
+  solids0 = solids;
+  if (walls) {
+    create_walls();
+    MSG("done creating walls");
+  }
+  MC(MPI_Barrier(m::cart));
 
-    if (solids0) {
-        cD2H(o::pp_hst, o::pp, o::n);
+  if (solids0) {
+    cD2H(o::pp_hst, o::pp, o::n);
+    
+    rig::create(/*io*/ o::pp_hst, &o::n, /**/ &s::q);
 
-        rig::create(/*io*/ o::pp_hst, &o::n, /**/ &s::q);
-
-        MC(l::m::Barrier(m::cart));
-        
-        rig::gen_pp_hst(s::q);
-        rig::gen_ipp_hst(s::q);
-        rig::cpy_H2D(s::q);
-
-        cH2D(o::pp, o::pp_hst, o::n);
-        MC(l::m::Barrier(m::cart));
-        MSG("created %d solids.", s::q.ns);
-    }
-    if (walls) remove_bodies();
-    if (solids) set_ids_solids();
-    if (solids0 && s::q.n) k_sim::clear_velocity<<<k_cnf(s::q.n)>>>(s::q.pp, s::q.n);
-    if (rbcs    && r::q.n) k_sim::clear_velocity<<<k_cnf(r::q.n)>>>(r::q.pp, r::q.n);
-    if (pushflow) driving_force0 = driving_force;
-
-    for (/**/; it < nsteps; ++it) step(driving_force0, wall0, it);
+    MC(l::m::Barrier(m::cart));
+    
+    rig::gen_pp_hst(s::q);
+    rig::gen_ipp_hst(s::q);
+    rig::cpy_H2D(s::q);
+    
+    cH2D(o::pp, o::pp_hst, o::n);
+    MC(l::m::Barrier(m::cart));
+    MSG("created %d solids.", s::q.ns);
+  }
+  if (walls) remove_bodies();
+  if (solids) set_ids_solids();
+  if (solids0 && s::q.n) k_sim::clear_velocity<<<k_cnf(s::q.n)>>>(s::q.pp, s::q.n);
+  if (rbcs    && r::q.n) k_sim::clear_velocity<<<k_cnf(r::q.n)>>>(r::q.pp, r::q.n);
+  if (pushflow) driving_force0 = driving_force;
+  
+  for (it = ts; it < te; ++it) step(driving_force0, wall0, it);
 }
 
 void run() {
     long nsteps = (int)(tend / dt);
     MSG0("will take %ld steps", nsteps);
-
-    if (walls || solids) run_complex(nsteps);
-    else                 run_simple(nsteps);
+    if (walls || solids) {
+      run_eq(wall_creation);
+      run_complex(wall_creation, nsteps);
+    } else {
+      run_simple(nsteps);
+    }
 }
 
 void fin() {
