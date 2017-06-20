@@ -14,7 +14,7 @@ void update_solid0() {
     solid::update_mesh_dev(s::q.ss, s::q.ns, s::q.m_dev, /**/ s::q.i_pp);
 
     // for dump
-    //cD2H(s::q.ss_dmphst, s::q.ss_dev, s::q.ns);
+    cD2H(s::q.ss_dmp, s::q.ss, s::q.ns);
 
     solid::reinit_ft_dev(s::q.ns, /**/ s::q.ss);
 }
@@ -52,7 +52,7 @@ void bounce_solid(int it) {
     cH2D(s::q.ss, s::q.ss_hst, s::q.ns);
 
     // for dump
-    //memcpy(s::q.ss_dmpbbhst, s::q.ss_hst, s::q.ns * sizeof(Solid));
+    memcpy(s::t.ss_dmp, s::q.ss_hst, s::q.ns * sizeof(Solid));
 }
   
 } /* namespace sim */
