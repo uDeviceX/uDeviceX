@@ -16,6 +16,9 @@ struct InfoDPD {
     float seed;
 };
 
+bool fdpd_init = false;
+static bool is_mps_enabled = false;
+
 __constant__ InfoDPD info;
 __device__ char4 tid2ind[32] = {
     { -1, -1, -1, 0}, {0, -1, -1, 0}, {1, -1, -1, 0},
@@ -34,19 +37,20 @@ texture<float4, cudaTextureType1D> texParticlesF4;
 texture<ushort4, cudaTextureType1D, cudaReadModeNormalizedFloat> texParticlesH4;
 texture<uint2, cudaTextureType1D> texStartAndCount;
 
-__device__ float3 _dpd_interaction( const int dpid, const float4 xdest, const float4 udest, const float4 xsrc, const float4 usrc, const int spid )
-{
+__device__ void f2tof3(float4 r, /**/ float3 *l) { /* lhs = rhs */
+  l->x = r.x; l->y = r.y; l->z = r.z;
+}
+
+__device__ float3 _dpd_interaction(int dpid, float4 rdest, float4 udest, float4 rsrc, float4 usrc, int spid) {
   float rnd;
   float3 r1, r2, v1, v2;
   float3 f;
   
   rnd = l::rnd::d::mean0var1ii( info.seed, xmin( spid, dpid ), xmax( spid, dpid ) );
-  r1 = make_float3(xdest.x, xdest.y, xdest.z);
-  r2 = make_float3(xsrc.x, xsrc.y, xsrc.z);
-  v1 = make_float3(udest.x, udest.y, udest.z);
-  v2 = make_float3(usrc.x, usrc.y, usrc.z);
-  f = force(SOLVENT_TYPE, SOLVENT_TYPE, r1, r2, v1, v2, rnd);
+  f2tof3(rdest, &r1); f2tof3(rsrc, &r2);
+  f2tof3(udest, &v1); f2tof3(usrc, &v2);
   
+  f = force(SOLVENT_TYPE, SOLVENT_TYPE, r1, r2, v1, v2, rnd);
   return f;
 }
 
@@ -284,31 +288,11 @@ void _dpd_forces_symm_merged()
     }
 }
 
-bool fdpd_init = false;
-static bool is_mps_enabled = false;
-
 __global__ void make_texture2( uint2 *start_and_count, const int *start, const int *count, const int n )
 {
     for( int i = blockIdx.x * blockDim.x + threadIdx.x; i < n; i += blockDim.x * gridDim.x ) {
         start_and_count[i] = make_uint2( start[i], count[i] );
     }
-}
-
-__global__ void check_acc( const int np )
-{
-    double sx = 0, sy = 0, sz = 0;
-    for( int i = 0; i < np; i++ ) {
-        double ax = info.ff[i * 3 + 0];
-        double ay = info.ff[i * 3 + 1];
-        double az = info.ff[i * 3 + 2];
-        if( ax != ax || ay != ay || az != az ) {
-            printf( "particle %d: %f %f %f\n", i, ax, ay, az );
-        }
-        sx += ax;
-        sy += ay;
-        sz += az;
-    }
-    printf( "ACC: %+.7lf %+.7lf %+.7lf\n", sx, sy, sz );
 }
 
 __global__
