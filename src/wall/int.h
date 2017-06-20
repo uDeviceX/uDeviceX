@@ -48,7 +48,9 @@ void interactions(const Quants q, const Ticket t, const int type, const Particle
     sub::interactions(type, pp, n, t.texstart, t.texpp, q.n, /**/ t.rnd, ff);
 }
 
-
+void strt_dump(const int id, const Quants q) {
+    sub::strt_dump(id, q.n, q.pp);
+}
 
 /*
   Imaginary interface
