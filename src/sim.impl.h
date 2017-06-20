@@ -97,11 +97,11 @@ void forces_fsi(SolventWrap *w_s, std::vector<ParticlesWrap> *w_r) {
 void forces(bool wall0) {
     SolventWrap w_s(o::pp, o::n, o::ff, o::cells->start, o::cells->count);
     std::vector<ParticlesWrap> w_r;
-    if (solids0) w_r.push_back(ParticlesWrap(s::q.pp, s::q.npp, s::q.ff));
-    if (rbcs   ) w_r.push_back(ParticlesWrap(r::q.pp, r::q.n  , r::ff));
+    if (solids0) w_r.push_back(ParticlesWrap(s::q.pp, s::q.n, s::ff));
+    if (rbcs   ) w_r.push_back(ParticlesWrap(r::q.pp, r::q.n, r::ff));
 
     clear_forces(o::ff, o::n);
-    if (solids0) clear_forces(s::q.ff, s::q.npp);
+    if (solids0) clear_forces(s::ff, s::q.n);
     if (rbcs)    clear_forces(r::ff, r::q.n);
 
     forces_dpd();
@@ -128,7 +128,7 @@ void dev2hst() { /* device to host  data transfer */
     int start = 0;
     cD2H(a::pp_hst + start, o::pp, o::n); start += o::n;
     if (solids0) {
-        cD2H(a::pp_hst + start, s::q.pp, s::q.npp); start += s::q.npp;
+        cD2H(a::pp_hst + start, s::q.pp, s::q.n); start += s::q.n;
     }
     if (rbcs) {
         cD2H(a::pp_hst + start, r::q.pp, r::q.n); start += r::q.n;
@@ -140,8 +140,8 @@ void dump_part(int step) {
         dump::parts(o::pp_hst, o::n, "solvent", step);
 
         if(solids0) {
-            cD2H(s::q.pp_hst, s::q.pp, s::q.npp);
-            dump::parts(s::q.pp_hst, s::q.npp, "solid", step);
+            cD2H(s::q.pp_hst, s::q.pp, s::q.n);
+            dump::parts(s::q.pp_hst, s::q.n, "solid", step);
         }
 }
 
@@ -159,15 +159,15 @@ void dump_grid() {
 }
 
 void diag(int it) {
-    int n = o::n + s::q.npp + r::q.n; dev2hst();
+    int n = o::n + s::q.n + r::q.n; dev2hst();
     diagnostics(a::pp_hst, n, it);
 }
 
 void body_force(float driving_force0) {
     k_sim::body_force<<<k_cnf(o::n)>>> (1, o::pp, o::ff, o::n, driving_force0);
 
-    if (solids0 && s::q.npp)
-    k_sim::body_force<<<k_cnf(s::q.npp)>>> (solid_mass, s::q.pp, s::q.ff, s::q.npp, driving_force0);
+    if (solids0 && s::q.n)
+    k_sim::body_force<<<k_cnf(s::q.n)>>> (solid_mass, s::q.pp, s::ff, s::q.n, driving_force0);
 
     if (rbcs && r::q.n)
     k_sim::body_force<<<k_cnf(r::q.n)>>> (rbc_mass, r::q.pp, r::ff, r::q.n, driving_force0);
@@ -175,7 +175,7 @@ void body_force(float driving_force0) {
 
 
 void update_solid() {
-    if (s::q.npp) update_solid0();
+    if (s::q.n) update_solid0();
 }
 
 void update_solvent() {
@@ -218,7 +218,7 @@ void ini() {
 
     mpDeviceMalloc(&o::pp);
     mpDeviceMalloc(&o::ff);
-    mpDeviceMalloc(&s::q.ff); mpDeviceMalloc(&s::q.ff);
+    mpDeviceMalloc(&s::ff); mpDeviceMalloc(&s::ff);
     mpDeviceMalloc(&s::q.rr0);
 
     if (solids) {
