@@ -12,7 +12,7 @@ struct InfoDPD {
     uint nxyz;
     float3 domainsize, invdomainsize, domainstart;
     float invrc;
-    float * axayaz;
+    float * ff;
     float seed;
 };
 
@@ -96,7 +96,7 @@ __forceinline__ __device__ void core_ytang( const uint dststart, const uint psha
     // can be completely killed by changing the integration kernel
     uint off  = dpid & 0x0000001FU;
     uint base = xdiv( dpid, 1 / 32.f );
-    float* acc = info.axayaz + xmad( base, 96.f, off );
+    float* acc = info.ff + xmad( base, 96.f, off );
     atomicAdd( acc   , f.x );
     atomicAdd( acc + 32, f.y );
     atomicAdd( acc + 64, f.z );
@@ -104,7 +104,7 @@ __forceinline__ __device__ void core_ytang( const uint dststart, const uint psha
     if( spid < spidext ) {
         uint off  = spid & 0x0000001FU;
         uint base = xdiv( spid, 1 / 32.f );
-        float* acc = info.axayaz + xmad( base, 96.f, off );
+        float* acc = info.ff + xmad( base, 96.f, off );
         atomicAdd( acc   , -f.x );
         atomicAdd( acc + 32, -f.y );
         atomicAdd( acc + 64, -f.z );
@@ -298,9 +298,9 @@ __global__ void check_acc( const int np )
 {
     double sx = 0, sy = 0, sz = 0;
     for( int i = 0; i < np; i++ ) {
-        double ax = info.axayaz[i * 3 + 0];
-        double ay = info.axayaz[i * 3 + 1];
-        double az = info.axayaz[i * 3 + 2];
+        double ax = info.ff[i * 3 + 0];
+        double ay = info.ff[i * 3 + 1];
+        double az = info.ff[i * 3 + 2];
         if( ax != ax || ay != ay || az != az ) {
             printf( "particle %d: %f %f %f\n", i, ax, ay, az );
         }
@@ -320,17 +320,17 @@ void transpose_acc( const int np )
 
     for( uint i = ( blockIdx.x * blockDim.x + threadIdx.x ) & 0xFFFFFFE0U; i < np; i += blockDim.x * gridDim.x ) {
         const uint base = xmad( i, 3.f, lane );
-        smem[warpid][lane   ] = info.axayaz[ base      ];
-        smem[warpid][lane + 32] = info.axayaz[ base + 32 ];
-        smem[warpid][lane + 64] = info.axayaz[ base + 64 ];
-        info.axayaz[ base      ] = smem[warpid][ xmad( __IMOD( lane + 0, 3 ), 32.f, ( lane + 0 ) / 3 ) ];
-        info.axayaz[ base + 32 ] = smem[warpid][ xmad( __IMOD( lane + 32, 3 ), 32.f, ( lane + 32 ) / 3 ) ];
-        info.axayaz[ base + 64 ] = smem[warpid][ xmad( __IMOD( lane + 64, 3 ), 32.f, ( lane + 64 ) / 3 ) ];
+        smem[warpid][lane   ] = info.ff[ base      ];
+        smem[warpid][lane + 32] = info.ff[ base + 32 ];
+        smem[warpid][lane + 64] = info.ff[ base + 64 ];
+        info.ff[ base      ] = smem[warpid][ xmad( __IMOD( lane + 0, 3 ), 32.f, ( lane + 0 ) / 3 ) ];
+        info.ff[ base + 32 ] = smem[warpid][ xmad( __IMOD( lane + 32, 3 ), 32.f, ( lane + 32 ) / 3 ) ];
+        info.ff[ base + 64 ] = smem[warpid][ xmad( __IMOD( lane + 64, 3 ), 32.f, ( lane + 64 ) / 3 ) ];
     }
 }
 
-void flocal0(float4 *xyzouvwo, ushort4 *xyzo_half, float* axayaz,  int np,
-	     int *cellsstart, int *cellscount,
+void flocal0(float4 *zip0, ushort4 *zip1, float* ff,  int np,
+	     int *start, int *count,
 	     float rc, float XL, float YL, float ZL, float invsqrtdt, float seed)
 	     
 {
@@ -394,9 +394,9 @@ void flocal0(float4 *xyzouvwo, ushort4 *xyzo_half, float* axayaz,  int np,
         last_nc = ncells;
     }
 
-    CC( cudaBindTexture( &textureoffset, &texParticlesF4, xyzouvwo,  &texParticlesF4.channelDesc, sizeof( float ) * 8 * np ) );
-    CC( cudaBindTexture( &textureoffset, &texParticlesH4, xyzo_half, &texParticlesH4.channelDesc, sizeof( ushort4 ) * np ) );
-    make_texture2 <<< 64, 512, 0>>>( start_and_count, cellsstart, cellscount, ncells );
+    CC( cudaBindTexture( &textureoffset, &texParticlesF4, zip0,  &texParticlesF4.channelDesc, sizeof( float ) * 8 * np ) );
+    CC( cudaBindTexture( &textureoffset, &texParticlesH4, zip1, &texParticlesH4.channelDesc, sizeof( ushort4 ) * np ) );
+    make_texture2 <<< 64, 512, 0>>>( start_and_count, start, count, ncells );
     CC( cudaBindTexture( &textureoffset, &texStartAndCount, start_and_count, &texStartAndCount.channelDesc, sizeof( uint2 ) * ncells ) );
 
     c.ncells = make_int3( nx, ny, nz );
@@ -405,7 +405,7 @@ void flocal0(float4 *xyzouvwo, ushort4 *xyzo_half, float* axayaz,  int np,
     c.invdomainsize = make_float3( 1 / XL, 1 / YL, 1 / ZL );
     c.domainstart = make_float3( -XL * 0.5, -YL * 0.5, -ZL * 0.5 );
     c.invrc = 1.f / rc;
-    c.axayaz = axayaz;
+    c.ff = ff;
     c.seed = seed;
 
     if (!is_mps_enabled)
@@ -418,7 +418,7 @@ void flocal0(float4 *xyzouvwo, ushort4 *xyzo_half, float* axayaz,  int np,
 
     int np32 = np;
     if( np32 % 32 ) np32 += 32 - np32 % 32;
-    CC( cudaMemsetAsync( axayaz, 0, sizeof( float )* np32 * 3) );
+    CC( cudaMemsetAsync( ff, 0, sizeof( float )* np32 * 3) );
 
     if( c.ncells.x % MYCPBX == 0 && c.ncells.y % MYCPBY == 0 && c.ncells.z % MYCPBZ == 0 ) {
         _dpd_forces_symm_merged <<< dim3( c.ncells.x / MYCPBX, c.ncells.y / MYCPBY, c.ncells.z / MYCPBZ ), dim3( 32, MYWPB ), 0>>> ();
