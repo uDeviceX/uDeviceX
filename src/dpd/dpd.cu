@@ -3,7 +3,7 @@
 #include <mpi.h>
 #include "dpd/tiny-float.h"
 #include "l/rnd.h"
-#include "dpd/cuda-dpd.h"
+#include "dpd/dpd.h"
 #include "force.h"
 #include "common.h"
 
