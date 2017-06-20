@@ -17,23 +17,37 @@ struct InfoDPD {
 };
 
 __constant__ InfoDPD info;
-
+__device__ char4 tid2ind[32] = {
+    { -1, -1, -1, 0}, {0, -1, -1, 0}, {1, -1, -1, 0},
+    { -1,  0, -1, 0}, {0,  0, -1, 0}, {1,  0, -1, 0},
+    { -1 , 1, -1, 0}, {0,  1, -1, 0}, {1,  1, -1, 0},
+    { -1, -1,  0, 0}, {0, -1,  0, 0}, {1, -1,  0, 0},
+    { -1,  0,  0, 0}, {0,  0,  0, 0}, {1,  0,  0, 0},
+    { -1,  1,  0, 0}, {0,  1,  0, 0}, {1,  1,  0, 0},
+    { -1, -1,  1, 0}, {0, -1,  1, 0}, {1, -1,  1, 0},
+    { -1,  0,  1, 0}, {0,  0,  1, 0}, {1,  0,  1, 0},
+    { -1,  1,  1, 0}, {0,  1,  1, 0}, {1,  1,  1, 0},
+    { 0,  0,  0, 0}, {0,  0,  0, 0}, {0,  0,  0, 0},
+    { 0,  0,  0, 0}, {0,  0,  0, 0}
+};
 texture<float4, cudaTextureType1D> texParticlesF4;
 texture<ushort4, cudaTextureType1D, cudaReadModeNormalizedFloat> texParticlesH4;
 texture<uint2, cudaTextureType1D> texStartAndCount;
 
 __device__ float3 _dpd_interaction( const int dpid, const float4 xdest, const float4 udest, const float4 xsrc, const float4 usrc, const int spid )
 {
-    const float myrandnr = l::rnd::d::mean0var1ii( info.seed, xmin( spid, dpid ), xmax( spid, dpid ) );
-
-    // check for particle types and compute the DPD force
-    float3 pos1 = make_float3(xdest.x, xdest.y, xdest.z), pos2 = make_float3(xsrc.x, xsrc.y, xsrc.z);
-    float3 vel1 = make_float3(udest.x, udest.y, udest.z), vel2 = make_float3(usrc.x, usrc.y, usrc.z);
-    
-    const float3 strength = force(SOLVENT_TYPE, SOLVENT_TYPE,
-            pos1, pos2, vel1, vel2, myrandnr);
-
-    return strength;
+  float rnd;
+  float3 r1, r2, v1, v2;
+  float3 f;
+  
+  rnd = l::rnd::d::mean0var1ii( info.seed, xmin( spid, dpid ), xmax( spid, dpid ) );
+  r1 = make_float3(xdest.x, xdest.y, xdest.z);
+  r2 = make_float3(xsrc.x, xsrc.y, xsrc.z);
+  v1 = make_float3(udest.x, udest.y, udest.z);
+  v2 = make_float3(usrc.x, usrc.y, usrc.z);
+  f = force(SOLVENT_TYPE, SOLVENT_TYPE, pos1, pos2, vel1, vel2, myrandnr);
+  
+  return f;
 }
 
 #define __IMOD(x,y) ((x)-((x)/(y))*(y))
@@ -58,20 +72,6 @@ __inline__ __device__ uint2 __unpack_8_24( uint d )
     asm( "bfe.u32  %0, %1, 24, 8;" : "=r"( a ) : "r"( d ) );
     return make_uint2( a, d & 0x00FFFFFFU );
 }
-
-__device__ char4 tid2ind[32] = {
-    { -1, -1, -1, 0}, {0, -1, -1, 0}, {1, -1, -1, 0},
-    { -1,  0, -1, 0}, {0,  0, -1, 0}, {1,  0, -1, 0},
-    { -1 , 1, -1, 0}, {0,  1, -1, 0}, {1,  1, -1, 0},
-    { -1, -1,  0, 0}, {0, -1,  0, 0}, {1, -1,  0, 0},
-    { -1,  0,  0, 0}, {0,  0,  0, 0}, {1,  0,  0, 0},
-    { -1,  1,  0, 0}, {0,  1,  0, 0}, {1,  1,  0, 0},
-    { -1, -1,  1, 0}, {0, -1,  1, 0}, {1, -1,  1, 0},
-    { -1,  0,  1, 0}, {0,  0,  1, 0}, {1,  0,  1, 0},
-    { -1,  1,  1, 0}, {0,  1,  1, 0}, {1,  1,  1, 0},
-    { 0,  0,  0, 0}, {0,  0,  0, 0}, {0,  0,  0, 0},
-    { 0,  0,  0, 0}, {0,  0,  0, 0}
-};
 
 // TODO: modify compiled PTX to replace integer comparison in branch statements
 
@@ -334,11 +334,6 @@ void flocal0(float4 *zip0, ushort4 *zip1, float* ff,  int np,
 	     float rc, float XL, float YL, float ZL, float invsqrtdt, float seed)
 	     
 {
-    if( np == 0 ) {
-        printf( "WARNING: forces_dpd_cuda_nohost called with np = %d\n", np );
-        return;
-    }
-
     int nx = ( int )ceil( XL / rc );
     int ny = ( int )ceil( YL / rc );
     int nz = ( int )ceil( ZL / rc );
