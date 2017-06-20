@@ -111,7 +111,7 @@ void gen_quants(int *o_n, Particle *o_pp, int *w_n, float4 **w_pp) {
     CC(cudaFree(frozen));
 }
 
-void strt_quants(const int id, int *w_n, , float4 **w_pp) {
+void strt_quants(const int id, int *w_n, float4 **w_pp) {
     // TODO strt::read(id, );
 }
 
@@ -120,7 +120,7 @@ void gen_ticket(const int w_n, float4 *w_pp, Clist *cells, Texo<int> *texstart, 
     build_cells(w_n, /**/ w_pp, cells);
     
     texstart->setup(cells->start, cells->ncells);
-    texpp->setup(*w_pp, *w_n);    
+    texpp->setup(w_pp, w_n);    
 }
 
 void interactions(const int type, const Particle *const pp, const int n, const Texo<int> texstart,
