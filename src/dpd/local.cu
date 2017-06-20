@@ -34,19 +34,20 @@ texture<float4, cudaTextureType1D> texParticlesF4;
 texture<ushort4, cudaTextureType1D, cudaReadModeNormalizedFloat> texParticlesH4;
 texture<uint2, cudaTextureType1D> texStartAndCount;
 
-__device__ float3 _dpd_interaction( const int dpid, const float4 xdest, const float4 udest, const float4 xsrc, const float4 usrc, const int spid )
-{
+__device__ void f2tof3(float4 r, /**/ float3 *l) { /* lhs = rhs */
+  l->x = r.x; l->y = r.y; l->z = r.z;
+}
+
+__device__ float3 _dpd_interaction(int dpid, float4 rdest, float4 udest, float4 rsrc, float4 usrc, int spid) {
   float rnd;
   float3 r1, r2, v1, v2;
   float3 f;
   
   rnd = l::rnd::d::mean0var1ii( info.seed, xmin( spid, dpid ), xmax( spid, dpid ) );
-  r1 = make_float3(xdest.x, xdest.y, xdest.z);
-  r2 = make_float3(xsrc.x, xsrc.y, xsrc.z);
-  v1 = make_float3(udest.x, udest.y, udest.z);
-  v2 = make_float3(usrc.x, usrc.y, usrc.z);
-  f = force(SOLVENT_TYPE, SOLVENT_TYPE, r1, r2, v1, v2, rnd);
+  f2tof3(rdest, &r1); f2tof3(rsrc, &r2);
+  f2tof3(udest, &v1); f2tof3(usrc, &v2);
   
+  f = force(SOLVENT_TYPE, SOLVENT_TYPE, r1, r2, v1, v2, rnd);
   return f;
 }
 
