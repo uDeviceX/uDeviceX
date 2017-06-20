@@ -112,7 +112,14 @@ void gen_quants(int *o_n, Particle *o_pp, int *w_n, float4 **w_pp) {
 }
 
 void strt_quants(const int id, int *w_n, float4 **w_pp) {
-    // TODO strt::read(id, );
+    float4 * pptmp; CC(cudaMalloc(&pptmp, MAX_PART_NUM * sizeof(float4)));
+    strt::read(id, pptmp, w_n);
+
+    if (*w_n) {
+        CC(cudaMalloc(w_pp, *w_n * sizeof(float4)));
+        cD2D(*w_pp, pptmp, *w_n);
+    }
+    CC(cudaFree(pptmp));
 }
 
 void gen_ticket(const int w_n, float4 *w_pp, Clist *cells, Texo<int> *texstart, Texo<float4> *texpp) {
