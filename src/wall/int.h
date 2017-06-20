@@ -58,10 +58,10 @@ void strt_dump(const int id, const Quants q) {
   restart from particles
   need conversion to float4
   
-  create_from_solvent(&q &t);
-  create_from_file(&q &t);
+  create_from_solvent(&q &t); -> see gen_quants
+  create_from_file(&q &t);    -> see strt_quants
 
-  sub::create_ticket(q, &t);
+  sub::gen_ticket(q, &t);
 
   restart::read/write( (&) q.pp, (&) q.n);
   
