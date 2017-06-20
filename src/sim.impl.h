@@ -302,12 +302,16 @@ void run_wall(long nsteps) {
         cD2H(o::pp_hst, o::pp, o::n);
 
         rig::create(/*io*/ o::pp_hst, &o::n, /**/ &s::q);
+
+        MC(l::m::Barrier(m::cart));
+        
         rig::gen_pp_hst(s::q);
         rig::gen_ipp_hst(s::q, s::t);
         rig::cpy_H2D(s::q, s::t);
 
         cH2D(o::pp, o::pp_hst, o::n);
-        MC(MPI_Barrier(m::cart));
+        MC(l::m::Barrier(m::cart));
+        MSG("created %d solids.", s::q.ns);
     }
     if (walls) remove_bodies();
     set_ids_solids();
