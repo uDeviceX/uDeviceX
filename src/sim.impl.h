@@ -242,7 +242,7 @@ void ini() {
 
 void dump_diag_after(int it) { /* after wall */
     if (it % part_freq)
-    solid::dump(it, s::q.ss_dmphst, s::q.ss_dmpbbhst, s::q.ns, m::coords);
+    solid::dump(it, s::q.ss_dmp, s::t.ss_dmp, s::q.ns, m::coords);
 }
 
 void dump_diag0(int it) { /* generic dump */
@@ -300,7 +300,12 @@ void run_wall(long nsteps) {
 
     if (solids0) {
         cD2H(o::pp_hst, o::pp, o::n);
-        s::q.create(o::pp_hst, &o::n);
+
+        rig::create(/*io*/ o::pp_hst, &o::n, /**/ &s::q);
+        rig::gen_pp_hst(s::q);
+        rig::gen_ipp_hst(s::q, s::t);
+        rig::cpy_H2D(s::q, s::t);
+
         cH2D(o::pp, o::pp_hst, o::n);
         MC(MPI_Barrier(m::cart));
     }
