@@ -147,6 +147,7 @@ namespace ic {
 #include "safety.impl.h"
 
 #include "k/sim.h"
+#include "sim/generic.h"
 #include "sim.decl.h"
 
 #define HST (true)
