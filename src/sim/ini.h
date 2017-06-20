@@ -37,7 +37,7 @@ void ini() {
     o::n = ic::gen(o::pp_hst);
     cH2D(o::pp, o::pp_hst, o::n);
     o::cells->build(o::pp, o::n);
-    create_ticketZ(o::pp, o::n, &o::tz);
+    get_ticketZ(o::pp, o::n, &o::tz);
 
     if (rbcs) rbc::setup_from_pos("rbc.off", "rbcs-ic.txt", /**/ &r::q);
 

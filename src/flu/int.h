@@ -66,7 +66,7 @@ void free_ticketZ(/**/ TicketZ *t) {
   cudaFree(zip1);
 }
 
-void create_ticketZ(Particle *pp, int n, /**/ TicketZ *t) {
+void get_ticketZ(Particle *pp, int n, /**/ TicketZ *t) {
   if (n == 0) return;
   float4  *zip0 = t->zip0;
   ushort4 *zip1 = t->zip1;

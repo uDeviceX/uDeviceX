@@ -70,7 +70,7 @@ void gen() { /* generate */
   run_eq(wall_creation);
   freeze();
   wall::gen_ticket(w::q, &w::t);
-  flu::create_ticketZ(o::pp, o::n, &o::tz);
+  flu::get_ticketZ(o::pp, o::n, &o::tz);
 }
 
 void sim() {
