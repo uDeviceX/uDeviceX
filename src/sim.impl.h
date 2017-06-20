@@ -225,6 +225,8 @@ void ini() {
         mrescue::ini(MAX_PART_NUM);
         rig::alloc_quants(&s::q);
         rig::alloc_ticket(&s::t);
+        s::ff_hst = new Force[MAX_PART_NUM];
+        CC(cudaMalloc(&s::ff, MAX_PART_NUM * sizeof(Force)));
     }
 
     o::n = ic::gen(o::pp_hst);
