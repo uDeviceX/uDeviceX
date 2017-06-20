@@ -143,7 +143,6 @@ namespace ic {
 }
 #include "rig/int.h"
 }
-
 #include "safety.impl.h"
 
 #include "k/sim.h"
@@ -153,6 +152,7 @@ namespace ic {
 #include "sim/generic.h"
 #include "sim/dump.h"
 #include "sim/forces.h"
+#include "sim/update.h"
 #define HST (true)
 #define DEV (false)
 #define DEVICE_SOLID
