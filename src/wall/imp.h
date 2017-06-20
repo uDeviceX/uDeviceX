@@ -137,3 +137,7 @@ void interactions(const int type, const Particle *const pp, const int n, const T
             ((float2 *)pp, n, w_n, (float *)ff, rnd->get_float(), type, texstart, texpp);
     }
 }
+
+void strt_dump(const int id, const int n, const float4 *pp) {
+    strt::write(id, pp, n);
+}
