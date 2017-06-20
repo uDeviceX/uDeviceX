@@ -55,7 +55,7 @@ void remove_bodies() {
 }
 
 void set_ids_solids() {
-    if (solids) rig::set_ids(s::q);
+    rig::set_ids(s::q);
     CC(cudaPeekAtLastError());
 }
 
@@ -310,7 +310,7 @@ void run_wall(long nsteps) {
         MSG("created %d solids.", s::q.ns);
     }
     if (walls) remove_bodies();
-    set_ids_solids();
+    if (solids) set_ids_solids();
     if (solids0 && s::q.n) k_sim::clear_velocity<<<k_cnf(s::q.n)>>>(s::q.pp, s::q.n);
     if (rbcs    && r::q.n) k_sim::clear_velocity<<<k_cnf(r::q.n)>>>(r::q.pp, r::q.n);
     if (pushflow) driving_force0 = driving_force;
