@@ -218,8 +218,6 @@ void ini() {
 
     mpDeviceMalloc(&o::pp);
     mpDeviceMalloc(&o::ff);
-    mpDeviceMalloc(&s::ff); mpDeviceMalloc(&s::ff);
-    mpDeviceMalloc(&s::q.rr0);
 
     if (solids) {
         mrescue::ini(MAX_PART_NUM);
