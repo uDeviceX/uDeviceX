@@ -1,3 +1,4 @@
+namespace sim {
 void forces_rbc() {
     if (rbcs) rbc::forces(r::q, r::tt, /**/ r::ff);
 }
@@ -59,4 +60,5 @@ void forces(bool wall0) {
     rex::recv_f();
 
     dSync();
+}
 }
