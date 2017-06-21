@@ -64,7 +64,7 @@ void data(const char *name, const long n, Particle *pp) {
 }
 } // namespace bopread
 
-void write(const char *code, const int id, const Particle *pp, const long n) {
+void write_pp(const char *code, const int id, const Particle *pp, const long n) {
     char bop[BS] = {0}, rel[BS] = {0}, val[BS] = {0};
     gen_name(code, id, "bop"   , /**/ bop);
     gen_name(code, id, "values", /**/ val);
@@ -75,7 +75,7 @@ void write(const char *code, const int id, const Particle *pp, const long n) {
     bopwrite::data(val, pp, n);
 }
 
-void read(const char *code, const int id, Particle *pp, int *n) {
+void read_pp(const char *code, const int id, Particle *pp, int *n) {
     long np = 0;
     char bop[BS] = {0}, val[BS] = {0};
     gen_name(code, id, "bop"   , /**/ bop);
@@ -86,7 +86,7 @@ void read(const char *code, const int id, Particle *pp, int *n) {
     *n = np;
 }
 
-void write(const char *code, const int id, const Solid *ss, const long n) {
+void write_ss(const char *code, const int id, const Solid *ss, const long n) {
     char fname[BS] = {0};
     gen_name(code, id, "solid", /**/ fname);
         
@@ -96,7 +96,7 @@ void write(const char *code, const int id, const Solid *ss, const long n) {
     fclose(f);
 }
 
-void read(const char *code, const int id, Solid *ss, int *n) {
+void read_ss(const char *code, const int id, Solid *ss, int *n) {
     long ns = 0;
     char fname[BS] = {0};
     gen_name(code, id, "solid", /**/ fname);

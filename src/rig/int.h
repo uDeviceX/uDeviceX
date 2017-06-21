@@ -123,3 +123,4 @@ void cpy_H2D(Quants q) {
 void set_ids(Quants q) {
     sub::set_ids(q.ns, q.ss_hst, q.ss);
 }
+

@@ -84,7 +84,7 @@ void forces(int nc, const Texo<float2> texvert, const Texo<int4> textri, const T
 void f() {}
 
 void setup_from_strt(const int id, /**/ Particle *pp, int *nc, int *n, /*w*/ Particle *pp_hst) {
-    restart::read("rbc", id, pp_hst, n);
+    restart::read_pp("rbc", id, pp_hst, n);
     *nc = *n / nv;
     
     if (*n) cH2D(pp, pp_hst, *n);
@@ -93,7 +93,7 @@ void setup_from_strt(const int id, /**/ Particle *pp, int *nc, int *n, /*w*/ Par
 void strt_dump(const int id, const int n, const Particle *pp, /*w*/ Particle *pp_hst) {
     if (n) cD2H(pp_hst, pp, n);
 
-    restart::write("rbc", id, pp_hst, n);
+    restart::write_pp("rbc", id, pp_hst, n);
 }
 
 #undef md

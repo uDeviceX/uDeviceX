@@ -1,7 +1,7 @@
 void read(const int id, /**/ float4 *pp, int *n) {
     Particle *pphst, *ppdev;
     pphst = new Particle[MAX_PART_NUM];
-    restart::read("wall", id, /**/ pphst, n);
+    restart::read_pp("wall", id, /**/ pphst, n);
 
     if (*n) {
         CC(cudaMalloc(&ppdev, MAX_PART_NUM * sizeof(Particle)));
@@ -21,7 +21,7 @@ void write(const int id, const float4 *pp, const int n) {
         cD2H(pphst, ppdev, n);
         CC(cudaFree(ppdev));
     }
-    restart::write("wall", id, /**/ pphst, n);
+    restart::write_pp("wall", id, /**/ pphst, n);
 
     delete[] pphst;
 }
