@@ -3,11 +3,8 @@ namespace sim {
 
 void create_walls() {
   int nold = o::n;
-  wall::gen_quants(&o::n, o::pp, &w::q);
-  wall::gen_ticket(w::q, &w::t);
+  wall::gen_quants(&o::n, o::pp, &w::q); o::cells->build(o::pp, o::n);
   MSG("solvent particles survived: %d/%d", o::n, nold);
-  o::cells->build(o::pp, o::n);
-  flu::get_ticketZ(o::pp, o::n, &o::tz);
 }
 
 void create_solids() {
@@ -42,6 +39,9 @@ void freeze() {
 void gen() { /* generate */
   run_eq(wall_creation);
   freeze();
+  dSync();
+  if (walls) wall::gen_ticket(w::q, &w::t);
+  flu::get_ticketZ(o::pp, o::n, &o::tz);
 }
 
 void sim() {
