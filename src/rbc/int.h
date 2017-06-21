@@ -53,7 +53,7 @@ void gen_quants(const char *r_templ, const char *r_state, Quants *q) {
 }
 
 void strt_quants(const int id, Quants *q) {
-    ic::setup_from_strt(id, q->nv, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
+    sub::setup_from_strt(id, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
 }
 
 void gen_ticket(const Quants q, TicketT *t) {
@@ -69,4 +69,8 @@ void destroy_textures(TicketT *t) {
 
 void forces(const Quants q, const TicketT t, /**/ Force *ff) {
     sub::forces(q.nc, t.texvert, t.textri, t.texadj0, t.texadj1, /**/ ff, q.av);
+}
+
+void strt_dump(const int id, const Quants q) {
+    sub::strt_dump(id, q.n, q.pp);
 }

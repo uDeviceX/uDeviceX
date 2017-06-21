@@ -57,10 +57,3 @@ void setup_from_pos(const char *r_templ, const char *r_state, int nv, /**/ Parti
     l::m::Barrier(m::cart);
     *n = *nc * nv;
 }
-
-void setup_from_strt(const int id, const int nv, /**/ Particle *pp, int *nc, int *n, /*w*/ Particle *pp_hst) {
-    restart::read("rbc", id, pp_hst, n);
-    *nc = *n / nv;
-
-    if (*n) cH2D(pp, pp_hat, *n);
-}
