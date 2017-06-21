@@ -3,8 +3,6 @@ void ini() {
     if (rbcs) {
         CC(cudaMalloc(&r::ff, MAX_PART_NUM));
         rbc::alloc_quants(&r::q);
-        //rbc::setup("rbc.off", &r::q);
-        rbc::gen_ticket(r::q, &r::tt);
     }
     rdstr::ini();
     dpd::ini();
