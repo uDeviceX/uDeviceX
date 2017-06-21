@@ -1,8 +1,8 @@
-/* struct Quants {
-  Particle *pp;
-  int       n;
-  Clist *cells;
-  }; */
+struct Quants {
+    Particle *pp;
+    int       n;
+    Clist *cells;
+}; 
 
 struct TicketZ { /* zip */
   float4  *zip0;
