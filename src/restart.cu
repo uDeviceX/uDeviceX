@@ -1,5 +1,7 @@
 #include <mpi.h>
 #include "common.h"
+#include <conf.h>
+#include "conf.common.h"
 #include "m.h"
 
 #include "restart.h"
@@ -15,10 +17,6 @@ enum {X, Y, Z};
 #define PATTERN0     "%5d.%s"
 #define PATTERN_SING "%s/strt/%s/"             PATTERN0
 #define PATTERN_MULT "%s/strt/%s/%3d.%3d.%3d/" PATTERN0
-
-/* :TODO: : move this to conf.h */
-#define BASE_STRT_DUMP "."
-#define BASE_STRT_READ "."
 
 #define READ (true)
 #define DUMP (false)

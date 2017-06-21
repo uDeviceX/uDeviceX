@@ -67,3 +67,13 @@
 
 /* maximum allowed degree of vertex in triangulated mesh */
 #define RBCmd 7
+
+// restart
+
+#ifndef BASE_STRT_DUMP 
+#define BASE_STRT_DUMP "."
+#endif
+
+#ifndef BASE_STRT_READ
+#define BASE_STRT_READ "."
+#endif
