@@ -21,6 +21,22 @@ void gen_from_solvent(const Mesh m_hst,  /* io */ Particle *opp, int *on,
     *n = *ns * (*nps);
 }
 
+static void pp2rr(const Particle *pp, const int n, float *rr) {
+    for (int i = 0; i < n; ++i)
+    for (int c = 0; c < 3; ++c)
+    rr[3*i + c] = pp[i].r[c];
+}
+
+void gen_from_strt(const int id, int *ns, int *nps, int *n, float *rr0_hst, Solid *ss_hst, Particle *pp_hst) {
+    Particle *pp = new Particle[MAX_PART_NUM];
+    restart::read_pp("rig_temp", 0, pp, nps);
+    pp2rr(pp, *nps, rr0_hst);
+    delete[] pp;
+
+    restart::read_pp("rig", id, pp_hst, n);
+    *ns = *n / *nps;
+}
+
 void gen_pp_hst(const int ns, const float *rr0_hst, const int nps, /**/ Solid *ss_hst, Particle *pp_hst) {
     solid::generate_hst(ss_hst, ns, rr0_hst, nps, /**/ pp_hst);
     solid::reinit_ft_hst(ns, /**/ ss_hst);
