@@ -95,6 +95,9 @@ namespace sub {
 #include "flu/imp.h" /* Fluid class impl */
 #include "flu/fin.h"
 }
+namespace ic {
+#include "flu/ic.h"
+}
 #include "flu/int.h"
 }
 
@@ -126,8 +129,6 @@ namespace sub {
 
 #include "bbhalo.decl.h"
 #include "bbhalo.impl.h"
-
-#include "ic.impl.h"
 
 #include "dump.decl.h"
 #include "dump.impl.h"

@@ -2,6 +2,7 @@ struct Quants {
     Particle *pp;
     int       n;
     Clist *cells;
+    Particle *pp_hst;
 }; 
 
 struct TicketZ { /* zip */
@@ -30,11 +31,13 @@ void alloc_quants(Quants *q) {
     q->n = 0;
     mpDeviceMalloc(&q->pp);
     q->cells = new Clist(XS, YS, ZS);
+    q->pp_hst = new Particle[MAX_PART_NUM];
 }
 
 void free_quants(Quants *q) {
     CC(cudaFree(q->pp));
     delete q->cells;
+    delete[] q->pp_hst;
 }
 
 void alloc_work(Work *w) {
@@ -155,4 +158,8 @@ void distr(Particle **qpp, int *qn, Clist *cells, TicketD *td, TicketZ *tz, Work
   *qn = n;
   *qfirst = first;
   *qpp = pp0; w->pp0 = pp; /* swap */
+}
+
+void gen_quants(Quants *q) {
+    q->n = ic::gen(q->pp, q->pp_hst);
 }

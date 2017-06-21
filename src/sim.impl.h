@@ -42,7 +42,7 @@ void gen() { /* generate */
 }
 
 void sim_gen() {
-  o::q.n = ic::gen(o::q.pp, /*w*/ o::pp_hst);
+    flu::gen_quants(&o::q);
   o::q.cells->build(o::q.pp, o::q.n);
   get_ticketZ(o::q.pp, o::q.n, &o::tz);
   if (rbcs) {
