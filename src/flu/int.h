@@ -26,6 +26,17 @@ struct Work {
   Particle *pp0;
 };
 
+void alloc_quants(Quants *q) {
+    q->n = 0;
+    mpDeviceMalloc(&q->pp);
+    q->cells = new Clist(XS, YS, ZS);
+}
+
+void free_quants(Quants *q) {
+    CC(cudaFree(q->pp));
+    delete q->cells;
+}
+
 void alloc_work(Work *w) {
   mpDeviceMalloc(&w->subi_lo);
   mpDeviceMalloc(&w->subi_re);
