@@ -13,12 +13,13 @@ void fin() {
 
     wall::free_quants(&w::q);
     wall::free_ticket(&w::t);
-    flu::free_work(&o::w);
 
-    delete o::cells;
     delete dump_field;
+
+    flu::free_quants(&o::q);
     flu::free_ticketZ(&o::tz);
     flu::free_ticketD(&o::td);
+    flu::free_work(&o::w);
 
     if (solids) {
         rig::free_quants(&s::q);
