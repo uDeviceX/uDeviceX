@@ -9,10 +9,8 @@ void create_walls() {
 
 void create_solids() {
   cD2H(o::pp_hst, o::pp, o::n);
-  rig::create(/*io*/ o::pp_hst, &o::n, /**/ &s::q);
+  rig::gen_quants(/*io*/ o::pp_hst, &o::n, /**/ &s::q);
   MC(l::m::Barrier(m::cart));
-  rig::gen_pp_hst(s::q);
-  rig::gen_ipp_hst(s::q);
   rig::cpy_H2D(s::q);
   
   cH2D(o::pp, o::pp_hst, o::n);

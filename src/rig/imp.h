@@ -11,14 +11,11 @@ void load_solid_mesh(const char *fname, Mesh *m_dev, Mesh *m_hst) {
     cH2D(m_dev->vv, m_hst->vv, 3 * m_dev->nv);
 }
 
-void create(/* io */ Particle *opp, int *on,
-            /* o */ Mesh *m_dev, Mesh *m_hst, int *ns, int *nps, int *n,
-            float *rr0_hst, Solid *ss_hst, Particle *pp_hst) {
-    load_solid_mesh("mesh_solid.ply", /**/ m_dev, m_hst);
-
+void gen_from_solvent(const Mesh m_hst,  /* io */ Particle *opp, int *on,
+                      /* o */ int *ns, int *nps, int *n, float *rr0_hst, Solid *ss_hst, Particle *pp_hst) {
     // generate models
     MSG("start solid ini");
-    ic::ini("ic_solid.txt", *m_hst, /**/ ns, nps, rr0_hst, ss_hst, on, opp, pp_hst);
+    ic::ini("ic_solid.txt", m_hst, /**/ ns, nps, rr0_hst, ss_hst, on, opp, pp_hst);
     MSG("done solid ini");
 
     *n = *ns * (*nps);
