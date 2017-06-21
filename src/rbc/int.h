@@ -44,15 +44,13 @@ void free_quants(Quants *q) {
     delete[] q->pp_hst;
 }
 
-void setup(const char *r_templ, Quants *q) {
-    sub::setup(r_templ, /**/ q->tri_hst, q->tri, q->adj0, q->adj1);
-}
-
 void gen_quants(const char *r_templ, const char *r_state, Quants *q) {
+    sub::setup(r_templ, /**/ q->tri_hst, q->tri, q->adj0, q->adj1);
     ic::setup_from_pos(r_templ, r_state, q->nv, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
 }
 
-void strt_quants(const int id, Quants *q) {
+void strt_quants(const char *r_templ, const int id, Quants *q) {
+    sub::setup(r_templ, /**/ q->tri_hst, q->tri, q->adj0, q->adj1);
     sub::setup_from_strt(id, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
 }
 

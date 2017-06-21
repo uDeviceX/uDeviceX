@@ -73,7 +73,7 @@ void sim_strt() {
 
   /*Q*/
   /*** flu::strt(&o::pp, &o::nn); ***/
-  o::cells->build(o::pp, o::n);
+  o::cells->build(/* io */ o::pp, o::n);
 
   /*** rbc::strt(&r::q); ***/
   dSync();
