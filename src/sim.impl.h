@@ -21,16 +21,14 @@ void create_solids() {
 }
 
 void freeze() {
-  if (walls) {
-    dSync();
-    sdf::ini();
-    create_walls();
-  }
   MC(MPI_Barrier(m::cart));
-  if (solids) create_solids();
+  if (solids)           create_solids();
   if (walls && rbcs  )  remove_rbcs();
   if (walls && solids)  remove_solids();
   if (solids)           rig::set_ids(s::q);
+}
+
+void clear_velocity() {
   if (o::n)             k_sim::clear_velocity<<<k_cnf(o::n)>>>(o::pp, o::n);  
   if (solids && s::q.n) k_sim::clear_velocity<<<k_cnf(s::q.n)>>>(s::q.pp, s::q.n);
   if (rbcs   && r::q.n) k_sim::clear_velocity<<<k_cnf(r::q.n)>>>(r::q.pp, r::q.n);
@@ -38,7 +36,13 @@ void freeze() {
 
 void gen() { /* generate */
   run_eq(wall_creation);
+  if (walls) {
+    dSync();
+    sdf::ini();
+    create_walls();
+  }
   freeze();
+  clear_velocity();
   dSync();
   if (walls) wall::gen_ticket(w::q, &w::t);
   flu::get_ticketZ(o::pp, o::n, &o::tz);
