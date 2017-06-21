@@ -56,7 +56,7 @@ void setup_from_strt(const int id, Quants *q) {
     ic::setup_from_strt(id, q->nv, /**/ q->pp, &q->nc, &q->n);
 }
 
-void setup_textures(const Quants q, TicketT *t) {
+void gen_ticket(const Quants q, TicketT *t) {
     sub::setup_textures(q.tri, &t->textri, q.adj0, &t->texadj0, q.adj1, &t->texadj1, q.pp, &t->texvert);
 }
 
