@@ -129,5 +129,5 @@ void strt_dump_templ(const Quants q) {
 }
 
 void strt_dump(const int id, const Quants q) {
-    //sub::strt_dump(id, q.n, q.pp, /*w*/ q.pp_hst);
+    sub::strt_dump(id, q.ns, q.ss_hst);
 }

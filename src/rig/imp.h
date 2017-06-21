@@ -54,3 +54,7 @@ void strt_dump_templ(const int nps, const float *rr0_hst) {
     
     delete[] pp;
 }
+
+void strt_dump(const int id, const int ns, const Solid *ss) {
+    restart::write_ss("rig", id, ss, ns);
+}
