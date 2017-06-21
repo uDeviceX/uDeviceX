@@ -7,10 +7,6 @@ H5FieldDump *dump_field;
 
 namespace o /* s[o]lvent */
 {
-
-// int       n; /* Quants for flu:: */
-// Particle *pp;
-// Clist *cells;
 flu::Quants q;
 
 flu::TicketZ tz;
