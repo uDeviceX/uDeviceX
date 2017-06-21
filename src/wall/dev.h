@@ -1,5 +1,4 @@
-namespace dev {
-  enum {X, Y, Z};
+enum {X, Y, Z};
 
 __global__ void particle2float4(const Particle *src, const int n, float4 *dst) {
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
@@ -103,8 +102,8 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np, const in
         k_wvel::vell(rw.x, rw.y, rw.z, &vxw, &vyw, &vzw);
         float rnd = l::rnd::d::mean0var1ii(seed, pid, spid);
         float3 strength = force(type, WALL_TYPE,
-				mf3(x ,  y,  z), mf3(rw.x, rw.y, rw.z),
-				mf3(vx, vy, vz), mf3( vxw,  vyw,  vzw), rnd);
+                                mf3(x ,  y,  z), mf3(rw.x, rw.y, rw.z),
+                                mf3(vx, vy, vz), mf3( vxw,  vyw,  vzw), rnd);
         xforce += strength.x; yforce += strength.y; zforce += strength.z;
     }
 #undef zig
@@ -115,4 +114,3 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np, const in
 #undef start_fetch
 #undef wpp_fetch
 }
-} /* namespace k_wall */
