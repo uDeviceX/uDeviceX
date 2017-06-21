@@ -96,6 +96,9 @@ namespace sub {
 }
 
 namespace odstr {
+namespace dev {
+#include "odstr/dev.h"
+}
 namespace sub {
 #include "odstr/hdr.h" /* Fluid class decl */
 #include "odstr/ini.h"
