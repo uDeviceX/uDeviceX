@@ -20,6 +20,6 @@ minmax.o: $S/common.h conf.h $S/m.h $S/minmax.h
 m.o: $S/m.h
 mrescue.o: $S/collision.h $S/common.h conf.h $S/mrescue.h
 rbc/dev0.h: $S/params/rbc.inc0.h
-restart.o: $S/common.h $S/m.h $S/restart.h
+restart.o: $S/common.h $S/conf.common.h conf.h $S/m.h $S/restart.h
 solid.o: $S/common.h $S/conf.common.h conf.h $S/k/solid.h $S/l/gsl.h $S/mesh.h $S/solid.h
 tcells.o: $S/common.h conf.h $S/m.h $S/tcells.h
