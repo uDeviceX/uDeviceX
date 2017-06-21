@@ -69,26 +69,33 @@ void sim_gen() {
 }
 
 void sim_strt() {
-  o::n = ic::gen(o::pp, /*w*/ o::pp_hst);
-  o::cells->build(o::pp, o::n);
-  get_ticketZ(o::pp, o::n, &o::tz);
-  if (rbcs) rbc::gen_quants("rbc.off", "rbcs-ic.txt", /**/ &r::q);
-  MC(MPI_Barrier(m::cart));
-  
   long nsteps = (int)(tend / dt);
-  MSG0("will take %ld steps", nsteps);
-  if (walls || solids) {
-    solids0 = false;  /* global */
-    gen();
+
+  /*Q*/
+  /*** flu::strt(&o::pp, &o::nn); ***/
+  o::cells->build(o::pp, o::n);
+
+  /*** rbc::strt(&r::q); ***/
+  dSync();
+
+  /*** rig::strt(&s::q); ***/
+
+  /*** wall::strt(&w::q); ***/
+
+  /*T*/
+  get_ticketZ(o::pp, o::n, &o::tz);
+  if (walls) wall::gen_ticket(w::q, &w::t);
+  flu::get_ticketZ(o::pp, o::n, &o::tz);
+
+  MC(MPI_Barrier(m::cart));
+  if (walls) {
     dSync();
-    if (walls) wall::gen_ticket(w::q, &w::t);
-    flu::get_ticketZ(o::pp, o::n, &o::tz);
-    solids0 = solids;
-    run(wall_creation, nsteps);
-  } else {
-    solids0 = solids;
-    run(            0, nsteps);
+    sdf::ini();
+    create_walls();
   }
+
+  solids0 = solids;
+  run(wall_creation, nsteps);
 }
 
 }
