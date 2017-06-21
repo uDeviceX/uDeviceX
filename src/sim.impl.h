@@ -3,8 +3,6 @@ namespace sim {
 
 void create_walls() {
     int nold = o::n;
-    dSync();
-    sdf::ini();
     wall::gen_quants(&o::n, o::pp, &w::q);
     wall::gen_ticket(w::q, &w::t);
     MSG("solvent particles survived: %d/%d", o::n, nold);
@@ -26,7 +24,11 @@ void create_solids() {
 }
 
 void freeze() {
-  if (walls) create_walls();
+  if (walls) {
+    dSync();
+    sdf::ini();
+    create_walls();
+  }
   MC(MPI_Barrier(m::cart));
   if (solids) create_solids();
   if (walls && rbcs  )  remove_rbcs();
