@@ -4,7 +4,7 @@ struct TicketD { /* distribution */
     MPI_Request send_size_req[27], recv_size_req[27];
     MPI_Request send_mesg_req[27], recv_mesg_req[27];
     bool first = true;
-    sub::Fluid fluid; /* was odstr; */
+    sub::Distr distr; /* was odstr; */
 };
 
 struct Work {
@@ -16,12 +16,12 @@ struct Work {
 
 void alloc_ticketD(TicketD *t) {
     l::m::Comm_dup(m::cart, &t->cart);
-    t->fluid.ini(t->cart, t->rank);
+    t->distr.ini(t->cart, t->rank);
     t->first = true;
 }
 
 void free_ticketD(/**/ TicketD *t) {
-    t->fluid.fin();
+    t->distr.fin();
 }
 
 void alloc_work(Work *w) {
@@ -64,30 +64,30 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     Particle *pp = q->pp;
   
     int nbulk, nhalo_padded, nhalo;
-    td->fluid.post_recv(cart, rank, /**/ recv_size_req, recv_mesg_req);
+    td->distr.post_recv(cart, rank, /**/ recv_size_req, recv_mesg_req);
     if (n) {
-        td->fluid.halo(pp, n);
-        td->fluid.scan(n);
-        td->fluid.pack(pp, n);
+        td->distr.halo(pp, n);
+        td->distr.scan(n);
+        td->distr.pack(pp, n);
     }
     if (!first) {
-        td->fluid.waitall(send_size_req);
-        td->fluid.waitall(send_mesg_req);
+        td->distr.waitall(send_size_req);
+        td->distr.waitall(send_mesg_req);
     }
     first = false;
-    nbulk = td->fluid.send_sz(cart, rank, send_size_req);
-    td->fluid.send_msg(cart, rank, send_mesg_req);
+    nbulk = td->distr.send_sz(cart, rank, send_size_req);
+    td->distr.send_msg(cart, rank, send_mesg_req);
 
     CC(cudaMemsetAsync(q->cells->count, 0, sizeof(int)*XS*YS*ZS));
     if (n)
     k_common::subindex_local<false><<<k_cnf(n)>>>
         (n, (float2*)pp, /*io*/ q->cells->count, /*o*/ subi_lo);
 
-    td->fluid.waitall(recv_size_req);
-    td->fluid.recv_count(&nhalo_padded, &nhalo);
-    td->fluid.waitall(recv_mesg_req);
+    td->distr.waitall(recv_size_req);
+    td->distr.recv_count(&nhalo_padded, &nhalo);
+    td->distr.waitall(recv_mesg_req);
     if (nhalo)
-    td->fluid.unpack
+    td->distr.unpack
         (nhalo_padded, /*io*/ q->cells->count, /*o*/ subi_re, pp_re);
 
     k_common::compress_counts<<<k_cnf(XS*YS*ZS)>>>

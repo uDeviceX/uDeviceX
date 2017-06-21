@@ -20,7 +20,7 @@ struct Recv {
     float2 *hst_[27];
 };
 
-class Fluid {
+class Distr {
 public:
     void ini(MPI_Comm cart, int rank[]);
     void fin();

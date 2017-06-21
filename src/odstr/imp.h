@@ -1,9 +1,9 @@
-void Fluid::waitall(MPI_Request *reqs) {
+void Distr::waitall(MPI_Request *reqs) {
     MPI_Status statuses[128]; /* big number */
     l::m::Waitall(26, reqs, statuses) ;
 }
 
-void Fluid::post_recv(MPI_Comm cart, int rank[],
+void Distr::post_recv(MPI_Comm cart, int rank[],
                       MPI_Request *size_req, MPI_Request *mesg_req) {
     for(int i = 1, c = 0; i < 27; ++i)
     l::m::Irecv(r.size + i, 1, MPI_INTEGER, rank[i],
@@ -14,22 +14,22 @@ void Fluid::post_recv(MPI_Comm cart, int rank[],
                 950 + r.tags[i] + 333, cart, mesg_req + c++);
 }
 
-void Fluid::halo(Particle *pp, int n) {
+void Distr::halo(Particle *pp, int n) {
     CC(cudaMemset(s.size_dev, 0,  27*sizeof(s.size_dev[0])));
     dev::halo<<<k_cnf(n)>>>(pp, n, /**/ s.iidx, s.size_dev);
 }
 
-void Fluid::scan(int n) {
+void Distr::scan(int n) {
     dev::scan<<<1, 32>>>(n, s.size_dev, /**/ s.strt, s.size_pin->DP);
     dSync();
 }
 
-void Fluid::pack(Particle *pp, int n) {
+void Distr::pack(Particle *pp, int n) {
     dev::pack<<<k_cnf(3*n)>>>((float2*)pp, s.iidx, s.strt, /**/ s.dev);
     dSync();
 }
 
-int Fluid::send_sz(MPI_Comm cart, int rank[], MPI_Request *req) {
+int Distr::send_sz(MPI_Comm cart, int rank[], MPI_Request *req) {
     for(int i = 0; i < 27; ++i) s.size[i] = s.size_pin->D[i];
     for(int i = 1, cnt = 0; i < 27; ++i)
     l::m::Isend(s.size + i, 1, MPI_INTEGER, rank[i],
@@ -37,13 +37,13 @@ int Fluid::send_sz(MPI_Comm cart, int rank[], MPI_Request *req) {
     return s.size[0]; /* `n' bulk */
 }
 
-void Fluid::send_msg(MPI_Comm cart, int rank[], MPI_Request *req) {
+void Distr::send_msg(MPI_Comm cart, int rank[], MPI_Request *req) {
     for(int i = 1, cnt = 0; i < 27; ++i)
     l::m::Isend(s.hst[i], s.size[i] * 6, MPI_FLOAT, rank[i],
                 950 + i + 333, cart, &req[cnt++]);
 }
 
-void Fluid::recv_count(int *nhalo_padded, int *nhalo) {
+void Distr::recv_count(int *nhalo_padded, int *nhalo) {
     int i;
     static int size[27], strt[28], strt_pa[28];
 
@@ -57,7 +57,7 @@ void Fluid::recv_count(int *nhalo_padded, int *nhalo) {
     *nhalo_padded = strt_pa[27];
 }
 
-void Fluid::unpack(int n_pa,
+void Distr::unpack(int n_pa,
                    /*io*/ int *count,
                    /*o*/ uchar4 *subi, Particle *pp_re) {
     /* n_pa: n padded */
@@ -67,7 +67,7 @@ void Fluid::unpack(int n_pa,
          /*o*/ (float2*)pp_re, subi);
 }
 
-void Fluid::cancel_recv(MPI_Request *size_req, MPI_Request *mesg_req) {
+void Distr::cancel_recv(MPI_Request *size_req, MPI_Request *mesg_req) {
     for(int i = 0; i < 26; ++i) l::m::Cancel(size_req + i) ;
     for(int i = 0; i < 26; ++i) l::m::Cancel(mesg_req + i) ;
 }

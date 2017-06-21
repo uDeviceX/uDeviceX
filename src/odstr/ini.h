@@ -1,4 +1,4 @@
-void Fluid::ini(MPI_Comm cart, int rank[])  {
+void Distr::ini(MPI_Comm cart, int rank[])  {
     enum {X, Y, Z};
     s.size_pin = new PinnedHostBuffer4<int>(27);
 
