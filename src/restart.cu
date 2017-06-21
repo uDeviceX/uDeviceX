@@ -8,12 +8,20 @@ namespace restart {
 enum {X, Y, Z};
 
 /* pattern : 
-   sing processor  : strt/code/id.ext
-   mult processors : strt/code/XXX.YYY.ZZZ/id.ext
+   sing processor  : base/strt/code/id.ext
+   mult processors : base/strt/code/XXX.YYY.ZZZ/id.ext
+   base depends on read/write
  */
 #define PATTERN0     "%5d.%s"
-#define PATTERN_SING "strt/%s/"             PATTERN0
-#define PATTERN_MULT "strt/%s/%3d.%3d.%3d/" PATTERN0
+#define PATTERN_SING "%s/strt/%s/"             PATTERN0
+#define PATTERN_MULT "%s/strt/%s/%3d.%3d.%3d/" PATTERN0
+
+/* :TODO: : move this to conf.h */
+#define BASE_STRT_DUMP "."
+#define BASE_STRT_READ "."
+
+#define READ (true)
+#define DUMP (false)
 
 // buff size
 #define BS (256)
@@ -27,10 +35,10 @@ enum {X, Y, Z};
 
 #define CF(f) do {if (f==NULL) ERR("could not open the file\n");} while(0)
 
-void gen_name(const char *code, const int id, const char *ext, /**/ char *name) {
-    if (m::d == 1) CSPR(sprintf(name, PATTERN_SING, code, id, ext));
-    else           CSPR(sprintf(name, PATTERN_MULT, code, m::coords[X], m::coords[Y], m::coords[Z], id, ext));
-}                
+void gen_name(const bool read, const char *code, const int id, const char *ext, /**/ char *name) {
+    if (m::d == 1) CSPR(sprintf(name, PATTERN_SING, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, id, ext));
+    else           CSPR(sprintf(name, PATTERN_MULT, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, m::coords[X], m::coords[Y], m::coords[Z], id, ext));
+}
 
 namespace bopwrite {
 void header(const char *bop, const char *rel, const long n) {
@@ -66,8 +74,8 @@ void data(const char *name, const long n, Particle *pp) {
 
 void write_pp(const char *code, const int id, const Particle *pp, const long n) {
     char bop[BS] = {0}, rel[BS] = {0}, val[BS] = {0};
-    gen_name(code, id, "bop"   , /**/ bop);
-    gen_name(code, id, "values", /**/ val);
+    gen_name(DUMP, code, id, "bop"   , /**/ bop);
+    gen_name(DUMP, code, id, "values", /**/ val);
 
     CSPR(sprintf(rel, PATTERN0, id, "values"));
     
@@ -78,8 +86,8 @@ void write_pp(const char *code, const int id, const Particle *pp, const long n) 
 void read_pp(const char *code, const int id, Particle *pp, int *n) {
     long np = 0;
     char bop[BS] = {0}, val[BS] = {0};
-    gen_name(code, id, "bop"   , /**/ bop);
-    gen_name(code, id, "values", /**/ val);
+    gen_name(READ, code, id, "bop"   , /**/ bop);
+    gen_name(READ, code, id, "values", /**/ val);
     
     bopread::header(bop, &np);
     bopread::data(val, np, pp);
@@ -88,7 +96,7 @@ void read_pp(const char *code, const int id, Particle *pp, int *n) {
 
 void write_ss(const char *code, const int id, const Solid *ss, const long n) {
     char fname[BS] = {0};
-    gen_name(code, id, "solid", /**/ fname);
+    gen_name(DUMP, code, id, "solid", /**/ fname);
         
     FILE *f = fopen(fname, "r"); CF(f);
     fprintf(f, "%ld\n", n);
@@ -99,7 +107,7 @@ void write_ss(const char *code, const int id, const Solid *ss, const long n) {
 void read_ss(const char *code, const int id, Solid *ss, int *n) {
     long ns = 0;
     char fname[BS] = {0};
-    gen_name(code, id, "solid", /**/ fname);
+    gen_name(READ, code, id, "solid", /**/ fname);
     
     FILE *f = fopen(fname, "r"); CF(f);
     fscanf(f, "%ld\n", &ns);
@@ -108,5 +116,8 @@ void read_ss(const char *code, const int id, Solid *ss, int *n) {
 
     *n = ns;
 }
+
+#undef READ
+#undef DUMP
 
 } // namespace restart
