@@ -71,7 +71,7 @@ void sim_strt() {
   long nsteps = (int)(tend / dt);
 
   /*Q*/
-  /*** flu::strt(&o::q.pp, &o::q.nn); ***/
+  /*** flu::strt(&o::q); ***/
   o::q.cells->build(/* io */ o::q.pp, o::q.n);
 
   /*** rbc::strt(&r::q); ***/
