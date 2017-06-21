@@ -86,19 +86,23 @@ namespace strt {
 }
 
 namespace flu {
-namespace sub {
-#include "flu/dev/zip.h"
-#include "flu/dev/fluid.h"
-#include "flu/hdr.h" /* Fluid class decl */
-
-#include "flu/ini.h"
-#include "flu/imp.h" /* Fluid class impl */
-#include "flu/fin.h"
+namespace dev {
+#include "flu/dev.h"
 }
-namespace ic {
-#include "flu/ic.h"
+namespace sub {
+#include "flu/imp.h"
 }
 #include "flu/int.h"
+}
+
+namespace odstr {
+namespace sub {
+#include "odstr/hdr.h" /* Fluid class decl */
+#include "odstr/ini.h"
+#include "odstr/imp.h" /* Fluid class impl */
+#include "odstr/fin.h"
+}
+#include "odstr/int.h"
 }
 
 #include "k/fsi.h"
