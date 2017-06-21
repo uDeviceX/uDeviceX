@@ -16,12 +16,11 @@ void ini() {
     wall::alloc_quants(&w::q);
     wall::alloc_ticket(&w::t);
 
-    o::cells   = new Clist(XS, YS, ZS);
+    flu::alloc_quants(&o::q);
     flu::alloc_ticketD(&o::td);
     flu::alloc_ticketZ(&o::tz);
     flu::alloc_work(&o::w);
 
-    mpDeviceMalloc(&o::pp);
     mpDeviceMalloc(&o::ff);
 
     if (solids) {
