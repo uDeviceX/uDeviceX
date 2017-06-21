@@ -1,5 +1,5 @@
 struct Quants {
-    Particle *pp;
+    Particle *pp, *pp0;
     int       n;
     Clist *cells;
     Particle *pp_hst;
@@ -30,12 +30,14 @@ struct Work {
 void alloc_quants(Quants *q) {
     q->n = 0;
     mpDeviceMalloc(&q->pp);
+    mpDeviceMalloc(&q->pp0);
     q->cells = new Clist(XS, YS, ZS);
     q->pp_hst = new Particle[MAX_PART_NUM];
 }
 
 void free_quants(Quants *q) {
     CC(cudaFree(q->pp));
+    CC(cudaFree(q->pp0));
     delete q->cells;
     delete[] q->pp_hst;
 }
