@@ -53,7 +53,7 @@ void gen_quants(const char *r_templ, const char *r_state, Quants *q) {
 }
 
 void strt_quants(const int id, Quants *q) {
-    ic::setup_from_strt(id, q->nv, /**/ q->pp, &q->nc, &q->n);
+    ic::setup_from_strt(id, q->nv, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
 }
 
 void gen_ticket(const Quants q, TicketT *t) {
