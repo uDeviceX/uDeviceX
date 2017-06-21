@@ -8,10 +8,10 @@ void create_walls() {
 }
 
 void create_solids() {
-  cD2H(o::q.pp_hst, o::q.pp, o::q.n);
-  rig::gen_quants(/*io*/ o::q.pp_hst, &o::q.n, /**/ &s::q);
+  cD2H(o::pp_hst, o::q.pp, o::q.n);
+  rig::gen_quants(/*io*/ o::pp_hst, &o::q.n, /**/ &s::q);
   MC(l::m::Barrier(m::cart));
-  cH2D(o::q.pp, o::q.pp_hst, o::q.n);
+  cH2D(o::q.pp, o::pp_hst, o::q.n);
   MC(l::m::Barrier(m::cart));
   MSG("created %d solids.", s::q.ns);
 }
@@ -42,7 +42,7 @@ void gen() { /* generate */
 }
 
 void sim_gen() {
-  o::q.n = ic::gen(o::q.pp, /*w*/ o::q.pp_hst);
+  o::q.n = ic::gen(o::q.pp, /*w*/ o::pp_hst);
   o::q.cells->build(o::q.pp, o::q.n);
   get_ticketZ(o::q.pp, o::q.n, &o::tz);
   if (rbcs) {
