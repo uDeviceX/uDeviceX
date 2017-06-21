@@ -66,5 +66,5 @@ void parts(const Particle *pp, const long n, const char *name, const int step) {
     MC( MPI_File_close(&f) );
 }
 
-#undef PATTREN
+#undef PATTERN
 }
