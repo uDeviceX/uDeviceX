@@ -3,7 +3,7 @@ namespace sim {
 void step(float driving_force0, bool wall0, int it) {
   assert(o::q.n <= MAX_PART_NUM);
   assert(r::q.n <= MAX_PART_NUM);
-  flu::distr(&o::q.pp, &o::q.n, o::q.cells, &o::td, &o::tz, &o::w);
+  flu::distr(&o::q, &o::td, &o::tz, &o::w);
   if (solids0) distr_solid();
   if (rbcs)    distr_rbc();
   forces(wall0);
