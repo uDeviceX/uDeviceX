@@ -11,8 +11,6 @@ void create_solids() {
   cD2H(o::pp_hst, o::pp, o::n);
   rig::gen_quants(/*io*/ o::pp_hst, &o::n, /**/ &s::q);
   MC(l::m::Barrier(m::cart));
-  rig::cpy_H2D(s::q);
-  
   cH2D(o::pp, o::pp_hst, o::n);
   MC(l::m::Barrier(m::cart));
   MSG("created %d solids.", s::q.ns);

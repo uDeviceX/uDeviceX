@@ -101,18 +101,19 @@ void free_ticket(TicketBB *t) {
     delete[] t->ss_dmp;
 }
 
+static void cpy_H2D(Quants q) {
+    cH2D(q.i_pp, q.i_pp_hst, q.ns * q.m_hst.nv);
+    cH2D(q.ss,   q.ss_hst,   q.ns);
+    cH2D(q.rr0,  q.rr0_hst,  q.nps * 3);
+    cH2D(q.pp,   q.pp_hst,   q.n);
+}
+
 void gen_quants(Particle *opp, int *on, Quants *q) {
     sub::load_solid_mesh("mesh_solid.ply", /**/ &q->m_dev, &q->m_hst);
     sub::gen_from_solvent(q->m_hst, /**/ opp, on, /**/ &q->ns, &q->nps, &q->n, q->rr0_hst, q->ss_hst, q->pp_hst);
     sub::gen_pp_hst(q->ns, q->rr0_hst, q->nps, /**/ q->ss_hst, q->pp_hst);
     sub::gen_ipp_hst(q->ss_hst, q->ns, q->m_hst, /**/ q->i_pp_hst);
-}
-
-void cpy_H2D(Quants q) {
-    cH2D(q.i_pp, q.i_pp_hst, q.ns * q.m_hst.nv);
-    cH2D(q.ss,   q.ss_hst,   q.ns);
-    cH2D(q.rr0,  q.rr0_hst,  q.nps * 3);
-    cH2D(q.pp,   q.pp_hst,   q.n);
+    cpy_H2D(*q);
 }
 
 void set_ids(Quants q) {
