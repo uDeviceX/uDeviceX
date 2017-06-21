@@ -43,9 +43,6 @@ void gen() { /* generate */
   }
   freeze();
   clear_velocity();
-  dSync();
-  if (walls) wall::gen_ticket(w::q, &w::t);
-  flu::get_ticketZ(o::pp, o::n, &o::tz);
 }
 
 void sim() {
@@ -61,6 +58,8 @@ void sim() {
     solids0 = false;  /* global */
     gen();
     dSync();
+    if (walls) wall::gen_ticket(w::q, &w::t);
+    flu::get_ticketZ(o::pp, o::n, &o::tz);
     solids0 = solids;
     run(wall_creation, nsteps);
   } else {
