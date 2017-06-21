@@ -90,8 +90,10 @@ void setup_from_strt(const int id, /**/ Particle *pp, int *nc, int *n, /*w*/ Par
     if (*n) cH2D(pp, pp_hst, *n);
 }
 
-void strt_dump(const int id, const int n, const Particle *pp) {
+void strt_dump(const int id, const int n, const Particle *pp, /*w*/ Particle *pp_hst) {
+    if (n) cD2H(pp_hst, pp, n);
 
+    restart::write("rbc", id, pp_hst, n);
 }
 
 #undef md
