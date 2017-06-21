@@ -49,7 +49,7 @@ void sim() {
   o::n = ic::gen(o::pp, /*w*/ o::pp_hst);
   o::cells->build(o::pp, o::n);
   get_ticketZ(o::pp, o::n, &o::tz);
-  if (rbcs) rbc::setup_from_pos("rbc.off", "rbcs-ic.txt", /**/ &r::q);
+  if (rbcs) rbc::gen_quants("rbc.off", "rbcs-ic.txt", /**/ &r::q);
   MC(MPI_Barrier(m::cart));
   
   long nsteps = (int)(tend / dt);
