@@ -1,5 +1,6 @@
 namespace sim {
 void ini();
-void sim();
+void sim_gen();
+void sim_strt();  
 void fin();
 }

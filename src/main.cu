@@ -29,9 +29,8 @@ int main(int argc, char **argv) {
     CC(cudaSetDevice(device));
   
     glb::sim(); /* simulation level globals */
-
     sim::ini();
-    sim::sim();
+    sim::sim_gen();
     sim::fin();
   
     MC(l::m::Finalize());
