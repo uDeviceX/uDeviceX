@@ -48,3 +48,7 @@ void get_ticketZ(Quants q, /**/ TicketZ *t) {
 void gen_quants(Quants *q) {
     q->n = sub::gen(q->pp, q->pp_hst);
 }
+
+void strt_quants(const int id, Quants *q) {
+    q->n = sub::strt(id, q->pp, q->pp_hst);
+}

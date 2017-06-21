@@ -31,3 +31,10 @@ int gen(Particle *dev, /*w*/ Particle *hst) {
     cH2D(dev, hst, n);
     return n;
 }
+
+int strt(const int id, Particle *dev, /*w*/ Particle *hst) {
+    int n;
+    restart::read_pp("flu", id, hst, &n);
+    if (n) cH2D(dev, hst, n);
+    return n;
+}
