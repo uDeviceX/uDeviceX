@@ -12,9 +12,8 @@ flu::Quants q;
 flu::TicketZ tz;
 flu::TicketD td;
 flu::Work w;
-Force    *ff;
 
-Particle  pp_hst[MAX_PART_NUM]; /* solvent on host           */
+Force    *ff;
 Force     ff_hst[MAX_PART_NUM]; /* solvent forces on host    */
 }
 

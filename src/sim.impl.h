@@ -8,10 +8,10 @@ void create_walls() {
 }
 
 void create_solids() {
-  cD2H(o::pp_hst, o::q.pp, o::q.n);
-  rig::gen_quants(/*io*/ o::pp_hst, &o::q.n, /**/ &s::q);
+  cD2H(o::q.pp_hst, o::q.pp, o::q.n);
+  rig::gen_quants(/*io*/ o::q.pp_hst, &o::q.n, /**/ &s::q);
   MC(l::m::Barrier(m::cart));
-  cH2D(o::q.pp, o::pp_hst, o::q.n);
+  cH2D(o::q.pp, o::q.pp_hst, o::q.n);
   MC(l::m::Barrier(m::cart));
   MSG("created %d solids.", s::q.ns);
 }

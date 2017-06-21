@@ -11,8 +11,8 @@ void dev2hst() { /* device to host  data transfer */
 }
 
 void dump_part(int step) {
-  cD2H(o::pp_hst, o::q.pp, o::q.n);
-  dump::parts(o::pp_hst, o::q.n, "solvent", step);
+  cD2H(o::q.pp_hst, o::q.pp, o::q.n);
+  dump::parts(o::q.pp_hst, o::q.n, "solvent", step);
 
   if(solids0) {
     cD2H(s::q.pp_hst, s::q.pp, s::q.n);
