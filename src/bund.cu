@@ -163,4 +163,5 @@ namespace ic {
 #undef HST
 #undef DEV
 #include "sim/update.h"
+#include "sim/step.h"
 #include "sim.impl.h"
