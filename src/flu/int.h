@@ -50,5 +50,5 @@ void gen_quants(Quants *q) {
 }
 
 void strt_quants(const int id, Quants *q) {
-    q->n = sub::strt(id, q->pp, q->pp_hst);
+    q->n = sub::strt(id, q->pp, /* w */ q->pp_hst);
 }
