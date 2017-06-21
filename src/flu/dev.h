@@ -1,7 +1,7 @@
 __global__ void zip(float4 *__restrict zip0,
-		    ushort4 *__restrict zip1,
-		    const float *__restrict pp,
-		    const uint n) {
+                    ushort4 *__restrict zip1,
+                    const float *__restrict pp,
+                    const uint n) {
     extern __shared__ volatile float smem[];
 
     uint warpid = threadIdx.x / 32;
