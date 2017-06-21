@@ -38,3 +38,8 @@ int strt(const int id, Particle *dev, /*w*/ Particle *hst) {
     if (n) cH2D(dev, hst, n);
     return n;
 }
+
+void strt_dump(const int id, const int n, const Particle *dev, Particle *hst) {
+    if (n) cD2H(hst, dev, n);
+    restart::write_pp("flu", id, hst, n);
+}
