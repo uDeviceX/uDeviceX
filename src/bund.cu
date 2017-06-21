@@ -96,10 +96,10 @@ namespace sub {
 }
 
 namespace odstr {
+namespace sub {
 namespace dev {
 #include "odstr/dev.h"
 }
-namespace sub {
 #include "odstr/hdr.h" /* Fluid class decl */
 #include "odstr/ini.h"
 #include "odstr/imp.h" /* Fluid class impl */
