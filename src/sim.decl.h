@@ -9,8 +9,8 @@ namespace o /* s[o]lvent */
 {
 flu::Quants q;
 flu::TicketZ tz;
-flu::TicketD td;
-flu::Work w;
+odstr::TicketD td;
+odstr::Work w;
 
 Force    *ff;
 Force     ff_hst[MAX_PART_NUM]; /* solvent forces on host    */

@@ -17,9 +17,11 @@ void ini() {
     wall::alloc_ticket(&w::t);
 
     flu::alloc_quants(&o::q);
-    flu::alloc_ticketD(&o::td);
     flu::alloc_ticketZ(&o::tz);
-    flu::alloc_work(&o::w);
+
+    odstr::alloc_ticketD(&o::td);
+    odstr::alloc_work(&o::w);
+    
 
     mpDeviceMalloc(&o::ff);
 

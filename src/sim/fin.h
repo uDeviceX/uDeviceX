@@ -18,8 +18,9 @@ void fin() {
 
     flu::free_quants(&o::q);
     flu::free_ticketZ(&o::tz);
-    flu::free_ticketD(&o::td);
-    flu::free_work(&o::w);
+
+    odstr::free_ticketD(&o::td);
+    odstr::free_work(&o::w);
 
     if (solids) {
         rig::free_quants(&s::q);
