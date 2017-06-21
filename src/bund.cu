@@ -86,10 +86,10 @@ namespace strt {
 }
 
 namespace flu {
+namespace sub {
 namespace dev {
 #include "flu/dev.h"
 }
-namespace sub {
 #include "flu/imp.h"
 }
 #include "flu/int.h"

@@ -42,7 +42,7 @@ void get_ticketZ(Quants q, /**/ TicketZ *t) {
     float4  *zip0 = t->zip0;
     ushort4 *zip1 = t->zip1;
     assert(sizeof(Particle) == 6 * sizeof(float)); /* :TODO: implicit dependency */
-    dev::zip<<<(q.n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>(zip0, zip1, (float*)q.pp, q.n);
+    sub::dev::zip<<<(q.n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>(zip0, zip1, (float*)q.pp, q.n);
 }
 
 void gen_quants(Quants *q) {
