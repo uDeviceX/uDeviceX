@@ -1,4 +1,3 @@
-namespace dev {
 /* which neighboring subdomain `p' belongs to? */
  __device__ int box(Particle *p) {
    enum {X, Y, Z};
@@ -202,4 +201,3 @@ __global__ void gather(float2  *pp_lo, float2  *pp_re, int n, uint *iidx,
 				    0);
   k_common::write_AOS6f(pp + 3 * base, nsrc, d0, d1, d2);
 }
-} /* namespace dev */
