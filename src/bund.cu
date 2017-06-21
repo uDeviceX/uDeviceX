@@ -164,4 +164,5 @@ namespace ic {
 #undef DEV
 #include "sim/update.h"
 #include "sim/step.h"
+#include "sim/run.h"
 #include "sim.impl.h"

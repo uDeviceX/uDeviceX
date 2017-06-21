@@ -12,13 +12,6 @@ void create_walls() {
     flu::get_ticketZ(o::pp, o::n, &o::tz);
 }
 
-void run_eq(long te) { /* equilibrate */
-  long it;
-  float driving_force0 = 0;
-  bool wall0 = false;
-  for (it = 0; it < te; ++it) step(driving_force0, wall0, it);
-}
-
 void create_solids() {
   cD2H(o::pp_hst, o::pp, o::n);
   rig::create(/*io*/ o::pp_hst, &o::n, /**/ &s::q);
@@ -42,13 +35,6 @@ void freeze() {
   if (o::n)             k_sim::clear_velocity<<<k_cnf(o::n)>>>(o::pp, o::n);  
   if (solids && s::q.n) k_sim::clear_velocity<<<k_cnf(s::q.n)>>>(s::q.pp, s::q.n);
   if (rbcs   && r::q.n) k_sim::clear_velocity<<<k_cnf(r::q.n)>>>(r::q.pp, r::q.n);
-}
-
-void run(long ts, long te) {
-  /* ts, te: time start and end */
-  long it;
-  float driving_force0 = pushflow ? driving_force : 0;
-  for (it = ts; it < te; ++it) step(driving_force0, walls, it);
 }
 
 void gen() { /* generate */
