@@ -40,7 +40,7 @@ void free_work(Work *w) {
   CC(cudaFree(w->count_zip));
 }
 
-void distr(Quants *q, TicketD *td, TicketZ *tz, Work *w) {
+void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
   MPI_Comm cart = td->cart; /* can be a copy */
   int *rank = td->rank; /* arrays */
   int *send_size_req = td->send_size_req;
