@@ -8,7 +8,6 @@ H5FieldDump *dump_field;
 namespace o /* s[o]lvent */
 {
 flu::Quants q;
-
 flu::TicketZ tz;
 flu::TicketD td;
 flu::Work w;
