@@ -5,7 +5,7 @@ void update_solid() {
 
 void update_solvent() {
     float mass = 1;
-    if (o::n) k_sim::update<<<k_cnf(o::n)>>> (mass, o::pp, o::ff, o::n);
+    if (o::q.n) k_sim::update<<<k_cnf(o::q.n)>>> (mass, o::q.pp, o::ff, o::q.n);
 }
 
 void update_rbc() {
@@ -14,7 +14,7 @@ void update_rbc() {
 }
 
 void bounce() {
-    if (o::n) k_sdf::bounce<<<k_cnf(o::n)>>>((float2*)o::pp, o::n);
+    if (o::q.n) k_sdf::bounce<<<k_cnf(o::q.n)>>>((float2*)o::q.pp, o::q.n);
     //if (rbcs && r::n) k_sdf::bounce<<<k_cnf(r::n)>>>((float2*)r::pp, r::n);
 }
 }

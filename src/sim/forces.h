@@ -1,6 +1,6 @@
 namespace sim {
 void body_force(float driving_force0) {
-    k_sim::body_force<<<k_cnf(o::n)>>> (1, o::pp, o::ff, o::n, driving_force0);
+    k_sim::body_force<<<k_cnf(o::q.n)>>> (1, o::q.pp, o::ff, o::q.n, driving_force0);
 
     if (solids0 && s::q.n)
     k_sim::body_force<<<k_cnf(s::q.n)>>> (solid_mass, s::q.pp, s::ff, s::q.n, driving_force0);
@@ -14,12 +14,12 @@ void forces_rbc() {
 }
 
 void forces_dpd() {
-    dpd::pack(o::pp, o::n, o::cells->start, o::cells->count);
+    dpd::pack(o::q.pp, o::q.n, o::q.cells->start, o::q.cells->count);
     /* :TODO: breaks a contract with hiwi */
-    dpd::flocal(o::tz.zip0, o::tz.zip1, o::n, o::cells->start, o::cells->count, /**/ o::ff);
-    dpd::post(o::pp, o::n);
+    dpd::flocal(o::tz.zip0, o::tz.zip1, o::q.n, o::q.cells->start, o::q.cells->count, /**/ o::ff);
+    dpd::post(o::q.pp, o::q.n);
     dpd::recv();
-    dpd::fremote(o::n, o::ff);
+    dpd::fremote(o::q.n, o::ff);
 }
 
 void clear_forces(Force* ff, int n) {
@@ -27,7 +27,7 @@ void clear_forces(Force* ff, int n) {
 }
 
 void forces_wall() {
-    if (o::n)              wall::interactions(w::q, w::t, SOLVENT_TYPE, o::pp, o::n,   /**/ o::ff);
+    if (o::q.n)            wall::interactions(w::q, w::t, SOLVENT_TYPE, o::q.pp, o::q.n,   /**/ o::ff);
     if (solids0 && s::q.n) wall::interactions(w::q, w::t, SOLID_TYPE, s::q.pp, s::q.n, /**/ s::ff);
     if (rbcs && r::q.n)    wall::interactions(w::q, w::t, SOLID_TYPE, r::q.pp, r::q.n, /**/ r::ff);
 }
@@ -43,12 +43,12 @@ void forces_fsi(SolventWrap *w_s, std::vector<ParticlesWrap> *w_r) {
 }
 
 void forces(bool wall0) {
-    SolventWrap w_s(o::pp, o::n, o::ff, o::cells->start, o::cells->count);
+    SolventWrap w_s(o::q.pp, o::q.n, o::ff, o::q.cells->start, o::q.cells->count);
     std::vector<ParticlesWrap> w_r;
     if (solids0) w_r.push_back(ParticlesWrap(s::q.pp, s::q.n, s::ff));
     if (rbcs   ) w_r.push_back(ParticlesWrap(r::q.pp, r::q.n, r::ff));
 
-    clear_forces(o::ff, o::n);
+    clear_forces(o::ff, o::q.n);
     if (solids0) clear_forces(s::ff, s::q.n);
     if (rbcs)    clear_forces(r::ff, r::q.n);
 

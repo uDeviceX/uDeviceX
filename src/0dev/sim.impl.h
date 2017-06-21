@@ -36,10 +36,10 @@ void bounce_solid(int it) {
 
     build_tcells_dev(s::q.m_dev, s::t.i_pp, nsbb, /**/ s::t.tcs_dev, s::t.tcc_dev, s::t.tci_dev);
 
-    mbounce::bounce_tcells_dev(o::ff, s::q.m_dev, s::t.i_pp, s::t.tcs_dev, s::t.tcc_dev, s::t.tci_dev, o::n, /**/ o::pp, s::t.ss);
+    mbounce::bounce_tcells_dev(o::ff, s::q.m_dev, s::t.i_pp, s::t.tcs_dev, s::t.tcc_dev, s::t.tci_dev, o::q.n, /**/ o::q.pp, s::t.ss);
 
     if (it % rescue_freq == 0)
-    mrescue::rescue_dev(s::q.m_dev, s::t.i_pp, nsbb, o::n, s::t.tcs_dev, s::t.tcc_dev, s::t.tci_dev, /**/ o::pp);
+    mrescue::rescue_dev(s::q.m_dev, s::t.i_pp, nsbb, o::q.n, s::t.tcs_dev, s::t.tcc_dev, s::t.tci_dev, /**/ o::q.pp);
 
     // send back fo, to
 

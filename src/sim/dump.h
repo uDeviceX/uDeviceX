@@ -1,7 +1,7 @@
 namespace sim {
 void dev2hst() { /* device to host  data transfer */
     int start = 0;
-    cD2H(a::pp_hst + start, o::pp, o::n); start += o::n;
+    cD2H(a::pp_hst + start, o::q.pp, o::q.n); start += o::q.n;
     if (solids0) {
         cD2H(a::pp_hst + start, s::q.pp, s::q.n); start += s::q.n;
     }
@@ -11,8 +11,8 @@ void dev2hst() { /* device to host  data transfer */
 }
 
 void dump_part(int step) {
-  cD2H(o::pp_hst, o::pp, o::n);
-  dump::parts(o::pp_hst, o::n, "solvent", step);
+  cD2H(o::pp_hst, o::q.pp, o::q.n);
+  dump::parts(o::pp_hst, o::q.n, "solvent", step);
 
   if(solids0) {
     cD2H(s::q.pp_hst, s::q.pp, s::q.n);
@@ -27,8 +27,8 @@ void dump_rbcs() {
 }
 
 void dump_grid() {
-  cD2H(a::pp_hst, o::pp, o::n);
-  dump_field->dump(a::pp_hst, o::n);
+  cD2H(a::pp_hst, o::q.pp, o::q.n);
+  dump_field->dump(a::pp_hst, o::q.n);
 }
 
 void dump_diag_after(int it) { /* after wall */
@@ -37,7 +37,7 @@ void dump_diag_after(int it) { /* after wall */
 }
 
 void diag(int it) {
-    int n = o::n + s::q.n + r::q.n; dev2hst();
+    int n = o::q.n + s::q.n + r::q.n; dev2hst();
     diagnostics(a::pp_hst, n, it);
 }
 

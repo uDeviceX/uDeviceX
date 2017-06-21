@@ -2,16 +2,16 @@ namespace sim {
 /* see bund.cu for more sim:: functions */
 
 void create_walls() {
-  int nold = o::n;
-  wall::gen_quants(&o::n, o::pp, &w::q); o::cells->build(o::pp, o::n);
-  MSG("solvent particles survived: %d/%d", o::n, nold);
+  int nold = o::q.n;
+  wall::gen_quants(&o::q.n, o::q.pp, &w::q); o::q.cells->build(o::q.pp, o::q.n);
+  MSG("solvent particles survived: %d/%d", o::q.n, nold);
 }
 
 void create_solids() {
-  cD2H(o::pp_hst, o::pp, o::n);
-  rig::gen_quants(/*io*/ o::pp_hst, &o::n, /**/ &s::q);
+  cD2H(o::q.pp_hst, o::q.pp, o::q.n);
+  rig::gen_quants(/*io*/ o::q.pp_hst, &o::q.n, /**/ &s::q);
   MC(l::m::Barrier(m::cart));
-  cH2D(o::pp, o::pp_hst, o::n);
+  cH2D(o::q.pp, o::q.pp_hst, o::q.n);
   MC(l::m::Barrier(m::cart));
   MSG("created %d solids.", s::q.ns);
 }
@@ -25,7 +25,7 @@ void freeze() {
 }
 
 void clear_velocity() {
-  if (o::n)             k_sim::clear_velocity<<<k_cnf(o::n)>>>(o::pp, o::n);  
+  if (o::q.n)           k_sim::clear_velocity<<<k_cnf(o::q.n)>>>(o::q.pp, o::q.n);  
   if (solids && s::q.n) k_sim::clear_velocity<<<k_cnf(s::q.n)>>>(s::q.pp, s::q.n);
   if (rbcs   && r::q.n) k_sim::clear_velocity<<<k_cnf(r::q.n)>>>(r::q.pp, r::q.n);
 }
@@ -42,9 +42,9 @@ void gen() { /* generate */
 }
 
 void sim_gen() {
-  o::n = ic::gen(o::pp, /*w*/ o::pp_hst);
-  o::cells->build(o::pp, o::n);
-  get_ticketZ(o::pp, o::n, &o::tz);
+  o::q.n = ic::gen(o::q.pp, /*w*/ o::q.pp_hst);
+  o::q.cells->build(o::q.pp, o::q.n);
+  get_ticketZ(o::q.pp, o::q.n, &o::tz);
   if (rbcs) {
       rbc::gen_quants("rbc.off", "rbcs-ic.txt", /**/ &r::q);
       rbc::gen_ticket(r::q, &r::tt);
@@ -58,7 +58,7 @@ void sim_gen() {
     gen();
     dSync();
     if (walls) wall::gen_ticket(w::q, &w::t);
-    flu::get_ticketZ(o::pp, o::n, &o::tz);
+    flu::get_ticketZ(o::q.pp, o::q.n, &o::tz);
     solids0 = solids;
     run(wall_creation, nsteps);
   } else {
@@ -71,8 +71,8 @@ void sim_strt() {
   long nsteps = (int)(tend / dt);
 
   /*Q*/
-  /*** flu::strt(&o::pp, &o::nn); ***/
-  o::cells->build(/* io */ o::pp, o::n);
+  /*** flu::strt(&o::q.pp, &o::q.nn); ***/
+  o::q.cells->build(/* io */ o::q.pp, o::q.n);
 
   /*** rbc::strt(&r::q); ***/
   dSync();
@@ -82,9 +82,9 @@ void sim_strt() {
   /*** wall::strt(&w::q); ***/
 
   /*T*/
-  get_ticketZ(o::pp, o::n, &o::tz);
+  get_ticketZ(o::q.pp, o::q.n, &o::tz);
   if (walls) wall::gen_ticket(w::q, &w::t);
-  flu::get_ticketZ(o::pp, o::n, &o::tz);
+  flu::get_ticketZ(o::q.pp, o::q.n, &o::tz);
 
   MC(MPI_Barrier(m::cart));
   if (walls) {
