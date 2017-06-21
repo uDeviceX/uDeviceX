@@ -37,3 +37,20 @@ void set_ids(const int ns, Solid *ss_hst, Solid *ss_dev) {
     ic::set_ids(ns, ss_hst);
     if (ns) cH2D(ss_dev, ss_hst, ns);
 }
+
+static void rr2pp(const float *rr, const int n, Particle *pp) {
+    for (int i = 0; i < n; ++i)
+    for (int c = 0; c < 3; ++c) {
+        pp[i].r[c] = rr[3*i + c];
+        pp[i].v[c] = 0;
+    }
+}
+
+void strt_dump_templ(const int nps, const float *rr0_hst) {
+    Particle *pp = new Particle[nps];
+    rr2pp(rr0_hst, nps, pp);
+
+    restart::write_pp("rig_templ", 0, pp, nps);
+    
+    delete[] pp;
+}

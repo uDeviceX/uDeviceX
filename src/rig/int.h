@@ -124,3 +124,10 @@ void set_ids(Quants q) {
     sub::set_ids(q.ns, q.ss_hst, q.ss);
 }
 
+void strt_dump_templ(const Quants q) {
+    sub::strt_dump_templ(q.nps, q.rr0_hst);
+}
+
+void strt_dump(const int id, const Quants q) {
+    //sub::strt_dump(id, q.n, q.pp, /*w*/ q.pp_hst);
+}
