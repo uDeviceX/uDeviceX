@@ -40,6 +40,20 @@ void diag(int it) {
     diagnostics(a::pp_hst, n, it);
 }
 
+void dump_strt_templ() { /* template dumps (wall, solid) */
+    if (strt_dumps) {
+        if (walls) wall::strt_dump_templ(w::q);
+        if (solids) rig::strt_dump_templ(s::q);
+    }
+}
+
+void dump_strt(int it) {
+    const int id = it / strt_freq;
+    flu::strt_dump(id, o::q);
+    if (rbcs)   rbc::strt_dump(id, r::q);
+    if (solids) rig::strt_dump(id, s::q);
+}
+
 void dump_diag0(int it) { /* generic dump */
     if (it % part_freq  == 0) {
         if (part_dumps) dump_part(it);
@@ -47,5 +61,5 @@ void dump_diag0(int it) { /* generic dump */
         diag(it);
     }
     if (field_dumps && it % field_freq == 0) dump_grid();
+    if (strt_dumps  && it % strt_freq == 0)  dump_strt(it);
 }
-

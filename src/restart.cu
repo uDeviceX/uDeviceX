@@ -17,7 +17,7 @@ enum {X, Y, Z};
 #define PF_ID     "%5d.%s"
 #define PF_TM     "templ.%s"
 #define DIR_S "%s/strt/%s/"             
-#define DIR_M "%s/strt/%s/%3d.%3d.%3d/"
+#define DIR_M "%s/strt/%s/%03d.%03d.%03d/"
 
 #define READ (true)
 #define DUMP (false)
@@ -32,17 +32,17 @@ enum {X, Y, Z};
         ERR("Buffer too small to handle this format\n");    \
     } while (0)
 
-#define CF(f) do {if (f==NULL) ERR("could not open the file\n");} while(0)
+#define CF(f, fname) do {if (f==NULL) ERR("could not open the file <%s>\n", fname);} while(0)
 
 void gen_name(const bool read, const char *code, const int id, const char *ext, /**/ char *name) {
     if (id >= 0) {
-        if (m::d == 1)
+        if (m::size == 1)
         CSPR(sprintf(name, DIR_S PF_ID, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, id, ext));
         else
         CSPR(sprintf(name, DIR_M PF_ID, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, m::coords[X], m::coords[Y], m::coords[Z], id, ext));
     }
     else {
-        if (m::d == 1)
+        if (m::size == 1)
         CSPR(sprintf(name, DIR_S PF_TM, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, ext));
         else
         CSPR(sprintf(name, DIR_M PF_TM, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, m::coords[X], m::coords[Y], m::coords[Z], ext));
@@ -51,7 +51,7 @@ void gen_name(const bool read, const char *code, const int id, const char *ext, 
 
 namespace bopwrite {
 void header(const char *bop, const char *rel, const long n) {
-    FILE *f = fopen(bop, "w"); CF(f);
+    FILE *f = fopen(bop, "w"); CF(f, bop);
     
     fprintf(f, "%ld\n", n);
     fprintf(f, "DATA_FILE: %s\n", rel);
@@ -61,7 +61,7 @@ void header(const char *bop, const char *rel, const long n) {
 }
 
 void data(const char *val, const Particle *pp, const long n) {
-    FILE *f = fopen(val, "w"); CF(f);
+    FILE *f = fopen(val, "w"); CF(f, val);
     fwrite((float *) pp, sizeof(float), sizeof(Particle)/sizeof(float) * n, f);
     fclose(f);
 }
@@ -69,13 +69,13 @@ void data(const char *val, const Particle *pp, const long n) {
 
 namespace bopread {
 void header(const char *name, long *n) {
-    FILE *f = fopen(name, "r"); CF(f);
+    FILE *f = fopen(name, "r"); CF(f, name);
     if (fscanf(f, "%ld\n", n) != 1) ERR("wrong format\n");
     fclose(f);
 }
 
 void data(const char *name, const long n, Particle *pp) {
-    FILE *f = fopen(name, "r"); CF(f);
+    FILE *f = fopen(name, "r"); CF(f, name);
     fread(pp, sizeof(Particle), n, f);
     fclose(f);
 }
@@ -110,7 +110,7 @@ void write_ss(const char *code, const int id, const Solid *ss, const long n) {
     char fname[BS] = {0};
     gen_name(DUMP, code, id, "solid", /**/ fname);
         
-    FILE *f = fopen(fname, "r"); CF(f);
+    FILE *f = fopen(fname, "r"); CF(f, fname);
     fprintf(f, "%ld\n", n);
     fwrite(ss, sizeof(Solid), n, f);
     fclose(f);
@@ -121,7 +121,7 @@ void read_ss(const char *code, const int id, Solid *ss, int *n) {
     char fname[BS] = {0};
     gen_name(READ, code, id, "solid", /**/ fname);
     
-    FILE *f = fopen(fname, "r"); CF(f);
+    FILE *f = fopen(fname, "r"); CF(f, fname);
     fscanf(f, "%ld\n", &ns);
     fread(ss, sizeof(Solid), ns, f);
     fclose(f);

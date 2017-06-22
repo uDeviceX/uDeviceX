@@ -48,8 +48,8 @@ void interactions(const sdf::Quants qsdf, const Quants q, const Ticket t, const 
     sub::interactions(qsdf.texsdf, type, pp, n, t.texstart, t.texpp, q.n, /**/ t.rnd, ff);
 }
 
-void strt_dump(const Quants q) {
-    sub::strt_dump(q.n, q.pp);
+void strt_dump_templ(const Quants q) {
+    sub::strt_dump_templ(q.n, q.pp);
 }
 
 /*
