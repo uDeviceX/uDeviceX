@@ -20,19 +20,21 @@ function bins() {
 function bins1(   sp, b, rc) {
     sp = " " # space
     b = "."
-    rc = cmd("u.conf.make0" sp qq(S) sp b)
+    cmd("u.conf.make0" sp qq(S) sp b)
 }
 
 function binsN(i,  sp, b, rc) {
     for (i = 1; i <= nbin; i++) {
 	sp = " " # space
 	b  = "bin" "." i
-	rc = cmd("u.conf.make0" sp qq(S) sp b)
+	cmd("u.conf.make0" sp qq(S) sp b)
     }
 }
 
-function cmd(s) { return system(s) } # run shell command
-
+function cmd(s,  rc) {
+    rc = system(s)
+    if (rc != 0) exit rc
+} 
 function parse() {
     while (getline < c > 0) {
 	comm() # stip comments
