@@ -25,17 +25,21 @@ fi
 NN=$((${NX}*${NY}*${NZ}))
 
 nameS() {
-    echo
-}
-nameM() {
-    TMP=`printf "%03d.%03d.%03d" $X $Y $Z`
+    TMP=`printf "%s/strt/%s/" $B $1` 
     echo $TMP
 }
 
+nameM() {
+    TMP=`printf "%s/strt/%03d.%03d.%03d/%s/" $B $X $Y $Z $1` 
+    echo $TMP
+}
+
+
+
 if test $NN = 1; then
-    nameS
+    nameS bop
 else
     for X in `seq 1 $NX`; do for Y in `seq 1 $NY`; do for Z in `seq 1 $NZ`; do
-        nameM
+        nameM bop
     done; done; done
 fi
