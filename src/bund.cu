@@ -158,6 +158,7 @@ namespace ic {
 namespace sim {
 namespace dev {
 #include "sim/dev.h"
+}
 #include "sim.decl.h"
 #include "sim/ini.h"
 #include "sim/fin.h"
@@ -178,3 +179,4 @@ namespace dev {
 #include "sim/step.h"
 #include "sim/run.h"
 #include "sim.impl.h"
+}

@@ -24,9 +24,9 @@ void freeze() {
 }
 
 void clear_velocity() {
-    if (o::q.n)           k_sim::clear_velocity<<<k_cnf(o::q.n)>>>(o::q.pp, o::q.n);  
-    if (solids && s::q.n) k_sim::clear_velocity<<<k_cnf(s::q.n)>>>(s::q.pp, s::q.n);
-    if (rbcs   && r::q.n) k_sim::clear_velocity<<<k_cnf(r::q.n)>>>(r::q.pp, r::q.n);
+    if (o::q.n)           dev::clear_velocity<<<k_cnf(o::q.n)>>>(o::q.pp, o::q.n);  
+    if (solids && s::q.n) dev::clear_velocity<<<k_cnf(s::q.n)>>>(s::q.pp, s::q.n);
+    if (rbcs   && r::q.n) dev::clear_velocity<<<k_cnf(r::q.n)>>>(r::q.pp, r::q.n);
 }
 
 void gen() { /* generate */
