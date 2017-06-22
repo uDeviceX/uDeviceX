@@ -40,7 +40,7 @@ void diag(int it) {
     diagnostics(a::pp_hst, n, it);
 }
 
-void dump_strt_templ() {
+void dump_strt_templ() { /* template dumps (wall, solid) */
     if (walls) wall::strt_dump_templ(w::q);
     if (solids) rig::strt_dump_templ(s::q);
 }
@@ -61,4 +61,3 @@ void dump_diag0(int it) { /* generic dump */
     if (field_dumps && it % field_freq == 0) dump_grid();
     if (strt_dumps  && it % strt_freq == 0)  dump_strt(it);
 }
-
