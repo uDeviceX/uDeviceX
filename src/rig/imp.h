@@ -27,13 +27,13 @@ static void pp2rr(const Particle *pp, const int n, float *rr) {
     rr[3*i + c] = pp[i].r[c];
 }
 
-void gen_from_strt(const int id, int *ns, int *nps, int *n, float *rr0_hst, Solid *ss_hst, Particle *pp_hst) {
+void gen_from_strt(const int id, int *ns, int *nps, int *n, float *rr0_hst, Solid *ss_hst) {
     Particle *pp = new Particle[MAX_PART_NUM];
     restart::read_pp("rig", restart::TEMPL, pp, nps);
     pp2rr(pp, *nps, rr0_hst);
     delete[] pp;
 
-    restart::read_pp("rig", id, pp_hst, n);
+    restart::read_ss("rig", id, ss_hst, n);
     *ns = *n / *nps;
 }
 
