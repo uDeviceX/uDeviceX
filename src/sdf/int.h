@@ -13,3 +13,6 @@ void  free_quants(Quants *q) {
     q.texsdf.destroy();
 }
 
+void ini(Quants *q) {
+    sub::ini(q->arrsdf, &q->texsdf);
+}
