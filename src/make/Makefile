@@ -7,7 +7,8 @@ ARCH     ?= -arch compute_35 -code sm_35
 
 slevel   ?= -2
 
-NVCCFLAGS += -std=c++11 -I. -I$S
+NVCCFLAGS += -I$B -I$S
+NVCCFLAGS += -std=c++11
 LIBS      += -lcudart
 
 OBJ0 = $B/bund.o  $B/collision.o $B/common.o $B/force.o $B/local.o \
