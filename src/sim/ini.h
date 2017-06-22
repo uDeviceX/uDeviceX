@@ -12,6 +12,7 @@ void ini() {
     rex::ini();
     dump::ini();
 
+    sdf::alloc_quants(&w::qsdf);
     wall::alloc_quants(&w::q);
     wall::alloc_ticket(&w::t);
 
