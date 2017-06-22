@@ -18,7 +18,11 @@ struct tex3Dca {
         
         memset(&texD, 0, sizeof(texD));
         texD.normalizedCoords = 0;
-        texD.readMode = cudaReadModeElementType;
+        texD.readMode = cudaFilterModePoint;
+        texD.mipmapFilterMode = cudaFilterModePoint;
+        texD.addressMode[0] = cudaAddressModeWrap;
+        texD.addressMode[1] = cudaAddressModeWrap;
+        texD.addressMode[2] = cudaAddressModeWrap;
 
         CC(cudaCreateTextureObject(&to, &resD, &texD, NULL));
     }
