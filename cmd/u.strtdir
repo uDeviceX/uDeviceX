@@ -9,7 +9,7 @@ if test $# -ne 0 -a "$1" = -h; then usg; fi
 
 # default basedir
 B=. 
-if test $# -ne 0; then if test -d "$1"; then B=$1; shift; else usg; fi; fi
+if test $# -ne 0; then if test -d "$1"; then B=${1%/}; shift; else usg; fi; fi
 
 # default num procs
 NX=1; NY=1; NZ=1;
@@ -25,23 +25,29 @@ fi
 NN=$((${NX}*${NY}*${NZ}))
 
 single() {
-    TMP=`printf "%s/strt/%s/" $B $1` 
-    echo $TMP
+    TMP=`printf "%s/strt/%s" $B $1` 
+    shift; $@ $TMP
 }
 
 multiple() {
-    TMP=`printf "%s/strt/%03d.%03d.%03d/%s/" $B $X $Y $Z $1` 
-    echo $TMP
+    TMP=`printf "%s/strt/%03d.%03d.%03d/%s" $B $X $Y $Z $1` 
+    shift; $@ $TMP
 }
 
 process() {
-    for code in flu wall rig rbc; do $1 $code; done
+    driver=$1; shift
+    for code in flu wall rig rbc; do
+        $driver $code $@
+    done
 }
 
 if test $NN = 1; then
-    process single
+    process single echo
 else
-    for X in `seq 1 $NX`; do for Y in `seq 1 $NY`; do for Z in `seq 1 $NZ`; do
-        process multiple
+    NX=$((${NX}-1))
+    NY=$((${NY}-1))
+    NZ=$((${NZ}-1))
+    for X in `seq 0 $NX`; do for Y in `seq 0 $NY`; do for Z in `seq 0 $NZ`; do
+        process multiple echo
     done; done; done
 fi
