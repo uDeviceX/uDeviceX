@@ -14,7 +14,7 @@ enum {X, Y, Z};
    mult processors : base/strt/code/XXX.YYY.ZZZ/id.ext
    base depends on read/write
  */
-#define PF_ID     "%5d.%s"
+#define PF_ID     "%05d.%s"
 #define PF_TM     "templ.%s"
 #define DIR_S "%s/strt/%s/"             
 #define DIR_M "%s/strt/%s/%03d.%03d.%03d/"
@@ -110,7 +110,7 @@ void write_ss(const char *code, const int id, const Solid *ss, const long n) {
     char fname[BS] = {0};
     gen_name(DUMP, code, id, "solid", /**/ fname);
         
-    FILE *f = fopen(fname, "r"); CF(f, fname);
+    FILE *f = fopen(fname, "w"); CF(f, fname);
     fprintf(f, "%ld\n", n);
     fwrite(ss, sizeof(Solid), n, f);
     fclose(f);
