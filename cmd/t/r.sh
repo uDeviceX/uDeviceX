@@ -1,4 +1,5 @@
-make -C .. > /dev/null
+make -C ..
+exit
 
 #u.conf test_data/double.poiseuille.h <<!
 #pushflow # hmmm
