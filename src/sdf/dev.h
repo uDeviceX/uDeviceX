@@ -18,7 +18,7 @@ struct tex3Dca {
         
         memset(&texD, 0, sizeof(texD));
         texD.normalizedCoords = 0;
-        texD.readMode = cudaFilterModePoint;
+        texD.filterMode = cudaFilterModePoint;
         texD.mipmapFilterMode = cudaFilterModePoint;
         texD.addressMode[0] = cudaAddressModeWrap;
         texD.addressMode[1] = cudaAddressModeWrap;
