@@ -2,25 +2,46 @@
 
 s="$1" # source
 b="$2" # bin
-m="$b/Makefile"
 
 ERR_BIN_MAKE=4
+ERR_MISSING_MK=5
 
 msg() { printf '%s\n' "$*" >&2; }
 
-write() {
+write_make() {
     echo "\
 S = $s
 B = $b"'
 include $B/config.mk
 include $S/make/common.mk
 include $S/make/Makefile
-include $S/make/Makefile.dep'
+include $S/make/Makefile.dep' > "$m"
 }
+
+write_conf () ( # configure
+    dn=amlucas dh=panda
+    n=`whoami` h=`u.host`
+
+    c0="$s/sys/$n.$h"
+    if test ! -f "$c0"; then c0="$s/sys/$dn.$h";  fi
+    if test ! -f "$c0"; then c0="$s/sys/$dn.$dh"; fi
+    if test ! -f "$c0"; then exit 1             ; fi
+    msg "cp $c0  config.mk"; cp "$c0"  "$c"
+)
+
 
 mkdir -p     "$b"
 
-write > "$m"
-if test $? -ne 0; then exit $ERR_BIN_MAKE; fi
+m="$b/Makefile"
+c="$b/config.mk"
 
+write_make; rc=$?
+if test $rc -ne 0; then exit $ERR_BIN_MAKE; fi
 msg "$m created"
+
+write_conf; rc=$?
+if test $rc -ne 0; then exit $ERR_MISSING_MK; fi
+msg "$c created"
+
+
+
