@@ -63,7 +63,7 @@ function parse() {
 }
 
 function runp() { return $1 == "run" } # run predicate
-function comm() { sub(/#.*/, "") }
+function comm() { sub(/#.*/, "") }     # stip comments
 function emptyp() { return $0 ~ /^[ \t]*$/ }
 function qq(s)    { return "'"  s  "'" } # quotes a string
 
