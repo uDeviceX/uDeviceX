@@ -42,12 +42,12 @@ process() {
 }
 
 if test $NN = 1; then
-    process single echo
+    process single mkdir -p
 else
     NX=$((${NX}-1))
     NY=$((${NY}-1))
     NZ=$((${NZ}-1))
     for X in `seq 0 $NX`; do for Y in `seq 0 $NY`; do for Z in `seq 0 $NZ`; do
-        process multiple echo
+        process multiple mkdir -p
     done; done; done
 fi
