@@ -153,7 +153,6 @@ namespace ic {
 }
 #include "rig/int.h"
 }
-#include "safety.impl.h"
 
 namespace sim {
 namespace dev {
