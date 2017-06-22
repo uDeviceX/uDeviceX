@@ -31,6 +31,8 @@
 
 #define contactforces    (false)
 #define doublepoiseuille (false)
+#define       strt_dumps (false)
+#define        strt_freq  (5000)
 #define      field_dumps (false)
 #define       field_freq  (2000)
 #define       part_dumps (false)
