@@ -2,6 +2,7 @@
 #include <mpi.h>
 #include <map>
 #include <conf.h>
+#include "conf.common.h"
 #include "m.h" /* MPI */
 #include "l/m.h"
 #include "common.h"
@@ -31,8 +32,8 @@ int main(int argc, char **argv) {
   
     glb::sim(); /* simulation level globals */
     sim::ini();
-    sim::sim_gen();
-    //sim::sim_strt();
+    if (RESTART) sim::sim_strt();
+    else         sim::sim_gen();
     sim::fin();
   
     MC(l::m::Finalize());
