@@ -10,7 +10,9 @@ usg () {
 
 write_make() (
     d="$1"
-    echo "S = $d"'
+    echo "\
+S = $d
+B = ."'
 include config.mk
 include $S/make/common.mk
 include $S/make/Makefile
