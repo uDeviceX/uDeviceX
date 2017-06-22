@@ -52,7 +52,8 @@ function binsN(i,  sp, b, rc) {
 function cmd(s,  rc) {
     rc = system(s)
     if (rc != 0) exit rc
-} 
+}
+
 function parse() {
     while (getline < c > 0) {
 	comm() # stip comments
