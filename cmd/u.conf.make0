@@ -2,5 +2,20 @@
 
 s="$1" # source
 b="$2" # bin
+m="$b/Makefile"
 
-echo 'u.conf.make0' $s $b
+msg() { printf '%s\n' "$*" >&2; }
+
+write() {
+    echo "\
+S = $s
+B = $b"'
+include $B/config.mk
+include $S/make/common.mk
+include $S/make/Makefile
+include $S/make/Makefile.dep'
+}
+
+mkdir -p     "$b"
+write > "$m"
+msg "$m created"
