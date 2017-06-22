@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/usr/bin/sh
 
 usg() {
     echo 'usage: u.strtdir [basedir] [NX] [NY] [NZ]' >&2
@@ -9,7 +9,7 @@ if test $# -ne 0 -a "$1" = -h; then usg; fi
 
 # default basedir
 B=. 
-if test $# -ne 0; then if test -d "$1"; then B=$1; shift; else usg; fi; fi
+if test $# -ne 0; then if test -d "$1"; then B=${1%/}; shift; else usg; fi; fi
 
 # default num procs
 NX=1; NY=1; NZ=1;
@@ -24,18 +24,30 @@ fi
 
 NN=$((${NX}*${NY}*${NZ}))
 
-nameS() {
-    echo
+single() {
+    TMP=`printf "%s/strt/%s" $B $1` 
+    shift; $@ $TMP
 }
-nameM() {
-    TMP=`printf "%03d.%03d.%03d" $X $Y $Z`
-    echo $TMP
+
+multiple() {
+    TMP=`printf "%s/strt/%03d.%03d.%03d/%s" $B $X $Y $Z $1` 
+    shift; $@ $TMP
+}
+
+process() {
+    driver=$1; shift
+    for code in flu wall rig rbc; do
+        $driver $code $@
+    done
 }
 
 if test $NN = 1; then
-    nameS
+    process single mkdir -p
 else
-    for X in `seq 1 $NX`; do for Y in `seq 1 $NY`; do for Z in `seq 1 $NZ`; do
-        nameM
+    NX=$((${NX}-1))
+    NY=$((${NY}-1))
+    NZ=$((${NZ}-1))
+    for X in `seq 0 $NX`; do for Y in `seq 0 $NY`; do for Z in `seq 0 $NZ`; do
+        process multiple mkdir -p
     done; done; done
 fi
