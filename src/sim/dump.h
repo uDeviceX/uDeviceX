@@ -59,5 +59,6 @@ void dump_diag0(int it) { /* generic dump */
         diag(it);
     }
     if (field_dumps && it % field_freq == 0) dump_grid();
+    if (strt_dumps  && it % strt_freq == 0)  dump_strt(it);
 }
 
