@@ -1,3 +1,5 @@
 #!/bin/bash
 
-echo "$@"
+S="$1" # source
+B="$2" # bin
+
