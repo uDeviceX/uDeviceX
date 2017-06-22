@@ -1,7 +1,7 @@
 #### contact force: two RBCs in double Poiseuille
 # nTEST: contact.t1
 # rm -rf bop diag.txt h5 ply rbc.off
-# cp cells/rbc.498.off rbc.off
+# cp data/cells/rbc.498.off rbc.off
 # export PATH=../tools:$PATH
 #  x=5 y=17 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 # x=11 y=15 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
@@ -19,7 +19,7 @@
 #### no contact force: two RBCs in double Poiseuille
 # nTEST: no.contact.t1
 # rm -rf bop diag.txt h5 ply rbc.off
-# cp cells/rbc.498.off rbc.off
+# cp data/cells/rbc.498.off rbc.off
 # export PATH=../tools:$PATH
 # x=4  y=17 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 # x=12 y=15 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
