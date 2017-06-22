@@ -20,7 +20,7 @@
 #
 
 #### two consequent runs
-# cTEST: strt.t1
+# nTEST: strt.t1
 # rm -rf bop h5 diag.txt rbc.off
 # :
 # export PATH=../tools:$PATH
