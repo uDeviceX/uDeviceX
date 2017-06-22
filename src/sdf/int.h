@@ -1,6 +1,6 @@
 struct Quants {
     cudaArray *arrsdf;
-    cudaTextureObject_t texsdf;
+    tex3Dca<float> texsdf;
 };
 
 void alloc_quants(Quants *q) {
