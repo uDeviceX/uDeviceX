@@ -36,8 +36,8 @@ void gen_quants(sdf::Quants qsdf, int *n, Particle* pp, Quants *q) {
     sub::gen_quants(qsdf.texsdf, n, pp, &q->n, &q->pp);
 }
 
-void strt_quants(const int id, Quants *q) {
-    sub::strt_quants(id, &q->n, &q->pp);
+void strt_quants(Quants *q) {
+    sub::strt_quants(0, &q->n, &q->pp);
 }
 
 void gen_ticket(const Quants q, Ticket *t) {
@@ -48,8 +48,8 @@ void interactions(const sdf::Quants qsdf, const Quants q, const Ticket t, const 
     sub::interactions(qsdf.texsdf, type, pp, n, t.texstart, t.texpp, q.n, /**/ t.rnd, ff);
 }
 
-void strt_dump(const int id, const Quants q) {
-    sub::strt_dump(id, q.n, q.pp);
+void strt_dump(const Quants q) {
+    sub::strt_dump(0, q.n, q.pp);
 }
 
 /*
