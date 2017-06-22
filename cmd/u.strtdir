@@ -24,22 +24,24 @@ fi
 
 NN=$((${NX}*${NY}*${NZ}))
 
-nameS() {
+single() {
     TMP=`printf "%s/strt/%s/" $B $1` 
     echo $TMP
 }
 
-nameM() {
+multiple() {
     TMP=`printf "%s/strt/%03d.%03d.%03d/%s/" $B $X $Y $Z $1` 
     echo $TMP
 }
 
-
+process() {
+    for code in flu wall rig rbc; do $1 $code; done
+}
 
 if test $NN = 1; then
-    nameS bop
+    process single
 else
     for X in `seq 1 $NX`; do for Y in `seq 1 $NY`; do for Z in `seq 1 $NZ`; do
-        nameM bop
+        process multiple
     done; done; done
 fi
