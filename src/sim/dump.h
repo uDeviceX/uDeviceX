@@ -41,8 +41,10 @@ void diag(int it) {
 }
 
 void dump_strt_templ() { /* template dumps (wall, solid) */
-    if (walls) wall::strt_dump_templ(w::q);
-    if (solids) rig::strt_dump_templ(s::q);
+    if (strt_dumps) {
+        if (walls) wall::strt_dump_templ(w::q);
+        if (solids) rig::strt_dump_templ(s::q);
+    }
 }
 
 void dump_strt(int it) {
