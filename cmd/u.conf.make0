@@ -1,5 +1,6 @@
 #!/bin/bash
 
-S="$1" # source
-B="$2" # bin
+s="$1" # source
+b="$2" # bin
 
+echo 'u.conf.make0' $s $b
