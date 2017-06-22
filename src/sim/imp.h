@@ -64,6 +64,8 @@ void sim_gen() {
         solids0 = solids;
         run(            0, nsteps);
     }
+    /* final strt dump*/
+    if (strt_dumps) dump_strt(restart::FINAL);
 }
 
 void sim_strt() {
@@ -97,4 +99,7 @@ void sim_strt() {
 
     solids0 = solids;
     run(wall_creation, nsteps);
+    
+    /* final strt dump*/
+    if (strt_dumps) dump_strt(restart::FINAL);
 }
