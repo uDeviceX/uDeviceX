@@ -6,6 +6,8 @@
 
 #include "restart.h"
 
+#define DBG(...) MSG(__VA_ARGS__)
+
 namespace restart {
 enum {X, Y, Z};
 
@@ -106,10 +108,11 @@ void read_pp(const char *code, const int id, Particle *pp, int *n) {
     char bop[BS] = {0}, val[BS] = {0};
     gen_name(READ, code, id, "bop"   , /**/ bop);
     gen_name(READ, code, id, "values", /**/ val);
-    
+    DBG("reading <%s> and <%s>", bop, val);
     bopread::header(bop, &np);
     bopread::data(val, np, pp);
     *n = np;
+    DBG("I have read %ld pp", np);
 }
 
 void write_ss(const char *code, const int id, const Solid *ss, const long n) {
@@ -126,13 +129,13 @@ void read_ss(const char *code, const int id, Solid *ss, int *n) {
     long ns = 0;
     char fname[BS] = {0};
     gen_name(READ, code, id, "solid", /**/ fname);
-    
+    fprintf(stderr, "reading %s\n", fname);
     FILE *f = fopen(fname, "r"); CF(f, fname);
     fscanf(f, "%ld\n", &ns);
     fread(ss, sizeof(Solid), ns, f);
     fclose(f);
-
     *n = ns;
+    DBG("I have read %ld ss.", ns);
 }
 
 #undef READ
