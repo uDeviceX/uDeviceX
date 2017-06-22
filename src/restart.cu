@@ -36,13 +36,13 @@ enum {X, Y, Z};
 
 void gen_name(const bool read, const char *code, const int id, const char *ext, /**/ char *name) {
     if (id >= 0) {
-        if (m::d == 1)
+        if (m::size == 1)
         CSPR(sprintf(name, DIR_S PF_ID, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, id, ext));
         else
         CSPR(sprintf(name, DIR_M PF_ID, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, m::coords[X], m::coords[Y], m::coords[Z], id, ext));
     }
     else {
-        if (m::d == 1)
+        if (m::size == 1)
         CSPR(sprintf(name, DIR_S PF_TM, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, ext));
         else
         CSPR(sprintf(name, DIR_M PF_TM, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, m::coords[X], m::coords[Y], m::coords[Z], ext));
