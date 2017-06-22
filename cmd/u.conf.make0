@@ -4,6 +4,8 @@ s="$1" # source
 b="$2" # bin
 m="$b/Makefile"
 
+ERR_BIN_MAKE=4
+
 msg() { printf '%s\n' "$*" >&2; }
 
 write() {
@@ -17,5 +19,8 @@ include $S/make/Makefile.dep'
 }
 
 mkdir -p     "$b"
+
 write > "$m"
+if test $? -ne 0; then exit $ERR_BIN_MAKE; fi
+
 msg "$m created"
