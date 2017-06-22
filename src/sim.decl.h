@@ -30,6 +30,7 @@ Force *ff, *ff_hst;
 
 /*** see int/wall.h ***/
 namespace w {
+sdf::Quants qsdf;
 wall::Quants q;
 wall::Ticket t;
 }

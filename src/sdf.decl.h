@@ -1,1 +1,0 @@
-namespace sdf { cudaArray *arrSDF; }

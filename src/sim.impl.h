@@ -2,7 +2,7 @@
 
 void create_walls() {
     int nold = o::q.n;
-    wall::gen_quants(&o::q.n, o::q.pp, &w::q); o::q.cells->build(o::q.pp, o::q.n);
+    wall::gen_quants(w::qsdf, &o::q.n, o::q.pp, &w::q); o::q.cells->build(o::q.pp, o::q.n);
     MSG("solvent particles survived: %d/%d", o::q.n, nold);
 }
 
@@ -33,7 +33,7 @@ void gen() { /* generate */
     run_eq(wall_creation);
     if (walls) {
         dSync();
-        sdf::ini();
+        sdf::ini(&w::qsdf);
         create_walls();
     }
     freeze();
@@ -69,16 +69,19 @@ void sim_gen() {
 void sim_strt() {
     long nsteps = (int)(tend / dt);
 
+    /* :TODO: set this as argument */
+    const int strt_id = 0;
+    
     /*Q*/
-    /*** flu::strt(&o::q); ***/
+    flu::strt_quants(strt_id, &o::q);
     o::q.cells->build(/* io */ o::q.pp, o::q.n);
 
-    /*** rbc::strt(&r::q); ***/
+    if (rbcs) rbc::strt_quants("rbc.off", strt_id, &r::q);
     dSync();
 
-    /*** rig::strt(&s::q); ***/
+    if (solids) rig::strt_quants(strt_id, &s::q);
 
-    /*** wall::strt(&w::q); ***/
+    if (walls) wall::strt_quants(&w::q);
 
     /*T*/
     get_ticketZ(o::q, &o::tz);
@@ -88,7 +91,7 @@ void sim_strt() {
     MC(MPI_Barrier(m::cart));
     if (walls) {
         dSync();
-        sdf::ini();
+        sdf::ini(&w::qsdf);
         create_walls();
     }
 

@@ -67,19 +67,21 @@ static void exch(/*io*/ Particle *pp, int *n) { /* exchange pp(hst) between proc
   #undef isize
 }
 
-static void freeze0(/*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n, /*w*/ Particle *hst) {
-  sdf::bulk_wall(/*io*/ pp, n, /*o*/ hst, w_n); /* sort into bulk-frozen */
-  MSG("befor exch: bulk/frozen : %d/%d", *n, *w_n);
-  exch(/*io*/ hst, w_n);
-  cH2D(dev, hst, *w_n);
-  MSG("after exch: bulk/frozen : %d/%d", *n, *w_n);
+typedef const sdf::sub::dev::tex3Dca<float> TexSDF_t;
+
+static void freeze0(TexSDF_t texsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n, /*w*/ Particle *hst) {
+    sdf::sub::bulk_wall(texsdf, /*io*/ pp, n, /*o*/ hst, w_n); /* sort into bulk-frozen */
+    MSG("befor exch: bulk/frozen : %d/%d", *n, *w_n);
+    exch(/*io*/ hst, w_n);
+    cH2D(dev, hst, *w_n);
+    MSG("after exch: bulk/frozen : %d/%d", *n, *w_n);
 }
 
-static void freeze(/*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n) {
-  Particle *hst;
-  mpHostMalloc(&hst);
-  freeze0(/*io*/ pp, n, /*o*/ dev, w_n, /*w*/ hst);
-  free(hst);
+static void freeze(TexSDF_t texsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n) {
+    Particle *hst;
+    mpHostMalloc(&hst);
+    freeze0(texsdf, /*io*/ pp, n, /*o*/ dev, w_n, /*w*/ hst);
+    free(hst);
 }
 
 void build_cells(const int n, float4 *pp4, Clist *cells) {
@@ -95,11 +97,11 @@ void build_cells(const int n, float4 *pp4, Clist *cells) {
     CC(cudaFree(pp));
 }
 
-void gen_quants(int *o_n, Particle *o_pp, int *w_n, float4 **w_pp) {
+void gen_quants(TexSDF_t texsdf, int *o_n, Particle *o_pp, int *w_n, float4 **w_pp) {
     Particle *frozen;
     CC(cudaMalloc(&frozen, sizeof(Particle) * MAX_PART_NUM));
 
-    freeze(o_pp, o_n, frozen, w_n);
+    freeze(texsdf, o_pp, o_n, frozen, w_n);
 
     MSG0("consolidating wall particles");
 
@@ -111,9 +113,9 @@ void gen_quants(int *o_n, Particle *o_pp, int *w_n, float4 **w_pp) {
     CC(cudaFree(frozen));
 }
 
-void strt_quants(const int id, int *w_n, float4 **w_pp) {
+void strt_quants(int *w_n, float4 **w_pp) {
     float4 * pptmp; CC(cudaMalloc(&pptmp, MAX_PART_NUM * sizeof(float4)));
-    strt::read(id, pptmp, w_n);
+    strt::read(pptmp, w_n);
 
     if (*w_n) {
         CC(cudaMalloc(w_pp, *w_n * sizeof(float4)));
@@ -130,14 +132,14 @@ void gen_ticket(const int w_n, float4 *w_pp, Clist *cells, Texo<int> *texstart, 
     texpp->setup(w_pp, w_n);    
 }
 
-void interactions(const int type, const Particle *const pp, const int n, const Texo<int> texstart,
+void interactions(TexSDF_t texsdf, const int type, const Particle *const pp, const int n, const Texo<int> texstart,
                   const Texo<float4> texpp, const int w_n, /**/ l::rnd::d::KISS *rnd, Force *ff) {
     if (n > 0 && w_n > 0) {
         dev::interactions_3tpp <<<k_cnf(3 * n)>>>
-            ((float2 *)pp, n, w_n, (float *)ff, rnd->get_float(), type, texstart, texpp);
+            (texsdf, (float2 *)pp, n, w_n, (float *)ff, rnd->get_float(), type, texstart, texpp);
     }
 }
 
-void strt_dump(const int id, const int n, const float4 *pp) {
-    strt::write(id, pp, n);
+void strt_dump(const int n, const float4 *pp) {
+    strt::write(pp, n);
 }

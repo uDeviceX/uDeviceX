@@ -9,7 +9,7 @@ void distr_rbc() {
 void remove_rbcs() {
   int stay[MAX_CELL_NUM];
   int nc0;
-  r::q.nc = sdf::who_stays(r::q.pp, r::q.n, nc0 = r::q.nc, r::q.nv, /**/ stay);
+  r::q.nc = sdf::who_stays(w::qsdf, r::q.pp, r::q.n, nc0 = r::q.nc, r::q.nv, /**/ stay);
   r::q.n = r::q.nc * r::q.nv;
   Cont::remove(r::q.pp, r::q.nv, stay, r::q.nc);
   MSG("%d/%d RBCs survived", r::q.nc, nc0);
@@ -19,7 +19,7 @@ void remove_solids() {
   int stay[MAX_SOLIDS];
   int ns0;
   int nip = s::q.ns * s::q.m_dev.nv;
-  s::q.ns = sdf::who_stays(s::q.i_pp, nip, ns0 = s::q.ns, s::q.m_dev.nv, /**/ stay);
+  s::q.ns = sdf::who_stays(w::qsdf, s::q.i_pp, nip, ns0 = s::q.ns, s::q.m_dev.nv, /**/ stay);
   s::q.n  = s::q.ns * s::q.nps;
   Cont::remove(s::q.pp,       s::q.nps,      stay, s::q.ns);
   Cont::remove(s::q.pp_hst,   s::q.nps,      stay, s::q.ns);

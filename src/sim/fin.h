@@ -10,6 +10,7 @@ void fin() {
 
     if (solids) mrescue::fin();
 
+    sdf::free_quants(&w::qsdf);
     wall::free_quants(&w::q);
     wall::free_ticket(&w::t);
 

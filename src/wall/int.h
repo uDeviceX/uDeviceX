@@ -32,24 +32,24 @@ void free_ticket(Ticket *t) {
     t->texpp.destroy();
 }
 
-void gen_quants(int *n, Particle* pp, Quants *q) {
-    sub::gen_quants(n, pp, &q->n, &q->pp);
+void gen_quants(sdf::Quants qsdf, int *n, Particle* pp, Quants *q) {
+    sub::gen_quants(qsdf.texsdf, n, pp, &q->n, &q->pp);
 }
 
-void strt_quants(const int id, Quants *q) {
-    sub::strt_quants(id, &q->n, &q->pp);
+void strt_quants(Quants *q) {
+    sub::strt_quants(&q->n, &q->pp);
 }
 
-void gen_ticket(Quants q, Ticket *t) {
+void gen_ticket(const Quants q, Ticket *t) {
     sub::gen_ticket(q.n, q.pp, t->cells, &t->texstart, &t->texpp);
 }
 
-void interactions(const Quants q, const Ticket t, const int type, const Particle *pp, const int n, Force *ff) {
-    sub::interactions(type, pp, n, t.texstart, t.texpp, q.n, /**/ t.rnd, ff);
+void interactions(const sdf::Quants qsdf, const Quants q, const Ticket t, const int type, const Particle *pp, const int n, Force *ff) {
+    sub::interactions(qsdf.texsdf, type, pp, n, t.texstart, t.texpp, q.n, /**/ t.rnd, ff);
 }
 
-void strt_dump(const int id, const Quants q) {
-    sub::strt_dump(id, q.n, q.pp);
+void strt_dump(const Quants q) {
+    sub::strt_dump(q.n, q.pp);
 }
 
 /*

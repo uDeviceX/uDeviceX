@@ -14,9 +14,10 @@ enum {X, Y, Z};
    mult processors : base/strt/code/XXX.YYY.ZZZ/id.ext
    base depends on read/write
  */
-#define PATTERN0     "%5d.%s"
-#define PATTERN_SING "%s/strt/%s/"             PATTERN0
-#define PATTERN_MULT "%s/strt/%s/%3d.%3d.%3d/" PATTERN0
+#define PF_ID     "%5d.%s"
+#define PF_TM     "templ.%s"
+#define DIR_S "%s/strt/%s/"             
+#define DIR_M "%s/strt/%s/%3d.%3d.%3d/"
 
 #define READ (true)
 #define DUMP (false)
@@ -34,8 +35,18 @@ enum {X, Y, Z};
 #define CF(f) do {if (f==NULL) ERR("could not open the file\n");} while(0)
 
 void gen_name(const bool read, const char *code, const int id, const char *ext, /**/ char *name) {
-    if (m::d == 1) CSPR(sprintf(name, PATTERN_SING, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, id, ext));
-    else           CSPR(sprintf(name, PATTERN_MULT, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, m::coords[X], m::coords[Y], m::coords[Z], id, ext));
+    if (id >= 0) {
+        if (m::d == 1)
+        CSPR(sprintf(name, DIR_S PF_ID, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, id, ext));
+        else
+        CSPR(sprintf(name, DIR_M PF_ID, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, m::coords[X], m::coords[Y], m::coords[Z], id, ext));
+    }
+    else {
+        if (m::d == 1)
+        CSPR(sprintf(name, DIR_S PF_TM, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, ext));
+        else
+        CSPR(sprintf(name, DIR_M PF_TM, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, m::coords[X], m::coords[Y], m::coords[Z], ext));
+    }
 }
 
 namespace bopwrite {
@@ -75,7 +86,10 @@ void write_pp(const char *code, const int id, const Particle *pp, const long n) 
     gen_name(DUMP, code, id, "bop"   , /**/ bop);
     gen_name(DUMP, code, id, "values", /**/ val);
 
-    CSPR(sprintf(rel, PATTERN0, id, "values"));
+    if (id >= 0)
+    CSPR(sprintf(rel, PF_ID, id, "values"));
+    else
+    CSPR(sprintf(rel, PF_TM,     "values"));
     
     bopwrite::header(bop, rel, n);
     bopwrite::data(val, pp, n);

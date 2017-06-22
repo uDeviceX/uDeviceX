@@ -70,9 +70,15 @@ namespace ic {
 #include "k/cnt.h"
 #include "cnt.impl.h"
 
-#include "k/sdf.h"
-#include "sdf.decl.h"
-#include "sdf.impl.h"
+namespace sdf {
+namespace sub {
+namespace dev {
+#include "sdf/dev.h"
+}
+#include "sdf/imp.h"
+}
+#include "sdf/int.h"
+}
 
 namespace wall {
 namespace sub {
