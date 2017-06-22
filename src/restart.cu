@@ -6,7 +6,8 @@
 
 #include "restart.h"
 
-#define DBG(...) MSG(__VA_ARGS__)
+//#define DBG(...) MSG(__VA_ARGS__)
+#define DBG(...) 
 
 namespace restart {
 enum {X, Y, Z};
@@ -138,7 +139,12 @@ void read_ss(const char *code, const int id, Solid *ss, int *n) {
     DBG("I have read %ld ss.", ns);
 }
 
+#undef PF
+#undef DIR_S
+#undef DIR_M
+
 #undef READ
 #undef DUMP
 
+#undef DBG
 } // namespace restart
