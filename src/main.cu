@@ -31,8 +31,8 @@ int main(int argc, char **argv) {
   
     glb::sim(); /* simulation level globals */
     sim::ini();
-    //sim::sim_gen();
-    sim::sim_strt();
+    sim::sim_gen();
+    //sim::sim_strt();
     sim::fin();
   
     MC(l::m::Finalize());
