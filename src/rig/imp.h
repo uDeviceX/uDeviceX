@@ -33,8 +33,8 @@ void gen_from_strt(const int id, int *ns, int *nps, int *n, float *rr0_hst, Soli
     pp2rr(pp, *nps, rr0_hst);
     delete[] pp;
 
-    restart::read_ss("rig", id, ss_hst, n);
-    *ns = *n / *nps;
+    restart::read_ss("rig", id, ss_hst, ns);
+    *n = *ns * (*nps);
 }
 
 void gen_pp_hst(const int ns, const float *rr0_hst, const int nps, /**/ Solid *ss_hst, Particle *pp_hst) {
