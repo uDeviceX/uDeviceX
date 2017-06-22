@@ -9,8 +9,7 @@ void alloc_quants(Quants *q) {
 }
 
 void  free_quants(Quants *q) {
-    if (q->arrsdf) {
-        CC(cudaFreeArray(q->arrsdf));
-    }
+    CC(cudaFreeArray(q->arrsdf));
+    q.texsdf.destroy();
 }
 
