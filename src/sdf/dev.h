@@ -13,8 +13,8 @@ struct tex3Dca {
         cudaTextureDesc  texD;
 
         memset(&resD, 0, sizeof(resD));
-        resDesc.resType = cudaResourceTypeArray;
-        resDesc.res.array.array = ca;
+        resD.resType = cudaResourceTypeArray;
+        resD.res.array.array = ca;
         
         memset(&texD, 0, sizeof(texD));
         texD.normalizedCoords = 0;
