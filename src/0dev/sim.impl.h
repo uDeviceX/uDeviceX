@@ -1,4 +1,3 @@
-namespace sim {
 void distr_solid() {
     if (s::q.ns) cD2H(s::q.ss_hst, s::q.ss, s::q.ns);
     sdstr::pack_sendcnt <DEV> (s::q.ss_hst, s::q.i_pp, s::q.ns, s::q.m_dev.nv);
@@ -54,5 +53,3 @@ void bounce_solid(int it) {
     // for dump
     memcpy(s::t.ss_dmp, s::q.ss_hst, s::q.ns * sizeof(Solid));
 }
-  
-} /* namespace sim */

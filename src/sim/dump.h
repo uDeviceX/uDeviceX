@@ -1,4 +1,3 @@
-namespace sim {
 void dev2hst() { /* device to host  data transfer */
     int start = 0;
     cD2H(a::pp_hst + start, o::q.pp, o::q.n); start += o::q.n;
@@ -50,4 +49,3 @@ void dump_diag0(int it) { /* generic dump */
     if (field_dumps && it % field_freq == 0) dump_grid();
 }
 
-}

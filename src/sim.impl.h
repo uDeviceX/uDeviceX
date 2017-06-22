@@ -1,4 +1,3 @@
-namespace sim {
 /* see bund.cu for more sim:: functions */
 
 void create_walls() {
@@ -95,6 +94,4 @@ void sim_strt() {
 
     solids0 = solids;
     run(wall_creation, nsteps);
-}
-
 }

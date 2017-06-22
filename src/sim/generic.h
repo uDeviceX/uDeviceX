@@ -1,4 +1,3 @@
-namespace sim {
 void distr_rbc() {
   rdstr::extent(r::q.pp, r::q.nc, r::q.nv);
   dSync();
@@ -33,4 +32,3 @@ void remove_solids() {
   MSG("sim.impl: %d/%d Solids survived", s::q.ns, ns0);
 }
 
-}

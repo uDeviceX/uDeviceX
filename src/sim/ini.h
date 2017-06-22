@@ -1,4 +1,3 @@
-namespace sim {
 void ini() {
     if (rbcs) {
         CC(cudaMalloc(&r::ff, MAX_PART_NUM));
@@ -35,5 +34,4 @@ void ini() {
 
     dump_field = new H5FieldDump;
     MC(MPI_Barrier(m::cart));
-}
 }

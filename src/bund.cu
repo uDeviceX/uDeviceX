@@ -155,7 +155,9 @@ namespace ic {
 }
 #include "safety.impl.h"
 
-#include "k/sim.h"
+namespace sim {
+namespace dev {
+#include "sim/dev.h"
 #include "sim.decl.h"
 #include "sim/ini.h"
 #include "sim/fin.h"

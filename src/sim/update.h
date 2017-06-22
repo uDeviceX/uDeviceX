@@ -1,4 +1,3 @@
-namespace sim {
 void update_solid() {
     if (s::q.n) update_solid0();
 }
@@ -16,5 +15,4 @@ void update_rbc() {
 void bounce() {
     if (o::q.n) k_sdf::bounce<<<k_cnf(o::q.n)>>>((float2*)o::q.pp, o::q.n);
     //if (rbcs && r::n) k_sdf::bounce<<<k_cnf(r::n)>>>((float2*)r::pp, r::n);
-}
 }

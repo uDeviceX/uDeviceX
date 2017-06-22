@@ -1,5 +1,3 @@
-namespace sim {
-
 void step(float driving_force0, bool wall0, int it) {
   assert(o::q.n <= MAX_PART_NUM);
   assert(r::q.n <= MAX_PART_NUM);
@@ -15,6 +13,4 @@ void step(float driving_force0, bool wall0, int it) {
   if (rbcs)    update_rbc();
   if (wall0) bounce();
   if (sbounce_back && solids0) bounce_solid(it);
-}
-
 }

@@ -1,4 +1,3 @@
-namespace sim {
 void fin() {
     sdstr::fin();
     rdstr::fin();
@@ -33,5 +32,4 @@ void fin() {
         rbc::destroy_textures(&r::tt);
         CC(cudaFree(r::ff));
     }
-}
 }

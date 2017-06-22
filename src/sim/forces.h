@@ -1,4 +1,3 @@
-namespace sim {
 void body_force(float driving_force0) {
     k_sim::body_force<<<k_cnf(o::q.n)>>> (1, o::q.pp, o::ff, o::q.n, driving_force0);
 
@@ -70,5 +69,4 @@ void forces(bool wall0) {
     rex::recv_f();
 
     dSync();
-}
 }
