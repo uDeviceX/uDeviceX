@@ -2,9 +2,9 @@
 # nTEST: solid.t1
 # rm -rf h5 bop diag.txt solid_diag.txt
 # export PATH=../tools:$PATH
-# cp sdf/wall1/wall.dat sdf.dat
+# cp data/sdf/wall1/wall.dat sdf.dat
 # echo -e "16 16 16" > ic_solid.txt
-# cp data/sphere.ply mesh_solid.ply
+# cp data/rig/sphere.ply mesh_solid.ply
 # :
 # argp conf/test.h                                  \
 #   tend=2.01 part_freq=1000 walls wall_creation=1  \
@@ -20,7 +20,7 @@
 # rm -rf h5 bop diag.txt solid_diag.txt
 # export PATH=../tools:$PATH
 # echo -e "8 16 8" > ic_solid.txt
-# cp data/sphere.ply mesh_solid.ply
+# cp data/rig/sphere.ply mesh_solid.ply
 # :
 # argp conf/double.poiseuille.h \
 #   solids sbounce_back         \
@@ -39,9 +39,9 @@
 # nTEST: solid.t3
 # rm -rf h5 bop diag.txt solid_diag.txt
 # export PATH=../tools:$PATH
-# cp sdf/yplates1/yplates.dat sdf.dat
+# cp data/sdf/yplates1/yplates.dat sdf.dat
 # echo -e "16 16 16" > ic_solid.txt
-# cp data/cyl.ply mesh_solid.ply
+# cp data/rig/cyl.ply mesh_solid.ply
 # :
 # argp conf/test.h                                   \
 #   tend=2.01 part_freq=1000 walls wall_creation=100 \
@@ -56,8 +56,8 @@
 # snTEST: solid.t4
 # rm -rf h5 bop diag.txt solid_diag.txt
 # export PATH=../tools:$PATH
-# cp sdf/cyl1/cyl.dat sdf.dat
-# cp data/sphere_R1.ply mesh_solid.ply
+# cp data/sdf/cyl1/cyl.dat sdf.dat
+# cp data/rig/sphere_R1.ply mesh_solid.ply
 # x=0.75 y=3 z=9; echo $x $y $z >  ic_solid.txt
 # x=8    y=8 z=8; echo $x $y $z >> ic_solid.txt
 # :
