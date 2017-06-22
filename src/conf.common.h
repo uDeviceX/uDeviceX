@@ -70,6 +70,10 @@
 
 // restart
 
+#ifndef RESTART
+#define RESTART (false)
+#endif
+
 #ifndef BASE_STRT_DUMP 
 #define BASE_STRT_DUMP "."
 #endif
