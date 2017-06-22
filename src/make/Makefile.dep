@@ -13,7 +13,7 @@ $B/l.off.o: $S/l/h/off.h $S/l/off.h
 $B/l.ply.o: $S/common.h $S/l/h/ply.ascii.h $S/l/h/ply.bin.h $S/l/h/ply.h $S/l/ply.h
 $B/l.rnd.o: $S/l/d/rnd.h $S/l/rnd.h
 $B/l.scan.o: $S/l/d/scan.h $S/l/scan.h
-$B/main.o: $S/bund.h $S/common.h $B/conf.h $S/glb.h $S/l/m.h $S/m.h
+$B/main.o: $S/bund.h $S/common.h $S/conf.common.h $B/conf.h $S/glb.h $S/l/m.h $S/m.h
 $B/mbounce.o: $S/common.h $B/conf.h $S/mbounce.h $S/roots.impl.h
 $B/mesh.o: $S/common.h $S/mesh.h
 $B/minmax.o: $S/common.h $B/conf.h $S/m.h $S/minmax.h
