@@ -7,7 +7,6 @@ BEGIN {
     c = ARGV[1]; shift()
     nbin = 0 # bin dirs
     parse()
-    print "nbin:", nbin
     bins()
     if (nbin > 1) make("Makefile")
 }
