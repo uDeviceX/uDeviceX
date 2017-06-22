@@ -137,9 +137,9 @@ __device__ void handle_collision(const tex3Dca<float> texsdf, float currsdf,
                                  float &x, float &y, float &z,
                                  float &vx, float &vy, float &vz) {
     float x0 = x - vx*dt, y0 = y - vy*dt, z0 = z - vz*dt;
-    if (sdf(x0, y0, z0) >= 0) { /* this is the worst case - 0 position
-                                   was bad already we need to search
-                                   and rescue the particle */
+    if (sdf(texsdf, x0, y0, z0) >= 0) { /* this is the worst case - 0 position
+                                           was bad already we need to search
+                                           and rescue the particle */
         float3 dsdf = grad_sdf(texsdf, x, y, z); float sdf0 = currsdf;
         x -= sdf0 * dsdf.x; y -= sdf0 * dsdf.y; z -= sdf0 * dsdf.z;
         for (int l = 8; l >= 1; --l) {
@@ -174,7 +174,7 @@ __device__ void handle_collision(const tex3Dca<float> texsdf, float currsdf,
     t -= phi/dphi;                            if (t < -dt) t = -dt; if (t > 0) t = 0;
 
     r = rr(t); phi = sdf(texsdf, r.x, r.y, r.z);
-    dsdf = ugrad_sdf(r.x, r.y, r.z);
+    dsdf = ugrad_sdf(texsdf, r.x, r.y, r.z);
     dphi = vx*dsdf.x + vy*dsdf.y + vz*dsdf.z; if (small(dphi)) goto giveup;
     t -= phi/dphi;                            if (t < -dt) t = -dt; if (t > 0) t = 0;
 #undef rr
@@ -187,7 +187,7 @@ __device__ void handle_collision(const tex3Dca<float> texsdf, float currsdf,
     x += 2*t*vx; y += 2*t*vy; z += 2*t*vz; /* bouncing relatively to
                                               wall */
     k_wvel::bounce_vel(xw, yw, zw, &vx, &vy, &vz);
-    if (sdf(x, y, z) >= 0) {x = x0; y = y0; z = z0;}
+    if (sdf(texsdf, x, y, z) >= 0) {x = x0; y = y0; z = z0;}
 }
 
 __global__ void bounce(const tex3Dca<float> texsdf, float2 *const pp, int nparticles) {
@@ -207,7 +207,7 @@ __global__ void bounce(const tex3Dca<float> texsdf, float2 *const pp, int nparti
             float3 v0 = make_float3(data1.y, data2.x, data2.y);
 
             if (currsdf >= 0) {
-                handle_collision(currsdf, data0.x, data0.y, data1.x, data1.y, data2.x, data2.y);
+                handle_collision(texsdf, currsdf, data0.x, data0.y, data1.x, data1.y, data2.x, data2.y);
 
                 pp[3 * pid] = data0;
                 pp[3 * pid + 1] = data1;

@@ -1,6 +1,6 @@
 struct Quants {
     cudaArray *arrsdf;
-    tex3Dca<float> texsdf;
+    sub::dev::tex3Dca<float> texsdf;
 };
 
 void alloc_quants(Quants *q) {
@@ -10,7 +10,7 @@ void alloc_quants(Quants *q) {
 
 void  free_quants(Quants *q) {
     CC(cudaFreeArray(q->arrsdf));
-    q.texsdf.destroy();
+    q->texsdf.destroy();
 }
 
 void ini(Quants *q) {
