@@ -9,7 +9,7 @@ BEGIN {
     parse()
     print "nbin:", nbin
     bins()
-    if (nbin > 1) make("makefile")
+    if (nbin > 1) make("Makefile")
 }
 
 function make(f,   i) { # makefile in .

@@ -3,7 +3,9 @@
 BEGIN {
     c = ARGV[1]; shift()
     nr = count_runs() # [n]umber of runs
-    print nr
+    for (i = 1; i <= nr; i++)
+	printf "bin.%d/udx\n", i      > "runfile"
+    msg("runfile created")
 }
 
 function count_runs(  cnt) {
