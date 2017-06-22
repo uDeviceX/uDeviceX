@@ -71,17 +71,14 @@ void sim_gen() {
 void sim_strt() {
     long nsteps = (int)(tend / dt);
 
-    /* :TODO: set this as argument */
-    const int strt_id = 0;
-    
     /*Q*/
-    flu::strt_quants(strt_id, &o::q);
+    flu::strt_quants(restart::BEGIN, &o::q);
     o::q.cells->build(/* io */ o::q.pp, o::q.n);
 
-    if (rbcs) rbc::strt_quants("rbc.off", strt_id, &r::q);
+    if (rbcs) rbc::strt_quants("rbc.off", restart::BEGIN, &r::q);
     dSync();
 
-    if (solids) rig::strt_quants(strt_id, &s::q);
+    if (solids) rig::strt_quants(restart::BEGIN, &s::q);
 
     if (walls) wall::strt_quants(&w::q);
 
