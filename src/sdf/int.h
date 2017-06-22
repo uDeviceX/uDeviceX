@@ -16,3 +16,4 @@ void  free_quants(Quants *q) {
 void ini(Quants *q) {
     sub::ini(q->arrsdf, &q->texsdf);
 }
+

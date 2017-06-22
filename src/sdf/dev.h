@@ -4,7 +4,7 @@ struct tex3Dca {
     cudaTextureObject_t to;
 
     __device__ __forceinline__
-    const T fetch(const int i, const int j, const int k) const {
+    const T fetch(const float i, const float j, const float k) const {
         return tex3Dfetch<T>(to, i, j, k);
     }
     
@@ -30,7 +30,7 @@ struct tex3Dca {
     void destroy() {CC(cudaDestroyTextureObject(to));}
 };
 
-__device__ float sdf(float x, float y, float z) {
+__device__ float sdf(tex3Dca<float> texsdf, float x, float y, float z) {
     int L[3] = {XS, YS, ZS};
     int MARGIN[3] = {XWM, YWM, ZWM};
     int TE[3] = {XTE, YTE, ZTE};
@@ -43,7 +43,7 @@ __device__ float sdf(float x, float y, float z) {
         lmbd[c] = t - (int)t;
         tc[c] = (int)t + 0.5;
     }
-#define tex0(ix, iy, iz) (tex3D(texSDF, tc[0] + ix, tc[1] + iy, tc[2] + iz))
+#define tex0(ix, iy, iz) (texsdf.fetch(tc[0] + ix, tc[1] + iy, tc[2] + iz))
     float s000 = tex0(0, 0, 0), s001 = tex0(1, 0, 0), s010 = tex0(0, 1, 0);
     float s011 = tex0(1, 1, 0), s100 = tex0(0, 0, 1), s101 = tex0(1, 0, 1);
     float s110 = tex0(0, 1, 1), s111 = tex0(1, 1, 1);
