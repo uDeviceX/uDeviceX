@@ -17,7 +17,7 @@ enum {X, Y, Z};
 #define PF_ID     "%5d.%s"
 #define PF_TM     "templ.%s"
 #define DIR_S "%s/strt/%s/"             
-#define DIR_M "%s/strt/%s/%3d.%3d.%3d/"
+#define DIR_M "%s/strt/%s/%03d.%03d.%03d/"
 
 #define READ (true)
 #define DUMP (false)
