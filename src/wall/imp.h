@@ -113,9 +113,9 @@ void gen_quants(TexSDF_t texsdf, int *o_n, Particle *o_pp, int *w_n, float4 **w_
     CC(cudaFree(frozen));
 }
 
-void strt_quants(const int id, int *w_n, float4 **w_pp) {
+void strt_quants(int *w_n, float4 **w_pp) {
     float4 * pptmp; CC(cudaMalloc(&pptmp, MAX_PART_NUM * sizeof(float4)));
-    strt::read(id, pptmp, w_n);
+    strt::read(pptmp, w_n);
 
     if (*w_n) {
         CC(cudaMalloc(w_pp, *w_n * sizeof(float4)));
@@ -140,6 +140,6 @@ void interactions(TexSDF_t texsdf, const int type, const Particle *const pp, con
     }
 }
 
-void strt_dump(const int id, const int n, const float4 *pp) {
-    strt::write(id, pp, n);
+void strt_dump(const int n, const float4 *pp) {
+    strt::write(pp, n);
 }

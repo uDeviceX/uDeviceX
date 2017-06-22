@@ -37,7 +37,7 @@ void gen_quants(sdf::Quants qsdf, int *n, Particle* pp, Quants *q) {
 }
 
 void strt_quants(Quants *q) {
-    sub::strt_quants(0, &q->n, &q->pp);
+    sub::strt_quants(&q->n, &q->pp);
 }
 
 void gen_ticket(const Quants q, Ticket *t) {
@@ -49,7 +49,7 @@ void interactions(const sdf::Quants qsdf, const Quants q, const Ticket t, const 
 }
 
 void strt_dump(const Quants q) {
-    sub::strt_dump(0, q.n, q.pp);
+    sub::strt_dump(q.n, q.pp);
 }
 
 /*
