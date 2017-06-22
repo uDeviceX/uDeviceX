@@ -81,12 +81,12 @@ static int who_stays0(int *keys, int nc, int nv, /*o*/ int *stay) {
     return s;
 }
 
-static int who_stays1(Particle *pp, int n, int nc, int nv, /**/ int *stay, /*w*/ int *keys) {
-    k_sdf::fill_keys<<<k_cnf(n)>>>(pp, n, keys);
+static int who_stays1(const tex3Dca<float> texsdf, Particle *pp, int n, int nc, int nv, /**/ int *stay, /*w*/ int *keys) {
+    k_sdf::fill_keys<<<k_cnf(n)>>>(texsdf, pp, n, keys);
     return who_stays0(keys, nc, nv, /*o*/ stay);
 }
 
-int who_stays(Particle *pp, int n, int nc, int nv, /**/ int *stay) {
+int who_stays(const tex3Dca<float> texsdf, Particle *pp, int n, int nc, int nv, /**/ int *stay) {
     int *keys;
     CC(cudaMalloc(&keys, n*sizeof(keys[0])));
     nc = who_stays1(pp, n, nc, nv, /**/ stay, /*w*/ keys);
