@@ -1,0 +1,41 @@
+#!/usr/bin/bash
+
+usg() {
+    echo 'usage: u.strtdir [basedir] [NX] [NY] [NZ]' >&2
+    exit
+}
+
+if test $# -ne 0 -a "$1" = -h; then usg; fi
+
+# default basedir
+B=. 
+if test $# -ne 0; then if test -d "$1"; then B=$1; shift; else usg; fi; fi
+
+# default num procs
+NX=1; NY=1; NZ=1;
+
+if test $# -ne 0 -a $# -ne 3; then usg; fi
+
+if test $# = 3; then
+    if test "$1" -ge 1 -a "$2" -ge 1 -a "$3" -ge 1; then NX=$1; NY=$2; NZ=$3;
+    else usg;
+    fi
+fi
+
+NN=$((${NX}*${NY}*${NZ}))
+
+nameS() {
+    echo
+}
+nameM() {
+    TMP=`printf "%03d.%03d.%03d" $X $Y $Z`
+    echo $TMP
+}
+
+if test $NN = 1; then
+    nameS
+else
+    for X in `seq 1 $NX`; do for Y in `seq 1 $NY`; do for Z in `seq 1 $NZ`; do
+        nameM
+    done; done; done
+fi
