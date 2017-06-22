@@ -14,7 +14,7 @@ enum {X, Y, Z};
    mult processors : base/strt/code/XXX.YYY.ZZZ/id.ext
    base depends on read/write
  */
-#define PF_ID     "%5d.%s"
+#define PF_ID     "%05d.%s"
 #define PF_TM     "templ.%s"
 #define DIR_S "%s/strt/%s/"             
 #define DIR_M "%s/strt/%s/%03d.%03d.%03d/"
