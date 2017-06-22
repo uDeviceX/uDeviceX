@@ -1,9 +1,3 @@
-# Run
-#  > atest test/flow.sh
-#
-# To update the test change nTEST to cTEST and run
-#  > atest test/flow
-
 #### Double poiseuille
 # nTEST: flow.t1
 # rm -rf bop h5 diag.txt rbc.off
