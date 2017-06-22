@@ -1,5 +1,3 @@
-namespace sim
-{
 bool solids0;
 
 H5FieldDump *dump_field;
@@ -40,7 +38,6 @@ wall::Ticket t;
 namespace a /* all */
 {
 Particle pp_hst[3*MAX_PART_NUM]; /* particles on host */
-}
 }
 
 /* functions defined in 00dev/ and 00hst/ */

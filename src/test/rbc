@@ -1,7 +1,7 @@
 #### RBC in a periodic box
 # nTEST: diag.t2
 # rm -rf bop diag.txt h5 ply rbc.off
-# cp cells/rbc.498.off rbc.off
+# cp data/cells/rbc.498.off rbc.off
 # export PATH=../tools:$PATH
 # x=0.75 y=8 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 # :
@@ -15,7 +15,7 @@
 #### RBC initialy rotated
 # nTEST: rotated.t1
 # rm -rf bop diag.txt h5 ply rbc.off
-# cp cells/rbc.498.off rbc.off
+# cp data/cells/rbc.498.off rbc.off
 # export PATH=../tools:$PATH
 # x=0.75 y=8 z=12   c=0.5 s=0.866 # sin() and cos()
 # echo     1  0   0 $x              \
@@ -32,9 +32,9 @@
 #### RBC with wall
 # nTEST: diag.t3
 # rm -rf bop diag.txt h5 ply rbc.off
-# cp cells/rbc.498.off rbc.off
+# cp data/cells/rbc.498.off rbc.off
 # export PATH=../tools:$PATH
-# cp sdf/wall1/wall.dat                               sdf.dat
+# cp data/sdf/wall1/wall.dat sdf.dat
 # x=0.75 y=8 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 # :
 # argp conf/couette.h                                    \
@@ -48,9 +48,9 @@
 #### one RBC around cylinder
 # nTEST: flow.around.t1
 # rm -rf bop diag.txt h5 ply rbc.off
-# cp cells/rbc.498.off rbc.off
+# cp data/cells/rbc.498.off rbc.off
 # export PATH=../tools:$PATH
-# cp sdf/cyl1/cyl.dat sdf.dat
+# cp data/sdf/cyl1/cyl.dat sdf.dat
 # x=0.75 y=8 z=9; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 # :
 # argp conf/around.h -kBT=1e-7 \
@@ -64,12 +64,11 @@
 #### two RBCs around cylinder
 # nTEST: flow.around.t2
 # rm -rf bop diag.txt h5 ply rbc.off
-# cp cells/rbc.498.off rbc.off
+# cp data/cells/rbc.498.off rbc.off
 # export PATH=../tools:$PATH
-# cp cells/rbc.498.off rbc.off
 # x=0.75  y=3 z=9; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 # x=0.75 y=13 z=9; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
-# cp sdf/cyl1/cyl.dat sdf.dat
+# cp data/sdf/cyl1/cyl.dat sdf.dat
 # :
 # argp conf/around.h  rbcs tend=3.0 part_freq=5000 \
 #        walls wall_creation=1000 kBT=1e-7 \
@@ -85,8 +84,8 @@
 # nTEST: flow.around.t3
 # rm -rf bop diag.txt h5 ply rbc.off
 # export PATH=../tools:$PATH
-# cp cells/rbc.498.off rbc.off
-# cp sdf/cyl1/cyl.dat  sdf.dat
+# cp data/cells/rbc.498.off rbc.off
+# cp data/sdf/cyl1/cyl.dat  sdf.dat
 # x=0.75 y=3 z=9; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 # x=8    y=8 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
 # :

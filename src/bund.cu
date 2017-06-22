@@ -102,9 +102,9 @@ namespace sub {
 namespace dev {
 #include "odstr/dev.h"
 }
-#include "odstr/hdr.h" /* Fluid class decl */
+#include "odstr/hdr.h" /* Distr class decl */
 #include "odstr/ini.h"
-#include "odstr/imp.h" /* Fluid class impl */
+#include "odstr/imp.h" /* Distr class impl */
 #include "odstr/fin.h"
 }
 #include "odstr/int.h"
@@ -153,9 +153,11 @@ namespace ic {
 }
 #include "rig/int.h"
 }
-#include "safety.impl.h"
 
-#include "k/sim.h"
+namespace sim {
+namespace dev {
+#include "sim/dev.h"
+}
 #include "sim.decl.h"
 #include "sim/ini.h"
 #include "sim/fin.h"
@@ -176,3 +178,4 @@ namespace ic {
 #include "sim/step.h"
 #include "sim/run.h"
 #include "sim.impl.h"
+}

@@ -1,4 +1,3 @@
-namespace sim {
 void distr_solid() {
     sdstr::pack_sendcnt <HST> (s::q.ss_hst, s::q.i_pp_hst, s::q.ns, s::q.m_hst.nv);
     s::q.ns = sdstr::post(s::q.m_hst.nv);
@@ -53,5 +52,3 @@ void bounce_solid(int it) {
     // for dump
     memcpy(s::q.ss_dmp, s::q.ss_hst, s::q.ns * sizeof(Solid));
 }
-  
-} /* namespace sim */

@@ -1,4 +1,3 @@
-namespace sim {
 void run_eq(long te) { /* equilibrate */
   long it;
   float driving_force0 = 0;
@@ -11,6 +10,4 @@ void run(long ts, long te) {
   long it;
   float driving_force0 = pushflow ? driving_force : 0;
   for (it = ts; it < te; ++it) step(driving_force0, walls, it);
-}
-
 }

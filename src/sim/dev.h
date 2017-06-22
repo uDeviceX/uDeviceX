@@ -1,5 +1,3 @@
-namespace k_sim {
-
 __global__ void update(float mass, Particle* pp, Force* ff, int n) {
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
@@ -50,5 +48,3 @@ __global__ void ic_shear_velocity(Particle *pp, int n)  {
     float vx = gamma_dot*z, vy = 0, vz = 0;
     pp[pid].v[0] = vx; pp[pid].v[1] = vy; pp[pid].v[2] = vz;
 }
-
-} /* end of k_sim */
