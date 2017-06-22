@@ -1,8 +1,8 @@
-# Run from this directory:
-#  > atest test.flow.sh
+# Run
+#  > atest test/flow.sh
 #
-# To update the test change TEST to cTEST and run
-#  > atest test.flow.sh
+# To update the test change nTEST to cTEST and run
+#  > atest test/flow
 
 #### Double poiseuille
 # nTEST: flow.t1
@@ -31,13 +31,14 @@
 # cp data/cells/rbc.498.off  rbc.off
 # cp data/sdf/wall1/wall.dat sdf.dat
 # :
-# argp conf/test.h                                  \
-#    tend=1.0 part_freq=300 walls wall_creation=100 \
-#    field_dumps part_dumps field_freq=300          \
-#    shear_z > conf.h
-# :
+# u.conf conf/test.h <<!!!
+#    tend=1.0 part_freq=300 walls wall_creation=100
+#    field_dumps part_dumps field_freq=300
+#    shear_z
+#    run
+#!!!
 # (make clean && u.make -j) > /dev/null
-# u.run
+# sh runfile
 # avg_h5.m h5/flowfields-0003.h5 | uscale 0.1 > h5.out.txt
 
 #### Plates : poiseuille
@@ -48,13 +49,14 @@
 # cp data/cells/rbc.498.off  rbc.off
 # cp data/sdf/wall1/wall.dat sdf.dat
 # :
-# argp conf/poiseuille.h                            \
-#    tend=2.0 part_freq=300 walls wall_creation=100 \
-#    field_dumps part_dumps field_freq=300          \
-#    pushflow > conf.h
-# :
+# u.conf conf/poiseuille.h <<!!!
+#    tend=2.0 part_freq=300 walls wall_creation=100
+#    field_dumps part_dumps field_freq=300
+#    pushflow
+#    run
+#!!!
 # (make clean && u.make -j) > /dev/null
-# u.run
+# sh runfile
 # avg_h5.m h5/flowfields-0013.h5 > h5.out.txt
 
 #### flow around cylinder
@@ -65,11 +67,13 @@
 # cp data/cells/rbc.498.off rbc.off
 # cp data/sdf/cyl1/cyl.dat sdf.dat
 # :
-# argp conf/poiseuille.h                            \
-#    tend=4.0 part_freq=300 walls wall_creation=100 \
-#    field_dumps part_dumps field_freq=300 pushflow > conf.h
+# u.conf conf/poiseuille.h <<!!!
+#    tend=4.0 part_freq=300 walls wall_creation=100
+#    field_dumps part_dumps field_freq=300 pushflow
+#    run
+#!!!
 # :
 # (make clean && u.make -j) > /dev/null
-# u.run
+# sh runfile
 # mid_h5.m h5/flowfields-0026.h5 > h5.out.txt
 #
