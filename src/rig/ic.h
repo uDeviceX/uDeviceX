@@ -146,7 +146,7 @@ static void share_parts(const int root, /**/ Particle *pp, int *n) {
     for (int c = 0; c < 3; ++c)
     pp[i].r[c] += mi[c];
 
-    std::vector<int> counts(m::d), displs(m::d);
+    std::vector<int> counts(m::size), displs(m::size);
     std::vector<Particle> recvbuf(MAX_PSOLID_NUM);
 
     if (*n >= MAX_PSOLID_NUM)
