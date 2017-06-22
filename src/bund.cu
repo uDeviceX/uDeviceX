@@ -164,7 +164,7 @@ namespace sim {
 namespace dev {
 #include "sim/dev.h"
 }
-#include "sim.decl.h"
+#include "sim/dec.h"
 #include "sim/ini.h"
 #include "sim/fin.h"
 #include "sim/generic.h"
@@ -183,5 +183,5 @@ namespace dev {
 #include "sim/update.h"
 #include "sim/step.h"
 #include "sim/run.h"
-#include "sim.impl.h"
+#include "sim/imp.h"
 }
