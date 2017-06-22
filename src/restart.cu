@@ -14,10 +14,9 @@ enum {X, Y, Z};
    mult processors : base/strt/code/XXX.YYY.ZZZ/id.ext
    base depends on read/write
  */
-#define PF_ID     "%05d.%s"
-#define PF_TM     "templ.%s"
-#define DIR_S "%s/strt/%s/"             
-#define DIR_M "%s/strt/%s/%03d.%03d.%03d/"
+#define PF    "%s.%s"
+#define DIR_S "%s/strt/%s/"                 PF
+#define DIR_M "%s/strt/%s/%03d.%03d.%03d/"  PF
 
 #define READ (true)
 #define DUMP (false)
@@ -34,19 +33,28 @@ enum {X, Y, Z};
 
 #define CF(f, fname) do {if (f==NULL) ERR("could not open the file <%s>\n", fname);} while(0)
 
+void id2str(const int id, char *str) {
+    switch (id) {
+    case TEMPL:
+        CSPR(sprintf(str, "templ"));
+        break;
+    case FINAL:
+        CSPR(sprintf(str, "final"));
+        break;
+    default:
+        CSPR(sprintf(str, "%05d", id));
+        break;
+    }
+}
+
 void gen_name(const bool read, const char *code, const int id, const char *ext, /**/ char *name) {
-    if (id >= 0) {
-        if (m::size == 1)
-        CSPR(sprintf(name, DIR_S PF_ID, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, id, ext));
-        else
-        CSPR(sprintf(name, DIR_M PF_ID, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, m::coords[X], m::coords[Y], m::coords[Z], id, ext));
-    }
-    else {
-        if (m::size == 1)
-        CSPR(sprintf(name, DIR_S PF_TM, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, ext));
-        else
-        CSPR(sprintf(name, DIR_M PF_TM, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, m::coords[X], m::coords[Y], m::coords[Z], ext));
-    }
+    char idcode[BS] = {0};
+    id2str(id, /**/ idcode);
+    
+    if (m::size == 1)
+    CSPR(sprintf(name, DIR_S, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, idcode, ext));
+    else
+    CSPR(sprintf(name, DIR_M, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, m::coords[X], m::coords[Y], m::coords[Z], idcode, ext));
 }
 
 namespace bopwrite {
@@ -82,15 +90,13 @@ void data(const char *name, const long n, Particle *pp) {
 } // namespace bopread
 
 void write_pp(const char *code, const int id, const Particle *pp, const long n) {
-    char bop[BS] = {0}, rel[BS] = {0}, val[BS] = {0};
+    char bop[BS] = {0}, rel[BS] = {0}, val[BS] = {0}, idcode[BS] = {0};
     gen_name(DUMP, code, id, "bop"   , /**/ bop);
     gen_name(DUMP, code, id, "values", /**/ val);
 
-    if (id >= 0)
-    CSPR(sprintf(rel, PF_ID, id, "values"));
-    else
-    CSPR(sprintf(rel, PF_TM,     "values"));
-    
+    id2str(id, /**/ idcode);
+    CSPR(sprintf(rel, PF, idcode, "values"));    
+
     bopwrite::header(bop, rel, n);
     bopwrite::data(val, pp, n);
 }

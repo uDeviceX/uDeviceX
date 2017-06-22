@@ -29,7 +29,7 @@ static void pp2rr(const Particle *pp, const int n, float *rr) {
 
 void gen_from_strt(const int id, int *ns, int *nps, int *n, float *rr0_hst, Solid *ss_hst, Particle *pp_hst) {
     Particle *pp = new Particle[MAX_PART_NUM];
-    restart::read_pp("rig", -1, pp, nps);
+    restart::read_pp("rig", restart::TEMPL, pp, nps);
     pp2rr(pp, *nps, rr0_hst);
     delete[] pp;
 
@@ -63,7 +63,7 @@ void strt_dump_templ(const int nps, const float *rr0_hst) {
     Particle *pp = new Particle[nps];
     rr2pp(rr0_hst, nps, pp);
 
-    restart::write_pp("rig", -1, pp, nps);
+    restart::write_pp("rig", restart::TEMPL, pp, nps);
     
     delete[] pp;
 }

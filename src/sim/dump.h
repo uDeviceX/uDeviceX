@@ -47,8 +47,7 @@ void dump_strt_templ() { /* template dumps (wall, solid) */
     }
 }
 
-void dump_strt(int it) {
-    const int id = it / strt_freq;
+void dump_strt(int id) {
     flu::strt_dump(id, o::q);
     if (rbcs)   rbc::strt_dump(id, r::q);
     if (solids) rig::strt_dump(id, s::q);
@@ -61,5 +60,5 @@ void dump_diag0(int it) { /* generic dump */
         diag(it);
     }
     if (field_dumps && it % field_freq == 0) dump_grid();
-    if (strt_dumps  && it % strt_freq == 0)  dump_strt(it);
+    if (strt_dumps  && it % strt_freq == 0)  dump_strt(it / strt_freq);
 }
