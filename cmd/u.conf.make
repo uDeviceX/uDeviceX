@@ -12,7 +12,20 @@ BEGIN {
     if (nbin != 0) make("makefile")
 }
 
-function make(f) { # makefile in .
+function make(f,   i) { # makefile in .
+    printf "%s", "all:"                                             > f
+    for (i = 1; i <= nbin; i++) printf " bin.%d/udx", i             > f
+    printf "\n"                                                     > f
+
+    printf "%s", "clean:"                                           > f
+    for (i = 1; i <= nbin; i++) printf " clean.%d", i               > f
+    
+    printf "\n\n"                                                   > f
+    for (i = 1; i <= nbin; i++)
+    	printf "bin.%d/udx:; u.make -f bin.%d/Makefile\n", i, i     > f
+    printf "\n"                                                     > f
+    for (i = 1; i <= nbin; i++)
+     	printf "clean.%d:; u.make -f bin.%d/Makefile clean\n", i, i > f
     close(f)
 }
 

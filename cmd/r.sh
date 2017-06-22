@@ -6,11 +6,11 @@ make > /dev/null
 #run
 #!
 
-u.conf test_data/double.poiseuille.h <<!
-run
-pushflow # hmmm
-run
-!
+#u.conf test_data/double.poiseuille.h <<!
+#run
+#pushflow # hmmm
+#run
+#!
 
 u.conf ../src test_data/double.poiseuille.h <<!
 run
