@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/bin/sh
 
 usg() {
     echo 'usage: u.strtdir [basedir] [NX] [NY] [NZ]' >&2
