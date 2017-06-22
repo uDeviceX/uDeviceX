@@ -1,4 +1,3 @@
-
 all: udx
 
 NVCC     ?= nvcc
@@ -11,9 +10,9 @@ slevel   ?= -2
 NVCCFLAGS += -std=c++11 -I. -I$S
 LIBS      += -lcudart
 
-OBJ0 = bund.o  collision.o common.o force.o local.o field.o glb.o io.o  m.o main.o \
-	mbounce.o mesh.o mrescue.o minmax.o solid.o tcells.o restart.o
-OBJL = l.clist.o l.gsl.o l.m.o l.off.o l.ply.o l.scan.o l.rnd.o
+OBJ0 = $B/bund.o  $B/collision.o $B/common.o $B/force.o $B/local.o $B/field.o $B/glb.o $B/io.o  $B/m.o $B/main.o \
+	$B/mbounce.o $B/mesh.o $B/mrescue.o $B/minmax.o $B/solid.o $B/tcells.o $B/restart.o
+OBJL = $B/l.clist.o $B/l.gsl.o $B/l.m.o $B/l.off.o $B/l.ply.o $B/l.scan.o $B/l.rnd.o
 OBJS = $(OBJ0) $(OBJL)
 
 ifeq ($(h5),0)
@@ -23,23 +22,23 @@ endif
 NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel)
 
 # http://devblogs.nvidia.com/parallelforall/separate-compilation-linking-cuda-device-code
-udx: $(OBJS)
-	$(NVCC)  $(ARCH) -dlink $(OBJS) $(NVCCLIBS) -o gpuCode.o
-	$(LINK)  gpuCode.o $(OBJS) $(LIBS) -o $@
+$B/udx: $(OBJS)
+	$(NVCC)  $(ARCH) -dlink $(OBJS) $(NVCCLIBS) -o $B/gpuCode.o
+	$(LINK)  $B/gpuCode.o $(OBJS) $(LIBS) -o $@
 
 # dev
-%.o:     $S/%.cu;         $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT)     $< -c -o $@
-l.%.o:   $S/l/%.cu;       $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT)     $< -c -o $@
+$B/%.o:     $S/%.cu;         $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT)     $< -c -o $@
+$B/l.%.o:   $S/l/%.cu;       $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT)     $< -c -o $@
 
 # dev and hst
-force.o: $S/force.cu;     $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
-bund.o:  $S/bund.cu;      $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
-glb.o:   $S/glb.cu;       $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
-local.o: $S/dpd/local.cu; $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
+$B/force.o: $S/force.cu;     $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
+$B/bund.o:  $S/bund.cu;      $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
+$B/glb.o:   $S/glb.cu;       $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
+$B/local.o: $S/dpd/local.cu; $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 
 # dev and hst
-l.rnd.o:   $S/l/rnd.cu;   $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
+$B/l.rnd.o: $S/l/rnd.cu;   $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 
-clean:; -rm -f udx $(OBJS) gpuCode.o
+clean:; -rm -f $B/udx $(OBJS) $B/gpuCode.o
 
 .PHONY = clean all
