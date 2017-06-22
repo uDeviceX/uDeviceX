@@ -1,4 +1,4 @@
-all: udx
+all: $B/udx
 
 NVCC     ?= nvcc
 OPT      ?= -O3 -use_fast_math -g --compiler-options -Wall
