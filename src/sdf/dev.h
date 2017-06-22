@@ -30,7 +30,7 @@ struct tex3Dca {
     void destroy() {CC(cudaDestroyTextureObject(to));}
 };
 
-__device__ float sdf(tex3Dca<float> texsdf, float x, float y, float z) {
+__device__ float sdf(const tex3Dca<float> texsdf, float x, float y, float z) {
     int L[3] = {XS, YS, ZS};
     int MARGIN[3] = {XWM, YWM, ZWM};
     int TE[3] = {XTE, YTE, ZTE};
