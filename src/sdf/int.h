@@ -17,6 +17,6 @@ void ini(Quants *q) {
     sub::ini(q->arrsdf, &q->texsdf);
 }
 
-void who_stays(const Quants q, Particle *pp, int n, int nc, int nv, int *stay) {
-    sub::who_stays(q.texsdf, pp, n, nc, nv, /**/ stay);
+int who_stays(const Quants q, Particle *pp, int n, int nc, int nv, int *stay) {
+    return sub::who_stays(q.texsdf, pp, n, nc, nv, /**/ stay);
 }
