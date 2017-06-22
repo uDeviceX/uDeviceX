@@ -93,9 +93,3 @@ int who_stays(Particle *pp, int n, int nc, int nv, /**/ int *stay) {
   CC(cudaFree(keys));
   return nc;
 }
-
-void fin() {
-    CC(cudaUnbindTexture(k_sdf::texSDF));
-    CC(cudaFreeArray(arrSDF));
-}
-}
