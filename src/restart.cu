@@ -110,7 +110,7 @@ void write_ss(const char *code, const int id, const Solid *ss, const long n) {
     char fname[BS] = {0};
     gen_name(DUMP, code, id, "solid", /**/ fname);
         
-    FILE *f = fopen(fname, "r"); CF(f, fname);
+    FILE *f = fopen(fname, "w"); CF(f, fname);
     fprintf(f, "%ld\n", n);
     fwrite(ss, sizeof(Solid), n, f);
     fclose(f);
