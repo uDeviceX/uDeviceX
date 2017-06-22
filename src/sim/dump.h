@@ -41,7 +41,7 @@ void diag(int it) {
 }
 
 void dump_strt_templ() {
-    if (walls) wall::strt_dump(w::q);
+    if (walls) wall::strt_dump_templ(w::q);
     if (solids) rig::strt_dump_templ(s::q);
 }
 

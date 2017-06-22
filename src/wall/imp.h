@@ -140,6 +140,6 @@ void interactions(TexSDF_t texsdf, const int type, const Particle *const pp, con
     }
 }
 
-void strt_dump(const int n, const float4 *pp) {
+void strt_dump_templ(const int n, const float4 *pp) {
     strt::write(pp, n);
 }
