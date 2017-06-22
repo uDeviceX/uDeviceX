@@ -1,6 +1,6 @@
 BIN = $(HOME)/bin
 
-P.common = u.host u.make u.run u.conf u.conf.make u.conf.conf
+P.common = u.host u.make u.run u.conf u.conf.make u.conf.make0 u.conf.conf
 P.daint  = u.load.daint u.run.daint
 P.panda  = u.load.panda u.run.panda
 P.acer   = u.load.acer  u.run.acer
