@@ -4,13 +4,13 @@ struct Quants {
 };
 
 void alloc_quants(Quants *q) {
-    q->arrsdf = NULL;
+    cudaChannelFormatDesc fmt = cudaCreateChannelDesc<float>();
+    CC(cudaMalloc3DArray(&q->arrsdf, &fmt, make_cudaExtent(XTE, YTE, ZTE)));
 }
 
 void  free_quants(Quants *q) {
     if (q->arrsdf) {
         CC(cudaFreeArray(q->arrsdf));
-        CC(cudaDestroyTextureObject(q->rexsdf));
     }
 }
 
