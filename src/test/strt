@@ -1,5 +1,5 @@
 #### two consequent runs (no connections)
-# nTEST: strt.t0
+# cTEST: strt.t0
 # rm -rf bop h5 diag.txt rbc.off
 # :
 # export PATH=../tools:$PATH
