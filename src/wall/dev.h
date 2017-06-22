@@ -19,8 +19,8 @@ __global__ void float42particle(const float4 *src, const int n, Particle *dst) {
 
 __device__ int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
 
-__global__ void interactions_3tpp(const float2 *const pp, const int np, const int w_n, float *const acc,
-                                  const float seed, const int type, const Texo<int> texstart, const Texo<float4> texwpp) {
+__global__ void interactions_3tpp(const sdf::sub::dev::tex3Dca<float> texsdf, const float2 *const pp, const int np, const int w_n,
+                                  float *const acc, const float seed, const int type, const Texo<int> texstart, const Texo<float4> texwpp) {
                                   
 #define start_fetch(i) (texstart.fetch(i))
 #define   wpp_fetch(i) (texwpp.fetch(i))
@@ -37,7 +37,7 @@ __global__ void interactions_3tpp(const float2 *const pp, const int np, const in
     float interacting_threshold =
         -1 - 1.7320f * ((float)XSIZE_WALLCELLS / (float)XTE);
 
-    if (k_sdf::cheap_sdf(dst0.x, dst0.y, dst1.x) <= interacting_threshold) return;
+    if (sdf::sub::dev::cheap_sdf(texsdf, dst0.x, dst0.y, dst1.x) <= interacting_threshold) return;
 
     float2 dst2 = pp[3 * pid + 2];
 
