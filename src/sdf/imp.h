@@ -1,14 +1,5 @@
-namespace sdf {
-void setup() {
-    k_sdf::texSDF.normalized = 0;
-    k_sdf::texSDF.filterMode = cudaFilterModePoint;
-    k_sdf::texSDF.mipmapFilterMode = cudaFilterModePoint;
-    k_sdf::texSDF.addressMode[0] = cudaAddressModeWrap;
-    k_sdf::texSDF.addressMode[1] = cudaAddressModeWrap;
-    k_sdf::texSDF.addressMode[2] = cudaAddressModeWrap;
-}
 
-void ini() {
+void ini(cudaArray *arrsdf, tex3Dca<float> *texsdf) {
     int N[3]; float extent[3];
 
     field::ini_dims("sdf.dat", N, extent);
@@ -37,21 +28,16 @@ void ini() {
 
     if (field_dumps) field::dump(N, extent, grid_data);
 
-    cudaChannelFormatDesc fmt = cudaCreateChannelDesc<float>();
-    CC(cudaMalloc3DArray
-       (&arrSDF, &fmt, make_cudaExtent(XTE, YTE, ZTE)));
-
     cudaMemcpy3DParms copyParams = {0};
     copyParams.srcPtr = make_cudaPitchedPtr
 	((void *)field, XTE * sizeof(float), XTE, YTE);
 
-    copyParams.dstArray = arrSDF;
+    copyParams.dstArray = arrsdf;
     copyParams.extent = make_cudaExtent(XTE, YTE, ZTE);
     copyParams.kind = H2D;
     CC(cudaMemcpy3D(&copyParams));
 
-    setup();
-    CC(cudaBindTextureToArray(k_sdf::texSDF, arrSDF, fmt));
+    texsdf->setup(arrsdf);
 
     delete[] grid_data;
     delete[] field;
