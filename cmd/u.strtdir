@@ -9,7 +9,7 @@ if test $# -ne 0 -a "$1" = -h; then usg; fi
 
 # default basedir
 B=. 
-if test $# -ne 0; then if test -d "$1"; then B=${1%/}; shift; else usg; fi; fi
+if test $# -ne 0; then B=${1%/}; shift; fi
 
 # default num procs
 NX=1; NY=1; NZ=1;
