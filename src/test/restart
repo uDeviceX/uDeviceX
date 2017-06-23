@@ -65,3 +65,34 @@
 # sh runfile
 # avg_h52.m h5/flowfields-0000.h5 | uscale 0.1 > h5.out.txt
 #
+
+#### RBC in a periodic box
+# nTEST: rstrt.t3
+# rm -rf bop diag.txt h5 r rbc.off
+# export PATH=../tools:$PATH
+# (cd ../cmd; make ) > /dev/null
+# :
+# cp data/cells/rbc.498.off rbc.off
+# x=0.75 y=8 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
+# :
+# u.conf conf/couette.h <<!!!
+#    rbcs tend=0.5 part_freq=300
+#    wall_creation=0
+#    BASE_STRT_DUMP=\"bin.1\"
+#    strt_dumps=true
+#    strt_freq=10000
+#    RESTART=false
+#    run
+#    RESTART=true
+#    pushflow=true
+#    BASE_STRT_READ=\"bin.1\"
+#    BASE_STRT_DUMP=\"bin.2\"
+#    run
+#!!!
+# :
+# u.strtdir bin.1
+# u.strtdir bin.2
+# (make clean && u.make -j && make -C ../tools) > /dev/null
+# sh runfile
+# ply2punto r/00003.ply | uscale 100 > ply.out.txt
+#
