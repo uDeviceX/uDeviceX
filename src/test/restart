@@ -1,5 +1,5 @@
 #### solvent only restart
-# nTEST: rstrt.t1
+# snTEST: rstrt.t1
 # rm -rf bop h5 diag.txt rbc.off bin.1 bin.2
 # :
 # export PATH=../tools:$PATH
@@ -33,7 +33,7 @@
 #
 
 #### solvent with wall restart
-# nTEST: rstrt.t2
+# snTEST: rstrt.t2
 # rm -rf bop h5 diag.txt rbc.off bin.1 bin.2 sdf.dat
 # :
 # export PATH=../tools:$PATH
@@ -67,7 +67,7 @@
 #
 
 #### RBC in a periodic box
-# nTEST: rstrt.t3
+# snTEST: rstrt.t3
 # rm -rf bop diag.txt h5 r rbc.off
 # export PATH=../tools:$PATH
 # (cd ../cmd; make ) > /dev/null
@@ -98,7 +98,7 @@
 #
 
 #### two RBCs around cylinder with one RBC removed by the wall
-# nTEST: rstrt.t4
+# snTEST: rstrt.t4
 # rm -rf bop diag.txt h5 ply rbc.off bin.1 bin.2
 # export PATH=../tools:$PATH
 # (cd ../cmd; make ) > /dev/null
@@ -130,3 +130,38 @@
 # sh runfile
 # ply2punto r/00001.ply | uscale 100 > ply.out.txt
 #
+
+#### 3 rigid ellipsoids in double poiseuille, contact
+# snTEST: rstrt.t5
+# export PATH=../tools:$PATH
+# (cd ../cmd; make ) > /dev/null
+# :
+# cp data/cells/rbc.498.off rbc.off
+# rm -rf h5 diag.txt solid_diag.txt
+# echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > ic_solid.txt
+# cp data/rig/ellipsoid.ply mesh_solid.ply
+# :
+# u.conf conf/double.poiseuille.h <<!!!
+#    solids contactforces tend=0.1 part_freq=100
+#    wall_creation=199 part_dumps
+#    BASE_STRT_DUMP=\"bin.1\"
+#    pushflow=false doublepoiseuille
+#    strt_dumps=true
+#    strt_freq=10000
+#    RESTART=false
+#    run
+#    RESTART=true
+#    pushflow=true tend=0.7
+#    BASE_STRT_READ=\"bin.1\"
+#    BASE_STRT_DUMP=\"bin.2\"
+#    run
+#!!!
+# :
+# u.strtdir bin.1
+# u.strtdir bin.2
+# :
+# { make clean && u.make -j && make -C ../tools; } > /dev/null
+# sh runfile
+# bop2test.py bop/solid-00004.bop | awk '{print $1, $2}' > bop.out.txt
+#
+
