@@ -5,6 +5,8 @@ conf.h
 *.out.txt
 h5/
 bop/
+bin.*/
+runfile
 
 udx
 
