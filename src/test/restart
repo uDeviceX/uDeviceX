@@ -1,5 +1,5 @@
 #### solvent only restart
-# nTEST: rstrt.t1
+# snTEST: rstrt.t1
 # rm -rf bop h5 diag.txt rbc.off bin.1 bin.2
 # :
 # export PATH=../tools:$PATH
@@ -33,7 +33,7 @@
 #
 
 #### solvent with wall restart
-# nTEST: rstrt.t2
+# snTEST: rstrt.t2
 # rm -rf bop h5 diag.txt rbc.off bin.1 bin.2 sdf.dat
 # :
 # export PATH=../tools:$PATH
@@ -67,7 +67,7 @@
 #
 
 #### RBC in a periodic box
-# nTEST: rstrt.t3
+# snTEST: rstrt.t3
 # rm -rf bop diag.txt h5 r rbc.off
 # export PATH=../tools:$PATH
 # (cd ../cmd; make ) > /dev/null
@@ -95,4 +95,38 @@
 # (make clean && u.make -j && make -C ../tools) > /dev/null
 # sh runfile
 # ply2punto r/00003.ply | uscale 100 > ply.out.txt
+#
+
+#### two RBCs around cylinder with one RBC removed by the wall
+# cTEST: rstrt.t4
+# rm -rf bop diag.txt h5 ply rbc.off bin.1 bin.2
+# export PATH=../tools:$PATH
+# (cd ../cmd; make ) > /dev/null
+# :
+# cp data/cells/rbc.498.off rbc.off
+# cp data/sdf/cyl1/cyl.dat  sdf.dat
+# x=0.75 y=3 z=9; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
+# x=8    y=8 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
+# :
+# u.conf conf/around.h <<!!!
+#    rbcs tend=0.5 part_freq=5000
+#    wall_creation=999 walls kBT=1e-7
+#    BASE_STRT_DUMP=\"bin.1\"
+#    strt_dumps=true
+#    strt_freq=10000
+#    RESTART=false
+#    run
+#    RESTART=true
+#    pushflow=true tend=3.0
+#    BASE_STRT_READ=\"bin.1\"
+#    BASE_STRT_DUMP=\"bin.2\"
+#    run
+#!!!
+# :
+# u.strtdir bin.1
+# u.strtdir bin.2
+# :
+# { make clean && u.make -j && make -C ../tools; } > /dev/null
+# sh runfile
+# ply2punto r/00001.ply | uscale 100 > ply.out.txt
 #
