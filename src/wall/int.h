@@ -51,18 +51,3 @@ void interactions(const sdf::Quants qsdf, const Quants q, const Ticket t, const 
 void strt_dump_templ(const Quants q) {
     sub::strt_dump_templ(q.n, q.pp);
 }
-
-/*
-  Imaginary interface
-  
-  restart from particles
-  need conversion to float4
-  
-  create_from_solvent(&q &t); -> see gen_quants
-  create_from_file(&q &t);    -> see strt_quants
-
-  sub::gen_ticket(q, &t);
-
-  restart::read/write( (&) q.pp, (&) q.n);
-  
- */
