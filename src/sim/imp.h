@@ -70,7 +70,7 @@ void sim_gen() {
 
 void sim_strt() {
     long nsteps = (int)(tend / dt);
-
+    
     /*Q*/
     flu::strt_quants(restart::BEGIN, &o::q);
     o::q.cells->build(/* io */ o::q.pp, o::q.n);
@@ -95,7 +95,9 @@ void sim_strt() {
     }
 
     solids0 = solids;
-    run(wall_creation, nsteps);
+
+    MSG0("will take %ld steps", nsteps);
+    run(0, nsteps);
     
     /* final strt dump*/
     if (strt_dumps) dump_strt(restart::FINAL);
