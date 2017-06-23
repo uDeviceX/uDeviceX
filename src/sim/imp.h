@@ -84,6 +84,7 @@ void sim_strt() {
 
     /*T*/
     get_ticketZ(o::q, &o::tz);
+    if (rbcs)   rbc::gen_ticket(r::q, &r::tt);
     if (walls) wall::gen_ticket(w::q, &w::t);
     flu::get_ticketZ(o::q, &o::tz);
 
