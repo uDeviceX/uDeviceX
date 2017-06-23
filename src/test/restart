@@ -10,7 +10,41 @@
 #    tend=0.01 part_freq=4000
 #    pushflow doublepoiseuille
 #    field_dumps part_dumps
-#    field_freq=4000
+#    field_freq=4000 wall_creation=0
+#    pushflow=false
+#    BASE_STRT_DUMP=\"bin.1\"
+#    strt_dumps=true
+#    strt_freq=10000
+#    RESTART=false
+#    run
+#    tend=2.01
+#    RESTART=true
+#    pushflow=true
+#    BASE_STRT_READ=\"bin.1\"
+#    BASE_STRT_DUMP=\"bin.2\"
+#    run
+#!!!
+# :
+# u.strtdir bin.1
+# u.strtdir bin.2
+# (make clean && u.make -j) > /dev/null
+# sh runfile
+# avg_h52.m h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
+#
+
+#### solvent with wall restart
+# nTEST: rstrt.t1
+# rm -rf bop h5 diag.txt rbc.off bin.1 bin.2 sdf.dat
+# :
+# export PATH=../tools:$PATH
+# (cd ../cmd; make ) > /dev/null
+# cp data/cells/rbc.498.off  rbc.off
+# cp data/sdf/wall1/wall.dat sdf.dat
+# :
+# u.conf conf/couette.h <<!!!
+#    tend=0.5 part_freq=4000
+#    field_dumps part_dumps field_freq=4000
+#    walls wall_creation=100 shear_z
 #    pushflow=false
 #    BASE_STRT_DUMP=\"bin.1\"
 #    strt_dumps=true
