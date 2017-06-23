@@ -96,8 +96,8 @@ void sim_strt() {
 
     solids0 = solids;
 
-    MSG0("will take %ld steps", nsteps);
-    run(wall_creation, nsteps);
+    MSG0("will take %ld steps", nsteps - (wall_creation + 1));
+    run(wall_creation + 1, nsteps);
     
     /* final strt dump*/
     if (strt_dumps) dump_strt(restart::FINAL);
