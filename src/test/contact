@@ -3,16 +3,19 @@
 # rm -rf bop diag.txt h5 ply rbc.off
 # cp data/cells/rbc.498.off rbc.off
 # export PATH=../tools:$PATH
+# (cd ../cmd; make ) > /dev/null
 #  x=5 y=17 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 # x=11 y=15 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
 # :
-# argp conf/double.poiseuille.h rbcs tend=2.0 part_freq=1500 \
-#        part_dumps   field_freq=1500 \
-#        pushflow doublepoiseuille \
-#        contactforces > conf.h
-# :
+# u.conf conf/double.poiseuille.h <<!!!
+#    rbcs tend=2.0 part_freq=1500 
+#    part_dumps   field_freq=1500 
+#    pushflow doublepoiseuille 
+#    contactforces 
+#    run
+#!!!
 # { make clean &&  u.make -j && make -C ../tools; } > /dev/null
-# u.run
+# sh runfile
 # ply2punto r/00002.ply | uscale 100 > ply.out.txt
 #
 
@@ -21,15 +24,17 @@
 # rm -rf bop diag.txt h5 ply rbc.off
 # cp data/cells/rbc.498.off rbc.off
 # export PATH=../tools:$PATH
+# (cd ../cmd; make ) > /dev/null
 # x=4  y=17 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 # x=12 y=15 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
 # :
-# argp conf/double.poiseuille.h rbcs tend=2.0 part_freq=1500 \
-#        part_dumps field_freq=1500 \
-#        pushflow doublepoiseuille \
-#                      > conf.h
-# :
+# u.conf conf/double.poiseuille.h  <<!!!
+#    rbcs tend=2.0 part_freq=1500
+#    part_dumps field_freq=1500
+#    pushflow doublepoiseuille
+#    run
+#!!!
 # { make clean && u.make -j && make -C ../tools; } > /dev/null
-# u.run
+# sh runfile
 # ply2punto r/00002.ply | uscale 100 > ply.out.txt
 #
