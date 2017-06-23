@@ -1,0 +1,33 @@
+#### solvent only restart
+# nTEST: rstrt.t1
+# rm -rf bop h5 diag.txt rbc.off bin.1 bin.2
+# :
+# export PATH=../tools:$PATH
+# (cd ../cmd; make ) > /dev/null
+# cp data/cells/rbc.498.off  rbc.off
+# :
+# u.conf conf/double.poiseuille.h <<!!!
+#    tend=0.01 part_freq=4000
+#    pushflow doublepoiseuille
+#    field_dumps part_dumps
+#    field_freq=4000
+#    pushflow=false
+#    BASE_STRT_DUMP=\"bin.1\"
+#    strt_dumps=true
+#    strt_freq=10000
+#    RESTART=false
+#    run
+#    tend=2.01
+#    RESTART=true
+#    pushflow=true
+#    BASE_STRT_READ=\"bin.1\"
+#    BASE_STRT_DUMP=\"bin.2\"
+#    run
+#!!!
+# :
+# u.strtdir bin.1
+# u.strtdir bin.2
+# (make clean && u.make -j) > /dev/null
+# sh runfile
+# avg_h52.m h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
+#
