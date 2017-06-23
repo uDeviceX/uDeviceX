@@ -29,11 +29,11 @@
 # u.strtdir bin.2
 # (make clean && u.make -j) > /dev/null
 # sh runfile
-# avg_h52.m h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
+# avg_h52.m h5/flowfields-0000.h5 | uscale 0.1 > h5.out.txt
 #
 
 #### solvent with wall restart
-# nTEST: rstrt.t1
+# nTEST: rstrt.t2
 # rm -rf bop h5 diag.txt rbc.off bin.1 bin.2 sdf.dat
 # :
 # export PATH=../tools:$PATH
@@ -63,5 +63,5 @@
 # u.strtdir bin.2
 # (make clean && u.make -j) > /dev/null
 # sh runfile
-# avg_h52.m h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
+# avg_h52.m h5/flowfields-0000.h5 | uscale 0.1 > h5.out.txt
 #
