@@ -156,9 +156,9 @@ __global__ void area_volume(const Texo<float2> texvert, const Texo<int4> textri,
         int4 ids = textri.fetch(i);
 
         Pos r0, r1, r2;
-        tex2Pos(texvert, 3 * (ids.x + cid * nv), /**/ &r0);
-        tex2Pos(texvert, 3 * (ids.y + cid * nv), /**/ &r1);
-        tex2Pos(texvert, 3 * (ids.z + cid * nv), /**/ &r2);
+        tex2Pos(texvert, ids.x + cid * nv, /**/ &r0);
+        tex2Pos(texvert, ids.y + cid * nv, /**/ &r1);
+        tex2Pos(texvert, ids.z + cid * nv, /**/ &r2);
 
         fst(a_v) += area0(r0.r, r1.r, r2.r);
         scn(a_v) += volume0(r0.r, r1.r, r2.r);
