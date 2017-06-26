@@ -14,6 +14,10 @@
 
 // dump
 
+#ifndef DUMP_BASE
+#define DUMP_BASE "."
+#endif
+
 #ifndef field_dumps
 #define field_dumps (false)
 #endif
