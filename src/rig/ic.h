@@ -183,20 +183,19 @@ void set_ids(const int ns, Solid *ss_hst) {
 
 void ini(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp)
 {
+    int npsolid = 0;
+    float3 minbb, maxbb;
     float *coms = new float[MAX_SOLIDS * 3 * 10];
         
     int nsolid = read_coms(fname, coms);
-    int npsolid = 0;
-
-    float3 minbb, maxbb;
+    
+    if (nsolid == 0) ERR("No solid provided.\n");
+    
     collision::get_bbox(m.vv, m.nv, /**/ &minbb, &maxbb);
         
     nsolid = duplicate_PBC(minbb, maxbb, nsolid, /**/ coms);
 
     make_local(nsolid, coms);
-
-    if (nsolid == 0)
-    ERR("No solid provided.\n");
 
     const int npp0 = *s_n;
     int *tags = new int[npp0];
