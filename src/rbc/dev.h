@@ -34,6 +34,12 @@ __device__ void tex2Pos(const Texo<float2> texvert, const int i, /**/ Pos *r) {
     r->f2[1] = texvert.fetch(3 * i + 1);    
 }
 
+__device__ void tex2Part(const Texo<float2> texvert, const int i, /**/ Part *p) {
+    p->f2[0] = texvert.fetch(3 * i + 0);
+    p->f2[1] = texvert.fetch(3 * i + 1);
+    p->f2[2] = texvert.fetch(3 * i + 2);
+}
+
 __device__ float3 adj_tris(const Texo<float2> texvert, const Texo<int> texadj0,
                            float2 t0a, float2 t0b, const float *av) {
     int pid, lid, idrbc, offset, neighid, i2, i3;
@@ -131,12 +137,12 @@ __global__ void force(const Texo<float2> texvert, const Texo<int> texadj0, const
     int pid = (threadIdx.x + blockDim.x * blockIdx.x) / md;
 
     if (pid < nc * nv) {
-        float2 t0 = texvert.fetch(pid * 3 + 0);
-        float2 t1 = texvert.fetch(pid * 3 + 1);
+        Part p0;
+        tex2Part(texvert, pid, /**/ &p0);
 
         /* all triangles and dihedrals adjusting to vertex `pid` */
-        float3 f = adj_tris(texvert, texadj0, t0, t1, av);
-        f += adj_dihedrals(texvert, texadj0, texadj1, t0, t1);
+        float3 f = adj_tris(texvert, texadj0, p0.f2[0], p0.f2[1], av);
+        f += adj_dihedrals(texvert, texadj0, texadj1, p0.f2[0], p0.f2[1]);
 
         if (f.x > -1.0e9f) {
             atomicAdd(&ff[3 * pid + 0], f.x);
