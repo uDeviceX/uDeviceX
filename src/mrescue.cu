@@ -14,22 +14,19 @@ int *tags_hst, *tags_dev;
 static _DH_ int min2(int a, int b) {return a < b ? a : b;}
 static _DH_ int max2(int a, int b) {return a < b ? b : a;}
 
-void ini(int n)
-{
+void ini(int n) {
     tags_hst = new int[n];
     CC(cudaMalloc(&tags_dev, n*sizeof(int)));
 }
 
-void fin()
-{
+void fin() {
     delete[] tags_hst;
     CC(cudaFree(tags_dev));
 }
 
 static _DH_ void project_t(const float *a, const float *b, const float *c,
                            const float *va, const float *vb, const float *vc,
-                           const float *r, /**/ float *rp, float *vp, float *n)
-{
+                           const float *r, /**/ float *rp, float *vp, float *n) {
     const float ab[3] = {b[0]-a[0], b[1]-a[1], b[2]-a[2]};
     const float ac[3] = {c[0]-a[0], c[1]-a[1], c[2]-a[2]};
     const float ar[3] = {r[0]-a[0], r[1]-a[1], r[2]-a[2]};
@@ -95,8 +92,7 @@ static _DH_ void project_t(const float *a, const float *b, const float *c,
 #include <curand_kernel.h>
     
 static _DH_ void rescue_1p(const Particle *vv, const int *tt, const int nt, const int sid, const int nv,
-                           const int *tcstarts, const int *tccounts, const int *tcids, unsigned long seed, /**/ Particle *p)
-{        
+                           const int *tcstarts, const int *tccounts, const int *tcids, unsigned long seed, /**/ Particle *p) {        
     float dr2b = 1000.f, rpb[3] = {0}, vpb[3] = {0}, nb[3] = {0};
 
     // check around me if there is triangles and select the closest one
@@ -145,8 +141,7 @@ static _DH_ void rescue_1p(const Particle *vv, const int *tt, const int nt, cons
     curand_init (seed, threadIdx.x + blockIdx.x * blockDim.x, 0, &crstate );
 #endif
         
-    if (dr2b == 1000.f)
-    {
+    if (dr2b == 1000.f) {
 #if (defined (__CUDA_ARCH__) && (__CUDA_ARCH__ > 0))
         const int tid = curand(&crstate) % nt;
 #else
@@ -201,12 +196,10 @@ static _DH_ void rescue_1p(const Particle *vv, const int *tt, const int nt, cons
 }
     
 void rescue_hst(const Mesh m, const Particle *i_pp, const int ns, const int n,
-                const int *tcstarts, const int *tccounts, const int *tcids, /**/ Particle *pp)
-{
+                const int *tcstarts, const int *tccounts, const int *tcids, /**/ Particle *pp) {
     collision::inside_hst(pp, n, m, i_pp, ns, /**/ tags_hst);
 
-    for (int i = 0; i < n; ++i)
-    {
+    for (int i = 0; i < n; ++i) {
         const int tag = tags_hst[i];
             
         if (tag != -1)
@@ -216,8 +209,7 @@ void rescue_hst(const Mesh m, const Particle *i_pp, const int ns, const int n,
 
 static __global__ void rescue_dev_k(const Particle *vv, const int *tt, const int nt, const int nv,
                                     const int *tcstarts, const int *tccounts, const int *tcids, const int *tags, const int n,
-                                    unsigned long seed, /**/ Particle *pp)
-{
+                                    unsigned long seed, /**/ Particle *pp) {
     const int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
         
@@ -230,8 +222,7 @@ static __global__ void rescue_dev_k(const Particle *vv, const int *tt, const int
 }
     
 void rescue_dev(const Mesh m, const Particle *i_pp, const int ns, const int n,
-                const int *tcstarts, const int *tccounts, const int *tcids, /**/ Particle *pp)
-{
+                const int *tcstarts, const int *tccounts, const int *tcids, /**/ Particle *pp) {
     if (ns == 0 || n == 0) return;
         
     collision::inside_dev(pp, n, m, i_pp, ns, /**/ tags_dev);
