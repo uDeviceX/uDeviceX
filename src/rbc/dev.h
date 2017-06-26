@@ -29,6 +29,11 @@ __device__ void ttt2ru(float2 t1, float2 t2, float2 t3, /**/ float3 *r, float3 *
     u->x = scn(t2); u->y = fst(t3); u->z = scn(t3);
 }
 
+__device__ void tex2Pos(const Texo<float2> texvert, const int i, /**/ Pos *r) {
+    r->f2[0] = texvert.fetch(3 * i + 0);
+    r->f2[1] = texvert.fetch(3 * i + 1);    
+}
+
 __device__ float3 adj_tris(const Texo<float2> texvert, const Texo<int> texadj0,
                            float2 t0a, float2 t0b, const float *av) {
     int pid, lid, idrbc, offset, neighid, i2, i3;
@@ -72,17 +77,16 @@ __device__ float3 adj_dihedrals(const Texo<float2> texvert, const Texo<int> texa
                                 const Texo<int> texadj1, float2 t0a, float2 t0b) {
     int pid, lid, offset, neighid;
     int i1, i2, i3, i4;
-    float2 t1a, t1b, t2a, t2b, t3a, t3b, t4a, t4b;
-    float3 r0, r1, r2, r3, r4;
+    Pos r1, r2, r3, r4;
     bool valid;
 
     pid     = (threadIdx.x + blockDim.x * blockIdx.x) / md;
     neighid = (threadIdx.x + blockDim.x * blockIdx.x) % md;
 
-    offset = (pid / nv) * nv * 3;
+    offset = (pid / nv) * nv;
     lid =     pid % nv;
 
-    r0 = make_float3(fst(t0a), scn(t0a), fst(t0b));
+    float3 r0 = make_float3(fst(t0a), scn(t0a), fst(t0b));
 
     /*
       r4
@@ -112,21 +116,12 @@ __device__ float3 adj_dihedrals(const Texo<float2> texvert, const Texo<int> texa
     i4 = texadj1.fetch(neighid + md * lid);
 
     if (valid) {
-        t1a = texvert.fetch(offset + i1 * 3 + 0);
-        t1b = texvert.fetch(offset + i1 * 3 + 1);
-        t2a = texvert.fetch(offset + i2 * 3 + 0);
-        t2b = texvert.fetch(offset + i2 * 3 + 1);
-        t3a = texvert.fetch(offset + i3 * 3 + 0);
-        t3b = texvert.fetch(offset + i3 * 3 + 1);
-        t4a = texvert.fetch(offset + i4 * 3 + 0);
-        t4b = texvert.fetch(offset + i4 * 3 + 1);
+        tex2Pos(texvert, offset + i1, /**/ &r1);
+        tex2Pos(texvert, offset + i2, /**/ &r2);
+        tex2Pos(texvert, offset + i3, /**/ &r3);
+        tex2Pos(texvert, offset + i4, /**/ &r4);
 
-        tt2r(t1a, t1b, &r1);
-        tt2r(t2a, t2b, &r2);
-        tt2r(t3a, t3b, &r3);
-        tt2r(t4a, t4b, &r4);
-
-        return dihedral<1>(r0, r2, r1, r4) + dihedral<2>(r1, r0, r2, r3);
+        return dihedral<1>(r0, r2.r, r1.r, r4.r) + dihedral<2>(r1.r, r0, r2.r, r3.r);
     }
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
 }
