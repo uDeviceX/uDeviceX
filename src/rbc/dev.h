@@ -11,7 +11,7 @@ namespace dev {
 /* particle - float2 union */
 union Part {
     float2 f2[3];
-    float3 f3[2];
+    struct { float3 r, v; };
 };
 
 /* position - float2 union */
@@ -41,18 +41,18 @@ __device__ void tex2Part(const Texo<float2> texvert, const int i, /**/ Part *p) 
 }
 
 __device__ float3 adj_tris(const Texo<float2> texvert, const Texo<int> texadj0,
-                           float2 t0a, float2 t0b, const float *av) {
+                           Part p0, const float *av) {
     int pid, lid, idrbc, offset, neighid, i2, i3;
-    float2 t0c;
-    float2 t1a, t1b, t1c, t2a, t2b;
-    float3 r0, u0, r1, u1, r2, f;
+    Pos r2;
+    Part p1;
+    float3 f;
     bool valid;
 
     pid     = (threadIdx.x + blockDim.x * blockIdx.x) / md;
     neighid = (threadIdx.x + blockDim.x * blockIdx.x) % md;
     lid   = pid % nv;
     idrbc = pid / nv;
-    offset = idrbc * nv * 3;
+    offset = idrbc * nv;
     i2 = texadj0.fetch(neighid + md * lid);
     valid = i2 != -1;
 
@@ -61,19 +61,12 @@ __device__ float3 adj_tris(const Texo<float2> texvert, const Texo<int> texadj0,
     i3 = texadj0.fetch(0 + md * lid);
 
     if (valid) {
-        t0c = texvert.fetch(        pid * 3 + 2);
-        t1a = texvert.fetch(offset + i2 * 3 + 0);
-        t1b = texvert.fetch(offset + i2 * 3 + 1);
-        t1c = texvert.fetch(offset + i2 * 3 + 2);
-        t2a = texvert.fetch(offset + i3 * 3 + 0);
-        t2b = texvert.fetch(offset + i3 * 3 + 1);
 
-        ttt2ru( t0a, t0b, t0c, &r0, &u0);
-        ttt2ru( t1a, t1b, t1c, &r1, &u1);
-        tt2r  ( t2a, t2b,      &r2     );
+        tex2Part(texvert, offset + i2, &p1);
+        tex2Pos(texvert, offset + i3, &r2);
 
-        f  = tri(r0, r1, r2, av[2 * idrbc], av[2 * idrbc + 1]);
-        f += visc(r0, r1, u0, u1);
+        f  = tri(p0.r, p1.r, r2.r, av[2 * idrbc], av[2 * idrbc + 1]);
+        f += visc(p0.r, p1.r, p0.v, p1.v);
         return f;
     }
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
@@ -141,7 +134,7 @@ __global__ void force(const Texo<float2> texvert, const Texo<int> texadj0, const
         tex2Part(texvert, pid, /**/ &p0);
 
         /* all triangles and dihedrals adjusting to vertex `pid` */
-        float3 f = adj_tris(texvert, texadj0, p0.f2[0], p0.f2[1], av);
+        float3 f = adj_tris(texvert, texadj0, p0, av);
         f += adj_dihedrals(texvert, texadj0, texadj1, p0.f2[0], p0.f2[1]);
 
         if (f.x > -1.0e9f) {
