@@ -45,7 +45,7 @@ __device__ float3 adj_tris(const Texo<float2> texvert, const Texo<int> texadj0,
     int pid, lid, idrbc, offset, neighid, i2, i3;
     float2 t0c;
     float2 t1a, t1b, t1c, t2a, t2b;
-    float3 r1, u1, r2, u2, r3, f;
+    float3 r0, u0, r1, u1, r2, f;
     bool valid;
 
     pid     = (threadIdx.x + blockDim.x * blockIdx.x) / md;
@@ -68,12 +68,12 @@ __device__ float3 adj_tris(const Texo<float2> texvert, const Texo<int> texadj0,
         t2a = texvert.fetch(offset + i3 * 3 + 0);
         t2b = texvert.fetch(offset + i3 * 3 + 1);
 
-        ttt2ru( t0a, t0b, t0c, &r1, &u1);
-        ttt2ru( t1a, t1b, t1c, &r2, &u2);
-        tt2r  ( t2a, t2b,      &r3     );
+        ttt2ru( t0a, t0b, t0c, &r0, &u0);
+        ttt2ru( t1a, t1b, t1c, &r1, &u1);
+        tt2r  ( t2a, t2b,      &r2     );
 
-        f  = tri(r1, r2, r3, av[2 * idrbc], av[2 * idrbc + 1]);
-        f += visc(r1, r2, u1, u2);
+        f  = tri(r0, r1, r2, av[2 * idrbc], av[2 * idrbc + 1]);
+        f += visc(r0, r1, u0, u1);
         return f;
     }
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
