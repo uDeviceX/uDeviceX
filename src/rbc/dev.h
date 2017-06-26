@@ -133,12 +133,6 @@ __global__ void force(const Texo<float2> texvert, const Texo<int> texadj0, const
     }
 }
 
-__DF__ float3 tex2vec(const Texo<float2> texvert, int id) {
-    float2 ta = texvert.fetch(id + 0);
-    float2 tb = texvert.fetch(id + 1);
-    return make_float3(fst(ta), scn(ta), fst(tb));
-}
-
 __DF__ float2 warpReduceSum(float2 val) {
     for (int offset = warpSize / 2; offset > 0; offset /= 2) {
         fst(val) += __shfl_down(fst(val), offset);
