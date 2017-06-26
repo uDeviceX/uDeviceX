@@ -8,6 +8,18 @@ namespace dev {
 #define fst(t) ( (t).x )
 #define scn(t) ( (t).y )
 
+/* particle - float2 union */
+union Part {
+    float2 f[2];
+    Particle p;
+};
+
+/* position - float2 union */
+union Pos {
+    float2 f[2];
+    struct { float3 r; float dummy; };
+};
+
 __device__ void tt2r(float2 t1, float2 t2, /**/ float3 *r) {
     r->x = fst(t1); r->y = scn(t1); r->z = fst(t2);
 }
