@@ -5,6 +5,8 @@
 . ../generic.sh #defines SRC via GITROOT
 $SRC/configure $SRC
 
+. ./ic.sh
+
 pre() {
     clean
 
@@ -16,14 +18,9 @@ pre() {
     cp $rig mesh_solid.ply
 
     NX=1  NY=1  NZ=1
-    XS=32 YS=32 ZS=16
+    XS=64 YS=32 ZS=16
     geom # set NN, LX, LY, LZ, Domain
-
-    x0=`echo "$LX * 0.5" | bc`
-    y0=`echo "$LY * 0.5" | bc`
-    z0=`echo "$LZ * 0.5" | bc` 
-    echo $x0 $y0 $z0 > ic_solid.txt
-
+    ic_center
     Tend=100
     gamma_dot=0.01
     
