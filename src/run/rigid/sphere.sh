@@ -32,6 +32,7 @@ pre() {
     field_dumps part_dumps
     field_freq=4000 parts_freq=1000
     solids sbounce_back
+    walls wall_creation=5000
     run
 EOF
     u.strtdir . $NX $NY $NZ
