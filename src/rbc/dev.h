@@ -10,13 +10,13 @@ namespace dev {
 
 /* particle - float2 union */
 union Part {
-    float2 f[2];
-    Particle p;
+    float2 f2[3];
+    float3 f3[2];
 };
 
 /* position - float2 union */
 union Pos {
-    float2 f[2];
+    float2 f2[2];
     struct { float3 r; float dummy; };
 };
 
