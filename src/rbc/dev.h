@@ -20,22 +20,24 @@ union Pos {
     struct { float3 r; float dummy; };
 };
 
-__device__ void tex2Pos(const Texo<float2> texvert, const int id, /**/ Pos *r) {
-    r->f2[0] = texvert.fetch(3 * id + 0);
-    r->f2[1] = texvert.fetch(3 * id + 1);    
+__device__ Pos tex2Pos(const Texo<float2> texvert, const int id) {
+    Pos r;
+    r.f2[0] = texvert.fetch(3 * id + 0);
+    r.f2[1] = texvert.fetch(3 * id + 1);
+    return r;
 }
 
-__device__ void tex2Part(const Texo<float2> texvert, const int id, /**/ Part *p) {
-    p->f2[0] = texvert.fetch(3 * id + 0);
-    p->f2[1] = texvert.fetch(3 * id + 1);
-    p->f2[2] = texvert.fetch(3 * id + 2);
+__device__ Part tex2Part(const Texo<float2> texvert, const int id) {
+    Part p;
+    p.f2[0] = texvert.fetch(3 * id + 0);
+    p.f2[1] = texvert.fetch(3 * id + 1);
+    p.f2[2] = texvert.fetch(3 * id + 2);
+    return p;
 }
 
 __device__ float3 adj_tris(const Texo<float2> texvert, const Texo<int> texadj0,
-                           Part p0, const float *av) {
+                           const Part p0, const float *av) {
     int pid, lid, idrbc, offset, neighid, i1, i2;
-    Pos r2;
-    Part p1;
     float3 f;
     bool valid;
 
@@ -52,8 +54,8 @@ __device__ float3 adj_tris(const Texo<float2> texvert, const Texo<int> texadj0,
     i2 = texadj0.fetch(0 + md * lid);
 
     if (valid) {
-        tex2Part(texvert, offset + i1, &p1);
-        tex2Pos(texvert, offset + i2, &r2);
+        const Part p1 = tex2Part(texvert, offset + i1);
+        const Pos  r2 = tex2Pos(texvert, offset + i2);
 
         f  = tri(p0.r, p1.r, r2.r, av[2 * idrbc], av[2 * idrbc + 1]);
         f += visc(p0.r, p1.r, p0.v, p1.v);
@@ -66,7 +68,6 @@ __device__ float3 adj_dihedrals(const Texo<float2> texvert, const Texo<int> texa
                                 const Texo<int> texadj1, float3 r0) {
     int pid, lid, offset, neighid;
     int i1, i2, i3, i4;
-    Pos r1, r2, r3, r4;
     bool valid;
 
     pid     = (threadIdx.x + blockDim.x * blockIdx.x) / md;
@@ -102,10 +103,10 @@ __device__ float3 adj_dihedrals(const Texo<float2> texvert, const Texo<int> texa
     i4 = texadj1.fetch(neighid + md * lid);
 
     if (valid) {
-        tex2Pos(texvert, offset + i1, /**/ &r1);
-        tex2Pos(texvert, offset + i2, /**/ &r2);
-        tex2Pos(texvert, offset + i3, /**/ &r3);
-        tex2Pos(texvert, offset + i4, /**/ &r4);
+        const Pos r1 = tex2Pos(texvert, offset + i1);
+        const Pos r2 = tex2Pos(texvert, offset + i2);
+        const Pos r3 = tex2Pos(texvert, offset + i3);
+        const Pos r4 = tex2Pos(texvert, offset + i4);
 
         return dihedral<1>(r0, r2.r, r1.r, r4.r) + dihedral<2>(r1.r, r0, r2.r, r3.r);
     }
@@ -117,8 +118,7 @@ __global__ void force(const Texo<float2> texvert, const Texo<int> texadj0, const
     int pid = (threadIdx.x + blockDim.x * blockIdx.x) / md;
 
     if (pid < nc * nv) {
-        Part p0;
-        tex2Part(texvert, pid, /**/ &p0);
+        const Part p0 = tex2Part(texvert, pid);
 
         /* all triangles and dihedrals adjusting to vertex `pid` */
         float3 f = adj_tris(texvert, texadj0, p0, av);
@@ -148,10 +148,9 @@ __global__ void area_volume(const Texo<float2> texvert, const Texo<int4> textri,
          i += blockDim.x * gridDim.x) {
         int4 ids = textri.fetch(i);
 
-        Pos r0, r1, r2;
-        tex2Pos(texvert, ids.x + cid * nv, /**/ &r0);
-        tex2Pos(texvert, ids.y + cid * nv, /**/ &r1);
-        tex2Pos(texvert, ids.z + cid * nv, /**/ &r2);
+        const Pos r0 = tex2Pos(texvert, ids.x + cid * nv);
+        const Pos r1 = tex2Pos(texvert, ids.y + cid * nv);
+        const Pos r2 = tex2Pos(texvert, ids.z + cid * nv);
 
         fst(a_v) += area0(r0.r, r1.r, r2.r);
         scn(a_v) += volume0(r0.r, r1.r, r2.r);
