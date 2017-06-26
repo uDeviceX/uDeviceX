@@ -78,7 +78,7 @@ static void rbc_dump0(const char * filename,
 }
 
 void rbc_dump(int nc, Particle *p, int* triplets, int nv, int nt, int id) {
-    const char *fmt = "r/%05d.ply";
+    const char *fmt = DUMP_BASE "/r/%05d.ply";
     char buf[BUFSIZ];
     sprintf(buf, fmt, id);
     if (m::rank == 0) mkdir("r", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
@@ -191,7 +191,7 @@ H5FieldDump::H5FieldDump() : last_idtimestep(0) {
 void H5FieldDump::dump_scalarfield(float *data,
                                    const char *channelname) {
     char path2h5[512];
-    sprintf(path2h5, "h5/%s.h5", channelname);
+    sprintf(path2h5, DUMP_BASE "/h5/%s.h5", channelname);
     _write_fields(path2h5, &data, &channelname, 1);
 }
 
@@ -221,13 +221,13 @@ void H5FieldDump::dump(Particle *p, int n) {
     const char * names[] = { "density", "u", "v", "w" };
     if (!directory_exists) {
         if (m::rank == 0)
-        mkdir("h5", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+        mkdir(DUMP_BASE "/h5", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
         directory_exists = true;
         MC(l::m::Barrier(m::cart));
     }
 
     char filepath[512];
-    sprintf(filepath, "h5/flowfields-%04d.h5", id++);
+    sprintf(filepath, DUMP_BASE "/h5/flowfields-%04d.h5", id++);
     float * data[] = { rho.data(), u[0].data(), u[1].data(), u[2].data() };
     _write_fields(filepath, data, names, 4);
 #endif // NO_H5
