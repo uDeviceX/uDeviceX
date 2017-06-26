@@ -12,3 +12,10 @@ clean () {
     rm -rf diag.txt h5 bop r solid_diag*txt solid-ply
 }
 
+geom () {
+    NN=$((${NX}*${NY}*${NZ}))
+    LX=$((${NX}*${XS}))
+    LY=$((${NY}*${YS}))
+    LZ=$((${NZ}*${ZS}))
+    Domain="XS=$XS YS=$YS ZS=$ZS"
+}
