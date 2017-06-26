@@ -317,7 +317,7 @@ void dump(const int it, const Solid *ss, const Solid *ssbb, int ns, const int *m
         const Solid *s   = ss   + j;
         const Solid *sbb = ssbb + j;
             
-        sprintf(fname, "solid_diag_%04d.txt", (int) s->id);
+        sprintf(fname, DUMP_BASE "/solid_diag_%04d.txt", (int) s->id);
         FILE *fp;
         if (first) fp = fopen(fname, "w");
         else       fp = fopen(fname, "a");
