@@ -20,15 +20,6 @@ union Pos {
     struct { float3 r; float dummy; };
 };
 
-__device__ void tt2r(float2 t1, float2 t2, /**/ float3 *r) {
-    r->x = fst(t1); r->y = scn(t1); r->z = fst(t2);
-}
-
-__device__ void ttt2ru(float2 t1, float2 t2, float2 t3, /**/ float3 *r, float3 *u) {
-    r->x = fst(t1); r->y = scn(t1); r->z = fst(t2);
-    u->x = scn(t2); u->y = fst(t3); u->z = scn(t3);
-}
-
 __device__ void tex2Pos(const Texo<float2> texvert, const int i, /**/ Pos *r) {
     r->f2[0] = texvert.fetch(3 * i + 0);
     r->f2[1] = texvert.fetch(3 * i + 1);    
