@@ -34,10 +34,13 @@ static int duplicate_PBC(const float3 minbb, const float3 maxbb, int n, /**/ flo
         dupls.push_back(r0);
 
         auto duplicate = [&](int d, int sign) {
+#ifdef spdir
+            if (d == spdir) return;
+#endif
             auto dupls2 = dupls;
             for (f3& r : dupls2)
             r.x[d] += Lg[d] * sign;
-            dupls.insert(dupls.end(), dupls2.begin(), dupls2.end());
+            dupls.insert(dupls.end(), dupls2.begin(), dupls2.end());      
         };
 
         if (r0.x[0] + minbb.x < 0) duplicate(0, +1);

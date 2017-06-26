@@ -131,6 +131,10 @@ void pack_sendcnt(const Solid *ss_hst, const int ns, const Particle *pp, const i
 
             const int code = vcode[0] + 3 * (vcode[1] + 3 * vcode[2]);
 
+#ifdef psdir
+            if (vcode[spdir] != 1) return;
+#endif
+
             if (hhindices[code].size() == 0 || hhindices[code].back() != i)
             hhindices[code].push_back(i);
         };
