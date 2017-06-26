@@ -138,8 +138,9 @@ __global__ void update_om_v(const int ns, Solid *ss)
         s.om[Y] += dom[Y]*dt;
         s.om[Z] += dom[Z]*dt;
 
+        // assume always rotating around z axis
         if (pin_axis) {
-            s.om[X] = s.om[Y] = s.om[Z] = 0.f;
+            s.om[X] = s.om[Y] = 0.f;
         }
 
         if (pin_com) {
