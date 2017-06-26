@@ -72,15 +72,15 @@ static void make_local(const int n, /**/ float *coms) {
     coms[3*j + d] -= mi[d];
 }
 
-#define R (XS)
-
 static void count_pp_inside(const Particle *s_pp, const int n, const float *coms, const int ns,
                             const int *tt, const float *vv, const int nt,
                             /**/ int *tags, int *rcounts) {
     for (int j = 0; j < ns; ++j) rcounts[j] = 0;
+
+    const float R = (XS > YS) ? (XS > ZS ? XS : ZS) : (YS > ZS ? YS : ZS);
     
     for (int ip = 0; ip < n; ++ip) {
-        Particle p = s_pp[ip]; float *r0 = p.r;
+        const Particle p = s_pp[ip]; const float *r0 = p.r;
         int tag = -1;
         for (int j = 0; j < ns; ++j) {
             const float *com = coms + 3*j;
@@ -104,8 +104,6 @@ static void count_pp_inside(const Particle *s_pp, const int n, const float *coms
     MSG("Found %d particles in solid %d", rcounts[j], j);
 #endif
 }
-
-#undef R
 
 static void elect(const int *rcounts, const int ns, /**/ int *root, int *idmax) {
     int localmax[2] = {0, m::rank}, globalmax[2] = {0, m::rank}, idmax_ = 0;
