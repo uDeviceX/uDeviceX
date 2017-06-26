@@ -45,8 +45,7 @@ int inside_1p(const float *r, const float *vv, const int *tt, const int nt)
     origin[spdir] = r[spdir];
 #endif
         
-    for (int i = 0; i < nt; ++i)
-    {
+    for (int i = 0; i < nt; ++i) {
         const int *t = tt + 3 * i;
         if (in_tetrahedron(r, vv + 3*t[0], vv + 3*t[1], vv + 3*t[2], origin)) ++c;
     }
@@ -67,8 +66,7 @@ static int inside_1p(const float *r, const Particle *vv, const int *tt, const in
     origin[spdir] = r[spdir];
 #endif
 
-    for (int i = 0; i < nt; ++i)
-    {
+    for (int i = 0; i < nt; ++i) {
         const int *t = tt + 3 * i;
         if (in_tetrahedron(r, vv[t[0]].r, vv[t[1]].r, vv[t[2]].r, origin)) ++c;
     }
