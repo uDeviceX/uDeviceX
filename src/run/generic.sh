@@ -2,11 +2,11 @@ setup() {
     ( make -C ../tools/rbc install        ) > /dev/null
     ( make -C ../tools install            ) > /dev/null
     ( make -C ../post/build_smesh install ) > /dev/null
-    ( cd ../cmd; make                     ) > /dev/null
+    ( cd ../cmd; make ;                   ) > /dev/null
 }
 
 compile() {
-    { make clean && make -j ; } > /dev/null
+    { make clean && u.make -j ; } > /dev/null
 }
 
 clean () {
