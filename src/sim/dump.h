@@ -31,7 +31,7 @@ void dump_grid() {
 }
 
 void dump_diag_after(int it) { /* after wall */
-    if (it % part_freq)
+    if (it % part_freq == 0)
     solid::dump(it, s::q.ss_dmp, s::t.ss_dmp, s::q.ns, m::coords);
 }
 
