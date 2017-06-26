@@ -2,7 +2,7 @@ namespace dump
 {
 void ini() {
     if (m::rank == 0)
-    mkdir("bop", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    mkdir(DUMP_BASE "/bop", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 
     const int L[3] = {XS, YS, ZS};        
     for (int c = 0; c < 3; ++c) mi[c] = (m::coords[c] + 0.5) * L[c];
@@ -26,7 +26,7 @@ static void copy_shift(const Particle *pp, const long n, Particle *w) {
     
 static void header(const long n, const char *name, const int step) {
     char fname[256] = {0};
-    sprintf(fname, "bop/" PATTERN ".bop", name, step / part_freq);
+    sprintf(fname, DUMP_BASE "/bop/" PATTERN ".bop", name, step / part_freq);
         
     FILE *f = fopen(fname, "w");
 
@@ -46,7 +46,7 @@ void parts(const Particle *pp, const long n, const char *name, const int step) {
     copy_shift(pp, n, /**/ w_pp);
         
     char fname[256] = {0};
-    sprintf(fname, "bop/" PATTERN ".values", name, step / part_freq);
+    sprintf(fname, DUMP_BASE "/bop/" PATTERN ".values", name, step / part_freq);
 
     MPI_File f;
     MPI_Status status;
