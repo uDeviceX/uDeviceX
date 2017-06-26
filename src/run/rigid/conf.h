@@ -22,6 +22,7 @@
 #define gammadpd_rbc        8.f
 #define gammadpd_solid      8.f
 #define gammadpd_wall       8.f
+#define driving_force       0.f
 
 #define ljsigma          0.3f       /* RBC-RBC contact LJ interaction parameters */
 #define ljepsilon        0.44f
