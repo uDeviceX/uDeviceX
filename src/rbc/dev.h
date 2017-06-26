@@ -20,15 +20,15 @@ union Pos {
     struct { float3 r; float dummy; };
 };
 
-__device__ void tex2Pos(const Texo<float2> texvert, const int i, /**/ Pos *r) {
-    r->f2[0] = texvert.fetch(3 * i + 0);
-    r->f2[1] = texvert.fetch(3 * i + 1);    
+__device__ void tex2Pos(const Texo<float2> texvert, const int id, /**/ Pos *r) {
+    r->f2[0] = texvert.fetch(3 * id + 0);
+    r->f2[1] = texvert.fetch(3 * id + 1);    
 }
 
-__device__ void tex2Part(const Texo<float2> texvert, const int i, /**/ Part *p) {
-    p->f2[0] = texvert.fetch(3 * i + 0);
-    p->f2[1] = texvert.fetch(3 * i + 1);
-    p->f2[2] = texvert.fetch(3 * i + 2);
+__device__ void tex2Part(const Texo<float2> texvert, const int id, /**/ Part *p) {
+    p->f2[0] = texvert.fetch(3 * id + 0);
+    p->f2[1] = texvert.fetch(3 * id + 1);
+    p->f2[2] = texvert.fetch(3 * id + 2);
 }
 
 __device__ float3 adj_tris(const Texo<float2> texvert, const Texo<int> texadj0,
