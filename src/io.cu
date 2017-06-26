@@ -81,7 +81,7 @@ void rbc_dump(int nc, Particle *p, int* triplets, int nv, int nt, int id) {
     const char *fmt = DUMP_BASE "/r/%05d.ply";
     char buf[BUFSIZ];
     sprintf(buf, fmt, id);
-    if (m::rank == 0) mkdir("r", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    if (m::rank == 0) mkdir(DUMP_BASE "/r", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     rbc_dump0(buf, triplets, nc, nt, p, nv);
 }
 
