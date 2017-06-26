@@ -155,12 +155,13 @@ __global__ void area_volume(const Texo<float2> texvert, const Texo<int4> textri,
          i += blockDim.x * gridDim.x) {
         int4 ids = textri.fetch(i);
 
-        float3 r0(tex2vec(texvert, 3 * (ids.x + cid * nv)));
-        float3 r1(tex2vec(texvert, 3 * (ids.y + cid * nv)));
-        float3 r2(tex2vec(texvert, 3 * (ids.z + cid * nv)));
+        Pos r0, r1, r2;
+        tex2Pos(texvert, 3 * (ids.x + cid * nv), /**/ &r0);
+        tex2Pos(texvert, 3 * (ids.y + cid * nv), /**/ &r1);
+        tex2Pos(texvert, 3 * (ids.z + cid * nv), /**/ &r2);
 
-        fst(a_v) += area0(r0, r1, r2);
-        scn(a_v) += volume0(r0, r1, r2);
+        fst(a_v) += area0(r0.r, r1.r, r2.r);
+        scn(a_v) += volume0(r0.r, r1.r, r2.r);
     }
     a_v = warpReduceSum(a_v);
     if ((threadIdx.x & (warpSize - 1)) == 0) {
