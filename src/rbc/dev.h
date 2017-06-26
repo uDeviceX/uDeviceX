@@ -61,7 +61,6 @@ __device__ float3 adj_tris(const Texo<float2> texvert, const Texo<int> texadj0,
     i2 = texadj0.fetch(0 + md * lid);
 
     if (valid) {
-
         tex2Part(texvert, offset + i1, &p1);
         tex2Pos(texvert, offset + i2, &r2);
 
