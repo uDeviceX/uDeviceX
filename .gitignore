@@ -18,3 +18,4 @@ CMakeCache.txt
 src/r/*.ply
 *.cmake
 *.tramp_history
+/src/conf.h
