@@ -1,15 +1,16 @@
 #!/usr/bin/sh
 
-# assume the script is run from uDeviceX/src/ directory
-
-./configure
-. ./run/generic.sh
+# assumes executed from the git repo;
+# if one need to dump elsewhere, use symlinks
+. ../generic.sh #defines SRC via GITROOT
+$SRC/configure $SRC
 
 pre() {
     clean
 
-    sdf=data/sdf/yplates1/yplates.dat
-    rig=data/rig/sphere.ply
+    DATA=$SRC/data
+    sdf=$DATA/sdf/yplates1/yplates.dat
+    rig=$DATA/rig/sphere.ply
 
     cp $sdf sdf.dat
     cp $rig mesh_solid.ply
@@ -26,7 +27,7 @@ pre() {
     Tend=100
     gamma_dot=0.01
     
-    u.conf run/rigid/conf.h <<EOF
+    u.conf $SRC conf.base.h <<EOF
     $Domain tend=$Tend
     gamma_dot=$gamma_dot shear_y
     field_dumps part_dumps

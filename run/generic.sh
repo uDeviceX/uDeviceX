@@ -1,8 +1,11 @@
+GITROOT=`git rev-parse --show-toplevel`
+SRC=${GITROOT}/src
+
 setup() {
-    ( make -C ../tools/rbc install        ) > /dev/null
-    ( make -C ../tools install            ) > /dev/null
-    ( make -C ../post/build_smesh install ) > /dev/null
-    ( cd ../cmd; make ;                   ) > /dev/null
+    ( make -C ${GITROOT}/tools/rbc install        ) > /dev/null
+    ( make -C ${GITROOT}/tools install            ) > /dev/null
+    ( make -C ${GITROOT}/post/build_smesh install ) > /dev/null
+    ( cd ${GITROOT}/cmd; make ;                   ) > /dev/null
 }
 
 compile() {
