@@ -73,7 +73,7 @@ __device__ float3 adj_tris(const Texo<float2> texvert, const Texo<int> texadj0,
 }
 
 __device__ float3 adj_dihedrals(const Texo<float2> texvert, const Texo<int> texadj0,
-                                const Texo<int> texadj1, float2 t0a, float2 t0b) {
+                                const Texo<int> texadj1, float3 r0) {
     int pid, lid, offset, neighid;
     int i1, i2, i3, i4;
     Pos r1, r2, r3, r4;
@@ -84,8 +84,6 @@ __device__ float3 adj_dihedrals(const Texo<float2> texvert, const Texo<int> texa
 
     offset = (pid / nv) * nv;
     lid =     pid % nv;
-
-    float3 r0 = make_float3(fst(t0a), scn(t0a), fst(t0b));
 
     /*
       r4
@@ -135,7 +133,7 @@ __global__ void force(const Texo<float2> texvert, const Texo<int> texadj0, const
 
         /* all triangles and dihedrals adjusting to vertex `pid` */
         float3 f = adj_tris(texvert, texadj0, p0, av);
-        f += adj_dihedrals(texvert, texadj0, texadj1, p0.f2[0], p0.f2[1]);
+        f += adj_dihedrals(texvert, texadj0, texadj1, p0.r);
 
         if (f.x > -1.0e9f) {
             atomicAdd(&ff[3 * pid + 0], f.x);
