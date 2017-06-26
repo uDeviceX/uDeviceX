@@ -28,7 +28,7 @@ pre() {
     
     u.conf run/rigid/conf.h <<EOF
     $Domain tend=$Tend
-    gamma_dot=$gamma_dot
+    gamma_dot=$gamma_dot shear_y
     field_dumps part_dumps
     field_freq=4000 parts_freq=1000
     solids sbounce_back
