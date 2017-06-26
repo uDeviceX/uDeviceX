@@ -42,7 +42,7 @@ __device__ void tex2Part(const Texo<float2> texvert, const int i, /**/ Part *p) 
 
 __device__ float3 adj_tris(const Texo<float2> texvert, const Texo<int> texadj0,
                            Part p0, const float *av) {
-    int pid, lid, idrbc, offset, neighid, i2, i3;
+    int pid, lid, idrbc, offset, neighid, i1, i2;
     Pos r2;
     Part p1;
     float3 f;
@@ -53,17 +53,17 @@ __device__ float3 adj_tris(const Texo<float2> texvert, const Texo<int> texadj0,
     lid   = pid % nv;
     idrbc = pid / nv;
     offset = idrbc * nv;
-    i2 = texadj0.fetch(neighid + md * lid);
-    valid = i2 != -1;
+    i1 = texadj0.fetch(neighid + md * lid);
+    valid = i1 != -1;
 
-    i3 = texadj0.fetch(((neighid + 1) % md) + md * lid);
-    if (i3 == -1 && valid)
-    i3 = texadj0.fetch(0 + md * lid);
+    i2 = texadj0.fetch(((neighid + 1) % md) + md * lid);
+    if (i2 == -1 && valid)
+    i2 = texadj0.fetch(0 + md * lid);
 
     if (valid) {
 
-        tex2Part(texvert, offset + i2, &p1);
-        tex2Pos(texvert, offset + i3, &r2);
+        tex2Part(texvert, offset + i1, &p1);
+        tex2Pos(texvert, offset + i2, &r2);
 
         f  = tri(p0.r, p1.r, r2.r, av[2 * idrbc], av[2 * idrbc + 1]);
         f += visc(p0.r, p1.r, p0.v, p1.v);
