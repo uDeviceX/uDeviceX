@@ -95,8 +95,7 @@ __device__ float3 adj_dihedrals(const Texo<float2> texvert, const Texo<int> texa
         i2 = texadj0.fetch(0 + md * lid);
         i3 = texadj0.fetch(1 + md * lid);
     } else {
-        i3 =
-            texadj0.fetch(((neighid + 2) % md) + md * lid);
+        i3 = texadj0.fetch(((neighid + 2) % md) + md * lid);
         if (i3 == -1 && valid) i3 = texadj0.fetch(0 + md * lid);
     }
 
