@@ -1,6 +1,8 @@
 #include <mpi.h>
 #include "common.h"
 #include "minmax.h"
+#include <conf.h>
+#include "conf.common.h"
 
 #include "collision.h"
 
