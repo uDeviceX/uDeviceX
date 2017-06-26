@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <conf.h>
+#include "conf.common.h"
 #include "m.h"     /* MPI */
 #include "common.h"
 
