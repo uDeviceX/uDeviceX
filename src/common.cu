@@ -34,7 +34,7 @@ void diagnostics(Particle *pp, int n, int idstep) {
     double kbt = 0.5 * ke / (n * 3. / 2);
     if (m::rank == 0) {
         static bool firsttime = true;
-        FILE * f = fopen("diag.txt", firsttime ? "w" : "a");
+        FILE * f = fopen(DUMP_BASE "/diag.txt", firsttime ? "w" : "a");
         firsttime = false;
         if (idstep == 0) fprintf(f, "# TSTEP\tKBT\tPX\tPY\tPZ\n");
         fprintf(stderr, "%e\t%.10e\t%.10e\t%.10e\t%.10e\n", idstep * dt, kbt, p[0], p[1], p[2]);
