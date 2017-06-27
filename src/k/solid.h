@@ -36,8 +36,7 @@ _HD_ void gram_schmidt(/**/ float *e0, float *e1, float *e2) {
     normalize(e2);
 }
 
-_HD_ void rot_e(const float *om, /**/ float *e)
-{
+_HD_ void rot_e(const float *om, /**/ float *e) {
     const float omx = om[X], omy = om[Y], omz = om[Z];
     const float ex = e[X], ey = e[Y], ez = e[Z];
 
@@ -48,10 +47,8 @@ _HD_ void rot_e(const float *om, /**/ float *e)
     e[X] += vx*dt; e[Y] += vy*dt; e[Z] += vz*dt;
 }
 
-__global__ void rot_referential(const int ns, Solid *ss)
-{
-    if (threadIdx.x < ns)
-    {
+__global__ void rot_referential(const int ns, Solid *ss) {
+    if (threadIdx.x < ns) {
         Solid s = ss[threadIdx.x];
         rot_e(s.om, /**/ s.e0);
         rot_e(s.om, /**/ s.e1);
@@ -62,18 +59,15 @@ __global__ void rot_referential(const int ns, Solid *ss)
     }
 }
     
-static __device__ void warpReduceSumf3(float *x)
-{
-    for (int offset = warpSize>>1; offset > 0; offset >>= 1)
-    {
+static __device__ void warpReduceSumf3(float *x) {
+    for (int offset = warpSize>>1; offset > 0; offset >>= 1) {
         x[X] += __shfl_down(x[X], offset);
         x[Y] += __shfl_down(x[Y], offset);
         x[Z] += __shfl_down(x[Z], offset);
     }
 }
 
-__global__ void add_f_to(const Particle *pp, const Force *ff, const int nps, const int ns, Solid *ss)
-{
+__global__ void add_f_to(const Particle *pp, const Force *ff, const int nps, const int ns, Solid *ss) {
     const int gid = blockIdx.x * blockDim.x + threadIdx.x;
     const int sid = blockIdx.y;
 
@@ -82,8 +76,7 @@ __global__ void add_f_to(const Particle *pp, const Force *ff, const int nps, con
     Force    f = {0, 0, 0};
     Particle p = {0, 0, 0, 0, 0, 0};
 
-    if (gid < nps)
-    {
+    if (gid < nps) {
         f = ff[i];
         p = pp[i];
     }
@@ -99,8 +92,7 @@ __global__ void add_f_to(const Particle *pp, const Force *ff, const int nps, con
     warpReduceSumf3(f.f);
     warpReduceSumf3(to);
 
-    if ((threadIdx.x & (warpSize - 1)) == 0)
-    {
+    if ((threadIdx.x & (warpSize - 1)) == 0) {
         atomicAdd(ss[sid].fo + X, f.f[X]);
         atomicAdd(ss[sid].fo + Y, f.f[Y]);
         atomicAdd(ss[sid].fo + Z, f.f[Z]);
@@ -111,22 +103,18 @@ __global__ void add_f_to(const Particle *pp, const Force *ff, const int nps, con
     }
 }
 
-__global__ void reinit_ft(const int nsolid, Solid *ss)
-{
+__global__ void reinit_ft(const int nsolid, Solid *ss) {
     const int gid = blockIdx.x * blockDim.x + threadIdx.x;
 
-    if (gid < nsolid)
-    {
+    if (gid < nsolid) {
         Solid *s = ss + gid;
         s->fo[X] = s->fo[Y] = s->fo[Z] = 0.f;
         s->to[X] = s->to[Y] = s->to[Z] = 0.f;
     }
 }
 
-__global__ void update_om_v(const int ns, Solid *ss)
-{
-    if (threadIdx.x < ns)
-    {
+__global__ void update_om_v(const int ns, Solid *ss) {
+    if (threadIdx.x < ns) {
         Solid s = ss[threadIdx.x];
         const float *A = s.Iinv, *b = s.to;
 
@@ -146,8 +134,7 @@ __global__ void update_om_v(const int ns, Solid *ss)
         if (pin_com) {
             s.v[X] = s.v[Y] = s.v[Z] = 0.f;
         }
-        else
-        {
+        else {
             const float sc = dt/s.mass;
                 
             s.v[X] += s.fo[X] * sc;
@@ -159,8 +146,7 @@ __global__ void update_om_v(const int ns, Solid *ss)
     }
 }
 
-__global__ void compute_velocity(const Solid *ss, const int ns, const int nps, /**/ Particle *pp)
-{
+__global__ void compute_velocity(const Solid *ss, const int ns, const int nps, /**/ Particle *pp) {
     const int pid = threadIdx.x + blockIdx.x * blockDim.x;
     const int sid = blockIdx.y;
 
@@ -170,8 +156,7 @@ __global__ void compute_velocity(const Solid *ss, const int ns, const int nps, /
         
     const float omx = s.om[X], omy = s.om[Y], omz = s.om[Z];
         
-    if (pid < nps)
-    {
+    if (pid < nps) {
         float *r0 = pp[i].r, *v0 = pp[i].v;
 
         const float x = r0[X]-s.com[X];
@@ -184,8 +169,7 @@ __global__ void compute_velocity(const Solid *ss, const int ns, const int nps, /
     }
 }
 
-__global__ void update_com(const int ns, Solid *ss)
-{
+__global__ void update_com(const int ns, Solid *ss) {
     const int sid = threadIdx.x / 3;
     const int c   = threadIdx.x % 3;
 
@@ -193,8 +177,7 @@ __global__ void update_com(const int ns, Solid *ss)
     ss[sid].com[c] += ss[sid].v[c]*dt;
 }
 
-__global__ void update_r(const float *rr0, const int nps, const Solid *ss, const int nsolid, /**/ Particle *pp)
-{
+__global__ void update_r(const float *rr0, const int nps, const Solid *ss, const int nsolid, /**/ Particle *pp) {
     const int pid = threadIdx.x + blockIdx.x * blockDim.x;
     const int sid = blockIdx.y;
 
@@ -202,8 +185,7 @@ __global__ void update_r(const float *rr0, const int nps, const Solid *ss, const
 
     const Solid s = ss[sid];
         
-    if (pid < nps)
-    {
+    if (pid < nps) {
         float *r0 = pp[i].r;
         const float *ro = &rr0[3*pid];
         const float x = ro[X], y = ro[Y], z = ro[Z];
@@ -214,16 +196,14 @@ __global__ void update_r(const float *rr0, const int nps, const Solid *ss, const
     }
 }
 
-__global__ void update_mesh(const Solid *ss_dev, const float *vv, const int nv, /**/ Particle *pp)
-{
+__global__ void update_mesh(const Solid *ss_dev, const float *vv, const int nv, /**/ Particle *pp) {
     const int sid = blockIdx.y; // solid Id
     const Solid *s = ss_dev + sid;
 
     const int i = threadIdx.x + blockIdx.x * blockDim.x;
     const int vid = sid * nv + i;
         
-    if (i < nv)
-    {
+    if (i < nv) {
         const float x = vv[3*i + X];
         const float y = vv[3*i + Y];
         const float z = vv[3*i + Z];
