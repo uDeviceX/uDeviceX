@@ -169,7 +169,7 @@ static void shift_copy_pp(const Particle *pp_src, const int n, const int code, /
         shiftpp_hst(n, shift, /**/ pp_dst);
     }
     else {
-        cH2D(pp_dst, pp_src, n);
+        CC(cudaMemcpyAsync(pp_dst, pp_src, n * sizeof(Particle), H2D));
         shiftpp_dev <<< k_cnf(n) >>>(n, shift, /**/ pp_dst);
     }
 }
@@ -196,7 +196,7 @@ void unpack(const int nv, /**/ Solid *ss_hst, Particle *pp) {
         const int count = recv_counts[i];
 
         if (count > 0) {
-            shift_copy_ss       (srbuf[i].data(), count, i, /**/ ss_hst + start);
+            shift_copy_ss       (srbuf[i].data(), count,      i, /**/ ss_hst + start);
             shift_copy_pp <hst> (prbuf[i].data(), count * nv, i, /**/ pp + start * nv);
         }
 
