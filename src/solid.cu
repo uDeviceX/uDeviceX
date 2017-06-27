@@ -17,8 +17,7 @@ enum {XX, XY, XZ, YY, YZ, ZZ};
 enum {YX = XY, ZX = XZ, ZY = YZ};
 
 #ifdef spdir // open geometry, use particles    
-static void init_I_frompp(const Particle *pp, int n, float pmass, const float *com, /**/ float *I)
-{
+static void init_I_frompp(const Particle *pp, int n, float pmass, const float *com, /**/ float *I) {
     for (int c = 0; c < 6; ++c) I[c] = 0;
 
     for (int ip = 0; ip < n; ++ip) {
@@ -34,8 +33,7 @@ static void init_I_frompp(const Particle *pp, int n, float pmass, const float *c
     for (int c = 0; c < 6; ++c) I[c] *= pmass;
 }
 #else
-static void init_I_fromm(float pmass, const Mesh mesh, /**/ float *I)
-{
+static void init_I_fromm(float pmass, const Mesh mesh, /**/ float *I) {
     float com[3] = {0};
     mesh::center_of_mass(mesh, /**/ com);
     mesh::inertia_tensor(mesh, com, numberdensity, /**/ I);
@@ -44,8 +42,7 @@ static void init_I_fromm(float pmass, const Mesh mesh, /**/ float *I)
 }
 #endif
     
-void ini(const Particle *pp, int n, float pmass, const float *com, const Mesh mesh, /**/ float *rr0, Solid *s)
-{
+void ini(const Particle *pp, int n, float pmass, const float *com, const Mesh mesh, /**/ float *rr0, Solid *s) {
     s->v[X] = s->v[Y] = s->v[Z] = 0; 
     s->om[X] = s->om[Y] = s->om[Z] = 0; 
 
@@ -143,10 +140,8 @@ static void update_com(const float *v, /**/ float *com) {
     com[X] += v[X]*dt; com[Y] += v[Y]*dt; com[Z] += v[Z]*dt;
 }
 
-static void update_r(const float *rr0, const int n, const float *com, const float *e0, const float *e1, const float *e2, /**/ Particle *pp)
-{
-    for (int ip = 0; ip < n; ++ip)
-    {
+static void update_r(const float *rr0, const int n, const float *com, const float *e0, const float *e1, const float *e2, /**/ Particle *pp) {
+    for (int ip = 0; ip < n; ++ip) {
         float *r0 = pp[ip].r;
         const float* ro = &rr0[3*ip];
         float x = ro[X], y = ro[Y], z = ro[Z];
@@ -158,10 +153,8 @@ static void update_r(const float *rr0, const int n, const float *com, const floa
     }
 }
 
-void reinit_ft_hst(const int nsolid, /**/ Solid *ss)
-{
-    for (int i = 0; i < nsolid; ++i)
-    {
+void reinit_ft_hst(const int nsolid, /**/ Solid *ss) {
+    for (int i = 0; i < nsolid; ++i) {
         Solid *s = ss + i;
             
         s->fo[X] = s->fo[Y] = s->fo[Z] = 0;
@@ -169,13 +162,11 @@ void reinit_ft_hst(const int nsolid, /**/ Solid *ss)
     }
 }
 
-void reinit_ft_dev(const int nsolid, /**/ Solid *ss)
-{
+void reinit_ft_dev(const int nsolid, /**/ Solid *ss) {
     k_solid::reinit_ft <<< k_cnf(nsolid) >>> (nsolid, /**/ ss);
 }
 
-static void update_hst_1s(const Force *ff, const float *rr0, int n, /**/ Particle *pp, Solid *shst)
-{
+static void update_hst_1s(const Force *ff, const float *rr0, int n, /**/ Particle *pp, Solid *shst) {
     /* clear velocity */
     for (int ip = 0; ip < n; ++ip) {
         float *v0 = pp[ip].v;
@@ -205,20 +196,17 @@ static void update_hst_1s(const Force *ff, const float *rr0, int n, /**/ Particl
     update_r(rr0, n, shst->com, shst->e0, shst->e1, shst->e2, /**/ pp);
 }
 
-void update_hst(const Force *ff, const float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *shst)
-{
+void update_hst(const Force *ff, const float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *shst) {
     int start = 0;
     const int nps = n / nsolid; /* number of particles per solid */
         
-    for (int i = 0; i < nsolid; ++i)
-    {
+    for (int i = 0; i < nsolid; ++i) {
         update_hst_1s(ff + start, rr0, nps, /**/ pp + start, shst + i);
         start += nps;
     }
 }
     
-void update_dev(const Force *ff, const float *rr0, int n, int ns, /**/ Particle *pp, Solid *ss)
-{
+void update_dev(const Force *ff, const float *rr0, int n, int ns, /**/ Particle *pp, Solid *ss) {
     if (ns < 1) return;
         
     const int nps = n / ns; /* number of particles per solid */
@@ -239,8 +227,7 @@ void update_dev(const Force *ff, const float *rr0, int n, int ns, /**/ Particle 
     k_solid::update_r <<< nblck, nthrd >>> (rr0, nps, ss, ns, /**/ pp);
 }
 
-void generate_hst(const Solid *ss_hst, const int ns, const float *rr0, const int nps, /**/ Particle *pp)
-{
+void generate_hst(const Solid *ss_hst, const int ns, const float *rr0, const int nps, /**/ Particle *pp) {
     int start = 0;
     for (int j = 0; j < ns; ++j) {
         update_r(rr0, nps, ss_hst[j].com, ss_hst[j].e0, ss_hst[j].e1, ss_hst[j].e2, /**/ pp + start);
@@ -248,8 +235,7 @@ void generate_hst(const Solid *ss_hst, const int ns, const float *rr0, const int
     }
 }
 
-void generate_dev(const Solid *ss_dev, const int ns, const float *rr0, const int nps, /**/ Particle *pp)
-{
+void generate_dev(const Solid *ss_dev, const int ns, const float *rr0, const int nps, /**/ Particle *pp) {
     if (ns < 1) return;
         
     const dim3 nblck ( (127 + nps) / 128, ns );
@@ -258,8 +244,7 @@ void generate_dev(const Solid *ss_dev, const int ns, const float *rr0, const int
     k_solid::update_r <<< nblck, nthrd >>> (rr0, nps, ss_dev, ns, /**/ pp);
 }
 
-void mesh2pp_hst(const Solid *ss_hst, const int ns, const Mesh m, /**/ Particle *pp)
-{
+void mesh2pp_hst(const Solid *ss_hst, const int ns, const Mesh m, /**/ Particle *pp) {
     for (int j = 0; j < ns; ++j) {
         const Solid *s = ss_hst + j;
         update_r(m.vv, m.nv, s->com, s->e0, s->e1, s->e2, /**/ pp + j * m.nv);
@@ -271,8 +256,7 @@ void mesh2pp_hst(const Solid *ss_hst, const int ns, const Mesh m, /**/ Particle 
     }
 }    
 
-void update_mesh_hst(const Solid *ss_hst, const int ns, const Mesh m, /**/ Particle *pp)
-{
+void update_mesh_hst(const Solid *ss_hst, const int ns, const Mesh m, /**/ Particle *pp) {
     for (int j = 0; j < ns; ++j) {
         const Solid *s = ss_hst + j;
                         
@@ -294,21 +278,18 @@ void update_mesh_hst(const Solid *ss_hst, const int ns, const Mesh m, /**/ Parti
     }
 }
 
-void update_mesh_dev(const Solid *ss_dev, const int ns, const Mesh m, /**/ Particle *pp)
-{
+void update_mesh_dev(const Solid *ss_dev, const int ns, const Mesh m, /**/ Particle *pp) {
     const dim3 nthrd(128, 1);
     const dim3 nblck((m.nv + 127)/128, ns);
 
     k_solid::update_mesh <<< nblck, nthrd >>> (ss_dev, m.vv, m.nv, /**/ pp);
 }
 
-void dump(const int it, const Solid *ss, const Solid *ssbb, int ns, const int *mcoords)
-{
+void dump(const int it, const Solid *ss, const Solid *ssbb, int ns, const int *mcoords) {
     static bool first = true;
     char fname[256];
 
-    for (int j = 0; j < ns; ++j)
-    {
+    for (int j = 0; j < ns; ++j) {
         const Solid *s   = ss   + j;
         const Solid *sbb = ssbb + j;
             
