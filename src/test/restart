@@ -132,7 +132,7 @@
 #
 
 #### 3 rigid ellipsoids in double poiseuille, contact
-# snTEST: rstrt.t5
+# nTEST: rstrt.t5
 # export PATH=../tools:$PATH
 # (cd ../cmd; make ) > /dev/null
 # :
@@ -162,6 +162,6 @@
 # :
 # { make clean && u.make -j && make -C ../tools; } > /dev/null
 # sh runfile
-# bop2test.py bop/solid-00004.bop | awk '{print $1, $2}' > bop.out.txt
+# cat solid_diag_0000.txt | uscale 100 > sdiag.out.txt
 #
 
