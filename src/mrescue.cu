@@ -156,7 +156,7 @@ static _DH_ void rescue_1p(const Particle *vv, const int *tt, const int nt, cons
     curand_init (seed, threadIdx.x + blockIdx.x * blockDim.x, 0, &crstate );
 #endif
         
-    if (dr2b == 1000.f) {
+    if (dr2b >= 99.f) {
 #if (defined (__CUDA_ARCH__) && (__CUDA_ARCH__ > 0))
         const int tid = curand(&crstate) % nt;
 #else
