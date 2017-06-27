@@ -103,6 +103,11 @@ __global__ void unpack(uint n_pa, float2 *recv[], int strt[], int strt_pa[],
         yi = (int)floor((double)d0.y + YS / 2);
         zi = (int)floor((double)d1.x + ZS / 2);
 
+// #ifndef NDEBUG
+//         if (xi < 0 || xi > XS-1) printf("error: xi = %d\n", xi);
+//         if (yi < 0 || yi > YS-1) printf("error: yi = %d\n", yi);
+//         if (zi < 0 || zi > ZS-1) printf("error: zi = %d\n", zi);
+// #endif 
         cid = xi + XS * (yi + YS * zi);
         subindex = atomicAdd(counts + cid, 1);
     }
