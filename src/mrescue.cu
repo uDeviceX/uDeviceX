@@ -79,13 +79,13 @@ static _DH_ void project_t(const float *a, const float *b, const float *c,
     // compute projected point
     const float wa = 1 - u - v;
 
-    rp[0] = wa + a[0] + u * b[0] + v * c[0];
-    rp[1] = wa + a[1] + u * b[1] + v * c[1];
-    rp[2] = wa + a[2] + u * b[2] + v * c[2];
+    rp[0] = wa * a[0] + u * b[0] + v * c[0];
+    rp[1] = wa * a[1] + u * b[1] + v * c[1];
+    rp[2] = wa * a[2] + u * b[2] + v * c[2];
 
-    vp[0] = wa + va[0] + u * vb[0] + v * vc[0];
-    vp[1] = wa + va[1] + u * vb[1] + v * vc[1];
-    vp[2] = wa + va[2] + u * vb[2] + v * vc[2];
+    vp[0] = wa * va[0] + u * vb[0] + v * vc[0];
+    vp[1] = wa * va[1] + u * vb[1] + v * vc[1];
+    vp[2] = wa * va[2] + u * vb[2] + v * vc[2];
 }
 
 #include <curand.h>
