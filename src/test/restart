@@ -1,5 +1,5 @@
 #### solvent only restart
-# snTEST: rstrt.t1
+# nTEST: rstrt.t1
 # rm -rf bop h5 diag.txt rbc.off bin.1 bin.2
 # :
 # export PATH=../tools:$PATH
@@ -33,7 +33,7 @@
 #
 
 #### solvent with wall restart
-# snTEST: rstrt.t2
+# nTEST: rstrt.t2
 # rm -rf bop h5 diag.txt rbc.off bin.1 bin.2 sdf.dat
 # :
 # export PATH=../tools:$PATH
@@ -67,7 +67,7 @@
 #
 
 #### RBC in a periodic box
-# snTEST: rstrt.t3
+# nTEST: rstrt.t3
 # rm -rf bop diag.txt h5 r rbc.off
 # export PATH=../tools:$PATH
 # (cd ../cmd; make ) > /dev/null
@@ -98,7 +98,7 @@
 #
 
 #### two RBCs around cylinder with one RBC removed by the wall
-# snTEST: rstrt.t4
+# nTEST: rstrt.t4
 # rm -rf bop diag.txt h5 ply rbc.off bin.1 bin.2
 # export PATH=../tools:$PATH
 # (cd ../cmd; make ) > /dev/null
