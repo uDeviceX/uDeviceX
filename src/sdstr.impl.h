@@ -84,8 +84,8 @@ void pack_sendcnt(const Solid *ss_hst, const Particle *pp, const int ns, const i
         const int id = dstindices[i][j];
         ssbuf[i][j] = ss_hst[id];
 
-        if (hst)    memcpy(psbuf[i].data() + j*nv, pp + id*nv, nv*sizeof(Particle));
-        else cD2H(psbuf[i].data() + j*nv, pp + id*nv, nv);
+        if (hst) memcpy(psbuf[i].data() + j*nv, pp + id*nv, nv*sizeof(Particle));
+        else       cD2H(psbuf[i].data() + j*nv, pp + id*nv, nv);
     }
 }
 
