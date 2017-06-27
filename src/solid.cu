@@ -242,8 +242,7 @@ void update_dev(const Force *ff, const float *rr0, int n, int ns, /**/ Particle 
 void generate_hst(const Solid *ss_hst, const int ns, const float *rr0, const int nps, /**/ Particle *pp)
 {
     int start = 0;
-    for (int j = 0; j < ns; ++j)
-    {
+    for (int j = 0; j < ns; ++j) {
         update_r(rr0, nps, ss_hst[j].com, ss_hst[j].e0, ss_hst[j].e1, ss_hst[j].e2, /**/ pp + start);
         start += nps;
     }
@@ -261,27 +260,23 @@ void generate_dev(const Solid *ss_dev, const int ns, const float *rr0, const int
 
 void mesh2pp_hst(const Solid *ss_hst, const int ns, const Mesh m, /**/ Particle *pp)
 {
-    for (int j = 0; j < ns; ++j)
-    {
+    for (int j = 0; j < ns; ++j) {
         const Solid *s = ss_hst + j;
         update_r(m.vv, m.nv, s->com, s->e0, s->e1, s->e2, /**/ pp + j * m.nv);
 
-        for (int i = 0; i < m.nv; ++i)
-        {
+        for (int i = 0; i < m.nv; ++i) {
             float *v = pp[j*m.nv + i].v;
             v[X] = v[Y] = v[Z] = 0;
         }
     }
-}
+}    
 
 void update_mesh_hst(const Solid *ss_hst, const int ns, const Mesh m, /**/ Particle *pp)
 {
-    for (int j = 0; j < ns; ++j)
-    {
+    for (int j = 0; j < ns; ++j) {
         const Solid *s = ss_hst + j;
                         
-        for (int i = 0; i < m.nv; ++i)
-        {
+        for (int i = 0; i < m.nv; ++i) {
             const float* ro = m.vv + 3*i;
             const Particle p0 = pp[j * m.nv + i];
             float *r = pp[j * m.nv + i].r;
