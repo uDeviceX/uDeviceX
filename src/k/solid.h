@@ -219,7 +219,7 @@ __global__ void update_mesh(const Solid *ss_dev, const float *vv, const int nv, 
     const int sid = blockIdx.y; // solid Id
     const Solid *s = ss_dev + sid;
 
-    const int i = threadIdx.x + blockIdx.x * blockDim.x;;
+    const int i = threadIdx.x + blockIdx.x * blockDim.x;
     const int vid = sid * nv + i;
         
     if (i < nv)
