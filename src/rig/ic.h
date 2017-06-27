@@ -174,6 +174,24 @@ static void share_parts(const int root, /**/ Particle *pp, int *n) {
     pp[i].r[c] -= mi[c];
 }
 
+static void empty_solid(const Mesh m, /* io */ float *rr0, int *npsolid) {
+    const int n0 = *npsolid;
+    int j = 0;
+    for (int i = 0; i < n0; ++i) {
+        const float *r0 = rr0 + 3*i;
+        const float d = collision::dist_from_mesh(m, r0);
+        //if (d> 5) ERR("d = %f", d);
+        if (d <= 2) {
+            rr0[3*j + X] = r0[X];
+            rr0[3*j + Y] = r0[Y];
+            rr0[3*j + Z] = r0[Z];
+            ++j;
+        }
+    }
+    if (j == 0) ERR("No particle remaining in solid template\n");
+    *npsolid = j;
+}
+
 void set_ids(const int ns, Solid *ss_hst) {
     int id = 0;
     MC( MPI_Exscan(&ns, &id, 1, MPI_INT, MPI_SUM, m::cart) );
@@ -230,6 +248,8 @@ void ini(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, So
         model.com[d] = coms[idmax*3 + d];
     
         solid::ini(r_pp, npsolid, solid_mass, model.com, m, /**/ rr0, &model);
+
+        empty_solid(m, /* io */ rr0, &npsolid);
     }
     
     MC( MPI_Bcast(&npsolid,       1,   MPI_INT, root, m::cart) );
