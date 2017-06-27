@@ -249,7 +249,7 @@ void ini(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, So
     
         solid::ini(r_pp, npsolid, solid_mass, model.com, m, /**/ rr0, &model);
 
-        empty_solid(m, /* io */ rr0, &npsolid);
+        //empty_solid(m, /* io */ rr0, &npsolid);
     }
     
     MC( MPI_Bcast(&npsolid,       1,   MPI_INT, root, m::cart) );
