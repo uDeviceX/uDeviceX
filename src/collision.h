@@ -1,5 +1,7 @@
 namespace collision
 {
+float dist_from_mesh(const Mesh m, const float *r0);
+
 int inside_1p(const float *r, const float *vv, const int *tt, const int nt);
 void inside_hst(const Particle *pp, const int n, const Mesh m, /**/ int *inout);
 
