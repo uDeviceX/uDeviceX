@@ -96,44 +96,59 @@ static _DH_ void rescue_1p(const Particle *vv, const int *tt, const int nt, cons
     float dr2b = 1000.f, rpb[3] = {0}, vpb[3] = {0}, nb[3] = {0};
 
     // check around me if there is triangles and select the closest one
-        
-    const int xcid = min2(max2(0, int (p->r[0] + XS/2)), XS-1);
-    const int ycid = min2(max2(0, int (p->r[1] + YS/2)), YS-1);
-    const int zcid = min2(max2(0, int (p->r[2] + ZS/2)), ZS-1);
-    const int cid = xcid + XS * (ycid + YS * zcid);
-        
-    const int start = tcstarts[cid];
-    const int count = tccounts[cid];
-        
-    for (int i = start; i < start + count; ++i)
-    {
-        const int btid = tcids[i];
-        const int tid  = btid % nt;
-        const int mid  = btid / nt;
 
-        const int t1 = mid * nv + tt[3*tid + 0];
-        const int t2 = mid * nv + tt[3*tid + 1];
-        const int t3 = mid * nv + tt[3*tid + 2];
-            
-        const Particle pa = vv[t1];
-        const Particle pb = vv[t2];
-        const Particle pc = vv[t3];
-                        
-        float rp[3], n[3], vp[3];
-        project_t(pa.r, pb.r, pc.r, pa.v, pb.v, pc.v, p->r, /**/ rp, vp, n);
+    const int xcid_ = (int) p->r[0] + XS/2;
+    const int ycid_ = (int) p->r[1] + YS/2;
+    const int zcid_ = (int) p->r[2] + ZS/2;
 
-        const float dr[3] = {p->r[0] - rp[0], p->r[1] - rp[1], p->r[2] - rp[2]};
-        const float dr2 = dr[0]*dr[0] + dr[1]*dr[1] + dr[2]*dr[2];
+    for (int code = 0; code < 27; ++code) {
+        const int dx = ((code)     % 3) - 1;
+        const int dy = ((code / 3) % 3) - 1;
+        const int dz = ((code / 9) % 3) - 1;
 
-        if (dr2 < dr2b)
+        const int xcid = xcid_ + dx;
+        const int ycid = ycid_ + dy;
+        const int zcid = zcid_ + dz;
+        const int cid = xcid + XS * (ycid + YS * zcid);
+
+        if (xcid < 0 || xcid >= XS ||
+            ycid < 0 || ycid >= YS ||
+            zcid < 0 || zcid >= ZS)
+        continue;
+        
+        const int start = tcstarts[cid];
+        const int count = tccounts[cid];
+        
+        for (int i = start; i < start + count; ++i)
         {
-            dr2b = dr2;
-            rpb[0] = rp[0]; rpb[1] = rp[1]; rpb[2] = rp[2];
-            vpb[0] = vp[0]; vpb[1] = vp[1]; vpb[2] = vp[2];
-            nb[0] = n[0]; nb[1] = n[1]; nb[2] = n[2];
+            const int btid = tcids[i];
+            const int tid  = btid % nt;
+            const int mid  = btid / nt;
+
+            const int t1 = mid * nv + tt[3*tid + 0];
+            const int t2 = mid * nv + tt[3*tid + 1];
+            const int t3 = mid * nv + tt[3*tid + 2];
+            
+            const Particle pa = vv[t1];
+            const Particle pb = vv[t2];
+            const Particle pc = vv[t3];
+                        
+            float rp[3], n[3], vp[3];
+            project_t(pa.r, pb.r, pc.r, pa.v, pb.v, pc.v, p->r, /**/ rp, vp, n);
+
+            const float dr[3] = {p->r[0] - rp[0], p->r[1] - rp[1], p->r[2] - rp[2]};
+            const float dr2 = dr[0]*dr[0] + dr[1]*dr[1] + dr[2]*dr[2];
+
+            if (dr2 < dr2b)
+            {
+                dr2b = dr2;
+                rpb[0] = rp[0]; rpb[1] = rp[1]; rpb[2] = rp[2];
+                vpb[0] = vp[0]; vpb[1] = vp[1]; vpb[2] = vp[2];
+                nb[0] = n[0]; nb[1] = n[1]; nb[2] = n[2];
+            }
         }
     }
-
+    
     // otherwise pick one randomly
 
 #if (defined (__CUDA_ARCH__) && (__CUDA_ARCH__ > 0))
