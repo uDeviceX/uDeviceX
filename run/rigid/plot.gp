@@ -1,4 +1,4 @@
-f="solid_diag_0000.txt"
+f="cylinder_shear/solid_diag_0000.txt"
 
 set xlabel 't'
 set ylabel '\omega'
