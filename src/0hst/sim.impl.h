@@ -33,15 +33,15 @@ void bounce_solid(int it) {
 
     build_tcells_hst(s::q.m_hst, s::t.i_pp_hst, nsbb, /**/ s::t.tcs_hst, s::t.tcc_hst, s::t.tci_hst);
 
-    cD2H(o::pp_hst, o::pp, o::n);
-    cD2H(o::ff_hst, o::ff, o::n);
+    cD2H(o::q.pp_hst, o::q.pp, o::q.n);
+    cD2H(o::ff_hst, o::ff, o::q.n);
 
-    mbounce::bounce_tcells_hst(o::ff_hst, s::q.m_hst, s::t.i_pp_hst, s::t.tcs_hst, s::t.tcc_hst, s::t.tci_hst, o::n, /**/ o::pp_hst, s::t.ss_hst);
+    mbounce::bounce_tcells_hst(o::ff_hst, s::q.m_hst, s::t.i_pp_hst, s::t.tcs_hst, s::t.tcc_hst, s::t.tci_hst, o::q.n, /**/ o::q.pp_hst, s::t.ss_hst);
 
     if (it % rescue_freq == 0)
-    mrescue::rescue_hst(s::q.m_hst, s::t.i_pp_hst, nsbb, o::n, s::t.tcs_hst, s::t.tcc_hst, s::t.tci_hst, /**/ o::pp_hst);
+    mrescue::rescue_hst(s::q.m_hst, s::t.i_pp_hst, nsbb, o::q.n, s::t.tcs_hst, s::t.tcc_hst, s::t.tci_hst, /**/ o::q.pp_hst);
 
-    cH2D(o::pp, o::pp_hst, o::n);
+    cH2D(o::q.pp, o::q.pp_hst, o::q.n);
 
     // send back fo, to
 
