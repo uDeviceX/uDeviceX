@@ -114,8 +114,7 @@ static _DH_ void rescue_1p(const Particle *vv, const int *tt, const int nt, cons
         const int start = tcstarts[cid];
         const int count = tccounts[cid];
         
-        for (int i = start; i < start + count; ++i)
-        {
+        for (int i = start; i < start + count; ++i) {
             const int btid = tcids[i];
             const int tid  = btid % nt;
             const int mid  = btid / nt;
