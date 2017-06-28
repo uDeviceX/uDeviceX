@@ -14,8 +14,7 @@ enum {X, Y, Z};
 template <typename T> _HD_ T min3(T a, T b, T c) {return min(a, min(b, c));}
 template <typename T> _HD_ T max3(T a, T b, T c) {return max(a, max(b, c));}
     
-static _HD_ void tbbox(const float *A, const float *B, const float *C, float *bb)
-{
+static _HD_ void tbbox(const float *A, const float *B, const float *C, float *bb) {
     bb[2*X + 0] = min3(A[X], B[X], C[X]) - BBOX_MARGIN;
     bb[2*X + 1] = max3(A[X], B[X], C[X]) + BBOX_MARGIN;
     bb[2*Y + 0] = min3(A[Y], B[Y], C[Y]) - BBOX_MARGIN;
@@ -24,13 +23,11 @@ static _HD_ void tbbox(const float *A, const float *B, const float *C, float *bb
     bb[2*Z + 1] = max3(A[Z], B[Z], C[Z]) + BBOX_MARGIN;
 }
     
-static void countt(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, /**/ int *counts)
-{
+static void countt(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, /**/ int *counts) {
     memset(counts, 0, NCELLS * sizeof(int));
         
     for (int is = 0; is < ns; ++is)
-    for (int it = 0; it < nt; ++it)
-    {
+    for (int it = 0; it < nt; ++it) {
         const int t1 = tt[3*it + 0];
         const int t2 = tt[3*it + 1];
         const int t3 = tt[3*it + 2];
@@ -54,21 +51,18 @@ static void countt(const int nt, const int *tt, const int nv, const Particle *pp
 
         for (int iz = startz; iz < endz; ++iz)
         for (int iy = starty; iy < endy; ++iy)
-        for (int ix = startx; ix < endx; ++ix)
-        {
+        for (int ix = startx; ix < endx; ++ix) {
             const int cid = ix + XS * (iy + YS * iz);
             ++counts[cid];
         }
     }
 }
 
-static void fill_ids(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, const int *starts, /**/ int *counts, int *ids)
-{
+static void fill_ids(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, const int *starts, /**/ int *counts, int *ids) {
     memset(counts, 0, NCELLS * sizeof(int));
         
     for (int is = 0; is < ns; ++is)
-    for (int it = 0; it < nt; ++it)
-    {
+    for (int it = 0; it < nt; ++it) {
         const int id = is * nt + it;
             
         const int t1 = tt[3*it + 0];
@@ -94,8 +88,7 @@ static void fill_ids(const int nt, const int *tt, const int nv, const Particle *
 
         for (int iz = startz; iz < endz; ++iz)
         for (int iy = starty; iy < endy; ++iy)
-        for (int ix = startx; ix < endx; ++ix)
-        {
+        for (int ix = startx; ix < endx; ++ix) {
             const int cid = ix + XS * (iy + YS * iz);
             const int subindex = counts[cid]++;
             const int start = starts[cid];
@@ -105,15 +98,13 @@ static void fill_ids(const int nt, const int *tt, const int nv, const Particle *
     }
 }
 
-static void exscan(const int *counts, int *starts)
-{
+static void exscan(const int *counts, int *starts) {
     starts[0] = 0;
     for (int i = 1; i < NCELLS; ++i)
     starts[i] = starts[i-1] + counts[i-1];
 }
     
-void build_tcells_hst(const Mesh m, const Particle *i_pp, const int ns, /**/ int *starts, int *counts, int *ids)
-{
+void build_tcells_hst(const Mesh m, const Particle *i_pp, const int ns, /**/ int *starts, int *counts, int *ids) {
     countt(m.nt, m.tt, m.nv, i_pp, ns, /**/ counts);
 
     exscan(counts, starts);
@@ -123,8 +114,7 @@ void build_tcells_hst(const Mesh m, const Particle *i_pp, const int ns, /**/ int
 
 namespace tckernels
 {
-__global__ void countt(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, /**/ int *counts)
-{
+__global__ void countt(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, /**/ int *counts) {
     const int thid = threadIdx.x + blockIdx.x * blockDim.x;
 
     if (thid >= nt * ns) return;
@@ -155,15 +145,13 @@ __global__ void countt(const int nt, const int *tt, const int nv, const Particle
 
     for (int iz = startz; iz < endz; ++iz)
     for (int iy = starty; iy < endy; ++iy)
-    for (int ix = startx; ix < endx; ++ix)
-    {
+    for (int ix = startx; ix < endx; ++ix) {
         const int cid = ix + XS * (iy + YS * iz);
         atomicAdd(counts + cid, 1);
     }
 }
 
-__global__ void fill_ids(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, const int *starts, /**/ int *counts, int *ids)
-{
+__global__ void fill_ids(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, const int *starts, /**/ int *counts, int *ids) {
     const int thid = threadIdx.x + blockIdx.x * blockDim.x;
 
     if (thid >= nt * ns) return;
@@ -194,8 +182,7 @@ __global__ void fill_ids(const int nt, const int *tt, const int nv, const Partic
 
     for (int iz = startz; iz < endz; ++iz)
     for (int iy = starty; iy < endy; ++iy)
-    for (int ix = startx; ix < endx; ++ix)
-    {
+    for (int ix = startx; ix < endx; ++ix) {
         const int cid = ix + XS * (iy + YS * iz);
         const int subindex = atomicAdd(counts + cid, 1);
         const int start = starts[cid];
@@ -208,12 +195,10 @@ __global__ void fill_ids(const int nt, const int *tt, const int nv, const Partic
 #include <thrust/scan.h>
 #include <thrust/execution_policy.h>
 
-void build_tcells_dev(const Mesh m, const Particle *i_pp, const int ns, /**/ int *starts, int *counts, int *ids)
-{
+void build_tcells_dev(const Mesh m, const Particle *i_pp, const int ns, /**/ int *starts, int *counts, int *ids) {
     CC(cudaMemset(counts, 0, NCELLS * sizeof(int)));
 
-    if (ns == 0)
-    {
+    if (ns == 0) {
         CC(cudaMemset(starts, 0, NCELLS * sizeof(int)));
         return;
     }
