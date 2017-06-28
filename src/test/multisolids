@@ -2,7 +2,7 @@
 # nTEST: multisolid.t1
 # export PATH=../tools:$PATH
 # (cd ../cmd; make ) > /dev/null
-# rm -rf bop h5 diag.txt solid_diag.txt rbc.off
+# rm -rf bop h5 diag.txt solid_diag*.txt rbc.off
 # echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > ic_solid.txt
 # cp data/rig/sphere.ply   mesh_solid.ply
 # cp data/cells/rbc.498.off rbc.off
@@ -15,14 +15,14 @@
 #!!!
 # (make clean && u.make -j && make -C ../tools) > /dev/null
 # sh runfile
-# bop2test.py bop/solid-00004.bop | awk '{print $1, $2}' | uscale 10 > bop.out.txt
+# cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt
 #
 
 #### spheres in double poiseuille, contact
 # nTEST: multisolid.t2
 # export PATH=../tools:$PATH
 # (cd ../cmd; make ) > /dev/null
-# rm -rf bop h5 diag.txt solid_diag.txt
+# rm -rf bop h5 diag.txt solid_diag*.txt
 # echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > ic_solid.txt
 # cp data/rig/sphere.ply mesh_solid.ply
 # :
@@ -34,7 +34,7 @@
 #!!!
 # (make clean && u.make -j && make -C ../tools) > /dev/null
 # sh runfile
-# bop2test.py bop/solid-00004.bop | awk '{print $1, $2}' | uscale 10 > bop.out.txt
+# cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt
 #
 
 #### ellipsoids in double poiseuille, contact
@@ -42,7 +42,7 @@
 # export PATH=../tools:$PATH
 # (cd ../cmd; make ) > /dev/null
 # cp data/cells/rbc.498.off rbc.off
-# rm -rf h5 diag.txt solid_diag.txt
+# rm -rf h5 diag.txt solid_diag*.txt
 # echo -e "4.1 21.5 8\n4.1 10.5 8\n11.9 16 8" > ic_solid.txt
 # cp data/rig/ellipsoid.ply mesh_solid.ply
 # :
@@ -54,5 +54,5 @@
 #!!!
 # (make clean && u.make -j && make -C ../tools) > /dev/null
 # sh runfile
-# bop2test.py bop/solid-00004.bop | awk '{print $1, $2}' | uscale 10 > bop.out.txt
+# cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt
 #
