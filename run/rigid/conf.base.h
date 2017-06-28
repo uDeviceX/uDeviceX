@@ -56,6 +56,8 @@
 #define       part_dumps (false)
 #define        part_freq  (1000)
 #define         pushflow (false)
+#define        pushsolid (false)
+#define          pushrbc (false)
 #define             tend    (50)
 #define    wall_creation  (5000)
 #define            walls (false)
