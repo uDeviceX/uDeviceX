@@ -25,8 +25,7 @@ enum {X, Y, Z};
     _(BB_HFAIL)     /* no time solution h                        */ \
     _(BB_HNEXT)     /* h triangle is not the first to be crossed */
     
-enum BBState
-{
+enum BBState {
     bbstates(make_enum)
     NBBSTATES
 };
@@ -43,9 +42,6 @@ static const char *bbstatenames[] = {bbstates(make_str)};
 #undef make_enum
 #undef make_str
         
-template <typename T>  T _DH_ min2(T a, T b) {return a < b ? a : b;}
-template <typename T>  T _DH_ max2(T a, T b) {return a < b ? b : a;}
-
 static _DH_ void rvprev(const float *r1, const float *v1, const float *f0, /**/ float *r0, float *v0)
 {
 #ifdef FORWARD_EULER
@@ -301,9 +297,9 @@ void bounce_tcells_hst(const Force *ff, const Mesh m, const Particle *i_pp, cons
 
         int sid = -1;
             
-        for (int zcid = max2(zcid_-1, 0); zcid <= min2(zcid_ + 1, ZS - 1); ++zcid)
-        for (int ycid = max2(ycid_-1, 0); ycid <= min2(ycid_ + 1, YS - 1); ++ycid)
-        for (int xcid = max2(xcid_-1, 0); xcid <= min2(xcid_ + 1, XS - 1); ++xcid)
+        for (int zcid = max(zcid_-1, 0); zcid <= min(zcid_ + 1, ZS - 1); ++zcid)
+        for (int ycid = max(ycid_-1, 0); ycid <= min(ycid_ + 1, YS - 1); ++ycid)
+        for (int xcid = max(xcid_-1, 0); xcid <= min(xcid_ + 1, XS - 1); ++xcid)
         {
             const int cid = xcid + XS * (ycid + YS * zcid);
             const int start = tcellstarts[cid];
@@ -369,9 +365,9 @@ __global__ void bounce_tcells(const Force *ff, const Mesh m, const Particle *i_p
 
     int sid = -1;
         
-    for (int zcid = max2(zcid_-1, 0); zcid <= min2(zcid_ + 1, ZS - 1); ++zcid)
-    for (int ycid = max2(ycid_-1, 0); ycid <= min2(ycid_ + 1, YS - 1); ++ycid)
-    for (int xcid = max2(xcid_-1, 0); xcid <= min2(xcid_ + 1, XS - 1); ++xcid)
+    for (int zcid = max(zcid_-1, 0); zcid <= min(zcid_ + 1, ZS - 1); ++zcid)
+    for (int ycid = max(ycid_-1, 0); ycid <= min(ycid_ + 1, YS - 1); ++ycid)
+    for (int xcid = max(xcid_-1, 0); xcid <= min(xcid_ + 1, XS - 1); ++xcid)
     {
         const int cid = xcid + XS * (ycid + YS * zcid);
         const int start = tcellstarts[cid];

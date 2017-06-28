@@ -11,10 +11,8 @@ enum {X, Y, Z};
 #define BBOX_MARGIN 0.1f
 #define _HD_  __host__ __device__
 
-template <typename T> _HD_ T min2(T a, T b) {return a < b ? a : b;}
-template <typename T> _HD_ T max2(T a, T b) {return a < b ? b : a;}
-template <typename T> _HD_ T min3(T a, T b, T c) {return min2(a, min2(b, c));}
-template <typename T> _HD_ T max3(T a, T b, T c) {return max2(a, max2(b, c));}
+template <typename T> _HD_ T min3(T a, T b, T c) {return min(a, min(b, c));}
+template <typename T> _HD_ T max3(T a, T b, T c) {return max(a, max(b, c));}
     
 static _HD_ void tbbox(const float *A, const float *B, const float *C, float *bb)
 {
@@ -46,13 +44,13 @@ static void countt(const int nt, const int *tt, const int nv, const Particle *pp
 #undef loadr
         float bbox[6]; tbbox(A, B, C, /**/ bbox);
 
-        const int startx = max2(int (bbox[2*X + 0] + XS/2), 0);
-        const int starty = max2(int (bbox[2*Y + 0] + YS/2), 0);
-        const int startz = max2(int (bbox[2*Z + 0] + ZS/2), 0);
+        const int startx = max(int (bbox[2*X + 0] + XS/2), 0);
+        const int starty = max(int (bbox[2*Y + 0] + YS/2), 0);
+        const int startz = max(int (bbox[2*Z + 0] + ZS/2), 0);
 
-        const int endx = min2(int (bbox[2*X + 1] + XS/2) + 1, XS);
-        const int endy = min2(int (bbox[2*Y + 1] + YS/2) + 1, YS);
-        const int endz = min2(int (bbox[2*Z + 1] + ZS/2) + 1, ZS);
+        const int endx = min(int (bbox[2*X + 1] + XS/2) + 1, XS);
+        const int endy = min(int (bbox[2*Y + 1] + YS/2) + 1, YS);
+        const int endz = min(int (bbox[2*Z + 1] + ZS/2) + 1, ZS);
 
         for (int iz = startz; iz < endz; ++iz)
         for (int iy = starty; iy < endy; ++iy)
@@ -86,13 +84,13 @@ static void fill_ids(const int nt, const int *tt, const int nv, const Particle *
 #undef loadr
         float bbox[6]; tbbox(A, B, C, /**/ bbox);
 
-        const int startx = max2(int (bbox[2*X + 0] + XS/2), 0);
-        const int starty = max2(int (bbox[2*Y + 0] + YS/2), 0);
-        const int startz = max2(int (bbox[2*Z + 0] + ZS/2), 0);
+        const int startx = max(int (bbox[2*X + 0] + XS/2), 0);
+        const int starty = max(int (bbox[2*Y + 0] + YS/2), 0);
+        const int startz = max(int (bbox[2*Z + 0] + ZS/2), 0);
 
-        const int endx = min2(int (bbox[2*X + 1] + XS/2) + 1, XS);
-        const int endy = min2(int (bbox[2*Y + 1] + YS/2) + 1, YS);
-        const int endz = min2(int (bbox[2*Z + 1] + ZS/2) + 1, ZS);
+        const int endx = min(int (bbox[2*X + 1] + XS/2) + 1, XS);
+        const int endy = min(int (bbox[2*Y + 1] + YS/2) + 1, YS);
+        const int endz = min(int (bbox[2*Z + 1] + ZS/2) + 1, ZS);
 
         for (int iz = startz; iz < endz; ++iz)
         for (int iy = starty; iy < endy; ++iy)
@@ -147,13 +145,13 @@ __global__ void countt(const int nt, const int *tt, const int nv, const Particle
 #undef loadr
     float bbox[6]; tbbox(A, B, C, /**/ bbox);
 
-    const int startx = max2(int (bbox[2*X + 0] + XS/2), 0);
-    const int starty = max2(int (bbox[2*Y + 0] + YS/2), 0);
-    const int startz = max2(int (bbox[2*Z + 0] + ZS/2), 0);
+    const int startx = max(int (bbox[2*X + 0] + XS/2), 0);
+    const int starty = max(int (bbox[2*Y + 0] + YS/2), 0);
+    const int startz = max(int (bbox[2*Z + 0] + ZS/2), 0);
 
-    const int endx = min2(int (bbox[2*X + 1] + XS/2) + 1, XS);
-    const int endy = min2(int (bbox[2*Y + 1] + YS/2) + 1, YS);
-    const int endz = min2(int (bbox[2*Z + 1] + ZS/2) + 1, ZS);
+    const int endx = min(int (bbox[2*X + 1] + XS/2) + 1, XS);
+    const int endy = min(int (bbox[2*Y + 1] + YS/2) + 1, YS);
+    const int endz = min(int (bbox[2*Z + 1] + ZS/2) + 1, ZS);
 
     for (int iz = startz; iz < endz; ++iz)
     for (int iy = starty; iy < endy; ++iy)
@@ -186,13 +184,13 @@ __global__ void fill_ids(const int nt, const int *tt, const int nv, const Partic
 #undef loadr
     float bbox[6]; tbbox(A, B, C, /**/ bbox);
 
-    const int startx = max2(int (bbox[2*X + 0] + XS/2), 0);
-    const int starty = max2(int (bbox[2*Y + 0] + YS/2), 0);
-    const int startz = max2(int (bbox[2*Z + 0] + ZS/2), 0);
+    const int startx = max(int (bbox[2*X + 0] + XS/2), 0);
+    const int starty = max(int (bbox[2*Y + 0] + YS/2), 0);
+    const int startz = max(int (bbox[2*Z + 0] + ZS/2), 0);
 
-    const int endx = min2(int (bbox[2*X + 1] + XS/2) + 1, XS);
-    const int endy = min2(int (bbox[2*Y + 1] + YS/2) + 1, YS);
-    const int endz = min2(int (bbox[2*Z + 1] + ZS/2) + 1, ZS);
+    const int endx = min(int (bbox[2*X + 1] + XS/2) + 1, XS);
+    const int endy = min(int (bbox[2*Y + 1] + YS/2) + 1, YS);
+    const int endz = min(int (bbox[2*Z + 1] + ZS/2) + 1, ZS);
 
     for (int iz = startz; iz < endz; ++iz)
     for (int iy = starty; iy < endy; ++iy)
