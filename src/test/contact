@@ -10,7 +10,7 @@
 # u.conf conf/double.poiseuille.h <<!!!
 #    rbcs tend=2.0 part_freq=1500 
 #    part_dumps   field_freq=1500 
-#    pushflow doublepoiseuille 
+#    pushflow doublepoiseuille pushrbc 
 #    contactforces 
 #    run
 #!!!
@@ -31,7 +31,7 @@
 # u.conf conf/double.poiseuille.h  <<!!!
 #    rbcs tend=2.0 part_freq=1500
 #    part_dumps field_freq=1500
-#    pushflow doublepoiseuille
+#    pushflow doublepoiseuille pushrbc
 #    run
 #!!!
 # { make clean && u.make -j && make -C ../tools; } > /dev/null
