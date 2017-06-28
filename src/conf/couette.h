@@ -12,7 +12,9 @@
 #define numberdensity    10
 #define kBT              1e-7
 #define dt               5e-4  /* timestep */
-#define rbc_mass         0.5   /* ratio of RBC particle mass to solvent particle mass */
+#define dpd_mass         1.0        /* solvent particle mass */
+#define rbc_mass         0.5        /* RBC particle mass     */
+#define solid_mass       0.5        /* solid particle mass   */
 #define gamma_dot        5.0       /* shear rate */
 #define driving_force    3.333e-2  /* flow acceleration for Poiseuille setup */
 
