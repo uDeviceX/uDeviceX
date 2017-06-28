@@ -16,5 +16,5 @@
 #!!!
 # (make clean && u.make -j && make -C ../tools) > /dev/null
 # sh runfile
-# bop2txt bop/solid-00004.bop | awk '{print $1, $2}' | uscale 10 > bop.out.txt
+# cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt
 #
