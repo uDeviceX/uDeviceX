@@ -34,7 +34,7 @@
 #endif
 
 #ifndef solid_mass
-#define solid_mass (1.f)
+#define solid_mass dpd_mass
 #endif
 
 #ifndef pin_com
