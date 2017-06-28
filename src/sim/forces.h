@@ -1,4 +1,5 @@
 void body_force(float driving_force0) {
+    if (pushflow && o::q.n)
     dev::body_force<<<k_cnf(o::q.n)>>> (1, o::q.pp, o::ff, o::q.n, driving_force0);
 
     if (pushsolid && solids0 && s::q.n)
