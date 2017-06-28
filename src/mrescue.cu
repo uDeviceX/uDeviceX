@@ -11,9 +11,6 @@ namespace mrescue
     
 int *tags_hst, *tags_dev;
     
-static _DH_ int min2(int a, int b) {return a < b ? a : b;}
-static _DH_ int max2(int a, int b) {return a < b ? b : a;}
-
 void ini(int n) {
     tags_hst = new int[n];
     CC(cudaMalloc(&tags_dev, n*sizeof(int)));
@@ -64,16 +61,14 @@ static _DH_ void project_t(const float *a, const float *b, const float *c,
         
     // project (u,v) onto unit triangle
 
-    if ( (v > u - 1) && (v < u + 1) && (v > 1 - u) )
-    {
+    if ( (v > u - 1) && (v < u + 1) && (v > 1 - u) ) {
         const float a_ = 0.5f * (u + v - 1);
         u -= a_;
         v -= a_;
     }
-    else
-    {
-        u = max2(min2(1.f, u), 0.f);
-        v = max2(min2(v, 1.f-u), 0.f);
+    else {
+        u = max(min(1.f, u), 0.f);
+        v = max(min(v, 1.f-u), 0.f);
     }
         
     // compute projected point
