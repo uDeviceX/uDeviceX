@@ -5,12 +5,12 @@
 #define MAX_PSOLID_NUM 30000
 
 /* maximum number of solids per node */
-#define MAX_SOLIDS 200
+#define MAX_SOLIDS 20
 
 /* maximum number of faces per one RBC */
-#define MAX_FACE_NUM 50000
+#define MAX_FACE_NUM 5000
 #define MAX_VERT_NUM 10000
-#define MAX_CELL_NUM 100000
+#define MAX_CELL_NUM 10000
 
 /* write ascii/bin in l/ply.cu */
 #define PLY_WRITE_ASCII
