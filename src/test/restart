@@ -131,7 +131,7 @@
 #
 
 #### 3 rigid ellipsoids in double poiseuille, contact
-# nTEST: rstrt.t5
+# sTEST: rstrt.t5
 # export PATH=../tools:$PATH
 # (cd ../cmd; make ) > /dev/null
 # :
@@ -161,6 +161,6 @@
 # :
 # { make clean && u.make -j && make -C ../tools; } > /dev/null
 # sh runfile
-# cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 1000 > sdiag.out.txt
+# cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt
 #
 
