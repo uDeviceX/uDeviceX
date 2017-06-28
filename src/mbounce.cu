@@ -42,17 +42,14 @@ static const char *bbstatenames[] = {bbstates(make_str)};
 #undef make_enum
 #undef make_str
         
-static _DH_ void rvprev(const float *r1, const float *v1, const float *f0, /**/ float *r0, float *v0)
-{
+static _DH_ void rvprev(const float *r1, const float *v1, const float *f0, /**/ float *r0, float *v0) {
 #ifdef FORWARD_EULER
-    for (int c = 0; c < 3; ++c)
-    {
+    for (int c = 0; c < 3; ++c) {
         v0[c] = v1[c] - f0[c] * dt;
         r0[c] = r1[c] - v0[c] * dt;
     }
 #else // velocity-verlet
-    for (int c = 0; c < 3; ++c)
-    {
+    for (int c = 0; c < 3; ++c) {
         r0[c] = r1[c] - v1[c] * dt;
         //v0[c] = v1[c] - f0[c] * dt;
 
@@ -68,8 +65,7 @@ static _DH_ bool cubic_root(real a, real b, real c, real d, /**/ real *h)
 #define valid(t) ((t) >= 0 && (t) <= dt)
 #define eps 1e-6
         
-    if (fabs(a) > eps) // cubic
-    {
+    if (fabs(a) > eps) { // cubic
         const real b_ = b /= a;
         const real c_ = c /= a;
         const real d_ = d /= a;
@@ -81,15 +77,13 @@ static _DH_ bool cubic_root(real a, real b, real c, real d, /**/ real *h)
         if (nsol > 1 && valid(h2)) {*h = h2; return true;}
         if (nsol > 2 && valid(h3)) {*h = h3; return true;}
     }
-    else if(fabs(b) > eps) // quadratic
-    {
+    else if(fabs(b) > eps) { // quadratic
         real h1, h2;
         if (!roots::quadratic(b, c, d, &h1, &h2)) return false;
         if (valid(h1)) {*h = h1; return true;}
         if (valid(h2)) {*h = h2; return true;}
     }
-    else if (fabs(c) > eps) // linear
-    {
+    else if (fabs(c) > eps) { // linear
         const real h1 = -d/c;
         if (valid(h1)) {*h = h1; return true;}
     }
@@ -100,8 +94,7 @@ static _DH_ bool cubic_root(real a, real b, real c, real d, /**/ real *h)
 /* see Fedosov PhD Thesis */
 static _DH_ BBState intersect_triangle(const float *s10, const float *s20, const float *s30,
                                        const float *vs1, const float *vs2, const float *vs3,
-                                       const Particle *p0,  /*io*/ float *h, /**/ float *rw, float *vw)
-{
+                                       const Particle *p0,  /*io*/ float *h, /**/ float *rw, float *vw) {
     typedef double real;
         
 #define diff(a, b) {a[X] - b[X], a[Y] - b[Y], a[Z] - b[Z]}
@@ -158,8 +151,7 @@ static _DH_ BBState intersect_triangle(const float *s10, const float *s20, const
 
         
         
-        if (!cubic_root(a, b, c, d, &hl))
-        {
+        if (!cubic_root(a, b, c, d, &hl)) {
             // printf("failed : %g %g %g %g\n", a, b, c, d);
             return BB_HFAIL;
         }
@@ -209,14 +201,12 @@ static _DH_ BBState intersect_triangle(const float *s10, const float *s20, const
     return BB_SUCCESS;
 }
 
-static _DH_ void lin_mom_solid(const float *v1, const float *vn, /**/ float *dP)
-{
+static _DH_ void lin_mom_solid(const float *v1, const float *vn, /**/ float *dP) {
     for (int c = 0; c < 3; ++c)
     dP[c] = -(vn[c] - v1[c]) / dt;
 }
 
-static _DH_ void ang_mom_solid(const float *com, const float *rw, const float *v0, const float *vn, /**/ float *dL)
-{
+static _DH_ void ang_mom_solid(const float *com, const float *rw, const float *v0, const float *vn, /**/ float *dL) {
     const float dr[3] = {rw[X] - com[X], rw[Y] - com[Y], rw[Z] - com[Z]};
         
     dL[X] = -(dr[Y] * vn[Z] - dr[Z] * vn[Y] - dr[Y] * v0[Z] + dr[Z] * v0[Y]) / dt;
@@ -231,8 +221,7 @@ __device__ int bbstates_dev[NBBSTATES];
 
 
     
-static _DH_ bool find_better_intersection(const int *tt, const int it, const Particle *i_pp, const Particle *p0, /* io */ float *h, /**/ float *rw, float *vw)
-{
+static _DH_ bool find_better_intersection(const int *tt, const int it, const Particle *i_pp, const Particle *p0, /* io */ float *h, /**/ float *rw, float *vw) {
     // load data
     const int t1 = tt[3*it + 0];
     const int t2 = tt[3*it + 1];
@@ -262,8 +251,7 @@ static _DH_ bool find_better_intersection(const int *tt, const int it, const Par
     return bbstate == BB_SUCCESS;
 }
     
-static _DH_ void bounce_back(const Particle *p0, const float *rw, const float *vw, const float h, /**/ Particle *pn)
-{
+static _DH_ void bounce_back(const Particle *p0, const float *rw, const float *vw, const float h, /**/ Particle *pn) {
     pn->v[X] = 2 * vw[X] - p0->v[X];
     pn->v[Y] = 2 * vw[Y] - p0->v[Y];
     pn->v[Z] = 2 * vw[Z] - p0->v[Z];
@@ -275,15 +263,13 @@ static _DH_ void bounce_back(const Particle *p0, const float *rw, const float *v
     
 /* One node, no periodicity for now */
 void bounce_tcells_hst(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
-                       const int n, /**/ Particle *pp, Solid *ss)
-{
+                       const int n, /**/ Particle *pp, Solid *ss) {
 #ifdef debug_output
     if (dstep % part_freq == 0)
     for (int c = 0; c < NBBSTATES; ++c) bbstates_hst[c] = 0;
 #endif
         
-    for (int i = 0; i < n; ++i)
-    {
+    for (int i = 0; i < n; ++i) {
         const Particle p1 = pp[i];
             
         Particle p0; rvprev(p1.r, p1.v, ff[i].f, /**/ p0.r, p0.v);
@@ -299,14 +285,12 @@ void bounce_tcells_hst(const Force *ff, const Mesh m, const Particle *i_pp, cons
             
         for (int zcid = max(zcid_-1, 0); zcid <= min(zcid_ + 1, ZS - 1); ++zcid)
         for (int ycid = max(ycid_-1, 0); ycid <= min(ycid_ + 1, YS - 1); ++ycid)
-        for (int xcid = max(xcid_-1, 0); xcid <= min(xcid_ + 1, XS - 1); ++xcid)
-        {
+        for (int xcid = max(xcid_-1, 0); xcid <= min(xcid_ + 1, XS - 1); ++xcid) {
             const int cid = xcid + XS * (ycid + YS * zcid);
             const int start = tcellstarts[cid];
             const int count = tcellcounts[cid];
                 
-            for (int j = start; j < start + count; ++j)
-            {
+            for (int j = start; j < start + count; ++j) {
                 const int tid = tids[j];
                 const int it  = tid % m.nt;
                 const int mid = tid / m.nt;
@@ -316,8 +300,7 @@ void bounce_tcells_hst(const Force *ff, const Mesh m, const Particle *i_pp, cons
             }
         }
 
-        if (sid != -1)
-        {
+        if (sid != -1) {
             Particle pn;
             bounce_back(&p0, rw, vw, h, /**/ &pn);
 
@@ -346,8 +329,7 @@ void bounce_tcells_hst(const Force *ff, const Mesh m, const Particle *i_pp, cons
 namespace mbkernels
 {
 __global__ void bounce_tcells(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
-                              const int n, /**/ Particle *pp, Solid *ss)
-{
+                              const int n, /**/ Particle *pp, Solid *ss) {
     const int i = threadIdx.x + blockDim.x * blockIdx.x;
 
     if (i >= n) return;
@@ -367,14 +349,12 @@ __global__ void bounce_tcells(const Force *ff, const Mesh m, const Particle *i_p
         
     for (int zcid = max(zcid_-1, 0); zcid <= min(zcid_ + 1, ZS - 1); ++zcid)
     for (int ycid = max(ycid_-1, 0); ycid <= min(ycid_ + 1, YS - 1); ++ycid)
-    for (int xcid = max(xcid_-1, 0); xcid <= min(xcid_ + 1, XS - 1); ++xcid)
-    {
+    for (int xcid = max(xcid_-1, 0); xcid <= min(xcid_ + 1, XS - 1); ++xcid) {
         const int cid = xcid + XS * (ycid + YS * zcid);
         const int start = tcellstarts[cid];
         const int count = tcellcounts[cid];
                 
-        for (int j = start; j < start + count; ++j)
-        {
+        for (int j = start; j < start + count; ++j) {
             const int tid = tids[j];
             const int it  = tid % m.nt;
             const int mid = tid / m.nt;
@@ -384,8 +364,7 @@ __global__ void bounce_tcells(const Force *ff, const Mesh m, const Particle *i_p
         }
     }
 
-    if (sid != -1)
-    {
+    if (sid != -1) {
         Particle pn;
         bounce_back(&p0, rw, vw, h, /**/ &pn);
 
@@ -408,11 +387,9 @@ __global__ void bounce_tcells(const Force *ff, const Mesh m, const Particle *i_p
 
 /* One node, no periodicity for now */
 void bounce_tcells_dev(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
-                       const int n, /**/ Particle *pp, Solid *ss)
-{
+                       const int n, /**/ Particle *pp, Solid *ss) {
 #ifdef debug_output
-    if (dstep % part_freq == 0)
-    {
+    if (dstep % part_freq == 0) {
         const int zeros[NBBSTATES] = {0};
         CC(cudaMemcpyToSymbol(bbstates_dev, zeros, NBBSTATES*sizeof(int)));
     }
@@ -421,8 +398,7 @@ void bounce_tcells_dev(const Force *ff, const Mesh m, const Particle *i_pp, cons
     mbkernels::bounce_tcells <<< k_cnf(n) >>> (ff, m, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, ss);
         
 #ifdef debug_output
-    if ((++dstep) % part_freq == 0)
-    {
+    if ((++dstep) % part_freq == 0) {
         int bbinfos[NBBSTATES];
         CC(cudaMemcpyFromSymbol(bbinfos, bbstates_dev, NBBSTATES*sizeof(int)));
         print_states(bbinfos);
