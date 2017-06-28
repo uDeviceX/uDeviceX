@@ -8,10 +8,9 @@
 # :
 # u.conf conf/double.poiseuille.h <<!!!
 #    tend=0.01 part_freq=4000
-#    pushflow doublepoiseuille
+#    doublepoiseuille
 #    field_dumps part_dumps
 #    field_freq=4000 wall_creation=0
-#    pushflow=false
 #    BASE_STRT_DUMP=\"bin.1\"
 #    strt_dumps=true
 #    strt_freq=10000
@@ -84,7 +83,7 @@
 #    RESTART=false
 #    run
 #    RESTART=true
-#    pushflow=true
+#    pushflow pushrbc
 #    BASE_STRT_READ=\"bin.1\"
 #    BASE_STRT_DUMP=\"bin.2\"
 #    run
@@ -117,7 +116,7 @@
 #    RESTART=false
 #    run
 #    RESTART=true
-#    pushflow=true tend=3.0
+#    pushflow pushrbc tend=3.0
 #    BASE_STRT_READ=\"bin.1\"
 #    BASE_STRT_DUMP=\"bin.2\"
 #    run

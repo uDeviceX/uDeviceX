@@ -48,7 +48,7 @@
 # :
 # u.conf conf/around.h <<!!!
 #    kBT=1e-7 rbcs tend=4.0 part_freq=5000 walls wall_creation=1000
-#    field_dumps part_dumps field_freq=5000 pushflow
+#    field_dumps part_dumps field_freq=5000 pushflow pushrbc
 #    run
 #!!!
 # { make clean && u.make -j; } > /dev/null
