@@ -326,7 +326,7 @@ void bounce_tcells_hst(const Force *ff, const Mesh m, const Particle *i_pp, cons
 #endif
 }
 
-namespace mbkernels
+namespace dev
 {
 __global__ void bounce_tcells(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
                               const int n, /**/ Particle *pp, Solid *ss) {
@@ -395,7 +395,7 @@ void bounce_tcells_dev(const Force *ff, const Mesh m, const Particle *i_pp, cons
     }
 #endif
 
-    mbkernels::bounce_tcells <<< k_cnf(n) >>> (ff, m, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, ss);
+    dev::bounce_tcells <<< k_cnf(n) >>> (ff, m, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, ss);
         
 #ifdef debug_output
     if ((++dstep) % part_freq == 0) {
