@@ -144,14 +144,13 @@ static _DH_ void rescue_1p(const Particle *vv, const int *tt, const int nt, cons
     }
     
     // otherwise pick one randomly
-
-#if (defined (__CUDA_ARCH__) && (__CUDA_ARCH__ > 0))
+#if DEVICE_FUNC
     curandState_t crstate;
     curand_init (seed, threadIdx.x + blockIdx.x * blockDim.x, 0, &crstate );
 #endif
         
     if (dr2b >= 99.f) {
-#if (defined (__CUDA_ARCH__) && (__CUDA_ARCH__ > 0))
+#if DEVICE_FUNC
         const int tid = curand(&crstate) % nt;
 #else
         const int tid = rand() % nt;
@@ -189,7 +188,7 @@ static _DH_ void rescue_1p(const Particle *vv, const int *tt, const int nt, cons
     // new particle position
 #define eps 1e-1
         
-#if (defined (__CUDA_ARCH__) && (__CUDA_ARCH__ > 0))
+#if DEVICE_FUNC
     const float u = curand_uniform(&crstate) * eps;
 #else
     const float u = drand48() * eps;
