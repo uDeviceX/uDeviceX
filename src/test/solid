@@ -33,7 +33,7 @@
 #!!!
 # (make clean && u.make -j && make -C ../tools) > /dev/null
 # sh runfile
-# bop2txt bop/solid-00004.bop | awk '{print $1, $2}' | uscale 10 > bop.out.txt
+# cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt
 #
 
 #### Couette pinned cylinder
@@ -56,7 +56,7 @@
 # avg_h5.m h5/flowfields-0001.h5 | sed -n '4,29p' | uscale 0.5 > h5.out.txt
 
 #### two solids around cylinder with one solid removed by the wall
-# snTEST: solid.t4
+# nTEST: solid.t4
 # rm -rf h5 bop diag.txt solid_diag.txt
 # export PATH=../tools:$PATH
 # (cd ../cmd; make ) > /dev/null
@@ -72,5 +72,5 @@
 #!!!
 # { make clean && u.make -j && make -C ../tools; } > /dev/null
 # sh runfile
-# bop2txt bop/solid-00001.bop | awk '{print $1, $2}' | uscale 10 > bop.out.txt
+# cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt
 #
