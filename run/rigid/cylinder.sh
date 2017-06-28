@@ -1,7 +1,9 @@
 #!/usr/bin/sh
 
+m=0.5
+
 ORIG=`pwd`
-DEPLOY=$ORIG/cylinder_shear
+DEPLOY=$ORIG/cylinder_shear_m$m
 
 echo $DEPLOY
 
@@ -41,6 +43,7 @@ pre() {
     solids spdir=2 sbounce_back
     walls wall_creation=5000
     strt_dumps strt_freq=20000
+    dpd_mass=$m solid_mass=$m
     run
 EOF
     u.strtdir . $NX $NY $NZ
