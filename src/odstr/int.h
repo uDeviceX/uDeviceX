@@ -91,6 +91,7 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
 
     if (nhalo) {
         td->distr.unpack_pp(nhalo, /*o*/ pp_re);
+        //if (global_ids) td->distr.unpack_ii(nhalo, ii_re);
         td->distr.subindex_remote(nhalo, /*io*/ pp_re, q->cells->count, /**/ subi_re);
     }
     
