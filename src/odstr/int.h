@@ -9,8 +9,9 @@ struct TicketD { /* distribution */
 
 struct Work {
     uchar4 *subi_lo, *subi_re; /* local remote subindices */
-    uint   *iidx;              /* scatter indices */
-    Particle *pp_re;           /* remote particles */
+    uint   *iidx;              /* scatter indices         */
+    Particle *pp_re;           /* remote particles        */
+    int *ii_re;                /* remote ids              */
     unsigned char *count_zip;
 };
 
@@ -29,6 +30,7 @@ void alloc_work(Work *w) {
     mpDeviceMalloc(&w->subi_re);
     mpDeviceMalloc(&w->iidx);
     mpDeviceMalloc(&w->pp_re);
+    if (global_ids) mpDeviceMalloc(&w->ii_re);
     CC(cudaMalloc(&w->count_zip, sizeof(w->count_zip[0])*XS*YS*ZS));
 }
 
@@ -37,6 +39,7 @@ void free_work(Work *w) {
     CC(cudaFree(w->subi_re));
     CC(cudaFree(w->iidx));
     CC(cudaFree(w->pp_re));
+    if (global_ids) CC(cudaFree(w->ii_re));
     CC(cudaFree(w->count_zip));
 }
 
