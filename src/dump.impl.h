@@ -7,18 +7,22 @@ void ini() {
     const int L[3] = {XS, YS, ZS};        
     for (int c = 0; c < 3; ++c) mi[c] = (m::coords[c] + 0.5) * L[c];
 
-    w_pp = new Particle[MAX_PART_NUM];
+    w_pp = new float[7*MAX_PART_NUM];
+
+    MC(MPI_Type_contiguous(global_ids ? 7 : 6, MPI_FLOAT, &dumptype));
+    MC(MPI_Type_commit(&dumptype));
 }
 
 void fin() {
     delete[] w_pp;
+    MC(MPI_Type_free(&dumptype)); 
 }
 
-static void copy_shift(const Particle *pp, const long n, Particle *w) {
+static void copy_shift(const Particle *pp, const long n, float *w) {
     for (int j = 0; j < n; ++j)
     for (int d = 0; d < 3; ++d) {
-        w[j].r[d] = pp[j].r[d] + mi[d];
-        w[j].v[d] = pp[j].v[d];
+        w[6 * j + d]     = pp[j].r[d] + mi[d];
+        w[6 * j + 3 + d] = pp[j].v[d];
     }
 }
 
@@ -62,7 +66,7 @@ void parts(const Particle *pp, const long n, const char *name, const int step) {
     if (m::rank == 0) header(ntot, name, step);
 
     MC( MPI_Exscan(&len, &offset, 1, MPI_OFFSET, MPI_SUM, m::cart) );
-    MC( MPI_File_write_at_all(f, base + offset, w_pp, n, Particle::datatype(), &status) ); 
+    MC( MPI_File_write_at_all(f, base + offset, w_pp, n, dumptype, &status) ); 
     MC( MPI_File_close(&f) );
 }
 
