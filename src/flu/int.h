@@ -55,7 +55,7 @@ void get_ticketZ(Quants q, /**/ TicketZ *t) {
 
 void gen_quants(Quants *q) {
     q->n = sub::gen(q->pp, q->pp_hst);
-    if (global_ids) sub::ii_gen(q->n, q->ii. q->ii_hst);
+    if (global_ids) sub::ii_gen(q->n, q->ii, q->ii_hst);
 }
 
 void strt_quants(const int id, Quants *q) {
