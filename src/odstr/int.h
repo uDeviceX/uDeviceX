@@ -68,7 +68,8 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     if (n) {
         td->distr.halo(pp, n);
         td->distr.scan(n);
-        td->distr.pack(pp, n);
+        td->distr.pack_pp(pp, n);
+        dSync();
     }
     if (!first) {
         td->distr.waitall(send_size_req);

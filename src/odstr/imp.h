@@ -24,9 +24,12 @@ void Distr::scan(int n) {
     dSync();
 }
 
-void Distr::pack(Particle *pp, int n) {
+void Distr::pack_pp(const Particle *pp, int n) {
     dev::pack<float2, 3> <<<k_cnf(3*n)>>>((float2*)pp, s.iidx, s.strt, /**/ s.pp_dev);
-    dSync();
+}
+
+void Distr::pack_ii(const int *ii, int n) {
+    dev::pack<int, 1> <<<k_cnf(n)>>>(ii, s.iidx, s.strt, /**/ s.ii_dev);
 }
 
 int Distr::send_sz(MPI_Comm cart, int rank[], MPI_Request *req) {
