@@ -70,28 +70,28 @@ __global__ void pack(const T *data, int *const iidx[], const int send_strt[], /*
     send_dev[idpack][d] = data[c + STRIDE * pid];
 }
 
+template <typename T, int STRIDE>
+__global__ void unpack(T *const recv[], const int strt[], /**/ T *data) {
+    const int gid = threadIdx.x + blockDim.x * blockIdx.x;
+    const int slot = gid / STRIDE;
 
-__global__ void pack(const float2 *pp, int *const iidx[], const int send_strt[], /**/ float2 *send_dev[]) {
-    int gid = threadIdx.x + blockDim.x * blockIdx.x;
-    int slot = gid / 3;
-
-    int tid = threadIdx.x;
+    const int tid = threadIdx.x;
 
     __shared__ int start[28];
 
-    if (tid < 28) start[tid] = send_strt[tid];
+    if (tid < 28) start[tid] = strt[tid];
     __syncthreads();
-    int idpack = code(start, slot);
+    const int idpack = code(start, slot);
 
     if (slot >= start[27]) return;
 
-    int offset = slot - start[idpack];
-    int pid = __ldg(iidx[idpack] + offset);
+    const int offset = slot - start[idpack];
+    const int c = gid % STRIDE;
+    const int srcid = c + STRIDE * offset;
 
-    int c = gid % 3;
-    int d = c + 3 * offset;
-    send_dev[idpack][d] = pp[c + 3 * pid];
+    data[gid] = recv[idpack][srcid];
 }
+
 
 __global__ void unpack(float2 *const recv[], const int strt[], /**/ float2 *pp) {
     const int gid = threadIdx.x + blockDim.x * blockIdx.x;
