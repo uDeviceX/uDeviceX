@@ -84,12 +84,8 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
         (n, (float2*)pp, /*io*/ q->cells->count, /*o*/ subi_lo);
 
     td->distr.waitall(recv_size_req);
-    td->distr.recv_count(&nhalo_padded, &nhalo);
+    td->distr.recv_count(&nhalo);
     td->distr.waitall(recv_mesg_req);
-
-    // if (nhalo)
-    // td->distr.unpack
-    //     (nhalo_padded, /*io*/ q->cells->count, /*o*/ subi_re, pp_re);
 
     if (nhalo)
     td->distr.unpack(nhalo, /*io*/ q->cells->count, /*o*/ subi_re, pp_re);

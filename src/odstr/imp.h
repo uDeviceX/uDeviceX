@@ -43,29 +43,16 @@ void Distr::send_msg(MPI_Comm cart, int rank[], MPI_Request *req) {
                 BT_P_ODSTR + i, cart, &req[cnt++]);
 }
 
-void Distr::recv_count(int *nhalo_padded, int *nhalo) {
+void Distr::recv_count(int *nhalo) {
     int i;
-    static int size[27], strt[28], strt_pa[28];
+    static int size[27], strt[28];
 
-    size[0] = strt[0] = strt_pa[0] = 0;
+    size[0] = strt[0] = 0;
     for (i = 1; i < 27; ++i)    size[i] = r.size[i];
     for (i = 1; i < 28; ++i)    strt[i] = strt[i - 1] + size[i - 1];
-    for (i = 1; i < 28; ++i) strt_pa[i] = strt_pa[i - 1] + 32 * ceiln(size[i-1], 32);
     CC(cudaMemcpy(r.strt,    strt,    sizeof(strt),    H2D));
-    CC(cudaMemcpy(r.strt_pa, strt_pa, sizeof(strt_pa), H2D));
     *nhalo = strt[27];
-    *nhalo_padded = strt_pa[27];
 }
-
-// void Distr::unpack(int n_pa,
-//                    /*io*/ int *count,
-//                    /*o*/ uchar4 *subi, Particle *pp_re) {
-//     /* n_pa: n padded */
-//     dev::unpack<<<k_cnf(n_pa)>>>
-//         (n_pa,  r.dev, r.strt, r.strt_pa,
-//          /*io*/ count,
-//          /*o*/ (float2*)pp_re, subi);
-// }
 
 void Distr::unpack(int n, /*io*/ int *counts, /*o*/ uchar4 *subi, Particle *pp_re) {
     dev::unpack <<<k_cnf(3*n)>>> (r.dev, r.strt, /**/ (float2*) pp_re);
