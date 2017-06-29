@@ -4,6 +4,7 @@ struct Quants {
     int       n;
     Clist *cells;
     Particle *pp_hst;
+    int *ii_hst;
 }; 
 
 struct TicketZ { /* zip */
@@ -16,6 +17,7 @@ void alloc_quants(Quants *q) {
     mpDeviceMalloc(&q->pp); mpDeviceMalloc(&q->pp0);
     if (global_ids) {
         mpDeviceMalloc(&q->ii); mpDeviceMalloc(&q->ii0);
+        q->ii_hst = new int[MAX_PART_NUM];
     }
     q->cells = new Clist(XS, YS, ZS);
     q->pp_hst = new Particle[MAX_PART_NUM];
@@ -25,6 +27,7 @@ void free_quants(Quants *q) {
     CC(cudaFree(q->pp)); CC(cudaFree(q->pp0));
     if (global_ids) {
         CC(cudaFree(q->ii)); CC(cudaFree(q->ii0));
+        delete[] q->ii_hst;
     }
     delete q->cells;
     delete[] q->pp_hst;
@@ -52,6 +55,7 @@ void get_ticketZ(Quants q, /**/ TicketZ *t) {
 
 void gen_quants(Quants *q) {
     q->n = sub::gen(q->pp, q->pp_hst);
+    if (global_ids) sub::ii_gen(q->n, q->ii. q->ii_hst);
 }
 
 void strt_quants(const int id, Quants *q) {

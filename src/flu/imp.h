@@ -32,6 +32,17 @@ int gen(Particle *dev, /*w*/ Particle *hst) {
     return n;
 }
 
+void ii_gen0(const long n, int *ii) {
+    long i0;
+    l::m::Exscan(&n, &i0, 1, MPI_LONG, MPI_SUM, m::cart);
+    for (long i = 0; i < n; ++i) ii[i] = i + i0;
+}
+
+void ii_gen(const int n, int *ii_dev, int *ii_hst) {
+    ii_gen0(n, ii_hst);
+    cH2D(ii_dev, ii_hst, n);
+}
+
 int strt(const int id, Particle *dev, /*w*/ Particle *hst) {
     int n;
     restart::read_pp("flu", id, hst, &n);
