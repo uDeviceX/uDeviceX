@@ -55,7 +55,7 @@ void Distr::recv_count(int *nhalo) {
 }
 
 void Distr::unpack(int n, /*io*/ int *counts, /*o*/ uchar4 *subi, Particle *pp_re) {
-    dev::unpack <<<k_cnf(3*n)>>> (r.dev, r.strt, /**/ (float2*) pp_re);
+    dev::unpack<float2, 3> <<<k_cnf(3*n)>>> (r.dev, r.strt, /**/ (float2*) pp_re);
     dev::subindex_remote <<<k_cnf(n)>>> (n, r.strt, /*io*/ (float2*) pp_re, counts, /**/ subi);
 }
 

@@ -92,28 +92,6 @@ __global__ void unpack(T *const recv[], const int strt[], /**/ T *data) {
     data[gid] = recv[idpack][srcid];
 }
 
-
-__global__ void unpack(float2 *const recv[], const int strt[], /**/ float2 *pp) {
-    const int gid = threadIdx.x + blockDim.x * blockIdx.x;
-    const int slot = gid / 3;
-
-    const int tid = threadIdx.x;
-
-    __shared__ int start[28];
-
-    if (tid < 28) start[tid] = strt[tid];
-    __syncthreads();
-    const int idpack = code(start, slot);
-
-    if (slot >= start[27]) return;
-
-    const int offset = slot - start[idpack];
-    const int c = gid % 3;
-    const int srcid = c + 3 * offset;
-
-    pp[gid] = recv[idpack][srcid];
-}
-
 __global__ void subindex_remote(const int n, const int strt[], /*io*/ float2 *pp, int *counts, /**/ uchar4 *subids) {
     const int tid    = threadIdx.x;
     const int warpid = tid / warpSize;
