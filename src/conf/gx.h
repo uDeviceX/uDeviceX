@@ -30,6 +30,8 @@
 #define ljsigma          0.3        /* RBC-RBC contact LJ interaction parameters */
 #define ljepsilon        0.44
 
+#define       global_ids (false)
+
 #define contactforces    (false)
 #define doublepoiseuille (false)
 #define       strt_dumps (false)
