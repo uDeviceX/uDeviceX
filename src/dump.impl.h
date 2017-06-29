@@ -88,7 +88,7 @@ void parts_ids(const Particle *pp, const int *ii, const long n, const char *name
     MPI_File f;
     MPI_Status status;
     MPI_Offset base, offset = 0;
-    MPI_Offset len = n * sizeof(Particle);
+    MPI_Offset len = n * (sizeof(Particle) + sizeof(float));
 
     long ntot = 0;
     MC( l::m::Reduce(&n, &ntot, 1, MPI_LONG, MPI_SUM, 0, m::cart) );
