@@ -3,6 +3,7 @@ struct TicketD { /* distribution */
     int rank[27];
     MPI_Request send_size_req[27], recv_size_req[27];
     MPI_Request send_mesg_req[27], recv_mesg_req[27];
+    MPI_Request send_ii_req[27], recv_ii_req[27];
     bool first = true;
     sub::Distr distr; /* was odstr; */
 };
@@ -46,8 +47,8 @@ void free_work(Work *w) {
 void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     MPI_Comm cart = td->cart; /* can be a copy */
     int *rank = td->rank; /* arrays */
-    int *send_size_req = td->send_size_req;
-    int *recv_size_req = td->recv_size_req;
+    MPI_Request *send_size_req = td->send_size_req;
+    MPI_Request *recv_size_req = td->recv_size_req;
     MPI_Request *send_mesg_req = td->send_mesg_req;
     MPI_Request *recv_mesg_req = td->recv_mesg_req;
     bool *qfirst = &td->first; /* shoud be updated */
