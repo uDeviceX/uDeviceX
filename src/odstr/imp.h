@@ -47,10 +47,16 @@ int Distr::send_sz(MPI_Comm cart, int rank[], MPI_Request *req) {
     return s.size[0]; /* `n' bulk */
 }
 
-void Distr::send_msg(MPI_Comm cart, int rank[], MPI_Request *req) {
+void Distr::send_pp(MPI_Comm cart, int rank[], MPI_Request *req) {
     for(int i = 1, cnt = 0; i < 27; ++i)
     l::m::Isend(s.pp_hst[i], s.size[i] * 6, MPI_FLOAT, rank[i],
                 BT_P_ODSTR + i, cart, &req[cnt++]);
+}
+
+void Distr::send_ii(MPI_Comm cart, int rank[], MPI_Request *req) {
+    for(int i = 1, cnt = 0; i < 27; ++i)
+    l::m::Isend(s.ii_hst[i], s.size[i], MPI_INT, rank[i],
+                BT_I_ODSTR + i, cart, &req[cnt++]);
 }
 
 void Distr::recv_count(int *nhalo) {

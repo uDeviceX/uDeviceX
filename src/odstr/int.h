@@ -78,7 +78,7 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     }
     first = false;
     nbulk = td->distr.send_sz(cart, rank, send_size_req);
-    td->distr.send_msg(cart, rank, send_mesg_req);
+    td->distr.send_pp(cart, rank, send_mesg_req);
 
     CC(cudaMemsetAsync(q->cells->count, 0, sizeof(int)*XS*YS*ZS));
     if (n)

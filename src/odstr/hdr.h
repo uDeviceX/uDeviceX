@@ -44,7 +44,8 @@ public:
     void pack_pp(const Particle *pp, int n);
     void pack_ii(const int *ii, int n);
     int send_sz(MPI_Comm cart, int rank[], MPI_Request *req);
-    void send_msg(MPI_Comm cart, int rank[], MPI_Request *req);
+    void send_pp(MPI_Comm cart, int rank[], MPI_Request *req);
+    void send_ii(MPI_Comm cart, int rank[], MPI_Request *req);
     void recv_count(int *nhalo);
     void unpack_pp(int n, /*o*/ Particle *pp_re);
     void unpack_ii(int n, /*o*/ int *ii_re);
