@@ -1,19 +1,19 @@
 /* which neighboring subdomain `p' belongs to? */
-__device__ int box(Particle *p) {
+__device__ int box(const Particle *p) {
     enum {X, Y, Z};
     int c;
     int vc[3]; /* vcode */
-    float *r = p->r;
+    const float *r = p->r;
     int   L[3] = {XS, YS, ZS};
     for (c = 0; c < 3; ++c) vc[c] = (2 + (r[c] >= -L[c]/2) + (r[c] >= L[c]/2)) % 3;
     return vc[X] + 3 * (vc[Y] + 3 * vc[Z]);
 }
 
-__global__ void halo(Particle *pp, int n, /**/ int *iidx[], int size[]) {
+__global__ void halo(const Particle *pp, const int n, /**/ int *iidx[], int size[]) {
     int pid, code, entry;
     pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
-    Particle *p = &pp[pid];
+    const Particle *p = &pp[pid];
     code = box(p);
     if (code > 0) {
         entry = atomicAdd(size + code, 1);
@@ -21,7 +21,7 @@ __global__ void halo(Particle *pp, int n, /**/ int *iidx[], int size[]) {
     }
 }
 
-__global__ void scan(int n, int size[], /**/ int strt[], int size_pin[]) {
+__global__ void scan(const int n, const int size[], /**/ int strt[], int size_pin[]) {
     int tid = threadIdx.x;
     int val = 0, cnt = 0;
 
@@ -39,7 +39,7 @@ __global__ void scan(int n, int size[], /**/ int strt[], int size_pin[]) {
     }
 }
 
-__device__ int code(int a[], uint i) { /* where is `i' in sorted a[27]? */
+__device__ int code(const int a[], const uint i) { /* where is `i' in sorted a[27]? */
     uint k1, k9, k3;
     k9 = 9 * (i >= a[          9]) + 9 * (i >= a[         18]);
     k3 = 3 * (i >= a[k9      + 3]) + 3 * (i >= a[k9      + 6]);
@@ -47,7 +47,7 @@ __device__ int code(int a[], uint i) { /* where is `i' in sorted a[27]? */
     return k9 + k3 + k1;
 }
 
-__global__ void pack(float2 *pp, int *iidx[], int send_strt[], /**/ float2 *send_dev[]) {
+__global__ void pack(const float2 *pp, int *const iidx[], const int send_strt[], /**/ float2 *send_dev[]) {
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
     int slot = gid / 3;
 
@@ -69,7 +69,7 @@ __global__ void pack(float2 *pp, int *iidx[], int send_strt[], /**/ float2 *send
     send_dev[idpack][d] = pp[c + 3 * pid];
 }
 
-__global__ void unpack(uint n_pa, float2 *recv[], int strt[], int strt_pa[],
+__global__ void unpack(const uint n_pa, float2 *const recv[], const int strt[], const int strt_pa[],
                        /*io*/ int *counts,
                        /*o*/ float2 *pp, uchar4 *subi) {
     /* n_pa: `n' padded; strt_pa: start padded */
@@ -103,11 +103,6 @@ __global__ void unpack(uint n_pa, float2 *recv[], int strt[], int strt_pa[],
         yi = (int)floor((double)d0.y + YS / 2);
         zi = (int)floor((double)d1.x + ZS / 2);
 
-// #ifndef NDEBUG
-//         if (xi < 0 || xi > XS-1) printf("error: xi = %d\n", xi);
-//         if (yi < 0 || yi > YS-1) printf("error: yi = %d\n", yi);
-//         if (zi < 0 || zi > ZS-1) printf("error: zi = %d\n", zi);
-// #endif 
         cid = xi + XS * (yi + YS * zi);
         subindex = atomicAdd(counts + cid, 1);
     }
@@ -117,7 +112,7 @@ __global__ void unpack(uint n_pa, float2 *recv[], int strt[], int strt_pa[],
     if (laneid < nu) subi[db + laneid] = make_uchar4(xi, yi, zi, subindex);
 }
 
-__global__ void scatter(bool remote, uchar4 *subi, int n, int *start,
+__global__ void scatter(const bool remote, const uchar4 *subi, const int n, const int *start,
                         /**/ uint *iidx) {
     uint pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
@@ -148,7 +143,7 @@ __forceinline__ __device__ void xchg_aos4f(int srclane0, int srclane1, int start
     xchg_aos2f(srclane0, srclane1, start, s0.z, s1.z);
 }
 
-__global__ void gather(float2  *pp_lo, float2  *pp_re, int n, uint *iidx,
+__global__ void gather(const float2  *pp_lo, const float2 *pp_re, int n, const uint *iidx,
                        /**/ float2  *pp, float4  *zip0, ushort4 *zip1) {
     /* pp_lo, pp_re, pp: local, remote and output particles */
     int warpid, tid, base, pid;
