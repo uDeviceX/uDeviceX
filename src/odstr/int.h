@@ -63,7 +63,7 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     bool first = *qfirst;
     Particle *pp = q->pp;
   
-    int nbulk, nhalo_padded, nhalo;
+    int nbulk, nhalo;
     td->distr.post_recv(cart, rank, /**/ recv_size_req, recv_mesg_req);
     if (n) {
         td->distr.halo(pp, n);

@@ -13,7 +13,7 @@ void Distr::fin() {
     CC(cudaFree(s.dev)); CC(cudaFree(r.dev));
 
     CC(cudaFree(s.size_dev)); CC(cudaFree(s.strt));
-    CC(cudaFree(r.strt)); CC(cudaFree(r.strt_pa));
+    CC(cudaFree(r.strt));
 
     delete s.size_pin;
 }

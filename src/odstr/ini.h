@@ -36,7 +36,6 @@ void Distr::ini(MPI_Comm cart, int rank[])  {
     CC(cudaMalloc(&s.size_dev, 27*sizeof(s.size_dev[0])));
     CC(cudaMalloc(&s.strt,     28*sizeof(s.strt[0])));
     CC(cudaMalloc(&r.strt, 28*sizeof(r.strt[0])));
-    CC(cudaMalloc(&r.strt_pa,     28*sizeof(r.strt_pa[0])));
 
     CC(cudaMalloc(&s.iidx, SZ_PTR_ARR(s.iidx_)));
     CC(cudaMemcpy(s.iidx, s.iidx_, sizeof(s.iidx_), H2D));

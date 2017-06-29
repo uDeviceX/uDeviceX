@@ -13,7 +13,7 @@ struct Send {
 
 struct Recv {
     float2 **dev;
-    int *strt, *strt_pa; /* _pa: padded */
+    int *strt;
     int tags[27];
     int    size[27];
     float *hst[27];
