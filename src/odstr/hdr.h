@@ -2,6 +2,8 @@ struct Send {
     int **iidx; /* indices */
     float2 **pp_dev;   /* buffers */
     float *pp_hst[27];
+    float2 *pp_hst_[27];
+
     // int **iidev;
     // int *iihst[27];
     
@@ -9,17 +11,17 @@ struct Send {
     int size[27];
     PinnedHostBuffer4<int>* size_pin;
 
-    float2 *pp_hst_[27];
     int    *iidx_[27];
 };
 
 struct Recv {
-    float2 **dev;
+    float2 **pp_dev;
+    float *pp_hst[27];
+    float2 *pp_hst_[27];
+
     int *strt;
     int tags[27];
     int    size[27];
-    float *hst[27];
-    float2 *hst_[27];
 };
 
 class Distr {
