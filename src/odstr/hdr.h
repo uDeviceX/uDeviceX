@@ -1,13 +1,15 @@
 struct Send {
     int **iidx; /* indices */
-    float2 **dev;   /* buffers */
-    float *hst[27];
-
+    float2 **pp_dev;   /* buffers */
+    float *pp_hst[27];
+    // int **iidev;
+    // int *iihst[27];
+    
     int *size_dev, *strt;
     int size[27];
     PinnedHostBuffer4<int>* size_pin;
 
-    float2 *hst_[27];
+    float2 *pp_hst_[27];
     int    *iidx_[27];
 };
 
