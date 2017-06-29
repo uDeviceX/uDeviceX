@@ -51,6 +51,8 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     MPI_Request *recv_size_req = td->recv_size_req;
     MPI_Request *send_mesg_req = td->send_mesg_req;
     MPI_Request *recv_mesg_req = td->recv_mesg_req;
+    MPI_Request *send_ii_req = td->send_ii_req;
+    MPI_Request *recv_ii_req = td->recv_ii_req;
     bool *qfirst = &td->first; /* shoud be updated */
 
     float4  *zip0 = tz->zip0;
@@ -59,30 +61,37 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     uchar4 *subi_lo = w->subi_lo; /* arrays */
     uchar4 *subi_re = w->subi_re;
     uint   *iidx = w->iidx;
-    Particle *pp_re = w->pp_re;
     unsigned char *count_zip = w->count_zip;
-    Particle *pp0 = q->pp0;
+    Particle *pp_re = w->pp_re;
+    int *ii_re = w->ii_re;
 
     int n = q->n;
     bool first = *qfirst;
-    Particle *pp = q->pp;
+    Particle *pp  = q->pp;
+    Particle *pp0 = q->pp0;
+    int *ii  = q->ii;
+    int *ii0 = q->ii0;
   
     int nbulk, nhalo;
     td->distr.post_recv(cart, rank, /**/ recv_size_req, recv_mesg_req);
+    if (global_ids) td->distr.post_recv_ii(cart, rank, /**/ recv_ii_req);
+    
     if (n) {
         td->distr.halo(pp, n);
         td->distr.scan(n);
         td->distr.pack_pp(pp, n);
-        //if (global_ids) td->distr.pack_ii(ii, n);
+        if (global_ids) td->distr.pack_ii(ii, n);
         dSync();
     }
     if (!first) {
         td->distr.waitall(send_size_req);
         td->distr.waitall(send_mesg_req);
+        if (global_ids) td->distr.waitall(send_ii_req);
     }
     first = false;
     nbulk = td->distr.send_sz(cart, rank, send_size_req);
     td->distr.send_pp(cart, rank, send_mesg_req);
+    if (global_ids) td->distr.send_ii(cart, rank, send_ii_req);
 
     CC(cudaMemsetAsync(q->cells->count, 0, sizeof(int)*XS*YS*ZS));
     if (n)
@@ -92,10 +101,11 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     td->distr.waitall(recv_size_req);
     td->distr.recv_count(&nhalo);
     td->distr.waitall(recv_mesg_req);
-
+    if (global_ids) td->distr.waitall(recv_ii_req);
+    
     if (nhalo) {
         td->distr.unpack_pp(nhalo, /*o*/ pp_re);
-        //if (global_ids) td->distr.unpack_ii(nhalo, ii_re);
+        if (global_ids) td->distr.unpack_ii(nhalo, ii_re);
         td->distr.subindex_remote(nhalo, /*io*/ pp_re, q->cells->count, /**/ subi_re);
     }
     
@@ -116,12 +126,17 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
         sub::dev::gather_pp<<<k_cnf(n)>>>((float2*)pp, (float2*)pp_re, n, iidx,
                                           /**/ (float2*)pp0, zip0, zip1);
 
-        // if (global_ids)
-        // sub::dev::gather_id<<<k_cnf(n)>>>(ii, ii_re, n, iidx, /**/ ii0);
+        if (global_ids)
+        sub::dev::gather_id<<<k_cnf(n)>>>(ii, ii_re, n, iidx, /**/ ii0);
         
     }
 
     q->n = n;
     *qfirst = first;
-    q->pp = pp0; q->pp0 = pp; /* swap */
+
+    /* swap */
+    q->pp = pp0; q->pp0 = pp; 
+    if (global_ids) {
+        q->ii = ii0; q->ii0 = ii;
+    }
 }
