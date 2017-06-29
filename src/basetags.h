@@ -4,6 +4,7 @@
  * P: [p]articles
  * S: [s]olid
  * CS: [C]ell [S]tart
+ * I: global [i]d
  */
 
 #define STRIDE (100)
@@ -17,6 +18,7 @@
     /* odstr/imp.h */                           \
     _(BT_C_ODSTR)                               \
     _(BT_P_ODSTR)                               \
+    _(BT_I_ODSTR)                               \
     /* wall.impl.h (ini) */                     \
     _(BT_C_WALL)                                \
     _(BT_P_WALL)                                \
