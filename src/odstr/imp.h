@@ -7,11 +7,11 @@ void Distr::post_recv(MPI_Comm cart, int rank[],
                       MPI_Request *size_req, MPI_Request *mesg_req) {
     for(int i = 1, c = 0; i < 27; ++i)
     l::m::Irecv(r.size + i, 1, MPI_INTEGER, rank[i],
-                950 + r.tags[i], cart, size_req + c++);
+                BT_C_ODSTR + r.tags[i], cart, size_req + c++);
 
     for(int i = 1, c = 0; i < 27; ++i)
     l::m::Irecv(r.hst[i], MAX_PART_NUM, MPI_FLOAT, rank[i],
-                950 + r.tags[i] + 333, cart, mesg_req + c++);
+                BT_P_ODSTR + r.tags[i], cart, mesg_req + c++);
 }
 
 void Distr::halo(Particle *pp, int n) {
@@ -33,14 +33,14 @@ int Distr::send_sz(MPI_Comm cart, int rank[], MPI_Request *req) {
     for(int i = 0; i < 27; ++i) s.size[i] = s.size_pin->D[i];
     for(int i = 1, cnt = 0; i < 27; ++i)
     l::m::Isend(s.size + i, 1, MPI_INTEGER, rank[i],
-                950 + i, cart, &req[cnt++]);
+                BT_C_ODSTR + i, cart, &req[cnt++]);
     return s.size[0]; /* `n' bulk */
 }
 
 void Distr::send_msg(MPI_Comm cart, int rank[], MPI_Request *req) {
     for(int i = 1, cnt = 0; i < 27; ++i)
     l::m::Isend(s.hst[i], s.size[i] * 6, MPI_FLOAT, rank[i],
-                950 + i + 333, cart, &req[cnt++]);
+                BT_P_ODSTR + i, cart, &req[cnt++]);
 }
 
 void Distr::recv_count(int *nhalo_padded, int *nhalo) {
