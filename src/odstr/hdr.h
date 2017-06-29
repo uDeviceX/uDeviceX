@@ -1,11 +1,14 @@
 struct Send {
     int **iidx; /* indices */
-    float2 **pp_dev;   /* buffers */
+
+    /* buffers */
+    float2 **pp_dev;   
     float *pp_hst[27];
     float2 *pp_hst_[27];
 
-    // int **iidev;
-    // int *iihst[27];
+    int **ii_dev;
+    int *ii_hst[27];
+    int *ii_hst_[27];
     
     int *size_dev, *strt;
     int size[27];
@@ -18,6 +21,10 @@ struct Recv {
     float2 **pp_dev;
     float *pp_hst[27];
     float2 *pp_hst_[27];
+
+    int **ii_dev;
+    int *ii_hst[27];
+    int *ii_hst_[27];
 
     int *strt;
     int tags[27];
