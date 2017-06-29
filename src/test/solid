@@ -42,12 +42,12 @@
 # export PATH=../tools:$PATH
 # (cd ../cmd; make ) > /dev/null
 # cp data/sdf/yplates1/yplates.dat sdf.dat
-# echo -e "16 16 16" > ic_solid.txt
+# echo -e "16 16 8" > ic_solid.txt
 # cp data/rig/cyl.ply mesh_solid.ply
 # :
 # u.conf conf/test.h <<!!!
 #    tend=2.01 part_freq=1000 walls wall_creation=100
-#    field_dumps part_dumps field_freq=1000
+#    field_dumps part_dumps field_freq=1000 ZS=16
 #    solids spdir=2 sbounce_back dt=1e-3 shear_y
 #    run
 #!!!
