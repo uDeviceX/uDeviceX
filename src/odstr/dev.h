@@ -47,6 +47,30 @@ __device__ int code(const int a[], const uint i) { /* where is `i' in sorted a[2
     return k9 + k3 + k1;
 }
 
+template <typename T, int STRIDE>
+__global__ void pack(const T *data, int *const iidx[], const int send_strt[], /**/ T *send_dev[]) {
+    int gid = threadIdx.x + blockDim.x * blockIdx.x;
+    int slot = gid / STRIDE;
+
+    int tid = threadIdx.x;
+
+    __shared__ int start[28];
+
+    if (tid < 28) start[tid] = send_strt[tid];
+    __syncthreads();
+    int idpack = code(start, slot);
+
+    if (slot >= start[27]) return;
+
+    int offset = slot - start[idpack];
+    int pid = __ldg(iidx[idpack] + offset);
+
+    int c = gid % STRIDE;
+    int d = c + STRIDE * offset;
+    send_dev[idpack][d] = data[c + STRIDE * pid];
+}
+
+
 __global__ void pack(const float2 *pp, int *const iidx[], const int send_strt[], /**/ float2 *send_dev[]) {
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
     int slot = gid / 3;
@@ -173,8 +197,8 @@ __global__ void gather_id(const int *ii_lo, const int *ii_re, int n, const uint 
     ii[pid] = data;
 }
 
-__global__ void gather(const float2  *pp_lo, const float2 *pp_re, int n, const uint *iidx,
-                       /**/ float2  *pp, float4  *zip0, ushort4 *zip1) {
+__global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, const uint *iidx,
+                          /**/ float2  *pp, float4  *zip0, ushort4 *zip1) {
     /* pp_lo, pp_re, pp: local, remote and output particles */
     int warpid, tid, base, pid;
     bool valid, remote;
