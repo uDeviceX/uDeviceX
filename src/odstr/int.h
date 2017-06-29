@@ -105,7 +105,7 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     n = nbulk + nhalo;
     if (n)
     sub::dev::gather_pp<<<k_cnf(n)>>>((float2*)pp, (float2*)pp_re, n, iidx,
-                                   /**/ (float2*)pp0, zip0, zip1);
+                                      /**/ (float2*)pp0, zip0, zip1);
 
     q->n = n;
     *qfirst = first;
