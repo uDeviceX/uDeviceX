@@ -25,7 +25,7 @@ void Distr::scan(int n) {
 }
 
 void Distr::pack(Particle *pp, int n) {
-    dev::pack<<<k_cnf(3*n)>>>((float2*)pp, s.iidx, s.strt, /**/ s.dev);
+    dev::pack<float2, 3> <<<k_cnf(3*n)>>>((float2*)pp, s.iidx, s.strt, /**/ s.dev);
     dSync();
 }
 
