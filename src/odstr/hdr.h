@@ -38,6 +38,7 @@ public:
 
     void waitall(MPI_Request *reqs);
     void post_recv(MPI_Comm cart, int rank[], MPI_Request *size_req, MPI_Request *mesg_req);
+    void post_recv_ii(MPI_Comm cart, int rank[], MPI_Request *ii_req);
     void halo(Particle *pp, int n);
     void scan(int n);
     void pack_pp(const Particle *pp, int n);

@@ -14,6 +14,13 @@ void Distr::post_recv(MPI_Comm cart, int rank[],
                 BT_P_ODSTR + r.tags[i], cart, mesg_req + c++);
 }
 
+void Distr::post_recv_ii(MPI_Comm cart, int rank[],
+                         MPI_Request *ii_req) {
+    for(int i = 1, c = 0; i < 27; ++i)
+    l::m::Irecv(r.ii_hst[i], MAX_PART_NUM, MPI_INT, rank[i],
+                BT_I_ODSTR + r.tags[i], cart, ii_req + c++);
+}
+
 void Distr::halo(Particle *pp, int n) {
     CC(cudaMemset(s.size_dev, 0,  27*sizeof(s.size_dev[0])));
     dev::halo<<<k_cnf(n)>>>(pp, n, /**/ s.iidx, s.size_dev);
