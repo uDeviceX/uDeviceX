@@ -69,6 +69,64 @@ __global__ void pack(const float2 *pp, int *const iidx[], const int send_strt[],
     send_dev[idpack][d] = pp[c + 3 * pid];
 }
 
+__global__ void unpack(float2 *const recv[], const int strt[], /**/ float2 *pp) {
+    const int gid = threadIdx.x + blockDim.x * blockIdx.x;
+    const int slot = gid / 3;
+
+    const int tid = threadIdx.x;
+
+    __shared__ int start[28];
+
+    if (tid < 28) start[tid] = strt[tid];
+    __syncthreads();
+    const int idpack = code(start, slot);
+
+    if (slot >= start[27]) return;
+
+    const int offset = slot - start[idpack];
+    const int c = gid % 3;
+    const int srcid = c + 3 * offset;
+
+    pp[gid] = recv[idpack][srcid];
+}
+
+__global__ void subindex_remote(const int n, const int strt[], /*io*/ float2 *pp, int *counts, /**/ uchar4 *subids) {
+    const int tid    = threadIdx.x;
+    const int warpid = tid / warpSize;
+    const int laneid = tid % warpSize;
+    const int wpb    = blockDim.x / warpSize;
+    const int base   = warpSize * (warpid + wpb * blockIdx.x);
+    if (base >= n) return;    
+    const int nlocal = min(warpSize, n - base);
+
+    const int slot = base + laneid;
+    
+    __shared__ int start[28];
+    if (tid < 28) start[tid] = strt[tid];
+    __syncthreads();
+    const int idpack = code(start, slot);
+
+    float2 d0, d1, d2;
+    k_common::read_AOS6f(pp + 3*base, nlocal, d0, d1, d2);
+    
+    if (laneid < nlocal) {
+        d0.x += XS * ((idpack     + 1) % 3 - 1);
+        d0.y += YS * ((idpack / 3 + 1) % 3 - 1);
+        d1.x += ZS * ((idpack / 9 + 1) % 3 - 1);
+
+        const int xi = (int)floor((double)d0.x + XS / 2);
+        const int yi = (int)floor((double)d0.y + YS / 2);
+        const int zi = (int)floor((double)d1.x + ZS / 2);
+
+        const int cid = xi + XS * (yi + YS * zi);
+        const int subindex = atomicAdd(counts + cid, 1);
+
+        subids[slot] = make_uchar4(xi, yi, zi, subindex);
+    }
+
+    k_common::write_AOS6f(pp + 3*base, nlocal, d0, d1, d2);
+}
+
 __global__ void unpack(const uint n_pa, float2 *const recv[], const int strt[], const int strt_pa[],
                        /*io*/ int *counts,
                        /*o*/ float2 *pp, uchar4 *subi) {
