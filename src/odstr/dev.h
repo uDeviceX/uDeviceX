@@ -158,6 +158,21 @@ __forceinline__ __device__ void xchg_aos4f(int srclane0, int srclane1, int start
     xchg_aos2f(srclane0, srclane1, start, s0.z, s1.z);
 }
 
+__global__ void gather_id(const int *ii_lo, const int *ii_re, int n, const uint *iidx, /**/ int *ii) {
+    int spid, data;
+    const int pid = threadIdx.x + blockIdx.x * blockDim.x;
+    if (pid >= n) return;
+
+    spid = iidx[pid];
+    
+    const bool remote = (spid >> 31) & 1;
+    spid &= ~(1 << 31);
+    if (remote) data = ii_re[spid];
+    else        data = ii_lo[spid];
+
+    ii[pid] = data;
+}
+
 __global__ void gather(const float2  *pp_lo, const float2 *pp_re, int n, const uint *iidx,
                        /**/ float2  *pp, float4  *zip0, ushort4 *zip1) {
     /* pp_lo, pp_re, pp: local, remote and output particles */
