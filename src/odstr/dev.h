@@ -127,49 +127,6 @@ __global__ void subindex_remote(const int n, const int strt[], /*io*/ float2 *pp
     k_common::write_AOS6f(pp + 3*base, nlocal, d0, d1, d2);
 }
 
-__global__ void unpack(const uint n_pa, float2 *const recv[], const int strt[], const int strt_pa[],
-                       /*io*/ int *counts,
-                       /*o*/ float2 *pp, uchar4 *subi) {
-    /* n_pa: `n' padded; strt_pa: start padded */
-    uint warpid, laneid;
-    uint lb, ub, db; /* local/unpack/distribute base */
-
-    int c; /* code */
-    float2 d0, d1, d2; /* data */
-    uint nu; /* "n unpack" */
-    int xi, yi, zi, cid, subindex;
-
-    warpid = threadIdx.x / 32;
-    laneid = threadIdx.x % 32;
-
-    lb = 32 * (warpid + 4 * blockIdx.x);
-    if (lb >= n_pa)  return;
-    c = code(strt_pa, lb); /* find `lb' in strt_pa */
-    ub = lb - strt_pa[c];
-
-    nu = min(32, strt[c + 1] - strt[c] - ub);
-    if (nu == 0) return;
-
-    k_common::read_AOS6f(recv[c] + 3 * ub, nu, d0, d1, d2);
-
-    if (laneid < nu) {
-        d0.x += XS * ((c     + 1) % 3 - 1);
-        d0.y += YS * ((c / 3 + 1) % 3 - 1);
-        d1.x += ZS * ((c / 9 + 1) % 3 - 1);
-
-        xi = (int)floor((double)d0.x + XS / 2);
-        yi = (int)floor((double)d0.y + YS / 2);
-        zi = (int)floor((double)d1.x + ZS / 2);
-
-        cid = xi + XS * (yi + YS * zi);
-        subindex = atomicAdd(counts + cid, 1);
-    }
-
-    db = strt[c] + ub;
-    k_common::write_AOS6f(pp + 3 * db, nu, d0, d1, d2);
-    if (laneid < nu) subi[db + laneid] = make_uchar4(xi, yi, zi, subindex);
-}
-
 __global__ void scatter(const bool remote, const uchar4 *subi, const int n, const int *start,
                         /**/ uint *iidx) {
     uint pid = threadIdx.x + blockDim.x * blockIdx.x;
