@@ -9,7 +9,7 @@ namespace mbounce
 {
 enum {X, Y, Z};
 
-// #define debug_output
+//#define debug_output
 
 #define _DH_ __device__ __host__
 
@@ -338,30 +338,26 @@ __global__ void bounce_tcells(const Force *ff, const Mesh m, const Particle *i_p
             
     Particle p0; rvprev(p1.r, p1.v, ff[i].f, /**/ p0.r, p0.v);
 
-    const int xcid_ = int (p1.r[X] + XS/2);
-    const int ycid_ = int (p1.r[Y] + YS/2);
-    const int zcid_ = int (p1.r[Z] + ZS/2);
+    const int xcid = max(0, min(int (p1.r[X] + XS/2), XS-1));
+    const int ycid = max(0, min(int (p1.r[Y] + YS/2), YS-1));
+    const int zcid = max(0, min(int (p1.r[Z] + ZS/2), ZS-1));
 
     float h = 2*dt; // must be higher than any valid result
     float rw[3], vw[3];
 
     int sid = -1;
         
-    for (int zcid = max(zcid_-1, 0); zcid <= min(zcid_ + 1, ZS - 1); ++zcid)
-    for (int ycid = max(ycid_-1, 0); ycid <= min(ycid_ + 1, YS - 1); ++ycid)
-    for (int xcid = max(xcid_-1, 0); xcid <= min(xcid_ + 1, XS - 1); ++xcid) {
-        const int cid = xcid + XS * (ycid + YS * zcid);
-        const int start = tcellstarts[cid];
-        const int count = tcellcounts[cid];
+    const int cid = xcid + XS * (ycid + YS * zcid);
+    const int start = tcellstarts[cid];
+    const int count = tcellcounts[cid];
                 
-        for (int j = start; j < start + count; ++j) {
-            const int tid = tids[j];
-            const int it  = tid % m.nt;
-            const int mid = tid / m.nt;
+    for (int j = start; j < start + count; ++j) {
+        const int tid = tids[j];
+        const int it  = tid % m.nt;
+        const int mid = tid / m.nt;
                     
-            if (find_better_intersection(m.tt, it, i_pp + mid * m.nv, &p0, /*io*/ &h, /**/ rw, vw))
-            sid = mid;
-        }
+        if (find_better_intersection(m.tt, it, i_pp + mid * m.nv, &p0, /*io*/ &h, /**/ rw, vw))
+        sid = mid;
     }
 
     if (sid != -1) {
