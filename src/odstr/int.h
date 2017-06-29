@@ -86,9 +86,13 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     td->distr.waitall(recv_size_req);
     td->distr.recv_count(&nhalo_padded, &nhalo);
     td->distr.waitall(recv_mesg_req);
+
+    // if (nhalo)
+    // td->distr.unpack
+    //     (nhalo_padded, /*io*/ q->cells->count, /*o*/ subi_re, pp_re);
+
     if (nhalo)
-    td->distr.unpack
-        (nhalo_padded, /*io*/ q->cells->count, /*o*/ subi_re, pp_re);
+    td->distr.unpack(nhalo, /*io*/ q->cells->count, /*o*/ subi_re, pp_re);
 
     k_common::compress_counts<<<k_cnf(XS*YS*ZS)>>>
         (XS*YS*ZS, (int4*)q->cells->count, /**/ (uchar4*)count_zip);

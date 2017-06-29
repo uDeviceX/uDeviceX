@@ -57,14 +57,19 @@ void Distr::recv_count(int *nhalo_padded, int *nhalo) {
     *nhalo_padded = strt_pa[27];
 }
 
-void Distr::unpack(int n_pa,
-                   /*io*/ int *count,
-                   /*o*/ uchar4 *subi, Particle *pp_re) {
-    /* n_pa: n padded */
-    dev::unpack<<<k_cnf(n_pa)>>>
-        (n_pa,  r.dev, r.strt, r.strt_pa,
-         /*io*/ count,
-         /*o*/ (float2*)pp_re, subi);
+// void Distr::unpack(int n_pa,
+//                    /*io*/ int *count,
+//                    /*o*/ uchar4 *subi, Particle *pp_re) {
+//     /* n_pa: n padded */
+//     dev::unpack<<<k_cnf(n_pa)>>>
+//         (n_pa,  r.dev, r.strt, r.strt_pa,
+//          /*io*/ count,
+//          /*o*/ (float2*)pp_re, subi);
+// }
+
+void Distr::unpack(int n, /*io*/ int *counts, /*o*/ uchar4 *subi, Particle *pp_re) {
+    dev::unpack <<<k_cnf(3*n)>>> (r.dev, r.strt, /**/ (float2*) pp_re);
+    dev::subindex_remote <<<k_cnf(n)>>> (n, r.strt, /*io*/ (float2*) pp_re, counts, /**/ subi);
 }
 
 void Distr::cancel_recv(MPI_Request *size_req, MPI_Request *mesg_req) {
