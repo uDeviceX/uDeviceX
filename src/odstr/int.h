@@ -108,9 +108,14 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
         (true, subi_re, nhalo, q->cells->start, /**/ iidx);
 
     n = nbulk + nhalo;
-    if (n)
-    sub::dev::gather_pp<<<k_cnf(n)>>>((float2*)pp, (float2*)pp_re, n, iidx,
-                                      /**/ (float2*)pp0, zip0, zip1);
+    if (n) {
+        sub::dev::gather_pp<<<k_cnf(n)>>>((float2*)pp, (float2*)pp_re, n, iidx,
+                                          /**/ (float2*)pp0, zip0, zip1);
+
+        // if (global_ids)
+        // sub::dev::gather_id<<<k_cnf(n)>>>(ii, ii_re, n, iidx, /**/ ii0);
+        
+    }
 
     q->n = n;
     *qfirst = first;
