@@ -69,6 +69,7 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
         td->distr.halo(pp, n);
         td->distr.scan(n);
         td->distr.pack_pp(pp, n);
+        //if (global_ids) td->distr.pack_ii(ii, n);
         dSync();
     }
     if (!first) {
@@ -88,9 +89,11 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     td->distr.recv_count(&nhalo);
     td->distr.waitall(recv_mesg_req);
 
-    if (nhalo)
-    td->distr.unpack(nhalo, /*io*/ q->cells->count, /*o*/ subi_re, pp_re);
-
+    if (nhalo) {
+        td->distr.unpack_pp(nhalo, /*o*/ pp_re);
+        td->distr.subindex_remote(nhalo, /*io*/ pp_re, q->cells->count, /**/ subi_re);
+    }
+    
     k_common::compress_counts<<<k_cnf(XS*YS*ZS)>>>
         (XS*YS*ZS, (int4*)q->cells->count, /**/ (uchar4*)count_zip);
     l::scan::d::scan(count_zip, XS*YS*ZS, /**/ (uint*)q->cells->start);
