@@ -35,7 +35,6 @@ int gen(Particle *dev, /*w*/ Particle *hst) {
 void ii_gen0(const long n, int *ii) {
     long i0 = 0;
     MC(l::m::Exscan(&n, &i0, 1, MPI_LONG, MPI_SUM, m::cart));
-    MSG("i0 = %ld", i0);
     for (long i = 0; i < n; ++i) ii[i] = i + i0;
 }
 
