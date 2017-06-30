@@ -3,15 +3,15 @@ Build Mesh
 
 A tool for generating solid mesh from one centered mesh in space and several `solid_diag_xxxx.txt` files.
 
-Compilation
------------
+Installation
+------------
 ```sh
-make
+make install
 ```
 
 Usage
 -----
 
 ```sh
-./build <mesh.ply> <solid_diag_0000.txt> <solid_diag_0001.txt> ...
+po.ss2ply <mesh.ply> <solid_diag_0000.txt> <solid_diag_0001.txt> ...
 ```
