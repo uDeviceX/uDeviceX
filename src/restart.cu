@@ -71,9 +71,10 @@ void header(const char *bop, const char *rel, const long n) {
     fclose(f);
 }
 
-void data(const char *val, const Particle *pp, const long n) {
+template <typename T>
+void data(const char *val, const T *dat, const long n) {
     FILE *f = fopen(val, "w"); CF(f, val);
-    fwrite((float *) pp, sizeof(float), sizeof(Particle)/sizeof(float) * n, f);
+    fwrite(dat, sizeof(T), n, f);
     fclose(f);
 }
 } // namespace bopwrite
@@ -85,9 +86,10 @@ void header(const char *name, long *n) {
     fclose(f);
 }
 
-void data(const char *name, const long n, Particle *pp) {
+template <typename T>
+void data(const char *name, const long n, T *dat) {
     FILE *f = fopen(name, "r"); CF(f, name);
-    fread(pp, sizeof(Particle), n, f);
+    fread(dat, sizeof(T), n, f);
     fclose(f);
 }
 } // namespace bopread
