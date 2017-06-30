@@ -30,8 +30,8 @@ for ((i=0;i<${#fbop[@]};++i)); do
     if test "$WF" = "true"; then
         in=$fin
     else
-        in=`echo $fin -- "${ibop[i]}"`
+        in="$fin -- \"${ibop[i]}\""
     fi
     out="${fin%.bop}.vtk"
-    bop2vtk $out $in
+    echo bop2vtk $out $in
 done
