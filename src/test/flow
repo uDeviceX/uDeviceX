@@ -4,7 +4,6 @@
 # :
 # export PATH=../tools:$PATH
 # (cd ../cmd; make ) > /dev/null
-# cp data/cells/rbc.498.off  rbc.off
 # :
 # u.conf conf/double.poiseuille.h <<!!!
 #    tend=2.01 part_freq=4000
@@ -22,7 +21,6 @@
 # rm -rf bop h5 diag.txt rbc.off
 # :
 # export PATH=../tools:$PATH
-# cp data/cells/rbc.498.off  rbc.off
 # cp data/sdf/wall1/wall.dat sdf.dat
 # :
 # u.conf conf/test.h <<!!!
@@ -40,7 +38,6 @@
 # rm -rf bop h5 diag.txt rbc.off
 # :
 # export PATH=../tools:$PATH
-# cp data/cells/rbc.498.off  rbc.off
 # cp data/sdf/wall1/wall.dat sdf.dat
 # :
 # u.conf conf/poiseuille.h <<!!!
@@ -58,7 +55,6 @@
 # rm -rf bop h5 diag.txt rbc.off
 # :
 # export PATH=../tools:$PATH
-# cp data/cells/rbc.498.off rbc.off
 # cp data/sdf/cyl1/cyl.dat sdf.dat
 # :
 # u.conf conf/poiseuille.h <<!!!
