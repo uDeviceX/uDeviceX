@@ -61,13 +61,23 @@ void gen_name(const bool read, const char *code, const int id, const char *ext, 
 }
 
 namespace bopwrite {
-void header(const char *bop, const char *rel, const long n) {
+void header_pp(const char *bop, const char *rel, const long n) {
     FILE *f = fopen(bop, "w"); CF(f, bop);
     
     fprintf(f, "%ld\n", n);
     fprintf(f, "DATA_FILE: %s\n", rel);
     fprintf(f, "DATA_FORMAT: float\n");
     fprintf(f, "VARIABLES: x y z vx vy vz\n");
+    fclose(f);
+}
+
+void header_ii(const char *bop, const char *rel, const long n) {
+    FILE *f = fopen(bop, "w"); CF(f, bop);
+    
+    fprintf(f, "%ld\n", n);
+    fprintf(f, "DATA_FILE: %s\n", rel);
+    fprintf(f, "DATA_FORMAT: int\n");
+    fprintf(f, "VARIABLES: id\n");
     fclose(f);
 }
 
@@ -80,7 +90,7 @@ void data(const char *val, const T *dat, const long n) {
 } // namespace bopwrite
 
 namespace bopread {
-void header(const char *name, long *n) {
+void read_n(const char *name, long *n) {
     FILE *f = fopen(name, "r"); CF(f, name);
     if (fscanf(f, "%ld\n", n) != 1) ERR("wrong format\n");
     fclose(f);
@@ -102,7 +112,7 @@ void write_pp(const char *code, const int id, const Particle *pp, const long n) 
     id2str(id, /**/ idcode);
     CSPR(sprintf(rel, PF, idcode, "values"));    
 
-    bopwrite::header(bop, rel, n);
+    bopwrite::header_pp(bop, rel, n);
     bopwrite::data(val, pp, n);
 }
 
@@ -112,8 +122,32 @@ void read_pp(const char *code, const int id, Particle *pp, int *n) {
     gen_name(READ, code, id, "bop"   , /**/ bop);
     gen_name(READ, code, id, "values", /**/ val);
     DBG("reading <%s> and <%s>", bop, val);
-    bopread::header(bop, &np);
+    bopread::read_n(bop, &np);
     bopread::data(val, np, pp);
+    *n = np;
+    DBG("I have read %ld pp", np);
+}
+
+void write_ii(const char *code, const int id, const int *ii, const long n) {
+    char bop[BS] = {0}, rel[BS] = {0}, val[BS] = {0}, idcode[BS] = {0};
+    gen_name(DUMP, code, id, "id.bop"   , /**/ bop);
+    gen_name(DUMP, code, id, "id.values", /**/ val);
+
+    id2str(id, /**/ idcode);
+    CSPR(sprintf(rel, PF, idcode, "id.values"));    
+
+    bopwrite::header_ii(bop, rel, n);
+    bopwrite::data(val, ii, n);
+}
+
+void read_ii(const char *code, const int id, int *ii, int *n) {
+    long np = 0;
+    char bop[BS] = {0}, val[BS] = {0};
+    gen_name(READ, code, id, "id.bop"   , /**/ bop);
+    gen_name(READ, code, id, "id.values", /**/ val);
+    DBG("reading <%s> and <%s>", bop, val);
+    bopread::read_n(bop, &np);
+    bopread::data(val, np, ii);
     *n = np;
     DBG("I have read %ld pp", np);
 }
