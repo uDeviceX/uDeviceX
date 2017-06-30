@@ -33,5 +33,5 @@ for ((i=0;i<${#fbop[@]};++i)); do
         in="$fin -- \"${ibop[i]}\""
     fi
     out="${fin%.bop}.vtk"
-    echo bop2vtk $out $in
+    bop2vtk $out $in
 done
