@@ -13,12 +13,10 @@ void dump_part(int step) {
   cD2H(o::q.pp_hst, o::q.pp, o::q.n);
   if (global_ids) {
       cD2H(o::q.ii_hst, o::q.ii, o::q.n);
-      dump::parts_ids(o::q.pp_hst, o::q.ii_hst, o::q.n, "solvent", step);
-  } else {
-      dump::parts(o::q.pp_hst, o::q.n, "solvent", step);
+      dump::ids(o::q.ii_hst, o::q.n, "id_solvent", step);
   }
+  dump::parts(o::q.pp_hst, o::q.n, "solvent", step);
   
-
   if(solids0) {
     cD2H(s::q.pp_hst, s::q.pp, s::q.n);
     dump::parts(s::q.pp_hst, s::q.n, "solid", step);
