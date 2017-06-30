@@ -59,9 +59,11 @@ void gen_quants(Quants *q) {
 }
 
 void strt_quants(const int id, Quants *q) {
-    q->n = sub::strt(id, q->pp, /* w */ q->pp_hst);
+    q->n = sub::strt(id, /**/ q->pp, /* w */ q->pp_hst);
+    if (global_ids) sub::strt_ii(id, /**/ q->ii, /* w */ q->ii_hst);
 }
 
 void strt_dump(const int id, const Quants q) {
     sub::strt_dump(id, q.n, q.pp, /* w */ q.pp_hst);
+    if (global_ids) sub::strt_dump_ii(id, q.n, q.ii, /* w */ q.ii_hst);
 }
