@@ -32,10 +32,10 @@ void pack_first1() {
 }
 
 void wait() {
-  MPI_Status statuses[26 * 2];
-  MC(l::m::Waitall(26, sendcellsreq, statuses));
-  MC(l::m::Waitall(nsendreq, sendreq, statuses));
-  MC(l::m::Waitall(26, sendcountreq, statuses));
+  MPI_Status ss[26 * 2];
+  MC(l::m::Waitall(26, sendcellsreq, ss));
+  MC(l::m::Waitall(nsendreq, sendreq, ss));
+  MC(l::m::Waitall(26, sendcountreq, ss));
 }
 
 void pack(Particle *pp, int n, int *start, int *count) {
