@@ -111,7 +111,7 @@ template <int NWARPS> __global__ void scan() {
     }
 }
   
-__global__ void fill_all(Particle *particles, int np,
+__global__ void fill(Particle *particles, int np,
                          int *required_bag_size) {
     int gcid = (threadIdx.x >> 4) + 2 * blockIdx.x;
     if (gcid >= cellpackstarts[26]) return;
