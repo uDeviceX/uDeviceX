@@ -1,6 +1,6 @@
 namespace dpd {
 void upd_bag() {
-  static phalo::SendBagInfo baginfos[26];
+  static k_halo::SendBagInfo baginfos[26];
   for (int i = 0; i < 26; ++i) {
     baginfos[i].start_src = sendhalos[i]->tmpstart->D;
     baginfos[i].count_src = sendhalos[i]->tmpcount->D;
@@ -10,11 +10,11 @@ void upd_bag() {
     baginfos[i].dbag = sendhalos[i]->dbuf->D;
     baginfos[i].hbag = sendhalos[i]->hbuf->D;
   }
-  CC(cudaMemcpyToSymbolAsync(phalo::baginfos, baginfos, sizeof(baginfos), 0, H2D));
+  CC(cudaMemcpyToSymbolAsync(k_halo::baginfos, baginfos, sizeof(baginfos), 0, H2D));
 }
 
 void _pack_all(Particle *p, int n) {
-    if (ncells) phalo::fill<<<(ncells + 1) / 2, 32>>>(p, n, required_send_bag_size);
+    if (ncells) k_halo::fill<<<(ncells + 1) / 2, 32>>>(p, n, required_send_bag_size);
     CC(cudaEventRecord(evfillall));
 }
 

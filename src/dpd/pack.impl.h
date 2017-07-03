@@ -5,7 +5,7 @@ void pack_first0() {
     cellpackstarts[i + 1] =
       (s += sendhalos[i]->dcellstarts->S * (sendhalos[i]->expected > 0));
   ncells = cellpackstarts[26];
-  CC(cudaMemcpyToSymbol(phalo::cellpackstarts, cellpackstarts,
+  CC(cudaMemcpyToSymbol(k_halo::cellpackstarts, cellpackstarts,
 			sizeof(cellpackstarts), 0, H2D));
 
   for (int i = 0; i < 26; ++i) {
@@ -15,20 +15,20 @@ void pack_first0() {
     cellpacks[i].scan = sendhalos[i]->dcellstarts->D;
     cellpacks[i].size = sendhalos[i]->dcellstarts->S;
   }
-  CC(cudaMemcpyToSymbol(phalo::cellpacks, cellpacks,
+  CC(cudaMemcpyToSymbol(k_halo::cellpacks, cellpacks,
 			sizeof(cellpacks), 0, H2D));
 }
 
 void pack_first1() {
   int i;
   for (i = 0; i < 26; ++i) srccells0[i] = sendhalos[i]->dcellstarts->D;
-  CC(cudaMemcpyToSymbol(phalo::srccells, srccells0, sizeof(srccells0), 0, H2D));
+  CC(cudaMemcpyToSymbol(k_halo::srccells, srccells0, sizeof(srccells0), 0, H2D));
   for (i = 0; i < 26; ++i) dstcells0[i] = sendhalos[i]->hcellstarts->DP;
-  CC(cudaMemcpyToSymbol(phalo::dstcells, dstcells0, sizeof(dstcells0), 0, H2D));
+  CC(cudaMemcpyToSymbol(k_halo::dstcells, dstcells0, sizeof(dstcells0), 0, H2D));
   for (i = 0; i < 26; ++i) srccells1[i] = recvhalos[i]->hcellstarts->DP;
-  CC(cudaMemcpyToSymbol(phalo::srccells, srccells1, sizeof(srccells1), sizeof(srccells1), H2D));
+  CC(cudaMemcpyToSymbol(k_halo::srccells, srccells1, sizeof(srccells1), sizeof(srccells1), H2D));
   for (i = 0; i < 26; ++i) dstcells1[i] = recvhalos[i]->dcellstarts->D;
-  CC(cudaMemcpyToSymbol(phalo::dstcells, dstcells1, sizeof(dstcells1), sizeof(dstcells1), H2D));
+  CC(cudaMemcpyToSymbol(k_halo::dstcells, dstcells1, sizeof(dstcells1), sizeof(dstcells1), H2D));
 }
 
 void wait_send() {
@@ -42,15 +42,15 @@ void pack(Particle *pp, int n, int *start, int *count) {
   if (firstpost) pack_first0();
 
   if (ncells)
-    phalo::count<<<k_cnf(ncells)>>>(start, count, ncells);
-  phalo::scan<32><<<26, 32 * 32>>>();
+    k_halo::count<<<k_cnf(ncells)>>>(start, count, ncells);
+  k_halo::scan<32><<<26, 32 * 32>>>();
 
   if (firstpost) {
     post_expected_recv();
     pack_first1();
   } else wait_send();
   
-  if (ncells) phalo::copy<0><<<k_cnf(ncells)>>>(ncells);
+  if (ncells) k_halo::copy<0><<<k_cnf(ncells)>>>(ncells);
   if (firstpost) upd_bag();
   _pack_all(pp, n);
 }
