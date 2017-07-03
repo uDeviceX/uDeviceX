@@ -125,8 +125,6 @@ namespace dev {
 #include "k/rex.h"
 #include "rex.impl.h"
 
-#include "phalo.decl.h"
-#include "phalo.impl.h"
 #include "k/halo.h"
 
 #include "bipsbatch.decl.h"
