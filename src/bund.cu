@@ -135,6 +135,7 @@ namespace dev {
 #include "dpd/buf.decl.h"
 #include "dpd/ini.h"
 #include "dpd/remote.impl.h"
+#include "dpd/pack.impl.h"
 
 #include "collision.h"
 
