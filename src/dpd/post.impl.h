@@ -2,13 +2,6 @@ namespace dpd {
 void post(Particle *p, int n) {
     {
         CC(cudaEventSynchronize(evfillall));
-
-        bool succeeded = true;
-        for (int i = 0; i < 26; ++i) {
-            int nrequired = required_send_bag_size_host[i];
-            bool failed_entry = nrequired > sendhalos[i]->dbuf->C;
-        }
-
         for (int i = 0; i < 26; ++i) {
             int nrequired = required_send_bag_size_host[i];
 
