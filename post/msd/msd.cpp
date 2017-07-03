@@ -125,6 +125,7 @@ int main(int argc, char **argv) {
     }
 
     delete[] rr0; delete[] rrc;
+    delete[] rrp; delete[] ddL;
     finalize(&dpp0); finalize(&dii0);
     return 0;
 }
