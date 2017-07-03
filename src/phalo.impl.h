@@ -67,7 +67,7 @@ template <int slot> __global__ void copycells(int n) {
     dstcells[idpack + 26 * slot][offset] = srccells[idpack + 26 * slot][offset];
 }
 
-template <int NWARPS> __global__ void scan_diego() {
+template <int NWARPS> __global__ void scan() {
     __shared__ int shdata[32];
 
     int code = blockIdx.x;

@@ -43,7 +43,7 @@ void pack(Particle *pp, int n, int *start, int *count) {
 
   if (ncells)
     phalo::count_all<<<k_cnf(ncells)>>>(start, count, ncells);
-  phalo::scan_diego<32><<<26, 32 * 32>>>();
+  phalo::scan<32><<<26, 32 * 32>>>();
 
   if (firstpost) {
     post_expected_recv();
