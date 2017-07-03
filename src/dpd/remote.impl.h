@@ -95,7 +95,6 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
     }
     
     {
-      static phalo::CellPackSOA cellpacks[26];
       for (int i = 0; i < 26; ++i) {
 	cellpacks[i].start = sendhalos[i]->tmpstart->D;
 	cellpacks[i].count = sendhalos[i]->tmpcount->D;
