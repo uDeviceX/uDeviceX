@@ -1,28 +1,26 @@
 namespace dpd {
-void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
-  if (firstpost) {
-    {
-      cellpackstarts[0] = 0;
-      for (int i = 0, s = 0; i < 26; ++i)
-	cellpackstarts[i + 1] =
-	  (s += sendhalos[i]->dcellstarts->S * (sendhalos[i]->expected > 0));
-      ncells = cellpackstarts[26];
-      CC(cudaMemcpyToSymbol(phalo::cellpackstarts, cellpackstarts,
-			    sizeof(cellpackstarts), 0, H2D));
-    }
+void pack_first0() {
+  cellpackstarts[0] = 0;
+  for (int i = 0, s = 0; i < 26; ++i)
+    cellpackstarts[i + 1] =
+      (s += sendhalos[i]->dcellstarts->S * (sendhalos[i]->expected > 0));
+  ncells = cellpackstarts[26];
+  CC(cudaMemcpyToSymbol(phalo::cellpackstarts, cellpackstarts,
+			sizeof(cellpackstarts), 0, H2D));
 
-    {
-      for (int i = 0; i < 26; ++i) {
-	cellpacks[i].start = sendhalos[i]->tmpstart->D;
-	cellpacks[i].count = sendhalos[i]->tmpcount->D;
-	cellpacks[i].enabled = sendhalos[i]->expected > 0;
-	cellpacks[i].scan = sendhalos[i]->dcellstarts->D;
-	cellpacks[i].size = sendhalos[i]->dcellstarts->S;
-      }
-      CC(cudaMemcpyToSymbol(phalo::cellpacks, cellpacks,
-			    sizeof(cellpacks), 0, H2D));
-    }
+  for (int i = 0; i < 26; ++i) {
+    cellpacks[i].start = sendhalos[i]->tmpstart->D;
+    cellpacks[i].count = sendhalos[i]->tmpcount->D;
+    cellpacks[i].enabled = sendhalos[i]->expected > 0;
+    cellpacks[i].scan = sendhalos[i]->dcellstarts->D;
+    cellpacks[i].size = sendhalos[i]->dcellstarts->S;
   }
+  CC(cudaMemcpyToSymbol(phalo::cellpacks, cellpacks,
+			sizeof(cellpacks), 0, H2D));
+}
+  
+void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
+  if (firstpost) pack_first0();
 
   if (ncells)
     phalo::
@@ -38,6 +36,7 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
     MC(l::m::Waitall(nsendreq, sendreq, statuses));
     MC(l::m::Waitall(26, sendcountreq, statuses));
   }
+  
   if (firstpost) {
     {
       for (int i = 0; i < 26; ++i) srccells0[i] = sendhalos[i]->dcellstarts->D;
