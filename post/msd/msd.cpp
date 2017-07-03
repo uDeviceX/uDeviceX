@@ -41,28 +41,28 @@ void pp2rr_sorted(const int *ii, const float *fdata, const int n, const int stri
     }
 }
 
-void glbrr(const float *rrp, const int n, /**/ float *rrc, float *ddL) {
+void updddL(const float *rrp, const float *rrc, const int n, /**/ float *ddL) {
     const int dL[3] = {XS, YS, ZS};
     
     for (int i = 0; i < 3*n; ++i) {
         const int d = i%3;
-        const float dl = rrp[i] - rrc[i];
+        const float dl = rrc[i] - rrp[i];
         const float sign = dl > 0 ? 1.f : -1.f;
         if (fabs(dl) > dL[d]/2) {
-            ddL[i] += sign * dL[d];
-            rrc[i] += sign * dL[d];
+            ddL[i] -= sign * dL[d];
         }
     }
 }
 
-float MSD(const float *rr0, const float *rr, const int buffsize, const int n) {
+float MSD(const float *rr0, const float *rr, const float *ddL, const int buffsize, const int n) {
     float sumsq = 0.f;
 
     for (int i = 0; i < buffsize; ++i) {
         const float *r0 = rr0 + 3*i;
-        const float *r  = rr  + 3*i;
+        const float  *r = rr  + 3*i;
+        const float *dL = ddL + 3*i;
         for (int c = 0; c < 3; ++c) {
-            const float dr = r[c] - r0[c];
+            const float dr = r[c] + dL[c] - r0[c];
             sumsq += dr*dr;
         }
     }
@@ -114,9 +114,9 @@ int main(int argc, char **argv) {
 
         memset(rrc, 0, 3*buffsize*sizeof(float));
         pp2rr_sorted(dii.idata, dpp.fdata, dpp.n, dpp.nvars, /**/ rrc);
-        glbrr(rrp, buffsize, /**/ rrc, ddL);
+        updddL(rrp, rrc, buffsize, /**/ ddL);
 
-        const float msd = MSD(rr0, rrc, buffsize, dpp.n);
+        const float msd = MSD(rr0, rrc, ddL, buffsize, dpp.n);
 
         printf("%f\n", msd);
         
