@@ -127,6 +127,7 @@ namespace dev {
 
 #include "phalo.decl.h"
 #include "phalo.impl.h"
+#include "k/halo.h"
 
 #include "bipsbatch.decl.h"
 #include "bipsbatch.impl.h"
