@@ -12,7 +12,7 @@ bool interrank_masks[26];
 MPI_Comm cart;
 MPI_Request sendreq[26 * 2], recvreq[26], sendcellsreq[26], recvcellsreq[26],
     sendcountreq[26], recvcountreq[26];
-int recv_tags[26], recv_counts[26], nlocal, nactive;
+int recv_tags[26], recv_counts[26], nlocal;
 bool firstpost;
 int dstranks[26];
 

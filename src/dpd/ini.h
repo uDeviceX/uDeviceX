@@ -21,7 +21,6 @@ void init0_one(int i, float safety_factor) {
 void init0() {
   float safety_factor;
   firstpost = true;
-  nactive = 26;
   safety_factor = getenv("HEX_COMM_FACTOR") ? atof(getenv("HEX_COMM_FACTOR")) : 1.2;
   MC(l::m::Comm_dup(m::cart, &cart));
   for (int i = 0; i < 26; ++i) init0_one(i, safety_factor);
