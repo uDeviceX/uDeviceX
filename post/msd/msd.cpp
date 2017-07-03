@@ -5,6 +5,8 @@
 
 #include "reader.h"
 
+int XS, YS, ZS;
+
 #define ERR(...) do {                            \
         fprintf(stderr,__VA_ARGS__);             \
         exit(1);                                 \
@@ -39,10 +41,8 @@ void pp2rr_sorted(const int *ii, const float *fdata, const int n, const int stri
     }
 }
 
-enum {XS=16, YS=32, ZS=16};
-
 void glbrr(const float *rrp, const int n, /**/ float *rrc, float *ddL) {
-    const float dL[3] = {XS, YS, ZS};
+    const int dL[3] = {XS, YS, ZS};
     
     for (int i = 0; i < 3*n; ++i) {
         const int d = i%3;
@@ -72,18 +72,22 @@ float MSD(const float *rr0, const float *rr, const int buffsize, const int n) {
 
 int main(int argc, char **argv) {
 
-    if (argc < 4) {
-        fprintf(stderr, "Usage: po.msd <inpp-*.bop> -- <inii-*.bop>\n");
+    if (argc < 7) {
+        fprintf(stderr, "Usage: po.msd <XS> <YS> <ZS> <inpp-*.bop> -- <inii-*.bop>\n");
         exit(1);
     }
+    int iarg = 1;
+    XS = atoi(argv[iarg++]);
+    YS = atoi(argv[iarg++]);
+    ZS = atoi(argv[iarg++]);
 
     const int sep = separator(argc, argv);
-    const int nin = sep - 1;
+    const int nin = sep - iarg;
 
     if (nin < 2) ERR("Need more than one file\n");
     
-    char **ffpp = argv + 1;
-    char **ffii = ffpp + sep;
+    char **ffpp = argv + iarg;
+    char **ffii = ffpp + nin + 1;
     
     ReadData dpp0, dii0, dpp, dii;
     init(&dpp0); init(&dii0);
@@ -104,6 +108,8 @@ int main(int argc, char **argv) {
     
     for (int i = 1; i < nin; ++i) {
         init(&dpp);  init(&dii);
+        // printf("%s -- %s\n", ffpp[i], ffii[i]);
+        
         read_data(ffpp[i], &dpp, ffii[i], &dii);
 
         memset(rrc, 0, 3*buffsize*sizeof(float));
@@ -118,7 +124,7 @@ int main(int argc, char **argv) {
         memcpy(rrp, rrc, 3*buffsize*sizeof(float));
     }
 
-    delete[] rr0; delete[] rrc;    
+    delete[] rr0; delete[] rrc;
     finalize(&dpp0); finalize(&dii0);
     return 0;
 }
