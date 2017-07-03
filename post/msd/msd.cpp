@@ -5,7 +5,7 @@
 
 #include "reader.h"
 
-int XS, YS, ZS;
+int X, Y, Z;
 
 #define ERR(...) do {                            \
         fprintf(stderr,__VA_ARGS__);             \
@@ -42,7 +42,7 @@ void pp2rr_sorted(const int *ii, const float *fdata, const int n, const int stri
 }
 
 void updddL(const float *rrp, const float *rrc, const int n, /**/ float *ddL) {
-    const int dL[3] = {XS, YS, ZS};
+    const int dL[3] = {X, Y, Z};
     
     for (int i = 0; i < 3*n; ++i) {
         const int d = i%3;
@@ -73,13 +73,13 @@ float MSD(const float *rr0, const float *rr, const float *ddL, const int buffsiz
 int main(int argc, char **argv) {
 
     if (argc < 7) {
-        fprintf(stderr, "Usage: po.msd <XS> <YS> <ZS> <inpp-*.bop> -- <inii-*.bop>\n");
+        fprintf(stderr, "Usage: po.msd <X> <Y> <Z> <inpp-*.bop> -- <inii-*.bop>\n");
         exit(1);
     }
     int iarg = 1;
-    XS = atoi(argv[iarg++]);
-    YS = atoi(argv[iarg++]);
-    ZS = atoi(argv[iarg++]);
+    X = atoi(argv[iarg++]);
+    Y = atoi(argv[iarg++]);
+    Z = atoi(argv[iarg++]);
 
     const int sep = separator(argc, argv);
     const int nin = sep - iarg;
