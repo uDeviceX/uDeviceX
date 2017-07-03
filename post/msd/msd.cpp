@@ -56,7 +56,7 @@ float MSD(const float *rr0, const float *rr, const int buffsize, const int n) {
 int main(int argc, char **argv) {
 
     if (argc < 4) {
-        fprintf(stderr, "Usage: po.diffCoeff <inpp-*.bop> -- <inii-*.bop>\n");
+        fprintf(stderr, "Usage: po.msd <inpp-*.bop> -- <inii-*.bop>\n");
         exit(1);
     }
 
