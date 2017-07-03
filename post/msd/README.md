@@ -1,4 +1,4 @@
-# Diffusion
+# MSD
 
 A tool for measuring MSD (Mean Squared Displacement).
 
