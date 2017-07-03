@@ -72,6 +72,14 @@ void displ(const float *rrp, const float *rrc, const int buffsize, /**/ float *d
     }
 }
 
+void outname(const char *inrr, char *out) {
+    const int l = strlen(inrr);
+    memcpy(out, inrr, l * sizeof(char));
+    const int strt = l - 4;
+    const char newext[] = ".disp.bop";
+    memcpy(out + strt, newext, sizeof(newext));
+}
+
 int main(int argc, char **argv) {
     if (argc < 7) {
         fprintf(stderr, "Usage: po.disp <X> <Y> <Z> <rr-*.bop> -- <ii-*.bop>\n");
@@ -85,7 +93,37 @@ int main(int argc, char **argv) {
     const int sep = separator(argc, argv);
     const int nin = sep - iarg;
 
+    if (nin < 2) ERR("Need more than one file\n");
     
+    char **ffpp = argv + iarg;
+    char **ffii = ffpp + nin + 1;
+    
+    ReadData dpp, dii;
+
+    // init(&dpp); init(&dii);
+    // read_data(ffpp[0], &dpp, ffii[0], &dii);
+
+    // const int buffsize = max_index(dii.idata, dii.n);
+
+    // float *rrc = new float[3*buffsize]; /* current  positions     */
+    // float *rrp = new float[3*buffsize]; /* previous positions     */
+
+    // memset(rrp, 0, 3*buffsize*sizeof(float));
+    // pp2rr_sorted(dii.idata, dpp.fdata, dpp.n, dpp.nvars, /**/ rr);
+
+    // finalize(&dpp0); finalize(&dii0);
+
+    
+    for (int i = 0; i < nin-1; ++i) {
+        init(&dpp);  init(&dii);
+        char fout[1024] = {0};
+        outname(ffpp[i], /**/ fout);
+        printf("%s -- %s -> %s\n", ffpp[i], ffii[i], fout);
+                
+        finalize(&dpp);  finalize(&dii);
+    }
+
+    // delete[] rrp; delete[] rrc;
     
     return 0;
 }
