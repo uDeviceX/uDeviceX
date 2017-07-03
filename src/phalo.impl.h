@@ -1,6 +1,6 @@
 namespace phalo {
-__global__ void count_all(int *cellsstart,
-                          int *cellscount, int ntotalcells) {
+__global__ void count(int *cellsstart,
+		      int *cellscount, int ntotalcells) {
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
     if (gid >= cellpackstarts[26]) return;

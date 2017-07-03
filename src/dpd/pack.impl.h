@@ -42,7 +42,7 @@ void pack(Particle *pp, int n, int *start, int *count) {
   if (firstpost) pack_first0();
 
   if (ncells)
-    phalo::count_all<<<k_cnf(ncells)>>>(start, count, ncells);
+    phalo::count<<<k_cnf(ncells)>>>(start, count, ncells);
   phalo::scan<32><<<26, 32 * 32>>>();
 
   if (firstpost) {
