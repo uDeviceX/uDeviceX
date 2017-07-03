@@ -135,6 +135,7 @@ namespace dev {
 #include "dpd/ini.h"
 #include "dpd/forces.impl.h"
 #include "dpd/remote.impl.h"
+#include "dpd/post.impl.h"
 #include "dpd/pack.impl.h"
 
 #include "collision.h"
