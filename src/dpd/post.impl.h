@@ -16,13 +16,6 @@ void post(Particle *p, int n) {
             }
         }
 
-        if (!succeeded) {
-	    upd_bag();
-            _pack_all(p, n);
-
-            CC(cudaEventSynchronize(evfillall));
-        }
-
         for (int i = 0; i < 26; ++i) {
             int nrequired = required_send_bag_size_host[i];
 
