@@ -38,13 +38,8 @@ void fremote(int n, Force *a) {
         infos[i] = entry;
     }
 
-    BipsBatch::interactions(1. / sqrt(dt), infos,
-                            (float *)a, n);
-
-
+    BipsBatch::interactions(infos, (float *)a, n);
 }
-
-
 
 void _pack_all(Particle *p, int n, bool update_baginfos) {
     if (update_baginfos) {
