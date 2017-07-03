@@ -90,7 +90,7 @@ int main(int argc, char **argv) {
 
         const float msd = MSD(rr0, rr, buffsize, dpp.n);
 
-        printf("d = %f\n", msd);
+        printf("%f\n", msd);
         
         finalize(&dpp);  finalize(&dii);
     }
