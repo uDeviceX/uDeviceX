@@ -31,6 +31,13 @@ void pack_first1() {
   CC(cudaMemcpyToSymbol(phalo::dstcells, dstcells1, sizeof(dstcells1), sizeof(dstcells1), H2D));
 }
 
+void wait() {
+  MPI_Status statuses[26 * 2];
+  MC(l::m::Waitall(26, sendcellsreq, statuses));
+  MC(l::m::Waitall(nsendreq, sendreq, statuses));
+  MC(l::m::Waitall(26, sendcountreq, statuses));
+}
+
 void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
   if (firstpost) pack_first0();
 
@@ -41,12 +48,8 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
   if (firstpost) {
     post_expected_recv();
     pack_first1();
-  } else {
-    MPI_Status statuses[26 * 2];
-    MC(l::m::Waitall(26, sendcellsreq, statuses));
-    MC(l::m::Waitall(nsendreq, sendreq, statuses));
-    MC(l::m::Waitall(26, sendcountreq, statuses));
-  }
+  } else wait();
+  
   if (ncells) phalo::copycells<0><<<k_cnf(ncells)>>>(ncells);
   _pack_all(p, n, firstpost);
 }
