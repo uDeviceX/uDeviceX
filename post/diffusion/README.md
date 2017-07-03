@@ -1,6 +1,6 @@
 # Diffusion
 
-A tool for measuring diffusion coefficient.
+A tool for measuring MSD (Mean Squared Displacement).
 
 ## Requirements
 
