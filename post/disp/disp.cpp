@@ -41,16 +41,15 @@ void pp2rr_sorted(const int *ii, const float *fdata, const int n, const int stri
     }
 }
 
-void updddL(const float *rrp, const float *rrc, const int n, /**/ float *ddL) {
-    const int dL[3] = {X, Y, Z};
-    
-    for (int i = 0; i < 3*n; ++i) {
-        const int d = i%3;
-        const float dl = rrc[i] - rrp[i];
-        const float sign = dl > 0 ? 1.f : -1.f;
-        if (fabs(dl) > dL[d]/2) {
-            ddL[i] -= sign * dL[d];
-        }
+enum {EMPTY=0, OCCUPIED=1};
+void empty_tags(const int bufsize, int *tags) {
+    for (int i = 0; i < bufsize; ++i) tags[i] = EMPTY;
+}
+
+void compute_tags(const int *ii, const int n, int *tags) {
+    for (int j = 0; j < n; ++j) {
+        const int i = ii[j];
+        tags[i] = OCCUPIED;
     }
 }
 
@@ -63,7 +62,7 @@ void disp0(const float *rp, const float *rc, float *dr) {
     }
 }
 
-void displ(const float *rrp, const float *rrc, const int buffsize, /**/ float *ddr) {
+void disp(const float *rrp, const float *rrc, const int buffsize, /**/ float *ddr) {
     for (int i = 0; i < buffsize; ++i) {
         const float *rp = rrp + 3*i;
         const float *rc = rrc + 3*i;
@@ -78,6 +77,22 @@ void outname(const char *inrr, char *out) {
     const int strt = l - 4;
     const char newext[] = ".disp.bop";
     memcpy(out + strt, newext, sizeof(newext));
+}
+
+void dump(const char *fout, const float *rr, const float *ddr, const int *tags, const int buffsize, /*w*/ float *work) {
+    /* fill work buffer */
+    int j = 0;
+    for (int i = 0; i < buffsize; ++i)
+    if (tags[i] == OCCUPIED) {
+        for (int c = 0; c < 3; ++c) {
+            work[6 * j + 0 + c] = rr[c];
+            work[6 * j + 3 + c] = ddr[c];
+        }
+        ++j;
+    }
+
+    /* dump */
+    
 }
 
 int main(int argc, char **argv) {
@@ -100,30 +115,50 @@ int main(int argc, char **argv) {
     
     ReadData dpp, dii;
 
-    // init(&dpp); init(&dii);
-    // read_data(ffpp[0], &dpp, ffii[0], &dii);
+    init(&dpp); init(&dii);
+    read_data(ffpp[0], &dpp, ffii[0], &dii);
 
-    // const int buffsize = max_index(dii.idata, dii.n);
+    const int buffsize = max_index(dii.idata, dii.n);
 
-    // float *rrc = new float[3*buffsize]; /* current  positions     */
-    // float *rrp = new float[3*buffsize]; /* previous positions     */
+    float *rrc = new float[3*buffsize]; /* current  positions     */
+    float *rrp = new float[3*buffsize]; /* previous positions     */
+    float *ddr = new float[3*buffsize]; /* displacements          */
+    float *rrw = new float[6*buffsize]; /* work                   */
+    int  *tags = new int[buffsize];     /* tags: particle with this id or not? */
 
-    // memset(rrp, 0, 3*buffsize*sizeof(float));
-    // pp2rr_sorted(dii.idata, dpp.fdata, dpp.n, dpp.nvars, /**/ rr);
+    memset(rrp, 0, 3*buffsize*sizeof(float));
+    pp2rr_sorted(dii.idata, dpp.fdata, dpp.n, dpp.nvars, /**/ rrp);
 
-    // finalize(&dpp0); finalize(&dii0);
+    empty_tags(buffsize, /**/ tags);
+    compute_tags(dii.idata, dii.n, /**/ tags);
 
+    finalize(&dpp); finalize(&dii);
     
     for (int i = 0; i < nin-1; ++i) {
         init(&dpp);  init(&dii);
         char fout[1024] = {0};
         outname(ffpp[i], /**/ fout);
         printf("%s -- %s -> %s\n", ffpp[i], ffii[i], fout);
-                
+
+        read_data(ffpp[i+1], &dpp, ffii[i+1], &dii);
+        pp2rr_sorted(dii.idata, dpp.fdata, dpp.n, dpp.nvars, /**/ rrc);
+
+        disp(rrp, rrc, buffsize, /**/ ddr);
+
+        dump(fout, rrp, ddr, tags, buffsize, /*w*/ rrw);
+        compute_tags(dii.idata, dii.n, /**/ tags);
+        
         finalize(&dpp);  finalize(&dii);
+
+        {   /* swap */
+            float *const tmp = rrp;
+            rrp = rrc; rrc = tmp;
+        }
     }
 
-    // delete[] rrp; delete[] rrc;
+    delete[] rrp; delete[] rrc;
+    delete[] ddr; delete[] rrw;
+    delete[] tags;
     
     return 0;
 }
