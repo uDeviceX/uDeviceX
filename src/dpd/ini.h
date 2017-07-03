@@ -80,11 +80,11 @@ void init1() {
 }
 
 void ini() {
-    local_trunk = new l::rnd::d::KISS(0, 0, 0, 0);
-    for (int i = 0; i < 26; i++) recvhalos[i] = new RecvHalo;
-    for (int i = 0; i < 26; i++) sendhalos[i] = new SendHalo;
-
-    init0();
-    init1();
+  int i;
+  local_trunk = new l::rnd::d::KISS(0, 0, 0, 0);
+  for (i = 0; i < 26; i++) recvhalos[i] = new RecvHalo;
+  for (i = 0; i < 26; i++) sendhalos[i] = new SendHalo;
+  init0();
+  init1();
 }
 }
