@@ -134,6 +134,7 @@ namespace dev {
 #include "dpd/remote.decl.h"
 #include "dpd/buf.decl.h"
 #include "dpd/ini.h"
+#include "dpd/forces.impl.h"
 #include "dpd/remote.impl.h"
 #include "dpd/pack.impl.h"
 
