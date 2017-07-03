@@ -37,8 +37,6 @@ void post(Particle *p, int n) {
 
             if (expected == 0) continue;
 
-            int count = sendhalos[i]->hbuf->S;
-
             MC(l::m::Isend(sendhalos[i]->hbuf->D, expected, Particle::datatype(),
                          dstranks[i], BT_P_DPD + i, cart, sendreq + nsendreq));
 
