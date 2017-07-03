@@ -38,11 +38,11 @@ void wait() {
   MC(l::m::Waitall(26, sendcountreq, statuses));
 }
 
-void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
+void pack(Particle *pp, int n, int *start, int *count) {
   if (firstpost) pack_first0();
 
   if (ncells)
-    phalo::count_all<<<k_cnf(ncells)>>>(cellsstart, cellscount, ncells);
+    phalo::count_all<<<k_cnf(ncells)>>>(start, count, ncells);
   phalo::scan_diego<32><<<26, 32 * 32>>>();
 
   if (firstpost) {
@@ -51,6 +51,6 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
   } else wait();
   
   if (ncells) phalo::copycells<0><<<k_cnf(ncells)>>>(ncells);
-  _pack_all(p, n, firstpost);
+  _pack_all(pp, n, firstpost);
 }
 }
