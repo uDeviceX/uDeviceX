@@ -1,5 +1,5 @@
 namespace dpd {
-void init0_one(int i, float safety_factor) {
+void init0_one(int i) {
   int xs, ys, zs, ns; /* directional and total halo sizes */
   int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
   recv_tags[i] = (2 - d[0]) % 3 + 3 * ((2 - d[1]) % 3 + 3 * ((2 - d[2]) % 3));
@@ -11,19 +11,15 @@ void init0_one(int i, float safety_factor) {
   ys = d[1] != 0 ? 1 : YS;
   zs = d[2] != 0 ? 1 : ZS;
   ns = xs * ys * zs;
-  int estimate = numberdensity * safety_factor * ns;
-  estimate = 32 * ((estimate + 31) / 32);
-
+  int estimate = 1.5 * numberdensity * ns;
   recvhalos[i]->setup(estimate, ns);
   sendhalos[i]->setup(estimate, ns);
 }
 
 void init0() {
-  float safety_factor;
   firstpost = true;
-  safety_factor = getenv("HEX_COMM_FACTOR") ? atof(getenv("HEX_COMM_FACTOR")) : 1.2;
   MC(l::m::Comm_dup(m::cart, &cart));
-  for (int i = 0; i < 26; ++i) init0_one(i, safety_factor);
+  for (int i = 0; i < 26; ++i) init0_one(i);
   CC(cudaHostAlloc((void **)&required_send_bag_size_host, sizeof(int) * 26, cudaHostAllocMapped));
   CC(cudaHostGetDevicePointer(&required_send_bag_size, required_send_bag_size_host, 0));
   CC(cudaEventCreateWithFlags(&evfillall, cudaEventDisableTiming));
