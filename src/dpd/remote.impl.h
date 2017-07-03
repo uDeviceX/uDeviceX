@@ -293,12 +293,6 @@ void recv() {
     post_expected_recv();
 }
 
-int nof_sent_particles() {
-    int s = 0;
-    for (int i = 0; i < 26; ++i) s += sendhalos[i]->hbuf->S;
-    return s;
-}
-
 void _cancel_recv() {
     if (!firstpost) {
         {
