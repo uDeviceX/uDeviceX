@@ -3,9 +3,9 @@ void init0_one(int i) {
   int xs, ys, zs, ns; /* directional and total halo sizes */
   int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
   recv_tags[i] = (2 - d[0]) % 3 + 3 * ((2 - d[1]) % 3 + 3 * ((2 - d[2]) % 3));
-  int coordsneighbor[3];
-  for (int c = 0; c < 3; ++c) coordsneighbor[c] = m::coords[c] + d[c];
-  MC(l::m::Cart_rank(cart, coordsneighbor, dstranks + i));
+  int ne[3];
+  for (int c = 0; c < 3; ++c) ne[c] = m::coords[c] + d[c];
+  MC(l::m::Cart_rank(cart, ne, dstranks + i));
 
   xs = d[0] != 0 ? 1 : XS;
   ys = d[1] != 0 ? 1 : YS;
