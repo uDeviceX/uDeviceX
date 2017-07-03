@@ -50,7 +50,7 @@ void pack(Particle *pp, int n, int *start, int *count) {
     pack_first1();
   } else wait();
   
-  if (ncells) phalo::copycells<0><<<k_cnf(ncells)>>>(ncells);
+  if (ncells) phalo::copy<0><<<k_cnf(ncells)>>>(ncells);
   _pack_all(pp, n, firstpost);
 }
 }
