@@ -85,7 +85,6 @@ void post_expected_recv() {
 void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
   if (firstpost) {
     {
-      static int cellpackstarts[27];
       cellpackstarts[0] = 0;
       for (int i = 0, s = 0; i < 26; ++i)
 	cellpackstarts[i + 1] =
