@@ -89,8 +89,6 @@ void post_expected_recv() {
 }
 
 void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
-
-    nlocal = n;
     if (firstpost) {
         {
             static int cellpackstarts[27];
