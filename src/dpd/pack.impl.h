@@ -51,6 +51,7 @@ void pack(Particle *pp, int n, int *start, int *count) {
   } else wait_send();
   
   if (ncells) phalo::copy<0><<<k_cnf(ncells)>>>(ncells);
-  _pack_all(pp, n, firstpost);
+  if (firstpost) upd_bag();
+  _pack_all(pp, n);
 }
 }
