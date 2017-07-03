@@ -132,6 +132,7 @@ namespace dev {
 #include "bipsbatch.impl.h"
 
 #include "dpd/remote.decl.h"
+#include "dpd/ini.h"
 #include "dpd/remote.impl.h"
 
 #include "collision.h"
