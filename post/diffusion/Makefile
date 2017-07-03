@@ -2,7 +2,7 @@ CXX=g++
 CXXFLAGS= -O3 -Wall -Wpedantic -std=c++11
 
 BIN=~/bin/
-EXECS = po.diffCoeff
+EXECS = po.msd
 
 BOPDIR = $(HOME)/prefix/bop
 LIBS = -lbop
@@ -15,10 +15,10 @@ install: all
 	mkdir -p $(BIN)
 	cp $(EXECS) $(BIN)
 
-po.diffCoeff: diffusion.o
+po.msd: msd.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $^ -o $@ -lm $(LIBS)
 
-diffusion.o: diffusion.cpp
+msd.o: msd.cpp
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
