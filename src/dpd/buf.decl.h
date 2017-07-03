@@ -1,5 +1,11 @@
 namespace dpd { /* declaration of bufers */
 struct SendHalo {
+  DeviceBuffer<int> *scattered_entries, *tmpstart, *tmpcount, *dcellstarts;
+  DeviceBuffer<Particle> *dbuf;
+  PinnedHostBuffer<Particle> *hbuf;
+  PinnedHostBuffer<int> *hcellstarts;
+  int expected;
+
   SendHalo() {
     dbuf = new DeviceBuffer<Particle>;
     hbuf = new PinnedHostBuffer<Particle>;
@@ -21,12 +27,6 @@ struct SendHalo {
     delete hcellstarts;
   }
 
-  DeviceBuffer<int> *scattered_entries, *tmpstart, *tmpcount, *dcellstarts;
-  DeviceBuffer<Particle> *dbuf;
-  PinnedHostBuffer<Particle> *hbuf;
-  PinnedHostBuffer<int> *hcellstarts;
-
-  int expected;
   void setup(int estimate, int nhalocells) {
     adjust(estimate);
     dcellstarts->resize(nhalocells + 1);
@@ -43,33 +43,34 @@ struct SendHalo {
   }
 } * sendhalos[26];
 
-  struct RecvHalo {
-    RecvHalo() {
-      hcellstarts = new PinnedHostBuffer<int>;
-      hbuf = new PinnedHostBuffer<Particle>;
-      dbuf = new DeviceBuffer<Particle>;
-      dcellstarts = new DeviceBuffer<int>;
-    }
-    ~RecvHalo() {
-      delete hcellstarts;
-      delete hbuf;
-      delete dbuf;
-      delete dcellstarts;
-    }
-    int expected;
-    PinnedHostBuffer<int> *hcellstarts;
-    PinnedHostBuffer<Particle> *hbuf;
-    DeviceBuffer<Particle> *dbuf;
-    DeviceBuffer<int> *dcellstarts;
-    void setup(int estimate, int nhalocells) {
-      adjust(estimate);
-      dcellstarts->resize(nhalocells + 1);
-      hcellstarts->resize(nhalocells + 1);
-    }
-    void adjust(int estimate) {
-      expected = estimate;
-      hbuf->resize(estimate);
-      dbuf->resize(estimate);
-    }
-  } * recvhalos[26];
-}
+struct RecvHalo {
+  int expected;
+  PinnedHostBuffer<int> *hcellstarts;
+  PinnedHostBuffer<Particle> *hbuf;
+  DeviceBuffer<Particle> *dbuf;
+  DeviceBuffer<int> *dcellstarts;
+
+  RecvHalo() {
+    hcellstarts = new PinnedHostBuffer<int>;
+    hbuf = new PinnedHostBuffer<Particle>;
+    dbuf = new DeviceBuffer<Particle>;
+    dcellstarts = new DeviceBuffer<int>;
+  }
+  ~RecvHalo() {
+    delete hcellstarts;
+    delete hbuf;
+    delete dbuf;
+    delete dcellstarts;
+  }
+  void setup(int estimate, int nhalocells) {
+    adjust(estimate);
+    dcellstarts->resize(nhalocells + 1);
+    hcellstarts->resize(nhalocells + 1);
+  }
+  void adjust(int estimate) {
+    expected = estimate;
+    hbuf->resize(estimate);
+    dbuf->resize(estimate);
+  }
+} * recvhalos[26];
+} /* namespace dpd */
