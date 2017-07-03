@@ -124,30 +124,25 @@ void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
   
   if (firstpost) {
     {
-      static int *srccells[26];
-      for (int i = 0; i < 26; ++i) srccells[i] = sendhalos[i]->dcellstarts->D;
+      for (int i = 0; i < 26; ++i) srccells0[i] = sendhalos[i]->dcellstarts->D;
       
-      CC(cudaMemcpyToSymbol(phalo::srccells, srccells, sizeof(srccells),
+      CC(cudaMemcpyToSymbol(phalo::srccells, srccells0, sizeof(srccells0),
 			    0, H2D));
       
-      static int *dstcells[26];
       for (int i = 0; i < 26; ++i)
-	dstcells[i] = sendhalos[i]->hcellstarts->DP;
+	dstcells0[i] = sendhalos[i]->hcellstarts->DP;
       
-      CC(cudaMemcpyToSymbol(phalo::dstcells, dstcells, sizeof(dstcells),
+      CC(cudaMemcpyToSymbol(phalo::dstcells, dstcells0, sizeof(dstcells0),
 			    0, H2D));
     }
     
     {
-      static int *srccells[26];
-      for (int i = 0; i < 26; ++i) srccells[i] = recvhalos[i]->hcellstarts->DP;
-      CC(cudaMemcpyToSymbol(phalo::srccells, srccells, sizeof(srccells),
-			    sizeof(srccells), H2D));
-      
-      static int *dstcells[26];
-      for (int i = 0; i < 26; ++i) dstcells[i] = recvhalos[i]->dcellstarts->D;
-      CC(cudaMemcpyToSymbol(phalo::dstcells, dstcells, sizeof(dstcells),
-			    sizeof(dstcells), H2D));
+      for (int i = 0; i < 26; ++i) srccells1[i] = recvhalos[i]->hcellstarts->DP;
+      CC(cudaMemcpyToSymbol(phalo::srccells, srccells1, sizeof(srccells1),
+			    sizeof(srccells1), H2D));
+      for (int i = 0; i < 26; ++i) dstcells1[i] = recvhalos[i]->dcellstarts->D;
+      CC(cudaMemcpyToSymbol(phalo::dstcells, dstcells1, sizeof(dstcells1),
+			    sizeof(dstcells1), H2D));
     }
   }
   

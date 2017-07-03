@@ -28,5 +28,7 @@ cudaEvent_t evfillall, evuploaded, evdownloaded;
 /** were static in pack() **/
 int cellpackstarts[27];
 phalo::CellPackSOA cellpacks[26];
+int *srccells0[26], *dstcells0[26];
+int *srccells1[26], *dstcells1[26];
 /***************************/
 }
