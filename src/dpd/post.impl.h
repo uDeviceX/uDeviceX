@@ -7,13 +7,6 @@ void post(Particle *p, int n) {
         for (int i = 0; i < 26; ++i) {
             int nrequired = required_send_bag_size_host[i];
             bool failed_entry = nrequired > sendhalos[i]->dbuf->C;
-
-            if (failed_entry) {
-                sendhalos[i]->dbuf->resize(nrequired);
-                // sendhalos[i].hbuf.resize(nrequired);
-                sendhalos[i]->scattered_entries->resize(nrequired);
-                succeeded = false;
-            }
         }
 
         for (int i = 0; i < 26; ++i) {
