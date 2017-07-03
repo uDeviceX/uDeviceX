@@ -1,5 +1,5 @@
 #### RBC in a periodic box
-# sTEST: mpi.t1
+# nTEST: mpi.t1
 # rm -rf diag.txt h5 bop ply rbc.off
 # :
 # export PATH=../tools:$PATH
