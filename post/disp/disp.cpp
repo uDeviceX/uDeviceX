@@ -3,7 +3,7 @@
 #include <cstring>
 #include <cmath>
 
-#include "reader.h"
+#include "bop_reader.h"
 
 int X, Y, Z;
 
@@ -18,7 +18,7 @@ int separator(int argc, char **argv) {
     return -1;
 }
 
-void read_data(const char *fpp, ReadData *dpp, const char *fii, ReadData *dii) {
+void read_data(const char *fpp, BopData *dpp, const char *fii, BopData *dii) {
     read(fpp, dpp);
     read(fii, dii);
 
@@ -113,7 +113,7 @@ int main(int argc, char **argv) {
     char **ffpp = argv + iarg;
     char **ffii = ffpp + nin + 1;
     
-    ReadData dpp, dii;
+    BopData dpp, dii;
 
     init(&dpp); init(&dii);
     read_data(ffpp[0], &dpp, ffii[0], &dii);
