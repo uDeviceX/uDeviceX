@@ -48,6 +48,7 @@ __global__ void count(int *cellsstart,
         cellpacks[code].count[dstcid] = 0;
     }
 }
+
 template <int slot> __global__ void copy(int n) {
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
