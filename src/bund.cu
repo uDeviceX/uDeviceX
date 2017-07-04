@@ -130,8 +130,7 @@ namespace dev {
 #include "dpd/local.h"
 
 #ifdef  YDPD
-  #include "y/phalo.decl.h"
-  #include "y/phalo.impl.h"
+  #include "y/k/halo.h"
   #include "y/dpd/remote.decl.h"
   #include "y/dpd/ini.h"
   #include "y/dpd/remote.impl.h"
