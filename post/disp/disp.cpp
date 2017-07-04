@@ -4,6 +4,7 @@
 #include <cmath>
 
 #include "bop_reader.h"
+#include "bop_writer.h"
 
 int X, Y, Z;
 
@@ -22,8 +23,8 @@ void read_data(const char *fpp, BopData *dpp, const char *fii, BopData *dii) {
     read(fpp, dpp);
     read(fii, dii);
 
-    if (dpp->type != FLOAT) ERR("expected float data form <%s>\n", fpp);
-    if (dii->type != INT)   ERR("expected int   data form <%s>\n", fii);
+    if (dpp->type != FLOAT && dpp->type != FASCII) ERR("expected float data form <%s>\n", fpp);
+    if (dii->type != INT   && dii->type != IASCII) ERR("expected int   data form <%s>\n", fii);
 }
 
 int max_index(const int *ii, const int n) {
@@ -92,7 +93,25 @@ void dump(const char *fout, const float *rr, const float *ddr, const int *tags, 
     }
 
     /* dump */
+    BopData d;
+    init(&d);
+    d.n = j;
+    d.nvars = 6;
+    d.type = FLOAT;
+    d.vars = new Cbuf[d.nvars];
+    strncpy(d.vars[0].c, "x", 4);
+    strncpy(d.vars[1].c, "y", 4);
+    strncpy(d.vars[2].c, "z", 4);
+    strncpy(d.vars[3].c, "dx", 4);
+    strncpy(d.vars[4].c, "dy", 4);
+    strncpy(d.vars[5].c, "dz", 4);
+
+    d.fdata = new float[d.n * d.nvars];
+    memcpy(d.fdata, work, d.n * d.nvars * sizeof(float));
+
+    write(fout, d);
     
+    finalize(&d);
 }
 
 int main(int argc, char **argv) {
