@@ -39,7 +39,7 @@ __global__ void count_all(int *cellsstart,
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
     if (gid >= cellpackstarts[26]) return;
 
-    int hid = get_hid(cellpackstarts, gid);
+    int hid = get_idpack(cellpackstarts, gid);
     get_box(hid, org, ext);
     int ndstcells = ext[0] * ext[1] * ext[2];
     int dstcid = gid - cellpackstarts[hid];
