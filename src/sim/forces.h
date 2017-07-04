@@ -16,7 +16,9 @@ void forces_rbc() {
 void forces_dpd() {
     dpd::pack(o::q.pp, o::q.n, o::q.cells->start, o::q.cells->count);
     /* :TODO: breaks a contract with hiwi */
-    dpd::flocal(o::tz.zip0, o::tz.zip1, o::q.n, o::q.cells->start, o::q.cells->count, /**/ o::ff);
+    dpd::flocal(o::tz.zip0, o::tz.zip1, o::q.n,
+		o::q.cells->start, o::q.cells->count,
+		/**/ o::ff);
     dpd::post(o::q.pp, o::q.n);
     dpd::recv();
     dpd::fremote(o::q.n, o::ff);
