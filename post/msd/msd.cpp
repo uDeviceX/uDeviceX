@@ -39,25 +39,8 @@ float MSD(const float *rr0, const float *rr, const float *ddL, const int buffsiz
     return sumsq / n;
 }
 
-int main(int argc, char **argv) {
+void MSD_seq(char **ffpp, char **ffii, const int nin, /**/ float *out) {
 
-    if (argc < 7) {
-        fprintf(stderr, "Usage: po.msd <X> <Y> <Z> <inpp-*.bop> -- <inii-*.bop>\n");
-        exit(1);
-    }
-    int iarg = 1;
-    X = atoi(argv[iarg++]);
-    Y = atoi(argv[iarg++]);
-    Z = atoi(argv[iarg++]);
-
-    const int sep = separator(argc, argv);
-    const int nin = sep - iarg;
-
-    if (nin < 2) ERR("Need more than one file\n");
-    
-    char **ffpp = argv + iarg;
-    char **ffii = ffpp + nin + 1;
-    
     BopData dpp0, dii0, dpp, dii;
     init(&dpp0); init(&dii0);
     
@@ -85,9 +68,7 @@ int main(int argc, char **argv) {
         pp2rr_sorted(dii.idata, dpp.fdata, dpp.n, dpp.nvars, /**/ rrc);
         updddL(rrp, rrc, buffsize, /**/ ddL);
 
-        const float msd = MSD(rr0, rrc, ddL, buffsize, dpp.n);
-
-        printf("%f\n", msd);
+        out[i-1] = MSD(rr0, rrc, ddL, buffsize, dpp.n);
         
         finalize(&dpp);  finalize(&dii);
         memcpy(rrp, rrc, 3*buffsize*sizeof(float));
@@ -95,6 +76,36 @@ int main(int argc, char **argv) {
 
     delete[] rr0; delete[] rrc;
     delete[] rrp; delete[] ddL;
-    finalize(&dpp0); finalize(&dii0);
+    finalize(&dpp0); finalize(&dii0);    
+}
+
+int main(int argc, char **argv) {
+
+    if (argc < 7) {
+        fprintf(stderr, "Usage: po.msd <X> <Y> <Z> <inpp-*.bop> -- <inii-*.bop>\n");
+        exit(1);
+    }
+    int iarg = 1;
+    X = atoi(argv[iarg++]);
+    Y = atoi(argv[iarg++]);
+    Z = atoi(argv[iarg++]);
+
+    const int sep = separator(argc, argv);
+    const int nin = sep - iarg;
+
+    if (nin < 2) ERR("Need more than one file\n");
+
+    char **ffpp = argv + iarg;
+    char **ffii = ffpp + nin + 1;
+
+    float *msds = new float[nin-1];
+    memset(msds, 0, (nin-1)*sizeof(float));
+    
+    MSD_seq(ffpp, ffii, nin, /**/ msds);
+
+    for (int i = 0; i < nin - 1; ++i) printf("%.6e\n", msds[i]);
+    
+    delete[] msds;
+        
     return 0;
 }
