@@ -43,6 +43,7 @@ static __device__ int h2cid(int h, int ext[3]) {
 }
   
 __global__ void count_all(int *start, int *count) {
+    enum {X, Y, Z};
     int gid;
     int hid; /* halo id */
     int nhc; /* number of hallo cells */
@@ -56,7 +57,7 @@ __global__ void count_all(int *start, int *count) {
     hci = gid - cellpackstarts[hid];
 
     get_box(hid, /**/ org, ext);
-    nhc = ext[0] * ext[1] * ext[2];
+    nhc = ext[X] * ext[Y] * ext[Z];
 
     if (hci < nhc) {
         cid = h2cid(hci, ext);
