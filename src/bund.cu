@@ -133,6 +133,7 @@ namespace dev {
   #include "y/k/halo.h"
   #include "y/dpd/remote.decl.h"
   #include "y/dpd/buf.decl.h"
+  #include "dpd/forces.h"        /* common */
   #include "y/dpd/ini.h"
   #include "y/dpd/remote.impl.h"
   #include "y/dpd/pack.impl.h"
@@ -143,6 +144,7 @@ namespace dev {
   #include "x/phalo.decl.h"
   #include "x/phalo.impl.h"
   #include "x/dpd/remote.decl.h"
+  #include "dpd/forces.h"          /* common */
   #include "x/dpd/ini.h"
   #include "x/dpd/remote.impl.h"
 #endif
