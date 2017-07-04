@@ -21,12 +21,15 @@ static __device__ int get_idpack(const int a[], const int i) {  /* where is `i' 
   return k9 + k3 + k1;
 }
 
-static __device__ void get_box(int idpack, /**/ int halo_start[], int halo_size[]) {
+/* returns halo box; 0 is a corner of subdomain */
+static __device__ void get_box(int i, /**/ int org[3], int ext[3]) {
+  /* i, org, ext : halo id, origin, extend */
   int L[3] = {XS, YS, ZS};
-  int d[3] = {(idpack + 2) % 3 - 1, (idpack / 3 + 2) % 3 - 1, (idpack / 9 + 2) % 3 - 1};
-  for (int c = 0; c < 3; ++c) {
-    halo_start[c] = (d[c] == 1) ? L[c] - 1 : 0;
-    halo_size [c] = (d[c] == 0) ? L[c]     : 1;
+  int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
+  int c;
+  for (c = 0; c < 3; ++c) {
+    org[c] = (d[c] == 1) ? L[c] - 1 : 0;
+    ext[c] = (d[c] == 0) ? L[c]     : 1;
   }
 }
   
