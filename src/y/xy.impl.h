@@ -17,6 +17,7 @@ void fin0() {
   int i;
   for (i = 0; i < 26; i++) delete recvhalos[i];
   for (i = 0; i < 26; i++) delete sendhalos[i];
+  MC(l::m::Comm_free(&cart));
 }
 
 void fin() {
