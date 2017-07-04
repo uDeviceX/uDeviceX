@@ -26,10 +26,7 @@ __global__ void count_all(int *cellsstart,
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
     if (gid >= cellpackstarts[26]) return;
 
-    int key9 = 9 * ((gid >= cellpackstarts[9]) + (gid >= cellpackstarts[18]));
-    int key3 = 3 * ((gid >= cellpackstarts[key9 + 3]) + (gid >= cellpackstarts[key9 + 6]));
-    int key1 = (gid >= cellpackstarts[key9 + key3 + 1]) + (gid >= cellpackstarts[key9 + key3 + 2]);
-    int idpack = key9 + key3 + key1;
+    int idpack = get_idpack(cellpackstarts, gid);
 
     int d[3] = {(idpack + 2) % 3 - 1, (idpack / 3 + 2) % 3 - 1,
                 (idpack / 9 + 2) % 3 - 1};
@@ -72,11 +69,7 @@ template <int slot> __global__ void copycells(int n) {
 
     if (gid >= cellpackstarts[26]) return;
 
-    int key9 = 9 * ((gid >= cellpackstarts[9]) + (gid >= cellpackstarts[18]));
-    int key3 = 3 * ((gid >= cellpackstarts[key9 + 3]) + (gid >= cellpackstarts[key9 + 6]));
-    int key1 = (gid >= cellpackstarts[key9 + key3 + 1]) + (gid >= cellpackstarts[key9 + key3 + 2]);
-    int idpack = key9 + key3 + key1;
-
+    int idpack = get_idpack(cellpackstarts, gid);
     int offset = gid - cellpackstarts[idpack];
 
     dstcells[idpack + 26 * slot][offset] = srccells[idpack + 26 * slot][offset];
@@ -130,11 +123,7 @@ __global__ void fill_all(Particle *particles, int np,
                          int *required_bag_size) {
     int gid = (threadIdx.x >> 4) + 2 * blockIdx.x;
     if (gid >= cellpackstarts[26]) return;
-
-    int key9 = 9 * ((gid >= cellpackstarts[9]) + (gid >= cellpackstarts[18]));
-    int key3 = 3 * ((gid >= cellpackstarts[key9 + 3]) + (gid >= cellpackstarts[key9 + 6]));
-    int key1 = (gid >= cellpackstarts[key9 + key3 + 1]) + (gid >= cellpackstarts[key9 + key3 + 2]);
-    int idpack = key9 + key3 + key1;
+    int idpack = get_idpack(cellpackstarts, gid);
 
     int cellid = gid - cellpackstarts[idpack];
     int tid = threadIdx.x & 0xf;
