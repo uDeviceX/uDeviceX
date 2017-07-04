@@ -1,6 +1,6 @@
 namespace xy { /* temporary interface to dpd/x and dpd/y */
-void ini() {}
-void fin() {}
+void ini() { dpd::ini(); }
+void fin() { dpd::fin(); }
 
 void forces(flu::Quants *q, flu::TicketZ *tz, flu::TicketRND *trnd, /**/ Force *ff) {
   dpd::pack(q->pp, q->n, q->cells->start, q->cells->count);
