@@ -48,9 +48,8 @@ __global__ void count_all(int *start, int *count) {
     int gid;
     int hid; /* halo id */
     int nhc; /* number of hallo cells */
-    int cid; /* bulk cell id */
-    int hci; /* halo cell id */
-    int org[3], ext[3]; /* halo [or]i[g]in and [ext]end */
+    int cid, hci; /* bulk and halo cell ids */
+    int org[3], ext[3]; /* halo origin and extend */
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     if (gid >= cellpackstarts[26]) return;
 
