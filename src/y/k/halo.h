@@ -36,29 +36,35 @@ static __device__ void get_box(int i, /**/ int org[3], int ext[3]) {
 __global__ void count_all(int *start, int *count) {
     int gid;
     int hid; /* halo id */
-    int ndstcells, dstcid, cid, c;
+    int nhc; /* number of hallo cells */
+    int cid; /* bulk cell id */
+    int hci; /* halo cell id */
     int org[3], ext[3]; /* halo [or]i[g]in and [ext]end */
     int srccellpos[3];
+    int c;
     
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     if (gid >= cellpackstarts[26]) return;
 
     hid = get_idpack(cellpackstarts, gid);
-    get_box(hid, /**/ org, ext);
-    ndstcells = ext[0] * ext[1] * ext[2];
-    dstcid = gid - cellpackstarts[hid];
+    hci = gid - cellpackstarts[hid];
 
-    if (dstcid < ndstcells) {
-        int dstcellpos[3] = {dstcid % ext[0], (dstcid / ext[0]) % ext[1], dstcid / (ext[0] * ext[1])};
+    get_box(hid, /**/ org, ext);
+    nhc = ext[0] * ext[1] * ext[2];
+
+    if (hci < nhc) {
+        int dstcellpos[3] = {hci % ext[0], (hci / ext[0]) % ext[1], hci / (ext[0] * ext[1])};
         for (c = 0; c < 3; ++c) srccellpos[c] = org[c] + dstcellpos[c];
         cid = srccellpos[0] + XS * (srccellpos[1] + YS * srccellpos[2]);
-        cellpacks[hid].start[dstcid] = start[cid];
-        cellpacks[hid].count[dstcid] = count[cid];
-    } else if (dstcid == ndstcells) {
-        cellpacks[hid].start[dstcid] = 0;
-        cellpacks[hid].count[dstcid] = 0;
+        cellpacks[hid].start[hci] = start[cid];
+        cellpacks[hid].count[hci] = count[cid];
+    } else if (hci == nhc) {
+        cellpacks[hid].start[hci] = 0;
+        cellpacks[hid].count[hci] = 0;
     }
-}__global__ void copycells(int n) {
+}
+
+__global__ void copycells(int n) {
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
     if (gid >= cellpackstarts[26]) return;
