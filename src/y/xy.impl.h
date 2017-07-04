@@ -10,7 +10,6 @@ void forces(flu::Quants *q, flu::TicketZ *tz, flu::TicketRND *trnd, /**/ Force *
 	      /**/ ff);
   dpd::post(q->pp, q->n);
   dpd::recv();
-  dpd::fremote(q->n, /**/ ff);
-  // dpd::fremote(q->n, interrank_trunks, interrank_masks, /**/ ff);
+  dpd::fremote(q->n, interrank_trunks, interrank_masks, /**/ ff);
 }
 }

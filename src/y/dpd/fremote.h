@@ -1,5 +1,5 @@
 namespace dpd {
-void fremote(int n, Force *ff) {
+void fremote(int n, l::rnd::d::KISS* interrank_trunks000[], bool interrank_masks000[], /**/ Force *ff) {
     static BipsBatch::BatchInfo infos[26];
 
     for (int i = 0; i < 26; ++i) {
