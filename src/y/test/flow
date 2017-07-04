@@ -6,6 +6,7 @@
 # (cd ../cmd; make ) > /dev/null
 # :
 # u.conf conf/double.poiseuille.h <<!!!
+#    YDPD
 #    tend=2.01 part_freq=4000
 #    pushflow doublepoiseuille
 #    field_dumps part_dumps
@@ -24,6 +25,7 @@
 # cp data/sdf/wall1/wall.dat sdf.dat
 # :
 # u.conf conf/test.h <<!!!
+#    YDPD
 #    tend=1.0 part_freq=300 walls wall_creation=100
 #    field_dumps part_dumps field_freq=300
 #    shear_z
@@ -41,6 +43,7 @@
 # cp data/sdf/wall1/wall.dat sdf.dat
 # :
 # u.conf conf/poiseuille.h <<!!!
+#    YDPD
 #    tend=2.0 part_freq=300 walls wall_creation=100
 #    field_dumps part_dumps field_freq=300
 #    pushflow
@@ -58,6 +61,7 @@
 # cp data/sdf/cyl1/cyl.dat sdf.dat
 # :
 # u.conf conf/poiseuille.h <<!!!
+#    YDPD
 #    tend=4.0 part_freq=300 walls wall_creation=100
 #    field_dumps part_dumps field_freq=300 pushflow
 #    run
