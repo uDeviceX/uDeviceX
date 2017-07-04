@@ -1,5 +1,6 @@
 namespace dpd {
 void init0() {
+    int xsz, ysz, zsz;
     firstpost = true;
     safety_factor =
         getenv("HEX_COMM_FACTOR") ? atof(getenv("HEX_COMM_FACTOR")) : 1.2;
@@ -12,11 +13,10 @@ void init0() {
         int coordsneighbor[3];
         for (int c = 0; c < 3; ++c) coordsneighbor[c] = m::coords[c] + d[c];
         MC(l::m::Cart_rank(cart, coordsneighbor, dstranks + i));
-        halosize[i].x = d[0] != 0 ? 1 : XS;
-        halosize[i].y = d[1] != 0 ? 1 : YS;
-        halosize[i].z = d[2] != 0 ? 1 : ZS;
-
-        int nhalocells = halosize[i].x * halosize[i].y * halosize[i].z;
+        xsz = d[0] != 0 ? 1 : XS;
+        ysz = d[1] != 0 ? 1 : YS;
+        zsz = d[2] != 0 ? 1 : ZS;
+        int nhalocells = xsz * ysz * zsz;
 
         int estimate = numberdensity * safety_factor * nhalocells;
         estimate = 32 * ((estimate + 31) / 32);
