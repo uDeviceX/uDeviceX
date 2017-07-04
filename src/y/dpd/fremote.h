@@ -14,10 +14,10 @@ void fremote(int n, l::rnd::d::KISS* interrank_trunks000[], bool interrank_masks
         BipsBatch::BatchInfo entry = {
             (float *)sendhalos[i]->dbuf->D,
             (float2 *)recvhalos[i]->dbuf->D,
-            interrank_trunks[i]->get_float(),
+            interrank_trunks000[i]->get_float(),
             sendhalos[i]->dbuf->S,
             recvhalos[i]->dbuf->S,
-            interrank_masks[i],
+            interrank_masks000[i],
             recvhalos[i]->dcellstarts->D,
             sendhalos[i]->scattered_entries->D,
             dx,

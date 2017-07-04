@@ -63,7 +63,7 @@ void fin(l::rnd::d::KISS* interrank_trunks000[]) {
     CC(cudaEventDestroy(evfillall));
     CC(cudaEventDestroy(evdownloaded));
 
-    for (int i = 1; i < 26; i++) delete interrank_trunks[i];
+    for (int i = 1; i < 26; i++) delete interrank_trunks000[i];
     for (int i = 0; i < 26; i++) delete recvhalos[i];
     for (int i = 0; i < 26; i++) delete sendhalos[i];
 }

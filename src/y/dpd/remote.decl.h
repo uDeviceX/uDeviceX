@@ -2,12 +2,6 @@
 // operates
 namespace dpd {
 int ncells;
-
-/* allocated inside init1 */
-l::rnd::d::KISS *interrank_trunks[26];
-
-bool interrank_masks[26];
-
 MPI_Comm cart;
 MPI_Request sendreq[26 * 2], recvreq[26], sendcellsreq[26], recvcellsreq[26],
     sendcountreq[26], recvcountreq[26];
