@@ -12,6 +12,10 @@ struct TicketZ { /* zip */
     ushort4 *zip1;
 };
 
+struct TicketRND { /* random */
+    l::rnd::d::KISS *rnd;
+};
+
 void alloc_quants(Quants *q) {
     q->n = 0;
     mpDeviceMalloc(&q->pp); mpDeviceMalloc(&q->pp0);
@@ -51,6 +55,14 @@ void get_ticketZ(Quants q, /**/ TicketZ *t) {
     ushort4 *zip1 = t->zip1;
     assert(sizeof(Particle) == 6 * sizeof(float)); /* :TODO: implicit dependency */
     sub::dev::zip<<<(q.n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>(zip0, zip1, (float*)q.pp, q.n);
+}
+
+void get_ticketRND(/**/ TicketRND *t) {
+    t->rnd = new l::rnd::d::KISS(0, 0, 0, 0);
+}
+
+void free_ticketRND(/**/ TicketRND *t) {
+    delete t->rnd;
 }
 
 void gen_quants(Quants *q) {
