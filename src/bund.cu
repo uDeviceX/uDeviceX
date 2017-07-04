@@ -125,14 +125,18 @@ namespace dev {
 #include "k/rex.h"
 #include "rex.impl.h"
 
-#include "phalo.decl.h"
-#include "phalo.impl.h"
+#include "k/halo.h"
 
 #include "bipsbatch.decl.h"
 #include "bipsbatch.impl.h"
 
 #include "dpd/remote.decl.h"
+#include "dpd/buf.decl.h"
+#include "dpd/ini.h"
+#include "dpd/forces.impl.h"
 #include "dpd/remote.impl.h"
+#include "dpd/post.impl.h"
+#include "dpd/pack.impl.h"
 
 #include "collision.h"
 

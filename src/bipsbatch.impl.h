@@ -140,8 +140,7 @@ __global__ void interaction_kernel(int ndstall, float *adst, int sizeadst) {
     atomicAdd(adst + dstbase + 2, zforce);
 }
 
-void interactions(float invsqrtdt, BatchInfo infos[20],
-                  float *acc, int n) {
+void interactions(BatchInfo infos[20], float *acc, int n) {
     if (firstcall) {
         CC(cudaEventCreate(&evhalodone, cudaEventDisableTiming));
         CC(cudaFuncSetCacheConfig(interaction_kernel, cudaFuncCachePreferL1));
