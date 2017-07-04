@@ -49,9 +49,6 @@ __global__ void count_all(int *start, int *count) {
     int cid; /* bulk cell id */
     int hci; /* halo cell id */
     int org[3], ext[3]; /* halo [or]i[g]in and [ext]end */
-    int srccellpos[3];
-    int c;
-    
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     if (gid >= cellpackstarts[26]) return;
 
@@ -62,9 +59,7 @@ __global__ void count_all(int *start, int *count) {
     nhc = ext[0] * ext[1] * ext[2];
 
     if (hci < nhc) {
-        int dstcellpos[3] = {hci % ext[0], (hci / ext[0]) % ext[1], hci / (ext[0] * ext[1])};
-        for (c = 0; c < 3; ++c) srccellpos[c] = org[c] + dstcellpos[c];
-        cid = srccellpos[0] + XS * (srccellpos[1] + YS * srccellpos[2]);
+        cid = h2cid(hci, ext);
         cellpacks[hid].start[hci] = start[cid];
         cellpacks[hid].count[hci] = count[cid];
     } else if (hci == nhc) {
