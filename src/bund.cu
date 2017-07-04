@@ -14,7 +14,6 @@
 #include "l/off.h"
 #include "l/scan.h"
 
-#include "dpd/local.h"
 #include "l/rnd.h"
 
 #include <conf.h>
@@ -125,18 +124,31 @@ namespace dev {
 #include "k/rex.h"
 #include "rex.impl.h"
 
-#include "k/halo.h"
-
 #include "bipsbatch.decl.h"
 #include "bipsbatch.impl.h"
 
-#include "dpd/remote.decl.h"
-#include "dpd/buf.decl.h"
-#include "dpd/ini.h"
-#include "dpd/forces.impl.h"
-#include "dpd/remote.impl.h"
-#include "dpd/post.impl.h"
-#include "dpd/pack.impl.h"
+/* old dpd */
+#define ODPD
+#ifdef  ODPD
+  #include "x/dpd/local.h"
+  #include "x/phalo.decl.h"
+  #include "x/phalo.impl.h"
+  #include "x/dpd/remote.decl.h"
+  #include "x/dpd/buf.decl.h"
+  #include "x/dpd/ini.h"
+  #include "x/dpd/remote.impl.h"
+  #include "x/dpd/pack.impl.h"
+#else
+  #include "k/halo.h"
+  #include "dpd/local.h"
+  #include "dpd/remote.decl.h"
+  #include "dpd/buf.decl.h"
+  #include "dpd/ini.h"
+  #include "dpd/forces.impl.h"
+  #include "dpd/remote.impl.h"
+  #include "dpd/post.impl.h"
+  #include "dpd/pack.impl.h"
+#endif
 
 #include "collision.h"
 
