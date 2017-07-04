@@ -33,7 +33,9 @@ void forces(flu::Quants *q, flu::TicketZ *tz, flu::TicketRND *trnd, /**/ Force *
 	      trnd->rnd,
 	      /**/ ff);
   dpd::post(q->pp, q->n);
+  dpd::wait_recv();
   dpd::recv();
+  dpd::post_expected_recv();
   dpd::fremote(q->n, interrank_trunks, interrank_masks, /**/ ff);
 }
 }
