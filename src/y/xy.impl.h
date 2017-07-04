@@ -9,7 +9,7 @@ void ini() {
   int i;
   ini0();
   dpd::ini(interrank_trunks, interrank_masks);
-  for (i = 0; i < 26; ++i) init1_one(i, interrank_trunks, interrank_masks);
+  for (i = 0; i < 26; ++i) dpd::init1_one(i, interrank_trunks, interrank_masks);
 }
 
 void fin0() {
