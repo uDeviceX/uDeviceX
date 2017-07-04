@@ -43,7 +43,7 @@ void gen() { /* generate */
 void sim_gen() {
     flu::gen_quants(&o::q);
     o::q.cells->build(o::q.pp, o::q.n);
-    get_ticketZ(o::q, &o::tz);
+    flu::get_ticketZ(o::q, &o::tz);
     if (rbcs) {
         rbc::gen_quants("rbc.off", "rbcs-ic.txt", /**/ &r::q);
         rbc::gen_ticket(r::q, &r::tt);
@@ -83,10 +83,9 @@ void sim_strt() {
     if (walls) wall::strt_quants(&w::q);
 
     /*T*/
-    get_ticketZ(o::q, &o::tz);
+    flu::get_ticketZ(o::q, &o::tz);
     if (rbcs)   rbc::gen_ticket(r::q, &r::tt);
     if (walls) wall::gen_ticket(w::q, &w::t);
-    flu::get_ticketZ(o::q, &o::tz);
 
     MC(MPI_Barrier(m::cart));
     if (walls) {
