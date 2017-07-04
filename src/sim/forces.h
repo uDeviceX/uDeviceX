@@ -18,6 +18,7 @@ void forces_dpd() {
     /* :TODO: breaks a contract with hiwi */
     dpd::flocal(o::tz.zip0, o::tz.zip1, o::q.n,
 		o::q.cells->start, o::q.cells->count,
+		o::trnd.rnd,
 		/**/ o::ff);
     dpd::post(o::q.pp, o::q.n);
     dpd::recv();
