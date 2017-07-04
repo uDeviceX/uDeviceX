@@ -146,7 +146,8 @@ namespace dev {
   #include "x/dpd/ini.h"
   #include "x/dpd/remote.impl.h"
 #endif
-#include "dpd/xy.impl.h"              /* temporary interface to dpd/x and dpd/y */
+#include "dpd/xy.decl.h"              /* temporary interface to dpd/x and dpd/y */
+#include "dpd/xy.impl.h"
 
 #include "collision.h"
 
