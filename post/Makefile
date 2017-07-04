@@ -1,8 +1,8 @@
 
-subdirs=$(shell find . -mindepth 1 -maxdepth 1 -type d)
-deps=$(subdirs:%=%.dummy)
+subdirs=build_smesh msd disp
+.PHONY: install $(subdirs)
 
-install: $(deps)
+install: $(subdirs)
 
-%.dummy: %
-	@make install -C $<
+$(subdirs):
+	@make install -C $@
