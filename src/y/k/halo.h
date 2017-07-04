@@ -33,8 +33,7 @@ static __device__ void get_box(int i, /**/ int org[3], int ext[3]) {
   }
 }
   
-__global__ void count_all(int *cellsstart,
-                          int *cellscount) {
+__global__ void count_all(int *cellsstart, int *cellscount) {
     int gid;
     int hid; /* halo id */
     int ndstcells, dstcid, srcentry, c;
@@ -45,7 +44,7 @@ __global__ void count_all(int *cellsstart,
     if (gid >= cellpackstarts[26]) return;
 
     hid = get_idpack(cellpackstarts, gid);
-    get_box(hid, org, ext);
+    get_box(hid, /**/ org, ext);
     ndstcells = ext[0] * ext[1] * ext[2];
     dstcid = gid - cellpackstarts[hid];
 
@@ -59,8 +58,7 @@ __global__ void count_all(int *cellsstart,
         cellpacks[hid].start[dstcid] = 0;
         cellpacks[hid].count[dstcid] = 0;
     }
-}
-__global__ void copycells(int n) {
+}__global__ void copycells(int n) {
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
     if (gid >= cellpackstarts[26]) return;
