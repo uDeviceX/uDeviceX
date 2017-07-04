@@ -137,6 +137,8 @@ namespace dev {
   #include "y/dpd/pack.impl.h"
   #include "y/dpd/post.impl.h"
   #include "y/dpd/recv.impl.h"
+  #include "y/dpd/xy.decl.h"              /* temporary interface to dpd/x and dpd/y */
+  #include "y/dpd/xy.impl.h"
 #else
   /* old dpd */
   #include "x/phalo.decl.h"
@@ -145,9 +147,9 @@ namespace dev {
   #include "dpd/forces.h"          /* common */
   #include "x/dpd/ini.h"
   #include "x/dpd/remote.impl.h"
+  #include "x/dpd/xy.decl.h"              /* temporary interface to dpd/x and dpd/y */
+  #include "x/dpd/xy.impl.h"
 #endif
-#include "dpd/xy.decl.h"              /* temporary interface to dpd/x and dpd/y */
-#include "dpd/xy.impl.h"
 
 #include "collision.h"
 
