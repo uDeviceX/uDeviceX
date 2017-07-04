@@ -40,9 +40,9 @@ static __device__ int h2cid(int h, int ext[3]) {
   int srccellpos[3];
   int dstcellpos[3] = {hci % ext[0], (hci / ext[0]) % ext[1], hci / (ext[0] * ext[1])};
   for (c = 0; c < 3; ++c) srccellpos[c] = org[c] + dstcellpos[c];
-  returns srccellpos[X] + XS * (srccellpos[Y] + YS * srccellpos[Z]);
+  return srccellpos[X] + XS * (srccellpos[Y] + YS * srccellpos[Z]);
 }
-  
+
 __global__ void count_all(int *start, int *count) {
     enum {X, Y, Z};
     int gid;
