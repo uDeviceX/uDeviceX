@@ -17,16 +17,13 @@ __constant__ int *srccells[26 * 2], *dstcells[26 * 2];
 __global__ void count_all(int *cellsstart,
                           int *cellscount, int ntotalcells) {
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
-
     if (gid >= cellpackstarts[26]) return;
 
-    int key9 =
-        9 * ((gid >= cellpackstarts[9]) + (gid >= cellpackstarts[18]));
-    int key3 = 3 * ((gid >= cellpackstarts[key9 + 3]) +
-                    (gid >= cellpackstarts[key9 + 6]));
-    int key1 = (gid >= cellpackstarts[key9 + key3 + 1]) +
-        (gid >= cellpackstarts[key9 + key3 + 2]);
+    int key9 = 9 * ((gid >= cellpackstarts[9]) + (gid >= cellpackstarts[18]));
+    int key3 = 3 * ((gid >= cellpackstarts[key9 + 3]) + (gid >= cellpackstarts[key9 + 6]));
+    int key1 = (gid >= cellpackstarts[key9 + key3 + 1]) + (gid >= cellpackstarts[key9 + key3 + 2]);
     int code = key9 + key3 + key1;
+
     int d[3] = {(code + 2) % 3 - 1, (code / 3 + 2) % 3 - 1,
                 (code / 9 + 2) % 3 - 1};
     int L[3] = {XS, YS, ZS};
@@ -68,13 +65,9 @@ template <int slot> __global__ void copycells(int n) {
 
     if (gid >= cellpackstarts[26]) return;
 
-    int key9 =
-        9 * ((gid >= cellpackstarts[9]) + (gid >= cellpackstarts[18]));
-    int key3 = 3 * ((gid >= cellpackstarts[key9 + 3]) +
-                    (gid >= cellpackstarts[key9 + 6]));
-    int key1 = (gid >= cellpackstarts[key9 + key3 + 1]) +
-        (gid >= cellpackstarts[key9 + key3 + 2]);
-
+    int key9 = 9 * ((gid >= cellpackstarts[9]) + (gid >= cellpackstarts[18]));
+    int key3 = 3 * ((gid >= cellpackstarts[key9 + 3]) + (gid >= cellpackstarts[key9 + 6]));
+    int key1 = (gid >= cellpackstarts[key9 + key3 + 1]) + (gid >= cellpackstarts[key9 + key3 + 2]);
     int idpack = key9 + key3 + key1;
 
     int offset = gid - cellpackstarts[idpack];
@@ -130,13 +123,12 @@ __global__ void fill_all(Particle *particles, int np,
                          int *required_bag_size) {
     int gcid = (threadIdx.x >> 4) + 2 * blockIdx.x;
     if (gcid >= cellpackstarts[26]) return;
-    int key9 =
-                            9 * ((gcid >= cellpackstarts[9]) + (gcid >= cellpackstarts[18]));
-    int key3 = 3 * ((gcid >= cellpackstarts[key9 + 3]) +
-                    (gcid >= cellpackstarts[key9 + 6]));
-    int key1 = (gcid >= cellpackstarts[key9 + key3 + 1]) +
-        (gcid >= cellpackstarts[key9 + key3 + 2]);
+
+    int key9 = 9 * ((gcid >= cellpackstarts[9]) + (gcid >= cellpackstarts[18]));
+    int key3 = 3 * ((gcid >= cellpackstarts[key9 + 3]) + (gcid >= cellpackstarts[key9 + 6]));
+    int key1 = (gcid >= cellpackstarts[key9 + key3 + 1]) + (gcid >= cellpackstarts[key9 + key3 + 2]);
     int code = key9 + key3 + key1;
+    
     int cellid = gcid - cellpackstarts[code];
     int tid = threadIdx.x & 0xf;
     int base_src = baginfos[code].start_src[cellid];
