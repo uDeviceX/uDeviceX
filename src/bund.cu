@@ -135,6 +135,7 @@ namespace dev {
   #include "y/dpd/buf.decl.h"
   #include "y/dpd/ini.h"
   #include "y/dpd/remote.impl.h"
+  #include "y/dpd/pack.impl.h"
 #else
   /* old dpd */
   #include "x/phalo.decl.h"
