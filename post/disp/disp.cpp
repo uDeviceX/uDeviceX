@@ -24,7 +24,7 @@ void read_data(const char *fpp, BopData *dpp, const char *fii, BopData *dii) {
     read(fii, dii);
 
     if (dpp->type != FLOAT && dpp->type != FASCII) ERR("expected float data form <%s>\n", fpp);
-    if (dii->type != INT   && dii->type != IASCII) ERR("expected int   data form <%s>\n", fii);
+    if (dii->type != INT   && dii->type != IASCII) ERR("expected int data form <%s>\n", fii);
 }
 
 int max_index(const int *ii, const int n) {
@@ -86,8 +86,8 @@ void dump(const char *fout, const float *rr, const float *ddr, const int *tags, 
     for (int i = 0; i < buffsize; ++i)
     if (tags[i] == OCCUPIED) {
         for (int c = 0; c < 3; ++c) {
-            work[6 * j + 0 + c] = rr[c];
-            work[6 * j + 3 + c] = ddr[c];
+            work[6 * j + 0 + c] = rr[3 * i + c];
+            work[6 * j + 3 + c] = ddr[3 * i + c];
         }
         ++j;
     }
@@ -98,6 +98,7 @@ void dump(const char *fout, const float *rr, const float *ddr, const int *tags, 
     d.n = j;
     d.nvars = 6;
     d.type = FLOAT;
+    //d.type = FASCII;
     d.vars = new Cbuf[d.nvars];
     strncpy(d.vars[0].c, "x", 4);
     strncpy(d.vars[1].c, "y", 4);
@@ -137,7 +138,7 @@ int main(int argc, char **argv) {
     init(&dpp); init(&dii);
     read_data(ffpp[0], &dpp, ffii[0], &dii);
 
-    const int buffsize = max_index(dii.idata, dii.n);
+    const int buffsize = max_index(dii.idata, dii.n) + 1;
 
     float *rrc = new float[3*buffsize]; /* current  positions     */
     float *rrp = new float[3*buffsize]; /* previous positions     */
