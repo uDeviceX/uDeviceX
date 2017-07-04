@@ -38,7 +38,7 @@ static __device__ int h2cid(int h, int ext[3]) {
   enum {X, Y, Z};
   int c;
   int srccellpos[3];
-  int dstcellpos[3] = {hci % ext[0], (hci / ext[0]) % ext[1], hci / (ext[0] * ext[1])};
+  int dstcellpos[3] = {hci % ext[X], (hci / ext[X]) % ext[Y], hci / (ext[X] * ext[Y])};
   for (c = 0; c < 3; ++c) srccellpos[c] = org[c] + dstcellpos[c];
   return srccellpos[X] + XS * (srccellpos[Y] + YS * srccellpos[Z]);
 }
