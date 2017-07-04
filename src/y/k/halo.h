@@ -124,7 +124,7 @@ template <int NWARPS> __global__ void scan_diego() {
     }
 }
   
-__global__ void fill_all(Particle *pp, int np, int *required_bag_size) {
+__global__ void fill_all(Particle *pp, int *required_bag_size) {
   int gid, hid, hci, tid, src, dst, nsrc, nfloats;
   int i, lpid, dpid, spid, c;
   float2 word;
