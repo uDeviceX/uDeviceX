@@ -54,29 +54,25 @@ void pack_first1() {
   }
 }
 
-void pack(Particle *p, int n, int *cellsstart, int *cellscount) {
+void wait_send() {
+  MPI_Status ss[26 * 2];
+  MC(l::m::Waitall(nactive, sendcellsreq, ss));
+  MC(l::m::Waitall(nsendreq, sendreq, ss));
+  MC(l::m::Waitall(nactive, sendcountreq, ss));
+}
+
+void pack(Particle *p, int n, int *start, int *count) {
     nlocal = n;
     if (firstpost) pack_first0();
 
     if (ncells)
-    k_halo::
-        count_all<<<k_cnf(ncells)>>>(cellsstart, cellscount, ncells);
-
+    k_halo::count_all<<<k_cnf(ncells)>>>(start, count, ncells);
     k_halo::scan_diego<32><<<26, 32 * 32>>>();
 
-    if (firstpost)
-    post_expected_recv();
-    else {
-        MPI_Status statuses[26 * 2];
-        MC(l::m::Waitall(nactive, sendcellsreq, statuses));
-        MC(l::m::Waitall(nsendreq, sendreq, statuses));
-        MC(l::m::Waitall(nactive, sendcountreq, statuses));
-    }
-
+    if (firstpost) post_expected_recv(); else wait_send();
     if (firstpost) pack_first1();
 
     if (ncells) k_halo::copycells<0><<<k_cnf(ncells)>>>(ncells);
     _pack_all(p, n, firstpost);
-
 }
 }
