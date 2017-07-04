@@ -133,8 +133,8 @@ namespace dev {
   #include "y/dpd/buf.decl.h"
 
   #include "dpd/flocal.h"        /* common */
-  #include "dpd/fremote.h"
 
+  #include "y/dpd/fremote.h"
   #include "y/dpd/ini.h"
   #include "y/dpd/remote.impl.h"
   #include "y/dpd/pack.impl.h"
@@ -149,8 +149,8 @@ namespace dev {
   #include "x/dpd/remote.decl.h"
 
   #include "dpd/flocal.h"        /* common */
-  #include "dpd/fremote.h"
 
+  #include "x/dpd/fremote.h"
   #include "x/dpd/ini.h"
   #include "x/dpd/remote.impl.h"
   #include "x/xy.decl.h"              /* temporary interface to dpd/x and dpd/y */
