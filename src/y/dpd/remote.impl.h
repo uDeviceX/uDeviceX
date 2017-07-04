@@ -1,19 +1,20 @@
 namespace dpd {
-void _pack_all(Particle *p, int n, bool update_baginfos) {
-    if (update_baginfos) {
-        static k_halo::SendBagInfo baginfos[26];
-        for (int i = 0; i < 26; ++i) {
-            baginfos[i].start_src = sendhalos[i]->tmpstart->D;
-            baginfos[i].count_src = sendhalos[i]->tmpcount->D;
-            baginfos[i].start_dst = sendhalos[i]->dcellstarts->D;
-            baginfos[i].bagsize = sendhalos[i]->dbuf->C;
-            baginfos[i].scattered_entries = sendhalos[i]->scattered_entries->D;
-            baginfos[i].dbag = sendhalos[i]->dbuf->D;
-            baginfos[i].hbag = sendhalos[i]->hbuf->D;
-        }
-        CC(cudaMemcpyToSymbolAsync(k_halo::baginfos, baginfos, sizeof(baginfos), 0, H2D));
-    }
+void upd_bag() {
+  static k_halo::SendBagInfo baginfos[26];
+  for (int i = 0; i < 26; ++i) {
+    baginfos[i].start_src = sendhalos[i]->tmpstart->D;
+    baginfos[i].count_src = sendhalos[i]->tmpcount->D;
+    baginfos[i].start_dst = sendhalos[i]->dcellstarts->D;
+    baginfos[i].bagsize = sendhalos[i]->dbuf->C;
+    baginfos[i].scattered_entries = sendhalos[i]->scattered_entries->D;
+    baginfos[i].dbag = sendhalos[i]->dbuf->D;
+    baginfos[i].hbag = sendhalos[i]->hbuf->D;
+  }
+  CC(cudaMemcpyToSymbolAsync(k_halo::baginfos, baginfos, sizeof(baginfos), 0, H2D));
+}
 
+void _pack_all(Particle *p, int n, bool update_baginfos) {
+    if (update_baginfos) upd_bag();
     if (ncells)
       k_halo::fill_all<<<(ncells + 1) / 2, 32>>>(p, required_send_bag_size);
     CC(cudaEventRecord(evfillall));
