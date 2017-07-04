@@ -9,6 +9,7 @@
 # echo 1 0 0 8  0 1 0 8  0 0 1 8  0 0 0 1 > rbcs-ic.txt
 # :
 # u.conf conf/couette.h <<!!!
+#    YDPD
 #    rbcs tend=0.5 part_freq=100
 #    run
 #!!!
@@ -26,6 +27,7 @@
 # cp data/cells/rbc.498.off  rbc.off
 # :
 # u.conf conf/double.poiseuille.h <<!!!
+#    YDPD
 #    kBT=1e-7 tend=2.1 part_freq=100 field_freq=300
 #    pushflow doublepoiseuille
 #    field_dumps part_dumps pushflow
@@ -47,6 +49,7 @@
 # x=0.75 y=8 z=9; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 # :
 # u.conf conf/around.h <<!!!
+#    YDPD
 #    kBT=1e-7 rbcs tend=4.0 part_freq=5000 walls wall_creation=1000
 #    field_dumps part_dumps field_freq=5000 pushflow pushrbc
 #    run
@@ -67,6 +70,7 @@
 # cp data/sdf/wall1/wall.dat sdf.dat
 # :
 # u.conf conf/poiseuille.h <<!!!
+#    YDPD
 #    tend=4.0 part_freq=600 walls wall_creation=100
 #    field_dumps part_dumps field_freq=600 pushflow
 #    run

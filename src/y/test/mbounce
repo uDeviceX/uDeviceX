@@ -7,6 +7,7 @@
 # cp data/rig/sphere.ply mesh_solid.ply
 # :
 # u.conf conf/double.poiseuille.h <<!!!
+#    YDPD
 #    solids sbounce_back
 #    tend=0.5 part_freq=100
 #    pushflow doublepoiseuille

@@ -8,6 +8,7 @@
 # cp data/rig/sphere_R2.ply mesh_solid.ply
 # :
 # u.conf conf/double.poiseuille.h <<!!!
+#    YDPD
 #    rbcs tend=2.0 part_freq=1500
 #    solids sbounce_back wall_creation=1
 #    part_dumps field_freq=1500
@@ -30,6 +31,7 @@
 # cp data/rig/sphere_R2.ply mesh_solid.ply
 # :
 # u.conf conf/double.poiseuille.h <<!!!
+#    YDPD
 #    rbcs tend=2.0 part_freq=1500
 #    solids sbounce_back wall_creation=1
 #    part_dumps field_freq=1500

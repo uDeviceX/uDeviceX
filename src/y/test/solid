@@ -8,6 +8,7 @@
 # cp data/rig/sphere.ply mesh_solid.ply
 # :
 # u.conf conf/test.h <<!!!
+#    YDPD
 #    tend=2.01 part_freq=1000 walls wall_creation=1
 #    field_dumps part_dumps field_freq=1000
 #    solids sbounce_back pin_com dt=1e-3 shear_z
@@ -26,6 +27,7 @@
 # cp data/rig/sphere.ply mesh_solid.ply
 # :
 # u.conf conf/double.poiseuille.h <<!!!
+#    YDPD
 #    solids sbounce_back tend=0.5 part_freq=100
 #    pushflow doublepoiseuille field_dumps part_dumps
 #    wall_creation=0 field_freq=100
@@ -46,6 +48,7 @@
 # cp data/rig/cyl.ply mesh_solid.ply
 # :
 # u.conf conf/test.h <<!!!
+#    YDPD
 #    tend=2.01 part_freq=1000 walls wall_creation=100
 #    field_dumps part_dumps field_freq=1000 ZS=16
 #    solids spdir=2 sbounce_back dt=1e-3 shear_y
@@ -66,6 +69,7 @@
 # x=8    y=8 z=8; echo $x $y $z >> ic_solid.txt
 # :
 # u.conf conf/around.h <<!!!
+#    YDPD
 #    solids tend=1.0 part_freq=500 walls wall_creation=100 kBT=1e-7
 #    field_dumps part_dumps field_freq=500 pushflow
 #    run

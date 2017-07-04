@@ -8,6 +8,7 @@
 # cp data/cells/rbc.498.off rbc.off
 # :
 # u.conf conf/double.poiseuille.h <<!!!
+#   YDPD
 #   solids sbounce_back tend=0.5 part_freq=100
 #   pushflow doublepoiseuille field_dumps part_dumps
 #   wall_creation=0 contactforces=false field_freq=100
@@ -27,6 +28,7 @@
 # cp data/rig/sphere.ply mesh_solid.ply
 # :
 # u.conf conf/double.poiseuille.h <<!!!
+#   YDPD
 #   solids sbounce_back tend=0.5 part_freq=100
 #   pushflow doublepoiseuille field_dumps part_dumps
 #   wall_creation=0 contactforces=true field_freq=100
@@ -47,6 +49,7 @@
 # cp data/rig/ellipsoid.ply mesh_solid.ply
 # :
 # u.conf conf/double.poiseuille.h <<!!!
+#   YDPD
 #   solids sbounce_back tend=0.5 part_freq=100
 #   pushflow doublepoiseuille field_dumps part_dumps
 #   wall_creation=0 contactforces=true field_freq=100

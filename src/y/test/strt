@@ -7,6 +7,7 @@
 # cp data/cells/rbc.498.off  rbc.off
 # :
 # u.conf conf/double.poiseuille.h <<!!!
+#    YDPD
 #    tend=2.01 part_freq=4000
 #    pushflow doublepoiseuille
 #    field_dumps part_dumps
@@ -28,6 +29,7 @@
 # cp data/cells/rbc.498.off  rbc.off
 # :
 # u.conf conf/double.poiseuille.h <<!!!
+#    YDPD
 #    tend=2.01 part_freq=4000
 #    pushflow doublepoiseuille
 #    field_dumps part_dumps
