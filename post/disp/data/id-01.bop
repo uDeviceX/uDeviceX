@@ -1,4 +1,4 @@
 3
 DATA_FILE: id-01.values
-DATA_FORMAT: ascii
+DATA_FORMAT: iascii
 VARIABLES: id
