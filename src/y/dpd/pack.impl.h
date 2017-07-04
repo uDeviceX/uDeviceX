@@ -55,9 +55,9 @@ void pack_first1() {
 
 void wait_send() {
   MPI_Status ss[26 * 2];
-  MC(l::m::Waitall(nactive, sendcellsreq, ss));
+  MC(l::m::Waitall(26, sendcellsreq, ss));
   MC(l::m::Waitall(nsendreq, sendreq, ss));
-  MC(l::m::Waitall(nactive, sendcountreq, ss));
+  MC(l::m::Waitall(26, sendcountreq, ss));
 }
 
 void pack(Particle *p, int n, int *start, int *count) {

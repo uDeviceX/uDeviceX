@@ -44,14 +44,14 @@ void _cancel_recv() {
     if (!firstpost) {
         {
             MPI_Status statuses[26 * 2];
-            MC(l::m::Waitall(nactive, sendcellsreq, statuses));
+            MC(l::m::Waitall(26, sendcellsreq, statuses));
             MC(l::m::Waitall(nsendreq, sendreq, statuses));
-            MC(l::m::Waitall(nactive, sendcountreq, statuses));
+            MC(l::m::Waitall(26, sendcountreq, statuses));
         }
 
-        for (int i = 0; i < nactive; ++i) MC(MPI_Cancel(recvreq + i));
-        for (int i = 0; i < nactive; ++i) MC(MPI_Cancel(recvcellsreq + i));
-        for (int i = 0; i < nactive; ++i) MC(MPI_Cancel(recvcountreq + i));
+        for (int i = 0; i < 26; ++i) MC(MPI_Cancel(recvreq + i));
+        for (int i = 0; i < 26; ++i) MC(MPI_Cancel(recvcellsreq + i));
+        for (int i = 0; i < 26; ++i) MC(MPI_Cancel(recvcountreq + i));
         firstpost = true;
     }
 }

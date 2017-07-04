@@ -4,9 +4,9 @@ void recv() {
     {
         MPI_Status statuses[26];
 
-        MC(l::m::Waitall(nactive, recvreq, statuses));
-        MC(l::m::Waitall(nactive, recvcellsreq, statuses));
-        MC(l::m::Waitall(nactive, recvcountreq, statuses));
+        MC(l::m::Waitall(26, recvreq, statuses));
+        MC(l::m::Waitall(26, recvcellsreq, statuses));
+        MC(l::m::Waitall(26, recvcountreq, statuses));
     }
 
     for (int i = 0; i < 26; ++i) {
