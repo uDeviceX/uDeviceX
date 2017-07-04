@@ -34,7 +34,7 @@ static __device__ void get_box(int i, /**/ int org[3], int ext[3]) {
 }
 
 /* halo to bulk cell id */
-static __device__ int h2cid(int h, int ext[3]) {
+static __device__ int h2cid(int hci, int ext[3]) {
   enum {X, Y, Z};
   int c;
   int srccellpos[3];
