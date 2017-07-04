@@ -34,7 +34,7 @@ static __device__ void get_box(int i, /**/ int org[3], int ext[3]) {
 }
 
 /* halo to bulk cell id */
-static __device__ int h2cid(int hci, int ext[3]) {
+static __device__ int h2cid(int hci, int org[3], int ext[3]) {
   enum {X, Y, Z};
   int c;
   int srccellpos[3];
@@ -61,7 +61,7 @@ __global__ void count_all(int *start, int *count) {
     nhc = ext[X] * ext[Y] * ext[Z];
 
     if (hci < nhc) {
-        cid = h2cid(hci, ext);
+        cid = h2cid(hci, org, ext);
         cellpacks[hid].start[hci] = start[cid];
         cellpacks[hid].count[hci] = count[cid];
     } else if (hci == nhc) {
