@@ -59,7 +59,7 @@ void disp0(const float *rp, const float *rc, float *dr) {
     for (int c = 0; c < 3; ++c) {
         dr[c] = rc[c] - rp[c];
         const float sign = dr[c] > 0 ? 1.f : -1.f;
-        dr[c] += fabs(dr[c]) > dL[c]/2 ? sign * dL[c] : 0.f;        
+        dr[c] -= fabs(dr[c]) > dL[c]/2 ? sign * dL[c] : 0.f;        
     }
 }
 

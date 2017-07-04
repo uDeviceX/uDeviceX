@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
     
     read_data(ffpp[0], &dpp0, ffii[0], &dii0);
 
-    const int buffsize = max_index(dii0.idata, dii0.n);
+    const int buffsize = max_index(dii0.idata, dii0.n) + 1;
 
     float *rr0 = new float[3*buffsize]; /* initial  positions     */
     float *rrc = new float[3*buffsize]; /* current  positions     */
