@@ -128,13 +128,12 @@ __global__ void fill_all(Particle *pp, int np, int *required_bag_size) {
     int gid = (threadIdx.x >> 4) + 2 * blockIdx.x;
     if (gid >= cellpackstarts[26]) return;
     int hid = get_hid(cellpackstarts, gid);
-
-    int cellid = gid - cellpackstarts[hid];
+    int hci = gid - cellpackstarts[hid];
     int tid = threadIdx.x & 0xf;
-    int base_src = baginfos[hid].start_src[cellid];
-    int base_dst = baginfos[hid].start_dst[cellid];
+    int base_src = baginfos[hid].start_src[hci];
+    int base_dst = baginfos[hid].start_dst[hci];
     int nsrc =
-        min(baginfos[hid].count_src[cellid], baginfos[hid].bagsize - base_dst);
+        min(baginfos[hid].count_src[hci], baginfos[hid].bagsize - base_dst);
     int nfloats = nsrc * 6;
     for (int i = 2 * tid; i < nfloats; i += warpSize) {
         int lpid = i / 6;
