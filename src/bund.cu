@@ -127,25 +127,24 @@ namespace dev {
 #include "bipsbatch.decl.h"
 #include "bipsbatch.impl.h"
 
+#include "dpd/local.h"
+
 /* old dpd */
-#define ODPD
-#ifdef  ODPD
-  #include "x/dpd/local.h"
+#define XDPD
+#ifdef  XDPD
   #include "x/phalo.decl.h"
   #include "x/phalo.impl.h"
   #include "x/dpd/remote.decl.h"
   #include "x/dpd/ini.h"
   #include "x/dpd/remote.impl.h"
 #else
-  #include "k/halo.h"
-  #include "dpd/local.h"
-  #include "dpd/remote.decl.h"
-  #include "dpd/buf.decl.h"
-  #include "dpd/ini.h"
-  #include "dpd/forces.impl.h"
-  #include "dpd/remote.impl.h"
-  #include "dpd/post.impl.h"
-  #include "dpd/pack.impl.h"
+  #include "y/dpd/remote.decl.h"
+  #include "y/dpd/buf.decl.h"
+  #include "y/dpd/ini.h"
+  #include "y/dpd/forces.impl.h"
+  #include "y/dpd/remote.impl.h"
+  #include "y/dpd/post.impl.h"
+  #include "y/dpd/pack.impl.h"
 #endif
 
 #include "collision.h"
