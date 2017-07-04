@@ -14,7 +14,7 @@ void forces_rbc() {
 }
 
 void forces_dpd() {
-  xy::forces(&o::q, &o::tz, &o::trnd, /**/ o::ff); /* defined in dpd/xy.impl.h */
+  xy::forces(&o::q, &o::tz, &o::trnd, /**/ o::ff); /* defined in [xy]/dpd/xy.impl.h */
 }
 
 void clear_forces(Force* ff, int n) {
