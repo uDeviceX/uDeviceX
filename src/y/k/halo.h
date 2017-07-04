@@ -43,7 +43,7 @@ static __device__ int h2cid(int hci, int org[3], int ext[3]) {
   return srccellpos[X] + XS * (srccellpos[Y] + YS * srccellpos[Z]);
 }
 
-__global__ void count_all(int *start, int *count) {
+__global__ void count(int *start, int *count) {
     enum {X, Y, Z};
     int gid;
     int hid; /* halo id */
