@@ -64,7 +64,6 @@ void fin() {
     CC(cudaEventDestroy(evdownloaded));
 
     for (int i = 1; i < 26; i++) delete interrank_trunks[i];
-    delete local_trunk;
     for (int i = 0; i < 26; i++) delete recvhalos[i];
     for (int i = 0; i < 26; i++) delete sendhalos[i];
 }

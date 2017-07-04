@@ -2,7 +2,6 @@
 // operates
 namespace dpd {
 int ncells;
-l::rnd::d::KISS *local_trunk;
 
 /* allocated inside init1 */
 l::rnd::d::KISS *interrank_trunks[26];
