@@ -1,4 +1,4 @@
-namespace dpd { /* declaration of bufers */
+namespace dpd { /* declaration of buffers */
 struct SendHalo {
   DeviceBuffer<int> *scattered_entries, *tmpstart, *tmpcount, *dcellstarts;
   DeviceBuffer<Particle> *dbuf;

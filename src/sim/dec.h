@@ -6,8 +6,9 @@ H5FieldDump *dump_field;
 namespace o /* s[o]lvent */
 {
 flu::Quants q;
-flu::TicketZ tz;
-odstr::TicketD td;
+flu::TicketZ tz;   /* [z]ip */
+flu::TicketRND trnd;
+odstr::TicketD td;   /* [d]istribute */
 odstr::Work w;
 
 Force    *ff;
