@@ -56,14 +56,13 @@ void _cancel_recv() {
     }
 }
 
-void fin(l::rnd::d::KISS* interrank_trunks000[]) {
+void fin() {
     CC(cudaFreeHost(required_send_bag_size));
     MC(l::m::Comm_free(&cart));
     _cancel_recv();
     CC(cudaEventDestroy(evfillall));
     CC(cudaEventDestroy(evdownloaded));
 
-    for (int i = 1; i < 26; i++) delete interrank_trunks000[i];
     for (int i = 0; i < 26; i++) delete recvhalos[i];
     for (int i = 0; i < 26; i++) delete sendhalos[i];
 }

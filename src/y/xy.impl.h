@@ -17,11 +17,12 @@ void fin0() {
   int i;
   for (i = 0; i < 26; i++) delete recvhalos[i];
   for (i = 0; i < 26; i++) delete sendhalos[i];
+  for (i = 1; i < 26; i++) delete interrank_trunks[i];
   MC(l::m::Comm_free(&cart));
 }
 
 void fin() {
-  dpd::fin(interrank_trunks);
+  dpd::fin();
   fin0();
 }
 
