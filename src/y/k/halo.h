@@ -13,6 +13,13 @@ struct SendBagInfo {
 
 __constant__ SendBagInfo baginfos[26];
 __constant__ int *srccells[26 * 2], *dstcells[26 * 2];
+
+__device__ int get_idpack(const int cellpackstarts[], const int gid) {  /* where is `i' in sorted a[27]? */
+  int key9 = 9 * ((gid >= cellpackstarts[9]) + (gid >= cellpackstarts[18]));
+  int key3 = 3 * ((gid >= cellpackstarts[key9 + 3]) + (gid >= cellpackstarts[key9 + 6]));
+  int key1 = (gid >= cellpackstarts[key9 + key3 + 1]) + (gid >= cellpackstarts[key9 + key3 + 2]);
+  return key9 + key3 + key1;
+}
   
 __global__ void count_all(int *cellsstart,
                           int *cellscount, int ntotalcells) {
