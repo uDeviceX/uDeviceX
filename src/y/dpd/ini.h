@@ -79,16 +79,10 @@ void init1_one(int i, l::rnd::d::KISS* interrank_trunks000[], bool interrank_mas
         }
 }
 
-void init1(l::rnd::d::KISS* interrank_trunks000[], bool interrank_masks000[]) {
-  int i;
-  for (i = 0; i < 26; ++i) init1_one(i, interrank_trunks000, interrank_masks000);
-}
-
 void ini(l::rnd::d::KISS* interrank_trunks000[], bool interrank_masks000[]) {
     for (int i = 0; i < 26; i++) recvhalos[i] = new RecvHalo;
     for (int i = 0; i < 26; i++) sendhalos[i] = new SendHalo;
 
     init0();
-    init1(interrank_trunks000, interrank_masks000);
 }
 }
