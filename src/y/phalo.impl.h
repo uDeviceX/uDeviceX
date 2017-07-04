@@ -1,21 +1,6 @@
-namespace k_halo {
-__constant__ int cellpackstarts[27];
-struct CellPackSOA {
-    int *start, *count, *scan, size;
-    bool enabled;
-};
-__constant__ CellPackSOA cellpacks[26];
-struct SendBagInfo {
-    int *start_src, *count_src, *start_dst;
-    int bagsize, *scattered_entries;
-    Particle *dbag, *hbag;
-};
-
-__constant__ SendBagInfo baginfos[26];
-__constant__ int *srccells[26 * 2], *dstcells[26 * 2];
-
-__global__ void count(int *cellsstart,
-		      int *cellscount, int ntotalcells) {
+namespace phalo {
+__global__ void count_all(int *cellsstart,
+                          int *cellscount, int ntotalcells) {
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
     if (gid >= cellpackstarts[26]) return;
@@ -63,8 +48,7 @@ __global__ void count(int *cellsstart,
         cellpacks[code].count[dstcid] = 0;
     }
 }
-
-template <int slot> __global__ void copy(int n) {
+template <int slot> __global__ void copycells(int n) {
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
     if (gid >= cellpackstarts[26]) return;
@@ -83,7 +67,7 @@ template <int slot> __global__ void copy(int n) {
     dstcells[idpack + 26 * slot][offset] = srccells[idpack + 26 * slot][offset];
 }
 
-template <int NWARPS> __global__ void scan() {
+template <int NWARPS> __global__ void scan_diego() {
     __shared__ int shdata[32];
 
     int code = blockIdx.x;
@@ -126,8 +110,8 @@ template <int NWARPS> __global__ void scan() {
         if (sourceid < n) start[sourceid] = myscan - mycount;
     }
 }
-
-__global__ void fill(Particle *particles, int np,
+  
+__global__ void fill_all(Particle *particles, int np,
                          int *required_bag_size) {
     int gcid = (threadIdx.x >> 4) + 2 * blockIdx.x;
     if (gcid >= cellpackstarts[26]) return;
