@@ -69,6 +69,7 @@ void pack(Particle *p, int n, int *start, int *count) {
     if (firstpost) pack_first1();
 
     if (ncells) k_halo::copycells<<<k_cnf(ncells)>>>(ncells);
-    _pack_all(p, n, firstpost);
+    if (firstpost) upd_bag();
+    _pack_all(p, n);
 }
 }
