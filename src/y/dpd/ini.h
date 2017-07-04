@@ -1,6 +1,7 @@
 namespace dpd {
 void init0() {
     int xsz, ysz, zsz;
+    float safety_factor;
     firstpost = true;
     safety_factor =
         getenv("HEX_COMM_FACTOR") ? atof(getenv("HEX_COMM_FACTOR")) : 1.2;
