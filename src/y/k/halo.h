@@ -65,7 +65,7 @@ __global__ void count_all(int *cellsstart,
         cellpacks[idpack].count[dstcid] = 0;
     }
 }
-template <int slot> __global__ void copycells(int n) {
+__global__ void copycells(int n) {
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
     if (gid >= cellpackstarts[26]) return;
@@ -73,7 +73,7 @@ template <int slot> __global__ void copycells(int n) {
     int idpack = get_idpack(cellpackstarts, gid);
     int offset = gid - cellpackstarts[idpack];
 
-    dstcells[idpack + 26 * slot][offset] = srccells[idpack + 26 * slot][offset];
+    dstcells[idpack][offset] = srccells[idpack][offset];
 }
 
 template <int NWARPS> __global__ void scan_diego() {
