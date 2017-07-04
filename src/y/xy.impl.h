@@ -9,7 +9,17 @@ void ini() {
   ini0();
   dpd::ini(interrank_trunks, interrank_masks);
 }
-void fin() { dpd::fin(interrank_trunks); }
+
+void fin0() {
+  int i;
+  for (i = 0; i < 26; i++) delete recvhalos[i];
+  for (i = 0; i < 26; i++) delete sendhalos[i];
+}
+
+void fin() {
+  dpd::fin(interrank_trunks);
+  fin0();
+}
 
 void forces(flu::Quants *q, flu::TicketZ *tz, flu::TicketRND *trnd, /**/ Force *ff) {
   dpd::pack(q->pp, q->n, q->cells->start, q->cells->count);
