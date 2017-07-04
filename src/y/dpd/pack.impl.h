@@ -63,7 +63,7 @@ void wait_send() {
 
 void pack(Particle *p, int n, int *start, int *count) {
     if (firstpost) pack_first0();
-    if (ncells) k_halo::count_all<<<k_cnf(ncells)>>>(start, count, ncells);
+    if (ncells) k_halo::count_all<<<k_cnf(ncells)>>>(start, count);
     k_halo::scan_diego<32><<<26, 32 * 32>>>();
 
     if (firstpost) post_expected_recv(); else wait_send();

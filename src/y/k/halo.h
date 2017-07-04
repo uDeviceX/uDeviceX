@@ -23,7 +23,7 @@ static __device__ int get_idpack(const int a[], const int i) {  /* where is `i' 
 }
   
 __global__ void count_all(int *cellsstart,
-                          int *cellscount, int ntotalcells) {
+                          int *cellscount) {
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
     if (gid >= cellpackstarts[26]) return;
 
