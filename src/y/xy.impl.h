@@ -1,5 +1,14 @@
 namespace xy { /* temporary interface to dpd/x and dpd/y */
-void ini() { dpd::ini(interrank_trunks, interrank_masks); }
+void ini0() {
+  int i;
+  for (i = 0; i < 26; i++) recvhalos[i] = new RecvHalo;
+  for (i = 0; i < 26; i++) sendhalos[i] = new SendHalo;
+}
+
+void ini() {
+  ini0();
+  dpd::ini(interrank_trunks, interrank_masks);
+}
 void fin() { dpd::fin(interrank_trunks); }
 
 void forces(flu::Quants *q, flu::TicketZ *tz, flu::TicketRND *trnd, /**/ Force *ff) {
