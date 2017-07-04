@@ -127,7 +127,7 @@ template <int NWARPS> __global__ void scan_diego() {
 __global__ void fill_all(Particle *pp, int np, int *required_bag_size) {
     int gid = (threadIdx.x >> 4) + 2 * blockIdx.x;
     if (gid >= cellpackstarts[26]) return;
-    int hid = get_hid(cellpackstarts, gid);
+    int hid = get_idpack(cellpackstarts, gid);
     int hci = gid - cellpackstarts[hid];
     int tid = threadIdx.x & 0xf;
     int base_src = baginfos[hid].start_src[hci];
