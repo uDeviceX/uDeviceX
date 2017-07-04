@@ -22,8 +22,8 @@ static __device__ int get_idpack(const int a[], const int i) {  /* where is `i' 
 }
 
 static __device__ void get_box(int idpack, /**/ int halo_start[], int halo_size[]) {
-  int d[3] = {(idpack + 2) % 3 - 1, (idpack / 3 + 2) % 3 - 1, (idpack / 9 + 2) % 3 - 1};
   int L[3] = {XS, YS, ZS};
+  int d[3] = {(idpack + 2) % 3 - 1, (idpack / 3 + 2) % 3 - 1, (idpack / 9 + 2) % 3 - 1};
   for (int c = 0; c < 3; ++c) {
     halo_start[c] = (d[c] == 1) ? L[c] - 1 : 0;
     halo_size [c] = (d[c] == 0) ? L[c]     : 1;
