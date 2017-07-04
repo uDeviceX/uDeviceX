@@ -124,8 +124,7 @@ template <int NWARPS> __global__ void scan_diego() {
     }
 }
   
-__global__ void fill_all(Particle *particles, int np,
-                         int *required_bag_size) {
+__global__ void fill_all(Particle *pp, int np, int *required_bag_size) {
     int gid = (threadIdx.x >> 4) + 2 * blockIdx.x;
     if (gid >= cellpackstarts[26]) return;
     int idpack = get_idpack(cellpackstarts, gid);
@@ -142,7 +141,7 @@ __global__ void fill_all(Particle *particles, int np,
         int dpid = base_dst + lpid;
         int spid = base_src + lpid;
         int c = i % 6;
-        float2 word = *(float2 *)&particles[spid].r[c];
+        float2 word = *(float2 *)&pp[spid].r[c];
         *(float2 *)&baginfos[idpack].dbag[dpid].r[c] = word;
     }
     for (int lpid = tid; lpid < nsrc; lpid += warpSize / 2) {
