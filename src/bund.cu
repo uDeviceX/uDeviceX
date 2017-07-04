@@ -134,10 +134,8 @@ namespace dev {
   #include "x/phalo.decl.h"
   #include "x/phalo.impl.h"
   #include "x/dpd/remote.decl.h"
-  #include "x/dpd/buf.decl.h"
   #include "x/dpd/ini.h"
   #include "x/dpd/remote.impl.h"
-  #include "x/dpd/pack.impl.h"
 #else
   #include "k/halo.h"
   #include "dpd/local.h"
