@@ -1,5 +1,5 @@
 namespace dpd {
-void fremote(int n, Force *a) {
+void fremote(int n, Force *ff) {
     static BipsBatch::BatchInfo infos[26];
 
     for (int i = 0; i < 26; ++i) {
@@ -31,6 +31,6 @@ void fremote(int n, Force *a) {
         infos[i] = entry;
     }
 
-    BipsBatch::interactions(infos, (float *)a, n);
+    BipsBatch::interactions(infos, (float *)ff, n);
 }
 } /* namespace dpd */
