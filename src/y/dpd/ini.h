@@ -79,7 +79,7 @@ void init1_one(int i, l::rnd::d::KISS* interrank_trunks000[], bool interrank_mas
         }
 }
 
-void ini(l::rnd::d::KISS* interrank_trunks000[], bool interrank_masks000[]) {
+void ini() {
     for (int i = 0; i < 26; i++) recvhalos[i] = new RecvHalo;
     for (int i = 0; i < 26; i++) sendhalos[i] = new SendHalo;
 

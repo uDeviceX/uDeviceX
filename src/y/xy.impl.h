@@ -9,7 +9,7 @@ void ini() {
   int i;
   ini0();
   MC(l::m::Comm_dup(m::cart, &cart));
-  dpd::ini(interrank_trunks, interrank_masks);
+  dpd::ini();
   for (i = 0; i < 26; ++i) dpd::init1_one(i, interrank_trunks, interrank_masks);
 }
 
