@@ -32,23 +32,12 @@ static __device__ void get_box(int idpack, /**/ int halo_start[], int halo_size[
   
 __global__ void count_all(int *cellsstart,
                           int *cellscount) {
+    int halo_start[3], halo_size[3];
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
     if (gid >= cellpackstarts[26]) return;
 
     int idpack = get_idpack(cellpackstarts, gid);
-
-    int d[3] = {(idpack + 2) % 3 - 1, (idpack / 3 + 2) % 3 - 1,
-                (idpack / 9 + 2) % 3 - 1};
-    int L[3] = {XS, YS, ZS};
-
-    int halo_start[3];
-    for (int c = 0; c < 3; ++c)
-    halo_start[c] = max(d[c] * L[c] - L[c] / 2 - 1, -L[c] / 2);
-
-    int halo_size[3];
-    for (int c = 0; c < 3; ++c)
-    halo_size[c] = min(d[c] * L[c] + L[c] / 2 + 1, L[c] / 2) - halo_start[c];
-
+    get_box(idpack, halo_start, halo_size);
     int ndstcells = halo_size[0] * halo_size[1] * halo_size[2];
     int dstcid = gid - cellpackstarts[idpack];
 
@@ -59,7 +48,7 @@ __global__ void count_all(int *cellsstart,
 
         int srccellpos[3];
         for (int c = 0; c < 3; ++c)
-        srccellpos[c] = halo_start[c] + dstcellpos[c] + L[c] / 2;
+        srccellpos[c] = halo_start[c] + dstcellpos[c];
 
         int srcentry =
             srccellpos[0] +
