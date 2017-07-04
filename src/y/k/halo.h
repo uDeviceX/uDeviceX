@@ -125,27 +125,30 @@ template <int NWARPS> __global__ void scan_diego() {
 }
   
 __global__ void fill_all(Particle *pp, int np, int *required_bag_size) {
-    int gid = (threadIdx.x >> 4) + 2 * blockIdx.x;
+  int gid, hid, hci, tid, base_src, base_dst, nsrc, nfloats;
+  int i, lpid, dpid, spid, c;
+  float2 word;
+
+    gid = (threadIdx.x >> 4) + 2 * blockIdx.x;
     if (gid >= cellpackstarts[26]) return;
-    int hid = get_idpack(cellpackstarts, gid);
-    int hci = gid - cellpackstarts[hid];
-    int tid = threadIdx.x & 0xf;
-    int base_src = baginfos[hid].start_src[hci];
-    int base_dst = baginfos[hid].start_dst[hci];
-    int nsrc =
-        min(baginfos[hid].count_src[hci], baginfos[hid].bagsize - base_dst);
-    int nfloats = nsrc * 6;
-    for (int i = 2 * tid; i < nfloats; i += warpSize) {
-        int lpid = i / 6;
-        int dpid = base_dst + lpid;
-        int spid = base_src + lpid;
-        int c = i % 6;
-        float2 word = *(float2 *)&pp[spid].r[c];
+    hid = get_idpack(cellpackstarts, gid);
+    hci = gid - cellpackstarts[hid];
+    tid = threadIdx.x & 0xf;
+    base_src = baginfos[hid].start_src[hci];
+    base_dst = baginfos[hid].start_dst[hci];
+    nsrc = min(baginfos[hid].count_src[hci], baginfos[hid].bagsize - base_dst);
+    nfloats = nsrc * 6;
+    for (i = 2 * tid; i < nfloats; i += warpSize) {
+        lpid = i / 6;
+        dpid = base_dst + lpid;
+        spid = base_src + lpid;
+        c = i % 6;
+        word = *(float2 *)&pp[spid].r[c];
         *(float2 *)&baginfos[hid].dbag[dpid].r[c] = word;
     }
-    for (int lpid = tid; lpid < nsrc; lpid += warpSize / 2) {
-        int dpid = base_dst + lpid;
-        int spid = base_src + lpid;
+    for (lpid = tid; lpid < nsrc; lpid += warpSize / 2) {
+        dpid = base_dst + lpid;
+        spid = base_src + lpid;
         baginfos[hid].scattered_entries[dpid] = spid;
     }
     if (gid + 1 == cellpackstarts[hid + 1]) required_bag_size[hid] = base_dst;
