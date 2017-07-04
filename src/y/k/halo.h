@@ -13,7 +13,7 @@ struct SendBagInfo {
 __constant__ SendBagInfo baginfos[26];
 __constant__ int *srccells[26 * 2], *dstcells[26 * 2];
 
-static __device__ int get_idpack(const int a[], const int i) {  /* where is `i' in sorted a[27]? */
+static __device__ int get_hid(const int a[], const int i) {  /* where is `i' in sorted a[27]? */
   int k1, k3, k9;
   k9 = 9 * ((i >= a[9]) + (i >= a[18]));
   k3 = 3 * ((i >= a[k9 + 3]) + (i >= a[k9 + 6]));
@@ -39,7 +39,7 @@ __global__ void count_all(int *cellsstart,
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
     if (gid >= cellpackstarts[26]) return;
 
-    int idpack = get_idpack(cellpackstarts, gid);
+    int idpack = get_hid(cellpackstarts, gid);
     get_box(idpack, halo_start, halo_size);
     int ndstcells = halo_size[0] * halo_size[1] * halo_size[2];
     int dstcid = gid - cellpackstarts[idpack];
@@ -68,7 +68,7 @@ __global__ void copycells(int n) {
 
     if (gid >= cellpackstarts[26]) return;
 
-    int idpack = get_idpack(cellpackstarts, gid);
+    int idpack = get_hid(cellpackstarts, gid);
     int offset = gid - cellpackstarts[idpack];
 
     dstcells[idpack][offset] = srccells[idpack][offset];
@@ -122,7 +122,7 @@ __global__ void fill_all(Particle *particles, int np,
                          int *required_bag_size) {
     int gid = (threadIdx.x >> 4) + 2 * blockIdx.x;
     if (gid >= cellpackstarts[26]) return;
-    int idpack = get_idpack(cellpackstarts, gid);
+    int idpack = get_hid(cellpackstarts, gid);
 
     int cellid = gid - cellpackstarts[idpack];
     int tid = threadIdx.x & 0xf;
