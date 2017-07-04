@@ -33,7 +33,7 @@ static __device__ void get_box(int i, /**/ int org[3], int ext[3]) {
   }
 }
   
-__global__ void count_all(int *cellsstart, int *cellscount) {
+__global__ void count_all(int *start, int *count) {
     int gid;
     int hid; /* halo id */
     int ndstcells, dstcid, srcentry, c;
@@ -52,8 +52,8 @@ __global__ void count_all(int *cellsstart, int *cellscount) {
         int dstcellpos[3] = {dstcid % ext[0], (dstcid / ext[0]) % ext[1], dstcid / (ext[0] * ext[1])};
         for (c = 0; c < 3; ++c) srccellpos[c] = org[c] + dstcellpos[c];
         srcentry = srccellpos[0] + XS * (srccellpos[1] + YS * srccellpos[2]);
-        cellpacks[hid].start[dstcid] = cellsstart[srcentry];
-        cellpacks[hid].count[dstcid] = cellscount[srcentry];
+        cellpacks[hid].start[dstcid] = start[srcentry];
+        cellpacks[hid].count[dstcid] = count[srcentry];
     } else if (dstcid == ndstcells) {
         cellpacks[hid].start[dstcid] = 0;
         cellpacks[hid].count[dstcid] = 0;
