@@ -127,14 +127,14 @@ template <int NWARPS> __global__ void scan_diego() {
 __global__ void fill_all(Particle *pp, int np, int *required_bag_size) {
     int gid = (threadIdx.x >> 4) + 2 * blockIdx.x;
     if (gid >= cellpackstarts[26]) return;
-    int idpack = get_idpack(cellpackstarts, gid);
+    int hid = get_hid(cellpackstarts, gid);
 
-    int cellid = gid - cellpackstarts[idpack];
+    int cellid = gid - cellpackstarts[hid];
     int tid = threadIdx.x & 0xf;
-    int base_src = baginfos[idpack].start_src[cellid];
-    int base_dst = baginfos[idpack].start_dst[cellid];
+    int base_src = baginfos[hid].start_src[cellid];
+    int base_dst = baginfos[hid].start_dst[cellid];
     int nsrc =
-        min(baginfos[idpack].count_src[cellid], baginfos[idpack].bagsize - base_dst);
+        min(baginfos[hid].count_src[cellid], baginfos[hid].bagsize - base_dst);
     int nfloats = nsrc * 6;
     for (int i = 2 * tid; i < nfloats; i += warpSize) {
         int lpid = i / 6;
@@ -142,13 +142,13 @@ __global__ void fill_all(Particle *pp, int np, int *required_bag_size) {
         int spid = base_src + lpid;
         int c = i % 6;
         float2 word = *(float2 *)&pp[spid].r[c];
-        *(float2 *)&baginfos[idpack].dbag[dpid].r[c] = word;
+        *(float2 *)&baginfos[hid].dbag[dpid].r[c] = word;
     }
     for (int lpid = tid; lpid < nsrc; lpid += warpSize / 2) {
         int dpid = base_dst + lpid;
         int spid = base_src + lpid;
-        baginfos[idpack].scattered_entries[dpid] = spid;
+        baginfos[hid].scattered_entries[dpid] = spid;
     }
-    if (gid + 1 == cellpackstarts[idpack + 1]) required_bag_size[idpack] = base_dst;
+    if (gid + 1 == cellpackstarts[hid + 1]) required_bag_size[hid] = base_dst;
 }
 }
