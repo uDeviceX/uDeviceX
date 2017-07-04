@@ -29,14 +29,13 @@ void init0() {
 void init1_one(int i) {
   int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
 
-  int coordsneighbor[3];
+  int ne[3];
   for (int c = 0; c < 3; ++c)
-    coordsneighbor[c] = (m::coords[c] + d[c] + m::dims[c]) % m::dims[c];
+    ne[c] = (m::coords[c] + d[c] + m::dims[c]) % m::dims[c];
 
   int indx[3];
   for (int c = 0; c < 3; ++c)
-    indx[c] = min(m::coords[c], coordsneighbor[c]) * m::dims[c] +
-      max(m::coords[c], coordsneighbor[c]);
+    indx[c] = min(m::coords[c], ne[c]) * m::dims[c] + max(m::coords[c], ne[c]);
 
   int interrank_seed_base =
     indx[0] + m::dims[0] * m::dims[0] * (indx[1] + m::dims[1] * m::dims[1] * indx[2]);
