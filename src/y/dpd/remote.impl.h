@@ -40,30 +40,27 @@ void post_expected_recv() {
     recv_counts[i] = 0;
 }
 
-void _cancel_recv() {
-    if (!firstpost) {
-        {
-            MPI_Status statuses[26 * 2];
-            MC(l::m::Waitall(26, sendcellsreq, statuses));
-            MC(l::m::Waitall(nsendreq, sendreq, statuses));
-            MC(l::m::Waitall(26, sendcountreq, statuses));
-        }
-
-        for (int i = 0; i < 26; ++i) MC(MPI_Cancel(recvreq + i));
-        for (int i = 0; i < 26; ++i) MC(MPI_Cancel(recvcellsreq + i));
-        for (int i = 0; i < 26; ++i) MC(MPI_Cancel(recvcountreq + i));
-        firstpost = true;
-    }
+void cancel_recv() {
+  int i;
+  MPI_Status statuses[26 * 2];
+  MC(l::m::Waitall(26, sendcellsreq, statuses));
+  MC(l::m::Waitall(nsendreq, sendreq, statuses));
+  MC(l::m::Waitall(26, sendcountreq, statuses));
+  
+  for (i = 0; i < 26; ++i) MC(MPI_Cancel(recvreq + i));
+  for (i = 0; i < 26; ++i) MC(MPI_Cancel(recvcellsreq + i));
+  for (i = 0; i < 26; ++i) MC(MPI_Cancel(recvcountreq + i));
 }
 
 void fin() {
     CC(cudaFreeHost(required_send_bag_size));
     MC(l::m::Comm_free(&cart));
-    _cancel_recv();
+    if (!firstpost) cancel_recv();
     CC(cudaEventDestroy(evfillall));
     CC(cudaEventDestroy(evdownloaded));
 
     for (int i = 0; i < 26; i++) delete recvhalos[i];
     for (int i = 0; i < 26; i++) delete sendhalos[i];
+    firstpost = true;
 }
 }
