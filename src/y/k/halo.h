@@ -128,15 +128,17 @@ __global__ void fill_all(Particle *pp, int np, int *required_bag_size) {
   int gid, hid, hci, tid, base_src, base_dst, nsrc, nfloats;
   int i, lpid, dpid, spid, c;
   float2 word;
+  SendBagInfo bag;
 
     gid = (threadIdx.x >> 4) + 2 * blockIdx.x;
     if (gid >= cellpackstarts[26]) return;
     hid = get_idpack(cellpackstarts, gid);
     hci = gid - cellpackstarts[hid];
     tid = threadIdx.x & 0xf;
-    base_src = baginfos[hid].start_src[hci];
-    base_dst = baginfos[hid].start_dst[hci];
-    nsrc = min(baginfos[hid].count_src[hci], baginfos[hid].bagsize - base_dst);
+    bag = baginfos[hid];
+    base_src = bag.start_src[hci];
+    base_dst = bag.start_dst[hci];
+    nsrc = min(bag.count_src[hci], bag.bagsize - base_dst);
     nfloats = nsrc * 6;
     for (i = 2 * tid; i < nfloats; i += warpSize) {
         lpid = i / 6;
@@ -144,12 +146,12 @@ __global__ void fill_all(Particle *pp, int np, int *required_bag_size) {
         spid = base_src + lpid;
         c = i % 6;
         word = *(float2 *)&pp[spid].r[c];
-        *(float2 *)&baginfos[hid].dbag[dpid].r[c] = word;
+        *(float2 *)&bag.dbag[dpid].r[c] = word;
     }
     for (lpid = tid; lpid < nsrc; lpid += warpSize / 2) {
         dpid = base_dst + lpid;
         spid = base_src + lpid;
-        baginfos[hid].scattered_entries[dpid] = spid;
+        bag.scattered_entries[dpid] = spid;
     }
     if (gid + 1 == cellpackstarts[hid + 1]) required_bag_size[hid] = base_dst;
 }
