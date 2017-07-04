@@ -121,15 +121,15 @@ template <int NWARPS> __global__ void scan_diego() {
   
 __global__ void fill_all(Particle *particles, int np,
                          int *required_bag_size) {
-    int gcid = (threadIdx.x >> 4) + 2 * blockIdx.x;
-    if (gcid >= cellpackstarts[26]) return;
+    int gid = (threadIdx.x >> 4) + 2 * blockIdx.x;
+    if (gid >= cellpackstarts[26]) return;
 
-    int key9 = 9 * ((gcid >= cellpackstarts[9]) + (gcid >= cellpackstarts[18]));
-    int key3 = 3 * ((gcid >= cellpackstarts[key9 + 3]) + (gcid >= cellpackstarts[key9 + 6]));
-    int key1 = (gcid >= cellpackstarts[key9 + key3 + 1]) + (gcid >= cellpackstarts[key9 + key3 + 2]);
+    int key9 = 9 * ((gid >= cellpackstarts[9]) + (gid >= cellpackstarts[18]));
+    int key3 = 3 * ((gid >= cellpackstarts[key9 + 3]) + (gid >= cellpackstarts[key9 + 6]));
+    int key1 = (gid >= cellpackstarts[key9 + key3 + 1]) + (gid >= cellpackstarts[key9 + key3 + 2]);
     int code = key9 + key3 + key1;
-    
-    int cellid = gcid - cellpackstarts[code];
+
+    int cellid = gid - cellpackstarts[code];
     int tid = threadIdx.x & 0xf;
     int base_src = baginfos[code].start_src[cellid];
     int base_dst = baginfos[code].start_dst[cellid];
@@ -149,6 +149,6 @@ __global__ void fill_all(Particle *particles, int np,
         int spid = base_src + lpid;
         baginfos[code].scattered_entries[dpid] = spid;
     }
-    if (gcid + 1 == cellpackstarts[code + 1]) required_bag_size[code] = base_dst;
+    if (gid + 1 == cellpackstarts[code + 1]) required_bag_size[code] = base_dst;
 }
 }
