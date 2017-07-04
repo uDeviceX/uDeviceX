@@ -32,6 +32,15 @@ static __device__ void get_box(int i, /**/ int org[3], int ext[3]) {
     ext[c] = (d[c] == 0) ? L[c]     : 1;
   }
 }
+
+/* halo to bulk cell id */
+static __device__ int h2cid(int h, int ext[3]) {
+  int c;
+  int srccellpos[3];
+  int dstcellpos[3] = {hci % ext[0], (hci / ext[0]) % ext[1], hci / (ext[0] * ext[1])};
+  for (c = 0; c < 3; ++c) srccellpos[c] = org[c] + dstcellpos[c];
+  returns srccellpos[0] + XS * (srccellpos[1] + YS * srccellpos[2]);
+}
   
 __global__ void count_all(int *start, int *count) {
     int gid;
