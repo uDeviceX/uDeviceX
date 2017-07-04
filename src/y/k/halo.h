@@ -13,11 +13,11 @@ struct SendBagInfo {
 __constant__ SendBagInfo baginfos[26];
 __constant__ int *srccells[26 * 2], *dstcells[26 * 2];
 
-static __device__ int get_hid(const int a[], const int i) {  /* where is `i' in sorted a[27]? */
+static __device__ int get_idpack(const int a[], const int i) {  /* where is `i' in sorted a[27]? */
   int k1, k3, k9;
-  k9 = 9 * ((i >= a[9]) + (i >= a[18]));
-  k3 = 3 * ((i >= a[k9 + 3]) + (i >= a[k9 + 6]));
-  k1 = (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
+  k9 = 9 * ((i >= a[9])           + (i >= a[18]));
+  k3 = 3 * ((i >= a[k9 + 3])      + (i >= a[k9 + 6]));
+  k1 =      (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
   return k9 + k3 + k1;
 }
 
