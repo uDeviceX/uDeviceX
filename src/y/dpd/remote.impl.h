@@ -56,7 +56,7 @@ void _cancel_recv() {
     }
 }
 
-void fin() {
+void fin(l::rnd::d::KISS* interrank_trunks000[]) {
     CC(cudaFreeHost(required_send_bag_size));
     MC(l::m::Comm_free(&cart));
     _cancel_recv();
