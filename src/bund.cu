@@ -129,15 +129,16 @@ namespace dev {
 
 #include "dpd/local.h"
 
-/* old dpd */
 #define XDPD
 #ifdef  XDPD
+  /* old dpd */
   #include "x/phalo.decl.h"
   #include "x/phalo.impl.h"
   #include "x/dpd/remote.decl.h"
   #include "x/dpd/ini.h"
   #include "x/dpd/remote.impl.h"
 #else
+  #include "y/k/halo.h"
   #include "y/dpd/remote.decl.h"
   #include "y/dpd/buf.decl.h"
   #include "y/dpd/ini.h"
