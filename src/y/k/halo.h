@@ -2,7 +2,6 @@ namespace k_halo {
 __constant__ int cellpackstarts[27];
 struct CellPackSOA {
     int *start, *count, *scan, size;
-    bool enabled;
 };
 __constant__ CellPackSOA cellpacks[26];
 struct SendBagInfo {
@@ -56,10 +55,8 @@ __global__ void count_all(int *cellsstart,
         int srcentry =
             srccellpos[0] +
             XS * (srccellpos[1] + YS * srccellpos[2]);
-        int enabled = cellpacks[idpack].enabled;
-
-        cellpacks[idpack].start[dstcid] = enabled * cellsstart[srcentry];
-        cellpacks[idpack].count[dstcid] = enabled * cellscount[srcentry];
+        cellpacks[idpack].start[dstcid] = cellsstart[srcentry];
+        cellpacks[idpack].count[dstcid] = cellscount[srcentry];
     } else if (dstcid == ndstcells) {
         cellpacks[idpack].start[dstcid] = 0;
         cellpacks[idpack].count[dstcid] = 0;

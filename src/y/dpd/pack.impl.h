@@ -16,7 +16,6 @@ void pack_first0() {
     for (int i = 0; i < 26; ++i) {
       cellpacks[i].start = sendhalos[i]->tmpstart->D;
       cellpacks[i].count = sendhalos[i]->tmpcount->D;
-      cellpacks[i].enabled = sendhalos[i]->expected > 0;
       cellpacks[i].scan = sendhalos[i]->dcellstarts->D;
       cellpacks[i].size = sendhalos[i]->dcellstarts->S;
     }
