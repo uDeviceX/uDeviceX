@@ -126,9 +126,7 @@ namespace dev {
 
 #include "bipsbatch.decl.h"
 #include "bipsbatch.impl.h"
-
 #include "dpd/local.h"
-
 #ifdef  YDPD
   #include "y/k/halo.h"
   #include "y/dpd/remote.decl.h"
@@ -148,6 +146,7 @@ namespace dev {
   #include "x/dpd/ini.h"
   #include "x/dpd/remote.impl.h"
 #endif
+#include "dpd/int.h"              /* temporary interface to dpd/x and dpd/y */
 
 #include "collision.h"
 
