@@ -22,10 +22,10 @@ __global__ void count_all(int *cellsstart,
     int key9 = 9 * ((gid >= cellpackstarts[9]) + (gid >= cellpackstarts[18]));
     int key3 = 3 * ((gid >= cellpackstarts[key9 + 3]) + (gid >= cellpackstarts[key9 + 6]));
     int key1 = (gid >= cellpackstarts[key9 + key3 + 1]) + (gid >= cellpackstarts[key9 + key3 + 2]);
-    int code = key9 + key3 + key1;
+    int idpack = key9 + key3 + key1;
 
-    int d[3] = {(code + 2) % 3 - 1, (code / 3 + 2) % 3 - 1,
-                (code / 9 + 2) % 3 - 1};
+    int d[3] = {(idpack + 2) % 3 - 1, (idpack / 3 + 2) % 3 - 1,
+                (idpack / 9 + 2) % 3 - 1};
     int L[3] = {XS, YS, ZS};
 
     int halo_start[3];
@@ -37,7 +37,7 @@ __global__ void count_all(int *cellsstart,
     halo_size[c] = min(d[c] * L[c] + L[c] / 2 + 1, L[c] / 2) - halo_start[c];
 
     int ndstcells = halo_size[0] * halo_size[1] * halo_size[2];
-    int dstcid = gid - cellpackstarts[code];
+    int dstcid = gid - cellpackstarts[idpack];
 
     if (dstcid < ndstcells) {
         int dstcellpos[3] = {dstcid % halo_size[0],
@@ -51,13 +51,13 @@ __global__ void count_all(int *cellsstart,
         int srcentry =
             srccellpos[0] +
             XS * (srccellpos[1] + YS * srccellpos[2]);
-        int enabled = cellpacks[code].enabled;
+        int enabled = cellpacks[idpack].enabled;
 
-        cellpacks[code].start[dstcid] = enabled * cellsstart[srcentry];
-        cellpacks[code].count[dstcid] = enabled * cellscount[srcentry];
+        cellpacks[idpack].start[dstcid] = enabled * cellsstart[srcentry];
+        cellpacks[idpack].count[dstcid] = enabled * cellscount[srcentry];
     } else if (dstcid == ndstcells) {
-        cellpacks[code].start[dstcid] = 0;
-        cellpacks[code].count[dstcid] = 0;
+        cellpacks[idpack].start[dstcid] = 0;
+        cellpacks[idpack].count[dstcid] = 0;
     }
 }
 template <int slot> __global__ void copycells(int n) {
