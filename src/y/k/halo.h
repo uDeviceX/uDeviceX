@@ -35,27 +35,24 @@ static __device__ void get_box(int i, /**/ int org[3], int ext[3]) {
   
 __global__ void count_all(int *cellsstart,
                           int *cellscount) {
+    int gid;
+    int hid; /* halo id */
+    int ndstcells, dstcid, srcentry, c;
     int org[3], ext[3]; /* halo [or]i[g]in and [ext]end */
-    int gid = threadIdx.x + blockDim.x * blockIdx.x;
+    int srccellpos[3];
+    
+    gid = threadIdx.x + blockDim.x * blockIdx.x;
     if (gid >= cellpackstarts[26]) return;
 
-    int hid = get_idpack(cellpackstarts, gid);
+    hid = get_idpack(cellpackstarts, gid);
     get_box(hid, org, ext);
-    int ndstcells = ext[0] * ext[1] * ext[2];
-    int dstcid = gid - cellpackstarts[hid];
+    ndstcells = ext[0] * ext[1] * ext[2];
+    dstcid = gid - cellpackstarts[hid];
 
     if (dstcid < ndstcells) {
-        int dstcellpos[3] = {dstcid % ext[0],
-                             (dstcid / ext[0]) % ext[1],
-                             dstcid / (ext[0] * ext[1])};
-
-        int srccellpos[3];
-        for (int c = 0; c < 3; ++c)
-        srccellpos[c] = org[c] + dstcellpos[c];
-
-        int srcentry =
-            srccellpos[0] +
-            XS * (srccellpos[1] + YS * srccellpos[2]);
+        int dstcellpos[3] = {dstcid % ext[0], (dstcid / ext[0]) % ext[1], dstcid / (ext[0] * ext[1])};
+        for (c = 0; c < 3; ++c) srccellpos[c] = org[c] + dstcellpos[c];
+        srcentry = srccellpos[0] + XS * (srccellpos[1] + YS * srccellpos[2]);
         cellpacks[hid].start[dstcid] = cellsstart[srcentry];
         cellpacks[hid].count[dstcid] = cellscount[srcentry];
     } else if (dstcid == ndstcells) {
