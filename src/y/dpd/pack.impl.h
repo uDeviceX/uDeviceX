@@ -62,7 +62,6 @@ void wait_send() {
 }
 
 void pack(Particle *p, int n, int *start, int *count) {
-    nlocal = n;
     if (firstpost) pack_first0();
 
     if (ncells)
