@@ -80,7 +80,7 @@ void outname(const char *inrr, char *out) {
     memcpy(out + strt, newext, sizeof(newext));
 }
 
-void dump(const char *fout, const float *rr, const float *ddr, const int *tags, const int buffsize, /*w*/ float *work) {
+void dump(const Type type, const char *fout, const float *rr, const float *ddr, const int *tags, const int buffsize, /*w*/ float *work) {
     /* fill work buffer */
     int j = 0;
     for (int i = 0; i < buffsize; ++i)
@@ -97,8 +97,7 @@ void dump(const char *fout, const float *rr, const float *ddr, const int *tags, 
     init(&d);
     d.n = j;
     d.nvars = 6;
-    d.type = FLOAT;
-    //d.type = FASCII;
+    d.type = type;
     d.vars = new Cbuf[d.nvars];
     strncpy(d.vars[0].c, "x", 4);
     strncpy(d.vars[1].c, "y", 4);
@@ -165,7 +164,7 @@ int main(int argc, char **argv) {
 
         disp(rrp, rrc, buffsize, /**/ ddr);
 
-        dump(fout, rrp, ddr, tags, buffsize, /*w*/ rrw);
+        dump(dpp.type, fout, rrp, ddr, tags, buffsize, /*w*/ rrw);
         compute_tags(dii.idata, dii.n, /**/ tags);
         
         finalize(&dpp);  finalize(&dii);
@@ -182,3 +181,12 @@ int main(int argc, char **argv) {
     
     return 0;
 }
+
+/*
+  
+  # nTEST: small.t0
+  # make install -j
+  # po.disp 4 4 4 data/s-??.bop -- data/id-??.bop
+  # cp data/s-00.disp.values disp.out.txt
+
+ */
