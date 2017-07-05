@@ -12,6 +12,8 @@ struct SendBagInfo {
 __constant__ SendBagInfo baginfos[26];
 __constant__ int *srccells[26], *dstcells[26];
 
+typedef Sarray<int, 27> int27;
+
 static __device__ int get_idpack(const int a[], const int i) {  /* where is `i' in sorted a[27]? */
   int k1, k3, k9;
   k9 = 9 * ((i >= a[9])           + (i >= a[18]));
@@ -42,7 +44,7 @@ static __device__ int h2cid(int hci, const int org[3], const int ext[3]) {
   return srccellpos[X] + XS * (srccellpos[Y] + YS * srccellpos[Z]);
 }
 
-__global__ void count(const Sarray<int, 27> cellpackstarts, const int *start, const int *count) {
+__global__ void count(const int27 cellpackstarts, const int *start, const int *count) {
     enum {X, Y, Z};
     int gid;
     int hid; /* halo id */
@@ -68,7 +70,7 @@ __global__ void count(const Sarray<int, 27> cellpackstarts, const int *start, co
     }
 }
 
-__global__ void copycells(const Sarray<int, 27> cellpackstarts) {
+__global__ void copycells(const int27 cellpackstarts) {
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
     if (gid >= cellpackstarts.d[26]) return;
@@ -123,7 +125,7 @@ template <int NWARPS> __global__ void scan_diego() {
     }
 }
   
-__global__ void fill_all(const Sarray<int, 27> cellpackstarts, Particle *pp, int *required_bag_size) {
+__global__ void fill_all(const int27 cellpackstarts, Particle *pp, int *required_bag_size) {
   int gid, hid, hci, tid, src, dst, nsrc, nfloats;
   int i, lpid, dpid, spid, c;
   float2 word;
