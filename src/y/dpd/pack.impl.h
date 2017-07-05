@@ -1,12 +1,10 @@
 namespace dpd {
 void pack_first0(SendHalo* sendhalos[]) {
-    {
-        cellpackstarts.d[0] = 0;
-        for (int i = 0, s = 0; i < 26; ++i)
-        cellpackstarts.d[i + 1] =
-            (s += sendhalos[i]->dcellstarts->S * (sendhalos[i]->expected > 0));
-        ncells = cellpackstarts.d[26];
-    }
+    cellpackstarts.d[0] = 0;
+    for (int i = 0, s = 0; i < 26; ++i)
+    cellpackstarts.d[i + 1] =
+        (s += sendhalos[i]->dcellstarts->S * (sendhalos[i]->expected > 0));
+    ncells = cellpackstarts.d[26];
 
     for (int i = 0; i < 26; ++i) {
         frag::start.d[i] = sendhalos[i]->tmpstart->D;
