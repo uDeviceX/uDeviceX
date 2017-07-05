@@ -30,5 +30,5 @@ int *required_send_bag_size, *required_send_bag_size_host;
 // plain copy of the offsets for the cpu (i speculate that reading multiple
 // times the zero-copy entries is slower)
 int nsendreq;
-cudaEvent_t evfillall, evuploaded, evdownloaded;
+cudaEvent_t evuploaded, evdownloaded;
 }

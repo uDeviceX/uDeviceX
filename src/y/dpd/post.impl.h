@@ -18,12 +18,12 @@ bool check_size(SendHalo* sendhalos[]) {
 void post(MPI_Comm cart, Particle *pp, SendHalo* sendhalos[], int n) {
     {
         bool succeeded;
-        CC(cudaEventSynchronize(evfillall));
+        dSync();
         succeeded = check_size(sendhalos);
         if (!succeeded) {
             upd_bag(sendhalos);
             pack(pp, n);
-            CC(cudaEventSynchronize(evfillall));
+            dSync();
         }
 
         for (int i = 0; i < 26; ++i) {

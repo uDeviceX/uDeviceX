@@ -33,6 +33,5 @@ void pack(Particle *p, int n) {
     k_halo::fill_all<<<(ncells + 1) / 2, 32>>>(cellpackstarts, p, required_send_bag_size,
                                                frag::str, frag::cnt, frag::cum, frag::nc,
                                                frag::capacity, frag::ii, frag::pp);
-    CC(cudaEventRecord(evfillall));
 }
 }

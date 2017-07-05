@@ -26,7 +26,6 @@ void init0(MPI_Comm cart, SendHalo* sendhalos[], RecvHalo* recvhalos[]) {
 		   cudaHostAllocMapped));
   CC(cudaHostGetDevicePointer(&required_send_bag_size,
 			      required_send_bag_size_host, 0));
-  CC(cudaEventCreateWithFlags(&evfillall, cudaEventDisableTiming));
   CC(cudaEventCreateWithFlags(&evdownloaded,
 			      cudaEventDisableTiming | cudaEventBlockingSync));
 }
