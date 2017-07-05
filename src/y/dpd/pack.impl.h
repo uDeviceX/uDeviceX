@@ -52,7 +52,7 @@ void pack(Particle *p, int n, int *start, int *count) {
     if (firstpost) post_expected_recv(); else wait_send();
     if (firstpost) pack_first1();
 
-    if (ncells) k_halo::copycells<<<k_cnf(ncells)>>>(ncells);
+    if (ncells) k_halo::copycells<<<k_cnf(ncells)>>>();
     if (firstpost) upd_bag();
     _pack_all(p, n);
 }

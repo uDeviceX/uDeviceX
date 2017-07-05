@@ -69,7 +69,7 @@ __global__ void count(int *start, int *count) {
     }
 }
 
-__global__ void copycells(int n) {
+__global__ void copycells() {
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
     if (gid >= cellpackstarts[26]) return;
