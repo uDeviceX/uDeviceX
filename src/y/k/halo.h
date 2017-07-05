@@ -84,10 +84,10 @@ __global__ void copycells(const int27 cellpackstarts, const intp26 srccells, /**
 template <int NWARPS> __global__ void scan_diego() {
     __shared__ int shdata[32];
 
-    int code = blockIdx.x;
-    int *count = cellpacks[code].count;
-    int *start = cellpacks[code].scan;
-    int n = cellpacks[code].size;
+    int hid = blockIdx.x;
+    int *count = cellpacks[hid].count;
+    int *start = cellpacks[hid].scan;
+    int n = cellpacks[hid].size;
 
     int tid = threadIdx.x;
     int laneid = threadIdx.x & 0x1f;
