@@ -7,6 +7,7 @@ void ini0() {
 
 void ini() {
   int i;
+  first = true;
   ini0();
   MC(l::m::Comm_dup(m::cart, &cart));
   dpd::ini(cart);
@@ -22,12 +23,19 @@ void fin0() {
 }
 
 void fin() {
-  dpd::fin();
+  dpd::fin(first);
   fin0();
+  first = true;
 }
 
 void forces(flu::Quants *q, flu::TicketZ *tz, flu::TicketRND *trnd, /**/ Force *ff) {
-  dpd::pack(cart, q->pp, q->n, q->cells->start, q->cells->count);
+  if (first) dpd::pack_first0();
+  dpd::scan(q->cells->start, q->cells->count);
+  if (first) dpd::post_expected_recv(cart); else dpd::wait_send();
+  if (first) dpd::pack_first1();
+  dpd::pack(cart, q->pp, q->n, first);
+  first = false;
+  
   dpd::flocal(tz->zip0, tz->zip1, q->n, q->cells->start, q->cells->count, trnd->rnd,
 	      /**/ ff);
   dpd::post(cart, q->pp, q->n);

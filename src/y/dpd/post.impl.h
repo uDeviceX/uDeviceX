@@ -80,6 +80,5 @@ void post(MPI_Comm cart, Particle *p, int n) {
       }
     }
   }
-  first = false;
 }
 }

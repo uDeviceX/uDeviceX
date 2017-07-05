@@ -52,7 +52,7 @@ void cancel_recv() {
   for (i = 0; i < 26; ++i) MC(MPI_Cancel(recvcountreq + i));
 }
 
-void fin() {
+void fin(bool first) {
     CC(cudaFreeHost(required_send_bag_size));
     if (!first) cancel_recv();
     CC(cudaEventDestroy(evfillall));
@@ -60,6 +60,5 @@ void fin() {
 
     for (int i = 0; i < 26; i++) delete recvhalos[i];
     for (int i = 0; i < 26; i++) delete sendhalos[i];
-    first = true;
 }
 }

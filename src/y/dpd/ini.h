@@ -2,7 +2,6 @@ namespace dpd {
 void init0(MPI_Comm cart) {
   int xsz, ysz, zsz;
   float safety_factor;
-  first = true;
   safety_factor =
     getenv("HEX_COMM_FACTOR") ? atof(getenv("HEX_COMM_FACTOR")) : 1.2;
   for (int i = 0; i < 26; ++i) {
