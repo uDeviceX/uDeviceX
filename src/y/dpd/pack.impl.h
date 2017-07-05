@@ -50,8 +50,7 @@ void copycells() {
   if (ncells) k_halo::copycells<<<k_cnf(ncells)>>>(cellpackstarts);
 }
 
-void pack(MPI_Comm cart, Particle *p, int n, bool first) {
-    if (first) upd_bag();
-    _pack_all(p, n);
+void pack(MPI_Comm cart, Particle *p, int n) {
+  _pack_all(p, n);
 }
 }
