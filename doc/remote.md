@@ -1,3 +1,7 @@
+# halo
+`halo` is composed of 26 `frag` : fragments
+
+
 # bulk particles
 `pp` the array of all bulk particles
 `pp[i]` is the particle
