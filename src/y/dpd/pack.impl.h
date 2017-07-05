@@ -22,16 +22,8 @@ void pack_first0(SendHalo* sendhalos[]) {
 }
 
 void pack_first1(SendHalo* sendhalos[]) {
-    static int *srccells[26];
-    for (int i = 0; i < 26; ++i) srccells[i] = sendhalos[i]->dcellstarts->D;
-
-    CC(cudaMemcpyToSymbol(k_halo::srccells, srccells, sizeof(srccells), 0, H2D));
-
-    static int *dstcells[26];
-    for (int i = 0; i < 26; ++i)
-    dstcells[i] = sendhalos[i]->hcellstarts->DP;
-
-    CC(cudaMemcpyToSymbol(k_halo::dstcells, dstcells, sizeof(dstcells), 0, H2D));
+    for (int i = 0; i < 26; ++i) srccells.d[i] = sendhalos[i]->dcellstarts->D;
+    for (int i = 0; i < 26; ++i) dstcells.d[i] = sendhalos[i]->hcellstarts->DP;
 }
 
 void wait_send() {
@@ -47,7 +39,7 @@ void scan(int *start, int *count) {
 }
 
 void copycells() {
-  if (ncells) k_halo::copycells<<<k_cnf(ncells)>>>(cellpackstarts);
+    if (ncells) k_halo::copycells<<<k_cnf(ncells)>>>(cellpackstarts, srccells, /**/ dstcells);
 }
   
 void pack(Particle *p, int n) {

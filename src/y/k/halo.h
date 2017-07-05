@@ -10,9 +10,10 @@ struct SendBagInfo {
 };
 
 __constant__ SendBagInfo baginfos[26];
-__constant__ int *srccells[26], *dstcells[26];
+//__constant__ int *srccells[26], *dstcells[26];
 
-typedef Sarray<int, 27> int27;
+typedef Sarray<int,  27> int27;
+typedef Sarray<int*, 26> intp26;
 
 static __device__ int get_idpack(const int a[], const int i) {  /* where is `i' in sorted a[27]? */
   int k1, k3, k9;
@@ -70,7 +71,7 @@ __global__ void count(const int27 cellpackstarts, const int *start, const int *c
     }
 }
 
-__global__ void copycells(const int27 cellpackstarts) {
+__global__ void copycells(const int27 cellpackstarts, const intp26 srccells, /**/ intp26 dstcells) {
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
     if (gid >= cellpackstarts.d[26]) return;
@@ -78,7 +79,7 @@ __global__ void copycells(const int27 cellpackstarts) {
     int idpack = get_idpack(cellpackstarts.d, gid);
     int offset = gid - cellpackstarts.d[idpack];
 
-    dstcells[idpack][offset] = srccells[idpack][offset];
+    dstcells.d[idpack][offset] = srccells.d[idpack][offset];
 }
 
 template <int NWARPS> __global__ void scan_diego() {
