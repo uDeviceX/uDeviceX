@@ -1,11 +1,4 @@
 namespace k_halo {
-struct SendBagInfo {
-    int *start_src, *count_src, *start_dst;
-    int bagsize, *scattered_entries;
-    Particle *dbag;
-};
-
-//__constant__ SendBagInfo baginfos[26];
 
 typedef Sarray<int,  26> int26;
 typedef Sarray<int,  27> int27;
