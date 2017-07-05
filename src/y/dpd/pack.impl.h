@@ -10,10 +10,10 @@ void pack_first0(SendHalo* sendhalos[]) {
 
   {
     for (int i = 0; i < 26; ++i) {
-        cellpacks::start.d[i] = sendhalos[i]->tmpstart->D;
-        cellpacks::count.d[i] = sendhalos[i]->tmpcount->D;
-        cellpacks::scan.d[i] = sendhalos[i]->dcellstarts->D;
-        cellpacks::size.d[i] = sendhalos[i]->dcellstarts->S;
+        frag::start.d[i] = sendhalos[i]->tmpstart->D;
+        frag::count.d[i] = sendhalos[i]->tmpcount->D;
+        frag::scan.d[i] = sendhalos[i]->dcellstarts->D;
+        frag::size.d[i] = sendhalos[i]->dcellstarts->S;
     }
   }
 }
@@ -24,8 +24,8 @@ void pack_first1(SendHalo* sendhalos[]) {
 }
 
 void scan(int *start, int *count) {
-    if (ncells) k_halo::count<<<k_cnf(ncells)>>>(cellpackstarts, start, count, cellpacks::start, cellpacks::count);
-    k_halo::scan_diego<32><<<26, 32 * 32>>>(cellpacks::size, cellpacks::count, /**/ cellpacks::scan);
+    if (ncells) k_halo::count<<<k_cnf(ncells)>>>(cellpackstarts, start, count, frag::start, frag::count);
+    k_halo::scan_diego<32><<<26, 32 * 32>>>(frag::size, frag::count, /**/ frag::scan);
 }
 
 void copycells() {

@@ -15,7 +15,7 @@ typedef Sarray<int*, 26> intp26;
 int27 cellpackstarts;
 intp26 srccells, dstcells;
 
-namespace cellpacks {
+namespace frag {
 intp26 start, count, scan;
 int26 size;
 }
