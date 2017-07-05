@@ -46,8 +46,11 @@ void scan(int *start, int *count) {
   k_halo::scan_diego<32><<<26, 32 * 32>>>();
 }
 
+void copycells() {
+  if (ncells) k_halo::copycells<<<k_cnf(ncells)>>>(cellpackstarts);
+}
+
 void pack(MPI_Comm cart, Particle *p, int n, bool first) {
-    if (ncells) k_halo::copycells<<<k_cnf(ncells)>>>(cellpackstarts);
     if (first) upd_bag();
     _pack_all(p, n);
 }

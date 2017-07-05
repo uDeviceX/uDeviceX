@@ -33,6 +33,7 @@ void forces(flu::Quants *q, flu::TicketZ *tz, flu::TicketRND *trnd, /**/ Force *
   dpd::scan(q->cells->start, q->cells->count);
   if (first) dpd::post_expected_recv(cart); else dpd::wait_send();
   if (first) dpd::pack_first1();
+  dpd::copycells();
   dpd::pack(cart, q->pp, q->n, first);
   first = false;
   
