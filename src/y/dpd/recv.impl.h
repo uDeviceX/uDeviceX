@@ -1,9 +1,9 @@
 namespace dpd {
 void wait_recv() {
-  MPI_Status statuses[26];
-  MC(l::m::Waitall(26, recvreq, statuses));
-  MC(l::m::Waitall(26, recvcellsreq, statuses));
-  MC(l::m::Waitall(26, recvcountreq, statuses));
+    MPI_Status statuses[26];
+    MC(l::m::Waitall(26, recvreq, statuses));
+    MC(l::m::Waitall(26, recvcellsreq, statuses));
+    MC(l::m::Waitall(26, recvcountreq, statuses));
 }
 
 void recv(MPI_Comm cart, RecvHalo* recvhalos[]) {
