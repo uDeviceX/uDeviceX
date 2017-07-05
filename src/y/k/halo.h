@@ -1,5 +1,4 @@
 namespace k_halo {
-__constant__ int cellpackstarts[27];
 struct CellPackSOA {
     int *start, *count, *scan, size;
 };
@@ -43,7 +42,7 @@ static __device__ int h2cid(int hci, const int org[3], const int ext[3]) {
   return srccellpos[X] + XS * (srccellpos[Y] + YS * srccellpos[Z]);
 }
 
-__global__ void count(const int *start, const int *count) {
+__global__ void count(const Sarray<int, 27> cellpackstarts, const int *start, const int *count) {
     enum {X, Y, Z};
     int gid;
     int hid; /* halo id */
@@ -51,10 +50,10 @@ __global__ void count(const int *start, const int *count) {
     int cid, hci; /* bulk and halo cell ids */
     int org[3], ext[3]; /* halo origin and extend */
     gid = threadIdx.x + blockDim.x * blockIdx.x;
-    if (gid >= cellpackstarts[26]) return;
+    if (gid >= cellpackstarts.d[26]) return;
 
-    hid = get_idpack(cellpackstarts, gid);
-    hci = gid - cellpackstarts[hid];
+    hid = get_idpack(cellpackstarts.d, gid);
+    hci = gid - cellpackstarts.d[hid];
 
     get_box(hid, /**/ org, ext);
     nhc = ext[X] * ext[Y] * ext[Z];
@@ -69,13 +68,13 @@ __global__ void count(const int *start, const int *count) {
     }
 }
 
-__global__ void copycells() {
+__global__ void copycells(const Sarray<int, 27> cellpackstarts) {
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
-    if (gid >= cellpackstarts[26]) return;
+    if (gid >= cellpackstarts.d[26]) return;
 
-    int idpack = get_idpack(cellpackstarts, gid);
-    int offset = gid - cellpackstarts[idpack];
+    int idpack = get_idpack(cellpackstarts.d, gid);
+    int offset = gid - cellpackstarts.d[idpack];
 
     dstcells[idpack][offset] = srccells[idpack][offset];
 }
@@ -124,17 +123,17 @@ template <int NWARPS> __global__ void scan_diego() {
     }
 }
   
-__global__ void fill_all(Particle *pp, int *required_bag_size) {
+__global__ void fill_all(const Sarray<int, 27> cellpackstarts, Particle *pp, int *required_bag_size) {
   int gid, hid, hci, tid, src, dst, nsrc, nfloats;
   int i, lpid, dpid, spid, c;
   float2 word;
   SendBagInfo bag;
 
   gid = (threadIdx.x >> 4) + 2 * blockIdx.x;
-  if (gid >= cellpackstarts[26]) return;
+  if (gid >= cellpackstarts.d[26]) return;
 
-  hid = get_idpack(cellpackstarts, gid);
-  hci = gid - cellpackstarts[hid];
+  hid = get_idpack(cellpackstarts.d, gid);
+  hci = gid - cellpackstarts.d[hid];
 
   tid = threadIdx.x & 0xf;
   bag = baginfos[hid];
@@ -155,6 +154,6 @@ __global__ void fill_all(Particle *pp, int *required_bag_size) {
     spid = src + lpid;
     bag.scattered_entries[dpid] = spid;
   }
-  if (gid + 1 == cellpackstarts[hid + 1]) required_bag_size[hid] = dst;
+  if (gid + 1 == cellpackstarts.d[hid + 1]) required_bag_size[hid] = dst;
 }
 }

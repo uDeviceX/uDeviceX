@@ -1,14 +1,11 @@
 namespace dpd {
 void pack_first0() {
   {
-    static int cellpackstarts[27];
-    cellpackstarts[0] = 0;
+    cellpackstarts.d[0] = 0;
     for (int i = 0, s = 0; i < 26; ++i)
-      cellpackstarts[i + 1] =
+      cellpackstarts.d[i + 1] =
 	(s += sendhalos[i]->dcellstarts->S * (sendhalos[i]->expected > 0));
-    ncells = cellpackstarts[26];
-    CC(cudaMemcpyToSymbol(k_halo::cellpackstarts, cellpackstarts,
-			  sizeof(cellpackstarts), 0, H2D));
+    ncells = cellpackstarts.d[26];
   }
 
   {
@@ -46,13 +43,13 @@ void wait_send() {
 
 void pack(Particle *p, int n, int *start, int *count) {
     if (firstpost) pack_first0();
-    if (ncells) k_halo::count<<<k_cnf(ncells)>>>(start, count);
+    if (ncells) k_halo::count<<<k_cnf(ncells)>>>(cellpackstarts, start, count);
     k_halo::scan_diego<32><<<26, 32 * 32>>>();
 
     if (firstpost) post_expected_recv(); else wait_send();
     if (firstpost) pack_first1();
 
-    if (ncells) k_halo::copycells<<<k_cnf(ncells)>>>();
+    if (ncells) k_halo::copycells<<<k_cnf(ncells)>>>(cellpackstarts);
     if (firstpost) upd_bag();
     _pack_all(p, n);
 }

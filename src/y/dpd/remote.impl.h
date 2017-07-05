@@ -15,7 +15,7 @@ void upd_bag() {
 
 void _pack_all(Particle *p, int n) {
     if (ncells)
-      k_halo::fill_all<<<(ncells + 1) / 2, 32>>>(p, required_send_bag_size);
+    k_halo::fill_all<<<(ncells + 1) / 2, 32>>>(cellpackstarts, p, required_send_bag_size);
     CC(cudaEventRecord(evfillall));
 }
 
