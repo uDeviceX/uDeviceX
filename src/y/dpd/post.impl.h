@@ -1,5 +1,5 @@
 namespace dpd {
-void post(MPI_Comm cart, Particle *p, int n) {
+void post(MPI_Comm cart, Particle *p, SendHalo* sendhalos[], int n) {
   {
     CC(cudaEventSynchronize(evfillall));
 
@@ -17,7 +17,7 @@ void post(MPI_Comm cart, Particle *p, int n) {
     }
 
     if (!succeeded) {
-      upd_bag();
+      upd_bag(sendhalos);
       pack(p, n);
       CC(cudaEventSynchronize(evfillall));
     }

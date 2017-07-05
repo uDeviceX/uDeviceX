@@ -1,5 +1,5 @@
 namespace dpd {
-void upd_bag() {
+void upd_bag(SendHalo* sendhalos[]) {
   static k_halo::SendBagInfo baginfos[26];
   for (int i = 0; i < 26; ++i) {
     baginfos[i].start_src = sendhalos[i]->tmpstart->D;
@@ -13,7 +13,7 @@ void upd_bag() {
   CC(cudaMemcpyToSymbolAsync(k_halo::baginfos, baginfos, sizeof(baginfos), 0, H2D));
 }
 
-void post_expected_recv(MPI_Comm cart) {
+void post_expected_recv(MPI_Comm cart, RecvHalo* recvhalos[]) {
   for (int i = 0, c = 0; i < 26; ++i) {
     if (recvhalos[i]->expected)
       MC(l::m::Irecv(recvhalos[i]->hbuf->D, recvhalos[i]->expected,
@@ -51,8 +51,5 @@ void fin(bool first) {
     if (!first) cancel_recv();
     CC(cudaEventDestroy(evfillall));
     CC(cudaEventDestroy(evdownloaded));
-
-    for (int i = 0; i < 26; i++) delete recvhalos[i];
-    for (int i = 0; i < 26; i++) delete sendhalos[i];
 }
 }

@@ -6,7 +6,7 @@ void wait_recv() {
   MC(l::m::Waitall(26, recvcountreq, statuses));
 }
 
-void recv(MPI_Comm cart) {
+void recv(MPI_Comm cart, RecvHalo* recvhalos[]) {
     for (int i = 0; i < 26; ++i) {
         int count = recv_counts[i];
         int expected = recvhalos[i]->expected;

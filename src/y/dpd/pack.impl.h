@@ -1,5 +1,5 @@
 namespace dpd {
-void pack_first0() {
+void pack_first0(SendHalo* sendhalos[]) {
   {
     cellpackstarts.d[0] = 0;
     for (int i = 0, s = 0; i < 26; ++i)
@@ -21,7 +21,7 @@ void pack_first0() {
   }
 }
 
-void pack_first1() {
+void pack_first1(SendHalo* sendhalos[]) {
     static int *srccells[26];
     for (int i = 0; i < 26; ++i) srccells[i] = sendhalos[i]->dcellstarts->D;
 

@@ -1,5 +1,5 @@
 namespace dpd {
-void init0(MPI_Comm cart) {
+void init0(MPI_Comm cart, SendHalo* sendhalos[], RecvHalo* recvhalos[]) {
   int xsz, ysz, zsz;
   float safety_factor;
   safety_factor =
@@ -75,9 +75,9 @@ void init1_one(int i, l::rnd::d::KISS* interrank_trunks[], bool interrank_masks[
   }
 }
 
-void ini(MPI_Comm cart) {
+void ini(MPI_Comm cart, SendHalo* sendhalos[], RecvHalo* recvhalos[]) {
   for (int i = 0; i < 26; i++) recvhalos[i] = new RecvHalo;
   for (int i = 0; i < 26; i++) sendhalos[i] = new SendHalo;
-  init0(cart);
+  init0(cart, sendhalos, recvhalos);
 }
 }
