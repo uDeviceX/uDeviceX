@@ -23,7 +23,7 @@ void pack_first1(SendHalo* sendhalos[]) {
 
 void scan(int *start, int *count) {
     if (ncells) k_halo::count<<<k_cnf(ncells)>>>(cellpackstarts, start, count, frag::start, frag::count);
-    k_halo::scan_diego<32><<<26, 32 * 32>>>(frag::size, frag::count, /**/ frag::scan);
+    k_halo::scan<32><<<26, 32 * 32>>>(frag::size, frag::count, /**/ frag::scan);
 }
 
 void copycells() {

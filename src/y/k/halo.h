@@ -80,7 +80,7 @@ __global__ void copycells(const int27 cellpackstarts, const intp26 srccells, /**
 }
 
 template <int NWARPS>
-__global__ void scan_diego(const int26 fragn, const intp26 fragcc, /**/ intp26 fragcum) {
+__global__ void scan(const int26 fragn, const intp26 fragcc, /**/ intp26 fragcum) {
     __shared__ int shdata[32];
 
     int hid = blockIdx.x;
