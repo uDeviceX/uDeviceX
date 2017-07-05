@@ -96,6 +96,11 @@ struct Texo {
 
 #define ERR(fmt, ...) do { fprintf(stderr, "%03d: ERROR: %s, l%d: " fmt, m::rank, __FILE__, __LINE__, ##__VA_ARGS__); exit(1); } while(0)
 
+template <typename T, int N>
+struct Sarray { /* [s]tatic array */
+    T d[N];
+};
+
 /* [m]pi [c]heck */
 #define MC(ans)                                             \
     do { mpiAssert((ans), __FILE__, __LINE__); } while (0)
