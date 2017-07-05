@@ -16,4 +16,7 @@ int *required_send_bag_size, *required_send_bag_size_host;
 // times the zero-copy entries is slower)
 int nsendreq;
 cudaEvent_t evfillall, evuploaded, evdownloaded;
+
+SendHalo* sendhalos[26];
+RecvHalo* recvhalos[26];
 }

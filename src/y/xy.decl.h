@@ -3,4 +3,7 @@ namespace xy { /* temporary interface to dpd/x and dpd/y */
   bool interrank_masks[26];
   MPI_Comm cart;
   bool first;
+
+  dpd::SendHalo* sendhalos[26];
+  dpd::RecvHalo* recvhalos[26];
 }

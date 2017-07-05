@@ -1,4 +1,4 @@
-namespace xy { /* declaration of buffers */
+namespace dpd { /* declaration of buffer types */
 struct SendHalo {
   DeviceBuffer<int> *scattered_entries, *tmpstart, *tmpcount, *dcellstarts;
   DeviceBuffer<Particle> *dbuf;
@@ -41,7 +41,7 @@ struct SendHalo {
     dbuf->resize(estimate);
     scattered_entries->resize(estimate);
   }
-} * sendhalos[26];
+};
 
 struct RecvHalo {
   int expected;
@@ -72,5 +72,5 @@ struct RecvHalo {
     hbuf->resize(estimate);
     dbuf->resize(estimate);
   }
-} * recvhalos[26];
+};
 } /* namespace dpd */

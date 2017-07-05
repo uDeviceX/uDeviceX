@@ -1,8 +1,8 @@
 namespace xy { /* temporary interface to dpd/x and dpd/y */
 void ini0() {
   int i;
-  for (i = 0; i < 26; i++) recvhalos[i] = new RecvHalo;
-  for (i = 0; i < 26; i++) sendhalos[i] = new SendHalo;
+  for (i = 0; i < 26; i++) recvhalos[i] = new dpd::RecvHalo;
+  for (i = 0; i < 26; i++) sendhalos[i] = new dpd::SendHalo;
 }
 
 void ini() {

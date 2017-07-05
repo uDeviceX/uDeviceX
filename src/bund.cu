@@ -129,10 +129,8 @@ namespace dev {
 #include "dpd/local.h"
 #ifdef  YDPD
   #include "y/k/halo.h"
+  #include "y/dpd/remote.type.h"
   #include "y/dpd/remote.decl.h"
-  #include "y/dpd/buf2.decl.h"
-  #include "y/dpd/buf.decl.h"
-
   #include "dpd/flocal.h"        /* common */
 
   #include "y/dpd/fremote.h"
