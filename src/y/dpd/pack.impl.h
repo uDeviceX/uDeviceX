@@ -28,15 +28,13 @@ void pack_first1() {
     static int *srccells[26];
     for (int i = 0; i < 26; ++i) srccells[i] = sendhalos[i]->dcellstarts->D;
 
-    CC(cudaMemcpyToSymbol(k_halo::srccells, srccells, sizeof(srccells),
-                          0, H2D));
+    CC(cudaMemcpyToSymbol(k_halo::srccells, srccells, sizeof(srccells), 0, H2D));
 
     static int *dstcells[26];
     for (int i = 0; i < 26; ++i)
     dstcells[i] = sendhalos[i]->hcellstarts->DP;
 
-    CC(cudaMemcpyToSymbol(k_halo::dstcells, dstcells, sizeof(dstcells),
-                          0, H2D));
+    CC(cudaMemcpyToSymbol(k_halo::dstcells, dstcells, sizeof(dstcells), 0, H2D));
 }
 
 void wait_send() {
