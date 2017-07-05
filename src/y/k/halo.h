@@ -11,7 +11,7 @@ struct SendBagInfo {
 };
 
 __constant__ SendBagInfo baginfos[26];
-__constant__ int *srccells[26 * 2], *dstcells[26 * 2];
+__constant__ int *srccells[26], *dstcells[26];
 
 static __device__ int get_idpack(const int a[], const int i) {  /* where is `i' in sorted a[27]? */
   int k1, k3, k9;
