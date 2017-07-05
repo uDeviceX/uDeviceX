@@ -20,7 +20,7 @@ po.msd <optional options> <X> <Y> <Z> rr-*.bop -- ii-*.bop
 
 Assumes rr and ii files are in the same order.
 
-#### Optional options:
+#### Optional arguments:
 
 `-t0step <t0step>` to specify the steps for starting points `t0` used for the average. (default: `N`)  
 Note that a small step leads to `O(N^2)` file reads, where `N` is the number of files!
