@@ -10,7 +10,6 @@ struct SendBagInfo {
 };
 
 __constant__ SendBagInfo baginfos[26];
-//__constant__ int *srccells[26], *dstcells[26];
 
 typedef Sarray<int,  27> int27;
 typedef Sarray<int*, 26> intp26;
