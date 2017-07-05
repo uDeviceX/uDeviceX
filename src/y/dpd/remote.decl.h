@@ -18,8 +18,8 @@ intp26 srccells, dstcells;
 
 /* fragments of halo */
 namespace frag {
-intp26 start, count, scan, indices;
-int26 size, capacity;
+intp26 str, cnt, cum, ii;
+int26 nc, capacity;
 Particlep26 pp;
 }
 

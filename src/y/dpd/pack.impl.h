@@ -7,10 +7,10 @@ void pack_first0(SendHalo* sendhalos[]) {
     ncells = cellpackstarts.d[26];
 
     for (int i = 0; i < 26; ++i) {
-        frag::start.d[i] = sendhalos[i]->tmpstart->D;
-        frag::count.d[i] = sendhalos[i]->tmpcount->D;
-        frag::scan.d[i] = sendhalos[i]->dcellstarts->D;
-        frag::size.d[i] = sendhalos[i]->dcellstarts->S;
+        frag::str.d[i] = sendhalos[i]->tmpstart->D;
+        frag::cnt.d[i] = sendhalos[i]->tmpcount->D;
+        frag::cum.d[i] = sendhalos[i]->dcellstarts->D;
+        frag::nc.d[i]  = sendhalos[i]->dcellstarts->S;
     }
 }
 
@@ -20,8 +20,8 @@ void pack_first1(SendHalo* sendhalos[]) {
 }
 
 void gather_cells(const int *start, const int *count) {
-    if (ncells) k_halo::count<<<k_cnf(ncells)>>>(cellpackstarts, start, count, frag::start, frag::count);
-    k_halo::scan<32><<<26, 32 * 32>>>(frag::size, frag::count, /**/ frag::scan);
+    if (ncells) k_halo::count<<<k_cnf(ncells)>>>(cellpackstarts, start, count, frag::str, frag::cnt);
+    k_halo::scan<32><<<26, 32 * 32>>>(frag::nc, frag::cnt, /**/ frag::cum);
 }
 
 void copycells() {
@@ -31,8 +31,8 @@ void copycells() {
 void pack(Particle *p, int n) {
     if (ncells)
     k_halo::fill_all<<<(ncells + 1) / 2, 32>>>(cellpackstarts, p, required_send_bag_size,
-                                               frag::start, frag::count, frag::scan, frag::size,
-                                               frag::capacity, frag::indices, frag::pp);
+                                               frag::str, frag::cnt, frag::cum, frag::nc,
+                                               frag::capacity, frag::ii, frag::pp);
     CC(cudaEventRecord(evfillall));
 }
 }

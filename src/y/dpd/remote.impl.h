@@ -1,11 +1,11 @@
 namespace dpd {
 void upd_bag(SendHalo* sendhalos[]) {
     for (int i = 0; i < 26; ++i) {
-        frag::start.d[i] = sendhalos[i]->tmpstart->D;
-        frag::count.d[i] = sendhalos[i]->tmpcount->D;
-        frag::scan.d[i] = sendhalos[i]->dcellstarts->D;
+        frag::str.d[i] = sendhalos[i]->tmpstart->D;
+        frag::cnt.d[i] = sendhalos[i]->tmpcount->D;
+        frag::cum.d[i] = sendhalos[i]->dcellstarts->D;
         frag::capacity.d[i] = sendhalos[i]->dbuf->C;
-        frag::indices.d[i] = sendhalos[i]->scattered_entries->D;
+        frag::ii.d[i] = sendhalos[i]->scattered_entries->D;
         frag::pp.d[i] = sendhalos[i]->dbuf->D;
     }
 }
