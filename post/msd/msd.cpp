@@ -82,10 +82,22 @@ void MSD_seq(char **ffpp, char **ffii, const int nin, /**/ float *out) {
 int main(int argc, char **argv) {
 
     if (argc < 7) {
-        fprintf(stderr, "Usage: po.msd <X> <Y> <Z> <inpp-*.bop> -- <inii-*.bop>\n");
+        fprintf(stderr,
+                "Usage: po.msd <optional args> <X> <Y> <Z> <inpp-*.bop> -- <inii-*.bop>\n"
+                "Optional arguments:\n"
+                "\t-t0step <t0step> : step (int) for averaging over t0 (default: Nfiles)\n");
         exit(1);
     }
     int iarg = 1;
+
+    int t0step = -1;
+    
+    // check if optional arguments
+    if (strcmp(argv[iarg], "-t0step") == 0) {
+        iarg++;
+        t0step = atoi(argv[iarg++]);
+    }
+    
     X = atoi(argv[iarg++]);
     Y = atoi(argv[iarg++]);
     Z = atoi(argv[iarg++]);
@@ -105,7 +117,7 @@ int main(int argc, char **argv) {
     memset(msds,   0, (nin-1)*sizeof(float));
     memset(counts, 0, (nin-1)*sizeof(int));
 
-    const int t0step = nin;
+    t0step = t0step == -1 ? nin : t0step;
     
     for (int t0 = 0; t0 < nin-1; t0 += t0step) {
         memset(submsds, 0, (nin-1)*sizeof(float));
