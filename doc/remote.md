@@ -1,6 +1,14 @@
 # halo
 `halo` is composed of 26 `frag` : fragments
 
+Each fragment has `nc` cell infos:  
+-start from bulk coordinates : `str`  
+-counts : `cnt`  
+-start from fragment coordinates : `cum`  
+
+Each fragment also has (output of `pack`):  
+-Particles `pp`  
+-Particle indices `ii`  
 
 # bulk particles
 `pp` the array of all bulk particles

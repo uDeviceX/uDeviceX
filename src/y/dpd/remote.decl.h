@@ -16,6 +16,7 @@ typedef Sarray<Particle*, 26> Particlep26;
 int27 cellpackstarts;
 intp26 srccells, dstcells;
 
+/* fragments of halo */
 namespace frag {
 intp26 start, count, scan, indices;
 int26 size, capacity;
