@@ -1,18 +1,17 @@
 namespace dpd {
 void init0(MPI_Comm cart, SendHalo* sendhalos[], RecvHalo* recvhalos[]) {
-  int xsz, ysz, zsz;
+    int xsz, ysz, zsz, coordsneighbor[3], estimate, nhalocells;
   for (int i = 0; i < 26; ++i) {
     int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
     recv_tags[i] = (2 - d[0]) % 3 + 3 * ((2 - d[1]) % 3 + 3 * ((2 - d[2]) % 3));
-    int coordsneighbor[3];
     for (int c = 0; c < 3; ++c) coordsneighbor[c] = m::coords[c] + d[c];
     MC(l::m::Cart_rank(cart, coordsneighbor, dstranks + i));
     xsz = d[0] != 0 ? 1 : XS;
     ysz = d[1] != 0 ? 1 : YS;
     zsz = d[2] != 0 ? 1 : ZS;
-    int nhalocells = xsz * ysz * zsz;
+    nhalocells = xsz * ysz * zsz;
 
-    int estimate = numberdensity * HSAFETY_FACTOR * nhalocells;
+    estimate = numberdensity * HSAFETY_FACTOR * nhalocells;
     estimate = 32 * ((estimate + 31) / 32);
 
     recvhalos[i]->setup(estimate, nhalocells);
