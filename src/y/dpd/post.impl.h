@@ -1,7 +1,6 @@
 namespace dpd {
 
 bool check_size(SendHalo* sendhalos[]) {
-  CC(cudaEventSynchronize(evfillall));
   bool succeeded = true;
   for (int i = 0; i < 26; ++i) {
     int nrequired = required_send_bag_size_host[i];
@@ -19,6 +18,7 @@ bool check_size(SendHalo* sendhalos[]) {
 void post(MPI_Comm cart, Particle *pp, SendHalo* sendhalos[], int n) {
   {
     bool succeeded;
+    CC(cudaEventSynchronize(evfillall));
     succeeded = check_size(sendhalos);
     if (!succeeded) {
       upd_bag(sendhalos);
