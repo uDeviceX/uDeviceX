@@ -1,7 +1,8 @@
 namespace dpd {
 void init0() {
+    int xsz, ysz, zsz;
+    float safety_factor;
     firstpost = true;
-    nactive = 26;
     safety_factor =
         getenv("HEX_COMM_FACTOR") ? atof(getenv("HEX_COMM_FACTOR")) : 1.2;
 
@@ -13,11 +14,10 @@ void init0() {
         int coordsneighbor[3];
         for (int c = 0; c < 3; ++c) coordsneighbor[c] = m::coords[c] + d[c];
         MC(l::m::Cart_rank(cart, coordsneighbor, dstranks + i));
-        halosize[i].x = d[0] != 0 ? 1 : XS;
-        halosize[i].y = d[1] != 0 ? 1 : YS;
-        halosize[i].z = d[2] != 0 ? 1 : ZS;
-
-        int nhalocells = halosize[i].x * halosize[i].y * halosize[i].z;
+        xsz = d[0] != 0 ? 1 : XS;
+        ysz = d[1] != 0 ? 1 : YS;
+        zsz = d[2] != 0 ? 1 : ZS;
+        int nhalocells = xsz * ysz * zsz;
 
         int estimate = numberdensity * safety_factor * nhalocells;
         estimate = 32 * ((estimate + 31) / 32);
@@ -35,7 +35,7 @@ void init0() {
                                 cudaEventDisableTiming | cudaEventBlockingSync));
 }
 
-void init1_one(int i) {
+void init1_one(int i, l::rnd::d::KISS* interrank_trunks000[], bool interrank_masks000[]) {
           int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
 
         int coordsneighbor[3];
@@ -67,21 +67,16 @@ void init1_one(int i) {
 
         int interrank_seed = interrank_seed_base + interrank_seed_offset;
 
-        interrank_trunks[i] = new l::rnd::d::KISS(390 + interrank_seed, interrank_seed + 615, 12309, 23094);
+        interrank_trunks000[i] = new l::rnd::d::KISS(390 + interrank_seed, interrank_seed + 615, 12309, 23094);
         int dstrank = dstranks[i];
 
         if (dstrank != m::rank)
-        interrank_masks[i] = min(dstrank, m::rank) == m::rank;
+        interrank_masks000[i] = min(dstrank, m::rank) == m::rank;
         else {
             int alter_ego =
                 (2 - d[0]) % 3 + 3 * ((2 - d[1]) % 3 + 3 * ((2 - d[2]) % 3));
-            interrank_masks[i] = min(i, alter_ego) == i;
+            interrank_masks000[i] = min(i, alter_ego) == i;
         }
-}
-
-void init1() {
-  int i;
-  for (i = 0; i < 26; ++i) init1_one(i);
 }
 
 void ini() {
@@ -89,6 +84,5 @@ void ini() {
     for (int i = 0; i < 26; i++) sendhalos[i] = new SendHalo;
 
     init0();
-    init1();
 }
 }

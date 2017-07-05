@@ -1,14 +1,12 @@
 namespace dpd {
+void wait_recv() {
+  MPI_Status statuses[26];
+  MC(l::m::Waitall(26, recvreq, statuses));
+  MC(l::m::Waitall(26, recvcellsreq, statuses));
+  MC(l::m::Waitall(26, recvcountreq, statuses));
+}
+
 void recv() {
-
-    {
-        MPI_Status statuses[26];
-
-        MC(l::m::Waitall(nactive, recvreq, statuses));
-        MC(l::m::Waitall(nactive, recvcellsreq, statuses));
-        MC(l::m::Waitall(nactive, recvcountreq, statuses));
-    }
-
     for (int i = 0; i < 26; ++i) {
         int count = recv_counts[i];
         int expected = recvhalos[i]->expected;
@@ -40,8 +38,5 @@ void recv() {
                        recvhalos[i]->hcellstarts->D,
                        sizeof(int) * recvhalos[i]->hcellstarts->S,
                        H2D));
-
-
-    post_expected_recv();
 }
 }

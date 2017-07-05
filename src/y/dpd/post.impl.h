@@ -17,9 +17,9 @@ void post(Particle *p, int n) {
         }
 
         if (!succeeded) {
-            _pack_all(p, n, true);
-
-            CC(cudaEventSynchronize(evfillall));
+	  upd_bag();
+	  _pack_all(p, n);
+	  CC(cudaEventSynchronize(evfillall));
         }
 
         for (int i = 0; i < 26; ++i) {

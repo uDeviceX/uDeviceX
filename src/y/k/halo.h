@@ -2,7 +2,6 @@ namespace k_halo {
 __constant__ int cellpackstarts[27];
 struct CellPackSOA {
     int *start, *count, *scan, size;
-    bool enabled;
 };
 __constant__ CellPackSOA cellpacks[26];
 struct SendBagInfo {
@@ -13,73 +12,72 @@ struct SendBagInfo {
 
 __constant__ SendBagInfo baginfos[26];
 __constant__ int *srccells[26 * 2], *dstcells[26 * 2];
-  
-__global__ void count_all(int *cellsstart,
-                          int *cellscount, int ntotalcells) {
-    int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
+static __device__ int get_idpack(const int a[], const int i) {  /* where is `i' in sorted a[27]? */
+  int k1, k3, k9;
+  k9 = 9 * ((i >= a[9])           + (i >= a[18]));
+  k3 = 3 * ((i >= a[k9 + 3])      + (i >= a[k9 + 6]));
+  k1 =      (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
+  return k9 + k3 + k1;
+}
+
+/* returns halo box; 0 is a corner of subdomain */
+static __device__ void get_box(int i, /**/ int org[3], int ext[3]) {
+  /* i, org, ext : halo id, origin, extend */
+  int L[3] = {XS, YS, ZS};
+  int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
+  int c;
+  for (c = 0; c < 3; ++c) {
+    org[c] = (d[c] == 1) ? L[c] - 1 : 0;
+    ext[c] = (d[c] == 0) ? L[c]     : 1;
+  }
+}
+
+/* halo to bulk cell id */
+static __device__ int h2cid(int hci, int org[3], int ext[3]) {
+  enum {X, Y, Z};
+  int c;
+  int srccellpos[3];
+  int dstcellpos[3] = {hci % ext[X], (hci / ext[X]) % ext[Y], hci / (ext[X] * ext[Y])};
+  for (c = 0; c < 3; ++c) srccellpos[c] = org[c] + dstcellpos[c];
+  return srccellpos[X] + XS * (srccellpos[Y] + YS * srccellpos[Z]);
+}
+
+__global__ void count(int *start, int *count) {
+    enum {X, Y, Z};
+    int gid;
+    int hid; /* halo id */
+    int nhc; /* number of hallo cells */
+    int cid, hci; /* bulk and halo cell ids */
+    int org[3], ext[3]; /* halo origin and extend */
+    gid = threadIdx.x + blockDim.x * blockIdx.x;
     if (gid >= cellpackstarts[26]) return;
 
-    int key9 =
-        9 * ((gid >= cellpackstarts[9]) + (gid >= cellpackstarts[18]));
-    int key3 = 3 * ((gid >= cellpackstarts[key9 + 3]) +
-                    (gid >= cellpackstarts[key9 + 6]));
-    int key1 = (gid >= cellpackstarts[key9 + key3 + 1]) +
-        (gid >= cellpackstarts[key9 + key3 + 2]);
-    int code = key9 + key3 + key1;
-    int d[3] = {(code + 2) % 3 - 1, (code / 3 + 2) % 3 - 1,
-                (code / 9 + 2) % 3 - 1};
-    int L[3] = {XS, YS, ZS};
+    hid = get_idpack(cellpackstarts, gid);
+    hci = gid - cellpackstarts[hid];
 
-    int halo_start[3];
-    for (int c = 0; c < 3; ++c)
-    halo_start[c] = max(d[c] * L[c] - L[c] / 2 - 1, -L[c] / 2);
+    get_box(hid, /**/ org, ext);
+    nhc = ext[X] * ext[Y] * ext[Z];
 
-    int halo_size[3];
-    for (int c = 0; c < 3; ++c)
-    halo_size[c] = min(d[c] * L[c] + L[c] / 2 + 1, L[c] / 2) - halo_start[c];
-
-    int ndstcells = halo_size[0] * halo_size[1] * halo_size[2];
-    int dstcid = gid - cellpackstarts[code];
-
-    if (dstcid < ndstcells) {
-        int dstcellpos[3] = {dstcid % halo_size[0],
-                             (dstcid / halo_size[0]) % halo_size[1],
-                             dstcid / (halo_size[0] * halo_size[1])};
-
-        int srccellpos[3];
-        for (int c = 0; c < 3; ++c)
-        srccellpos[c] = halo_start[c] + dstcellpos[c] + L[c] / 2;
-
-        int srcentry =
-            srccellpos[0] +
-            XS * (srccellpos[1] + YS * srccellpos[2]);
-        int enabled = cellpacks[code].enabled;
-
-        cellpacks[code].start[dstcid] = enabled * cellsstart[srcentry];
-        cellpacks[code].count[dstcid] = enabled * cellscount[srcentry];
-    } else if (dstcid == ndstcells) {
-        cellpacks[code].start[dstcid] = 0;
-        cellpacks[code].count[dstcid] = 0;
+    if (hci < nhc) {
+        cid = h2cid(hci, org, ext);
+        cellpacks[hid].start[hci] = start[cid];
+        cellpacks[hid].count[hci] = count[cid];
+    } else if (hci == nhc) {
+        cellpacks[hid].start[hci] = 0;
+        cellpacks[hid].count[hci] = 0;
     }
 }
-template <int slot> __global__ void copycells(int n) {
+
+__global__ void copycells(int n) {
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
     if (gid >= cellpackstarts[26]) return;
 
-    int key9 =
-        9 * ((gid >= cellpackstarts[9]) + (gid >= cellpackstarts[18]));
-    int key3 = 3 * ((gid >= cellpackstarts[key9 + 3]) +
-                    (gid >= cellpackstarts[key9 + 6]));
-    int key1 = (gid >= cellpackstarts[key9 + key3 + 1]) +
-        (gid >= cellpackstarts[key9 + key3 + 2]);
-
-    int idpack = key9 + key3 + key1;
-
+    int idpack = get_idpack(cellpackstarts, gid);
     int offset = gid - cellpackstarts[idpack];
 
-    dstcells[idpack + 26 * slot][offset] = srccells[idpack + 26 * slot][offset];
+    dstcells[idpack][offset] = srccells[idpack][offset];
 }
 
 template <int NWARPS> __global__ void scan_diego() {
@@ -126,37 +124,37 @@ template <int NWARPS> __global__ void scan_diego() {
     }
 }
   
-__global__ void fill_all(Particle *particles, int np,
-                         int *required_bag_size) {
-    int gcid = (threadIdx.x >> 4) + 2 * blockIdx.x;
-    if (gcid >= cellpackstarts[26]) return;
-    int key9 =
-                            9 * ((gcid >= cellpackstarts[9]) + (gcid >= cellpackstarts[18]));
-    int key3 = 3 * ((gcid >= cellpackstarts[key9 + 3]) +
-                    (gcid >= cellpackstarts[key9 + 6]));
-    int key1 = (gcid >= cellpackstarts[key9 + key3 + 1]) +
-        (gcid >= cellpackstarts[key9 + key3 + 2]);
-    int code = key9 + key3 + key1;
-    int cellid = gcid - cellpackstarts[code];
-    int tid = threadIdx.x & 0xf;
-    int base_src = baginfos[code].start_src[cellid];
-    int base_dst = baginfos[code].start_dst[cellid];
-    int nsrc =
-        min(baginfos[code].count_src[cellid], baginfos[code].bagsize - base_dst);
-    int nfloats = nsrc * 6;
-    for (int i = 2 * tid; i < nfloats; i += warpSize) {
-        int lpid = i / 6;
-        int dpid = base_dst + lpid;
-        int spid = base_src + lpid;
-        int c = i % 6;
-        float2 word = *(float2 *)&particles[spid].r[c];
-        *(float2 *)&baginfos[code].dbag[dpid].r[c] = word;
-    }
-    for (int lpid = tid; lpid < nsrc; lpid += warpSize / 2) {
-        int dpid = base_dst + lpid;
-        int spid = base_src + lpid;
-        baginfos[code].scattered_entries[dpid] = spid;
-    }
-    if (gcid + 1 == cellpackstarts[code + 1]) required_bag_size[code] = base_dst;
+__global__ void fill_all(Particle *pp, int *required_bag_size) {
+  int gid, hid, hci, tid, src, dst, nsrc, nfloats;
+  int i, lpid, dpid, spid, c;
+  float2 word;
+  SendBagInfo bag;
+
+  gid = (threadIdx.x >> 4) + 2 * blockIdx.x;
+  if (gid >= cellpackstarts[26]) return;
+
+  hid = get_idpack(cellpackstarts, gid);
+  hci = gid - cellpackstarts[hid];
+
+  tid = threadIdx.x & 0xf;
+  bag = baginfos[hid];
+  src = bag.start_src[hci];
+  dst = bag.start_dst[hci];
+  nsrc = min(bag.count_src[hci], bag.bagsize - dst);
+  nfloats = nsrc * 6;
+  for (i = 2 * tid; i < nfloats; i += warpSize) {
+    lpid = i / 6;
+    c    = i % 6;
+    dpid = dst + lpid;
+    spid = src + lpid;
+    word = *(float2 *)&pp[spid].r[c];
+    *(float2 *)&bag.dbag[dpid].r[c] = word;
+  }
+  for (lpid = tid; lpid < nsrc; lpid += warpSize / 2) {
+    dpid = dst + lpid;
+    spid = src + lpid;
+    bag.scattered_entries[dpid] = spid;
+  }
+  if (gid + 1 == cellpackstarts[hid + 1]) required_bag_size[hid] = dst;
 }
 }
