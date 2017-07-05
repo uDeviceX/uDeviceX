@@ -98,14 +98,33 @@ int main(int argc, char **argv) {
     char **ffpp = argv + iarg;
     char **ffii = ffpp + nin + 1;
 
-    float *msds = new float[nin-1];
-    memset(msds, 0, (nin-1)*sizeof(float));
+    float *msds    = new float[nin-1];
+    float *submsds = new float[nin-1];
+    int   *counts  = new   int[nin-1];
     
-    MSD_seq(ffpp, ffii, nin, /**/ msds);
+    memset(msds,   0, (nin-1)*sizeof(float));
+    memset(counts, 0, (nin-1)*sizeof(int));
 
-    for (int i = 0; i < nin - 1; ++i) printf("%.6e\n", msds[i]);
+    const int t0step = nin;
     
-    delete[] msds;
-        
+    for (int t0 = 0; t0 < nin-1; t0 += t0step) {
+        memset(submsds, 0, (nin-1)*sizeof(float));
+
+        MSD_seq(ffpp + t0, ffii + t0, nin - t0, /**/ submsds);
+
+        for (int i = 0; i < nin-1-t0; ++i) {
+            ++counts[i];
+            msds[i] += submsds[i];
+        }
+    }
+
+    // average
+    for (int i = 0; i < nin - 1; ++i) {
+        const int c = counts[i] ? counts[i] : 1;
+        msds[i] /= c;
+    }
+    
+    for (int i = 0; i < nin - 1; ++i) printf("%.6e\n", msds[i]);    
+    delete[] msds; delete[] submsds;
     return 0;
 }
