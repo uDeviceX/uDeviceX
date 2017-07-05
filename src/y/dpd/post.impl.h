@@ -18,7 +18,7 @@ void post(MPI_Comm cart, Particle *p, int n) {
 
     if (!succeeded) {
       upd_bag();
-      _pack_all(p, n);
+      pack(p, n);
       CC(cudaEventSynchronize(evfillall));
     }
 

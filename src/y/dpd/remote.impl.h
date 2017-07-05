@@ -13,12 +13,6 @@ void upd_bag() {
   CC(cudaMemcpyToSymbolAsync(k_halo::baginfos, baginfos, sizeof(baginfos), 0, H2D));
 }
 
-void _pack_all(Particle *p, int n) {
-    if (ncells)
-    k_halo::fill_all<<<(ncells + 1) / 2, 32>>>(cellpackstarts, p, required_send_bag_size);
-    CC(cudaEventRecord(evfillall));
-}
-
 void post_expected_recv(MPI_Comm cart) {
   for (int i = 0, c = 0; i < 26; ++i) {
     if (recvhalos[i]->expected)

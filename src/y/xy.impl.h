@@ -35,7 +35,7 @@ void forces(flu::Quants *q, flu::TicketZ *tz, flu::TicketRND *trnd, /**/ Force *
   if (first) dpd::pack_first1();
   dpd::copycells();
   if (first) dpd::upd_bag();
-  dpd::pack(cart, q->pp, q->n, first);
+  dpd::pack(q->pp, q->n);
   first = false;
   
   dpd::flocal(tz->zip0, tz->zip1, q->n, q->cells->start, q->cells->count, trnd->rnd,
