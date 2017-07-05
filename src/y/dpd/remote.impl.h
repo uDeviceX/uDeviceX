@@ -34,13 +34,6 @@ void post_expected_recv(MPI_Comm cart, RecvHalo* recvhalos[]) {
       recv_counts[i] = 0;
 }
 
-void wait_send() {
-  MPI_Status statuses[26 * 2];
-  MC(l::m::Waitall(26, sendcellsreq, statuses));
-  MC(l::m::Waitall(nsendreq, sendreq, statuses));
-  MC(l::m::Waitall(26, sendcountreq, statuses));
-}
-
 void cancel_recv() {
   int i;
   for (i = 0; i < 26; ++i) MC(MPI_Cancel(recvreq + i));
