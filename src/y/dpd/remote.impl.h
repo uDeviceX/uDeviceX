@@ -8,7 +8,6 @@ void upd_bag(SendHalo* sendhalos[]) {
         baginfos[i].bagsize = sendhalos[i]->dbuf->C;
         baginfos[i].scattered_entries = sendhalos[i]->scattered_entries->D;
         baginfos[i].dbag = sendhalos[i]->dbuf->D;
-        baginfos[i].hbag = sendhalos[i]->hbuf->D;
     }
     CC(cudaMemcpyToSymbolAsync(k_halo::baginfos, baginfos, sizeof(baginfos), 0, H2D));
 }
