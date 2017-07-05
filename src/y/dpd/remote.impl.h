@@ -34,13 +34,15 @@ void post_expected_recv(MPI_Comm cart, RecvHalo* recvhalos[]) {
       recv_counts[i] = 0;
 }
 
-void cancel_recv() {
-  int i;
+void wait_send() {
   MPI_Status statuses[26 * 2];
   MC(l::m::Waitall(26, sendcellsreq, statuses));
   MC(l::m::Waitall(nsendreq, sendreq, statuses));
   MC(l::m::Waitall(26, sendcountreq, statuses));
-  
+}
+
+void cancel_recv() {
+  int i;
   for (i = 0; i < 26; ++i) MC(MPI_Cancel(recvreq + i));
   for (i = 0; i < 26; ++i) MC(MPI_Cancel(recvcellsreq + i));
   for (i = 0; i < 26; ++i) MC(MPI_Cancel(recvcountreq + i));
@@ -48,7 +50,10 @@ void cancel_recv() {
 
 void fin(bool first) {
     CC(cudaFreeHost(required_send_bag_size));
-    if (!first) cancel_recv();
+    if (!first) {
+      wait_send();
+      cancel_recv();
+    }
     CC(cudaEventDestroy(evfillall));
     CC(cudaEventDestroy(evdownloaded));
 }
