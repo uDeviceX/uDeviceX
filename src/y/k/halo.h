@@ -1,8 +1,4 @@
 namespace k_halo {
-struct CellPackSOA {
-    int *start, *count, *scan, size;
-};
-__constant__ CellPackSOA cellpacks[26];
 struct SendBagInfo {
     int *start_src, *count_src, *start_dst;
     int bagsize, *scattered_entries;
@@ -11,6 +7,7 @@ struct SendBagInfo {
 
 __constant__ SendBagInfo baginfos[26];
 
+typedef Sarray<int,  26> int26;
 typedef Sarray<int,  27> int27;
 typedef Sarray<int*, 26> intp26;
 
@@ -44,7 +41,8 @@ static __device__ int h2cid(int hci, const int org[3], const int ext[3]) {
   return srccellpos[X] + XS * (srccellpos[Y] + YS * srccellpos[Z]);
 }
 
-__global__ void count(const int27 cellpackstarts, const int *start, const int *count) {
+__global__ void count(const int27 cellpackstarts, const int *start, const int *count, /**/
+                      intp26 fragss, intp26 fragcc) {
     enum {X, Y, Z};
     int gid;
     int hid; /* halo id */
@@ -62,11 +60,11 @@ __global__ void count(const int27 cellpackstarts, const int *start, const int *c
 
     if (hci < nhc) {
         cid = h2cid(hci, org, ext);
-        cellpacks[hid].start[hci] = start[cid];
-        cellpacks[hid].count[hci] = count[cid];
+        fragss.d[hid][hci] = start[cid];
+        fragcc.d[hid][hci] = count[cid];
     } else if (hci == nhc) {
-        cellpacks[hid].start[hci] = 0;
-        cellpacks[hid].count[hci] = 0;
+        fragss.d[hid][hci] = 0;
+        fragcc.d[hid][hci] = 0;
     }
 }
 
@@ -81,13 +79,13 @@ __global__ void copycells(const int27 cellpackstarts, const intp26 srccells, /**
     dstcells.d[idpack][offset] = srccells.d[idpack][offset];
 }
 
-template <int NWARPS> __global__ void scan_diego() {
+template <int NWARPS> __global__ void scan_diego(const int26 fragn, const intp26 fragcc, /**/ intp26 fragcum) {
     __shared__ int shdata[32];
 
     int hid = blockIdx.x;
-    int *count = cellpacks[hid].count;
-    int *start = cellpacks[hid].scan;
-    int n = cellpacks[hid].size;
+    int *count = fragcc.d[hid];
+    int *start = fragcum.d[hid];
+    int n = fragn.d[hid];
 
     int tid = threadIdx.x;
     int laneid = threadIdx.x & 0x1f;

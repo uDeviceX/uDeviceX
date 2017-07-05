@@ -9,15 +9,12 @@ void pack_first0(SendHalo* sendhalos[]) {
   }
 
   {
-    static k_halo::CellPackSOA cellpacks[26];
     for (int i = 0; i < 26; ++i) {
-      cellpacks[i].start = sendhalos[i]->tmpstart->D;
-      cellpacks[i].count = sendhalos[i]->tmpcount->D;
-      cellpacks[i].scan = sendhalos[i]->dcellstarts->D;
-      cellpacks[i].size = sendhalos[i]->dcellstarts->S;
+        cellpacks::start.d[i] = sendhalos[i]->tmpstart->D;
+        cellpacks::count.d[i] = sendhalos[i]->tmpcount->D;
+        cellpacks::scan.d[i] = sendhalos[i]->dcellstarts->D;
+        cellpacks::size.d[i] = sendhalos[i]->dcellstarts->S;
     }
-    CC(cudaMemcpyToSymbol(k_halo::cellpacks, cellpacks,
-			  sizeof(cellpacks), 0, H2D));
   }
 }
 
@@ -34,8 +31,8 @@ void wait_send() {
 }
 
 void scan(int *start, int *count) {
-  if (ncells) k_halo::count<<<k_cnf(ncells)>>>(cellpackstarts, start, count);
-  k_halo::scan_diego<32><<<26, 32 * 32>>>();
+    if (ncells) k_halo::count<<<k_cnf(ncells)>>>(cellpackstarts, start, count, cellpacks::start, cellpacks::count);
+    k_halo::scan_diego<32><<<26, 32 * 32>>>(cellpacks::size, cellpacks::count, /**/ cellpacks::scan);
 }
 
 void copycells() {
