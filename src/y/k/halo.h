@@ -5,7 +5,7 @@ struct SendBagInfo {
     Particle *dbag;
 };
 
-__constant__ SendBagInfo baginfos[26];
+//__constant__ SendBagInfo baginfos[26];
 
 typedef Sarray<int,  26> int26;
 typedef Sarray<int,  27> int27;
@@ -125,11 +125,13 @@ __global__ void scan(const int26 fragn, const intp26 fragcc, /**/ intp26 fragcum
     }
 }
   
-__global__ void fill_all(const int27 cellpackstarts, Particle *pp, int *required_bag_size) {
+__global__ void fill_all(const int27 cellpackstarts, Particle *pp, int *required_bag_size,
+                         const intp26 fragss, const intp26 fragcc, const intp26 fragcum,
+                         const int26 fragn, const int26 fragcapacity,
+                         intp26 fragindices, Particlep26 fragpp) {
     int gid, hid, hci, tid, src, dst, nsrc, nfloats;
     int i, lpid, dpid, spid, c;
     float2 word;
-    SendBagInfo bag;
 
     gid = (threadIdx.x >> 4) + 2 * blockIdx.x;
     if (gid >= cellpackstarts.d[26]) return;
@@ -138,10 +140,9 @@ __global__ void fill_all(const int27 cellpackstarts, Particle *pp, int *required
     hci = gid - cellpackstarts.d[hid];
 
     tid = threadIdx.x & 0xf;
-    bag = baginfos[hid];
-    src = bag.start_src[hci];
-    dst = bag.start_dst[hci];
-    nsrc = min(bag.count_src[hci], bag.bagsize - dst);
+    src = fragss.d[hid][hci];
+    dst = fragcum.d[hid][hci];
+    nsrc = min(fragcc.d[hid][hci], fragcapacity.d[hid] - dst);
     nfloats = nsrc * 6;
     for (i = 2 * tid; i < nfloats; i += warpSize) {
         lpid = i / 6;
@@ -149,12 +150,12 @@ __global__ void fill_all(const int27 cellpackstarts, Particle *pp, int *required
         dpid = dst + lpid;
         spid = src + lpid;
         word = *(float2 *)&pp[spid].r[c];
-        *(float2 *)&bag.dbag[dpid].r[c] = word;
+        *(float2 *)&fragpp.d[hid][dpid].r[c] = word;
     }
     for (lpid = tid; lpid < nsrc; lpid += warpSize / 2) {
         dpid = dst + lpid;
         spid = src + lpid;
-        bag.scattered_entries[dpid] = spid;
+        fragindices.d[hid][dpid] = spid;
     }
     if (gid + 1 == cellpackstarts.d[hid + 1]) required_bag_size[hid] = dst;
 }

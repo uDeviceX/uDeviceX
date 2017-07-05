@@ -32,7 +32,9 @@ void copycells() {
   
 void pack(Particle *p, int n) {
     if (ncells)
-    k_halo::fill_all<<<(ncells + 1) / 2, 32>>>(cellpackstarts, p, required_send_bag_size);
+    k_halo::fill_all<<<(ncells + 1) / 2, 32>>>(cellpackstarts, p, required_send_bag_size,
+                                               frag::start, frag::count, frag::scan, frag::size,
+                                               frag::capacity, frag::indices, frag::pp);
     CC(cudaEventRecord(evfillall));
 }
 }

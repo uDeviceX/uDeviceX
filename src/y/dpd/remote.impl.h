@@ -1,15 +1,13 @@
 namespace dpd {
 void upd_bag(SendHalo* sendhalos[]) {
-    static k_halo::SendBagInfo baginfos[26];
     for (int i = 0; i < 26; ++i) {
-        baginfos[i].start_src = sendhalos[i]->tmpstart->D;
-        baginfos[i].count_src = sendhalos[i]->tmpcount->D;
-        baginfos[i].start_dst = sendhalos[i]->dcellstarts->D;
-        baginfos[i].bagsize = sendhalos[i]->dbuf->C;
-        baginfos[i].scattered_entries = sendhalos[i]->scattered_entries->D;
-        baginfos[i].dbag = sendhalos[i]->dbuf->D;
+        frag::start.d[i] = sendhalos[i]->tmpstart->D;
+        frag::count.d[i] = sendhalos[i]->tmpcount->D;
+        frag::scan.d[i] = sendhalos[i]->dcellstarts->D;
+        frag::capacity.d[i] = sendhalos[i]->dbuf->C;
+        frag::indices.d[i] = sendhalos[i]->scattered_entries->D;
+        frag::pp.d[i] = sendhalos[i]->dbuf->D;
     }
-    CC(cudaMemcpyToSymbolAsync(k_halo::baginfos, baginfos, sizeof(baginfos), 0, H2D));
 }
 
 void post_expected_recv(MPI_Comm cart, RecvHalo* recvhalos[]) {

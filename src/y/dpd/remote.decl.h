@@ -17,7 +17,7 @@ int27 cellpackstarts;
 intp26 srccells, dstcells;
 
 namespace frag {
-intp26 start, count, scan, scattered_indices;
+intp26 start, count, scan, indices;
 int26 size, capacity;
 Particlep26 pp;
 }
