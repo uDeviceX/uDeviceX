@@ -1,27 +1,28 @@
 namespace dpd {
 void init0(MPI_Comm cart, SendHalo* sendhalos[], RecvHalo* recvhalos[]) {
     int xsz, ysz, zsz, coordsneighbor[3], estimate, nhalocells;
-  for (int i = 0; i < 26; ++i) {
-    int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
-    recv_tags[i] = (2 - d[0]) % 3 + 3 * ((2 - d[1]) % 3 + 3 * ((2 - d[2]) % 3));
-    for (int c = 0; c < 3; ++c) coordsneighbor[c] = m::coords[c] + d[c];
-    MC(l::m::Cart_rank(cart, coordsneighbor, dstranks + i));
-    xsz = d[0] != 0 ? 1 : XS;
-    ysz = d[1] != 0 ? 1 : YS;
-    zsz = d[2] != 0 ? 1 : ZS;
-    nhalocells = xsz * ysz * zsz;
 
-    estimate = numberdensity * HSAFETY_FACTOR * nhalocells;
-    estimate = 32 * ((estimate + 31) / 32);
+    for (int i = 0; i < 26; ++i) {
+        int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
+        recv_tags[i] = (2 - d[0]) % 3 + 3 * ((2 - d[1]) % 3 + 3 * ((2 - d[2]) % 3));
+        for (int c = 0; c < 3; ++c) coordsneighbor[c] = m::coords[c] + d[c];
+        MC(l::m::Cart_rank(cart, coordsneighbor, dstranks + i));
+        xsz = d[0] != 0 ? 1 : XS;
+        ysz = d[1] != 0 ? 1 : YS;
+        zsz = d[2] != 0 ? 1 : ZS;
+        nhalocells = xsz * ysz * zsz;
 
-    recvhalos[i]->setup(estimate, nhalocells);
-    sendhalos[i]->setup(estimate, nhalocells);
-  }
+        estimate = numberdensity * HSAFETY_FACTOR * nhalocells;
+        estimate = 32 * ((estimate + 31) / 32);
 
-  CC(cudaHostAlloc((void **)&required_send_bag_size_host, sizeof(int) * 26,
-		   cudaHostAllocMapped));
-  CC(cudaHostGetDevicePointer(&required_send_bag_size,
-			      required_send_bag_size_host, 0));
+        recvhalos[i]->setup(estimate, nhalocells);
+        sendhalos[i]->setup(estimate, nhalocells);
+    }
+
+    CC(cudaHostAlloc((void **)&required_send_bag_size_host, sizeof(int) * 26,
+                     cudaHostAllocMapped));
+    CC(cudaHostGetDevicePointer(&required_send_bag_size,
+                                required_send_bag_size_host, 0));
 }
 
 void init1_one(int i, l::rnd::d::KISS* interrank_trunks[], bool interrank_masks[]) {
