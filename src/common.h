@@ -12,6 +12,9 @@
 #define MAX_VERT_NUM 10000
 #define MAX_CELL_NUM 10000
 
+/* safety factor for dpd halo interactions */
+#define HSAFETY_FACTOR 10.f
+
 /* write ascii/bin in l/ply.cu */
 #define PLY_WRITE_ASCII
 
