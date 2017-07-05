@@ -10,7 +10,7 @@ void ini() {
   ini0();
   MC(l::m::Comm_dup(m::cart, &cart));
   dpd::ini(cart);
-  for (i = 0; i < 26; ++i) dpd::init1_one(i, interrank_trunks, interrank_masks);
+  for (i = 0; i < 26; ++i) dpd::init1_one(i, /**/ interrank_trunks, interrank_masks);
 }
 
 void fin0() {
@@ -28,9 +28,7 @@ void fin() {
 
 void forces(flu::Quants *q, flu::TicketZ *tz, flu::TicketRND *trnd, /**/ Force *ff) {
   dpd::pack(cart, q->pp, q->n, q->cells->start, q->cells->count);
-  dpd::flocal(tz->zip0, tz->zip1, q->n,
-	      q->cells->start, q->cells->count,
-	      trnd->rnd,
+  dpd::flocal(tz->zip0, tz->zip1, q->n, q->cells->start, q->cells->count, trnd->rnd,
 	      /**/ ff);
   dpd::post(cart, q->pp, q->n);
   dpd::wait_recv();
