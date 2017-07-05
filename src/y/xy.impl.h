@@ -41,8 +41,8 @@ void forces(flu::Quants *q, flu::TicketZ *tz, flu::TicketRND *trnd, /**/ Force *
   first = false;
   dpd::pack(pp, n);
   
-  dpd::flocal(tz->zip0, tz->zip1, n, q->cells->start, q->cells->count, trnd->rnd,
-	      /**/ ff);
+  dpd::flocal(tz->zip0, tz->zip1, n, q->cells->start, q->cells->count, trnd->rnd, /**/ ff);
+
   dpd::post(cart, pp, sendhalos, n);
   dpd::wait_recv();
   dpd::recv(cart, recvhalos);
