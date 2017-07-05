@@ -54,12 +54,12 @@ void cancel_recv() {
 
 void fin() {
     CC(cudaFreeHost(required_send_bag_size));
-    if (!firstpost) cancel_recv();
+    if (!first) cancel_recv();
     CC(cudaEventDestroy(evfillall));
     CC(cudaEventDestroy(evdownloaded));
 
     for (int i = 0; i < 26; i++) delete recvhalos[i];
     for (int i = 0; i < 26; i++) delete sendhalos[i];
-    firstpost = true;
+    first = true;
 }
 }

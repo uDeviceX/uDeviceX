@@ -42,15 +42,15 @@ void wait_send() {
 }
 
 void pack(MPI_Comm cart, Particle *p, int n, int *start, int *count) {
-    if (firstpost) pack_first0();
+    if (first) pack_first0();
     if (ncells) k_halo::count<<<k_cnf(ncells)>>>(cellpackstarts, start, count);
     k_halo::scan_diego<32><<<26, 32 * 32>>>();
 
-    if (firstpost) post_expected_recv(cart); else wait_send();
-    if (firstpost) pack_first1();
+    if (first) post_expected_recv(cart); else wait_send();
+    if (first) pack_first1();
 
     if (ncells) k_halo::copycells<<<k_cnf(ncells)>>>(cellpackstarts);
-    if (firstpost) upd_bag();
+    if (first) upd_bag();
     _pack_all(p, n);
 }
 }
