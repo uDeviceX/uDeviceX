@@ -33,7 +33,7 @@ void forces(flu::Quants *q, flu::TicketZ *tz, flu::TicketRND *trnd, /**/ Force *
   Particle *pp = q->pp;
 
   if (first) dpd::pack_first0(sendhalos);
-  dpd::scan(q->cells->start, q->cells->count);
+  dpd::gather_cells(q->cells->start, q->cells->count);
   if (first) dpd::post_expected_recv(cart, recvhalos); else dpd::wait_send();
   if (first) dpd::pack_first1(sendhalos);
   dpd::copycells();
