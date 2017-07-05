@@ -9,7 +9,7 @@ void ini() {
   int i;
   ini0();
   MC(l::m::Comm_dup(m::cart, &cart));
-  dpd::ini();
+  dpd::ini(cart);
   for (i = 0; i < 26; ++i) dpd::init1_one(i, interrank_trunks, interrank_masks);
 }
 
@@ -27,15 +27,15 @@ void fin() {
 }
 
 void forces(flu::Quants *q, flu::TicketZ *tz, flu::TicketRND *trnd, /**/ Force *ff) {
-  dpd::pack(q->pp, q->n, q->cells->start, q->cells->count);
+  dpd::pack(cart, q->pp, q->n, q->cells->start, q->cells->count);
   dpd::flocal(tz->zip0, tz->zip1, q->n,
 	      q->cells->start, q->cells->count,
 	      trnd->rnd,
 	      /**/ ff);
-  dpd::post(q->pp, q->n);
+  dpd::post(cart, q->pp, q->n);
   dpd::wait_recv();
-  dpd::recv();
-  dpd::post_expected_recv();
+  dpd::recv(cart);
+  dpd::post_expected_recv(cart);
   dpd::fremote(q->n, interrank_trunks, interrank_masks, /**/ ff);
 }
 }

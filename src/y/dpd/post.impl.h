@@ -1,5 +1,5 @@
 namespace dpd {
-void post(Particle *p, int n) {
+void post(MPI_Comm cart, Particle *p, int n) {
     {
         CC(cudaEventSynchronize(evfillall));
 

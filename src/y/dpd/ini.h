@@ -1,13 +1,10 @@
 namespace dpd {
-void init0() {
+void init0(MPI_Comm cart) {
   int xsz, ysz, zsz;
   float safety_factor;
   firstpost = true;
   safety_factor =
     getenv("HEX_COMM_FACTOR") ? atof(getenv("HEX_COMM_FACTOR")) : 1.2;
-
-  MC(l::m::Comm_dup(m::cart, &cart));
-
   for (int i = 0; i < 26; ++i) {
     int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
     recv_tags[i] = (2 - d[0]) % 3 + 3 * ((2 - d[1]) % 3 + 3 * ((2 - d[2]) % 3));
@@ -79,10 +76,9 @@ void init1_one(int i, l::rnd::d::KISS* interrank_trunks[], bool interrank_masks[
   }
 }
 
-void ini() {
+void ini(MPI_Comm cart) {
   for (int i = 0; i < 26; i++) recvhalos[i] = new RecvHalo;
   for (int i = 0; i < 26; i++) sendhalos[i] = new SendHalo;
-
-  init0();
+  init0(cart);
 }
 }

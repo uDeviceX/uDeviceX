@@ -19,7 +19,7 @@ void _pack_all(Particle *p, int n) {
     CC(cudaEventRecord(evfillall));
 }
 
-void post_expected_recv() {
+void post_expected_recv(MPI_Comm cart) {
   for (int i = 0, c = 0; i < 26; ++i) {
     if (recvhalos[i]->expected)
       MC(l::m::Irecv(recvhalos[i]->hbuf->D, recvhalos[i]->expected,
@@ -54,7 +54,6 @@ void cancel_recv() {
 
 void fin() {
     CC(cudaFreeHost(required_send_bag_size));
-    MC(l::m::Comm_free(&cart));
     if (!firstpost) cancel_recv();
     CC(cudaEventDestroy(evfillall));
     CC(cudaEventDestroy(evdownloaded));
