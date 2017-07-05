@@ -35,6 +35,7 @@ struct SendHalo {
     tmpstart->resize(nhalocells + 1);
   }
 
+private:
   void adjust(int estimate) {
     expected = estimate;
     hbuf->resize(estimate);
@@ -67,6 +68,8 @@ struct RecvHalo {
     dcellstarts->resize(nhalocells + 1);
     hcellstarts->resize(nhalocells + 1);
   }
+
+private:
   void adjust(int estimate) {
     expected = estimate;
     hbuf->resize(estimate);
