@@ -39,18 +39,6 @@ void pack_first1() {
     CC(cudaMemcpyToSymbol(k_halo::dstcells, dstcells, sizeof(dstcells),
 			  0, H2D));
   }
-
-  {
-    static int *srccells[26];
-    for (int i = 0; i < 26; ++i) srccells[i] = recvhalos[i]->hcellstarts->DP;
-    CC(cudaMemcpyToSymbol(k_halo::srccells, srccells, sizeof(srccells),
-			  sizeof(srccells), H2D));
-
-    static int *dstcells[26];
-    for (int i = 0; i < 26; ++i) dstcells[i] = recvhalos[i]->dcellstarts->D;
-    CC(cudaMemcpyToSymbol(k_halo::dstcells, dstcells, sizeof(dstcells),
-			  sizeof(dstcells), H2D));
-  }
 }
 
 void wait_send() {
