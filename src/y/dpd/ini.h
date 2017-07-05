@@ -35,7 +35,7 @@ void init0() {
 			      cudaEventDisableTiming | cudaEventBlockingSync));
 }
 
-void init1_one(int i, l::rnd::d::KISS* interrank_trunks000[], bool interrank_masks000[]) {
+void init1_one(int i, l::rnd::d::KISS* interrank_trunks[], bool interrank_masks[]) {
   int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
 
   int coordsneighbor[3];
@@ -67,15 +67,15 @@ void init1_one(int i, l::rnd::d::KISS* interrank_trunks000[], bool interrank_mas
 
   int interrank_seed = interrank_seed_base + interrank_seed_offset;
 
-  interrank_trunks000[i] = new l::rnd::d::KISS(390 + interrank_seed, interrank_seed + 615, 12309, 23094);
+  interrank_trunks[i] = new l::rnd::d::KISS(390 + interrank_seed, interrank_seed + 615, 12309, 23094);
   int dstrank = dstranks[i];
 
   if (dstrank != m::rank)
-    interrank_masks000[i] = min(dstrank, m::rank) == m::rank;
+    interrank_masks[i] = min(dstrank, m::rank) == m::rank;
   else {
     int alter_ego =
       (2 - d[0]) % 3 + 3 * ((2 - d[1]) % 3 + 3 * ((2 - d[2]) % 3));
-    interrank_masks000[i] = min(i, alter_ego) == i;
+    interrank_masks[i] = min(i, alter_ego) == i;
   }
 }
 
