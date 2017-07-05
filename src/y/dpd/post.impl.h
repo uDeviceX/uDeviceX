@@ -16,25 +16,23 @@ bool check_size(SendHalo* sendhalos[]) {
 }
   
 void post(MPI_Comm cart, Particle *pp, SendHalo* sendhalos[], int n) {
-    {
-        bool succeeded;
+    bool succeeded;
+    dSync();
+    succeeded = check_size(sendhalos);
+    if (!succeeded) {
+        upd_bag(sendhalos);
+        pack(pp, n);
         dSync();
-        succeeded = check_size(sendhalos);
-        if (!succeeded) {
-            upd_bag(sendhalos);
-            pack(pp, n);
-            dSync();
-        }
-
-        for (int i = 0; i < 26; ++i) {
-            int nrequired = required_send_bag_size_host[i];
-
-            sendhalos[i]->dbuf->S = nrequired;
-            sendhalos[i]->hbuf->resize(nrequired);
-            sendhalos[i]->scattered_entries->S = nrequired;
-        }
     }
 
+    for (int i = 0; i < 26; ++i) {
+        int nrequired = required_send_bag_size_host[i];
+
+        sendhalos[i]->dbuf->S = nrequired;
+        sendhalos[i]->hbuf->resize(nrequired);
+        sendhalos[i]->scattered_entries->S = nrequired;
+    }
+    
     for (int i = 0; i < 26; ++i)
     if (sendhalos[i]->hbuf->S)
     cudaMemcpyAsync(sendhalos[i]->hbuf->D, sendhalos[i]->dbuf->D,
