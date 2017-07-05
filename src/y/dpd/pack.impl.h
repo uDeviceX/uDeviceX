@@ -1,21 +1,19 @@
 namespace dpd {
 void pack_first0(SendHalo* sendhalos[]) {
-  {
-    cellpackstarts.d[0] = 0;
-    for (int i = 0, s = 0; i < 26; ++i)
-      cellpackstarts.d[i + 1] =
-	(s += sendhalos[i]->dcellstarts->S * (sendhalos[i]->expected > 0));
-    ncells = cellpackstarts.d[26];
-  }
+    {
+        cellpackstarts.d[0] = 0;
+        for (int i = 0, s = 0; i < 26; ++i)
+        cellpackstarts.d[i + 1] =
+            (s += sendhalos[i]->dcellstarts->S * (sendhalos[i]->expected > 0));
+        ncells = cellpackstarts.d[26];
+    }
 
-  {
     for (int i = 0; i < 26; ++i) {
         frag::start.d[i] = sendhalos[i]->tmpstart->D;
         frag::count.d[i] = sendhalos[i]->tmpcount->D;
         frag::scan.d[i] = sendhalos[i]->dcellstarts->D;
         frag::size.d[i] = sendhalos[i]->dcellstarts->S;
     }
-  }
 }
 
 void pack_first1(SendHalo* sendhalos[]) {
@@ -34,7 +32,7 @@ void copycells() {
   
 void pack(Particle *p, int n) {
     if (ncells)
-      k_halo::fill_all<<<(ncells + 1) / 2, 32>>>(cellpackstarts, p, required_send_bag_size);
+    k_halo::fill_all<<<(ncells + 1) / 2, 32>>>(cellpackstarts, p, required_send_bag_size);
     CC(cudaEventRecord(evfillall));
 }
 }
