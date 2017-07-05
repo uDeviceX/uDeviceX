@@ -29,6 +29,9 @@ void fin() {
 }
 
 void forces(flu::Quants *q, flu::TicketZ *tz, flu::TicketRND *trnd, /**/ Force *ff) {
+  int n = q->n;
+  Particle *pp = q->pp;
+
   if (first) dpd::pack_first0(sendhalos);
   dpd::scan(q->cells->start, q->cells->count);
   if (first) dpd::post_expected_recv(cart, recvhalos); else dpd::wait_send();
@@ -36,14 +39,14 @@ void forces(flu::Quants *q, flu::TicketZ *tz, flu::TicketRND *trnd, /**/ Force *
   dpd::copycells();
   if (first) dpd::upd_bag(sendhalos);
   first = false;
-  dpd::pack(q->pp, q->n);
+  dpd::pack(pp, n);
   
-  dpd::flocal(tz->zip0, tz->zip1, q->n, q->cells->start, q->cells->count, trnd->rnd,
+  dpd::flocal(tz->zip0, tz->zip1, n, q->cells->start, q->cells->count, trnd->rnd,
 	      /**/ ff);
-  dpd::post(cart, q->pp, sendhalos, q->n);
+  dpd::post(cart, pp, sendhalos, n);
   dpd::wait_recv();
   dpd::recv(cart, recvhalos);
   dpd::post_expected_recv(cart, recvhalos);
-  dpd::fremote(q->n, sendhalos, recvhalos, interrank_trunks, interrank_masks, /**/ ff);
+  dpd::fremote(n, sendhalos, recvhalos, interrank_trunks, interrank_masks, /**/ ff);
 }
 }
