@@ -51,6 +51,5 @@ void fin(bool first) {
         wait_send();
         cancel_recv();
     }
-    CC(cudaEventDestroy(evdownloaded));
 }
 }

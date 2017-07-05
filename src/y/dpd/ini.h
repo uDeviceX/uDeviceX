@@ -26,8 +26,6 @@ void init0(MPI_Comm cart, SendHalo* sendhalos[], RecvHalo* recvhalos[]) {
 		   cudaHostAllocMapped));
   CC(cudaHostGetDevicePointer(&required_send_bag_size,
 			      required_send_bag_size_host, 0));
-  CC(cudaEventCreateWithFlags(&evdownloaded,
-			      cudaEventDisableTiming | cudaEventBlockingSync));
 }
 
 void init1_one(int i, l::rnd::d::KISS* interrank_trunks[], bool interrank_masks[]) {
