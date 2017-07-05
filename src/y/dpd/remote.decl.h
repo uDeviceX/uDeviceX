@@ -11,13 +11,15 @@ int dstranks[26];
 typedef Sarray<int,  26> int26;
 typedef Sarray<int,  27> int27;
 typedef Sarray<int*, 26> intp26;
+typedef Sarray<Particle*, 26> Particlep26;
 
 int27 cellpackstarts;
 intp26 srccells, dstcells;
 
 namespace frag {
-intp26 start, count, scan;
-int26 size;
+intp26 start, count, scan, scattered_indices;
+int26 size, capacity;
+Particlep26 pp;
 }
 
 // zero-copy allocation for acquiring the message offsets in the gpu send

@@ -10,7 +10,7 @@ __constant__ SendBagInfo baginfos[26];
 typedef Sarray<int,  26> int26;
 typedef Sarray<int,  27> int27;
 typedef Sarray<int*, 26> intp26;
-typedef Sarray<Particle*, 26> Pp26;
+typedef Sarray<Particle*, 26> Particlep26;
 
 static __device__ int get_idpack(const int a[], const int i) {  /* where is `i' in sorted a[27]? */
     int k1, k3, k9;
