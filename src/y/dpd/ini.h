@@ -1,9 +1,6 @@
 namespace dpd {
 void init0(MPI_Comm cart, SendHalo* sendhalos[], RecvHalo* recvhalos[]) {
   int xsz, ysz, zsz;
-  float safety_factor;
-  safety_factor =
-    getenv("HEX_COMM_FACTOR") ? atof(getenv("HEX_COMM_FACTOR")) : 1.2;
   for (int i = 0; i < 26; ++i) {
     int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
     recv_tags[i] = (2 - d[0]) % 3 + 3 * ((2 - d[1]) % 3 + 3 * ((2 - d[2]) % 3));
@@ -15,7 +12,7 @@ void init0(MPI_Comm cart, SendHalo* sendhalos[], RecvHalo* recvhalos[]) {
     zsz = d[2] != 0 ? 1 : ZS;
     int nhalocells = xsz * ysz * zsz;
 
-    int estimate = numberdensity * safety_factor * nhalocells;
+    int estimate = numberdensity * HSAFETY_FACTOR * nhalocells;
     estimate = 32 * ((estimate + 31) / 32);
 
     recvhalos[i]->setup(estimate, nhalocells);
