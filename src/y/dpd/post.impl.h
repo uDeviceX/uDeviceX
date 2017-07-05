@@ -1,7 +1,7 @@
 namespace dpd {
   
 void post(MPI_Comm cart, Particle *pp, SendHalo* sendhalos[], int n) {
-    dSync();
+    dSync(); /* wait for fill_all */
 
     for (int i = 0; i < 26; ++i) {
         int nrequired = required_send_bag_size_host[i];
