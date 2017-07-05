@@ -21,7 +21,7 @@ void pack_first1(SendHalo* sendhalos[]) {
     for (int i = 0; i < 26; ++i) dstcells.d[i] = sendhalos[i]->hcellstarts->DP;
 }
 
-void scan(int *start, int *count) {
+void scan(const int *start, const int *count) {
     if (ncells) k_halo::count<<<k_cnf(ncells)>>>(cellpackstarts, start, count, frag::start, frag::count);
     k_halo::scan<32><<<26, 32 * 32>>>(frag::size, frag::count, /**/ frag::scan);
 }
