@@ -41,6 +41,13 @@ void cancel_recv() {
   for (i = 0; i < 26; ++i) MC(MPI_Cancel(recvcountreq + i));
 }
 
+void wait_send() {
+  MPI_Status ss[26 * 2];
+  MC(l::m::Waitall(26, sendcellsreq, ss));
+  MC(l::m::Waitall(nsendreq, sendreq, ss));
+  MC(l::m::Waitall(26, sendcountreq, ss));
+}
+
 void fin(bool first) {
     CC(cudaFreeHost(required_send_bag_size));
     if (!first) {
