@@ -8,11 +8,17 @@ int recv_tags[26], recv_counts[26];
 int dstranks[26];
 
 /* refugees from halo.h */
+typedef Sarray<int,  26> int26;
 typedef Sarray<int,  27> int27;
 typedef Sarray<int*, 26> intp26;
 
 int27 cellpackstarts;
 intp26 srccells, dstcells;
+
+namespace cellpacks {
+intp26 start, count, scan;
+int26 size;
+}
 
 // zero-copy allocation for acquiring the message offsets in the gpu send
 // buffer
