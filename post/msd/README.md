@@ -22,5 +22,5 @@ Assumes rr and ii files are in the same order.
 
 #### Optional options:
 
-`-t0step <t0step>` to specify the steps for starting points `t0` used for the average. (default: N)  
-Note that a sall step leads to N^2 file reads, where 2N is the number of files!
+`-t0step <t0step>` to specify the steps for starting points `t0` used for the average. (default: `N`)  
+Note that a small step leads to `O(N^2)` file reads, where `N` is the number of files!
