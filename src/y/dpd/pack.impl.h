@@ -23,13 +23,6 @@ void pack_first1(SendHalo* sendhalos[]) {
     for (int i = 0; i < 26; ++i) dstcells.d[i] = sendhalos[i]->hcellstarts->DP;
 }
 
-void wait_send() {
-  MPI_Status ss[26 * 2];
-  MC(l::m::Waitall(26, sendcellsreq, ss));
-  MC(l::m::Waitall(nsendreq, sendreq, ss));
-  MC(l::m::Waitall(26, sendcountreq, ss));
-}
-
 void scan(int *start, int *count) {
     if (ncells) k_halo::count<<<k_cnf(ncells)>>>(cellpackstarts, start, count, cellpacks::start, cellpacks::count);
     k_halo::scan_diego<32><<<26, 32 * 32>>>(cellpacks::size, cellpacks::count, /**/ cellpacks::scan);
