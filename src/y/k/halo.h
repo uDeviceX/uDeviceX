@@ -34,7 +34,7 @@ static __device__ void get_box(int i, /**/ int org[3], int ext[3]) {
 }
 
 /* halo to bulk cell id */
-static __device__ int h2cid(int hci, int org[3], int ext[3]) {
+static __device__ int h2cid(int hci, const int org[3], const int ext[3]) {
   enum {X, Y, Z};
   int c;
   int srccellpos[3];
@@ -43,7 +43,7 @@ static __device__ int h2cid(int hci, int org[3], int ext[3]) {
   return srccellpos[X] + XS * (srccellpos[Y] + YS * srccellpos[Z]);
 }
 
-__global__ void count(int *start, int *count) {
+__global__ void count(const int *start, const int *count) {
     enum {X, Y, Z};
     int gid;
     int hid; /* halo id */
