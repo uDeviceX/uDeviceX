@@ -1,10 +1,10 @@
 namespace dpd {
 void fremote(int n, SendHalo* sendhalos[], RecvHalo* recvhalos[],
-	     l::rnd::d::KISS* interrank_trunks[], bool interrank_masks[], /**/ Force *ff) {
+             l::rnd::d::KISS* interrank_trunks[], bool interrank_masks[], /**/ Force *ff) {
     static BipsBatch::BatchInfo infos[26];
 
     for (int i = 0; i < 26; ++i) {
-        int dx = (i + 2) % 3 - 1;
+        int dx = (i     + 2) % 3 - 1;
         int dy = (i / 3 + 2) % 3 - 1;
         int dz = (i / 9 + 2) % 3 - 1;
 
