@@ -1,6 +1,6 @@
 namespace dpd {
   
-void post(MPI_Comm cart, Particle *pp, SendHalo* sendhalos[], int n) {
+void post(MPI_Comm cart, SendHalo* sendhalos[]) {
     dSync(); /* wait for fill_all */
 
     for (int i = 0; i < 26; ++i) {
