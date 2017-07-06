@@ -11,6 +11,14 @@ flu::TicketRND trnd;
 odstr::TicketD td;   /* [d]istribute */
 odstr::Work w;
 
+/* [h]alo interactions */
+namespace h {
+dpdr::TicketCom tc;
+dpdr::Ticketrnd trnd;
+dpdr::TicketShalo ts;
+dpdr::TicketRhalo tr;
+}
+
 Force    *ff;
 Force     ff_hst[MAX_PART_NUM]; /* solvent forces on host    */
 }
