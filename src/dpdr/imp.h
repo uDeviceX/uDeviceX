@@ -19,3 +19,30 @@ void pack(const int27 fragstarts, const int ncells, const Particle *pp, const in
     dev::fill_all<<<(ncells + 1) / 2, 32>>>(fragstarts, pp, bagcounts, fragstr, fragcnt, fragcum,
                                             fragcapacity, fragii, fragpp);
 }
+
+void copy_pp(const int *fragnp, const Particlep26 fragppdev, /**/ Particlep26 fragpphst) {
+    dSync(); /* wait for fill_all */
+    
+    for (int i = 0; i < 26; ++i)
+    if (fragnp[i])
+    cudaMemcpyAsync(fragpphst.d[i], fragppdev.d[i], sizeof(Particle) * fragnp[i], D2H);
+    dSync(); /* was CC(cudaStreamSynchronize(downloadstream)); */
+}
+
+void post(MPI_Comm cart, const int dstranks[], const int *fragnp, const int26 fragnc, const intp26 fragcum, const Particlep26 fragpp,
+          /**/ MPI_Request *sendcellsreq, MPI_Request *sendcountreq, MPI_Request *sendreq) {
+
+    for (int i = 0; i < 26; ++i) {
+        const int nc = fragnc.d[i];
+        MC(l::m::Isend(fragcum.d[i], nc, MPI_INT, dstranks[i],
+                       BT_CS_DPD + i, cart, sendcellsreq + i));
+
+        const int count = fragnp[i];
+        
+        MC(l::m::Isend(&count, 1, MPI_INT, dstranks[i],
+                       BT_C_DPD + i, cart, sendcountreq + i));
+        
+        MC(l::m::Isend(fragpp.d[i], count, Particle::datatype(),
+                       dstranks[i], BT_P_DPD + i, cart, sendreq + i));
+    }
+}
