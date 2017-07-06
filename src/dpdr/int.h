@@ -32,7 +32,7 @@ struct TicketShalo {
     Particlep26 ppdev, pphst;  /* pinned memory for transfering particles         */
     intp26 cumdev, cumhst;     /* pinned memory for transfering local cum sum     */
 
-    void setup_frag(const int i, const int est, const int nfragcells) {
+    void alloc_frag(const int i, const int est, const int nfragcells) {
         estimate[i] = est;
         CC(cudaMalloc(&str.d[i], (nfragcells + 1) * sizeof(int)));
         CC(cudaMalloc(&cnt.d[i], (nfragcells + 1) * sizeof(int)));
@@ -71,7 +71,7 @@ struct TicketRhalo {
     Particlep26 ppdev, pphst;  /* pinned memory for transfering particles         */
     intp26 cumdev, cumhst;     /* pinned memory for transfering local cum sum     */
 
-    void setup_frag(const int i, const int est, const int nfragcells) {
+    void alloc_frag(const int i, const int est, const int nfragcells) {
         estimate[i] = est;
         CC(cudaMalloc(&cum.d[i], (nfragcells + 1) * sizeof(int)));
         CC(cudaMalloc(&pp.d[i], est * sizeof(Particle)));
