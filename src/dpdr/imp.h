@@ -9,11 +9,11 @@ void gather_cells(const int *start, const int *count, const int27 fragstarts, co
     dev::scan<32><<<26, 32 * 32>>>(fragnc, fragcnt, /**/ fragcum);
 }
 
-// void copycells() {
-//     if (ncells) k_halo::copycells<<<k_cnf(ncells)>>>(fragstarts, srccells, /**/ dstcells);
-// }
+void copycells(const int27 fragstarts, const int ncells, const intp26 srccells, /**/ intp26 dstcells) {
+    if (ncells) dev::copycells<<<k_cnf(ncells)>>>(fragstarts, srccells, /**/ dstcells);
+}
   
-// void pack(const Particle *pp, int n) {
+// void pack(const int27 fragstarts, const Particle *pp, int n) {
 //     if (ncells)
 //     k_halo::fill_all<<<(ncells + 1) / 2, 32>>>(fragstarts, pp, frag::np,
 //                                                frag::str, frag::cnt, frag::cum,
