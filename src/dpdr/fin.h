@@ -1,3 +1,3 @@
-void fin_tcom(/**/ TicketCom *t) {
-    MC(l::m::Comm_free(&t->cart);
+void fin_tcom(/**/ MPI_Comm *cart) {
+    MC(l::m::Comm_free(cart));
 }
