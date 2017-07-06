@@ -12,23 +12,18 @@ void upd_bag(SendHalo* sendhalos[]) {
 
 void post_expected_recv(MPI_Comm cart, RecvHalo* recvhalos[]) {
     for (int i = 0, c = 0; i < 26; ++i) {
-        if (recvhalos[i]->expected)
         MC(l::m::Irecv(recvhalos[i]->hbuf->D, recvhalos[i]->expected,
                        Particle::datatype(), dstranks[i], BT_P_DPD + recv_tags[i],
                        cart, recvreq + c++));
     }
     for (int i = 0, c = 0; i < 26; ++i)
-    if (recvhalos[i]->expected)
     MC(l::m::Irecv(recvhalos[i]->hcellstarts->D,
                    recvhalos[i]->hcellstarts->S, MPI_INTEGER, dstranks[i],
                    BT_CS_DPD + recv_tags[i], cart, recvcellsreq + c++));
   
     for (int i = 0, c = 0; i < 26; ++i)
-    if (recvhalos[i]->expected)
     MC(l::m::Irecv(recv_counts + i, 1, MPI_INTEGER, dstranks[i],
                    BT_C_DPD + recv_tags[i], cart, recvcountreq + c++));
-    else
-    recv_counts[i] = 0;
 }
 
 void cancel_recv() {
