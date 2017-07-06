@@ -44,4 +44,14 @@ struct TicketRhalo {
     intp26 cumdev, cumhst;     /* pinned memory for transfering local cum sum     */
 };
 
+void get_ticketcom(MPI_Comm cart, /**/ TicketCom *t) {
+    sub::ini_tcom(cart, /**/ &t->cart, t->dstranks, t->recv_tags);
+}
 
+void fin_ticketcom(/**/ TicketCom *t) {
+    sub::fin_tcom(/**/ &t->cart);
+}
+
+void ini_ticketrnd(const TicketCom tc, /**/ Ticketrnd *tr) {
+    sub::ini_trnd(tc.dstranks, /**/ tr->interrank_trunks, tr->interrank_masks);
+}

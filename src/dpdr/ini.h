@@ -1,4 +1,4 @@
-void ini_tcomm(MPI_Comm cart, /**/ MPI_Comm *newcart, int dstranks[], int recv_tags[]) {
+void ini_tcom(MPI_Comm cart, /**/ MPI_Comm *newcart, int dstranks[], int recv_tags[]) {
     int coordsneighbor[3];
 
     for (int i = 0; i < 26; ++i) {
