@@ -127,34 +127,7 @@ namespace dev {
 #include "bipsbatch.decl.h"
 #include "bipsbatch.impl.h"
 #include "dpd/local.h"
-#ifdef  YDPD
-  #include "y/k/halo.h"
-  #include "y/dpd/remote.type.h"
-  #include "y/dpd/remote.decl.h"
-  #include "dpd/flocal.h"        /* common */
-
-  #include "y/dpd/fremote.h"
-  #include "y/dpd/ini.h"
-  #include "y/dpd/remote.impl.h"
-  #include "y/dpd/pack.impl.h"
-  #include "y/dpd/post.impl.h"
-  #include "y/dpd/recv.impl.h"
-  #include "y/xy.decl.h"              /* temporary interface to dpd/x and dpd/y */
-  #include "y/xy.impl.h"
-#else
-  /* old dpd */
-  #include "x/phalo.decl.h"
-  #include "x/phalo.impl.h"
-  #include "x/dpd/remote.decl.h"
-
-  #include "dpd/flocal.h"        /* common */
-
-  #include "x/dpd/fremote.h"
-  #include "x/dpd/ini.h"
-  #include "x/dpd/remote.impl.h"
-  #include "x/xy.decl.h"              /* temporary interface to dpd/x and dpd/y */
-  #include "x/xy.impl.h"
-#endif
+#include "dpd/flocal.h"
 
 namespace dpdr {
 namespace sub {

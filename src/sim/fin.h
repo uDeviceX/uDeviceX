@@ -3,7 +3,6 @@ void fin() {
     rdstr::fin();
     bbhalo::fin();
     cnt::fin();
-    xy::fin(); /* calls dpd::ini() */
     dump::fin();
     rex::fin();
     fsi::fin();

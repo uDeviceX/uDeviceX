@@ -4,7 +4,6 @@ void ini() {
         rbc::alloc_quants(&r::q);
     }
     rdstr::ini();
-    xy::ini(); /* calls dpd::ini() */
     fsi::ini();
     sdstr::ini();
     bbhalo::ini();
