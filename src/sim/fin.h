@@ -20,6 +20,11 @@ void fin() {
     flu::free_ticketZ(&o::tz);
     flu::free_ticketRND(&o::trnd);
 
+    dpdr::free_ticketcom(&o::h::tc);
+    dpdr::free_ticketrnd(&o::h::trnd);
+    dpdr::free_ticketSh(&o::h::ts);
+    dpdr::free_ticketRh(&o::h::tr);
+    
     odstr::free_ticketD(&o::td);
     odstr::free_work(&o::w);
 
