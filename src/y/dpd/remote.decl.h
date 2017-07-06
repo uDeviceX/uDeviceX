@@ -1,7 +1,7 @@
 // see the vanilla version of this code for details about how this class
 // operates
 namespace dpd {
-int ncells;
+int ncells;                 /* total number of cells in halo           */
 MPI_Request sendreq[26 * 2], recvreq[26], sendcellsreq[26], recvcellsreq[26],
     sendcountreq[26], recvcountreq[26];
 int recv_tags[26], recv_counts[26];
