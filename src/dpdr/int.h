@@ -100,7 +100,29 @@ void ini_ticketcom(MPI_Comm cart, /**/ TicketCom *t) {
     t->first = true;
 }
 
+/* TODO move to fin */
+static 
+void cancel_recv(TicketCom *tc) {
+    for (int i = 0; i < 26; ++i) {
+        MC(MPI_Cancel(tc->recvreq + i));
+        MC(MPI_Cancel(tc->recvcellsreq + i));
+        MC(MPI_Cancel(tc->recvcountreq + i));
+    }
+}
+
+static void wait_send(TicketCom *tc) {
+    MPI_Status ss[26];
+    MC(l::m::Waitall(26, tc->sendcellsreq, ss));
+    MC(l::m::Waitall(26, tc->sendreq,      ss));
+    MC(l::m::Waitall(26, tc->sendcountreq, ss));
+}
+
+
 void free_ticketcom(/**/ TicketCom *t) {
+    if (!t->first) {
+        wait_send(t);
+        cancel_recv(t);
+    }
     sub::fin_tcom(/**/ &t->cart);
 }
 
@@ -174,27 +196,11 @@ void post_expected_recv(TicketCom *tc, TicketRhalo *tr) {
                        /**/ tr->pphst, tr->np.d, tr->cumhst, tc->recvcellsreq, tc->recvcountreq, tc->recvreq);
 }
 
-void cancel_recv(TicketCom *tc) {
-    for (int i = 0; i < 26; ++i) {
-        MC(MPI_Cancel(tc->recvreq + i));
-        MC(MPI_Cancel(tc->recvcellsreq + i));
-        MC(MPI_Cancel(tc->recvcountreq + i));
-    }
-}
-
-
 void wait_recv(TicketCom *tc) {
     MPI_Status statuses[26];
     MC(l::m::Waitall(26, tc->recvreq, statuses));
     MC(l::m::Waitall(26, tc->recvcellsreq, statuses));
     MC(l::m::Waitall(26, tc->recvcountreq, statuses));
-}
-
-void wait_send(TicketCom *tc) {
-    MPI_Status ss[26];
-    MC(l::m::Waitall(26, tc->sendcellsreq, ss));
-    MC(l::m::Waitall(26, tc->sendreq,      ss));
-    MC(l::m::Waitall(26, tc->sendcountreq, ss));
 }
 
 void fremote(Ticketrnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
