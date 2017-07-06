@@ -3,6 +3,10 @@ typedef Sarray<int,  27> int27;
 typedef Sarray<int*, 26> intp26;
 typedef Sarray<Particle*, 26> Particlep26;
 
+struct Reqs {
+    MPI_Request pp[26], cells[26], counts[26];
+};
+
 void gather_cells(const int *start, const int *count, const int27 fragstarts, const int26 fragnc,
                   const int ncells, /**/ intp26 fragstr, intp26 fragcnt, intp26 fragcum) {
     if (ncells) dev::count<<<k_cnf(ncells)>>>(fragstarts, start, count, fragstr, fragcnt);
@@ -30,33 +34,33 @@ void copy_pp(const int *fragnp, const Particlep26 fragppdev, /**/ Particlep26 fr
 }
 
 void post(MPI_Comm cart, const int dstranks[], const int *fragnp, const int26 fragnc, const intp26 fragcum, const Particlep26 fragpp,
-          /**/ MPI_Request *sendcellsreq, MPI_Request *sendcountreq, MPI_Request *sendreq) {
+          /**/ Reqs *sreq) {
 
     for (int i = 0; i < 26; ++i) {
         const int nc = fragnc.d[i];
         MC(l::m::Isend(fragcum.d[i], nc, MPI_INT, dstranks[i],
-                       BT_CS_DPD + i, cart, sendcellsreq + i));
+                       BT_CS_DPD + i, cart, sreq->cells + i));
 
         const int count = fragnp[i];
         
         MC(l::m::Isend(&count, 1, MPI_INT, dstranks[i],
-                       BT_C_DPD + i, cart, sendcountreq + i));
+                       BT_C_DPD + i, cart, sreq->counts + i));
         
         MC(l::m::Isend(fragpp.d[i], count, Particle::datatype(),
-                       dstranks[i], BT_P_DPD + i, cart, sendreq + i));
+                       dstranks[i], BT_P_DPD + i, cart, sreq->pp + i));
     }
 }
 
 void post_expected_recv(MPI_Comm cart, const int dstranks[], const int recv_tags[], const int estimate[], const int26 fragnc,
-                        /**/ Particlep26 fragpp, int *Rfragnp, intp26 Rfragcum, MPI_Request *recvcellsreq, MPI_Request *recvcountreq, MPI_Request *recvreq) {
+                        /**/ Particlep26 fragpp, int *Rfragnp, intp26 Rfragcum, Reqs *rreq) {
     for (int i = 0; i < 26; ++i) {
         MC(l::m::Irecv(fragpp.d[i], estimate[i], Particle::datatype(), dstranks[i], BT_P_DPD + recv_tags[i],
-                       cart, recvreq + i));
+                       cart, rreq->pp + i));
     
         MC(l::m::Irecv(Rfragcum.d[i], fragnc.d[i], MPI_INT, dstranks[i],
-                       BT_CS_DPD + recv_tags[i], cart, recvcellsreq + i));
+                       BT_CS_DPD + recv_tags[i], cart, rreq->cells + i));
     
         MC(l::m::Irecv(Rfragnp + i, 1, MPI_INT, dstranks[i],
-                       BT_C_DPD + recv_tags[i], cart, recvcountreq + i));
+                       BT_C_DPD + recv_tags[i], cart, rreq->counts + i));
     }
 }

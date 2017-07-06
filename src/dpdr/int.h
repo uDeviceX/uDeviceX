@@ -5,8 +5,7 @@ typedef Sarray<Particle*, 26> Particlep26;
 
 struct TicketCom {
     MPI_Comm cart;
-    MPI_Request sendreq[26], sendcellsreq[26], sendcountreq[26];
-    MPI_Request recvreq[26], recvcellsreq[26], recvcountreq[26];
+    sub::Reqs sreq, rreq;
     int recv_tags[26], recv_counts[26], dstranks[26];
     bool first;
 };
@@ -101,26 +100,26 @@ void ini_ticketcom(MPI_Comm cart, /**/ TicketCom *t) {
 }
 
 /* TODO move to fin */
-static void cancel_recv(TicketCom *tc) {
+static void cancel_req(sub::Reqs *r) {
     for (int i = 0; i < 26; ++i) {
-        MC(MPI_Cancel(tc->recvreq + i));
-        MC(MPI_Cancel(tc->recvcellsreq + i));
-        MC(MPI_Cancel(tc->recvcountreq + i));
+        MC(MPI_Cancel(r->pp     + i));
+        MC(MPI_Cancel(r->cells  + i));
+        MC(MPI_Cancel(r->counts + i));
     }
 }
 
-static void wait_send(TicketCom *tc) {
+static void wait_req(sub::Reqs *r) {
     MPI_Status ss[26];
-    MC(l::m::Waitall(26, tc->sendcellsreq, ss));
-    MC(l::m::Waitall(26, tc->sendreq,      ss));
-    MC(l::m::Waitall(26, tc->sendcountreq, ss));
+    MC(l::m::Waitall(26, r->cells,  ss));
+    MC(l::m::Waitall(26, r->pp,     ss));
+    MC(l::m::Waitall(26, r->counts, ss));
 }
 
 
 void free_ticketcom(/**/ TicketCom *t) {
     if (!t->first) {
-        wait_send(t);
-        cancel_recv(t);
+        wait_req(&t->sreq);
+        cancel_req(&t->rreq);
     }
     sub::fin_tcom(/**/ &t->cart);
 }
@@ -187,19 +186,16 @@ void pack(const Particle *pp, /**/ TicketShalo t) {
 void post(TicketCom *tc, TicketShalo *ts) {
     sub::copy_pp(ts->nphst, ts->pp, ts->pphst);
     sub::post(tc->cart, tc->dstranks, ts->nphst, ts->nc, ts->cumhst, ts->pphst,
-              /**/ tc->sendcellsreq, tc->sendcountreq, tc->sendreq);
+              /**/ &tc->sreq);
 }
 
 void post_expected_recv(TicketCom *tc, TicketRhalo *tr) {
     sub::post_expected_recv(tc->cart, tc->dstranks, tc->recv_tags, tr->estimate, tr->nc,
-                       /**/ tr->pphst, tr->np.d, tr->cumhst, tc->recvcellsreq, tc->recvcountreq, tc->recvreq);
+                       /**/ tr->pphst, tr->np.d, tr->cumhst, &tc->rreq);
 }
 
 void wait_recv(TicketCom *tc) {
-    MPI_Status statuses[26];
-    MC(l::m::Waitall(26, tc->recvreq, statuses));
-    MC(l::m::Waitall(26, tc->recvcellsreq, statuses));
-    MC(l::m::Waitall(26, tc->recvcountreq, statuses));
+    wait_req(&tc->rreq);
 }
 
 // TODO move this to imp
