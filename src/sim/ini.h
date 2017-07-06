@@ -21,7 +21,10 @@ void ini() {
 
     odstr::alloc_ticketD(&o::td);
     odstr::alloc_work(&o::w);
-    
+
+    dpdr::ini_ticketcom(m::cart, &o::h::tc);
+    dpdr::ini_ticketrnd(o::h::tc, /**/ &o::h::trnd);
+    dpdr::alloc_tickethalo(/**/ &o::h::ts, &o::h::tr);
 
     mpDeviceMalloc(&o::ff);
 
