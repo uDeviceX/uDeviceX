@@ -14,7 +14,17 @@ struct Ticketrnd {
 };
 
 struct TicketShalo {
-    
+    int27 fragstarts;          /* cumulative sum of number of cells for each fragment */
+
+    intp26 str, cnt, cum;      /* see /doc/remote.md                              */
+    int26 nc, capacity;        /* number of cells per fragment                    */
+    Particlep26 pp;            /* buffer of particles for each fragment           */
+    intp26 ii;                 /* buffer of scattered indices for each fragment   */
+
+    /* pinned buffers */
+    int *npdev, *nphst;        /* number of particles on each fragment            */
+    Particlep26 ppdev, pphst;  /* pinned memory for transfering particles         */
+    intp26 iidev, iihst;       /* pinned memory for transfering scattered indices */
 };
 
 struct TicketRhalo {
