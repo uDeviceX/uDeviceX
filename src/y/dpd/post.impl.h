@@ -18,14 +18,14 @@ void post(MPI_Comm cart, Particle *pp, SendHalo* sendhalos[], int n) {
                     H2H);
     dSync(); /* was CC(cudaStreamSynchronize(downloadstream)); */
 
-    for (int i = 0, c = 0; i < 26; ++i)
+    for (int i = 0; i < 26; ++i)
     MC(l::m::Isend(sendhalos[i]->hcellstarts->D,
                    sendhalos[i]->hcellstarts->S, MPI_INTEGER, dstranks[i],
-                   BT_CS_DPD + i, cart, sendcellsreq + c++));
+                   BT_CS_DPD + i, cart, sendcellsreq + i));
 
-    for (int i = 0, c = 0; i < 26; ++i)
+    for (int i = 0; i < 26; ++i)
     MC(l::m::Isend(&sendhalos[i]->hbuf->S, 1, MPI_INTEGER, dstranks[i],
-                   BT_C_DPD + i, cart, sendcountreq + c++));
+                   BT_C_DPD + i, cart, sendcountreq + i));
 
     for (int i = 0; i < 26; ++i) {
         int count = sendhalos[i]->hbuf->S;
