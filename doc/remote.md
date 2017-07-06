@@ -19,6 +19,8 @@ Each fragment also has (output of `pack`):
 -Particles `pp`  
 -Particle indices `ii`  
 
+Scattered indices are NOT sent, they are used for bipsbatch interactions.
+
 ## halo particles
 
 `hid` is the fragment id `0 <= hid < 26`  
