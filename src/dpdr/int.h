@@ -71,6 +71,7 @@ struct TicketRhalo {
     /* pinned buffers */
     Particlep26 ppdev, pphst;  /* pinned memory for transfering particles         */
     intp26 cumdev, cumhst;     /* pinned memory for transfering local cum sum     */
+    int26 np;                  /* recv sizes */
 
     void alloc_frag(const int i, const int est, const int nfragcells) {
         estimate[i] = est;
@@ -167,3 +168,4 @@ void post(TicketCom *tc, TicketShalo *ts) {
     sub::post(tc->cart, tc->dstranks, ts->nphst, ts->nc, ts->cumhst, ts->pphst,
               /**/ tc->sendcellsreq, tc->sendcountreq, tc->sendreq);
 }
+
