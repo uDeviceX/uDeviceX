@@ -118,7 +118,7 @@ __global__ void scan(const int26 fragn, const intp26 fragcc, /**/ intp26 fragcum
     }
 }
   
-__global__ void fill_all(const int27 cellpackstarts, Particle *pp, int *required_bag_size,
+__global__ void fill_all(const int27 cellpackstarts, const Particle *pp, int *required_bag_size,
                          const intp26 fragss, const intp26 fragcc, const intp26 fragcum,
                          const int26 fragcapacity, intp26 fragindices, Particlep26 fragpp) {
     int gid, hid, hci, tid, src, dst, nsrc, nfloats;
@@ -141,7 +141,7 @@ __global__ void fill_all(const int27 cellpackstarts, Particle *pp, int *required
         c    = i % 6;
         dpid = dst + lpid;
         spid = src + lpid;
-        word = *(float2 *)&pp[spid].r[c];
+        word = *(const float2 *)&pp[spid].r[c];
         *(float2 *)&fragpp.d[hid][dpid].r[c] = word;
     }
     for (lpid = tid; lpid < nsrc; lpid += warpSize / 2) {
