@@ -4,13 +4,15 @@ typedef Sarray<int*, 26> intp26;
 typedef Sarray<Particle*, 26> Particlep26;
 
 struct TicketCom {
+    MPI_Comm cart;
     MPI_Request sendreq[26], sendcellsreq[26], sendcountreq[26];
     MPI_Request recvreq[26], recvcellsreq[26], recvcountreq[26];
     int recv_tags[26], recv_counts[26], dstranks[26];
 };
 
 struct Ticketrnd {
-    
+    l::rnd::d::KISS *interrank_trunks[26];
+    bool interrank_masks[26];
 };
 
 struct TicketShalo {
