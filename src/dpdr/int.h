@@ -174,3 +174,18 @@ void post_expected_recv(TicketCom *tc, TicketRhalo *tr) {
     sub::post_expected_recv(tc->cart, tc->dstranks, tc->recv_tags, tr->estimate, tr->nc,
                        /**/ tr->pphst, tr->np.d, tr->cumhst, tc->recvcellsreq, tc->recvcountreq, tc->recvreq);
 }
+
+void cancel_recv(TicketCom *tc) {
+    for (int i = 0; i < 26; ++i) {
+        MC(MPI_Cancel(tc->recvreq + i));
+        MC(MPI_Cancel(tc->recvcellsreq + i));
+        MC(MPI_Cancel(tc->recvcountreq + i));
+    }
+}
+
+void wait_send(TicketCom *tc) {
+    MPI_Status ss[26];
+    MC(l::m::Waitall(26, tc->sendcellsreq, ss));
+    MC(l::m::Waitall(26, tc->sendreq,      ss));
+    MC(l::m::Waitall(26, tc->sendcountreq, ss));
+}
