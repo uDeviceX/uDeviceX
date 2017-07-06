@@ -28,9 +28,9 @@ void copycells() {
     if (ncells) k_halo::copycells<<<k_cnf(ncells)>>>(fragstarts, srccells, /**/ dstcells);
 }
   
-void pack(Particle *p, int n) {
+void pack(Particle *pp, int n) {
     if (ncells)
-    k_halo::fill_all<<<(ncells + 1) / 2, 32>>>(fragstarts, p, required_send_bag_size,
+    k_halo::fill_all<<<(ncells + 1) / 2, 32>>>(fragstarts, pp, required_send_bag_size,
                                                frag::str, frag::cnt, frag::cum,
                                                frag::capacity, frag::ii, frag::pp);
 }
