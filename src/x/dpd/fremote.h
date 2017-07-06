@@ -31,6 +31,6 @@ void fremote(int n, Force *ff) {
         infos[i] = entry;
     }
 
-    BipsBatch::interactions(infos, (float *)ff, n);
+    BipsBatch::interactions(infos, (float *)ff);
 }
 } /* namespace dpd */
