@@ -225,7 +225,7 @@ void fremote(Ticketrnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
 
         BipsBatch::BatchInfo entry = {
             (float *)ts.pp.d[i],
-            (float2 *)tr.ppdev.d[i],
+            (float2 *)tr.pp.d[i],
             trnd.interrank_trunks[i]->get_float(),
             ts.nphst[i],
             tr.np.d[i],
