@@ -97,7 +97,7 @@ void dump0(const int N[3], const float extent[3], const float* grid_data, float*
         dr[c] = N[c] / (float)(m::dims[c] * L[c]);
     }
     ampl = L[0] / (extent[0] / (float) m::dims[0]);
-    field::sample(rlo, dr, L, N, ampl, grid_data, walldata);
+    sample(rlo, dr, L, N, ampl, grid_data, walldata);
     H5FieldDump dump;
     dump.dump_scalarfield(walldata, "wall");
 }
