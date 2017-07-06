@@ -27,11 +27,8 @@ void post(MPI_Comm cart, Particle *pp, SendHalo* sendhalos[], int n) {
     MC(l::m::Isend(&sendhalos[i]->hbuf->S, 1, MPI_INTEGER, dstranks[i],
                    BT_C_DPD + i, cart, sendcountreq + i));
 
-    for (int i = 0; i < 26; ++i) {
-        int count = sendhalos[i]->hbuf->S;
-
-        MC(l::m::Isend(sendhalos[i]->hbuf->D, count, Particle::datatype(),
-                       dstranks[i], BT_P_DPD + i, cart, sendreq + i));
-    }
+    for (int i = 0; i < 26; ++i)
+    MC(l::m::Isend(sendhalos[i]->hbuf->D, sendhalos[i]->hbuf->S, Particle::datatype(),
+                   dstranks[i], BT_P_DPD + i, cart, sendreq + i));
 }
 }
