@@ -145,3 +145,15 @@ void free_ticketSh(/**/TicketShalo *t) {
 void free_ticketRh(/**/TicketRhalo *t) {
     for (int i = 0; i < 26; ++i) t->free_frag(i);
 }
+
+
+/* remote: send functions */
+
+void gather_cells(const int *start, const int *count, /**/ TicketShalo *t) {
+    sub::gather_cells(start, count, t->fragstarts, t->nc, t->ncells,
+                      /**/ t->str, t->cnt, t->cum);
+}
+
+void copy_cells(/**/ TicketShalo *t) {
+    sub::copy_cells(t->fragstarts, t->ncells, t->cum, /**/ t->cumdev);
+}

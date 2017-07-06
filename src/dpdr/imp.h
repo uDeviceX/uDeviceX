@@ -9,7 +9,7 @@ void gather_cells(const int *start, const int *count, const int27 fragstarts, co
     dev::scan<32><<<26, 32 * 32>>>(fragnc, fragcnt, /**/ fragcum);
 }
 
-void copycells(const int27 fragstarts, const int ncells, const intp26 srccells, /**/ intp26 dstcells) {
+void copy_cells(const int27 fragstarts, const int ncells, const intp26 srccells, /**/ intp26 dstcells) {
     if (ncells) dev::copycells<<<k_cnf(ncells)>>>(fragstarts, srccells, /**/ dstcells);
 }
   
