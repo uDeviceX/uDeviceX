@@ -10,7 +10,6 @@ void ini_tcomm(MPI_Comm cart, /**/ TicketCom *t) {
 
         for (int c = 0; c < 3; ++c) coordsneighbor[c] = m::coords[c] + d[c];
         MC(l::m::Cart_rank(cart, coordsneighbor, t->dstranks + i));
-
-        MC(l::m::Comm_dup(cart, /**/ t->cart));
+        MC(l::m::Comm_dup(cart, /**/ &t->cart));
     }
 }
