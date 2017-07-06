@@ -20,7 +20,7 @@ intp26 srccells, dstcells;
 namespace frag {
 intp26 str, cnt, cum, ii;   /* see /doc/remote.md                        */
 int26 nc, capacity;         /* number of cells per fragment              */
-Particlep26 pp;             /* buffer of particles fro each fragment     */
+Particlep26 pp;             /* buffer of particles for each fragment     */
 int *np, *nphst;  /* number of particles on the device and host (pinned) */
 }
 }
