@@ -22,7 +22,7 @@ struct TicketShalo {
     int27 fragstarts;          /* cumulative sum of number of cells for each fragment */
 
     intp26 str, cnt, cum;      /* see /doc/remote.md                              */
-    int26 nc, capacity;        /* number of cells per fragment                    */
+    int26 nc;                  /* number of cells per fragment                    */
     Particlep26 pp;            /* buffer of particles for each fragment           */
     intp26 ii;                 /* buffer of scattered indices for each fragment   */
 
@@ -32,7 +32,7 @@ struct TicketShalo {
     intp26 cumdev, cumhst;     /* pinned memory for transfering local cum sum     */
 
     void alloc_frag(const int i, const int est, const int nfragcells) {
-        estimate.d[i] = capacity.d[i] = est;
+        estimate.d[i] = est;
         nc.d[i] = nfragcells + 1;
         CC(cudaMalloc(&str.d[i], (nfragcells + 1) * sizeof(int)));
         CC(cudaMalloc(&cnt.d[i], (nfragcells + 1) * sizeof(int)));
@@ -159,7 +159,7 @@ void copy_cells(/**/ TicketShalo *t) {
 }
 
 void pack(const Particle *pp, /**/ TicketShalo t) {
-    sub::pack(t.fragstarts, t.ncells, pp, t.str, t.cnt, t.cum, t.capacity, t.ii, t.pp, t.npdev);
+    sub::pack(t.fragstarts, t.ncells, pp, t.str, t.cnt, t.cum, t.estimate, t.ii, t.pp, t.npdev);
 }
 
 void post(TicketCom *tc, TicketShalo *ts) {
