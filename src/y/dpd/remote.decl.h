@@ -13,7 +13,7 @@ typedef Sarray<int,  27> int27;
 typedef Sarray<int*, 26> intp26;
 typedef Sarray<Particle*, 26> Particlep26;
 
-int27 cellpackstarts;
+int27 fragstarts;
 intp26 srccells, dstcells;
 
 /* fragments of halo */
