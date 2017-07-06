@@ -31,6 +31,34 @@ struct TicketShalo {
     int *npdev, *nphst;        /* number of particles on each fragment            */
     Particlep26 ppdev, pphst;  /* pinned memory for transfering particles         */
     intp26 cumdev, cumhst;     /* pinned memory for transfering local cum sum     */
+
+    void setup_frag(const int i, const int est, const int nfragcells) {
+        estimate[i] = est;
+        CC(cudaMalloc(&str.d[i], (nfragcells + 1) * sizeof(int)));
+        CC(cudaMalloc(&cnt.d[i], (nfragcells + 1) * sizeof(int)));
+        CC(cudaMalloc(&cum.d[i], (nfragcells + 1) * sizeof(int)));
+
+        CC(cudaMalloc(&ii.d[i], est * sizeof(int)));
+        CC(cudaMalloc(&pp.d[i], est * sizeof(Particle)));
+
+        CC(cudaHostAlloc(&pphst.d[i], est * sizeof(Particle), cudaHostAllocMapped));
+        CC(cudaHostGetDevicePointer(&ppdev.d[i], pphst.d[i], 0));
+
+        CC(cudaHostAlloc(&cumhst.d[i], est * sizeof(int), cudaHostAllocMapped));
+        CC(cudaHostGetDevicePointer(&cumdev.d[i], cumhst.d[i], 0));
+    }
+
+    void free_frag(const int i) {
+        CC(cudaFree(str.d[i]));
+        CC(cudaFree(cnt.d[i]));
+        CC(cudaFree(cum.d[i]));
+
+        CC(cudaFree(ii.d[i]));
+        CC(cudaFree(pp.d[i]));
+        
+        CC(cudaFreeHost(cumhst.d[i]));
+        CC(cudaFreeHost(pphst.d[i]));
+    }
 };
 
 struct TicketRhalo {
@@ -42,6 +70,26 @@ struct TicketRhalo {
     /* pinned buffers */
     Particlep26 ppdev, pphst;  /* pinned memory for transfering particles         */
     intp26 cumdev, cumhst;     /* pinned memory for transfering local cum sum     */
+
+    void setup_frag(const int i, const int est, const int nfragcells) {
+        estimate[i] = est;
+        CC(cudaMalloc(&cum.d[i], (nfragcells + 1) * sizeof(int)));
+        CC(cudaMalloc(&pp.d[i], est * sizeof(Particle)));
+
+        CC(cudaHostAlloc(&pphst.d[i], est * sizeof(Particle), cudaHostAllocMapped));
+        CC(cudaHostGetDevicePointer(&ppdev.d[i], pphst.d[i], 0));
+
+        CC(cudaHostAlloc(&cumhst.d[i], est * sizeof(int), cudaHostAllocMapped));
+        CC(cudaHostGetDevicePointer(&cumdev.d[i], cumhst.d[i], 0));
+    }
+
+    void free_frag(const int i) {
+        CC(cudaFree(cum.d[i]));
+        CC(cudaFree(pp.d[i]));
+        
+        CC(cudaFreeHost(cumhst.d[i]));
+        CC(cudaFreeHost(pphst.d[i]));
+    }
 };
 
 void ini_ticketcom(MPI_Comm cart, /**/ TicketCom *t) {
@@ -58,4 +106,12 @@ void ini_ticketrnd(const TicketCom tc, /**/ Ticketrnd *tr) {
 
 void fin_ticketrnd(/**/ Ticketrnd *tr) {
     sub::fin_trnd(/**/ tr->interrank_trunks);
+}
+
+void alloc_ticketSh(/**/ TicketShalo *t) {
+    
+}
+
+void ini_ticketSh(/**/ TicketShalo *t) {
+    
 }
