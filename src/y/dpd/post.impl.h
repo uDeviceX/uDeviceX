@@ -14,7 +14,7 @@ void post(MPI_Comm cart, SendHalo* sendhalos[]) {
     if (sendhalos[i]->hbuf->S)
     cudaMemcpyAsync(sendhalos[i]->hbuf->D, sendhalos[i]->dbuf->D,
                     sizeof(Particle) * sendhalos[i]->hbuf->S,
-                    H2H);
+                    D2H);
     dSync(); /* was CC(cudaStreamSynchronize(downloadstream)); */
 
     for (int i = 0; i < 26; ++i)
