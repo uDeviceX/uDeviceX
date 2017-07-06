@@ -16,6 +16,7 @@ struct Ticketrnd {
 };
 
 struct TicketShalo {
+    int estimate[26];
     bool first;
     int ncells;                /* total number of cells in the halo              */
     
@@ -33,6 +34,8 @@ struct TicketShalo {
 };
 
 struct TicketRhalo {
+    int estimate[26];
+    
     intp26 cum;                /* cellstarts for each fragment (frag coords)      */
     Particlep26 pp;            /* buffer of particles for each fragment           */
 
