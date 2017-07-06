@@ -8,6 +8,7 @@ struct TicketCom {
     MPI_Request sendreq[26], sendcellsreq[26], sendcountreq[26];
     MPI_Request recvreq[26], recvcellsreq[26], recvcountreq[26];
     int recv_tags[26], recv_counts[26], dstranks[26];
+    bool first;
 };
 
 struct Ticketrnd {
@@ -17,7 +18,6 @@ struct Ticketrnd {
 
 struct TicketShalo {
     int estimate[26];
-    bool first;
     int ncells;                /* total number of cells in the halo              */
     
     int27 fragstarts;          /* cumulative sum of number of cells for each fragment */
@@ -97,6 +97,7 @@ struct TicketRhalo {
 
 void ini_ticketcom(MPI_Comm cart, /**/ TicketCom *t) {
     sub::ini_tcom(cart, /**/ &t->cart, t->dstranks, t->recv_tags);
+    t->first = true;
 }
 
 void free_ticketcom(/**/ TicketCom *t) {
@@ -131,8 +132,6 @@ void alloc_tickethalo(/**/ TicketShalo *ts, TicketRhalo *tr) {
 
     CC(cudaHostAlloc(&ts->nphst, sizeof(int) * 26, cudaHostAllocMapped));
     CC(cudaHostGetDevicePointer(&ts->npdev, ts->nphst, 0));
-
-    ts->first = true;
 
     int s = ts->fragstarts.d[0] = 0;
     for (int i = 0; i < 26; ++i) ts->fragstarts.d[i + 1] = (s += ts->nc.d[i]);
@@ -181,6 +180,14 @@ void cancel_recv(TicketCom *tc) {
         MC(MPI_Cancel(tc->recvcellsreq + i));
         MC(MPI_Cancel(tc->recvcountreq + i));
     }
+}
+
+
+void wait_recv(TicketCom *tc) {
+    MPI_Status statuses[26];
+    MC(l::m::Waitall(26, tc->recvreq, statuses));
+    MC(l::m::Waitall(26, tc->recvcellsreq, statuses));
+    MC(l::m::Waitall(26, tc->recvcountreq, statuses));
 }
 
 void wait_send(TicketCom *tc) {
