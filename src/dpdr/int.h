@@ -186,6 +186,7 @@ void recv(TicketRhalo *t) {
     CC(cudaMemcpyAsync(t->cum.d[i], t->cumhst.d[i],  sizeof(int) * t->nc.d[i], H2D));
 }
 
+// TODO move this to imp
 void fremote(Ticketrnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
     static BipsBatch::BatchInfo infos[26];
 
