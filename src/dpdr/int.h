@@ -28,5 +28,10 @@ struct TicketShalo {
 };
 
 struct TicketRhalo {
-    
+    intp26 cum;                /* cellstarts for each fragment (frag coords)      */
+    Particlep26 pp;            /* buffer of particles for each fragment           */
+
+    /* pinned buffers */
+    Particlep26 ppdev, pphst;  /* pinned memory for transfering particles         */
+    intp26 cumdev, cumhst;     /* pinned memory for transfering local cum sum     */
 };
