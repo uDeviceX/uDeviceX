@@ -3,6 +3,7 @@ typedef Sarray<int,  27> int27;
 typedef Sarray<int*, 26> intp26;
 typedef Sarray<Particle*, 26> Particlep26;
 
+/* Structure containing all all kinds of requests a fragment can have */
 struct Reqs {
     MPI_Request pp[26], cells[26], counts[26];
 };
