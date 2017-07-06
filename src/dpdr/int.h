@@ -24,7 +24,7 @@ struct TicketShalo {
     /* pinned buffers */
     int *npdev, *nphst;        /* number of particles on each fragment            */
     Particlep26 ppdev, pphst;  /* pinned memory for transfering particles         */
-    intp26 iidev, iihst;       /* pinned memory for transfering scattered indices */
+    intp26 cumdev, cumhst;     /* pinned memory for transfering local cum sum     */
 };
 
 struct TicketRhalo {
