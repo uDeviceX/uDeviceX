@@ -32,6 +32,6 @@ void fremote(int n, SendHalo* sendhalos[], RecvHalo* recvhalos[],
         infos[i] = entry;
     }
 
-    BipsBatch::interactions(infos, (float *)ff, n);
+    BipsBatch::interactions(infos, (float *)ff);
 }
 } /* namespace dpd */

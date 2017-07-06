@@ -1,5 +1,5 @@
 namespace BipsBatch {
-__global__ void interaction_kernel(int ndstall, float *adst, int sizeadst) {
+__global__ void interaction_kernel(float *adst) {
     BatchInfo info;
 
     uint code, dpid;
@@ -140,7 +140,7 @@ __global__ void interaction_kernel(int ndstall, float *adst, int sizeadst) {
     atomicAdd(adst + dstbase + 2, zforce);
 }
 
-void interactions(BatchInfo infos[20], float *acc, int n) {
+void interactions(BatchInfo infos[20], /**/ float *acc) {
     if (firstcall) {
         CC(cudaEventCreate(&evhalodone, cudaEventDisableTiming));
         CC(cudaFuncSetCacheConfig(interaction_kernel, cudaFuncCachePreferL1));
@@ -165,8 +165,7 @@ void interactions(BatchInfo infos[20], float *acc, int n) {
     CC(cudaEventRecord(evhalodone));
 
     if (nthreads)
-    interaction_kernel<<<k_cnf(nthreads)>>>
-        (nthreads, acc, n);
+    interaction_kernel<<<k_cnf(nthreads)>>> (acc);
 }
 
 }
