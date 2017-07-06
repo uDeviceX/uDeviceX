@@ -121,28 +121,34 @@ __global__ void scan(const int26 fragn, const intp26 fragcc, /**/ intp26 fragcum
 __global__ void fill_all(const int27 cellpackstarts, const Particle *pp, int *required_bag_size,
                          const intp26 fragss, const intp26 fragcc, const intp26 fragcum,
                          const int26 fragcapacity, intp26 fragindices, Particlep26 fragpp) {
-    int gid, hid, hci, tid, src, dst, nsrc, nfloats;
+    int gid, hid, hci, tid, src, dst, nsrc, nfloat2s;
     int i, lpid, dpid, spid, c;
-    float2 word;
 
+    /* 16 workers (warpSize/2) per cell */
+    /* gid: work group id               */
+    /* tid: worker id within the group  */
+    
     gid = (threadIdx.x >> 4) + 2 * blockIdx.x;
     if (gid >= cellpackstarts.d[26]) return;
 
     hid = get_idpack(cellpackstarts.d, gid);
     hci = gid - cellpackstarts.d[hid];
-
+    
     tid = threadIdx.x & 0xf;
     src = fragss.d[hid][hci];
     dst = fragcum.d[hid][hci];
     nsrc = min(fragcc.d[hid][hci], fragcapacity.d[hid] - dst);
-    nfloats = nsrc * 6;
-    for (i = 2 * tid; i < nfloats; i += warpSize) {
-        lpid = i / 6;
-        c    = i % 6;
+
+    const float2 *srcpp = (const float2*) pp;
+    float2 *dstpp = (float2*) fragpp.d[hid];
+    
+    nfloat2s = nsrc * 3;
+    for (i = tid; i < nfloat2s; i += warpSize/2) {
+        lpid = i / 3;
+        c    = i % 3;
         dpid = dst + lpid;
         spid = src + lpid;
-        word = *(const float2 *)&pp[spid].r[c];
-        *(float2 *)&fragpp.d[hid][dpid].r[c] = word;
+        dstpp[3 * dpid + c] = srcpp[3 * spid + c];
     }
     for (lpid = tid; lpid < nsrc; lpid += warpSize / 2) {
         dpid = dst + lpid;
