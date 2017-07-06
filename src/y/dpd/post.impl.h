@@ -5,7 +5,6 @@ void post(MPI_Comm cart, SendHalo* sendhalos[]) {
 
     for (int i = 0; i < 26; ++i) {
         int nrequired = required_send_bag_size_host[i];
-
         sendhalos[i]->dbuf->S = nrequired;
         sendhalos[i]->hbuf->resize(nrequired);
         sendhalos[i]->scattered_entries->S = nrequired;
