@@ -195,6 +195,13 @@ void post_expected_recv(TicketCom *tc, TicketRhalo *tr) {
                        /**/ tr->pphst, tr->np.d, tr->cumhst, tc->recvcellsreq, tc->recvcountreq, tc->recvreq);
 }
 
+void wait_recv(TicketCom *tc) {
+    MPI_Status statuses[26];
+    MC(l::m::Waitall(26, tc->recvreq, statuses));
+    MC(l::m::Waitall(26, tc->recvcellsreq, statuses));
+    MC(l::m::Waitall(26, tc->recvcountreq, statuses));
+}
+
 // TODO move this to imp
 void recv(TicketRhalo *t) {
     for (int i = 0; i < 26; ++i)
@@ -202,13 +209,6 @@ void recv(TicketRhalo *t) {
     
     for (int i = 0; i < 26; ++i)
     CC(cudaMemcpyAsync(t->cum.d[i], t->cumhst.d[i],  sizeof(int) * t->nc.d[i], H2D));
-}
-
-void wait_recv(TicketCom *tc) {
-    MPI_Status statuses[26];
-    MC(l::m::Waitall(26, tc->recvreq, statuses));
-    MC(l::m::Waitall(26, tc->recvcellsreq, statuses));
-    MC(l::m::Waitall(26, tc->recvcountreq, statuses));
 }
 
 void fremote(Ticketrnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
