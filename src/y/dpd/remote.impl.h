@@ -34,9 +34,9 @@ void cancel_recv() {
 }
 
 void wait_send() {
-    MPI_Status ss[26 * 2];
+    MPI_Status ss[26];
     MC(l::m::Waitall(26, sendcellsreq, ss));
-    MC(l::m::Waitall(nsendreq, sendreq, ss));
+    MC(l::m::Waitall(26, sendreq,      ss));
     MC(l::m::Waitall(26, sendcountreq, ss));
 }
 
