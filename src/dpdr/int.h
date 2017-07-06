@@ -16,7 +16,7 @@ struct Ticketrnd {
 };
 
 struct TicketShalo {
-    int estimate[26];
+    int26 estimate;
     int ncells;                /* total number of cells in the halo              */
     
     int27 fragstarts;          /* cumulative sum of number of cells for each fragment */
@@ -32,7 +32,7 @@ struct TicketShalo {
     intp26 cumdev, cumhst;     /* pinned memory for transfering local cum sum     */
 
     void alloc_frag(const int i, const int est, const int nfragcells) {
-        estimate[i] = capacity.d[i] = est;
+        estimate.d[i] = capacity.d[i] = est;
         nc.d[i] = nfragcells + 1;
         CC(cudaMalloc(&str.d[i], (nfragcells + 1) * sizeof(int)));
         CC(cudaMalloc(&cnt.d[i], (nfragcells + 1) * sizeof(int)));
