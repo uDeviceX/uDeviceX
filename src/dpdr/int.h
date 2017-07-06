@@ -33,7 +33,8 @@ struct TicketShalo {
     intp26 cumdev, cumhst;     /* pinned memory for transfering local cum sum     */
 
     void alloc_frag(const int i, const int est, const int nfragcells) {
-        estimate[i] = est;
+        estimate[i] = capacity.d[i] = est;
+        nc.d[i] = nfragcells + 1;
         CC(cudaMalloc(&str.d[i], (nfragcells + 1) * sizeof(int)));
         CC(cudaMalloc(&cnt.d[i], (nfragcells + 1) * sizeof(int)));
         CC(cudaMalloc(&cum.d[i], (nfragcells + 1) * sizeof(int)));
@@ -108,10 +109,29 @@ void fin_ticketrnd(/**/ Ticketrnd *tr) {
     sub::fin_trnd(/**/ tr->interrank_trunks);
 }
 
-void alloc_ticketSh(/**/ TicketShalo *t) {
-    
-}
+void alloc_tickethalo(/**/ TicketShalo *ts, TicketShalo *tr) {
+    int xsz, ysz, zsz, estimate, nhalocells;
 
-void ini_ticketSh(/**/ TicketShalo *t) {
-    
+    for (int i = 0; i < 26; ++i) {
+        int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
+        xsz = d[0] != 0 ? 1 : XS;
+        ysz = d[1] != 0 ? 1 : YS;
+        zsz = d[2] != 0 ? 1 : ZS;
+        nhalocells = xsz * ysz * zsz;
+
+        estimate = numberdensity * HSAFETY_FACTOR * nhalocells;
+        estimate = 32 * ((estimate + 31) / 32);
+
+        ts->alloc_frag(i, estimate, nhalocells);
+        tr->alloc_frag(i, estimate, nhalocells);
+    }
+
+    CC(cudaHostAlloc(&ts->nphst, sizeof(int) * 26, cudaHostAllocMapped));
+    CC(cudaHostGetDevicePointer(&ts->npdev, ts->nphst, 0));
+
+    ts->first = true;
+
+    int s = ts->fragstarts.d[0] = 0;
+    for (int i = 0; i < 26; ++i) ts->fragstarts.d[i + 1] = (s += ts->nc.d[i]);
+    ts->ncells = s;
 }
