@@ -156,6 +156,18 @@ namespace dev {
   #include "x/xy.impl.h"
 #endif
 
+namespace dpdr {
+namespace sub {
+namespace dev {
+#include "dpdr/dev.h"
+}
+#include "dpdr/ini.h"
+#include "dpdr/imp.h"
+#include "dpdr/fin.h"
+}
+#include "dpdr/int.h"
+}
+
 #include "collision.h"
 
 #include "solid.h"
