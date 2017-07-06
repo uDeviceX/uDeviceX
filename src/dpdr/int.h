@@ -109,6 +109,7 @@ void fin_ticketrnd(/**/ Ticketrnd *tr) {
     sub::fin_trnd(/**/ tr->interrank_trunks);
 }
 
+/* TODO move this in impl file */
 void alloc_tickethalo(/**/ TicketShalo *ts, TicketShalo *tr) {
     int xsz, ysz, zsz, estimate, nhalocells;
 
@@ -134,4 +135,13 @@ void alloc_tickethalo(/**/ TicketShalo *ts, TicketShalo *tr) {
     int s = ts->fragstarts.d[0] = 0;
     for (int i = 0; i < 26; ++i) ts->fragstarts.d[i + 1] = (s += ts->nc.d[i]);
     ts->ncells = s;
+}
+
+void free_ticketSh(/**/TicketShalo *t) {
+    for (int i = 0; i < 26; ++i) t->free_frag(i);
+    CC(cudaFreeHost(t->nphst));
+}
+
+void free_ticketRh(/**/TicketRhalo *t) {
+    for (int i = 0; i < 26; ++i) t->free_frag(i);
 }
