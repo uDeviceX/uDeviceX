@@ -13,14 +13,14 @@ typedef Sarray<int,  27> int27;
 typedef Sarray<int*, 26> intp26;
 typedef Sarray<Particle*, 26> Particlep26;
 
-int27 fragstarts;
+int27 fragstarts;           /* cumulative sum of number of cells for each fragment */
 intp26 srccells, dstcells;
 
 /* fragments of halo */
 namespace frag {
-intp26 str, cnt, cum, ii;
-int26 nc, capacity;
-Particlep26 pp;
+intp26 str, cnt, cum, ii;   /* see /doc/remote.md                        */
+int26 nc, capacity;         /* number of cells per fragment              */
+Particlep26 pp;             /* buffer of particles fro each fragment     */
 int *np, *nphst;  /* number of particles on the device and host (pinned) */
 }
 }
