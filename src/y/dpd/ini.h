@@ -19,10 +19,9 @@ void init0(MPI_Comm cart, SendHalo* sendhalos[], RecvHalo* recvhalos[]) {
         sendhalos[i]->setup(estimate, nhalocells);
     }
 
-    CC(cudaHostAlloc((void **)&required_send_bag_size_host, sizeof(int) * 26,
+    CC(cudaHostAlloc((void **)&frag::nphst, sizeof(int) * 26,
                      cudaHostAllocMapped));
-    CC(cudaHostGetDevicePointer(&required_send_bag_size,
-                                required_send_bag_size_host, 0));
+    CC(cudaHostGetDevicePointer(&frag::np, frag::nphst, 0));
 }
 
 void init1_one(int i, l::rnd::d::KISS* interrank_trunks[], bool interrank_masks[]) {

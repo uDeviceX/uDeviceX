@@ -41,7 +41,7 @@ void wait_send() {
 }
 
 void fin(bool first) {
-    CC(cudaFreeHost(required_send_bag_size));
+    CC(cudaFreeHost(frag::nphst));
     if (!first) {
         wait_send();
         cancel_recv();

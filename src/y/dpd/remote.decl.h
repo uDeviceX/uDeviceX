@@ -21,9 +21,10 @@ namespace frag {
 intp26 str, cnt, cum, ii;
 int26 nc, capacity;
 Particlep26 pp;
+int *np, *nphst;  /* number of particles on the device and host (pinned) */
 }
 
 // zero-copy allocation for acquiring the message offsets in the gpu send
 // buffer
-int *required_send_bag_size, *required_send_bag_size_host;
+//int *required_send_bag_size, *required_send_bag_size_host;
 }
