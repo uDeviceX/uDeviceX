@@ -48,7 +48,7 @@ void post(MPI_Comm cart, const int dstranks[], const int *fragnp, const int26 fr
 }
 
 void post_expected_recv(MPI_Comm cart, const int dstranks[], const int recv_tags[], const int estimate[], const int26 fragnc,
-                        /**/ Particlep26 fragpp, int26 Rfragnp, intp26 Rfragcum, MPI_Request *recvcellsreq, MPI_Request *recvcountreq, MPI_Request *recvreq) {
+                        /**/ Particlep26 fragpp, int *Rfragnp, intp26 Rfragcum, MPI_Request *recvcellsreq, MPI_Request *recvcountreq, MPI_Request *recvreq) {
     for (int i = 0; i < 26; ++i) {
         MC(l::m::Irecv(fragpp.d[i], estimate[i], Particle::datatype(), dstranks[i], BT_P_DPD + recv_tags[i],
                        cart, recvreq + i));
@@ -56,7 +56,7 @@ void post_expected_recv(MPI_Comm cart, const int dstranks[], const int recv_tags
         MC(l::m::Irecv(Rfragcum.d[i], fragnc.d[i], MPI_INT, dstranks[i],
                        BT_CS_DPD + recv_tags[i], cart, recvcellsreq + i));
     
-        MC(l::m::Irecv(Rfragnp.d + i, 1, MPI_INT, dstranks[i],
+        MC(l::m::Irecv(Rfragnp + i, 1, MPI_INT, dstranks[i],
                        BT_C_DPD + recv_tags[i], cart, recvcountreq + i));
     }
 }

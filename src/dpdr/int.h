@@ -71,10 +71,11 @@ struct TicketRhalo {
     /* pinned buffers */
     Particlep26 ppdev, pphst;  /* pinned memory for transfering particles         */
     intp26 cumdev, cumhst;     /* pinned memory for transfering local cum sum     */
-    int26 np;                  /* recv sizes */
+    int26 nc, np;                  /* recv sizes */
 
     void alloc_frag(const int i, const int est, const int nfragcells) {
         estimate[i] = est;
+        nc.d[i] = nfragcells + 1;
         CC(cudaMalloc(&cum.d[i], (nfragcells + 1) * sizeof(int)));
         CC(cudaMalloc(&pp.d[i], est * sizeof(Particle)));
 
@@ -169,3 +170,7 @@ void post(TicketCom *tc, TicketShalo *ts) {
               /**/ tc->sendcellsreq, tc->sendcountreq, tc->sendreq);
 }
 
+void post_expected_recv(TicketCom *tc, TicketRhalo *tr) {
+    sub::post_expected_recv(tc->cart, tc->dstranks, tc->recv_tags, tr->estimate, tr->nc,
+                       /**/ tr->pphst, tr->np.d, tr->cumhst, tc->recvcellsreq, tc->recvcountreq, tc->recvreq);
+}
