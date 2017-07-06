@@ -112,7 +112,7 @@ void fin_ticketrnd(/**/ Ticketrnd *tr) {
 }
 
 /* TODO move this in impl file */
-void alloc_tickethalo(/**/ TicketShalo *ts, TicketShalo *tr) {
+void alloc_tickethalo(/**/ TicketShalo *ts, TicketRhalo *tr) {
     int xsz, ysz, zsz, estimate, nhalocells;
 
     for (int i = 0; i < 26; ++i) {
