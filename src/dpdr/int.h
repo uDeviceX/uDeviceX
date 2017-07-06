@@ -189,3 +189,38 @@ void wait_send(TicketCom *tc) {
     MC(l::m::Waitall(26, tc->sendreq,      ss));
     MC(l::m::Waitall(26, tc->sendcountreq, ss));
 }
+
+void fremote(Ticketrnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
+    static BipsBatch::BatchInfo infos[26];
+
+    for (int i = 0; i < 26; ++i) {
+        int dx = (i     + 2) % 3 - 1;
+        int dy = (i / 3 + 2) % 3 - 1;
+        int dz = (i / 9 + 2) % 3 - 1;
+
+        int m0 = 0 == dx;
+        int m1 = 0 == dy;
+        int m2 = 0 == dz;
+
+        BipsBatch::BatchInfo entry = {
+            (float *)ts.pp.d[i],
+            (float2 *)tr.ppdev.d[i],
+            trnd.interrank_trunks[i]->get_float(),
+            ts.nphst[i],
+            tr.np.d[i],
+            trnd.interrank_masks[i],
+            tr.cumdev.d[i],
+            ts.ii.d[i],
+            dx,
+            dy,
+            dz,
+            1 + m0 * (XS - 1),
+            1 + m1 * (YS - 1),
+            1 + m2 * (ZS - 1),
+            (BipsBatch::HaloType)(abs(dx) + abs(dy) + abs(dz))};
+
+        infos[i] = entry;
+    }
+
+    BipsBatch::interactions(infos, (float *)ff);
+}
