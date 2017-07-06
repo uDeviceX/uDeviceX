@@ -4,10 +4,10 @@ void post(MPI_Comm cart, SendHalo* sendhalos[]) {
     dSync(); /* wait for fill_all */
 
     for (int i = 0; i < 26; ++i) {
-        int nrequired = frag::nphst[i];
-        sendhalos[i]->dbuf->S = nrequired;
-        sendhalos[i]->hbuf->resize(nrequired);
-        sendhalos[i]->scattered_entries->S = nrequired;
+        int np = frag::nphst[i];
+        sendhalos[i]->dbuf->S = np;
+        sendhalos[i]->hbuf->resize(np);
+        sendhalos[i]->scattered_entries->S = np;
     }
     
     for (int i = 0; i < 26; ++i)
