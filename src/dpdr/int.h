@@ -101,8 +101,7 @@ void ini_ticketcom(MPI_Comm cart, /**/ TicketCom *t) {
 }
 
 /* TODO move to fin */
-static 
-void cancel_recv(TicketCom *tc) {
+static void cancel_recv(TicketCom *tc) {
     for (int i = 0; i < 26; ++i) {
         MC(MPI_Cancel(tc->recvreq + i));
         MC(MPI_Cancel(tc->recvcellsreq + i));
@@ -194,6 +193,15 @@ void post(TicketCom *tc, TicketShalo *ts) {
 void post_expected_recv(TicketCom *tc, TicketRhalo *tr) {
     sub::post_expected_recv(tc->cart, tc->dstranks, tc->recv_tags, tr->estimate, tr->nc,
                        /**/ tr->pphst, tr->np.d, tr->cumhst, tc->recvcellsreq, tc->recvcountreq, tc->recvreq);
+}
+
+// TODO move this to imp
+void recv(TicketRhalo *t) {
+    for (int i = 0; i < 26; ++i)
+    CC(cudaMemcpyAsync(t->pp.d[i], t->pphst.d[i], sizeof(Particle) * t->np.d[i], H2D));
+    
+    for (int i = 0; i < 26; ++i)
+    CC(cudaMemcpyAsync(t->cum.d[i], t->cumhst.d[i],  sizeof(int) * t->nc.d[i], H2D));
 }
 
 void wait_recv(TicketCom *tc) {
