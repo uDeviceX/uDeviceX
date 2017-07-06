@@ -14,8 +14,6 @@ void forces_rbc() {
 }
 
 void forces_dpd() {
-    //xy::forces(&o::q, &o::tz, &o::trnd, /**/ o::ff); /* defined in [xy]/dpd/xy.impl.h */
-
     dpdr::gather_cells(o::q.cells->start, o::q.cells->count, /**/ &o::h::ts);
     if (o::h::tc.first) {
         dpdr::post_expected_recv(&o::h::tc, &o::h::tr);
