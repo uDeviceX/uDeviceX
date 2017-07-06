@@ -161,3 +161,9 @@ void copy_cells(/**/ TicketShalo *t) {
 void pack(const Particle *pp, /**/ TicketShalo t) {
     sub::pack(t.fragstarts, t.ncells, pp, t.str, t.cnt, t.cum, t.capacity, t.ii, t.pp, t.npdev);
 }
+
+void post(TicketCom *tc, TicketShalo *ts) {
+    sub::copy_pp(ts->nphst, ts->pp, ts->pphst);
+    sub::post(tc->cart, tc->dstranks, ts->nphst, ts->nc, ts->cumhst, ts->pphst,
+              /**/ tc->sendcellsreq, tc->sendcountreq, tc->sendreq);
+}
