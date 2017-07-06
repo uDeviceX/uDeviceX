@@ -7,6 +7,21 @@ struct Reqs {
     MPI_Request pp[26], cells[26], counts[26];
 };
 
+void cancel_req(Reqs *r) {
+    for (int i = 0; i < 26; ++i) {
+        MC(MPI_Cancel(r->pp     + i));
+        MC(MPI_Cancel(r->cells  + i));
+        MC(MPI_Cancel(r->counts + i));
+    }
+}
+
+void wait_req(Reqs *r) {
+    MPI_Status ss[26];
+    MC(l::m::Waitall(26, r->cells,  ss));
+    MC(l::m::Waitall(26, r->pp,     ss));
+    MC(l::m::Waitall(26, r->counts, ss));
+}
+
 void gather_cells(const int *start, const int *count, const int27 fragstarts, const int26 fragnc,
                   const int ncells, /**/ intp26 fragstr, intp26 fragcnt, intp26 fragcum) {
     if (ncells) dev::count<<<k_cnf(ncells)>>>(fragstarts, start, count, fragstr, fragcnt);

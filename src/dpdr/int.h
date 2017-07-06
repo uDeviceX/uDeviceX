@@ -99,29 +99,8 @@ void ini_ticketcom(MPI_Comm cart, /**/ TicketCom *t) {
     t->first = true;
 }
 
-/* TODO move to fin */
-static void cancel_req(sub::Reqs *r) {
-    for (int i = 0; i < 26; ++i) {
-        MC(MPI_Cancel(r->pp     + i));
-        MC(MPI_Cancel(r->cells  + i));
-        MC(MPI_Cancel(r->counts + i));
-    }
-}
-
-static void wait_req(sub::Reqs *r) {
-    MPI_Status ss[26];
-    MC(l::m::Waitall(26, r->cells,  ss));
-    MC(l::m::Waitall(26, r->pp,     ss));
-    MC(l::m::Waitall(26, r->counts, ss));
-}
-
-
 void free_ticketcom(/**/ TicketCom *t) {
-    if (!t->first) {
-        wait_req(&t->sreq);
-        cancel_req(&t->rreq);
-    }
-    sub::fin_tcom(/**/ &t->cart);
+    sub::fin_tcom(t->first, /**/ &t->cart, &t->sreq, &t->rreq);
 }
 
 void ini_ticketrnd(const TicketCom tc, /**/ Ticketrnd *tr) {
@@ -195,7 +174,7 @@ void post_expected_recv(TicketCom *tc, TicketRhalo *tr) {
 }
 
 void wait_recv(TicketCom *tc) {
-    wait_req(&tc->rreq);
+    sub::wait_req(&tc->rreq);
 }
 
 // TODO move this to imp
