@@ -157,3 +157,7 @@ void gather_cells(const int *start, const int *count, /**/ TicketShalo *t) {
 void copy_cells(/**/ TicketShalo *t) {
     sub::copy_cells(t->fragstarts, t->ncells, t->cum, /**/ t->cumdev);
 }
+
+void pack(const Particle *pp, /**/ TicketShalo t) {
+    sub::pack(t.fragstarts, t.ncells, pp, t.str, t.cnt, t.cum, t.capacity, t.ii, t.pp, t.npdev);
+}
