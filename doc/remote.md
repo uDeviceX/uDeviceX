@@ -1,11 +1,14 @@
-# bulk particles
+# remote
+Doc for the packing/data structures used for the dpd remote interactions
+
+## bulk particles
 `pp` the array of all bulk particles  
 `k = 0 .. n` loops over all bulk particles
 
-# halo
+## halo
 `halo` is composed of 26 `frag` : fragments
 
-# Fragments
+## Fragments
 
 Each fragment has `nc` cell infos:  
 -start from bulk coordinates : `str`  
@@ -16,12 +19,12 @@ Each fragment also has (output of `pack`):
 -Particles `pp`  
 -Particle indices `ii`  
 
-# halo particles
+## halo particles
 
 `hid` is the fragment id `0 <= hid < 26`  
 `pp[hid][i]` is the particle  
 
-# bulk cell lists
+## bulk cell lists
 
 `cid` is cell id  
 `start[cid]` point to global particle id  
@@ -31,7 +34,7 @@ Each fragment also has (output of `pack`):
 
 `k = start[cid] ... start[cid] + count[cid]` loops over all particles in the cell `cid`  
 
-# halo cell lists
+## halo cell lists
 
 `hid` is fragment id : `0 <= hid < 26`  
 `hci` is fragment cell id : `0 < hci < nc[hid]`  
