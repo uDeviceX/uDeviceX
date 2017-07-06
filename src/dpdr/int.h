@@ -43,3 +43,5 @@ struct TicketRhalo {
     Particlep26 ppdev, pphst;  /* pinned memory for transfering particles         */
     intp26 cumdev, cumhst;     /* pinned memory for transfering local cum sum     */
 };
+
+
