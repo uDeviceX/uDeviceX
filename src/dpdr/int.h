@@ -99,7 +99,7 @@ void ini_ticketcom(MPI_Comm cart, /**/ TicketCom *t) {
     sub::ini_tcom(cart, /**/ &t->cart, t->dstranks, t->recv_tags);
 }
 
-void fin_ticketcom(/**/ TicketCom *t) {
+void free_ticketcom(/**/ TicketCom *t) {
     sub::fin_tcom(/**/ &t->cart);
 }
 
@@ -107,7 +107,7 @@ void ini_ticketrnd(const TicketCom tc, /**/ Ticketrnd *tr) {
     sub::ini_trnd(tc.dstranks, /**/ tr->interrank_trunks, tr->interrank_masks);
 }
 
-void fin_ticketrnd(/**/ Ticketrnd *tr) {
+void free_ticketrnd(/**/ Ticketrnd *tr) {
     sub::fin_trnd(/**/ tr->interrank_trunks);
 }
 
