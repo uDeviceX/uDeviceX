@@ -20,4 +20,15 @@ e: format(e, v);
 foo0(i):=horner(coeff(e, i));
 foo(i):=subst(x^3 = xcu, foo0(i));
 
-for i thru n do grind([i-1, i, foo(I[i-1, i])])$
+grd():=for i thru n do grind([i-1, i, foo(I[i-1, i])])$
+plot():=block(
+  [],
+  local(f, indic, i, j, r),
+  indic(a, b)::= if x >= a and x < b then 1 else 0,
+  matchdeclare([i, j], true),
+  defrule(r, I[i, j], indic(i, j)),
+  define(f(x), apply1(e, r)),
+  draw2d(explicit(f(x + n/2), x, -n/2, n/2)));
+
+/* plot(); */
+grd(); /* grind */
