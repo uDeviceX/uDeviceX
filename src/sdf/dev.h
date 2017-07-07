@@ -195,12 +195,12 @@ __device__ void handle_collision(const tex3Dca<float> texsdf, float currsdf,
     if (sdf(texsdf, x, y, z) >= 0) {x = x0; y = y0; z = z0;}
 }
 
-__global__ void bounce(const tex3Dca<float> texsdf, float2 *const pp, int nparticles) {
+__global__ void bounce(const tex3Dca<float> texsdf, float2 *const pp, int n) {
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
-    if (pid >= nparticles) return;
+    if (pid >= n) return;
     float2 data0 = pp[pid * 3];
     float2 data1 = pp[pid * 3 + 1];
-    if (pid < nparticles) {
+    if (pid < n) {
         float mycheapsdf = cheap_sdf(texsdf, data0.x, data0.y, data1.x);
 
         if (mycheapsdf >=
