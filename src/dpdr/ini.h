@@ -61,3 +61,41 @@ void ini_trnd(const int dstranks[], /**/ l::rnd::d::KISS* interrank_trunks[], bo
     for (int i = 0; i < 26; ++i)
     ini_one_trunk(i, dstranks[i], /**/ interrank_trunks, interrank_masks);
 }
+
+static int26 get_nhalocells() {
+    int26 nc;
+    int xsz, ysz, zsz;
+
+    for (int i = 0; i < 26; ++i) {
+        int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
+        xsz = d[0] != 0 ? 1 : XS;
+        ysz = d[1] != 0 ? 1 : YS;
+        zsz = d[2] != 0 ? 1 : ZS;
+        nc.d[i] = xsz * ysz * zsz;
+    }
+    return nc;
+}
+
+static int26 get_estimates(const int26 nhalocells) {
+    int26 ee; int e;
+    for (int i = 0; i < 26; ++i) {
+        e = numberdensity * HSAFETY_FACTOR * nhalocells.d[i];
+        e = 32 * ((e + 31) / 32);
+        ee.d[i] = e;
+    }
+    return ee;
+}
+
+void ini_ticketSh(/**/ Sbufs *b, int26 *est, int26 *nc) {
+    const int26 nhalocells = get_nhalocells();
+    *est = get_estimates(nhalocells);
+
+    for (int i = 0; i < 26; ++i) nc->d[i] = nhalocells.d[i];
+    alloc_Sbufs(*est, nhalocells, /**/ b);
+}
+
+void ini_ticketRh(/**/ Rbufs *b, int26 *est) {
+    const int26 nhalocells = get_nhalocells();
+    *est = get_estimates(nhalocells);
+    alloc_Rbufs(*est, nhalocells, /**/ b);
+}
