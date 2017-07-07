@@ -90,7 +90,7 @@ void ini_ticketSh(/**/ Sbufs *b, int26 *est, int26 *nc) {
     const int26 nhalocells = get_nhalocells();
     *est = get_estimates(nhalocells);
 
-    for (int i = 0; i < 26; ++i) nc->d[i] = nhalocells.d[i];
+    for (int i = 0; i < 26; ++i) nc->d[i] = nhalocells.d[i] + 1;
     alloc_Sbufs(*est, nhalocells, /**/ b);
 }
 
