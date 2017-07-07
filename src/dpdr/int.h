@@ -20,44 +20,8 @@ struct TicketShalo {
     int ncells;                /* total number of cells in the halo                   */
     int27 fragstarts;          /* cumulative sum of number of cells for each fragment */
     int26 nc;                  /* number of cells per fragment                        */
-    
-    intp26 str, cnt, cum;      /* see /doc/remote.md                              */
-    Particlep26 pp;            /* buffer of particles for each fragment           */
-    intp26 ii;                 /* buffer of scattered indices for each fragment   */
-
-    /* pinned buffers */
-    int *npdev, *nphst;        /* number of particles on each fragment            */
-    Particlep26 ppdev, pphst;  /* pinned memory for transfering particles         */
-    intp26 cumdev, cumhst;     /* pinned memory for transfering local cum sum     */
-
-    void alloc_frag(const int i, const int est, const int nfragcells) {
-        estimate.d[i] = est;
-        nc.d[i] = nfragcells + 1;
-        CC(cudaMalloc(&str.d[i], (nfragcells + 1) * sizeof(int)));
-        CC(cudaMalloc(&cnt.d[i], (nfragcells + 1) * sizeof(int)));
-        CC(cudaMalloc(&cum.d[i], (nfragcells + 1) * sizeof(int)));
-
-        CC(cudaMalloc(&ii.d[i], est * sizeof(int)));
-        CC(cudaMalloc(&pp.d[i], est * sizeof(Particle)));
-
-        CC(cudaHostAlloc(&pphst.d[i], est * sizeof(Particle), cudaHostAllocMapped));
-        CC(cudaHostGetDevicePointer(&ppdev.d[i], pphst.d[i], 0));
-
-        CC(cudaHostAlloc(&cumhst.d[i], est * sizeof(int), cudaHostAllocMapped));
-        CC(cudaHostGetDevicePointer(&cumdev.d[i], cumhst.d[i], 0));
-    }
-
-    void free_frag(const int i) {
-        CC(cudaFree(str.d[i]));
-        CC(cudaFree(cnt.d[i]));
-        CC(cudaFree(cum.d[i]));
-
-        CC(cudaFree(ii.d[i]));
-        CC(cudaFree(pp.d[i]));
-        
-        CC(cudaFreeHost(cumhst.d[i]));
-        CC(cudaFreeHost(pphst.d[i]));
-    }
+    int *npdev, *nphst;        /* number of particles on each fragment (pinned)       */
+    sub::Sbufs b;
 };
 
 struct TicketRhalo {
@@ -110,8 +74,19 @@ void free_ticketrnd(/**/ Ticketrnd *tr) {
     sub::fin_trnd(/**/ tr->interrank_trunks);
 }
 
+void alloc_ticketSh(/**/ TicketShalo *t) {
+    sub::ini_ticketSh(/**/ &t->b, &t->estimate, &t->nc);
+    
+    CC(cudaHostAlloc(&t->nphst, sizeof(int) * 26, cudaHostAllocMapped));
+    CC(cudaHostGetDevicePointer(&t->npdev, t->nphst, 0));
+
+    int s = t->fragstarts.d[0] = 0;
+    for (int i = 0; i < 26; ++i) t->fragstarts.d[i + 1] = (s += t->nc.d[i]);
+    t->ncells = s;
+}
+
 /* TODO move this in impl file */
-void alloc_tickethalo(/**/ TicketShalo *ts, TicketRhalo *tr) {
+void alloc_ticketRh(/**/ TicketRhalo *t) {
     int xsz, ysz, zsz, estimate, nhalocells;
 
     for (int i = 0; i < 26; ++i) {
@@ -124,20 +99,12 @@ void alloc_tickethalo(/**/ TicketShalo *ts, TicketRhalo *tr) {
         estimate = numberdensity * HSAFETY_FACTOR * nhalocells;
         estimate = 32 * ((estimate + 31) / 32);
 
-        ts->alloc_frag(i, estimate, nhalocells);
-        tr->alloc_frag(i, estimate, nhalocells);
+        t->alloc_frag(i, estimate, nhalocells);
     }
-
-    CC(cudaHostAlloc(&ts->nphst, sizeof(int) * 26, cudaHostAllocMapped));
-    CC(cudaHostGetDevicePointer(&ts->npdev, ts->nphst, 0));
-
-    int s = ts->fragstarts.d[0] = 0;
-    for (int i = 0; i < 26; ++i) ts->fragstarts.d[i + 1] = (s += ts->nc.d[i]);
-    ts->ncells = s;
 }
 
 void free_ticketSh(/**/TicketShalo *t) {
-    for (int i = 0; i < 26; ++i) t->free_frag(i);
+    sub::free_Sbufs(/**/ &t->b);
     CC(cudaFreeHost(t->nphst));
 }
 
@@ -150,20 +117,20 @@ void free_ticketRh(/**/TicketRhalo *t) {
 
 void gather_cells(const int *start, const int *count, /**/ TicketShalo *t) {
     sub::gather_cells(start, count, t->fragstarts, t->nc, t->ncells,
-                      /**/ t->str, t->cnt, t->cum);
+                      /**/ t->b.str, t->b.cnt, t->b.cum);
 }
 
 void copy_cells(/**/ TicketShalo *t) {
-    sub::copy_cells(t->fragstarts, t->ncells, t->cum, /**/ t->cumdev);
+    sub::copy_cells(t->fragstarts, t->ncells, t->b.cum, /**/ t->b.cumdev);
 }
 
 void pack(const Particle *pp, /**/ TicketShalo t) {
-    sub::pack(t.fragstarts, t.ncells, pp, t.str, t.cnt, t.cum, t.estimate, t.ii, t.pp, t.npdev);
+    sub::pack(t.fragstarts, t.ncells, pp, t.b.str, t.b.cnt, t.b.cum, t.estimate, t.b.ii, t.b.pp, t.npdev);
 }
 
 void post(TicketCom *tc, TicketShalo *ts) {
-    sub::copy_pp(ts->nphst, ts->pp, ts->pphst);
-    sub::post(tc->cart, tc->dstranks, ts->nphst, ts->nc, ts->cumhst, ts->pphst,
+    sub::copy_pp(ts->nphst, ts->b.pp, ts->b.pphst);
+    sub::post(tc->cart, tc->dstranks, ts->nphst, ts->nc, ts->b.cumhst, ts->b.pphst,
               /**/ &tc->sreq);
 }
 
@@ -199,14 +166,14 @@ void fremote(Ticketrnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
         int m2 = 0 == dz;
 
         BipsBatch::BatchInfo entry = {
-            (float  *)ts.pp.d[i],
+            (float  *)ts.b.pp.d[i],
             (float2 *)tr.pp.d[i],
             trnd.interrank_trunks[i]->get_float(),
             ts.nphst[i],
             tr.np.d[i],
             trnd.interrank_masks[i],
             tr.cumdev.d[i],
-            ts.ii.d[i],
+            ts.b.ii.d[i],
             dx,
             dy,
             dz,
