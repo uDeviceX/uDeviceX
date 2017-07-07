@@ -45,7 +45,7 @@ void alloc_Sbufs(const int26 estimates, const int26 nfragcells, /**/ Sbufs *b) {
     alloc_Sbuf_frag(i, estimates.d[i], nfragcells.d[i], /**/ b);
 }
 
-void free_Sbufs(const int26 estimates, const int26 nfragcells, /**/ Sbufs *b) {
+void free_Sbufs(/**/ Sbufs *b) {
     for (int i = 0; i < 26; ++i)
     free_Sbuf_frag(i, /**/ b);
 }
@@ -85,7 +85,7 @@ void alloc_Rbufs(const int26 estimates, const int26 nfragcells, /**/ Rbufs *b) {
     alloc_Rbuf_frag(i, estimates.d[i], nfragcells.d[i], /**/ b);
 }
 
-void free_Rbufs(const int26 estimates, const int26 nfragcells, /**/ Rbufs *b) {
+void free_Rbufs(/**/ Rbufs *b) {
     for (int i = 0; i < 26; ++i)
     free_Rbuf_frag(i, /**/ b);
 }
