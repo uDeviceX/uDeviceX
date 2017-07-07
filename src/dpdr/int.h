@@ -22,7 +22,6 @@ struct TicketShalo {
     int26 nc;                  /* number of cells per fragment                        */
     
     intp26 str, cnt, cum;      /* see /doc/remote.md                              */
-    int26 nc;                  /* number of cells per fragment                    */
     Particlep26 pp;            /* buffer of particles for each fragment           */
     intp26 ii;                 /* buffer of scattered indices for each fragment   */
 
