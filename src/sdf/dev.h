@@ -131,10 +131,11 @@ __device__ float3 grad_sdf(const tex3Dca<float> texsdf, float x, float y, float 
 
 __global__ void fill_keys(const tex3Dca<float> texsdf, const Particle *const pp, const int n,
                           int *const key) {
+    enum {X, Y, Z};
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
     Particle p = pp[pid];
-    float sdf0 = sdf(texsdf, p.r[0], p.r[1], p.r[2]);
+    float sdf0 = sdf(texsdf, p.r[X], p.r[Y], p.r[Z]);
     key[pid] = (int)(sdf0 >= 0) + (int)(sdf0 > 2);
 }
 
