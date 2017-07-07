@@ -134,6 +134,7 @@ namespace sub {
 namespace dev {
 #include "dpdr/dev.h"
 }
+#include "dpdr/buf.h"
 #include "dpdr/ini.h"
 #include "dpdr/imp.h"
 #include "dpdr/fin.h"
