@@ -22,7 +22,6 @@ foo(i):=subst(x^3 = xcu, foo0(i));
 
 grd():=for i thru n do grind([i-1, i, foo(I[i-1, i])])$
 plot():=block(
-  [],
   local(f, indic, i, j, r),
   indic(a, b)::= if x >= a and x < b then 1 else 0,
   matchdeclare([i, j], true),
@@ -30,5 +29,5 @@ plot():=block(
   define(f(x), apply1(e, r)),
   draw2d(explicit(f(x + n/2), x, -n/2, n/2)));
 
-/* plot(); */
+plot();
 grd(); /* grind */
