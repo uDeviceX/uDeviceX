@@ -17,10 +17,10 @@ struct Ticketrnd {
 
 struct TicketShalo {
     int26 estimate;
-    int ncells;                /* total number of cells in the halo              */
-    
+    int ncells;                /* total number of cells in the halo                   */
     int27 fragstarts;          /* cumulative sum of number of cells for each fragment */
-
+    int26 nc;                  /* number of cells per fragment                        */
+    
     intp26 str, cnt, cum;      /* see /doc/remote.md                              */
     int26 nc;                  /* number of cells per fragment                    */
     Particlep26 pp;            /* buffer of particles for each fragment           */
