@@ -13,9 +13,8 @@ void ini0(float *D, /**/ struct Tex te) {
   te.t->setup(te.a);
 }
 
-void ini1(int N[3], float ext[3], float *D0, float *D1, /**/ struct Tex te) {
+void ini1(int N[3], float *D0, float *D1, /**/ struct Tex te) {
   int c;
-  float sc;
   int L[3] = {XS, YS, ZS};
   int M[3] = {XWM, YWM, ZWM}; /* margin and texture */
   int T[3] = {XTE, YTE, ZTE};
@@ -27,14 +26,12 @@ void ini1(int N[3], float ext[3], float *D0, float *D1, /**/ struct Tex te) {
     spa[c] = N[c] * (L[c] + 2 * M[c]) / G / T[c];
   }
   field::sample(org, spa, T, N, D0, /**/ D1);
-  sc = XS / (ext[0] / m::dims[0]);
-  field::scale(T, sc, /**/ D1);
   ini0(D1, te);
 }
 
-void ini2(int N[3], float ext[3], float* D0, /**/ struct Tex te) {
+void ini2(int N[3], float* D0, /**/ struct Tex te) {
   float *D1 = new float[XTE * YTE * ZTE];
-  ini1(N, ext, D0, D1, /**/ te);
+  ini1(N, D0, D1, /**/ te);
   delete[] D1;
 }
 
@@ -48,7 +45,7 @@ void ini3(int N[3], float ext[3], float* D, /**/ struct Tex te) {
   MC(l::m::Barrier(m::cart)); /* TODO: why? */
   if (field_dumps) field::dump(N, D);
 
-  ini2(N, ext, D, /**/ te);
+  ini2(N, D, /**/ te);
 }
 
 void ini(cudaArray *arrsdf, dev::tex3Dca<float> *texsdf) {
