@@ -1,4 +1,4 @@
-namespace l { namespace gsl {
+namespace l { namespace linal {
 /* inverts symmetric matrix m[6] (see poc/3x3) */
 void inv3x3(float *m, /**/ float *r) {
   enum {XX, XY, XZ, YY, YZ, ZZ};

@@ -7,7 +7,7 @@ $B/force.o: $S/conf.common.h $B/conf.h $S/force.h
 $B/glb.o: $S/common.h $S/conf.common.h $B/conf.h $S/glb.h $S/m.h
 $B/io.o: $S/common.h $S/conf.common.h $B/conf.h $S/io.h $S/l/m.h $S/m.h
 $B/l.clist.o: $S/common.h $S/l/clist.h $S/l/d/clist.h $S/l/h/clist.h
-$B/l.gsl.o: $S/l/gsl.h $S/l/h/gsl.h
+$B/l.linal.o: $S/l/h/linal.h $S/l/linal.h
 $B/l.m.o: $S/l/h/m.h $S/l/m.h
 $B/l.off.o: $S/l/h/off.h $S/l/off.h
 $B/l.ply.o: $S/common.h $S/l/h/ply.ascii.h $S/l/h/ply.bin.h $S/l/h/ply.h $S/l/ply.h
@@ -21,5 +21,5 @@ $B/m.o: $S/m.h
 $B/mrescue.o: $S/collision.h $S/common.h $B/conf.h $S/mrescue.h
 $B/rbc/dev0.h: $S/params/rbc.inc0.h
 $B/restart.o: $S/common.h $S/conf.common.h $B/conf.h $S/m.h $S/restart.h
-$B/solid.o: $S/common.h $S/conf.common.h $B/conf.h $S/k/solid.h $S/l/gsl.h $S/mesh.h $S/solid.h
+$B/solid.o: $S/common.h $S/conf.common.h $B/conf.h $S/k/solid.h $S/l/linal.h $S/mesh.h $S/solid.h
 $B/tcells.o: $S/common.h $B/conf.h $S/m.h $S/tcells.h

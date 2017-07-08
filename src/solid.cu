@@ -1,4 +1,4 @@
-#include "l/gsl.h"
+#include "l/linal.h"
 
 #include <mpi.h>
 #include "common.h"
@@ -60,7 +60,7 @@ void ini(const Particle *pp, int n, float pmass, const float *com, const Mesh me
     s->mass = mesh::volume(mesh) * numberdensity * pmass;
 #endif
         
-    l::gsl::inv3x3(I, /**/ s->Iinv);
+    l::linal::inv3x3(I, /**/ s->Iinv);
 
     // {
     //     FILE *f = fopen("solid_Iinv.txt", "w");
