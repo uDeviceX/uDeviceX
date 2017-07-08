@@ -1,7 +1,10 @@
-void ini0(cudaArray *arrsdf, dev::tex3Dca<float> *texsdf,
-	  int N[3], float extent[3], float* grid_data) {
-    float sc;
+struct Tex { /* simplifies communication between ini[0123..] */
+  cudaArray *a;
+  dev::tex3Dca<float> *t;
+};
 
+void ini0(int N[3], float extent[3], float* grid_data, /**/ struct Tex te) {
+    float sc;
     float *field     = new float[XTE * YTE * ZTE];
     MC(l::m::Barrier(m::cart));
 
@@ -25,13 +28,11 @@ void ini0(cudaArray *arrsdf, dev::tex3Dca<float> *texsdf,
     copyParams.srcPtr = make_cudaPitchedPtr
         ((void *)field, XTE * sizeof(float), XTE, YTE);
 
-    copyParams.dstArray = arrsdf;
+    copyParams.dstArray = te.a;
     copyParams.extent = make_cudaExtent(XTE, YTE, ZTE);
     copyParams.kind = H2D;
     CC(cudaMemcpy3D(&copyParams));
-
-    texsdf->setup(arrsdf);
-
+    te.t->setup(te.a);
     delete[] field;
 }
 
@@ -41,11 +42,13 @@ void ini(cudaArray *arrsdf, dev::tex3Dca<float> *texsdf) {
   int N[3];     /* size of D */
   float ext[3]; /* extent */
   int n;
+  struct Tex te {arrsdf, texsdf};
+  
   field::ini_dims("sdf.dat", N, ext);
   n = N[X] * N[Y] * N[Z];
   D = new float[n];
   field::ini_data("sdf.dat", n, D);
-  ini0(/*o*/ arrsdf, texsdf, /*i*/ N, ext, D);
+  ini0(N, ext, D, /**/ te);
   delete[] D;
 }
 
