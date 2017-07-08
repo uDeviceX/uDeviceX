@@ -3,7 +3,7 @@ struct Tex { /* simplifies communication between ini[0123..] */
   dev::tex3Dca<float> *t;
 };
 
-void ini0(float* D, /**/ struct Tex te) {
+void ini0(float *D, /**/ struct Tex te) {
     cudaMemcpy3DParms copyParams = {0};
     copyParams.srcPtr = make_cudaPitchedPtr((void *)D, XTE * sizeof(float), XTE, YTE);
     copyParams.dstArray = te.a;
@@ -13,19 +13,22 @@ void ini0(float* D, /**/ struct Tex te) {
     te.t->setup(te.a);
 }
 
-void ini1(int N[3], float extent[3], float* D0, float* D1, /**/ struct Tex te) {
+void ini1(int N[3], float ext[3], float *D0, float *D1, /**/ struct Tex te) {
+  int c;
   float sc;
   int L[3] = {XS, YS, ZS};
-  int MARGIN[3] = {XWM, YWM, ZWM};
-  int TE[3] = {XTE, YTE, ZTE};
-  float start[3], spacing[3];
-  for (int c = 0; c < 3; ++c) {
-    start[c] = N[c] * (m::coords[c] * L[c] - MARGIN[c]) / (float)(m::dims[c] * L[c]);
-    spacing[c] = N[c] * (L[c] + 2 * MARGIN[c]) / (float)(m::dims[c] * L[c]) / (float)TE[c];
+  int M[3] = {XWM, YWM, ZWM}; /* margin and texture */
+  int T[3] = {XTE, YTE, ZTE};
+  float G; /* domain size ([g]lobal) */
+  float org[3], spa[3]; /* origin and spacing */
+  for (c = 0; c < 3; ++c) {
+    G = m::dims[c] * L[c];
+    org[c] = N[c] * (G - M[c]) / G;
+    spa[c] = N[c] * (L[c] + 2 * M[c]) / G / T[c];
   }
-  field::sample(start, spacing, TE, N, D0, /**/ D1);
-  sc = XS / (extent[0] / m::dims[0]);
-  field::scale(TE, sc, /**/ D1);
+  field::sample(org, spa, T, N, D0, /**/ D1);
+  sc = XS / (ext[0] / m::dims[0]);
+  field::scale(T, sc, /**/ D1);
   ini0(D1, te);
 }
 
