@@ -105,7 +105,7 @@ void scale(int N[3], float s, /**/ float *D) {
     scale0(N, s, x, y, z, /**/ D);
 }
 
-static void dump0(const int N[3], const float ext[3], const float* D, /**/ float* W) {
+static void dump0(const int N[3], const float ext[3], const float* D0, /**/ float* D1) {
   int c, L[3] = {XS, YS, ZS};
   float org[3], spa[3], ampl;
   for (c = 0; c < 3; ++c) {
@@ -113,7 +113,7 @@ static void dump0(const int N[3], const float ext[3], const float* D, /**/ float
     spa[c] = N[c] / (float)(m::dims[c] * L[c]);
   }
   ampl = L[0] / (ext[0] / (float) m::dims[0]);
-  sample(org, spa, L, N, D, /**/ W);
+  sample(org, spa, L, N, D0, /**/ D1);
   scale(L, ampl, /**/ W);
 }
 
