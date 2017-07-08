@@ -201,10 +201,8 @@ __global__ void bounce(const tex3Dca<float> texsdf, float2 *const pp, int n) {
     if (pid >= n) return;
     float2 data0 = pp[pid * 3];
     float2 data1 = pp[pid * 3 + 1];
-    float mycheapsdf = cheap_sdf(texsdf, data0.x, data0.y, data1.x);
-
-    if (mycheapsdf >=
-	-1.7320f * ((float)XSIZE_WALLCELLS / (float)XTE)) {
+    float s = cheap_sdf(texsdf, data0.x, data0.y, data1.x);
+    if (s >= -1.7320 * XSIZE_WALLCELLS / XTE) {
       float currsdf = sdf(texsdf, data0.x, data0.y, data1.x);
       float2 data2 = pp[pid * 3 + 2];
       float3 v0 = make_float3(data1.y, data2.x, data2.y);
