@@ -188,7 +188,7 @@ H5FieldDump::H5FieldDump() : last_idtimestep(0) {
     globalsize[c] = L[c] * m::dims[c];
 }
 
-void H5FieldDump::dump_scalarfield(float *data,
+void H5FieldDump::scalar(float *data,
                                    const char *channelname) {
     char path2h5[512];
     sprintf(path2h5, DUMP_BASE "/h5/%s.h5", channelname);

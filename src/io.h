@@ -11,5 +11,5 @@ class H5FieldDump {
 public:
     H5FieldDump();
     void dump(Particle * p, int n);
-    void dump_scalarfield(float * data, const char *channelname);
+    void scalar(float * data, const char *channelname);
 };
