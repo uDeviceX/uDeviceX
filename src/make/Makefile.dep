@@ -2,7 +2,7 @@ $B/bund.o: $S/0dev/sim.impl.h $S/0hst/sim.impl.h $S/basetags.h $S/bbhalo.decl.h 
 $B/collision.o: $S/collision.h $S/common.h $S/conf.common.h $B/conf.h $S/minmax.h
 $B/common.o: $S/common.h $S/conf.common.h $B/conf.h $S/l/m.h $S/m.h
 $B/dpd/local.o: $S/common.h $S/dpd/float.h $S/dpd/local.h $S/force.h $S/l/rnd.h
-$B/field.o: $S/common.h $B/conf.h $S/field.h $S/io.h $S/l/m.h $S/m.h
+$B/field.o: $S/common.h $B/conf.h $S/field.h $S/io.h $S/m.h
 $B/force.o: $S/conf.common.h $B/conf.h $S/force.h
 $B/glb.o: $S/common.h $S/conf.common.h $B/conf.h $S/glb.h $S/m.h
 $B/io.o: $S/common.h $S/conf.common.h $B/conf.h $S/io.h $S/l/m.h $S/m.h
