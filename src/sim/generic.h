@@ -6,6 +6,12 @@ void distr_rbc() {
   rdstr::unpack(r::q.pp, r::q.nv);
 }
 
+template <typename T>
+void remove(T *data, int nv, int *e, int nc) {
+  int c; /* c: cell */
+  for (c = 0; c < nc; c++) cA2A(data + nv*c, data + nv*e[c], nv);
+}
+
 void remove_rbcs() {
   int stay[MAX_CELL_NUM];
   int nc0;
