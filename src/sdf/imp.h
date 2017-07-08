@@ -24,8 +24,8 @@ static void ini1(int N[3], float *D0, float *D1, /**/ struct Tex te) {
   for (c = 0; c < 3; ++c) {
     G = m::dims[c] * L[c];
     lo = m::coords[c] * L[c];
-    org[c] = N[c] * (lo - M[c]) / G;
     spa[c] = N[c] * (L[c] + 2 * M[c]) / G / T[c];
+    org[c] = N[c] * (lo - M[c]) / G;
   }
   field::sample(org, spa, N, D0,   T, /**/ D1);
   ini0(D1, te);
