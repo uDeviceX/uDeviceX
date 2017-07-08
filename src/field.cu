@@ -29,7 +29,7 @@ void ini_dims(const char *path, int N[3], float ext[3]) {
 
 static void skip_line(FILE *f) {
   char l[BUFSIZ];
-  fgets(line, sizeof(l), f);
+  fgets(l, sizeof(l), f);
 }
   
 void ini_data(const char *path, int n, float *D) { /* read sdf file */
