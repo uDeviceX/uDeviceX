@@ -23,7 +23,7 @@ void ini(cudaArray *arrsdf, dev::tex3Dca<float> *texsdf) {
         }
         field::sample(start, spacing, TE, N, grid_data, /**/ field);
 
-        sc = (XS /*+ 2 * XWM*/) / (extent[0] / m::dims[0]);
+        sc = XS / (extent[0] / m::dims[0]);
 	field::scale(TE, sc, /**/ field);
     }
 
