@@ -27,15 +27,6 @@
 
 #define dSync() CC(cudaDeviceSynchronize())
 
-/* a common textrue setup */
-#define setup_texture(T, TYPE) do {                         \
-        (T).channelDesc = cudaCreateChannelDesc<TYPE>();    \
-        (T).filterMode = cudaFilterModePoint;               \
-        (T).mipmapFilterMode = cudaFilterModePoint;         \
-        (T).normalized = 0;                                 \
-    } while (false)
-
-
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cudaAssert((ans), __FILE__, __LINE__); } while (0)
