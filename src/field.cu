@@ -16,7 +16,12 @@ static float spl(float x) { /* b-spline (see tools/bspline.mac) */
     0.0;
 }
 
-void ini_dims(const char *path, int N[3], float ext[3]) {
+static void skip_line(FILE *f) {
+  char l[BUFSIZ];
+  fgets(l, sizeof(l), f);
+}
+
+void ini_dims(const char *path, /**/ int N[3], float ext[3]) {
     FILE *f;
     char l[BUFSIZ];
     f = fopen(path, "r");
@@ -25,11 +30,6 @@ void ini_dims(const char *path, int N[3], float ext[3]) {
     fgets(l, sizeof(l), f);
     sscanf(l, "%d %d %d", &N[0], &N[1], &N[2]);
     fclose(f);
-}
-
-static void skip_line(FILE *f) {
-  char l[BUFSIZ];
-  fgets(l, sizeof(l), f);
 }
   
 void ini_data(const char *path, int n, float *D) { /* read sdf file */
