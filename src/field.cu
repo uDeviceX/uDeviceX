@@ -91,7 +91,7 @@ void sample(const float rlo[3], const float dr[3], const int nsize[3], const int
 #undef OOO
 }
 
-static void dump0(const int N[3], const float ext[3], const float* D, /*o*/ float* W) {
+static void dump0(const int N[3], const float ext[3], const float* D, /**/ float* W) {
   int c, L[3] = {XS, YS, ZS};
   float org[3], spa[3], ampl;
   for (c = 0; c < 3; ++c) {
@@ -102,7 +102,7 @@ static void dump0(const int N[3], const float ext[3], const float* D, /*o*/ floa
   sample(org, spa, L, N, ampl, D, /**/ W);
 }
 
-static void dump1(const int N[3], const float ext[3], const float* D, float* W) {
+static void dump1(const int N[3], const float ext[3], const float* D, /*w*/ float* W) {
   dump0(N, ext, D, /**/ W);
   H5FieldDump dump;
   dump.scalar(W, "wall");
