@@ -109,10 +109,13 @@ static void dump0(const int N0[3], const float* D0, /**/ float* D1) {
   float org[3], spa[3];
   float G; /* domain size ([g]lobal) */
   int c;
-  int N1[3] = {XS, YS, ZS};
+  int *N1; /* size of the grid */
+  int L[3] = {XS, YS, ZS};
+
+  N1 = L;
   for (c = 0; c < 3; ++c) {
-    G = m::dims[c] * N1[c];
-    org[c] = m::coords[c] * N1[c] / G * N0[c];
+    G = m::dims[c] * L[c];
+    org[c] = m::coords[c] * L[c] / G * N0[c];
     spa[c] = N0[c] / G ;
   }
   sample(org, spa, N0, D0,   N1, /**/ D1);
