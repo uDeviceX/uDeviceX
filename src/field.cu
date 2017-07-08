@@ -91,17 +91,17 @@ void sample(const float rlo[3], const float dr[3], const int nsize[3], const int
 #undef OOO
 }
 
-static void dump0(const int N[3], const float extent[3], const float* grid_data, float* walldata) {
+static void dump0(const int N[3], const float ext[3], const float* D, float* W) {
     int c, L[3] = {XS, YS, ZS};
-    float rlo[3], dr[3], ampl;
+    float org[3], spa[3], ampl;
     for (c = 0; c < 3; ++c) {
-        rlo[c] = m::coords[c] * L[c] / (float)(m::dims[c] * L[c]) * N[c];
-        dr[c] = N[c] / (float)(m::dims[c] * L[c]);
+        org[c] = m::coords[c] * L[c] / (float)(m::dims[c] * L[c]) * N[c];
+        spa[c] = N[c] / (float)(m::dims[c] * L[c]);
     }
-    ampl = L[0] / (extent[0] / (float) m::dims[0]);
-    sample(rlo, dr, L, N, ampl, grid_data, walldata);
+    ampl = L[0] / (ext[0] / (float) m::dims[0]);
+    sample(org, spa, L, N, ampl, D, /**/ W);
     H5FieldDump dump;
-    dump.dump_scalarfield(walldata, "wall");
+    dump.dump_scalarfield(W, "wall");
 }
 
 void dump(const int N[], const float ext[], const float* D) {
