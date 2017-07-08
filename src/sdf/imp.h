@@ -44,6 +44,11 @@ void ini3(int N[3], float ext[3], float* D, /**/ struct Tex te) {
   G = m::dims[X] * XS;
   sc = G / ext[X];
   field::scale(N, sc, /**/ D);
+
+  MC(l::m::Barrier(m::cart)); /* TODO: why? */
+  if (field_dumps) field::dump(N, D);
+
+  ini2(N, ext, D, /**/ te);
 }
 
 void ini(cudaArray *arrsdf, dev::tex3Dca<float> *texsdf) {
@@ -55,13 +60,11 @@ void ini(cudaArray *arrsdf, dev::tex3Dca<float> *texsdf) {
   char f[] = "sdf.dat";
   struct Tex te {arrsdf, texsdf};
   
-  field::ini_dims(f, N, ext);
+  field::ini_dims(f, /**/ N, ext);
   n = N[X] * N[Y] * N[Z];
   D = new float[n];
-  field::ini_data(f, n, D);
-  MC(l::m::Barrier(m::cart)); /* TODO: why? */
-  if (field_dumps) field::dump(N, ext, D);
-  ini2(N, ext, D, /**/ te);
+  field::ini_data(f, n, /**/ D);
+  ini3(N, ext, D, /**/ te);
   delete[] D;
 }
 
