@@ -40,7 +40,7 @@ void ini_data(const char *path, int n, /**/ float *D) { /* read sdf file */
   fclose(f);
 }
 
-void sample(const float org[3], const float spa[3], const int N1[3], const int N0[3], const float ampl, const float *D0, float *D1) {
+void sample(const float org[3], const float spa[3], const int N1[3], const int N0[3], const float *D0, float *D1) {
     enum {X, Y, Z};
 #define OOO(ix, iy, iz) (D1 [ix + N1[X] * (iy + N1[Y] * iz)])
 #define DDD(ix, iy, iz) (D0 [ix + N0[X] * (iy + N0[Y] * iz)])
@@ -85,7 +85,7 @@ void sample(const float org[3], const float spa[3], const int N1[3], const int N
         }
         float val = 0;
         for (sz = 0; sz < 4; ++sz) val += w[2][sz] * partial[sz];
-        OOO(ix, iy, iz) = val * ampl;
+        OOO(ix, iy, iz) = val;
     }
 #undef DDD
 #undef OOO
@@ -113,7 +113,8 @@ static void dump0(const int N[3], const float ext[3], const float* D, /**/ float
     spa[c] = N[c] / (float)(m::dims[c] * L[c]);
   }
   ampl = L[0] / (ext[0] / (float) m::dims[0]);
-  sample(org, spa, L, N, ampl, D, /**/ W);
+  sample(org, spa, L, N, D, /**/ W);
+  scale(L, ampl, /**/ W);
 }
 
 static void dump1(const int N[3], const float ext[3], const float* D, /*w*/ float* W) {
