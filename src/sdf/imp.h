@@ -5,7 +5,7 @@ struct Tex { /* simplifies communication between ini[0123..] */
 
 void ini0(float *D, /**/ struct Tex te) {
   cudaMemcpy3DParms copyParams = {0};
-  copyParams.srcPtr = make_cudaPitchedPtr((void *)D, XTE * sizeof(float), XTE, YTE);
+  copyParams.srcPtr = make_cudaPitchedPtr((void*)D, XTE * sizeof(float), XTE, YTE);
   copyParams.dstArray = te.a;
   copyParams.extent = make_cudaExtent(XTE, YTE, ZTE);
   copyParams.kind = H2D;
@@ -25,7 +25,7 @@ void ini1(int N[3], float *D0, float *D1, /**/ struct Tex te) {
     org[c] = N[c] * (G - M[c]) / G;
     spa[c] = N[c] * (L[c] + 2 * M[c]) / G / T[c];
   }
-  field::sample(org, spa, T, N, D0, /**/ D1);
+  field::sample(org, spa, N, D0,   T, /**/ D1);
   ini0(D1, te);
 }
 

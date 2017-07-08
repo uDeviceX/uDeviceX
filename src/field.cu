@@ -40,7 +40,7 @@ void ini_data(const char *path, int n, /**/ float *D) { /* read sdf file */
   fclose(f);
 }
 
-void sample(const float org[3], const float spa[3], const int N1[3], const int N0[3], const float *D0, float *D1) {
+void sample(const float org[3], const float spa[3], const int N0[3], const float *D0, const int N1[3], float *D1) {
     enum {X, Y, Z};
 #define OOO(ix, iy, iz) (D1 [ix + N1[X] * (iy + N1[Y] * iz)])
 #define DDD(ix, iy, iz) (D0 [ix + N0[X] * (iy + N0[Y] * iz)])
@@ -107,13 +107,15 @@ void scale(int N[3], float s, /**/ float *D) {
 
 static void dump0(const int N0[3], const float* D0, /**/ float* D1) {
   float org[3], spa[3];
+  float G; /* domain size ([g]lobal) */
   int c;
   int N1[3] = {XS, YS, ZS};
   for (c = 0; c < 3; ++c) {
-    org[c] = m::coords[c] * N1[c] / (float)(m::dims[c] * N1[c]) * N0[c];
-    spa[c] = N0[c] / (float)(m::dims[c] * N1[c]);
+    G = m::dims[c] * N1[c];
+    org[c] = m::coords[c] * N1[c] / G * N0[c];
+    spa[c] = N0[c] / G ;
   }
-  sample(org, spa, N1, N0, D0, /**/ D1);
+  sample(org, spa, N0, D0,   N1, /**/ D1);
 }
 
 static void dump1(const int N[3], const float* D, /*w*/ float* W) {
