@@ -1,0 +1,30 @@
+load("scifac");
+c: [x, y, z];
+C: [X, Y, Z];
+e[i, j]:=if i < j then concat(c[i], c[j]) else concat(c[j], c[i]);
+m: genmatrix(e, 3, 3);
+
+ratsubst0(s, e):=ratsubst(lhs(s), rhs(s), e);
+ratsubstL(L, e):=(for s in L do e: ratsubst0(s, e), e);
+substL(L, e):=(for s in L do e: subst(reverse(s), e), e);
+
+s1: i = 1/determinant(m);
+s2: yz2 = yz^2;
+s3: xz2 = xz^2;
+s4: xy2 = xy^2;
+s5: mx  = yy*zz-yz2;
+s6: my  = xy*zz-xz*yz;
+s7: mz  = xy*yz-xz*yy;
+
+r: invert(m);
+r: ratsubst0(s1, r);
+r: factor(r);
+
+su(e):=gcfac(ratsubstL([s2, s3, s4, s5, s6, s7], e));
+su0(e):=substL([s2, s5, s6, s7], e);
+
+(
+  grind(s2, s3, s4, s5, s6, s7, su0(s1)),
+  for i: 1 thru 3 do for j: i thru 3 do
+   grind('r[concat(C[i], C[j])] = su(r[i,j])));
+
