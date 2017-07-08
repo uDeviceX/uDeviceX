@@ -49,6 +49,7 @@ void ini(cudaArray *arrsdf, dev::tex3Dca<float> *texsdf) {
   ini0(/*o*/ arrsdf, texsdf, /*i*/ N, ext, D);
   delete [] D;
 }
+
 /* sort solvent particle (dev) into remaining in solvent (dev) and turning into wall (hst)*/
 static void bulk_wall0(const dev::tex3Dca<float> texsdf, /*io*/ Particle *s_pp, int* s_n,
                        /*o*/ Particle *w_pp, int *w_n, /*w*/ int *keys) {
