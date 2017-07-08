@@ -37,17 +37,16 @@ void ini0(cudaArray *arrsdf, dev::tex3Dca<float> *texsdf,
 
 void ini(cudaArray *arrsdf, dev::tex3Dca<float> *texsdf) {
   enum {X, Y, Z};
-  int N[3];
+  float *D;     /* data */
+  int N[3];     /* size of D */
   float ext[3]; /* extent */
   int n;
-  float *D; /* data */
-
   field::ini_dims("sdf.dat", N, ext);
   n = N[X] * N[Y] * N[Z];
   D = new float[n];
   field::ini_data("sdf.dat", n, D);
   ini0(/*o*/ arrsdf, texsdf, /*i*/ N, ext, D);
-  delete [] D;
+  delete[] D;
 }
 
 /* sort solvent particle (dev) into remaining in solvent (dev) and turning into wall (hst)*/
