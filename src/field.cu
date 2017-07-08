@@ -102,7 +102,7 @@ static void dump0(const int N[3], const float ext[3], const float* D, /*o*/ floa
   sample(org, spa, L, N, ampl, D, /**/ W);
 }
 
-static void dump0(const int N[3], const float ext[3], const float* D, float* W) {
+static void dump1(const int N[3], const float ext[3], const float* D, float* W) {
   dump0(N, ext, D, /**/ W);
   H5FieldDump dump;
   dump.dump_scalarfield(W, "wall");
