@@ -36,7 +36,7 @@ void ini_data(const char *path, int n, float *D) { /* read sdf file */
   FILE *f;
   f = fopen(path, "r");
   skip_line(f); skip_line(f);
-  fread(D, sizeof(float), n, f);
+  fread(D, sizeof(D[0]), n, f);
   fclose(f);
 }
 
