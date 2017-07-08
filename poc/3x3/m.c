@@ -50,7 +50,7 @@ int main() {
        2, 3,
 	  4
   };
-  dump(m);
+  puts("m:"); dump(m);
   inv3x3(m, /**/ r);
-  dump(r);
+  puts("r:"); dump(r);
 }
