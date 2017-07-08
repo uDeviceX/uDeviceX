@@ -1,6 +1,4 @@
-#include <cstdio>
 #include <mpi.h>
-#include <map>
 #include <conf.h>
 #include "conf.common.h"
 #include "m.h" /* MPI */
@@ -9,7 +7,7 @@
 #include "bund.h"
 #include "glb.h"
 
-void mpi_init(int argc, char **argv) {
+static void mpi_init(int argc, char **argv) {
     MC(MPI_Init(&argc, &argv));
     MC(MPI_Comm_rank(MPI_COMM_WORLD,   &m::rank));
     MC(MPI_Comm_size(MPI_COMM_WORLD,   &m::size));
