@@ -1,6 +1,6 @@
 # !/bin/bash
 
-module load GSL cray-hdf5-parallel cudatoolkit
+module load cray-hdf5-parallel cudatoolkit
 
 BNAME=small_n4
 SRCDIR=$HOME/uDeviceX/uDX_gx

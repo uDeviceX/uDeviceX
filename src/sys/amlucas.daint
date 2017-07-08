@@ -1,8 +1,8 @@
 # To compile and run daint
-#    module load cray-hdf5-parallel cudatoolkit daint-gpu GSL
+#    module load cray-hdf5-parallel cudatoolkit daint-gpu
 #
 #   salloc --nodes=2 -C gpu bash
-#   module module load cray-hdf5-parallel cudatoolkit daint-gpu GSL
+#   module module load cray-hdf5-parallel cudatoolkit daint-gpu
 #   srun ./udx 1 1 2
 
 h5 = 1

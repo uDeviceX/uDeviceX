@@ -1,4 +1,3 @@
-#include <gsl/gsl_linalg.h>
 #include "l/gsl.h"
 
 #include <mpi.h>

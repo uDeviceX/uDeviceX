@@ -40,8 +40,6 @@ Configuration options
 	  CXX=/usr/lib64/mpich/bin/mpic++
 	  CC=/usr/lib64/mpich/bin/mpicc
 
-## gsl
-
 ## nvcc
 
 How did we get flags?

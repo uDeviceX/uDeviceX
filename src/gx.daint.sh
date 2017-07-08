@@ -3,7 +3,7 @@
 googlex=/scratch/snx3000/amlucas/geom
 
 ini() {
-    module load cray-hdf5-parallel cudatoolkit daint-gpu GSL
+    module load cray-hdf5-parallel cudatoolkit daint-gpu
     cp .cache.Makefile.amlucas.daint .cache.Makefile
 }
 
@@ -21,7 +21,7 @@ run () {
 #SBATCH --error=error.txt
 #SBATCH --constraint=gpu
 :
-module load cray-hdf5-parallel cudatoolkit daint-gpu GSL
+module load cray-hdf5-parallel cudatoolkit daint-gpu
 export HEX_COMM_FACTOR=2
 srun --export=HEX_COMM_FACTOR -u ./udx ${NX} ${NY} ${NZ}
 EOF
