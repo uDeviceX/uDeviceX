@@ -7,6 +7,7 @@ void ini(cudaArray *arrsdf, dev::tex3Dca<float> *texsdf) {
     float *grid_data = new float[np];
     float *field     = new float[XTE * YTE * ZTE];
     field::ini_data("sdf.dat", np, grid_data);
+    MC(l::m::Barrier(m::cart));
 
     int L[3] = {XS, YS, ZS};
     int MARGIN[3] = {XWM, YWM, ZWM};

@@ -35,7 +35,6 @@ void ini_data(const char *path, const int n, float *grid_data) { /* read sdf fil
 
     fread(grid_data, sizeof(float), n, fh);
     fclose(fh);
-    MC(l::m::Barrier(m::cart));
 }
 
 void sample(const float rlo[3], const float dr[3], const int nsize[3], const int N[3], const float ampl, const float *grid_data, float *out) {
