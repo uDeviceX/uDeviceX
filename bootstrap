@@ -26,7 +26,7 @@ cloned()   { if test -d "$d"; then    pull0; else git0;             fi; }
 msg()      { printf 'bstrap: %s\n' "$*" >&2 ; }
 err()      { msg "$@"; exit 1; }
 cmd()      { msg "> $*"; cmd0 "$@"; }
-cmd0()     { (echo "$@"); status; }
+cmd0()     { exec "$@"; status; }
 status()   { if test "$?" -eq 0; then msg "  OK"; else msg "  FAILED"; fi; }
 cd0()      { msg ": cd $1"; cd "$1"; }
 
