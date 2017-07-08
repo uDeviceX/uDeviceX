@@ -201,25 +201,19 @@ __global__ void bounce(const tex3Dca<float> texsdf, float2 *const pp, int n) {
     if (pid >= n) return;
     float2 data0 = pp[pid * 3];
     float2 data1 = pp[pid * 3 + 1];
-    if (pid < n) {
-        float mycheapsdf = cheap_sdf(texsdf, data0.x, data0.y, data1.x);
+    float mycheapsdf = cheap_sdf(texsdf, data0.x, data0.y, data1.x);
 
-        if (mycheapsdf >=
-            -1.7320f * ((float)XSIZE_WALLCELLS / (float)XTE)) {
-            float currsdf = sdf(texsdf, data0.x, data0.y, data1.x);
-
-            float2 data2 = pp[pid * 3 + 2];
-
-            float3 v0 = make_float3(data1.y, data2.x, data2.y);
-
-            if (currsdf >= 0) {
-                handle_collision(texsdf, currsdf, data0.x, data0.y, data1.x, data1.y, data2.x, data2.y);
-
-                pp[3 * pid] = data0;
-                pp[3 * pid + 1] = data1;
-                pp[3 * pid + 2] = data2;
-            }
-        }
+    if (mycheapsdf >=
+	-1.7320f * ((float)XSIZE_WALLCELLS / (float)XTE)) {
+      float currsdf = sdf(texsdf, data0.x, data0.y, data1.x);
+      float2 data2 = pp[pid * 3 + 2];
+      float3 v0 = make_float3(data1.y, data2.x, data2.y);
+      if (currsdf >= 0) {
+	handle_collision(texsdf, currsdf, data0.x, data0.y, data1.x, data1.y, data2.x, data2.y);
+	pp[3 * pid] = data0;
+	pp[3 * pid + 1] = data1;
+	pp[3 * pid + 2] = data2;
+      }
     }
 }
 
