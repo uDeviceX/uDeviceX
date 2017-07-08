@@ -105,16 +105,17 @@ void scale(int N[3], float s, /**/ float *D) {
     scale0(N, s, x, y, z, /**/ D);
 }
 
-static void dump0(const int N[3], const float ext[3], const float* D0, /**/ float* D1) {
-  int c, L[3] = {XS, YS, ZS};
-  float org[3], spa[3], ampl;
+static void dump0(const int N0[3], const float ext[3], const float* D0, /**/ float* D1) {
+  float ampl, org[3], spa[3];
+  int c;
+  int N1[3] = {XS, YS, ZS};
   for (c = 0; c < 3; ++c) {
-    org[c] = m::coords[c] * L[c] / (float)(m::dims[c] * L[c]) * N[c];
-    spa[c] = N[c] / (float)(m::dims[c] * L[c]);
+    org[c] = m::coords[c] * N1[c] / (float)(m::dims[c] * N1[c]) * N0[c];
+    spa[c] = N0[c] / (float)(m::dims[c] * N1[c]);
   }
-  ampl = L[0] / (ext[0] / (float) m::dims[0]);
-  sample(org, spa, L, N, D0, /**/ D1);
-  scale(L, ampl, /**/ D1);
+  ampl = N1[0] / (ext[0] / (float) m::dims[0]);
+  sample(org, spa, N1, N0, D0, /**/ D1);
+  scale(N1, ampl, /**/ D1);
 }
 
 static void dump1(const int N[3], const float ext[3], const float* D, /*w*/ float* W) {
