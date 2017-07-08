@@ -18,7 +18,7 @@ void ini(cudaArray *arrsdf, dev::tex3Dca<float> *texsdf) {
 	(float)(m::dims[c] * L[c]);
       spacing[c] = N[c] * (L[c] + 2 * MARGIN[c]) /
 	(float)(m::dims[c] * L[c]) / (float)TE[c];
-        }
+    }
     field::sample(start, spacing, TE, N, grid_data, /**/ field);
 
     sc = XS / (extent[0] / m::dims[0]);
