@@ -32,7 +32,7 @@ void ini_dims(const char *path, /**/ int N[3], float ext[3]) {
     fclose(f);
 }
   
-void ini_data(const char *path, int n, float *D) { /* read sdf file */
+void ini_data(const char *path, int n, /**/ float *D) { /* read sdf file */
   FILE *f;
   f = fopen(path, "r");
   skip_line(f); skip_line(f);
