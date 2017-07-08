@@ -22,7 +22,6 @@ void ini0(int N[3], float extent[3],
     sc = XS / (extent[0] / m::dims[0]);
     field::scale(TE, sc, /**/ field);
 
-    if (field_dumps) field::dump(N, extent, grid_data);
     cudaMemcpy3DParms copyParams = {0};
     copyParams.srcPtr = make_cudaPitchedPtr
         ((void *)field, XTE * sizeof(float), XTE, YTE);
@@ -53,6 +52,7 @@ void ini(cudaArray *arrsdf, dev::tex3Dca<float> *texsdf) {
   D = new float[n];
   field::ini_data(f, n, D);
   MC(l::m::Barrier(m::cart)); /* TODO: why? */
+  if (field_dumps) field::dump(N, ext, D);
   ini1(N, ext, D, /**/ te);
   delete[] D;
 }
