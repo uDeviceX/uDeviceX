@@ -2,6 +2,7 @@ namespace l { namespace linal {
 /* inverts symmetric matrix m[6] (see poc/3x3) */
 void inv3x3(float *m, /**/ float *r) {
   enum {XX, XY, XZ, YY, YZ, ZZ};
+  double eps = 1e-8;
 
   double xx, yy, zz, xy, xz, yz;
   double yz2, xz2, xy2;
@@ -16,7 +17,7 @@ void inv3x3(float *m, /**/ float *r) {
   mx  = yy*zz-yz2;
   my  = xy*zz-xz*yz;
   mz  = xy*yz-xz*yy;
-  d   = mz*xz-my*xy+mx*xx;
+  d   = mz*xz-my*xy+mx*xx;   assert(abs(d) < eps);
   i   = 1/d;
 
   r[XX] =  mx*i;
