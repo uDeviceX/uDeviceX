@@ -17,7 +17,7 @@ git_udx() (
 )
 git_all()  { cmd git -q clone "$p/$d" "$d"; }
 pull0()    ( cd0 "$d" && cmd git -q pull )
-install0() ( cd0 "$d" && cmd install )
+install0() ( cd0 "$d" && cmd make install )
 
 git0()     { if test "$d" = udx; then git_udx; else git_all; fi; }
 installd() { if test -d "$d"; then install0; else err "no dir: $d"; fi; }
