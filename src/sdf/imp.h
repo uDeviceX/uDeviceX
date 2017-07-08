@@ -3,11 +3,10 @@ struct Tex { /* simplifies communication between ini[0123..] */
   dev::tex3Dca<float> *t;
 };
 
-void ini0(int N[3], float extent[3], float* grid_data, /**/ struct Tex te) {
+void ini0(int N[3], float extent[3],
+	  float* grid_data, float* field,
+	  /**/ struct Tex te) {
     float sc;
-    float *field     = new float[XTE * YTE * ZTE];
-    MC(l::m::Barrier(m::cart));
-
     int L[3] = {XS, YS, ZS};
     int MARGIN[3] = {XWM, YWM, ZWM};
     int TE[3] = {XTE, YTE, ZTE};
@@ -27,13 +26,17 @@ void ini0(int N[3], float extent[3], float* grid_data, /**/ struct Tex te) {
     cudaMemcpy3DParms copyParams = {0};
     copyParams.srcPtr = make_cudaPitchedPtr
         ((void *)field, XTE * sizeof(float), XTE, YTE);
-
     copyParams.dstArray = te.a;
     copyParams.extent = make_cudaExtent(XTE, YTE, ZTE);
     copyParams.kind = H2D;
     CC(cudaMemcpy3D(&copyParams));
     te.t->setup(te.a);
-    delete[] field;
+}
+
+void ini1(int N[3], float ext[3], float* D0, /**/ struct Tex te) {
+  float *D1 = new float[XTE * YTE * ZTE];
+  ini0(N, ext, D0, D1, /**/ te);
+  delete[] D1;
 }
 
 void ini(cudaArray *arrsdf, dev::tex3Dca<float> *texsdf) {
@@ -42,13 +45,15 @@ void ini(cudaArray *arrsdf, dev::tex3Dca<float> *texsdf) {
   int N[3];     /* size of D */
   float ext[3]; /* extent */
   int n;
+  char f[] = "sdf.dat";
   struct Tex te {arrsdf, texsdf};
   
-  field::ini_dims("sdf.dat", N, ext);
+  field::ini_dims(f, N, ext);
   n = N[X] * N[Y] * N[Z];
   D = new float[n];
-  field::ini_data("sdf.dat", n, D);
-  ini0(N, ext, D, /**/ te);
+  field::ini_data(f, n, D);
+  MC(l::m::Barrier(m::cart)); /* TODO: why? */
+  ini1(N, ext, D, /**/ te);
   delete[] D;
 }
 
