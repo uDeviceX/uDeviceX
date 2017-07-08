@@ -4,13 +4,13 @@ struct Tex { /* simplifies communication between ini[0123..] */
 };
 
 void ini0(float *D, /**/ struct Tex te) {
-    cudaMemcpy3DParms copyParams = {0};
-    copyParams.srcPtr = make_cudaPitchedPtr((void *)D, XTE * sizeof(float), XTE, YTE);
-    copyParams.dstArray = te.a;
-    copyParams.extent = make_cudaExtent(XTE, YTE, ZTE);
-    copyParams.kind = H2D;
-    CC(cudaMemcpy3D(&copyParams));
-    te.t->setup(te.a);
+  cudaMemcpy3DParms copyParams = {0};
+  copyParams.srcPtr = make_cudaPitchedPtr((void *)D, XTE * sizeof(float), XTE, YTE);
+  copyParams.dstArray = te.a;
+  copyParams.extent = make_cudaExtent(XTE, YTE, ZTE);
+  copyParams.kind = H2D;
+  CC(cudaMemcpy3D(&copyParams));
+  te.t->setup(te.a);
 }
 
 void ini1(int N[3], float ext[3], float *D0, float *D1, /**/ struct Tex te) {
