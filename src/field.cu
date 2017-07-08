@@ -40,19 +40,19 @@ void ini_data(const char *path, int n, /**/ float *D) { /* read sdf file */
   fclose(f);
 }
 
-void sample(const float rlo[3], const float dr[3], const int nsize[3], const int N[3], const float ampl, const float *grid_data, float *out) {
+void sample(const float org[3], const float spa[3], const int N1[3], const int N0[3], const float ampl, const float *D0, float *D1) {
     enum {X, Y, Z};
-#define OOO(ix, iy, iz) (       out[ix + nsize[X] * (iy + nsize[Y] * iz)])
-#define DDD(ix, iy, iz) (grid_data [ix +     N[X] * (iy +     N[Y] * iz)])
-#define i2r(i, d) (rlo[d] + (i + 0.5) * dr[d] - 0.5)
+#define OOO(ix, iy, iz) (D1 [ix + N1[X] * (iy + N1[Y] * iz)])
+#define DDD(ix, iy, iz) (D0 [ix + N0[X] * (iy + N0[Y] * iz)])
+#define i2r(i, d) (org[d] + (i + 0.5) * spa[d] - 0.5)
 #define i2x(i)    i2r(i,X)
 #define i2y(i)    i2r(i,Y)
 #define i2z(i)    i2r(i,Z)
     int iz, iy, ix, i, c, sx, sy, sz;
     float s;
-    for (iz = 0; iz < nsize[Z]; ++iz)
-    for (iy = 0; iy < nsize[Y]; ++iy)
-    for (ix = 0; ix < nsize[X]; ++ix) {
+    for (iz = 0; iz < N1[Z]; ++iz)
+    for (iy = 0; iy < N1[Y]; ++iy)
+    for (ix = 0; ix < N1[X]; ++ix) {
         float r[3] = {(float) i2x(ix), (float) i2y(iy), (float) i2z(iz)};
 
         int anchor[3];
@@ -71,7 +71,7 @@ void sample(const float rlo[3], const float dr[3], const int nsize[3], const int
                 int l[3] = {sx, sy, sz};
                 int g[3];
                 for (c = 0; c < 3; ++c)
-                g[c] = (l[c] - 1 + anchor[c] + N[c]) % N[c];
+                g[c] = (l[c] - 1 + anchor[c] + N0[c]) % N0[c];
 
                 s += w[0][sx] * DDD(g[X], g[Y], g[Z]);
             }
