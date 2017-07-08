@@ -35,7 +35,7 @@ __global__ void body_force(float mass, Particle* pp, Force* ff, int n, float dri
     f[0] += mass*driving_force0;
 }
 
-__global__ void clear_velocity(Particle *pp, int n)  {
+__global__ void clear_vel(Particle *pp, int n)  {
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
     for(int c = 0; c < 3; ++c) pp[pid].v[c] = 0;

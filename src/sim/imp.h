@@ -23,10 +23,10 @@ void freeze() {
     if (solids)           rig::set_ids(s::q);
 }
 
-void clear_velocity() {
-    if (o::q.n)           dev::clear_velocity<<<k_cnf(o::q.n)>>>(o::q.pp, o::q.n);  
-    if (solids && s::q.n) dev::clear_velocity<<<k_cnf(s::q.n)>>>(s::q.pp, s::q.n);
-    if (rbcs   && r::q.n) dev::clear_velocity<<<k_cnf(r::q.n)>>>(r::q.pp, r::q.n);
+void clear_vel() {
+    if (o::q.n)           dev::clear_vel<<<k_cnf(o::q.n)>>>(o::q.pp, o::q.n);  
+    if (solids && s::q.n) dev::clear_vel<<<k_cnf(s::q.n)>>>(s::q.pp, s::q.n);
+    if (rbcs   && r::q.n) dev::clear_vel<<<k_cnf(r::q.n)>>>(r::q.pp, r::q.n);
 }
 
 void gen() { /* generate */
@@ -37,7 +37,7 @@ void gen() { /* generate */
         create_walls();
     }
     freeze();
-    clear_velocity();
+    clear_vel();
 }
 
 void sim_gen() {
