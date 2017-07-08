@@ -12,23 +12,19 @@ void ini(cudaArray *arrsdf, dev::tex3Dca<float> *texsdf) {
     int L[3] = {XS, YS, ZS};
     int MARGIN[3] = {XWM, YWM, ZWM};
     int TE[3] = {XTE, YTE, ZTE};
-    MSG0("sampling the geometry file");
-    {
-        float start[3], spacing[3];
-        for (int c = 0; c < 3; ++c) {
-            start[c] = N[c] * (m::coords[c] * L[c] - MARGIN[c]) /
-                (float)(m::dims[c] * L[c]);
-            spacing[c] = N[c] * (L[c] + 2 * MARGIN[c]) /
-                (float)(m::dims[c] * L[c]) / (float)TE[c];
+    float start[3], spacing[3];
+    for (int c = 0; c < 3; ++c) {
+      start[c] = N[c] * (m::coords[c] * L[c] - MARGIN[c]) /
+	(float)(m::dims[c] * L[c]);
+      spacing[c] = N[c] * (L[c] + 2 * MARGIN[c]) /
+	(float)(m::dims[c] * L[c]) / (float)TE[c];
         }
-        field::sample(start, spacing, TE, N, grid_data, /**/ field);
+    field::sample(start, spacing, TE, N, grid_data, /**/ field);
 
-        sc = XS / (extent[0] / m::dims[0]);
-	field::scale(TE, sc, /**/ field);
-    }
+    sc = XS / (extent[0] / m::dims[0]);
+    field::scale(TE, sc, /**/ field);
 
     if (field_dumps) field::dump(N, extent, grid_data);
-
     cudaMemcpy3DParms copyParams = {0};
     copyParams.srcPtr = make_cudaPitchedPtr
         ((void *)field, XTE * sizeof(float), XTE, YTE);
