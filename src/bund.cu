@@ -58,9 +58,6 @@ namespace ic {
 
 #include "sdstr.decl.h"
 #include "sdstr.impl.h"
-
-#include "containers.impl.h"
-
 #include "field.h"
 
 #include "k/wvel.h" /* wall velocity used by sdf and wall */
