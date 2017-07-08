@@ -1,6 +1,6 @@
-
 void ini(cudaArray *arrsdf, dev::tex3Dca<float> *texsdf) {
-    int N[3]; float extent[3];
+    int N[3];
+    float sc, extent[3];
 
     field::ini_dims("sdf.dat", N, extent);
     const int np = N[0] * N[1] * N[2];
@@ -21,9 +21,10 @@ void ini(cudaArray *arrsdf, dev::tex3Dca<float> *texsdf) {
             spacing[c] = N[c] * (L[c] + 2 * MARGIN[c]) /
                 (float)(m::dims[c] * L[c]) / (float)TE[c];
         }
-        float amplitude_rescaling = (XS /*+ 2 * XWM*/) / (extent[0] / m::dims[0]);
         field::sample(start, spacing, TE, N, grid_data, /**/ field);
-	field::scale(TE, amplitude_rescaling, /**/ field);
+
+        sc = (XS /*+ 2 * XWM*/) / (extent[0] / m::dims[0]);
+	field::scale(TE, sc, /**/ field);
     }
 
     if (field_dumps) field::dump(N, extent, grid_data);
