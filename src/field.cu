@@ -6,7 +6,7 @@
 #include "field.h"
 
 namespace field {
-float spl(float x) { /* b-spline (see tools/bspline.mac) */
+static float spl(float x) { /* b-spline (see tools/bspline.mac) */
   return  \
     x <= 0 ? 0.0 :
     x <= 1 ? x*x*x/6 :
@@ -87,7 +87,7 @@ void sample(const float rlo[3], const float dr[3], const int nsize[3], const int
 #undef OOO
 }
 
-void dump0(const int N[3], const float extent[3], const float* grid_data, float* walldata) {
+static void dump0(const int N[3], const float extent[3], const float* grid_data, float* walldata) {
     int c, L[3] = {XS, YS, ZS};
     float rlo[3], dr[3], ampl;
     for (c = 0; c < 3; ++c) {
