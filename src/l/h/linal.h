@@ -17,7 +17,7 @@ void inv3x3(float *m, /**/ float *r) {
   mx  = yy*zz-yz2;
   my  = xy*zz-xz*yz;
   mz  = xy*yz-xz*yy;
-  d   = mz*xz-my*xy+mx*xx;   assert(abs(d) < eps);
+  d   = mz*xz-my*xy+mx*xx;   assert(d > eps || d < -eps);
   i   = 1/d;
 
   r[XX] =  mx*i;
