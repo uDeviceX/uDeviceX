@@ -91,6 +91,20 @@ void sample(const float org[3], const float spa[3], const int N1[3], const int N
 #undef OOO
 }
 
+static void scale0(int N[3], float s, int x, int y, int z, /**/ float *D) {
+  enum {X, Y};
+  int i;
+  i = x + N[X] * (y + N[Y] * z);
+  D[i] *= s;
+}
+
+void scale(int N[3], float s, /**/ float *D) {
+  enum {X, Y, Z};
+  int x, y, z;
+  for (z = 0; z < N[Z]; ++z) for (y = 0; y < N[Y]; ++y) for (x = 0; x < N[X]; ++x)
+    scale0(N, s, x, y, z, /**/ D);
+}
+
 static void dump0(const int N[3], const float ext[3], const float* D, /**/ float* W) {
   int c, L[3] = {XS, YS, ZS};
   float org[3], spa[3], ampl;
