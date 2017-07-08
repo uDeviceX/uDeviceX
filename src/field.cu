@@ -16,24 +16,28 @@ static float spl(float x) { /* b-spline (see tools/bspline.mac) */
     0.0;
 }
 
-void ini_dims(const char *path, int N[3], float extent[3]) {
-    FILE *fh = fopen(path, "r");
-    char line[2048];
-    fgets(line, sizeof(line), fh);
-    sscanf(line, "%f %f %f", &extent[0], &extent[1], &extent[2]);
-    fgets(line, sizeof(line), fh);
-    sscanf(line, "%d %d %d", &N[0], &N[1], &N[2]);
-    fclose(fh);
+void ini_dims(const char *path, int N[3], float ext[3]) {
+    FILE *f;
+    char l[BUFSIZ];
+    f = fopen(path, "r");
+    fgets(l, sizeof(l), f);
+    sscanf(l, "%f %f %f", &ext[0], &ext[1], &ext[2]);
+    fgets(l, sizeof(l), f);
+    sscanf(l, "%d %d %d", &N[0], &N[1], &N[2]);
+    fclose(f);
 }
 
-void ini_data(const char *path, const int n, float *grid_data) { /* read sdf file */
-    FILE *fh = fopen(path, "r");
-    char line[2048];
-    fgets(line, sizeof(line), fh);
-    fgets(line, sizeof(line), fh);
-
-    fread(grid_data, sizeof(float), n, fh);
-    fclose(fh);
+static void skip_line(FILE *f) {
+  char l[BUFSIZ];
+  fgets(line, sizeof(l), f);
+}
+  
+void ini_data(const char *path, int n, float *D) { /* read sdf file */
+  FILE *f;
+  f = fopen(path, "r");
+  skip_line(f); skip_line(f);
+  fread(D, sizeof(float), n, f);
+  fclose(f);
 }
 
 void sample(const float rlo[3], const float dr[3], const int nsize[3], const int N[3], const float ampl, const float *grid_data, float *out) {
