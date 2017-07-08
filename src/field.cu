@@ -91,22 +91,26 @@ void sample(const float rlo[3], const float dr[3], const int nsize[3], const int
 #undef OOO
 }
 
+static void dump0(const int N[3], const float ext[3], const float* D, /*o*/ float* W) {
+  int c, L[3] = {XS, YS, ZS};
+  float org[3], spa[3], ampl;
+  for (c = 0; c < 3; ++c) {
+    org[c] = m::coords[c] * L[c] / (float)(m::dims[c] * L[c]) * N[c];
+    spa[c] = N[c] / (float)(m::dims[c] * L[c]);
+  }
+  ampl = L[0] / (ext[0] / (float) m::dims[0]);
+  sample(org, spa, L, N, ampl, D, /**/ W);
+}
+
 static void dump0(const int N[3], const float ext[3], const float* D, float* W) {
-    int c, L[3] = {XS, YS, ZS};
-    float org[3], spa[3], ampl;
-    for (c = 0; c < 3; ++c) {
-        org[c] = m::coords[c] * L[c] / (float)(m::dims[c] * L[c]) * N[c];
-        spa[c] = N[c] / (float)(m::dims[c] * L[c]);
-    }
-    ampl = L[0] / (ext[0] / (float) m::dims[0]);
-    sample(org, spa, L, N, ampl, D, /**/ W);
-    H5FieldDump dump;
-    dump.dump_scalarfield(W, "wall");
+  dump0(N, ext, D, /**/ W);
+  H5FieldDump dump;
+  dump.dump_scalarfield(W, "wall");
 }
 
 void dump(const int N[], const float ext[], const float* D) {
   float *W = new float[XS * YS * ZS];
-  dump0(N, ext, D, /*w*/ W);
+  dump1(N, ext, D, /*w*/ W);
   delete[] W;
 }
 } /* namespace field */
