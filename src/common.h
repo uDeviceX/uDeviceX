@@ -214,21 +214,6 @@ template <typename T> struct DeviceBuffer {
         C = 128 * ((conservative_estimate + 129) / 128);
         CC(cudaMalloc(&D, sizeof(T) * C));
     }
-
-    void preserve_resize(int n) {
-        T *old = D;
-        int oldS = S;
-
-        S = n;
-        if (C >= n) return;
-        int conservative_estimate = (int)ceil(1.1 * n);
-        C = 128 * ((conservative_estimate + 129) / 128);
-        CC(cudaMalloc(&D, sizeof(T) * C));
-        if (old != NULL) {
-            CC(cudaMemcpy(D, old, sizeof(T) * oldS, D2D));
-            CC(cudaFree(old));
-        }
-    }
 };
 
 template <typename T> struct PinnedHostBuffer {
