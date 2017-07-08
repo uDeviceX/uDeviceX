@@ -1,12 +1,8 @@
-void ini(cudaArray *arrsdf, dev::tex3Dca<float> *texsdf) {
-    int N[3];
-    float sc, extent[3];
+void ini0(cudaArray *arrsdf, dev::tex3Dca<float> *texsdf,
+	  int N[3], float extent[3], float* grid_data) {
+    float sc;
 
-    field::ini_dims("sdf.dat", N, extent);
-    const int np = N[0] * N[1] * N[2];
-    float *grid_data = new float[np];
     float *field     = new float[XTE * YTE * ZTE];
-    field::ini_data("sdf.dat", np, grid_data);
     MC(l::m::Barrier(m::cart));
 
     int L[3] = {XS, YS, ZS};
@@ -36,10 +32,23 @@ void ini(cudaArray *arrsdf, dev::tex3Dca<float> *texsdf) {
 
     texsdf->setup(arrsdf);
 
-    delete[] grid_data;
     delete[] field;
 }
 
+void ini(cudaArray *arrsdf, dev::tex3Dca<float> *texsdf) {
+  enum {X, Y, Z};
+  int N[3];
+  float ext[3]; /* extent */
+  int n;
+  float *D; /* data */
+
+  field::ini_dims("sdf.dat", N, ext);
+  n = N[X] * N[Y] * N[Z];
+  D = new float[n];
+  field::ini_data("sdf.dat", n, D);
+  ini0(/*o*/ arrsdf, texsdf, /*i*/ N, ext, D);
+  delete [] D;
+}
 /* sort solvent particle (dev) into remaining in solvent (dev) and turning into wall (hst)*/
 static void bulk_wall0(const dev::tex3Dca<float> texsdf, /*io*/ Particle *s_pp, int* s_n,
                        /*o*/ Particle *w_pp, int *w_n, /*w*/ int *keys) {
