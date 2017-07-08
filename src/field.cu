@@ -114,7 +114,7 @@ static void dump0(const int N[3], const float ext[3], const float* D0, /**/ floa
   }
   ampl = L[0] / (ext[0] / (float) m::dims[0]);
   sample(org, spa, L, N, D0, /**/ D1);
-  scale(L, ampl, /**/ W);
+  scale(L, ampl, /**/ D1);
 }
 
 static void dump1(const int N[3], const float ext[3], const float* D, /*w*/ float* W) {
