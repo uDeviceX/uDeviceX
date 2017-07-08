@@ -38,6 +38,14 @@ void ini2(int N[3], float ext[3], float* D0, /**/ struct Tex te) {
   delete[] D1;
 }
 
+void ini3(int N[3], float ext[3], float* D, /**/ struct Tex te) {
+  enum {X, Y, Z};
+  float sc, G; /* domain size in x ([G]lobal) */
+  G = m::dims[X] * XS;
+  sc = G / ext[X];
+  field::scale(N, sc, /**/ D);
+}
+
 void ini(cudaArray *arrsdf, dev::tex3Dca<float> *texsdf) {
   enum {X, Y, Z};
   float *D;     /* data */
