@@ -25,36 +25,9 @@ struct TicketShalo {
 };
 
 struct TicketRhalo {
-    int estimate[26];
-    
-    intp26 cum;                /* cellstarts for each fragment (frag coords)      */
-    Particlep26 pp;            /* buffer of particles for each fragment           */
-
-    /* pinned buffers */
-    Particlep26 ppdev, pphst;  /* pinned memory for transfering particles         */
-    intp26 cumdev, cumhst;     /* pinned memory for transfering local cum sum     */
-    int26 nc, np;                  /* recv sizes */
-
-    void alloc_frag(const int i, const int est, const int nfragcells) {
-        estimate[i] = est;
-        nc.d[i] = nfragcells + 1;
-        CC(cudaMalloc(&cum.d[i], (nfragcells + 1) * sizeof(int)));
-        CC(cudaMalloc(&pp.d[i], est * sizeof(Particle)));
-
-        CC(cudaHostAlloc(&pphst.d[i], est * sizeof(Particle), cudaHostAllocMapped));
-        CC(cudaHostGetDevicePointer(&ppdev.d[i], pphst.d[i], 0));
-
-        CC(cudaHostAlloc(&cumhst.d[i], est * sizeof(int), cudaHostAllocMapped));
-        CC(cudaHostGetDevicePointer(&cumdev.d[i], cumhst.d[i], 0));
-    }
-
-    void free_frag(const int i) {
-        CC(cudaFree(cum.d[i]));
-        CC(cudaFree(pp.d[i]));
-        
-        CC(cudaFreeHost(cumhst.d[i]));
-        CC(cudaFreeHost(pphst.d[i]));
-    }
+    int26 estimate;
+    int26 nc, np;              /* number of cells, recv sizes */
+    sub::Rbufs b;
 };
 
 void ini_ticketcom(MPI_Comm cart, /**/ TicketCom *t) {
@@ -85,22 +58,8 @@ void alloc_ticketSh(/**/ TicketShalo *t) {
     t->ncells = s;
 }
 
-/* TODO move this in impl file */
 void alloc_ticketRh(/**/ TicketRhalo *t) {
-    int xsz, ysz, zsz, estimate, nhalocells;
-
-    for (int i = 0; i < 26; ++i) {
-        int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
-        xsz = d[0] != 0 ? 1 : XS;
-        ysz = d[1] != 0 ? 1 : YS;
-        zsz = d[2] != 0 ? 1 : ZS;
-        nhalocells = xsz * ysz * zsz;
-
-        estimate = numberdensity * HSAFETY_FACTOR * nhalocells;
-        estimate = 32 * ((estimate + 31) / 32);
-
-        t->alloc_frag(i, estimate, nhalocells);
-    }
+    sub::ini_ticketRh(/**/ &t->b, &t->estimate, &t->nc);
 }
 
 void free_ticketSh(/**/TicketShalo *t) {
@@ -109,7 +68,7 @@ void free_ticketSh(/**/TicketShalo *t) {
 }
 
 void free_ticketRh(/**/TicketRhalo *t) {
-    for (int i = 0; i < 26; ++i) t->free_frag(i);
+    sub::free_Rbufs(/**/ &t->b);
 }
 
 
@@ -135,8 +94,8 @@ void post(TicketCom *tc, TicketShalo *ts) {
 }
 
 void post_expected_recv(TicketCom *tc, TicketRhalo *tr) {
-    sub::post_expected_recv(tc->cart, tc->dstranks, tc->recv_tags, tr->estimate, tr->nc,
-                       /**/ tr->pphst, tr->np.d, tr->cumhst, &tc->rreq);
+    sub::post_expected_recv(tc->cart, tc->dstranks, tc->recv_tags, tr->estimate.d, tr->nc,
+                       /**/ tr->b.pphst, tr->np.d, tr->b.cumhst, &tc->rreq);
 }
 
 void wait_recv(TicketCom *tc) {
@@ -146,10 +105,10 @@ void wait_recv(TicketCom *tc) {
 // TODO move this to imp
 void recv(TicketRhalo *t) {
     for (int i = 0; i < 26; ++i)
-    CC(cudaMemcpyAsync(t->pp.d[i], t->pphst.d[i], sizeof(Particle) * t->np.d[i], H2D));
+    CC(cudaMemcpyAsync(t->b.pp.d[i], t->b.pphst.d[i], sizeof(Particle) * t->np.d[i], H2D));
     
     for (int i = 0; i < 26; ++i)
-    CC(cudaMemcpyAsync(t->cum.d[i], t->cumhst.d[i],  sizeof(int) * t->nc.d[i], H2D));
+    CC(cudaMemcpyAsync(t->b.cum.d[i], t->b.cumhst.d[i],  sizeof(int) * t->nc.d[i], H2D));
 }
 
 // TODO move this to imp
@@ -167,12 +126,12 @@ void fremote(Ticketrnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
 
         BipsBatch::BatchInfo entry = {
             (float  *)ts.b.pp.d[i],
-            (float2 *)tr.pp.d[i],
+            (float2 *)tr.b.pp.d[i],
             trnd.interrank_trunks[i]->get_float(),
             ts.nphst[i],
             tr.np.d[i],
             trnd.interrank_masks[i],
-            tr.cumdev.d[i],
+            tr.b.cumdev.d[i],
             ts.b.ii.d[i],
             dx,
             dy,
