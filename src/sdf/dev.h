@@ -91,10 +91,10 @@ __device__ float3 ugrad_sdf(const tex3Dca<float> texsdf, float x, float y, float
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
     int T[3] = {XTE, YTE, ZTE};
-
-    float tc[3], fcts[3], r[3] = {x, y, z};
+    int tc[3];
+    float fcts[3], r[3] = {x, y, z};
     for (int c = 0; c < 3; ++c)
-      tc[c] = (int)(T[c] * (r[c] + L[c] / 2 + M[c]) / (L[c] + 2 * M[c]));
+      tc[c] = T[c] * (r[c] + L[c] / 2 + M[c]) / (L[c] + 2 * M[c]);
     for (int c = 0; c < 3; ++c)
       fcts[c] = T[c] / (2 * M[c] + L[c]);
 
