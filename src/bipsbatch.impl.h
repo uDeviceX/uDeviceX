@@ -140,7 +140,7 @@ __global__ void interaction_kernel(float *adst) {
     atomicAdd(adst + dstbase + 2, zforce);
 }
 
-void interactions(BatchInfo infos[20], /**/ float *acc) {
+void interactions(BatchInfo infos[26], /**/ float *acc) {
 
     CC(cudaMemcpyToSymbolAsync(batchinfos, infos, sizeof(BatchInfo) * 26, 0,
                                H2D));
