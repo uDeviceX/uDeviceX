@@ -23,3 +23,8 @@ block([f, g],
   h: chain(f, g),
   [h(0), h(1)]);
 [b0, b1]$
+
+block([f, g],
+  [f, g]: genfi(0,  a0,   1, a1),
+  [f(0), f(1), g(a0), g(a1)]);
+[a0, a1, 0, 1]$

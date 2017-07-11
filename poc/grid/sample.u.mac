@@ -21,6 +21,12 @@ genf(xf, xt, yf, yt)::=buildq(
 /* return an inverse of linear function `f' */
 invf(f):= apply(genf, [f(0), 0,  f(1), 1]);
 
+/* return `f' and its inverse */
+genfi(xf, xt, yf, yt):=block([f, g],
+  f: genf(xf, xt, yf, yt),
+  g: invf(f),
+  [f, g]);
+
 chain(a2b, b2c):= block(
   local(a2c),
   a2c(r):=b2c(a2b(r)),

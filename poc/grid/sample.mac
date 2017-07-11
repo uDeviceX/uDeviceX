@@ -1,49 +1,18 @@
-/*
-
-global system of coordinate:
-
-x = 0: left edge of domain
-G    : size of domain
-lo   : left edge of subdomain
-
-sdf file
-0: 0
-N: G
-
-texture
-0: lo     - M
-T: lo + L + M
-
-subdomain
--L/2: lo
-0   : lo + L/2
-
-dump grid
-0: lo
-L: lo + L
-
-*/
+/* g: global */
 
 load("sample.u.mac") $
-sdf2g: genf(0, 0,   N, G);
-g2sdf: invf(sdf2g);
+[sdf2g, g2sdf]: genfi(0,    0,        N, G ) $
+[tex2g, g2tex]: genfi(0,    lo - M,   T, lo + L + M) $
+[sub2g, g2sub]: genfi(-L/2, lo,       0, lo + L/2) $
+[dum2g, g2dum]: genfi(0,    lo,       L, lo + L) $
 
-tex2g: genf(0, lo - M,   T, lo + L + M);
-g2tex: invf(tex2g);
-
-sub2g: genf(-L/2, lo,   0, lo + L/2);
-g2sub: invf(sub2g);
-
-dum2g: genf(0, lo,   L, lo + L);
-g2dum: invf(dum2g);
-
-dum2sdf: chain(dum2g, g2sdf);
+dum2sdf: chain(dum2g, g2sdf) $
 factor(dum2sdf(1) - dum2sdf(0));
 factor(dum2sdf(0));
 
-tex2sdf: chain(tex2g, g2sdf);
+tex2sdf: chain(tex2g, g2sdf) $
 factor(tex2sdf(1) - tex2sdf(0));
 factor(tex2sdf(0));
 
-sub2tex: chain(sub2g, g2tex);
+sub2tex: chain(sub2g, g2tex) $
 factor(sub2tex(r));
