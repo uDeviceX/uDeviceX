@@ -8,7 +8,9 @@ BEGIN {
     print "<form>"
     print  "<input name=\"y\" value=\"1\">"
     print  "<input name=\"z\" value=\"10\">"
-    print "<input type=\"submit\">"
+    print "<button type=\"submit\">"
+    print "submit"
+    print "</button>"
     print  "</form>"
 
     print "Q:" q
