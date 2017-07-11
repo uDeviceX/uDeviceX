@@ -41,6 +41,10 @@ void ini_data(const char *path, int n, /**/ float *D) { /* read sdf file */
 }
 
 void sample(const float org[3], const float spa[3], const int N0[3], const float *D0, const int N1[3], float *D1) {
+  /* org: origin, spa: spacing, N[01]: number of points; D[01]: data
+     sample from grid `0' to `1'
+     org, spa: are for `0'
+  */
     enum {X, Y, Z};
 #define OOO(ix, iy, iz) (D1 [ix + N1[X] * (iy + N1[Y] * iz)])
 #define DDD(ix, iy, iz) (D0 [ix + N0[X] * (iy + N0[Y] * iz)])
