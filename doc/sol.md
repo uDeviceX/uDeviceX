@@ -1,7 +1,6 @@
 # hiwi for solvent
 
 # problems
-* in `odstr` tags for MPI are hardcoded
 * `pp0` is swaped with `pp`
 * two layers with states: `x` and `odstr`
 
