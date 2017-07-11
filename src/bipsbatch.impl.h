@@ -142,7 +142,6 @@ __global__ void interaction_kernel(float *adst) {
 
 void interactions(BatchInfo infos[20], /**/ float *acc) {
     if (firstcall) {
-        CC(cudaEventCreate(&evhalodone, cudaEventDisableTiming));
         CC(cudaFuncSetCacheConfig(interaction_kernel, cudaFuncCachePreferL1));
         firstcall = false;
     }
@@ -162,7 +161,7 @@ void interactions(BatchInfo infos[20], /**/ float *acc) {
 
     int nthreads = 2 * hstart_padded[26];
 
-    CC(cudaEventRecord(evhalodone));
+    dSync();
 
     if (nthreads)
     interaction_kernel<<<k_cnf(nthreads)>>> (acc);

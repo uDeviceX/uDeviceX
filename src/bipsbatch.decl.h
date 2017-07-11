@@ -17,5 +17,4 @@ __constant__ BatchInfo batchinfos[26];
 
 bool firstcall = true;
 
-cudaEvent_t evhalodone;
 }
