@@ -15,6 +15,5 @@ struct BatchInfo {
 __constant__ BatchInfo batchinfos[26];
 
 
-bool firstcall = true;
 
 }

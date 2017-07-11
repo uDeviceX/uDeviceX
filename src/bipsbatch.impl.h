@@ -141,10 +141,6 @@ __global__ void interaction_kernel(float *adst) {
 }
 
 void interactions(BatchInfo infos[20], /**/ float *acc) {
-    if (firstcall) {
-        CC(cudaFuncSetCacheConfig(interaction_kernel, cudaFuncCachePreferL1));
-        firstcall = false;
-    }
 
     CC(cudaMemcpyToSymbolAsync(batchinfos, infos, sizeof(BatchInfo) * 26, 0,
                                H2D));
