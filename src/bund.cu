@@ -122,6 +122,7 @@ namespace dev {
 #include "rex.impl.h"
 
 #include "bipsbatch.decl.h"
+#include "k/bipsbatch.h"
 #include "bipsbatch.impl.h"
 #include "dpd/local.h"
 #include "dpd/flocal.h"

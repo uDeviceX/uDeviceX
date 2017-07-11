@@ -1,6 +1,4 @@
 namespace BipsBatch {
-__constant__ unsigned int start[27];
-
 enum HaloType { HALO_BULK = 0, HALO_FACE = 1, HALO_EDGE = 2, HALO_CORNER = 3 };
 
 struct BatchInfo {
@@ -11,9 +9,5 @@ struct BatchInfo {
         ycells, zcells;
     HaloType halotype;
 };
-
-__constant__ BatchInfo batchinfos[26];
-
-
 
 }
