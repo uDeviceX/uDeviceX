@@ -30,6 +30,10 @@ struct tex3Dca {
     void destroy() {CC(cudaDestroyTextureObject(to));}
 };
 
+__device__ static int iround(float x) {
+  return (x > 0.5) ? (x + 0.5) : (x - 0.5);
+}
+
 __device__ float sdf(const tex3Dca<float> texsdf, float x, float y, float z) {
     int c;
     float t;
