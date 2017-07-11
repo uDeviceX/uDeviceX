@@ -1,0 +1,27 @@
+/* return a linear function which maps
+   xf to xt and yf to yt ([f]rom, [t]o)
+Ex:
+(%i1) f: genf(0, a, 1, b) $
+(%i2) [f(0), f(1)];
+(%o2)                               [a, b]
+*/
+genf(xf, xt, yf, yt)::=buildq(
+  [a: gensym(), b: gensym(), r: gensym(), xf, xt, yf, yt],
+  block(
+    [f, e, s, b, fu],
+    local(ss),
+    ss(rf, rt):=subst('r = rf, f = rt),
+    f: 'a + 'b * 'r,
+    e: [ss(xf, xt), ss(yf, yt)],
+    s: linsolve(e, ['a, 'b]),
+    f: subst(s, f),
+    f: ratsimp(f),
+    subst('f = f, lambda([r], f))));
+
+/* return an inverse of linear function `f' */
+invf(f):= apply(genf, [f(0), 0,  f(1), 1]);
+
+chain(a2b, b2c):= block(
+  local(a2c),
+  a2c(r):=b2c(a2b(r)),
+  apply(genf, [0, a2c(0),   1, a2c(1)]));

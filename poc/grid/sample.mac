@@ -1,0 +1,32 @@
+/*
+
+global system of coordinate:
+
+x = 0: left edge of the domain
+G    : size of the domain
+lo   : left edge of subdomain
+
+sdf file
+0: 0
+N: G
+
+texture
+0: lo     - M
+T: lo + L + M
+
+subdomain
+-L/2: lo
+0   : lo + L/2
+
+*/
+
+load("sample.u.mac") $
+sdf2g: genf(0, 0,   N, G);
+g2sdf: invf(sdf2g);
+
+tex2g: genf(0, lo - M,   T, lo + L + M);
+g2tex: invf(tex2g);
+
+sub2g: genf(-L/2, lo,   0, lo + L/2);
+g2sub: invf(sub2g);
+

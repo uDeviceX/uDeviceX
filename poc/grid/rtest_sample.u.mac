@@ -1,0 +1,25 @@
+(load("sample.u.mac"), 'done);
+'done$
+
+block([f],
+  f: genf(0, a, 1, b),
+  [f(0), f(1)]);
+[a, b]$
+
+block([f],
+  f: genf(a0, a1, b0, b1),
+  ratsimp([f(a0), f(b0)]));
+[a1, b1]$
+
+block([f, g],
+  f: genf(0, a, 1, b),
+  g: invf(f),
+  [g(a), g(b)]);
+[0, 1]$
+
+block([f, g],
+  f: genf(0,  a0,   1, a1),
+  g: genf(a0, b0,  a1, b1),
+  h: chain(f, g),
+  [h(0), h(1)]);
+[b0, b1]$
