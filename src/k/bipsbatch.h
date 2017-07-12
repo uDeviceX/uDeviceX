@@ -15,9 +15,7 @@ __global__ void force(float *adst) {
         {
             int key9 = 9 * ((gid >= start[9]) + (gid >= start[18]));
             int key3 = 3 * ((gid >= start[key9 + 3]) + (gid >= start[key9 + 6]));
-            int key1 =
-                (gid >= start[key9 + key3 + 1]) + (gid >= start[key9 + key3 + 2]);
-
+            int key1 = (gid >= start[key9 + key3 + 1]) + (gid >= start[key9 + key3 + 2]);
             code = key9 + key3 + key1;
             dpid = gid - start[code];
         }

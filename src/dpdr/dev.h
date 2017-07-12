@@ -3,7 +3,7 @@ typedef Sarray<int,  27> int27;
 typedef Sarray<int*, 26> intp26;
 typedef Sarray<Particle*, 26> Particlep26;
 
-static __device__ int get_idpack(const int a[], const int i) {  /* where is `i' in sorted a[27]? */
+static __device__ int get_hid(const int a[], const int i) {  /* where is `i' in sorted a[27]? */
     int k1, k3, k9;
     k9 = 9 * ((i >= a[9])           + (i >= a[18]));
     k3 = 3 * ((i >= a[k9 + 3])      + (i >= a[k9 + 6]));
@@ -44,7 +44,7 @@ __global__ void count(const int27 cellpackstarts, const int *start, const int *c
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     if (gid >= cellpackstarts.d[26]) return;
 
-    hid = get_idpack(cellpackstarts.d, gid);
+    hid = get_hid(cellpackstarts.d, gid);
     hci = gid - cellpackstarts.d[hid];
 
     get_box(hid, /**/ org, ext);
@@ -65,7 +65,7 @@ __global__ void copycells(const int27 cellpackstarts, const intp26 srccells, /**
 
     if (gid >= cellpackstarts.d[26]) return;
 
-    int idpack = get_idpack(cellpackstarts.d, gid);
+    int idpack = get_hid(cellpackstarts.d, gid);
     int offset = gid - cellpackstarts.d[idpack];
 
     dstcells.d[idpack][offset] = srccells.d[idpack][offset];
@@ -129,7 +129,7 @@ __global__ void fill_all(const int27 cellpackstarts, const Particle *pp, int *re
     gid = (threadIdx.x >> 4) + 2 * blockIdx.x;
     if (gid >= cellpackstarts.d[26]) return;
 
-    hid = get_idpack(cellpackstarts.d, gid);
+    hid = get_hid(cellpackstarts.d, gid);
     hci = gid - cellpackstarts.d[hid];
     
     tid = threadIdx.x & 0xf;
