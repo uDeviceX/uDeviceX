@@ -1,6 +1,6 @@
 namespace bipsbatch {
 __constant__ unsigned int start[27];
-__constant__ Frag batchinfos[26];
+__constant__ Frag ffrag[26];
 
 static __device__ unsigned int get_hid(const unsigned int a[], const unsigned int i) {
     /* where is `i' in sorted a[27]? */
@@ -158,7 +158,7 @@ __global__ void force(float *ff) {
     if (gid >= start[26]) return;
     hid = get_hid(start, gid);
     i = gid - start[hid];
-    info = batchinfos[hid];
+    info = ffrag[hid];
     if (i >= info.ndst) return;
 
     force2(info, i, /**/ ff);
