@@ -164,7 +164,7 @@ __global__ void force(/**/ float *ff) {
     i = gid - start[hid];
     frag = ffrag[hid];
     if (i >= frag.ndst) return;
-    rnd = rrnd[i];
+    rnd = rrnd[hid];
     force2(frag, rnd, i, /**/ ff);
 }
 }
