@@ -139,7 +139,7 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
             1 + m0 * (XS - 1),
             1 + m1 * (YS - 1),
             1 + m2 * (ZS - 1),
-            (bipsbatch::HaloType)(abs(dx) + abs(dy) + abs(dz))};
+            (bipsbatch::FragType)(abs(dx) + abs(dy) + abs(dz))};
 
         infos[i] = entry;
     }
