@@ -22,7 +22,6 @@ __device__ void force0(const BatchInfo info, uint dpid,
   int xbasecid, ybasecid, zbasecid;
 
   deltaspid1 = deltaspid2 = 0;
-  {
     basecid = 0; xstencilsize = 1; ystencilsize = 1; zstencilsize = 1;
     {
       if (info.dz == 0) {
@@ -87,7 +86,6 @@ __device__ void force0(const BatchInfo info, uint dpid,
 
     deltaspid1 -= scan1;
     deltaspid2 -= scan2;
-  }
 
   float2 *xsrc = info.xsrc;
   int mask = info.mask;
