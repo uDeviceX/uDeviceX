@@ -123,31 +123,32 @@ __device__ void force1(const BatchInfo info, uint dpid,
     atomicAdd(ff + dstbase + 2, zforce);
 }
 
-__device__ void force2(const BatchInfo info, uint dpid, /**/ float *ff) {
+__device__ void force2(const BatchInfo info, uint i, /**/ float *ff) {
   float x, y, z, vx, vy, vz;
-  x = info.xdst[0 + dpid * 6];
-  y = info.xdst[1 + dpid * 6];
-  z = info.xdst[2 + dpid * 6];
+  x = info.xdst[0 + i * 6];
+  y = info.xdst[1 + i * 6];
+  z = info.xdst[2 + i * 6];
 
-  vx = info.xdst[3 + dpid * 6];
-  vy = info.xdst[4 + dpid * 6];
-  vz = info.xdst[5 + dpid * 6];
+  vx = info.xdst[3 + i * 6];
+  vy = info.xdst[4 + i * 6];
+  vz = info.xdst[5 + i * 6];
 
-  force1(info, dpid, x, y, z, vx, vy, vz, /**/ ff);
+  force1(info, i, x, y, z, vx, vy, vz, /**/ ff);
 }
 
 __global__ void force(float *ff) {
   BatchInfo info;
   int gid;
-  uint code, dpid;
-  
+  uint hid;
+  uint i; /* particle id */
+
   gid = (threadIdx.x + blockDim.x * blockIdx.x) >> 1;
   if (gid >= start[26]) return;
-  code = get_hid(start, gid);
-  dpid = gid - start[code];
-  info = batchinfos[code];
-  if (dpid >= info.ndst) return;
-  
-  force2(info, dpid, /**/ ff);
+  hid = get_hid(start, gid);
+  i = gid - start[hid];
+  info = batchinfos[hid];
+  if (i >= info.ndst) return;
+
+  force2(info, i, /**/ ff);
 }
 }
