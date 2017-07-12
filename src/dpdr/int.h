@@ -95,7 +95,7 @@ void post(TicketCom *tc, TicketShalo *ts) {
 
 void post_expected_recv(TicketCom *tc, TicketRhalo *tr) {
     sub::post_expected_recv(tc->cart, tc->dstranks, tc->recv_tags, tr->estimate.d, tr->nc,
-                       /**/ tr->b.pphst, tr->np.d, tr->b.cumhst, &tc->rreq);
+                            /**/ tr->b.pphst, tr->np.d, tr->b.cumhst, &tc->rreq);
 }
 
 void wait_recv(TicketCom *tc) {
@@ -105,10 +105,10 @@ void wait_recv(TicketCom *tc) {
 // TODO move this to imp
 void recv(TicketRhalo *t) {
     for (int i = 0; i < 26; ++i)
-    CC(cudaMemcpyAsync(t->b.pp.d[i], t->b.pphst.d[i], sizeof(Particle) * t->np.d[i], H2D));
+        CC(cudaMemcpyAsync(t->b.pp.d[i], t->b.pphst.d[i], sizeof(Particle) * t->np.d[i], H2D));
     
     for (int i = 0; i < 26; ++i)
-    CC(cudaMemcpyAsync(t->b.cum.d[i], t->b.cumhst.d[i],  sizeof(int) * t->nc.d[i], H2D));
+        CC(cudaMemcpyAsync(t->b.cum.d[i], t->b.cumhst.d[i],  sizeof(int) * t->nc.d[i], H2D));
 }
 
 // TODO move this to imp
