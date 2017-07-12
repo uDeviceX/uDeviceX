@@ -11,22 +11,14 @@ static __device__ unsigned int get_hid(const unsigned int a[], const unsigned in
 }
 
   
-__device__ void force2(const BatchInfo info, uint dpid, /**/ float *ff) {
-    float x, y, z;
-    float vx, vy, vz;
+__device__ void force1(const BatchInfo info, uint dpid,
+		       float x, float y, float z,
+		       float vx, float vy, float vz,
+		       /**/ float *ff) {
     int dstbase;
     uint scan1, scan2, ncandidates, spidbase;
     int deltaspid1, deltaspid2;
     int basecid, xstencilsize, ystencilsize, zstencilsize;
-
-
-    x = info.xdst[0 + dpid * 6];
-    y = info.xdst[1 + dpid * 6];
-    z = info.xdst[2 + dpid * 6];
-
-    vx = info.xdst[3 + dpid * 6];
-    vy = info.xdst[4 + dpid * 6];
-    vz = info.xdst[5 + dpid * 6];
 
     dstbase = 3 * info.scattered_entries[dpid];
 
