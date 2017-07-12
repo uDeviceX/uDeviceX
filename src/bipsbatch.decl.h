@@ -1,6 +1,6 @@
 namespace bipsbatch {
 
-enum HaloType { HALO_BULK = 0, HALO_FACE = 1, HALO_EDGE = 2, HALO_CORNER = 3 };
+enum HaloType { BULK = 0, FACE = 1, EDGE = 2, CORNER = 3 };
 
 struct BatchInfo {
     float *xdst;

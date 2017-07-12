@@ -75,11 +75,11 @@ __global__ void interaction_kernel(float *adst) {
 
         int rowstencilsize = 1, colstencilsize = 1, ncols = 1;
 
-        if (info.halotype == HALO_FACE) {
+        if (info.halotype == FACE) {
             rowstencilsize = info.dz ? ystencilsize : zstencilsize;
             colstencilsize = info.dx ? ystencilsize : xstencilsize;
             ncols = info.dx ? info.ycells : info.xcells;
-        } else if (info.halotype == HALO_EDGE)
+        } else if (info.halotype == EDGE)
         colstencilsize = max(xstencilsize, max(ystencilsize, zstencilsize));
 
         spidbase = __ldg(info.cellstarts + basecid);
