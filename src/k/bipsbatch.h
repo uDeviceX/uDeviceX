@@ -14,6 +14,8 @@ __global__ void force(float *ff) {
     BatchInfo info;
     int gid;
     uint code, dpid;
+    float xp, yp, zp;
+    float up, vp, wp;
 
     gid = (threadIdx.x + blockDim.x * blockIdx.x) >> 1;
     if (gid >= start[26]) return;
@@ -22,13 +24,13 @@ __global__ void force(float *ff) {
     info = batchinfos[code];
     if (dpid >= info.ndst) return;
 
-    float xp = info.xdst[0 + dpid * 6];
-    float yp = info.xdst[1 + dpid * 6];
-    float zp = info.xdst[2 + dpid * 6];
+    xp = info.xdst[0 + dpid * 6];
+    yp = info.xdst[1 + dpid * 6];
+    zp = info.xdst[2 + dpid * 6];
 
-    float up = info.xdst[3 + dpid * 6];
-    float vp = info.xdst[4 + dpid * 6];
-    float wp = info.xdst[5 + dpid * 6];
+    up = info.xdst[3 + dpid * 6];
+    vp = info.xdst[4 + dpid * 6];
+    wp = info.xdst[5 + dpid * 6];
 
     int dstbase = 3 * info.scattered_entries[dpid];
 
