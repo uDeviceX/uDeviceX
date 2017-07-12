@@ -11,8 +11,7 @@ struct BatchInfo {
 };
 
 struct Rnd {
-  float seed;
-  int mask;
+    float seed;
+    int mask;
 };
-
 }
