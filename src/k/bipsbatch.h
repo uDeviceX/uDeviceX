@@ -11,7 +11,7 @@ static __device__ unsigned int get_hid(const unsigned int a[], const unsigned in
     return k9 + k3 + k1;
 }
   
-__device__ void force0(const Frag info, uint dpid,
+__device__ void force0(const Frag frag, uint dpid,
 		       float x, float y, float z,
 		       float vx, float vy, float vz,
 		       /**/ float *fx, float *fy, float *fz) {
@@ -23,58 +23,58 @@ __device__ void force0(const Frag info, uint dpid,
 
     deltaspid1 = deltaspid2 = 0;
     basecid = 0; xstencilsize = 1; ystencilsize = 1; zstencilsize = 1;
-    if (info.dz == 0) {
+    if (frag.dz == 0) {
         zcid = (int)(z + ZS / 2);
         zbasecid = max(0, -1 + zcid);
         basecid = zbasecid;
-        zstencilsize = min(info.zcells, zcid + 2) - zbasecid;
+        zstencilsize = min(frag.zcells, zcid + 2) - zbasecid;
     }
 
-    basecid *= info.ycells;
+    basecid *= frag.ycells;
 
-    if (info.dy == 0) {
+    if (frag.dy == 0) {
         ycid = (int)(y + YS / 2);
         ybasecid = max(0, -1 + ycid);
         basecid += ybasecid;
-        ystencilsize = min(info.ycells, ycid + 2) - ybasecid;
+        ystencilsize = min(frag.ycells, ycid + 2) - ybasecid;
     }
 
-    basecid *= info.xcells;
+    basecid *= frag.xcells;
 
-    if (info.dx == 0) {
+    if (frag.dx == 0) {
         xcid = (int)(x + XS / 2);
         xbasecid = max(0, -1 + xcid);
         basecid += xbasecid;
-        xstencilsize = min(info.xcells, xcid + 2) - xbasecid;
+        xstencilsize = min(frag.xcells, xcid + 2) - xbasecid;
     }
 
-    x -= info.dx * XS;
-    y -= info.dy * YS;
-    z -= info.dz * ZS;
+    x -= frag.dx * XS;
+    y -= frag.dy * YS;
+    z -= frag.dz * ZS;
 
     int rowstencilsize = 1, colstencilsize = 1, ncols = 1;
 
-    if (info.type == FACE) {
-        rowstencilsize = info.dz ? ystencilsize : zstencilsize;
-        colstencilsize = info.dx ? ystencilsize : xstencilsize;
-        ncols = info.dx ? info.ycells : info.xcells;
-    } else if (info.type == EDGE)
+    if (frag.type == FACE) {
+        rowstencilsize = frag.dz ? ystencilsize : zstencilsize;
+        colstencilsize = frag.dx ? ystencilsize : xstencilsize;
+        ncols = frag.dx ? frag.ycells : frag.xcells;
+    } else if (frag.type == EDGE)
         colstencilsize = max(xstencilsize, max(ystencilsize, zstencilsize));
 
-    spidbase = __ldg(info.cellstarts + basecid);
-    int count0 = __ldg(info.cellstarts + basecid + colstencilsize) - spidbase;
+    spidbase = __ldg(frag.cellstarts + basecid);
+    int count0 = __ldg(frag.cellstarts + basecid + colstencilsize) - spidbase;
 
     int count1 = 0, count2 = 0;
 
     if (rowstencilsize > 1) {
-        deltaspid1 = __ldg(info.cellstarts + basecid + ncols);
-        count1 = __ldg(info.cellstarts + basecid + ncols + colstencilsize) -
+        deltaspid1 = __ldg(frag.cellstarts + basecid + ncols);
+        count1 = __ldg(frag.cellstarts + basecid + ncols + colstencilsize) -
             deltaspid1;
     }
 
     if (rowstencilsize > 2) {
-        deltaspid2 = __ldg(info.cellstarts + basecid + 2 * ncols);
-        count2 = __ldg(info.cellstarts + basecid + 2 * ncols + colstencilsize) -
+        deltaspid2 = __ldg(frag.cellstarts + basecid + 2 * ncols);
+        count2 = __ldg(frag.cellstarts + basecid + 2 * ncols + colstencilsize) -
             deltaspid2;
     }
 
@@ -85,9 +85,9 @@ __device__ void force0(const Frag info, uint dpid,
     deltaspid1 -= scan1;
     deltaspid2 -= scan2;
 
-    float2 *xsrc = info.xsrc;
-    int mask = info.mask;
-    float seed = info.seed;
+    float2 *xsrc = frag.xsrc;
+    int mask = frag.mask;
+    float seed = frag.seed;
 
     float xforce = 0, yforce = 0, zforce = 0;
     for (uint i = threadIdx.x & 1; i < ncandidates; i += 2) {
@@ -116,40 +116,40 @@ __device__ void force0(const Frag info, uint dpid,
     atomicAdd(fz, zforce);
 }
 
-__device__ void force1(const Frag info, uint i,
+__device__ void force1(const Frag frag, uint i,
 		       float x, float y, float z,
 		       float vx, float vy, float vz,
 		       /**/ float *ff) {
     float *fx, *fy, *fz;
 
     int k;
-    k = 3 * info.scattered_entries[i];
+    k = 3 * frag.scattered_entries[i];
     fx = &ff[k++];
     fy = &ff[k++];
     fz = &ff[k++];
 
-    force0(info, i, x, y, z, vx, vy, vz, /**/ fx, fy, fz);  
+    force0(frag, i, x, y, z, vx, vy, vz, /**/ fx, fy, fz);  
 }
 
 
-__device__ void force2(const Frag info, uint i, /**/ float *ff) {
+__device__ void force2(const Frag frag, uint i, /**/ float *ff) {
     float x, y, z, vx, vy, vz;
 
     int k;
     k  = 6*i;
-    x  = info.xdst[k++];
-    y  = info.xdst[k++];
-    z  = info.xdst[k++];
+    x  = frag.xdst[k++];
+    y  = frag.xdst[k++];
+    z  = frag.xdst[k++];
 
-    vx = info.xdst[k++];
-    vy = info.xdst[k++];
-    vz = info.xdst[k++];
+    vx = frag.xdst[k++];
+    vy = frag.xdst[k++];
+    vz = frag.xdst[k++];
 
-    force1(info, i, x, y, z, vx, vy, vz, /**/ ff);
+    force1(frag, i, x, y, z, vx, vy, vz, /**/ ff);
 }
 
 __global__ void force(float *ff) {
-    Frag info;
+    Frag frag;
     int gid;
     uint hid; /* halo id */
     uint i; /* particle id */
@@ -158,9 +158,9 @@ __global__ void force(float *ff) {
     if (gid >= start[26]) return;
     hid = get_hid(start, gid);
     i = gid - start[hid];
-    info = ffrag[hid];
-    if (i >= info.ndst) return;
+    frag = ffrag[hid];
+    if (i >= frag.ndst) return;
 
-    force2(info, i, /**/ ff);
+    force2(frag, i, /**/ ff);
 }
 }
