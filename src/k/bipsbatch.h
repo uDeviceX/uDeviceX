@@ -1,29 +1,26 @@
 namespace bipsbatch {
 __constant__ unsigned int start[27];
 __constant__ BatchInfo batchinfos[26];
+
+static __device__ unsigned int get_hid(const unsigned int a[], const unsigned int i) {  /* where is `i' in sorted a[27]? */
+    unsigned int k1, k3, k9;
+    k9 = 9 * ((i >= a[9])           + (i >= a[18]));
+    k3 = 3 * ((i >= a[k9 + 3])      + (i >= a[k9 + 6]));
+    k1 =      (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
+    return k9 + k3 + k1;
+}
   
-__global__ void force(float *adst) {
+__global__ void force(float *ff) {
     BatchInfo info;
 
     uint code, dpid;
 
-    {
-        int gid = (threadIdx.x + blockDim.x * blockIdx.x) >> 1;
-
-        if (gid >= start[26]) return;
-
-        {
-            int key9 = 9 * ((gid >= start[9]) + (gid >= start[18]));
-            int key3 = 3 * ((gid >= start[key9 + 3]) + (gid >= start[key9 + 6]));
-            int key1 = (gid >= start[key9 + key3 + 1]) + (gid >= start[key9 + key3 + 2]);
-            code = key9 + key3 + key1;
-            dpid = gid - start[code];
-        }
-
-        info = batchinfos[code];
-
-        if (dpid >= info.ndst) return;
-    }
+    int gid = (threadIdx.x + blockDim.x * blockIdx.x) >> 1;
+    if (gid >= start[26]) return;
+    code = get_hid(start, gid);
+    dpid = gid - start[code];
+    info = batchinfos[code];
+    if (dpid >= info.ndst) return;
 
     float xp = info.xdst[0 + dpid * 6];
     float yp = info.xdst[1 + dpid * 6];
@@ -133,8 +130,8 @@ __global__ void force(float *adst) {
         zforce += strength.z;
     }
 
-    atomicAdd(adst + dstbase + 0, xforce);
-    atomicAdd(adst + dstbase + 1, yforce);
-    atomicAdd(adst + dstbase + 2, zforce);
+    atomicAdd(ff + dstbase + 0, xforce);
+    atomicAdd(ff + dstbase + 1, yforce);
+    atomicAdd(ff + dstbase + 2, zforce);
 }
 }
