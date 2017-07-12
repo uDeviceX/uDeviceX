@@ -88,8 +88,8 @@ __device__ void force0(const Frag frag, const Rnd rnd,
     deltaspid2 -= scan2;
 
     float2 *xsrc = frag.xsrc;
-    int mask = frag.mask;
-    float seed = frag.seed;
+    int mask = rnd.mask;
+    float seed = rnd.seed;
 
     float xforce = 0, yforce = 0, zforce = 0;
     for (uint i = threadIdx.x & 1; i < ncandidates; i += 2) {
