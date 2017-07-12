@@ -9,11 +9,9 @@ static __device__ unsigned int get_hid(const unsigned int a[], const unsigned in
     k1 =      (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
     return k9 + k3 + k1;
 }
+
   
-__global__ void force(float *ff) {
-    BatchInfo info;
-    int gid;
-    uint code, dpid;
+__device__ void force2(const BatchInfo info, uint dpid, /**/ float *ff) {
     float xp, yp, zp;
     float up, vp, wp;
     int dstbase;
@@ -21,12 +19,6 @@ __global__ void force(float *ff) {
     int deltaspid1, deltaspid2;
     int basecid, xstencilsize, ystencilsize, zstencilsize;
 
-    gid = (threadIdx.x + blockDim.x * blockIdx.x) >> 1;
-    if (gid >= start[26]) return;
-    code = get_hid(start, gid);
-    dpid = gid - start[code];
-    info = batchinfos[code];
-    if (dpid >= info.ndst) return;
 
     xp = info.xdst[0 + dpid * 6];
     yp = info.xdst[1 + dpid * 6];
@@ -138,4 +130,19 @@ __global__ void force(float *ff) {
     atomicAdd(ff + dstbase + 1, yforce);
     atomicAdd(ff + dstbase + 2, zforce);
 }
+
+  __global__ void force(float *ff) {
+    BatchInfo info;
+    int gid;
+    uint code, dpid;
+
+    gid = (threadIdx.x + blockDim.x * blockIdx.x) >> 1;
+    if (gid >= start[26]) return;
+    code = get_hid(start, gid);
+    dpid = gid - start[code];
+    info = batchinfos[code];
+    if (dpid >= info.ndst) return;
+
+    force2(info, dpid, /**/ ff);
+  }
 }
