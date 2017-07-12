@@ -12,10 +12,10 @@ static __device__ unsigned int get_hid(const unsigned int a[], const unsigned in
   
 __global__ void force(float *ff) {
     BatchInfo info;
-
+    int gid;
     uint code, dpid;
 
-    int gid = (threadIdx.x + blockDim.x * blockIdx.x) >> 1;
+    gid = (threadIdx.x + blockDim.x * blockIdx.x) >> 1;
     if (gid >= start[26]) return;
     code = get_hid(start, gid);
     dpid = gid - start[code];
