@@ -10,4 +10,9 @@ struct BatchInfo {
     HaloType halotype;
 };
 
+struct Rnd {
+  float seed;
+  int mask;
+};
+
 }
