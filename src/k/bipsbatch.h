@@ -102,9 +102,9 @@ __device__ void force0(const BatchInfo info, uint dpid,
     uint arg1 = mask ? dpid : spid;
     uint arg2 = mask ? spid : dpid;
     float myrandnr = l::rnd::d::mean0var1uu(seed, arg1, arg2);
-    float3 pos1 = make_float3(x, y, z), pos2 = make_float3(s0.x, s0.y, s1.x);
-    float3 vel1 = make_float3(vx, vy, vz), vel2 = make_float3(s1.y, s2.x, s2.y);
-    float3 strength = force(SOLVENT_TYPE, SOLVENT_TYPE, pos1, pos2, vel1, vel2, myrandnr);
+    float3 r1 = make_float3(x, y, z), r2 = make_float3(s0.x, s0.y, s1.x);
+    float3 v1 = make_float3(vx, vy, vz), v2 = make_float3(s1.y, s2.x, s2.y);
+    float3 strength = force(SOLVENT_TYPE, SOLVENT_TYPE, r1, r2, v1, v2, myrandnr);
 
     xforce += strength.x;
     yforce += strength.y;
