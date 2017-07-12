@@ -23,7 +23,6 @@ __device__ void force0(const BatchInfo info, uint dpid,
 
   deltaspid1 = deltaspid2 = 0;
   basecid = 0; xstencilsize = 1; ystencilsize = 1; zstencilsize = 1;
-  {
     if (info.dz == 0) {
       zcid = (int)(z + ZS / 2);
       zbasecid = max(0, -1 + zcid);
@@ -52,7 +51,6 @@ __device__ void force0(const BatchInfo info, uint dpid,
     x -= info.dx * XS;
     y -= info.dy * YS;
     z -= info.dz * ZS;
-  }
 
   int rowstencilsize = 1, colstencilsize = 1, ncols = 1;
 
