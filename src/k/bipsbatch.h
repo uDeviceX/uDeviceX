@@ -1,6 +1,7 @@
 namespace k_bipsbatch {
 static __constant__ unsigned int start[27];
 static __constant__ Frag         ffrag[26];
+static __constant__ Rnd           rrnd[26];
 
 static __device__ unsigned int get_hid(const unsigned int a[], const unsigned int i) {
     /* where is `i' in sorted a[27]? */
