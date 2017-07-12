@@ -113,7 +113,6 @@ __global__ void interaction_kernel(float *adst) {
 
     float xforce = 0, yforce = 0, zforce = 0;
 
-#pragma unroll 2
     for (uint i = threadIdx.x & 1; i < ncandidates; i += 2) {
         int m1 = (int)(i >= scan1);
         int m2 = (int)(i >= scan2);
@@ -126,8 +125,6 @@ __global__ void interaction_kernel(float *adst) {
         uint arg1 = mask ? dpid : spid;
         uint arg2 = mask ? spid : dpid;
         float myrandnr = l::rnd::d::mean0var1uu(seed, arg1, arg2);
-
-        // check for particle types and compute the DPD force
         float3 pos1 = make_float3(xp, yp, zp), pos2 = make_float3(s0.x, s0.y, s1.x);
         float3 vel1 = make_float3(up, vp, wp), vel2 = make_float3(s1.y, s2.x, s2.y);
         float3 strength = force(SOLVENT_TYPE, SOLVENT_TYPE, pos1, pos2, vel1,
