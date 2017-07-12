@@ -1,4 +1,7 @@
 namespace k_bipsbatch {
+static __constant__ unsigned int start[27];
+static __constant__ Frag         ffrag[26];
+
 static __device__ unsigned int get_hid(const unsigned int a[], const unsigned int i) {
     /* where is `i' in sorted a[27]? */
     unsigned int k1, k3, k9;
@@ -145,8 +148,7 @@ __device__ void force2(const Frag frag, uint i, /**/ float *ff) {
     force1(frag, i, x, y, z, vx, vy, vz, /**/ ff);
 }
 
-__global__ void force(const Frag ffrag[26], const unsigned int start[27],
-                      /**/ float *ff) {
+__global__ void force(/**/ float *ff) {
     Frag frag;
     int gid;
     uint hid; /* halo id */
