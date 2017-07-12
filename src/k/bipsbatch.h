@@ -137,17 +137,17 @@ __device__ void force2(const BatchInfo info, uint dpid, /**/ float *ff) {
 }
 
 __global__ void force(float *ff) {
-    BatchInfo info;
-    int gid;
-    uint code, dpid;
-
-    gid = (threadIdx.x + blockDim.x * blockIdx.x) >> 1;
-    if (gid >= start[26]) return;
-    code = get_hid(start, gid);
-    dpid = gid - start[code];
-    info = batchinfos[code];
-    if (dpid >= info.ndst) return;
-
-    force2(info, dpid, /**/ ff);
-  }
+  BatchInfo info;
+  int gid;
+  uint code, dpid;
+  
+  gid = (threadIdx.x + blockDim.x * blockIdx.x) >> 1;
+  if (gid >= start[26]) return;
+  code = get_hid(start, gid);
+  dpid = gid - start[code];
+  info = batchinfos[code];
+  if (dpid >= info.ndst) return;
+  
+  force2(info, dpid, /**/ ff);
+}
 }
