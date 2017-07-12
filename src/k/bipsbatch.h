@@ -16,6 +16,10 @@ __global__ void force(float *ff) {
     uint code, dpid;
     float xp, yp, zp;
     float up, vp, wp;
+    int dstbase;
+    uint scan1, scan2, ncandidates, spidbase;
+    int deltaspid1, deltaspid2;
+    int basecid, xstencilsize, ystencilsize, zstencilsize;
 
     gid = (threadIdx.x + blockDim.x * blockIdx.x) >> 1;
     if (gid >= start[26]) return;
@@ -32,13 +36,11 @@ __global__ void force(float *ff) {
     vp = info.xdst[4 + dpid * 6];
     wp = info.xdst[5 + dpid * 6];
 
-    int dstbase = 3 * info.scattered_entries[dpid];
+    dstbase = 3 * info.scattered_entries[dpid];
 
-    uint scan1, scan2, ncandidates, spidbase;
-    int deltaspid1 = 0, deltaspid2 = 0;
+    deltaspid1 = deltaspid2 = 0;
     {
-        int basecid = 0, xstencilsize = 1, ystencilsize = 1, zstencilsize = 1;
-
+        basecid = 0; xstencilsize = 1; ystencilsize = 1; zstencilsize = 1;
         {
             if (info.dz == 0) {
                 int zcid = (int)(zp + ZS / 2);
