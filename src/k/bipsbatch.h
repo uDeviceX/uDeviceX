@@ -123,6 +123,19 @@ __device__ void force1(const BatchInfo info, uint dpid,
     atomicAdd(ff + dstbase + 2, zforce);
 }
 
+__device__ void force2(const BatchInfo info, uint dpid, /**/ float *ff) {
+  float x, y, z, vx, vy, vz;
+  x = info.xdst[0 + dpid * 6];
+  y = info.xdst[1 + dpid * 6];
+  z = info.xdst[2 + dpid * 6];
+
+  vx = info.xdst[3 + dpid * 6];
+  vy = info.xdst[4 + dpid * 6];
+  vz = info.xdst[5 + dpid * 6];
+
+  force1(info, dpid, x, y, z, vx, vy, vz, /**/ ff);
+}
+
 __global__ void force(float *ff) {
     BatchInfo info;
     int gid;
