@@ -11,16 +11,13 @@ static __device__ unsigned int get_hid(const unsigned int a[], const unsigned in
 }
 
   
-__device__ void force1(const BatchInfo info, uint dpid,
+__device__ void force0(const BatchInfo info, uint dpid,
 		       float x, float y, float z,
 		       float vx, float vy, float vz,
-		       /**/ float *ff) {
-    int dstbase;
+		       /**/ float *fx, float *fy, float *fz) {
     uint scan1, scan2, ncandidates, spidbase;
     int deltaspid1, deltaspid2;
     int basecid, xstencilsize, ystencilsize, zstencilsize;
-
-    dstbase = 3 * info.scattered_entries[dpid];
 
     deltaspid1 = deltaspid2 = 0;
     {
@@ -118,10 +115,26 @@ __device__ void force1(const BatchInfo info, uint dpid,
         zforce += strength.z;
     }
 
-    atomicAdd(ff + dstbase + 0, xforce);
-    atomicAdd(ff + dstbase + 1, yforce);
-    atomicAdd(ff + dstbase + 2, zforce);
+    atomicAdd(fx, xforce);
+    atomicAdd(fy, yforce);
+    atomicAdd(fz, zforce);
 }
+
+__device__ void force1(const BatchInfo info, uint i,
+		       float x, float y, float z,
+		       float vx, float vy, float vz,
+		       /**/ float *ff) {
+  float *fx, *fy, *fz;
+
+  int k;
+  k = 3 * info.scattered_entries[i];
+  fx = &ff[k++];
+  fy = &ff[k++];
+  fz = &ff[k++];
+
+  force0(info, i, x, y, z, vx, vy, vz, /**/ fx, fy, fz);  
+}
+
 
 __device__ void force2(const BatchInfo info, uint i, /**/ float *ff) {
   float x, y, z, vx, vy, vz;
