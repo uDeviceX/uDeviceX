@@ -9,6 +9,6 @@ void interactions(BatchInfo infos[26], /**/ float *ff) {
     CC(cudaMemcpyToSymbolAsync(start, hstart_padded, sizeof(hstart_padded), 0, H2D));
     nt = 2 * hstart_padded[26];
     dSync();
-    if (nt) interaction_kernel<<<k_cnf(nt)>>>(ff);
+    if (nt) force<<<k_cnf(nt)>>>(ff);
 }
 }

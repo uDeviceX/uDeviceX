@@ -2,7 +2,7 @@ namespace bipsbatch {
 __constant__ unsigned int start[27];
 __constant__ BatchInfo batchinfos[26];
   
-__global__ void interaction_kernel(float *adst) {
+__global__ void force(float *adst) {
     BatchInfo info;
 
     uint code, dpid;
