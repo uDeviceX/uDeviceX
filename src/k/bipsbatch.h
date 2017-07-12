@@ -12,7 +12,7 @@ static __device__ unsigned int get_hid(const unsigned int a[], const unsigned in
 
   
 __device__ void force2(const BatchInfo info, uint dpid, /**/ float *ff) {
-    float xp, yp, zp;
+    float x, y, z;
     float up, vp, wp;
     int dstbase;
     uint scan1, scan2, ncandidates, spidbase;
@@ -20,9 +20,9 @@ __device__ void force2(const BatchInfo info, uint dpid, /**/ float *ff) {
     int basecid, xstencilsize, ystencilsize, zstencilsize;
 
 
-    xp = info.xdst[0 + dpid * 6];
-    yp = info.xdst[1 + dpid * 6];
-    zp = info.xdst[2 + dpid * 6];
+    x = info.xdst[0 + dpid * 6];
+    y = info.xdst[1 + dpid * 6];
+    z = info.xdst[2 + dpid * 6];
 
     up = info.xdst[3 + dpid * 6];
     vp = info.xdst[4 + dpid * 6];
@@ -35,7 +35,7 @@ __device__ void force2(const BatchInfo info, uint dpid, /**/ float *ff) {
         basecid = 0; xstencilsize = 1; ystencilsize = 1; zstencilsize = 1;
         {
             if (info.dz == 0) {
-                int zcid = (int)(zp + ZS / 2);
+                int zcid = (int)(z + ZS / 2);
                 int zbasecid = max(0, -1 + zcid);
                 basecid = zbasecid;
                 zstencilsize = min(info.zcells, zcid + 2) - zbasecid;
@@ -44,7 +44,7 @@ __device__ void force2(const BatchInfo info, uint dpid, /**/ float *ff) {
             basecid *= info.ycells;
 
             if (info.dy == 0) {
-                int ycid = (int)(yp + YS / 2);
+                int ycid = (int)(y + YS / 2);
                 int ybasecid = max(0, -1 + ycid);
                 basecid += ybasecid;
                 ystencilsize = min(info.ycells, ycid + 2) - ybasecid;
@@ -53,15 +53,15 @@ __device__ void force2(const BatchInfo info, uint dpid, /**/ float *ff) {
             basecid *= info.xcells;
 
             if (info.dx == 0) {
-                int xcid = (int)(xp + XS / 2);
+                int xcid = (int)(x + XS / 2);
                 int xbasecid = max(0, -1 + xcid);
                 basecid += xbasecid;
                 xstencilsize = min(info.xcells, xcid + 2) - xbasecid;
             }
 
-            xp -= info.dx * XS;
-            yp -= info.dy * YS;
-            zp -= info.dz * ZS;
+            x -= info.dx * XS;
+            y -= info.dy * YS;
+            z -= info.dz * ZS;
         }
 
         int rowstencilsize = 1, colstencilsize = 1, ncols = 1;
@@ -116,7 +116,7 @@ __device__ void force2(const BatchInfo info, uint dpid, /**/ float *ff) {
         uint arg1 = mask ? dpid : spid;
         uint arg2 = mask ? spid : dpid;
         float myrandnr = l::rnd::d::mean0var1uu(seed, arg1, arg2);
-        float3 pos1 = make_float3(xp, yp, zp), pos2 = make_float3(s0.x, s0.y, s1.x);
+        float3 pos1 = make_float3(x, y, z), pos2 = make_float3(s0.x, s0.y, s1.x);
         float3 vel1 = make_float3(up, vp, wp), vel2 = make_float3(s1.y, s2.x, s2.y);
         float3 strength = force(SOLVENT_TYPE, SOLVENT_TYPE, pos1, pos2, vel1,
                                                    vel2, myrandnr);
