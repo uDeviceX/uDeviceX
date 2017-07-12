@@ -2,14 +2,14 @@ namespace bipsbatch {
 __constant__ unsigned int start[27];
 __constant__ BatchInfo batchinfos[26];
 
-static __device__ unsigned int get_hid(const unsigned int a[], const unsigned int i) {  /* where is `i' in sorted a[27]? */
-    unsigned int k1, k3, k9;
-    k9 = 9 * ((i >= a[9])           + (i >= a[18]));
-    k3 = 3 * ((i >= a[k9 + 3])      + (i >= a[k9 + 6]));
-    k1 =      (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
-    return k9 + k3 + k1;
+static __device__ unsigned int get_hid(const unsigned int a[], const unsigned int i) {
+  /* where is `i' in sorted a[27]? */
+  unsigned int k1, k3, k9;
+  k9 = 9 * ((i >= a[9])           + (i >= a[18]));
+  k3 = 3 * ((i >= a[k9 + 3])      + (i >= a[k9 + 6]));
+  k1 =      (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
+  return k9 + k3 + k1;
 }
-
   
 __device__ void force0(const BatchInfo info, uint dpid,
 		       float x, float y, float z,
@@ -94,7 +94,6 @@ __device__ void force0(const BatchInfo info, uint dpid,
   float seed = info.seed;
 
   float xforce = 0, yforce = 0, zforce = 0;
-
   for (uint i = threadIdx.x & 1; i < ncandidates; i += 2) {
     int m1 = (int)(i >= scan1);
     int m2 = (int)(i >= scan2);
