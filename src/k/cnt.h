@@ -72,8 +72,7 @@ __global__ void populate(uchar4 *subindices,
 }
 
 void bind(const int *const cellsstart, const int *const cellentries,
-          const int ncellentries, std::vector<ParticlesWrap> wsolutes,
-          const int *const cellscount) {
+          const int ncellentries, std::vector<ParticlesWrap> wsolutes) {
     size_t textureoffset = 0;
 
     if (ncellentries)

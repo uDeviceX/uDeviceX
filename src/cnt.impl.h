@@ -49,8 +49,7 @@ void build_cells(std::vector<ParticlesWrap> wsolutes) {
         ctr += it.n;
     }
 
-    k_cnt::bind(cellsstart->D, cellsentries->D, ntotal, wsolutes,
-                cellscount->D);
+    k_cnt::bind(cellsstart->D, cellsentries->D, ntotal, wsolutes);
 }
 
 void bulk(std::vector<ParticlesWrap> wsolutes) {
