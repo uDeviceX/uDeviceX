@@ -12,7 +12,8 @@ static __device__ unsigned int get_hid(const unsigned int a[], const unsigned in
     return k9 + k3 + k1;
 }
   
-__device__ void force0(const Frag frag, uint dpid,
+__device__ void force0(const Frag frag, const Rnd rnd,
+                       uint dpid,
 		       float x, float y, float z,
 		       float vx, float vy, float vz,
 		       /**/ float *fx, float *fy, float *fz) {
@@ -117,7 +118,8 @@ __device__ void force0(const Frag frag, uint dpid,
     atomicAdd(fz, zforce);
 }
 
-__device__ void force1(const Frag frag, uint i,
+__device__ void force1(const Frag frag, const Rnd rnd,
+                       uint i,
 		       float x, float y, float z,
 		       float vx, float vy, float vz,
 		       /**/ float *ff) {
@@ -129,11 +131,11 @@ __device__ void force1(const Frag frag, uint i,
     fy = &ff[k++];
     fz = &ff[k++];
 
-    force0(frag, i, x, y, z, vx, vy, vz, /**/ fx, fy, fz);  
+    force0(frag, rnd, i, x, y, z, vx, vy, vz, /**/ fx, fy, fz);
 }
 
 
-__device__ void force2(const Frag frag, uint i, /**/ float *ff) {
+__device__ void force2(const Frag frag, const Rnd rnd, uint i, /**/ float *ff) {
     float x, y, z, vx, vy, vz;
 
     int k;
@@ -146,11 +148,12 @@ __device__ void force2(const Frag frag, uint i, /**/ float *ff) {
     vy = frag.xdst[k++];
     vz = frag.xdst[k++];
 
-    force1(frag, i, x, y, z, vx, vy, vz, /**/ ff);
+    force1(frag, rnd, i, x, y, z, vx, vy, vz, /**/ ff);
 }
 
 __global__ void force(/**/ float *ff) {
     Frag frag;
+    Rnd  rnd;
     int gid;
     uint hid; /* halo id */
     uint i; /* particle id */
@@ -161,7 +164,7 @@ __global__ void force(/**/ float *ff) {
     i = gid - start[hid];
     frag = ffrag[hid];
     if (i >= frag.ndst) return;
-
-    force2(frag, i, /**/ ff);
+    rnd = rrnd[i];
+    force2(frag, rnd, i, /**/ ff);
 }
 }
