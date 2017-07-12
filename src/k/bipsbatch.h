@@ -18,14 +18,16 @@ __device__ void force0(const BatchInfo info, uint dpid,
     uint scan1, scan2, ncandidates, spidbase;
     int deltaspid1, deltaspid2;
     int basecid, xstencilsize, ystencilsize, zstencilsize;
+    int xcid, ycid, zcid;
+    int xbasecid, ybasecid, zbasecid;
 
     deltaspid1 = deltaspid2 = 0;
     {
         basecid = 0; xstencilsize = 1; ystencilsize = 1; zstencilsize = 1;
         {
             if (info.dz == 0) {
-                int zcid = (int)(z + ZS / 2);
-                int zbasecid = max(0, -1 + zcid);
+                zcid = (int)(z + ZS / 2);
+                zbasecid = max(0, -1 + zcid);
                 basecid = zbasecid;
                 zstencilsize = min(info.zcells, zcid + 2) - zbasecid;
             }
@@ -33,8 +35,8 @@ __device__ void force0(const BatchInfo info, uint dpid,
             basecid *= info.ycells;
 
             if (info.dy == 0) {
-                int ycid = (int)(y + YS / 2);
-                int ybasecid = max(0, -1 + ycid);
+                ycid = (int)(y + YS / 2);
+                ybasecid = max(0, -1 + ycid);
                 basecid += ybasecid;
                 ystencilsize = min(info.ycells, ycid + 2) - ybasecid;
             }
@@ -42,8 +44,8 @@ __device__ void force0(const BatchInfo info, uint dpid,
             basecid *= info.xcells;
 
             if (info.dx == 0) {
-                int xcid = (int)(x + XS / 2);
-                int xbasecid = max(0, -1 + xcid);
+                xcid = (int)(x + XS / 2);
+                xbasecid = max(0, -1 + xcid);
                 basecid += xbasecid;
                 xstencilsize = min(info.xcells, xcid + 2) - xbasecid;
             }
