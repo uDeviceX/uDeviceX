@@ -142,7 +142,7 @@ __device__ void force2(const BatchInfo info, uint i, /**/ float *ff) {
 __global__ void force(float *ff) {
   BatchInfo info;
   int gid;
-  uint hid;
+  uint hid; /* halo id */
   uint i; /* particle id */
 
   gid = (threadIdx.x + blockDim.x * blockIdx.x) >> 1;
