@@ -131,7 +131,7 @@ __device__ void force2(const BatchInfo info, uint dpid, /**/ float *ff) {
     atomicAdd(ff + dstbase + 2, zforce);
 }
 
-  __global__ void force(float *ff) {
+__global__ void force(float *ff) {
     BatchInfo info;
     int gid;
     uint code, dpid;
