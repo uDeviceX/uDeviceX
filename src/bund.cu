@@ -121,6 +121,7 @@ namespace dev {
 #include "k/rex.h"
 #include "rex.impl.h"
 
+#include "bipsbatch.type.h"
 #include "bipsbatch.decl.h"
 #include "k/bipsbatch.h"
 #include "bipsbatch.impl.h"
