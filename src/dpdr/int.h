@@ -10,7 +10,7 @@ struct TicketCom {
     bool first;
 };
 
-struct Ticketrnd {
+struct TicketRnd {
     l::rnd::d::KISS *interrank_trunks[26];
     bool interrank_masks[26];
 };
@@ -39,11 +39,11 @@ void free_ticketcom(/**/ TicketCom *t) {
     sub::fin_tcom(t->first, /**/ &t->cart, &t->sreq, &t->rreq);
 }
 
-void ini_ticketrnd(const TicketCom tc, /**/ Ticketrnd *tr) {
+void ini_ticketrnd(const TicketCom tc, /**/ TicketRnd *tr) {
     sub::ini_trnd(tc.dstranks, /**/ tr->interrank_trunks, tr->interrank_masks);
 }
 
-void free_ticketrnd(/**/ Ticketrnd *tr) {
+void free_ticketrnd(/**/ TicketRnd *tr) {
     sub::fin_trnd(/**/ tr->interrank_trunks);
 }
 
@@ -112,7 +112,7 @@ void recv(TicketRhalo *t) {
 }
 
 // TODO move this to imp
-void fremote(Ticketrnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
+void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
     static bipsbatch::BatchInfo infos[26];
 
     for (int i = 0; i < 26; ++i) {

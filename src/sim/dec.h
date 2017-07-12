@@ -14,7 +14,7 @@ odstr::Work w;
 /* [h]alo interactions */
 namespace h {
 dpdr::TicketCom tc;
-dpdr::Ticketrnd trnd;
+dpdr::TicketRnd trnd;
 dpdr::TicketShalo ts;
 dpdr::TicketRhalo tr;
 }
