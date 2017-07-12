@@ -13,7 +13,7 @@ static __device__ unsigned int get_hid(const unsigned int a[], const unsigned in
   
 __device__ void force2(const BatchInfo info, uint dpid, /**/ float *ff) {
     float x, y, z;
-    float up, vp, wp;
+    float vx, vy, vz;
     int dstbase;
     uint scan1, scan2, ncandidates, spidbase;
     int deltaspid1, deltaspid2;
@@ -24,9 +24,9 @@ __device__ void force2(const BatchInfo info, uint dpid, /**/ float *ff) {
     y = info.xdst[1 + dpid * 6];
     z = info.xdst[2 + dpid * 6];
 
-    up = info.xdst[3 + dpid * 6];
-    vp = info.xdst[4 + dpid * 6];
-    wp = info.xdst[5 + dpid * 6];
+    vx = info.xdst[3 + dpid * 6];
+    vy = info.xdst[4 + dpid * 6];
+    vz = info.xdst[5 + dpid * 6];
 
     dstbase = 3 * info.scattered_entries[dpid];
 
@@ -117,7 +117,7 @@ __device__ void force2(const BatchInfo info, uint dpid, /**/ float *ff) {
         uint arg2 = mask ? spid : dpid;
         float myrandnr = l::rnd::d::mean0var1uu(seed, arg1, arg2);
         float3 pos1 = make_float3(x, y, z), pos2 = make_float3(s0.x, s0.y, s1.x);
-        float3 vel1 = make_float3(up, vp, wp), vel2 = make_float3(s1.y, s2.x, s2.y);
+        float3 vel1 = make_float3(vx, vy, vz), vel2 = make_float3(s1.y, s2.x, s2.y);
         float3 strength = force(SOLVENT_TYPE, SOLVENT_TYPE, pos1, pos2, vel1,
                                                    vel2, myrandnr);
 
