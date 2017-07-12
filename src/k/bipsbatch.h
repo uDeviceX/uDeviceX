@@ -125,13 +125,16 @@ __device__ void force1(const BatchInfo info, uint dpid,
 
 __device__ void force2(const BatchInfo info, uint i, /**/ float *ff) {
   float x, y, z, vx, vy, vz;
-  x = info.xdst[0 + i * 6];
-  y = info.xdst[1 + i * 6];
-  z = info.xdst[2 + i * 6];
 
-  vx = info.xdst[3 + i * 6];
-  vy = info.xdst[4 + i * 6];
-  vz = info.xdst[5 + i * 6];
+  int k;
+  k = 6*i;
+  x = info.xdst[k++];
+  y = info.xdst[k++];
+  z = info.xdst[k++];
+
+  vx = info.xdst[k++];
+  vy = info.xdst[k++];
+  vz = info.xdst[k++];
 
   force1(info, i, x, y, z, vx, vy, vz, /**/ ff);
 }
