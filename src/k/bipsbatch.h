@@ -1,6 +1,6 @@
 namespace bipsbatch {
 __constant__ unsigned int start[27];
-__constant__ BatchInfo batchinfos[26];
+__constant__ Frag batchinfos[26];
 
 static __device__ unsigned int get_hid(const unsigned int a[], const unsigned int i) {
     /* where is `i' in sorted a[27]? */
@@ -11,7 +11,7 @@ static __device__ unsigned int get_hid(const unsigned int a[], const unsigned in
     return k9 + k3 + k1;
 }
   
-__device__ void force0(const BatchInfo info, uint dpid,
+__device__ void force0(const Frag info, uint dpid,
 		       float x, float y, float z,
 		       float vx, float vy, float vz,
 		       /**/ float *fx, float *fy, float *fz) {
@@ -54,11 +54,11 @@ __device__ void force0(const BatchInfo info, uint dpid,
 
     int rowstencilsize = 1, colstencilsize = 1, ncols = 1;
 
-    if (info.halotype == FACE) {
+    if (info.type == FACE) {
         rowstencilsize = info.dz ? ystencilsize : zstencilsize;
         colstencilsize = info.dx ? ystencilsize : xstencilsize;
         ncols = info.dx ? info.ycells : info.xcells;
-    } else if (info.halotype == EDGE)
+    } else if (info.type == EDGE)
         colstencilsize = max(xstencilsize, max(ystencilsize, zstencilsize));
 
     spidbase = __ldg(info.cellstarts + basecid);
@@ -116,7 +116,7 @@ __device__ void force0(const BatchInfo info, uint dpid,
     atomicAdd(fz, zforce);
 }
 
-__device__ void force1(const BatchInfo info, uint i,
+__device__ void force1(const Frag info, uint i,
 		       float x, float y, float z,
 		       float vx, float vy, float vz,
 		       /**/ float *ff) {
@@ -132,7 +132,7 @@ __device__ void force1(const BatchInfo info, uint i,
 }
 
 
-__device__ void force2(const BatchInfo info, uint i, /**/ float *ff) {
+__device__ void force2(const Frag info, uint i, /**/ float *ff) {
     float x, y, z, vx, vy, vz;
 
     int k;
@@ -149,7 +149,7 @@ __device__ void force2(const BatchInfo info, uint i, /**/ float *ff) {
 }
 
 __global__ void force(float *ff) {
-    BatchInfo info;
+    Frag info;
     int gid;
     uint hid; /* halo id */
     uint i; /* particle id */

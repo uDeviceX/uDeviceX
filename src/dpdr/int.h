@@ -113,7 +113,7 @@ void recv(TicketRhalo *t) {
 
 // TODO move this to imp
 void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
-    static bipsbatch::BatchInfo infos[26];
+    static bipsbatch::Frag infos[26];
 
     for (int i = 0; i < 26; ++i) {
         int dx = (i     + 2) % 3 - 1;
@@ -124,7 +124,7 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
         int m1 = 0 == dy;
         int m2 = 0 == dz;
 
-        bipsbatch::BatchInfo entry = {
+        bipsbatch::Frag entry = {
             (float  *)ts.b.pp.d[i],
             (float2 *)tr.b.pp.d[i],
             trnd.interrank_trunks[i]->get_float(),
