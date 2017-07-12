@@ -1,4 +1,4 @@
-namespace BipsBatch {
+namespace bipsbatch {
 __constant__ unsigned int start[27];
 __constant__ BatchInfo batchinfos[26];
   

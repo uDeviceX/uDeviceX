@@ -1,4 +1,4 @@
-namespace BipsBatch {
+namespace bipsbatch {
 void interactions(BatchInfo infos[26], /**/ float *acc) {
 
     CC(cudaMemcpyToSymbolAsync(batchinfos, infos, sizeof(BatchInfo) * 26, 0,
