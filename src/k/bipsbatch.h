@@ -22,70 +22,70 @@ __device__ void force0(const BatchInfo info, uint dpid,
   int xbasecid, ybasecid, zbasecid;
 
   deltaspid1 = deltaspid2 = 0;
-    basecid = 0; xstencilsize = 1; ystencilsize = 1; zstencilsize = 1;
-    {
-      if (info.dz == 0) {
-	zcid = (int)(z + ZS / 2);
-	zbasecid = max(0, -1 + zcid);
-	basecid = zbasecid;
-	zstencilsize = min(info.zcells, zcid + 2) - zbasecid;
-      }
-
-      basecid *= info.ycells;
-
-      if (info.dy == 0) {
-	ycid = (int)(y + YS / 2);
-	ybasecid = max(0, -1 + ycid);
-	basecid += ybasecid;
-	ystencilsize = min(info.ycells, ycid + 2) - ybasecid;
-      }
-
-      basecid *= info.xcells;
-
-      if (info.dx == 0) {
-	xcid = (int)(x + XS / 2);
-	xbasecid = max(0, -1 + xcid);
-	basecid += xbasecid;
-	xstencilsize = min(info.xcells, xcid + 2) - xbasecid;
-      }
-
-      x -= info.dx * XS;
-      y -= info.dy * YS;
-      z -= info.dz * ZS;
+  basecid = 0; xstencilsize = 1; ystencilsize = 1; zstencilsize = 1;
+  {
+    if (info.dz == 0) {
+      zcid = (int)(z + ZS / 2);
+      zbasecid = max(0, -1 + zcid);
+      basecid = zbasecid;
+      zstencilsize = min(info.zcells, zcid + 2) - zbasecid;
     }
 
-    int rowstencilsize = 1, colstencilsize = 1, ncols = 1;
+    basecid *= info.ycells;
 
-    if (info.halotype == FACE) {
-      rowstencilsize = info.dz ? ystencilsize : zstencilsize;
-      colstencilsize = info.dx ? ystencilsize : xstencilsize;
-      ncols = info.dx ? info.ycells : info.xcells;
-    } else if (info.halotype == EDGE)
-      colstencilsize = max(xstencilsize, max(ystencilsize, zstencilsize));
-
-    spidbase = __ldg(info.cellstarts + basecid);
-    int count0 = __ldg(info.cellstarts + basecid + colstencilsize) - spidbase;
-
-    int count1 = 0, count2 = 0;
-
-    if (rowstencilsize > 1) {
-      deltaspid1 = __ldg(info.cellstarts + basecid + ncols);
-      count1 = __ldg(info.cellstarts + basecid + ncols + colstencilsize) -
-	deltaspid1;
+    if (info.dy == 0) {
+      ycid = (int)(y + YS / 2);
+      ybasecid = max(0, -1 + ycid);
+      basecid += ybasecid;
+      ystencilsize = min(info.ycells, ycid + 2) - ybasecid;
     }
 
-    if (rowstencilsize > 2) {
-      deltaspid2 = __ldg(info.cellstarts + basecid + 2 * ncols);
-      count2 = __ldg(info.cellstarts + basecid + 2 * ncols + colstencilsize) -
-	deltaspid2;
+    basecid *= info.xcells;
+
+    if (info.dx == 0) {
+      xcid = (int)(x + XS / 2);
+      xbasecid = max(0, -1 + xcid);
+      basecid += xbasecid;
+      xstencilsize = min(info.xcells, xcid + 2) - xbasecid;
     }
 
-    scan1 = count0;
-    scan2 = scan1 + count1;
-    ncandidates = scan2 + count2;
+    x -= info.dx * XS;
+    y -= info.dy * YS;
+    z -= info.dz * ZS;
+  }
 
-    deltaspid1 -= scan1;
-    deltaspid2 -= scan2;
+  int rowstencilsize = 1, colstencilsize = 1, ncols = 1;
+
+  if (info.halotype == FACE) {
+    rowstencilsize = info.dz ? ystencilsize : zstencilsize;
+    colstencilsize = info.dx ? ystencilsize : xstencilsize;
+    ncols = info.dx ? info.ycells : info.xcells;
+  } else if (info.halotype == EDGE)
+    colstencilsize = max(xstencilsize, max(ystencilsize, zstencilsize));
+
+  spidbase = __ldg(info.cellstarts + basecid);
+  int count0 = __ldg(info.cellstarts + basecid + colstencilsize) - spidbase;
+
+  int count1 = 0, count2 = 0;
+
+  if (rowstencilsize > 1) {
+    deltaspid1 = __ldg(info.cellstarts + basecid + ncols);
+    count1 = __ldg(info.cellstarts + basecid + ncols + colstencilsize) -
+      deltaspid1;
+  }
+
+  if (rowstencilsize > 2) {
+    deltaspid2 = __ldg(info.cellstarts + basecid + 2 * ncols);
+    count2 = __ldg(info.cellstarts + basecid + 2 * ncols + colstencilsize) -
+      deltaspid2;
+  }
+
+  scan1 = count0;
+  scan2 = scan1 + count1;
+  ncandidates = scan2 + count2;
+
+  deltaspid1 -= scan1;
+  deltaspid2 -= scan2;
 
   float2 *xsrc = info.xsrc;
   int mask = info.mask;
