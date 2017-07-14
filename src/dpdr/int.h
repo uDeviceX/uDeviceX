@@ -113,7 +113,8 @@ void recv(TicketRhalo *t) {
 
 // TODO move this to imp
 void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
-    static Frag frag[26];
+    static SFrag sfrag[26];
+    static  Frag  frag[26];
     static Rnd  rnd[26];
 
     for (int i = 0; i < 26; ++i) {
