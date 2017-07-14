@@ -58,46 +58,45 @@ __device__ void force1(const Frag frag, const Rnd rnd, /**/ Part p) {
     uint cnt0, cnt1, cnt2;
     int org0, org1, org2;
     int count1, count2;
-    int basecid, xstencilsize, ystencilsize, zstencilsize;
+    int basecid;
     int xcid, ycid, zcid;
-    int xbasecid, ybasecid, zbasecid;
+    int xl, yl, zl; /* low */
+    int xs, ys, zs; /* size */
     int dx, dy, dz;
     dx = frag.dx; dy = frag.dy; dz = frag.dz;
 
-    basecid = 0; xstencilsize = 1; ystencilsize = 1; zstencilsize = 1;
+    basecid = 0; xs = 1; ys = 1; zs = 1;
     if (dz == 0) {
         zcid = (int)(p.z + ZS / 2);
-        zbasecid = max(0, -1 + zcid);
-        basecid = zbasecid;
-        zstencilsize = min(frag.zcells, zcid + 2) - zbasecid;
+        zl = max(0, -1 + zcid);
+        zs = min(frag.zcells, zcid + 2) - zl;
+        basecid = zl;
     }
-
     basecid *= frag.ycells;
 
     if (dy == 0) {
         ycid = (int)(p.y + YS / 2);
-        ybasecid = max(0, -1 + ycid);
-        basecid += ybasecid;
-        ystencilsize = min(frag.ycells, ycid + 2) - ybasecid;
+        yl = max(0, -1 + ycid);
+        ys = min(frag.ycells, ycid + 2) - yl;
+        basecid += yl;
     }
-
     basecid *= frag.xcells;
 
     if (dx == 0) {
         xcid = (int)(p.x + XS / 2);
-        xbasecid = max(0, -1 + xcid);
-        basecid += xbasecid;
-        xstencilsize = min(frag.xcells, xcid + 2) - xbasecid;
+        xl = max(0, -1 + xcid);
+        xs = min(frag.xcells, xcid + 2) - xl;
+        basecid += xl;
     }
 
     int rowstencilsize = 1, colstencilsize = 1, ncols = 1;
 
     if (frag.type == FACE) {
-        rowstencilsize = dz ? ystencilsize : zstencilsize;
-        colstencilsize = dx ? ystencilsize : xstencilsize;
+        rowstencilsize = dz ? ys : zs;
+        colstencilsize = dx ? ys : xs;
         ncols = dx ? frag.ycells : frag.xcells;
     } else if (frag.type == EDGE)
-        colstencilsize = max(xstencilsize, max(ystencilsize, zstencilsize));
+        colstencilsize = max(xs, max(ys, zs));
 
     org0 = __ldg(frag.start + basecid);
     cnt0 = __ldg(frag.start + basecid + colstencilsize) - org0;
@@ -124,10 +123,7 @@ __device__ void force1(const Frag frag, const Rnd rnd, /**/ Part p) {
     p.y -= dy * YS;
     p.z -= dz * ZS;
 
-    force0(rnd, frag.pp,
-           org0, org1, org2,
-           cnt0, cnt1, cnt2,
-           p);
+    force0(rnd, frag.pp, org0, org1, org2, cnt0, cnt1, cnt2, p);
 }
 
 static __device__ void i2f(const int *ii, float *f, uint i, /**/ float **fx, float **fy, float **fz) {
