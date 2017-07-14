@@ -131,10 +131,8 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
         Frag frag = {
             (float  *)ts.b.pp.d[i],
             (float2 *)tr.b.pp.d[i],
-            trnd.interrank_trunks[i]->get_float(),
             ts.nphst[i],
             tr.np.d[i],
-            trnd.interrank_masks[i],
             tr.b.cumdev.d[i],
             ts.b.ii.d[i],
             dx,
