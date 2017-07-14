@@ -126,8 +126,6 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
         int m1 = 0 == dy;
         int m2 = 0 == dz;
 
-        rnd[i] = {trnd.interrank_trunks[i]->get_float(), trnd.interrank_masks[i]};
-
         frag[i] = {
             (float  *)ts.b.pp.d[i],
             ts.b.ii.d[i],
@@ -143,6 +141,8 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
             1 + m1 * (YS - 1),
             1 + m2 * (ZS - 1),
             (FragType)(abs(dx) + abs(dy) + abs(dz))};
+
+        rnd[i] = {trnd.interrank_trunks[i]->get_float(), trnd.interrank_masks[i]};
     }
 
     bipsbatch::interactions(frag, rnd, (float*)ff);
