@@ -153,5 +153,5 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
         rnd[i] = {trnd.interrank_trunks[i]->get_float(), trnd.interrank_masks[i]};
     }
 
-    bipsbatch::interactions(frag, rnd, (float*)ff);
+    bipsbatch::interactions(sfrag, frag, rnd, (float*)ff);
 }
