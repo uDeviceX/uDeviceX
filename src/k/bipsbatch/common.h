@@ -53,18 +53,14 @@ static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, const
     Pa r;
     uint i;
     uint lid, rid; /* ids */
-    float seed;
-    int mask;
     float x, y, z; /* pair force */
     lid = l.id;    
-    mask = rnd.mask;
-    seed = rnd.seed;
 
     *fx = *fy = *fz = 0;
     for (i = threadIdx.x & 1; !endp(m, i); i += 2) {
         rid = m2id(m, i);
         r = frag2p(frag, rid);
-        pair(l, r, random(lid, rid, seed, mask), &x, &y, &z);
+        pair(l, r, random(lid, rid, rnd.seed, rnd.mask), &x, &y, &z);
         *fx += x; *fy += y; *fz += z;
     }
 }
