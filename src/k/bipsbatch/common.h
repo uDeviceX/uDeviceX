@@ -69,18 +69,12 @@ static __device__ void force1(const Frag frag, const Rnd rnd, /*const */ LPart p
     force0(rnd, frag, m, p, f);
 }
 
-static __device__ Fo i2f0(const int *ii, float *ff, uint i) {
+static __device__ Fo i2f(const int *ii, float *ff, uint i) {
     /* local id and index to force */
     Fo f;
     ff += 3*ii[i];
     f.x = ff++; f.y = ff++; f.z = ff++;
     return f;
-}
-
-static __device__ void i2f(const int *ii, float *f, uint i, /**/ float **fx, float **fy, float **fz) {
-    /* local id and index to force */
-    f += 3*ii[i];
-    *fx = f++; *fy = f++; *fz = f++;
 }
 
 static __device__ void p2rv(const float *p, uint i,
@@ -99,7 +93,7 @@ static __device__ LPart sfrag2p(const SFrag sfrag, float *ff, uint i) {
 }
 
 static __device__ Fo sfrag2f(const SFrag sfrag, float *ff, uint i) {
-    return i2f0(sfrag.ii, ff, i);
+    return i2f(sfrag.ii, ff, i);
 }
 
 static __device__ void force2(const SFrag sfrag, const Frag frag, const Rnd rnd, uint i, /**/ float *ff) {
