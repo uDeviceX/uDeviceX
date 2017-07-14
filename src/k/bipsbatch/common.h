@@ -29,7 +29,7 @@ static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, LPart
 
      x = p0.x;   y = p0.y;   z = p0.z;
     vx = p0.vx; vy = p0.vy; vz = p0.vz;
-    fx = p0.fx; fy = p0.fy; fz = p0.fz;
+    fx = f.x; fy = f.y; fz = f.z;
     dpid = p0.id;
     
     int mask = rnd.mask;
