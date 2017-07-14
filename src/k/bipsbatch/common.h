@@ -27,7 +27,7 @@ static __device__ void p2rv2(const float2 *p, uint i,
 
 static __device__ Pa frag2p(const Frag frag, uint i) {
     Pa p;
-    p2rv2(frag.pp,     i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
+    p2rv2(frag.pp, i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
     p.id = i;
     return p;
 }
