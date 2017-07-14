@@ -113,18 +113,21 @@ void recv(TicketRhalo *t) {
 
 // TODO move this to imp
 void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
+    int i;
+    int dx, dy, dz;
+    int m0, m1, m2;
     static SFrag sfrag[26];
     static  Frag  frag[26];
     static Rnd  rnd[26];
 
-    for (int i = 0; i < 26; ++i) {
-        int dx = (i     + 2) % 3 - 1;
-        int dy = (i / 3 + 2) % 3 - 1;
-        int dz = (i / 9 + 2) % 3 - 1;
+    for (i = 0; i < 26; ++i) {
+        dx = (i     + 2) % 3 - 1;
+        dy = (i / 3 + 2) % 3 - 1;
+        dz = (i / 9 + 2) % 3 - 1;
 
-        int m0 = 0 == dx;
-        int m1 = 0 == dy;
-        int m2 = 0 == dz;
+        m0 = 0 == dx;
+        m1 = 0 == dy;
+        m2 = 0 == dz;
 
         frag[i] = {
             (float  *)ts.b.pp.d[i],
