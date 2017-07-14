@@ -10,12 +10,13 @@ struct Part { /* local struct to simplify communications better force[...] */
     float vx, vy, vz;
     float *fx, *fy, *fz;
     uint id;
-}
+};
 
 __device__ void force0(const SFrag sfrag,
                        const Rnd rnd, float2 *pp,
                         int org0,  int org1,  int org2,
                        uint cnt0, uint cnt1, uint cnt2,
+                       Part p,
 		       float x, float y, float z,
 		       float vx, float vy, float vz,
                        uint dpid,
@@ -49,6 +50,7 @@ __device__ void force0(const SFrag sfrag,
 }
 
 __device__ void force1(const Frag frag, const SFrag sfrag, const Rnd rnd,
+                       Part p,
                        uint dpid,
 		       float x, float y, float z,
 		       float vx, float vy, float vz,
@@ -126,6 +128,7 @@ __device__ void force1(const Frag frag, const SFrag sfrag, const Rnd rnd,
     force0(sfrag, rnd, frag.pp,
            org0, org1, org2,
            cnt0, cnt1, cnt2,
+           p,
            x, y, z,
            vx, vy, vz,
            dpid,
@@ -143,9 +146,10 @@ __device__ void force2(const SFrag sfrag, const Frag frag, const Rnd rnd,
 		       float x, float y, float z,
 		       float vx, float vy, float vz,
 		       /**/ float *ff) {
+    Part p;
     float *fx, *fy, *fz;
     i2f(sfrag.ii, ff, i, /**/ &fx, &fy, &fz);
-    force1(frag, sfrag, rnd, i, x, y, z, vx, vy, vz, /**/ fx, fy, fz);
+    force1(frag, sfrag, rnd, p, i, x, y, z, vx, vy, vz, /**/ fx, fy, fz);
 }
 
 static __device__ void p2rv(const float *p,
