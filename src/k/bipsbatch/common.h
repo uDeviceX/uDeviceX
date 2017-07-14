@@ -32,6 +32,11 @@ static __device__ Pa frag2p(const Frag frag, uint i) {
     return p;
 }
 
+static __device__ void pair(const Pa l, const Pa r, float *fx, float *fy, float *fz) {
+    /* pairt force ; l, r: local and remote */
+
+}
+
 static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, const Pa l, /**/
                               float *fx, float *fy, float *fz) {
     /* l, r: local and remote particles */
