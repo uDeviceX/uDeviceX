@@ -5,16 +5,15 @@ static __constant__ SFrag        ssfrag[26];
 static __constant__ Frag          ffrag[26];
 static __constant__ Rnd            rrnd[26];
 
-struct LPart { /* local particle */
+struct Pa { /* local particle */
     float x, y, z;
     float vx, vy, vz;
     uint id;
 };
 
-/* force */
-struct Fo { float *x, *y, *z; };
+struct Fo { float *x, *y, *z; }; /* force */
 
-static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, LPart p0, Fo f) {
+static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, Pa p0, Fo f) {
     float x, y, z;
     float vx, vy, vz;
     float *fx, *fy, *fz;
@@ -51,7 +50,7 @@ static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, LPart
 }
 
 
-static __device__ void force1(const Frag frag, const Rnd rnd, /*const */ LPart p, /**/ Fo f) {
+static __device__ void force1(const Frag frag, const Rnd rnd, /*const */ Pa p, /**/ Fo f) {
     int dx, dy, dz;
     Map m;
     m = p2map(frag, p.x, p.y, p.z);
@@ -79,8 +78,8 @@ static __device__ void p2rv(const float *p, uint i,
     *vx = *(p++); *vy = *(p++); *vz = *(p++);
 }
 
-static __device__ LPart sfrag2p(const SFrag sfrag, float *ff, uint i) {
-    LPart p;
+static __device__ Pa sfrag2p(const SFrag sfrag, float *ff, uint i) {
+    Pa p;
     p2rv(sfrag.pp,     i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
     p.id = i;
     return p;
@@ -91,7 +90,7 @@ static __device__ Fo sfrag2f(const SFrag sfrag, float *ff, uint i) {
 }
 
 static __device__ void force2(const SFrag sfrag, const Frag frag, const Rnd rnd, uint i, /**/ float *ff) {
-    LPart p;
+    Pa p;
     Fo f;
     p = sfrag2p(sfrag, ff, i);
     f = sfrag2f(sfrag, ff, i);
