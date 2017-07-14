@@ -5,7 +5,7 @@ static __constant__ SFrag        ssfrag[26];
 static __constant__ Frag          ffrag[26];
 static __constant__ Rnd            rrnd[26];
 
-struct Part { /* local struct to simplify communications better force[...] */
+struct Part { /* local struct to simplify communications between force[...] */
     float x, y, z;
     float vx, vy, vz;
     float *fx, *fy, *fz;
