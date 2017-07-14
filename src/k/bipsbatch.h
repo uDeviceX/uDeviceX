@@ -17,6 +17,9 @@ struct Map { /* helps to find remote particle */
     int cnt0, cnt1, cnt2;
 };
 
+/* true if `i' bigger than the number of remote particles */
+static __device__ int endp(Map m, uint i) { return i >= m.cnt2; }
+
 static __device__ void force0(const Rnd rnd, float2 *pp, const Map m, Part p) {
     float x, y, z;
     float vx, vy, vz;
@@ -31,7 +34,7 @@ static __device__ void force0(const Rnd rnd, float2 *pp, const Map m, Part p) {
     int mask = rnd.mask;
     float seed = rnd.seed;
     float xforce = 0, yforce = 0, zforce = 0;
-    for (uint i = threadIdx.x & 1; i < m.cnt2; i += 2) {
+    for (uint i = threadIdx.x & 1; !endp(m, i); i += 2) {
         int m1 = (int)(i >= m.cnt0);
         int m2 = (int)(i >= m.cnt1);
         uint spid = i + (m2 ? m.org2 : m1 ? m.org1 : m.org0);
