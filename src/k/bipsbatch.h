@@ -5,7 +5,7 @@ static __constant__ SFrag        ssfrag[26];
 static __constant__ Frag          ffrag[26];
 static __constant__ Rnd            rrnd[26];
   
-__device__ void force0(const Frag frag, const Rnd rnd,
+__device__ void force1(const Frag frag, const Rnd rnd,
                        uint dpid,
 		       float x, float y, float z,
 		       float vx, float vy, float vz,
@@ -105,13 +105,12 @@ __device__ void force0(const Frag frag, const Rnd rnd,
         yforce += strength.y;
         zforce += strength.z;
     }
-
     atomicAdd(fx, xforce);
     atomicAdd(fy, yforce);
     atomicAdd(fz, zforce);
 }
 
-__device__ void force1(const SFrag sfrag, const Frag frag, const Rnd rnd,
+__device__ void force2(const SFrag sfrag, const Frag frag, const Rnd rnd,
                        uint i,
 		       float x, float y, float z,
 		       float vx, float vy, float vz,
@@ -124,11 +123,11 @@ __device__ void force1(const SFrag sfrag, const Frag frag, const Rnd rnd,
     fy = &ff[k++];
     fz = &ff[k++];
 
-    force0(frag, rnd, i, x, y, z, vx, vy, vz, /**/ fx, fy, fz);
+    force1(frag, rnd, i, x, y, z, vx, vy, vz, /**/ fx, fy, fz);
 }
 
 
-__device__ void force2(const SFrag sfrag, const Frag frag, const Rnd rnd, uint i, /**/ float *ff) {
+__device__ void force3(const SFrag sfrag, const Frag frag, const Rnd rnd, uint i, /**/ float *ff) {
     float x, y, z, vx, vy, vz;
 
     int k;
@@ -141,7 +140,7 @@ __device__ void force2(const SFrag sfrag, const Frag frag, const Rnd rnd, uint i
     vy = sfrag.pp[k++];
     vz = sfrag.pp[k++];
 
-    force1(sfrag, frag, rnd, i, x, y, z, vx, vy, vz, /**/ ff);
+    force2(sfrag, frag, rnd, i, x, y, z, vx, vy, vz, /**/ ff);
 }
 
 static __device__ unsigned int get_hid(const unsigned int a[], const unsigned int i) {
@@ -170,6 +169,6 @@ __global__ void force(/**/ float *ff) {
 
     frag = ffrag[hid];
     rnd = rrnd[hid];
-    force2(sfrag, frag, rnd, i, /**/ ff);
+    force3(sfrag, frag, rnd, i, /**/ ff);
 }
 }
