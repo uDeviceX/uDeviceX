@@ -12,6 +12,9 @@ struct LPart { /* local particle */
     uint id;
 };
 
+/* force */
+struct Fo { float *x, *y, *z; };
+
 struct RPart { /* remote particle */
     float x, y, z;
     float vx, vy, vz;
