@@ -130,12 +130,12 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
         m2 = 0 == dz;
 
         sfrag[i] = {
-            (float  *)ts.b.pp.d[i],
+            (float*)ts.b.pp.d[i],
             ts.b.ii.d[i],
             ts.nphst[i]};
 
         frag[i] = {
-            (float2 *)tr.b.pp.d[i],
+            (float2*)tr.b.pp.d[i],
             tr.b.cumdev.d[i],
             dx,
             dy,
