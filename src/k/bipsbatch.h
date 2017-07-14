@@ -63,6 +63,8 @@ __device__ void force1(const Frag frag, const Rnd rnd, /**/ Part p) {
     int xl, yl, zl; /* low */
     int xs, ys, zs; /* size */
     int dx, dy, dz;
+    int* start;
+
     dx = frag.dx; dy = frag.dy; dz = frag.dz;
 
     basecid = 0; xs = 1; ys = 1; zs = 1;
@@ -89,28 +91,31 @@ __device__ void force1(const Frag frag, const Rnd rnd, /**/ Part p) {
         basecid += xl;
     }
 
-    int rowstencilsize = 1, colstencilsize = 1, ncols = 1;
+    int row = 1, col = 1, ncols = 1;
 
     if (frag.type == FACE) {
-        rowstencilsize = dz ? ys : zs;
-        colstencilsize = dx ? ys : xs;
+        row = dz ? ys : zs;
+        col = dx ? ys : xs;
         ncols = dx ? frag.ycells : frag.xcells;
     } else if (frag.type == EDGE)
-        colstencilsize = max(xs, max(ys, zs));
+        col = max(xs, max(ys, zs));
 
-    org0 = __ldg(frag.start + basecid);
-    cnt0 = __ldg(frag.start + basecid + colstencilsize) - org0;
+    start = frag.start + basecid;
+    org0 = __ldg(start);
+    cnt0 = __ldg(start + col) - org0;
+    start += ncols;
 
     org1   = org2 = 0;
     count1 = count2 = 0;
-    if (rowstencilsize > 1) {
-        org1   = __ldg(frag.start + basecid + ncols);
-        count1 = __ldg(frag.start + basecid + ncols + colstencilsize) - org1;
+    if (row > 1) {
+        org1   = __ldg(start);
+        count1 = __ldg(start + col) - org1;
+        start += ncols;
     }
 
-    if (rowstencilsize > 2) {
-        org2   = __ldg(frag.start + basecid + 2 * ncols);
-        count2 = __ldg(frag.start + basecid + 2 * ncols + colstencilsize) - org2;
+    if (row > 2) {
+        org2   = __ldg(start);
+        count2 = __ldg(start + col) - org2;
     }
 
     cnt1 = cnt0 + count1;
