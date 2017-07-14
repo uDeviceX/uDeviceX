@@ -126,7 +126,7 @@ __device__ void force1(const Frag frag, const SFrag sfrag, const Rnd rnd,
            fx, fy, fz);
 }
 
-__device__ void i2f(const int *ii, float *f, uint i, /**/ float **fx, float **fy, float **fz) {
+static __device__ void i2f(const int *ii, float *f, uint i, /**/ float **fx, float **fy, float **fz) {
     f += 3 * ii[i];
     *fx = f++; *fy = f++; *fz = f++;
 }
