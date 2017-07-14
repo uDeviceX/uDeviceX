@@ -4,15 +4,6 @@ static __constant__ unsigned int start[27];
 static __constant__ SFrag        ssfrag[26];
 static __constant__ Frag          ffrag[26];
 static __constant__ Rnd            rrnd[26];
-
-static __device__ unsigned int get_hid(const unsigned int a[], const unsigned int i) {
-    /* where is `i' in sorted a[27]? */
-    unsigned int k1, k3, k9;
-    k9 = 9 * ((i >= a[9])           + (i >= a[18]));
-    k3 = 3 * ((i >= a[k9 + 3])      + (i >= a[k9 + 6]));
-    k1 =      (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
-    return k9 + k3 + k1;
-}
   
 __device__ void force0(const Frag frag, const Rnd rnd,
                        uint dpid,
@@ -151,6 +142,15 @@ __device__ void force2(const SFrag sfrag, const Frag frag, const Rnd rnd, uint i
     vz = sfrag.pp[k++];
 
     force1(sfrag, frag, rnd, i, x, y, z, vx, vy, vz, /**/ ff);
+}
+
+static __device__ unsigned int get_hid(const unsigned int a[], const unsigned int i) {
+    /* where is `i' in sorted a[27]? */
+    unsigned int k1, k3, k9;
+    k9 = 9 * ((i >= a[9])           + (i >= a[18]));
+    k3 = 3 * ((i >= a[k9 + 3])      + (i >= a[k9 + 6]));
+    k1 =      (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
+    return k9 + k3 + k1;
 }
 
 __global__ void force(/**/ float *ff) {
