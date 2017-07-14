@@ -159,12 +159,12 @@ static __device__ void force1(const Frag frag, const Rnd rnd, /**/ Part p) {
 }
 
 static __device__ void i2f(const int *ii, float *f, uint i, /**/ float **fx, float **fy, float **fz) {
+    /* local id and index to force */
     f += 3*ii[i];
     *fx = f++; *fy = f++; *fz = f++;
 }
 
-static __device__ void p2rv(const float *p,
-                            uint i,
+static __device__ void p2rv(const float *p, uint i,
                             float  *x, float  *y, float  *z,
                             float *vx, float *vy, float *vz) {
     p += 6*i;
