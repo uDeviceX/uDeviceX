@@ -49,7 +49,7 @@ void free_ticketrnd(/**/ TicketRnd *tr) {
 
 void alloc_ticketSh(/**/ TicketShalo *t) {
     sub::ini_ticketSh(/**/ &t->b, &t->estimate, &t->nc);
-    
+
     CC(cudaHostAlloc(&t->nphst, sizeof(int) * 26, cudaHostAllocMapped));
     CC(cudaHostGetDevicePointer(&t->npdev, t->nphst, 0));
 
@@ -106,7 +106,7 @@ void wait_recv(TicketCom *tc) {
 void recv(TicketRhalo *t) {
     for (int i = 0; i < 26; ++i)
         CC(cudaMemcpyAsync(t->b.pp.d[i], t->b.pphst.d[i], sizeof(Particle) * t->np.d[i], H2D));
-    
+
     for (int i = 0; i < 26; ++i)
         CC(cudaMemcpyAsync(t->b.cum.d[i], t->b.cumhst.d[i],  sizeof(int) * t->nc.d[i], H2D));
 }
@@ -129,10 +129,16 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
         m1 = 0 == dy;
         m2 = 0 == dz;
 
+        sfrag[i] = {
+            (float  *)ts.b.pp.d[i],
+            ts.b.ii.d[i],
+            ts.nphst[i],
+        };
+
         frag[i] = {
             (float  *)ts.b.pp.d[i],
             ts.b.ii.d[i],
-            ts.nphst[i],            
+            ts.nphst[i],
 
             (float2 *)tr.b.pp.d[i],
             tr.np.d[i],
