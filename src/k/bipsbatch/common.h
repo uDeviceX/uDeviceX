@@ -32,22 +32,21 @@ static __device__ Pa frag2p(const Frag frag, uint i) {
     return p;
 }
 
-static __device__ void force1(const Rnd rnd, const Frag frag, const Map m, const Pa l, Fo f) {
+static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, const Pa l, /**/
+                              float *fx, float *fy, float *fz) {
     /* l, r: local and remote particles */
     Pa r;
     uint lid, rid; /* ids */
     float x, y, z;
     float vx, vy, vz;
-    float *fx, *fy, *fz;
 
+    *fx = *fy = *fz = 0;
      x = l.x;   y = l.y;   z = l.z;
     vx = l.vx; vy = l.vy; vz = l.vz;
-    fx = f.x; fy = f.y; fz = f.z;
     lid = l.id;
     
     int mask = rnd.mask;
     float seed = rnd.seed;
-    float xforce = 0, yforce = 0, zforce = 0;
     for (uint i = threadIdx.x & 1; !endp(m, i); i += 2) {
         rid = m2id(m, i);
         r = frag2p(frag, rid);
@@ -62,13 +61,18 @@ static __device__ void force1(const Rnd rnd, const Frag frag, const Map m, const
         float3 v1 = make_float3(vx, vy, vz), v2 = make_float3(r.vx, r.vy, r.vz);
         float3 strength = force(SOLVENT_TYPE, SOLVENT_TYPE, r1, r2, v1, v2, myrandnr);
 
-        xforce += strength.x;
-        yforce += strength.y;
-        zforce += strength.z;
+        *fx += strength.x;
+        *fy += strength.y;
+        *fz += strength.z;
     }
-    atomicAdd(fx, xforce);
-    atomicAdd(fy, yforce);
-    atomicAdd(fz, zforce);
+}
+
+static __device__ void force1(const Rnd rnd, const Frag frag, const Map m, const Pa p, Fo f) {
+    float x, y, z; /* force */
+    force0(rnd, frag, m, p, /**/ &x, &y, &z);
+    atomicAdd(f.x, x);
+    atomicAdd(f.y, y);
+    atomicAdd(f.z, z);
 }
 
 static __device__ void force2(const Frag frag, const Rnd rnd, Pa p, /**/ Fo f) {
