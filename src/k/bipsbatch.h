@@ -12,7 +12,32 @@ __device__ void force0(const Rnd rnd, float2 *pp,
 		       float vx, float vy, float vz,
                        uint dpid,
 		       /**/ float *fx, float *fy, float *fz) {
+    int mask = rnd.mask;
+    float seed = rnd.seed;
+    float xforce = 0, yforce = 0, zforce = 0;
+    for (uint i = threadIdx.x & 1; i < cnt2; i += 2) {
+        int m1 = (int)(i >= cnt0);
+        int m2 = (int)(i >= cnt1);
+        uint spid = i + (m2 ? org2 : m1 ? org1 : org0);
 
+        float2 s0 = __ldg(pp + 0 + spid * 3);
+        float2 s1 = __ldg(pp + 1 + spid * 3);
+        float2 s2 = __ldg(pp + 2 + spid * 3);
+
+        uint arg1 = mask ? dpid : spid;
+        uint arg2 = mask ? spid : dpid;
+        float myrandnr = l::rnd::d::mean0var1uu(seed, arg1, arg2);
+        float3 r1 = make_float3(x, y, z), r2 = make_float3(s0.x, s0.y, s1.x);
+        float3 v1 = make_float3(vx, vy, vz), v2 = make_float3(s1.y, s2.x, s2.y);
+        float3 strength = force(SOLVENT_TYPE, SOLVENT_TYPE, r1, r2, v1, v2, myrandnr);
+
+        xforce += strength.x;
+        yforce += strength.y;
+        zforce += strength.z;
+    }
+    atomicAdd(fx, xforce);
+    atomicAdd(fy, yforce);
+    atomicAdd(fz, zforce);
 }
 
 __device__ void force1(const Frag frag, const Rnd rnd,
