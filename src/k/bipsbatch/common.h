@@ -13,28 +13,30 @@ struct Pa { /* local particle */
 
 struct Fo { float *x, *y, *z; }; /* force */
 
-static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, Pa p0, Fo f) {
+static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, Pa l, Fo f) {
+    /* l, r: local and remote particles */
+    Pa r;
+    uint lid, rid; /* ids */
     float x, y, z;
     float vx, vy, vz;
     float *fx, *fy, *fz;
-    uint dpid;
 
-     x = p0.x;   y = p0.y;   z = p0.z;
-    vx = p0.vx; vy = p0.vy; vz = p0.vz;
+     x = l.x;   y = l.y;   z = l.z;
+    vx = l.vx; vy = l.vy; vz = l.vz;
     fx = f.x; fy = f.y; fz = f.z;
-    dpid = p0.id;
+    lid = l.id;
     
     int mask = rnd.mask;
     float seed = rnd.seed;
     float xforce = 0, yforce = 0, zforce = 0;
     for (uint i = threadIdx.x & 1; !endp(m, i); i += 2) {
-        uint spid = m2id(m, i);
-        float2 s0 = __ldg(frag.pp + 0 + spid * 3);
-        float2 s1 = __ldg(frag.pp + 1 + spid * 3);
-        float2 s2 = __ldg(frag.pp + 2 + spid * 3);
+        rid = m2id(m, i);
+        float2 s0 = __ldg(frag.pp + 0 + rid * 3);
+        float2 s1 = __ldg(frag.pp + 1 + rid * 3);
+        float2 s2 = __ldg(frag.pp + 2 + rid * 3);
 
-        uint arg1 = mask ? dpid : spid;
-        uint arg2 = mask ? spid : dpid;
+        uint arg1 = mask ? lid : rid;
+        uint arg2 = mask ? rid : lid;
         float myrandnr = l::rnd::d::mean0var1uu(seed, arg1, arg2);
         float3 r1 = make_float3(x, y, z), r2 = make_float3(s0.x, s0.y, s1.x);
         float3 v1 = make_float3(vx, vy, vz), v2 = make_float3(s1.y, s2.x, s2.y);
@@ -77,7 +79,7 @@ static __device__ void p2rv(const float *p, uint i,
     *vx = *(p++); *vy = *(p++); *vz = *(p++);
 }
 
-static __device__ Pa sfrag2p(const SFrag sfrag, float *ff, uint i) {
+static __device__ Pa sfrag2p(const SFrag sfrag, uint i) {
     Pa p;
     p2rv(sfrag.pp,     i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
     p.id = i;
@@ -91,7 +93,7 @@ static __device__ Fo sfrag2f(const SFrag sfrag, float *ff, uint i) {
 static __device__ void force2(const SFrag sfrag, const Frag frag, const Rnd rnd, uint i, /**/ float *ff) {
     Pa p;
     Fo f;
-    p = sfrag2p(sfrag, ff, i);
+    p = sfrag2p(sfrag, i);
     f = sfrag2f(sfrag, ff, i);
     force1(frag, rnd, p, f);
 }
