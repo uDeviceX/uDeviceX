@@ -14,12 +14,6 @@ struct LPart { /* local particle */
 /* force */
 struct Fo { float *x, *y, *z; };
 
-struct RPart { /* remote particle */
-    float x, y, z;
-    float vx, vy, vz;
-    uint id;
-};
-
 static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, LPart p0, Fo f) {
     float x, y, z;
     float vx, vy, vz;
