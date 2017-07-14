@@ -5,7 +5,7 @@ static __constant__ SFrag        ssfrag[26];
 static __constant__ Frag          ffrag[26];
 static __constant__ Rnd            rrnd[26];
 
-struct Part { /* local struct to simplify communications between force[...] */
+struct Part { /* local particle */
     float x, y, z;
     float vx, vy, vz;
     float *fx, *fy, *fz;
@@ -15,7 +15,7 @@ struct Part { /* local struct to simplify communications between force[...] */
 struct Map { /* helps to find remote particle */
     int org0, org1, org2;
     int cnt0, cnt1, cnt2;
-}
+};
 
 __device__ void force0(const Rnd rnd, float2 *pp,
                        int org0,  int org1,  int org2,
