@@ -145,7 +145,7 @@ static __device__ void p2rv(const float *p,
     *vx = *(p++); *vy = *(p++); *vz = *(p++);
 }
 
-__device__ void force3(const SFrag sfrag, const Frag frag, const Rnd rnd, uint i, /**/ float *ff) {
+__device__ void force2(const SFrag sfrag, const Frag frag, const Rnd rnd, uint i, /**/ float *ff) {
     Part p;
     p2rv(sfrag.pp,     i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
     i2f (sfrag.ii, ff, i, /**/ &p.fx, &p.fy, &p.fz);
@@ -179,6 +179,6 @@ __global__ void force(/**/ float *ff) {
 
     frag = ffrag[hid];
     rnd = rrnd[hid];
-    force3(sfrag, frag, rnd, i, /**/ ff);
+    force2(sfrag, frag, rnd, i, /**/ ff);
 }
 }
