@@ -8,7 +8,6 @@ static __constant__ Rnd            rrnd[26];
 struct LPart { /* local particle */
     float x, y, z;
     float vx, vy, vz;
-    float *fx, *fy, *fz;
     uint id;
 };
 
@@ -95,7 +94,6 @@ static __device__ void p2rv(const float *p, uint i,
 static __device__ LPart sfrag2p(const SFrag sfrag, float *ff, uint i) {
     LPart p;
     p2rv(sfrag.pp,     i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
-    i2f (sfrag.ii, ff, i, /**/ &p.fx, &p.fy, &p.fz);
     p.id = i;
     return p;
 }
