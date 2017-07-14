@@ -10,8 +10,8 @@ __device__ void force1(const Frag frag, const Rnd rnd,
 		       float x, float y, float z,
 		       float vx, float vy, float vz,
 		       /**/ float *fx, float *fy, float *fz) {
-    uint scan1, scan2, ncandidates, org0;
-    int org1, org2;
+    uint scan1, scan2, ncandidates;
+    int org0, org1, org2;
     int basecid, xstencilsize, ystencilsize, zstencilsize;
     int xcid, ycid, zcid;
     int xbasecid, ybasecid, zbasecid;
