@@ -1,6 +1,12 @@
 /* fragment */
 enum FragType { BULK = 0, FACE = 1, EDGE = 2, CORNER = 3 };
 
+struct SFrag { /* "send" fragment */
+    float *xdst;
+    int *ii;
+    int ndst;
+}
+
 struct Frag {
     float *xdst;
     int *ii;
