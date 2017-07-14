@@ -120,7 +120,7 @@ __device__ void force0(const Frag frag, const Rnd rnd,
     atomicAdd(fz, zforce);
 }
 
-__device__ void force1(const Frag frag, const Rnd rnd,
+__device__ void force1(const SFrag sfrag, const Frag frag, const Rnd rnd,
                        uint i,
 		       float x, float y, float z,
 		       float vx, float vy, float vz,
@@ -137,7 +137,7 @@ __device__ void force1(const Frag frag, const Rnd rnd,
 }
 
 
-__device__ void force2(const Frag frag, const Rnd rnd, uint i, /**/ float *ff) {
+__device__ void force2(const SFrag sfrag, const Frag frag, const Rnd rnd, uint i, /**/ float *ff) {
     float x, y, z, vx, vy, vz;
 
     int k;
@@ -150,7 +150,7 @@ __device__ void force2(const Frag frag, const Rnd rnd, uint i, /**/ float *ff) {
     vy = frag.xdst[k++];
     vz = frag.xdst[k++];
 
-    force1(frag, rnd, i, x, y, z, vx, vy, vz, /**/ ff);
+    force1(sfrag, frag, rnd, i, x, y, z, vx, vy, vz, /**/ ff);
 }
 
 __global__ void force(/**/ float *ff) {
@@ -169,6 +169,6 @@ __global__ void force(/**/ float *ff) {
     sfrag = ssfrag[hid];
     if (i >= frag.ndst) return;
     rnd = rrnd[hid];
-    force2(frag, rnd, i, /**/ ff);
+    force2(sfrag, frag, rnd, i, /**/ ff);
 }
 }
