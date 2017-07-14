@@ -17,7 +17,7 @@ struct Map { /* helps to find remote particle */
     int cnt0, cnt1, cnt2;
 };
 
-__device__ void force0(const Rnd rnd, float2 *pp, const Map m, Part p) {
+static __device__ void force0(const Rnd rnd, float2 *pp, const Map m, Part p) {
     float x, y, z;
     float vx, vy, vz;
     float *fx, *fy, *fz;
@@ -136,7 +136,7 @@ static __device__ Map p2map(const Frag frag, const Part p) {
     return m;
 }
 
-__device__ void force1(const Frag frag, const Rnd rnd, /**/ Part p) {
+static __device__ void force1(const Frag frag, const Rnd rnd, /**/ Part p) {
     int dx, dy, dz;
     Map m;
     m = p2map(frag, p);
@@ -170,7 +170,7 @@ static __device__ Part sfrag2p(const SFrag sfrag, float *ff, uint i) {
     return p;
 }
 
-__device__ void force2(const SFrag sfrag, const Frag frag, const Rnd rnd, uint i, /**/ float *ff) {
+static __device__ void force2(const SFrag sfrag, const Frag frag, const Rnd rnd, uint i, /**/ float *ff) {
     Part p;
     p = sfrag2p(sfrag, ff, i);
     force1(frag, rnd, p);
