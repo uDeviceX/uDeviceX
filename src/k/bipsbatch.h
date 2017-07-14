@@ -5,7 +5,8 @@ static __constant__ SFrag        ssfrag[26];
 static __constant__ Frag          ffrag[26];
 static __constant__ Rnd            rrnd[26];
   
-__device__ void force0(const Rnd rnd, float2 *pp,
+__device__ void force0(const SFrag sfrag,
+                       const Rnd rnd, float2 *pp,
                         int org0,  int org1,  int org2,
                        uint cnt0, uint cnt1, uint cnt2,
 		       float x, float y, float z,
@@ -115,7 +116,7 @@ __device__ void force1(const Frag frag, const SFrag sfrag, const Rnd rnd,
     y -= dy * YS;
     z -= dz * ZS;
 
-    force0(rnd, frag.pp,
+    force0(sfrag, rnd, frag.pp,
            org0, org1, org2,
            cnt0, cnt1, cnt2,
            x, y, z,
