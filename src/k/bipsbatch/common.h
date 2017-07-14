@@ -50,10 +50,6 @@ static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, const
     for (uint i = threadIdx.x & 1; !endp(m, i); i += 2) {
         rid = m2id(m, i);
         r = frag2p(frag, rid);
-        float2 s0 = __ldg(frag.pp + 0 + rid * 3);
-        float2 s1 = __ldg(frag.pp + 1 + rid * 3);
-        float2 s2 = __ldg(frag.pp + 2 + rid * 3);
-
         uint arg1 = mask ? lid : rid;
         uint arg2 = mask ? rid : lid;
         float myrandnr = l::rnd::d::mean0var1uu(seed, arg1, arg2);
