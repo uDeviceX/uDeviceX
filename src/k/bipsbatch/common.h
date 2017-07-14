@@ -134,18 +134,18 @@ __global__ void force(/**/ float *ff) {
     Rnd  rnd;
     SFrag sfrag;
     int gid;
-    uint hid; /* halo id */
+    uint h; /* halo id */
     uint i; /* particle id */
 
     gid = (threadIdx.x + blockDim.x * blockIdx.x) >> 1;
     if (gid >= start[26]) return;
-    hid = get_hid(start, gid);
-    i = gid - start[hid];
-    sfrag = ssfrag[hid];
+    h = get_h(start, gid);
+    i = gid - start[h];
+    sfrag = ssfrag[h];
     if (i >= sfrag.n) return;
 
-    frag = ffrag[hid];
-    rnd = rrnd[hid];
+    frag = ffrag[h];
+    rnd = rrnd[h];
     force3(sfrag, frag, rnd, i, /**/ ff);
 }
 }
