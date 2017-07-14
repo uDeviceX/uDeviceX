@@ -12,6 +12,11 @@ struct Part { /* local struct to simplify communications between force[...] */
     uint id;
 };
 
+struct Map { /* helps to find remote particle */
+    int org0, org1, org2;
+    int cnt0, cnt1, cnt2;
+}
+
 __device__ void force0(const Rnd rnd, float2 *pp,
                        int org0,  int org1,  int org2,
                        uint cnt0, uint cnt1, uint cnt2,
