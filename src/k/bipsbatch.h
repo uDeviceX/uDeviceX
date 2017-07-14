@@ -87,19 +87,19 @@ __device__ void force1(const Frag frag, const Rnd rnd,
     } else if (frag.type == EDGE)
         colstencilsize = max(xstencilsize, max(ystencilsize, zstencilsize));
 
-    org0 = __ldg(frag.cellstarts + basecid);
-    cnt0 = __ldg(frag.cellstarts + basecid + colstencilsize) - org0;
+    org0 = __ldg(frag.start + basecid);
+    cnt0 = __ldg(frag.start + basecid + colstencilsize) - org0;
 
     org1   = org2 = 0;
     count1 = count2 = 0;
     if (rowstencilsize > 1) {
-        org1   = __ldg(frag.cellstarts + basecid + ncols);
-        count1 = __ldg(frag.cellstarts + basecid + ncols + colstencilsize) - org1;
+        org1   = __ldg(frag.start + basecid + ncols);
+        count1 = __ldg(frag.start + basecid + ncols + colstencilsize) - org1;
     }
 
     if (rowstencilsize > 2) {
-        org2   = __ldg(frag.cellstarts + basecid + 2 * ncols);
-        count2 = __ldg(frag.cellstarts + basecid + 2 * ncols + colstencilsize) - org2;
+        org2   = __ldg(frag.start + basecid + 2 * ncols);
+        count2 = __ldg(frag.start + basecid + 2 * ncols + colstencilsize) - org2;
     }
 
     cnt1 = cnt0 + count1;
