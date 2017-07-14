@@ -142,13 +142,13 @@ __device__ void force2(const SFrag sfrag, const Frag frag, const Rnd rnd, uint i
 
     int k;
     k  = 6*i;
-    x  = sfrag.xdst[k++];
-    y  = sfrag.xdst[k++];
-    z  = sfrag.xdst[k++];
+    x  = sfrag.pp[k++];
+    y  = sfrag.pp[k++];
+    z  = sfrag.pp[k++];
 
-    vx = sfrag.xdst[k++];
-    vy = sfrag.xdst[k++];
-    vz = sfrag.xdst[k++];
+    vx = sfrag.pp[k++];
+    vy = sfrag.pp[k++];
+    vz = sfrag.pp[k++];
 
     force1(sfrag, frag, rnd, i, x, y, z, vx, vy, vz, /**/ ff);
 }
@@ -165,9 +165,10 @@ __global__ void force(/**/ float *ff) {
     if (gid >= start[26]) return;
     hid = get_hid(start, gid);
     i = gid - start[hid];
-    frag = ffrag[hid];
     sfrag = ssfrag[hid];
-    if (i >= sfrag.ndst) return;
+    if (i >= sfrag.n) return;
+
+    frag = ffrag[hid];
     rnd = rrnd[hid];
     force2(sfrag, frag, rnd, i, /**/ ff);
 }

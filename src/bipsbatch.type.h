@@ -2,9 +2,9 @@
 enum FragType { BULK = 0, FACE = 1, EDGE = 2, CORNER = 3 };
 
 struct SFrag { /* "send" fragment */
-    float *xdst;
+    float *pp;
     int *ii;
-    int ndst;
+    int n;
 };
 
 struct Frag {

@@ -3,7 +3,7 @@ static void get_start(SFrag sfrag[26], /**/ unsigned int start[27]) {
     /* generate padded start */
     int i;
     start[0] = 0;
-    for (i = 0; i < 26; ++i) start[i + 1] = start[i] + 16 * (((unsigned int)sfrag[i].ndst + 15) / 16);
+    for (i = 0; i < 26; ++i) start[i + 1] = start[i] + 16 * (((unsigned int)sfrag[i].n + 15) / 16);
 }
 
 void interactions(SFrag ssfrag[], Frag ffrag[], Rnd rrnd[], /**/ float *ff) {
