@@ -1,7 +1,4 @@
 #include "force.h"
-#include <cstdio>
-#include <mpi.h>
-#include <utility>
 #include <conf.h>
 #include "conf.common.h"
 
