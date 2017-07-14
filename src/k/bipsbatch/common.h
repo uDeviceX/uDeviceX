@@ -12,11 +12,6 @@ struct Part { /* local particle */
     uint id;
 };
 
-struct Map { /* helps to find remote particle */
-    int  org0, org1, org2;
-    uint cnt0, cnt1, cnt2;
-};
-
 /* true if `i' bigger than the number of remote particles */
 static __device__ int endp(const Map m, uint i) { return i >= m.cnt2; }
 
