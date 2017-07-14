@@ -13,8 +13,7 @@ template<> inline __device__ float viscosity_function<0>(float x) { return x;   
 __device__ float3 force(int type1, int type2,
 			float3 pos1, float3 pos2,
 			float3 vel1, float3 vel2, float myrandnr) {
-    /* return the DPD interaction force based on particle types
-     * type: 0 -- outer solvent, 1 -- inner solvent, 2 -- membrane, 3 -- wall */
+    /* return the DPD interaction force based on particle types */
 
     const float gammadpd[] = {gammadpd_solv, gammadpd_solid, gammadpd_wall, gammadpd_rbc};
     const float aij[] = {aij_solv, aij_solid, aij_wall, aij_rbc};
