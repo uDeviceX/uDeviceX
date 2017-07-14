@@ -66,12 +66,8 @@ static __device__ void force0(const Rnd rnd, float2 *pp, const Map m, Part p) {
     atomicAdd(fz, zforce);
 }
 
-static __device__ void p2r(const Part p, /**/ float *x, float *y, float *z) {
-    *x = p.x; *y = p.y; *z = p.z;
-}
-
-static __device__ Map p2map(const Frag frag, const Part p) {
-    float x, y, z;
+static __device__ Map p2map(const Frag frag, float x, float y, float z) {
+    /* particle to map */
     int org0, org1, org2;
     uint cnt0, cnt1, cnt2;
     int count1, count2;
@@ -84,7 +80,6 @@ static __device__ Map p2map(const Frag frag, const Part p) {
     int* start;
     Map m;
 
-    p2r(p, &x, &y, &z);
     dx = frag.dx; dy = frag.dy; dz = frag.dz;
 
     basecid = 0; xs = 1; ys = 1; zs = 1;
@@ -149,7 +144,7 @@ static __device__ Map p2map(const Frag frag, const Part p) {
 static __device__ void force1(const Frag frag, const Rnd rnd, /**/ Part p) {
     int dx, dy, dz;
     Map m;
-    m = p2map(frag, p);
+    m = p2map(frag, p.x, p.y, p.z);
 
     dx = frag.dx; dy = frag.dy; dz = frag.dz;
     p.x -= dx * XS;
