@@ -1,8 +1,8 @@
 namespace k_bipsbatch {
 static __constant__ unsigned int start[27];
 
-static __constant__ SFrag        ssfrag[26];
-static __constant__ Frag          ffrag[26];
+static __constant__ SFrag        ssfrag[26]; /* "send" fragment : TODO */
+static __constant__ Frag          ffrag[26]; /* "remote" fragment */
 static __constant__ Rnd            rrnd[26];
 
 struct Pa { /* local particle */
@@ -12,6 +12,25 @@ struct Pa { /* local particle */
 };
 
 struct Fo { float *x, *y, *z; }; /* force */
+
+static __device__ float fst(float2 p) { return p.x; }
+static __device__ float scn(float2 p) { return p.y; }
+static __device__ void p2rv2(const float2 *p, uint i,
+                             float  *x, float  *y, float  *z,
+                             float *vx, float *vy, float *vz) {
+    float2 s0, s1, s2;
+    p += 3*i;
+    s0 = __ldg(p++); s1 = __ldg(p++); s2 = __ldg(p++);
+     *x = fst(s0);  *y = scn(s0);  *z = fst(s1);
+    *vx = scn(s1); *vy = fst(s2); *vz = scn(s2);
+}
+
+static __device__ Pa frag2p(const Frag frag, uint i) {
+    Pa p;
+    p2rv2(frag.pp,     i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
+    p.id = i;
+    return p;
+}
 
 static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, Pa l, Fo f) {
     /* l, r: local and remote particles */
@@ -31,6 +50,7 @@ static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, Pa l,
     float xforce = 0, yforce = 0, zforce = 0;
     for (uint i = threadIdx.x & 1; !endp(m, i); i += 2) {
         rid = m2id(m, i);
+        r = frag2p(frag, rid);
         float2 s0 = __ldg(frag.pp + 0 + rid * 3);
         float2 s1 = __ldg(frag.pp + 1 + rid * 3);
         float2 s2 = __ldg(frag.pp + 2 + rid * 3);
