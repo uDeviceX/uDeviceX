@@ -4,7 +4,7 @@ static __constant__ unsigned int start[27];
 static __constant__ SFrag        ssfrag[26];
 static __constant__ Frag          ffrag[26];
 static __constant__ Rnd            rrnd[26];
-  
+
 __device__ void force0(const SFrag sfrag,
                        const Rnd rnd, float2 *pp,
                         int org0,  int org1,  int org2,
@@ -142,20 +142,18 @@ __device__ void force2(const SFrag sfrag, const Frag frag, const Rnd rnd,
     force1(frag, sfrag, rnd, i, x, y, z, vx, vy, vz, /**/ fx, fy, fz);
 }
 
+static __device__ void p2rv(const float *p,
+                            uint i,
+                            float  *x, float  *y, float  *z,
+                            float *vx, float *vy, float *vz) {
+    p += 6*i;
+     *x = *(p++);  *y = *(p++);  *z = *(p++);
+    *vx = *(p++); *vy = *(p++); *vz = *(p++);
+}
 
 __device__ void force3(const SFrag sfrag, const Frag frag, const Rnd rnd, uint i, /**/ float *ff) {
     float x, y, z, vx, vy, vz;
-
-    int k;
-    k  = 6*i;
-    x  = sfrag.pp[k++];
-    y  = sfrag.pp[k++];
-    z  = sfrag.pp[k++];
-
-    vx = sfrag.pp[k++];
-    vy = sfrag.pp[k++];
-    vz = sfrag.pp[k++];
-
+    p2rv(sfrag.pp, i,   &x, &y, &z,   &vx, &vy, &vz);
     force2(sfrag, frag, rnd, i, x, y, z, vx, vy, vz, /**/ ff);
 }
 
