@@ -13,8 +13,8 @@ struct Part { /* local particle */
 };
 
 struct Map { /* helps to find remote particle */
-    int org0, org1, org2;
-    int cnt0, cnt1, cnt2;
+    int  org0, org1, org2;
+    uint cnt0, cnt1, cnt2;
 };
 
 /* true if `i' bigger than the number of remote particles */
