@@ -12,15 +12,20 @@ struct Part { /* local struct to simplify communications better force[...] */
     uint id;
 };
 
-__device__ void force0(const SFrag sfrag,
-                       const Rnd rnd, float2 *pp,
-                        int org0,  int org1,  int org2,
+__device__ void force0(const Rnd rnd, float2 *pp,
+                       int org0,  int org1,  int org2,
                        uint cnt0, uint cnt1, uint cnt2,
-                       Part p,
-		       float x, float y, float z,
-		       float vx, float vy, float vz,
-                       uint dpid,
-		       /**/ float *fx, float *fy, float *fz) {
+                       Part p) {
+    float x, y, z;
+    float vx, vy, vz;
+    float *fx, *fy, *fz;
+    uint dpid;
+
+     x = p.x;   y = p.y;   z = p.z;
+    vx = p.vx; vy = p.vy; vz = p.vz;
+    fx = p.fx; fy = p.fy; fz = p.fz;
+    dpid = p.id;
+    
     int mask = rnd.mask;
     float seed = rnd.seed;
     float xforce = 0, yforce = 0, zforce = 0;
@@ -49,12 +54,7 @@ __device__ void force0(const SFrag sfrag,
     atomicAdd(fz, zforce);
 }
 
-__device__ void force1(const Frag frag, const SFrag sfrag, const Rnd rnd,
-                       Part p,
-                       uint dpid,
-		       float x, float y, float z,
-		       float vx, float vy, float vz,
-		       /**/ float *fx, float *fy, float *fz) {
+__device__ void force1(const Frag frag, const Rnd rnd, /**/ Part p) {
     uint cnt0, cnt1, cnt2;
     int org0, org1, org2;
     int count1, count2;
@@ -62,12 +62,11 @@ __device__ void force1(const Frag frag, const SFrag sfrag, const Rnd rnd,
     int xcid, ycid, zcid;
     int xbasecid, ybasecid, zbasecid;
     int dx, dy, dz;
-
     dx = frag.dx; dy = frag.dy; dz = frag.dz;
 
     basecid = 0; xstencilsize = 1; ystencilsize = 1; zstencilsize = 1;
     if (dz == 0) {
-        zcid = (int)(z + ZS / 2);
+        zcid = (int)(p.z + ZS / 2);
         zbasecid = max(0, -1 + zcid);
         basecid = zbasecid;
         zstencilsize = min(frag.zcells, zcid + 2) - zbasecid;
@@ -76,7 +75,7 @@ __device__ void force1(const Frag frag, const SFrag sfrag, const Rnd rnd,
     basecid *= frag.ycells;
 
     if (dy == 0) {
-        ycid = (int)(y + YS / 2);
+        ycid = (int)(p.y + YS / 2);
         ybasecid = max(0, -1 + ycid);
         basecid += ybasecid;
         ystencilsize = min(frag.ycells, ycid + 2) - ybasecid;
@@ -85,7 +84,7 @@ __device__ void force1(const Frag frag, const SFrag sfrag, const Rnd rnd,
     basecid *= frag.xcells;
 
     if (dx == 0) {
-        xcid = (int)(x + XS / 2);
+        xcid = (int)(p.x + XS / 2);
         xbasecid = max(0, -1 + xcid);
         basecid += xbasecid;
         xstencilsize = min(frag.xcells, xcid + 2) - xbasecid;
@@ -121,35 +120,19 @@ __device__ void force1(const Frag frag, const SFrag sfrag, const Rnd rnd,
     org1 -= cnt0;
     org2 -= cnt1;
 
-    x -= dx * XS;
-    y -= dy * YS;
-    z -= dz * ZS;
+    p.x -= dx * XS;
+    p.y -= dy * YS;
+    p.z -= dz * ZS;
 
-    force0(sfrag, rnd, frag.pp,
+    force0(rnd, frag.pp,
            org0, org1, org2,
            cnt0, cnt1, cnt2,
-           p,
-           x, y, z,
-           vx, vy, vz,
-           dpid,
-           /**/
-           fx, fy, fz);
+           p);
 }
 
 static __device__ void i2f(const int *ii, float *f, uint i, /**/ float **fx, float **fy, float **fz) {
     f += 3 * ii[i];
     *fx = f++; *fy = f++; *fz = f++;
-}
-
-__device__ void force2(const SFrag sfrag, const Frag frag, const Rnd rnd,
-                       uint i,
-		       float x, float y, float z,
-		       float vx, float vy, float vz,
-		       /**/ float *ff) {
-    Part p;
-    float *fx, *fy, *fz;
-    i2f(sfrag.ii, ff, i, /**/ &fx, &fy, &fz);
-    force1(frag, sfrag, rnd, p, i, x, y, z, vx, vy, vz, /**/ fx, fy, fz);
 }
 
 static __device__ void p2rv(const float *p,
@@ -162,9 +145,11 @@ static __device__ void p2rv(const float *p,
 }
 
 __device__ void force3(const SFrag sfrag, const Frag frag, const Rnd rnd, uint i, /**/ float *ff) {
-    float x, y, z, vx, vy, vz;
-    p2rv(sfrag.pp, i,   &x, &y, &z,   &vx, &vy, &vz);
-    force2(sfrag, frag, rnd, i, x, y, z, vx, vy, vz, /**/ ff);
+    Part p;
+    p2rv(sfrag.pp,     i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
+    i2f (sfrag.ii, ff, i, /**/ &p.fx, &p.fy, &p.fz);
+    p.id = i;
+    force1(frag, rnd, p);
 }
 
 static __device__ unsigned int get_hid(const unsigned int a[], const unsigned int i) {
