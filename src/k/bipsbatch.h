@@ -43,10 +43,6 @@ __device__ void force1(const Frag frag, const Rnd rnd,
         xstencilsize = min(frag.xcells, xcid + 2) - xbasecid;
     }
 
-    x -= frag.dx * XS;
-    y -= frag.dy * YS;
-    z -= frag.dz * ZS;
-
     int rowstencilsize = 1, colstencilsize = 1, ncols = 1;
 
     if (frag.type == FACE) {
@@ -80,6 +76,9 @@ __device__ void force1(const Frag frag, const Rnd rnd,
     float2 *pp = frag.pp;
     int mask = rnd.mask;
     float seed = rnd.seed;
+    x -= frag.dx * XS;
+    y -= frag.dy * YS;
+    z -= frag.dz * ZS;
 
     float xforce = 0, yforce = 0, zforce = 0;
     for (uint i = threadIdx.x & 1; i < cnt2; i += 2) {
