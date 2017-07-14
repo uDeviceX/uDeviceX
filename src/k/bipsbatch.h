@@ -112,14 +112,14 @@ __device__ void force1(const Frag frag, const Rnd rnd,
     y -= frag.dy * YS;
     z -= frag.dz * ZS;
 
-   force0(rnd, frag.pp,
-          org0, org1, org2,
-          cnt0, cnt1, cnt2,
-          x, y, z,
-          vx, vy, vz,
-          dpid,
-          /**/
-          fx, fy, fz);
+    force0(rnd, frag.pp,
+           org0, org1, org2,
+           cnt0, cnt1, cnt2,
+           x, y, z,
+           vx, vy, vz,
+           dpid,
+           /**/
+           fx, fy, fz);
 }
 
 __device__ void force2(const SFrag sfrag, const Frag frag, const Rnd rnd,
