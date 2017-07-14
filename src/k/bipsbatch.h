@@ -63,6 +63,7 @@ __device__ void force1(const Frag frag, const Rnd rnd, /**/ Part p) {
     int xl, yl, zl; /* low */
     int xs, ys, zs; /* size */
     int dx, dy, dz;
+    int row, col, ncols;
     int* start;
 
     dx = frag.dx; dy = frag.dy; dz = frag.dz;
@@ -91,8 +92,7 @@ __device__ void force1(const Frag frag, const Rnd rnd, /**/ Part p) {
         basecid += xl;
     }
 
-    int row = 1, col = 1, ncols = 1;
-
+    row = col = ncols = 1;
     if (frag.type == FACE) {
         row = dz ? ys : zs;
         col = dx ? ys : xs;
