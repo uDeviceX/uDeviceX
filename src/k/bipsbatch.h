@@ -11,12 +11,12 @@ __device__ void force1(const Frag frag, const Rnd rnd,
 		       float vx, float vy, float vz,
 		       /**/ float *fx, float *fy, float *fz) {
     uint scan1, scan2, ncandidates, org0;
-    int deltaspid1, deltaspid2;
+    int org1, org2;
     int basecid, xstencilsize, ystencilsize, zstencilsize;
     int xcid, ycid, zcid;
     int xbasecid, ybasecid, zbasecid;
 
-    deltaspid1 = deltaspid2 = 0;
+    org1 = org2 = 0;
     basecid = 0; xstencilsize = 1; ystencilsize = 1; zstencilsize = 1;
     if (frag.dz == 0) {
         zcid = (int)(z + ZS / 2);
@@ -62,23 +62,23 @@ __device__ void force1(const Frag frag, const Rnd rnd,
     int count1 = 0, count2 = 0;
 
     if (rowstencilsize > 1) {
-        deltaspid1 = __ldg(frag.cellstarts + basecid + ncols);
+        org1 = __ldg(frag.cellstarts + basecid + ncols);
         count1 = __ldg(frag.cellstarts + basecid + ncols + colstencilsize) -
-            deltaspid1;
+            org1;
     }
 
     if (rowstencilsize > 2) {
-        deltaspid2 = __ldg(frag.cellstarts + basecid + 2 * ncols);
+        org2 = __ldg(frag.cellstarts + basecid + 2 * ncols);
         count2 = __ldg(frag.cellstarts + basecid + 2 * ncols + colstencilsize) -
-            deltaspid2;
+            org2;
     }
 
     scan1 = count0;
     scan2 = scan1 + count1;
     ncandidates = scan2 + count2;
 
-    deltaspid1 -= scan1;
-    deltaspid2 -= scan2;
+    org1 -= scan1;
+    org2 -= scan2;
 
     float2 *pp = frag.pp;
     int mask = rnd.mask;
@@ -88,7 +88,7 @@ __device__ void force1(const Frag frag, const Rnd rnd,
     for (uint i = threadIdx.x & 1; i < ncandidates; i += 2) {
         int m1 = (int)(i >= scan1);
         int m2 = (int)(i >= scan2);
-        uint spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : org0);
+        uint spid = i + (m2 ? org2 : m1 ? org1 : org0);
 
         float2 s0 = __ldg(pp + 0 + spid * 3);
         float2 s1 = __ldg(pp + 1 + spid * 3);
