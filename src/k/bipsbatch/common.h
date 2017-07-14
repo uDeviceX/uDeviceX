@@ -58,7 +58,7 @@ static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, Pa l,
         uint arg1 = mask ? lid : rid;
         uint arg2 = mask ? rid : lid;
         float myrandnr = l::rnd::d::mean0var1uu(seed, arg1, arg2);
-        float3 r1 = make_float3(x, y, z), r2 = make_float3(s0.x, s0.y, s1.x);
+        float3 r1 = make_float3(x, y, z), r2 = make_float3(r.x, r.y, r.z);
         float3 v1 = make_float3(vx, vy, vz), v2 = make_float3(s1.y, s2.x, s2.y);
         float3 strength = force(SOLVENT_TYPE, SOLVENT_TYPE, r1, r2, v1, v2, myrandnr);
 
