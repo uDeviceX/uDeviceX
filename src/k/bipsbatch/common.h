@@ -34,17 +34,10 @@ static __device__ Pa frag2p(const Frag frag, uint i) {
 
 static __device__ void pair(const Pa l, const Pa r, float rnd, /**/ float *fx, float *fy, float *fz) {
     /* pair force ; l, r: local and remote */
-    float x, y, z;
-    float vx, vy, vz;
-
-     x = l.x;   y = l.y;   z = l.z;
-    vx = l.vx; vy = l.vy; vz = l.vz;
-
-    float3 r1 = make_float3( x,  y,  z), r2 = make_float3( r.x,  r.y,  r.z);
-    float3 v1 = make_float3(vx, vy, vz), v2 = make_float3(r.vx, r.vy, r.vz);
-    float3 strength = force(SOLVENT_TYPE, SOLVENT_TYPE, r1, r2, v1, v2, rnd);
-
-    *fx = strength.x; *fy = strength.y; *fz = strength.z;
+    float3 r1 = make_float3( l.x,  l.y,  l.z), r2 = make_float3( r.x,  r.y,  r.z);
+    float3 v1 = make_float3(l.vx, l.vy, l.vz), v2 = make_float3(r.vx, r.vy, r.vz);
+    float3  f = force(SOLVENT_TYPE, SOLVENT_TYPE, r1, r2, v1, v2, rnd);
+    *fx = f.x; *fy = f.y; *fz = f.z;
 }
 
 static __device__ float random(uint lid, uint rid, float seed, int mask) {
@@ -62,7 +55,7 @@ static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, const
     uint lid, rid; /* ids */
     float seed;
     int mask;
-    float xx, yy, zz;
+    float x, y, z; /* pair force */
     lid = l.id;    
     mask = rnd.mask;
     seed = rnd.seed;
@@ -71,8 +64,8 @@ static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, const
     for (i = threadIdx.x & 1; !endp(m, i); i += 2) {
         rid = m2id(m, i);
         r = frag2p(frag, rid);
-        pair(l, r, random(lid, rid, seed, mask), &xx, &yy, &zz);
-        *fx += xx; *fy += yy; *fz += zz;
+        pair(l, r, random(lid, rid, seed, mask), &x, &y, &z);
+        *fx += x; *fy += y; *fz += z;
     }
 }
 
