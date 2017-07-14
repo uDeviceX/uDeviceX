@@ -10,7 +10,7 @@ __device__ void force1(const Frag frag, const Rnd rnd,
 		       float x, float y, float z,
 		       float vx, float vy, float vz,
 		       /**/ float *fx, float *fy, float *fz) {
-    uint scan1, scan2, ncandidates;
+    uint cnt0, scan2, ncandidates;
     int org0, org1, org2;
     int basecid, xstencilsize, ystencilsize, zstencilsize;
     int xcid, ycid, zcid;
@@ -73,11 +73,11 @@ __device__ void force1(const Frag frag, const Rnd rnd,
             org2;
     }
 
-    scan1 = count0;
-    scan2 = scan1 + count1;
+    cnt0 = count0;
+    scan2 = cnt0 + count1;
     ncandidates = scan2 + count2;
 
-    org1 -= scan1;
+    org1 -= cnt0;
     org2 -= scan2;
 
     float2 *pp = frag.pp;
@@ -86,7 +86,7 @@ __device__ void force1(const Frag frag, const Rnd rnd,
 
     float xforce = 0, yforce = 0, zforce = 0;
     for (uint i = threadIdx.x & 1; i < ncandidates; i += 2) {
-        int m1 = (int)(i >= scan1);
+        int m1 = (int)(i >= cnt0);
         int m2 = (int)(i >= scan2);
         uint spid = i + (m2 ? org2 : m1 ? org1 : org0);
 
