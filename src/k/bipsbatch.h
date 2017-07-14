@@ -64,7 +64,11 @@ static void p2r(const Part p, /**/ float *x, float *y, float *z) {
 }
 
 static __device__ Map p2map(const Frag frag, const Part p) {
+    float x, y, z;
     Map m;
+    p2r(p, *x, *y, *z);
+
+
     return m;
 }
 
