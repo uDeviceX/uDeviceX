@@ -128,7 +128,7 @@ __device__ void force1(const SFrag sfrag, const Frag frag, const Rnd rnd,
     float *fx, *fy, *fz;
 
     int k;
-    k = 3 * frag.ii[i];
+    k = 3 * sfrag.ii[i];
     fx = &ff[k++];
     fy = &ff[k++];
     fz = &ff[k++];
@@ -142,13 +142,13 @@ __device__ void force2(const SFrag sfrag, const Frag frag, const Rnd rnd, uint i
 
     int k;
     k  = 6*i;
-    x  = frag.xdst[k++];
-    y  = frag.xdst[k++];
-    z  = frag.xdst[k++];
+    x  = sfrag.xdst[k++];
+    y  = sfrag.xdst[k++];
+    z  = sfrag.xdst[k++];
 
-    vx = frag.xdst[k++];
-    vy = frag.xdst[k++];
-    vz = frag.xdst[k++];
+    vx = sfrag.xdst[k++];
+    vy = sfrag.xdst[k++];
+    vz = sfrag.xdst[k++];
 
     force1(sfrag, frag, rnd, i, x, y, z, vx, vy, vz, /**/ ff);
 }
@@ -167,7 +167,7 @@ __global__ void force(/**/ float *ff) {
     i = gid - start[hid];
     frag = ffrag[hid];
     sfrag = ssfrag[hid];
-    if (i >= frag.ndst) return;
+    if (i >= sfrag.ndst) return;
     rnd = rrnd[hid];
     force2(sfrag, frag, rnd, i, /**/ ff);
 }
