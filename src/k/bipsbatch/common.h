@@ -32,7 +32,7 @@ static __device__ Pa frag2p(const Frag frag, uint i) {
     return p;
 }
 
-static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, const Pa l, Fo f) {
+static __device__ void force1(const Rnd rnd, const Frag frag, const Map m, const Pa l, Fo f) {
     /* l, r: local and remote particles */
     Pa r;
     uint lid, rid; /* ids */
@@ -71,7 +71,7 @@ static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, const
     atomicAdd(fz, zforce);
 }
 
-static __device__ void force1(const Frag frag, const Rnd rnd, Pa p, /**/ Fo f) {
+static __device__ void force2(const Frag frag, const Rnd rnd, Pa p, /**/ Fo f) {
     int dx, dy, dz;
     Map m;
     m = p2map(frag, p.x, p.y, p.z);
@@ -80,7 +80,7 @@ static __device__ void force1(const Frag frag, const Rnd rnd, Pa p, /**/ Fo f) {
     p.x -= dx * XS;
     p.y -= dy * YS;
     p.z -= dz * ZS;
-    force0(rnd, frag, m, p, f);
+    force1(rnd, frag, m, p, f);
 }
 
 static __device__ Fo i2f(const int *ii, float *ff, uint i) {
@@ -110,12 +110,12 @@ static __device__ Fo sfrag2f(const SFrag sfrag, float *ff, uint i) {
     return i2f(sfrag.ii, ff, i);
 }
 
-static __device__ void force2(const SFrag sfrag, const Frag frag, const Rnd rnd, uint i, /**/ float *ff) {
+static __device__ void force3(const SFrag sfrag, const Frag frag, const Rnd rnd, uint i, /**/ float *ff) {
     Pa p;
     Fo f;
     p = sfrag2p(sfrag, i);
     f = sfrag2f(sfrag, ff, i);
-    force1(frag, rnd, p, f);
+    force2(frag, rnd, p, f);
 }
 
 static __device__ unsigned int get_hid(const unsigned int a[], const unsigned int i) {
@@ -144,6 +144,6 @@ __global__ void force(/**/ float *ff) {
 
     frag = ffrag[hid];
     rnd = rrnd[hid];
-    force2(sfrag, frag, rnd, i, /**/ ff);
+    force3(sfrag, frag, rnd, i, /**/ ff);
 }
 }
