@@ -5,7 +5,7 @@ struct SFrag { /* "send" fragment */
     float *xdst;
     int *ii;
     int ndst;
-}
+};
 
 struct Frag {
     float *xdst;
