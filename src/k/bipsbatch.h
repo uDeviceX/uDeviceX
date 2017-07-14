@@ -89,7 +89,7 @@ __device__ void force0(const Frag frag, const Rnd rnd,
     deltaspid1 -= scan1;
     deltaspid2 -= scan2;
 
-    float2 *xsrc = frag.xsrc;
+    float2 *pp = frag.pp;
     int mask = rnd.mask;
     float seed = rnd.seed;
 
@@ -99,9 +99,9 @@ __device__ void force0(const Frag frag, const Rnd rnd,
         int m2 = (int)(i >= scan2);
         uint spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
 
-        float2 s0 = __ldg(xsrc + 0 + spid * 3);
-        float2 s1 = __ldg(xsrc + 1 + spid * 3);
-        float2 s2 = __ldg(xsrc + 2 + spid * 3);
+        float2 s0 = __ldg(pp + 0 + spid * 3);
+        float2 s1 = __ldg(pp + 1 + spid * 3);
+        float2 s2 = __ldg(pp + 2 + spid * 3);
 
         uint arg1 = mask ? dpid : spid;
         uint arg2 = mask ? spid : dpid;

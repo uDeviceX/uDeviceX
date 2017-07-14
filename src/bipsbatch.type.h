@@ -8,7 +8,7 @@ struct SFrag { /* "send" fragment */
 };
 
 struct Frag {
-    float2 *xsrc;
+    float2 *pp;
     int *cellstarts, dx, dy, dz, xcells, ycells, zcells;
     FragType type;
 };
