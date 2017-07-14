@@ -59,6 +59,15 @@ __device__ void force0(const Rnd rnd, float2 *pp,
     atomicAdd(fz, zforce);
 }
 
+static void p2r(const Part p, /**/ float *x, float *y, float *z) {
+    *x = p.x; *y = p.y; *z = p.z;
+}
+
+static __device__ Map p2map(const Frag frag, const Part p) {
+    Map m;
+    return m;
+}
+
 __device__ void force1(const Frag frag, const Rnd rnd, /**/ Part p) {
     uint cnt0, cnt1, cnt2;
     int org0, org1, org2;
