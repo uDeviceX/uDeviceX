@@ -100,6 +100,10 @@ static __device__ LPart sfrag2p(const SFrag sfrag, float *ff, uint i) {
     return p;
 }
 
+static __device__ Fo sfrag2f(const SFrag sfrag, float *ff, uint i) {
+    return i2f0(sfrag.ii, ff, i);
+}
+
 static __device__ void force2(const SFrag sfrag, const Frag frag, const Rnd rnd, uint i, /**/ float *ff) {
     LPart p;
     p = sfrag2p(sfrag, ff, i);
