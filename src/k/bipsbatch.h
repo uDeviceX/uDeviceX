@@ -126,7 +126,7 @@ __device__ void force1(const Frag frag, const Rnd rnd,
     float *fx, *fy, *fz;
 
     int k;
-    k = 3 * frag.scattered_entries[i];
+    k = 3 * frag.ii[i];
     fx = &ff[k++];
     fy = &ff[k++];
     fz = &ff[k++];
