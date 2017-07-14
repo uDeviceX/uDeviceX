@@ -49,7 +49,6 @@ static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, Pa p0
     atomicAdd(fz, zforce);
 }
 
-
 static __device__ void force1(const Frag frag, const Rnd rnd, /*const */ Pa p, /**/ Fo f) {
     int dx, dy, dz;
     Map m;
