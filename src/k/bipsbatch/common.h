@@ -18,25 +18,25 @@ struct RPart { /* remote particle */
     uint id;
 };
 
-static __device__ void force0(const Rnd rnd, float2 *pp, const Map m, LPart p) {
+static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, LPart p0) {
     float x, y, z;
     float vx, vy, vz;
     float *fx, *fy, *fz;
     uint dpid;
 
-     x = p.x;   y = p.y;   z = p.z;
-    vx = p.vx; vy = p.vy; vz = p.vz;
-    fx = p.fx; fy = p.fy; fz = p.fz;
-    dpid = p.id;
+     x = p0.x;   y = p0.y;   z = p0.z;
+    vx = p0.vx; vy = p0.vy; vz = p0.vz;
+    fx = p0.fx; fy = p0.fy; fz = p0.fz;
+    dpid = p0.id;
     
     int mask = rnd.mask;
     float seed = rnd.seed;
     float xforce = 0, yforce = 0, zforce = 0;
     for (uint i = threadIdx.x & 1; !endp(m, i); i += 2) {
         uint spid = m2id(m, i);
-        float2 s0 = __ldg(pp + 0 + spid * 3);
-        float2 s1 = __ldg(pp + 1 + spid * 3);
-        float2 s2 = __ldg(pp + 2 + spid * 3);
+        float2 s0 = __ldg(frag.pp + 0 + spid * 3);
+        float2 s1 = __ldg(frag.pp + 1 + spid * 3);
+        float2 s2 = __ldg(frag.pp + 2 + spid * 3);
 
         uint arg1 = mask ? dpid : spid;
         uint arg2 = mask ? spid : dpid;
@@ -64,7 +64,7 @@ static __device__ void force1(const Frag frag, const Rnd rnd, /**/ LPart p) {
     p.x -= dx * XS;
     p.y -= dy * YS;
     p.z -= dz * ZS;
-    force0(rnd, frag.pp, m, p);
+    force0(rnd, frag, m, p);
 }
 
 static __device__ void i2f(const int *ii, float *f, uint i, /**/ float **fx, float **fy, float **fz) {
