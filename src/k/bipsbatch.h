@@ -12,11 +12,11 @@ __device__ void force1(const Frag frag, const Rnd rnd,
 		       /**/ float *fx, float *fy, float *fz) {
     uint cnt0, cnt1, cnt2;
     int org0, org1, org2;
+    int count1, count2;
     int basecid, xstencilsize, ystencilsize, zstencilsize;
     int xcid, ycid, zcid;
     int xbasecid, ybasecid, zbasecid;
 
-    org1 = org2 = 0;
     basecid = 0; xstencilsize = 1; ystencilsize = 1; zstencilsize = 1;
     if (frag.dz == 0) {
         zcid = (int)(z + ZS / 2);
@@ -59,7 +59,8 @@ __device__ void force1(const Frag frag, const Rnd rnd,
     org0 = __ldg(frag.cellstarts + basecid);
     cnt0 = __ldg(frag.cellstarts + basecid + colstencilsize) - org0;
 
-    int count1 = 0, count2 = 0;
+    org1   = org2 = 0;
+    count1 = count2 = 0;
     if (rowstencilsize > 1) {
         org1   = __ldg(frag.cellstarts + basecid + ncols);
         count1 = __ldg(frag.cellstarts + basecid + ncols + colstencilsize) - org1;
