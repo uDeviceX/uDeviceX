@@ -21,7 +21,7 @@ struct RPart { /* remote particle */
     uint id;
 };
 
-static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, LPart p0) {
+static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, LPart p0, Fo f) {
     float x, y, z;
     float vx, vy, vz;
     float *fx, *fy, *fz;
@@ -58,7 +58,7 @@ static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, LPart
 }
 
 
-static __device__ void force1(const Frag frag, const Rnd rnd, /**/ LPart p) {
+static __device__ void force1(const Frag frag, const Rnd rnd, /*const */ LPart p, /**/ Fo f) {
     int dx, dy, dz;
     Map m;
     m = p2map(frag, p.x, p.y, p.z);
@@ -67,7 +67,7 @@ static __device__ void force1(const Frag frag, const Rnd rnd, /**/ LPart p) {
     p.x -= dx * XS;
     p.y -= dy * YS;
     p.z -= dz * ZS;
-    force0(rnd, frag, m, p);
+    force0(rnd, frag, m, p, f);
 }
 
 static __device__ Fo i2f0(const int *ii, float *ff, uint i) {
@@ -106,8 +106,10 @@ static __device__ Fo sfrag2f(const SFrag sfrag, float *ff, uint i) {
 
 static __device__ void force2(const SFrag sfrag, const Frag frag, const Rnd rnd, uint i, /**/ float *ff) {
     LPart p;
+    Fo f;
     p = sfrag2p(sfrag, ff, i);
-    force1(frag, rnd, p);
+    f = sfrag2f(sfrag, ff, i);
+    force1(frag, rnd, p, f);
 }
 
 static __device__ unsigned int get_hid(const unsigned int a[], const unsigned int i) {
