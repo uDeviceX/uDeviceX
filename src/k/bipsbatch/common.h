@@ -70,6 +70,14 @@ static __device__ void force1(const Frag frag, const Rnd rnd, /**/ LPart p) {
     force0(rnd, frag, m, p);
 }
 
+static __device__ Fo i2f0(const int *ii, float *ff, uint i) {
+    /* local id and index to force */
+    Fo f;
+    ff += 3*ii[i];
+    f.x = ff++; f.y = ff++; f.z = ff++;
+    return f;
+}
+
 static __device__ void i2f(const int *ii, float *f, uint i, /**/ float **fx, float **fy, float **fz) {
     /* local id and index to force */
     f += 3*ii[i];
