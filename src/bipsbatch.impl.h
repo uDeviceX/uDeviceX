@@ -12,9 +12,10 @@ void interactions(SFrag ssfrag[], Frag ffrag[], Rnd rrnd[], /**/ float *ff) {
     get_start(ffrag, /**/ start);
     n = 2 * start[26];
     
-    CC(cudaMemcpyToSymbolAsync(k_bipsbatch::start, start, sizeof(start), 0, H2D));
-    CC(cudaMemcpyToSymbolAsync(k_bipsbatch::ffrag, ffrag, sizeof(Frag) * 26, 0, H2D));
-    CC(cudaMemcpyToSymbolAsync(k_bipsbatch::rrnd,   rrnd, sizeof(Rnd) * 26,  0, H2D));
+    CC(cudaMemcpyToSymbolAsync(k_bipsbatch::start, start,   sizeof(start), 0, H2D));
+    CC(cudaMemcpyToSymbolAsync(k_bipsbatch::ssfrag, ssfrag, sizeof(SFrag) * 26, 0, H2D));
+    CC(cudaMemcpyToSymbolAsync(k_bipsbatch::ffrag, ffrag,   sizeof(Frag)  * 26, 0, H2D));
+    CC(cudaMemcpyToSymbolAsync(k_bipsbatch::rrnd,   rrnd,   sizeof(Rnd)   * 26,  0, H2D));
 
     dSync();
     if (n) k_bipsbatch::force<<<k_cnf(n)>>>(ff);
