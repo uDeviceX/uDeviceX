@@ -17,10 +17,7 @@ struct Map { /* helps to find remote particle */
     int cnt0, cnt1, cnt2;
 };
 
-__device__ void force0(const Rnd rnd, float2 *pp,
-                       int org0,  int org1,  int org2,
-                       uint cnt0, uint cnt1, uint cnt2,
-                       Part p) {
+__device__ void force0(const Rnd rnd, float2 *pp, const Map m, Part p) {
     float x, y, z;
     float vx, vy, vz;
     float *fx, *fy, *fz;
@@ -34,10 +31,10 @@ __device__ void force0(const Rnd rnd, float2 *pp,
     int mask = rnd.mask;
     float seed = rnd.seed;
     float xforce = 0, yforce = 0, zforce = 0;
-    for (uint i = threadIdx.x & 1; i < cnt2; i += 2) {
-        int m1 = (int)(i >= cnt0);
-        int m2 = (int)(i >= cnt1);
-        uint spid = i + (m2 ? org2 : m1 ? org1 : org0);
+    for (uint i = threadIdx.x & 1; i < m.cnt2; i += 2) {
+        int m1 = (int)(i >= m.cnt0);
+        int m2 = (int)(i >= m.cnt1);
+        uint spid = i + (m2 ? m.org2 : m1 ? m.org1 : m.org0);
 
         float2 s0 = __ldg(pp + 0 + spid * 3);
         float2 s1 = __ldg(pp + 1 + spid * 3);
@@ -59,7 +56,7 @@ __device__ void force0(const Rnd rnd, float2 *pp,
     atomicAdd(fz, zforce);
 }
 
-static void p2r(const Part p, /**/ float *x, float *y, float *z) {
+static __device__ void p2r(const Part p, /**/ float *x, float *y, float *z) {
     *x = p.x; *y = p.y; *z = p.z;
 }
 
@@ -141,80 +138,15 @@ static __device__ Map p2map(const Frag frag, const Part p) {
 }
 
 __device__ void force1(const Frag frag, const Rnd rnd, /**/ Part p) {
-    uint cnt0, cnt1, cnt2;
-    int org0, org1, org2;
-    int count1, count2;
-    int basecid;
-    int xcid, ycid, zcid;
-    int xl, yl, zl; /* low */
-    int xs, ys, zs; /* size */
     int dx, dy, dz;
-    int row, col, ncols;
-    int* start;
+    Map m;
+    m = p2map(frag, p);
 
     dx = frag.dx; dy = frag.dy; dz = frag.dz;
-
-    basecid = 0; xs = 1; ys = 1; zs = 1;
-    if (dz == 0) {
-        zcid = (int)(p.z + ZS / 2);
-        zl = max(0, -1 + zcid);
-        zs = min(frag.zcells, zcid + 2) - zl;
-        basecid = zl;
-    }
-    basecid *= frag.ycells;
-
-    if (dy == 0) {
-        ycid = (int)(p.y + YS / 2);
-        yl = max(0, -1 + ycid);
-        ys = min(frag.ycells, ycid + 2) - yl;
-        basecid += yl;
-    }
-    basecid *= frag.xcells;
-
-    if (dx == 0) {
-        xcid = (int)(p.x + XS / 2);
-        xl = max(0, -1 + xcid);
-        xs = min(frag.xcells, xcid + 2) - xl;
-        basecid += xl;
-    }
-
-    row = col = ncols = 1;
-    if (frag.type == FACE) {
-        row = dz ? ys : zs;
-        col = dx ? ys : xs;
-        ncols = dx ? frag.ycells : frag.xcells;
-    } else if (frag.type == EDGE)
-        col = max(xs, max(ys, zs));
-
-    start = frag.start + basecid;
-    org0 = __ldg(start);
-    cnt0 = __ldg(start + col) - org0;
-    start += ncols;
-
-    org1   = org2 = 0;
-    count1 = count2 = 0;
-    if (row > 1) {
-        org1   = __ldg(start);
-        count1 = __ldg(start + col) - org1;
-        start += ncols;
-    }
-
-    if (row > 2) {
-        org2   = __ldg(start);
-        count2 = __ldg(start + col) - org2;
-    }
-
-    cnt1 = cnt0 + count1;
-    cnt2 = cnt1 + count2;
-
-    org1 -= cnt0;
-    org2 -= cnt1;
-
     p.x -= dx * XS;
     p.y -= dy * YS;
     p.z -= dz * ZS;
-
-    force0(rnd, frag.pp, org0, org1, org2, cnt0, cnt1, cnt2, p);
+    force0(rnd, frag.pp, m, p);
 }
 
 static __device__ void i2f(const int *ii, float *f, uint i, /**/ float **fx, float **fy, float **fz) {
