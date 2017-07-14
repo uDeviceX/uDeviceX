@@ -10,7 +10,7 @@ __device__ void force1(const Frag frag, const Rnd rnd,
 		       float x, float y, float z,
 		       float vx, float vy, float vz,
 		       /**/ float *fx, float *fy, float *fz) {
-    uint scan1, scan2, ncandidates, spidbase;
+    uint scan1, scan2, ncandidates, org0;
     int deltaspid1, deltaspid2;
     int basecid, xstencilsize, ystencilsize, zstencilsize;
     int xcid, ycid, zcid;
@@ -56,8 +56,8 @@ __device__ void force1(const Frag frag, const Rnd rnd,
     } else if (frag.type == EDGE)
         colstencilsize = max(xstencilsize, max(ystencilsize, zstencilsize));
 
-    spidbase = __ldg(frag.cellstarts + basecid);
-    int count0 = __ldg(frag.cellstarts + basecid + colstencilsize) - spidbase;
+    org0 = __ldg(frag.cellstarts + basecid);
+    int count0 = __ldg(frag.cellstarts + basecid + colstencilsize) - org0;
 
     int count1 = 0, count2 = 0;
 
@@ -88,7 +88,7 @@ __device__ void force1(const Frag frag, const Rnd rnd,
     for (uint i = threadIdx.x & 1; i < ncandidates; i += 2) {
         int m1 = (int)(i >= scan1);
         int m2 = (int)(i >= scan2);
-        uint spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
+        uint spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : org0);
 
         float2 s0 = __ldg(pp + 0 + spid * 3);
         float2 s1 = __ldg(pp + 1 + spid * 3);
