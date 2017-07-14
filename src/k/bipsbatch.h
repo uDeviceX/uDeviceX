@@ -156,6 +156,7 @@ __device__ void force2(const Frag frag, const Rnd rnd, uint i, /**/ float *ff) {
 __global__ void force(/**/ float *ff) {
     Frag frag;
     Rnd  rnd;
+    SFrag sfrag;
     int gid;
     uint hid; /* halo id */
     uint i; /* particle id */
@@ -165,6 +166,7 @@ __global__ void force(/**/ float *ff) {
     hid = get_hid(start, gid);
     i = gid - start[hid];
     frag = ffrag[hid];
+    sfrag = ssfrag[hid];
     if (i >= frag.ndst) return;
     rnd = rrnd[hid];
     force2(frag, rnd, i, /**/ ff);
