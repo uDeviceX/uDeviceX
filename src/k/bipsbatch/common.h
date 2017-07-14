@@ -139,7 +139,7 @@ __global__ void force(/**/ float *ff) {
 
     gid = (threadIdx.x + blockDim.x * blockIdx.x) >> 1;
     if (gid >= start[26]) return;
-    h = get_h(start, gid);
+    h = get_hid(start, gid);
     i = gid - start[h];
     sfrag = ssfrag[h];
     if (i >= sfrag.n) return;
