@@ -51,9 +51,12 @@ __device__ void force1(const Frag frag, const Rnd rnd,
     int basecid, xstencilsize, ystencilsize, zstencilsize;
     int xcid, ycid, zcid;
     int xbasecid, ybasecid, zbasecid;
+    int dx, dy, dz;
+
+    dx = frag.dx; dy = frag.dy; dz = frag.dz;
 
     basecid = 0; xstencilsize = 1; ystencilsize = 1; zstencilsize = 1;
-    if (frag.dz == 0) {
+    if (dz == 0) {
         zcid = (int)(z + ZS / 2);
         zbasecid = max(0, -1 + zcid);
         basecid = zbasecid;
@@ -62,7 +65,7 @@ __device__ void force1(const Frag frag, const Rnd rnd,
 
     basecid *= frag.ycells;
 
-    if (frag.dy == 0) {
+    if (dy == 0) {
         ycid = (int)(y + YS / 2);
         ybasecid = max(0, -1 + ycid);
         basecid += ybasecid;
@@ -71,7 +74,7 @@ __device__ void force1(const Frag frag, const Rnd rnd,
 
     basecid *= frag.xcells;
 
-    if (frag.dx == 0) {
+    if (dx == 0) {
         xcid = (int)(x + XS / 2);
         xbasecid = max(0, -1 + xcid);
         basecid += xbasecid;
@@ -81,9 +84,9 @@ __device__ void force1(const Frag frag, const Rnd rnd,
     int rowstencilsize = 1, colstencilsize = 1, ncols = 1;
 
     if (frag.type == FACE) {
-        rowstencilsize = frag.dz ? ystencilsize : zstencilsize;
-        colstencilsize = frag.dx ? ystencilsize : xstencilsize;
-        ncols = frag.dx ? frag.ycells : frag.xcells;
+        rowstencilsize = dz ? ystencilsize : zstencilsize;
+        colstencilsize = dx ? ystencilsize : xstencilsize;
+        ncols = dx ? frag.ycells : frag.xcells;
     } else if (frag.type == EDGE)
         colstencilsize = max(xstencilsize, max(ystencilsize, zstencilsize));
 
@@ -108,9 +111,9 @@ __device__ void force1(const Frag frag, const Rnd rnd,
     org1 -= cnt0;
     org2 -= cnt1;
 
-    x -= frag.dx * XS;
-    y -= frag.dy * YS;
-    z -= frag.dz * ZS;
+    x -= dx * XS;
+    y -= dy * YS;
+    z -= dz * ZS;
 
     force0(rnd, frag.pp,
            org0, org1, org2,
