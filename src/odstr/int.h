@@ -122,8 +122,6 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
 
     if (nhalo)
         sub::dev::scatter<<<k_cnf(nhalo)>>>(true, subi_re, nhalo, start, /**/ iidx);
-            
-
     n = nbulk + nhalo;
     if (n) {
         sub::dev::gather_pp<<<k_cnf(n)>>>((float2*)pp, (float2*)pp_re, n, iidx, /**/ (float2*)pp0, zip0, zip1);
