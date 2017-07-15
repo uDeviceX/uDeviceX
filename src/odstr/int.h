@@ -72,6 +72,8 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     bool first = *qfirst;
     Particle *pp  = q->pp;
     Particle *pp0 = q->pp0;
+    int *start = q->cells->start;
+    int *count = q->cells->count;
     int *ii  = q->ii;
     int *ii0 = q->ii0;
     sub::Distr *D = &td->distr;
@@ -97,10 +99,10 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     D->send_pp(cart, rank, send_mesg_req);
     if (global_ids) D->send_ii(cart, rank, send_ii_req);
 
-    CC(cudaMemsetAsync(q->cells->count, 0, sizeof(int)*XS*YS*ZS));
+    CC(cudaMemsetAsync(count, 0, sizeof(int)*XS*YS*ZS));
     if (n)
     k_common::subindex_local<false><<<k_cnf(n)>>>
-        (n, (float2*)pp, /*io*/ q->cells->count, /*o*/ subi_lo);
+        (n, (float2*)pp, /*io*/ count, /*o*/ subi_lo);
 
     D->waitall(recv_size_req);
     D->recv_count(&nhalo);
@@ -110,26 +112,23 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     if (nhalo) {
         D->unpack_pp(nhalo, /*o*/ pp_re);
         if (global_ids) D->unpack_ii(nhalo, ii_re);
-        D->subindex_remote(nhalo, /*io*/ pp_re, q->cells->count, /**/ subi_re);
+        D->subindex_remote(nhalo, /*io*/ pp_re, count, /**/ subi_re);
     }
     
-    k_common::compress_counts<<<k_cnf(XS*YS*ZS)>>>(XS*YS*ZS, (int4*)q->cells->count, /**/ (uchar4*)count_zip);
-    l::scan::d::scan(count_zip, XS*YS*ZS, /**/ (uint*)q->cells->start);
+    k_common::compress_counts<<<k_cnf(XS*YS*ZS)>>>(XS*YS*ZS, (int4*)count, /**/ (uchar4*)count_zip);
+    l::scan::d::scan(count_zip, XS*YS*ZS, /**/ (uint*)start);
 
     if (n)
-        sub::dev::scatter<<<k_cnf(n)>>>
-            (false, subi_lo,  n, q->cells->start, /**/ iidx);
+        sub::dev::scatter<<<k_cnf(n)>>>(false, subi_lo,  n, start, /**/ iidx);
 
     if (nhalo)
-        sub::dev::scatter<<<k_cnf(nhalo)>>>
-            (true, subi_re, nhalo, q->cells->start, /**/ iidx);
+        sub::dev::scatter<<<k_cnf(nhalo)>>>(true, subi_re, nhalo, start, /**/ iidx);
+            
 
     n = nbulk + nhalo;
     if (n) {
-        sub::dev::gather_pp<<<k_cnf(n)>>>((float2*)pp, (float2*)pp_re, n, iidx,
-                                          /**/ (float2*)pp0, zip0, zip1);
-        if (global_ids)
-            sub::dev::gather_id<<<k_cnf(n)>>>(ii, ii_re, n, iidx, /**/ ii0);
+        sub::dev::gather_pp<<<k_cnf(n)>>>((float2*)pp, (float2*)pp_re, n, iidx, /**/ (float2*)pp0, zip0, zip1);
+        if (global_ids) sub::dev::gather_id<<<k_cnf(n)>>>(ii, ii_re, n, iidx, /**/ ii0);
     }
 
     q->n = n;
