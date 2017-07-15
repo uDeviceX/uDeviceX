@@ -101,8 +101,7 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
 
     CC(cudaMemsetAsync(count, 0, sizeof(int)*XS*YS*ZS));
     if (n)
-    k_common::subindex_local<false><<<k_cnf(n)>>>
-        (n, (float2*)pp, /*io*/ count, /*o*/ subi_lo);
+        k_common::subindex_local<false><<<k_cnf(n)>>>(n, (float2*)pp, /*io*/ count, /*o*/ subi_lo);
 
     D->waitall(recv_size_req);
     D->recv_count(&nhalo);
