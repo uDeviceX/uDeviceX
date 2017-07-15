@@ -71,42 +71,43 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     Particle *pp0 = q->pp0;
     int *ii  = q->ii;
     int *ii0 = q->ii0;
+    sub::Distr *D = &td->distr;
   
     int nbulk, nhalo;
-    td->distr.post_recv(cart, rank, /**/ recv_size_req, recv_mesg_req);
-    if (global_ids) td->distr.post_recv_ii(cart, rank, /**/ recv_ii_req);
+    D->post_recv(cart, rank, /**/ recv_size_req, recv_mesg_req);
+    if (global_ids) D->post_recv_ii(cart, rank, /**/ recv_ii_req);
     
     if (n) {
-        td->distr.halo(pp, n);
-        td->distr.scan(n);
-        td->distr.pack_pp(pp, n);
-        if (global_ids) td->distr.pack_ii(ii, n);
+        D->halo(pp, n);
+        D->scan(n);
+        D->pack_pp(pp, n);
+        if (global_ids) D->pack_ii(ii, n);
         dSync();
     }
     if (!first) {
-        td->distr.waitall(send_size_req);
-        td->distr.waitall(send_mesg_req);
-        if (global_ids) td->distr.waitall(send_ii_req);
+        D->waitall(send_size_req);
+        D->waitall(send_mesg_req);
+        if (global_ids) D->waitall(send_ii_req);
     }
     first = false;
-    nbulk = td->distr.send_sz(cart, rank, send_size_req);
-    td->distr.send_pp(cart, rank, send_mesg_req);
-    if (global_ids) td->distr.send_ii(cart, rank, send_ii_req);
+    nbulk = D->send_sz(cart, rank, send_size_req);
+    D->send_pp(cart, rank, send_mesg_req);
+    if (global_ids) D->send_ii(cart, rank, send_ii_req);
 
     CC(cudaMemsetAsync(q->cells->count, 0, sizeof(int)*XS*YS*ZS));
     if (n)
     k_common::subindex_local<false><<<k_cnf(n)>>>
         (n, (float2*)pp, /*io*/ q->cells->count, /*o*/ subi_lo);
 
-    td->distr.waitall(recv_size_req);
-    td->distr.recv_count(&nhalo);
-    td->distr.waitall(recv_mesg_req);
-    if (global_ids) td->distr.waitall(recv_ii_req);
+    D->waitall(recv_size_req);
+    D->recv_count(&nhalo);
+    D->waitall(recv_mesg_req);
+    if (global_ids) D->waitall(recv_ii_req);
     
     if (nhalo) {
-        td->distr.unpack_pp(nhalo, /*o*/ pp_re);
-        if (global_ids) td->distr.unpack_ii(nhalo, ii_re);
-        td->distr.subindex_remote(nhalo, /*io*/ pp_re, q->cells->count, /**/ subi_re);
+        D->unpack_pp(nhalo, /*o*/ pp_re);
+        if (global_ids) D->unpack_ii(nhalo, ii_re);
+        D->subindex_remote(nhalo, /*io*/ pp_re, q->cells->count, /**/ subi_re);
     }
     
     k_common::compress_counts<<<k_cnf(XS*YS*ZS)>>>
