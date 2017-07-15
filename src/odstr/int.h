@@ -44,6 +44,9 @@ void free_work(Work *w) {
     CC(cudaFree(w->count_zip));
 }
 
+void distrB() {
+}
+
 void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     MPI_Comm cart = td->cart; /* can be a copy */
     int *rank = td->rank; /* arrays */
@@ -110,26 +113,23 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
         D->subindex_remote(nhalo, /*io*/ pp_re, q->cells->count, /**/ subi_re);
     }
     
-    k_common::compress_counts<<<k_cnf(XS*YS*ZS)>>>
-        (XS*YS*ZS, (int4*)q->cells->count, /**/ (uchar4*)count_zip);
+    k_common::compress_counts<<<k_cnf(XS*YS*ZS)>>>(XS*YS*ZS, (int4*)q->cells->count, /**/ (uchar4*)count_zip);
     l::scan::d::scan(count_zip, XS*YS*ZS, /**/ (uint*)q->cells->start);
 
     if (n)
-    sub::dev::scatter<<<k_cnf(n)>>>
-        (false, subi_lo,  n, q->cells->start, /**/ iidx);
+        sub::dev::scatter<<<k_cnf(n)>>>
+            (false, subi_lo,  n, q->cells->start, /**/ iidx);
 
     if (nhalo)
-    sub::dev::scatter<<<k_cnf(nhalo)>>>
-        (true, subi_re, nhalo, q->cells->start, /**/ iidx);
+        sub::dev::scatter<<<k_cnf(nhalo)>>>
+            (true, subi_re, nhalo, q->cells->start, /**/ iidx);
 
     n = nbulk + nhalo;
     if (n) {
         sub::dev::gather_pp<<<k_cnf(n)>>>((float2*)pp, (float2*)pp_re, n, iidx,
                                           /**/ (float2*)pp0, zip0, zip1);
-
         if (global_ids)
-        sub::dev::gather_id<<<k_cnf(n)>>>(ii, ii_re, n, iidx, /**/ ii0);
-        
+            sub::dev::gather_id<<<k_cnf(n)>>>(ii, ii_re, n, iidx, /**/ ii0);
     }
 
     q->n = n;
