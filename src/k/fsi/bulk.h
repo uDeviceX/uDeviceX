@@ -1,5 +1,5 @@
 namespace k_fsi {
-__global__ void bulk(const float2 *const particles, const int n,
+__global__ void bulk(const float2 *const pp, const int n,
                      const int nsolvent, float *const acc,
                      float *const accsolvent, const float seed) {
     const int gid = threadIdx.x + blockDim.x * blockIdx.x;
@@ -8,9 +8,9 @@ __global__ void bulk(const float2 *const particles, const int n,
 
     if (pid >= n) return;
 
-    const float2 dst0 = __ldg(particles + 3 * pid + 0);
-    const float2 dst1 = __ldg(particles + 3 * pid + 1);
-    const float2 dst2 = __ldg(particles + 3 * pid + 2);
+    const float2 dst0 = __ldg(pp + 3 * pid + 0);
+    const float2 dst1 = __ldg(pp + 3 * pid + 1);
+    const float2 dst2 = __ldg(pp + 3 * pid + 2);
     int scan1, scan2, ncandidates, spidbase;
     int deltaspid1, deltaspid2;
 
