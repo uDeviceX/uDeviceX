@@ -1,7 +1,6 @@
 namespace k_fsi {
 texture<float2, cudaTextureType1D> texSolventParticles;
 texture<int, cudaTextureType1D> texCellsStart, texCellsCount;
-bool firsttime = true;
 static const int NCELLS = XS * YS * ZS;
 __constant__ int packstarts_padded[27], packcount[26];
 __constant__ Particle *packstates[26];
@@ -124,6 +123,7 @@ __global__ void interactions_3tpp(const float2 *const particles, const int np,
     atomicAdd(acc + 3 * pid + 1, yforce);
     atomicAdd(acc + 3 * pid + 2, zforce);
 }
+
 
 __global__ void interactions_halo(const int nparticles_padded,
                                   const int nsolvent, float *const accsolvent,

@@ -14,8 +14,8 @@ void fin() {
 void bulk(std::vector<ParticlesWrap> wsolutes) {
     if (wsolutes.size() == 0) return;
 
-    k_fsi::setup(wsolvent->p, wsolvent->n, wsolvent->cellsstart,
-                 wsolvent->cellscount);
+    fsi::setup(wsolvent->p, wsolvent->n, wsolvent->cellsstart,
+               wsolvent->cellscount);
 
 
 
@@ -31,7 +31,7 @@ void bulk(std::vector<ParticlesWrap> wsolutes) {
 }
 
 void halo(ParticlesWrap halos[26]) {
-    k_fsi::setup(wsolvent->p, wsolvent->n, wsolvent->cellsstart,
+    setup(wsolvent->p, wsolvent->n, wsolvent->cellsstart,
                  wsolvent->cellscount);
 
 

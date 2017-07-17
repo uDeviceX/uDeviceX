@@ -1,41 +1,38 @@
-namespace k_fsi {
+namespace fsi {
 void setup(const Particle *const solvent, const int npsolvent,
            const int *const cellsstart, const int *const cellscount) {
     if (firsttime) {
-        texCellsStart.channelDesc = cudaCreateChannelDesc<int>();
-        texCellsStart.filterMode = cudaFilterModePoint;
-        texCellsStart.mipmapFilterMode = cudaFilterModePoint;
-        texCellsStart.normalized = 0;
+        k_fsi::texCellsStart.channelDesc = cudaCreateChannelDesc<int>();
+        k_fsi::texCellsStart.filterMode = cudaFilterModePoint;
+        k_fsi::texCellsStart.mipmapFilterMode = cudaFilterModePoint;
+        k_fsi::texCellsStart.normalized = 0;
 
-        texCellsCount.channelDesc = cudaCreateChannelDesc<int>();
-        texCellsCount.filterMode = cudaFilterModePoint;
-        texCellsCount.mipmapFilterMode = cudaFilterModePoint;
-        texCellsCount.normalized = 0;
+        k_fsi::texCellsCount.channelDesc = cudaCreateChannelDesc<int>();
+        k_fsi::texCellsCount.filterMode = cudaFilterModePoint;
+        k_fsi::texCellsCount.mipmapFilterMode = cudaFilterModePoint;
+        k_fsi::texCellsCount.normalized = 0;
 
-        texSolventParticles.channelDesc = cudaCreateChannelDesc<float2>();
-        texSolventParticles.filterMode = cudaFilterModePoint;
-        texSolventParticles.mipmapFilterMode = cudaFilterModePoint;
-        texSolventParticles.normalized = 0;
-
-        CC(cudaFuncSetCacheConfig(interactions_3tpp, cudaFuncCachePreferL1));
-
+        k_fsi::texSolventParticles.channelDesc = cudaCreateChannelDesc<float2>();
+        k_fsi::texSolventParticles.filterMode = cudaFilterModePoint;
+        k_fsi::texSolventParticles.mipmapFilterMode = cudaFilterModePoint;
+        k_fsi::texSolventParticles.normalized = 0;
         firsttime = false;
     }
 
     size_t textureoffset = 0;
 
     if (npsolvent) {
-        CC(cudaBindTexture(&textureoffset, &texSolventParticles, solvent,
-                           &texSolventParticles.channelDesc,
+        CC(cudaBindTexture(&textureoffset, &k_fsi::texSolventParticles, solvent,
+                           &k_fsi::texSolventParticles.channelDesc,
                            sizeof(float) * 6 * npsolvent));
     }
 
     const int ncells = XS * YS * ZS;
 
-    CC(cudaBindTexture(&textureoffset, &texCellsStart, cellsstart,
-                       &texCellsStart.channelDesc, sizeof(int) * ncells));
+    CC(cudaBindTexture(&textureoffset, &k_fsi::texCellsStart, cellsstart,
+                       &k_fsi::texCellsStart.channelDesc, sizeof(int) * ncells));
 
-    CC(cudaBindTexture(&textureoffset, &texCellsCount, cellscount,
-                       &texCellsCount.channelDesc, sizeof(int) * ncells));
+    CC(cudaBindTexture(&textureoffset, &k_fsi::texCellsCount, cellscount,
+                       &k_fsi::texCellsCount.channelDesc, sizeof(int) * ncells));
 }
 }
