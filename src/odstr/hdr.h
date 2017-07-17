@@ -1,25 +1,3 @@
-struct Send {
-    int **iidx; /* indices */
-
-    Pbufs<float2> pp;
-    Pbufs<int> ii; /* global ids */
-    
-    int *size_dev, *strt;
-    int size[27];
-    PinnedHostBuffer4<int>* size_pin;
-
-    int    *iidx_[27];
-};
-
-struct Recv {
-    Pbufs<float2> pp;
-    Pbufs<int> ii; /* global ids */
-    
-    int *strt;
-    int tags[27];
-    int    size[27];
-};
-
 class Distr {
 public:
     void ini(MPI_Comm cart, int rank[]);
