@@ -2,6 +2,6 @@
 
 # udx commands
 
-# should the path be hardcoded?
+# should the path to udx be hardcoded?
 
 ./udx "$@"
