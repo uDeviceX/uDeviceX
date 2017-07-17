@@ -6,10 +6,11 @@ struct TicketD { /* distribution */
     MPI_Request send_ii_req[27], recv_ii_req[27];
     bool first = true;
     sub::Distr distr; /* was odstr; */
+    uchar4 *subi_lo;           /* local subindices */
 };
 
 struct Work {
-    uchar4 *subi_lo, *subi_re; /* local remote subindices */
+    uchar4 *subi_re;           /* remote subindices */
     uint   *iidx;              /* scatter indices         */
     Particle *pp_re;           /* remote particles        */
     int *ii_re;                /* remote ids              */
@@ -20,14 +21,15 @@ void alloc_ticketD(TicketD *t) {
     l::m::Comm_dup(m::cart, &t->cart);
     t->distr.ini(t->cart, t->rank);
     t->first = true;
+    mpDeviceMalloc(&t->subi_lo);
 }
 
 void free_ticketD(/**/ TicketD *t) {
     t->distr.fin();
+    CC(cudaFree(t->subi_lo));
 }
 
 void alloc_work(Work *w) {
-    mpDeviceMalloc(&w->subi_lo);
     mpDeviceMalloc(&w->subi_re);
     mpDeviceMalloc(&w->iidx);
     mpDeviceMalloc(&w->pp_re);
@@ -36,7 +38,6 @@ void alloc_work(Work *w) {
 }
 
 void free_work(Work *w) {
-    CC(cudaFree(w->subi_lo));
     CC(cudaFree(w->subi_re));
     CC(cudaFree(w->iidx));
     CC(cudaFree(w->pp_re));
@@ -89,7 +90,7 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     float4  *zip0 = tz->zip0;
     ushort4 *zip1 = tz->zip1;
 
-    uchar4 *subi_lo = w->subi_lo; /* arrays */
+    uchar4 *subi_lo = td->subi_lo; /* arrays */
     uchar4 *subi_re = w->subi_re;
     uint   *iidx = w->iidx;
     unsigned char *count_zip = w->count_zip;
