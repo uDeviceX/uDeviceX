@@ -61,6 +61,20 @@ void pack(flu::Quants *q, TicketD *t) {
     }
 }    
 
+void send(TicketD *t) {
+    sub::Distr *D = &t->distr;
+    if (!t->first) {
+        D->waitall(t->send_sz_req);
+        D->waitall(t->send_pp_req);
+        if (global_ids) D->waitall(t->send_ii_req);
+    }
+    t->first = false;
+    int nbulk = D->send_sz(t->cart, t->rank, t->send_sz_req);
+    D->send_pp(t->cart, t->rank, t->send_pp_req);
+    if (global_ids) D->send_ii(t->cart, t->rank, t->send_ii_req);
+}
+
+
 void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     MPI_Comm cart = td->cart; /* can be a copy */
     int *rank = td->rank; /* arrays */
