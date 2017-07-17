@@ -13,7 +13,7 @@
 #    run
 #!!!
 # { make clean && u.make -j; } > /dev/null
-# mpirun -n 2 ./udx 2 1 1
+# u.run 2 1 1 ./udx
 # awk '{print 10000*$2}' diag.txt > diag.out.txt
 
 #### double Poiseuille
@@ -32,7 +32,7 @@
 #    run
 #!!!
 # { make clean && u.make -j; } > /dev/null
-# mpirun -n 2 ./udx 2 1 1
+# u.run 2 1 1 ./udx
 # avg_h52.m h5/flowfields-0013.h5 | uscale 10 > h5.out.txt
 
 ####
@@ -52,7 +52,7 @@
 #    run
 #!!!
 # { make clean && u.make -j; } > /dev/null
-# mpirun -n 3 ./udx 3 1 1
+# u.run 3 1 1 ./udx
 # mid_h5.m h5/flowfields-0001.h5 > h5.out.txt
 #
 
@@ -72,6 +72,6 @@
 #    run
 #!!!
 # { make clean && u.make -j; } > /dev/null
-# mpirun -n 2 ./udx 1 1 2
+# u.run 1 1 2 ./udx
 # avg_h5.m h5/flowfields-0013.h5 | uscale 100 > h5.out.txt
 #
