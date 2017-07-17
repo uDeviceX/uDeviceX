@@ -115,9 +115,8 @@ namespace dev {
 }
 
 #include "k/fsi.h"
-
-#include "fsi.decl.h"
-#include "fsi.impl.h"
+#include "fsi/decl.h"
+#include "fsi/impl.h"
 
 #include "rex.decl.h"
 #include "k/rex.h"
