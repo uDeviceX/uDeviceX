@@ -102,13 +102,8 @@ void wait_recv(TicketCom *tc) {
     sub::wait_req(&tc->rreq);
 }
 
-// TODO move this to imp
 void recv(TicketRhalo *t) {
-    for (int i = 0; i < 26; ++i)
-        CC(cudaMemcpyAsync(t->b.pp.d[i], t->b.pphst.d[i], sizeof(Particle) * t->np.d[i], H2D));
-
-    for (int i = 0; i < 26; ++i)
-        CC(cudaMemcpyAsync(t->b.cum.d[i], t->b.cumhst.d[i],  sizeof(int) * t->nc.d[i], H2D));
+    sub::recv(t->np.d, t->nc.d, /**/ &t->b);
 }
 
 // TODO move this to imp
@@ -116,9 +111,9 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
     int i;
     int dx, dy, dz;
     int m0, m1, m2;
-    static SFrag sfrag[26];
-    static  Frag  frag[26];
-    static Rnd  rnd[26];
+    SFrag sfrag[26];
+    Frag   frag[26];
+    Rnd     rnd[26];
 
     for (i = 0; i < 26; ++i) {
         dx = (i     + 2) % 3 - 1;

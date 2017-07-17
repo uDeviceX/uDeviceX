@@ -2,6 +2,7 @@
 #include <conf.h>
 #include "m.h"
 #include "common.h"
+#include "common.cuda.h"
 #include "tcells.h"
 
 static const int NCELLS = XS * YS * ZS;

@@ -89,7 +89,6 @@ static void count_pp_inside(const Particle *s_pp, const int n, const float *coms
             const float r2 = r[X]*r[X] + r[Y]*r[Y] + r[Z]*r[Z];     
 
             if (r2 < R*R && collision::inside_1p(r, vv, tt, nt)) {
-                assert(tag == -1);
                 ++rcounts[j];
                 tags[ip] = tag = j;
             }
@@ -162,7 +161,7 @@ static void share_parts(const int root, /**/ Particle *pp, int *n) {
         displs[j+1] = displs[j] + counts[j];
     }
 
-    MC( MPI_Gatherv(pp, *n, Particle::datatype(), recvbuf.data(), counts.data(), displs.data(), Particle::datatype(), root, m::cart) );
+    MC( MPI_Gatherv(pp, *n, datatype::particle, recvbuf.data(), counts.data(), displs.data(), datatype::particle, root, m::cart) );
 
     if (m::rank == root) {
         *n = displs.back() + counts.back();
@@ -255,7 +254,7 @@ void ini(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, So
     
     MC( MPI_Bcast(&npsolid,       1,   MPI_INT, root, m::cart) );
     MC( MPI_Bcast(rr0,  3 * npsolid, MPI_FLOAT, root, m::cart) );
-    MC( MPI_Bcast(&model, 1, Solid::datatype(), root, m::cart) );
+    MC( MPI_Bcast(&model, 1, datatype::solid, root, m::cart) );
     
     // filter coms to keep only the ones in my domain
     int id = 0;

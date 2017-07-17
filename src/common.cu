@@ -6,12 +6,7 @@
 #include "conf.common.h"
 #include "m.h"     /* MPI */
 #include "common.h"
-
-bool Particle::initialized = false;
-MPI_Datatype Particle::mytype;
-
-bool Solid::initialized = false;
-MPI_Datatype Solid::mytype;
+#include "common.mpi.h"
 
 void diagnostics(Particle *pp, int n, int idstep) {
     double p[] = {0, 0, 0};

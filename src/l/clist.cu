@@ -3,6 +3,7 @@
 #include <thrust/binary_search.h>
 #include <mpi.h>
 #include "common.h"
+#include "common.cuda.h"
 
 #include "l/clist.h"
 #include "l/d/clist.h"

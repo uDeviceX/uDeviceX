@@ -62,7 +62,7 @@ void post(MPI_Comm cart, const int dstranks[], const int *fragnp, const int26 fr
         MC(l::m::Isend(&count, 1, MPI_INT, dstranks[i],
                        BT_C_DPD + i, cart, sreq->counts + i));
         
-        MC(l::m::Isend(fragpp.d[i], count, Particle::datatype(),
+        MC(l::m::Isend(fragpp.d[i], count, datatype::particle,
                        dstranks[i], BT_P_DPD + i, cart, sreq->pp + i));
     }
 }
@@ -70,7 +70,7 @@ void post(MPI_Comm cart, const int dstranks[], const int *fragnp, const int26 fr
 void post_expected_recv(MPI_Comm cart, const int dstranks[], const int recv_tags[], const int estimate[], const int26 fragnc,
                         /**/ Particlep26 fragpp, int *Rfragnp, intp26 Rfragcum, Reqs *rreq) {
     for (int i = 0; i < 26; ++i) {
-        MC(l::m::Irecv(fragpp.d[i], estimate[i], Particle::datatype(), dstranks[i], BT_P_DPD + recv_tags[i],
+        MC(l::m::Irecv(fragpp.d[i], estimate[i], datatype::particle, dstranks[i], BT_P_DPD + recv_tags[i],
                        cart, rreq->pp + i));
     
         MC(l::m::Irecv(Rfragcum.d[i], fragnc.d[i], MPI_INT, dstranks[i],
@@ -79,4 +79,12 @@ void post_expected_recv(MPI_Comm cart, const int dstranks[], const int recv_tags
         MC(l::m::Irecv(Rfragnp + i, 1, MPI_INT, dstranks[i],
                        BT_C_DPD + recv_tags[i], cart, rreq->counts + i));
     }
+}
+
+void recv(const int *np, const int *nc, /**/ Rbufs *b) {
+    for (int i = 0; i < 26; ++i)
+        CC(cudaMemcpyAsync(b->pp.d[i], b->pphst.d[i], sizeof(Particle) * np[i], H2D));
+
+    for (int i = 0; i < 26; ++i)
+        CC(cudaMemcpyAsync(b->cum.d[i], b->cumhst.d[i],  sizeof(int) * nc[i], H2D));
 }

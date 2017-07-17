@@ -38,4 +38,5 @@ void fin() {
         rbc::destroy_textures(&r::tt);
         CC(cudaFree(r::ff));
     }
+    datatype::fin();
 }

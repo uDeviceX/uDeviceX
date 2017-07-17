@@ -11,7 +11,7 @@ NVCCFLAGS += -I$B -I$S
 NVCCFLAGS += -std=c++11
 LIBS      += -lcudart
 
-OBJ0 = $B/bund.o  $B/collision.o $B/common.o $B/force.o $B/local.o \
+OBJ0 = $B/bund.o  $B/collision.o $B/common.o $B/common.mpi.o $B/force.o $B/local.o \
 	$B/field.o $B/glb.o $B/io.o  $B/m.o $B/main.o \
 	$B/mbounce.o $B/mesh.o $B/mrescue.o $B/minmax.o \
 	$B/solid.o $B/tcells.o $B/restart.o

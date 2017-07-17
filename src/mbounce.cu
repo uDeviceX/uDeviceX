@@ -1,6 +1,7 @@
 #include <mpi.h>
 #include <conf.h>
 #include "common.h"
+#include "common.cuda.h"
 
 #include "roots.impl.h"
 #include "mbounce.h"
