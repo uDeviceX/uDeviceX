@@ -106,6 +106,7 @@ namespace sub {
 namespace dev {
 #include "odstr/dev.h"
 }
+#include "odstr/buf.h"
 #include "odstr/hdr.h" /* Distr class decl */
 #include "odstr/ini.h"
 #include "odstr/imp.h" /* Distr class impl */
