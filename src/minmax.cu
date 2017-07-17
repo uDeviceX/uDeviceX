@@ -2,6 +2,7 @@
 #include <conf.h>
 #include "m.h"
 #include "common.h"
+#include "common.cuda.h"
 #include "minmax.h"
 
 #define MAXTHREADS 1024

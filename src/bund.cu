@@ -22,6 +22,7 @@
 #include "basetags.h"
 #include "common.h"
 #include "common.mpi.h"
+#include "common.cuda.h"
 #include "common.tmp.h"
 #include "common.macro.h"
 #include "io.h"

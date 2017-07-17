@@ -2,6 +2,7 @@
 
 #include <mpi.h>
 #include "common.h"
+#include "common.cuda.h"
 #include <conf.h>
 #include "conf.common.h"
 

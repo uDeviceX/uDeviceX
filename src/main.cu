@@ -5,6 +5,7 @@
 #include "l/m.h"
 #include "common.h"
 #include "common.mpi.h"
+#include "common.cuda.h"
 #include "bund.h"
 #include "glb.h"
 
