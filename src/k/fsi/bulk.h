@@ -5,7 +5,24 @@ struct Pa { /* local particle */
     float vx, vy, vz;
 };
 
-__device__ void bulk0(float2 *pp, int pid, int zplane, int n, float seed, float *ff0, float *ff1) {
+static __device__ float fst(float2 p) { return p.x; }
+static __device__ float scn(float2 p) { return p.y; }
+static __device__ void p2rv(const float2 *p, uint i, /**/
+                            float  *x, float  *y, float  *z,
+                            float *vx, float *vy, float *vz) {
+    float2 s0, s1, s2;
+    p += 3*i;
+    s0 = __ldg(p++); s1 = __ldg(p++); s2 = __ldg(p++);
+     *x = fst(s0);  *y = scn(s0);  *z = fst(s1);
+    *vx = scn(s1); *vy = fst(s2); *vz = scn(s2);
+}
+static __device__ Pa pp2p(float2 *pp, int i) {
+    Pa p;
+    p2rv(pp, i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
+    return p;
+}
+
+static __device__ void bulk0(float2 *pp, int pid, int zplane, int n, float seed, float *ff0, float *ff1) {
     const float2 dst0 = __ldg(pp + 3 * pid + 0);
     const float2 dst1 = __ldg(pp + 3 * pid + 1);
     const float2 dst2 = __ldg(pp + 3 * pid + 2);
