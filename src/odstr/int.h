@@ -75,6 +75,12 @@ void send(TicketD *t) {
     if (global_ids) D->send_ii(t->cart, t->rank, t->send_ii_req);
 }
 
+void bulk(flu::Quants *q, TicketD *t) {
+    int n = q->n, *count = q->cells->count;
+    CC(cudaMemsetAsync(count, 0, sizeof(int)*XS*YS*ZS));
+    if (n)
+    k_common::subindex_local<false><<<k_cnf(n)>>>(n, (float2*)q->pp, /*io*/ count, /*o*/ t->subi_lo);
+}
 
 void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     MPI_Comm cart = td->cart; /* can be a copy */
