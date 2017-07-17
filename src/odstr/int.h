@@ -91,6 +91,47 @@ void recv(TicketD *t) {
     if (global_ids) D->waitall(t->recv_ii_req);
 }
 
+void unpack(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
+    const int nhalo = td->nhalo, nbulk = td->nbulk;
+    sub::Distr *D = &td->distr;
+
+    int n = q->n;
+    int *start = q->cells->start;
+    int *count = q->cells->count;
+
+    Particle *pp = q->pp, *pp0 = q->pp0;
+    int *ii = q->ii, *ii0 = q->ii0;
+    
+    if (nhalo) {
+        D->unpack_pp(nhalo, /*o*/ w->pp_re);
+        if (global_ids) D->unpack_ii(nhalo, w->ii_re);
+        D->subindex_remote(nhalo, /*io*/ w->pp_re, count, /**/ w->subi_re);
+    }
+    
+    k_common::compress_counts<<<k_cnf(XS*YS*ZS)>>>(XS*YS*ZS, (int4*)count, /**/ (uchar4*)w->count_zip);
+    l::scan::d::scan(w->count_zip, XS*YS*ZS, /**/ (uint*)start);
+
+    if (n)
+        sub::dev::scatter<<<k_cnf(n)>>>(false, td->subi_lo,  n, start, /**/ w->iidx);
+
+    if (nhalo)
+        sub::dev::scatter<<<k_cnf(nhalo)>>>(true, w->subi_re, nhalo, start, /**/ w->iidx);
+    n = nbulk + nhalo;
+    if (n) {
+        sub::dev::gather_pp<<<k_cnf(n)>>>((float2*)pp, (float2*)w->pp_re, n, w->iidx,
+                                          /**/ (float2*)pp0, tz->zip0, tz->zip1);
+        if (global_ids) sub::dev::gather_id<<<k_cnf(n)>>>(ii, w->ii_re, n, w->iidx, /**/ ii0);
+    }
+
+    q->n = n;
+
+    /* swap */
+    q->pp = pp0; q->pp0 = pp; 
+    if (global_ids) {
+        q->ii = ii0; q->ii0 = ii;
+    }    
+}
+
 void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     MPI_Comm cart = td->cart; /* can be a copy */
     int *rank = td->rank; /* arrays */
