@@ -1,4 +1,10 @@
 namespace k_fsi {
+
+struct Pa { /* local particle */
+    float x, y, z;
+    float vx, vy, vz;
+};
+
 __device__ void bulk0(float2 *pp, int pid, int zplane, int n1, float seed, float *ff0, float *ff1) {
     const float2 dst0 = __ldg(pp + 3 * pid + 0);
     const float2 dst1 = __ldg(pp + 3 * pid + 1);
