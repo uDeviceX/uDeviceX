@@ -1,7 +1,5 @@
 namespace k_fsi {
-__global__ void bulk(float2 *pp, int n,
-                     int nsolvent, float *acc,
-                     float *accsolvent, float seed) {
+__global__ void bulk(float2 *pp, int n, int nsolvent, float seed, float *acc, float *accsolvent) {
     const int gid = threadIdx.x + blockDim.x * blockIdx.x;
     const int pid = gid / 3;
     const int zplane = gid % 3;

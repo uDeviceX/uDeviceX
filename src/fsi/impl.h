@@ -23,9 +23,7 @@ void bulk(std::vector<ParticlesWrap> wsolutes) {
          it != wsolutes.end(); ++it)
     if (it->n)
     k_fsi::bulk<<<k_cnf(3 * it->n)>>>
-        ((float2 *)it->p, it->n, wsolvent->n, (float *)it->f,
-         (float *)wsolvent->f, local_trunk->get_float());
-
+        ((float2 *)it->p, it->n, wsolvent->n, local_trunk->get_float(), (float *)it->f, (float *)wsolvent->f);
 
 }
 
