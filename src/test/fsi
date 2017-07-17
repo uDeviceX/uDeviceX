@@ -10,7 +10,7 @@
 #    rbcs tend=2.0 part_freq=1500
 #    part_dumps   field_freq=1500
 #    pushflow doublepoiseuille
-#    pushrbc=fasle fsiforces=false
+#    pushrbc=false fsiforces=false
 #    run
 #!!!
 # { make clean &&  u.make -j && make -C ../tools; } > /dev/null
