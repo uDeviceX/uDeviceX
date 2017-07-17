@@ -1,4 +1,4 @@
-#include <mpi.h>
+#include <stdio.h>
 #include "common.h"
 #include "common.cuda.h"
 #include "minmax.h"
