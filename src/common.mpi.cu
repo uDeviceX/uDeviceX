@@ -1,5 +1,4 @@
 #include <mpi.h>
-#include "m.h"
 #include "common.mpi.h"
 
 namespace datatype {
