@@ -82,6 +82,15 @@ void bulk(flu::Quants *q, TicketD *t) {
     k_common::subindex_local<false><<<k_cnf(n)>>>(n, (float2*)q->pp, /*io*/ count, /*o*/ t->subi_lo);
 }
 
+void recv(TicketD *t) {
+    int nhalo;
+    sub::Distr *D = &t->distr;
+    D->waitall(t->recv_sz_req);
+    D->recv_count(&nhalo);
+    D->waitall(t->recv_pp_req);
+    if (global_ids) D->waitall(t->recv_ii_req);
+}
+
 void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     MPI_Comm cart = td->cart; /* can be a copy */
     int *rank = td->rank; /* arrays */
