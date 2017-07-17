@@ -24,10 +24,12 @@ static __device__ Pa pp2p(float2 *pp, int i) {
 }
 
 static __device__ void bulk0(float2 *pp, int pid, int zplane, int n, float seed, float *ff0, float *ff1) {
+    Map m;
     Pa p;
     float x, y, z;
     p = pp2p(pp, pid);
     x = p.x; y = p.y; z = p.z;
+    if (!p2map(zplane, n, x, y, z, /**/ &m)) return;
     int cnt0, cnt1, cnt2, org0;
     int org1, org2;
 
