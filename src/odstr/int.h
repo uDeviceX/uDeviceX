@@ -44,8 +44,6 @@ void free_work(Work *w) {
     CC(cudaFree(w->count_zip));
 }
 
-void distrB() {
-}
 
 void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     MPI_Comm cart = td->cart; /* can be a copy */
