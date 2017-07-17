@@ -36,7 +36,7 @@ void Distr::pack_pp(const Particle *pp, int n) {
 }
 
 void Distr::pack_ii(const int *ii, int n) {
-    dev::pack<int, 1> <<<k_cnf(n)>>>(ii, s.iidx, s.strt, /**/ s.ii_dev);
+    dev::pack<int, 1> <<<k_cnf(n)>>>(ii, s.iidx, s.strt, /**/ s.ii.dev);
 }
 
 int Distr::send_sz(MPI_Comm cart, int rank[], MPI_Request *req) {
@@ -55,7 +55,7 @@ void Distr::send_pp(MPI_Comm cart, int rank[], MPI_Request *req) {
 
 void Distr::send_ii(MPI_Comm cart, int rank[], MPI_Request *req) {
     for(int i = 1, cnt = 0; i < 27; ++i)
-    l::m::Isend(s.ii_hst[i], s.size[i], MPI_INT, rank[i],
+    l::m::Isend(s.ii.hst[i], s.size[i], MPI_INT, rank[i],
                 BT_I_ODSTR + i, cart, &req[cnt++]);
 }
 

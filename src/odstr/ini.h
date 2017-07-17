@@ -26,8 +26,7 @@ void Distr::ini(MPI_Comm cart, int rank[])  {
             CC(cudaHostGetDevicePointer(&r.pp_hst_[i], r.pp_hst[i], 0));
 
             if (global_ids) {
-                CC(cudaHostAlloc(&s.ii_hst[i], sizeof(int) * estimate, cudaHostAllocMapped));
-                CC(cudaHostGetDevicePointer(&s.ii_hst_[i], s.ii_hst[i], 0));
+                alloc_pinned(i, estimate, /**/ &s.ii);
                 CC(cudaHostAlloc(&r.ii_hst[i], sizeof(int) * estimate, cudaHostAllocMapped));
                 CC(cudaHostGetDevicePointer(&r.ii_hst_[i], r.ii_hst[i], 0));        
             }
@@ -38,9 +37,9 @@ void Distr::ini(MPI_Comm cart, int rank[])  {
             r.pp_hst[i] = NULL;
 
             if (global_ids) {
-                CC(cudaMalloc(&s.ii_hst_[i], sizeof(int) * estimate));
-                r.ii_hst_[i] = s.ii_hst_[i];
-                s.ii_hst[i] = NULL;
+                CC(cudaMalloc(&s.ii.dp[i], sizeof(int) * estimate));
+                r.ii_hst_[i] = s.ii.dp[i];
+                s.ii.hst[i] = NULL;
                 r.ii_hst[i] = NULL;
             }
         }
@@ -59,9 +58,8 @@ void Distr::ini(MPI_Comm cart, int rank[])  {
     CC(cudaMemcpy(r.pp_dev, r.pp_hst_, sizeof(r.pp_hst_), H2D));
 
     if (global_ids) {
-        CC(cudaMalloc(&s.ii_dev, SZ_PTR_ARR(s.ii_hst_)));
-        CC(cudaMemcpy(s.ii_dev, s.ii_hst_, sizeof(s.ii_hst_), H2D));
-
+        alloc_dev(/**/ &s.ii);
+        
         CC(cudaMalloc(&r.ii_dev, SZ_PTR_ARR(r.pp_hst_)));
         CC(cudaMemcpy(r.ii_dev, r.ii_hst_, sizeof(r.ii_hst_), H2D));
     }
