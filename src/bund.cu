@@ -3,7 +3,6 @@
 #include <assert.h>
 #include <string>
 #include <vector>
-#include <cstdio>
 #include <mpi.h>
 
 #include <limits> /* for rnd */
