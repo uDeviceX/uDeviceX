@@ -1,6 +1,4 @@
-#include <mpi.h>
 #include "common.h"
-
 #include "mesh.h"
 
 namespace mesh
