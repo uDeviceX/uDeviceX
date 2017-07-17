@@ -44,14 +44,14 @@ void free_work(Work *w) {
     CC(cudaFree(w->count_zip));
 }
 
-void post_recv(TicketD *td) {
-    sub::Distr *D = &td->distr;
-    D->post_recv(td->cart, td->rank, /**/ td->recv_sz_req, td->recv_pp_req);
-    if (global_ids) D->post_recv_ii(td->cart, td->rank, /**/ td->recv_ii_req);        
+void post_recv(TicketD *t) {
+    sub::Distr *D = &t->distr;
+    D->post_recv(t->cart, t->rank, /**/ t->recv_sz_req, t->recv_pp_req);
+    if (global_ids) D->post_recv_ii(t->cart, t->rank, /**/ t->recv_ii_req);        
 }
 
-void pack(flu::Quants *q, TicketD *td) {
-    sub::Distr *D = &td->distr;
+void pack(flu::Quants *q, TicketD *t) {
+    sub::Distr *D = &t->distr;
     if (q->n) {
         D->halo(q->pp, q->n);
         D->scan(q->n);
