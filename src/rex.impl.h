@@ -305,7 +305,7 @@ void halo() {
     dSync(); /* was CC(cudaStreamSynchronize(uploadstream)); */
 
     /** here was visitor  **/
-    fsi::halo(halos);
+    if (fsiforces)     fsi::halo(halos);
     if (contactforces) cnt::halo(halos);
     /***********************/
 
