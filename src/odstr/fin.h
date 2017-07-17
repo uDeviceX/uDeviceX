@@ -1,13 +1,9 @@
 void Distr::fin() {
-    for(int i = 0; i < 27; ++i) {
-        CC(cudaFree(s.iidx_[i]));
-        if (i) {
-        } else {
-            CC(                cudaFree(s.pp.dp[i])); /* r.pp.dp[0] = s.pp.dp[0] */
-            if (global_ids) CC(cudaFree(s.ii.dp[i])); /* r.ii.dp[0] = s.ii.dp[0] */
-        }
-    }
+    for(int i = 0; i < 27; ++i) CC(cudaFree(s.iidx_[i]));
 
+    CC(                cudaFree(s.pp.dp[0])); /* r.pp.dp[0] = s.pp.dp[0] */
+    if (global_ids) CC(cudaFree(s.ii.dp[0])); /* r.ii.dp[0] = s.ii.dp[0] */
+    
     dealloc(&s.pp);
     dealloc(&r.pp);
     
