@@ -1,7 +1,6 @@
 #include <sys/stat.h>
 
 #include <assert.h>
-#include <string>
 #include <vector>
 #include <mpi.h>
 
