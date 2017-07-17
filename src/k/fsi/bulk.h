@@ -28,8 +28,8 @@ static __device__ void bulk0(float2 *pp, int pid, int zplane, int n, float seed,
     float x, y, z;
     p = pp2p(pp, pid);
     x = p.x; y = p.y; z = p.z;
-    int scan1, scan2, ncandidates, spidbase;
-    int deltaspid1, deltaspid2;
+    int cnt0, cnt1, cnt2, org0;
+    int org1, org2;
 
     {
         enum {
@@ -57,44 +57,44 @@ static __device__ void bulk0(float2 *pp, int pid, int zplane, int n, float seed,
 
         if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < YCELLS) {
             const int cid0 = xstart + XCELLS * (ycenter - 1 + YCELLS * zmy);
-            spidbase = tex1Dfetch(texCellsStart, cid0);
+            org0 = tex1Dfetch(texCellsStart, cid0);
             count0 = ((cid0 + xcount == NCELLS)
                       ? n
                       : tex1Dfetch(texCellsStart, cid0 + xcount)) -
-                spidbase;
+                org0;
         }
 
         if (zvalid && ycenter >= 0 && ycenter < YCELLS) {
             const int cid1 = xstart + XCELLS * (ycenter + YCELLS * zmy);
-            deltaspid1 = tex1Dfetch(texCellsStart, cid1);
+            org1 = tex1Dfetch(texCellsStart, cid1);
             count1 = ((cid1 + xcount == NCELLS)
                       ? n
                       : tex1Dfetch(texCellsStart, cid1 + xcount)) -
-                deltaspid1;
+                org1;
         }
 
         if (zvalid && ycenter + 1 >= 0 && ycenter + 1 < YCELLS) {
             const int cid2 = xstart + XCELLS * (ycenter + 1 + YCELLS * zmy);
-            deltaspid2 = tex1Dfetch(texCellsStart, cid2);
+            org2 = tex1Dfetch(texCellsStart, cid2);
             count2 = ((cid2 + xcount == NCELLS)
                       ? n
                       : tex1Dfetch(texCellsStart, cid2 + xcount)) -
-                deltaspid2;
+                org2;
         }
 
-        scan1 = count0;
-        scan2 = count0 + count1;
-        ncandidates = scan2 + count2;
+        cnt0 = count0;
+        cnt1 = count0 + count1;
+        cnt2 = cnt1 + count2;
 
-        deltaspid1 -= scan1;
-        deltaspid2 -= scan2;
+        org1 -= cnt0;
+        org2 -= cnt1;
     }
 
     float xforce = 0, yforce = 0, zforce = 0;
-    for (int i = 0; i < ncandidates; ++i) {
-        const int m1 = (int)(i >= scan1);
-        const int m2 = (int)(i >= scan2);
-        const int spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
+    for (int i = 0; i < cnt2; ++i) {
+        const int m1 = (int)(i >= cnt0);
+        const int m2 = (int)(i >= cnt1);
+        const int spid = i + (m2 ? org2 : m1 ? org1 : org0);
 
         const int sentry = 3 * spid;
         const float2 stmp0 = tex1Dfetch(texSolventParticles, sentry);
