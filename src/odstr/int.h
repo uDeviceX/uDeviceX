@@ -5,15 +5,15 @@ struct TicketD { /* distribution */
     MPI_Request send_pp_req[27], recv_pp_req[27];
     MPI_Request send_ii_req[27], recv_ii_req[27];
     bool first = true;
-    sub::Distr distr; /* was odstr; */
+    sub::Distr distr;
     uchar4 *subi_lo;           /* local subindices */
 };
 
 struct Work {
     uchar4 *subi_re;           /* remote subindices */
-    uint   *iidx;              /* scatter indices         */
-    Particle *pp_re;           /* remote particles        */
-    int *ii_re;                /* remote ids              */
+    uint   *iidx;              /* scatter indices   */
+    Particle *pp_re;           /* remote particles  */
+    int *ii_re;                /* remote ids        */
     unsigned char *count_zip;
 };
 
@@ -70,7 +70,7 @@ void send(TicketD *t) {
         if (global_ids) D->waitall(t->send_ii_req);
     }
     t->first = false;
-    int nbulk = D->send_sz(t->cart, t->rank, t->send_sz_req);
+    int nbulk = D->send_sz(t->cart, t->rank, t->send_sz_req);// TODO output this (ticket?)
     D->send_pp(t->cart, t->rank, t->send_pp_req);
     if (global_ids) D->send_ii(t->cart, t->rank, t->send_ii_req);
 }
@@ -83,7 +83,7 @@ void bulk(flu::Quants *q, TicketD *t) {
 }
 
 void recv(TicketD *t) {
-    int nhalo;
+    int nhalo; // TODO output this (ticket?)
     sub::Distr *D = &t->distr;
     D->waitall(t->recv_sz_req);
     D->recv_count(&nhalo);
