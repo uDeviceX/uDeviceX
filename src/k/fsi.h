@@ -125,9 +125,9 @@ __global__ void bulk(const float2 *const particles, const int np,
 }
 
 
-__global__ void interactions_halo(const int nparticles_padded,
-                                  const int nsolvent, float *const accsolvent,
-                                  const float seed) {
+__global__ void halo(const int nparticles_padded,
+                     const int nsolvent, float *const accsolvent,
+                     const float seed) {
     const int laneid = threadIdx.x & 0x1f;
     const int warpid = threadIdx.x >> 5;
     const int localbase = 32 * (warpid + 4 * blockIdx.x);
