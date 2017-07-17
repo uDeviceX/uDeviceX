@@ -5,8 +5,7 @@ void fin() {
     cnt::fin();
     dump::fin();
     rex::fin();
-    fsi::fin();
-
+    if (fsiforces)  fsi::fin();
     if (solids) mrescue::fin();
 
     sdf::free_quants(&w::qsdf);

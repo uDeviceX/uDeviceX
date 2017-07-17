@@ -5,7 +5,7 @@ void ini() {
         rbc::alloc_quants(&r::q);
     }
     rdstr::ini();
-    fsi::ini();
+    if (fsiforces) fsi::ini();
     sdstr::ini();
     bbhalo::ini();
     cnt::ini();

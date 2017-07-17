@@ -66,7 +66,7 @@ void forces(bool wall0) {
     forces_rbc();
 
     if (contactforces) forces_cnt(&w_r);
-    forces_fsi(&w_s, &w_r);
+    if (fsiforces)     forces_fsi(&w_s, &w_r);
 
     rex::bind_solutes(w_r);
     rex::pack_p();

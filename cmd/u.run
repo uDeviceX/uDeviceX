@@ -6,6 +6,22 @@ msg () { printf '%s\n' "$@" | cat 1>&2; }
 
 if test $# = 1 -a "$1" = -h; then msg 'udx run wrapper'; exit; fi
 
-h=`u.host`
+# integer?
+intp() { echo "$1" | grep -q '^[0-9]*$'; }
+mult () { awk -v x=$x -v y=$y -v z=$z 'BEGIN {print x*y*z}'; }
 
-u.run."$h" "$@"
+msg() { printf '%s\n' "$*" >&2; }
+err() {
+    msg "$@"
+    exit 1
+}
+
+x=1 y=1 z=1
+if test $# -ne 0 && intp "$1"; then x=$1; shift; fi
+if test $# -ne 0 && intp "$1"; then y=$1; shift; fi
+if test $# -ne 0 && intp "$1"; then z=$1; shift; fi
+if test  $# -eq 0; then err 'nothing to run'  ; fi
+n=`mult`
+
+h=`u.host`
+u.run."$h" $n $x $y $z "$@"

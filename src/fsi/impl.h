@@ -14,16 +14,15 @@ void fin() {
 void bulk(std::vector<ParticlesWrap> wsolutes) {
     if (wsolutes.size() == 0) return;
 
-    k_fsi::setup(wsolvent->p, wsolvent->n, wsolvent->cellsstart,
-                 wsolvent->cellscount);
+    fsi::setup(wsolvent->p, wsolvent->n, wsolvent->cellsstart,
+               wsolvent->cellscount);
 
 
 
     for (std::vector<ParticlesWrap>::iterator it = wsolutes.begin();
          it != wsolutes.end(); ++it)
     if (it->n)
-    k_fsi::
-        interactions_3tpp<<<k_cnf(3 * it->n)>>>
+    k_fsi::bulk<<<k_cnf(3 * it->n)>>>
         ((float2 *)it->p, it->n, wsolvent->n, (float *)it->f,
          (float *)wsolvent->f, local_trunk->get_float());
 
@@ -31,7 +30,7 @@ void bulk(std::vector<ParticlesWrap> wsolutes) {
 }
 
 void halo(ParticlesWrap halos[26]) {
-    k_fsi::setup(wsolvent->p, wsolvent->n, wsolvent->cellsstart,
+    setup(wsolvent->p, wsolvent->n, wsolvent->cellsstart,
                  wsolvent->cellscount);
 
 
@@ -77,8 +76,7 @@ void halo(ParticlesWrap halos[26]) {
     }
 
     if (nremote_padded)
-    k_fsi::
-        interactions_halo<<<k_cnf(nremote_padded)>>>
+    k_fsi::halo<<<k_cnf(nremote_padded)>>>
         (nremote_padded, wsolvent->n, (float *)wsolvent->f,
          local_trunk->get_float());
 }

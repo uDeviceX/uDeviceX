@@ -1,7 +1,6 @@
 namespace k_fsi {
 texture<float2, cudaTextureType1D> texSolventParticles;
 texture<int, cudaTextureType1D> texCellsStart, texCellsCount;
-bool firsttime = true;
 static const int NCELLS = XS * YS * ZS;
 __constant__ int packstarts_padded[27], packcount[26];
 __constant__ Particle *packstates[26];
@@ -9,9 +8,9 @@ __constant__ Force *packresults[26];
 
 
 
-__global__ void interactions_3tpp(const float2 *const particles, const int np,
-                                  const int nsolvent, float *const acc,
-                                  float *const accsolvent, const float seed) {
+__global__ void bulk(const float2 *const particles, const int np,
+                     const int nsolvent, float *const acc,
+                     float *const accsolvent, const float seed) {
     const int gid = threadIdx.x + blockDim.x * blockIdx.x;
     const int pid = gid / 3;
     const int zplane = gid % 3;
@@ -125,50 +124,10 @@ __global__ void interactions_3tpp(const float2 *const particles, const int np,
     atomicAdd(acc + 3 * pid + 2, zforce);
 }
 
-void setup(const Particle *const solvent, const int npsolvent,
-           const int *const cellsstart, const int *const cellscount) {
-    if (firsttime) {
-        texCellsStart.channelDesc = cudaCreateChannelDesc<int>();
-        texCellsStart.filterMode = cudaFilterModePoint;
-        texCellsStart.mipmapFilterMode = cudaFilterModePoint;
-        texCellsStart.normalized = 0;
 
-        texCellsCount.channelDesc = cudaCreateChannelDesc<int>();
-        texCellsCount.filterMode = cudaFilterModePoint;
-        texCellsCount.mipmapFilterMode = cudaFilterModePoint;
-        texCellsCount.normalized = 0;
-
-        texSolventParticles.channelDesc = cudaCreateChannelDesc<float2>();
-        texSolventParticles.filterMode = cudaFilterModePoint;
-        texSolventParticles.mipmapFilterMode = cudaFilterModePoint;
-        texSolventParticles.normalized = 0;
-
-        CC(cudaFuncSetCacheConfig(interactions_3tpp, cudaFuncCachePreferL1));
-
-        firsttime = false;
-    }
-
-    size_t textureoffset = 0;
-
-    if (npsolvent) {
-        CC(cudaBindTexture(&textureoffset, &texSolventParticles, solvent,
-                           &texSolventParticles.channelDesc,
-                           sizeof(float) * 6 * npsolvent));
-    }
-
-    const int ncells = XS * YS * ZS;
-
-    CC(cudaBindTexture(&textureoffset, &texCellsStart, cellsstart,
-                       &texCellsStart.channelDesc, sizeof(int) * ncells));
-
-    CC(cudaBindTexture(&textureoffset, &texCellsCount, cellscount,
-                       &texCellsCount.channelDesc, sizeof(int) * ncells));
-}
-
-
-__global__ void interactions_halo(const int nparticles_padded,
-                                  const int nsolvent, float *const accsolvent,
-                                  const float seed) {
+__global__ void halo(const int nparticles_padded,
+                     const int nsolvent, float *const accsolvent,
+                     const float seed) {
     const int laneid = threadIdx.x & 0x1f;
     const int warpid = threadIdx.x >> 5;
     const int localbase = 32 * (warpid + 4 * blockIdx.x);

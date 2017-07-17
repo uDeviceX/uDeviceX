@@ -1,7 +1,24 @@
 #!/bin/bash
 
-# udx commands
+run_one() { # single processor
+    exec "$e" "$@"
+}
 
-# should the path be hardcoded?
+env_panda() {
+    export PATH=/usr/lib64/mpich/bin:"$PATH"
+}
 
-./udx "$@"
+run_mpi() {
+    env_panda
+    exec mpirun -n $n "$e" $x $y $z "$@"
+}
+
+n=$1; shift
+x=$1; shift
+y=$1; shift
+z=$1; shift
+e=$1; shift # executable
+
+# one processor?
+onep() { test $n -eq 1; }
+if onep; then run_one "$@"; else run_mpi "$@"; fi

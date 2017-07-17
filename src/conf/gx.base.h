@@ -29,6 +29,7 @@
 
 #define       global_ids (false)
 
+#define fsiforces        (true)
 #define contactforces    (false)
 #define doublepoiseuille (false)
 #define       strt_dumps (false)
