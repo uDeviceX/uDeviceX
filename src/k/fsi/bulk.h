@@ -1,11 +1,5 @@
 namespace k_fsi {
-__global__ void bulk(float2 *pp, int n0, int n1, float seed, float *ff0, float *ff1) {
-    const int gid = threadIdx.x + blockDim.x * blockIdx.x;
-    const int pid = gid / 3;
-    const int zplane = gid % 3;
-
-    if (pid >= n0) return;
-
+__device__ void bulk0(float2 *pp, int pid, int zplane, int n1, float seed, float *ff0, float *ff1) {
     const float2 dst0 = __ldg(pp + 3 * pid + 0);
     const float2 dst1 = __ldg(pp + 3 * pid + 1);
     const float2 dst2 = __ldg(pp + 3 * pid + 2);
@@ -111,4 +105,12 @@ __global__ void bulk(float2 *pp, int n0, int n1, float seed, float *ff0, float *
     atomicAdd(ff0 + 3 * pid + 2, zforce);
 }
 
+__global__ void bulk(float2 *pp, int n0, int n1, float seed, float *ff0, float *ff1) {
+    int gid, pid, zplane;
+    gid    = threadIdx.x + blockDim.x * blockIdx.x;
+    pid    = gid / 3;
+    zplane = gid % 3;
+    if (pid >= n0) return;
+    bulk0(pp, pid, zplane, n1, seed, ff0, ff1);
+}
 }
