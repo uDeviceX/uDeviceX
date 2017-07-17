@@ -23,7 +23,7 @@ void alloc_dev(/**/ Pbufs<T, N> *b) {
 }
 
 template <typename T, int N>
-void free(Pbufs<T, N> *b) {
+void dealloc(Pbufs<T, N> *b) {
     for (int i = 0; i < N; ++i) {
         if (b->dp[i] != NULL) CC(cudaFreeHost(b->hst[i]));
     }
