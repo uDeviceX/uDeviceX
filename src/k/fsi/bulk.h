@@ -1,5 +1,5 @@
 namespace k_fsi {
-__global__ void bulk(float2 *pp, int n, int nsolvent, float seed, float *acc, float *accsolvent) {
+__global__ void bulk(float2 *pp, int n, int nsolvent, float seed, float *ff0, float *ff1) {
     const int gid = threadIdx.x + blockDim.x * blockIdx.x;
     const int pid = gid / 3;
     const int zplane = gid % 3;
@@ -101,14 +101,14 @@ __global__ void bulk(float2 *pp, int n, int nsolvent, float seed, float *acc, fl
         yforce += yinteraction;
         zforce += zinteraction;
 
-        atomicAdd(accsolvent + sentry, -xinteraction);
-        atomicAdd(accsolvent + sentry + 1, -yinteraction);
-        atomicAdd(accsolvent + sentry + 2, -zinteraction);
+        atomicAdd(ff1 + sentry, -xinteraction);
+        atomicAdd(ff1 + sentry + 1, -yinteraction);
+        atomicAdd(ff1 + sentry + 2, -zinteraction);
     }
 
-    atomicAdd(acc + 3 * pid + 0, xforce);
-    atomicAdd(acc + 3 * pid + 1, yforce);
-    atomicAdd(acc + 3 * pid + 2, zforce);
+    atomicAdd(ff0 + 3 * pid + 0, xforce);
+    atomicAdd(ff0 + 3 * pid + 1, yforce);
+    atomicAdd(ff0 + 3 * pid + 2, zforce);
 }
 
 }
