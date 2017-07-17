@@ -31,11 +31,8 @@ static __device__ void bulk0(float2 *pp, int pid, int zplane, int n, float seed,
     x = p.x; y = p.y; z = p.z;
     if (!p2map(zplane, n, x, y, z, /**/ &m)) return;
     float xforce = 0, yforce = 0, zforce = 0;
-    for (int i = 0; i < m.cnt2; ++i) {
-        const int m1 = (int)(i >= m.cnt0);
-        const int m2 = (int)(i >= m.cnt1);
-        const int spid = i + (m2 ? m.org2 : m1 ? m.org1 : m.org0);
-
+    for (int i = 0; !endp(m, i); ++i) {
+        const int spid = m2id(m, i);
         const int sentry = 3 * spid;
         const float2 stmp0 = tex1Dfetch(texSolventParticles, sentry);
         const float2 stmp1 = tex1Dfetch(texSolventParticles, sentry + 1);
