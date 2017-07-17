@@ -8,9 +8,9 @@ __constant__ Force *packresults[26];
 
 
 
-__global__ void interactions_3tpp(const float2 *const particles, const int np,
-                                  const int nsolvent, float *const acc,
-                                  float *const accsolvent, const float seed) {
+__global__ void bulk(const float2 *const particles, const int np,
+                     const int nsolvent, float *const acc,
+                     float *const accsolvent, const float seed) {
     const int gid = threadIdx.x + blockDim.x * blockIdx.x;
     const int pid = gid / 3;
     const int zplane = gid % 3;
