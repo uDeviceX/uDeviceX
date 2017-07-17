@@ -2,8 +2,6 @@ void Distr::fin() {
     for(int i = 0; i < 27; ++i) {
         CC(cudaFree(s.iidx_[i]));
         if (i) {
-            CC(cudaFreeHost(r.pp_hst_[i]));
-
             if (global_ids) {
                 CC(cudaFreeHost(r.ii_hst_[i]));
             }
@@ -14,9 +12,10 @@ void Distr::fin() {
     }
 
     dealloc(&s.pp);
+    dealloc(&r.pp);
     
     CC(cudaFree(s.iidx));
-    CC(cudaFree(r.pp_dev));
+
     if (global_ids) {
         dealloc(&s.ii);
         CC(cudaFree(r.ii_dev));

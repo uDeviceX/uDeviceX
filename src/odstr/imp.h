@@ -10,7 +10,7 @@ void Distr::post_recv(MPI_Comm cart, int rank[],
                 BT_C_ODSTR + r.tags[i], cart, size_req + c++);
 
     for(int i = 1, c = 0; i < 27; ++i)
-    l::m::Irecv(r.pp_hst[i], MAX_PART_NUM, MPI_FLOAT, rank[i],
+    l::m::Irecv(r.pp.hst[i], MAX_PART_NUM, MPI_FLOAT, rank[i],
                 BT_P_ODSTR + r.tags[i], cart, mesg_req + c++);
 }
 
@@ -71,7 +71,7 @@ void Distr::recv_count(int *nhalo) {
 }
 
 void Distr::unpack_pp(int n, /*o*/ Particle *pp_re) {
-    dev::unpack<float2, 3> <<<k_cnf(3*n)>>> (r.pp_dev, r.strt, /**/ (float2*) pp_re);
+    dev::unpack<float2, 3> <<<k_cnf(3*n)>>> (r.pp.dev, r.strt, /**/ (float2*) pp_re);
 }
 
 void Distr::unpack_ii(int n, /*o*/ int *ii_re) {
