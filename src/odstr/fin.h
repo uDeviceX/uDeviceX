@@ -3,8 +3,8 @@ void Distr::fin() {
         CC(cudaFree(s.iidx_[i]));
         if (i) {
         } else {
-            CC(                cudaFree(s.pp.dp[i])); /* r.pp_hst_[0] = s.pp_hst_[0] */
-            if (global_ids) CC(cudaFree(s.ii.dp[i])); /* r.ii_hst_[0] = s.ii_hst_[0] */
+            CC(                cudaFree(s.pp.dp[i])); /* r.pp.dp[0] = s.pp.dp[0] */
+            if (global_ids) CC(cudaFree(s.ii.dp[i])); /* r.ii.dp[0] = s.ii.dp[0] */
         }
     }
 
