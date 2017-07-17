@@ -2,10 +2,11 @@ struct Send {
     int **iidx; /* indices */
 
     /* buffers */
-    float2 **pp_dev;   
-    float *pp_hst[27];
-    float2 *pp_hst_[27];
-
+    // float2 **pp_dev;   
+    // float *pp_hst[27];
+    // float2 *pp_hst_[27];
+    Pbufs<float2> pp;
+    
     int **ii_dev;
     int *ii_hst[27];
     int *ii_hst_[27];
