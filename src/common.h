@@ -53,4 +53,23 @@ struct Force {
     float f[3];
 };
 
+struct ParticlesWrap {
+    const Particle *p;
+    Force *f;
+    int n;
+    ParticlesWrap() : p(NULL), f(NULL), n(0) {}
+    ParticlesWrap(const Particle *const p, const int n, Force *f)
+        : p(p), n(n), f(f) {}
+};
+
+struct SolventWrap : ParticlesWrap {
+    const int *cellsstart, *cellscount;
+    SolventWrap() : cellsstart(NULL), cellscount(NULL), ParticlesWrap() {}
+    SolventWrap(const Particle *const p, const int n, Force *f,
+                const int *const cellsstart, const int *const cellscount)
+        : ParticlesWrap(p, n, f),
+          cellsstart(cellsstart),
+          cellscount(cellscount) {}
+};
+
 void diagnostics(Particle *_particles, int n, int idstep);
