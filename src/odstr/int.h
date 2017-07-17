@@ -44,6 +44,22 @@ void free_work(Work *w) {
     CC(cudaFree(w->count_zip));
 }
 
+void post_recv(TicketD *td) {
+    sub::Distr *D = &td->distr;
+    D->post_recv(td->cart, td->rank, /**/ td->recv_sz_req, td->recv_pp_req);
+    if (global_ids) D->post_recv_ii(td->cart, td->rank, /**/ td->recv_ii_req);        
+}
+
+void pack(flu::Quants *q, TicketD *td) {
+    sub::Distr *D = &td->distr;
+    if (q->n) {
+        D->halo(q->pp, q->n);
+        D->scan(q->n);
+        D->pack_pp(q->pp, q->n);
+        if (global_ids) D->pack_ii(q->ii, q->n);
+        dSync();
+    }
+}    
 
 void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     MPI_Comm cart = td->cart; /* can be a copy */
