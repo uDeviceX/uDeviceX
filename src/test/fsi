@@ -19,7 +19,7 @@
 #
 
 #### with fsi
-# cTEST: fsi.t2
+# nTEST: fsi.t2
 # rm -rf bop diag.txt h5 ply rbc.off
 # cp data/cells/rbc.498.off rbc.off
 # export PATH=../tools:$PATH
@@ -39,7 +39,7 @@
 #
 
 #### with fsi and mpi
-# cTEST: fsi.t3
+# nTEST: fsi.t3
 # rm -rf bop diag.txt h5 ply rbc.off
 # cp data/cells/rbc.498.off rbc.off
 # export PATH=../tools:$PATH
