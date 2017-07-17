@@ -1,6 +1,6 @@
 #include <limits>
 #include <stdint.h>
-#include <mpi.h>
+#include <stdio.h>
 #include "dpd/float.h"
 #include "l/rnd.h"
 #include "dpd/local.h"
