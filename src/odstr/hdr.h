@@ -25,10 +25,11 @@ struct Recv {
     // float2 *pp_hst_[27];
     Pbufs<float2> pp;
     
-    int **ii_dev;
-    int *ii_hst[27];
-    int *ii_hst_[27];
-
+    // int **ii_dev;
+    // int *ii_hst[27];
+    // int *ii_hst_[27];
+    Pbufs<int> ii; /* global ids */
+    
     int *strt;
     int tags[27];
     int    size[27];

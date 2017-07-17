@@ -17,7 +17,7 @@ void Distr::post_recv(MPI_Comm cart, int rank[],
 void Distr::post_recv_ii(MPI_Comm cart, int rank[],
                          MPI_Request *ii_req) {
     for(int i = 1, c = 0; i < 27; ++i)
-    l::m::Irecv(r.ii_hst[i], MAX_PART_NUM, MPI_INT, rank[i],
+    l::m::Irecv(r.ii.hst[i], MAX_PART_NUM, MPI_INT, rank[i],
                 BT_I_ODSTR + r.tags[i], cart, ii_req + c++);
 }
 
@@ -75,7 +75,7 @@ void Distr::unpack_pp(int n, /*o*/ Particle *pp_re) {
 }
 
 void Distr::unpack_ii(int n, /*o*/ int *ii_re) {
-    dev::unpack<int, 1> <<<k_cnf(n)>>> (r.ii_dev, r.strt, /**/ ii_re);
+    dev::unpack<int, 1> <<<k_cnf(n)>>> (r.ii.dev, r.strt, /**/ ii_re);
 }
 
 void Distr::subindex_remote(int n, /*io*/ Particle *pp_re, int *counts, /**/ uchar4 *subi) {
