@@ -1,4 +1,5 @@
 void ini() {
+    datatype::ini();
     if (rbcs) {
         CC(cudaMalloc(&r::ff, MAX_PART_NUM));
         rbc::alloc_quants(&r::q);

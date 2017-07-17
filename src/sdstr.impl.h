@@ -110,20 +110,20 @@ int post(const int nv) {
     for (int i = 1; i < 27; ++i)
     if (srbuf[i].size() > 0) {
         MPI_Request request;
-        l::m::Irecv(srbuf[i].data(), srbuf[i].size(), Solid::datatype(), ank_ne[i], i + BT_S_SDSTR, cart, &request);
+        l::m::Irecv(srbuf[i].data(), srbuf[i].size(), datatype::solid, ank_ne[i], i + BT_S_SDSTR, cart, &request);
         srecvreq.push_back(request);
 
-        l::m::Irecv(prbuf[i].data(), prbuf[i].size(), Particle::datatype(), ank_ne[i], i + BT_P_SDSTR, cart, &request);
+        l::m::Irecv(prbuf[i].data(), prbuf[i].size(), datatype::particle, ank_ne[i], i + BT_P_SDSTR, cart, &request);
         precvreq.push_back(request);
     }
 
     for (int i = 1; i < 27; ++i)
     if (ssbuf[i].size() > 0) {
         MPI_Request request;
-        l::m::Isend(ssbuf[i].data(), ssbuf[i].size(), Solid::datatype(), rnk_ne[i], i + BT_S_SDSTR, cart, &request);
+        l::m::Isend(ssbuf[i].data(), ssbuf[i].size(), datatype::solid, rnk_ne[i], i + BT_S_SDSTR, cart, &request);
         ssendreq.push_back(request);
 
-        l::m::Isend(psbuf[i].data(), psbuf[i].size(), Particle::datatype(), rnk_ne[i], i + BT_P_SDSTR, cart, &request);
+        l::m::Isend(psbuf[i].data(), psbuf[i].size(), datatype::particle, rnk_ne[i], i + BT_P_SDSTR, cart, &request);
         psendreq.push_back(request);
     }
         

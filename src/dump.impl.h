@@ -76,7 +76,7 @@ void parts(const Particle *pp, const long n, const char *name, const int step) {
     if (m::rank == 0) header_pp(ntot, name, step);
 
     MC( MPI_Exscan(&len, &offset, 1, MPI_OFFSET, MPI_SUM, m::cart) );
-    MC( MPI_File_write_at_all(f, base + offset, w_pp, n, Particle::datatype(), &status) ); 
+    MC( MPI_File_write_at_all(f, base + offset, w_pp, n, datatype::particle, &status) ); 
     MC( MPI_File_close(&f) );
 }
 

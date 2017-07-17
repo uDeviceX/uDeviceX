@@ -140,8 +140,8 @@ int post(int nv) {
     if (rbuf[i]->S > 0) {
         MPI_Request request;
         l::m::Irecv(rbuf[i]->D, rbuf[i]->S,
-                  Particle::datatype(), ank_ne[i], i + BT_P_RDSTR,
-                  cart, &request);
+                    datatype::particle, ank_ne[i], i + BT_P_RDSTR,
+                    cart, &request);
         recvreq.pb(request);
     }
 
@@ -149,8 +149,8 @@ int post(int nv) {
     if (sbuf[i]->S > 0) {
         MPI_Request request;
         l::m::Isend(sbuf[i]->D, sbuf[i]->S,
-                  Particle::datatype(), rnk_ne[i], i + BT_P_RDSTR,
-                  cart, &request);
+                    datatype::particle, rnk_ne[i], i + BT_P_RDSTR,
+                    cart, &request);
         sendreq.pb(request);
     }
     return nstay + ncome;

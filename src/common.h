@@ -95,31 +95,8 @@ struct Sarray { /* [s]tatic array */
     T d[N];
 };
 
-/* [m]pi [c]heck */
-#define MC(ans)                                             \
-    do { mpiAssert((ans), __FILE__, __LINE__); } while (0)
-inline void mpiAssert(int code, const char *file, int line) {
-    if (code != MPI_SUCCESS) {
-        char error_string[2048];
-        int length_of_error_string = sizeof(error_string);
-        MPI_Error_string(code, error_string, &length_of_error_string);
-        printf("mpiAssert: %s %d %s\n", file, line, error_string);
-        MPI_Abort(MPI_COMM_WORLD, code);
-    }
-}
-
 struct Particle {
     float r[3], v[3];
-    static bool initialized;
-    static MPI_Datatype mytype;
-    static MPI_Datatype datatype() {
-        if (!initialized) {
-            MC(MPI_Type_contiguous(6, MPI_FLOAT, &mytype));
-            MC(MPI_Type_commit(&mytype));
-            initialized = true;
-        }
-        return mytype;
-    }
 };
 
 struct Solid {
@@ -130,19 +107,6 @@ struct Solid {
         e0[3], e1[3], e2[3],  /* local referential            19 22 25 */
         fo[3], to[3],         /* force, torque                28 31    */
         id;                   /* id of the solid              32       */
-
-    static bool initialized;
-    static MPI_Datatype mytype;
-    static MPI_Datatype datatype()
-    {
-        if (!initialized)
-        {
-            MC (MPI_Type_contiguous(32, MPI_FLOAT, &mytype));
-            MC (MPI_Type_commit(&mytype));
-            initialized = true;
-        }
-        return mytype;
-    }
 };
 
 struct Mesh {   /* triangle mesh structure                */

@@ -200,10 +200,10 @@ int post(const int nps)
     if (srhalo[i].size() > 0)
     {
         MPI_Request request;
-        l::m::Irecv(srhalo[i].data(), srhalo[i].size(), Solid::datatype(), ank_ne[i], i + BT_S_BBHALO, cart, &request);
+        l::m::Irecv(srhalo[i].data(), srhalo[i].size(), datatype::solid, ank_ne[i], i + BT_S_BBHALO, cart, &request);
         srecvreq.push_back(request);
 
-        l::m::Irecv(prhalo[i].data(), prhalo[i].size(), Particle::datatype(), ank_ne[i], i + BT_P_BBHALO, cart, &request);
+        l::m::Irecv(prhalo[i].data(), prhalo[i].size(), datatype::particle, ank_ne[i], i + BT_P_BBHALO, cart, &request);
         precvreq.push_back(request);
     }
 
@@ -211,10 +211,10 @@ int post(const int nps)
     if (sshalo[i].size() > 0)
     {
         MPI_Request request;
-        l::m::Isend(sshalo[i].data(), sshalo[i].size(), Solid::datatype(), rnk_ne[i], i + BT_S_BBHALO, cart, &request);
+        l::m::Isend(sshalo[i].data(), sshalo[i].size(), datatype::solid, rnk_ne[i], i + BT_S_BBHALO, cart, &request);
         ssendreq.push_back(request);
 
-        l::m::Isend(pshalo[i].data(), pshalo[i].size(), Particle::datatype(), rnk_ne[i], i + BT_P_BBHALO, cart, &request);
+        l::m::Isend(pshalo[i].data(), pshalo[i].size(), datatype::particle, rnk_ne[i], i + BT_P_BBHALO, cart, &request);
         psendreq.push_back(request);
     }
         
@@ -297,7 +297,7 @@ void post_back()
     if (srhalo[i].size() > 0)
     {
         MPI_Request request;
-        l::m::Irecv(srhalo[i].data(), srhalo[i].size(), Solid::datatype(), rnk_ne[i], i + BT_S2_BBHALO, cart, &request);
+        l::m::Irecv(srhalo[i].data(), srhalo[i].size(), datatype::solid, rnk_ne[i], i + BT_S2_BBHALO, cart, &request);
         //printf("[%d] halo %d recv %d\n", m::rank, i, srhalo[i].size());
         srecvreq.push_back(request);
     }
@@ -306,7 +306,7 @@ void post_back()
     if (sshalo[i].size() > 0)
     {
         MPI_Request request;
-        l::m::Isend(sshalo[i].data(), sshalo[i].size(), Solid::datatype(), ank_ne[i], i + BT_S2_BBHALO, cart, &request);
+        l::m::Isend(sshalo[i].data(), sshalo[i].size(), datatype::solid, ank_ne[i], i + BT_S2_BBHALO, cart, &request);
         ssendreq.push_back(request);
     }
 }
