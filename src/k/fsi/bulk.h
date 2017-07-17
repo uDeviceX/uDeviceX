@@ -5,7 +5,7 @@ struct Pa { /* local particle */
     float vx, vy, vz;
 };
 
-__device__ void bulk0(float2 *pp, int pid, int zplane, int n1, float seed, float *ff0, float *ff1) {
+__device__ void bulk0(float2 *pp, int pid, int zplane, int n, float seed, float *ff0, float *ff1) {
     const float2 dst0 = __ldg(pp + 3 * pid + 0);
     const float2 dst1 = __ldg(pp + 3 * pid + 1);
     const float2 dst2 = __ldg(pp + 3 * pid + 2);
@@ -40,7 +40,7 @@ __device__ void bulk0(float2 *pp, int pid, int zplane, int n1, float seed, float
             const int cid0 = xstart + XCELLS * (ycenter - 1 + YCELLS * zmy);
             spidbase = tex1Dfetch(texCellsStart, cid0);
             count0 = ((cid0 + xcount == NCELLS)
-                      ? n1
+                      ? n
                       : tex1Dfetch(texCellsStart, cid0 + xcount)) -
                 spidbase;
         }
@@ -49,7 +49,7 @@ __device__ void bulk0(float2 *pp, int pid, int zplane, int n1, float seed, float
             const int cid1 = xstart + XCELLS * (ycenter + YCELLS * zmy);
             deltaspid1 = tex1Dfetch(texCellsStart, cid1);
             count1 = ((cid1 + xcount == NCELLS)
-                      ? n1
+                      ? n
                       : tex1Dfetch(texCellsStart, cid1 + xcount)) -
                 deltaspid1;
         }
@@ -58,7 +58,7 @@ __device__ void bulk0(float2 *pp, int pid, int zplane, int n1, float seed, float
             const int cid2 = xstart + XCELLS * (ycenter + 1 + YCELLS * zmy);
             deltaspid2 = tex1Dfetch(texCellsStart, cid2);
             count2 = ((cid2 + xcount == NCELLS)
-                      ? n1
+                      ? n
                       : tex1Dfetch(texCellsStart, cid2 + xcount)) -
                 deltaspid2;
         }
