@@ -1,12 +1,12 @@
 namespace k_fsi {
-__global__ void bulk(const float2 *const particles, const int np,
+__global__ void bulk(const float2 *const particles, const int n,
                      const int nsolvent, float *const acc,
                      float *const accsolvent, const float seed) {
     const int gid = threadIdx.x + blockDim.x * blockIdx.x;
     const int pid = gid / 3;
     const int zplane = gid % 3;
 
-    if (pid >= np) return;
+    if (pid >= n) return;
 
     const float2 dst0 = __ldg(particles + 3 * pid + 0);
     const float2 dst1 = __ldg(particles + 3 * pid + 1);
