@@ -1,7 +1,15 @@
 void step(float driving_force0, bool wall0, int it) {
     assert(o::q.n <= MAX_PART_NUM);
     assert(r::q.n <= MAX_PART_NUM);
-    odstr::distr(&o::q, &o::td, &o::tz, &o::w);
+
+    //odstr::distr(&o::q, &o::td, &o::tz, &o::w);
+    odstr::post_recv(&o::td);
+    odstr::pack(&o::q, &o::td);
+    odstr::send(&o::td);
+    odstr::bulk(&o::q, &o::td);
+    odstr::recv(&o::td);
+    odstr::unpack(&o::q, &o::td, &o::tz, &o::w);
+
     if (solids0) distr_solid();
     if (rbcs)    distr_rbc();
     forces(wall0);
