@@ -5,7 +5,7 @@ $B/common.o: $S/common.h $S/common.mpi.h $S/conf.common.h $B/conf.h $S/l/m.h $S/
 $B/dpd/local.o: $S/common.cuda.h $S/common.h $S/dpd/float.h $S/dpd/local.h $S/force.h $S/l/rnd.h
 $B/field.o: $S/common.h $B/conf.h $S/field.h $S/io.h $S/m.h
 $B/force.o: $S/conf.common.h $B/conf.h $S/force.h
-$B/glb.o: $S/common.h $S/conf.common.h $B/conf.h $S/glb.h $S/m.h
+$B/glb.o: $S/conf.common.h $B/conf.h $S/glb.h $S/m.h
 $B/io.o: $S/common.h $S/common.mpi.h $S/conf.common.h $B/conf.h $S/io.h $S/l/m.h $S/m.h
 $B/l.clist.o: $S/common.cuda.h $S/common.h $S/l/clist.h $S/l/d/clist.h $S/l/h/clist.h
 $B/l.linal.o: $S/l/h/linal.h $S/l/linal.h
