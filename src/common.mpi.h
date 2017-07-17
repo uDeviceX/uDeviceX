@@ -12,18 +12,7 @@ inline void mpiAssert(int code, const char *file, int line) {
 }
 
 namespace datatype {
-MPI_Datatype particle, solid;
-
-void ini() {
-    MC(MPI_Type_contiguous(6, MPI_FLOAT, &particle));
-    MC(MPI_Type_contiguous(32, MPI_FLOAT, &solid));
-
-    MC(MPI_Type_commit(&particle));
-    MC(MPI_Type_commit(&solid));
-}
-
-void fin() {
-    MC(MPI_Type_free(&particle));
-    MC(MPI_Type_free(&solid));
-}
+extern MPI_Datatype particle, solid;
+void ini();
+void fin();
 }
