@@ -80,3 +80,11 @@ void post_expected_recv(MPI_Comm cart, const int dstranks[], const int recv_tags
                        BT_C_DPD + recv_tags[i], cart, rreq->counts + i));
     }
 }
+
+void recv(const int *np, const int *nc, /**/ Rbufs *b) {
+    for (int i = 0; i < 26; ++i)
+        CC(cudaMemcpyAsync(b->pp.d[i], b->pphst.d[i], sizeof(Particle) * np[i], H2D));
+
+    for (int i = 0; i < 26; ++i)
+        CC(cudaMemcpyAsync(b->cum.d[i], b->cumhst.d[i],  sizeof(int) * nc[i], H2D));
+}
