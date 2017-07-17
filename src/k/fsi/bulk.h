@@ -74,8 +74,6 @@ __global__ void bulk(const float2 *const pp, const int n,
     }
 
     float xforce = 0, yforce = 0, zforce = 0;
-
-#pragma unroll 3
     for (int i = 0; i < ncandidates; ++i) {
         const int m1 = (int)(i >= scan1);
         const int m2 = (int)(i >= scan2);
