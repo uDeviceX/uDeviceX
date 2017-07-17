@@ -1,12 +1,3 @@
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less
-   than `m') */
-#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
-
-/* a common kernel execution configuration */
-#define k_cnf(n) ceiln((n), 128), 128
-
-#define dSync() CC(cudaDeviceSynchronize())
-
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cudaAssert((ans), __FILE__, __LINE__); } while (0)
@@ -17,6 +8,15 @@ inline void cudaAssert(cudaError_t code, const char *file, int line) {
         abort();
     }
 }
+
+/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less
+   than `m') */
+#define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
+
+/* a common kernel execution configuration */
+#define k_cnf(n) ceiln((n), 128), 128
+
+#define dSync() CC(cudaDeviceSynchronize())
 
 /* test if inside device function                                 */
 /* usefule for small differences in __device__ __host__ functions */
