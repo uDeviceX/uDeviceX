@@ -2,7 +2,7 @@ struct TicketD { /* distribution */
     MPI_Comm cart;
     int rank[27];
     MPI_Request send_sz_req[27], recv_sz_req[27];
-    MPI_Request send_mesg_req[27], recv_mesg_req[27];
+    MPI_Request send_pp_req[27], recv_pp_req[27];
     MPI_Request send_ii_req[27], recv_ii_req[27];
     bool first = true;
     sub::Distr distr; /* was odstr; */
@@ -52,8 +52,8 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     int *rank = td->rank; /* arrays */
     MPI_Request *send_sz_req = td->send_sz_req;
     MPI_Request *recv_sz_req = td->recv_sz_req;
-    MPI_Request *send_mesg_req = td->send_mesg_req;
-    MPI_Request *recv_mesg_req = td->recv_mesg_req;
+    MPI_Request *send_pp_req = td->send_pp_req;
+    MPI_Request *recv_pp_req = td->recv_pp_req;
     MPI_Request *send_ii_req = td->send_ii_req;
     MPI_Request *recv_ii_req = td->recv_ii_req;
     bool *qfirst = &td->first; /* shoud be updated */
@@ -79,7 +79,7 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     sub::Distr *D = &td->distr;
   
     int nbulk, nhalo;
-    D->post_recv(cart, rank, /**/ recv_sz_req, recv_mesg_req);
+    D->post_recv(cart, rank, /**/ recv_sz_req, recv_pp_req);
     if (global_ids) D->post_recv_ii(cart, rank, /**/ recv_ii_req);
     
     if (n) {
@@ -91,12 +91,12 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     }
     if (!first) {
         D->waitall(send_sz_req);
-        D->waitall(send_mesg_req);
+        D->waitall(send_pp_req);
         if (global_ids) D->waitall(send_ii_req);
     }
     first = false;
     nbulk = D->send_sz(cart, rank, send_sz_req);
-    D->send_pp(cart, rank, send_mesg_req);
+    D->send_pp(cart, rank, send_pp_req);
     if (global_ids) D->send_ii(cart, rank, send_ii_req);
 
     CC(cudaMemsetAsync(count, 0, sizeof(int)*XS*YS*ZS));
@@ -105,7 +105,7 @@ void distr(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
 
     D->waitall(recv_sz_req);
     D->recv_count(&nhalo);
-    D->waitall(recv_mesg_req);
+    D->waitall(recv_pp_req);
     if (global_ids) D->waitall(recv_ii_req);
     
     if (nhalo) {
