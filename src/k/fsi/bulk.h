@@ -1,10 +1,10 @@
 namespace k_fsi {
-__global__ void bulk(float2 *pp, int n, int nsolvent, float seed, float *ff0, float *ff1) {
+__global__ void bulk(float2 *pp, int n0, int n1, float seed, float *ff0, float *ff1) {
     const int gid = threadIdx.x + blockDim.x * blockIdx.x;
     const int pid = gid / 3;
     const int zplane = gid % 3;
 
-    if (pid >= n) return;
+    if (pid >= n0) return;
 
     const float2 dst0 = __ldg(pp + 3 * pid + 0);
     const float2 dst1 = __ldg(pp + 3 * pid + 1);
@@ -40,7 +40,7 @@ __global__ void bulk(float2 *pp, int n, int nsolvent, float seed, float *ff0, fl
             const int cid0 = xstart + XCELLS * (ycenter - 1 + YCELLS * zmy);
             spidbase = tex1Dfetch(texCellsStart, cid0);
             count0 = ((cid0 + xcount == NCELLS)
-                      ? nsolvent
+                      ? n1
                       : tex1Dfetch(texCellsStart, cid0 + xcount)) -
                 spidbase;
         }
@@ -49,7 +49,7 @@ __global__ void bulk(float2 *pp, int n, int nsolvent, float seed, float *ff0, fl
             const int cid1 = xstart + XCELLS * (ycenter + YCELLS * zmy);
             deltaspid1 = tex1Dfetch(texCellsStart, cid1);
             count1 = ((cid1 + xcount == NCELLS)
-                      ? nsolvent
+                      ? n1
                       : tex1Dfetch(texCellsStart, cid1 + xcount)) -
                 deltaspid1;
         }
@@ -58,7 +58,7 @@ __global__ void bulk(float2 *pp, int n, int nsolvent, float seed, float *ff0, fl
             const int cid2 = xstart + XCELLS * (ycenter + 1 + YCELLS * zmy);
             deltaspid2 = tex1Dfetch(texCellsStart, cid2);
             count2 = ((cid2 + xcount == NCELLS)
-                      ? nsolvent
+                      ? n1
                       : tex1Dfetch(texCellsStart, cid2 + xcount)) -
                 deltaspid2;
         }
