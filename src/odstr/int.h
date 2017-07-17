@@ -7,6 +7,7 @@ struct TicketD { /* distribution */
     bool first = true;
     sub::Distr distr;
     uchar4 *subi_lo;           /* local subindices */
+    int nhalo, nbulk;
 };
 
 struct Work {
@@ -70,7 +71,7 @@ void send(TicketD *t) {
         if (global_ids) D->waitall(t->send_ii_req);
     }
     t->first = false;
-    int nbulk = D->send_sz(t->cart, t->rank, t->send_sz_req);// TODO output this (ticket?)
+    t->nbulk = D->send_sz(t->cart, t->rank, t->send_sz_req);
     D->send_pp(t->cart, t->rank, t->send_pp_req);
     if (global_ids) D->send_ii(t->cart, t->rank, t->send_ii_req);
 }
@@ -83,10 +84,9 @@ void bulk(flu::Quants *q, TicketD *t) {
 }
 
 void recv(TicketD *t) {
-    int nhalo; // TODO output this (ticket?)
     sub::Distr *D = &t->distr;
     D->waitall(t->recv_sz_req);
-    D->recv_count(&nhalo);
+    D->recv_count(&t->nhalo);
     D->waitall(t->recv_pp_req);
     if (global_ids) D->waitall(t->recv_ii_req);
 }
