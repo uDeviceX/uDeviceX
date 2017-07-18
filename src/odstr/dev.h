@@ -1,5 +1,5 @@
 /* which neighboring subdomain `p' belongs to? */
-__device__ int box(const Particle *p) {
+static __device__ int box(const Particle *p) {
     enum {X, Y, Z};
     int c;
     int vc[3]; /* vcode */
@@ -39,7 +39,7 @@ __global__ void scan(const int n, const int size[], /**/ int strt[], int size_pi
     }
 }
 
-__device__ int get_idpack(const int a[], const uint i) { /* where is `i' in sorted a[27]? */
+static __device__ int get_idpack(const int a[], const uint i) { /* where is `i' in sorted a[27]? */
     uint k1, k9, k3;
     k9 = 9 * (i >= a[          9]) + 9 * (i >= a[         18]);
     k3 = 3 * (i >= a[k9      + 3]) + 3 * (i >= a[k9      + 6]);
@@ -145,7 +145,8 @@ __global__ void scatter(const bool remote, const uchar4 *subi, const int n, cons
     }
 }
 
-__forceinline__ __device__ void xchg_aos2f(int srclane0, int srclane1, int start, float& s0, float& s1) {
+static __forceinline__ __device__
+void xchg_aos2f(int srclane0, int srclane1, int start, float& s0, float& s1) {
     float t0 = __shfl(s0, srclane0);
     float t1 = __shfl(s1, srclane1);
 
@@ -154,7 +155,8 @@ __forceinline__ __device__ void xchg_aos2f(int srclane0, int srclane1, int start
     s1 = __shfl_xor(s1, 1);
 }
 
-__forceinline__ __device__ void xchg_aos4f(int srclane0, int srclane1, int start, float3& s0, float3& s1) {
+static __forceinline__ __device__
+void xchg_aos4f(int srclane0, int srclane1, int start, float3& s0, float3& s1) {
     xchg_aos2f(srclane0, srclane1, start, s0.x, s1.x);
     xchg_aos2f(srclane0, srclane1, start, s0.y, s1.y);
     xchg_aos2f(srclane0, srclane1, start, s0.z, s1.z);
