@@ -44,6 +44,14 @@ void free_ticketD(/**/ TicketD *t) {
     CC(cudaFree(t->subi_lo));
 }
 
+void alloc_ticketI(/**/ TicketI *t) {
+    sub::ini_SRI(/**/ &t->sii, &t->rii);
+}
+
+void free_ticketI(/**/ TicketI *t) {
+    sub::fin_SRI(/**/ &t->sii, &t->rii);
+}
+
 void alloc_ticketU(TicketU *t) {
     mpDeviceMalloc(&t->subi_re);
     mpDeviceMalloc(&t->iidx);
