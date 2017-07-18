@@ -13,6 +13,7 @@ static int estimate(const int i) {
     return numberdensity * safety_factor * nhalocells;    
 }
 
+// TODO rm this
 void Distr::ini(MPI_Comm cart, int rank[])  {
     enum {X, Y, Z};
     s.size_pin = new PinnedHostBuffer4<int>(27);
