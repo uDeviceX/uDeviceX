@@ -3,16 +3,15 @@ void waitall(MPI_Request *reqs) {
     l::m::Waitall(26, reqs, statuses) ;
 }
 
-// TODO rm this
-void Distr::post_recv(MPI_Comm cart, int rank[],
-                      MPI_Request *size_req, MPI_Request *mesg_req) {
+void post_recv(const MPI_Comm cart, const int rank[],
+               MPI_Request *size_req, MPI_Request *mesg_req, Recv *r) {
     for(int i = 1, c = 0; i < 27; ++i)
-    l::m::Irecv(r.size + i, 1, MPI_INTEGER, rank[i],
-                BT_C_ODSTR + r.tags[i], cart, size_req + c++);
+    l::m::Irecv(r->size + i, 1, MPI_INTEGER, rank[i],
+                BT_C_ODSTR + r->tags[i], cart, size_req + c++);
 
     for(int i = 1, c = 0; i < 27; ++i)
-    l::m::Irecv(r.pp.hst[i], MAX_PART_NUM, MPI_FLOAT, rank[i],
-                BT_P_ODSTR + r.tags[i], cart, mesg_req + c++);
+    l::m::Irecv(r->pp.hst[i], MAX_PART_NUM, MPI_FLOAT, rank[i],
+                BT_P_ODSTR + r->tags[i], cart, mesg_req + c++);
 }
 
 // TODO rm this
