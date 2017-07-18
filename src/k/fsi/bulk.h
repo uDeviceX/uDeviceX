@@ -69,22 +69,29 @@ static __device__ int p2map(int zplane, int n, const Pa p, /**/ Map *m) {
     return r2map(zplane, n, p.x, p.y, p.z, m);
 }
 
+static __device__ void pair(const Pa l, const Pa r, float rnd, /**/
+                            float *fx, float *fy, float *fz,
+                            Fo f) {
+    /* f[xyz]: local force; Fo f: remote force */
+    float x, y, z; /* pair force */
+    pair0(l, r, rnd, /**/ &x, &y, &z);
+    *fx += x; *fy += y; *fz += z;
+    atomicAdd(f.x, -x); atomicAdd(f.y, -y); atomicAdd(f.z, -z);
+}
+
 static __device__ void bulk0(const Pa l, int lid, const Map m, float seed, /**/
                              float *fx, float *fy, float *fz, float *ff) {
     /* "[l]ocal" and "[r]emote" particles */
     Pa r;
     Fo f;
-    float x, y, z;
     int i, rid;
 
-    *fx = *fy = *fz = 0; /* local particle force */
+    *fx = *fy = *fz = 0; /* local force */
     for (i = 0; !endp(m, i); ++i) {
         rid = m2id(m, i);
         r = tex2p(rid);
         f = ff2f(ff, rid);
-        pair0(l, r, random(lid, rid, seed), &x, &y, &z);
-        *fx += x; *fy += y; *fz += z;
-        atomicAdd(f.x, -x); atomicAdd(f.y, -y); atomicAdd(f.z, -z);
+        pair(l, r, random(lid, rid, seed), /**/ fx, fy, fz,   f);
     }
 }
 
