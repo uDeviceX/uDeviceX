@@ -50,9 +50,8 @@ void free_work(Work *w) {
 }
 
 void post_recv(TicketD *t) {
-    sub::Distr *D = &t->distr;
     sub::post_recv(t->cart, t->rank, /**/ t->recv_sz_req, t->recv_pp_req, &t->distr.r);
-    if (global_ids) D->post_recv_ii(t->cart, t->rank, /**/ t->recv_ii_req);        
+    if (global_ids) sub::post_recv_ii(t->cart, t->rank, /**/ t->recv_ii_req, &t->distr.r);
 }
 
 void pack(flu::Quants *q, TicketD *t) {

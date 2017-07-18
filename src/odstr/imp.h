@@ -14,11 +14,10 @@ void post_recv(const MPI_Comm cart, const int rank[],
                 BT_P_ODSTR + r->tags[i], cart, mesg_req + c++);
 }
 
-// TODO rm this
-void Distr::post_recv_ii(MPI_Comm cart, int rank[], MPI_Request *ii_req) {
+void post_recv_ii(MPI_Comm cart, int rank[], MPI_Request *ii_req, Recv *r) {
     for(int i = 1, c = 0; i < 27; ++i)
-    l::m::Irecv(r.ii.hst[i], MAX_PART_NUM, MPI_INT, rank[i],
-                BT_I_ODSTR + r.tags[i], cart, ii_req + c++);
+    l::m::Irecv(r->ii.hst[i], MAX_PART_NUM, MPI_INT, rank[i],
+                BT_I_ODSTR + r->tags[i], cart, ii_req + c++);
 }
 
 // TODO rm this
