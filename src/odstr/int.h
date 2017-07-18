@@ -11,11 +11,19 @@ struct TicketD { /* distribution */
     int nhalo, nbulk;
 };
 
-struct Work {
+struct TicketU { /* unpack ticket */
     uchar4 *subi_re;           /* remote subindices */
-    uint   *iidx;              /* scatter indices   */
     Particle *pp_re;           /* remote particles  */
     int *ii_re;                /* remote ids        */
+};
+
+struct Work {
+    // TODO rm these
+    uchar4 *subi_re;           /* remote subindices */
+    Particle *pp_re;           /* remote particles  */
+    int *ii_re;                /* remote ids        */
+
+    uint*iidx;              /* scatter indices   */
     unsigned char *count_zip;
 };
 
