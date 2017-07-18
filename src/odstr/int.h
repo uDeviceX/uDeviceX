@@ -161,7 +161,7 @@ void unpack_pp(flu::Quants *q, TicketD *td, TicketU *tu, Work *w) {
     l::scan::d::scan(w->count_zip, XS*YS*ZS, /**/ (uint*)start);
 }
 
-void gather_pp(flu::Quants *q, TicketD *td, TicketU *tu, flu::TicketZ *tz, Work *w) {
+void gather_pp(flu::Quants *q, TicketD *td, TicketU *tu, flu::TicketZ *tz) {
     const int nhalo = td->nhalo, nbulk = td->nbulk;
     
     int n = q->n;
@@ -186,7 +186,7 @@ void gather_pp(flu::Quants *q, TicketD *td, TicketU *tu, flu::TicketZ *tz, Work 
     q->pp = pp0; q->pp0 = pp; 
 }
 
-void unpack_ii(flu::Quants *q, TicketD *td, TicketU *tu, flu::TicketZ *tz) {
+void unpack_ii(TicketD *td, TicketU *tu) {
     const int nhalo = td->nhalo;
     if (nhalo) sub::unpack_ii(nhalo, /**/ &td->r, tu->ii_re);    
 }
