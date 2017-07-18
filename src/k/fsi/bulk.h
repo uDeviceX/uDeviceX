@@ -55,7 +55,7 @@ static __device__ float random(uint lid, uint rid, float seed) {
     return l::rnd::d::mean0var1uu(seed, lid, rid);
 }
 
-static __device__ void pair(const Pa l, const Pa r, float rnd, /**/ float *fx, float *fy, float *fz) {
+static __device__ void pair0(const Pa l, const Pa r, float rnd, /**/ float *fx, float *fy, float *fz) {
     /* pair force ; l, r: local and remote */
     float3 r1, r2, v1, v2, f;
     r1 = make_float3( l.x,  l.y,  l.z); r2 = make_float3( r.x,  r.y,  r.z);
@@ -69,24 +69,29 @@ static __device__ int p2map(int zplane, int n, const Pa p, /**/ Map *m) {
     return r2map(zplane, n, p.x, p.y, p.z, m);
 }
 
-static __device__ void bulk0(const Pa l, int rid, const Map m, float seed, /**/
-                             float *fx, float *fy, float *fz, float *ff1) {
-    /* "[l]ocal" and "[r]emote" particles */
-    *fx = *fy = *fz = 0; /* local particle force */
-    Pa r;
-    float xinteraction, yinteraction, zinteraction;
-    for (int i = 0; !endp(m, i); ++i) {
-        const int lid = m2id(m, i);
-        r = tex2p(lid);
-        pair(l, r, random(rid, lid, seed), &xinteraction, &yinteraction, &zinteraction);
-        *fx += xinteraction;
-        *fy += yinteraction;
-        *fz += zinteraction;
+static __device__ void pair(const Pa l, const Pa r, float rnd, /**/
+                            float *fx, float *fy, float *fz,
+                            Fo f) {
+    /* f[xyz]: local force; Fo f: remote force */
+    float x, y, z; /* pair force */
+    pair0(l, r, rnd, /**/ &x, &y, &z);
+    *fx += x; *fy += y; *fz += z;
+    atomicAdd(f.x, -x); atomicAdd(f.y, -y); atomicAdd(f.z, -z);
+}
 
-        const int sentry = 3 * lid;
-        atomicAdd(ff1 + sentry,     -xinteraction);
-        atomicAdd(ff1 + sentry + 1, -yinteraction);
-        atomicAdd(ff1 + sentry + 2, -zinteraction);
+static __device__ void bulk0(const Pa l, int lid, const Map m, float seed, /**/
+                             float *fx, float *fy, float *fz, float *ff) {
+    /* "[l]ocal" and "[r]emote" particles */
+    Pa r;
+    Fo f;
+    int i, rid;
+
+    *fx = *fy = *fz = 0; /* local force */
+    for (i = 0; !endp(m, i); ++i) {
+        rid = m2id(m, i);
+        r = tex2p(rid);
+        f = ff2f(ff, rid);
+        pair(l, r, random(lid, rid, seed), /**/ fx, fy, fz,   f);
     }
 }
 
