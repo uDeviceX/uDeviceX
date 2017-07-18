@@ -20,3 +20,9 @@ void fin_R(Recv *r) {
 
     if (global_ids) dealloc(&r->ii);
 }
+
+void fin_SRI(Pbufs<int> *sii, Pbufs<int> *rii) {
+    CC(cudaFree(sii->dp[0])); /* rii.dp[0] = sii.dp[0] */
+    dealloc(sii);
+    dealloc(rii);
+}
