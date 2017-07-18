@@ -45,6 +45,7 @@ void free_ticketD(/**/ TicketD *t) {
 }
 
 void alloc_ticketI(/**/ TicketI *t) {
+    t->first = true;
     sub::ini_SRI(/**/ &t->sii, &t->rii);
 }
 
