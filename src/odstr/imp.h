@@ -58,26 +58,23 @@ void send_ii(MPI_Comm cart, const int rank[], /**/ Send *s, MPI_Request *req) {
                 BT_I_ODSTR + i, cart, &req[cnt++]);
 }
 
-// TODO rm this
-void Distr::recv_count(int *nhalo) {
+void recv_count(/**/ Recv *r, int *nhalo) {
     int i;
     static int size[27], strt[28];
 
     size[0] = strt[0] = 0;
-    for (i = 1; i < 27; ++i)    size[i] = r.size[i];
+    for (i = 1; i < 27; ++i)    size[i] = r->size[i];
     for (i = 1; i < 28; ++i)    strt[i] = strt[i - 1] + size[i - 1];
-    CC(cudaMemcpy(r.strt,    strt,    sizeof(strt),    H2D));
+    CC(cudaMemcpy(r->strt,    strt,    sizeof(strt),    H2D));
     *nhalo = strt[27];
 }
 
-// TODO rm this
-void Distr::unpack_pp(int n, /*o*/ Particle *pp_re) {
-    dev::unpack<float2, 3> <<<k_cnf(3*n)>>> (r.pp.dev, r.strt, /**/ (float2*) pp_re);
+void unpack_pp(const int n, /**/ Recv *r, Particle *pp_re) {
+    dev::unpack<float2, 3> <<<k_cnf(3*n)>>> (r->pp.dev, r->strt, /**/ (float2*) pp_re);
 }
 
-// TODO rm this
-void Distr::unpack_ii(int n, /*o*/ int *ii_re) {
-    dev::unpack<int, 1> <<<k_cnf(n)>>> (r.ii.dev, r.strt, /**/ ii_re);
+void unpack_ii(const int n, /**/ Recv *r, int *ii_re) {
+    dev::unpack<int, 1> <<<k_cnf(n)>>> (r->ii.dev, r->strt, /**/ ii_re);
 }
 
 // TODO rm this

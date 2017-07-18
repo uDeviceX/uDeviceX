@@ -88,7 +88,7 @@ void bulk(flu::Quants *q, TicketD *t) {
 void recv(TicketD *t) {
     sub::Distr *D = &t->distr;
     sub::waitall(t->recv_sz_req);
-    D->recv_count(&t->nhalo);
+    sub::recv_count(/**/ &D->r, &t->nhalo);
     sub::waitall(t->recv_pp_req);
     if (global_ids) sub::waitall(t->recv_ii_req);
 }
@@ -105,8 +105,8 @@ void unpack(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     int *ii = q->ii, *ii0 = q->ii0;
     
     if (nhalo) {
-        D->unpack_pp(nhalo, /*o*/ w->pp_re);
-        if (global_ids) D->unpack_ii(nhalo, w->ii_re);
+        sub::unpack_pp(nhalo, /**/ &D->r, w->pp_re);
+        if (global_ids) sub::unpack_ii(nhalo, /**/ &D->r, w->ii_re);
         D->subindex_remote(nhalo, /*io*/ w->pp_re, count, /**/ w->subi_re);
     }
     
