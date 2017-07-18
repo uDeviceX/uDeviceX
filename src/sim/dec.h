@@ -1,7 +1,7 @@
 bool solids0;
 
 H5FieldDump *dump_field;
-
+dump::Ticket dumpt;
 
 namespace o /* s[o]lvent */
 {

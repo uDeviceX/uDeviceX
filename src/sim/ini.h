@@ -10,7 +10,7 @@ void ini() {
     bbhalo::ini();
     cnt::ini();
     rex::ini();
-    dump::ini();
+    dump::ini(&dumpt);
 
     sdf::alloc_quants(&w::qsdf);
     wall::alloc_quants(&w::q);
