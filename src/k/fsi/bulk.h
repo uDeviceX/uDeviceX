@@ -70,27 +70,21 @@ static __device__ int p2map(int zplane, int n, const Pa p, /**/ Map *m) {
 }
 
 static __device__ void bulk0(const Pa l, int lid, const Map m, float seed, /**/
-                             float *fx, float *fy, float *fz, float *ff1) {
+                             float *fx, float *fy, float *fz, float *ff) {
     /* "[l]ocal" and "[r]emote" particles */
     Pa r;
     Fo f;
-    float xinteraction, yinteraction, zinteraction;
-    int i, rid, sentry;
-    
+    float x, y, z;
+    int i, rid;
+
     *fx = *fy = *fz = 0; /* local particle force */
     for (i = 0; !endp(m, i); ++i) {
         rid = m2id(m, i);
-        
         r = tex2p(rid);
-        pair(l, r, random(lid, rid, seed), &xinteraction, &yinteraction, &zinteraction);
-        *fx += xinteraction;
-        *fy += yinteraction;
-        *fz += zinteraction;
-
-        sentry = 3 * rid;
-        atomicAdd(ff1 + sentry,     -xinteraction);
-        atomicAdd(ff1 + sentry + 1, -yinteraction);
-        atomicAdd(ff1 + sentry + 2, -zinteraction);
+        f = ff2f(ff, rid);
+        pair(l, r, random(lid, rid, seed), &x, &y, &z);
+        *fx += x; *fy += y; *fz += z;
+        atomicAdd(f.x, -x); atomicAdd(f.y, -y); atomicAdd(f.z, -z);
     }
 }
 
