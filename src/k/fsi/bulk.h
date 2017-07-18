@@ -69,12 +69,10 @@ static __device__ int p2map(int zplane, int n, const Pa p, /**/ Map *m) {
     return r2map(zplane, n, p.x, p.y, p.z, m);
 }
 
-static __device__ void bulk1(float2 *pp, int rid, int zplane, int n, float seed, float *ff0, float *ff1) {
-    Map m;
-    Pa l, r; /* "local" and "remote" particles */
+static __device__ void bulk1(const Pa l, const Fo f, int rid, const Map m, float seed, float *ff1) {
+    /* "[l]ocal" and "[r]emote" particles */
+    Pa r;
     float xinteraction, yinteraction, zinteraction;
-    l = pp2p(pp, rid);
-    if (!p2map(zplane, n, l, /**/ &m)) return;
     float xforce = 0, yforce = 0, zforce = 0;
     for (int i = 0; !endp(m, i); ++i) {
         const int lid = m2id(m, i);
@@ -90,17 +88,27 @@ static __device__ void bulk1(float2 *pp, int rid, int zplane, int n, float seed,
         atomicAdd(ff1 + sentry + 2, -zinteraction);
     }
 
-    atomicAdd(ff0 + 3 * rid + 0, xforce);
-    atomicAdd(ff0 + 3 * rid + 1, yforce);
-    atomicAdd(ff0 + 3 * rid + 2, zforce);
+    atomicAdd(f.x, xforce);
+    atomicAdd(f.y, yforce);
+    atomicAdd(f.z, zforce);
+}
+
+static __device__ void bulk2(float2 *pp, int i, int zplane, int n, float seed, float *ff0, float *ff1) {
+    Pa p;
+    Fo f; /* "local" particle */
+    Map m;
+    p = pp2p(pp, i);
+    f = ff2f(ff0, i);
+    if (!p2map(zplane, n, p, /**/ &m)) return;
+    bulk1(p, f, i, m, seed, ff1);
 }
 
 __global__ void bulk(float2 *pp, int n0, int n1, float seed, float *ff0, float *ff1) {
-    int gid, pid, zplane;
+    int gid, i, zplane;
     gid    = threadIdx.x + blockDim.x * blockIdx.x;
-    pid    = gid / 3;
+    i      = gid / 3;
     zplane = gid % 3;
-    if (pid >= n0) return;
-    bulk1(pp, pid, zplane, n1, seed, ff0, ff1);
+    if (i >= n0) return;
+    bulk2(pp, i, zplane, n1, seed, ff0, ff1);
 }
 }
