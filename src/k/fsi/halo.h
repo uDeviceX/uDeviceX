@@ -21,13 +21,7 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
     float *dst = NULL;
 
     {
-        const uint key9 = 9 * (localbase >= packstarts_padded[9]) +
-            9 * (localbase >= packstarts_padded[18]);
-        const uint key3 = 3 * (localbase >= packstarts_padded[key9 + 3]) +
-            3 * (localbase >= packstarts_padded[key9 + 6]);
-        const uint key1 = (localbase >= packstarts_padded[key9 + key3 + 1]) +
-            (localbase >= packstarts_padded[key9 + key3 + 2]);
-        const int code = key9 + key3 + key1;
+        const int code = get_hid(packstarts_padded, localbase);
         const int unpackbase = localbase - packstarts_padded[code];
 
         nunpack = min(32, packcount[code] - unpackbase);
