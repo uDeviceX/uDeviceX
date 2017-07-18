@@ -131,11 +131,6 @@ int inside_1p(const float *r, const float *vv, const int *tt, const int nt) {
     return c%2;
 }
 
-void inside_hst(const Particle *pp, const int n, const Mesh m, /**/ int *inout) {
-    for (int i = 0; i < n; ++i)
-    inout[i] = inside_1p(pp[i].r, m.vv, m.tt, m.nt);
-}
-
 static int inside_1p(const float *r, const Particle *vv, const int *tt, const int nt) {
     int c = 0;
     float origin[3] = {0, 0, 0};
