@@ -17,7 +17,7 @@ static __device__ uint m2id(const Map m, uint i) {
     return id;
 }
 
-static __device__ Map p2map(const Frag frag, float x, float y, float z) {
+static __device__ Map r2map(const Frag frag, float x, float y, float z) {
     /* create map for a particle */
     int org0, org1, org2;
     uint cnt0, cnt1, cnt2;

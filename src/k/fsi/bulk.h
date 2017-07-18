@@ -71,7 +71,7 @@ static __device__ void bulk0(float2 *pp, int rid, int zplane, int n, float seed,
     float xinteraction, yinteraction, zinteraction;
     l = pp2p(pp, rid);
     x = l.x; y = l.y; z = l.z;
-    if (!p2map(zplane, n, x, y, z, /**/ &m)) return;
+    if (!r2map(zplane, n, x, y, z, /**/ &m)) return;
     float xforce = 0, yforce = 0, zforce = 0;
     for (int i = 0; !endp(m, i); ++i) {
         const int lid = m2id(m, i);
