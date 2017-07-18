@@ -20,30 +20,17 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
     float2 dst0, dst1, dst2;
     float *dst = NULL;
 
-    {
-        const uint key9 = 9 * (localbase >= packstarts_padded[9]) +
-            9 * (localbase >= packstarts_padded[18]);
-        const uint key3 = 3 * (localbase >= packstarts_padded[key9 + 3]) +
-            3 * (localbase >= packstarts_padded[key9 + 6]);
-        const uint key1 = (localbase >= packstarts_padded[key9 + key3 + 1]) +
-            (localbase >= packstarts_padded[key9 + key3 + 2]);
-        const int code = key9 + key3 + key1;
-        const int unpackbase = localbase - packstarts_padded[code];
+    const int code = get_hid(packstarts_padded, localbase);
+    const int unpackbase = localbase - packstarts_padded[code];
 
-        nunpack = min(32, packcount[code] - unpackbase);
+    nunpack = min(32, packcount[code] - unpackbase);
+    if (nunpack == 0) return;
 
-        if (nunpack == 0) return;
-
-        k_common::read_AOS6f((float2 *)(packstates[code] + unpackbase), nunpack, dst0, dst1,
-                             dst2);
-
-        dst = (float *)(packresults[code] + unpackbase);
-    }
+    k_common::read_AOS6f((float2 *)(packstates[code] + unpackbase), nunpack, dst0, dst1, dst2);
+    dst = (float *)(packresults[code] + unpackbase);
 
     float xforce = 0, yforce = 0, zforce = 0;
-
     const int nzplanes = laneid < nunpack ? 3 : 0;
-
     for (int zplane = 0; zplane < nzplanes; ++zplane) {
         int scan1, scan2, ncandidates, spidbase;
         int deltaspid1, deltaspid2;
