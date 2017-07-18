@@ -73,9 +73,9 @@ void send(TicketD *t) {
         if (global_ids) sub::waitall(t->send_ii_req);
     }
     t->first = false;
-    t->nbulk = D->send_sz(t->cart, t->rank, t->send_sz_req);
-    D->send_pp(t->cart, t->rank, t->send_pp_req);
-    if (global_ids) D->send_ii(t->cart, t->rank, t->send_ii_req);
+    t->nbulk = sub::send_sz(t->cart, t->rank, /**/ &D->s, t->send_sz_req);
+    sub::send_pp(t->cart, t->rank, /**/ &D->s, t->send_pp_req);
+    if (global_ids) sub::send_ii(t->cart, t->rank, /**/ &D->s, t->send_ii_req);
 }
 
 void bulk(flu::Quants *q, TicketD *t) {

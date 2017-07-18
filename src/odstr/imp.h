@@ -38,26 +38,23 @@ void pack_ii(const int *ii, int n, Send *s) {
     dev::pack<int, 1> <<<k_cnf(n)>>>(ii, s->iidx, s->strt, /**/ s->ii.dev);
 }
 
-// TODO rm this
-int Distr::send_sz(MPI_Comm cart, int rank[], MPI_Request *req) {
-    for(int i = 0; i < 27; ++i) s.size[i] = s.size_pin->D[i];
+int send_sz(MPI_Comm cart, const int rank[], /**/ Send *s, MPI_Request *req) {
+    for(int i = 0; i < 27; ++i) s->size[i] = s->size_pin->D[i];
     for(int i = 1, cnt = 0; i < 27; ++i)
-    l::m::Isend(s.size + i, 1, MPI_INTEGER, rank[i],
+    l::m::Isend(s->size + i, 1, MPI_INTEGER, rank[i],
                 BT_C_ODSTR + i, cart, &req[cnt++]);
-    return s.size[0]; /* `n' bulk */
+    return s->size[0]; /* `n' bulk */
 }
 
-// TODO rm this
-void Distr::send_pp(MPI_Comm cart, int rank[], MPI_Request *req) {
+void send_pp(MPI_Comm cart, const int rank[], /**/ Send *s, MPI_Request *req) {
     for(int i = 1, cnt = 0; i < 27; ++i)
-    l::m::Isend(s.pp.hst[i], s.size[i] * 6, MPI_FLOAT, rank[i],
+    l::m::Isend(s->pp.hst[i], s->size[i] * 6, MPI_FLOAT, rank[i],
                 BT_P_ODSTR + i, cart, &req[cnt++]);
 }
 
-// TODO rm this
-void Distr::send_ii(MPI_Comm cart, int rank[], MPI_Request *req) {
+void send_ii(MPI_Comm cart, const int rank[], /**/ Send *s, MPI_Request *req) {
     for(int i = 1, cnt = 0; i < 27; ++i)
-    l::m::Isend(s.ii.hst[i], s.size[i], MPI_INT, rank[i],
+    l::m::Isend(s->ii.hst[i], s->size[i], MPI_INT, rank[i],
                 BT_I_ODSTR + i, cart, &req[cnt++]);
 }
 
