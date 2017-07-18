@@ -11,6 +11,13 @@ struct TicketD { /* distribution */
     int nhalo, nbulk;
 };
 
+struct Ticketii { /* global_ids */
+    MPI_Request send_ii_req[27], recv_ii_req[27];
+    bool first = true;
+    sub::Pbufs<int> sii;    /* Send global ids         */
+    sub::Pbufs<int> rii;    /* Recv global ids         */
+};
+
 struct TicketU { /* unpack ticket */
     uchar4 *subi_re;           /* remote subindices */
     Particle *pp_re;           /* remote particles  */
