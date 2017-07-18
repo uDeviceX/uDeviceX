@@ -70,7 +70,7 @@ void send(TicketD *t) {
     if (!t->first) {
         sub::waitall(t->send_sz_req);
         sub::waitall(t->send_pp_req);
-        if (global_ids) D->waitall(t->send_ii_req);
+        if (global_ids) sub::waitall(t->send_ii_req);
     }
     t->first = false;
     t->nbulk = D->send_sz(t->cart, t->rank, t->send_sz_req);
@@ -90,7 +90,7 @@ void recv(TicketD *t) {
     sub::waitall(t->recv_sz_req);
     D->recv_count(&t->nhalo);
     sub::waitall(t->recv_pp_req);
-    if (global_ids) D->waitall(t->recv_ii_req);
+    if (global_ids) sub::waitall(t->recv_ii_req);
 }
 
 void unpack(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
