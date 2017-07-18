@@ -42,6 +42,10 @@ static __device__ Pa tex2p(int i) {
     return p;
 }
 
+static __device__ float random(uint lid, uint rid, float seed) {
+    return l::rnd::d::mean0var1uu(seed, lid, rid);
+}
+
 static __device__ void pair(const Pa l, const Pa r, float rnd, /**/ float *fx, float *fy, float *fz) {
     /* pair force ; l, r: local and remote */
     float3 r1 = make_float3( l.x,  l.y,  l.z), r2 = make_float3( r.x,  r.y,  r.z);
@@ -50,39 +54,32 @@ static __device__ void pair(const Pa l, const Pa r, float rnd, /**/ float *fx, f
     *fx = f.x; *fy = f.y; *fz = f.z;
 }
 
-static __device__ void bulk0(float2 *pp, int pid, int zplane, int n, float seed, float *ff0, float *ff1) {
+static __device__ void bulk0(float2 *pp, int rid, int zplane, int n, float seed, float *ff0, float *ff1) {
     Map m;
     Pa l, r; /* "local" and "remote" particles */
     float x, y, z;
-    l = pp2p(pp, pid);
+    float xinteraction, yinteraction, zinteraction;
+    l = pp2p(pp, rid);
     x = l.x; y = l.y; z = l.z;
     if (!p2map(zplane, n, x, y, z, /**/ &m)) return;
     float xforce = 0, yforce = 0, zforce = 0;
     for (int i = 0; !endp(m, i); ++i) {
-        const int spid = m2id(m, i);
-        r = tex2p(spid);
-        const int sentry = 3 * spid;
-
-        const float myrandnr = l::rnd::d::mean0var1ii(seed, pid, spid);
-        float3 pos1 = make_float3(x, y, z), pos2 = make_float3(r.x, r.y, r.z);
-        float3 vel1 = make_float3(l.vx, l.vy, l.vz), vel2 = make_float3(r.vx, r.vy, r.vz);
-        const float3 strength = force(SOLID_TYPE, SOLVENT_TYPE, pos1, pos2, vel1, vel2, myrandnr);
-        const float xinteraction = strength.x;
-        const float yinteraction = strength.y;
-        const float zinteraction = strength.z;
-
+        const int lid = m2id(m, i);
+        r = tex2p(lid);
+        pair(l, r, random(rid, lid, seed), &xinteraction, &yinteraction, &zinteraction);
         xforce += xinteraction;
         yforce += yinteraction;
         zforce += zinteraction;
 
-        atomicAdd(ff1 + sentry, -xinteraction);
+        const int sentry = 3 * lid;
+        atomicAdd(ff1 + sentry,     -xinteraction);
         atomicAdd(ff1 + sentry + 1, -yinteraction);
         atomicAdd(ff1 + sentry + 2, -zinteraction);
     }
 
-    atomicAdd(ff0 + 3 * pid + 0, xforce);
-    atomicAdd(ff0 + 3 * pid + 1, yforce);
-    atomicAdd(ff0 + 3 * pid + 2, zforce);
+    atomicAdd(ff0 + 3 * rid + 0, xforce);
+    atomicAdd(ff0 + 3 * rid + 1, yforce);
+    atomicAdd(ff0 + 3 * rid + 2, zforce);
 }
 
 __global__ void bulk(float2 *pp, int n0, int n1, float seed, float *ff0, float *ff1) {
