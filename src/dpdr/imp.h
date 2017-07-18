@@ -83,8 +83,8 @@ void post_expected_recv(MPI_Comm cart, const int dstranks[], const int recv_tags
 
 void recv(const int *np, const int *nc, /**/ Rbufs *b) {
     for (int i = 0; i < 26; ++i)
-    if (np[i]) CC(cudaMemcpyAsync(b->pp.d[i], b->pphst.d[i], sizeof(Particle) * np[i], D2D));
+    if (np[i] > 0) CC(cudaMemcpyAsync(b->pp.d[i], b->pphst.d[i], sizeof(Particle) * np[i], A2A));
 
     for (int i = 0; i < 26; ++i)
-    if (nc[i]) CC(cudaMemcpyAsync(b->cum.d[i], b->cumhst.d[i],  sizeof(int) * nc[i], D2D));
+    if (nc[i] > 0) CC(cudaMemcpyAsync(b->cum.d[i], b->cumhst.d[i],  sizeof(int) * nc[i], A2A));
 }
