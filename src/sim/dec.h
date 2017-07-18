@@ -9,6 +9,7 @@ flu::Quants q;
 flu::TicketZ tz;     /* [z]ip        */
 flu::TicketRND trnd; 
 odstr::TicketD td;   /* [d]istribute */
+odstr::TicketI ti;   /* global [i]ds */
 odstr::TicketU tu;   /* [u]npack     */
 odstr::Work w;
 

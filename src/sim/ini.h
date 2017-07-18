@@ -20,6 +20,7 @@ void ini() {
     flu::alloc_ticketZ(&o::tz);
 
     odstr::alloc_ticketD(&o::td);
+    odstr::alloc_ticketI(&o::ti);
     odstr::alloc_ticketU(&o::tu);
     odstr::alloc_work(&o::w);
 
