@@ -66,7 +66,6 @@ static void project_t(const float *a, const float *b, const float *c, const floa
 static float dist_from_triangle(const float *a, const float *b, const float *c, const float *r) {
     float p[3];
     project_t(a, b, c, r, /**/ p);
-    //for (int k = 0; k < 3; ++k) p[k] = (a[k] + b[k] + c[k]) / 3.f;
     
     const float dr[3] = {p[0] - r[0], p[1] - r[1], p[2] - r[2]};
     return sqrt(dot(dr, dr));
