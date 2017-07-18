@@ -64,14 +64,17 @@ static __device__ void pair(const Pa l, const Pa r, float rnd, /**/ float *fx, f
     *fx = f.x; *fy = f.y; *fz = f.z;
 }
 
-static __device__ void bulk0(float2 *pp, int rid, int zplane, int n, float seed, float *ff0, float *ff1) {
+static __device__ int p2map(int zplane, int n, const Pa p, /**/ Map *m) {
+    /* particle to map */
+    return r2map(zplane, n, p.x, p.y, p.z, m);
+}
+
+static __device__ void bulk1(float2 *pp, int rid, int zplane, int n, float seed, float *ff0, float *ff1) {
     Map m;
     Pa l, r; /* "local" and "remote" particles */
-    float x, y, z;
     float xinteraction, yinteraction, zinteraction;
     l = pp2p(pp, rid);
-    x = l.x; y = l.y; z = l.z;
-    if (!r2map(zplane, n, x, y, z, /**/ &m)) return;
+    if (!p2map(zplane, n, l, /**/ &m)) return;
     float xforce = 0, yforce = 0, zforce = 0;
     for (int i = 0; !endp(m, i); ++i) {
         const int lid = m2id(m, i);
@@ -98,6 +101,6 @@ __global__ void bulk(float2 *pp, int n0, int n1, float seed, float *ff0, float *
     pid    = gid / 3;
     zplane = gid % 3;
     if (pid >= n0) return;
-    bulk0(pp, pid, zplane, n1, seed, ff0, ff1);
+    bulk1(pp, pid, zplane, n1, seed, ff0, ff1);
 }
 }
