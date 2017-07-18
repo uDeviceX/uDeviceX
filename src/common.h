@@ -72,4 +72,3 @@ struct SolventWrap : ParticlesWrap {
           cellscount(cellscount) {}
 };
 
-void diagnostics(Particle *_particles, int n, int idstep);

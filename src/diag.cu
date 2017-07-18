@@ -8,6 +8,8 @@
 #include "common.h"
 #include "common.mpi.h"
 
+#include "diag.h"
+
 void diagnostics(Particle *pp, int n, int idstep) {
     double p[] = {0, 0, 0};
     for(int i = 0; i < n; ++i)

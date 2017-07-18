@@ -4,7 +4,7 @@
 # export PATH=../tools:$PATH
 # (cd ../cmd; make ) > /dev/null
 # cp data/sdf/wall1/wall.dat sdf.dat
-# echo -e "16 16 16" > ic_solid.txt
+# echo -e "16 16 16" > rigs-ic.txt
 # cp data/rig/sphere.ply mesh_solid.ply
 # :
 # u.conf conf/test.h <<!!!
@@ -22,7 +22,7 @@
 # rm -rf h5 bop diag.txt solid_diag.txt
 # export PATH=../tools:$PATH
 # (cd ../cmd; make ) > /dev/null
-# echo -e "8 16 8" > ic_solid.txt
+# echo -e "8 16 8" > rigs-ic.txt
 # cp data/rig/sphere.ply mesh_solid.ply
 # :
 # u.conf conf/double.poiseuille.h <<!!!
@@ -42,7 +42,7 @@
 # export PATH=../tools:$PATH
 # (cd ../cmd; make ) > /dev/null
 # cp data/sdf/yplates1/yplates.dat sdf.dat
-# echo -e "16 16 8" > ic_solid.txt
+# echo -e "16 16 8" > rigs-ic.txt
 # cp data/rig/cyl.ply mesh_solid.ply
 # :
 # u.conf conf/test.h <<!!!
@@ -62,8 +62,8 @@
 # (cd ../cmd; make ) > /dev/null
 # cp data/sdf/cyl1/cyl.dat sdf.dat
 # cp data/rig/sphere_R1.ply mesh_solid.ply
-# x=0.75 y=3 z=9; echo $x $y $z >  ic_solid.txt
-# x=8    y=8 z=8; echo $x $y $z >> ic_solid.txt
+# x=0.75 y=3 z=9; echo $x $y $z >  rigs-ic.txt
+# x=8    y=8 z=8; echo $x $y $z >> rigs-ic.txt
 # :
 # u.conf conf/around.h <<!!!
 #    solids tend=1.0 part_freq=500 walls wall_creation=100 kBT=1e-7

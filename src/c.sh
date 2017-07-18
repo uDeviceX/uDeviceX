@@ -31,7 +31,7 @@ pre() {
 
     df=5.0
     fraction=0.2 radius=2.3 sc=0.2 ang=rnd
-    plcmt.ro $LX $LY $LZ $radius $fraction $sc $ang ic_solid.txt rbcs-ic.txt
+    plcmt.ro $LX $LY $LZ $radius $fraction $sc $ang rigs-ic.txt rbcs-ic.txt
 
     argp conf/gx.base.h $Domain              \
 	 $Rbcs RBCnv=$nv                      \

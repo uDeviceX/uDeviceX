@@ -40,7 +40,7 @@ plane point xc 0.1*Ly zc normal 0  1 0" > yplates.tsdf
 
 tsdf yplates.tsdf sdf.dat
 
-echo `awk "BEGIN{ printf \"%.6e %.6e %.6e\n\", 0.5*${XS}, 0.5*${YS}, 0.5*${ZS} }"` > ic_solid.txt
+echo `awk "BEGIN{ printf \"%.6e %.6e %.6e\n\", 0.5*${XS}, 0.5*${YS}, 0.5*${ZS} }"` > rigs-ic.txt
 
 GEN=${GITROOT}/pre/meshgen/gencylinder
 

@@ -39,7 +39,7 @@ radius=3
 fraction=0.5
 sc=1
 ang=0
-plcmt.ro $LX $LY $LZ $radius $fraction $sc $ang ic_solid.txt rbcs-ic.txt
+plcmt.ro $LX $LY $LZ $radius $fraction $sc $ang rigs-ic.txt rbcs-ic.txt
 
 # create sbatch script
  echo "#!/bin/bash -l
