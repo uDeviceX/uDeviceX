@@ -77,7 +77,7 @@ static __device__ void force1(const Rnd rnd, const Frag frag, const Map m, const
 static __device__ void force2(const Frag frag, const Rnd rnd, Pa p, /**/ Fo f) {
     int dx, dy, dz;
     Map m;
-    m = p2map(frag, p.x, p.y, p.z);
+    m = r2map(frag, p.x, p.y, p.z);
 
     dx = frag.dx; dy = frag.dy; dz = frag.dz; /* TODO: where it should be? */
     p.x -= dx * XS;
