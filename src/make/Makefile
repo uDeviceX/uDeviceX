@@ -29,20 +29,22 @@ $B/udx: $(OBJS)
 	$(NVCC)  $(ARCH) -dlink $(OBJS) $(NVCCLIBS) -o $B/gpuCode.o
 	$(LINK)  $B/gpuCode.o $(OBJS) $(LIBS) -o $@
 
-# compile
-C=$(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT)
+# compile commands
+0=$(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT)
+1=test -d $B/l || mkdir $B/l && $0
+
 # dev
-$B/%.o:     $S/%.cu;         $C     $< -c -o $@
-$B/l.%.o:   $S/l/%.cu;       $C     $< -c -o $@
+$B/%.o:     $S/%.cu;         $0     $< -c -o $@
+$B/l.%.o:   $S/l/%.cu;       $1     $< -c -o $@
 
 # dev and hst
-$B/force.o: $S/force.cu;     $C -dc $< -c -o $@
-$B/bund.o:  $S/bund.cu;      $C -dc $< -c -o $@
-$B/glb.o:   $S/glb.cu;       $C -dc $< -c -o $@
-$B/local.o: $S/dpd/local.cu; $C -dc $< -c -o $@
+$B/force.o: $S/force.cu;     $0 -dc $< -c -o $@
+$B/bund.o:  $S/bund.cu;      $0 -dc $< -c -o $@
+$B/glb.o:   $S/glb.cu;       $0 -dc $< -c -o $@
+$B/local.o: $S/dpd/local.cu; $0 -dc $< -c -o $@
 
 # dev and hst
-$B/l.rnd.o: $S/l/rnd.cu;     $C -dc $< -c -o $@
+$B/l.rnd.o: $S/l/rnd.cu;     $1 -dc $< -c -o $@
 
 clean:; -rm -f $B/udx $(OBJS) $B/gpuCode.o
 
