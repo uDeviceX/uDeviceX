@@ -28,7 +28,9 @@ void alloc_ticketD(TicketD *t) {
 }
 
 void free_ticketD(/**/ TicketD *t) {
-    t->distr.fin();
+    //t->distr.fin();
+    sub::fin_S(/**/ &t->distr.s);
+    sub::fin_R(/**/ &t->distr.r);
     CC(cudaFree(t->subi_lo));
 }
 
