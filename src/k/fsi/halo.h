@@ -1,7 +1,5 @@
 namespace k_fsi {
-__global__ void halo(int n0,
-                     int n1, float *ff1,
-                     float seed) {
+__global__ void halo(int n0, int n1, float *ff1, float seed) {
     int laneid = threadIdx.x & 0x1f;
     int warpid = threadIdx.x >> 5;
     int localbase = 32 * (warpid + 4 * blockIdx.x);
