@@ -75,7 +75,6 @@ void halo(ParticlesWrap halos[26]) {
 
     if (nremote_padded)
     k_fsi::halo<<<k_cnf(nremote_padded)>>>
-        (nremote_padded, wsolvent->n, (float *)wsolvent->f,
-         local_trunk->get_float());
+        (nremote_padded, wsolvent->n, local_trunk->get_float(), /**/ (float *)wsolvent->f);
 }
 }
