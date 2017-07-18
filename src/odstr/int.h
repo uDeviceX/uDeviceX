@@ -59,7 +59,7 @@ void pack(flu::Quants *q, TicketD *t) {
     if (q->n) {
         sub::halo(q->pp, q->n, /**/ &D->s);
         sub::scan(q->n, /**/ &D->s);
-        D->pack_pp(q->pp, q->n);
+        sub::pack_pp(q->pp, q->n, /**/ &D->s);
         if (global_ids) D->pack_ii(q->ii, q->n);
         dSync();
     }

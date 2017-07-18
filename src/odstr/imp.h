@@ -30,9 +30,8 @@ void scan(int n, Send *s) {
     dSync();
 }
 
-// TODO rm this
-void Distr::pack_pp(const Particle *pp, int n) {
-    dev::pack<float2, 3> <<<k_cnf(3*n)>>>((float2*)pp, s.iidx, s.strt, /**/ s.pp.dev);
+void pack_pp(const Particle *pp, int n, Send *s) {
+    dev::pack<float2, 3> <<<k_cnf(3*n)>>>((float2*)pp, s->iidx, s->strt, /**/ s->pp.dev);
 }
 
 // TODO rm this
