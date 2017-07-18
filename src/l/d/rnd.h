@@ -18,7 +18,6 @@ const static float sqrt2 = 1.41421356237309514547;
  * cite G. Marsaglia
  * passes BigCrush
  *****************************************************************/
-#ifdef __CUDACC__
 
 /************************* Branch generator **********************
  * Make one random number per pair of particles per timestep
@@ -91,5 +90,4 @@ __inline__ __device__ float mean0var1_dual( float seed, float u, float v )
   return l + z;
 }
 
-#endif
 }}} /* l:rnd:d */
