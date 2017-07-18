@@ -69,7 +69,7 @@ static __device__ int p2map(int zplane, int n, const Pa p, /**/ Map *m) {
     return r2map(zplane, n, p.x, p.y, p.z, m);
 }
 
-static __device__ void bulk1(const Pa l, const Fo f, int rid, const Map m, float seed, float *ff1) {
+static __device__ void bulk1(const Pa l, const Fo f, int rid, const Map m, float seed, /**/ float *ff1) {
     /* "[l]ocal" and "[r]emote" particles */
     Pa r;
     float xinteraction, yinteraction, zinteraction;
@@ -93,14 +93,14 @@ static __device__ void bulk1(const Pa l, const Fo f, int rid, const Map m, float
     atomicAdd(f.z, zforce);
 }
 
-static __device__ void bulk2(float2 *pp, int i, int zplane, int n, float seed, float *ff0, float *ff1) {
+static __device__ void bulk2(float2 *pp, int i, int zplane, int n, float seed, /**/ float *ff0, float *ff1) {
     Pa p;
     Fo f; /* "local" particle */
     Map m;
     p = pp2p(pp, i);
     f = ff2f(ff0, i);
     if (!p2map(zplane, n, p, /**/ &m)) return;
-    bulk1(p, f, i, m, seed, ff1);
+    bulk1(p, f, i, m, seed, /**/ ff1);
 }
 
 __global__ void bulk(float2 *pp, int n0, int n1, float seed, float *ff0, float *ff1) {
