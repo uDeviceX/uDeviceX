@@ -155,10 +155,7 @@ namespace dev {
 #include "bbhalo.decl.h"
 #include "bbhalo.impl.h"
 
-// #include "dump.decl.h"
-// #include "dump.impl.h"
 #include "dump.h"
-
 #include "l/ply.h"
 
 namespace rig {
