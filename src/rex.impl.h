@@ -356,7 +356,7 @@ void recv_f() {
             CC(cudaMemcpyToSymbolAsync(k_rex::coffsets, packsoffset->D + 26 * i,
                                        sizeof(int) * 26, 0, D2D));
 
-            k_rex::unpack<<<16 * 14, 128>>>((float *)it.f, it.n);
+            k_rex::unpack<<<16 * 14, 128>>>(it.n, /**/ (float *)it.f);
         }
 
     }

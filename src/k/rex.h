@@ -141,7 +141,7 @@ __global__ void pack(const float2 *particles, const int nparticles,
     }
 }
 
-__global__ void unpack(float *forces, int nparticles) {
+__global__ void unpack(int nparticles, /**/ float *forces) {
     int npack_padded = cpaddedstarts[26];
 
     for (int gid = threadIdx.x + blockDim.x * blockIdx.x; gid < 3 * npack_padded;
