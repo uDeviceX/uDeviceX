@@ -66,3 +66,16 @@ void ini_R(const Send *s, /**/ Recv *r) {
     }
 }
 #undef i2d
+
+void ini_SRI(Pbufs<int> *sii, Pbufs<int> *rii) {
+    for (int i = 1; i < 27; ++i) alloc_pinned(i, estimate(i), /**/ rii);
+    for (int i = 1; i < 27; ++i) alloc_pinned(i, estimate(i), /**/ sii);
+    
+    CC(cudaMalloc(&sii->dp[0], sizeof(int) * estimate(0)));
+    sii->hst[0] = NULL;
+    rii->dp[0]  = sii->dp[0];
+    rii->hst[0] = NULL;
+
+    alloc_dev(/**/ sii);
+    alloc_dev(/**/ rii);
+}
