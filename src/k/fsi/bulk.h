@@ -44,10 +44,10 @@ static __device__ Pa tex2p(int i) {
 
 static __device__ void bulk0(float2 *pp, int pid, int zplane, int n, float seed, float *ff0, float *ff1) {
     Map m;
-    Pa p;
+    Pa l; /* local particle */
     float x, y, z;
-    p = pp2p(pp, pid);
-    x = p.x; y = p.y; z = p.z;
+    l = pp2p(pp, pid);
+    x = l.x; y = l.y; z = l.z;
     if (!p2map(zplane, n, x, y, z, /**/ &m)) return;
     float xforce = 0, yforce = 0, zforce = 0;
     for (int i = 0; !endp(m, i); ++i) {
@@ -58,10 +58,8 @@ static __device__ void bulk0(float2 *pp, int pid, int zplane, int n, float seed,
         const float2 stmp2 = tex1Dfetch(texSolventParticles, sentry + 2);
 
         const float myrandnr = l::rnd::d::mean0var1ii(seed, pid, spid);
-
-        // check for particle types and compute the DPD force
         float3 pos1 = make_float3(x, y, z), pos2 = make_float3(stmp0.x, stmp0.y, stmp1.x);
-        float3 vel1 = make_float3(p.vx, p.vy, p.vz), vel2 = make_float3(stmp1.y, stmp2.x, stmp2.y);
+        float3 vel1 = make_float3(l.vx, l.vy, l.vz), vel2 = make_float3(stmp1.y, stmp2.x, stmp2.y);
 
         const float3 strength = force(SOLID_TYPE, SOLVENT_TYPE, pos1, pos2,
                                                          vel1, vel2, myrandnr);
