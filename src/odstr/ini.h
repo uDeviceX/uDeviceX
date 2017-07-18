@@ -66,11 +66,32 @@ void Distr::ini(MPI_Comm cart, int rank[])  {
     }
 }
 
-void ini_S(Send *s) {
-    s->size_pin = new PinnedHostBuffer4<int>(27);    
+void ini_S(/**/ Send *s) {
+    s->size_pin = new PinnedHostBuffer4<int>(27);
+    for (int i = 0; i < 27; ++i) CC(cudaMalloc(&s->iidx_[i], sizeof(int) * estimate(i)));
+
+    for (int i = 1; i < 27; ++i) alloc_pinned(i, 3 * estimate(i), /**/ &s->pp);
+    CC(cudaMalloc(&s->pp.dp[0], sizeof(float) * 6 * estimate(0)));
+    s->pp.hst[0] = NULL;
+
+    CC(cudaMalloc(&s->size_dev, 27*sizeof(s->size_dev[0])));
+    CC(cudaMalloc(&s->strt,     28*sizeof(s->strt[0])));
+
+    CC(cudaMalloc(&s->iidx, SZ_PTR_ARR(s->iidx_)));
+    CC(cudaMemcpy(s->iidx, s->iidx_, sizeof(s->iidx_), H2D));
+
+    alloc_dev(/**/ &s->pp);
+
+    if (global_ids) {
+        for (int i = 1; i < 27; ++i) alloc_pinned(i, estimate(i), /**/ &s->ii);
+        CC(cudaMalloc(&s->ii.dp[0], sizeof(int) * estimate(0)));
+        s->ii.hst[0] = NULL;
+        
+        alloc_dev(/**/ &s->ii);
+    }
 }
 
-void ini_R(Recv *r) {
+void ini_R(const Send *s, /**/ Recv *r) {
 
 }
 #undef i2d
