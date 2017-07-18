@@ -44,7 +44,7 @@ static __device__ Pa tex2p(int i) {
 
 static __device__ void bulk0(float2 *pp, int pid, int zplane, int n, float seed, float *ff0, float *ff1) {
     Map m;
-    Pa l; /* local particle */
+    Pa l, r; /* "local" and "remote" particles */
     float x, y, z;
     l = pp2p(pp, pid);
     x = l.x; y = l.y; z = l.z;
@@ -52,18 +52,13 @@ static __device__ void bulk0(float2 *pp, int pid, int zplane, int n, float seed,
     float xforce = 0, yforce = 0, zforce = 0;
     for (int i = 0; !endp(m, i); ++i) {
         const int spid = m2id(m, i);
+        r = tex2p(spid);
         const int sentry = 3 * spid;
-        const float2 stmp0 = tex1Dfetch(texSolventParticles, sentry);
-        const float2 stmp1 = tex1Dfetch(texSolventParticles, sentry + 1);
-        const float2 stmp2 = tex1Dfetch(texSolventParticles, sentry + 2);
 
         const float myrandnr = l::rnd::d::mean0var1ii(seed, pid, spid);
-        float3 pos1 = make_float3(x, y, z), pos2 = make_float3(stmp0.x, stmp0.y, stmp1.x);
-        float3 vel1 = make_float3(l.vx, l.vy, l.vz), vel2 = make_float3(stmp1.y, stmp2.x, stmp2.y);
-
-        const float3 strength = force(SOLID_TYPE, SOLVENT_TYPE, pos1, pos2,
-                                                         vel1, vel2, myrandnr);
-
+        float3 pos1 = make_float3(x, y, z), pos2 = make_float3(r.x, r.y, r.z);
+        float3 vel1 = make_float3(l.vx, l.vy, l.vz), vel2 = make_float3(r.vx, r.vy, r.vz);
+        const float3 strength = force(SOLID_TYPE, SOLVENT_TYPE, pos1, pos2, vel1, vel2, myrandnr);
         const float xinteraction = strength.x;
         const float yinteraction = strength.y;
         const float zinteraction = strength.z;
