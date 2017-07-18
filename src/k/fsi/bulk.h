@@ -103,22 +103,22 @@ static __device__ void bulk1(const Pa l, const Fo f, int i, const Map m, float s
     atomicAdd(f.z, fz);
 }
 
-static __device__ void bulk2(float2 *pp, int i, int zplane, int n, float seed, /**/ float *ff0, float *ff1) {
+static __device__ void bulk2(float2 *pp, int i, int zplane, int n, float seed, /**/ float *ff, float *ff0) {
     Pa p;
     Fo f; /* "local" particle */
     Map m;
     p = pp2p(pp, i);
-    f = ff2f(ff0, i);
+    f = ff2f(ff, i);
     if (!p2map(zplane, n, p, /**/ &m)) return;
-    bulk1(p, f, i, m, seed, /**/ ff1);
+    bulk1(p, f, i, m, seed, /**/ ff0);
 }
 
-__global__ void bulk(float2 *pp, int n0, int n1, float seed, float *ff0, float *ff1) {
+__global__ void bulk(float2 *pp, int n0, int n1, float seed, float *ff, float *ff0) {
     int gid, i, zplane;
     gid    = threadIdx.x + blockDim.x * blockIdx.x;
     i      = gid / 3;
     zplane = gid % 3;
     if (i >= n0) return;
-    bulk2(pp, i, zplane, n1, seed, ff0, ff1);
+    bulk2(pp, i, zplane, n1, seed, ff, ff0);
 }
 }
