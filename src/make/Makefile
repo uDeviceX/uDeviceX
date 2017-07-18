@@ -35,7 +35,7 @@ $B/udx: $(OBJS)
 
 # dev
 $B/%.o:     $S/%.cu;         $0     $< -c -o $@
-$B/l.%.o:   $S/l/%.cu;       $1     $< -c -o $@
+$B/l/%.o:   $S/l/%.cu;       $1     $< -c -o $@
 
 # dev and hst
 $B/force.o: $S/force.cu;     $0 -dc $< -c -o $@
@@ -44,7 +44,7 @@ $B/glb.o:   $S/glb.cu;       $0 -dc $< -c -o $@
 $B/local.o: $S/dpd/local.cu; $0 -dc $< -c -o $@
 
 # dev and hst
-$B/l.rnd.o: $S/l/rnd.cu;     $1 -dc $< -c -o $@
+$B/l/rnd.o: $S/l/rnd.cu;     $1 -dc $< -c -o $@
 
 clean:; -rm -f $B/udx $(OBJS) $B/gpuCode.o
 
