@@ -99,7 +99,7 @@ void unpack(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     int *count = q->cells->count;
 
     Particle *pp = q->pp, *pp0 = q->pp0;
-    int *ii = q->ii, *ii0 = q->ii0;
+    in     t *ii = q->ii, *ii0 = q->ii0;
     
     if (nhalo) {
         sub::unpack_pp(nhalo, /**/ &td->r, w->pp_re);
