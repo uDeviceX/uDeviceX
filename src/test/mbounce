@@ -3,7 +3,7 @@
 # export PATH=../tools:$PATH
 # (cd ../cmd; make ) > /dev/null
 # rm -rf h5 bop diag.txt solid_diag.txt
-# echo -e "8 16 8" > ic_solid.txt
+# echo -e "8 16 8" > rigs-ic.txt
 # cp data/rig/sphere.ply mesh_solid.ply
 # :
 # u.conf conf/double.poiseuille.h <<!!!

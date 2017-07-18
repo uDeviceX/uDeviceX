@@ -15,7 +15,7 @@ void gen_from_solvent(const Mesh m_hst,  /* io */ Particle *opp, int *on,
                       /* o */ int *ns, int *nps, int *n, float *rr0_hst, Solid *ss_hst, Particle *pp_hst) {
     // generate models
     MSG("start solid ini");
-    ic::ini("ic_solid.txt", m_hst, /**/ ns, nps, rr0_hst, ss_hst, on, opp, pp_hst);
+    ic::ini("rigs-ic.txt", m_hst, /**/ ns, nps, rr0_hst, ss_hst, on, opp, pp_hst);
     MSG("done solid ini");
 
     *n = *ns * (*nps);

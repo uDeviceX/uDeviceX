@@ -13,7 +13,7 @@ compile() {
 }
 
 clean () {
-    rm -rf rbcs-ic.txt ic_solid.txt sdf.dat mesh_solid.ply
+    rm -rf rbcs-ic.txt rigs-ic.txt sdf.dat mesh_solid.ply
     rm -rf diag.txt h5 bop r solid_diag*txt solid-ply
     rm -rf runfile conf.h
 }
