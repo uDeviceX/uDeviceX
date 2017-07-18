@@ -31,23 +31,21 @@ void dealloc(Pbufs<T, N> *b) {
 }
 
 struct Send {
-    int **iidx; /* indices */
-
+    int **iidx;       /* indices (device) */
+    int *iidx_[27];   /* indices (pinned) */
+    
     Pbufs<float2> pp;
-    Pbufs<int> ii; /* global ids */
+    Pbufs<int> ii;    /* global ids */
     
     int *size_dev, *strt;
     int size[27];
     PinnedHostBuffer4<int>* size_pin;
-
-    int    *iidx_[27];
 };
 
 struct Recv {
     Pbufs<float2> pp;
-    Pbufs<int> ii; /* global ids */
+    Pbufs<int> ii;    /* global ids */
     
     int *strt;
-    int tags[27];
-    int    size[27];
+    int tags[27], size[27];
 };
