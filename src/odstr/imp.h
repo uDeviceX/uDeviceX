@@ -81,8 +81,8 @@ void subindex_remote(const int n, const Recv *r, /*io*/ Particle *pp_re, int *co
     dev::subindex_remote <<<k_cnf(n)>>> (n, r->strt, /*io*/ (float2*) pp_re, counts, /**/ subi);
 }
 
-// TODO rm this
-void Distr::cancel_recv(MPI_Request *size_req, MPI_Request *mesg_req) {
+/* TODO: this is not used, why? *?
+void cancel_recv(/**/ MPI_Request *size_req, MPI_Request *mesg_req) {
     for(int i = 0; i < 26; ++i) l::m::Cancel(size_req + i) ;
     for(int i = 0; i < 26; ++i) l::m::Cancel(mesg_req + i) ;
 }
