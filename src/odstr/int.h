@@ -107,7 +107,7 @@ void unpack(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     if (nhalo) {
         sub::unpack_pp(nhalo, /**/ &D->r, w->pp_re);
         if (global_ids) sub::unpack_ii(nhalo, /**/ &D->r, w->ii_re);
-        D->subindex_remote(nhalo, /*io*/ w->pp_re, count, /**/ w->subi_re);
+        sub::subindex_remote(nhalo, &D->r, /*io*/ w->pp_re, count, /**/ w->subi_re);
     }
     
     k_common::compress_counts<<<k_cnf(XS*YS*ZS)>>>(XS*YS*ZS, (int4*)count, /**/ (uchar4*)w->count_zip);

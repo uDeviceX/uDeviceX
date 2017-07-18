@@ -77,9 +77,8 @@ void unpack_ii(const int n, /**/ Recv *r, int *ii_re) {
     dev::unpack<int, 1> <<<k_cnf(n)>>> (r->ii.dev, r->strt, /**/ ii_re);
 }
 
-// TODO rm this
-void Distr::subindex_remote(int n, /*io*/ Particle *pp_re, int *counts, /**/ uchar4 *subi) {
-    dev::subindex_remote <<<k_cnf(n)>>> (n, r.strt, /*io*/ (float2*) pp_re, counts, /**/ subi);
+void subindex_remote(const int n, const Recv *r, /*io*/ Particle *pp_re, int *counts, /**/ uchar4 *subi) {
+    dev::subindex_remote <<<k_cnf(n)>>> (n, r->strt, /*io*/ (float2*) pp_re, counts, /**/ subi);
 }
 
 // TODO rm this
