@@ -1,3 +1,5 @@
+#define i2d(i) { (i + 1) % 3 - 1, (i / 3 + 1) % 3 - 1, (i / 9 + 1) % 3 - 1 }
+
 static int estimate(const int d[3]) {
     int nhalodir[3] =  {
         d[0] != 0 ? 1 : XS,
@@ -63,3 +65,11 @@ void Distr::ini(MPI_Comm cart, int rank[])  {
     }
 }
 
+void ini_S(Send *s) {
+    s->size_pin = new PinnedHostBuffer4<int>(27);    
+}
+
+void ini_R(Recv *r) {
+
+}
+#undef i2d
