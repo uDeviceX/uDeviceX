@@ -1,6 +1,6 @@
 namespace k_fsi {
 __global__ void halo(const int nparticles_padded,
-                     const int nsolvent, float *const accsolvent,
+                     const int nsolvent, float *const ff1,
                      const float seed) {
     const int laneid = threadIdx.x & 0x1f;
     const int warpid = threadIdx.x >> 5;
@@ -130,9 +130,9 @@ __global__ void halo(const int nparticles_padded,
             yforce += yinteraction;
             zforce += zinteraction;
 
-            atomicAdd(accsolvent + sentry, -xinteraction);
-            atomicAdd(accsolvent + sentry + 1, -yinteraction);
-            atomicAdd(accsolvent + sentry + 2, -zinteraction);
+            atomicAdd(ff1 + sentry, -xinteraction);
+            atomicAdd(ff1 + sentry + 1, -yinteraction);
+            atomicAdd(ff1 + sentry + 2, -zinteraction);
         }
     }
 
