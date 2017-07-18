@@ -5,13 +5,13 @@ namespace l { namespace rnd { namespace d {
 // can be used directly for DPD
 
 // passes of logistic map
-static __device__ const int N = 18;
+static __const__ int N = 18;
 // spacing coefficints for low discrepancy numbers
-static __device__ const float gold   = 0.6180339887498948482;
-static __device__ const float silver = 0.4142135623730950488;
-static __device__ const float bronze = 0.00008877875787352212838853023;
-static __device__ const float tin    = 0.00004602357186447026756768986;
-static __device__ const float sqrt2 = 1.41421356237309514547;
+static __const__ float gold   = 0.6180339887498948482;
+static __const__ float silver = 0.4142135623730950488;
+static __const__ float bronze = 0.00008877875787352212838853023;
+static __const__ float tin    = 0.00004602357186447026756768986;
+static __const__ float sqrt2 = 1.41421356237309514547;
 
 /************************* Trunk generator ***********************
  * Make one global random number per each timestep
