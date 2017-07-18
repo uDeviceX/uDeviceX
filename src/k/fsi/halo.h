@@ -1,11 +1,11 @@
 namespace k_fsi {
-__global__ void halo(const int n0,
-                     const int n1, float *const ff1,
-                     const float seed) {
-    const int laneid = threadIdx.x & 0x1f;
-    const int warpid = threadIdx.x >> 5;
-    const int localbase = 32 * (warpid + 4 * blockIdx.x);
-    const int pid = localbase + laneid;
+__global__ void halo(int n0,
+                     int n1, float *ff1,
+                     float seed) {
+    int laneid = threadIdx.x & 0x1f;
+    int warpid = threadIdx.x >> 5;
+    int localbase = 32 * (warpid + 4 * blockIdx.x);
+    int pid = localbase + laneid;
 
     if (localbase >= n0) return;
 
