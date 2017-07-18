@@ -7,8 +7,13 @@ void step(float driving_force0, bool wall0, int it) {
     odstr::send(&o::td);
     odstr::bulk(&o::q, &o::td);
     odstr::recv(&o::td);
-    odstr::unpack(&o::q, &o::td, &o::tu, &o::tz, &o::w);
+    //odstr::unpack(&o::q, &o::td, &o::tu, &o::tz, &o::w);
 
+    odstr::unpack_pp(&o::q, &o::td, &o::tu, &o::w);
+    if (global_ids) odstr::unpack_ii(&o::td, &o::tu);
+    odstr::gather_pp(&o::q, &o::td, &o::tu, &o::tz);
+    if (global_ids) odstr::gather_ii(&o::q, &o::tu);
+    
     if (solids0) distr_solid();
     if (rbcs)    distr_rbc();
     forces(wall0);
