@@ -1,6 +1,5 @@
 class Distr {
 public:
-    void scan(int n);
     void pack_pp(const Particle *pp, int n);
     void pack_ii(const int *ii, int n);
     int  send_sz(MPI_Comm cart, int rank[], MPI_Request *req);

@@ -25,9 +25,8 @@ void halo(const Particle *pp, int n, Send *s) {
     dev::halo<<<k_cnf(n)>>>(pp, n, /**/ s->iidx, s->size_dev);
 }
 
-// TODO rm this
-void Distr::scan(int n) {
-    dev::scan<<<1, 32>>>(n, s.size_dev, /**/ s.strt, s.size_pin->DP);
+void scan(int n, Send *s) {
+    dev::scan<<<1, 32>>>(n, s->size_dev, /**/ s->strt, s->size_pin->DP);
     dSync();
 }
 
