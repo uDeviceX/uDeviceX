@@ -102,6 +102,20 @@ void ini_S(/**/ Send *s) {
 }
 
 void ini_R(const Send *s, /**/ Recv *r) {
+    for (int i = 1; i < 27; ++i) alloc_pinned(i, 3 * estimate(i), /**/ &r->pp);
+    r->pp.dp[0] = s->pp.dp[0];
+    r->pp.hst[0] = NULL;
 
+    CC(cudaMalloc(&r->strt, 28*sizeof(r->strt[0])));
+
+    alloc_dev(/**/ &r->pp);
+
+    if (global_ids) {
+        for (int i = 1; i < 27; ++i) alloc_pinned(i, estimate(i), /**/ &r->ii);
+        r->ii.dp[0] = s->ii.dp[0];
+        r->ii.hst[0] = NULL;
+        
+        alloc_dev(/**/ &r->ii);
+    }
 }
 #undef i2d
