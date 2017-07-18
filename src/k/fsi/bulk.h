@@ -69,28 +69,33 @@ static __device__ int p2map(int zplane, int n, const Pa p, /**/ Map *m) {
     return r2map(zplane, n, p.x, p.y, p.z, m);
 }
 
-static __device__ void bulk1(const Pa l, const Fo f, int rid, const Map m, float seed, /**/ float *ff1) {
+static __device__ void bulk0(const Pa l, int rid, const Map m, float seed, /**/
+                             float *fx, float *fy, float *fz, float *ff1) {
     /* "[l]ocal" and "[r]emote" particles */
+    *fx = *fy = *fz = 0; /* local particle force */
     Pa r;
     float xinteraction, yinteraction, zinteraction;
-    float xforce = 0, yforce = 0, zforce = 0;
     for (int i = 0; !endp(m, i); ++i) {
         const int lid = m2id(m, i);
         r = tex2p(lid);
         pair(l, r, random(rid, lid, seed), &xinteraction, &yinteraction, &zinteraction);
-        xforce += xinteraction;
-        yforce += yinteraction;
-        zforce += zinteraction;
+        *fx += xinteraction;
+        *fy += yinteraction;
+        *fz += zinteraction;
 
         const int sentry = 3 * lid;
         atomicAdd(ff1 + sentry,     -xinteraction);
         atomicAdd(ff1 + sentry + 1, -yinteraction);
         atomicAdd(ff1 + sentry + 2, -zinteraction);
     }
+}
 
-    atomicAdd(f.x, xforce);
-    atomicAdd(f.y, yforce);
-    atomicAdd(f.z, zforce);
+static __device__ void bulk1(const Pa l, const Fo f, int i, const Map m, float seed, /**/ float *ff) {
+    float fx, fy, fz; /* "local" force */
+    bulk0(l, i, m, seed, /**/ &fx, &fy, &fz, ff);
+    atomicAdd(f.x, fx);
+    atomicAdd(f.y, fy);
+    atomicAdd(f.z, fz);
 }
 
 static __device__ void bulk2(float2 *pp, int i, int zplane, int n, float seed, /**/ float *ff0, float *ff1) {
