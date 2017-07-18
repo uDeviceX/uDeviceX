@@ -166,7 +166,7 @@ void unpack_ii(TicketD *td, TicketU *tu) {
     if (nhalo) sub::unpack_ii(nhalo, /**/ &td->r, tu->ii_re);    
 }
 
-void gather_pp(flu::Quants *q, TicketD *td, TicketU *tu, flu::TicketZ *tz) {
+void gather_pp(flu::Quants *q, const TicketD *td, TicketU *tu, flu::TicketZ *tz) {
     const int nhalo = td->nhalo, nbulk = td->nbulk;
     
     int n = q->n;
@@ -191,7 +191,7 @@ void gather_pp(flu::Quants *q, TicketD *td, TicketU *tu, flu::TicketZ *tz) {
     q->pp = pp0; q->pp0 = pp; 
 }
 
-void gather_ii(flu::Quants *q, TicketU *tu) {
+void gather_ii(flu::Quants *q, const TicketU *tu) {
     int n = q->n;
     int *ii = q->ii, *ii0 = q->ii0;
 
