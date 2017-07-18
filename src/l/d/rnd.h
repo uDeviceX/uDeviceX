@@ -5,20 +5,19 @@ namespace l { namespace rnd { namespace d {
 // can be used directly for DPD
 
 // passes of logistic map
-const static int N = 18;
+static __device__ const int N = 18;
 // spacing coefficints for low discrepancy numbers
-const static float gold   = 0.6180339887498948482;
-const static float silver = 0.4142135623730950488;
-const static float bronze = 0.00008877875787352212838853023;
-const static float tin    = 0.00004602357186447026756768986;
-const static float sqrt2 = 1.41421356237309514547;
+static __device__ const float gold   = 0.6180339887498948482;
+static __device__ const float silver = 0.4142135623730950488;
+static __device__ const float bronze = 0.00008877875787352212838853023;
+static __device__ const float tin    = 0.00004602357186447026756768986;
+static __device__ const float sqrt2 = 1.41421356237309514547;
 
 /************************* Trunk generator ***********************
  * Make one global random number per each timestep
  * cite G. Marsaglia
  * passes BigCrush
  *****************************************************************/
-#ifdef __CUDACC__
 
 /************************* Branch generator **********************
  * Make one random number per pair of particles per timestep
@@ -91,5 +90,4 @@ __inline__ __device__ float mean0var1_dual( float seed, float u, float v )
   return l + z;
 }
 
-#endif
 }}} /* l:rnd:d */
