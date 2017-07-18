@@ -14,7 +14,7 @@ LIBS      += -lcudart
 OBJ0 = $B/bund.o  $B/collision.o $B/common.o $B/common.mpi.o $B/force.o $B/local.o \
 	$B/field.o $B/glb.o $B/io.o  $B/m.o $B/main.o \
 	$B/mbounce.o $B/mesh.o $B/mrescue.o $B/minmax.o \
-	$B/solid.o $B/tcells.o $B/restart.o
+	$B/solid.o $B/tcells.o $B/restart.o $B/dump.o
 OBJL = $B/l.clist.o $B/l.linal.o $B/l.m.o $B/l.off.o $B/l.ply.o $B/l.scan.o $B/l.rnd.o
 OBJS = $(OBJ0) $(OBJL)
 
