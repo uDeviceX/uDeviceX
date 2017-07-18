@@ -18,9 +18,9 @@ static __device__ uint m2id(const Map m, uint i) {
 }
 
 static __device__ int r2map(int zplane, int n, float x, float y, float z, /**/ Map *m) {
+    /* coordinate [r] to map */
     int cnt0, cnt1, cnt2, org0;
     int org1, org2;
-
     enum {
         XCELLS = XS,
         YCELLS = YS,

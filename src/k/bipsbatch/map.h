@@ -18,7 +18,7 @@ static __device__ uint m2id(const Map m, uint i) {
 }
 
 static __device__ Map r2map(const Frag frag, float x, float y, float z) {
-    /* create map for a particle */
+    /* coordinate [r] to map */
     int org0, org1, org2;
     uint cnt0, cnt1, cnt2;
     int count1, count2;
