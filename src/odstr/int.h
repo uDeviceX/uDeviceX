@@ -19,11 +19,11 @@ struct TicketU { /* unpack ticket */
 };
 
 struct Work {
-    // TODO rm these
-    uchar4 *subi_re;           /* remote subindices */
-    Particle *pp_re;           /* remote particles  */
-    int *ii_re;                /* remote ids        */
-    uint *iidx;                /* scatter indices   */
+    // // TODO rm these
+    // uchar4 *subi_re;           /* remote subindices */
+    // Particle *pp_re;           /* remote particles  */
+    // int *ii_re;                /* remote ids        */
+    // uint *iidx;                /* scatter indices   */
     
     unsigned char *count_zip;
 };
@@ -43,19 +43,25 @@ void free_ticketD(/**/ TicketD *t) {
     CC(cudaFree(t->subi_lo));
 }
 
+void alloc_ticketU(TicketU *t) {
+    mpDeviceMalloc(&t->subi_re);
+    mpDeviceMalloc(&t->iidx);
+    mpDeviceMalloc(&t->pp_re);
+    if (global_ids) mpDeviceMalloc(&t->ii_re); 
+}
+
+void free_ticketU(TicketU *t) {
+    CC(cudaFree(t->subi_re));
+    CC(cudaFree(t->iidx));
+    CC(cudaFree(t->pp_re));
+    if (global_ids) CC(cudaFree(t->ii_re));
+}
+
 void alloc_work(Work *w) {
-    mpDeviceMalloc(&w->subi_re);
-    mpDeviceMalloc(&w->iidx);
-    mpDeviceMalloc(&w->pp_re);
-    if (global_ids) mpDeviceMalloc(&w->ii_re);
     CC(cudaMalloc(&w->count_zip, sizeof(w->count_zip[0])*XS*YS*ZS));
 }
 
 void free_work(Work *w) {
-    CC(cudaFree(w->subi_re));
-    CC(cudaFree(w->iidx));
-    CC(cudaFree(w->pp_re));
-    if (global_ids) CC(cudaFree(w->ii_re));
     CC(cudaFree(w->count_zip));
 }
 
@@ -100,7 +106,7 @@ void recv(TicketD *t) {
     if (global_ids) sub::waitall(t->recv_ii_req);
 }
 
-void unpack(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
+void unpack(flu::Quants *q, TicketD *td, TicketU *tu, flu::TicketZ *tz, Work *w) {
     const int nhalo = td->nhalo, nbulk = td->nbulk;
     
     int n = q->n;
@@ -111,24 +117,24 @@ void unpack(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
     int      *ii = q->ii, *ii0 = q->ii0;
     
     if (nhalo) {
-        sub::unpack_pp(nhalo, /**/ &td->r, w->pp_re);
-        if (global_ids) sub::unpack_ii(nhalo, /**/ &td->r, w->ii_re);
-        sub::subindex_remote(nhalo, &td->r, /*io*/ w->pp_re, count, /**/ w->subi_re);
+        sub::unpack_pp(nhalo, /**/ &td->r, tu->pp_re);
+        if (global_ids) sub::unpack_ii(nhalo, /**/ &td->r, tu->ii_re);
+        sub::subindex_remote(nhalo, &td->r, /*io*/ tu->pp_re, count, /**/ tu->subi_re);
     }
     
     k_common::compress_counts<<<k_cnf(XS*YS*ZS)>>>(XS*YS*ZS, (int4*)count, /**/ (uchar4*)w->count_zip);
     l::scan::d::scan(w->count_zip, XS*YS*ZS, /**/ (uint*)start);
 
     if (n)
-        sub::dev::scatter<<<k_cnf(n)>>>(false, td->subi_lo,  n, start, /**/ w->iidx);
+        sub::dev::scatter<<<k_cnf(n)>>>(false, td->subi_lo,  n, start, /**/ tu->iidx);
 
     if (nhalo)
-        sub::dev::scatter<<<k_cnf(nhalo)>>>(true, w->subi_re, nhalo, start, /**/ w->iidx);
+        sub::dev::scatter<<<k_cnf(nhalo)>>>(true, tu->subi_re, nhalo, start, /**/ tu->iidx);
     n = nbulk + nhalo;
     if (n) {
-        sub::dev::gather_pp<<<k_cnf(n)>>>((float2*)pp, (float2*)w->pp_re, n, w->iidx,
+        sub::dev::gather_pp<<<k_cnf(n)>>>((float2*)pp, (float2*)tu->pp_re, n, tu->iidx,
                                           /**/ (float2*)pp0, tz->zip0, tz->zip1);
-        if (global_ids) sub::dev::gather_id<<<k_cnf(n)>>>(ii, w->ii_re, n, w->iidx, /**/ ii0);
+        if (global_ids) sub::dev::gather_id<<<k_cnf(n)>>>(ii, tu->ii_re, n, tu->iidx, /**/ ii0);
     }
 
     q->n = n;
@@ -147,8 +153,8 @@ void unpack_pp(flu::Quants *q, TicketD *td, TicketU *tu, Work *w) {
     int *count = q->cells->count;
     
     if (nhalo) {
-        sub::unpack_pp(nhalo, /**/ &td->r, w->pp_re);
-        sub::subindex_remote(nhalo, &td->r, /*io*/ w->pp_re, count, /**/ w->subi_re);
+        sub::unpack_pp(nhalo, /**/ &td->r, tu->pp_re);
+        sub::subindex_remote(nhalo, &td->r, /*io*/ tu->pp_re, count, /**/ tu->subi_re);
     }
     
     k_common::compress_counts<<<k_cnf(XS*YS*ZS)>>>(XS*YS*ZS, (int4*)count, /**/ (uchar4*)w->count_zip);
@@ -164,14 +170,14 @@ void gather_pp(flu::Quants *q, TicketD *td, TicketU *tu, flu::TicketZ *tz, Work 
     Particle *pp = q->pp, *pp0 = q->pp0;
 
     if (n)
-        sub::dev::scatter<<<k_cnf(n)>>>(false, td->subi_lo,  n, start, /**/ w->iidx);
+        sub::dev::scatter<<<k_cnf(n)>>>(false, td->subi_lo,  n, start, /**/ tu->iidx);
 
     if (nhalo)
-        sub::dev::scatter<<<k_cnf(nhalo)>>>(true, w->subi_re, nhalo, start, /**/ w->iidx);
+        sub::dev::scatter<<<k_cnf(nhalo)>>>(true, tu->subi_re, nhalo, start, /**/ tu->iidx);
     n = nbulk + nhalo;
     
     if (n)
-    sub::dev::gather_pp<<<k_cnf(n)>>>((float2*)pp, (float2*)w->pp_re, n, w->iidx,
+    sub::dev::gather_pp<<<k_cnf(n)>>>((float2*)pp, (float2*)tu->pp_re, n, tu->iidx,
                                           /**/ (float2*)pp0, tz->zip0, tz->zip1);
 
     q->n = n;
@@ -180,16 +186,16 @@ void gather_pp(flu::Quants *q, TicketD *td, TicketU *tu, flu::TicketZ *tz, Work 
     q->pp = pp0; q->pp0 = pp; 
 }
 
-void unpack_ii(flu::Quants *q, TicketD *td, flu::TicketZ *tz, Work *w) {
+void unpack_ii(flu::Quants *q, TicketD *td, TicketU *tu, flu::TicketZ *tz) {
     const int nhalo = td->nhalo;
-    if (nhalo) sub::unpack_ii(nhalo, /**/ &td->r, w->ii_re);    
+    if (nhalo) sub::unpack_ii(nhalo, /**/ &td->r, tu->ii_re);    
 }
 
-void gather_ii(flu::Quants *q, Work *w) {
+void gather_ii(flu::Quants *q, TicketU *tu) {
     int n = q->n;
     int *ii = q->ii, *ii0 = q->ii0;
 
-    if (n) sub::dev::gather_id<<<k_cnf(n)>>>(ii, w->ii_re, n, w->iidx, /**/ ii0);
+    if (n) sub::dev::gather_id<<<k_cnf(n)>>>(ii, tu->ii_re, n, tu->iidx, /**/ ii0);
 
     /* swap */
     q->ii = ii0; q->ii0 = ii;
