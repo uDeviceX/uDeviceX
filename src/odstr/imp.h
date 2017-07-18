@@ -14,16 +14,15 @@ void post_recv(const MPI_Comm cart, const int rank[],
                 BT_P_ODSTR + r->tags[i], cart, mesg_req + c++);
 }
 
-void post_recv_ii(MPI_Comm cart, int rank[], MPI_Request *ii_req, Recv *r) {
+void post_recv_ii(const MPI_Comm cart, const int rank[], MPI_Request *ii_req, Recv *r) {
     for(int i = 1, c = 0; i < 27; ++i)
     l::m::Irecv(r->ii.hst[i], MAX_PART_NUM, MPI_INT, rank[i],
                 BT_I_ODSTR + r->tags[i], cart, ii_req + c++);
 }
 
-// TODO rm this
-void Distr::halo(Particle *pp, int n) {
-    CC(cudaMemset(s.size_dev, 0,  27*sizeof(s.size_dev[0])));
-    dev::halo<<<k_cnf(n)>>>(pp, n, /**/ s.iidx, s.size_dev);
+void halo(const Particle *pp, int n, Send *s) {
+    CC(cudaMemset(s->size_dev, 0,  27*sizeof(s->size_dev[0])));
+    dev::halo<<<k_cnf(n)>>>(pp, n, /**/ s->iidx, s->size_dev);
 }
 
 // TODO rm this

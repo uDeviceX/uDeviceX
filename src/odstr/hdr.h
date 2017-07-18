@@ -1,6 +1,5 @@
 class Distr {
 public:
-    void halo(Particle *pp, int n);
     void scan(int n);
     void pack_pp(const Particle *pp, int n);
     void pack_ii(const int *ii, int n);

@@ -57,7 +57,7 @@ void post_recv(TicketD *t) {
 void pack(flu::Quants *q, TicketD *t) {
     sub::Distr *D = &t->distr;
     if (q->n) {
-        D->halo(q->pp, q->n);
+        sub::halo(q->pp, q->n, /**/ &D->s);
         D->scan(q->n);
         D->pack_pp(q->pp, q->n);
         if (global_ids) D->pack_ii(q->ii, q->n);
