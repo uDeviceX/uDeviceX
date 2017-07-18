@@ -43,9 +43,6 @@ $B/bund.o:  $S/bund.cu;      $0 -dc $< -c -o $@
 $B/glb.o:   $S/glb.cu;       $0 -dc $< -c -o $@
 $B/local.o: $S/dpd/local.cu; $0 -dc $< -c -o $@
 
-# dev and hst
-$B/l/rnd.o: $S/l/rnd.cu;     $1 -dc $< -c -o $@
-
 clean:; -rm -f $B/udx $(OBJS) $B/gpuCode.o
 
 .PHONY = clean all
