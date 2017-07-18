@@ -26,6 +26,7 @@
 #include "io.h"
 #include "bund.h"
 #include "force.h"
+#include "diag.h"
 
 #include "restart.h"
 
