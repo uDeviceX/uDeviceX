@@ -24,6 +24,7 @@ void fin() {
     dpdr::free_ticketRh(&o::h::tr);
     
     odstr::free_ticketD(&o::td);
+    odstr::free_ticketU(&o::tu);
     odstr::free_work(&o::w);
 
     if (solids) {
