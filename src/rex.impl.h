@@ -116,7 +116,7 @@ void _pack_attempt() {
         }
         k_rex::tiny_scan<<<1, 32>>>
             (packscount->D + i * 26, packsoffset->D + 26 * i,
-             packsoffset->D + 26 * (i + 1), packsstart->D + i * 27);
+             /**/ packsoffset->D + 26 * (i + 1), packsstart->D + i * 27);
     }
 
     CC(cudaMemcpyAsync(host_packstotalcount->D,

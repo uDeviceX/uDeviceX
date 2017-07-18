@@ -66,9 +66,8 @@ __global__ void scatter_indices(const float2 *particles,
     }
 }
 
-__global__ void tiny_scan(int *counts,
-                          int *oldtotalcounts,
-                          int *totalcounts, int *paddedstarts) {
+__global__ void tiny_scan(const int *counts, const int *oldtotalcounts,
+                          /**/ int *totalcounts, int *paddedstarts) {
     int tid = threadIdx.x;
 
     int mycount = 0;
