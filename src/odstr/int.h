@@ -20,7 +20,6 @@ struct Work {
 
 void alloc_ticketD(TicketD *t) {
     l::m::Comm_dup(m::cart, &t->cart);
-    //t->distr.ini(t->cart, t->rank);
     sub::ini_comm(t->cart, /**/ t->rank, t->distr.r.tags);
     sub::ini_S(/**/ &t->distr.s);
     sub::ini_R(&t->distr.s, /**/ &t->distr.r);
