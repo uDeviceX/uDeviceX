@@ -124,7 +124,7 @@ void _pack_attempt() {
                        H2H));
 
     k_rex::tiny_scan<<<1, 32>>>
-        (packsoffset->D + 26 * wsolutes.size(), NULL, NULL, packstotalstart->D);
+        (packsoffset->D + 26 * wsolutes.size(), NULL, /**/ NULL, packstotalstart->D);
 
     CC(cudaMemcpyAsync(host_packstotalstart->D, packstotalstart->D,
                        sizeof(int) * 27, H2H));
@@ -144,7 +144,7 @@ void _pack_attempt() {
                                        D2D));
 
             k_rex::pack<<<14 * 16, 128>>>
-                ((float2 *)it.p, it.n, (float2 *)packbuf->D, packbuf->C, i);
+                ((float2 *)it.p, it.n, packbuf->C, i, /**/ (float2 *)packbuf->D);
         }
     }
 

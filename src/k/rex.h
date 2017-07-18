@@ -95,9 +95,8 @@ __global__ void tiny_scan(const int *counts, const int *oldtotalcounts,
     }
 }
 
-__global__ void pack(float2 *particles, int nparticles,
-                     float2 *buffer, int nbuffer,
-                     int soluteid) {
+__global__ void pack(const float2 *particles, const int nparticles,
+                     int nbuffer, int soluteid, /**/ float2 *buffer) {
     if (failed) return;
 
     int warpid = threadIdx.x >> 5;
