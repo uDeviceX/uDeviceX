@@ -69,8 +69,8 @@ void pack(flu::Quants *q, TicketD *t) {
 void send(TicketD *t) {
     sub::Distr *D = &t->distr;
     if (!t->first) {
-        D->waitall(t->send_sz_req);
-        D->waitall(t->send_pp_req);
+        sub::waitall(t->send_sz_req);
+        sub::waitall(t->send_pp_req);
         if (global_ids) D->waitall(t->send_ii_req);
     }
     t->first = false;
@@ -88,9 +88,9 @@ void bulk(flu::Quants *q, TicketD *t) {
 
 void recv(TicketD *t) {
     sub::Distr *D = &t->distr;
-    D->waitall(t->recv_sz_req);
+    sub::waitall(t->recv_sz_req);
     D->recv_count(&t->nhalo);
-    D->waitall(t->recv_pp_req);
+    sub::waitall(t->recv_pp_req);
     if (global_ids) D->waitall(t->recv_ii_req);
 }
 

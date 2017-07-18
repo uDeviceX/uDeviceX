@@ -1,6 +1,5 @@
-// TODO rm this
-void Distr::waitall(MPI_Request *reqs) {
-    MPI_Status statuses[128]; /* big number */
+void waitall(MPI_Request *reqs) {
+    MPI_Status statuses[26];
     l::m::Waitall(26, reqs, statuses) ;
 }
 
