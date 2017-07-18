@@ -3,7 +3,8 @@ void step(float driving_force0, bool wall0, int it) {
     assert(r::q.n <= MAX_PART_NUM);
 
     odstr::post_recv(&o::td);
-    odstr::pack(&o::q, &o::td);
+    odstr::pack_pp(&o::q, &o::td);
+    if (global_ids) odstr::pack_ii(&o::q, &o::td);
     odstr::send(&o::td);
     odstr::bulk(&o::q, &o::td);
     odstr::recv(&o::td);

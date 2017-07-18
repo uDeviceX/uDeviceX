@@ -64,15 +64,19 @@ void post_recv(TicketD *t) {
     if (global_ids) sub::post_recv_ii(t->cart, t->rank, /**/ t->recv_ii_req, &t->r);
 }
 
-void pack(flu::Quants *q, TicketD *t) {
+void pack_pp(flu::Quants *q, TicketD *t) {
     if (q->n) {
         sub::halo(q->pp, q->n, /**/ &t->s);
         sub::scan(q->n, /**/ &t->s);
         sub::pack_pp(q->pp, q->n, /**/ &t->s);
-        if (global_ids) sub::pack_ii(q->ii, q->n, /**/ &t->s);
         dSync();
     }
 }    
+
+void pack_ii(flu::Quants *q, TicketD *t) {
+    if (q->n) sub::pack_ii(q->ii, q->n, /**/ &t->s);
+    dSync();
+}
 
 void send(TicketD *t) {
     if (!t->first) {
