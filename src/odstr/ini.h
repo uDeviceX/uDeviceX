@@ -1,6 +1,7 @@
 #define i2d(i) { (i + 1) % 3 - 1, (i / 3 + 1) % 3 - 1, (i / 9 + 1) % 3 - 1 }
 
-static int estimate(const int d[3]) {
+static int estimate(const int i) {
+    const int d[3] = i2d(i);
     int nhalodir[3] =  {
         d[0] != 0 ? 1 : XS,
         d[1] != 0 ? 1 : YS,
@@ -17,13 +18,13 @@ void Distr::ini(MPI_Comm cart, int rank[])  {
     s.size_pin = new PinnedHostBuffer4<int>(27);
 
     for(int i = 0; i < 27; ++i) {
-        int d[3] = { (i + 1) % 3 - 1, (i / 3 + 1) % 3 - 1, (i / 9 + 1) % 3 - 1 };
+        int d[3] = i2d(i);
         r.tags[i] = (3 - d[0]) % 3 + 3 * ((3 - d[1]) % 3 + 3 * ((3 - d[2]) % 3));
         int send_coor[3], ranks[3] = {m::coords[X], m::coords[Y], m::coords[Z]};
         for(int c = 0; c < 3; ++c) send_coor[c] = ranks[c] + d[c];
         l::m::Cart_rank(cart, send_coor, rank + i) ;
 
-        int e = estimate(d);
+        int e = estimate(i);
         CC(cudaMalloc(&s.iidx_[i], sizeof(int) * e));
 
         if (i) {
