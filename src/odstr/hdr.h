@@ -1,6 +1,5 @@
 class Distr {
 public:
-    void pack_ii(const int *ii, int n);
     int  send_sz(MPI_Comm cart, int rank[], MPI_Request *req);
     void send_pp(MPI_Comm cart, int rank[], MPI_Request *req);
     void send_ii(MPI_Comm cart, int rank[], MPI_Request *req);

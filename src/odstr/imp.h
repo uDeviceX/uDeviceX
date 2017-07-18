@@ -34,9 +34,8 @@ void pack_pp(const Particle *pp, int n, Send *s) {
     dev::pack<float2, 3> <<<k_cnf(3*n)>>>((float2*)pp, s->iidx, s->strt, /**/ s->pp.dev);
 }
 
-// TODO rm this
-void Distr::pack_ii(const int *ii, int n) {
-    dev::pack<int, 1> <<<k_cnf(n)>>>(ii, s.iidx, s.strt, /**/ s.ii.dev);
+void pack_ii(const int *ii, int n, Send *s) {
+    dev::pack<int, 1> <<<k_cnf(n)>>>(ii, s->iidx, s->strt, /**/ s->ii.dev);
 }
 
 // TODO rm this
