@@ -55,7 +55,7 @@ static __device__ float random(uint lid, uint rid, float seed) {
     return l::rnd::d::mean0var1uu(seed, lid, rid);
 }
 
-static __device__ void pair(const Pa l, const Pa r, float rnd, /**/ float *fx, float *fy, float *fz) {
+static __device__ void pair0(const Pa l, const Pa r, float rnd, /**/ float *fx, float *fy, float *fz) {
     /* pair force ; l, r: local and remote */
     float3 r1, r2, v1, v2, f;
     r1 = make_float3( l.x,  l.y,  l.z); r2 = make_float3( r.x,  r.y,  r.z);
@@ -82,7 +82,7 @@ static __device__ void bulk0(const Pa l, int lid, const Map m, float seed, /**/
         rid = m2id(m, i);
         r = tex2p(rid);
         f = ff2f(ff, rid);
-        pair(l, r, random(lid, rid, seed), &x, &y, &z);
+        pair0(l, r, random(lid, rid, seed), &x, &y, &z);
         *fx += x; *fy += y; *fz += z;
         atomicAdd(f.x, -x); atomicAdd(f.y, -y); atomicAdd(f.z, -z);
     }
