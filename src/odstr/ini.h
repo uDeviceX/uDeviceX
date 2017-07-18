@@ -1,3 +1,15 @@
+static int estimate(const int d[3]) {
+    int nhalodir[3] =  {
+        d[0] != 0 ? 1 : XS,
+        d[1] != 0 ? 1 : YS,
+        d[2] != 0 ? 1 : ZS
+    };
+
+    int nhalocells = nhalodir[0] * nhalodir[1] * nhalodir[2];
+    int safety_factor = 2;
+    return numberdensity * safety_factor * nhalocells;    
+}
+
 void Distr::ini(MPI_Comm cart, int rank[])  {
     enum {X, Y, Z};
     s.size_pin = new PinnedHostBuffer4<int>(27);
@@ -9,33 +21,25 @@ void Distr::ini(MPI_Comm cart, int rank[])  {
         for(int c = 0; c < 3; ++c) send_coor[c] = ranks[c] + d[c];
         l::m::Cart_rank(cart, send_coor, rank + i) ;
 
-        int nhalodir[3] =  {
-            d[0] != 0 ? 1 : XS,
-            d[1] != 0 ? 1 : YS,
-            d[2] != 0 ? 1 : ZS
-        };
-
-        int nhalocells = nhalodir[0] * nhalodir[1] * nhalodir[2];
-        int safety_factor = 2;
-        int estimate = numberdensity * safety_factor * nhalocells;
-        CC(cudaMalloc(&s.iidx_[i], sizeof(int) * estimate));
+        int e = estimate(d);
+        CC(cudaMalloc(&s.iidx_[i], sizeof(int) * e));
 
         if (i) {
-            alloc_pinned(i, 3*estimate, /**/ &s.pp);
-            alloc_pinned(i, 3*estimate, /**/ &r.pp);
+            alloc_pinned(i, 3*e, /**/ &s.pp);
+            alloc_pinned(i, 3*e, /**/ &r.pp);
 
             if (global_ids) {
-                alloc_pinned(i, estimate, /**/ &s.ii);
-                alloc_pinned(i, estimate, /**/ &r.ii);
+                alloc_pinned(i, e, /**/ &s.ii);
+                alloc_pinned(i, e, /**/ &r.ii);
             }
         } else {
-            CC(cudaMalloc(&s.pp.dp[i], sizeof(float) * 6 * estimate));
+            CC(cudaMalloc(&s.pp.dp[i], sizeof(float) * 6 * e));
             r.pp.dp[i] = s.pp.dp[i];
             s.pp.hst[i] = NULL;
             r.pp.hst[i] = NULL;
 
             if (global_ids) {
-                CC(cudaMalloc(&s.ii.dp[i], sizeof(int) * estimate));
+                CC(cudaMalloc(&s.ii.dp[i], sizeof(int) * e));
                 r.ii.dp[i] = s.ii.dp[i];
                 s.ii.hst[i] = NULL;
                 r.ii.hst[i] = NULL;
