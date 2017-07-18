@@ -31,7 +31,7 @@ $B/udx: $(OBJS)
 
 # compile commands
 0=$(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT)
-1=test -d $B/l || mkdir $B/l && $0
+1=mkdir $B/l   2>/dev/null; $0
 
 # dev
 $B/%.o:     $S/%.cu;         $0     $< -c -o $@
