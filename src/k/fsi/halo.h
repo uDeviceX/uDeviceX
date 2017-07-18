@@ -1,13 +1,13 @@
 namespace k_fsi {
-__global__ void halo(const int nparticles_padded,
-                     const int nsolvent, float *const ff1,
+__global__ void halo(const int n0,
+                     const int n1, float *const ff1,
                      const float seed) {
     const int laneid = threadIdx.x & 0x1f;
     const int warpid = threadIdx.x >> 5;
     const int localbase = 32 * (warpid + 4 * blockIdx.x);
     const int pid = localbase + laneid;
 
-    if (localbase >= nparticles_padded) return;
+    if (localbase >= n0) return;
 
     int nunpack;
     float2 dst0, dst1, dst2;
@@ -70,7 +70,7 @@ __global__ void halo(const int nparticles_padded,
                 const int cid0 = xstart + XCELLS * (ycenter - 1 + YCELLS * zmy);
                 spidbase = tex1Dfetch(texCellsStart, cid0);
                 count0 = ((cid0 + xcount == NCELLS)
-                          ? nsolvent
+                          ? n1
                           : tex1Dfetch(texCellsStart, cid0 + xcount)) -
                     spidbase;
             }
@@ -79,7 +79,7 @@ __global__ void halo(const int nparticles_padded,
                 const int cid1 = xstart + XCELLS * (ycenter + YCELLS * zmy);
                 deltaspid1 = tex1Dfetch(texCellsStart, cid1);
                 count1 = ((cid1 + xcount == NCELLS)
-                          ? nsolvent
+                          ? n1
                           : tex1Dfetch(texCellsStart, cid1 + xcount)) -
                     deltaspid1;
             }
@@ -88,7 +88,7 @@ __global__ void halo(const int nparticles_padded,
                 const int cid2 = xstart + XCELLS * (ycenter + 1 + YCELLS * zmy);
                 deltaspid2 = tex1Dfetch(texCellsStart, cid2);
                 count2 = ((cid2 + xcount == NCELLS)
-                          ? nsolvent
+                          ? n1
                           : tex1Dfetch(texCellsStart, cid2 + xcount)) -
                     deltaspid2;
             }
