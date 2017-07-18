@@ -6,8 +6,8 @@ dump::Ticket dumpt;
 namespace o /* s[o]lvent */
 {
 flu::Quants q;
-flu::TicketZ tz;   /* [z]ip */
-flu::TicketRND trnd;
+flu::TicketZ tz;     /* [z]ip        */
+flu::TicketRND trnd; 
 odstr::TicketD td;   /* [d]istribute */
 odstr::TicketU tu;   /* [u]npack     */
 odstr::Work w;
@@ -20,8 +20,8 @@ dpdr::TicketShalo ts;
 dpdr::TicketRhalo tr;
 }
 
-Force    *ff;
-Force     ff_hst[MAX_PART_NUM]; /* solvent forces on host    */
+Force *ff;
+Force  ff_hst[MAX_PART_NUM]; /* solvent forces on host    */
 }
 
 namespace r /* [r]bc */
