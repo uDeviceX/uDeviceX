@@ -1,10 +1,10 @@
 struct Quants {
-    Particle *pp, *pp0;
-    int      *ii, *ii0;
-    int       n;
-    Clist *cells;
-    Particle *pp_hst;
-    int *ii_hst;
+    Particle *pp, *pp0; /* particles on device  */
+    int      *ii, *ii0; /* global ids on device */
+    int       n;        /* particle number      */
+    Clist *cells;       /* cell lists           */
+    Particle *pp_hst;   /* particles on host    */
+    int *ii_hst;        /* global ids on host   */
 }; 
 
 struct TicketZ { /* zip */
