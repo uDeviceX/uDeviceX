@@ -17,6 +17,7 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
     int fid; /* fragment id */
     int unpackbase;
 
+    Map m;
     int cnt0, cnt1, cnt2, org0;
     int org1, org2;
     int nzplanes;
@@ -61,6 +62,7 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
     nzplanes = laneid < nunpack ? 3 : 0;
 
     /******/
+    m = tex2map(nzplanes, n1, x, y, z);
     for (zplane = 0; zplane < nzplanes; ++zplane) {
         {
             enum {
