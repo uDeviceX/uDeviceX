@@ -51,6 +51,7 @@ __device__ void halo0(int n1, float seed,
         for (i = 0; !endp(m, i); ++i) {
             spid = m2id(m, i);
             r = tex2p(spid);
+            f = ff2f(ff1, spid);
             sentry = 3 * spid;
             myrandnr = l::rnd::d::mean0var1ii(seed, pid, spid);
 
