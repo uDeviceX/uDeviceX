@@ -7,6 +7,11 @@ struct Quants {
     int *ii_hst;        /* global ids on host   */
 }; 
 
+struct QuantsI {
+    int *ii, *ii0; /* int data on device */
+    int *ii_hst;   /* int data on host   */
+};
+
 struct TicketZ { /* zip */
     float4  *zip0;
     ushort4 *zip1;
@@ -35,6 +40,16 @@ void free_quants(Quants *q) {
     }
     delete q->cells;
     delete[] q->pp_hst;
+}
+
+void alloc_quantsI(QuantsI *q) {
+    mpDeviceMalloc(&q->ii); mpDeviceMalloc(&q->ii0);
+    q->ii_hst = new int[MAX_PART_NUM];
+}
+
+void free_quantsI(QuantsI *q) {
+    CC(cudaFree(q->ii)); CC(cudaFree(q->ii0));
+    delete[] q->ii_hst;
 }
 
 void alloc_ticketZ(/**/ TicketZ *t) {
