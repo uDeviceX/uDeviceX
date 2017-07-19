@@ -117,6 +117,7 @@ namespace dev {
 #include "k/fsi/common.h"
 #include "k/fsi/map.common.h"
 #include "k/fsi/map.bulk.h"
+#include "k/fsi/map.halo.h"
 #include "k/fsi/bulk.h"
 #include "k/fsi/halo.h"
 
