@@ -24,9 +24,9 @@ void fin() {
     dpdr::free_ticketRh(&o::h::tr);
     
     odstr::free_ticketD(&o::td);
-    odstr::free_ticketI(&o::ti);
     odstr::free_ticketU(&o::tu);
-    odstr::free_ticketUI(&o::tui);
+    if (global_ids) odstr::free_ticketI(&o::ti);
+    if (global_ids) odstr::free_ticketUI(&o::tui);
     odstr::free_work(&o::w);
 
     if (solids) {
