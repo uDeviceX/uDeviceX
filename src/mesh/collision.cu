@@ -113,6 +113,46 @@ __global__ void compute_tags(const Particle *pp, const int n, const Particle *vv
     // dont consider the case of inside several solids
     if (count % 2) atomicExch(tags + gid, sid);
 }
+
+union Pos {
+    float2 f2[2];
+    struct { float r[3]; float dummy; };
+};
+
+__device__ Pos tex2Pos(const Texo<float2> texvert, const int id) {
+    Pos r;
+    r.f2[0] = texvert.fetch(3 * id + 0);
+    r.f2[1] = texvert.fetch(3 * id + 1);
+    return r;
+}
+
+// assume nm blocks along y
+__global__ void compute_tags_tex(const Particle *pp, const int n, const Texo<float2> texvert, const int nv, const Texo<int4> textri, const int nt, /**/ int *tags) {
+    const int sid = blockIdx.y;
+    const int gid = threadIdx.x + blockIdx.x * blockDim.x;
+    if (gid >= n) return;
+
+    int count = 0;
+
+    const Particle p = pp[gid];
+    float origin[3] = {0, 0, 0};
+#ifdef spdir
+    origin[spdir] = p.r[spdir];
+#endif
+        
+    for (int i = 0; i < nt; ++i) {
+        const int4 t = textri.fetch(i);
+
+        const Pos a = tex2Pos(texvert, t.x);
+        const Pos b = tex2Pos(texvert, t.y);
+        const Pos c = tex2Pos(texvert, t.z);
+            
+        if (in_tetrahedron(p.r, a.r, b.r, c.r, origin)) ++count;
+    }
+
+    // dont consider the case of inside several solids
+    if (count % 2) atomicExch(tags + gid, sid);
+}
 }
     
 void inside_dev(const Particle *pp, const int n, const Mesh m, const Particle *i_pp, const int ns, /**/ int *tags) {
@@ -124,5 +164,22 @@ void inside_dev(const Particle *pp, const int n, const Mesh m, const Particle *i
     dim3 blck((127 + n)/128, ns);
 
     kernels::compute_tags <<< blck, thrd >>> (pp, n, i_pp, m.nv, m.tt, m.nt, /**/ tags);
+}
+
+/* 
+   n:  number of particles
+   nm: number of meshes 
+   nt: number of triangles per mesh
+   nv: number of vertices per mesh
+*/
+void get_tags(const Particle *pp, const int n, const Texo<float2> texvert, const Texo<int4> textri, const int nt, const int nv, const int nm, /**/ int *tags) {
+    if (nm == 0 || n == 0) return;
+
+    kernels::init_tags <<< k_cnf(n) >>> (n, /**/ tags);
+
+    dim3 thrd(128, 1);
+    dim3 blck((127 + n)/128, nm);
+
+    kernels::compute_tags_tex <<< blck, thrd >>> (pp, n, texvert, nv, textri, nt, /**/ tags);
 }
 }
