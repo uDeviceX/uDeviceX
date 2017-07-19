@@ -1,6 +1,4 @@
 namespace k_fsi {
-struct Fo { float *x, *y, *z; }; /* force */
-
 static __device__ void p2rv(const float2 *p, int i, /**/
                             float  *x, float  *y, float  *z,
                             float *vx, float *vy, float *vz) {
