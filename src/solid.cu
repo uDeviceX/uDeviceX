@@ -8,7 +8,7 @@
 
 #include "solid.h"
 #include "k/solid.h"
-#include "mesh.h"
+#include "mesh/props.h"
 
 namespace solid
 {

@@ -178,7 +178,7 @@ static void empty_solid(const Mesh m, /* io */ float *rr0, int *npsolid) {
     int j = 0;
     for (int i = 0; i < n0; ++i) {
         const float *r0 = rr0 + 3*i;
-        const float d = collision::dist_from_mesh(m, r0);
+        const float d = mesh::dist_from_mesh(m, r0);
         //if (d> 5) ERR("d = %f", d);
         if (d <= 1) {
             rr0[3*j + X] = r0[X];

@@ -1,7 +1,5 @@
 namespace collision
 {
-float dist_from_mesh(const Mesh m, const float *r0);
-
 int inside_1p(const float *r, const float *vv, const int *tt, const int nt);
 
 /* tags: -1 if outside, i if in ith solid */

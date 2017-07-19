@@ -145,7 +145,8 @@ namespace dev {
 #include "dpdr/int.h"
 }
 
-#include "collision.h"
+#include "mesh/collision.h"
+#include "mesh/dist.h"
 
 #include "solid.h"
 #include "tcells.h"
