@@ -2,7 +2,7 @@
 #include "common.h"
 #include "common.cuda.h"
 #include <conf.h>
-#include "collision.h"
+#include "mesh/collision.h"
 
 #include "mrescue.h"
 

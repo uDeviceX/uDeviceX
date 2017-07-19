@@ -5,7 +5,7 @@
 #include <conf.h>
 #include "conf.common.h"
 
-#include "collision.h"
+#include "mesh/collision.h"
 
 namespace collision
 {
