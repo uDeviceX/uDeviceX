@@ -76,10 +76,11 @@ __device__ void halo0(int n1, float seed,
     k_common::write_AOS3f(dst, nunpack, xforce, yforce, zforce);
 }
 
+
 __global__ void halo(int n0, int n1, float seed, float *ff1) {
     int laneid, warpid, localbase, pid;
-    laneid = threadIdx.x & 0x1f;
-    warpid = threadIdx.x >> 5;
+    warpid = threadIdx.x / 32;
+    laneid = threadIdx.x % 32;
     localbase = 32 * (warpid + 4 * blockIdx.x);
     pid = localbase + laneid;
     if (localbase >= n0) return;
