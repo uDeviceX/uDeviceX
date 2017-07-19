@@ -128,7 +128,7 @@ void recv_ii(TicketI *t) {
     sub::waitall(t->recv_ii_req);
 }
 
-void unpack_pp(flu::Quants *q, TicketD *td, TicketU *tu, Work *w) {
+void unpack_pp(const TicketD *td, /**/ flu::Quants *q, TicketU *tu, /*w*/ Work *w) {
     const int nhalo = td->nhalo;
     
     int *start = q->cells->start;

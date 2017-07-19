@@ -11,12 +11,12 @@ void step(float driving_force0, bool wall0, int it) {
     odstr::send_pp(/**/ &o::td);
     if (global_ids) odstr::send_ii(&o::td, /**/ &o::ti);
 
-    odstr::bulk(&o::q, &o::td);
+    odstr::bulk(/**/ &o::q, &o::td);
 
-    odstr::recv_pp(&o::td);
-    if (global_ids)odstr::recv_ii(&o::ti);
+    odstr::recv_pp(/**/ &o::td);
+    if (global_ids)odstr::recv_ii(/**/ &o::ti);
 
-    odstr::unpack_pp(&o::q, &o::td, &o::tu, &o::w);
+    odstr::unpack_pp(&o::td, /**/ &o::q, &o::tu, /*w*/ &o::w);
     if (global_ids) odstr::unpack_ii(&o::td, &o::ti, /**/ &o::tu);
 
     odstr::gather_pp(&o::td, /**/ &o::q, &o::tu, &o::tz);
