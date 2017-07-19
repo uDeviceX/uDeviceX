@@ -27,8 +27,9 @@ See [sim.md](../../doc/sim.md)
 * `unpack_pp`->`unpack_ii`
 
 ### TicketU:
-* `unpack_pp`->`unpack_ii`
-* `unpack_pp`->`gather_pp`
+* `unpack_pp`->`gather_pp`->`gather_ii`
+
+### TicketUI:
 * `unpack_ii`->`gather_ii`
 
 ### TicketI:
