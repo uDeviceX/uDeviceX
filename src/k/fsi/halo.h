@@ -58,6 +58,8 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
     dst = (float *)(packresults[fid] + unpackbase);
 
     xforce = yforce = zforce = 0;
+
+    /******/
     nzplanes = laneid < nunpack ? 3 : 0;
     for (zplane = 0; zplane < nzplanes; ++zplane) {
         {
@@ -119,6 +121,7 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
             org1 -= cnt0;
             org2 -= cnt1;
         }
+        /****************/
 
         for (i = 0; i < cnt2; ++i) {
             m1 = (int)(i >= cnt0);
