@@ -18,6 +18,7 @@ void ini() {
 
     flu::alloc_quants(&o::q);
     flu::alloc_ticketZ(&o::tz);
+    if (global_ids) flu::alloc_quantsI(&o::qi);
 
     odstr::alloc_ticketD(&o::td);
     odstr::alloc_ticketU(&o::tu);

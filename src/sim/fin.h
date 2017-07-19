@@ -17,6 +17,7 @@ void fin() {
     flu::free_quants(&o::q);
     flu::free_ticketZ(&o::tz);
     flu::free_ticketRND(&o::trnd);
+    if (global_ids) flu::free_quantsI(&o::qi);
 
     dpdr::free_ticketcom(&o::h::tc);
     dpdr::free_ticketrnd(&o::h::trnd);
