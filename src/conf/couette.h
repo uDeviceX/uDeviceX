@@ -29,6 +29,7 @@
 #define gammadpd_wall    8.0  /* gamma for the wall */
 
 #define       global_ids (false)
+#define    multi_solvent (false)
 
 #define ljsigma          0.3   /* RBC-RBC contact LJ interaction parameters */
 #define ljepsilon        0.444
