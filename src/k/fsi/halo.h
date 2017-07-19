@@ -12,6 +12,7 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
     int laneid, warpid, localbase, pid;
     int nunpack;
     float2 dst0, dst1, dst2;
+    float x, y, z;
     float *dst = NULL;
     int fid; /* fragment id */
     int unpackbase;
