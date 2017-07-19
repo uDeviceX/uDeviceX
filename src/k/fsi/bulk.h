@@ -7,8 +7,6 @@ struct Pa { /* local particle */
 
 struct Fo { float *x, *y, *z; }; /* force */
 
-static __device__ float fst(float2 p) { return p.x; }
-static __device__ float scn(float2 p) { return p.y; }
 static __device__ void p2rv(const float2 *p, int i, /**/
                             float  *x, float  *y, float  *z,
                             float *vx, float *vy, float *vz) {
