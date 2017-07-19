@@ -77,13 +77,11 @@ __device__ void halo0(int n1, float seed,
 }
 
 
-#include <assert.h>
 __global__ void halo(int n0, int n1, float seed, float *ff1) {
     int lane, warp, base, pid;
     warp = threadIdx.x / 32;
     lane = threadIdx.x % 32;
     base = 32 * warp + 128 * blockIdx.x;
-    assert(blockDim.x == 128);
     if (base >= n0) return;
     pid = base + lane;
     halo0(n1, seed, pid, base, lane, /**/ ff1);
