@@ -128,10 +128,14 @@ void read_pp(const char *code, const int id, Particle *pp, int *n) {
     DBG("I have read %ld pp", np);
 }
 
-void write_ii(const char *code, const int id, const int *ii, const long n) {
-    char bop[BS] = {0}, rel[BS] = {0}, val[BS] = {0}, idcode[BS] = {0};
-    gen_name(DUMP, code, id, "id.bop"   , /**/ bop);
-    gen_name(DUMP, code, id, "id.values", /**/ val);
+void write_ii(const char *code, const char *subext, const int id, const int *ii, const long n) {
+    char bop[BS] = {0}, rel[BS] = {0}, val[BS] = {0}, idcode[BS] = {0},
+        extbop[BS] = {0}, extval[BS] = {0};
+    CSPR(sprintf(extbop, "%s.bop",    subext));
+    CSPR(sprintf(extval, "%s.values", subext));
+    
+    gen_name(DUMP, code, id, extbop, /**/ bop);
+    gen_name(DUMP, code, id, extval, /**/ val);
 
     id2str(id, /**/ idcode);
     CSPR(sprintf(rel, PF, idcode, "id.values"));    
@@ -140,11 +144,14 @@ void write_ii(const char *code, const int id, const int *ii, const long n) {
     bopwrite::data(val, ii, n);
 }
 
-void read_ii(const char *code, const int id, int *ii, int *n) {
+void read_ii(const char *code, const char *subext, const int id, int *ii, int *n) {
     long np = 0;
-    char bop[BS] = {0}, val[BS] = {0};
-    gen_name(READ, code, id, "id.bop"   , /**/ bop);
-    gen_name(READ, code, id, "id.values", /**/ val);
+    char bop[BS] = {0}, val[BS] = {0}, extbop[BS] = {0}, extval[BS] = {0};
+    CSPR(sprintf(extbop, "%s.bop",    subext));
+    CSPR(sprintf(extval, "%s.values", subext));
+    
+    gen_name(READ, code, id, extbop, /**/ bop);
+    gen_name(READ, code, id, extval, /**/ val);
     DBG("reading <%s> and <%s>", bop, val);
     bopread::read_n(bop, &np);
     bopread::data(val, np, ii);
