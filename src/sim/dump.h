@@ -53,6 +53,7 @@ void dump_strt_templ() { /* template dumps (wall, solid) */
 
 void dump_strt(int id) {
     flu::strt_dump(id, o::q);
+    if (global_ids) flu::strt_dump_ids(id, o::qi, o::q.n);
     if (rbcs)   rbc::strt_dump(id, r::q);
     if (solids) rig::strt_dump(id, s::q);
 }
