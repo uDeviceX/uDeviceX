@@ -17,7 +17,6 @@ void fin() {
     flu::free_quants(&o::q);
     flu::free_ticketZ(&o::tz);
     flu::free_ticketRND(&o::trnd);
-    if (global_ids) flu::free_quantsI(&o::qi);
 
     dpdr::free_ticketcom(&o::h::tc);
     dpdr::free_ticketrnd(&o::h::trnd);
@@ -26,8 +25,19 @@ void fin() {
     
     odstr::free_ticketD(&o::td);
     odstr::free_ticketU(&o::tu);
-    if (global_ids) odstr::free_ticketI(&o::ti);
-    if (global_ids) odstr::free_ticketUI(&o::tui);
+
+    if (global_ids) {
+        flu::free_quantsI(&o::qi);
+        odstr::free_ticketI(&o::ti);
+        odstr::free_ticketUI(&o::tui);
+    }
+
+    if (multi_solvent) {
+        flu::free_quantsI(&o::qt);
+        odstr::free_ticketI(&o::tt);
+        odstr::free_ticketUI(&o::tut);
+    }
+    
     odstr::free_work(&o::w);
 
     if (solids) {

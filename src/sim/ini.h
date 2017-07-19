@@ -18,12 +18,22 @@ void ini() {
 
     flu::alloc_quants(&o::q);
     flu::alloc_ticketZ(&o::tz);
-    if (global_ids) flu::alloc_quantsI(&o::qi);
 
     odstr::alloc_ticketD(&o::td);
     odstr::alloc_ticketU(&o::tu);
-    if (global_ids) odstr::alloc_ticketI(&o::ti);
-    if (global_ids) odstr::alloc_ticketUI(&o::tui);
+
+    if (global_ids) {
+        flu::alloc_quantsI(&o::qi);
+        odstr::alloc_ticketI(&o::ti);
+        odstr::alloc_ticketUI(&o::tui);
+    }
+    
+    if (multi_solvent) {
+        flu::alloc_quantsI(&o::qt);
+        odstr::alloc_ticketI(&o::tt);
+        odstr::alloc_ticketUI(&o::tut);
+    }
+    
     odstr::alloc_work(&o::w);
 
     dpdr::ini_ticketcom(m::cart, &o::h::tc);
