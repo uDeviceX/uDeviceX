@@ -19,6 +19,8 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
     int scan1, scan2, ncandidates, spidbase;
     int deltaspid1, deltaspid2;
     int nzplanes;
+    int zplane;
+    int NCELLS;
 
     float xforce, yforce, zforce;
     
@@ -39,7 +41,7 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
 
     xforce = yforce = zforce = 0;
     nzplanes = laneid < nunpack ? 3 : 0;
-    for (int zplane = 0; zplane < nzplanes; ++zplane) {
+    for (zplane = 0; zplane < nzplanes; ++zplane) {
         {
             enum {
                 XCELLS = XS,
@@ -50,7 +52,7 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
                 ZOFFSET = ZCELLS / 2
             };
 
-            const int NCELLS = XS * YS * ZS;
+            NCELLS = XS * YS * ZS;
             const int xcenter = XOFFSET + (int)floorf(dst0.x);
             const int xstart = max(0, xcenter - 1);
             const int xcount = min(XCELLS, xcenter + 2) - xstart;
