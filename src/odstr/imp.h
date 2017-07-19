@@ -3,21 +3,21 @@ void waitall(MPI_Request *reqs) {
     l::m::Waitall(26, reqs, statuses) ;
 }
 
-void post_recv(const MPI_Comm cart, const int rank[],
+void post_recv(const MPI_Comm cart, const int rank[], const int bt_count, const int bt_part,
                MPI_Request *size_req, MPI_Request *mesg_req, Recv *r) {
     for(int i = 1, c = 0; i < 27; ++i)
     l::m::Irecv(r->size + i, 1, MPI_INTEGER, rank[i],
-                BT_C_ODSTR + r->tags[i], cart, size_req + c++);
+                bt_count + r->tags[i], cart, size_req + c++);
 
     for(int i = 1, c = 0; i < 27; ++i)
     l::m::Irecv(r->pp.hst[i], MAX_PART_NUM, MPI_FLOAT, rank[i],
-                BT_P_ODSTR + r->tags[i], cart, mesg_req + c++);
+                bt_part + r->tags[i], cart, mesg_req + c++);
 }
 
-void post_recv_ii(const MPI_Comm cart, const int rank[], const int tags[], /**/ MPI_Request *ii_req, Pbufs<int> *rii) {
+void post_recv_ii(const MPI_Comm cart, const int rank[], const int tags[], const int bt, /**/ MPI_Request *ii_req, Pbufs<int> *rii) {
     for(int i = 1, c = 0; i < 27; ++i)
     l::m::Irecv(rii->hst[i], MAX_PART_NUM, MPI_INT, rank[i],
-                BT_I_ODSTR + tags[i], cart, ii_req + c++);
+                bt + tags[i], cart, ii_req + c++);
 }
 
 void halo(const Particle *pp, int n, Send *s) {
@@ -38,24 +38,24 @@ void pack_ii(const int *ii, int n, const Send *s, Pbufs<int>* sii) {
     dev::pack<int, 1> <<<k_cnf(n)>>>(ii, s->iidx, s->strt, /**/ sii->dev);
 }
 
-int send_sz(MPI_Comm cart, const int rank[], /**/ Send *s, MPI_Request *req) {
+int send_sz(MPI_Comm cart, const int rank[], const int bt_count, /**/ Send *s, MPI_Request *req) {
     for(int i = 0; i < 27; ++i) s->size[i] = s->size_pin->D[i];
     for(int i = 1, cnt = 0; i < 27; ++i)
     l::m::Isend(s->size + i, 1, MPI_INTEGER, rank[i],
-                BT_C_ODSTR + i, cart, &req[cnt++]);
+                bt_count + i, cart, &req[cnt++]);
     return s->size[0]; /* `n' bulk */
 }
 
-void send_pp(MPI_Comm cart, const int rank[], /**/ Send *s, MPI_Request *req) {
+void send_pp(MPI_Comm cart, const int rank[], const int bt_part, /**/ Send *s, MPI_Request *req) {
     for(int i = 1, cnt = 0; i < 27; ++i)
     l::m::Isend(s->pp.hst[i], s->size[i] * 6, MPI_FLOAT, rank[i],
-                BT_P_ODSTR + i, cart, &req[cnt++]);
+                bt_part + i, cart, &req[cnt++]);
 }
 
-void send_ii(MPI_Comm cart, const int rank[], const int size[], /**/ Pbufs<int> *sii, MPI_Request *req) {
+void send_ii(MPI_Comm cart, const int rank[], const int size[], const int bt, /**/ Pbufs<int> *sii, MPI_Request *req) {
     for(int i = 1, cnt = 0; i < 27; ++i)
     l::m::Isend(sii->hst[i], size[i], MPI_INT, rank[i],
-                BT_I_ODSTR + i, cart, &req[cnt++]);
+                bt + i, cart, &req[cnt++]);
 }
 
 void recv_count(/**/ Recv *r, int *nhalo) {

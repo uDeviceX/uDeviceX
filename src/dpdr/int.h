@@ -4,6 +4,8 @@ typedef Sarray<int*, 26> intp26;
 typedef Sarray<Particle*, 26> Particlep26;
 
 struct TicketCom {
+    /* basetags */
+    int btc, btcs, btp;
     MPI_Comm cart;
     sub::Reqs sreq, rreq;
     int recv_tags[26], recv_counts[26], dstranks[26];
@@ -30,9 +32,12 @@ struct TicketRhalo {
     sub::Rbufs b;
 };
 
-void ini_ticketcom(MPI_Comm cart, /**/ TicketCom *t) {
+void ini_ticketcom(MPI_Comm cart, /*io*/ basetags::TagGen *tg, /**/ TicketCom *t) {
     sub::ini_tcom(cart, /**/ &t->cart, t->dstranks, t->recv_tags);
     t->first = true;
+    t->btc  = get_tag(tg);
+    t->btcs = get_tag(tg);
+    t->btp  = get_tag(tg);
 }
 
 void free_ticketcom(/**/ TicketCom *t) {
@@ -90,12 +95,12 @@ void pack(const Particle *pp, /**/ TicketShalo t) {
 void post(TicketCom *tc, TicketShalo *ts) {
     sub::copy_pp(ts->nphst, ts->b.pp, ts->b.pphst);
     sub::post(tc->cart, tc->dstranks, ts->nphst, ts->nc, ts->b.cumhst, ts->b.pphst,
-              /**/ &tc->sreq);
+              tc->btcs, tc->btc, tc->btp, /**/ &tc->sreq);
 }
 
 void post_expected_recv(TicketCom *tc, TicketRhalo *tr) {
     sub::post_expected_recv(tc->cart, tc->dstranks, tc->recv_tags, tr->estimate.d, tr->nc,
-                            /**/ tr->b.pphst, tr->np.d, tr->b.cumhst, &tc->rreq);
+                            tc->btcs, tc->btc, tc->btp, /**/ tr->b.pphst, tr->np.d, tr->b.cumhst, &tc->rreq);
 }
 
 void wait_recv(TicketCom *tc) {

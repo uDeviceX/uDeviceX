@@ -55,6 +55,9 @@ MPI_Comm cart;
 int iterationcount;
 int dstranks[26], recv_tags[26], recv_counts[26], send_counts[26];
 
+/* basetags */
+int btc, btp1, btp2, btf;
+
 cudaEvent_t evPpacked, evAcomputed;
 DeviceBuffer<int> *packscount, *packsstart, *packsoffset, *packstotalstart;
 PinnedHostBuffer<int> *host_packstotalstart, *host_packstotalcount;

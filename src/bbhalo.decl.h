@@ -4,6 +4,9 @@ MPI_Comm cart;
 MPI_Request sendcntreq[26];
 std::vector<MPI_Request> ssendreq, srecvreq, psendreq, precvreq, recvcntreq;
 
+/* basetags */
+int btc, btp, bts, bts2;
+
 std::vector<Solid> sshalo[27]; /* [s]olid [s]end halo buffer */
 std::vector<Solid> srhalo[27]; /* [s]olid [r]ecv halo buffer */
 

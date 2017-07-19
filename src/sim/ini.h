@@ -4,12 +4,15 @@ void ini() {
         CC(cudaMalloc(&r::ff, MAX_PART_NUM));
         rbc::alloc_quants(&r::q);
     }
-    rdstr::ini();
+
+    basetags::ini(&tag_gen);
+    
+    rdstr::ini(&tag_gen);
     if (fsiforces) fsi::ini();
-    sdstr::ini();
-    bbhalo::ini();
+    sdstr::ini(&tag_gen);
+    bbhalo::ini(&tag_gen);
     cnt::ini();
-    rex::ini();
+    rex::ini(&tag_gen);
     dump::ini(&dumpt);
 
     sdf::alloc_quants(&w::qsdf);
@@ -19,24 +22,24 @@ void ini() {
     flu::alloc_quants(&o::q);
     flu::alloc_ticketZ(&o::tz);
 
-    odstr::alloc_ticketD(&o::td);
+    odstr::alloc_ticketD(&tag_gen, &o::td);
     odstr::alloc_ticketU(&o::tu);
 
     if (global_ids) {
         flu::alloc_quantsI(&o::qi);
-        odstr::alloc_ticketI(&o::ti);
+        odstr::alloc_ticketI(&tag_gen, &o::ti);
         odstr::alloc_ticketUI(&o::tui);
     }
     
     if (multi_solvent) {
         flu::alloc_quantsI(&o::qt);
-        odstr::alloc_ticketI(&o::tt);
+        odstr::alloc_ticketI(&tag_gen, &o::tt);
         odstr::alloc_ticketUI(&o::tut);
     }
     
     odstr::alloc_work(&o::w);
 
-    dpdr::ini_ticketcom(m::cart, &o::h::tc);
+    dpdr::ini_ticketcom(m::cart, &tag_gen, &o::h::tc);
     dpdr::ini_ticketrnd(o::h::tc, /**/ &o::h::trnd);
     dpdr::alloc_ticketSh(/**/ &o::h::ts);
     dpdr::alloc_ticketRh(/**/ &o::h::tr);

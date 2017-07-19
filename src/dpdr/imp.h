@@ -49,35 +49,35 @@ void copy_pp(const int *fragnp, const Particlep26 fragppdev, /**/ Particlep26 fr
     dSync(); /* was CC(cudaStreamSynchronize(downloadstream)); */
 }
 
-void post(MPI_Comm cart, const int dstranks[], const int *fragnp, const int26 fragnc, const intp26 fragcum, const Particlep26 fragpp,
-          /**/ Reqs *sreq) {
+void post(MPI_Comm cart, const int dstranks[], const int *fragnp, const int26 fragnc, const intp26 fragcum,
+          const Particlep26 fragpp, int btcs, int btc, int btp, /**/ Reqs *sreq) {
 
     for (int i = 0; i < 26; ++i) {
         const int nc = fragnc.d[i];
         MC(l::m::Isend(fragcum.d[i], nc, MPI_INT, dstranks[i],
-                       BT_CS_DPD + i, cart, sreq->cells + i));
+                       btcs + i, cart, sreq->cells + i));
 
         const int count = fragnp[i];
         
         MC(l::m::Isend(&count, 1, MPI_INT, dstranks[i],
-                       BT_C_DPD + i, cart, sreq->counts + i));
+                       btc + i, cart, sreq->counts + i));
         
         MC(l::m::Isend(fragpp.d[i], count, datatype::particle,
-                       dstranks[i], BT_P_DPD + i, cart, sreq->pp + i));
+                       dstranks[i], btp + i, cart, sreq->pp + i));
     }
 }
 
 void post_expected_recv(MPI_Comm cart, const int dstranks[], const int recv_tags[], const int estimate[], const int26 fragnc,
-                        /**/ Particlep26 fragpp, int *Rfragnp, intp26 Rfragcum, Reqs *rreq) {
+                        int btcs, int btc, int btp, /**/ Particlep26 fragpp, int *Rfragnp, intp26 Rfragcum, Reqs *rreq) {
     for (int i = 0; i < 26; ++i) {
-        MC(l::m::Irecv(fragpp.d[i], estimate[i], datatype::particle, dstranks[i], BT_P_DPD + recv_tags[i],
+        MC(l::m::Irecv(fragpp.d[i], estimate[i], datatype::particle, dstranks[i], btp + recv_tags[i],
                        cart, rreq->pp + i));
     
         MC(l::m::Irecv(Rfragcum.d[i], fragnc.d[i], MPI_INT, dstranks[i],
-                       BT_CS_DPD + recv_tags[i], cart, rreq->cells + i));
+                       btcs + recv_tags[i], cart, rreq->cells + i));
     
         MC(l::m::Irecv(Rfragnp + i, 1, MPI_INT, dstranks[i],
-                       BT_C_DPD + recv_tags[i], cart, rreq->counts + i));
+                       btc + recv_tags[i], cart, rreq->counts + i));
     }
 }
 

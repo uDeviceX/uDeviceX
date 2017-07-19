@@ -1,5 +1,8 @@
 namespace rdstr
 {
+/* base tags */
+int btc, btp;
+
 int n_bulk;
 Particle* bulk;
   

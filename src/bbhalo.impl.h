@@ -80,16 +80,21 @@ void _post_recvcnt()
     for (int i = 1; i < 27; ++i)
     {
         MPI_Request req;
-        l::m::Irecv(&recv_counts[i], 1, MPI_INTEGER, ank_ne[i], i + BT_C_BBHALO, cart, &req);
+        l::m::Irecv(&recv_counts[i], 1, MPI_INTEGER, ank_ne[i], i + btc, cart, &req);
         recvcntreq.push_back(req);
     }
 }
 
-void ini()
+void ini(/*io*/ basetags::TagGen *tg)
 {
     l::m::Comm_dup(m::cart, &cart);
     
     gen_ne(cart, /**/ rnk_ne, ank_ne);
+
+    btc  = get_tag(tg);
+    btp  = get_tag(tg);
+    bts  = get_tag(tg);
+    bts2 = get_tag(tg);
 
     _post_recvcnt();
 }
@@ -173,7 +178,7 @@ void pack_sendcnt(const Solid *ss_hst, const int ns, const Particle *pp, const i
     for (int i = 0; i < 27; ++i) send_counts[i] = sshalo[i].size();
 
     for (int i = 1; i < 27; ++i)
-    l::m::Isend(send_counts + i, 1, MPI_INTEGER, rnk_ne[i], i + BT_C_BBHALO, cart, &sendcntreq[i - 1]);
+    l::m::Isend(send_counts + i, 1, MPI_INTEGER, rnk_ne[i], i + btc, cart, &sendcntreq[i - 1]);
 }
 
 int post(const int nps)
@@ -200,10 +205,10 @@ int post(const int nps)
     if (srhalo[i].size() > 0)
     {
         MPI_Request request;
-        l::m::Irecv(srhalo[i].data(), srhalo[i].size(), datatype::solid, ank_ne[i], i + BT_S_BBHALO, cart, &request);
+        l::m::Irecv(srhalo[i].data(), srhalo[i].size(), datatype::solid, ank_ne[i], i + bts, cart, &request);
         srecvreq.push_back(request);
 
-        l::m::Irecv(prhalo[i].data(), prhalo[i].size(), datatype::particle, ank_ne[i], i + BT_P_BBHALO, cart, &request);
+        l::m::Irecv(prhalo[i].data(), prhalo[i].size(), datatype::particle, ank_ne[i], i + btp, cart, &request);
         precvreq.push_back(request);
     }
 
@@ -211,10 +216,10 @@ int post(const int nps)
     if (sshalo[i].size() > 0)
     {
         MPI_Request request;
-        l::m::Isend(sshalo[i].data(), sshalo[i].size(), datatype::solid, rnk_ne[i], i + BT_S_BBHALO, cart, &request);
+        l::m::Isend(sshalo[i].data(), sshalo[i].size(), datatype::solid, rnk_ne[i], i + bts, cart, &request);
         ssendreq.push_back(request);
 
-        l::m::Isend(pshalo[i].data(), pshalo[i].size(), datatype::particle, rnk_ne[i], i + BT_P_BBHALO, cart, &request);
+        l::m::Isend(pshalo[i].data(), pshalo[i].size(), datatype::particle, rnk_ne[i], i + btp, cart, &request);
         psendreq.push_back(request);
     }
         
@@ -297,7 +302,7 @@ void post_back()
     if (srhalo[i].size() > 0)
     {
         MPI_Request request;
-        l::m::Irecv(srhalo[i].data(), srhalo[i].size(), datatype::solid, rnk_ne[i], i + BT_S2_BBHALO, cart, &request);
+        l::m::Irecv(srhalo[i].data(), srhalo[i].size(), datatype::solid, rnk_ne[i], i + bts2, cart, &request);
         //printf("[%d] halo %d recv %d\n", m::rank, i, srhalo[i].size());
         srecvreq.push_back(request);
     }
@@ -306,7 +311,7 @@ void post_back()
     if (sshalo[i].size() > 0)
     {
         MPI_Request request;
-        l::m::Isend(sshalo[i].data(), sshalo[i].size(), datatype::solid, ank_ne[i], i + BT_S2_BBHALO, cart, &request);
+        l::m::Isend(sshalo[i].data(), sshalo[i].size(), datatype::solid, ank_ne[i], i + bts2, cart, &request);
         ssendreq.push_back(request);
     }
 }

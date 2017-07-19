@@ -1,5 +1,8 @@
 namespace sdstr
 {
+/* base tags */
+int btc, btp, bts;
+
 std::vector<Solid> srbuf[27], ssbuf[27]; /* send and recieve buffers: solid */
 std::vector<Particle> prbuf[27], psbuf[27]; /* send and recieve buffers: mesh */
     

@@ -17,7 +17,7 @@ void _post_recvcnt() {
     recv_cnts[0] = 0;
     for (int i = 1; i < 27; ++i) {
         MPI_Request req;
-        l::m::Irecv(&recv_cnts[i], 1, MPI_INTEGER, ank_ne[i], i + BT_C_RDSTR, cart, &req);
+        l::m::Irecv(&recv_cnts[i], 1, MPI_INTEGER, ank_ne[i], i + btc, cart, &req);
         recvcntreq.pb(req);
     }
 }
@@ -37,7 +37,7 @@ static void gen_ne(MPI_Comm cart, /* */ int* rnk_ne, int* ank_ne)
     }
 }
 
-void ini() {
+void ini(/*io*/ basetags::TagGen *tg) {
     mpDeviceMalloc(&bulk);
 
     for (int i = 0; i < 27; i++) rbuf[i] = new PinnedHostBuffer1<Particle>;
@@ -51,6 +51,9 @@ void ini() {
     l::m::Comm_dup(m::cart, &cart);
     gen_ne(cart,   rnk_ne, ank_ne); /* generate ranks and anti-ranks */
 
+    btc = get_tag(tg);
+    btp = get_tag(tg);
+    
     _post_recvcnt();
 }
 
@@ -113,7 +116,7 @@ void pack_sendcnt(Particle *pp, int nc, int nv) {
     dSync(); /* was CC(cudaStreamSynchronize(stream)); */
     for (int i = 1; i < 27; ++i)
     l::m::Isend(&sbuf[i]->S, 1, MPI_INTEGER,
-              rnk_ne[i], i + BT_C_RDSTR, cart,
+              rnk_ne[i], i + btc, cart,
               &sendcntreq[i - 1]);
 }
 
@@ -140,7 +143,7 @@ int post(int nv) {
     if (rbuf[i]->S > 0) {
         MPI_Request request;
         l::m::Irecv(rbuf[i]->D, rbuf[i]->S,
-                    datatype::particle, ank_ne[i], i + BT_P_RDSTR,
+                    datatype::particle, ank_ne[i], i + btp,
                     cart, &request);
         recvreq.pb(request);
     }
@@ -149,7 +152,7 @@ int post(int nv) {
     if (sbuf[i]->S > 0) {
         MPI_Request request;
         l::m::Isend(sbuf[i]->D, sbuf[i]->S,
-                    datatype::particle, rnk_ne[i], i + BT_P_RDSTR,
+                    datatype::particle, rnk_ne[i], i + btp,
                     cart, &request);
         sendreq.pb(request);
     }

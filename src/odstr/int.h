@@ -1,4 +1,7 @@
 struct TicketD { /* distribution */
+    /* base tags */
+    int btc, btp;
+
     MPI_Comm cart;
     int rank[27];
     MPI_Request send_sz_req[27], recv_sz_req[27];
@@ -11,6 +14,7 @@ struct TicketD { /* distribution */
 };
 
 struct TicketI { /* int data */
+    int bt;                    /* base tag */
     MPI_Request send_ii_req[27], recv_ii_req[27];
     bool first = true;
     sub::Pbufs<int> sii;       /* Send int data    */
@@ -31,13 +35,15 @@ struct Work {
     unsigned char *count_zip;
 };
 
-void alloc_ticketD(TicketD *t) {
+void alloc_ticketD(/*io*/ basetags::TagGen *tg, /**/ TicketD *t) {
     l::m::Comm_dup(m::cart, &t->cart);
     sub::ini_comm(t->cart, /**/ t->rank, t->r.tags);
     sub::ini_S(/**/ &t->s);
     sub::ini_R(&t->s, /**/ &t->r);
     t->first = true;
     mpDeviceMalloc(&t->subi_lo);
+    t->btc = get_tag(tg);
+    t->btp = get_tag(tg);
 }
 
 void free_ticketD(/**/ TicketD *t) {
@@ -46,9 +52,10 @@ void free_ticketD(/**/ TicketD *t) {
     CC(cudaFree(t->subi_lo));
 }
 
-void alloc_ticketI(/**/ TicketI *t) {
+void alloc_ticketI(/*io*/ basetags::TagGen *tg, /**/ TicketI *t) {
     t->first = true;
     sub::ini_SRI(/**/ &t->sii, &t->rii);
+    t->bt = get_tag(tg);
 }
 
 void free_ticketI(/**/ TicketI *t) {
@@ -84,10 +91,10 @@ void free_work(Work *w) {
 }
 
 void post_recv_pp(TicketD *t) {
-    sub::post_recv(t->cart, t->rank, /**/ t->recv_sz_req, t->recv_pp_req, &t->r);
+    sub::post_recv(t->cart, t->rank, t->btc, t->btp, /**/ t->recv_sz_req, t->recv_pp_req, &t->r);
 }
 void post_recv_ii(const TicketD *td, TicketI *ti) {
-    sub::post_recv_ii(td->cart, td->rank, td->r.tags, /**/ ti->recv_ii_req, &ti->rii);
+    sub::post_recv_ii(td->cart, td->rank, td->r.tags, ti->bt, /**/ ti->recv_ii_req, &ti->rii);
 }
 
 void pack_pp(const flu::Quants *q, TicketD *t) {
@@ -110,14 +117,14 @@ void send_pp(TicketD *t) {
         sub::waitall(t->send_pp_req);
     }
     t->first = false;
-    t->nbulk = sub::send_sz(t->cart, t->rank, /**/ &t->s, t->send_sz_req);
-    sub::send_pp(t->cart, t->rank, /**/ &t->s, t->send_pp_req);
+    t->nbulk = sub::send_sz(t->cart, t->rank, t->btc, /**/ &t->s, t->send_sz_req);
+    sub::send_pp(t->cart, t->rank, t->btp, /**/ &t->s, t->send_pp_req);
 }
 
 void send_ii(const TicketD *td, TicketI *ti) {
     if (!ti->first) sub::waitall(ti->send_ii_req);
     ti->first = false;
-    sub::send_ii(td->cart, td->rank, td->s.size, /**/ &ti->sii, ti->send_ii_req);
+    sub::send_ii(td->cart, td->rank, td->s.size, ti->bt, /**/ &ti->sii, ti->send_ii_req);
 }
 
 void bulk(flu::Quants *q, TicketD *t) {

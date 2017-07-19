@@ -8,7 +8,7 @@ void _adjust_packbuffers() {
     host_packbuf->resize(s);
 }
 
-void ini() {
+void ini(/*io*/ basetags::TagGen *tg) {
     iterationcount = -1;
     packstotalstart = new DeviceBuffer<int>(27);
     host_packstotalstart = new PinnedHostBuffer<int>(27);
@@ -24,6 +24,11 @@ void ini() {
     for (int i = 0; i < SE_HALO_SIZE; i++) local[i] = new LocalHalo;
     for (int i = 0; i < SE_HALO_SIZE; i++) remote[i] = new RemoteHalo;
 
+    btc  = get_tag(tg);
+    btp1 = get_tag(tg);
+    btp2 = get_tag(tg);
+    btf  = get_tag(tg);
+        
     MC(l::m::Comm_dup(m::cart, &cart));
     for (int i = 0; i < 26; ++i) {
         int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
@@ -66,7 +71,7 @@ void _postrecvC() {
     for (int i = 0; i < 26; ++i) {
         MPI_Request reqC;
         MC(l::m::Irecv(recv_counts + i, 1, MPI_INTEGER, dstranks[i],
-                     BT_C_REX + recv_tags[i], cart, &reqC));
+                     btc + recv_tags[i], cart, &reqC));
         reqrecvC.push_back(reqC);
     }
 }
@@ -76,7 +81,7 @@ void _postrecvP() {
         MPI_Request reqP;
         remote[i]->pmessage.resize(remote[i]->expected());
         MC(l::m::Irecv(&remote[i]->pmessage.front(), remote[i]->expected() * 6,
-                     MPI_FLOAT, dstranks[i], BT_P_REX + recv_tags[i],
+                     MPI_FLOAT, dstranks[i], btp1 + recv_tags[i],
                      cart, &reqP));
         reqrecvP.push_back(reqP);
     }
@@ -87,7 +92,7 @@ void _postrecvA() {
         MPI_Request reqA;
 
         MC(l::m::Irecv(local[i]->result->D, local[i]->result->S * 3,
-                     MPI_FLOAT, dstranks[i], BT_A_REX + recv_tags[i],
+                     MPI_FLOAT, dstranks[i], btf + recv_tags[i],
                      cart, &reqA));
         reqrecvA.push_back(reqA);
     }
@@ -232,7 +237,7 @@ void post_p() {
 
         for (int i = 0; i < 26; ++i)
         MC(l::m::Isend(send_counts + i, 1, MPI_INTEGER, dstranks[i],
-                     BT_C_REX + i, cart, &reqsendC[i]));
+                     btc + i, cart, &reqsendC[i]));
 
         for (int i = 0; i < 26; ++i) {
             int start = host_packstotalstart->D[i];
@@ -244,14 +249,14 @@ void post_p() {
             _not_nan((float *)(host_packbuf->D + start), count * 6);
 
             MC(l::m::Isend(host_packbuf->D + start, expected * 6, MPI_FLOAT,
-                         dstranks[i], BT_P_REX + i, cart, &reqP));
+                         dstranks[i], btp1 + i, cart, &reqP));
             reqsendP.push_back(reqP);
 
             if (count > expected) {
                 MPI_Request reqP2;
                 MC(l::m::Isend(host_packbuf->D + start + expected,
                              (count - expected) * 6, MPI_FLOAT, dstranks[i],
-                             BT_P2_REX + i, cart, &reqP2));
+                             btp2 + i, cart, &reqP2));
 
                 reqsendP.push_back(reqP2);
             }
@@ -276,7 +281,7 @@ void recv_p() {
         if (count > expected)
         MC(MPI_Recv(&remote[i]->pmessage.front() + expected,
                     (count - expected) * 6, MPI_FLOAT, dstranks[i],
-                    BT_P2_REX + recv_tags[i], cart, &status));
+                    btp2 + recv_tags[i], cart, &status));
 
         memcpy(remote[i]->hstate.D, &remote[i]->pmessage.front(),
                sizeof(Particle) * count);
@@ -326,7 +331,7 @@ void post_f() {
     reqsendA.resize(26);
     for (int i = 0; i < 26; ++i)
     MC(l::m::Isend(remote[i]->result.D, remote[i]->result.S * 3,
-                 MPI_FLOAT, dstranks[i], BT_A_REX + i, cart,
+                 MPI_FLOAT, dstranks[i], btf + i, cart,
                  &reqsendA[i]));
 }
 
