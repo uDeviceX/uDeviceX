@@ -50,9 +50,9 @@ int strt(const int id, Particle *dev, /*w*/ Particle *hst) {
     return n;
 }
 
-int strt_ii(const int id, int *dev, /*w*/ int *hst) {
+int strt_ii(const char *subext, const int id, int *dev, /*w*/ int *hst) {
     int n;
-    restart::read_ii("flu", "id", id, hst, &n);
+    restart::read_ii("flu", subext, id, hst, &n);
     if (n) cH2D(dev, hst, n);
     return n;
 }
@@ -62,8 +62,8 @@ void strt_dump(const int id, const int n, const Particle *dev, Particle *hst) {
     restart::write_pp("flu", id, hst, n);
 }
 
-void strt_dump_ii(const int id, const int n, const int *dev, int *hst) {
+void strt_dump_ii(const char *subext, const int id, const int n, const int *dev, int *hst) {
     if (n) cD2H(hst, dev, n);
-    restart::write_ii("flu", "id", id, hst, n);
+    restart::write_ii("flu", subext, id, hst, n);
 }
 

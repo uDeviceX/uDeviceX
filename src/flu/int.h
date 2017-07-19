@@ -83,7 +83,7 @@ void strt_quants(const int id, Quants *q) {
 }
 
 void strt_ids(const int id, QuantsI *q) {
-    sub::strt_ii(id, /**/ q->ii, /* w */ q->ii_hst);
+    sub::strt_ii("id", id, /**/ q->ii, /* w */ q->ii_hst);
 }
 
 void strt_dump(const int id, const Quants q) {
@@ -91,5 +91,5 @@ void strt_dump(const int id, const Quants q) {
 }
 
 void strt_dump_ids(const int id, const QuantsI q, const int n) {
-    sub::strt_dump_ii(id, n, q.ii, /* w */ q.ii_hst);
+    sub::strt_dump_ii("id", id, n, q.ii, /* w */ q.ii_hst);
 }
