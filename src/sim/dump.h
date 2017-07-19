@@ -13,7 +13,7 @@ void dump_part(int step) {
   cD2H(o::q.pp_hst, o::q.pp, o::q.n);
   if (global_ids) {
       cD2H(o::qi.ii_hst, o::qi.ii, o::q.n);
-      dump::ids(o::qi.ii_hst, o::q.n, "id_solvent", step, /**/ &dumpt);
+      dump::intdata(o::qi.ii_hst, o::q.n, "id_solvent", step, /**/ &dumpt);
   }
   dump::parts(o::q.pp_hst, o::q.n, "solvent", step, /**/ &dumpt);
   

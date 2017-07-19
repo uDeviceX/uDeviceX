@@ -90,7 +90,7 @@ void parts(const Particle *pp, const long n, const char *name, const int step, T
     MC( MPI_File_close(&f) );
 }
 
-void ids(const int *ii, const long n, const char *name, const int step, Ticket *t) {
+void intdata(const int *ii, const long n, const char *name, const int step, Ticket *t) {
     char fname[256] = {0};
     sprintf(fname, DUMP_BASE "/bop/" PATTERN ".values", name, step / part_freq);
 
