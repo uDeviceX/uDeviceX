@@ -12,8 +12,8 @@ void dev2hst() { /* device to host  data transfer */
 void dump_part(int step) {
   cD2H(o::q.pp_hst, o::q.pp, o::q.n);
   if (global_ids) {
-      cD2H(o::q.ii_hst, o::q.ii, o::q.n);
-      dump::ids(o::q.ii_hst, o::q.n, "id_solvent", step, /**/ &dumpt);
+      cD2H(o::qi.ii_hst, o::qi.ii, o::q.n);
+      dump::ids(o::qi.ii_hst, o::q.n, "id_solvent", step, /**/ &dumpt);
   }
   dump::parts(o::q.pp_hst, o::q.n, "solvent", step, /**/ &dumpt);
   
