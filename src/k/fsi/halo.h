@@ -82,8 +82,8 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
     warp = threadIdx.x / 32;
     lane = threadIdx.x % 32;
     base = 32 * (warp + 4 * blockIdx.x);
-    pid = base + lane;
     if (base >= n0) return;
+    pid = base + lane;
     halo0(n1, seed, pid, base, lane, /**/ ff1);
 }
 
