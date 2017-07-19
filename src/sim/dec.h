@@ -6,16 +6,19 @@ dump::Ticket dumpt;
 namespace o /* s[o]lvent */
 {
 flu::Quants       q;
-flu::QuantsI     qi; /* global ids        */
 flu::TicketZ     tz; /* [z]ip             */
 flu::TicketRND trnd; /* random            */
 odstr::TicketD   td; /* [d]istribute      */
 odstr::TicketU   tu; /* [u]npack          */
 odstr::Work       w; /* work              */
 
+flu::QuantsI     qi; /* global [i]ds      */
 odstr::TicketI   ti; /* global [i]ds      */
 odstr::TicketUI tui; /* [u]npack [i]ds    */
 
+flu::QuantsI     qi; /* [t]ags            */
+odstr::TicketI   tt; /* [t]ags            */
+odstr::TicketUI tut; /* [u]npack [t]ags   */
 
 /* [h]alo interactions */
 namespace h {
