@@ -13,6 +13,7 @@ __device__ void halo0(int n1, float seed,
                       int localbase, int laneid, /**/
                       float *ff1) {
     Pa r;
+    Fo f;
     int nunpack;
     float2 dst0, dst1, dst2;
     float x, y, z;
