@@ -71,15 +71,15 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
             };
 
             NCELLS = XS * YS * ZS;
-            xcenter = XOFFSET + (int)floorf(dst0.x);
+            xcenter = XOFFSET + (int)floorf(x);
             xstart = max(0, xcenter - 1);
             xcount = min(XCELLS, xcenter + 2) - xstart;
 
             if (xcenter - 1 >= XCELLS || xcenter + 2 <= 0) continue;
 
-            ycenter = YOFFSET + (int)floorf(dst0.y);
+            ycenter = YOFFSET + (int)floorf(y);
 
-            zcenter = ZOFFSET + (int)floorf(dst1.x);
+            zcenter = ZOFFSET + (int)floorf(z);
             zmy = zcenter - 1 + zplane;
             zvalid = zmy >= 0 && zmy < ZCELLS;
 
