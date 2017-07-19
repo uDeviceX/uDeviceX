@@ -58,9 +58,9 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
     dst = (float *)(packresults[fid] + unpackbase);
 
     xforce = yforce = zforce = 0;
+    nzplanes = laneid < nunpack ? 3 : 0;
 
     /******/
-    nzplanes = laneid < nunpack ? 3 : 0;
     for (zplane = 0; zplane < nzplanes; ++zplane) {
         {
             enum {
