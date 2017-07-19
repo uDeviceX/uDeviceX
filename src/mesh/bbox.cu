@@ -1,7 +1,5 @@
 #include "common.h"
 #include "minmax.h"
-#include <conf.h>
-#include "conf.common.h"
 
 #include "mesh/bbox.h"
 

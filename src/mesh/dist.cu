@@ -1,5 +1,4 @@
 #include "common.h"
-
 #include "mesh/dist.h"
 
 namespace mesh
