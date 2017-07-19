@@ -8,8 +8,10 @@ static __device__ unsigned int get_hid(const int a[], const int i) {
     return k9 + k3 + k1;
 }
 
-__global__ void halo(int n0, int n1, float seed, float *ff1) {
-    int laneid, warpid, localbase, pid;
+__device__ void halo0(int n1, float seed,
+                      int pid,
+                      int localbase, int laneid, /**/
+                      float *ff1) {
     int nunpack;
     float2 dst0, dst1, dst2;
     float x, y, z;
@@ -30,13 +32,6 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
     float xinteraction, yinteraction, zinteraction;
 
     float xforce, yforce, zforce;
-    
-    laneid = threadIdx.x & 0x1f;
-    warpid = threadIdx.x >> 5;
-    localbase = 32 * (warpid + 4 * blockIdx.x);
-    pid = localbase + laneid;
-    if (localbase >= n0) return;
-
     fid = get_hid(packstarts_padded, localbase);
     unpackbase = localbase - packstarts_padded[fid];
 
@@ -84,4 +79,15 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
 
     k_common::write_AOS3f(dst, nunpack, xforce, yforce, zforce);
 }
+
+__global__ void halo(int n0, int n1, float seed, float *ff1) {
+    int laneid, warpid, localbase, pid;
+    laneid = threadIdx.x & 0x1f;
+    warpid = threadIdx.x >> 5;
+    localbase = 32 * (warpid + 4 * blockIdx.x);
+    pid = localbase + laneid;
+    if (localbase >= n0) return;
+    halo0(n1, seed, pid, localbase, laneid, /**/ ff1);
+}
+
 }
