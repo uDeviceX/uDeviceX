@@ -12,6 +12,7 @@ __device__ void halo0(int n1, float seed,
                       int pid,
                       int localbase, int laneid, /**/
                       float *ff1) {
+    Pa r;
     int nunpack;
     float2 dst0, dst1, dst2;
     float x, y, z;
@@ -24,7 +25,6 @@ __device__ void halo0(int n1, float seed,
     int zplane;
     int i, spid;
     int sentry;
-    float2 stmp0, stmp1, stmp2;
     float myrandnr;
 
     float3 pos1, pos2, vel1, vel2;
@@ -49,18 +49,14 @@ __device__ void halo0(int n1, float seed,
         if (!tex2map(zplane, n1, x, y, z, /**/ &m)) continue;
         for (i = 0; !endp(m, i); ++i) {
             spid = m2id(m, i);
-
+            r = tex2p(spid);
             sentry = 3 * spid;
-            stmp0 = tex1Dfetch(texSolventParticles, sentry);
-            stmp1 = tex1Dfetch(texSolventParticles, sentry + 1);
-            stmp2 = tex1Dfetch(texSolventParticles, sentry + 2);
-
             myrandnr = l::rnd::d::mean0var1ii(seed, pid, spid);
 
             pos1 = make_float3(dst0.x, dst0.y, dst1.x);
-            pos2 = make_float3(stmp0.x, stmp0.y, stmp1.x);
+            pos2 = make_float3(r.x,    r.y,    r.z);
             vel1 = make_float3(dst1.y, dst2.x, dst2.y);
-            vel2 = make_float3(stmp1.y, stmp2.x, stmp2.y);
+            vel2 = make_float3(r.vx,   r.vy,   r.vz);
             strength = force(SOLID_TYPE, SOLVENT_TYPE, pos1, pos2, vel1, vel2, myrandnr);
 
             xinteraction = strength.x;

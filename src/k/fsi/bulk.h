@@ -1,10 +1,4 @@
 namespace k_fsi {
-
-struct Pa { /* local particle */
-    float x, y, z;
-    float vx, vy, vz;
-};
-
 struct Fo { float *x, *y, *z; }; /* force */
 
 static __device__ void p2rv(const float2 *p, int i, /**/
@@ -28,25 +22,6 @@ static __device__ Fo ff2f(float *ff, int i) {
     ff += 3*i;
     f.x = ff++; f.y = ff++; f.z = ff++;
     return f;
-}
-
-static __device__ void tex2rv(int i,
-                              float  *x, float  *y, float  *z,
-                              float *vx, float *vy, float *vz) {
-    float2 s0, s1, s2;
-    i *= 3;
-    s0 = tex1Dfetch(texSolventParticles, i++);
-    s1 = tex1Dfetch(texSolventParticles, i++);
-    s2 = tex1Dfetch(texSolventParticles, i++);
-
-     *x = fst(s0);  *y = scn(s0);  *z = fst(s1);
-    *vx = scn(s1); *vy = fst(s2); *vz = scn(s2);
-}
-
-static __device__ Pa tex2p(int i) {
-    Pa p;
-    tex2rv(i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
-    return p;
 }
 
 static __device__ float random(uint lid, uint rid, float seed) {
