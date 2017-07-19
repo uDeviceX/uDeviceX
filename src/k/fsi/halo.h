@@ -25,7 +25,6 @@ __device__ void halo0(int n1, float seed,
     int nzplanes;
     int zplane;
     int i, spid;
-    int sentry;
     float myrandnr;
 
     float3 pos1, pos2, vel1, vel2;
