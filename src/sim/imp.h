@@ -42,6 +42,7 @@ void gen() { /* generate */
 
 void sim_gen() {
     flu::gen_quants(&o::q);
+    if (global_ids) flu::gen_ids(o::q.n, &o::qi);
     o::q.cells->build(o::q.pp, o::q.n);
     flu::get_ticketZ(o::q, &o::tz);
     flu::get_ticketRND(&o::trnd);
@@ -75,6 +76,7 @@ void sim_strt() {
     
     /*Q*/
     flu::strt_quants(restart::BEGIN, &o::q);
+    if (global_ids) flu::strt_ids(restart::BEGIN, &o::qi);
     o::q.cells->build(/* io */ o::q.pp, o::q.n);
 
     if (rbcs) rbc::strt_quants("rbc.off", restart::BEGIN, &r::q);
