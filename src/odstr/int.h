@@ -20,8 +20,11 @@ struct TicketI { /* global [i]ds */
 struct TicketU { /* unpack ticket */
     uchar4 *subi_re;           /* remote subindices */
     Particle *pp_re;           /* remote particles  */
-    int *ii_re;                /* remote ids        */
     uint *iidx;                /* scatter indices   */
+};
+
+struct TicketUI { /* unpack ticket for int data */
+    int *ii_re;                /* remote ids        */
 };
 
 struct Work {
@@ -56,14 +59,20 @@ void alloc_ticketU(TicketU *t) {
     mpDeviceMalloc(&t->subi_re);
     mpDeviceMalloc(&t->iidx);
     mpDeviceMalloc(&t->pp_re);
-    if (global_ids) mpDeviceMalloc(&t->ii_re); 
 }
 
 void free_ticketU(TicketU *t) {
     CC(cudaFree(t->subi_re));
     CC(cudaFree(t->iidx));
     CC(cudaFree(t->pp_re));
-    if (global_ids) CC(cudaFree(t->ii_re));
+}
+
+void alloc_ticketUI(TicketUI *t) {
+    mpDeviceMalloc(&t->ii_re); 
+}
+
+void free_ticketUI(TicketUI *t) {
+    CC(cudaFree(t->ii_re));
 }
 
 void alloc_work(Work *w) {
@@ -143,9 +152,9 @@ void unpack_pp(const TicketD *td, /**/ flu::Quants *q, TicketU *tu, /*w*/ Work *
     l::scan::d::scan(w->count_zip, XS*YS*ZS, /**/ (uint*)start);
 }
 
-void unpack_ii(const TicketD *td, const TicketI *ti, TicketU *tu) {
+void unpack_ii(const TicketD *td, const TicketI *ti, TicketUI *tui) {
     const int nhalo = td->nhalo;
-    if (nhalo) sub::unpack_ii(nhalo, &td->r, &ti->rii, /**/ tu->ii_re);    
+    if (nhalo) sub::unpack_ii(nhalo, &td->r, &ti->rii, /**/ tui->ii_re);    
 }
 
 void gather_pp(const TicketD *td, /**/ flu::Quants *q, TicketU *tu, flu::TicketZ *tz) {
@@ -173,11 +182,11 @@ void gather_pp(const TicketD *td, /**/ flu::Quants *q, TicketU *tu, flu::TicketZ
     q->pp = pp0; q->pp0 = pp; 
 }
 
-void gather_ii(const TicketU *tu, /**/ flu::Quants *q) {
+void gather_ii(const TicketU *tu, const TicketUI *tui , /**/ flu::Quants *q) {
     int n = q->n;
     int *ii = q->ii, *ii0 = q->ii0;
 
-    if (n) sub::dev::gather_id<<<k_cnf(n)>>>(ii, tu->ii_re, n, tu->iidx, /**/ ii0);
+    if (n) sub::dev::gather_id<<<k_cnf(n)>>>(ii, tui->ii_re, n, tu->iidx, /**/ ii0);
 
     /* swap */
     q->ii = ii0; q->ii0 = ii;
