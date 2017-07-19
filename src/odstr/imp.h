@@ -3,11 +3,11 @@ void waitall(MPI_Request *reqs) {
     l::m::Waitall(26, reqs, statuses) ;
 }
 
-void post_recv(const MPI_Comm cart, const int rank[], const int bt_count, const int bt_part,
+void post_recv(const MPI_Comm cart, const int rank[], const int btc, const int bt_part,
                MPI_Request *size_req, MPI_Request *mesg_req, Recv *r) {
     for(int i = 1, c = 0; i < 27; ++i)
     l::m::Irecv(r->size + i, 1, MPI_INTEGER, rank[i],
-                bt_count + r->tags[i], cart, size_req + c++);
+                btc + r->tags[i], cart, size_req + c++);
 
     for(int i = 1, c = 0; i < 27; ++i)
     l::m::Irecv(r->pp.hst[i], MAX_PART_NUM, MPI_FLOAT, rank[i],
@@ -38,11 +38,11 @@ void pack_ii(const int *ii, int n, const Send *s, Pbufs<int>* sii) {
     dev::pack<int, 1> <<<k_cnf(n)>>>(ii, s->iidx, s->strt, /**/ sii->dev);
 }
 
-int send_sz(MPI_Comm cart, const int rank[], const int bt_count, /**/ Send *s, MPI_Request *req) {
+int send_sz(MPI_Comm cart, const int rank[], const int btc, /**/ Send *s, MPI_Request *req) {
     for(int i = 0; i < 27; ++i) s->size[i] = s->size_pin->D[i];
     for(int i = 1, cnt = 0; i < 27; ++i)
     l::m::Isend(s->size + i, 1, MPI_INTEGER, rank[i],
-                bt_count + i, cart, &req[cnt++]);
+                btc + i, cart, &req[cnt++]);
     return s->size[0]; /* `n' bulk */
 }
 
