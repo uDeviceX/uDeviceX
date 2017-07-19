@@ -147,6 +147,7 @@ namespace dev {
 
 #include "mesh/collision.h"
 #include "mesh/dist.h"
+#include "mesh/bbox.h"
 
 #include "solid.h"
 #include "tcells.h"

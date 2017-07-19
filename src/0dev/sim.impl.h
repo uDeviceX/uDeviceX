@@ -19,7 +19,7 @@ void update_solid0() {
 }
 
 void bounce_solid(int it) {
-    collision::get_bboxes_dev(s::q.i_pp, s::q.m_dev.nv, s::q.ns, /**/ s::t.minbb_dev, s::t.maxbb_dev);
+    mesh::get_bboxes_dev(s::q.i_pp, s::q.m_dev.nv, s::q.ns, /**/ s::t.minbb_dev, s::t.maxbb_dev);
 
     cD2H(s::t.minbb_hst, s::t.minbb_dev, s::q.ns);
     cD2H(s::t.maxbb_hst, s::t.maxbb_dev, s::q.ns);

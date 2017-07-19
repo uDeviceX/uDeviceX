@@ -210,7 +210,7 @@ void ini(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, So
     
     if (nsolid == 0) ERR("No solid provided.\n");
     
-    collision::get_bbox(m.vv, m.nv, /**/ &minbb, &maxbb);
+    mesh::get_bbox(m.vv, m.nv, /**/ &minbb, &maxbb);
         
     nsolid = duplicate_PBC(minbb, maxbb, nsolid, /**/ coms);
 
