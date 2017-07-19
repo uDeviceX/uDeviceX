@@ -16,7 +16,7 @@ flu::QuantsI     qi; /* global [i]ds      */
 odstr::TicketI   ti; /* global [i]ds      */
 odstr::TicketUI tui; /* [u]npack [i]ds    */
 
-flu::QuantsI     qi; /* [t]ags            */
+flu::QuantsI     qt; /* [t]ags            */
 odstr::TicketI   tt; /* [t]ags            */
 odstr::TicketUI tut; /* [u]npack [t]ags   */
 
