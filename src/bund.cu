@@ -113,10 +113,12 @@ namespace dev {
 #include "odstr/int.h"
 }
 
+#include "k/fsi/decl.h"
 #include "k/fsi/common.h"
 #include "k/fsi/map.h"
 #include "k/fsi/bulk.h"
 #include "k/fsi/halo.h"
+
 #include "fsi/decl.h"
 #include "fsi/setup.h"
 #include "fsi/impl.h"
