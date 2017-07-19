@@ -6,15 +6,15 @@ struct TicketD { /* distribution */
     bool first = true;
     sub::Send s;
     sub::Recv r;
-    uchar4 *subi_lo;           /* local subindices  */
+    uchar4 *subi_lo;           /* local subindices */
     int nhalo, nbulk;
 };
 
-struct TicketI { /* global [i]ds */
+struct TicketI { /* int data */
     MPI_Request send_ii_req[27], recv_ii_req[27];
     bool first = true;
-    sub::Pbufs<int> sii;       /* Send global ids   */
-    sub::Pbufs<int> rii;       /* Recv global ids   */
+    sub::Pbufs<int> sii;       /* Send int data    */
+    sub::Pbufs<int> rii;       /* Recv int data    */
 };
 
 struct TicketU { /* unpack ticket */
@@ -24,7 +24,7 @@ struct TicketU { /* unpack ticket */
 };
 
 struct TicketUI { /* unpack ticket for int data */
-    int *ii_re;                /* remote ids        */
+    int *ii_re;                /* remote int data    */
 };
 
 struct Work {
