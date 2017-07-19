@@ -18,19 +18,9 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
     int unpackbase;
 
     Map m;
-    int cnt0, cnt1, cnt2, org0;
-    int org1, org2;
     int nzplanes;
     int zplane;
-    int NCELLS;
-
-    int xstart, xcount;
-    int zmy;
-    int xcenter, ycenter, zcenter;
-    bool zvalid;
-    int count0, count1, count2;
-    int cid0, cid1, cid2;
-    int i, m1, m2, spid;
+    int i, spid;
     int sentry;
     float2 stmp0, stmp1, stmp2;
     float myrandnr;
@@ -60,70 +50,8 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
 
     xforce = yforce = zforce = 0;
     nzplanes = laneid < nunpack ? 3 : 0;
-
-    /******/
-    m = tex2map(nzplanes, n1, x, y, z);
     for (zplane = 0; zplane < nzplanes; ++zplane) {
-        {
-            enum {
-                XCELLS = XS,
-                YCELLS = YS,
-                ZCELLS = ZS,
-                XOFFSET = XCELLS / 2,
-                YOFFSET = YCELLS / 2,
-                ZOFFSET = ZCELLS / 2
-            };
-
-            NCELLS = XS * YS * ZS;
-            xcenter = XOFFSET + (int)floorf(x);
-            xstart = max(0, xcenter - 1);
-            xcount = min(XCELLS, xcenter + 2) - xstart;
-
-            if (xcenter - 1 >= XCELLS || xcenter + 2 <= 0) continue;
-
-            ycenter = YOFFSET + (int)floorf(y);
-
-            zcenter = ZOFFSET + (int)floorf(z);
-            zmy = zcenter - 1 + zplane;
-            zvalid = zmy >= 0 && zmy < ZCELLS;
-
-            count0 = count1 = count2 = 0;
-
-            if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < YCELLS) {
-                cid0 = xstart + XCELLS * (ycenter - 1 + YCELLS * zmy);
-                org0 = tex1Dfetch(texCellsStart, cid0);
-                count0 = ((cid0 + xcount == NCELLS)
-                          ? n1
-                          : tex1Dfetch(texCellsStart, cid0 + xcount)) -
-                    org0;
-            }
-
-            if (zvalid && ycenter >= 0 && ycenter < YCELLS) {
-                cid1 = xstart + XCELLS * (ycenter + YCELLS * zmy);
-                org1 = tex1Dfetch(texCellsStart, cid1);
-                count1 = ((cid1 + xcount == NCELLS)
-                          ? n1
-                          : tex1Dfetch(texCellsStart, cid1 + xcount)) -
-                    org1;
-            }
-
-            if (zvalid && ycenter + 1 >= 0 && ycenter + 1 < YCELLS) {
-                cid2 = xstart + XCELLS * (ycenter + 1 + YCELLS * zmy);
-                org2 = tex1Dfetch(texCellsStart, cid2);
-                count2 = ((cid2 + xcount == NCELLS)
-                          ? n1
-                          : tex1Dfetch(texCellsStart, cid2 + xcount)) -
-                    org2;
-            }
-
-            cnt0 = count0;
-            cnt1 = count0 + count1;
-            cnt2 = cnt1 + count2;
-
-            org1 -= cnt0;
-            org2 -= cnt1;
-        }
-        /****************/
+        if (!tex2map(zplane, n1, x, y, z, /**/ &m)) continue;
         for (i = 0; !endp(m, i); ++i) {
             spid = m2id(m, i);
 
