@@ -60,7 +60,7 @@ void sim_gen() {
         dSync();
         if (walls) wall::gen_ticket(w::q, &w::t);
         flu::get_ticketZ(o::q, &o::tz);
-	flu::get_ticketRND(&o::trnd);
+        flu::get_ticketRND(&o::trnd);
         solids0 = solids;
         run(wall_creation, nsteps);
     } else {
