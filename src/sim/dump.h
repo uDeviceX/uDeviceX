@@ -15,6 +15,11 @@ void dump_part(int step) {
       cD2H(o::qi.ii_hst, o::qi.ii, o::q.n);
       dump::intdata(o::qi.ii_hst, o::q.n, "id_solvent", step, /**/ &dumpt);
   }
+  // TODO add a switch?
+  if (multi_solvent) {
+      cD2H(o::qt.ii_hst, o::qt.ii, o::q.n);
+      dump::intdata(o::qt.ii_hst, o::q.n, "tags_solvent", step, /**/ &dumpt);
+  }
   dump::parts(o::q.pp_hst, o::q.n, "solvent", step, /**/ &dumpt);
   
   if(solids0) {
