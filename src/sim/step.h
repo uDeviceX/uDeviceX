@@ -17,10 +17,10 @@ void step(float driving_force0, bool wall0, int it) {
     if (global_ids)odstr::recv_ii(/**/ &o::ti);
 
     odstr::unpack_pp(&o::td, /**/ &o::q, &o::tu, /*w*/ &o::w);
-    if (global_ids) odstr::unpack_ii(&o::td, &o::ti, /**/ &o::tu);
+    if (global_ids) odstr::unpack_ii(&o::td, &o::ti, /**/ &o::tui);
 
     odstr::gather_pp(&o::td, /**/ &o::q, &o::tu, &o::tz);
-    if (global_ids) odstr::gather_ii(&o::tu, /**/ &o::q);
+    if (global_ids) odstr::gather_ii(&o::tu, &o::tui, /**/ &o::q);
     
     if (solids0) distr_solid();
     if (rbcs)    distr_rbc();
