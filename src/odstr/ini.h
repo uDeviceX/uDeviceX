@@ -38,14 +38,6 @@ void ini_S(/**/ Send *s) {
     CC(cudaMemcpy(s->iidx, s->iidx_, sizeof(s->iidx_), H2D));
 
     alloc_dev(/**/ &s->pp);
-
-    if (global_ids) {
-        for (int i = 1; i < 27; ++i) alloc_pinned(i, estimate(i), /**/ &s->ii);
-        CC(cudaMalloc(&s->ii.dp[0], sizeof(int) * estimate(0)));
-        s->ii.hst[0] = NULL;
-        
-        alloc_dev(/**/ &s->ii);
-    }
 }
 
 void ini_R(const Send *s, /**/ Recv *r) {
@@ -57,13 +49,6 @@ void ini_R(const Send *s, /**/ Recv *r) {
 
     alloc_dev(/**/ &r->pp);
 
-    if (global_ids) {
-        for (int i = 1; i < 27; ++i) alloc_pinned(i, estimate(i), /**/ &r->ii);
-        r->ii.dp[0] = s->ii.dp[0];
-        r->ii.hst[0] = NULL;
-        
-        alloc_dev(/**/ &r->ii);
-    }
 }
 #undef i2d
 

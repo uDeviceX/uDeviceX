@@ -3,7 +3,6 @@ struct TicketD { /* distribution */
     int rank[27];
     MPI_Request send_sz_req[27], recv_sz_req[27];
     MPI_Request send_pp_req[27], recv_pp_req[27];
-    MPI_Request send_ii_req[27], recv_ii_req[27];
     bool first = true;
     sub::Send s;
     sub::Recv r;
@@ -75,12 +74,14 @@ void free_work(Work *w) {
     CC(cudaFree(w->count_zip));
 }
 
-void post_recv(TicketD *t) {
+void post_recv_pp(TicketD *t) {
     sub::post_recv(t->cart, t->rank, /**/ t->recv_sz_req, t->recv_pp_req, &t->r);
-    if (global_ids) sub::post_recv_ii(t->cart, t->rank, /**/ t->recv_ii_req, &t->r);
+}
+void post_recv_ii(const TicketD *td, TicketI *ti) {
+    sub::post_recv_ii(td->cart, td->rank, td->r.tags, /**/ ti->recv_ii_req, &ti->rii);
 }
 
-void pack_pp(flu::Quants *q, TicketD *t) {
+void pack_pp(const flu::Quants *q, TicketD *t) {
     if (q->n) {
         sub::halo(q->pp, q->n, /**/ &t->s);
         sub::scan(q->n, /**/ &t->s);
@@ -89,21 +90,25 @@ void pack_pp(flu::Quants *q, TicketD *t) {
     }
 }    
 
-void pack_ii(flu::Quants *q, TicketD *t) {
-    if (q->n) sub::pack_ii(q->ii, q->n, /**/ &t->s);
+void pack_ii(const flu::Quants *q, const TicketD *td, TicketI *ti) {
+    if (q->n) sub::pack_ii(q->ii, q->n, &td->s, /**/ &ti->sii);
     dSync();
 }
 
-void send(TicketD *t) {
+void send_pp(TicketD *t) {
     if (!t->first) {
         sub::waitall(t->send_sz_req);
         sub::waitall(t->send_pp_req);
-        if (global_ids) sub::waitall(t->send_ii_req);
     }
     t->first = false;
     t->nbulk = sub::send_sz(t->cart, t->rank, /**/ &t->s, t->send_sz_req);
     sub::send_pp(t->cart, t->rank, /**/ &t->s, t->send_pp_req);
-    if (global_ids) sub::send_ii(t->cart, t->rank, /**/ &t->s, t->send_ii_req);
+}
+
+void send_ii(const TicketD *td, TicketI *ti) {
+    if (!ti->first) sub::waitall(ti->send_ii_req);
+    ti->first = false;
+    sub::send_ii(td->cart, td->rank, td->s.size, /**/ &ti->sii, ti->send_ii_req);
 }
 
 void bulk(flu::Quants *q, TicketD *t) {
@@ -113,11 +118,14 @@ void bulk(flu::Quants *q, TicketD *t) {
     k_common::subindex_local<false><<<k_cnf(n)>>>(n, (float2*)q->pp, /*io*/ count, /*o*/ t->subi_lo);
 }
 
-void recv(TicketD *t) {
+void recv_pp(TicketD *t) {
     sub::waitall(t->recv_sz_req);
     sub::recv_count(/**/ &t->r, &t->nhalo);
     sub::waitall(t->recv_pp_req);
-    if (global_ids) sub::waitall(t->recv_ii_req);
+}
+
+void recv_ii(TicketI *t) {
+    sub::waitall(t->recv_ii_req);
 }
 
 void unpack_pp(flu::Quants *q, TicketD *td, TicketU *tu, Work *w) {
@@ -127,7 +135,7 @@ void unpack_pp(flu::Quants *q, TicketD *td, TicketU *tu, Work *w) {
     int *count = q->cells->count;
     
     if (nhalo) {
-        sub::unpack_pp(nhalo, /**/ &td->r, tu->pp_re);
+        sub::unpack_pp(nhalo, &td->r, /**/ tu->pp_re);
         sub::subindex_remote(nhalo, &td->r, /*io*/ tu->pp_re, count, /**/ tu->subi_re);
     }
     
@@ -135,9 +143,9 @@ void unpack_pp(flu::Quants *q, TicketD *td, TicketU *tu, Work *w) {
     l::scan::d::scan(w->count_zip, XS*YS*ZS, /**/ (uint*)start);
 }
 
-void unpack_ii(TicketD *td, TicketU *tu) {
+void unpack_ii(const TicketD *td, const TicketI *ti, TicketU *tu) {
     const int nhalo = td->nhalo;
-    if (nhalo) sub::unpack_ii(nhalo, /**/ &td->r, tu->ii_re);    
+    if (nhalo) sub::unpack_ii(nhalo, &td->r, &ti->rii, /**/ tu->ii_re);    
 }
 
 void gather_pp(const TicketD *td, /**/ flu::Quants *q, TicketU *tu, flu::TicketZ *tz) {

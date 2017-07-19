@@ -2,15 +2,18 @@ void step(float driving_force0, bool wall0, int it) {
     assert(o::q.n <= MAX_PART_NUM);
     assert(r::q.n <= MAX_PART_NUM);
 
-    odstr::post_recv(&o::td);
-    odstr::pack_pp(&o::q, &o::td);
-    if (global_ids) odstr::pack_ii(&o::q, &o::td);
-    odstr::send(&o::td);
+    odstr::post_recv_pp(/**/ &o::td);
+    if (global_ids) odstr::post_recv_ii(&o::td, /**/ &o::ti);
+    odstr::pack_pp(&o::q, /**/ &o::td);
+    if (global_ids) odstr::pack_ii(&o::q, &o::td, /**/ &o::ti);
+    odstr::send_pp(/**/ &o::td);
+    if (global_ids) odstr::send_ii(&o::td, /**/ &o::ti);
     odstr::bulk(&o::q, &o::td);
-    odstr::recv(&o::td);
+    odstr::recv_pp(&o::td);
+    if (global_ids)odstr::recv_ii(&o::ti);
 
     odstr::unpack_pp(&o::q, &o::td, &o::tu, &o::w);
-    if (global_ids) odstr::unpack_ii(&o::td, &o::tu);
+    if (global_ids) odstr::unpack_ii(&o::td, &o::ti, /**/ &o::tu);
     odstr::gather_pp(&o::td, /**/ &o::q, &o::tu, &o::tz);
     if (global_ids) odstr::gather_ii(&o::tu, /**/ &o::q);
     

@@ -35,7 +35,6 @@ struct Send {
     int *iidx_[27];   /* helper indices (pinned) */
     
     Pbufs<float2> pp; /* Send particles          */
-    Pbufs<int> ii;    /* Send global ids         */
     
     int *size_dev, *strt;
     int size[27];
@@ -44,7 +43,6 @@ struct Send {
 
 struct Recv {
     Pbufs<float2> pp; /* Recv  particles          */
-    Pbufs<int> ii;    /* Recv global ids          */
     
     int *strt;
     int tags[27], size[27];
