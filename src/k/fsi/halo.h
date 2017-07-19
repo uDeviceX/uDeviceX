@@ -10,7 +10,7 @@ static __device__ unsigned int get_hid(const int a[], const int i) {
 
 __device__ void halo0(int n1, float seed,
                       int pid,
-                      int localbase, int lane, /**/
+                      int base, int lane, /**/
                       float *ff1) {
     Pa r;
     Fo f;
@@ -32,8 +32,8 @@ __device__ void halo0(int n1, float seed,
     float xinteraction, yinteraction, zinteraction;
 
     float xforce, yforce, zforce;
-    fid = get_hid(packstarts_padded, localbase);
-    unpackbase = localbase - packstarts_padded[fid];
+    fid = get_hid(packstarts_padded, base);
+    unpackbase = base - packstarts_padded[fid];
 
     nunpack = min(32, packcount[fid] - unpackbase);
     if (nunpack == 0) return;
@@ -78,13 +78,13 @@ __device__ void halo0(int n1, float seed,
 
 
 __global__ void halo(int n0, int n1, float seed, float *ff1) {
-    int lane, warp, localbase, pid;
+    int lane, warp, base, pid;
     warp = threadIdx.x / 32;
     lane = threadIdx.x % 32;
-    localbase = 32 * (warp + 4 * blockIdx.x);
-    pid = localbase + lane;
-    if (localbase >= n0) return;
-    halo0(n1, seed, pid, localbase, lane, /**/ ff1);
+    base = 32 * (warp + 4 * blockIdx.x);
+    pid = base + lane;
+    if (base >= n0) return;
+    halo0(n1, seed, pid, base, lane, /**/ ff1);
 }
 
 }
