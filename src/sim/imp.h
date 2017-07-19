@@ -76,7 +76,8 @@ void sim_strt() {
     
     /*Q*/
     flu::strt_quants(restart::BEGIN, &o::q);
-    if (global_ids) flu::strt_ii("id", restart::BEGIN, &o::qi);
+    if (global_ids)    flu::strt_ii("id",   restart::BEGIN, &o::qi);
+    if (multi_solvent) flu::strt_ii("tags", restart::BEGIN, &o::qt);
     o::q.cells->build(/* io */ o::q.pp, o::q.n);
 
     if (rbcs) rbc::strt_quants("rbc.off", restart::BEGIN, &r::q);
