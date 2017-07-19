@@ -10,7 +10,7 @@ static __device__ unsigned int get_hid(const int a[], const int i) {
 
 __device__ void halo0(int n1, float seed,
                       int pid,
-                      int localbase, int laneid, /**/
+                      int localbase, int lane, /**/
                       float *ff1) {
     Pa r;
     Fo f;
@@ -44,7 +44,7 @@ __device__ void halo0(int n1, float seed,
     dst = (float *)(packresults[fid] + unpackbase);
 
     xforce = yforce = zforce = 0;
-    nzplanes = laneid < nunpack ? 3 : 0;
+    nzplanes = lane < nunpack ? 3 : 0;
     for (zplane = 0; zplane < nzplanes; ++zplane) {
         if (!tex2map(zplane, n1, x, y, z, /**/ &m)) continue;
         for (i = 0; !endp(m, i); ++i) {
@@ -78,13 +78,13 @@ __device__ void halo0(int n1, float seed,
 
 
 __global__ void halo(int n0, int n1, float seed, float *ff1) {
-    int laneid, warpid, localbase, pid;
-    warpid = threadIdx.x / 32;
-    laneid = threadIdx.x % 32;
-    localbase = 32 * (warpid + 4 * blockIdx.x);
-    pid = localbase + laneid;
+    int lane, warp, localbase, pid;
+    warp = threadIdx.x / 32;
+    lane = threadIdx.x % 32;
+    localbase = 32 * (warp + 4 * blockIdx.x);
+    pid = localbase + lane;
     if (localbase >= n0) return;
-    halo0(n1, seed, pid, localbase, laneid, /**/ ff1);
+    halo0(n1, seed, pid, localbase, lane, /**/ ff1);
 }
 
 }
