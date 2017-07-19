@@ -1,6 +1,4 @@
 #include "common.h"
-#include <conf.h>
-#include "conf.common.h"
 
 #include "mesh/dist.h"
 

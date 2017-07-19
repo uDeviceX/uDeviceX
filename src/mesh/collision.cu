@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include "common.h"
 #include "common.cuda.h"
-#include "minmax.h"
 #include <conf.h>
 #include "conf.common.h"
 

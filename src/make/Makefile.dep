@@ -17,8 +17,8 @@ $B/l/scan.o: $S/l/d/scan.h $S/l/scan.h
 $B/main.o: $S/bund.h $S/common.cuda.h $S/common.h $S/common.mpi.h $S/conf.common.h $B/conf.h $S/glb.h $S/l/m.h $S/m.h
 $B/mbounce.o: $S/common.cuda.h $S/common.h $B/conf.h $S/mbounce.h $S/roots.impl.h
 $B/mesh/bbox.o: $S/common.h $S/conf.common.h $B/conf.h $S/mesh/bbox.h $S/minmax.h
-$B/mesh/collision.o: $S/common.cuda.h $S/common.h $S/conf.common.h $B/conf.h $S/mesh/collision.h $S/minmax.h
-$B/mesh/dist.o: $S/common.h $S/conf.common.h $B/conf.h $S/mesh/dist.h
+$B/mesh/collision.o: $S/common.cuda.h $S/common.h $S/conf.common.h $B/conf.h $S/mesh/collision.h
+$B/mesh/dist.o: $S/common.h $S/mesh/dist.h
 $B/mesh/props.o: $S/common.h $S/mesh/props.h
 $B/minmax.o: $S/common.cuda.h $S/common.h $B/conf.h $S/minmax.h
 $B/m.o: $S/m.h
