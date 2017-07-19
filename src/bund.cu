@@ -38,6 +38,15 @@
 #include "clist.face.h"
 #include "minmax.h"
 
+namespace mcomm {
+namespace sub {
+#include "mcomm/ini.h"
+#include "mcomm/imp.h"
+#include "mcomm/fin.h"
+}
+#include "mcomm/int.h"
+}
+
 namespace rbc {
 namespace sub {
 #define __DF__ __device__ __forceinline__
