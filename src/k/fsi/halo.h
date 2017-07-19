@@ -124,11 +124,8 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
             org2 -= cnt1;
         }
         /****************/
-
-        for (i = 0; i < cnt2; ++i) {
-            m1 = (int)(i >= cnt0);
-            m2 = (int)(i >= cnt1);
-            spid = i + (m2 ? org2 : m1 ? org1 : org0);
+        for (i = 0; !endp(m, i); ++i) {
+            spid = m2id(m, i);
 
             sentry = 3 * spid;
             stmp0 = tex1Dfetch(texSolventParticles, sentry);
