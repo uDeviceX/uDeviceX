@@ -1,5 +1,5 @@
 #include "common.h"
-#include "mesh.h"
+#include "mesh/props.h"
 
 namespace mesh
 {
