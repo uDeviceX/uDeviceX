@@ -20,8 +20,8 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
     float2 dst0, dst1, dst2;
     float *dst = NULL;
 
-    const int code = get_hid(packstarts_padded, localbase);
-    const int unpackbase = localbase - packstarts_padded[code];
+    int code = get_hid(packstarts_padded, localbase);
+    int unpackbase = localbase - packstarts_padded[code];
 
     nunpack = min(32, packcount[code] - unpackbase);
     if (nunpack == 0) return;
@@ -30,7 +30,7 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
     dst = (float *)(packresults[code] + unpackbase);
 
     float xforce = 0, yforce = 0, zforce = 0;
-    const int nzplanes = laneid < nunpack ? 3 : 0;
+    int nzplanes = laneid < nunpack ? 3 : 0;
     for (int zplane = 0; zplane < nzplanes; ++zplane) {
         int scan1, scan2, ncandidates, spidbase;
         int deltaspid1, deltaspid2;
