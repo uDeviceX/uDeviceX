@@ -7,13 +7,13 @@ struct TicketCom { /* communication ticket */
 };
 
 struct TicketS { /* send data */
-    Particle *pp[27];
-    int counts[27];
+    Particle *pp_hst[27]; /* particles on host */
+    int counts[27];       /* number of meshes  */
 };
 
 struct TicketR { /* recv data */
-    Particle *pp[27];
-    int counts[27];
+    Particle *pp_hst[27]; /* particles on host */
+    int counts[27];       /* number of meshes  */
 };
 
 void ini_ticketcom(MPI_Comm cart, /*io*/ basetags::TagGen *tg, /**/ TicketCom *t) {
@@ -25,4 +25,20 @@ void ini_ticketcom(MPI_Comm cart, /*io*/ basetags::TagGen *tg, /**/ TicketCom *t
 
 void free_ticketcom(/**/ TicketCom *t) {
     sub::fin_tcom(t->first, /**/ &t->cart, &t->sreq, &t->rreq);
+}
+
+void alloc_ticketS(TicketS *t) {
+    for (int i = 0; i < 27; ++i) t->pp_hst[i] = new Particle[MAX_PART_NUM];
+}
+
+void free_ticketS(TicketS *t) {
+    for (int i = 0; i < 27; ++i) delete[] t->pp_hst[i];
+}
+
+void alloc_ticketR(TicketR *t) {
+    for (int i = 0; i < 27; ++i) t->pp_hst[i] = new Particle[MAX_PART_NUM];
+}
+
+void free_ticketR(TicketR *t) {
+    for (int i = 0; i < 27; ++i) delete[] t->pp_hst[i];
 }
