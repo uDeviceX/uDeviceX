@@ -9,19 +9,27 @@ static __device__ unsigned int get_hid(const int a[], const int i) {
 }
 
 __global__ void halo(int n0, int n1, float seed, float *ff1) {
-    int laneid = threadIdx.x & 0x1f;
-    int warpid = threadIdx.x >> 5;
-    int localbase = 32 * (warpid + 4 * blockIdx.x);
-    int pid = localbase + laneid;
-
-    if (localbase >= n0) return;
-
+    int laneid, warpid, localbase, pid;
     int nunpack;
     float2 dst0, dst1, dst2;
     float *dst = NULL;
+    int fid; /* fragment id */
+    int unpackbase;
 
-    int fid = get_hid(packstarts_padded, localbase);
-    int unpackbase = localbase - packstarts_padded[fid];
+    int scan1, scan2, ncandidates, spidbase;
+    int deltaspid1, deltaspid2;
+    int nzplanes;
+
+    float xforce, yforce, zforce;
+    
+    laneid = threadIdx.x & 0x1f;
+    warpid = threadIdx.x >> 5;
+    localbase = 32 * (warpid + 4 * blockIdx.x);
+    pid = localbase + laneid;
+    if (localbase >= n0) return;
+
+    fid = get_hid(packstarts_padded, localbase);
+    unpackbase = localbase - packstarts_padded[fid];
 
     nunpack = min(32, packcount[fid] - unpackbase);
     if (nunpack == 0) return;
@@ -29,12 +37,9 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
     k_common::read_AOS6f((float2 *)(packstates[fid] + unpackbase), nunpack, dst0, dst1, dst2);
     dst = (float *)(packresults[fid] + unpackbase);
 
-    float xforce = 0, yforce = 0, zforce = 0;
-    int nzplanes = laneid < nunpack ? 3 : 0;
+    xforce = yforce = zforce = 0;
+    nzplanes = laneid < nunpack ? 3 : 0;
     for (int zplane = 0; zplane < nzplanes; ++zplane) {
-        int scan1, scan2, ncandidates, spidbase;
-        int deltaspid1, deltaspid2;
-
         {
             enum {
                 XCELLS = XS,
