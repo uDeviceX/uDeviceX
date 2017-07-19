@@ -52,7 +52,6 @@ __device__ void halo0(int n1, float seed,
             spid = m2id(m, i);
             r = tex2p(spid);
             f = ff2f(ff1, spid);
-            sentry = 3 * spid;
             myrandnr = l::rnd::d::mean0var1ii(seed, pid, spid);
 
             pos1 = make_float3(dst0.x, dst0.y, dst1.x);
@@ -69,9 +68,9 @@ __device__ void halo0(int n1, float seed,
             yforce += yinteraction;
             zforce += zinteraction;
 
-            atomicAdd(ff1 + sentry, -xinteraction);
-            atomicAdd(ff1 + sentry + 1, -yinteraction);
-            atomicAdd(ff1 + sentry + 2, -zinteraction);
+            atomicAdd(f.x, -xinteraction);
+            atomicAdd(f.y, -yinteraction);
+            atomicAdd(f.z, -zinteraction);
         }
     }
 
