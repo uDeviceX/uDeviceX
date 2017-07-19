@@ -9,7 +9,7 @@ See [sim.md](../../doc/sim.md)
 
 ## ticket dependencies:
 
-A->B reads B depends on A
+A->B reads B depends on A  
 A->B->C reads C depends on B, which depends on A
 
 ### TicketD: 
