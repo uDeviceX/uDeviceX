@@ -99,8 +99,8 @@ void pack_pp(const flu::Quants *q, TicketD *t) {
     }
 }    
 
-void pack_ii(const flu::Quants *q, const TicketD *td, TicketI *ti) {
-    if (q->n) sub::pack_ii(q->ii, q->n, &td->s, /**/ &ti->sii);
+void pack_ii(const int n, const flu::QuantsI *q, const TicketD *td, TicketI *ti) {
+    if (n) sub::pack_ii(q->ii, n, &td->s, /**/ &ti->sii);
     dSync();
 }
 
@@ -182,8 +182,7 @@ void gather_pp(const TicketD *td, /**/ flu::Quants *q, TicketU *tu, flu::TicketZ
     q->pp = pp0; q->pp0 = pp; 
 }
 
-void gather_ii(const TicketU *tu, const TicketUI *tui , /**/ flu::Quants *q) {
-    int n = q->n;
+void gather_ii(const int n, const TicketU *tu, const TicketUI *tui , /**/ flu::QuantsI *q) {
     int *ii = q->ii, *ii0 = q->ii0;
 
     if (n) sub::dev::gather_id<<<k_cnf(n)>>>(ii, tui->ii_re, n, tu->iidx, /**/ ii0);

@@ -6,7 +6,7 @@ void step(float driving_force0, bool wall0, int it) {
     if (global_ids) odstr::post_recv_ii(&o::td, /**/ &o::ti);
 
     odstr::pack_pp(&o::q, /**/ &o::td);
-    if (global_ids) odstr::pack_ii(&o::q, &o::td, /**/ &o::ti);
+    if (global_ids) odstr::pack_ii(o::q.n, &o::qi, &o::td, /**/ &o::ti);
 
     odstr::send_pp(/**/ &o::td);
     if (global_ids) odstr::send_ii(&o::td, /**/ &o::ti);
@@ -20,7 +20,7 @@ void step(float driving_force0, bool wall0, int it) {
     if (global_ids) odstr::unpack_ii(&o::td, &o::ti, /**/ &o::tui);
 
     odstr::gather_pp(&o::td, /**/ &o::q, &o::tu, &o::tz);
-    if (global_ids) odstr::gather_ii(&o::tu, &o::tui, /**/ &o::q);
+    if (global_ids) odstr::gather_ii(o::q.n, &o::tu, &o::tui, /**/ &o::qi);
     
     if (solids0) distr_solid();
     if (rbcs)    distr_rbc();
