@@ -20,14 +20,14 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
     float2 dst0, dst1, dst2;
     float *dst = NULL;
 
-    int code = get_hid(packstarts_padded, localbase);
-    int unpackbase = localbase - packstarts_padded[code];
+    int fid = get_hid(packstarts_padded, localbase);
+    int unpackbase = localbase - packstarts_padded[fid];
 
-    nunpack = min(32, packcount[code] - unpackbase);
+    nunpack = min(32, packcount[fid] - unpackbase);
     if (nunpack == 0) return;
 
-    k_common::read_AOS6f((float2 *)(packstates[code] + unpackbase), nunpack, dst0, dst1, dst2);
-    dst = (float *)(packresults[code] + unpackbase);
+    k_common::read_AOS6f((float2 *)(packstates[fid] + unpackbase), nunpack, dst0, dst1, dst2);
+    dst = (float *)(packresults[fid] + unpackbase);
 
     float xforce = 0, yforce = 0, zforce = 0;
     int nzplanes = laneid < nunpack ? 3 : 0;
