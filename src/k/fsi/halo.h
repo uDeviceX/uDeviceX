@@ -16,8 +16,8 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
     int fid; /* fragment id */
     int unpackbase;
 
-    int scan1, scan2, ncandidates, spidbase;
-    int deltaspid1, deltaspid2;
+    int cnt0, cnt1, cnt2, org0;
+    int org1, org2;
     int nzplanes;
     int zplane;
     int NCELLS;
@@ -84,43 +84,43 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
 
             if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < YCELLS) {
                 cid0 = xstart + XCELLS * (ycenter - 1 + YCELLS * zmy);
-                spidbase = tex1Dfetch(texCellsStart, cid0);
+                org0 = tex1Dfetch(texCellsStart, cid0);
                 count0 = ((cid0 + xcount == NCELLS)
                           ? n1
                           : tex1Dfetch(texCellsStart, cid0 + xcount)) -
-                    spidbase;
+                    org0;
             }
 
             if (zvalid && ycenter >= 0 && ycenter < YCELLS) {
                 cid1 = xstart + XCELLS * (ycenter + YCELLS * zmy);
-                deltaspid1 = tex1Dfetch(texCellsStart, cid1);
+                org1 = tex1Dfetch(texCellsStart, cid1);
                 count1 = ((cid1 + xcount == NCELLS)
                           ? n1
                           : tex1Dfetch(texCellsStart, cid1 + xcount)) -
-                    deltaspid1;
+                    org1;
             }
 
             if (zvalid && ycenter + 1 >= 0 && ycenter + 1 < YCELLS) {
                 cid2 = xstart + XCELLS * (ycenter + 1 + YCELLS * zmy);
-                deltaspid2 = tex1Dfetch(texCellsStart, cid2);
+                org2 = tex1Dfetch(texCellsStart, cid2);
                 count2 = ((cid2 + xcount == NCELLS)
                           ? n1
                           : tex1Dfetch(texCellsStart, cid2 + xcount)) -
-                    deltaspid2;
+                    org2;
             }
 
-            scan1 = count0;
-            scan2 = count0 + count1;
-            ncandidates = scan2 + count2;
+            cnt0 = count0;
+            cnt1 = count0 + count1;
+            cnt2 = cnt1 + count2;
 
-            deltaspid1 -= scan1;
-            deltaspid2 -= scan2;
+            org1 -= cnt0;
+            org2 -= cnt1;
         }
 
-        for (i = 0; i < ncandidates; ++i) {
-            m1 = (int)(i >= scan1);
-            m2 = (int)(i >= scan2);
-            spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
+        for (i = 0; i < cnt2; ++i) {
+            m1 = (int)(i >= cnt0);
+            m2 = (int)(i >= cnt1);
+            spid = i + (m2 ? org2 : m1 ? org1 : org0);
 
             sentry = 3 * spid;
             stmp0 = tex1Dfetch(texSolventParticles, sentry);
