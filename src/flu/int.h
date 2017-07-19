@@ -78,6 +78,10 @@ void gen_ids(const int n, QuantsI *q) {
     sub::ii_gen(n, q->ii, q->ii_hst);
 }
 
+void gen_tags0(const int n, QuantsI *q) {
+    sub::tags0_gen(n, q->ii, q->ii_hst);
+}
+
 void strt_quants(const int id, Quants *q) {
     q->n = sub::strt(id, /**/ q->pp, /* w */ q->pp_hst);
 }
