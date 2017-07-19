@@ -6,6 +6,7 @@ dump::Ticket dumpt;
 namespace o /* s[o]lvent */
 {
 flu::Quants       q;
+flu::QuantsI     qi; /* global ids        */
 flu::TicketZ     tz; /* [z]ip             */
 flu::TicketRND trnd; 
 odstr::TicketD   td; /* [d]istribute      */
