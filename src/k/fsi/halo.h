@@ -53,6 +53,8 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
     if (nunpack == 0) return;
 
     k_common::read_AOS6f((float2 *)(packstates[fid] + unpackbase), nunpack, dst0, dst1, dst2);
+    x = fst(dst0); y = scn(dst0); z = fst(dst1);
+
     dst = (float *)(packresults[fid] + unpackbase);
 
     xforce = yforce = zforce = 0;
