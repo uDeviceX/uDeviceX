@@ -27,7 +27,7 @@ static __device__ Pa warp2p(const Particle *pp, int n, int i) {
 __device__ void halo0(int n1, float seed, int lid, int lane, int unpackbase, int nunpack,
                       Particle *pp, Force *ff,
                       /**/ float *ff1) {
-    Pa r; /* local particle */
+    Pa l, r; /* local and remote particles */
     Fo f;
     float2 dst0, dst1, dst2;
     float x, y, z;
@@ -56,7 +56,7 @@ __device__ void halo0(int n1, float seed, int lid, int lane, int unpackbase, int
             rid = m2id(m, i);
             r = tex2p(rid);
             f = ff2f(ff1, rid);
-            myrandnr = r::rnd::d::mean0var1ii(seed, lid, rid);
+            myrandnr = l::rnd::d::mean0var1ii(seed, lid, rid);
 
             pos1 = make_float3(dst0.x, dst0.y, dst1.x);
             pos2 = make_float3(r.x,    r.y,    r.z);
