@@ -42,7 +42,7 @@ __device__ void halo0(int n1, float seed, int pid, int base, int lane, /**/ floa
 
     unpackbase = base - start;
 
-    nunpack = min(32, packcount[fid] - unpackbase);
+    nunpack = min(32, count - unpackbase);
     if (nunpack == 0) return;
 
     k_common::read_AOS6f((float2 *)(packstates[fid] + unpackbase), nunpack, dst0, dst1, dst2);
