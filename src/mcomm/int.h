@@ -52,7 +52,11 @@ void free_ticketR(TicketR *tr) {
     CC(cudaFree(tr->pp));
 }
 
-void extents();
+void extents(const Particle *pp, const int nv, const int nm, /**/ TicketS *t) {
+    t->llo->resize(nm); t->hhi->resize(nm);
+    if (nm) minmax(pp, nv, nm, /**/ t->llo->DP, t->hhi->DP);
+    dSync();
+}
 
 void pack(const float3* minext_hst, const float3 *maxext_hst, const Particle *pp, const int nv,
           const int nm, /**/ TicketS *t) {
