@@ -161,7 +161,7 @@ __global__ void fill_all_ii(const int27 cellpackstarts, const int *ii,
                             const intp26 fragss, const intp26 fragcc, const intp26 fragcum,
                             const int26 fragcapacity, /**/ intp26 fragii) {
     int gid, fid, hci, tid, src, dst, nsrc;
-    int lpid, dpid, spid, c;
+    int lpid, dpid, spid;
 
     /* 16 workers (warpSize/2) per cell  */
     /* requirement: 32 threads per block */
