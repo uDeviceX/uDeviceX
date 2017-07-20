@@ -91,15 +91,15 @@ void pack(const float3* minext_hst, const float3 *maxext_hst, const Particle *pp
 void post_recv(MPI_Comm cart, const int dstranks[26], const int rcvtags[26], int btc, int btp, /**/ int counts[27], Particle *pp[27], Reqs *rreqs) {
     for (int i = 0; i < 26; ++i) {
         MC(l::m::Irecv(counts + i + 1, 1, MPI_INT, dstranks[i], btc + rcvtags[i], cart, rreqs->counts + i));
-        MC(l::m::Irecv(pp + i + 1, MAX_PART_NUM, datatype::particle, dstranks[i], btp + rcvtags[i], cart, rreqs->pp + i));
+        MC(l::m::Irecv(pp[i + 1], MAX_PART_NUM, datatype::particle, dstranks[i], btp + rcvtags[i], cart, rreqs->pp + i));
     }
 }
 
 void post_send(MPI_Comm cart, const int dstranks[26], int btc, int btp, int nv, const int counts[27], const Particle *const pp[27], /**/ Reqs *sreqs) {
     for (int i = 0; i < 26; ++i) {
         const int c = counts[i+1];
-        MC(l::m::Isend(&c, 1, MPI_INT, dstranks[i], btc + i, cart, sreqs->counts + i));
-        MC(l::m::Isend(&pp[i], c * nv, datatype::particle, dstranks[i], btp + i, cart, sreqs->pp + i));
+        MC(l::m::Isend(counts + i + 1, 1, MPI_INT, dstranks[i], btc + i, cart, sreqs->counts + i));
+        MC(l::m::Isend(pp[i + 1], c * nv, datatype::particle, dstranks[i], btp + i, cart, sreqs->pp + i));
     }
 }
 
