@@ -27,7 +27,7 @@ static __device__ Pa warp2p(const Particle *pp, int n, int i) {
 __device__ void halo0(int n1, float seed, int lid, int lane, int unpackbase, int nunpack,
                       Particle *pp, Force *ff,
                       /**/ float *ff1) {
-    Pa l; /* local particle */
+    Pa r; /* local particle */
     Fo f;
     float2 dst0, dst1, dst2;
     float x, y, z;
@@ -54,14 +54,14 @@ __device__ void halo0(int n1, float seed, int lid, int lane, int unpackbase, int
         if (!tex2map(zplane, n1, x, y, z, /**/ &m)) continue;
         for (i = 0; !endp(m, i); ++i) {
             rid = m2id(m, i);
-            l = tex2p(rid);
+            r = tex2p(rid);
             f = ff2f(ff1, rid);
-            myrandnr = l::rnd::d::mean0var1ii(seed, lid, rid);
+            myrandnr = r::rnd::d::mean0var1ii(seed, lid, rid);
 
             pos1 = make_float3(dst0.x, dst0.y, dst1.x);
-            pos2 = make_float3(l.x,    l.y,    l.z);
+            pos2 = make_float3(r.x,    r.y,    r.z);
             vel1 = make_float3(dst1.y, dst2.x, dst2.y);
-            vel2 = make_float3(l.vx,   l.vy,   l.vz);
+            vel2 = make_float3(r.vx,   r.vy,   r.vz);
             strength = force(SOLID_TYPE, SOLVENT_TYPE, pos1, pos2, vel1, vel2, myrandnr);
 
             xinteraction = strength.x;
