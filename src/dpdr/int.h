@@ -90,6 +90,23 @@ void free_ticketRh(/**/TicketRhalo *t) {
     sub::free_Rbufs(/**/ &t->b);
 }
 
+void alloc_ticketSIh(/**/ TicketSIhalo *t) {
+    sub::ini_ticketSIh(/**/ &t->b);
+}
+
+void free_ticketSIh(/**/TicketSIhalo *t) {
+    sub::free_SIbuf(/**/ &t->b);
+}
+
+void alloc_ticketRIh(/**/ TicketRIhalo *t) {
+    sub::ini_ticketRIh(/**/ &t->b);
+}
+
+void free_ticketRIh(/**/TicketRIhalo *t) {
+    sub::free_RIbuf(/**/ &t->b);
+}
+
+
 
 /* remote: send functions */
 

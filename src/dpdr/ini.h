@@ -101,3 +101,17 @@ void ini_ticketRh(/**/ Rbufs *b, int26 *est, int26 *nc) {
     for (int i = 0; i < 26; ++i) nc->d[i] = nhalocells.d[i] + 1;
     alloc_Rbufs(*est, nhalocells, /**/ b);
 }
+
+void ini_ticketSIh(/**/ SIbuf *b) {
+    const int26 nhc = get_nhalocells();
+    const int26 est = get_estimates(nhc);
+
+    alloc_SIbuf(est, /**/ b);
+}
+
+void ini_ticketRIh(/**/ RIbuf *b) {
+    const int26 nhc = get_nhalocells();
+    const int26 est = get_estimates(nhc);
+
+    alloc_RIbuf(est, /**/ b);
+}
