@@ -3,10 +3,10 @@ void gen_tags() {
 
     if (mc::tc.first) mcomm::post_recv(/**/ &mc::tc, &mc::tr);
     mcomm::extents(r::q.pp, r::q.nv, r::q.nc, /**/ &mc::ts);
-    mcomm::pack(r::q.pp, r::q.nv, r::q.nc, /**/ &mc::ts);
+    int nbulk = mcomm::pack(r::q.pp, r::q.nv, r::q.nc, /**/ &mc::ts);
     mcomm::post_send(r::q.nv, &mc::ts, /**/ &mc::tc);
     mcomm::wait_recv(/**/ &mc::tc);
-    int nm = mcomm::unpack(r::q.nv, /**/ &mc::tr);
+    int nm = mcomm::unpack(r::q.nv, nbulk, /**/ &mc::tr);
     mcomm::post_recv(/**/ &mc::tc, &mc::tr);
 
     /* tmp texture object; TODO: make a ticket? */
