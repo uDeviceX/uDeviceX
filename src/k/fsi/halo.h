@@ -27,8 +27,12 @@ __device__ void halo0(int n1, float seed, int pid, int base, int lane, /**/ floa
     float3 pos1, pos2, vel1, vel2;
     float3 strength;
     float xinteraction, yinteraction, zinteraction;
-
     float xforce, yforce, zforce;
+
+    int start, count;
+    Particle *states;
+    Force *results;
+
     fid = get_hid(packstarts_padded, base);
     unpackbase = base - packstarts_padded[fid];
 
