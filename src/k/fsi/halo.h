@@ -30,8 +30,6 @@ __device__ void halo0(int n1, float seed, int lid, int lane, int unpackbase, int
                       /**/ float *ff1) {
     Pa l, r; /* local and remote particles */
     Fo f;
-    float2 dst0, dst1, dst2;
-    float x, y, z;
     float *dst = NULL;
 
     Map m;
@@ -45,24 +43,24 @@ __device__ void halo0(int n1, float seed, int lid, int lane, int unpackbase, int
     float3 strength;
     float xinteraction, yinteraction, zinteraction;
     float xforce, yforce, zforce;
-    k_common::read_AOS6f((float2 *)(pp + unpackbase), nunpack, dst0, dst1, dst2);
-    x = fst(dst0); y = scn(dst0); z = fst(dst1);
+
+    l = warp2p(pp, nunpack, unpackbase);
     dst = (float *)(ff + unpackbase);
 
     xforce = yforce = zforce = 0;
     nzplanes = lane < nunpack ? 3 : 0;
     for (zplane = 0; zplane < nzplanes; ++zplane) {
-        if (!tex2map(zplane, n1, x, y, z, /**/ &m)) continue;
+        if (!tex2map(zplane, n1, l.x, l.y, l.z, /**/ &m)) continue;
         for (i = 0; !endp(m, i); ++i) {
             rid = m2id(m, i);
             r = tex2p(rid);
             f = ff2f(ff1, rid);
             myrandnr = l::rnd::d::mean0var1ii(seed, lid, rid);
 
-            pos1 = make_float3(dst0.x, dst0.y, dst1.x);
-            pos2 = make_float3(r.x,    r.y,    r.z);
-            vel1 = make_float3(dst1.y, dst2.x, dst2.y);
-            vel2 = make_float3(r.vx,   r.vy,   r.vz);
+            pos1 = make_float3(l.x, l.y, l.z);
+            pos2 = make_float3(r.x, r.y, r.z);
+            vel1 = make_float3(l.vx, l.vy, l.vz);
+            vel2 = make_float3(r.vx, r.vy, r.vz);
             strength = force(SOLID_TYPE, SOLVENT_TYPE, pos1, pos2, vel1, vel2, myrandnr);
 
             xinteraction = strength.x;
