@@ -15,10 +15,7 @@ void forces_rbc() {
 
 void forces_dpd() {
     dpdr::gather_cells(o::q.cells->start, o::q.cells->count, /**/ &o::h::ts);
-    if (o::h::tc.first) {
-        dpdr::post_expected_recv(&o::h::tc, &o::h::tr);
-        o::h::tc.first = false;
-    }
+    if (o::h::tc.first) dpdr::post_expected_recv(&o::h::tc, &o::h::tr);
     dpdr::copy_cells(&o::h::ts);
     dpdr::pack(o::q.pp, /**/ o::h::ts);
 
@@ -29,6 +26,7 @@ void forces_dpd() {
     dpdr::recv(&o::h::tr);
     dpdr::post_expected_recv(&o::h::tc, &o::h::tr);
     dpdr::fremote(o::h::trnd, o::h::ts, o::h::tr, /**/ o::ff);
+    o::h::tc.first = false;
 }
 
 void clear_forces(Force* ff, int n) {
