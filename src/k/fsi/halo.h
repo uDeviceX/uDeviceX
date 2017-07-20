@@ -34,6 +34,12 @@ __device__ void halo0(int n1, float seed, int pid, int base, int lane, /**/ floa
     Force *results;
 
     fid = get_hid(packstarts_padded, base);
+
+    start = packstarts_padded[fid];
+    count = packcount[fid];
+    states = packstates[fid];
+    results = packresults[fid];
+
     unpackbase = base - packstarts_padded[fid];
 
     nunpack = min(32, packcount[fid] - unpackbase);
