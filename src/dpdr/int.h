@@ -32,6 +32,14 @@ struct TicketRhalo {
     sub::Rbufs b;
 };
 
+struct TicketSIhalo {
+    sub::SIbuf b;
+};
+
+struct TicketRIhalo {
+    sub::RIbuf b;
+};
+
 void ini_ticketcom(MPI_Comm cart, /*io*/ basetags::TagGen *tg, /**/ TicketCom *t) {
     sub::ini_tcom(cart, /**/ &t->cart, t->dstranks, t->recv_tags);
     t->first = true;
