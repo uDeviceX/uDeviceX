@@ -8,7 +8,7 @@ static __device__ unsigned int get_hid(const int a[], const int i) {
     return k9 + k3 + k1;
 }
 
-__device__ void halo0(int n1, float seed,
+__device__ void halo1(int n1, float seed,
                       int pid,
                       int base, int lane, /**/
                       float *ff1) {
@@ -85,7 +85,7 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
     base = 32 * warp + blockDim.x * blockIdx.x;
     if (base >= n0) return;
     i = base + lane;
-    halo0(n1, seed, i, base, lane, /**/ ff1);
+    halo1(n1, seed, i, base, lane, /**/ ff1);
 }
 
 }
