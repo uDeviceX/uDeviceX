@@ -139,13 +139,14 @@ __global__ void compute_tags_tex(const Particle *pp, const int n, const Texo<flo
 #ifdef spdir
     origin[spdir] = p.r[spdir];
 #endif
-        
+
+    int mbase = nv * sid;
     for (int i = 0; i < nt; ++i) {
         const int4 t = textri.fetch(i);
 
-        const Pos a = tex2Pos(texvert, t.x);
-        const Pos b = tex2Pos(texvert, t.y);
-        const Pos c = tex2Pos(texvert, t.z);
+        const Pos a = tex2Pos(texvert, mbase + t.x);
+        const Pos b = tex2Pos(texvert, mbase + t.y);
+        const Pos c = tex2Pos(texvert, mbase + t.z);
             
         if (in_tetrahedron(p.r, a.r, b.r, c.r, origin)) ++count;
     }
