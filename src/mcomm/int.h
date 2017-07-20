@@ -31,14 +31,14 @@ void free_ticketcom(/**/ TicketCom *t) {
 
 void alloc_ticketS(TicketS *ts) {
     for (int i = 0; i < 27; ++i) ts->pp_hst[i] = new Particle[MAX_PART_NUM];
-    llo = new PinnedHostBuffer2<float3>;
-    hhi = new PinnedHostBuffer2<float3>;
+    ts->llo = new PinnedHostBuffer2<float3>;
+    ts->hhi = new PinnedHostBuffer2<float3>;
 }
 
 void free_ticketS(TicketS *ts) {
     for (int i = 0; i < 27; ++i) delete[] ts->pp_hst[i];
-    delete llo;
-    delete hhi;
+    delete ts->llo;
+    delete ts->hhi;
 }
 
 void alloc_ticketR(const TicketS * ts, TicketR *tr) {
@@ -52,7 +52,7 @@ void free_ticketR(TicketR *tr) {
     CC(cudaFree(tr->pp));
 }
 
-void extents
+void extents();
 
 void pack(const float3* minext_hst, const float3 *maxext_hst, const Particle *pp, const int nv,
           const int nm, /**/ TicketS *t) {
