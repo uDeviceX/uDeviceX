@@ -38,7 +38,7 @@ __device__ void halo0(int n1, float seed, int pid, int base, int lane, /**/ floa
     start = packstarts_padded[fid];
     count = packcount[fid];
     states = packstates[fid];
-    results = results;
+    results = packresults[fid];
 
     unpackbase = base - start;
 
