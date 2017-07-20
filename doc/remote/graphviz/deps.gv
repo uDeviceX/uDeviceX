@@ -1,7 +1,11 @@
 digraph {
 	{
 		node [shape=box] 
-		gather_cells->copy_cells->pack->post_send->wait_recv->recv->fremote;
-		post_expected_recv->wait_recv;
+		gather_cells->copy_cells->pack->post_send [label="S"];
+		post_send->wait_recv->recv [label="C"];
+		recv->fremote [label="R"];
+		pack->fremote [label="S"];
+		post_expected_recv->wait_recv [label="C"];
+		post_expected_recv->wait_recv [label="R"];
 	}
 }
