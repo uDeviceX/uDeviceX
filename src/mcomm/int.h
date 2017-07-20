@@ -39,10 +39,12 @@ void free_ticketS(TicketS *ts) {
 void alloc_ticketR(const TicketS * ts, TicketR *tr) {
     for (int i = 1; i < 27; ++i) tr->pp_hst[i] = new Particle[MAX_PART_NUM];
     tr->pp_hst[0] = ts->pp_hst[0];
+    CC(cudaMalloc(&tr->pp, MAX_PART_NUM * sizeof(Particle)));
 }
 
 void free_ticketR(TicketR *tr) {
     for (int i = 1; i < 27; ++i) delete[] tr->pp_hst[i];
+    CC(cudaFree(tr->pp));
 }
 
 void pack(const float3* minext_hst, const float3 *maxext_hst, const Particle *pp, const int nv,
