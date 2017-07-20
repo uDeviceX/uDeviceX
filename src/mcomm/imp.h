@@ -103,7 +103,7 @@ void post_send(MPI_Comm cart, const int dstranks[26], int btc, int btp, int nv, 
     }
 }
 
-void unpack(const int counts[27], const Particle *rpp[27], const int nv, /**/ Particle *pp) {
+void unpack(const int counts[27], const Particle *const rpp[27], const int nv, /**/ Particle *pp) {
     int s = 0; /* start */
     for (int i = 0; i < 27; ++i) {
         const int c = counts[i];
