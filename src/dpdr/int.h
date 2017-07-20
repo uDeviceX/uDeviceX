@@ -1,7 +1,7 @@
-typedef Sarray<int,  26> int26;
-typedef Sarray<int,  27> int27;
-typedef Sarray<int*, 26> intp26;
-typedef Sarray<Particle*, 26> Particlep26;
+using sub::int26;
+using sub::int27;
+using sub::intp26;
+using sub::Particlep26;
 
 struct TicketCom {
     /* basetags */
