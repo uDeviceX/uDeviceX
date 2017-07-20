@@ -95,7 +95,7 @@ void post_recv(MPI_Comm cart, const int dstranks[26], const int rcvtags[26], int
     }
 }
 
-void post_send(MPI_Comm cart, const int dstranks[26], int btc, int btp, int nv, const int counts[27], const Particle *pp[27], /**/ Reqs *sreqs) {
+void post_send(MPI_Comm cart, const int dstranks[26], int btc, int btp, int nv, const int counts[27], const Particle *const pp[27], /**/ Reqs *sreqs) {
     for (int i = 0; i < 26; ++i) {
         const int c = counts[i+1];
         MC(l::m::Isend(&c, 1, MPI_INT, dstranks[i], btc + i, cart, sreqs->counts + i));

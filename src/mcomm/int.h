@@ -52,3 +52,7 @@ void pack(const float3* minext_hst, const float3 *maxext_hst, const Particle *pp
 void post_recv(/**/ TicketCom *tc, TicketR *tr) {
     sub::post_recv(tc->cart, tc->dstranks, tc->recv_tags, tc->btc, tc->btp, /**/ tr->counts, tr->pp_hst, &tc->rreq);
 }
+
+void post_send(int nv, const TicketS *ts, /**/ TicketCom *tc) {
+    sub::post_send(tc->cart, tc->dstranks, tc->btc, tc->btp, nv, ts->counts, ts->pp_hst, /**/ &tc->sreq);
+}
