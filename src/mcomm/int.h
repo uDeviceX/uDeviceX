@@ -2,7 +2,7 @@ struct TicketCom { /* communication ticket */
     int btc, btp;           /* basetags     */
     MPI_Comm cart;          /* communicator */
     sub::Reqs sreq, rreq;   /* requests     */
-    int recv_tags[26], recv_counts[26], dstranks[26];
+    int recv_tags[26], dstranks[26];
     bool first;
 };
 
