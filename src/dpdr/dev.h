@@ -157,3 +157,32 @@ __global__ void fill_all(const int27 cellpackstarts, const Particle *pp, int *re
     if (gid + 1 == cellpackstarts.d[fid + 1]) required_bag_size[fid] = dst;
 }
 
+__global__ void fill_all_ii(const int27 cellpackstarts, const int *ii,
+                            const intp26 fragss, const intp26 fragcc, const intp26 fragcum,
+                            const int26 fragcapacity, /**/ intp26 fragii) {
+    int gid, fid, hci, tid, src, dst, nsrc;
+    int lpid, dpid, spid, c;
+
+    /* 16 workers (warpSize/2) per cell  */
+    /* requirement: 32 threads per block */
+    /* gid: work group id                */
+    /* tid: worker id within the group   */
+    
+    gid = (threadIdx.x >> 4) + 2 * blockIdx.x;
+    if (gid >= cellpackstarts.d[26]) return;
+
+    fid = get_fid(cellpackstarts.d, gid);
+    hci = gid - cellpackstarts.d[fid];
+    
+    tid = threadIdx.x & 0xf;
+    src = fragss.d[fid][hci];
+    dst = fragcum.d[fid][hci];
+    nsrc = min(fragcc.d[fid][hci], fragcapacity.d[fid] - dst);
+    
+    for (lpid = tid; lpid < nsrc; lpid += warpSize / 2) {
+        dpid = dst + lpid;
+        spid = src + lpid;
+        fragii.d[fid][dpid] = ii[spid];
+    }
+}
+
