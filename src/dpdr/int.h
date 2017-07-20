@@ -77,13 +77,13 @@ void alloc_ticketSh(/**/ TicketShalo *t) {
     t->ncells = s;
 }
 
-void alloc_ticketRh(/**/ TicketRhalo *t) {
-    sub::ini_ticketRh(/**/ &t->b, &t->estimate, &t->nc);
-}
-
 void free_ticketSh(/**/TicketShalo *t) {
     sub::free_Sbufs(/**/ &t->b);
     CC(cudaFreeHost(t->nphst));
+}
+
+void alloc_ticketRh(/**/ TicketRhalo *t) {
+    sub::ini_ticketRh(/**/ &t->b, &t->estimate, &t->nc);
 }
 
 void free_ticketRh(/**/TicketRhalo *t) {
