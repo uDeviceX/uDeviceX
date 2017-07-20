@@ -37,10 +37,6 @@ __device__ void halo0(int n1, float seed, int lid, int lane, int unpackbase, int
     int zplane;
     int i;
     int rid; /* remote particle id */
-
-    float3 pos1, pos2, vel1, vel2;
-    float3 strength;
-    float xinteraction, yinteraction, zinteraction;
     float xforce, yforce, zforce;
 
     l = warp2p(pp, nunpack, unpackbase);
@@ -54,24 +50,7 @@ __device__ void halo0(int n1, float seed, int lid, int lane, int unpackbase, int
             rid = m2id(m, i);
             r = tex2p(rid);
             f = ff2f(ff1, rid);
-
-            pos1 = make_float3(l.x, l.y, l.z);
-            pos2 = make_float3(r.x, r.y, r.z);
-            vel1 = make_float3(l.vx, l.vy, l.vz);
-            vel2 = make_float3(r.vx, r.vy, r.vz);
-            strength = force(SOLID_TYPE, SOLVENT_TYPE, pos1, pos2, vel1, vel2, random(seed, lid, rid));
-
-            xinteraction = strength.x;
-            yinteraction = strength.y;
-            zinteraction = strength.z;
-
-            xforce += xinteraction;
-            yforce += yinteraction;
-            zforce += zinteraction;
-
-            atomicAdd(f.x, -xinteraction);
-            atomicAdd(f.y, -yinteraction);
-            atomicAdd(f.z, -zinteraction);
+            pair(l, r, random(lid, rid, seed), /**/ &xforce, &yforce, &zforce,   f);
         }
     }
 
