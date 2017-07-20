@@ -6,5 +6,6 @@ digraph {
 		recv->fremote [label="R"];
 		pack->fremote [label="S"];
 		post_expected_recv->wait_recv [label="C"];
+		post_expected_recv->recv [label="R"];
 	}
 }
