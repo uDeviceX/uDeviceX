@@ -58,8 +58,8 @@ void extents(const Particle *pp, const int nv, const int nm, /**/ TicketS *t) {
     dSync();
 }
 
-void pack(const Particle *pp, const int nv, const int nm, /**/ TicketS *t) {
-    sub::pack(t->llo->D, t->hhi->D, pp, nv, nm, /**/ t->pp_hst, t->counts);
+int pack(const Particle *pp, const int nv, const int nm, /**/ TicketS *t) {
+    return sub::pack(t->llo->D, t->hhi->D, pp, nv, nm, /**/ t->pp_hst, t->counts);
 }
 
 void post_recv(/**/ TicketCom *tc, TicketR *tr) {
@@ -75,6 +75,7 @@ void wait_recv(TicketCom *t) {
     sub::wait_req(&t->rreq);
 }
 
-int unpack(int nv, /**/ TicketR *tr) {
+int unpack(int nv, int nbulk, /**/ TicketR *tr) {
+    tr->counts[0] = nbulk;
     return sub::unpack(tr->counts, tr->pp_hst, nv, /**/ tr->pp);
 }

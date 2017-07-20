@@ -57,7 +57,7 @@ void cornr(const int i, const int d[3], /**/ std::vector<int> travellers[27]) {
 }
 }
 
-void pack(const float3* minext_hst, const float3 *maxext_hst, const Particle *pp, const int nv, const int nm, /**/ Particle *spp[27], int counts[27]) {
+int pack(const float3* minext_hst, const float3 *maxext_hst, const Particle *pp, const int nv, const int nm, /**/ Particle *spp[27], int counts[27]) {
     std::vector<int> travellers[27];
     int d[3];
 
@@ -86,6 +86,7 @@ void pack(const float3* minext_hst, const float3 *maxext_hst, const Particle *pp
     }
     
     dSync();
+    return counts[0];
 }
 
 void post_recv(MPI_Comm cart, const int dstranks[26], const int rcvtags[26], int btc, int btp, /**/ int counts[27], Particle *pp[27], Reqs *rreqs) {
