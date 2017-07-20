@@ -36,21 +36,21 @@ void copy_cells(const int27 fragstarts, const int ncells, const intp26 srccells,
 void pack(const int27 fragstarts, const int ncells, const Particle *pp, const intp26 fragstr,
           const intp26 fragcnt, const intp26 fragcum, const int26 fragcapacity, /**/ intp26 fragii, Particlep26 fragpp, int *bagcounts) {
     if (ncells)
-    dev::fill_all<<<(ncells + 1) / 2, 32>>>(fragstarts, pp, bagcounts, fragstr, fragcnt, fragcum,
-                                            fragcapacity, fragii, fragpp);
+        dev::fill_all<<<(ncells + 1) / 2, 32>>>(fragstarts, pp, bagcounts, fragstr, fragcnt, fragcum,
+                                                fragcapacity, fragii, fragpp);
 }
 
 void copy_pp(const int *fragnp, const Particlep26 fragppdev, /**/ Particlep26 fragpphst) {
     dSync(); /* wait for fill_all */
     
     for (int i = 0; i < 26; ++i)
-    if (fragnp[i])
-    cudaMemcpyAsync(fragpphst.d[i], fragppdev.d[i], sizeof(Particle) * fragnp[i], D2H);
+        if (fragnp[i])
+            cudaMemcpyAsync(fragpphst.d[i], fragppdev.d[i], sizeof(Particle) * fragnp[i], D2H);
     dSync(); /* was CC(cudaStreamSynchronize(downloadstream)); */
 }
 
 void post_send(MPI_Comm cart, const int dstranks[], const int *fragnp, const int26 fragnc, const intp26 fragcum,
-          const Particlep26 fragpp, int btcs, int btc, int btp, /**/ Reqs *sreq) {
+               const Particlep26 fragpp, int btcs, int btc, int btp, /**/ Reqs *sreq) {
 
     for (int i = 0; i < 26; ++i) {
         const int nc = fragnc.d[i];
@@ -83,8 +83,8 @@ void post_expected_recv(MPI_Comm cart, const int dstranks[], const int recv_tags
 
 void recv(const int *np, const int *nc, /**/ Rbufs *b) {
     for (int i = 0; i < 26; ++i)
-    if (np[i] > 0) CC(cudaMemcpyAsync(b->pp.d[i], b->ppdev.d[i], sizeof(Particle) * np[i], D2D));
+        if (np[i] > 0) CC(cudaMemcpyAsync(b->pp.d[i], b->ppdev.d[i], sizeof(Particle) * np[i], D2D));
 
     for (int i = 0; i < 26; ++i)
-    if (nc[i] > 0) CC(cudaMemcpyAsync(b->cum.d[i], b->cumdev.d[i],  sizeof(int) * nc[i], D2D));
+        if (nc[i] > 0) CC(cudaMemcpyAsync(b->cum.d[i], b->cumdev.d[i],  sizeof(int) * nc[i], D2D));
 }
