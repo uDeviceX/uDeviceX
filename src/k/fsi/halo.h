@@ -8,10 +8,7 @@ static __device__ unsigned int get_hid(const int a[], const int i) {
     return k9 + k3 + k1;
 }
 
-__device__ void halo0(int n1, float seed,
-                      int pid,
-                      int base, int lane, /**/
-                      float *ff1) {
+__device__ void halo0(int n1, float seed, int pid, int base, int lane, /**/ float *ff1) {
     Pa r;
     Fo f;
     int nunpack;
@@ -30,18 +27,28 @@ __device__ void halo0(int n1, float seed,
     float3 pos1, pos2, vel1, vel2;
     float3 strength;
     float xinteraction, yinteraction, zinteraction;
-
     float xforce, yforce, zforce;
-    fid = get_hid(packstarts_padded, base);
-    unpackbase = base - packstarts_padded[fid];
 
-    nunpack = min(32, packcount[fid] - unpackbase);
+    int start, count;
+    Particle *states;
+    Force *results;
+
+    fid = get_hid(packstarts_padded, base);
+
+    start = packstarts_padded[fid];
+    count = packcount[fid];
+    states = packstates[fid];
+    results = results;
+
+    unpackbase = base - start;
+
+    nunpack = min(32, count - unpackbase);
     if (nunpack == 0) return;
 
-    k_common::read_AOS6f((float2 *)(packstates[fid] + unpackbase), nunpack, dst0, dst1, dst2);
+    k_common::read_AOS6f((float2 *)(states + unpackbase), nunpack, dst0, dst1, dst2);
     x = fst(dst0); y = scn(dst0); z = fst(dst1);
 
-    dst = (float *)(packresults[fid] + unpackbase);
+    dst = (float *)(results + unpackbase);
 
     xforce = yforce = zforce = 0;
     nzplanes = lane < nunpack ? 3 : 0;
@@ -76,6 +83,9 @@ __device__ void halo0(int n1, float seed,
     k_common::write_AOS3f(dst, nunpack, xforce, yforce, zforce);
 }
 
+__device__ void halo1(int n1, float seed, int pid, int base, int lane, /**/ float *ff1) {
+    
+}
 
 __global__ void halo(int n0, int n1, float seed, float *ff1) {
     int lane, warp, base;
