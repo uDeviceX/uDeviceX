@@ -84,8 +84,40 @@ struct Ibuf {
     intp26 ii;             /* int data on device for each fragment   */
 
     /* pinned buffers */
-    intp26 ii_hst, ii_dev; /* pinned memory for transfering int data */
+    intp26 iihst, iidev; /* pinned memory for transfering int data */
 };
 
 struct SIbuf : Ibuf {};
 struct RIbuf : Ibuf {};
+
+static void alloc_Ibuf_frag(const int i, const int est, /**/ Ibuf *b) {
+    CC(cudaMalloc(&b->ii.d[i], est * sizeof(int)));
+
+    CC(cudaHostAlloc(&b->iihst.d[i], est * sizeof(int), cudaHostAllocMapped));
+    CC(cudaHostGetDevicePointer(&b->iidev.d[i], b->iihst.d[i], 0));
+}
+
+static void free_Ibuf_frag(const int i, /**/ Ibuf *b) {
+    CC(cudaFree(b->ii.d[i]));
+    CC(cudaFreeHost(b->iihst.d[i]));
+}
+
+void alloc_SIbuf(const int26 estimates, /**/ SIbuf *b) {
+    for (int i = 0; i < 26; ++i)
+    alloc_Ibuf_frag(i, estimates.d[i], /**/ b);
+}
+
+void free_SIbuf(/**/ SIbuf *b) {
+    for (int i = 0; i < 26; ++i)
+    free_Ibuf_frag(i, /**/ b);
+}
+
+void alloc_RIbuf(const int26 estimates, /**/ RIbuf *b) {
+    for (int i = 0; i < 26; ++i)
+    alloc_Ibuf_frag(i, estimates.d[i], /**/ b);
+}
+
+void free_RIbuf(/**/ RIbuf *b) {
+    for (int i = 0; i < 26; ++i)
+    free_Ibuf_frag(i, /**/ b);
+}
