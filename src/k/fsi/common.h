@@ -2,6 +2,10 @@ namespace k_fsi {
 static __device__ float fst(float2 p) { return p.x; }
 static __device__ float scn(float2 p) { return p.y; }
 
+static __device__ float random(uint lid, uint rid, float seed) {
+    return l::rnd::d::mean0var1uu(seed, lid, rid);
+}
+
 static __device__ void tex2rv(int i,
                               float  *x, float  *y, float  *z,
                               float *vx, float *vy, float *vz) {

@@ -15,10 +15,6 @@ static __device__ Pa pp2p(float2 *pp, int i) {
     return p;
 }
 
-static __device__ float random(uint lid, uint rid, float seed) {
-    return l::rnd::d::mean0var1uu(seed, lid, rid);
-}
-
 static __device__ void pair0(const Pa l, const Pa r, float rnd, /**/ float *fx, float *fy, float *fz) {
     /* pair force ; l, r: local and remote */
     float3 r1, r2, v1, v2, f;
