@@ -1,0 +1,7 @@
+digraph {
+	{
+		node [shape=box] 
+		gather_cells->copy_cells->pack->post_send->wait_recv->recv->fremote;
+		post_expected_recv->wait_recv;
+	}
+}
