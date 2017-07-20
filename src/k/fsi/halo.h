@@ -40,7 +40,7 @@ __device__ void halo0(int n1, float seed, int pid, int base, int lane, /**/ floa
     states = packstates[fid];
     results = packresults[fid];
 
-    unpackbase = base - packstarts_padded[fid];
+    unpackbase = base - start;
 
     nunpack = min(32, packcount[fid] - unpackbase);
     if (nunpack == 0) return;
