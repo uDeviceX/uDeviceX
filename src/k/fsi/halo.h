@@ -8,7 +8,7 @@ static __device__ unsigned int get_hid(const int a[], const int i) {
     return k9 + k3 + k1;
 }
 
-__device__ void halo0(int n1, float seed, int pid, int lane, int unpackbase, int nunpack,
+__device__ void halo0(int n1, float seed, int lid, int lane, int unpackbase, int nunpack,
                       Particle *pp, Force *ff,
                       /**/ float *ff1) {
     Pa r;
@@ -39,7 +39,7 @@ __device__ void halo0(int n1, float seed, int pid, int lane, int unpackbase, int
             spid = m2id(m, i);
             r = tex2p(spid);
             f = ff2f(ff1, spid);
-            myrandnr = l::rnd::d::mean0var1ii(seed, pid, spid);
+            myrandnr = l::rnd::d::mean0var1ii(seed, lid, spid);
 
             pos1 = make_float3(dst0.x, dst0.y, dst1.x);
             pos2 = make_float3(r.x,    r.y,    r.z);
@@ -64,7 +64,7 @@ __device__ void halo0(int n1, float seed, int pid, int lane, int unpackbase, int
     k_common::write_AOS3f(dst, nunpack, xforce, yforce, zforce);
 }
 
-__device__ void halo1(int n1, float seed, int pid, int base, int lane, /**/ float *ff1) {
+__device__ void halo1(int n1, float seed, int lid, int base, int lane, /**/ float *ff1) {
     int fid; /* fragment id */
     int start, count;
     Particle *pp;
@@ -79,7 +79,7 @@ __device__ void halo1(int n1, float seed, int pid, int base, int lane, /**/ floa
     nunpack = min(32, count - unpackbase);
     if (nunpack == 0) return;
 
-    halo0(n1, seed, pid, lane, unpackbase, nunpack, pp, ff, /**/ ff1);
+    halo0(n1, seed, lid, lane, unpackbase, nunpack, pp, ff, /**/ ff1);
 }
 
 __global__ void halo(int n0, int n1, float seed, float *ff1) {
