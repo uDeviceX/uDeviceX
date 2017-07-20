@@ -54,6 +54,7 @@ void post_recv(/**/ TicketCom *tc, TicketR *tr) {
 }
 
 void post_send(int nv, const TicketS *ts, /**/ TicketCom *tc) {
+    if (!tc->first) sub::wait_req(&tc->sreq);
     sub::post_send(tc->cart, tc->dstranks, tc->btc, tc->btp, nv, ts->counts, ts->pp_hst, /**/ &tc->sreq);
 }
 
