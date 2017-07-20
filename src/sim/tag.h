@@ -13,7 +13,7 @@ void gen_tags() {
     Texo<float2> texvert;
     texvert.setup((float2*) mc::tr.pp, nm * 3 * r::q.nv);
 
-    collision::get_tags(o::q.pp, o::q.n, texvert, r::tt.textri, r::q.nt, r::q.nv, r::q.nc, /**/ o::qt.ii);
+    collision::get_tags(o::q.pp, o::q.n, texvert, r::tt.textri, r::q.nt, r::q.nv, nm, /**/ o::qt.ii);
 
     texvert.destroy();
     mc::tc.first = false;
