@@ -76,4 +76,12 @@ void pack(const float3* minext_hst, const float3 *maxext_hst, const Particle *pp
         if (type >= EDGE) travel::edges(i, d, /**/ travellers);
         if (type >= CORN) travel::cornr(i, d, /**/ travellers);
     }
+
+    /* copy data */
+    for (int i = 0; i < 27; ++i) {
+        int s = 0; /* start */
+
+        for (int id : travellers[i])
+        CC(cudaMemcpyAsync(spp[i] + nv * (s++), pp + nv * id, nv * sizeof(Particle), D2H));
+    }
 }
