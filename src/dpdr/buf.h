@@ -13,6 +13,16 @@ struct Sbufs {
     intp26 cumdev, cumhst;     /* pinned memory for transfering local cum sum     */
 };
 
+struct Rbufs {
+    
+    intp26 cum;                /* cellstarts for each fragment (frag coords)      */
+    Particlep26 pp;            /* buffer of particles for each fragment           */
+
+    /* pinned buffers */
+    Particlep26 ppdev, pphst;  /* pinned memory for transfering particles         */
+    intp26 cumdev, cumhst;     /* pinned memory for transfering local cum sum     */
+};
+
 static void alloc_Sbuf_frag(const int i, const int est, const int nfragcells, /**/ Sbufs *b) {
     CC(cudaMalloc(&b->str.d[i], (nfragcells + 1) * sizeof(int)));
     CC(cudaMalloc(&b->cnt.d[i], (nfragcells + 1) * sizeof(int)));
@@ -49,17 +59,6 @@ void free_Sbufs(/**/ Sbufs *b) {
     for (int i = 0; i < 26; ++i)
     free_Sbuf_frag(i, /**/ b);
 }
-
-
-struct Rbufs {
-    
-    intp26 cum;                /* cellstarts for each fragment (frag coords)      */
-    Particlep26 pp;            /* buffer of particles for each fragment           */
-
-    /* pinned buffers */
-    Particlep26 ppdev, pphst;  /* pinned memory for transfering particles         */
-    intp26 cumdev, cumhst;     /* pinned memory for transfering local cum sum     */
-};
 
 static void alloc_Rbuf_frag(const int i, const int est, const int nfragcells, /**/ Rbufs *b) {
     CC(cudaMalloc(&b->cum.d[i], (nfragcells + 1) * sizeof(int)));
