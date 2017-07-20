@@ -57,7 +57,7 @@ void cornr(const int i, const int d[3], /**/ std::vector<int> travellers[27]) {
 }
 }
 
-void pack(const float3* minext_hst, const float3 *maxext_hst, const Particle *pp, const int nv, const int nm, /**/ Particle *spp[27]) {
+void pack(const float3* minext_hst, const float3 *maxext_hst, const Particle *pp, const int nv, const int nm, /**/ Particle *spp[27], int counts[27]) {
     std::vector<int> travellers[27];
     int d[3];
 
@@ -79,9 +79,19 @@ void pack(const float3* minext_hst, const float3 *maxext_hst, const Particle *pp
 
     /* copy data */
     for (int i = 0; i < 27; ++i) {
+        counts[i] = travellers[i].size();
         int s = 0; /* start */
-
         for (int id : travellers[i])
             CC(cudaMemcpyAsync(spp[i] + nv * (s++), pp + nv * id, nv * sizeof(Particle), D2H));
+    }
+    
+    dSync();
+}
+
+void post(MPI_Comm cart, const int dstranks[27], int btc, int btp, int nv, const int counts[27], const Particle *pp[27], /**/ Reqs *sreqs) {
+    for (int i = 0; i < 26; ++i) {
+        const int c = counts[i+1];
+        MC(l::m::Isend(&c, 1, MPI_INT, dstranks[i], btc + i, cart, sreqs->counts + i));
+        MC(l::m::Isend(&pp[i], c * nv, datatype::particle, dstranks[i], btp + i, cart, sreqs->pp + i));
     }
 }
