@@ -78,13 +78,14 @@ __device__ void halo0(int n1, float seed,
 
 
 __global__ void halo(int n0, int n1, float seed, float *ff1) {
-    int lane, warp, base, pid;
+    int lane, warp, base;
+    int i; /* particle id */
     warp = threadIdx.x / 32;
     lane = threadIdx.x % 32;
     base = 32 * warp + blockDim.x * blockIdx.x;
     if (base >= n0) return;
-    pid = base + lane;
-    halo0(n1, seed, pid, base, lane, /**/ ff1);
+    i = base + lane;
+    halo0(n1, seed, i, base, lane, /**/ ff1);
 }
 
 }
