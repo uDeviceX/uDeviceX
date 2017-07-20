@@ -19,6 +19,7 @@ static __device__ void warp2rv(const Particle *p, int n, int i, /**/
 }
 
 static __device__ Pa warp2p(const Particle *pp, int n, int i) {
+    /* NOTE: collective read */
     Pa p;
     warp2rv(pp, n, i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
     return p;
