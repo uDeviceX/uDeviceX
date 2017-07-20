@@ -8,10 +8,7 @@ static __device__ unsigned int get_hid(const int a[], const int i) {
     return k9 + k3 + k1;
 }
 
-__device__ void halo1(int n1, float seed,
-                      int pid,
-                      int base, int lane, /**/
-                      float *ff1) {
+__device__ void halo0(int n1, float seed, int pid, int base, int lane, /**/ float *ff1) {
     Pa r;
     Fo f;
     int nunpack;
@@ -76,6 +73,9 @@ __device__ void halo1(int n1, float seed,
     k_common::write_AOS3f(dst, nunpack, xforce, yforce, zforce);
 }
 
+__device__ void halo1(int n1, float seed, int pid, int base, int lane, /**/ float *ff1) {
+    
+}
 
 __global__ void halo(int n0, int n1, float seed, float *ff1) {
     int lane, warp, base;
@@ -85,7 +85,7 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
     base = 32 * warp + blockDim.x * blockIdx.x;
     if (base >= n0) return;
     i = base + lane;
-    halo1(n1, seed, i, base, lane, /**/ ff1);
+    halo0(n1, seed, i, base, lane, /**/ ff1);
 }
 
 }
