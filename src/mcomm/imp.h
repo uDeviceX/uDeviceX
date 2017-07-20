@@ -109,11 +109,9 @@ int unpack(const int counts[27], const Particle *const rpp[27], const int nv, /*
     for (int i = 0; i < 27; ++i) {
         const int c = counts[i];
         if (c) CC(cudaMemcpyAsync(pp + s * nv, rpp[i], c * nv * sizeof(Particle), H2D));
-        printf("%d : got %d mesh\n", i, c);
         if (i && c) {
             const int d[3] = i2del(i);
             const float3 shift = make_float3(-d[X] * XS, -d[Y] * YS, -d[Z] * ZS);
-            printf("shifting: %f %f %f\n", shift.x, shift.y, shift.z);
             dev::shift <<< k_cnf(c * nv) >>> (shift, c * nv, /**/ pp + s * nv);
         }
         
