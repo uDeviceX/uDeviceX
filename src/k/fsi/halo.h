@@ -38,7 +38,7 @@ __device__ void halo0(int n1, float seed, int pid, int base, int lane, /**/ floa
     start = packstarts_padded[fid];
     count = packcount[fid];
     states = packstates[fid];
-    results = packresults[fid];
+    results = results;
 
     unpackbase = base - start;
 
@@ -48,7 +48,7 @@ __device__ void halo0(int n1, float seed, int pid, int base, int lane, /**/ floa
     k_common::read_AOS6f((float2 *)(states + unpackbase), nunpack, dst0, dst1, dst2);
     x = fst(dst0); y = scn(dst0); z = fst(dst1);
 
-    dst = (float *)(packresults[fid] + unpackbase);
+    dst = (float *)(results + unpackbase);
 
     xforce = yforce = zforce = 0;
     nzplanes = lane < nunpack ? 3 : 0;
