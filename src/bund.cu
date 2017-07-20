@@ -139,6 +139,7 @@ namespace dev {
 #include "fsi/impl.h"
 
 #include "rex/decl.h"
+#include "rex/ini.h"
 #include "k/rex.h"
 #include "rex/impl.h"
 
