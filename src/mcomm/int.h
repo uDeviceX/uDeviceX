@@ -27,20 +27,21 @@ void free_ticketcom(/**/ TicketCom *t) {
     sub::fin_tcom(t->first, /**/ &t->cart, &t->sreq, &t->rreq);
 }
 
-void alloc_ticketS(TicketS *t) {
-    for (int i = 0; i < 27; ++i) t->pp_hst[i] = new Particle[MAX_PART_NUM];
+void alloc_ticketS(TicketS *ts) {
+    for (int i = 0; i < 27; ++i) ts->pp_hst[i] = new Particle[MAX_PART_NUM];
 }
 
-void free_ticketS(TicketS *t) {
-    for (int i = 0; i < 27; ++i) delete[] t->pp_hst[i];
+void free_ticketS(TicketS *ts) {
+    for (int i = 0; i < 27; ++i) delete[] ts->pp_hst[i];
 }
 
-void alloc_ticketR(TicketR *t) {
-    for (int i = 0; i < 27; ++i) t->pp_hst[i] = new Particle[MAX_PART_NUM];
+void alloc_ticketR(const TicketS * ts, TicketR *tr) {
+    for (int i = 1; i < 27; ++i) tr->pp_hst[i] = new Particle[MAX_PART_NUM];
+    tr->pp_hst[0] = ts->pp_hst[0];
 }
 
-void free_ticketR(TicketR *t) {
-    for (int i = 0; i < 27; ++i) delete[] t->pp_hst[i];
+void free_ticketR(TicketR *tr) {
+    for (int i = 0; i < 27; ++i) delete[] tr->pp_hst[i];
 }
 
 void pack(const float3* minext_hst, const float3 *maxext_hst, const Particle *pp, const int nv,
