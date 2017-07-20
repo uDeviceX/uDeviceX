@@ -36,6 +36,10 @@ void fin() {
         flu::free_quantsI(&o::qt);
         odstr::free_ticketI(&o::tt);
         odstr::free_ticketUI(&o::tut);
+
+        mcomm::free_ticketcom(&mc::tc);
+        mcomm::free_ticketS(&mc::ts);
+        mcomm::free_ticketR(&mc::tr);
     }
     
     odstr::free_work(&o::w);

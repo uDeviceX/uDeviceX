@@ -35,6 +35,10 @@ void ini() {
         flu::alloc_quantsI(&o::qt);
         odstr::alloc_ticketI(&tag_gen, &o::tt);
         odstr::alloc_ticketUI(&o::tut);
+
+        mcomm::ini_ticketcom(m::cart, /*io*/ &tag_gen, /**/ &mc::tc);
+        mcomm::alloc_ticketS(/**/ &mc::ts);
+        mcomm::alloc_ticketR(&mc::ts, /**/ &mc::tr);
     }
     
     odstr::alloc_work(&o::w);
