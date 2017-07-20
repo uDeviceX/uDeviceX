@@ -82,6 +82,6 @@ void pack(const float3* minext_hst, const float3 *maxext_hst, const Particle *pp
         int s = 0; /* start */
 
         for (int id : travellers[i])
-        CC(cudaMemcpyAsync(spp[i] + nv * (s++), pp + nv * id, nv * sizeof(Particle), D2H));
+            CC(cudaMemcpyAsync(spp[i] + nv * (s++), pp + nv * id, nv * sizeof(Particle), D2H));
     }
 }
