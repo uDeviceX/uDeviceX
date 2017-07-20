@@ -43,3 +43,11 @@ void free_ticketR(TicketR *t) {
     for (int i = 0; i < 27; ++i) delete[] t->pp_hst[i];
 }
 
+void pack(const float3* minext_hst, const float3 *maxext_hst, const Particle *pp, const int nv,
+          const int nm, /**/ TicketS *t) {
+    sub::pack(minext_hst, maxext_hst, pp, nv, nm, /**/ t->pp_hst, t->counts);
+}
+
+void post_recv(/**/ TicketCom *tc, TicketR *tr) {
+    sub::post_recv(tc->cart, tc->dstranks, tc->recv_tags, tc->btc, tc->btp, /**/ tr->counts, tr->pp_hst, &tc->rreq);
+}
