@@ -104,3 +104,12 @@ void post_send(MPI_Comm cart, const int dstranks[26], int btc, int btp, int nv, 
         MC(l::m::Isend(&pp[i], c * nv, datatype::particle, dstranks[i], btp + i, cart, sreqs->pp + i));
     }
 }
+
+void unpack(const int counts[27], const Particle *rpp[27], const int nv, /**/ Particle *pp) {
+    int s = 0; /* start */
+    for (int i = 0; i < 27; ++i) {
+        const int c = counts[i];
+        CC(cudaMemcpyAsync(pp + s * nv, rpp[i], c * nv * sizeof(Particle), H2D));
+        s += c;
+    }
+}
