@@ -1,7 +1,7 @@
-typedef Sarray<int,  26> int26;
-typedef Sarray<int,  27> int27;
-typedef Sarray<int*, 26> intp26;
-typedef Sarray<Particle*, 26> Particlep26;
+using dev::int26;
+using dev::int27;
+using dev::intp26;
+using dev::Particlep26;
 
 /* Structure containing all kinds of requests a fragment can have */
 struct Reqs {
