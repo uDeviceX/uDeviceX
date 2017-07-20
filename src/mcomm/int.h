@@ -12,8 +12,9 @@ struct TicketS { /* send data */
 };
 
 struct TicketR { /* recv data */
-    Particle *pp_hst[27]; /* particles on host */
-    int counts[27];       /* number of meshes  */
+    Particle *pp_hst[27]; /* particles on host           */
+    int counts[27];       /* number of meshes            */
+    Particle *pp;         /* particles on dev (unpacked) */
 };
 
 void ini_ticketcom(MPI_Comm cart, /*io*/ basetags::TagGen *tg, /**/ TicketCom *t) {
