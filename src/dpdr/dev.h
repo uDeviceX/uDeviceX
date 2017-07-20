@@ -3,7 +3,7 @@ typedef Sarray<int,  27> int27;
 typedef Sarray<int*, 26> intp26;
 typedef Sarray<Particle*, 26> Particlep26;
 
-static __device__ int get_hid(const int a[], const int i) {  /* where is `i' in sorted a[27]? */
+static __device__ int get_fid(const int a[], const int i) {  /* where is `i' in sorted a[27]? */
     int k1, k3, k9;
     k9 = 9 * ((i >= a[9])           + (i >= a[18]));
     k3 = 3 * ((i >= a[k9 + 3])      + (i >= a[k9 + 6]));
@@ -13,7 +13,7 @@ static __device__ int get_hid(const int a[], const int i) {  /* where is `i' in 
 
 /* returns halo box; 0 is a corner of subdomain */
 static __device__ void get_box(int i, /**/ int org[3], int ext[3]) {
-    /* i, org, ext : halo id, origin, extend */
+    /* i, org, ext : fragment id, origin, extend */
     int L[3] = {XS, YS, ZS};
     int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
     int c;
@@ -37,26 +37,26 @@ __global__ void count(const int27 cellpackstarts, const int *start, const int *c
                       intp26 fragss, intp26 fragcc) {
     enum {X, Y, Z};
     int gid;
-    int hid; /* halo id */
-    int nhc; /* number of hallo cells */
+    int fid; /* fragment id */
+    int nhc; /* number of halo cells */
     int cid, hci; /* bulk and halo cell ids */
-    int org[3], ext[3]; /* halo origin and extend */
+    int org[3], ext[3]; /* fragment origin and extend */
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     if (gid >= cellpackstarts.d[26]) return;
 
-    hid = get_hid(cellpackstarts.d, gid);
-    hci = gid - cellpackstarts.d[hid];
+    fid = get_fid(cellpackstarts.d, gid);
+    hci = gid - cellpackstarts.d[fid];
 
-    get_box(hid, /**/ org, ext);
+    get_box(fid, /**/ org, ext);
     nhc = ext[X] * ext[Y] * ext[Z];
 
     if (hci < nhc) {
         cid = h2cid(hci, org, ext);
-        fragss.d[hid][hci] = start[cid];
-        fragcc.d[hid][hci] = count[cid];
+        fragss.d[fid][hci] = start[cid];
+        fragcc.d[fid][hci] = count[cid];
     } else if (hci == nhc) {
-        fragss.d[hid][hci] = 0;
-        fragcc.d[hid][hci] = 0;
+        fragss.d[fid][hci] = 0;
+        fragcc.d[fid][hci] = 0;
     }
 }
 
@@ -65,7 +65,7 @@ __global__ void copycells(const int27 cellpackstarts, const intp26 srccells, /**
 
     if (gid >= cellpackstarts.d[26]) return;
 
-    int idpack = get_hid(cellpackstarts.d, gid);
+    int idpack = get_fid(cellpackstarts.d, gid);
     int offset = gid - cellpackstarts.d[idpack];
 
     dstcells.d[idpack][offset] = srccells.d[idpack][offset];
@@ -75,10 +75,10 @@ template <int NWARPS>
 __global__ void scan(const int26 fragn, const intp26 fragcc, /**/ intp26 fragcum) {
     __shared__ int shdata[32];
 
-    int hid = blockIdx.x;
-    int *count = fragcc.d[hid];
-    int *start = fragcum.d[hid];
-    int n = fragn.d[hid];
+    int fid = blockIdx.x;
+    int *count = fragcc.d[fid];
+    int *start = fragcum.d[fid];
+    int n = fragn.d[fid];
 
     int tid = threadIdx.x;
     int laneid = threadIdx.x & 0x1f;
@@ -119,7 +119,7 @@ __global__ void scan(const int26 fragn, const intp26 fragcc, /**/ intp26 fragcum
 __global__ void fill_all(const int27 cellpackstarts, const Particle *pp, int *required_bag_size,
                          const intp26 fragss, const intp26 fragcc, const intp26 fragcum,
                          const int26 fragcapacity, /**/ intp26 fragindices, Particlep26 fragpp) {
-    int gid, hid, hci, tid, src, dst, nsrc, nfloat2s;
+    int gid, fid, hci, tid, src, dst, nsrc, nfloat2s;
     int i, lpid, dpid, spid, c;
 
     /* 16 workers (warpSize/2) per cell */
@@ -129,16 +129,16 @@ __global__ void fill_all(const int27 cellpackstarts, const Particle *pp, int *re
     gid = (threadIdx.x >> 4) + 2 * blockIdx.x;
     if (gid >= cellpackstarts.d[26]) return;
 
-    hid = get_hid(cellpackstarts.d, gid);
-    hci = gid - cellpackstarts.d[hid];
+    fid = get_fid(cellpackstarts.d, gid);
+    hci = gid - cellpackstarts.d[fid];
     
     tid = threadIdx.x & 0xf;
-    src = fragss.d[hid][hci];
-    dst = fragcum.d[hid][hci];
-    nsrc = min(fragcc.d[hid][hci], fragcapacity.d[hid] - dst);
+    src = fragss.d[fid][hci];
+    dst = fragcum.d[fid][hci];
+    nsrc = min(fragcc.d[fid][hci], fragcapacity.d[fid] - dst);
 
     const float2 *srcpp = (const float2*) pp;
-    float2 *dstpp = (float2*) fragpp.d[hid];
+    float2 *dstpp = (float2*) fragpp.d[fid];
     
     nfloat2s = nsrc * 3;
     for (i = tid; i < nfloat2s; i += warpSize/2) {
@@ -151,7 +151,8 @@ __global__ void fill_all(const int27 cellpackstarts, const Particle *pp, int *re
     for (lpid = tid; lpid < nsrc; lpid += warpSize / 2) {
         dpid = dst + lpid;
         spid = src + lpid;
-        fragindices.d[hid][dpid] = spid;
+        fragindices.d[fid][dpid] = spid;
     }
-    if (gid + 1 == cellpackstarts.d[hid + 1]) required_bag_size[hid] = dst;
+    if (gid + 1 == cellpackstarts.d[fid + 1]) required_bag_size[fid] = dst;
 }
+
