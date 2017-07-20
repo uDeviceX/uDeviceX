@@ -1,8 +1,9 @@
 struct TicketCom { /* communication ticket */
-    int btc, btp;           /* basetags     */
-    MPI_Comm cart;          /* communicator */
-    sub::Reqs sreq, rreq;   /* requests     */
-    int recv_tags[26], dstranks[26];
+    int btc, btp;           /* basetags           */
+    MPI_Comm cart;          /* communicator       */
+    sub::Reqs sreq, rreq;   /* requests           */
+    int rnk_ne[27];         /* neighbor rank      */
+    int ank_ne[27];         /* anti neighbor rank */
     bool first;
 };
 
@@ -19,7 +20,7 @@ struct TicketR { /* recv data */
 };
 
 void ini_ticketcom(MPI_Comm cart, /*io*/ basetags::TagGen *tg, /**/ TicketCom *t) {
-    sub::ini_tcom(cart, /**/ &t->cart, t->dstranks, t->recv_tags);
+    sub::ini_tcom(cart, /**/ &t->cart, t->rnk_ne, t->ank_ne);
     t->first = true;
     t->btc = get_tag(tg);
     t->btp = get_tag(tg);
@@ -63,12 +64,12 @@ int pack(const Particle *pp, const int nv, const int nm, /**/ TicketS *t) {
 }
 
 void post_recv(/**/ TicketCom *tc, TicketR *tr) {
-    sub::post_recv(tc->cart, tc->dstranks, tc->recv_tags, tc->btc, tc->btp, /**/ tr->counts, tr->pp_hst, &tc->rreq);
+    sub::post_recv(tc->cart, tc->ank_ne, tc->btc, tc->btp, /**/ tr->counts, tr->pp_hst, &tc->rreq);
 }
 
 void post_send(int nv, const TicketS *ts, /**/ TicketCom *tc) {
     if (!tc->first) sub::wait_req(&tc->sreq);
-    sub::post_send(tc->cart, tc->dstranks, tc->btc, tc->btp, nv, ts->counts, ts->pp_hst, /**/ &tc->sreq);
+    sub::post_send(tc->cart, tc->rnk_ne, tc->btc, tc->btp, nv, ts->counts, ts->pp_hst, /**/ &tc->sreq);
 }
 
 void wait_recv(TicketCom *t) {
