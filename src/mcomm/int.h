@@ -42,3 +42,4 @@ void alloc_ticketR(TicketR *t) {
 void free_ticketR(TicketR *t) {
     for (int i = 0; i < 27; ++i) delete[] t->pp_hst[i];
 }
+
