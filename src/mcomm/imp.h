@@ -88,7 +88,16 @@ void pack(const float3* minext_hst, const float3 *maxext_hst, const Particle *pp
     dSync();
 }
 
-void post(MPI_Comm cart, const int dstranks[27], int btc, int btp, int nv, const int counts[27], const Particle *pp[27], /**/ Reqs *sreqs) {
+void post_recv(MPI_Comm cart, const int dstranks[26], const int rcvtags[26], int btc, int btp, int nv, /**/ int counts[27], Particle *pp[27], Reqs *rreqs) {
+    for (int i = 0; i < 26; ++i) {
+        // TODO
+        int nrecv = 10;
+        MC(l::m::Irecv(counts + i + 1, 1, MPI_INT, dstranks[i], btc + rcvtags[i], cart, rreqs->counts + i));
+        MC(l::m::Irecv(pp + i + 1, nv * nrecv, datatype::particle, dstranks[i], btp + rcvtags[i], cart, rreqs->pp + i));
+    }
+}
+
+void post(MPI_Comm cart, const int dstranks[26], int btc, int btp, int nv, const int counts[27], const Particle *pp[27], /**/ Reqs *sreqs) {
     for (int i = 0; i < 26; ++i) {
         const int c = counts[i+1];
         MC(l::m::Isend(&c, 1, MPI_INT, dstranks[i], btc + i, cart, sreqs->counts + i));
