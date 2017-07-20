@@ -41,7 +41,7 @@ void alloc_ticketR(const TicketS * ts, TicketR *tr) {
 }
 
 void free_ticketR(TicketR *tr) {
-    for (int i = 0; i < 27; ++i) delete[] tr->pp_hst[i];
+    for (int i = 1; i < 27; ++i) delete[] tr->pp_hst[i];
 }
 
 void pack(const float3* minext_hst, const float3 *maxext_hst, const Particle *pp, const int nv,
