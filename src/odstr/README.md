@@ -16,7 +16,7 @@ See [sim.md](../../doc/sim.md)
 
 ## ticket dependencies:
 
-![alt text][graphviz/deps.png]
+![alt text](graphviz/deps.png)
 
 "A->B" reads "B depends on A"  
 "A->B->C" reads "C depends on B, which depends on A"
