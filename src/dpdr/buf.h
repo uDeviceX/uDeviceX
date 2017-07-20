@@ -79,3 +79,13 @@ void free_Rbufs(/**/ Rbufs *b) {
     for (int i = 0; i < 26; ++i)
     free_Rbuf_frag(i, /**/ b);
 }
+
+struct Ibuf {
+    intp26 ii;             /* int data on device for each fragment   */
+
+    /* pinned buffers */
+    intp26 ii_hst, ii_dev; /* pinned memory for transfering int data */
+};
+
+struct SIbuf : Ibuf {};
+struct RIbuf : Ibuf {};
