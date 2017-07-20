@@ -8,10 +8,26 @@ static __device__ unsigned int get_hid(const int a[], const int i) {
     return k9 + k3 + k1;
 }
 
-__device__ void halo0(int n1, float seed, int pid, int lane, int unpackbase, int nunpack,
-                      Particle *states, Force *results,
+static __device__ void warp2rv(const float2 *p, int i, /**/
+                            float  *x, float  *y, float  *z,
+                            float *vx, float *vy, float *vz) {
+    float2 s0, s1, s2;
+    p += 3*i;
+    s0 = __ldg(p++); s1 = __ldg(p++); s2 = __ldg(p++);
+     *x = fst(s0);  *y = scn(s0);  *z = fst(s1);
+    *vx = scn(s1); *vy = fst(s2); *vz = scn(s2);
+}
+
+static __device__ Pa warp2p(float2 *pp, int i) {
+    Pa p;
+    warp2rv(pp, i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
+    return p;
+}
+
+__device__ void halo0(int n1, float seed, int lid, int lane, int unpackbase, int nunpack,
+                      Particle *pp, Force *ff,
                       /**/ float *ff1) {
-    Pa r;
+    Pa l; /* local particle */
     Fo f;
     float2 dst0, dst1, dst2;
     float x, y, z;
@@ -20,31 +36,32 @@ __device__ void halo0(int n1, float seed, int pid, int lane, int unpackbase, int
     Map m;
     int nzplanes;
     int zplane;
-    int i, spid;
+    int i;
+    int rid; /* remote particle id */
     float myrandnr;
 
     float3 pos1, pos2, vel1, vel2;
     float3 strength;
     float xinteraction, yinteraction, zinteraction;
     float xforce, yforce, zforce;
-    k_common::read_AOS6f((float2 *)(states + unpackbase), nunpack, dst0, dst1, dst2);
+    k_common::read_AOS6f((float2 *)(pp + unpackbase), nunpack, dst0, dst1, dst2);
     x = fst(dst0); y = scn(dst0); z = fst(dst1);
-    dst = (float *)(results + unpackbase);
+    dst = (float *)(ff + unpackbase);
 
     xforce = yforce = zforce = 0;
     nzplanes = lane < nunpack ? 3 : 0;
     for (zplane = 0; zplane < nzplanes; ++zplane) {
         if (!tex2map(zplane, n1, x, y, z, /**/ &m)) continue;
         for (i = 0; !endp(m, i); ++i) {
-            spid = m2id(m, i);
-            r = tex2p(spid);
-            f = ff2f(ff1, spid);
-            myrandnr = l::rnd::d::mean0var1ii(seed, pid, spid);
+            rid = m2id(m, i);
+            l = tex2p(rid);
+            f = ff2f(ff1, rid);
+            myrandnr = l::rnd::d::mean0var1ii(seed, lid, rid);
 
             pos1 = make_float3(dst0.x, dst0.y, dst1.x);
-            pos2 = make_float3(r.x,    r.y,    r.z);
+            pos2 = make_float3(l.x,    l.y,    l.z);
             vel1 = make_float3(dst1.y, dst2.x, dst2.y);
-            vel2 = make_float3(r.vx,   r.vy,   r.vz);
+            vel2 = make_float3(l.vx,   l.vy,   l.vz);
             strength = force(SOLID_TYPE, SOLVENT_TYPE, pos1, pos2, vel1, vel2, myrandnr);
 
             xinteraction = strength.x;
@@ -64,22 +81,22 @@ __device__ void halo0(int n1, float seed, int pid, int lane, int unpackbase, int
     k_common::write_AOS3f(dst, nunpack, xforce, yforce, zforce);
 }
 
-__device__ void halo1(int n1, float seed, int pid, int base, int lane, /**/ float *ff1) {
+__device__ void halo1(int n1, float seed, int lid, int base, int lane, /**/ float *ff1) {
     int fid; /* fragment id */
     int start, count;
-    Particle *states;
-    Force *results;
+    Particle *pp;
+    Force *ff;
     int nunpack, unpackbase;
     fid = get_hid(packstarts_padded, base);
     start = packstarts_padded[fid];
     count = packcount[fid];
-    states = packstates[fid];
-    results = packresults[fid];
+    pp = packstates[fid];
+    ff = packresults[fid];
     unpackbase = base - start;
     nunpack = min(32, count - unpackbase);
     if (nunpack == 0) return;
 
-    halo0(n1, seed, pid, lane, unpackbase, nunpack, states, results, /**/ ff1);
+    halo0(n1, seed, lid, lane, unpackbase, nunpack, pp, ff, /**/ ff1);
 }
 
 __global__ void halo(int n0, int n1, float seed, float *ff1) {
