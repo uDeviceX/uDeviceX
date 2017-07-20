@@ -60,6 +60,13 @@ namespace a /* all */
 Particle pp_hst[3*MAX_PART_NUM]; /* particles on host */
 }
 
+namespace mc /* mesh communication */
+{
+mcomm::TicketCom tc;
+mcomm::TicketS   ts;
+mcomm::TicketR   tr;
+}
+
 /* functions defined in 00dev/ and 00hst/ */
 void distr_solid();
 void update_solid0();
