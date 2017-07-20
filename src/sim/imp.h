@@ -51,7 +51,7 @@ void sim_gen() {
         rbc::gen_quants("rbc.off", "rbcs-ic.txt", /**/ &r::q);
         rbc::gen_ticket(r::q, &r::tt);
 
-        if (multi_solvent) collision::get_tags(o::q.pp, o::q.n, r::tt.texvert, r::tt.textri, r::q.nt, r::q.nv, r::q.nc, /**/ o::qt.ii);
+        if (multi_solvent) gen_tags();
     }
     MC(MPI_Barrier(m::cart));
   
