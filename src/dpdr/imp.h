@@ -49,7 +49,7 @@ void copy_pp(const int *fragnp, const Particlep26 fragppdev, /**/ Particlep26 fr
     dSync(); /* was CC(cudaStreamSynchronize(downloadstream)); */
 }
 
-void post(MPI_Comm cart, const int dstranks[], const int *fragnp, const int26 fragnc, const intp26 fragcum,
+void post_send(MPI_Comm cart, const int dstranks[], const int *fragnp, const int26 fragnc, const intp26 fragcum,
           const Particlep26 fragpp, int btcs, int btc, int btp, /**/ Reqs *sreq) {
 
     for (int i = 0; i < 26; ++i) {
