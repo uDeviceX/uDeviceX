@@ -57,6 +57,10 @@ void post_send(int nv, const TicketS *ts, /**/ TicketCom *tc) {
     sub::post_send(tc->cart, tc->dstranks, tc->btc, tc->btp, nv, ts->counts, ts->pp_hst, /**/ &tc->sreq);
 }
 
+void wait_recv(TicketCom *t) {
+    sub::wait_req(&t->rreq);
+}
+
 void unpack(int nv, const TicketR *tr, /**/ Particle *pp) {
     sub::unpack(tr->counts, tr->pp_hst, nv, /**/ pp);
 }
