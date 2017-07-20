@@ -6,6 +6,7 @@ digraph {
 	}
 	pack_pp->pack_ii [label="D"];
 	send_pp->send_ii [label="D"];
+	recv_pp->unpack_ii [label="D"];
 	
 	unpack_pp->gather_pp->gather_ii[label="U"];
 
