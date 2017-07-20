@@ -122,9 +122,10 @@ __global__ void fill_all(const int27 cellpackstarts, const Particle *pp, int *re
     int gid, fid, hci, tid, src, dst, nsrc, nfloat2s;
     int i, lpid, dpid, spid, c;
 
-    /* 16 workers (warpSize/2) per cell */
-    /* gid: work group id               */
-    /* tid: worker id within the group  */
+    /* 16 workers (warpSize/2) per cell  */
+    /* requirement: 32 threads per block */
+    /* gid: work group id                */
+    /* tid: worker id within the group   */
     
     gid = (threadIdx.x >> 4) + 2 * blockIdx.x;
     if (gid >= cellpackstarts.d[26]) return;
