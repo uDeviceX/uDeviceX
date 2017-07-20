@@ -1,18 +1,18 @@
 digraph {
 	{
 		node [shape=box] 
-		post_recv_pp->pack_pp->send_pp->bulk->recv_pp->unpack_pp->gather_pp [label="D"];
+		pack_pp->send_pp->bulk->recv_pp->unpack_pp->gather_pp [label="D"];
+		post_recv_pp->recv_pp [label="D"];
 	}
-	post_recv_pp->post_recv_ii [label="D"];
 	pack_pp->pack_ii [label="D"];
 	send_pp->send_ii [label="D"];
-	unpack_pp->unpack_ii [label="D"];
 	
 	unpack_pp->gather_pp->gather_ii[label="U"];
 
 	unpack_ii->gather_ii [label="UI"];
 	
-	post_recv_ii->pack_ii->send_ii->recv_ii->unpack_ii [label="I"];
+	pack_ii->send_ii->recv_ii->unpack_ii [label="I"];
+	post_recv_ii->recv_ii [label="I"];
 
 	{rank=same; post_recv_pp; post_recv_ii;}
 	{rank=same; pack_pp; pack_ii;}
