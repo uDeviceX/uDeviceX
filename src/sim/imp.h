@@ -65,6 +65,7 @@ void sim_gen() {
         flu::get_ticketZ(o::q, &o::tz);
         flu::get_ticketRND(&o::trnd);
         solids0 = solids;
+        if (rbcs && multi_solvent) gen_tags();
         run(wall_creation, nsteps);
     } else {
         solids0 = solids;
