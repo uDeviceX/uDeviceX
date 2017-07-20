@@ -8,19 +8,19 @@ static __device__ unsigned int get_hid(const int a[], const int i) {
     return k9 + k3 + k1;
 }
 
-static __device__ void warp2rv(const float2 *p, int i, /**/
-                            float  *x, float  *y, float  *z,
-                            float *vx, float *vy, float *vz) {
+static __device__ void warp2rv(const Particle *p, int n, int i, /**/
+                               float  *x, float  *y, float  *z,
+                               float *vx, float *vy, float *vz) {
     float2 s0, s1, s2;
-    p += 3*i;
-    s0 = __ldg(p++); s1 = __ldg(p++); s2 = __ldg(p++);
+    p += i;
+    k_common::read_AOS6f((float2*)p, n, s0, s1, s2);
      *x = fst(s0);  *y = scn(s0);  *z = fst(s1);
     *vx = scn(s1); *vy = fst(s2); *vz = scn(s2);
 }
 
-static __device__ Pa warp2p(float2 *pp, int i) {
+static __device__ Pa warp2p(const Particle *pp, int n, int i) {
     Pa p;
-    warp2rv(pp, i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
+    warp2rv(pp, n, i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
     return p;
 }
 
