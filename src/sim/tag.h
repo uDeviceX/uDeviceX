@@ -8,6 +8,7 @@ void gen_tags() {
     mcomm::wait_recv(/**/ &mc::tc);
     int nm = mcomm::unpack(r::q.nv, nbulk, /**/ &mc::tr);
     mcomm::post_recv(/**/ &mc::tc, &mc::tr);
+    dSync();
 
     /* tmp texture object; TODO: make a ticket? */
     Texo<float2> texvert;
