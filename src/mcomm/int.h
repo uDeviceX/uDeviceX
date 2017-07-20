@@ -75,6 +75,6 @@ void wait_recv(TicketCom *t) {
     sub::wait_req(&t->rreq);
 }
 
-void unpack(int nv, /**/ TicketR *tr) {
-    sub::unpack(tr->counts, tr->pp_hst, nv, /**/ tr->pp);
+int unpack(int nv, /**/ TicketR *tr) {
+    return sub::unpack(tr->counts, tr->pp_hst, nv, /**/ tr->pp);
 }
