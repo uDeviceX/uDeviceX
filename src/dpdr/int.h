@@ -32,6 +32,12 @@ struct TicketRhalo {
     sub::Rbufs b;
 };
 
+struct TicketIComm {
+    int bt;
+    MPI_Request sreq[26], rreq[26];
+    bool first;
+};
+
 struct TicketSIhalo {
     sub::SIbuf b;
 };
