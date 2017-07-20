@@ -76,10 +76,10 @@ static int26 get_nhalocells() {
     return nc;
 }
 
-static int26 get_estimates(const int26 nhalocells) {
+static int26 get_estimates(const int26 nhc) {
     int26 ee; int e;
     for (int i = 0; i < 26; ++i) {
-        e = numberdensity * HSAFETY_FACTOR * nhalocells.d[i];
+        e = numberdensity * HSAFETY_FACTOR * nhc.d[i];
         e = 32 * ((e + 31) / 32);
         ee.d[i] = e;
     }
@@ -87,19 +87,19 @@ static int26 get_estimates(const int26 nhalocells) {
 }
 
 void ini_ticketSh(/**/ Sbufs *b, int26 *est, int26 *nc) {
-    const int26 nhalocells = get_nhalocells();
-    *est = get_estimates(nhalocells);
+    const int26 nhc = get_nhalocells();
+    *est = get_estimates(nhc);
 
-    for (int i = 0; i < 26; ++i) nc->d[i] = nhalocells.d[i] + 1;
-    alloc_Sbufs(*est, nhalocells, /**/ b);
+    for (int i = 0; i < 26; ++i) nc->d[i] = nhc.d[i] + 1;
+    alloc_Sbufs(*est, nhc, /**/ b);
 }
 
 void ini_ticketRh(/**/ Rbufs *b, int26 *est, int26 *nc) {
-    const int26 nhalocells = get_nhalocells();
-    *est = get_estimates(nhalocells);
+    const int26 nhc = get_nhalocells();
+    *est = get_estimates(nhc);
     
-    for (int i = 0; i < 26; ++i) nc->d[i] = nhalocells.d[i] + 1;
-    alloc_Rbufs(*est, nhalocells, /**/ b);
+    for (int i = 0; i < 26; ++i) nc->d[i] = nhc.d[i] + 1;
+    alloc_Rbufs(*est, nhc, /**/ b);
 }
 
 void ini_ticketSIh(/**/ SIbuf *b) {
