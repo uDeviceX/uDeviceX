@@ -2,7 +2,7 @@
 
 hiwi for dpd remote interactions
 
-See [remote.md](../../doc/remote.md)
+See [remote.md](../../doc/remote/remote.md)
 
 ## purpose
 
