@@ -40,6 +40,9 @@
 
 namespace mcomm {
 namespace sub {
+namespace dev {
+#include "mcomm/dev.h"
+}
 #include "mcomm/ini.h"
 #include "mcomm/imp.h"
 #include "mcomm/fin.h"
