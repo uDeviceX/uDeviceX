@@ -40,6 +40,12 @@ void pack(const int27 fragstarts, const int ncells, const Particle *pp, const in
                                                 fragcapacity, fragii, fragpp);
 }
 
+void pack_ii(const int27 fragstarts, const int ncells, const int *ii, const intp26 fragstr, const intp26 fragcnt, const intp26 fragcum,
+             const int26 fragcapacity, /**/ intp26 fragii) {
+    if (ncells)
+        dev::fill_all_ii<<<(ncells + 1) / 2, 32>>>(fragstarts, ii, fragstr, fragcnt, fragcum, fragcapacity, fragii);
+}
+
 void copy_pp(const int *fragnp, const Particlep26 fragppdev, /**/ Particlep26 fragpphst) {
     dSync(); /* wait for fill_all */
     
