@@ -141,8 +141,9 @@ void post_send(TicketCom *tc, TicketShalo *ts) {
               tc->btcs, tc->btc, tc->btp, /**/ &tc->sreq);
 }
 
-void post_send_ii(const TicketICom *tc, TicketICom *tic, TicketSIhalo *ts) {
-    if (!tc->first) sub::wait_req(tic->sreq);
+void post_send_ii(const TicketICom *tc, const TicketShalo *ts, /**/ TicketICom *tic, TicketSIhalo *tsi) {
+    if (!tic->first) sub::wait_req(tic->sreq);
+    sub::copy_ii(ts->nphst, tsi->b.ii, /**/ tsi->b.iihst);
 }
 
 void post_expected_recv(TicketCom *tc, TicketRhalo *tr) {
