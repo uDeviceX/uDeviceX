@@ -1,6 +1,6 @@
 enum {X, Y, Z};
 
-//#define DBG(frmt, ...) MSG(fmt, ##__VA_ARGS__)
+//#define DBG(frmt, ...) MSG(frmt, ##__VA_ARGS__)
 #define DBG(frmt, ...) {}
 
 static int read_coms(const char *fname, /**/ float* coms) {
@@ -27,6 +27,7 @@ static int read_coms(const char *fname, /**/ float* coms) {
 
 /* bbox: minx, maxx, miny, maxy, minz, maxz */
 static int duplicate_PBC(const float3 minbb, const float3 maxbb, int n, /**/ float *coms) {
+    DBG("duplicating using bbox %g %g %g, %g %g %g", minbb.x, minbb.y, minbb.z, maxbb.x, maxbb.y, maxbb.z);
     struct f3 {float x[3];};
     const int Lg[3] = {XS * m::dims[X], YS * m::dims[Y], ZS * m::dims[Z]};
     int id = n;
@@ -36,6 +37,7 @@ static int duplicate_PBC(const float3 minbb, const float3 maxbb, int n, /**/ flo
         dupls.push_back(r0);
 
         auto duplicate = [&](int d, int sign) {
+            DBG("duplicating solid %d along direction %d (%d)", j, d, sign);
 #ifdef spdir
             if (d == spdir) return;
 #endif
