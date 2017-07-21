@@ -41,8 +41,7 @@ void get_bbox(const float *rr, const int n, /**/ float3 *minbb, float3 *maxbb) {
         minb.y = min(minb.y, r[1]); maxb.y = max(maxb.y, r[1]);
         minb.z = min(minb.z, r[2]); maxb.z = max(maxb.z, r[2]);
     }
-    minbb->x = minb.x; minbb->y = minb.y; minbb->z = minb.z;
-    maxbb->x = maxb.x; maxbb->y = maxb.y; maxbb->z = maxb.z;
+    *minbb = minbb; *maxbb = maxbb;
 }
 
 void get_bboxes_hst(const Particle *pp, const int nps, const int ns, /**/ float3 *minbb, float3 *maxbb) {
