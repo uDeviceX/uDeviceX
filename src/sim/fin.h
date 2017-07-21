@@ -38,6 +38,10 @@ void fin() {
         odstr::free_ticketI(&o::tt);
         odstr::free_ticketUI(&o::tut);
 
+        dpdr::free_ticketIcom(&o::h::tic);
+        dpdr::free_ticketSIh(&o::h::tsi);
+        dpdr::free_ticketRIh(&o::h::tri);
+        
         mcomm::free_ticketcom(&mc::tc);
         mcomm::free_ticketS(&mc::ts);
         mcomm::free_ticketR(&mc::tr);
