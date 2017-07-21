@@ -47,7 +47,7 @@ struct TicketRIhalo {
 };
 
 void ini_ticketcom(MPI_Comm cart, /*io*/ basetags::TagGen *tg, /**/ TicketCom *t) {
-    sub::ini_tcom(cart, /**/ &t->cart, t->dstranks, t->recv_tags);
+    sub::ini_tcom(cart, /**/ &t->cart, t->dstranks, t->recv_tags); 
     t->first = true;
     t->btc  = get_tag(tg);
     t->btcs = get_tag(tg);
