@@ -169,6 +169,11 @@ void recv(TicketRhalo *t) {
     sub::recv(t->np.d, t->nc.d, /**/ &t->b);
 }
 
+void recv_ii(const TicketRhalo *t, /**/ TicketRIhalo *ti) {
+    sub::recv_ii(t->np.d, /**/ &ti->b);
+}
+
+
 // TODO move this to imp
 void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
     int i;
