@@ -1,7 +1,7 @@
 void fin_tcom(const bool first, /**/ MPI_Comm *cart, Reqs *sreq, Reqs *rreq) {
     if (!first) {
-        wait_req(sreq);
-        cancel_req(rreq);
+        wait_Reqs(sreq);
+        cancel_Reqs(rreq);
     }
 
     MC(l::m::Comm_free(cart));

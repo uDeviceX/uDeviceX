@@ -135,10 +135,14 @@ void pack_ii(const int *ii, const TicketShalo *t, /**/ TicketSIhalo *ti) {
 }
 
 void post_send(TicketCom *tc, TicketShalo *ts) {
-    if (!tc->first) sub::wait_req(&tc->sreq);
+    if (!tc->first) sub::wait_Reqs(&tc->sreq);
     sub::copy_pp(ts->nphst, ts->b.pp, /**/ ts->b.pphst);
     sub::post_send(tc->cart, tc->dstranks, ts->nphst, ts->nc, ts->b.cumhst, ts->b.pphst,
               tc->btcs, tc->btc, tc->btp, /**/ &tc->sreq);
+}
+
+void post_send_ii(const TicketICom *tc, TicketICom *tic, TicketSIhalo *ts) {
+    if (!tc->first) sub::wait_req(tic->sreq);
 }
 
 void post_expected_recv(TicketCom *tc, TicketRhalo *tr) {
@@ -147,7 +151,7 @@ void post_expected_recv(TicketCom *tc, TicketRhalo *tr) {
 }
 
 void wait_recv(TicketCom *tc) {
-    sub::wait_req(&tc->rreq);
+    sub::wait_Reqs(&tc->rreq);
 }
 
 void recv(TicketRhalo *t) {

@@ -12,7 +12,7 @@ void cancel_req(MPI_Request r[26]) {
     for (int i = 0; i < 26; ++i) MC(MPI_Cancel(r + i));
 }
     
-void cancel_req(Reqs *r) {
+void cancel_Reqs(Reqs *r) {
     cancel_req(r->pp);
     cancel_req(r->cells);
     cancel_req(r->counts);
@@ -23,7 +23,7 @@ void wait_req(MPI_Request r[26]) {
     MC(l::m::Waitall(26, r, ss));
 }
 
-void wait_req(Reqs *r) {
+void wait_Reqs(Reqs *r) {
     wait_req(r->cells);
     wait_req(r->pp);
     wait_req(r->counts);
