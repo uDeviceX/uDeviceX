@@ -161,6 +161,10 @@ void wait_recv(TicketCom *tc) {
     sub::wait_Reqs(&tc->rreq);
 }
 
+void wait_recv_ii(TicketICom *tc) {
+    sub::wait_req(tc->rreq);
+}
+
 void recv(TicketRhalo *t) {
     sub::recv(t->np.d, t->nc.d, /**/ &t->b);
 }
