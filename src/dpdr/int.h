@@ -125,7 +125,7 @@ void pack(const Particle *pp, /**/ TicketShalo t) {
 
 void post_send(TicketCom *tc, TicketShalo *ts) {
     if (!tc->first) sub::wait_req(&tc->sreq);
-    sub::copy_pp(ts->nphst, ts->b.pp, ts->b.pphst);
+    sub::copy_pp(ts->nphst, ts->b.pp, /**/ ts->b.pphst);
     sub::post_send(tc->cart, tc->dstranks, ts->nphst, ts->nc, ts->b.cumhst, ts->b.pphst,
               tc->btcs, tc->btc, tc->btp, /**/ &tc->sreq);
 }
