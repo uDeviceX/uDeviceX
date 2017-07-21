@@ -45,7 +45,7 @@ void copy_pp(const int *fragnp, const Particlep26 fragppdev, /**/ Particlep26 fr
     
     for (int i = 0; i < 26; ++i)
         if (fragnp[i])
-            cudaMemcpyAsync(fragpphst.d[i], fragppdev.d[i], sizeof(Particle) * fragnp[i], D2H);
+            CC(cudaMemcpyAsync(fragpphst.d[i], fragppdev.d[i], sizeof(Particle) * fragnp[i], D2H));
     dSync(); /* was CC(cudaStreamSynchronize(downloadstream)); */
 }
 
