@@ -8,4 +8,18 @@ digraph {
 		post_expected_recv->wait_recv [label="C"];
 		post_expected_recv->recv [label="R"];
 	}
+	label="ii functions (optional)"
+	copy_cells->pack_ii [label="S"];
+	pack_ii->post_send_ii [label="SI"];
+	recv_ii->fremote [label="RI (TODO)"];
+	pack_ii->fremote [label="SI (TODO)"];
+	post_expected_recv_ii->wait_recv_ii->recv_ii [label="CI"];
+	post_expected_recv_ii->recv_ii [label="RI"];
+	post_send_ii->wait_recv_ii [label="CI"];
+	
+	{rank=same; pack; pack_ii;}
+	{rank=same; post_send; post_send_ii;}
+	{rank=same; wait_recv; wait_recv_ii;}
+	{rank=same; recv; recv_ii;}
+	{rank=same; post_expected_recv; post_expected_recv_ii;}
 }
