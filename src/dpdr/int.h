@@ -119,12 +119,12 @@ void copy_cells(/**/ TicketShalo *t) {
     sub::copy_cells(t->fragstarts, t->ncells, t->b.cum, /**/ t->b.cumdev);
 }
 
-void pack(const Particle *pp, /**/ TicketShalo t) {
-    sub::pack(t.fragstarts, t.ncells, pp, t.b.str, t.b.cnt, t.b.cum, t.estimate, /**/ t.b.ii, t.b.pp, t.npdev);
+void pack(const Particle *pp, /**/ TicketShalo *t) {
+    sub::pack(t->fragstarts, t->ncells, pp, t->b.str, t->b.cnt, t->b.cum, t->estimate, /**/ t->b.ii, t->b.pp, t->npdev);
 }
 
-void pack_ii(const int *ii, const TicketShalo t, /**/ TicketSIhalo *ti) {
-    sub::pack_ii(t.fragstarts, t.ncells, ii, t.b.str, t.b.cnt, t.b.cum, t.estimate, /**/ ti->b.ii);
+void pack_ii(const int *ii, const TicketShalo *t, /**/ TicketSIhalo *ti) {
+    sub::pack_ii(t->fragstarts, t->ncells, ii, t->b.str, t->b.cnt, t->b.cum, t->estimate, /**/ ti->b.ii);
 }
 
 void post_send(TicketCom *tc, TicketShalo *ts) {
