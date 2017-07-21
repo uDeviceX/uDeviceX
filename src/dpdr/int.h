@@ -32,7 +32,7 @@ struct TicketRhalo {
     sub::Rbufs b;
 };
 
-struct TicketIComm {
+struct TicketICom {
     int bt;
     MPI_Request sreq[26], rreq[26];
     bool first;
