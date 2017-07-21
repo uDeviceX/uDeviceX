@@ -27,6 +27,11 @@ dpdr::TicketCom tc;
 dpdr::TicketRnd trnd;
 dpdr::TicketShalo ts;
 dpdr::TicketRhalo tr;
+
+/* optional: flags */
+dpdr::TicketICom tic;
+dpdr::TicketSIhalo tsi;
+dpdr::TicketRIhalo tri;
 }
 
 Force *ff;
