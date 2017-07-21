@@ -138,9 +138,11 @@ namespace dev {
 #include "fsi/setup.h"
 #include "fsi/impl.h"
 
-#include "rex.decl.h"
+#include "rex/decl.h"
 #include "k/rex.h"
-#include "rex.impl.h"
+#include "rex/ini.h"
+#include "rex/impl.h"
+#include "rex/fin.h"
 
 #include "bipsbatch.type.h"
 #include "k/bipsbatch/map.h"
