@@ -16,11 +16,15 @@ void cancel_req(Reqs *r) {
     }
 }
 
-void wait_req(Reqs *r) {
+void wait_req(MPI_Request r[26]) {
     MPI_Status ss[26];
-    MC(l::m::Waitall(26, r->cells,  ss));
-    MC(l::m::Waitall(26, r->pp,     ss));
-    MC(l::m::Waitall(26, r->counts, ss));
+    MC(l::m::Waitall(26, r, ss));
+}
+
+void wait_req(Reqs *r) {
+    wait_req(r->cells);
+    wait_req(r->pp);
+    wait_req(r->counts);
 }
 
 void gather_cells(const int *start, const int *count, const int27 fragstarts, const int26 fragnc,
