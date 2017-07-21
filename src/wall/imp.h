@@ -97,7 +97,7 @@ void build_cells(const int n, float4 *pp4, Clist *cells) {
     CC(cudaFree(pp));
 }
 
-void gen_quants(TexSDF_t texsdf, int *o_n, Particle *o_pp, int *w_n, float4 **w_pp) {
+void gen_quants(TexSDF_t texsdf, /**/ int *o_n, Particle *o_pp, int *w_n, float4 **w_pp) {
     Particle *frozen;
     CC(cudaMalloc(&frozen, sizeof(Particle) * MAX_PART_NUM));
 

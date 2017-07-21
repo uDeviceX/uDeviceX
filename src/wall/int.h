@@ -32,7 +32,7 @@ void free_ticket(Ticket *t) {
     t->texpp.destroy();
 }
 
-void gen_quants(sdf::Quants qsdf, int *n, Particle* pp, Quants *q) {
+void gen_quants(const sdf::Quants qsdf, /**/ int *n, Particle* pp, Quants *q) {
     sub::gen_quants(qsdf.texsdf, n, pp, &q->n, &q->pp);
 }
 

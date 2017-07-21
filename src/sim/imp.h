@@ -2,7 +2,8 @@
 
 void create_walls() {
     int nold = o::q.n;
-    wall::gen_quants(w::qsdf, &o::q.n, o::q.pp, &w::q); o::q.cells->build(o::q.pp, o::q.n);
+    wall::gen_quants(w::qsdf, /**/ &o::q.n, o::q.pp, &w::q);
+    o::q.cells->build(o::q.pp, o::q.n);
     MSG("solvent particles survived: %d/%d", o::q.n, nold);
 }
 
