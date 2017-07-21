@@ -1,7 +1,8 @@
 enum {X, Y, Z};
 
-//#define DEBUG_MSG
-    
+//#define DBG(frmt, ...) MSG(fmt, ##__VA_ARGS__)
+#define DBG(frmt, ...) {}
+
 static int read_coms(const char *fname, /**/ float* coms) {
     int nsolids = 0;
     FILE *f = fopen(fname, "r"); 
@@ -20,6 +21,7 @@ static int read_coms(const char *fname, /**/ float* coms) {
         assert(i < MAX_SOLIDS);
     }
     nsolids = i;
+    DBG("have read %d solids", nsolids);
     return nsolids;
 }
 
@@ -98,10 +100,8 @@ static void count_pp_inside(const Particle *s_pp, const int n, const float *coms
         tags[ip] = tag;
     }
 
-#ifdef DEBUG_MSG
     for (int j = 0; j < ns; ++j)
-    MSG("Found %d particles in solid %d", rcounts[j], j);
-#endif
+    DBG("Found %d particles in solid %d", rcounts[j], j);
 }
 
 static void elect(const int *rcounts, const int ns, /**/ int *root, int *idmax) {
@@ -117,6 +117,8 @@ static void elect(const int *rcounts, const int ns, /**/ int *root, int *idmax) 
 
     *root = globalmax[1];
     *idmax = idmax_;
+
+    DBG("Elected root %d with id %d (%d particles)", globalmax[1], idmax_, globalmax[0]);
 }
 
 static void kill(const int idmax, const int *tags, /**/ int *s_n, Particle *s_pp, int *r_n, Particle *r_pp) {
@@ -243,6 +245,7 @@ void ini(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, So
     if (m::rank == root)
     {
         npsolid = rcount;
+        if (!npsolid) ERR("No particles remaining in root node.\n");
             
         for (int d = 0; d < 3; ++d)
         model.com[d] = coms[idmax*3 + d];
