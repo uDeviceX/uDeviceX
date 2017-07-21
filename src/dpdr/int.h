@@ -90,6 +90,13 @@ void free_ticketRh(/**/TicketRhalo *t) {
     sub::free_Rbufs(/**/ &t->b);
 }
 
+void ini_ticketIcom(/*io*/ basetags::TagGen *tg, /**/ TicketICom *t) {    
+    t->first = true;
+    t->bt    = get_tag(tg);    
+}
+
+void free_ticketIcom(/**/ TicketCom *t) {t->first = true;}
+
 void alloc_ticketSIh(/**/ TicketSIhalo *t) {
     sub::ini_ticketSIh(/**/ &t->b);
 }
