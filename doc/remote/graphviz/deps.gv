@@ -8,7 +8,7 @@ digraph {
 		post_expected_recv->wait_recv [label="C"];
 		post_expected_recv->recv [label="R"];
 	}
-	label="ii functions (optional)"
+	
 	copy_cells->pack_ii [label="S"];
 	pack_ii->post_send_ii [label="SI"];
 	recv_ii->fremote [label="RI (TODO)"];
