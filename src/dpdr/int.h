@@ -95,7 +95,7 @@ void ini_ticketIcom(/*io*/ basetags::TagGen *tg, /**/ TicketICom *t) {
     t->bt    = get_tag(tg);    
 }
 
-void free_ticketIcom(/**/ TicketCom *t) {t->first = true;}
+void free_ticketIcom(/**/ TicketICom *t) {t->first = true;}
 
 void alloc_ticketSIh(/**/ TicketSIhalo *t) {
     sub::ini_ticketSIh(/**/ &t->b);
