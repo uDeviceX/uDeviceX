@@ -109,6 +109,12 @@ void post_expected_recv(MPI_Comm cart, const int dstranks[], const int recv_tags
     }
 }
 
+void post_expected_recv_ii(MPI_Comm cart, const int dstranks[], const int recv_tags[], const int estimate[],
+                           int bt, /**/ intp26 fragii, MPI_Request rreq[26]) {
+    for (int i = 0; i < 26; ++i)
+        MC(l::m::Irecv(fragii.d[i], estimate[i], MPI_INT, dstranks[i], bt + recv_tags[i], cart, rreq + i));
+}
+
 void recv(const int *np, const int *nc, /**/ Rbufs *b) {
     for (int i = 0; i < 26; ++i)
         if (np[i] > 0) CC(cudaMemcpyAsync(b->pp.d[i], b->ppdev.d[i], sizeof(Particle) * np[i], D2D));

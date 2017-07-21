@@ -153,6 +153,10 @@ void post_expected_recv(TicketCom *tc, TicketRhalo *tr) {
                             tc->btcs, tc->btc, tc->btp, /**/ tr->b.pphst, tr->np.d, tr->b.cumhst, &tc->rreq);
 }
 
+void post_expected_recv_ii(const TicketCom *tc, const TicketRhalo *tr, /**/ TicketICom *tic, TicketSIhalo *tsi) {
+    sub::post_expected_recv_ii(tc->cart, tc->dstranks, tc->recv_tags, tr->estimate.d, tic->bt, /**/ tsi->b.iihst, tic->rreq);
+}
+
 void wait_recv(TicketCom *tc) {
     sub::wait_Reqs(&tc->rreq);
 }
