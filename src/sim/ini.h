@@ -25,6 +25,15 @@ void ini() {
     odstr::alloc_ticketD(&tag_gen, &o::td);
     odstr::alloc_ticketU(&o::tu);
 
+    dpdr::ini_ticketcom(m::cart, &tag_gen, &o::h::tc);
+    dpdr::ini_ticketrnd(o::h::tc, /**/ &o::h::trnd);
+    dpdr::alloc_ticketSh(/**/ &o::h::ts);
+    dpdr::alloc_ticketRh(/**/ &o::h::tr);
+
+    odstr::alloc_work(&o::w);
+
+    mpDeviceMalloc(&o::ff);
+
     if (global_ids) {
         flu::alloc_quantsI(&o::qi);
         odstr::alloc_ticketI(&tag_gen, &o::ti);
@@ -41,15 +50,6 @@ void ini() {
         mcomm::alloc_ticketR(&mc::ts, /**/ &mc::tr);
     }
     
-    odstr::alloc_work(&o::w);
-
-    dpdr::ini_ticketcom(m::cart, &tag_gen, &o::h::tc);
-    dpdr::ini_ticketrnd(o::h::tc, /**/ &o::h::trnd);
-    dpdr::alloc_ticketSh(/**/ &o::h::ts);
-    dpdr::alloc_ticketRh(/**/ &o::h::tr);
-
-    mpDeviceMalloc(&o::ff);
-
     if (solids) {
         mrescue::ini(MAX_PART_NUM);
         rig::alloc_quants(&s::q);
