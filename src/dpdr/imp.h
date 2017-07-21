@@ -8,12 +8,14 @@ struct Reqs {
     MPI_Request pp[26], cells[26], counts[26];
 };
 
+void cancel_req(MPI_Request r[26]) {
+    for (int i = 0; i < 26; ++i) MC(MPI_Cancel(r + i));
+}
+    
 void cancel_req(Reqs *r) {
-    for (int i = 0; i < 26; ++i) {
-        MC(MPI_Cancel(r->pp     + i));
-        MC(MPI_Cancel(r->cells  + i));
-        MC(MPI_Cancel(r->counts + i));
-    }
+    cancel_req(r->pp);
+    cancel_req(r->cells);
+    cancel_req(r->counts);
 }
 
 void wait_req(MPI_Request r[26]) {
