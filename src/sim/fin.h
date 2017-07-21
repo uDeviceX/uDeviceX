@@ -25,6 +25,7 @@ void fin() {
     
     odstr::free_ticketD(&o::td);
     odstr::free_ticketU(&o::tu);
+    odstr::free_work(&o::w);
 
     if (global_ids) {
         flu::free_quantsI(&o::qi);
@@ -42,8 +43,6 @@ void fin() {
         mcomm::free_ticketR(&mc::tr);
     }
     
-    odstr::free_work(&o::w);
-
     if (solids) {
         rig::free_quants(&s::q);
         rig::free_ticket(&s::t);
