@@ -88,6 +88,13 @@ void post_send(MPI_Comm cart, const int dstranks[], const int *fragnp, const int
     }
 }
 
+void post_send_ii(MPI_Comm cart, const int dstranks[], const int *fragnp,
+                  const intp26 fragii, int bt, /**/ MPI_Request sreq[26]) {
+
+    for (int i = 0; i < 26; ++i)
+        MC(l::m::Isend(fragii.d[i], fragnp[i], MPI_INT, dstranks[i], bt + i, cart, sreq + i));
+}
+
 void post_expected_recv(MPI_Comm cart, const int dstranks[], const int recv_tags[], const int estimate[], const int26 fragnc,
                         int btcs, int btc, int btp, /**/ Particlep26 fragpp, int *Rfragnp, intp26 Rfragcum, Reqs *rreq) {
     for (int i = 0; i < 26; ++i) {
