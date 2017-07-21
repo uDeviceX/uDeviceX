@@ -111,6 +111,7 @@ void gen_quants(TexSDF_t texsdf, /**/ int *o_n, Particle *o_pp, int *w_n, float4
     dev::particle2float4 <<<k_cnf(*w_n)>>> (frozen, *w_n, /**/ *w_pp);
     
     CC(cudaFree(frozen));
+    dSync();
 }
 
 void strt_quants(int *w_n, float4 **w_pp) {
