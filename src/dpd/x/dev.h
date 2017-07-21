@@ -29,9 +29,9 @@ __global__ void interactions(const Texo<float2> texpp, const int *sstart, int n,
     int deltaspid1, deltaspid2;
 
     {
-        int xbase = (int)(p.r[X] + XS / 2);
-        int ybase = (int)(p.r[Y] + YS / 2));
-        int zbase = (int)(p.r[Z] + ZS / 2));
+        int xcid = (int)(p.r[X] + XS / 2);
+        int ycid = (int)(p.r[Y] + YS / 2));
+        int zcid = (int)(p.r[Z] + ZS / 2));
                 
         enum {
             XCELLS = XS,
@@ -39,8 +39,8 @@ __global__ void interactions(const Texo<float2> texpp, const int *sstart, int n,
             ZCELLS = ZS,
             NCELLS = XCELLS * YCELLS * ZCELLS
         };
-
-        int cid0 = xbase - 1 + XCELLS * (ybase - 1 + YCELLS * (zbase - 1 + zplane));
+/* needs check on boundaries */
+        int cid0 = xcid - 1 + XCELLS * (ycid - 1 + YCELLS * (zcid - 1 + zplane));
 
         spidbase = start_fetch(cid0);
         int count0 = start_fetch(cid0 + 3) - spidbase;
