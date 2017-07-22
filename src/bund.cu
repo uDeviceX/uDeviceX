@@ -144,6 +144,9 @@ namespace dev {
 #include "rex/impl.h"
 #include "rex/fin.h"
 
+#include "x/decl.h"
+#include "x/impl.h"
+
 #include "bipsbatch.type.h"
 #include "k/bipsbatch/map.h"
 #include "k/bipsbatch/common.h"
