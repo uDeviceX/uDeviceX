@@ -66,15 +66,6 @@ void forces(bool wall0) {
     if (contactforces) forces_cnt(&w_r);
     if (fsiforces)     forces_fsi(&w_s, &w_r);
 
-    rex::bind_solutes(w_r);
-    rex::pack_p();
-    rex::post_p();
-    rex::recv_p();
-
-    rex::halo(); /* fsi::halo(); */
-
-    rex::post_f();
-    rex::recv_f();
-
+    x::rex(w_r); /* fsi::halo(), cnt::halo() */
     dSync();
 }

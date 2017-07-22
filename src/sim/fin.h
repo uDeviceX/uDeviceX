@@ -4,7 +4,7 @@ void fin() {
     bbhalo::fin();
     cnt::fin();
     dump::fin(&dumpt);
-    rex::fin();
+    x::fin(); /* rex:: */
     if (fsiforces)  fsi::fin();
     if (solids) mrescue::fin();
 

@@ -12,7 +12,7 @@ void ini() {
     sdstr::ini(&tag_gen);
     bbhalo::ini(&tag_gen);
     cnt::ini();
-    rex::ini(&tag_gen);
+    x::ini(&tag_gen); /* rex:: */
     dump::ini(&dumpt);
 
     sdf::alloc_quants(&w::qsdf);
