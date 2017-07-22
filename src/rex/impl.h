@@ -92,7 +92,6 @@ void _pack_attempt(std::vector<ParticlesWrap> w) {
         }
     }
 
-    CC(cudaEventRecord(evPpacked));
 
 
 }
@@ -116,7 +115,7 @@ void post_p(std::vector<ParticlesWrap> w) {
 
     // consolidate the packing
     {
-        CC(cudaEventSynchronize(evPpacked));
+        dSync();
 
         if (iterationcount == 0)
         _postrecvC();

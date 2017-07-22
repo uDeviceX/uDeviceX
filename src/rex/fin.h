@@ -1,7 +1,6 @@
 namespace rex {
 void fin() {
     MC(l::m::Comm_free(&cart));
-    CC(cudaEventDestroy(evPpacked));
 
     delete packstotalstart;
     delete host_packstotalstart;
