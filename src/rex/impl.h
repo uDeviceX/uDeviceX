@@ -158,9 +158,7 @@ void recv_p(std::vector<ParticlesWrap> w) {
                        H2D));
 }
 
-void halo(std::vector<ParticlesWrap> w) {
-    if (w.size() == 0) return;
-
+void halo() {
     if (iterationcount) _wait(reqsendA);
 
     ParticlesWrap halos[26];

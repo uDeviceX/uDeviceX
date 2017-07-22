@@ -11,7 +11,7 @@ void rex(std::vector<ParticlesWrap> w) {
     rex::post_p(w);
     rex::recv_p(w);
 
-    rex::halo(w); /* fsi::halo(); */
+    if (nw) rex::halo(); /* fsi::halo(); */
     rex::_postrecvP();
 
     rex::post_f(w);
