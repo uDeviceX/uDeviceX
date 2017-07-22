@@ -252,11 +252,6 @@ void halo(std::vector<ParticlesWrap> w) {
     if (fsiforces)     fsi::halo(halos);
     if (contactforces) cnt::halo(halos);
     /***********************/
-
-
-
-    CC(cudaEventRecord(evAcomputed));
-
     for (int i = 0; i < 26; ++i) local[i]->update();
 
     _postrecvP();
@@ -265,7 +260,7 @@ void halo(std::vector<ParticlesWrap> w) {
 void post_f(std::vector<ParticlesWrap> w) {
     if (w.size() == 0) return;
 
-    CC(cudaEventSynchronize(evAcomputed));
+    dSync(); /* was cudaEventSynchronize() */
 
     reqsendA.resize(26);
     for (int i = 0; i < 26; ++i)

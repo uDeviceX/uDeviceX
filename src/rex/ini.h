@@ -55,7 +55,5 @@ void ini(/*io*/ basetags::TagGen *tg) {
 
     CC(cudaEventCreateWithFlags(&evPpacked,
                                 cudaEventDisableTiming | cudaEventBlockingSync));
-    CC(cudaEventCreateWithFlags(&evAcomputed,
-                                cudaEventDisableTiming | cudaEventBlockingSync));
 }
 }
