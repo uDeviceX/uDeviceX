@@ -1,6 +1,6 @@
 namespace rex {
 void _not_nan(float*, int) {};
-void bind_solutes(std::vector<ParticlesWrap> wsolutes_) {wsolutes = wsolutes_;}
+void bind_solutes(std::vector<ParticlesWrap> wsolutes_) {w = wsolutes_;}
 
 void _wait(std::vector<MPI_Request> &v) {
     MPI_Status statuses[v.size()];
@@ -52,8 +52,8 @@ void _pack_attempt() {
     CC(cudaMemsetAsync(packsstart->D, 0, sizeof(int) * packsstart->S));
 
     k_rex::ini<<<1, 1>>>();
-    for (int i = 0; i < (int) wsolutes.size(); ++i) {
-        ParticlesWrap it = wsolutes[i];
+    for (int i = 0; i < (int) w.size(); ++i) {
+        ParticlesWrap it = w[i];
         if (it.n) {
             CC(cudaMemcpyToSymbolAsync(k_rex::coffsets, packsoffset->D + 26 * i,
                                        sizeof(int) * 26, 0, D2D));
@@ -66,19 +66,19 @@ void _pack_attempt() {
     }
 
     CC(cudaMemcpyAsync(host_packstotalcount->D,
-                       packsoffset->D + 26 * wsolutes.size(), sizeof(int) * 26,
+                       packsoffset->D + 26 * w.size(), sizeof(int) * 26,
                        H2H));
 
     k_rex::tiny_scan<<<1, 32>>>
-        (packsoffset->D + 26 * wsolutes.size(), NULL, /**/ NULL, packstotalstart->D);
+        (packsoffset->D + 26 * w.size(), NULL, /**/ NULL, packstotalstart->D);
 
     CC(cudaMemcpyAsync(host_packstotalstart->D, packstotalstart->D,
                        sizeof(int) * 27, H2H));
 
     CC(cudaMemcpyToSymbolAsync(k_rex::cbases, packstotalstart->D,
                                sizeof(int) * 27, 0, D2D));
-    for (int i = 0; i < (int) wsolutes.size(); ++i) {
-        ParticlesWrap it = wsolutes[i];
+    for (int i = 0; i < (int) w.size(); ++i) {
+        ParticlesWrap it = w[i];
 
         if (it.n) {
             CC(cudaMemcpyToSymbolAsync(k_rex::coffsets, packsoffset->D + 26 * i,
@@ -100,19 +100,19 @@ void _pack_attempt() {
 }
 
 void pack_p() {
-    if (wsolutes.size() == 0) return;
+    if (w.size() == 0) return;
 
     ++iterationcount;
 
-    packscount->resize(26 * wsolutes.size());
-    packsoffset->resize(26 * (wsolutes.size() + 1));
-    packsstart->resize(27 * wsolutes.size());
+    packscount->resize(26 * w.size());
+    packsoffset->resize(26 * (w.size() + 1));
+    packsstart->resize(27 * w.size());
 
     _pack_attempt();
 }
 
 void post_p() {
-    if (wsolutes.size() == 0) return;
+    if (w.size() == 0) return;
 
 
 
@@ -206,7 +206,7 @@ void post_p() {
 }
 
 void recv_p() {
-    if (wsolutes.size() == 0) return;
+    if (w.size() == 0) return;
 
     _wait(reqrecvC);
     _wait(reqrecvP);
@@ -238,7 +238,7 @@ void recv_p() {
 }
 
 void halo() {
-    if (wsolutes.size() == 0) return;
+    if (w.size() == 0) return;
 
     if (iterationcount) _wait(reqsendA);
 
@@ -265,7 +265,7 @@ void halo() {
 }
 
 void post_f() {
-    if (wsolutes.size() == 0) return;
+    if (w.size() == 0) return;
 
     CC(cudaEventSynchronize(evAcomputed));
 
@@ -277,7 +277,7 @@ void post_f() {
 }
 
 void recv_f() {
-    if (wsolutes.size() == 0) return;
+    if (w.size() == 0) return;
 
     {
         float *recvbags[26];
@@ -290,8 +290,8 @@ void recv_f() {
 
     _wait(reqrecvA);
 
-    for (int i = 0; i < (int) wsolutes.size(); ++i) {
-        ParticlesWrap it = wsolutes[i];
+    for (int i = 0; i < (int) w.size(); ++i) {
+        ParticlesWrap it = w[i];
 
         if (it.n) {
             CC(cudaMemcpyToSymbolAsync(k_rex::cpaddedstarts,
