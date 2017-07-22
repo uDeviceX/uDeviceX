@@ -95,7 +95,7 @@ void _pack_attempt(std::vector<ParticlesWrap> w) {
 
 }
 
-void pack_p(std::vector<ParticlesWrap> w) {
+void pack_p0(std::vector<ParticlesWrap> w) {
     if (w.size() == 0) return;
 
     ++iterationcount;
@@ -103,8 +103,6 @@ void pack_p(std::vector<ParticlesWrap> w) {
     packscount->resize(26 * w.size());
     packsoffset->resize(26 * (w.size() + 1));
     packsstart->resize(27 * w.size());
-
-    _pack_attempt(w);
 }
 
 void post_p(std::vector<ParticlesWrap> w) {
@@ -229,7 +227,7 @@ void recv_p(std::vector<ParticlesWrap> w) {
                        H2D));
 }
 
-void halo(std::vector<ParticlesWrap> w) {
+void halo0(std::vector<ParticlesWrap> w) {
     if (w.size() == 0) return;
 
     if (iterationcount) _wait(reqsendA);
@@ -247,8 +245,6 @@ void halo(std::vector<ParticlesWrap> w) {
     if (contactforces) cnt::halo(halos);
     /***********************/
     for (int i = 0; i < 26; ++i) local[i]->update();
-
-    _postrecvP();
 }
 
 void post_f(std::vector<ParticlesWrap> w) {

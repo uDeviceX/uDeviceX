@@ -7,11 +7,14 @@ void rex(std::vector<ParticlesWrap> w) {
 
     nw = w.size();
 
-    rex::pack_p(w);
+    rex::pack_p0(w);
+    rex::_pack_attempt(w);
+
     rex::post_p(w);
     rex::recv_p(w);
 
-    rex::halo(w); /* fsi::halo(); */
+    rex::halo0(w); /* fsi::halo(); */
+    rex::_postrecvP();
 
     rex::post_f(w);
     rex::recv_f(w);
