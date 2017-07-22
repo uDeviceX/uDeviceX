@@ -4,10 +4,8 @@ void fin() { rex::fin(); }
 
 void rex(std::vector<ParticlesWrap> w) {
     int nw;
-
     nw = w.size();
-
-    rex::pack_p(w);
+    rex::pack_p(nw);
     rex::_pack_attempt(w);
 
     rex::post_p(w);

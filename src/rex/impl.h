@@ -95,14 +95,14 @@ void _pack_attempt(std::vector<ParticlesWrap> w) {
 
 }
 
-void pack_p(std::vector<ParticlesWrap> w) {
-    if (w.size() == 0) return;
+void pack_p(int n) {
+    if (n == 0) return;
 
     ++iterationcount;
 
-    packscount->resize(26 * w.size());
-    packsoffset->resize(26 * (w.size() + 1));
-    packsstart->resize(27 * w.size());
+    packscount->resize(26 * n);
+    packsoffset->resize(26 * (n + 1));
+    packsstart->resize(27 * n);
 }
 
 void post_p(std::vector<ParticlesWrap> w) {
