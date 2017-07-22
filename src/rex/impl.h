@@ -1,7 +1,5 @@
 namespace rex {
 void _not_nan(float*, int) {};
-void bind_solutes(std::vector<ParticlesWrap> wsolutes_) {w = wsolutes_;}
-
 void _wait(std::vector<MPI_Request> &v) {
     MPI_Status statuses[v.size()];
     if (v.size()) MC(l::m::Waitall(v.size(), &v.front(), statuses));
@@ -39,7 +37,7 @@ void _postrecvA() {
     }
 }
 
-void _pack_attempt() {
+void _pack_attempt(std::vector<ParticlesWrap> w) {
 
 
     if (packscount->S)
@@ -99,7 +97,7 @@ void _pack_attempt() {
 
 }
 
-void pack_p() {
+void pack_p(std::vector<ParticlesWrap> w) {
     if (w.size() == 0) return;
 
     ++iterationcount;
@@ -108,10 +106,10 @@ void pack_p() {
     packsoffset->resize(26 * (w.size() + 1));
     packsstart->resize(27 * w.size());
 
-    _pack_attempt();
+    _pack_attempt(w);
 }
 
-void post_p() {
+void post_p(std::vector<ParticlesWrap> w) {
     if (w.size() == 0) return;
 
 
@@ -150,7 +148,7 @@ void post_p() {
 
             _adjust_packbuffers();
 
-            _pack_attempt();
+            _pack_attempt(w);
 
             dSync(); /* was CC(cudaStreamSynchronize(stream)); */
         }
@@ -205,7 +203,7 @@ void post_p() {
     }
 }
 
-void recv_p() {
+void recv_p(std::vector<ParticlesWrap> w) {
     if (w.size() == 0) return;
 
     _wait(reqrecvC);
@@ -237,7 +235,7 @@ void recv_p() {
                        H2D));
 }
 
-void halo() {
+void halo(std::vector<ParticlesWrap> w) {
     if (w.size() == 0) return;
 
     if (iterationcount) _wait(reqsendA);
@@ -264,7 +262,7 @@ void halo() {
     _postrecvP();
 }
 
-void post_f() {
+void post_f(std::vector<ParticlesWrap> w) {
     if (w.size() == 0) return;
 
     CC(cudaEventSynchronize(evAcomputed));
@@ -276,7 +274,7 @@ void post_f() {
                  &reqsendA[i]));
 }
 
-void recv_f() {
+void recv_f(std::vector<ParticlesWrap> w) {
     if (w.size() == 0) return;
 
     {
