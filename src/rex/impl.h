@@ -1,5 +1,4 @@
 namespace rex {
-void _not_nan(float*, int) {};
 void _wait(std::vector<MPI_Request> &v) {
     MPI_Status statuses[v.size()];
     if (v.size()) MC(l::m::Waitall(v.size(), &v.front(), statuses));
@@ -183,9 +182,6 @@ void post_p(std::vector<ParticlesWrap> w) {
             int expected = local[i]->expected();
 
             MPI_Request reqP;
-
-            _not_nan((float *)(host_packbuf->D + start), count * 6);
-
             MC(l::m::Isend(host_packbuf->D + start, expected * 6, MPI_FLOAT,
                          dstranks[i], btp1 + i, cart, &reqP));
             reqsendP.push_back(reqP);
@@ -223,7 +219,6 @@ void recv_p(std::vector<ParticlesWrap> w) {
 
         memcpy(remote[i]->hstate.D, &remote[i]->pmessage.front(),
                sizeof(Particle) * count);
-        _not_nan((float *)remote[i]->hstate.D, count * 6);
     }
 
     _postrecvC();
