@@ -95,7 +95,7 @@ void _pack_attempt(std::vector<ParticlesWrap> w) {
 
 }
 
-void pack_p0(std::vector<ParticlesWrap> w) {
+void pack_p(std::vector<ParticlesWrap> w) {
     if (w.size() == 0) return;
 
     ++iterationcount;
@@ -227,7 +227,7 @@ void recv_p(std::vector<ParticlesWrap> w) {
                        H2D));
 }
 
-void halo0(std::vector<ParticlesWrap> w) {
+void halo(std::vector<ParticlesWrap> w) {
     if (w.size() == 0) return;
 
     if (iterationcount) _wait(reqsendA);
