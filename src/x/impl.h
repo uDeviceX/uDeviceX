@@ -8,7 +8,7 @@ void rex(std::vector<ParticlesWrap> w) {
     rex::pack_p(nw);
     rex::_pack_attempt(w);
 
-    rex::post_p(w);
+    if (nw) rex::post_p(w);
     rex::recv_p(w);
 
     if (nw) rex::halo(); /* fsi::halo(); */

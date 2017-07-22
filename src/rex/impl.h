@@ -37,10 +37,6 @@ void _postrecvA() {
 }
 
 void post_p(std::vector<ParticlesWrap> w) {
-    if (w.size() == 0) return;
-
-
-
     // consolidate the packing
     {
         dSync();
