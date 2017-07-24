@@ -4,7 +4,7 @@ struct TicketCom { /* tikcket communiction */
     int ranks[26];
 };
 
-struct TikcketR { /* ticket receive */
+struct TicketR { /* ticket receive */
     int tags[26];
 };
 
