@@ -8,6 +8,9 @@
 #include "common.h"
 #include "common.cuda.h"
 
+#include <conf.h>
+#include "forces.h"
+
 struct InfoDPD {
     int3 ncells;
     uint nxyz;
@@ -51,7 +54,7 @@ __device__ float3 _dpd_interaction(int dpid, float4 rdest, float4 udest, float4 
   f2tof3(rdest, &r1); f2tof3(rsrc, &r2);
   f2tof3(udest, &v1); f2tof3(usrc, &v2);
   
-  f = force(SOLVENT_TYPE, SOLVENT_TYPE, r1, r2, v1, v2, rnd);
+  f = forces::dpd(SOLVENT_TYPE, SOLVENT_TYPE, r1, r2, v1, v2, rnd);
   return f;
 }
 

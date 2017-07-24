@@ -33,13 +33,13 @@ static __device__ Pa frag2p(const Frag frag, uint i) {
 }
 
 static __device__ void pair(const Pa l, const Pa r, float rnd, /**/ float *fx, float *fy, float *fz) {
-    force0(SOLVENT_TYPE, SOLVENT_TYPE,
-           l.x, l.y, l.z,
-           r.x, r.y, r.z,
-           l.vx, l.vy, l.vz,
-           r.vx, r.vy, r.vz,
-           rnd,
-           fx, fy, fz);
+    forces::dpd0(SOLVENT_TYPE, SOLVENT_TYPE,
+                 l.x, l.y, l.z,
+                 r.x, r.y, r.z,
+                 l.vx, l.vy, l.vz,
+                 r.vx, r.vy, r.vz,
+                 rnd,
+                 fx, fy, fz);
 }
 
 static __device__ float random(uint lid, uint rid, float seed, int mask) {
