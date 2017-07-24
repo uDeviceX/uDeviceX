@@ -36,25 +36,9 @@ void post_p(MPI_Comm cart, int dstranks[26], std::vector<ParticlesWrap> w) {
         packingfailed = post_pre(cart, dstranks);
 
         if (packingfailed) {
-            for (int i = 0; i < 26; ++i) local[i]->resize(send_counts[i]);
-
-            int newcapacities[26];
-            for (int i = 0; i < 26; ++i) newcapacities[i] = local[i]->capacity();
-
-            CC(cudaMemcpyToSymbolAsync(k_rex::ccapacities, newcapacities,
-                                       sizeof(newcapacities), 0,
-                                       H2D));
-
-            int *newindices[26];
-            for (int i = 0; i < 26; ++i) newindices[i] = local[i]->scattered_indices->D;
-
-            CC(cudaMemcpyToSymbolAsync(k_rex::scattered_indices, newindices,
-                                       sizeof(newindices), 0, H2D));
-
+            post_resize();
             _adjust_packbuffers();
-
             _pack_attempt(w);
-
             dSync(); /* was CC(cudaStreamSynchronize(stream)); */
         }
 
