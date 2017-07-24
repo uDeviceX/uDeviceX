@@ -54,19 +54,8 @@ bool post_pre(MPI_Comm cart, int dstranks[26]) {
 void post_p(MPI_Comm cart, int dstranks[26], std::vector<ParticlesWrap> w) {
     // consolidate the packing
     {
-        dSync();
-
-        if (iterationcount == 0)
-            _postrecvC(cart, dstranks);
-        else
-            _wait(reqsendC);
-
-        for (int i = 0; i < 26; ++i) send_counts[i] = host_packstotalcount->D[i];
-
-        bool packingfailed = false;
-
-        for (int i = 0; i < 26; ++i)
-            packingfailed |= send_counts[i] > local[i]->capacity();
+        bool packingfailed;
+        packingfailed = post_pre(cart, dstranks);
 
         if (packingfailed) {
             for (int i = 0; i < 26; ++i) local[i]->resize(send_counts[i]);
