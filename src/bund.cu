@@ -152,8 +152,16 @@ namespace dev {
 #include "k/bipsbatch/map.h"
 #include "k/bipsbatch/common.h"
 #include "bipsbatch.impl.h"
+
 #include "dpd/local.h"
 #include "dpd/flocal.h"
+
+namespace dpdx {
+namespace dev {
+#include "dpd/x/dev.h"
+}
+#include "dpd/x/imp.h"
+}
 
 namespace dpdr {
 namespace sub {
