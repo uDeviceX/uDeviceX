@@ -14,12 +14,12 @@ __device__ Part tex2Part(const Texo<float2> texpp, const int id) {
     return p;
 }
 
-__global__ void flocal(const Texo<float2> texpp, const int *sstart, int n, const float seed, /**/ float *ff) {
+__global__ void flocal(const Texo<float2> texpp, const Texo<int> texstart, int n, const float seed, /**/ float *ff) {
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
     int pid = gid / 3;
     int zplane = gid % 3;
     
-#define start_fetch(id) (id < XS*YS*ZS ? sstart[id] : n)
+#define start_fetch(id) (id < XS*YS*ZS ? texstart.fetch(id) : n)
     
     if (pid >= n) return;
     
@@ -34,9 +34,9 @@ __global__ void flocal(const Texo<float2> texpp, const int *sstart, int n, const
     int ycid = (int)(p.r[Y] + YS / 2);
     int zcid = (int)(p.r[Z] + ZS / 2);
 
-    assert(xcid >= 0); assert(xcid < XS);
-    assert(ycid >= 0); assert(ycid < YS);
-    assert(zcid >= 0); assert(zcid < ZS);
+    xcid = min(XS-1, max(0, xcid));
+    ycid = min(YS-1, max(0, ycid));
+    zcid = min(ZS-1, max(0, zcid));
         
     int xcid0 = max(xcid - 1, 0);
     int ycid0 = max(ycid - 1, 0);
