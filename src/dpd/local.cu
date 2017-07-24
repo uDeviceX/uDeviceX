@@ -4,7 +4,6 @@
 #include "dpd/float.h"
 #include "l/rnd.h"
 #include "dpd/local.h"
-#include "force.h"
 #include "common.h"
 #include "common.cuda.h"
 
