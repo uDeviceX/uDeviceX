@@ -1,6 +1,7 @@
 namespace x {
 void ini(/*io*/ basetags::TagGen *tg) {
     ini_ticketcom(&tc);
+    ini_ticketr(tr);
     rex::ini(tg);
 }
 
