@@ -8,7 +8,7 @@ struct TicketCom {
     int btc, btcs, btp;
     MPI_Comm cart;
     sub::Reqs sreq, rreq;
-    int recv_tags[26], recv_counts[26], dstranks[26];
+    int recv_tags[26], dstranks[26];
     bool first;
 };
 
