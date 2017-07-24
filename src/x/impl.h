@@ -39,7 +39,7 @@ static void post(TicketCom t, std::vector<ParticlesWrap> w) {
 static void rex0(std::vector<ParticlesWrap> w, int nw) {
     rex::pack_p(nw);
     rex::_pack_attempt(w);
-    rex::post_p(tc.cart, tc.ranks, w);
+    post(tc, w);
     rex::recv_p(tc.cart, tc.ranks);
     rex::halo(); /* fsi::halo(); */
     rex::_postrecvP(tc.cart, tc.ranks);
