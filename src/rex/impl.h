@@ -124,8 +124,6 @@ void post_p(MPI_Comm cart, std::vector<ParticlesWrap> w) {
 }
 
 void recv_p(MPI_Comm cart, std::vector<ParticlesWrap> w) {
-    if (w.size() == 0) return;
-
     _wait(reqrecvC);
     _wait(reqrecvP);
 
@@ -173,8 +171,6 @@ void halo() {
 }
 
 void post_f(MPI_Comm cart, std::vector<ParticlesWrap> w) {
-    if (w.size() == 0) return;
-
     dSync(); /* was cudaEventSynchronize() */
 
     reqsendA.resize(26);
@@ -185,8 +181,6 @@ void post_f(MPI_Comm cart, std::vector<ParticlesWrap> w) {
 }
 
 void recv_f(std::vector<ParticlesWrap> w) {
-    if (w.size() == 0) return;
-
     {
         float *recvbags[26];
 
