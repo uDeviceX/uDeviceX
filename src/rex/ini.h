@@ -6,7 +6,7 @@ void _adjust_packbuffers() {
     host_packbuf->resize(s);
 }
 
-void ini(MPI_Comm cart, /*io*/ basetags::TagGen *tg) {
+void ini(/*io*/ basetags::TagGen *tg) {
     iterationcount = -1;
     packstotalstart = new DeviceBuffer<int>(27);
     host_packstotalstart = new PinnedHostBuffer<int>(27);
