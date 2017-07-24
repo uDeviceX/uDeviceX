@@ -25,8 +25,6 @@
 #include "common.macro.h"
 #include "io.h"
 #include "bund.h"
-#include "force.h"
-#include "forces.h"
 #include "diag.h"
 
 #include "restart.h"
@@ -75,6 +73,7 @@ namespace ic {
 #include "field.h"
 
 #include "k/wvel.h" /* wall velocity used by sdf and wall */
+#include "forces.h"
 
 #include "cnt.decl.h"
 #include "k/cnt.h"

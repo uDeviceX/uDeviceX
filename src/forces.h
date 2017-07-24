@@ -1,4 +1,5 @@
 namespace forces {
+
 template<int s>
 inline __device__ float viscosity_function(float x) { return sqrtf(viscosity_function<s - 1>(x)); }
 template<> inline __device__ float viscosity_function<1>(float x) { return sqrtf(x); }
@@ -8,7 +9,6 @@ inline __device__ void dpd00(int typed, int types,
                              float x, float y, float z,
                              float vx, float vy, float vz,
                              float rnd, float *fx, float *fy, float *fz) {
-
     float gammadpd[] = {gammadpd_solv, gammadpd_solid, gammadpd_wall, gammadpd_rbc};
     float aij[] = {aij_solv, aij_solid, aij_wall, aij_rbc};
 

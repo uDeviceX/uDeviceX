@@ -7,7 +7,7 @@ static __device__ void pair0(const Pa l, const Pa r, float rnd, /**/ float *fx, 
     float3 r1, r2, v1, v2, f;
     r1 = make_float3( l.x,  l.y,  l.z); r2 = make_float3( r.x,  r.y,  r.z);
     v1 = make_float3(l.vx, l.vy, l.vz); v2 = make_float3(r.vx, r.vy, r.vz);
-    f = force(SOLID_TYPE, SOLVENT_TYPE, r1, r2, v1, v2, rnd); /* TODO: type */
+    f = forces::dpd(SOLID_TYPE, SOLVENT_TYPE, r1, r2, v1, v2, rnd); /* TODO: type */
     *fx = f.x; *fy = f.y; *fz = f.z;
 }
 

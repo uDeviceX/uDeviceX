@@ -84,9 +84,9 @@ __global__ void flocal(const Texo<float2> texpp, const Texo<int> texstart, int n
 
         float rnd = l::rnd::d::mean0var1ii(seed, pid, spid);
         
-        float3 strength = force(SOLVENT_TYPE, SOLVENT_TYPE,
-                                mf3(p.r[X], p.r[Y], p.r[Z]), mf3(ps.r[X], ps.r[Y], ps.r[Z]),
-                                mf3(p.v[X], p.v[Y], p.v[Z]), mf3(ps.v[X], ps.v[Y], ps.v[Z]), rnd);
+        float3 strength = forces::dpd(SOLVENT_TYPE, SOLVENT_TYPE,
+                                      mf3(p.r[X], p.r[Y], p.r[Z]), mf3(ps.r[X], ps.r[Y], ps.r[Z]),
+                                      mf3(p.v[X], p.v[Y], p.v[Z]), mf3(ps.v[X], ps.v[Y], ps.v[Z]), rnd);
 
         xforce += strength.x; yforce += strength.y; zforce += strength.z;
     }

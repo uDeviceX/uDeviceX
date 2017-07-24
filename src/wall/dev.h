@@ -103,9 +103,9 @@ __global__ void interactions_3tpp(TexSDF_t texsdf, const float2 *const pp, const
         float vxw, vyw, vzw;
         k_wvel::vell(rw.x, rw.y, rw.z, &vxw, &vyw, &vzw);
         float rnd = l::rnd::d::mean0var1ii(seed, pid, spid);
-        float3 strength = force(type, WALL_TYPE,
-                                mf3(x ,  y,  z), mf3(rw.x, rw.y, rw.z),
-                                mf3(vx, vy, vz), mf3( vxw,  vyw,  vzw), rnd);
+        float3 strength = forces::dpd(type, WALL_TYPE,
+                                      mf3(x ,  y,  z), mf3(rw.x, rw.y, rw.z),
+                                      mf3(vx, vy, vz), mf3( vxw,  vyw,  vzw), rnd);
         xforce += strength.x; yforce += strength.y; zforce += strength.z;
     }
 #undef zig

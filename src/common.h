@@ -1,3 +1,10 @@
+enum { /* used in forces.h */
+    SOLVENT_TYPE = 0,
+    SOLID_TYPE   = 1,
+    WALL_TYPE    = 2,
+    RBC_TYPE     = 3,
+};
+
 /* maximum particle number per one processor for static allocation */
 #define MAX_PART_NUM 1000000
 

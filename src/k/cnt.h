@@ -193,8 +193,7 @@ __global__ void bulk_3tpp(float2 *particles, int np,
                          vel2 = make_float3(stmp1.y, stmp2.x, stmp2.y);
         int type1 = SOLID_TYPE;
         int type2 = SOLID_TYPE;
-        float3 strength = force(type1, type2, pos1, pos2,
-                                                   vel1, vel2, myrandnr);
+        float3 strength = forces::dpd(type1, type2, pos1, pos2, vel1, vel2, myrandnr);
 
         float xinteraction = strength.x;
         float yinteraction = strength.y;
@@ -323,8 +322,7 @@ __global__ void halo(int nparticles_padded, int ncellentries,
                 vel2 = make_float3(stmp1.y, stmp2.x, stmp2.y);
             int type1 = SOLID_TYPE;
             int type2 = SOLID_TYPE;
-            float3 strength = force(type1, type2, pos1, pos2,
-                                                       vel1, vel2, myrandnr);
+            float3 strength = forces::dpd(type1, type2, pos1, pos2, vel1, vel2, myrandnr);
 
             float xinteraction = strength.x;
             float yinteraction = strength.y;
