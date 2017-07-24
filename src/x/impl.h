@@ -33,7 +33,15 @@ void fin() {
 }
 
 static void post(TicketCom t, std::vector<ParticlesWrap> w) {
-    rex::post_p(tc.cart, tc.ranks, w);
+    bool packingfailed;
+    packingfailed = rex::post_pre(t.cart, t.ranks);
+    if (packingfailed) {
+        rex::post_resize();
+        rex::_adjust_packbuffers();
+        rex::_pack_attempt(w);
+        dSync();
+    }
+    rex::post_p(t.cart, t.ranks);
 }
 
 static void rex0(std::vector<ParticlesWrap> w, int nw) {

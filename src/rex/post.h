@@ -29,19 +29,9 @@ void post_resize() {
                                sizeof(newindices), 0, H2D));
 }
 
-void post_p(MPI_Comm cart, int dstranks[26], std::vector<ParticlesWrap> w) {
+void post_p(MPI_Comm cart, int dstranks[26]) {
     // consolidate the packing
     {
-        bool packingfailed;
-        packingfailed = post_pre(cart, dstranks);
-
-        if (packingfailed) {
-            post_resize();
-            _adjust_packbuffers();
-            _pack_attempt(w);
-            dSync(); /* was CC(cudaStreamSynchronize(stream)); */
-        }
-
         for (int i = 0; i < 26; ++i) local[i]->resize(send_counts[i]);
 
         _postrecvA(cart, dstranks);
