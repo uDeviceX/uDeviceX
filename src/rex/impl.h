@@ -123,7 +123,7 @@ void post_p(MPI_Comm cart, int dstranks[26], std::vector<ParticlesWrap> w) {
     }
 }
 
-void recv_p(MPI_Comm cart, int dstranks[26], std::vector<ParticlesWrap> w) {
+void recv_p(MPI_Comm cart, int dstranks[26]) {
     _wait(reqrecvC);
     _wait(reqrecvP);
 
@@ -170,7 +170,7 @@ void halo() {
     for (int i = 0; i < 26; ++i) local[i]->update();
 }
 
-void post_f(MPI_Comm cart, int dstranks[26], std::vector<ParticlesWrap> w) {
+void post_f(MPI_Comm cart, int dstranks[26]) {
     dSync(); /* was cudaEventSynchronize() */
 
     reqsendA.resize(26);
