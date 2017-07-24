@@ -1,8 +1,14 @@
 namespace x {
+
+static void ini_ticketcom(MPI_Comm cart, /**/ int dstranks[26]) {
+
+}
+
 void ini(/*io*/ basetags::TagGen *tg) {
     MC(l::m::Comm_dup(m::cart, &cart));
     rex::ini(cart, tg);
 }
+
 void fin() {
     rex::fin();
     MC(l::m::Comm_free(&cart));
