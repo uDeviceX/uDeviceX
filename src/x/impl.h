@@ -15,6 +15,7 @@ static void ini_ticketcom(MPI_Comm cart, /**/ int dstranks[26]) {
 
 void ini(/*io*/ basetags::TagGen *tg) {
     MC(l::m::Comm_dup(m::cart, &cart));
+    ini_ticketcom(cart, dstranks);
     rex::ini(cart, tg);
 }
 
