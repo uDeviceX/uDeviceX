@@ -1,6 +1,6 @@
 namespace x {
 
-static void ini_ticketcom(MPI_Comm cart, /**/ int ranks[26]) {
+static void ini_ticketcom0(MPI_Comm cart, /**/ int ranks[26]) {
     enum {X, Y, Z};
     int i, c;
     int ne[3], d[3];
@@ -13,9 +13,15 @@ static void ini_ticketcom(MPI_Comm cart, /**/ int ranks[26]) {
     }
 }
 
+static void ini_ticketcom(TicketCom *t) {
+    MC(l::m::Comm_dup(m::cart, &(t->cart)));
+    ini_ticketcom0(t->cart, t->ranks);
+}
+
 void ini(/*io*/ basetags::TagGen *tg) {
+    //    ini_ticketcom(cart, &tc);
     MC(l::m::Comm_dup(m::cart, &cart));
-    ini_ticketcom(cart, dstranks);
+    ini_ticketcom0(cart, dstranks);
     rex::ini(tg);
 }
 
