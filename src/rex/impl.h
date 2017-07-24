@@ -50,9 +50,9 @@ void recv_p(MPI_Comm cart, int ranks[26], int tags[26]) {
         MPI_Status status;
 
         if (count > expected)
-        MC(MPI_Recv(&remote[i]->pmessage.front() + expected,
-                    (count - expected) * 6, MPI_FLOAT, ranks[i],
-                    btp2 + tags[i], cart, &status));
+            MC(MPI_Recv(&remote[i]->pmessage.front() + expected,
+                        (count - expected) * 6, MPI_FLOAT, ranks[i],
+                        btp2 + tags[i], cart, &status));
 
         memcpy(remote[i]->hstate.D, &remote[i]->pmessage.front(),
                sizeof(Particle) * count);
@@ -61,7 +61,7 @@ void recv_p(MPI_Comm cart, int ranks[26], int tags[26]) {
     _postrecvC(cart, ranks, tags);
 
     for (int i = 0; i < 26; ++i)
-    CC(cudaMemcpyAsync(remote[i]->dstate.D, remote[i]->hstate.D,
+        CC(cudaMemcpyAsync(remote[i]->dstate.D, remote[i]->hstate.D,
                        sizeof(Particle) * remote[i]->hstate.S,
                        H2D));
 }
@@ -72,8 +72,8 @@ void halo() {
     ParticlesWrap halos[26];
 
     for (int i = 0; i < 26; ++i)
-    halos[i] = ParticlesWrap(remote[i]->dstate.D, remote[i]->dstate.S,
-                             remote[i]->result.DP);
+        halos[i] = ParticlesWrap(remote[i]->dstate.D, remote[i]->dstate.S,
+                                 remote[i]->result.DP);
 
     dSync(); /* was CC(cudaStreamSynchronize(uploadstream)); */
 
