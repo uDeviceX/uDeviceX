@@ -1,10 +1,10 @@
 namespace rex {
-bool post_pre(MPI_Comm cart, int dstranks[26]) {
+bool post_pre(MPI_Comm cart, int ranks[26]) {
     bool packingfailed;
     int i;
 
     dSync();
-    if (iterationcount == 0) _postrecvC(cart, dstranks);
+    if (iterationcount == 0) _postrecvC(cart, ranks);
     else _wait(reqsendC);
 
     for (i = 0; i < 26; ++i) send_counts[i] = host_packstotalcount->D[i];
@@ -29,15 +29,15 @@ void post_resize() {
                                sizeof(newindices), 0, H2D));
 }
 
-void post_p(MPI_Comm cart, int dstranks[26]) {
+void post_p(MPI_Comm cart, int ranks[26]) {
     // consolidate the packing
     {
         for (int i = 0; i < 26; ++i) local[i]->resize(send_counts[i]);
 
-        _postrecvA(cart, dstranks);
+        _postrecvA(cart, ranks);
 
         if (iterationcount == 0) {
-            _postrecvP(cart, dstranks);
+            _postrecvP(cart, ranks);
         } else
             _wait(reqsendP);
 
@@ -54,7 +54,7 @@ void post_p(MPI_Comm cart, int dstranks[26]) {
         reqsendC.resize(26);
 
         for (int i = 0; i < 26; ++i)
-            MC(l::m::Isend(send_counts + i, 1, MPI_INTEGER, dstranks[i],
+            MC(l::m::Isend(send_counts + i, 1, MPI_INTEGER, ranks[i],
                            btc + i, cart, &reqsendC[i]));
 
         for (int i = 0; i < 26; ++i) {
@@ -64,13 +64,13 @@ void post_p(MPI_Comm cart, int dstranks[26]) {
 
             MPI_Request reqP;
             MC(l::m::Isend(host_packbuf->D + start, expected * 6, MPI_FLOAT,
-                           dstranks[i], btp1 + i, cart, &reqP));
+                           ranks[i], btp1 + i, cart, &reqP));
             reqsendP.push_back(reqP);
 
             if (count > expected) {
                 MPI_Request reqP2;
                 MC(l::m::Isend(host_packbuf->D + start + expected,
-                               (count - expected) * 6, MPI_FLOAT, dstranks[i],
+                               (count - expected) * 6, MPI_FLOAT, ranks[i],
                                btp2 + i, cart, &reqP2));
 
                 reqsendP.push_back(reqP2);
