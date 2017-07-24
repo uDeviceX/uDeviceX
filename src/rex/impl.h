@@ -51,7 +51,7 @@ void post_p(MPI_Comm cart, int dstranks[26], std::vector<ParticlesWrap> w) {
         bool packingfailed = false;
 
         for (int i = 0; i < 26; ++i)
-        packingfailed |= send_counts[i] > local[i]->capacity();
+            packingfailed |= send_counts[i] > local[i]->capacity();
 
         if (packingfailed) {
             for (int i = 0; i < 26; ++i) local[i]->resize(send_counts[i]);
@@ -83,7 +83,7 @@ void post_p(MPI_Comm cart, int dstranks[26], std::vector<ParticlesWrap> w) {
         if (iterationcount == 0) {
             _postrecvP(cart, dstranks);
         } else
-        _wait(reqsendP);
+            _wait(reqsendP);
 
         if (host_packstotalstart->D[26]) {
             CC(cudaMemcpyAsync(host_packbuf->D, packbuf->D,
@@ -98,8 +98,8 @@ void post_p(MPI_Comm cart, int dstranks[26], std::vector<ParticlesWrap> w) {
         reqsendC.resize(26);
 
         for (int i = 0; i < 26; ++i)
-        MC(l::m::Isend(send_counts + i, 1, MPI_INTEGER, dstranks[i],
-                     btc + i, cart, &reqsendC[i]));
+            MC(l::m::Isend(send_counts + i, 1, MPI_INTEGER, dstranks[i],
+                           btc + i, cart, &reqsendC[i]));
 
         for (int i = 0; i < 26; ++i) {
             int start = host_packstotalstart->D[i];
@@ -108,14 +108,14 @@ void post_p(MPI_Comm cart, int dstranks[26], std::vector<ParticlesWrap> w) {
 
             MPI_Request reqP;
             MC(l::m::Isend(host_packbuf->D + start, expected * 6, MPI_FLOAT,
-                         dstranks[i], btp1 + i, cart, &reqP));
+                           dstranks[i], btp1 + i, cart, &reqP));
             reqsendP.push_back(reqP);
 
             if (count > expected) {
                 MPI_Request reqP2;
                 MC(l::m::Isend(host_packbuf->D + start + expected,
-                             (count - expected) * 6, MPI_FLOAT, dstranks[i],
-                             btp2 + i, cart, &reqP2));
+                               (count - expected) * 6, MPI_FLOAT, dstranks[i],
+                               btp2 + i, cart, &reqP2));
 
                 reqsendP.push_back(reqP2);
             }
