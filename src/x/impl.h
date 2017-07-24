@@ -32,6 +32,10 @@ void fin() {
     fin_ticketcom(tc);
 }
 
+static void post(TicketCom t, std::vector<ParticlesWrap> w) {
+    rex::post_p(tc.cart, tc.ranks, w);
+}
+
 static void rex0(std::vector<ParticlesWrap> w, int nw) {
     rex::pack_p(nw);
     rex::_pack_attempt(w);
