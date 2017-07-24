@@ -1,2 +1,3 @@
 namespace x {
+TicketCom tc;
 }

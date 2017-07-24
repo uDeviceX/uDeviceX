@@ -1,7 +1,5 @@
 namespace rex {
 void fin() {
-    MC(l::m::Comm_free(&cart));
-
     delete packstotalstart;
     delete host_packstotalstart;
     delete host_packstotalcount;
