@@ -62,45 +62,45 @@ inline __device__ void dpd00(int typed, int types,
                              float vx, float vy, float vz,
                              float rnd, float *fx, float *fy, float *fz) {
 
-    const float gammadpd[] = {gammadpd_solv, gammadpd_solid, gammadpd_wall, gammadpd_rbc};
-    const float aij[] = {aij_solv, aij_solid, aij_wall, aij_rbc};
+    float gammadpd[] = {gammadpd_solv, gammadpd_solid, gammadpd_wall, gammadpd_rbc};
+    float aij[] = {aij_solv, aij_solid, aij_wall, aij_rbc};
 
-    const float rij2 = x * x + y * y + z * z;
-    const float invrij = rsqrtf(rij2);
-    const float rij = rij2 * invrij;
+    float rij2 = x * x + y * y + z * z;
+    float invrij = rsqrtf(rij2);
+    float rij = rij2 * invrij;
 
     if (rij2 >= 1) {
         *fx = *fy = *fz = 0;
         return;
     }
 
-    const float argwr = 1.f - rij;
-    const float wr = viscosity_function<-VISCOSITY_S_LEVEL>(argwr);
+    float argwr = 1.f - rij;
+    float wr = viscosity_function<-VISCOSITY_S_LEVEL>(argwr);
 
     x *= invrij;
     y *= invrij;
     z *= invrij;
 
-    const float rdotv = x * vx + y * vy + z * vz;
+    float rdotv = x * vx + y * vy + z * vz;
 
-    const float gammadpd_pair = 0.5 * (gammadpd[typed] + gammadpd[types]);
-    const float sigmaf_pair = sqrt(2*gammadpd_pair*kBT / dt);
+    float gammadpd_pair = 0.5 * (gammadpd[typed] + gammadpd[types]);
+    float sigmaf_pair = sqrt(2*gammadpd_pair*kBT / dt);
     float f = (-gammadpd_pair * wr * rdotv + sigmaf_pair * rnd) * wr;
 
-    const bool ss = (typed == SOLID_TYPE) && (types == SOLID_TYPE);
-    const bool sw = (typed == SOLID_TYPE) && (types ==  WALL_TYPE);
+    bool ss = (typed == SOLID_TYPE) && (types == SOLID_TYPE);
+    bool sw = (typed == SOLID_TYPE) && (types ==  WALL_TYPE);
 
     if (ss || sw) {
         /*hack*/ const float ljsi = ss ? ljsigma : 2 * ljsigma;
-        const float invr2 = invrij * invrij;
-        const float t2 = ljsi * ljsi * invr2;
-        const float t4 = t2 * t2;
-        const float t6 = t4 * t2;
-        const float lj = min(1e4f, max(0.f, ljepsilon * 24.f * invrij * t6 * (2.f * t6 - 1.f)));
+        float invr2 = invrij * invrij;
+        float t2 = ljsi * ljsi * invr2;
+        float t4 = t2 * t2;
+        float t6 = t4 * t2;
+        float lj = min(1e4f, max(0.f, ljepsilon * 24.f * invrij * t6 * (2.f * t6 - 1.f)));
         f += lj;
     } 
 
-    const float aij_pair = 0.5 * (aij[typed] + aij[types]);
+    float aij_pair = 0.5 * (aij[typed] + aij[types]);
     f += aij_pair * argwr;
 
     *fx = f * x;
