@@ -6,7 +6,7 @@ void _adjust_packbuffers() {
     host_packbuf->resize(s);
 }
 
-void ini(/*io*/ basetags::TagGen *tg) {
+void ini(MPI_Comm cart, /*io*/ basetags::TagGen *tg) {
     iterationcount = -1;
     packstotalstart = new DeviceBuffer<int>(27);
     host_packstotalstart = new PinnedHostBuffer<int>(27);
@@ -27,7 +27,6 @@ void ini(/*io*/ basetags::TagGen *tg) {
     btp2 = get_tag(tg);
     btf  = get_tag(tg);
         
-    MC(l::m::Comm_dup(m::cart, &cart));
     for (int i = 0; i < 26; ++i) {
         int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
 

@@ -51,7 +51,6 @@ public:
     int capacity() const { return scattered_indices->C;}
 };
 
-MPI_Comm cart;
 int iterationcount;
 int dstranks[26], recv_tags[26], recv_counts[26], send_counts[26];
 

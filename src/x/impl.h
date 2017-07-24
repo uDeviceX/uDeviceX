@@ -1,7 +1,7 @@
 namespace x {
 void ini(/*io*/ basetags::TagGen *tg) {
     MC(l::m::Comm_dup(m::cart, &cart));
-    rex::ini(tg);
+    rex::ini(cart, tg);
 }
 void fin() {
     rex::fin();
@@ -11,11 +11,11 @@ void fin() {
 void rex0(std::vector<ParticlesWrap> w, int nw) {
     rex::pack_p(nw);
     rex::_pack_attempt(w);
-    rex::post_p(w);
-    rex::recv_p(w);
+    rex::post_p(cart, w);
+    rex::recv_p(cart, w);
     rex::halo(); /* fsi::halo(); */
-    rex::_postrecvP();
-    rex::post_f(w);
+    rex::_postrecvP(cart);
+    rex::post_f(cart, w);
     rex::recv_f(w);
 }
 
