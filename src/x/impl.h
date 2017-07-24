@@ -1,6 +1,12 @@
 namespace x {
-void ini(/*io*/ basetags::TagGen *tg) { rex::ini(tg); }
-void fin() { rex::fin(); }
+void ini(/*io*/ basetags::TagGen *tg) {
+    MC(l::m::Comm_dup(m::cart, &cart));
+    rex::ini(tg);
+}
+void fin() {
+    rex::fin();
+    MC(l::m::Comm_free(&cart));
+}
 
 void rex0(std::vector<ParticlesWrap> w, int nw) {
     rex::pack_p(nw);
