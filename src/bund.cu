@@ -150,6 +150,8 @@ namespace dev {
   #include "rex/fin.h"
 
 #include "x/decl.h"
+#include "x/common.h"
+#include "x/ticketcom.h"
 #include "x/impl.h"
 
 #include "bipsbatch.type.h"
