@@ -14,6 +14,21 @@ bool post_pre(MPI_Comm cart, int dstranks[26]) {
     return packingfailed;
 }
 
+void post_resize() {
+    int newcapacities[26];
+    int *newindices[26];
+    int i;
+
+    for (i = 0; i < 26; ++i) local[i]->resize(send_counts[i]);
+    for (i = 0; i < 26; ++i) newcapacities[i] = local[i]->capacity();
+    CC(cudaMemcpyToSymbolAsync(k_rex::ccapacities, newcapacities,
+                               sizeof(newcapacities), 0,
+                               H2D));
+    for (i = 0; i < 26; ++i) newindices[i] = local[i]->scattered_indices->D;
+    CC(cudaMemcpyToSymbolAsync(k_rex::scattered_indices, newindices,
+                               sizeof(newindices), 0, H2D));
+}
+
 void post_p(MPI_Comm cart, int dstranks[26], std::vector<ParticlesWrap> w) {
     // consolidate the packing
     {
