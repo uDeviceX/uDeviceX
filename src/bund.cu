@@ -142,6 +142,7 @@ namespace dev {
 
   #include "rex/decl.h"
   #include "k/rex.h"
+  #include "rex/mpi.h"
   #include "rex/ini.h"
   #include "rex/pack.h"
   #include "rex/impl.h"
