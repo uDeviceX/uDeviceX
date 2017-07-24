@@ -74,10 +74,10 @@ inline __device__ float3 dpd(int t1, int t2,
                              float rnd) {
     float fx, fy, fz;
     dpd0(t1, t2,
-         r1.x, r1.y, r1.x,
-         r2.x, r2.y, r2.x,
-         v1.x, v1.y, v1.x,
-         v2.x, v2.y, v2.x,
+         r1.x, r1.y, r1.z,
+         r2.x, r2.y, r2.z,
+         v1.x, v1.y, v1.z,
+         v2.x, v2.y, v2.z,
          rnd,
          &fx, &fy, &fz);
 
