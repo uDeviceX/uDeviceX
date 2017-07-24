@@ -38,15 +38,15 @@ void _postrecvA(MPI_Comm cart, int dstranks[26]) {
 
 bool post_pre(MPI_Comm cart, int dstranks[26]) {
     bool packingfailed;
+    int i;
 
     dSync();
-    if (iterationcount == 0)
-        _postrecvC(cart, dstranks);
-    else
-        _wait(reqsendC);
-    for (int i = 0; i < 26; ++i) send_counts[i] = host_packstotalcount->D[i];
+    if (iterationcount == 0) _postrecvC(cart, dstranks);
+    else _wait(reqsendC);
+        
+    for (i = 0; i < 26; ++i) send_counts[i] = host_packstotalcount->D[i];
     packingfailed = false;
-    for (int i = 0; i < 26; ++i)
+    for (i = 0; i < 26; ++i)
         packingfailed |= send_counts[i] > local[i]->capacity();
     return packingfailed;
 }
