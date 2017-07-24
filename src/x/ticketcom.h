@@ -1,6 +1,5 @@
 namespace x {
 static void ini_ticketcom0(MPI_Comm cart, /**/ int ranks[26]) {
-    enum {X, Y, Z};
     int i, c;
     int ne[3], d[3];
     for (i = 0; i < 26; ++i) {
