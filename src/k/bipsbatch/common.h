@@ -33,12 +33,13 @@ static __device__ Pa frag2p(const Frag frag, uint i) {
 }
 
 static __device__ void pair(const Pa l, const Pa r, float rnd, /**/ float *fx, float *fy, float *fz) {
-    /* pair force ; l, r: local and remote */
-    float3 r1, r2, v1, v2, f;
-    r1 = make_float3( l.x,  l.y,  l.z); r2 = make_float3( r.x,  r.y,  r.z);
-    v1 = make_float3(l.vx, l.vy, l.vz); v2 = make_float3(r.vx, r.vy, r.vz);
-    f = force(SOLVENT_TYPE, SOLVENT_TYPE, r1, r2, v1, v2, rnd);
-    *fx = f.x; *fy = f.y; *fz = f.z;
+    force0(SOLVENT_TYPE, SOLVENT_TYPE,
+           l.x, l.y, l.z,
+           r.x, r.y, r.z,
+           l.vx, l.vy, l.vz,
+           r.vx, r.vy, r.vz,
+           rnd,
+           fx, fy, fz);
 }
 
 static __device__ float random(uint lid, uint rid, float seed, int mask) {
