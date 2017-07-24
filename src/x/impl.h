@@ -14,30 +14,32 @@ static void ini_ticketcom0(MPI_Comm cart, /**/ int ranks[26]) {
 }
 
 static void ini_ticketcom(TicketCom *t) {
-    MC(l::m::Comm_dup(m::cart, &(t->cart)));
+    MC(l::m::Comm_dup(m::cart, &t->cart));
     ini_ticketcom0(t->cart, t->ranks);
 }
 
+static void fin_ticketcom(TicketCom t) {
+    MC(l::m::Comm_free(&t.cart));
+}
+
 void ini(/*io*/ basetags::TagGen *tg) {
-    //    ini_ticketcom(cart, &tc);
-    MC(l::m::Comm_dup(m::cart, &cart));
-    ini_ticketcom0(cart, dstranks);
+    ini_ticketcom(&tc);
     rex::ini(tg);
 }
 
 void fin() {
     rex::fin();
-    MC(l::m::Comm_free(&cart));
+    fin_ticketcom(tc);
 }
 
 static void rex0(std::vector<ParticlesWrap> w, int nw) {
     rex::pack_p(nw);
     rex::_pack_attempt(w);
-    rex::post_p(cart, dstranks, w);
-    rex::recv_p(cart, dstranks);
+    rex::post_p(tc.cart, tc.ranks, w);
+    rex::recv_p(tc.cart, tc.ranks);
     rex::halo(); /* fsi::halo(); */
-    rex::_postrecvP(cart, dstranks);
-    rex::post_f(cart, dstranks);
+    rex::_postrecvP(tc.cart, tc.ranks);
+    rex::post_f(tc.cart, tc.ranks);
     rex::recv_f(w);
 }
 
