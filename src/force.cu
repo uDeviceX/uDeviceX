@@ -59,3 +59,72 @@ __device__ float3 force(int type1, int type2,
     
     return make_float3(strength*xr, strength*yr, strength*zr);
 }
+
+__device__ void force00(int typed, int types,
+                        float x, float y, float z,
+                        float vx, float vy, float vz,
+                        float rnd, float *fx, float *fy, float *fz) {
+
+    const float gammadpd[] = {gammadpd_solv, gammadpd_solid, gammadpd_wall, gammadpd_rbc};
+    const float aij[] = {aij_solv, aij_solid, aij_wall, aij_rbc};
+
+    const float rij2 = x * x + y * y + z * z;
+    const float invrij = rsqrtf(rij2);
+    const float rij = rij2 * invrij;
+
+    if (rij2 >= 1) {
+        *fx = *fy = *fz = 0;
+        return;
+    }
+
+    const float argwr = 1.f - rij;
+    const float wr = viscosity_function<-VISCOSITY_S_LEVEL>(argwr);
+
+    x *= invrij;
+    y *= invrij;
+    z *= invrij;
+
+    const float rdotv = x * vx + y * vy + z * vz;
+
+    const float gammadpd_pair = 0.5 * (gammadpd[typed] + gammadpd[types]);
+    const float sigmaf_pair = sqrt(2*gammadpd_pair*kBT / dt);
+    float f = (-gammadpd_pair * wr * rdotv + sigmaf_pair * rnd) * wr;
+
+    const bool ss = (typed == SOLID_TYPE) && (types == SOLID_TYPE);
+    const bool sw = (typed == SOLID_TYPE) && (types ==  WALL_TYPE);
+
+    if (ss || sw) {
+        /*hack*/ const float ljsi = ss ? ljsigma : 2 * ljsigma;
+        const float invr2 = invrij * invrij;
+        const float t2 = ljsi * ljsi * invr2;
+        const float t4 = t2 * t2;
+        const float t6 = t4 * t2;
+        const float lj = min(1e4f, max(0.f, ljepsilon * 24.f * invrij * t6 * (2.f * t6 - 1.f)));
+        f += lj;
+    } 
+
+    const float aij_pair = 0.5 * (aij[typed] + aij[types]);
+    f += aij_pair * argwr;
+
+    *fx = f * x;
+    *fy = f * y;
+    *fz = f * z;
+}
+
+__device__ void force0(int typed, int types,
+                       float xd, float yd, float zd,
+                       float xs, float ys, float zs,
+                       float vxd, float vyd, float vzd,
+                       float vxs, float vys, float vzs,
+                       float rnd, float *fx, float *fy, float *fz) {
+    
+    const float dx = xd - xs;
+    const float dy = yd - ys;
+    const float dz = zd - zs;
+    
+    const float dvx = vxd - vxs;
+    const float dvy = vyd - vys;
+    const float dvz = vzd - vzs;
+
+    force00(typed, types, dx, dy, dz, dvx, dvy, dvz, rnd, /**/ fx, fy, fz);
+}
