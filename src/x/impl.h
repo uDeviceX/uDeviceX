@@ -1,6 +1,6 @@
 namespace x {
 
-static void ini_ticketcom(MPI_Comm cart, /**/ int dstranks[26]) {
+static void ini_ticketcom(MPI_Comm cart, /**/ int ranks[26]) {
     enum {X, Y, Z};
     int i, c;
     int ne[3], d[3];
@@ -9,7 +9,7 @@ static void ini_ticketcom(MPI_Comm cart, /**/ int dstranks[26]) {
         d[Y] = (i / 3 + 2) % 3 - 1;
         d[Z] = (i / 9 + 2) % 3 - 1;
         for (c = 0; c < 3; ++c) ne[c] = m::coords[c] + d[c];
-        MC(l::m::Cart_rank(cart, ne, dstranks + i));
+        MC(l::m::Cart_rank(cart, ne, ranks + i));
     }
 }
 
