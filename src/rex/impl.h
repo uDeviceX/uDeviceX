@@ -5,7 +5,7 @@ void _wait(std::vector<MPI_Request> &v) {
     v.clear();
 }
 
-void _postrecvC(MPI_Comm cart) {
+void _postrecvC(MPI_Comm cart, int dstranks[26]) {
     for (int i = 0; i < 26; ++i) {
         MPI_Request reqC;
         MC(l::m::Irecv(recv_counts + i, 1, MPI_INTEGER, dstranks[i],
@@ -14,7 +14,7 @@ void _postrecvC(MPI_Comm cart) {
     }
 }
 
-void _postrecvP(MPI_Comm cart) {
+void _postrecvP(MPI_Comm cart, int dstranks[26]) {
     for (int i = 0; i < 26; ++i) {
         MPI_Request reqP;
         remote[i]->pmessage.resize(remote[i]->expected());
@@ -25,7 +25,7 @@ void _postrecvP(MPI_Comm cart) {
     }
 }
 
-void _postrecvA(MPI_Comm cart) {
+void _postrecvA(MPI_Comm cart, int dstranks[26]) {
     for (int i = 0; i < 26; ++i) {
         MPI_Request reqA;
 
@@ -36,15 +36,15 @@ void _postrecvA(MPI_Comm cart) {
     }
 }
 
-void post_p(MPI_Comm cart, std::vector<ParticlesWrap> w) {
+void post_p(MPI_Comm cart, int dstranks[26], std::vector<ParticlesWrap> w) {
     // consolidate the packing
     {
         dSync();
 
         if (iterationcount == 0)
-        _postrecvC(cart);
+            _postrecvC(cart, dstranks);
         else
-        _wait(reqsendC);
+            _wait(reqsendC);
 
         for (int i = 0; i < 26; ++i) send_counts[i] = host_packstotalcount->D[i];
 
@@ -78,10 +78,10 @@ void post_p(MPI_Comm cart, std::vector<ParticlesWrap> w) {
 
         for (int i = 0; i < 26; ++i) local[i]->resize(send_counts[i]);
 
-        _postrecvA(cart);
+        _postrecvA(cart, dstranks);
 
         if (iterationcount == 0) {
-            _postrecvP(cart);
+            _postrecvP(cart, dstranks);
         } else
         _wait(reqsendP);
 
@@ -123,7 +123,7 @@ void post_p(MPI_Comm cart, std::vector<ParticlesWrap> w) {
     }
 }
 
-void recv_p(MPI_Comm cart, std::vector<ParticlesWrap> w) {
+void recv_p(MPI_Comm cart, int dstranks[26], std::vector<ParticlesWrap> w) {
     _wait(reqrecvC);
     _wait(reqrecvP);
 
@@ -144,7 +144,7 @@ void recv_p(MPI_Comm cart, std::vector<ParticlesWrap> w) {
                sizeof(Particle) * count);
     }
 
-    _postrecvC(cart);
+    _postrecvC(cart, dstranks);
 
     for (int i = 0; i < 26; ++i)
     CC(cudaMemcpyAsync(remote[i]->dstate.D, remote[i]->hstate.D,
@@ -170,7 +170,7 @@ void halo() {
     for (int i = 0; i < 26; ++i) local[i]->update();
 }
 
-void post_f(MPI_Comm cart, std::vector<ParticlesWrap> w) {
+void post_f(MPI_Comm cart, int dstranks[26], std::vector<ParticlesWrap> w) {
     dSync(); /* was cudaEventSynchronize() */
 
     reqsendA.resize(26);

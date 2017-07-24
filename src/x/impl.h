@@ -27,11 +27,11 @@ void fin() {
 static void rex0(std::vector<ParticlesWrap> w, int nw) {
     rex::pack_p(nw);
     rex::_pack_attempt(w);
-    rex::post_p(cart, w);
-    rex::recv_p(cart, w);
+    rex::post_p(cart, dstranks, w);
+    rex::recv_p(cart, dstranks, w);
     rex::halo(); /* fsi::halo(); */
-    rex::_postrecvP(cart);
-    rex::post_f(cart, w);
+    rex::_postrecvP(cart, dstranks);
+    rex::post_f(cart, dstranks, w);
     rex::recv_f(w);
 }
 
