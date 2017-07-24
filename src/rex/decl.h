@@ -52,7 +52,7 @@ public:
 };
 
 int iterationcount;
-int recv_tags[26], recv_counts[26], send_counts[26];
+int recv_counts[26], send_counts[26];
 
 /* basetags */
 int btc, btp1, btp2, btf;

@@ -5,39 +5,39 @@ void _wait(std::vector<MPI_Request> &v) {
     v.clear();
 }
 
-void _postrecvC(MPI_Comm cart, int ranks[26]) {
+void _postrecvC(MPI_Comm cart, int ranks[26], int tags[26]) {
     for (int i = 0; i < 26; ++i) {
         MPI_Request reqC;
         MC(l::m::Irecv(recv_counts + i, 1, MPI_INTEGER, ranks[i],
-                     btc + recv_tags[i], cart, &reqC));
+                     btc + tags[i], cart, &reqC));
         reqrecvC.push_back(reqC);
     }
 }
 
-void _postrecvP(MPI_Comm cart, int ranks[26]) {
+void _postrecvP(MPI_Comm cart, int ranks[26], int tags[26]) {
     for (int i = 0; i < 26; ++i) {
         MPI_Request reqP;
         remote[i]->pmessage.resize(remote[i]->expected());
         MC(l::m::Irecv(&remote[i]->pmessage.front(), remote[i]->expected() * 6,
-                     MPI_FLOAT, ranks[i], btp1 + recv_tags[i],
+                     MPI_FLOAT, ranks[i], btp1 + tags[i],
                      cart, &reqP));
         reqrecvP.push_back(reqP);
     }
 }
 
-void _postrecvA(MPI_Comm cart, int ranks[26]) {
+void _postrecvA(MPI_Comm cart, int ranks[26], int tags[26]) {
     for (int i = 0; i < 26; ++i) {
         MPI_Request reqA;
 
         MC(l::m::Irecv(local[i]->result->D, local[i]->result->S * 3,
-                     MPI_FLOAT, ranks[i], btf + recv_tags[i],
+                     MPI_FLOAT, ranks[i], btf + tags[i],
                      cart, &reqA));
         reqrecvA.push_back(reqA);
     }
 }
 
 
-void recv_p(MPI_Comm cart, int ranks[26]) {
+void recv_p(MPI_Comm cart, int ranks[26], int tags[26]) {
     _wait(reqrecvC);
     _wait(reqrecvP);
 
@@ -52,13 +52,13 @@ void recv_p(MPI_Comm cart, int ranks[26]) {
         if (count > expected)
         MC(MPI_Recv(&remote[i]->pmessage.front() + expected,
                     (count - expected) * 6, MPI_FLOAT, ranks[i],
-                    btp2 + recv_tags[i], cart, &status));
+                    btp2 + tags[i], cart, &status));
 
         memcpy(remote[i]->hstate.D, &remote[i]->pmessage.front(),
                sizeof(Particle) * count);
     }
 
-    _postrecvC(cart, ranks);
+    _postrecvC(cart, ranks, tags);
 
     for (int i = 0; i < 26; ++i)
     CC(cudaMemcpyAsync(remote[i]->dstate.D, remote[i]->hstate.D,

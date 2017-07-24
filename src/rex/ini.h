@@ -28,8 +28,6 @@ void ini(/*io*/ basetags::TagGen *tg) {
     btf  = get_tag(tg);
         
     for (int i = 0; i < 26; ++i) {
-        int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
-        recv_tags[i] = (2 - d[0]) % 3 + 3 * ((2 - d[1]) % 3 + 3 * ((2 - d[2]) % 3));
         int estimate = 1;
         remote[i]->preserve_resize(estimate);
         local[i]->resize(estimate);

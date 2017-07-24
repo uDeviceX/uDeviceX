@@ -1,10 +1,10 @@
 namespace rex {
-bool post_pre(MPI_Comm cart, int ranks[26]) {
+bool post_pre(MPI_Comm cart, int ranks[26], int tags[26]) {
     bool packingfailed;
     int i;
 
     dSync();
-    if (iterationcount == 0) _postrecvC(cart, ranks);
+    if (iterationcount == 0) _postrecvC(cart, ranks, tags);
     else _wait(reqsendC);
 
     for (i = 0; i < 26; ++i) send_counts[i] = host_packstotalcount->D[i];
@@ -29,15 +29,15 @@ void post_resize() {
                                sizeof(newindices), 0, H2D));
 }
 
-void post_p(MPI_Comm cart, int ranks[26]) {
+void post_p(MPI_Comm cart, int ranks[26], int tags[26]) {
     // consolidate the packing
     {
         for (int i = 0; i < 26; ++i) local[i]->resize(send_counts[i]);
 
-        _postrecvA(cart, ranks);
+        _postrecvA(cart, ranks, tags);
 
         if (iterationcount == 0) {
-            _postrecvP(cart, ranks);
+            _postrecvP(cart, ranks, tags);
         } else
             _wait(reqsendP);
 
