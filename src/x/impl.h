@@ -3,8 +3,7 @@ namespace x {
 static void ini_ticketcom(MPI_Comm cart, /**/ int dstranks[26]) {
     enum {X, Y, Z};
     int i, c;
-    int ne[3];
-    int d[3];
+    int ne[3], d[3];
     for (i = 0; i < 26; ++i) {
         d[X] = (i     + 2) % 3 - 1;
         d[Y] = (i / 3 + 2) % 3 - 1;
