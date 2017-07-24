@@ -21,6 +21,7 @@ void forces_dpd() {
     dpdr::post_send(&o::h::tc, &o::h::ts);
  
     dpd::flocal(o::tz.zip0, o::tz.zip1, o::q.n, o::q.cells->start, o::q.cells->count, o::trnd.rnd, /**/ o::ff);
+    //dpdx::flocal(o::q.pp, o::q.cells->start, o::q.n, o::trnd.rnd->get_float(), /**/ o::ff);
     
     dpdr::wait_recv(&o::h::tc);
     dpdr::recv(&o::h::tr);
