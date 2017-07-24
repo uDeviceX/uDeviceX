@@ -146,6 +146,7 @@ namespace dev {
   #include "rex/ini.h"
   #include "rex/pack.h"
   #include "rex/impl.h"
+  #include "rex/post.h"
   #include "rex/fin.h"
 
 #include "x/decl.h"
