@@ -23,7 +23,7 @@ void fin() {
     MC(l::m::Comm_free(&cart));
 }
 
-void rex0(std::vector<ParticlesWrap> w, int nw) {
+static void rex0(std::vector<ParticlesWrap> w, int nw) {
     rex::pack_p(nw);
     rex::_pack_attempt(w);
     rex::post_p(cart, w);
