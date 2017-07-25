@@ -1,6 +1,6 @@
 namespace k_rex {
-__global__ void tiny_scan(const int *counts, const int *oldtotalcounts,
-                          /**/ int *totalcounts, int *paddedstarts) {
+__global__ void scan(const int *counts, const int *oldtotalcounts,
+                     /**/ int *totalcounts, int *paddedstarts) {
     int tid = threadIdx.x;
 
     int mycount = 0;
