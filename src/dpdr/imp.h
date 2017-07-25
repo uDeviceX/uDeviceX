@@ -42,8 +42,8 @@ void copy_cells(const int27 fragstarts, const int ncells, const intp26 srccells,
 void pack(const int27 fragstarts, const int ncells, const Particle *pp, const intp26 fragstr,
           const intp26 fragcnt, const intp26 fragcum, const int26 fragcapacity, /**/ intp26 fragii, Particlep26 fragpp, int *bagcounts) {
     if (ncells)
-        dev::fill_all<<<(ncells + 1) / 2, 32>>>(fragstarts, pp, bagcounts, fragstr, fragcnt, fragcum,
-                                                fragcapacity, fragii, fragpp);
+        dev::fill_all<<<(ncells + 1) / 2, 32>>>(fragstarts, pp, fragstr, fragcnt, fragcum,
+                                                fragcapacity, /**/ fragii, fragpp, bagcounts);
 }
 
 void pack_ii(const int27 fragstarts, const int ncells, const int *ii, const intp26 fragstr, const intp26 fragcnt, const intp26 fragcum,
@@ -53,21 +53,17 @@ void pack_ii(const int27 fragstarts, const int ncells, const int *ii, const intp
 }
 
 void copy_pp(const int *fragnp, const Particlep26 fragppdev, /**/ Particlep26 fragpphst) {
-    dSync(); /* wait for fill_all */
-    
+    // dSync(); /* wait for fill_all */ /* use async copy now, no need to wait */
     for (int i = 0; i < 26; ++i)
         if (fragnp[i])
             CC(cudaMemcpyAsync(fragpphst.d[i], fragppdev.d[i], sizeof(Particle) * fragnp[i], D2H));
-    dSync(); /* was CC(cudaStreamSynchronize(downloadstream)); */
 }
 
 void copy_ii(const int *fragnp, const intp26 fragiidev, /**/ intp26 fragiihst) {
-    dSync(); /* wait for fill_all_ii */
-    
+    // dSync(); /* wait for fill_all_ii */ /* use async copy now, no need to wait */
     for (int i = 0; i < 26; ++i)
         if (fragnp[i])
             CC(cudaMemcpyAsync(fragiihst.d[i], fragiidev.d[i], sizeof(int) * fragnp[i], D2H));
-    dSync(); /* was CC(cudaStreamSynchronize(downloadstream)); */
 }
 
 void post_send(MPI_Comm cart, const int dstranks[], const int *fragnp, const int26 fragnc, const intp26 fragcum,
