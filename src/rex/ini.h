@@ -6,7 +6,7 @@ void _adjust_packbuffers() {
     host_packbuf->resize(s);
 }
 
-void ini(/*io*/ basetags::TagGen *tg) {
+void ini() {
     iterationcount = -1;
     packstotalstart = new DeviceBuffer<int>(27);
     host_packstotalstart = new PinnedHostBuffer1<int>(27);

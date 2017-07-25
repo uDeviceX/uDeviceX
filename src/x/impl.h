@@ -3,7 +3,7 @@ void ini(/*io*/ basetags::TagGen *tg) {
     ini_ticketcom(&tc);
     ini_ticketr(&tr);
     ini_tickettags(tg, &tt);
-    rex::ini(tg);
+    rex::ini();
 }
 
 void fin() {
