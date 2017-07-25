@@ -1,4 +1,27 @@
 namespace k_rex {
+__global__ void scanA(const int *counts, const int *oldtotalcounts,
+                     /**/ int *totalcounts, int *paddedstarts) {
+    int tid, mycount, newcount, myscan, L;
+    tid = threadIdx.x;
+    mycount = 0;
+    if (tid < 26) {
+        mycount = counts[tid];
+        if (mycount > ccapacities[tid]) failed = true;
+        if (totalcounts && oldtotalcounts) {
+            newcount = mycount + oldtotalcounts[tid];
+            totalcounts[tid] = newcount;
+            if (newcount > ccapacities[tid]) failed = true;
+        }
+    }
+
+    if (paddedstarts) {
+        myscan = mycount = 32 * ((mycount + 31) / 32);
+        for (L = 1; L < 32; L <<= 1)
+        myscan += (tid >= L) * __shfl_up(myscan, L);
+        if (tid < 27) paddedstarts[tid] = myscan - mycount;
+    }
+}
+
 __global__ void scanB(const int *count, /**/ int *start) {
     int tid, cnt, scan, L;
     tid = threadIdx.x;
@@ -15,33 +38,4 @@ __global__ void scanB(const int *count, /**/ int *start) {
     }
 }
 
-__global__ void scanB(const int *counts, const int *oldtotalcounts,
-                     /**/ int *totalcounts, int *paddedstarts) {
-    int tid, mycount, newcount, myscan, L;
-
-    tid = threadIdx.x;
-    mycount = 0;
-
-    if (tid < 26) {
-        mycount = counts[tid];
-
-        if (mycount > ccapacities[tid]) failed = true;
-
-        if (totalcounts && oldtotalcounts) {
-            newcount = mycount + oldtotalcounts[tid];
-            totalcounts[tid] = newcount;
-
-            if (newcount > ccapacities[tid]) failed = true;
-        }
-    }
-
-    if (paddedstarts) {
-        myscan = mycount = 32 * ((mycount + 31) / 32);
-
-        for (L = 1; L < 32; L <<= 1)
-        myscan += (tid >= L) * __shfl_up(myscan, L);
-
-        if (tid < 27) paddedstarts[tid] = myscan - mycount;
-    }
-}
 }
