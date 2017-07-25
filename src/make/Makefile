@@ -39,7 +39,6 @@ $B/l/%.o:      $S/l/%.cu;          $D     $< -c -o $@
 $B/mesh/%.o:   $S/mesh/%.cu;       $D     $< -c -o $@
 
 # dev and hst
-$B/force.o: $S/force.cu;     $C -dc $< -c -o $@
 $B/bund.o:  $S/bund.cu;      $C -dc $< -c -o $@
 $B/glb.o:   $S/glb.cu;       $C -dc $< -c -o $@
 $B/local.o: $S/dpd/local.cu; $C -dc $< -c -o $@
