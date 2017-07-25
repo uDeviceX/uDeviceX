@@ -1,5 +1,5 @@
 namespace k_read { /* collective (wrap) read */
-__device__ __forceinline__
+__device__ __inline__
 void AOS6f(const float2 * const data, const int nparticles, float2& s0, float2& s1, float2& s2)
 {
     if (nparticles == 0)
@@ -45,7 +45,7 @@ void AOS6f(const float2 * const data, const int nparticles, float2& s0, float2& 
         s2.y = t2;
     }
 }
-__device__ __forceinline__
+__device__ __inline__
 void AOS3f(const float * const data, const int nparticles, float& s0, float& s1, float& s2)
 {
     if (nparticles == 0)
