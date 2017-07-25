@@ -4,7 +4,7 @@ bool post_pre(MPI_Comm cart, int dranks[26], int tags[26], x::TicketTags t) {
     int i;
 
     dSync();
-    if (iterationcount == 0) _postrecvC(cart, dranks, tags, t);
+    if (cnt == 0) _postrecvC(cart, dranks, tags, t);
     else _wait(reqsendC);
 
     for (i = 0; i < 26; ++i) send_counts[i] = host_packstotalcount->D[i];
@@ -36,7 +36,7 @@ void local_resize() {
 
 void post_p(MPI_Comm cart, int dranks[26], int tags[26], x::TicketTags t) {
     // consolidate the packing
-    if (iterationcount == 0)
+    if (cnt == 0)
         _postrecvP(cart, dranks, tags, t);
     else
         _wait(reqsendP);
