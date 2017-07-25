@@ -28,7 +28,7 @@ void ini(/*io*/ basetags::TagGen *tg) {
     btf  = get_tag(tg);
         
     for (int i = 0; i < 26; ++i) {
-        int estimate = 1;
+        int estimate = 10;
         remote[i]->preserve_resize(estimate);
         local[i]->resize(estimate);
         local[i]->update();
