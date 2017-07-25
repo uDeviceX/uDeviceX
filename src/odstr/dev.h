@@ -109,7 +109,7 @@ __global__ void subindex_remote(const int n, const int strt[], /*io*/ float2 *pp
     const int idpack = get_idpack(start, slot);
 
     float2 d0, d1, d2;
-    k_common::read_AOS6f(pp + 3*base, nlocal, d0, d1, d2);
+    k_read::AOS6f(pp + 3*base, nlocal, d0, d1, d2);
     
     if (laneid < nlocal) {
         d0.x += XS * ((idpack     + 1) % 3 - 1);

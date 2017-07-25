@@ -5,7 +5,7 @@ __global__ void scatter(const float2 *particles,
     int base = 32 * (warpid + 4 * blockIdx.x);
     int nsrc = min(32, nparticles - base);
     float2 s0, s1, s2;
-    k_common::read_AOS6f(particles + 3 * base, nsrc, s0, s1, s2);
+    k_read::AOS6f(particles + 3 * base, nsrc, s0, s1, s2);
     int lane = threadIdx.x & 0x1f;
     int pid = base + lane;
     if (lane >= nsrc) return;

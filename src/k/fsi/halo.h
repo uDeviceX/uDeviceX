@@ -13,7 +13,7 @@ static __device__ void warp2rv(const Particle *p, int n, int i, /**/
                                float *vx, float *vy, float *vz) {
     float2 s0, s1, s2;
     p += i;
-    k_common::read_AOS6f((float2*)p, n, s0, s1, s2);
+    k_read::AOS6f((float2*)p, n, s0, s1, s2);
      *x = fst(s0);  *y = scn(s0);  *z = fst(s1);
     *vx = scn(s1); *vy = fst(s2); *vz = scn(s2);
 }
