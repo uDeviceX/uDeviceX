@@ -11,11 +11,11 @@ NVCCFLAGS += -I$B -I$S
 NVCCFLAGS += -std=c++11
 LIBS      += -lcudart
 
-OBJ0 = $B/bund.o  $B/mesh/collision.o $B/mesh/dist.o $B/mesh/bbox.o $B/diag.o $B/common.mpi.o \
+OBJ0 = $B/bund.o $B/mesh/collision.o $B/mesh/dist.o $B/mesh/bbox.o $B/diag.o $B/common.mpi.o \
 	$B/dpd/local.o $B/field.o $B/glb.o $B/io.o  $B/m.o $B/main.o \
 	$B/mbounce.o $B/mesh/props.o $B/mrescue.o $B/minmax.o \
 	$B/solid.o $B/tcells.o $B/restart.o $B/dump.o
-OBJL = $B/l/clist.o $B/l/linal.o $B/l/m.o $B/l/off.o $B/l/ply.o $B/l/scan.o
+OBJL = $B/l/clist.o $B/l/linal.o $B/l/m.o $B/l/off.o $B/l/ply.o $B/l/scan.o $B/scan/imp.o
 OBJS = $(OBJ0) $(OBJL)
 
 ifeq ($(h5),0)
@@ -38,6 +38,7 @@ $B/%.o:           $S/%.cu;            $C     $< -c -o $@
 $B/l/%.o:         $S/l/%.cu;          $D     $< -c -o $@
 $B/mesh/%.o:      $S/mesh/%.cu;       $D     $< -c -o $@
 $B/dpd/local.o:   $S/dpd/local.cu;    $D     $< -c -o $@
+$B/scan/imp.o:    $S/scan/imp.cu;     $D     $< -c -o $@
 
 # dev and hst
 $B/bund.o:  $S/bund.cu;      $C -dc $< -c -o $@

@@ -1,5 +1,11 @@
+#include <cstdio>
+#include <common.h>
+#include "common.cuda.h"
+
+#include "scan/int.h"
+
 namespace dev {
-#include "dev.h"
+#include "scan/dev.h"
 }
 
 static void scan0(const unsigned char *input, int size, uint *output) {
