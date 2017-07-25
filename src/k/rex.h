@@ -1,12 +1,10 @@
 namespace k_rex {
 __constant__ int ccapacities[26], *scattered_indices[26];
-__device__ bool failed;
 __constant__ int coffsets[26];
 __constant__ int ccounts[26], cbases[27], cpaddedstarts[27];
 __constant__ float *recvbags[26];
 
 
-__global__ void ini() { failed = false; }
 __global__ void scatter_indices(const float2 *particles,
                                 const int nparticles, /**/ int *counts) {
     int warpid = threadIdx.x >> 5;
@@ -75,13 +73,11 @@ __global__ void tiny_scan(const int *counts, const int *oldtotalcounts,
     if (tid < 26) {
         mycount = counts[tid];
 
-        if (mycount > ccapacities[tid]) failed = true;
 
         if (totalcounts && oldtotalcounts) {
             int newcount = mycount + oldtotalcounts[tid];
             totalcounts[tid] = newcount;
 
-            if (newcount > ccapacities[tid]) failed = true;
         }
     }
 
@@ -97,7 +93,6 @@ __global__ void tiny_scan(const int *counts, const int *oldtotalcounts,
 
 __global__ void pack(const float2 *particles, const int nparticles,
                      int nbuffer, int soluteid, /**/ float2 *buffer) {
-    if (failed) return;
 
     int warpid = threadIdx.x >> 5;
     int npack_padded = cpaddedstarts[26];
