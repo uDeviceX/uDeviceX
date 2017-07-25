@@ -1,5 +1,5 @@
 namespace x {
-static void ini_tickpack(TicketPack *t) {
+static void ini_ticketpack(TicketPack *t) {
     t->packstotalstart = new DeviceBuffer<int>(27);
     t->host_packstotalstart = new PinnedHostBuffer1<int>(27);
     t->host_packstotalcount = new PinnedHostBuffer1<int>(26);
@@ -10,7 +10,7 @@ static void ini_tickpack(TicketPack *t) {
 
 }
 
-static void fin_tickpack(TicketPack *t) {
+static void fin_ticketpack(TicketPack *t) {
     delete t->packstotalstart;
     delete t->host_packstotalstart;
     delete t->host_packstotalcount;
