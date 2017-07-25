@@ -22,7 +22,7 @@ __global__ void scan(const int *counts, const int *oldtotalcounts,
     if (paddedstarts) {
         myscan = mycount = 32 * ((mycount + 31) / 32);
 
-        for (int L = 1; L < 32; L <<= 1)
+        for (L = 1; L < 32; L <<= 1)
         myscan += (tid >= L) * __shfl_up(myscan, L);
 
         if (tid < 27) paddedstarts[tid] = myscan - mycount;
