@@ -1,9 +1,9 @@
 namespace forces {
 
 template<int s>
-inline __device__ float viscosity_function(float x) { return sqrtf(viscosity_function<s - 1>(x)); }
-template<> inline __device__ float viscosity_function<1>(float x) { return sqrtf(x); }
-template<> inline __device__ float viscosity_function<0>(float x) { return x;        }
+inline            __device__ float wrf(float x)    { return sqrtf(wrf<s - 1>(x)); }
+template<> inline __device__ float wrf<1>(float x) { return sqrtf(x); }
+template<> inline __device__ float wrf<0>(float x) { return x;        }
 
 inline __device__ void dpd00(int typed, int types,
                              float x, float y, float z,
@@ -22,7 +22,7 @@ inline __device__ void dpd00(int typed, int types,
     }
 
     float argwr = 1.f - rij;
-    float wr = viscosity_function<-VISCOSITY_S_LEVEL>(argwr);
+    float wr = wrf<-VISCOSITY_S_LEVEL>(argwr);
 
     x *= invrij;
     y *= invrij;
