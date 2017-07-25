@@ -29,9 +29,13 @@ void post_resize() {
                                sizeof(newindices), 0, H2D));
 }
 
+void local_resize() {
+    int i;
+    for (i = 0; i < 26; ++i) local[i]->resize(send_counts[i]);
+}
+
 void post_p(MPI_Comm cart, int dranks[26], int tags[26], x::TicketTags t) {
     // consolidate the packing
-    for (int i = 0; i < 26; ++i) local[i]->resize(send_counts[i]);
 
     _postrecvA(cart, dranks, tags, t);
     

@@ -20,6 +20,7 @@ static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<Particle
         rex::_pack_attempt(w);
         dSync();
     }
+    rex::local_resize();
     rex::post_p(tc.cart, tc.ranks, tr.tags, t);
 }
 
