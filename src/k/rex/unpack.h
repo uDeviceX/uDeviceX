@@ -1,6 +1,6 @@
 namespace k_rex {
 __global__ void unpack(/**/ float *forces) {
-    int npack_padded = g::cpaddedstarts[26];
+    int npack_padded = g::starts[26];
 
     for (int gid = threadIdx.x + blockDim.x * blockIdx.x; gid < 3 * npack_padded;
          gid += blockDim.x * gridDim.x) {
@@ -8,8 +8,8 @@ __global__ void unpack(/**/ float *forces) {
 
         if (pid >= npack_padded) return;
 
-        int code = k_common::fid(g::cpaddedstarts, pid);
-        int lpid = pid - g::cpaddedstarts[code];
+        int code = k_common::fid(g::starts, pid);
+        int lpid = pid - g::starts[code];
 
         if (lpid >= g::counts[code]) continue;
 

@@ -3,12 +3,12 @@ __global__ void pack(const float2 *pp, /**/ float2 *buffer) {
     if (g::failed) return;
 
     int warpid = threadIdx.x >> 5;
-    int npack_padded = g::cpaddedstarts[26];
+    int npack_padded = g::starts[26];
 
     for (int localbase = 32 * (warpid + 4 * blockIdx.x); localbase < npack_padded;
          localbase += gridDim.x * blockDim.x) {
-        int code = k_common::fid(g::cpaddedstarts, localbase);
-        int packbase = localbase - g::cpaddedstarts[code];
+        int code = k_common::fid(g::starts, localbase);
+        int packbase = localbase - g::starts[code];
 
         int npack = min(32, g::counts[code] - packbase);
 

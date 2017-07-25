@@ -42,7 +42,7 @@ void _pack_attempt(std::vector<ParticlesWrap> w, x::TicketPack tp) {
                                        sizeof(int) * 26, 0, D2D));
             CC(cudaMemcpyToSymbolAsync(k_rex::g::counts, tp.counts->D + 26 * i,
                                        sizeof(int) * 26, 0, D2D));
-            CC(cudaMemcpyToSymbolAsync(k_rex::g::cpaddedstarts, tp.starts->D + 27 * i,
+            CC(cudaMemcpyToSymbolAsync(k_rex::g::starts, tp.starts->D + 27 * i,
                                        sizeof(int) * 27, 0, D2D));
             k_rex::pack<<<14 * 16, 128>>>((float2 *)it.p, /**/ (float2 *)packbuf->D);
         }
