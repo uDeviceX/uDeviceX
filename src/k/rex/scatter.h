@@ -1,11 +1,10 @@
 namespace k_rex {
-__global__ void scatter(const float2 *particles,
-                        const int nparticles, /**/ int *counts) {
+__global__ void scatter(const float2 *pp, const int n, /**/ int *counts) {
     int warpid = threadIdx.x >> 5;
     int base = 32 * (warpid + 4 * blockIdx.x);
-    int nsrc = min(32, nparticles - base);
+    int nsrc = min(32, n - base);
     float2 s0, s1, s2;
-    k_read::AOS6f(particles + 3 * base, nsrc, s0, s1, s2);
+    k_read::AOS6f(pp + 3 * base, nsrc, s0, s1, s2);
     int lane = threadIdx.x & 0x1f;
     int pid = base + lane;
     if (lane >= nsrc) return;
