@@ -1,5 +1,5 @@
 namespace k_write { /* collective (wrap) write */
-__device__ __forceinline__
+__device__ __inline__
 void AOS6f(float2 * const data, const int nparticles, float2& s0, float2& s1, float2& s2)
 {
     if (nparticles == 0)
