@@ -139,16 +139,15 @@ namespace dev {
 #include "fsi/impl.h"
 
 #include "x/type.h"
-
   #include "rex/decl.h"
-  #include "k/rex/common.h"
+
   #include "k/rex/decl.h"
+  #include "k/rex/common.h"
   #include "k/rex/pack.h"
   #include "k/rex/scan.h"
   #include "k/rex/scatter.h"
   #include "k/rex/unpack.h"
 
-  #include "k/rex.h"
   #include "rex/mpi.h"
   #include "rex/ini.h"
   #include "rex/pack.h"
