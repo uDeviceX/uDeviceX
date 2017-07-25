@@ -193,9 +193,6 @@ __global__ void fill_ids(const int nt, const int *tt, const int nv, const Partic
 }
 }
 
-#include <thrust/scan.h>
-#include <thrust/execution_policy.h>
-
 void build_tcells_dev(const Mesh m, const Particle *i_pp, const int ns, /**/ int *starts, int *counts, int *ids, /*w*/ scan::Work *w) {
     CC(cudaMemsetAsync(counts, 0, NCELLS * sizeof(int)));
 
@@ -206,7 +203,7 @@ void build_tcells_dev(const Mesh m, const Particle *i_pp, const int ns, /**/ int
     
     tckernels::countt <<< k_cnf(ns*m.nt) >>> (m.nt, m.tt, m.nv, i_pp, ns, /**/ counts);
 
-    thrust::exclusive_scan(thrust::device, counts, counts + NCELLS, starts);
+    scan::scan(counts, NCELLS, /**/ starts, /*w*/ w);
 
     CC(cudaMemsetAsync(counts, 0, NCELLS * sizeof(int)));
     
