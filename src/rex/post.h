@@ -1,5 +1,6 @@
 namespace rex {
 void post_waitC() { _wait(reqsendC); }
+void post_waitP() { _wait(reqsendP); }
 
 bool post_pre(MPI_Comm cart, int dranks[26], int tags[26], x::TicketTags t) {
     bool packingfailed;
@@ -40,7 +41,7 @@ void post_p(MPI_Comm cart, int dranks[26], int tags[26], x::TicketTags t) {
     if (cnt == 0)
         _postrecvP(cart, dranks, tags, t);
     else
-        _wait(reqsendP);
+        post_waitP();
     
     if (host_packstotalstart->D[26]) {
         CC(cudaMemcpyAsync(host_packbuf->D, packbuf->D,
