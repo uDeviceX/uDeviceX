@@ -1,6 +1,6 @@
 namespace k_rex {
-__global__ void scatter_indices(const float2 *particles,
-                                const int nparticles, /**/ int *counts) {
+__global__ void scatter(const float2 *particles,
+                        const int nparticles, /**/ int *counts) {
     int warpid = threadIdx.x >> 5;
     int base = 32 * (warpid + 4 * blockIdx.x);
     int nsrc = min(32, nparticles - base);

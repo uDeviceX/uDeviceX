@@ -17,7 +17,7 @@ void _pack_attempt(std::vector<ParticlesWrap> w) {
         if (it.n) {
             CC(cudaMemcpyToSymbolAsync(k_rex::coffsets, packsoffset->D + 26 * i,
                                        sizeof(int) * 26, 0, D2D));
-            k_rex::scatter_indices<<<k_cnf(it.n)>>>
+            k_rex::scatter<<<k_cnf(it.n)>>>
                 ((float2 *)it.p, it.n, /**/ packscount->D + i * 26);
         }
         k_rex::tiny_scan<<<1, 32>>>
