@@ -15,7 +15,7 @@ OBJ0 = $B/bund.o $B/mesh/collision.o $B/mesh/dist.o $B/mesh/bbox.o $B/diag.o $B/
 	$B/dpd/local.o $B/field.o $B/glb.o $B/io.o  $B/m.o $B/main.o \
 	$B/mbounce.o $B/mesh/props.o $B/mrescue.o $B/minmax.o \
 	$B/solid.o $B/tcells.o $B/restart.o $B/dump.o
-OBJL = $B/l/clist.o $B/l/linal.o $B/l/m.o $B/l/off.o $B/l/ply.o $B/scan/imp.o
+OBJL = $B/l/clist.o $B/clist/imp.o $B/l/linal.o $B/l/m.o $B/l/off.o $B/l/ply.o $B/scan/imp.o
 OBJS = $(OBJ0) $(OBJL)
 
 ifeq ($(h5),0)
@@ -39,6 +39,7 @@ $B/l/%.o:         $S/l/%.cu;          $D     $< -c -o $@
 $B/mesh/%.o:      $S/mesh/%.cu;       $D     $< -c -o $@
 $B/dpd/local.o:   $S/dpd/local.cu;    $D     $< -c -o $@
 $B/scan/imp.o:    $S/scan/imp.cu;     $D     $< -c -o $@
+$B/clist/imp.o:   $S/clist/imp.cu;    $D     $< -c -o $@
 
 # dev and hst
 $B/bund.o:  $S/bund.cu;      $C -dc $< -c -o $@

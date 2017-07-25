@@ -35,7 +35,7 @@ __global__ void get_ids(const Particle *pp, const int *starts, const int n, int3
     ids[i] = id;
 }
 
-__global__ void gather(__restrict__ const Particle *pps, const int ids, int n, /**/ Particle *ppd) {
+__global__ void gather(const Particle *pps, const int *ids, int n, /**/ Particle *ppd) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
     
@@ -44,4 +44,4 @@ __global__ void gather(__restrict__ const Particle *pps, const int ids, int n, /
 
     ppd[id] = p;
 }
-}
+

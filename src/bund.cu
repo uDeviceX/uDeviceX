@@ -37,6 +37,7 @@
 #include "k/common.h"
 
 #include "clist.face.h"
+#include "clist/int.h"
 #include "minmax.h"
 
 namespace mcomm {
