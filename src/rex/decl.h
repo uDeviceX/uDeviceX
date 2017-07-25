@@ -60,7 +60,6 @@ DeviceBuffer<Particle> *packbuf;
 PinnedHostBuffer<Particle> *host_packbuf;
 
 std::vector<MPI_Request> reqsendC, reqrecvC, reqsendP, reqrecvP, reqsendA, reqrecvA;
-#define SE_HALO_SIZE 26
-RemoteHalo *remote[SE_HALO_SIZE];
-LocalHalo  *local[SE_HALO_SIZE];
+RemoteHalo *remote[26];
+LocalHalo  *local[26];
 }

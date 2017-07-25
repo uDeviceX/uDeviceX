@@ -19,8 +19,8 @@ void ini() {
     packbuf = new DeviceBuffer<Particle>;
     host_packbuf = new PinnedHostBuffer<Particle>;
 
-    for (int i = 0; i < SE_HALO_SIZE; i++) local[i] = new LocalHalo;
-    for (int i = 0; i < SE_HALO_SIZE; i++) remote[i] = new RemoteHalo;
+    for (int i = 0; i < 26; i++) local[i] = new LocalHalo;
+    for (int i = 0; i < 26; i++) remote[i] = new RemoteHalo;
         
     for (int i = 0; i < 26; ++i) {
         int estimate = 10;
