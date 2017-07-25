@@ -46,7 +46,7 @@ static __device__ float random(uint lid, uint rid, float seed, int mask) {
     uint a1, a2;
     a1 = mask ? lid : rid;
     a2 = mask ? rid : lid;
-    return l::rnd::d::mean0var1uu(seed, a1, a2);
+    return rnd::mean0var1uu(seed, a1, a2);
 }
 
 static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, const Pa l, /**/
