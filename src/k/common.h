@@ -1,7 +1,8 @@
 namespace k_common {
-__device__ inline unsigned int get_fid(const int a[], const int i) {
+template <typename T>
+__device__ inline unsigned int get_fid(const T a[], const T i) {
     /* where is `i' in sorted a[27]? */
-    int k1, k3, k9;
+    unsigned int k1, k3, k9;
     k9 = 9 * ((i >= a[9])           + (i >= a[18]));
     k3 = 3 * ((i >= a[k9 + 3])      + (i >= a[k9 + 6]));
     k1 =      (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
