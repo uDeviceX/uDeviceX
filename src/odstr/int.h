@@ -156,9 +156,6 @@ void unpack_pp(const TicketD *td, /**/ flu::Quants *q, TicketU *tu, /*w*/ Work *
     }
 
     scan::scan(count, XS*YS*ZS, /**/ start, /*w*/ &w->s);
-    
-    // k_common::compress_counts<<<k_cnf(XS*YS*ZS)>>>(XS*YS*ZS, (int4*)count, /**/ (uchar4*)w->count_zip);
-    // l::scan::d::scan(w->count_zip, XS*YS*ZS, /**/ (uint*)start);
 }
 
 void unpack_ii(const TicketD *td, const TicketI *ti, TicketUI *tui) {
