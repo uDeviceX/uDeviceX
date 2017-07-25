@@ -103,11 +103,11 @@ void recv_f(std::vector<ParticlesWrap> w, x::TicketPack tp) {
         ParticlesWrap it = w[i];
         if (it.n) {
             CC(cudaMemcpyToSymbolAsync(k_rex::cpaddedstarts,
-                                       tp.packsstart->D + 27 * i, sizeof(int) * 27, 0,
+                                       tp.starts->D + 27 * i, sizeof(int) * 27, 0,
                                        D2D));
-            CC(cudaMemcpyToSymbolAsync(k_rex::ccounts, tp.packscount->D + 26 * i,
+            CC(cudaMemcpyToSymbolAsync(k_rex::ccounts, tp.counts->D + 26 * i,
                                        sizeof(int) * 26, 0, D2D));
-            CC(cudaMemcpyToSymbolAsync(k_rex::coffsets, tp.packsoffset->D + 26 * i,
+            CC(cudaMemcpyToSymbolAsync(k_rex::coffsets, tp.offsets->D + 26 * i,
                                        sizeof(int) * 26, 0, D2D));
 
             k_rex::unpack<<<16 * 14, 128>>>(/**/ (float *)it.f);
