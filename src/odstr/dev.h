@@ -126,7 +126,7 @@ __global__ void subindex_remote(const int n, const int strt[], /*io*/ float2 *pp
         subids[slot] = make_uchar4(xi, yi, zi, subindex);
     }
 
-    k_common::write_AOS6f(pp + 3*base, nlocal, d0, d1, d2);
+    k_write::AOS6f(pp + 3*base, nlocal, d0, d1, d2);
 }
 
 __global__ void scatter(const bool remote, const uchar4 *subi, const int n, const int *start,
@@ -233,5 +233,5 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
                                     __float2half_rn(d0.y),
                                     __float2half_rn(d1.x),
                                     0);
-    k_common::write_AOS6f(pp + 3 * base, nsrc, d0, d1, d2);
+    k_write::AOS6f(pp + 3 * base, nsrc, d0, d1, d2);
 }

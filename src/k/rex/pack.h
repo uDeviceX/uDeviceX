@@ -39,8 +39,8 @@ __global__ void pack(const float2 *pp, /**/ float2 *buffer) {
             s0.y -= ((code / 3 + 2) % 3 - 1) * YS;
             s1.x -= ((code / 9 + 2) % 3 - 1) * ZS;
         }
-        k_common::write_AOS6f(buffer + 3 * (cbases[code] + coffsets[code] + packbase), npack,
-                              s0, s1, s2);
+        k_write::AOS6f(buffer + 3 * (cbases[code] + coffsets[code] + packbase), npack,
+                       s0, s1, s2);
     }
 }
 }
