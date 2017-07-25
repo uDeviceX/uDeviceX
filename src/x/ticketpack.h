@@ -10,13 +10,13 @@ static void ini_ticketpack(TicketPack *t) {
 
 }
 
-static void fin_ticketpack(TicketPack *t) {
-    delete t->packstotalstart;
-    delete t->host_packstotalstart;
-    delete t->host_packstotalcount;
+static void fin_ticketpack(TicketPack t) {
+    delete t.packstotalstart;
+    delete t.host_packstotalstart;
+    delete t.host_packstotalcount;
 
-    delete t->packscount;
-    delete t->packsstart;
-    delete t->packsoffset;
+    delete t.packscount;
+    delete t.packsstart;
+    delete t.packsoffset;
 }
 }
