@@ -47,43 +47,6 @@ void write_AOS6f(float2 * const data, const int nparticles, float2& s0, float2& 
 }
 
 __device__ __forceinline__
-void read_AOS3f(const float * const data, const int nparticles, float& s0, float& s1, float& s2)
-{
-    if (nparticles == 0)
-    return;
-
-    int laneid;
-    asm volatile ("mov.u32 %0, %%laneid;" : "=r"(laneid));
-
-    const int nfloat2 = 3 * nparticles;
-
-    if (laneid < nfloat2)
-    s0 = data[laneid];
-
-    if (laneid + 32 < nfloat2)
-    s1 = data[laneid + 32];
-
-    if (laneid + 64 < nfloat2)
-    s2 = data[laneid + 64];
-
-    const int srclane0 = (3 * laneid + 0) & 0x1f;
-    const int srclane1 = (srclane0 + 1) & 0x1f;
-    const int srclane2 = (srclane0 + 2) & 0x1f;
-
-    const int start = laneid % 3;
-
-    {
-        const float t0 = __shfl(start == 0 ? s0 : start == 1 ? s1 : s2, srclane0);
-        const float t1 = __shfl(start == 0 ? s2 : start == 1 ? s0 : s1, srclane1);
-        const float t2 = __shfl(start == 0 ? s1 : start == 1 ? s2 : s0, srclane2);
-
-        s0 = t0;
-        s1 = t1;
-        s2 = t2;
-    }
-}
-
-__device__ __forceinline__
 void write_AOS3f(float * const data, const int nparticles, float& s0, float& s1, float& s2)
 {
     if (nparticles == 0)

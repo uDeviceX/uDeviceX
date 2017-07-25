@@ -246,7 +246,7 @@ __global__ void halo(int nparticles_padded, int ncellentries,
     }
 
     float xforce, yforce, zforce;
-    k_common::read_AOS3f(dst, nunpack, xforce, yforce, zforce);
+    k_read::AOS3f(dst, nunpack, xforce, yforce, zforce);
 
     int nzplanes = laneid < nunpack ? 3 : 0;
 
