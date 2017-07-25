@@ -2,6 +2,7 @@
 #include <conf.h>
 #include "common.h"
 #include "common.cuda.h"
+#include "scan/int.h"
 #include "tcells.h"
 
 static const int NCELLS = XS * YS * ZS;
@@ -195,7 +196,7 @@ __global__ void fill_ids(const int nt, const int *tt, const int nv, const Partic
 #include <thrust/scan.h>
 #include <thrust/execution_policy.h>
 
-void build_tcells_dev(const Mesh m, const Particle *i_pp, const int ns, /**/ int *starts, int *counts, int *ids) {
+void build_tcells_dev(const Mesh m, const Particle *i_pp, const int ns, /**/ int *starts, int *counts, int *ids, /*w*/ scan::Work *w) {
     CC(cudaMemsetAsync(counts, 0, NCELLS * sizeof(int)));
 
     if (ns == 0) {
