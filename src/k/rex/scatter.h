@@ -19,7 +19,6 @@ __global__ void scatter(const float2 *pp, const int n, /**/ int *counts) {
         -1 + (int)(s1.x >= -HZSIZE + 1) + (int)(s1.x >= HZSIZE - 1)};
     if (halocode[0] == 0 && halocode[1] == 0 && halocode[2] == 0) return;
     // faces
-#pragma unroll 3
     for (int d = 0; d < 3; ++d)
     if (halocode[d]) {
         int xterm = (halocode[0] * (d == 0) + 2) % 3;
@@ -32,7 +31,6 @@ __global__ void scatter(const float2 *pp, const int n, /**/ int *counts) {
         if (myid < ccapacities[bagid]) scattered_indices[bagid][myid] = pid;
     }
     // edges
-#pragma unroll 3
     for (int d = 0; d < 3; ++d)
     if (halocode[(d + 1) % 3] && halocode[(d + 2) % 3]) {
         int xterm = (halocode[0] * (d != 0) + 2) % 3;
