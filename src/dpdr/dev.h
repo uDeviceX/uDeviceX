@@ -108,9 +108,9 @@ __global__ void scan(const int26 fragn, const intp26 fragcc, /**/ intp26 fragcum
     }
 }
   
-__global__ void fill_all(const int27 cellpackstarts, const Particle *pp, int *required_bag_size,
-                         const intp26 fragss, const intp26 fragcc, const intp26 fragcum,
-                         const int26 fragcapacity, /**/ intp26 fragindices, Particlep26 fragpp) {
+__global__ void fill_all(const int27 cellpackstarts, const Particle *pp, const intp26 fragss, 
+                         const intp26 fragcc, const intp26 fragcum, const int26 fragcapacity,
+                         /**/ intp26 fragindices, Particlep26 fragpp, int *required_bag_size) {
     int gid, fid, hci, tid, src, dst, nsrc, nfloat2s;
     int i, lpid, dpid, spid, c;
 

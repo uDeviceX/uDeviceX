@@ -42,8 +42,8 @@ void copy_cells(const int27 fragstarts, const int ncells, const intp26 srccells,
 void pack(const int27 fragstarts, const int ncells, const Particle *pp, const intp26 fragstr,
           const intp26 fragcnt, const intp26 fragcum, const int26 fragcapacity, /**/ intp26 fragii, Particlep26 fragpp, int *bagcounts) {
     if (ncells)
-        dev::fill_all<<<(ncells + 1) / 2, 32>>>(fragstarts, pp, bagcounts, fragstr, fragcnt, fragcum,
-                                                fragcapacity, fragii, fragpp);
+        dev::fill_all<<<(ncells + 1) / 2, 32>>>(fragstarts, pp, fragstr, fragcnt, fragcum,
+                                                fragcapacity, /**/ fragii, fragpp, bagcounts);
 }
 
 void pack_ii(const int27 fragstarts, const int ncells, const int *ii, const intp26 fragstr, const intp26 fragcnt, const intp26 fragcum,
