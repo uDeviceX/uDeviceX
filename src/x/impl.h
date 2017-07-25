@@ -3,7 +3,7 @@ void ini(/*io*/ basetags::TagGen *tg) {
     ini_ticketcom(&tc);
     ini_ticketr(&tr);
     ini_tickettags(tg, &tt);
-    rex::ini(tg);
+    rex::ini();
 }
 
 void fin() {
@@ -20,7 +20,9 @@ static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<Particle
         rex::_pack_attempt(w);
         dSync();
     }
-    rex::post_p(tc.cart, tc.ranks, tr.tags, tt);
+    rex::local_resize();
+    rex::_postrecvA(tc.cart, tc.ranks, tr.tags, t);
+    rex::post_p(tc.cart, tc.ranks, tr.tags, t);
 }
 
 static void rex0(std::vector<ParticlesWrap> w, int nw) {
