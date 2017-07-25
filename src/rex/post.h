@@ -31,23 +31,21 @@ void post_resize() {
 
 void post_p(MPI_Comm cart, int dranks[26], int tags[26], x::TicketTags t) {
     // consolidate the packing
-    {
-        for (int i = 0; i < 26; ++i) local[i]->resize(send_counts[i]);
+    for (int i = 0; i < 26; ++i) local[i]->resize(send_counts[i]);
 
-        _postrecvA(cart, dranks, tags, t);
-
-        if (iterationcount == 0) {
-            _postrecvP(cart, dranks, tags, t);
-        } else
-            _wait(reqsendP);
-
-        if (host_packstotalstart->D[26]) {
-            CC(cudaMemcpyAsync(host_packbuf->D, packbuf->D,
-                               sizeof(Particle) * host_packstotalstart->D[26],
-                               H2H));
-        }
-        dSync(); /* was CC(cudaStreamSynchronize(downloadstream)); */
+    _postrecvA(cart, dranks, tags, t);
+    
+    if (iterationcount == 0)
+        _postrecvP(cart, dranks, tags, t);
+    else
+        _wait(reqsendP);
+    
+    if (host_packstotalstart->D[26]) {
+        CC(cudaMemcpyAsync(host_packbuf->D, packbuf->D,
+                           sizeof(Particle) * host_packstotalstart->D[26],
+                           H2H));
     }
+    dSync(); /* was CC(cudaStreamSynchronize(downloadstream)); */
 
     // post the sending of the packs
     {
