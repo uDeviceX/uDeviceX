@@ -9,9 +9,12 @@ static __device__ int get_cid(const float *r, int3 ncells, int3 domainstart) {
     int iy = (int)floor(r[Y] - domainstart.y);
     int iz = (int)floor(r[Z] - domainstart.z);
 
+    ix = min(ncells.x, max(0, ix));
+    iy = min(ncells.y, max(0, iy));
+    iz = min(ncells.z, max(0, iz));
+    
     return encode(ix, iy, iz, ncells);
 }
-
 
 __global__ void get_counts(const Particle *pp, const int n, int3 ncells, int3 domainstart, /**/ int *counts) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
