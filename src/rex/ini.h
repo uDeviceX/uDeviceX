@@ -8,14 +8,6 @@ void _adjust_packbuffers() {
 
 void ini() {
     int i;
-    packstotalstart = new DeviceBuffer<int>(27);
-    host_packstotalstart = new PinnedHostBuffer1<int>(27);
-    host_packstotalcount = new PinnedHostBuffer1<int>(26);
-
-    packscount = new DeviceBuffer<int>;
-    packsstart = new DeviceBuffer<int>;
-    packsoffset = new DeviceBuffer<int>;
-
     packbuf = new DeviceBuffer<Particle>;
     host_packbuf = new PinnedHostBuffer<Particle>;
 

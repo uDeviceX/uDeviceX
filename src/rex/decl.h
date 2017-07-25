@@ -52,9 +52,6 @@ public:
 };
 
 int recv_counts[26], send_counts[26];
-
-DeviceBuffer<int> *packscount, *packsstart, *packsoffset, *packstotalstart;
-PinnedHostBuffer1<int> *host_packstotalstart, *host_packstotalcount;
 DeviceBuffer<Particle> *packbuf;
 PinnedHostBuffer<Particle> *host_packbuf;
 
