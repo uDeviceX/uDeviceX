@@ -53,7 +53,7 @@ void pack_ii(const int27 fragstarts, const int ncells, const int *ii, const intp
 }
 
 void copy_pp(const int *fragnp, const Particlep26 fragppdev, /**/ Particlep26 fragpphst) {
-    dSync(); /* wait for fill_all */
+    //dSync(); /* wait for fill_all */ /* use async copy now, no need to wait */
     
     for (int i = 0; i < 26; ++i)
         if (fragnp[i])
