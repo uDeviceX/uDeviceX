@@ -27,7 +27,7 @@ void _pack_attempt(std::vector<ParticlesWrap> w) {
                        packsoffset->D + 26 * w.size(), sizeof(int) * 26,
                        H2H));
 
-    k_rex::scan<<<1, 32>>>(packsoffset->D + 26 * w.size(), NULL, /**/ NULL, packstotalstart->D);
+    k_rex::scanB<<<1, 32>>>(packsoffset->D + 26 * w.size(), /**/ packstotalstart->D);
 
     CC(cudaMemcpyAsync(host_packstotalstart->D, packstotalstart->D,
                        sizeof(int) * 27, H2H));
