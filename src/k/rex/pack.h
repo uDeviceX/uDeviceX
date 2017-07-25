@@ -10,7 +10,7 @@ __global__ void pack(const float2 *pp, /**/ float2 *buffer) {
         int code = k_common::fid(g::cpaddedstarts, localbase);
         int packbase = localbase - g::cpaddedstarts[code];
 
-        int npack = min(32, g::ccounts[code] - packbase);
+        int npack = min(32, g::counts[code] - packbase);
 
         int lane = threadIdx.x & 0x1f;
 

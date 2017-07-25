@@ -11,7 +11,7 @@ __global__ void unpack(/**/ float *forces) {
         int code = k_common::fid(g::cpaddedstarts, pid);
         int lpid = pid - g::cpaddedstarts[code];
 
-        if (lpid >= g::ccounts[code]) continue;
+        if (lpid >= g::counts[code]) continue;
 
         int component = gid % 3;
 
