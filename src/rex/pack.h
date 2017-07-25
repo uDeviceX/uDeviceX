@@ -11,6 +11,7 @@ void _pack_attempt(std::vector<ParticlesWrap> w) {
     if (packsstart->S)
     CC(cudaMemsetAsync(packsstart->D, 0, sizeof(int) * packsstart->S));
 
+    k_rex::ini<<<1, 1>>>();
     for (int i = 0; i < (int) w.size(); ++i) {
         ParticlesWrap it = w[i];
         if (it.n) {
