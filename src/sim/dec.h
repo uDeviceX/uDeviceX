@@ -72,7 +72,7 @@ mcomm::TicketS   ts;
 mcomm::TicketR   tr;
 }
 
-/* functions defined in 00dev/ and 00hst/ */
+/* defined in 0dev/ and 0hst/ */
 void distr_solid();
 void update_solid0();
 void bounce_solid(int);
