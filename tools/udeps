@@ -1,7 +1,14 @@
 #!/bin/bash
 
-# temp. fix for clarity/udeps
-# run from src/
-u.deps *.cu *.h */*.cu */*.h */*/*.cu */*/*.h > make/Makefile.dep
+# uses clarity/udeps
+# run from src
 
-echo make/Makefile.dep updated | cat >&2
+err () {
+    printf "$s\n" "$1" >&2
+    exit 1
+}
+
+l=`find . -name '*.cu' -o -name '*.h'`
+if test -z "$l"; then err 'no *.cu and *.h files'; fi
+u.deps $l > make/Makefile.dep
+echo make/Makefile.dep updated >&2
