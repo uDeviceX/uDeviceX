@@ -97,17 +97,17 @@ void post_f(MPI_Comm cart, int ranks[26], x::TicketTags t) {
 void recv_f(std::vector<ParticlesWrap> w, x::TicketPack tp) {
     float *recvbags[26];
     for (int i = 0; i < 26; ++i) recvbags[i] = (float *)local[i]->result->DP;
-    CC(cudaMemcpyToSymbolAsync(k_rex::recvbags, recvbags, sizeof(recvbags), 0, H2D));
+    CC(cudaMemcpyToSymbolAsync(k_rex::g::recvbags, recvbags, sizeof(recvbags), 0, H2D));
     _wait(reqrecvA);
     for (int i = 0; i < (int) w.size(); ++i) {
         ParticlesWrap it = w[i];
         if (it.n) {
-            CC(cudaMemcpyToSymbolAsync(k_rex::cpaddedstarts,
+            CC(cudaMemcpyToSymbolAsync(k_rex::g::cpaddedstarts,
                                        tp.starts->D + 27 * i, sizeof(int) * 27, 0,
                                        D2D));
-            CC(cudaMemcpyToSymbolAsync(k_rex::ccounts, tp.counts->D + 26 * i,
+            CC(cudaMemcpyToSymbolAsync(k_rex::g::ccounts, tp.counts->D + 26 * i,
                                        sizeof(int) * 26, 0, D2D));
-            CC(cudaMemcpyToSymbolAsync(k_rex::coffsets, tp.offsets->D + 26 * i,
+            CC(cudaMemcpyToSymbolAsync(k_rex::g::coffsets, tp.offsets->D + 26 * i,
                                        sizeof(int) * 26, 0, D2D));
 
             k_rex::unpack<<<16 * 14, 128>>>(/**/ (float *)it.f);

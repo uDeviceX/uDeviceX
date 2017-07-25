@@ -19,11 +19,11 @@ void post_resize() {
 
     for (i = 0; i < 26; ++i) local[i]->resize(send_counts[i]);
     for (i = 0; i < 26; ++i) newcapacities[i] = local[i]->capacity();
-    CC(cudaMemcpyToSymbolAsync(k_rex::ccapacities, newcapacities,
+    CC(cudaMemcpyToSymbolAsync(k_rex::g::ccapacities, newcapacities,
                                sizeof(newcapacities), 0,
                                H2D));
     for (i = 0; i < 26; ++i) newindices[i] = local[i]->scattered_indices->D;
-    CC(cudaMemcpyToSymbolAsync(k_rex::scattered_indices, newindices,
+    CC(cudaMemcpyToSymbolAsync(k_rex::g::scattered_indices, newindices,
                                sizeof(newindices), 0, H2D));
 }
 

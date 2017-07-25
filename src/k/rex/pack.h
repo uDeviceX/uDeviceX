@@ -1,24 +1,24 @@
 namespace k_rex {
 __global__ void pack(const float2 *pp, /**/ float2 *buffer) {
-    if (failed) return;
+    if (g::failed) return;
 
     int warpid = threadIdx.x >> 5;
-    int npack_padded = cpaddedstarts[26];
+    int npack_padded = g::cpaddedstarts[26];
 
     for (int localbase = 32 * (warpid + 4 * blockIdx.x); localbase < npack_padded;
          localbase += gridDim.x * blockDim.x) {
-        int code = k_common::fid(cpaddedstarts, localbase);
-        int packbase = localbase - cpaddedstarts[code];
+        int code = k_common::fid(g::cpaddedstarts, localbase);
+        int packbase = localbase - g::cpaddedstarts[code];
 
-        int npack = min(32, ccounts[code] - packbase);
+        int npack = min(32, g::ccounts[code] - packbase);
 
         int lane = threadIdx.x & 0x1f;
 
         float2 s0, s1, s2;
 
         if (lane < npack) {
-            int entry = coffsets[code] + packbase + lane;
-            int pid = __ldg(scattered_indices[code] + entry);
+            int entry = g::coffsets[code] + packbase + lane;
+            int pid = __ldg(g::scattered_indices[code] + entry);
 
             int entry2 = 3 * pid;
 
@@ -30,7 +30,7 @@ __global__ void pack(const float2 *pp, /**/ float2 *buffer) {
             s0.y -= ((code / 3 + 2) % 3 - 1) * YS;
             s1.x -= ((code / 9 + 2) % 3 - 1) * ZS;
         }
-        k_write::AOS6f(buffer + 3 * (cbases[code] + coffsets[code] + packbase), npack,
+        k_write::AOS6f(buffer + 3 * (g::cbases[code] + g::coffsets[code] + packbase), npack,
                        s0, s1, s2);
     }
 }
