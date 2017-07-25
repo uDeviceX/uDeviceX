@@ -29,7 +29,7 @@ static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<Particle
 
     if (cnt == 0) rex::_postrecvP(tc.cart, tc.ranks, tr.tags, t);
     else          rex::post_waitP();
-    rex::post_p(tc.cart, tc.ranks, tr.tags, t);
+    rex::post_p(tc.cart, tc.ranks, t);
 }
 
 static void rex0(std::vector<ParticlesWrap> w, int nw) {

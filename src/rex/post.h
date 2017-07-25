@@ -32,7 +32,7 @@ void local_resize() {
     for (i = 0; i < 26; ++i) local[i]->resize(send_counts[i]);
 }
 
-void post_p(MPI_Comm cart, int dranks[26], int tags[26], x::TicketTags t) {
+void post_p(MPI_Comm cart, int dranks[26], x::TicketTags t) {
     // consolidate the packing
     if (host_packstotalstart->D[26]) {
         CC(cudaMemcpyAsync(host_packbuf->D, packbuf->D,
