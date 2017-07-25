@@ -54,7 +54,7 @@ __device__ void halo0(int n1, float seed, int lid, int lane, int unpackbase, int
         }
     }
 
-    k_common::write_AOS3f(dst, nunpack, xforce, yforce, zforce);
+    k_write::AOS3f(dst, nunpack, xforce, yforce, zforce);
 }
 
 __device__ void halo1(int n1, float seed, int lid, int base, int lane, /**/ float *ff1) {

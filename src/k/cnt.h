@@ -337,6 +337,6 @@ __global__ void halo(int nparticles_padded, int ncellentries,
         }
     }
 
-    k_common::write_AOS3f(dst, nunpack, xforce, yforce, zforce);
+    k_write::AOS3f(dst, nunpack, xforce, yforce, zforce);
 }
 }
