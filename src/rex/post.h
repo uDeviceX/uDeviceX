@@ -2,7 +2,7 @@ namespace rex {
 void post_waitC() { _wait(reqsendC); }
 void post_waitP() { _wait(reqsendP); }
 
-bool post_pre(MPI_Comm cart, int dranks[26], int tags[26], x::TicketTags t) {
+bool post_pre() {
     bool packingfailed;
     int i;
     for (i = 0; i < 26; ++i) send_counts[i] = host_packstotalcount->D[i];
