@@ -300,16 +300,4 @@ __global__  void subindex_local(const int nparticles, const float2 * particles, 
         subindices[pid] = entry;
     }
 }
-
-__global__ static void compress_counts(const int nentries, const int4 * const counts, uchar4 * const output)
-{
-    const int gid = threadIdx.x + blockDim.x * blockIdx.x;
-
-    if (4 * gid >= nentries)
-    return;
-
-    const int4 entry = counts[gid];
-
-    output[gid] = make_uchar4(entry.x, entry.y, entry.z, entry.w);
-}
 }
