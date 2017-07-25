@@ -1,6 +1,16 @@
-namespace l { namespace scan { namespace d {
+__global__ void compress(const int nentries, const int4 *const in, uchar4 *const out) {
+    const int gid = threadIdx.x + blockDim.x * blockIdx.x;
+
+    if (4 * gid >= nentries)
+    return;
+
+    const int4 entry = in[gid];
+
+    out[gid] = make_uchar4(entry.x, entry.y, entry.z, entry.w);
+}
+
 template <int NWARP>
-__global__ void breduce(uint4 *vin, unsigned int *vout, int n) {
+__global__ void breduce(const uint4 *vin, unsigned int *vout, int n) {
 
     const int wid = threadIdx.x/32;
     const int lid = threadIdx.x%32;
@@ -87,7 +97,7 @@ __global__ void bexscan(unsigned int *v, int n) {
 }
 
 template <int NWARP>
-__global__ void gexscan(uint4 *vin, unsigned int *offs, uint4 *vout, int n) {
+__global__ void gexscan(const uint4 *vin, unsigned int *offs, uint4 *vout, int n) {
 
     const int wid = threadIdx.x/32;
     const int lid = threadIdx.x%32;
@@ -185,22 +195,3 @@ __global__ void gexscan(uint4 *vin, unsigned int *offs, uint4 *vout, int n) {
     vout[i] = val[i];
     return;
 }
-
-void scan(unsigned char *input, int size, uint *output)
-{
-    enum { THREADS = 128 } ;
-
-    static uint * tmp = NULL;
-
-    if (tmp == NULL)
-    cudaMalloc(&tmp, sizeof(uint) * (64 * 64 * 64 / THREADS));
-
-    int nblocks = ((size / 16) + THREADS - 1 ) / THREADS;
-
-    breduce< THREADS / 32 ><<<nblocks, THREADS>>>((uint4 *)input, tmp, size / 16);
-
-    bexscan< THREADS ><<<1, THREADS, nblocks*sizeof(uint)>>>(tmp, nblocks);
-
-    gexscan< THREADS / 32 ><<<nblocks, THREADS>>>((uint4 *)input, tmp, (uint4 *)output, size / 16);
-}
-}}}

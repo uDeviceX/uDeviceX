@@ -49,6 +49,7 @@ namespace s /* rigid bodies */
 {
 rig::Quants q;
 rig::TicketBB t;
+scan::Work ws; /* work for scan */
 Force *ff, *ff_hst;
 }
 

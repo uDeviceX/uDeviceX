@@ -58,6 +58,7 @@ void ini() {
         mrescue::ini(MAX_PART_NUM);
         rig::alloc_quants(&s::q);
         rig::alloc_ticket(&s::t);
+        scan::alloc_work(XS*YS*ZS, /**/ &s::ws);
         s::ff_hst = new Force[MAX_PART_NUM];
         CC(cudaMalloc(&s::ff, MAX_PART_NUM * sizeof(Force)));
     }

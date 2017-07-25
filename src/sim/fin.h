@@ -50,6 +50,7 @@ void fin() {
     if (solids) {
         rig::free_quants(&s::q);
         rig::free_ticket(&s::t);
+        scan::free_work(/**/ &s::ws);
         CC(cudaFree(s::ff)); delete[] s::ff_hst;
     }
 

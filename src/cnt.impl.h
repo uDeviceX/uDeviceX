@@ -2,8 +2,7 @@ namespace cnt {
 void ini() {
     cellsstart = new DeviceBuffer<int>(k_cnt::NCELLS + 16);
     cellscount = new DeviceBuffer<int>(k_cnt::NCELLS + 16);
-    compressed_cellscount = new DeviceBuffer<unsigned char>(k_cnt::NCELLS + 16);
-
+    scan::alloc_work(k_cnt::NCELLS + 16, &ws);
     cellsentries = new DeviceBuffer<int>;
     subindices = new DeviceBuffer<uchar4>;
     local_trunk = new rnd::KISS;
@@ -31,12 +30,7 @@ void build_cells(std::vector<ParticlesWrap> wsolutes) {
         ctr += it.n;
     }
 
-    k_common::compress_counts<<<k_cnf(compressed_cellscount->S)>>>
-        (compressed_cellscount->S, (int4 *)cellscount->D,
-         (uchar4 *)compressed_cellscount->D);
-
-    l::scan::d::scan(compressed_cellscount->D, compressed_cellscount->S,
-		     (uint *)cellsstart->D);
+    scan::scan(cellscount->D, k_cnt::NCELLS + 16, /**/ cellsstart->D, /*w*/ &ws);
 
     ctr = 0;
     for (int i = 0; i < (int) wsolutes.size(); ++i) {
@@ -103,7 +97,7 @@ void halo(ParticlesWrap halos[26]) {
 
 void fin() {
     delete subindices;
-    delete compressed_cellscount;
+    scan::free_work(&ws);
     delete cellsentries;
     delete cellsstart;
     delete  cellscount;

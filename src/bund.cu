@@ -8,7 +8,7 @@
 #include "l/clist.h"
 #include "l/m.h"
 #include "l/off.h"
-#include "l/scan.h"
+#include "scan/int.h"
 
 #include <limits> /* for rnd */
 #include <stdint.h>
