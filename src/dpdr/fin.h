@@ -7,6 +7,6 @@ void fin_tcom(const bool first, /**/ MPI_Comm *cart, Reqs *sreq, Reqs *rreq) {
     MC(l::m::Comm_free(cart));
 }
 
-void fin_trnd(/**/ l::rnd::d::KISS* interrank_trunks[]) {
+void fin_trnd(/**/ rnd::KISS* interrank_trunks[]) {
     for (int i = 0; i < 26; ++i) delete interrank_trunks[i];
 }

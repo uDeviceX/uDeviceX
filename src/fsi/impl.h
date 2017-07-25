@@ -1,9 +1,9 @@
 namespace fsi {
 void bind_solvent(SolventWrap wrap) {*wsolvent = wrap;}
 void ini() {
-    local_trunk = new l::rnd::d::KISS;
+    local_trunk = new rnd::KISS;
     wsolvent    = new SolventWrap;
-    *local_trunk = l::rnd::d::KISS(1908 - m::rank, 1409 + m::rank, 290, 12968);
+    *local_trunk = rnd::KISS(1908 - m::rank, 1409 + m::rank, 290, 12968);
 }
 
 void fin() {

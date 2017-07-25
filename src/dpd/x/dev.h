@@ -82,7 +82,7 @@ __global__ void flocal(const Texo<float2> texpp, const Texo<int> texstart, int n
 
         const Part ps = tex2Part(texpp, spid); /* source particle */
 
-        float rnd = l::rnd::d::mean0var1ii(seed, pid, spid);
+        float rnd = rnd::mean0var1ii(seed, pid, spid);
         
         float3 strength = forces::dpd(SOLVENT_TYPE, SOLVENT_TYPE,
                                       mf3(p.r[X], p.r[Y], p.r[Z]), mf3(ps.r[X], ps.r[Y], ps.r[Z]),

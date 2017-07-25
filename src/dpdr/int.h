@@ -13,7 +13,7 @@ struct TicketCom {
 };
 
 struct TicketRnd {
-    l::rnd::d::KISS *interrank_trunks[26];
+    rnd::KISS *interrank_trunks[26];
     bool interrank_masks[26];
 };
 

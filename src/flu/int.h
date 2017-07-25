@@ -16,7 +16,7 @@ struct TicketZ { /* zip */
 };
 
 struct TicketRND { /* random */
-    l::rnd::d::KISS *rnd;
+    rnd::KISS *rnd;
 };
 
 void alloc_quants(Quants *q) {
@@ -63,7 +63,7 @@ void get_ticketZ(Quants q, /**/ TicketZ *t) {
 }
 
 void get_ticketRND(/**/ TicketRND *t) {
-    t->rnd = new l::rnd::d::KISS(0, 0, 0, 0);
+    t->rnd = new rnd::KISS(0, 0, 0, 0);
 }
 
 void free_ticketRND(/**/ TicketRND *t) {
