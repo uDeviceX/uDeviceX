@@ -1,5 +1,5 @@
 namespace k_rex {
-__global__ void pack(const float2 *particles, const int nparticles,
+__global__ void pack(const float2 *pp, const int nparticles,
                      int nbuffer, int soluteid, /**/ float2 *buffer) {
     if (failed) return;
 
@@ -32,9 +32,9 @@ __global__ void pack(const float2 *particles, const int nparticles,
 
             int entry2 = 3 * pid;
 
-            s0 = __ldg(particles + entry2);
-            s1 = __ldg(particles + entry2 + 1);
-            s2 = __ldg(particles + entry2 + 2);
+            s0 = __ldg(pp + entry2);
+            s1 = __ldg(pp + entry2 + 1);
+            s2 = __ldg(pp + entry2 + 2);
 
             s0.x -= ((code + 2) % 3 - 1) * XS;
             s0.y -= ((code / 3 + 2) % 3 - 1) * YS;
