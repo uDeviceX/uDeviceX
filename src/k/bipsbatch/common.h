@@ -122,26 +122,17 @@ static __device__ void force3(const SFrag sfrag, const Frag frag, const Rnd rnd,
     force2(frag, rnd, p, f);
 }
 
-static __device__ unsigned int get_fid(const unsigned int a[], const unsigned int i) {
-    /* where is `i' in sorted a[27]? */
-    unsigned int k1, k3, k9;
-    k9 = 9 * ((i >= a[9])           + (i >= a[18]));
-    k3 = 3 * ((i >= a[k9 + 3])      + (i >= a[k9 + 6]));
-    k1 =      (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
-    return k9 + k3 + k1;
-}
-
 __global__ void force(/**/ float *ff) {
     Frag frag;
     Rnd  rnd;
     SFrag sfrag;
-    int gid;
+    unsigned int gid;
     uint h; /* halo id */
     uint i; /* particle id */
 
     gid = (threadIdx.x + blockDim.x * blockIdx.x) >> 1;
     if (gid >= start[26]) return;
-    h = get_fid(start, gid);
+    h = k_common::fid(start, gid);
     i = gid - start[h];
     sfrag = ssfrag[h];
     if (i >= sfrag.n) return;

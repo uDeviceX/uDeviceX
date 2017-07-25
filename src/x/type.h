@@ -13,4 +13,9 @@ struct TicketTags {
     int btc, btp1, btp2, btf;
 };
 
+struct TicketPack {
+    DeviceBuffer<int> *packscount, *packsstart, *packsoffset, *packstotalstart;
+    PinnedHostBuffer1<int> *host_packstotalstart, *host_packstotalcount;
+};
+
 }

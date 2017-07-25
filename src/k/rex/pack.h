@@ -7,16 +7,7 @@ __global__ void pack(const float2 *pp, /**/ float2 *buffer) {
 
     for (int localbase = 32 * (warpid + 4 * blockIdx.x); localbase < npack_padded;
          localbase += gridDim.x * blockDim.x) {
-        int key9 = 9 * ((int)(localbase >= cpaddedstarts[9]) +
-                        (int)(localbase >= cpaddedstarts[18]));
-
-        int key3 = 3 * ((int)(localbase >= cpaddedstarts[key9 + 3]) +
-                        (int)(localbase >= cpaddedstarts[key9 + 6]));
-
-        int key1 = (int)(localbase >= cpaddedstarts[key9 + key3 + 1]) +
-            (int)(localbase >= cpaddedstarts[key9 + key3 + 2]);
-
-        int code = key9 + key3 + key1;
+        int code = k_common::fid(cpaddedstarts, localbase);
         int packbase = localbase - cpaddedstarts[code];
 
         int npack = min(32, ccounts[code] - packbase);
