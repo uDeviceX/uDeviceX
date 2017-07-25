@@ -45,14 +45,9 @@ void _pack_attempt(std::vector<ParticlesWrap> w) {
             CC(cudaMemcpyToSymbolAsync(k_rex::cpaddedstarts,
                                        packsstart->D + 27 * i, sizeof(int) * 27, 0,
                                        D2D));
-
-            k_rex::pack<<<14 * 16, 128>>>
-                ((float2 *)it.p, it.n, packbuf->C, i, /**/ (float2 *)packbuf->D);
+            k_rex::pack<<<14 * 16, 128>>>((float2 *)it.p, packbuf->C, i, /**/ (float2 *)packbuf->D);
         }
     }
-
-
-
 }
 
 void pack_p(int n) {
