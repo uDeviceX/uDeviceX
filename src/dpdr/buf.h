@@ -54,12 +54,12 @@ static void free_Sbuf_frag(const int i, /**/ Sbufs *b) {
 
 void alloc_Sbufs(const int26 estimates, const int26 nfragcells, /**/ Sbufs *b) {
     for (int i = 0; i < 26; ++i)
-    alloc_Sbuf_frag(i, estimates.d[i], nfragcells.d[i], /**/ b);
+        alloc_Sbuf_frag(i, estimates.d[i], nfragcells.d[i], /**/ b);
 }
 
 void free_Sbufs(/**/ Sbufs *b) {
     for (int i = 0; i < 26; ++i)
-    free_Sbuf_frag(i, /**/ b);
+        free_Sbuf_frag(i, /**/ b);
 }
 
 static void alloc_Rbuf_frag(const int i, const int est, const int nfragcells, /**/ Rbufs *b) {
@@ -72,12 +72,12 @@ static void free_Rbuf_frag(const int i, /**/ Rbufs *b) {
 
 void alloc_Rbufs(const int26 estimates, const int26 nfragcells, /**/ Rbufs *b) {
     for (int i = 0; i < 26; ++i)
-    alloc_Rbuf_frag(i, estimates.d[i], nfragcells.d[i], /**/ b);
+        alloc_Rbuf_frag(i, estimates.d[i], nfragcells.d[i], /**/ b);
 }
 
 void free_Rbufs(/**/ Rbufs *b) {
     for (int i = 0; i < 26; ++i)
-    free_Rbuf_frag(i, /**/ b);
+        free_Rbuf_frag(i, /**/ b);
 }
 
 struct Ibuf {
@@ -104,20 +104,20 @@ static void free_Ibuf_frag(const int i, /**/ Ibuf *b) {
 
 void alloc_SIbuf(const int26 estimates, /**/ SIbuf *b) {
     for (int i = 0; i < 26; ++i)
-    alloc_Ibuf_frag(i, estimates.d[i], /**/ b);
+        alloc_Ibuf_frag(i, estimates.d[i], /**/ b);
 }
 
 void free_SIbuf(/**/ SIbuf *b) {
     for (int i = 0; i < 26; ++i)
-    free_Ibuf_frag(i, /**/ b);
+        free_Ibuf_frag(i, /**/ b);
 }
 
 void alloc_RIbuf(const int26 estimates, /**/ RIbuf *b) {
     for (int i = 0; i < 26; ++i)
-    alloc_Ibuf_frag(i, estimates.d[i], /**/ b);
+        alloc_Ibuf_frag(i, estimates.d[i], /**/ b);
 }
 
 void free_RIbuf(/**/ RIbuf *b) {
     for (int i = 0; i < 26; ++i)
-    free_Ibuf_frag(i, /**/ b);
+        free_Ibuf_frag(i, /**/ b);
 }
