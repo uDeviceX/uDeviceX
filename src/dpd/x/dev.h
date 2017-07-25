@@ -80,12 +80,15 @@ __global__ void flocal(const Texo<float2> texpp, const Texo<int> texstart, int n
         const Part ps = tex2Part(texpp, spid); /* source particle */
 
         float rnd = rnd::mean0var1ii(seed, pid, spid);
-        
-        float3 strength = forces::dpd(SOLVENT_TYPE, SOLVENT_TYPE,
-                                      mf3(p.r[X], p.r[Y], p.r[Z]), mf3(ps.r[X], ps.r[Y], ps.r[Z]),
-                                      mf3(p.v[X], p.v[Y], p.v[Z]), mf3(ps.v[X], ps.v[Y], ps.v[Z]), rnd);
 
-        xforce += strength.x; yforce += strength.y; zforce += strength.z;
+        float fx, fy, fz;
+        forces::dpd0(SOLVENT_TYPE, SOLVENT_TYPE,
+                     p.r[X], p.r[Y], p.r[Z],
+                     ps.r[X], ps.r[Y], ps.r[Z],
+                     p.v[X], p.v[Y], p.v[Z],
+                     ps.v[X], ps.v[Y], ps.v[Z], rnd, &fx, &fy, &fz);
+        
+        xforce += fx; yforce += fy; zforce += fz;
     }
     atomicAdd(ff + 3 * pid + 0, xforce);
     atomicAdd(ff + 3 * pid + 1, yforce);
