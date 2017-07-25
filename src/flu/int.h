@@ -1,7 +1,7 @@
 struct Quants {
     Particle *pp, *pp0; /* particles on device  */
     int       n;        /* particle number      */
-    Clist *cells;       /* cell lists           */
+    clist::Clist *cells;       /* cell lists           */
     Particle *pp_hst;   /* particles on host    */
 }; 
 
@@ -22,7 +22,7 @@ struct TicketRND { /* random */
 void alloc_quants(Quants *q) {
     q->n = 0;
     mpDeviceMalloc(&q->pp); mpDeviceMalloc(&q->pp0);
-    q->cells = new Clist(XS, YS, ZS);
+    q->cells = new clist::Clist(XS, YS, ZS);
     q->pp_hst = new Particle[MAX_PART_NUM];
 }
 

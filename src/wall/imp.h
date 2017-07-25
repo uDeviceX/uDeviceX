@@ -84,7 +84,7 @@ static void freeze(TexSDF_t texsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle 
     free(hst);
 }
 
-void build_cells(const int n, float4 *pp4, Clist *cells) {
+void build_cells(const int n, float4 *pp4, clist::Clist *cells) {
     if (n == 0) return;
 
     Particle *pp;
@@ -125,7 +125,7 @@ void strt_quants(int *w_n, float4 **w_pp) {
     CC(cudaFree(pptmp));
 }
 
-void gen_ticket(const int w_n, float4 *w_pp, Clist *cells, Texo<int> *texstart, Texo<float4> *texpp) {
+void gen_ticket(const int w_n, float4 *w_pp, clist::Clist *cells, Texo<int> *texstart, Texo<float4> *texpp) {
 
     build_cells(w_n, /**/ w_pp, cells);
     

@@ -5,7 +5,7 @@ struct Quants {
 
 struct Ticket {
     rnd::KISS *rnd;
-    Clist *cells;
+    clist::Clist *cells;
     Texo<int> texstart;
     Texo<float4> texpp;
 };
@@ -17,7 +17,7 @@ void alloc_quants(Quants *q) {
 
 void alloc_ticket(Ticket *t) {
     t->rnd   = new rnd::KISS;
-    t->cells = new Clist(XS + 2 * XWM, YS + 2 * YWM, ZS + 2 * ZWM);
+    t->cells = new clist::Clist(XS + 2 * XWM, YS + 2 * YWM, ZS + 2 * ZWM);
 }
 
 void free_quants(Quants *q) {
