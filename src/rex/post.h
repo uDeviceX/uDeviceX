@@ -5,7 +5,6 @@ bool post_pre(MPI_Comm cart, int dranks[26], int tags[26], x::TicketTags t) {
     bool packingfailed;
     int i;
 
-    dSync();
     if (cnt == 0) _postrecvC(cart, dranks, tags, t);
     else post_wait();
 

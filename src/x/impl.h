@@ -14,6 +14,7 @@ void fin() {
 
 static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<ParticlesWrap> w) {
     bool packingfailed;
+    dSync();
     packingfailed = rex::post_pre(tc.cart, tc.ranks, tr.tags, t);
     if (packingfailed) {
         rex::post_resize();
