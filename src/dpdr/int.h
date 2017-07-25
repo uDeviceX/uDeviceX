@@ -128,22 +128,24 @@ void copy_cells(/**/ TicketShalo *t) {
 
 void pack(const Particle *pp, /**/ TicketShalo *t) {
     sub::pack(t->fragstarts, t->ncells, pp, t->b.str, t->b.cnt, t->b.cum, t->estimate, /**/ t->b.ii, t->b.pp, t->npdev);
+    sub::copy_pp(t->nphst, t->b.pp, /**/ t->b.pphst);
 }
 
 void pack_ii(const int *ii, const TicketShalo *t, /**/ TicketSIhalo *ti) {
     sub::pack_ii(t->fragstarts, t->ncells, ii, t->b.str, t->b.cnt, t->b.cum, t->estimate, /**/ ti->b.ii);
+    sub::copy_ii(t->nphst, ti->b.ii, /**/ ti->b.iihst);
 }
 
 void post_send(TicketCom *tc, TicketShalo *ts) {
     if (!tc->first) sub::wait_Reqs(&tc->sreq);
-    sub::copy_pp(ts->nphst, ts->b.pp, /**/ ts->b.pphst);
+    dSync(); /* was CC(cudaStreamSynchronize(downloadstream)); */
     sub::post_send(tc->cart, tc->dstranks, ts->nphst, ts->nc, ts->b.cumhst, ts->b.pphst,
               tc->btcs, tc->btc, tc->btp, /**/ &tc->sreq);
 }
 
 void post_send_ii(const TicketCom *tc, const TicketShalo *ts, /**/ TicketICom *tic, TicketSIhalo *tsi) {
     if (!tic->first) sub::wait_req(tic->sreq);
-    sub::copy_ii(ts->nphst, tsi->b.ii, /**/ tsi->b.iihst);
+    dSync(); /* was CC(cudaStreamSynchronize(downloadstream)); */
     sub::post_send_ii(tc->cart, tc->dstranks, ts->nphst, tsi->b.iihst, tic->bt, /**/ tic->sreq);
 
 }
