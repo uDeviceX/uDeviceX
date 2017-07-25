@@ -1,4 +1,5 @@
 namespace x {
-TicketCom tc;
-TicketR   tr;
+TicketCom  tc;
+TicketR    tr;
+TicketTags tt;
 }
