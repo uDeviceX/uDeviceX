@@ -19,7 +19,7 @@ void _pack_attempt(std::vector<ParticlesWrap> w) {
                                        sizeof(int) * 26, 0, D2D));
             k_rex::scatter<<<k_cnf(it.n)>>>((float2 *)it.p, it.n, /**/ packscount->D + i * 26);
         }
-        k_rex::scan<<<1, 32>>>(packscount->D + i * 26, packsoffset->D + 26 * i,
+        k_rex::scanA<<<1, 32>>>(packscount->D + i * 26, packsoffset->D + 26 * i,
                                /**/ packsoffset->D + 26 * (i + 1), packsstart->D + i * 27);
     }
 

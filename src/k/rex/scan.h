@@ -15,7 +15,7 @@ __global__ void scanB(const int *count, /**/ int *start) {
     }
 }
 
-__global__ void scan(const int *counts, const int *oldtotalcounts,
+__global__ void scanB(const int *counts, const int *oldtotalcounts,
                      /**/ int *totalcounts, int *paddedstarts) {
     int tid, mycount, newcount, myscan, L;
 
