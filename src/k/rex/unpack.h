@@ -15,7 +15,7 @@ __global__ void unpack(/**/ float *forces) {
 
         int component = gid % 3;
 
-        int entry = g::coffsets[code] + lpid;
+        int entry = g::offsets[code] + lpid;
         float myval = __ldg(g::recvbags[code] + component + 3 * entry);
         int dpid = __ldg(g::scattered_indices[code] + entry);
 

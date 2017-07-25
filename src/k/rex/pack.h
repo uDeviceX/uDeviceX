@@ -17,7 +17,7 @@ __global__ void pack(const float2 *pp, /**/ float2 *buffer) {
         float2 s0, s1, s2;
 
         if (lane < npack) {
-            int entry = g::coffsets[code] + packbase + lane;
+            int entry = g::offsets[code] + packbase + lane;
             int pid = __ldg(g::scattered_indices[code] + entry);
 
             int entry2 = 3 * pid;
@@ -30,7 +30,7 @@ __global__ void pack(const float2 *pp, /**/ float2 *buffer) {
             s0.y -= ((code / 3 + 2) % 3 - 1) * YS;
             s1.x -= ((code / 9 + 2) % 3 - 1) * ZS;
         }
-        k_write::AOS6f(buffer + 3 * (g::cbases[code] + g::coffsets[code] + packbase), npack,
+        k_write::AOS6f(buffer + 3 * (g::cbases[code] + g::offsets[code] + packbase), npack,
                        s0, s1, s2);
     }
 }
