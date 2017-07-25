@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "dpd/float.h"
-#include "l/rnd.h"
+#include "rnd.h"
 #include "dpd/local.h"
 #include "common.h"
 #include "common.cuda.h"
@@ -49,7 +49,7 @@ __device__ float3 _dpd_interaction(int dpid, float4 rdest, float4 udest, float4 
   float3 r1, r2, v1, v2;
   float3 f;
   
-  rnd = l::rnd::d::mean0var1ii( info.seed, xmin( spid, dpid ), xmax( spid, dpid ) );
+  rnd = rnd::mean0var1ii( info.seed, xmin( spid, dpid ), xmax( spid, dpid ) );
   f2tof3(rdest, &r1); f2tof3(rsrc, &r2);
   f2tof3(udest, &v1); f2tof3(usrc, &v2);
   

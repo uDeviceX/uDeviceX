@@ -4,15 +4,15 @@
 #include <vector>
 #include <mpi.h>
 
-#include <limits> /* for rnd */
-#include <stdint.h>
 
 #include "l/clist.h"
 #include "l/m.h"
 #include "l/off.h"
 #include "l/scan.h"
 
-#include "l/rnd.h"
+#include <limits> /* for rnd */
+#include <stdint.h>
+#include "rnd.h"
 
 #include <conf.h>
 #include "conf.common.h"

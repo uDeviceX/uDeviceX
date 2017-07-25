@@ -12,10 +12,10 @@ NVCCFLAGS += -std=c++11
 LIBS      += -lcudart
 
 OBJ0 = $B/bund.o  $B/mesh/collision.o $B/mesh/dist.o $B/mesh/bbox.o $B/diag.o $B/common.mpi.o \
-	$B/local.o $B/field.o $B/glb.o $B/io.o  $B/m.o $B/main.o \
+	$B/dpd/local.o $B/field.o $B/glb.o $B/io.o  $B/m.o $B/main.o \
 	$B/mbounce.o $B/mesh/props.o $B/mrescue.o $B/minmax.o \
 	$B/solid.o $B/tcells.o $B/restart.o $B/dump.o
-OBJL = $B/l/clist.o $B/l/linal.o $B/l/m.o $B/l/off.o $B/l/ply.o $B/l/scan.o $B/l/rnd.o
+OBJL = $B/l/clist.o $B/l/linal.o $B/l/m.o $B/l/off.o $B/l/ply.o $B/l/scan.o
 OBJS = $(OBJ0) $(OBJL)
 
 ifeq ($(h5),0)
@@ -34,18 +34,15 @@ C=$(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT)
 D=mkdir `dirname $@` 2>/dev/null;     $C
 
 # dev
-$B/%.o:        $S/%.cu;            $C     $< -c -o $@
-$B/l/%.o:      $S/l/%.cu;          $D     $< -c -o $@
-$B/mesh/%.o:   $S/mesh/%.cu;       $D     $< -c -o $@
+$B/%.o:           $S/%.cu;            $C     $< -c -o $@
+$B/l/%.o:         $S/l/%.cu;          $D     $< -c -o $@
+$B/mesh/%.o:      $S/mesh/%.cu;       $D     $< -c -o $@
+$B/dpd/local.o:   $S/dpd/local.cu;    $D     $< -c -o $@
 
 # dev and hst
-$B/force.o: $S/force.cu;     $C -dc $< -c -o $@
 $B/bund.o:  $S/bund.cu;      $C -dc $< -c -o $@
 $B/glb.o:   $S/glb.cu;       $C -dc $< -c -o $@
-$B/local.o: $S/dpd/local.cu; $C -dc $< -c -o $@
 
-# dev and hst
-$B/l/rnd.o: $S/l/rnd.cu;     $D -dc $< -c -o $@
 
 clean:; -rm -f $B/udx $(OBJS) $B/gpuCode.o
 

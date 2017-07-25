@@ -14,7 +14,7 @@ void ini_tcom(MPI_Comm cart, /**/ MPI_Comm *newcart, int dstranks[], int recv_ta
     }
 }
 
-static void ini_one_trunk(const int i, const int dstrank, /**/ l::rnd::d::KISS* interrank_trunks[], bool interrank_masks[]) {
+static void ini_one_trunk(const int i, const int dstrank, /**/ rnd::KISS* interrank_trunks[], bool interrank_masks[]) {
     int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
 
     int coordsneighbor[3];
@@ -46,7 +46,7 @@ static void ini_one_trunk(const int i, const int dstrank, /**/ l::rnd::d::KISS* 
 
     int interrank_seed = interrank_seed_base + interrank_seed_offset;
 
-    interrank_trunks[i] = new l::rnd::d::KISS(390 + interrank_seed, interrank_seed + 615, 12309, 23094);
+    interrank_trunks[i] = new rnd::KISS(390 + interrank_seed, interrank_seed + 615, 12309, 23094);
     
     if (dstrank != m::rank)
     interrank_masks[i] = min(dstrank, m::rank) == m::rank;
@@ -57,7 +57,7 @@ static void ini_one_trunk(const int i, const int dstrank, /**/ l::rnd::d::KISS* 
     }
 }
 
-void ini_trnd(const int dstranks[], /**/ l::rnd::d::KISS* interrank_trunks[], bool interrank_masks[]) {
+void ini_trnd(const int dstranks[], /**/ rnd::KISS* interrank_trunks[], bool interrank_masks[]) {
     for (int i = 0; i < 26; ++i)
     ini_one_trunk(i, dstranks[i], /**/ interrank_trunks, interrank_masks);
 }

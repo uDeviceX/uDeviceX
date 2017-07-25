@@ -22,7 +22,7 @@ static __device__ void pair(const Pa l, const Pa r, float rnd, /**/
 }
 
 static __device__ float random(uint lid, uint rid, float seed) {
-    return l::rnd::d::mean0var1uu(seed, lid, rid);
+    return rnd::mean0var1uu(seed, lid, rid);
 }
 
 static __device__ void tex2rv(int i,
