@@ -54,9 +54,6 @@ public:
 int iterationcount;
 int recv_counts[26], send_counts[26];
 
-/* basetags */
-int btc, btp1, btp2, btf;
-
 DeviceBuffer<int> *packscount, *packsstart, *packsoffset, *packstotalstart;
 PinnedHostBuffer<int> *host_packstotalstart, *host_packstotalcount;
 DeviceBuffer<Particle> *packbuf;

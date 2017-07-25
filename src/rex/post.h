@@ -1,10 +1,10 @@
 namespace rex {
-bool post_pre(MPI_Comm cart, int dranks[26], int tags[26]) {
+bool post_pre(MPI_Comm cart, int dranks[26], int tags[26], x::TicketTags t) {
     bool packingfailed;
     int i;
 
     dSync();
-    if (iterationcount == 0) _postrecvC(cart, dranks, tags);
+    if (iterationcount == 0) _postrecvC(cart, dranks, tags, t);
     else _wait(reqsendC);
 
     for (i = 0; i < 26; ++i) send_counts[i] = host_packstotalcount->D[i];
@@ -29,15 +29,15 @@ void post_resize() {
                                sizeof(newindices), 0, H2D));
 }
 
-void post_p(MPI_Comm cart, int dranks[26], int tags[26]) {
+void post_p(MPI_Comm cart, int dranks[26], int tags[26], x::TicketTags t) {
     // consolidate the packing
     {
         for (int i = 0; i < 26; ++i) local[i]->resize(send_counts[i]);
 
-        _postrecvA(cart, dranks, tags);
+        _postrecvA(cart, dranks, tags, t);
 
         if (iterationcount == 0) {
-            _postrecvP(cart, dranks, tags);
+            _postrecvP(cart, dranks, tags, t);
         } else
             _wait(reqsendP);
 
@@ -55,7 +55,7 @@ void post_p(MPI_Comm cart, int dranks[26], int tags[26]) {
 
         for (int i = 0; i < 26; ++i)
             MC(l::m::Isend(send_counts + i, 1, MPI_INTEGER, dranks[i],
-                           btc + i, cart, &reqsendC[i]));
+                           t.btc + i, cart, &reqsendC[i]));
 
         for (int i = 0; i < 26; ++i) {
             int start = host_packstotalstart->D[i];
@@ -64,14 +64,14 @@ void post_p(MPI_Comm cart, int dranks[26], int tags[26]) {
 
             MPI_Request reqP;
             MC(l::m::Isend(host_packbuf->D + start, expected * 6, MPI_FLOAT,
-                           dranks[i], btp1 + i, cart, &reqP));
+                           dranks[i], t.btp1 + i, cart, &reqP));
             reqsendP.push_back(reqP);
 
             if (count > expected) {
                 MPI_Request reqP2;
                 MC(l::m::Isend(host_packbuf->D + start + expected,
                                (count - expected) * 6, MPI_FLOAT, dranks[i],
-                               btp2 + i, cart, &reqP2));
+                               t.btp2 + i, cart, &reqP2));
 
                 reqsendP.push_back(reqP2);
             }

@@ -11,26 +11,26 @@ void fin() {
     fin_ticketcom(tc);
 }
 
-static void post(TicketCom tc, TicketR tr, std::vector<ParticlesWrap> w) {
+static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<ParticlesWrap> w) {
     bool packingfailed;
-    packingfailed = rex::post_pre(tc.cart, tc.ranks, tr.tags);
+    packingfailed = rex::post_pre(tc.cart, tc.ranks, tr.tags, t);
     if (packingfailed) {
         rex::post_resize();
         rex::_adjust_packbuffers();
         rex::_pack_attempt(w);
         dSync();
     }
-    rex::post_p(tc.cart, tc.ranks, tr.tags);
+    rex::post_p(tc.cart, tc.ranks, tr.tags, tt);
 }
 
 static void rex0(std::vector<ParticlesWrap> w, int nw) {
     rex::pack_p(nw);
     rex::_pack_attempt(w);
-    post(tc, tr, w);
-    rex::recv_p(tc.cart, tc.ranks, tr.tags);
+    post(tc, tr, tt, w);
+    rex::recv_p(tc.cart, tc.ranks, tr.tags, tt);
     rex::halo(); /* fsi::halo(); */
-    rex::_postrecvP(tc.cart, tc.ranks, tr.tags);
-    rex::post_f(tc.cart, tc.ranks);
+    rex::_postrecvP(tc.cart, tc.ranks, tr.tags, tt);
+    rex::post_f(tc.cart, tc.ranks, tt);
     rex::recv_f(w);
 }
 

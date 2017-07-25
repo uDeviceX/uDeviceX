@@ -21,11 +21,6 @@ void ini(/*io*/ basetags::TagGen *tg) {
 
     for (int i = 0; i < SE_HALO_SIZE; i++) local[i] = new LocalHalo;
     for (int i = 0; i < SE_HALO_SIZE; i++) remote[i] = new RemoteHalo;
-
-    btc  = get_tag(tg);
-    btp1 = get_tag(tg);
-    btp2 = get_tag(tg);
-    btf  = get_tag(tg);
         
     for (int i = 0; i < 26; ++i) {
         int estimate = 10;
