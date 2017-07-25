@@ -1,12 +1,12 @@
-__global__ void compress_counts(const int nentries, const int4 *const counts, uchar4 *const output) {
+__global__ void compress(const int nentries, const int4 *const in, uchar4 *const out) {
     const int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
     if (4 * gid >= nentries)
     return;
 
-    const int4 entry = counts[gid];
+    const int4 entry = in[gid];
 
-    output[gid] = make_uchar4(entry.x, entry.y, entry.z, entry.w);
+    out[gid] = make_uchar4(entry.x, entry.y, entry.z, entry.w);
 }
 
 template <int NWARP>
