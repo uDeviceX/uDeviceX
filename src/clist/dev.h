@@ -1,10 +1,10 @@
 enum {X, Y, Z};
 
-__device__ int encode(int ix, int iy, int iz, int3 ncells) {
+static __device__ int encode(int ix, int iy, int iz, int3 ncells) {
   return ix + ncells.x * (iy + iz * ncells.y);
 }
 
-__device__ int get_cid(const float *r, int3 ncells, int3 domainstart) {
+static __device__ int get_cid(const float *r, int3 ncells, int3 domainstart) {
     int ix = (int)floor(r[X] - domainstart.x);
     int iy = (int)floor(r[Y] - domainstart.y);
     int iz = (int)floor(r[Z] - domainstart.z);
