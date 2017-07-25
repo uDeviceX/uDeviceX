@@ -10,7 +10,7 @@ __global__ static void compress_counts(const int nentries, const int4 *const cou
 }
 
 template <int NWARP>
-__global__ void breduce(uint4 *vin, unsigned int *vout, int n) {
+__global__ void breduce(const uint4 *vin, unsigned int *vout, int n) {
 
     const int wid = threadIdx.x/32;
     const int lid = threadIdx.x%32;
@@ -97,7 +97,7 @@ __global__ void bexscan(unsigned int *v, int n) {
 }
 
 template <int NWARP>
-__global__ void gexscan(uint4 *vin, unsigned int *offs, uint4 *vout, int n) {
+__global__ void gexscan(const uint4 *vin, unsigned int *offs, uint4 *vout, int n) {
 
     const int wid = threadIdx.x/32;
     const int lid = threadIdx.x%32;
