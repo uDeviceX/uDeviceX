@@ -160,6 +160,7 @@ namespace dev {
 #include "x/ticketcom.h"
 #include "x/ticketr.h"
 #include "x/tickettags.h"
+#include "x/ticketpack.h"
 #include "x/impl.h"
 
 #include "bipsbatch.type.h"
