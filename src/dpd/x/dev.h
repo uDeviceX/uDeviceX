@@ -54,7 +54,6 @@ __global__ void flocal(const Texo<float2> texpp, const Texo<int> texstart, int n
     int cid1 = cid0 + XS;
     start1 = start_fetch(cid1);
     count1 = start_fetch(cid1 + dx) - start1;
-    if (cid1 < 0 || cid1 > XS*YS*ZS) printf("cid1 = %d\n", cid1);
         
     if (dy > 2) {
         int cid2 = cid0 + XS * 2;
@@ -77,8 +76,6 @@ __global__ void flocal(const Texo<float2> texpp, const Texo<int> texstart, int n
         int spid = i + (m2 ? start2 : (m1 ? start1 : start0));
 
         if (spid == pid) continue;
-
-        assert(spid >= 0); assert(spid < n);
 
         const Part ps = tex2Part(texpp, spid); /* source particle */
 

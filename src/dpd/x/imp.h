@@ -8,6 +8,5 @@ void flocal(Particle *pp, int *sstart, const int n, const float seed, /**/ Force
         dev::flocal <<< k_cnf(3*n)>>> (texpp, texstart, n, seed, /**/ (float *) ff);
         texpp.destroy();
         texstart.destroy();
-        //printf("bye\n");
     }
 }
