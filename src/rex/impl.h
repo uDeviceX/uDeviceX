@@ -118,7 +118,7 @@ void recv_f(std::vector<ParticlesWrap> w) {
             CC(cudaMemcpyToSymbolAsync(k_rex::coffsets, packsoffset->D + 26 * i,
                                        sizeof(int) * 26, 0, D2D));
 
-            k_rex::unpack<<<16 * 14, 128>>>(it.n, /**/ (float *)it.f);
+            k_rex::unpack<<<16 * 14, 128>>>(/**/ (float *)it.f);
         }
 
     }

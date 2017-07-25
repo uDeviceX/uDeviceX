@@ -1,5 +1,5 @@
 namespace k_rex {
-__global__ void unpack(int nparticles, /**/ float *forces) {
+__global__ void unpack(/**/ float *forces) {
     int npack_padded = cpaddedstarts[26];
 
     for (int gid = threadIdx.x + blockDim.x * blockIdx.x; gid < 3 * npack_padded;
