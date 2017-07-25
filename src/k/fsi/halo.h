@@ -1,13 +1,4 @@
 namespace k_fsi {
-static __device__ unsigned int get_fid(const int a[], const int i) {
-    /* where is `i' in sorted a[27]? */
-    int k1, k3, k9;
-    k9 = 9 * ((i >= a[9])           + (i >= a[18]));
-    k3 = 3 * ((i >= a[k9 + 3])      + (i >= a[k9 + 6]));
-    k1 =      (i >= a[k9 + k3 + 1]) + (i >= a[k9 + k3 + 2]);
-    return k9 + k3 + k1;
-}
-
 static __device__ void warp2rv(const Particle *p, int n, int i, /**/
                                float  *x, float  *y, float  *z,
                                float *vx, float *vy, float *vz) {
@@ -63,7 +54,7 @@ __device__ void halo1(int n1, float seed, int lid, int base, int lane, /**/ floa
     Particle *pp;
     Force *ff;
     int nunpack, unpackbase;
-    fid = get_fid(packstarts_padded, base);
+    fid = k_common::get_fid(packstarts_padded, base);
     start = packstarts_padded[fid];
     count = packcount[fid];
     pp = packstates[fid];
