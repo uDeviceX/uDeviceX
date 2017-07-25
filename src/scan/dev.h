@@ -1,4 +1,4 @@
-__global__ static void compress_counts(const int nentries, const int4 *const counts, uchar4 *const output) {
+__global__ void compress_counts(const int nentries, const int4 *const counts, uchar4 *const output) {
     const int gid = threadIdx.x + blockDim.x * blockIdx.x;
 
     if (4 * gid >= nentries)
