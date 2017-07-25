@@ -16,10 +16,9 @@ static void scan(const int *counts, int n, /**/ int *starts) {
     scan::free_work(&ws);
 }
 
-void build(const Particle *pp, int n,
-           const int xcells, const int ycells, const int zcells,
-           const float xstart, const float ystart, const float zstart,
-           /**/ int *starts, int *counts) {
+void build(int n, int xcells, int ycells, int zcells,
+           float xstart, float ystart, float zstart,
+           /**/ Particle *pp, int *starts, int *counts) {
     if (!n) return;
 
     const int ncells = xcells * ycells * zcells;
@@ -45,7 +44,7 @@ void build(const Particle *pp, int n,
 
     dev::gather <<<k_cnf(n)>>> (pp, ids, n, /**/ ppd);
 
-    CC(cudaMemcpyAsync(pp, ppd, n * sizeof(Particle)));
+    CC(cudaMemcpyAsync(pp, ppd, n * sizeof(Particle), D2D));
     
     CC(cudaFree(ids));
     CC(cudaFree(ppd));
