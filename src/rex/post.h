@@ -1,11 +1,13 @@
 namespace rex {
+void post_wait() { _wait(reqsendC); }
+
 bool post_pre(MPI_Comm cart, int dranks[26], int tags[26], x::TicketTags t) {
     bool packingfailed;
     int i;
 
     dSync();
     if (cnt == 0) _postrecvC(cart, dranks, tags, t);
-    else _wait(reqsendC);
+    else post_wait();
 
     for (i = 0; i < 26; ++i) send_counts[i] = host_packstotalcount->D[i];
     packingfailed = false;
