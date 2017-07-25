@@ -4,12 +4,14 @@ void ini(/*io*/ basetags::TagGen *tg) {
     ini_ticketcom(&tc);
     ini_ticketr(&tr);
     ini_tickettags(tg, &tt);
+    ini_ticketpack(&tp);
     rex::ini();
 }
 
 void fin() {
     rex::fin();
     fin_ticketcom(tc);
+    fin_ticketpack(&tp);
 }
 
 static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<ParticlesWrap> w) {
