@@ -1,5 +1,5 @@
 namespace k_rex {
-__global__ void pack(const float2 *pp, int nbuffer, int soluteid, /**/ float2 *buffer) {
+__global__ void pack(const float2 *pp, int soluteid, /**/ float2 *buffer) {
     if (failed) return;
 
     int warpid = threadIdx.x >> 5;
