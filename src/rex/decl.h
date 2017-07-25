@@ -51,7 +51,6 @@ public:
     int capacity() const { return scattered_indices->C;}
 };
 
-int cnt;
 int recv_counts[26], send_counts[26];
 
 DeviceBuffer<int> *packscount, *packsstart, *packsoffset, *packstotalstart;

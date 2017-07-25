@@ -5,10 +5,6 @@ void post_waitP() { _wait(reqsendP); }
 bool post_pre(MPI_Comm cart, int dranks[26], int tags[26], x::TicketTags t) {
     bool packingfailed;
     int i;
-
-    if (cnt == 0) _postrecvC(cart, dranks, tags, t);
-    else post_waitC();
-
     for (i = 0; i < 26; ++i) send_counts[i] = host_packstotalcount->D[i];
     packingfailed = false;
     for (i = 0; i < 26; ++i)
@@ -38,11 +34,6 @@ void local_resize() {
 
 void post_p(MPI_Comm cart, int dranks[26], int tags[26], x::TicketTags t) {
     // consolidate the packing
-    if (cnt == 0)
-        _postrecvP(cart, dranks, tags, t);
-    else
-        post_waitP();
-    
     if (host_packstotalstart->D[26]) {
         CC(cudaMemcpyAsync(host_packbuf->D, packbuf->D,
                            sizeof(Particle) * host_packstotalstart->D[26],

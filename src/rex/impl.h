@@ -69,8 +69,6 @@ void recv_p(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
 void halo_wait() { _wait(reqsendA); }
 
 void halo() {
-    if (cnt) halo_wait();
-
     ParticlesWrap halos[26];
 
     for (int i = 0; i < 26; ++i)

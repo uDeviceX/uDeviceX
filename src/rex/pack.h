@@ -59,8 +59,6 @@ void _pack_attempt(std::vector<ParticlesWrap> w) {
 }
 
 void pack_p(int n) {
-    ++cnt;
-
     packscount->resize(26 * n);
     packsoffset->resize(26 * (n + 1));
     packsstart->resize(27 * n);
