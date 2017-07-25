@@ -21,6 +21,7 @@ static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<Particle
         dSync();
     }
     rex::local_resize();
+    rex::_postrecvA(tc.cart, tc.ranks, tr.tags, t);
     rex::post_p(tc.cart, tc.ranks, tr.tags, t);
 }
 

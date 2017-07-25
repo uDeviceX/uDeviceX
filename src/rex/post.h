@@ -36,9 +36,6 @@ void local_resize() {
 
 void post_p(MPI_Comm cart, int dranks[26], int tags[26], x::TicketTags t) {
     // consolidate the packing
-
-    _postrecvA(cart, dranks, tags, t);
-    
     if (iterationcount == 0)
         _postrecvP(cart, dranks, tags, t);
     else
