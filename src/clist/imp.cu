@@ -44,6 +44,8 @@ void build(const Particle *pp, int n,
     dev::get_ids <<<k_cnf(n)>>> (pp, starts, n, cells, domainstart, /**/ counts, ids);
 
     dev::gather <<<k_cnf(n)>>> (pp, ids, n, /**/ ppd);
+
+    CC(cudaMemcpyAsync(pp, ppd, n * sizeof(Particle)));
     
     CC(cudaFree(ids));
     CC(cudaFree(ppd));
