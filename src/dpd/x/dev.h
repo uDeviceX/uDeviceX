@@ -23,16 +23,16 @@ __global__ void flocal(const Texo<float2> texpp, const Texo<int> texstart, int n
     
     if (pid >= n) return;
     
-    Part p = tex2Part(texpp, pid);
+    Part pd = tex2Part(texpp, pid);
     /* TODO check from here */
     uint scan1, scan2, ncandidates;
     int start0, start1, start2 = 0;
 
     int count0, count1 = 0, count2 = 0;
         
-    int xcid = (int)(p.r[X] + XS / 2);
-    int ycid = (int)(p.r[Y] + YS / 2);
-    int zcid = (int)(p.r[Z] + ZS / 2);
+    int xcid = (int)(pd.r[X] + XS / 2);
+    int ycid = (int)(pd.r[Y] + YS / 2);
+    int zcid = (int)(pd.r[Z] + ZS / 2);
 
     xcid = min(XS-1, max(0, xcid));
     ycid = min(YS-1, max(0, ycid));
@@ -83,10 +83,11 @@ __global__ void flocal(const Texo<float2> texpp, const Texo<int> texstart, int n
 
         float fx, fy, fz;
         forces::dpd0(SOLVENT_TYPE, SOLVENT_TYPE,
-                     p.r[X], p.r[Y], p.r[Z],
+                     pd.r[X], pd.r[Y], pd.r[Z],
                      ps.r[X], ps.r[Y], ps.r[Z],
-                     p.v[X], p.v[Y], p.v[Z],
-                     ps.v[X], ps.v[Y], ps.v[Z], rnd, &fx, &fy, &fz);
+                     pd.v[X], pd.v[Y], pd.v[Z],
+                     ps.v[X], ps.v[Y], ps.v[Z],
+                     rnd, &fx, &fy, &fz);
         
         xforce += fx; yforce += fy; zforce += fz;
     }
