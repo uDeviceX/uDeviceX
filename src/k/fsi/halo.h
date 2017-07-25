@@ -54,7 +54,7 @@ __device__ void halo1(int n1, float seed, int lid, int base, int lane, /**/ floa
     Particle *pp;
     Force *ff;
     int nunpack, unpackbase;
-    fid = k_common::get_fid(packstarts_padded, base);
+    fid = k_common::fid(packstarts_padded, base);
     start = packstarts_padded[fid];
     count = packcount[fid];
     pp = packstates[fid];

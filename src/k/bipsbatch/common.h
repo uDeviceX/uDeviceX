@@ -122,7 +122,7 @@ static __device__ void force3(const SFrag sfrag, const Frag frag, const Rnd rnd,
     force2(frag, rnd, p, f);
 }
 
-static __device__ unsigned int get_fid(const unsigned int a[], const unsigned int i) {
+static __device__ unsigned int fid(const unsigned int a[], const unsigned int i) {
     /* where is `i' in sorted a[27]? */
     unsigned int k1, k3, k9;
     k9 = 9 * ((i >= a[9])           + (i >= a[18]));
@@ -141,7 +141,7 @@ __global__ void force(/**/ float *ff) {
 
     gid = (threadIdx.x + blockDim.x * blockIdx.x) >> 1;
     if (gid >= start[26]) return;
-    h = get_fid(start, gid);
+    h = fid(start, gid);
     i = gid - start[h];
     sfrag = ssfrag[h];
     if (i >= sfrag.n) return;

@@ -36,7 +36,7 @@ __global__ void count(const int27 cellpackstarts, const int *start, const int *c
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     if (gid >= cellpackstarts.d[26]) return;
 
-    fid = k_common::get_fid(cellpackstarts.d, gid);
+    fid = k_common::fid(cellpackstarts.d, gid);
     hci = gid - cellpackstarts.d[fid];
 
     get_box(fid, /**/ org, ext);
@@ -57,7 +57,7 @@ __global__ void copycells(const int27 cellpackstarts, const intp26 srccells, /**
 
     if (gid >= cellpackstarts.d[26]) return;
 
-    int idpack = k_common::get_fid(cellpackstarts.d, gid);
+    int idpack = k_common::fid(cellpackstarts.d, gid);
     int offset = gid - cellpackstarts.d[idpack];
 
     dstcells.d[idpack][offset] = srccells.d[idpack][offset];
@@ -122,7 +122,7 @@ __global__ void fill_all(const int27 cellpackstarts, const Particle *pp, int *re
     gid = (threadIdx.x >> 4) + 2 * blockIdx.x;
     if (gid >= cellpackstarts.d[26]) return;
 
-    fid = k_common::get_fid(cellpackstarts.d, gid);
+    fid = k_common::fid(cellpackstarts.d, gid);
     hci = gid - cellpackstarts.d[fid];
     
     tid = threadIdx.x & 0xf;
@@ -163,7 +163,7 @@ __global__ void fill_all_ii(const int27 cellpackstarts, const int *ii,
     gid = (threadIdx.x >> 4) + 2 * blockIdx.x;
     if (gid >= cellpackstarts.d[26]) return;
 
-    fid = k_common::get_fid(cellpackstarts.d, gid);
+    fid = k_common::fid(cellpackstarts.d, gid);
     hci = gid - cellpackstarts.d[fid];
     
     tid = threadIdx.x & 0xf;
