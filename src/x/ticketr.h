@@ -1,4 +1,5 @@
 namespace x {
+/* ticket recive */
 static void ini_ticketr(TicketR *t) {
     enum {X, Y, Z};
     int i;
