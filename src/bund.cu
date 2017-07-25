@@ -13,6 +13,7 @@
 #include "l/scan.h"
 
 #include "l/rnd.h"
+#include "rnd.h"
 
 #include <conf.h>
 #include "conf.common.h"
