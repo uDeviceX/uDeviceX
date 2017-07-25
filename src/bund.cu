@@ -33,6 +33,8 @@
 
 #include "l/float3.h"
 #include "k/common.h"
+#include "k/read.h"
+#include "k/write.h"
 
 #include "clist.face.h"
 #include "minmax.h"
