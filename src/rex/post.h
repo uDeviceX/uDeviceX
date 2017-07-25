@@ -5,7 +5,7 @@ void post_waitP() { _wait(reqsendP); }
 bool post_pre(x::TicketPack tp) {
     bool packingfailed;
     int i;
-    for (i = 0; i < 26; ++i) send_counts[i] = tp.host_packstotalcount->D[i];
+    for (i = 0; i < 26; ++i) send_counts[i] = tp.tcounts_hst->D[i];
     packingfailed = false;
     for (i = 0; i < 26; ++i)
         packingfailed |= send_counts[i] > local[i]->capacity();
@@ -34,9 +34,9 @@ void local_resize() {
 
 void post_p(MPI_Comm cart, int dranks[26], x::TicketTags t, x::TicketPack tp) {
     // consolidate the packing
-    if (tp.host_packstotalstart->D[26]) {
+    if (tp.tstarts_hst->D[26]) {
         CC(cudaMemcpyAsync(host_packbuf->D, packbuf->D,
-                           sizeof(Particle) * tp.host_packstotalstart->D[26],
+                           sizeof(Particle) * tp.tstarts_hst->D[26],
                            H2H));
     }
     dSync(); /* was CC(cudaStreamSynchronize(downloadstream)); */
@@ -48,7 +48,7 @@ void post_p(MPI_Comm cart, int dranks[26], x::TicketTags t, x::TicketPack tp) {
                        t.btc + i, cart, &reqsendC[i]));
 
     for (int i = 0; i < 26; ++i) {
-        int start = tp.host_packstotalstart->D[i];
+        int start = tp.tstarts_hst->D[i];
         int count = send_counts[i];
         int expected = local[i]->expected();
         

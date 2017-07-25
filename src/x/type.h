@@ -13,8 +13,8 @@ struct TicketTags { /* basetags */
 };
 
 struct TicketPack { /* helps pack particles for mpi */
-    DeviceBuffer<int> *packscount, *packsstart, *packsoffset, *packstotalstart;
-    PinnedHostBuffer1<int> *host_packstotalstart, *host_packstotalcount;
+    DeviceBuffer<int> *counts, *starts, *offsets, *tstarts;
+    PinnedHostBuffer1<int> *tstarts_hst, *tcounts_hst;
 };
 
 }
