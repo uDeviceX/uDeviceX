@@ -8,16 +8,7 @@ __global__ void unpack(int nparticles, /**/ float *forces) {
 
         if (pid >= npack_padded) return;
 
-        int key9 =
-            9 * ((int)(pid >= cpaddedstarts[9]) + (int)(pid >= cpaddedstarts[18]));
-
-        int key3 = 3 * ((int)(pid >= cpaddedstarts[key9 + 3]) +
-                        (int)(pid >= cpaddedstarts[key9 + 6]));
-
-        int key1 = (int)(pid >= cpaddedstarts[key9 + key3 + 1]) +
-            (int)(pid >= cpaddedstarts[key9 + key3 + 2]);
-
-        int code = key9 + key3 + key1;
+        int code = k_common::fid(cpaddedstarts, pid);
         int lpid = pid - cpaddedstarts[code];
 
         if (lpid >= ccounts[code]) continue;
