@@ -32,7 +32,7 @@ struct TicketUI { /* unpack ticket for int data */
 };
 
 struct Work {
-    unsigned char *count_zip;
+    scan::Work s;
 };
 
 void alloc_ticketD(/*io*/ basetags::TagGen *tg, /**/ TicketD *t) {
@@ -83,11 +83,11 @@ void free_ticketUI(TicketUI *t) {
 }
 
 void alloc_work(Work *w) {
-    CC(cudaMalloc(&w->count_zip, sizeof(w->count_zip[0])*XS*YS*ZS));
+    scan::alloc_work(XS*YS*ZS, /**/ &w->s);
 }
 
 void free_work(Work *w) {
-    CC(cudaFree(w->count_zip));
+    scan::free_work(/**/ &w->s);
 }
 
 void post_recv_pp(TicketD *t) {
@@ -154,9 +154,11 @@ void unpack_pp(const TicketD *td, /**/ flu::Quants *q, TicketU *tu, /*w*/ Work *
         sub::unpack_pp(nhalo, &td->r, /**/ tu->pp_re);
         sub::subindex_remote(nhalo, &td->r, /*io*/ tu->pp_re, count, /**/ tu->subi_re);
     }
+
+    scan::scan(count, XS*YS*ZS, /**/ start, /*w*/ &w->s);
     
-    k_common::compress_counts<<<k_cnf(XS*YS*ZS)>>>(XS*YS*ZS, (int4*)count, /**/ (uchar4*)w->count_zip);
-    l::scan::d::scan(w->count_zip, XS*YS*ZS, /**/ (uint*)start);
+    // k_common::compress_counts<<<k_cnf(XS*YS*ZS)>>>(XS*YS*ZS, (int4*)count, /**/ (uchar4*)w->count_zip);
+    // l::scan::d::scan(w->count_zip, XS*YS*ZS, /**/ (uint*)start);
 }
 
 void unpack_ii(const TicketD *td, const TicketI *ti, TicketUI *tui) {
