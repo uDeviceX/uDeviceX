@@ -10,7 +10,6 @@
 
 #include <conf.h>
 #include "k/read.h"
-#include "k/write.h"
 #include "k/common.h"
 
 #include <limits> /* for rnd */
