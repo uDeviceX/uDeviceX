@@ -302,8 +302,8 @@ __global__
 void transpose_acc( const int np )
 {
     __shared__ volatile float  smem[32][96];
-    const uint lane = threadIdx.x % 32;
-    const uint warpid = threadIdx.x / 32;
+    const uint lane = threadIdx.x % warpSize;
+    const uint warpid = threadIdx.x / warpSize;
 
     for( uint i = ( blockIdx.x * blockDim.x + threadIdx.x ) & 0xFFFFFFE0U; i < np; i += blockDim.x * gridDim.x ) {
         const uint base = xmad( i, 3.f, lane );

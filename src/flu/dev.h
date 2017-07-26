@@ -4,8 +4,8 @@ __global__ void zip(float4 *__restrict zip0,
                     const uint n) {
     extern __shared__ volatile float smem[];
 
-    uint warpid = threadIdx.x / 32;
-    uint lane = threadIdx.x % 32;
+    uint warpid = threadIdx.x / warpSize;
+    uint lane = threadIdx.x % warpSize;
 
     uint i = (blockIdx.x * blockDim.x + threadIdx.x) & 0xFFFFFFE0U;
 
