@@ -1,17 +1,17 @@
 namespace k_rex {
 __device__ void pack0(const float2 *pp, /**/ float2 *buf) {
-    int warpid, npack_padded, localbase, code, packbase, npack, lane;
+    int warp, npack_padded, localbase, code, packbase, npack, lane;
     float2 s0, s1, s2;
     int entry, pid, entry2;
 
-    warpid = threadIdx.x >> 5;
+    warp = threadIdx.x / warpSize;
+    lane = threadIdx.x % warpSize;
     npack_padded = g::starts[26];
-    for (localbase = 32 * (warpid + 4 * blockIdx.x); localbase < npack_padded;
+    for (localbase = 32 * (warp + 4 * blockIdx.x); localbase < npack_padded;
          localbase += gridDim.x * blockDim.x) {
         code = k_common::fid(g::starts, localbase);
         packbase = localbase - g::starts[code];
-        npack = min(32, g::counts[code] - packbase);
-        lane = threadIdx.x & 0x1f;
+        npack = min(32, g::counts[code] - packbase);        
         if (lane < npack) {
             entry = g::offsets[code] + packbase + lane;
             pid = __ldg(g::scattered_indices[code] + entry);
