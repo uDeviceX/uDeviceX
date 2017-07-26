@@ -16,7 +16,7 @@ __device__ void pack0(const float2 *pp, /**/ float2 *buf) {
     for (localbase = lo; localbase < hi; localbase += step) {
         fid = k_common::fid(g::starts, localbase);
         packbase = localbase - g::starts[fid];
-        npack = min(32, g::counts[fid] - packbase);        
+        npack = min(warpSize, g::counts[fid] - packbase);
         if (lane < npack) {
             entry = g::offsets[fid] + packbase + lane;
             pid = __ldg(g::scattered_indices[fid] + entry);
