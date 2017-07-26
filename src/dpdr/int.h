@@ -1,5 +1,3 @@
-#include "dpdr/type.h"
-
 namespace dpdr {
 
 using sub::int26;

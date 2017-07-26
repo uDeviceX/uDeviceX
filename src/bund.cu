@@ -165,6 +165,7 @@ namespace dev {
 #include "dpd/x/imp.h"
 }
 
+#include "dpdr/type.h"
 #include "dpdr/int.h"
 
 #include "mesh/collision.h"

@@ -20,6 +20,7 @@
 #include "k/bipsbatch/common.h"
 #include "bipsbatch.impl.h"
 
+#include "dpdr/type.h"
 #include "dpdr/int.h"
 #include "dpdr/imp.h"
 
