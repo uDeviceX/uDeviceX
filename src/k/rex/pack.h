@@ -7,18 +7,20 @@ __device__ void fid2dr(int fid, /**/ float *d) {
     d[Z] = - ((fid / 9 + 2) % 3 - 1) * ZS;
 }
 
-__device__ void pack0(const float2 *pp, int localbase, int lane, /**/ float2 *buf) {
+__device__ void pack0(const float2 *pp, int ws, int dw, /**/ float2 *buf) {
     enum {X, Y, Z};
-    int fid, packbase, npack;
+    int wsf;  /* wraps start in fragment coordinates */
+    int dwe;  /* end of wrap relative to `ws' */
+    int fid;
     float2 s0, s1, s2;
     int entry, pid, entry2;
     float d[3]; /* coordinate shift */
 
-    fid = k_common::fid(g::starts, localbase);
-    packbase = localbase - g::starts[fid];
-    npack = min(warpSize, g::counts[fid] - packbase);
-    if (lane < npack) {
-        entry = g::offsets[fid] + packbase + lane;
+    fid = k_common::fid(g::starts, ws);
+    wsf = ws - g::starts[fid];
+    dwe = min(warpSize, g::counts[fid] - wsf);
+    if (dw < dwe) {
+        entry = g::offsets[fid] + wsf + dw;
         pid = __ldg(g::scattered_indices[fid] + entry);
 
         entry2 = 3 * pid;
@@ -32,22 +34,24 @@ __device__ void pack0(const float2 *pp, int localbase, int lane, /**/ float2 *bu
         s0.y += d[Y];
         s1.x += d[Z];
     }
-    k_write::AOS6f(buf + 3 * (g::tstarts[fid] + g::offsets[fid] + packbase), npack, s0, s1, s2);
+    k_write::AOS6f(buf + 3 * (g::tstarts[fid] + g::offsets[fid] + wsf), dwe, s0, s1, s2);
 }
 
 __device__ void pack1(const float2 *pp, /**/ float2 *buf) {
-    int warp, localbase, lane;
+    int warp;
     int lo, hi, step;
+    int ws; /* warp start in global coordinates */
+    int dw; /* shift relative to `ws' (lane) */
 
     warp = threadIdx.x / warpSize;
-    lane = threadIdx.x % warpSize;
+    dw   = threadIdx.x % warpSize;
 
     lo = warpSize * warp + blockDim.x * blockIdx.x;
     hi = g::starts[26];
     step = gridDim.x * blockDim.x;
 
-    for (localbase = lo; localbase < hi; localbase += step)
-        pack0(pp, localbase, lane, /**/ buf);
+    for (ws = lo; ws < hi; ws += step)
+        pack0(pp, ws, dw, /**/ buf);
 }
 
 __global__ void pack(const float2 *pp, /**/ float2 *buf) {
