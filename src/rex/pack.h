@@ -21,9 +21,12 @@ void scanA(std::vector<ParticlesWrap> w, x::TicketPack tp) {
     }
 }
 
-void pack_attempt(std::vector<ParticlesWrap> w, x::TicketPack tp) {
+void scanB(std::vector<ParticlesWrap> w, x::TicketPack tp) {
     CC(cudaMemcpyAsync(tp.tcounts_hst->D, tp.offsets->D + 26 * w.size(), sizeof(int) * 26, H2H));
     k_rex::scanB<<<1, 32>>>(tp.offsets->D + 26 * w.size(), /**/ tp.tstarts->D);
+}
+
+void pack_attempt(std::vector<ParticlesWrap> w, x::TicketPack tp) {
     CC(cudaMemcpyAsync(tp.tstarts_hst->D, tp.tstarts->D, sizeof(int) * 27, H2H));
     CC(cudaMemcpyToSymbolAsync(k_rex::g::tstarts, tp.tstarts->D, sizeof(int) * 27, 0, D2D));
     for (int i = 0; i < (int) w.size(); ++i) {
