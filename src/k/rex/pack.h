@@ -7,21 +7,20 @@ __device__ void fid2dr(int fid, /**/ float *d) {
     d[Z] = - ((fid / 9 + 2) % 3 - 1) * ZS;
 }
 
-__device__ void pack0(const float2 *pp, int ws, int dw, /**/ float2 *buf) {
+__device__ void
+pack0(const float2 *pp, int fid,
+      int count, int offset, int tstart, int *scattered_indices,
+      int wsf, int dw, /**/ float2 *buf) {
     enum {X, Y, Z};
-    int wsf;  /* wraps start in fragment coordinates */
-    int dwe;  /* end of wrap relative to `ws' */
-    int fid;
+    float d[3]; /* coordinate shift */
+    int dwe;  /* wrap or buffer end relative to `ws' */
     float2 s0, s1, s2;
     int entry, pid, entry2;
-    float d[3]; /* coordinate shift */
-
-    fid = k_common::fid(g::starts, ws);
-    wsf = ws - g::starts[fid];
-    dwe = min(warpSize, g::counts[fid] - wsf);
+    
+    dwe = min(warpSize, count - wsf);
     if (dw < dwe) {
-        entry = g::offsets[fid] + wsf + dw;
-        pid = __ldg(g::scattered_indices[fid] + entry);
+        entry = offset + wsf + dw;
+        pid = __ldg(scattered_indices + entry);
 
         entry2 = 3 * pid;
 
@@ -34,10 +33,22 @@ __device__ void pack0(const float2 *pp, int ws, int dw, /**/ float2 *buf) {
         s0.y += d[Y];
         s1.x += d[Z];
     }
-    k_write::AOS6f(buf + 3 * (g::tstarts[fid] + g::offsets[fid] + wsf), dwe, s0, s1, s2);
+    k_write::AOS6f(buf + 3 * (tstart + offset + wsf), dwe, s0, s1, s2);
 }
 
-__device__ void pack1(const float2 *pp, /**/ float2 *buf) {
+__device__ void pack1(const float2 *pp, int ws, int dw, /**/ float2 *buf) {
+    int wsf;  /* wraps start in fragment coordinates */
+    int fid;
+
+    fid = k_common::fid(g::starts, ws);
+    wsf = ws - g::starts[fid];
+
+    pack0(pp, fid,
+          g::counts[fid], g::offsets[fid], g::tstarts[fid], g::scattered_indices[fid], /**/
+          wsf, dw, /**/ buf);
+}
+
+__device__ void pack2(const float2 *pp, /**/ float2 *buf) {
     int warp;
     int lo, hi, step;
     int ws; /* warp start in global coordinates */
@@ -51,11 +62,11 @@ __device__ void pack1(const float2 *pp, /**/ float2 *buf) {
     step = gridDim.x * blockDim.x;
 
     for (ws = lo; ws < hi; ws += step)
-        pack0(pp, ws, dw, /**/ buf);
+        pack1(pp, ws, dw, /**/ buf);
 }
 
 __global__ void pack(const float2 *pp, /**/ float2 *buf) {
     if (g::failed) return;
-    pack1(pp, buf);
+    pack2(pp, buf);
 }
 }
