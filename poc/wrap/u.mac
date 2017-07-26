@@ -1,3 +1,5 @@
+/* u.mac: utilities */
+
 /* return a function which maps `f` to `t` (from and to) */
 genf(f, t)::=buildq([s: gensym(),  r: gensym(), f, t],
   subst('b = r + t - f, lambda([r], b)));
