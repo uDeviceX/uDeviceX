@@ -102,15 +102,7 @@ namespace strt {
 #include "wall/int.h"
 }
 
-namespace flu {
-namespace sub {
-namespace dev {
-#include "flu/dev.h"
-}
-#include "flu/imp.h"
-}
 #include "flu/int.h"
-}
 
 namespace odstr {
 namespace sub {
