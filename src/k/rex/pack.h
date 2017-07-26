@@ -27,7 +27,7 @@ __device__ void pack1(const float2 *pp, /**/ float2 *buf) {
             s1 = __ldg(pp + entry2 + 1);
             s2 = __ldg(pp + entry2 + 2);
 
-            s0.x -= ((fid + 2) % 3 - 1) * XS;
+            s0.x -= ((fid +     2) % 3 - 1) * XS;
             s0.y -= ((fid / 3 + 2) % 3 - 1) * YS;
             s1.x -= ((fid / 9 + 2) % 3 - 1) * ZS;
         }
