@@ -1,9 +1,5 @@
 namespace k_rex {
 
-__device__ void a(/**/ int *localbase, int *npack) {
-
-}
-
 __device__ void pack0(const float2 *pp, /**/ float2 *buf) {
     int warp, localbase, fid, packbase, npack, lane;
     float2 s0, s1, s2;
