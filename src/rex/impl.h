@@ -9,7 +9,7 @@ void _postrecvC(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     for (int i = 0; i < 26; ++i) {
         MPI_Request reqC;
         MC(l::m::Irecv(recv_counts + i, 1, MPI_INTEGER, ranks[i],
-                     t.btc + tags[i], cart, &reqC));
+                       t.btc + tags[i], cart, &reqC));
         reqrecvC.push_back(reqC);
     }
 }
@@ -28,14 +28,12 @@ void _postrecvP(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
 void _postrecvA(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     for (int i = 0; i < 26; ++i) {
         MPI_Request reqA;
-
         MC(l::m::Irecv(local[i]->result->D, local[i]->result->S * 3,
                      MPI_FLOAT, ranks[i], t.btf + tags[i],
                      cart, &reqA));
         reqrecvA.push_back(reqA);
     }
 }
-
 
 void recv_p(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     _wait(reqrecvC);
@@ -89,9 +87,9 @@ void post_f(MPI_Comm cart, int ranks[26], x::TicketTags t) {
 
     reqsendA.resize(26);
     for (int i = 0; i < 26; ++i)
-    MC(l::m::Isend(remote[i]->result.D, remote[i]->result.S * 3,
-                 MPI_FLOAT, ranks[i], t.btf + i, cart,
-                 &reqsendA[i]));
+        MC(l::m::Isend(remote[i]->result.D, remote[i]->result.S * 3,
+                       MPI_FLOAT, ranks[i], t.btf + i, cart,
+                       &reqsendA[i]));
 }
 
 void recv_f(std::vector<ParticlesWrap> w, x::TicketPack tp) {
