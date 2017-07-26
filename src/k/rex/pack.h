@@ -1,14 +1,23 @@
 namespace k_rex {
+
+__device__ void a(/**/ int *localbase, int *npack) {
+
+}
+
 __device__ void pack0(const float2 *pp, /**/ float2 *buf) {
-    int warp, npack_padded, localbase, fid, packbase, npack, lane;
+    int warp, localbase, fid, packbase, npack, lane;
     float2 s0, s1, s2;
     int entry, pid, entry2;
+    int lo, hi, step;
 
     warp = threadIdx.x / warpSize;
     lane = threadIdx.x % warpSize;
-    npack_padded = g::starts[26];
-    for (localbase = 32 * (warp + 4 * blockIdx.x); localbase < npack_padded;
-         localbase += gridDim.x * blockDim.x) {
+
+    lo = warpSize * warp + blockDim.x * blockIdx.x;
+    hi = g::starts[26];
+    step = gridDim.x * blockDim.x;
+
+    for (localbase = lo; localbase < hi; localbase += step) {
         fid = k_common::fid(g::starts, localbase);
         packbase = localbase - g::starts[fid];
         npack = min(32, g::counts[fid] - packbase);        
