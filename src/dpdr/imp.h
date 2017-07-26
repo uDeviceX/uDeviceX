@@ -2,8 +2,6 @@ namespace dpdr {
 namespace sub {
 
 // imp.h
-void cancel_req(MPI_Request r[26]);
-void cancel_Reqs(Reqs *r);
 
 void wait_req(MPI_Request r[26]);
 void wait_Reqs(Reqs *r);
