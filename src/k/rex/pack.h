@@ -10,6 +10,11 @@ __device__ Pa pp2p(const float2 *pp, int i) {
     return p;
 }
 
+__device__ void p2pp(Pa p, int n, int i, /**/ float2 *pp) {
+    /* collective write : p to buffer pp */
+    k_write::AOS6f(pp + 3 * i, n, p.s0, p.s1, p.s2);
+}
+
 __device__ void fid2dr(int fid, /**/ float *d) {
     /* fragment id to coordinate shift */
     enum {X, Y, Z};
@@ -43,7 +48,8 @@ pack0(const float2 *pp, int fid,
         p = pp2p(pp, pid);
         shift(fid, &p); /* shift coordinates */
     }
-    k_write::AOS6f(buf + 3 * (tstart + offset + wsf), dwe, p.s0, p.s1, p.s2);
+    p2pp(p, dwe, tstart + offset + wsf, /**/ buf);
+    //k_write::AOS6f(buf + 3 * (tstart + offset + wsf), dwe, p.s0, p.s1, p.s2);
 }
 
 __device__ void pack1(const float2 *pp, int ws, int dw, /**/ float2 *buf) {
