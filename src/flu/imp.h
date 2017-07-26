@@ -1,11 +1,8 @@
 namespace sub {
-int gen0(Particle *pp);
 int gen(Particle *dev, /*w*/ Particle *hst);
 
-void ii_gen0(const long n, int *ii);
 void ii_gen(const int n, int *ii_dev, int *ii_hst);
 
-void tags0_gen0(const long n, int *ii);
 void tags0_gen(const int n, int *ii_dev, int *ii_hst);
 
 int strt(const int id, Particle *dev, /*w*/ Particle *hst);

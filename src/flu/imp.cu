@@ -17,7 +17,7 @@ namespace dev {
 #include "flu/dev.h"
 }
 
-int gen0(Particle *pp) { /* generate particle positions and velocities */
+static int gen0(Particle *pp) { /* generate particle positions and velocities */
     enum {X, Y, Z};
     assert(XS * YS * ZS * numberdensity < MAX_PART_NUM);
   
@@ -51,7 +51,7 @@ int gen(Particle *dev, /*w*/ Particle *hst) {
     return n;
 }
 
-void ii_gen0(const long n, int *ii) {
+static void ii_gen0(const long n, int *ii) {
     long i0 = 0;
     MC(l::m::Exscan(&n, &i0, 1, MPI_LONG, MPI_SUM, m::cart));
     for (long i = 0; i < n; ++i) ii[i] = i + i0;
@@ -62,7 +62,7 @@ void ii_gen(const int n, int *ii_dev, int *ii_hst) {
     cH2D(ii_dev, ii_hst, n);
 }
 
-void tags0_gen0(const long n, int *ii) {
+static void tags0_gen0(const long n, int *ii) {
     for (long i = 0; i < n; ++i) ii[i] = -1;
 }
 
