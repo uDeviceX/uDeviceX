@@ -17,7 +17,7 @@ void fin() {
 static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<ParticlesWrap> w) {
     bool packingfailed;
     dSync();
-    if (cnt == 0) rex::_postrecvC(tc.cart, tc.ranks, tr.tags, t);
+    if (cnt == 0) rex::postrecvC(tc.cart, tc.ranks, tr.tags, t);
     else          rex::post_waitC();
     packingfailed = rex::post_pre(tp);
     if (packingfailed) {
