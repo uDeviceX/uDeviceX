@@ -4,6 +4,6 @@ struct TagGen {
     static const int stride = 100;
 };
 
-void ini(TagGen *tg)    {tg->bt = 0;}
-int get_tag(TagGen *tg) {return tg->bt += tg->stride;}
+inline void ini(TagGen *tg)    {tg->bt = 0;}
+inline int get_tag(TagGen *tg) {return tg->bt += tg->stride;}
 }
