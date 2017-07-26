@@ -14,7 +14,7 @@ void _postrecvC(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     }
 }
 
-void _postrecvP(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
+void postrecvP(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     for (int i = 0; i < 26; ++i) {
         MPI_Request reqP;
         remote[i]->pmessage.resize(remote[i]->expected());

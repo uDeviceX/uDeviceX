@@ -32,7 +32,7 @@ static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<Particle
     rex::local_resize();
     rex::postrecvA(tc.cart, tc.ranks, tr.tags, t);
 
-    if (cnt == 0) rex::_postrecvP(tc.cart, tc.ranks, tr.tags, t);
+    if (cnt == 0) rex::postrecvP(tc.cart, tc.ranks, tr.tags, t);
     else          rex::post_waitP();
     rex::post_p(tc.cart, tc.ranks, t, tp);
 }
@@ -48,7 +48,7 @@ static void rex0(std::vector<ParticlesWrap> w, int nw) {
     rex::recv_p(tc.cart, tc.ranks, tr.tags, tt);
     if (cnt) rex::halo_wait();
     rex::halo(); /* fsi::halo(); */
-    rex::_postrecvP(tc.cart, tc.ranks, tr.tags, tt);
+    rex::postrecvP(tc.cart, tc.ranks, tr.tags, tt);
     rex::post_f(tc.cart, tc.ranks, tt);
     rex::recv_f(w, tp);
 }
