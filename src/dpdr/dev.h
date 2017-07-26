@@ -69,7 +69,7 @@ __global__ void scan(const int26 fragn, const intp26 fragcc, /**/ intp26 fragcum
 
     int tid = threadIdx.x;
     int laneid = threadIdx.x % wrapSize;
-    int warpid = threadIdx.x >> 5;
+    int warpid = threadIdx.x / wrapSize;
 
     int lastval = 0;
     for (int sourcebase = 0; sourcebase < n; sourcebase += 32 * NWARPS) {

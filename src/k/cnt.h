@@ -48,7 +48,7 @@ __global__ void populate(uchar4 *subindices,
                          int *cellstart, int nparticles,
                          int soluteid, int ntotalparticles,
                          CellEntry *entrycells) {
-    int warpid = threadIdx.x >> 5;
+    int warpid = threadIdx.x / warpSize;
     int tid = threadIdx.x % warpSize;
 
     int base = 32 * (warpid + 4 * blockIdx.x);
@@ -216,7 +216,7 @@ __global__ void bulk_3tpp(float2 *particles, int np,
 __global__ void halo(int nparticles_padded, int ncellentries,
                      int nsolutes, float seed) {
     int laneid = threadIdx.x % warpSize;
-    int warpid = threadIdx.x >> 5;
+    int warpid = threadIdx.x / warpSize;
     int localbase = 32 * (warpid + 4 * blockIdx.x);
     int pid = localbase + laneid;
 
