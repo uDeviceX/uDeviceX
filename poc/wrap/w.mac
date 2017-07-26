@@ -2,6 +2,8 @@ load("u.mac");
 /*
 
 i: paritcle id, ws: wrap start (0th lane), fs: fragment start
+wsf: wrap start in fragment coordinates
+wef: wrap end   in fragment coordinates
 
 "global":
 [fs  ws     i     ]
@@ -19,5 +21,8 @@ i: paritcle id, ws: wrap start (0th lane), fs: fragment start
 [g2f, f2g]: genfi(fs, 0);
 f2w: chain(f2g, g2w);
 
-g2w(ws);
+wsf: g2f(ws);
 f2w(cnt);
+
+wef: g2f(ws + wrapSize);
+
