@@ -1,47 +1,29 @@
+#include "basetags.h"
 
-struct TicketCom {
-    /* basetags */
-    int btc, btcs, btp;
-    MPI_Comm cart;
-    sub::Reqs sreq, rreq;
-    int recv_tags[26], dstranks[26];
-    bool first;
-};
+#include <limits> /* for rnd */
+#include <stdint.h>
+#include "rnd.h"
 
-struct TicketRnd {
-    rnd::KISS *interrank_trunks[26];
-    bool interrank_masks[26];
-};
+#include <mpi.h>
+#include "l/m.h"
+#include "common.h"
+#include "common.cuda.h"
+#include "common.mpi.h"
 
-struct TicketShalo {
-    int26 estimate;
-    int ncells;                /* total number of cells in the halo                   */
-    int27 fragstarts;          /* cumulative sum of number of cells for each fragment */
-    int26 nc;                  /* number of cells per fragment                        */
-    int *npdev, *nphst;        /* number of particles on each fragment (pinned)       */
-    sub::Sbufs b;
-};
+#include <conf.h>
+#include "k/read.h"
+#include "k/common.h"
+#include <forces.h>
 
-struct TicketRhalo {
-    int26 estimate;
-    int26 nc, np;              /* number of cells, recv sizes */
-    sub::Rbufs b;
-};
+#include "bipsbatch.type.h"
+#include "k/bipsbatch/map.h"
+#include "k/bipsbatch/common.h"
+#include "bipsbatch.impl.h"
 
-struct TicketICom {
-    int bt;
-    MPI_Request sreq[26], rreq[26];
-    bool first;
-};
+#include "dpdr/int.h"
+#include "dpdr/imp.h"
 
-struct TicketSIhalo {
-    sub::SIbuf b;
-};
-
-struct TicketRIhalo {
-    sub::RIbuf b;
-};
-
+namespace dpdr {
 void ini_ticketcom(MPI_Comm cart, /*io*/ basetags::TagGen *tg, /**/ TicketCom *t) {
     sub::ini_tcom(cart, /**/ &t->cart, t->dstranks, t->recv_tags); 
     t->first = true;
@@ -108,7 +90,6 @@ void alloc_ticketRIh(/**/ TicketRIhalo *t) {
 void free_ticketRIh(/**/TicketRIhalo *t) {
     sub::free_RIbuf(/**/ &t->b);
 }
-
 
 
 /* remote: send functions */
@@ -210,4 +191,5 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
     }
 
     bipsbatch::interactions(sfrag, frag, rnd, (float*)ff);
+}
 }
