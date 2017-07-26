@@ -6,11 +6,11 @@ __global__ void scanA(const int *counts, const int *oldtotalcounts,
     cnt = 0;
     if (tid < 26) {
         cnt = counts[tid];
-        if (cnt > g::ccapacities[tid]) g::failed = true;
+        if (cnt > g::capacities[tid]) g::failed = true;
         if (totalcounts && oldtotalcounts) {
             newcount = cnt + oldtotalcounts[tid];
             totalcounts[tid] = newcount;
-            if (newcount > g::ccapacities[tid]) g::failed = true;
+            if (newcount > g::capacities[tid]) g::failed = true;
         }
     }
 
@@ -28,7 +28,7 @@ __global__ void scanB(const int *count, /**/ int *start) {
     cnt = 0;
     if (tid < 26) {
         cnt = count[tid];
-        if (cnt > g::ccapacities[tid]) g::failed = true;
+        if (cnt > g::capacities[tid]) g::failed = true;
     }
     if (start) {
         scan = cnt = 32 * ((cnt + 31) / 32);

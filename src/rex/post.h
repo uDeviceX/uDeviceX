@@ -19,7 +19,7 @@ void post_resize() {
 
     for (i = 0; i < 26; ++i) local[i]->resize(send_counts[i]);
     for (i = 0; i < 26; ++i) newcapacities[i] = local[i]->capacity();
-    CC(cudaMemcpyToSymbolAsync(k_rex::g::ccapacities, newcapacities,
+    CC(cudaMemcpyToSymbolAsync(k_rex::g::capacities, newcapacities,
                                sizeof(newcapacities), 0,
                                H2D));
     for (i = 0; i < 26; ++i) newindices[i] = local[i]->scattered_indices->D;

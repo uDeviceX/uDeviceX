@@ -28,7 +28,7 @@ __global__ void scatter(const float2 *pp, const int n, /**/ int *counts) {
         int bagid = xterm + 3 * (yterm + 3 * zterm);
         int myid = g::offsets[bagid] + atomicAdd(counts + bagid, 1);
 
-        if (myid < g::ccapacities[bagid]) g::scattered_indices[bagid][myid] = pid;
+        if (myid < g::capacities[bagid]) g::scattered_indices[bagid][myid] = pid;
     }
     // edges
     for (int d = 0; d < 3; ++d)
@@ -40,7 +40,7 @@ __global__ void scatter(const float2 *pp, const int n, /**/ int *counts) {
         int bagid = xterm + 3 * (yterm + 3 * zterm);
         int myid = g::offsets[bagid] + atomicAdd(counts + bagid, 1);
 
-        if (myid < g::ccapacities[bagid]) g::scattered_indices[bagid][myid] = pid;
+        if (myid < g::capacities[bagid]) g::scattered_indices[bagid][myid] = pid;
     }
     // one corner
     if (halocode[0] && halocode[1] && halocode[2]) {
@@ -51,7 +51,7 @@ __global__ void scatter(const float2 *pp, const int n, /**/ int *counts) {
         int bagid = xterm + 3 * (yterm + 3 * zterm);
         int myid = g::offsets[bagid] + atomicAdd(counts + bagid, 1);
 
-        if (myid < g::ccapacities[bagid]) g::scattered_indices[bagid][myid] = pid;
+        if (myid < g::capacities[bagid]) g::scattered_indices[bagid][myid] = pid;
     }
 }
 }
