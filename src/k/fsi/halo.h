@@ -69,9 +69,9 @@ __device__ void halo1(int n1, float seed, int lid, int base, int lane, /**/ floa
 __global__ void halo(int n0, int n1, float seed, float *ff1) {
     int lane, warp, base;
     int i; /* particle id */
-    warp = threadIdx.x / 32;
-    lane = threadIdx.x % 32;
-    base = 32 * warp + blockDim.x * blockIdx.x;
+    warp = threadIdx.x / warpSize;
+    lane = threadIdx.x % warpSize;
+    base = warpSize * warp + blockDim.x * blockIdx.x;
     if (base >= n0) return;
     i = base + lane;
     halo1(n1, seed, i, base, lane, /**/ ff1);
