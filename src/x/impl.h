@@ -22,7 +22,7 @@ static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<Particle
     packingfailed = rex::post_pre(tp);
     if (packingfailed) {
         rex::post_resize();
-        rex::_adjust_packbuffers();
+        rex::adjust_packbuffers();
         rex::pack_clear(tp);
         rex::scanA(w, tp);
         rex::scanB(w, tp);

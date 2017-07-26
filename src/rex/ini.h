@@ -1,5 +1,5 @@
 namespace rex {
-void _adjust_packbuffers() {
+void adjust_packbuffers() {
     int s = 0;
     for (int i = 0; i < 26; ++i) s += 32 * ((local[i]->capacity() + 31) / 32);
     packbuf->resize(s);
@@ -28,7 +28,7 @@ void ini() {
                               sizeof(int *) * i, H2D));
     }
 
-    _adjust_packbuffers();
+    adjust_packbuffers();
 
 }
 }
