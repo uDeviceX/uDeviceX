@@ -5,7 +5,7 @@ void _wait(std::vector<MPI_Request> &v) {
     v.clear();
 }
 
-void _postrecvC(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
+void postrecvC(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     for (int i = 0; i < 26; ++i) {
         MPI_Request reqC;
         MC(l::m::Irecv(recv_counts + i, 1, MPI_INTEGER, ranks[i],
@@ -14,7 +14,7 @@ void _postrecvC(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     }
 }
 
-void _postrecvP(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
+void postrecvP(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     for (int i = 0; i < 26; ++i) {
         MPI_Request reqP;
         remote[i]->pmessage.resize(remote[i]->expected());
@@ -25,7 +25,7 @@ void _postrecvP(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     }
 }
 
-void _postrecvA(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
+void postrecvA(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     for (int i = 0; i < 26; ++i) {
         MPI_Request reqA;
         MC(l::m::Irecv(local[i]->result->D, local[i]->result->S * 3,
@@ -56,7 +56,7 @@ void recv_p(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
                sizeof(Particle) * count);
     }
 
-    _postrecvC(cart, ranks, tags, t);
+    postrecvC(cart, ranks, tags, t);
 
     for (int i = 0; i < 26; ++i)
         CC(cudaMemcpyAsync(remote[i]->dstate.D, remote[i]->hstate.D,
