@@ -2,13 +2,9 @@
 
 # uses clarity/udeps
 # run from src
-
-err () {
-    printf "$s\n" "$1" >&2
-    exit 1
-}
-
 l=`find . -name '*.cu' -o -name '*.h'`
+
+err () { printf "udeps: %s\n" "$1"; exit 1; }
 if test -z "$l"; then err 'no *.cu and *.h files'; fi
 u.deps $l > make/Makefile.dep
 echo make/Makefile.dep updated >&2
