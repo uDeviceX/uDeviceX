@@ -13,13 +13,14 @@
 #include <conf.h>
 #include "k/read.h"
 #include "k/common.h"
-#include <forces.h>
+#include "forces.h"
 
 #include "bipsbatch.type.h"
 #include "k/bipsbatch/map.h"
 #include "k/bipsbatch/common.h"
 #include "bipsbatch.impl.h"
 
+#include "dpdr/type.h"
 #include "dpdr/int.h"
 #include "dpdr/imp.h"
 
