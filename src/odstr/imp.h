@@ -1,88 +1,47 @@
-void waitall(MPI_Request *reqs) {
-    MPI_Status statuses[26];
-    l::m::Waitall(26, reqs, statuses) ;
-}
+namespace odstr {
+namespace sub {
+
+void waitall(MPI_Request *reqs);
 
 void post_recv(const MPI_Comm cart, const int rank[], const int btc, const int btp,
-               MPI_Request *size_req, MPI_Request *mesg_req, Recv *r) {
-    for(int i = 1, c = 0; i < 27; ++i)
-    l::m::Irecv(r->size + i, 1, MPI_INTEGER, rank[i],
-                btc + r->tags[i], cart, size_req + c++);
+               MPI_Request *size_req, MPI_Request *mesg_req, Recv *r);
 
-    for(int i = 1, c = 0; i < 27; ++i)
-    l::m::Irecv(r->pp.hst[i], MAX_PART_NUM, MPI_FLOAT, rank[i],
-                btp + r->tags[i], cart, mesg_req + c++);
-}
+void post_recv_ii(const MPI_Comm cart, const int rank[], const int tags[], const int bt, /**/ MPI_Request *ii_req, Pbufs<int> *rii);
 
-void post_recv_ii(const MPI_Comm cart, const int rank[], const int tags[], const int bt, /**/ MPI_Request *ii_req, Pbufs<int> *rii) {
-    for(int i = 1, c = 0; i < 27; ++i)
-    l::m::Irecv(rii->hst[i], MAX_PART_NUM, MPI_INT, rank[i],
-                bt + tags[i], cart, ii_req + c++);
-}
+void halo(const Particle *pp, int n, Send *s);
+void scan(int n, Send *s);
 
-void halo(const Particle *pp, int n, Send *s) {
-    CC(cudaMemset(s->size_dev, 0,  27*sizeof(s->size_dev[0])));
-    dev::halo<<<k_cnf(n)>>>(pp, n, /**/ s->iidx, s->size_dev);
-}
+void pack_pp(const Particle *pp, int n, Send *s);
+void pack_ii(const int *ii, int n, const Send *s, Pbufs<int>* sii);
 
-void scan(int n, Send *s) {
-    dev::scan<<<1, 32>>>(n, s->size_dev, /**/ s->strt, s->size_pin->DP);
-    dSync();
-}
+int send_sz(MPI_Comm cart, const int rank[], const int btc, /**/ Send *s, MPI_Request *req);
+void send_pp(MPI_Comm cart, const int rank[], const int btp, /**/ Send *s, MPI_Request *req);
+void send_ii(MPI_Comm cart, const int rank[], const int size[], const int bt, /**/ Pbufs<int> *sii, MPI_Request *req);
 
-void pack_pp(const Particle *pp, int n, Send *s) {
-    dev::pack<float2, 3> <<<k_cnf(3*n)>>>((float2*)pp, s->iidx, s->strt, /**/ s->pp.dev);
-}
+void recv_count(/**/ Recv *r, int *nhalo);
 
-void pack_ii(const int *ii, int n, const Send *s, Pbufs<int>* sii) {
-    dev::pack<int, 1> <<<k_cnf(n)>>>(ii, s->iidx, s->strt, /**/ sii->dev);
-}
+void unpack_pp(const int n, const Recv *r, /**/ Particle *pp_re);
+void unpack_ii(const int n, const Recv *r, const Pbufs<int> *rii, /**/ int *ii_re);
 
-int send_sz(MPI_Comm cart, const int rank[], const int btc, /**/ Send *s, MPI_Request *req) {
-    for(int i = 0; i < 27; ++i) s->size[i] = s->size_pin->D[i];
-    for(int i = 1, cnt = 0; i < 27; ++i)
-    l::m::Isend(s->size + i, 1, MPI_INTEGER, rank[i],
-                btc + i, cart, &req[cnt++]);
-    return s->size[0]; /* `n' bulk */
-}
-
-void send_pp(MPI_Comm cart, const int rank[], const int btp, /**/ Send *s, MPI_Request *req) {
-    for(int i = 1, cnt = 0; i < 27; ++i)
-    l::m::Isend(s->pp.hst[i], s->size[i] * 6, MPI_FLOAT, rank[i],
-                btp + i, cart, &req[cnt++]);
-}
-
-void send_ii(MPI_Comm cart, const int rank[], const int size[], const int bt, /**/ Pbufs<int> *sii, MPI_Request *req) {
-    for(int i = 1, cnt = 0; i < 27; ++i)
-    l::m::Isend(sii->hst[i], size[i], MPI_INT, rank[i],
-                bt + i, cart, &req[cnt++]);
-}
-
-void recv_count(/**/ Recv *r, int *nhalo) {
-    int i;
-    static int size[27], strt[28];
-
-    size[0] = strt[0] = 0;
-    for (i = 1; i < 27; ++i)    size[i] = r->size[i];
-    for (i = 1; i < 28; ++i)    strt[i] = strt[i - 1] + size[i - 1];
-    CC(cudaMemcpy(r->strt,    strt,    sizeof(strt),    H2D));
-    *nhalo = strt[27];
-}
-
-void unpack_pp(const int n, const Recv *r, /**/ Particle *pp_re) {
-    dev::unpack<float2, 3> <<<k_cnf(3*n)>>> (r->pp.dev, r->strt, /**/ (float2*) pp_re);
-}
-
-void unpack_ii(const int n, const Recv *r, const Pbufs<int> *rii, /**/ int *ii_re) {
-    dev::unpack<int, 1> <<<k_cnf(n)>>> (rii->dev, r->strt, /**/ ii_re);
-}
-
-void subindex_remote(const int n, const Recv *r, /*io*/ Particle *pp_re, int *counts, /**/ uchar4 *subi) {
-    dev::subindex_remote <<<k_cnf(n)>>> (n, r->strt, /*io*/ (float2*) pp_re, counts, /**/ subi);
-}
+void subindex_remote(const int n, const Recv *r, /*io*/ Particle *pp_re, int *counts, /**/ uchar4 *subi);
 
 /* TODO: this is not used, why? */
-void cancel_recv(/**/ MPI_Request *size_req, MPI_Request *mesg_req) {
-    for(int i = 0; i < 26; ++i) l::m::Cancel(size_req + i) ;
-    for(int i = 0; i < 26; ++i) l::m::Cancel(mesg_req + i) ;
+void cancel_recv(/**/ MPI_Request *size_req, MPI_Request *mesg_req);
+
+void scatter(bool remote, const uchar4 *subi, const int n, const int *start, /**/ uint *iidx);
+void gather_id(const int *ii_lo, const int *ii_re, int n, const uint *iidx, /**/ int *ii);
+void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, const uint *iidx,
+               /**/ float2  *pp, float4  *zip0, ushort4 *zip1);
+
+// ini.h
+void ini_comm(const MPI_Comm cart, /**/ int rank[], int tags[]);
+void ini_S(/**/ Send *s);
+void ini_R(const Send *s, /**/ Recv *r);
+void ini_SRI(Pbufs<int> *sii, Pbufs<int> *rii);
+
+// fin.h
+void fin_S(Send *s);
+void fin_R(Recv *r);
+void fin_SRI(Pbufs<int> *sii, Pbufs<int> *rii);
+}
 }
