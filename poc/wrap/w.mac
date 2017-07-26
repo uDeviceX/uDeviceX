@@ -1,0 +1,17 @@
+/* return a function which maps `f` to `t` (from and to) */
+genf(f, t)::=buildq([s: gensym(),  r: gensym(), f, t],
+  subst('b = r + t - f, lambda([r], b)));
+
+/* return an inverse of function `f' */
+invf(f):= apply(genf, [f(0), 0]);
+
+/* return `f' and its inverse */
+genfi(f, t):=block([ff, gg],
+  ff: genf(f, t),
+  gg: invf(ff),
+  [ff, gg]);
+
+chain(a2b, b2c):= block(
+  local(a2c),
+  a2c(r):=b2c(a2b(r)),
+  apply(genf, [0, a2c(0)]));
