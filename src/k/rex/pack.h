@@ -30,7 +30,8 @@ __device__ void shift(int fid, Pa *p) {
 __device__ void
 pack0(const float2 *pp, int fid,
       int count, int offset, int tstart, int *scattered_indices,
-      int wsf, int dw, /**/ float2 *buf) {
+      int wsf, int dw, /**/ float2 *buf)
+{
     int dwe;  /* wrap or buffer end relative to `ws' */
     int entry, pid;
     Pa p;
