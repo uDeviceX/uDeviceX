@@ -1,5 +1,15 @@
 namespace k_rex {
-struct Pa { float2 s0, s1, s2; }
+struct Pa { float2 s0, s1, s2; };
+
+__device__ Pa pp2p(const float2 *pp, int i) {
+    Pa p;
+    float2 s0, s1, s2;
+    pp += 3*i;
+    s0 = __ldg(pp++); s1 = __ldg(pp++); s2 = __ldg(pp++);
+    p.s0 = s0; p.s1 = s1; p.s2 = s2;
+    return p;
+}
+
 
 __device__ void fid2dr(int fid, /**/ float *d) {
     /* fragment id to coordinate shift */
@@ -16,26 +26,20 @@ pack0(const float2 *pp, int fid,
     enum {X, Y, Z};
     float d[3]; /* coordinate shift */
     int dwe;  /* wrap or buffer end relative to `ws' */
-    float2 s0, s1, s2;
-    int entry, pid, entry2;
+    int entry, pid;
+    Pa p;
     
     dwe = min(warpSize, count - wsf);
     if (dw < dwe) {
         entry = offset + wsf + dw;
         pid = __ldg(scattered_indices + entry);
-
-        entry2 = 3 * pid;
-
-        s0 = __ldg(pp + entry2);
-        s1 = __ldg(pp + entry2 + 1);
-        s2 = __ldg(pp + entry2 + 2);
-
+        p = pp2p(pp, pid);
         fid2dr(fid, d);
-        s0.x += d[X];
-        s0.y += d[Y];
-        s1.x += d[Z];
+        p.s0.x += d[X];
+        p.s0.y += d[Y];
+        p.s1.x += d[Z];
     }
-    k_write::AOS6f(buf + 3 * (tstart + offset + wsf), dwe, s0, s1, s2);
+    k_write::AOS6f(buf + 3 * (tstart + offset + wsf), dwe, p.s0, p.s1, p.s2);
 }
 
 __device__ void pack1(const float2 *pp, int ws, int dw, /**/ float2 *buf) {
