@@ -10,7 +10,6 @@ __device__ Pa pp2p(const float2 *pp, int i) {
     return p;
 }
 
-
 __device__ void fid2dr(int fid, /**/ float *d) {
     /* fragment id to coordinate shift */
     enum {X, Y, Z};
@@ -19,12 +18,19 @@ __device__ void fid2dr(int fid, /**/ float *d) {
     d[Z] = - ((fid / 9 + 2) % 3 - 1) * ZS;
 }
 
+__device__ void shift(int fid, Pa *p) {
+    enum {X, Y, Z};
+    float d[3]; /* coordinate shift */
+    fid2dr(fid, d);
+    p->s0.x += d[X];
+    p->s0.y += d[Y];
+    p->s1.x += d[Z];
+}
+
 __device__ void
 pack0(const float2 *pp, int fid,
       int count, int offset, int tstart, int *scattered_indices,
       int wsf, int dw, /**/ float2 *buf) {
-    enum {X, Y, Z};
-    float d[3]; /* coordinate shift */
     int dwe;  /* wrap or buffer end relative to `ws' */
     int entry, pid;
     Pa p;
@@ -34,10 +40,7 @@ pack0(const float2 *pp, int fid,
         entry = offset + wsf + dw;
         pid = __ldg(scattered_indices + entry);
         p = pp2p(pp, pid);
-        fid2dr(fid, d);
-        p.s0.x += d[X];
-        p.s0.y += d[Y];
-        p.s1.x += d[Z];
+        shift(fid, &p); /* shift coordinates */
     }
     k_write::AOS6f(buf + 3 * (tstart + offset + wsf), dwe, p.s0, p.s1, p.s2);
 }
