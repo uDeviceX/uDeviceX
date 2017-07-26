@@ -1,6 +1,6 @@
 namespace k_rex {
 
-__device__ void pack0(const float2 *pp, /**/ float2 *buf) {
+__device__ void pack1(const float2 *pp, /**/ float2 *buf) {
     int warp, localbase, fid, packbase, npack, lane;
     float2 s0, s1, s2;
     int entry, pid, entry2;
@@ -37,7 +37,7 @@ __device__ void pack0(const float2 *pp, /**/ float2 *buf) {
 
 __global__ void pack(const float2 *pp, /**/ float2 *buf) {
     if (g::failed) return;
-    pack0(pp, buf);
+    pack1(pp, buf);
 }
 
 }
