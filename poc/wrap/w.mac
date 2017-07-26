@@ -1,0 +1,23 @@
+load("u.mac");
+/*
+
+i: paritcle id, ws: wrap start (0th lane), fs: fragment start
+
+"global":
+[fs  ws     i     ]
+
+"wrap":
+[0           ]
+
+"fragment"
+[0                      cnt]
+
+*/
+
+/* transformations */
+[g2w, w2g]: genfi(ws, 0);
+[g2f, f2g]: genfi(fs, 0);
+f2w: chain(f2g, g2w);
+
+g2w(ws);
+f2w(cnt);
