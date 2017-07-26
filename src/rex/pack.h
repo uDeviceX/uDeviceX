@@ -1,11 +1,14 @@
 namespace rex {
-void pack_attempt(std::vector<ParticlesWrap> w, x::TicketPack tp) {
+void pack_clear(x::TicketPack tp) {
     if (tp.counts->S)
         CC(cudaMemsetAsync(tp.counts->D, 0, sizeof(int) * tp.counts->S));
     if (tp.offsets->S)
         CC(cudaMemsetAsync(tp.offsets->D, 0, sizeof(int) * tp.offsets->S));
     if (tp.starts->S)
         CC(cudaMemsetAsync(tp.starts->D, 0, sizeof(int) * tp.starts->S));
+}
+
+void pack_attempt(std::vector<ParticlesWrap> w, x::TicketPack tp) {
     k_rex::ini<<<1, 1>>>();
     for (int i = 0; i < (int) w.size(); ++i) {
         ParticlesWrap it = w[i];
