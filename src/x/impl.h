@@ -30,7 +30,7 @@ static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<Particle
         dSync();
     }
     rex::local_resize();
-    rex::_postrecvA(tc.cart, tc.ranks, tr.tags, t);
+    rex::postrecvA(tc.cart, tc.ranks, tr.tags, t);
 
     if (cnt == 0) rex::_postrecvP(tc.cart, tc.ranks, tr.tags, t);
     else          rex::post_waitP();

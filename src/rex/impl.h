@@ -25,7 +25,7 @@ void _postrecvP(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     }
 }
 
-void _postrecvA(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
+void postrecvA(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     for (int i = 0; i < 26; ++i) {
         MPI_Request reqA;
         MC(l::m::Irecv(local[i]->result->D, local[i]->result->S * 3,
