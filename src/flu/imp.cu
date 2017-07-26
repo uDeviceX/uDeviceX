@@ -1,9 +1,20 @@
+#include <cstdio>
+#include <cassert>
 
-#include "imp.h"
+#include <mpi.h>
+#include "l/m.h"
+#include "m.h"
+#include "common.h"
+#include "common.cuda.h"
+#include "common.mpi.h"
+#include <conf.h>
+#include "restart.h"
+
+#include "flu/imp.h"
 
 namespace sub {
 namespace dev {
-#include "dev.h"
+#include "flu/dev.h"
 }
 
 int gen0(Particle *pp) { /* generate particle positions and velocities */
@@ -82,5 +93,10 @@ void strt_dump(const int id, const int n, const Particle *dev, Particle *hst) {
 void strt_dump_ii(const char *subext, const int id, const int n, const int *dev, int *hst) {
     if (n) cD2H(hst, dev, n);
     restart::write_ii("flu", subext, id, hst, n);
+}
+
+void zip(const Particle *pp, const int n, /**/ float4 *zip0, ushort4 * zip1) {
+    assert(sizeof(Particle) == 6 * sizeof(float)); /* :TODO: implicit dependency */
+    dev::zip<<<(n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>(zip0, zip1, (float*)pp, n);
 }
 }

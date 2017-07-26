@@ -1,6 +1,18 @@
-#include "int.h"
-#include "imp.h"
+#include <cstdio>
 
+#include "common.h"
+#include "common.cuda.h"
+#include <conf.h>
+#include "clist/int.h"
+
+#include <limits> /* for rnd */
+#include <stdint.h>
+#include "rnd.h"
+
+#include "flu/int.h"
+#include "flu/imp.h"
+
+namespace flu {
 void alloc_quants(Quants *q) {
     q->n = 0;
     mpDeviceMalloc(&q->pp); mpDeviceMalloc(&q->pp0);
@@ -40,8 +52,7 @@ void get_ticketZ(Quants q, /**/ TicketZ *t) {
     if (q.n == 0) return;
     float4  *zip0 = t->zip0;
     ushort4 *zip1 = t->zip1;
-    assert(sizeof(Particle) == 6 * sizeof(float)); /* :TODO: implicit dependency */
-    sub::dev::zip<<<(q.n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>(zip0, zip1, (float*)q.pp, q.n);
+    sub::zip(q.pp, q.n, /**/ zip0, zip1);
 }
 
 void get_ticketRND(/**/ TicketRND *t) {
@@ -78,4 +89,5 @@ void strt_dump(const int id, const Quants q) {
 
 void strt_dump_ii(const char *subext, const int id, const QuantsI q, const int n) {
     sub::strt_dump_ii(subext, id, n, q.ii, /* w */ q.ii_hst);
+}
 }
