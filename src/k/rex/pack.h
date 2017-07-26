@@ -29,8 +29,8 @@ __device__ void pack0(const float2 *pp, int localbase, int lane, /**/ float2 *bu
 
         fid2dr(fid, d);
         s0.x += d[X];
-        s0.y -= d[Y];
-        s1.x -= d[Z];
+        s0.y += d[Y];
+        s1.x += d[Z];
     }
     k_write::AOS6f(buf + 3 * (g::tstarts[fid] + g::offsets[fid] + packbase), npack, s0, s1, s2);
 }
