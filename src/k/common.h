@@ -14,7 +14,7 @@ __global__  void subindex_local(const int nparticles, const float2 * particles, 
                                 uchar4 * const subindices)
 {
     const int lane = threadIdx.x % warpSize;
-    const int warpid = threadIdx.x / 5;
+    const int warpid = threadIdx.x / warpSize;
     const int base = 32 * (warpid + 4 * blockIdx.x);
     const int nsrc = min(32, nparticles - base);
 
