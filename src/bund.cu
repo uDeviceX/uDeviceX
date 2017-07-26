@@ -104,18 +104,8 @@ namespace strt {
 
 #include "flu/int.h"
 
-namespace odstr {
-namespace sub {
-namespace dev {
-#include "odstr/dev.h"
-}
-#include "odstr/buf.h"
-#include "odstr/ini.h"
-#include "odstr/imp.h"
-#include "odstr/fin.h"
-}
+#include "odstr/type.h"
 #include "odstr/int.h"
-}
 
 #include "k/fsi/type.h"
 #include "k/fsi/decl.h"
