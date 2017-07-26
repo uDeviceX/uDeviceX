@@ -24,6 +24,7 @@ static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<Particle
         rex::post_resize();
         rex::_adjust_packbuffers();
         rex::pack_clear(tp);
+        rex::scanA(w, tp);
         rex::pack_attempt(w, tp);
         dSync();
     }
@@ -39,6 +40,7 @@ static void rex0(std::vector<ParticlesWrap> w, int nw) {
     cnt++;
     rex::pack_p(nw, tp);
     rex::pack_clear(tp);
+    rex::scanA(w, tp);
     rex::pack_attempt(w, tp);
     post(tc, tr, tt, w);
     rex::recv_p(tc.cart, tc.ranks, tr.tags, tt);
