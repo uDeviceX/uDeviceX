@@ -1,7 +1,5 @@
 namespace k_rex {
-__global__ void pack(const float2 *pp, /**/ float2 *buffer) {
-    if (g::failed) return;
-
+__device__ void pack0(const float2 *pp, /**/ float2 *buffer) {
     int warpid = threadIdx.x >> 5;
     int npack_padded = g::starts[26];
 
@@ -34,4 +32,10 @@ __global__ void pack(const float2 *pp, /**/ float2 *buffer) {
                        s0, s1, s2);
     }
 }
+
+__global__ void pack(const float2 *pp, /**/ float2 *buffer) {
+    if (g::failed) return;
+    pack0(pp, buffer);
+}
+
 }
