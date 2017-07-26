@@ -1,3 +1,36 @@
+#include <mpi.h>
+#include "l/m.h"
+#include "m.h"
+
+#include <conf.h>
+
+#include "common.h"
+#include "common.cuda.h"
+#include "common.mpi.h"
+#include "common.macro.h"
+#include "common.tmp.h"
+
+#include "scan/int.h"
+
+
+#include "k/read.h"
+#include "k/write.h"
+#include "k/common.h"
+
+#include "odstr/type.h"
+#include "odstr/imp.h"
+
+
+namespace odstr {
+namespace sub {
+
+namespace dev {
+#include "odstr/dev.h"
+}
+#include "odstr/buf.h"
+#include "odstr/ini.h"
+#include "odstr/fin.h"
+
 void waitall(MPI_Request *reqs) {
     MPI_Status statuses[26];
     l::m::Waitall(26, reqs, statuses) ;
@@ -85,4 +118,22 @@ void subindex_remote(const int n, const Recv *r, /*io*/ Particle *pp_re, int *co
 void cancel_recv(/**/ MPI_Request *size_req, MPI_Request *mesg_req) {
     for(int i = 0; i < 26; ++i) l::m::Cancel(size_req + i) ;
     for(int i = 0; i < 26; ++i) l::m::Cancel(mesg_req + i) ;
+}
+
+void scatter(bool remote, const uchar4 *subi, const int n, const int *start, /**/ uint *iidx) {
+    if (n)
+        dev::scatter <<<k_cnf(n)>>> (remote, subi, n, start, /**/ iidx);
+}
+
+void gather_id(const int *ii_lo, const int *ii_re, int n, const uint *iidx, /**/ int *ii) {
+    if (n)
+        dev::gather_id <<<k_cnf(n)>>> (ii_lo, ii_re, n, iidx, /**/ ii);
+}
+void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, const uint *iidx,
+               /**/ float2  *pp, float4  *zip0, ushort4 *zip1) {
+    if (n)
+        dev::gather_pp <<<k_cnf(n)>>> (pp_lo, pp_re, n,iidx, /**/ pp, zip0, zip1);
+}
+
+}
 }

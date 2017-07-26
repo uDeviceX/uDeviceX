@@ -1,4 +1,32 @@
+#include "basetags.h"
+
+#include <mpi.h>
+#include "l/m.h"
+#include "m.h"
+#include "common.h"
+#include "common.cuda.h"
+#include "common.mpi.h"
+#include "common.tmp.h"
+
+#include <conf.h>
+#include "k/read.h"
+#include "k/write.h"
+#include "k/common.h"
+
+#include <limits> /* for rnd */
+#include <stdint.h>
+#include "rnd.h"
+#include "clist/int.h"
+#include "flu/int.h"
+
+#include "scan/int.h"
+
+#include "odstr/type.h"
+#include "odstr/int.h"
+#include "odstr/imp.h"
+
 namespace odstr {
+
 void alloc_ticketD(/*io*/ basetags::TagGen *tg, /**/ TicketD *t) {
     l::m::Comm_dup(m::cart, &t->cart);
     sub::ini_comm(t->cart, /**/ t->rank, t->r.tags);
@@ -127,6 +155,9 @@ void unpack_ii(const TicketD *td, const TicketI *ti, TicketUI *tui) {
     if (nhalo) sub::unpack_ii(nhalo, &td->r, &ti->rii, /**/ tui->ii_re);    
 }
 
+#define HALO true
+#define BULK false
+
 void gather_pp(const TicketD *td, /**/ flu::Quants *q, TicketU *tu, flu::TicketZ *tz) {
     const int nhalo = td->nhalo, nbulk = td->nbulk;
     
@@ -135,16 +166,13 @@ void gather_pp(const TicketD *td, /**/ flu::Quants *q, TicketU *tu, flu::TicketZ
     
     Particle *pp = q->pp, *pp0 = q->pp0;
 
-    if (n)
-        sub::dev::scatter<<<k_cnf(n)>>>(false, td->subi_lo,  n, start, /**/ tu->iidx);
+    sub::scatter(BULK, td->subi_lo,  n, start, /**/ tu->iidx);
+    sub::scatter(HALO, tu->subi_re, nhalo, start, /**/ tu->iidx);
 
-    if (nhalo)
-        sub::dev::scatter<<<k_cnf(nhalo)>>>(true, tu->subi_re, nhalo, start, /**/ tu->iidx);
     n = nbulk + nhalo;
     
-    if (n)
-    sub::dev::gather_pp<<<k_cnf(n)>>>((float2*)pp, (float2*)tu->pp_re, n, tu->iidx,
-                                          /**/ (float2*)pp0, tz->zip0, tz->zip1);
+    sub::gather_pp((float2*)pp, (float2*)tu->pp_re, n, tu->iidx,
+                   /**/ (float2*)pp0, tz->zip0, tz->zip1);
 
     q->n = n;
 
@@ -152,10 +180,14 @@ void gather_pp(const TicketD *td, /**/ flu::Quants *q, TicketU *tu, flu::TicketZ
     q->pp = pp0; q->pp0 = pp; 
 }
 
+#undef HALO
+#undef BULK
+
+
 void gather_ii(const int n, const TicketU *tu, const TicketUI *tui , /**/ flu::QuantsI *q) {
     int *ii = q->ii, *ii0 = q->ii0;
 
-    if (n) sub::dev::gather_id<<<k_cnf(n)>>>(ii, tui->ii_re, n, tu->iidx, /**/ ii0);
+    sub::gather_id(ii, tui->ii_re, n, tu->iidx, /**/ ii0);
 
     /* swap */
     q->ii = ii0; q->ii0 = ii;
