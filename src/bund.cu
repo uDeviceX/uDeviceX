@@ -155,11 +155,6 @@ namespace dev {
 #include "x/ticketpack.h"
 #include "x/impl.h"
 
-#include "bipsbatch.type.h"
-#include "k/bipsbatch/map.h"
-#include "k/bipsbatch/common.h"
-#include "bipsbatch.impl.h"
-
 #include "dpd/local.h"
 #include "dpd/flocal.h"
 
@@ -170,18 +165,7 @@ namespace dev {
 #include "dpd/x/imp.h"
 }
 
-namespace dpdr {
-namespace sub {
-namespace dev {
-#include "dpdr/dev.h"
-}
-#include "dpdr/buf.h"
-#include "dpdr/ini.h"
-#include "dpdr/imp.h"
-#include "dpdr/fin.h"
-}
 #include "dpdr/int.h"
-}
 
 #include "mesh/collision.h"
 #include "mesh/dist.h"

@@ -1,8 +1,3 @@
-typedef Sarray<int,  26> int26;
-typedef Sarray<int,  27> int27;
-typedef Sarray<int*, 26> intp26;
-typedef Sarray<Particle*, 26> Particlep26;
-
 /* returns halo box; 0 is a corner of subdomain */
 static __device__ void get_box(int i, /**/ int org[3], int ext[3]) {
     /* i, org, ext : fragment id, origin, extend */
