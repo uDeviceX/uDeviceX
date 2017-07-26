@@ -1,8 +1,8 @@
 namespace x {
 static void ini_ticketpack(TicketPack *t) {
     t->tstarts = new DeviceBuffer<int>(27);
-    t->tstarts_hst = new PinnedHostBuffer1<int>(27);
-    t->tcounts_hst = new PinnedHostBuffer1<int>(26);
+    t->tstarts_hst = new PinnedHostBuffer4<int>(27);
+    t->tcounts_hst = new PinnedHostBuffer4<int>(26);
 
     t->counts = new DeviceBuffer<int>;
     t->starts = new DeviceBuffer<int>;
