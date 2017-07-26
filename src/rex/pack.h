@@ -1,5 +1,5 @@
 namespace rex {
-void _pack_attempt(std::vector<ParticlesWrap> w, x::TicketPack tp) {
+void pack_attempt(std::vector<ParticlesWrap> w, x::TicketPack tp) {
     if (tp.counts->S)
         CC(cudaMemsetAsync(tp.counts->D, 0, sizeof(int) * tp.counts->S));
     if (tp.offsets->S)
