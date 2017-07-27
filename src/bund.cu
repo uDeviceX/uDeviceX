@@ -63,6 +63,9 @@ namespace ic {
 #include "rbc/int.h"
 }
 
+#include "mdstr/int.h"
+#include "rdstr/int.h"
+
 #include "rdstr.decl.h"
 #include "k/rdstr.h"
 #include "rdstr.impl.h"
