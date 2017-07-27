@@ -21,16 +21,9 @@ namespace sub {
 namespace dev {
 #include "dpdr/dev.h"
 }
-
-static void cancel_req(MPI_Request r[26]) {
-    for (int i = 0; i < 26; ++i) MC(MPI_Cancel(r + i));
-}
-    
-static void cancel_Reqs(Reqs *r) {
-    cancel_req(r->pp);
-    cancel_req(r->cells);
-    cancel_req(r->counts);
-}
+#include "dpdr/ini.h"
+#include "dpdr/fin.h"
+#include "dpdr/buf.h"
 
 void wait_req(MPI_Request r[26]) {
     MPI_Status ss[26];
@@ -138,8 +131,5 @@ void recv_ii(const int *np, /**/ RIbuf *b) {
         if (np[i] > 0) CC(cudaMemcpyAsync(b->ii.d[i], b->iidev.d[i], sizeof(int) * np[i], D2D));
 }
 
-#include "dpdr/ini.h"
-#include "dpdr/fin.h"
-#include "dpdr/buf.h"
 }
 }
