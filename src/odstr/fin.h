@@ -1,3 +1,6 @@
+namespace odstr {
+namespace sub {
+
 void fin_S(Send *s) {
     for(int i = 0; i < 27; ++i) CC(cudaFree(s->iidx_[i]));
     CC(cudaFree(s->iidx));
@@ -19,3 +22,6 @@ void fin_SRI(Pbufs<int> *sii, Pbufs<int> *rii) {
     dealloc(sii);
     dealloc(rii);
 }
+
+} // sub
+} // odstr

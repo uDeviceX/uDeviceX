@@ -1,3 +1,7 @@
+namespace odstr {
+namespace sub {
+namespace dev {
+
 /* which neighboring subdomain `p' belongs to? */
 static __device__ int box(const Particle *p) {
     enum {X, Y, Z};
@@ -235,3 +239,7 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
                                     0);
     k_write::AOS6f(pp + 3 * base, nsrc, d0, d1, d2);
 }
+
+} // dev
+} // sub
+} // odstr

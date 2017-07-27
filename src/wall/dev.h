@@ -1,3 +1,7 @@
+namespace wall {
+namespace sub {
+namespace dev {
+
 enum {X, Y, Z};
 
 __global__ void particle2float4(const Particle *src, const int n, float4 *dst) {
@@ -117,3 +121,7 @@ __global__ void interactions_3tpp(TexSDF_t texsdf, const float2 *const pp, const
 #undef start_fetch
 #undef wpp_fetch
 }
+
+} // dev
+} // sub
+} // wall

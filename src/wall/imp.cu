@@ -29,15 +29,11 @@
 #include "restart.h"
 
 #include "wall/imp.h"
+#include "wall/dev.h"
+#include "wall/strt.h"
 
 namespace wall {
 namespace sub {
-namespace dev {
-#include "wall/dev.h"
-}
-namespace strt {
-#include "wall/strt.h"
-}
 
 static void exch(/*io*/ Particle *pp, int *n) { /* exchange pp(hst) between processors */
   #define isize(v) ((int)(v).size()) /* [i]nteger [size] */

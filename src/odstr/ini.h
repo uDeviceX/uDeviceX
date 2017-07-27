@@ -1,3 +1,6 @@
+namespace odstr {
+namespace sub {
+
 #define i2d(i) { (i + 1) % 3 - 1, (i / 3 + 1) % 3 - 1, (i / 9 + 1) % 3 - 1 }
 
 static int estimate(const int i) {
@@ -64,3 +67,6 @@ void ini_SRI(Pbufs<int> *sii, Pbufs<int> *rii) {
     alloc_dev(/**/ sii);
     alloc_dev(/**/ rii);
 }
+
+} // sub
+} // odstr
