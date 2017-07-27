@@ -65,7 +65,7 @@ void wait() {
 
 }
 
-int unpack(int nv, const Particle *ppr[27], const int counts[27], /**/ Particle *pp) {
+int unpack(int nv, Particle *const ppr[27], const int counts[27], /**/ Particle *pp) {
     int nm = 0;
     for (int i = 0; i < 27; ++i) {
         int c = counts[i];

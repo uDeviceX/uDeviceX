@@ -39,6 +39,6 @@ void post_send(int nv, const TicketS *ts, /**/ TicketC *tc);
 void post_recv(/**/ TicketR *tr, TicketC *tc);
 
 void wait();
-void unpack();
+int unpack(int nv, const TicketR *t, /**/ Particle *pp);
 
 } // mdstr

@@ -61,7 +61,10 @@ void post_recv(const TicketS *ts, /**/ TicketR *tr, TicketC *tc) {
 }
 
 void wait();
-void unpack();
+
+int unpack(int nv, const TicketR *t, /**/ Particle *pp) {
+    return sub::unpack(nv, t->pp, t->counts, /**/ pp);
+}
 
 #undef i2del
 } // mdstr
