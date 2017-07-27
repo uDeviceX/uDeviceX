@@ -1,5 +1,9 @@
 namespace k_rex {
-__device__ void scan_pad() {
+__device__ void scan_pad(int cnt, int t, /**/ int *starts) {
+    int L, scan;
+    scan = cnt = 32 * ((cnt + 31) / 32);
+    for (L = 1; L < 32; L <<= 1) scan += (t >= L) * __shfl_up(scan, L);
+    if (t < 27) starts[t] = scan - cnt;
 }
 
 __global__ void scanA(const int *counts, const int *oldtcounts, /**/ int *tcounts, int *starts) {
