@@ -31,7 +31,7 @@ struct tex3Dca {
 };
 
 __device__ static int iround(float x) {
-  return (x > 0.5) ? (x + 0.5) : (x - 0.5);
+    return (x > 0.5) ? (x + 0.5) : (x - 0.5);
 }
 
 __device__ float sdf(const tex3Dca<float> texsdf, float x, float y, float z) {
@@ -80,7 +80,7 @@ __device__ float cheap_sdf(const tex3Dca<float> texsdf, float x, float y, float 
     int tc[3];
     float r[3] = {x, y, z};
     for (int c = 0; c < 3; ++c)
-      tc[c] = iround(T[c] * (r[c] + L[c] / 2 + M[c]) / (L[c] + 2 * M[c]));
+        tc[c] = iround(T[c] * (r[c] + L[c] / 2 + M[c]) / (L[c] + 2 * M[c]));
 
 #define tex0(ix, iy, iz) (texsdf.fetch(tc[0] + ix, tc[1] + iy, tc[2] + iz))
     return tex0(0, 0, 0);
@@ -94,9 +94,9 @@ __device__ float3 ugrad_sdf(const tex3Dca<float> texsdf, float x, float y, float
     int tc[3];
     float fcts[3], r[3] = {x, y, z};
     for (int c = 0; c < 3; ++c)
-      tc[c] = T[c] * (r[c] + L[c] / 2 + M[c]) / (L[c] + 2 * M[c]);
+        tc[c] = T[c] * (r[c] + L[c] / 2 + M[c]) / (L[c] + 2 * M[c]);
     for (int c = 0; c < 3; ++c)
-      fcts[c] = T[c] / (2 * M[c] + L[c]);
+        fcts[c] = T[c] / (2 * M[c] + L[c]);
 
 #define tex0(ix, iy, iz) (texsdf.fetch(tc[0] + ix, tc[1] + iy, tc[2] + iz))
     float myval = tex0(0, 0, 0);
@@ -115,7 +115,7 @@ __device__ float3 grad_sdf(const tex3Dca<float> texsdf, float x, float y, float 
     int T[3] = {XTE, YTE, ZTE};
     float tc[3], r[3] = {x, y, z};
     for (int c = 0; c < 3; ++c)
-      tc[c] = T[c] * (r[c] + L[c] / 2 + M[c]) / (L[c] + 2 * M[c]) - 0.5;
+        tc[c] = T[c] * (r[c] + L[c] / 2 + M[c]) / (L[c] + 2 * M[c]) - 0.5;
 
 #define tex0(ix, iy, iz) (texsdf.fetch(tc[0] + ix, tc[1] + iy, tc[2] + iz))
     gx = tex0(1, 0, 0) - tex0(-1,  0,  0);
@@ -202,14 +202,14 @@ __global__ void bounce(const tex3Dca<float> texsdf, float2 *const pp, int n) {
     float2 data1 = pp[pid * 3 + 1];
     float s = cheap_sdf(texsdf, data0.x, data0.y, data1.x);
     if (s >= -1.7320 * XSIZE_WALLCELLS / XTE) {
-      float currsdf = sdf(texsdf, data0.x, data0.y, data1.x);
-      float2 data2 = pp[pid * 3 + 2];
-      if (currsdf >= 0) {
-	handle_collision(texsdf, currsdf, data0.x, data0.y, data1.x, data1.y, data2.x, data2.y);
-	pp[3 * pid] = data0;
-	pp[3 * pid + 1] = data1;
-	pp[3 * pid + 2] = data2;
-      }
+        float currsdf = sdf(texsdf, data0.x, data0.y, data1.x);
+        float2 data2 = pp[pid * 3 + 2];
+        if (currsdf >= 0) {
+            handle_collision(texsdf, currsdf, data0.x, data0.y, data1.x, data1.y, data2.x, data2.y);
+            pp[3 * pid] = data0;
+            pp[3 * pid + 1] = data1;
+            pp[3 * pid + 2] = data2;
+        }
     }
 }
 

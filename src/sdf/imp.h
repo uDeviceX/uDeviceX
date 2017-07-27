@@ -1,70 +1,70 @@
 struct Tex { /* simplifies communication between ini[0123..] */
-  cudaArray *a;
-  dev::tex3Dca<float> *t;
+    cudaArray *a;
+    dev::tex3Dca<float> *t;
 };
 
 static void ini0(float *D, /**/ struct Tex te) {
-  cudaMemcpy3DParms copyParams = {0};
-  copyParams.srcPtr = make_cudaPitchedPtr((void*)D, XTE * sizeof(float), XTE, YTE);
-  copyParams.dstArray = te.a;
-  copyParams.extent = make_cudaExtent(XTE, YTE, ZTE);
-  copyParams.kind = H2D;
-  CC(cudaMemcpy3D(&copyParams));
-  te.t->setup(te.a);
+    cudaMemcpy3DParms copyParams = {0};
+    copyParams.srcPtr = make_cudaPitchedPtr((void*)D, XTE * sizeof(float), XTE, YTE);
+    copyParams.dstArray = te.a;
+    copyParams.extent = make_cudaExtent(XTE, YTE, ZTE);
+    copyParams.kind = H2D;
+    CC(cudaMemcpy3D(&copyParams));
+    te.t->setup(te.a);
 }
 
 static void ini1(int N[3], float *D0, float *D1, /**/ struct Tex te) {
-  int c;
-  int L[3] = {XS, YS, ZS};
-  int M[3] = {XWM, YWM, ZWM}; /* margin and texture */
-  int T[3] = {XTE, YTE, ZTE};
-  float G; /* domain size ([g]lobal) */
-  float lo; /* left edge of subdomain */
-  float org[3], spa[3]; /* origin and spacing */
-  for (c = 0; c < 3; ++c) {
-    G = m::dims[c] * L[c];
-    lo = m::coords[c] * L[c];
-    spa[c] = N[c] * (L[c] + 2 * M[c]) / G / T[c];
-    org[c] = N[c] * (lo - M[c]) / G;
-  }
-  field::sample(org, spa, N, D0,   T, /**/ D1);
-  ini0(D1, te);
+    int c;
+    int L[3] = {XS, YS, ZS};
+    int M[3] = {XWM, YWM, ZWM}; /* margin and texture */
+    int T[3] = {XTE, YTE, ZTE};
+    float G; /* domain size ([g]lobal) */
+    float lo; /* left edge of subdomain */
+    float org[3], spa[3]; /* origin and spacing */
+    for (c = 0; c < 3; ++c) {
+        G = m::dims[c] * L[c];
+        lo = m::coords[c] * L[c];
+        spa[c] = N[c] * (L[c] + 2 * M[c]) / G / T[c];
+        org[c] = N[c] * (lo - M[c]) / G;
+    }
+    field::sample(org, spa, N, D0,   T, /**/ D1);
+    ini0(D1, te);
 }
 
 static void ini2(int N[3], float* D0, /**/ struct Tex te) {
-  float *D1 = new float[XTE * YTE * ZTE];
-  ini1(N, D0, D1, /**/ te);
-  delete[] D1;
+    float *D1 = new float[XTE * YTE * ZTE];
+    ini1(N, D0, D1, /**/ te);
+    delete[] D1;
 }
 
 static void ini3(int N[3], float ext[3], float* D, /**/ struct Tex te) {
-  enum {X, Y, Z};
-  float sc, G; /* domain size in x ([G]lobal) */
-  G = m::dims[X] * XS;
-  sc = G / ext[X];
-  field::scale(N, sc, /**/ D);
+    enum {X, Y, Z};
+    float sc, G; /* domain size in x ([G]lobal) */
+    G = m::dims[X] * XS;
+    sc = G / ext[X];
+    field::scale(N, sc, /**/ D);
 
-  MC(l::m::Barrier(m::cart)); /* TODO: why? */
-  if (field_dumps) field::dump(N, D);
+    MC(l::m::Barrier(m::cart)); /* TODO: why? */
+    if (field_dumps) field::dump(N, D);
 
-  ini2(N, D, /**/ te);
+    ini2(N, D, /**/ te);
 }
 
 void ini(cudaArray *arrsdf, dev::tex3Dca<float> *texsdf) {
-  enum {X, Y, Z};
-  float *D;     /* data */
-  int N[3];     /* size of D */
-  float ext[3]; /* extent */
-  int n;
-  char f[] = "sdf.dat";
-  struct Tex te {arrsdf, texsdf};
+    enum {X, Y, Z};
+    float *D;     /* data */
+    int N[3];     /* size of D */
+    float ext[3]; /* extent */
+    int n;
+    char f[] = "sdf.dat";
+    struct Tex te {arrsdf, texsdf};
   
-  field::ini_dims(f, /**/ N, ext);
-  n = N[X] * N[Y] * N[Z];
-  D = new float[n];
-  field::ini_data(f, n, /**/ D);
-  ini3(N, ext, D, /**/ te);
-  delete[] D;
+    field::ini_dims(f, /**/ N, ext);
+    n = N[X] * N[Y] * N[Z];
+    D = new float[n];
+    field::ini_data(f, n, /**/ D);
+    ini3(N, ext, D, /**/ te);
+    delete[] D;
 }
 
 /* sort solvent particle (dev) into remaining in solvent (dev) and turning into wall (hst)*/
