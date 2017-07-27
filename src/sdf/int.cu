@@ -1,5 +1,6 @@
 #include "common.h"
 
+#include "sdf/type.h"
 #include "sdf/int.h"
 #include "sdf/imp.h"
 
@@ -20,5 +21,9 @@ void ini(Quants *q) {
 
 int who_stays(const Quants q, Particle *pp, int n, int nc, int nv, int *stay) {
     return sub::who_stays(q.texsdf, pp, n, nc, nv, /**/ stay);
+}
+
+void bounce(const tex3Dca<float> texsdf, int n, /**/ Particle *pp) {
+    sub::bounce(texsdf, n, /**/ pp);
 }
 }
