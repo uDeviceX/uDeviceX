@@ -53,7 +53,7 @@ pack0(const float2 *pp, int fid,
 }
 
 __device__ void pack1(const float2 *pp, int ws, int dw, /**/ float2 *buf) {
-    int wsf;  /* wraps start in fragment coordinates */
+    int wsf;  /* wrap start in fragment coordinates */
     int fid;
 
     fid = k_common::fid(g::starts, ws);
