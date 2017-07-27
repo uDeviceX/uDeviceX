@@ -7,7 +7,7 @@ static inline __device__ int iround(float x) {
 }
 
 /* within the rescaled texel width error */
-__device__ float cheap_sdf(const tex3Dca<float> texsdf, float x, float y, float z)  {
+inline __device__ float cheap_sdf(const tex3Dca<float> texsdf, float x, float y, float z)  {
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
     int T[3] = {XTE, YTE, ZTE};
