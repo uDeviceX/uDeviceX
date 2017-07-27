@@ -1,12 +1,4 @@
 namespace k_cnt {
-__global__ void bulk_3tpp(float2 *particles, int np,
-                          int ncellentries, int nsolutes,
-                          float *acc, float seed,
-                          int mysoluteid);
-
-__global__ void halo(int nparticles_padded, int ncellentries,
-                     int nsolutes, float seed);
-
 void setup() {
     texCellsStart.channelDesc = cudaCreateChannelDesc<int>();
     texCellsStart.filterMode = cudaFilterModePoint;
@@ -17,33 +9,6 @@ void setup() {
     texCellEntries.filterMode = cudaFilterModePoint;
     texCellEntries.mipmapFilterMode = cudaFilterModePoint;
     texCellEntries.normalized = 0;
-}
-
-__global__ void populate(uchar4 *subindices,
-                         int *cellstart, int nparticles,
-                         int soluteid, int ntotalparticles,
-                         CellEntry *entrycells) {
-    int warpid = threadIdx.x / warpSize;
-    int tid = threadIdx.x % warpSize;
-
-    int base = 32 * (warpid + 4 * blockIdx.x);
-    int pid = base + tid;
-
-    if (pid >= nparticles) return;
-
-    uchar4 subindex = subindices[pid];
-
-    if (subindex.x == 0xff && subindex.y == 0xff && subindex.z == 0xff) return;
-
-    int cellid = subindex.x + XCELLS * (subindex.y + YCELLS * subindex.z);
-    int mystart = __ldg(cellstart + cellid);
-    int slot = mystart + subindex.w;
-
-    CellEntry myentrycell;
-    myentrycell.pid = pid;
-    myentrycell.code.w = soluteid;
-
-    entrycells[slot] = myentrycell;
 }
 
 void bind(const int *const cellsstart, const int *const cellentries,
