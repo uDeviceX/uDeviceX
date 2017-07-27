@@ -8,6 +8,7 @@
 #include <conf.h>
 #include "common.macro.h"
 
+#include "glb.h"
 #include "k/wvel.h"
 
 #include "field.h"
