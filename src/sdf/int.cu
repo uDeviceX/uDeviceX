@@ -31,7 +31,7 @@ int who_stays(const Quants q, Particle *pp, int n, int nc, int nv, int *stay) {
     return sub::who_stays(q.texsdf, pp, n, nc, nv, /**/ stay);
 }
 
-void bounce(const tex3Dca<float> texsdf, int n, /**/ Particle *pp) {
-    sub::bounce(texsdf, n, /**/ pp);
+void bounce(const Quants *q, int n, /**/ Particle *pp) {
+    sub::bounce(q->texsdf, n, /**/ pp);
 }
 }

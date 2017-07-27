@@ -11,6 +11,6 @@ void update_rbc() {
 }
 
 void bounce() {
-    sdf::bounce(w::qsdf.texsdf, o::q.n, /**/ o::q.pp);
-    // if (rbcs) sdf::bounce(w::qsdf.texsdf, r::q.n, /**/ r::q.pp);
+    sdf::bounce(&w::qsdf, o::q.n, /**/ o::q.pp);
+    // if (rbcs) sdf::bounce(&w::qsdf, r::q.n, /**/ r::q.pp);
 }
