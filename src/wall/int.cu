@@ -1,6 +1,20 @@
+#include <cstdio>
+#include "common.h"
+#include "common.cuda.h"
 
-#include "int.h"
-#include "imp.h"
+#include <conf.h>
+
+#include <limits> /* for rnd */
+#include <stdint.h>
+#include "rnd.h"
+
+#include "sdf/type.h"
+#include "sdf/int.h"
+
+#include "clist/int.h"
+
+#include "wall/int.h"
+#include "wall/imp.h"
 
 namespace wall {
 

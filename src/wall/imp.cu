@@ -1,3 +1,44 @@
+#include <mpi.h>
+#include <cassert>
+#include "m.h"
+#include "l/m.h"
+
+#include <vector>
+
+#include <cstdio>
+#include "common.h"
+#include "common.cuda.h"
+
+#include <conf.h>
+
+#include "common.macro.h"
+
+#include <limits> /* for rnd */
+#include <stdint.h>
+#include "rnd.h"
+
+#include "sdf/type.h"
+#include "sdf/int.h"
+namespace sdf {
+#include "sdf/cheap.dev.h"
+}
+#include "k/wvel.h"
+#include "forces.h"
+
+#include "clist/int.h"
+#include "restart.h"
+
+#include "wall/imp.h"
+
+namespace wall {
+namespace sub {
+namespace dev {
+#include "wall/dev.h"
+}
+namespace strt {
+#include "wall/strt.h"
+}
+
 static void exch(/*io*/ Particle *pp, int *n) { /* exchange pp(hst) between processors */
   #define isize(v) ((int)(v).size()) /* [i]nteger [size] */
   assert(sizeof(Particle) == 6 * sizeof(float)); /* :TODO: dependencies */
@@ -67,10 +108,10 @@ static void exch(/*io*/ Particle *pp, int *n) { /* exchange pp(hst) between proc
   #undef isize
 }
 
-typedef const sdf::sub::dev::tex3Dca<float> TexSDF_t;
+typedef const sdf::tex3Dca<float> TexSDF_t;
 
 static void freeze0(TexSDF_t texsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n, /*w*/ Particle *hst) {
-    sdf::sub::bulk_wall(texsdf, /*io*/ pp, n, /*o*/ hst, w_n); /* sort into bulk-frozen */
+    sdf::bulk_wall(texsdf, /*io*/ pp, n, /*o*/ hst, w_n); /* sort into bulk-frozen */
     MSG("befor exch: bulk/frozen : %d/%d", *n, *w_n);
     exch(/*io*/ hst, w_n);
     cH2D(dev, hst, *w_n);
@@ -144,3 +185,6 @@ void interactions(TexSDF_t texsdf, const int type, const Particle *const pp, con
 void strt_dump_templ(const int n, const float4 *pp) {
     strt::write(pp, n);
 }
+
+} // sub
+} // wall
