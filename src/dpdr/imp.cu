@@ -130,5 +130,5 @@ void recv_ii(const int *np, /**/ RIbuf *b) {
         if (np[i] > 0) CC(cudaMemcpyAsync(b->ii.d[i], b->iidev.d[i], sizeof(int) * np[i], D2D));
 }
 
-}
-}
+} // sub
+} // dpdr

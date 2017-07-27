@@ -59,5 +59,6 @@ void free_SIbuf(/**/ SIbuf *b);
 
 void alloc_RIbuf(const int26 estimates, /**/ RIbuf *b);
 void free_RIbuf(/**/ RIbuf *b);
-}
-}
+
+} // sub
+} // dpdr
