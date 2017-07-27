@@ -82,6 +82,7 @@ namespace ic {
 namespace sdf {
 namespace sub {
 namespace dev {
+#include "sdf/cheap.dev.h"
 #include "sdf/dev.h"
 }
 #include "sdf/imp.h"
