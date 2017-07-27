@@ -2,7 +2,10 @@
 #include "m.h"
 #include "l/m.h"
 
+#include <cstdio>
 #include "common.h"
+#include "common.mpi.h"
+#include "common.cuda.h"
 #include <conf.h>
 
 #include "mdstr/imp.h"
@@ -32,11 +35,20 @@ void get_dests(const float *rr, int nm, /**/ int *dests[27], int counts[27]) {
 }
 
 void pack(const int *dests[27], const int counts[27], const Particle *pp, int nm, int nv, /**/ Particle *pps[27]) {
-
+    for (int fid = 0; fid < 27; ++fid)
+        for (int j = 0; j < counts[fid]; ++j) {
+            int src = dests[fid][j];
+            CC(cudaMemcpyAsync(pps[fid] + j * nv, pp + src * nv, nv * sizeof(Particle), D2H));
+        }
 }
 
-void post() {
+void post_send(const int counts[27], const Particle *pp[27], MPI_Comm cart, int btc, int btp, int rnk_ne[27],
+               /**/ MPI_Request sreqc[26], MPI_Request sreqp[26]) {
+    for (int i = 1; i < 27; ++i)
+        MC(l::m::Isend(counts + i, 1, MPI_INT, rnk_ne[i], btc + i, cart, sreqc + i - 1));
 
+    for (int i = 1; i < 27; ++i)
+        MC(l::m::Isend(pp[i], counts[i], datatype::particle, rnk_ne[i], btp + i, cart, sreqp + i - 1));
 }
 
 void wait() {
