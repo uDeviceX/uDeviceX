@@ -1,5 +1,5 @@
 namespace k_rex { /* particle and force packing dependent part : TODO : give a name */
-__device__ Pa pp2p_coll(const float2 *pp, int n, int i) {
+__device__ Pa pp2p_col(const float2 *pp, int n, int i) {
     /* pp: array to a particle : [coll]ective */
     Pa p;
     k_read::AOS6f(pp + 3*i, n, /**/ p.s0, p.s1, p.s2);
