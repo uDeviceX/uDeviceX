@@ -3,6 +3,11 @@ void ini() {
     if (rbcs) {
         CC(cudaMalloc(&r::ff, MAX_PART_NUM));
         rbc::alloc_quants(&r::q);
+
+        mdstr::ini_ticketC(&tag_gen, &r::tdc);
+        mdstr::ini_ticketS(&r::tds);
+        mdstr::ini_ticketR(&r::tds, &r::tdr);
+        rdstr::alloc_ticketE(&r::tde);
     }
 
     basetags::ini(&tag_gen);

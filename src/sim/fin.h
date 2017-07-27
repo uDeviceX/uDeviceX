@@ -57,6 +57,12 @@ void fin() {
     if (rbcs) {
         rbc::free_quants(&r::q);
         rbc::destroy_textures(&r::tt);
+
+        mdstr::free_ticketC(&r::tdc);
+        mdstr::free_ticketS(&r::tds);
+        mdstr::free_ticketR(&r::tdr);
+        rdstr::free_ticketE(&r::tde);
+        
         CC(cudaFree(r::ff));
     }
     datatype::fin();
