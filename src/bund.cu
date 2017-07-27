@@ -126,6 +126,7 @@ namespace strt {
   #include "k/rex/type.h"
   #include "k/rex/decl.h"
   #include "k/rex/common.h"
+  #include "k/rex/x.h" /* TODO */
   #include "k/rex/pack.h"
   #include "k/rex/scan.h"
   #include "k/rex/scatter.h"
