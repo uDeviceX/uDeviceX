@@ -1,4 +1,4 @@
-__device__ float sdf(const tex3Dca<float> texsdf, float x, float y, float z) {
+static __device__ float sdf(const tex3Dca<float> texsdf, float x, float y, float z) {
     int c;
     float t;
     float s000, s001, s010, s100, s101, s011, s110, s111;
@@ -36,7 +36,7 @@ __device__ float sdf(const tex3Dca<float> texsdf, float x, float y, float z) {
     return szyx;
 }
 
-__device__ float3 ugrad_sdf(const tex3Dca<float> texsdf, float x, float y, float z) {
+static __device__ float3 ugrad_sdf(const tex3Dca<float> texsdf, float x, float y, float z) {
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
     int T[3] = {XTE, YTE, ZTE};
@@ -57,7 +57,7 @@ __device__ float3 ugrad_sdf(const tex3Dca<float> texsdf, float x, float y, float
     return make_float3(gx, gy, gz);
 }
 
-__device__ float3 grad_sdf(const tex3Dca<float> texsdf, float x, float y, float z) {
+static __device__ float3 grad_sdf(const tex3Dca<float> texsdf, float x, float y, float z) {
     float gx, gy, gz;
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
@@ -87,7 +87,7 @@ __global__ void fill_keys(const tex3Dca<float> texsdf, const Particle *const pp,
     key[pid] = (int)(sdf0 >= 0) + (int)(sdf0 > 2);
 }
 
-__device__ void handle_collision(const tex3Dca<float> texsdf, float currsdf,
+static __device__ void handle_collision(const tex3Dca<float> texsdf, float currsdf,
                                  float &x, float &y, float &z,
                                  float &vx, float &vy, float &vz) {
     float x0 = x - vx*dt, y0 = y - vy*dt, z0 = z - vz*dt;
