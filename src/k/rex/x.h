@@ -2,7 +2,7 @@ namespace k_rex { /* particle and force packing dependent part : TODO : give a n
 __device__ Pa pp2p_coll(const float2 *pp, int n, int i) {
     /* pp: array to a particle : [coll]ective */
     Pa p;
-    k_read::AOS6f(pp + 3 * i, n, /**/ p.s0, p.s1, p.s2);
+    k_read::AOS6f(pp + 3*i, n, /**/ p.s0, p.s1, p.s2);
     return p;
 }
 
@@ -16,7 +16,13 @@ __device__ Pa pp2p(const float2 *pp, int i) {
 
 __device__ void p2pp(Pa p, int n, int i, /**/ float2 *pp) {
     /* collective write : p to buffer pp */
-    k_write::AOS6f(pp + 3 * i, n, p.s0, p.s1, p.s2);
+    k_write::AOS6f(pp + 3*i, n, p.s0, p.s1, p.s2);
+}
+
+__device__ void p2xyz(const Pa p, /**/ float *x, float *y, float *z) {
+    *x = fst(p.s0);
+    *y = scn(p.s0);
+    *z = fst(p.s1);
 }
 
 __device__ void shift(int fid, Pa *p) {
