@@ -5,7 +5,7 @@ __device__ void pp2xyz_col(const float2 *pp, int n, int i, /**/ float *x, float 
     p2xyz(p, /**/ x, y, z);
 }
 
-__device__ void scatter0(const float2 *pp, int n, int pid, float x, float y, float z, /**/ int *counts) {
+__device__ void scatter0(const float2 *pp, int pid, float x, float y, float z, /**/ int *counts) {
     int d;
     int xterm, yterm, zterm, fid;
     int myid;
@@ -58,16 +58,19 @@ __device__ void scatter0(const float2 *pp, int n, int pid, float x, float y, flo
 }
 
 __global__ void scatter(const float2 *pp, int n, /**/ int *counts) {
-    int warpid, lane, base, nsrc, pid;
+    int warpid, base, nsrc, pid;
     float x, y, z;
 
+    int ws; /* warp start in global coordinates */
+    int dw; /* shift relative to `ws' (lane) */
+
     warpid = threadIdx.x / warpSize;
-    lane   = threadIdx.x % warpSize;
+    dw     = threadIdx.x % warpSize;
     base   = 32 * (warpid + 4 * blockIdx.x);
     nsrc   = min(32, n - base);
     pp2xyz_col(pp, nsrc, base, /**/ &x, &y, &z);
-    if (lane >= nsrc) return;
-    pid = base + lane;
-    scatter0(pp, n, pid, x, y, z, /**/ counts);
+    if (dw >= nsrc) return;
+    pid = base + dw;
+    scatter0(pp, pid, x, y, z, /**/ counts);
 }
 }
