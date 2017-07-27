@@ -13,13 +13,13 @@ namespace rdstr {
 
 enum {X, Y, Z};
 
-void alloc_TicketE(/**/ TicketE *t) {
+void alloc_ticketE(/**/ TicketE *t) {
     t->ll = new PinnedHostBuffer2<float3>;
     t->hh = new PinnedHostBuffer2<float3>;
     t->rr = new float[3 * MAX_CELL_NUM];
 }
 
-void free_TicketE(/**/ TicketE *t) {
+void free_ticketE(/**/ TicketE *t) {
     delete t->ll;
     delete t->hh;
     delete[] t->rr;

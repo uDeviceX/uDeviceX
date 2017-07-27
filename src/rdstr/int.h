@@ -7,8 +7,8 @@ struct TicketE {
     float *rr;                             /* positions used to distribute rbcs */
 };
 
-void alloc_TicketE(/**/ TicketE *t);
-void free_TicketE(/**/ TicketE *t);
+void alloc_ticketE(/**/ TicketE *t);
+void free_ticketE(/**/ TicketE *t);
 
 void get_pos(const Particle *pp, int nc, int nv, /**/ TicketE *t);
 }
