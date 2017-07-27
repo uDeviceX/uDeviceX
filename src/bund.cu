@@ -79,17 +79,8 @@ namespace ic {
 #include "k/cnt.h"
 #include "cnt.impl.h"
 
-namespace sdf {
-namespace sub {
-namespace dev {
 #include "sdf/type.h"
-#include "sdf/cheap.dev.h"
-#include "sdf/dev.h"
-}
-#include "sdf/imp.h"
-}
 #include "sdf/int.h"
-}
 
 namespace wall {
 namespace sub {
