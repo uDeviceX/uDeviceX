@@ -12,5 +12,5 @@ void update_rbc() {
 
 void bounce() {
     sdf::bounce(w::qsdf.texsdf, o::q.n, /**/ o::q.pp);
-    //if (rbcs && r::n) k_sdf::bounce<<<k_cnf(r::n)>>>((float2*)r::pp, r::n);
+    // if (rbcs) sdf::bounce(w::qsdf.texsdf, r::q.n, /**/ r::q.pp);
 }
