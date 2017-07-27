@@ -4,7 +4,6 @@ __global__ void unpack(/**/ float *ff) {
     int component, entry, myval, dpid;
 
     npack_padded = g::starts[26];
-
     for (gid = threadIdx.x + blockDim.x * blockIdx.x; gid < 3 * npack_padded; gid += blockDim.x * gridDim.x) {
         pid = gid / 3;
         if (pid >= npack_padded) return;
