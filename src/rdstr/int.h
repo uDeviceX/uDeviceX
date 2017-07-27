@@ -3,9 +3,12 @@ namespace rdstr {
 
 /* ticket extend */
 struct TicketE {
-    PinnedHostBuffer2<float3> *llo, *hhi;    /* extents of RBCs                   */
-    float *rr;                               /* positions used to distribute rbcs */
+    PinnedHostBuffer2<float3> *ll, *hh;    /* extents of RBCs                   */
+    float *rr;                             /* positions used to distribute rbcs */
 };
 
-void get_pos(const Particle *pp, /**/ TicketE *t);
+void alloc_TicketE(/**/ TicketE *t);
+void free_TicketE(/**/ TicketE *t);
+
+void get_pos(const Particle *pp, int nc, int nv, /**/ TicketE *t);
 }
