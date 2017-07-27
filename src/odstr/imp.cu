@@ -19,17 +19,13 @@
 
 #include "odstr/type.h"
 #include "odstr/imp.h"
-
-
-namespace odstr {
-namespace sub {
-
-namespace dev {
 #include "odstr/dev.h"
-}
 #include "odstr/buf.h"
 #include "odstr/ini.h"
 #include "odstr/fin.h"
+
+namespace odstr {
+namespace sub {
 
 void waitall(MPI_Request *reqs) {
     MPI_Status statuses[26];
@@ -135,5 +131,5 @@ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, const uint *iid
         dev::gather_pp <<<k_cnf(n)>>> (pp_lo, pp_re, n,iidx, /**/ pp, zip0, zip1);
 }
 
-}
-}
+} // sub
+} // odstr

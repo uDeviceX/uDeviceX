@@ -1,3 +1,6 @@
+namespace odstr {
+namespace sub {
+
 template <typename T, int N>
 void alloc_pinned(const int i, const int sz, /**/ Pbufs<T, N> *b) {
     if (sz){
@@ -21,3 +24,6 @@ void dealloc(Pbufs<T, N> *b) {
     }
     CC(cudaFree(b->dev));
 }
+
+} // sub
+} // odstr
