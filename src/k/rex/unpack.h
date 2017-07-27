@@ -2,11 +2,11 @@ namespace k_rex {
 __device__ void unpack0(int fid, int pif, int dim, /**/ float *ff) {
     /* fid: fragment id, pif: particle id in fragment coordinates */
     int entry, dpid;
-    float myval;
+    float f; /* force */
     entry = g::offsets[fid] + pif;
-    myval = __ldg(g::recvbags[fid] + dim + 3 * entry);
+    f = __ldg(g::recvbags[fid] + dim + 3 * entry);
     dpid = __ldg(g::scattered_indices[fid] + entry);
-    atomicAdd(ff + 3 * dpid + dim, myval);
+    atomicAdd(ff + 3 * dpid + dim, f);
 }
 
 __device__ void unpack1(int pid, int dim, /**/ float *ff) {
