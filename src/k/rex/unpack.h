@@ -1,14 +1,22 @@
 namespace k_rex {
-__device__ void unpack0(int pid, int dim, /**/ float *ff) {
-    int fid, lpid, entry, dpid;
+__device__ void unpack0(int fid, int pif, int dim, /**/ float *ff) {
+    /* fid: fragment id, pif: particle id in fragment coordinates */
+    int entry, dpid;
     float myval;
-    fid = k_common::fid(g::starts, pid);
-    lpid = pid - g::starts[fid];
-    if (lpid >= g::counts[fid]) return;
-    entry = g::offsets[fid] + lpid;
+    entry = g::offsets[fid] + pif;
     myval = __ldg(g::recvbags[fid] + dim + 3 * entry);
     dpid = __ldg(g::scattered_indices[fid] + entry);
     atomicAdd(ff + 3 * dpid + dim, myval);
+}
+
+__device__ void unpack1(int pid, int dim, /**/ float *ff) {
+    int fid; /* fragment id */
+    int pif; /* particle id in fragment coordinates */
+    float myval;
+    fid = k_common::fid(g::starts, pid);
+    pif = pid - g::starts[fid];
+    if (pif >= g::counts[fid]) return;
+    unpack0(fid, pif, dim, /**/ ff);
 }
 
 __global__ void unpack(/**/ float *ff) {
@@ -25,7 +33,7 @@ __global__ void unpack(/**/ float *ff) {
         pid = gid / 3;
         if (pid >= n) return;
         dim = gid % 3;
-        unpack0(pid, dim, /**/ ff);
+        unpack1(pid, dim, /**/ ff);
     }
 }
 }
