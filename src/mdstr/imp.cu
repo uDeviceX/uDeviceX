@@ -78,7 +78,7 @@ int unpack(int nv, Particle *const ppr[27], const int counts[27], /**/ Particle 
         int n = c * nv;
         if (n) {
             CC(cudaMemcpyAsync(pp + nm * nv, ppr[i], n * sizeof(Particle), H2D));
-            dev::shift <<<k_cnf(n)>>> (n, i, pp + nm * nv);
+            if (i) dev::shift <<<k_cnf(n)>>> (n, i, pp + nm * nv);
         } 
         nm += c;
     }
