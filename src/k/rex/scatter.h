@@ -36,10 +36,7 @@ __device__ void scatter0(const float2 *pp, int pid, float x, float y, float z, /
             dx = (fdir[0] * (d == 0) + 2) % 3;
             dy = (fdir[1] * (d == 1) + 2) % 3;
             dz = (fdir[2] * (d == 2) + 2) % 3;
-            //            reg_p(pid, dx, dy, dz, /**/ counts);
-            fid = dx + 3 * (dy + 3 * dz);
-            myid = g::offsets[fid] + atomicAdd(counts + fid, 1);
-            if (myid < g::capacities[fid]) g::scattered_indices[fid][myid] = pid;
+            reg_p(pid, dx, dy, dz, /**/ counts);
         }
     // edges
     for (d = 0; d < 3; ++d)
@@ -47,18 +44,14 @@ __device__ void scatter0(const float2 *pp, int pid, float x, float y, float z, /
             dx = (fdir[0] * (d != 0) + 2) % 3;
             dy = (fdir[1] * (d != 1) + 2) % 3;
             dz = (fdir[2] * (d != 2) + 2) % 3;
-            fid = dx + 3 * (dy + 3 * dz);
-            myid = g::offsets[fid] + atomicAdd(counts + fid, 1);
-            if (myid < g::capacities[fid]) g::scattered_indices[fid][myid] = pid;
+            reg_p(pid, dx, dy, dz, /**/ counts);
         }
     // one corner
     if (fdir[0] && fdir[1] && fdir[2]) {
         dx = (fdir[0] + 2) % 3;
         dy = (fdir[1] + 2) % 3;
         dz = (fdir[2] + 2) % 3;
-        fid = dx + 3 * (dy + 3 * dz);
-        myid = g::offsets[fid] + atomicAdd(counts + fid, 1);
-        if (myid < g::capacities[fid]) g::scattered_indices[fid][myid] = pid;
+        reg_p(pid, dx, dy, dz, /**/ counts);
     }
 }
 
