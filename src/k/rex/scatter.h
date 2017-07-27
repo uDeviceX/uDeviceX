@@ -23,33 +23,34 @@ __device__ void reg_p(int pid, int dx, int dy, int dz, /**/ int *counts) {
 }
 
 __device__ void scatter0(const float2 *pp, int pid, float x, float y, float z, /**/ int *counts) {
+    enum {X, Y, Z};
     int d;
     int dx, dy, dz;
     int fdir[3]; /* [f]ragment [dir]ection */
     xyz2fdir(x, y, z, fdir);
     
-    if (fdir[0] == 0 && fdir[1] == 0 && fdir[2] == 0) return;
+    if (fdir[X] == 0 && fdir[Y] == 0 && fdir[Z] == 0) return;
     // faces
     for (d = 0; d < 3; ++d)
         if (fdir[d]) {
-            dx = (fdir[0] * (d == 0) + 2) % 3;
-            dy = (fdir[1] * (d == 1) + 2) % 3;
-            dz = (fdir[2] * (d == 2) + 2) % 3;
+            dx = (fdir[X] * (d == X) + 2) % 3;
+            dy = (fdir[Y] * (d == Y) + 2) % 3;
+            dz = (fdir[Z] * (d == Z) + 2) % 3;
             reg_p(pid, dx, dy, dz, /**/ counts);
         }
     // edges
     for (d = 0; d < 3; ++d)
         if (fdir[(d + 1) % 3] && fdir[(d + 2) % 3]) {
-            dx = (fdir[0] * (d != 0) + 2) % 3;
-            dy = (fdir[1] * (d != 1) + 2) % 3;
-            dz = (fdir[2] * (d != 2) + 2) % 3;
+            dx = (fdir[X] * (d != X) + 2) % 3;
+            dy = (fdir[Y] * (d != Y) + 2) % 3;
+            dz = (fdir[Z] * (d != Z) + 2) % 3;
             reg_p(pid, dx, dy, dz, /**/ counts);
         }
-    // one corner
-    if (fdir[0] && fdir[1] && fdir[2]) {
-        dx = (fdir[0] + 2) % 3;
-        dy = (fdir[1] + 2) % 3;
-        dz = (fdir[2] + 2) % 3;
+    // corner
+    if (fdir[X] && fdir[Y] && fdir[Z]) {
+        dx = (fdir[X] + 2) % 3;
+        dy = (fdir[Y] + 2) % 3;
+        dz = (fdir[Z] + 2) % 3;
         reg_p(pid, dx, dy, dz, /**/ counts);
     }
 }
