@@ -22,7 +22,7 @@ __device__ void reg_p(int pid, int dx, int dy, int dz, /**/ int *counts) {
     if (i < g::capacities[fid]) g::scattered_indices[fid][i] = pid;
 }
 
-__device__ void scatter0(const float2 *pp, int pid, float x, float y, float z, /**/ int *counts) {
+__device__ void scatter0(int pid, float x, float y, float z, /**/ int *counts) {
     enum {X, Y, Z};
     int d;
     int dx, dy, dz;
@@ -70,7 +70,7 @@ __global__ void scatter(const float2 *pp, int n, /**/ int *counts) {
     pp2xyz_col(pp, dwe, ws, /**/ &x, &y, &z);
     if (dw < dwe) {
         pid = ws + dw;
-        scatter0(pp, pid, x, y, z, /**/ counts);
+        scatter0(pid, x, y, z, /**/ counts);
     }
 }
 }
