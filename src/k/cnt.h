@@ -9,10 +9,6 @@ enum {
     ZOFFSET = ZCELLS / 2
 };
 static const int NCELLS = XS * YS * ZS;
-union CellEntry {
-    int pid;
-    uchar4 code;
-};
 texture<int, cudaTextureType1D> texCellsStart, texCellEntries;
 __constant__ int cnsolutes[maxsolutes];
 __constant__ const float2 *csolutes[maxsolutes];
