@@ -19,6 +19,10 @@ void ini(Quants *q) {
     sub::ini(q->arrsdf, &q->texsdf);
 }
 
+void bulk_wall(const tex3Dca<float> texsdf, /*io*/ Particle *s_pp, int *s_n, /*o*/ Particle *w_pp, int *w_n) {
+    sub::bulk_wall(texsdf, /*io*/ s_pp, s_n, /*o*/ w_pp, w_n);
+}
+
 int who_stays(const Quants q, Particle *pp, int n, int nc, int nv, int *stay) {
     return sub::who_stays(q.texsdf, pp, n, nc, nv, /**/ stay);
 }
