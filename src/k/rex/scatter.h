@@ -14,7 +14,7 @@ __device__ void xyz2fdir(float x, float y, float z, /**/ int fdir[]) {
 }
 
 __device__ void reg_p(int pid, int dx, int dy, int dz, /**/ int *counts) {
-    /* regester particle */
+    /* register the particle */
     int fid;
     int i; /* particle in fragment coordinates */
     fid = dx + 3 * (dy + 3 * dz);
