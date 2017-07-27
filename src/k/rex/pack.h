@@ -2,6 +2,7 @@ namespace k_rex {
 struct Pa { float2 s0, s1, s2; };
 
 __device__ Pa pp2p(const float2 *pp, int i) {
+    /* pp array to a particle */
     Pa p;
     float2 s0, s1, s2;
     pp += 3*i;
