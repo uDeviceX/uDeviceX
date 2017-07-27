@@ -1,3 +1,6 @@
+namespace dpdr {
+namespace sub {
+
 void ini_tcom(MPI_Comm cart, /**/ MPI_Comm *newcart, int dstranks[], int recv_tags[]) {
     int coordsneighbor[3];
 
@@ -115,3 +118,6 @@ void ini_ticketRIh(/**/ RIbuf *b) {
 
     alloc_RIbuf(est, /**/ b);
 }
+
+} // sub
+} // dpdr

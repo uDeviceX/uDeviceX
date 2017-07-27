@@ -1,3 +1,6 @@
+namespace dpdr {
+namespace sub {
+
 static void alloc_Bbuf_frag(const int i, const int est, const int nfragcells, /**/ Bbufs *b) {
     CC(cudaMalloc(&b->cum.d[i], (nfragcells + 1) * sizeof(int)));
     CC(cudaMalloc(&b->pp.d[i], est * sizeof(Particle)));
@@ -90,3 +93,6 @@ void free_RIbuf(/**/ RIbuf *b) {
     for (int i = 0; i < 26; ++i)
         free_Ibuf_frag(i, /**/ b);
 }
+
+} // sub
+} // dpdr

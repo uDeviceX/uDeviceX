@@ -1,3 +1,6 @@
+namespace dpdr {
+namespace sub {
+
 static void cancel_req(MPI_Request r[26]) {
     for (int i = 0; i < 26; ++i) MC(MPI_Cancel(r + i));
 }
@@ -20,3 +23,7 @@ void fin_tcom(const bool first, /**/ MPI_Comm *cart, Reqs *sreq, Reqs *rreq) {
 void fin_trnd(/**/ rnd::KISS* interrank_trunks[]) {
     for (int i = 0; i < 26; ++i) delete interrank_trunks[i];
 }
+
+
+} // sub
+} // dpdr

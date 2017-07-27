@@ -1,3 +1,7 @@
+namespace dpdr {
+namespace sub {
+namespace dev {
+
 /* returns halo box; 0 is a corner of subdomain */
 static __device__ void get_box(int i, /**/ int org[3], int ext[3]) {
     /* i, org, ext : fragment id, origin, extend */
@@ -173,3 +177,6 @@ __global__ void fill_all_ii(const int27 cellpackstarts, const int *ii,
     }
 }
 
+} // dev
+} // sub
+} // dpdr

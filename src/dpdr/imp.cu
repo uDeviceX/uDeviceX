@@ -16,14 +16,13 @@
 #include "dpdr/type.h"
 #include "dpdr/imp.h"
 
-namespace dpdr {
-namespace sub {
-namespace dev {
 #include "dpdr/dev.h"
-}
 #include "dpdr/ini.h"
 #include "dpdr/fin.h"
 #include "dpdr/buf.h"
+
+namespace dpdr {
+namespace sub {
 
 void wait_req(MPI_Request r[26]) {
     MPI_Status ss[26];
