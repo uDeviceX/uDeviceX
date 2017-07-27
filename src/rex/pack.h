@@ -16,8 +16,7 @@ void scanA(std::vector<ParticlesWrap> w, x::TicketPack tp) {
             CC(cudaMemcpyToSymbolAsync(k_rex::g::offsets, tp.offsets->D + 26 * i, sizeof(int) * 26, 0, D2D));
             k_rex::scatter<<<k_cnf(it.n)>>>((float2 *)it.p, it.n, /**/ tp.counts->D + i * 26);
         }
-        k_rex::scanA<<<1, 32>>>(tp.counts->D + i * 26, tp.offsets->D + 26 * i,
-                               /**/ tp.offsets->D + 26 * (i + 1), tp.starts->D + i * 27);
+        k_rex::scanA<<<1, 32>>>(tp.counts->D + i * 26, tp.offsets->D + 26 * i, /**/ tp.offsets->D + 26 * (i + 1), tp.starts->D + i * 27);
     }
 }
 
