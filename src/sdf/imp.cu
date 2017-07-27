@@ -15,13 +15,11 @@
 
 #include "sdf/type.h"
 #include "sdf/imp.h"
+#include "sdf/cheap.dev.h"
+#include "sdf/dev.h"
 
 namespace sdf {
 namespace sub {
-namespace dev {
-#include "sdf/cheap.dev.h"
-#include "sdf/dev.h"
-}
 
 struct Tex { /* simplifies communication between ini[0123..] */
     cudaArray *a;

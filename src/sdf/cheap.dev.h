@@ -1,9 +1,13 @@
-__device__ static int iround(float x) {
+namespace sdf {
+namespace sub {
+namespace dev {
+
+static inline __device__ int iround(float x) {
     return (x > 0.5) ? (x + 0.5) : (x - 0.5);
 }
 
 /* within the rescaled texel width error */
-__device__ float cheap_sdf(const tex3Dca<float> texsdf, float x, float y, float z)  {
+inline __device__ float cheap_sdf(const tex3Dca<float> texsdf, float x, float y, float z)  {
     int L[3] = {XS, YS, ZS};
     int M[3] = {XWM, YWM, ZWM};
     int T[3] = {XTE, YTE, ZTE};
@@ -16,3 +20,7 @@ __device__ float cheap_sdf(const tex3Dca<float> texsdf, float x, float y, float 
     return tex0(0, 0, 0);
 #undef  tex0
 }
+
+} // dev
+} // sub
+} // sdf
