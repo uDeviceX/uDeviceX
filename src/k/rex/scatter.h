@@ -20,28 +20,28 @@ __global__ void scatter(const float2 *pp, const int n, /**/ int *counts) {
     if (halocode[0] == 0 && halocode[1] == 0 && halocode[2] == 0) return;
     // faces
     for (int d = 0; d < 3; ++d)
-    if (halocode[d]) {
-        int xterm = (halocode[0] * (d == 0) + 2) % 3;
-        int yterm = (halocode[1] * (d == 1) + 2) % 3;
-        int zterm = (halocode[2] * (d == 2) + 2) % 3;
+        if (halocode[d]) {
+            int xterm = (halocode[0] * (d == 0) + 2) % 3;
+            int yterm = (halocode[1] * (d == 1) + 2) % 3;
+            int zterm = (halocode[2] * (d == 2) + 2) % 3;
 
-        int fid = xterm + 3 * (yterm + 3 * zterm);
-        int myid = g::offsets[fid] + atomicAdd(counts + fid, 1);
+            int fid = xterm + 3 * (yterm + 3 * zterm);
+            int myid = g::offsets[fid] + atomicAdd(counts + fid, 1);
 
-        if (myid < g::capacities[fid]) g::scattered_indices[fid][myid] = pid;
-    }
+            if (myid < g::capacities[fid]) g::scattered_indices[fid][myid] = pid;
+        }
     // edges
     for (int d = 0; d < 3; ++d)
-    if (halocode[(d + 1) % 3] && halocode[(d + 2) % 3]) {
-        int xterm = (halocode[0] * (d != 0) + 2) % 3;
-        int yterm = (halocode[1] * (d != 1) + 2) % 3;
-        int zterm = (halocode[2] * (d != 2) + 2) % 3;
+        if (halocode[(d + 1) % 3] && halocode[(d + 2) % 3]) {
+            int xterm = (halocode[0] * (d != 0) + 2) % 3;
+            int yterm = (halocode[1] * (d != 1) + 2) % 3;
+            int zterm = (halocode[2] * (d != 2) + 2) % 3;
 
-        int fid = xterm + 3 * (yterm + 3 * zterm);
-        int myid = g::offsets[fid] + atomicAdd(counts + fid, 1);
+            int fid = xterm + 3 * (yterm + 3 * zterm);
+            int myid = g::offsets[fid] + atomicAdd(counts + fid, 1);
 
-        if (myid < g::capacities[fid]) g::scattered_indices[fid][myid] = pid;
-    }
+            if (myid < g::capacities[fid]) g::scattered_indices[fid][myid] = pid;
+        }
     // one corner
     if (halocode[0] && halocode[1] && halocode[2]) {
         int xterm = (halocode[0] + 2) % 3;
