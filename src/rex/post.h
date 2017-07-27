@@ -2,13 +2,16 @@ namespace rex {
 void post_waitC() { _wait(reqsendC); }
 void post_waitP() { _wait(reqsendP); }
 
-bool post_pre(x::TicketPack tp) {
-    bool packingfailed;
+void post_count(x::TicketPack tp) {
     int i;
     for (i = 0; i < 26; ++i) send_counts[i] = tp.tcounts_hst->D[i];
+}
+
+bool post_check() {
+    bool packingfailed;
+    int i;
     packingfailed = false;
-    for (i = 0; i < 26; ++i)
-        packingfailed |= send_counts[i] > local[i]->capacity();
+    for (i = 0; i < 26; ++i) packingfailed |= send_counts[i] > local[i]->capacity();
     return packingfailed;
 }
 
