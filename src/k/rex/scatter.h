@@ -1,11 +1,12 @@
 namespace k_rex {
 __global__ void scatter(const float2 *pp, const int n, /**/ int *counts) {
     int warpid = threadIdx.x / warpSize;
-    int base = 32 * (warpid + 4 * blockIdx.x);
-    int nsrc = min(32, n - base);
+    int lane   = threadIdx.x % warpSize;
+    int base   = 32 * (warpid + 4 * blockIdx.x);
+    int nsrc   = min(32, n - base);
     float2 s0, s1, s2;
     k_read::AOS6f(pp + 3 * base, nsrc, s0, s1, s2);
-    int lane = threadIdx.x % warpSize;
+
     int pid = base + lane;
     if (lane >= nsrc) return;
     enum {
