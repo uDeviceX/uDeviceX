@@ -1,15 +1,14 @@
 namespace k_rex {
-__global__ void scanA(const int *counts, const int *oldtotalcounts,
-                     /**/ int *totalcounts, int *starts) {
+__global__ void scanA(const int *counts, const int *oldtcounts, /**/ int *tcounts, int *starts) {
     int tid, cnt, newcount, scan, L;
     tid = threadIdx.x;
     cnt = 0;
     if (tid < 26) {
         cnt = counts[tid];
         if (cnt > g::capacities[tid]) g::failed = true;
-        if (totalcounts && oldtotalcounts) {
-            newcount = cnt + oldtotalcounts[tid];
-            totalcounts[tid] = newcount;
+        if (tcounts && oldtcounts) {
+            newcount = cnt + oldtcounts[tid];
+            tcounts[tid] = newcount;
             if (newcount > g::capacities[tid]) g::failed = true;
         }
     }
