@@ -78,6 +78,10 @@ namespace ic {
 
 #include "cnt.decl.h"
 #include "k/cnt.h"
+  #include "k/cnt/bulk.h"
+  #include "k/cnt/decl.h"
+  #include "k/cnt/halo.h"
+  #include "k/cnt/type.h"
 #include "cnt.impl.h"
 
 #include "sdf/type.h"
