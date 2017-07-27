@@ -1,12 +1,14 @@
 namespace k_rex {
+enum {FD = 3}; /* number of dimenshion in force */
+
 __device__ void unpack0(int fid, int pif, int dim, /**/ float *ff) {
     /* fid: fragment id, pif: particle id in fragment coordinates */
     int entry, dpid;
     float f; /* force */
     entry = g::offsets[fid] + pif;
-    f = __ldg(g::recvbags[fid] + dim + 3 * entry);
+    f = __ldg(g::recvbags[fid] + dim + FD * entry);
     dpid = __ldg(g::scattered_indices[fid] + entry);
-    atomicAdd(ff + 3 * dpid + dim, f);
+    atomicAdd(ff + FD * dpid + dim, f);
 }
 
 __device__ void unpack1(int pid, int dim, /**/ float *ff) {
@@ -27,11 +29,11 @@ __global__ void unpack(/**/ float *ff) {
     n = g::starts[26];
     lo = threadIdx.x + blockDim.x * blockIdx.x;
     step = blockDim.x * gridDim.x;
-    hi = 3*n;
+    hi = FD*n;
     for (gid = lo; gid < hi; gid += step) {
-        pid = gid / 3;
+        pid = gid / FD;
         if (pid >= n) return;
-        dim = gid % 3;
+        dim = gid % FD;
         unpack1(pid, dim, /**/ ff);
     }
 }
