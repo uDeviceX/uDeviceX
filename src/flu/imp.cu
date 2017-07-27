@@ -11,11 +11,10 @@
 #include "restart.h"
 
 #include "flu/imp.h"
-
-namespace sub {
-namespace dev {
 #include "flu/dev.h"
-}
+
+namespace flu {
+namespace sub {
 
 static int gen0(Particle *pp) { /* generate particle positions and velocities */
     enum {X, Y, Z};
@@ -99,4 +98,6 @@ void zip(const Particle *pp, const int n, /**/ float4 *zip0, ushort4 * zip1) {
     assert(sizeof(Particle) == 6 * sizeof(float)); /* :TODO: implicit dependency */
     dev::zip<<<(n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>(zip0, zip1, (float*)pp, n);
 }
-}
+
+} // sub
+} // flu

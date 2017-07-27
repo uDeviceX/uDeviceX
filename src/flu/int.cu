@@ -13,6 +13,7 @@
 #include "flu/imp.h"
 
 namespace flu {
+
 void alloc_quants(Quants *q) {
     q->n = 0;
     mpDeviceMalloc(&q->pp); mpDeviceMalloc(&q->pp0);
@@ -90,4 +91,5 @@ void strt_dump(const int id, const Quants q) {
 void strt_dump_ii(const char *subext, const int id, const QuantsI q, const int n) {
     sub::strt_dump_ii(subext, id, n, q.ii, /* w */ q.ii_hst);
 }
-}
+
+} // flu

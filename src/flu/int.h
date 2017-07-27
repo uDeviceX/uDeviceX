@@ -45,4 +45,4 @@ void strt_ii(const char *subext, const int id, QuantsI *q);
 void strt_dump(const int id, const Quants q);
 void strt_dump_ii(const char *subext, const int id, const QuantsI q, const int n);
 
-}
+} // flu

@@ -1,3 +1,7 @@
+namespace flu {
+namespace sub {
+namespace dev {
+
 __global__ void zip(float4 *__restrict zip0,
                     ushort4 *__restrict zip1,
                     const float *__restrict pp,
@@ -37,3 +41,7 @@ __global__ void zip(float4 *__restrict zip0,
                      __float2half_rn(smem[warpid * 192 + lane * 6 + 1]),
                      __float2half_rn(smem[warpid * 192 + lane * 6 + 2]), 0);
 }
+
+} // dev
+} // sub
+} // flu
