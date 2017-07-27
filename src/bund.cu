@@ -123,6 +123,7 @@ namespace strt {
 #include "x/type.h"
   #include "rex/decl.h"
 
+  #include "k/rex/type.h"
   #include "k/rex/decl.h"
   #include "k/rex/common.h"
   #include "k/rex/pack.h"
