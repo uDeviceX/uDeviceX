@@ -58,16 +58,16 @@ __device__ void scatter0(const float2 *pp, int pid, float x, float y, float z, /
 }
 
 __global__ void scatter(const float2 *pp, int n, /**/ int *counts) {
-    int warpid, base, nsrc, pid;
+    int warp, base, nsrc, pid;
     float x, y, z;
 
     int ws; /* warp start in global coordinates */
     int dw; /* shift relative to `ws' (lane) */
 
-    warpid = threadIdx.x / warpSize;
-    dw     = threadIdx.x % warpSize;
-    base   = 32 * (warpid + 4 * blockIdx.x);
-    nsrc   = min(32, n - base);
+    warp = threadIdx.x / warpSize;
+    dw   = threadIdx.x % warpSize;
+    base = 32 * (warp + 4 * blockIdx.x);
+    nsrc = min(32, n - base);
     pp2xyz_col(pp, nsrc, base, /**/ &x, &y, &z);
     if (dw >= nsrc) return;
     pid = base + dw;
