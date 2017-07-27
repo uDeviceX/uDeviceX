@@ -1,0 +1,2 @@
+namespace k_cnt {
+}
