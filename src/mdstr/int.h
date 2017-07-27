@@ -8,6 +8,7 @@ struct TicketC {
     MPI_Request sreqp[26], rreqp[26]; /* particles requests          */
     int rnk_ne[27];                   /* rank      of the neighbor   */
     int ank_ne[27];                   /* anti-rank of the neighbor   */
+    bool first;
 };
 
 /* send buffers */
