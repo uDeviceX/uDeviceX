@@ -132,7 +132,6 @@ namespace strt {
   #include "k/rex/scatter.h"
   #include "k/rex/unpack.h"
 
-  #include "rex/mpi.h"
   #include "rex/ini.h"
   #include "rex/pack.h"
   #include "rex/impl.h"
