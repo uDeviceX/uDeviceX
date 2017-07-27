@@ -67,10 +67,10 @@ static void exch(/*io*/ Particle *pp, int *n) { /* exchange pp(hst) between proc
   #undef isize
 }
 
-typedef const sdf::sub::dev::tex3Dca<float> TexSDF_t;
+typedef const sdf::tex3Dca<float> TexSDF_t;
 
 static void freeze0(TexSDF_t texsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n, /*w*/ Particle *hst) {
-    sdf::sub::bulk_wall(texsdf, /*io*/ pp, n, /*o*/ hst, w_n); /* sort into bulk-frozen */
+    sdf::bulk_wall(texsdf, /*io*/ pp, n, /*o*/ hst, w_n); /* sort into bulk-frozen */
     MSG("befor exch: bulk/frozen : %d/%d", *n, *w_n);
     exch(/*io*/ hst, w_n);
     cH2D(dev, hst, *w_n);
