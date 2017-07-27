@@ -19,6 +19,10 @@ void ini_ticketC(/*io*/ basetags::TagGen *tg, /**/ TicketC *t) {
 }
 
 void free_ticketC(/**/ TicketC *t) {
+    if (!t->first) {
+        sub::cancelall(t->rreqc);
+        sub::cancelall(t->rreqp);
+    }
     l::m::Comm_free(&t->cart);
 }
 
@@ -52,6 +56,11 @@ void pack(const Particle *pp, int nv, /**/  TicketS *t) {
 }
 
 void post_send(int nv, const TicketS *ts, /**/ TicketC *tc) {
+    if (!tc->first) {
+        sub::waitall(tc->sreqc);
+        sub::waitall(tc->sreqp);
+        tc->first = false;
+    }
     sub::post_send(nv, ts->counts, ts->pp, tc->cart, tc->btc, tc->btp, tc->rnk_ne, /**/ tc->sreqc, tc->sreqp);
 }
 
@@ -60,7 +69,10 @@ void post_recv(const TicketS *ts, /**/ TicketR *tr, TicketC *tc) {
     tr->counts[0] = ts->counts[0]; // bulk
 }
 
-void wait();
+void wait_recv(/**/ TicketC *tc) {
+    sub::waitall(tc->rreqc);
+    sub::waitall(tc->rreqp);
+}
 
 int unpack(int nv, const TicketR *t, /**/ Particle *pp) {
     return sub::unpack(nv, t->pp, t->counts, /**/ pp);

@@ -5,6 +5,9 @@ namespace sub {
 void gen_ne(MPI_Comm cart, /**/ int* rnk_ne, int* ank_ne);
 
 // imp
+void waitall(MPI_Request rr[26]);
+void cancelall(MPI_Request rr[26]);
+
 void get_dests(const float *rr, int nm, /**/ int *dests[27], int counts[27]);
 
 void pack(int *dests[27], const int counts[27], const Particle *pp, int nv, /**/ Particle *pps[27]);

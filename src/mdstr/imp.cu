@@ -17,6 +17,16 @@ namespace sub {
 
 enum {X, Y, Z};
 
+void waitall(MPI_Request rr[26]) {
+    MPI_Status ss[26];
+    l::m::Waitall(26, rr, ss) ;
+}
+
+void cancelall(MPI_Request rr[26]) {
+    for (int i = 0; i < 26; ++i) MC(MPI_Cancel(rr + i));
+}
+
+
 static int r2fid(const float r[3]) {
     int cx, cy, cz;
     cx = (2 + (r[X] >= -XS / 2) + (r[X] >= XS / 2)) % 3;
@@ -59,10 +69,6 @@ void post_recv(MPI_Comm cart, int btc, int btp, int ank_ne[27],
 
     for (int i = 1; i < 27; ++i)
         MC(l::m::Isend(pp[i], MAX_PART_NUM, datatype::particle, ank_ne[i], btp + i, cart, rreqp + i - 1));
-}
-
-void wait() {
-
 }
 
 int unpack(int nv, Particle *const ppr[27], const int counts[27], /**/ Particle *pp) {
