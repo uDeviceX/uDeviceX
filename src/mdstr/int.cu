@@ -48,10 +48,18 @@ void get_dests(const float *rr, int nm, /**/ TicketS *t) {
 }
 
 void pack(const Particle *pp, int nv, /**/  TicketS *t) {
-    
+    sub::pack(t->dd, t->counts, pp, nv, /**/ t->pp);
 }
 
-void post();
+void post_send(int nv, const TicketS *ts, /**/ TicketC *tc) {
+    sub::post_send(nv, ts->counts, ts->pp, tc->cart, tc->btc, tc->btp, tc->rnk_ne, /**/ tc->sreqc, tc->sreqp);
+}
+
+void post_recv(const TicketS *ts, /**/ TicketR *tr, TicketC *tc) {
+    sub::post_recv(tc->cart, tc->btc, tc->btp, tc->ank_ne, /**/ tr->counts, tr->pp, tc->rreqc, tc->rreqp);
+    tr->counts[0] = ts->counts[0]; // bulk
+}
+
 void wait();
 void unpack();
 
