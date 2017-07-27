@@ -8,8 +8,7 @@ void _wait(std::vector<MPI_Request> &v) {
 void postrecvC(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     for (int i = 0; i < 26; ++i) {
         MPI_Request reqC;
-        MC(l::m::Irecv(recv_counts + i, 1, MPI_INTEGER, ranks[i],
-                       t.btc + tags[i], cart, &reqC));
+        MC(l::m::Irecv(recv_counts + i, 1, MPI_INTEGER, ranks[i], t.btc + tags[i], cart, &reqC));
         reqrecvC.push_back(reqC);
     }
 }
@@ -18,9 +17,7 @@ void postrecvP(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     for (int i = 0; i < 26; ++i) {
         MPI_Request reqP;
         remote[i]->pmessage.resize(remote[i]->expected());
-        MC(l::m::Irecv(&remote[i]->pmessage.front(), remote[i]->expected() * 6,
-                     MPI_FLOAT, ranks[i], t.btp1 + tags[i],
-                     cart, &reqP));
+        MC(l::m::Irecv(&remote[i]->pmessage.front(), remote[i]->expected() * 6, MPI_FLOAT, ranks[i], t.btp1 + tags[i], cart, &reqP));
         reqrecvP.push_back(reqP);
     }
 }
@@ -28,9 +25,7 @@ void postrecvP(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
 void postrecvA(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     for (int i = 0; i < 26; ++i) {
         MPI_Request reqA;
-        MC(l::m::Irecv(local[i]->result->D, local[i]->result->S * 3,
-                     MPI_FLOAT, ranks[i], t.btf + tags[i],
-                     cart, &reqA));
+        MC(l::m::Irecv(local[i]->result->D, local[i]->result->S * 3, MPI_FLOAT, ranks[i], t.btf + tags[i], cart, &reqA));
         reqrecvA.push_back(reqA);
     }
 }
@@ -48,48 +43,32 @@ void recv_p(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
         MPI_Status status;
 
         if (count > expected)
-            MC(MPI_Recv(&remote[i]->pmessage.front() + expected,
-                        (count - expected) * 6, MPI_FLOAT, ranks[i],
-                        t.btp2 + tags[i], cart, &status));
-
-        memcpy(remote[i]->hstate.D, &remote[i]->pmessage.front(),
-               sizeof(Particle) * count);
+            MC(MPI_Recv(&remote[i]->pmessage.front() + expected, (count - expected) * 6, MPI_FLOAT, ranks[i], t.btp2 + tags[i], cart, &status));
+        memcpy(remote[i]->hstate.D, &remote[i]->pmessage.front(), sizeof(Particle) * count);
     }
 
     postrecvC(cart, ranks, tags, t);
 
     for (int i = 0; i < 26; ++i)
-        CC(cudaMemcpyAsync(remote[i]->dstate.D, remote[i]->hstate.D,
-                       sizeof(Particle) * remote[i]->hstate.S,
-                       H2D));
+        CC(cudaMemcpyAsync(remote[i]->dstate.D, remote[i]->hstate.D, sizeof(Particle) * remote[i]->hstate.S, H2D));
 }
 
 void halo_wait() { _wait(reqsendA); }
 
 void halo() {
     ParticlesWrap halos[26];
-
-    for (int i = 0; i < 26; ++i)
-        halos[i] = ParticlesWrap(remote[i]->dstate.D, remote[i]->dstate.S,
-                                 remote[i]->result.DP);
-
-    dSync(); /* was CC(cudaStreamSynchronize(uploadstream)); */
-
-    /** here was visitor  **/
+    for (int i = 0; i < 26; ++i) halos[i] = ParticlesWrap(remote[i]->dstate.D, remote[i]->dstate.S, remote[i]->result.DP);
+        
+    dSync();
     if (fsiforces)     fsi::halo(halos);
     if (contactforces) cnt::halo(halos);
-    /***********************/
     for (int i = 0; i < 26; ++i) local[i]->update();
 }
 
 void post_f(MPI_Comm cart, int ranks[26], x::TicketTags t) {
-    dSync(); /* was cudaEventSynchronize() */
-
+    dSync();
     reqsendA.resize(26);
-    for (int i = 0; i < 26; ++i)
-        MC(l::m::Isend(remote[i]->result.D, remote[i]->result.S * 3,
-                       MPI_FLOAT, ranks[i], t.btf + i, cart,
-                       &reqsendA[i]));
+    for (int i = 0; i < 26; ++i) MC(l::m::Isend(remote[i]->result.D, remote[i]->result.S * 3, MPI_FLOAT, ranks[i], t.btf + i, cart, &reqsendA[i]));
 }
 
 void recv_f(std::vector<ParticlesWrap> w, x::TicketPack tp) {
@@ -100,14 +79,9 @@ void recv_f(std::vector<ParticlesWrap> w, x::TicketPack tp) {
     for (int i = 0; i < (int) w.size(); ++i) {
         ParticlesWrap it = w[i];
         if (it.n) {
-            CC(cudaMemcpyToSymbolAsync(k_rex::g::starts,
-                                       tp.starts->D + 27 * i, sizeof(int) * 27, 0,
-                                       D2D));
-            CC(cudaMemcpyToSymbolAsync(k_rex::g::counts, tp.counts->D + 26 * i,
-                                       sizeof(int) * 26, 0, D2D));
-            CC(cudaMemcpyToSymbolAsync(k_rex::g::offsets, tp.offsets->D + 26 * i,
-                                       sizeof(int) * 26, 0, D2D));
-
+            CC(cudaMemcpyToSymbolAsync(k_rex::g::starts, tp.starts->D + 27 * i, sizeof(int) * 27, 0, D2D));
+            CC(cudaMemcpyToSymbolAsync(k_rex::g::counts, tp.counts->D + 26 * i, sizeof(int) * 26, 0, D2D));
+            CC(cudaMemcpyToSymbolAsync(k_rex::g::offsets, tp.offsets->D + 26 * i, sizeof(int) * 26, 0, D2D));
             k_rex::unpack<<<16 * 14, 128>>>(/**/ (float *)it.f);
         }
     }
