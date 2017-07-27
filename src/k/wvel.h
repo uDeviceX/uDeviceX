@@ -1,7 +1,7 @@
 namespace k_wvel
 {
 /* wall velocity */
-__device__ void vell(float x, float y, float z,
+inline __device__ void vell(float x, float y, float z,
                      float *vxw, float *vyw, float *vzw)
 {
 #if defined( shear_z )
@@ -13,7 +13,7 @@ __device__ void vell(float x, float y, float z,
 #endif
 }
 
-__device__ void bounce_vel(float   xw, float   yw, float   zw, /* wall */
+inline __device__ void bounce_vel(float   xw, float   yw, float   zw, /* wall */
                            float* vxp, float* vyp, float* vzp) {
     float vx = *vxp, vy = *vyp, vz = *vzp;
     float vxw, vyw, vzw;
