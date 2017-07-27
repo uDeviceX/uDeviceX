@@ -144,7 +144,7 @@ static __device__ void handle_collision(const tex3Dca<float> texsdf, float currs
     if (sdf(texsdf, x, y, z) >= 0) {x = x0; y = y0; z = z0;}
 }
 
-__global__ void bounce(const tex3Dca<float> texsdf, float2 *const pp, int n) {
+__global__ void bounce(const tex3Dca<float> texsdf, int n, /**/ float2 *const pp) {
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
     float2 data0 = pp[pid * 3];
