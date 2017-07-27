@@ -15,5 +15,7 @@ void post_send(int nv, const int counts[27], Particle *const pp[27], MPI_Comm ca
 void post_recv(MPI_Comm cart, int btc, int btp, int ank_ne[27],
                /**/ int counts[27], Particle *pp[27], MPI_Request rreqc[26], MPI_Request rreqp[26]);
 
+int unpack(int nv, const Particle *ppr[27], const int counts[27], /**/ Particle *pp);
+
 } // sub
 } // mdstr

@@ -10,6 +10,7 @@
 
 #include "mdstr/imp.h"
 #include "mdstr/ini.h"
+#include "mdstr/dev.h"
 
 namespace mdstr {
 namespace sub {
@@ -64,8 +65,18 @@ void wait() {
 
 }
 
-void unpack() {
-
+int unpack(int nv, const Particle *ppr[27], const int counts[27], /**/ Particle *pp) {
+    int nm = 0;
+    for (int i = 0; i < 27; ++i) {
+        int c = counts[i];
+        int n = c * nv;
+        if (n) {
+            CC(cudaMemcpyAsync(pp + nm * nv, ppr[i], n * sizeof(Particle), H2D));
+            dev::shift <<<k_cnf(n)>>> (n, i, pp + nm * nv);
+        } 
+        nm += c;
+    }
+    return nm;
 }
 
 } // sub
