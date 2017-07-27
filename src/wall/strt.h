@@ -1,3 +1,7 @@
+namespace wall {
+namespace sub {
+namespace strt {
+
 void read(/**/ float4 *pp, int *n) {
     Particle *pphst, *ppdev;
     pphst = new Particle[MAX_PART_NUM];
@@ -25,3 +29,7 @@ void write(const float4 *pp, const int n) {
 
     delete[] pphst;
 }
+
+} // strt
+} // sub
+} // wall
