@@ -15,7 +15,7 @@ __device__ void xyz2fdir(float x, float y, float z, /**/ int fdir[]) {
 
 __device__ void scatter0(const float2 *pp, int pid, float x, float y, float z, /**/ int *counts) {
     int d;
-    int xterm, yterm, zterm, fid;
+    int dx, dy, dz, fid;
     int myid;
     int fdir[3]; /* [f]ragment [dir]ection */
     xyz2fdir(x, y, z, fdir);
@@ -24,36 +24,30 @@ __device__ void scatter0(const float2 *pp, int pid, float x, float y, float z, /
     // faces
     for (d = 0; d < 3; ++d)
         if (fdir[d]) {
-            xterm = (fdir[0] * (d == 0) + 2) % 3;
-            yterm = (fdir[1] * (d == 1) + 2) % 3;
-            zterm = (fdir[2] * (d == 2) + 2) % 3;
-
-            fid = xterm + 3 * (yterm + 3 * zterm);
+            dx = (fdir[0] * (d == 0) + 2) % 3;
+            dy = (fdir[1] * (d == 1) + 2) % 3;
+            dz = (fdir[2] * (d == 2) + 2) % 3;
+            fid = dx + 3 * (dy + 3 * dz);
             myid = g::offsets[fid] + atomicAdd(counts + fid, 1);
-
             if (myid < g::capacities[fid]) g::scattered_indices[fid][myid] = pid;
         }
     // edges
     for (d = 0; d < 3; ++d)
         if (fdir[(d + 1) % 3] && fdir[(d + 2) % 3]) {
-            xterm = (fdir[0] * (d != 0) + 2) % 3;
-            yterm = (fdir[1] * (d != 1) + 2) % 3;
-            zterm = (fdir[2] * (d != 2) + 2) % 3;
-
-            fid = xterm + 3 * (yterm + 3 * zterm);
+            dx = (fdir[0] * (d != 0) + 2) % 3;
+            dy = (fdir[1] * (d != 1) + 2) % 3;
+            dz = (fdir[2] * (d != 2) + 2) % 3;
+            fid = dx + 3 * (dy + 3 * dz);
             myid = g::offsets[fid] + atomicAdd(counts + fid, 1);
-
             if (myid < g::capacities[fid]) g::scattered_indices[fid][myid] = pid;
         }
     // one corner
     if (fdir[0] && fdir[1] && fdir[2]) {
-        xterm = (fdir[0] + 2) % 3;
-        yterm = (fdir[1] + 2) % 3;
-        zterm = (fdir[2] + 2) % 3;
-
-        fid = xterm + 3 * (yterm + 3 * zterm);
+        dx = (fdir[0] + 2) % 3;
+        dy = (fdir[1] + 2) % 3;
+        dz = (fdir[2] + 2) % 3;
+        fid = dx + 3 * (dy + 3 * dz);
         myid = g::offsets[fid] + atomicAdd(counts + fid, 1);
-
         if (myid < g::capacities[fid]) g::scattered_indices[fid][myid] = pid;
     }
 }
