@@ -26,10 +26,10 @@ struct TicketR {
 void ini_ticketC(/*io*/ basetags::TagGen *tg, /**/ TicketC *t);
 void free_ticketC(/**/ TicketC *t);
 
-void ini_ticketS(/**/ TicketS *t);
+void ini_ticketS(int nv, /**/ TicketS *t);
 void free_ticketS(/**/ TicketS *t);
 
-void ini_ticketR(const TicketS *ts, /**/ TicketR *t);
+void ini_ticketR(int nv, const TicketS *ts, /**/ TicketR *t);
 void free_ticketR(/**/ TicketR *t);
 
 void pack();
