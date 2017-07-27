@@ -81,8 +81,6 @@ void forces(int nc, const Texo<float2> texvert, const Texo<int4> textri, const T
     dev::force<<<k_cnf(nc*nv*md)>>>(texvert, texadj0, texadj1, nc, av, (float*)ff);
 }
 
-void f() {}
-
 void setup_from_strt(const int id, /**/ Particle *pp, int *nc, int *n, /*w*/ Particle *pp_hst) {
     restart::read_pp("rbc", id, pp_hst, n);
     *nc = *n / nv;
