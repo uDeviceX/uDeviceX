@@ -12,7 +12,6 @@ __device__ void unpack0(int fid, int pif, int dim, /**/ float *ff) {
 __device__ void unpack1(int pid, int dim, /**/ float *ff) {
     int fid; /* fragment id */
     int pif; /* particle id in fragment coordinates */
-    float myval;
     fid = k_common::fid(g::starts, pid);
     pif = pid - g::starts[fid];
     if (pif >= g::counts[fid]) return;
