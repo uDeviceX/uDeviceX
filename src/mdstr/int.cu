@@ -24,11 +24,13 @@ void free_ticketC(/**/ TicketC *t) {
 
 void ini_ticketS(int nv, /**/ TicketS *t) {
     for (int i = 0; i < 27; ++i) t->pp[i] = new Particle[MAX_PART_NUM];
+    for (int i = 0; i < 27; ++i) t->dd[i] = new      int[MAX_CELL_NUM];
     for (int i = 0; i < 27; ++i) t->counts[i] = 0;
 }
 
 void free_ticketS(/**/ TicketS *t) {
     for (int i = 0; i < 27; ++i) delete[] t->pp[i];
+    for (int i = 0; i < 27; ++i) delete[] t->dd[i];
 }
 
 void ini_ticketR(int nv, const TicketS *ts, /**/ TicketR *t) {

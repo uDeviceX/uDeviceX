@@ -13,14 +13,15 @@ struct TicketC {
 
 /* send buffers */
 struct TicketS {
-    int counts[27];                   /* number of leaving particles  */
-    Particle *pp[27];                 /* leaving particles            */
+    int counts[27];                   /* number of leaving particles   */
+    Particle *pp[27];                 /* leaving particles             */
+    int *dd[27];                      /* which mesh in which fragment? */
 };
 
 /* recv buffers */
 struct TicketR {
-    int counts[27];                   /* number of incoming particles */
-    Particle *pp[27];                 /* incoming particles           */
+    int counts[27];                   /* number of incoming particles  */
+    Particle *pp[27];                 /* incoming particles            */
 };
 
 void ini_ticketC(/*io*/ basetags::TagGen *tg, /**/ TicketC *t);
@@ -32,6 +33,7 @@ void free_ticketS(/**/ TicketS *t);
 void ini_ticketR(int nv, const TicketS *ts, /**/ TicketR *t);
 void free_ticketR(/**/ TicketR *t);
 
+void get_dests(const float *rr, int nm, /**/ TicketS *t);
 void pack();
 void post();
 void wait();
