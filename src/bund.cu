@@ -72,7 +72,6 @@ namespace ic {
 #include "sdstr.impl.h"
 #include "field.h"
 
-#include "k/wvel.h" /* wall velocity used by sdf and wall */
 #include "forces.h"
 
 #include "cnt.decl.h"
@@ -82,22 +81,7 @@ namespace ic {
 #include "sdf/type.h"
 #include "sdf/int.h"
 
-namespace sdf {
-#include "sdf/cheap.dev.h"
-}
-
-namespace wall {
-namespace sub {
-namespace dev {
-#include "wall/dev.h"
-}
-namespace strt {
-#include "wall/strt.h"
-}
-#include "wall/imp.h"
-}
 #include "wall/int.h"
-}
 
 #include "flu/int.h"
 
