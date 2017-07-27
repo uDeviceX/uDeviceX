@@ -1,24 +1,19 @@
 namespace k_rex {
 __global__ void unpack(/**/ float *ff) {
-    int npack_padded = g::starts[26];
-
-    for (int gid = threadIdx.x + blockDim.x * blockIdx.x; gid < 3 * npack_padded;
-         gid += blockDim.x * gridDim.x) {
-        int pid = gid / 3;
-
-        if (pid >= npack_padded) return;
-
-        int code = k_common::fid(g::starts, pid);
-        int lpid = pid - g::starts[code];
-
-        if (lpid >= g::counts[code]) continue;
-
-        int component = gid % 3;
-
-        int entry = g::offsets[code] + lpid;
-        float myval = __ldg(g::recvbags[code] + component + 3 * entry);
-        int dpid = __ldg(g::scattered_indices[code] + entry);
-
+    int n;
+    int gid, pid, fid, lpid, component, entry, dpid;
+    float myval;
+    n = g::starts[26];
+    for (gid = threadIdx.x + blockDim.x * blockIdx.x; gid < 3 * n; gid += blockDim.x * gridDim.x) {
+        pid = gid / 3;
+        if (pid >= n) return;
+        fid = k_common::fid(g::starts, pid);
+        lpid = pid - g::starts[fid];
+        if (lpid >= g::counts[fid]) continue;
+        component = gid % 3;
+        entry = g::offsets[fid] + lpid;
+        myval = __ldg(g::recvbags[fid] + component + 3 * entry);
+        dpid = __ldg(g::scattered_indices[fid] + entry);
         atomicAdd(ff + 3 * dpid + component, myval);
     }
 }
