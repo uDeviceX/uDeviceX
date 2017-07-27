@@ -13,6 +13,15 @@ __device__ void xyz2fdir(float x, float y, float z, /**/ int fdir[]) {
     fdir[Z] = -1 + (int)(z >= -HZSIZE + 1) + (int)(z >= HZSIZE - 1);
 }
 
+__device__ void reg_p(int pid, int dx, int dy, int dz, /**/ int *counts) {
+    /* regester particle */
+    int fid;
+    int i; /* particle in fragment coordinates */
+    fid = dx + 3 * (dy + 3 * dz);
+    i = g::offsets[fid] + atomicAdd(counts + fid, 1);
+    if (i < g::capacities[fid]) g::scattered_indices[fid][i] = pid;
+}
+
 __device__ void scatter0(const float2 *pp, int pid, float x, float y, float z, /**/ int *counts) {
     int d;
     int dx, dy, dz, fid;
@@ -27,6 +36,7 @@ __device__ void scatter0(const float2 *pp, int pid, float x, float y, float z, /
             dx = (fdir[0] * (d == 0) + 2) % 3;
             dy = (fdir[1] * (d == 1) + 2) % 3;
             dz = (fdir[2] * (d == 2) + 2) % 3;
+            //            reg_p(pid, dx, dy, dz, /**/ counts);
             fid = dx + 3 * (dy + 3 * dz);
             myid = g::offsets[fid] + atomicAdd(counts + fid, 1);
             if (myid < g::capacities[fid]) g::scattered_indices[fid][myid] = pid;
