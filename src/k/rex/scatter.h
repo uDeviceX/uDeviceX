@@ -24,8 +24,7 @@ __device__ void reg_p(int pid, int dx, int dy, int dz, /**/ int *counts) {
 
 __device__ void scatter0(const float2 *pp, int pid, float x, float y, float z, /**/ int *counts) {
     int d;
-    int dx, dy, dz, fid;
-    int myid;
+    int dx, dy, dz;
     int fdir[3]; /* [f]ragment [dir]ection */
     xyz2fdir(x, y, z, fdir);
     
