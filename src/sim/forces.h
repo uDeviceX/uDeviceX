@@ -41,7 +41,7 @@ void forces_wall() {
 }
 
 void forces_cnt(std::vector<ParticlesWrap> *w_r) {
-    cnt::build_cells(*w_r);
+    cnt::build(*w_r); /* build cells */
     cnt::bulk(*w_r);
 }
 
