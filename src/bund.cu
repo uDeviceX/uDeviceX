@@ -77,11 +77,11 @@ namespace ic {
 #include "forces.h"
 
 #include "cnt.decl.h"
-#include "k/cnt.h"
-  #include "k/cnt/bulk.h"
-  #include "k/cnt/decl.h"
-  #include "k/cnt/halo.h"
   #include "k/cnt/type.h"
+  #include "k/cnt/decl.h"
+  #include "k/cnt/bulk.h"
+  #include "k/cnt/halo.h"
+  #include "k/cnt.h"
 #include "cnt.impl.h"
 
 #include "sdf/type.h"
