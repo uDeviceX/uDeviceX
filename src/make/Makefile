@@ -16,7 +16,7 @@ OBJ0 = $B/bund.o $B/mesh/collision.o $B/mesh/dist.o $B/mesh/bbox.o $B/diag.o $B/
 	$B/mbounce.o $B/mesh/props.o $B/mrescue.o $B/minmax.o \
 	$B/solid.o $B/tcells.o $B/restart.o $B/dump.o $B/flu/int.o $B/flu/imp.o \
 	$B/dpdr/int.o $B/dpdr/imp.o $B/odstr/int.o $B/odstr/imp.o $B/sdf/int.o $B/sdf/imp.o \
-	$B/wall/int.o $B/wall/imp.o
+	$B/wall/int.o $B/wall/imp.o $B/mdstr/int.o $B/mdstr/imp.o $B/rdstr/int.o
 OBJL = $B/clist/imp.o $B/l/linal.o $B/l/m.o $B/l/off.o $B/l/ply.o $B/scan/imp.o
 OBJS = $(OBJ0) $(OBJL)
 
