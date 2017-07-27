@@ -1,3 +1,7 @@
+namespace sdf {
+namespace sub {
+namespace dev {
+
 static __device__ float sdf(const tex3Dca<float> texsdf, float x, float y, float z) {
     int c;
     float t;
@@ -162,3 +166,6 @@ __global__ void bounce(const tex3Dca<float> texsdf, int n, /**/ float2 *const pp
     }
 }
 
+} // dev
+} // sub
+} // sdf

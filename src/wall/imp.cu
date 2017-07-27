@@ -19,9 +19,8 @@
 
 #include "sdf/type.h"
 #include "sdf/int.h"
-namespace sdf {
 #include "sdf/cheap.dev.h"
-}
+
 #include "glb.h"
 #include "k/wvel.h"
 #include "forces.h"
