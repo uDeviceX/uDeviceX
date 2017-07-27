@@ -5,21 +5,11 @@ __device__ void pp2xyz_col(const float2 *pp, int n, int i, /**/ float *x, float 
     p2xyz(p, /**/ x, y, z);
 }
 
-__global__ void scatter(const float2 *pp, const int n, /**/ int *counts) {
-    int warpid, lane, base, nsrc, pid;
+__device__ void scatter0(const float2 *pp, int n, int pid, float x, float y, float z, /**/ int *counts) {
     int d;
     int xterm, yterm, zterm, fid;
     int myid;
-    float x, y, z;
     
-    warpid = threadIdx.x / warpSize;
-    lane   = threadIdx.x % warpSize;
-    base   = 32 * (warpid + 4 * blockIdx.x);
-    nsrc   = min(32, n - base);
-    pp2xyz_col(pp, nsrc, base, /**/ &x, &y, &z);
-
-    pid = base + lane;
-    if (lane >= nsrc) return;
     enum {
         HXSIZE = XS / 2,
         HYSIZE = YS / 2,
@@ -65,5 +55,19 @@ __global__ void scatter(const float2 *pp, const int n, /**/ int *counts) {
 
         if (myid < g::capacities[fid]) g::scattered_indices[fid][myid] = pid;
     }
+}
+
+__global__ void scatter(const float2 *pp, int n, /**/ int *counts) {
+    int warpid, lane, base, nsrc, pid;
+    float x, y, z;
+
+    warpid = threadIdx.x / warpSize;
+    lane   = threadIdx.x % warpSize;
+    base   = 32 * (warpid + 4 * blockIdx.x);
+    nsrc   = min(32, n - base);
+    pp2xyz_col(pp, nsrc, base, /**/ &x, &y, &z);
+    if (lane >= nsrc) return;
+    pid = base + lane;
+    scatter0(pp, n, pid, x, y, z, /**/ counts);
 }
 }
