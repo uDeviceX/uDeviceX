@@ -40,17 +40,14 @@ void recv_p(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
 
         remote[i]->pmessage.resize(max(1, count));
         remote[i]->preserve_resize(count);
-        MPI_Status status;
-
+        MPI_Status s;
         if (count > expected)
-            MC(MPI_Recv(&remote[i]->pmessage.front() + expected, (count - expected) * 6, MPI_FLOAT, ranks[i], t.btp2 + tags[i], cart, &status));
+            MC(MPI_Recv(&remote[i]->pmessage.front() + expected, (count - expected) * 6, MPI_FLOAT, ranks[i], t.btp2 + tags[i], cart, &s));
         memcpy(remote[i]->hstate.D, &remote[i]->pmessage.front(), sizeof(Particle) * count);
     }
 
     postrecvC(cart, ranks, tags, t);
-
-    for (int i = 0; i < 26; ++i)
-        CC(cudaMemcpyAsync(remote[i]->dstate.D, remote[i]->hstate.D, sizeof(Particle) * remote[i]->hstate.S, H2D));
+    for (int i = 0; i < 26; ++i) CC(cudaMemcpyAsync(remote[i]->dstate.D, remote[i]->hstate.D, sizeof(Particle) * remote[i]->hstate.S, H2D));
 }
 
 void halo_wait() { _wait(reqsendA); }
