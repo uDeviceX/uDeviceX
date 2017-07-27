@@ -88,8 +88,8 @@ __global__ void fill_keys(const tex3Dca<float> texsdf, const Particle *const pp,
 }
 
 static __device__ void handle_collision(const tex3Dca<float> texsdf, float currsdf,
-                                 float &x, float &y, float &z,
-                                 float &vx, float &vy, float &vz) {
+                                        float &x, float &y, float &z,
+                                        float &vx, float &vy, float &vz) {
     float x0 = x - vx*dt, y0 = y - vy*dt, z0 = z - vz*dt;
     if (sdf(texsdf, x0, y0, z0) >= 0) { /* this is the worst case - 0 position
                                            was bad already we need to search
