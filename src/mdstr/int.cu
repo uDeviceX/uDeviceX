@@ -43,7 +43,14 @@ void free_ticketR(/**/ TicketR *t) {
     for (int i = 1; i < 27; ++i) delete[] t->pp[i];
 }
 
-void pack();
+void get_dests(const float *rr, int nm, /**/ TicketS *t) {
+    sub::get_dests(rr, nm, /**/ t->dd, t->counts);
+}
+
+void pack(const Particle *pp, int nv, /**/  TicketS *t) {
+    
+}
+
 void post();
 void wait();
 void unpack();
