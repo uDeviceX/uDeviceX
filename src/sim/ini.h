@@ -12,7 +12,6 @@ void ini() {
 
     basetags::ini(&tag_gen);
     
-    rdstr::ini(&tag_gen);
     if (fsiforces) fsi::ini();
     sdstr::ini(&tag_gen);
     bbhalo::ini(&tag_gen);

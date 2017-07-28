@@ -66,10 +66,6 @@ namespace ic {
 #include "mdstr/int.h"
 #include "rdstr/int.h"
 
-#include "rdstr.decl.h"
-#include "k/rdstr.h"
-#include "rdstr.impl.h"
-
 #include "sdstr.decl.h"
 #include "sdstr.impl.h"
 #include "field.h"

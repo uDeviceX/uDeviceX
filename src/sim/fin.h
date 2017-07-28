@@ -1,6 +1,5 @@
 void fin() {
     sdstr::fin();
-    rdstr::fin();
     bbhalo::fin();
     cnt::fin();
     dump::fin(&dumpt);
