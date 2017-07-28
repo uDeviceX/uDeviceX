@@ -10,7 +10,6 @@ static void ini_ticketpack(TicketPack *t) {
 }
 
 static void fin_ticketpack(TicketPack t) {
-    delete t.tstarts;
     delete t.tstarts_hst;
     delete t.offsets_hst;
 
