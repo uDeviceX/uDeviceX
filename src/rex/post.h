@@ -1,7 +1,4 @@
 namespace rex {
-void post_waitC() { _wait(reqsendC); }
-void post_waitP() { _wait(reqsendP); }
-
 void post_count(x::TicketPack tp) {
     int i;
     for (i = 0; i < 26; ++i) send_counts[i] = tp.offsets_hst->D[i];

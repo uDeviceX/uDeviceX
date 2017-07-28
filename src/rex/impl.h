@@ -1,9 +1,4 @@
 namespace rex {
-void _wait(std::vector<MPI_Request> &v) {
-    MPI_Status statuses[v.size()];
-    if (v.size()) MC(l::m::Waitall(v.size(), &v.front(), statuses));
-    v.clear();
-}
 
 void postrecvC(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     for (int i = 0; i < 26; ++i) {
@@ -31,8 +26,8 @@ void postrecvA(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
 }
 
 void recv_p(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
-    _wait(reqrecvC);
-    _wait(reqrecvP);
+    wait(reqrecvC);
+    wait(reqrecvP);
 
     for (int i = 0; i < 26; ++i) {
         int count = recv_counts[i];
@@ -50,7 +45,6 @@ void recv_p(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     for (int i = 0; i < 26; ++i) CC(cudaMemcpyAsync(remote[i]->dstate.D, remote[i]->hstate.D, sizeof(Particle) * remote[i]->hstate.S, H2D));
 }
 
-void halo_wait() { _wait(reqsendA); }
 
 void post_f(MPI_Comm cart, int ranks[26], x::TicketTags t) {
     dSync();
@@ -62,7 +56,7 @@ void recv_f(std::vector<ParticlesWrap> w, x::TicketPack tp) {
     float *recvbags[26];
     for (int i = 0; i < 26; ++i) recvbags[i] = (float *)local[i]->result->DP;
     CC(cudaMemcpyToSymbolAsync(k_rex::g::recvbags, recvbags, sizeof(recvbags), 0, H2D));
-    _wait(reqrecvA);
+    wait(reqrecvA);
     for (int i = 0; i < (int) w.size(); ++i) {
         ParticlesWrap it = w[i];
         if (it.n) {

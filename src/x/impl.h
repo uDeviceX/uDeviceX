@@ -18,7 +18,7 @@ static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<Particle
     bool packingfailed;
     dSync();
     if (cnt == 0) rex::postrecvC(tc.cart, tc.ranks, tr.tags, t);
-    else          rex::post_waitC();
+    else          rex::waitC();
 
     rex::post_count(tp);
     packingfailed = rex::post_check();
@@ -36,7 +36,7 @@ static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<Particle
     rex::postrecvA(tc.cart, tc.ranks, tr.tags, t);
 
     if (cnt == 0) rex::postrecvP(tc.cart, tc.ranks, tr.tags, t);
-    else          rex::post_waitP();
+    else          rex::waitP();
     rex::post_p(tc.cart, tc.ranks, t, tp);
 }
 
@@ -48,7 +48,7 @@ static void rex0(std::vector<ParticlesWrap> w, int nw) {
     rex::pack_attempt(w, tp);
     post(tc, tr, tt, w, nw);
     rex::recv_p(tc.cart, tc.ranks, tr.tags, tt);
-    if (cnt) rex::halo_wait();
+    if (cnt) rex::waitA();
     rex::halo(); /* fsi::halo(); */
     rex::postrecvP(tc.cart, tc.ranks, tr.tags, tt);
     rex::post_f(tc.cart, tc.ranks, tt);
