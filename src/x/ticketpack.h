@@ -4,9 +4,9 @@ static void ini_ticketpack(TicketPack *t) {
     t->tstarts_hst = new PinnedHostBuffer1<int>(27);
     t->offsets_hst = new PinnedHostBuffer1<int>(26);
 
-    t->offsets = new DeviceBuffer<int>;
-    Dalloc(&t->starts, 27* MAX_OBJ_TYPES);
-    Dalloc(&t->counts, 26* MAX_OBJ_TYPES);
+    Dalloc(&t->offsets, 27 * (MAX_OBJ_TYPES + 1));
+    Dalloc(&t->starts,  27 *  MAX_OBJ_TYPES);
+    Dalloc(&t->counts,  26 *  MAX_OBJ_TYPES);
 }
 
 static void fin_ticketpack(TicketPack t) {
@@ -18,5 +18,7 @@ static void fin_ticketpack(TicketPack t) {
     delete t.offsets;
 
     Dfree(t.counts);
+    Dfree(t.starts);
+    Dfree(t.offsets);
 }
 }

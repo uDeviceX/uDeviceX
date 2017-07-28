@@ -42,7 +42,6 @@ static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<Particle
 
 static void rex0(std::vector<ParticlesWrap> w, int nw) {
     cnt++;
-    rex::pack_p(nw, tp);
     rex::pack_clear(nw, tp);
     rex::scanA(w, tp);
     rex::scanB(w, tp);    
