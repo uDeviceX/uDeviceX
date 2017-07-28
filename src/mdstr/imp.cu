@@ -35,20 +35,20 @@ static int r2fid(const float r[3]) {
     return cx + 3 * cy + 9 * cz;
 }
 
-void get_dests(const float *rr, int nm, /**/ int *dests[27], int counts[27]) {
+void get_reord(const float *rr, int nm, /**/ int *reord[27], int counts[27]) {
     int i, fid, did;
     for (i = 0; i < 27; ++i) counts[i] = 0;
     for (i = 0; i < nm; ++i) {
         fid = r2fid(rr + 3 * i);
         did = counts[fid] ++;
-        dests[fid][did] = i;
+        reord[fid][did] = i;
     }
 }
 
-void pack(int *dests[27], const int counts[27], const Particle *pp, int nv, /**/ Particle *pps[27]) {
+void pack(int *reord[27], const int counts[27], const Particle *pp, int nv, /**/ Particle *pps[27]) {
     for (int fid = 0; fid < 27; ++fid)
         for (int j = 0; j < counts[fid]; ++j) {
-            int src = dests[fid][j];
+            int src = reord[fid][j];
             CC(cudaMemcpyAsync(pps[fid] + j * nv, pp + src * nv, nv * sizeof(Particle), D2H));
         }
 }
@@ -78,7 +78,7 @@ int unpack(int nv, Particle *const ppr[27], const int counts[27], /**/ Particle 
         int n = c * nv;
         if (n) {
             CC(cudaMemcpyAsync(pp + nm * nv, ppr[i], n * sizeof(Particle), H2D));
-            if (i) dev::shift <<<k_cnf(n)>>> (n, i, pp + nm * nv);
+            if (i) dev::shift <<<k_cnf(n)>>> (n, i, /**/ pp + nm * nv);
         } 
         nm += c;
     }

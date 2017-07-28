@@ -28,13 +28,13 @@ void free_ticketC(/**/ TicketC *t) {
 
 void ini_ticketS(/**/ TicketS *t) {
     for (int i = 0; i < 27; ++i) t->pp[i] = new Particle[MAX_PART_NUM];
-    for (int i = 0; i < 27; ++i) t->dd[i] = new      int[MAX_CELL_NUM];
+    for (int i = 0; i < 27; ++i) t->reord[i] = new   int[MAX_CELL_NUM];
     for (int i = 0; i < 27; ++i) t->counts[i] = 0;
 }
 
 void free_ticketS(/**/ TicketS *t) {
     for (int i = 0; i < 27; ++i) delete[] t->pp[i];
-    for (int i = 0; i < 27; ++i) delete[] t->dd[i];
+    for (int i = 0; i < 27; ++i) delete[] t->reord[i];
 }
 
 void ini_ticketR(const TicketS *ts, /**/ TicketR *t) {
@@ -47,12 +47,12 @@ void free_ticketR(/**/ TicketR *t) {
     for (int i = 1; i < 27; ++i) delete[] t->pp[i];
 }
 
-void get_dests(const float *rr, int nm, /**/ TicketS *t) {
-    sub::get_dests(rr, nm, /**/ t->dd, t->counts);
+void get_reord(const float *rr, int nm, /**/ TicketS *t) {
+    sub::get_reord(rr, nm, /**/ t->reord, t->counts);
 }
 
 void pack(const Particle *pp, int nv, /**/  TicketS *t) {
-    sub::pack(t->dd, t->counts, pp, nv, /**/ t->pp);
+    sub::pack(t->reord, t->counts, pp, nv, /**/ t->pp);
 }
 
 void post_send(int nv, const TicketS *ts, /**/ TicketC *tc) {

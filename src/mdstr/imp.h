@@ -8,9 +8,9 @@ void gen_ne(MPI_Comm cart, /**/ int* rnk_ne, int* ank_ne);
 void waitall(MPI_Request rr[26]);
 void cancelall(MPI_Request rr[26]);
 
-void get_dests(const float *rr, int nm, /**/ int *dests[27], int counts[27]);
+void get_reord(const float *rr, int nm, /**/ int *reord[27], int counts[27]);
 
-void pack(int *dests[27], const int counts[27], const Particle *pp, int nv, /**/ Particle *pps[27]);
+void pack(int *reord[27], const int counts[27], const Particle *pp, int nv, /**/ Particle *pps[27]);
 
 void post_send(int nv, const int counts[27], Particle *const pp[27], MPI_Comm cart, int btc, int btp, int rnk_ne[27],
                /**/ MPI_Request sreqc[26], MPI_Request sreqp[26]);

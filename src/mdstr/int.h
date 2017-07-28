@@ -15,7 +15,7 @@ struct TicketC {
 struct TicketS {
     int counts[27];                   /* number of leaving particles   */
     Particle *pp[27];                 /* leaving particles             */
-    int *dd[27];                      /* which mesh in which fragment? */
+    int *reord[27];                   /* which mesh in which fragment? */
 };
 
 /* recv buffers */
@@ -33,7 +33,7 @@ void free_ticketS(/**/ TicketS *t);
 void ini_ticketR(const TicketS *ts, /**/ TicketR *t);
 void free_ticketR(/**/ TicketR *t);
 
-void get_dests(const float *rr, int nm, /**/ TicketS *t);
+void get_reord(const float *rr, int nm, /**/ TicketS *t);
 void pack(const Particle *pp, int nv, /**/  TicketS *t);
 void post_send(int nv, const TicketS *ts, /**/ TicketC *tc);
 void post_recv(const TicketS *ts, /**/ TicketR *tr, TicketC *tc);

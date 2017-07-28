@@ -1,6 +1,6 @@
 void distr_rbc() {
     rdstr::get_pos(r::q.pp, r::q.nc, r::q.nv, /**/ &r::tde);
-    mdstr::get_dests(r::tde.rr, r::q.nc, /**/ &r::tds);
+    mdstr::get_reord(r::tde.rr, r::q.nc, /**/ &r::tds);
     mdstr::pack(r::q.pp, r::q.nv, /**/ &r::tds);
     mdstr::post_recv(&r::tds, /**/ &r::tdr, &r::tdc);
     mdstr::post_send(r::q.nv, &r::tds, /**/ &r::tdc);
