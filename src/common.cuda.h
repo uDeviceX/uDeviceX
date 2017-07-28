@@ -1,10 +1,10 @@
 /* [c]cuda [c]heck */
 #define CC(ans)                                             \
     do { cudaAssert((ans), __FILE__, __LINE__); } while (0)
-inline void cudaAssert(cudaError_t code, const char *file, int line) {
-    if (code != cudaSuccess) {
-        fprintf(stderr, "GPU assert: %s %s %d\n", cudaGetErrorString(code), file,
-                line);
+
+inline void cudaAssert(cudaError_t rc, const char *file, int line) {
+    if (rc != cudaSuccess) {
+        fprintf(stderr, "GPU assert: %s %s %d\n", cudaGetErrorString(rc), file, line);
         abort();
     }
 }
@@ -59,27 +59,24 @@ struct Texo {
 #define cD2D(t, f, n) CC(cudaMemcpy((t), (f), (n) * sizeof((f)[0]), D2D))
 #define cH2H(t, f, n) CC(cudaMemcpy((t), (f), (n) * sizeof((f)[0]), H2H))  /* [t]to, [f]rom */
 #define cA2A(t, f, n) CC(cudaMemcpy((t), (f), (n) * sizeof((f)[0]), A2A))
-
 #define cD2H(h, d, n) CC(cudaMemcpy((h), (d), (n) * sizeof((h)[0]), D2H))
 #define cH2D(d, h, n) CC(cudaMemcpy((d), (h), (n) * sizeof((h)[0]), H2D))
 
 template <typename T>
-void mpDeviceMalloc(T **D) { /* a pointer to pointer!) */
+void mpDeviceMalloc(T **D) {
     CC(cudaMalloc(D, sizeof(T) * MAX_PART_NUM));
 }
 
 template <typename T>
-void mpHostMalloc(T **D) { /* a pointer to pointer!) */
+void mpHostMalloc(T **D) {
   T *p;
   p = (T*)malloc(sizeof(T) * MAX_PART_NUM);
   *D = p;
 }
 
-/* container for the gpu particles during the simulation */
 template <typename T> struct DeviceBuffer {
     /* `C': capacity; `S': size; `D' : data*/
     int C, S; T *D;
-
     explicit DeviceBuffer(int n = 0) : C(0), S(0), D(NULL) { resize(n); }
     ~DeviceBuffer() {
         if (D != NULL) CC(cudaFree(D));
@@ -102,7 +99,6 @@ private:
 public:
     /* `S': size; `D' is for data; `DP' device pointer */
     int S;  T *D, *DP;
-
     explicit PinnedHostBuffer(int n = 0)
         : capacity(0), S(0), D(NULL), DP(NULL) {
         resize(n);
