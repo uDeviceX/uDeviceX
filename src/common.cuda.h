@@ -9,8 +9,7 @@ inline void cudaAssert(cudaError_t rc, const char *file, int line) {
     }
 }
 
-/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less
-   than `m') */
+/* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 
 /* a common kernel execution configuration */
