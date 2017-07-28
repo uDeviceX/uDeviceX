@@ -1,5 +1,13 @@
 namespace rex {
-void pack_clear(x::TicketPack tp) {
+void pack_p(int nw, x::TicketPack tp) {
+    tp.counts->resize (26 *  nw);
+    tp.offsets->resize(26 * (nw + 1));
+    tp.starts->resize (27 *  nw);
+}
+
+void pack_clear(int nw, x::TicketPack tp) {
+    CC(cudaMemsetAsync(tp.counts0, 0, sizeof(int) * 26 * nw));
+    
     if (tp.counts->S)
         CC(cudaMemsetAsync(tp.counts->D, 0, sizeof(int) * tp.counts->S));
     if (tp.offsets->S)
@@ -39,9 +47,4 @@ void pack_attempt(std::vector<ParticlesWrap> w, x::TicketPack tp) {
     }
 }
 
-void pack_p(int n, x::TicketPack tp) {
-    tp.counts->resize(26 * n);
-    tp.offsets->resize(26 * (n + 1));
-    tp.starts->resize(27 * n);
-}
 }

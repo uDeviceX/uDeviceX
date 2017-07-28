@@ -14,7 +14,7 @@ void fin() {
     fin_ticketpack(tp);
 }
 
-static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<ParticlesWrap> w) {
+static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<ParticlesWrap> w, int nw) {
     bool packingfailed;
     dSync();
     if (cnt == 0) rex::postrecvC(tc.cart, tc.ranks, tr.tags, t);
@@ -26,7 +26,7 @@ static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<Particle
         rex::local_resize();
         rex::post_resize();
         rex::adjust_packbuffers();
-        rex::pack_clear(tp);
+        rex::pack_clear(nw, tp);
         rex::scanA(w, tp);
         rex::scanB(w, tp);
         rex::pack_attempt(w, tp);
@@ -43,11 +43,11 @@ static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<Particle
 static void rex0(std::vector<ParticlesWrap> w, int nw) {
     cnt++;
     rex::pack_p(nw, tp);
-    rex::pack_clear(tp);
+    rex::pack_clear(nw, tp);
     rex::scanA(w, tp);
     rex::scanB(w, tp);    
     rex::pack_attempt(w, tp);
-    post(tc, tr, tt, w);
+    post(tc, tr, tt, w, nw);
     rex::recv_p(tc.cart, tc.ranks, tr.tags, tt);
     if (cnt) rex::halo_wait();
     rex::halo(); /* fsi::halo(); */
