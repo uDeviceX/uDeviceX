@@ -1,11 +1,6 @@
 namespace mdstr {
 namespace gen {
 
-template <typename T>
-struct pbuf { /* pack buffer */
-    T *dd[27];
-};
-
 enum DataLoc {Host, Device};
 
 template <typename T, DataLoc> void cpy_pck (T *dst, const T *src, int n);
