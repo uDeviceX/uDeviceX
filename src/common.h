@@ -14,9 +14,14 @@ enum { /* used in forces.h */
 /* maximum number of solids per node */
 #define MAX_SOLIDS 20
 
-/* maximum number of faces per one RBC */
+/* maximum number of object types (solid, rbc, ...) */
+#define MAX_OBJ_TYPES 10
+
+/* maximum number of faces and vertices per one RBC */
 #define MAX_FACE_NUM 5000
 #define MAX_VERT_NUM 10000
+
+/* maximum number of red blood cells */
 #define MAX_CELL_NUM 10000
 
 /* safety factor for dpd halo interactions */
