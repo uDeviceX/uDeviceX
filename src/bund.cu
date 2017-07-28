@@ -112,6 +112,7 @@ namespace ic {
 #include "fsi/impl.h"
 
 #include "x/type.h"
+  #include "rex/type.h"
   #include "rex/decl.h"
 
   #include "k/rex/type.h"
