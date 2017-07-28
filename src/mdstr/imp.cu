@@ -68,7 +68,7 @@ void post_recv(MPI_Comm cart, int btc, int btp, int ank_ne[27],
         MC(l::m::Irecv(counts + i, 1, MPI_INT, ank_ne[i], btc + i, cart, rreqc + i - 1));
 
     for (int i = 1; i < 27; ++i)
-        MC(l::m::Isend(pp[i], MAX_PART_NUM, datatype::particle, ank_ne[i], btp + i, cart, rreqp + i - 1));
+        MC(l::m::Irecv(pp[i], MAX_PART_NUM, datatype::particle, ank_ne[i], btp + i, cart, rreqp + i - 1));
 }
 
 int unpack(int nv, Particle *const ppr[27], const int counts[27], /**/ Particle *pp) {
