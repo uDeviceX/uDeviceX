@@ -32,9 +32,6 @@ void get_pos(int n, const float3 *ll, const float3 *hh, /**/ float *rr) {
     }
 }
 
-namespace gen = mdstr::gen;
-typedef gen::pbuf<Particle> Partbuf;
-
 void pack(int *reord[27], const int counts[27], const Particle *pp, int nv, /**/ Partbuf *bpp) {
     gen::pack <Particle, gen::Device> (reord, counts, pp, nv, /**/ bpp);
 }
