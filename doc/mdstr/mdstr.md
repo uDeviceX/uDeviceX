@@ -5,7 +5,7 @@ See [sim.md](../sim.md)
 ## purpose
 
 * distributes mesh particles across nodes
-* let specific information tracking (e.g. `struct Solid` to another hiwi
+* let specific information tracking (e.g. `struct Solid` to another hiwi)
 
 ## ticket dependencies:
 
