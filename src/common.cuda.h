@@ -61,6 +61,9 @@ struct Texo {
 #define cD2H(h, d, n) CC(cudaMemcpy((h), (d), (n) * sizeof((h)[0]), D2H))
 #define cH2D(d, h, n) CC(cudaMemcpy((d), (h), (n) * sizeof((h)[0]), H2D))
 
+/* device alloc */
+#define Dalloc(d, n) CC(cudaMalloc((d), sizeof(&&(d))*(n)))
+
 template <typename T>
 void mpDeviceMalloc(T **D) {
     CC(cudaMalloc(D, sizeof(T) * MAX_PART_NUM));
