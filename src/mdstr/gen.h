@@ -37,22 +37,19 @@ void post_recv(MPI_Comm cart, int nmax, int bt, int ank_ne[27], /**/ pbuf<T> *b,
         MC(l::m::Irecv(b->dd[i], nmax, MType<T>, ank_ne[i], bt + i, cart, rreq + i - 1));
 }
 
-// TODO make it generic
-int unpack(int nv, Particle *const ppr[27], const int counts[27], /**/ Particle *pp) {
+template <typename T, DataLoc LOC>
+int unpack(int npd, const pbuf<T> *b, const int counts[27], /**/ T *dd) {
     int nm = 0;
     for (int i = 0; i < 27; ++i) {
         int c = counts[i];
-        int n = c * nv;
-        if (n) {
-            CC(cudaMemcpyAsync(pp + nm * nv, ppr[i], n * sizeof(Particle), H2D));
-            if (i) dev::shift <<<k_cnf(n)>>> (n, i, /**/ pp + nm * nv);
-        } 
+        int n = c * npd;
+        if (n) cpu_upck <LOC> (dd + nm * npd, b->dd[i], n);
         nm += c;
     }
     return nm;
 }
 
-void shift();
+/* shift() is not generic */
 
 /* template specializations */
 
