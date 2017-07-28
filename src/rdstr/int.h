@@ -10,5 +10,6 @@ struct TicketE {
 void alloc_ticketE(/**/ TicketE *t);
 void free_ticketE(/**/ TicketE *t);
 
-void get_pos(const Particle *pp, int nc, int nv, /**/ TicketE *t);
+void extents(const Particle *pp, int nc, int nv, /**/ TicketE *t);
+void get_pos(int nc, /**/ TicketE *t);
 }
