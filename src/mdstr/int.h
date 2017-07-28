@@ -36,7 +36,7 @@ void free_ticketR(/**/ TicketR *t);
 void get_dests(const float *rr, int nm, /**/ TicketS *t);
 void pack(const Particle *pp, int nv, /**/  TicketS *t);
 void post_send(int nv, const TicketS *ts, /**/ TicketC *tc);
-void post_recv(/**/ TicketR *tr, TicketC *tc);
+void post_recv(const TicketS *ts, /**/ TicketR *tr, TicketC *tc);
 void wait_recv(/**/ TicketC *tc);
 int unpack(int nv, const TicketR *t, /**/ Particle *pp);
 

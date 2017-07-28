@@ -36,6 +36,8 @@ static void lh2r(int n, const float3 *ll, const float3 *hh, /**/ float *rr) {
 }
 
 void get_pos(const Particle *pp, int nc, int nv, /**/ TicketE *t) {
+    t->ll->resize(nc);
+    t->hh->resize(nc);
     minmax(pp, nv, nc, /**/ t->ll->DP, t->hh->DP);
     dSync();
     lh2r(nc, t->ll->D, t->hh->D, /**/ t->rr);
