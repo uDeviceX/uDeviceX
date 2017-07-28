@@ -52,16 +52,6 @@ void recv_p(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
 
 void halo_wait() { _wait(reqsendA); }
 
-void halo() {
-    ParticlesWrap halos[26];
-    for (int i = 0; i < 26; ++i) halos[i] = ParticlesWrap(remote[i]->dstate.D, remote[i]->dstate.S, remote[i]->result.DP);
-        
-    dSync();
-    if (fsiforces)     fsi::halo(halos);
-    if (contactforces) cnt::halo(halos);
-    for (int i = 0; i < 26; ++i) local[i]->update();
-}
-
 void post_f(MPI_Comm cart, int ranks[26], x::TicketTags t) {
     dSync();
     reqsendA.resize(26);
