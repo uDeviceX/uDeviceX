@@ -1,12 +1,12 @@
 void distr_rbc() {
     rdstr::extents(r::q.pp, r::q.nc, r::q.nv, /**/ &r::tde);
     rdstr::get_pos(r::q.nc, /**/ &r::tde);
-    mdstr::get_reord(r::tde.rr, r::q.nc, /**/ &r::tds);
-    mdstr::pack(r::q.pp, r::q.nv, /**/ &r::tds);
-    mdstr::post_recv(&r::tds, /**/ &r::tdr, &r::tdc);
-    mdstr::post_send(r::q.nv, &r::tds, /**/ &r::tdc);
-    mdstr::wait_recv(/**/ &r::tdc);
-    r::q.nc = mdstr::unpack(r::q.nv, &r::tdr, /**/ r::q.pp);
+    rdstr::get_reord(r::tde.rr, r::q.nc, /**/ &r::tds);
+    rdstr::pack(r::q.pp, r::q.nv, /**/ &r::tds);
+    rdstr::post_recv(&r::tds, /**/ &r::tdr, &r::tdc);
+    rdstr::post_send(r::q.nv, &r::tds, /**/ &r::tdc);
+    rdstr::wait_recv(/**/ &r::tdc);
+    r::q.nc = rdstr::unpack(r::q.nv, &r::tdr, /**/ r::q.pp);
     r::q.n = r::q.nc * r::q.nv;
     
     dSync();

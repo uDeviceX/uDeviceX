@@ -1,14 +1,19 @@
 #include <cstdio>
+#include <mpi.h>
 
 #include "common.h"
 #include "common.cuda.h"
 #include "common.tmp.h"
 
-//#include "mdstr/int.h"
+#include "basetags.h"
+
+#include "mdstr/int.h"
 #include "rdstr/int.h"
 #include "rdstr/imp.h"
 
 namespace rdstr {
+
+using namespace mdstr;
 
 void alloc_ticketE(/**/ TicketE *t) {
     t->ll = new PinnedHostBuffer2<float3>;

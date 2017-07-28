@@ -44,9 +44,9 @@ rbc::Quants q;
 rbc::TicketT tt;
 
 /* [d]istribute [t]ickets */
-mdstr::TicketC tdc;
-mdstr::TicketS tds;
-mdstr::TicketR tdr;
+rdstr::TicketC tdc;
+rdstr::TicketS tds;
+rdstr::TicketR tdr;
 rdstr::TicketE tde;
 
 Force     *ff;
