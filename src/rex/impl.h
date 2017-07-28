@@ -26,9 +26,6 @@ void postrecvA(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
 }
 
 void recv_p(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
-    r::waitC();
-    r::waitP();
-
     for (int i = 0; i < 26; ++i) {
         int count = recv_counts[i];
         int expected = remote[i]->expected();
@@ -52,11 +49,13 @@ void post_f(MPI_Comm cart, int ranks[26], x::TicketTags t) {
     for (int i = 0; i < 26; ++i) MC(l::m::Isend(remote[i]->result.D, remote[i]->result.S * 3, MPI_FLOAT, ranks[i], t.btf + i, cart, &reqsendA[i]));
 }
 
-void recv_f(std::vector<ParticlesWrap> w, x::TicketPack tp) {
+void recv_copy_bags() {
     float *recvbags[26];
     for (int i = 0; i < 26; ++i) recvbags[i] = (float *)local[i]->result->DP;
     CC(cudaMemcpyToSymbolAsync(k_rex::g::recvbags, recvbags, sizeof(recvbags), 0, H2D));
-    r::waitA();
+}
+
+void recv_f(std::vector<ParticlesWrap> w, x::TicketPack tp) {
     for (int i = 0; i < (int) w.size(); ++i) {
         ParticlesWrap it = w[i];
         if (it.n) {

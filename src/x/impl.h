@@ -47,11 +47,15 @@ static void rex0(std::vector<ParticlesWrap> w, int nw) {
     rex::scanB(w, tp);    
     rex::pack_attempt(w, tp);
     post(tc, tr, tt, w, nw);
+    rex::r::waitC();
+    rex::r::waitP();
     rex::recv_p(tc.cart, tc.ranks, tr.tags, tt);
     if (cnt) rex::s::waitA();
     rex::halo(); /* fsi::halo(); */
     rex::postrecvP(tc.cart, tc.ranks, tr.tags, tt);
     rex::post_f(tc.cart, tc.ranks, tt);
+    rex::recv_copy_bags();
+    rex::r::waitA();
     rex::recv_f(w, tp);
 }
 
