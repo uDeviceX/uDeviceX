@@ -8,12 +8,14 @@ static void ini_ticketpack(TicketPack *t) {
     t->starts = new DeviceBuffer<int>;
     t->offsets = new DeviceBuffer<int>;
 
+    Dalloc(&t->counts0, 26*MAX_OBJ_TYPES);
 }
 
 static void fin_ticketpack(TicketPack t) {
     delete t.tstarts;
     delete t.tstarts_hst;
     delete t.offsets_hst;
+
 
     delete t.counts;
     delete t.starts;
