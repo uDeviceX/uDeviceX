@@ -56,7 +56,7 @@ void recv_f(std::vector<ParticlesWrap> w, x::TicketPack tp) {
     float *recvbags[26];
     for (int i = 0; i < 26; ++i) recvbags[i] = (float *)local[i]->result->DP;
     CC(cudaMemcpyToSymbolAsync(k_rex::g::recvbags, recvbags, sizeof(recvbags), 0, H2D));
-    wait(reqrecvA);
+    r::waitA();
     for (int i = 0; i < (int) w.size(); ++i) {
         ParticlesWrap it = w[i];
         if (it.n) {

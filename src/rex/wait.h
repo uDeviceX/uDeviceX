@@ -14,5 +14,6 @@ void waitA() { wait(reqsendA); }
 namespace r { /* recive */
 void waitC() { wait(reqrecvC); }
 void waitP() { wait(reqrecvP); }
+void waitA() { wait(reqrecvA); }
 }
 }
