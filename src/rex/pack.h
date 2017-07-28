@@ -1,15 +1,11 @@
 namespace rex {
 void pack_p(int nw, x::TicketPack tp) {
-    tp.counts->resize (26 *  nw);
     tp.offsets->resize(26 * (nw + 1));
     tp.starts->resize (27 *  nw);
 }
 
 void pack_clear(int nw, x::TicketPack tp) {
-    CC(cudaMemsetAsync(tp.counts0, 0, sizeof(int) * 26 * nw));
-    
-    if (tp.counts->S)
-        CC(cudaMemsetAsync(tp.counts->D, 0, sizeof(int) * tp.counts->S));
+    CC(cudaMemsetAsync(tp.counts, 0, sizeof(int) * 26 * nw));
     if (tp.offsets->S)
         CC(cudaMemsetAsync(tp.offsets->D, 0, sizeof(int) * tp.offsets->S));
     if (tp.starts->S)
@@ -22,9 +18,9 @@ void scanA(std::vector<ParticlesWrap> w, x::TicketPack tp) {
         ParticlesWrap it = w[i];
         if (it.n) {
             CC(cudaMemcpyToSymbolAsync(k_rex::g::offsets, tp.offsets->D + 26 * i, sizeof(int) * 26, 0, D2D));
-            k_rex::scatter<<<k_cnf(it.n)>>>((float2 *)it.p, it.n, /**/ tp.counts->D + i * 26);
+            k_rex::scatter<<<k_cnf(it.n)>>>((float2 *)it.p, it.n, /**/ tp.counts + i * 26);
         }
-        k_rex::scanA<<<1, 32>>>(tp.counts->D + i * 26, tp.offsets->D + 26 * i, /**/ tp.offsets->D + 26 * (i + 1), tp.starts->D + i * 27);
+        k_rex::scanA<<<1, 32>>>(tp.counts + i * 26, tp.offsets->D + 26 * i, /**/ tp.offsets->D + 26 * (i + 1), tp.starts->D + i * 27);
     }
 }
 
@@ -40,7 +36,7 @@ void pack_attempt(std::vector<ParticlesWrap> w, x::TicketPack tp) {
         ParticlesWrap it = w[i];
         if (it.n) {
             CC(cudaMemcpyToSymbolAsync(k_rex::g::offsets, tp.offsets->D + 26 * i, sizeof(int) * 26, 0, D2D));
-            CC(cudaMemcpyToSymbolAsync(k_rex::g::counts, tp.counts->D + 26 * i, sizeof(int) * 26, 0, D2D));
+            CC(cudaMemcpyToSymbolAsync(k_rex::g::counts, tp.counts + 26 * i, sizeof(int) * 26, 0, D2D));
             CC(cudaMemcpyToSymbolAsync(k_rex::g::starts, tp.starts->D + 27 * i, sizeof(int) * 27, 0, D2D));
             k_rex::pack<<<14 * 16, 128>>>((float2 *)it.p, /**/ (float2*)packbuf->D);
         }
