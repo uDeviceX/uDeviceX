@@ -3,8 +3,9 @@ namespace gen {
 
 enum DataLoc {Host, Device};
 
-template <typename T, DataLoc> void cpy_pck (T *dst, const T *src, int n);
-template <typename T, DataLoc> void cpy_upck(T *dst, const T *src, int n);
+// https://stackoverflow.com/questions/19959637/double-templated-function-instantiation-fails
+template <typename T, DataLoc LOC> struct cpy_pck {void operator() (T *dst, const T *src, int n);};
+template <typename T, DataLoc LOC> struct cpy_upck{void operator() (T *dst, const T *src, int n);};
 template <typename T> MPI_Datatype MType();
 
 template <typename T, DataLoc LOC>
@@ -14,7 +15,7 @@ void pack(int *reord[27], const int counts[27],  const T *dd, int npd, /**/ pbuf
         count = counts[fid];
         for (j = 0; j < count; ++j) {
             src = reord[fid][j];
-            cpy_pck <LOC> (b->dd[fid] + j * npd, dd + src * npd, npd);
+            cpy_pck <T, LOC> (b->dd[fid] + j * npd, dd + src * npd, npd);
         }
     }
 }
@@ -38,7 +39,7 @@ int unpack(int npd, const pbuf<T> *b, const int counts[27], /**/ T *dd) {
     for (int i = 0; i < 27; ++i) {
         int c = counts[i];
         int n = c * npd;
-        if (n) cpu_upck <LOC> (dd + nm * npd, b->dd[i], n);
+        if (n) cpy_upck <T, LOC> (dd + nm * npd, b->dd[i], n);
         nm += c;
     }
     return nm;
@@ -48,21 +49,21 @@ int unpack(int npd, const pbuf<T> *b, const int counts[27], /**/ T *dd) {
 
 /* template specializations */
 
-template <typename T, Host>
-void cpy_pck(T *dst, const T *src, int n) { memcpy(dst, src, n*sizeof(T)); }
+template <typename T>
+struct cpy_pck <T, Host>   {void operator() (T *dst, const T *src, int n) {memcpy(dst, src, n*sizeof(T));}};
 
-template <typename T, Device>
-void cpy_pck(T *dst, const T *src, int n) { CC(cudaMemcpyAsync(dst, src, n*sizeof(T), D2H)); }
+template <typename T>
+struct cpy_pck <T, Device> {void operator() (T *dst, const T *src, int n) {CC(cudaMemcpyAsync(dst, src, n*sizeof(T), D2H));}};
 
-template <typename T, Host>
-void cpy_upck(T *dst, const T *src, int n) { memcpy(dst, src, n*sizeof(T)); }
+template <typename T>
+struct cpy_upck <T, Host>   {void operator() (T *dst, const T *src, int n) {memcpy(dst, src, n*sizeof(T));}};
 
-template <typename T, Device>
-void cpy_upck(T *dst, const T *src, int n) { CC(cudaMemcpyAsync(dst, src, n*sizeof(T), H2D)); }
+template <typename T>
+struct cpy_upck <T, Device> {void operator() (T *dst, const T *src, int n) { CC(cudaMemcpyAsync(dst, src, n*sizeof(T), H2D));}};
 
-MPI_Datatype MType<int>()      {return MPI_INT;}
-MPI_Datatype MType<Particle>() {return datatype::particle;}
-MPI_Datatype MType<Solid>()    {return datatype::solid;}
+template <> MPI_Datatype MType<int>()      {return MPI_INT;}
+template <> MPI_Datatype MType<Particle>() {return datatype::particle;}
+template <> MPI_Datatype MType<Solid>()    {return datatype::solid;}
 
 } // gen
 } // mdstr
