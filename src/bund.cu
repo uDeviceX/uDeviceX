@@ -63,6 +63,8 @@ namespace ic {
 #include "rbc/int.h"
 }
 
+#include "mdstr/buf.h"
+#include "mdstr/tic.h"
 #include "mdstr/int.h"
 #include "rdstr/int.h"
 
