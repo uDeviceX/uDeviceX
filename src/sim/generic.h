@@ -1,9 +1,15 @@
 void distr_rbc() {
-    rdstr::extent(r::q.pp, r::q.nc, r::q.nv);
+    rdstr::get_pos(r::q.pp, r::q.nc, r::q.nv, /**/ &r::tde);
+    mdstr::get_dests(r::tde.rr, r::q.nc, /**/ &r::tds);
+    mdstr::pack(r::q.pp, r::q.nv, /**/ &r::tds);
+    mdstr::post_recv(&r::tds, /**/ &r::tdr, &r::tdc);
+    mdstr::post_send(r::q.nv, &r::tds, /**/ &r::tdc);
+    mdstr::wait_recv(/**/ &r::tdc);
+    r::q.nc = mdstr::unpack(r::q.nv, &r::tdr, /**/ r::q.pp);
+    r::q.n = r::q.nc * r::q.nv;
+    
     dSync();
-    rdstr::pack_sendcnt(r::q.pp, r::q.nc, r::q.nv);
-    r::q.nc = rdstr::post(r::q.nv); r::q.n = r::q.nc * r::q.nv;
-    rdstr::unpack(r::q.pp, r::q.nv);
+    CC( cudaPeekAtLastError() );
 }
 
 template <typename T>
