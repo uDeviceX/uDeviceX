@@ -26,8 +26,8 @@ void postrecvA(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
 }
 
 void recv_p(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
-    wait(reqrecvC);
-    wait(reqrecvP);
+    r::waitC();
+    r::waitP();
 
     for (int i = 0; i < 26; ++i) {
         int count = recv_counts[i];

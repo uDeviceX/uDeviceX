@@ -1,11 +1,18 @@
 namespace rex {
 void wait(std::vector<MPI_Request> &v) {
-    MPI_Status statuses[v.size()];
-    if (v.size()) MC(l::m::Waitall(v.size(), &v.front(), statuses));
+    MPI_Status s[v.size()];
+    if (v.size()) MC(l::m::Waitall(v.size(), &v.front(), s));
     v.clear();
 }
 
+namespace s { /* send */
 void waitC() { wait(reqsendC); }
 void waitP() { wait(reqsendP); }
 void waitA() { wait(reqsendA); }
+}
+
+namespace r { /* recive */
+void waitC() { wait(reqrecvC); }
+void waitP() { wait(reqrecvP); }
+}
 }
