@@ -57,13 +57,13 @@ template <typename T, Host>
 void cpy_pck(T *dst, const T *src, int n) { memcpy(dst, src, n*sizeof(T)); }
 
 template <typename T, Device>
-void cpy_pck(T *dst, const T *src, int n) { CC(cudaMemcpy(dst, src, n*sizeof(T), D2H)); }
+void cpy_pck(T *dst, const T *src, int n) { CC(cudaMemcpyAsync(dst, src, n*sizeof(T), D2H)); }
 
 template <typename T, Host>
 void cpy_upck(T *dst, const T *src, int n) { memcpy(dst, src, n*sizeof(T)); }
 
 template <typename T, Device>
-void cpy_upck(T *dst, const T *src, int n) { CC(cudaMemcpy(dst, src, n*sizeof(T), H2D)); }
+void cpy_upck(T *dst, const T *src, int n) { CC(cudaMemcpyAsync(dst, src, n*sizeof(T), H2D)); }
 
 MPI_Datatype MType<int>()      {return MPI_INT;}
 MPI_Datatype MType<Particle>() {return datatype::particle;}
