@@ -59,7 +59,7 @@ template <typename T>
 struct cpy_upck <T, Host>   {void operator() (T *dst, const T *src, int n) {memcpy(dst, src, n*sizeof(T));}};
 
 template <typename T>
-struct cpy_upck <T, Device> {void operator() (T *dst, const T *src, int n) { CC(cudaMemcpyAsync(dst, src, n*sizeof(T), H2D));}};
+struct cpy_upck <T, Device> {void operator() (T *dst, const T *src, int n) {CC(cudaMemcpyAsync(dst, src, n*sizeof(T), H2D));}};
 
 template <> MPI_Datatype MType<int>()      {return MPI_INT;}
 template <> MPI_Datatype MType<Particle>() {return datatype::particle;}
