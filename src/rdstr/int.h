@@ -12,4 +12,5 @@ void free_ticketE(/**/ TicketE *t);
 
 void extents(const Particle *pp, int nc, int nv, /**/ TicketE *t);
 void get_pos(int nc, /**/ TicketE *t);
-}
+
+} // rdstr
