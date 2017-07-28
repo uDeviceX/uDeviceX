@@ -1,7 +1,7 @@
 namespace x {
 static void ini_ticketpack(TicketPack *t) {
-    t->tstarts_hst = new PinnedHostBuffer4<int>(27);
-    t->offsets_hst = new PinnedHostBuffer4<int>(26);
+    t->tstarts_hst = new PinnedHostBuffer5<int>(27);
+    t->offsets_hst = new PinnedHostBuffer5<int>(26);
 
     Dalloc(&t->tstarts, 27);
     Dalloc(&t->offsets, 27 * (MAX_OBJ_TYPES + 1));
