@@ -14,9 +14,6 @@ static void fin_ticketpack(TicketPack t) {
     delete t.tstarts_hst;
     delete t.offsets_hst;
 
-    delete t.starts;
-    delete t.offsets;
-
     Dfree(t.counts);
     Dfree(t.starts);
     Dfree(t.offsets);
