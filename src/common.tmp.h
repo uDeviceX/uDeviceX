@@ -149,3 +149,18 @@ public:
     D = NULL;
   }
 };
+
+template <typename T> struct PinnedHostBuffer5 {
+public:
+    /* `D' is for data */
+    T *D;
+
+    explicit PinnedHostBuffer5(int n) {
+        CC(cudaHostAlloc(&D, sizeof(T) * n, cudaHostAllocMapped));
+    }
+
+    ~PinnedHostBuffer5() {
+        if (D != NULL) CC(cudaFreeHost(D));
+        D = NULL;
+    }
+};
