@@ -13,8 +13,6 @@
 
 namespace rdstr {
 
-using namespace mdstr;
-
 void alloc_ticketE(/**/ TicketE *t) {
     t->ll = new PinnedHostBuffer2<float3>;
     t->hh = new PinnedHostBuffer2<float3>;
