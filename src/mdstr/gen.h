@@ -15,7 +15,7 @@ void pack(int *reord[27], const int counts[27],  const T *dd, int npd, /**/ pbuf
         count = counts[fid];
         for (j = 0; j < count; ++j) {
             src = reord[fid][j];
-            cpy_pck <T, LOC> (b->dd[fid] + j * npd, dd + src * npd, npd);
+            cpy_pck <T, LOC>() (b->dd[fid] + j * npd, dd + src * npd, npd);
         }
     }
 }
@@ -30,7 +30,7 @@ void post_send(int npd, const int counts[27], const pbuf<T> *b, MPI_Comm cart, i
 template <typename T>
 void post_recv(MPI_Comm cart, int nmax, int bt, int ank_ne[27], /**/ pbuf<T> *b, MPI_Request rreq[26]) {
     for (int i = 1; i < 27; ++i)
-        MC(l::m::Irecv(b->dd[i], nmax, MType<T>, ank_ne[i], bt + i, cart, rreq + i - 1));
+        MC(l::m::Irecv(b->dd[i], nmax, MType<T>(), ank_ne[i], bt + i, cart, rreq + i - 1));
 }
 
 template <typename T, DataLoc LOC>
@@ -39,7 +39,7 @@ int unpack(int npd, const pbuf<T> *b, const int counts[27], /**/ T *dd) {
     for (int i = 0; i < 27; ++i) {
         int c = counts[i];
         int n = c * npd;
-        if (n) cpy_upck <T, LOC> (dd + nm * npd, b->dd[i], n);
+        if (n) cpy_upck <T, LOC>() (dd + nm * npd, b->dd[i], n);
         nm += c;
     }
     return nm;
