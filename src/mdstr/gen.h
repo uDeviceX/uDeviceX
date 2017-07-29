@@ -40,7 +40,7 @@ int unpack(int npd, const pbuf<T> *b, const int counts[27], /**/ T *dd) {
     for (int i = 0; i < 27; ++i) {
         int c = counts[i];
         int n = c * npd;
-        if (n) cpy(dd + nm * npd, b->dd[i], n, LOC == Host ? H2H : D2H);
+        if (n) cpy(dd + nm * npd, b->dd[i], n, LOC == Host ? H2H : H2D);
         nm += c;
     }
     return nm;
