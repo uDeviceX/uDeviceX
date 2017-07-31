@@ -66,7 +66,7 @@ struct Texo {
 #define Dfree(d)     CC(cudaFree(d))
 
 /* pinned memory allocation */
-#define Palloc(d, n) CC(cudaHostAlloc((d), (n) * sizeof((**(d)))))
+#define Palloc(d, n) CC(cudaHostAlloc((d), (n) * sizeof((**(d))), cudaHostAllocMapped))
 #define Pfree(d)     CC(cudaFreeHost(d))
 
 template <typename T>
