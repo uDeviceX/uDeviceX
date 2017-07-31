@@ -20,5 +20,9 @@ struct Rnd {
     int mask;
 };
 
-void interactions(const SFrag ssfrag[26], const Frag ffrag[26], const Rnd rrnd[26], /**/ float *ff);
+typedef Sarray<SFrag, 26> SFrag26;
+typedef Sarray< Frag, 26>  Frag26;
+typedef Sarray<  Rnd, 26>   Rnd26;
+
+void interactions(const SFrag26 ssfrag, const Frag26 ffrag, const Rnd26 rrnd, /**/ float *ff);
 };
