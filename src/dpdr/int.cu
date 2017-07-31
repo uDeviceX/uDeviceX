@@ -15,10 +15,12 @@
 #include "k/common.h"
 #include "forces.h"
 
-#include "bipsbatch.type.h"
-#include "k/bipsbatch/map.h"
-#include "k/bipsbatch/common.h"
-#include "bipsbatch.impl.h"
+// #include "bipsbatch.type.h"
+// #include "k/bipsbatch/map.h"
+// #include "k/bipsbatch/common.h"
+// #include "bipsbatch.impl.h"
+
+#include "bipsbatch/imp.h"
 
 #include "dpdr/type.h"
 #include "dpdr/int.h"
@@ -159,9 +161,10 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
     int i;
     int dx, dy, dz;
     int m0, m1, m2;
-    SFrag sfrag[26];
-    Frag   frag[26];
-    Rnd     rnd[26];
+
+    bipsbatch::SFrag sfrag[26];
+    bipsbatch::Frag   frag[26];
+    bipsbatch::Rnd     rnd[26];
 
     for (i = 0; i < 26; ++i) {
         dx = (i     + 2) % 3 - 1;
@@ -186,7 +189,7 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
             1 + m0 * (XS - 1),
             1 + m1 * (YS - 1),
             1 + m2 * (ZS - 1),
-            (FragType)(abs(dx) + abs(dy) + abs(dz))};
+            (bipsbatch::FragType)(abs(dx) + abs(dy) + abs(dz))};
 
         rnd[i] = {trnd.interrank_trunks[i]->get_float(), trnd.interrank_masks[i]};
     }
