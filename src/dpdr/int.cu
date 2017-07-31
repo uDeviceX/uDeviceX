@@ -11,9 +11,6 @@
 #include "common.mpi.h"
 
 #include <conf.h>
-#include "k/read.h"
-#include "k/common.h"
-#include "forces.h"
 
 #include "bipsbatch/imp.h"
 
