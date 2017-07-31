@@ -28,15 +28,15 @@ void local_resize() {
 }
 
 void post_p(MPI_Comm cart, int dranks[26], x::TicketTags t, x::TicketPack tp) {
-    if (tp.tstarts_hst->D[26])
-        CC(cudaMemcpyAsync(host_packbuf->D, packbuf->D, sizeof(Particle) * tp.tstarts_hst->D[26], H2H));
+    if (tp.tstarts_hst[26])
+        CC(cudaMemcpyAsync(host_packbuf->D, packbuf->D, sizeof(Particle) * tp.tstarts_hst[26], H2H));
     dSync();
     reqsendC.resize(26);
     for (int i = 0; i < 26; ++i)
         MC(l::m::Isend(send_counts + i, 1, MPI_INTEGER, dranks[i], t.btc + i, cart, &reqsendC[i]));
 
     for (int i = 0; i < 26; ++i) {
-        int start = tp.tstarts_hst->D[i];
+        int start = tp.tstarts_hst[i];
         int count = send_counts[i];
         int expected = local[i]->expected();
         
