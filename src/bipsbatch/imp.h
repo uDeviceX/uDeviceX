@@ -20,6 +20,7 @@ struct Rnd {
     int mask;
 };
 
+typedef Sarray<unsigned int, 27> int27;
 typedef Sarray<SFrag, 26> SFrag26;
 typedef Sarray< Frag, 26>  Frag26;
 typedef Sarray<  Rnd, 26>   Rnd26;

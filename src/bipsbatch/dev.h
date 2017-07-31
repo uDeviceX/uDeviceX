@@ -1,8 +1,6 @@
 namespace bipsbatch {
 namespace dev {
 
-static __constant__ unsigned int start[27];
-
 static __constant__ SFrag        ssfrag[26]; /* "send" fragment : TODO */
 static __constant__ Frag          ffrag[26]; /* "remote" fragment */
 static __constant__ Rnd            rrnd[26];
@@ -124,7 +122,7 @@ static __device__ void force3(const SFrag sfrag, const Frag frag, const Rnd rnd,
     force2(frag, rnd, p, f);
 }
 
-__global__ void force(/**/ float *ff) {
+__global__ void force(const int27 start, /**/ float *ff) {
     Frag frag;
     Rnd  rnd;
     SFrag sfrag;
@@ -133,9 +131,9 @@ __global__ void force(/**/ float *ff) {
     uint i; /* particle id */
 
     gid = (threadIdx.x + blockDim.x * blockIdx.x) >> 1;
-    if (gid >= start[26]) return;
-    h = k_common::fid(start, gid);
-    i = gid - start[h];
+    if (gid >= start.d[26]) return;
+    h = k_common::fid(start.d, gid);
+    i = gid - start.d[h];
     sfrag = ssfrag[h];
     if (i >= sfrag.n) return;
 
