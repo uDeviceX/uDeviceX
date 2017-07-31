@@ -51,8 +51,14 @@ int unpack(int npd, const Partbuf *bpp, const int counts[27], /**/ Particle *pp)
     return gen::unpack <Particle, gen::Device> (npd, bpp, counts, /**/ pp);
 }
 
-void shift() {
-    // TODO
+void shift(int npd, const int counts[27], /**/ Particle *pp) {
+    int nm = counts[0]; /* skip bulk */
+    for (int i = 1; i < 27; ++i) {
+        int c = counts[i];
+        int n = c * npd;
+        if (n) dev::shift <<<k_cnf(n)>>> (n, i, /**/ pp + nm * npd);
+        nm += c;
+    }
 }
 
 } // sub
