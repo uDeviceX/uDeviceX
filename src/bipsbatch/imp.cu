@@ -17,7 +17,9 @@
 
 namespace bipsbatch {
 
-static void get_start(const SFrag sfrag[26], /**/ unsigned int start[27]) {
+typedef Sarray<int, 27> int27;
+
+static void get_start(const SFrag sfrag[26], /**/ int start[27]) {
     /* generate padded start */
     int i;
     start[0] = 0;
@@ -25,12 +27,12 @@ static void get_start(const SFrag sfrag[26], /**/ unsigned int start[27]) {
 }
 
 void interactions(const SFrag26 ssfrag, const Frag26 ffrag, const Rnd26 rrnd, /**/ float *ff) {
-    static unsigned int start[27];
+    int27 start;
     int n; /* number of threads */
-    get_start(ssfrag.d, /**/ start);
-    n = 2 * start[26];
+    get_start(ssfrag.d, /**/ start.d);
+    n = 2 * start.d[26];
     
-    CC(cudaMemcpyToSymbolAsync(dev::start, start,   sizeof(start), 0, H2D));
+    CC(cudaMemcpyToSymbolAsync(dev::start, start.d,   sizeof(start), 0, H2D));
     CC(cudaMemcpyToSymbolAsync(dev::ssfrag, ssfrag.d, sizeof(SFrag) * 26, 0, H2D));
     CC(cudaMemcpyToSymbolAsync(dev::ffrag, ffrag.d,   sizeof(Frag)  * 26, 0, H2D));
     CC(cudaMemcpyToSymbolAsync(dev::rrnd,   rrnd.d,   sizeof(Rnd)   * 26,  0, H2D));
