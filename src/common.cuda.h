@@ -65,6 +65,10 @@ struct Texo {
 #define Dalloc(d, n) CC(cudaMalloc((d), (n) * sizeof((**(d)))))
 #define Dfree(d)     CC(cudaFree(d))
 
+/* pinned memory allocation */
+#define Palloc(d, n) CC(cudaHostAlloc((d), (n) * sizeof((**(d)))))
+#define Pfree(d)     CC(cudaFreeHost(d))
+
 template <typename T>
 void mpDeviceMalloc(T **D) {
     CC(cudaMalloc(D, sizeof(T) * MAX_PART_NUM));
