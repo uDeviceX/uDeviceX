@@ -36,7 +36,7 @@ void free_ticketR(/**/ TicketR *t);
 void extents(const Particle *pp, int nc, int nv, /**/ TicketE *t);
 void get_pos(int nc, /**/ TicketE *t);
 void get_reord(int nc, TicketE *te, /**/ TicketP *tp);
-void pack(const Particle *pp, int nv, TicketP *tp, TicketS *ts);
+void pack(const Particle *pp, int nv, TicketP *tp, /**/ TicketS *ts);
 void post_send(int nv, const TicketP *tp, /**/ TicketC *tc, TicketS *ts);
 void post_recv(/**/ TicketP *tp, TicketC *tc, TicketR *tr);
 void wait_recv(/**/ TicketC *tc, TicketR *tr);

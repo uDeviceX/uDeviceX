@@ -68,7 +68,7 @@ void get_reord(int nc, TicketE *te, /**/ TicketP *tp) {
     mdstr::get_reord(te->rr, nc, /**/ tp);
 }
 
-void pack(const Particle *pp, int nv, TicketP *tp, TicketS *ts) {
+void pack(const Particle *pp, int nv, TicketP *tp, /**/ TicketS *ts) {
     sub::pack(tp->reord, tp->scounts, pp, nv, /**/ &ts->p.b);
 }
 
