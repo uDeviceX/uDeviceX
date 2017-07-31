@@ -20,7 +20,6 @@ void ini_ticketC(/*io*/ basetags::TagGen *tg, /**/ TicketC *t) {
 }
 
 void free_ticketC(/**/ TicketC *t) {
-    if (!t->first) sub::cancelall(t->rreqc);
     l::m::Comm_free(&t->cart);
 }
 
