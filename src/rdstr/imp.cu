@@ -49,6 +49,7 @@ void pack(int *reord[27], const int counts[27], const Particle *pp, int nv, /**/
 
 void post_send(int nv, const int counts[27], const Partbuf *bpp, MPI_Comm cart, int bt, int rnk_ne[27],
                /**/ MPI_Request sreq[26]) {
+    dSync(); // wait for pack
     gen::post_send(nv, counts, bpp, cart, bt, rnk_ne, /**/ sreq);
 }
 
