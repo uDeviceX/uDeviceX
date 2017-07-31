@@ -41,6 +41,7 @@ void post_sendc(const TicketP *tp, /**/ TicketC *tc) {
 }
 
 void post_recvc(/**/ TicketC *tc, TicketP *tp) {
+    tp->rcounts[0] = tp->scounts[0]; /* bulk */
     sub::post_recvc(tc->cart, tc->btc, tc->ank_ne, /**/ tp->rcounts, tc->rreqc);
 }
 
