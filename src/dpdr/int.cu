@@ -15,11 +15,6 @@
 #include "k/common.h"
 #include "forces.h"
 
-// #include "bipsbatch.type.h"
-// #include "k/bipsbatch/map.h"
-// #include "k/bipsbatch/common.h"
-// #include "bipsbatch.impl.h"
-
 #include "bipsbatch/imp.h"
 
 #include "dpdr/type.h"
