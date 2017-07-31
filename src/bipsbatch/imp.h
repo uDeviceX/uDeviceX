@@ -1,4 +1,4 @@
-namespace bibsbatch {
+namespace bipsbatch {
 
 /* fragment */
 enum FragType { BULK = 0, FACE = 1, EDGE = 2, CORNER = 3 };

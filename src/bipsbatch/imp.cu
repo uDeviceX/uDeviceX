@@ -1,10 +1,23 @@
+#include <conf.h>
+#include <cstdio>
+
+#include "common.h"
+#include "common.cuda.h"
+#include "forces.h"
+#include "k/read.h"
+#include "k/common.h"
+
+#include <limits> /* for rnd */
+#include <stdint.h>
+#include "rnd.h"
+
 #include "bipsbatch/imp.h"
 #include "bipsbatch/dev.map.h"
 #include "bipsbatch/dev.h"
 
 namespace bipsbatch {
 
-static void get_start(SFrag sfrag[26], /**/ unsigned int start[27]) {
+static void get_start(const SFrag sfrag[26], /**/ unsigned int start[27]) {
     /* generate padded start */
     int i;
     start[0] = 0;
