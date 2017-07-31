@@ -24,4 +24,4 @@ see generic code in [gen.h](../../src/mdstr/gen.h).
 
 ## tickets dependencies
 
-![alt text](graphviz/deps.png)
+See specific hiwis, e.g. [rdstr](../rdstr/rdstr.md).

@@ -1,0 +1,14 @@
+digraph {
+	{
+		node [shape=box]
+		extents->get_pos->get_reord [label="E"];
+		get_reord->pack [label="P"];
+		get_reord->post_recv [label="P (bulk count)"];
+		pack->post_send [label="S"];
+		get_reord->post_send [label="P"];
+		post_send->wait_recv [label="C"];
+		post_recv->wait_recv [label="C"];
+		wait_recv->unpack [label="R"];
+		post_recv->unpack [label="P, R"];
+	}
+}
