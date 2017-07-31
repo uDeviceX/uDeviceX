@@ -28,18 +28,18 @@ void free_ticketE(/**/ TicketE *t) {
     delete[] t->rr;
 }
 
-void ini_ticketS(/*io*/ basetags::TagGen *tg, /**/ x::TicketS *t) {
+void ini_ticketS(/*io*/ basetags::TagGen *tg, /**/ TicketS *t) {
     auto *p = &t->p;
     mdstr::gen::alloc_buf(0, MAX_PART_NUM, /**/ &p->b);
     p->bt = get_tag(tg);
 }
 
-void free_ticketS(/**/ x::TicketS *t) {
+void free_ticketS(/**/ TicketS *t) {
     auto *p = &t->p;
     mdstr::gen::free_buf(0, /**/ &p->b);
 }
 
-void ini_ticketR(const x::TicketS *ts, /**/ x::TicketR *t) {
+void ini_ticketR(const TicketS *ts, /**/ TicketR *t) {
     auto *p = &t->p;
     auto *ps = &ts->p;
     mdstr::gen::alloc_buf(1, MAX_PART_NUM, /**/ &p->b);
@@ -47,7 +47,7 @@ void ini_ticketR(const x::TicketS *ts, /**/ x::TicketR *t) {
     p->bt = ps->bt;
 }
 
-void free_ticketR(/**/ x::TicketR *t) {
+void free_ticketR(/**/ TicketR *t) {
     auto *p = &t->p;
     mdstr::gen::free_buf(1, /**/ &p->b);
 }
@@ -62,6 +62,14 @@ void extents(const Particle *pp, int nc, int nv, /**/ TicketE *t) {
 void get_pos(int nc, /**/ TicketE *t) {
     dSync(); // wait for extents
     sub::get_pos(nc, t->ll->D, t->hh->D, /**/ t->rr);
+}
+
+void get_reord(TicketE *te, /**/ TicketP *tp) {
+    
+}
+
+void pack(const Particle *pp, int nv, TicketP *tp, TicketS *ts) {
+    sub::pack(tp->reord, tp->scounts, pp, nv, /**/ &ts->p.b);
 }
 
 } // rdstr
