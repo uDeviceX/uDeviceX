@@ -29,12 +29,8 @@ void interactions(const SFrag26 ssfrag, const Frag26 ffrag, const Rnd26 rrnd, /*
     int n; /* number of threads */
     get_start(ssfrag.d, /**/ start.d);
     n = 2 * start.d[26];
-    
-    CC(cudaMemcpyToSymbolAsync(dev::ssfrag, ssfrag.d, sizeof(SFrag) * 26, 0, H2D));
-    CC(cudaMemcpyToSymbolAsync(dev::ffrag, ffrag.d,   sizeof(Frag)  * 26, 0, H2D));
-    CC(cudaMemcpyToSymbolAsync(dev::rrnd,   rrnd.d,   sizeof(Rnd)   * 26,  0, H2D));
-    
-    if (n) dev::force <<<k_cnf(n)>>> (start, /**/ ff);
+        
+    if (n) dev::force <<<k_cnf(n)>>> (start, ssfrag, ffrag, rrnd, /**/ ff);
 }
 
 };

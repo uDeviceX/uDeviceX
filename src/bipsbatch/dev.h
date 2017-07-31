@@ -1,10 +1,6 @@
 namespace bipsbatch {
 namespace dev {
 
-static __constant__ SFrag        ssfrag[26]; /* "send" fragment : TODO */
-static __constant__ Frag          ffrag[26]; /* "remote" fragment */
-static __constant__ Rnd            rrnd[26];
-
 struct Pa { /* local particle */
     float x, y, z;
     float vx, vy, vz;
@@ -122,7 +118,7 @@ static __device__ void force3(const SFrag sfrag, const Frag frag, const Rnd rnd,
     force2(frag, rnd, p, f);
 }
 
-__global__ void force(const int27 start, /**/ float *ff) {
+__global__ void force(const int27 start, const SFrag26 ssfrag, const Frag26 ffrag, const Rnd26 rrnd, /**/ float *ff) {
     Frag frag;
     Rnd  rnd;
     SFrag sfrag;
@@ -134,11 +130,11 @@ __global__ void force(const int27 start, /**/ float *ff) {
     if (gid >= start.d[26]) return;
     h = k_common::fid(start.d, gid);
     i = gid - start.d[h];
-    sfrag = ssfrag[h];
+    sfrag = ssfrag.d[h];
     if (i >= sfrag.n) return;
 
-    frag = ffrag[h];
-    rnd = rrnd[h];
+    frag = ffrag.d[h];
+    rnd = rrnd.d[h];
     force3(sfrag, frag, rnd, i, /**/ ff);
 }
 
