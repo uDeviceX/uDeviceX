@@ -1,5 +1,5 @@
 # mdstr
 
-hiwi for generic [m]esh distribution
+hiwi for generic [m]esh [distr]ibution
 
-See [mdstr.md](../../doc/mdstr/mdstr.md) for function dependencies
+See [mdstr.md](../../doc/mdstr/mdstr.md)
