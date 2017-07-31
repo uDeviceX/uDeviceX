@@ -29,7 +29,7 @@ void local_resize() {
 
 void post_p(MPI_Comm cart, int dranks[26], x::TicketTags t, x::TicketPack tp) {
     if (tp.tstarts_hst[26])
-        CC(cudaMemcpyAsync(host_packbuf->D, packbuf->D, sizeof(Particle) * tp.tstarts_hst[26], H2H));
+        CC(cudaMemcpyAsync(host_packbuf->D, packbuf, sizeof(Particle) * tp.tstarts_hst[26], H2H));
     dSync();
     reqsendC.resize(26);
     for (int i = 0; i < 26; ++i)

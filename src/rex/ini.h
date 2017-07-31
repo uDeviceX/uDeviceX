@@ -2,13 +2,12 @@ namespace rex {
 void adjust_packbuffers() {
     int s = 0;
     for (int i = 0; i < 26; ++i) s += 32 * ((local[i]->capacity() + 31) / 32);
-    packbuf->resize(s);
     host_packbuf->resize(s);
 }
 
 void ini() {
     int i;
-    packbuf = new DeviceBuffer<Particle>;
+    mpDeviceMalloc(&packbuf);
     host_packbuf = new PinnedHostBuffer<Particle>;
 
     for (i = 0; i < 26; i++) local[i] = new LocalHalo;

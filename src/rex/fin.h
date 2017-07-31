@@ -1,6 +1,6 @@
 namespace rex {
 void fin() {
-    delete packbuf;
+    cudaFree(packbuf);
     delete host_packbuf;
 
     for (int i = 0; i < 26; i++) delete local[i];
