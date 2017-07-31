@@ -2,18 +2,18 @@ namespace mdstr {
 
 /* -- common tickets, mandatory for redistribution -- */
 namespace x {
-struct TicketC {                      /* communication ticket        */
-    MPI_Comm cart;                    /* Cartesian communicator      */
-    MPI_Request sreqc[26], rreqc[26]; /* counts requests             */
-    int rnk_ne[27];                   /* rank      of the neighbor   */
-    int ank_ne[27];                   /* anti-rank of the neighbor   */
+struct TicketC {                      /* communication ticket          */
+    MPI_Comm cart;                    /* Cartesian communicator        */
+    MPI_Request sreqc[26], rreqc[26]; /* counts requests               */
+    int rnk_ne[27];                   /* rank      of the neighbor     */
+    int ank_ne[27];                   /* anti-rank of the neighbor     */
     bool first;
 };
 
-struct TicketP {                       /* packer/unpacker ticket        */
-    int scounts[27];                   /* number of leaving objects     */
-    int  *reord[27];                   /* which mesh in which fragment? */
-    int rcounts[27];                   /* number of incoming objects    */
+struct TicketP {                      /* packer/unpacker ticket        */
+    int scounts[27];                  /* number of leaving objects     */
+    int  *reord[27];                  /* which mesh in which fragment? */
+    int rcounts[27];                  /* number of incoming objects    */
 };
 } // x
 
