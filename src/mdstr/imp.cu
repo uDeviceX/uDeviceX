@@ -19,7 +19,7 @@ enum {X, Y, Z};
 
 void waitall(MPI_Request rr[26]) {
     MPI_Status ss[26];
-    l::m::Waitall(26, rr, ss) ;
+    MC(l::m::Waitall(26, rr, ss));
 }
 
 void cancelall(MPI_Request rr[26]) {

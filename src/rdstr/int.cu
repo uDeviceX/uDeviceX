@@ -73,6 +73,11 @@ void pack(const Particle *pp, int nv, TicketP *tp, TicketS *ts) {
 }
 
 void post_send(int nv, const TicketP *tp, /**/ TicketC *tc, TicketS *ts) {
+    if (!tc->first) {
+        sub::waitall(/**/ tc->sreqc);
+        sub::waitall(/**/ ts->p.req);
+    }
+    tc->first = false;
     mdstr::post_sendc(tp, /**/ tc);
     auto *pts = &ts->p;
     sub::post_send(nv, tp->scounts, &pts->b, tc->cart, pts->bt, tc->rnk_ne, /**/ pts->req);
