@@ -5,6 +5,7 @@
 #include "common.h"
 #include "common.mpi.h"
 #include "common.cuda.h"
+#include <conf.h>
 
 #include "minmax.h"
 
@@ -12,6 +13,7 @@
 #include "mdstr/gen.h"
 
 #include "rdstr/imp.h"
+#include "rdstr/dev.h"
 
 namespace rdstr {
 namespace sub {
