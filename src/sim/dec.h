@@ -45,9 +45,10 @@ rbc::TicketT tt;
 
 /* [d]istribute [t]ickets */
 rdstr::TicketC tdc;
+rdstr::TicketP tdp;
+rdstr::TicketE tde;
 rdstr::TicketS tds;
 rdstr::TicketR tdr;
-rdstr::TicketE tde;
 
 Force     *ff;
 }

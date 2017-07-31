@@ -5,7 +5,8 @@ void ini() {
         rbc::alloc_quants(&r::q);
 
         rdstr::ini_ticketC(&tag_gen, &r::tdc);
-        rdstr::ini_ticketS(&r::tds);
+        rdstr::ini_ticketP(MAX_PART_NUM, &r::tdp);
+        rdstr::ini_ticketS(&tag_gen, &r::tds);
         rdstr::ini_ticketR(&r::tds, &r::tdr);
         rdstr::alloc_ticketE(&r::tde);
     }

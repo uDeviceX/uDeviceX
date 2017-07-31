@@ -58,6 +58,7 @@ void fin() {
         rbc::destroy_textures(&r::tt);
 
         rdstr::free_ticketC(&r::tdc);
+        rdstr::free_ticketP(&r::tdp);
         rdstr::free_ticketS(&r::tds);
         rdstr::free_ticketR(&r::tdr);
         rdstr::free_ticketE(&r::tde);
