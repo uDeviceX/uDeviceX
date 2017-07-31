@@ -9,6 +9,8 @@ digraph {
 		post_send->wait_recv [label="C"];
 		post_recv->wait_recv [label="C"];
 		wait_recv->unpack [label="R"];
-		post_recv->unpack [label="P, R"];
+		wait_recv->unpack [label="P, R"];
+		unpack->shift [label="q::pp"];
+		wait_recv->shift [label="P"];
 	}
 }
