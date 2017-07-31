@@ -7,13 +7,13 @@ struct pbuf { /* pack buffer */
 };
 
 template <typename T>
-void alloc_buf(int nmax, /**/ pbuf<T> *b) {
-    for (int i = 0; i < 27; ++i) b->dd[i] = new T[nmax];
+void alloc_buf(int istart, int nmax, /**/ pbuf<T> *b) {
+    for (int i = istart; i < 27; ++i) b->dd[i] = new T[nmax];
 }
 
 template <typename T>
-void free_buf(/**/ pbuf<T> *b) {
-    for (int i = 0; i < 27; ++i) delete[] b->dd[i];
+void free_buf(int istart, /**/ pbuf<T> *b) {
+    for (int i = istart; i < 27; ++i) delete[] b->dd[i];
 }
 
 } // gen
