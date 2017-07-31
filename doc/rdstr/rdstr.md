@@ -1,6 +1,7 @@
 # rdstr
 
-See [sim.md](../sim.md)
+See [sim.md](../sim.md)  
+See [mdstr.md](../mdstr/mdstr.md)  
 
 ## purpose
 
