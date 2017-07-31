@@ -6,9 +6,8 @@ digraph {
 		get_reord->post_recv [label="P (bulk count)"];
 		pack->post_send [label="S"];
 		get_reord->post_send [label="P"];
-		post_send->wait_recv [label="C"];
-		post_recv->wait_recv [label="C"];
-		wait_recv->unpack [label="R"];
+		post_send->wait_recv [label="C, S"];
+		post_recv->wait_recv [label="C, P, R"];
 		wait_recv->unpack [label="P, R"];
 		unpack->shift [label="q::pp"];
 		wait_recv->shift [label="P"];
