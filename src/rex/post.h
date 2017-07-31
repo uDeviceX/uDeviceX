@@ -1,7 +1,7 @@
 namespace rex {
 void post_count(x::TicketPack tp) {
     int i;
-    for (i = 0; i < 26; ++i) send_counts[i] = tp.offsets_hst->D[i];
+    for (i = 0; i < 26; ++i) send_counts[i] = tp.offsets_hst[i];
 }
 
 bool post_check() {
