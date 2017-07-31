@@ -45,45 +45,15 @@ void get_reord(const float *rr, int nm, /**/ int *reord[27], int counts[27]) {
     }
 }
 
-// void pack(int *reord[27], const int counts[27], const Particle *pp, int nv, /**/ Particle *pps[27]) {
-//     for (int fid = 0; fid < 27; ++fid)
-//         for (int j = 0; j < counts[fid]; ++j) {
-//             int src = reord[fid][j];
-//             CC(cudaMemcpyAsync(pps[fid] + j * nv, pp + src * nv, nv * sizeof(Particle), D2H));
-//         }
-// }
+void post_sendc(const int counts[27], MPI_Comm cart, int btc, int rnk_ne[27], /**/ MPI_Request sreqc[26]) {
+    for (int i = 1; i < 27; ++i)
+        MC(l::m::Isend(counts + i, 1, MPI_INT, rnk_ne[i], btc + i, cart, sreqc + i - 1));
+}
 
-// void post_send(int nv, const int counts[27], Particle *const pp[27], MPI_Comm cart, int btc, int btp, int rnk_ne[27],
-//                /**/ MPI_Request sreqc[26], MPI_Request sreqp[26]) {
-//     for (int i = 1; i < 27; ++i)
-//         MC(l::m::Isend(counts + i, 1, MPI_INT, rnk_ne[i], btc + i, cart, sreqc + i - 1));
-
-//     for (int i = 1; i < 27; ++i)
-//         MC(l::m::Isend(pp[i], nv * counts[i], datatype::particle, rnk_ne[i], btp + i, cart, sreqp + i - 1));
-// }
-
-// void post_recv(MPI_Comm cart, int btc, int btp, int ank_ne[27],
-//                /**/ int counts[27], Particle *pp[27], MPI_Request rreqc[26], MPI_Request rreqp[26]) {
-//     for (int i = 1; i < 27; ++i)
-//         MC(l::m::Irecv(counts + i, 1, MPI_INT, ank_ne[i], btc + i, cart, rreqc + i - 1));
-
-//     for (int i = 1; i < 27; ++i)
-//         MC(l::m::Irecv(pp[i], MAX_PART_NUM, datatype::particle, ank_ne[i], btp + i, cart, rreqp + i - 1));
-// }
-
-// int unpack(int nv, Particle *const ppr[27], const int counts[27], /**/ Particle *pp) {
-//     int nm = 0;
-//     for (int i = 0; i < 27; ++i) {
-//         int c = counts[i];
-//         int n = c * nv;
-//         if (n) {
-//             CC(cudaMemcpyAsync(pp + nm * nv, ppr[i], n * sizeof(Particle), H2D));
-//             if (i) dev::shift <<<k_cnf(n)>>> (n, i, /**/ pp + nm * nv);
-//         } 
-//         nm += c;
-//     }
-//     return nm;
-// }
+void post_recvc(MPI_Comm cart, int btc, int ank_ne[27], /**/ int rcounts[27], MPI_Request rreqc[26]) {
+    for (int i = 1; i < 27; ++i)
+        MC(l::m::Irecv(rcounts + i, 1, MPI_INT, ank_ne[i], btc + i, cart, rreqc + i - 1));
+}
 
 } // sub
 } // mdstr

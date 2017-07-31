@@ -20,6 +20,15 @@ namespace sub {
 
 enum {X, Y, Z};
 
+void waitall(MPI_Request rr[26]) {
+    MPI_Status ss[26];
+    l::m::Waitall(26, rr, ss) ;
+}
+
+void cancelall(MPI_Request rr[26]) {
+    for (int i = 0; i < 26; ++i) MC(MPI_Cancel(rr + i));
+}
+
 void extents(const Particle *pp, int nc, int nv, /**/ float3 *ll, float3 *hh) {
     if (nc) minmax(pp, nv, nc, /**/ ll, hh);
 }
@@ -46,7 +55,7 @@ void post_send(int nv, const int counts[27], const Partbuf *bpp, MPI_Comm cart, 
 void post_recv(MPI_Comm cart, int nmax, int bt, int ank_ne[27], /**/ Partbuf *bpp, MPI_Request rreq[26]) {
     gen::post_recv(cart, nmax, bt, ank_ne, /**/ bpp, rreq);
 }
-    
+
 int unpack(int npd, const Partbuf *bpp, const int counts[27], /**/ Particle *pp) {
     return gen::unpack <Particle, gen::Device> (npd, bpp, counts, /**/ pp);
 }

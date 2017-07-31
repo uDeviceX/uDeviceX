@@ -64,12 +64,37 @@ void get_pos(int nc, /**/ TicketE *t) {
     sub::get_pos(nc, t->ll->D, t->hh->D, /**/ t->rr);
 }
 
-void get_reord(TicketE *te, /**/ TicketP *tp) {
-    
+void get_reord(int nc, TicketE *te, /**/ TicketP *tp) {
+    mdstr::get_reord(te->rr, nc, /**/ tp);
 }
 
 void pack(const Particle *pp, int nv, TicketP *tp, TicketS *ts) {
     sub::pack(tp->reord, tp->scounts, pp, nv, /**/ &ts->p.b);
+}
+
+void post_send(int nv, const TicketP *tp, /**/ TicketC *tc, TicketS *ts) {
+    mdstr::post_sendc(tp, /**/ tc);
+    auto *pts = &ts->p;
+    sub::post_send(nv, tp->scounts, &pts->b, tc->cart, pts->bt, tc->rnk_ne, /**/ pts->req);
+}
+
+void post_recv(/**/ TicketP *tp, TicketC *tc, TicketR *tr) {
+    mdstr::post_recvc(/**/ tc, tp);
+    auto *ptr = &tr->p;
+    sub::post_recv(tc->cart, MAX_PART_NUM, ptr->bt, tc->ank_ne, /**/ &ptr->b, ptr->req);
+}
+
+void wait_recv(/**/ TicketC *tc, TicketR *tr) {
+    mdstr::wait_recvc(/**/ tc);
+    sub::waitall(/**/tr->p.req);
+}
+
+int unpack(int nv, const TicketR *tr, const TicketP *tp, /**/ Particle *pp) {
+    return sub::unpack(nv, &(tr->p.b), tp->rcounts, /**/ pp);
+}
+
+void shift(int nv, const TicketP *tp, /**/ Particle *pp) {
+    sub::shift(nv, tp->rcounts, /**/ pp);
 }
 
 } // rdstr

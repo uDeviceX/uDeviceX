@@ -35,14 +35,12 @@ void free_ticketR(/**/ TicketR *t);
 
 void extents(const Particle *pp, int nc, int nv, /**/ TicketE *t);
 void get_pos(int nc, /**/ TicketE *t);
-
-using mdstr::get_reord;
-
-// // TODO: custom ones
-// using mdstr::pack;
-// using mdstr::post_send;
-// using mdstr::post_recv;
-// using mdstr::wait_recv;
-// using mdstr::unpack;
+void get_reord(int nc, TicketE *te, /**/ TicketP *tp);
+void pack(const Particle *pp, int nv, TicketP *tp, TicketS *ts);
+void post_send(int nv, const TicketP *tp, /**/ TicketC *tc, TicketS *ts);
+void post_recv(/**/ TicketP *tp, TicketC *tc, TicketR *tr);
+void wait_recv(/**/ TicketC *tc, TicketR *tr);
+int unpack(int nv, const TicketR *tr, const TicketP *tp, /**/ Particle *pp);
+void shift(int nv, const TicketP *tp, /**/ Particle *pp);
 
 } // rdstr

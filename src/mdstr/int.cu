@@ -37,32 +37,17 @@ void get_reord(const float *rr, int nm, /**/ TicketP *t) {
     sub::get_reord(rr, nm, /**/ t->reord, t->scounts);
 }
 
-// void pack(const Particle *pp, int nv, /**/  TicketS *t) {
-//     sub::pack(t->reord, t->counts, pp, nv, /**/ t->pp);
-// }
+void post_sendc(const TicketP *tp, /**/ TicketC *tc) {
+    sub::post_sendc(tp->scounts, tc->cart, tc->btc, tc->rnk_ne, /**/ tc->sreqc);
+}
 
-// void post_send(int nv, const TicketS *ts, /**/ TicketC *tc) {
-//     if (!tc->first) {
-//         sub::waitall(tc->sreqc);
-//         sub::waitall(tc->sreqp);
-//         tc->first = false;
-//     }
-//     sub::post_send(nv, ts->counts, ts->pp, tc->cart, tc->btc, tc->btp, tc->rnk_ne, /**/ tc->sreqc, tc->sreqp);
-// }
+void post_recvc(/**/ TicketC *tc, TicketP *tp) {
+    sub::post_recvc(tc->cart, tc->btc, tc->ank_ne, /**/ tp->rcounts, tc->rreqc);
+}
 
-// void post_recv(const TicketS *ts, /**/ TicketR *tr, TicketC *tc) {
-//     sub::post_recv(tc->cart, tc->btc, tc->btp, tc->ank_ne, /**/ tr->counts, tr->pp, tc->rreqc, tc->rreqp);
-//     tr->counts[0] = ts->counts[0]; // bulk
-// }
-
-// void wait_recv(/**/ TicketC *tc) {
-//     sub::waitall(tc->rreqc);
-//     sub::waitall(tc->rreqp);
-// }
-
-// int unpack(int nv, const TicketR *t, /**/ Particle *pp) {
-//     return sub::unpack(nv, t->pp, t->counts, /**/ pp);
-// }
+void wait_recvc(/**/ TicketC *tc) {
+    sub::waitall(tc->rreqc);
+}
 
 #undef i2del
 } // mdstr
