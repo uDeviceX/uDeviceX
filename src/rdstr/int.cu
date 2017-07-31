@@ -28,6 +28,31 @@ void free_ticketE(/**/ TicketE *t) {
     delete[] t->rr;
 }
 
+void ini_ticketS(/*io*/ basetags::TagGen *tg, /**/ x::TicketS *t) {
+    auto *p = &t->p;
+    mdstr::gen::alloc_buf(0, MAX_PART_NUM, /**/ &p->b);
+    p->bt = get_tag(tg);
+}
+
+void free_ticketS(/**/ x::TicketS *t) {
+    auto *p = &t->p;
+    mdstr::gen::free_buf(0, /**/ &p->b);
+}
+
+void ini_ticketR(const x::TicketS *ts, /**/ x::TicketR *t) {
+    auto *p = &t->p;
+    auto *ps = &ts->p;
+    mdstr::gen::alloc_buf(1, MAX_PART_NUM, /**/ &p->b);
+    p->b.dd[0] = ps->b.dd[0];
+    p->bt = ps->bt;
+}
+
+void free_ticketR(/**/ x::TicketR *t) {
+    auto *p = &t->p;
+    mdstr::gen::free_buf(1, /**/ &p->b);
+}
+
+
 void extents(const Particle *pp, int nc, int nv, /**/ TicketE *t) {
     t->ll->resize(nc);
     t->hh->resize(nc);

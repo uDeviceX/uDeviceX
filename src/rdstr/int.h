@@ -15,6 +15,19 @@ using mdstr::free_ticketC;
 using mdstr::TicketS;
 using mdstr::TicketR;
 
+namespace x {
+namespace gen = mdstr::gen;
+
+struct TicketS {
+    gen::TicketS <Particle> p;
+};
+
+struct TicketR {
+    gen::TicketR <Particle> p;
+};
+
+}
+
 void alloc_ticketE(/**/ TicketE *t);
 void free_ticketE(/**/ TicketE *t);
 
@@ -23,6 +36,12 @@ using mdstr::ini_ticketS;
 using mdstr::ini_ticketR;
 using mdstr::free_ticketS;
 using mdstr::free_ticketR;
+
+void ini_ticketS(/*io*/ basetags::TagGen *tg, /**/ x::TicketS *t);
+void free_ticketS(/**/ x::TicketS *t);
+
+void ini_ticketR(const x::TicketS *ts, /**/ x::TicketR *t);
+void free_ticketR(/**/ x::TicketR *t);
 
 
 void extents(const Particle *pp, int nc, int nv, /**/ TicketE *t);
