@@ -3,7 +3,7 @@
 #include "common.h"
 #include "common.cuda.h"
 
-#define debug_output
+// #define debug_output
 
 #include "mbounce/bbstates.h"
 #include "mbounce/dbg.h"
