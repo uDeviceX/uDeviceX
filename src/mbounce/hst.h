@@ -3,10 +3,6 @@ namespace hst {
 
 void bounce_tcells(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
                    const int n, /**/ Particle *pp, Solid *ss) {
-#ifdef debug_output
-    if (dstep % part_freq == 0)
-        for (int c = 0; c < NBBSTATES; ++c) bbstates_hst[c] = 0;
-#endif
 
     for (int i = 0; i < n; ++i) {
         const Particle p1 = pp[i];
@@ -58,11 +54,6 @@ void bounce_tcells(const Force *ff, const Mesh m, const Particle *i_pp, const in
             ss[sid].to[Z] += dL[Z];
         }
     }
-
-#ifdef debug_output
-    if ((++dstep) % part_freq == 0)
-        print_states(bbstates_hst);
-#endif
 }
 
 
