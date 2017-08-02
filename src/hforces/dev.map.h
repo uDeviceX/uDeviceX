@@ -1,4 +1,4 @@
-namespace bipsbatch {
+namespace hforces {
 namespace dev {
 
 struct Map { /* helps to find remote particle */
@@ -95,4 +95,4 @@ static __device__ Map r2map(const Frag frag, float x, float y, float z) {
 }
 
 } // dev
-} // bipsbatch
+} // hforces

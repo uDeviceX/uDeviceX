@@ -1,4 +1,4 @@
-namespace bipsbatch {
+namespace hforces {
 namespace dev {
 
 struct Pa { /* local particle */
@@ -139,4 +139,4 @@ __global__ void force(const int27 start, const SFrag26 ssfrag, const Frag26 ffra
 }
 
 } // dev
-} // bipsbatch
+} // hforces

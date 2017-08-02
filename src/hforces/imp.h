@@ -1,4 +1,4 @@
-namespace bipsbatch {
+namespace hforces {
 
 /* fragment */
 enum FragType { BULK = 0, FACE = 1, EDGE = 2, CORNER = 3 };
@@ -26,4 +26,5 @@ typedef Sarray< Frag, 26>  Frag26;
 typedef Sarray<  Rnd, 26>   Rnd26;
 
 void interactions(const SFrag26 ssfrag, const Frag26 ffrag, const Rnd26 rrnd, /**/ float *ff);
-};
+
+} // hforces

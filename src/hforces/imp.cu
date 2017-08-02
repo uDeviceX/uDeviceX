@@ -11,11 +11,11 @@
 #include <stdint.h>
 #include "rnd.h"
 
-#include "bipsbatch/imp.h"
-#include "bipsbatch/dev.map.h"
-#include "bipsbatch/dev.h"
+#include "hforces/imp.h"
+#include "hforces/dev.map.h"
+#include "hforces/dev.h"
 
-namespace bipsbatch {
+namespace hforces {
 
 static void get_start(const SFrag sfrag[26], /**/ unsigned int start[27]) {
     /* generate padded start */
@@ -33,4 +33,4 @@ void interactions(const SFrag26 ssfrag, const Frag26 ffrag, const Rnd26 rrnd, /*
     if (n) dev::force <<<k_cnf(n)>>> (start, ssfrag, ffrag, rrnd, /**/ ff);
 }
 
-};
+} // hforces

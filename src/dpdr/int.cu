@@ -12,7 +12,7 @@
 
 #include <conf.h>
 
-#include "bipsbatch/imp.h"
+#include "hforces/imp.h"
 
 #include "dpdr/type.h"
 #include "dpdr/int.h"
@@ -154,9 +154,9 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
     int dx, dy, dz;
     int m0, m1, m2;
 
-    bipsbatch::SFrag26 sfrag;
-    bipsbatch::Frag26   frag;
-    bipsbatch::Rnd26     rnd;
+    hforces::SFrag26 sfrag;
+    hforces::Frag26   frag;
+    hforces::Rnd26     rnd;
 
     for (i = 0; i < 26; ++i) {
         dx = (i     + 2) % 3 - 1;
@@ -181,11 +181,11 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
             1 + m0 * (XS - 1),
             1 + m1 * (YS - 1),
             1 + m2 * (ZS - 1),
-            (bipsbatch::FragType)(abs(dx) + abs(dy) + abs(dz))};
+            (hforces::FragType)(abs(dx) + abs(dy) + abs(dz))};
 
         rnd.d[i] = {trnd.interrank_trunks[i]->get_float(), trnd.interrank_masks[i]};
     }
 
-    bipsbatch::interactions(sfrag, frag, rnd, (float*)ff);
+    hforces::interactions(sfrag, frag, rnd, (float*)ff);
 }
 }
