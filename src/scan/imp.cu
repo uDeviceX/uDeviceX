@@ -3,11 +3,9 @@
 #include "common.cuda.h"
 
 #include "scan/int.h"
+#include "scan/dev.h"
 
 namespace scan {
-namespace dev {
-#include "scan/dev.h"
-}
 
 enum { THREADS = 128 };
 
@@ -36,4 +34,5 @@ void free_work(/**/ Work *w) {
     CC(cudaFree(w->tmp));
     CC(cudaFree(w->compressed));
 }
-}
+
+} // scan
