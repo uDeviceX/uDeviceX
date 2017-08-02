@@ -21,8 +21,6 @@ static _DH_ void rvprev(const float *r1, const float *v1, const float *f0, /**/ 
 #endif
 }
 
-
-
 template <typename real>
 static _DH_ bool cubic_root(real a, real b, real c, real d, /**/ real *h) {
 #define valid(t) ((t) >= 0 && (t) <= dt)
@@ -98,7 +96,7 @@ static _DH_ BBState intersect_triangle(const float *s10, const float *s20, const
         const real b1 = dot(dr1, n1);
 
         if (b0 * b1 > 0)
-        return BB_NOCROSS;
+            return BB_NOCROSS;
     }
 
     // find intersection time with plane
@@ -110,9 +108,7 @@ static _DH_ BBState intersect_triangle(const float *s10, const float *s20, const
         const real a = dot(ntt, dv);
         const real b = dot(ntt, dr0) + dot(nt, dv);
         const real c = dot(nt, dr0) + dot(n0, dv);
-        const real d = dot(n0, dr0);
-
-        
+        const real d = dot(n0, dr0);        
         
         if (!cubic_root(a, b, c, d, &hl)) {
             // printf("failed : %g %g %g %g\n", a, b, c, d);
@@ -121,7 +117,7 @@ static _DH_ BBState intersect_triangle(const float *s10, const float *s20, const
     }
 
     if (hl > *h)
-    return BB_HNEXT;
+        return BB_HNEXT;
 
     const real rwl[3] = {r0[X] + hl * v0[X],
                          r0[Y] + hl * v0[Y],
@@ -177,23 +173,21 @@ static _DH_ void ang_mom_solid(const float *com, const float *rw, const float *v
     dL[Z] = -(dr[X] * vn[Y] - dr[Y] * vn[X] - dr[X] * v0[Y] + dr[Y] * v0[X]) / dt;
 }
 
+static _DH_ void revert_r(Particle *p) {
+    p->r[X] -= dt * p->v[X];
+    p->r[Y] -= dt * p->v[Y];
+    p->r[Z] -= dt * p->v[Z];
+}
+
 static _DH_ bool find_better_intersection(const int *tt, const int it, const Particle *i_pp, const Particle *p0, /* io */ float *h, /**/ float *rw, float *vw) {
     // load data
     const int t1 = tt[3*it + 0];
     const int t2 = tt[3*it + 1];
     const int t3 = tt[3*it + 2];
 
-#define revert_r(P) do {                        \
-        P.r[X] -= dt * P.v[X];                  \
-        P.r[Y] -= dt * P.v[Y];                  \
-        P.r[Z] -= dt * P.v[Z];                  \
-    } while(0)
-
-    Particle pA = i_pp[t1]; revert_r(pA);
-    Particle pB = i_pp[t2]; revert_r(pB);
-    Particle pC = i_pp[t3]; revert_r(pC);
-
-#undef revert_r
+    Particle pA = i_pp[t1]; revert_r(&pA);
+    Particle pB = i_pp[t2]; revert_r(&pB);
+    Particle pC = i_pp[t3]; revert_r(&pC);
         
     const BBState bbstate = intersect_triangle(pA.r, pB.r, pC.r, pA.v, pB.v, pC.v, p0, /* io */ h, /**/ rw, vw);
 
