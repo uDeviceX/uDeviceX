@@ -31,7 +31,7 @@ __global__ void bounce_tcells(const Force *ff, const Mesh m, const Particle *i_p
         const int mid = tid / m.nt;
                     
         if (find_better_intersection(m.tt, it, i_pp + mid * m.nv, &p0, /*io*/ &h, /**/ rw, vw))
-        sid = mid;
+            sid = mid;
     }
 
     if (sid != -1) {
