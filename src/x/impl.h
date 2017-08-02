@@ -26,7 +26,7 @@ static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<Particle
         rex::local_resize();
         rex::post_resize();
         rex::pack_clear(nw, tp);
-        rex::scanA(w, tp);
+        rex::scanA(w, nw, tp);
         rex::scanB(w, tp);
         rex::pack_attempt(w, tp);
         dSync();
@@ -42,7 +42,7 @@ static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<Particle
 static void rex0(std::vector<ParticlesWrap> w, int nw) {
     cnt++;
     rex::pack_clear(nw, tp);
-    rex::scanA(w, tp);
+    rex::scanA(w, nw, tp);
     rex::scanB(w, tp);    
     rex::pack_attempt(w, tp);
     post(tc, tr, tt, w, nw);

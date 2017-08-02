@@ -5,10 +5,10 @@ void pack_clear(int nw, x::TicketPack tp) {
     CC(cudaMemsetAsync(tp.offsets, 0, sizeof(int) * 26 * (nw + 1)));
 }
 
-void scanA(std::vector<ParticlesWrap> w, x::TicketPack tp) {
+void scanA(std::vector<ParticlesWrap> w, int nw, x::TicketPack tp) {
     int i;
     k_rex::ini<<<1, 1>>>();
-    for (i = 0; i < (int) w.size(); ++i) {
+    for (i = 0; i < nw; ++i) {
         ParticlesWrap it = w[i];
         if (it.n) {
             CC(cudaMemcpyToSymbolAsync(k_rex::g::offsets, tp.offsets + 26 * i, sizeof(int) * 26, 0, D2D));
