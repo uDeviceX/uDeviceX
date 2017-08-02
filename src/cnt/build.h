@@ -20,7 +20,7 @@ void build(std::vector<ParticlesWrap> wsolutes) {
         ctr += it.n;
     }
 
-    scan::scan(cellscount->D, k_cnt::NCELLS + 16, /**/ cellsstart->D, /*w*/ &ws);
+    scan::scan(cellscount->D, XS*YS*ZS + 16, /**/ cellsstart->D, /*w*/ &ws);
 
     ctr = 0;
     for (int i = 0; i < (int) wsolutes.size(); ++i) {
