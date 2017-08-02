@@ -144,7 +144,7 @@ static _DH_ BBState intersect_triangle(const float *s10, const float *s20, const
     const real u = (ga1 * a22 - ga2 * a12) * fac;
     const real v = (ga2 * a11 - ga1 * a12) * fac;
 
-    if (!((u >= 0) && (v >= 0) && (u+v <= 1)))
+    if ((u < 0) || (v < 0) || (u+v > 1))
         return BB_WTRIANGLE;
 
     *h = hl;
