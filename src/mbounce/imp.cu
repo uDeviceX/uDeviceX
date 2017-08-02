@@ -6,6 +6,7 @@
 #define debug_output
 
 #include "mbounce/bbstates.h"
+#include "mbounce/dbg.h"
 #include "mbounce/roots.h"
 #include "mbounce/gen.h"
 #include "mbounce/hst.h"
