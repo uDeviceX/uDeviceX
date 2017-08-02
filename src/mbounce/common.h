@@ -191,13 +191,8 @@ static _DH_ bool find_better_intersection(const int *tt, const int it, const Par
         
     const BBState bbstate = intersect_triangle(pA.r, pB.r, pC.r, pA.v, pB.v, pC.v, p0, /* io */ h, /**/ rw, vw);
 
-#ifdef debug_output
-#if DEVICE_FUNC
-    atomicAdd(bbstates_dev + bbstate, 1);
-#else
-    bbstates_hst[bbstate] ++;
-#endif
-#endif
+    log_states(bbstate);
+    
     return bbstate == BB_SUCCESS;
 }
 

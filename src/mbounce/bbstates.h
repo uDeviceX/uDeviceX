@@ -27,6 +27,20 @@ static const char *bbstatenames[] = {bbstates(make_str)};
 int bbstates_hst[NBBSTATES], dstep = 0;
 __device__ int bbstates_dev[NBBSTATES];
 
+__device__ __host__ void _log_states(BBState s) {
+#if DEVICE_FUNC
+    atomicAdd(bbstates_dev + s, 1);
+#else
+    bbstates_hst[s] ++;
+#endif
+}
+
+#define log_states(state) _log_states(state)
+
+#else // debug_output
+
+#define log_states(state)
+
 #endif // debug_output
 
 #undef bbstates
