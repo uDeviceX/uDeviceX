@@ -154,7 +154,6 @@ namespace dev {
 #include "dpdr/int.h"
 
 #include "mesh/collision.h"
-#include "mesh/dist.h"
 #include "mesh/bbox.h"
 
 #include "solid.h"
