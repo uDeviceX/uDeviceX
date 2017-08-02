@@ -1,14 +1,8 @@
 namespace rex {
-void adjust_packbuffers() {
-    int s = 0;
-    for (int i = 0; i < 26; ++i) s += 32 * ((local[i]->capacity() + 31) / 32);
-    host_packbuf->resize(s);
-}
-
 void ini() {
     int i;
     mpDeviceMalloc(&packbuf);
-    host_packbuf = new PinnedHostBuffer<Particle>;
+    Palloc(&host_packbuf, MAX_PART_NUM);
 
     for (i = 0; i < 26; i++) local[i] = new LocalHalo;
     for (i = 0; i < 26; i++) remote[i] = new RemoteHalo;
@@ -26,8 +20,5 @@ void ini() {
                               &local[i]->scattered_indices->D, sizeof(int *),
                               sizeof(int *) * i, H2D));
     }
-
-    adjust_packbuffers();
-
 }
 }

@@ -29,7 +29,7 @@ void local_resize() {
 
 void post_p(MPI_Comm cart, int dranks[26], x::TicketTags t, x::TicketPack tp) {
     if (tp.tstarts_hst[26])
-        CC(cudaMemcpyAsync(host_packbuf->D, packbuf, sizeof(Particle) * tp.tstarts_hst[26], H2H));
+        CC(cudaMemcpyAsync(host_packbuf, packbuf, sizeof(Particle) * tp.tstarts_hst[26], H2H));
     dSync();
     reqsendC.resize(26);
     for (int i = 0; i < 26; ++i)
@@ -41,12 +41,12 @@ void post_p(MPI_Comm cart, int dranks[26], x::TicketTags t, x::TicketPack tp) {
         int expected = local[i]->expected();
         
         MPI_Request reqP;
-        MC(l::m::Isend(host_packbuf->D + start, expected * 6, MPI_FLOAT, dranks[i], t.btp1 + i, cart, &reqP));
+        MC(l::m::Isend(host_packbuf + start, expected * 6, MPI_FLOAT, dranks[i], t.btp1 + i, cart, &reqP));
         reqsendP.push_back(reqP);
         
         if (count > expected) {
             MPI_Request reqP2;
-            MC(l::m::Isend(host_packbuf->D + start + expected, (count - expected) * 6, MPI_FLOAT, dranks[i], t.btp2 + i, cart, &reqP2));
+            MC(l::m::Isend(host_packbuf + start + expected, (count - expected) * 6, MPI_FLOAT, dranks[i], t.btp2 + i, cart, &reqP2));
             reqsendP.push_back(reqP2);
         }
     }
