@@ -63,31 +63,29 @@ _DH_ int cubic(real a, real b, real c,
             *x2 = 2 * sqrtQ - a / 3;
         }
         return 3 ;
-    }
-    else if (R2 < Q3)
-        {
-            real sgnR = (R >= 0 ? 1 : -1);
-            real ratio = sgnR * sqrt (R2 / Q3);
-            real theta = acos (ratio);
-            real norm = -2 * sqrt (Q);
-            *x0 = norm * cos (theta / 3) - a / 3;
-            *x1 = norm * cos ((theta + 2.0 * M_PI) / 3) - a / 3;
-            *x2 = norm * cos ((theta - 2.0 * M_PI) / 3) - a / 3;
+    } else if (R2 < Q3) {
+        real sgnR = (R >= 0 ? 1 : -1);
+        real ratio = sgnR * sqrt (R2 / Q3);
+        real theta = acos (ratio);
+        real norm = -2 * sqrt (Q);
+        *x0 = norm * cos (theta / 3) - a / 3;
+        *x1 = norm * cos ((theta + 2.0 * M_PI) / 3) - a / 3;
+        *x2 = norm * cos ((theta - 2.0 * M_PI) / 3) - a / 3;
       
-            /* Sort *x0, *x1, *x2 into increasing order */
+        /* Sort *x0, *x1, *x2 into increasing order */
 
+        if (*x0 > *x1)
+            SWAP(*x0, *x1) ;
+      
+        if (*x1 > *x2) {
+            SWAP(*x1, *x2) ;
+          
             if (*x0 > *x1)
                 SWAP(*x0, *x1) ;
+        }
       
-            if (*x1 > *x2) {
-                SWAP(*x1, *x2) ;
-          
-                if (*x0 > *x1)
-                    SWAP(*x0, *x1) ;
-            }
-      
-            return 3;
-        } else {
+        return 3;
+    } else {
         real sgnR = (R >= 0 ? 1 : -1);
         real A = -sgnR * pow (fabs (R) + sqrt (R2 - Q3), 1.0/3.0);
         real B = Q / A ;
