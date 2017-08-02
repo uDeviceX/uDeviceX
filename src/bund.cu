@@ -159,7 +159,7 @@ namespace dev {
 #include "solid.h"
 #include "tcells.h"
 
-#include "mbounce.h"
+#include "mbounce/imp.h"
 #include "mrescue.h"
 
 #include "bbhalo.decl.h"
