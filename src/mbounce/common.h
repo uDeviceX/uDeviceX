@@ -22,9 +22,11 @@ static _DH_ void rvprev(const float *r1, const float *v1, const float *f0, /**/ 
 }
 
 template <typename real>
+static _DH_ bool valid(real t) {return (t >= 0 && t <= dt);}
+
+template <typename real>
 static _DH_ bool cubic_root(real a, real b, real c, real d, /**/ real *h) {
-#define valid(t) ((t) >= 0 && (t) <= dt)
-#define eps 1e-6
+    static const real eps = 1e-6;
         
     if (fabs(a) > eps) { // cubic
         const real b_ = b /= a;
@@ -158,6 +160,11 @@ static _DH_ BBState intersect_triangle(const float *s10, const float *s20, const
     vw[Z] = w * vs1[Z] + u * vs2[Z] + v * vs3[Z];
     
     return BB_SUCCESS;
+
+#undef diff
+#undef cross
+#undef dot
+#undef apxb
 }
 
 static _DH_ void lin_mom_solid(const float *v1, const float *vn, /**/ float *dP) {
@@ -205,12 +212,6 @@ static _DH_ void bounce_back(const Particle *p0, const float *rw, const float *v
     pn->r[Y] = rw[Y] + (dt-h) * pn->v[Y];
     pn->r[Z] = rw[Z] + (dt-h) * pn->v[Z];
 }
-
-
-#undef diff
-#undef cross
-#undef dot
-#undef apxb
 
 #undef _DH_
 
