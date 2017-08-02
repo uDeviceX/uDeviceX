@@ -1,3 +1,7 @@
+namespace rig {
+namespace sub {
+namespace ic {
+
 enum {X, Y, Z};
 
 //#define DBG(frmt, ...) MSG(frmt, ##__VA_ARGS__)
@@ -285,3 +289,7 @@ void ini(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, So
 
     delete[] coms;
 }
+
+} // ic
+} // rig
+} // sub

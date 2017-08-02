@@ -167,17 +167,8 @@ namespace dev {
 #include "bbhalo.impl.h"
 
 #include "dump.h"
-#include "l/ply.h"
 
-namespace rig {
-namespace sub {
-namespace ic {
-#include "rig/ic.h"
-}
-#include "rig/imp.h"
-}
 #include "rig/int.h"
-}
 
 namespace sim {
 namespace dev {
