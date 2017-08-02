@@ -1,4 +1,5 @@
 namespace mbounce {
+namespace sub {
 
 #define make_enum(a) a ,
 #define make_str(a) #a ,
@@ -22,11 +23,15 @@ static const char *bbstatenames[] = {bbstates(make_str)};
         for (int c = 0; c < NBBSTATES; ++c)                 \
         printf("%-12s\t%d\n", bbstatenames[c], infos[c]);   \
     } while(0)
-    
+
+int bbstates_hst[NBBSTATES], dstep = 0;
+__device__ int bbstates_dev[NBBSTATES];
+
 #endif // debug_output
 
 #undef bbstates
 #undef make_enum
 #undef make_str
 
+} // sub
 } // mbounce
