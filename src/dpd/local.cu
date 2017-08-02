@@ -41,20 +41,20 @@ texture<ushort4, cudaTextureType1D, cudaReadModeNormalizedFloat> texParticlesH4;
 texture<uint2, cudaTextureType1D> texStartAndCount;
 
 __device__ void f2tof3(float4 r, /**/ float3 *l) { /* lhs = rhs */
-  l->x = r.x; l->y = r.y; l->z = r.z;
+    l->x = r.x; l->y = r.y; l->z = r.z;
 }
 
 __device__ float3 _dpd_interaction(int dpid, float4 rdest, float4 udest, float4 rsrc, float4 usrc, int spid) {
-  float rnd;
-  float3 r1, r2, v1, v2;
-  float3 f;
+    float rnd;
+    float3 r1, r2, v1, v2;
+    float3 f;
   
-  rnd = rnd::mean0var1ii( info.seed, xmin( spid, dpid ), xmax( spid, dpid ) );
-  f2tof3(rdest, &r1); f2tof3(rsrc, &r2);
-  f2tof3(udest, &v1); f2tof3(usrc, &v2);
+    rnd = rnd::mean0var1ii( info.seed, xmin( spid, dpid ), xmax( spid, dpid ) );
+    f2tof3(rdest, &r1); f2tof3(rsrc, &r2);
+    f2tof3(udest, &v1); f2tof3(usrc, &v2);
   
-  f = forces::dpd(SOLVENT_TYPE, SOLVENT_TYPE, r1, r2, v1, v2, rnd);
-  return f;
+    f = forces::dpd(SOLVENT_TYPE, SOLVENT_TYPE, r1, r2, v1, v2, rnd);
+    return f;
 }
 
 #define __IMOD(x,y) ((x)-((x)/(y))*(y))
@@ -140,11 +140,11 @@ void _dpd_forces_symm_merged()
 #endif
 
     const int cbase = blockIdx.z * MYCPBZ * info.ncells.x * info.ncells.y +
-                      blockIdx.y * MYCPBY * info.ncells.x +
-                      blockIdx.x * MYCPBX + wid +
-                      offs.z * info.ncells.x * info.ncells.y +
-                      offs.y * info.ncells.x +
-                      offs.x;
+        blockIdx.y * MYCPBY * info.ncells.x +
+        blockIdx.x * MYCPBX + wid +
+        offs.z * info.ncells.x * info.ncells.y +
+        offs.y * info.ncells.x +
+        offs.x;
 
     for( uint it = 0; it < 4 ; it = xadd( it, 1u ) ) {
         int cid;
