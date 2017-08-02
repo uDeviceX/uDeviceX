@@ -16,6 +16,8 @@ enum BBState {
     NBBSTATES
 };
 
+namespace dbg {
+
 #ifdef debug_output
 static const char *bbstatenames[] = {bbstates(make_str)};
 
@@ -27,7 +29,7 @@ static const char *bbstatenames[] = {bbstates(make_str)};
 int bbstates_hst[NBBSTATES], dstep = 0;
 __device__ int bbstates_dev[NBBSTATES];
 
-__device__ __host__ void _log_states(BBState s) {
+__device__ __host__ void log_states(BBState s) {
 #if DEVICE_FUNC
     atomicAdd(bbstates_dev + s, 1);
 #else
@@ -35,13 +37,43 @@ __device__ __host__ void _log_states(BBState s) {
 #endif
 }
 
-#define log_states(state) _log_states(state)
+void ini_hst() {
+    if (dstep % part_freq == 0)
+        for (int c = 0; c < NBBSTATES; ++c) bbstates_hst[c] = 0;
+}
+
+void report_hst() {
+    if ((++dstep) % part_freq == 0)
+        print_states(bbstates_hst);
+}
+
+void ini_dev() {
+    if (dstep % part_freq == 0) {
+        const int zeros[NBBSTATES] = {0};
+        CC(cudaMemcpyToSymbol(bbstates_dev, zeros, NBBSTATES*sizeof(int)));
+    }
+}
+
+void report_dev() {
+    if ((++dstep) % part_freq == 0) {
+        int bbinfos[NBBSTATES];
+        CC(cudaMemcpyFromSymbol(bbinfos, bbstates_dev, NBBSTATES*sizeof(int)));
+        print_states(bbinfos);
+    }
+}
 
 #else // debug_output
 
-#define log_states(state)
+__device__ __host__ void log_states(BBState s) {}
+
+void ini_hst() {}
+void ini_dev() {}
+void report_hst() {}
+void report_dev() {}
 
 #endif // debug_output
+
+} // dbg
 
 #undef bbstates
 #undef make_enum

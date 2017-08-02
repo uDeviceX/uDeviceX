@@ -198,7 +198,7 @@ static _DH_ bool find_better_intersection(const int *tt, const int it, const Par
         
     const BBState bbstate = intersect_triangle(pA.r, pB.r, pC.r, pA.v, pB.v, pC.v, p0, /* io */ h, /**/ rw, vw);
 
-    log_states(bbstate);
+    dbg::log_states(bbstate);
     
     return bbstate == BB_SUCCESS;
 }
