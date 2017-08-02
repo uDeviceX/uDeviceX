@@ -6,7 +6,8 @@
 // #define debug_output
 
 #include "mbounce/bbstates.h"
-#include "mbounce/common.h"
+#include "mbounce/roots.h"
+#include "mbounce/gen.h"
 #include "mbounce/hst.h"
 #include "mbounce/dev.h"
 #include "mbounce/imp.h"
@@ -20,7 +21,7 @@ void bounce_tcells_hst(const Force *ff, const Mesh m, const Particle *i_pp, cons
         for (int c = 0; c < NBBSTATES; ++c) bbstates_hst[c] = 0;
 #endif
 
-    if (n) hst::bounce_tcells(ff, m, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, ss);
+    if (n) sub::hst::bounce_tcells(ff, m, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, ss);
     
 #ifdef debug_output
     if ((++dstep) % part_freq == 0)
@@ -37,7 +38,7 @@ void bounce_tcells_dev(const Force *ff, const Mesh m, const Particle *i_pp, cons
     }
 #endif
 
-    if (n) dev::bounce_tcells <<< k_cnf(n) >>> (ff, m, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, ss);
+    if (n) sub::dev::bounce_tcells <<< k_cnf(n) >>> (ff, m, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, ss);
         
 #ifdef debug_output
     if ((++dstep) % part_freq == 0) {

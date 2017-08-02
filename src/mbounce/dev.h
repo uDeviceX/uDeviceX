@@ -1,4 +1,5 @@
 namespace mbounce {
+namespace sub {
 namespace dev {
 
 __global__ void bounce_tcells(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
@@ -55,4 +56,5 @@ __global__ void bounce_tcells(const Force *ff, const Mesh m, const Particle *i_p
 
 
 } // dev
+} // sub
 } // mbounce

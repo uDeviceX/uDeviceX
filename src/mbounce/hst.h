@@ -1,4 +1,5 @@
 namespace mbounce {
+namespace sub {
 namespace hst {
 
 void bounce_tcells(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
@@ -7,7 +8,8 @@ void bounce_tcells(const Force *ff, const Mesh m, const Particle *i_pp, const in
     for (int i = 0; i < n; ++i) {
         const Particle p1 = pp[i];
 
-        Particle p0; rvprev(p1.r, p1.v, ff[i].f, /**/ p0.r, p0.v);
+        Particle p0;
+        rvprev(p1.r, p1.v, ff[i].f, /**/ p0.r, p0.v);
 
         const int xcid_ = int (p1.r[X] + XS/2);
         const int ycid_ = int (p1.r[Y] + YS/2);
@@ -58,4 +60,5 @@ void bounce_tcells(const Force *ff, const Mesh m, const Particle *i_pp, const in
 
 
 } // hst
+} // sub
 } // mbounce
