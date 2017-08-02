@@ -1,10 +1,15 @@
+#include <conf.h> // for dt
+#include <cstdio>
+#include "common.h"
+#include "common.cuda.h"
 
-#define debug_output
+// #define debug_output
 
 #include "mbounce/bbstates.h"
 #include "mbounce/common.h"
 #include "mbounce/hst.h"
 #include "mbounce/dev.h"
+#include "mbounce/imp.h"
 
 namespace mbounce {
 

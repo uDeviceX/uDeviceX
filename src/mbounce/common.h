@@ -50,7 +50,7 @@ static _DH_ bool cubic_root(real a, real b, real c, real d, /**/ real *h) {
         const real h1 = -d/c;
         if (valid(h1)) {*h = h1; return true;}
     }
-        
+    
     return false;
 }
     
