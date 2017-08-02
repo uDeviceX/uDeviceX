@@ -145,7 +145,7 @@ static _DH_ BBState intersect_triangle(const float *s10, const float *s20, const
     const real v = (ga2 * a11 - ga1 * a12) * fac;
 
     if (!((u >= 0) && (v >= 0) && (u+v <= 1)))
-    return BB_WTRIANGLE;
+        return BB_WTRIANGLE;
 
     *h = hl;
         
@@ -169,7 +169,7 @@ static _DH_ BBState intersect_triangle(const float *s10, const float *s20, const
 
 static _DH_ void lin_mom_solid(const float *v1, const float *vn, /**/ float *dP) {
     for (int c = 0; c < 3; ++c)
-    dP[c] = -(vn[c] - v1[c]) / dt;
+        dP[c] = -(vn[c] - v1[c]) / dt;
 }
 
 static _DH_ void ang_mom_solid(const float *com, const float *rw, const float *v0, const float *vn, /**/ float *dL) {
