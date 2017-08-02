@@ -192,10 +192,14 @@ static _DH_ bool find_better_intersection(const int *tt, const int it, const Par
     const int t2 = tt[3*it + 1];
     const int t3 = tt[3*it + 2];
 
-    Particle pA = i_pp[t1]; revert_r(&pA);
-    Particle pB = i_pp[t2]; revert_r(&pB);
-    Particle pC = i_pp[t3]; revert_r(&pC);
-        
+    Particle pA = i_pp[t1];
+    Particle pB = i_pp[t2];
+    Particle pC = i_pp[t3];
+
+    revert_r(&pA);
+    revert_r(&pB);
+    revert_r(&pC);
+    
     const BBState bbstate = intersect_triangle(pA.r, pB.r, pC.r, pA.v, pB.v, pC.v, p0, /* io */ h, /**/ rw, vw);
 
     dbg::log_states(bbstate);
