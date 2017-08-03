@@ -133,8 +133,7 @@ __global__ void update_om_v(const int ns, Solid *ss) {
 
         if (pin_com) {
             s.v[X] = s.v[Y] = s.v[Z] = 0.f;
-        }
-        else {
+        } else {
             const float sc = dt/s.mass;
                 
             s.v[X] += s.fo[X] * sc;
