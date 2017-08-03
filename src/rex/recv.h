@@ -36,9 +36,6 @@ void recvM(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
             MC(l::m::Recv(&remote[i]->pmessage.front() + expected, (count - expected) * 6, MPI_FLOAT, ranks[i], t.btp2 + tags[i], cart, &s));
         memcpy(remote[i]->hstate.D, &remote[i]->pmessage.front(), sizeof(Particle) * count);
     }
-
-    recvC(cart, ranks, tags, t);
-    for (int i = 0; i < 26; ++i) CC(cudaMemcpyAsync(remote[i]->dstate.D, remote[i]->hstate.D, sizeof(Particle) * remote[i]->hstate.S, H2D));
 }
 
 }
