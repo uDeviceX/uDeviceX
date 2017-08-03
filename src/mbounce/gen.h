@@ -26,7 +26,7 @@ static _DH_ bool valid(real t) {return (t >= 0 && t <= dt);}
 
 template <typename real>
 static _DH_ bool cubic_root(real a, real b, real c, real d, /**/ real *h) {
-    static const real eps = 1e-6;
+    const real eps = 1e-6;
         
     if (fabs(a) > eps) { // cubic
         const real b_ = b /= a;

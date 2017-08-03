@@ -127,6 +127,7 @@ namespace ic {
   #include "rex/ini.h"
   #include "rex/wait.h"
   #include "rex/halo.h"
+  #include "rex/scan.h"
   #include "rex/pack.h"
   #include "rex/impl.h"
   #include "rex/post.h"

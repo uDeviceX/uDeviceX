@@ -1,8 +1,8 @@
 namespace k_cnt {
-__global__ void bulk_3tpp(float2 *particles, int np,
-                          int ncellentries, int nsolutes,
-                          float *acc, float seed,
-                          int mysoluteid) {
+__global__ void bulk(float2 *particles, int np,
+                     int ncellentries, int nsolutes,
+                     float *acc, float seed,
+                     int mysoluteid) {
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
     int pid = gid / 3;
     int zplane = gid % 3;
