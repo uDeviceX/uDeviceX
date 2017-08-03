@@ -16,11 +16,13 @@
 namespace mbounce {
 
 void alloc_work(Work *w) {
-    CC(cudaMalloc(&w->mm, MAX_PART_NUM * sizeof(Momentum)));
+    CC(cudaMalloc(&w->mm_dev, MAX_PART_NUM * sizeof(Momentum)));
+    w->mm_hst = new Momentum[MAX_PART_NUM];
 }
 
 void free_work(Work *w) {
-    CC(cudaFree(w->mm));
+    CC(cudaFree(w->mm_dev));
+    delete[] w->mm_hst;
 }
 
 

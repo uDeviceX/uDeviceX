@@ -5,7 +5,7 @@ struct Momentum {
 };
 
 struct Work {
-    Momentum *mm;
+    Momentum *mm_dev, *mm_hst;
 };
 
 void alloc_work(Work *w);
