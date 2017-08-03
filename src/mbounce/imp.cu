@@ -64,7 +64,7 @@ void bounce_dev(const Force *ff, const Mesh m, const Particle *i_pp, const int *
 void collect_rig_dev(int nt, int ns, const TicketM *t, /**/ Solid *ss) {
     int n = ns * nt;
 
-    if (n) sub::dev::reduce_rig <<<k_cnf(n) >>> (t->mm_dev, ns, nt, /**/ ss);
+    if (n) sub::dev::collect_rig_mom <<<k_cnf(n) >>> (t->mm_dev, ns, nt, /**/ ss);
 }
 
 } // mbounce

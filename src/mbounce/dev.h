@@ -114,7 +114,7 @@ static __device__ bool nonzero(const Momentum *m) {
 }
 
 /* assume very small portion of non zero momentum changes */
-__global__ void reduce_rig(const Momentum *mm, int ns, int nt, /**/ Solid *ss) {
+__global__ void collect_rig_mom(const Momentum *mm, int ns, int nt, /**/ Solid *ss) {
     int i = threadIdx.x + blockDim.x * blockIdx.x;
     int is = i / nt;
 
