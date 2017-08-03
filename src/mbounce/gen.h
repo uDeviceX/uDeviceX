@@ -236,8 +236,6 @@ _DH_ void mom_shift_ref(const float R[3], /**/ Momentum *m) {
     m->L[2] -= R[0] * m->P[1] - R[1] * m->P[0];
 }
 
-
-
 #undef _DH_
 
 } // sub

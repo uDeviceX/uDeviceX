@@ -15,6 +15,17 @@
 
 namespace mbounce {
 
+void alloc_ticketM(TicketM *t) {
+    CC(cudaMalloc(&t->mm_dev, MAX_PART_NUM * sizeof(Momentum)));
+    t->mm_hst = new Momentum[MAX_PART_NUM];
+}
+
+void free_ticketM(TicketM *t) {
+    CC(cudaFree(t->mm_dev));
+    delete[] t->mm_hst;
+}
+
+
 void bounce_tcells_hst(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
                        const int n, /**/ Particle *pp, Solid *ss) {
 
@@ -33,6 +44,27 @@ void bounce_tcells_dev(const Force *ff, const Mesh m, const Particle *i_pp, cons
     if (n) sub::dev::bounce_tcells <<< k_cnf(n) >>> (ff, m, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, ss);
     
     sub::dbg::report_dev();
+}
+
+void bounce_dev(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
+                const int n, const int totnt, /**/ Particle *pp, TicketM *t) {
+
+    sub::dbg::ini_dev();
+
+    if (totnt && n) {
+
+        CC(cudaMemsetAsync(t->mm_dev, 0, totnt * sizeof(Momentum)));
+        
+        sub::dev::bounce <<< k_cnf(n) >>> (ff, m, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, t->mm_dev);
+    }
+    
+    sub::dbg::report_dev();
+}
+
+void collect_rig_dev(int nt, int ns, const TicketM *t, /**/ Solid *ss) {
+    int n = ns * nt;
+
+    if (n) sub::dev::collect_rig_mom <<<k_cnf(n) >>> (t->mm_dev, ns, nt, /**/ ss);
 }
 
 } // mbounce
