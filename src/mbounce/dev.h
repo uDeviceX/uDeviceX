@@ -54,14 +54,14 @@ __global__ void bounce_tcells(const Force *ff, const Mesh m, const Particle *i_p
     }
 }
 
-__device__ bool nz(float a) {return fabs(a) > 1e-6f;}
-__device__ bool nonzero(Momentum *m) {
+static __device__ bool nz(float a) {return fabs(a) > 1e-6f;}
+static __device__ bool nonzero(Momentum *m) {
     return nz(m->P[0]) && nz(m->P[1]) && nz(m->P[2]) &&
         nz(m->L[0]) && nz(m->L[1]) && nz(m->L[2]);
 }
 
 /* change of referencial : origin to R */
-__device__ void change_ref(const float R[3], /**/ Momentum *m) {
+static __device__ void change_ref(const float R[3], /**/ Momentum *m) {
     m->L[0] -= R[1] * m->P[2] - R[2] * m->P[1];
     m->L[1] -= R[2] * m->P[0] - R[0] * m->P[2];
     m->L[2] -= R[0] * m->P[1] - R[1] * m->P[0];
