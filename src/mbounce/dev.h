@@ -106,13 +106,6 @@ __global__ void bounce(const Force *ff, const Mesh m, const Particle *i_pp, cons
     }
 }
 
-
-static __device__ bool nz(float a) {return fabs(a) > 1e-6f;}
-static __device__ bool nonzero(const Momentum *m) {
-    return nz(m->P[0]) && nz(m->P[1]) && nz(m->P[2]) &&
-        nz(m->L[0]) && nz(m->L[1]) && nz(m->L[2]);
-}
-
 /* assume very small portion of non zero momentum changes */
 __global__ void collect_rig_mom(const Momentum *mm, int ns, int nt, /**/ Solid *ss) {
     int i = threadIdx.x + blockDim.x * blockIdx.x;

@@ -236,6 +236,13 @@ _DH_ void mom_shift_ref(const float R[3], /**/ Momentum *m) {
     m->L[2] -= R[0] * m->P[1] - R[1] * m->P[0];
 }
 
+_DH_ bool nz(float a) {return fabs(a) > 1e-6f;}
+_DH_ bool nonzero(const Momentum *m) {
+    return nz(m->P[0]) && nz(m->P[1]) && nz(m->P[2]) &&
+        nz(m->L[0]) && nz(m->L[1]) && nz(m->L[2]);
+}
+
+
 #undef _DH_
 
 } // sub
