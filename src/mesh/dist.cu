@@ -5,7 +5,8 @@ namespace mesh
 {
 enum {X, Y, Z};
 
-#define dot(x, y) (x[0]*y[0] + x[1]*y[1] + x[2]*y[2])
+static float dot(const float x[3], const float y[3]) { return x[0]*y[0] + x[1]*y[1] + x[2]*y[2]; }
+
 static void project_t(const float *a, const float *b, const float *c, const float *r, /**/ float *p) {
     const float ab[3] = {b[0]-a[0], b[1]-a[1], b[2]-a[2]};
     const float ac[3] = {c[0]-a[0], c[1]-a[1], c[2]-a[2]};
@@ -63,7 +64,6 @@ static float dist_from_triangle(const float *a, const float *b, const float *c, 
     const float dr[3] = {p[0] - r[0], p[1] - r[1], p[2] - r[2]};
     return sqrt(dot(dr, dr));
 }
-#undef dot
 
 float dist_from_mesh(const Mesh m, const float *r0) {
     float dmin = 1e5f;
