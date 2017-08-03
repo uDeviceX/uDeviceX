@@ -8,8 +8,8 @@
 #include "common.h"
 #include "common.cuda.h"
 #include "common.mpi.h"
-#include "common.macro.h"
-#include "common.tmp.h"
+#include "inc/macro.h"
+#include "inc/tmp/pinned.h"
 
 #include "scan/int.h"
 
