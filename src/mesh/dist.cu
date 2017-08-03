@@ -1,4 +1,4 @@
-#include "common.h"
+#include "inc/type.h"
 #include "mesh/dist.h"
 
 namespace mesh

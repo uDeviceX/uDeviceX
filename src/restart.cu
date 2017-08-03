@@ -1,4 +1,5 @@
 #include <mpi.h>
+#include "inc/type.h"
 #include "common.h"
 #include <conf.h>
 #include "conf.common.h"
