@@ -4,7 +4,7 @@ struct Momentum {
     float P[3], L[3]; /* linear and angular momentum */
 };
 
-struct TicketM {
+struct TicketM { /* momentum ticket */
     Momentum *mm_dev, *mm_hst;
 };
 
