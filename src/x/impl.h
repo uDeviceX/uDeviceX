@@ -38,7 +38,7 @@ static void post(std::vector<ParticlesWrap> w, int nw) {
 
     if (cnt == 0) rex::postrecvP(tc.cart, tc.ranks, tr.tags, tt);
     else          rex::s::waitP();
-    rex::post_p(tc.cart, tc.ranks, tt, ti);
+    rex::sendP(tc.cart, tc.ranks, tt, ti);
 }
 
 static void rex0(std::vector<ParticlesWrap> w, int nw) {
@@ -54,7 +54,7 @@ static void rex0(std::vector<ParticlesWrap> w, int nw) {
     if (cnt) rex::s::waitA();
     rex::halo(); /* fsi::halo(); */
     rex::postrecvP(tc.cart, tc.ranks, tr.tags, tt);
-    rex::post_f(tc.cart, tc.ranks, tt);
+    rex::sendF(tc.cart, tc.ranks, tt);
     rex::recv_copy_bags();
     rex::r::waitA();
     rex::recv_f(w, tp);
