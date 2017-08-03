@@ -59,8 +59,9 @@ static void rex0(std::vector<ParticlesWrap> w, int nw) {
     if (cnt) rex::s::waitA();
     rex::halo(); /* fsi::halo(); */
     rex::recvP(tc.cart, tc.ranks, tr.tags, tt);
+    dSync();
     rex::sendF(tc.cart, tc.ranks, tt);
-    rex::recv_copy_bags();
+    rex::copy_bags();
     rex::r::waitA();
     rex::unpack(w, tp);
 }
