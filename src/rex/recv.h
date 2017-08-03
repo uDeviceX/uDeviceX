@@ -1,0 +1,44 @@
+namespace rex {
+void recvF(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
+    for (int i = 0; i < 26; ++i) {
+        MPI_Request reqA;
+        MC(l::m::Irecv(local[i]->result->D, local[i]->result->S * 3, MPI_FLOAT, ranks[i], t.btf + tags[i], cart, &reqA));
+        reqrecvA.push_back(reqA);
+    }
+}
+
+void recvC(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
+    for (int i = 0; i < 26; ++i) {
+        MPI_Request reqC;
+        MC(l::m::Irecv(recv_counts + i, 1, MPI_INTEGER, ranks[i], t.btc + tags[i], cart, &reqC));
+        reqrecvC.push_back(reqC);
+    }
+}
+
+void recvP(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
+    for (int i = 0; i < 26; ++i) {
+        MPI_Request reqP;
+        remote[i]->pmessage.resize(remote[i]->expected());
+        MC(l::m::Irecv(&remote[i]->pmessage.front(), remote[i]->expected() * 6, MPI_FLOAT, ranks[i], t.btp1 + tags[i], cart, &reqP));
+        reqrecvP.push_back(reqP);
+    }
+}
+
+void recvM(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
+    for (int i = 0; i < 26; ++i) {
+        int count = recv_counts[i];
+        int expected = remote[i]->expected();
+
+        remote[i]->pmessage.resize(max(1, count));
+        remote[i]->preserve_resize(count);
+        MPI_Status s;
+        if (count > expected)
+            MC(l::m::Recv(&remote[i]->pmessage.front() + expected, (count - expected) * 6, MPI_FLOAT, ranks[i], t.btp2 + tags[i], cart, &s));
+        memcpy(remote[i]->hstate.D, &remote[i]->pmessage.front(), sizeof(Particle) * count);
+    }
+
+    recvC(cart, ranks, tags, t);
+    for (int i = 0; i < 26; ++i) CC(cudaMemcpyAsync(remote[i]->dstate.D, remote[i]->hstate.D, sizeof(Particle) * remote[i]->hstate.S, H2D));
+}
+
+}
