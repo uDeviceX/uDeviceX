@@ -16,10 +16,10 @@ void fin() {
     fin_ticketpinned(ti);
 }
 
-static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<ParticlesWrap> w, int nw) {
+static void post(TicketCom tc, TicketR tr, x::TicketTags tt, std::vector<ParticlesWrap> w, int nw) {
     bool packingfailed;
     dSync();
-    if (cnt == 0) rex::postrecvC(tc.cart, tc.ranks, tr.tags, t);
+    if (cnt == 0) rex::postrecvC(tc.cart, tc.ranks, tr.tags, tt);
     else          rex::s::waitC();
 
     rex::post_count(tp);
@@ -34,11 +34,11 @@ static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<Particle
         dSync();
     }
     rex::local_resize();
-    rex::postrecvA(tc.cart, tc.ranks, tr.tags, t);
+    rex::postrecvA(tc.cart, tc.ranks, tr.tags, tt);
 
-    if (cnt == 0) rex::postrecvP(tc.cart, tc.ranks, tr.tags, t);
+    if (cnt == 0) rex::postrecvP(tc.cart, tc.ranks, tr.tags, tt);
     else          rex::s::waitP();
-    rex::post_p(tc.cart, tc.ranks, t, tp);
+    rex::post_p(tc.cart, tc.ranks, tt, tp);
 }
 
 static void rex0(std::vector<ParticlesWrap> w, int nw) {
