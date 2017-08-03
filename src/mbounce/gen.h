@@ -167,19 +167,6 @@ static _DH_ BBState intersect_triangle(const float *s10, const float *s20, const
 #undef apxb
 }
 
-_DH_ void lin_mom_solid(const float *v1, const float *vn, /**/ float *dP) {
-    for (int c = 0; c < 3; ++c)
-        dP[c] = -(vn[c] - v1[c]) / dt;
-}
-
-_DH_ void ang_mom_solid(const float *com, const float *rw, const float *v0, const float *vn, /**/ float *dL) {
-    const float dr[3] = {rw[X] - com[X], rw[Y] - com[Y], rw[Z] - com[Z]};
-        
-    dL[X] = -(dr[Y] * vn[Z] - dr[Z] * vn[Y] - dr[Y] * v0[Z] + dr[Z] * v0[Y]) / dt;
-    dL[Y] = -(dr[Z] * vn[X] - dr[X] * vn[Z] - dr[Z] * v0[X] + dr[X] * v0[Z]) / dt;
-    dL[Z] = -(dr[X] * vn[Y] - dr[Y] * vn[X] - dr[X] * v0[Y] + dr[Y] * v0[X]) / dt;
-}
-
 static _DH_ void revert_r(Particle *p) {
     p->r[X] -= dt * p->v[X];
     p->r[Y] -= dt * p->v[Y];
