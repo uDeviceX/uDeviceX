@@ -3,6 +3,7 @@
 #include "l/m.h"
 
 #include <cstdio>
+#include "inc/type.h"
 #include "common.h"
 #include "common.mpi.h"
 #include "common.cuda.h"

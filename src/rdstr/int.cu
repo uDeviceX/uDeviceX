@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <mpi.h>
 
+#include "inc/type.h"
 #include "common.h"
 #include "common.cuda.h"
 #include "common.tmp.h"

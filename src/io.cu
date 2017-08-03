@@ -10,7 +10,7 @@
 #include "conf.common.h"
 #include "m.h"     /* MPI */
 #include "l/m.h"
-#include "common.h"
+#include "inc/type.h"
 #include "common.mpi.h"
 #include "io.h"
 

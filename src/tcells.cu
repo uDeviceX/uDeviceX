@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <conf.h>
 #include "common.h"
+#include "inc/type.h"
 #include "common.cuda.h"
 #include "scan/int.h"
 #include "tcells.h"

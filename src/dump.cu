@@ -3,6 +3,7 @@
 #include "l/m.h"
 #include "conf.h"
 #include "conf.common.h"
+#include "inc/type.h"
 #include "common.h"
 #include "common.mpi.h"
 #include "dump.h"

@@ -2,6 +2,7 @@
 #include <mpi.h>
 #include "l/m.h"
 
+#include "inc/type.h"
 #include "common.h"
 #include "common.mpi.h"
 #include "common.cuda.h"

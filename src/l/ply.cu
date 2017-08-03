@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <cassert>
+#include "inc/type.h"
 #include "common.h"
 #include "l/ply.h"
 

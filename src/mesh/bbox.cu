@@ -1,4 +1,4 @@
-#include "common.h"
+#include "inc/type.h"
 #include "minmax.h"
 
 #include "mesh/bbox.h"
