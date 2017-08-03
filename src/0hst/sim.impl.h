@@ -36,7 +36,6 @@ void bounce_solid(int it) {
     cD2H(o::q.pp_hst, o::q.pp, o::q.n);
     cD2H(o::ff_hst, o::ff, o::q.n);
 
-    //mbounce::bounce_tcells_hst(o::ff_hst, s::q.m_hst, s::t.i_pp_hst, s::t.tcs_hst, s::t.tcc_hst, s::t.tci_hst, o::q.n, /**/ o::q.pp_hst, s::t.ss_hst);
     mbounce::bounce_hst(o::ff_hst, s::q.m_hst, s::t.i_pp_hst, s::t.tcs_hst, s::t.tcc_hst, s::t.tci_hst, o::q.n, nsbb*s::q.m_dev.nt, /**/ o::q.pp_hst, &bb::tm);
     mbounce::collect_rig_dev(s::q.m_hst.nt, nsbb, &bb::tm, /**/ s::t.ss_hst);
 
