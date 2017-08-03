@@ -11,13 +11,6 @@ struct TicketM { /* momentum ticket */
 void alloc_ticketM(TicketM *t);
 void free_ticketM(TicketM *t);
 
-void bounce_tcells_hst(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
-                       const int n, /**/ Particle *pp, Solid *ss);
-    
-void bounce_tcells_dev(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
-                       const int n, /**/ Particle *pp, Solid *ss);
-
-
 void bounce_hst(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
                 const int n, const int totnt, /**/ Particle *pp, TicketM *t);
 

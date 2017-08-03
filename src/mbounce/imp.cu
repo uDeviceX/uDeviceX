@@ -25,27 +25,6 @@ void free_ticketM(TicketM *t) {
     delete[] t->mm_hst;
 }
 
-
-void bounce_tcells_hst(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
-                       const int n, /**/ Particle *pp, Solid *ss) {
-
-    sub::dbg::ini_hst();
-    
-    if (n) sub::hst::bounce_tcells(ff, m, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, ss);
-
-    sub::dbg::report_hst();
-}
-    
-void bounce_tcells_dev(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
-                       const int n, /**/ Particle *pp, Solid *ss) {
-
-    sub::dbg::ini_dev();
-    
-    if (n) sub::dev::bounce_tcells <<< k_cnf(n) >>> (ff, m, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, ss);
-    
-    sub::dbg::report_dev();
-}
-
 void bounce_hst(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
                 const int n, const int totnt, /**/ Particle *pp, TicketM *t) {
     sub::dbg::ini_hst();
