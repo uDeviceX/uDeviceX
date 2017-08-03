@@ -1,23 +1,5 @@
 namespace rex {
 
-void recv_p(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
-    for (int i = 0; i < 26; ++i) {
-        int count = recv_counts[i];
-        int expected = remote[i]->expected();
-
-        remote[i]->pmessage.resize(max(1, count));
-        remote[i]->preserve_resize(count);
-        MPI_Status s;
-        if (count > expected)
-            MC(l::m::Recv(&remote[i]->pmessage.front() + expected, (count - expected) * 6, MPI_FLOAT, ranks[i], t.btp2 + tags[i], cart, &s));
-        memcpy(remote[i]->hstate.D, &remote[i]->pmessage.front(), sizeof(Particle) * count);
-    }
-
-    recvC(cart, ranks, tags, t);
-    for (int i = 0; i < 26; ++i) CC(cudaMemcpyAsync(remote[i]->dstate.D, remote[i]->hstate.D, sizeof(Particle) * remote[i]->hstate.S, H2D));
-}
-
-
 void recv_copy_bags() {
     float *recvbags[26];
     for (int i = 0; i < 26; ++i) recvbags[i] = (float *)local[i]->result->DP;
