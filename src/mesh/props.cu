@@ -118,7 +118,9 @@ void center_of_mass(const Mesh mesh, /**/ float *com) {
     com[Z] = M1tot[Z] / Vtot;
 }
 
-#define shift(a, s) do {a[X] -= s[X]; a[Y] -= s[Y]; a[Z] -= s[Z];} while(0)
+static void shift(const float s[3], /**/ float a[3]) {
+    a[X] -= s[X]; a[Y] -= s[Y]; a[Z] -= s[Z];
+}
     
 void inertia_tensor(const Mesh mesh, const float *com, const float density, /**/ float *I) {
     memset(I, 0, 6 * sizeof(float));
@@ -132,9 +134,9 @@ void inertia_tensor(const Mesh mesh, const float *com, const float density, /**/
         float B[3] = load_t(mesh, t2);
         float C[3] = load_t(mesh, t3);
 
-        shift(A, com);
-        shift(B, com);
-        shift(C, com);
+        shift(com, /**/ A);
+        shift(com, /**/ B);
+        shift(com, /**/ C);
 
         float M2[6];
         M_2(A, B, C, /**/ M2);
@@ -152,6 +154,5 @@ void inertia_tensor(const Mesh mesh, const float *com, const float density, /**/
         I[c] *= density;
 }
 
-#undef shift
 #undef load_t
 }
