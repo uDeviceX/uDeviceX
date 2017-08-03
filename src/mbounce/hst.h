@@ -111,7 +111,29 @@ void bounce(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcel
     }
 }
 
+void collect_rig_mom(const Momentum *mm, int ns, int nt, /**/ Solid *ss) {
+    int i = 0;
+    Momentum m;
+    
+    for (int is = 0; is < ns; ++is) {
+        for (int it = 0; it < nt; ++it, ++i) {
+            
+            m = mm[i];
+    
+            if (nonzero(&m)) {
 
+                mom_shift_ref(ss[is].com, /**/ &m); 
+
+                const float fac = dpd_mass / dt;
+
+                for (int c = 0; c < 3; ++c) {
+                    ss[is].fo[c] += fac * m.P[c];
+                    ss[is].to[c] += fac * m.L[c];
+                }
+            }
+        }
+    }
+}
 
 } // hst
 } // sub
