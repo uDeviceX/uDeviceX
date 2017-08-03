@@ -133,6 +133,7 @@ namespace ic {
   #include "rex/pack.h"
   #include "rex/send.h"
   #include "rex/recv.h"
+  #include "rex/unpack.h"
   #include "rex/impl.h"
   #include "rex/post.h"
   #include "rex/fin.h"
