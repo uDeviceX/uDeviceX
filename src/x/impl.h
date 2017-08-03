@@ -13,7 +13,7 @@ void fin() {
     rex::fin();
     fin_ticketcom(tc);
     fin_ticketpack(tp);
-    fin_ticketpinned(&ti);
+    fin_ticketpinned(ti);
 }
 
 static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<ParticlesWrap> w, int nw) {
