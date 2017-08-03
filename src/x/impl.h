@@ -1,9 +1,9 @@
 namespace x {
-void ini(/*io*/ basetags::TagGen *tg) {
+void ini(/*io*/ basetags::TagGen *g) {
     cnt = -1; /* TODO: */
     ini_ticketcom(&tc);
     ini_ticketr(&tr);
-    ini_tickettags(tg, &tt);
+    ini_tickettags(g, &tt);
     ini_ticketpack(&tp);
     ini_ticketpinned(&ti);
     rex::ini();
