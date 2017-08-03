@@ -6,8 +6,6 @@ void sendF(MPI_Comm cart, int ranks[26], x::TicketTags t) {
 }
 
 void sendP(MPI_Comm cart, int dranks[26], x::TicketTags t, x::TicketPinned ti) {
-    if (ti.tstarts[26]) CC(cudaMemcpyAsync(host_packbuf, packbuf, sizeof(Particle) * ti.tstarts[26], H2H));
-    dSync();
     reqsendC.resize(26);
     for (int i = 0; i < 26; ++i)
         MC(l::m::Isend(send_counts + i, 1, MPI_INTEGER, dranks[i], t.btc + i, cart, &reqsendC[i]));

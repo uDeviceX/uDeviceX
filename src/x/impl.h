@@ -38,6 +38,8 @@ static void post(std::vector<ParticlesWrap> w, int nw) {
 
     if (cnt == 0) rex::recvP(tc.cart, tc.ranks, tr.tags, tt);
     else          rex::s::waitP();
+    rex::copy_pack(ti);
+    dSync();
     rex::sendP(tc.cart, tc.ranks, tt, ti);
 }
 
