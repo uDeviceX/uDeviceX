@@ -5,11 +5,14 @@ void sendF(MPI_Comm cart, int ranks[26], x::TicketTags t) {
     for (int i = 0; i < 26; ++i) MC(l::m::Isend(remote[i]->result.D, remote[i]->result.S * 3, MPI_FLOAT, ranks[i], t.btf + i, cart, &reqsendA[i]));
 }
 
-void sendP(MPI_Comm cart, int dranks[26], x::TicketTags t, x::TicketPinned ti) {
+void sendC(MPI_Comm cart, int dranks[26], x::TicketTags t) {
+    int i;
     reqsendC.resize(26);
-    for (int i = 0; i < 26; ++i)
+    for (i = 0; i < 26; ++i)
         MC(l::m::Isend(send_counts + i, 1, MPI_INTEGER, dranks[i], t.btc + i, cart, &reqsendC[i]));
+}
 
+void sendP(MPI_Comm cart, int dranks[26], x::TicketTags t, x::TicketPinned ti) {
     for (int i = 0; i < 26; ++i) {
         int start = ti.tstarts[i];
         int count = send_counts[i];

@@ -40,6 +40,7 @@ static void post(std::vector<ParticlesWrap> w, int nw) {
     else          rex::s::waitP();
     rex::copy_pack(ti);
     dSync();
+    rex::sendC(tc.cart, tc.ranks, tt);
     rex::sendP(tc.cart, tc.ranks, tt, ti);
 }
 
