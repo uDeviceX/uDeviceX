@@ -131,6 +131,7 @@ namespace ic {
   #include "rex/halo.h"
   #include "rex/scan.h"
   #include "rex/pack.h"
+  #include "rex/send.h"
   #include "rex/impl.h"
   #include "rex/post.h"
   #include "rex/fin.h"
