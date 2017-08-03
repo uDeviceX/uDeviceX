@@ -1,9 +1,4 @@
 namespace rex {
-void post_count(x::TicketPinned ti) {
-    int i;
-    for (i = 0; i < 26; ++i) send_counts[i] = ti.offsets[i];
-}
-
 bool post_check() {
     bool packingfailed;
     int i;

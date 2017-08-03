@@ -15,4 +15,9 @@ void copy_bags() {
     CC(cudaMemcpyToSymbolAsync(k_rex::g::recvbags, recvbags, sizeof(recvbags), 0, H2D));
 }
 
+void copy_count(x::TicketPinned ti) {
+    int i;
+    for (i = 0; i < 26; ++i) send_counts[i] = ti.offsets[i];
+}
+
 }

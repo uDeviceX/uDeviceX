@@ -22,7 +22,7 @@ static void post(std::vector<ParticlesWrap> w, int nw) {
     if (cnt == 0) rex::recvC(tc.cart, tc.ranks, tr.tags, tt);
     else          rex::s::waitC();
 
-    rex::post_count(ti);
+    rex::copy_count(ti);
     packingfailed = rex::post_check();
     if (packingfailed) {
         rex::local_resize();
