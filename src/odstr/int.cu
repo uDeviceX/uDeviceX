@@ -7,7 +7,7 @@
 #include "common.h"
 #include "common.cuda.h"
 #include "common.mpi.h"
-#include "inc/tmp/type.h"
+#include "inc/tmp/pinned.h"
 
 #include <conf.h>
 #include "k/read.h"

@@ -20,7 +20,7 @@
 #include "inc/type.h"
 #include "common.mpi.h"
 #include "common.cuda.h"
-#include "inc/tmp/type.h"
+#include "inc/tmp/pinned.h"
 #include "io.h"
 #include "bund.h"
 #include "diag.h"

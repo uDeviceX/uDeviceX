@@ -9,7 +9,7 @@
 #include "common.cuda.h"
 #include "common.mpi.h"
 #include "inc/macro.h"
-#include "inc/tmp/type.h"
+#include "inc/tmp/pinned.h"
 
 #include "scan/int.h"
 

@@ -4,7 +4,7 @@
 #include "inc/type.h"
 #include "common.h"
 #include "common.cuda.h"
-#include "inc/tmp/type.h"
+#include "inc/tmp/pinned.h"
 
 #include "basetags.h"
 
