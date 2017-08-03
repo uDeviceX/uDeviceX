@@ -8,7 +8,7 @@ struct ParticlesWrap {
 };
 
 struct ParticlesRex {
-    const ParticleRex *p;
+    const Particle *p;
     Force *f;
     int n;
     ParticlesRex() : p(NULL), f(NULL), n(0) {}
