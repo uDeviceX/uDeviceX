@@ -27,21 +27,21 @@ struct Force {
     float f[3];
 };
 
-struct ParticlesWrap {
+struct ParticlesWrap000 {
     const Particle *p;
     Force *f;
     int n;
-    ParticlesWrap() : p(NULL), f(NULL), n(0) {}
-    ParticlesWrap(const Particle *const p, const int n, Force *f)
+    ParticlesWrap000() : p(NULL), f(NULL), n(0) {}
+    ParticlesWrap000(const Particle *const p, const int n, Force *f)
         : p(p), n(n), f(f) {}
 };
 
-struct SolventWrap : ParticlesWrap {
+struct SolventWrap : ParticlesWrap000 {
     const int *cellsstart, *cellscount;
-    SolventWrap() : cellsstart(NULL), cellscount(NULL), ParticlesWrap() {}
+    SolventWrap() : cellsstart(NULL), cellscount(NULL), ParticlesWrap000() {}
     SolventWrap(const Particle *const p, const int n, Force *f,
                 const int *const cellsstart, const int *const cellscount)
-        : ParticlesWrap(p, n, f),
+        : ParticlesWrap000(p, n, f),
           cellsstart(cellsstart),
           cellscount(cellscount) {}
 };
