@@ -13,7 +13,7 @@ void recv_p(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
         memcpy(remote[i]->hstate.D, &remote[i]->pmessage.front(), sizeof(Particle) * count);
     }
 
-    postrecvC(cart, ranks, tags, t);
+    recvC(cart, ranks, tags, t);
     for (int i = 0; i < 26; ++i) CC(cudaMemcpyAsync(remote[i]->dstate.D, remote[i]->hstate.D, sizeof(Particle) * remote[i]->hstate.S, H2D));
 }
 

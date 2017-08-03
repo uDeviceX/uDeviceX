@@ -1,5 +1,5 @@
 namespace rex {
-void postrecvA(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
+void recvF(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     for (int i = 0; i < 26; ++i) {
         MPI_Request reqA;
         MC(l::m::Irecv(local[i]->result->D, local[i]->result->S * 3, MPI_FLOAT, ranks[i], t.btf + tags[i], cart, &reqA));
@@ -7,7 +7,7 @@ void postrecvA(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     }
 }
 
-void postrecvC(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
+void recvC(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     for (int i = 0; i < 26; ++i) {
         MPI_Request reqC;
         MC(l::m::Irecv(recv_counts + i, 1, MPI_INTEGER, ranks[i], t.btc + tags[i], cart, &reqC));
@@ -15,7 +15,7 @@ void postrecvC(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     }
 }
 
-void postrecvP(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
+void recvP(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     for (int i = 0; i < 26; ++i) {
         MPI_Request reqP;
         remote[i]->pmessage.resize(remote[i]->expected());
