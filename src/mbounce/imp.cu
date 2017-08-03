@@ -31,19 +31,11 @@ void bounce_hst(const Force *ff, const Mesh m, const Particle *i_pp, const int *
     sub::dbg::ini_hst();
     
     if (totnt && n) {
-
         memset(t->mm_hst, 0, totnt * sizeof(Momentum));
-        
         sub::hst::bounce(ff, m, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, t->mm_hst);
     }
     
     sub::dbg::report_hst();
-}
-
-void collect_rig_hst(int nt, int ns, const TicketM *t, /**/ Solid *ss) {
-    int n = ns * nt;
-
-    if (n) sub::hst::collect_rig_mom (t->mm_hst, ns, nt, /**/ ss);
 }
 
 void bounce_dev(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
@@ -52,18 +44,20 @@ void bounce_dev(const Force *ff, const Mesh m, const Particle *i_pp, const int *
     sub::dbg::ini_dev();
 
     if (totnt && n) {
-
-        CC(cudaMemsetAsync(t->mm_dev, 0, totnt * sizeof(Momentum)));
-        
+        CC(cudaMemsetAsync(t->mm_dev, 0, totnt * sizeof(Momentum)));        
         sub::dev::bounce <<< k_cnf(n) >>> (ff, m, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, t->mm_dev);
     }
     
     sub::dbg::report_dev();
 }
 
+void collect_rig_hst(int nt, int ns, const TicketM *t, /**/ Solid *ss) {
+    int n = ns * nt;
+    if (n) sub::hst::collect_rig_mom (t->mm_hst, ns, nt, /**/ ss);
+}
+
 void collect_rig_dev(int nt, int ns, const TicketM *t, /**/ Solid *ss) {
     int n = ns * nt;
-
     if (n) sub::dev::collect_rig_mom <<<k_cnf(n) >>> (t->mm_dev, ns, nt, /**/ ss);
 }
 
