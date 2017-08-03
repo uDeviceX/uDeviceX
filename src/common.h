@@ -21,8 +21,8 @@ enum { /* used in forces.h */
 #define MAX_FACE_NUM 5000
 #define MAX_VERT_NUM 10000
 
-/* maximum number of red blood cells */
-#define MAX_CELL_NUM 10000
+/* maximum number of red blood cells per node */
+#define MAX_CELL_NUM 100
 
 /* safety factor for dpd halo interactions */
 #define HSAFETY_FACTOR 10.f
