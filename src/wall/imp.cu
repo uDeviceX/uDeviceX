@@ -11,8 +11,7 @@
 #include "common.cuda.h"
 
 #include <conf.h>
-
-#include "common.macro.h"
+#include "inc/macro.h"
 
 #include <limits> /* for rnd */
 #include <stdint.h>

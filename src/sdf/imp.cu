@@ -7,7 +7,7 @@
 #include "common.mpi.h"
 #include "common.cuda.h"
 #include <conf.h>
-#include "common.macro.h"
+#include "inc/macro.h"
 
 #include "glb.h"
 #include "k/wvel.h"

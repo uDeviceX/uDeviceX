@@ -27,7 +27,7 @@ $B/mesh/props.o: $S/inc/type.h $S/mesh/props.h
 $B/minmax.o: $S/common.cuda.h $S/common.h $B/conf.h $S/inc/type.h $S/minmax.h
 $B/m.o: $S/m.h
 $B/mrescue.o: $S/common.cuda.h $S/common.h $B/conf.h $S/inc/type.h $S/mesh/collision.h $S/mrescue.h
-$B/odstr/imp.o: $S/common.cuda.h $S/common.h $S/common.macro.h $S/common.mpi.h $B/conf.h $S/inc/tmp/type.h $S/inc/type.h $S/k/common.h $S/k/read.h $S/k/write.h $S/l/m.h $S/m.h $S/odstr/buf.h $S/odstr/dev.h $S/odstr/fin.h $S/odstr/imp.h $S/odstr/ini.h $S/odstr/type.h $S/scan/int.h
+$B/odstr/imp.o: $S/common.cuda.h $S/common.h $S/common.mpi.h $B/conf.h $S/inc/macro.h $S/inc/tmp/type.h $S/inc/type.h $S/k/common.h $S/k/read.h $S/k/write.h $S/l/m.h $S/m.h $S/odstr/buf.h $S/odstr/dev.h $S/odstr/fin.h $S/odstr/imp.h $S/odstr/ini.h $S/odstr/type.h $S/scan/int.h
 $B/odstr/int.o: $S/basetags.h $S/clist/int.h $S/common.cuda.h $S/common.h $S/common.mpi.h $B/conf.h $S/flu/int.h $S/inc/tmp/type.h $S/inc/type.h $S/k/common.h $S/k/read.h $S/l/m.h $S/m.h $S/odstr/imp.h $S/odstr/int.h $S/odstr/type.h $S/rnd.h $S/scan/int.h
 $B/rbc/dev0.h: $S/params/rbc.inc0.h
 $B/rdstr/imp.o: $S/common.cuda.h $S/common.h $S/common.mpi.h $B/conf.h $S/inc/type.h $S/l/m.h $S/mdstr/buf.h $S/mdstr/gen.h $S/minmax.h $S/rdstr/dev.h $S/rdstr/imp.h
@@ -36,9 +36,9 @@ $B/restart.o: $S/common.h $S/conf.common.h $B/conf.h $S/inc/type.h $S/m.h $S/res
 $B/rig/imp.o: $S/common.cuda.h $S/common.h $S/common.mpi.h $B/conf.h $S/inc/type.h $S/l/m.h $S/l/ply.h $S/m.h $S/mesh/bbox.h $S/mesh/collision.h $S/mesh/dist.h $S/restart.h $S/rig/ic.h $S/rig/imp.h $S/solid.h
 $B/rig/int.o: $S/common.cuda.h $S/common.h $B/conf.h $S/inc/type.h $S/rig/imp.h $S/rig/int.h
 $B/scan/imp.o: $S/common.cuda.h $S/scan/dev.h $S/scan/int.h
-$B/sdf/imp.o: $S/common.cuda.h $S/common.h $S/common.macro.h $S/common.mpi.h $B/conf.h $S/field.h $S/glb.h $S/inc/type.h $S/k/wvel.h $S/l/m.h $S/m.h $S/sdf/cheap.dev.h $S/sdf/dev.h $S/sdf/imp.h $S/sdf/type.h
-$B/sdf/int.o: $S/common.cuda.h $S/common.h $S/common.macro.h $B/conf.h $S/inc/type.h $S/sdf/imp.h $S/sdf/int.h $S/sdf/type.h
+$B/sdf/imp.o: $S/common.cuda.h $S/common.h $S/common.mpi.h $B/conf.h $S/field.h $S/glb.h $S/inc/macro.h $S/inc/type.h $S/k/wvel.h $S/l/m.h $S/m.h $S/sdf/cheap.dev.h $S/sdf/dev.h $S/sdf/imp.h $S/sdf/type.h
+$B/sdf/int.o: $S/common.cuda.h $S/common.h $B/conf.h $S/inc/macro.h $S/inc/type.h $S/sdf/imp.h $S/sdf/int.h $S/sdf/type.h
 $B/solid.o: $S/common.cuda.h $S/common.h $S/conf.common.h $B/conf.h $S/inc/type.h $S/k/solid.h $S/l/linal.h $S/mesh/props.h $S/solid.h
 $B/tcells.o: $S/common.cuda.h $S/common.h $B/conf.h $S/inc/type.h $S/scan/int.h $S/tcells.h
-$B/wall/imp.o: $S/clist/int.h $S/common.cuda.h $S/common.h $S/common.macro.h $B/conf.h $S/forces.h $S/glb.h $S/inc/type.h $S/k/wvel.h $S/l/m.h $S/m.h $S/restart.h $S/rnd.h $S/sdf/cheap.dev.h $S/sdf/int.h $S/sdf/type.h $S/wall/dev.h $S/wall/imp.h $S/wall/strt.h
+$B/wall/imp.o: $S/clist/int.h $S/common.cuda.h $S/common.h $B/conf.h $S/forces.h $S/glb.h $S/inc/macro.h $S/inc/type.h $S/k/wvel.h $S/l/m.h $S/m.h $S/restart.h $S/rnd.h $S/sdf/cheap.dev.h $S/sdf/int.h $S/sdf/type.h $S/wall/dev.h $S/wall/imp.h $S/wall/strt.h
 $B/wall/int.o: $S/clist/int.h $S/common.cuda.h $S/common.h $B/conf.h $S/inc/type.h $S/rnd.h $S/sdf/int.h $S/sdf/type.h $S/wall/imp.h $S/wall/int.h

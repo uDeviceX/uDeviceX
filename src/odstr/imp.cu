@@ -8,7 +8,7 @@
 #include "common.h"
 #include "common.cuda.h"
 #include "common.mpi.h"
-#include "common.macro.h"
+#include "inc/macro.h"
 #include "inc/tmp/type.h"
 
 #include "scan/int.h"
