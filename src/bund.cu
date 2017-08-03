@@ -20,6 +20,7 @@
 #include "inc/type.h"
 #include "common.mpi.h"
 #include "common.cuda.h"
+#include "inc/tmp/wrap.h"
 #include "inc/tmp/pinned.h"
 #include "io.h"
 #include "bund.h"
