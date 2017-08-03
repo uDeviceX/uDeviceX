@@ -43,12 +43,6 @@ void recv_p(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
 }
 
 
-void post_f(MPI_Comm cart, int ranks[26], x::TicketTags t) {
-    dSync();
-    reqsendA.resize(26);
-    for (int i = 0; i < 26; ++i) MC(l::m::Isend(remote[i]->result.D, remote[i]->result.S * 3, MPI_FLOAT, ranks[i], t.btf + i, cart, &reqsendA[i]));
-}
-
 void recv_copy_bags() {
     float *recvbags[26];
     for (int i = 0; i < 26; ++i) recvbags[i] = (float *)local[i]->result->DP;
