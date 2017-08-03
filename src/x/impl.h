@@ -30,7 +30,7 @@ static void post(std::vector<ParticlesWrap> w, int nw) {
         rex::pack_clear(nw, tp);
         rex::scanA( w, nw, tp);
         rex::scanB(nw, tp, ti);
-        rex::pack_attempt(w, tp, ti);
+        rex::pack(w, tp, ti);
         dSync();
     }
     rex::local_resize();
@@ -46,7 +46,7 @@ static void rex0(std::vector<ParticlesWrap> w, int nw) {
     rex::pack_clear(nw, tp);
     rex::scanA(w, nw, tp);
     rex::scanB(nw, tp, ti);
-    rex::pack_attempt(w, tp, ti);
+    rex::pack(w, tp, ti);
     post(w, nw);
     rex::r::waitC();
     rex::r::waitP();
