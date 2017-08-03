@@ -54,6 +54,41 @@ __global__ void bounce_tcells(const Force *ff, const Mesh m, const Particle *i_p
     }
 }
 
+__device__ bool nz(float a) {return fabs(a) > 1e-6f;}
+__device__ bool nonzero(Momentum *m) {
+    return nz(m->P[0]) && nz(m->P[1]) && nz(m->P[2]) &&
+        nz(m->L[0]) && nz(m->L[1]) && nz(m->L[2]);
+}
+
+/* change of referencial : origin to R */
+__device__ void change_ref(const float R[3], /**/ Momentum *m) {
+    m->L[0] -= R[1] * m->P[2] - R[2] * m->P[1];
+    m->L[1] -= R[2] * m->P[0] - R[0] * m->P[2];
+    m->L[2] -= R[0] * m->P[1] - R[1] * m->P[0];
+}
+
+/* assume very small portion of non zero momentum changes */
+__global__ void reduce_rig(const Momentum *mm, int ns, int nt, /**/ Solid *ss) {
+    int i = threadIdx.x + blockDim.x * blockIdx.x;
+    int is = i / nt;
+
+    if (i >= ns * nt) return;
+
+    Momentum m = mm[i];
+    
+    if (nonzero(&m)) {
+
+        change_ref(ss[is].com, /**/ &m); 
+        
+        atomicAdd(ss[is].fo + X, m.P[X]);
+        atomicAdd(ss[is].fo + Y, m.P[Y]);
+        atomicAdd(ss[is].fo + Z, m.P[Z]);
+
+        atomicAdd(ss[is].to + X, m.L[X]);
+        atomicAdd(ss[is].to + Y, m.L[Y]);
+        atomicAdd(ss[is].to + Z, m.L[Z]);
+    }
+}
 
 } // dev
 } // sub
