@@ -50,7 +50,7 @@ static void rex0(std::vector<ParticlesWrap> w, int nw) {
     post(w, nw);
     rex::r::waitC();
     rex::r::waitP();
-    rex::recv_p(tc.cart, tc.ranks, tr.tags, tt);
+    rex::recvM(tc.cart, tc.ranks, tr.tags, tt);
     if (cnt) rex::s::waitA();
     rex::halo(); /* fsi::halo(); */
     rex::recvP(tc.cart, tc.ranks, tr.tags, tt);

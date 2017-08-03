@@ -24,7 +24,7 @@ void recvP(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     }
 }
 
-void recv_p(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
+void recvM(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     for (int i = 0; i < 26; ++i) {
         int count = recv_counts[i];
         int expected = remote[i]->expected();
