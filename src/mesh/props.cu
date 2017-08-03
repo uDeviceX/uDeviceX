@@ -20,15 +20,13 @@ enum {XX, XY, XZ, YY, YZ, ZZ};
 
 /* see http://chenlab.ece.cornell.edu/Publication/Cha/icip01_Cha.pdf */
     
-static void M_0(const float *A, const float *B, const float *C, /**/ float *res)
-{
+static void M_0(const float *A, const float *B, const float *C, /**/ float *res) {
     *res =  (+Ax * (By * Cz -Bz * Cy)
              -Ay * (Bx * Cz -Bz * Cx)
              +Az * (Bx * Cy -By * Cx)) / 6.f;
 }
 
-static void M_1(const float *A, const float *B, const float *C, /**/ float *res)
-{
+static void M_1(const float *A, const float *B, const float *C, /**/ float *res) {
     const float common = (+Ax * (By * Cz -Bz * Cy)
                           -Ay * (Bx * Cz -Bz * Cx)
                           +Az * (Bx * Cy -By * Cx)) / 24.f;
@@ -38,8 +36,7 @@ static void M_1(const float *A, const float *B, const float *C, /**/ float *res)
     res[2] = common * (Az + Bz + Cz);
 }
 
-static void M_2(const float *A, const float *B, const float *C, /**/ float *res)
-{
+static void M_2(const float *A, const float *B, const float *C, /**/ float *res) {
     /* see /poc/mesh/moments.mac */
     const float D1 = (+Ax * (By*Cz - Bz*Cy)
                       -Ay * (Bx*Cz - Bz*Cx)
@@ -73,12 +70,10 @@ static void M_2(const float *A, const float *B, const float *C, /**/ float *res)
 
 #define load_t(m, tid) {m.vv[3*tid + 0], m.vv[3*tid + 1], m.vv[3*tid + 2]}
 
-float volume(const Mesh mesh)
-{
+float volume(const Mesh mesh) {
     float Vtot = 0;
         
-    for (int it = 0; it < mesh.nt; ++it)
-    {
+    for (int it = 0; it < mesh.nt; ++it) {
         const int t1 = mesh.tt[3*it + 0];
         const int t2 = mesh.tt[3*it + 1];
         const int t3 = mesh.tt[3*it + 2];
@@ -95,12 +90,10 @@ float volume(const Mesh mesh)
     return Vtot;
 }
 
-void center_of_mass(const Mesh mesh, /**/ float *com)
-{
+void center_of_mass(const Mesh mesh, /**/ float *com) {
     float Vtot = 0, M1tot[3] = {0};
         
-    for (int it = 0; it < mesh.nt; ++it)
-    {
+    for (int it = 0; it < mesh.nt; ++it) {
         const int t1 = mesh.tt[3*it + 0];
         const int t2 = mesh.tt[3*it + 1];
         const int t3 = mesh.tt[3*it + 2];
@@ -127,12 +120,10 @@ void center_of_mass(const Mesh mesh, /**/ float *com)
 
 #define shift(a, s) do {a[X] -= s[X]; a[Y] -= s[Y]; a[Z] -= s[Z];} while(0)
     
-void inertia_tensor(const Mesh mesh, const float *com, const float density, /**/ float *I)
-{
+void inertia_tensor(const Mesh mesh, const float *com, const float density, /**/ float *I) {
     memset(I, 0, 6 * sizeof(float));
         
-    for (int it = 0; it < mesh.nt; ++it)
-    {
+    for (int it = 0; it < mesh.nt; ++it) {
         const int t1 = mesh.tt[3*it + 0];
         const int t2 = mesh.tt[3*it + 1];
         const int t3 = mesh.tt[3*it + 2];
@@ -158,7 +149,7 @@ void inertia_tensor(const Mesh mesh, const float *com, const float density, /**/
     }
 
     for (int c = 0; c < 6; ++c)
-    I[c] *= density;
+        I[c] *= density;
 }
 
 #undef shift
