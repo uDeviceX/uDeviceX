@@ -63,7 +63,7 @@ void bounce_hst(const Force *ff, const Mesh m, const Particle *i_pp, const int *
 void collect_rig_hst(int nt, int ns, const TicketM *t, /**/ Solid *ss) {
     int n = ns * nt;
 
-    if (n) sub::hst::collect_rig_mom (t->mm_dev, ns, nt, /**/ ss);
+    if (n) sub::hst::collect_rig_mom (t->mm_hst, ns, nt, /**/ ss);
 }
 
 void bounce_dev(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
