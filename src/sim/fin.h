@@ -51,6 +51,8 @@ void fin() {
         rig::free_ticket(&s::t);
         scan::free_work(/**/ &s::ws);
         CC(cudaFree(s::ff)); delete[] s::ff_hst;
+
+        mbounce::free_ticketM(&bb::tm);
     }
 
     if (rbcs) {

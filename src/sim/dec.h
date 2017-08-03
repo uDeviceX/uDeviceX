@@ -81,6 +81,11 @@ mcomm::TicketS   ts;
 mcomm::TicketR   tr;
 }
 
+namespace bb /* bounce back */
+{
+mbounce::TicketM tm;
+}
+
 /* defined in 0dev/ and 0hst/ */
 void distr_solid();
 void update_solid0();

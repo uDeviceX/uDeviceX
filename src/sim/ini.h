@@ -66,6 +66,8 @@ void ini() {
         scan::alloc_work(XS*YS*ZS, /**/ &s::ws);
         s::ff_hst = new Force[MAX_PART_NUM];
         CC(cudaMalloc(&s::ff, MAX_PART_NUM * sizeof(Force)));
+
+        mbounce::alloc_ticketM(&bb::tm);
     }
 
     dump_field = new H5FieldDump;
