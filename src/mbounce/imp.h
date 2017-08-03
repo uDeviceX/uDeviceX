@@ -17,6 +17,12 @@ void bounce_tcells_hst(const Force *ff, const Mesh m, const Particle *i_pp, cons
 void bounce_tcells_dev(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
                        const int n, /**/ Particle *pp, Solid *ss);
 
+
+void bounce_hst(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
+                const int n, const int totnt, /**/ Particle *pp, TicketM *t);
+
+void collect_rig_hst(int nt, int ns, const TicketM *t, /**/ Solid *ss);
+
 void bounce_dev(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
                 const int n, const int totnt, /**/ Particle *pp, TicketM *t);
 
