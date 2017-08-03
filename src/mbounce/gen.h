@@ -229,6 +229,13 @@ _DH_ void ang_mom_change(const float r[3], const float v0[3], const float v1[3],
     dL[X] = -(r[X] * v1[Y] - r[Y] * v1[X]  -  r[X] * v0[Y] + r[Y] - v0[X]);
 }
 
+/* shift origin from 0 to R for ang momentum */
+_DH_ void mom_shift_ref(const float R[3], /**/ Momentum *m) {
+    m->L[0] -= R[1] * m->P[2] - R[2] * m->P[1];
+    m->L[1] -= R[2] * m->P[0] - R[0] * m->P[2];
+    m->L[2] -= R[0] * m->P[1] - R[1] * m->P[0];
+}
+
 
 
 #undef _DH_

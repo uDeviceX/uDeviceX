@@ -113,13 +113,6 @@ static __device__ bool nonzero(const Momentum *m) {
         nz(m->L[0]) && nz(m->L[1]) && nz(m->L[2]);
 }
 
-/* shift origin from 0 to R for ang momentum */
-static __device__ void mom_shift_ref(const float R[3], /**/ Momentum *m) {
-    m->L[0] -= R[1] * m->P[2] - R[2] * m->P[1];
-    m->L[1] -= R[2] * m->P[0] - R[0] * m->P[2];
-    m->L[2] -= R[0] * m->P[1] - R[1] * m->P[0];
-}
-
 /* assume very small portion of non zero momentum changes */
 __global__ void reduce_rig(const Momentum *mm, int ns, int nt, /**/ Solid *ss) {
     int i = threadIdx.x + blockDim.x * blockIdx.x;
