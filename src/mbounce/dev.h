@@ -145,14 +145,16 @@ __global__ void reduce_rig(const Momentum *mm, int ns, int nt, /**/ Solid *ss) {
     if (nonzero(&m)) {
 
         change_ref(ss[is].com, /**/ &m); 
-        
-        atomicAdd(ss[is].fo + X, m.P[X]);
-        atomicAdd(ss[is].fo + Y, m.P[Y]);
-        atomicAdd(ss[is].fo + Z, m.P[Z]);
 
-        atomicAdd(ss[is].to + X, m.L[X]);
-        atomicAdd(ss[is].to + Y, m.L[Y]);
-        atomicAdd(ss[is].to + Z, m.L[Z]);
+        const float fac = dpd_mass / dt;
+        
+        atomicAdd(ss[is].fo + X, fac * m.P[X]);
+        atomicAdd(ss[is].fo + Y, fac * m.P[Y]);
+        atomicAdd(ss[is].fo + Z, fac * m.P[Z]);
+
+        atomicAdd(ss[is].to + X, fac * m.L[X]);
+        atomicAdd(ss[is].to + Y, fac * m.L[Y]);
+        atomicAdd(ss[is].to + Z, fac * m.L[Z]);
     }
 }
 
