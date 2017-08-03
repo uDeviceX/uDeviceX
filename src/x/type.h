@@ -18,7 +18,7 @@ struct TicketPack { /* helps pack particles (device) */
 };
 
 struct TicketPinned { /* helps pack particles (host) */
-    int *tstarts_hst;
-    int *offsets_hst;
+    int *tstarts;
+    int *offsets;
 };
 }
