@@ -15,8 +15,6 @@ struct TicketTags { /* basetags */
 struct TicketPack { /* helps pack particles (device) */
     int *counts, *starts, *offsets;
     int *tstarts; /* total start */
-    int *tstarts_hst;
-    int *offsets_hst;
 };
 
 struct TicketPinned { /* helps pack particles (host) */

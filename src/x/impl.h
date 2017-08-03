@@ -22,15 +22,15 @@ static void post(std::vector<ParticlesWrap> w, int nw) {
     if (cnt == 0) rex::postrecvC(tc.cart, tc.ranks, tr.tags, tt);
     else          rex::s::waitC();
 
-    rex::post_count(tp);
+    rex::post_count(ti);
     packingfailed = rex::post_check();
     if (packingfailed) {
         rex::local_resize();
         rex::post_resize();
         rex::pack_clear(nw, tp);
-        rex::scanA(w, nw, tp);
-        rex::scanB(w, tp);
-        rex::pack_attempt(w, tp);
+        rex::scanA( w, nw, tp);
+        rex::scanB(nw, tp, ti);
+        rex::pack_attempt(w, tp, ti);
         dSync();
     }
     rex::local_resize();
@@ -38,15 +38,15 @@ static void post(std::vector<ParticlesWrap> w, int nw) {
 
     if (cnt == 0) rex::postrecvP(tc.cart, tc.ranks, tr.tags, tt);
     else          rex::s::waitP();
-    rex::post_p(tc.cart, tc.ranks, tt, tp);
+    rex::post_p(tc.cart, tc.ranks, tt, ti);
 }
 
 static void rex0(std::vector<ParticlesWrap> w, int nw) {
     cnt++;
     rex::pack_clear(nw, tp);
     rex::scanA(w, nw, tp);
-    rex::scanB(w, tp);    
-    rex::pack_attempt(w, tp);
+    rex::scanB(nw, tp, ti);
+    rex::pack_attempt(w, tp, ti);
     post(w, nw);
     rex::r::waitC();
     rex::r::waitP();
