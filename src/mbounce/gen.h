@@ -4,7 +4,7 @@ namespace sub {
 #define _DH_ __device__ __host__
 enum {X, Y, Z};
 
-static _DH_ void rvprev(const float *r1, const float *v1, const float *f0, /**/ float *r0, float *v0) {
+_DH_ void rvprev(const float *r1, const float *v1, const float *f0, /**/ float *r0, float *v0) {
 #ifdef FORWARD_EULER
     for (int c = 0; c < 3; ++c) {
         v0[c] = v1[c] - f0[c] * dt;
@@ -167,12 +167,12 @@ static _DH_ BBState intersect_triangle(const float *s10, const float *s20, const
 #undef apxb
 }
 
-static _DH_ void lin_mom_solid(const float *v1, const float *vn, /**/ float *dP) {
+_DH_ void lin_mom_solid(const float *v1, const float *vn, /**/ float *dP) {
     for (int c = 0; c < 3; ++c)
         dP[c] = -(vn[c] - v1[c]) / dt;
 }
 
-static _DH_ void ang_mom_solid(const float *com, const float *rw, const float *v0, const float *vn, /**/ float *dL) {
+_DH_ void ang_mom_solid(const float *com, const float *rw, const float *v0, const float *vn, /**/ float *dL) {
     const float dr[3] = {rw[X] - com[X], rw[Y] - com[Y], rw[Z] - com[Z]};
         
     dL[X] = -(dr[Y] * vn[Z] - dr[Z] * vn[Y] - dr[Y] * v0[Z] + dr[Z] * v0[Y]) / dt;
@@ -186,7 +186,7 @@ static _DH_ void revert_r(Particle *p) {
     p->r[Z] -= dt * p->v[Z];
 }
 
-static _DH_ bool find_better_intersection(const int *tt, const int it, const Particle *i_pp, const Particle *p0, /* io */ float *h, /**/ float *rw, float *vw) {
+_DH_ bool find_better_intersection(const int *tt, const int it, const Particle *i_pp, const Particle *p0, /* io */ float *h, /**/ float *rw, float *vw) {
     // load data
     const int t1 = tt[3*it + 0];
     const int t2 = tt[3*it + 1];
@@ -207,7 +207,7 @@ static _DH_ bool find_better_intersection(const int *tt, const int it, const Par
     return bbstate == BB_SUCCESS;
 }
 
-static _DH_ void bounce_back(const Particle *p0, const float *rw, const float *vw, const float h, /**/ Particle *pn) {
+_DH_ void bounce_back(const Particle *p0, const float *rw, const float *vw, const float h, /**/ Particle *pn) {
     pn->v[X] = 2 * vw[X] - p0->v[X];
     pn->v[Y] = 2 * vw[Y] - p0->v[Y];
     pn->v[Z] = 2 * vw[Z] - p0->v[Z];
@@ -216,6 +216,20 @@ static _DH_ void bounce_back(const Particle *p0, const float *rw, const float *v
     pn->r[Y] = rw[Y] + (dt-h) * pn->v[Y];
     pn->r[Z] = rw[Z] + (dt-h) * pn->v[Z];
 }
+
+_DH_ void lin_mom_change(const float v0[3], const float v1[3], /**/ float dP[3]) {
+    dP[X] = -(v1[X] - v0[X]);
+    dP[Y] = -(v1[Y] - v0[Y]);
+    dP[Z] = -(v1[Z] - v0[Z]);
+}
+
+_DH_ void ang_mom_change(const float r[3], const float v0[3], const float v1[3], /**/ float dL[3]) {
+    dL[X] = -(r[Y] * v1[Z] - r[Z] * v1[Y]  -  r[Y] * v0[Z] + r[Z] - v0[Y]);
+    dL[X] = -(r[Z] * v1[X] - r[X] * v1[Z]  -  r[Z] * v0[X] + r[X] - v0[Z]);
+    dL[X] = -(r[X] * v1[Y] - r[Y] * v1[X]  -  r[X] * v0[Y] + r[Y] - v0[X]);
+}
+
+
 
 #undef _DH_
 

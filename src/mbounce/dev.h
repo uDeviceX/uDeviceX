@@ -54,19 +54,6 @@ __global__ void bounce_tcells(const Force *ff, const Mesh m, const Particle *i_p
     }
 }
 
-
-__device__ void lin_mom_change(const float v0[3], const float v1[3], /**/ float dP[3]) {
-    dP[X] = -(v1[X] - v0[X]);
-    dP[Y] = -(v1[Y] - v0[Y]);
-    dP[Z] = -(v1[Z] - v0[Z]);
-}
-
-__device__ void ang_mom_change(const float r[3], const float v0[3], const float v1[3], /**/ float dL[3]) {
-    dL[X] = -(r[Y] * v1[Z] - r[Z] * v1[Y]  -  r[Y] * v0[Z] + r[Z] - v0[Y]);
-    dL[X] = -(r[Z] * v1[X] - r[X] * v1[Z]  -  r[Z] * v0[X] + r[X] - v0[Z]);
-    dL[X] = -(r[X] * v1[Y] - r[Y] * v1[X]  -  r[X] * v0[Y] + r[Y] - v0[X]);
-}
-
 __global__ void bounce(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
                        const int n, /**/ Particle *pp, Momentum *mm) {
     const int i = threadIdx.x + blockDim.x * blockIdx.x;
