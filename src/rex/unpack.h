@@ -1,5 +1,5 @@
 namespace rex {
-void recv_f(std::vector<ParticlesWrap> w, x::TicketPack tp) {
+void unpack(std::vector<ParticlesWrap> w, x::TicketPack tp) {
     for (int i = 0; i < (int) w.size(); ++i) {
         ParticlesWrap it = w[i];
         if (it.n) {
