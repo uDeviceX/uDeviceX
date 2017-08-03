@@ -1,10 +1,11 @@
 namespace x {
-void ini(/*io*/ basetags::TagGen *tg) {
+void ini(/*io*/ basetags::TagGen *g) {
     cnt = -1; /* TODO: */
     ini_ticketcom(&tc);
     ini_ticketr(&tr);
-    ini_tickettags(tg, &tt);
+    ini_tickettags(g, &tt);
     ini_ticketpack(&tp);
+    ini_ticketpinned(&ti);
     rex::ini();
 }
 
@@ -12,40 +13,41 @@ void fin() {
     rex::fin();
     fin_ticketcom(tc);
     fin_ticketpack(tp);
+    fin_ticketpinned(ti);
 }
 
-static void post(TicketCom tc, TicketR tr, x::TicketTags t, std::vector<ParticlesWrap> w, int nw) {
+static void post(std::vector<ParticlesWrap> w, int nw) {
     bool packingfailed;
     dSync();
-    if (cnt == 0) rex::postrecvC(tc.cart, tc.ranks, tr.tags, t);
+    if (cnt == 0) rex::postrecvC(tc.cart, tc.ranks, tr.tags, tt);
     else          rex::s::waitC();
 
-    rex::post_count(tp);
+    rex::post_count(ti);
     packingfailed = rex::post_check();
     if (packingfailed) {
         rex::local_resize();
         rex::post_resize();
         rex::pack_clear(nw, tp);
-        rex::scanA(w, nw, tp);
-        rex::scanB(w, tp);
-        rex::pack_attempt(w, tp);
+        rex::scanA( w, nw, tp);
+        rex::scanB(nw, tp, ti);
+        rex::pack_attempt(w, tp, ti);
         dSync();
     }
     rex::local_resize();
-    rex::postrecvA(tc.cart, tc.ranks, tr.tags, t);
+    rex::postrecvA(tc.cart, tc.ranks, tr.tags, tt);
 
-    if (cnt == 0) rex::postrecvP(tc.cart, tc.ranks, tr.tags, t);
+    if (cnt == 0) rex::postrecvP(tc.cart, tc.ranks, tr.tags, tt);
     else          rex::s::waitP();
-    rex::post_p(tc.cart, tc.ranks, t, tp);
+    rex::post_p(tc.cart, tc.ranks, tt, ti);
 }
 
 static void rex0(std::vector<ParticlesWrap> w, int nw) {
     cnt++;
     rex::pack_clear(nw, tp);
     rex::scanA(w, nw, tp);
-    rex::scanB(w, tp);    
-    rex::pack_attempt(w, tp);
-    post(tc, tr, tt, w, nw);
+    rex::scanB(nw, tp, ti);
+    rex::pack_attempt(w, tp, ti);
+    post(w, nw);
     rex::r::waitC();
     rex::r::waitP();
     rex::recv_p(tc.cart, tc.ranks, tr.tags, tt);

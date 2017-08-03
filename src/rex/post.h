@@ -1,7 +1,7 @@
 namespace rex {
-void post_count(x::TicketPack tp) {
+void post_count(x::TicketPinned ti) {
     int i;
-    for (i = 0; i < 26; ++i) send_counts[i] = tp.offsets_hst[i];
+    for (i = 0; i < 26; ++i) send_counts[i] = ti.offsets_hst[i];
 }
 
 bool post_check() {
@@ -27,16 +27,16 @@ void local_resize() {
     for (i = 0; i < 26; ++i) local[i]->resize(send_counts[i]);
 }
 
-void post_p(MPI_Comm cart, int dranks[26], x::TicketTags t, x::TicketPack tp) {
-    if (tp.tstarts_hst[26])
-        CC(cudaMemcpyAsync(host_packbuf, packbuf, sizeof(Particle) * tp.tstarts_hst[26], H2H));
+void post_p(MPI_Comm cart, int dranks[26], x::TicketTags t, x::TicketPinned ti) {
+    if (ti.tstarts_hst[26])
+        CC(cudaMemcpyAsync(host_packbuf, packbuf, sizeof(Particle) * ti.tstarts_hst[26], H2H));
     dSync();
     reqsendC.resize(26);
     for (int i = 0; i < 26; ++i)
         MC(l::m::Isend(send_counts + i, 1, MPI_INTEGER, dranks[i], t.btc + i, cart, &reqsendC[i]));
 
     for (int i = 0; i < 26; ++i) {
-        int start = tp.tstarts_hst[i];
+        int start = ti.tstarts_hst[i];
         int count = send_counts[i];
         int expected = local[i]->expected();
         

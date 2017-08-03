@@ -5,8 +5,8 @@ void pack_clear(int nw, x::TicketPack tp) {
     CC(cudaMemsetAsync(tp.offsets, 0, sizeof(int) * 26 * (nw + 1)));
 }
 
-void pack_attempt(std::vector<ParticlesWrap> w, x::TicketPack tp) {
-    CC(cudaMemcpyAsync(tp.tstarts_hst, tp.tstarts, sizeof(int) * 27, H2H));
+void pack_attempt(std::vector<ParticlesWrap> w, x::TicketPack tp, x::TicketPinned ti) {
+    CC(cudaMemcpyAsync(ti.tstarts_hst, tp.tstarts, sizeof(int) * 27, H2H));
     CC(cudaMemcpyToSymbolAsync(k_rex::g::tstarts, tp.tstarts, sizeof(int) * 27, 0, D2D));
     for (int i = 0; i < (int) w.size(); ++i) {
         ParticlesWrap it = w[i];

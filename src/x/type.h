@@ -12,11 +12,13 @@ struct TicketTags { /* basetags */
     int btc, btp1, btp2, btf;
 };
 
-struct TicketPack { /* helps pack particles for mpi */
+struct TicketPack { /* helps pack particles (device) */
     int *counts, *starts, *offsets;
     int *tstarts; /* total start */
+};
+
+struct TicketPinned { /* helps pack particles (host) */
     int *tstarts_hst;
     int *offsets_hst;
 };
-
 }

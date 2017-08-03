@@ -1,8 +1,5 @@
 namespace x {
 static void ini_ticketpack(TicketPack *t) {
-    Palloc(&t->tstarts_hst, 27);
-    Palloc(&t->offsets_hst, 26);
-
     Dalloc(&t->tstarts, 27);
     Dalloc(&t->offsets, 27 * (MAX_OBJ_TYPES + 1));
     Dalloc(&t->starts,  27 *  MAX_OBJ_TYPES);
@@ -10,9 +7,6 @@ static void ini_ticketpack(TicketPack *t) {
 }
 
 static void fin_ticketpack(TicketPack t) {
-    Pfree(t.tstarts_hst);
-    Pfree(t.offsets_hst);
-
     Dfree(t.tstarts);
     Dfree(t.counts);
     Dfree(t.starts);
