@@ -15,6 +15,15 @@
 
 namespace mbounce {
 
+void alloc_work(Work *w) {
+    CC(cudaMalloc(&w->mm, MAX_PART_NUM * sizeof(Momentum)));
+}
+
+void free_work(Work *w) {
+    CC(cudaFree(w->mm));
+}
+
+
 void bounce_tcells_hst(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
                        const int n, /**/ Particle *pp, Solid *ss) {
 
