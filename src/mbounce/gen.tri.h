@@ -3,7 +3,6 @@ namespace sub {
 
 #define _DH_ __device__ __host__
 
-enum {X, Y, Z};
 enum {XX, XY, XZ, YY, YZ, ZZ};
 /* see /poc/bounce-back/inertia.cpp */
 
@@ -57,7 +56,7 @@ static _DH_ void inverse(const float A[6], /**/ float I[6]) {
 }
 
 static _DH_ void v2f(const float r[3], const float om[3], const float v[3], /**/ float f[3]) {
-    const float fac = mass_rbc / dt;
+    const float fac = rbc_mass / dt;
     f[X] = fac * (v[X] + r[Y] * om[Z] - r[Z] * om[Y]);
     f[Y] = fac * (v[Y] + r[Z] * om[X] - r[X] * om[Z]);
     f[Z] = fac * (v[Z] + r[X] * om[Y] - r[Y] * om[X]);
@@ -66,8 +65,8 @@ static _DH_ void v2f(const float r[3], const float om[3], const float v[3], /**/
 _DH_ void M2f(const Momentum m, const float a[3], const float b[3], const float c[3],
               /**/ float fa[3], float fb[3], float fc[3]) {
 
-    float I[6], Iinv[6], om[3], v[3];
-    const float fac = 1.f / (3.f * mass_rbc);
+    float I[6] = {0}, Iinv[6], om[3], v[3];
+    const float fac = 1.f / (3.f * rbc_mass);
     
     compute_I(a, b, c, /**/ I);
     inverse(I, /**/ Iinv);
