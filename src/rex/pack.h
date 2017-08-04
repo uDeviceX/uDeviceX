@@ -6,10 +6,10 @@ void clear(int nw, x::TicketPack tp) {
 }
 
 void pack(std::vector<ParticlesWrap> w, int nw, x::TicketPack tp) {
-    int n;
+    int i, n;
     int *o, *c, *s;
     CC(cudaMemcpyToSymbolAsync(k_rex::g::tstarts, tp.tstarts, sizeof(int) * 27, 0, D2D));
-    for (int i = 0; i < nw; ++i) {
+    for (i = 0; i < nw; ++i) {
         n = w[i].n;
         if (n) {
             const Particle *pp = w[i].p;
