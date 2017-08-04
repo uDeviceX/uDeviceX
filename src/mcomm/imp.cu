@@ -1,3 +1,23 @@
+#include <mpi.h>
+#include "m.h"
+#include "l/m.h"
+
+#include <vector>
+#include <cassert>
+
+#include <conf.h>
+
+#include "inc/type.h"
+#include "common.h"
+#include "common.mpi.h"
+#include "common.cuda.h"
+
+#include "mcomm/type.h"
+#include "mcomm/imp.h"
+#include "mcomm/dev.h"
+#include "mcomm/ini.h"
+#include "mcomm/fin.h"
+
 namespace mcomm {
 namespace sub {
 
