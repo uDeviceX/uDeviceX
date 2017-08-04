@@ -2,7 +2,7 @@ namespace mbounce {
 namespace sub {
 namespace hst {
 
-void bounce(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
+void bounce(const Force *ff, const int *tt, int nt, int nv, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
             const int n, /**/ Particle *pp, Momentum *mm) {
 
     for (int i = 0; i < n; ++i) {
@@ -29,10 +29,10 @@ void bounce(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcel
 
                     for (int j = start; j < start + count; ++j) {
                         const int tid = tids[j];
-                        const int it  = tid % m.nt;
-                        const int mid = tid / m.nt;
+                        const int it  = tid % nt;
+                        const int mid = tid / nt;
 
-                        if (find_better_intersection(m.tt, it, i_pp + mid * m.nv, &p0, /*io*/ &h, /**/ rw, vw))
+                        if (find_better_intersection(tt, it, i_pp + mid * nv, &p0, /*io*/ &h, /**/ rw, vw))
                             icol = tid;
                     }
                 }

@@ -34,7 +34,7 @@ void bounce_hst(const Force *ff, const Mesh m, const Particle *i_pp, const int *
     
     if (totnt && n) {
         memset(t->mm_hst, 0, totnt * sizeof(Momentum));
-        sub::hst::bounce(ff, m, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, t->mm_hst);
+        sub::hst::bounce(ff, m.tt, m.nt, m.nv, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, t->mm_hst);
     }
     
     sub::dbg::report_hst();
