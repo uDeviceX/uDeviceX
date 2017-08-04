@@ -33,13 +33,13 @@ void bounce_solid(int it) {
 
     cH2D(s::t.ss, s::t.ss_hst, nsbb);
 
-    tcells::build_dev(s::q.m_dev, s::t.i_pp, nsbb, /**/ s::t.tcs_dev, s::t.tcc_dev, s::t.tci_dev, /*w*/ &s::ws);
+    tcells::build_dev(s::q.m_dev, s::t.i_pp, nsbb, /**/ &bb::qtc, /*w*/ &s::ws);
 
-    mbounce::bounce_dev(o::ff, s::q.m_dev, s::t.i_pp, s::t.tcs_dev, s::t.tcc_dev, s::t.tci_dev, o::q.n, nsbb*s::q.m_dev.nt, /**/ o::q.pp, &bb::tm);
+    mbounce::bounce_dev(o::ff, s::q.m_dev, s::t.i_pp, bb::qtc.ss_dev, bb::qtc.cc_dev, bb::qtc.ii_dev, o::q.n, nsbb*s::q.m_dev.nt, /**/ o::q.pp, &bb::tm);
     mbounce::collect_rig_dev(s::q.m_dev.nt, nsbb, &bb::tm, /**/ s::t.ss);
 
     if (it % rescue_freq == 0)
-    mrescue::rescue_dev(s::q.m_dev, s::t.i_pp, nsbb, o::q.n, s::t.tcs_dev, s::t.tcc_dev, s::t.tci_dev, /**/ o::q.pp);
+    mrescue::rescue_dev(s::q.m_dev, s::t.i_pp, nsbb, o::q.n, bb::qtc.ss_dev, bb::qtc.cc_dev, bb::qtc.ii_dev, /**/ o::q.pp);
 
     // send back fo, to
 
