@@ -1,5 +1,5 @@
 namespace fsi {
-void bind_solvent(SolventWrap wrap) {*wsolvent = wrap;}
+void bind(SolventWrap wrap) {*wsolvent = wrap;}
 void ini() {
     local_trunk = new rnd::KISS;
     wsolvent    = new SolventWrap;
