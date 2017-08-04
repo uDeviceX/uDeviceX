@@ -1,3 +1,6 @@
+namespace mcomm {
+namespace sub {
+
 void ini_tcom(MPI_Comm cart, /**/ MPI_Comm *newcart, int rnk_ne[27], int ank_ne[27]) {
     int crds[3];
 
@@ -14,3 +17,6 @@ void ini_tcom(MPI_Comm cart, /**/ MPI_Comm *newcart, int rnk_ne[27], int ank_ne[
     }
     MC(l::m::Comm_dup(cart, /**/ newcart));
 }
+
+} // sub
+} // mcomm
