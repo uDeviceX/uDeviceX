@@ -22,7 +22,7 @@ static void post(std::vector<ParticlesWrap> w, int nw) {
     if (cnt == 0) rex::recvC(tc.cart, tc.ranks, tr.tags, tt);
     else          rex::s::waitC();
 
-    rex::post_count(ti);
+    rex::copy_count(ti);
     packingfailed = rex::post_check();
     if (packingfailed) {
         rex::local_resize();
@@ -38,6 +38,9 @@ static void post(std::vector<ParticlesWrap> w, int nw) {
 
     if (cnt == 0) rex::recvP(tc.cart, tc.ranks, tr.tags, tt);
     else          rex::s::waitP();
+    rex::copy_pack(ti);
+    dSync();
+    rex::sendC(tc.cart, tc.ranks, tt);
     rex::sendP(tc.cart, tc.ranks, tt, ti);
 }
 
@@ -56,8 +59,9 @@ static void rex0(std::vector<ParticlesWrap> w, int nw) {
     if (cnt) rex::s::waitA();
     rex::halo(); /* fsi::halo(); */
     rex::recvP(tc.cart, tc.ranks, tr.tags, tt);
+    dSync();
     rex::sendF(tc.cart, tc.ranks, tt);
-    rex::recv_copy_bags();
+    rex::copy_bags();
     rex::r::waitA();
     rex::unpack(w, tp);
 }
