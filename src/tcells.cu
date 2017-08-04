@@ -125,7 +125,8 @@ static __device__ void loadr(const Particle *pp, int i, /**/ float r[3]) {
 
 __global__ void countt(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, /**/ int *counts) {
     const int thid = threadIdx.x + blockIdx.x * blockDim.x;
-
+    float A[3], B[3], C[3], bbox[6];
+    
     if (thid >= nt * ns) return;
         
     const int tid = thid % nt;
@@ -136,13 +137,12 @@ __global__ void countt(const int nt, const int *tt, const int nv, const Particle
     const int t3 = tt[3*tid + 2];
 
     const int base = nv * sid;
-        
-#define loadr(i) {pp[base + i].r[X], pp[base + i].r[Y], pp[base + i].r[Z]}       
-    const float A[3] = loadr(t1);
-    const float B[3] = loadr(t2);
-    const float C[3] = loadr(t3);
-#undef loadr
-    float bbox[6]; tbbox(A, B, C, /**/ bbox);
+
+    loadr(pp, base + t1, /**/ A);
+    loadr(pp, base + t2, /**/ B);
+    loadr(pp, base + t3, /**/ C);
+
+    tbbox(A, B, C, /**/ bbox);
 
     const int startx = max(int (bbox[2*X + 0] + XS/2), 0);
     const int starty = max(int (bbox[2*Y + 0] + YS/2), 0);
@@ -162,7 +162,8 @@ __global__ void countt(const int nt, const int *tt, const int nv, const Particle
 
 __global__ void fill_ids(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, const int *starts, /**/ int *counts, int *ids) {
     const int thid = threadIdx.x + blockIdx.x * blockDim.x;
-
+    float A[3], B[3], C[3], bbox[6];
+    
     if (thid >= nt * ns) return;
         
     const int tid = thid % nt;
@@ -174,12 +175,11 @@ __global__ void fill_ids(const int nt, const int *tt, const int nv, const Partic
 
     const int base = nv * sid;
         
-#define loadr(i) {pp[base + i].r[X], pp[base + i].r[Y], pp[base + i].r[Z]}       
-    const float A[3] = loadr(t1);
-    const float B[3] = loadr(t2);
-    const float C[3] = loadr(t3);
-#undef loadr
-    float bbox[6]; tbbox(A, B, C, /**/ bbox);
+    loadr(pp, base + t1, /**/ A);
+    loadr(pp, base + t2, /**/ B);
+    loadr(pp, base + t3, /**/ C);
+
+    tbbox(A, B, C, /**/ bbox);
 
     const int startx = max(int (bbox[2*X + 0] + XS/2), 0);
     const int starty = max(int (bbox[2*Y + 0] + YS/2), 0);
