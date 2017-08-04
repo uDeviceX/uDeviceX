@@ -9,6 +9,10 @@ struct TicketCom { /* communication ticket */
     bool first;
 };
 
+struct TicketM { /* map ticket : who goes where? */
+    std::vector<int> travellers[27];
+};
+
 struct TicketS { /* send data */
     Particle *pp_hst[27]; /* particles on host */
     int counts[27];       /* number of meshes  */
