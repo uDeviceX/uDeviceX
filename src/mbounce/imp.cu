@@ -12,6 +12,7 @@
 #include "mbounce/roots.h"
 #include "mbounce/gen.h"
 #include "mbounce/gen.intersect.h"
+#include "mbounce/gen.tri.h"
 #include "mbounce/hst.h"
 #include "mbounce/dev.h"
 
