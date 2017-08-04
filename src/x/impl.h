@@ -65,7 +65,7 @@ static void rex0(std::vector<ParticlesWrap> w, int nw) {
     rex::sendF(tc.cart, tc.ranks, tt);
     rex::copy_bags();
     rex::r::waitA();
-    rex::unpack(w, tp);
+    rex::unpack(w, nw, tp);
 }
 
 void rex(std::vector<ParticlesWrap> w) {
