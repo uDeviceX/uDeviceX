@@ -69,6 +69,10 @@
 #define rbcs (false)
 #endif
 
+#ifndef rbounce_back
+#define rbounce_back (false)
+#endif
+
 /* maximum allowed degree of vertex in triangulated mesh */
 #define RBCmd 7
 
