@@ -155,6 +155,7 @@ static _DH_ void rescue_1p(const Particle *vv, const int *tt, const int nt, cons
 #if DEVICE_FUNC
         const int tid = curand(&crstate) % nt;
 #else
+        srand(seed);
         const int tid = rand() % nt;
 #endif
 
