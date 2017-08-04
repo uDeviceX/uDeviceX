@@ -79,7 +79,7 @@ void collect_rig_mom(const Momentum *mm, int ns, int nt, /**/ Solid *ss) {
     }
 }
 
-void collect_rbc_mom(const Momentum *mm, int nc, int nt, const int4 *tt, const Particle *pp, /**/ Force *ff) {
+void collect_rbc_mom(const Momentum *mm, int nc, int nt, int nv, const int4 *tt, const Particle *pp, /**/ Force *ff) {
     int i = 0, ic, it, off;
     int4 t;
     Particle pa, pb, pc;
@@ -93,7 +93,7 @@ void collect_rbc_mom(const Momentum *mm, int nc, int nt, const int4 *tt, const P
     
             if (nonzero(&m)) {
                 t = tt[it];
-                off = ic * nt;
+                off = ic * nv;
                 
                 pa = pp[off + t.x];
                 pb = pp[off + t.y];
