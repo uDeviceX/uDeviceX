@@ -15,7 +15,21 @@ enum {X, Y, Z};
 
 template <typename T> _HD_ T min3(T a, T b, T c) {return min(a, min(b, c));}
 template <typename T> _HD_ T max3(T a, T b, T c) {return max(a, max(b, c));}
-    
+
+static __host__ __device__ void loadr(const Particle *pp, int i, /**/ float r[3]) {
+    Particle p = pp[i];
+    r[X] = p.r[X];
+    r[Y] = p.r[Y];
+    r[Z] = p.r[Z];
+}
+
+static __host__ __device__ void loadt(const int *tt, int i, /**/ int t[3]) {
+    t[0] = tt[3*i + 0];
+    t[1] = tt[3*i + 1];
+    t[2] = tt[3*i + 2];
+}
+
+
 static _HD_ void tbbox(const float *A, const float *B, const float *C, float *bb) {
     bb[2*X + 0] = min3(A[X], B[X], C[X]) - BBOX_MARGIN;
     bb[2*X + 1] = max3(A[X], B[X], C[X]) + BBOX_MARGIN;
@@ -27,21 +41,20 @@ static _HD_ void tbbox(const float *A, const float *B, const float *C, float *bb
     
 static void countt(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, /**/ int *counts) {
     memset(counts, 0, NCELLS * sizeof(int));
+    float A[3], B[3], C[3], bbox[6];
+    int t[3];
         
     for (int is = 0; is < ns; ++is)
     for (int it = 0; it < nt; ++it) {
-        const int t1 = tt[3*it + 0];
-        const int t2 = tt[3*it + 1];
-        const int t3 = tt[3*it + 2];
+        loadt(tt, it, /**/ t);
 
         const int base = nv * is;
-        
-#define loadr(i) {pp[base + i].r[X], pp[base + i].r[Y], pp[base + i].r[Z]}       
-        const float A[3] = loadr(t1);
-        const float B[3] = loadr(t2);
-        const float C[3] = loadr(t3);
-#undef loadr
-        float bbox[6]; tbbox(A, B, C, /**/ bbox);
+
+        loadr(pp, base + t[0], /**/ A);
+        loadr(pp, base + t[1], /**/ B);
+        loadr(pp, base + t[2], /**/ C);
+            
+        tbbox(A, B, C, /**/ bbox);
 
         const int startx = max(int (bbox[2*X + 0] + XS/2), 0);
         const int starty = max(int (bbox[2*Y + 0] + YS/2), 0);
@@ -62,23 +75,24 @@ static void countt(const int nt, const int *tt, const int nv, const Particle *pp
 
 static void fill_ids(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, const int *starts, /**/ int *counts, int *ids) {
     memset(counts, 0, NCELLS * sizeof(int));
+    float A[3], B[3], C[3], bbox[6];
+    int t[3];
+
+    tbbox(A, B, C, /**/ bbox);
         
     for (int is = 0; is < ns; ++is)
     for (int it = 0; it < nt; ++it) {
         const int id = is * nt + it;
-            
-        const int t1 = tt[3*it + 0];
-        const int t2 = tt[3*it + 1];
-        const int t3 = tt[3*it + 2];
-            
+
+        loadt(tt, it, /**/ t);
+
         const int base = nv * is;
-        
-#define loadr(i) {pp[base + i].r[X], pp[base + i].r[Y], pp[base + i].r[Z]}       
-        const float A[3] = loadr(t1);
-        const float B[3] = loadr(t2);
-        const float C[3] = loadr(t3);
-#undef loadr
-        float bbox[6]; tbbox(A, B, C, /**/ bbox);
+
+        loadr(pp, base + t[0], /**/ A);
+        loadr(pp, base + t[1], /**/ B);
+        loadr(pp, base + t[2], /**/ C);
+            
+        tbbox(A, B, C, /**/ bbox);
 
         const int startx = max(int (bbox[2*X + 0] + XS/2), 0);
         const int starty = max(int (bbox[2*Y + 0] + YS/2), 0);
@@ -116,19 +130,6 @@ void build_tcells_hst(const Mesh m, const Particle *i_pp, const int ns, /**/ int
 
 namespace tckernels
 {
-static __device__ void loadr(const Particle *pp, int i, /**/ float r[3]) {
-    Particle p = pp[i];
-    r[X] = p.r[X];
-    r[Y] = p.r[Y];
-    r[Z] = p.r[Z];
-}
-
-static __device__ void loadt(const int *tt, int i, /**/ int t[3]) {
-    t[0] = tt[3*i + 0];
-    t[1] = tt[3*i + 1];
-    t[2] = tt[3*i + 2];
-}
-
 __global__ void countt(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, /**/ int *counts) {
     const int thid = threadIdx.x + blockIdx.x * blockDim.x;
     float A[3], B[3], C[3], bbox[6];
