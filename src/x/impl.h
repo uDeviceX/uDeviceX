@@ -31,7 +31,7 @@ static void post(std::vector<ParticlesWrap> w, int nw) {
         rex::scanA( w, nw, tp);
         rex::copy_offset(nw, tp, ti);
         rex::scanB(nw, tp);
-        rex::pack(w, tp, ti);
+        rex::pack(w, nw, tp, ti);
         dSync();
     }
     rex::local_resize();
