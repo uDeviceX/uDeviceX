@@ -165,10 +165,9 @@ _DH_ bool find_better_intersection(const int *tt, const int it, const Particle *
     // load data
     int t1, t2, t3;
     Particle pA, pB, pC;
-    t1 = tt[3*it + 0];
-    t2 = tt[3*it + 1];
-    t3 = tt[3*it + 2];
 
+    loadt(tt, it, /**/ &t1, &t2, &t3);
+    
     pA = i_pp[t1];
     pB = i_pp[t2];
     pC = i_pp[t3];
