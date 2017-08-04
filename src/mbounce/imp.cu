@@ -4,7 +4,7 @@
 #include "common.h"
 #include "common.cuda.h"
 
-#define debug_output
+// #define debug_output
 
 #include "mbounce/imp.h"
 #include "mbounce/bbstates.h"
