@@ -14,10 +14,10 @@ void ini() {
         local[i]->update();
 
         CC(cudaMemcpyToSymbol(k_rex::g::capacities,
-                              &local[i]->scattered_indices->C, sizeof(int),
+                              &local[i]->indexes->C, sizeof(int),
                               sizeof(int) * i, H2D));
-        CC(cudaMemcpyToSymbol(k_rex::g::scattered_indices,
-                              &local[i]->scattered_indices->D, sizeof(int *),
+        CC(cudaMemcpyToSymbol(k_rex::g::indexes,
+                              &local[i]->indexes->D, sizeof(int *),
                               sizeof(int *) * i, H2D));
     }
 }
