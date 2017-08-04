@@ -47,7 +47,7 @@ void report_dev() {
 
 #else // debug_output
 
-__device__ __host__ void log_states(BBState s) {}
+__device__ __host__ void log_states(BBState) {}
 
 void ini_hst() {}
 void ini_dev() {}
