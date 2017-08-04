@@ -7,7 +7,6 @@ static __device__ int tex2map(int zplane, int n1, float x, float y, float z, /**
     bool zvalid;
     int count0, count1, count2;
     int cid0, cid1, cid2;
-    int NCELLS;    
     int cnt0, cnt1, cnt2;
     int org0, org1, org2;
     
@@ -17,10 +16,10 @@ static __device__ int tex2map(int zplane, int n1, float x, float y, float z, /**
         ZCELLS = ZS,
         XOFFSET = XCELLS / 2,
         YOFFSET = YCELLS / 2,
-        ZOFFSET = ZCELLS / 2
+        ZOFFSET = ZCELLS / 2,
+        NCELLS  = XS*YS*ZS
     };
     
-    NCELLS = XS * YS * ZS;
     xcenter = XOFFSET + (int)floorf(x);
     xstart = max(0, xcenter - 1);
     xcount = min(XCELLS, xcenter + 2) - xstart;

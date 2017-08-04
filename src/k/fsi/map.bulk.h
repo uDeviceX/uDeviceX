@@ -9,7 +9,8 @@ static __device__ int r2map(int zplane, int n, float x, float y, float z, /**/ M
         ZCELLS = ZS,
         XOFFSET = XCELLS / 2,
         YOFFSET = YCELLS / 2,
-        ZOFFSET = ZCELLS / 2
+        ZOFFSET = ZCELLS / 2,
+        NCELLS  = XS*YS*ZS
     };
 
     const int xcenter = XOFFSET + (int)floorf(x);
