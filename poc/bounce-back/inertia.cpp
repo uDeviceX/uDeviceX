@@ -47,11 +47,11 @@ void inverse(const float A[6], /**/ float I[6]) {
 
     /* inverse determinant */
     float idet = mx * A[XX] - my * A[XY] + mz * A[XZ];
-    idet = 1.f / idet;
-
+    idet = 1.f / idet;    
+    
     I[XX] =  idet * mx;
     I[XY] = -idet * my;
-    I[XZ] =  idet * mx;
+    I[XZ] =  idet * mz;
     I[YY] =  idet * (A[XX] * A[ZZ] - A[XZ] * A[XZ]);
     I[YZ] =  idet * (A[XY] * A[XZ] - A[XX] * A[YZ]);
     I[ZZ] =  idet * (A[XX] * A[YY] - A[XY] * A[XY]);
