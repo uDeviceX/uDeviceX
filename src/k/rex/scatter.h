@@ -14,16 +14,16 @@ static __device__ void xyz2fdir(float x, float y, float z, /**/ int fdir[]) {
     fdir[Z] = -1 + (int)(z >= -HZSIZE + 1) + (int)(z >= HZSIZE - 1);
 }
 
-static __device__ void reg_p(int pid, int dx, int dy, int dz, /**/ int *counts) {
+static __device__ void reg_p(int pid, int dx, int dy, int dz, int *offsets, /**/ int *counts) {
     /* register the particle */
     int fid;
     int i; /* particle in fragment coordinates */
     fid = dx + 3 * (dy + 3 * dz);
-    i = g::offsets[fid] + atomicAdd(counts + fid, 1);
+    i = offsets[fid] + atomicAdd(counts + fid, 1);
     if (i < g::sizes[fid]) g::indexes[fid][i] = pid;
 }
 
-static __device__ void scatter0(int pid, float x, float y, float z, /**/ int *counts) {
+static __device__ void scatter0(int pid, float x, float y, float z, int *offsets, /**/ int *counts) {
     enum {X, Y, Z};
     int d;
     int dx, dy, dz;
@@ -37,7 +37,7 @@ static __device__ void scatter0(int pid, float x, float y, float z, /**/ int *co
             dx = (fdir[X] * (d == X) + 2) % 3;
             dy = (fdir[Y] * (d == Y) + 2) % 3;
             dz = (fdir[Z] * (d == Z) + 2) % 3;
-            reg_p(pid, dx, dy, dz, /**/ counts);
+            reg_p(pid, dx, dy, dz, offsets, /**/ counts);
         }
     // edges
     for (d = 0; d < 3; ++d)
@@ -45,18 +45,18 @@ static __device__ void scatter0(int pid, float x, float y, float z, /**/ int *co
             dx = (fdir[X] * (d != X) + 2) % 3;
             dy = (fdir[Y] * (d != Y) + 2) % 3;
             dz = (fdir[Z] * (d != Z) + 2) % 3;
-            reg_p(pid, dx, dy, dz, /**/ counts);
+            reg_p(pid, dx, dy, dz, offsets, /**/ counts);
         }
     // corner
     if (fdir[X] && fdir[Y] && fdir[Z]) {
         dx = (fdir[X] + 2) % 3;
         dy = (fdir[Y] + 2) % 3;
         dz = (fdir[Z] + 2) % 3;
-        reg_p(pid, dx, dy, dz, /**/ counts);
+        reg_p(pid, dx, dy, dz, offsets, /**/ counts);
     }
 }
 
-__global__ void scatter(const float2 *pp, int n, /**/ int *counts) {
+__global__ void scatter(const float2 *pp, int *offsets, int n, /**/ int *counts) {
     int warp;
     float x, y, z;
     int ws;  /* warp start in global coordinates */
@@ -71,7 +71,7 @@ __global__ void scatter(const float2 *pp, int n, /**/ int *counts) {
     pp2xyz_col(pp, dwe, ws, /**/ &x, &y, &z);
     if (dw < dwe) {
         pid = ws + dw;
-        scatter0(pid, x, y, z, /**/ counts);
+        scatter0(pid, x, y, z, offsets, /**/ counts);
     }
 }
 }
