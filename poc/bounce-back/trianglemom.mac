@@ -24,13 +24,21 @@ z(u, v) := transf(u, v, zA, zB, zC);
 area: Jacobian;
 rho: 3 / area;
 
+/* moments */
+Mxx : Jacobian * integrate(integrate(rho * x(u,v) * x(u,v), v, 0, 1-u), u, 0, 1);
+Mxy : Jacobian * integrate(integrate(rho * x(u,v) * y(u,v), v, 0, 1-u), u, 0, 1);
+Mxz : Jacobian * integrate(integrate(rho * x(u,v) * z(u,v), v, 0, 1-u), u, 0, 1);
+Myy : Jacobian * integrate(integrate(rho * y(u,v) * y(u,v), v, 0, 1-u), u, 0, 1);
+Myz : Jacobian * integrate(integrate(rho * y(u,v) * z(u,v), v, 0, 1-u), u, 0, 1);
+Mzz : Jacobian * integrate(integrate(rho * z(u,v) * z(u,v), v, 0, 1-u), u, 0, 1);
+
 /* Inertia tensor of triangle */
-Ixx : Jacobian * integrate(integrate(rho * x(u,v) * x(u,v), v, 0, 1-u), u, 0, 1);
-Ixy : Jacobian * integrate(integrate(rho * x(u,v) * y(u,v), v, 0, 1-u), u, 0, 1);
-Ixz : Jacobian * integrate(integrate(rho * x(u,v) * z(u,v), v, 0, 1-u), u, 0, 1);
-Iyy : Jacobian * integrate(integrate(rho * y(u,v) * y(u,v), v, 0, 1-u), u, 0, 1);
-Iyz : Jacobian * integrate(integrate(rho * y(u,v) * z(u,v), v, 0, 1-u), u, 0, 1);
-Izz : Jacobian * integrate(integrate(rho * z(u,v) * z(u,v), v, 0, 1-u), u, 0, 1);
+Ixx :  Myy + Mzz;
+Ixy : -Mxy;
+Ixz : -Mxz;
+Iyy :  Mxx + Mzz;
+Iyz : -Myz;
+Izz :  Mxx + Myy;
 
 I: [Ixx, Ixy, Ixz, Iyy, Iyz, Izz];
 
