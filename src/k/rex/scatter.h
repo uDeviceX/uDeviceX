@@ -1,12 +1,12 @@
 namespace k_rex {
-__device__ void pp2xyz_col(const float2 *pp, int n, int i, /**/ float *x, float *y, float *z) {
+static __device__ void pp2xyz_col(const float2 *pp, int n, int i, /**/ float *x, float *y, float *z) {
     /* [col]collective (wrap) */
     Pa p;
     p = pp2p_col(pp, n, i);
     p2xyz(p, /**/ x, y, z);
 }
 
-__device__ void xyz2fdir(float x, float y, float z, /**/ int fdir[]) {
+static __device__ void xyz2fdir(float x, float y, float z, /**/ int fdir[]) {
     enum {X, Y, Z};
     enum { HXSIZE = XS / 2, HYSIZE = YS / 2, HZSIZE = ZS / 2 };
     fdir[X] = -1 + (int)(x >= -HXSIZE + 1) + (int)(x >= HXSIZE - 1);
@@ -14,7 +14,7 @@ __device__ void xyz2fdir(float x, float y, float z, /**/ int fdir[]) {
     fdir[Z] = -1 + (int)(z >= -HZSIZE + 1) + (int)(z >= HZSIZE - 1);
 }
 
-__device__ void reg_p(int pid, int dx, int dy, int dz, /**/ int *counts) {
+static __device__ void reg_p(int pid, int dx, int dy, int dz, /**/ int *counts) {
     /* register the particle */
     int fid;
     int i; /* particle in fragment coordinates */
@@ -23,7 +23,7 @@ __device__ void reg_p(int pid, int dx, int dy, int dz, /**/ int *counts) {
     if (i < g::capacities[fid]) g::scattered_indices[fid][i] = pid;
 }
 
-__device__ void scatter0(int pid, float x, float y, float z, /**/ int *counts) {
+static __device__ void scatter0(int pid, float x, float y, float z, /**/ int *counts) {
     enum {X, Y, Z};
     int d;
     int dx, dy, dz;
