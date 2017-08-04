@@ -11,9 +11,7 @@ void halo(ParticlesWrap halos[26]) {
         int recvpackcount[26], recvpackstarts_padded[27];
 
         for (int i = 0; i < 26; ++i) recvpackcount[i] = halos[i].n;
-
-        CC(cudaMemcpyToSymbolAsync(k_fsi::packcount, recvpackcount,
-                                   sizeof(recvpackcount), 0, H2D));
+        CC(cudaMemcpyToSymbolAsync(k_fsi::g::packcount, recvpackcount, sizeof(recvpackcount), 0, H2D));
 
         recvpackstarts_padded[0] = 0;
         for (int i = 0, s = 0; i < 26; ++i)
@@ -22,7 +20,7 @@ void halo(ParticlesWrap halos[26]) {
         nremote_padded = recvpackstarts_padded[26];
 
         CC(cudaMemcpyToSymbolAsync(
-                                   k_fsi::packstarts_padded, recvpackstarts_padded,
+                                   k_fsi::g::packstarts_padded, recvpackstarts_padded,
                                    sizeof(recvpackstarts_padded), 0, H2D));
     }
 
@@ -31,7 +29,7 @@ void halo(ParticlesWrap halos[26]) {
 
         for (int i = 0; i < 26; ++i) recvpackstates[i] = halos[i].p;
 
-        CC(cudaMemcpyToSymbolAsync(k_fsi::packstates, recvpackstates,
+        CC(cudaMemcpyToSymbolAsync(k_fsi::g::packstates, recvpackstates,
                                    sizeof(recvpackstates), 0,
                                    H2D));
     }
@@ -41,12 +39,12 @@ void halo(ParticlesWrap halos[26]) {
 
         for (int i = 0; i < 26; ++i) packresults[i] = halos[i].f;
 
-        CC(cudaMemcpyToSymbolAsync(k_fsi::packresults, packresults,
+        CC(cudaMemcpyToSymbolAsync(k_fsi::g::packresults, packresults,
                                    sizeof(packresults), 0, H2D));
     }
 
     if (nremote_padded)
-    k_fsi::halo<<<k_cnf(nremote_padded)>>>
-        (nremote_padded, wsolvent->n, local_trunk->get_float(), /**/ (float *)wsolvent->f);
+        k_fsi::halo<<<k_cnf(nremote_padded)>>>
+            (nremote_padded, wsolvent->n, local_trunk->get_float(), /**/ (float *)wsolvent->f);
 }
 }
