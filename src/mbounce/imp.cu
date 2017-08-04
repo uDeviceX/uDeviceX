@@ -4,7 +4,7 @@
 #include "common.h"
 #include "common.cuda.h"
 
-// #define debug_output
+#define debug_output
 
 #include "mbounce/imp.h"
 #include "mbounce/bbstates.h"
@@ -47,6 +47,18 @@ void bounce_dev(const Force *ff, const Mesh m, const Particle *i_pp, const int *
     if (totnt && n) {
         CC(cudaMemsetAsync(t->mm_dev, 0, totnt * sizeof(Momentum)));        
         sub::dev::bounce <<< k_cnf(n) >>> (ff, m.tt, m.nt, m.nv, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, t->mm_dev);
+    }
+    
+    sub::dbg::report_dev();
+}
+
+void bounce_rbc_dev(const Force *ff, const int4 *tt, int nt, int nv, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts,
+                    const int *tids, const int n, const int totnt, /**/ Particle *pp, TicketM *t) {
+    sub::dbg::ini_dev();
+    
+    if (totnt && n) {
+        CC(cudaMemsetAsync(t->mm_dev, 0, totnt * sizeof(Momentum)));        
+        sub::dev::bounce <<< k_cnf(n) >>> (ff, tt, nt, nv, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, t->mm_dev);
     }
     
     sub::dbg::report_dev();

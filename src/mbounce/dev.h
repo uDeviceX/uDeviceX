@@ -2,7 +2,8 @@ namespace mbounce {
 namespace sub {
 namespace dev {
 
-__global__ void bounce(const Force *ff, const int *tt, int nt, int nv, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
+template <typename Tri>
+__global__ void bounce(const Force *ff, const Tri *tt, int nt, int nv, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
                        const int n, /**/ Particle *pp, Momentum *mm) {
     const int i = threadIdx.x + blockDim.x * blockIdx.x;
 
