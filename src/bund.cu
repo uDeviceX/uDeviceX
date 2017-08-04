@@ -168,7 +168,7 @@ namespace dev {
 #include "mesh/bbox.h"
 
 #include "solid.h"
-#include "tcells.h"
+#include "tcells/int.h"
 
 #include "mbounce/imp.h"
 #include "mrescue.h"
