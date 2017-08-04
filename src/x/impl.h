@@ -31,7 +31,7 @@ static void post(std::vector<ParticlesWrap> w, int nw) {
         rex::scanA( w, nw, tp);
         rex::copy_offset(nw, tp, ti);
         rex::scanB(nw, tp);
-        rex::pack(w, tp, ti);
+        rex::pack(w, nw, tp, ti);
         dSync();
     }
     rex::local_resize();
@@ -51,7 +51,7 @@ static void rex0(std::vector<ParticlesWrap> w, int nw) {
     rex::scanA(w, nw, tp);
     rex::copy_offset(nw, tp, ti);
     rex::scanB(nw, tp);
-    rex::pack(w, tp, ti);
+    rex::pack(w, nw, tp, ti);
     post(w, nw);
     rex::r::waitC();
     rex::r::waitP();
@@ -65,7 +65,7 @@ static void rex0(std::vector<ParticlesWrap> w, int nw) {
     rex::sendF(tc.cart, tc.ranks, tt);
     rex::copy_bags();
     rex::r::waitA();
-    rex::unpack(w, tp);
+    rex::unpack(w, nw, tp);
 }
 
 void rex(std::vector<ParticlesWrap> w) {

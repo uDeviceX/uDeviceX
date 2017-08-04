@@ -13,7 +13,7 @@ void ini() {
         local[i]->resize(estimate);
         local[i]->update();
 
-        CC(cudaMemcpyToSymbol(k_rex::g::capacities,
+        CC(cudaMemcpyToSymbol(k_rex::g::sizes,
                               &local[i]->indexes->C, sizeof(int),
                               sizeof(int) * i, H2D));
         CC(cudaMemcpyToSymbol(k_rex::g::indexes,
