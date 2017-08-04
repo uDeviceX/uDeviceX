@@ -77,6 +77,7 @@ Particle pp_hst[3*MAX_PART_NUM]; /* particles on host */
 namespace mc /* mesh communication */
 {
 mcomm::TicketCom tc;
+mcomm::TicketM   tm;
 mcomm::TicketS   ts;
 mcomm::TicketR   tr;
 }
