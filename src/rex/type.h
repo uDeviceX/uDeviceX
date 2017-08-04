@@ -32,21 +32,21 @@ class LocalHalo {
     TimeSeriesWindow history;
 public:
     LocalHalo() {
-        scattered_indices = new DeviceBuffer<int>;
+        indexes = new DeviceBuffer<int>;
         result            = new PinnedHostBuffer<Force>;
     }
     ~LocalHalo() {
-        delete scattered_indices;
+        delete indexes;
         delete result;
     }
-    DeviceBuffer<int>* scattered_indices;
+    DeviceBuffer<int>* indexes;
     PinnedHostBuffer<Force>* result;
     void resize(int n) {
-        scattered_indices->resize(n);
+        indexes->resize(n);
         result->resize(n);
     }
     void update() { history.update(result->S);}
     int expected() const { return (int)ceil(history.max() * 1.1);}
-    int capacity() const { return scattered_indices->C;}
+    int capacity() const { return indexes->C;}
 };
 }

@@ -1,7 +1,7 @@
 namespace k_rex {
 __device__ void
 pack0(const float2 *pp, int fid,
-      int count, int offset, int tstart, int *scattered_indices,
+      int count, int offset, int tstart, int *indexes,
       int wsf, int dw, /**/ float2 *buf)
 {
     int dwe;  /* wrap or buffer end relative to `ws' */
@@ -11,7 +11,7 @@ pack0(const float2 *pp, int fid,
     dwe = min(warpSize, count - wsf);
     if (dw < dwe) {
         entry = offset + wsf + dw;
-        pid = __ldg(scattered_indices + entry);
+        pid = __ldg(indexes + entry);
         p = pp2p(pp, pid);
         shift(fid, &p); /* shift coordinates */
     }
@@ -26,7 +26,7 @@ __device__ void pack1(const float2 *pp, int ws, int dw, /**/ float2 *buf) {
     wsf = ws - g::starts[fid];
 
     pack0(pp, fid,
-          g::counts[fid], g::offsets[fid], g::tstarts[fid], g::scattered_indices[fid], /**/
+          g::counts[fid], g::offsets[fid], g::tstarts[fid], g::indexes[fid], /**/
           wsf, dw, /**/ buf);
 }
 
