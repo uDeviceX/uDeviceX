@@ -11,10 +11,8 @@ mesh bounce hiwi
 
 ### mesh:
 
-* faces indices and Particles for the mesh
+* faces indices and vertices (Particles) for the mesh
 
-### triangle cell list (parallel to mesh, i.e. no need to reorder the faces)
+### triangle cell list
 
-* cell starts
-* cell counts
-* triangle indices
+see [tcells.md](tcells.md)
