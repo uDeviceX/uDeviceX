@@ -20,7 +20,7 @@ static __device__ void reg_p(int pid, int dx, int dy, int dz, /**/ int *counts) 
     int i; /* particle in fragment coordinates */
     fid = dx + 3 * (dy + 3 * dz);
     i = g::offsets[fid] + atomicAdd(counts + fid, 1);
-    if (i < g::capacities[fid]) g::indexes[fid][i] = pid;
+    if (i < g::sizes[fid]) g::indexes[fid][i] = pid;
 }
 
 static __device__ void scatter0(int pid, float x, float y, float z, /**/ int *counts) {
