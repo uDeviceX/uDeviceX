@@ -13,7 +13,7 @@ void copy_state() {
         CC(cudaMemcpyAsync(remote[i]->dstate.D, remote[i]->hstate.D, sizeof(Particle) * remote[i]->hstate.S, H2D));
 }
 
-void copy_bags() {
+void copy_ff() {
     int i;
     float *ff[26];
     for (i = 0; i < 26; ++i) ff[i] = (float*)local[i]->ff->DP;
