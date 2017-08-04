@@ -155,12 +155,18 @@ static _DH_ void revert_r(Particle *p) {
     p->r[Z] -= dt * p->v[Z];
 }
 
+static _DH_ void loadt(const int *tt, int it, /**/ int *t1, int *t2, int *t3) {
+    *t1 = tt[3*it + 0];
+    *t2 = tt[3*it + 1];
+    *t3 = tt[3*it + 2];    
+}
 
 _DH_ bool find_better_intersection(const int *tt, const int it, const Particle *i_pp, const Particle *p0, /* io */ float *h, /**/ float *rw, float *vw) {
     // load data
-    const int t1 = tt[3*it + 0];
-    const int t2 = tt[3*it + 1];
-    const int t3 = tt[3*it + 2];
+    int t1, t2, t3;
+    t1 = tt[3*it + 0];
+    t2 = tt[3*it + 1];
+    t3 = tt[3*it + 2];
 
     Particle pA = i_pp[t1];
     Particle pB = i_pp[t2];
