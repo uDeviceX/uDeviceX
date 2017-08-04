@@ -1,5 +1,6 @@
 namespace k_rex {
 __device__ void pp2xyz_col(const float2 *pp, int n, int i, /**/ float *x, float *y, float *z) {
+    /* [col]collective (wrap) */
     Pa p;
     p = pp2p_col(pp, n, i);
     p2xyz(p, /**/ x, y, z);
