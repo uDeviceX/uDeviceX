@@ -36,19 +36,9 @@
 #include "k/common.h"
 
 #include "clist/int.h"
-#include "minmax.h"
 
-namespace mcomm {
-namespace sub {
-namespace dev {
-#include "mcomm/dev.h"
-}
-#include "mcomm/ini.h"
-#include "mcomm/imp.h"
-#include "mcomm/fin.h"
-}
+#include "mcomm/type.h"
 #include "mcomm/int.h"
-}
 
 namespace rbc {
 namespace sub {
