@@ -2,7 +2,8 @@ namespace mbounce {
 namespace sub {
 namespace hst {
 
-void bounce(const Force *ff, const int *tt, int nt, int nv, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
+template <typename Tri>
+void bounce(const Force *ff, const Tri *tt, int nt, int nv, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
             const int n, /**/ Particle *pp, Momentum *mm) {
 
     for (int i = 0; i < n; ++i) {

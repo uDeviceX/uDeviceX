@@ -52,6 +52,18 @@ void bounce_dev(const Force *ff, const Mesh m, const Particle *i_pp, const int *
     sub::dbg::report_dev();
 }
 
+void bounce_rbc_hst(const Force *ff, const int4 *tt, int nt, int nv, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts,
+                    const int *tids, const int n, const int totnt, /**/ Particle *pp, TicketM *t) {
+    sub::dbg::ini_hst();
+    
+    if (totnt && n) {
+        memset(t->mm_hst, 0, totnt * sizeof(Momentum));
+        sub::hst::bounce(ff, tt, nt, nv, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, t->mm_hst);
+    }
+    
+    sub::dbg::report_hst();
+}
+
 void bounce_rbc_dev(const Force *ff, const int4 *tt, int nt, int nv, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts,
                     const int *tids, const int n, const int totnt, /**/ Particle *pp, TicketM *t) {
     sub::dbg::ini_dev();
