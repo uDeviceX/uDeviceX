@@ -33,7 +33,7 @@ class LocalHalo {
 public:
     LocalHalo() {
         indexes = new DeviceBuffer<int>;
-        ff            = new PinnedHostBuffer<Force>;
+        ff      = new PinnedHostBuffer<Force>;
     }
     ~LocalHalo() {
         delete indexes;
