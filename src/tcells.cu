@@ -116,6 +116,13 @@ void build_tcells_hst(const Mesh m, const Particle *i_pp, const int ns, /**/ int
 
 namespace tckernels
 {
+static __device__ void loadr(const Particle *pp, int i, /**/ float r[3]) {
+    Particle p = pp[i];
+    r[X] = p.r[X];
+    r[Y] = p.r[Y];
+    r[Z] = p.r[Z];
+}
+
 __global__ void countt(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, /**/ int *counts) {
     const int thid = threadIdx.x + blockIdx.x * blockDim.x;
 
