@@ -1,14 +1,22 @@
 namespace rex {
 void scanA(std::vector<ParticlesWrap> w, int nw, x::TicketPack tp) {
-    int i;
+    int i, n;
+    int *o0, *o1; /* offsets */
+    int *c;       /* counts */
+    int *s;       /* starts */
     k_rex::ini<<<1, 1>>>();
     for (i = 0; i < nw; ++i) {
         ParticlesWrap it = w[i];
-        if (it.n) {
-            CC(cudaMemcpyToSymbolAsync(k_rex::g::offsets, tp.offsets + 26 * i, sizeof(int) * 26, 0, D2D));
-            k_rex::scatter<<<k_cnf(it.n)>>>((float2*)it.p, it.n, /**/ tp.counts + i * 26);
+        o0 = tp.offsets + 26 *  i;
+        o1 = tp.offsets + 26 * (i + 1);
+        c  = tp.counts  + 26 *  i;
+        s  = tp.starts  + 27 *  i;
+        n = w[i].n;
+        if (n) {
+            CC(cudaMemcpyToSymbolAsync(k_rex::g::offsets, o0, sizeof(int) * 26, 0, D2D));
+            k_rex::scatter<<<k_cnf(n)>>>((float2*)it.p, n, /**/ c);
         }
-        k_rex::scanA<<<1, 32>>>(tp.counts + i * 26, tp.offsets + 26 * i, /**/ tp.offsets + 26 * (i + 1), tp.starts + i * 27);
+        k_rex::scanA<<<1, 32>>>(c, o0, /**/ o1, s);
     }
 }
 
