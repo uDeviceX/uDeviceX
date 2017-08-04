@@ -79,6 +79,38 @@ void collect_rig_mom(const Momentum *mm, int ns, int nt, /**/ Solid *ss) {
     }
 }
 
+void collect_rbc_mom(const Momentum *mm, int nc, int nt, const int4 *tt, const Particle *pp, /**/ Force *ff) {
+    int i = 0, ic, it, off;
+    int4 t;
+    Particle pa, pb, pc;
+    Momentum m;
+    float fa[3], fb[3], fc[3];
+    
+    for (ic = 0; ic < nc; ++ic) {
+        for (it = 0; it < nt; ++it, ++i) {
+            
+            m = mm[i];
+    
+            if (nonzero(&m)) {
+                t = tt[it];
+                off = ic * nt;
+                
+                pa = pp[off + t.x];
+                pb = pp[off + t.y];
+                pc = pp[off + t.z];
+
+                M2f(m, pa.r, pb.r, pc.r, /**/ fa, fb, fc);
+
+                for (int c = 0; c < 3; ++c) {
+                    ff[off + t.x].f[c] += fa[c];
+                    ff[off + t.y].f[c] += fb[c];
+                    ff[off + t.z].f[c] += fc[c];
+                }
+            }
+        }
+    }
+}
+
 } // hst
 } // sub
 } // mbounce
