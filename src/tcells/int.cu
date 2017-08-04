@@ -4,7 +4,9 @@
 #include "inc/type.h"
 #include "common.cuda.h"
 #include "scan/int.h"
-#include "tcells.h"
+#include "tcells/int.h"
+
+namespace tcells {
 
 static const int NCELLS = XS * YS * ZS;
 
@@ -219,3 +221,5 @@ void build_tcells_dev(const Mesh m, const Particle *i_pp, const int ns, /**/ int
     
     tckernels::fill_ids <<< k_cnf(ns*m.nt) >>> (m.nt, m.tt, m.nv, i_pp, ns, starts, /**/ counts, ids);
 }
+
+} // tcells
