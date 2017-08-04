@@ -4,7 +4,7 @@ struct Map { /* helps to find remote particle */
     uint cnt0, cnt1, cnt2;
 };
 
-/* true if `i' bigger than the number of remote particles */
+/* true if `i' is bigger than the number of remote particles */
 static __device__ int endp(const Map m, uint i) { return i >= m.cnt2; }
 
 static __device__ uint m2id(const Map m, uint i) {
