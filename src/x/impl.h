@@ -51,7 +51,7 @@ static void rex0(std::vector<ParticlesWrap> w, int nw) {
     rex::scanA(w, nw, tp);
     rex::copy_offset(nw, tp, ti);
     rex::scanB(nw, tp);
-    rex::pack(w, tp, ti);
+    rex::pack(w, nw, tp, ti);
     post(w, nw);
     rex::r::waitC();
     rex::r::waitP();
