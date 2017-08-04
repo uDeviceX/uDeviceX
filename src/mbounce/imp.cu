@@ -46,7 +46,7 @@ void bounce_dev(const Force *ff, const Mesh m, const Particle *i_pp, const int *
     
     if (totnt && n) {
         CC(cudaMemsetAsync(t->mm_dev, 0, totnt * sizeof(Momentum)));        
-        sub::dev::bounce <<< k_cnf(n) >>> (ff, m, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, t->mm_dev);
+        sub::dev::bounce <<< k_cnf(n) >>> (ff, m.tt, m.nt, m.nv, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, t->mm_dev);
     }
     
     sub::dbg::report_dev();
