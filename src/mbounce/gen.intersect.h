@@ -161,6 +161,13 @@ static _DH_ void loadt(const int *tt, int it, /**/ int *t1, int *t2, int *t3) {
     *t3 = tt[3*it + 2];    
 }
 
+static _DH_ void loadt(const int4 *tt, int it, /**/ int *t1, int *t2, int *t3) {
+    int4 t = tt[it];
+    *t1 = t.x;
+    *t2 = t.y;
+    *t3 = t.z;
+}
+
 _DH_ bool find_better_intersection(const int *tt, const int it, const Particle *i_pp, const Particle *p0, /* io */ float *h, /**/ float *rw, float *vw) {
     // load data
     int t1, t2, t3;
