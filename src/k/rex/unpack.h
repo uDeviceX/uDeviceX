@@ -6,7 +6,7 @@ __device__ void unpack0(int fid, int pif, int dim, /**/ float *ff) {
     int entry, dpid;
     float f; /* force */
     entry = g::offsets[fid] + pif;
-    f = __ldg(g::recvbags[fid] + dim + FD * entry);
+    f = __ldg(g::ff[fid] + dim + FD * entry);
     dpid = __ldg(g::indexes[fid] + entry);
     atomicAdd(ff + FD * dpid + dim, f);
 }

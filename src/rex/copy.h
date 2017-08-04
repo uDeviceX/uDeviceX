@@ -14,9 +14,9 @@ void copy_state() {
 }
 
 void copy_bags() {
-    float *recvbags[26];
-    for (int i = 0; i < 26; ++i) recvbags[i] = (float *)local[i]->result->DP;
-    CC(cudaMemcpyToSymbolAsync(k_rex::g::recvbags, recvbags, sizeof(recvbags), 0, H2D));
+    float *ff[26];
+    for (int i = 0; i < 26; ++i) ff[i] = (float *)local[i]->result->DP;
+    CC(cudaMemcpyToSymbolAsync(k_rex::g::ff, ff, sizeof(ff), 0, H2D));
 }
 
 void copy_count(x::TicketPinned ti) {
