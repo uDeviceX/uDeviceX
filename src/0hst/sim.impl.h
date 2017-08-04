@@ -31,16 +31,16 @@ void bounce_solid(int it) {
     const int nsbb = bbhalo::post(s::q.m_hst.nv);
     bbhalo::unpack <HST> (s::q.m_hst.nv, /**/ s::t.ss_hst, s::t.i_pp_hst);
 
-    tcells::build_hst(s::q.m_hst, s::t.i_pp_hst, nsbb, /**/ s::t.tcs_hst, s::t.tcc_hst, s::t.tci_hst);
+    tcells::build_hst(s::q.m_hst, s::t.i_pp_hst, nsbb, /**/ &bb::qtc);
 
     cD2H(o::q.pp_hst, o::q.pp, o::q.n);
     cD2H(o::ff_hst, o::ff, o::q.n);
 
-    mbounce::bounce_hst(o::ff_hst, s::q.m_hst, s::t.i_pp_hst, s::t.tcs_hst, s::t.tcc_hst, s::t.tci_hst, o::q.n, nsbb*s::q.m_dev.nt, /**/ o::q.pp_hst, &bb::tm);
+    mbounce::bounce_hst(o::ff_hst, s::q.m_hst, s::t.i_pp_hst, bb::qtc.ss_hst, bb::qtc.cc_hst, bb::qtc.ii_hst, o::q.n, nsbb*s::q.m_dev.nt, /**/ o::q.pp_hst, &bb::tm);
     mbounce::collect_rig_dev(s::q.m_hst.nt, nsbb, &bb::tm, /**/ s::t.ss_hst);
 
     if (it % rescue_freq == 0)
-        mrescue::rescue_hst(s::q.m_hst, s::t.i_pp_hst, nsbb, o::q.n, s::t.tcs_hst, s::t.tcc_hst, s::t.tci_hst, /**/ o::q.pp_hst);
+        mrescue::rescue_hst(s::q.m_hst, s::t.i_pp_hst, nsbb, o::q.n, bb::qtc.ss_hst, bb::qtc.cc_hst, bb::qtc.ii_hst, /**/ o::q.pp_hst);
 
     cH2D(o::q.pp, o::q.pp_hst, o::q.n);
 
