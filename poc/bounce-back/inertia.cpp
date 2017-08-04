@@ -57,6 +57,8 @@ void inverse(const float A[6], /**/ float I[6]) {
     I[ZZ] =  idet * (A[XX] * A[YY] - A[XY] * A[XY]);
 }
 
+bool err(float a, float b) {return (a-b)*(a-b) < 1e-6f;}
+
 void verify(const float A[6], const float I[6]) {
     const float xx = A[XX] * I[XX] + A[XY] * I[XY] + A[XZ] * I[XZ];
     const float yy = A[XY] * I[XY] + A[YY] * I[YY] + A[YZ] * I[YZ];
@@ -65,13 +67,19 @@ void verify(const float A[6], const float I[6]) {
     const float xy = A[XX] * I[XY] + A[XY] * I[YY] + A[XZ] * I[YZ];
     const float xz = A[XX] * I[XZ] + A[XY] * I[YZ] + A[XZ] * I[ZZ];
     const float yz = A[XY] * I[XZ] + A[YY] * I[YZ] + A[YZ] * I[ZZ];
-    
-    printf("%6e %6e %6e\n"
-           "%6e %6e %6e\n"
-           "%6e %6e %6e\n\n",
-           xx, xy, xz,
-           xy, yy, yz,
-           xz, yz, zz);     
+
+    if (err(xx, 1.f) && err(yy, 1.f) && err(zz, 1.f) &&
+        err(xy, 0.f) && err(xz, 0.f) && err(yz, 0.f) ) {
+        printf("Valid inverse\n");
+    } else {
+        printf("Invalid inverse: product gave\n");
+        printf("%6e %6e %6e\n"
+               "%6e %6e %6e\n"
+               "%6e %6e %6e\n\n",
+               xx, xy, xz,
+               xy, yy, yz,
+               xz, yz, zz);
+    }
 }
 
 void print(const float I[6]) {
