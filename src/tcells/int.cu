@@ -10,6 +10,28 @@ namespace tcells {
 
 static const int NCELLS = XS * YS * ZS;
 
+void alloc_quants(int max_num_mesh, /**/ Quants *q) {
+    // assume 1 triangle doesn't overlap more than 27 cells
+    q->ss_hst = new int[NCELLS];
+    q->cc_hst = new int[NCELLS];
+    q->ii_hst = new int[27 * MAX_SOLIDS * MAX_FACE_NUM];
+    
+    CC(cudaMalloc(&q->ss_dev, NCELLS * sizeof(int)));
+    CC(cudaMalloc(&q->cc_dev, NCELLS * sizeof(int)));
+    CC(cudaMalloc(&q->ii_dev, 27 * max_num_mesh * MAX_FACE_NUM * sizeof(int)));
+}
+
+void free_quants(/**/ Quants *q) {
+    delete[] q->ss_hst;
+    delete[] q->cc_hst;
+    delete[] q->ii_hst;
+
+    CC(cudaFree(q->ss_dev));
+    CC(cudaFree(q->cc_dev));
+    CC(cudaFree(q->ii_dev));
+}
+
+
 enum {X, Y, Z};
 
 #define BBOX_MARGIN 0.1f
