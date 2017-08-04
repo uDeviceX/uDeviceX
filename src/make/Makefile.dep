@@ -39,6 +39,7 @@ $B/scan/imp.o: $S/common.cuda.h $S/scan/dev.h $S/scan/int.h
 $B/sdf/imp.o: $S/common.cuda.h $S/common.h $S/common.mpi.h $B/conf.h $S/field.h $S/glb.h $S/inc/macro.h $S/inc/type.h $S/k/wvel.h $S/l/m.h $S/m.h $S/sdf/cheap.dev.h $S/sdf/dev.h $S/sdf/imp.h $S/sdf/type.h
 $B/sdf/int.o: $S/common.cuda.h $S/common.h $B/conf.h $S/inc/macro.h $S/inc/type.h $S/sdf/imp.h $S/sdf/int.h $S/sdf/type.h
 $B/solid.o: $S/common.cuda.h $S/common.h $S/conf.common.h $B/conf.h $S/inc/type.h $S/k/solid.h $S/l/linal.h $S/mesh/props.h $S/solid.h
-$B/tcells/int.o: $S/common.cuda.h $S/common.h $B/conf.h $S/inc/type.h $S/scan/int.h $S/tcells/int.h
+$B/tcells/imp.o: $S/common.cuda.h $S/common.h $B/conf.h $S/inc/type.h $S/scan/int.h $S/tcells/int.h
+$B/tcells/int.o: $S/common.cuda.h $S/common.h $B/conf.h $S/inc/type.h $S/scan/int.h $S/tcells/imp.h $S/tcells/int.h
 $B/wall/imp.o: $S/clist/int.h $S/common.cuda.h $S/common.h $B/conf.h $S/forces.h $S/glb.h $S/inc/macro.h $S/inc/type.h $S/k/wvel.h $S/l/m.h $S/m.h $S/restart.h $S/rnd.h $S/sdf/cheap.dev.h $S/sdf/int.h $S/sdf/type.h $S/wall/dev.h $S/wall/imp.h $S/wall/strt.h
 $B/wall/int.o: $S/clist/int.h $S/common.cuda.h $S/common.h $B/conf.h $S/inc/type.h $S/rnd.h $S/sdf/int.h $S/sdf/type.h $S/wall/imp.h $S/wall/int.h
