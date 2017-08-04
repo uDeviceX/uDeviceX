@@ -29,7 +29,6 @@ static __host__ __device__ void loadt(const int *tt, int i, /**/ int t[3]) {
     t[2] = tt[3*i + 2];
 }
 
-
 static _HD_ void tbbox(const float *A, const float *B, const float *C, float *bb) {
     bb[2*X + 0] = min3(A[X], B[X], C[X]) - BBOX_MARGIN;
     bb[2*X + 1] = max3(A[X], B[X], C[X]) + BBOX_MARGIN;
@@ -208,11 +207,9 @@ __global__ void fill_ids(const int nt, const int *tt, const int nv, const Partic
 
 void build_tcells_dev(const Mesh m, const Particle *i_pp, const int ns, /**/ int *starts, int *counts, int *ids, /*w*/ scan::Work *w) {
     CC(cudaMemsetAsync(counts, 0, NCELLS * sizeof(int)));
+    CC(cudaMemsetAsync(starts, 0, NCELLS * sizeof(int)));
 
-    if (ns == 0) {
-        CC(cudaMemsetAsync(starts, 0, NCELLS * sizeof(int)));
-        return;
-    }
+    if (ns == 0) return;
     
     tckernels::countt <<< k_cnf(ns*m.nt) >>> (m.nt, m.tt, m.nv, i_pp, ns, /**/ counts);
 
