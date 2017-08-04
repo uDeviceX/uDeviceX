@@ -4,22 +4,24 @@ namespace sub {
 #define _DH_ __device__ __host__
 enum {X, Y, Z};
 
-_DH_ void rvprev(const float *r1, const float *v1, const float *f0, /**/ float *r0, float *v0) {
 #ifdef FORWARD_EULER
+_DH_ void rvprev(const float *r1, const float *v1, const float *f0, /**/ float *r0, float *v0) {
     for (int c = 0; c < 3; ++c) {
         v0[c] = v1[c] - f0[c] * dt;
         r0[c] = r1[c] - v0[c] * dt;
     }
+}
 #else // velocity-verlet
-    for (int c = 0; c < 3; ++c) {
+_DH_ void rvprev(const float *r1, const float *v1, const float *, /**/ float *r0, float *v0) {
+     for (int c = 0; c < 3; ++c) {
         r0[c] = r1[c] - v1[c] * dt;
         //v0[c] = v1[c] - f0[c] * dt;
 
         // BB assumes r0 + v0 dt = r1 for now
         v0[c] = v1[c];
     }
-#endif
 }
+#endif
 
 _DH_ void bounce_back(const Particle *p0, const float *rw, const float *vw, const float h, /**/ Particle *pn) {
     pn->v[X] = 2 * vw[X] - p0->v[X];
