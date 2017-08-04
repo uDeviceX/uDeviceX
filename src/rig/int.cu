@@ -52,20 +52,11 @@ void alloc_ticket(TicketBB *t) {
     CC(cudaMalloc(&t->maxbb_dev, MAX_SOLIDS * sizeof(float3)));
     CC(cudaMalloc(&t->i_pp,  MAX_PART_NUM * sizeof(Particle)));
     CC(cudaMalloc(&t->ss ,        MAX_SOLIDS * sizeof(Solid)));
-
-    // assume 1 triangle don't overlap more than 27 cells
-    CC(cudaMalloc(&t->tcs_dev, XS * YS * ZS * sizeof(int)));
-    CC(cudaMalloc(&t->tcc_dev, XS * YS * ZS * sizeof(int)));
-    CC(cudaMalloc(&t->tci_dev, 27 * MAX_SOLIDS * MAX_FACE_NUM * sizeof(int)));
     
     t->minbb_hst = new float3[MAX_SOLIDS];
     t->maxbb_hst = new float3[MAX_SOLIDS];
     t->ss_hst   = new Solid[MAX_SOLIDS];
     t->i_pp_hst = new Particle[MAX_PART_NUM];
-
-    t->tcs_hst = new int[XS * YS * ZS];
-    t->tcc_hst = new int[XS * YS * ZS];
-    t->tci_hst = new int[27 * MAX_SOLIDS * MAX_FACE_NUM];
 
     t->ss_dmp = new Solid[MAX_SOLIDS];
 }
@@ -76,18 +67,10 @@ void free_ticket(TicketBB *t) {
     CC(cudaFree(t->i_pp));
     CC(cudaFree(t->ss));
 
-    CC(cudaFree(t->tcs_dev));
-    CC(cudaFree(t->tcc_dev));
-    CC(cudaFree(t->tci_dev));
-
     delete[] t->minbb_hst;
     delete[] t->maxbb_hst;
     delete[] t->ss_hst;
     delete[] t->i_pp_hst;
-
-    delete[] t->tcs_hst;
-    delete[] t->tcc_hst;
-    delete[] t->tci_hst;
 
     delete[] t->ss_dmp;
 }

@@ -16,8 +16,6 @@ struct TicketBB {
     float3 *minbb_dev, *maxbb_dev; /* [b]ounding [b]oxes of solid mesh on device */
     Solid *ss_hst, *ss;
     Particle *i_pp_hst, *i_pp;
-    int *tcs_hst, *tcc_hst, *tci_hst; /* [t]riangle cell-lists on host   */
-    int *tcs_dev, *tcc_dev, *tci_dev; /* [t]riangle cell-lists on device */
 
     Solid *ss_dmp;
 };
