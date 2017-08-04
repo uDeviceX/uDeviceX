@@ -52,6 +52,7 @@ void fin() {
         scan::free_work(/**/ &s::ws);
         CC(cudaFree(s::ff)); delete[] s::ff_hst;
 
+        tcells::free_quants(&bb::qtc);
         mbounce::free_ticketM(&bb::tm);
     }
 

@@ -83,6 +83,7 @@ mcomm::TicketR   tr;
 
 namespace bb /* bounce back */
 {
+tcells::Quants qtc;
 mbounce::TicketM tm;
 }
 

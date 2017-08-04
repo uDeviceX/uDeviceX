@@ -67,6 +67,7 @@ void ini() {
         s::ff_hst = new Force[MAX_PART_NUM];
         CC(cudaMalloc(&s::ff, MAX_PART_NUM * sizeof(Force)));
 
+        tcells::alloc_quants(MAX_SOLIDS, &bb::qtc);
         mbounce::alloc_ticketM(&bb::tm);
     }
 
