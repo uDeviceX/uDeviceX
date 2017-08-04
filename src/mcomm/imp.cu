@@ -48,7 +48,7 @@ static int d2i(const int d[3]) {
 }
 
 namespace travel {
-void faces(const int i, const int d[3], /**/ std::vector<int> travellers[27]) {
+static void faces(const int i, const int d[3], /**/ std::vector<int> travellers[27]) {
     for (int c = 0; c < 3; ++c) {
         if (d[c]) {
             int df[3] = {0, 0, 0}; df[c] = d[c];
@@ -58,7 +58,7 @@ void faces(const int i, const int d[3], /**/ std::vector<int> travellers[27]) {
     }
 }
 
-void edges(const int i, const int d[3], /**/ std::vector<int> travellers[27]) {
+static void edges(const int i, const int d[3], /**/ std::vector<int> travellers[27]) {
     for (int c = 0; c < 3; ++c) {
         int de[3] = {d[X], d[Y], d[Z]}; de[c] = 0;
         if (de[(c + 1) % 3] && de[(c + 2) % 3]) {
@@ -68,18 +68,19 @@ void edges(const int i, const int d[3], /**/ std::vector<int> travellers[27]) {
     }
 }
 
-void cornr(const int i, const int d[3], /**/ std::vector<int> travellers[27]) {
+static void cornr(const int i, const int d[3], /**/ std::vector<int> travellers[27]) {
     assert(d[X] && d[Y] && d[Z]);
     int code = d2i(d);
     travellers[code].push_back(i);
 }
-}
+} // travel
 
-int pack(const float3* minext_hst, const float3 *maxext_hst, const Particle *pp, const int nv, const int nm, /**/ Particle *spp[27], int counts[27]) {
-    std::vector<int> travellers[27];
-    int d[3];
+int map(const float3* minext_hst, const float3 *maxext_hst, const int nm, /**/ std::vector<int> travellers[27], int counts[27]) {
+    int i, d[3], type;
+    
+    for (i = 0; i < 27; ++ i) travellers[i].clear();
 
-    for (int i = 0; i < nm; ++i) {
+    for (i = 0; i < nm; ++i) {
         const float3 lo = minext_hst[i];
         const float3 hi = maxext_hst[i];
 
@@ -87,7 +88,7 @@ int pack(const float3* minext_hst, const float3 *maxext_hst, const Particle *pp,
         d[Y] = -1 + (lo.y > -YS/2) + (hi.y > YS/2);
         d[Z] = -1 + (lo.z > -ZS/2) + (hi.z > ZS/2);
 
-        const int type = fabs(d[X]) + fabs(d[Y]) + fabs(d[Z]);
+        type = fabs(d[X]) + fabs(d[Y]) + fabs(d[Z]);
 
         if (type >= BULK) travellers[0].push_back(i);
         if (type >= FACE) travel::faces(i, d, /**/ travellers);
@@ -95,16 +96,19 @@ int pack(const float3* minext_hst, const float3 *maxext_hst, const Particle *pp,
         if (type >= CORN) travel::cornr(i, d, /**/ travellers);
     }
 
+    for (i = 0; i < 27; ++ i) counts[i] = travellers[i].size();
+    return counts[0];
+}
+
+void pack(const Particle *pp, const int nv, const std::vector<int> travellers[27], /**/ Particle *spp[27]) {
     /* copy data */
     for (int i = 0; i < 27; ++i) {
-        counts[i] = travellers[i].size();
         int s = 0; /* start */
         for (int id : travellers[i])
             CC(cudaMemcpyAsync(spp[i] + nv * (s++), pp + nv * id, nv * sizeof(Particle), D2H));
     }
     
     dSync();
-    return counts[0];
 }
 
 void post_recv(MPI_Comm cart, const int ank_ne[26], int btc, int btp, /**/ int counts[27], Particle *pp[27], Reqs *rreqs) {

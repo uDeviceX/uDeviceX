@@ -1,4 +1,5 @@
 #include <mpi.h>
+#include <vector>
 
 #include "common.h"
 #include "common.cuda.h"
@@ -56,8 +57,12 @@ void extents(const Particle *pp, const int nv, const int nm, /**/ TicketS *t) {
     dSync();
 }
 
-int pack(const Particle *pp, const int nv, const int nm, /**/ TicketS *t) {
-    return sub::pack(t->llo->D, t->hhi->D, pp, nv, nm, /**/ t->pp_hst, t->counts);
+int map(const int nm, /**/ TicketM *tm, TicketS *ts) {
+    return sub::map(ts->llo->D, ts->hhi->D, nm, /**/ tm->travellers, ts->counts);
+}
+
+void pack(const Particle *pp, const int nv, const TicketM *tm, /**/ TicketS *ts) {
+    sub::pack(pp, nv, tm->travellers, /**/ ts->pp_hst);
 }
 
 void post_recv(/**/ TicketCom *tc, TicketR *tr) {
