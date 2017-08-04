@@ -17,7 +17,7 @@ $B/l/m.o: $S/l/h/m.h $S/l/m.h
 $B/l/off.o: $S/l/h/off.h $S/l/off.h
 $B/l/ply.o: $S/common.h $S/inc/type.h $S/l/h/ply.ascii.h $S/l/h/ply.bin.h $S/l/h/ply.h $S/l/ply.h
 $B/main.o: $S/bund.h $S/common.cuda.h $S/common.h $S/common.mpi.h $S/conf.common.h $B/conf.h $S/glb.h $S/l/m.h $S/m.h
-$B/mbounce/imp.o: $S/common.cuda.h $S/common.h $B/conf.h $S/inc/type.h $S/mbounce/bbstates.h $S/mbounce/dbg.h $S/mbounce/dev.h $S/mbounce/gen.h $S/mbounce/gen.intersect.h $S/mbounce/hst.h $S/mbounce/imp.h $S/mbounce/roots.h
+$B/mbounce/imp.o: $S/common.cuda.h $S/common.h $B/conf.h $S/inc/type.h $S/mbounce/bbstates.h $S/mbounce/dbg.h $S/mbounce/dev.h $S/mbounce/gen.h $S/mbounce/gen.intersect.h $S/mbounce/gen.tri.h $S/mbounce/hst.h $S/mbounce/imp.h $S/mbounce/roots.h
 $B/mdstr/imp.o: $S/common.cuda.h $S/common.h $S/common.mpi.h $B/conf.h $S/inc/type.h $S/l/m.h $S/m.h $S/mdstr/dev.h $S/mdstr/imp.h $S/mdstr/ini.h
 $B/mdstr/int.o: $S/basetags.h $S/common.h $S/l/m.h $S/m.h $S/mdstr/buf.h $S/mdstr/imp.h $S/mdstr/int.h $S/mdstr/tic.h
 $B/mesh/bbox.o: $S/inc/type.h $S/mesh/bbox.h $S/minmax.h
