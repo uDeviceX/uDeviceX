@@ -14,8 +14,9 @@ void copy_state() {
 }
 
 void copy_bags() {
+    int i;
     float *ff[26];
-    for (int i = 0; i < 26; ++i) ff[i] = (float *)local[i]->result->DP;
+    for (i = 0; i < 26; ++i) ff[i] = (float*)local[i]->result->DP;
     CC(cudaMemcpyToSymbolAsync(k_rex::g::ff, ff, sizeof(ff), 0, H2D));
 }
 
