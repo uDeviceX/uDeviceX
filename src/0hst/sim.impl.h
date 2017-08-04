@@ -31,7 +31,7 @@ void bounce_solid(int it) {
     const int nsbb = bbhalo::post(s::q.m_hst.nv);
     bbhalo::unpack <HST> (s::q.m_hst.nv, /**/ s::t.ss_hst, s::t.i_pp_hst);
 
-    build_tcells_hst(s::q.m_hst, s::t.i_pp_hst, nsbb, /**/ s::t.tcs_hst, s::t.tcc_hst, s::t.tci_hst);
+    tcells::build_hst(s::q.m_hst, s::t.i_pp_hst, nsbb, /**/ s::t.tcs_hst, s::t.tcc_hst, s::t.tci_hst);
 
     cD2H(o::q.pp_hst, o::q.pp, o::q.n);
     cD2H(o::ff_hst, o::ff, o::q.n);

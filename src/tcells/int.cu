@@ -121,7 +121,7 @@ static void exscan(const int *counts, int *starts) {
     starts[i] = starts[i-1] + counts[i-1];
 }
     
-void build_tcells_hst(const Mesh m, const Particle *i_pp, const int ns, /**/ int *starts, int *counts, int *ids) {
+void build_hst(const Mesh m, const Particle *i_pp, const int ns, /**/ int *starts, int *counts, int *ids) {
     countt(m.nt, m.tt, m.nv, i_pp, ns, /**/ counts);
 
     exscan(counts, starts);
@@ -207,7 +207,7 @@ __global__ void fill_ids(const int nt, const int *tt, const int nv, const Partic
 }
 }
 
-void build_tcells_dev(const Mesh m, const Particle *i_pp, const int ns, /**/ int *starts, int *counts, int *ids, /*w*/ scan::Work *w) {
+void build_dev(const Mesh m, const Particle *i_pp, const int ns, /**/ int *starts, int *counts, int *ids, /*w*/ scan::Work *w) {
     CC(cudaMemsetAsync(counts, 0, NCELLS * sizeof(int)));
     CC(cudaMemsetAsync(starts, 0, NCELLS * sizeof(int)));
 
