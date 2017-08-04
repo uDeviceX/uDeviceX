@@ -20,4 +20,8 @@ void copy_count(x::TicketPinned ti) {
     for (i = 0; i < 26; ++i) send_counts[i] = ti.offsets[i];
 }
 
+void copy_offset(int nw, x::TicketPack tp, x::TicketPinned ti) {
+    CC(cudaMemcpyAsync(ti.offsets, tp.offsets + 26 * nw, sizeof(int) * 26, H2H));
+}
+
 }
