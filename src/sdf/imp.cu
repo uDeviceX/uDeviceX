@@ -28,7 +28,8 @@ struct Tex { /* simplifies communication between ini[0123..] */
 };
 
 static void ini0(float *D, /**/ struct Tex te) {
-    cudaMemcpy3DParms copyParams = {0};
+    cudaMemcpy3DParms copyParams;
+    memset(&copyParams, 0, sizeof(copyParams));
     copyParams.srcPtr = make_cudaPitchedPtr((void*)D, XTE * sizeof(float), XTE, YTE);
     copyParams.dstArray = te.a;
     copyParams.extent = make_cudaExtent(XTE, YTE, ZTE);
