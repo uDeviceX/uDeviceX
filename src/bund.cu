@@ -115,7 +115,6 @@ namespace ic {
 #include "fsi/bulk.h"
 #include "fsi/fin.h"
 #include "fsi/halo.h"
-#include "fsi/impl.h"
 #include "fsi/ini.h"
 
 #include "x/type.h"
