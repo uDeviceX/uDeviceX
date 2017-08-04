@@ -123,10 +123,16 @@ static __device__ void loadr(const Particle *pp, int i, /**/ float r[3]) {
     r[Z] = p.r[Z];
 }
 
+static __device__ void loadt(const int *tt, int i, /**/ int t[3]) {
+    r[0] = tt[3*i + 0];
+    r[1] = tt[3*i + 1];
+    r[2] = tt[3*i + 2];
+}
+
 __global__ void countt(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, /**/ int *counts) {
     const int thid = threadIdx.x + blockIdx.x * blockDim.x;
     float A[3], B[3], C[3], bbox[6];
-    
+        
     if (thid >= nt * ns) return;
         
     const int tid = thid % nt;
