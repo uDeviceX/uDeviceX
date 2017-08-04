@@ -46,7 +46,7 @@ static void post(std::vector<ParticlesWrap> w, int nw) {
 
 static void rex0(std::vector<ParticlesWrap> w, int nw) {
     cnt++;
-    rex::pack_clear(nw, tp);
+    rex::clear(nw, tp);
     rex::scanA(w, nw, tp);
     rex::scanB(nw, tp, ti);
     rex::pack(w, tp, ti);

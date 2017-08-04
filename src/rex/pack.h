@@ -1,5 +1,5 @@
 namespace rex {
-void pack_clear(int nw, x::TicketPack tp) {
+void clear(int nw, x::TicketPack tp) {
     CC(cudaMemsetAsync(tp.starts,  0, sizeof(int) * 27 *  nw));
     CC(cudaMemsetAsync(tp.counts,  0, sizeof(int) * 26 *  nw));
     CC(cudaMemsetAsync(tp.offsets, 0, sizeof(int) * 26 * (nw + 1)));
