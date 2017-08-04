@@ -1,4 +1,18 @@
+#include <mpi.h>
 
+#include "common.h"
+#include "common.cuda.h"
+
+#include "inc/type.h"
+#include "inc/tmp/pinned.h"
+
+#include "minmax.h"
+
+#include "basetags.h"
+
+#include "mcomm/type.h"
+#include "mcomm/int.h"
+#include "mcomm/imp.h"
 
 namespace mcomm {
 
