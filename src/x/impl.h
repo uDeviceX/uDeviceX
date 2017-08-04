@@ -27,7 +27,7 @@ static void post(std::vector<ParticlesWrap> w, int nw) {
     if (packingfailed) {
         rex::local_resize();
         rex::post_resize();
-        rex::pack_clear(nw, tp);
+        rex::clear(nw, tp);
         rex::scanA( w, nw, tp);
         rex::scanB(nw, tp, ti);
         rex::pack(w, tp, ti);
