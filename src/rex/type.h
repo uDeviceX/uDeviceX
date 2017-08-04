@@ -17,12 +17,12 @@ class RemoteHalo {
 public:
     DeviceBuffer<Particle> dstate;
     PinnedHostBuffer<Particle> hstate;
-    PinnedHostBuffer<Force> result;
+    PinnedHostBuffer<Force> ff;
     std::vector<Particle> pmessage;
     void preserve_resize(int n) {
         dstate.resize(n);
         hstate.preserve_resize(n);
-        result.resize(n);
+        ff.resize(n);
         history.update(n);
     }
     int expected() const {return (int)ceil(history.max() * 1.1);}
@@ -33,19 +33,19 @@ class LocalHalo {
 public:
     LocalHalo() {
         indexes = new DeviceBuffer<int>;
-        result            = new PinnedHostBuffer<Force>;
+        ff            = new PinnedHostBuffer<Force>;
     }
     ~LocalHalo() {
         delete indexes;
-        delete result;
+        delete ff;
     }
     DeviceBuffer<int>* indexes;
-    PinnedHostBuffer<Force>* result;
+    PinnedHostBuffer<Force>* ff;
     void resize(int n) {
         indexes->resize(n);
-        result->resize(n);
+        ff->resize(n);
     }
-    void update() { history.update(result->S);}
+    void update() { history.update(ff->S);}
     int expected() const { return (int)ceil(history.max() * 1.1);}
     int size() const { return indexes->C;}
 };

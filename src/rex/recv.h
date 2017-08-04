@@ -2,7 +2,7 @@ namespace rex {
 void recvF(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     for (int i = 0; i < 26; ++i) {
         MPI_Request reqA;
-        MC(l::m::Irecv(local[i]->result->D, local[i]->result->S * 3, MPI_FLOAT, ranks[i], t.btf + tags[i], cart, &reqA));
+        MC(l::m::Irecv(local[i]->ff->D, local[i]->ff->S * 3, MPI_FLOAT, ranks[i], t.btf + tags[i], cart, &reqA));
         reqrecvA.push_back(reqA);
     }
 }
