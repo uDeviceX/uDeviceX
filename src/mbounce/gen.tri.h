@@ -7,7 +7,7 @@ enum {X, Y, Z};
 enum {XX, XY, XZ, YY, YZ, ZZ};
 /* see /poc/bounce-back/inertia.cpp */
 
-_DH_ float Moment(const int d, const float A[3], const float B[3], const float C[3]) {
+static _DH_ float Moment(const int d, const float A[3], const float B[3], const float C[3]) {
     return 0.25f * (A[d] * A[d] +
                     A[d] * B[d] +
                     B[d] * B[d] +
@@ -15,7 +15,7 @@ _DH_ float Moment(const int d, const float A[3], const float B[3], const float C
                     C[d] * C[d]);
 }
 
-_DH_ void compute_I(const float A[3], const float B[3], const float C[3], /**/ float I[6]) {
+static _DH_ void compute_I(const float A[3], const float B[3], const float C[3], /**/ float I[6]) {
     
     const float Mxx = Moment(X, A, B, C);
     const float Myy = Moment(Y, A, B, C);
@@ -37,7 +37,7 @@ _DH_ void compute_I(const float A[3], const float B[3], const float C[3], /**/ f
     I[ZZ] = Myy + Mxx;
 }
 
-_DH_ void inverse(const float A[6], /**/ float I[6]) {
+static _DH_ void inverse(const float A[6], /**/ float I[6]) {
 
     /* minors */
     const float mx = A[YY] * A[ZZ] - A[YZ] * A[YZ];
@@ -54,6 +54,37 @@ _DH_ void inverse(const float A[6], /**/ float I[6]) {
     I[YY] =  idet * (A[XX] * A[ZZ] - A[XZ] * A[XZ]);
     I[YZ] =  idet * (A[XY] * A[XZ] - A[XX] * A[YZ]);
     I[ZZ] =  idet * (A[XX] * A[YY] - A[XY] * A[XY]);
+}
+
+static _DH_ void v2f(const float r[3], const float om[3], const float v[3], /**/ float f[3]) {
+    const float fac = mass_rbc / dt;
+    f[X] = fac * (v[X] + r[Y] * om[Z] - r[Z] * om[Y]);
+    f[Y] = fac * (v[Y] + r[Z] * om[X] - r[X] * om[Z]);
+    f[Z] = fac * (v[Z] + r[X] * om[Y] - r[Y] * om[X]);
+}
+
+_DH_ void M2f(const Momentum m, const float a[3], const float b[3], const float c[3],
+              /**/ float fa[3], float fb[3], float fc[3]) {
+
+    float I[6], Iinv[6], om[3], v[3];
+    const float fac = 1.f / (3.f * mass_rbc);
+    
+    compute_I(a, b, c, /**/ I);
+    inverse(I, /**/ Iinv);
+
+    /* angular velocity to be added (w.r.t. origin) */
+    om[X] = fac * (I[XX] * m.L[X] + I[XY] * m.L[Y] + I[XZ] * m.L[Z]);
+    om[Y] = fac * (I[XY] * m.L[X] + I[YY] * m.L[Y] + I[YZ] * m.L[Z]);
+    om[Z] = fac * (I[XZ] * m.L[X] + I[YZ] * m.L[Y] + I[ZZ] * m.L[Z]);
+
+    /* linear velocity to be added */
+    v[X] =  fac * (m.P[X]);
+    v[Y] =  fac * (m.P[Y]);
+    v[Z] =  fac * (m.P[Z]);
+
+    v2f(a, om, v, /**/ fa);
+    v2f(b, om, v, /**/ fb);
+    v2f(c, om, v, /**/ fc);
 }
 
 #undef _DH_
