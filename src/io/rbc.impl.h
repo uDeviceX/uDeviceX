@@ -11,8 +11,8 @@ static void write(const void * const ptr, const int nbytes32, MPI_File f) {
 }
 
 static void dump0(Particle  *_particles, int *mesh_indices,
-                  const int ninstances, const int ntriangles_per_instance,
-                  int nvertices_per_instance, const char * filename) {
+                  int ninstances, int ntriangles_per_instance, int nvertices_per_instance,
+                  const char * filename) {
     std::vector<Particle> particles(_particles, _particles + ninstances * nvertices_per_instance);
     int NPOINTS = 0;
     const int n = particles.size();
