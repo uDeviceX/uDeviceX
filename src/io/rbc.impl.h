@@ -13,7 +13,7 @@ static void shift(Particle *f, int n, /**/ Particle *t) {
     for (i = 0; i < n; i++) shift0(f++, t++);
 }
 
-static void write(const void * const ptr, int nbytes, MPI_File f) {
+static void write(const void *const ptr, int nbytes, MPI_File f) {
     MPI_Offset base, offset, ntotal;
     MPI_Status status;
     MC(MPI_File_get_position(f, &base));
@@ -38,7 +38,7 @@ static void header(int nc0, int nv, int nt, MPI_File f) {
         ss <<  "property float u\nproperty float v\nproperty float w\n";
         ss <<  "element face " << nt * nc << "\n";
         ss <<  "property list int int vertex_index\n";
-        ss <<  "end_header\n";
+s        ss <<  "end_header\n";
     }
     std::string content = ss.str();
     write(content.c_str(), content.size(), f);
