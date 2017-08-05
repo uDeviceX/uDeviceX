@@ -109,6 +109,9 @@ namespace ic {
 
 #include "x/type.h"
   #include "rex/type.h"
+  #include "rex/type/hist.h"
+  #include "rex/type/remote.h"
+  #include "rex/type/local.h"
   #include "rex/decl.h"
 
   #include "k/rex/type.h"
