@@ -29,4 +29,12 @@ void copy_offset(int nw, x::TicketPack tp, x::TicketPinned ti) {
     CC(cudaMemcpyAsync(ti.offsets, tp.offsets + 26 * nw, sizeof(int) * 26, H2H));
 }
 
+void copy_hstate() {
+    int i, count;
+    for (i = 0; i < 26; ++i) {
+        count = recv_counts[i];
+        memcpy(remote[i]->hstate.D, &remote[i]->pmessage.front(), sizeof(Particle) * count);
+    }
+}
+
 }
