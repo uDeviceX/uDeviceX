@@ -25,17 +25,17 @@ void recvP(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
 }
 
 void recvM(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
-    for (int i = 0; i < 26; ++i) {
-        int count = recv_counts[i];
-        int expected = remote[i]->expected();
+    int i, count, expected;
+    MPI_Status s;
+    for (i = 0; i < 26; ++i) {
+        count = recv_counts[i];
+        expected = remote[i]->expected();
 
         remote[i]->pmessage.resize(max(1, count));
         remote[i]->resize(count);
-        MPI_Status s;
         if (count > expected)
             MC(l::m::Recv(&remote[i]->pmessage.front() + expected, (count - expected) * 6, MPI_FLOAT, ranks[i], t.btp2 + tags[i], cart, &s));
         memcpy(remote[i]->hstate.D, &remote[i]->pmessage.front(), sizeof(Particle) * count);
     }
 }
-
 }
