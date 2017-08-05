@@ -5,7 +5,7 @@ void clear(int nw, x::TicketPack tp) {
     CC(cudaMemsetAsync(tp.offsets, 0, sizeof(int) * 26 * (nw + 1)));
 }
 
-void pack(std::vector<ParticlesWrap> w, int nw, x::TicketPack tp) {
+void pack(std::vector<ParticlesWrap> w, int nw, x::TicketPack tp, Particle *packbuf) {
     int i, n;
     int *o, *c, *s;
     CC(cudaMemcpyToSymbolAsync(k_rex::g::tstarts, tp.tstarts, sizeof(int) * 27, 0, D2D));
