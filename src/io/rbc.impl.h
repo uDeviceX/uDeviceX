@@ -38,6 +38,7 @@ static void dump0(Particle  *_particles, int *faces,
         ss <<  "end_header\n";
     }
     std::string content = ss.str();
+
     write(content.c_str(), content.size(), f);
     int L[3] = { XS, YS, ZS };
     for(int i = 0; i < n; ++i)
@@ -62,8 +63,8 @@ static void dump0(Particle  *_particles, int *faces,
 
 void rbc_dump(Particle *pp, int *faces, int nc, int nv, int nt, int id) {
     const char *fmt = DUMP_BASE "/r/%05d.ply";
-    char buf[BUFSIZ];
-    sprintf(buf, fmt, id);
+    char f[BUFSIZ]; /* file name */
+    sprintf(f, fmt, id);
     if (m::rank == 0) os::mkdir(DUMP_BASE "/r");
-    dump0(pp, faces, nc, nv, nt, buf);
+    dump0(pp, faces, nc, nv, nt, f);
 }
