@@ -7,12 +7,14 @@ void ini(/*io*/ basetags::TagGen *g) {
     ini_ticketpack(&tp);
     ini_ticketpinned(&ti);
     mpDeviceMalloc(&packbuf);
+    Palloc(&host_packbuf, MAX_PART_NUM);
     rex::ini();
 }
 
 void fin() {
     rex::fin();
     cudaFree(packbuf);
+    Pfree(host_packbuf);
     fin_ticketcom(tc);
     fin_ticketpack(tp);
     fin_ticketpinned(ti);
