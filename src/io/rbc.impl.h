@@ -25,11 +25,11 @@ static void write(const void * const ptr, const int nbytes32, MPI_File f) {
     MC(MPI_File_seek(f, ntotal, MPI_SEEK_CUR));
 }
 
-static void dump0(Particle  *_particles, int *faces,
+static void dump0(Particle  *pp, int *faces,
                   int nc, int nv, int nt, MPI_File f) {
-    std::vector<Particle> particles(_particles, _particles + nc * nv);
-    int NPOINTS = 0;
-    const int n = particles.size();
+    int n, NPOINTS;
+    n = nc * nv;
+    NPOINTS = 0;
     l::m::Reduce(&n, &NPOINTS, 1, MPI_INT, MPI_SUM, 0, m::cart) ;
     const int ntriangles = nt * nc;
     int NTRIANGLES = 0;
@@ -48,7 +48,7 @@ static void dump0(Particle  *_particles, int *faces,
     std::string content = ss.str();
     write(content.c_str(), content.size(), f);
 
-    write(&particles.front(), sizeof(Particle) * n, f);
+    write(pp, sizeof(Particle) * n, f);
     int poffset = 0;
     MPI_Exscan(&n, &poffset, 1, MPI_INTEGER, MPI_SUM, m::cart);
     std::vector<int> buf;
