@@ -9,7 +9,7 @@ void mkdir(const char *path) {
     int rc, ok;
     mode = S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH;
     rc = ::mkdir(path, mode);
-    ok = (rc == 0 || rc == EEXIST);
+    ok = (rc == 0 || errno == EEXIST);
     if (!ok) {
         fprintf(stderr, "os.cu: mkdir: cannot create directory ‘%s’\n", path);
         fprintf(stderr, "errno: %d\n", errno);
