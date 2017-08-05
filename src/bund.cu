@@ -139,6 +139,8 @@ namespace ic {
 #include "x/tickettags.h"
 #include "x/ticketpack.h"
 #include "x/ticketpinned.h"
+#include "x/ini.h"
+#include "x/fin.h"
 #include "x/impl.h"
 
 #include "dpd/local.h"
