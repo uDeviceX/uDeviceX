@@ -10,9 +10,9 @@ static void write(const void * const ptr, const int nbytes32, MPI_File f) {
     MC(MPI_File_seek(f, ntotal, MPI_SEEK_CUR));
 }
 
-static void rbc_dump0(const char * filename,
-              int *mesh_indices, const int ninstances, const int ntriangles_per_instance,
-              Particle * _particles, int nvertices_per_instance) {
+static void dump0(Particle  *_particles, int *mesh_indices,
+                  const int ninstances, const int ntriangles_per_instance,
+                  int nvertices_per_instance, const char * filename) {
     std::vector<Particle> particles(_particles, _particles + ninstances * nvertices_per_instance);
     int NPOINTS = 0;
     const int n = particles.size();
@@ -65,5 +65,5 @@ void rbc_dump(Particle *pp, int *faces, int nc, int nv, int nt, int id) {
     char buf[BUFSIZ];
     sprintf(buf, fmt, id);
     if (m::rank == 0) os::mkdir(DUMP_BASE "/r");
-    rbc_dump0(buf, faces, nc, nt, pp, nv);
+    dump0(pp, faces, nc, nt, nv, buf);
 }
