@@ -22,7 +22,8 @@
 #include "common.cuda.h"
 #include "inc/tmp/wrap.h"
 #include "inc/tmp/pinned.h"
-#include "io.h"
+#include "io/field.h"
+#include "io/rbc.h"
 #include "bund.h"
 #include "diag.h"
 

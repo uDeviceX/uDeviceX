@@ -1,6 +1,6 @@
 #include <mpi.h>
 #include "inc/type.h"
-#include "io.h"
+#include "io/field.h"
 #include <conf.h>
 #include "m.h"
 #include "field.h"
