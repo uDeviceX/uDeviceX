@@ -44,18 +44,21 @@ static void header(int nc0, int nv, int nt, MPI_File f) {
     write(content.c_str(), content.size(), f);
 }
 
-static void dump0(Particle  *pp, int *faces,
-                  int nc, int nv, int nt, MPI_File f) {
+static void vert(Particle *pp, int nc, int nv, MPI_File f) {
     int n;
-    header(nc, nv, nt, f);
-
     n = nc * nv;
     write(pp, sizeof(Particle) * n, f);
-    int poffset = 0;
-    MPI_Exscan(&n, &poffset, 1, MPI_INTEGER, MPI_SUM, m::cart);
+}
+
+static void wfaces(int *faces, int nc, int nv, int nt, MPI_File f) {
+    /* write faces */
+    int n, poffset, i, j;
     std::vector<int> buf;
-    for(int j = 0; j < nc; ++j)
-    for(int i = 0; i < nt; ++i) {
+    n = nc * nv;
+    poffset = 0;
+    MPI_Exscan(&n, &poffset, 1, MPI_INTEGER, MPI_SUM, m::cart);
+    for(j = 0; j < nc; ++j)
+    for(i = 0; i < nt; ++i) {
         int primitive[4] = { 3,
                              poffset + nv * j + faces[3 * i + 0],
                              poffset + nv * j + faces[3 * i + 1],
@@ -63,6 +66,13 @@ static void dump0(Particle  *pp, int *faces,
         buf.insert(buf.end(), primitive, primitive + 4);
     }
     write(&buf.front(), sizeof(int) * buf.size(), f);
+}
+
+static void dump0(Particle *pp, int *faces,
+                  int nc, int nv, int nt, MPI_File f) {
+    header(nc,        nv, nt, f);
+    vert(pp,      nc, nv,     f);
+    wfaces(faces, nc, nv, nt, f);
 }
 
 static void dump1(Particle  *pp, int *faces, int nc, int nv, int nt, MPI_File f) {
