@@ -44,10 +44,10 @@ static void post(std::vector<ParticlesWrap> w, int nw) {
 
     if (cnt == 0) rex::recvP(tc.cart, tc.ranks, tr.tags, tt);
     else          rex::s::waitP();
-    rex::copy_pack(ti, packbuf);
+    rex::copy_pack(ti, packbuf, host_packbuf);
     dSync();
     rex::sendC(tc.cart, tc.ranks, tt);
-    rex::sendP(tc.cart, tc.ranks, tt, ti);
+    rex::sendP(tc.cart, tc.ranks, tt, ti, host_packbuf);
 }
 
 static void rex0(std::vector<ParticlesWrap> w, int nw) {

@@ -2,7 +2,6 @@ namespace rex {
 void ini() {
     int i, estimate;
     estimate = 10;
-    Palloc(&host_packbuf, MAX_PART_NUM);
 
     for (i = 0; i < 26; i++) local[i] = new LocalHalo;
     for (i = 0; i < 26; i++) remote[i] = new RemoteHalo;
