@@ -13,7 +13,7 @@ void sendC(MPI_Comm cart, int dranks[26], x::TicketTags t) {
         MC(l::m::Isend(send_counts + i, 1, MPI_INTEGER, dranks[i], t.btc + i, cart, &reqsendC[i]));
 }
 
-void sendP(MPI_Comm cart, int dranks[26], x::TicketTags t, x::TicketPinned ti, Particle *host_packbuf) {
+void sendP(MPI_Comm cart, int dranks[26], x::TicketTags t, x::TicketPinned ti, Particle *buf_pinned) {
     int i, start, count, expected;
     MPI_Request req;
     for (i = 0; i < 26; ++i) {
@@ -21,11 +21,11 @@ void sendP(MPI_Comm cart, int dranks[26], x::TicketTags t, x::TicketPinned ti, P
         count = send_counts[i];
         expected = local[i]->expected();
         
-        MC(l::m::Isend(host_packbuf + start, expected * 6, MPI_FLOAT, dranks[i], t.btp1 + i, cart, &req));
+        MC(l::m::Isend(buf_pinned + start, expected * 6, MPI_FLOAT, dranks[i], t.btp1 + i, cart, &req));
         reqsendP.push_back(req);
         
         if (count > expected) {
-            MC(l::m::Isend(host_packbuf + start + expected, (count - expected) * 6, MPI_FLOAT, dranks[i], t.btp2 + i, cart, &req));
+            MC(l::m::Isend(buf_pinned + start + expected, (count - expected) * 6, MPI_FLOAT, dranks[i], t.btp2 + i, cart, &req));
             reqsendP.push_back(req);
         }
     }

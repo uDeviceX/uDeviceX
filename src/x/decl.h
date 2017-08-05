@@ -7,6 +7,6 @@ TicketPinned ti;
 
 int cnt;
 Particle *buf;
-Particle *host_packbuf;
+Particle *buf_pinned;
 
 }

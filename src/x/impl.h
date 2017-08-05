@@ -7,14 +7,14 @@ void ini(/*io*/ basetags::TagGen *g) {
     ini_ticketpack(&tp);
     ini_ticketpinned(&ti);
     mpDeviceMalloc(&buf);
-    Palloc(&host_packbuf, MAX_PART_NUM);
+    Palloc(&buf_pinned, MAX_PART_NUM);
     rex::ini();
 }
 
 void fin() {
     rex::fin();
     cudaFree(buf);
-    Pfree(host_packbuf);
+    Pfree(buf_pinned);
     fin_ticketcom(tc);
     fin_ticketpack(tp);
     fin_ticketpinned(ti);
@@ -44,10 +44,10 @@ static void post(std::vector<ParticlesWrap> w, int nw) {
 
     if (cnt == 0) rex::recvP(tc.cart, tc.ranks, tr.tags, tt);
     else          rex::s::waitP();
-    rex::copy_pack(ti, buf, host_packbuf);
+    rex::copy_pack(ti, buf, buf_pinned);
     dSync();
     rex::sendC(tc.cart, tc.ranks, tt);
-    rex::sendP(tc.cart, tc.ranks, tt, ti, host_packbuf);
+    rex::sendP(tc.cart, tc.ranks, tt, ti, buf_pinned);
 }
 
 static void rex0(std::vector<ParticlesWrap> w, int nw) {
