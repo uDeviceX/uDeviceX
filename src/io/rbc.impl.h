@@ -25,22 +25,18 @@ static void write(const void * const ptr, const int nbytes32, MPI_File f) {
     MC(MPI_File_seek(f, ntotal, MPI_SEEK_CUR));
 }
 
-static void header(int nc, int nv, int nt, MPI_File f) {
-    int n, NPOINTS;
-    n = nc * nv;
-    NPOINTS = 0;
-    l::m::Reduce(&n, &NPOINTS, 1, MPI_INT, MPI_SUM, 0, m::cart) ;
-    const int ntriangles = nt * nc;
-    int NTRIANGLES = 0;
-    l::m::Reduce(&ntriangles, &NTRIANGLES, 1, MPI_INT, MPI_SUM, 0, m::cart) ;
+static void header(int nc0, int nv, int nt, MPI_File f) {
+    int nc; /* total number of cells */
+    nc = 0;
+    l::m::Reduce(&nc0, &nc, 1, MPI_INT, MPI_SUM, 0, m::cart) ;
     std::stringstream ss;
     if (m::rank == 0) {
         ss <<  "ply\n";
         ss <<  "format binary_little_endian 1.0\n";
-        ss <<  "element vertex " << NPOINTS << "\n";
+        ss <<  "element vertex " << nv * nc << "\n";
         ss <<  "property float x\nproperty float y\nproperty float z\n";
         ss <<  "property float u\nproperty float v\nproperty float w\n";
-        ss <<  "element face " << NTRIANGLES << "\n";
+        ss <<  "element face " << nt * nc << "\n";
         ss <<  "property list int int vertex_index\n";
         ss <<  "end_header\n";
     }
