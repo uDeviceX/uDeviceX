@@ -11,13 +11,13 @@ static void write(const void * const ptr, const int nbytes32, MPI_File f) {
 }
 
 static void dump0(Particle  *_particles, int *mesh_indices,
-                  int ninstances, int ntriangles_per_instance, int nvertices_per_instance,
+                  int nc, int nt, int nv,
                   const char * filename) {
-    std::vector<Particle> particles(_particles, _particles + ninstances * nvertices_per_instance);
+    std::vector<Particle> particles(_particles, _particles + nc * nv);
     int NPOINTS = 0;
     const int n = particles.size();
     l::m::Reduce(&n, &NPOINTS, 1, MPI_INT, MPI_SUM, 0, m::cart) ;
-    const int ntriangles = ntriangles_per_instance * ninstances;
+    const int ntriangles = nt * nc;
     int NTRIANGLES = 0;
     l::m::Reduce(&ntriangles, &NTRIANGLES, 1, MPI_INT, MPI_SUM, 0, m::cart) ;
     MPI_File f;
@@ -48,12 +48,12 @@ static void dump0(Particle  *_particles, int *mesh_indices,
     int poffset = 0;
     MPI_Exscan(&n, &poffset, 1, MPI_INTEGER, MPI_SUM, m::cart);
     std::vector<int> buf;
-    for(int j = 0; j < ninstances; ++j)
-    for(int i = 0; i < ntriangles_per_instance; ++i) {
+    for(int j = 0; j < nc; ++j)
+    for(int i = 0; i < nt; ++i) {
         int primitive[4] = { 3,
-                             poffset + nvertices_per_instance * j + mesh_indices[3 * i + 0],
-                             poffset + nvertices_per_instance * j + mesh_indices[3 * i + 1],
-                             poffset + nvertices_per_instance * j + mesh_indices[3 * i + 2] };
+                             poffset + nv * j + mesh_indices[3 * i + 0],
+                             poffset + nv * j + mesh_indices[3 * i + 1],
+                             poffset + nv * j + mesh_indices[3 * i + 2] };
         buf.insert(buf.end(), primitive, primitive + 4);
     }
     write(&buf.front(), sizeof(int) * buf.size(), f);
