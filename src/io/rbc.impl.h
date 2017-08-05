@@ -10,7 +10,7 @@ static void write(const void * const ptr, const int nbytes32, MPI_File f) {
     MC(MPI_File_seek(f, ntotal, MPI_SEEK_CUR));
 }
 
-static void dump0(Particle  *_particles, int *mesh_indices,
+static void dump0(Particle  *_particles, int *faces,
                   int nc, int nv, int nt,
                   const char * filename) {
     std::vector<Particle> particles(_particles, _particles + nc * nv);
@@ -51,9 +51,9 @@ static void dump0(Particle  *_particles, int *mesh_indices,
     for(int j = 0; j < nc; ++j)
     for(int i = 0; i < nt; ++i) {
         int primitive[4] = { 3,
-                             poffset + nv * j + mesh_indices[3 * i + 0],
-                             poffset + nv * j + mesh_indices[3 * i + 1],
-                             poffset + nv * j + mesh_indices[3 * i + 2] };
+                             poffset + nv * j + faces[3 * i + 0],
+                             poffset + nv * j + faces[3 * i + 1],
+                             poffset + nv * j + faces[3 * i + 2] };
         buf.insert(buf.end(), primitive, primitive + 4);
     }
     write(&buf.front(), sizeof(int) * buf.size(), f);
