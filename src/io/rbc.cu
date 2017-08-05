@@ -1,9 +1,5 @@
 #include <sys/stat.h>
-
-#ifndef NO_H5
-#include <hdf5.h>
-#endif
-
+#include <mpi.h>
 #include <sstream>
 #include <vector>
 #include <conf.h>

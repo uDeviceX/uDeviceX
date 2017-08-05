@@ -4,7 +4,7 @@
 #include <hdf5.h>
 #endif
 
-#include <sstream>
+#include <string>
 #include <vector>
 #include <conf.h>
 #include "conf.common.h"
