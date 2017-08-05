@@ -31,7 +31,7 @@ void dump_part(int step) {
 void dump_rbcs() {
   static int id = 0;
   cD2H(a::pp_hst, r::q.pp, r::q.n);
-  rbc_dump(r::q.nc, a::pp_hst, r::q.tri_hst, r::q.nv, r::q.nt, id++);
+  rbc_dump(a::pp_hst, r::q.tri_hst, r::q.nc, r::q.nv, r::q.nt, id++);
 }
 
 void dump_grid() {

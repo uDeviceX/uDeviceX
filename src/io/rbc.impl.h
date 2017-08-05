@@ -60,10 +60,10 @@ static void rbc_dump0(const char * filename,
     MPI_File_close(&f);
 }
 
-void rbc_dump(int nc, Particle *p, int* triplets, int nv, int nt, int id) {
+void rbc_dump(Particle *pp, int *triplets, int nc, int nv, int nt, int id) {
     const char *fmt = DUMP_BASE "/r/%05d.ply";
     char buf[BUFSIZ];
     sprintf(buf, fmt, id);
     if (m::rank == 0) mkdir(DUMP_BASE "/r", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-    rbc_dump0(buf, triplets, nc, nt, p, nv);
+    rbc_dump0(buf, triplets, nc, nt, pp, nv);
 }
