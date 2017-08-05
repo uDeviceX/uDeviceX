@@ -1,6 +1,6 @@
 namespace rex {
 class RemoteHalo {
-    TimeSeriesWindow history;
+    History hist;
 public:
     DeviceBuffer<Particle> dstate;
     PinnedHostBuffer<Particle> hstate;
@@ -11,8 +11,8 @@ public:
         dstate.resize(n);
         hstate.preserve_resize(n);
         ff.resize(n);
-        history.update(n);
+        hist.update(n);
     }
-    int expected() const {return (int)ceil(history.max() * 1.1);}
+    int expected() const {return (int)ceil(hist.max() * 1.1);}
 };
 }

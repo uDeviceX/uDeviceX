@@ -1,6 +1,6 @@
 namespace rex {
 class LocalHalo {
-    TimeSeriesWindow history;
+    History hist;
 public:
     DeviceBuffer<int>* indexes;
     PinnedHostBuffer<Force>* ff;
@@ -17,8 +17,8 @@ public:
         indexes->resize(n);
         ff->resize(n);
     }
-    void update() { history.update(ff->S);}
-    int expected() const { return (int)ceil(history.max() * 1.1);}
+    void update() { hist.update(ff->S);}
+    int expected() const { return (int)ceil(hist.max() * 1.1);}
     int size() const { return indexes->C;}
 };
 }
