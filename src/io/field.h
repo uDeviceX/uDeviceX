@@ -1,12 +1,12 @@
 bool H5FieldDump::directory_exists = false;
-void H5FieldDump::_xdmf_header(FILE * xmf) {
+void H5FieldDump::header(FILE * xmf) {
     fprintf(xmf, "<?xml version=\"1.0\" ?>\n");
     fprintf(xmf, "<!DOCTYPE Xdmf SYSTEM \"Xdmf.dtd\" []>\n");
     fprintf(xmf, "<Xdmf Version=\"2.0\">\n");
     fprintf(xmf, " <Domain>\n");
 }
 
-void H5FieldDump::_xdmf_grid(FILE * xmf,
+void H5FieldDump::grid(FILE * xmf,
                              const char * const h5path, const char * const *channelnames, int nchannels) {
     fprintf(xmf, "   <Grid Name=\"mesh\" GridType=\"Uniform\">\n");
     fprintf(xmf, "     <Topology TopologyType=\"3DCORECTMesh\" Dimensions=\"%d %d %d\"/>\n",
@@ -34,12 +34,12 @@ void H5FieldDump::_xdmf_grid(FILE * xmf,
     fprintf(xmf, "   </Grid>\n");
 }
 
-void H5FieldDump::_xdmf_epilogue(FILE * xmf) {
+void H5FieldDump::epilogue(FILE * xmf) {
     fprintf(xmf, " </Domain>\n");
     fprintf(xmf, "</Xdmf>\n");
 }
 
-void H5FieldDump::_write_fields(const char * const path2h5,
+void H5FieldDump::fields(const char * const path2h5,
                                 const float * const channeldata[],
                                 const char * const * const channelnames, const int nchannels) {
 #ifndef NO_H5
@@ -85,10 +85,10 @@ void H5FieldDump::_write_fields(const char * const path2h5,
 
         FILE * xmf = fopen(wrapper, "w");
 
-        _xdmf_header(xmf);
-        _xdmf_grid(xmf, std::string(path2h5).substr(std::string(path2h5).find_last_of("/") + 1).c_str(),
+        header(xmf);
+        grid(xmf, std::string(path2h5).substr(std::string(path2h5).find_last_of("/") + 1).c_str(),
                    channelnames, nchannels);
-        _xdmf_epilogue(xmf);
+        epilogue(xmf);
 
         fclose(xmf);
     }
@@ -106,7 +106,7 @@ void H5FieldDump::scalar(float *data,
                                    const char *channelname) {
     char path2h5[512];
     sprintf(path2h5, DUMP_BASE "/h5/%s.h5", channelname);
-    _write_fields(path2h5, &data, &channelname, 1);
+    fields(path2h5, &data, &channelname, 1);
 }
 
 void H5FieldDump::dump(Particle *p, int n) {
@@ -143,6 +143,6 @@ void H5FieldDump::dump(Particle *p, int n) {
     char filepath[512];
     sprintf(filepath, DUMP_BASE "/h5/flowfields-%04d.h5", id++);
     float * data[] = { rho.data(), u[0].data(), u[1].data(), u[2].data() };
-    _write_fields(filepath, data, names, 4);
+    fields(filepath, data, names, 4);
 #endif // NO_H5
 }

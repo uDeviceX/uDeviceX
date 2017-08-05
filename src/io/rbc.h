@@ -1,4 +1,4 @@
-void _write_bytes(const void * const ptr, const int nbytes32, MPI_File f) {
+static void _write_bytes(const void * const ptr, const int nbytes32, MPI_File f) {
     MPI_Offset base;
     MC(MPI_File_get_position(f, &base));
     MPI_Offset offset = 0, nbytes = nbytes32;
