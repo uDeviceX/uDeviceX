@@ -13,7 +13,5 @@
 #include "inc/type.h"
 #include "common.mpi.h"
 #include "io/field.h"
-#include "io/rbc.h"
 
-#include "io/rbc.impl.h"
 #include "io/field.impl.h"
