@@ -1,4 +1,4 @@
-static void _write_bytes(const void * const ptr, const int nbytes32, MPI_File f) {
+static void write(const void * const ptr, const int nbytes32, MPI_File f) {
     MPI_Offset base;
     MC(MPI_File_get_position(f, &base));
     MPI_Offset offset = 0, nbytes = nbytes32;
@@ -38,13 +38,13 @@ static void rbc_dump0(const char * filename,
         ss <<  "end_header\n";
     }
     std::string content = ss.str();
-    _write_bytes(content.c_str(), content.size(), f);
+    write(content.c_str(), content.size(), f);
     int L[3] = { XS, YS, ZS };
     for(int i = 0; i < n; ++i)
     for(int c = 0; c < 3; ++c)
     particles[i].r[c] += L[c] / 2 + m::coords[c] * L[c];
 
-    _write_bytes(&particles.front(), sizeof(Particle) * n, f);
+    write(&particles.front(), sizeof(Particle) * n, f);
     int poffset = 0;
     MPI_Exscan(&n, &poffset, 1, MPI_INTEGER, MPI_SUM, m::cart);
     std::vector<int> buf;
@@ -56,7 +56,7 @@ static void rbc_dump0(const char * filename,
                              poffset + nvertices_per_instance * j + mesh_indices[3 * i + 2] };
         buf.insert(buf.end(), primitive, primitive + 4);
     }
-    _write_bytes(&buf.front(), sizeof(int) * buf.size(), f);
+    write(&buf.front(), sizeof(int) * buf.size(), f);
     MPI_File_close(&f);
 }
 
