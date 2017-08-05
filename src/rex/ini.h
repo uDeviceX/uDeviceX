@@ -7,7 +7,7 @@ void ini() {
     for (i = 0; i < 26; i++) remote[i] = new RemoteHalo;
 
     for (i = 0; i < 26; ++i) {
-        remote[i]->preserve_resize(estimate);
+        remote[i]->resize(estimate);
         local[i]->resize(estimate);
         local[i]->update();
 

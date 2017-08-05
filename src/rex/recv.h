@@ -30,7 +30,7 @@ void recvM(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
         int expected = remote[i]->expected();
 
         remote[i]->pmessage.resize(max(1, count));
-        remote[i]->preserve_resize(count);
+        remote[i]->resize(count);
         MPI_Status s;
         if (count > expected)
             MC(l::m::Recv(&remote[i]->pmessage.front() + expected, (count - expected) * 6, MPI_FLOAT, ranks[i], t.btp2 + tags[i], cart, &s));
