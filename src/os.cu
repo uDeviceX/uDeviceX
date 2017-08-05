@@ -1,6 +1,7 @@
 #include <sys/stat.h>
 #include <stdio.h>
-#include "io/os.h"
+#include <errno.h>
+#include "os.h"
 
 namespace os {
 void mkdir(const char *path) {
@@ -11,6 +12,7 @@ void mkdir(const char *path) {
 
     if (!rc) {
         fprintf(stderr, "os.cu: mkdir: cannot create directory ‘%s’\n", path);
+        fprintf(stderr, "errno: %d\n", errno);
         exit(1);
     }
 }

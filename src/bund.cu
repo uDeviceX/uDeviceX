@@ -1,5 +1,3 @@
-#include <sys/stat.h> /* for dump.impl */
-
 #include <assert.h>
 #include <vector>
 #include <mpi.h>

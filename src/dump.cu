@@ -7,14 +7,12 @@
 #include "common.h"
 #include "common.mpi.h"
 #include "dump.h"
-#include <sys/stat.h>
+#include "os.h"
 
 namespace dump
 {
 void ini(Ticket *t) {
-    if (m::rank == 0)
-    mkdir(DUMP_BASE "/bop", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-
+    if (m::rank == 0) os::mkdir(DUMP_BASE "/bop");
     const int L[3] = {XS, YS, ZS};        
     for (int c = 0; c < 3; ++c) t->mi[c] = (m::coords[c] + 0.5) * L[c];
 

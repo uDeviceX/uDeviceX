@@ -1,5 +1,3 @@
-#include <sys/stat.h>
-
 #ifndef NO_H5
 #include <hdf5.h>
 #endif
@@ -7,6 +5,8 @@
 #include <string>
 #include <vector>
 #include <conf.h>
+
+#include "os.h"
 #include "conf.common.h"
 #include "m.h"     /* MPI */
 #include "l/m.h"

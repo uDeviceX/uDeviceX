@@ -134,8 +134,7 @@ void H5FieldDump::dump(Particle *p, int n) {
 
     const char * names[] = { "density", "u", "v", "w" };
     if (!directory_exists) {
-        if (m::rank == 0)
-        mkdir(DUMP_BASE "/h5", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+        if (m::rank == 0) os::mkdir(DUMP_BASE "/h5");
         directory_exists = true;
         MC(l::m::Barrier(m::cart));
     }

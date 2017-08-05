@@ -1,8 +1,8 @@
-#include <sys/stat.h>
 #include <mpi.h>
 #include <sstream>
 #include <vector>
 #include <conf.h>
+#include "os.h"
 #include "conf.common.h"
 #include "m.h"     /* MPI */
 #include "l/m.h"
