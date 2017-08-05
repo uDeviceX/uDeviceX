@@ -7,7 +7,7 @@ static void shift0(Particle* f, /**/ Particle* t) {
     t->r[Z] = f->r[Z] + 0.5*ZS + co[Z]*ZS;
 }
 
-static void shift(Particle* f, int n, /**/ Particle* t) {
+static void shift(Particle *f, int n, /**/ Particle *t) {
     /* f, t: from, to */
     int i;
     for (i = 0; i < n; i++) shift0(f++, t++);
