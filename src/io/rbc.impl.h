@@ -25,8 +25,7 @@ static void write(const void * const ptr, const int nbytes32, MPI_File f) {
     MC(MPI_File_seek(f, ntotal, MPI_SEEK_CUR));
 }
 
-static void dump0(Particle  *pp, int *faces,
-                  int nc, int nv, int nt, MPI_File f) {
+static void header(int nc, int nv, int nt, MPI_File f) {
     int n, NPOINTS;
     n = nc * nv;
     NPOINTS = 0;
@@ -47,7 +46,14 @@ static void dump0(Particle  *pp, int *faces,
     }
     std::string content = ss.str();
     write(content.c_str(), content.size(), f);
+}
 
+static void dump0(Particle  *pp, int *faces,
+                  int nc, int nv, int nt, MPI_File f) {
+    int n;
+    header(nc, nv, nt, f);
+
+    n = nc * nv;
     write(pp, sizeof(Particle) * n, f);
     int poffset = 0;
     MPI_Exscan(&n, &poffset, 1, MPI_INTEGER, MPI_SUM, m::cart);
