@@ -1,10 +1,10 @@
 static void shift0(Particle* f, /**/ Particle* t) {
     enum {X, Y, Z};
-    int *c;
-    c = m::coords;
-    t->r[X] = f->r[X] + 0.5*XS + c[X]*XS;
-    t->r[Y] = f->r[Y] + 0.5*YS + c[Y]*YS;
-    t->r[Z] = f->r[Z] + 0.5*ZS + c[Z]*ZS;
+    int *co;
+    co = m::coords;
+    t->r[X] = f->r[X] + 0.5*XS + co[X]*XS;
+    t->r[Y] = f->r[Y] + 0.5*YS + co[Y]*YS;
+    t->r[Z] = f->r[Z] + 0.5*ZS + co[Z]*ZS;
 }
 
 static void shift(Particle* f, int n, /**/ Particle* t) {
