@@ -11,7 +11,7 @@ static void write(const void * const ptr, const int nbytes32, MPI_File f) {
 }
 
 static void dump0(Particle  *_particles, int *mesh_indices,
-                  int nc, int nt, int nv,
+                  int nc, int nv, int nt,
                   const char * filename) {
     std::vector<Particle> particles(_particles, _particles + nc * nv);
     int NPOINTS = 0;
@@ -65,5 +65,5 @@ void rbc_dump(Particle *pp, int *faces, int nc, int nv, int nt, int id) {
     char buf[BUFSIZ];
     sprintf(buf, fmt, id);
     if (m::rank == 0) os::mkdir(DUMP_BASE "/r");
-    dump0(pp, faces, nc, nt, nv, buf);
+    dump0(pp, faces, nc, nv, nt, buf);
 }
