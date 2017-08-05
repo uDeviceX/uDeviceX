@@ -2,6 +2,9 @@ namespace rex {
 class LocalHalo {
     TimeSeriesWindow history;
 public:
+    DeviceBuffer<int>* indexes;
+    PinnedHostBuffer<Force>* ff;
+
     LocalHalo() {
         indexes = new DeviceBuffer<int>;
         ff      = new PinnedHostBuffer<Force>;
@@ -10,8 +13,6 @@ public:
         delete indexes;
         delete ff;
     }
-    DeviceBuffer<int>* indexes;
-    PinnedHostBuffer<Force>* ff;
     void resize(int n) {
         indexes->resize(n);
         ff->resize(n);

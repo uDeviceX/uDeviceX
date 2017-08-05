@@ -6,6 +6,7 @@ public:
     PinnedHostBuffer<Particle> hstate;
     PinnedHostBuffer<Force> ff;
     std::vector<Particle> pmessage;
+
     void preserve_resize(int n) {
         dstate.resize(n);
         hstate.preserve_resize(n);
