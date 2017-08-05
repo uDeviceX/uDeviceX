@@ -6,14 +6,14 @@ void ini(/*io*/ basetags::TagGen *g) {
     ini_tickettags(g, &tt);
     ini_ticketpack(&tp);
     ini_ticketpinned(&ti);
-    mpDeviceMalloc(&packbuf);
+    mpDeviceMalloc(&buf);
     Palloc(&host_packbuf, MAX_PART_NUM);
     rex::ini();
 }
 
 void fin() {
     rex::fin();
-    cudaFree(packbuf);
+    cudaFree(buf);
     Pfree(host_packbuf);
     fin_ticketcom(tc);
     fin_ticketpack(tp);
@@ -36,7 +36,7 @@ static void post(std::vector<ParticlesWrap> w, int nw) {
         rex::copy_offset(nw, tp, ti);
         rex::scanB(nw, tp);
         rex::copy_tstarts(tp, ti);
-        rex::pack(w, nw, tp, packbuf);
+        rex::pack(w, nw, tp, buf);
         dSync();
     }
     rex::local_resize();
@@ -44,7 +44,7 @@ static void post(std::vector<ParticlesWrap> w, int nw) {
 
     if (cnt == 0) rex::recvP(tc.cart, tc.ranks, tr.tags, tt);
     else          rex::s::waitP();
-    rex::copy_pack(ti, packbuf, host_packbuf);
+    rex::copy_pack(ti, buf, host_packbuf);
     dSync();
     rex::sendC(tc.cart, tc.ranks, tt);
     rex::sendP(tc.cart, tc.ranks, tt, ti, host_packbuf);
@@ -57,7 +57,7 @@ static void rex0(std::vector<ParticlesWrap> w, int nw) {
     rex::copy_offset(nw, tp, ti);
     rex::scanB(nw, tp);
     rex::copy_tstarts(tp, ti);
-    rex::pack(w, nw, tp, packbuf);
+    rex::pack(w, nw, tp, buf);
     post(w, nw);
     rex::r::waitC();
     rex::r::waitP();
