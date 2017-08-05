@@ -6,4 +6,6 @@ TicketPack   tp;
 TicketPinned ti;
 
 int cnt;
+Particle *packbuf;
+
 }

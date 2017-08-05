@@ -21,4 +21,5 @@ struct TicketPinned { /* helps pack particles (host) */
     int *tstarts;
     int *offsets;
 };
+
 }
