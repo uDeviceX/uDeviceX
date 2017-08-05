@@ -14,6 +14,9 @@
 #include "common.mpi.h"
 #include "io.h"
 
+#include "io/rbc.h"
+#include "io/field.h"
+
 bool H5FieldDump::directory_exists = false;
 
 void _write_bytes(const void * const ptr, const int nbytes32, MPI_File f) {
