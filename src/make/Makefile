@@ -12,7 +12,7 @@ NVCCFLAGS += -std=c++11
 LIBS      += -lcudart
 
 OBJ0 = $B/bund.o $B/mesh/collision.o $B/mesh/dist.o $B/mesh/bbox.o $B/diag.o $B/common.mpi.o \
-	$B/dpd/local.o $B/field.o $B/glb.o $B/io/rbc.o  $B/io/field.o $B/m.o $B/main.o \
+	$B/dpd/local.o $B/field.o $B/glb.o $B/io/os.o $B/io/rbc.o  $B/io/field.o $B/m.o $B/main.o \
 	$B/mesh/props.o $B/mrescue.o $B/minmax.o $B/mcomm/int.o $B/mcomm/imp.o \
 	$B/solid.o $B/tcells/int.o $B/tcells/imp.o $B/restart.o $B/dump.o $B/flu/int.o $B/flu/imp.o \
 	$B/dpdr/int.o $B/dpdr/imp.o $B/odstr/int.o $B/odstr/imp.o $B/sdf/int.o $B/sdf/imp.o \
