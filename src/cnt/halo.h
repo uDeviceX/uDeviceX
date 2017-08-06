@@ -22,10 +22,10 @@ void halo(ParticlesWrap halos[26]) {
         CC(cudaMemcpyToSymbolAsync(k_cnt::g::packstates, recvpackstates,
                                    sizeof(recvpackstates), 0,
                                    H2D));
-        Force *packresults[26];
-        for (int i = 0; i < 26; ++i) packresults[i] = halos[i].f;
-        CC(cudaMemcpyToSymbolAsync(k_cnt::g::packresults, packresults,
-                                   sizeof(packresults), 0, H2D));
+        Force *ff[26];
+        for (int i = 0; i < 26; ++i) ff[i] = halos[i].f;
+        CC(cudaMemcpyToSymbolAsync(k_cnt::g::ff, ff,
+                                   sizeof(ff), 0, H2D));
     }
 
     if (nremote_padded)

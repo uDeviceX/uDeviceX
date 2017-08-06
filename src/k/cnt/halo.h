@@ -29,7 +29,7 @@ __global__ void halo(int nparticles_padded, int ncellentries,
         k_read::AOS6f((float2*)(g::packstates[code] + unpackbase),
                       nunpack, dst0, dst1, dst2);
 
-        dst = (float *)(g::packresults[code] + unpackbase);
+        dst = (float *)(g::ff[code] + unpackbase);
     }
 
     float xforce, yforce, zforce;

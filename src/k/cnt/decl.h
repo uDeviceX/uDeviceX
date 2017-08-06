@@ -16,6 +16,6 @@ __constant__ float *csolutesacc[MAX_OBJ_TYPES];
 
 __constant__ int packstarts_padded[27], packcount[26];
 __constant__ Particle *packstates[26];
-__constant__ Force *packresults[26];
+__constant__ Force *ff[26];
 }
 }
