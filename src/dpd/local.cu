@@ -13,7 +13,6 @@
 struct InfoDPD {
     int3 ncells;
     uint nxyz;
-    float3 domainsize, domainstart;
     float * ff;
     float seed;
 };
@@ -382,8 +381,6 @@ void flocal0(float4 *zip0, ushort4 *zip1, float* ff,  int np,
 
     c.ncells = make_int3( nx, ny, nz );
     c.nxyz = nx * ny * nz;
-    c.domainsize = make_float3( XL, YL, ZL );
-    c.domainstart = make_float3( -XL * 0.5, -YL * 0.5, -ZL * 0.5 );
     c.ff = ff;
     c.seed = seed;
 
