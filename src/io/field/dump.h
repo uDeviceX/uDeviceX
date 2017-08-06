@@ -3,8 +3,7 @@ static int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
 
 static void dump0(Particle *pp, int n,
                   int ncells, /*w*/
-                  std::vector<float> rho,
-                  std::vector<float> u[3]) {
+                  float *rho, float *u[3]) {
 #ifndef NO_H5
     enum {X, Y, Z};
     static int id = 0; /* dump id */
@@ -38,7 +37,7 @@ static void dump0(Particle *pp, int n,
     }
 
     sprintf(path, DUMP_BASE "/h5/flowfields-%04d.h5", id++);
-    float *data[] = { rho.data(), u[X].data(), u[Y].data(), u[Z].data() };
+    float *data[] = { rho, u[X], u[Y], u[Z] };
     fields(path, data, names, 4);
 #endif // NO_H5
 }
@@ -46,13 +45,16 @@ static void dump0(Particle *pp, int n,
 void dump(Particle *pp, int n) {
 #ifndef NO_H5
     enum {X, Y, Z};
-    int nc;
+    int nc, sz;
+    float *rho, *u[3];
     nc = XS * YS * ZS;
-    std::vector<float> rho(nc), u[3];
-    u[X].resize(nc);
-    u[Y].resize(nc);
-    u[Z].resize(nc);
+    sz = nc*sizeof(rho[0]);
+    rho  =  (float*)malloc(sz);
+    u[X] = (float*)malloc(sz);
+    u[Y] = (float*)malloc(sz);
+    u[Z] = (float*)malloc(sz);
     dump0(pp, n, nc, /*w*/ rho, u);
+    free(rho); free(u[X]); free(u[Y]); free(u[Z]);
 #endif // NO_H5
 }
 }
