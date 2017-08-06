@@ -145,7 +145,6 @@ namespace ic {
 #include "x/impl.h"
 
 #include "dpd/local.h"
-#include "dpd/flocal.h"
 
 namespace dpdx {
 namespace dev {

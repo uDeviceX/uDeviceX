@@ -3,10 +3,10 @@
 #include <stdio.h>
 #include "dpd/float.h"
 #include "rnd.h"
-#include "dpd/local.h"
 #include "common.h"
 #include "common.cuda.h"
-
+#include "inc/type.h"
+#include "dpd/local.h"
 #include <conf.h>
 #include "forces.h"
 
@@ -397,4 +397,10 @@ void flocal0(float4 *zip0, ushort4 *zip1, int np, int *start, int *count, float 
     }
 
     CC( cudaPeekAtLastError() );
+}
+
+void flocal(float4 *zip0, ushort4 *zip1, int n, int *start, int *count,
+	    rnd::KISS* rnd, /**/ Force *ff) {
+    if (n <= 0) return;
+    flocal0(zip0, zip1, n, start, count, rnd->get_float(), (float*)ff);
 }
