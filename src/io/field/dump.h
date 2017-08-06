@@ -12,18 +12,11 @@ static void zero(float *rho, float *v[3], int n) {
     zero0(v[X], n); zero0(v[Y], n); zero0(v[Z], n);
 }
 
-static void dump0(Particle *pp, int n, int nc, /*w*/
-                  float *rho, float *u[3]) {
-#ifndef NO_H5
+static void avg(Particle *pp, int n, int nc, /*w*/
+                float *rho, float *u[3]) {
     enum {X, Y, Z};
-    static int id = 0; /* dump id */
-    static bool directory_exists = false;
-
-    char path[BUFSIZ];
-    const char *names[] = { "density", "u", "v", "w" };
     int c, i, entry;
     float *r, *v;
-
     zero(rho, u, nc);
     for (i = 0; i < n; ++i) {
         r = pp[i].r;
@@ -37,11 +30,21 @@ static void dump0(Particle *pp, int n, int nc, /*w*/
         rho[entry] += 1;
         for (c = 0; c < 3; ++c) u[c][entry] += v[c];
     }
-
     for (c = 0; c < 3; ++c)
     for (i = 0; i < nc; ++i)
         u[c][i] = rho[i] ? u[c][i] / rho[i] : 0;
+}
 
+static void dump0(Particle *pp, int n, int nc, /*w*/
+                  float *rho, float *u[3]) {
+#ifndef NO_H5
+    enum {X, Y, Z};
+    static int id = 0; /* dump id */
+    static bool directory_exists = false;
+    char path[BUFSIZ];
+    const char *names[] = { "density", "u", "v", "w" };
+
+    avg(pp, n, nc, rho, u);
     if (!directory_exists) {
         if (m::rank == 0) os::mkdir(DUMP_BASE "/h5");
         directory_exists = true;
