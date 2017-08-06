@@ -31,19 +31,19 @@ static void header(int nc0, int nv, int nt, MPI_File f) {
     int nc; /* total number of cells */
     nc = 0;
     l::m::Reduce(&nc0, &nc, 1, MPI_INT, MPI_SUM, 0, m::cart) ;
-    std::stringstream ss;
+    std::stringstream s;
     if (m::rank == 0) {
-        ss <<  "ply\n";
-        ss <<  "format binary_little_endian 1.0\n";
-        ss <<  "element vertex " << nv * nc << "\n";
-        ss <<  "property float x\nproperty float y\nproperty float z\n";
-        ss <<  "property float u\nproperty float v\nproperty float w\n";
-        ss <<  "element face " << nt * nc << "\n";
-        ss <<  "property list int int vertex_index\n";
-        ss <<  "end_header\n";
+        s <<  "ply\n";
+        s <<  "format binary_little_endian 1.0\n";
+        s <<  "element vertex " << nv * nc << "\n";
+        s <<  "property float x\nproperty float y\nproperty float z\n";
+        s <<  "property float u\nproperty float v\nproperty float w\n";
+        s <<  "element face " << nt * nc << "\n";
+        s <<  "property list int int vertex_index\n";
+        s <<  "end_header\n";
     }
-    std::string content = ss.str();
-    write(content.c_str(), content.size(), f);
+    std::string ss = s.str();
+    write(ss.c_str(), ss.size(), f);
 }
 
 static void vert(Particle *pp, int nc, int nv, MPI_File f) {
