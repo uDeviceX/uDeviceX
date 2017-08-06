@@ -1,6 +1,5 @@
-void H5FieldDump::scalar(float *data,
-                                   const char *channelname) {
-    char path2h5[512];
-    sprintf(path2h5, DUMP_BASE "/h5/%s.h5", channelname);
-    fields(path2h5, &data, &channelname, 1);
+void H5FieldDump::scalar(float *D, const char *name) {
+    char path[BUFSIZ];
+    sprintf(path, DUMP_BASE "/h5/%s.h5", name);
+    fields(path, &D, &name, 1);
 }
