@@ -243,31 +243,3 @@ inline __device__ uint xgt( uint i, uint j ) {
   return xmin( 1u, xmax(0u, diff) );
 }
 
-/******************************************************************************
-  Branch
-  Not Working Yet, Compiler does not see the loop!
- ******************************************************************************/
-
-#define __CONCAT__(x,y) x##y
-#define CONCAT(x,y) __CONCAT__(x,y)
-#define UNIQUE(variable) CONCAT(variable##_,__LINE__)
-
-#define xfor(i,i_beg,i_end,inc,LOOP) \
-    uint i, init_##LOOP = i_beg; \
-const float f_##LOOP = u2f(i_beg); \
-const float g_##LOOP = u2f(i_end); \
-asm volatile( "{" ); \
-asm volatile( ".reg .pred p,q;" ); \
-asm volatile( "setp.geu.f32 p, %0, %1;" : : "f"(f_##LOOP), "f"(g_##LOOP) : "memory" ); \
-asm volatile( "mov.b32 %0, %1;" : "=r"(i) : "r"(init_##LOOP) : "memory" ); \
-asm volatile( "@p bra " #LOOP "_END;" : : : "memory"  ); \
-asm volatile( #LOOP "_BEG:" : : : "memory");
-
-#define xendfor(i,i_beg,i_end,inc,LOOP) \
-    const float i##_##LOOP = u2f(i) + u2f(inc); \
-i = f2u( i##_##LOOP ); \
-asm volatile( "setp.lt.f32 q, %0, %1;" : : "f"(i##_##LOOP), "f"(g_##LOOP) : "memory" ); \
-asm volatile( "@q bra " #LOOP "_BEG;" : : : "memory" ); \
-asm volatile( #LOOP "_END:" : : : "memory" );\
-asm volatile( "}" );
-
