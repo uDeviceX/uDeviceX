@@ -12,7 +12,7 @@ static void zero(float *rho, float *v[3], int n) {
     zero0(v[X], n); zero0(v[Y], n); zero0(v[Z], n);
 }
 
-static void avg(Particle *pp, int n, int nc, /*w*/
+static void avg(Particle *pp, int n, int nc, /**/
                 float *rho, float *u[3]) {
     enum {X, Y, Z};
     int c, i, entry;
