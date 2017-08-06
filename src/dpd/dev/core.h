@@ -1,4 +1,4 @@
-__forceinline__ __device__ void core( const uint dststart, const uint pshare, const uint tid, const uint spidext )
+static __device__ void core( const uint dststart, const uint pshare, const uint tid, const uint spidext )
 {
     uint item;
     const uint offset = xmad( tid, 4.f, pshare );

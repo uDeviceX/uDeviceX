@@ -1,18 +1,10 @@
-__global__
-void merged()
-{
-
+static __global__ void merged() {
     asm volatile( ".shared .u32 smem[512];" ::: "memory" );
 
     const uint tid = threadIdx.x;
     const uint wid = threadIdx.y;
     const uint pshare = xscale( threadIdx.y, 256.f );
-
-#if !(defined(__CUDA_ARCH__)) || __CUDA_ARCH__>= 350
     const char4 offs = __ldg( tid2ind + tid );
-#else
-    const char4 offs = tid2ind[tid];
-#endif
 
     const int cbase = blockIdx.z * MYCPBZ * info.ncells.x * info.ncells.y +
         blockIdx.y * MYCPBY * info.ncells.x +

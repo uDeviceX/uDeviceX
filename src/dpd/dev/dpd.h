@@ -1,4 +1,4 @@
-__device__ float3 dpd(int dpid, float4 rdest, float4 udest, float4 rsrc, float4 usrc, int spid) {
+static __device__ float3 dpd(int dpid, float4 rdest, float4 udest, float4 rsrc, float4 usrc, int spid) {
     float rnd;
     float3 r1, r2, v1, v2;
     float3 f;
