@@ -12,8 +12,7 @@ static void zero(float *rho, float *v[3], int n) {
     zero0(v[X], n); zero0(v[Y], n); zero0(v[Z], n);
 }
 
-static void dump0(Particle *pp, int n,
-                  int ncells, /*w*/
+static void dump0(Particle *pp, int n, int nc, /*w*/
                   float *rho, float *u[3]) {
 #ifndef NO_H5
     enum {X, Y, Z};
@@ -22,7 +21,7 @@ static void dump0(Particle *pp, int n,
 
     char path[BUFSIZ];
     const char *names[] = { "density", "u", "v", "w" };
-    zero(rho, u, n);
+    zero(rho, u, nc);
     int c, i, entry;
     float *r, *v;
     for (i = 0; i < n; ++i) {
@@ -39,7 +38,7 @@ static void dump0(Particle *pp, int n,
     }
 
     for (c = 0; c < 3; ++c)
-    for (i = 0; i < ncells; ++i)
+    for (i = 0; i < nc; ++i)
         u[c][i] = rho[i] ? u[c][i] / rho[i] : 0;
 
     if (!directory_exists) {
