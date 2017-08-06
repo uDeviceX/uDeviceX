@@ -1,3 +1,5 @@
+static const int NVP = 3; /* number of vertices per face */
+
 static void shift0(Particle* f, /**/ Particle* t) {
     enum {X, Y, Z};
     int *co;
@@ -38,7 +40,7 @@ static void header(int nc0, int nv, int nt, MPI_File f) {
         ss <<  "property float u\nproperty float v\nproperty float w\n";
         ss <<  "element face " << nt * nc << "\n";
         ss <<  "property list int int vertex_index\n";
-s        ss <<  "end_header\n";
+        ss <<  "end_header\n";
     }
     std::string content = ss.str();
     write(content.c_str(), content.size(), f);
@@ -50,22 +52,32 @@ static void vert(Particle *pp, int nc, int nv, MPI_File f) {
     write(pp, sizeof(Particle) * n, f);
 }
 
-static void wfaces(int *faces, int nc, int nv, int nt, MPI_File f) {
+static void wfaces0(int *buf, int *faces, int nc, int nv, int nt, MPI_File f) {
     /* write faces */
-    int n, poffset, i, j;
-    std::vector<int> buf;
+    int c, t, b;  /* cell, triangle, buffer index */
+    int n, shift;
     n = nc * nv;
-    poffset = 0;
-    MPI_Exscan(&n, &poffset, 1, MPI_INTEGER, MPI_SUM, m::cart);
-    for(j = 0; j < nc; ++j)
-    for(i = 0; i < nt; ++i) {
-        int primitive[4] = { 3,
-                             poffset + nv * j + faces[3 * i + 0],
-                             poffset + nv * j + faces[3 * i + 1],
-                             poffset + nv * j + faces[3 * i + 2] };
-        buf.insert(buf.end(), primitive, primitive + 4);
+    shift = 0;
+    MPI_Exscan(&n, &shift, 1, MPI_INTEGER, MPI_SUM, m::cart);
+
+    b = 0;
+    for(c = 0; c < nc; ++c)
+    for(t = 0; t < nt; ++t) {
+        buf[b++] = NVP;
+        buf[b++] = shift + nv*c + faces[3*t    ];
+        buf[b++] = shift + nv*c + faces[3*t + 1];
+        buf[b++] = shift + nv*c + faces[3*t + 2];        
     }
-    write(&buf.front(), sizeof(int) * buf.size(), f);
+    write(buf, sizeof(&buf) * b, f);
+}
+
+static void wfaces(int *faces, int nc, int nv, int nt, MPI_File f) {
+    int *buf; /* buffer for faces */
+    int sz;
+    sz = (1 + NVP) * nc * nt * sizeof(int);
+    buf = (int*)malloc(sz);
+    wfaces0(buf, faces, nc, nv, nt, f);
+    free(buf);
 }
 
 static void dump0(Particle *pp, int *faces,
