@@ -18,5 +18,6 @@
 #include "io/field/grid.h"
 #include "io/field/field.h"
 #include "io/field/dump.h"
+#include "io/field/scalar.h"
 
 

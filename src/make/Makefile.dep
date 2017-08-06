@@ -11,7 +11,7 @@ $B/flu/imp.o: $S/common.cuda.h $S/common.h $S/common.mpi.h $B/conf.h $S/flu/dev.
 $B/flu/int.o: $S/clist/int.h $S/common.cuda.h $S/common.h $B/conf.h $S/flu/imp.h $S/flu/int.h $S/inc/type.h $S/rnd.h
 $B/glb.o: $S/conf.common.h $B/conf.h $S/glb.h $S/m.h
 $B/hforces/imp.o: $S/common.cuda.h $S/common.h $B/conf.h $S/forces.h $S/hforces/dev.h $S/hforces/dev.map.h $S/hforces/imp.h $S/inc/type.h $S/k/common.h $S/k/read.h $S/rnd.h
-$B/io/field.o: $S/common.mpi.h $S/conf.common.h $B/conf.h $S/inc/type.h $S/io/field.h $S/io/field/dump.h $S/io/field/field.h $S/io/field/grid.h $S/io/field/imp.h $S/l/m.h $S/m.h $S/os.h
+$B/io/field.o: $S/common.mpi.h $S/conf.common.h $B/conf.h $S/inc/type.h $S/io/field.h $S/io/field/dump.h $S/io/field/field.h $S/io/field/grid.h $S/io/field/imp.h $S/io/field/scalar.h $S/l/m.h $S/m.h $S/os.h
 $B/io/rbc.o: $S/common.mpi.h $S/conf.common.h $B/conf.h $S/inc/type.h $S/io/rbc.h $S/io/rbc/imp.h $S/l/m.h $S/m.h $S/os.h
 $B/l/linal.o: $S/l/h/linal.h $S/l/linal.h
 $B/l/m.o: $S/l/h/m.h $S/l/m.h

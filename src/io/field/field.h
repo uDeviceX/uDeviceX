@@ -1,6 +1,6 @@
-void H5FieldDump::fields(const char * const path2h5,
-                                const float * const channeldata[],
-                                const char * const * const channelnames, const int nchannels) {
+void fields(const char * const path2h5,
+            const float * const channeldata[],
+            const char * const * const channelnames, const int nchannels) {
 #ifndef NO_H5
     hid_t plist_id_access = H5Pcreate(H5P_FILE_ACCESS);
     H5Pset_fapl_mpio(plist_id_access, m::cart, MPI_INFO_NULL);
