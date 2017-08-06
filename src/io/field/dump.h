@@ -1,9 +1,12 @@
 namespace h5 {
+static int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
+
 static void dump0(Particle *pp, int n,
                   int ncells, /*w*/
                   std::vector<float> rho,
                   std::vector<float> u[3]) {
 #ifndef NO_H5
+    enum {X, Y, Z};
     static int id = 0; /* dump id */
     static bool directory_exists = false;
 
@@ -15,9 +18,9 @@ static void dump0(Particle *pp, int n,
         r = pp[i].r;
         v = pp[i].v;
         int index[3] = {
-             max(0, min(XS - 1, (int)(floor(r[0])) + XS / 2)),
-             max(0, min(YS - 1, (int)(floor(r[1])) + YS / 2)),
-             max(0, min(ZS - 1, (int)(floor(r[2])) + ZS / 2))
+            minmax(0, XS - 1, (int)(floor(r[X])) + XS / 2),
+            minmax(0, YS - 1, (int)(floor(r[Y])) + YS / 2),
+            minmax(0, ZS - 1, (int)(floor(r[Z])) + ZS / 2)
         };
         entry = index[0] + XS * (index[1] + YS * index[2]);
         rho[entry] += 1;
@@ -35,17 +38,21 @@ static void dump0(Particle *pp, int n,
     }
 
     sprintf(path, DUMP_BASE "/h5/flowfields-%04d.h5", id++);
-    float *data[] = { rho.data(), u[0].data(), u[1].data(), u[2].data() };
+    float *data[] = { rho.data(), u[X].data(), u[Y].data(), u[Z].data() };
     fields(path, data, names, 4);
 #endif // NO_H5
 }
 
 void dump(Particle *pp, int n) {
 #ifndef NO_H5
-    int ncells;
-    ncells = XS * YS * ZS;
-    std::vector<float> rho(ncells), u[3];
-    dump0(pp, n, ncells, /*w*/ rho, u);
+    enum {X, Y, Z};
+    int nc;
+    nc = XS * YS * ZS;
+    std::vector<float> rho(nc), u[3];
+    u[X].resize(nc);
+    u[Y].resize(nc);
+    u[Z].resize(nc);
+    dump0(pp, n, nc, /*w*/ rho, u);
 #endif // NO_H5
 }
 }
