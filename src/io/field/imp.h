@@ -11,14 +11,6 @@ void H5FieldDump::epilogue(FILE * xmf) {
     fprintf(xmf, "</Xdmf>\n");
 }
 
-
-H5FieldDump::H5FieldDump() {
-    const int L[3] = { XS, YS, ZS };
-
-    for(int c = 0; c < 3; ++c)
-    globalsize[c] = L[c] * m::dims[c];
-}
-
 void H5FieldDump::scalar(float *data,
                                    const char *channelname) {
     char path2h5[512];
