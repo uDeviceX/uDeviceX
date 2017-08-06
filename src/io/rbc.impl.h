@@ -15,14 +15,14 @@ static void shift(Particle *f, int n, /**/ Particle *t) {
     for (i = 0; i < n; i++) shift0(f++, t++);
 }
 
-static void write(const void *const ptr, int nbytes, MPI_File f) {
-    MPI_Offset base, offset, ntotal;
-    MPI_Status status;
+static void write(const void * const ptr, const int nbytes32, MPI_File f) {
+    MPI_Offset base;
     MC(MPI_File_get_position(f, &base));
-    offset = 0;
+    MPI_Offset offset = 0, nbytes = nbytes32;
     MC(MPI_Exscan(&nbytes, &offset, 1, MPI_OFFSET, MPI_SUM, m::cart));
+    MPI_Status status;
     MC(MPI_File_write_at_all(f, base + offset, ptr, nbytes, MPI_CHAR, &status));
-    ntotal = 0;
+    MPI_Offset ntotal = 0;
     MC(MPI_Allreduce(&nbytes, &ntotal, 1, MPI_OFFSET, MPI_SUM, m::cart) );
     MC(MPI_File_seek(f, ntotal, MPI_SEEK_CUR));
 }
