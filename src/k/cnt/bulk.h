@@ -77,9 +77,9 @@ __global__ void bulk(float2 *particles, int np,
         continue;
 
         int sentry = 3 * spid;
-        float2 stmp0 = __ldg(csolutes[soluteid] + sentry);
-        float2 stmp1 = __ldg(csolutes[soluteid] + sentry + 1);
-        float2 stmp2 = __ldg(csolutes[soluteid] + sentry + 2);
+        float2 stmp0 = __ldg(g::csolutes[soluteid] + sentry);
+        float2 stmp1 = __ldg(g::csolutes[soluteid] + sentry + 1);
+        float2 stmp2 = __ldg(g::csolutes[soluteid] + sentry + 2);
 
         float myrandnr = rnd::mean0var1ii(seed, pid, spid);
 
@@ -100,9 +100,9 @@ __global__ void bulk(float2 *particles, int np,
         yforce += yinteraction;
         zforce += zinteraction;
 
-        atomicAdd(csolutesacc[soluteid] + sentry, -xinteraction);
-        atomicAdd(csolutesacc[soluteid] + sentry + 1, -yinteraction);
-        atomicAdd(csolutesacc[soluteid] + sentry + 2, -zinteraction);
+        atomicAdd(g::csolutesacc[soluteid] + sentry, -xinteraction);
+        atomicAdd(g::csolutesacc[soluteid] + sentry + 1, -yinteraction);
+        atomicAdd(g::csolutesacc[soluteid] + sentry + 2, -zinteraction);
     }
 
     atomicAdd(acc + 3 * pid + 0, xforce);

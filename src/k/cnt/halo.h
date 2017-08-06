@@ -13,22 +13,23 @@ __global__ void halo(int nparticles_padded, int ncellentries,
     float *dst = NULL;
 
     {
-        uint key9 = 9 * (localbase >= packstarts_padded[9]) +
-            9 * (localbase >= packstarts_padded[18]);
-        uint key3 = 3 * (localbase >= packstarts_padded[key9 + 3]) +
-            3 * (localbase >= packstarts_padded[key9 + 6]);
-        uint key1 = (localbase >= packstarts_padded[key9 + key3 + 1]) +
-            (localbase >= packstarts_padded[key9 + key3 + 2]);
+        uint key9 = 9 * (localbase >= g::packstarts_padded[9]) +
+            9 * (localbase >= g::packstarts_padded[18]);
+        uint key3 = 3 * (localbase >= g::packstarts_padded[key9 + 3]) +
+            3 * (localbase >= g::packstarts_padded[key9 + 6]);
+        uint key1 = (localbase >= g::packstarts_padded[key9 + key3 + 1]) +
+            (localbase >= g::packstarts_padded[key9 + key3 + 2]);
         int code = key9 + key3 + key1;
-        int unpackbase = localbase - packstarts_padded[code];
+        int unpackbase = localbase - g::packstarts_padded[code];
 
-        nunpack = min(32, packcount[code] - unpackbase);
+        nunpack = min(32, g::packcount[code] - unpackbase);
 
         if (nunpack == 0) return;
 
-        k_read::AOS6f((float2 *)(packstates[code] + unpackbase), nunpack, dst0, dst1, dst2);
+        k_read::AOS6f((float2*)(g::packstates[code] + unpackbase),
+                      nunpack, dst0, dst1, dst2);
 
-        dst = (float *)(packresults[code] + unpackbase);
+        dst = (float *)(g::packresults[code] + unpackbase);
     }
 
     float xforce, yforce, zforce;
@@ -94,9 +95,9 @@ __global__ void halo(int nparticles_padded, int ncellentries,
             int spid = ce.pid;
 
             int sentry = 3 * spid;
-            float2 stmp0 = __ldg(csolutes[soluteid] + sentry);
-            float2 stmp1 = __ldg(csolutes[soluteid] + sentry + 1);
-            float2 stmp2 = __ldg(csolutes[soluteid] + sentry + 2);
+            float2 stmp0 = __ldg(g::csolutes[soluteid] + sentry);
+            float2 stmp1 = __ldg(g::csolutes[soluteid] + sentry + 1);
+            float2 stmp2 = __ldg(g::csolutes[soluteid] + sentry + 2);
 
             float myrandnr = rnd::mean0var1ii(seed, pid, spid);
 
@@ -117,9 +118,9 @@ __global__ void halo(int nparticles_padded, int ncellentries,
             yforce += yinteraction;
             zforce += zinteraction;
 
-            atomicAdd(csolutesacc[soluteid] + sentry, -xinteraction);
-            atomicAdd(csolutesacc[soluteid] + sentry + 1, -yinteraction);
-            atomicAdd(csolutesacc[soluteid] + sentry + 2, -zinteraction);
+            atomicAdd(g::csolutesacc[soluteid] + sentry,     -xinteraction);
+            atomicAdd(g::csolutesacc[soluteid] + sentry + 1, -yinteraction);
+            atomicAdd(g::csolutesacc[soluteid] + sentry + 2, -zinteraction);
         }
     }
 

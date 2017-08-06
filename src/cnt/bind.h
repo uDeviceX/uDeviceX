@@ -22,11 +22,11 @@ void bind(const int *const cellsstart, const int *const cellentries,
         fs[i] = (float *)wsolutes[i].f;
     }
 
-    CC(cudaMemcpyToSymbolAsync(k_cnt::cnsolutes, ns, sizeof(int) * n, 0,
+    CC(cudaMemcpyToSymbolAsync(k_cnt::g::cnsolutes, ns, sizeof(int) * n, 0,
                                H2D));
-    CC(cudaMemcpyToSymbolAsync(k_cnt::csolutes, ps, sizeof(float2 *) * n, 0,
+    CC(cudaMemcpyToSymbolAsync(k_cnt::g::csolutes, ps, sizeof(float2 *) * n, 0,
                                H2D));
-    CC(cudaMemcpyToSymbolAsync(k_cnt::csolutesacc, fs, sizeof(float *) * n, 0,
+    CC(cudaMemcpyToSymbolAsync(k_cnt::g::csolutesacc, fs, sizeof(float *) * n, 0,
                                H2D));
 }
 }
