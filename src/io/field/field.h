@@ -37,19 +37,6 @@ void fields(const char * const path2h5,
     H5Sclose(filespace_simple);
     H5Fclose(file_id);
 
-    if (!m::rank)
-    {
-        char wrapper[256];
-        sprintf(wrapper, "%s.xmf", std::string(path2h5).substr(0, std::string(path2h5).find_last_of(".h5") - 2).data());
-
-        FILE * xmf = fopen(wrapper, "w");
-
-        header(xmf);
-        grid(xmf, std::string(path2h5).substr(std::string(path2h5).find_last_of("/") + 1).c_str(),
-                   channelnames, nchannels);
-        epilogue(xmf);
-
-        fclose(xmf);
-    }
+    if (!m::rank) wrapper(path2h5, channelnames, nchannels);
 #endif // NO_H5
 }
