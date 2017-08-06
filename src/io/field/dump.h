@@ -1,19 +1,16 @@
 namespace h5 {
-void dump(Particle *pp, int n) {
+static void dump0(Particle *pp, int n,
+                  int ncells, /*w*/
+                  std::vector<float> rho,
+                  std::vector<float> u[3]) {
 #ifndef NO_H5
     static int id = 0; /* dump id */
     static bool directory_exists = false;
 
     char path[BUFSIZ];
     const char *names[] = { "density", "u", "v", "w" };
-    int ncells;
     int c, i, entry;
     float *r, *v;
-    ncells = XS * YS * ZS;
-    std::vector<float> rho(ncells), u[3];
-
-    for (c = 0; c < 3; ++c) u[c].resize(ncells);
-
     for (i = 0; i < n; ++i) {
         r = pp[i].r;
         v = pp[i].v;
@@ -40,6 +37,15 @@ void dump(Particle *pp, int n) {
     sprintf(path, DUMP_BASE "/h5/flowfields-%04d.h5", id++);
     float *data[] = { rho.data(), u[0].data(), u[1].data(), u[2].data() };
     fields(path, data, names, 4);
+#endif // NO_H5
+}
+
+void dump(Particle *pp, int n) {
+#ifndef NO_H5
+    int ncells;
+    ncells = XS * YS * ZS;
+    std::vector<float> rho(ncells), u[3];
+    dump0(pp, n, ncells, /*w*/ rho, u);
 #endif // NO_H5
 }
 }
