@@ -1,5 +1,5 @@
-void H5FieldDump::grid(FILE * xmf,
-                             const char * const h5path, const char * const *channelnames, int nchannels) {
+static void grid(FILE * xmf,
+                 const char * const h5path, const char * const *channelnames, int nchannels) {
     enum {X, Y, Z};
     int i;
     int *d, G[3];
