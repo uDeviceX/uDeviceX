@@ -1,24 +1,27 @@
-void H5FieldDump::dump(Particle *p, int n) {
+void H5FieldDump::dump(Particle *pp, int n) {
 #ifndef NO_H5
     static int id = 0; /* dump id */
     char path[BUFSIZ];
     const char *names[] = { "density", "u", "v", "w" };
     int ncells;
     int c, i, entry;
+    float *r, *v;
     ncells = XS * YS * ZS;
     std::vector<float> rho(ncells), u[3];
 
     for (c = 0; c < 3; ++c) u[c].resize(ncells);
 
     for (i = 0; i < n; ++i) {
-         int index[3] = {
-             max(0, min(XS - 1, (int)(floor(p[i].r[0])) + XS / 2)),
-             max(0, min(YS - 1, (int)(floor(p[i].r[1])) + YS / 2)),
-             max(0, min(ZS - 1, (int)(floor(p[i].r[2])) + ZS / 2))
+        r = pp[i].r;
+        v = pp[i].v;
+        int index[3] = {
+             max(0, min(XS - 1, (int)(floor(r[0])) + XS / 2)),
+             max(0, min(YS - 1, (int)(floor(r[1])) + YS / 2)),
+             max(0, min(ZS - 1, (int)(floor(r[2])) + ZS / 2))
         };
         entry = index[0] + XS * (index[1] + YS * index[2]);
         rho[entry] += 1;
-        for (c = 0; c < 3; ++c) u[c][entry] += p[i].v[c];
+        for (c = 0; c < 3; ++c) u[c][entry] += v[c];
     }
 
     for (c = 0; c < 3; ++c)
