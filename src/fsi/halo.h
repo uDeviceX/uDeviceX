@@ -2,10 +2,10 @@ namespace fsi {
 void halo(ParticlesWrap halos[26]) {
     setup(wsolvent->p, wsolvent->n, wsolvent->cellsstart, wsolvent->cellscount);
     int nremote_padded = 0;
-    int recvpackcount[26], recvpackstarts_padded[27];
+    int counts[26], recvpackstarts_padded[27];
 
-    for (int i = 0; i < 26; ++i) recvpackcount[i] = halos[i].n;
-    CC(cudaMemcpyToSymbolAsync(k_fsi::g::counts, recvpackcount, sizeof(recvpackcount), 0, H2D));
+    for (int i = 0; i < 26; ++i) counts[i] = halos[i].n;
+    CC(cudaMemcpyToSymbolAsync(k_fsi::g::counts, counts, sizeof(counts), 0, H2D));
 
     recvpackstarts_padded[0] = 0;
     for (int i = 0, s = 0; i < 26; ++i)
