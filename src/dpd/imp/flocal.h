@@ -17,9 +17,6 @@ void flocal0(float4 *zip0, ushort4 *zip1, int np, int *start, int *count, float 
         texParticlesH4.mipmapFilterMode = cudaFilterModePoint;
         texParticlesH4.normalized = 0;
 
-        CC( cudaFuncSetCacheConfig( _dpd_forces_symm_merged, cudaFuncCachePreferEqual ) );
-
-
 	{
 	    is_mps_enabled = false;
 
@@ -74,7 +71,7 @@ void flocal0(float4 *zip0, ushort4 *zip1, int np, int *start, int *count, float 
     CC( cudaMemsetAsync( ff, 0, sizeof( float )* np32 * 3) );
 
     if( c.ncells.x % MYCPBX == 0 && c.ncells.y % MYCPBY == 0 && c.ncells.z % MYCPBZ == 0 ) {
-        _dpd_forces_symm_merged <<< dim3( c.ncells.x / MYCPBX, c.ncells.y / MYCPBY, c.ncells.z / MYCPBZ ), dim3( 32, MYWPB ), 0>>> ();
+        merged<<< dim3( c.ncells.x / MYCPBX, c.ncells.y / MYCPBY, c.ncells.z / MYCPBZ ), dim3( 32, MYWPB ), 0>>> ();
         transpose<<< 28, 1024, 0>>>(np);
     } else {
         fprintf( stderr, "Incompatible grid config\n" );
