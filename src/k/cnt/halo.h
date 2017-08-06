@@ -26,7 +26,7 @@ __global__ void halo(int nparticles_padded, int ncellentries,
 
         if (nunpack == 0) return;
 
-        k_read::AOS6f((float2*)(g::packstates[code] + unpackbase),
+        k_read::AOS6f((float2*)(g::pp[code] + unpackbase),
                       nunpack, dst0, dst1, dst2);
 
         dst = (float *)(g::ff[code] + unpackbase);

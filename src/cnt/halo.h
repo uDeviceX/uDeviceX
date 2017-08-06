@@ -19,7 +19,7 @@ void halo(ParticlesWrap halos[26]) {
         const Particle *recvpackstates[26];
         for (int i = 0; i < 26; ++i) recvpackstates[i] = halos[i].p;
 
-        CC(cudaMemcpyToSymbolAsync(k_cnt::g::packstates, recvpackstates,
+        CC(cudaMemcpyToSymbolAsync(k_cnt::g::pp, recvpackstates,
                                    sizeof(recvpackstates), 0,
                                    H2D));
         Force *ff[26];
