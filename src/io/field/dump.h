@@ -11,12 +11,12 @@ void H5FieldDump::dump(Particle *p, int n) {
     for (c = 0; c < 3; ++c) u[c].resize(ncells);
 
     for (i = 0; i < n; ++i) {
-         int cellindex[3] = {
+         int index[3] = {
              max(0, min(XS - 1, (int)(floor(p[i].r[0])) + XS / 2)),
              max(0, min(YS - 1, (int)(floor(p[i].r[1])) + YS / 2)),
              max(0, min(ZS - 1, (int)(floor(p[i].r[2])) + ZS / 2))
         };
-        entry = cellindex[0] + XS * (cellindex[1] + YS * cellindex[2]);
+        entry = index[0] + XS * (index[1] + YS * index[2]);
         rho[entry] += 1;
         for (c = 0; c < 3; ++c) u[c][entry] += p[i].v[c];
     }
