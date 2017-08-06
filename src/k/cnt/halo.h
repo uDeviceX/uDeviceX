@@ -13,16 +13,16 @@ __global__ void halo(int nparticles_padded, int ncellentries,
     float *dst = NULL;
 
     {
-        uint key9 = 9 * (localbase >= g::packstarts_padded[9]) +
-            9 * (localbase >= g::packstarts_padded[18]);
-        uint key3 = 3 * (localbase >= g::packstarts_padded[key9 + 3]) +
-            3 * (localbase >= g::packstarts_padded[key9 + 6]);
-        uint key1 = (localbase >= g::packstarts_padded[key9 + key3 + 1]) +
-            (localbase >= g::packstarts_padded[key9 + key3 + 2]);
+        uint key9 = 9 * (localbase >= g::starts[9]) +
+            9 * (localbase >= g::starts[18]);
+        uint key3 = 3 * (localbase >= g::starts[key9 + 3]) +
+            3 * (localbase >= g::starts[key9 + 6]);
+        uint key1 = (localbase >= g::starts[key9 + key3 + 1]) +
+            (localbase >= g::starts[key9 + key3 + 2]);
         int code = key9 + key3 + key1;
-        int unpackbase = localbase - g::packstarts_padded[code];
+        int unpackbase = localbase - g::starts[code];
 
-        nunpack = min(32, g::packcount[code] - unpackbase);
+        nunpack = min(32, g::counts[code] - unpackbase);
 
         if (nunpack == 0) return;
 

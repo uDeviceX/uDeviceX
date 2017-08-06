@@ -22,7 +22,7 @@ void bind(const int *const cellsstart, const int *const cellentries,
         fs[i] = (float *)wsolutes[i].f;
     }
 
-    CC(cudaMemcpyToSymbolAsync(k_cnt::g::cnsolutes, ns, sizeof(int) * n, 0,
+    CC(cudaMemcpyToSymbolAsync(k_cnt::g::ns, ns, sizeof(int) * n, 0,
                                H2D));
     CC(cudaMemcpyToSymbolAsync(k_cnt::g::csolutes, ps, sizeof(float2 *) * n, 0,
                                H2D));
