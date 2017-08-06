@@ -16,27 +16,21 @@ static void setup_first() {
     k_fsi::texSolventParticles.normalized = 0;
 }
 
-void setup(const Particle *const solvent, const int npsolvent,
-           const int *const cellsstart, const int *const cellscount) {
+void setup(const Particle *const solvent, const int npsolvent, const int *const cellsstart, const int *const cellscount) {
+    size_t offset;
+    int nc;
     if (firsttime) {
         setup_first();
         firsttime = false;
     }
 
-    size_t textureoffset = 0;
+    offset = 0;
+    if (npsolvent)
+        CC(cudaBindTexture(&offset, &k_fsi::texSolventParticles, solvent, &k_fsi::texSolventParticles.channelDesc, sizeof(float) * 6 * npsolvent));
 
-    if (npsolvent) {
-        CC(cudaBindTexture(&textureoffset, &k_fsi::texSolventParticles, solvent,
-                           &k_fsi::texSolventParticles.channelDesc,
-                           sizeof(float) * 6 * npsolvent));
-    }
-
-    const int ncells = XS * YS * ZS;
-
-    CC(cudaBindTexture(&textureoffset, &k_fsi::texCellsStart, cellsstart,
-                       &k_fsi::texCellsStart.channelDesc, sizeof(int) * ncells));
-
-    CC(cudaBindTexture(&textureoffset, &k_fsi::texCellsCount, cellscount,
-                       &k_fsi::texCellsCount.channelDesc, sizeof(int) * ncells));
+    nc = XS * YS * ZS;
+    CC(cudaBindTexture(&offset, &k_fsi::texCellsStart, cellsstart, &k_fsi::texCellsStart.channelDesc, sizeof(int) * nc));
+    CC(cudaBindTexture(&offset, &k_fsi::texCellsCount, cellscount, &k_fsi::texCellsCount.channelDesc, sizeof(int) * nc));
+                       
 }
 }
