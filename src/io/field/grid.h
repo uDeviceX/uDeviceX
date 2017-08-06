@@ -2,7 +2,7 @@ static void grid(FILE * xmf,
                  const char * const h5path, const char * const *channelnames, int nchannels) {
     enum {X, Y, Z};
     int i;
-    int *d, G[3];
+    int *d, G[3]; /* global size */
     d = m::dims;
     G[X] = XS*d[X]; G[Y] = YS*d[Y]; G[Z] = ZS*d[Z];
 
