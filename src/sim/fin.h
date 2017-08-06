@@ -11,8 +11,6 @@ void fin() {
     wall::free_quants(&w::q);
     wall::free_ticket(&w::t);
 
-    delete dump_field;
-
     flu::free_quants(&o::q);
     flu::free_ticketZ(&o::tz);
     flu::free_ticketRND(&o::trnd);

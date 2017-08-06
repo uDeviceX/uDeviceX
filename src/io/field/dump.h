@@ -1,6 +1,9 @@
-void H5FieldDump::dump(Particle *pp, int n) {
+namespace h5 {
+void dump(Particle *pp, int n) {
 #ifndef NO_H5
     static int id = 0; /* dump id */
+    static bool directory_exists = false;
+
     char path[BUFSIZ];
     const char *names[] = { "density", "u", "v", "w" };
     int ncells;
@@ -38,4 +41,5 @@ void H5FieldDump::dump(Particle *pp, int n) {
     float *data[] = { rho.data(), u[0].data(), u[1].data(), u[2].data() };
     fields(path, data, names, 4);
 #endif // NO_H5
+}
 }

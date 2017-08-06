@@ -1,5 +1,3 @@
-bool H5FieldDump::directory_exists = false;
-
 static void header(FILE * xmf) {
     fprintf(xmf, "<?xml version=\"1.0\" ?>\n");
     fprintf(xmf, "<!DOCTYPE Xdmf SYSTEM \"Xdmf.dtd\" []>\n");

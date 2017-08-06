@@ -36,7 +36,7 @@ void dump_rbcs() {
 
 void dump_grid() {
   cD2H(a::pp_hst, o::q.pp, o::q.n);
-  dump_field->dump(a::pp_hst, o::q.n);
+  h5::dump(a::pp_hst, o::q.n);
 }
 
 void dump_diag_after(int it) { /* after wall */

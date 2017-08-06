@@ -129,8 +129,7 @@ static void dump0(const int N0[3], const float* D0, /**/ float* D1) {
 
 static void dump1(const int N[3], const float* D, /*w*/ float* W) {
   dump0(N, D, /**/ W);
-  H5FieldDump dump;
-  dump.scalar(W, "wall");
+  h5::scalar(W, "wall");
 }
 
 void dump(const int N[], const float* D) {

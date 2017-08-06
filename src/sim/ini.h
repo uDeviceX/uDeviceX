@@ -71,6 +71,5 @@ void ini() {
         mbounce::alloc_ticketM(&bb::tm);
     }
 
-    dump_field = new H5FieldDump;
     MC(MPI_Barrier(m::cart));
 }
