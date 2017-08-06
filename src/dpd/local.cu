@@ -9,11 +9,9 @@
 #include <conf.h>
 #include "forces.h"
 
-#include "dpd/dev/float.h"
 #include "dpd/imp/type.h"
-
+#include "dpd/dev/float.h"
 #include "dpd/dev/decl.h"
-#include "dpd/imp/decl.h"
 
 #define __IMOD(x,y) ((x)-((x)/(y))*(y))
 
@@ -29,4 +27,6 @@
 #include "dpd/dev/merged.h"
 #include "dpd/dev/tex.h"
 #include "dpd/dev/transpose.h"
+
+#include "dpd/imp/decl.h"
 #include "dpd/imp/flocal.h"
