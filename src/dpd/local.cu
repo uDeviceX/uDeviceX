@@ -55,43 +55,7 @@ __inline__ __device__ uint2 __unpack_8_24( uint d )
     return make_uint2( a, d & 0x00FFFFFFU );
 }
 
-// TODO: modify compiled PTX to replace integer comparison in branch statements
-
-__forceinline__ __device__ void core_ytang( const uint dststart, const uint pshare, const uint tid, const uint spidext )
-{
-    uint item;
-    const uint offset = xmad( tid, 4.f, pshare );
-    asm volatile( "ld.volatile.shared.u32 %0, [%1+1024];" : "=r"( item ) : "r"( offset ) : "memory" );
-    const uint2 pid = __unpack_8_24( item );
-    const uint dpid = xadd( dststart, pid.x );
-    const uint spid = pid.y;
-
-    const uint dentry = xscale( dpid, 2.f );
-    const uint sentry = xscale( spid, 2.f );
-    const float4 xdest = tex1Dfetch( texParticlesF4,       dentry );
-    const float4 xsrc  = tex1Dfetch( texParticlesF4,       sentry );
-    const float4 udest = tex1Dfetch( texParticlesF4, xadd( dentry, 1u ) );
-    const float4 usrc  = tex1Dfetch( texParticlesF4, xadd( sentry, 1u ) );
-    const float3 f = _dpd_interaction( dpid, xdest, udest, xsrc, usrc, spid );
-
-    // the overhead of transposition acc back
-    // can be completely killed by changing the integration kernel
-    uint off  = dpid & 0x0000001FU;
-    uint base = xdiv( dpid, 1 / 32.f );
-    float* acc = info.ff + xmad( base, 96.f, off );
-    atomicAdd( acc   , f.x );
-    atomicAdd( acc + 32, f.y );
-    atomicAdd( acc + 64, f.z );
-
-    if( spid < spidext ) {
-        uint off  = spid & 0x0000001FU;
-        uint base = xdiv( spid, 1 / 32.f );
-        float* acc = info.ff + xmad( base, 96.f, off );
-        atomicAdd( acc   , -f.x );
-        atomicAdd( acc + 32, -f.y );
-        atomicAdd( acc + 64, -f.z );
-    }
-}
+#include "dpd/dev/core.h"
 
 #define MYCPBX  (4)
 #define MYCPBY  (2)
@@ -247,7 +211,7 @@ void _dpd_forces_symm_merged()
 
                 nb = xadd( nb, i2u( __popc( overview ) ) );
                 if( nb >= 32u ) {
-                    core_ytang( dststart, pshare, tid, spidext );
+                    core( dststart, pshare, tid, spidext );
                     nb = xsub( nb, 32u );
 
                     asm volatile( "{ .reg .u32 tmp;"
@@ -260,7 +224,7 @@ void _dpd_forces_symm_merged()
         }
 
         if( tid < nb ) {
-            core_ytang( dststart, pshare, tid, spidext );
+            core( dststart, pshare, tid, spidext );
         }
         nb = 0;
     }
