@@ -316,12 +316,12 @@ void transpose_acc( const int np )
 
 void flocal0(float4 *zip0, ushort4 *zip1, float* ff,  int np,
 	     int *start, int *count,
-	     float rc, float XL, float YL, float ZL, float seed)
+	     float XL, float YL, float ZL, float seed)
 	     
 {
-    int nx = ( int )ceil( XL / rc );
-    int ny = ( int )ceil( YL / rc );
-    int nz = ( int )ceil( ZL / rc );
+    int nx = ( int )ceil( XL );
+    int ny = ( int )ceil( YL );
+    int nz = ( int )ceil( ZL );
     const int ncells = nx * ny * nz;
 
     if( !fdpd_init ) {
