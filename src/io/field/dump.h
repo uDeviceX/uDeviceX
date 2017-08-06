@@ -21,9 +21,10 @@ static void dump0(Particle *pp, int n, int nc, /*w*/
 
     char path[BUFSIZ];
     const char *names[] = { "density", "u", "v", "w" };
-    zero(rho, u, nc);
     int c, i, entry;
     float *r, *v;
+
+    zero(rho, u, nc);
     for (i = 0; i < n; ++i) {
         r = pp[i].r;
         v = pp[i].v;
