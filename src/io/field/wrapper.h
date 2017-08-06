@@ -5,6 +5,5 @@ static void wrapper(const char* const path, const char * const * const channelna
     header(xmf);
     grid(xmf, std::string(path).substr(std::string(path).find_last_of("/") + 1).c_str(), channelnames, nchannels);
     epilogue(xmf);
-
     fclose(xmf);
 }
