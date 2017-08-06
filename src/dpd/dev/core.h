@@ -13,7 +13,7 @@ __forceinline__ __device__ void core( const uint dststart, const uint pshare, co
     const float4 xsrc  = tex1Dfetch( texParticlesF4,       sentry );
     const float4 udest = tex1Dfetch( texParticlesF4, xadd( dentry, 1u ) );
     const float4 usrc  = tex1Dfetch( texParticlesF4, xadd( sentry, 1u ) );
-    const float3 f = _dpd_interaction( dpid, xdest, udest, xsrc, usrc, spid );
+    const float3 f = dpd( dpid, xdest, udest, xsrc, usrc, spid );
 
     // the overhead of transposition acc back
     // can be completely killed by changing the integration kernel

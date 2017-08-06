@@ -19,18 +19,7 @@ __device__ void f2tof3(float4 r, /**/ float3 *l) { /* lhs = rhs */
     l->x = r.x; l->y = r.y; l->z = r.z;
 }
 
-__device__ float3 _dpd_interaction(int dpid, float4 rdest, float4 udest, float4 rsrc, float4 usrc, int spid) {
-    float rnd;
-    float3 r1, r2, v1, v2;
-    float3 f;
-  
-    rnd = rnd::mean0var1ii( info.seed, xmin( spid, dpid ), xmax( spid, dpid ) );
-    f2tof3(rdest, &r1); f2tof3(rsrc, &r2);
-    f2tof3(udest, &v1); f2tof3(usrc, &v2);
-  
-    f = forces::dpd(SOLVENT_TYPE, SOLVENT_TYPE, r1, r2, v1, v2, rnd);
-    return f;
-}
+#include "dpd/dev/dpd.h"
 
 #define __IMOD(x,y) ((x)-((x)/(y))*(y))
 
@@ -63,13 +52,6 @@ __inline__ __device__ uint2 __unpack_8_24( uint d )
 #define MYWPB   (4)
 
 #include "dpd/dev/merged.h"
-
-__global__ void make_texture2( uint2 *start_and_count, const int *start, const int *count, const int n )
-{
-    for( int i = blockIdx.x * blockDim.x + threadIdx.x; i < n; i += blockDim.x * gridDim.x ) {
-        start_and_count[i] = make_uint2( start[i], count[i] );
-    }
-}
-
+#include "dpd/dev/tex.h"
 #include "dpd/dev/transpose.h"
 #include "dpd/imp/flocal.h"

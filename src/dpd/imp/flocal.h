@@ -50,7 +50,7 @@ void flocal0(float4 *zip0, ushort4 *zip1, int np, int *start, int *count, float 
 
     CC( cudaBindTexture( &textureoffset, &texParticlesF4, zip0,  &texParticlesF4.channelDesc, sizeof( float ) * 8 * np ) );
     CC( cudaBindTexture( &textureoffset, &texParticlesH4, zip1, &texParticlesH4.channelDesc, sizeof( ushort4 ) * np ) );
-    make_texture2 <<< 64, 512, 0>>>( start_and_count, start, count, ncells );
+    tex<<< 64, 512, 0>>>( start_and_count, start, count, ncells );
     CC( cudaBindTexture( &textureoffset, &texStartAndCount, start_and_count, &texStartAndCount.channelDesc, sizeof( uint2 ) * ncells ) );
 
     c.ncells = make_int3( XS, YS, ZS );
