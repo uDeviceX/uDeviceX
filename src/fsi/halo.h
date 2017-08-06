@@ -1,36 +1,23 @@
 namespace fsi {
 void halo(ParticlesWrap halos[26]) {
     setup(wsolvent->p, wsolvent->n, wsolvent->cellsstart, wsolvent->cellscount);
-    int nremote_padded = 0;
-    int counts[26], recvpackstarts_padded[27];
-
+    int n = 0;
+    int counts[26], starts[27];
     for (int i = 0; i < 26; ++i) counts[i] = halos[i].n;
     CC(cudaMemcpyToSymbolAsync(k_fsi::g::counts, counts, sizeof(counts), 0, H2D));
+    starts[0] = 0;
+    for (int i = 0, s = 0; i < 26; ++i) starts[i + 1] = (s += 32 * ((halos[i].n + 31) / 32));
+    n = starts[26];
 
-    recvpackstarts_padded[0] = 0;
-    for (int i = 0, s = 0; i < 26; ++i)
-        recvpackstarts_padded[i + 1] = (s += 32 * ((halos[i].n + 31) / 32));
-
-    nremote_padded = recvpackstarts_padded[26];
-
-    CC(cudaMemcpyToSymbolAsync(
-                               k_fsi::g::starts, recvpackstarts_padded,
-                               sizeof(recvpackstarts_padded), 0, H2D));
-
-    const Particle *recvpackstates[26];
-
-    for (int i = 0; i < 26; ++i) recvpackstates[i] = halos[i].p;
-
-    CC(cudaMemcpyToSymbolAsync(k_fsi::g::pp, recvpackstates,
-                               sizeof(recvpackstates), 0,
-                               H2D));
-
+    CC(cudaMemcpyToSymbolAsync(k_fsi::g::starts, starts, sizeof(starts), 0, H2D));
+    const Particle *pp[26];
+    for (int i = 0; i < 26; ++i) pp[i] = halos[i].p;
+    CC(cudaMemcpyToSymbolAsync(k_fsi::g::pp, pp, sizeof(pp), 0, H2D));
     Force *ff[26];
     for (int i = 0; i < 26; ++i) ff[i] = halos[i].f;
     CC(cudaMemcpyToSymbolAsync(k_fsi::g::ff, ff, sizeof(ff), 0, H2D));
 
-    if (nremote_padded)
-        k_fsi::halo<<<k_cnf(nremote_padded)>>>
-            (nremote_padded, wsolvent->n, local_trunk->get_float(), /**/ (float *)wsolvent->f);
+    if (n)
+        k_fsi::halo<<<k_cnf(n)>>>(n, wsolvent->n, local_trunk->get_float(), /**/ (float *)wsolvent->f);
 }
 }
