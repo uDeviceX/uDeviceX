@@ -1,7 +1,7 @@
 #include <limits>
 #include <stdint.h>
 #include <stdio.h>
-#include "dpd/float.h"
+#include "dpd/dev/float.h"
 #include "rnd.h"
 #include "common.h"
 #include "common.cuda.h"
