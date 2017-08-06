@@ -10,10 +10,10 @@ void H5FieldDump::grid(FILE * xmf,
     fprintf(xmf, "     <Topology TopologyType=\"3DCORECTMesh\" Dimensions=\"%d %d %d\"/>\n", 1 + G[Z], 1 + G[Y], 1 + G[X]);
     fprintf(xmf, "     <Geometry GeometryType=\"ORIGIN_DXDYDZ\">\n");
     fprintf(xmf, "       <DataItem Name=\"Origin\" Dimensions=\"3\" NumberType=\"Float\" Precision=\"4\" Format=\"XML\">\n");
-    fprintf(xmf, "        %e %e %e\n", 0, 0, 0);
+    fprintf(xmf, "        %e %e %e\n", 0.0, 0.0, 0.0);
     fprintf(xmf, "       </DataItem>\n");
     fprintf(xmf, "       <DataItem Name=\"Spacing\" Dimensions=\"3\" NumberType=\"Float\" Precision=\"4\" Format=\"XML\">\n");
-    fprintf(xmf, "        %e %e %e\n", 1, 1, 1);
+    fprintf(xmf, "        %e %e %e\n", 1.0, 1.0, 1.0);
     fprintf(xmf, "       </DataItem>\n");
     fprintf(xmf, "     </Geometry>\n");
     for(i = 0; i < nchannels; ++i) {
