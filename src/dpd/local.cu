@@ -1,7 +1,6 @@
 #include <limits>
 #include <stdint.h>
 #include <stdio.h>
-#include "dpd/dev/float.h"
 #include "rnd.h"
 #include "common.h"
 #include "common.cuda.h"
@@ -10,33 +9,11 @@
 #include <conf.h>
 #include "forces.h"
 
-struct InfoDPD {
-    int3 ncells;
-    uint nxyz;
-    float * ff;
-    float seed;
-};
+#include "dpd/dev/float.h"
+#include "imp/type.h"
 
-bool fdpd_init = false;
-static bool is_mps_enabled = false;
-
-__constant__ InfoDPD info;
-__device__ char4 tid2ind[32] = {
-    { -1, -1, -1, 0}, {0, -1, -1, 0}, {1, -1, -1, 0},
-    { -1,  0, -1, 0}, {0,  0, -1, 0}, {1,  0, -1, 0},
-    { -1 , 1, -1, 0}, {0,  1, -1, 0}, {1,  1, -1, 0},
-    { -1, -1,  0, 0}, {0, -1,  0, 0}, {1, -1,  0, 0},
-    { -1,  0,  0, 0}, {0,  0,  0, 0}, {1,  0,  0, 0},
-    { -1,  1,  0, 0}, {0,  1,  0, 0}, {1,  1,  0, 0},
-    { -1, -1,  1, 0}, {0, -1,  1, 0}, {1, -1,  1, 0},
-    { -1,  0,  1, 0}, {0,  0,  1, 0}, {1,  0,  1, 0},
-    { -1,  1,  1, 0}, {0,  1,  1, 0}, {1,  1,  1, 0},
-    { 0,  0,  0, 0}, {0,  0,  0, 0}, {0,  0,  0, 0},
-    { 0,  0,  0, 0}, {0,  0,  0, 0}
-};
-texture<float4, cudaTextureType1D> texParticlesF4;
-texture<ushort4, cudaTextureType1D, cudaReadModeNormalizedFloat> texParticlesH4;
-texture<uint2, cudaTextureType1D> texStartAndCount;
+#include "dev/decl.h"
+#include "imp/decl.h"
 
 __device__ void f2tof3(float4 r, /**/ float3 *l) { /* lhs = rhs */
     l->x = r.x; l->y = r.y; l->z = r.z;
