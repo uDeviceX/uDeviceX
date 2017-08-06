@@ -271,10 +271,3 @@ asm volatile( "@q bra " #LOOP "_BEG;" : : : "memory" ); \
 asm volatile( #LOOP "_END:" : : : "memory" );\
 asm volatile( "}" );
 
-//__global__ void foo( const uint n ) {
-//	volatile uint sum = 0;
-//	xfor(i,0,n,1,LOOP)
-//	sum += i * i;
-//	xendfor(i,0,n,1,LOOP)
-//	printf("%u\n",sum);
-//}
