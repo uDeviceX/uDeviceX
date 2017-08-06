@@ -1,6 +1,6 @@
 class H5FieldDump {
     static bool directory_exists;
-    int last_idtimestep, globalsize[3];
+    int globalsize[3];
     void fields(const char * const path2h5,
                        const float * const channeldata[], const char * const * const channelnames, const int nchannels);
     void header(FILE * xmf);

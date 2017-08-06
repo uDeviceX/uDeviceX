@@ -12,7 +12,7 @@ void H5FieldDump::epilogue(FILE * xmf) {
 }
 
 
-H5FieldDump::H5FieldDump() : last_idtimestep(0) {
+H5FieldDump::H5FieldDump() {
     const int L[3] = { XS, YS, ZS };
 
     for(int c = 0; c < 3; ++c)
