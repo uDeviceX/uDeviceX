@@ -1,6 +1,17 @@
 namespace h5 {
 static int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
 
+static void zero0(float *a, int n) {
+    int i;
+    for (i = 0; i < n; i ++) a[i] = 0.0;
+}
+
+static void zero(float *rho, float *v[3], int n) {
+    enum {X, Y, Z};
+    zero0(rho, n);
+    zero0(v[X], n); zero0(v[Y], n); zero0(v[Z], n);
+}
+
 static void dump0(Particle *pp, int n,
                   int ncells, /*w*/
                   float *rho, float *u[3]) {
@@ -11,6 +22,7 @@ static void dump0(Particle *pp, int n,
 
     char path[BUFSIZ];
     const char *names[] = { "density", "u", "v", "w" };
+    zero(rho, u, n);
     int c, i, entry;
     float *r, *v;
     for (i = 0; i < n; ++i) {
