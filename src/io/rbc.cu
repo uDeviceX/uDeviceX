@@ -9,4 +9,4 @@
 #include "common.mpi.h"
 #include "io/rbc.h"
 
-#include "io/rbc.impl.h"
+#include "io/rbc/imp.h"
