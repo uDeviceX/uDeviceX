@@ -1,0 +1,8 @@
+# TEST: cont.t0
+# mkdir -p tmp.conf
+# cd tmp.conf
+# u.conf ../../src ../../src/conf/default.h <<!!!
+# run
+# !
+# cat runfile Makefile ../rm.out.txt
+#

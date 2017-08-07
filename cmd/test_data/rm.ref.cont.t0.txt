@@ -1,0 +1,7 @@
+S = ../src
+B = .
+include $B/config.mk
+include $S/make/common.mk
+include $S/make/Makefile
+include $S/make/Makefile.dep
+./udx
