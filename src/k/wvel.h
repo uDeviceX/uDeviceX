@@ -2,21 +2,22 @@ namespace k_wvel
 {
 /* wall velocity */
 inline __device__ void vell(float x, float y, float z,
-                     float *vxw, float *vyw, float *vzw)
-{
+                            float *vx, float *vy, float *vz) {
+    enum {X, Y, Z};
+    *vx = *vy = *vz = 0;
 #if defined( shear_z )
-    float z0 = glb::r0[2];
-    *vxw = gamma_dot * (z - z0); *vyw = 0; *vzw = 0; /* velocity of the wall; */
+    float *r = glb::r0;
+    *vx = gamma_dot * (z - r[Z]);
 #elif defined( shear_y )
-    float y0 = glb::r0[1];
-    *vxw = gamma_dot * (y - y0); *vyw = 0; *vzw = 0; /* velocity of the wall; */
+    float *r = glb::r0;    
+    *vx = gamma_dot * (y - r[Y]);
 #endif
 }
 
 inline __device__ void bounce_vel(float   xw, float   yw, float   zw, /* wall */
                            float* vxp, float* vyp, float* vzp) {
     float vx = *vxp, vy = *vyp, vz = *vzp;
-    float vxw=0., vyw=0., vzw=0.;
+    float vxw, vyw, vzw;
     vell(xw, yw, zw, &vxw, &vyw, &vzw);
     /* go to velocity relative to the wall; bounce; and go back */
     vx -= vxw; vx = -vx; vx += vxw;
