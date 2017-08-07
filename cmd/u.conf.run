@@ -10,12 +10,12 @@ BEGIN {
 }
 
 function run1() {
-    printf "./udx\n", i > "runfile"
+    printf "u.run ./udx\n", i > "runfile"
 }
 
 function runN(   i) {
     for (i = 1; i <= nr; i++)
-	printf "bin.%d/udx\n", i > "runfile"
+	printf "u.run bin.%d/udx\n", i > "runfile"
 }
 
 function count_runs(  cnt) {
