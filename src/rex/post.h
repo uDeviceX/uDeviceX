@@ -19,7 +19,7 @@ void post_resize() {
 
 void local_resize() {
     int i;
-    for (i = 0; i < 26; ++i) local[i]->resize(send_counts[i]);
+    for (i = 0; i < 26; ++i) lo::resize(local[i], send_counts[i]);
 }
 
 }
