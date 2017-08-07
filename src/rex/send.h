@@ -19,7 +19,7 @@ void sendP(MPI_Comm cart, int dranks[26], x::TicketTags t, x::TicketPinned ti, P
     for (i = 0; i < 26; ++i) {
         start = ti.tstarts[i];
         count = send_counts[i];
-        expected = local[i]->expected();
+        expected = lo::expected(local[i]);
         
         MC(l::m::Isend(buf_pinned + start, expected * 6, MPI_FLOAT, dranks[i], t.btp1 + i, cart, &req));
         reqsendP.push_back(req);

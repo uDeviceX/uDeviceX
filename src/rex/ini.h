@@ -6,7 +6,7 @@ static void ini_local(int estimate) {
         local[i]->indexes = new DeviceBuffer<int>;
         local[i]->ff      = new PinnedHostBuffer<Force>;
         lo::resize(local[i], estimate);
-        local[i]->update();
+        lo::update(local[i]);
     }
 }
 
