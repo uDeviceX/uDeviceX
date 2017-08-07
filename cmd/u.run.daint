@@ -1,6 +1,12 @@
 #!/bin/bash
 
+run_one() { # single processor
+    exec srun "$e" "$@"
+}
 
+run_mpi() {
+    exec srun -n $n "$e" $x $y $z "$@"
+}
 
 n=$1; shift
 x=$1; shift
