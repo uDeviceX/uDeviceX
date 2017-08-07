@@ -1,6 +1,16 @@
 namespace rex {
+static void fin_local() {
+    int i;
+    for (i = 0; i < 26; i++) delete local[i];
+}
+
+static void fin_remote() {
+    int i;
+    for (i = 0; i < 26; i++) delete remote[i];
+}
+
 void fin() {
-    for (int i = 0; i < 26; i++) delete local[i];
-    for (int i = 0; i < 26; i++) delete remote[i];
+    fin_local();
+    fin_remote();
 }
 }
