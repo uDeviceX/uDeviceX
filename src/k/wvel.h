@@ -1,6 +1,4 @@
-namespace k_wvel
-{
-/* wall velocity */
+namespace k_wvel {
 inline __device__ void vell(float x, float y, float z,
                             float *vx, float *vy, float *vz) {
     enum {X, Y, Z};
