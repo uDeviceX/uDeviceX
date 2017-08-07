@@ -5,10 +5,6 @@ public:
     DeviceBuffer<int>* indexes;
     PinnedHostBuffer<Force>* ff;
 
-    ~LocalHalo() {
-        delete indexes;
-        delete ff;
-    }
     void resize(int n) {
         indexes->resize(n);
         ff->resize(n);
