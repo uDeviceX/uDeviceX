@@ -1,6 +1,6 @@
 namespace rex {
 struct LocalHalo {
-    History hist;
+    History h;
     DeviceBuffer<int>* indexes;
     PinnedHostBuffer<Force>* ff;
 
@@ -8,8 +8,27 @@ struct LocalHalo {
         indexes->resize(n);
         ff->resize(n);
     }
-    void update() { hist.update(ff->S);}
-    int expected() const { return (int)ceil(hist.max() * 1.1);}
+    void update() { h.update(ff->S);}
+    int expected() const { return (int)ceil(h.max() * 1.1);}
     int size() const { return indexes->C;}
 };
+
+namespace lo {
+void resize(LocalHalo l, int n) {
+    l.resize(n);
+    l.resize(n);
+}
+
+void update(LocalHalo l) {
+    l.h.update(l.ff->S);
+}
+
+int expected(LocalHalo l) {
+    return (int)ceil(l.h.max() * 1.1);
+}
+
+int size(LocalHalo l) {
+    return l.indexes->C;
+}
+}
 }
