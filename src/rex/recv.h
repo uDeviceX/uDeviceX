@@ -25,16 +25,20 @@ void recvP(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
 }
 
 void recvM(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
-    int i, count, expected;
+    int tag, rank;
+    int i, count, expected, n;
     MPI_Status s;
     for (i = 0; i < 26; ++i) {
         count = recv_counts[i];
         expected = remote[i]->expected();
-
         remote[i]->pmessage.resize(max(1, count));
         remote[i]->resize(count);
-        if (count > expected)
-            MC(l::m::Recv(&remote[i]->pmessage.front() + expected, (count - expected) * 6, MPI_FLOAT, ranks[i], t.btp2 + tags[i], cart, &s));
+        n = count - expected;
+        if (n > 0) {
+            tag = t.btp2 + tags[i];
+            rank = ranks[i];
+            MC(l::m::Recv(&remote[i]->pmessage.front() + expected, n * 6, MPI_FLOAT, rank, tag, cart, &s));
+        }
     }
 }
 }
