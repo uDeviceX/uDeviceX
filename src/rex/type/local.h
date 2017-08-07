@@ -5,10 +5,6 @@ public:
     DeviceBuffer<int>* indexes;
     PinnedHostBuffer<Force>* ff;
 
-    LocalHalo() {
-        indexes = new DeviceBuffer<int>;
-        ff      = new PinnedHostBuffer<Force>;
-    }
     ~LocalHalo() {
         delete indexes;
         delete ff;

@@ -3,6 +3,8 @@ static void ini_local(int estimate) {
     int i;
     for (i = 0; i < 26; i++) {
         local[i] = new LocalHalo;
+        local[i]->indexes = new DeviceBuffer<int>;
+        local[i]->ff      = new PinnedHostBuffer<Force>;
         local[i]->resize(estimate);
         local[i]->update();
     }
