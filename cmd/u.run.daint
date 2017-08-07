@@ -1,3 +1,13 @@
 #!/bin/bash
 
-# udx commands
+
+
+n=$1; shift
+x=$1; shift
+y=$1; shift
+z=$1; shift
+e=$1; shift # executable
+
+# one processor?
+onep() { test $n -eq 1; }
+if onep; then run_one "$@"; else run_mpi "$@"; fi
