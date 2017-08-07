@@ -16,7 +16,7 @@ inline __device__ void vell(float x, float y, float z,
 inline __device__ void bounce_vel(float   xw, float   yw, float   zw, /* wall */
                            float* vxp, float* vyp, float* vzp) {
     float vx = *vxp, vy = *vyp, vz = *vzp;
-    float vxw, vyw, vzw;
+    float vxw=0., vyw=0., vzw=0.;
     vell(xw, yw, zw, &vxw, &vyw, &vzw);
     /* go to velocity relative to the wall; bounce; and go back */
     vx -= vxw; vx = -vx; vx += vxw;
