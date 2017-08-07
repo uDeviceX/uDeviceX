@@ -182,6 +182,7 @@ namespace dev {
 #include "sim/generic.h"
 #include "sim/dump.h"
 #include "sim/tag.h"
+#include "sim/forces/dpd.h"
 #include "sim/forces.h"
 #define HST (true)
 #define DEV (false)
