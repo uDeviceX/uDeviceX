@@ -1,5 +1,7 @@
 #!/usr/bin/awk -f
 
+# generate `runfile'
+
 BEGIN {
     c = ARGV[1]; shift()
     nr = count_runs() # [n]umber of runs
