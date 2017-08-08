@@ -30,4 +30,5 @@
 
 #include "dpd/imp/decl.h"
 #include "dpd/imp/setup.h"
+#include "dpd/imp/mps.h"
 #include "dpd/imp/flocal.h"
