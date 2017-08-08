@@ -26,17 +26,17 @@
 namespace rig {
 namespace sub {
 
-void load_solid_mesh(const char *fname, Mesh *m_dev, Mesh *m_hst) {
-    l::ply::read(fname, /**/ m_hst);
+void load_solid_mesh(const char *fname, Mesh *dev, Mesh *hst) {
+    l::ply::read(fname, /**/ hst);
 
-    m_dev->nv = m_hst->nv;
-    m_dev->nt = m_hst->nt;
+    dev->nv = hst->nv;
+    dev->nt = hst->nt;
 
-    CC(cudaMalloc(&m_dev->tt, 3 * m_dev->nt * sizeof(int)));
-    CC(cudaMalloc(&m_dev->vv, 3 * m_dev->nv * sizeof(float)));
+    CC(cudaMalloc(&dev->tt, 3 * dev->nt * sizeof(int)));
+    CC(cudaMalloc(&dev->vv, 3 * dev->nv * sizeof(float)));
 
-    cH2D(m_dev->tt, m_hst->tt, 3 * m_dev->nt);
-    cH2D(m_dev->vv, m_hst->vv, 3 * m_dev->nv);
+    cH2D(dev->tt, hst->tt, 3 * dev->nt);
+    cH2D(dev->vv, hst->vv, 3 * dev->nv);
 }
 
 void gen_from_solvent(const Mesh m_hst,  /* io */ Particle *opp, int *on,
