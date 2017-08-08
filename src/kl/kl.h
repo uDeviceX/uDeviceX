@@ -1,11 +1,12 @@
 /* TODO: header includes header */
 #include "kl/common.h"
-#ifdef KL_RELEASE
+
+#if    defined(KL_RELEASE)
   #include "kl/release.h"
-#elif  KL_TRACE
+#elif  defined(KL_TRACE)
   #include "kl/trace.h"
-#elif  KL_PEEK
+#elif  defined(KL_PEEK)
   #include "kl/peek.h"
-#elif  KL_SAFE
+#elif  defined(KL_SAFE)
   #include "kl/safe.h"
 #endif

@@ -23,7 +23,6 @@ pre() {
     ic_center
     
     u.conf $SRC conf.base.h <<EOF
-    KL_SAFE
     $Domain
     run
 EOF
