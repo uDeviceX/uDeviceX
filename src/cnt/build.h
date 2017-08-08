@@ -15,8 +15,7 @@ void build(std::vector<ParticlesWrap> wsolutes) {
     for (int i = 0; i < (int) wsolutes.size(); ++i) {
         ParticlesWrap it = wsolutes[i];
         if (it.n)
-        k_common::subindex_local<true><<<k_cnf(it.n)>>>
-            (it.n, (float2 *)it.p, cellscount->D, subindices->D + ctr);
+            KL(k_common::subindex_local<true>, (k_cnf(it.n)), (it.n, (float2 *)it.p, cellscount->D, subindices->D + ctr));
         ctr += it.n;
     }
 
@@ -27,9 +26,8 @@ void build(std::vector<ParticlesWrap> wsolutes) {
         ParticlesWrap it = wsolutes[i];
 
         if (it.n)
-        k_cnt::populate<<<k_cnf(it.n)>>>
-            (subindices->D + ctr, cellsstart->D, it.n, i, ntotal,
-             (k_cnt::CellEntry *)cellsentries->D);
+            KL(k_cnt::populate, (k_cnf(it.n)),
+               (subindices->D + ctr, cellsstart->D, it.n, i, ntotal, (k_cnt::CellEntry *)cellsentries->D));
         ctr += it.n;
     }
 
