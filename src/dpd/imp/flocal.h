@@ -1,4 +1,5 @@
 void flocal0(float4 *zip0, ushort4 *zip1, int np, int *start, int *count, float seed, float *ff) {
+    int nx, ny, nz;
     if(!fdpd_init) {
         setup();
         fdpd_init = true;
@@ -7,7 +8,10 @@ void flocal0(float4 *zip0, ushort4 *zip1, int np, int *start, int *count, float 
     set_info(ff, np, seed);
 
     if (XS % MYCPBX == 0 && YS % MYCPBY == 0 && ZS % MYCPBZ == 0) {
-        merged<<<dim3(XS / MYCPBX, YS / MYCPBY, ZS / MYCPBZ), dim3(32, MYWPB), 0>>>();
+        nx = XS / MYCPBX;
+        ny = YS / MYCPBY;
+        nz = ZS / MYCPBZ;
+        merged<<<dim3(nx, ny, nz), dim3(32, MYWPB), 0>>>();
         CC(cudaPeekAtLastError());
         transpose<<< 28, 1024, 0>>>(np);
         CC(cudaPeekAtLastError());
