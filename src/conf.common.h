@@ -93,5 +93,5 @@
 // TODO: kernel launch options
 #if !defined(KL_RELEASE) && !defined(KL_TRACE) && \
     !defined(KL_PEEK)    && !defined(KL_SAFE)
-  #define KL_RELEASE
+  #define KL_SAFE
 #endif
