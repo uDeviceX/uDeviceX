@@ -33,8 +33,8 @@ write_conf () ( # configure
     if test ! -f $c; then c="$d/sys/$dn.$dh"; fi
     if test ! -f $c; then err 'missing config file: '"$c"; fi
 
-    msg "cp $c  config.mk"; cp "$c"  config.mk
-    msg "cp $dc conf.h"   ; cp "$dc" conf.h
+    cp "$c"  config.mk
+    cp "$dc" conf.h
 )
 
 arg0() { other . ; }
