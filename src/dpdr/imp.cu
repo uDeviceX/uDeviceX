@@ -43,15 +43,14 @@ void gather_cells(const int *start, const int *count, const int27 starts, const 
     dev::scan<32><<<26, 32 * 32>>>(nc, cnt, /**/ cum);
 }
 
-void copy_cells(const int27 fragstarts, const int ncells, const intp26 srccells, /**/ intp26 dstcells) {
-    if (ncells) dev::copycells<<<k_cnf(ncells)>>>(fragstarts, srccells, /**/ dstcells);
+void copy_cells(const int27 starts, const int ncells, const intp26 srccells, /**/ intp26 dstcells) {
+    if (ncells) dev::copycells<<<k_cnf(ncells)>>>(starts, srccells, /**/ dstcells);
 }
   
-void pack(const int27 fragstarts, const int ncells, const Particle *pp, const intp26 fragstr,
-          const intp26 fragcnt, const intp26 fragcum, const int26 fragcapacity, /**/ intp26 fragii, Particlep26 fragpp, int *bagcounts) {
-    if (ncells)
-        dev::fill_all<<<(ncells + 1) / 2, 32>>>(fragstarts, pp, fragstr, fragcnt, fragcum,
-                                                fragcapacity, /**/ fragii, fragpp, bagcounts);
+void pack(const int27 starts, const int nc, const Particle *pp, const intp26 str,
+          const intp26 cnt, const intp26 cum, const int26 capacity, /**/ intp26 ii, Particlep26 pp, int *bagcounts) {
+    if (nc)
+        dev::fill_all<<<(ncells + 1) / 2, 32>>>(starts, pp, str, cnt, cum, capacity, /**/ ii, pp, bagcounts);
 }
 
 void pack_ii(const int27 starts, const int nc, const int *ii, const intp26 str, const intp26 cnt, const intp26 cum,
