@@ -1,31 +1,13 @@
 void flocal0(float4 *zip0, ushort4 *zip1, int np, int *start, int *count, float seed, float* ff) {
-    const int ncells = XS * YS * ZS;
+    static InfoDPD c;
+    static int cetriolo = 0;
 
     if( !fdpd_init ) {
         setup();
         mps();
         fdpd_init = true;
     }
-
-    static InfoDPD c;
-
-
-    static uint2 *start_and_count;
-    static int last_nc;
-    if( !start_and_count || last_nc < ncells ) {
-        if( start_and_count ) {
-            cudaFree( start_and_count );
-        }
-        cudaMalloc( &start_and_count, sizeof( uint2 )*ncells );
-        last_nc = ncells;
-    }
-
-    size_t offset;
-    CC( cudaBindTexture( &offset, &texParticlesF4, zip0,  &texParticlesF4.channelDesc, sizeof( float ) * 8 * np ) );
-    CC( cudaBindTexture( &offset, &texParticlesH4, zip1, &texParticlesH4.channelDesc, sizeof( ushort4 ) * np ) );
-    tex<<< 64, 512, 0>>>( start_and_count, start, count, ncells );
-    CC( cudaBindTexture( &offset, &texStartAndCount, start_and_count, &texStartAndCount.channelDesc, sizeof( uint2 ) * ncells ) );
-
+    tex(zip0, zip1, np, start, count);
     c.ncells = make_int3( XS, YS, ZS );
     c.nxyz = XS * YS * ZS;
     c.ff = ff;
@@ -36,7 +18,6 @@ void flocal0(float4 *zip0, ushort4 *zip1, int np, int *start, int *count, float 
     else
 	CC( cudaMemcpyToSymbol( info, &c, sizeof( c ), 0, cudaMemcpyHostToDevice ) );
 
-    static int cetriolo = 0;
     cetriolo++;
 
     int np32 = np;
