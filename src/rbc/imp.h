@@ -75,10 +75,8 @@ void forces(int nc, const Texo<float2> texvert, const Texo<int4> textri, const T
     dim3 avBlocks(1, nc);
 
     CC(cudaMemsetAsync(av, 0, nc * 2 * sizeof(float)));
-    dev::area_volume<<<avBlocks, avThreads>>>(texvert, textri, av);
-    CC(cudaPeekAtLastError());
-
-    dev::force<<<k_cnf(nc*nv*md)>>>(texvert, texadj0, texadj1, nc, av, (float*)ff);
+    KL(dev::area_volume, (avBlocks, avThreads), (texvert, textri, av));
+    KL(dev::force, (k_cnf(nc*nv*md)), (texvert, texadj0, texadj1, nc, av, (float*)ff));
 }
 
 void setup_from_strt(const int id, /**/ Particle *pp, int *nc, int *n, /*w*/ Particle *pp_hst) {
