@@ -1,7 +1,5 @@
 void flocal0(float4 *zip0, ushort4 *zip1, int np, int *start, int *count, float seed, float* ff) {
     static InfoDPD c;
-    static int cetriolo = 0;
-
     if( !fdpd_init ) {
         setup();
         mps();
@@ -17,8 +15,6 @@ void flocal0(float4 *zip0, ushort4 *zip1, int np, int *start, int *count, float 
 	CC( cudaMemcpyToSymbolAsync( info, &c, sizeof( c ), 0, cudaMemcpyHostToDevice) );
     else
 	CC( cudaMemcpyToSymbol( info, &c, sizeof( c ), 0, cudaMemcpyHostToDevice ) );
-
-    cetriolo++;
 
     int np32 = np;
     if( np32 % 32 ) np32 += 32 - np32 % 32;
