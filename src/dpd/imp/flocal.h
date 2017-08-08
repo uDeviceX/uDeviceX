@@ -11,6 +11,7 @@ void flocal0(float4 *zip0, ushort4 *zip1, int np, int *start, int *count, float 
         nx = XS / MYCPBX;
         ny = YS / MYCPBY;
         nz = ZS / MYCPBZ;
+        MSG("flocal: n[xyz]: %d %d %d", nx, ny, nz);
         merged<<<dim3(nx, ny, nz), dim3(32, MYWPB), 0>>>();
         CC(cudaPeekAtLastError());
         transpose<<< 28, 1024, 0>>>(np);
