@@ -119,7 +119,7 @@ static void elect(const int *rcounts, const int ns, /**/ int *root, int *idmax) 
         idmax_ = j;
     }
     
-    MPI_Allreduce(localmax, globalmax, 1, MPI_2INT, MPI_MAXLOC, m::cart);
+    MPI_Allreduce(localmax, globalmax, 1, MPI_2INT, MPI_MAXLOC, l::m::cart);
 
     *root = globalmax[1];
     *idmax = idmax_;
@@ -160,7 +160,7 @@ static void share_parts(const int root, /**/ Particle *pp, int *n) {
     if (*n >= MAX_PSOLID_NUM)
     ERR("Number of solid particles too high for the buffer\n");
         
-    MC( MPI_Gather(n, 1, MPI_INT, counts.data(), 1, MPI_INT, root, m::cart) );
+    MC(MPI_Gather(n, 1, MPI_INT, counts.data(), 1, MPI_INT, root, l::m::cart) );
 
     if (m::rank == root)
     {
@@ -169,7 +169,9 @@ static void share_parts(const int root, /**/ Particle *pp, int *n) {
         displs[j+1] = displs[j] + counts[j];
     }
 
-    MC( MPI_Gatherv(pp, *n, datatype::particle, recvbuf.data(), counts.data(), displs.data(), datatype::particle, root, m::cart) );
+    MC(MPI_Gatherv(pp, *n,
+                   datatype::particle, recvbuf.data(), counts.data(), displs.data(),
+                   datatype::particle, root, l::m::cart) );
 
     if (m::rank == root) {
         *n = displs.back() + counts.back();
@@ -202,7 +204,7 @@ static void empty_solid(const Mesh m, /* io */ float *rr0, int *npsolid) {
 
 void set_ids(const int ns, Solid *ss_hst) {
     int id = 0;
-    MC( MPI_Exscan(&ns, &id, 1, MPI_INT, MPI_SUM, m::cart) );
+    MC(MPI_Exscan(&ns, &id, 1, MPI_INT, MPI_SUM, l::m::cart));
 
     for (int j = 0; j < ns; ++j)
     ss_hst[j].id = id++;
@@ -233,7 +235,7 @@ void ini(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, So
     int root, idmax;
     elect(rcounts, nsolid, /**/ &root, &idmax);
     
-    MC( MPI_Bcast(&idmax, 1, MPI_INT, root, m::cart) );
+    MC(MPI_Bcast(&idmax, 1, MPI_INT, root, l::m::cart));
 
     int rcount = 0;
 
@@ -261,9 +263,9 @@ void ini(const char *fname, const Mesh m, /**/ int *ns, int *nps, float *rr0, So
         empty_solid(m, /* io */ rr0, &npsolid);
     }
     
-    MC( MPI_Bcast(&npsolid,       1,   MPI_INT, root, m::cart) );
-    MC( MPI_Bcast(rr0,  3 * npsolid, MPI_FLOAT, root, m::cart) );
-    MC( MPI_Bcast(&model, 1, datatype::solid, root, m::cart) );
+    MC(MPI_Bcast(&npsolid,       1,   MPI_INT, root, l::m::cart) );
+    MC(MPI_Bcast(rr0,  3 * npsolid, MPI_FLOAT, root, l::m::cart) );
+    MC(MPI_Bcast(&model, 1, datatype::solid, root, l::m::cart) );
     
     // filter coms to keep only the ones in my domain
     int id = 0;

@@ -29,7 +29,7 @@
 namespace odstr {
 
 void alloc_ticketD(/*io*/ basetags::TagGen *tg, /**/ TicketD *t) {
-    l::m::Comm_dup(m::cart, &t->cart);
+    l::m::Comm_dup(l::m::cart, &t->cart);
     sub::ini_comm(t->cart, /**/ t->rank, t->r.tags);
     sub::ini_S(/**/ &t->s);
     sub::ini_R(&t->s, /**/ &t->r);

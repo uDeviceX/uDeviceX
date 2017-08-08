@@ -69,7 +69,7 @@ static void ini3(int N[3], float ext[3], float* D, /**/ struct Tex te) {
     sc = G / ext[X];
     field::scale(N, sc, /**/ D);
 
-    MC(l::m::Barrier(m::cart)); /* TODO: why? */
+    MC(l::m::Barrier(l::m::cart)); /* TODO: why? */
     if (field_dumps) field::dump(N, D);
 
     ini2(N, D, /**/ te);

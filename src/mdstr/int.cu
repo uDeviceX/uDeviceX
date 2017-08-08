@@ -13,8 +13,8 @@
 namespace mdstr {
 
 void ini_ticketC(/*io*/ basetags::TagGen *tg, /**/ TicketC *t) {
-    l::m::Comm_dup(m::cart, &t->cart);
-    sub::gen_ne(m::cart, t->rnk_ne, t->ank_ne);
+    l::m::Comm_dup(l::m::cart, &t->cart);
+    sub::gen_ne(l::m::cart, t->rnk_ne, t->ank_ne);
     t->first = true;
     t->btc = get_tag(tg);
 }
