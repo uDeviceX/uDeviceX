@@ -5,8 +5,9 @@ inline int good0(const char s[], dim3 i, dim3 j) {
     if (!rc) ERR("s: %s", s);
     return rc;
 }
-inline int good(const char s[], dim3 i, dim3 j)      { return good0(s, i, j); }
-inline int good(const char s[], dim3 i, dim3 j, int) { return good0(s, i, j); }
+inline int good(const char s[], dim3 i, dim3 j)                    { return good0(s, i, j); }
+inline int good(const char s[], dim3 i, dim3 j, int)               { return good0(s, i, j); }
+inline int good(const char s[], dim3 i, dim3 j, int, cudaStream_t) { return good0(s, i, j); }
 
 #define KL_BEFORE(s, C) if (!good(s, ESC C)) continue;
 #define KL_AFTER(s) CC(cudaPeekAtLastError())
