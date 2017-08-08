@@ -4,6 +4,8 @@
 #include "common.cuda.h"
 #include "scan/int.h"
 #include "clist/int.h"
+#include "conf.common.h"
+#include "kl/kl.h"
 
 namespace clist {
 namespace dev {
