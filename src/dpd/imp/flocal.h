@@ -22,12 +22,12 @@ void flocal0(float4 *zip0, ushort4 *zip1, int np, int *start, int *count, float 
 
     if( c.ncells.x % MYCPBX == 0 && c.ncells.y % MYCPBY == 0 && c.ncells.z % MYCPBZ == 0 ) {
         merged<<< dim3( c.ncells.x / MYCPBX, c.ncells.y / MYCPBY, c.ncells.z / MYCPBZ ), dim3( 32, MYWPB ), 0>>> ();
+        CC(cudaPeekAtLastError());
         transpose<<< 28, 1024, 0>>>(np);
+        CC(cudaPeekAtLastError());
     } else {
         fprintf( stderr, "Incompatible grid config\n" );
     }
-
-    CC( cudaPeekAtLastError() );
 }
 
 void flocal(float4 *zip0, ushort4 *zip1, int n, int *start, int *count,
