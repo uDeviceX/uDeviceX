@@ -75,17 +75,16 @@ void copy_ii(const int *fragnp, const intp26 fragiidev, /**/ intp26 fragiihst) {
             CC(cudaMemcpyAsync(fragiihst.d[i], fragiidev.d[i], sizeof(int) * fragnp[i], D2H));
 }
 
-void post_send(MPI_Comm cart, const int ranks[], const int *fragnp, const int26 fragnc, const intp26 fragcum,
-               const Particlep26 fragpp, int btcs, int btc, int btp, /**/ Reqs *sreq) {
+void post_send(MPI_Comm cart, const int ranks[], const int *np, const int26 nc, const intp26 cum,
+               const Particlep26 pp, int btcs, int btc, int btp, /**/ Reqs *req) {
     for (int i = 0; i < 26; ++i) {
-        const int nc = fragnc.d[i];
-        MC(l::m::Isend(fragcum.d[i], nc, MPI_INT, ranks[i],
-                       btcs + i, cart, sreq->cells + i));
-        const int count = fragnp[i];
+        MC(l::m::Isend(cum.d[i], nc.d[i], MPI_INT, ranks[i],
+                       btcs + i, cart, req->cells + i));
+        const int count = np[i];
         MC(l::m::Isend(&count, 1, MPI_INT, ranks[i],
-                       btc + i, cart, sreq->counts + i));
-        MC(l::m::Isend(fragpp.d[i], fragnp[i], datatype::particle,
-                       ranks[i], btp + i, cart, sreq->pp + i));
+                       btc + i, cart, req->counts + i));
+        MC(l::m::Isend(pp.d[i], np[i], datatype::particle,
+                       ranks[i], btp + i, cart, req->pp + i));
     }
 }
 
