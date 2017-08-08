@@ -14,6 +14,9 @@
 #include "flu/imp.h"
 #include "flu/dev.h"
 
+#include "conf.common.h"
+#include "kl/kl.h"
+
 namespace flu {
 namespace sub {
 
@@ -97,7 +100,9 @@ void strt_dump_ii(const char *subext, const int id, const int n, const int *dev,
 
 void zip(const Particle *pp, const int n, /**/ float4 *zip0, ushort4 * zip1) {
     assert(sizeof(Particle) == 6 * sizeof(float)); /* :TODO: implicit dependency */
-    dev::zip<<<(n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)>>>(zip0, zip1, (float*)pp, n);
+    KL(dev::zip,
+       ((n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)),
+       (zip0, zip1, (float*)pp, n));
 }
 
 } // sub
