@@ -58,7 +58,7 @@ static void _shift_copy_pp(const Particle *ss_src, const int n, const int nps, c
         _shift_hst(shift, n*nps, /**/ ss_dst); 
     } else {
         cH2D(ss_dst, ss_src, n*nps);
-        _shift_dev <<< k_cnf(n*nps) >>> (shift, n*nps, /**/ ss_dst);
+        KL(_shift_dev, (k_cnf(n*nps)), (shift, n*nps, /**/ ss_dst));
     }        
 }
 
