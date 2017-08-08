@@ -2,7 +2,7 @@
 
 # assumes executed from the git repo;
 # if one need to dump elsewhere, use symlinks
-. ../generic.sh #defines SRC via GITROOT
+. ../../run/generic.sh #defines SRC via GITROOT
 $SRC/configure $SRC
 
 . ./ic.sh
