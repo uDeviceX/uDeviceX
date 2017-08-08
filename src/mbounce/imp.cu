@@ -2,7 +2,10 @@
 #include <cstdio>
 #include "inc/type.h"
 #include "common.h"
+#include "m.h"
 #include "common.cuda.h"
+#include "conf.common.h"
+#include "kl/kl.h"
 
 // #define debug_output
 
@@ -46,7 +49,9 @@ void bounce_dev(const Force *ff, const Mesh m, const Particle *i_pp, const int *
     
     if (totnt && n) {
         CC(cudaMemsetAsync(t->mm_dev, 0, totnt * sizeof(Momentum)));        
-        sub::dev::bounce <<< k_cnf(n) >>> (ff, m.tt, m.nt, m.nv, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, t->mm_dev);
+        KL(sub::dev::bounce,
+           (k_cnf(n)),
+           (ff, m.tt, m.nt, m.nv, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, t->mm_dev));
     }
     
     sub::dbg::report_dev();
@@ -70,7 +75,9 @@ void bounce_rbc_dev(const Force *ff, const int4 *tt, int nt, int nv, const Parti
     
     if (totnt && n) {
         CC(cudaMemsetAsync(t->mm_dev, 0, totnt * sizeof(Momentum)));        
-        sub::dev::bounce <<< k_cnf(n) >>> (ff, tt, nt, nv, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, t->mm_dev);
+        KL(sub::dev::bounce,
+           (k_cnf(n)),
+           (ff, tt, nt, nv, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, t->mm_dev));
     }
     
     sub::dbg::report_dev();
@@ -83,7 +90,10 @@ void collect_rig_hst(int nt, int ns, const TicketM *t, /**/ Solid *ss) {
 
 void collect_rig_dev(int nt, int ns, const TicketM *t, /**/ Solid *ss) {
     int n = ns * nt;
-    if (n) sub::dev::collect_rig_mom <<<k_cnf(n) >>> (t->mm_dev, ns, nt, /**/ ss);
+    if (n)
+        KL(sub::dev::collect_rig_mom,
+           (k_cnf(n)),
+           (t->mm_dev, ns, nt, /**/ ss));
 }
 
 } // mbounce
