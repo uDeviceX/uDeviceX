@@ -80,8 +80,7 @@ void post_send(MPI_Comm cart, const int ranks[], const int *np, const int26 nc, 
     for (int i = 0; i < 26; ++i) {
         MC(l::m::Isend(cum.d[i], nc.d[i], MPI_INT, ranks[i],
                        btcs + i, cart, req->cells + i));
-        const int count = np[i];
-        MC(l::m::Isend(&count, 1, MPI_INT, ranks[i],
+        MC(l::m::Isend(&np[i], 1, MPI_INT, ranks[i],
                        btc + i, cart, req->counts + i));
         MC(l::m::Isend(pp.d[i], np[i], datatype::particle,
                        ranks[i], btp + i, cart, req->pp + i));
