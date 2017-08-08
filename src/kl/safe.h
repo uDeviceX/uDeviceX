@@ -1,5 +1,5 @@
 inline int zero0(dim3 i, dim3 j) {
-    MSG("ij: %d %d", i.x*i.y*i.z, j.x*j.y*j.z);
+    fprintf(stderr, "ij: %d %d\n", i.x*i.y*i.z, j.x*j.y*j.z);
     return 1;
 }
 
