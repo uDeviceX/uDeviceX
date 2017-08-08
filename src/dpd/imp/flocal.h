@@ -9,7 +9,6 @@ void flocal0(float4 *zip0, ushort4 *zip1, int np, int *start, int *count, float 
 
     static InfoDPD c;
 
-    size_t textureoffset;
 
     static uint2 *start_and_count;
     static int last_nc;
@@ -21,10 +20,11 @@ void flocal0(float4 *zip0, ushort4 *zip1, int np, int *start, int *count, float 
         last_nc = ncells;
     }
 
-    CC( cudaBindTexture( &textureoffset, &texParticlesF4, zip0,  &texParticlesF4.channelDesc, sizeof( float ) * 8 * np ) );
-    CC( cudaBindTexture( &textureoffset, &texParticlesH4, zip1, &texParticlesH4.channelDesc, sizeof( ushort4 ) * np ) );
+    size_t offset;
+    CC( cudaBindTexture( &offset, &texParticlesF4, zip0,  &texParticlesF4.channelDesc, sizeof( float ) * 8 * np ) );
+    CC( cudaBindTexture( &offset, &texParticlesH4, zip1, &texParticlesH4.channelDesc, sizeof( ushort4 ) * np ) );
     tex<<< 64, 512, 0>>>( start_and_count, start, count, ncells );
-    CC( cudaBindTexture( &textureoffset, &texStartAndCount, start_and_count, &texStartAndCount.channelDesc, sizeof( uint2 ) * ncells ) );
+    CC( cudaBindTexture( &offset, &texStartAndCount, start_and_count, &texStartAndCount.channelDesc, sizeof( uint2 ) * ncells ) );
 
     c.ncells = make_int3( XS, YS, ZS );
     c.nxyz = XS * YS * ZS;
