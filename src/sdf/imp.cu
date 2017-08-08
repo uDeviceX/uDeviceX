@@ -100,7 +100,7 @@ static void bulk_wall0(const tex3Dca<float> texsdf, /*io*/ Particle *s_pp, int* 
                        /*o*/ Particle *w_pp, int *w_n, /*w*/ int *keys) {
     int n = *s_n;
     int k, a = 0, b = 0, w = 0; /* all, bulk, wall */
-    KL(dev::fill_keys,(k_cnf(n)), (texsdf, s_pp, n, keys));
+    if (n) KL(dev::fill_keys,(k_cnf(n)), (texsdf, s_pp, n, keys));
     for (/* */ ; a < n; a++) {
         cD2H(&k, &keys[a], 1);
         if      (k == W_BULK) {cD2D(&s_pp[b], &s_pp[a], 1); b++;}
