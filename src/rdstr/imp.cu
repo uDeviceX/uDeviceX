@@ -8,6 +8,7 @@
 #include "common.cuda.h"
 #include <conf.h>
 
+#include "m.h"
 #include "conf.common.h"
 #include "kl/kl.h"
 

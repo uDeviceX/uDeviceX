@@ -8,6 +8,10 @@
 #include "k/read.h"
 #include "k/common.h"
 
+#include "m.h"
+#include "conf.common.h"
+#include "kl/kl.h"
+
 #include <stdint.h>
 #include "rnd/imp.h"
 #include "rnd/dev.h"
@@ -31,7 +35,7 @@ void interactions(const SFrag26 ssfrag, const Frag26 ffrag, const Rnd26 rrnd, /*
     get_start(ssfrag.d, /**/ start.d);
     n = 2 * start.d[26];
         
-    if (n) dev::force <<<k_cnf(n)>>> (start, ssfrag, ffrag, rrnd, /**/ ff);
+    if (n) KL(dev::force, (k_cnf(n)), (start, ssfrag, ffrag, rrnd, /**/ ff));
 }
 
 } // hforces
