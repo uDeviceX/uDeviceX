@@ -10,7 +10,7 @@ void read(/**/ float4 *pp, int *n) {
     if (*n) {
         CC(cudaMalloc(&ppdev, MAX_PART_NUM * sizeof(Particle)));
         cH2D(ppdev, pphst, *n);
-        dev::particle2float4 <<<k_cnf(*n)>>> (ppdev, *n, /**/ pp);
+        KL(dev::particle2float4, (k_cnf(*n)), (ppdev, *n, /**/ pp));
         CC(cudaFree(ppdev));
     }
     delete[] pphst;
@@ -21,7 +21,7 @@ void write(const float4 *pp, const int n) {
     pphst = new Particle[MAX_PART_NUM];
     if (n) {
         CC(cudaMalloc(&ppdev, MAX_PART_NUM * sizeof(Particle)));
-        dev::float42particle <<<k_cnf(n)>>> (pp, n, /**/ ppdev);
+        KL(dev::float42particle , (k_cnf(n)), (pp, n, /**/ ppdev));
         cD2H(pphst, ppdev, n);
         CC(cudaFree(ppdev));
     }

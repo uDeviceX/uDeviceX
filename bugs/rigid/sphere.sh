@@ -23,7 +23,7 @@ pre() {
     ic_center
     
     u.conf $SRC conf.base.h <<EOF
-    KL_TRACE
+    KL_PEEK
     $Domain
     run
 EOF

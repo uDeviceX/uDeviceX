@@ -28,6 +28,9 @@
 #include "clist/int.h"
 #include "restart.h"
 
+#include "conf.common.h"
+#include "kl/kl.h"
+
 #include "wall/imp.h"
 #include "wall/dev.h"
 #include "wall/strt.h"
@@ -127,9 +130,9 @@ void build_cells(const int n, float4 *pp4, clist::Clist *cells) {
     Particle *pp;
     CC(cudaMalloc(&pp, n * sizeof(Particle)));
 
-    dev::float42particle <<<k_cnf(n)>>> (pp4, n, /**/ pp);
+    KL(dev::float42particle, (k_cnf(n)), (pp4, n, /**/ pp));
     cells->build(pp, n);
-    dev::particle2float4 <<<k_cnf(n)>>> (pp, n, /**/ pp4);
+    KL(dev::particle2float4, (k_cnf(n)), (pp, n, /**/ pp4));
 
     CC(cudaFree(pp));
 }
@@ -145,7 +148,7 @@ void gen_quants(TexSDF_t texsdf, /**/ int *o_n, Particle *o_pp, int *w_n, float4
     CC(cudaMalloc(w_pp, *w_n * sizeof(float4)));
 
     if (*w_n > 0)
-    dev::particle2float4 <<<k_cnf(*w_n)>>> (frozen, *w_n, /**/ *w_pp);
+        KL(dev::particle2float4, (k_cnf(*w_n)), (frozen, *w_n, /**/ *w_pp));
     
     CC(cudaFree(frozen));
     dSync();
@@ -173,7 +176,7 @@ void gen_ticket(const int w_n, float4 *w_pp, clist::Clist *cells, Texo<int> *tex
 void interactions(TexSDF_t texsdf, const int type, const Particle *const pp, const int n, const Texo<int> texstart,
                   const Texo<float4> texpp, const int w_n, /**/ rnd::KISS *rnd, Force *ff) {
     if (n > 0 && w_n > 0) {
-        dev::interactions_3tpp <<<k_cnf(3 * n)>>>
+        dev::interactions_3tpp<<<k_cnf(3 * n)>>>
             (texsdf, (float2 *)pp, n, w_n, (float *)ff, rnd->get_float(), type, texstart, texpp);
     }
 }
