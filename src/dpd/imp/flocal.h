@@ -2,21 +2,7 @@ void flocal0(float4 *zip0, ushort4 *zip1, int np, int *start, int *count, float 
     const int ncells = XS * YS * ZS;
 
     if( !fdpd_init ) {
-        texStartAndCount.channelDesc = cudaCreateChannelDesc<uint2>();
-        texStartAndCount.filterMode  = cudaFilterModePoint;
-        texStartAndCount.mipmapFilterMode = cudaFilterModePoint;
-        texStartAndCount.normalized = 0;
-
-        texParticlesF4.channelDesc = cudaCreateChannelDesc<float4>();
-        texParticlesF4.filterMode = cudaFilterModePoint;
-        texParticlesF4.mipmapFilterMode = cudaFilterModePoint;
-        texParticlesF4.normalized = 0;
-
-        texParticlesH4.channelDesc = cudaCreateChannelDescHalf4();
-        texParticlesH4.filterMode = cudaFilterModePoint;
-        texParticlesH4.mipmapFilterMode = cudaFilterModePoint;
-        texParticlesH4.normalized = 0;
-
+        setup();
 	{
 	    is_mps_enabled = false;
 

@@ -29,4 +29,5 @@
 #include "dpd/dev/transpose.h"
 
 #include "dpd/imp/decl.h"
+#include "dpd/imp/setupt.h"
 #include "dpd/imp/flocal.h"
