@@ -4,18 +4,17 @@ void flocal0(float4 *zip0, ushort4 *zip1, int np, int *start, int *count, float 
         setup();
         fdpd_init = true;
     }
+    CC(cudaPeekAtLastError());
     tex(zip0, zip1, np, start, count);
+    CC(cudaPeekAtLastError());
     set_info(ff, np, seed);
+    CC(cudaPeekAtLastError());
 
     if (XS % MYCPBX == 0 && YS % MYCPBY == 0 && ZS % MYCPBZ == 0) {
         nx = XS / MYCPBX;
         ny = YS / MYCPBY;
         nz = ZS / MYCPBZ;
-
-        MSG("flocal: n[xyz]: %d %d %d", nx, ny, nz);
-        dSync(); CC(cudaPeekAtLastError());
         merged<<<dim3(nx, ny, nz), dim3(32, MYWPB), 0>>>();
-        CC(cudaPeekAtLastError());
         transpose<<< 28, 1024, 0>>>(np);
         CC(cudaPeekAtLastError());
     } else {
