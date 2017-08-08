@@ -7,7 +7,7 @@ void flocal(Particle *pp, int *sstart, const int n, const float seed, /**/ Force
         texstart.setup(sstart, XS*YS*ZS);
 
         enum { THREADS = 256 };
-        dev::flocal <<< ceiln((3*n), THREADS), THREADS >>> (texpp, texstart, n, seed, /**/ (float *) ff);
+        KL(dev::flocal, (ceiln((3*n), THREADS), THREADS), (texpp, texstart, n, seed, /**/ (float *) ff));
 
         texpp.destroy();
         texstart.destroy();

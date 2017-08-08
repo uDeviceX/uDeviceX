@@ -8,6 +8,9 @@
 #include "common.cuda.h"
 #include <conf.h>
 
+#include "conf.common.h"
+#include "kl/kl.h"
+
 #include "minmax.h"
 
 #include "mdstr/buf.h"
@@ -67,7 +70,7 @@ void shift(int npd, const int counts[27], /**/ Particle *pp) {
     for (int i = 1; i < 27; ++i) {
         int c = counts[i];
         int n = c * npd;
-        if (n) dev::shift <<<k_cnf(n)>>> (n, i, /**/ pp + nm * npd);
+        if (n) KL(dev::shift, (k_cnf(n)), (n, i, /**/ pp + nm * npd));
         nm += c;
     }
 }
