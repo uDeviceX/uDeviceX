@@ -31,4 +31,5 @@
 #include "dpd/imp/decl.h"
 #include "dpd/imp/setup.h"
 #include "dpd/imp/tex.h"
+#include "dpd/imp/info.h"
 #include "dpd/imp/flocal.h"
