@@ -89,3 +89,8 @@
 #ifndef BASE_STRT_READ
 #define BASE_STRT_READ "."
 #endif
+
+// TODO: krenel launch parameter
+#if !defined(KL_RELEASE) && !defined(KL_TRACE)
+  #define KL_RELEASE
+#endif

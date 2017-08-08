@@ -12,6 +12,7 @@
 
 #include <conf.h>
 #include "conf.common.h"
+#include "kl/kl.h"
 #include "m.h"     /* MPI */
 #include "basetags.h"
 #include "common.h"
