@@ -3,13 +3,12 @@
 #define KL_AFTER(s)
 #define KL_CALL(F, C, A) F<<ESC C>>A
 
-#define KL0(F, C, A)                            \
+#define KL(F, C, A)                            \
     do  {                                       \
         KL_BEFORE(#F, ESC C);                   \
         KL_CALL(F, C, A);                       \
         KL_AFTER(#F);                           \
     } while (0)
-#define KL(F, C, A) KL0(F, C, A)
 
 /* examples */
 KL(fun, (i+1, j, k), ())
