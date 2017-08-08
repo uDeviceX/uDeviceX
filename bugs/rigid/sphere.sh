@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/bin/bash
 
 # assumes executed from the git repo;
 # if one need to dump elsewhere, use symlinks
