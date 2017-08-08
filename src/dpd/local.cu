@@ -9,6 +9,8 @@
 #include "inc/type.h"
 #include "dpd/local.h"
 #include <conf.h>
+#include "conf.common.h"
+#include "kl/kl.h"
 #include "forces.h"
 
 #include "dpd/imp/type.h"
