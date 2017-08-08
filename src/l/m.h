@@ -1,4 +1,6 @@
 namespace l { namespace m {
+extern MPI_Comm cart;
+
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
 int Barrier(MPI_Comm comm);
 int Cancel(MPI_Request *request);

@@ -10,14 +10,14 @@ void create_walls() {
 void create_solids() {
     cD2H(o::q.pp_hst, o::q.pp, o::q.n);
     rig::gen_quants(/*io*/ o::q.pp_hst, &o::q.n, /**/ &s::q);
-    MC(l::m::Barrier(m::cart));
+    MC(l::m::Barrier(l::m::cart));
     cH2D(o::q.pp, o::q.pp_hst, o::q.n);
-    MC(l::m::Barrier(m::cart));
+    MC(l::m::Barrier(l::m::cart));
     MSG("created %d solids.", s::q.ns);
 }
 
 void freeze() {
-    MC(MPI_Barrier(m::cart));
+    MC(l::m::Barrier(l::m::cart));
     if (solids)           create_solids();
     if (walls && rbcs  )  remove_rbcs();
     if (walls && solids)  remove_solids();
@@ -54,7 +54,7 @@ void sim_gen() {
 
         if (multi_solvent) gen_tags();
     }
-    MC(MPI_Barrier(m::cart));
+    MC(l::m::Barrier(l::m::cart));
   
     long nsteps = (int)(tend / dt);
     MSG0("will take %ld steps", nsteps);
@@ -98,7 +98,7 @@ void sim_strt() {
     if (rbcs)   rbc::gen_ticket(r::q, &r::tt);
     if (walls) wall::gen_ticket(w::q, &w::t);
 
-    MC(MPI_Barrier(m::cart));
+    MC(l::m::Barrier(l::m::cart));
     if (walls) {
         dSync();
         sdf::ini(&w::qsdf);

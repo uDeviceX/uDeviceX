@@ -3,7 +3,7 @@ void fields(const char * const path2h5,
             const char * const * const channelnames, const int nchannels) {
 #ifndef NO_H5
     hid_t plist_id_access = H5Pcreate(H5P_FILE_ACCESS);
-    H5Pset_fapl_mpio(plist_id_access, m::cart, MPI_INFO_NULL);
+    H5Pset_fapl_mpio(plist_id_access, l::m::cart, MPI_INFO_NULL);
 
     hid_t file_id = H5Fcreate(path2h5, H5F_ACC_TRUNC, H5P_DEFAULT, plist_id_access);
     H5Pclose(plist_id_access);

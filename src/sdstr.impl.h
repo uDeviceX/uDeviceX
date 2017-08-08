@@ -37,7 +37,7 @@ static void gen_ne(MPI_Comm cart, /* */ int* rnk_ne, int* ank_ne) {
 }
 
 void ini(/*io*/ basetags::TagGen *tg) {
-    l::m::Comm_dup(m::cart, &cart);
+    l::m::Comm_dup(l::m::cart, &cart);
     gen_ne(cart,   rnk_ne, ank_ne); /* generate ranks and anti-ranks */
 
     btc = get_tag(tg);

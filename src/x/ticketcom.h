@@ -10,7 +10,7 @@ static void ini_ticketcom0(MPI_Comm cart, /**/ int ranks[26]) {
 }
 
 static void ini_ticketcom(TicketCom *t) {
-    MC(l::m::Comm_dup(m::cart, &t->cart));
+    MC(l::m::Comm_dup(l::m::cart, &t->cart));
     ini_ticketcom0(t->cart, t->ranks);
 }
 

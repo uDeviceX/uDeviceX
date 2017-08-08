@@ -13,6 +13,7 @@ struct KISS {
         x( x_ ), y( y_ ), z( z_ ), c( c_ ) {}
 
     float get_float();
+private:    
     integer get_int();
 };
 }

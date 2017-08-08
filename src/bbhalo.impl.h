@@ -72,7 +72,7 @@ void _post_recvcnt() {
 }
 
 void ini(/*io*/ basetags::TagGen *tg) {
-    l::m::Comm_dup(m::cart, &cart);
+    l::m::Comm_dup(l::m::cart, &cart);
     
     gen_ne(cart, /**/ rnk_ne, ank_ne);
 

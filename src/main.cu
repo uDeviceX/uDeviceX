@@ -14,8 +14,8 @@ static void mpi_init(int argc, char **argv) {
     MC(MPI_Comm_rank(MPI_COMM_WORLD,   &m::rank));
     MC(MPI_Comm_size(MPI_COMM_WORLD,   &m::size));
     MC(MPI_Cart_create(MPI_COMM_WORLD,
-                       m::d, m::dims, m::periods, m::reorder,   &m::cart));
-    MC(MPI_Cart_coords(m::cart, m::rank, m::d,   m::coords));
+                       m::d, m::dims, m::periods, m::reorder,   &l::m::cart));
+    MC(MPI_Cart_coords(l::m::cart, m::rank, m::d,   m::coords));
 }
 
 int main(int argc, char **argv) {

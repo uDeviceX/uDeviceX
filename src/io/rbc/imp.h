@@ -19,11 +19,11 @@ static void write(const void * const ptr, const int nbytes32, MPI_File f) {
     MPI_Offset base;
     MC(MPI_File_get_position(f, &base));
     MPI_Offset offset = 0, nbytes = nbytes32;
-    MC(MPI_Exscan(&nbytes, &offset, 1, MPI_OFFSET, MPI_SUM, m::cart));
+    MC(MPI_Exscan(&nbytes, &offset, 1, MPI_OFFSET, MPI_SUM, l::m::cart));
     MPI_Status status;
     MC(MPI_File_write_at_all(f, base + offset, ptr, nbytes, MPI_CHAR, &status));
     MPI_Offset ntotal = 0;
-    MC(MPI_Allreduce(&nbytes, &ntotal, 1, MPI_OFFSET, MPI_SUM, m::cart) );
+    MC(MPI_Allreduce(&nbytes, &ntotal, 1, MPI_OFFSET, MPI_SUM, l::m::cart) );
     MC(MPI_File_seek(f, ntotal, MPI_SEEK_CUR));
 }
 
@@ -32,7 +32,7 @@ static void header(int nc0, int nv, int nt, MPI_File f) {
     int sz;
     char s[BUFSIZ];
     nc = 0;
-    l::m::Reduce(&nc0, &nc, 1, MPI_INT, MPI_SUM, 0, m::cart) ;
+    l::m::Reduce(&nc0, &nc, 1, MPI_INT, MPI_SUM, 0, l::m::cart) ;
     if (m::rank == 0)
         sz = sprintf(s,
                      "ply\n"
@@ -60,7 +60,7 @@ static void wfaces0(int *buf, int *faces, int nc, int nv, int nt, MPI_File f) {
     int n, shift;
     n = nc * nv;
     shift = 0;
-    MPI_Exscan(&n, &shift, 1, MPI_INTEGER, MPI_SUM, m::cart);
+    MPI_Exscan(&n, &shift, 1, MPI_INTEGER, MPI_SUM, l::m::cart);
 
     b = 0;
     for(c = 0; c < nc; ++c)
@@ -102,7 +102,7 @@ static void dump1(Particle  *pp, int *faces, int nc, int nv, int nt, MPI_File f)
 
 static void dump2(Particle  *pp, int *faces, int nc, int nv, int nt, const char *fn) {
     MPI_File f;
-    MPI_File_open(m::cart, fn, MPI_MODE_WRONLY |  MPI_MODE_CREATE, MPI_INFO_NULL, &f);
+    MPI_File_open(l::m::cart, fn, MPI_MODE_WRONLY |  MPI_MODE_CREATE, MPI_INFO_NULL, &f);
     MPI_File_set_size(f, 0);
     dump1(pp, faces, nc, nv, nt, f);
     MPI_File_close(&f);
