@@ -1,8 +1,8 @@
 #include <mpi.h>
 #include "l/m.h"
-#include "m.h"
 
 #include <conf.h>
+#include "m.h"
 
 #include "inc/type.h"
 #include "common.h"
@@ -13,6 +13,8 @@
 
 #include "scan/int.h"
 
+#include "conf.common.h"
+#include "kl/kl.h"
 
 #include "k/read.h"
 #include "k/write.h"
@@ -52,16 +54,16 @@ void post_recv_ii(const MPI_Comm cart, const int rank[], const int tags[], const
 
 void halo(const Particle *pp, int n, Send *s) {
     CC(cudaMemset(s->size_dev, 0,  27*sizeof(s->size_dev[0])));
-    dev::halo<<<k_cnf(n)>>>(pp, n, /**/ s->iidx, s->size_dev);
+    KL(dev::halo, (k_cnf(n)),(pp, n, /**/ s->iidx, s->size_dev));
 }
 
 void scan(int n, Send *s) {
-    dev::scan<<<1, 32>>>(n, s->size_dev, /**/ s->strt, s->size_pin->DP);
+    KL(dev::scan, (1, 32),(n, s->size_dev, /**/ s->strt, s->size_pin->DP));
     dSync();
 }
 
 void pack_pp(const Particle *pp, int n, Send *s) {
-    dev::pack<float2, 3> <<<k_cnf(3*n)>>>((float2*)pp, s->iidx, s->strt, /**/ s->pp.dev);
+    KL((dev::pack<float2, 3>), (k_cnf(3*n)),((float2*)pp, s->iidx, s->strt, /**/ s->pp.dev));
 }
 
 void pack_ii(const int *ii, int n, const Send *s, Pbufs<int>* sii) {
