@@ -12,6 +12,8 @@
 #include <conf.h>
 #include "k/read.h"
 #include "k/common.h"
+#include "conf.common.h"
+#include "kl/kl.h"
 
 #include <limits> /* for rnd */
 #include <stdint.h>
@@ -123,7 +125,7 @@ void bulk(flu::Quants *q, TicketD *t) {
     int n = q->n, *count = q->cells->count;
     CC(cudaMemsetAsync(count, 0, sizeof(int)*XS*YS*ZS));
     if (n)
-    k_common::subindex_local<false><<<k_cnf(n)>>>(n, (float2*)q->pp, /*io*/ count, /*o*/ t->subi_lo);
+        KL(k_common::subindex_local<false>, (k_cnf(n)),(n, (float2*)q->pp, /*io*/ count, /*o*/ t->subi_lo));
 }
 
 void recv_pp(TicketD *t) {

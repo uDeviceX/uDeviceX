@@ -102,15 +102,15 @@ void recv_count(/**/ Recv *r, int *nhalo) {
 }
 
 void unpack_pp(const int n, const Recv *r, /**/ Particle *pp_re) {
-    dev::unpack<float2, 3> <<<k_cnf(3*n)>>> (r->pp.dev, r->strt, /**/ (float2*) pp_re);
+    KL((dev::unpack<float2,3>), (k_cnf(3*n)), (r->pp.dev, r->strt, /**/ (float2*) pp_re));
 }
 
 void unpack_ii(const int n, const Recv *r, const Pbufs<int> *rii, /**/ int *ii_re) {
-    dev::unpack<int, 1> <<<k_cnf(n)>>> (rii->dev, r->strt, /**/ ii_re);
+    KL((dev::unpack<int,1>), (k_cnf(n)), (rii->dev, r->strt, /**/ ii_re));
 }
 
 void subindex_remote(const int n, const Recv *r, /*io*/ Particle *pp_re, int *counts, /**/ uchar4 *subi) {
-    dev::subindex_remote <<<k_cnf(n)>>> (n, r->strt, /*io*/ (float2*) pp_re, counts, /**/ subi);
+    KL(dev::subindex_remote, (k_cnf(n)), (n, r->strt, /*io*/ (float2*) pp_re, counts, /**/ subi));
 }
 
 /* TODO: this is not used, why? */
@@ -121,17 +121,17 @@ void cancel_recv(/**/ MPI_Request *size_req, MPI_Request *mesg_req) {
 
 void scatter(bool remote, const uchar4 *subi, const int n, const int *start, /**/ uint *iidx) {
     if (n)
-        dev::scatter <<<k_cnf(n)>>> (remote, subi, n, start, /**/ iidx);
+        KL(dev::scatter, (k_cnf(n)),(remote, subi, n, start, /**/ iidx));
 }
 
 void gather_id(const int *ii_lo, const int *ii_re, int n, const uint *iidx, /**/ int *ii) {
     if (n)
-        dev::gather_id <<<k_cnf(n)>>> (ii_lo, ii_re, n, iidx, /**/ ii);
+        KL(dev::gather_id, (k_cnf(n)), (ii_lo, ii_re, n, iidx, /**/ ii));
 }
 void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, const uint *iidx,
                /**/ float2  *pp, float4  *zip0, ushort4 *zip1) {
     if (n)
-        dev::gather_pp <<<k_cnf(n)>>> (pp_lo, pp_re, n,iidx, /**/ pp, zip0, zip1);
+        KL(dev::gather_pp, (k_cnf(n)), (pp_lo, pp_re, n,iidx, /**/ pp, zip0, zip1));
 }
 
 } // sub
