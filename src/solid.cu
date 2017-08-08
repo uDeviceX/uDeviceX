@@ -9,6 +9,7 @@
 
 #include "solid.h"
 #include "k/solid.h"
+#include "kl/kl.h"
 #include "mesh/props.h"
 
 namespace solid
@@ -164,7 +165,7 @@ void reinit_ft_hst(const int nsolid, /**/ Solid *ss) {
 }
 
 void reinit_ft_dev(const int nsolid, /**/ Solid *ss) {
-    k_solid::reinit_ft <<< k_cnf(nsolid) >>> (nsolid, /**/ ss);
+    KL(k_solid::reinit_ft, (k_cnf(nsolid)), (nsolid, /**/ ss));
 }
 
 static void update_hst_1s(const Force *ff, const float *rr0, int n, /**/ Particle *pp, Solid *shst) {
@@ -215,17 +216,17 @@ void update_dev(const Force *ff, const float *rr0, int n, int ns, /**/ Particle 
     const dim3 nblck ( (127 + nps) / 128, ns );
     const dim3 nthrd ( 128, 1 );
         
-    k_solid::add_f_to <<< nblck, nthrd >>> (pp, ff, nps, ns, /**/ ss);
+    KL(k_solid::add_f_to, ( nblck, nthrd ), (pp, ff, nps, ns, /**/ ss));
 
-    k_solid::update_om_v <<<1, ns>>> (ns, /**/ ss);
+    KL(k_solid::update_om_v, (1, ns), (ns, /**/ ss));
 
-    k_solid::compute_velocity <<< nblck, nthrd >>> (ss, ns, nps, /**/ pp);
+    KL(k_solid::compute_velocity, ( nblck, nthrd ), (ss, ns, nps, /**/ pp));
 
-    if (!pin_com) k_solid::update_com <<<1, 3*ns >>> (ns, /**/ ss);
+    if (!pin_com) KL(k_solid::update_com, (1, 3*ns ), (ns, /**/ ss));
         
-    k_solid::rot_referential <<<1, ns>>> (ns, /**/ ss);
+    KL(k_solid::rot_referential,(1, ns), (ns, /**/ ss));
 
-    k_solid::update_r <<< nblck, nthrd >>> (rr0, nps, ss, ns, /**/ pp);
+    KL(k_solid::update_r, ( nblck, nthrd ), (rr0, nps, ss, ns, /**/ pp));
 }
 
 void generate_hst(const Solid *ss_hst, const int ns, const float *rr0, const int nps, /**/ Particle *pp) {
@@ -242,7 +243,7 @@ void generate_dev(const Solid *ss_dev, const int ns, const float *rr0, const int
     const dim3 nblck ( (127 + nps) / 128, ns );
     const dim3 nthrd ( 128, 1 );
 
-    k_solid::update_r <<< nblck, nthrd >>> (rr0, nps, ss_dev, ns, /**/ pp);
+    KL(k_solid::update_r, ( nblck, nthrd ), (rr0, nps, ss_dev, ns, /**/ pp));
 }
 
 void mesh2pp_hst(const Solid *ss_hst, const int ns, const Mesh m, /**/ Particle *pp) {
@@ -283,7 +284,7 @@ void update_mesh_dev(const Solid *ss_dev, const int ns, const Mesh m, /**/ Parti
     const dim3 nthrd(128, 1);
     const dim3 nblck((m.nv + 127)/128, ns);
 
-    k_solid::update_mesh <<< nblck, nthrd >>> (ss_dev, m.vv, m.nv, /**/ pp);
+    KL(k_solid::update_mesh, ( nblck, nthrd ), (ss_dev, m.vv, m.nv, /**/ pp));
 }
 
 void dump(const int it, const Solid *ss, const Solid *ssbb, int ns, const int *mcoords) {

@@ -91,6 +91,6 @@
 #endif
 
 // TODO: krenel launch parameter
-#if !defined(KL_RELEASE) && !defined(KL_TRACE)
+#if !defined(KL_RELEASE) && !defined(KL_TRACE) && !defined(KL_PEEK)
   #define KL_RELEASE
 #endif
