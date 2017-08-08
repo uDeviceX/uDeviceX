@@ -14,7 +14,7 @@ static void pack0(std::vector<ParticlesWrap> w, x::TicketPack tp, int i, /**/ Pa
     CC(cudaMemcpyToSymbolAsync(k_rex::g::offsets, o, sizeof(int) * 26, 0, D2D));
     CC(cudaMemcpyToSymbolAsync(k_rex::g::counts,  c, sizeof(int) * 26, 0, D2D));
     CC(cudaMemcpyToSymbolAsync(k_rex::g::starts,  s, sizeof(int) * 27, 0, D2D));
-    k_rex::pack<<<14 * 16, 128>>>((float2*)pp, /**/ (float2*)buf);
+    KL(k_rex::pack, (14 * 16, 128), ((float2*)pp, /**/ (float2*)buf));
 }
 
 void pack(std::vector<ParticlesWrap> w, int nw, x::TicketPack tp, Particle *buf) {

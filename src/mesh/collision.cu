@@ -4,8 +4,9 @@
 #include "common.cuda.h"
 #include <conf.h>
 #include "conf.common.h"
-#include "kl/kl.h"
 
+#include "m.h"
+#include "kl/kl.h"
 #include "mesh/collision.h"
 
 namespace collision
