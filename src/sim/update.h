@@ -3,11 +3,11 @@ void update_solid() {
 }
 
 void update_solvent() {
-    if (o::q.n) KL(dev::update, (k_cnf(o::q.n)), (dpd_mass, o::q.pp, o::ff, o::q.n));
+    KL(dev::update, (k_cnf(o::q.n)), (dpd_mass, o::q.pp, o::ff, o::q.n));
 }
 
 void update_rbc() {
-    if (r::q.n) KL(dev::update, (k_cnf(r::q.n)),  (rbc_mass, r::q.pp, r::ff, r::q.n));
+    KL(dev::update, (k_cnf(r::q.n)),  (rbc_mass, r::q.pp, r::ff, r::q.n));
 }
 
 void bounce() {

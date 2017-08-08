@@ -40,27 +40,23 @@ void wait_Reqs(Reqs *r) {
 
 void gather_cells(const int *start, const int *count, const int27 starts, const int26 nc,
                   const int ncells, /**/ intp26 str, intp26 cnt, intp26 cum) {
-    if (ncells)
-        KL(dev::count, (k_cnf(ncells)),(starts, start, count, str, cnt));
+    KL(dev::count, (k_cnf(ncells)),(starts, start, count, str, cnt));
     KL(dev::scan<32>, (26, 32 * 32), (nc, cnt, /**/ cum));
 }
 
 void copy_cells(const int27 starts, const int ncells, const intp26 srccells, /**/ intp26 dstcells) {
-    if (ncells)
-        KL(dev::copycells, (k_cnf(ncells)), (starts, srccells, /**/ dstcells));
+    KL(dev::copycells, (k_cnf(ncells)), (starts, srccells, /**/ dstcells));
 }
   
 void pack(const int27 starts, const int nc, const Particle *pp, const intp26 str,
           const intp26 cnt, const intp26 cum, const int26 capacity, /**/ intp26 ii, Particlep26 pp0, int *bagcounts) {
-    if (nc)
-        KL(dev::fill_all, ((nc + 1) / 2, 32), (starts, pp, str, cnt, cum, capacity, /**/ ii, pp0, bagcounts));
+    KL(dev::fill_all, ((nc + 1) / 2, 32), (starts, pp, str, cnt, cum, capacity, /**/ ii, pp0, bagcounts));
 }
 
 void pack_ii(const int27 starts, const int nc, const int *ii, const intp26 str, const intp26 cnt, const intp26 cum,
              const int26 capacity, /**/ intp26 fii) {
     /* fii: fragii */
-    if (nc)
-        KL(dev::fill_all_ii, ((nc + 1) / 2, 32), (starts, ii, str, cnt, cum, capacity, fii));
+    KL(dev::fill_all_ii, ((nc + 1) / 2, 32), (starts, ii, str, cnt, cum, capacity, fii));
 }
 
 void copy_pp(const int *np, const Particlep26 dev, /**/ Particlep26 hst) {

@@ -25,9 +25,9 @@ void freeze() {
 }
 
 void clear_vel() {
-    if (o::q.n)           KL(dev::clear_vel, (k_cnf(o::q.n)), (o::q.pp, o::q.n));
-    if (solids && s::q.n) KL(dev::clear_vel, (k_cnf(s::q.n)), (s::q.pp, s::q.n));
-    if (rbcs   && r::q.n) KL(dev::clear_vel, (k_cnf(r::q.n)), (r::q.pp, r::q.n));
+    KL(dev::clear_vel, (k_cnf(o::q.n)), (o::q.pp, o::q.n));
+    if (solids) KL(dev::clear_vel, (k_cnf(s::q.n)), (s::q.pp, s::q.n));
+    if (rbcs  ) KL(dev::clear_vel, (k_cnf(r::q.n)), (r::q.pp, r::q.n));
 }
 
 void gen() { /* generate */

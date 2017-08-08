@@ -218,9 +218,7 @@ void update_dev(const Force *ff, const float *rr0, int n, int ns, /**/ Particle 
     const dim3 nthrd ( 128, 1 );
         
     KL(k_solid::add_f_to, ( nblck, nthrd ), (pp, ff, nps, ns, /**/ ss));
-
     KL(k_solid::update_om_v, (1, ns), (ns, /**/ ss));
-
     KL(k_solid::compute_velocity, ( nblck, nthrd ), (ss, ns, nps, /**/ pp));
 
     if (!pin_com) KL(k_solid::update_com, (1, 3*ns ), (ns, /**/ ss));

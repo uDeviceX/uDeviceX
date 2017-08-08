@@ -100,7 +100,7 @@ static void bulk_wall0(const tex3Dca<float> texsdf, /*io*/ Particle *s_pp, int* 
                        /*o*/ Particle *w_pp, int *w_n, /*w*/ int *keys) {
     int n = *s_n;
     int k, a = 0, b = 0, w = 0; /* all, bulk, wall */
-    if (n) KL(dev::fill_keys,(k_cnf(n)), (texsdf, s_pp, n, keys));
+    KL(dev::fill_keys,(k_cnf(n)), (texsdf, s_pp, n, keys));
     for (/* */ ; a < n; a++) {
         cD2H(&k, &keys[a], 1);
         if      (k == W_BULK) {cD2D(&s_pp[b], &s_pp[a], 1); b++;}
@@ -134,7 +134,7 @@ static int who_stays0(int *keys, int nc, int nv, /*o*/ int *stay) {
 }
 
 static int who_stays1(const tex3Dca<float> texsdf, Particle *pp, int n, int nc, int nv, /**/ int *stay, /*w*/ int *keys) {
-    if (n) KL(dev::fill_keys, (k_cnf(n)), (texsdf, pp, n, keys));
+    KL(dev::fill_keys, (k_cnf(n)), (texsdf, pp, n, keys));
     return who_stays0(keys, nc, nv, /*o*/ stay);
 }
 
@@ -147,7 +147,7 @@ int who_stays(const tex3Dca<float> texsdf, Particle *pp, int n, int nc, int nv, 
 }
 
 void bounce(const tex3Dca<float> texsdf, int n, /**/ Particle *pp) {
-    if (n) KL(dev::bounce, (k_cnf(n)), (texsdf, n, /**/ (float2*) pp));
+    KL(dev::bounce, (k_cnf(n)), (texsdf, n, /**/ (float2*) pp));
 }
 
 } // sub
