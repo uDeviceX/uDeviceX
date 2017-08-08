@@ -107,3 +107,4 @@ u.conf conf/around.h <<!!!
 { make clean && u.make -j && make -C ../tools; } > /dev/null
 sh runfile
 ply2punto r/00001.ply | uscale 100 > ply.out.txt
+
