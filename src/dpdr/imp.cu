@@ -37,10 +37,10 @@ void wait_Reqs(Reqs *r) {
     wait_req(r->counts);
 }
 
-void gather_cells(const int *start, const int *count, const int27 fragstarts, const int26 fragnc,
-                  const int ncells, /**/ intp26 fragstr, intp26 fragcnt, intp26 fragcum) {
-    if (ncells) dev::count<<<k_cnf(ncells)>>>(fragstarts, start, count, fragstr, fragcnt);
-    dev::scan<32><<<26, 32 * 32>>>(fragnc, fragcnt, /**/ fragcum);
+void gather_cells(const int *start, const int *count, const int27 starts, const int26 nc,
+                  const int ncells, /**/ intp26 str, intp26 cnt, intp26 cum) {
+    if (ncells) dev::count<<<k_cnf(ncells)>>>(starts, start, count, str, cnt);
+    dev::scan<32><<<26, 32 * 32>>>(nc, cnt, /**/ cum);
 }
 
 void copy_cells(const int27 fragstarts, const int ncells, const intp26 srccells, /**/ intp26 dstcells) {
@@ -82,8 +82,8 @@ void post_send(MPI_Comm cart, const int ranks[], const int *np, const int26 nc, 
                        btcs + i, cart, req->cells + i));
         MC(l::m::Isend(&np[i], 1, MPI_INT, ranks[i],
                        btc + i, cart, req->counts + i));
-        MC(l::m::Isend(pp.d[i], np[i], datatype::particle,
-                       ranks[i], btp + i, cart, req->pp + i));
+        MC(l::m::Isend(pp.d[i], np[i], datatype::particle, ranks[i],
+                       btp + i, cart, req->pp + i));
     }
 }
 
