@@ -237,6 +237,6 @@ void rescue_dev(const Mesh m, const Particle *i_pp, const int ns, const int n,
     if (ns == 0 || n == 0) return;
         
     collision::inside_dev(pp, n, m, i_pp, ns, /**/ tags_dev);
-    rescue_dev_k <<< k_cnf(n) >>> (i_pp, m.tt, m.nt, m.nv, tcstarts, tccounts, tcids, tags_dev, n, rand(), /**/ pp);
+    KL(rescue_dev_k, ( k_cnf(n) ), (i_pp, m.tt, m.nt, m.nv, tcstarts, tccounts, tcids, tags_dev, n, rand(), /**/ pp));
 }
 }
