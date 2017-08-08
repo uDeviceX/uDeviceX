@@ -10,7 +10,6 @@ if test $# = 1 -a "$1" = -h; then msg 'udx run wrapper'; exit; fi
 intp() { echo "$1" | grep -q '^[0-9]*$'; }
 mult () { awk -v x=$x -v y=$y -v z=$z 'BEGIN {print x*y*z}'; }
 
-msg() { printf '%s\n' "$*" >&2; }
 err() {
     msg "$@"
     exit 1
