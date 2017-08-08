@@ -134,7 +134,7 @@ static int who_stays0(int *keys, int nc, int nv, /*o*/ int *stay) {
 }
 
 static int who_stays1(const tex3Dca<float> texsdf, Particle *pp, int n, int nc, int nv, /**/ int *stay, /*w*/ int *keys) {
-    KL(dev::fill_keys, (k_cnf(n)), (texsdf, pp, n, keys));
+    if (n) KL(dev::fill_keys, (k_cnf(n)), (texsdf, pp, n, keys));
     return who_stays0(keys, nc, nv, /*o*/ stay);
 }
 
