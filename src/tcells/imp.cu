@@ -6,6 +6,10 @@
 #include "scan/int.h"
 #include "tcells/int.h"
 
+#include "m.h"
+#include "conf.common.h"
+#include "kl/kl.h"
+
 namespace tcells {
 namespace sub {
 
@@ -215,13 +219,10 @@ void build_dev(const Mesh m, const Particle *i_pp, const int ns, /**/ int *start
 
     if (ns == 0) return;
     
-    tckernels::countt <<< k_cnf(ns*m.nt) >>> (m.nt, m.tt, m.nv, i_pp, ns, /**/ counts);
-
+    KL(tckernels::countt, (k_cnf(ns*m.nt)), (m.nt, m.tt, m.nv, i_pp, ns, /**/ counts));
     scan::scan(counts, NCELLS, /**/ starts, /*w*/ w);
-
     CC(cudaMemsetAsync(counts, 0, NCELLS * sizeof(int)));
-    
-    tckernels::fill_ids <<< k_cnf(ns*m.nt) >>> (m.nt, m.tt, m.nv, i_pp, ns, starts, /**/ counts, ids);
+    KL(tckernels::fill_ids, (k_cnf(ns*m.nt)), (m.nt, m.tt, m.nv, i_pp, ns, starts, /**/ counts, ids));
 }
 
 } // sub
