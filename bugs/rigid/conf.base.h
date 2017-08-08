@@ -7,7 +7,7 @@
 #define ZBBM                1.f
 
 /* DPD */
-#define numberdensity       10
+#define numberdensity       4
 #define kBT                 0.0444
 #define dt                  5.e-4
 #define aij_solv            2.667
