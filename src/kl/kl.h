@@ -6,4 +6,6 @@
   #include "kl/trace.h"
 #elif  KL_PEEK
   #include "kl/peek.h"
+#elif  KL_SAFE
+  #include "kl/safe.h"
 #endif

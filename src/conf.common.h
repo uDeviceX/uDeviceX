@@ -90,7 +90,8 @@
 #define BASE_STRT_READ "."
 #endif
 
-// TODO: krenel launch parameter
-#if !defined(KL_RELEASE) && !defined(KL_TRACE) && !defined(KL_PEEK)
+// TODO: kernel launch options
+#if !defined(KL_RELEASE) && !defined(KL_TRACE) && \
+    !defined(KL_PEEK)    && !defined(KL_SAFE)
   #define KL_RELEASE
 #endif
