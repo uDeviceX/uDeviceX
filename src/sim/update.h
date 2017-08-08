@@ -7,7 +7,7 @@ void update_solvent() {
 }
 
 void update_rbc() {
-    if (r::q.n) dev::update<<<k_cnf(r::q.n)>>> (rbc_mass, r::q.pp, r::ff, r::q.n);
+    if (r::q.n) KL(dev::update, (k_cnf(r::q.n)),  (rbc_mass, r::q.pp, r::ff, r::q.n));
 }
 
 void bounce() {
