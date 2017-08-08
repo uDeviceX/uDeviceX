@@ -1,8 +1,8 @@
-#include <limits>
 #include <stdint.h>
 #include <stdio.h>
 #include <mpi.h>
-#include "rnd.h"
+#include "rnd/imp.h"
+#include "rnd/dev.h"
 #include "m.h"
 #include "common.h"
 #include "common.cuda.h"

@@ -5,9 +5,8 @@
 
 #include <conf.h>
 
-#include <limits> /* for rnd */
 #include <stdint.h>
-#include "rnd.h"
+#include "rnd/imp.h"
 
 #include "sdf/type.h"
 #include "sdf/int.h"

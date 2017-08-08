@@ -6,9 +6,9 @@
 #include "l/off.h"
 #include "scan/int.h"
 
-#include <limits> /* for rnd */
 #include <stdint.h>
-#include "rnd.h"
+#include "rnd/imp.h"
+#include "rnd/dev.h"
 
 #include <conf.h>
 #include "conf.common.h"

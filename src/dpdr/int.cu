@@ -1,8 +1,7 @@
 #include "basetags.h"
 
-#include <limits> /* for rnd */
 #include <stdint.h>
-#include "rnd.h"
+#include "rnd/imp.h"
 
 #include <mpi.h>
 #include "inc/type.h"

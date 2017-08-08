@@ -15,9 +15,8 @@
 #include "conf.common.h"
 #include "kl/kl.h"
 
-#include <limits> /* for rnd */
 #include <stdint.h>
-#include "rnd.h"
+#include "rnd/imp.h"
 #include "clist/int.h"
 #include "flu/int.h"
 

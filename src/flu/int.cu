@@ -6,9 +6,8 @@
 #include <conf.h>
 #include "clist/int.h"
 
-#include <limits> /* for rnd */
 #include <stdint.h>
-#include "rnd.h"
+#include "rnd/imp.h"
 
 #include "flu/int.h"
 #include "flu/imp.h"

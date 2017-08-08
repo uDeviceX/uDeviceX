@@ -8,9 +8,9 @@
 #include "k/read.h"
 #include "k/common.h"
 
-#include <limits> /* for rnd */
 #include <stdint.h>
-#include "rnd.h"
+#include "rnd/imp.h"
+#include "rnd/dev.h"
 
 #include "hforces/imp.h"
 #include "hforces/dev.map.h"

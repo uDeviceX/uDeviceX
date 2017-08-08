@@ -13,9 +13,9 @@
 #include <conf.h>
 #include "inc/macro.h"
 
-#include <limits> /* for rnd */
 #include <stdint.h>
-#include "rnd.h"
+#include "rnd/imp.h"
+#include "rnd/dev.h"
 
 #include "sdf/type.h"
 #include "sdf/int.h"
