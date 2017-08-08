@@ -6,10 +6,11 @@
 #include "common.cuda.h"
 #include <conf.h>
 #include "conf.common.h"
+#include "m.h"
+#include "kl/kl.h"
 
 #include "solid.h"
 #include "k/solid.h"
-#include "kl/kl.h"
 #include "mesh/props.h"
 
 namespace solid
