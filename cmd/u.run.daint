@@ -8,7 +8,7 @@ run_mpi() {
     exec srun -n $n "$e" $x $y $z "$@"
 }
 
-n=$1; shift
+n=$1; shift # n = x*y*z
 x=$1; shift
 y=$1; shift
 z=$1; shift
