@@ -11,8 +11,8 @@ void flocal0(float4 *zip0, ushort4 *zip1, int np, int *start, int *count, float 
         nx = XS / MYCPBX;
         ny = YS / MYCPBY;
         nz = ZS / MYCPBZ;
-        KL(merged, (dim3(nx, ny, nz), dim3(32, MYWPB), 0), ());
-        KL(transpose, (28, 1024, 0), (np));
+        KL(merged, (dim3(nx, ny, nz), dim3(32, MYWPB)), ());
+        KL(transpose, (28, 1024), (np));
         CC(cudaPeekAtLastError());
     } else {
         fprintf(stderr, "Incompatible grid config\n");
