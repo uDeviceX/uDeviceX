@@ -48,9 +48,9 @@ void copy_cells(const int27 starts, const int ncells, const intp26 srccells, /**
 }
   
 void pack(const int27 starts, const int nc, const Particle *pp, const intp26 str,
-          const intp26 cnt, const intp26 cum, const int26 capacity, /**/ intp26 ii, Particlep26 pp, int *bagcounts) {
+          const intp26 cnt, const intp26 cum, const int26 capacity, /**/ intp26 ii, Particlep26 pp0, int *bagcounts) {
     if (nc)
-        dev::fill_all<<<(ncells + 1) / 2, 32>>>(starts, pp, str, cnt, cum, capacity, /**/ ii, pp, bagcounts);
+        dev::fill_all<<<(nc + 1) / 2, 32>>>(starts, pp, str, cnt, cum, capacity, /**/ ii, pp0, bagcounts);
 }
 
 void pack_ii(const int27 starts, const int nc, const int *ii, const intp26 str, const intp26 cnt, const intp26 cum,
