@@ -1,20 +1,20 @@
 #### 2 RBCs in a double poiseuille, crossing domain
 # nTEST: rdstr.t1
-# rm -rf r diag.txt h5 bop ply rbc.off
-# :
-# export PATH=../tools:$PATH
-# (cd ../cmd; make ) > /dev/null
-# export PATH=/usr/lib64/mpich/bin:$PATH
-# cp data/cells/rbc.498.off  rbc.off
-# x=0.75 y=8 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
-# x=17.75 y=8 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
-# :
-# u.conf conf/double.poiseuille.h <<!!!
-#    kBT=1e-7 tend=2.1 part_freq=100 field_freq=300
-#    pushflow doublepoiseuille rbcs
-#    field_dumps part_dumps
-#    run
-#!!!
-# { make clean && u.make -j; } > /dev/null
-# u.run 2 1 1 ./udx
-# ply2punto r/00040.ply | uscale 10 > ply.out.txt
+rm -rf r diag.txt h5 bop ply rbc.off
+:
+export PATH=../tools:$PATH
+(cd ../cmd; make ) > /dev/null
+export PATH=/usr/lib64/mpich/bin:$PATH
+cp data/cells/rbc.498.off  rbc.off
+x=0.75 y=8 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
+x=17.75 y=8 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
+:
+u.conf conf/double.poiseuille.h <<!!!
+   kBT=1e-7 tend=2.1 part_freq=100 field_freq=300
+   pushflow doublepoiseuille rbcs
+   field_dumps part_dumps
+   run
+!!!
+{ make clean && u.make -j; } > /dev/null
+u.run 2 1 1 ./udx
+ply2punto r/00040.ply | uscale 10 > ply.out.txt
