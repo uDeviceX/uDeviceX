@@ -3,6 +3,11 @@
 #include "inc/type.h"
 #include "common.h"
 #include "common.cuda.h"
+
+#include "m.h"
+#include "conf.common.h"
+#include "kl/kl.h"
+
 #include "minmax.h"
 
 #define MAXTHREADS 1024
@@ -188,7 +193,6 @@ __global__ void minmaxmba(const Particle  *d_data, float3 *d_min, float3 *d_max,
             atomicAdd(&(ptoblockds[which].g_blockcnt),1);
         }
     }
-
 }
 
 void minmax(const Particle * const rbc, int size, int n, float3 *minrbc, float3 *maxrbc)
@@ -196,7 +200,7 @@ void minmax(const Particle * const rbc, int size, int n, float3 *minrbc, float3 
     const int size32 = ((size + 31) / 32) * 32;
 
     if (size32 < MAXTHREADS)
-    minmaxob<<<n, size32>>>(rbc, minrbc, maxrbc, size);
+        KL(minmaxob, (n, size32), (rbc, minrbc, maxrbc, size));
     else
     {
         static int nctc = -1;
@@ -230,7 +234,6 @@ void minmax(const Particle * const rbc, int size, int n, float3 *minrbc, float3 
         }
 
         int nblocks= n * ((size + MAXTHREADS - 1) / MAXTHREADS);
-
-        minmaxmba<<<nblocks, MAXTHREADS>>>(rbc, minrbc, maxrbc, size, ptoblockds);
+        KL(minmaxmba, (nblocks, MAXTHREADS), (rbc, minrbc, maxrbc, size, ptoblockds));
     }
 }
