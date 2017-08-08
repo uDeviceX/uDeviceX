@@ -34,37 +34,21 @@ void forces_fsi(SolventWrap *w_s, std::vector<ParticlesWrap> *w_r) {
 }
 
 void forces(bool wall0) {
-#define P CC(cudaPeekAtLastError());
-    P
     SolventWrap w_s(o::q.pp, o::q.n, o::ff, o::q.cells->start, o::q.cells->count);
-    P
     std::vector<ParticlesWrap> w_r;
-    P
     if (solids0) w_r.push_back(ParticlesWrap(s::q.pp, s::q.n, s::ff));
-    P
     if (rbcs)    w_r.push_back(ParticlesWrap(r::q.pp, r::q.n, r::ff));
-
-    P
     clear_forces(o::ff, o::q.n);
-    P
     if (solids0) clear_forces(s::ff, s::q.n);
-    P
     if (rbcs)    clear_forces(r::ff, r::q.n);
 
-    P
     forces_dpd();
-    P
     if (wall0) forces_wall();
-    P
     forces_rbc();
 
-    P
     if (contactforces) forces_cnt(&w_r);
-    P
     if (fsiforces)     forces_fsi(&w_s, &w_r);
-    P
 
     x::rex(w_r); /* fsi::halo(), cnt::halo() */
     dSync();
-#undef P    
 }
