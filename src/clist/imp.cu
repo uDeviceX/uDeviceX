@@ -35,15 +35,15 @@ void build(int n, int xcells, int ycells, int zcells,
 
     CC(cudaMemsetAsync(counts, 0, ncells * sizeof(int)));
 
-    dev::get_counts <<<k_cnf(n)>>> (pp, n, cells, domainstart, /**/ counts);
+    KL(dev::get_counts, (k_cnf(n)), (pp, n, cells, domainstart, /**/ counts));
 
     scan(counts, ncells, /**/ starts);
     
     CC(cudaMemsetAsync(counts, 0, ncells * sizeof(int)));
 
-    dev::get_ids <<<k_cnf(n)>>> (pp, starts, n, cells, domainstart, /**/ counts, ids);
+    KL(dev::get_ids, (k_cnf(n)), (pp, starts, n, cells, domainstart, /**/ counts, ids));
 
-    dev::gather <<<k_cnf(n)>>> (pp, ids, n, /**/ ppd);
+    KL(dev::gather, (k_cnf(n)), (pp, ids, n, /**/ ppd));
 
     CC(cudaMemcpyAsync(pp, ppd, n * sizeof(Particle), D2D));
     
