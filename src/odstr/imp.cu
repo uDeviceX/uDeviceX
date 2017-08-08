@@ -67,7 +67,7 @@ void pack_pp(const Particle *pp, int n, Send *s) {
 }
 
 void pack_ii(const int *ii, int n, const Send *s, Pbufs<int>* sii) {
-    dev::pack<int, 1> <<<k_cnf(n)>>>(ii, s->iidx, s->strt, /**/ sii->dev);
+    KL((dev::pack<int, 1>), (k_cnf(n)),(ii, s->iidx, s->strt, /**/ sii->dev));
 }
 
 int send_sz(MPI_Comm cart, const int rank[], const int btc, /**/ Send *s, MPI_Request *req) {

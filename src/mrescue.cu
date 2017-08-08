@@ -5,6 +5,11 @@
 #include <conf.h>
 #include "mesh/collision.h"
 
+#include <mpi.h>
+#include "m.h"
+#include "conf.common.h"
+#include "kl/kl.h"
+
 #include "mrescue.h"
 
 namespace mrescue
