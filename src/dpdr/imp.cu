@@ -25,7 +25,6 @@
 
 namespace dpdr {
 namespace sub {
-
 void wait_req(MPI_Request r[26]) {
     MPI_Status ss[26];
     MC(l::m::Waitall(26, r, ss));
