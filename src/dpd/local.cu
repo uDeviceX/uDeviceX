@@ -1,6 +1,5 @@
 #include <stdint.h>
 #include <stdio.h>
-#include <mpi.h>
 #include "rnd/imp.h"
 #include "rnd/dev.h"
 #include "m.h"

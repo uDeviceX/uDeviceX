@@ -1,4 +1,4 @@
-#include <mpi.h>
+#include <stdio.h>
 #include "inc/type.h"
 #include "io/field.h"
 #include <conf.h>
