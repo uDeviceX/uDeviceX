@@ -2,7 +2,6 @@ void flocal0(float4 *zip0, ushort4 *zip1, int np, int *start, int *count, float 
     static InfoDPD c;
     if(!fdpd_init) {
         setup();
-        mps();
         fdpd_init = true;
     }
     tex(zip0, zip1, np, start, count);
@@ -10,11 +9,7 @@ void flocal0(float4 *zip0, ushort4 *zip1, int np, int *start, int *count, float 
     c.nxyz = XS * YS * ZS;
     c.ff = ff;
     c.seed = seed;
-
-    if (!is_mps_enabled)
-	CC(cudaMemcpyToSymbolAsync(info, &c, sizeof(c), 0, cudaMemcpyHostToDevice));
-    else
-	CC(cudaMemcpyToSymbol(info, &c, sizeof(c), 0, cudaMemcpyHostToDevice));
+    CC(cudaMemcpyToSymbol(info, &c, sizeof(c), 0, H2D));
 
     int np32 = np;
     if(np32 % 32) np32 += 32 - np32 % 32;
