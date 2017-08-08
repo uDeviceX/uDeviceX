@@ -34,7 +34,7 @@ void forces_fsi(SolventWrap *w_s, std::vector<ParticlesWrap> *w_r) {
 }
 
 void forces(bool wall0) {
-#define P CC(cudaPeekAtLastError())
+#define P CC(cudaPeekAtLastError());
     P
     SolventWrap w_s(o::q.pp, o::q.n, o::ff, o::q.cells->start, o::q.cells->count);
     P
