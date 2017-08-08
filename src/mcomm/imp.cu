@@ -12,6 +12,9 @@
 #include "common.mpi.h"
 #include "common.cuda.h"
 
+#include "conf.common.h"
+#include "kl/kl.h"
+
 #include "mcomm/type.h"
 #include "mcomm/imp.h"
 #include "mcomm/dev.h"
@@ -134,9 +137,10 @@ int unpack(const int counts[27], const Particle *const rpp[27], const int nv, /*
         if (i && c) {
             const int d[3] = i2del(i);
             const float3 shift = make_float3(-d[X] * XS, -d[Y] * YS, -d[Z] * ZS);
-            dev::shift <<< k_cnf(c * nv) >>> (shift, c * nv, /**/ pp + s * nv);
+            KL(dev::shift,
+               (k_cnf(c * nv)),
+               (shift, c * nv, /**/ pp + s * nv));
         }
-        
         s += c;
     }
     return s;

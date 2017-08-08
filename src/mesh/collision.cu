@@ -4,6 +4,7 @@
 #include "common.cuda.h"
 #include <conf.h>
 #include "conf.common.h"
+#include "kl/kl.h"
 
 #include "mesh/collision.h"
 
@@ -163,12 +164,12 @@ __global__ void compute_tags_tex(const Particle *pp, const int n, const Texo<flo
 void inside_dev(const Particle *pp, const int n, const Mesh m, const Particle *i_pp, const int ns, /**/ int *tags) {
     if (ns == 0 || n == 0) return;
         
-    kernels::init_tags <<< k_cnf(n) >>> (n, /**/ tags);
+    KL(kernels::init_tags, (k_cnf(n)), (n, /**/ tags));
 
     dim3 thrd(128, 1);
     dim3 blck((127 + n)/128, ns);
 
-    kernels::compute_tags <<< blck, thrd >>> (pp, n, i_pp, m.nv, m.tt, m.nt, /**/ tags);
+    KL(kernels::compute_tags, (blck, thrd), (pp, n, i_pp, m.nv, m.tt, m.nt, /**/ tags));
 }
 
 /* 
@@ -180,11 +181,11 @@ void inside_dev(const Particle *pp, const int n, const Mesh m, const Particle *i
 void get_tags(const Particle *pp, const int n, const Texo<float2> texvert, const Texo<int4> textri, const int nt, const int nv, const int nm, /**/ int *tags) {
     if (nm == 0 || n == 0) return;
 
-    kernels::init_tags <<< k_cnf(n) >>> (n, /**/ tags);
+    KL(kernels::init_tags, (k_cnf(n)), (n, /**/ tags));
 
     dim3 thrd(128, 1);
     dim3 blck((127 + n)/128, nm);
 
-    kernels::compute_tags_tex <<< blck, thrd >>> (pp, n, texvert, nv, textri, nt, /**/ tags);
+    KL(kernels::compute_tags_tex, (blck, thrd), (pp, n, texvert, nv, textri, nt, /**/ tags));
 }
 }
