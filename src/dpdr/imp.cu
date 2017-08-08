@@ -60,18 +60,18 @@ void pack_ii(const int27 starts, const int nc, const int *ii, const intp26 str, 
         dev::fill_all_ii<<<(nc + 1) / 2, 32>>>(starts, ii, str, cnt, cum, capacity, fii);
 }
 
-void copy_pp(const int *fragnp, const Particlep26 fragppdev, /**/ Particlep26 fragpphst) {
+void copy_pp(const int *np, const Particlep26 dev, /**/ Particlep26 hst) {
     // dSync(); /* wait for fill_all */ /* use async copy now, no need to wait */
     for (int i = 0; i < 26; ++i)
-        if (fragnp[i])
-            CC(cudaMemcpyAsync(fragpphst.d[i], fragppdev.d[i], sizeof(Particle) * fragnp[i], D2H));
+        if (np[i])
+            CC(cudaMemcpyAsync(hst.d[i], dev.d[i], sizeof(Particle) * np[i], D2H));
 }
 
-void copy_ii(const int *fragnp, const intp26 fragiidev, /**/ intp26 fragiihst) {
+void copy_ii(const int *np, const intp26 dev, /**/ intp26 hst) {
     // dSync(); /* wait for fill_all_ii */ /* use async copy now, no need to wait */
     for (int i = 0; i < 26; ++i)
-        if (fragnp[i])
-            CC(cudaMemcpyAsync(fragiihst.d[i], fragiidev.d[i], sizeof(int) * fragnp[i], D2H));
+        if (np[i])
+            CC(cudaMemcpyAsync(hst.d[i], dev.d[i], sizeof(int) * np[i], D2H));
 }
 
 void post_send(MPI_Comm cart, const int ranks[], const int *np, const int26 nc, const intp26 cum,
@@ -86,11 +86,11 @@ void post_send(MPI_Comm cart, const int ranks[], const int *np, const int26 nc, 
     }
 }
 
-void post_send_ii(MPI_Comm cart, const int dstranks[], const int *fragnp,
-                  const intp26 fragii, int bt, /**/ MPI_Request sreq[26]) {
+void post_send_ii(MPI_Comm cart, const int ranks[], const int *np,
+                  const intp26 ii, int bt, /**/ MPI_Request sreq[26]) {
 
     for (int i = 0; i < 26; ++i)
-        MC(l::m::Isend(fragii.d[i], fragnp[i], MPI_INT, dstranks[i], bt + i, cart, sreq + i));
+        MC(l::m::Isend(ii.d[i], np[i], MPI_INT, ranks[i], bt + i, cart, sreq + i));
 }
 
 void post_expected_recv(MPI_Comm cart, const int ranks[], const int tags[], const int estimate[], const int26 nc,
@@ -106,10 +106,10 @@ void post_expected_recv(MPI_Comm cart, const int ranks[], const int tags[], cons
     }
 }
 
-void post_expected_recv_ii(MPI_Comm cart, const int dstranks[], const int recv_tags[], const int estimate[],
-                           int bt, /**/ intp26 fragii, MPI_Request rreq[26]) {
+void post_expected_recv_ii(MPI_Comm cart, const int ranks[], const int tags[], const int estimate[],
+                           int bt, /**/ intp26 ii, MPI_Request rreq[26]) {
     for (int i = 0; i < 26; ++i)
-        MC(l::m::Irecv(fragii.d[i], estimate[i], MPI_INT, dstranks[i], bt + recv_tags[i], cart, rreq + i));
+        MC(l::m::Irecv(ii.d[i], estimate[i], MPI_INT, ranks[i], bt + tags[i], cart, rreq + i));
 }
 
 } // sub
