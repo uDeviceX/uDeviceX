@@ -70,7 +70,12 @@ static void ini0(const Mesh m, int nsolid, float *coms, /**/
     set_ids(nsolid, /**/ ss);
 }
 
-static void ini1(const char *fname, const Mesh m, /**/
+static void ini1(const Mesh m, int nsolid, float *coms, /**/
+                 int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp) {
+    ini0(m, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp);    
+}
+
+static void ini2(const char *fname, const Mesh m, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp,
                  /*w*/ float *coms) {
     float3 minbb, maxbb;
@@ -79,13 +84,13 @@ static void ini1(const char *fname, const Mesh m, /**/
     mesh::get_bbox(m.vv, m.nv, /**/ &minbb, &maxbb);
     nsolid = duplicate_PBC(minbb, maxbb, nsolid, /**/ coms);
     make_local(nsolid, /**/ coms);
-    ini0(m, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp);
+    ini1(m, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp);
 }
 
 void ini(const char *fname, const Mesh m, /**/
          int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp) {
     float *coms = new float[MAX_SOLIDS * 3 * 10];
-    ini1(fname, m, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ coms);
+    ini2(fname, m, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ coms);
     delete[] coms;
 }
 
