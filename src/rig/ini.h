@@ -3,11 +3,11 @@ namespace sub {
 namespace ic {
 
 static void ini0(const char *fname, const Mesh m, /**/
-         int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp)
+                 int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp,
+                 /*w*/ float *coms)
 {
     int npsolid = 0;
     float3 minbb, maxbb;
-    float *coms = new float[MAX_SOLIDS * 3 * 10];
     int nsolid = read_coms(fname, coms);
     
     if (nsolid == 0) ERR("No solid provided.\n");
@@ -80,13 +80,13 @@ static void ini0(const char *fname, const Mesh m, /**/
     *nps = npsolid;
 
     set_ids(nsolid, /**/ ss);
-
-    delete[] coms;
 }
 
 void ini(const char *fname, const Mesh m, /**/
          int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp) {
-    ini0(fname, m, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp);
+    float *coms = new float[MAX_SOLIDS * 3 * 10];
+    ini0(fname, m, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ coms);
+    delete[] coms;
 }
 
 
