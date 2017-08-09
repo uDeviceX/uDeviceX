@@ -17,7 +17,6 @@ void halo(ParticlesWrap halos[26]) {
     for (int i = 0; i < 26; ++i) ff[i] = halos[i].f;
     CC(cudaMemcpyToSymbolAsync(k_fsi::g::ff, ff, sizeof(ff), 0, H2D));
 
-    if (n)
-        KL(k_fsi::halo, (k_cnf(n)), (n, wo->n, rgen->get_float(), /**/ (float*)wo->f));
+    KL(k_fsi::halo, (k_cnf(n)), (n, wo->n, rgen->get_float(), /**/ (float*)wo->f));
 }
 }
