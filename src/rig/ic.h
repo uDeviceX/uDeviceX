@@ -143,7 +143,7 @@ static void kill(const int idmax, const int *tags, /**/ int *s_n, Particle *s_pp
     *r_n = rcount;
 }
 
-static void share_parts(const int root, /**/ Particle *pp, int *n) {
+static void share(const int root, /**/ Particle *pp, int *n) {
     // set to global coordinates and then convert back to local
     const int L[3] = {XS, YS, ZS};
     int mi[3];
@@ -165,7 +165,7 @@ static void share_parts(const int root, /**/ Particle *pp, int *n) {
     {
         displs[0] = 0;
         for (int j = 0; j < m::d-1; ++j)
-        displs[j+1] = displs[j] + counts[j];
+            displs[j+1] = displs[j] + counts[j];
     }
 
     MC(MPI_Gatherv(pp, *n,
