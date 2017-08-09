@@ -91,3 +91,4 @@ u.conf conf/around.h <<!!!
 { make clean && u.make -j && make -C ../tools; } > /dev/null
 u.run 2 1 1 ./udx
 cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt
+
