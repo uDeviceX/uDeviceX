@@ -24,7 +24,7 @@ static void skip_line(FILE *f) {
 
 static FILE* safe_fopen(const char *path, const char *mode) {
     FILE *f;
-    f = fopen(path, "r");
+    f = fopen(path, mode);
     if (f == NULL) ERR("fail to open: %s\n", path);
     return f;
 }
