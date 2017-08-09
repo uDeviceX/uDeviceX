@@ -125,7 +125,7 @@ void scatter(bool remote, const uchar4 *subi, const int n, const int *start, /**
 
 void gather_id(const int *ii_lo, const int *ii_re, int n, const uint *iidx, /**/ int *ii) {
     KL(dev::gather_id, (k_cnf(n)), (ii_lo, ii_re, n, iidx, /**/ ii));
-}
+ }
 void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, const uint *iidx,
                /**/ float2  *pp, float4  *zip0, ushort4 *zip1) {
     KL(dev::gather_pp, (k_cnf(n)), (pp_lo, pp_re, n,iidx, /**/ pp, zip0, zip1));
