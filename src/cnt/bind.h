@@ -1,6 +1,6 @@
 namespace cnt {
 void bind(const int *const cellsstart, const int *const cellentries,
-          const int ncellentries, std::vector<ParticlesWrap> wsolutes) {
+          const int ncellentries, std::vector<ParticlesWrap> wr) {
     size_t textureoffset = 0;
 
     if (ncellentries)
@@ -10,16 +10,16 @@ void bind(const int *const cellsstart, const int *const cellentries,
     int ncells = XS * YS * ZS;
     CC(cudaBindTexture(&textureoffset, &k_cnt::texCellsStart, cellsstart,
                        &k_cnt::texCellsStart.channelDesc, sizeof(int) * ncells));
-    int n = wsolutes.size();
+    int n = wr.size();
 
     int ns[n];
     float2 *ps[n];
     float *fs[n];
 
     for (int i = 0; i < n; ++i) {
-        ns[i] = wsolutes[i].n;
-        ps[i] = (float2 *)wsolutes[i].p;
-        fs[i] = (float *)wsolutes[i].f;
+        ns[i] = wr[i].n;
+        ps[i] = (float2 *)wr[i].p;
+        fs[i] = (float *)wr[i].f;
     }
 
     CC(cudaMemcpyToSymbolAsync(k_cnt::g::ns, ns, sizeof(int) * n, 0,

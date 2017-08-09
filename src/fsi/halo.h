@@ -1,6 +1,6 @@
 namespace fsi {
 void halo(ParticlesWrap halos[26]) {
-    setup(wsolvent->p, wsolvent->n, wsolvent->cellsstart, wsolvent->cellscount);
+    setup(wo->p, wo->n, wo->cellsstart, wo->cellscount);
     int n = 0;
     int counts[26], starts[27];
     for (int i = 0; i < 26; ++i) counts[i] = halos[i].n;
@@ -18,6 +18,6 @@ void halo(ParticlesWrap halos[26]) {
     CC(cudaMemcpyToSymbolAsync(k_fsi::g::ff, ff, sizeof(ff), 0, H2D));
 
     if (n)
-        KL(k_fsi::halo, (k_cnf(n)), (n, wsolvent->n, rgen->get_float(), /**/ (float*)wsolvent->f));
+        KL(k_fsi::halo, (k_cnf(n)), (n, wo->n, rgen->get_float(), /**/ (float*)wo->f));
 }
 }

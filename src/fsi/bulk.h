@@ -1,10 +1,10 @@
 namespace fsi {
-void bulk(std::vector<ParticlesWrap> wsolutes) {
-    if (wsolutes.size() == 0) return;
-    setup(wsolvent->p, wsolvent->n, wsolvent->cellsstart, wsolvent->cellscount);
-    for (std::vector<ParticlesWrap>::iterator it = wsolutes.begin(); it != wsolutes.end(); ++it)
+void bulk(std::vector<ParticlesWrap> wr) {
+    if (wr.size() == 0) return;
+    setup(wo->p, wo->n, wo->cellsstart, wo->cellscount);
+    for (std::vector<ParticlesWrap>::iterator it = wr.begin(); it != wr.end(); ++it)
         KL(k_fsi::bulk,
            (k_cnf(3*it->n)),
-           ((float2 *)it->p, it->n, wsolvent->n, rgen->get_float(), (float*)it->f, (float*)wsolvent->f));
+           ((float2 *)it->p, it->n, wo->n, rgen->get_float(), (float*)it->f, (float*)wo->f));
 }
 }

@@ -1,3 +1,3 @@
 namespace fsi {
-void bind(SolventWrap wrap) {*wsolvent = wrap;}
+void bind(SolventWrap wrap) {*wo = wrap;}
 }

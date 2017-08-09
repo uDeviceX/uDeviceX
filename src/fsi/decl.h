@@ -1,5 +1,5 @@
 namespace fsi {
 bool firsttime = true;
-SolventWrap* wsolvent;
+SolventWrap* wo;
 rnd::KISS* rgen;
 }
