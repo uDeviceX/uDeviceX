@@ -10,6 +10,10 @@
 #include "glb.h"
 
 static void mpi_init(int argc, char **argv) {
+    m::dims[0] = m::dims[1] = m::dims[2] = 1;
+    for (int iarg = 1; iarg < argc && iarg <= 3; iarg++)
+    m::dims[iarg - 1] = atoi(argv[iarg]);
+    
     MC(MPI_Init(&argc, &argv));
     MC(MPI_Comm_rank(MPI_COMM_WORLD,   &m::rank));
     MC(MPI_Comm_size(MPI_COMM_WORLD,   &m::size));
@@ -19,10 +23,6 @@ static void mpi_init(int argc, char **argv) {
 }
 
 int main(int argc, char **argv) {
-    m::dims[0] = m::dims[1] = m::dims[2] = 1;
-    for (int iarg = 1; iarg < argc && iarg <= 3; iarg++)
-    m::dims[iarg - 1] = atoi(argv[iarg]);
-
     mpi_init(argc, argv);
 
     // panda specific for multi-gpu testing
