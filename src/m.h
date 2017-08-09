@@ -1,5 +1,4 @@
 namespace m { /* MPI */
-extern const int d;
-extern int rank, size, coords[], dims[], periods[];
-extern const bool reorder;
+extern int rank, size, coords[], dims[];
+void ini(int argc, char **argv);
 }
