@@ -64,8 +64,6 @@ cd ${COMPILEDIR}/build
     { make clean && u.make -j ; } > /dev/null
 cd -
 # Copy to $RUNDIR
-rm ${RUNDIR}/*
-rm -rf ${RUNDIR}/bop ${RUNDIR}/h5 
 cp ${COMPILEDIR}/build/udx ${RUNDIR}/
 cp ${COMPILEDIR}/build/launch_daint.sh ${RUNDIR}/
 cp ${COMPILEDIR}/build/run_daint.sh ${RUNDIR}/
