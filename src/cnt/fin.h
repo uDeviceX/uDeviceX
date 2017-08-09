@@ -5,6 +5,6 @@ void fin() {
     delete cellsentries;
     delete cellsstart;
     delete  cellscount;
-    delete local_trunk;
+    delete rgen;
 }
 }

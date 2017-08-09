@@ -5,6 +5,6 @@ void bulk(std::vector<ParticlesWrap> wsolutes) {
     for (std::vector<ParticlesWrap>::iterator it = wsolutes.begin(); it != wsolutes.end(); ++it)
         KL(k_fsi::bulk,
            (k_cnf(3*it->n)),
-           ((float2 *)it->p, it->n, wsolvent->n, local_trunk->get_float(), (float*)it->f, (float*)wsolvent->f));
+           ((float2 *)it->p, it->n, wsolvent->n, rgen->get_float(), (float*)it->f, (float*)wsolvent->f));
 }
 }

@@ -1,6 +1,6 @@
 namespace fsi {
 void fin() {
-    delete local_trunk;
+    delete rgen;
     delete wsolvent;
 }
 }

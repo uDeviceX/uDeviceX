@@ -6,7 +6,7 @@ void bulk(std::vector<ParticlesWrap> wsolutes) {
         ParticlesWrap it = wsolutes[i];
         KL(k_cnt::bulk, (k_cnf(3 * it.n)),
            ((float2 *)it.p, it.n, cellsentries->S, wsolutes.size(), (float *)it.f,
-            local_trunk->get_float(), i));
+            rgen->get_float(), i));
     }
 }
 }

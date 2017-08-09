@@ -29,6 +29,6 @@ void halo(ParticlesWrap halos[26]) {
     }
 
     KL(k_cnt::halo, (k_cnf(nremote_padded)),
-       (nremote_padded, cellsentries->S, nsolutes, local_trunk->get_float()));
+       (nremote_padded, cellsentries->S, nsolutes, rgen->get_float()));
 }
 }
