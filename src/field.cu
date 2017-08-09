@@ -113,8 +113,10 @@ static void scale0(int N[3], float s, int x, int y, int z, /**/ float *D) {
 void scale(int N[3], float s, /**/ float *D) {
     enum {X, Y, Z};
     int x, y, z;
-    for (z = 0; z < N[Z]; ++z) for (y = 0; y < N[Y]; ++y) for (x = 0; x < N[X]; ++x)
-                                                              scale0(N, s, x, y, z, /**/ D);
+    for (z = 0; z < N[Z]; ++z)
+        for (y = 0; y < N[Y]; ++y)
+            for (x = 0; x < N[X]; ++x)
+                scale0(N, s, x, y, z, /**/ D);
 }
 
 static void dump0(const int N0[3], const float* D0, /**/ float* D1) {
