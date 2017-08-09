@@ -30,9 +30,12 @@ static void share(const int root, /**/ Particle *pp, int *n) {
     int i, c;
     const int L[3] = {XS, YS, ZS};
     int mi[3];
+
     for (c = 0; c < 3; ++c) mi[c] = (m::coords[c] + 0.5) * L[c];
     for (i = 0; i < *n; ++i) for (c = 0; c < 3; ++c) pp[i].r[c] += mi[c];
-    share(root, /**/ pp, n);
+
+    share0(root, /**/ pp, n);
+
     for (i = 0; i < *n; ++i) for (c = 0; c < 3; ++c) pp[i].r[c] -= mi[c];
 
 }
