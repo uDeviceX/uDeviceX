@@ -91,6 +91,6 @@
 #endif
 
 // [k]ernel [l]aunch options
-#if !defined(KL_RELEASE) && !defined(KL_TRACE) && !defined(KL_PEEK)
+#if !defined(KL_RELEASE) && !defined(KL_TRACE) && !defined(KL_PEEK) && !defined(KL_UNSAFE)
   #define KL_RELEASE
 #endif
