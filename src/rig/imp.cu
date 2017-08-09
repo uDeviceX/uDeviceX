@@ -22,6 +22,7 @@
 
 #include "rig/imp.h"
 #include "rig/ic.h"
+#include "rig/share.h"
 #include "rig/ini.h"
 
 namespace rig {

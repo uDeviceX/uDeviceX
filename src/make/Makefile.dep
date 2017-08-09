@@ -38,7 +38,7 @@ $B/rbc/dev0.h: $S/params/rbc.inc0.h
 $B/rdstr/imp.o: $S/common.cuda.h $S/common.h $S/common.mpi.h $S/conf.common.h $B/conf.h $S/inc/type.h $S/kl/kl.h $S/l/m.h $S/m.h $S/mdstr/buf.h $S/mdstr/gen.h $S/minmax.h $S/rdstr/dev.h $S/rdstr/imp.h
 $B/rdstr/int.o: $S/basetags.h $S/common.cuda.h $S/common.h $S/inc/tmp/pinned.h $S/inc/type.h $S/mdstr/buf.h $S/mdstr/int.h $S/mdstr/tic.h $S/rdstr/imp.h $S/rdstr/int.h
 $B/restart.o: $S/common.h $S/conf.common.h $B/conf.h $S/inc/type.h $S/m.h $S/restart.h
-$B/rig/imp.o: $S/common.cuda.h $S/common.h $S/common.mpi.h $B/conf.h $S/inc/type.h $S/l/m.h $S/l/ply.h $S/m.h $S/mesh/bbox.h $S/mesh/collision.h $S/mesh/dist.h $S/restart.h $S/rig/ic.h $S/rig/imp.h $S/rig/ini.h $S/solid.h
+$B/rig/imp.o: $S/common.cuda.h $S/common.h $S/common.mpi.h $B/conf.h $S/inc/type.h $S/l/m.h $S/l/ply.h $S/m.h $S/mesh/bbox.h $S/mesh/collision.h $S/mesh/dist.h $S/restart.h $S/rig/ic.h $S/rig/imp.h $S/rig/ini.h $S/rig/share.h $S/solid.h
 $B/rig/int.o: $S/common.cuda.h $S/common.h $B/conf.h $S/inc/type.h $S/rig/imp.h $S/rig/int.h
 $B/rnd/imp.o: $S/rnd/imp.h
 $B/scan/imp.o: $S/common.cuda.h $S/conf.common.h $S/kl/kl.h $S/m.h $S/scan/dev.h $S/scan/int.h
