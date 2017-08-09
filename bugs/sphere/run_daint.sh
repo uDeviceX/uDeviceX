@@ -35,5 +35,5 @@ ${GITROOT}/tsdf/tsdf channel.tsdf sdf.dat sdf.vti
 u.strtdir . $NX $NY $NZ
 
 # Run simulation
-srun -u -n ${NN} ./udx $NX $NY $NZ 
+u.run $NX $NY $NZ ./udx 
 
