@@ -4,8 +4,8 @@ namespace ic {
 
 enum {X, Y, Z};
 
-//#define DBG(frmt, ...) MSG(frmt, ##__VA_ARGS__)
-#define DBG(frmt, ...) {}
+#define DBG(frmt, ...) MSG(frmt, ##__VA_ARGS__)
+//#define DBG(frmt, ...) {}
 
 static int read_coms(const char *fname, /**/ float* coms) {
     int nsolids = 0;

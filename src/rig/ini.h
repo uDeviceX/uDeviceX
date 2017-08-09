@@ -2,32 +2,20 @@ namespace rig {
 namespace sub {
 namespace ic {
 
-static void ini0(const Mesh m, int nsolid, float *coms, /**/
-                 int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp,
-                 /*w*/ int *tags, int *rcounts)
+static void ini0(const Mesh m, int nsolid, int rcount, int idmax, int root, float *coms, /**/
+                 int *ns, int *nps, float *rr0, Solid *ss, Particle *r_pp)
 {
-    int root, idmax;
-    elect(rcounts, nsolid, /**/ &root, &idmax);
-    MC(MPI_Bcast(&idmax, 1, MPI_INT, root, l::m::cart));
-
-    int rcount = 0;
-    kill(idmax, tags, /**/ s_n, s_pp, &rcount, r_pp);
-    share_parts(root, /**/ r_pp, &rcount);
-
     Solid model;
-
     // share model to everyone
     int npsolid = 0;
     if (m::rank == root)
     {
         npsolid = rcount;
         if (!npsolid) ERR("No particles remaining in root node.\n");
-
         for (int d = 0; d < 3; ++d)
-        model.com[d] = coms[idmax*3 + d];
+            model.com[d] = coms[idmax*3 + d];
 
         solid::ini(r_pp, npsolid, solid_mass, model.com, m, /**/ rr0, &model);
-
         empty_solid(m, /* io */ rr0, &npsolid);
     }
 
@@ -62,7 +50,15 @@ static void ini1(const Mesh m, int nsolid, float *coms, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp,
                  /*w*/ int *tags, int *rcounts)
 {
-    ini0(m, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ tags, rcounts);    
+    int root, idmax;
+    elect(rcounts, nsolid, /**/ &root, &idmax);
+    MC(MPI_Bcast(&idmax, 1, MPI_INT, root, l::m::cart));
+
+    int rcount = 0;
+    kill(idmax, tags, /**/ s_n, s_pp, &rcount, r_pp);
+    share_parts(root, /**/ r_pp, &rcount);
+
+    ini0(m, nsolid, rcount, idmax, root, coms, /**/ ns, nps, rr0, ss, r_pp);
 }
 
 static void ini2(const Mesh m, int nsolid, float *coms, /**/
