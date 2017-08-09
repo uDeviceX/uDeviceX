@@ -6,17 +6,12 @@ static void ini0(const Mesh m, int nsolid, float *coms, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp,
                  /*w*/ int *tags, int *rcounts)
 {
-    count_pp_inside(s_pp, *s_n, coms, nsolid, m.tt, m.vv, m.nt, /**/ tags, rcounts);
-
     int root, idmax;
     elect(rcounts, nsolid, /**/ &root, &idmax);
-
     MC(MPI_Bcast(&idmax, 1, MPI_INT, root, l::m::cart));
 
     int rcount = 0;
-
     kill(idmax, tags, /**/ s_n, s_pp, &rcount, r_pp);
-
     share_parts(root, /**/ r_pp, &rcount);
 
     Solid model;
@@ -65,20 +60,28 @@ static void ini0(const Mesh m, int nsolid, float *coms, /**/
 
 static void ini1(const Mesh m, int nsolid, float *coms, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp,
-                 /*w*/ int *tags, int *rcounts) {
-    ini0(m, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ tags, rcounts);
+                 /*w*/ int *tags, int *rcounts)
+{
+    ini0(m, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ tags, rcounts);    
 }
 
 static void ini2(const Mesh m, int nsolid, float *coms, /**/
+                 int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp,
+                 /*w*/ int *tags, int *rcounts) {
+    count_pp_inside(s_pp, *s_n, coms, nsolid, m.tt, m.vv, m.nt, /**/ tags, rcounts);
+    ini1(m, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ tags, rcounts);
+}
+
+static void ini3(const Mesh m, int nsolid, float *coms, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp) {
     int *tags = new int[*s_n];
     int *rcounts = new int[nsolid];
-    ini1(m, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ tags, rcounts);
+    ini2(m, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ tags, rcounts);
     delete[] rcounts;
     delete[] tags;
 }
 
-static void ini3(const char *fname, const Mesh m, /**/
+static void ini4(const char *fname, const Mesh m, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp,
                  /*w*/ float *coms) {
     float3 minbb, maxbb;
@@ -87,13 +90,13 @@ static void ini3(const char *fname, const Mesh m, /**/
     mesh::get_bbox(m.vv, m.nv, /**/ &minbb, &maxbb);
     nsolid = duplicate_PBC(minbb, maxbb, nsolid, /**/ coms);
     make_local(nsolid, /**/ coms);
-    ini2(m, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp);
+    ini3(m, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp);
 }
 
 void ini(const char *fname, const Mesh m, /**/
          int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp) {
     float *coms = new float[MAX_SOLIDS * 3 * 10];
-    ini3(fname, m, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ coms);
+    ini4(fname, m, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ coms);
     delete[] coms;
 }
 
