@@ -30,7 +30,7 @@ single() {
 }
 
 multiple() {
-    TMP=`printf "%s/strt/%03d.%03d.%03d/%s" $B $X $Y $Z $1` 
+    TMP=`printf "%s/strt/%s/%03d.%03d.%03d" $B $1 $X $Y $Z`
     shift; $@ $TMP
 }
 
