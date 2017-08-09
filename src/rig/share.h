@@ -10,7 +10,7 @@ static void share0(const int root, /**/ Particle *pp, int *n) {
     if (m::rank == root)
     {
         displs[0] = 0;
-        for (int j = 0; j < m::d-1; ++j)
+        for (int j = 0; j < m::size - 1; ++j)
             displs[j+1] = displs[j] + counts[j];
     }
 
