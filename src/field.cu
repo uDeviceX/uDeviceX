@@ -21,9 +21,10 @@ static void skip_line(FILE *f) {
     fgets(l, sizeof(l), f);
 }
 
-static void safe_fopen(const char *path, const char *mode) {
+static FILE* safe_fopen(const char *path, const char *mode) {
     FILE *f;
     f = fopen(path, "r");
+    return f;
 }
 
 void ini_dims(const char *path, /**/ int N[3], float ext[3]) {
