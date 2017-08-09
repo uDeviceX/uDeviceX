@@ -2,7 +2,8 @@ namespace rig {
 namespace sub {
 namespace ic {
 
-static void share(const int root, /**/ Particle *pp, int *n) {
+
+static void share0(const int root, /**/ Particle *pp, int *n) {
     // set to global coordinates and then convert back to local
     const int L[3] = {XS, YS, ZS};
     int mi[3];
@@ -39,6 +40,10 @@ static void share(const int root, /**/ Particle *pp, int *n) {
     for (int i = 0; i < *n; ++i)
     for (int c = 0; c < 3; ++c)
         pp[i].r[c] -= mi[c];
+}
+
+static void share(const int root, /**/ Particle *pp, int *n) {
+    share(root, /**/ pp, n);
 }
 
 } // ic
