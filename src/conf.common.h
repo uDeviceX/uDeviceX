@@ -12,6 +12,10 @@
 #define contactforces (false)
 #endif
 
+#ifndef multi_solvent
+#define multi_solvent (false)
+#endif
+
 // dump
 
 #ifndef DUMP_BASE
