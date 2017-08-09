@@ -4,8 +4,7 @@ namespace ic {
 
 enum {X, Y, Z};
 
-#define DBG(frmt, ...) MSG(frmt, ##__VA_ARGS__)
-//#define DBG(frmt, ...) {}
+#define DBG(frmt, ...) MSG0(frmt, ##__VA_ARGS__)
 
 static int read_coms(const char *fname, /**/ float* coms) {
     int nsolids = 0;
@@ -152,13 +151,13 @@ static void share_parts(const int root, /**/ Particle *pp, int *n) {
 
     for (int i = 0; i < *n; ++i)
     for (int c = 0; c < 3; ++c)
-    pp[i].r[c] += mi[c];
+        pp[i].r[c] += mi[c];
 
     std::vector<int> counts(m::size), displs(m::size);
     std::vector<Particle> recvbuf(MAX_PSOLID_NUM);
 
     if (*n >= MAX_PSOLID_NUM)
-    ERR("Number of solid particles too high for the buffer\n");
+        ERR("Number of solid particles too high for the buffer\n");
         
     MC(MPI_Gather(n, 1, MPI_INT, counts.data(), 1, MPI_INT, root, l::m::cart) );
 
@@ -180,7 +179,7 @@ static void share_parts(const int root, /**/ Particle *pp, int *n) {
         
     for (int i = 0; i < *n; ++i)
     for (int c = 0; c < 3; ++c)
-    pp[i].r[c] -= mi[c];
+        pp[i].r[c] -= mi[c];
 }
 
 static void empty_solid(const Mesh m, /* io */ float *rr0, int *npsolid) {

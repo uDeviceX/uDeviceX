@@ -56,9 +56,9 @@ void gen_name(const bool read, const char *code, const int id, const char *ext, 
     id2str(id, /**/ idcode);
     
     if (m::size == 1)
-    CSPR(sprintf(name, DIR_S, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, idcode, ext));
+        CSPR(sprintf(name, DIR_S, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, idcode, ext));
     else
-    CSPR(sprintf(name, DIR_M, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, m::coords[X], m::coords[Y], m::coords[Z], idcode, ext));
+        CSPR(sprintf(name, DIR_M, read ? BASE_STRT_READ : BASE_STRT_DUMP, code, m::coords[X], m::coords[Y], m::coords[Z], idcode, ext));
 }
 
 namespace bopwrite {

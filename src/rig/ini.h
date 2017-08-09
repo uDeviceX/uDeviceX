@@ -56,7 +56,10 @@ static void ini1(const Mesh m, int nsolid, float *coms, /**/
 
     int rcount = 0;
     kill(idmax, tags, /**/ s_n, s_pp, &rcount, r_pp);
+    DBG("after kill: %d", rcount);
+
     share_parts(root, /**/ r_pp, &rcount);
+    DBG("after share_parts: %d", rcount);
 
     ini0(m, nsolid, rcount, idmax, root, coms, /**/ ns, nps, rr0, ss, r_pp);
 }
