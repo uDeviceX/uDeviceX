@@ -4,6 +4,7 @@
 #include <conf.h>
 #include "m.h"
 #include "field.h"
+#include "common.h"
 
 namespace field {
 static float spl(float x) { /* b-spline (see tools/bspline.mac) */
@@ -24,6 +25,7 @@ static void skip_line(FILE *f) {
 static FILE* safe_fopen(const char *path, const char *mode) {
     FILE *f;
     f = fopen(path, "r");
+    if (f == NULL) ERR("fail to open: %s\n", path);
     return f;
 }
 
@@ -40,7 +42,7 @@ void ini_dims(const char *path, /**/ int N[3], float ext[3]) {
   
 void ini_data(const char *path, int n, /**/ float *D) { /* read sdf file */
     FILE *f;
-    f = fopen(path, "r");
+    f = safe_fopen(path, "r");
     skip_line(f); skip_line(f);
     fread(D, sizeof(D[0]), n, f);
     fclose(f);
