@@ -2,4 +2,4 @@
 #define KL_AFTER(s) MSG("kl: %s", s);
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 
-namespace kl { void msg(int, int, int,   int, int, int) { }; }
+namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
