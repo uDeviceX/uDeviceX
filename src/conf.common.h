@@ -69,6 +69,10 @@
 #define rbcs (false)
 #endif
 
+#ifndef RBCnv
+#define RBCnv (498)
+#endif
+
 #ifndef rbounce_back
 #define rbounce_back (false)
 #endif
