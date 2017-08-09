@@ -13,7 +13,7 @@ $B/glb.o: $S/conf.common.h $B/conf.h $S/glb.h $S/m.h
 $B/hforces/imp.o: $S/common.cuda.h $S/common.h $S/conf.common.h $B/conf.h $S/forces.h $S/hforces/dev.h $S/hforces/dev.map.h $S/hforces/imp.h $S/inc/type.h $S/k/common.h $S/k/read.h $S/kl/kl.h $S/m.h $S/rnd/dev.h $S/rnd/imp.h
 $B/io/field.o: $S/common.mpi.h $S/conf.common.h $B/conf.h $S/inc/type.h $S/io/field.h $S/io/field/dump.h $S/io/field/field.h $S/io/field/grid.h $S/io/field/imp.h $S/io/field/scalar.h $S/io/field/wrapper.h $S/l/m.h $S/m.h $S/os.h
 $B/io/rbc.o: $S/common.mpi.h $S/conf.common.h $B/conf.h $S/inc/type.h $S/io/rbc.h $S/io/rbc/imp.h $S/l/m.h $S/m.h $S/os.h
-$B/kl/kl.h: $S/kl/common.h $S/kl/macro.h $S/kl/peek.h $S/kl/release.h $S/kl/safe.h $S/kl/trace.h
+$B/kl/kl.h: $S/kl/common.h $S/kl/macro.h $S/kl/peek.h $S/kl/release.h $S/kl/trace.h
 $B/l/linal.o: $S/l/h/linal.h $S/l/linal.h
 $B/l/m.o: $S/l/h/m.h $S/l/m.h
 $B/l/off.o: $S/l/h/off.h $S/l/off.h
