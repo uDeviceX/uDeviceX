@@ -16,6 +16,10 @@
 #define multi_solvent (false)
 #endif
 
+#ifndef global_ids
+#define global_ids (false)
+#endif
+
 // dump
 
 #ifndef DUMP_BASE
