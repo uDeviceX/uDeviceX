@@ -37,19 +37,19 @@
 #endif
 
 #ifndef field_dumps
-  #define field_dumps (false)
-#else
-  #ifndef field_freq
-  #define field_freq (1000)
-  #endif
+#define field_dumps (false)
+#endif
+
+#ifndef field_freq
+#define field_freq (1000)
 #endif
 
 #ifndef part_dumps
-  #define part_dumps (false)
-#else
-  #ifndef part_freq
-  #define part_freq (1000)
-  #endif
+#define part_dumps (false)
+#endif
+
+#ifndef part_freq
+#define part_freq (1000)
 #endif
 
 // solid 
