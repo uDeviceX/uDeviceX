@@ -144,6 +144,7 @@
 #ifndef strt_dumps
 #define strt_dumps (false)
 #endif
+
 #ifndef strt_freq
 #define strt_freq (1000)
 #endif
