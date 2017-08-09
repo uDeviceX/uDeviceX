@@ -2,14 +2,9 @@ namespace rig {
 namespace sub {
 namespace ic {
 
-
 static void share0(const int root, /**/ Particle *pp, int *n) {
     std::vector<int> counts(m::size), displs(m::size);
     std::vector<Particle> recvbuf(MAX_PSOLID_NUM);
-
-    if (*n >= MAX_PSOLID_NUM)
-        ERR("Number of solid particles too high for the buffer\n");
-
     MC(MPI_Gather(n, 1, MPI_INT, counts.data(), 1, MPI_INT, root, l::m::cart) );
 
     if (m::rank == root)
@@ -27,10 +22,10 @@ static void share0(const int root, /**/ Particle *pp, int *n) {
         *n = displs.back() + counts.back();
         for (int i = 0; i < *n; ++i) pp[i] = recvbuf[i];
     }
-
 }
 
 static void share(const int root, /**/ Particle *pp, int *n) {
+    if (*n >= MAX_PSOLID_NUM) ERR("Number of solid particles too high for the buffer\n");
     // set to global coordinates and then convert back to local
     int i, c;
     const int L[3] = {XS, YS, ZS};
