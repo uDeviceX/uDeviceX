@@ -57,22 +57,5 @@ cd $RUNDIR
 . run_daint.sh
 )
 
-
-# Rerun with restarts
-cd ${COMPILEDIR}/build
-    echo -e "#define RESTART true" >> ${COMPILEDIR}/build/conf.h
-    { make clean && u.make -j ; } > /dev/null
-cd -
-# Copy to $RUNDIR
-cp ${COMPILEDIR}/build/udx ${RUNDIR}/
-cp ${COMPILEDIR}/build/launch_daint.sh ${RUNDIR}/
-cp ${COMPILEDIR}/build/run_daint.sh ${RUNDIR}/
-cp ${COMPILEDIR}/build/conf.h ${RUNDIR}/
-
-(
-cd $RUNDIR
-. run_daint.sh
-)
-
 #rm -rf ${COMPILEDIR}
 
