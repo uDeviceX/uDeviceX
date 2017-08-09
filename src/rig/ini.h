@@ -5,7 +5,6 @@ namespace ic {
 static void ini0(const Mesh m, int nsolid, float *coms, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp)
 {
-    int npsolid = 0;
     const int npp0 = *s_n;
     int *tags = new int[npp0];
     int *rcounts = new int[nsolid];
@@ -29,7 +28,7 @@ static void ini0(const Mesh m, int nsolid, float *coms, /**/
     Solid model;
 
     // share model to everyone
-    
+    int npsolid = 0;
     if (m::rank == root)
     {
         npsolid = rcount;
