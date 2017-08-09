@@ -35,7 +35,7 @@ void interactions(const SFrag26 ssfrag, const Frag26 ffrag, const Rnd26 rrnd, /*
     get_start(ssfrag.d, /**/ start.d);
     n = 2 * start.d[26];
         
-    if (n) KL(dev::force, (k_cnf(n)), (start, ssfrag, ffrag, rrnd, /**/ ff));
+    KL(dev::force, (k_cnf(n)), (start, ssfrag, ffrag, rrnd, /**/ ff));
 }
 
 } // hforces

@@ -90,10 +90,9 @@ void collect_rig_hst(int nt, int ns, const TicketM *t, /**/ Solid *ss) {
 
 void collect_rig_dev(int nt, int ns, const TicketM *t, /**/ Solid *ss) {
     int n = ns * nt;
-    if (n)
-        KL(sub::dev::collect_rig_mom,
-           (k_cnf(n)),
-           (t->mm_dev, ns, nt, /**/ ss));
+    KL(sub::dev::collect_rig_mom,
+       (k_cnf(n)),
+       (t->mm_dev, ns, nt, /**/ ss));
 }
 
 } // mbounce
