@@ -2,4 +2,8 @@
 #define KL_AFTER(s) CC(cudaPeekAtLastError());
 #define KL_CALL(F, C, A) F<<<ESC C>>>A
 
-namespace kl { inline void msg(int, int, int,   int int int) { }; }
+namespace kl {
+inline void msg(int ix, int iy, int iz,   int jx, int jy, int jz) {
+    MSG("klconf: [%d %d %d] [%d %d %d]", ix, iy, iz,   jx, jy, jz);
+};
+}
