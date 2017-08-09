@@ -1,5 +1,6 @@
 /* TODO: header includes header */
 #include "kl/common.h"
+#include "kl/macro.h"
 
 #if    defined(KL_RELEASE)
   #include "kl/release.h"
