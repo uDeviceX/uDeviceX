@@ -1,7 +1,4 @@
 /* TODO: header includes header */
-#include "kl/common.h"
-#include "kl/macro.h"
-
 #if    defined(KL_RELEASE)
   #include "kl/release.h"
 #elif  defined(KL_TRACE)
@@ -13,3 +10,6 @@
 #elif  defined(KL_UNSAFE)
   #include "kl/unsafe.h"
 #endif
+
+#include "kl/common.h"
+#include "kl/macro.h"
