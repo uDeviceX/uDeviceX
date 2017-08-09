@@ -11,9 +11,10 @@ int rank, size, coords[d], dims[d];
 const bool reorder = false;
 
 void ini(int argc, char **argv) {
+    int i;
     m::dims[0] = m::dims[1] = m::dims[2] = 1;
-    for (int iarg = 1; iarg < argc && iarg <= 3; iarg++)
-    m::dims[iarg - 1] = atoi(argv[iarg]);
+    for (i = 1; i < argc && i <= 3; i++)
+    m::dims[i - 1] = atoi(argv[i]);
     
     MC(MPI_Init(&argc, &argv));
     MC(MPI_Comm_rank(MPI_COMM_WORLD,   &m::rank));
