@@ -9,7 +9,6 @@ static void ini0(const char *fname, const Mesh m, /**/
     int npsolid = 0;
     float3 minbb, maxbb;
     int nsolid = read_coms(fname, coms);
-    
     if (nsolid == 0) ERR("No solid provided.\n");
     
     mesh::get_bbox(m.vv, m.nv, /**/ &minbb, &maxbb);
@@ -82,10 +81,16 @@ static void ini0(const char *fname, const Mesh m, /**/
     set_ids(nsolid, /**/ ss);
 }
 
+static void ini1(const char *fname, const Mesh m, /**/
+                 int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp,
+                 /*w*/ float *coms) {
+    ini0(fname, m, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ coms);
+}
+
 void ini(const char *fname, const Mesh m, /**/
          int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp) {
     float *coms = new float[MAX_SOLIDS * 3 * 10];
-    ini0(fname, m, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ coms);
+    ini1(fname, m, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ coms);
     delete[] coms;
 }
 
