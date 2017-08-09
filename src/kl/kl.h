@@ -8,6 +8,8 @@
   #include "kl/trace.h"
 #elif  defined(KL_PEEK)
   #include "kl/peek.h"
+#elif  defined(KL_TRACE_PEEK)
+  #include "kl/trace.peek.h"
 #elif  defined(KL_UNSAFE)
   #include "kl/unsafe.h"
 #endif
