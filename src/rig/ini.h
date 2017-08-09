@@ -3,12 +3,9 @@ namespace sub {
 namespace ic {
 
 static void ini0(const Mesh m, int nsolid, float *coms, /**/
-                 int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp)
+                 int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp,
+                 /*w*/ int *tags, int *rcounts)
 {
-    const int npp0 = *s_n;
-    int *tags = new int[npp0];
-    int *rcounts = new int[nsolid];
-
     count_pp_inside(s_pp, *s_n, coms, nsolid, m.tt, m.vv, m.nt, /**/ tags, rcounts);
 
     int root, idmax;
@@ -19,9 +16,6 @@ static void ini0(const Mesh m, int nsolid, float *coms, /**/
     int rcount = 0;
 
     kill(idmax, tags, /**/ s_n, s_pp, &rcount, r_pp);
-
-    delete[] rcounts;
-    delete[] tags;
 
     share_parts(root, /**/ r_pp, &rcount);
 
@@ -71,7 +65,11 @@ static void ini0(const Mesh m, int nsolid, float *coms, /**/
 
 static void ini1(const Mesh m, int nsolid, float *coms, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp) {
-    ini0(m, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp);    
+    int *tags = new int[*s_n];
+    int *rcounts = new int[nsolid];
+    ini0(m, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ tags, rcounts);
+    delete[] rcounts;
+    delete[] tags;
 }
 
 static void ini2(const char *fname, const Mesh m, /**/
