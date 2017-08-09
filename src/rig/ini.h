@@ -2,17 +2,12 @@ namespace rig {
 namespace sub {
 namespace ic {
 
-static void ini0(const char *fname, const Mesh m, /**/
-                 int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp,
-                 /*w*/ float *coms)
+static void ini0(const Mesh m, int nsolid, float *coms, /**/
+                 int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp)
 {
     int npsolid = 0;
     float3 minbb, maxbb;
-    int nsolid = read_coms(fname, coms);
-    if (nsolid == 0) ERR("No solid provided.\n");
-    
     mesh::get_bbox(m.vv, m.nv, /**/ &minbb, &maxbb);
-        
     nsolid = duplicate_PBC(minbb, maxbb, nsolid, /**/ coms);
 
     make_local(nsolid, coms);
@@ -84,7 +79,9 @@ static void ini0(const char *fname, const Mesh m, /**/
 static void ini1(const char *fname, const Mesh m, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp,
                  /*w*/ float *coms) {
-    ini0(fname, m, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ coms);
+    int nsolid = read_coms(fname, /**/ coms);
+    if (nsolid == 0) ERR("No solid provided.\n");
+    ini0(m, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp);
 }
 
 void ini(const char *fname, const Mesh m, /**/
