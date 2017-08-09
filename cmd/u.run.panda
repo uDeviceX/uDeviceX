@@ -1,7 +1,12 @@
 #!/bin/bash
 
+msg () { printf '%s\n' "$*" >&2; }
+exec0() { # echo and exec
+    msg cmd: "$@"; exec "$@"
+}
+
 run_one() { # single processor
-    exec "$e" "$@"
+    exec0 "$e" "$@"
 }
 
 env_panda() {
@@ -10,7 +15,7 @@ env_panda() {
 
 run_mpi() {
     env_panda
-    exec mpirun -n $n "$e" $x $y $z "$@"
+    exec0 mpirun -n $n "$e" $x $y $z "$@"
 }
 
 n=$1; shift
