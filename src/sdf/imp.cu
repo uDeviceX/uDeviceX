@@ -1,5 +1,7 @@
 #include <mpi.h>
 #include <conf.h>
+#include "conf.common.h"
+#include "cc.h"
 
 #include "m.h"
 #include "l/m.h"
@@ -10,7 +12,6 @@
 #include "common.cuda.h"
 #include "inc/macro.h"
 
-#include "conf.common.h"
 #include "kl.h"
 
 #include "glb.h"

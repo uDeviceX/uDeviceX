@@ -1,9 +1,3 @@
-#ifdef CC_SYNC
-  #include "cc/sync.h"
-#else
-  #include "cc/release.h"
-#endif
-
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
 

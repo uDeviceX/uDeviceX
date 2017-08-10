@@ -1,8 +1,11 @@
 #include <mpi.h>
 #include <cassert>
 #include <vector>
-#include <conf.h>
 #include <cstdio>
+
+#include <conf.h>
+#include "conf.common.h"
+#include "cc.h"
 
 #include "m.h"
 #include "l/m.h"

@@ -1,13 +1,14 @@
 #include <cstdio>
 #include <conf.h>
+#include "conf.common.h"
+#include "cc.h"
+#include "kl.h"
 
 #include "inc/type.h"
 #include "common.h"
 #include "common.cuda.h"
 #include "scan/int.h"
 #include "clist/int.h"
-#include "conf.common.h"
-#include "kl.h"
 
 namespace clist {
 namespace dev {

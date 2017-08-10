@@ -1,7 +1,8 @@
 #include <stdio.h>
+#include <conf.h>
+
 #include "inc/type.h"
 #include "io/field.h"
-#include <conf.h>
 #include "m.h"
 #include "field.h"
 #include "common.h"

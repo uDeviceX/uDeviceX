@@ -1,14 +1,16 @@
 #include <stdint.h>
 #include <stdio.h>
+#include <conf.h>
+#include "conf.common.h"
+#include "cc.h"
+
 #include "rnd/imp.h"
 #include "rnd/dev.h"
 #include "m.h"
-#include <conf.h>
 #include "common.h"
 #include "common.cuda.h"
 #include "inc/type.h"
 #include "dpd/local.h"
-#include "conf.common.h"
 #include "kl.h"
 #include "forces.h"
 

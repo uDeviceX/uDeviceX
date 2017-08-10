@@ -1,7 +1,9 @@
 #include <mpi.h>
 #include <vector>
-
 #include <conf.h>
+#include "conf.common.h"
+#include "cc.h"
+
 #include "common.h"
 #include "common.cuda.h"
 

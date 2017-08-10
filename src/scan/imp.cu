@@ -1,12 +1,12 @@
 #include <cstdio>
 #include <conf.h>
-
-#include <common.h>
-#include "common.cuda.h"
-
-#include "m.h"
 #include "conf.common.h"
+#include "cc.h"
 #include "kl.h"
+
+#include "common.h"
+#include "common.cuda.h"
+#include "m.h"
 
 #include "scan/int.h"
 #include "scan/dev.h"

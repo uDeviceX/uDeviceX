@@ -1,11 +1,13 @@
-#include "l/linal.h"
-
 #include <mpi.h>
+#include <conf.h>
+#include "conf.common.h"
+#include "cc.h"
+
+#include "l/linal.h"
 #include "inc/type.h"
 #include "common.h"
 #include "common.cuda.h"
-#include <conf.h>
-#include "conf.common.h"
+
 #include "m.h"
 #include "kl.h"
 

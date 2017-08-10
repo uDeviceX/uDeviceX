@@ -1,5 +1,7 @@
 #include <mpi.h>
 #include <conf.h>
+#include "conf.common.h"
+#include "cc.h"
 
 #include "basetags.h"
 #include "l/m.h"
