@@ -1,57 +1,60 @@
 namespace x {
 static void post(std::vector<ParticlesWrap> w, int nw) {
+    using namespace rex;
+
     bool packingfailed;
     dSync();
-    if (cnt == 0) rex::recvC(tc.cart, tc.ranks, tr.tags, tt);
-    else          rex::s::waitC();
+    if (cnt == 0) recvC(tc.cart, tc.ranks, tr.tags, tt);
+    else          s::waitC();
 
-    rex::copy_count(ti);
-    packingfailed = rex::post_check();
+    copy_count(ti);
+    packingfailed = post_check();
     if (packingfailed) {
-        rex::local_resize();
-        rex::post_resize();
-        rex::clear(nw, tp);
-        rex::scanA( w, nw, tp);
-        rex::copy_offset(nw, tp, ti);
-        rex::scanB(nw, tp);
-        rex::copy_tstarts(tp, ti);
-        rex::pack(w, nw, tp, buf);
+        local_resize();
+        post_resize();
+        clear(nw, tp);
+        scanA( w, nw, tp);
+        copy_offset(nw, tp, ti);
+        scanB(nw, tp);
+        copy_tstarts(tp, ti);
+        pack(w, nw, tp, buf);
         dSync();
     }
-    rex::local_resize();
-    rex::recvF(tc.cart, tc.ranks, tr.tags, tt);
+    local_resize();
+    recvF(tc.cart, tc.ranks, tr.tags, tt);
 
-    if (cnt == 0) rex::recvP(tc.cart, tc.ranks, tr.tags, tt);
-    else          rex::s::waitP();
-    rex::copy_pack(ti, buf, buf_pinned);
+    if (cnt == 0) recvP(tc.cart, tc.ranks, tr.tags, tt);
+    else          s::waitP();
+    copy_pack(ti, buf, buf_pinned);
     dSync();
-    rex::sendC(tc.cart, tc.ranks, tt);
-    rex::sendP(tc.cart, tc.ranks, tt, ti, buf_pinned);
+    sendC(tc.cart, tc.ranks, tt);
+    sendP(tc.cart, tc.ranks, tt, ti, buf_pinned);
 }
 
 static void rex0(std::vector<ParticlesWrap> w, int nw) {
+    using namespace rex;
     cnt++;
-    rex::clear(nw, tp);
-    rex::scanA(w, nw, tp);
-    rex::copy_offset(nw, tp, ti);
-    rex::scanB(nw, tp);
-    rex::copy_tstarts(tp, ti);
-    rex::pack(w, nw, tp, buf);
+    clear(nw, tp);
+    scanA(w, nw, tp);
+    copy_offset(nw, tp, ti);
+    scanB(nw, tp);
+    copy_tstarts(tp, ti);
+    pack(w, nw, tp, buf);
     post(w, nw);
-    rex::r::waitC();
-    rex::r::waitP();
-    rex::recvM(tc.cart, tc.ranks, tr.tags, tt);
-    rex::copy_hstate();
-    rex::recvC(tc.cart, tc.ranks, tr.tags, tt);
-    rex::copy_state();
-    if (cnt) rex::s::waitA();
-    rex::halo(); /* fsi::halo(); */
-    rex::recvP(tc.cart, tc.ranks, tr.tags, tt);
+    r::waitC();
+    r::waitP();
+    recvM(tc.cart, tc.ranks, tr.tags, tt);
+    copy_hstate();
+    recvC(tc.cart, tc.ranks, tr.tags, tt);
+    copy_state();
+    if (cnt) s::waitA();
+    halo(); /* fsi::halo(); */
+    recvP(tc.cart, tc.ranks, tr.tags, tt);
     dSync();
-    rex::sendF(tc.cart, tc.ranks, tt);
-    rex::copy_ff();
-    rex::r::waitA();
-    rex::unpack(w, nw, tp);
+    sendF(tc.cart, tc.ranks, tt);
+    copy_ff();
+    r::waitA();
+    unpack(w, nw, tp);
 }
 
 void rex(std::vector<ParticlesWrap> w) {
