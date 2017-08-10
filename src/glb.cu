@@ -33,4 +33,3 @@ void sim() {
     cudaMemcpyToSymbol(lg, lg_h, 3*sizeof(float));
 }
 }
-#undef ndim
