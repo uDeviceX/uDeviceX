@@ -2,7 +2,7 @@
 #include "l/m.h"
 #include <stdio.h>
 #include <conf.h>
-#include "conf.common.h"
+#include "inc/conf.h"
 #include "m.h"     /* MPI */
 #include "inc/type.h"
 #include "common.mpi.h"

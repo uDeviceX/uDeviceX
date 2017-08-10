@@ -4,7 +4,7 @@
 #include <cstdio>
 
 #include <conf.h>
-#include "conf.common.h"
+#include "inc/conf.h"
 #include "cc.h"
 
 #include "m.h"
@@ -32,7 +32,6 @@
 #include "clist/int.h"
 #include "restart.h"
 
-#include "conf.common.h"
 #include "kl.h"
 
 #include "wall/imp.h"

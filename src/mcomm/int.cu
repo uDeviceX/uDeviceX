@@ -1,7 +1,7 @@
 #include <mpi.h>
 #include <vector>
 #include <conf.h>
-#include "conf.common.h"
+#include "inc/conf.h"
 #include "cc.h"
 
 #include "common.h"

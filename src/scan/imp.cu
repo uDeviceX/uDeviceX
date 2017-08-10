@@ -1,6 +1,6 @@
-#include <cstdio>
+#include <stdio.h>
 #include <conf.h>
-#include "conf.common.h"
+#include "inc/conf.h"
 #include "cc.h"
 #include "kl.h"
 

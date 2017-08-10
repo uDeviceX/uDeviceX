@@ -2,7 +2,7 @@
 #include "inc/type.h"
 #include "common.h"
 #include <conf.h>
-#include "conf.common.h"
+#include "inc/conf.h"
 #include "m.h"
 
 #include "restart.h"

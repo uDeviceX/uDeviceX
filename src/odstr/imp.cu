@@ -1,7 +1,7 @@
 #include <mpi.h>
 #include "l/m.h"
 #include <conf.h>
-#include "conf.common.h"
+#include "inc/conf.h"
 #include "cc.h"
 
 #include "m.h"
@@ -15,7 +15,6 @@
 
 #include "scan/int.h"
 
-#include "conf.common.h"
 #include "kl.h"
 
 #include "k/read.h"

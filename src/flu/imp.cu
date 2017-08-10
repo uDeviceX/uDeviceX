@@ -3,7 +3,7 @@
 #include <mpi.h>
 
 #include <conf.h>
-#include "conf.common.h"
+#include "inc/conf.h"
 #include "cc.h"
 
 #include "l/m.h"
@@ -17,7 +17,6 @@
 #include "flu/imp.h"
 #include "flu/dev.h"
 
-#include "conf.common.h"
 #include "kl.h"
 
 namespace flu {

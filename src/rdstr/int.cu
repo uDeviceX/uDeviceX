@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <mpi.h>
 #include <conf.h>
-#include "conf.common.h"
+#include "inc/conf.h"
 #include "cc.h"
 
 #include "inc/type.h"

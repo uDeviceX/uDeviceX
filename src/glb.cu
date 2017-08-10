@@ -1,5 +1,5 @@
 #include <conf.h>
-#include "conf.common.h"
+#include "inc/conf.h"
 #include "m.h"
 #include "glb.h"
 

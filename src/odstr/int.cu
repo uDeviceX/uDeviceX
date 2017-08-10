@@ -1,6 +1,6 @@
 #include <mpi.h>
 #include <conf.h>
-#include "conf.common.h"
+#include "inc/conf.h"
 #include "cc.h"
 
 #include "basetags.h"
@@ -14,7 +14,6 @@
 
 #include "k/read.h"
 #include "k/common.h"
-#include "conf.common.h"
 #include "kl.h"
 
 #include <stdint.h>

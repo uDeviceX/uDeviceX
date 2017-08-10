@@ -3,7 +3,7 @@
 #include <vector> // for ic
 
 #include <conf.h>
-#include "conf.common.h"
+#include "inc/conf.h"
 #include "cc.h"
 
 #include "l/m.h"
