@@ -37,6 +37,10 @@
 #define wall_creation       1000
 #define tend                5
 
+/* DEBUG */
+#define KL_PEEK             true
+#define CC_SYNC             true
+
 /* FLOW TYPE */
 #define pushflow            true
 #define driving_force       0.05

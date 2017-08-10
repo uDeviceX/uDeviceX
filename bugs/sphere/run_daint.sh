@@ -1,8 +1,8 @@
 # !/bin/bash
 
 NX=10
-NY=1
-NZ=1
+NY=2
+NZ=2
 
 # Domain size
 XS=`grep -w XS conf.h | awk '{print $3}'`
