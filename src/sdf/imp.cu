@@ -13,8 +13,6 @@
 #include "inc/macro.h"
 
 #include "kl.h"
-
-#include "glb.h"
 #include "k/wvel.h"
 
 #include "field.h"
