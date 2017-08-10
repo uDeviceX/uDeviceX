@@ -14,7 +14,7 @@ static void ini_remote(int estimate) {
     int i;
     for (i = 0; i < 26; i++) {
         remote[i] = new RemoteHalo;
-        remote[i]->resize(estimate);
+        re::resize(remote[i], estimate);
     }
 }
 static void ini_copy() {

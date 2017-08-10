@@ -39,7 +39,7 @@ void recvM(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
         count = recv_counts[i];
         expected = remote[i]->expected();
         remote[i]->pmessage.resize(max(1, count));
-        remote[i]->resize(count);
+        re::resize(remote[i], count);
         n = count - expected;
         if (n > 0) {
             tag = t.btp2 + tags[i];

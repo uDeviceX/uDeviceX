@@ -5,13 +5,6 @@ struct RemoteHalo {
     PinnedHostBuffer<Particle> hstate;
     PinnedHostBuffer<Force> ff;
     std::vector<Particle> pmessage;
-
-    void resize(int n) {
-        dstate.resize(n);
-        hstate.preserve_resize(n);
-        ff.resize(n);
-        h.update(n);
-    }
     int expected() const {return (int)ceil(h.max() * 1.1);}
 };
 
