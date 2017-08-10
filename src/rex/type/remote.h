@@ -1,7 +1,6 @@
 namespace rex {
-class RemoteHalo {
-    History hist;
-public:
+struct RemoteHalo {
+    History h;
     DeviceBuffer<Particle> dstate;
     PinnedHostBuffer<Particle> hstate;
     PinnedHostBuffer<Force> ff;
@@ -11,8 +10,22 @@ public:
         dstate.resize(n);
         hstate.preserve_resize(n);
         ff.resize(n);
-        hist.update(n);
+        h.update(n);
     }
-    int expected() const {return (int)ceil(hist.max() * 1.1);}
+    int expected() const {return (int)ceil(h.max() * 1.1);}
 };
+
+namespace re {
+void resize(RemoteHalo *r, int n) {
+    r->dstate.resize(n);
+    r->hstate.preserve_resize(n);
+    r->ff.resize(n);
+    r->h.update(n);
+}
+
+int expected(RemoteHalo *r) {
+    return (int)ceil(r->h.max() * 1.1);
+}
+
+}
 }
