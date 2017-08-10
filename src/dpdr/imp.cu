@@ -12,7 +12,7 @@
 #include "common.cuda.h"
 #include "common.mpi.h"
 
-#include "kl/kl.h"
+#include "kl.h"
 
 #include "k/read.h"
 #include "k/common.h"

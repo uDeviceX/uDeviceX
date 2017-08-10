@@ -16,7 +16,7 @@
 #include "flu/dev.h"
 
 #include "conf.common.h"
-#include "kl/kl.h"
+#include "kl.h"
 
 namespace flu {
 namespace sub {

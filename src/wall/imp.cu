@@ -30,7 +30,7 @@
 #include "restart.h"
 
 #include "conf.common.h"
-#include "kl/kl.h"
+#include "kl.h"
 
 #include "wall/imp.h"
 #include "wall/dev.h"

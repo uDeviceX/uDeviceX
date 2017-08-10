@@ -7,7 +7,7 @@
 #include "scan/int.h"
 #include "clist/int.h"
 #include "conf.common.h"
-#include "kl/kl.h"
+#include "kl.h"
 
 namespace clist {
 namespace dev {

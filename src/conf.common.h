@@ -157,8 +157,9 @@
   #define KL_RELEASE
 #endif
 
-#ifndef SS_SYNC
-#define SS_SYNC (false)
+// [c]uda [c]heck macro
+#if !defined(CC_SYNC)
+  #define CC_RELEASE
 #endif
 
 // time

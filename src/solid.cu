@@ -7,7 +7,7 @@
 #include <conf.h>
 #include "conf.common.h"
 #include "m.h"
-#include "kl/kl.h"
+#include "kl.h"
 
 #include "solid.h"
 #include "k/solid.h"

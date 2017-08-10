@@ -14,7 +14,7 @@
 #include "conf.common.h"
 #include "common.h"
 #include "m.h"     /* MPI */
-#include "kl/kl.h"
+#include "kl.h"
 #include "basetags.h"
 #include "inc/type.h"
 #include "common.mpi.h"

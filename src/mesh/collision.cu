@@ -6,7 +6,7 @@
 #include "conf.common.h"
 
 #include "m.h"
-#include "kl/kl.h"
+#include "kl.h"
 #include "mesh/collision.h"
 
 namespace collision

@@ -13,7 +13,7 @@
 #include "common.cuda.h"
 
 #include "conf.common.h"
-#include "kl/kl.h"
+#include "kl.h"
 
 #include "mcomm/type.h"
 #include "mcomm/imp.h"

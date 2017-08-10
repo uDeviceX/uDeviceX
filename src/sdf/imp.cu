@@ -11,7 +11,7 @@
 #include "inc/macro.h"
 
 #include "conf.common.h"
-#include "kl/kl.h"
+#include "kl.h"
 
 #include "glb.h"
 #include "k/wvel.h"

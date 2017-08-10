@@ -10,7 +10,7 @@
 
 #include "m.h"
 #include "conf.common.h"
-#include "kl/kl.h"
+#include "kl.h"
 
 #include <stdint.h>
 #include "rnd/imp.h"

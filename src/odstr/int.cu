@@ -13,7 +13,7 @@
 #include "k/read.h"
 #include "k/common.h"
 #include "conf.common.h"
-#include "kl/kl.h"
+#include "kl.h"
 
 #include <stdint.h>
 #include "rnd/imp.h"

@@ -9,7 +9,7 @@
 #include "inc/type.h"
 #include "dpd/local.h"
 #include "conf.common.h"
-#include "kl/kl.h"
+#include "kl.h"
 #include "forces.h"
 
 #include "dpd/imp/type.h"

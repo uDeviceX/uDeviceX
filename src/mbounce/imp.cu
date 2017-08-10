@@ -5,7 +5,7 @@
 #include "m.h"
 #include "common.cuda.h"
 #include "conf.common.h"
-#include "kl/kl.h"
+#include "kl.h"
 
 // #define debug_output
 
