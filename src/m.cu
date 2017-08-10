@@ -22,4 +22,8 @@ void ini(int argc, char **argv) {
     MC(MPI_Cart_create(MPI_COMM_WORLD, d, dims, periods, reorder,   &l::m::cart));
     MC(MPI_Cart_coords(l::m::cart, rank, d,   coords));
 }
+
+void fin() {
+    MC(l::m::Finalize());
+}
 }

@@ -23,5 +23,5 @@ int main(int argc, char **argv) {
     else         sim::sim_gen();
     sim::fin();
   
-    MC(l::m::Finalize());
+    m::fin();
 }
