@@ -13,3 +13,11 @@ and "solids"
 - each fragment interacts with local particles and objects
 - sends a force of a fragment back.
 
+`TicketPack` is an index which helps to pack particles
+
+     struct TicketPack {
+         int *counts, *starts, *offsets;
+         int *tstarts;
+     };
+
+`TicketPinned` is a copy of `tstarts` and `offsets`
