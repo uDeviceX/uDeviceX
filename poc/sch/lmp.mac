@@ -1,0 +1,6 @@
+/* LAMMPS nve */
+
+v : r : 0;
+v: v + 1/2 * d * f;
+r: r + d * v;
+v: v + 1/2 * d * f;

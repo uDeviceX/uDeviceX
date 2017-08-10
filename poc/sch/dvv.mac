@@ -1,0 +1,8 @@
+/* DPD velocity verlet */
+
+la: 1/2;
+v : r : 0;
+
+r: r + d*v + 1/2*d^2*(fc + fd);
+w: v + la*d*(fc + fd1);
+v: v + d*fc + 1/2*d*(fd1 + fd2);

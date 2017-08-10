@@ -1,0 +1,4 @@
+v : r : 0;
+f: fc + fd;
+v: v + f*d;
+r: r + v*d;
