@@ -1,5 +1,5 @@
 namespace x {
-static void post(std::vector<ParticlesWrap> w, int nw) {
+static void send(std::vector<ParticlesWrap> w, int nw) {
     using namespace rex;
 
     bool packingfailed;
@@ -40,7 +40,7 @@ static void rex0(std::vector<ParticlesWrap> w, int nw) {
     scanB(nw, tp);
     copy_tstarts(tp, ti);
     pack(w, nw, tp, buf);
-    post(w, nw);
+    send(w, nw);
     r::waitC();
     r::waitP();
     recvM(tc.cart, tc.ranks, tr.tags, tt);
