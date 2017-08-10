@@ -175,6 +175,12 @@ namespace dev {
 
 namespace sim {
 namespace dev {
+#ifdef FORWARD_EULER
+  #include "sim/sch/euler.h"
+#else
+  #include "sim/sch/vv.h"
+#endif
+
 #include "sim/dev.h"
 }
 #include "sim/dec.h"
