@@ -1,4 +1,6 @@
 #include <mpi.h>
+#include <conf.h>
+
 #include "m.h"
 #include "l/m.h"
 
@@ -6,7 +8,6 @@
 #include "common.h"
 #include "common.mpi.h"
 #include "common.cuda.h"
-#include <conf.h>
 #include "inc/macro.h"
 
 #include "conf.common.h"

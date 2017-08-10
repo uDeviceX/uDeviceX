@@ -1,4 +1,6 @@
 #include <cstdio>
+#include <conf.h>
+
 #include <common.h>
 #include "common.cuda.h"
 

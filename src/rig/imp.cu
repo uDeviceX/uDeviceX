@@ -1,5 +1,8 @@
 #include <mpi.h>
 #include <cassert>
+#include <vector> // for ic
+
+#include <conf.h>
 #include "l/m.h"
 #include "m.h"
 
@@ -12,10 +15,6 @@
 #include "mesh/collision.h"
 #include "mesh/dist.h"
 #include "mesh/bbox.h"
-
-#include <vector> // for ic
-
-#include <conf.h>
 
 #include "l/ply.h"
 #include "restart.h"

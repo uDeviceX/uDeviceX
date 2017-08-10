@@ -1,16 +1,17 @@
 #include <stdint.h>
-#include "rnd/imp.h"
-
 #include <mpi.h>
+
+#include <conf.h>
+
+#include "rnd/imp.h"
 #include "m.h"
 #include "l/m.h"
 #include "inc/type.h"
 #include "common.h"
+#include "conf.common.h"
 #include "common.cuda.h"
 #include "common.mpi.h"
 
-#include <conf.h>
-#include "conf.common.h"
 #include "kl/kl.h"
 
 #include "k/read.h"

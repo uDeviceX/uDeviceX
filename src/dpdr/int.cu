@@ -4,12 +4,11 @@
 #include "rnd/imp.h"
 
 #include <mpi.h>
+#include <conf.h>
 #include "inc/type.h"
 #include "common.h"
 #include "common.cuda.h"
 #include "common.mpi.h"
-
-#include <conf.h>
 
 #include "hforces/imp.h"
 

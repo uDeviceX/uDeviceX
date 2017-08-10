@@ -1,6 +1,7 @@
-#include "basetags.h"
-
 #include <mpi.h>
+#include <conf.h>
+
+#include "basetags.h"
 #include "l/m.h"
 #include "m.h"
 #include "inc/type.h"
@@ -9,7 +10,6 @@
 #include "common.mpi.h"
 #include "inc/tmp/pinned.h"
 
-#include <conf.h>
 #include "k/read.h"
 #include "k/common.h"
 #include "conf.common.h"

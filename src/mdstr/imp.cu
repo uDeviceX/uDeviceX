@@ -1,13 +1,14 @@
 #include <mpi.h>
+#include <cstdio>
+#include <conf.h>
+
 #include "m.h"
 #include "l/m.h"
 
-#include <cstdio>
 #include "inc/type.h"
 #include "common.h"
 #include "common.mpi.h"
 #include "common.cuda.h"
-#include <conf.h>
 
 #include "mdstr/imp.h"
 #include "mdstr/ini.h"

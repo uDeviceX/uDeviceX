@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include "common.h"
 #include "inc/type.h"
-#include "common.cuda.h"
 #include <conf.h>
+#include "common.cuda.h"
 #include "conf.common.h"
 
 #include "m.h"

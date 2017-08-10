@@ -1,7 +1,6 @@
 #ifdef CC_SYNC
   #include "cc/sync.h"
 #else
-  djfgkjdfhkg
   #include "cc/release.h"
 #endif
 

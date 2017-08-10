@@ -1,8 +1,9 @@
 #include <cstdio>
+#include <conf.h>
+
 #include "inc/type.h"
 #include "common.h"
 #include "common.cuda.h"
-#include <conf.h>
 #include "inc/macro.h"
 
 #include "sdf/type.h"

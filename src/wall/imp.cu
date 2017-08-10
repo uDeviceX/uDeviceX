@@ -1,16 +1,17 @@
 #include <mpi.h>
 #include <cassert>
+#include <vector>
+#include <conf.h>
+#include <cstdio>
+
 #include "m.h"
 #include "l/m.h"
 
-#include <vector>
-
-#include <cstdio>
 #include "inc/type.h"
 #include "common.h"
 #include "common.cuda.h"
 
-#include <conf.h>
+
 #include "inc/macro.h"
 
 #include <stdint.h>

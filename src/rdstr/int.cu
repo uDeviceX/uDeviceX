@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <mpi.h>
+#include <conf.h>
 
 #include "inc/type.h"
 #include "common.h"

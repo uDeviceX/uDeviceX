@@ -2,8 +2,8 @@
 
 #include "inc/type.h"
 #include "common.h"
-#include "common.cuda.h"
 #include <conf.h>
+#include "common.cuda.h"
 #include "clist/int.h"
 
 #include <stdint.h>

@@ -2,13 +2,14 @@
 #include <cassert>
 
 #include <mpi.h>
+#include <conf.h>
+
 #include "l/m.h"
 #include "m.h"
 #include "inc/type.h"
 #include "common.h"
 #include "common.cuda.h"
 #include "common.mpi.h"
-#include <conf.h>
 #include "restart.h"
 
 #include "flu/imp.h"

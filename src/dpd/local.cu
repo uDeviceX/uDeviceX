@@ -3,11 +3,11 @@
 #include "rnd/imp.h"
 #include "rnd/dev.h"
 #include "m.h"
+#include <conf.h>
 #include "common.h"
 #include "common.cuda.h"
 #include "inc/type.h"
 #include "dpd/local.h"
-#include <conf.h>
 #include "conf.common.h"
 #include "kl/kl.h"
 #include "forces.h"
