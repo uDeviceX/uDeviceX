@@ -149,11 +149,16 @@
 #define strt_freq (1000)
 #endif
 
+// debug
 // [k]ernel [l]aunch options
 #if !defined(KL_RELEASE) && !defined(KL_TRACE)  && \
     !defined(KL_PEEK)    && !defined(KL_UNSAFE) && \
     !defined(KL_TRACE_PEEK)
   #define KL_RELEASE
+#endif
+
+#ifndef SS_SYNC
+#define SS_SYNC (false)
 #endif
 
 // time

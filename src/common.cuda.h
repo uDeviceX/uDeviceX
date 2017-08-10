@@ -1,13 +1,9 @@
-/* [c]cuda [c]heck */
-#define CC(ans)                                             \
-    do { cudaAssert((ans), __FILE__, __LINE__); } while (0)
-
-inline void cudaAssert(cudaError_t rc, const char *file, int line) {
-    if (rc != cudaSuccess) {
-        fprintf(stderr, "GPU assert: %s %s %d\n", cudaGetErrorString(rc), file, line);
-        abort();
-    }
-}
+#ifdef CC_SYNC
+  #include "cc/sync.h"
+#else
+  djfgkjdfhkg
+  #include "cc/release.h"
+#endif
 
 /* ceiling `m' to `n' (returns the smallest `A' such n*A is not less than `m') */
 #define ceiln(m, n) (   ((m) + (n) - 1)/(n)   )
