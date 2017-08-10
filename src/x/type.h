@@ -1,5 +1,5 @@
 namespace x {
-struct TicketCom { /* tikcket communiction */
+struct TicketCom { /* ticket communiction */
     MPI_Comm cart;
     int ranks[26];
 };
