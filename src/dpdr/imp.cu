@@ -61,14 +61,14 @@ void pack_ii(const int27 starts, const int nc, const int *ii, const intp26 str, 
 }
 
 void copy_pp(const int *np, const Particlep26 dev, /**/ Particlep26 hst) {
-    // dSync(); /* wait for fill_all */ /* use async copy now, no need to wait */
+    dSync();
     for (int i = 0; i < 26; ++i)
         if (np[i])
             CC(cudaMemcpyAsync(hst.d[i], dev.d[i], sizeof(Particle) * np[i], D2H));
 }
 
 void copy_ii(const int *np, const intp26 dev, /**/ intp26 hst) {
-    // dSync(); /* wait for fill_all_ii */ /* use async copy now, no need to wait */
+    dSync();
     for (int i = 0; i < 26; ++i)
         if (np[i])
             CC(cudaMemcpyAsync(hst.d[i], dev.d[i], sizeof(int) * np[i], D2H));
