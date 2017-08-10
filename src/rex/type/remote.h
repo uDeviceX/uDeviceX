@@ -5,7 +5,6 @@ struct RemoteHalo {
     PinnedHostBuffer<Particle> hstate;
     PinnedHostBuffer<Force> ff;
     std::vector<Particle> pmessage;
-    int expected() const {return (int)ceil(h.max() * 1.1);}
 };
 
 namespace re {
