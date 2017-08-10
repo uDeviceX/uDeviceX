@@ -1,6 +1,6 @@
 # !/bin/bash
 
-NX=4
+NX=10
 NY=1
 NZ=1
 
