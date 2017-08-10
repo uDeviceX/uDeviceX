@@ -25,7 +25,6 @@
 #include "sdf/int.h"
 #include "sdf/cheap.dev.h"
 
-#include "glb.h"
 #include "k/wvel.h"
 #include "forces.h"
 

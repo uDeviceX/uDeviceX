@@ -3,17 +3,13 @@
 #include "m.h"
 #include "glb.h"
 
-#define ndim 3
-#define X 0
-#define Y 1
-#define Z 2
-
 /* global variables visible for every kernel */
 namespace glb {
-__constant__ float r0[ndim];
-__constant__ float lg[ndim];
+__constant__ float r0[3];
+__constant__ float lg[3];
 
 void sim() {
+    enum {X, Y, Z};
     /* all coordinates are relative to the center of the sub-domain;
        Example: (dims[X] = 3, `XS' is sub-domain size):
        |            |             |             |
@@ -28,16 +24,13 @@ void sim() {
     r0_h[X] = XS*(m::dims[X]-2*m::coords[X]-1)/2;
     r0_h[Y] = YS*(m::dims[Y]-2*m::coords[Y]-1)/2;
     r0_h[Z] = ZS*(m::dims[Z]-2*m::coords[Z]-1)/2;
-    cudaMemcpyToSymbol(r0, r0_h, ndim*sizeof(float));
+    cudaMemcpyToSymbol(r0, r0_h, 3*sizeof(float));
 
     float lg_h[3]; /* domain size */
 	lg_h[X] = m::dims[X] * XS;
 	lg_h[Y] = m::dims[Y] * YS;
 	lg_h[Z] = m::dims[Z] * ZS;
-    cudaMemcpyToSymbol(lg, lg_h, ndim*sizeof(float));
+    cudaMemcpyToSymbol(lg, lg_h, 3*sizeof(float));
 }
 }
-#undef X
-#undef Y
-#undef Z
 #undef ndim
