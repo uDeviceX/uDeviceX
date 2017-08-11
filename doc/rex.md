@@ -15,10 +15,21 @@ and "solids"
 
 `TicketPack` is an index which helps to pack particles
 
-     struct TicketPack {
-         int *counts, *starts, *offsets;
-         int *tstarts;
-     };
+	 struct TicketPack {
+		 int *counts, *starts, *offsets;
+		 int *tstarts;
+	 };
 
-`TicketPinned` is a copy of `tstarts` and `offsets`
-`buf`(dev)  and `buf_pinned` (hst) are particles
+
+`TicketPinned` is a host copy of `TicketPack`
+
+	struct TicketPinned { /* helps pack particles (hst) */
+		int *tstarts;
+		int *offsets;
+	};
+
+
+`buf` is a "packed" particles (dev)
+`buf_pinned` is a copy of `buf` of host
+
+`send_counts[i]` is a copy of `TicketPinned.offsets`
