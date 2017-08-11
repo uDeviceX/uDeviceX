@@ -28,7 +28,7 @@ static void send(std::vector<ParticlesWrap> w, int nw) {
     copy_pack(ti, buf, buf_pinned);
     dSync();
     sendC(tc.cart, tc.ranks, tt);
-    sendP(tc.cart, tc.ranks, tt, ti, buf_pinned);
+    sendP12(tc.cart, tc.ranks, tt, ti, buf_pinned);
 }
 
 static void rex0(std::vector<ParticlesWrap> w, int nw) {
