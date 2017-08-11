@@ -43,14 +43,6 @@ __global__ void scan(const int n, const int size[], /**/ int strt[], int size_pi
     }
 }
 
-static __device__ int get_idpack(const int a[], const uint i) { /* where is `i' in sorted a[27]? */
-    uint k1, k9, k3;
-    k9 = 9 * (i >= a[          9]) + 9 * (i >= a[         18]);
-    k3 = 3 * (i >= a[k9      + 3]) + 3 * (i >= a[k9      + 6]);
-    k1 =     (i >= a[k9 + k3 + 1]) +     (i >= a[k9 + k3 + 2]);
-    return k9 + k3 + k1;
-}
-
 template <typename T, int STRIDE>
 __global__ void pack(const T *data, int *const iidx[], const int send_strt[], /**/ T *send_dev[]) {
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
@@ -62,7 +54,7 @@ __global__ void pack(const T *data, int *const iidx[], const int send_strt[], /*
 
     if (tid < 28) start[tid] = send_strt[tid];
     __syncthreads();
-    int idpack = get_idpack(start, slot);
+    int idpack = k_common::fid(start, slot);
 
     if (slot >= start[27]) return;
 
@@ -85,7 +77,7 @@ __global__ void unpack(T *const recv[], const int strt[], /**/ T *data) {
 
     if (tid < 28) start[tid] = strt[tid];
     __syncthreads();
-    const int idpack = get_idpack(start, slot);
+    const int idpack = k_common::fid(start, slot);
 
     if (slot >= start[27]) return;
 
@@ -110,7 +102,7 @@ __global__ void subindex_remote(const int n, const int strt[], /*io*/ float2 *pp
     __shared__ int start[28];
     if (tid < 28) start[tid] = strt[tid];
     __syncthreads();
-    const int idpack = get_idpack(start, slot);
+    const int idpack = k_common::fid(start, slot);
 
     float2 d0, d1, d2;
     k_read::AOS6f(pp + 3*base, nlocal, d0, d1, d2);

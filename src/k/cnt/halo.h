@@ -3,25 +3,17 @@ __global__ void halo(int nparticles_padded, int ncellentries,
                      int nsolutes, float seed) {
     int laneid = threadIdx.x % warpSize;
     int warpid = threadIdx.x / warpSize;
-    int localbase = 32 * (warpid + 4 * blockIdx.x);
-    int pid = localbase + laneid;
-
-    if (localbase >= nparticles_padded) return;
+    int base = 32 * (warpid + 4 * blockIdx.x);
+    int pid = base + laneid;
+    if (base >= nparticles_padded) return;
 
     int nunpack;
     float2 dst0, dst1, dst2;
     float *dst = NULL;
 
     {
-        uint key9 = 9 * (localbase >= g::starts[9]) +
-            9 * (localbase >= g::starts[18]);
-        uint key3 = 3 * (localbase >= g::starts[key9 + 3]) +
-            3 * (localbase >= g::starts[key9 + 6]);
-        uint key1 = (localbase >= g::starts[key9 + key3 + 1]) +
-            (localbase >= g::starts[key9 + key3 + 2]);
-        int code = key9 + key3 + key1;
-        int unpackbase = localbase - g::starts[code];
-
+        int code = k_common::fid(g::starts, base);
+        int unpackbase = base - g::starts[code];
         nunpack = min(32, g::counts[code] - unpackbase);
 
         if (nunpack == 0) return;
