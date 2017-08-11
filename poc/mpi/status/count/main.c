@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <mpi.h>
+#include "common.h"
 
 /* send.h */
 void send();
@@ -8,18 +9,14 @@ void wait();
 /* recv.h */
 void recv(int*, int*);
 
-#define SEND 0
-#define RECV 1
-#define COMM MPI_COMM_WORLD
-
-int buf[123];
-int count;
+int a[123];
+int n;
 int rank;
 
 void dump() {
     int i;
-    for (i = 0; i < count; i++)
-        fprintf(stderr, "%d ", buf[i]);
+    for (i = 0; i < n; i++)
+        fprintf(stderr, "%d ", a[i]);
     fprintf(stderr, "\n");
 }
 
@@ -32,7 +29,7 @@ int main(int argc, char *argv[]) {
         wait();
     }
     else {
-        recv(buf, &count);
+        recv(a, &n);
         dump();
     }
     

@@ -1,14 +1,8 @@
 #include <stdio.h>
 #include <mpi.h>
+#include "common.h"
 
-#define COMM MPI_COMM_WORLD
-#define SEND 0
-#define RECV 1
-#define TAG 0
-#define TYPE MPI_INT
 #define recv_cnt 10
-#define SZ(a) sizeof(a)/sizeof(a[0])
-
 MPI_Status status;
 
 static void data(int *buf) {
