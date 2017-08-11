@@ -6,9 +6,9 @@
 #include "common.h"
 #include "inc/type.h"
 #include "common.cuda.h"
+#include "m.h"
 #include "texo.h"
 
-#include "m.h"
 #include "kl.h"
 #include "mesh/collision.h"
 
