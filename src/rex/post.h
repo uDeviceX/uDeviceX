@@ -8,11 +8,8 @@ bool post_check() {
 }
 
 void post_resize() {
-    int sizes[26];
     int *indexes[26];
     int i;
-    for (i = 0; i < 26; ++i) sizes[i] = lo::size(local[i]);
-    CC(cudaMemcpyToSymbolAsync(k_rex::g::sizes, sizes, sizeof(sizes), 0, H2D));
     for (i = 0; i < 26; ++i) indexes[i] = local[i]->indexes->D;
     CC(cudaMemcpyToSymbolAsync(k_rex::g::indexes, indexes, sizeof(indexes), 0, H2D));
 }

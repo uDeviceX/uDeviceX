@@ -47,10 +47,8 @@ static void ini_remote() {
 }
 static void ini_copy() {
     int i;
-    for (i = 0; i < 26; ++i) {
-        CC(cudaMemcpyToSymbol(k_rex::g::sizes,   &local[i]->indexes->C, sizeof(int),  sizeof(int)  * i, H2D));
+    for (i = 0; i < 26; ++i)
         CC(cudaMemcpyToSymbol(k_rex::g::indexes, &local[i]->indexes->D, sizeof(int*), sizeof(int*) * i, H2D));
-    }
 }
 
 void ini() {
