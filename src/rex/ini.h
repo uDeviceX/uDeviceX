@@ -21,22 +21,30 @@ static int i2sz(int i) { /* fragment id to size */
     return d2sz(d);
 }
 
-static void ini_local(int estimate) {
-    int i;
+static int i2max(int i) { /* fragment id to maximum size */
+    return MAX_OBJ_DENSITY*i2sz(i);
+}
+
+static void ini_local() {
+    int i, n;
     for (i = 0; i < 26; i++) {
+        n = i2max(i);
+        MSG("i2max[%d]: %d", i, n);
         local[i] = new LocalHalo;
         local[i]->indexes = new DeviceBuffer<int>;
         local[i]->ff      = new PinnedHostBuffer<Force>;
-        lo::resize(local[i], estimate);
+        lo::resize(local[i], n);
         lo::update(local[i]);
     }
 }
 
-static void ini_remote(int estimate) {
-    int i;
+static void ini_remote() {
+    int i, n;
     for (i = 0; i < 26; i++) {
+        n = i2max(i);
+        MSG("i2max[%d]: %d", i, n);
         remote[i] = new RemoteHalo;
-        re::resize(remote[i], estimate);
+        re::resize(remote[i], n);
     }
 }
 static void ini_copy() {
@@ -48,10 +56,8 @@ static void ini_copy() {
 }
 
 void ini() {
-    int estimate;
-    estimate = 10;
-    ini_local(estimate);
-    ini_remote(estimate);
+    ini_local();
+    ini_remote();
     ini_copy();
 }
 }
