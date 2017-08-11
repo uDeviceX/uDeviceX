@@ -1,25 +1,12 @@
 namespace x {
-static void send(std::vector<ParticlesWrap> w, int nw) {
+static void send() {
     using namespace rex;
 
-    bool packingfailed;
     dSync();
     if (cnt == 0) recvC(tc.cart, tc.ranks, tr.tags, tt);
     else          s::waitC();
 
     copy_count(ti);
-    packingfailed = post_check();
-    if (packingfailed) {
-        local_resize();
-        post_resize();
-        clear(nw, tp);
-        scanA(w, nw, tp);
-        copy_offset(nw, tp, ti);
-        scanB(nw, tp);
-        copy_tstarts(tp, ti);
-        pack(w, nw, tp, buf);
-        dSync();
-    }
     local_resize();
     recvF(tc.cart, tc.ranks, tr.tags, tt);
 
@@ -40,7 +27,7 @@ static void rex0(std::vector<ParticlesWrap> w, int nw) {
     scanB(nw, tp);
     copy_tstarts(tp, ti);
     pack(w, nw, tp, buf);
-    send(w, nw);
+    send();
     r::waitC();
     r::waitP();
     recvP2(tc.cart, tc.ranks, tr.tags, tt);
