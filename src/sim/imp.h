@@ -35,6 +35,7 @@ void gen() { /* generate */
     if (walls) {
         dSync();
         sdf::ini(&w::qsdf);
+        MC(l::m::Barrier(l::m::cart));
         create_walls();
     }
     freeze();
@@ -102,6 +103,7 @@ void sim_strt() {
     if (walls) {
         dSync();
         sdf::ini(&w::qsdf);
+        MC(l::m::Barrier(l::m::cart));
     }
 
     solids0 = solids;

@@ -1,14 +1,12 @@
-#include <mpi.h>
+#include <stdio.h>
 #include <conf.h>
 #include "inc/conf.h"
 #include "cc.h"
 
 #include "m.h"
-#include "l/m.h"
 
 #include "inc/type.h"
 #include "common.h"
-#include "common.mpi.h"
 #include "common.cuda.h"
 #include "inc/macro.h"
 
@@ -72,7 +70,7 @@ static void ini3(int N[3], float ext[3], float* D, /**/ struct Tex te) {
     sc = G / ext[X];
     field::scale(N, sc, /**/ D);
 
-    MC(l::m::Barrier(l::m::cart)); /* TODO: why? */
+    /* MC(l::m::Barrier(l::m::cart)); */
     if (field_dumps) field::dump(N, D);
 
     ini2(N, D, /**/ te);
@@ -135,7 +133,7 @@ static int who_stays0(int *keys, int nc, int nv, /*o*/ int *stay) {
 
 static int who_stays1(const tex3Dca<float> texsdf, Particle *pp, int n, int nc, int nv, /**/ int *stay, /*w*/ int *keys) {
     KL(dev::fill, (k_cnf(n)), (texsdf, pp, n, keys));
-    return who_stays0(keys, nc, nv, /*o*/ stay);
+    return who_stays0(keys, nc, nv, /**/ stay);
 }
 
 int who_stays(const tex3Dca<float> texsdf, Particle *pp, int n, int nc, int nv, /**/ int *stay) {
