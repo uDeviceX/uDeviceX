@@ -21,3 +21,4 @@ and "solids"
      };
 
 `TicketPinned` is a copy of `tstarts` and `offsets`
+`buf`(dev)  and `buf_pinned` (hst) are particles
