@@ -29,7 +29,7 @@ __device__ void shift(int fid, Pa *p) {
     /* fid: fragment id */
     enum {X, Y, Z};
     float d[3]; /* coordinate shift */
-    fid2dr(fid, d);
+    i2shift(fid, d);
     p->s0.x += d[X];
     p->s0.y += d[Y];
     p->s1.x += d[Z];

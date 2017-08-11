@@ -4,7 +4,7 @@ __global__ void ini() { g::failed = false; }
 __device__ float fst(float2 s) { return s.x; }
 __device__ float scn(float2 s) { return s.y; }
 
-__device__ void fid2dr(int fid, /**/ float *d) {
+__device__ void i2shift(int fid, /**/ float *d) {
     /* fragment id to coordinate shift */
     enum {X, Y, Z};
     d[X] = - ((fid +     2) % 3 - 1) * XS;
