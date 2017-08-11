@@ -1,8 +1,8 @@
 CC=mpicc
 E=mpiexec
 
-run: send
-run:; $E  -np 2 ./send
+run: status
+run:; $E  -np 2 ./status
 
-clean:; rm -f send
+clean:; rm -f status
 .PHONY: clean run
