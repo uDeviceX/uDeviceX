@@ -248,6 +248,9 @@ static const char *_cudaGetErrorEnum(cudaError_t error)
         case cudaErrorApiFailureBase:
             return "cudaErrorApiFailureBase";
 
+        /* Since CUDA 8.0*/        
+        case cudaErrorNvlinkUncorrectable :   
+            return "cudaErrorNvlinkUncorrectable";
     }
 
     return "<unknown>";
