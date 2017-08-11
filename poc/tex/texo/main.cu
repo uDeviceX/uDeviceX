@@ -21,11 +21,11 @@ float *d_A,   *d_B; /* device */
 float  h_A[n], h_B[n]; /* host */
 #define sz ((n)*sizeof(h_A[0]))
 
-__global__ void plus(float *A, cudaTextureObject_t to) {
+__global__ void plus(float *A, Texo<float> to) {
   int i = blockDim.x * blockIdx.x + threadIdx.x;
   if (i >= n) return;
 
-  float b = tex1Dfetch<float>(to, i);
+  float b = to.fetch(i);
   if (i < n) A[i] += b;
 }
 
@@ -55,9 +55,9 @@ int main() {
   h2d(); /* host to device */
 
   Texo<float> to;
-  to.setup(h_A, n);
+  to.setup(d_B, n);
 
-  //  plus<<<k_cnf(n)>>>(d_A, to);
+  plus<<<k_cnf(n)>>>(d_A, to);
   d2h(); /* device to host */
 
   for (int i = 0; i < n; i++)
