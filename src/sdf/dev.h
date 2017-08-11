@@ -81,8 +81,8 @@ static __device__ float3 grad_sdf(const tex3Dca<float> texsdf, float x, float y,
     return make_float3(gx, gy, gz);
 }
 
-__global__ void fill_keys(const tex3Dca<float> texsdf, const Particle *const pp, const int n,
-                          int *const key) {
+__global__ void fill(const tex3Dca<float> texsdf, const Particle *const pp, const int n,
+                     int *const key) {
     enum {X, Y, Z};
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
@@ -91,9 +91,9 @@ __global__ void fill_keys(const tex3Dca<float> texsdf, const Particle *const pp,
     key[pid] = (int)(sdf0 >= 0) + (int)(sdf0 > 2);
 }
 
-static __device__ void handle_collision(const tex3Dca<float> texsdf, float currsdf,
-                                        float &x, float &y, float &z,
-                                        float &vx, float &vy, float &vz) {
+static __device__ void bounce0(const tex3Dca<float> texsdf, float currsdf,
+                               float &x, float &y, float &z,
+                               float &vx, float &vy, float &vz) {
     float x0 = x - vx*dt, y0 = y - vy*dt, z0 = z - vz*dt;
     if (sdf(texsdf, x0, y0, z0) >= 0) { /* this is the worst case - 0 position
                                            was bad already we need to search
@@ -158,7 +158,7 @@ __global__ void bounce(const tex3Dca<float> texsdf, int n, /**/ float2 *const pp
         float currsdf = sdf(texsdf, data0.x, data0.y, data1.x);
         float2 data2 = pp[pid * 3 + 2];
         if (currsdf >= 0) {
-            handle_collision(texsdf, currsdf, data0.x, data0.y, data1.x, data1.y, data2.x, data2.y);
+            bounce0(texsdf, currsdf, data0.x, data0.y, data1.x, data1.y, data2.x, data2.y);
             pp[3 * pid] = data0;
             pp[3 * pid + 1] = data1;
             pp[3 * pid + 2] = data2;
