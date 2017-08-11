@@ -54,7 +54,7 @@ cp ${COMPILEDIR}/build/conf.h ${RUNDIR}/
 
 (
 cd $RUNDIR
-. run_daint.sh
+. ./run_daint.sh
 )
 
 #rm -rf ${COMPILEDIR}
