@@ -1,7 +1,7 @@
 /* 1D texture object template */
 inline void sz_check(int n) {
-    if (n <            0) ERR("too small texo: %d", n);
-    if (n > MAX_PART_NUM) ERR("too big texo: %d", n);
+    if (n <            0 ) ERR("too small texo: %d", n);
+    if (n > MAX_TEXO_SIZE) ERR("too big texo: %d > %d", n, MAX_TEXO_SIZE);
 }
 
 template<typename T>
