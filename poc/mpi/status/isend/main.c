@@ -17,10 +17,12 @@ int rank;
 MPI_Status status;
 int count;
 
+MPI_Request req;
+
 void send() {
     int dest = RECV;
     int buf[] = {1, 2, 3};
-    MPI_Send(buf, SZ(buf), TYPE, dest, TAG, COMM);
+    MPI_Isend(buf, SZ(buf), TYPE, dest, TAG, COMM, &req);
 }
 
 void recv() {
@@ -40,17 +42,25 @@ void dump() {
     fprintf(stderr, "\n");
 }
 
+void wait() {
+    MPI_Status s;
+    MPI_Wait(&req, &s);
+}
+
 int main(int argc, char *argv[]) {
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(COMM, &rank);
 
-    if (rank == SEND) send();
-    else              {
+    if (rank == SEND) {
+        send();
+        wait();
+    }
+    else {
         recv();
         cnt();
         dump();
     }
-
+    
     MPI_Finalize();
     return 0;
 }
