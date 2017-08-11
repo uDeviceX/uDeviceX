@@ -19,7 +19,7 @@ void recvC(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     }
 }
 
-void recvP(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
+void recvP1(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     int i, tag, n;
     MPI_Request reqP;
     for (i = 0; i < 26; ++i) {
@@ -31,7 +31,7 @@ void recvP(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     }
 }
 
-void recvM(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
+void recvP2(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     int tag, rank;
     int i, count, expected, n;
     MPI_Status s;
