@@ -6,7 +6,6 @@ BEGIN {
     c = ARGV[1]; shift()
     nr = count_runs() # [n]umber of runs
     if (nr == 1) run1(); else runN()
-    msg("runfile created")
 }
 
 function run1() {
