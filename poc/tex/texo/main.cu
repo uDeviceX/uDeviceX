@@ -54,6 +54,9 @@ int main() {
   h_ini(); d_ini();
   h2d(); /* host to device */
 
+  Texo<float> to;
+  to.setup(h_A, n);
+
   //  plus<<<k_cnf(n)>>>(d_A, to);
   d2h(); /* device to host */
 
