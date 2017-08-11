@@ -33,3 +33,5 @@ and "solids"
 `buf_pinned` is a copy of `buf` (hst)
 
 `send_counts[i]` is a copy of the "last part" of `TicketPinned.offsets`
+
+`remote[i]->pmessage` is for the "extra" particles

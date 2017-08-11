@@ -13,7 +13,7 @@ static void send(std::vector<ParticlesWrap> w, int nw) {
         local_resize();
         post_resize();
         clear(nw, tp);
-        scanA( w, nw, tp);
+        scanA(w, nw, tp);
         copy_offset(nw, tp, ti);
         scanB(nw, tp);
         copy_tstarts(tp, ti);
