@@ -1,6 +1,4 @@
 namespace k_rex {
-__global__ void ini() { g::failed = false; }
-
 __device__ float fst(float2 s) { return s.x; }
 __device__ float scn(float2 s) { return s.y; }
 

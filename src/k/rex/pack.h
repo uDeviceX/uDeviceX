@@ -48,7 +48,6 @@ __device__ void pack2(const float2 *pp, /**/ float2 *buf) {
 }
 
 __global__ void pack(const float2 *pp, /**/ float2 *buf) {
-    if (g::failed) return;
     pack2(pp, buf);
 }
 }

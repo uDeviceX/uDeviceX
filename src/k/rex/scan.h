@@ -12,11 +12,9 @@ __global__ void scanA(const int *counts, const int *oldtcounts, /**/ int *tcount
     cnt = 0;
     if (t < 26) {
         cnt = counts[t];
-        if (cnt > g::sizes[t]) g::failed = true;
         if (tcounts && oldtcounts) {
             newcount = cnt + oldtcounts[t];
             tcounts[t] = newcount;
-            if (newcount > g::sizes[t]) g::failed = true;
         }
     }
     if (starts) scan_pad(cnt, t, /**/ starts);
@@ -26,10 +24,7 @@ __global__ void scanB(const int *count, /**/ int *starts) {
     int t, cnt;
     t = threadIdx.x;
     cnt = 0;
-    if (t < 26) {
-        cnt = count[t];
-        if (cnt > g::sizes[t]) g::failed = true;
-    }
+    if (t < 26) cnt = count[t];
     if (starts) scan_pad(cnt, t, /**/ starts);
 }
 

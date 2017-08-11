@@ -4,7 +4,6 @@ void scanA(std::vector<ParticlesWrap> w, int nw, x::TicketPack tp) {
     int *o0, *o1; /* offsets */
     int *c;       /* counts */
     int *s;       /* starts */
-    KL(k_rex::ini, (1, 1), ());
     for (i = 0; i < nw; ++i) {
         const Particle *pp = w[i].p;
         o0 = tp.offsets + 26 *  i;
