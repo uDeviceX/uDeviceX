@@ -1,4 +1,6 @@
-# load modules for panda : does nothing
+# load modules for panda
 #  used by: u.make, u.run.panda
 
-:
+NVCC_DIR=/usr/local/cuda
+NVCC="${NVCC_DIR}"/bin/nvcc
+export PATH=${NVCC_DIR}/bin:$PATH
