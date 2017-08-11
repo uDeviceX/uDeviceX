@@ -14,7 +14,6 @@
 #include "common.h"
 #include "common.cuda.h"
 
-
 #include "inc/macro.h"
 
 #include <stdint.h>
@@ -25,6 +24,7 @@
 #include "sdf/int.h"
 #include "sdf/cheap.dev.h"
 
+#include "glb.h"
 #include "k/wvel.h"
 #include "forces.h"
 
