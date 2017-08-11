@@ -21,10 +21,6 @@ float *d_A,   *d_B; /* device */
 float  h_A[n], h_B[n]; /* host */
 #define sz ((n)*sizeof(h_A[0]))
 
-cudaTextureObject_t   to;
-cudaResourceDesc      resD;
-cudaTextureDesc       texD;
-
 __global__ void plus(float *A, cudaTextureObject_t to) {
   int i = blockDim.x * blockIdx.x + threadIdx.x;
   if (i >= n) return;
@@ -54,27 +50,11 @@ void d2h() { /* device to host */
   cudaMemcpy(h_A, d_A, sz, cudaMemcpyDeviceToHost);
 }
 
-void tex_ini() {
-  memset(&resD, 0, sizeof(resD));
-  resD.resType = cudaResourceTypeLinear;
-  resD.res.linear.devPtr  = d_B;
-  resD.res.linear.sizeInBytes = sz;
-  resD.res.linear.desc = cudaCreateChannelDesc<float>();
-
-  memset(&texD, 0, sizeof(texD));
-  texD.normalizedCoords = 0;
-  texD.readMode = cudaReadModeElementType;
-
-  checkCudaErrors(cudaCreateTextureObject(&to, &resD, &texD, NULL));
-}
-
 int main() {
   h_ini(); d_ini();
-
   h2d(); /* host to device */
-  tex_ini();
 
-  plus<<<k_cnf(n)>>>(d_A, to);
+  //  plus<<<k_cnf(n)>>>(d_A, to);
   d2h(); /* device to host */
 
   for (int i = 0; i < n; i++)
