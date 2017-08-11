@@ -1,5 +1,8 @@
 /* 1D texture object template */
-inline void sz_check(int n) { if (n > MAX_PART_NUM) ERR("too big texo: %d", n); }
+inline void sz_check(int n) {
+    if (n <            0) ERR("too small texo: %d", n);
+    if (n > MAX_PART_NUM) ERR("too big texo: %d", n);
+}
 
 template<typename T>
 struct Texo {
