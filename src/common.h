@@ -27,6 +27,9 @@ enum { /* used in forces.h */
 /* maximum number of red blood cells per node */
 #define MAX_CELL_NUM 100
 
+/* maximum texture size in bytes */
+#define MAX_TEXO_SIZE 5000000
+
 /* safety factor for dpd halo interactions */
 #define HSAFETY_FACTOR 10.f
 
