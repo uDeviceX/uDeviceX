@@ -29,7 +29,6 @@ static void ini_local() {
     int i, n;
     for (i = 0; i < 26; i++) {
         n = i2max(i);
-        MSG("i2max[%d]: %d", i, n);
         local[i] = new LocalHalo;
         local[i]->indexes = new DeviceBuffer<int>;
         local[i]->ff      = new PinnedHostBuffer<Force>;
@@ -42,7 +41,6 @@ static void ini_remote() {
     int i, n;
     for (i = 0; i < 26; i++) {
         n = i2max(i);
-        MSG("i2max[%d]: %d", i, n);
         remote[i] = new RemoteHalo;
         re::resize(remote[i], n);
     }
