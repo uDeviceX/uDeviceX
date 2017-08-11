@@ -25,7 +25,10 @@ void sendP(MPI_Comm cart, int ranks[26], x::TicketTags t, x::TicketPinned ti, Pa
         reqsendP.push_back(req);
         
         if (count > expected) {
-            MC(l::m::Isend(buf_pinned + start + expected, (count - expected) * 6, MPI_FLOAT, ranks[i], t.btp2 + i, cart, &req));
+            MC(l::m::Isend(buf_pinned + start + expected,
+                           (count - expected) * 6,
+                           MPI_FLOAT,
+                           ranks[i], t.btp2 + i, cart, &req));
             reqsendP.push_back(req);
         }
     }
