@@ -21,6 +21,7 @@
 #include "inc/type.h"
 #include "common.mpi.h"
 #include "common.cuda.h"
+#include "texo.h"
 #include "inc/tmp/wrap.h"
 #include "inc/tmp/pinned.h"
 #include "io/field.h"

@@ -13,6 +13,7 @@
 #include "inc/type.h"
 #include "common.h"
 #include "common.cuda.h"
+#include "texo.h"
 
 #include "inc/macro.h"
 

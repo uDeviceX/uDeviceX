@@ -6,6 +6,7 @@
 #include "inc/type.h"
 #include "common.h"
 #include "common.cuda.h"
+#include "texo.h"
 
 #include <stdint.h>
 #include "rnd/imp.h"

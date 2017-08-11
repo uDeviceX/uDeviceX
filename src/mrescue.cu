@@ -6,6 +6,7 @@
 #include "common.h"
 #include "inc/type.h"
 #include "common.cuda.h"
+#include "texo.h"
 #include "mesh/collision.h"
 #include "m.h"
 #include "kl.h"

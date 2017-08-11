@@ -12,6 +12,7 @@
 #include "inc/type.h"
 #include "common.h"
 #include "common.cuda.h"
+#include "texo.h"
 #include "common.mpi.h"
 #include "solid.h"
 
