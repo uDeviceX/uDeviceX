@@ -7,7 +7,7 @@
 #define dSync() CC(cudaDeviceSynchronize())
 
 /* test if inside device function                                 */
-/* usefule for small differences in __device__ __host__ functions */
+/* useful for small differences in __device__ __host__ functions */
 #define DEVICE_FUNC (defined (__CUDA_ARCH__) && (__CUDA_ARCH__ > 0))
 
 /* 1D texture object template */
