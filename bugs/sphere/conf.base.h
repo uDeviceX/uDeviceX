@@ -40,6 +40,7 @@
 /* DEBUG */
 #define KL_PEEK             true
 #define CC_SYNC             true
+#define TE_TRACE
 
 /* FLOW TYPE */
 #define pushflow            true
