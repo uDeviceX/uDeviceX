@@ -11,7 +11,7 @@ u.conf conf/test.h <<!!!
    shear_z
    run
 !!!
-(make clean && u.make -j) > /dev/null
-sh runfile
+{ make clean && u.make -j; } > /dev/null
+u.run 3 1 1 ./udx
 avg_h5.m h5/flowfields-0003.h5 | uscale 0.1 > h5.out.txt
 
