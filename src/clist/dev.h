@@ -1,10 +1,9 @@
-enum {X, Y, Z};
-
 static __device__ int encode(int ix, int iy, int iz, int3 ncells) {
-  return ix + ncells.x * (iy + iz * ncells.y);
+    return ix + ncells.x * (iy + iz * ncells.y);
 }
 
 static __device__ int get_cid(const float *r, int3 ncells, int3 domainstart) {
+    enum {X, Y, Z};
     int ix = (int)floor(r[X] - domainstart.x);
     int iy = (int)floor(r[Y] - domainstart.y);
     int iz = (int)floor(r[Z] - domainstart.z);
@@ -47,4 +46,3 @@ __global__ void gather(const Particle *pps, const int *ids, int n, /**/ Particle
 
     ppd[id] = p;
 }
-
