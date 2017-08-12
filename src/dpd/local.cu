@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <conf.h>
 #include "inc/conf.h"
-#include "m.h"
 #include "common.h"
 #include "msg.h"
 #include "cc.h"
