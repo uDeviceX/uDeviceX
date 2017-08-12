@@ -6,7 +6,7 @@ export PATH=../tools:$PATH
 cp data/sdf/wall1/wall.dat sdf.dat
 :
 u.conf conf/test.h <<!!!
-   tend=1.0 part_freq=300 walls wall_creation=100
+   tend=1.0 part_freq=300 walls wall_creation=1
    field_dumps part_dumps field_freq=300
    shear_z
    run
