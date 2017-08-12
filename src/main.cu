@@ -25,6 +25,5 @@ int main(int argc, char **argv) {
     if (RESTART) sim::sim_strt();
     else         sim::sim_gen();
     sim::fin();
-  
     m::fin();
 }
