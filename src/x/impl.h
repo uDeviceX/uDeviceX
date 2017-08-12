@@ -1,8 +1,6 @@
 namespace x {
 static void send() {
     using namespace rex;
-
-    dSync();
     if (cnt == 0) recvC(tc.cart, tc.ranks, tr.tags, tt);
     else          s::waitC();
 
@@ -18,7 +16,7 @@ static void send() {
     sendP12(tc.cart, tc.ranks, tt, ti, buf_pinned);
 }
 
-static void rex0(std::vector<ParticlesWrap> w, int nw) {
+static void pre(std::vector<ParticlesWrap> w, int nw) {
     using namespace rex;
     cnt++;
     clear(nw, tp);
@@ -27,6 +25,12 @@ static void rex0(std::vector<ParticlesWrap> w, int nw) {
     scanB(nw, tp);
     copy_tstarts(tp, ti);
     pack(w, nw, tp, buf);
+}
+
+static void rex0(std::vector<ParticlesWrap> w, int nw) {
+    using namespace rex;
+    pre(w, nw);
+    dSync();
     send();
     r::waitC();
     r::waitP();
