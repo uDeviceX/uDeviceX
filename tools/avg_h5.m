@@ -17,5 +17,4 @@ xxc = xx-nx/2; yyc = yy-ny/2; zzc = zz-nz/2;
 vx = sq(mean(vx, 1));
 vx = sq(mean(vx, 1));
 
-% dlmwrite('vx.dat', [zz' vx'], ' ');
-dlmwrite(stdout, [xxc; vx]', ' ');
+dlmwrite(stdout, [zzc; vx]', ' ');

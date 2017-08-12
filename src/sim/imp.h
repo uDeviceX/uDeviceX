@@ -57,13 +57,13 @@ void sim_gen() {
     }
     MC(l::m::Barrier(l::m::cart));
   
-    long nsteps = (int)(tend / dt);
-    MSG0("will take %ld steps", nsteps);
+    long nsteps = (long)(tend / dt);
+    MSG("will take %ld steps", nsteps);
     if (walls || solids) {
         solids0 = false;  /* global */
         gen();
         dSync();
-        if (walls) wall::gen_ticket(w::q, &w::t);
+        if (walls && w::q.n) wall::gen_ticket(w::q, &w::t);
         flu::get_ticketZ(o::q, &o::tz);
         flu::get_ticketRND(&o::trnd);
         solids0 = solids;
@@ -96,8 +96,8 @@ void sim_strt() {
     /*T*/
     flu::get_ticketZ(o::q, &o::tz);
     flu::get_ticketRND(&o::trnd);
-    if (rbcs)   rbc::gen_ticket(r::q, &r::tt);
-    if (walls) wall::gen_ticket(w::q, &w::t);
+    if (rbcs)            rbc::gen_ticket(r::q, &r::tt);
+    if (walls && w::q.n) wall::gen_ticket(w::q, &w::t);
 
     MC(l::m::Barrier(l::m::cart));
     if (walls) {
@@ -108,7 +108,7 @@ void sim_strt() {
 
     solids0 = solids;
 
-    MSG0("will take %ld steps", nsteps - wall_creation);
+    MSG("will take %ld steps", nsteps - wall_creation);
     run(wall_creation, nsteps);
     
     /* final strt dump*/

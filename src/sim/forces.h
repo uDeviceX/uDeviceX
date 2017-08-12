@@ -43,7 +43,7 @@ void forces(bool wall0) {
     if (rbcs)    clear_forces(r::ff, r::q.n);
 
     forces_dpd();
-    if (wall0) forces_wall();
+    if (wall0 && w::q.n) forces_wall();
     forces_rbc();
 
     if (contactforces) forces_cnt(&w_r);

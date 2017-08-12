@@ -146,7 +146,7 @@ void gen_quants(TexSDF_t texsdf, /**/ int *o_n, Particle *o_pp, int *w_n, float4
     Particle *frozen;
     CC(cudaMalloc(&frozen, sizeof(Particle) * MAX_PART_NUM));
     freeze(texsdf, o_pp, o_n, frozen, w_n);
-    MSG0("consolidating wall particles");
+    MSG("consolidating wall");
     CC(cudaMalloc(w_pp, *w_n * sizeof(float4)));
     KL(dev::particle2float4, (k_cnf(*w_n)), (frozen, *w_n, /**/ *w_pp));
     
@@ -175,7 +175,7 @@ void gen_ticket(const int w_n, float4 *w_pp, clist::Clist *cells, Texo<int> *tex
 
 void interactions(TexSDF_t texsdf, const int type, const Particle *const pp, const int n, const Texo<int> texstart,
                   const Texo<float4> texpp, const int w_n, /**/ rnd::KISS *rnd, Force *ff) {
-    KL(dev::interactions_3tpp,
+    KL(dev::interactions,
        (k_cnf(3*n)),
        (texsdf, (float2 *)pp, n, w_n, (float *)ff, rnd->get_float(), type, texstart, texpp));
 }

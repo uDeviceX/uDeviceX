@@ -16,7 +16,5 @@ then
     cp $t "$o" 
     echo make/Makefile.dep updated >&2
 else
-    err 'failed'
+    err failed
 fi
-
-
