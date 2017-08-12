@@ -1,4 +1,5 @@
-/* TODO: header includes header */
+/* [k]ernel [l]aunch macros */
+
 #if    defined(KL_RELEASE)
   #include "kl/release.h"
 #elif  defined(KL_TRACE)
@@ -15,3 +16,5 @@
 
 #include "kl/common.h"
 #include "kl/macro.h"
+
+/* TODO: header includes header */
