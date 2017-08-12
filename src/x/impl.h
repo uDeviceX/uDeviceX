@@ -3,7 +3,6 @@ static void send() {
     using namespace rex;
     if (cnt == 0) recvC(tc.cart, tc.ranks, tr.tags, tt);
     else          s::waitC();
-
     copy_count(ti);
     local_resize();
     recvF(tc.cart, tc.ranks, tr.tags, tt);
@@ -12,8 +11,6 @@ static void send() {
     else          s::waitP();
     copy_pack(ti, buf, buf_pinned);
     dSync();
-    sendC(tc.cart, tc.ranks, tt);
-    sendP12(tc.cart, tc.ranks, tt, ti, buf_pinned);
 }
 
 static void pre(std::vector<ParticlesWrap> w, int nw) {
@@ -32,6 +29,8 @@ static void rex0(std::vector<ParticlesWrap> w, int nw) {
     pre(w, nw);
     dSync();
     send();
+    sendC(tc.cart, tc.ranks, tt);
+    sendP12(tc.cart, tc.ranks, tt, ti, buf_pinned);
     r::waitC();
     r::waitP();
     recvP2(tc.cart, tc.ranks, tr.tags, tt);
