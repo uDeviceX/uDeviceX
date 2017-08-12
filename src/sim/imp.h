@@ -63,7 +63,7 @@ void sim_gen() {
         solids0 = false;  /* global */
         gen();
         dSync();
-        if (walls) wall::gen_ticket(w::q, &w::t);
+        if (walls && w::q.n) wall::gen_ticket(w::q, &w::t);
         flu::get_ticketZ(o::q, &o::tz);
         flu::get_ticketRND(&o::trnd);
         solids0 = solids;
@@ -96,8 +96,8 @@ void sim_strt() {
     /*T*/
     flu::get_ticketZ(o::q, &o::tz);
     flu::get_ticketRND(&o::trnd);
-    if (rbcs)   rbc::gen_ticket(r::q, &r::tt);
-    if (walls) wall::gen_ticket(w::q, &w::t);
+    if (rbcs)            rbc::gen_ticket(r::q, &r::tt);
+    if (walls && w::q.n) wall::gen_ticket(w::q, &w::t);
 
     MC(l::m::Barrier(l::m::cart));
     if (walls) {
