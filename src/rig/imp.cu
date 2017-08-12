@@ -1,16 +1,18 @@
 #include <mpi.h>
 #include <cassert>
-#include <vector> // for ic
+#include <vector>
 
 #include <conf.h>
 #include "inc/conf.h"
+
+#include "m.h"
+#include "common.h"
 #include "cc.h"
 
 #include "l/m.h"
 #include "m.h"
 
 #include "inc/type.h"
-#include "common.h"
 #include "common.cuda.h"
 #include "texo.h"
 #include "common.mpi.h"

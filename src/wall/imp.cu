@@ -5,13 +5,12 @@
 
 #include <conf.h>
 #include "inc/conf.h"
-#include "cc.h"
-
+#include "common.h"
 #include "m.h"
+#include "cc.h"
 #include "l/m.h"
 
 #include "inc/type.h"
-#include "common.h"
 #include "common.cuda.h"
 #include "texo.h"
 #include "te.h"

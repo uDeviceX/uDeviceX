@@ -1,21 +1,23 @@
 #include <cstdio>
+#include <stdint.h>
+#include <mpi.h>
 
 #include <conf.h>
 #include "inc/conf.h"
+
+#include "common.h"
+#include "m.h"
 #include "cc.h"
+#include "l/m.h"
 
 #include "inc/type.h"
-#include "common.h"
 #include "common.cuda.h"
 #include "forces.h"
 #include "k/read.h"
 #include "k/common.h"
 
-#include "m.h"
-
 #include "kl.h"
 
-#include <stdint.h>
 #include "rnd/imp.h"
 #include "rnd/dev.h"
 

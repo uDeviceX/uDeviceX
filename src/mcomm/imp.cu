@@ -4,14 +4,12 @@
 
 #include <conf.h>
 #include "inc/conf.h"
-
-#include "cc.h"
 #include "m.h"
+#include "common.h"
+#include "cc.h"
 #include "l/m.h"
 
-
 #include "inc/type.h"
-#include "common.h"
 #include "common.mpi.h"
 #include "common.cuda.h"
 

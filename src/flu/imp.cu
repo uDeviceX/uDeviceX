@@ -1,15 +1,15 @@
 #include <cstdio>
 #include <cassert>
 #include <mpi.h>
-
 #include <conf.h>
+
+#include "common.h"
+#include "m.h"
 #include "inc/conf.h"
 #include "cc.h"
 
 #include "l/m.h"
-#include "m.h"
 #include "inc/type.h"
-#include "common.h"
 #include "common.cuda.h"
 #include "common.mpi.h"
 #include "restart.h"

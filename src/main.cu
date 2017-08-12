@@ -1,10 +1,10 @@
 #include <mpi.h>
 #include <conf.h>
 #include "inc/conf.h"
-#include "cc.h"
-#include "m.h" /* MPI */
-#include "l/m.h"
 #include "common.h"
+#include "m.h"
+#include "cc.h"
+#include "l/m.h"
 #include "common.mpi.h"
 #include "common.cuda.h"
 #include "bund.h"

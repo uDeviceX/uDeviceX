@@ -1,14 +1,14 @@
 #include <mpi.h>
 #include <conf.h>
 #include "inc/conf.h"
+#include "m.h"
+#include "common.h"
 #include "cc.h"
 
 #include "l/linal.h"
 #include "inc/type.h"
-#include "common.h"
-#include "common.cuda.h"
 
-#include "m.h"
+#include "common.cuda.h"
 #include "kl.h"
 
 #include "solid.h"

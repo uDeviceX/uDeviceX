@@ -2,12 +2,12 @@
 #include "l/m.h"
 #include <conf.h>
 #include "inc/conf.h"
+
+#include "common.h"
+#include "m.h"
 #include "cc.h"
 
-#include "m.h"
-
 #include "inc/type.h"
-#include "common.h"
 #include "common.cuda.h"
 #include "common.mpi.h"
 #include "inc/macro.h"

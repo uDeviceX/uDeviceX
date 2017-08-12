@@ -1,10 +1,12 @@
 #include <mpi.h>
+
+#include <conf.h>
+#include "inc/conf.h"
+#include "common.h"
 #include "m.h"
 #include "l/m.h"
+
 #include "basetags.h"
-
-#include "common.h"
-
 #include "mdstr/imp.h"
 #include "mdstr/buf.h"
 #include "mdstr/tic.h"

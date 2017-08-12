@@ -2,11 +2,11 @@
 
 #include <conf.h>
 #include "inc/conf.h"
-#include "cc.h"
-
-#include "inc/type.h"
 #include "common.h"
+
 #include "m.h"
+#include "cc.h"
+#include "inc/type.h"
 #include "common.cuda.h"
 
 #include "kl.h"

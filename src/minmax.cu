@@ -1,15 +1,14 @@
 #include <stdio.h>
 #include <conf.h>
 #include "inc/conf.h"
-#include "cc.h"
-
-#include "inc/type.h"
+#include "m.h"
 #include "common.h"
+
+#include "cc.h"
+#include "inc/type.h"
 #include "common.cuda.h"
 
-#include "m.h"
 #include "kl.h"
-
 #include "minmax.h"
 
 #define MAXTHREADS 1024

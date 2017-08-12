@@ -1,13 +1,16 @@
 #include <cstdio>
 #include <mpi.h>
+
 #include <conf.h>
 #include "inc/conf.h"
+#include "common.h"
+#include "m.h"
+
 #include "cc.h"
+#include "l/m.h"
 
 #include "inc/type.h"
-#include "common.h"
 #include "common.cuda.h"
-#include "m.h"
 #include "texo.h"
 #include "inc/tmp/pinned.h"
 
