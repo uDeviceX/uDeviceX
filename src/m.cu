@@ -1,5 +1,5 @@
 #include <mpi.h>
-#include "common.mpi.h"
+#include "inc/mpi.h"
 #include "l/m.h"
 
 #include "m.h"

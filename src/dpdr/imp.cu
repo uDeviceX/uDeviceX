@@ -11,7 +11,7 @@
 #include "l/m.h"
 #include "inc/type.h"
 #include "inc/dev.h"
-#include "common.mpi.h"
+#include "inc/mpi.h"
 
 #include "kl.h"
 

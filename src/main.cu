@@ -5,7 +5,7 @@
 #include "m.h"
 #include "cc.h"
 #include "l/m.h"
-#include "common.mpi.h"
+#include "inc/mpi.h"
 #include "inc/dev.h"
 #include "bund.h"
 #include "glb.h"

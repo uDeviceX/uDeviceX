@@ -9,7 +9,7 @@
 
 #include "l/m.h"
 #include "inc/type.h"
-#include "common.mpi.h"
+#include "inc/mpi.h"
 #include "inc/dev.h"
 
 #include "mdstr/imp.h"

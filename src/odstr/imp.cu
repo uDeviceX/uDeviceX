@@ -9,7 +9,7 @@
 
 #include "inc/type.h"
 #include "inc/dev.h"
-#include "common.mpi.h"
+#include "inc/mpi.h"
 #include "inc/macro.h"
 #include "inc/tmp/pinned.h"
 

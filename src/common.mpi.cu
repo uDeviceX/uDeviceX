@@ -1,6 +1,6 @@
 #include <mpi.h>
 #include "inc/type.h"
-#include "common.mpi.h"
+#include "inc/mpi.h"
 
 namespace datatype {
 MPI_Datatype particle, solid;

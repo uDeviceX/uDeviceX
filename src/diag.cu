@@ -6,7 +6,7 @@
 #include "l/m.h"
 #include "m.h"     /* MPI */
 #include "inc/type.h"
-#include "common.mpi.h"
+#include "inc/mpi.h"
 #include "diag.h"
 
 void diagnostics(Particle *pp, int n, int idstep) {

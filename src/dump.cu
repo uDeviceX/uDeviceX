@@ -5,7 +5,7 @@
 #include "inc/conf.h"
 #include "inc/type.h"
 #include "common.h"
-#include "common.mpi.h"
+#include "inc/mpi.h"
 #include "dump.h"
 #include "os.h"
 
