@@ -46,7 +46,6 @@
 namespace rbc {
 namespace sub {
 #define __DF__ __device__ __forceinline__
-/* physical part of RBC calculations : see also params/rbc.inc0.h */
 #include "rbc/dev0.h"
 #include "rbc/dev.h"
 #undef __DF__
