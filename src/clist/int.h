@@ -26,6 +26,7 @@ public:
     int *start, *count;
     Clist(const int X, const int Y, const int Z)
         : ncells(X*Y*Z + 1), LX(X), LY(Y), LZ(Z) {
+        MSG("%s:%d: ncells: %n", __LINE__, __FILE__, ncells);
         CC(cudaMalloc(&start, sizeof(start[0]) * ncells));
         CC(cudaMalloc(&count, sizeof(count[0]) * ncells));
     }
