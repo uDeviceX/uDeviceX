@@ -149,6 +149,11 @@
 #define strt_freq (1000)
 #endif
 
+// time
+#ifndef tend
+#define tend (10)
+#endif
+
 // debug
 // [k]ernel [l]aunch macros
 #if !defined(KL_RELEASE) && !defined(KL_TRACE)  && \
@@ -162,7 +167,3 @@
   #define CC_RELEASE
 #endif
 
-// time
-#ifndef tend
-#define tend (10)
-#endif
