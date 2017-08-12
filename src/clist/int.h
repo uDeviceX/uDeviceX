@@ -11,7 +11,6 @@ void build(int n, int xcells, int ycells, int zcells,
 
 class Clist {
     const int LX, LY, LZ;
-
     void buildn(Particle *const pp, const int n) {
         clist::build(n, LX, LY, LZ, -LX/2, -LY/2, -LZ/2, /**/ pp, start, count);
     }
@@ -24,10 +23,9 @@ class Clist {
 public:
     const int ncells;
     int *start, *count;
-    Clist(const int X, const int Y, const int Z)
-        : ncells(X*Y*Z + 1), LX(X), LY(Y), LZ(Z) {
-        MSG("%s:%d: ncells: %d", __FILE__, __LINE__, ncells);
-        MSG("%d:%d:%d", X, Y, Z);
+    Clist(const int LX, const int LY, const int LZ)
+        : ncells(LX*LY*LZ + 1), LX(LX), LY(LY), LZ(LZ)
+    {
         CC(cudaMalloc(&start, sizeof(start[0]) * ncells));
         CC(cudaMalloc(&count, sizeof(count[0]) * ncells));
     }
