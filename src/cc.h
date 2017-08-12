@@ -1,9 +1,11 @@
 /* [c]uda [c]heck macros */
 
-#ifdef CC_SYNC
+#if   defined(CC_SYNC)
   #include "cc/sync.h"
-#else
+#elif defined(CC_RELEASE)
   #include "cc/release.h"
+#else
+  #error CC_* is undefined
 #endif
 #include "cc/common.h"
 
