@@ -168,7 +168,7 @@
 #endif
 
 /* [te]xture macros */
-#if !defined(TE_TRACE)
-  #define TE_RELEASE
+#if !defined(TE_RELEASE)
+  #define TE_TRACE
 #endif
 

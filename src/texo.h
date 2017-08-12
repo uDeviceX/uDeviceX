@@ -3,7 +3,6 @@ inline void sz_check(int n) {
     if (n <            0 ) ERR("too small texo: %d", n);
     if (n > MAX_TEXO_SIZE) ERR("too big texo: %d > %d", n, MAX_TEXO_SIZE);
 }
-inline void sz_trace(int n) { MSG("texo: %d", n); }
 
 template<typename T>
 struct Texo {
@@ -14,7 +13,6 @@ struct Texo {
 
     void setup0(T *data, int n) {
         sz_check(n);
-        sz_trace(n);
 
         cudaResourceDesc resD;
         cudaTextureDesc  texD;
