@@ -13,7 +13,7 @@
 
 int main(int argc, char **argv) {
     m::ini(argc, argv);
-    MSG("main");
+    MSG("rank: %d", m::rank);
 
     // panda specific for multi-gpu testing
     //int device = m::rank % 2 ? 0 : 2;

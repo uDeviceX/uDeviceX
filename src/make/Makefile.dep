@@ -32,6 +32,7 @@ $B/mesh/props.o: $S/inc/type.h $S/mesh/props.h
 $B/minmax.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/kl.h $S/m.h $S/minmax.h $S/msg.h
 $B/m.o: $S/inc/mpi.h $S/l/m.h $S/m.h
 $B/mrescue.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/kl.h $S/m.h $S/mesh/collision.h $S/mrescue.h $S/msg.h $S/texo.h
+$B/msg.o: $S/m.h
 $B/odstr/imp.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/macro.h $S/inc/mpi.h $S/inc/tmp/pinned.h $S/inc/type.h $S/k/common.h $S/k/read.h $S/k/write.h $S/kl.h $S/l/m.h $S/m.h $S/msg.h $S/odstr/buf.h $S/odstr/dev.h $S/odstr/fin.h $S/odstr/imp.h $S/odstr/ini.h $S/odstr/type.h $S/scan/int.h
 $B/odstr/int.o: $S/basetags.h $S/cc.h $S/clist/int.h $S/common.h $B/conf.h $S/flu/int.h $S/inc/conf.h $S/inc/dev.h $S/inc/mpi.h $S/inc/tmp/pinned.h $S/inc/type.h $S/k/common.h $S/k/read.h $S/kl.h $S/l/m.h $S/m.h $S/msg.h $S/odstr/imp.h $S/odstr/int.h $S/odstr/type.h $S/rnd/imp.h $S/scan/int.h
 $B/os.o: $S/os.h
