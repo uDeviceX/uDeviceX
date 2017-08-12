@@ -10,31 +10,31 @@ void build(int n, int xcells, int ycells, int zcells,
    the cell lists involve a reordering of the particle array (!) */
 
 class Clist {
-  const int LX, LY, LZ;
+    const int LX, LY, LZ;
 
-  void buildn(Particle *const pp, const int n) {
-      clist::build(n, LX, LY, LZ, -LX/2, -LY/2, -LZ/2, /**/ pp, start, count);
-  }
+    void buildn(Particle *const pp, const int n) {
+        clist::build(n, LX, LY, LZ, -LX/2, -LY/2, -LZ/2, /**/ pp, start, count);
+    }
 
-  void build0() {
-    CC(cudaMemsetAsync(start, 0, sizeof(start[0]) * ncells));
-    CC(cudaMemsetAsync(count, 0, sizeof(count[0]) * ncells));
-  }
+    void build0() {
+        CC(cudaMemsetAsync(start, 0, sizeof(start[0]) * ncells));
+        CC(cudaMemsetAsync(count, 0, sizeof(count[0]) * ncells));
+    }
 
 public:
-  const int ncells;
-  int *start, *count;
-  Clist(const int LX, const int LY, const int LZ)
-    : ncells(LX*LY*LZ + 1), LX(LX), LY(LY), LZ(LZ) {
-    CC(cudaMalloc(&start, sizeof(start[0]) * ncells));
-    CC(cudaMalloc(&count, sizeof(count[0]) * ncells));
-  }
+    const int ncells;
+    int *start, *count;
+    Clist(const int LX, const int LY, const int LZ)
+        : ncells(LX*LY*LZ + 1), LX(LX), LY(LY), LZ(LZ) {
+        CC(cudaMalloc(&start, sizeof(start[0]) * ncells));
+        CC(cudaMalloc(&count, sizeof(count[0]) * ncells));
+    }
 
-  void build(Particle *const pp, const int n) {
-    if (n) buildn(pp, n); else build0();
-  }
+    void build(Particle *const pp, const int n) {
+        if (n) buildn(pp, n); else build0();
+    }
 
-  ~Clist() { CC(cudaFree(start)); CC(cudaFree(count)); }
+    ~Clist() { CC(cudaFree(start)); CC(cudaFree(count)); }
 };
 
 }
