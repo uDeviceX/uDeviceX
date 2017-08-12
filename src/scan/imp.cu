@@ -7,7 +7,7 @@
 #include "cc.h"
 #include "kl.h"
 
-#include "common.cuda.h"
+#include "inc/dev.h"
 
 #include "scan/int.h"
 #include "scan/dev.h"

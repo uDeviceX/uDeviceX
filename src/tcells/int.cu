@@ -5,7 +5,7 @@
 #include "common.h"
 #include "cc.h"
 #include "inc/type.h"
-#include "common.cuda.h"
+#include "inc/dev.h"
 #include "scan/int.h"
 
 #include "tcells/int.h"

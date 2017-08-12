@@ -7,7 +7,7 @@
 #include "m.h"
 #include "cc.h"
 #include "inc/type.h"
-#include "common.cuda.h"
+#include "inc/dev.h"
 
 #include "kl.h"
 

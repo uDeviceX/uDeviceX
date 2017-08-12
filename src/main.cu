@@ -6,7 +6,7 @@
 #include "cc.h"
 #include "l/m.h"
 #include "common.mpi.h"
-#include "common.cuda.h"
+#include "inc/dev.h"
 #include "bund.h"
 #include "glb.h"
 

@@ -7,7 +7,7 @@
 #include "cc.h"
 
 #include "inc/type.h"
-#include "common.cuda.h"
+#include "inc/dev.h"
 #include "texo.h"
 
 #include <stdint.h>

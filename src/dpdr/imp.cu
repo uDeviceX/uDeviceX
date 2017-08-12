@@ -10,7 +10,7 @@
 #include "rnd/imp.h"
 #include "l/m.h"
 #include "inc/type.h"
-#include "common.cuda.h"
+#include "inc/dev.h"
 #include "common.mpi.h"
 
 #include "kl.h"

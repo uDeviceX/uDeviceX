@@ -6,7 +6,7 @@
 #include "common.h"
 #include "cc.h"
 
-#include "common.cuda.h"
+#include "inc/dev.h"
 #include "inc/type.h"
 #include "inc/tmp/pinned.h"
 

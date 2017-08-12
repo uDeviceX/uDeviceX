@@ -8,7 +8,7 @@
 
 #include "rnd/imp.h"
 #include "rnd/dev.h"
-#include "common.cuda.h"
+#include "inc/dev.h"
 #include "inc/type.h"
 #include "dpd/local.h"
 #include "kl.h"

@@ -11,7 +11,7 @@
 
 #include "inc/type.h"
 #include "common.mpi.h"
-#include "common.cuda.h"
+#include "inc/dev.h"
 
 #include "kl.h"
 

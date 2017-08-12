@@ -8,7 +8,7 @@
 #include "kl.h"
 
 #include "inc/type.h"
-#include "common.cuda.h"
+#include "inc/dev.h"
 #include "scan/int.h"
 #include "clist/int.h"
 
