@@ -1,3 +1,4 @@
+namespace rex {
 void recv0(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     int i, tag, n;
     MPI_Request reqP;
@@ -8,4 +9,5 @@ void recv0(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
         MC(l::m::Irecv(&remote[i]->pmessage.front(), n * 6, MPI_FLOAT, ranks[i], tag, cart, &reqP));
         reqrecvP.push_back(reqP);
     }
+}
 }
