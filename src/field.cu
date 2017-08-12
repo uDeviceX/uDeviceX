@@ -5,7 +5,6 @@
 #include "io/field.h"
 #include "m.h"
 #include "field.h"
-#include "common.h"
 #include "msg.h"
 
 namespace field {
