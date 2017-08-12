@@ -1,10 +1,22 @@
 #!/bin/bash
 
-# uses clarity/udeps
+# uses clarity/u.deps
 # run from src
 l=`find . -name '*.cu' -o -name '*.h'`
+o=make/Makefile.dep
+
+t=/tmp/udeps.XXX
+trap 'rm -f $t' 0 1 2 3 15
 
 err () { printf "udeps: %s\n" "$1"; exit 1; }
 if test -z "$l"; then err 'no *.cu and *.h files'; fi
-u.deps $l > make/Makefile.dep
-echo make/Makefile.dep updated >&2
+
+if u.deps $l > $t
+then
+    cp $t "$o" 
+    echo make/Makefile.dep updated >&2
+else
+    err 'failed'
+fi
+
+
