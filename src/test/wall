@@ -1,0 +1,17 @@
+#### Plates : shear
+# cTEST: wall.t0
+rm -rf bop h5 diag.txt rbc.off
+:
+export PATH=../tools:$PATH
+cp data/sdf/wall1/wall.dat sdf.dat
+:
+u.conf conf/test.h <<!!!
+   tend=1.0 part_freq=300 walls wall_creation=100
+   field_dumps part_dumps field_freq=300
+   shear_z
+   run
+!!!
+(make clean && u.make -j) > /dev/null
+sh runfile
+avg_h5.m h5/flowfields-0003.h5 | uscale 0.1 > h5.out.txt
+
