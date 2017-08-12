@@ -38,7 +38,6 @@ static void rex0(std::vector<ParticlesWrap> w, int nw) {
     r::waitP();
 
     copy_hstate();
-    recvC(tc.cart, tc.ranks, tr.tags, tt);
     copy_state();
     if (cnt) s::waitA();
     halo(); /* fsi::halo(); */
