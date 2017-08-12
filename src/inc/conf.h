@@ -155,15 +155,20 @@
 #endif
 
 // debug
-// [k]ernel [l]aunch macros
+/* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE) && !defined(KL_TRACE)  && \
     !defined(KL_PEEK)    && !defined(KL_UNSAFE) && \
     !defined(KL_TRACE_PEEK)
   #define KL_RELEASE
 #endif
 
-// [c]uda [c]heck macro
+/* [c]uda [c]heck macro */
 #if !defined(CC_SYNC)
   #define CC_RELEASE
+#endif
+
+/* [te]xture macros */
+#if !defined(TE_TRACE)
+  #define TE_RELEASE
 #endif
 
