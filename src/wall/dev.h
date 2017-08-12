@@ -26,8 +26,8 @@ __device__ int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
 namespace sdfdev = sdf::sub::dev;
 typedef const sdf::tex3Dca<float> TexSDF_t;
 
-__global__ void interactions_3tpp(TexSDF_t texsdf, const float2 *const pp, const int np, const int w_n,
-                                  float *const acc, const float seed, const int type, const Texo<int> texstart, const Texo<float4> texwpp) {
+__global__ void interactions(TexSDF_t texsdf, const float2 *const pp, const int np, const int w_n,
+                             float *const acc, const float seed, const int type, const Texo<int> texstart, const Texo<float4> texwpp) {
                                   
 #define start_fetch(i) (texstart.fetch(i))
 #define   wpp_fetch(i) (texwpp.fetch(i))
