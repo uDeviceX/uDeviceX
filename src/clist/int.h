@@ -24,8 +24,8 @@ class Clist {
 public:
     const int ncells;
     int *start, *count;
-    Clist(const int LX, const int LY, const int LZ)
-        : ncells(LX*LY*LZ + 1), LX(LX), LY(LY), LZ(LZ) {
+    Clist(const int X, const int Y, const int Z)
+        : ncells(X*Y*Z + 1), LX(X), LY(Y), LZ(Z) {
         CC(cudaMalloc(&start, sizeof(start[0]) * ncells));
         CC(cudaMalloc(&count, sizeof(count[0]) * ncells));
     }
