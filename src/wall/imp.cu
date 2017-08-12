@@ -14,6 +14,7 @@
 #include "common.h"
 #include "common.cuda.h"
 #include "texo.h"
+#include "te.h"
 
 #include "inc/macro.h"
 
@@ -167,8 +168,8 @@ void gen_ticket(const int w_n, float4 *w_pp, clist::Clist *cells, Texo<int> *tex
 
     build_cells(w_n, /**/ w_pp, cells);
     
-    texstart->setup(cells->start, cells->ncells);
-    texpp->setup(w_pp, w_n);    
+    TE(texstart, cells->start, cells->ncells);
+    TE(texpp, w_pp, w_n);
 }
 
 void interactions(TexSDF_t texsdf, const int type, const Particle *const pp, const int n, const Texo<int> texstart,

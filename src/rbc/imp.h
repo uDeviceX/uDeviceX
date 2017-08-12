@@ -62,10 +62,10 @@ void setup(const char *r_templ, int *faces, int4 *tri, int *adj0, int *adj1) {
 
 void setup_textures(int4 *tri, Texo<int4> *textri, int *adj0, Texo<int> *texadj0,
                     int *adj1, Texo<int> *texadj1, Particle *pp, Texo<float2> *texvert) {
-    texadj0->setup(adj0, nv*md);
-    texadj1->setup(adj1, nv*md);
-    textri->setup(tri,   nt);
-    texvert->setup((float2*) pp, 3*MAX_PART_NUM);
+    TE(texadj0, adj0, nv*md);
+    TE(texadj1, adj1, nv*md);
+    TE(textri,  tri,  nt);
+    TE(texvert, (float2*)pp, 3*MAX_PART_NUM);
 }
 
 void forces(int nc, const Texo<float2> texvert, const Texo<int4> textri, const Texo<int> texadj0, const Texo<int> texadj1, Force *ff, float* av) {

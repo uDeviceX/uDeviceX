@@ -13,7 +13,7 @@ void gen_tags() {
 
     /* tmp texture object; TODO: make a ticket? */
     Texo<float2> texvert;
-    texvert.setup((float2*) mc::tr.pp, nm * 3 * r::q.nv);
+    TE(&texvert, (float2*)mc::tr.pp, nm * 3 * r::q.nv);
 
     collision::get_tags(o::q.pp, o::q.n, texvert, r::tt.textri, r::q.nt, r::q.nv, nm, /**/ o::qt.ii);
 

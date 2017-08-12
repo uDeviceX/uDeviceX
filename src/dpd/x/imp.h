@@ -3,8 +3,8 @@ void flocal(Particle *pp, int *sstart, const int n, const float seed, /**/ Force
     if (n) {
         Texo<float2> texpp;
         Texo<int> texstart;
-        texpp.setup((float2 *) pp, 3*n);
-        texstart.setup(sstart, XS*YS*ZS);
+        TE(&texpp, (float2*)pp, 3*n);
+        TE(&texstart, sstart, XS*YS*ZS);
 
         enum { THREADS = 256 };
         KL(dev::flocal, (ceiln((3*n), THREADS), THREADS), (texpp, texstart, n, seed, /**/ (float *) ff));

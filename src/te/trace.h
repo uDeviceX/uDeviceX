@@ -1,1 +1,1 @@
-#define TE(te, D, n) (  te->setup((D), (n))  );
+#define TE(te, D, n) (  (te)->setup0((D), (n))  );

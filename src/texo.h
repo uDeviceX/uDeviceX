@@ -12,7 +12,7 @@ struct Texo {
     __device__ __forceinline__
     const T fetch(const int i) const {return tex1Dfetch<T>(to, i);}
 
-    void setup(T *data, int n) {
+    void setup0(T *data, int n) {
         sz_check(n);
         sz_trace(n);
 
