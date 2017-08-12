@@ -6,6 +6,7 @@
 #include "m.h"
 #include "field.h"
 #include "common.h"
+#include "msg.h"
 
 namespace field {
 static float spl(float x) { /* b-spline (see tools/bspline.mac) */

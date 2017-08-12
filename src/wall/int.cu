@@ -4,6 +4,8 @@
 
 #include "m.h"
 #include "common.h"
+#include "msg.h"
+
 #include "cc.h"
 
 #include "inc/type.h"

@@ -1,8 +1,10 @@
 #include <stdio.h>
+#include <conf.h>
+
+#include "inc/conf.h"
 #include "inc/type.h"
 #include "common.h"
-#include <conf.h>
-#include "inc/conf.h"
+#include "msg.h"
 #include "m.h"
 
 #include "restart.h"

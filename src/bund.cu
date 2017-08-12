@@ -13,6 +13,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 #include "common.h"
+#include "msg.h"
 #include "m.h"
 #include "cc.h"
 
@@ -39,7 +40,7 @@
 #include "l/float3.h"
 #include "k/read.h"
 #include "k/write.h"
-#include "k/common.h"
+#include "k/common.h"`
 
 #include "clist/int.h"
 

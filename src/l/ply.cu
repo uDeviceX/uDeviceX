@@ -2,6 +2,7 @@
 #include <cassert>
 #include "inc/type.h"
 #include "common.h"
+#include "msg.h"
 #include "l/ply.h"
 
 #ifdef PLY_WRITE_ASCII

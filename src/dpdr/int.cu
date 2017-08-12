@@ -4,6 +4,8 @@
 #include "inc/conf.h"
 
 #include "common.h"
+#include "msg.h"
+
 #include "m.h"
 #include "cc.h"
 
