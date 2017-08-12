@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "m.h"
 
+#include "msg.h"
+
 namespace msg {
 char buf[BUFSIZ];
 static char fmt[] = ".%03d";

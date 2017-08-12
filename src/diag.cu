@@ -4,7 +4,7 @@
 #include "inc/conf.h"
 
 #include "l/m.h"
-#include "m.h"     /* MPI */
+#include "m.h"
 #include "inc/type.h"
 #include "inc/mpi.h"
 #include "diag.h"

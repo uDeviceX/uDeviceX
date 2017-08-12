@@ -26,13 +26,13 @@ $B/mcomm/int.o: $S/basetags.h $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc
 $B/mdstr/imp.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/mpi.h $S/inc/type.h $S/l/m.h $S/m.h $S/mdstr/dev.h $S/mdstr/imp.h $S/mdstr/ini.h $S/msg.h
 $B/mdstr/int.o: $S/basetags.h $S/common.h $B/conf.h $S/inc/conf.h $S/l/m.h $S/m.h $S/mdstr/buf.h $S/mdstr/imp.h $S/mdstr/int.h $S/mdstr/tic.h $S/msg.h
 $B/mesh/bbox.o: $S/inc/type.h $S/mesh/bbox.h $S/minmax.h
-$B/mesh/collision.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/kl.h $S/m.h $S/mesh/collision.h $S/msg.h $S/texo.h
+$B/mesh/collision.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/kl.h $S/mesh/collision.h $S/msg.h $S/texo.h
 $B/mesh/dist.o: $S/inc/type.h $S/mesh/dist.h
 $B/mesh/props.o: $S/inc/type.h $S/mesh/props.h
-$B/minmax.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/kl.h $S/m.h $S/minmax.h $S/msg.h
+$B/minmax.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/kl.h $S/minmax.h $S/msg.h
 $B/m.o: $S/inc/mpi.h $S/l/m.h $S/m.h
 $B/mrescue.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/kl.h $S/mesh/collision.h $S/mrescue.h $S/msg.h $S/texo.h
-$B/msg.o: $S/m.h
+$B/msg.o: $S/m.h $S/msg.h
 $B/odstr/imp.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/macro.h $S/inc/mpi.h $S/inc/tmp/pinned.h $S/inc/type.h $S/k/common.h $S/k/read.h $S/k/write.h $S/kl.h $S/l/m.h $S/m.h $S/msg.h $S/odstr/buf.h $S/odstr/dev.h $S/odstr/fin.h $S/odstr/imp.h $S/odstr/ini.h $S/odstr/type.h $S/scan/int.h
 $B/odstr/int.o: $S/basetags.h $S/cc.h $S/clist/int.h $S/common.h $B/conf.h $S/flu/int.h $S/inc/conf.h $S/inc/dev.h $S/inc/mpi.h $S/inc/tmp/pinned.h $S/inc/type.h $S/k/common.h $S/k/read.h $S/kl.h $S/l/m.h $S/msg.h $S/odstr/imp.h $S/odstr/int.h $S/odstr/type.h $S/rnd/imp.h $S/scan/int.h
 $B/os.o: $S/os.h
@@ -46,7 +46,7 @@ $B/rnd/imp.o: $S/rnd/imp.h
 $B/scan/imp.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/kl.h $S/msg.h $S/scan/dev.h $S/scan/int.h
 $B/sdf/imp.o: $S/cc.h $S/common.h $B/conf.h $S/field.h $S/glb.h $S/inc/conf.h $S/inc/dev.h $S/inc/macro.h $S/inc/type.h $S/k/wvel.h $S/kl.h $S/m.h $S/msg.h $S/sdf/cheap.dev.h $S/sdf/dev.h $S/sdf/imp.h $S/sdf/type.h
 $B/sdf/int.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/macro.h $S/inc/type.h $S/m.h $S/msg.h $S/sdf/imp.h $S/sdf/int.h $S/sdf/type.h
-$B/solid.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/k/solid.h $S/kl.h $S/l/linal.h $S/m.h $S/mesh/props.h $S/msg.h $S/solid.h
+$B/solid.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/k/solid.h $S/kl.h $S/l/linal.h $S/mesh/props.h $S/msg.h $S/solid.h
 $B/tcells/imp.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/kl.h $S/msg.h $S/scan/int.h $S/tcells/int.h
 $B/tcells/int.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/msg.h $S/scan/int.h $S/tcells/imp.h $S/tcells/int.h
 $B/te.h: $S/te/common.h $S/te/release.h $S/te/trace.h
