@@ -8,7 +8,7 @@ $B/dpdr/imp.o: $S/cc.h $S/common.h $B/conf.h $S/dpdr/buf.h $S/dpdr/dev.h $S/dpdr
 $B/dpdr/int.o: $S/basetags.h $S/cc.h $S/common.h $B/conf.h $S/dpdr/imp.h $S/dpdr/int.h $S/dpdr/type.h $S/hforces/imp.h $S/inc/conf.h $S/inc/dev.h $S/inc/mpi.h $S/inc/type.h $S/m.h $S/msg.h $S/rnd/imp.h
 $B/dump.o: $S/common.h $B/conf.h $S/dump.h $S/inc/conf.h $S/inc/mpi.h $S/inc/type.h $S/l/m.h $S/m.h $S/msg.h $S/os.h
 $B/field.o: $B/conf.h $S/field.h $S/inc/type.h $S/io/field.h $S/m.h $S/msg.h
-$B/flu/imp.o: $S/cc.h $S/common.h $B/conf.h $S/flu/dev.h $S/flu/imp.h $S/inc/conf.h $S/inc/dev.h $S/inc/mpi.h $S/inc/type.h $S/kl.h $S/l/m.h $S/m.h $S/msg.h $S/restart.h
+$B/flu/imp.o: $S/cc.h $S/common.h $B/conf.h $S/flu/dev.h $S/flu/imp.h $S/inc/conf.h $S/inc/dev.h $S/inc/mpi.h $S/inc/type.h $S/kl.h $S/l/m.h $S/msg.h $S/restart.h
 $B/flu/int.o: $S/cc.h $S/clist/int.h $S/common.h $B/conf.h $S/flu/imp.h $S/flu/int.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/m.h $S/msg.h $S/rnd/imp.h
 $B/glb.o: $B/conf.h $S/glb.h $S/inc/conf.h $S/m.h
 $B/hforces/imp.o: $S/cc.h $S/common.h $B/conf.h $S/forces.h $S/hforces/dev.h $S/hforces/dev.map.h $S/hforces/imp.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/k/common.h $S/k/read.h $S/kl.h $S/l/m.h $S/m.h $S/msg.h $S/rnd/dev.h $S/rnd/imp.h
@@ -31,10 +31,10 @@ $B/mesh/dist.o: $S/inc/type.h $S/mesh/dist.h
 $B/mesh/props.o: $S/inc/type.h $S/mesh/props.h
 $B/minmax.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/kl.h $S/m.h $S/minmax.h $S/msg.h
 $B/m.o: $S/inc/mpi.h $S/l/m.h $S/m.h
-$B/mrescue.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/kl.h $S/m.h $S/mesh/collision.h $S/mrescue.h $S/msg.h $S/texo.h
+$B/mrescue.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/kl.h $S/mesh/collision.h $S/mrescue.h $S/msg.h $S/texo.h
 $B/msg.o: $S/m.h
 $B/odstr/imp.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/macro.h $S/inc/mpi.h $S/inc/tmp/pinned.h $S/inc/type.h $S/k/common.h $S/k/read.h $S/k/write.h $S/kl.h $S/l/m.h $S/m.h $S/msg.h $S/odstr/buf.h $S/odstr/dev.h $S/odstr/fin.h $S/odstr/imp.h $S/odstr/ini.h $S/odstr/type.h $S/scan/int.h
-$B/odstr/int.o: $S/basetags.h $S/cc.h $S/clist/int.h $S/common.h $B/conf.h $S/flu/int.h $S/inc/conf.h $S/inc/dev.h $S/inc/mpi.h $S/inc/tmp/pinned.h $S/inc/type.h $S/k/common.h $S/k/read.h $S/kl.h $S/l/m.h $S/m.h $S/msg.h $S/odstr/imp.h $S/odstr/int.h $S/odstr/type.h $S/rnd/imp.h $S/scan/int.h
+$B/odstr/int.o: $S/basetags.h $S/cc.h $S/clist/int.h $S/common.h $B/conf.h $S/flu/int.h $S/inc/conf.h $S/inc/dev.h $S/inc/mpi.h $S/inc/tmp/pinned.h $S/inc/type.h $S/k/common.h $S/k/read.h $S/kl.h $S/l/m.h $S/msg.h $S/odstr/imp.h $S/odstr/int.h $S/odstr/type.h $S/rnd/imp.h $S/scan/int.h
 $B/os.o: $S/os.h
 $B/rbc/dev0.h: $S/params/rbc.inc0.h
 $B/rdstr/imp.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/mpi.h $S/inc/type.h $S/kl.h $S/l/m.h $S/m.h $S/mdstr/buf.h $S/mdstr/gen.h $S/minmax.h $S/msg.h $S/rdstr/dev.h $S/rdstr/imp.h
@@ -43,7 +43,7 @@ $B/restart.o: $S/common.h $B/conf.h $S/inc/conf.h $S/inc/type.h $S/m.h $S/msg.h 
 $B/rig/imp.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/mpi.h $S/inc/type.h $S/l/m.h $S/l/ply.h $S/m.h $S/mesh/bbox.h $S/mesh/collision.h $S/mesh/dist.h $S/msg.h $S/restart.h $S/rig/ic.h $S/rig/imp.h $S/rig/ini.h $S/rig/share.h $S/solid.h $S/texo.h
 $B/rig/int.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/m.h $S/msg.h $S/rig/imp.h $S/rig/int.h
 $B/rnd/imp.o: $S/rnd/imp.h
-$B/scan/imp.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/kl.h $S/m.h $S/msg.h $S/scan/dev.h $S/scan/int.h
+$B/scan/imp.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/kl.h $S/msg.h $S/scan/dev.h $S/scan/int.h
 $B/sdf/imp.o: $S/cc.h $S/common.h $B/conf.h $S/field.h $S/glb.h $S/inc/conf.h $S/inc/dev.h $S/inc/macro.h $S/inc/type.h $S/k/wvel.h $S/kl.h $S/m.h $S/msg.h $S/sdf/cheap.dev.h $S/sdf/dev.h $S/sdf/imp.h $S/sdf/type.h
 $B/sdf/int.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/macro.h $S/inc/type.h $S/m.h $S/msg.h $S/sdf/imp.h $S/sdf/int.h $S/sdf/type.h
 $B/solid.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/k/solid.h $S/kl.h $S/l/linal.h $S/m.h $S/mesh/props.h $S/msg.h $S/solid.h
