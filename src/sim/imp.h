@@ -57,7 +57,7 @@ void sim_gen() {
     }
     MC(l::m::Barrier(l::m::cart));
   
-    long nsteps = (int)(tend / dt);
+    long nsteps = (long)(tend / dt);
     MSG0("will take %ld steps", nsteps);
     if (walls || solids) {
         solids0 = false;  /* global */
