@@ -4,3 +4,7 @@ void ini() {
     int device = 0;
     CC(cudaSetDevice(device));
 }
+
+int Malloc(void **devPtr, size_t size) {
+    return cudaMalloc(devPtr, size);
+}
