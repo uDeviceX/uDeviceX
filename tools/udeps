@@ -5,8 +5,11 @@
 
 # run from src
 l=`find . -name '*.cu' -o -name '*.h'`
-o=make/dep.mk
-u.deps $l > $o
+d=make/dep.mk
+o=make/obj.mk
 
-echo upd: $o >&2
+u.deps $l > $d
+u.obj  $l > $o
+
+echo upd: $d >&2
 echo upd: $o >&2

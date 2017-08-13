@@ -11,16 +11,6 @@ NVCCFLAGS += -I$B -I$S
 NVCCFLAGS += -std=c++11
 LIBS      += -lcudart
 
-OBJ0 = $B/bund.o $B/msg.o $B/mesh/collision.o $B/mesh/dist.o $B/mesh/bbox.o $B/diag.o $B/common.mpi.o \
-	$B/dpd/local.o $B/field.o $B/glb.o $B/os.o $B/io/rbc.o  $B/io/field.o $B/m.o $B/main.o \
-	$B/mesh/props.o $B/mrescue.o $B/minmax.o $B/mcomm/int.o $B/mcomm/imp.o \
-	$B/solid.o $B/tcells/int.o $B/tcells/imp.o $B/restart.o $B/dump.o $B/flu/int.o $B/flu/imp.o \
-	$B/dpdr/int.o $B/dpdr/imp.o $B/odstr/int.o $B/odstr/imp.o $B/sdf/int.o $B/sdf/imp.o \
-	$B/wall/int.o $B/wall/imp.o $B/mdstr/int.o $B/mdstr/imp.o $B/rdstr/int.o $B/rdstr/imp.o \
-	$B/rnd/imp.o $B/hforces/imp.o $B/rig/int.o $B/rig/imp.o $B/mbounce/imp.o
-OBJL = $B/clist/imp.o $B/l/linal.o $B/l/m.o $B/l/off.o $B/l/ply.o $B/scan/imp.o
-OBJS = $(OBJ0) $(OBJL)
-
 ifeq ($(h5),0)
 NVCCFLAGS += -DNO_H5
 endif
@@ -28,9 +18,9 @@ endif
 NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel)
 
 # http://devblogs.nvidia.com/parallelforall/separate-compilation-linking-cuda-device-code
-$B/udx: $(OBJS)
-	$(NVCC)  $(ARCH) -dlink $(OBJS) $(NVCCLIBS) -o $B/gpuCode.o
-	$(LINK)  $B/gpuCode.o $(OBJS) $(LIBS) -o $@
+$B/udx: $(OBJ)
+	$(NVCC)  $(ARCH) -dlink $(OBJ) $(NVCCLIBS) -o $B/gpuCode.o
+	$(LINK)  $B/gpuCode.o $(OBJ) $(LIBS) -o $@
 
 # compile commands
 C=$(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT)
