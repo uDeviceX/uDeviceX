@@ -3,7 +3,7 @@
 #include "m.h"
 #include "glb.h"
 
-/* global variables visible for every kernel */
+/* globals for all kernels */
 namespace glb {
 __constant__ float r0[3];
 __constant__ float lg[3];
