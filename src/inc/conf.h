@@ -171,3 +171,8 @@
 #if !defined(TE_RELEASE) && !defined(TE_TRACE)
   #define TE_RELEASE
 #endif
+
+/* who plays as device? */
+#if !defined(DEV_CUDA) && !defined(DEV_HST)
+  #define DEV_CUDA
+#endif
