@@ -30,10 +30,7 @@
 #define Palloc(d, n) CC(cudaHostAlloc((d), (n) * sizeof((**(d))), cudaHostAllocMapped))
 #define Pfree(d)     CC(cudaFreeHost(d))
 
-template <typename T>
-void mpDeviceMalloc(T **D) {
-    CC(cudaMalloc(D, sizeof(T) * MAX_PART_NUM));
-}
+#define mpDeviceMalloc(d) (   Palloc(d, MAX_PART_NUM)   )
 
 template <typename T>
 void mpHostMalloc(T **D) {
