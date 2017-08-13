@@ -5,6 +5,7 @@
 #include "inc/conf.h"
 #include "common.h"
 #include "msg.h"
+#include "glb.h"
 
 #include "cc.h"
 
