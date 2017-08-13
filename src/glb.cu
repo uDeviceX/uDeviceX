@@ -27,9 +27,9 @@ void sim() {
     cudaMemcpyToSymbol(r0, r0_h, 3*sizeof(float));
 
     float lg_h[3]; /* domain size */
-	lg_h[X] = m::dims[X] * XS;
-	lg_h[Y] = m::dims[Y] * YS;
-	lg_h[Z] = m::dims[Z] * ZS;
+    lg_h[X] = m::dims[X] * XS;
+    lg_h[Y] = m::dims[Y] * YS;
+    lg_h[Z] = m::dims[Z] * ZS;
     cudaMemcpyToSymbol(lg, lg_h, 3*sizeof(float));
 }
 }
