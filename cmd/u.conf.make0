@@ -15,10 +15,10 @@ B = $b"'
 include $B/config.mk
 include $S/make/common.mk
 include $S/make/Makefile
-include $S/make/Makefile.dep' > "$m"
+include $S/make/dep.mk' > "$m"
 }
 
-write_conf () ( # configure
+write_conf () (
     dn=amlucas dh=panda
     n=`whoami` h=`u.host`
 
