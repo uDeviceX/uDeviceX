@@ -8,35 +8,6 @@ usg () {
     exit
 }
 
-write_make() (
-    d="$1"
-    echo "\
-S = $d
-B = ."'
-include config.mk
-include $S/make/common.mk
-include $S/make/Makefile
-include $S/make/Makefile.dep' > Makefile
-)
-
-err () { msg "$*"; exit; }
-write_conf () ( # configure
-    d="$1"
-    cmd="$d/../cmd"
-    if test ! -d "$cmd"; then err 'missing cmd dir: '"$cmd"; fi
-    (cd "$cmd" && make)
-    dn=amlucas dh=panda dc="$d"/conf/default.h # defaults
-    n=`whoami` h=`u.host`
-
-    c="$d/sys/$n.$h"
-    if test ! -f $c; then c="$d/sys/$dn.$h";  fi
-    if test ! -f $c; then c="$d/sys/$dn.$dh"; fi
-    if test ! -f $c; then err 'missing config file: '"$c"; fi
-
-    cp "$c"  config.mk
-    cp "$dc" conf.h
-)
-
 arg0() { other . ; }
 arg1() { # if one agument
     if test "$1" = -h; then usg ; fi
@@ -44,7 +15,7 @@ arg1() { # if one agument
     other "$1"
 }
 
-other()   { write_conf "$1"; write_make "$1"; }
+other()   { echo run | u.conf "$1" "$1/conf/default.h"; }
 
 case $# in
     0) arg0      ;;
