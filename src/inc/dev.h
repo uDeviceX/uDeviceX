@@ -28,11 +28,13 @@
 
 /* generic device allocation */
 #define Dalloc0(D, n) CC(d::Malloc((void**)(void*)(D), (n) * sizeof(**(D))))
-#define Dfree0(d)     CC(cudaFree(d))
 
 /* pinned memory allocation */
 #define Palloc(d, n) CC(cudaHostAlloc((d), (n) * sizeof((**(d))), cudaHostAllocMapped))
 #define Pfree(d)     CC(cudaFreeHost(d))
+
+/* generic pinned memory allocation */
+#define Palloc0(D, n) CC(cudaHostAlloc((void**)(void*)(D), (n) * sizeof(**(D)), cudaHostAllocMapped))
 
 template <typename T>
 void mpHostMalloc(T **D) {
