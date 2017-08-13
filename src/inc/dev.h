@@ -27,7 +27,7 @@
 #define Dfree(d)     CC(cudaFree(d))
 
 /* generic device allocation */
-#define Dalloc0(D, n) CC(d::Malloc(D, (n) * sizeof(**(D))))
+#define Dalloc0(D, n) CC(d::Malloc((void**)(void*)(D), (n) * sizeof(**(D))))
 #define Dfree0(d)     CC(cudaFree(d))
 
 /* pinned memory allocation */
