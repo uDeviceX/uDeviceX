@@ -18,15 +18,12 @@ void bind(const int *const starts, const int *const cellentries,
 
     for (int i = 0; i < n; ++i) {
         ns[i] = wr[i].n;
-        ps[i] = (float2 *)wr[i].p;
-        fs[i] = (float *)wr[i].f;
+        ps[i] = (float2*)wr[i].p;
+        fs[i] = (float*)wr[i].f;
     }
 
-    CC(cudaMemcpyToSymbolAsync(k_cnt::g::ns, ns, sizeof(int) * n, 0,
-                               H2D));
-    CC(cudaMemcpyToSymbolAsync(k_cnt::g::csolutes, ps, sizeof(float2 *) * n, 0,
-                               H2D));
-    CC(cudaMemcpyToSymbolAsync(k_cnt::g::csolutesacc, fs, sizeof(float *) * n, 0,
-                               H2D));
+    CC(cudaMemcpyToSymbolAsync(k_cnt::g::ns, ns, sizeof(int)*n, 0, H2D));
+    CC(cudaMemcpyToSymbolAsync(k_cnt::g::csolutes, ps, sizeof(float2*)*n, 0, H2D));
+    CC(cudaMemcpyToSymbolAsync(k_cnt::g::csolutesacc, fs, sizeof(float*)*n, 0, H2D));
 }
 }

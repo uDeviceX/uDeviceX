@@ -5,7 +5,8 @@ void fin() {
     delete entries;
     delete  counts;
     delete rgen;
-    
+
+    Pfree(counts);
     Pfree(starts);
 }
 }

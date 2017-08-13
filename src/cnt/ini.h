@@ -1,8 +1,8 @@
 namespace cnt {
 void ini() {
-    Palloc(&starts, XS*YS*ZS + 16);
-    counts = new DeviceBuffer<int>(XS*YS*ZS + 16);
-    scan::alloc_work(XS*YS*ZS + 16, &ws);
+    Palloc(&starts, sz);
+    Palloc(&counts, sz);
+    scan::alloc_work(sz, &ws);
     entries = new DeviceBuffer<int>;
     indexes = new DeviceBuffer<uchar4>;
     rgen = new rnd::KISS;

@@ -11,7 +11,7 @@ void distr_rbc() {
     rdstr::shift(r::q.nv, &r::tdp, /**/ r::q.pp);
     
     dSync();
-    CC( cudaPeekAtLastError() );
+    CC(cudaPeekAtLastError());
 }
 
 template <typename T>
