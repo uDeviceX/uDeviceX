@@ -1,6 +1,6 @@
 namespace cnt {
 void ini() {
-    starts = new DeviceBuffer<int>(XS*YS*ZS + 16);
+    Palloc(&starts, XS*YS*ZS + 16);
     counts = new DeviceBuffer<int>(XS*YS*ZS + 16);
     scan::alloc_work(XS*YS*ZS + 16, &ws);
     entries = new DeviceBuffer<int>;

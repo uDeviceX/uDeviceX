@@ -18,16 +18,16 @@ void build(std::vector<ParticlesWrap> wr) {
         ctr += it.n;
     }
 
-    scan::scan(counts->D, XS*YS*ZS + 16, /**/ starts->D, /*w*/ &ws);
+    scan::scan(counts->D, XS*YS*ZS + 16, /**/ starts, /*w*/ &ws);
 
     ctr = 0;
     for (int i = 0; i < (int) wr.size(); ++i) {
         ParticlesWrap it = wr[i];
         KL(k_cnt::populate, (k_cnf(it.n)),
-           (indexes->D + ctr, starts->D, it.n, i, ntotal, (k_cnt::CellEntry *)entries->D));
+           (indexes->D + ctr, starts, it.n, i, ntotal, (k_cnt::CellEntry *)entries->D));
         ctr += it.n;
     }
 
-    bind(starts->D, entries->D, ntotal, wr);
+    bind(starts, entries->D, ntotal, wr);
 }
 }
