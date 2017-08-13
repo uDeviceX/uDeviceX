@@ -22,15 +22,17 @@ void sim() {
                       coordinates; to go to domain coordinates (`rg')
                       from sub-domain coordinates (`r'): rg = r - r0
                    */
-    r0_h[X] = XS*(m::dims[X]-2*m::coords[X]-1)/2;
-    r0_h[Y] = YS*(m::dims[Y]-2*m::coords[Y]-1)/2;
-    r0_h[Z] = ZS*(m::dims[Z]-2*m::coords[Z]-1)/2;
+    int *c = m::coords;
+    int *d = m::dims;
+    r0_h[X] = XS*(d[X]-2*c[X]-1)/2;
+    r0_h[Y] = YS*(d[Y]-2*c[Y]-1)/2;
+    r0_h[Z] = ZS*(d[Z]-2*c[Z]-1)/2;
     d::MemcpyToSymbol(r0, r0_h, 3*sizeof(float));
 
     float lg_h[3]; /* domain size */
-    lg_h[X] = m::dims[X] * XS;
-    lg_h[Y] = m::dims[Y] * YS;
-    lg_h[Z] = m::dims[Z] * ZS;
+    lg_h[X] = d[X]*XS;
+    lg_h[Y] = d[Y]*YS;
+    lg_h[Z] = d[Z]*ZS;
     d::MemcpyToSymbol(lg, lg_h, 3*sizeof(float));
 }
 }
