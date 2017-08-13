@@ -1,13 +1,11 @@
-#include <mpi.h>
+#include <stdio.h>
+
 #include <conf.h>
 #include "inc/conf.h"
-#include "common.h"
+
 #include "msg.h"
 #include "m.h"
 #include "cc.h"
-#include "l/m.h"
-#include "inc/mpi.h"
-#include "inc/dev.h"
 #include "bund.h"
 #include "glb.h"
 
