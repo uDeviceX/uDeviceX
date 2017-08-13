@@ -14,6 +14,7 @@ S = $s
 B = $b"'
 include $B/config.mk
 include $S/make/common.mk
+include $S/make/obj.mk
 include $S/make/Makefile
 include $S/make/dep.mk' > "$m"
 }
