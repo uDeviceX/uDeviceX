@@ -5,7 +5,7 @@ void bulk(std::vector<ParticlesWrap> wr) {
     for (int i = 0; i < (int) wr.size(); ++i) {
         ParticlesWrap it = wr[i];
         KL(k_cnt::bulk, (k_cnf(3 * it.n)),
-           ((float2 *)it.p, it.n, cellsentries->S, wr.size(), (float *)it.f,
+           ((float2 *)it.p, it.n, entries->S, wr.size(), (float *)it.f,
             rgen->get_float(), i));
     }
 }

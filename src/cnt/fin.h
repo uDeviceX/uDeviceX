@@ -1,10 +1,10 @@
 namespace cnt {
 void fin() {
-    delete subindices;
+    delete indexes;
     scan::free_work(&ws);
-    delete cellsentries;
-    delete cellsstart;
-    delete  cellscount;
+    delete entries;
+    delete starts;
+    delete  counts;
     delete rgen;
 }
 }

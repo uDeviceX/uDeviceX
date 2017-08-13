@@ -1,7 +1,7 @@
 namespace cnt {
-int nsolutes;
-DeviceBuffer<uchar4> *subindices;
+int no; /* number of objects */
+DeviceBuffer<uchar4> *indexes;
 scan::Work ws;
-DeviceBuffer<int> *cellsentries, *cellsstart, *cellscount;
+DeviceBuffer<int> *entries, *starts, *counts;
 rnd::KISS* rgen;
 }

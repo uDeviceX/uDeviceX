@@ -1,33 +1,33 @@
 namespace cnt {
 void build(std::vector<ParticlesWrap> wr) {
     /* build cells */
-    nsolutes = wr.size();
+    no = wr.size();
     int ntotal = 0;
     for (int i = 0; i < (int) wr.size(); ++i) ntotal += wr[i].n;
 
-    subindices->resize(ntotal);
-    cellsentries->resize(ntotal);
+    indexes->resize(ntotal);
+    entries->resize(ntotal);
 
-    CC(cudaMemsetAsync(cellscount->D, 0, sizeof(int) * cellscount->S));
+    CC(cudaMemsetAsync(counts->D, 0, sizeof(int) * counts->S));
 
 
     int ctr = 0;
     for (int i = 0; i < (int) wr.size(); ++i) {
         ParticlesWrap it = wr[i];
-        KL(k_common::subindex_local<true>, (k_cnf(it.n)), (it.n, (float2 *)it.p, cellscount->D, subindices->D + ctr));
+        KL(k_common::subindex_local<true>, (k_cnf(it.n)), (it.n, (float2 *)it.p, counts->D, indexes->D + ctr));
         ctr += it.n;
     }
 
-    scan::scan(cellscount->D, XS*YS*ZS + 16, /**/ cellsstart->D, /*w*/ &ws);
+    scan::scan(counts->D, XS*YS*ZS + 16, /**/ starts->D, /*w*/ &ws);
 
     ctr = 0;
     for (int i = 0; i < (int) wr.size(); ++i) {
         ParticlesWrap it = wr[i];
         KL(k_cnt::populate, (k_cnf(it.n)),
-           (subindices->D + ctr, cellsstart->D, it.n, i, ntotal, (k_cnt::CellEntry *)cellsentries->D));
+           (indexes->D + ctr, starts->D, it.n, i, ntotal, (k_cnt::CellEntry *)entries->D));
         ctr += it.n;
     }
 
-    bind(cellsstart->D, cellsentries->D, ntotal, wr);
+    bind(starts->D, entries->D, ntotal, wr);
 }
 }
