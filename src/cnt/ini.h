@@ -1,7 +1,7 @@
 namespace cnt {
 void ini() {
-    Palloc(&starts, sz);
-    Palloc(&counts, sz);
+    Dalloc(&starts, sz);
+    Dalloc(&counts, sz);
     scan::alloc_work(sz, &ws);
     entries = new DeviceBuffer<int>;
     indexes = new DeviceBuffer<uchar4>;
