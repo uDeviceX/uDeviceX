@@ -1,3 +1,3 @@
 # make
 
-Fragments of makefile. See [../src/configure](../src/configure)
+Fragments of makefile
