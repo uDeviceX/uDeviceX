@@ -1,6 +1,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 #include "m.h"
+#include "d.h"
 #include "glb.h"
 
 /* globals for all kernels */
@@ -24,12 +25,12 @@ void sim() {
     r0_h[X] = XS*(m::dims[X]-2*m::coords[X]-1)/2;
     r0_h[Y] = YS*(m::dims[Y]-2*m::coords[Y]-1)/2;
     r0_h[Z] = ZS*(m::dims[Z]-2*m::coords[Z]-1)/2;
-    cudaMemcpyToSymbol(r0, r0_h, 3*sizeof(float));
+    d::MemcpyToSymbol(r0, r0_h, 3*sizeof(float));
 
     float lg_h[3]; /* domain size */
     lg_h[X] = m::dims[X] * XS;
     lg_h[Y] = m::dims[Y] * YS;
     lg_h[Z] = m::dims[Z] * ZS;
-    cudaMemcpyToSymbol(lg, lg_h, 3*sizeof(float));
+    d::MemcpyToSymbol(lg, lg_h, 3*sizeof(float));
 }
 }
