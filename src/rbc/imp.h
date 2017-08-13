@@ -19,7 +19,7 @@ static void gen_a12(int i0, int *hx, int *hy, /**/ int *a1, int *a2) {
     int lo = i0*md, hi = lo + md, mi = hx[lo];
     int i;
     for (i = lo + 1; (i < hi) && (hx[i] != -1); i++)
-    if (hx[i] < mi) mi = hx[i]; /* minimum */
+        if (hx[i] < mi) mi = hx[i]; /* minimum */
 
     int c = mi, c0;
     i = lo;
