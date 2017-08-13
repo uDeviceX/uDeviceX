@@ -7,6 +7,7 @@
 #include "msg.h"
 #include "cc.h"
 #include "kl.h"
+#include "d.h"
 
 #include "scan/int.h"
 #include "scan/dev.h"
@@ -28,8 +29,8 @@ void scan(const int *input, int size, /**/ int *output, /*w*/ Work *w) {
 }
 
 void alloc_work(int size, /**/ Work *w) {
-    Dalloc(&w->tmp, 64 * 64 * 64 / THREADS);
-    Dalloc(&w->compressed, 4 * size);
+    Dalloc0(&w->tmp, 64 * 64 * 64 / THREADS);
+    Dalloc0(&w->compressed, 4 * size);
 }
 
 void free_work(/**/ Work *w) {
