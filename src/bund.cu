@@ -1,17 +1,18 @@
 #include <assert.h>
 #include <vector>
 #include <mpi.h>
+#include <stdint.h>
+#include <conf.h>
+#include "inc/conf.h"
 
 #include "l/m.h"
 #include "l/off.h"
 #include "scan/int.h"
+#include "d.h"
 
-#include <stdint.h>
 #include "rnd/imp.h"
 #include "rnd/dev.h"
 
-#include <conf.h>
-#include "inc/conf.h"
 #include "common.h"
 #include "msg.h"
 #include "m.h"
