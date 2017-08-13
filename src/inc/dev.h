@@ -26,6 +26,10 @@
 #define Dalloc(d, n) CC(cudaMalloc((d), (n) * sizeof((**(d)))))
 #define Dfree(d)     CC(cudaFree(d))
 
+/* generic device allocation */
+#define Dalloc0(D, n) CC(d::Malloc(D, (n) * sizeof(**(D))))
+#define Dfree0(d)     CC(cudaFree(d))
+
 /* pinned memory allocation */
 #define Palloc(d, n) CC(cudaHostAlloc((d), (n) * sizeof((**(d))), cudaHostAllocMapped))
 #define Pfree(d)     CC(cudaFreeHost(d))
