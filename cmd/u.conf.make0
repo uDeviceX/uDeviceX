@@ -30,7 +30,6 @@ write_conf () (
     msg "cp $c0  config.mk"; cp "$c0"  "$c"
 )
 
-
 mkdir -p     "$b"
 
 m="$b/Makefile"
