@@ -3,11 +3,10 @@
 #include "inc/conf.h"
 
 #include "common.h"
+#include "inc/dev.h"
 #include "msg.h"
 #include "cc.h"
 #include "kl.h"
-
-#include "inc/dev.h"
 
 #include "scan/int.h"
 #include "scan/dev.h"
@@ -29,13 +28,13 @@ void scan(const int *input, int size, /**/ int *output, /*w*/ Work *w) {
 }
 
 void alloc_work(int size, /**/ Work *w) {
-    CC(cudaMalloc(&w->tmp, sizeof(uint) * (64 * 64 * 64 / THREADS)));
-    CC(cudaMalloc(&w->compressed, sizeof(char) * 4 * size));
+    Dalloc(&w->tmp, 64 * 64 * 64 / THREADS);
+    Dalloc(&w->compressed, 4 * size);
 }
 
 void free_work(/**/ Work *w) {
-    CC(cudaFree(w->tmp));
-    CC(cudaFree(w->compressed));
+    Dfree(w->tmp);
+    Dfree(w->compressed);
 }
 
 } // scan
