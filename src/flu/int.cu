@@ -17,7 +17,8 @@ namespace flu {
 
 void alloc_quants(Quants *q) {
     q->n = 0;
-    mpDeviceMalloc(&q->pp); mpDeviceMalloc(&q->pp0);
+    Dalloc(&q->pp, MAX_PART_NUM);
+    Dalloc(&q->pp0, MAX_PART_NUM);
     q->cells = new clist::Clist(XS, YS, ZS);
     q->pp_hst = new Particle[MAX_PART_NUM];
 }
@@ -29,7 +30,8 @@ void free_quants(Quants *q) {
 }
 
 void alloc_quantsI(QuantsI *q) {
-    mpDeviceMalloc(&q->ii); mpDeviceMalloc(&q->ii0);
+    Dalloc(&q->ii, MAX_PART_NUM);
+    Dalloc(&q->ii0, MAX_PART_NUM);
     q->ii_hst = new int[MAX_PART_NUM];
 }
 
@@ -39,8 +41,8 @@ void free_quantsI(QuantsI *q) {
 }
 
 void alloc_ticketZ(/**/ TicketZ *t) {
-    mpDeviceMalloc(&t->zip0);
-    mpDeviceMalloc(&t->zip1);
+    Dalloc(&t->zip0, MAX_PART_NUM);
+    Dalloc(&t->zip1, MAX_PART_NUM);
 }
 
 void free_ticketZ(/**/ TicketZ *t) {

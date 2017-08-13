@@ -38,7 +38,7 @@ template <typename T> struct DeviceBuffer1 {
 template <typename T> struct DeviceBuffer2 {
   /* `D': data */
   T *D;
-  DeviceBuffer2()  {mpDeviceMalloc(&D);}
+  DeviceBuffer2()  {Dalloc(&D, MAX_PART_NUM);}
   ~DeviceBuffer2() {CC(cudaFree(D));}
 };
 

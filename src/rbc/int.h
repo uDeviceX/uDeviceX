@@ -18,7 +18,7 @@ struct TicketT {
 
 void alloc_quants(Quants *q) {
     q->n = q->nc = 0;
-    mpDeviceMalloc(&q->pp);
+    Dalloc(&q->pp, MAX_PART_NUM);
     q->pp_hst = new Particle[MAX_PART_NUM];
 
     q->nt = RBCnt;

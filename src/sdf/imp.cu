@@ -111,7 +111,7 @@ static void bulk_wall0(const tex3Dca<float> texsdf, /*io*/ Particle *s_pp, int* 
 
 void bulk_wall(const tex3Dca<float> texsdf, /*io*/ Particle *s_pp, int *s_n, /*o*/ Particle *w_pp, int *w_n) {
     int *keys;
-    mpDeviceMalloc(&keys);
+    Dalloc(&keys, MAX_PART_NUM);
     bulk_wall0(texsdf, s_pp, s_n, w_pp, w_n, keys);
     CC(cudaFree(keys));
 }

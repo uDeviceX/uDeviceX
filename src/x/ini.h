@@ -6,7 +6,7 @@ void ini(/*io*/ basetags::TagGen *g) {
     ini_tickettags(g, &tt);
     ini_ticketpack(&tp);
     ini_ticketpinned(&ti);
-    mpDeviceMalloc(&buf);
+    Dalloc(&buf, MAX_PART_NUM);
     Palloc(&buf_pinned, MAX_PART_NUM);
     rex::ini();
 }

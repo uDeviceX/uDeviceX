@@ -37,7 +37,7 @@ void ini() {
 
     odstr::alloc_work(&o::w);
 
-    mpDeviceMalloc(&o::ff);
+    Dalloc(&o::ff, MAX_PART_NUM);
 
     if (global_ids) {
         flu::alloc_quantsI(&o::qi);
