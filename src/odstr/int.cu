@@ -18,7 +18,6 @@
 #include "k/common.h"
 #include "kl.h"
 
-#include <stdint.h>
 #include "rnd/imp.h"
 #include "clist/int.h"
 #include "flu/int.h"
