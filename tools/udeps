@@ -1,20 +1,12 @@
 #!/bin/bash
 
-# uses clarity/u.deps
+# u.deps and u.obj are from
+# see git@gitlab.ethz.ch:mavt-cse/clarity
+
 # run from src
 l=`find . -name '*.cu' -o -name '*.h'`
 o=make/Makefile.dep
+u.deps $l > $o
 
-t=/tmp/udeps.XXX
-trap 'rm -f $t' 0 1 2 3 15
-
-err () { printf "udeps: %s\n" "$1"; exit 1; }
-if test -z "$l"; then err 'no *.cu and *.h files'; fi
-
-if u.deps $l > $t
-then
-    cp $t "$o" 
-    echo make/Makefile.dep updated >&2
-else
-    err failed
-fi
+echo upd: $o >&2
+echo upd: $o >&2
