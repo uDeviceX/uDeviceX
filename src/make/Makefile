@@ -35,6 +35,7 @@ $B/l/%.o:         $S/l/%.cu;          $D     $< -c -o $@
 $B/mesh/%.o:      $S/mesh/%.cu;       $D     $< -c -o $@
 $B/io/%.o:        $S/io/%.cu;         $D     $< -c -o $@
 $B/dpd/local.o:   $S/dpd/local.cu;    $D     $< -c -o $@
+$B/wall/exch.o:   $S/wall/exch.cu;    $D     $< -c -o $@
 
 # generic interface and implementation rules
 $B/%/int.o:       $S/%/int.cu;        $D     $< -c -o $@
