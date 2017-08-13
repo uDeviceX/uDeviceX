@@ -1,5 +1,4 @@
 #include "d.h"
 namespace d {
-void f() {
-}
+#include "d/cuda/imp.h"
 }
