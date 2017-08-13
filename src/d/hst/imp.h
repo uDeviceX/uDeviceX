@@ -10,3 +10,8 @@ cudaError_t MemcpyToSymbol(const void *symbol, const void *src, size_t count, si
     MSG("MemcpyToSymbol is not implemented on host");
     return cudaSuccess;
 }
+
+cudaError_t HostAlloc (void **pHost, size_t size, unsigned int flags) {
+    MSG("HostAlloc is not implemented on host");
+    return cudaSuccess;
+}

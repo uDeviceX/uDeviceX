@@ -6,8 +6,8 @@ void ini(/*io*/ basetags::TagGen *g) {
     ini_tickettags(g, &tt);
     ini_ticketpack(&tp);
     ini_ticketpinned(&ti);
-    Dalloc(&buf, MAX_PART_NUM);
-    Palloc(&buf_pinned, MAX_PART_NUM);
+    Dalloc0(&buf, MAX_PART_NUM);
+    Palloc0(&buf_pinned, MAX_PART_NUM);
     rex::ini();
 }
 }

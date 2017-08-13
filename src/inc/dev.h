@@ -34,7 +34,7 @@
 #define Pfree(d)     CC(cudaFreeHost(d))
 
 /* generic pinned memory allocation */
-#define Palloc0(D, n) CC(cudaHostAlloc((void**)(void*)(D), (n) * sizeof(**(D)), cudaHostAllocMapped))
+#define Palloc0(D, n) CC(d::HostAlloc((void**)(void*)(D), (n) * sizeof(**(D)), cudaHostAllocMapped))
 
 template <typename T>
 void mpHostMalloc(T **D) {
