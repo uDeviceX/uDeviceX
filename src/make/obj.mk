@@ -6,5 +6,5 @@ OBJ = $B/bund.o $B/clist/imp.o $B/common.mpi.o $B/d.o $B/diag.o $B/dpd/local.o \
     $B/mesh/collision.o $B/mesh/dist.o $B/mesh/props.o $B/minmax.o $B/mrescue.o \
     $B/msg.o $B/odstr/imp.o $B/odstr/int.o $B/os.o $B/rdstr/imp.o $B/rdstr/int.o \
     $B/restart.o $B/rig/imp.o $B/rig/int.o $B/rnd/imp.o $B/scan/imp.o $B/sdf/imp.o \
-    $B/sdf/int.o $B/solid.o $B/tcells/imp.o $B/tcells/int.o $B/wall/imp.o \
-    $B/wall/int.o
+    $B/sdf/int.o $B/solid.o $B/tcells/imp.o $B/tcells/int.o $B/wall/exch.o \
+    $B/wall/imp.o $B/wall/int.o
