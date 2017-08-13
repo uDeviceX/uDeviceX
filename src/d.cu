@@ -7,5 +7,11 @@
 #include "d.h"
 
 namespace d {
-#include "d/cuda/imp.h"
+#if   defined(DEV_CUDA)
+  #include "d/cuda/imp.h"
+#elif defined(DEV_HST)
+  #include "d/hst/imp.h"
+#else
+  #error DEV_* is undefined
+#endif
 }
