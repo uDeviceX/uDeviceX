@@ -1,3 +1,6 @@
+# a fragment of makefile
+# see src/make/ and tools/udeps
+
 all: $B/udx
 
 NVCC     ?= nvcc
