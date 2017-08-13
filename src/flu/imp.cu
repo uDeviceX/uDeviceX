@@ -1,4 +1,4 @@
-#include <cstdio>
+#include <stdio.h>
 #include <cassert>
 #include <mpi.h>
 #include <conf.h>

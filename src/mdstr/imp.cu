@@ -1,5 +1,5 @@
 #include <mpi.h>
-#include <cstdio>
+#include <stdio.h>
 #include <conf.h>
 #include "inc/conf.h"
 
