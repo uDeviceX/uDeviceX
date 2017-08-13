@@ -163,12 +163,11 @@
 #endif
 
 /* [c]uda [c]heck macro */
-#if !defined(CC_SYNC)
+#if !defined(CC_RELEASE) && !defined(CC_SYNC)
   #define CC_RELEASE
 #endif
 
 /* [te]xture macros */
-#if !defined(TE_TRACE)
+#if !defined(TE_RELEASE) && !defined(TE_TRACE)
   #define TE_RELEASE
 #endif
-
