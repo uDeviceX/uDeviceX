@@ -1,7 +1,7 @@
 namespace rex {
 struct LocalHalo {
     History h;
-    DeviceBuffer<int>* indexes;
+    int* indexes;
     PinnedHostBuffer<Force>* ff;
 };
 

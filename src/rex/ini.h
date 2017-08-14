@@ -30,7 +30,7 @@ static void ini_local() {
     for (i = 0; i < 26; i++) {
         n = i2max(i);
         local[i] = new LocalHalo;
-        local[i]->indexes = new DeviceBuffer<int>(n);
+        Dalloc(&local[i]->indexes, n);
         local[i]->ff      = new PinnedHostBuffer<Force>(n);
         lo::update(local[i]);
     }
@@ -47,7 +47,7 @@ static void ini_remote() {
 static void ini_copy() {
     int i;
     for (i = 0; i < 26; ++i)
-        CC(cudaMemcpyToSymbol(k_rex::g::indexes, &local[i]->indexes->D, sizeof(int*), sizeof(int*) * i, H2D));
+        CC(cudaMemcpyToSymbol(k_rex::g::indexes, &local[i]->indexes, sizeof(int*), sizeof(int*) * i, H2D));
 }
 
 void ini() {
