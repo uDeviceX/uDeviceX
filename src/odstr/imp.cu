@@ -16,7 +16,6 @@
 #include "inc/dev.h"
 #include "inc/mpi.h"
 #include "inc/macro.h"
-#include "inc/tmp/pinned.h"
 
 #include "scan/int.h"
 

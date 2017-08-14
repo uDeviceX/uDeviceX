@@ -14,7 +14,6 @@
 #include "inc/dev.h"
 
 #include "inc/mpi.h"
-#include "inc/tmp/pinned.h"
 
 #include "k/read.h"
 #include "k/common.h"
