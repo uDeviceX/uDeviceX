@@ -1,4 +1,4 @@
-OBJ = $B/bund.o $B/clist/imp.o $B/common.mpi.o $B/d.o $B/diag.o $B/dpd/local.o \
+O = $B/bund.o $B/clist/imp.o $B/common.mpi.o $B/d.o $B/diag.o $B/dpd/local.o \
     $B/dpdr/imp.o $B/dpdr/int.o $B/dump.o $B/field.o $B/flu/imp.o $B/flu/int.o \
     $B/glb.o $B/hforces/imp.o $B/io/field.o $B/io/rbc.o $B/l/linal.o $B/l/m.o \
     $B/l/off.o $B/l/ply.o $B/m.o $B/main.o $B/mbounce/imp.o $B/mcomm/imp.o \

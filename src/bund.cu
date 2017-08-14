@@ -212,6 +212,7 @@ namespace dev {
 #undef HST
 #undef DEV
 #include "sim/update.h"
+#include "sim/odstr1.h"
 #include "sim/step.h"
 #include "sim/run.h"
 #include "sim/imp.h"
