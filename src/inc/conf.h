@@ -163,7 +163,7 @@
 #endif
 
 /* [c]uda [c]heck macro */
-#if !defined(CC_RELEASE) && !defined(CC_SYNC) && !defined(CC_TRACE)
+#if !defined(CC_RELEASE) && !defined(CC_SYNC) && !defined(CC_TRACE) && !defined(CC_TRACE_PEEK)
   #define CC_RELEASE
 #endif
 
