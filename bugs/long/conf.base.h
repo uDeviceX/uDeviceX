@@ -3,9 +3,9 @@
 /* Configuration file for sphere in channel flow */
 
 /* DOMAIN */
-#define XS                  8
-#define YS                  8
-#define ZS                  8
+#define XS                  4
+#define YS                  4
+#define ZS                  4
 #define XWM                 6
 #define YWM                 6
 #define ZWM                 6
