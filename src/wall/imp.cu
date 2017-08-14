@@ -6,7 +6,7 @@
 #include "common.h"
 #include "msg.h"
 #include "glb.h"
-
+#include "d.h"
 #include "cc.h"
 
 #include "inc/type.h"

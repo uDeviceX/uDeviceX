@@ -26,8 +26,8 @@ public:
     Clist(const int LX, const int LY, const int LZ)
         : ncells(LX*LY*LZ + 1), LX(LX), LY(LY), LZ(LZ)
     {
-        CC(cudaMalloc(&start, sizeof(start[0]) * ncells));
-        CC(cudaMalloc(&count, sizeof(count[0]) * ncells));
+        Dalloc0(&start, ncells);
+        Dalloc0(&count, ncells);
     }
 
     void build(Particle *const pp, const int n) {

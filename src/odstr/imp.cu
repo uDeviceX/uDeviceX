@@ -6,6 +6,7 @@
 #include "common.h"
 #include "msg.h"
 #include "m.h"
+#include "d.h"
 #include "cc.h"
 
 #include "inc/type.h"

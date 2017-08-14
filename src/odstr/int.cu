@@ -4,7 +4,7 @@
 
 #include "common.h"
 #include "msg.h"
-
+#include "d.h"
 #include "cc.h"
 
 #include "basetags.h"
