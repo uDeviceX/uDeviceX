@@ -16,3 +16,7 @@ cudaError_t MemcpyToSymbol(const void *symbol, const void *src, size_t count, si
 cudaError_t HostAlloc(void **pHost, size_t size, unsigned int flags) {
     return cudaHostAlloc(pHost, size, flags);
 }
+
+cudaError_t HostGetDevicePointer (void **pDevice, void *pHost, unsigned int flags) {
+    return cudaHostGetDevicePointer (**pDevice, *pHost, flags);
+}

@@ -15,3 +15,8 @@ cudaError_t HostAlloc (void **pHost, size_t size, unsigned int flags) {
     MSG("HostAlloc is not implemented on host");
     return cudaSuccess;
 }
+
+cudaError_t HostGetDevicePointer (void **pDevice, void *pHost, unsigned int flags) {
+    MSG("HostGetDevicePointer is not implemented on host");
+    return cudaSuccess;
+}
