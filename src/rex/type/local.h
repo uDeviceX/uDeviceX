@@ -19,8 +19,5 @@ int expected(LocalHalo *l) {
     return (int)ceil(l->h.max() * 1.1);
 }
 
-int size(LocalHalo *l) {
-    return l->indexes->C;
-}
 }
 }
