@@ -36,7 +36,13 @@
 /* generic pinned memory allocation */
 #define Palloc0(D, n) CC(d::HostAlloc((void**)(void*)(D), (n) * sizeof(**(D)), cudaHostAllocMapped))
 
-#define Dset(P, v, n) CC(P, v, (n)*sizeof(*(D))))
+/* [d]evice set */
+#define Dset(P, v, n) CC(cudaMemset(P, v, (n)*sizeof(*(P))))
+#define Dzero(P, n)   Dset(P, 0, n)
+
+/* [d]evice [a]synchronous set */
+#define DsetA(P, v, n) CC(cudaMemsetAsync(P, v, (n)*sizeof(*(P))))
+#define DzeroA(P, n)   DsetA(P, 0, n)
 
 template <typename T>
 void mpHostMalloc(T **D) {

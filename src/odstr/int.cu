@@ -125,7 +125,7 @@ void send_ii(const TicketD *td, TicketI *ti) {
 
 void bulk(flu::Quants *q, TicketD *t) {
     int n = q->n, *count = q->cells->count;
-    CC(cudaMemsetAsync(count, 0, sizeof(int)*XS*YS*ZS));
+    DzeroA(count, XS*YS*ZS);
     KL(k_common::subindex_local<false>, (k_cnf(n)),(n, (float2*)q->pp, /*io*/ count, /*o*/ t->subi_lo));
 }
 

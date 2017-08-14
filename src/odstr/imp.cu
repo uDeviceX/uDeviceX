@@ -55,7 +55,7 @@ void post_recv_ii(const MPI_Comm cart, const int rank[], const int tags[], const
 }
 
 void halo(const Particle *pp, int n, Send *s) {
-    CC(cudaMemset(s->size_dev, 0,  27*sizeof(*(s->size_dev))));
+    Dzero(s->size_dev, 27);
     KL(dev::halo, (k_cnf(n)),(pp, n, /**/ s->iidx, s->size_dev));
 }
 
