@@ -201,6 +201,8 @@ namespace dev {
 #include "sim/tag.h"
 #include "sim/forces/dpd.h"
 #include "sim/forces.h"
+#include "sim/force1.h"
+
 #define HST (true)
 #define DEV (false)
 #define DEVICE_SOLID
