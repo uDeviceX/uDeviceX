@@ -1,4 +1,7 @@
 void odstr() {
+    assert(o::q.n <= MAX_PART_NUM);
+    assert(r::q.n <= MAX_PART_NUM);
+
     odstr::post_recv_pp(/**/ &o::td);
     if (global_ids)    odstr::post_recv_ii(&o::td, /**/ &o::ti);
     if (multi_solvent) odstr::post_recv_ii(&o::td, /**/ &o::tt);
@@ -26,12 +29,7 @@ void odstr() {
     if (multi_solvent) odstr::gather_ii(o::q.n, &o::tu, &o::tut, /**/ &o::qt);
 }
 
-void step(float driving_force0, bool wall0, int it) {
-    assert(o::q.n <= MAX_PART_NUM);
-    assert(r::q.n <= MAX_PART_NUM);
-
-    odstr();
-
+void step0(float driving_force0, bool wall0, int it) {
     if (solids0) distr_solid();
     if (rbcs)    distr_rbc();
     forces(wall0);
@@ -43,4 +41,9 @@ void step(float driving_force0, bool wall0, int it) {
     if (rbcs)    update_rbc();
     if (wall0) bounce();
     if (sbounce_back && solids0) bounce_solid(it);
+}
+
+void step(float driving_force0, bool wall0, int it) {
+    step0(driving_force0, wall0, it);
+    odstr();
 }
