@@ -1,5 +1,8 @@
 # a fragment of makefile
 # see src/make/ and tools/udeps
+# B: binary
+# S: source
+# O: objects
 
 all: $B/udx
 
