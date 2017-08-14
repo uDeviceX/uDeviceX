@@ -44,13 +44,6 @@
 #define DsetA(P, v, n) CC(cudaMemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 
-template <typename T>
-void mpHostMalloc(T **D) {
-  T *p;
-  p = (T*)malloc(sizeof(T) * MAX_PART_NUM);
-  *D = p;
-}
-
 template <typename T> struct DeviceBuffer {
     /* `C': capacity; `S': size; `D' : data*/
     int C, S; T *D;
