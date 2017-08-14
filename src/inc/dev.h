@@ -36,6 +36,8 @@
 /* generic pinned memory allocation */
 #define Palloc0(D, n) CC(d::HostAlloc((void**)(void*)(D), (n) * sizeof(**(D)), cudaHostAllocMapped))
 
+#define Link(D, H) CC(d::HostGetDevicePointer((void**)(void*)(D), H,   0))
+
 /* [d]evice set */
 #define Dset(P, v, n) CC(cudaMemset(P, v, (n)*sizeof(*(P))))
 #define Dzero(P, n)   Dset(P, 0, n)
