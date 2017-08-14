@@ -3,9 +3,9 @@
 /* Configuration file for sphere in channel flow */
 
 /* DOMAIN */
-#define XS                  32
-#define YS                  32
-#define ZS                  32
+#define XS                  16
+#define YS                  16
+#define ZS                  16
 #define XWM                 6
 #define YWM                 6
 #define ZWM                 6
@@ -43,7 +43,6 @@
 #define KL_PEEK             true
 #define CC_SYNC             true
 #define TE_TRACE
-#define FORCE0
 
 /* FLOW TYPE */
 #define pushflow            true
