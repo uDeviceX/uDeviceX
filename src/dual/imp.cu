@@ -11,10 +11,8 @@
 
 namespace dual {
 void alloc(I *p, int n) {
-    int *D, *DP;
-    D = p->D; DP = p->DP;
-    CC(cudaHostAlloc(&D, sizeof(int) * n, cudaHostAllocMapped));
-    CC(cudaHostGetDevicePointer(&DP, D, 0));
+    CC(cudaHostAlloc(&p->D, sizeof(int) * n, cudaHostAllocMapped));
+    CC(cudaHostGetDevicePointer(&p->DP, p->D, 0));
 }
 
 void dealloc(I p) {
