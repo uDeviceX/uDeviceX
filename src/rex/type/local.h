@@ -6,11 +6,6 @@ struct LocalHalo {
 };
 
 namespace lo {
-void resize(LocalHalo *l, int n) {
-    l->indexes->resize(n);
-    l->ff->resize(n);
-}
-
 void update(LocalHalo *l) {
     l->h.update(l->ff->S);
 }

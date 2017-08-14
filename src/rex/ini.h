@@ -30,9 +30,8 @@ static void ini_local() {
     for (i = 0; i < 26; i++) {
         n = i2max(i);
         local[i] = new LocalHalo;
-        local[i]->indexes = new DeviceBuffer<int>;
-        local[i]->ff      = new PinnedHostBuffer<Force>;
-        lo::resize(local[i], n);
+        local[i]->indexes = new DeviceBuffer<int>(n);
+        local[i]->ff      = new PinnedHostBuffer<Force>(n);
         lo::update(local[i]);
     }
 }
