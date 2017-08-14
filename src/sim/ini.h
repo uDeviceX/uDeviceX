@@ -17,12 +17,14 @@ void ini() {
     sdstr::ini(&tag_gen);
     bbhalo::ini(&tag_gen);
     cnt::ini();
-    x::ini(&tag_gen); /* rex:: */
+    if (rbcs || solids) x::ini(&tag_gen); /* rex:: */
     dump::ini(&dumpt);
 
-    sdf::alloc_quants(&w::qsdf);
-    wall::alloc_quants(&w::q);
-    wall::alloc_ticket(&w::t);
+    if (walls) {
+        sdf::alloc_quants(&w::qsdf);
+        wall::alloc_quants(&w::q);
+        wall::alloc_ticket(&w::t);
+    }
 
     flu::alloc_quants(&o::q);
     flu::alloc_ticketZ(&o::tz);

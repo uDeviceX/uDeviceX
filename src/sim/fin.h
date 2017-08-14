@@ -3,13 +3,15 @@ void fin() {
     bbhalo::fin();
     cnt::fin();
     dump::fin(&dumpt);
-    x::fin(); /* rex:: */
+    if (rbcs || solids) x::fin(); /* rex:: */
     if (fsiforces)  fsi::fin();
     if (solids) mrescue::fin();
 
-    sdf::free_quants(&w::qsdf);
-    wall::free_quants(&w::q);
-    wall::free_ticket(&w::t);
+    if (walls) {
+        sdf::free_quants(&w::qsdf);
+        wall::free_quants(&w::q);
+        wall::free_ticket(&w::t);
+    }
 
     flu::free_quants(&o::q);
     flu::free_ticketZ(&o::tz);
