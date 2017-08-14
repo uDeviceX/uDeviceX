@@ -40,8 +40,8 @@
 #define tend                10
 
 /* DEBUG */
-#define KL_TRACE_PEEK
-#define CC_TRACE_PEEK
+#define KL_PEEK
+#define CC_PEEK
 #define TE_TRACE
 #define FORCE0
 
@@ -50,7 +50,7 @@
 #define driving_force       0.18
 
 /* DUMPS */
-#define part_freq           10000
+#define part_freq           100
 #define field_dumps         false
 #define field_freq          10000
 #define strt_dumps          false
