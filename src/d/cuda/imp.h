@@ -18,5 +18,5 @@ cudaError_t HostAlloc(void **pHost, size_t size, unsigned int flags) {
 }
 
 cudaError_t HostGetDevicePointer (void **pDevice, void *pHost, unsigned int flags) {
-    return cudaHostGetDevicePointer (**pDevice, *pHost, flags);
+    return cudaHostGetDevicePointer (pDevice, pHost, flags);
 }
