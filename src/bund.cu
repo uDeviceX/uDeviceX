@@ -212,7 +212,15 @@ namespace dev {
 #undef HST
 #undef DEV
 #include "sim/update.h"
-#include "sim/odstr1.h"
+
+#if   defined(ODSTR1)
+  #include "sim/odstr1.h"
+#elif defined(ODSTR0)
+  #include "sim/odstr0.h"
+#else
+  #error ODSTR[01] is undefined
+#endif
+
 #include "sim/step.h"
 #include "sim/run.h"
 #include "sim/imp.h"

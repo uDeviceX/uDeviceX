@@ -176,3 +176,8 @@
 #if !defined(DEV_CUDA) && !defined(DEV_HST)
   #define DEV_CUDA
 #endif
+
+/* odstr:: on/off */
+#if !defined(ODSTR0) && !defined(ODSTR1)
+  #define ODSTR1
+#endif
