@@ -4,7 +4,7 @@ struct RemoteHalo {
     DeviceBuffer<Particle> dstate;
     PinnedHostBuffer<Particle> hstate;
     PinnedHostBuffer<Force> ff;
-    std::vector<Particle> pmessage;
+    std::vector<Particle> pp;
 };
 
 namespace re {
