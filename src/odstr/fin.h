@@ -9,7 +9,7 @@ void fin_S(Send *s) {
     dealloc(&s->pp);
     
     CC(cudaFree(s->size_dev)); CC(cudaFree(s->strt));
-    delete s->size_pin;
+    dual::dealloc(s->size_pin);
 }
 
 void fin_R(Recv *r) {

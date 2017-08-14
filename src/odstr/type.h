@@ -17,7 +17,7 @@ struct Send {
     
     int *size_dev, *strt;
     int size[27];
-    PinnedHostBuffer4<int>* size_pin;
+    dual::I size_pin;
 };
 
 struct Recv {

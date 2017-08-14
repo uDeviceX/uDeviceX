@@ -27,7 +27,7 @@ void ini_comm(const MPI_Comm cart, /**/ int rank[], int tags[]) {
 }
 
 void ini_S(/**/ Send *s) {
-    s->size_pin = new PinnedHostBuffer4<int>(27);
+    dual::alloc(s->size_pin, 27);
     for (int i = 0; i < 27; ++i)
         Dalloc(&s->iidx_[i], estimate(i));
 

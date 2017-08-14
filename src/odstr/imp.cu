@@ -9,6 +9,9 @@
 #include "d.h"
 #include "cc.h"
 
+#include "dual/type.h"
+#include "dual/int.h"
+
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "inc/mpi.h"
@@ -61,7 +64,7 @@ void halo(const Particle *pp, int n, Send *s) {
 }
 
 void scan(int n, Send *s) {
-    KL(dev::scan, (1, 32), (n, s->size_dev, /**/ s->strt, s->size_pin->DP));
+    KL(dev::scan, (1, 32), (n, s->size_dev, /**/ s->strt, s->size_pin.DP));
     dSync();
 }
 
@@ -74,7 +77,7 @@ void pack_ii(const int *ii, int n, const Send *s, Pbufs<int>* sii) {
 }
 
 int send_sz(MPI_Comm cart, const int rank[], const int btc, /**/ Send *s, MPI_Request *req) {
-    for(int i = 0; i < 27; ++i) s->size[i] = s->size_pin->D[i];
+    for(int i = 0; i < 27; ++i) s->size[i] = s->size_pin.D[i];
     for(int i = 1, cnt = 0; i < 27; ++i)
     l::m::Isend(s->size + i, 1, MPI_INTEGER, rank[i],
                 btc + i, cart, &req[cnt++]);
