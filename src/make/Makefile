@@ -21,7 +21,7 @@ ifeq ($(h5),0)
 NVCCFLAGS += -DNO_H5
 endif
 
-NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel)
+NVCCFLAGS += -DS_LEVEL=$(slevel)
 
 # http://devblogs.nvidia.com/parallelforall/separate-compilation-linking-cuda-device-code
 $B/udx: $O

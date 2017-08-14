@@ -22,7 +22,7 @@ inline __device__ void dpd00(int typed, int types,
     }
 
     float argwr = 1.f - rij;
-    float wr = wrf<-VISCOSITY_S_LEVEL>(argwr);
+    float wr = wrf<-S_LEVEL>(argwr);
 
     x *= invrij;
     y *= invrij;
