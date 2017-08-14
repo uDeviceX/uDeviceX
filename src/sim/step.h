@@ -1,7 +1,4 @@
-void step(float driving_force0, bool wall0, int it) {
-    assert(o::q.n <= MAX_PART_NUM);
-    assert(r::q.n <= MAX_PART_NUM);
-
+void odstr() {
     odstr::post_recv_pp(/**/ &o::td);
     if (global_ids)    odstr::post_recv_ii(&o::td, /**/ &o::ti);
     if (multi_solvent) odstr::post_recv_ii(&o::td, /**/ &o::tt);
@@ -27,7 +24,14 @@ void step(float driving_force0, bool wall0, int it) {
     odstr::gather_pp(&o::td, /**/ &o::q, &o::tu, &o::tz);
     if (global_ids)    odstr::gather_ii(o::q.n, &o::tu, &o::tui, /**/ &o::qi);
     if (multi_solvent) odstr::gather_ii(o::q.n, &o::tu, &o::tut, /**/ &o::qt);
-    
+}
+
+void step(float driving_force0, bool wall0, int it) {
+    assert(o::q.n <= MAX_PART_NUM);
+    assert(r::q.n <= MAX_PART_NUM);
+
+    odstr();
+
     if (solids0) distr_solid();
     if (rbcs)    distr_rbc();
     forces(wall0);
