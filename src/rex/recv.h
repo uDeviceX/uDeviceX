@@ -40,6 +40,8 @@ void recvP2(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
         expected = re::expected(remote[i]);
         remote[i]->pp.resize(max(1, count));
         re::resize(remote[i], count);
+        remote[i]->h.update(count);
+
         n = count - expected;
         if (n > 0) {
             tag = t.btp2 + tags[i];

@@ -12,7 +12,6 @@ void resize(RemoteHalo *r, int n) {
     r->dstate.resize(n);
     r->hstate.preserve_resize(n);
     r->ff.resize(n);
-    r->h.update(n);
 }
 
 int expected(RemoteHalo *r) {
