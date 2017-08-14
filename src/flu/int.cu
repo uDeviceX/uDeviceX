@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <conf.h>
 #include "inc/conf.h"
+#include "d.h"
 #include "common.h"
 #include "msg.h"
 #include "cc.h"
@@ -17,8 +18,8 @@ namespace flu {
 
 void alloc_quants(Quants *q) {
     q->n = 0;
-    Dalloc(&q->pp, MAX_PART_NUM);
-    Dalloc(&q->pp0, MAX_PART_NUM);
+    Dalloc0(&q->pp, MAX_PART_NUM);
+    Dalloc0(&q->pp0, MAX_PART_NUM);
     q->cells = new clist::Clist(XS, YS, ZS);
     q->pp_hst = new Particle[MAX_PART_NUM];
 }
