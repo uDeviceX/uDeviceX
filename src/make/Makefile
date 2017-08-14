@@ -24,7 +24,7 @@ endif
 NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel)
 
 # http://devblogs.nvidia.com/parallelforall/separate-compilation-linking-cuda-device-code
-$B/udx: $0
+$B/udx: $O
 	$(NVCC)  $(ARCH) -dlink $O $(NVCCLIBS) -o $B/gpuCode.o
 	$(LINK)  $B/gpuCode.o $O $(LIBS) -o $@
 
