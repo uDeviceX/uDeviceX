@@ -4,6 +4,7 @@
 #include "inc/conf.h"
 #include "msg.h"
 #include "cc.h"
+#include "d.h"
 #include "inc/dev.h"
 
 #include "dual/type.h"
@@ -11,7 +12,7 @@
 
 namespace dual {
 void alloc(I *p, int n) {
-    CC(cudaHostAlloc(&p->D, sizeof(int) * n, cudaHostAllocMapped));
+    Palloc0(&p->D, n);
     CC(cudaHostGetDevicePointer(&p->DP, p->D, 0));
 }
 
