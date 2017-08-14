@@ -6,6 +6,7 @@
 #include "msg.h"
 #include "d.h"
 #include "cc.h"
+#include "dual/type.h"
 
 #include "basetags.h"
 #include "l/m.h"
