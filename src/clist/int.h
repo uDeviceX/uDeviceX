@@ -10,7 +10,7 @@ void build(int n, int xcells, int ycells, int zcells,
    the cell lists involve a reordering of the particle array (!) */
 
 class Clist {
-    const int LX, LY, LZ;
+    int LX, LY, LZ;
     void buildn(Particle *const pp, const int n) {
         clist::build(n, LX, LY, LZ, -LX/2, -LY/2, -LZ/2, /**/ pp, start, count);
     }
@@ -23,15 +23,15 @@ class Clist {
 public:
     int ncells;
     int *start, *count;
-    Clist(const int LX, int LY, int LZ)
-        : LX(LX), LY(LY), LZ(LZ)
+    Clist(int X, int Y, int Z)
     {
+        LX = X; LY = Y; LZ = Z;
         ncells = LX * LY * LZ + 1;
         Dalloc0(&start, ncells);
         Dalloc0(&count, ncells);
     }
 
-    void build(Particle *const pp, const int n) {
+    void build(Particle *const pp, int n) {
         if (n) buildn(pp, n); else build0();
     }
 
