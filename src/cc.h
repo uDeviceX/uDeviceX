@@ -4,6 +4,8 @@
   #include "cc/sync.h"
 #elif defined(CC_RELEASE)
   #include "cc/release.h"
+#elif defined(CC_TRACE)
+  #include "cc/trace.h"
 #else
   #error CC_* is undefined
 #endif
