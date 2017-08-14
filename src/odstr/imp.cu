@@ -60,7 +60,7 @@ void halo(const Particle *pp, int n, Send *s) {
 }
 
 void scan(int n, Send *s) {
-    KL(dev::scan, (1, 32),(n, s->size_dev, /**/ s->strt, s->size_pin->DP));
+    KL(dev::scan, (1, 32), (n, s->size_dev, /**/ s->strt, s->size_pin->DP));
     dSync();
 }
 
