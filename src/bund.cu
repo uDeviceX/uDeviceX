@@ -24,6 +24,8 @@
 #include "inc/mpi.h"
 #include "inc/dev.h"
 
+#include "dual/type.h"
+#include "dual/int.h"
 #include "texo.h"
 #include "te.h"
 
