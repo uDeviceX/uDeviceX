@@ -21,11 +21,12 @@ class Clist {
     }
 
 public:
-    const int ncells;
+    int ncells;
     int *start, *count;
-    Clist(const int LX, const int LY, const int LZ)
-        : ncells(LX*LY*LZ + 1), LX(LX), LY(LY), LZ(LZ)
+    Clist(const int LX, int LY, int LZ)
+        : LX(LX), LY(LY), LZ(LZ)
     {
+        ncells = LX * LY * LZ + 1;
         Dalloc0(&start, ncells);
         Dalloc0(&count, ncells);
     }
