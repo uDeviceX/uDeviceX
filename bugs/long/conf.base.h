@@ -49,7 +49,7 @@
 #define driving_force       0.18
 
 /* DUMPS */
-#define field_dumps         true
+#define field_dumps         false
 #define field_freq          10000
-#define strt_dumps          true
+#define strt_dumps          false
 #define strt_freq           10000
