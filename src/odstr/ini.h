@@ -34,8 +34,8 @@ void ini_S(/**/ Send *s) {
     CC(cudaMalloc(&s->pp.dp[0], sizeof(float) * 6 * estimate(0)));
     s->pp.hst[0] = NULL;
 
-    CC(cudaMalloc(&s->size_dev, 27*sizeof(s->size_dev[0])));
-    CC(cudaMalloc(&s->strt,     28*sizeof(s->strt[0])));
+    CC(cudaMalloc(&s->size_dev, 27*sizeof(*(s->size_dev))));
+    CC(cudaMalloc(&s->strt,     28*sizeof(*(s->strt))));
 
     CC(cudaMalloc(&s->iidx, SZ_PTR_ARR(s->iidx_)));
     CC(cudaMemcpy(s->iidx, s->iidx_, sizeof(s->iidx_), H2D));
