@@ -41,7 +41,7 @@
 
 /* DEBUG */
 #define KL_PEEK             true
-#define CC_TRACE            true
+#define CC_SYNC             true
 #define TE_TRACE
 #define FORCE0
 
