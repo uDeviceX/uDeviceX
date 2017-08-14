@@ -37,7 +37,7 @@
 #define fsiforces           true
 #define walls               false
 #define wall_creation       1000
-#define tend                1000
+#define tend                0.1
 
 /* DEBUG */
 #define KL_PEEK

@@ -28,14 +28,15 @@ void ini_comm(const MPI_Comm cart, /**/ int rank[], int tags[]) {
 
 void ini_S(/**/ Send *s) {
     s->size_pin = new PinnedHostBuffer4<int>(27);
-    for (int i = 0; i < 27; ++i) CC(cudaMalloc(&s->iidx_[i], sizeof(int) * estimate(i)));
+    for (int i = 0; i < 27; ++i)
+        Dalloc(&s->iidx_[i], estimate(i));
 
     for (int i = 1; i < 27; ++i) alloc_pinned(i, 3 * estimate(i), /**/ &s->pp);
-    CC(cudaMalloc(&s->pp.dp[0], sizeof(float) * 6 * estimate(0)));
+    Dalloc(&s->pp.dp[0], estimate(0));
     s->pp.hst[0] = NULL;
 
-    CC(cudaMalloc(&s->size_dev, 27*sizeof(*(s->size_dev))));
-    CC(cudaMalloc(&s->strt,     28*sizeof(*(s->strt))));
+    Dalloc(&s->size_dev, 27);
+    Dalloc(&s->strt,     28);
 
     CC(cudaMalloc(&s->iidx, SZ_PTR_ARR(s->iidx_)));
     CC(cudaMemcpy(s->iidx, s->iidx_, sizeof(s->iidx_), H2D));
@@ -48,7 +49,7 @@ void ini_R(const Send *s, /**/ Recv *r) {
     r->pp.dp[0] = s->pp.dp[0];
     r->pp.hst[0] = NULL;
 
-    CC(cudaMalloc(&r->strt, 28*sizeof(r->strt[0])));
+    Dalloc(&r->strt, 28);
 
     alloc_dev(/**/ &r->pp);
 
@@ -59,7 +60,7 @@ void ini_SRI(Pbufs<int> *sii, Pbufs<int> *rii) {
     for (int i = 1; i < 27; ++i) alloc_pinned(i, estimate(i), /**/ rii);
     for (int i = 1; i < 27; ++i) alloc_pinned(i, estimate(i), /**/ sii);
     
-    CC(cudaMalloc(&sii->dp[0], sizeof(int) * estimate(0)));
+    Dalloc(&sii->dp[0], estimate(0));
     sii->hst[0] = NULL;
     rii->dp[0]  = sii->dp[0];
     rii->hst[0] = NULL;
