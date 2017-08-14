@@ -201,7 +201,15 @@ namespace dev {
 #include "sim/tag.h"
 #include "sim/forces/dpd.h"
 #include "sim/forces.h"
-#include "sim/force1.h"
+
+#if   defined(FORCE1)
+  #include "sim/force1.h"
+#elif defined(FORCE0)
+  #include "sim/force0.h"
+#else
+  #error FORCE[01] is undefined
+#endif
+
 
 #define HST (true)
 #define DEV (false)

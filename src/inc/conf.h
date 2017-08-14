@@ -181,3 +181,8 @@
 #if !defined(ODSTR0) && !defined(ODSTR1)
   #define ODSTR1
 #endif
+
+/* forces in sim:: on/off */
+#if !defined(FORCE0) && !defined(FORCE1)
+  #define FORCE1
+#endif
