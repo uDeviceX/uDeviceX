@@ -1,6 +1,6 @@
 #!/bin/bash
 
-u.conf ../../../src conf.base.h <<!
+u.conf ../../../src         base.h <<!
 run
 !
 
