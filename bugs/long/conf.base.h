@@ -37,11 +37,11 @@
 #define fsiforces           true
 #define walls               false
 #define wall_creation       1000
-#define tend                0.1
+#define tend                0.01
 
 /* DEBUG */
 #define KL_PEEK             true
-#define CC_SYNC             true
+#define CC_TRACE            true
 #define TE_TRACE
 #define FORCE0
 
