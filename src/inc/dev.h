@@ -36,6 +36,8 @@
 /* generic pinned memory allocation */
 #define Palloc0(D, n) CC(d::HostAlloc((void**)(void*)(D), (n) * sizeof(**(D)), cudaHostAllocMapped))
 
+#define Dset(P, v, n) CC(P, v, (n)*sizeof(*(D))))
+
 template <typename T>
 void mpHostMalloc(T **D) {
   T *p;
