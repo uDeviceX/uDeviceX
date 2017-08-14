@@ -1,8 +1,6 @@
 #!/bin/bash
 
-u.conf ../../../src         base.h <<!
-run
-!
+u.conf ../../../src  base.h h/`u.host`
 
 (u.make clean && u.make -j) > /dev/null
 u.strtdir
