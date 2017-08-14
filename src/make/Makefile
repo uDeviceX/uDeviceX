@@ -24,9 +24,9 @@ endif
 NVCCFLAGS += -DVISCOSITY_S_LEVEL=$(slevel)
 
 # http://devblogs.nvidia.com/parallelforall/separate-compilation-linking-cuda-device-code
-$B/udx: $(OBJ)
-	$(NVCC)  $(ARCH) -dlink $(OBJ) $(NVCCLIBS) -o $B/gpuCode.o
-	$(LINK)  $B/gpuCode.o $(OBJ) $(LIBS) -o $@
+$B/udx: $0
+	$(NVCC)  $(ARCH) -dlink $O $(NVCCLIBS) -o $B/gpuCode.o
+	$(LINK)  $B/gpuCode.o $O $(LIBS) -o $@
 
 # compile commands
 C=$(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT)
@@ -49,6 +49,6 @@ $B/bund.o:  $S/bund.cu;      $C -dc $< -c -o $@
 $B/glb.o:   $S/glb.cu;       $C -dc $< -c -o $@
 
 
-clean:; -rm -f $B/udx $(OBJS) $B/gpuCode.o
+clean:; -rm -f $B/udx $O $B/gpuCode.o
 
 .PHONY = clean all
