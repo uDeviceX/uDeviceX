@@ -34,7 +34,7 @@ u.run 2 1 1 ./udx
 avg_h52.m h5/flowfields-0013.h5 | uscale 10 > h5.out.txt
 
 ####
-# snTEST: mpi.t3
+# nTEST: mpi.t3
 rm -rf diag.txt h5 bop ply rbc.off
 :
 export PATH=../tools:$PATH
