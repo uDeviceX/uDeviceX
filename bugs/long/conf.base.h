@@ -43,14 +43,14 @@
 #define KL_PEEK             true
 #define CC_SYNC             true
 #define TE_TRACE
-#define ODSTR0
+#define FORCE0
 
 /* FLOW TYPE */
 #define pushflow            false
 #define driving_force       0.18
 
 /* DUMPS */
-#define part_freq           1000
+#define part_freq           100000
 #define field_dumps         false
 #define field_freq          10000
 #define strt_dumps          false
