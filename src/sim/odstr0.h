@@ -1,1 +1,1 @@
-void odstr() { }
+void odstr() { clear_vel(); }

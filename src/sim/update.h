@@ -1,3 +1,9 @@
+void clear_vel() {
+    KL(dev::clear_vel, (k_cnf(o::q.n)), (o::q.pp, o::q.n));
+    if (solids) KL(dev::clear_vel, (k_cnf(s::q.n)), (s::q.pp, s::q.n));
+    if (rbcs  ) KL(dev::clear_vel, (k_cnf(r::q.n)), (r::q.pp, r::q.n));
+}
+
 void update_solid() {
     if (s::q.n) update_solid0();
 }

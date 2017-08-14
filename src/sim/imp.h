@@ -1,5 +1,4 @@
 /* see bund.cu for more sim:: functions */
-
 void create_walls() {
     int nold = o::q.n;
     wall::gen_quants(w::qsdf, /**/ &o::q.n, o::q.pp, &w::q);
@@ -22,12 +21,6 @@ void freeze() {
     if (walls && rbcs  )  remove_rbcs();
     if (walls && solids)  remove_solids();
     if (solids)           rig::set_ids(s::q);
-}
-
-void clear_vel() {
-    KL(dev::clear_vel, (k_cnf(o::q.n)), (o::q.pp, o::q.n));
-    if (solids) KL(dev::clear_vel, (k_cnf(s::q.n)), (s::q.pp, s::q.n));
-    if (rbcs  ) KL(dev::clear_vel, (k_cnf(r::q.n)), (r::q.pp, r::q.n));
 }
 
 void gen() { /* generate */
