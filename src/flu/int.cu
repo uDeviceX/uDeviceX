@@ -42,8 +42,8 @@ void free_quantsI(QuantsI *q) {
 }
 
 void alloc_ticketZ(/**/ TicketZ *t) {
-    Dalloc(&t->zip0, MAX_PART_NUM);
-    Dalloc(&t->zip1, MAX_PART_NUM);
+    Dalloc0(&t->zip0, MAX_PART_NUM);
+    Dalloc0(&t->zip1, MAX_PART_NUM);
 }
 
 void free_ticketZ(/**/ TicketZ *t) {
