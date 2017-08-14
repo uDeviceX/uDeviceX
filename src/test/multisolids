@@ -1,5 +1,5 @@
 #### spheres in double poiseuille, no contact
-nTEST: multisolid.t1
+# nTEST: multisolid.t1
 export PATH=../tools:$PATH
 (cd ../cmd; make ) > /dev/null
 rm -rf bop h5 diag.txt solid_diag*.txt rbc.off
