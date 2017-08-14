@@ -37,19 +37,20 @@
 #define fsiforces           true
 #define walls               false
 #define wall_creation       1000
-#define tend                0.01
+#define tend                1000
 
 /* DEBUG */
-#define KL_PEEK             true
-#define CC_SYNC             true
+#define KL_PEEK
+#define CC_SYNC
 #define TE_TRACE
+#define FORCE0
 
 /* FLOW TYPE */
 #define pushflow            false
 #define driving_force       0.18
 
 /* DUMPS */
-#define part_freq           100
+#define part_freq           10000
 #define field_dumps         false
 #define field_freq          10000
 #define strt_dumps          false
