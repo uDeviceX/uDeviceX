@@ -1,4 +1,4 @@
-#define miss(n) MSG(n "is missing")
+#define miss(n) MSG(n ": missing")
 
 void ini() { }
 
