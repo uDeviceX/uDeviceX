@@ -25,3 +25,7 @@ cudaError_t Memcpy (void *dst, const void *src, size_t count, enum cudaMemcpyKin
     return cudaMemcpy(dst, src, count, kind);
 }
 
+cudaError_t MemsetAsync (void *devPtr, int value, size_t count, cudaStream_t stream) {
+    return cudaMemsetAsync(devPtr, value, count, stream);
+}
+
