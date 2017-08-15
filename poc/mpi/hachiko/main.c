@@ -10,11 +10,8 @@
 #define COMM MPI_COMM_WORLD
 #define TYPE MPI_INT
 
-#define SZ(a) sizeof(a)/sizeof(a[0])
-
 int buf[123];
 int rank;
-MPI_Status status;
 int count;
 
 MPI_Request req;
