@@ -73,7 +73,7 @@ void gen_quants(TexSDF_t texsdf, /**/ int *o_n, Particle *o_pp, int *w_n, float4
     Particle *frozen;
     Dalloc(&frozen, *o_n);
     freeze(texsdf, o_pp, o_n, frozen, w_n);
-    Dalloc(w_pp, *w_n);
+    Dalloc(&w_pp, *w_n);
     KL(dev::particle2float4, (k_cnf(*w_n)), (frozen, *w_n, /**/ *w_pp));
     Dfree(frozen);
     dSync();
