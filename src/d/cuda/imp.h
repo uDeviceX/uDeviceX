@@ -20,3 +20,8 @@ cudaError_t HostAlloc(void **pHost, size_t size, unsigned int flags) {
 cudaError_t HostGetDevicePointer (void **pDevice, void *pHost, unsigned int flags) {
     return cudaHostGetDevicePointer (pDevice, pHost, flags);
 }
+
+cudaError_t Memcpy (void *dst, const void *src, size_t count, enum cudaMemcpyKind kind) {
+    return cudaMemcpy(dst, src, count, kind);
+}
+
