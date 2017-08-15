@@ -2,10 +2,10 @@ namespace dpdr {
 namespace sub {
 
 static void alloc_Bbuf_frag(const int i, const int est, const int nfragcells, /**/ Bbufs *b) {
-    CC(cudaMalloc(&b->cum.d[i], (nfragcells + 1) * sizeof(int)));
-    CC(cudaMalloc(&b->pp.d[i], est * sizeof(Particle)));
+    Dalloc0(&b->cum.d[i], nfragcells + 1);
+    Dalloc0(&b->pp.d[i], est);
 
-    CC(cudaHostAlloc(&b->cumhst.d[i], (nfragcells + 1) * sizeof(int), cudaHostAllocMapped));
+    Palloc0(&b->cumhst.d[i], (nfragcells + 1));
     CC(cudaHostGetDevicePointer(&b->cumdev.d[i], b->cumhst.d[i], 0));
 
     CC(cudaHostAlloc(&b->pphst.d[i], est * sizeof(Particle), cudaHostAllocMapped));
