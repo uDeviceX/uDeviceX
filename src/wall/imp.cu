@@ -51,7 +51,7 @@ static void freeze0(TexSDF_t texsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle
 
 static void freeze(TexSDF_t texsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n) {
     Particle *hst;
-    hst = (Particle*)malloc((*n)*sizeof(Particle));
+    hst = (Particle*)malloc(MAX_PART_NUM*sizeof(Particle));
     freeze0(texsdf, /*io*/ pp, n, /*o*/ dev, w_n, /*w*/ hst);
     free(hst);
 }
@@ -71,11 +71,13 @@ void build_cells(const int n, float4 *pp4, clist::Clist *cells) {
 
 void gen_quants(TexSDF_t texsdf, /**/ int *o_n, Particle *o_pp, int *w_n, float4 **w_pp) {
     Particle *frozen;
-    Dalloc(&frozen, *o_n);
+    CC(cudaMalloc(&frozen, sizeof(Particle) * MAX_PART_NUM));
     freeze(texsdf, o_pp, o_n, frozen, w_n);
-    Dalloc(&w_pp, *w_n);
+    MSG("consolidating wall");
+    CC(cudaMalloc(w_pp, *w_n * sizeof(float4)));
     KL(dev::particle2float4, (k_cnf(*w_n)), (frozen, *w_n, /**/ *w_pp));
-    Dfree(frozen);
+    
+    CC(cudaFree(frozen));
     dSync();
 }
 
