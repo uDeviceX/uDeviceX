@@ -13,8 +13,8 @@ void alloc_pinned(const int i, const int sz, /**/ Pbufs<T, N> *b) {
 
 template <typename T, int N>
 void alloc_dev(/**/ Pbufs<T, N> *b) {
-    CC(cudaMalloc(&b->dev, SZ_PTR_ARR(b->dp)));
-    CC(cudaMemcpy(b->dev, b->dp, sizeof(b->dp), H2D));
+    Dalloc000(&b->dev, SZ_PTR_ARR(b->dp));
+    CC(d::Memcpy(b->dev, b->dp, sizeof(b->dp), H2D));
 }
 
 template <typename T, int N>
