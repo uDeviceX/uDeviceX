@@ -51,7 +51,7 @@ static void freeze0(TexSDF_t texsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle
 
 static void freeze(TexSDF_t texsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n) {
     Particle *hst;
-    hst = (Particle*)malloc(MAX_PART_NUM*sizeof(Particle));
+    hst = (Particle*)malloc((*n)*sizeof(Particle));
     freeze0(texsdf, /*io*/ pp, n, /*o*/ dev, w_n, /*w*/ hst);
     free(hst);
 }
