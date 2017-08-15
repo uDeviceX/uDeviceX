@@ -158,7 +158,7 @@
 /* [k]ernel [l]aunch macros */
 #if !defined(KL_RELEASE) && !defined(KL_TRACE)  && \
     !defined(KL_PEEK)    && !defined(KL_UNSAFE) && \
-    !defined(KL_TRACE_PEEK)
+    !defined(KL_TRACE_PEEK) && !defined(KL_NONE)
   #define KL_RELEASE
 #endif
 

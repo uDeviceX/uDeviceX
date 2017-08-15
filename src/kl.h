@@ -10,6 +10,8 @@
   #include "kl/trace.peek.h"
 #elif  defined(KL_UNSAFE)
   #include "kl/unsafe.h"
+#elif  defined(KL_NONE)
+  #include "kl/none.h"
 #else
   #error KL_* is undefined
 #endif
