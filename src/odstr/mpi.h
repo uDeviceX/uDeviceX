@@ -8,8 +8,19 @@ void waitall(MPI_Request *reqs) {
 
 void post_recv(const MPI_Comm cart, const int rank[], const int btc, const int btp,
                MPI_Request *size_req, MPI_Request *mesg_req, Recv *r) {
-    for(int i = 1, c = 0; i < 27; ++i)
-        l::m::Irecv(r->size + i, 1, MPI_INTEGER, rank[i], btc + r->tags[i], cart, size_req + c++);
+    void *buf;
+    int count, source, tag;
+    MPI_Request *request;
+    int i, c;
+
+    for(i = 1, c = 0; i < 27; ++i, ++c) {
+        buf = r->size + i;
+        count = 1;
+        source = rank[i];
+        tag = btc + r->tags[i];
+        request = &size_req[c];
+        l::m::Irecv(buf, count, MPI_INTEGER, source, tag, cart, request);
+    }
 
     for(int i = 1, c = 0; i < 27; ++i)
         l::m::Irecv(r->pp.hst[i], MAX_PART_NUM, MPI_FLOAT, rank[i], btp + r->tags[i], cart, mesg_req + c++);
