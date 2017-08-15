@@ -17,14 +17,24 @@ void post_recv(const MPI_Comm cart, const int rank[], const int btc, const int b
 
 int send_sz(MPI_Comm cart, const int rank[], const int btc, /**/ Send *s, MPI_Request *req) {
     for(int i = 0; i < 27; ++i) s->size[i] = s->size_pin.D[i];
-    for(int i = 1, cnt = 0; i < 27; ++i)
-        l::m::Isend(s->size + i, 1, MPI_INTEGER, rank[i], btc + i, cart, &req[cnt++]);
+    for(int i = 1, c = 0; i < 27; ++i)
+        l::m::Isend(s->size + i, 1, MPI_INTEGER, rank[i], btc + i, cart, &req[c++]);
     return s->size[0]; /* `n' bulk */
 }
 
 void send_pp(MPI_Comm cart, const int rank[], const int btp, /**/ Send *s, MPI_Request *req) {
-    for(int i = 1, cnt = 0; i < 27; ++i)
-        l::m::Isend(s->pp.hst[i], s->size[i] * 6, MPI_FLOAT, rank[i], btp + i, cart, &req[cnt++]);
+    const void *buf;
+    int count, dest, tag;
+    MPI_Request *request;
+    int i, c;
+    for(i = 1, c = 0; i < 27; ++i, c++) {
+        buf = s->pp.hst[i];
+        count = s->size[i] * 6;
+        dest = rank[i];
+        tag = btp + i;
+        request = &req[c];
+        l::m::Isend(buf, count, MPI_FLOAT, dest, tag, cart, request);
+    }
 }
 
 /* TODO: this is not used, why? */
