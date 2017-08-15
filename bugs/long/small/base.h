@@ -44,7 +44,8 @@
 #define CC_PEEK
 #define TE_TRACE
 #define FORCE0
-#define ODSTR_TRAP
+//#define ODSTR_TRAP
+#define ODSTR_CLEAN
 
 /* FLOW TYPE */
 #define pushflow            false

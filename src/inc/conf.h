@@ -178,7 +178,7 @@
 #endif
 
 /* odstr:: on/off */
-#if !defined(ODSTR0) && !defined(ODSTR1) && !defined(ODSTR_TRAP)
+#if !defined(ODSTR0) && !defined(ODSTR1) && !defined(ODSTR_TRAP) && !defined(ODSTR_CLEAN)
   #define ODSTR1
 #endif
 

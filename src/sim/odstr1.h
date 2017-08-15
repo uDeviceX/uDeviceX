@@ -10,6 +10,12 @@ static void pack() {
     if (multi_solvent) pack_ii(o::q.n, &o::qt, &o::td, /**/ &o::tt);
 }
 
+static void unpack() {
+    unpack_pp(&o::td, /**/ &o::q, &o::tu, /*w*/ &o::w);
+    if (global_ids)    unpack_ii(&o::td, &o::ti, /**/ &o::tui);
+    if (multi_solvent) unpack_ii(&o::td, &o::tt, /**/ &o::tut);
+}
+
 void odstr() {
     using namespace odstr;
 
@@ -31,10 +37,8 @@ void odstr() {
     recv_pp(/**/ &o::td);
     if (global_ids)    recv_ii(/**/ &o::ti);
     if (multi_solvent) recv_ii(/**/ &o::tt);
-    
-    unpack_pp(&o::td, /**/ &o::q, &o::tu, /*w*/ &o::w);
-    if (global_ids)    unpack_ii(&o::td, &o::ti, /**/ &o::tui);
-    if (multi_solvent) unpack_ii(&o::td, &o::tt, /**/ &o::tut);
-    
+
+    unpack();
+   
     gather();
 }
