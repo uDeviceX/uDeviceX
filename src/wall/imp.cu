@@ -71,13 +71,14 @@ void build_cells(const int n, float4 *pp4, clist::Clist *cells) {
 
 void gen_quants(TexSDF_t texsdf, /**/ int *o_n, Particle *o_pp, int *w_n, float4 **w_pp) {
     Particle *frozen;
-    CC(cudaMalloc(&frozen, sizeof(Particle) * MAX_PART_NUM));
+    int n;
+    n = *o_n;
+    Dalloc(&frozen, n);
     freeze(texsdf, o_pp, o_n, frozen, w_n);
     MSG("consolidating wall");
     CC(cudaMalloc(w_pp, *w_n * sizeof(float4)));
     KL(dev::particle2float4, (k_cnf(*w_n)), (frozen, *w_n, /**/ *w_pp));
-    
-    CC(cudaFree(frozen));
+    Dfree(frozen);
     dSync();
 }
 
