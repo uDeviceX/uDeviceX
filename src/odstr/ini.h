@@ -52,7 +52,7 @@ void ini_R(const Send *s, /**/ Recv *r) {
     r->pp.dp[0] = s->pp.dp[0];
     r->pp.hst[0] = NULL;
 
-    Dalloc(&r->strt, 28);
+    Dalloc0(&r->strt, 28);
 
     alloc_dev(/**/ &r->pp);
 
