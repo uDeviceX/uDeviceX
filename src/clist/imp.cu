@@ -33,7 +33,6 @@ void build(int n, int xcells, int ycells, int zcells,
     int ncells = xcells * ycells * zcells;
     if (!ncells) return;
     int3 cells = make_int3(xcells, ycells, zcells);
-    int3 domainstart = make_int3(xstart, ystart, zstart);
 
     int *ids;
     Particle *ppd;
