@@ -7,6 +7,7 @@
 #include "msg.h"
 #include "m.h"
 #include "cc.h"
+#include "d.h"
 
 #include "rnd/imp.h"
 #include "l/m.h"
