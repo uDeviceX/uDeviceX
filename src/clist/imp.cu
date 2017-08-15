@@ -33,29 +33,22 @@ void build(int n, int xcells, int ycells, int zcells,
 
     const int ncells = xcells * ycells * zcells;
     if (!ncells) return;
-
     const int3 cells = make_int3(xcells, ycells, zcells);
     const int3 domainstart = make_int3(xstart, ystart, zstart);
-    
+
     int *ids;
     Particle *ppd;
     Dalloc0(&ids, n);
     Dalloc0(&ppd, n);
 
     CC(d::MemsetAsync(counts, 0, ncells * sizeof(int)));
-
     KL(dev::get_counts, (k_cnf(n)), (pp, n, cells, domainstart, /**/ counts));
-
     scan(counts, ncells, /**/ starts);
-    
     CC(cudaMemsetAsync(counts, 0, ncells * sizeof(int)));
-
     KL(dev::get_ids, (k_cnf(n)), (pp, starts, n, cells, domainstart, /**/ counts, ids));
-
     KL(dev::gather, (k_cnf(n)), (pp, ids, n, /**/ ppd));
 
     CC(cudaMemcpyAsync(pp, ppd, n * sizeof(Particle), D2D));
-    
     CC(cudaFree(ids));
     CC(cudaFree(ppd));
 }
