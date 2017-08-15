@@ -21,7 +21,7 @@
 #define cA2A(t, f, n) CC(cudaMemcpy((t), (f), (n) * sizeof((f)[0]), A2A))
 #define cD2H(h, d, n) CC(cudaMemcpy((h), (d), (n) * sizeof((h)[0]), D2H))
 #define cH2D(d, h, n) CC(cudaMemcpy((d), (h), (n) * sizeof((h)[0]), H2D))
-#define cH2D0(d, h, n) CC(d::Memcpy((d), (h), (n) * sizeof((h)[0]), H2D))
+#define cH2D0(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
 /* device allocation */
 #define Dalloc(d, n) CC(cudaMalloc((d), (n) * sizeof((**(d)))))

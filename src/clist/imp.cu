@@ -39,8 +39,8 @@ void build(int n, int xcells, int ycells, int zcells,
     
     int *ids;
     Particle *ppd;
-    CC(cudaMalloc(&ids, n*sizeof(ids[0])));
-    CC(cudaMalloc(&ppd, n*sizeof(ppd[0])));
+    Dalloc0(&ids, n);
+    Dalloc0(&ppd, n);
 
     CC(cudaMemsetAsync(counts, 0, ncells * sizeof(int)));
 
