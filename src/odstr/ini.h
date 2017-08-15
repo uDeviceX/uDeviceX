@@ -29,14 +29,14 @@ void ini_comm(const MPI_Comm cart, /**/ int rank[], int tags[]) {
 void ini_S(/**/ Send *s) {
     dual::alloc(&s->size_pin, 27);
     for (int i = 0; i < 27; ++i)
-        Dalloc(&s->iidx_[i], estimate(i));
+        Dalloc0(&s->iidx_[i], estimate(i));
 
     for (int i = 1; i < 27; ++i) alloc_pinned(i, 3 * estimate(i), /**/ &s->pp);
-    Dalloc(&s->pp.dp[0], estimate(0));
+    Dalloc0(&s->pp.dp[0], estimate(0));
     s->pp.hst[0] = NULL;
 
-    Dalloc(&s->size_dev, 27);
-    Dalloc(&s->strt,     28);
+    Dalloc0(&s->size_dev, 27);
+    Dalloc0(&s->strt,     28);
 
     CC(cudaMalloc(&s->iidx, SZ_PTR_ARR(s->iidx_)));
     CC(cudaMemcpy(s->iidx, s->iidx_, sizeof(s->iidx_), H2D));
