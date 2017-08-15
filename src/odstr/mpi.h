@@ -1,6 +1,20 @@
 namespace odstr {
 namespace sub {
 
+int lsend(const void *buf, int count, MPI_Datatype datatype, int dest,
+           int tag, MPI_Comm comm, MPI_Request *request) {
+    return MPI_Isend(buf, count, datatype, dest, tag, comm, request);
+    //return MPI_Send(buf, count, datatype, dest, tag, comm);
+}
+
+int lrecv(void *buf, int count, MPI_Datatype datatype, int source,
+          int tag, MPI_Comm comm, MPI_Request *request) {
+    return MPI_Irecv(buf, count, datatype, source, tag, comm, request);
+    MPI_Status status;
+    //return MPI_Recv(buf, count, datatype, source, tag, comm, &status);
+}
+
+
 void waitall(MPI_Request *reqs) {
     MPI_Status statuses[123];
     l::m::Waitall(26, reqs, statuses) ;
@@ -19,7 +33,7 @@ void post_recv(const MPI_Comm cart, const int rank[], const int btc, const int b
         source = rank[i];
         tag = btc + r->tags[i];
         request = &size_req[c];
-        l::m::Irecv(buf, count, MPI_INTEGER, source, tag, cart, request);
+        lrecv(buf, count, MPI_INTEGER, source, tag, cart, request);
     }
 
     for(i = 1, c = 0; i < 27; ++i, ++c) {
@@ -28,7 +42,7 @@ void post_recv(const MPI_Comm cart, const int rank[], const int btc, const int b
         source = rank[i];
         tag = btp + r->tags[i];
         request = &mesg_req[c];
-        l::m::Irecv(buf, count, MPI_FLOAT, source, tag, cart, request);
+        lrecv(buf, count, MPI_FLOAT, source, tag, cart, request);
     }
 }
 
@@ -44,7 +58,7 @@ void send_sz(MPI_Comm cart, const int rank[], const int bt, /**/ Send *s, MPI_Re
         dest = rank[i];
         tag = bt + i;
         request = &req[c];
-        l::m::Isend(buf, count, MPI_INTEGER, dest, tag, cart, request);
+        lsend(buf, count, MPI_INTEGER, dest, tag, cart, request);
     }
 }
 
@@ -59,7 +73,8 @@ void send_pp(MPI_Comm cart, const int rank[], const int bt, /**/ Send *s, MPI_Re
         dest = rank[i];
         tag = bt + i;
         request = &req[c];
-        l::m::Isend(buf, count, MPI_FLOAT, dest, tag, cart, request);
+        lsend(buf, count, MPI_FLOAT, dest, tag, cart, request);
+//             Send(const void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm)
     }
 }
 
