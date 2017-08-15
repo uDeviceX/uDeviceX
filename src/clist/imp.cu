@@ -31,10 +31,10 @@ void build(int n, int xcells, int ycells, int zcells,
            /**/ Particle *pp, int *starts, int *counts) {
     if (!n) return;
 
-    const int ncells = xcells * ycells * zcells;
+    int ncells = xcells * ycells * zcells;
     if (!ncells) return;
-    const int3 cells = make_int3(xcells, ycells, zcells);
-    const int3 domainstart = make_int3(xstart, ystart, zstart);
+    int3 cells = make_int3(xcells, ycells, zcells);
+    int3 domainstart = make_int3(xstart, ystart, zstart);
 
     int *ids;
     Particle *ppd;
