@@ -29,6 +29,8 @@
 #include "odstr/int.h"
 #include "odstr/imp.h"
 
+#include "odstr/com.h"
+
 namespace odstr {
 
 void alloc_ticketD(/*io*/ basetags::TagGen *tg, /**/ TicketD *t) {
@@ -86,9 +88,6 @@ void free_work(Work *w) {
     scan::free_work(/**/ &w->s);
 }
 
-void post_recv_pp(TicketD *t) {
-    sub::post_recv(t->cart, t->rank, t->btc, t->btp, /**/ t->recv_sz_req, t->recv_pp_req, &t->r);
-}
 void post_recv_ii(const TicketD *td, TicketI *ti) {
     sub::post_recv_ii(td->cart, td->rank, td->r.tags, ti->bt, /**/ ti->recv_ii_req, &ti->rii);
 }
@@ -107,16 +106,6 @@ void pack_ii(const int n, const flu::QuantsI *q, const TicketD *td, TicketI *ti)
     dSync();
 }
 
-void send_pp(TicketD *t) {
-    if (!t->first) {
-        sub::waitall(t->send_sz_req);
-        sub::waitall(t->send_pp_req);
-        t->first = false;
-    }
-    t->nbulk = sub::send_sz(t->cart, t->rank, t->btc, /**/ &t->s, t->send_sz_req);
-    sub::send_pp(t->cart, t->rank, t->btp, /**/ &t->s, t->send_pp_req);
-}
-
 void send_ii(const TicketD *td, TicketI *ti) {
     if (!ti->first) sub::waitall(ti->send_ii_req);
     ti->first = false;
@@ -127,12 +116,6 @@ void bulk(flu::Quants *q, TicketD *t) {
     int n = q->n, *count = q->cells->count;
     DzeroA(count, XS*YS*ZS);
     KL(k_common::subindex_local<false>, (k_cnf(n)),(n, (float2*)q->pp, /*io*/ count, /*o*/ t->subi_lo));
-}
-
-void recv_pp(TicketD *t) {
-    sub::waitall(t->recv_sz_req);
-    sub::recv_count(/**/ &t->r, &t->nhalo);
-    sub::waitall(t->recv_pp_req);
 }
 
 void recv_ii(TicketI *t) {
