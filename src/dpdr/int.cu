@@ -6,6 +6,7 @@
 #include "common.h"
 #include "msg.h"
 #include "cc.h"
+#include "d.h"
 
 #include "rnd/imp.h"
 
@@ -44,8 +45,8 @@ void free_ticketrnd(/**/ TicketRnd *tr) {
 void alloc_ticketSh(/**/ TicketShalo *t) {
     sub::ini_ticketSh(/**/ &t->b, &t->estimate, &t->nc);
 
-    CC(cudaHostAlloc(&t->nphst, sizeof(int) * 26, cudaHostAllocMapped));
-    CC(cudaHostGetDevicePointer(&t->npdev, t->nphst, 0));
+    Palloc0(&t->nphst, 26);
+    Link(&t->npdev, t->nphst);
 
     int s = t->fragstarts.d[0] = 0;
     for (int i = 0; i < 26; ++i) t->fragstarts.d[i + 1] = (s += t->nc.d[i]);
