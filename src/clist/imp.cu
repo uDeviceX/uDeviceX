@@ -42,7 +42,7 @@ void build(int n, int xcells, int ycells, int zcells,
     Dalloc0(&ids, n);
     Dalloc0(&ppd, n);
 
-    CC(cudaMemsetAsync(counts, 0, ncells * sizeof(int)));
+    CC(d::MemsetAsync(counts, 0, ncells * sizeof(int)));
 
     KL(dev::get_counts, (k_cnf(n)), (pp, n, cells, domainstart, /**/ counts));
 
