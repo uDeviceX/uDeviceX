@@ -4,8 +4,8 @@ namespace sub {
 template <typename T, int N>
 void alloc_pinned(const int i, const int sz, /**/ Pbufs<T, N> *b) {
     if (sz){
-        CC(cudaHostAlloc(&b->hst[i], sizeof(T) * sz, cudaHostAllocMapped));
-        CC(cudaHostGetDevicePointer(&b->dp[i], b->hst[i], 0));
+        Palloc0(&b->hst[i], sz);
+        Link(&b->dp[i], b->hst[i]);
     } else {
         b->hst[i] = NULL;
     }
