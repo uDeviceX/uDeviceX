@@ -36,7 +36,7 @@ namespace odstr {
 namespace sub {
 
 void waitall(MPI_Request *reqs) {
-    MPI_Status statuses[26];
+    MPI_Status statuses[123];
     l::m::Waitall(26, reqs, statuses) ;
 }
 
