@@ -25,7 +25,6 @@ namespace sub {
 static int gen0(Particle *pp) { /* generate particle positions and velocities */
     enum {X, Y, Z};
     assert(XS * YS * ZS * numberdensity < MAX_PART_NUM);
-  
     srand48(123456);
     int iz, iy, ix, l, nd = numberdensity;
     int n = 0; /* particle index */
@@ -39,14 +38,11 @@ static int gen0(Particle *pp) { /* generate particle positions and velocities */
             Particle p = Particle();
             x = xlo + dr * drand48(), y = ylo + dr * drand48(), z = zlo + dr * drand48();
             p.r[X] = x; p.r[Y] = y; p.r[Z] = z;
-
             p.v[X] = 0; p.v[Y] = 0; p.v[Z] = 0;
-          
             pp[n++] = p;
         }
     }
-
-    MSG("ic::gen: created %06d solvent particles", n);
+    MSG("ic::gen: %d solvent particles", n);
     return n;
 }
 
