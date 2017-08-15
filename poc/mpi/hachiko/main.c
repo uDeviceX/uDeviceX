@@ -10,6 +10,8 @@
 #define COMM MPI_COMM_WORLD
 #define TYPE MPI_INT
 
+#define NMSG 1000
+
 int buf[123];
 int rank;
 int count;
@@ -23,7 +25,7 @@ void recv0() {
 
 void recv() {
     long i;
-    for (i = 0; i < 1000; i++) {
+    for (i = 0; i < NMSG; i++) {
         printf("recv: %ld\n", i);
         recv0();
     }
