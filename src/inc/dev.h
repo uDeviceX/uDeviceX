@@ -47,7 +47,7 @@
 #define Dzero(P, n)   Dset(P, 0, n)
 
 /* [d]evice [a]synchronous set */
-#define DsetA(P, v, n) CC(cudaMemsetAsync(P, v, (n)*sizeof(*(P))))
+#define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
 
 template <typename T> struct DeviceBuffer {
