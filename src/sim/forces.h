@@ -14,7 +14,7 @@ void forces_rbc() {
 }
 
 void clear_forces(Force* ff, int n) {
-    if (n) CC(cudaMemsetAsync(ff, 0, sizeof(Force) * n));
+    if (n) DzeroA(ff, n);
 }
 
 void forces_wall() {
