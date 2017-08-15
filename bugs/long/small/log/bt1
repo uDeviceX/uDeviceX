@@ -1,0 +1,23 @@
+(gdb) bt
+#0  0x00002aaaac4dad79 in MPIDI_Isend_self ()
+   from /opt/cray/pe/lib64/libmpich_gnu_51.so.3
+#1  0x00002aaaac4d37ee in MPID_Isend ()
+   from /opt/cray/pe/lib64/libmpich_gnu_51.so.3
+#2  0x00002aaaac3f35f5 in PMPI_Isend ()
+   from /opt/cray/pe/lib64/libmpich_gnu_51.so.3
+#3  0x0000000000421df3 in l::m::Isend (buf=0x1021ac00a00, count=0,
+    datatype=1275069450, dest=0, tag=903, comm=-2080374781,
+    request=0xac2478 <sim::o::td+344>) at ../../../src/l/h/m.h:65
+#4  0x0000000000430bc0 in odstr::sub::send_pp (cart=-2080374781,
+    rank=0xac232c <sim::o::td+12>, btp=900, s=0xac2550 <sim::o::td+560>,
+    req=0xac2470 <sim::o::td+336>) at ../../../src/odstr/imp.cu:88
+#5  0x0000000000432c66 in odstr::send_pp (t=0xac2320 <sim::o::td>)
+    at ../../../src/odstr/int.cu:117
+#6  0x000000000040d486 in sim::odstr () at ../../../src/sim/odstr1.h:13
+#7  0x000000000040d5a6 in sim::step (driving_force0=0, wall0=false, it=161317)
+    at ../../../src/sim/step.h:17
+#8  0x000000000040d649 in sim::run (ts=0, te=200000)
+    at ../../../src/sim/run.h:11
+#9  0x000000000040d8ea in sim::sim_gen () at ../../../src/sim/imp.h:67
+#10 0x0000000000422d6e in main (argc=1, argv=0x7fffffff72e8)
+    at ../../../src/main.cu:21
