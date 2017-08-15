@@ -7,6 +7,7 @@
 #include "msg.h"
 #include "inc/conf.h"
 #include "cc.h"
+#include "d.h"
 
 #include "l/m.h"
 #include "inc/type.h"
@@ -48,7 +49,7 @@ static int gen0(Particle *pp) { /* generate particle positions and velocities */
 
 int gen(Particle *dev, /*w*/ Particle *hst) {
     int n = gen0(hst);
-    cH2D(dev, hst, n);
+    cH2D0(dev, hst, n);
     return n;
 }
 
