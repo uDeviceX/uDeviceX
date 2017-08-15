@@ -15,14 +15,27 @@ void post_recv(const MPI_Comm cart, const int rank[], const int btc, const int b
         l::m::Irecv(r->pp.hst[i], MAX_PART_NUM, MPI_FLOAT, rank[i], btp + r->tags[i], cart, mesg_req + c++);
 }
 
-int send_sz(MPI_Comm cart, const int rank[], const int btc, /**/ Send *s, MPI_Request *req) {
-    for(int i = 0; i < 27; ++i) s->size[i] = s->size_pin.D[i];
-    for(int i = 1, c = 0; i < 27; ++i)
-        l::m::Isend(s->size + i, 1, MPI_INTEGER, rank[i], btc + i, cart, &req[c++]);
+int send_sz(MPI_Comm cart, const int rank[], const int bt, /**/ Send *s, MPI_Request *req) {
+    const void *buf;
+    int count, dest, tag;
+    MPI_Request *request;
+    int i, c;
+
+    for(i = 0; i < 27; ++i)
+        s->size[i] = s->size_pin.D[i];
+
+    for(i = 1, c = 0; i < 27; ++i, ++c) {
+        buf = s->size + i;
+        count = 1;
+        dest = rank[i];
+        tag = bt + i;
+        request = &req[c];
+        l::m::Isend(buf, count, MPI_INTEGER, dest, tag, cart, request);
+    }
     return s->size[0]; /* `n' bulk */
 }
 
-void send_pp(MPI_Comm cart, const int rank[], const int btp, /**/ Send *s, MPI_Request *req) {
+void send_pp(MPI_Comm cart, const int rank[], const int bt, /**/ Send *s, MPI_Request *req) {
     const void *buf;
     int count, dest, tag;
     MPI_Request *request;
@@ -31,7 +44,7 @@ void send_pp(MPI_Comm cart, const int rank[], const int btp, /**/ Send *s, MPI_R
         buf = s->pp.hst[i];
         count = s->size[i] * 6;
         dest = rank[i];
-        tag = btp + i;
+        tag = bt + i;
         request = &req[c];
         l::m::Isend(buf, count, MPI_FLOAT, dest, tag, cart, request);
     }
