@@ -32,6 +32,12 @@ cudaError_t MemsetAsync (void *devPtr, int value, size_t count, cudaStream_t str
     return cudaSuccess;
 }
 
+cudaError_t MemcpyAsync (void * dst, const void * src, size_t count, enum cudaMemcpyKind
+                         kind, cudaStream_t stream) {
+    miss("MemcpyAsync");
+    return cudaSuccess;
+}
+
 cudaError_t Free (void *devPtr) {
     miss("Free");
     return cudaSuccess;
