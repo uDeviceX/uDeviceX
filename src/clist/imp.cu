@@ -46,7 +46,7 @@ void build(int n, int xcells, int ycells, int zcells,
     KL(dev::get_ids, (k_cnf(n)), (pp, starts, n, cells, /**/ counts, ids));
     KL(dev::gather, (k_cnf(n)), (pp, ids, n, /**/ ppd));
 
-    CC(cudaMemcpyAsync(pp, ppd, n * sizeof(Particle), D2D));
+    aD2D0(pp, ppd, n);
     CC(cudaFree(ids));
     CC(cudaFree(ppd));
 }
