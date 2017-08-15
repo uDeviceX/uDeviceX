@@ -27,7 +27,7 @@ void send_pp(MPI_Comm cart, const int rank[], const int btp, /**/ Send *s, MPI_R
     int count, dest, tag;
     MPI_Request *request;
     int i, c;
-    for(i = 1, c = 0; i < 27; ++i, c++) {
+    for(i = 1, c = 0; i < 27; ++i, ++c) {
         buf = s->pp.hst[i];
         count = s->size[i] * 6;
         dest = rank[i];

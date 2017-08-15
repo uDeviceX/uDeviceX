@@ -16,7 +16,7 @@ void send_pp(TicketD *t) {
 
 void recv_pp(TicketD *t) {
     sub::waitall(t->recv_sz_req);
-    sub::recv_count(/**/ &t->r, &t->nhalo);
+    sub::count(/**/ &t->r, &t->nhalo);
     sub::waitall(t->recv_pp_req);
 }
 }

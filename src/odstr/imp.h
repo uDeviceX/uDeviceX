@@ -18,7 +18,7 @@ int send_sz(MPI_Comm cart, const int rank[], const int btc, /**/ Send *s, MPI_Re
 void send_pp(MPI_Comm cart, const int rank[], const int btp, /**/ Send *s, MPI_Request *req);
 void send_ii(MPI_Comm cart, const int rank[], const int size[], const int bt, /**/ Pbufs<int> *sii, MPI_Request *req);
 
-void recv_count(/**/ Recv *r, int *nhalo);
+void count(/**/ Recv *r, int *nhalo);
 
 void unpack_pp(const int n, const Recv *r, /**/ Particle *pp_re);
 void unpack_ii(const int n, const Recv *r, const Pbufs<int> *rii, /**/ int *ii_re);

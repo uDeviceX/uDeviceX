@@ -57,7 +57,7 @@ void pack_ii(const int *ii, int n, const Send *s, Pbufs<int>* sii) {
 }
 
 
-void recv_count(/**/ Recv *r, int *nhalo) {
+void count(/**/ Recv *r, int *nhalo) {
     int i;
     static int size[27], strt[28];
 
