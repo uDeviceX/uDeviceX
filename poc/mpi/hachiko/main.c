@@ -10,7 +10,8 @@
 #define COMM MPI_COMM_WORLD
 #define TYPE MPI_INT
 
-#define NMSG 1000
+#define NMSG 10000000
+#define PFRQ 100
 
 int buf[123];
 int rank;
@@ -24,9 +25,10 @@ void recv0() {
 }
 
 void recv() {
-    long i;
+    long i, dump;
+    dump = NMSG/PFRQ;
     for (i = 0; i < NMSG; i++) {
-        printf("recv: %ld\n", i);
+        if (i % dump == 1) fputc('.', stderr);
         recv0();
     }
 }
