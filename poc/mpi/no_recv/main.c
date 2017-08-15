@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <mpi.h>
 
-#define recv_cnt 10
+#define send_cnt 10
 
 #define SEND 0
 #define RECV 1
@@ -13,27 +13,27 @@
 #define NMSG 10000000
 #define PFRQ 100
 
-int buf[123];
 int rank;
 int count;
 
 MPI_Request req;
 
-void recv0() {
+void send0() {
+    int buf[123];
     MPI_Request request;
-    MPI_Irecv(buf, recv_cnt, TYPE, SEND, TAG, COMM, &request);
+    MPI_Isend(buf, send_cnt, TYPE, RECV, TAG, COMM, &request);
 }
 
-void recv() {
+void send() {
     long i, dump;
     dump = NMSG/PFRQ;
     for (i = 0; i < NMSG; i++) {
         if (i % dump == 1) fputc('.', stderr);
-        recv0();
+        send0();
     }
 }
 
-int send() { for(;;); }
+int recv() { for(;;); }
 
 int main(int argc, char *argv[]) {
     MPI_Init(&argc, &argv);
