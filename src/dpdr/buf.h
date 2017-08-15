@@ -5,11 +5,11 @@ static void alloc_Bbuf_frag(const int i, const int est, const int nfragcells, /*
     Dalloc0(&b->cum.d[i], nfragcells + 1);
     Dalloc0(&b->pp.d[i], est);
 
-    Palloc0(&b->cumhst.d[i], (nfragcells + 1));
-    CC(cudaHostGetDevicePointer(&b->cumdev.d[i], b->cumhst.d[i], 0));
+    Palloc0(&b->cumhst.d[i], nfragcells + 1);
+    Link(&b->cumdev.d[i], b->cumhst.d[i]);
 
-    CC(cudaHostAlloc(&b->pphst.d[i], est * sizeof(Particle), cudaHostAllocMapped));
-    CC(cudaHostGetDevicePointer(&b->ppdev.d[i], b->pphst.d[i], 0));
+    Palloc0(&b->pphst.d[i], est);
+    Link(&b->ppdev.d[i], b->pphst.d[i]);
 }
 
 static void free_Bbuf_frag(const int i, /**/ Bbufs *b) {
