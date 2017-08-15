@@ -1,5 +1,5 @@
-CC=mpicc.mpich
-E=mpiexec.mpich
+CC=mpicc
+E=mpiexec
 M=main
 O=$M.o send.o recv.o
 
