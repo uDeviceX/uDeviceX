@@ -1,7 +1,7 @@
 u.run ./udx
 S = ../../src
 B = .
-include $B/config.mk
+include $B/conf.mk
 include $S/make/common.mk
 include $S/make/obj.mk
 include $S/make/Makefile

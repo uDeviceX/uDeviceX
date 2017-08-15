@@ -1,5 +1,5 @@
 Makefile
-config.mk
+conf.mk
 
 *.out.txt
 h5/
