@@ -27,7 +27,7 @@ write_conf () (
     if test ! -f "$c0"; then c0="$s/sys/$dn.$h";  fi
     if test ! -f "$c0"; then c0="$s/sys/$dn.$dh"; fi
     if test ! -f "$c0"; then exit 1             ; fi
-    msg "cp $c0  conf.mk"; cp "$c0"  "$c"
+    cp "$c0"  "$c"
 )
 
 mkdir -p     "$b"
