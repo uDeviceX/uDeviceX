@@ -48,4 +48,7 @@ void cancel_recv(/**/ MPI_Request *size_req, MPI_Request *mesg_req) {
     for(int i = 0; i < 26; ++i) l::m::Cancel(size_req + i) ;
     for(int i = 0; i < 26; ++i) l::m::Cancel(mesg_req + i) ;
 }
+
+} /* namespace */
 }
+
