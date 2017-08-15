@@ -47,7 +47,7 @@ void build(int n, int xcells, int ycells, int zcells,
     KL(dev::gather, (k_cnf(n)), (pp, ids, n, /**/ ppd));
 
     aD2D0(pp, ppd, n);
-    CC(cudaFree(ids));
-    CC(cudaFree(ppd));
+    Dfree0(ids);
+    Dfree0(ppd);
 }
 }
