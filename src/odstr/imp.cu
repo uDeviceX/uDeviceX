@@ -29,6 +29,7 @@
 #include "odstr/imp.h"
 
 #include "odstr/mpi.h"
+#include "odstr/mpi.ii.h"
 #include "odstr/dev.h"
 #include "odstr/buf.h"
 #include "odstr/ini.h"
