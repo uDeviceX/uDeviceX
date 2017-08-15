@@ -26,6 +26,7 @@
 /* device allocation */
 #define Dalloc(d, n) CC(cudaMalloc((d), (n) * sizeof((**(d)))))
 #define Dfree(d)     CC(cudaFree(d))
+#define Dfree0(D)    CC(d::Free(D))
 
 /* generic device allocation: TODO: */
 #define Dalloc000000(D, sz) d::Malloc((void**)(void*)(D), (sz))
