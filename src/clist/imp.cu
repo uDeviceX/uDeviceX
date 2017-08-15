@@ -42,7 +42,7 @@ void build(int n, int xcells, int ycells, int zcells,
     CC(d::MemsetAsync(counts, 0, ncells * sizeof(int)));
     KL(dev::get_counts, (k_cnf(n)), (pp, n, cells, /**/ counts));
     scan(counts, ncells, /**/ starts);
-    CC(cudaMemsetAsync(counts, 0, ncells * sizeof(int)));
+    DzeroA(counts, ncells);
     KL(dev::get_ids, (k_cnf(n)), (pp, starts, n, cells, /**/ counts, ids));
     KL(dev::gather, (k_cnf(n)), (pp, ids, n, /**/ ppd));
 
