@@ -27,6 +27,7 @@ void ini_comm(const MPI_Comm cart, /**/ int rank[], int tags[]) {
 }
 
 void ini_S(/**/ Send *s) {
+    int sz;
     dual::alloc(&s->size_pin, 27);
     for (int i = 0; i < 27; ++i)
         Dalloc0(&s->iidx_[i], estimate(i));
@@ -38,7 +39,10 @@ void ini_S(/**/ Send *s) {
     Dalloc0(&s->size_dev, 27);
     Dalloc0(&s->strt,     28);
 
-    CC(cudaMalloc(&s->iidx, SZ_PTR_ARR(s->iidx_)));
+    /* TODO: */
+    sz = SZ_PTR_ARR(s->iidx_);
+    MSG("sz: s->iidx: %d", sz);
+    CC(d::Malloc((void**)(void*)(&s->iidx), sz));
     CC(cudaMemcpy(s->iidx, s->iidx_, sizeof(s->iidx_), H2D));
 
     alloc_dev(/**/ &s->pp);
