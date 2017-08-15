@@ -1,6 +1,5 @@
 namespace clist {
 void build(int n, int xcells, int ycells, int zcells,
-           float xstart, float ystart, float zstart,
            /**/ Particle *pp, int *starts, int *counts);
 
 /* container for the cell lists, which contains only two integer
@@ -12,7 +11,7 @@ void build(int n, int xcells, int ycells, int zcells,
 class Clist {
     int LX, LY, LZ;
     void buildn(Particle *const pp, const int n) {
-        clist::build(n, LX, LY, LZ, -LX/2, -LY/2, -LZ/2, /**/ pp, start, count);
+        clist::build(n, LX, LY, LZ, /**/ pp, start, count);
     }
 
     void build0() {

@@ -27,7 +27,6 @@ static void scan(const int *counts, int n, /**/ int *starts) {
 }
 
 void build(int n, int xcells, int ycells, int zcells,
-           float xstart, float ystart, float zstart,
            /**/ Particle *pp, int *starts, int *counts) {
     if (!n) return;
 
