@@ -22,9 +22,9 @@ static void free_Bbuf_frag(const int i, /**/ Bbufs *b) {
 
 static void alloc_Sbuf_frag(const int i, const int est, const int nfragcells, /**/ Sbufs *b) {
     alloc_Bbuf_frag(i, est, nfragcells, /**/ b);
-    CC(cudaMalloc(&b->str.d[i], (nfragcells + 1) * sizeof(int)));
-    CC(cudaMalloc(&b->cnt.d[i], (nfragcells + 1) * sizeof(int)));
-    CC(cudaMalloc(&b->ii.d[i], est * sizeof(int)));
+    Dalloc0(&b->str.d[i], nfragcells + 1);
+    Dalloc0(&b->cnt.d[i], nfragcells + 1);
+    Dalloc0(&b->ii.d[i], est);
 };
 
 static void free_Sbuf_frag(const int i, /**/ Sbufs *b) {
