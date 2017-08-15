@@ -29,3 +29,6 @@ cudaError_t MemsetAsync (void *devPtr, int value, size_t count, cudaStream_t str
     return cudaMemsetAsync(devPtr, value, count, stream);
 }
 
+cudaError_t Free (void *devPtr) {
+    return cudaFree (devPtr);
+}
