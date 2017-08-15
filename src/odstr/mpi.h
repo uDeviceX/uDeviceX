@@ -22,8 +22,14 @@ void post_recv(const MPI_Comm cart, const int rank[], const int btc, const int b
         l::m::Irecv(buf, count, MPI_INTEGER, source, tag, cart, request);
     }
 
-    for(int i = 1, c = 0; i < 27; ++i)
-        l::m::Irecv(r->pp.hst[i], MAX_PART_NUM, MPI_FLOAT, rank[i], btp + r->tags[i], cart, mesg_req + c++);
+    for(i = 1, c = 0; i < 27; ++i, ++c) {
+        buf = r->pp.hst[i];
+        count = MAX_PART_NUM;
+        source = rank[i];
+        tag = btp + r->tags[i];
+        request = &mesg_req[c];
+        l::m::Irecv(buf, count, MPI_FLOAT, source, tag, cart, request);
+    }
 }
 
 int send_sz(MPI_Comm cart, const int rank[], const int bt, /**/ Send *s, MPI_Request *req) {
