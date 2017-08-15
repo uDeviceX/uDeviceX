@@ -4,9 +4,9 @@ static __device__ int encode(int ix, int iy, int iz, int3 ncells) {
 
 static __device__ int get_cid(const float *r, int3 ncells, int3 domainstart) {
     enum {X, Y, Z};
-    int ix = (int)floor(r[X] - domainstart.x);
-    int iy = (int)floor(r[Y] - domainstart.y);
-    int iz = (int)floor(r[Z] - domainstart.z);
+    int ix = (int)floor(r[X] + 0.5*ncells.x);
+    int iy = (int)floor(r[Y] + 0.5*ncells.y);
+    int iz = (int)floor(r[Z] + 0.5*ncells.z);
 
     ix = min(ncells.x - 1, max(0, ix));
     iy = min(ncells.y - 1, max(0, iy));
