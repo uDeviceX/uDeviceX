@@ -40,7 +40,7 @@
 #define tend                100
 
 /* DEBUG */
-#define KL_PEEK
+#define KL_NONE
 #define CC_PEEK
 #define TE_TRACE
 #define FORCE0
