@@ -39,10 +39,9 @@ void ini_S(/**/ Send *s) {
     Dalloc0(&s->size_dev, 27);
     Dalloc0(&s->strt,     28);
 
-    /* TODO: */
     sz = SZ_PTR_ARR(s->iidx_);
     MSG("sz: s->iidx: %d", sz);
-    CC(d::Malloc((void**)(void*)(&s->iidx), sz));
+    CC(d::Malloc((void**)(void*)(&s->iidx), sz));                   /* TODO: */
     CC(cudaMemcpy(s->iidx, s->iidx_, sizeof(s->iidx_), H2D));
 
     alloc_dev(/**/ &s->pp);
