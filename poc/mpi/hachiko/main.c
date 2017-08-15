@@ -19,48 +19,28 @@ int count;
 
 MPI_Request req;
 
-void send() {
-    int dest = RECV;
-    int buf[] = {1, 2, 3};
-    MPI_Isend(buf, SZ(buf), TYPE, dest, TAG, COMM, &req);
+void recv0() {
+    MPI_Request request;
+    MPI_Irecv(buf, recv_cnt, TYPE, SEND, TAG, COMM, &request);
 }
 
 void recv() {
-    int source = SEND;
-    MPI_Recv(buf, recv_cnt, TYPE, source, TAG, COMM, &status);
+    long i;
+    for (i = 0; i < 1000; i++) {
+        printf("recv: %ld\n", i);
+        recv0();
+    }
 }
 
-void cnt() {
-    MPI_Get_count(&status, TYPE, &count);
-    fprintf(stderr, "count: %d\n", count);
-}
-
-void dump() {
-    int i;
-    for (i = 0; i < count; i++)
-        fprintf(stderr, "%d ", buf[i]);
-    fprintf(stderr, "\n");
-}
-
-void wait() {
-    MPI_Status s;
-    MPI_Wait(&req, &s);
-}
+int send() { for(;;); }
 
 int main(int argc, char *argv[]) {
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(COMM, &rank);
 
-    if (rank == SEND) {
-        send();
-        wait();
-    }
-    else {
-        recv();
-        cnt();
-        dump();
-    }
-    
+    if (rank == RECV)  recv();
+    else               send();
+   
     MPI_Finalize();
     return 0;
 }
