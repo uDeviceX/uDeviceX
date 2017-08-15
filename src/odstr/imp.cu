@@ -68,6 +68,13 @@ void count(/**/ Recv *r, int *nhalo) {
     *nhalo = strt[27];
 }
 
+int count_sz(Send *s) {
+    int i;
+    for(i = 0; i < 27; ++i)
+        s->size[i] = s->size_pin.D[i];
+    return s->size[0]; /* `n' bulk */
+}
+
 void unpack_pp(const int n, const Recv *r, /**/ Particle *pp_re) {
     KL((dev::unpack<float2,3>), (k_cnf(3*n)), (r->pp.dev, r->strt, /**/ (float2*) pp_re));
 }

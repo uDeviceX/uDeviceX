@@ -32,14 +32,11 @@ void post_recv(const MPI_Comm cart, const int rank[], const int btc, const int b
     }
 }
 
-int send_sz(MPI_Comm cart, const int rank[], const int bt, /**/ Send *s, MPI_Request *req) {
+void send_sz(MPI_Comm cart, const int rank[], const int bt, /**/ Send *s, MPI_Request *req) {
     const void *buf;
     int count, dest, tag;
     MPI_Request *request;
     int i, c;
-
-    for(i = 0; i < 27; ++i)
-        s->size[i] = s->size_pin.D[i];
 
     for(i = 1, c = 0; i < 27; ++i, ++c) {
         buf = s->size + i;
@@ -49,7 +46,6 @@ int send_sz(MPI_Comm cart, const int rank[], const int bt, /**/ Send *s, MPI_Req
         request = &req[c];
         l::m::Isend(buf, count, MPI_INTEGER, dest, tag, cart, request);
     }
-    return s->size[0]; /* `n' bulk */
 }
 
 void send_pp(MPI_Comm cart, const int rank[], const int bt, /**/ Send *s, MPI_Request *req) {
