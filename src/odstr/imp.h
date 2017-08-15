@@ -1,7 +1,8 @@
 namespace odstr {
 namespace sub {
 
-void waitall(MPI_Request *reqs);
+void waitall_s(MPI_Request *reqs);
+void waitall_r(MPI_Request *reqs);
 
 void post_recv(const MPI_Comm cart, const int rank[], const int btc, const int btp,
                MPI_Request *size_req, MPI_Request *mesg_req, Recv *r);

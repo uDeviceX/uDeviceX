@@ -4,20 +4,25 @@ namespace sub {
 int lsend(const void *buf, int count, MPI_Datatype datatype, int dest,
            int tag, MPI_Comm comm, MPI_Request *request) {
     return MPI_Isend(buf, count, datatype, dest, tag, comm, request);
-    //return MPI_Send(buf, count, datatype, dest, tag, comm);
 }
 
 int lrecv(void *buf, int count, MPI_Datatype datatype, int source,
           int tag, MPI_Comm comm, MPI_Request *request) {
     return MPI_Irecv(buf, count, datatype, source, tag, comm, request);
-    MPI_Status status;
-    //return MPI_Recv(buf, count, datatype, source, tag, comm, &status);
 }
 
 
 void waitall(MPI_Request *reqs) {
     MPI_Status statuses[123];
-    l::m::Waitall(26, reqs, statuses) ;
+    l::m::Waitall(26, reqs, statuses);
+}
+
+void waitall_s(MPI_Request *reqs) {
+    waitall(reqs);
+}
+
+void waitall_r(MPI_Request *reqs) {
+    waitall(reqs) ;
 }
 
 void post_recv(const MPI_Comm cart, const int rank[], const int btc, const int btp,
@@ -74,7 +79,6 @@ void send_pp(MPI_Comm cart, const int rank[], const int bt, /**/ Send *s, MPI_Re
         tag = bt + i;
         request = &req[c];
         lsend(buf, count, MPI_FLOAT, dest, tag, cart, request);
-//             Send(const void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm)
     }
 }
 

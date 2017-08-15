@@ -107,7 +107,7 @@ void pack_ii(const int n, const flu::QuantsI *q, const TicketD *td, TicketI *ti)
 }
 
 void send_ii(const TicketD *td, TicketI *ti) {
-    if (!ti->first) sub::waitall(ti->send_ii_req);
+    if (!ti->first) sub::waitall_s(ti->send_ii_req);
     ti->first = false;
     sub::send_ii(td->cart, td->rank, td->s.size, ti->bt, /**/ &ti->sii, ti->send_ii_req);
 }
@@ -119,7 +119,7 @@ void bulk(flu::Quants *q, TicketD *t) {
 }
 
 void recv_ii(TicketI *t) {
-    sub::waitall(t->recv_ii_req);
+    sub::waitall_r(t->recv_ii_req);
 }
 
 void unpack_pp(const TicketD *td, /**/ flu::Quants *q, TicketU *tu, /*w*/ Work *w) {
