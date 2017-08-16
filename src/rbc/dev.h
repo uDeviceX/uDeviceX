@@ -132,7 +132,7 @@ __global__ void force(const Texo<float2> texvert, const Texo<int> texadj0, const
     }
 }
 
-__DF__ float2 warpReduceSum(float2 val) {
+__device__ float2 warpReduceSum(float2 val) {
     for (int offset = warpSize / 2; offset > 0; offset /= 2) {
         fst(val) += __shfl_down(fst(val), offset);
         scn(val) += __shfl_down(scn(val), offset);

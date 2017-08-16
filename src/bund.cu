@@ -5,13 +5,13 @@
 #include <conf.h>
 #include "inc/conf.h"
 
-#include "l/m.h"
-#include "l/off.h"
-#include "scan/int.h"
-
 #include "d/api.h"
 #include "d/q.h"
 #include "d/ker.h"
+
+#include "l/m.h"
+#include "l/off.h"
+#include "scan/int.h"
 
 #include "rnd/imp.h"
 #include "rnd/dev.h"
@@ -55,10 +55,8 @@
 
 namespace rbc {
 namespace sub {
-#define __DF__ __device__ __forceinline__
 #include "rbc/dev0.h"
 #include "rbc/dev.h"
-#undef __DF__
 #include "rbc/imp.h"
 }
 namespace ic {
