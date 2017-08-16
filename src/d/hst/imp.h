@@ -1,4 +1,6 @@
 #define miss(n) MSG(n ": missing")
+/* [v]oid add */
+#define vadd(p, n) (void*)((char*)(p) + (n))
 
 void ini() { }
 
