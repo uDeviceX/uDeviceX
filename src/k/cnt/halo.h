@@ -80,7 +80,7 @@ __global__ void halo(int nparticles_padded, int ncellentries,
             int slot = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
 
             CellEntry ce;
-            ce.pid = tex1Dfetch(t::id, slot);
+            ce.pid = fetchID(slot);
             int soluteid = ce.code.w;
             ce.code.w = 0;
 
