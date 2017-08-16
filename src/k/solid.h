@@ -3,28 +3,26 @@ namespace k_solid
 enum {X, Y, Z};
 enum {XX, XY, XZ, YY, YZ, ZZ};
 enum {YX = XY, ZX = XZ, ZY = YZ};
-
-#define _HD_ __host__ __device__
     
-static _HD_ float dot(const float *v, const float *u) {
+static __host__ __device__ float dot(const float *v, const float *u) {
     return v[X]*u[X] + v[Y]*u[Y] + v[Z]*u[Z];
 }
 
-static _HD_ void reject(/**/ float *v, float *u) {
+static __host__ __device__ void reject(/**/ float *v, float *u) {
     const float d = dot(v, u);
     v[X] -= d*u[X]; v[Y] -= d*u[Y]; v[Z] -= d*u[Z];
 }
 
-static _HD_ float norm(const float *v) {
+static __host__ __device__ float norm(const float *v) {
     return sqrt(v[X]*v[X] + v[Y]*v[Y] + v[Z]*v[Z]);
 }
 
-static _HD_ void normalize(/**/ float *v) {
+static __host__ __device__ void normalize(/**/ float *v) {
     const float s = 1.f / norm(v);
     v[X] *= s; v[Y] *= s; v[Z] *= s;
 }
 
-_HD_ void gram_schmidt(/**/ float *e0, float *e1, float *e2) {
+__host__ __device__ void gram_schmidt(/**/ float *e0, float *e1, float *e2) {
     /* :TODO: use better more stable version of Gram-Schmidt */
     normalize(e0);
 
@@ -36,7 +34,7 @@ _HD_ void gram_schmidt(/**/ float *e0, float *e1, float *e2) {
     normalize(e2);
 }
 
-_HD_ void rot_e(const float *om, /**/ float *e) {
+__host__ __device__ void rot_e(const float *om, /**/ float *e) {
     const float omx = om[X], omy = om[Y], omz = om[Z];
     const float ex = e[X], ey = e[Y], ez = e[Z];
 

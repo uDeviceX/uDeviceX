@@ -18,9 +18,8 @@
 namespace collision
 {
 enum {X, Y, Z};
-#define _HD_ __host__ __device__
 
-static _HD_ bool same_side(const float *x, const float *p, const float *a, const float *b, const float *inplane) {
+static __host__ __device__ bool same_side(const float *x, const float *p, const float *a, const float *b, const float *inplane) {
     const float n[3] = {a[Y] * b[Z] - a[Z] * b[Y],
                         a[Z] * b[X] - a[X] * b[Z],
                         a[X] * b[Y] - a[Y] * b[X]};
@@ -31,7 +30,7 @@ static _HD_ bool same_side(const float *x, const float *p, const float *a, const
     return ndx * ndp > 0;
 }
     
-static _HD_ bool in_tetrahedron(const float *x, const float *A, const float *B, const float *C, const float *D) {
+static __host__ __device__ bool in_tetrahedron(const float *x, const float *A, const float *B, const float *C, const float *D) {
     const float AB[3] = {B[X] - A[X], B[Y] - A[Y], B[Z] - A[Z]};
     const float AC[3] = {C[X] - A[X], C[Y] - A[Y], C[Z] - A[Z]};
     const float AD[3] = {D[X] - A[X], D[Y] - A[Y], D[Z] - A[Z]};
