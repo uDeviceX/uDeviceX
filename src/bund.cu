@@ -80,6 +80,7 @@ namespace ic {
 
 #include "k/cnt/type.h"
 #include "k/cnt/decl.h"
+#include "k/cnt/fetch.h"
 #include "k/cnt/bulk.h"
 #include "k/cnt/halo.h"
 #include "k/cnt/pop.h"
