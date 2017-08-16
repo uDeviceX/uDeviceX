@@ -1,3 +1,7 @@
+static __device__ float4 fetchH4(uint i) {
+    return tex1Dfetch(texParticlesH4, i); /* (sic) type mismatch */
+}
+
 static __global__ void merged() {
     asm volatile( ".shared .u32 smem[512];" ::: "memory" );
 
@@ -112,11 +116,11 @@ static __global__ void merged() {
                           "   mov.b32           %0, mystart;"
                           "}" : "=r"( spid ) : "f"( u2f( pid ) ), "f"( u2f( 9u ) ), "f"( u2f( 3u ) ), "f"( u2f( pshare ) ), "f"( u2f( pid ) ), "f"( u2f( nsrc ) ) );
 
-            const float4 xsrc = tex1Dfetch( texParticlesH4, xmin( spid, lastdst ) );
+            const float4 xsrc = fetchH4(xmin(spid, lastdst));
 
             for( uint dpid = dststart; dpid < lastdst; dpid = xadd( dpid, 1u ) ) {
 
-                const float4 xdest = tex1Dfetch( texParticlesH4, dpid );
+                const float4 xdest = fetchH4(dpid);
                 const float dx = xdest.x - xsrc.x;
                 const float dy = xdest.y - xsrc.y;
                 const float dz = xdest.z - xsrc.z;
