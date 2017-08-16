@@ -8,6 +8,7 @@
 #include "m.h"
 #include "cc.h"
 #include "d/api.h"
+#include "d/q.h"
 #include "inc/type.h"
 #include "inc/dev.h"
 

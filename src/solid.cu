@@ -5,6 +5,8 @@
 #include "msg.h"
 #include "cc.h"
 
+#include "d/q.h"
+
 #include "l/linal.h"
 #include "inc/type.h"
 

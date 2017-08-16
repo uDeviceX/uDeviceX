@@ -8,7 +8,9 @@
 #include "l/m.h"
 #include "l/off.h"
 #include "scan/int.h"
+
 #include "d/api.h"
+#include "d/q.h"
 
 #include "rnd/imp.h"
 #include "rnd/dev.h"

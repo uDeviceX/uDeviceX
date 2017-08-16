@@ -8,6 +8,7 @@
 #include "inc/conf.h"
 #include "cc.h"
 #include "d/api.h"
+#include "d/q.h"
 
 #include "l/m.h"
 #include "inc/type.h"

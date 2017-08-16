@@ -1,8 +1,11 @@
 #include <stdio.h>
+
 #include <conf.h>
 #include "inc/conf.h"
+
 #include "common.h"
 #include "msg.h"
+#include "d/q.h"
 
 #include "cc.h"
 #include "inc/type.h"

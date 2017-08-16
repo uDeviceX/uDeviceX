@@ -5,6 +5,7 @@
 #include "common.h"
 #include "msg.h"
 #include "cc.h"
+#include "d/q.h"
 
 #include "rnd/imp.h"
 #include "rnd/dev.h"

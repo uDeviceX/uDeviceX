@@ -7,6 +7,7 @@
 #include "msg.h"
 #include "m.h"
 #include "d/api.h"
+#include "d/q.h"
 #include "cc.h"
 
 #include "dual/type.h"
