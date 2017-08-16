@@ -1,4 +1,7 @@
 #include <stdio.h>
+#include <curand.h>
+#include <curand_kernel.h>
+
 #include <conf.h>
 #include "inc/conf.h"
 #include "common.h"
@@ -94,9 +97,6 @@ static _DH_ void project_t(const float *a, const float *b, const float *c,
     vp[2] = wa * va[2] + u * vb[2] + v * vc[2];
 }
 
-#include <curand.h>
-#include <curand_kernel.h>
-    
 static _DH_ void rescue_1p(const Particle *vv, const int *tt, const int nt, const int sid, const int nv,
                            const int *tcstarts, const int *tccounts, const int *tcids, unsigned long seed, /**/ Particle *p) {        
     float dr2b = 1000.f, rpb[3] = {0}, vpb[3] = {0}, nb[3] = {0};
