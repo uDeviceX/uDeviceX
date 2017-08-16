@@ -9,8 +9,8 @@
 namespace d {
 #if   defined(DEV_CUDA)
   #include "d/cuda/imp.h"
-#elif defined(DEV_HST)
-  #include "d/hst/imp.h"
+#elif defined(DEV_CPU)
+  #include "d/cpu/imp.h"
 #else
   #error DEV_* is undefined
 #endif

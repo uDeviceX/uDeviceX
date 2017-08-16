@@ -173,7 +173,7 @@
 #endif
 
 /* who plays as device? */
-#if !defined(DEV_CUDA) && !defined(DEV_HST)
+#if !defined(DEV_CUDA) && !defined(DEV_CPU)
   #define DEV_CUDA
 #endif
 
