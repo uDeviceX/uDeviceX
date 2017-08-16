@@ -12,7 +12,7 @@
 
 int main(int argc, char **argv) {
     m::ini(argc, argv);
-    MSG("rank: %d", m::rank);
+    MSG("mpi size: %d", m::size);
 
     d::ini();
     glb::sim(); /* simulation level globals */
