@@ -6,6 +6,7 @@
 #include "msg.h"
 #include "cc.h"
 #include "d/q.h"
+#include "d/ker.h"
 
 #include "rnd/imp.h"
 #include "rnd/dev.h"
