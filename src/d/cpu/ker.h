@@ -17,3 +17,4 @@
 #define  Ifetch(t, i)  (0);
 #define F4fetch(t, i)  (make_float4(0, 0, 0, 0))
 #define F2fetch(t, i)  (make_float2(0, 0))
+#define Tfetch(T, t, i) (T{})

@@ -9,7 +9,7 @@ struct Texo {
     cudaTextureObject_t to;
 
     __device__ __forceinline__
-    const T fetch(const int i) const {return tex1Dfetch<T>(to, i);}
+    const T fetch(const int i) const {return Tfetch(T, to, i);}
 
     void setup0(T *data, int n) {
         sz_check(n);
