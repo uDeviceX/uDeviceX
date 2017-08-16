@@ -25,6 +25,7 @@
 #endif
 
 /* B.2. Variable Type Qualifiers */
+/* __device__ : also a function qualifier */
 #ifdef __constant__
   #undef  __constant__
   #define __constant__
