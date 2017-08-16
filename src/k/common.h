@@ -1,4 +1,10 @@
 namespace k_common {
+__device__ int lane() {
+    int laneid;
+    asm volatile ("mov.u32 %0, %%laneid;" : "=r"(laneid));
+    return laneid;
+}
+
 template <typename T>
 __device__ inline unsigned int fid(const T a[], const T i) {
     /* [f]ragment [id] : where is `i' in sorted a[27]? */
