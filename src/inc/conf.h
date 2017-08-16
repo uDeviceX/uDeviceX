@@ -156,9 +156,10 @@
 
 // debug
 /* [k]ernel [l]aunch macros */
-#if !defined(KL_RELEASE) && !defined(KL_TRACE)  && \
-    !defined(KL_PEEK)    && !defined(KL_UNSAFE) && \
-    !defined(KL_TRACE_PEEK) && !defined(KL_NONE)
+#if !defined(KL_RELEASE)    && !defined(KL_TRACE)  && \
+    !defined(KL_PEEK)       && !defined(KL_UNSAFE) && \
+    !defined(KL_TRACE_PEEK) && !defined(KL_NONE)   && \
+    !defined(KL_CPU)
   #define KL_RELEASE
 #endif
 
