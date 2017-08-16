@@ -1,12 +1,12 @@
 namespace mbounce {
 namespace sub {
 
-#define _DH_ __device__ __host__
+#define __host__ __device__ __device__ __host__
 
 enum {XX, XY, XZ, YY, YZ, ZZ};
 /* see /poc/bounce-back/inertia.cpp */
 
-static _DH_ float Moment(const int d, const float A[3], const float B[3], const float C[3]) {
+static __host__ __device__ float Moment(const int d, const float A[3], const float B[3], const float C[3]) {
     return 0.25f * (A[d] * A[d] +
                     A[d] * B[d] +
                     B[d] * B[d] +
@@ -14,7 +14,7 @@ static _DH_ float Moment(const int d, const float A[3], const float B[3], const 
                     C[d] * C[d]);
 }
 
-static _DH_ void compute_I(const float A[3], const float B[3], const float C[3], /**/ float I[6]) {
+static __host__ __device__ void compute_I(const float A[3], const float B[3], const float C[3], /**/ float I[6]) {
     
     const float Mxx = Moment(X, A, B, C);
     const float Myy = Moment(Y, A, B, C);
@@ -36,7 +36,7 @@ static _DH_ void compute_I(const float A[3], const float B[3], const float C[3],
     I[ZZ] = Myy + Mxx;
 }
 
-static _DH_ void inverse(const float A[6], /**/ float I[6]) {
+static __host__ __device__ void inverse(const float A[6], /**/ float I[6]) {
 
     /* minors */
     const float mx = A[YY] * A[ZZ] - A[YZ] * A[YZ];
@@ -55,14 +55,14 @@ static _DH_ void inverse(const float A[6], /**/ float I[6]) {
     I[ZZ] =  idet * (A[XX] * A[YY] - A[XY] * A[XY]);
 }
 
-static _DH_ void v2f(const float r[3], const float om[3], const float v[3], /**/ float f[3]) {
+static __host__ __device__ void v2f(const float r[3], const float om[3], const float v[3], /**/ float f[3]) {
     const float fac = rbc_mass / dt;
     f[X] = fac * (v[X] + r[Y] * om[Z] - r[Z] * om[Y]);
     f[Y] = fac * (v[Y] + r[Z] * om[X] - r[X] * om[Z]);
     f[Z] = fac * (v[Z] + r[X] * om[Y] - r[Y] * om[X]);
 }
 
-_DH_ void M2f(const Momentum m, const float a[3], const float b[3], const float c[3],
+__host__ __device__ void M2f(const Momentum m, const float a[3], const float b[3], const float c[3],
               /**/ float fa[3], float fb[3], float fc[3]) {
 
     float I[6] = {0}, Iinv[6], om[3], v[3];

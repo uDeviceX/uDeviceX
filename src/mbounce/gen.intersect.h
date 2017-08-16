@@ -2,10 +2,10 @@ namespace mbounce {
 namespace sub {
 
 template <typename real>
-static _DH_ bool valid(real t) {return (t >= 0 && t <= dt);}
+static __host__ __device__ bool valid(real t) {return (t >= 0 && t <= dt);}
 
 template <typename real>
-static _DH_ bool cubic_root(real a, real b, real c, real d, /**/ real *h) {
+static __host__ __device__ bool cubic_root(real a, real b, real c, real d, /**/ real *h) {
     const real eps = 1e-6;
         
     if (fabs(a) > eps) { // cubic
@@ -35,7 +35,7 @@ static _DH_ bool cubic_root(real a, real b, real c, real d, /**/ real *h) {
 }
     
 /* see Fedosov PhD Thesis */
-static _DH_ BBState intersect_triangle(const float *s10, const float *s20, const float *s30,
+static __host__ __device__ BBState intersect_triangle(const float *s10, const float *s20, const float *s30,
                                        const float *vs1, const float *vs2, const float *vs3,
                                        const Particle *p0,  /*io*/ float *h, /**/ float *rw, float *vw) {
     typedef double real;
@@ -147,19 +147,19 @@ static _DH_ BBState intersect_triangle(const float *s10, const float *s20, const
 #undef apxb
 }
 
-static _DH_ void revert_r(Particle *p) {
+static __host__ __device__ void revert_r(Particle *p) {
     p->r[X] -= dt * p->v[X];
     p->r[Y] -= dt * p->v[Y];
     p->r[Z] -= dt * p->v[Z];
 }
 
-static _DH_ void loadt(const int *tt, int it, /**/ int *t1, int *t2, int *t3) {
+static __host__ __device__ void loadt(const int *tt, int it, /**/ int *t1, int *t2, int *t3) {
     *t1 = tt[3*it + 0];
     *t2 = tt[3*it + 1];
     *t3 = tt[3*it + 2];    
 }
 
-static _DH_ void loadt(const int4 *tt, int it, /**/ int *t1, int *t2, int *t3) {
+static __host__ __device__ void loadt(const int4 *tt, int it, /**/ int *t1, int *t2, int *t3) {
     int4 t = tt[it];
     *t1 = t.x;
     *t2 = t.y;
@@ -167,7 +167,7 @@ static _DH_ void loadt(const int4 *tt, int it, /**/ int *t1, int *t2, int *t3) {
 }
 
 template <typename Tri>
-_DH_ bool find_better_intersection(const Tri *tt, const int it, const Particle *i_pp, const Particle *p0, /* io */ float *h, /**/ float *rw, float *vw) {
+__host__ __device__ bool find_better_intersection(const Tri *tt, const int it, const Particle *i_pp, const Particle *p0, /* io */ float *h, /**/ float *rw, float *vw) {
     // load data
     int t1, t2, t3;
     Particle pA, pB, pC;
