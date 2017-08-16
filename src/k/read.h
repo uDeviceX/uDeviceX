@@ -52,7 +52,7 @@ void AOS3f(const float * const data, const int nparticles, float& s0, float& s1,
     return;
 
     int laneid;
-    asm volatile ("mov.u32 %0, %%laneid;" : "=r"(laneid));
+    laneid = d::lane();
 
     const int nfloat2 = 3 * nparticles;
 
