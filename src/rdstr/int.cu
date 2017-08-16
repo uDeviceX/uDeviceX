@@ -7,6 +7,8 @@
 #include "msg.h"
 #include "m.h"
 
+#include "d/ker.h"
+
 #include "cc.h"
 #include "l/m.h"
 

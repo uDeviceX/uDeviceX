@@ -6,6 +6,7 @@
 #include "cc.h"
 
 #include "d/q.h"
+#include "d/ker.h"
 
 #include "l/linal.h"
 #include "inc/type.h"
