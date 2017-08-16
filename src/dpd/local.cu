@@ -16,8 +16,10 @@
 #include "forces.h"
 
 #include "dpd/imp/type.h"
+
 #include "dpd/dev/float.h"
 #include "dpd/dev/decl.h"
+#include "dpd/dev/fetch.h"
 
 #define __IMOD(x,y) ((x)-((x)/(y))*(y))
 

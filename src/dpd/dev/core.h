@@ -1,7 +1,3 @@
-static __device__ float4 fetchF4(uint i) {
-    return tex1Dfetch(texParticlesF4, i);
-}
-
 static __device__ void core( const uint dststart, const uint pshare, const uint tid, const uint spidext )
 {
     float4 xdest, xsrc, udest, usrc;
