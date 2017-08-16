@@ -1,7 +1,6 @@
 namespace mbounce {
 namespace sub {
 
-#define _DH_ __device__ __host__
 enum {X, Y, Z};
 
 #ifdef FORWARD_EULER
@@ -57,8 +56,6 @@ _DH_ bool nonzero(const Momentum *m) {
     return nz(m->P[0]) && nz(m->P[1]) && nz(m->P[2]) &&
         nz(m->L[0]) && nz(m->L[1]) && nz(m->L[2]);
 }
-
-#undef _DH_
 
 } // sub
 } // mbounce

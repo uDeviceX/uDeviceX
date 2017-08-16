@@ -86,7 +86,5 @@ _DH_ void M2f(const Momentum m, const float a[3], const float b[3], const float 
     v2f(c, om, v, /**/ fc);
 }
 
-#undef _DH_
-
 } // sub
 } // mbounce

@@ -21,7 +21,6 @@
 
 namespace mrescue
 {
-#define _DH_ __device__ __host__
     
 int *tags_hst, *tags_dev;
     

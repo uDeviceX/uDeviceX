@@ -1,5 +1,4 @@
 namespace roots {
-#define _DH_ __device__ __host__
 #define SWAP(a,b) do { auto tmp = b ; b = a ; a = tmp ; } while(0)
 
 template<typename real>

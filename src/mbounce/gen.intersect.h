@@ -1,8 +1,6 @@
 namespace mbounce {
 namespace sub {
 
-#define _DH_ __device__ __host__
-
 template <typename real>
 static _DH_ bool valid(real t) {return (t >= 0 && t <= dt);}
 
@@ -191,7 +189,6 @@ _DH_ bool find_better_intersection(const Tri *tt, const int it, const Particle *
     return bbstate == BB_SUCCESS;
 }
 
-#undef _DH_
 
 } // sub
 } // mbounce
