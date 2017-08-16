@@ -18,3 +18,5 @@
 #define F4fetch(t, i)  (make_float4(0, 0, 0, 0))
 #define F2fetch(t, i)  (make_float2(0, 0))
 #define Tfetch(T, t, i) (T{})
+
+#define Ttex3D(T, to, i, j, k) (T{})

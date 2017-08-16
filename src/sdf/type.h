@@ -7,7 +7,7 @@ struct tex3Dca {
 
     __device__ __forceinline__
     const T fetch(const float i, const float j, const float k) const {
-        return tex3D<T>(to, i, j, k);
+        return Ttex3D(T, to, i, j, k);
     }
     
     void setup(cudaArray *ca) {

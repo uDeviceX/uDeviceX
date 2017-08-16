@@ -6,6 +6,7 @@
 #include "common.h"
 #include "msg.h"
 #include "d/q.h"
+#include "d/ker.h"
 
 #include "cc.h"
 #include "inc/type.h"

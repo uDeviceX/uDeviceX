@@ -9,6 +9,7 @@
 #include "kl.h"
 #include "d/api.h"
 #include "d/q.h"
+#include "d/ker.h"
 
 #include "scan/int.h"
 #include "scan/dev.h"
