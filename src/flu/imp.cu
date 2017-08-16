@@ -2,10 +2,10 @@
 #include <cassert>
 #include <mpi.h>
 #include <conf.h>
+#include "inc/conf.h"
 
 #include "common.h"
 #include "msg.h"
-#include "inc/conf.h"
 #include "cc.h"
 #include "d/api.h"
 #include "d/q.h"
@@ -13,12 +13,18 @@
 
 #include "l/m.h"
 #include "inc/type.h"
-#include "inc/dev.h"
 #include "inc/mpi.h"
 #include "restart.h"
 
 #include "flu/imp.h"
-#include "flu/dev.h"
+
+#if   defined(DEV_CUDA)
+  #include "flu/dev1.h"
+#elif defined(DEV_CPU)
+  #include "flu/dev0.h"
+#else
+  #error DEV_* is undefined
+#endif
 
 #include "kl.h"
 
