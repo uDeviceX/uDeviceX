@@ -17,10 +17,10 @@ static __device__ void core( const uint dststart, const uint pshare, const uint 
     uint dentry = xscale( dpid, 2.f );
     uint sentry = xscale( spid, 2.f );
 
-    xdest = tex1Dfetch( texParticlesF4,       dentry );
-    xsrc  = tex1Dfetch( texParticlesF4,       sentry );
-    udest = tex1Dfetch( texParticlesF4, xadd( dentry, 1u ) );
-    usrc  = tex1Dfetch( texParticlesF4, xadd( sentry, 1u ) );
+    xdest = fetchf4(dentry);
+    xsrc  = fetchf4(sentry);
+    udest = fetchf4(xadd(dentry, 1u));
+    usrc  = fetchf4(xadd(sentry, 1u));
 
     f = dpd( dpid, xdest, udest, xsrc, usrc, spid );
 
