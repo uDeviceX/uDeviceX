@@ -5,6 +5,8 @@
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "d/ker.h"
+
 #include "m.h"
 #include "common.h"
 #include "msg.h"
