@@ -6,7 +6,7 @@ void AOS6f(float2 * const data, const int nparticles, float2& s0, float2& s1, fl
     return;
 
     int laneid;
-    asm volatile ("mov.u32 %0, %%laneid;" : "=r"(laneid));
+    laneid = d::lane();
 
     const int srclane0 = (32 * ((laneid) % 3) + laneid) / 3;
     const int srclane1 = (32 * ((laneid + 1) % 3) + laneid) / 3;
@@ -53,7 +53,7 @@ void AOS3f(float * const data, const int nparticles, float& s0, float& s1, float
     return;
 
     int laneid;
-    asm volatile ("mov.u32 %0, %%laneid;" : "=r"(laneid));
+    laneid = d::lane();
 
     const int srclane0 = (32 * ((laneid) % 3) + laneid) / 3;
     const int srclane1 = (32 * ((laneid + 1) % 3) + laneid) / 3;
