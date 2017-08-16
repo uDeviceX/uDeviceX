@@ -30,9 +30,9 @@ static __device__ void tex2rv(int i,
                               float *vx, float *vy, float *vz) {
     float2 s0, s1, s2;
     i *= 3;
-    s0 = tex1Dfetch(t::pp, i++);
-    s1 = tex1Dfetch(t::pp, i++);
-    s2 = tex1Dfetch(t::pp, i++);
+    s0 = fetchP(i++);
+    s1 = fetchP(i++);
+    s2 = fetchP(i++);
 
      *x = fst(s0);  *y = scn(s0);  *z = fst(s1);
     *vx = scn(s1); *vy = fst(s2); *vz = scn(s2);
