@@ -24,10 +24,9 @@ enum { NCELLS = XS * YS * ZS };
 enum {X, Y, Z};
 
 #define BBOX_MARGIN 0.1f
-#define _HD_  __host__ __device__
 
-template <typename T> _HD_ T min3(T a, T b, T c) {return min(a, min(b, c));}
-template <typename T> _HD_ T max3(T a, T b, T c) {return max(a, max(b, c));}
+template <typename T> __host__ __device__ T min3(T a, T b, T c) {return min(a, min(b, c));}
+template <typename T> __host__ __device__ T max3(T a, T b, T c) {return max(a, max(b, c));}
 
 static __host__ __device__ void loadr(const Particle *pp, int i, /**/ float r[3]) {
     Particle p = pp[i];
@@ -42,7 +41,7 @@ static __host__ __device__ void loadt(const int *tt, int i, /**/ int t[3]) {
     t[2] = tt[3*i + 2];
 }
 
-static _HD_ void tbbox(const float *A, const float *B, const float *C, float *bb) {
+static __host__ __device__ void tbbox(const float *A, const float *B, const float *C, float *bb) {
     bb[2*X + 0] = min3(A[X], B[X], C[X]) - BBOX_MARGIN;
     bb[2*X + 1] = max3(A[X], B[X], C[X]) + BBOX_MARGIN;
     bb[2*Y + 0] = min3(A[Y], B[Y], C[Y]) - BBOX_MARGIN;
