@@ -2,12 +2,6 @@ namespace clist {
 void build(int n, int xcells, int ycells, int zcells,
            /**/ Particle *pp, int *starts, int *counts);
 
-/* container for the cell lists, which contains only two integer
-   vectors of size ncells.  the start[cell-id] array gives the entry in
-   the particle array associated to first particle belonging to cell-id
-   count[cell-id] tells how many particles are inside cell-id.  building
-   the cell lists involve a reordering of the particle array (!) */
-
 class Clist {
     int LX, LY, LZ;
     void buildn(Particle *const pp, const int n) {
