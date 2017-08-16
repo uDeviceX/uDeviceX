@@ -1,4 +1,4 @@
-static __device__ float4 fetchf4(uint i) {
+static __device__ float4 fetchF4(uint i) {
     return tex1Dfetch(texParticlesF4, i);
 }
 
@@ -17,10 +17,10 @@ static __device__ void core( const uint dststart, const uint pshare, const uint 
     uint dentry = xscale( dpid, 2.f );
     uint sentry = xscale( spid, 2.f );
 
-    xdest = fetchf4(dentry);
-    xsrc  = fetchf4(sentry);
-    udest = fetchf4(xadd(dentry, 1u));
-    usrc  = fetchf4(xadd(sentry, 1u));
+    xdest = fetchF4(dentry);
+    xsrc  = fetchF4(sentry);
+    udest = fetchF4(xadd(dentry, 1u));
+    usrc  = fetchF4(xadd(sentry, 1u));
 
     f = dpd( dpid, xdest, udest, xsrc, usrc, spid );
 
