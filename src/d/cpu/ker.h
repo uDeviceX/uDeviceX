@@ -1,0 +1,8 @@
+#define atomicAdd(...)
+#define __fmaf_rz(...)
+#define __ldg(...)
+#define __shfl(...)
+#define __shfl_down(...)
+#define __shfl_up(...)
+#define __shfl_xor(...)
+#define tex1Dfetch(...)
