@@ -1,19 +1,19 @@
 namespace fsi {
 static void setup_first() {
-    k_fsi::texCellsStart.channelDesc = cudaCreateChannelDesc<int>();
-    k_fsi::texCellsStart.filterMode = cudaFilterModePoint;
-    k_fsi::texCellsStart.mipmapFilterMode = cudaFilterModePoint;
-    k_fsi::texCellsStart.normalized = 0;
+    k_fsi::t::start.channelDesc = cudaCreateChannelDesc<int>();
+    k_fsi::t::start.filterMode = cudaFilterModePoint;
+    k_fsi::t::start.mipmapFilterMode = cudaFilterModePoint;
+    k_fsi::t::start.normalized = 0;
 
-    k_fsi::texCellsCount.channelDesc = cudaCreateChannelDesc<int>();
-    k_fsi::texCellsCount.filterMode = cudaFilterModePoint;
-    k_fsi::texCellsCount.mipmapFilterMode = cudaFilterModePoint;
-    k_fsi::texCellsCount.normalized = 0;
+    k_fsi::t::count.channelDesc = cudaCreateChannelDesc<int>();
+    k_fsi::t::count.filterMode = cudaFilterModePoint;
+    k_fsi::t::count.mipmapFilterMode = cudaFilterModePoint;
+    k_fsi::t::count.normalized = 0;
 
-    k_fsi::texSolventParticles.channelDesc = cudaCreateChannelDesc<float2>();
-    k_fsi::texSolventParticles.filterMode = cudaFilterModePoint;
-    k_fsi::texSolventParticles.mipmapFilterMode = cudaFilterModePoint;
-    k_fsi::texSolventParticles.normalized = 0;
+    k_fsi::t::pp.channelDesc = cudaCreateChannelDesc<float2>();
+    k_fsi::t::pp.filterMode = cudaFilterModePoint;
+    k_fsi::t::pp.mipmapFilterMode = cudaFilterModePoint;
+    k_fsi::t::pp.normalized = 0;
 }
 
 void setup(const Particle *const pp, int n, const int *const cellsstart, const int *const cellscount) {
@@ -26,11 +26,11 @@ void setup(const Particle *const pp, int n, const int *const cellsstart, const i
 
     offset = 0;
     if (n)
-        CC(cudaBindTexture(&offset, &k_fsi::texSolventParticles, pp, &k_fsi::texSolventParticles.channelDesc, sizeof(float) * 6 * n));
+        CC(cudaBindTexture(&offset, &k_fsi::t::pp, pp, &k_fsi::t::pp.channelDesc, sizeof(float) * 6 * n));
 
     nc = XS * YS * ZS;
-    CC(cudaBindTexture(&offset, &k_fsi::texCellsStart, cellsstart, &k_fsi::texCellsStart.channelDesc, sizeof(int) * nc));
-    CC(cudaBindTexture(&offset, &k_fsi::texCellsCount, cellscount, &k_fsi::texCellsCount.channelDesc, sizeof(int) * nc));
+    CC(cudaBindTexture(&offset, &k_fsi::t::start, cellsstart, &k_fsi::t::start.channelDesc, sizeof(int) * nc));
+    CC(cudaBindTexture(&offset, &k_fsi::t::count, cellscount, &k_fsi::t::count.channelDesc, sizeof(int) * nc));
                        
 }
 }

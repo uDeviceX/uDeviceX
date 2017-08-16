@@ -36,28 +36,28 @@ static __device__ int tex2map(int zplane, int n1, float x, float y, float z, /**
     
     if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < YCELLS) {
         cid0 = xstart + XCELLS * (ycenter - 1 + YCELLS * zmy);
-        org0 = tex1Dfetch(texCellsStart, cid0);
+        org0 = tex1Dfetch(t::start, cid0);
         count0 = ((cid0 + xcount == NCELLS)
                   ? n1
-                  : tex1Dfetch(texCellsStart, cid0 + xcount)) -
+                  : tex1Dfetch(t::start, cid0 + xcount)) -
             org0;
     }
     
     if (zvalid && ycenter >= 0 && ycenter < YCELLS) {
         cid1 = xstart + XCELLS * (ycenter + YCELLS * zmy);
-        org1 = tex1Dfetch(texCellsStart, cid1);
+        org1 = tex1Dfetch(t::start, cid1);
         count1 = ((cid1 + xcount == NCELLS)
                   ? n1
-                  : tex1Dfetch(texCellsStart, cid1 + xcount)) -
+                  : tex1Dfetch(t::start, cid1 + xcount)) -
             org1;
     }
     
     if (zvalid && ycenter + 1 >= 0 && ycenter + 1 < YCELLS) {
         cid2 = xstart + XCELLS * (ycenter + 1 + YCELLS * zmy);
-        org2 = tex1Dfetch(texCellsStart, cid2);
+        org2 = tex1Dfetch(t::start, cid2);
         count2 = ((cid2 + xcount == NCELLS)
                   ? n1
-                  : tex1Dfetch(texCellsStart, cid2 + xcount)) -
+                  : tex1Dfetch(t::start, cid2 + xcount)) -
             org2;
     }
     

@@ -1,6 +1,8 @@
 namespace k_fsi {
-texture<float2, cudaTextureType1D> texSolventParticles;
-texture<int, cudaTextureType1D> texCellsStart, texCellsCount;
+namespace t {
+texture<float2, cudaTextureType1D> pp;
+texture<int, cudaTextureType1D> start, count;
+}
 namespace g {
 __constant__ int starts[27], counts[26];
 __constant__ Particle *pp[26];
