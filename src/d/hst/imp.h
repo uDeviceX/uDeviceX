@@ -10,7 +10,7 @@ cudaError_t Malloc(void **p, size_t size) {
 }
 
 cudaError_t MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset, enum cudaMemcpyKind kind) {
-    miss("MemcpyToSymbol");
+    memcpy(vadd(symbol, offset), src, count);
     return cudaSuccess;
 }
 
