@@ -14,7 +14,7 @@ namespace dev {
 #include "params/rbc.inc0.h"
 
 /* forces from one triangle */  
-__DF__ float3 tri(float3 r1, float3 r2, float3 r3, float area, float volume) {
+__device__ float3 tri(float3 r1, float3 r2, float3 r3, float area, float volume) {
     float Ak, A0, n_2, coefArea, coeffVol,
         r, xx, IbforceI_wcl, kp, IbforceI_pow, ka0, kv0, x0, l0, lmax,
         kbToverp;
@@ -56,8 +56,8 @@ __DF__ float3 tri(float3 r1, float3 r2, float3 r3, float area, float volume) {
     return addFArea + addFVolume + (IbforceI_wcl + IbforceI_pow) * x21;
 }
 
-__DF__ float3 visc(float3 r1, float3 r2,
-                   float3 u1, float3 u2) {
+__device__ float3 visc(float3 r1, float3 r2,
+                       float3 u1, float3 u2) {
     float3 du = u2 - u1, dr = r1 - r2;
     float gammaC = RBCgammaC, gammaT = 3.0 * RBCgammaC;
 
@@ -67,8 +67,8 @@ __DF__ float3 visc(float3 r1, float3 r2,
 
 /* forces from one dihedral */
 template <int update>
-__DF__ float3 dihedral(float3 r1, float3 r2, float3 r3,
-                       float3 r4) {
+__device__ float3 dihedral(float3 r1, float3 r2, float3 r3,
+                           float3 r4) {
     float overIksiI, overIdzeI, cosTheta, IsinThetaI2, sinTheta_1,
         beta, b11, b12, phi, sint0kb, cost0kb;
 
@@ -102,9 +102,9 @@ __DF__ float3 dihedral(float3 r1, float3 r2, float3 r3,
     return make_float3(0, 0, 0);
 }
 
-__DF__ float area0(float3 v0, float3 r1, float3 r2) { return 0.5f * abscross(r1 - v0, r2 - v0); }
-__DF__ float volume0(float3 v0, float3 r1, float3 r2) {
-    return \
+__device__ float area0(float3 v0, float3 r1, float3 r2) { return 0.5f * abscross(r1 - v0, r2 - v0); }
+__device__ float volume0(float3 v0, float3 r1, float3 r2) {
+    return                                      \
         0.1666666667f *
         ((v0.x*r1.y-v0.y*r1.x)*r2.z +
          (v0.z*r1.x-v0.x*r1.z)*r2.y +
