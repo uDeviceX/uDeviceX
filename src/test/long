@@ -28,3 +28,18 @@ u.conf conf/long.h <<!!!
 sh runfile
 cat diag.txt | awk 'NR>1 {print $1, $2, $3}' | uscale 1 > sdiag.out.txt
 
+#### normal run: only solvent
+# nTEST: long.t3
+rm -rf bop h5 diag.txt rbc.off
+:
+export PATH=../tools:$PATH
+(cd ../cmd; make ) > /dev/null
+:
+u.conf conf/long.h <<!!!
+   tend=1.0 part_freq=100
+   run
+!!!
+(make clean && u.make -j) > /dev/null 2>&1
+sh runfile
+cat diag.txt | awk 'NR>1 {print $1, $2, $3, $4, $5}' | uscale 1 > sdiag.out.txt
+
