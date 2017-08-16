@@ -7,7 +7,7 @@
 #include "msg.h"
 #include "inc/conf.h"
 #include "cc.h"
-#include "d.h"
+#include "d/api.h"
 
 #include "l/m.h"
 #include "inc/type.h"

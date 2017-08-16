@@ -1,7 +1,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 #include "m.h"
-#include "d.h"
+#include "d/api.h"
 #include "glb.h"
 
 /* globals for all kernels */

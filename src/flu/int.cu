@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <conf.h>
 #include "inc/conf.h"
-#include "d.h"
+#include "d/api.h"
 #include "common.h"
 #include "msg.h"
 #include "cc.h"

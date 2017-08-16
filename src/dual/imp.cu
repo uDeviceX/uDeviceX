@@ -4,7 +4,7 @@
 #include "inc/conf.h"
 #include "msg.h"
 #include "cc.h"
-#include "d.h"
+#include "d/api.h"
 #include "inc/dev.h"
 
 #include "dual/type.h"

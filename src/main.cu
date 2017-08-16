@@ -5,7 +5,7 @@
 
 #include "msg.h"
 #include "m.h" /* mini-MPI and -device */
-#include "d.h"
+#include "d/api.h"
 
 #include "bund.h"
 #include "glb.h"
