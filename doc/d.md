@@ -13,4 +13,4 @@ Generic device can by implemented by `cuda` and by `cpu`
 * `src/d/cpu`
 
 if `DEV_CUDA` defined it is `cuda`, if `DEV_CPU` is defined it is
-`cpu`.
+`cpu`. For cpu `KL_CPU` should be also defined.
