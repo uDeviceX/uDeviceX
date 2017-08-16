@@ -9,18 +9,18 @@ cudaError_t Malloc(void **p, size_t size) {
     return cudaSuccess;
 }
 
-cudaError_t MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset, enum cudaMemcpyKind kind) {
+cudaError_t MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset, enum cudaMemcpyKind) {
     memcpy(vadd(symbol, offset), src, count);
     return cudaSuccess;
 }
 
-cudaError_t HostAlloc (void **pHost, size_t size, unsigned int flags) {
-    miss("HostAlloc");
+cudaError_t HostAlloc (void **pHost, size_t size, unsigned int) {
+    *pHost = malloc(size);
     return cudaSuccess;
 }
 
 cudaError_t HostGetDevicePointer (void **pDevice, void *pHost, unsigned int flags) {
-    miss("HostGetDevicePointer");
+    *pDevice = pHost;
     return cudaSuccess;
 }
 
