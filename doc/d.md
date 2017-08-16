@@ -3,7 +3,9 @@
 The goal is to make cuda API and kernel functions generic. Meaning
 they can be replaced by CPU calls.
 
-* `src/d/api.h` generic device API calls and kernel calls
+generic files of the interface
+* `src/d/api.h` API calls
+* `src/d/q.h` function and variable type qualifiers
 * `src/d/ker.h`
 
 Generic device can by implemented by `cuda` and by `cpu`
