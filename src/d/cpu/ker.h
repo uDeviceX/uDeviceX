@@ -12,5 +12,7 @@
 
 #define __syncthreads(...)
 
-#define tex1Dfetch(...) (make_float2(0, 0))
 #define tex3D(...)
+
+#define  Ifetch(t, i)  (0);
+#define F4fetch(t, i)  (make_float4(0, 0, 0, 0))
