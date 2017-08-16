@@ -1,7 +1,7 @@
 namespace k_cnt {
 
 static __device__ int fetchS(int i) {
-    return fetchS(i);
+    return tex1Dfetch(t::start, i);
 }
 
 }
