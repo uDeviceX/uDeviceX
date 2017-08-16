@@ -1,8 +1,6 @@
 namespace mbounce {
 namespace sub {
 
-#define __host__ __device__ __device__ __host__
-
 enum {XX, XY, XZ, YY, YZ, ZZ};
 /* see /poc/bounce-back/inertia.cpp */
 
