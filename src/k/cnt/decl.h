@@ -7,7 +7,10 @@ enum {
     YOFFSET = YCELLS / 2,
     ZOFFSET = ZCELLS / 2
 };
-texture<int, cudaTextureType1D> texCellsStart, texCellEntries;
+
+namespace t {
+texture<int, cudaTextureType1D> start, id;
+}
 
 namespace g {
 __constant__ int ns[MAX_OBJ_TYPES];

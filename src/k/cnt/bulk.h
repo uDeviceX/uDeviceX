@@ -33,20 +33,20 @@ __global__ void bulk(float2 *particles, int np,
 
         if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < YCELLS) {
             int cid0 = xstart + XCELLS * (ycenter - 1 + YCELLS * zmy);
-            spidbase = tex1Dfetch(texCellsStart, cid0);
-            count0 = tex1Dfetch(texCellsStart, cid0 + xcount) - spidbase;
+            spidbase = tex1Dfetch(t::start, cid0);
+            count0 = tex1Dfetch(t::start, cid0 + xcount) - spidbase;
         }
 
         if (zvalid && ycenter >= 0 && ycenter < YCELLS) {
             int cid1 = xstart + XCELLS * (ycenter + YCELLS * zmy);
-            deltaspid1 = tex1Dfetch(texCellsStart, cid1);
-            count1 = tex1Dfetch(texCellsStart, cid1 + xcount) - deltaspid1;
+            deltaspid1 = tex1Dfetch(t::start, cid1);
+            count1 = tex1Dfetch(t::start, cid1 + xcount) - deltaspid1;
         }
 
         if (zvalid && ycenter + 1 >= 0 && ycenter + 1 < YCELLS) {
             int cid2 = xstart + XCELLS * (ycenter + 1 + YCELLS * zmy);
-            deltaspid2 = tex1Dfetch(texCellsStart, cid2);
-            count2 = tex1Dfetch(texCellsStart, cid2 + xcount) - deltaspid2;
+            deltaspid2 = tex1Dfetch(t::start, cid2);
+            count2 = tex1Dfetch(t::start, cid2 + xcount) - deltaspid2;
         }
 
         scan1 = count0;
@@ -66,7 +66,7 @@ __global__ void bulk(float2 *particles, int np,
         int slot = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
 
         CellEntry ce;
-        ce.pid = tex1Dfetch(texCellEntries, slot);
+        ce.pid = tex1Dfetch(t::id, slot);
         int soluteid = ce.code.w;
 
         ce.code.w = 0;

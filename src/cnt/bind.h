@@ -4,12 +4,12 @@ void bind(const int *const starts, const int *const cellentries,
     size_t textureoffset = 0;
 
     if (ncellentries)
-        CC(cudaBindTexture(&textureoffset, &k_cnt::texCellEntries, cellentries,
-                           &k_cnt::texCellEntries.channelDesc,
+        CC(cudaBindTexture(&textureoffset, &k_cnt::t::id, cellentries,
+                           &k_cnt::t::id.channelDesc,
                            sizeof(int) * ncellentries));
     int ncells = XS * YS * ZS;
-    CC(cudaBindTexture(&textureoffset, &k_cnt::texCellsStart, starts,
-                       &k_cnt::texCellsStart.channelDesc, sizeof(int) * ncells));
+    CC(cudaBindTexture(&textureoffset, &k_cnt::t::start, starts,
+                       &k_cnt::t::start.channelDesc, sizeof(int) * ncells));
     int n = wr.size();
 
     int ns[n];

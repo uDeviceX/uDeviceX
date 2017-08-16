@@ -1,13 +1,13 @@
 namespace cnt {
 void setup() {
-    k_cnt::texCellsStart.channelDesc = cudaCreateChannelDesc<int>();
-    k_cnt::texCellsStart.filterMode = cudaFilterModePoint;
-    k_cnt::texCellsStart.mipmapFilterMode = cudaFilterModePoint;
-    k_cnt::texCellsStart.normalized = 0;
+    k_cnt::t::start.channelDesc = cudaCreateChannelDesc<int>();
+    k_cnt::t::start.filterMode = cudaFilterModePoint;
+    k_cnt::t::start.mipmapFilterMode = cudaFilterModePoint;
+    k_cnt::t::start.normalized = 0;
 
-    k_cnt::texCellEntries.channelDesc = cudaCreateChannelDesc<int>();
-    k_cnt::texCellEntries.filterMode = cudaFilterModePoint;
-    k_cnt::texCellEntries.mipmapFilterMode = cudaFilterModePoint;
-    k_cnt::texCellEntries.normalized = 0;
+    k_cnt::t::id.channelDesc = cudaCreateChannelDesc<int>();
+    k_cnt::t::id.filterMode = cudaFilterModePoint;
+    k_cnt::t::id.mipmapFilterMode = cudaFilterModePoint;
+    k_cnt::t::id.normalized = 0;
 }
 }
