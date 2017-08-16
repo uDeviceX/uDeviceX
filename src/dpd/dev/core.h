@@ -1,5 +1,12 @@
+static __device__ float4 fetchf4(uint i) {
+    return tex1Dfetch(texParticlesF4, i);
+}
+
 static __device__ void core( const uint dststart, const uint pshare, const uint tid, const uint spidext )
 {
+    float4 xdest, xsrc, udest, usrc;
+    float3 f;
+
     uint item;
     uint offset = xmad( tid, 4.f, pshare );
     asm volatile( "ld.volatile.shared.u32 %0, [%1+1024];" : "=r"( item ) : "r"( offset ) : "memory" );
@@ -9,11 +16,13 @@ static __device__ void core( const uint dststart, const uint pshare, const uint 
 
     uint dentry = xscale( dpid, 2.f );
     uint sentry = xscale( spid, 2.f );
-    float4 xdest = tex1Dfetch( texParticlesF4,       dentry );
-    float4 xsrc  = tex1Dfetch( texParticlesF4,       sentry );
-    float4 udest = tex1Dfetch( texParticlesF4, xadd( dentry, 1u ) );
-    float4 usrc  = tex1Dfetch( texParticlesF4, xadd( sentry, 1u ) );
-    float3 f = dpd( dpid, xdest, udest, xsrc, usrc, spid );
+
+    xdest = tex1Dfetch( texParticlesF4,       dentry );
+    xsrc  = tex1Dfetch( texParticlesF4,       sentry );
+    udest = tex1Dfetch( texParticlesF4, xadd( dentry, 1u ) );
+    usrc  = tex1Dfetch( texParticlesF4, xadd( sentry, 1u ) );
+
+    f = dpd( dpid, xdest, udest, xsrc, usrc, spid );
 
     // the overhead of transposition acc back
     // can be completely killed by changing the integration kernel
