@@ -1,5 +1,3 @@
-/* function and variable type [q]ualifiers */
-
 #if   defined(DEV_CUDA)
   #include "d/cuda/ker.h"
   #include "d/cuda/wrap.h"
