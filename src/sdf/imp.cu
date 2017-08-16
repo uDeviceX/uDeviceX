@@ -7,6 +7,8 @@
 #include "msg.h"
 #include "cc.h"
 
+#include "d/q.h"
+
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "inc/macro.h"
