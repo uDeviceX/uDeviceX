@@ -1,7 +1,7 @@
 namespace fsi {
 void bulk(std::vector<ParticlesWrap> wr) {
     if (wr.size() == 0) return;
-    setup(wo->p, wo->n, wo->cellsstart, wo->cellscount);
+    setup(wo->p, wo->n, wo->cellsstart);
     for (std::vector<ParticlesWrap>::iterator it = wr.begin(); it != wr.end(); ++it)
         KL(k_fsi::bulk,
            (k_cnf(3*it->n)),

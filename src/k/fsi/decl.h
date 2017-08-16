@@ -1,7 +1,7 @@
 namespace k_fsi {
 namespace t {
 texture<float2, cudaTextureType1D> pp;
-texture<int, cudaTextureType1D> start, count;
+texture<int, cudaTextureType1D> start;
 }
 namespace g {
 __constant__ int starts[27], counts[26];
