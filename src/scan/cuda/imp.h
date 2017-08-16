@@ -1,21 +1,3 @@
-#include <stdio.h>
-#include <conf.h>
-#include "inc/conf.h"
-
-#include "common.h"
-#include "inc/dev.h"
-#include "msg.h"
-#include "cc.h"
-#include "kl.h"
-#include "d/api.h"
-#include "d/q.h"
-#include "d/ker.h"
-
-#include "scan/int.h"
-#include "scan/dev.h"
-
-namespace scan {
-
 enum { THREADS = 128 };
 
 static void scan0(const unsigned char *input, int size, /**/ uint *output, /*w*/ uint *tmp) {
@@ -40,4 +22,3 @@ void free_work(/**/ Work *w) {
     Dfree0(w->compressed);
 }
 
-} /* namespace */
