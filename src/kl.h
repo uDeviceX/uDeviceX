@@ -12,6 +12,8 @@
   #include "kl/unsafe.h"
 #elif  defined(KL_NONE)
   #include "kl/none.h"
+#elif  defined(KL_CPU)
+  #include "kl/cpu.h"
 #else
   #error KL_* is undefined
 #endif
