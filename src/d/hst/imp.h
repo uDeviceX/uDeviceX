@@ -24,23 +24,22 @@ cudaError_t HostGetDevicePointer (void **pDevice, void *pHost, unsigned int flag
     return cudaSuccess;
 }
 
-cudaError_t Memcpy (void *dst, const void *src, size_t count, enum cudaMemcpyKind kind) {
-    miss("Memcpy");
+cudaError_t Memcpy (void *dst, const void *src, size_t count, enum cudaMemcpyKind) {
+    memcpy(dst, src, count);
     return cudaSuccess;    
 }
 
 cudaError_t MemsetAsync (void *devPtr, int value, size_t count, cudaStream_t stream) {
-    miss("MemsetAsync");
+    memset(devPtr, value, count);
     return cudaSuccess;
 }
 
-cudaError_t MemcpyAsync (void * dst, const void * src, size_t count, enum cudaMemcpyKind
-                         kind, cudaStream_t stream) {
-    miss("MemcpyAsync");
+cudaError_t MemcpyAsync (void * dst, const void * src, size_t count, enum cudaMemcpyKind, cudaStream_t) {
+    memcpy(dst, src, count);
     return cudaSuccess;
 }
 
 cudaError_t Free (void *devPtr) {
-    miss("Free");
+    free(devPtr);
     return cudaSuccess;
 }
