@@ -105,6 +105,7 @@ namespace ic {
 
 #include "k/fsi/type.h"
 #include "k/fsi/decl.h"
+#include "k/fsi/fetch.h"
 #include "k/fsi/common.h"
 #include "k/fsi/map.common.h"
 #include "k/fsi/map.bulk.h"
