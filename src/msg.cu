@@ -28,7 +28,7 @@ static FILE* open(const char *path) {
 
 static void print0(FILE *f) {
     fprintf(f, "%s\n", buf);
-    if (m::rank == 0) fprintf(stderr, "000: %s\n", buf);
+    if (m::rank == 0) fprintf(stderr, ": %s\n", buf);
 }
 
 void print() {
