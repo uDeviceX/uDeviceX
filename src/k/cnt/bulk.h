@@ -33,20 +33,20 @@ __global__ void bulk(float2 *particles, int np,
 
         if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < YCELLS) {
             int cid0 = xstart + XCELLS * (ycenter - 1 + YCELLS * zmy);
-            spidbase = tex1Dfetch(t::start, cid0);
-            count0 = tex1Dfetch(t::start, cid0 + xcount) - spidbase;
+            spidbase = fetchS(cid0);
+            count0 = fetchS(cid0 + xcount) - spidbase;
         }
 
         if (zvalid && ycenter >= 0 && ycenter < YCELLS) {
             int cid1 = xstart + XCELLS * (ycenter + YCELLS * zmy);
-            deltaspid1 = tex1Dfetch(t::start, cid1);
-            count1 = tex1Dfetch(t::start, cid1 + xcount) - deltaspid1;
+            deltaspid1 = fetchS(cid1);
+            count1 = fetchS(cid1 + xcount) - deltaspid1;
         }
 
         if (zvalid && ycenter + 1 >= 0 && ycenter + 1 < YCELLS) {
             int cid2 = xstart + XCELLS * (ycenter + 1 + YCELLS * zmy);
-            deltaspid2 = tex1Dfetch(t::start, cid2);
-            count2 = tex1Dfetch(t::start, cid2 + xcount) - deltaspid2;
+            deltaspid2 = fetchS(cid2);
+            count2 = fetchS(cid2 + xcount) - deltaspid2;
         }
 
         scan1 = count0;
