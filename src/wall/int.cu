@@ -6,7 +6,9 @@
 #include "common.h"
 #include "msg.h"
 #include "cc.h"
+
 #include "d/api.h"
+#include "d/ker.h"
 
 #include "inc/type.h"
 #include "inc/dev.h"

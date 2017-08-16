@@ -6,8 +6,11 @@
 #include "common.h"
 #include "msg.h"
 #include "glb.h"
+
 #include "d/api.h"
 #include "d/q.h"
+#include "d/ker.h"
+
 #include "cc.h"
 
 #include "inc/type.h"
