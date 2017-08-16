@@ -1,7 +1,7 @@
 #define atomicAdd(...) (0)
 
 #define atomicExch(...)
-#define __float2half_rn(...)
+#define __float2half_rn(...) (0)
 #define __fmaf_rz(...) (0.0)
 #define __ldg(p) (*(p))
 #define __popc(...)
