@@ -1,0 +1,10 @@
+### Build out of source
+# TEST: make.t1
+t=/tmp/udx.$$
+trap 'rm -rf $t; echo $t' 0 1 2 3 15
+:
+s=`pwd`
+mkdir $t
+cd $t
+"$s"/configure "$s"
+u.make
