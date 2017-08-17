@@ -8,11 +8,14 @@ l=`find . -name '*.cu' -o -name '*.h'`
 d=make/dep.mk
 o=make/obj.mk
 m=make/dir.mk
+r=make/rule.mk
 
 u.deps $l > $d
 u.obj  $l > $o
 u.mdir $l > $m
+u.rule $l > $r
 
 echo upd: $d >&2
 echo upd: $o >&2
 echo upd: $m >&2
+echo upd: $r >&2
