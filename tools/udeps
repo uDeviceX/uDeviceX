@@ -8,7 +8,7 @@ special () { # TODO: exclude glb.cu
 }
 
 # run from src
-l=`find . -name '*.cu' -o -name '*.h'`
+l=`find . -name '*.cu' -o -name '*.h' -o -name '*.cpp'`
 l0=`special $l`
 
 d=make/dep.mk
