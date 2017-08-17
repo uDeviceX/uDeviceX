@@ -39,14 +39,14 @@ $B/rdstr/imp.o: $S/rdstr/imp.cu; $N
 $B/rdstr/int.o: $S/rdstr/int.cu; $N
 $B/restart.o: $S/restart.cpp; $X
 $B/rig/imp.o: $S/rig/imp.cu; $N
-$B/rig/int.o: $S/rig/int.cpp; $X
+$B/rig/int.o: $S/rig/int.cu; $N
 $B/rnd/imp.o: $S/rnd/imp.cpp; $X
 $B/scan/imp.o: $S/scan/imp.cu; $N
 $B/sdf/imp.o: $S/sdf/imp.cu; $N
 $B/sdf/int.o: $S/sdf/int.cu; $N
 $B/solid.o: $S/solid.cu; $N
 $B/tcells/imp.o: $S/tcells/imp.cu; $N
-$B/tcells/int.o: $S/tcells/int.cpp; $X
+$B/tcells/int.o: $S/tcells/int.cu; $N
 $B/wall/exch.o: $S/wall/exch.cpp; $X
 $B/wall/imp.o: $S/wall/imp.cu; $N
 $B/wall/int.o: $S/wall/int.cu; $N

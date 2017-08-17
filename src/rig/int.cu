@@ -6,6 +6,7 @@
 #include "common.h"
 #include "msg.h"
 #include "cc.h"
+#include "d/api.h"
 
 #include "inc/type.h"
 #include "inc/dev.h"
@@ -18,10 +19,10 @@ namespace rig {
 void alloc_quants(Quants *q) {
     q->n = q->ns = q->nps = 0;
     
-    CC(d::Malloc(&q->pp ,     MAX_PART_NUM * sizeof(Particle)));
-    CC(d::Malloc(&q->ss ,       MAX_SOLIDS * sizeof(Solid)));
-    CC(d::Malloc(&q->rr0, 3 * MAX_PART_NUM * sizeof(float)));
-    CC(d::Malloc(&q->i_pp,    MAX_PART_NUM * sizeof(Particle)));
+    Dalloc(&q->pp ,     MAX_PART_NUM);
+    Dalloc(&q->ss ,     MAX_SOLIDS);
+    Dalloc(&q->rr0, 3 * MAX_PART_NUM);
+    Dalloc(&q->i_pp,    MAX_PART_NUM);
     
     q->pp_hst   = new Particle[MAX_PART_NUM];
     q->ss_hst   = new Solid[MAX_SOLIDS];
@@ -52,10 +53,10 @@ void free_quants(Quants *q) {
 }
 
 void alloc_ticket(TicketBB *t) {
-    CC(d::Malloc(&t->minbb_dev, MAX_SOLIDS * sizeof(float3)));
-    CC(d::Malloc(&t->maxbb_dev, MAX_SOLIDS * sizeof(float3)));
-    CC(d::Malloc(&t->i_pp,  MAX_PART_NUM * sizeof(Particle)));
-    CC(d::Malloc(&t->ss ,        MAX_SOLIDS * sizeof(Solid)));
+    Dalloc(&t->minbb_dev, MAX_SOLIDS);
+    Dalloc(&t->maxbb_dev, MAX_SOLIDS);
+    Dalloc(&t->i_pp, MAX_PART_NUM);
+    Dalloc(&t->ss ,  MAX_SOLIDS);
     
     t->minbb_hst = new float3[MAX_SOLIDS];
     t->maxbb_hst = new float3[MAX_SOLIDS];
