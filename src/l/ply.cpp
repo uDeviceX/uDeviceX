@@ -1,5 +1,7 @@
 #include <stdio.h>
-#include <cassert>
+#include <stdlib.h>
+#include <string.h>
+#include <assert.h>
 #include "inc/type.h"
 #include "common.h"
 #include "msg.h"

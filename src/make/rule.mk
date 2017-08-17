@@ -14,10 +14,10 @@ $B/flu/int.o: $S/flu/int.cu; $N
 $B/hforces/imp.o: $S/hforces/imp.cu; $N
 $B/io/field.o: $S/io/field.cu; $N
 $B/io/rbc.o: $S/io/rbc.cu; $N
-$B/l/linal.o: $S/l/linal.cu; $N
+$B/l/linal.o: $S/l/linal.cpp; $X
 $B/l/m.o: $S/l/m.cu; $N
-$B/l/off.o: $S/l/off.cu; $N
-$B/l/ply.o: $S/l/ply.cu; $N
+$B/l/off.o: $S/l/off.cpp; $X
+$B/l/ply.o: $S/l/ply.cpp; $X
 $B/m.o: $S/m.cu; $N
 $B/main.o: $S/main.cu; $N
 $B/mbounce/imp.o: $S/mbounce/imp.cu; $N
