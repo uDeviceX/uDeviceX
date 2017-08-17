@@ -15,4 +15,5 @@ HDF5_LIBS  = `pkg-config --libs ${HDF5_VARIANT}`
 CXXFLAGS += -D_FORCE_INLINES
 
 CXXFLAGS += -Wall -Wextra
+CXXFLAGS += -Wno-unused -Wno-unused-parameter -Wno-unused-but-set-variable -Wno-unknown-pragmas
 CXXFLAGS += -DDEV_CPU -DKL_CPU
