@@ -7,6 +7,7 @@ cudaError_t HostAlloc(void **pHost, size_t size, unsigned int flags);
 cudaError_t HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
 cudaError_t Memcpy (void *dst, const void *src, size_t count, enum cudaMemcpyKind kind);
 cudaError_t MemsetAsync (void *devPtr, int value, size_t count, cudaStream_t stream=0);
+cudaError_t Memset (void *devPtr, int value, size_t count);
 cudaError_t MemcpyAsync (void * dst, const void * src, size_t count, enum cudaMemcpyKind
                          kind, cudaStream_t stream = 0);
 cudaError_t Free (void *devPtr);
