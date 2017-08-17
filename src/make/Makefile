@@ -46,7 +46,6 @@ $B/%/int.o:       $S/%/int.cu;        $C     $< -c -o $@
 $B/%/imp.o:       $S/%/imp.cu;        $C     $< -c -o $@
 
 # dev and hst
-$B/bund.o:  $S/bund.cu;      $C -dc $< -c -o $@
 $B/glb.o:   $S/glb.cu;       $C -dc $< -c -o $@
 
 clean:; -rm -f $B/udx $O $B/gpuCode.o
