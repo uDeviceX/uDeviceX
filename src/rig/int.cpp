@@ -18,10 +18,10 @@ namespace rig {
 void alloc_quants(Quants *q) {
     q->n = q->ns = q->nps = 0;
     
-    CC(cudaMalloc(&q->pp ,     MAX_PART_NUM * sizeof(Particle)));
-    CC(cudaMalloc(&q->ss ,       MAX_SOLIDS * sizeof(Solid)));
-    CC(cudaMalloc(&q->rr0, 3 * MAX_PART_NUM * sizeof(float)));
-    CC(cudaMalloc(&q->i_pp,    MAX_PART_NUM * sizeof(Particle)));
+    CC(d::Malloc(&q->pp ,     MAX_PART_NUM * sizeof(Particle)));
+    CC(d::Malloc(&q->ss ,       MAX_SOLIDS * sizeof(Solid)));
+    CC(d::Malloc(&q->rr0, 3 * MAX_PART_NUM * sizeof(float)));
+    CC(d::Malloc(&q->i_pp,    MAX_PART_NUM * sizeof(Particle)));
     
     q->pp_hst   = new Particle[MAX_PART_NUM];
     q->ss_hst   = new Solid[MAX_SOLIDS];
@@ -37,10 +37,10 @@ void free_quants(Quants *q) {
     delete[] q->rr0_hst;
     delete[] q->i_pp_hst;
     
-    CC(cudaFree(q->pp));
-    CC(cudaFree(q->ss));
-    CC(cudaFree(q->rr0));
-    CC(cudaFree(q->i_pp));
+    CC(d::Free(q->pp));
+    CC(d::Free(q->ss));
+    CC(d::Free(q->rr0));
+    CC(d::Free(q->i_pp));
 
     if (q->m_hst.tt) delete[] q->m_hst.tt;
     if (q->m_hst.vv) delete[] q->m_hst.vv;
@@ -52,10 +52,10 @@ void free_quants(Quants *q) {
 }
 
 void alloc_ticket(TicketBB *t) {
-    CC(cudaMalloc(&t->minbb_dev, MAX_SOLIDS * sizeof(float3)));
-    CC(cudaMalloc(&t->maxbb_dev, MAX_SOLIDS * sizeof(float3)));
-    CC(cudaMalloc(&t->i_pp,  MAX_PART_NUM * sizeof(Particle)));
-    CC(cudaMalloc(&t->ss ,        MAX_SOLIDS * sizeof(Solid)));
+    CC(d::Malloc(&t->minbb_dev, MAX_SOLIDS * sizeof(float3)));
+    CC(d::Malloc(&t->maxbb_dev, MAX_SOLIDS * sizeof(float3)));
+    CC(d::Malloc(&t->i_pp,  MAX_PART_NUM * sizeof(Particle)));
+    CC(d::Malloc(&t->ss ,        MAX_SOLIDS * sizeof(Solid)));
     
     t->minbb_hst = new float3[MAX_SOLIDS];
     t->maxbb_hst = new float3[MAX_SOLIDS];
@@ -66,10 +66,10 @@ void alloc_ticket(TicketBB *t) {
 }
 
 void free_ticket(TicketBB *t) {
-    CC(cudaFree(t->minbb_dev));
-    CC(cudaFree(t->maxbb_dev));
-    CC(cudaFree(t->i_pp));
-    CC(cudaFree(t->ss));
+    CC(d::Free(t->minbb_dev));
+    CC(d::Free(t->maxbb_dev));
+    CC(d::Free(t->i_pp));
+    CC(d::Free(t->ss));
 
     delete[] t->minbb_hst;
     delete[] t->maxbb_hst;
