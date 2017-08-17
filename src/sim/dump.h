@@ -1,11 +1,11 @@
 void dev2hst() { /* device to host  data transfer */
     int start = 0;
-    cD2H(a::pp_hst + start, o::q.pp, o::q.n); start += o::q.n;
+    cD2H0(a::pp_hst + start, o::q.pp, o::q.n); start += o::q.n;
     if (solids0) {
-        cD2H(a::pp_hst + start, s::q.pp, s::q.n); start += s::q.n;
+        cD2H0(a::pp_hst + start, s::q.pp, s::q.n); start += s::q.n;
     }
     if (rbcs) {
-        cD2H(a::pp_hst + start, r::q.pp, r::q.n); start += r::q.n;
+        cD2H0(a::pp_hst + start, r::q.pp, r::q.n); start += r::q.n;
     }
 }
 
