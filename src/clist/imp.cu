@@ -49,7 +49,7 @@ void build(int n, int xcells, int ycells, int zcells,
     KL(dev::get_ids, (k_cnf(n)), (pp, starts, n, cells, /**/ counts, ids));
     KL(dev::gather, (k_cnf(n)), (pp, ids, n, /**/ ppd));
 
-    aD2D0(pp, ppd, n);
+    aD2D(pp, ppd, n);
     Dfree0(ids);
     Dfree0(ppd);
 }
