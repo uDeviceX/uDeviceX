@@ -27,6 +27,7 @@ $B/udx: $O
 	$(LINK)  $B/gpuCode.o $O $(LIBS) -o $@
 
 N  = $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT)     $< -c -o $@
+X  = $N
 NN = $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 
 # special rule
