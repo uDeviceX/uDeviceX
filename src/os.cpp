@@ -1,6 +1,9 @@
-#include <sys/stat.h>
 #include <stdio.h>
+#include <stdlib.h>
+
+#include <sys/stat.h>
 #include <errno.h>
+
 #include "os.h"
 
 namespace os {
