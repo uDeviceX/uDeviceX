@@ -3,8 +3,14 @@
 # u.deps and u.obj are from
 # see git@gitlab.ethz.ch:mavt-cse/clarity
 
+special () { # TODO: exclude glb.cu
+    printf '%s\n' $* | awk '!/glb\.cu$/'
+}
+
 # run from src
 l=`find . -name '*.cu' -o -name '*.h'`
+l0=`special $l`
+
 d=make/dep.mk
 o=make/obj.mk
 m=make/dir.mk
@@ -13,7 +19,7 @@ r=make/rule.mk
 u.deps $l > $d
 u.obj  $l > $o
 u.mdir $l > $m
-u.rule $l > $r
+u.rule $l0 > $r
 
 echo upd: $d >&2
 echo upd: $o >&2

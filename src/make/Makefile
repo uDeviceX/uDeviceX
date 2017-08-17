@@ -30,24 +30,11 @@ $B/udx: $O
 	$(LINK)  $B/gpuCode.o $O $(LIBS) -o $@
 
 # compile commands
-C=$(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT)
-
-# dev
-$B/%.o:           $S/%.cu;            $C     $< -c -o $@
-$B/l/%.o:         $S/l/%.cu;          $C     $< -c -o $@
-$B/mesh/%.o:      $S/mesh/%.cu;       $C     $< -c -o $@
-$B/io/%.o:        $S/io/%.cu;         $C     $< -c -o $@
-$B/dpd/local.o:   $S/dpd/local.cu;    $C     $< -c -o $@
-$B/wall/exch.o:   $S/wall/exch.cu;    $C     $< -c -o $@
-$B/d/api.o:       $S/d/api.cu;        $C     $< -c -o $@
-
-# generic interface and implementation rules
-$B/%/int.o:       $S/%/int.cu;        $C     $< -c -o $@
-$B/%/imp.o:       $S/%/imp.cu;        $C     $< -c -o $@
+N= $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT)     $< -c -o $@
+N0=$(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 
 # dev and hst
-$B/glb.o:   $S/glb.cu;       $C -dc $< -c -o $@
-
+$B/glb.o:; $(NO)
 clean:; -rm -f $B/udx $O $B/gpuCode.o
 
 .PHONY = clean all D
