@@ -37,7 +37,7 @@ $B/odstr/int.o: $S/odstr/int.cu; $N
 $B/os.o: $S/os.cu; $N
 $B/rdstr/imp.o: $S/rdstr/imp.cu; $N
 $B/rdstr/int.o: $S/rdstr/int.cu; $N
-$B/restart.o: $S/restart.cu; $N
+$B/restart.o: $S/restart.cpp; $X
 $B/rig/imp.o: $S/rig/imp.cu; $N
 $B/rig/int.o: $S/rig/int.cu; $N
 $B/rnd/imp.o: $S/rnd/imp.cu; $N
