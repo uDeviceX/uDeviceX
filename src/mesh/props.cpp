@@ -1,3 +1,4 @@
+#include <string.h>
 #include "inc/type.h"
 #include "mesh/props.h"
 

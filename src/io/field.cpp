@@ -3,10 +3,12 @@
 #endif
 
 #include <string>
+#include <math.h>
+
 #include <conf.h>
+#include "inc/conf.h"
 
 #include "os.h"
-#include "inc/conf.h"
 #include "m.h"     /* MPI */
 #include "l/m.h"
 #include "inc/type.h"

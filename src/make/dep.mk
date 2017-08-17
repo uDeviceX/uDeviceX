@@ -8,7 +8,7 @@ $B/dpdr/imp.o: $S/cc.h $S/cc/common.h $S/cc/release.h $S/cc/sync.h $S/cc/trace.h
 $B/dpdr/int.o: $S/basetags.h $S/cc.h $S/cc/common.h $S/cc/release.h $S/cc/sync.h $S/cc/trace.h $S/cc/trace.peek.h $S/common.h $B/conf.h $S/d/api.h $S/dpdr/imp.h $S/dpdr/int.h $S/dpdr/type.h $S/hforces/imp.h $S/inc/conf.h $S/inc/dev.h $S/inc/mpi.h $S/inc/type.h $S/msg.h $S/rnd/imp.h
 $B/dual/imp.o: $S/cc.h $S/cc/common.h $S/cc/release.h $S/cc/sync.h $S/cc/trace.h $S/cc/trace.peek.h $B/conf.h $S/d/api.h $S/dual/int.h $S/dual/type.h $S/inc/conf.h $S/inc/dev.h $S/msg.h
 $B/dump.o: $S/common.h $B/conf.h $S/d/api.h $S/dump.h $S/inc/conf.h $S/inc/mpi.h $S/inc/type.h $S/l/m.h $S/m.h $S/msg.h $S/os.h
-$B/field.o: $B/conf.h $S/field.h $S/inc/type.h $S/io/field.h $S/m.h $S/msg.h
+$B/field.o: $B/conf.h $S/field.h $S/inc/conf.h $S/inc/type.h $S/io/field.h $S/m.h $S/msg.h
 $B/flu/imp.o: $S/cc.h $S/cc/common.h $S/cc/release.h $S/cc/sync.h $S/cc/trace.h $S/cc/trace.peek.h $S/common.h $B/conf.h $S/d/api.h $S/d/cpu/ker.h $S/d/cpu/q.h $S/d/cpu/wrap.h $S/d/cuda/ker.h $S/d/cuda/q.h $S/d/cuda/wrap.h $S/d/ker.h $S/d/q.h $S/flu/dev0.h $S/flu/dev1.h $S/flu/imp.h $S/inc/conf.h $S/inc/dev.h $S/inc/mpi.h $S/inc/type.h $S/kl.h $S/kl/common.h $S/kl/cpu.h $S/kl/macro.h $S/kl/none.h $S/kl/peek.h $S/kl/release.h $S/kl/trace.h $S/kl/trace.peek.h $S/kl/unsafe.h $S/l/m.h $S/msg.h $S/restart.h
 $B/flu/int.o: $S/cc.h $S/cc/common.h $S/cc/release.h $S/cc/sync.h $S/cc/trace.h $S/cc/trace.peek.h $S/clist/int.h $S/common.h $B/conf.h $S/d/api.h $S/flu/imp.h $S/flu/int.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/msg.h $S/rnd/imp.h
 $B/glb.o: $B/conf.h $S/d/api.h $S/glb.h $S/inc/conf.h $S/m.h

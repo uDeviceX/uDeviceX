@@ -1,5 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
 #include <conf.h>
+#include "inc/conf.h"
 
 #include "inc/type.h"
 #include "io/field.h"

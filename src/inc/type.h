@@ -31,14 +31,14 @@ struct ParticlesWrap000 {
     const Particle *p;
     int n;
     Force *f;
-    ParticlesWrap000() : p(NULL), n(0), f(NULL) {}
+    ParticlesWrap000() : n(0) {}
     ParticlesWrap000(const Particle *const p, const int n, Force *f)
         : p(p), n(n), f(f) {}
 };
 
 struct SolventWrap : ParticlesWrap000 {
     const int   *cellscount, *cellsstart;
-    SolventWrap() : ParticlesWrap000(), cellscount(NULL), cellsstart(NULL) {}
+    SolventWrap() : ParticlesWrap000() {}
     SolventWrap(const Particle *const p, const int n, Force *f,
                 const int *const cellsstart, const int *const cellscount)
         : ParticlesWrap000(p, n, f),

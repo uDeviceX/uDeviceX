@@ -1,5 +1,10 @@
 namespace h5 {
-static int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
+static int minmax(int lo, int hi, int x) {
+    return \
+        x <= lo ? lo :
+        x >= hi ? hi :
+        x;
+}
 
 static void zero0(float *a, int n) {
     int i;

@@ -1,8 +1,10 @@
 #include <mpi.h>
 #include <stdio.h>
+#include <stdlib.h>
+
 #include <conf.h>
-#include "os.h"
 #include "inc/conf.h"
+#include "os.h"
 #include "m.h"     /* MPI */
 #include "l/m.h"
 #include "inc/type.h"

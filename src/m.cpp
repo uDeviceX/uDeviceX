@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <mpi.h>
 #include "inc/mpi.h"
 #include "l/m.h"
