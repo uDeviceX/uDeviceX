@@ -31,7 +31,7 @@ $B/mesh/dist.o: $S/mesh/dist.cu; $N
 $B/mesh/props.o: $S/mesh/props.cu; $N
 $B/minmax.o: $S/minmax.cu; $N
 $B/mrescue.o: $S/mrescue.cu; $N
-$B/msg.o: $S/msg.cu; $N
+$B/msg.o: $S/msg.cpp; $X
 $B/odstr/imp.o: $S/odstr/imp.cu; $N
 $B/odstr/int.o: $S/odstr/int.cu; $N
 $B/os.o: $S/os.cu; $N
