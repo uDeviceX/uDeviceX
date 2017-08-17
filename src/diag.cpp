@@ -9,6 +9,8 @@
 #include "inc/mpi.h"
 #include "diag.h"
 
+static float sq(float x) { return x*x; }
+
 void diagnostics(Particle *pp, int n, int idstep) {
     double p[] = {0, 0, 0};
     for(int i = 0; i < n; ++i)
@@ -20,7 +22,7 @@ void diagnostics(Particle *pp, int n, int idstep) {
                     MPI_DOUBLE, MPI_SUM, 0, l::m::cart) );
     double ke = 0;
     for(int i = 0; i < n; ++i)
-    ke += pow(pp[i].v[0], 2) + pow(pp[i].v[1], 2) + pow(pp[i].v[2], 2);
+        ke += sq(pp[i].v[0]) + sq(pp[i].v[1]) + sq(pp[i].v[2]);
 
     MC(l::m::Reduce(m::rank == 0 ? MPI_IN_PLACE : &ke,
                     &ke,
