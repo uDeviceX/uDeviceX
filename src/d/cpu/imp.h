@@ -43,3 +43,7 @@ cudaError_t Free (void *devPtr) {
     free(devPtr);
     return cudaSuccess;
 }
+
+cudaError_t DeviceSynchronize (void) {
+    return cudaSuccess;
+}

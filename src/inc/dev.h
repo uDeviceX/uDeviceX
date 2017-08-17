@@ -4,7 +4,7 @@
 /* a common kernel execution configuration */
 #define k_cnf(n) ceiln((n), 128), 128
 
-#define dSync() CC(cudaDeviceSynchronize())
+#define dSync() CC(d::DeviceSynchronize())
 
 /* test if inside device function                                 */
 /* useful for small differences in __device__ __host__ functions */

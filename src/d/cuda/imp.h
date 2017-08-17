@@ -37,3 +37,7 @@ cudaError_t MemcpyAsync (void * dst, const void * src, size_t count, enum cudaMe
 cudaError_t Free (void *devPtr) {
     return cudaFree (devPtr);
 }
+
+cudaError_t DeviceSynchronize (void) {
+    return cudaDeviceSynchronize();
+}

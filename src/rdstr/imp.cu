@@ -5,6 +5,7 @@
 #include "inc/conf.h"
 
 #include "d/q.h"
+#include "d/api.h"
 #include "d/ker.h"
 
 #include "common.h"

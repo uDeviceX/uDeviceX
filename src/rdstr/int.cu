@@ -8,6 +8,7 @@
 #include "m.h"
 
 #include "d/ker.h"
+#include "d/api.h"
 
 #include "cc.h"
 #include "l/m.h"
