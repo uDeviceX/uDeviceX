@@ -2,7 +2,7 @@ $B/bund.o: $S/bund.cu; $N
 $B/clist/imp.o: $S/clist/imp.cu; $N
 $B/common.mpi.o: $S/common.mpi.cu; $N
 $B/d/api.o: $S/d/api.cu; $N
-$B/diag.o: $S/diag.cu; $N
+$B/diag.o: $S/diag.cpp; $X
 $B/dpd/local.o: $S/dpd/local.cu; $N
 $B/dpdr/imp.o: $S/dpdr/imp.cu; $N
 $B/dpdr/int.o: $S/dpdr/int.cu; $N
