@@ -3,8 +3,10 @@
 # B: binary
 # S: source
 # O: objects
+# D: directories
 
 all: $B/udx
+$O: DD
 
 NVCC     ?= nvcc
 OPT      ?= -O3 -use_fast_math -g --compiler-options -Wall,-Wextra
@@ -51,4 +53,4 @@ $B/glb.o:   $S/glb.cu;       $C -dc $< -c -o $@
 
 clean:; -rm -f $B/udx $O $B/gpuCode.o
 
-.PHONY = clean all
+.PHONY = clean all DD
