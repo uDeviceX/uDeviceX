@@ -8,7 +8,6 @@ all: $B/udx
 
 NVCC     ?= nvcc
 OPT      ?= -O3 -use_fast_math -g --compiler-options -Wall,-Wextra
-# for cuda-gdb: OPT=-O0 -g --device-debug
 ARCH     ?= -arch compute_35 -code sm_35
 
 slevel   ?= -2
