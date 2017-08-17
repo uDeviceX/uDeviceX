@@ -3,7 +3,7 @@
 # B: binary
 # S: source
 # O: objects
-# D: directories
+# target D: directories
 
 all: $B/udx
 $O: D
