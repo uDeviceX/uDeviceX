@@ -1,12 +1,13 @@
-### Build out of source
-# TEST: make.t1
+### Build out of source tree
+# cTEST: make.t1
 (cd ../cmd; make ) > /dev/null
 t=/tmp/udx.$$
-trap 'rm -rf $t; echo $t' 0 1 2 3 15
+trap 'rm -rf $t' 0 1 2 3 15
 :
 s=`pwd`
 mkdir $t
-cd $t
-"$s"/configure "$s"
-(make clean && u.make -j) > /dev/null
-
+( cd $t
+  "$s"/configure "$s"
+  { make clean && u.make -j; } > /dev/null
+)
+echo $?  > make.out.status
