@@ -1,8 +1,12 @@
 #include <mpi.h>
-#include "m.h"
-#include "l/m.h"
 #include "conf.h"
 #include "inc/conf.h"
+
+#include "d/api.h"
+
+#include "m.h"
+#include "l/m.h"
+
 #include "inc/type.h"
 #include "common.h"
 #include "msg.h"
