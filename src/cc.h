@@ -12,4 +12,6 @@
   #error CC_* is undefined
 #endif
 
+#include "cc/common.h"
+
 /* TODO: header includes header */
