@@ -21,10 +21,8 @@ LIBS      += -lcudart
 ifeq ($(h5),0)
 NVCCFLAGS += -DNO_H5
 endif
-
 NVCCFLAGS += -DS_LEVEL=$(slevel)
 
-# http://devblogs.nvidia.com/parallelforall/separate-compilation-linking-cuda-device-code
 $B/udx: $O
 	$(NVCC)  $(ARCH) -dlink $O $(NVCCLIBS) -o $B/gpuCode.o
 	$(LINK)  $B/gpuCode.o $O $(LIBS) -o $@
@@ -33,7 +31,7 @@ $B/udx: $O
 N= $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT)     $< -c -o $@
 N0=$(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 
-# dev and hst
+# special rule
 $B/glb.o:; $(NO)
 clean:; -rm -f $B/udx $O $B/gpuCode.o
 
