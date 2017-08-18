@@ -3,22 +3,10 @@
 msg () { printf '%s\n' "$@" | cat >&2; }
 usg () {
     msg  'adapts udx to systems'
-    msg  './configure [source dir]'
-    msg  '[source dir] : path to ./src : current is default'
+    msg  './configure [source dir] [unit dir]'
+    msg  '[source dir] : path to ./src'
+    msg  '[unit dir]   : path to unit'
     exit
 }
 
-arg0() { other . ; }
-arg1() {
-    if test "$1" = -h; then usg ; fi
-    if test ! -d "$1"; then err 'not a directory'; fi
-    other "$1"
-}
-
-other()   { echo run | u.conf "$1" "$1/conf/default.h"; }
-
-case $# in
-    0) arg0      ;;
-    1) arg1 "$1" ;;
-    *) usg
-esac
+echo run | u.conf "$@" conf/default.h
