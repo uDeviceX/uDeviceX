@@ -16,23 +16,39 @@
 #include "scan/int.h"
 
 #define N 10
+#define value 10
 
-scan::Work w;
-int *x, *y;
+static scan::Work w;
+static int *x, *dev;
+static int hst[N];
+
+static void dump0() {
+    int i;
+    for (i = 0; i < N; i++)
+        printf("%d\n", hst[i]);
+}
+
+static void dump() {
+    cD2H0(hst, dev, N);
+    dump0();
+}
 
 static void main0() {
-    scan::scan(x, N, /**/ y, /*w*/ &w);
-    MSG("main0");
+    Dset(x, value, N);
+    //    scan::scan(x, N, /**/ dev, /*w*/ &w);
+    dump();
 }
 
 static void main1() {
     alloc_work(N, &w);
-    Dalloc0(&x, N);
+    Dalloc0(&x,   N);
+    Dalloc0(&dev, N);    
     
     main0();
 
-    Dfree0(x);
     free_work(&w);
+    Dfree0(x);
+    Dfree0(dev);
 }
 
 int main(int argc, char **argv) {
