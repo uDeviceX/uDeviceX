@@ -4,6 +4,7 @@ BEGIN {
     ERR_NO_RUNS = 3
 
     S = ARGV[1]; shift()
+    U = ARGV[1]; shift()
     c = ARGV[1]; shift()
     nbin = 0 # bin dirs
     parse()
