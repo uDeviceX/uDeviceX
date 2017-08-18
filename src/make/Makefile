@@ -14,10 +14,10 @@
 NVCC     ?= nvcc
 ARCH     ?= -arch compute_35 -code sm_35
 
-CXXFLAGS +=  -I$B -I$S
+CXXFLAGS  +=  -I$B -I$S
 COMMON     =  -std=c++11 -O2 -g
 NCFLAGS    =           $(CXXFLAGS)
-XCFLAGS   += $(COMMON) $(CXXFLAGS)
+XCFLAGS    = $(COMMON) $(CXXFLAGS)
 NVCCFLAGS += $(COMMON) -use_fast_math 
 LIBS      += -lcudart
 
