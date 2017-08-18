@@ -8,3 +8,15 @@
 # cat runfile Makefile
 # ) > rm.out.txt
 #
+
+# TEST: conf.t1
+# mkdir -p tmp.conf
+# (
+#   cd tmp.conf
+#   u.conf ../../src ../../src/conf/default.h <<!!!
+#   run
+#   run
+#!!!
+# cat runfile Makefile
+# ) > rm.out.txt
+#
