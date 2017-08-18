@@ -1,0 +1,2 @@
+echo $U/main.cpp
+echo msg.cpp m.cpp l/m.cpp scan/imp.cu cc.cu d/api.cu
