@@ -8,7 +8,6 @@ mkdir -p tmp.conf
 cat runfile Makefile
 ) > rm.out.txt
 
-
 # TEST: conf.t1
 mkdir -p tmp.conf
 (
@@ -17,6 +16,6 @@ mkdir -p tmp.conf
   run
   run
 !!!
-cat runfile Makefile
+cat runfile Makefile bin.[12]/Makefile
 ) > rm.out.txt
 

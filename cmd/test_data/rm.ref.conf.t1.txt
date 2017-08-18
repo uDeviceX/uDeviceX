@@ -8,3 +8,25 @@ bin.2/udx:; u.make -f bin.2/Makefile
 
 clean.1:; u.make -f bin.1/Makefile clean
 clean.2:; u.make -f bin.2/Makefile clean
+S = ../../src
+U = U/x
+B = bin.1
+include $B/conf.mk
+include $S/make/common.mk
+include $S/make/main.mk
+
+include $U/make/obj.mk
+include $U/make/rule.mk
+include $U/make/dir.mk
+include $U/make/dep.mk
+S = ../../src
+U = U/x
+B = bin.2
+include $B/conf.mk
+include $S/make/common.mk
+include $S/make/main.mk
+
+include $U/make/obj.mk
+include $U/make/rule.mk
+include $U/make/dir.mk
+include $U/make/dep.mk
