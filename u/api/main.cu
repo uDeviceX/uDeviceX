@@ -31,7 +31,7 @@ static void dump(int *dev) {
 }
 
 static void main0() {
-    Dset(dev, value, N);
+    cudaMemset(dev, 42, (N)*sizeof(*dev));
     dump(dev);
 }
 
