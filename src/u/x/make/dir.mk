@@ -20,4 +20,7 @@ D = @d () { test -d "$$1" || mkdir "$$1"; } && \
     d    $B/scan && \
     d     $B/sdf && \
     d  $B/tcells && \
+    d   $B/u/api && \
+    d    $B/u/hw && \
+    d  $B/u/scan && \
     d    $B/wall
