@@ -1,1 +1,1 @@
-echo $U/main.cu msg.cpp m.cpp l/m.cpp
+find . -name '*.cu' -o -name '*.cpp' | grep -v '^\.\/u/'

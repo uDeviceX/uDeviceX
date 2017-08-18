@@ -49,9 +49,6 @@ $B/sdf/int.o: $S/cc.h $S/common.h $B/conf.h $S/d/ker.h $S/inc/conf.h $S/inc/dev.
 $B/solid.o: $S/cc.h $S/common.h $B/conf.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/k/solid.h $S/kl.h $S/l/linal.h $S/mesh/props.h $S/msg.h $S/solid.h
 $B/tcells/imp.o: $S/cc.h $S/common.h $B/conf.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/kl.h $S/msg.h $S/scan/int.h $S/tcells/int.h
 $B/tcells/int.o: $S/cc.h $S/common.h $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/msg.h $S/scan/int.h $S/tcells/imp.h $S/tcells/int.h
-$B/u/api/main.o: $S/bund.h $S/cc.h $B/conf.h $S/d/api.h $S/glb.h $S/inc/conf.h $S/inc/dev.h $S/m.h $S/msg.h
-$B/u/hw/main.o: $S/glb.h $S/m.h $S/msg.h
-$B/u/scan/main.o: $S/bund.h $S/cc.h $B/conf.h $S/d/api.h $S/glb.h $S/inc/conf.h $S/inc/dev.h $S/m.h $S/msg.h $S/scan/int.h
 $B/wall/exch.o: $B/conf.h $S/inc/conf.h $S/inc/type.h $S/l/m.h $S/m.h
 $B/wall/imp.o: $S/cc.h $S/clist/int.h $S/common.h $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/forces.h $S/glb.h $S/inc/conf.h $S/inc/dev.h $S/inc/macro.h $S/inc/type.h $S/k/wvel.h $S/kl.h $S/msg.h $S/restart.h $S/rnd/dev.h $S/rnd/imp.h $S/sdf/cheap.dev.h $S/sdf/int.h $S/sdf/type.h $S/te.h $S/texo.h $S/wall/dev.h $S/wall/exch.h $S/wall/imp.h $S/wall/strt.h
 $B/wall/int.o: $S/cc.h $S/clist/int.h $S/common.h $B/conf.h $S/d/api.h $S/d/ker.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/m.h $S/msg.h $S/rnd/imp.h $S/sdf/int.h $S/sdf/type.h $S/texo.h $S/wall/imp.h $S/wall/int.h
