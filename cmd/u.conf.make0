@@ -1,8 +1,8 @@
 #!/bin/bash
 
 S="$1"; shift # source
-u="$1"; shift # unit
-b="$1"; shift  # bin
+U="$1"; shift # unit
+B="$1"; shift  # bin
 
 ERR_BIN_MAKE=4
 ERR_MISSING_MK=5
@@ -12,7 +12,7 @@ msg() { printf '%s\n' "$*" >&2; }
 write_make() {
     echo "\
 S = $S
-B = $b"'
+B = $B"'
 include $B/conf.mk
 include $S/make/common.mk
 include $S/make/obj.mk
@@ -33,10 +33,10 @@ write_conf () (
     cp "$c0"  "$c"
 )
 
-mkdir -p     "$b"
+mkdir -p     "$B"
 
-m="$b/Makefile"
-c="$b/conf.mk"
+m="$B/Makefile"
+c="$B/conf.mk"
 
 write_make; rc=$?
 if test $rc -ne 0; then exit $ERR_BIN_MAKE; fi
