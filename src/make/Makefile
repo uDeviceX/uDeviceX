@@ -12,18 +12,19 @@
 # L: link
 
 NVCC     ?= nvcc
-OPT      ?= -O3 -use_fast_math -g --compiler-options -Wall,-Wextra
 ARCH     ?= -arch compute_35 -code sm_35
 slevel   ?= -2
 
+NVCCFLAGS += -O3 -use_fast_math -g 
+NVCCFLAGS += --compiler-options -Wall, -Wextra
 NVCCFLAGS += -I$B -I$S
 NVCCFLAGS += -std=c++11
 NVCCFLAGS += -DS_LEVEL=$(slevel)
 LIBS      += -lcudart
 
-N  = $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT)     $< -c -o $@
+N  = $(NVCC) $(ARCH) $(NVCCFLAGS)      $< -c -o $@
 X  = $N
-NN = $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
+NN = $(NVCC) $(ARCH) $(NVCCFLAGS)  -dc $< -c -o $@
 L  = $(NVCC)  $(ARCH) -dlink $O $(NVCCLIBS) -o $B/gpuCode.o && \
 	$(LINK)  $B/gpuCode.o $O $(LIBS) -o $@
 
