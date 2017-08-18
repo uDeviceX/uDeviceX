@@ -1,4 +1,3 @@
-jfkdj
 #include <assert.h>
 #include <vector>
 #include <mpi.h>
