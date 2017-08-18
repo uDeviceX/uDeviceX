@@ -15,7 +15,7 @@ NVCC     ?= nvcc
 ARCH     ?= -arch compute_35 -code sm_35
 slevel   ?= -2
 
-NVCCFLAGS += -O3 -use_fast_math -g 
+NVCCFLAGS += -O3 -use_fast_math -g
 NVCCFLAGS += --compiler-options -Wall, -Wextra
 NVCCFLAGS += -I$B -I$S
 NVCCFLAGS += -std=c++11
