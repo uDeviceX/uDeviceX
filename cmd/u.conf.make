@@ -35,17 +35,17 @@ function bins() {
     else                binsN()
 }
 
-function bins1(   sp, b, rc) {
-    sp = " " # space
-    b = "."
+function make0(b,  sp) {
+    sp = " "
     cmd("u.conf.make0" sp qq(S) sp b)
 }
 
-function binsN(i,  sp, b, rc) {
+function bins1(   b, rc) { make0(".") }
+
+function binsN(i,  b, rc) {
     for (i = 1; i <= nbin; i++) {
-	sp = " " # space
-	b  = "bin" "." i
-	cmd("u.conf.make0" sp qq(S) sp b)
+	b = "bin" "." i
+	make0(b)
     }
 }
 
