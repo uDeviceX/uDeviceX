@@ -9,7 +9,7 @@
 # N: nvcc compile
 # NN: special nvcc compile command
 # X: c++ compile
-#
+# L: link
 
 NVCC     ?= nvcc
 OPT      ?= -O3 -use_fast_math -g --compiler-options -Wall,-Wextra
@@ -20,10 +20,6 @@ NVCCFLAGS += -I$B -I$S
 NVCCFLAGS += -std=c++11
 NVCCFLAGS += -DS_LEVEL=$(slevel)
 LIBS      += -lcudart
-
-ifeq ($(h5),0)
-NVCCFLAGS += -DNO_H5
-endif
 
 N  = $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT)     $< -c -o $@
 X  = $N

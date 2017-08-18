@@ -1,5 +1,3 @@
-h5 = 1
-
 LINK = g++
 NVCC = nvcc
 OPT = -O0 -g
