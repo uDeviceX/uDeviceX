@@ -15,9 +15,9 @@ NVCC     ?= nvcc
 ARCH     ?= -arch compute_35 -code sm_35
 
 OPT      = -O3
-COMMON   = $(CXXFLAGS) $(OPT) -I$B -I$S -DS_LEVEL=-2
+COMMON   = $(CXXFLAGS) -I$B -I$S -DS_LEVEL=-2
 NCFLAGS  = $(COMMON)
-XCFLAGS += $(COMMON) -Wall -Wextra
+XCFLAGS += $(COMMON) $(OPT) -Wall -Wextra
 NVCCFLAGS += $(OPT) -use_fast_math -g -std=c++11
 LIBS      += -lcudart
 
