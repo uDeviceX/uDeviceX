@@ -10,8 +10,7 @@ HDF5_CXXFLAGS = `pkg-config  --cflags  ${HDF5_VARIANT}`
 HDF5_LIBS  = `pkg-config --libs ${HDF5_VARIANT}`
 
 # Ubuntu 16.04: https://github.com/BVLC/caffe/issues/4046
-CXXFLAGS += -D_FORCE_INLINES
-
+NVCCFLAGS += -D_FORCE_INLINES
 CXXFLAGS += -Wall -Wextra
 CXXFLAGS += -Wno-unused -Wno-unused-parameter -Wno-unused-but-set-variable -Wno-unknown-pragmas
 CXXFLAGS += -DDEV_CPU -DKL_CPU
