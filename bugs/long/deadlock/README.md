@@ -11,6 +11,8 @@ Two times
     2.250000e+01    1.6080401056e-02        1.1177369989e+02        -8.0807306522e-03       -2.4729833221e-02
 
 # gdb
+git: ae0ba2e
+
 (gdb) bt
 #0  0x00007ffff71e9eea in MPIDI_CH3I_Progress ()
    from /usr/lib64/mpich/lib/libmpich.so.10
