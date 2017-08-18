@@ -33,6 +33,7 @@ static void rex0(std::vector<ParticlesWrap> w, int nw) {
 
     /** P **/
     recvP1(tc.cart, tc.ranks, tr.tags, tt);
+    resizeR();
     recvP2(tc.cart, tc.ranks, tr.tags, tt);
     sendP12(tc.cart, tc.ranks, tt, ti, buf_pinned);
     s::waitP();

@@ -31,6 +31,9 @@ void recvP1(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     }
 }
 
+void resizeR() {
+}
+
 void recvP2(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     int tag, rank;
     int i, count, expected, n;
