@@ -20,8 +20,7 @@ static int *dev;
 
 static void dump0(int *hst) {
     int i;
-    for (i = 0; i < N; i++)
-        printf("%d\n", hst[i]);
+    for (i = 0; i < N; i++) printf("%d\n", hst[i]);
 }
 
 static void dump(int *dev) {
@@ -30,8 +29,15 @@ static void dump(int *dev) {
     dump0(hst);
 }
 
+static void fill(int e, int *dev) {
+    int hst[N];
+    int i;
+    for (i = 0; i < N; i++) hst[i] = i;
+    cH2D0(dev, hst, N);
+}
+
 static void main0() {
-    cudaMemset(dev, 42, (N)*sizeof(*dev));
+    fill(value, dev);
     dump(dev);
 }
 
@@ -43,6 +49,7 @@ static void main1() {
 
 int main(int argc, char **argv) {
     m::ini(argc, argv);
+    d::ini();    
     main1();
     m::fin();
 }
