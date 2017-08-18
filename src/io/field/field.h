@@ -1,7 +1,6 @@
 void fields(const char * const path2h5,
             const float * const channeldata[],
             const char * const * const channelnames, const int nchannels) {
-#ifndef NO_H5
     hid_t plist_id_access = H5Pcreate(H5P_FILE_ACCESS);
     H5Pset_fapl_mpio(plist_id_access, l::m::cart, MPI_INFO_NULL);
 
@@ -38,5 +37,4 @@ void fields(const char * const path2h5,
     H5Fclose(file_id);
 
     if (!m::rank) wrapper(path2h5, channelnames, nchannels);
-#endif // NO_H5
 }

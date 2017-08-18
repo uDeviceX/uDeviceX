@@ -1,9 +1,7 @@
-#ifndef NO_H5
 #include <hdf5.h>
-#endif
-
 #include <string>
 #include <math.h>
+#include <stdlib.h>
 
 #include <conf.h>
 #include "inc/conf.h"

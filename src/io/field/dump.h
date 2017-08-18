@@ -42,7 +42,6 @@ static void avg(Particle *pp, int n, int nc, /**/
 
 static void dump0(Particle *pp, int n, int nc, /*w*/
                   float *rho, float *u[3]) {
-#ifndef NO_H5
     enum {X, Y, Z};
     static int id = 0; /* dump id */
     static bool directory_exists = false;
@@ -59,11 +58,9 @@ static void dump0(Particle *pp, int n, int nc, /*w*/
     sprintf(path, DUMP_BASE "/h5/flowfields-%04d.h5", id++);
     float *data[] = { rho, u[X], u[Y], u[Z] };
     fields(path, data, names, 4);
-#endif // NO_H5
 }
 
 void dump(Particle *pp, int n) {
-#ifndef NO_H5
     enum {X, Y, Z};
     int nc, sz;
     float *rho, *u[3];
@@ -75,6 +72,5 @@ void dump(Particle *pp, int n) {
     u[Z] = (float*)malloc(sz);
     dump0(pp, n, nc, /*w*/ rho, u);
     free(rho); free(u[X]); free(u[Y]); free(u[Z]);
-#endif // NO_H5
 }
 }
