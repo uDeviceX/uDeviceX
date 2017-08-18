@@ -3,5 +3,5 @@
 U="$1"
 c="${2-conf/default.h}"
 
-echo run | u.conf . $U $c
+echo run | u.conf . "$U" "$c"
 
