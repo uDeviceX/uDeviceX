@@ -13,8 +13,6 @@
 #include "inc/dev.h"
 #include "cc.h"
 
-#include "scan/int.h"
-
 #define N 10
 #define value 10
 
