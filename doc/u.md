@@ -30,6 +30,9 @@ list of [i]ncluded files. `e` returns a list of [e]xcluded files. The
 `i` list "minus" `e` list is used as a source. `e` file is
 optional. In other words `e` "black lists" files returned by `i`.
 
+For `i` and `e` are executed from `src`. Variable `$U` is set to a
+path to unit directory relative to `src`.
+
 Run
 
 	u.u ../u/hw
