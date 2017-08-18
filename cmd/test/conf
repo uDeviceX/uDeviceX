@@ -1,4 +1,4 @@
-# TEST: cont.t0
+# TEST: conf.t0
 mkdir -p tmp.conf
 (
   cd tmp.conf

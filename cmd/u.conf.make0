@@ -16,11 +16,12 @@ U = $U
 B = $B"'
 include $B/conf.mk
 include $S/make/common.mk
-include $S/make/obj.mk
 include $S/make/main.mk
-include $S/make/rule.mk
-include $S/make/dir.mk
-include $S/make/dep.mk' > "$m"
+
+include $U/make/obj.mk
+include $U/make/rule.mk
+include $U/make/dir.mk
+include $U/make/dep.mk' > "$m"
 }
 
 write_conf () (
