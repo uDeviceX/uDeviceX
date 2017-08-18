@@ -29,10 +29,9 @@ NN = $(NVCC)  $(ARCH) $(NVCCFLAGS) --compiler-options '$(NCFLAGS)' -dc $< -c -o 
 L  = $(NVCC)  $(ARCH) -dlink $O $(NVCCLIBS) -o $B/gpuCode.o && \
 	$(LINK)  $B/gpuCode.o $O $(LIBS) -o $@
 
-all: $B/udx
+$B/udx: $O; $L
 $O:  $B/.cookie
 $B/.cookie:;       $D ; touch $@
-$B/udx: $O; $L
 
 # special rules
 $B/glb.o: $S/glb.cu; $(NN)

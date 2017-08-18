@@ -4,7 +4,7 @@ special () {
     printf '%s\n' $* | awk '!/glb\.cu$/' | awk '!/bund\.cu$/'
 }
 
-D="$1"
+D=../u/x
 
 # run from src
 l=`find . -name '*.cu' -o -name '*.h' -o -name '*.cpp'`

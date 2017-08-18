@@ -1,4 +1,3 @@
-$B/U/hw/main.o: $S/U/hw/main.cu; $N
 $B/cc.o: $S/cc.cu; $N
 $B/clist/imp.o: $S/clist/imp.cu; $N
 $B/common.mpi.o: $S/common.mpi.cpp; $X

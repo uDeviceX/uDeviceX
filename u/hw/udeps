@@ -7,21 +7,20 @@ special () { # TODO: exclude glb.cu
     printf '%s\n' $* | awk '!/glb\.cu$/' | awk '!/bund\.cu$/'
 }
 
+D=../u/hw
+
 # run from src
-l="U/hw/main.cu msg.cpp m.cpp l/m.cpp"
+l="../u/hw/main.cu msg.cpp m.cpp l/m.cpp"
 l0=`special $l`
 
-d=make/dep.mk
-o=make/obj.mk
-m=make/dir.mk
-r=make/rule.mk
+d=$D/make/dep.mk
+o=$D/make/obj.mk
+m=$D/make/dir.mk
+r=$D/make/rule.mk
 
 u.deps $l > $d
 u.obj  $l > $o
 u.mdir $l > $m
 u.rule $l0 > $r
 
-echo upd: $d >&2
-echo upd: $o >&2
-echo upd: $m >&2
-echo upd: $r >&2
+echo upd: $d $o $m $r >&2
