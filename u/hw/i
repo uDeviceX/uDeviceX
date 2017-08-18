@@ -1,0 +1,1 @@
+echo $U/main.cu msg.cpp m.cpp l/m.cpp
