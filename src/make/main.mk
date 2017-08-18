@@ -1,8 +1,9 @@
 # a fragment of makefile
 # see src/make/ and tools/udeps
-# B: binary
-# S: source
-# O: objects
+# B: binary dir
+# S: source dir
+#
+# O: list of objects
 
 # commands
 # D: create directories
@@ -13,9 +14,10 @@
 
 NVCC     ?= nvcc
 ARCH     ?= -arch compute_35 -code sm_35
+OPT	     ?= -O2 -g
 
 CXXFLAGS  +=  -I$B -I$S
-COMMON     =  -std=c++11 -O2 -g
+COMMON     =  -std=c++11 ${OPT}
 NCFLAGS    =           $(CXXFLAGS)
 XCFLAGS    = $(COMMON) $(CXXFLAGS)
 NVCCFLAGS += $(COMMON) -use_fast_math 
