@@ -135,6 +135,7 @@ namespace ic {
   #include "k/rex/unpack.h"
 
   #include "rex/ini.h"
+  #include "rex/resize.h"
   #include "rex/copy.h"
   #include "rex/wait.h"
   #include "rex/wait0.h"
@@ -142,9 +143,7 @@ namespace ic {
   #include "rex/scan.h"
   #include "rex/pack.h"
   #include "rex/send.h"
-  #include "rex/send0.h"
   #include "rex/recv.h"
-  #include "rex/recv0.h"
   #include "rex/unpack.h"
   #include "rex/post.h"
   #include "rex/fin.h"
