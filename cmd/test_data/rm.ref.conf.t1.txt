@@ -1,0 +1,10 @@
+u.run bin.1/udx
+u.run bin.2/udx
+all: bin.1/udx bin.2/udx
+clean: clean.1 clean.2
+
+bin.1/udx:; u.make -f bin.1/Makefile
+bin.2/udx:; u.make -f bin.2/Makefile
+
+clean.1:; u.make -f bin.1/Makefile clean
+clean.2:; u.make -f bin.2/Makefile clean
