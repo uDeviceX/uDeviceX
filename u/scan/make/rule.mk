@@ -1,4 +1,4 @@
-$B/../u/scan/main.o: $S/../u/scan/main.cu; $N
+$B/../u/scan/main.o: $S/../u/scan/main.cpp; $X
 $B/cc.o: $S/cc.cu; $N
 $B/d/api.o: $S/d/api.cu; $N
 $B/l/m.o: $S/l/m.cpp; $X
