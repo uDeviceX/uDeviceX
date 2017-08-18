@@ -17,8 +17,8 @@ run_if () (
     fi
 )
 
-run_if "$U/i" $i
-run_if "$U/e" $e
+run_if "$U/make/i" $i
+run_if "$U/make/e" $e
 
 "$AWK" '
 {
