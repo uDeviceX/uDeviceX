@@ -1,4 +1,3 @@
-$B/bund.o: $S/bund.cu; $N
 $B/cc.o: $S/cc.cu; $N
 $B/clist/imp.o: $S/clist/imp.cu; $N
 $B/common.mpi.o: $S/common.mpi.cpp; $X
@@ -49,6 +48,7 @@ $B/sdf/int.o: $S/sdf/int.cu; $N
 $B/solid.o: $S/solid.cu; $N
 $B/tcells/imp.o: $S/tcells/imp.cu; $N
 $B/tcells/int.o: $S/tcells/int.cu; $N
+$B/u/solid/bund.o: $S/u/solid/bund.cu; $N
 $B/wall/exch.o: $S/wall/exch.cpp; $X
 $B/wall/imp.o: $S/wall/imp.cu; $N
 $B/wall/int.o: $S/wall/int.cu; $N
