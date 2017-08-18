@@ -14,18 +14,16 @@
 NVCC     ?= nvcc
 ARCH     ?= -arch compute_35 -code sm_35
 
-CXXFLAGS += -O3 -g
-CXXFLAGS += -Wall -Wextra
-CXXFLAGS += -I$B -I$S
-CXXFLAGS += -DS_LEVEL=-2
-CXXFLAGS += -std=c++11
-
-NVCCFLAGS += -O3 -use_fast_math -g
+OPT      = -O3
+COMMON   = $(CXXFLAGS) $(OPT) -I$B -I$S -DS_LEVEL=-2
+NCFLAGS  = $(COMMON)
+XCFLAGS += $(COMMON) -Wall -Wextra
+NVCCFLAGS += $(OPT) -use_fast_math -g -std=c++11
 LIBS      += -lcudart
 
-N  = $(NVCC)  $(ARCH) $(NVCCFLAGS) --compiler-options '$(CXXFLAGS)'     $< -c -o $@
-X  = $(NVCC)  $(ARCH)              --compiler-options '$(CXXFLAGS)'     $< -c -o $@
-NN = $(NVCC)  $(ARCH) $(NVCCFLAGS) --compiler-options '$(CXXFLAGS)' -dc $< -c -o $@
+N  = $(NVCC)  $(ARCH) $(NVCCFLAGS) --compiler-options '$(NCFLAGS)'     $< -c -o $@
+X  = $(NVCC)  $(ARCH)              --compiler-options '$(XCFLAGS)'     $< -c -o $@
+NN = $(NVCC)  $(ARCH) $(NVCCFLAGS) --compiler-options '$(NCFLAGS)' -dc $< -c -o $@
 L  = $(NVCC)  $(ARCH) -dlink $O $(NVCCLIBS) -o $B/gpuCode.o && \
 	$(LINK)  $B/gpuCode.o $O $(LIBS) -o $@
 
