@@ -32,19 +32,21 @@ void recvP1(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
 }
 
 void resizeR() {
+    int i, count;
+    for (i = 0; i < 26; ++i) {
+        count = recv_counts[i];
+        re::resize(remote[i], count);
+        remote[i]->h.update(count);
+    }
 }
 
 void recvP2(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
-    int tag, rank;
-    int i, count, expected, n;
+    int tag, rank, count, expected;
+    int i, n;
     MPI_Status s;
     for (i = 0; i < 26; ++i) {
         count = recv_counts[i];
         expected = re::expected(remote[i]);
-        remote[i]->pp.resize(max(1, count));
-        re::resize(remote[i], count);
-        remote[i]->h.update(count);
-
         n = count - expected;
         if (n > 0) {
             tag = t.btp2 + tags[i];
