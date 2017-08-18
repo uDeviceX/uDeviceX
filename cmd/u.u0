@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -x
+
+: ${AWK=awk}
+
+export U="$1"
+
+i=/tmp/i.$$
+e=/tmp/e.$$
+
+trap 'rm -rf $i $e' 0 1 2 3 4 15
+
+run_if () (
+    f="$1" o="$2"
+    if test -f "$f"
+    then sh "$f" > $o
+    else         > $o
+    fi
+)
+
+run_if "$U/i" $i
+run_if "$U/e" $e
+
+"$AWK" '
+f == 0 {
+    e[$0]
+}
+
+f == 1 && !($0 in e)
+
+' f=0 $e f=1 $i
+
