@@ -12,6 +12,7 @@ msg() { printf '%s\n' "$*" >&2; }
 write_make() {
     echo "\
 S = $S
+U = $U
 B = $B"'
 include $B/conf.mk
 include $S/make/common.mk
