@@ -1,1 +1,1 @@
--name '*.cu' -o '*.h'
+find -name '*.cu' -o '*.h'

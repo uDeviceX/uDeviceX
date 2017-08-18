@@ -2,7 +2,7 @@ BIN = $(HOME)/bin
 
 P.common = u.host make/u.make run/u.run u.strtdir u.argp \
     utest/u.test u.
-P.conf = conf/u.conf conf/u.conf0 conf/u.conf.make conf/u.conf.make0 conf/u.conf.conf conf/u.conf.run
+P.conf = conf/u.conf conf/u.conf0 conf/u.conf.make conf/u.conf.make0 conf/u.conf.conf conf/u.conf.run u.u0 u.u
 
 P.daint  = make/u.load.daint make/u.make.daint run/u.run.daint utest/u.test.load.daint
 P.panda  = make/u.load.panda make/u.make.panda run/u.run.panda utest/u.test.load.panda
