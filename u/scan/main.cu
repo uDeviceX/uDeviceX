@@ -35,7 +35,7 @@ static void dump() {
 
 static void main0() {
     Dset(x, value, N);
-    //    scan::scan(x, N, /**/ dev, /*w*/ &w);
+    scan::scan(x, N, /**/ dev, /*w*/ &w);
     dump();
 }
 
