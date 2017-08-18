@@ -1,5 +1,9 @@
 // solvent
 
+#ifndef S_LEVEL
+  #define S_LEVEL (-2)
+#endif
+
 #ifndef gamma_dot
   #define gamma_dot (0.0)
   #define shear_y (false)

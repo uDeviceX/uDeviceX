@@ -14,7 +14,7 @@
 NVCC     ?= nvcc
 ARCH     ?= -arch compute_35 -code sm_35
 
-CXXFLAGS +=  -I$B -I$S -DS_LEVEL=-2
+CXXFLAGS +=  -I$B -I$S
 COMMON     =  -std=c++11 -O2 -g
 NCFLAGS    =           $(CXXFLAGS)
 XCFLAGS   += $(COMMON) $(CXXFLAGS)
