@@ -14,16 +14,17 @@
 NVCC     ?= nvcc
 ARCH     ?= -arch compute_35 -code sm_35
 
-CXXFLAGS  += -Wall -Wextra
-CXXFLAGS  += -I$B -I$S
-CXXFLAGS  += -DS_LEVEL=-2
+CXXFLAGS += -O3 -g
+CXXFLAGS += -Wall -Wextra
+CXXFLAGS += -I$B -I$S
+CXXFLAGS += -DS_LEVEL=-2
 
 NVCCFLAGS += -O3 -use_fast_math -g
 NVCCFLAGS += -std=c++11
 LIBS      += -lcudart
 
 N  = $(NVCC)  $(ARCH) $(NVCCFLAGS) --compiler-options '$(CXXFLAGS)'     $< -c -o $@
-X  = $(NVCC)                                          '$(CXXFLAGS)'     $< -c -o $@
+X  = $(NVCC)                       --compiler-options '$(CXXFLAGS)'     $< -c -o $@
 NN = $(NVCC)  $(ARCH) $(NVCCFLAGS) --compiler-options '$(CXXFLAGS)' -dc $< -c -o $@
 L  = $(NVCC)  $(ARCH) -dlink $O $(NVCCLIBS) -o $B/gpuCode.o && \
 	$(LINK)  $B/gpuCode.o $O $(LIBS) -o $@
