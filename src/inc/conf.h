@@ -1,5 +1,6 @@
 // solvent
 
+/* DPD kernel envelop parameter */
 #ifndef S_LEVEL
   #define S_LEVEL (-2)
 #endif
