@@ -9,7 +9,7 @@ usg () {
 }
 
 arg0() { other . ; }
-arg1() { # if one agument
+arg1() {
     if test "$1" = -h; then usg ; fi
     if test ! -d "$1"; then err 'not a directory'; fi
     other "$1"
