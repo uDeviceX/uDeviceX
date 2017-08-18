@@ -1,6 +1,6 @@
 #!/bin/bash
 
-U="$1"
+U="${1-../u/x}"
 c="${2-conf/default.h}"
 
 echo run | u.conf . "$U" "$c"
