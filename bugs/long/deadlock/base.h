@@ -35,7 +35,7 @@
 #define solids              true
 #define sbounce_back        true
 #define fsiforces           true
-#define walls               true
+#define walls               false
 #define wall_creation       1000
 #define tend                1000
 
@@ -47,10 +47,10 @@
 
 /* FLOW TYPE */
 #define pushflow            true
-#define driving_force       0.18
+#define driving_force       0.01
 
 /* DUMPS */
-#define part_freq           10000
+#define part_freq           1000
 #define field_dumps         false
 #define field_freq          10000
 #define strt_dumps          false
