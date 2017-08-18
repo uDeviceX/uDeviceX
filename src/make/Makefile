@@ -32,13 +32,13 @@ L  = $(NVCC)  $(ARCH) -dlink $O $(NVCCLIBS) -o $B/gpuCode.o && \
 	$(LINK)  $B/gpuCode.o $O $(LIBS) -o $@
 
 all: $B/udx
-$O:  $B/.dcookie
-$B/.dcookie: $D; touch $@
+$O:  $B/.cookie
+$B/.cookie: $D; touch $@
 $B/udx: $O; $L
 
 # special rules
 $B/glb.o: $S/glb.cu; $(NN)
 $B/bund.o: $S/bund.cu; $(NN)
-clean:; -rm -f $B/udx $O $B/gpuCode.o $B/.dcookie
+clean:; -rm -f $B/udx $O $B/gpuCode.o $B/.cookie
 
 .PHONY = clean all D
