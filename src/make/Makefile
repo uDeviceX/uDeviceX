@@ -29,7 +29,7 @@ L  = $(NVCC)  $(ARCH) -dlink $O $(NVCCLIBS) -o $B/gpuCode.o && \
 
 all: $B/udx
 $O:  $B/.cookie
-$B/.cookie: $D; touch $@
+$B/.cookie:;       $D ; touch $@
 $B/udx: $O; $L
 
 # special rules
