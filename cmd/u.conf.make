@@ -37,7 +37,7 @@ function bins() {
 
 function make0(b,  sp) {
     sp = " "
-    cmd("u.conf.make0" sp qq(S) sp b)
+    cmd("u.conf.make0" sp qq(S) sp qq(U) sp b)
 }
 
 function bins1(   b, rc) { make0(".") }

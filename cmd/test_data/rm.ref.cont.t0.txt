@@ -1,5 +1,6 @@
 u.run ./udx
 S = ../../src
+U = U/x
 B = .
 include $B/conf.mk
 include $S/make/common.mk
