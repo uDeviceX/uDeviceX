@@ -1,3 +1,4 @@
+$B/bund.o: $S/bund.cu; $N
 $B/cc.o: $S/cc.cu; $N
 $B/clist/imp.o: $S/clist/imp.cu; $N
 $B/common.mpi.o: $S/common.mpi.cpp; $X
@@ -11,6 +12,7 @@ $B/dump.o: $S/dump.cu; $N
 $B/field.o: $S/field.cpp; $X
 $B/flu/imp.o: $S/flu/imp.cu; $N
 $B/flu/int.o: $S/flu/int.cu; $N
+$B/glb.o: $S/glb.cu; $N
 $B/hforces/imp.o: $S/hforces/imp.cu; $N
 $B/io/field.o: $S/io/field.cpp; $X
 $B/io/rbc.o: $S/io/rbc.cpp; $X

@@ -23,7 +23,7 @@ XCFLAGS    = $(COMMON) $(CXXFLAGS)
 NVCCFLAGS += $(COMMON) -use_fast_math 
 LIBS      += -lcudart
 
-N  = $(NVCC)  $(ARCH) $(NVCCFLAGS) --compiler-options '$(NCFLAGS)'     $< -c -o $@
+N  = $(NVCC)  $(ARCH) $(NVCCFLAGS) --compiler-options '$(NCFLAGS)' -dc $< -c -o $@
 X  = $(NVCC)  $(ARCH)              --compiler-options '$(XCFLAGS)'     $< -c -o $@
 NN = $(NVCC)  $(ARCH) $(NVCCFLAGS) --compiler-options '$(NCFLAGS)' -dc $< -c -o $@
 L  = $(NVCC)  $(ARCH) -dlink $O $(NVCCLIBS) -o $B/gpuCode.o && \
@@ -34,8 +34,8 @@ $O:  $B/.cookie
 $B/.cookie:;       $D ; touch $@
 
 # special rules
-$B/glb.o: $S/glb.cu; $(NN)
-$B/bund.o: $S/bund.cu; $(NN)
+# $B/glb.o: $S/glb.cu; $(NN)
+# $B/bund.o: $S/bund.cu; $(NN)
 clean:; -rm -f $B/udx $O $B/gpuCode.o $B/.cookie
 
 .PHONY = clean all D
