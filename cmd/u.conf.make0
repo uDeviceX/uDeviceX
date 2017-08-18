@@ -1,7 +1,8 @@
 #!/bin/bash
 
-s="$1" # source
-b="$2" # bin
+S="$1"; shift # source
+u="$1"; shift # unit
+b="$1"; shift  # bin
 
 ERR_BIN_MAKE=4
 ERR_MISSING_MK=5
@@ -10,7 +11,7 @@ msg() { printf '%s\n' "$*" >&2; }
 
 write_make() {
     echo "\
-S = $s
+S = $S
 B = $b"'
 include $B/conf.mk
 include $S/make/common.mk
@@ -25,9 +26,9 @@ write_conf () (
     dn=amlucas dh=panda
     n=`whoami` h=`u.host`
 
-    c0="$s/sys/$n.$h"
-    if test ! -f "$c0"; then c0="$s/sys/$dn.$h";  fi
-    if test ! -f "$c0"; then c0="$s/sys/$dn.$dh"; fi
+    c0="$S/sys/$n.$h"
+    if test ! -f "$c0"; then c0="$S/sys/$dn.$h";  fi
+    if test ! -f "$c0"; then c0="$S/sys/$dn.$dh"; fi
     if test ! -f "$c0"; then exit 1             ; fi
     cp "$c0"  "$c"
 )
