@@ -26,7 +26,7 @@ void fields(const char * const path2h5,
         H5Sselect_hyperslab(filespace, H5S_SELECT_SET, start, NULL, extent, NULL);
 
         hid_t memspace = H5Screate_simple(4, extent, NULL);
-        herr_t status = H5Dwrite(dset_id, H5T_NATIVE_FLOAT, memspace, filespace, plist_id, channeldata[ichannel]);
+        H5Dwrite(dset_id, H5T_NATIVE_FLOAT, memspace, filespace, plist_id, channeldata[ichannel]);
 
         H5Sclose(memspace);
         H5Sclose(filespace);
