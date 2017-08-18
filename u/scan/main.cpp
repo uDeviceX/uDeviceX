@@ -20,35 +20,35 @@
 
 static scan::Work w;
 static int *x, *dev;
-static int hst[N];
 
-static void dump0() {
+static void dump0(int *hst) {
     int i;
     for (i = 0; i < N; i++)
         printf("%d\n", hst[i]);
 }
 
-static void dump() {
-    cD2H0(hst, dev, N);
-    dump0();
+static void dump(int *dev) {
+    int hst[N];
+    cD2H(hst, dev, N);
+    dump0(hst);
 }
 
 static void main0() {
     Dset(x, value, N);
-    scan::scan(x, N, /**/ dev, /*w*/ &w);
-    dump();
+    scan::scan(x, N, dev,  &w);
+    dump(x);
 }
 
 static void main1() {
     alloc_work(N, &w);
-    Dalloc0(&x,   N);
-    Dalloc0(&dev, N);    
+    Dalloc(&x,   N);
+    Dalloc(&dev, N);    
     
     main0();
 
     free_work(&w);
-    Dfree0(x);
-    Dfree0(dev);
+    Dfree(x);
+    Dfree(dev);
 }
 
 int main(int argc, char **argv) {
