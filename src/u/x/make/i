@@ -1,1 +1,1 @@
-find -name '*.cu' -o -name '*.cpp'
+find . -name '*.cu' -o -name '*.cpp' | grep -v '^\.\/u/'
