@@ -4,5 +4,7 @@ B = .
 include $B/conf.mk
 include $S/make/common.mk
 include $S/make/obj.mk
-include $S/make/Makefile
+include $S/make/main.mk
+include $S/make/rule.mk
+include $S/make/dir.mk
 include $S/make/dep.mk
