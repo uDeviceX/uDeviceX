@@ -7,7 +7,7 @@ trap 'rm -rf $t' 0 1 2 3 15
 s=`pwd`
 mkdir $t
 ( cd $t
-  echo run | u.conf "$s" "$s/conf/default.h"
+  u.conf0 "$s" "$s/conf/default.h"
   { make clean && u.make -j; } > /dev/null
 )
 echo $?  > make.out.status
