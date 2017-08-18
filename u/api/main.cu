@@ -16,8 +16,7 @@
 #define N 10
 #define value 10
 
-static scan::Work w;
-static int *x, *dev;
+static int *dev;
 
 static void dump0(int *hst) {
     int i;
@@ -27,26 +26,19 @@ static void dump0(int *hst) {
 
 static void dump(int *dev) {
     int hst[N];
-    cD2H(hst, dev, N);
+    cD2H0(hst, dev, N);
     dump0(hst);
 }
 
 static void main0() {
-    Dset(x, value, N);
-    scan::scan(x, N, dev,  &w);
-    dump(x);
+    Dset(dev, value, N);
+    dump(dev);
 }
 
 static void main1() {
-    alloc_work(N, &w);
-    Dalloc(&x,   N);
-    Dalloc(&dev, N);    
-    
+    Dalloc0(&dev, N);
     main0();
-
-    free_work(&w);
-    Dfree(x);
-    Dfree(dev);
+    Dfree0(dev);
 }
 
 int main(int argc, char **argv) {
