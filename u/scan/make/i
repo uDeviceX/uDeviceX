@@ -1,0 +1,2 @@
+echo $U/main.cu
+echo msg.cpp m.cpp l/m.cpp scan/imp.cu
