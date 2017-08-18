@@ -18,3 +18,13 @@ From `/src`
 
 updates `hw/make/*.mk` files
 
+# Create a new module
+
+From top directory
+
+    mkdir -p hw/make
+
+Add two file: `hw/make/i` and `hw/make/e`. The files are used by `u.u`
+to create a list of unit source files. `i` is a script which returns a
+list of [i]ncluded files. `e` returns a list of [e]xcluded files. The
+intersection of two lists is used as a source.
