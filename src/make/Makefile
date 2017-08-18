@@ -32,6 +32,7 @@ NN = $(NVCC) $(ARCH) $(NVCCFLAGS) $(OPT) -dc $< -c -o $@
 
 # special rule
 $B/glb.o: $S/glb.cu; $(NN)
+$B/bund.o: $S/bund.cu; $(NN)
 clean:; -rm -f $B/udx $O $B/gpuCode.o
 
 .PHONY = clean all D

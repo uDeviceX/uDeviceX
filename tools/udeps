@@ -4,7 +4,7 @@
 # see git@gitlab.ethz.ch:mavt-cse/clarity
 
 special () { # TODO: exclude glb.cu
-    printf '%s\n' $* | awk '!/glb\.cu$/'
+    printf '%s\n' $* | awk '!/glb\.cu$/' | awk '!/bund\.cu$/'
 }
 
 # run from src
