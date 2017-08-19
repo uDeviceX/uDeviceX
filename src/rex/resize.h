@@ -14,7 +14,6 @@ void resizeR() {
     for (i = 0; i < 26; ++i) {
         count = recv_counts[i];
         re::resize(remote[i], count);
-        remote[i]->h.update(count);
     }
 }
 }

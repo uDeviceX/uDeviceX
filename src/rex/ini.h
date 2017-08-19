@@ -41,7 +41,6 @@ static void ini_remote() {
         n = i2max(i);
         remote[i] = new RemoteHalo;
         re::resize(remote[i], n);
-        remote[i]->h.update(n);
     }
 }
 static void ini_copy() {
