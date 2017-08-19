@@ -62,7 +62,10 @@
 
 template <typename T> struct DeviceBuffer {
     /* `C': capacity; `S': size; `D' : data*/
-    int C, S; T *D;
+private:
+    int C;
+public:
+    int S; T *D;
     explicit DeviceBuffer(int n = 0) : C(0), S(0), D(NULL) { resize(n); }
     ~DeviceBuffer() {
         if (D != NULL) CC(cudaFree(D));
