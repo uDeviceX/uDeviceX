@@ -138,7 +138,6 @@ namespace ic {
   #include "rex/resize.h"
   #include "rex/copy.h"
   #include "rex/wait.h"
-  #include "rex/wait0.h"
   #include "rex/halo.h"
   #include "rex/scan.h"
   #include "rex/pack.h"
