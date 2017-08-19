@@ -27,11 +27,13 @@ static int i2max(int i) { /* fragment id to maximum size */
 
 static void ini_local() {
     int i, n;
+    LocalHalo *h;
     for (i = 0; i < 26; i++) {
         n = i2max(i);
         local[i] = new LocalHalo;
-        Dalloc(&local[i]->indexes, n);
-        local[i]->ff      = new PinnedHostBuffer<Force>(n);
+        h = local[i];
+        Dalloc(&h->indexes, n);
+        h->ff      = new PinnedHostBuffer<Force>(n);
     }
 }
 
