@@ -42,17 +42,17 @@ static void ini_local() {
 
 static void ini_remote() {
     int i, n;
-    RemoteHalo* r;
+    RemoteHalo* h;
     for (i = 0; i < 26; i++) {
         n = i2max(i);
         remote[i] = new RemoteHalo;
-        r = remote[i];
-        Dalloc0(&r->dstate, n);
-        Palloc0(&r->hstate, n);
-        r->pp = (Particle*)malloc(n*sizeof(Particle));
+        h = remote[i];
+        Dalloc0(&h->dstate, n);
+        Palloc0(&h->hstate, n);
+        h->pp = (Particle*)malloc(n*sizeof(Particle));
 
-        Palloc0(&r->ff_pi, n);
-        Link(&r->ff, r->ff_pi);
+        Palloc0(&h->ff_pi, n);
+        Link(&h->ff, h->ff_pi);
     }
 }
 
