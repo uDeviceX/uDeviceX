@@ -30,7 +30,7 @@ static void dump0(int *hst, int n) {
 
 static void dump(int *dev, int n) {
     int hst[M];
-    cD2H(hst, dev, n);
+    cD2H0(hst, dev, n);
     dump0(hst, n);
 }
 
@@ -46,19 +46,19 @@ static void fill0(int e, int *dev) { fill(e, 0, N, dev); }
 static void main0() {
     fill0(value, x);
     scan::scan(x, N, y,  &w);
-    dump(y, N + 1);
+    dump(y, N);
 }
 
 static void main1() {
     alloc_work(N, &w);
-    Dalloc(&x, M);
-    Dalloc(&y, M);
+    Dalloc0(&x, M);
+    Dalloc0(&y, M);
     
     main0();
 
     free_work(&w);
-    Dfree(x);
-    Dfree(y);
+    Dfree0(x);
+    Dfree0(y);
 }
 
 int main(int argc, char **argv) {
