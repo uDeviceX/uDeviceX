@@ -27,14 +27,14 @@ static int i2max(int i) { /* fragment id to maximum size */
 
 static void ini_local() {
     int i, n;
-    LocalHalo h;
+    LocalHalo *h;
     for (i = 0; i < 26; i++) {
         n = i2max(i);
-        h = local[i];
-        Dalloc(&h.indexes, n);
+        h = &local[i];
+        Dalloc(&h->indexes, n);
 
-        Palloc0(&h.ff_pi, n);
-        Link(&h.ff, h.ff_pi);
+        Palloc0(&h->ff_pi, n);
+        Link(&h->ff, h->ff_pi);
     }
 }
 
