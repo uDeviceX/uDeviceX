@@ -9,14 +9,14 @@ static void fin_local() {
 
 static void fin_remote() {
     int i;
-    RemoteHalo* r;
+    RemoteHalo* h;
     for (i = 0; i < 26; i++) {
-        r = remote[i];
-        Dfree(r->dstate);
-        Pfree(r->hstate);
-        free(r->pp);
-        Pfree(r->ff_pi);
-        delete r;
+        h = remote[i];
+        Dfree(h->dstate);
+        Pfree(h->hstate);
+        free(h->pp);
+        Pfree(h->ff_pi);
+        delete h;
     }
 }
 
