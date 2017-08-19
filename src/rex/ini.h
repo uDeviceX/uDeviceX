@@ -37,12 +37,15 @@ static void ini_local() {
 
 static void ini_remote() {
     int i, n;
+    RemoteHalo* r;
     for (i = 0; i < 26; i++) {
         n = i2max(i);
         remote[i] = new RemoteHalo;
-        re::resize(remote[i], n);
+        r = remote[i];
+        re::resize(r, n);
     }
 }
+
 static void ini_copy() {
     int i;
     for (i = 0; i < 26; ++i)

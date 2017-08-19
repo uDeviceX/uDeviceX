@@ -9,7 +9,11 @@ static void fin_local() {
 
 static void fin_remote() {
     int i;
-    for (i = 0; i < 26; i++) delete remote[i];
+    RemoteHalo* r;
+    for (i = 0; i < 26; i++) {
+        r = remote[i];
+        delete r;
+    }
 }
 
 void fin() {
