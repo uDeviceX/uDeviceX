@@ -3,7 +3,7 @@
 * multisolvent
 * BB on RBC
 * different interaction between objects
-* different interaction between objects ans solvent
+* different interaction between objects and solvent
 
 # modular
 
@@ -18,3 +18,8 @@
 * rm/make optional `Texo`
 * no -std=c++11
 * upgrade to c
+
+# doc
+
+* bird-view intro
+* web-page
