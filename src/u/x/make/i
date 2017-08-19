@@ -1,1 +1,7 @@
-find . -name '*.cu' -o -name '*.cpp' | grep -v '^\.\/u/'
+# filter out files in u/
+find . \
+     -name '*.cu'  -o  \
+     -name '*.cpp' -o  \
+     -name '*.h'    |  \
+    grep -v '^\.\/u/'
+
