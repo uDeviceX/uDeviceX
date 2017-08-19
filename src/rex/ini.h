@@ -32,7 +32,6 @@ static void ini_local() {
         local[i] = new LocalHalo;
         Dalloc(&local[i]->indexes, n);
         local[i]->ff      = new PinnedHostBuffer<Force>(n);
-        lo::update(local[i]);
     }
 }
 

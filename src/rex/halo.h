@@ -6,6 +6,5 @@ void halo() {
     dSync();
     if (fsiforces)     fsi::halo(halos);
     if (contactforces) cnt::halo(halos);
-    for (int i = 0; i < 26; ++i) lo::update(local[i]);
 }
 }
