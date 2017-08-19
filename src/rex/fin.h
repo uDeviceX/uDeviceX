@@ -1,9 +1,11 @@
 namespace rex {
 static void fin_local() {
     int i;
+    LocalHalo *h;
     for (i = 0; i < 26; i++) {
-        Dfree(local[i]->indexes);
-        delete local[i]->ff;
+        h = local[i];
+        Dfree(h->indexes);
+        delete h->ff;
     }
 }
 
