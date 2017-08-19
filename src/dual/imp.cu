@@ -14,7 +14,6 @@ namespace dual {
 void alloc(I *p, int n) {
     Palloc0(&p->D, n);
     Link(&p->DP, p->D);
-    //    CC(d::HostGetDevicePointer(&p->DP, p->D, 0));
 }
 
 void dealloc(I p) {
