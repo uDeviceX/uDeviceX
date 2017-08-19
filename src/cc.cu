@@ -11,7 +11,7 @@
 #include "cc/common.h"
 namespace cc {
 void check(d::Error_t rc, const char *file, int line) {
-    if (rc != d::Success)
+    if (rc != cudaSuccess)
         ERR("%s:%d: %s", file, line, d::GetErrorString(rc));
 }
 }
