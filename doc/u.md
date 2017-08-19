@@ -14,7 +14,7 @@ From `/src`
 
 From `/src`
 
-	u.u ../u/x
+	u.u ./u/x
 
 updates `hw/make/*.mk` files
 
