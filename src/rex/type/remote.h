@@ -9,10 +9,6 @@ struct RemoteHalo {
     Particle* pp;
     int n;
 };
+}
 
-namespace re {
-void resize(RemoteHalo *r, int n) {
-    r->n = n;
-}
-}
-}
+

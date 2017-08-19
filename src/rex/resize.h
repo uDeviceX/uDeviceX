@@ -10,10 +10,7 @@ void local_resize() {
 }
 
 void resizeR() {
-    int i, count;
-    for (i = 0; i < 26; ++i) {
-        count = recv_counts[i];
-        re::resize(remote[i], count);
-    }
+    int i;
+    for (i = 0; i < 26; ++i) remote[i]->n = recv_counts[i];
 }
 }

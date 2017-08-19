@@ -48,8 +48,6 @@ static void ini_remote() {
 
         Palloc0(&r->ff_pi, n);
         Link(&r->ff, r->ff_pi);
-            
-        re::resize(r, n);
     }
 }
 
