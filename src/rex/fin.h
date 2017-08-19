@@ -3,7 +3,7 @@ static void fin_local() {
     int i;
     LocalHalo *h;
     for (i = 0; i < 26; i++) {
-        h = local[i];
+        h = &local[i];
         Dfree(h->indexes);
         Pfree(h->ff_pi);
     }

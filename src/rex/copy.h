@@ -16,7 +16,7 @@ void copy_state() {
 void copy_ff() {
     int i;
     float *ff[26];
-    for (i = 0; i < 26; ++i) ff[i] = (float*)local[i]->ff;
+    for (i = 0; i < 26; ++i) ff[i] = (float*)local[i].ff;
     CC(cudaMemcpyToSymbolAsync(k_rex::g::ff, ff, sizeof(ff), 0, H2D));
 }
 

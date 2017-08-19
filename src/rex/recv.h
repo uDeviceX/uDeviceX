@@ -4,8 +4,8 @@ void recvF(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     MPI_Request reqA;
     for (i = 0; i < 26; ++i) {
         tag = t.btf + tags[i];
-        count = local[i]->n;
-        MC(l::m::Irecv(local[i]->ff_pi, 3 * count, MPI_FLOAT, ranks[i], tag, cart, &reqA));
+        count = local[i].n;
+        MC(l::m::Irecv(local[i].ff_pi, 3 * count, MPI_FLOAT, ranks[i], tag, cart, &reqA));
         reqrecvA.push_back(reqA);
     }
 }
