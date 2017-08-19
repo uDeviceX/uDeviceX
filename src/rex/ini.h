@@ -36,7 +36,7 @@ static void ini_local() {
 
         h->ff      = new PinnedHostBuffer<Force>(n);
         Palloc0(&h->ff_pi, n);
-        Link(&h->ff0, h->ff_pi);
+        Link(&h->ff0, h->ff->D);
     }
 }
 
