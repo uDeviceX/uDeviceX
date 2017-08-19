@@ -1,6 +1,7 @@
 void fields(const char * const path2h5,
             const float * const channeldata[],
             const char * const * const channelnames, const int nchannels) {
+    int i;
     hid_t plist_id_access = H5Pcreate(H5P_FILE_ACCESS);
     H5Pset_fapl_mpio(plist_id_access, l::m::cart, MPI_INFO_NULL);
 
@@ -11,9 +12,9 @@ void fields(const char * const path2h5,
     hsize_t globalsize[4] = {(hsize_t) m::dims[2] * L[2], (hsize_t) m::dims[1] * L[1], (hsize_t) m::dims[0] * L[0], 1};
     hid_t filespace_simple = H5Screate_simple(4, globalsize, NULL);
 
-    for(int ichannel = 0; ichannel < nchannels; ++ichannel)
+    for(int i = 0; i < nchannels; ++i)
     {
-        hid_t dset_id = H5Dcreate(file_id, channelnames[ichannel], H5T_NATIVE_FLOAT, filespace_simple,
+        hid_t dset_id = H5Dcreate(file_id, channelnames[i], H5T_NATIVE_FLOAT, filespace_simple,
                                   H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
         hid_t plist_id = H5Pcreate(H5P_DATASET_XFER);
 
@@ -25,7 +26,7 @@ void fields(const char * const path2h5,
         H5Sselect_hyperslab(filespace, H5S_SELECT_SET, start, NULL, extent, NULL);
 
         hid_t memspace = H5Screate_simple(4, extent, NULL);
-        H5Dwrite(dset_id, H5T_NATIVE_FLOAT, memspace, filespace, plist_id, channeldata[ichannel]);
+        H5Dwrite(dset_id, H5T_NATIVE_FLOAT, memspace, filespace, plist_id, channeldata[i]);
 
         H5Sclose(memspace);
         H5Sclose(filespace);
