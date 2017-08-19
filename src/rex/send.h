@@ -14,14 +14,12 @@ void sendC(MPI_Comm cart, int dranks[26], x::TicketTags t) {
 }
 
 void sendP12(MPI_Comm cart, int ranks[26], x::TicketTags t, x::TicketPinned ti, Particle *pp) {
-    int i, start, count, expected;
+    int i, start, count;
     MPI_Request req;
     for (i = 0; i < 26; ++i) {
         start = ti.tstarts[i];
         count = send_counts[i];
-        expected = send_counts[i];
-        
-        MC(l::m::Isend(pp + start, expected * 6, MPI_FLOAT, ranks[i], t.btp1 + i, cart, &req));
+        MC(l::m::Isend(pp + start, count * 6, MPI_FLOAT, ranks[i], t.btp1 + i, cart, &req));
         reqsendP.push_back(req);
     }
 }
