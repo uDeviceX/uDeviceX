@@ -43,8 +43,7 @@ static void ini_remote() {
     RemoteHalo* h;
     for (i = 0; i < 26; i++) {
         n = i2max(i);
-        remote[i] = new RemoteHalo;
-        h = remote[i];
+        h = &remote[i];
         Dalloc0(&h->dstate, n);
         Palloc0(&h->hstate, n);
         h->pp = (Particle*)malloc(n*sizeof(Particle));

@@ -13,7 +13,7 @@ static void fin_remote() {
     int i;
     RemoteHalo* h;
     for (i = 0; i < 26; i++) {
-        h = remote[i];
+        h = &remote[i];
         Dfree(h->dstate);
         Pfree(h->hstate);
         free(h->pp);
