@@ -1,5 +1,6 @@
 namespace rex {
 struct RemoteHalo {
+    int n;
     Particle* dstate;
     Particle* hstate;
 
@@ -7,7 +8,6 @@ struct RemoteHalo {
     Force* ff_pi; /* pinned */
     
     Particle* pp;
-    int n;
 };
 }
 
