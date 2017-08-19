@@ -17,7 +17,7 @@ sh runfile
 avg_h52.m h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
 
 #### Plates : shear
-# nTEST: flow.t2
+# cTEST: flow.t2
 rm -rf bop h5 diag.txt rbc.off
 :
 export PATH=../tools:$PATH
@@ -31,7 +31,7 @@ u.conf conf/test.h <<!!!
 !!!
 (make clean && u.make -j) > /dev/null
 sh runfile
-avg_h5.m h5/flowfields-0003.h5 | uscale 0.1 > h5.out.txt
+avg_h5.m h5/flowfields-0003.h5 | uscale 0.3 > h5.out.txt
 
 #### Plates : poiseuille
 # nTEST: flow.t3
