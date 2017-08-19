@@ -1,2 +1,0 @@
-find . -name '*.cu' -o -name '*.cpp' | grep -v '^\.\/u/'
-echo $U/bund.cu
