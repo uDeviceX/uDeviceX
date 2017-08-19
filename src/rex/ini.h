@@ -45,6 +45,10 @@ static void ini_remote() {
         Dalloc0(&r->dstate, n);
         Palloc0(&r->hstate, n);
         r->pp = (Particle*)malloc(n*sizeof(Particle));
+
+        Palloc0(&r->ff_pi, n);
+        Link(&r->ff, r->ff_pi);
+            
         re::resize(r, n);
     }
 }
