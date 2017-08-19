@@ -1,6 +1,6 @@
 namespace basetags {
 struct TagGen {
-    int bt = 0;
+    int bt;
     static const int stride = 100;
 };
 
