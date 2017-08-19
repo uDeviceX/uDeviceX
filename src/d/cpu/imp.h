@@ -52,3 +52,8 @@ cudaError_t Free (void *devPtr) {
 cudaError_t DeviceSynchronize (void) {
     return cudaSuccess;
 }
+
+const char *GetErrorString (cudaError_t error) {
+    static const char e[] = "api: cpu: error\n";
+    return e;
+}

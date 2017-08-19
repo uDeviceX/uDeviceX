@@ -45,3 +45,7 @@ cudaError_t Free (void *devPtr) {
 cudaError_t DeviceSynchronize (void) {
     return cudaDeviceSynchronize();
 }
+
+const char * GetErrorString (Error_t error) {
+    return cudaGetErrorString(error);
+}

@@ -1,3 +1,4 @@
 namespace d {
-typedef Error_t int;
+enum Error { Success = 0, ErrorUnknown =  30};
+typedef enum Error Error_t;
 }

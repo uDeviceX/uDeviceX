@@ -12,4 +12,5 @@ cudaError_t MemcpyAsync (void * dst, const void * src, size_t count, enum cudaMe
                          kind, cudaStream_t stream = 0);
 cudaError_t Free (void *devPtr);
 cudaError_t DeviceSynchronize (void);
+const char *GetErrorString (Error_t error);
 }

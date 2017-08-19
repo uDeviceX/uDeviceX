@@ -1,3 +1,3 @@
 namespace d {
-typedef Error_t cudaError_t;
+typedef cudaError_t Error_t;
 }
