@@ -14,6 +14,7 @@ static void fin_remote() {
         r = remote[i];
         Dfree(r->dstate);
         Pfree(r->hstate);
+        free(r->pp);
         delete r;
     }
 }

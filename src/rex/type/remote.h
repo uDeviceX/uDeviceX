@@ -3,7 +3,7 @@ struct RemoteHalo {
     Particle* dstate;
     Particle* hstate;
     PinnedHostBuffer<Force> ff;
-    std::vector<Particle> pp;
+    Particle* pp;
     int n;
 };
 

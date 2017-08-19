@@ -33,7 +33,7 @@ void copy_hstate() {
     int i, count;
     for (i = 0; i < 26; ++i) {
         count = recv_counts[i];
-        memcpy(remote[i]->hstate, &remote[i]->pp.front(), sizeof(Particle) * count);
+        memcpy(remote[i]->hstate, remote[i]->pp, sizeof(Particle) * count);
     }
 }
 
