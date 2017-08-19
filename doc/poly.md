@@ -20,7 +20,7 @@ Controlled by passing `-I$S/fun/cpu0` and `-I$S/fun` to files inside
 
 ## Conditional header
 
-Only global: one directory `g/` for entire project.  Controlled by
+Only global: one directory `g/` for entire project. Controlled by
 passing `-I$S/g/cpu0` to all files.
 
 	g/cpu0/api.h
