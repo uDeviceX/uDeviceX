@@ -5,7 +5,6 @@ void local_resize() {
     for (i = 0; i < 26; ++i) {
         l = local[i];
         l->n = send_counts[i];
-        l->ff->resize(l->n);
     }
 }
 
