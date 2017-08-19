@@ -18,6 +18,7 @@
 * rm/make optional `Texo`
 * no -std=c++11
 * upgrade to c
+* rm globals from kernels
 
 # doc
 
