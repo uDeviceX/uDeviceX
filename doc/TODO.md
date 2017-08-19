@@ -7,7 +7,7 @@
 
 # modular
 
-* pre-/inter- processors :  rm `sim_gen`
+* pre-/inter- processors : rm `sim_gen`
 * cuda/cpu
 * mpi/single
 * unify communication
