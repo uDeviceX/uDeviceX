@@ -6,7 +6,6 @@ static void fin_local() {
         h = local[i];
         Dfree(h->indexes);
         Pfree(h->ff_pi);
-        delete h->ff;
     }
 }
 
