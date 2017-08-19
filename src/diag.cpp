@@ -37,7 +37,7 @@ void diagnostics(Particle *pp, int n, int id) {
         f = fopen(DUMP_BASE "/diag.txt", firsttime ? "w" : "a");
         firsttime = false;
         if (id == 0) fprintf(f, "# TSTEP\tKBT\tPX\tPY\tPZ\n");
-        fprintf(stderr, "%e\t%.10e\t%.10e\t%.10e\t%.10e\n", id * dt, kbt, p[0], p[1], p[2]);
+        fprintf(stderr, "%.3e %.3e %.3e %.3e %.3e\n", id * dt, kbt, p[0], p[1], p[2]);
         fprintf(f, "%e\t%.10e\t%.10e\t%.10e\t%.10e\n", id * dt, kbt, p[0], p[1], p[2]);
         fclose(f);
     }
