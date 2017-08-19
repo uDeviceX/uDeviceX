@@ -7,7 +7,7 @@
 
 From `/src`
 
-	u.conf0 ../u/hw
+	u.conf0 ./u/hw
 	u.make -j
 
 # Update make file fragments
