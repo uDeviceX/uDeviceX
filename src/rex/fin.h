@@ -18,7 +18,6 @@ static void fin_remote() {
         Pfree(h->hstate);
         free(h->pp);
         Pfree(h->ff_pi);
-        delete h;
     }
 }
 
