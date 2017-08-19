@@ -12,8 +12,7 @@ void fields(const char * const path2h5,
     hsize_t globalsize[4] = {(hsize_t) m::dims[2] * L[2], (hsize_t) m::dims[1] * L[1], (hsize_t) m::dims[0] * L[0], 1};
     hid_t filespace_simple = H5Screate_simple(4, globalsize, NULL);
 
-    for(int i = 0; i < nchannels; ++i)
-    {
+    for(i = 0; i < nchannels; ++i) {
         hid_t dset_id = H5Dcreate(file_id, channelnames[i], H5T_NATIVE_FLOAT, filespace_simple,
                                   H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
         hid_t plist_id = H5Pcreate(H5P_DATASET_XFER);
