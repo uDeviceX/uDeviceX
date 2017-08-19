@@ -42,6 +42,7 @@ static void ini_remote() {
         n = i2max(i);
         remote[i] = new RemoteHalo;
         r = remote[i];
+        Dalloc0(&r->dstate, n);
         re::resize(r, n);
     }
 }

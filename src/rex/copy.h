@@ -10,7 +10,7 @@ void copy_pack(x::TicketPinned t, Particle *buf, Particle *buf_pinned) {
 void copy_state() {
     int i;
     for (i = 0; i < 26; ++i)
-        CC(cudaMemcpyAsync(remote[i]->dstate.D, remote[i]->hstate.D, sizeof(Particle) * remote[i]->hstate.S, H2D));
+        CC(cudaMemcpyAsync(remote[i]->dstate, remote[i]->hstate.D, sizeof(Particle) * remote[i]->hstate.S, H2D));
 }
 
 void copy_ff() {

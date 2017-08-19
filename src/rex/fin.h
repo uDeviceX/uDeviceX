@@ -12,6 +12,7 @@ static void fin_remote() {
     RemoteHalo* r;
     for (i = 0; i < 26; i++) {
         r = remote[i];
+        Dfree(r->dstate);
         delete r;
     }
 }
