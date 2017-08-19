@@ -33,7 +33,10 @@ static void ini_local() {
         local[i] = new LocalHalo;
         h = local[i];
         Dalloc(&h->indexes, n);
+
         h->ff      = new PinnedHostBuffer<Force>(n);
+        Palloc0(&h->ff_pi, n);
+        Link(&h->ff0, h->ff_pi);
     }
 }
 
