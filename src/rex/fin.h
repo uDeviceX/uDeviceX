@@ -13,6 +13,7 @@ static void fin_remote() {
     for (i = 0; i < 26; i++) {
         r = remote[i];
         Dfree(r->dstate);
+        Pfree(r->hstate);
         delete r;
     }
 }

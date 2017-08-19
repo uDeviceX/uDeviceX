@@ -1,7 +1,7 @@
 namespace rex {
 struct RemoteHalo {
     Particle* dstate;
-    PinnedHostBuffer<Particle> hstate;
+    Particle* hstate;
     PinnedHostBuffer<Force> ff;
     std::vector<Particle> pp;
     int n;
@@ -10,7 +10,6 @@ struct RemoteHalo {
 namespace re {
 void resize(RemoteHalo *r, int n) {
     r->n = n;
-    r->hstate.preserve_resize(n);
     r->ff.resize(n);
 }
 }
