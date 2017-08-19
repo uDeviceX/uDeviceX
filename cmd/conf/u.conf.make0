@@ -14,7 +14,7 @@ write_make() {
 S = $S
 U = $U
 B = $B"'
-include $B/conf.mk
+include $B/sys.mk
 include $S/make/common.mk
 include $S/$U/make/obj.mk
 
@@ -39,7 +39,7 @@ write_conf () (
 mkdir -p     "$B"
 
 m="$B/Makefile"
-c="$B/conf.mk"
+c="$B/sys.mk"
 
 write_make; rc=$?
 if test $rc -ne 0; then exit $ERR_BIN_MAKE; fi
