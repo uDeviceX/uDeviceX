@@ -1,9 +1,9 @@
-template <typename T> struct PinnedHostBuffer2 {
+struct PinnedHostBuffer2 {
 private:
   int capacity, S;
 public:
   /* `S': size; `D' is for data; `DP' device pointer */
-  T *D, *DP;
+  float3 *D, *DP;
 
   explicit PinnedHostBuffer2(int n = 0)
     : capacity(0), S(0), D(NULL), DP(NULL) {
@@ -22,9 +22,8 @@ public:
     const int conservative_estimate = (int)ceil(1.1 * n);
     capacity = 128 * ((conservative_estimate + 129) / 128);
 
-    CC(cudaHostAlloc(&D, sizeof(T) * capacity, cudaHostAllocMapped));
+    CC(cudaHostAlloc(&D, sizeof(float3) * capacity, cudaHostAllocMapped));
 
     CC(cudaHostGetDevicePointer(&DP, D, 0));
   }
 };
-

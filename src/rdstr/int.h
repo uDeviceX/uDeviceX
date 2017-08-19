@@ -3,9 +3,9 @@ namespace rdstr {
 using mdstr::TicketC; /* communication ticket */
 using mdstr::TicketP; /* (un)pack ticket      */
 
-struct TicketE {                           /* ticket extents                    */
-    PinnedHostBuffer2<float3> *ll, *hh;    /* extents of RBCs                   */
-    float *rr;                             /* positions used to distribute rbcs */
+struct TicketE {                   /* ticket extents                    */
+    PinnedHostBuffer2 *ll, *hh;    /* extents of RBCs                   */
+    float *rr;                     /* positions used to distribute rbcs */
 };
 
 namespace gen = mdstr::gen;

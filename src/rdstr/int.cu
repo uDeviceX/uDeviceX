@@ -30,8 +30,8 @@
 namespace rdstr {
 
 void alloc_ticketE(/**/ TicketE *t) {
-    t->ll = new PinnedHostBuffer2<float3>;
-    t->hh = new PinnedHostBuffer2<float3>;
+    t->ll = new PinnedHostBuffer2;
+    t->hh = new PinnedHostBuffer2;
     t->rr = new float[3 * MAX_CELL_NUM];
 }
 

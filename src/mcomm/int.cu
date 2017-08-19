@@ -35,8 +35,8 @@ void free_ticketcom(/**/ TicketCom *t) {
 
 void alloc_ticketS(TicketS *ts) {
     for (int i = 0; i < 27; ++i) ts->pp_hst[i] = new Particle[MAX_PART_NUM];
-    ts->llo = new PinnedHostBuffer2<float3>;
-    ts->hhi = new PinnedHostBuffer2<float3>;
+    ts->llo = new PinnedHostBuffer2;
+    ts->hhi = new PinnedHostBuffer2;
 }
 
 void free_ticketS(TicketS *ts) {

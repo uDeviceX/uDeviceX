@@ -16,7 +16,7 @@ struct TicketM { /* map ticket : who goes where? */
 struct TicketS { /* send data */
     Particle *pp_hst[27]; /* particles on host */
     int counts[27];       /* number of meshes  */
-    PinnedHostBuffer2<float3> *llo, *hhi; /* extents */
+    PinnedHostBuffer2 *llo, *hhi; /* extents */
 };
 
 struct TicketR { /* recv data */
