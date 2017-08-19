@@ -17,7 +17,7 @@ sh runfile
 avg_h52.m h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
 
 #### Plates : shear
-# cTEST: flow.t2
+# nTEST: flow.t2
 rm -rf bop h5 diag.txt rbc.off
 :
 export PATH=../tools:$PATH
