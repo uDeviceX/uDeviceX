@@ -1,5 +1,5 @@
 namespace cc {
-void check(d::Error_t rc, const char *file, int line);
+void check(int rc, const char *file, int line);
 }
 
 

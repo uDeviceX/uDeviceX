@@ -3,10 +3,11 @@
 #include "inc/conf.h"
 
 #include "msg.h"
-#include "cc.h"
 #include "d/api.h"
 
 namespace d {
+#include "d/common.h"
+
 #if   defined(DEV_CUDA)
   #include "d/cuda/imp.h"
 #elif defined(DEV_CPU)

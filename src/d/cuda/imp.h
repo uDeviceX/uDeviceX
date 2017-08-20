@@ -1,51 +1,55 @@
-void ini() {
+static int R(cudaError_t e) {
+    if (e == cudaSuccess) return 0;
+    else {
+        emsg0 = cudaGetErrorString(e);
+        return 1;
+    }
+}
+
+int ini() {
     /* panda specific for multi-gpu testing
        int device = m::rank % 2 ? 0 : 2; */
     int device = 0;
-    CC(cudaSetDevice(device));
+    return R(cudaSetDevice(device));
 }
 
-cudaError_t Malloc(void **devPtr, size_t size) {
-    return cudaMalloc(devPtr, size);
+int Malloc(void **devPtr, size_t size) {
+    return R(cudaMalloc(devPtr, size));
 }
 
-cudaError_t MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset, enum cudaMemcpyKind kind) {
-    return cudaMemcpyToSymbol(symbol, src, count, offset, kind);
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset, enum cudaMemcpyKind kind) {
+    return R(cudaMemcpyToSymbol(symbol, src, count, offset, kind));
 }
 
-cudaError_t HostAlloc(void **pHost, size_t size, unsigned int flags) {
-    return cudaHostAlloc(pHost, size, flags);
+int HostAlloc(void **pHost, size_t size, unsigned int flags) {
+    return R(cudaHostAlloc(pHost, size, flags));
 }
 
-cudaError_t HostGetDevicePointer (void **pDevice, void *pHost, unsigned int flags) {
-    return cudaHostGetDevicePointer (pDevice, pHost, flags);
+int HostGetDevicePointer (void **pDevice, void *pHost, unsigned int flags) {
+    return R(cudaHostGetDevicePointer (pDevice, pHost, flags));
 }
 
-cudaError_t Memcpy (void *dst, const void *src, size_t count, enum cudaMemcpyKind kind) {
-    return cudaMemcpy(dst, src, count, kind);
+int Memcpy (void *dst, const void *src, size_t count, enum cudaMemcpyKind kind) {
+    return R(cudaMemcpy(dst, src, count, kind));
 }
 
-cudaError_t MemsetAsync (void *devPtr, int value, size_t count, cudaStream_t stream) {
-    return cudaMemsetAsync(devPtr, value, count, stream);
+int MemsetAsync (void *devPtr, int value, size_t count, cudaStream_t stream) {
+    return R(cudaMemsetAsync(devPtr, value, count, stream));
 }
 
-cudaError_t Memset (void *devPtr, int value, size_t count) {
-    return cudaMemset(devPtr, value, count);
+int Memset (void *devPtr, int value, size_t count) {
+    return R(cudaMemset(devPtr, value, count));
 }
 
-cudaError_t MemcpyAsync (void * dst, const void * src, size_t count, enum cudaMemcpyKind
+int MemcpyAsync (void * dst, const void * src, size_t count, enum cudaMemcpyKind
                          kind, cudaStream_t stream) {
-    return cudaMemcpyAsync (dst, src, count, kind, stream);
+    return R(cudaMemcpyAsync (dst, src, count, kind, stream));
 }
 
-cudaError_t Free (void *devPtr) {
-    return cudaFree (devPtr);
+int Free (void *devPtr) {
+    return R(cudaFree (devPtr));
 }
 
-cudaError_t DeviceSynchronize (void) {
-    return cudaDeviceSynchronize();
-}
-
-const char * GetErrorString (Error_t error) {
-    return cudaGetErrorString(error);
+int DeviceSynchronize (void) {
+    return R(cudaDeviceSynchronize());
 }
