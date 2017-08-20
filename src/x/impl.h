@@ -14,7 +14,6 @@ static void send() {
     using namespace rex;
     copy_count(ti);
     recvF(tc.cart, tc.ranks, tr.tags, tt);
-    copy_pack(ti, buf, buf_pi);
     dSync();
 }
 
