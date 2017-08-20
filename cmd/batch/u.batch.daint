@@ -24,5 +24,4 @@ else Time="--time $1"; shift
 fi
 
 Args="-u -C gpu $Time $@"
-. u.load."$h"
 nohup0 srun -n $n "$Args" "$e" $x $y $z
