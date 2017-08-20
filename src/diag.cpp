@@ -36,15 +36,19 @@ static int sum_i(int *v) {
 void diagnostics(Particle *pp, int n, int id) {
     enum {X, Y, Z};
     int i, c;
-    double ke, kbt, km;
+    double k, km, ke, kbt;
     FILE * f;
     double v[] = {0, 0, 0};
     for (i = 0; i < n; ++i) for (c = 0; c < 3; ++c) v[c] += pp[i].v[c];
     sum3(v);
 
-    ke = 0;
-    for (i = 0; i < n; ++i) ke += sq(pp[i].v[0]) + sq(pp[i].v[1]) + sq(pp[i].v[2]);
-    km = ke;
+    ke = km = 0;
+    for (i = 0; i < n; ++i) {
+        k = sq(pp[i].v[X]) + sq(pp[i].v[Y]) + sq(pp[i].v[Z]);
+        ke += k;
+        if (k > km) ke = km;
+    }
+
     sum_d(&ke); max_d(&km);
     sum_i(&n);
 
