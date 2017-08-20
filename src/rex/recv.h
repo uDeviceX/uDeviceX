@@ -27,7 +27,7 @@ void recvP(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     for (i = 0; i < 26; ++i) {
         tag = t.btp1 + tags[i];
         n = recv_counts[i];
-        p = remote[i].pp;
+        p = remote[i].hstate;
         MC(l::m::Irecv(p, n * 6, MPI_FLOAT, ranks[i], tag, cart, &reqP));
         reqrecvP.push_back(reqP);
     }

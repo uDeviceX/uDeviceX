@@ -5,8 +5,6 @@ struct RemoteHalo {
 
     Force* ff;
     Force* ff_pi; /* pinned */
-    
-    Particle* pp;
 };
 }
 
