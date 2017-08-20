@@ -1,0 +1,2 @@
+h=`u.host`
+exec u.exec."$h" "$@"
