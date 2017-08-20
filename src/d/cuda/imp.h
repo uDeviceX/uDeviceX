@@ -1,5 +1,4 @@
-#define SZ(a) (sizeof(a)/sizeof(*(a)))
-
+#define SZ(a) (int)(sizeof(a)/sizeof(*(a)))
 static enum cudaMemcpyKind k2k0[] = {  /* [k]ind to [k]ind */
     cudaMemcpyHostToHost, cudaMemcpyHostToDevice,
     cudaMemcpyDeviceToHost, cudaMemcpyDeviceToDevice,
@@ -29,7 +28,8 @@ int Malloc(void **devPtr, size_t size) {
 }
 
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset, int kind0) {
-    enum cudaMemcpyKind kind = k2k(kind0);
+    enum cudaMemcpyKind kind;
+    kind = k2k(kind0);
     return R(cudaMemcpyToSymbol(symbol, src, count, offset, kind));
 }
 
@@ -46,17 +46,20 @@ int Memcpy (void *dst, const void *src, size_t count, int kind0) {
     return R(cudaMemcpy(dst, src, count, kind));
 }
 
-int MemsetAsync (void *devPtr, int value, size_t count, cudaStream_t stream) {
-    return R(cudaMemsetAsync(devPtr, value, count, stream));
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream) {
+    if (stream != 0) ERR("streams are not supported");
+    return R(cudaMemsetAsync(devPtr, value, count));
 }
 
 int Memset (void *devPtr, int value, size_t count) {
     return R(cudaMemset(devPtr, value, count));
 }
 
-int MemcpyAsync (void * dst, const void * src, size_t count, int kind0, cudaStream_t stream) {
-    enum cudaMemcpyKind kind = k2k(kind0);
-    return R(cudaMemcpyAsync (dst, src, count, kind, stream));
+int MemcpyAsync (void * dst, const void * src, size_t count, int kind0, Stream_t stream) {
+    enum cudaMemcpyKind kind;
+    if (stream != 0) ERR("streams are not supported");
+    kind = k2k(kind0);
+    return R(cudaMemcpyAsync (dst, src, count, kind));
 }
 
 int Free (void *devPtr) {

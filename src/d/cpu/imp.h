@@ -28,7 +28,7 @@ int Memcpy (void *dst, const void *src, size_t count, int /*kind*/) {
     return 0;    
 }
 
-int MemsetAsync (void *devPtr, int value, size_t count, cudaStream_t stream) {
+int MemsetAsync (void *devPtr, int value, size_t count, Stream_t) {
     memset(devPtr, value, count);
     return 0;
 }
@@ -38,7 +38,7 @@ int Memset (void *devPtr, int value, size_t count) {
     return 0;
 }
 
-int MemcpyAsync (void * dst, const void * src, size_t count, int /*kind*/, cudaStream_t) {
+int MemcpyAsync (void * dst, const void * src, size_t count, int /*kind*/, Stream_t) {
     memcpy(dst, src, count);
     return 0;
 }
