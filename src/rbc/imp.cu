@@ -1,4 +1,3 @@
-#include <vector>
 #include <mpi.h>
 #include <conf.h>
 #include "inc/conf.h"
