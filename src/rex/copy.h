@@ -10,7 +10,7 @@ void copy_pack(x::TicketPinned t, Particle *buf, Particle *buf_pinned) {
 void copy_state() {
     int i, n;
     for (i = 0; i < 26; ++i) {
-        n = remote[i].n;
+        n = recv_counts[i];
         aH2D0(remote[i].dstate, remote[i].hstate, n);
     }
 }

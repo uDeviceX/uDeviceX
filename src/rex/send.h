@@ -3,7 +3,7 @@ void sendF(MPI_Comm cart, int ranks[26], x::TicketTags t) {
     int i, n;
     reqsendA.resize(26);
     for (i = 0; i < 26; ++i) {
-        n = remote[i].n;
+        n = recv_counts[i];
         MC(l::m::Isend(remote[i].ff_pi, 3 * n, MPI_FLOAT, ranks[i], t.btf + i, cart, &reqsendA[i]));
     }
 }

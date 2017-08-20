@@ -8,8 +8,4 @@ void local_resize() {
     }
 }
 
-void resizeR() {
-    int i;
-    for (i = 0; i < 26; ++i) remote[i].n = recv_counts[i];
-}
 }

@@ -3,7 +3,7 @@ void halo() {
     int i, n;
     ParticlesWrap halos[26];
     for (i = 0; i < 26; ++i) {
-        n = remote[i].n;
+        n = recv_counts[i];
         halos[i] = ParticlesWrap(remote[i].dstate, n, remote[i].ff);
     }
 
