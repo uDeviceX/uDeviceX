@@ -30,7 +30,7 @@ static void dump0(int *hst, int n) {
 
 static void dump(int *dev, int n) {
     int hst[M];
-    cD2H0(hst, dev, n);
+    cD2H(hst, dev, n);
     dump0(hst, n);
 }
 
