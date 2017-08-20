@@ -54,6 +54,8 @@
 #include "mcomm/int.h"
 
 #include "rbc/imp.h"
+#include "rbc/int.h"
+
 namespace rbc {
 #include "params/rbc.inc0.h"
 #include "rbc/int/imp.h"

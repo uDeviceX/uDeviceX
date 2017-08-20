@@ -1,6 +1,5 @@
-void transform(float* rr0, int nv, float *A, /* output */ Particle* pp) {
-    /* rr0: vertices of RBC template
-       A: affine transformation matrix */
+void transform(float* rr0, int nv, float *A, /* output */ Particle *pp) {
+    /* rr0: vertices of RBC template; A: affine transformation matrix */
     for (int iv = 0; iv < nv; iv++) {
         float  *r = pp[iv].r, *v = pp[iv].v;
         float *r0 = &rr0[3*iv];

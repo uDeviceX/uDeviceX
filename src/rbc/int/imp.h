@@ -1,21 +1,3 @@
-struct Quants {
-    int n, nc, nt, nv;
-    Particle *pp, *pp_hst; /* vertices */
-    int *adj0, *adj1;      /* adjacency lists */
-    int4 *tri;             /* triangles */
-
-    int *tri_hst;
-    float *av;
-};
-
-/* textures ticket */
-struct TicketT {
-    Texo <float2> texvert;
-    Texo <int> texadj0, texadj1;
-    Texo <int4> textri;
-};
-
-
 void alloc_quants(Quants *q) {
     q->n = q->nc = 0;
     Dalloc(&q->pp, MAX_PART_NUM);

@@ -53,11 +53,7 @@
 #include "mcomm/type.h"
 #include "mcomm/int.h"
 
-#include "rbc/imp.h"
-namespace rbc {
-#include "params/rbc.inc0.h"
-#include "rbc/int/imp.h"
-}
+#include "rbc/int.h"
 
 #include "mdstr/buf.h"
 #include "mdstr/tic.h"
