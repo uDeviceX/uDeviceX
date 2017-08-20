@@ -1,5 +1,5 @@
 namespace k_rex {
-enum {FD = 3}; /* number of dimenshions in force */
+enum {FD = 3}; /* number of dimensions in force */
 
 __device__ void unpack0(int fid, int pif, int dim, /**/ float *ff) {
     /* fid: fragment id, pif: particle id in fragment coordinates */
