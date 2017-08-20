@@ -17,7 +17,7 @@ e=$1; shift # executable
 
 
 if   test $#   -eq 0
-then Time="--time 00:30"
+then Time="--time 00:10:00"
 elif test "$1"   = -
 then                   shift
 else Time="--time $1"; shift
