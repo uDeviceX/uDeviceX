@@ -6,12 +6,3 @@ struct ParticlesWrap {
     ParticlesWrap(const Particle *const p, const int n, Force *f)
         : p(p), n(n), f(f) {}
 };
-
-struct ParticlesRex {
-    const Particle *p;
-    Force *f;
-    int n;
-    ParticlesRex() : p(NULL), f(NULL), n(0) {}
-    ParticlesRex(const Particle *const p, const int n, Force *f)
-        : p(p), n(n), f(f) {}
-};
