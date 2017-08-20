@@ -10,11 +10,6 @@ void copy_ff() {
     CC(cudaMemcpyToSymbolAsync(k_rex::g::ff, ff, sizeof(ff), 0, H2D));
 }
 
-void copy_count(x::TicketPinned ti, int counts[26]) {
-    int i;
-    for (i = 0; i < 26; ++i) counts[i] = ti.counts[i];
-}
-
 void copy_offset(int nw, x::TicketPack tp, x::TicketPinned ti) {
     CC(cudaMemcpyAsync(ti.counts, tp.offsets + 26 * nw, sizeof(int) * 26, H2H));
 }
