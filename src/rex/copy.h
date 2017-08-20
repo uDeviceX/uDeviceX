@@ -8,9 +8,11 @@ void copy_pack(x::TicketPinned t, Particle *buf, Particle *buf_pinned) {
 }
 
 void copy_state() {
-    int i;
-    for (i = 0; i < 26; ++i)
-        CC(cudaMemcpyAsync(remote[i].dstate, remote[i].hstate, sizeof(Particle) * remote[i].n, H2D));
+    int i, n;
+    for (i = 0; i < 26; ++i) {
+        n = remote[i].n;
+        CC(cudaMemcpyAsync(remote[i].dstate, remote[i].hstate, n*sizeof(Particle), H2D));
+    }
 }
 
 void copy_ff() {
