@@ -6,7 +6,7 @@ static void pre(std::vector<ParticlesWrap> w, int nw) {
     scanA(w, nw, tp);
     scanB(nw, tp);
     copy_offset(nw, tp, ti);
-    copy_tstarts(tp, ti);
+    copy_starts(tp, ti);
     pack(w, nw, tp, buf);
 }
 
