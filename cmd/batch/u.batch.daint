@@ -24,4 +24,7 @@ else Time="--time $1"; shift
 fi
 
 Args="-u -C gpu $Time $@"
-nohup0 srun -n $n "$Args" u.exec.daint "$e" $x $y $z
+sbatch -n $n "$Args" - <<!
+#!/bin/bash
+u.exec.daint "$e" $x $y $z
+!
