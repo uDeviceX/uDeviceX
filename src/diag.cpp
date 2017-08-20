@@ -24,7 +24,7 @@ void diagnostics(Particle *pp, int n, int id) {
     double p[] = {0, 0, 0};
     for (i = 0; i < n; ++i) for (c = 0; c < 3; ++c) p[c] += pp[i].v[c];
     reduce(&p, m::rank == 0 ? &p : NULL, 3, MPI_DOUBLE, MPI_SUM);
-    
+
     ke = 0;
     for (i = 0; i < n; ++i)
         ke += sq(pp[i].v[0]) + sq(pp[i].v[1]) + sq(pp[i].v[2]);
