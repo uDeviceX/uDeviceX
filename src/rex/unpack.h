@@ -1,7 +1,5 @@
 namespace rex {
-void unpack(std::vector<ParticlesWrap> w0, int nw, x::TicketPack tp) {
-    ParticlesWrap* w = w0.data();
-    
+void unpack(ParticlesWrap *w, int nw, x::TicketPack tp) {
     int i, n;
     Force *ff;
     int *o, *c, *s;
