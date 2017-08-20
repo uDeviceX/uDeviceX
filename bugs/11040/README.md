@@ -7,3 +7,9 @@ srun: error: nid03042: task 3: Exited with exit code 1
 srun: Terminating job step 3124341.0
 
 /scratch/snx3000/eceva/tmp.m3ilRe00y/src/odstr/int.cu:104: an illegal memory access was encountered
+
+# f0f3c0c6
+no crash up to
+1.390e+02 8.270e-01 1.557e+05 4.582e+01 -5.041e+01
+1.391e+02 8.271e-01 1.557e+05 4.678e+01 -5.067e+01
+1.391e+02 8.272e-01 1.557e+05 4.734e+01 -5.095e+01
