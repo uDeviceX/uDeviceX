@@ -1,10 +1,10 @@
 namespace rex {
-void recvF(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t, int send_counts[26]) {
+void recvF(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t, int counts[26]) {
     int i, count, tag;
     MPI_Request reqA;
     for (i = 0; i < 26; ++i) {
         tag = t.btf + tags[i];
-        count = send_counts[i];
+        count = counts[i];
         MC(l::m::Irecv(local[i].ff_pi, 3 * count, MPI_FLOAT, ranks[i], tag, cart, &reqA));
         reqrecvA.push_back(reqA);
     }
