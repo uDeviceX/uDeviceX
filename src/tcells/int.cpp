@@ -1,9 +1,13 @@
 #include <stdio.h>
+#include <math.h>
+
 #include <conf.h>
 #include "inc/conf.h"
 #include "common.h"
 #include "msg.h"
 #include "cc.h"
+
+#include "d/api.h"
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "scan/int.h"
@@ -21,9 +25,9 @@ void alloc_quants(int max_num_mesh, /**/ Quants *q) {
     q->cc_hst = new int[NCELLS];
     q->ii_hst = new int[27 * MAX_SOLIDS * MAX_FACE_NUM];
     
-    CC(cudaMalloc(&q->ss_dev, NCELLS * sizeof(int)));
-    CC(cudaMalloc(&q->cc_dev, NCELLS * sizeof(int)));
-    CC(cudaMalloc(&q->ii_dev, 27 * max_num_mesh * MAX_FACE_NUM * sizeof(int)));
+    Dalloc0(&q->ss_dev, NCELLS);
+    Dalloc0(&q->cc_dev, NCELLS);
+    Dalloc0(&q->ii_dev, 27 * max_num_mesh * MAX_FACE_NUM);
 }
 
 void free_quants(/**/ Quants *q) {
@@ -31,9 +35,9 @@ void free_quants(/**/ Quants *q) {
     delete[] q->cc_hst;
     delete[] q->ii_hst;
 
-    CC(cudaFree(q->ss_dev));
-    CC(cudaFree(q->cc_dev));
-    CC(cudaFree(q->ii_dev));
+    Dfree0(q->ss_dev);
+    Dfree0(q->cc_dev);
+    Dfree0(q->ii_dev);
 }
 
 void build_hst(const Mesh m, const Particle *i_pp, const int ns, /**/ Quants *q) {

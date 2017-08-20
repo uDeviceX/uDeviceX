@@ -48,7 +48,7 @@ $B/sdf/imp.o: $S/sdf/imp.cu; $N
 $B/sdf/int.o: $S/sdf/int.cu; $N
 $B/solid.o: $S/solid.cu; $N
 $B/tcells/imp.o: $S/tcells/imp.cu; $N
-$B/tcells/int.o: $S/tcells/int.cu; $N
+$B/tcells/int.o: $S/tcells/int.cpp; $X
 $B/wall/exch.o: $S/wall/exch.cpp; $X
 $B/wall/imp.o: $S/wall/imp.cu; $N
 $B/wall/int.o: $S/wall/int.cu; $N

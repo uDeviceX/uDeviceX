@@ -1,6 +1,6 @@
 namespace scan {
 struct Work {
-    uint *tmp;
+    unsigned int  *tmp;
     unsigned char *compressed;
 };
 
