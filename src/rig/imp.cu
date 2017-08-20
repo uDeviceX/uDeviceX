@@ -6,6 +6,7 @@
 #include "inc/conf.h"
 
 #include "d/ker.h"
+#include "d/api.h"
 
 #include "m.h"
 #include "common.h"
