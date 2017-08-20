@@ -36,7 +36,6 @@ static void rex0(std::vector<ParticlesWrap> w, int nw) {
     s::waitP();
     r::waitP();
 
-    copy_state();
     if (cnt) s::waitA();
     halo(); /* fsi::halo(); */
     dSync();

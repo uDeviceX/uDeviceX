@@ -7,14 +7,6 @@ void copy_pack(x::TicketPinned t, Particle *buf, Particle *buf_pinned) {
     if (t.tstarts[26]) CC(cudaMemcpyAsync(buf_pinned, buf, sizeof(Particle) * t.tstarts[26], H2H));
 }
 
-void copy_state() {
-    int i, n;
-    for (i = 0; i < 26; ++i) {
-        n = recv_counts[i];
-        aH2D0(remote[i].pp, remote[i].pp_pi, n);
-    }
-}
-
 void copy_ff() {
     int i;
     float *ff[26];
