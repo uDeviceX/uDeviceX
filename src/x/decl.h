@@ -9,4 +9,5 @@ int cnt;
 Particle *buf;
 Particle *buf_pi;
 
+int recv_counts[26];
 }

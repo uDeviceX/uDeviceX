@@ -1,5 +1,5 @@
 namespace rex {
-void halo() {
+void halo(int recv_counts[26]) {
     int i, n;
     ParticlesWrap halos[26];
     for (i = 0; i < 26; ++i) {

@@ -1,5 +1,5 @@
 namespace rex {
-void sendF(MPI_Comm cart, int ranks[26], x::TicketTags t) {
+void sendF(MPI_Comm cart, int ranks[26], x::TicketTags t, int recv_counts[26]) {
     int i, n;
     reqsendA.resize(26);
     for (i = 0; i < 26; ++i) {
