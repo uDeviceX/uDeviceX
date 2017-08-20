@@ -8,6 +8,9 @@ nohup0() {
     then msg nohup: error: $r
     fi
 }
+exec0() { # echo and exec
+    msg cmd: "$@"; exec "$@"
+}
 
 n=$1; shift
 x=$1; shift
@@ -24,7 +27,4 @@ else Time="--time $1"; shift
 fi
 
 Args="-u -C gpu $Time $@"
-sbatch -n $n "$Args" - <<!
-#!/bin/bash
-u.exec.daint "$e" $x $y $z
-!
+exec0 srun -n $n "$Args" u.exec.daint "$e" $x $y $z
