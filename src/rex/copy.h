@@ -1,6 +1,6 @@
 namespace rex {
 void copy_starts(x::TicketPack tp, x::TicketPinned ti) {
-    CC(cudaMemcpyAsync(ti.tstarts, tp.tstarts, sizeof(int) * 27, D2H));
+    CC(cudaMemcpyAsync(ti.starts, tp.tstarts, sizeof(int) * 27, D2H));
 }
 
 void copy_ff() {
