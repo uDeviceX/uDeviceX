@@ -14,13 +14,13 @@ From `/src`
 
 From `/src`
 
-	u.u ./u/x
+	u.u u/x
 
 updates `hw/make/*.mk` files
 
 # Create a new module
 
-From top directory
+From `src`
 
 	mkdir -p hw/make
 
@@ -30,12 +30,11 @@ list of [i]ncluded files. `e` returns a list of [e]xcluded files. The
 `i` list "minus" `e` list is used as a source. `e` file is
 optional. In other words `e` "black lists" files returned by `i`.
 
-For `i` and `e` are executed from `src`. Variable `$U` is set to a
-path to unit directory relative to `src`.
+For `i` and `e` the variable `$U` is set to `u/hw`.
 
 Run
 
-	u.u ../u/hw
+	u.u u/hw
 
-Add `../u/hw//make/dep.mk ../u/hw//make/obj.mk ../u/hw//make/dir.mk
-../u/hw//make/rule.mk` to git.
+Add `u/hw/make/dep.mk u/hw/make/obj.mk u/hw/make/dir.mk
+u/hw/make/rule.mk` to git.
