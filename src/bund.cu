@@ -53,16 +53,9 @@
 #include "mcomm/type.h"
 #include "mcomm/int.h"
 
+#include "rbc/imp.h"
 namespace rbc {
-namespace sub {
 #include "params/rbc.inc0.h"
-#include "rbc/imp/dev0.h"
-#include "rbc/imp/dev.h"
-#include "rbc/imp/imp.h"
-}
-namespace ic {
-#include "rbc/imp/ic.h"
-}
 #include "rbc/int/imp.h"
 }
 
