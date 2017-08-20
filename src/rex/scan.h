@@ -1,5 +1,7 @@
 namespace rex {
-void scanA(std::vector<ParticlesWrap> w, int nw, x::TicketPack tp) {
+void scanA(std::vector<ParticlesWrap> w0, int nw, x::TicketPack tp) {
+    ParticlesWrap* w = w0.data();
+    
     int i, n;
     int *o0, *o1; /* offsets */
     int *c;       /* counts */
