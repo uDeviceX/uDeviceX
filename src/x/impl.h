@@ -38,7 +38,6 @@ static void rex0(std::vector<ParticlesWrap> w, int nw) {
     halo(recv_counts); /* fsi::halo(); */
     dSync();
     sendF(tc.cart, tc.ranks, tt, recv_counts); /* (sic) */
-    copy_ff();
     r::waitA();
     unpack(w, nw, tp);
 }
