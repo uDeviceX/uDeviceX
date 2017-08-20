@@ -11,7 +11,7 @@ void copy_state() {
     int i, n;
     for (i = 0; i < 26; ++i) {
         n = remote[i].n;
-        CC(cudaMemcpyAsync(remote[i].dstate, remote[i].hstate, n*sizeof(Particle), H2D));
+        aH2D0(remote[i].dstate, remote[i].hstate, n);
     }
 }
 
