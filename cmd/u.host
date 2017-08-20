@@ -3,7 +3,16 @@
 # udx commands
 
 msg () { printf '%s\n' "$@" | cat 1>&2; }
-if test $# != 0; then msg 'returns udx hostname'; exit; fi
+if test $# != 0
+then msg 'returns udx hostname'
+     msg '   if UHOST is set it is returned'
+     exit
+fi
+
+if test -n "$UHOST"
+then printf '%s\n' "$UHOST"
+     exit
+fi
 
 dh=panda # default host
 h=`hostname`
