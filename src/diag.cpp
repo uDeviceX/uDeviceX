@@ -34,6 +34,7 @@ static int sum_i(int *v) {
 }
 
 void diagnostics(Particle *pp, int n, int id) {
+    enum {X, Y, Z};
     int i, c;
     double ke, kbt, km;
     FILE * f;
@@ -53,8 +54,8 @@ void diagnostics(Particle *pp, int n, int id) {
         f = fopen(DUMP_BASE "/diag.txt", firsttime ? "w" : "a");
         firsttime = false;
         if (id == 0) fprintf(f, "# TSTEP\tKBT\tPX\tPY\tPZ\n");
-        fprintf(stderr, "%.3e %.3e %.3e %.3e %.3e\n", id * dt, kbt, v[0], v[1], v[2]);
-        fprintf(f, "%e\t%.10e\t%.10e\t%.10e\t%.10e\n", id * dt, kbt, v[0], v[1], v[2]);
+        fprintf(stderr, "%.3e %.3e %.3e %.3e %.3e %.3e\n", id * dt, kbt, v[X], v[Y], v[Z], km);
+        fprintf(f, "%e\t%.10e\t%.10e\t%.10e\t%.10e\t%.10e\n", id * dt, kbt, v[X], v[Y], v[Z], km);
         fclose(f);
     }
 }
