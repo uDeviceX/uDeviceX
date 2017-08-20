@@ -9,7 +9,8 @@ nohup0() {
     fi
 }
 exec0() { # echo and exec
-    msg cmd: "$@" # exec "$@"
+    msg cmd: "$@"
+    exec "$@"
 }
 
 n=$1; shift
