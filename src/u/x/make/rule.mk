@@ -37,6 +37,7 @@ $B/msg.o: $S/msg.cpp; $X
 $B/odstr/imp.o: $S/odstr/imp.cu; $N
 $B/odstr/int.o: $S/odstr/int.cu; $N
 $B/os.o: $S/os.cpp; $X
+$B/rbc/imp.o: $S/rbc/imp.cu; $N
 $B/rdstr/imp.o: $S/rdstr/imp.cu; $N
 $B/rdstr/int.o: $S/rdstr/int.cu; $N
 $B/restart.o: $S/restart.cpp; $X
