@@ -36,7 +36,8 @@ static int sum_i(int *v) {
 void diagnostics(Particle *pp, int n, int id) {
     enum {X, Y, Z};
     int i, c;
-    double k, km, ke, kbt;
+    double k, km, ke; /* particle, total, and maximum kinetic energies */
+    double kbt;
     FILE * f;
     double v[] = {0, 0, 0};
     for (i = 0; i < n; ++i) for (c = 0; c < 3; ++c) v[c] += pp[i].v[c];
