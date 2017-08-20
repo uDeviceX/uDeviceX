@@ -45,7 +45,7 @@ static void ini_remote() {
         n = i2max(i);
         h = &remote[i];
         Dalloc(&h->pp, n);
-        Palloc0(&h->hstate, n);
+        Palloc0(&h->pp_pi, n);
 
         Palloc0(&h->ff_pi, n);
         Link(&h->ff, h->ff_pi);

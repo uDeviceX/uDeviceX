@@ -11,7 +11,7 @@ void copy_state() {
     int i, n;
     for (i = 0; i < 26; ++i) {
         n = recv_counts[i];
-        aH2D0(remote[i].pp, remote[i].hstate, n);
+        aH2D0(remote[i].pp, remote[i].pp_pi, n);
     }
 }
 
