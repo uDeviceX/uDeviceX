@@ -11,9 +11,10 @@
 
 static float sq(float x) { return x*x; }
 
-int reduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
-           MPI_Op op, int root, MPI_Comm comm) {
-    return l::m::Reduce(sendbuf, recvbuf, count, datatype, op, root, comm);
+int reduce(const void *sendbuf0, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op) {
+    int root = 0;
+    const void *sendbuf = (m::rank == 0 ? MPI_IN_PLACE : sendbuf0);
+    return l::m::Reduce(sendbuf, recvbuf, count, datatype, op, root, l::m::cart);
 }
 
 void diagnostics(Particle *pp, int n, int id) {
