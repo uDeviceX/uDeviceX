@@ -3,9 +3,9 @@
 /* Configuration file for sphere in channel flow */
 
 /* DOMAIN */
-#define XS                  4
-#define YS                  4
-#define ZS                  4
+#define XS                  32
+#define YS                  32
+#define ZS                  32
 #define XWM                 6
 #define YWM                 6
 #define ZWM                 6
@@ -14,7 +14,7 @@
 #define ZBBM                1.f
 
 /* DPD */
-#define numberdensity       1
+#define numberdensity       4
 #define kBT                 1.e-8
 #define dt                  0.0005
 #define aij_solv            (75.0/numberdensity)
@@ -35,23 +35,27 @@
 #define solids              true
 #define sbounce_back        true
 #define fsiforces           true
-#define walls               false
+#define walls               true
 #define wall_creation       1000
-#define tend                1000
+#define tend                10000
 
 /* DEBUG */
 //#define KL_NONE
 //#define CC_PEEK
-//#define TE_TRACE
+#define TE_TRACE
 //#define FORCE0
 
 /* FLOW TYPE */
 #define pushflow            true
-#define driving_force       0.01
+#define driving_force       0.22
 
 /* DUMPS */
-#define part_freq           1000
-#define field_dumps         false
+#define part_freq           100
+#define field_dumps         true
 #define field_freq          10000
-#define strt_dumps          false
+#define strt_dumps          true
 #define strt_freq           10000
+
+/* Part II (added by tools/argp) */
+
+
