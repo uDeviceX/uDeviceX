@@ -1,5 +1,5 @@
 namespace rex {
-void recvF(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
+void recvF(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t, int send_counts[26]) {
     int i, count, tag;
     MPI_Request reqA;
     for (i = 0; i < 26; ++i) {

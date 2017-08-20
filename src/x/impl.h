@@ -12,8 +12,8 @@ static void pre(std::vector<ParticlesWrap> w, int nw) {
 
 static void send() {
     using namespace rex;
-    copy_count(ti);
-    recvF(tc.cart, tc.ranks, tr.tags, tt);
+    copy_count(ti, send_counts);
+    recvF(tc.cart, tc.ranks, tr.tags, tt, send_counts);
     dSync();
 }
 
@@ -25,13 +25,13 @@ static void rex0(std::vector<ParticlesWrap> w, int nw) {
 
     /** C **/
     recvC(tc.cart, tc.ranks, tr.tags, tt);
-    sendC(tc.cart, tc.ranks, tt);
+    sendC(tc.cart, tc.ranks, tt, send_counts);
     s::waitC();
     r::waitC();
 
     /** P **/
     recvP(tc.cart, tc.ranks, tr.tags, tt);
-    sendP(tc.cart, tc.ranks, tt, ti, buf_pi);
+    sendP(tc.cart, tc.ranks, tt, ti, buf_pi, send_counts);
     s::waitP();
     r::waitP();
 

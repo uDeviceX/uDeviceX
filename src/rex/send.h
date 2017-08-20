@@ -8,14 +8,14 @@ void sendF(MPI_Comm cart, int ranks[26], x::TicketTags t) {
     }
 }
 
-void sendC(MPI_Comm cart, int dranks[26], x::TicketTags t) {
+void sendC(MPI_Comm cart, int dranks[26], x::TicketTags t, int send_counts[26]) {
     int i;
     reqsendC.resize(26);
     for (i = 0; i < 26; ++i)
         MC(l::m::Isend(send_counts + i, 1, MPI_INTEGER, dranks[i], t.btc + i, cart, &reqsendC[i]));
 }
 
-void sendP(MPI_Comm cart, int ranks[26], x::TicketTags t, x::TicketPinned ti, Particle *pp) {
+void sendP(MPI_Comm cart, int ranks[26], x::TicketTags t, x::TicketPinned ti, Particle *pp, int send_counts[26]) {
     int i, start, count;
     MPI_Request req;
     for (i = 0; i < 26; ++i) {
