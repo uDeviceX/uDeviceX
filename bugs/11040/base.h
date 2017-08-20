@@ -41,7 +41,7 @@
 
 /* DEBUG */
 //#define KL_NONE
-#define CC_PEEK
+//#define CC_PEEK
 #define TE_TRACE
 //#define FORCE0
 
