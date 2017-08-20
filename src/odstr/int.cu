@@ -43,7 +43,7 @@ void alloc_ticketD(/*io*/ basetags::TagGen *tg, /**/ TicketD *t) {
     sub::ini_S(/**/ &t->s);
     sub::ini_R(&t->s, /**/ &t->r);
     t->first = true;
-    Dalloc0(&t->subi_lo, MAX_PART_NUM);
+    Dalloc(&t->subi_lo, MAX_PART_NUM);
     t->btc = get_tag(tg);
     t->btp = get_tag(tg);
 }
@@ -65,9 +65,9 @@ void free_ticketI(/**/ TicketI *t) {
 }
 
 void alloc_ticketU(TicketU *t) {
-    Dalloc0(&t->subi_re, MAX_PART_NUM);
-    Dalloc0(&t->iidx, MAX_PART_NUM);
-    Dalloc0(&t->pp_re, MAX_PART_NUM);
+    Dalloc(&t->subi_re, MAX_PART_NUM);
+    Dalloc(&t->iidx, MAX_PART_NUM);
+    Dalloc(&t->pp_re, MAX_PART_NUM);
 }
 
 void free_ticketU(TicketU *t) {

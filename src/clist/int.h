@@ -20,8 +20,8 @@ public:
     {
         LX = X; LY = Y; LZ = Z;
         ncells = LX * LY * LZ + 1;
-        Dalloc0(&start, ncells);
-        Dalloc0(&count, ncells);
+        Dalloc(&start, ncells);
+        Dalloc(&count, ncells);
     }
 
     void build(Particle *const pp, int n) {

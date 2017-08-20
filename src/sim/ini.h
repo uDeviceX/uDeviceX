@@ -39,7 +39,7 @@ void ini() {
 
     odstr::alloc_work(&o::w);
 
-    Dalloc0(&o::ff, MAX_PART_NUM);
+    Dalloc(&o::ff, MAX_PART_NUM);
 
     if (global_ids) {
         flu::alloc_quantsI(&o::qi);

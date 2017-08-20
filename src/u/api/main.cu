@@ -42,7 +42,7 @@ static void main0() {
 }
 
 static void main1() {
-    Dalloc0(&dev, N);
+    Dalloc(&dev, N);
     main0();
     Dfree0(dev);
 }

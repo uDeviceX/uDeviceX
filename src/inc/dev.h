@@ -34,14 +34,13 @@
 #define aH2D0(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
 /* device allocation */
-#define Dalloc(d, n) CC(cudaMalloc((d), (n) * sizeof((**(d)))))
 #define Dfree(d)     CC(cudaFree(d))
 #define Dfree0(D)    CC(d::Free(D))
 
 /* generic device allocation: TODO: */
 #define Dalloc000000(D, sz) d::Malloc((void**)(void*)(D), (sz))
 #define Dalloc000(D, sz)    CC(Dalloc000000(D, sz))
-#define Dalloc0(D, n)       CC(Dalloc000000(D, (n) * sizeof(**(D))))
+#define Dalloc(D, n)        CC(Dalloc000000(D, (n) * sizeof(**(D))))
 
 /* pinned memory allocation */
 #define Palloc(d, n) CC(cudaHostAlloc((d), (n) * sizeof((**(d))), cudaHostAllocMapped))

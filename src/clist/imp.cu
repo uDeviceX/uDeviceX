@@ -39,8 +39,8 @@ void build(int n, int xcells, int ycells, int zcells,
 
     int *ids;
     Particle *ppd;
-    Dalloc0(&ids, n);
-    Dalloc0(&ppd, n);
+    Dalloc(&ids, n);
+    Dalloc(&ppd, n);
 
     CC(d::MemsetAsync(counts, 0, ncells * sizeof(int)));
     KL(dev::get_counts, (k_cnf(n)), (pp, n, cells, /**/ counts));

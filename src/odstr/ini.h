@@ -30,14 +30,14 @@ void ini_S(/**/ Send *s) {
     int sz;
     dual::alloc(&s->size_pin, 27);
     for (int i = 0; i < 27; ++i)
-        Dalloc0(&s->iidx_[i], estimate(i));
+        Dalloc(&s->iidx_[i], estimate(i));
 
     for (int i = 1; i < 27; ++i) alloc_pinned(i, 3 * estimate(i), /**/ &s->pp);
-    Dalloc0(&s->pp.dp[0], estimate(0));
+    Dalloc(&s->pp.dp[0], estimate(0));
     s->pp.hst[0] = NULL;
 
-    Dalloc0(&s->size_dev, 27);
-    Dalloc0(&s->strt,     28);
+    Dalloc(&s->size_dev, 27);
+    Dalloc(&s->strt,     28);
 
     sz = SZ_PTR_ARR(s->iidx_);
     MSG("sz: s->iidx: %d", sz);
@@ -52,7 +52,7 @@ void ini_R(const Send *s, /**/ Recv *r) {
     r->pp.dp[0] = s->pp.dp[0];
     r->pp.hst[0] = NULL;
 
-    Dalloc0(&r->strt, 28);
+    Dalloc(&r->strt, 28);
 
     alloc_dev(/**/ &r->pp);
 

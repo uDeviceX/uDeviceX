@@ -44,7 +44,7 @@ static void ini_remote() {
     for (i = 0; i < 26; i++) {
         n = i2max(i);
         h = &remote[i];
-        Dalloc0(&h->dstate, n);
+        Dalloc(&h->dstate, n);
         Palloc0(&h->hstate, n);
         h->pp = (Particle*)malloc(n*sizeof(Particle));
 

@@ -20,10 +20,10 @@ namespace rig {
 void alloc_quants(Quants *q) {
     q->n = q->ns = q->nps = 0;
     
-    Dalloc0(&q->pp ,     MAX_PART_NUM);
-    Dalloc0(&q->ss ,     MAX_SOLIDS);
-    Dalloc0(&q->rr0, 3 * MAX_PART_NUM);
-    Dalloc0(&q->i_pp,    MAX_PART_NUM);
+    Dalloc(&q->pp ,     MAX_PART_NUM);
+    Dalloc(&q->ss ,     MAX_SOLIDS);
+    Dalloc(&q->rr0, 3 * MAX_PART_NUM);
+    Dalloc(&q->i_pp,    MAX_PART_NUM);
     
     q->pp_hst   = new Particle[MAX_PART_NUM];
     q->ss_hst   = new Solid[MAX_SOLIDS];

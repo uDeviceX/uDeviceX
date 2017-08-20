@@ -51,8 +51,8 @@ static void main0() {
 
 static void main1() {
     alloc_work(N, &w);
-    Dalloc0(&x, M);
-    Dalloc0(&y, M);
+    Dalloc(&x, M);
+    Dalloc(&y, M);
     
     main0();
 

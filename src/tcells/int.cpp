@@ -25,9 +25,9 @@ void alloc_quants(int max_num_mesh, /**/ Quants *q) {
     q->cc_hst = new int[NCELLS];
     q->ii_hst = new int[27 * MAX_SOLIDS * MAX_FACE_NUM];
     
-    Dalloc0(&q->ss_dev, NCELLS);
-    Dalloc0(&q->cc_dev, NCELLS);
-    Dalloc0(&q->ii_dev, 27 * max_num_mesh * MAX_FACE_NUM);
+    Dalloc(&q->ss_dev, NCELLS);
+    Dalloc(&q->cc_dev, NCELLS);
+    Dalloc(&q->ii_dev, 27 * max_num_mesh * MAX_FACE_NUM);
 }
 
 void free_quants(/**/ Quants *q) {

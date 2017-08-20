@@ -2,8 +2,8 @@ namespace dpdr {
 namespace sub {
 
 static void alloc_Bbuf_frag(const int i, const int est, const int nfragcells, /**/ Bbufs *b) {
-    Dalloc0(&b->cum.d[i], nfragcells + 1);
-    Dalloc0(&b->pp.d[i], est);
+    Dalloc(&b->cum.d[i], nfragcells + 1);
+    Dalloc(&b->pp.d[i], est);
 
     Palloc0(&b->cumhst.d[i], nfragcells + 1);
     Link(&b->cumdev.d[i], b->cumhst.d[i]);
@@ -22,9 +22,9 @@ static void free_Bbuf_frag(const int i, /**/ Bbufs *b) {
 
 static void alloc_Sbuf_frag(const int i, const int est, const int nfragcells, /**/ Sbufs *b) {
     alloc_Bbuf_frag(i, est, nfragcells, /**/ b);
-    Dalloc0(&b->str.d[i], nfragcells + 1);
-    Dalloc0(&b->cnt.d[i], nfragcells + 1);
-    Dalloc0(&b->ii.d[i], est);
+    Dalloc(&b->str.d[i], nfragcells + 1);
+    Dalloc(&b->cnt.d[i], nfragcells + 1);
+    Dalloc(&b->ii.d[i], est);
 };
 
 static void free_Sbuf_frag(const int i, /**/ Sbufs *b) {
