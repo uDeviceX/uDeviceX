@@ -1,7 +1,11 @@
 namespace rex {
 void halo() {
+    int i, n;
     ParticlesWrap halos[26];
-    for (int i = 0; i < 26; ++i) halos[i] = ParticlesWrap(remote[i].dstate, remote[i].n, remote[i].ff);
+    for (i = 0; i < 26; ++i) {
+        n = remote[i].n;
+        halos[i] = ParticlesWrap(remote[i].dstate, n, remote[i].ff);
+    }
 
     dSync();
     if (fsiforces)     fsi::halo(halos);
