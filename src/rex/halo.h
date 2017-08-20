@@ -4,7 +4,7 @@ void halo() {
     ParticlesWrap halos[26];
     for (i = 0; i < 26; ++i) {
         n = recv_counts[i];
-        halos[i] = ParticlesWrap(remote[i].dstate, n, remote[i].ff);
+        halos[i] = ParticlesWrap(remote[i].pp, n, remote[i].ff);
     }
 
     dSync();

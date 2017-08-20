@@ -1,6 +1,6 @@
 namespace rex {
 struct RemoteHalo {
-    Particle* dstate;
+    Particle* pp;
     Particle* hstate;
 
     Force* ff;
