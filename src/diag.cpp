@@ -47,7 +47,7 @@ void diagnostics(Particle *pp, int n, int id) {
     for (i = 0; i < n; ++i) {
         k = sq(pp[i].v[X]) + sq(pp[i].v[Y]) + sq(pp[i].v[Z]);
         ke += k;
-        if (k > km) ke = km;
+        if (k > km) km = k;
     }
 
     sum_d(&ke); max_d(&km);
