@@ -3,8 +3,8 @@ void copy_tstarts(x::TicketPack tp, x::TicketPinned ti) {
     CC(cudaMemcpyAsync(ti.tstarts, tp.tstarts, sizeof(int) * 27, H2H));
 }
 
-void copy_pack(x::TicketPinned t, Particle *buf, Particle *buf_pinned) {
-    if (t.tstarts[26]) CC(cudaMemcpyAsync(buf_pinned, buf, sizeof(Particle) * t.tstarts[26], H2H));
+void copy_pack(x::TicketPinned t, Particle *buf, Particle *buf_pi) {
+    if (t.tstarts[26]) CC(cudaMemcpyAsync(buf_pi, buf, sizeof(Particle) * t.tstarts[26], H2H));
 }
 
 void copy_ff() {
