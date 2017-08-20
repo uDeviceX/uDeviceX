@@ -23,10 +23,12 @@ void recvC(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
 void recvP(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t) {
     int i, tag, n;
     MPI_Request reqP;
+    Particle *p;
     for (i = 0; i < 26; ++i) {
         tag = t.btp1 + tags[i];
         n = recv_counts[i];
-        MC(l::m::Irecv(remote[i].pp, n * 6, MPI_FLOAT, ranks[i], tag, cart, &reqP));
+        p = remote[i].pp;
+        MC(l::m::Irecv(p, n * 6, MPI_FLOAT, ranks[i], tag, cart, &reqP));
         reqrecvP.push_back(reqP);
     }
 }
