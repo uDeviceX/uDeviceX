@@ -23,19 +23,13 @@ void diagnostics(Particle *pp, int n, int id) {
     FILE * f;
     double p[] = {0, 0, 0};
     for (i = 0; i < n; ++i) for (c = 0; c < 3; ++c) p[c] += pp[i].v[c];
-
-    MC(l::m::Reduce(m::rank == 0 ? MPI_IN_PLACE : &p,
-                    m::rank == 0 ? &p : NULL, 3,
-                    MPI_DOUBLE, MPI_SUM, 0, l::m::cart) );
+    reduce(&p, m::rank == 0 ? &p : NULL, 3, MPI_DOUBLE, MPI_SUM);
+    
     ke = 0;
     for (i = 0; i < n; ++i)
         ke += sq(pp[i].v[0]) + sq(pp[i].v[1]) + sq(pp[i].v[2]);
-
-    MC(l::m::Reduce(m::rank == 0 ? MPI_IN_PLACE : &ke,
-                    &ke,
-                    1, MPI_DOUBLE, MPI_SUM, 0, l::m::cart));
-    MC(l::m::Reduce(m::rank == 0 ? MPI_IN_PLACE : &n,
-                    &n, 1, MPI_INT, MPI_SUM, 0, l::m::cart));
+    reduce(&ke, &ke, 1, MPI_DOUBLE, MPI_SUM);
+    reduce(&n, &n, 1, MPI_INT, MPI_SUM);
 
     if (m::rank == 0) {
         kbt = 0.5 * ke / (n * 3. / 2);
