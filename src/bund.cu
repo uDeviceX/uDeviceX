@@ -62,7 +62,7 @@ namespace sub {
 namespace ic {
 #include "rbc/imp/ic.h"
 }
-#include "rbc/int.h"
+#include "rbc/int/imp.h"
 }
 
 #include "mdstr/buf.h"
