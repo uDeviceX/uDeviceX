@@ -1,6 +1,6 @@
 usg () {
-    msg 'usage: u.run NX NY NZ ./udx [ARGS]' >&2
-    msg '       u.run          ./udx [ARGS]' >&2
+    msg 'usage: u.batch NX NY NZ ./udx [ARGS]' >&2
+    msg '       u.batch          ./udx [ARGS]' >&2
     exit
 }
 

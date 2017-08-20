@@ -1,1 +1,2 @@
-:
+printf '%s\n' "u.batch on panda is not implimented" >&2
+exit
