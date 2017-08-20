@@ -1,0 +1,7 @@
+safe_cp () {
+    if ! test -r "$1"
+    then printf "cp: cannot open %s\n" "$1" >&2
+	 exit 1
+    fi
+    cp "$@"
+}
