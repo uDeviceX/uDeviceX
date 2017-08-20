@@ -23,6 +23,10 @@ int ini() {
     return R(cudaSetDevice(device));
 }
 
+int alloc_pinned(void **pHost, size_t size, unsigned int flags) {
+    return R(cudaHostAlloc(pHost, size, cudaHostAllocMapped));
+}
+
 int Malloc(void **devPtr, size_t size) {
     return R(cudaMalloc(devPtr, size));
 }
@@ -31,10 +35,6 @@ int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t off
     enum cudaMemcpyKind kind;
     kind = k2k(kind0);
     return R(cudaMemcpyToSymbol(symbol, src, count, offset, kind));
-}
-
-int HostAlloc(void **pHost, size_t size, unsigned int flags) {
-    return R(cudaHostAlloc(pHost, size, flags));
 }
 
 int HostGetDevicePointer (void **pDevice, void *pHost, unsigned int flags) {
@@ -64,6 +64,10 @@ int MemcpyAsync (void * dst, const void * src, size_t count, int kind0, Stream_t
 
 int Free (void *devPtr) {
     return R(cudaFree (devPtr));
+}
+
+int FreeHost (void *hstPtr) {
+    return R(cudaFreeHost(hstPtr));
 }
 
 int DeviceSynchronize (void) {

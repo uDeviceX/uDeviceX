@@ -48,6 +48,11 @@ int Free (void *devPtr) {
     return 0;
 }
 
+int FreeHost (void *hstPtr) {
+    free(hstPtr);
+    return 0;
+}
+
 int DeviceSynchronize (void) {
     return 0;
 }

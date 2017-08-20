@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 #include <conf.h>
 
 #include "inc/conf.h"
@@ -19,6 +20,6 @@ void alloc(I *p, int n) {
 void dealloc(I p) {
     int *D;
     D = p.D;
-    CC(cudaFreeHost(D));
+    Pfree0(D);
 }
 }

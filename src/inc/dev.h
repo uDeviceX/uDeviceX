@@ -45,10 +45,11 @@
 
 /* pinned memory allocation */
 #define Palloc(d, n) CC(cudaHostAlloc((d), (n) * sizeof((**(d))), cudaHostAllocMapped))
-#define Pfree(d)     CC(cudaFreeHost(d))
+#define Pfree(D)     CC(cudaFreeHost(D))
+#define Pfree0(D)    CC(d::FreeHost(D))
 
 /* generic pinned memory allocation */
-#define Palloc0(D, n) CC(d::HostAlloc((void**)(void*)(D), (n) * sizeof(**(D)), cudaHostAllocMapped))
+#define Palloc0(D, n) CC(d::alloc_pinned((void**)(void*)(D), (n) * sizeof(**(D))))
 
 #define Link(D, H) CC(d::HostGetDevicePointer((void**)(void*)(D), H,   0))
 
