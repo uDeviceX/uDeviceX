@@ -11,7 +11,7 @@
 
 static float sq(float x) { return x*x; }
 
-int reduce(const void *sendbuf0, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op) {
+static int reduce(const void *sendbuf0, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op) {
     int root = 0;
     const void *sendbuf = (m::rank == 0 ? MPI_IN_PLACE : sendbuf0);
     return l::m::Reduce(sendbuf, recvbuf, count, datatype, op, root, l::m::cart);
@@ -21,9 +21,9 @@ void diagnostics(Particle *pp, int n, int id) {
     int i, c;
     double ke, kbt;
     FILE * f;
-    double p[] = {0, 0, 0};
-    for (i = 0; i < n; ++i) for (c = 0; c < 3; ++c) p[c] += pp[i].v[c];
-    reduce(&p, m::rank == 0 ? &p : NULL, 3, MPI_DOUBLE, MPI_SUM);
+    double v[] = {0, 0, 0};
+    for (i = 0; i < n; ++i) for (c = 0; c < 3; ++c) v[c] += pp[i].v[c];
+    reduce(&v, m::rank == 0 ? &v : NULL, 3, MPI_DOUBLE, MPI_SUM);
 
     ke = 0;
     for (i = 0; i < n; ++i)
@@ -37,8 +37,8 @@ void diagnostics(Particle *pp, int n, int id) {
         f = fopen(DUMP_BASE "/diag.txt", firsttime ? "w" : "a");
         firsttime = false;
         if (id == 0) fprintf(f, "# TSTEP\tKBT\tPX\tPY\tPZ\n");
-        fprintf(stderr, "%.3e %.3e %.3e %.3e %.3e\n", id * dt, kbt, p[0], p[1], p[2]);
-        fprintf(f, "%e\t%.10e\t%.10e\t%.10e\t%.10e\n", id * dt, kbt, p[0], p[1], p[2]);
+        fprintf(stderr, "%.3e %.3e %.3e %.3e %.3e\n", id * dt, kbt, v[0], v[1], v[2]);
+        fprintf(f, "%e\t%.10e\t%.10e\t%.10e\t%.10e\n", id * dt, kbt, v[0], v[1], v[2]);
         fclose(f);
     }
 }
