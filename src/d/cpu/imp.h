@@ -8,7 +8,7 @@ int Malloc(void **p, size_t size) {
     return 0;
 }
 
-int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset, enum cudaMemcpyKind) {
+int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset, int /*kind*/) {
     memcpy(vadd(symbol, offset), src, count);
     return 0;
 }
@@ -23,7 +23,7 @@ int HostGetDevicePointer (void **pDevice, void *pHost, unsigned int flags) {
     return 0;
 }
 
-int Memcpy (void *dst, const void *src, size_t count, enum cudaMemcpyKind) {
+int Memcpy (void *dst, const void *src, size_t count, int /*kind*/) {
     memcpy(dst, src, count);
     return 0;    
 }
@@ -38,7 +38,7 @@ int Memset (void *devPtr, int value, size_t count) {
     return 0;
 }
 
-int MemcpyAsync (void * dst, const void * src, size_t count, enum cudaMemcpyKind, cudaStream_t) {
+int MemcpyAsync (void * dst, const void * src, size_t count, int /*kind*/, cudaStream_t) {
     memcpy(dst, src, count);
     return 0;
 }
