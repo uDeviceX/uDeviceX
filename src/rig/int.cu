@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 #include <conf.h>
 #include "inc/conf.h"
 
@@ -19,10 +20,10 @@ namespace rig {
 void alloc_quants(Quants *q) {
     q->n = q->ns = q->nps = 0;
     
-    Dalloc(&q->pp ,     MAX_PART_NUM);
-    Dalloc(&q->ss ,     MAX_SOLIDS);
-    Dalloc(&q->rr0, 3 * MAX_PART_NUM);
-    Dalloc(&q->i_pp,    MAX_PART_NUM);
+    Dalloc0(&q->pp ,     MAX_PART_NUM);
+    Dalloc0(&q->ss ,     MAX_SOLIDS);
+    Dalloc0(&q->rr0, 3 * MAX_PART_NUM);
+    Dalloc0(&q->i_pp,    MAX_PART_NUM);
     
     q->pp_hst   = new Particle[MAX_PART_NUM];
     q->ss_hst   = new Solid[MAX_SOLIDS];
@@ -38,10 +39,10 @@ void free_quants(Quants *q) {
     delete[] q->rr0_hst;
     delete[] q->i_pp_hst;
     
-    CC(d::Free(q->pp));
-    CC(d::Free(q->ss));
-    CC(d::Free(q->rr0));
-    CC(d::Free(q->i_pp));
+    Dfree0(q->pp);
+    Dfree0(q->ss);
+    Dfree0(q->rr0);
+    Dfree0(q->i_pp);
 
     if (q->m_hst.tt) delete[] q->m_hst.tt;
     if (q->m_hst.vv) delete[] q->m_hst.vv;
