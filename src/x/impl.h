@@ -4,8 +4,8 @@ static void pre(std::vector<ParticlesWrap> w, int nw) {
     cnt++;
     clear(nw, tp);
     scanA(w, nw, tp);
-    copy_offset(nw, tp, ti);
     scanB(nw, tp);
+    copy_offset(nw, tp, ti);
     copy_tstarts(tp, ti);
     pack(w, nw, tp, buf);
 }
