@@ -14,7 +14,6 @@ static void fin_remote() {
     RemoteHalo* h;
     for (i = 0; i < 26; i++) {
         h = &remote[i];
-        Dfree(h->pp);
         Pfree(h->pp_pi);
         Pfree(h->ff_pi);
     }
