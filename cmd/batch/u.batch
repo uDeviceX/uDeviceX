@@ -1,7 +1,8 @@
 usg () {
-    msg 'usage: u.batch NX NY NZ ./udx [Time]'
+    msg 'usage: u.batch NX NY NZ ./udx [Time] [Args..]'
     msg '       u.batch          ./udx [Time]'
     msg '       Time: HH:MM:SS : dafault is 30:00'
+    msg '       Args: passed to srun'
     exit
 }
 
