@@ -2,6 +2,9 @@
 #define vadd(p, n) (void*)((char*)(p) + (n))
 
 int ini() { return 0; }
+int alloc_pinned(void **pHost, size_t size) {
+    *pHost = malloc(size);
+}
 
 int Malloc(void **p, size_t size) {
     *p = malloc(size);
@@ -10,11 +13,6 @@ int Malloc(void **p, size_t size) {
 
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset, int /*kind*/) {
     memcpy(vadd(symbol, offset), src, count);
-    return 0;
-}
-
-int HostAlloc (void **pHost, size_t size, unsigned int) {
-    *pHost = malloc(size);
     return 0;
 }
 

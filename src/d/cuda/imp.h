@@ -23,7 +23,7 @@ int ini() {
     return R(cudaSetDevice(device));
 }
 
-int alloc_pinned(void **pHost, size_t size, unsigned int flags) {
+int alloc_pinned(void **pHost, size_t size) {
     return R(cudaHostAlloc(pHost, size, cudaHostAllocMapped));
 }
 
