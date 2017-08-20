@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdio.h>
+
 #include <conf.h>
 #include "inc/conf.h"
 
@@ -8,6 +9,7 @@
 #include "cc.h"
 #include "d/q.h"
 #include "d/ker.h"
+#include "d/api.h"
 
 #include "rnd/imp.h"
 #include "rnd/dev.h"

@@ -1,7 +1,7 @@
 /* Aggressive [sync]ronization */
 #define CC(ans)                                             \
     do {                                                    \
-        cudaDeviceSynchronize();                            \
+        d::DeviceSynchronize();                             \
         cc::check((ans), __FILE__, __LINE__);               \
-        cudaDeviceSynchronize();                            \
+        d::DeviceSynchronize();                             \
     } while (0)
