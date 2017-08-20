@@ -13,7 +13,6 @@ static void pre(std::vector<ParticlesWrap> w, int nw) {
 static void send() {
     using namespace rex;
     copy_count(ti);
-    local_resize();
     recvF(tc.cart, tc.ranks, tr.tags, tt);
     copy_pack(ti, buf, buf_pinned);
     dSync();

@@ -134,7 +134,6 @@ namespace ic {
   #include "k/rex/unpack.h"
 
   #include "rex/ini.h"
-  #include "rex/resize.h"
   #include "rex/copy.h"
   #include "rex/wait.h"
   #include "rex/halo.h"
