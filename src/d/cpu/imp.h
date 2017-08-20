@@ -4,6 +4,7 @@
 int ini() { return 0; }
 int alloc_pinned(void **pHost, size_t size) {
     *pHost = malloc(size);
+    return 0;
 }
 
 int Malloc(void **p, size_t size) {
