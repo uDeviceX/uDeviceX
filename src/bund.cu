@@ -55,12 +55,12 @@
 
 namespace rbc {
 namespace sub {
-#include "rbc/dev0.h"
-#include "rbc/dev.h"
-#include "rbc/imp.h"
+#include "rbc/imp/dev0.h"
+#include "rbc/imp/dev.h"
+#include "rbc/imp/imp.h"
 }
 namespace ic {
-#include "rbc/ic.h"
+#include "rbc/imp/ic.h"
 }
 #include "rbc/int.h"
 }
