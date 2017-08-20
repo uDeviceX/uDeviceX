@@ -7,6 +7,7 @@
 
 #include "d/q.h"
 #include "d/ker.h"
+#include "d/api.h"
 
 #include "l/linal.h"
 #include "inc/type.h"
