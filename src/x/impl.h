@@ -1,5 +1,5 @@
 namespace x {
-static void pre(std::vector<ParticlesWrap> w, int nw) {
+static void pre(ParticlesWrap *w, int nw) {
     using namespace rex;
     cnt++;
     clear(nw, tp);
@@ -16,7 +16,7 @@ static void send() {
     dSync();
 }
 
-static void rex0(std::vector<ParticlesWrap> w, int nw) {
+static void rex0(ParticlesWrap *w, int nw) {
     using namespace rex;
     pre(w, nw);
     dSync();
@@ -42,9 +42,13 @@ static void rex0(std::vector<ParticlesWrap> w, int nw) {
     unpack(w, nw, tp);
 }
 
-void rex(std::vector<ParticlesWrap> w) {
+void rex(std::vector<ParticlesWrap> w0) {
     int nw;
-    nw = w.size();
+    ParticlesWrap *w;
+    
+    nw = w0.size();
+    w  = w0.data();
+    
     if (nw) rex0(w, nw);
 }
 
