@@ -1,9 +1,11 @@
 namespace rex {
 void sendF(MPI_Comm cart, int ranks[26], x::TicketTags t) {
-    int i;
+    int i, n;
     reqsendA.resize(26);
-    for (i = 0; i < 26; ++i)
-        MC(l::m::Isend(remote[i].ff_pi, 3 * remote[i].n, MPI_FLOAT, ranks[i], t.btf + i, cart, &reqsendA[i]));
+    for (i = 0; i < 26; ++i) {
+        n = remote[i].n;
+        MC(l::m::Isend(remote[i].ff_pi, 3 * n, MPI_FLOAT, ranks[i], t.btf + i, cart, &reqsendA[i]));
+    }
 }
 
 void sendC(MPI_Comm cart, int dranks[26], x::TicketTags t) {
