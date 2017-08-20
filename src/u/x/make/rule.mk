@@ -1,5 +1,5 @@
 $B/bund.o: $S/bund.cu; $N
-$B/cc.o: $S/cc.cu; $N
+$B/cc.o: $S/cc.cpp; $X
 $B/clist/imp.o: $S/clist/imp.cu; $N
 $B/common.mpi.o: $S/common.mpi.cpp; $X
 $B/d/api.o: $S/d/api.cu; $N
