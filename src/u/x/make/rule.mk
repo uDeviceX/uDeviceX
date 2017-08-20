@@ -8,7 +8,7 @@ $B/dpd/local.o: $S/dpd/local.cu; $N
 $B/dpdr/imp.o: $S/dpdr/imp.cu; $N
 $B/dpdr/int.o: $S/dpdr/int.cu; $N
 $B/dual/imp.o: $S/dual/imp.cpp; $X
-$B/dump.o: $S/dump.cu; $N
+$B/dump.o: $S/dump.cpp; $X
 $B/field.o: $S/field.cpp; $X
 $B/flu/imp.o: $S/flu/imp.cu; $N
 $B/flu/int.o: $S/flu/int.cu; $N
