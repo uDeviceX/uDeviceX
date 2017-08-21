@@ -10,7 +10,6 @@ y=$1; shift
 z=$1; shift
 e=$1; shift # executable
 
-
 if   test $#   -eq 0
 then Time="--time 00:10:00"
 elif test "$1"   = -
@@ -18,6 +17,11 @@ then                   shift
 else Time="--time $1"; shift
 fi
 
+set -x
 Args="-C gpu $Time $@"
-msg sbatch -n $n $Args --wrap="u.exec.daint $e $x $y $z"
-sbatch -n $n $Args --wrap="u.exec.daint $e $x $y $z"
+sbatch -N $n $Args /dev/stdin <<EOF
+#!/bin/bash
+
+. u.load.daint
+srun ./udx $x $y $z
+EOF

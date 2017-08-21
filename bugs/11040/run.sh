@@ -16,4 +16,4 @@ safe_cp "$d/$n/sdf.dat" .
 
 x=$n y=1 z=1
 u.strtdir  . $x $y $z
-u.run    $x $y $z ./udx
+u.batch   $x $y $z ./udx
