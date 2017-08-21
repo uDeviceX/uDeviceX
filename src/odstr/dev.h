@@ -92,8 +92,7 @@ __global__ void subindex_remote(const int n, const int strt[], /*io*/ float2 *pp
     const int tid    = threadIdx.x;
     const int warpid = tid / warpSize;
     const int laneid = tid % warpSize;
-    const int wpb    = blockDim.x / warpSize;
-    const int base   = warpSize * (warpid + wpb * blockIdx.x);
+    const int base   = warpSize * warpid + blockDim.x * blockIdx.x;
     if (base >= n) return;    
     const int nlocal = min(warpSize, n - base);
 
