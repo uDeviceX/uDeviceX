@@ -12,7 +12,7 @@ s=../../src
 echo run | u.conf $s u/x base.h
 u.make -j > make.log
 
-safe_cp "$d/$n/sdf.dat" .
+safe_cp "$d/10/sdf.dat" .
 
 x=$n y=1 z=1
 u.strtdir  . $x $y $z
