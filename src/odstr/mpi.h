@@ -47,7 +47,7 @@ void post_recv(const MPI_Comm cart, const int rank[], const int btc, const int b
         source = rank[i];
         tag = btp + r->tags[i];
         request = &mesg_req[c];
-        lrecv(buf, count, MPI_FLOAT, source, tag, cart, request);
+        lrecv(buf, count, datatype::particle, source, tag, cart, request);
     }
 }
 
