@@ -12,6 +12,7 @@
 #include "common.h"
 #include "msg.h"
 #include "cc.h"
+#include "mc.h"
 
 #include "l/m.h"
 #include "inc/type.h"

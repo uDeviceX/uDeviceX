@@ -1,4 +1,8 @@
 #include <mpi.h>
+
+#include "inc/conf.h"
+#include "mc.h"
+
 #include "inc/type.h"
 #include "inc/mpi.h"
 

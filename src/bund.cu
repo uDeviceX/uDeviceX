@@ -20,6 +20,7 @@
 #include "msg.h"
 #include "m.h"
 #include "cc.h"
+#include "mc.h"
 
 #include "kl.h"
 #include "basetags.h"
