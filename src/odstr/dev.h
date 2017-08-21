@@ -97,13 +97,13 @@ __global__ void unpack(T *const buf[], const int start[], /**/ T *data) {
 }
 
 __global__ void subindex_remote(const int n, const int strt[], /*io*/ float2 *pp, int *counts, /**/ uchar4 *subids) {
-    int tid, warpid, laneid, base, nlocal, slot, fid;
+    int tid, warp, laneid, base, nlocal, slot, fid;
     float2 d0, d1, d2;
 
     tid    = threadIdx.x;
-    warpid = tid / warpSize;
+    warp = tid / warpSize;
     laneid = tid % warpSize;
-    base   = warpSize * warpid + blockDim.x * blockIdx.x;
+    base   = warpSize * warp + blockDim.x * blockIdx.x;
 
     if (base >= n) return;
     
