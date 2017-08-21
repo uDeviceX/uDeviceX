@@ -219,16 +219,16 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
     xchg_aos4f(src0, src1, start, s0, s1);
 
     if (tid < 2 * nsrc)
-    zip0[destbase + tid] = make_float4(s0.x, s0.y, s0.z, 0);
+        zip0[destbase + tid] = make_float4(s0.x, s0.y, s0.z, 0);
 
     if (tid + 32 < 2 * nsrc)
-    zip0[destbase + tid + 32] = make_float4(s1.x, s1.y, s1.z, 0);
+        zip0[destbase + tid + 32] = make_float4(s1.x, s1.y, s1.z, 0);
 
     if (tid < nsrc)
-    zip1[base + tid] = make_ushort4(__float2half_rn(d0.x),
-                                    __float2half_rn(d0.y),
-                                    __float2half_rn(d1.x),
-                                    0);
+        zip1[base + tid] = make_ushort4(__float2half_rn(d0.x),
+                                        __float2half_rn(d0.y),
+                                        __float2half_rn(d1.x),
+                                        0);
     k_write::AOS6f(pp + 3 * base, nsrc, d0, d1, d2);
 }
 
