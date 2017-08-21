@@ -1,6 +1,6 @@
 /* [m]pi [c]heck macros */
 
-#if    defined(CC_RELEASE)
+#if    defined(MC_RELEASE)
   #include "mc/release.h"
 #else
   #error MC_* is undefined
