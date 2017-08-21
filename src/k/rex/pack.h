@@ -30,7 +30,7 @@ __device__ void pack1(const float2 *pp, int ws, int dw, /**/ float2 *buf) {
           wsf, dw, /**/ buf);
 }
 
-__device__ void pack2(const float2 *pp, /**/ float2 *buf) {
+__global__ void pack(const float2 *pp, /**/ float2 *buf) {
     int warp;
     int lo, hi, step;
     int ws; /* warp start in global coordinates */
@@ -47,7 +47,4 @@ __device__ void pack2(const float2 *pp, /**/ float2 *buf) {
         pack1(pp, ws, dw, /**/ buf);
 }
 
-__global__ void pack(const float2 *pp, /**/ float2 *buf) {
-    pack2(pp, buf);
-}
 }
