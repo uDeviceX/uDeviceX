@@ -44,7 +44,7 @@ __global__ void scan(const int n, const int size[], /**/ int strt[], int size_pi
 }
 
 template <typename T, int STRIDE>
-__global__ void pack(const T *data, int *const iidx[], const int send_strt[], /**/ T *send_dev[]) {
+__global__ void pack(const T *data, int *const iidx[], const int send_strt[], /**/ T *buf[]) {
     int gid, slot, tid, idpack;
     int offset, pid, c, d;
     __shared__ int start[28];
@@ -64,7 +64,7 @@ __global__ void pack(const T *data, int *const iidx[], const int send_strt[], /*
 
     c = gid % STRIDE;
     d = c + STRIDE * offset;
-    send_dev[idpack][d] = data[c + STRIDE * pid];
+    buf[idpack][d] = data[c + STRIDE * pid];
 }
 
 template <typename T, int STRIDE>
