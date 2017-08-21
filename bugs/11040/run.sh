@@ -3,7 +3,7 @@
 set -eu
 
 # load utilities
-. ./u
+. u/`u.host`
 
 n=40
 d=/scratch/snx3000/lisergey/u # data
