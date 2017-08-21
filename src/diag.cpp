@@ -3,6 +3,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "msg.h"
 #include "l/m.h"
 #include "m.h"
 #include "inc/type.h"
@@ -59,7 +60,7 @@ void diagnostics(Particle *pp, int n, int id) {
         f = fopen(DUMP_BASE "/diag.txt", firsttime ? "w" : "a");
         firsttime = false;
         if (id == 0) fprintf(f, "# TSTEP\tKBT\tPX\tPY\tPZ\n");
-        fprintf(stderr, "%.3e %.3e [%.3e %.3e %.3e] %.3e\n", id * dt, kbt, v[X], v[Y], v[Z], km);
+        MSG("%.3e %.3e [%.3e %.3e %.3e] %.3e\n", id * dt, kbt, v[X], v[Y], v[Z], km);
         fprintf(f, "%e\t%.10e\t%.10e\t%.10e\t%.10e\t%.10e\n", id * dt, kbt, v[X], v[Y], v[Z], km);
         fclose(f);
     }
