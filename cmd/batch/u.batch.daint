@@ -18,6 +18,6 @@ then                   shift
 else Time="--time $1"; shift
 fi
 
-Args="-u -C gpu $Time $@"
+Args="-C gpu $Time $@"
 msg sbatch -n $n $Args --wrap="u.exec.daint $e $x $y $z"
 sbatch -n $n $Args --wrap="u.exec.daint $e $x $y $z"
