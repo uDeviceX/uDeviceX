@@ -18,7 +18,6 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "mc.h"
-#include "inc/mpi.h"
 #include "restart.h"
 
 #include "flu/imp.h"

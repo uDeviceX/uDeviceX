@@ -7,7 +7,6 @@
 #include "l/m.h"
 #include "m.h"
 #include "inc/type.h"
-#include "inc/mpi.h"
 #include "diag.h"
 
 static float sq(float x) { return x*x; }
