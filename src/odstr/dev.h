@@ -80,18 +80,11 @@ __global__ void pack(const T *data, int *const iidx[], const int start[], /**/ T
 }
 
 template <typename T, int STRIDE>
-__global__ void unpack(T *const recv[], const int strt[], /**/ T *data) {
+__global__ void unpack(T *const recv[], const int start[], /**/ T *data) {
     int gid, slot, tid, idpack, offset, c, srcid;
 
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     slot = gid / STRIDE;
-
-    tid = threadIdx.x;
-
-    __shared__ int start[28];
-
-    if (tid < 28) start[tid] = strt[tid];
-    __syncthreads();
     idpack = k_common::fid(start, slot);
 
     if (slot >= start[27]) return;
