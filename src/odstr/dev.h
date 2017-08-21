@@ -13,8 +13,20 @@ static __device__ int box(const Particle *p) {
     return vc[X] + 3 * (vc[Y] + 3 * vc[Z]);
 }
 
+#define DBG
+
+#ifdef DBG
+static __device__ void check(float x, int i, int L) {
+    if (i < 0 || i >= L) printf("odstr: i = %d (L = %d) from x = %g\n", i, L, x);
+}
+#else
+static __device__ void check(float x, int i, int L) {}
+#endif
+
 static __device__ int x2c(float x, int L) {
-    return (int) floor((double)x + L / 2);
+    int i = (int) floor((double)x + L / 2);
+    check(x, i, L);
+    return i;
 }
 
 __global__ void halo(const Particle *pp, const int n, /**/ int *iidx[], int size[]) {
