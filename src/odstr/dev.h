@@ -186,7 +186,7 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
     warpid = threadIdx.x / warpSize;
     tid = threadIdx.x % warpSize;
 
-    base = 32 * (warpid + 4 * blockIdx.x);
+    base = warpSize * warpid + blockDim.x * blockIdx.x;
     pid = base + tid;
 
     valid = (pid < n);
