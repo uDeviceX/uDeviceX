@@ -60,18 +60,13 @@ __global__ void scan(const int n, const int size[], /**/ int strt[], int size_pi
 }
 
 template <typename T, int STRIDE>
-__global__ void pack(const T *data, int *const iidx[], const int send_strt[], /**/ T *buf[]) {
-    int gid, slot, tid;
+__global__ void pack(const T *data, int *const iidx[], const int start[], /**/ T *buf[]) {
+    int gid, slot;
     int fid; /* [f]ragment [id] */
     int offset, pid, c, d;
-    __shared__ int start[28];
     
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     slot = gid / STRIDE;
-    tid = threadIdx.x;
-
-    if (tid < 28) start[tid] = send_strt[tid];
-    __syncthreads();
     fid = k_common::fid(start, slot);
 
     if (slot >= start[27]) return;
