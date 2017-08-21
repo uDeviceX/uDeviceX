@@ -80,20 +80,20 @@ __global__ void pack(const T *data, int *const iidx[], const int start[], /**/ T
 }
 
 template <typename T, int STRIDE>
-__global__ void unpack(T *const recv[], const int start[], /**/ T *data) {
-    int gid, slot, tid, idpack, offset, c, srcid;
+__global__ void unpack(T *const buf[], const int start[], /**/ T *data) {
+    int gid, slot, fid, offset, c, srcid;
 
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     slot = gid / STRIDE;
-    idpack = k_common::fid(start, slot);
+    fid = k_common::fid(start, slot);
 
     if (slot >= start[27]) return;
 
-    offset = slot - start[idpack];
+    offset = slot - start[fid];
     c = gid % STRIDE;
     srcid = c + STRIDE * offset;
 
-    data[gid] = recv[idpack][srcid];
+    data[gid] = buf[fid][srcid];
 }
 
 __global__ void subindex_remote(const int n, const int strt[], /*io*/ float2 *pp, int *counts, /**/ uchar4 *subids) {
