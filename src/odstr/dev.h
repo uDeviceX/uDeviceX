@@ -97,23 +97,24 @@ __global__ void unpack(T *const buf[], const int start[], /**/ T *data) {
 }
 
 __global__ void subindex_remote(const int n, const int strt[], /*io*/ float2 *pp, int *counts, /**/ uchar4 *subids) {
-    int tid, warp, laneid, base, nlocal, slot, fid;
+    int warp, base, nlocal, slot, fid;
     float2 d0, d1, d2;
+    int ws; /* warp start in global coordinates */
+    int dw; /* shift relative to `ws' (lane) */
 
-    tid    = threadIdx.x;
-    warp = tid / warpSize;
-    laneid = tid % warpSize;
+    warp = threadIdx.x / warpSize;
+    dw =   threadIdx.x % warpSize;
     base   = warpSize * warp + blockDim.x * blockIdx.x;
 
     if (base >= n) return;
     
     nlocal = min(warpSize, n - base);
-    slot   = base + laneid;
+    slot   = base + dw;
     fid = k_common::fid(strt, slot);
     
     k_read::AOS6f(pp + 3*base, nlocal, d0, d1, d2);
     
-    if (laneid < nlocal) {
+    if (dw < nlocal) {
         int xi, yi, zi, cid, subindex;
 
         d0.x += XS * ((fid     + 1) % 3 - 1);
