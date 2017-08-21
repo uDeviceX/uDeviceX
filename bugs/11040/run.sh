@@ -5,7 +5,7 @@ set -eu
 # load utilities
 . u/`u.host`
 
-n=40
+n=2
 d=/scratch/snx3000/lisergey/u # data
 
 s=../../src
