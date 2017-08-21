@@ -45,24 +45,25 @@ __global__ void scan(const int n, const int size[], /**/ int strt[], int size_pi
 
 template <typename T, int STRIDE>
 __global__ void pack(const T *data, int *const iidx[], const int send_strt[], /**/ T *send_dev[]) {
-    int gid = threadIdx.x + blockDim.x * blockIdx.x;
-    int slot = gid / STRIDE;
-
-    int tid = threadIdx.x;
-
+    int gid, slot, tid, idpack;
+    int offset, pid, c, d;
     __shared__ int start[28];
+    
+    gid = threadIdx.x + blockDim.x * blockIdx.x;
+    slot = gid / STRIDE;
+    tid = threadIdx.x;
 
     if (tid < 28) start[tid] = send_strt[tid];
     __syncthreads();
-    int idpack = k_common::fid(start, slot);
+    idpack = k_common::fid(start, slot);
 
     if (slot >= start[27]) return;
 
-    int offset = slot - start[idpack];
-    int pid = __ldg(iidx[idpack] + offset);
+    offset = slot - start[idpack];
+    pid = __ldg(iidx[idpack] + offset);
 
-    int c = gid % STRIDE;
-    int d = c + STRIDE * offset;
+    c = gid % STRIDE;
+    d = c + STRIDE * offset;
     send_dev[idpack][d] = data[c + STRIDE * pid];
 }
 
