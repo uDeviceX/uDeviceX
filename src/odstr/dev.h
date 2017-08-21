@@ -89,34 +89,40 @@ __global__ void unpack(T *const recv[], const int strt[], /**/ T *data) {
 }
 
 __global__ void subindex_remote(const int n, const int strt[], /*io*/ float2 *pp, int *counts, /**/ uchar4 *subids) {
-    const int tid    = threadIdx.x;
-    const int warpid = tid / warpSize;
-    const int laneid = tid % warpSize;
-    const int base   = warpSize * warpid + blockDim.x * blockIdx.x;
-    if (base >= n) return;    
-    const int nlocal = min(warpSize, n - base);
+    int tid, warpid, laneid, base, nlocal, slot, idpack;
+    float2 d0, d1, d2;
 
-    const int slot = base + laneid;
-    
     __shared__ int start[28];
+
+    tid    = threadIdx.x;
+    warpid = tid / warpSize;
+    laneid = tid % warpSize;
+    base   = warpSize * warpid + blockDim.x * blockIdx.x;
+
+    if (base >= n) return;    
+    nlocal = min(warpSize, n - base);
+
+    slot = base + laneid;
+        
     if (tid < 28) start[tid] = strt[tid];
     __syncthreads();
-    const int idpack = k_common::fid(start, slot);
-
-    float2 d0, d1, d2;
+    idpack = k_common::fid(start, slot);
+    
     k_read::AOS6f(pp + 3*base, nlocal, d0, d1, d2);
     
     if (laneid < nlocal) {
+        int xi, yi, zi, cid, subindex;
+
         d0.x += XS * ((idpack     + 1) % 3 - 1);
         d0.y += YS * ((idpack / 3 + 1) % 3 - 1);
         d1.x += ZS * ((idpack / 9 + 1) % 3 - 1);
 
-        const int xi = (int)floor((double)d0.x + XS / 2);
-        const int yi = (int)floor((double)d0.y + YS / 2);
-        const int zi = (int)floor((double)d1.x + ZS / 2);
+        xi = (int)floor((double)d0.x + XS / 2);
+        yi = (int)floor((double)d0.y + YS / 2);
+        zi = (int)floor((double)d1.x + ZS / 2);
 
-        const int cid = xi + XS * (yi + YS * zi);
-        const int subindex = atomicAdd(counts + cid, 1);
+        cid = xi + XS * (yi + YS * zi);
+        subindex = atomicAdd(counts + cid, 1);
 
         subids[slot] = make_uchar4(xi, yi, zi, subindex);
     }
