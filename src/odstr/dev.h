@@ -61,7 +61,6 @@ __global__ void scan(const int n, const int size[], /**/ int strt[], int size_pi
 
 template <typename T, int STRIDE>
 __global__ void pack(const T *data, int *const iidx[], const int start[], /**/ T *buf[]) {
-
     int gid, slot;
     int fid; /* [f]ragment [id] */
     int offset, pid, c, d;
@@ -98,7 +97,7 @@ __global__ void unpack(T *const buf[], const int start[], /**/ T *data) {
 }
 
 __global__ void subindex_remote(const int n, const int strt[], /*io*/ float2 *pp, int *counts, /**/ uchar4 *subids) {
-    int tid, warpid, laneid, base, nlocal, slot, idpack;
+    int tid, warpid, laneid, base, nlocal, slot, fid;
     float2 d0, d1, d2;
 
     tid    = threadIdx.x;
@@ -110,16 +109,16 @@ __global__ void subindex_remote(const int n, const int strt[], /*io*/ float2 *pp
     
     nlocal = min(warpSize, n - base);
     slot   = base + laneid;
-    idpack = k_common::fid(strt, slot);
+    fid = k_common::fid(strt, slot);
     
     k_read::AOS6f(pp + 3*base, nlocal, d0, d1, d2);
     
     if (laneid < nlocal) {
         int xi, yi, zi, cid, subindex;
 
-        d0.x += XS * ((idpack     + 1) % 3 - 1);
-        d0.y += YS * ((idpack / 3 + 1) % 3 - 1);
-        d1.x += ZS * ((idpack / 9 + 1) % 3 - 1);
+        d0.x += XS * ((fid     + 1) % 3 - 1);
+        d0.y += YS * ((fid / 3 + 1) % 3 - 1);
+        d1.x += ZS * ((fid / 9 + 1) % 3 - 1);
 
         xi = x2c(d0.x, XS);
         yi = x2c(d0.y, YS);
