@@ -104,8 +104,8 @@ __global__ void subindex_remote(const int n, const int strt[], /*io*/ float2 *pp
     int dwe; /* wrap or buffer end relative to `ws' (lane) */
 
     warp = threadIdx.x / warpSize;
-    dw =   threadIdx.x % warpSize;
-    ws   = warpSize * warp + blockDim.x * blockIdx.x;
+    dw   = threadIdx.x % warpSize;
+    ws = warpSize * warp + blockDim.x * blockIdx.x;
 
     if (ws >= n) return;
     
