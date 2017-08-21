@@ -69,13 +69,12 @@ __global__ void pack(const T *data, int *const iidx[], const int start[], /**/ T
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     slot = gid / STRIDE;
     fid = k_common::fid(start, slot);
-
     if (slot >= start[27]) return;
+    c = gid % STRIDE;
 
     offset = slot - start[fid];
     pid = __ldg(iidx[fid] + offset);
 
-    c = gid % STRIDE;
     d = c + STRIDE * offset;
     buf[fid][d] = data[c + STRIDE * pid];
 }
