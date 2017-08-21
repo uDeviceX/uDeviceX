@@ -61,6 +61,7 @@ __global__ void scan(const int n, const int size[], /**/ int strt[], int size_pi
 
 template <typename T, int STRIDE>
 __global__ void pack(const T *data, int *const iidx[], const int start[], /**/ T *buf[]) {
+
     int gid, slot;
     int fid; /* [f]ragment [id] */
     int offset, pid, c, d;
