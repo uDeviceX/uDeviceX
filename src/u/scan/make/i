@@ -1,2 +1,2 @@
 find $U -name '*.cu' -o -name '*.cpp'
-echo msg.cpp m.cpp l/m.cpp scan/imp.cu cc.cu d/api.cu
+echo msg.cpp m.cpp l/m.cpp scan/imp.cu cc.cpp d/api.cu

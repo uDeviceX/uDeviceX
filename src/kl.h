@@ -12,6 +12,8 @@
   #include "kl/unsafe.h"
 #elif  defined(KL_NONE)
   #include "kl/none.h"
+#elif  defined(KL_SYNC)
+  #include "kl/sync.h"
 #elif  defined(KL_CPU)
   #include "kl/cpu.h"
 #else

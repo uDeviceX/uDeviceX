@@ -1,1 +1,7 @@
+n=$1; shift
+x=$1; shift
+y=$1; shift
+z=$1; shift
+e=$1; shift # executable
+
 u.run.panda $n $x $y $z $e

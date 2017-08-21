@@ -1,0 +1,4 @@
+safe_cp () {
+    local f="$1"; shift
+    scp daint:"$f" "$@"
+}

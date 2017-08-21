@@ -93,21 +93,16 @@ __global__ void subindex_remote(const int n, const int strt[], /*io*/ float2 *pp
     int tid, warpid, laneid, base, nlocal, slot, idpack;
     float2 d0, d1, d2;
 
-    __shared__ int start[28];
-
     tid    = threadIdx.x;
     warpid = tid / warpSize;
     laneid = tid % warpSize;
     base   = warpSize * warpid + blockDim.x * blockIdx.x;
 
-    if (base >= n) return;    
+    if (base >= n) return;
+    
     nlocal = min(warpSize, n - base);
-
-    slot = base + laneid;
-        
-    if (tid < 28) start[tid] = strt[tid];
-    __syncthreads();
-    idpack = k_common::fid(start, slot);
+    slot   = base + laneid;
+    idpack = k_common::fid(strt, slot);
     
     k_read::AOS6f(pp + 3*base, nlocal, d0, d1, d2);
     
