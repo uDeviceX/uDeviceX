@@ -1,2 +1,1 @@
-printf '%s\n' "u.batch on panda is not implimented" >&2
-exit
+u.run.panda $n $x $y $z $e
