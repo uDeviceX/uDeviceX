@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <mpi.h>
-#include "inc/mpi.h"
 #include "l/m.h"
-
+#include "inc/conf.h"
+#include "mc.h"
 #include "m.h"
 
 namespace m { /* MPI */

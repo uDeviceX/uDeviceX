@@ -6,7 +6,7 @@
 
 #include "mc.h"
 
-namespace mc {
+namespace mpicheck {
 void check(int code, const char *file, int line) {
     if (code != MPI_SUCCESS) {
         char error_string[2048];
@@ -16,4 +16,4 @@ void check(int code, const char *file, int line) {
         MPI_Abort(MPI_COMM_WORLD, code);
     }
 }
-} // mc
+} // mpicheck

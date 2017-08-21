@@ -11,4 +11,5 @@
 #include "inc/mpi.h"
 #include "io/rbc.h"
 
+#include "mc.h"
 #include "io/rbc/imp.h"
