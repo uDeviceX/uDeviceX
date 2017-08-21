@@ -23,6 +23,7 @@ $B/l/ply.o: $S/l/ply.cpp; $X
 $B/m.o: $S/m.cpp; $X
 $B/main.o: $S/main.cu; $N
 $B/mbounce/imp.o: $S/mbounce/imp.cu; $N
+$B/mc.o: $S/mc.cpp; $X
 $B/mcomm/imp.o: $S/mcomm/imp.cu; $N
 $B/mcomm/int.o: $S/mcomm/int.cu; $N
 $B/mdstr/imp.o: $S/mdstr/imp.cu; $N
