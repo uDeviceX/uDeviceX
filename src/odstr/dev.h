@@ -89,35 +89,40 @@ __global__ void unpack(T *const recv[], const int strt[], /**/ T *data) {
 }
 
 __global__ void subindex_remote(const int n, const int strt[], /*io*/ float2 *pp, int *counts, /**/ uchar4 *subids) {
-    const int tid    = threadIdx.x;
-    const int warpid = tid / warpSize;
-    const int laneid = tid % warpSize;
-    const int wpb    = blockDim.x / warpSize;
-    const int base   = warpSize * (warpid + wpb * blockIdx.x);
-    if (base >= n) return;    
-    const int nlocal = min(warpSize, n - base);
+    int tid, warpid, laneid, base, nlocal, slot, idpack;
+    float2 d0, d1, d2;
 
-    const int slot = base + laneid;
-    
     __shared__ int start[28];
+
+    tid    = threadIdx.x;
+    warpid = tid / warpSize;
+    laneid = tid % warpSize;
+    base   = warpSize * warpid + blockDim.x * blockIdx.x;
+
+    if (base >= n) return;    
+    nlocal = min(warpSize, n - base);
+
+    slot = base + laneid;
+        
     if (tid < 28) start[tid] = strt[tid];
     __syncthreads();
-    const int idpack = k_common::fid(start, slot);
-
-    float2 d0, d1, d2;
+    idpack = k_common::fid(start, slot);
+    
     k_read::AOS6f(pp + 3*base, nlocal, d0, d1, d2);
     
     if (laneid < nlocal) {
+        int xi, yi, zi, cid, subindex;
+
         d0.x += XS * ((idpack     + 1) % 3 - 1);
         d0.y += YS * ((idpack / 3 + 1) % 3 - 1);
         d1.x += ZS * ((idpack / 9 + 1) % 3 - 1);
 
-        const int xi = (int)floor((double)d0.x + XS / 2);
-        const int yi = (int)floor((double)d0.y + YS / 2);
-        const int zi = (int)floor((double)d1.x + ZS / 2);
+        xi = (int)floor((double)d0.x + XS / 2);
+        yi = (int)floor((double)d0.y + YS / 2);
+        zi = (int)floor((double)d1.x + ZS / 2);
 
-        const int cid = xi + XS * (yi + YS * zi);
-        const int subindex = atomicAdd(counts + cid, 1);
+        cid = xi + XS * (yi + YS * zi);
+        subindex = atomicAdd(counts + cid, 1);
 
         subids[slot] = make_uchar4(xi, yi, zi, subindex);
     }
@@ -186,7 +191,7 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
     warpid = threadIdx.x / warpSize;
     tid = threadIdx.x % warpSize;
 
-    base = 32 * (warpid + 4 * blockIdx.x);
+    base = warpSize * warpid + blockDim.x * blockIdx.x;
     pid = base + tid;
 
     valid = (pid < n);
@@ -219,16 +224,16 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
     xchg_aos4f(src0, src1, start, s0, s1);
 
     if (tid < 2 * nsrc)
-    zip0[destbase + tid] = make_float4(s0.x, s0.y, s0.z, 0);
+        zip0[destbase + tid] = make_float4(s0.x, s0.y, s0.z, 0);
 
     if (tid + 32 < 2 * nsrc)
-    zip0[destbase + tid + 32] = make_float4(s1.x, s1.y, s1.z, 0);
+        zip0[destbase + tid + 32] = make_float4(s1.x, s1.y, s1.z, 0);
 
     if (tid < nsrc)
-    zip1[base + tid] = make_ushort4(__float2half_rn(d0.x),
-                                    __float2half_rn(d0.y),
-                                    __float2half_rn(d1.x),
-                                    0);
+        zip1[base + tid] = make_ushort4(__float2half_rn(d0.x),
+                                        __float2half_rn(d0.y),
+                                        __float2half_rn(d1.x),
+                                        0);
     k_write::AOS6f(pp + 3 * base, nsrc, d0, d1, d2);
 }
 
