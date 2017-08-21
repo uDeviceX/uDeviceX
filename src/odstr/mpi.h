@@ -74,11 +74,11 @@ void send_pp(MPI_Comm cart, const int rank[], const int bt, /**/ Send *s, MPI_Re
     int i, c;
     for(i = 1, c = 0; i < 27; ++i, ++c) {
         buf = s->pp.hst[i];
-        count = s->size[i] * 6;
+        count = s->size[i];
         dest = rank[i];
         tag = bt + i;
         request = &req[c];
-        lsend(buf, count, MPI_FLOAT, dest, tag, cart, request);
+        lsend(buf, count, datatype::particle, dest, tag, cart, request);
     }
 }
 
