@@ -97,10 +97,11 @@ __global__ void unpack(T *const buf[], const int start[], /**/ T *data) {
 }
 
 __global__ void subindex_remote(const int n, const int strt[], /*io*/ float2 *pp, int *counts, /**/ uchar4 *subids) {
-    int warp, nlocal, slot, fid;
+    int warp, slot, fid;
     float2 d0, d1, d2;
     int ws; /* warp start in global coordinates */
     int dw; /* shift relative to `ws' (lane) */
+    int dwe; /* wrap or buffer end relative to `ws' (lane) */
 
     warp = threadIdx.x / warpSize;
     dw =   threadIdx.x % warpSize;
@@ -108,13 +109,13 @@ __global__ void subindex_remote(const int n, const int strt[], /*io*/ float2 *pp
 
     if (ws >= n) return;
     
-    nlocal = min(warpSize, n - ws);
+    dwe = min(warpSize, n - ws);
     slot   = ws + dw;
     fid = k_common::fid(strt, slot);
     
-    k_read::AOS6f(pp + 3*ws, nlocal, d0, d1, d2);
+    k_read::AOS6f(pp + 3*ws, dwe, d0, d1, d2);
     
-    if (dw < nlocal) {
+    if (dw < dwe) {
         int xi, yi, zi, cid, subindex;
 
         d0.x += XS * ((fid     + 1) % 3 - 1);
@@ -131,7 +132,7 @@ __global__ void subindex_remote(const int n, const int strt[], /*io*/ float2 *pp
         subids[slot] = make_uchar4(xi, yi, zi, subindex);
     }
 
-    k_write::AOS6f(pp + 3*ws, nlocal, d0, d1, d2);
+    k_write::AOS6f(pp + 3*ws, dwe, d0, d1, d2);
 }
 
 __global__ void scatter(const bool remote, const uchar4 *subi, const int n, const int *start,
