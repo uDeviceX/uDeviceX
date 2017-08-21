@@ -13,6 +13,10 @@ static __device__ int box(const Particle *p) {
     return vc[X] + 3 * (vc[Y] + 3 * vc[Z]);
 }
 
+static __device__ int x2c(float x, int L) {
+    return (int) floor((double)x + L / 2);
+}
+
 __global__ void halo(const Particle *pp, const int n, /**/ int *iidx[], int size[]) {
     int pid, code, entry;
     pid = threadIdx.x + blockDim.x * blockIdx.x;
@@ -112,9 +116,9 @@ __global__ void subindex_remote(const int n, const int strt[], /*io*/ float2 *pp
         d0.y += YS * ((idpack / 3 + 1) % 3 - 1);
         d1.x += ZS * ((idpack / 9 + 1) % 3 - 1);
 
-        xi = (int)floor((double)d0.x + XS / 2);
-        yi = (int)floor((double)d0.y + YS / 2);
-        zi = (int)floor((double)d1.x + ZS / 2);
+        xi = x2c(d0.x, XS);
+        yi = x2c(d0.y, YS);
+        zi = x2c(d1.x, ZS);
 
         cid = xi + XS * (yi + YS * zi);
         subindex = atomicAdd(counts + cid, 1);
