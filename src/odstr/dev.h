@@ -81,22 +81,24 @@ __global__ void pack(const T *data, int *const iidx[], const int start[], /**/ T
 
 template <typename T, int STRIDE>
 __global__ void unpack(T *const recv[], const int strt[], /**/ T *data) {
-    const int gid = threadIdx.x + blockDim.x * blockIdx.x;
-    const int slot = gid / STRIDE;
+    int gid, slot, tid, idpack, offset, c, srcid;
 
-    const int tid = threadIdx.x;
+    gid = threadIdx.x + blockDim.x * blockIdx.x;
+    slot = gid / STRIDE;
+
+    tid = threadIdx.x;
 
     __shared__ int start[28];
 
     if (tid < 28) start[tid] = strt[tid];
     __syncthreads();
-    const int idpack = k_common::fid(start, slot);
+    idpack = k_common::fid(start, slot);
 
     if (slot >= start[27]) return;
 
-    const int offset = slot - start[idpack];
-    const int c = gid % STRIDE;
-    const int srcid = c + STRIDE * offset;
+    offset = slot - start[idpack];
+    c = gid % STRIDE;
+    srcid = c + STRIDE * offset;
 
     data[gid] = recv[idpack][srcid];
 }
