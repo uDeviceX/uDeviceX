@@ -20,8 +20,8 @@ static __device__ bool check_vel(float v, int L) {
     return true;
 }
 
-static __device__ bool check_p(float  x, float  y, float  z,
-                               float vx, float vy, float vz) {
+static __device__ bool check_unpacked_p(float  x, float  y, float  z,
+                                        float vx, float vy, float vz) {
     bool ok = true;
     ok &= check_pos(x, XS);
     ok &= check_pos(y, YS);
@@ -34,28 +34,25 @@ static __device__ bool check_p(float  x, float  y, float  z,
     return ok;
 }
 
-static __device__ void soft_check_p(const Particle *p) {
+static __device__ bool check_p(const Particle *p) {
     float x, y, z;
     float vx, vy, vz;
     x  = p->r[X];  y = p->r[Y];  z = p->r[Z];
     vx = p->v[X]; vy = p->v[Y]; vz = p->v[Z];
 
-    check_p(x, y, z, vx, vy, vz);
+    return check_unpacked_p(x, y, z, vx, vy, vz);
 }
 
-static __device__ void hard_check_p(const Particle *p) {
-    float x, y, z;
-    float vx, vy, vz;
-    x  = p->r[X];  y = p->r[Y];  z = p->r[Z];
-    vx = p->v[X]; vy = p->v[Y]; vz = p->v[Z];
-
-    assert(check_p(x, y, z, vx, vy, vz));
-}
-
-__global__ void check_pp(const Particle *pp, int n) {
+__global__ void soft_check_pp(const Particle *pp, int n) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
-    soft_check_p(pp + i);
+    check_p(pp + i);
+}
+
+__global__ void hard_check_pp(const Particle *pp, int n) {
+    int i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i >= n) return;
+    assert(check_p(pp + i));
 }
 
 } // dev
