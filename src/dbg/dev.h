@@ -4,7 +4,7 @@ namespace dev {
 enum {X, Y, Z};
 
 static __device__ bool check_pos(float x, int L) {
-    if (x < L/2 || x > L/2) {
+    if (x < -L/2 || x > L/2) {
         printf("DBG: x = %g (L = %d)\n", x, L);
         return false;
     }
