@@ -7,7 +7,7 @@ static __device__ void check_pos(float x, int L) {
     if (x < L/2 || x > L/2) printf("DBG: x = %g (L = %d)\n", x, L);
 }
 
-static __device__ void check_vel(float x, int L) {
+static __device__ void check_vel(float v, int L) {
     float dx = fabs(v * dt);
     if (dx > L/2) printf("DBG: v = %g (L = %d)\n", v, L);
 }
