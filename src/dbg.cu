@@ -12,8 +12,12 @@
 
 namespace dbg {
 
-void check_pp(const Particle *pp, int n) {
-    KL(dev::check_pp, (k_cnf(n)), (pp, n));
+void soft_check_pp(const Particle *pp, int n) {
+    KL(dev::soft_check_pp, (k_cnf(n)), (pp, n));
+}
+
+void hard_check_pp(const Particle *pp, int n) {
+    KL(dev::hard_check_pp, (k_cnf(n)), (pp, n));
 }
 
 } // dbg
