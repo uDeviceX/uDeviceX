@@ -43,6 +43,15 @@ static __device__ void soft_check_p(const Particle *p) {
     check_p(x, y, z, vx, vy, vz);
 }
 
+static __device__ void hard_check_p(const Particle *p) {
+    float x, y, z;
+    float vx, vy, vz;
+    x  = p->r[X];  y = p->r[Y];  z = p->r[Z];
+    vx = p->v[X]; vy = p->v[Y]; vz = p->v[Z];
+
+    assert(check_p(x, y, z, vx, vy, vz));
+}
+
 __global__ void check_pp(const Particle *pp, int n) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
