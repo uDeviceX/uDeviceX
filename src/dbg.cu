@@ -20,4 +20,8 @@ void hard_check_pp(const Particle *pp, int n) {
     KL(dev::hard_check_pp, (k_cnf(n)), (pp, n));
 }
 
+void check_pp(const Particle *pp, int n) {
+    hard_check_pp(pp, n);
+}
+
 } // dbg
