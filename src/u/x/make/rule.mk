@@ -3,6 +3,7 @@ $B/cc.o: $S/cc.cpp; $X
 $B/clist/imp.o: $S/clist/imp.cu; $N
 $B/common.mpi.o: $S/common.mpi.cpp; $X
 $B/d/api.o: $S/d/api.cu; $N
+$B/dbg.o: $S/dbg.cu; $N
 $B/diag.o: $S/diag.cpp; $X
 $B/dpd/local.o: $S/dpd/local.cu; $N
 $B/dpdr/imp.o: $S/dpdr/imp.cu; $N
