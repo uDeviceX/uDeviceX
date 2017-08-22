@@ -68,7 +68,7 @@ template <typename T, int STRIDE>
 __global__ void pack(const T *data, int *const iidx[], const int start[], /**/ T *buf[]) {
     int gid, slot;
     int fid; /* [f]ragment [id] */
-    int offset, pid, c, d;
+    int offset, pid, c, d, s;
     
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     slot = gid / STRIDE;
@@ -80,7 +80,9 @@ __global__ void pack(const T *data, int *const iidx[], const int start[], /**/ T
     pid = __ldg(iidx[fid] + offset);
 
     d = c + STRIDE * offset;
-    buf[fid][d] = data[c + STRIDE * pid];
+    s = c + STRIDE * pid;
+    
+    buf[fid][d] = data[s];
 }
 
 template <typename T, int STRIDE>
