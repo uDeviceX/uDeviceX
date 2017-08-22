@@ -40,6 +40,8 @@
 #include "bund.h"
 #include "diag.h"
 
+#include "dbg.h"
+
 #include "restart.h"
 
 #include "glb.h"
