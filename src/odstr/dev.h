@@ -101,17 +101,17 @@ __global__ void subindex_remote(const int n, const int strt[], /*io*/ float2 *pp
     float2 d0, d1, d2;
     int ws; /* warp start in global coordinates */
     int dw; /* shift relative to `ws' (lane) */
-    int dwe; /* wrap or buffer end relative to `ws' */
+    int dwe; /* warp or buffer end relative to `ws' */
 
     warp = threadIdx.x / warpSize;
     dw   = threadIdx.x % warpSize;
-    ws = warpSize * warp + blockDim.x * blockIdx.x;
+    ws   = warpSize * warp + blockDim.x * blockIdx.x;
 
     if (ws >= n) return;
     
-    dwe = min(warpSize, n - ws);
-    slot   = ws + dw;
-    fid = k_common::fid(strt, slot);
+    dwe  = min(warpSize, n - ws);
+    slot = ws + dw;
+    fid  = k_common::fid(strt, slot);
     
     k_read::AOS6f(pp + 3*ws, dwe, d0, d1, d2);
     
