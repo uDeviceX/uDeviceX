@@ -99,8 +99,8 @@ __global__ void unpack(T *const buf[], const int start[], /**/ T *data) {
 __global__ void subindex_remote(const int n, const int strt[], /*io*/ float2 *pp, int *counts, /**/ uchar4 *subids) {
     int warp, slot, fid;
     float2 d0, d1, d2;
-    int ws; /* warp start in global coordinates */
-    int dw; /* shift relative to `ws' (lane) */
+    int ws;  /* warp start in global coordinates    */
+    int dw;  /* shift relative to `ws' (lane)       */
     int dwe; /* warp or buffer end relative to `ws' */
 
     warp = threadIdx.x / warpSize;
