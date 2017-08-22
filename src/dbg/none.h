@@ -1,0 +1,5 @@
+namespace dbg {
+#define DBG_BEFORE(s, M) 
+#define DBG_CALL(F, A)
+#define DBG_AFTER(#F)
+} // dbg
