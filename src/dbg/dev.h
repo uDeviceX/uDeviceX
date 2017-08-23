@@ -20,6 +20,15 @@ static __device__ bool check_vel(float v, int L) {
     return true;
 }
 
+static __device__ bool check_acc(float a, int L) {
+    float dx = fabs(a * dt * dt);
+    if (dx > L/2) {
+        printf("DBG: a = %g (L = %d)\n", a, L);
+        return false;
+    }
+    return true;
+}
+
 static __device__ bool check_unpacked_p(float  x, float  y, float  z,
                                         float vx, float vy, float vz) {
     bool ok = true;
