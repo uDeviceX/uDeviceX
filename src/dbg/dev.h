@@ -20,15 +20,6 @@ static __device__ bool check_vel(float v, int L) {
     return true;
 }
 
-static __device__ bool check_acc(float a, int L) {
-    float dx = fabs(a * dt * dt);
-    if (dx > L/2) {
-        printf("DBG: a = %g (L = %d)\n", a, L);
-        return false;
-    }
-    return true;
-}
-
 static __device__ bool check_unpacked_p(float  x, float  y, float  z,
                                         float vx, float vy, float vz) {
     bool ok = true;
@@ -62,6 +53,44 @@ __global__ void hard_check_pp(const Particle *pp, int n) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
     assert(check_p(pp + i));
+}
+
+
+static __device__ bool check_acc(float a, int L) {
+    float dx = fabs(a * dt * dt);
+    if (dx > L/2) {
+        printf("DBG: a = %g (L = %d)\n", a, L);
+        return false;
+    }
+    return true;
+}
+
+static __device__ bool check_unpacked_f(float fx, float fy, float fz) {
+    bool ok = true;
+    ok &= check_acc(fx, XS);
+    ok &= check_acc(fy, YS);
+    ok &= check_acc(fz, ZS);
+
+    return ok;
+}
+
+static __device__ bool check_f(const Force *f) {
+    float fx, fy, fz;
+    fx = f->f[X]; fy = f->f[Y]; fz = f->f[Z];
+
+    return check_unpacked_f(fx, fy, fz);
+}
+
+__global__ void soft_check_ff(const Force *ff, int n) {
+    int i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i >= n) return;
+    check_f(ff + i);
+}
+
+__global__ void hard_check_ff(const Force *ff, int n) {
+    int i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i >= n) return;
+    assert(check_f(ff + i));
 }
 
 } // dev
