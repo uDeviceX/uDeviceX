@@ -8,6 +8,7 @@ int alloc_pinned(void **pHost, size_t size);
 
 int Malloc(void **p, size_t);
 int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset=0, int kind=MemcpyHostToDevice);
 int HostGetDevicePointer(void **pDevice, void *pHost, unsigned int flags);
 int Memcpy (void *dst, const void *src, size_t count, int kind);
 int MemsetAsync (void *devPtr, int value, size_t count, Stream_t stream=0);
