@@ -103,7 +103,7 @@ __global__ void unpack(T *const buf[], const int start[], /**/ T *data) {
     data[gid] = buf[fid][d];
 }
 
-__global__ void subindex_remote(const int n, const int strt[], /*io*/ float2 *pp, int *counts, /**/ uchar4 *subids) {
+__global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *counts, /**/ uchar4 *subids) {
     int warp, slot, fid;
     float2 d0, d1, d2;
     int ws;  /* warp start in global coordinates    */

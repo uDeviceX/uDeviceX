@@ -134,7 +134,7 @@ void unpack_pp(const TicketD *td, /**/ flu::Quants *q, TicketU *tu, /*w*/ Work *
     
     if (nhalo) {
         sub::unpack_pp(nhalo, &td->r, /**/ tu->pp_re);
-        sub::subindex_remote(nhalo, &td->r, /*io*/ tu->pp_re, count, /**/ tu->subi_re);
+        sub::subindex(nhalo, &td->r, /*io*/ tu->pp_re, count, /**/ tu->subi_re);
     }
 
     scan::scan(count, XS*YS*ZS, /**/ start, /*w*/ &w->s);

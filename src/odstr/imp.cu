@@ -86,8 +86,8 @@ void unpack_ii(const int n, const Recv *r, const Pbufs<int> *rii, /**/ int *ii_r
     KL((dev::unpack<int,1>), (k_cnf(n)), (rii->dev, r->strt, /**/ ii_re));
 }
 
-void subindex_remote(const int n, const Recv *r, /*io*/ Particle *pp_re, int *counts, /**/ uchar4 *subi) {
-    KL(dev::subindex_remote, (k_cnf(n)), (n, r->strt, /*io*/ (float2*) pp_re, counts, /**/ subi));
+void subindex(const int n, const Recv *r, /*io*/ Particle *pp_re, int *counts, /**/ uchar4 *subi) {
+    KL(dev::subindex, (k_cnf(n)), (n, r->strt, /*io*/ (float2*) pp_re, counts, /**/ subi));
 }
 
 

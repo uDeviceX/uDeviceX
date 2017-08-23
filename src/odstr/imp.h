@@ -25,7 +25,7 @@ int count_sz(Send *s);
 void unpack_pp(const int n, const Recv *r, /**/ Particle *pp_re);
 void unpack_ii(const int n, const Recv *r, const Pbufs<int> *rii, /**/ int *ii_re);
 
-void subindex_remote(const int n, const Recv *r, /*io*/ Particle *pp_re, int *counts, /**/ uchar4 *subi);
+void subindex(const int n, const Recv *r, /*io*/ Particle *pp_re, int *counts, /**/ uchar4 *subi);
 
 /* TODO: this is not used, why? */
 void cancel_recv(/**/ MPI_Request *size_req, MPI_Request *mesg_req);
