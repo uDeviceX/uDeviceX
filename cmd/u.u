@@ -1,33 +1,5 @@
 #!/bin/bash
 
-msg() { printf '%s\n' "$*" >&2; }
-err() { msg "$@"; usg; }
-usg () {
-    msg 'usage: u.u [unit dir]' >&2
-    exit
-}
+U="$1"; shift
 
-U="$1"
-
-l=`u.u0 "$U"`
-
-if test -z "$l"
-then err "u.u: empty file list"
-fi
-
-M=$U/make
-
-mkdir -p "$U/make"
-
-d="$M"/dep.mk
-o="$M"/obj.mk
-m="$M"/dir.mk
-r="$M"/rule.mk
-
-u.deps $l > $d
-u.obj  $l > $o
-u.mdir $l > $m
-u.rule $l > $r
-
-echo upd: $d $o $m $r >&2
-
+u.u0 "$U" | G=. c.main "$U"/make -- --
