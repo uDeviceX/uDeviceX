@@ -37,6 +37,12 @@ int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t off
     return R(cudaMemcpyToSymbol(symbol, src, count, offset, kind));
 }
 
+int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset, int kind0) {
+    enum cudaMemcpyKind kind;
+    kind = k2k(kind0);
+    return R(cudaMemcpyFromSymbol(dst, symbol, count, offset, kind));
+}
+
 int HostGetDevicePointer (void **pDevice, void *pHost, unsigned int flags) {
     return R(cudaHostGetDevicePointer (pDevice, pHost, flags));
 }
