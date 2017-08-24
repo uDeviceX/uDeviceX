@@ -1,5 +1,13 @@
 namespace odstr { namespace sub { namespace dev {
 
+__device__ void warpco(/**/ int *ws, int *dw) { /* warp [co]ordinates */
+    /* ws: start, dw: shift (lane) */
+    int warp;
+    warp = threadIdx.x / warpSize;
+    *dw   = threadIdx.x % warpSize;
+    *ws   = warpSize * warp + blockDim.x * blockIdx.x;
+}
+
 static __device__ void fid2shift(int id, int s[3]) {
     enum {X, Y, Z};
     s[X] = XS * ((id     + 1) % 3 - 1);

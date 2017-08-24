@@ -1,13 +1,5 @@
 namespace odstr { namespace sub { namespace dev {
 
-__device__ void warpco(/**/ int *ws, int *dw) { /* warp [co]ordinates */
-    /* ws: start, dw: shift (lane) */
-    int warp;
-    warp = threadIdx.x / warpSize;
-    *dw   = threadIdx.x % warpSize;
-    *ws   = warpSize * warp + blockDim.x * blockIdx.x;
-}
-
 struct Pa { /* local particle */
     float2 d0, d1, d2;
 };
