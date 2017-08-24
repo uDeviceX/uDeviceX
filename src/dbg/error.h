@@ -1,21 +1,25 @@
 namespace dbg {
 namespace dev {
 
-enum ERR_TYPE {
+namespace err {
+enum {
     NONE,     /* no error      */
     INVALID,  /* invalid value */
 };
+} // err
 
-__device__ ERR_TYPE error;
+typedef int err_type;
+
+__device__ err_type error;
 
 namespace err {
 
 void ini() {
-    ERR_TYPE e = NONE;
-    CC(d::MemcpyToSymbol(&error, &e, sizeof(ERR_TYPE)));
+    err_type e = NONE;
+    CC(d::MemcpyToSymbol(&error, &e, sizeof(err_type)));
 }
 
-static void errmsg(ERR_TYPE e) {
+static void errmsg(err_type e) {
     switch (e) {
     case INVALID:
         MSG("DBG: ERR: Invalid");
@@ -28,8 +32,8 @@ static void errmsg(ERR_TYPE e) {
 
 void handle() {
     dSync();
-    ERR_TYPE err;
-    CC(d::MemcpyFromSymbol(&err, &error, sizeof(ERR_TYPE)));
+    err_type err;
+    CC(d::MemcpyFromSymbol(&err, &error, sizeof(err_type)));
     errmsg(err);
 }
 
