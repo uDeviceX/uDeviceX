@@ -43,6 +43,9 @@ __device__ void FLo2D(FLo *l, int i, /**/ Da *d) {
     }
 }
 
+__device__ void D2TLo(Da *d, /**/ TLo *l) {
+
+}
 
 __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, const uint *iidx,
                           /**/ float2  *pp, float4  *zip0, ushort4 *zip1) {
