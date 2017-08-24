@@ -24,7 +24,7 @@ struct Ce { /* coordinates of a cell */
 };
 
 __device__ void pp2Lo(float2 *pp, int n, int ws, /**/ Lo *l) {
-    int dwe; /* warp or buffer end relative wrap start */
+    int dwe; /* warp or buffer end relative to wrap start (`ws') */
     int N_FLOAT2_PER_PARTICLE = 3;
     dwe  = min(warpSize, n - ws);
     l->p = pp + N_FLOAT2_PER_PARTICLE * ws;
@@ -32,6 +32,7 @@ __device__ void pp2Lo(float2 *pp, int n, int ws, /**/ Lo *l) {
 }
 
 __device__ int endLo(Lo *l, int d) { /* is `d' behind the end? */
+    /* `d' relative to wrap start */
     return d >= l->d;
 }
 
@@ -43,7 +44,7 @@ __device__ void writePa(Pa *p, /**/ Lo l) {
     k_write::AOS6f(/**/ l.p, l.d, /*i*/ p->d0, p->d1, p->d2);
 }
 
-__device__ void shiftPa(float r[3], Pa *p) {
+__device__ void shiftPa(int r[3], Pa *p) {
     enum {X, Y, Z};
     p->d0.x += r[X];   p->d0.y += r[Y];   p->d1.x += r[Z];
 }
@@ -97,7 +98,7 @@ __device__ void subindex0(int i, const int strt[], /*io*/ Pa *p, int *counts, /*
     /* i: particle index */
     enum {X, Y, Z};
     int fid;     /* fragment id */
-    float shift[3];
+    int shift[3];
     Ce c; /* cell coordinates */
 
     fid  = k_common::fid(strt, i);

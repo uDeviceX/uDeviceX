@@ -1,6 +1,6 @@
 namespace odstr { namespace sub { namespace dev {
 
-static __device__ void fid2shift(int id, float s[3]) {
+static __device__ void fid2shift(int id, int s[3]) {
     enum {X, Y, Z};
     s[X] = XS * ((id     + 1) % 3 - 1);
     s[Y] = YS * ((id / 3 + 1) % 3 - 1);
