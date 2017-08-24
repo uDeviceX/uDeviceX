@@ -96,7 +96,7 @@ void subindex(const int n, const Recv *r, /*io*/ Particle *pp_re, int *counts, /
 
 
 void scatter(bool remote, const uchar4 *subi, const int n, const int *start, /**/ uint *iidx) {
-    KL(dev::scatter, (k_cnf(n)),(remote, subi, n, start, /**/ iidx));
+    KL(dev::scatter, (k_cnf(n)), (remote, subi, n, start, /**/ iidx));
 }
 
 void gather_id(const int *ii_lo, const int *ii_re, int n, const uint *iidx, /**/ int *ii) {

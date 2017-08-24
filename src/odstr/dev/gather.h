@@ -55,7 +55,7 @@ __device__ void zip(float r[3], float v[3], int ws, int dw, int dwe, /**/
     enum {X, Y, Z};
     float3 s0, s1;    
     s0 = make_float3(r[X], r[Y], r[Z]);
-    s1 = make_float3(v[Z], v[Y], v[Z]);
+    s1 = make_float3(v[X], v[Y], v[Z]);
     xchg(dw, &s0, &s1); /* collective */
     if (dw < 2 * dwe)
         zip0[2 * ws + dw] = make_float4(s0.x, s0.y, s0.z, 0);
@@ -79,8 +79,8 @@ __device__ void D2TLo(Da *d, int ws, int dw, int dwe, /**/ TLo *l) { /* collecti
     pp = l->pp; zip0 = l->zip0; zip1 = l->zip1;
     d0 = d->d0; d1 = d->d1; d2 = d->d2;
     D2rv(d, /**/ r, v);
-    zip(r, v, ws, dw, dwe, /**/ zip0, zip1);
-    k_write::AOS6f(pp + 3 * ws, dwe, d0, d1, d2); /* collective */
+    zip(r, v, ws, dw, dwe, /**/ zip0, zip1);    /* collective */
+    k_write::AOS6f(pp + 3*ws, dwe, d0, d1, d2); /* collective */
 }
 
 __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, const uint *iidx,
