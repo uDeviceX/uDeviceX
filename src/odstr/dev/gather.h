@@ -19,7 +19,7 @@ __device__ void ini_FLo(const float2 *lo, const float2 *re, /**/ FLo *l) {
     l->lo = lo; l->re = re;
 }
 
-__device__ void Flo2D(Flo *l, /**/ Da *d) {
+__device__ void FLo2D(FLo *l, /**/ Da *d) {
     
 }
 
