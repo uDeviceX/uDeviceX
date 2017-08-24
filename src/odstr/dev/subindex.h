@@ -60,16 +60,15 @@ __global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *
     float shift[3], r[3], v[3];
     Lo l; /* location in memory */
     Pa p;
+    int xi, yi, zi, cid, subindex;
 
     warpco(&ws, &dw); /* warp coordinates */
     if (ws >= n) return;
     pp2Lo(pp, n, ws, /**/ &l);
-    fid  = k_common::fid(strt, ws + dw);
-
     readPa(l, /**/ &p);   /* collective */
 
     if (!endLo(&l, dw)) {
-        int xi, yi, zi, cid, subindex;
+        fid  = k_common::fid(strt, ws + dw);
         fid2shift(fid, /**/ shift);
         shiftPa(shift, &p);
 
