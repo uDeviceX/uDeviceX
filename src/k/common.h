@@ -9,16 +9,5 @@ __device__ inline unsigned int fid(const T a[], const T i) {
     return k9 + k3 + k1;
 }
 
-static __device__ int box(const float r[3]) {
-    /* which neighboring point belongs to? */
-    enum {X, Y, Z};
-    int c;
-    int vc[3]; /* vcode */
-    int   L[3] = {XS, YS, ZS};
-    for (c = 0; c < 3; ++c)
-        vc[c] = (2 + (r[c] >= -L[c]/2) + (r[c] >= L[c]/2)) % 3;
-    return vc[X] + 3 * (vc[Y] + 3 * vc[Z]);
-}
-
 } /* namespace */
 

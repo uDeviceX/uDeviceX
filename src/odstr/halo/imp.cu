@@ -1,5 +1,3 @@
-#include <mpi.h>
-#include "l/m.h"
 #include <conf.h>
 #include "inc/conf.h"
 
@@ -14,15 +12,10 @@
 #include "m.h"
 #include "cc.h"
 
-#include "dual/type.h"
-#include "dual/int.h"
-
 #include "inc/type.h"
 #include "inc/dev.h"
-#include "inc/mpi.h"
 #include "inc/macro.h"
 
-#include "scan/int.h"
 #include "kl.h"
 
 #include "dev.h"
