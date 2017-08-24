@@ -34,17 +34,19 @@ static void dump(int *dev, int n) {
     dump0(hst, n);
 }
 
-static void scan0(int n) { /* local scan wrapper */
+static void scan0(int *hst, int n) { /* local scan wrapper */
     alloc_work(M, &w);
+
+    cH2D0(x, hst, n);
     scan::scan(x, n, y,  &w);
+
     free_work(&w);
 }
 
 static void main0() {
-    int n;
-    set(y, &n);
-    cH2D0(x, y, n);
-    scan0(n);
+    int n, a[M];
+    set(a, &n);
+    scan0(a, n);
     dump(y, n);
 }
 

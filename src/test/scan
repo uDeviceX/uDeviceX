@@ -4,6 +4,3 @@ u.conf0 u/scan
 { u.make -j;     } > /dev/null
 seq 16 | ./udx >  scan.out.txt
 
-
-
-
