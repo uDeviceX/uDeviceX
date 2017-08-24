@@ -1,4 +1,5 @@
 namespace odstr { namespace sub { namespace dev {
+/** gather_id is in dev/common.h */
 
 __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, const uint *iidx,
                           /**/ float2  *pp, float4  *zip0, ushort4 *zip1) {
