@@ -61,8 +61,9 @@ __global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *
     slot = ws + dw;
     fid  = k_common::fid(strt, slot);
 
-    readPa(l, /**/ &p);
-    if (dw < dwe) {
+    readPa(l, /**/ &p);   /* collective */
+
+    if (!endLo(&l, dw)) {
         int xi, yi, zi, cid, subindex;
         fid2shift(fid, /**/ shift);
         shiftPa(shift, &p);
