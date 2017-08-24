@@ -2,6 +2,13 @@ namespace odstr {
 namespace sub {
 namespace dev {
 
+static __device__ void fid2shift(int id, float s[3]) {
+    enum {X, Y, Z};
+    s[X] = XS * ((id     + 1) % 3 - 1);
+    s[Y] = YS * ((id / 3 + 1) % 3 - 1);
+    s[Z] = ZS * ((id / 9 + 1) % 3 - 1);
+}
+
 /* which neighboring subdomain `p' belongs to? */
 static __device__ int box(const Particle *p) {
     enum {X, Y, Z};
@@ -109,6 +116,8 @@ __global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *
     int ws;  /* warp start in global coordinates    */
     int dw;  /* shift relative to `ws' (lane)       */
     int dwe; /* warp or buffer end relative to `ws' */
+
+    float shift[3];
 
     warp = threadIdx.x / warpSize;
     dw   = threadIdx.x % warpSize;
