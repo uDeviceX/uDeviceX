@@ -34,22 +34,26 @@ static void dump(int *dev, int n) {
     dump0(hst, n);
 }
 
+static void scan0(int n) { /* local scan wrapper */
+    alloc_work(M, &w);
+    scan::scan(x, n, y,  &w);
+    free_work(&w);
+}
+
 static void main0() {
     int n;
     set(y, &n);
     cH2D0(x, y, n);
-    scan::scan(x, n, y,  &w);
+    scan0(n);
     dump(y, n);
 }
 
 static void main1() {
-    alloc_work(M, &w);
     Dalloc(&x, M);
     Dalloc(&y, M);
 
     main0();
 
-    free_work(&w);
     Dfree0(x);
     Dfree0(y);
 }
