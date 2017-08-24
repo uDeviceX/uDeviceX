@@ -1,5 +1,9 @@
 namespace odstr { namespace sub { namespace dev {
 
+struct Pa { /* local particle */
+    float2 d0, d1, d2;
+}
+
 __global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *counts, /**/ uchar4 *subids) {
     enum {X, Y, Z};
     int warp, slot, fid;
