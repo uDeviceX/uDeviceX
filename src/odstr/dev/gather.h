@@ -53,14 +53,13 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
 
     dwe = min(32, n - ws);
 
-    src0 = (32 * ((dw    ) & 0x1) + dw) >> 1;
-    src1 = (32 * ((dw + 1) & 0x1) + dw) >> 1;
-
     float2 d0, d1, d2;
     d0 = d.d0; d1 = d.d1; d2 = d.d2;
     s0 = make_float3(d0.x, d0.y, d1.x);
     s1 = make_float3(d1.y, d2.x, d2.y);
 
+    src0 = (32 * ((dw    ) & 0x1) + dw) >> 1;
+    src1 = (32 * ((dw + 1) & 0x1) + dw) >> 1;
     xchg_aos4f(src0, src1, dw % 2 , s0, s1);
 
     if (dw < 2 * dwe)
@@ -71,9 +70,9 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
 
     if (dw < dwe)
         zip1[ws + dw] = make_ushort4(__float2half_rn(d0.x),
-                                        __float2half_rn(d0.y),
-                                        __float2half_rn(d1.x),
-                                        0);
+                                     __float2half_rn(d0.y),
+                                     __float2half_rn(d1.x),
+                                     0);
     k_write::AOS6f(pp + 3 * ws, dwe, d0, d1, d2);
 }
 
