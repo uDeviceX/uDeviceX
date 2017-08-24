@@ -1,6 +1,6 @@
 # TEST: scan.t0
 (cd ../cmd; make ) > /dev/null
-: u.conf0 u/scan
+u.conf0 u/scan
 u.make -j
 seq 16 | ./udx >  scan.out.txt
 
