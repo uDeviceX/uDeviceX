@@ -18,6 +18,11 @@ struct Lo { /* particle [lo]cation in memory
     int d;
 };
 
+struct Ce { /* coordinates of a cell */
+    int ix, iy, iz;
+    int i; /* linear index */
+};
+
 __device__ void pp2Lo(float2 *pp, int n, int ws, /**/ Lo *l) {
     int dwe; /* warp or buffer end relative wrap start */
     int N_FLOAT2_PER_PARTICLE = 3;
