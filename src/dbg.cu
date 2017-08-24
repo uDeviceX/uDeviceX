@@ -5,9 +5,14 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 
+#include "cc.h"
+#include "msg.h"
+#include "d/api.h"
+
 #include "kl.h"
 
 #include "dbg.h"
+#include "dbg/error.h"
 #include "dbg/dev.h"
 
 #include "dbg/switch.h"
