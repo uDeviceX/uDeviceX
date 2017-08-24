@@ -4,6 +4,29 @@ struct Pa { /* local particle */
     float2 d0, d1, d2;
 };
 
+__device__ void readPa(float2 *pp, int ws, int dwe, /**/ Pa *p) {
+    k_read::AOS6f(pp + 3*ws, dwe, /**/ p->d0, p->d1, p->d2);
+}
+
+__device__ void writePa(Pa *p, int ws, int dwe, /**/ float2 *pp) {
+    k_write::AOS6f(/**/ pp + 3*ws, dwe, /*i*/ p->d0, p->d1, p->d2);
+}
+
+__device__ void shiftPa(Pa *p, float r[3]) {
+    enum {X, Y, Z};
+    p->d0.x += r[X];   p->d0.y += r[Y];   p->d1.x += r[Z];
+}
+
+__device__ void Pa2r(Pa *p, /**/ float r[3]) {
+    enum {X, Y, Z};
+    r[X] = p->d0.x;   r[Y] = p->d0.y;   r[Z] = p->d1.x;
+}
+
+__device__ void Pa2v(Pa *p, /**/ float v[3]) {
+    enum {X, Y, Z};
+    v[X] = p->d1.y;   v[Y] = p->d2.x;   v[Z] = p->d2.y;
+}
+
 __global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *counts, /**/ uchar4 *subids) {
     enum {X, Y, Z};
     int warp, slot, fid;
@@ -13,6 +36,7 @@ __global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *
     int dwe; /* warp or buffer end relative to `ws' */
 
     float shift[3];
+    Pa p;
 
     warp = threadIdx.x / warpSize;
     dw   = threadIdx.x % warpSize;
