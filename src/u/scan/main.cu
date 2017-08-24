@@ -35,7 +35,7 @@ static void dump(int *dev, int n) {
 }
 
 static void scan0(int *hst, int n) { /* local scan wrapper */
-    alloc_work(M, &w);
+    alloc_work(n, &w);
 
     cH2D0(x, hst, n);
     scan::scan(x, n, y,  &w);
