@@ -43,6 +43,10 @@ __device__ void FLo2D(FLo *l, int i, /**/ Da *d) {
     }
 }
 
+__device__ void ini_TLo(float2 *pp, float4 *zip0, ushort4 *zip1, /**/ TLo *l) {
+    l->pp = pp; l->zip0 = zip0; l->zip1 = zip1;
+}
+
 __device__ void D2TLo(Da *d, int ws, int dw, int dwe, /**/ TLo *l) {
     float2 *pp;
     float4  *zip0;
