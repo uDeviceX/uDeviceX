@@ -45,18 +45,30 @@ __device__ void ini_TLo(float2 *pp, float4 *zip0, ushort4 *zip1, /**/ TLo *l) {
     l->pp = pp; l->zip0 = zip0; l->zip1 = zip1;
 }
 
+__device__ void D2rv(Da *d, /**/ float r[3], float v[3]) {
+    enum {X, Y, Z};
+    float2 d0, d1, d2;
+    d0 = d->d0; d1 = d->d1; d2 = d->d2;
+    r[X] = d0.x; r[Y] = d0.y; r[Z] = d1.x;
+    v[X] = d1.y; v[Y] = d2.x; v[Z] = d2.y;
+}
+
 __device__ void D2TLo(Da *d, int ws, int dw, int dwe, /**/ TLo *l) { /* collective */
+    enum {X, Y, Z};
     float2 *pp;
     float4  *zip0;
     ushort4 *zip1;
     float2 d0, d1, d2;
     float3 s0, s1;
 
-    pp = l->pp; zip0 = l->zip0; zip1 = l->zip1;
+    float r[3], v[3];
 
+    pp = l->pp; zip0 = l->zip0; zip1 = l->zip1;
     d0 = d->d0; d1 = d->d1; d2 = d->d2;
-    s0 = make_float3(d0.x, d0.y, d1.x);
-    s1 = make_float3(d1.y, d2.x, d2.y);
+    D2rv(d, /**/ r, v);
+
+    s0 = make_float3(r[X], r[Y], r[Z]);
+    s1 = make_float3(v[Z], v[Y], v[Z]);
     xchg(dw, &s0, &s1); /* collective */
     if (dw < 2 * dwe)
         zip0[2 * ws + dw] = make_float4(s0.x, s0.y, s0.z, 0);
