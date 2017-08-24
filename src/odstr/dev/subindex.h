@@ -54,7 +54,7 @@ __device__ void Pa2v(Pa *p, /**/ float v[3]) { /* to velocity */
 
 __global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *counts, /**/ uchar4 *subids) {
     enum {X, Y, Z};
-    int slot, fid;
+    int fid;     /* fragment id */
     int ws, dw;  /* warp start and shift (lane) */
 
     float shift[3], r[3], v[3];
@@ -64,8 +64,7 @@ __global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *
     warpco(&ws, &dw); /* warp coordinates */
     if (ws >= n) return;
     pp2Lo(pp, n, ws, /**/ &l);
-    slot = ws + dw;
-    fid  = k_common::fid(strt, slot);
+    fid  = k_common::fid(strt, ws + dw);
 
     readPa(l, /**/ &p);   /* collective */
 
@@ -87,7 +86,7 @@ __global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *
         cid = xi + XS * (yi + YS * zi);
         subindex = atomicAdd(counts + cid, 1);
 
-        subids[slot] = make_uchar4(xi, yi, zi, subindex);
+        subids[ws + dw] = make_uchar4(xi, yi, zi, subindex);
     }
     writePa(&p, /**/ l); /* collective */
 }
