@@ -28,12 +28,12 @@ __device__ void shiftPa(float r[3], Pa *p) {
     p->d0.x += r[X];   p->d0.y += r[Y];   p->d1.x += r[Z];
 }
 
-__device__ void Pa2r(Pa *p, /**/ float r[3]) {
+__device__ void Pa2r(Pa *p, /**/ float r[3]) { /* to position */
     enum {X, Y, Z};
     r[X] = p->d0.x;   r[Y] = p->d0.y;   r[Z] = p->d1.x;
 }
 
-__device__ void Pa2v(Pa *p, /**/ float v[3]) {
+__device__ void Pa2v(Pa *p, /**/ float v[3]) { /* to velocity */
     enum {X, Y, Z};
     v[X] = p->d1.y;   v[Y] = p->d2.x;   v[Z] = p->d2.y;
 }
@@ -51,13 +51,12 @@ __global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *
     warp = threadIdx.x / warpSize;
     dw   = threadIdx.x % warpSize;
     ws   = warpSize * warp + blockDim.x * blockIdx.x;
-
     if (ws >= n) return;
     dwe  = min(warpSize, n - ws);
     pp2Lo(pp, ws, dwe, /**/ &l);
-
     slot = ws + dw;
     fid  = k_common::fid(strt, slot);
+
     readPa(l, /**/ &p);
     if (dw < dwe) {
         int xi, yi, zi, cid, subindex;
