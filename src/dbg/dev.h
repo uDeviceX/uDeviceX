@@ -43,16 +43,10 @@ static __device__ bool check_p(const Particle *p) {
     return check_unpacked_p(x, y, z, vx, vy, vz);
 }
 
-__global__ void soft_check_pp(const Particle *pp, int n) {
-    int i = threadIdx.x + blockIdx.x * blockDim.x;
-    if (i >= n) return;
-    check_p(pp + i);
-}
-
 __global__ void hard_check_pp(const Particle *pp, int n) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
-    assert(check_p(pp + i));
+    if (!check_p(pp + i)) atomicExch(&error, err::INVALID);
 }
 
 
@@ -79,12 +73,6 @@ static __device__ bool check_f(const Force *f) {
     fx = f->f[X]; fy = f->f[Y]; fz = f->f[Z];
 
     return check_unpacked_f(fx, fy, fz);
-}
-
-__global__ void soft_check_ff(const Force *ff, int n) {
-    int i = threadIdx.x + blockIdx.x * blockDim.x;
-    if (i >= n) return;
-    check_f(ff + i);
 }
 
 __global__ void hard_check_ff(const Force *ff, int n) {
