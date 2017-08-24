@@ -4,6 +4,17 @@ struct Pa { /* local particle */
     float2 d0, d1, d2;
 };
 
+struct Lo { /* particle [lo]cation in memory
+               d: shift in wrap, used for collective access  */
+    float2 *p;
+    int d;
+};
+
+__device__ void pp2Lo(float2 *pp, int ws, int dwe, /**/ Lo *l) {
+    l->p = pp + 3*ws;
+    l->d = dwe;
+}
+
 __device__ void readPa(float2 *pp, int ws, int dwe, /**/ Pa *p) {
     k_read::AOS6f(pp + 3*ws, dwe, /**/ p->d0, p->d1, p->d2);
 }
