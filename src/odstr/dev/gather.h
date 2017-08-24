@@ -74,26 +74,12 @@ __device__ void D2TLo(Da *d, int ws, int dw, int dwe, /**/ TLo *l) { /* collecti
     float4  *zip0;
     ushort4 *zip1;
     float2 d0, d1, d2;
-    float3 s0, s1;
-
     float r[3], v[3];
 
     pp = l->pp; zip0 = l->zip0; zip1 = l->zip1;
     d0 = d->d0; d1 = d->d1; d2 = d->d2;
     D2rv(d, /**/ r, v);
-
-    s0 = make_float3(r[X], r[Y], r[Z]);
-    s1 = make_float3(v[Z], v[Y], v[Z]);
-    xchg(dw, &s0, &s1); /* collective */
-    if (dw < 2 * dwe)
-        zip0[2 * ws + dw] = make_float4(s0.x, s0.y, s0.z, 0);
-    if (dw + 32 < 2 * dwe)
-        zip0[2 * ws + dw + 32] = make_float4(s1.x, s1.y, s1.z, 0);
-    if (dw < dwe)
-        zip1[ws + dw] = make_ushort4(__float2half_rn(d0.x),
-                                     __float2half_rn(d0.y),
-                                     __float2half_rn(d1.x),
-                                     0);
+    zip(r, v, ws, dw, dwe, /**/ zip0, zip1);
     k_write::AOS6f(pp + 3 * ws, dwe, d0, d1, d2); /* collective */
 }
 
