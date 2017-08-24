@@ -70,11 +70,11 @@ __device__ void r2c(float r[3], /**/ int* ix, int* iy, int* iz, int* i) {
     *ix = x; *iy = y; *iz = z;
 }
 
-__device__ void Pa2c(Pa *p, /**/ int* ix, int* iy, int* iz, int* i) {
+__device__ void Pa2c(Pa *p, /**/ Ce *c) {
     /* particle to cell coordinates */
     float r[3];
     Pa2r(p, /**/ r);
-    r2c(r, /**/ ix, iy, iz, i);
+    r2c(r, /**/ &c->ix, &c->iy, &c->iz, &c->id);
 }
 
 __device__ void checkPav(Pa *p) { /* check particle velocity */
@@ -98,7 +98,7 @@ __device__ void subindex0(int i, const int strt[], /*io*/ Pa *p, int *counts, /*
     fid2shift(fid, /**/ shift);
     shiftPa(shift, p);
 
-    Pa2c(p, /**/ &c.ix, &c.iy, &c.iz, &c.id); /* to cell coordinates */
+    Pa2c(p, /**/ &c); /* to cell coordinates */
     checkPav(p); /* check velocity */
     subindex = atomicAdd(counts + c.id, 1);
     subids[i] = make_uchar4(c.ix, c.iy, c.iz, subindex);
