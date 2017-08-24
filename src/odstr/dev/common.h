@@ -133,20 +133,20 @@ __global__ void scatter(const bool remote, const uchar4 *subi, const int n, cons
 }
 
 static __forceinline__ __device__
-void xchg_aos2f(int srclane0, int srclane1, int start, float& s0, float& s1) {
-    float t0 = __shfl(s0, srclane0);
-    float t1 = __shfl(s1, srclane1);
+void xchg_aos2f(int srclane0, int srclane1, int start, float *s0, float *s1) {
+    float t0 = __shfl(*s0, srclane0);
+    float t1 = __shfl(*s1, srclane1);
 
-    s0 = start == 0 ? t0 : t1;
-    s1 = start == 0 ? t1 : t0;
-    s1 = __shfl_xor(s1, 1);
+    *s0 = start == 0 ? t0 : t1;
+    *s1 = start == 0 ? t1 : t0;
+    *s1 = __shfl_xor(*s1, 1);
 }
 
 static __forceinline__ __device__
 void xchg_aos4f(int srclane0, int srclane1, int start, float3 *s0, float3 *s1) {
-    xchg_aos2f(srclane0, srclane1, start, s0->x, s1->x);
-    xchg_aos2f(srclane0, srclane1, start, s0->y, s1->y);
-    xchg_aos2f(srclane0, srclane1, start, s0->z, s1->z);
+    xchg_aos2f(srclane0, srclane1, start, &s0->x, &s1->x);
+    xchg_aos2f(srclane0, srclane1, start, &s0->y, &s1->y);
+    xchg_aos2f(srclane0, srclane1, start, &s0->z, &s1->z);
 }
 
 __global__ void gather_id(const int *ii_lo, const int *ii_re, int n, const uint *iidx, /**/ int *ii) {
