@@ -15,12 +15,12 @@ __device__ void pp2Lo(float2 *pp, int ws, int dwe, /**/ Lo *l) {
     l->d = dwe;
 }
 
-__device__ void readPa(float2 *pp, int dwe, /**/ Pa *p) {
-    k_read::AOS6f(pp, dwe, /**/ p->d0, p->d1, p->d2);
+__device__ void readPa(Lo l, /**/ Pa *p) {
+    k_read::AOS6f(l.p, l.d, /**/ p->d0, p->d1, p->d2);
 }
 
-__device__ void writePa(Pa *p, int dwe, /**/ float2 *pp) {
-    k_write::AOS6f(/**/ pp, dwe, /*i*/ p->d0, p->d1, p->d2);
+__device__ void writePa(Pa *p, /**/ Lo l) {
+    k_write::AOS6f(/**/ l.p, l.d, /*i*/ p->d0, p->d1, p->d2);
 }
 
 __device__ void shiftPa(float r[3], Pa *p) {
@@ -58,7 +58,7 @@ __global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *
 
     slot = ws + dw;
     fid  = k_common::fid(strt, slot);
-    readPa(l.p, l.d, /**/ &p);
+    readPa(l, /**/ &p);
     if (dw < dwe) {
         int xi, yi, zi, cid, subindex;
         fid2shift(fid, /**/ shift);
@@ -79,7 +79,7 @@ __global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *
 
         subids[slot] = make_uchar4(xi, yi, zi, subindex);
     }
-    writePa(&p, l.d, /**/ l.p);
+    writePa(&p, /**/ l);
 }
 
 }}} /* namespace */
