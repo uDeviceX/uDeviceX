@@ -3,6 +3,7 @@ namespace odstr { namespace sub { namespace dev {
 
 struct FLo { /* [F]rom [lo]cation in memory */
     const float2 *lo, *re;
+    int n; /* size */
 };
 
 struct TLo { /* [T]o [lo]cation */
@@ -15,8 +16,8 @@ struct Da { /* Data */
     float2 d0, d1, d2;
 };
 
-__device__ void ini_FLo(const float2 *lo, const float2 *re, /**/ FLo *l) {
-    l->lo = lo; l->re = re;
+__device__ void ini_FLo(const float2 *lo, const float2 *re, int n, /**/ FLo *l) {
+    l->lo = lo; l->re = re; l->n = n;
 }
 
 __device__ void FLo2D(FLo *l, /**/ Da *d) {
