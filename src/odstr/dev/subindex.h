@@ -94,7 +94,6 @@ __device__ void subindex0(int i, const int strt[], /*io*/ Pa *p, int *counts, /*
 
     Pa2c(p, /**/ &xi, &yi, &zi, &cid); /* to cell coordinates */
     checkPav(p); /* check velocity */
-
     subindex = atomicAdd(counts + cid, 1);
     subids[i] = make_uchar4(xi, yi, zi, subindex);
 }
