@@ -85,13 +85,13 @@ __device__ void subindex0(int i, const int strt[], /*io*/ Pa *p, int *counts, /*
     enum {X, Y, Z};
     int fid;     /* fragment id */
     int xi, yi, zi, cid, subindex;
-    float shift[3], r[3];
+    float shift[3];
 
     fid  = k_common::fid(strt, i);
     fid2shift(fid, /**/ shift);
     shiftPa(shift, p);
 
-    Pa2c(p, /**/ *xi, *yi, *zi, *cid); /* to cell coordinates */
+    Pa2c(p, /**/ &xi, &yi, &zi, &cid); /* to cell coordinates */
     checkPav(p); /* check velocity */
 
     subindex = atomicAdd(counts + cid, 1);
