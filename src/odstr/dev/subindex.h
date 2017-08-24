@@ -1,6 +1,6 @@
 namespace odstr { namespace sub { namespace dev {
 
-__device__ void warpco(/**/ int *ws, int *dw) { /* warp coordinates */
+__device__ void warpco(/**/ int *ws, int *dw) { /* warp [co]ordinates */
     /* ws: start, dw: shift (lane) */
     int warp;
     warp = threadIdx.x / warpSize;
