@@ -38,11 +38,11 @@ __device__ void xchg(int dw, /**/ float3 *s0, float3 *s1) { /* collective */
     int src0, src1, rem;
     rem = dw % 2;
     if (rem  == 0) {
-        src0 = (32 * ((dw    ) % 2) + dw) / 2;
-        src1 = (32 * ((dw + 1) % 2) + dw) / 2;
+        src0 = dw / 2;
+        src1 = 16 + dw / 2;
     } else {
-        src0 = (32 * ((dw    ) % 2) + dw) / 2;
-        src1 = (32 * ((dw + 1) % 2) + dw) / 2;
+        src0 = 16 + dw / 2;
+        src1 = dw / 2;
     }
     xchg_aos4f(src0, src1, rem , /**/ s0, s1);
 }
