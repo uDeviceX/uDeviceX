@@ -45,7 +45,7 @@ static void scan0(int *hst, int n) { /* local scan wrapper */
 
 static void main0() {
     int n, a[M];
-    set(a, &n);
+    set(a, &n); /* see set.cpp */
     scan0(a, n);
     dump(y, n);
 }
