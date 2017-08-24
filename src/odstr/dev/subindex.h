@@ -89,7 +89,7 @@ __global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *
 
         subids[slot] = make_uchar4(xi, yi, zi, subindex);
     }
-    writePa(&p, /**/ l);
+    writePa(&p, /**/ l); /* collective */
 }
 
 }}} /* namespace */
