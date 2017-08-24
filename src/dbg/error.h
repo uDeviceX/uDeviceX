@@ -11,7 +11,8 @@ __device__ ERR_TYPE error;
 namespace err {
 
 void ini() {
-    CC(MemcpyToSymbol(error, NONE, sizeof(ERR_TYPE)));
+    ERR_TYPE e = NONE;
+    CC(d::MemcpyToSymbol(&error, &e, sizeof(ERR_TYPE)));
 }
 
 static void errmsg(ERR_TYPE e) {
@@ -28,7 +29,7 @@ static void errmsg(ERR_TYPE e) {
 void handle() {
     dSync();
     ERR_TYPE err;
-    CC(MemcpyFromSymbol(&err, error, sizeof(ERR_TYPE)));
+    CC(d::MemcpyFromSymbol(&err, &error, sizeof(ERR_TYPE)));
     errmsg(err);
 }
 
