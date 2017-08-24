@@ -39,11 +39,12 @@ __device__ void xchg(int dw, /**/ float3 *s0, float3 *s1) { /* collective */
     if (dw % 2 == 0) {
         src0 = (32 * ((dw    ) % 2) + dw) / 2;
         src1 = (32 * ((dw + 1) % 2) + dw) / 2;
+        xchg_aos4f(src0, src1, dw % 2 , /**/ s0, s1);
     } else {
         src0 = (32 * ((dw    ) % 2) + dw) / 2;
         src1 = (32 * ((dw + 1) % 2) + dw) / 2;
+        xchg_aos4f(src0, src1, dw % 2 , /**/ s0, s1);
     }
-    xchg_aos4f(src0, src1, dw % 2 , /**/ s0, s1);
 }
 
 __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, const uint *iidx,
@@ -58,7 +59,7 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
     ini_FLo(pp_lo, pp_re, &f);
 
     warpco(&ws, &dw);
-    
+
     pid = ws + dw;
     if (pid < n)
         FLo2D(&f, iidx[pid], /**/ &d);
