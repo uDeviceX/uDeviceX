@@ -54,7 +54,7 @@ __device__ void Pa2v(Pa *p, /**/ float v[3]) { /* to velocity */
 
 __device__ void subindex0(int ws, int dw, const int strt[], /*io*/ Pa *p, int *counts, /**/ uchar4 *subids) {
     enum {X, Y, Z};
-    int fid;
+    int fid;     /* fragment id */
     int xi, yi, zi, cid, subindex;
     float shift[3], r[3], v[3];
 
@@ -79,39 +79,18 @@ __device__ void subindex0(int ws, int dw, const int strt[], /*io*/ Pa *p, int *c
 
 __global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *counts, /**/ uchar4 *subids) {
     enum {X, Y, Z};
-    int fid;     /* fragment id */
     int ws, dw;  /* warp start and shift (lane) */
 
-    float shift[3], r[3], v[3];
     Lo l; /* location in memory */
     Pa p;
-    int xi, yi, zi, cid, subindex;
 
     warpco(&ws, &dw); /* warp coordinates */
     if (ws >= n) return;
     pp2Lo(pp, n, ws, /**/ &l);
     readPa(l, /**/ &p);   /* collective */
 
-    if (!endLo(&l, dw)) {
-        fid  = k_common::fid(strt, ws + dw);
-        fid2shift(fid, /**/ shift);
-        shiftPa(shift, &p);
-
-        Pa2r(&p, r);
-        xi = x2c(r[X], XS);
-        yi = x2c(r[Y], YS);
-        zi = x2c(r[Z], ZS);
-
-        Pa2v(&p, v);
-        check_vel(v[X], XS);
-        check_vel(v[Y], YS);
-        check_vel(v[Z], ZS);
-
-        cid = xi + XS * (yi + YS * zi);
-        subindex = atomicAdd(counts + cid, 1);
-
-        subids[ws + dw] = make_uchar4(xi, yi, zi, subindex);
-    }
+    if (!endLo(&l, dw))
+        subindex0(ws, dw, strt, /*io*/ &p, counts, /**/ subids);
     writePa(&p, /**/ l); /* collective */
 }
 
