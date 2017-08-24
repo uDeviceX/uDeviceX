@@ -11,6 +11,10 @@ struct TLo { /* [T]o [lo]cation */
     ushort4 *zip1;
 };
 
+struct Da { /* Data */
+    float2 d0, d1, d2;
+};
+
 __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, const uint *iidx,
                           /**/ float2  *pp, float4  *zip0, ushort4 *zip1) {
     /* pp_lo, pp_re, pp: local, remote and output particles */
