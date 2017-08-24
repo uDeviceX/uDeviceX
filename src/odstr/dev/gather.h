@@ -81,8 +81,9 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
     int dw, ws, dwe;
     float3 s0, s1;
 
-    FLo f; /* from location */
+    FLo f; /* "from" location */
     Da  d; /* data */
+    TLo t; /* "to" location */
     ini_FLo(pp_lo, pp_re, &f);
 
     warpco(&ws, &dw);
