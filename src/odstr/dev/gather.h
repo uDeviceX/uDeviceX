@@ -34,6 +34,9 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
     int nsrc, src0, src1, start, destbase;
     float3 s0, s1;
 
+    FLo f; /* from location */
+    ini_FLo(pp_lo, pp_re, n, &f);
+
     warpco(&ws, &dw);
     
     pid = ws + dw;
