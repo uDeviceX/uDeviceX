@@ -1,1 +1,3 @@
-find . -name '*.cu' -o -name '*.cpp' | grep -v '^\.\/u/'
+find $U -name '*.cu' -o -name '*.cpp' -o -name '*.h'
+echo \
+    cc.cpp d/api.cu l/m.cpp mc.cpp m.cpp msg.cpp scan/imp.cu
