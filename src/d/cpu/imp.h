@@ -19,6 +19,7 @@ int MemcpyToSymbol(const void *symbol, const void *src, size_t count, size_t off
 
 int MemcpyFromSymbol(void *dst, const void *symbol, size_t count, size_t offset, int /*kind*/) {
     memcpy(dst, vadd(symbol, offset), count);
+    return 0;
 }
 
 int HostGetDevicePointer (void **pDevice, void *pHost, unsigned int flags) {
