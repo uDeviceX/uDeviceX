@@ -9,6 +9,17 @@ __device__ inline unsigned int fid(const T a[], const T i) {
     return k9 + k3 + k1;
 }
 
+static __device__ int box(const Particle *p) {
+    /* which neighboring subdomain `p' belongs to? */
+    enum {X, Y, Z};
+    int c;
+    int vc[3]; /* vcode */
+    const float *r = p->r;
+    int   L[3] = {XS, YS, ZS};
+    for (c = 0; c < 3; ++c) vc[c] = (2 + (r[c] >= -L[c]/2) + (r[c] >= L[c]/2)) % 3;
+    return vc[X] + 3 * (vc[Y] + 3 * vc[Z]);
+}
+
 template<bool project>
 __global__  void subindex_local(const int nparticles, const float2 * particles, int * const partials,
                                 uchar4 * const subindices)

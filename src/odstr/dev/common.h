@@ -15,17 +15,6 @@ static __device__ void fid2shift(int id, int s[3]) {
     s[Z] = ZS * ((id / 9 + 1) % 3 - 1);
 }
 
-/* which neighboring subdomain `p' belongs to? */
-static __device__ int box(const Particle *p) {
-    enum {X, Y, Z};
-    int c;
-    int vc[3]; /* vcode */
-    const float *r = p->r;
-    int   L[3] = {XS, YS, ZS};
-    for (c = 0; c < 3; ++c) vc[c] = (2 + (r[c] >= -L[c]/2) + (r[c] >= L[c]/2)) % 3;
-    return vc[X] + 3 * (vc[Y] + 3 * vc[Z]);
-}
-
 #define DBG
 
 #ifdef DBG
@@ -52,7 +41,7 @@ __global__ void halo(const Particle *pp, const int n, /**/ int *iidx[], int size
     pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
     const Particle *p = &pp[pid];
-    code = box(p);
+    code = k_common::box(p);
     if (code > 0) {
         entry = atomicAdd(size + code, 1);
         iidx[code][entry] = pid;
