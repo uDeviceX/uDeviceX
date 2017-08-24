@@ -4,7 +4,7 @@ namespace odstr { namespace sub { namespace dev {
 __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, const uint *iidx,
                           /**/ float2  *pp, float4  *zip0, ushort4 *zip1) {
     /* pp_lo, pp_re, pp: local, remote and output particles */
-    int warp, tid, ws, pid;
+    int warp, dw, ws, pid;
     bool valid, remote;
     uint spid;
     float2 d0, d1, d2; /* data */
@@ -12,10 +12,10 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
     float3 s0, s1;
 
     warp = threadIdx.x / warpSize;
-    tid = threadIdx.x % warpSize;
+    dw = threadIdx.x % warpSize;
 
     ws = warpSize * warp + blockDim.x * blockIdx.x;
-    pid = ws + tid;
+    pid = ws + dw;
 
     valid = (pid < n);
 
@@ -36,9 +36,9 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
     }
     nsrc = min(32, n - ws);
 
-    src0 = (32 * ((tid    ) & 0x1) + tid) >> 1;
-    src1 = (32 * ((tid + 1) & 0x1) + tid) >> 1;
-    start = tid % 2;
+    src0 = (32 * ((dw    ) & 0x1) + dw) >> 1;
+    src1 = (32 * ((dw + 1) & 0x1) + dw) >> 1;
+    start = dw % 2;
     destbase = 2 * ws;
 
     s0 = make_float3(d0.x, d0.y, d1.x);
@@ -46,14 +46,14 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
 
     xchg_aos4f(src0, src1, start, s0, s1);
 
-    if (tid < 2 * nsrc)
-        zip0[destbase + tid] = make_float4(s0.x, s0.y, s0.z, 0);
+    if (dw < 2 * nsrc)
+        zip0[destbase + dw] = make_float4(s0.x, s0.y, s0.z, 0);
 
-    if (tid + 32 < 2 * nsrc)
-        zip0[destbase + tid + 32] = make_float4(s1.x, s1.y, s1.z, 0);
+    if (dw + 32 < 2 * nsrc)
+        zip0[destbase + dw + 32] = make_float4(s1.x, s1.y, s1.z, 0);
 
-    if (tid < nsrc)
-        zip1[ws + tid] = make_ushort4(__float2half_rn(d0.x),
+    if (dw < nsrc)
+        zip1[ws + dw] = make_ushort4(__float2half_rn(d0.x),
                                         __float2half_rn(d0.y),
                                         __float2half_rn(d1.x),
                                         0);
