@@ -33,7 +33,10 @@
 
 #include "odstr/mpi.h"
 #include "odstr/mpi.ii.h"
-#include "odstr/dev.h"
+
+#include "odstr/dev/common.h"
+#include "odstr/dev/subindex.h"
+
 #include "odstr/buf.h"
 #include "odstr/ini.h"
 #include "odstr/fin.h"
