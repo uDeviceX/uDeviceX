@@ -52,13 +52,23 @@ __device__ void Pa2v(Pa *p, /**/ float v[3]) { /* to velocity */
     v[X] = p->d1.y;   v[Y] = p->d2.x;   v[Z] = p->d2.y;
 }
 
-__device__ void subindex0(int ws, int dw, const int strt[], /*io*/ Pa *p, int *counts, /**/ uchar4 *subids) {
+__device__ void checkPav(Pa *p) { /* check particle velocity */
+    enum {X, Y, Z};
+    float v[3];
+    Pa2v(p, /**/ v);
+    check_vel(v[X], XS);
+    check_vel(v[Y], YS);
+    check_vel(v[Z], ZS);
+}
+
+__device__ void subindex0(int i, const int strt[], /*io*/ Pa *p, int *counts, /**/ uchar4 *subids) {
+    /* i: particle index */
     enum {X, Y, Z};
     int fid;     /* fragment id */
     int xi, yi, zi, cid, subindex;
-    float shift[3], r[3], v[3];
+    float shift[3], r[3];
 
-    fid  = k_common::fid(strt, ws + dw);
+    fid  = k_common::fid(strt, i);
     fid2shift(fid, /**/ shift);
     shiftPa(shift, p);
 
@@ -67,30 +77,25 @@ __device__ void subindex0(int ws, int dw, const int strt[], /*io*/ Pa *p, int *c
     yi = x2c(r[Y], YS);
     zi = x2c(r[Z], ZS);
 
-    Pa2v(p, /**/ v);
-    check_vel(v[X], XS);
-    check_vel(v[Y], YS);
-    check_vel(v[Z], ZS);
+    checkPav(p); /* check particle velocity */
 
     cid = xi + XS * (yi + YS * zi);
     subindex = atomicAdd(counts + cid, 1);
-    subids[ws + dw] = make_uchar4(xi, yi, zi, subindex);
+    subids[i] = make_uchar4(xi, yi, zi, subindex);
 }
 
 __global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *counts, /**/ uchar4 *subids) {
     enum {X, Y, Z};
     int ws, dw;  /* warp start and shift (lane) */
-
-    Lo l; /* location in memory */
-    Pa p;
+    Pa p; /* [p]article and its [l]ocation in memory */
+    Lo l;
 
     warpco(&ws, &dw); /* warp coordinates */
     if (ws >= n) return;
     pp2Lo(pp, n, ws, /**/ &l);
     readPa(l, /**/ &p);   /* collective */
-
     if (!endLo(&l, dw))
-        subindex0(ws, dw, strt, /*io*/ &p, counts, /**/ subids);
+        subindex0(ws + dw, strt, /*io*/ &p, counts, /**/ subids);
     writePa(&p, /**/ l); /* collective */
 }
 
