@@ -1,0 +1,15 @@
+l() { seq 0 1000; }
+make a && make b
+
+oa=/tmp/a.$$
+ob=/tmp/b.$$
+#trap 'rm -f $oa $ob' 0 1 2 3 15
+
+l | ./a > $oa
+l | ./b > $ob
+
+if cmp "$oa" "$ob";
+then echo OK
+else echo FAIL
+fi
+
