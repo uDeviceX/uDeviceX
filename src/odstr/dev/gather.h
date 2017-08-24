@@ -3,7 +3,6 @@ namespace odstr { namespace sub { namespace dev {
 
 struct FLo { /* [F]rom [lo]cation in memory */
     const float2 *lo, *re;
-    int n; /* size */
 };
 
 struct TLo { /* [T]o [lo]cation */
@@ -16,43 +15,43 @@ struct Da { /* Data */
     float2 d0, d1, d2;
 };
 
-__device__ void ini_FLo(const float2 *lo, const float2 *re, int n, /**/ FLo *l) {
-    l->lo = lo; l->re = re; l->n = n;
+__device__ void ini_FLo(const float2 *lo, const float2 *re, /**/ FLo *l) {
+    l->lo = lo; l->re = re;
 }
 
-__device__ void FLo2D(FLo *l, /**/ Da *d) {
-    
+__device__ void FLo2D(FLo *l, int spid, /**/ Da *d) {
+    bool remote;
+    remote = (spid >> 31) & 1;
+    spid &= ~(1 << 31);
+    if (remote) {
+        d->d0 = __ldg(l->re + 0 + 3 * spid);
+        d->d1 = __ldg(l->re + 1 + 3 * spid);
+        d->d2 = __ldg(l->re + 2 + 3 * spid);
+    } else {
+        d->d0 = l->lo[0 + 3 * spid];
+        d->d1 = l->lo[1 + 3 * spid];
+        d->d2 = l->lo[2 + 3 * spid];
+    }
 }
 
 __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, const uint *iidx,
                           /**/ float2  *pp, float4  *zip0, ushort4 *zip1) {
     /* pp_lo, pp_re, pp: local, remote and output particles */
     int dw, ws, pid;
-    bool remote;
     uint spid;
-    float2 d0, d1, d2; /* data */
     int nsrc, src0, src1, start, destbase;
     float3 s0, s1;
 
     FLo f; /* from location */
-    ini_FLo(pp_lo, pp_re, n, &f);
+    Da  d; /* data */
+    ini_FLo(pp_lo, pp_re, &f);
 
     warpco(&ws, &dw);
     
     pid = ws + dw;
     if (pid < n) {
         spid = iidx[pid];
-        remote = (spid >> 31) & 1;
-        spid &= ~(1 << 31);
-        if (remote) {
-            d0 = __ldg(pp_re + 0 + 3 * spid);
-            d1 = __ldg(pp_re + 1 + 3 * spid);
-            d2 = __ldg(pp_re + 2 + 3 * spid);
-        } else {
-            d0 = pp_lo[0 + 3 * spid];
-            d1 = pp_lo[1 + 3 * spid];
-            d2 = pp_lo[2 + 3 * spid];
-        }
+        FLo2D(&f, spid, /**/ &d);
     }
     nsrc = min(32, n - ws);
 
@@ -61,6 +60,8 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
     start = dw % 2;
     destbase = 2 * ws;
 
+    float2 d0, d1, d2;
+    d0 = d.d0; d1 = d.d1; d2 = d.d2;
     s0 = make_float3(d0.x, d0.y, d1.x);
     s1 = make_float3(d1.y, d2.x, d2.y);
 
