@@ -15,9 +15,7 @@ struct FLo { /* [F]rom [lo]cation in memory */
 };
 
 struct TLo { /* [T]o [lo]cation */
-    float2 *pp;
-    float4  *zip0;
-    ushort4 *zip1;
+    float2 *pp; float4  *zip0; ushort4 *zip1;
 };
 
 struct Da { /* Data */
@@ -60,13 +58,10 @@ __device__ void D2TLo(Da *d, int ws, int dw, int dwe, /**/ TLo *l) { /* collecti
     s0 = make_float3(d0.x, d0.y, d1.x);
     s1 = make_float3(d1.y, d2.x, d2.y);
     xchg(dw, &s0, &s1); /* collective */
-
     if (dw < 2 * dwe)
         zip0[2 * ws + dw] = make_float4(s0.x, s0.y, s0.z, 0);
-
     if (dw + 32 < 2 * dwe)
         zip0[2 * ws + dw + 32] = make_float4(s1.x, s1.y, s1.z, 0);
-
     if (dw < dwe)
         zip1[ws + dw] = make_ushort4(__float2half_rn(d0.x),
                                      __float2half_rn(d0.y),
@@ -88,7 +83,7 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
     dwe = min(32, n - ws);
     if (ws + dw < n)
         FLo2D(&f, iidx[ws + dw], /**/ &d);
-    
+
     ini_TLo(pp, zip0, zip1, /**/ &t);
     D2TLo(&d, ws, dw, dwe, /**/ &t);
 }
