@@ -34,6 +34,13 @@ __device__ void FLo2D(FLo *l, int i, /**/ Da *d) {
     }
 }
 
+__device__ void xchg(int dw, /**/ float3 *s0, float3 *s1) { /* collective */
+    int src0, src1;
+    src0 = (32 * ((dw    ) & 0x1) + dw) >> 1;
+    src1 = (32 * ((dw + 1) & 0x1) + dw) >> 1;
+    xchg_aos4f(src0, src1, dw % 2 , /**/ s0, s1);
+}
+
 __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, const uint *iidx,
                           /**/ float2  *pp, float4  *zip0, ushort4 *zip1) {
     /* pp_lo, pp_re, pp: local, remote and output particles */
