@@ -1,4 +1,4 @@
-# cTEST: scan.t0
+# nTEST: scan.t0
 (cd ../cmd; make ) > /dev/null
 u.conf0 u/scan
 u.make -j
