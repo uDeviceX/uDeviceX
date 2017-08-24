@@ -5,7 +5,7 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
                           /**/ float2  *pp, float4  *zip0, ushort4 *zip1) {
     /* pp_lo, pp_re, pp: local, remote and output particles */
     int dw, ws, pid;
-    bool valid, remote;
+    bool remote;
     uint spid;
     float2 d0, d1, d2; /* data */
     int nsrc, src0, src1, start, destbase;
