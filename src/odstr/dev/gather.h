@@ -47,7 +47,7 @@ __device__ void xchg(int dw, /**/ float3 *s0, float3 *s1) { /* collective */
 __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, const uint *iidx,
                           /**/ float2  *pp, float4  *zip0, ushort4 *zip1) {
     /* pp_lo, pp_re, pp: local, remote and output particles */
-    int dw, ws, pid;
+    int dw, ws;
     int dwe;
     float3 s0, s1;
 
@@ -57,9 +57,8 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
 
     warpco(&ws, &dw);
     
-    pid = ws + dw;
-    if (pid < n)
-        FLo2D(&f, iidx[pid], /**/ &d);
+    if (ws + dw < n)
+        FLo2D(&f, iidx[ws + dw], /**/ &d);
 
     dwe = min(32, n - ws);
 
@@ -67,7 +66,7 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
     d0 = d.d0; d1 = d.d1; d2 = d.d2;
     s0 = make_float3(d0.x, d0.y, d1.x);
     s1 = make_float3(d1.y, d2.x, d2.y);
-    xchg(dw, &s0, &s1);
+    xchg(dw, &s0, &s1); /* collective */
 
     if (dw < 2 * dwe)
         zip0[2 * ws + dw] = make_float4(s0.x, s0.y, s0.z, 0);
