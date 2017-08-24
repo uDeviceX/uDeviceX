@@ -20,7 +20,7 @@ struct Lo { /* particle [lo]cation in memory
 
 struct Ce { /* coordinates of a cell */
     int ix, iy, iz;
-    int i; /* linear index */
+    int id; /* linear index */
 };
 
 __device__ void pp2Lo(float2 *pp, int n, int ws, /**/ Lo *l) {
@@ -90,17 +90,18 @@ __device__ void subindex0(int i, const int strt[], /*io*/ Pa *p, int *counts, /*
     /* i: particle index */
     enum {X, Y, Z};
     int fid;     /* fragment id */
-    int xi, yi, zi, cid, subindex;
+    int ix, iy, iz, cid, subindex;
     float shift[3];
+    Ce c; /* cell coordinates */
 
     fid  = k_common::fid(strt, i);
     fid2shift(fid, /**/ shift);
     shiftPa(shift, p);
 
-    Pa2c(p, /**/ &xi, &yi, &zi, &cid); /* to cell coordinates */
+    Pa2c(p, /**/ &ix, &iy, &iz, &cid); /* to cell coordinates */
     checkPav(p); /* check velocity */
     subindex = atomicAdd(counts + cid, 1);
-    subids[i] = make_uchar4(xi, yi, zi, subindex);
+    subids[i] = make_uchar4(ix, iy, iz, subindex);
 }
 
 __global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *counts, /**/ uchar4 *subids) {
