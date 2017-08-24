@@ -36,6 +36,7 @@
 
 #include "odstr/dev/common.h"
 #include "odstr/dev/subindex.h"
+#include "odstr/dev/gather.h"
 
 #include "odstr/buf.h"
 #include "odstr/ini.h"
