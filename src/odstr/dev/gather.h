@@ -41,14 +41,13 @@ __device__ void xchg(int dw, /**/ float3 *s0, float3 *s1) { /* collective */
     } else {
         src0 = 16 + dw / 2; src1 = dw / 2;
     }
-    xchg_aos4f(src0, src1, dw % 2, /**/ s0, s1);
+    xchg_aos4f(src0, src1, dw % 2, /**/ s0, s1); /* collective */
 }
 
 __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, const uint *iidx,
                           /**/ float2  *pp, float4  *zip0, ushort4 *zip1) {
     /* pp_lo, pp_re, pp: local, remote and output particles */
-    int dw, ws;
-    int dwe;
+    int dw, ws, dwe;
     float3 s0, s1;
 
     FLo f; /* from location */
