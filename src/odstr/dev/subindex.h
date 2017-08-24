@@ -52,6 +52,25 @@ __device__ void Pa2v(Pa *p, /**/ float v[3]) { /* to velocity */
     v[X] = p->d1.y;   v[Y] = p->d2.x;   v[Z] = p->d2.y;
 }
 
+__device__ void r2c(float r[3], /**/ int* ix, int* iy, int* iz, int* i) {
+    /* position to cell coordinates */
+    enum {X, Y, Z};
+    int x, y, z;
+    x = x2c(r[X], XS);
+    y = x2c(r[Y], YS);
+    z = x2c(r[Z], ZS);
+    *i  = x + XS * (y + YS * z);
+
+    *ix = x; *iy = y; *iz = z;
+}
+
+__device__ void Pa2c(Pa *p, /**/ int* ix, int* iy, int* iz, int* i) {
+    /* particle to cell coordinates */
+    float r[3];
+    Pa2r(p, /**/ r);
+    r2c(r, /**/ ix, iy, iz, i);
+}
+
 __device__ void checkPav(Pa *p) { /* check particle velocity */
     enum {X, Y, Z};
     float v[3];
