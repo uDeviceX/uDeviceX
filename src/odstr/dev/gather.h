@@ -45,7 +45,7 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
                           /**/ float2  *pp, float4  *zip0, ushort4 *zip1) {
     /* pp_lo, pp_re, pp: local, remote and output particles */
     int dw, ws, pid;
-    int dwe, src0, src1;
+    int dwe;
     float3 s0, s1;
 
     FLo f; /* from location */
@@ -64,10 +64,7 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
     d0 = d.d0; d1 = d.d1; d2 = d.d2;
     s0 = make_float3(d0.x, d0.y, d1.x);
     s1 = make_float3(d1.y, d2.x, d2.y);
-
-    src0 = (32 * ((dw    ) & 0x1) + dw) >> 1;
-    src1 = (32 * ((dw + 1) & 0x1) + dw) >> 1;
-    xchg_aos4f(src0, src1, dw % 2 , &s0, &s1);
+    xchg(dw, &s0, &s1);
 
     if (dw < 2 * dwe)
         zip0[2 * ws + dw] = make_float4(s0.x, s0.y, s0.z, 0);
