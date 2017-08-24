@@ -2,7 +2,7 @@ namespace odstr { namespace sub { namespace dev {
 /** gather_id is in dev/common.h */
 
 struct FLo { /* [F]rom [lo]cation in memory */
-    float2 *lo, *re;
+    const float2 *lo, *re;
 };
 
 struct TLo { /* [T]o [lo]cation */
@@ -14,6 +14,14 @@ struct TLo { /* [T]o [lo]cation */
 struct Da { /* Data */
     float2 d0, d1, d2;
 };
+
+__device__ void ini_FLo(const float2 *lo, const float2 *re, /**/ FLo *l) {
+    l->lo = lo; l->re = re;
+}
+
+__device__ void Flo2D(Flo *l, /**/ Da *d) {
+    
+}
 
 __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, const uint *iidx,
                           /**/ float2  *pp, float4  *zip0, ushort4 *zip1) {
