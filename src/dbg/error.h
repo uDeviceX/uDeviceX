@@ -1,5 +1,4 @@
 namespace dbg {
-namespace dev {
 
 namespace err {
 enum {
@@ -10,13 +9,15 @@ enum {
 
 typedef int err_type;
 
+namespace dev {
 __device__ err_type error;
+} // dev
 
 namespace err {
 
 void ini() {
     err_type e = NONE;
-    CC(d::MemcpyToSymbol(&error, &e, sizeof(err_type)));
+    CC(d::MemcpyToSymbol(&dev::error, &e, sizeof(err_type)));
 }
 
 static void errmsg(err_type e) {
@@ -33,10 +34,9 @@ static void errmsg(err_type e) {
 void handle() {
     dSync();
     err_type err;
-    CC(d::MemcpyFromSymbol(&err, &error, sizeof(err_type)));
+    CC(d::MemcpyFromSymbol(&err, &dev::error, sizeof(err_type)));
     errmsg(err);
 }
 
 } // err
-} // dev
 } // dbg
