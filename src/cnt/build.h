@@ -14,7 +14,7 @@ void build(std::vector<ParticlesWrap> wr) {
     int ctr = 0;
     for (int i = 0; i < (int) wr.size(); ++i) {
         ParticlesWrap it = wr[i];
-        KL(k_common::subindex_local<true>, (k_cnf(it.n)), (it.n, (float2 *)it.p, counts, indexes->D + ctr));
+        KL(k_index::local<true>, (k_cnf(it.n)), (it.n, (float2 *)it.p, counts, indexes->D + ctr));
         ctr += it.n;
     }
 

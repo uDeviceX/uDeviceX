@@ -49,6 +49,7 @@
 #include "k/read.h"
 #include "k/write.h"
 #include "k/common.h"
+#include "k/index.h"
 
 #include "clist/int.h"
 
