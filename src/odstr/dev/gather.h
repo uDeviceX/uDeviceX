@@ -1,5 +1,14 @@
 namespace odstr { namespace sub { namespace dev {
 /** gather_id is in dev/common.h */
+__device__ void xchg(int dw, /**/ float3 *s0, float3 *s1) { /* collective */
+    int src0, src1;
+    if (dw % 2  == 0) {
+        src0 =      dw / 2; src1 = 16 + dw / 2;
+    } else {
+        src0 = 16 + dw / 2; src1 = dw / 2;
+    }
+    xchg_aos4f(src0, src1, dw % 2, /**/ s0, s1); /* collective */
+}
 
 struct FLo { /* [F]rom [lo]cation in memory */
     const float2 *lo, *re;
@@ -34,15 +43,6 @@ __device__ void FLo2D(FLo *l, int i, /**/ Da *d) {
     }
 }
 
-__device__ void xchg(int dw, /**/ float3 *s0, float3 *s1) { /* collective */
-    int src0, src1;
-    if (dw % 2  == 0) {
-        src0 =      dw / 2; src1 = 16 + dw / 2;
-    } else {
-        src0 = 16 + dw / 2; src1 = dw / 2;
-    }
-    xchg_aos4f(src0, src1, dw % 2, /**/ s0, s1); /* collective */
-}
 
 __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, const uint *iidx,
                           /**/ float2  *pp, float4  *zip0, ushort4 *zip1) {
