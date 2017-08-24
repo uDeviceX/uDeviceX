@@ -35,6 +35,7 @@
 #include "odstr/mpi.ii.h"
 
 #include "odstr/dev/common.h"
+#include "odstr/dev/u.h" /* utils */
 #include "odstr/dev/subindex.h"
 #include "odstr/dev/gather.h"
 

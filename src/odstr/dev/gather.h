@@ -1,14 +1,5 @@
 namespace odstr { namespace sub { namespace dev {
 /** gather_id is in dev/common.h */
-__device__ void xchg(int dw, /**/ float3 *s0, float3 *s1) { /* collective */
-    int src0, src1;
-    if (dw % 2  == 0) {
-        src0 =      dw / 2; src1 = 16 + dw / 2;
-    } else {
-        src0 = 16 + dw / 2; src1 = dw / 2;
-    }
-    xchg_aos4f(src0, src1, dw % 2, /**/ s0, s1); /* collective */
-}
 
 /* [F]rom [lo]cation in memory */
 struct FLo { const float2 *lo, *re; };
@@ -48,24 +39,6 @@ __device__ void D2rv(Da *d, /**/ float r[3], float v[3]) {
     d0 = d->d0; d1 = d->d1; d2 = d->d2;
     r[X] = d0.x; r[Y] = d0.y; r[Z] = d1.x;
     v[X] = d1.y; v[Y] = d2.x; v[Z] = d2.y;
-}
-
-__device__ void zip(float r[3], float v[3], int ws, int dw, int dwe, /**/
-                    float4  *zip0, ushort4 *zip1) { /* collective */
-    enum {X, Y, Z};
-    float3 s0, s1;    
-    s0 = make_float3(r[X], r[Y], r[Z]);
-    s1 = make_float3(v[X], v[Y], v[Z]);
-    xchg(dw, &s0, &s1); /* collective */
-    if (dw < 2 * dwe)
-        zip0[2 * ws + dw] = make_float4(s0.x, s0.y, s0.z, 0);
-    if (dw + 32 < 2 * dwe)
-        zip0[2 * ws + dw + 32] = make_float4(s1.x, s1.y, s1.z, 0);
-    if (dw < dwe)
-        zip1[ws + dw] = make_ushort4(__float2half_rn(r[X]),
-                                     __float2half_rn(r[Y]),
-                                     __float2half_rn(r[Z]),
-                                     0);
 }
 
 __device__ void D2TLo(Da *d, int ws, int dw, int dwe, /**/ TLo *l) { /* collective */
