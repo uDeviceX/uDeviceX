@@ -90,7 +90,7 @@ __device__ void subindex0(int i, const int strt[], /*io*/ Pa *p, int *counts, /*
     /* i: particle index */
     enum {X, Y, Z};
     int fid;     /* fragment id */
-    int ix, iy, iz, cid, subindex;
+    int subindex;
     float shift[3];
     Ce c; /* cell coordinates */
 
@@ -98,10 +98,10 @@ __device__ void subindex0(int i, const int strt[], /*io*/ Pa *p, int *counts, /*
     fid2shift(fid, /**/ shift);
     shiftPa(shift, p);
 
-    Pa2c(p, /**/ &ix, &iy, &iz, &cid); /* to cell coordinates */
+    Pa2c(p, /**/ &c.ix, &c.iy, &c.iz, &c.id); /* to cell coordinates */
     checkPav(p); /* check velocity */
-    subindex = atomicAdd(counts + cid, 1);
-    subids[i] = make_uchar4(ix, iy, iz, subindex);
+    subindex = atomicAdd(counts + c.id, 1);
+    subids[i] = make_uchar4(c.ix, c.iy, c.iz, subindex);
 }
 
 __global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *counts, /**/ uchar4 *subids) {
