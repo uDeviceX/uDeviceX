@@ -43,8 +43,32 @@ __device__ void FLo2D(FLo *l, int i, /**/ Da *d) {
     }
 }
 
-__device__ void D2TLo(Da *d, /**/ TLo *l) {
+__device__ void D2TLo(Da *d, int ws, int dw, int dwe, /**/ TLo *l) {
+    float2 *pp;
+    float4  *zip0;
+    ushort4 *zip1;
+    float2 d0, d1, d2;
+    float3 s0, s1;
 
+    pp = l->pp; zip0 = l->zip0; zip1 = l->zip1;
+
+    d0 = d->d0; d1 = d->d1; d2 = d->d2;
+    s0 = make_float3(d0.x, d0.y, d1.x);
+    s1 = make_float3(d1.y, d2.x, d2.y);
+    xchg(dw, &s0, &s1); /* collective */
+
+    if (dw < 2 * dwe)
+        zip0[2 * ws + dw] = make_float4(s0.x, s0.y, s0.z, 0);
+
+    if (dw + 32 < 2 * dwe)
+        zip0[2 * ws + dw + 32] = make_float4(s1.x, s1.y, s1.z, 0);
+
+    if (dw < dwe)
+        zip1[ws + dw] = make_ushort4(__float2half_rn(d0.x),
+                                     __float2half_rn(d0.y),
+                                     __float2half_rn(d1.x),
+                                     0);
+    k_write::AOS6f(pp + 3 * ws, dwe, d0, d1, d2);
 }
 
 __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, const uint *iidx,
@@ -58,7 +82,7 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
     ini_FLo(pp_lo, pp_re, &f);
 
     warpco(&ws, &dw);
-    
+
     if (ws + dw < n)
         FLo2D(&f, iidx[ws + dw], /**/ &d);
 
