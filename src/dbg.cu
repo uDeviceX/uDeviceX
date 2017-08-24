@@ -19,20 +19,23 @@
 
 namespace dbg {
 
+namespace sub {
+
 void hard_check_pp(const Particle *pp, int n) {
     KL(dev::hard_check_pp, (k_cnf(n)), (pp, n));
-}
-
-void check_pp(const Particle *pp, int n, const char *M) {
-    DBG(hard_check_pp, (pp, n), M);
 }
 
 void hard_check_ff(const Force *ff, int n) {
     KL(dev::hard_check_ff, (k_cnf(n)), (ff, n));
 }
 
+} // sub
+
+void check_pp(const Particle *pp, int n, const char *M) {
+    DBG(sub::hard_check_pp, (pp, n), M);
+}
 void check_ff(const Force *ff, int n, const char *M) {
-    DBG(hard_check_ff, (ff, n), M);
+    DBG(sub::hard_check_ff, (ff, n), M);
 }
 
 } // dbg
