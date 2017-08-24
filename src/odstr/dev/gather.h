@@ -14,12 +14,8 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
     warpco(&ws, &dw);
     
     pid = ws + dw;
-
-    valid = (pid < n);
-
-    if (valid) spid = iidx[pid];
-
-    if (valid) {
+    if (pid < n) {
+        spid = iidx[pid];
         remote = (spid >> 31) & 1;
         spid &= ~(1 << 31);
         if (remote) {
