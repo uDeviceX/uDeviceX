@@ -4,17 +4,17 @@ namespace odstr { namespace sub { namespace dev {
 __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, const uint *iidx,
                           /**/ float2  *pp, float4  *zip0, ushort4 *zip1) {
     /* pp_lo, pp_re, pp: local, remote and output particles */
-    int warpid, tid, base, pid;
+    int warp, tid, base, pid;
     bool valid, remote;
     uint spid;
     float2 d0, d1, d2; /* data */
     int nsrc, src0, src1, start, destbase;
     float3 s0, s1;
 
-    warpid = threadIdx.x / warpSize;
+    warp = threadIdx.x / warpSize;
     tid = threadIdx.x % warpSize;
 
-    base = warpSize * warpid + blockDim.x * blockIdx.x;
+    base = warpSize * warp + blockDim.x * blockIdx.x;
     pid = base + tid;
 
     valid = (pid < n);
