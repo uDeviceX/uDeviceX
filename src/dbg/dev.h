@@ -78,7 +78,7 @@ static __device__ bool valid_f(const Force *f) {
 __global__ void check_ff(const Force *ff, int n) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
-    assert(valid_f(ff + i));
+    if(!valid_f(ff + i)) atomicExch(&error, err::INVALID);
 }
 
 } // dev
