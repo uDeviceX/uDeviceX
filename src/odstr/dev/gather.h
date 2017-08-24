@@ -4,7 +4,7 @@ namespace odstr { namespace sub { namespace dev {
 __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, const uint *iidx,
                           /**/ float2  *pp, float4  *zip0, ushort4 *zip1) {
     /* pp_lo, pp_re, pp: local, remote and output particles */
-    int warp, tid, base, pid;
+    int warp, tid, ws, pid;
     bool valid, remote;
     uint spid;
     float2 d0, d1, d2; /* data */
@@ -14,8 +14,8 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
     warp = threadIdx.x / warpSize;
     tid = threadIdx.x % warpSize;
 
-    base = warpSize * warp + blockDim.x * blockIdx.x;
-    pid = base + tid;
+    ws = warpSize * warp + blockDim.x * blockIdx.x;
+    pid = ws + tid;
 
     valid = (pid < n);
 
@@ -34,12 +34,12 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
             d2 = pp_lo[2 + 3 * spid];
         }
     }
-    nsrc = min(32, n - base);
+    nsrc = min(32, n - ws);
 
     src0 = (32 * ((tid    ) & 0x1) + tid) >> 1;
     src1 = (32 * ((tid + 1) & 0x1) + tid) >> 1;
     start = tid % 2;
-    destbase = 2 * base;
+    destbase = 2 * ws;
 
     s0 = make_float3(d0.x, d0.y, d1.x);
     s1 = make_float3(d1.y, d2.x, d2.y);
@@ -53,11 +53,11 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
         zip0[destbase + tid + 32] = make_float4(s1.x, s1.y, s1.z, 0);
 
     if (tid < nsrc)
-        zip1[base + tid] = make_ushort4(__float2half_rn(d0.x),
+        zip1[ws + tid] = make_ushort4(__float2half_rn(d0.x),
                                         __float2half_rn(d0.y),
                                         __float2half_rn(d1.x),
                                         0);
-    k_write::AOS6f(pp + 3 * base, nsrc, d0, d1, d2);
+    k_write::AOS6f(pp + 3 * ws, nsrc, d0, d1, d2);
 }
 
 }}} /* namespace */
