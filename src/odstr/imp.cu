@@ -95,7 +95,6 @@ void subindex(const int n, const Recv *r, /*io*/ Particle *pp_re, int *counts, /
     KL(dev::subindex, (k_cnf(n)), (n, r->strt, /*io*/ (float2*) pp_re, counts, /**/ subi));
 }
 
-
 void scatter(bool remote, const uchar4 *subi, const int n, const int *start, /**/ uint *iidx) {
     KL(dev::scatter, (k_cnf(n)), (remote, subi, n, start, /**/ iidx));
 }
