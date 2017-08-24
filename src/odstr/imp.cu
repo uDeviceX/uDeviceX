@@ -46,9 +46,8 @@
 namespace odstr {
 namespace sub {
 
-void halo(const Particle *pp, int n, Send *s) {
-    Dzero(s->size_dev, 27);
-    KL(dev::halo, (k_cnf(n)),(pp, n, /**/ s->iidx, s->size_dev));
+void halo(const Particle *pp, int n, Send *s) { /* see src/odstr/halo */
+    halo(pp, n, /**/ s->iidx, s->size_dev);
 }
 
 void scan(int n, Send *s) {

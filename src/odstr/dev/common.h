@@ -36,18 +36,6 @@ static __device__ int x2c(float x, int L) {
     return i;
 }
 
-__global__ void halo(const Particle *pp, const int n, /**/ int *iidx[], int size[]) {
-    int pid, code, entry;
-    pid = threadIdx.x + blockDim.x * blockIdx.x;
-    if (pid >= n) return;
-    const Particle *p = &pp[pid];
-    code = k_common::box(p->r);
-    if (code > 0) {
-        entry = atomicAdd(size + code, 1);
-        iidx[code][entry] = pid;
-    }
-}
-
 __global__ void scan(const int n, const int size[], /**/ int strt[], int size_pin[]) {
     int tid = threadIdx.x;
     int val = 0, cnt = 0;
