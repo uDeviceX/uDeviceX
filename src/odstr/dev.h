@@ -111,6 +111,7 @@ __global__ void unpack(T *const buf[], const int start[], /**/ T *data) {
 }
 
 __global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *counts, /**/ uchar4 *subids) {
+    enum {X, Y, Z};
     int warp, slot, fid;
     float2 d0, d1, d2;
     int ws;  /* warp start in global coordinates    */
@@ -133,10 +134,11 @@ __global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *
     
     if (dw < dwe) {
         int xi, yi, zi, cid, subindex;
+        fid2shift(fid, /**/ shift);
 
-        d0.x += XS * ((fid     + 1) % 3 - 1);
-        d0.y += YS * ((fid / 3 + 1) % 3 - 1);
-        d1.x += ZS * ((fid / 9 + 1) % 3 - 1);
+        d0.x += shift[X];
+        d0.y += shift[Y];
+        d1.x += shift[Z];
 
         xi = x2c(d0.x, XS);
         yi = x2c(d0.y, YS);
