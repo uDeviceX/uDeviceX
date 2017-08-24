@@ -19,18 +19,18 @@ __device__ void ini_FLo(const float2 *lo, const float2 *re, /**/ FLo *l) {
     l->lo = lo; l->re = re;
 }
 
-__device__ void FLo2D(FLo *l, int spid, /**/ Da *d) {
+__device__ void FLo2D(FLo *l, int i, /**/ Da *d) {
     bool remote;
-    remote = (spid >> 31) & 1;
-    spid &= ~(1 << 31);
+    remote = (i >> 31) & 1;
+    i &= ~(1 << 31);
     if (remote) {
-        d->d0 = __ldg(l->re + 0 + 3 * spid);
-        d->d1 = __ldg(l->re + 1 + 3 * spid);
-        d->d2 = __ldg(l->re + 2 + 3 * spid);
+        d->d0 = __ldg(l->re + 0 + 3 * i);
+        d->d1 = __ldg(l->re + 1 + 3 * i);
+        d->d2 = __ldg(l->re + 2 + 3 * i);
     } else {
-        d->d0 = l->lo[0 + 3 * spid];
-        d->d1 = l->lo[1 + 3 * spid];
-        d->d2 = l->lo[2 + 3 * spid];
+        d->d0 = l->lo[0 + 3 * i];
+        d->d1 = l->lo[1 + 3 * i];
+        d->d2 = l->lo[2 + 3 * i];
     }
 }
 
