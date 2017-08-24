@@ -15,9 +15,9 @@
 
 #include "scan/int.h"
 
+/* see set.cpp */
+void set(/**/ int*, int*);
 #define M 9999
-#define N 16
-#define value 1
 
 static scan::Work w;
 static int *x, *y;
@@ -34,26 +34,19 @@ static void dump(int *dev, int n) {
     dump0(hst, n);
 }
 
-static void fill(int e, int lo, int hi, int *dev) {
-    int hst[M];
-    int i;
-    for (i = lo; i < hi; i++) hst[i] = e;
-    cH2D0(dev, hst, hi - lo);
-}
-
-static void fill0(int e, int *dev) { fill(e, 0, N, dev); }
-
 static void main0() {
-    fill0(value, x);
-    scan::scan(x, N, y,  &w);
-    dump(y, N);
+    int n;
+    set(y, &n);
+    cH2D0(x, y, n);
+    scan::scan(x, n, y,  &w);
+    dump(y, n);
 }
 
 static void main1() {
-    alloc_work(N, &w);
+    alloc_work(M, &w);
     Dalloc(&x, M);
     Dalloc(&y, M);
-    
+
     main0();
 
     free_work(&w);
