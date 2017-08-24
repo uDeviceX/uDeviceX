@@ -5,4 +5,5 @@ $B/m.o: $S/m.cpp; $X
 $B/mc.o: $S/mc.cpp; $X
 $B/msg.o: $S/msg.cpp; $X
 $B/scan/imp.o: $S/scan/imp.cu; $N
-$B/u/hw/main.o: $S/u/hw/main.cu; $N
+$B/u/scan/main.o: $S/u/scan/main.cu; $N
+$B/u/scan/set.o: $S/u/scan/set.cpp; $X
