@@ -37,11 +37,9 @@ __device__ void FLo2D(FLo *l, int i, /**/ Da *d) {
 __device__ void xchg(int dw, /**/ float3 *s0, float3 *s1) { /* collective */
     int src0, src1;
     if (dw % 2  == 0) {
-        src0 = dw / 2;
-        src1 = 16 + dw / 2;
+        src0 =      dw / 2; src1 = 16 + dw / 2;
     } else {
-        src0 = 16 + dw / 2;
-        src1 = dw / 2;
+        src0 = 16 + dw / 2; src1 = dw / 2;
     }
     xchg_aos4f(src0, src1, dw % 2, /**/ s0, s1);
 }
