@@ -20,7 +20,7 @@
 #include "inc/mpi.h"
 
 #include "k/read.h"
-#include "k/common.h"
+#include "k/index.h"
 #include "kl.h"
 
 #include "rnd/imp.h"
@@ -119,7 +119,7 @@ void send_ii(const TicketD *td, TicketI *ti) {
 void bulk(flu::Quants *q, TicketD *t) {
     int n = q->n, *count = q->cells->count;
     DzeroA(count, XS*YS*ZS);
-    KL(k_common::subindex_local<false>, (k_cnf(n)),(n, (float2*)q->pp, /*io*/ count, /*o*/ t->subi_lo));
+    KL(k_index::local<false>, (k_cnf(n)),(n, (float2*)q->pp, /*io*/ count, /*o*/ t->subi_lo));
 }
 
 void recv_ii(TicketI *t) {
