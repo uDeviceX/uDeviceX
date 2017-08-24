@@ -20,8 +20,9 @@ struct Lo { /* particle [lo]cation in memory
 
 __device__ void pp2Lo(float2 *pp, int n, int ws, /**/ Lo *l) {
     int dwe; /* warp or buffer end relative wrap start */
+    int N_FLOAT2_PER_PARTICLE = 3;
     dwe  = min(warpSize, n - ws);
-    l->p = pp + 3*ws;
+    l->p = pp + N_FLOAT2_PER_PARTICLE * ws;
     l->d = dwe;
 }
 
