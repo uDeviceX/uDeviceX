@@ -18,7 +18,9 @@ struct Lo { /* particle [lo]cation in memory
     int d;
 };
 
-__device__ void pp2Lo(float2 *pp, int ws, int dwe, /**/ Lo *l) {
+__device__ void pp2Lo(float2 *pp, int n, int ws, /**/ Lo *l) {
+    int dwe; /* warp or buffer end relative wrap start */
+    dwe  = min(warpSize, n - ws);
     l->p = pp + 3*ws;
     l->d = dwe;
 }
@@ -52,20 +54,16 @@ __device__ void Pa2v(Pa *p, /**/ float v[3]) { /* to velocity */
 
 __global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *counts, /**/ uchar4 *subids) {
     enum {X, Y, Z};
-    int warp, slot, fid;
-    int ws;  /* warp start in global coordinates    */
-    int dw;  /* shift relative to `ws' (lane)       */
-    int dwe; /* warp or buffer end relative to `ws' */
+    int slot, fid;
+    int ws, dw;  /* warp start and shift (lane) */
 
     float shift[3], r[3], v[3];
     Lo l; /* location in memory */
     Pa p;
-    warp = threadIdx.x / warpSize;
-    dw   = threadIdx.x % warpSize;
-    ws   = warpSize * warp + blockDim.x * blockIdx.x;
+
+    warpco(&ws, &dw); /* warp coordinates */
     if (ws >= n) return;
-    dwe  = min(warpSize, n - ws);
-    pp2Lo(pp, ws, dwe, /**/ &l);
+    pp2Lo(pp, n, ws, /**/ &l);
     slot = ws + dw;
     fid  = k_common::fid(strt, slot);
 
