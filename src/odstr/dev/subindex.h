@@ -106,7 +106,7 @@ __device__ void subindex0(int i, const int strt[], /*io*/ Pa *p, int *counts, /*
 
     Pa2Ce(p, /**/ &c); /* to cell coordinates */
     checkPav(p); /* check velocity */
-    reg(&c, i, /*io*/ counts, subids);
+    regCe(&c, i, /*io*/ counts, subids); /* register */
 }
 
 __global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *counts, /**/ uchar4 *subids) {
