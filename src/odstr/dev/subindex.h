@@ -91,14 +91,9 @@ __device__ void subindex0(int i, const int strt[], /*io*/ Pa *p, int *counts, /*
     fid2shift(fid, /**/ shift);
     shiftPa(shift, p);
 
-    Pa2r(p, /**/ r);
-    xi = x2c(r[X], XS);
-    yi = x2c(r[Y], YS);
-    zi = x2c(r[Z], ZS);
+    Pa2c(p, /**/ *xi, *yi, *zi, *cid); /* to cell coordinates */
+    checkPav(p); /* check velocity */
 
-    checkPav(p); /* check particle velocity */
-
-    cid = xi + XS * (yi + YS * zi);
     subindex = atomicAdd(counts + cid, 1);
     subids[i] = make_uchar4(xi, yi, zi, subindex);
 }
