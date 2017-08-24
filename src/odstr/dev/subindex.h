@@ -15,6 +15,10 @@ __device__ void pp2Lo(float2 *pp, int ws, int dwe, /**/ Lo *l) {
     l->d = dwe;
 }
 
+__device__ int endLo(Lo *l, int d) { /* is `d' behind the end? */
+    return d >= l->d;
+}
+
 __device__ void readPa(Lo l, /**/ Pa *p) {
     k_read::AOS6f(l.p, l.d, /**/ p->d0, p->d1, p->d2);
 }
