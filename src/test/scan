@@ -4,3 +4,9 @@ u.conf0 u/scan
 { u.make -j;     } > /dev/null
 seq 16 | ./udx >  scan.out.txt
 
+# TEST: scan.t1
+(cd ../cmd; make ) > /dev/null
+u.conf0 u/scan
+{ u.make -j;     } > /dev/null
+seq 64 | ./udx >  scan.out.txt
+
