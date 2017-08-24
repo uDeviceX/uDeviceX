@@ -143,10 +143,10 @@ void xchg_aos2f(int srclane0, int srclane1, int start, float& s0, float& s1) {
 }
 
 static __forceinline__ __device__
-void xchg_aos4f(int srclane0, int srclane1, int start, float3& s0, float3& s1) {
-    xchg_aos2f(srclane0, srclane1, start, s0.x, s1.x);
-    xchg_aos2f(srclane0, srclane1, start, s0.y, s1.y);
-    xchg_aos2f(srclane0, srclane1, start, s0.z, s1.z);
+void xchg_aos4f(int srclane0, int srclane1, int start, float3 *s0, float3 *s1) {
+    xchg_aos2f(srclane0, srclane1, start, s0->x, s1->x);
+    xchg_aos2f(srclane0, srclane1, start, s0->y, s1->y);
+    xchg_aos2f(srclane0, srclane1, start, s0->z, s1->z);
 }
 
 __global__ void gather_id(const int *ii_lo, const int *ii_re, int n, const uint *iidx, /**/ int *ii) {

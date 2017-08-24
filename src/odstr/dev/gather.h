@@ -60,7 +60,7 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
 
     src0 = (32 * ((dw    ) & 0x1) + dw) >> 1;
     src1 = (32 * ((dw + 1) & 0x1) + dw) >> 1;
-    xchg_aos4f(src0, src1, dw % 2 , s0, s1);
+    xchg_aos4f(src0, src1, dw % 2 , &s0, &s1);
 
     if (dw < 2 * dwe)
         zip0[2 * ws + dw] = make_float4(s0.x, s0.y, s0.z, 0);
