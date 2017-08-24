@@ -161,8 +161,8 @@
 
 // debug
 /* dbg macros */
-#if !defined(DBG_NONE)      && !defined(DBG_TRACE) && \
-    !defined(DBG_SILENT)
+#if !defined(DBG_NONE)    && !defined(DBG_TRACE) && \
+    !defined(DBG_SILENT)  && !defined(DBG_PEEK)
 #define DBG_NONE
 #endif
 
