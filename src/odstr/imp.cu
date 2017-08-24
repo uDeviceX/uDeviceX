@@ -21,6 +21,7 @@
 #include "inc/macro.h"
 
 #include "scan/int.h"
+#include "odstr/halo/int.h"
 
 #include "kl.h"
 
