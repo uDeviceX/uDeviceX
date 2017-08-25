@@ -1,10 +1,21 @@
 namespace dbg {
 
 namespace err {
+
+#define ERRLIST(_)                              \
+    _(NONE),  /* no error */                    \
+        _(INVALID) /* invalid value */
+
+#define make_str(s) #s
+#define make_enum(s) s
+
 enum {
-    NONE,     /* no error      */
-    INVALID,  /* invalid value */
+    ERRLIST(make_enum),
+    NERRORS
 };
+
+static const char *err_str[NERRORS] = {ERRLIST(make_str)};
+
 } // err
 
 typedef int err_type;
@@ -20,22 +31,17 @@ void ini() {
     CC(d::MemcpyToSymbol(&dev::error, &e, sizeof(err_type)));
 }
 
-static void errmsg(err_type e) {
-    switch (e) {
-    case INVALID:
-        MSG("DBG: ERR: Invalid");
-        break;
-    case NONE:
-    default:
-        break;
-    };
+static void errmsg(err_type e, const char *fun, const char *msg) {
+    if (e != NONE) {
+        MSG("DBG: ERR (%s): %s %s", fun, err_str[e], msg);
+    }
 }
 
-void handle() {
+void handle(const char *fun, const char *msg) {
     dSync();
     err_type err;
     CC(d::MemcpyFromSymbol(&err, &dev::error, sizeof(err_type)));
-    errmsg(err);
+    errmsg(err, fun, msg);
 }
 
 } // err
