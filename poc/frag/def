@@ -1,0 +1,25 @@
+#!/usr/bin/awk -f
+
+BEGIN {
+    v = ARGV[1]; shift()
+}
+
+{
+    if (NR > 1) s = s "\n"
+    s = s $0
+}
+
+END {
+    s = tab(s, Tab = 3)
+    printf "%s", v s
+}
+
+function tab(s, n,   t) {
+    gsub(/\n/, "\n" sp(n), s)
+    sub(/ *$/, "", s)
+    return s
+}
+
+function sp(n) { return sprintf("%" n "s", "") } # spaces
+
+function shift(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }

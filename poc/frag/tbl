@@ -1,14 +1,16 @@
 #!/usr/bin/awk -f
 
 BEGIN {
-    M = 60 # max column width
+    M = 48 # max column width
     D = 2  # deliminator size
 }
 
 { A[++N] = $0 } # N is a total number of elements
 END {
-    while (good(++k + 1)) ;
-    n = k
+    k = 1
+    while (k < N && good(k + 1))
+	k++
+    n = k # global
 
     dump_width()
     dump_data()
@@ -62,7 +64,7 @@ function good(_n) {
     return good0()
 }
 
-function good0(   i, j, len, L) {
+function good0(   i, j, len, L) { # TODO: M is wrong
     for (j = 1; ; j++) {
 	for (i = 1; i <= n; i++) {
 	    if (end(i, j)) return 1
