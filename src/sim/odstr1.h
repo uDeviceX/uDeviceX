@@ -41,4 +41,6 @@ void odstr() {
     unpack();
    
     gather();
+
+    dbg::check_pp(o::q.pp, o::q.n, "flu: distr pp");
 }
