@@ -1,0 +1,9 @@
+l () { printf '\n'; }
+
+./to0  | ./n0    | ./tbl  | ./arr | ./def 'static const int frag_to_ncell  [] = '
+l
+./to0  | ./dir0  | ./tbl  | ./arr | ./def 'static const int frag_to_dir [] = '
+l
+./fro0 | ./n0    | ./tbl  | ./arr | ./def 'static const int frag_fro_ncell [] = '
+l
+./fro0 | ./dir0  | ./tbl  | ./arr | ./def 'static const int frag_fro_dir [] = '
