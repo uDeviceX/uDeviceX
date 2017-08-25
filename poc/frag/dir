@@ -1,0 +1,36 @@
+#!/usr/bin/awk -f
+
+NR == 1 {
+    M = 80
+    n = $0
+    a = sprintf("const int %s[%s] = {", n, N = 27)
+    tab = length(a)
+    next
+}
+
+{
+    s = format()
+    if (!Agn) Agn = 1
+    else a = a ", "
+    if (length(a) > M) {
+	print a
+	a = tabs()
+    }
+    a = a s
+}
+
+function tabs(   s) {
+    s = sprintf("%" tab "s", "")
+    return s
+}
+
+END {
+    printf "%s", a
+    printf "};\n"
+}
+
+function format(s) {
+    x = $1; y = $2; z = $3
+    s = sprintf("{% d,% d,% d}", x, y, z)
+    return s
+}
