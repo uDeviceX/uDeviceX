@@ -1,0 +1,6 @@
+#!/usr/bin/awk -f
+
+NF == 3 {
+    x = $1; y = $2; z = $3
+    printf "{% d,% d,% d}\n", x, y, z
+}
