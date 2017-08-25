@@ -1,0 +1,21 @@
+#!/usr/bin/awk -f
+
+NR == 1 { n = $1; next }
+NR == 2 { split($0, w); next }
+{
+    if (i == n) {
+	i = 0
+	s = s ", \n"
+    }
+    if (i > 0) s = s ", "
+    fmt = fm(++i)
+    s = s sprintf(fmt, $0)
+}
+
+END {
+    s = sprintf("{\n%s};\n", s)
+    gsub(/\n/, "\n ", s)
+    printf s
+}
+
+function fm(i) { return "%" w[i] "s" }
