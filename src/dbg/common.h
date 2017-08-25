@@ -4,6 +4,6 @@ namespace dbg {
     do {                                        \
         DBG_BEFORE(#F, M);                      \
         DBG_CALL(F, A);                         \
-        DBG_AFTER(#F);                          \
+        DBG_AFTER(#F, M);                       \
     } while(0)
 } // dbg
