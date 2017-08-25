@@ -25,17 +25,22 @@ void check_pp(const Particle *pp, int n) {
     KL(dev::check_pp, (k_cnf(n)), (pp, n));
 }
 
+void check_pp_pu(const Particle *pp, int n) {
+
+}
+
 void check_ff(const Force *ff, int n) {
     KL(dev::check_ff, (k_cnf(n)), (ff, n));
 }
-
 } // sub
 
 void check_pp(const Particle *pp, int n, const char *M) {
     DBG(sub::check_pp, (pp, n), M);
 }
+void check_pp_pu(const Particle *pp, int n, const char *M) {
+    DBG(sub::check_pp_pu, (pp, n), M);
+}
 void check_ff(const Force *ff, int n, const char *M) {
     DBG(sub::check_ff, (ff, n), M);
 }
-
 } // dbg
