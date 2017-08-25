@@ -3,18 +3,18 @@ namespace dev {
 
 enum {X, Y, Z};
 
-static __device__ bool valid_pos(float x, int L) {
+static __device__ bool valid_pos(float x, int L, bool verbose = false) {
     if (x < -L/2 || x > L/2) {
-        printf("DBG: x = %g (L = %d)\n", x, L);
+        if (verbose) printf("DBG: x = %g (L = %d)\n", x, L);
         return false;
     }
     return true;
 }
 
-static __device__ bool valid_vel(float v, int L) {
+static __device__ bool valid_vel(float v, int L, bool verbose = false) {
     float dx = fabs(v * dt);
     if (dx > L/2) {
-        printf("DBG: v = %g (L = %d)\n", v, L);
+        if (verbose) printf("DBG: v = %g (L = %d)\n", v, L);
         return false;
     }
     return true;
@@ -72,10 +72,10 @@ __global__ void check_pp_pu(const Particle *pp, int n) {
 }
 
 
-static __device__ bool valid_acc(float a, int L) {
+static __device__ bool valid_acc(float a, int L, bool verbose = false) {
     float dx = fabs(a * dt * dt);
     if (dx > L/2) {
-        printf("DBG: a = %g (L = %d)\n", a, L);
+        if (verbose) printf("DBG: a = %g (L = %d)\n", a, L);
         return false;
     }
     return true;
