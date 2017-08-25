@@ -41,7 +41,6 @@ static void errmsg(err_type e, const char *fun, const char *msg) {
 }
 
 void handle(const char *fun, const char *msg) {
-    dSync();
     err_type err;
     CC(d::MemcpyFromSymbol(&err, &dev::error, sizeof(err_type)));
     errmsg(err, fun, msg);
