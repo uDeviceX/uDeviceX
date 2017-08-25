@@ -9,7 +9,10 @@ n=40
 d=/scratch/snx3000/lisergey/u
 
 s=../../src
-echo run | u.conf $s u/x base.h
+u.conf $s u/x base.h <<EOF
+       DBG_PEEK
+       run
+EOF
 u.make -j > make.log
 
 safe_cp "$d/$n/sdf.dat" .
