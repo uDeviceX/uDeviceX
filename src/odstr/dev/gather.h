@@ -63,10 +63,10 @@ __global__ void gather_pp(const float2  *pp_lo, const float2 *pp_re, int n, cons
     FLo f; /* "from" location */
     Da  d; /* data */
     TLo t; /* "to" location */
-    ini_FLo(pp_lo, pp_re, &f);
+    ini_FLo(pp_lo, pp_re, /**/ &f);
 
-    warpco(&ws, &dw);
-    dwe = min(32, n - ws);
+    warpco(/**/ &ws, &dw);
+    dwe = min(warpSize, n - ws);
     if (ws + dw < n)
         FLo2D(&f, iidx[ws + dw], /**/ &d);
 
