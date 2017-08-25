@@ -49,6 +49,28 @@ __global__ void check_pp(const Particle *pp, int n) {
     if (!valid_p(pp + i)) atomicExch(&error, err::INVALID);
 }
 
+static __device__ bool valid_unpacked_p_pu(float  x, float  y, float  z) {
+    bool ok = true;
+    ok &= valid_pos(x, 3*XS);
+    ok &= valid_pos(y, 3*YS);
+    ok &= valid_pos(z, 3*ZS);
+
+    return ok;
+}
+
+static __device__ bool valid_p_pu(const Particle *p) {
+    float x, y, z;
+    x  = p->r[X];  y = p->r[Y];  z = p->r[Z];
+
+    return valid_unpacked_p_pu(x, y, z);
+}
+
+__global__ void check_pp_pu(const Particle *pp, int n) {
+    int i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i >= n) return;
+    if (!valid_p_pu(pp + i)) atomicExch(&error, err::INVALID);
+}
+
 
 static __device__ bool valid_acc(float a, int L) {
     float dx = fabs(a * dt * dt);
