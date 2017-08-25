@@ -16,6 +16,9 @@ enum {
 
 static const char *err_str[NERRORS] = {ERRLIST(make_str)};
 
+#undef ERRLIST
+#undef make_str
+#undef make_enum
 } // err
 
 typedef int err_type;
