@@ -1,0 +1,32 @@
+#!/usr/bin/awk -f
+
+{
+    x = $1; y = $2; z = $3
+    x += 1; y += 1; z += 1
+    id[x, y, z] = num(i++)
+}
+
+function lo0(d) {
+    printf "%d", id[x, y, z]
+    if (d < 2) printf ","
+}
+
+function lon(l, d) {
+    printf "{"
+    if      (l == 3) for (x = 0; x < 3; x++) lo(l - 1, x)
+    else if (l == 2) for (y = 0; y < 3; y++) lo(l - 1, y)
+    else if (l == 1) for (z = 0; z < 3; z++) lo(l - 1, z)
+    printf ">" l d
+}
+
+function lo(l, d) {
+    if   (l == 0) lo0(d)
+    else          lon(l, d)
+}
+
+END {
+    lo(l = 3)
+    printf "\n"
+}
+
+function num(x) { return x + 0 }
