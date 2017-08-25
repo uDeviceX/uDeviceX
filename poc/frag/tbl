@@ -1,15 +1,16 @@
 #!/usr/bin/awk -f
 
 BEGIN {
-    M = 80 # max column width
+    M = 60 # max column width
     D = 2  # deliminator size
 }
 
 { A[++N] = $0 } # N is a total number of elements
 END {
     while (good(++k + 1)) ;
+    n = k
 
-    dump_width(k)
+    dump_width()
     dump_data()
 }
 
@@ -18,10 +19,12 @@ function dump_data(   i) {
 	print A[i]
 }
 
-function dump_width(n,   i) {
-    printf "%s", n
-    for (i = 1; i <= n; i ++)
-	printf " %s", maxwidth(i)
+function dump_width(   i) {
+    print n
+    for (i = 1; i <= n; i ++) {
+	if (i > 1) printf " "
+	printf "%s", maxwidth(i)
+    }
     printf "\n"
 }
 
@@ -54,7 +57,11 @@ function end(i, j,   c) {
     return c > N
 }
 
-function good(_n) { n = _n; return good0() }
+function good(_n) {
+    n = _n
+    return good0()
+}
+
 function good0(   i, j, len, L) {
     for (j = 1; ; j++) {
 	for (i = 1; i <= n; i++) {
