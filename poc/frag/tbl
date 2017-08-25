@@ -1,0 +1,36 @@
+#!/usr/bin/awk -f
+
+BEGIN {
+    M = 80 # max column width
+}
+
+{ A[++N] = $0 } # N is a total number of elements
+END { tbl(3) }
+
+function ij2c(i, j) {  # to linear index
+    i--; j--
+    return i + n*j + 1
+}
+
+function a(i, j,   c) {
+    c = ij2c(i, j)
+    return A[c]
+}
+
+function end(i, j,   c) {
+    c = ij2c(i, j)
+    return c > N
+}
+
+function tbl(n_) { n = n_; tbl0() }
+function tbl0(   i, j) {
+    i0 = 1
+    for (j = 1; !end(j, i = 1); j++) {
+	for (   ; i <= n; i++) {
+	    if (end(i, j)) return
+	    print i, j, ij2c(i, j)
+	}
+	
+    }
+    
+}

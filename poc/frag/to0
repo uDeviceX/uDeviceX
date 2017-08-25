@@ -3,7 +3,6 @@
 BEGIN {
     N = 27
     X = 0; Y = 1; Z = 2
-    print "to"
     for (i = 0; i < N; i++) {
 	f(i, o)
 	print o[X], o[Y], o[Z]
