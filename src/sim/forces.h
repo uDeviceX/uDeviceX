@@ -10,7 +10,10 @@ void body_force(float driving_force0) {
 }
   
 void forces_rbc() {
-    if (rbcs) rbc::forces(r::q, r::tt, /**/ r::ff);
+    if (rbcs) {
+        rbc::forces(r::q, r::tt, /**/ r::ff);
+        dbg::check_ff(r::ff, r::q.n, "rbc, rbc forces");
+    }
 }
 
 void clear_forces(Force* ff, int n) {
@@ -21,6 +24,10 @@ void forces_wall() {
     if (o::q.n)            wall::interactions(w::qsdf, w::q, w::t, SOLVENT_TYPE, o::q.pp, o::q.n,   /**/ o::ff);
     if (solids0 && s::q.n) wall::interactions(w::qsdf, w::q, w::t, SOLID_TYPE, s::q.pp, s::q.n, /**/ s::ff);
     if (rbcs && r::q.n)    wall::interactions(w::qsdf, w::q, w::t, SOLID_TYPE, r::q.pp, r::q.n, /**/ r::ff);
+
+    if (o::q.n)  dbg::check_ff(o::ff, o::q.n, "flu, wall forces");
+    if (solids0) dbg::check_ff(s::ff, s::q.n, "rig, wall forces");
+    if (rbcs)    dbg::check_ff(r::ff, r::q.n, "rbc, wall forces");
 }
 
 void forces_cnt(std::vector<ParticlesWrap> *w_r) {
