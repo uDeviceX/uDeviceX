@@ -10,9 +10,9 @@ BEGIN {
 }
 
 function f(i, d) { # odist
-    d[X] = (i         + 1) % 3 - 1
-    d[Y] = (div(i, 3) + 1) % 3 - 1
-    d[Z] = (div(i, 9) + 1) % 3 - 1
+    d[X] = (i         + 2) % 3 - 1
+    d[Y] = (div(i, 3) + 2) % 3 - 1
+    d[Z] = (div(i, 9) + 2) % 3 - 1
 }
 
 function div(a, b) { return int(a/b) }

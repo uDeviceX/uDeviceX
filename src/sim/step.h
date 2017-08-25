@@ -13,6 +13,6 @@ void step0(float driving_force0, bool wall0, int it) {
 }
 
 void step(float driving_force0, bool wall0, int it) {
-    step0(driving_force0, wall0, it);
     odstr();
+    step0(driving_force0, wall0, it);
 }
