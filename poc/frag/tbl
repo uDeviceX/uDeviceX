@@ -2,10 +2,34 @@
 
 BEGIN {
     M = 80 # max column width
+    D = 2  # deliminator size
 }
 
 { A[++N] = $0 } # N is a total number of elements
-END { tbl(3) }
+END {
+    while (good(++k + 1)) ;
+
+    dump_width(k)
+    dump_data()
+}
+
+function dump_data(   i) {
+    for (i = 1; i in A; i ++)
+	print A[i]
+}
+
+function dump_width(n,   i) {
+    printf "%s", n
+    for (i = 1; i <= n; i ++)
+	printf " %s", maxwidth(i)
+    printf "\n"
+}
+
+function maxwidth(i,   j, m) {
+    for (j = 1; !end(i, j); j++)
+	m = max(m, l(i, j))
+    return m
+}
 
 function ij2c(i, j) {  # to linear index
     i--; j--
@@ -17,20 +41,29 @@ function a(i, j,   c) {
     return A[c]
 }
 
+function l(i, j) { return length(a(i, j)) }
+
+# over M?
+function over(len, n) {
+    if  (n > 1) len += (n - 1) * D
+    return len > M
+} 
+ 
 function end(i, j,   c) {
     c = ij2c(i, j)
     return c > N
 }
 
-function tbl(n_) { n = n_; tbl0() }
-function tbl0(   i, j) {
-    i0 = 1
-    for (j = 1; !end(j, i = 1); j++) {
-	for (   ; i <= n; i++) {
-	    if (end(i, j)) return
-	    print i, j, ij2c(i, j)
+function good(_n) { n = _n; return good0() }
+function good0(   i, j, len, L) {
+    for (j = 1; ; j++) {
+	for (i = 1; i <= n; i++) {
+	    if (end(i, j)) return 1
+	    len += l(i, j)
 	}
-	
+	if (over(len, n)) return 0
+	len = ""
     }
-    
 }
+
+function max(a, b) { return (a > b) ? a : b }
