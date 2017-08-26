@@ -16,7 +16,7 @@ all: $F $E
 $E:  $F
 
 $F:
-	main/main > $@
+	main/main $d > $@
 
 test: $E
 	atest ex/0.sh && \
