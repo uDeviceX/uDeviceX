@@ -9,7 +9,7 @@ all: $f ex/0
 
 $f:; ./m > $@
 ex/0: $f ex/0.cpp
-test: ex/0; atest ex/0
+test: ex/0; atest ex/0.sh
 install: $f; cp $< "$T"
 
 .PHONY: clean test install
