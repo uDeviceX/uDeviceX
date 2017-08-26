@@ -1,6 +1,6 @@
 # install target
 T=../../src/frag
-f=frag/ncell.h
+F=frag/ncell.h
 
 # examples
 E=ex/0 ex/1 ex/2 ex/3
@@ -9,18 +9,18 @@ CXXFLAGS += -O2 -g
 CXXFLAGS += -Wall -Wextra
 CXXFLAGS += -I.
 
-all: $f $E
-$E:  $f
+all: $F $E
+$E:  $F
 
-$f:; main/main > $@
+$F:; main/main > $@
 
 test: $E
 	atest ex/0.sh && \
 	for e in $E; do $$e; done
 
-install: $f
+install: $F
 	mkdir -p  $T
 	cp frag.h $T
 
 .PHONY: clean test install
-clean:; rm -f $f $E
+clean:; rm -f $F $E

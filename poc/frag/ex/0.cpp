@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "frag.h"
+#include "frag/ncell.h"
 
 #define XS 10
 #define YS 20
