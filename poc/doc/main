@@ -27,12 +27,18 @@ function name(s,   p, i) {
     p = "@include"
     i = index(s, p)
     s = substr(s, i + length(p))
-    s = ltrim(s)
+    s = trim(s)
     return s
 }
 
+function trim(s) { return ltrim(rtrim(s)) }
 function ltrim(s) {
     sub(/^[ \t]*/, "", s)
+    return s
+}
+
+function rtrim(s) {
+    sub(/[ \t]*$/, "", s)
     return s
 }
 

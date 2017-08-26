@@ -10,5 +10,5 @@ From `fid` to direction and back again.
 	
 From `fid` to number of cells
 	
-    @include ex/3.h	
+    @include ex/3.h
 
