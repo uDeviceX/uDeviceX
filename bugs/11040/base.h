@@ -39,19 +39,13 @@
 #define wall_creation       1000
 #define tend                10000
 
-/* DEBUG */
-//#define KL_NONE
-//#define CC_PEEK
-#define TE_TRACE
-//#define FORCE0
-
 /* FLOW TYPE */
 #define pushflow            true
 #define driving_force       0.22
 
 /* DUMPS */
-#define part_freq           10000
+#define part_freq           100000
 #define field_dumps         true
-#define field_freq          10000
+#define field_freq          100000
 #define strt_dumps          true
 #define strt_freq           10000
