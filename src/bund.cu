@@ -225,14 +225,14 @@ namespace dev {
 #endif
 
 #if   defined(ODSTR1)
-  #include "sim/odstr1.h"
+  #include "sim/odstr/release.h"
 #elif defined(ODSTR0)
-  #include "sim/odstr0.h"
+  #include "sim/odstr/none.h"
 #elif defined(ODSTR_SAFE)
   namespace sub {
-    #include "sim/odstr1.h"
+    #include "sim/odstr/release.h"
   }
-  #include "sim/odstr.safe.h"
+  #include "sim/odstr/safe.h"
 #else
   #error ODSTR* is undefined
 #endif
