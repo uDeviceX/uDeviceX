@@ -69,7 +69,6 @@
 #include "field.h"
 
 #include "forces.h"
-#include "cnt/int.h"
 
 #include "sdf/type.h"
 #include "sdf/int.h"
@@ -98,6 +97,8 @@
 #include "fsi/fin.h"
 #include "fsi/halo.h"
 #include "fsi/ini.h"
+
+#include "cnt/int.h"
 
 #include "x/type.h"
   #include "rex/type/remote.h"
