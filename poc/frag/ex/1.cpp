@@ -1,5 +1,5 @@
 #include <assert.h>
-#include "frag.h"
+#include "frag/ncell.h"
 
 int main() {
     enum {X, Y, Z};
