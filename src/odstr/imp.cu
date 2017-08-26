@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <mpi.h>
 #include "l/m.h"
 #include <conf.h>
