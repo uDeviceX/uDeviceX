@@ -67,15 +67,9 @@ void ini_trnd(const int dstranks[], /**/ rnd::KISS* interrank_trunks[], bool int
 
 static int26 get_nhalocells() {
     int26 nc;
-    int xsz, ysz, zsz;
-
-    for (int i = 0; i < 26; ++i) {
-        int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
-        xsz = d[0] != 0 ? 1 : XS;
-        ysz = d[1] != 0 ? 1 : YS;
-        zsz = d[2] != 0 ? 1 : ZS;
-        nc.d[i] = xsz * ysz * zsz;
-    }
+    int i;
+    for (i = 0; i < 26; ++i)
+        nc.d[i] = frag_ncell(i);
     return nc;
 }
 
