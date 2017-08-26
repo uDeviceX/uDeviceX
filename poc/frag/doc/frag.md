@@ -14,5 +14,8 @@ From `fid` to number of cells
 
 Matching `to_id` and `fro_id`
 	
-    @include ex/3.h
+    @include ex/4.h
 
+Get "anti-fid" in two ways
+
+    @include ex/5.h

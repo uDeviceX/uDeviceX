@@ -35,12 +35,16 @@ From `fid` to number of cells
 Matching `to_id` and `fro_id`
 	
     #define a(x) (assert(x))
-    int ncell;
-    ncell = frag_ncell(frag_bulk);
-    a(ncell == XS * YS * ZS );
-    
-    int id, x = -1, y = 0, z = 1;
-    id = frag_to_id(x, y, z);
-    ncell = frag_ncell(id);
-    assert(ncell == YS);
+    int x = -1, y = 0, z = 1;
+    a(frag_to_id(x, y, z) == frag_fro_id(-x, -y, -z));
+    a(frag_to_id(0, 0, 0) == frag_fro_id(0, 0, 0));
 
+Get "anti-fid" in two ways
+
+    #define a(x) (assert(x))
+    int ad0, ad1, id, x = -1, y = 0, z = 1;
+    id = frag_to_id(x, y, z);
+    ad0 = frag_anti(id);
+    
+    ad1 = frag_to_id(-x, -y, -z);
+    assert(ad0 == ad1);

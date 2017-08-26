@@ -30,3 +30,4 @@ static const int frag_fro_dir[27][3] = {
     { 0,-1, 0}, {-1, 1, 0}, { 1, 1, 0}, { 0, 1, 0}, 
     {-1, 0, 0}, { 1, 0, 0}, { 0, 0, 0}};
 #define frag_fro_id(x, y, z) (frag_id000[-(x)+1][-(y)+1][-(z)+1])
+#define frag_anti(i) frag_to_id(frag_fro_dir[(i)][0], frag_fro_dir[(i)][1], frag_fro_dir[(i)][2])

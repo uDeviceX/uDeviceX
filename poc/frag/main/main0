@@ -9,3 +9,4 @@ cat main/macro/to.h
 l
 ./fro | ./dir  | ./tbl  | ./arr | ./def 'static const int frag_fro_dir[27][3] = '
 cat main/macro/fro.h
+cat main/macro/anti.h
