@@ -1,4 +1,1 @@
-. ./u
-. ./main/data
-l
-cat ./main/macro.h
+main/main0 "$@"
