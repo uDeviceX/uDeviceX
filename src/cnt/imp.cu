@@ -1,7 +1,6 @@
 #include <assert.h>
 #include <vector>
 #include <mpi.h>
-#include <stdint.h>
 #include <conf.h>
 #include "inc/conf.h"
 
@@ -29,8 +28,6 @@
 #include "inc/mpi.h"
 #include "inc/dev.h"
 
-#include "dual/type.h"
-#include "dual/int.h"
 #include "texo.h"
 #include "te.h"
 
@@ -38,13 +35,7 @@
 #include "inc/tmp/pinned.h"
 #include "io/field.h"
 #include "io/rbc.h"
-#include "bund.h"
-#include "diag.h"
-
 #include "dbg.h"
-
-#include "restart.h"
-
 #include "glb.h"
 
 #include "k/read.h"
@@ -53,21 +44,6 @@
 #include "k/index.h"
 
 #include "clist/int.h"
-
-#include "mcomm/type.h"
-#include "mcomm/int.h"
-
-#include "rbc/int.h"
-
-#include "mdstr/buf.h"
-#include "mdstr/tic.h"
-#include "mdstr/int.h"
-#include "rdstr/int.h"
-
-#include "sdstr.decl.h"
-#include "sdstr.impl.h"
-#include "field.h"
-
 #include "forces.h"
 
 #include "k/cnt/type.h"
@@ -84,4 +60,3 @@
 #include "cnt/halo.h"
 #include "cnt/ini.h"
 #include "cnt/setup.h"
-
