@@ -13,19 +13,19 @@ void update_solid() {
 }
 
 void update_solvent() {
-    dbg::check_pp_pu(o::q.pp, o::q.n, "flu, befor");
+    dbg::check_pp_pu(o::q.pp, o::q.n, "flu, before");
     KL(dev::update, (k_cnf(o::q.n)), (dpd_mass, o::q.pp, o::ff, o::q.n));
     dbg::check_pp_pu(o::q.pp, o::q.n, "flu, update");
 }
 
 void update_rbc() {
-    dbg::check_pp_pu(r::q.pp, r::q.n, "rbc, befor");
+    dbg::check_pp_pu(r::q.pp, r::q.n, "rbc, before");
     KL(dev::update, (k_cnf(r::q.n)),  (rbc_mass, r::q.pp, r::ff, r::q.n));
     dbg::check_pp_pu(r::q.pp, r::q.n, "rbc, update");
 }
 
 void bounce() {
-    dbg::check_pp_pu(o::q.pp, o::q.n, "flu, befor, bounce-back");
+    dbg::check_pp_pu(o::q.pp, o::q.n, "flu, before, bounce-back");
     sdf::bounce(&w::qsdf, o::q.n, /**/ o::q.pp);
     // if (rbcs) sdf::bounce(&w::qsdf, r::q.n, /**/ r::q.pp);
     dbg::check_pp_pu(o::q.pp, o::q.n, "flu, after, bounce-back");
