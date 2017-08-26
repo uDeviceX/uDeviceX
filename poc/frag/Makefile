@@ -3,7 +3,7 @@ d = frag
 
 # install target
 T = ../../src/$d
-F = $d/common.h
+F = $d/common.h $d/fro.h $d/to.h
 
 # examples
 E = ex/0 ex/1 ex/2 ex/3
