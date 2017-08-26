@@ -194,7 +194,6 @@
   #define DEV_CUDA
 #endif
 
-/* odstr:: on/off */
 #if !defined(ODSTR0) && !defined(ODSTR1) && !defined(ODSTR_SAFE)
   #define ODSTR1
 #endif
