@@ -1,1 +1,2 @@
-main/main0 "$@"
+d=$1
+main/main0 > $d/ncell.h
