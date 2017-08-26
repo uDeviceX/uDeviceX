@@ -12,8 +12,8 @@ int main(int, char **v) {
     i = 1;
     x = atoi(v[i++]); y = atoi(v[i++]); z = atoi(v[i++]);
     
-    printf("id : %d\n", id = frag_to_id(x, y, z));
-    printf("to : % d % d % d\n",  frag_to_dir[id][X],  frag_to_dir[id][Y],  frag_to_dir[id][Z]);
+    printf("id: %d\n", id = frag_to_id(x, y, z));
+    printf("to: % d % d % d\n",  frag_to_dir[id][X],  frag_to_dir[id][Y],  frag_to_dir[id][Z]);
     printf("fro: % d % d % d\n", frag_fro_dir[id][X], frag_fro_dir[id][Y], frag_fro_dir[id][Z]);
     printf("ncell: %d\n", frag_ncell(id));
 }
