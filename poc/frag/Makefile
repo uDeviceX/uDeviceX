@@ -10,10 +10,13 @@ CXXFLAGS += -Wall -Wextra
 CXXFLAGS += -I.
 
 all: $f $E
+$E: frag.h
 
 $f:; main/main > $@
 
-test: $E; atest ex/0.sh
+test: $E
+	atest ex/0.sh && \
+	for e in $E; do $$e; done
 
 install: $f; cp $< "$T"
 

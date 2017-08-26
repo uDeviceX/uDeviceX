@@ -6,9 +6,11 @@
 #define YS 20
 #define ZS 30
 
-int main(int, char **v) {
+int main(int c, char **v) {
     enum {X, Y, Z};
     int x, y, z, id, i;
+
+    if (c == 1) return 0;
     i = 1;
     x = atoi(v[i++]); y = atoi(v[i++]); z = atoi(v[i++]);
     
