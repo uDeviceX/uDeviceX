@@ -1,32 +1,41 @@
 #!/usr/bin/awk -f
 
+BEGIN {
+    d = 3 # dimension
+}
+
 {
     x = $1; y = $2; z = $3
     x += 1; y += 1; z += 1
     id[x, y, z] = num(i++)
 }
 
-function lo0(d) {
-    printf "%d", id[x, y, z]
-    if (d < 2) printf ","
+function loopx(x,   r) {
+    if (x) s = s ",\n"
+    s = s "{"
+    for (r = 0; r < d; r++) loopy(x, r)
+    s = s "}"
 }
 
-function lon(l, d) {
-    printf "{"
-    if      (l == 3) for (x = 0; x < 3; x++) lo(l - 1, x)
-    else if (l == 2) for (y = 0; y < 3; y++) lo(l - 1, y)
-    else if (l == 1) for (z = 0; z < 3; z++) lo(l - 1, z)
-    printf ">" l d
+function loopy(x, y,   r) {
+    if (y) s = s ", "
+    s = s "{"
+    for (r = 0; r < d; r++) loopz(x, y, r)
+    s = s "}"    
 }
 
-function lo(l, d) {
-    if   (l == 0) lo0(d)
-    else          lon(l, d)
+function loopz(x, y, z) {
+    if (z) s = s ", "
+    s = s sprintf("%d", id[x,y,z])
 }
 
 END {
-    lo(l = 3)
-    printf "\n"
+    for (r = 0; r < d; r++) loopx(r)
+
+    s = sprintf("{\n%s};\n", s)
+    gsub(/\n/, "\n ", s)
+
+    print s
 }
 
 function num(x) { return x + 0 }
