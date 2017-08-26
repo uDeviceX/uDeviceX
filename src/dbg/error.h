@@ -36,7 +36,7 @@ void ini() {
 
 static void errmsg(err_type e, const char *fun, const char *msg) {
     if (e != NONE) {
-        MSG("DBG: ERR (%s): %s %s", fun, err_str[e], msg);
+        ERR("DBG: ERR (%s): %s %s", fun, err_str[e], msg);
     }
 }
 
