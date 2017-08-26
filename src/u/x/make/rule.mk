@@ -39,7 +39,7 @@ $B/msg.o: $S/msg.cpp; $X -I.
 $B/odstr/halo/imp.o: $S/odstr/halo/imp.cu; $N -I. -Iodstr/halo
 $B/odstr/imp.o: $S/odstr/imp.cu; $N -I. -Iodstr
 $B/odstr/int.o: $S/odstr/int.cu; $N -I. -Iodstr
-$B/odstr/pack/imp.o: $S/odstr/pack/imp.cu; $N -I. -Iodstr/pack
+$B/odstr/pack/imp.o: $S/odstr/pack/imp.cu; $N -I. -Iodstr/pack -Iodstr/pack/_release
 $B/os.o: $S/os.cpp; $X -I.
 $B/rbc/imp.o: $S/rbc/imp.cu; $N -I. -Irbc
 $B/rbc/int.o: $S/rbc/int.cu; $N -I. -Irbc

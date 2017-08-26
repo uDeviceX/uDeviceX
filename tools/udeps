@@ -1,3 +1,5 @@
 #!/bin/bash
 
-u.u u/x
+U=u/x
+u.u0 "$U" | D=_ G=. c.main "$U"/make -- _release --
+
