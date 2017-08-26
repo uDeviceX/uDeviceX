@@ -12,6 +12,7 @@ s=../../src
 u.conf $s u/x base.h <<EOF
        DBG_PEEK
        ODSTR_SAFE
+       UPDATE_SAFE
        KL_SYNC
        run
 EOF
