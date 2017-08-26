@@ -5,9 +5,7 @@ void clear_vel() {
 }
 
 void update_solid() {
-    if (s::q.n) {
-        update_solid0();
-    }
+    if (s::q.n) update_solid0();
 }
 
 void update_solvent() {
