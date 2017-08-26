@@ -1,13 +1,13 @@
 . ./u
 
+d=$1
+
 ncell () { ./to  | ./id                    | ./def 'static const int frag_id000[3][3][3] = '; }
 to    () { ./to  | ./dir  | ./tbl  | ./arr | ./def 'static const int frag_to_dir[27][3] = '; }
 fro   () { ./fro | ./dir  | ./tbl  | ./arr | ./def 'static const int frag_fro_dir[27][3] = '; }
 
-ncell
-to
-fro
-l
-cat main/macro/to.h
-cat main/macro/fro.h
-cat main/macro/ncell.h
+{ ncell; cat main/macro/ncell.h; } > $d/ncell2.h
+{ to;  cat main/macro/to.h; } > $d/to.h
+{ fro; cat main/macro/fro.h; } > $d/fro.h
+
+cat $d/ncell2.h $d/to.h $d/fro.h > $d/ncell.h
