@@ -1,13 +1,6 @@
 #!/usr/bin/awk -f
 
 {
-    id = NR - 1
     x = $1; y = $2; z = $3
-    xx[id] = -x; yy[id] = -y; zz[id] = -z
+    print -x, -y, -z
 }
-
-END {
-    for (id = 0; id < NR; id ++)
-	print xx[id], yy[id], zz[id]
-}
-    

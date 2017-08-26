@@ -1,0 +1,5 @@
+e '#define  frag_to_id(x, y, z) (frag_id000[ (x)][ (y)][ (z)])'
+e '#define frag_fro_id(x, y, z) (frag_id000[-(x)][-(y)][-(z)])'
+l
+e '#define ncell000(r, RS) ((r) == 0 ? (RS) : 1)'
+e '#define frag_ncell(x, y, z) ( ncell000(r, XS) * ncell000(r, YS) * ncell000(r, ZS) )'

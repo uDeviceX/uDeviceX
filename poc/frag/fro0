@@ -1,18 +1,1 @@
-#!/usr/bin/awk -f
-
-BEGIN {
-    N = 27
-    X = 0; Y = 1; Z = 2
-    for (i = 0; i < N; i++) {
-	f(i, o)
-	print o[X], o[Y], o[Z]
-    }
-}
-
-function f(i, d) { # rex
-    d[X] = (i         + 2) % 3 - 1
-    d[Y] = (div(i, 3) + 2) % 3 - 1
-    d[Z] = (div(i, 9) + 2) % 3 - 1
-}
-
-function div(a, b) { return int(a/b) }
+./to0 | ./inv

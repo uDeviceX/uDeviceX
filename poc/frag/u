@@ -1,0 +1,2 @@
+l () { printf '\n'; }
+e () { printf '%s\n' "$*"; }
