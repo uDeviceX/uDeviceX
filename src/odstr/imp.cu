@@ -29,6 +29,8 @@
 #include "k/write.h"
 #include "k/common.h"
 
+#include "frag.h"
+
 #include "odstr/type.h"
 #include "odstr/imp.h"
 
