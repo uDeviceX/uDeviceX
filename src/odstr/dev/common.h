@@ -15,8 +15,7 @@ static __device__ void fid2shift(int id, int s[3]) {
     s[Z] = ZS * ((id / 9 + 1) % 3 - 1);
 }
 
-//#define DBG
-
+#define DBG
 #ifdef DBG
 static __device__ void check_cel(float x, int i, int L) {
     if (i < 0 || i >= L) printf("odstr: i = %d (L = %d) from x = %g\n", i, L, x);
