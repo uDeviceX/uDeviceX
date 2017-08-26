@@ -1,6 +1,4 @@
 #include <assert.h>
-#include <mpi.h>
-#include "l/m.h"
 #include <conf.h>
 #include "inc/conf.h"
 
@@ -11,12 +9,9 @@
 #include "common.h"
 #include "msg.h"
 #include "m.h"
-#include "cc.h"
 
 #include "inc/type.h"
 #include "inc/dev.h"
-#include "inc/mpi.h"
-#include "inc/macro.h"
 
 #include "kl.h"
 #include "k/common.h"
