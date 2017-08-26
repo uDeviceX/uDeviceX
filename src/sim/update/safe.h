@@ -6,32 +6,29 @@ void clear_vel() {
 
 void update_solid() {
     if (s::q.n) {
+        dbg::check_pp_pu(s::q.pp, s::q.n, "rig, before");
         update_solid0();
-        dbg::check_pp_pu(s::q.pp, s::q.n, "rig, update");
+        dbg::check_pp_pu(s::q.pp, s::q.n, "rig, after");
     }
 }
 
 void update_solvent() {
+    dbg::check_pp_pu(o::q.pp, o::q.n, "flu, befor");
     KL(dev::update, (k_cnf(o::q.n)), (dpd_mass, o::q.pp, o::ff, o::q.n));
     dbg::check_pp_pu(o::q.pp, o::q.n, "flu, update");
 }
 
 void update_rbc() {
+    dbg::check_pp_pu(r::q.pp, r::q.n, "rbc, befor");
     KL(dev::update, (k_cnf(r::q.n)),  (rbc_mass, r::q.pp, r::ff, r::q.n));
     dbg::check_pp_pu(r::q.pp, r::q.n, "rbc, update");
 }
 
 void bounce() {
+    dbg::check_pp_pu(o::q.pp, o::q.n, "flu, befor, bounce-back");
     sdf::bounce(&w::qsdf, o::q.n, /**/ o::q.pp);
     // if (rbcs) sdf::bounce(&w::qsdf, r::q.n, /**/ r::q.pp);
-
-    dbg::check_pp_pu(o::q.pp, o::q.n, "flu, bounce-back");
+    dbg::check_pp_pu(o::q.pp, o::q.n, "flu, after, bounce-back");
 }
 
-/* single node only for now */
-void bounce_rbc() {
-    // TODO
-    // build_tcells_dev(s::q.m_dev, s::t.i_pp, nsbb, /**/ s::t.tcs_dev, s::t.tcc_dev, s::t.tci_dev, /*w*/ &s::ws);
-    // mbounce::bounce_dev(o::ff, s::q.m_dev, s::t.i_pp, s::t.tcs_dev, s::t.tcc_dev, s::t.tci_dev, o::q.n, nsbb*s::q.m_dev.nt, /**/ o::q.pp, &bb::tm);
-    // mbounce::collect_rbc_dev(s::q.m_dev.nt, nsbb, &bb::tm, /**/ s::t.ss);
-}
+void bounce_rbc() { }
