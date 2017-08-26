@@ -7,25 +7,20 @@ void clear_vel() {
 void update_solid() {
     if (s::q.n) {
         update_solid0();
-        dbg::check_pp_pu(s::q.pp, s::q.n, "rig, update");
     }
 }
 
 void update_solvent() {
     KL(dev::update, (k_cnf(o::q.n)), (dpd_mass, o::q.pp, o::ff, o::q.n));
-    dbg::check_pp_pu(o::q.pp, o::q.n, "flu, update");
 }
 
 void update_rbc() {
     KL(dev::update, (k_cnf(r::q.n)),  (rbc_mass, r::q.pp, r::ff, r::q.n));
-    dbg::check_pp_pu(r::q.pp, r::q.n, "rbc, update");
 }
 
 void bounce() {
     sdf::bounce(&w::qsdf, o::q.n, /**/ o::q.pp);
     // if (rbcs) sdf::bounce(&w::qsdf, r::q.n, /**/ r::q.pp);
-
-    dbg::check_pp_pu(o::q.pp, o::q.n, "flu, bounce-back");
 }
 
 /* single node only for now */
