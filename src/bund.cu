@@ -69,21 +69,7 @@
 #include "field.h"
 
 #include "forces.h"
-
-#include "k/cnt/type.h"
-#include "k/cnt/decl.h"
-#include "k/cnt/fetch.h"
-#include "k/cnt/bulk.h"
-#include "k/cnt/halo.h"
-#include "k/cnt/pop.h"
-#include "cnt/decl.h"
-#include "cnt/bind.h"
-#include "cnt/build.h"
-#include "cnt/bulk.h"
-#include "cnt/fin.h"
-#include "cnt/halo.h"
-#include "cnt/ini.h"
-#include "cnt/setup.h"
+#include "cnt/int.h"
 
 #include "sdf/type.h"
 #include "sdf/int.h"
