@@ -77,29 +77,12 @@
 
 #include "odstr/type.h"
 #include "odstr/int.h"
+#include "cnt/int.h"
+#include "fsi/int.h"
 
 #include "sdstr.decl.h"
 #include "sdstr.impl.h"
 
-#include "k/fsi/type.h"
-#include "k/fsi/decl.h"
-#include "k/fsi/fetch.h"
-#include "k/fsi/common.h"
-#include "k/fsi/map.common.h"
-#include "k/fsi/map.bulk.h"
-#include "k/fsi/map.halo.h"
-#include "k/fsi/bulk.h"
-#include "k/fsi/halo.h"
-
-#include "fsi/decl.h"
-#include "fsi/setup.h"
-#include "fsi/bind.h"
-#include "fsi/bulk.h"
-#include "fsi/fin.h"
-#include "fsi/halo.h"
-#include "fsi/ini.h"
-
-#include "cnt/int.h"
 
 #include "x/type.h"
   #include "rex/type/remote.h"
