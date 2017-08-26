@@ -12,5 +12,5 @@ done
 
 # TEST: ex.t0
 # { make clean; make; } > /dev/null
-# ex/main        > ex.out.txt
+# ex/0                  > ex.out.txt
 #
