@@ -1,16 +1,21 @@
 # install targetn
 T=../../src/frag.h
+
+# examples
+E=ex/0 ex/1 ex/2 ex/3
+
 f=frag.h
 CXXFLAGS += -O2 -g
 CXXFLAGS += -Wall -Wextra
 CXXFLAGS += -I.
 
-all: $f ex/0
+all: $f $E
 
 $f:; main/main > $@
-ex/0: $f ex/0.cpp
-test: ex/0; atest ex/0.sh
+
+test: $E; atest ex/0.sh
+
 install: $f; cp $< "$T"
 
 .PHONY: clean test install
-clean:; rm -f $f ex/0
+clean:; rm -f $f $E
