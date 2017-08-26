@@ -1,6 +1,6 @@
 # example
 
-body () { echo ; ex/ex0 $x $y $z; }
+body () { echo ; ex/0 $x $y $z; }
 
 for x in -1 0 1
 do for y in -1 0 1

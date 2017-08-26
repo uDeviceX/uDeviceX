@@ -5,12 +5,12 @@ CXXFLAGS += -O2 -g
 CXXFLAGS += -Wall -Wextra
 CXXFLAGS += -I.
 
-all: $f ex/ex0
+all: $f ex/0
 
 $f:; ./m > $@
-ex/ex0: $f ex/ex0.cpp
-test: ex/ex0; atest ex/main
+ex/0: $f ex/0.cpp
+test: ex/0; atest ex/main
 install: $f; cp $< "$T"
 
 .PHONY: clean test install
-clean:; rm -f $f ex/ex0
+clean:; rm -f $f ex/0
