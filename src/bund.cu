@@ -64,8 +64,6 @@
 #include "mdstr/int.h"
 #include "rdstr/int.h"
 
-#include "sdstr.decl.h"
-#include "sdstr.impl.h"
 #include "field.h"
 
 #include "forces.h"
@@ -79,6 +77,9 @@
 
 #include "odstr/type.h"
 #include "odstr/int.h"
+
+#include "sdstr.decl.h"
+#include "sdstr.impl.h"
 
 #include "k/fsi/type.h"
 #include "k/fsi/decl.h"
