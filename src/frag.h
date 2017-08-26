@@ -9,7 +9,7 @@ static const int frag_id000[3][3][3] = {
      (((z) == 0 ? (ZS) : 1)))
 #define frag_ncell(i) \
     (frag_ncell0(frag_to_dir[(i)][0], frag_to_dir[(i)][1], frag_to_dir[(i)][2]))
-#define frag_bulk (27)
+#define frag_bulk (26)
 
 static const int frag_to_dir[27][3] = {
     { 1, 1, 1}, {-1, 1, 1}, { 0, 1, 1}, { 1,-1, 1}, 
