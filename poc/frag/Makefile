@@ -1,12 +1,13 @@
 # install targetn
 T=../../src/frag.h
+f=frag.h
 
-all: frag.h ex0
+all: $f ex0
 
-frag.h:; ./m > $@
-ex0: ex0.cpp
+$f:; ./m > $@
+ex0: $f ex0.cpp
 test: ex0; atest ex
-install: frag.h; cp $< "$T"
+install: $f; cp $< "$T"
 
 .PHONY: clean test install
-clean:; rm -f frag.h ex0
+clean:; rm -f $f ex0
