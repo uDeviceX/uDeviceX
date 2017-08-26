@@ -83,7 +83,6 @@
 #include "sdstr.decl.h"
 #include "sdstr.impl.h"
 
-
 #include "x/type.h"
   #include "rex/type/remote.h"
   #include "rex/type/local.h"
