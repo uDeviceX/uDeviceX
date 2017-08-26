@@ -2,15 +2,12 @@
 
 d=$1
 
-common () {
-       ./to  | ./id                    | ./def 'static const int frag_id000[3][3][3] = '
-       cat main/macro/ncell.h
-}
-to    ()  { ./to  | ./dir  | ./tbl  | ./arr | ./def 'static const int frag_to_dir[27][3] = '; }
-fro   ()  { ./fro | ./dir  | ./tbl  | ./arr | ./def 'static const int frag_fro_dir[27][3] = '; }
-
-common
+e '/* see doc/frag.md */'
+./to  | ./id                    | ./def 'static const int frag_id000[3][3][3] = '
+cat main/macro/ncell.h
 l
-{ to;  cat main/macro/to.h; }
+./to  | ./dir  | ./tbl  | ./arr | ./def 'static const int frag_to_dir[27][3] = '
+cat main/macro/to.h
 l
-{ fro; cat main/macro/fro.h; }
+./fro | ./dir  | ./tbl  | ./arr | ./def 'static const int frag_fro_dir[27][3] = '
+cat main/macro/fro.h

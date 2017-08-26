@@ -20,6 +20,7 @@ run = for f in $E; do $$f; done && \
 install: $F $E $T $D $(iF)
 
 # deps
+$F: main/main0 main/main
 $F:; main/main .
 
 $E: $F # implicit rule
