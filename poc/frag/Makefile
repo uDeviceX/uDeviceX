@@ -12,7 +12,8 @@ CXXFLAGS += -I.
 all: $F $E
 $E:  $F
 
-$F:; main/main > $@
+$F:
+	main/main > $@
 
 test: $E
 	atest ex/0.sh && \
