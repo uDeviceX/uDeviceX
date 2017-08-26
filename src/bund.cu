@@ -215,7 +215,14 @@ namespace dev {
 #endif
 #undef HST
 #undef DEV
-#include "sim/update.h"
+
+#if   defined(UPDATE1)
+  #include "sim/update/release.h"
+#elif defined(UPDATE_SAFE)
+  #include "sim/update/safe.h"
+#else
+  #error UPDATE* is undefined
+#endif
 
 #if   defined(ODSTR1)
   #include "sim/odstr1.h"
@@ -227,7 +234,7 @@ namespace dev {
   }
   #include "sim/odstr.safe.h"
 #else
-  #error ODSTR[01] is undefined
+  #error ODSTR* is undefined
 #endif
 
 #include "sim/step.h"
