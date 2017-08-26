@@ -1,3 +1,10 @@
+static char buf[BUFSIZ];
+#define F(s) fmsg(s, __FILE__, __LINE__)
+const char *fmsg(const char *msg, const char *f, int n) {
+    sprintf(buf, "%s:%d: %s", f, n, msg);
+    return buf;
+}
+
 void clear_vel() {
     KL(dev::clear_vel, (k_cnf(o::q.n)), (o::q.pp, o::q.n));
     if (solids) KL(dev::clear_vel, (k_cnf(s::q.n)), (s::q.pp, s::q.n));
@@ -6,16 +13,18 @@ void clear_vel() {
 
 void update_solid() {
     if (s::q.n) {
-        dbg::check_pp_pu(s::q.pp, s::q.n, "rig, before");
+        dbg::check_pp_pu(s::q.pp, s::q.n, F("solid: before"));
         update_solid0();
-        dbg::check_pp_pu(s::q.pp, s::q.n, "rig, after");
+        dbg::check_pp_pu(s::q.pp, s::q.n, F("solid: after"));
     }
 }
 
 void update_solvent() {
-    dbg::check_pp_pu(o::q.pp, o::q.n, "flu, before");
-    KL(dev::update, (k_cnf(o::q.n)), (dpd_mass, o::q.pp, o::ff, o::q.n));
-    dbg::check_pp_pu(o::q.pp, o::q.n, "flu, update");
+    using namespace o;
+    dbg::check_ff(ff, q.n, F("update_solvent: force: before"));
+    dbg::check_pp_pu(q.pp, q.n, F("update_solvent: particle: before"));
+    KL(dev::update, (k_cnf(q.n)), (dpd_mass, q.pp, ff, q.n));
+    dbg::check_pp_pu(q.pp, q.n, F("update_solvent: particle: after"));
 }
 
 void update_rbc() {
