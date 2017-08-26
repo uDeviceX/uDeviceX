@@ -11,6 +11,7 @@ d=/scratch/snx3000/lisergey/u
 s=../../src
 u.conf $s u/x base.h <<EOF
        DBG_PEEK
+       ODSTR_SAFE
        run
 EOF
 u.make -j > make.log
