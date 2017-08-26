@@ -6,6 +6,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/dpdr       && \
     d $B/dual       && \
     d $B/flu        && \
+    d $B/fsi        && \
     d $B/hforces    && \
     d $B/io         && \
     d $B/l          && \

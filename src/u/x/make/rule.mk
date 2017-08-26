@@ -14,6 +14,7 @@ $B/dump.o: $S/dump.cpp; $X -I$S/.
 $B/field.o: $S/field.cpp; $X -I$S/.
 $B/flu/imp.o: $S/flu/imp.cu; $N -I$S/. -I$S/flu
 $B/flu/int.o: $S/flu/int.cu; $N -I$S/. -I$S/flu
+$B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/. -I$S/fsi
 $B/glb.o: $S/glb.cu; $N -I$S/.
 $B/hforces/imp.o: $S/hforces/imp.cu; $N -I$S/. -I$S/hforces
 $B/io/field.o: $S/io/field.cpp; $X -I$S/. -I$S/io
