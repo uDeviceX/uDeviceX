@@ -14,6 +14,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/mesh       && \
     d $B/odstr      && \
     d $B/odstr/halo && \
+    d $B/odstr/pack && \
     d $B/rbc        && \
     d $B/rdstr      && \
     d $B/rig        && \
