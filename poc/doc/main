@@ -1,3 +1,51 @@
 "${AWK=awk}" '
-{print $0}
-'
+incp($0) {
+    inc($0, "")  # tabulation = 0
+    next
+}
+
+{ print }
+
+function incp(s) { # is include?
+    return s ~ /[ \t]*@include[ \t]/
+}
+
+function inc(s, t) { # process
+    t = t tab(s)     # combine tabulations
+    file(name(s), t)
+}
+
+function file(n, t,   l) {
+    while (getline l < n > 0) {
+	if (incp(l)) inc(l, t)
+	else print t l
+    }
+}
+
+function name(s,   p, i) {
+    p = "@include"
+    i = index(s, p)
+    s = substr(s, i + length(p))
+    s = ltrim(s)
+    return s
+}
+
+function ltrim(s) {
+    sub(/^[ \t]*/, "", s)
+    return s
+}
+
+function tab(s,   t) { # tabulation
+    n = length(s)
+    for (i = 1; i <= n &&  blank(c = ch(s, i)); i++)
+	t = t c
+    return t
+}
+
+function blank(s, i,   c) {
+    c = substr(s, i, 1)
+    return c == " " || c == "\t"
+}
+function ch(s, i) { return substr(s, i, 1) }
+
+' "$@"

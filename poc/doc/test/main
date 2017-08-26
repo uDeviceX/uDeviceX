@@ -1,0 +1,3 @@
+# TEST: doc.t0
+u.doc ex/hw.md  > doc.out.txt
+
