@@ -1,9 +1,12 @@
+# wherer to put headers?
+d = frag
+
 # install target
-T=../../src/frag
-F=frag/ncell.h
+T = ../../src/$d
+F = $d/ncell.h
 
 # examples
-E=ex/0 ex/1 ex/2 ex/3
+E = ex/0 ex/1 ex/2 ex/3
 
 CXXFLAGS += -O2 -g
 CXXFLAGS += -Wall -Wextra
