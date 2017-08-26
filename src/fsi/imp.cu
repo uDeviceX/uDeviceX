@@ -10,7 +10,6 @@
 #include "d/ker.h"
 
 #include "l/m.h"
-#include "l/off.h"
 #include "scan/int.h"
 
 #include "rnd/imp.h"
@@ -39,13 +38,9 @@
 #include "io/field.h"
 #include "io/rbc.h"
 #include "bund.h"
-#include "diag.h"
-
 #include "dbg.h"
 
 #include "restart.h"
-
-#include "glb.h"
 
 #include "k/read.h"
 #include "k/write.h"
@@ -53,30 +48,8 @@
 #include "k/index.h"
 
 #include "clist/int.h"
-
-#include "mcomm/type.h"
-#include "mcomm/int.h"
-
 #include "rbc/int.h"
-
-#include "mdstr/buf.h"
-#include "mdstr/tic.h"
-#include "mdstr/int.h"
-#include "rdstr/int.h"
-
-#include "field.h"
-
 #include "forces.h"
-
-#include "sdf/type.h"
-#include "sdf/int.h"
-
-#include "wall/int.h"
-
-#include "flu/int.h"
-
-#include "odstr/type.h"
-#include "odstr/int.h"
 
 #include "k/fsi/type.h"
 #include "k/fsi/decl.h"
