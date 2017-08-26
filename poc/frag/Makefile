@@ -1,30 +1,27 @@
+include make/ex.mk
+include make/frag.mk
+
 # wherer to put headers?
-d = .
 
 # install target
-T = ../../src/$d
-F = $d/frag.h
-
-# examples
-E = ex/0 ex/1 ex/2 ex/3
+iF = ../../src/frag.h
+D  = ../../doc/frag.md
 
 CXXFLAGS += -O2 -g
 CXXFLAGS += -Wall -Wextra
 CXXFLAGS += -I.
 
-all: $F $E
-$E:  $F
+# targets F (files), E (examples), T (tests), iD (docs)
+# iF (installed F)
 
-$F:
-	main/main $d
+install: $F $E $T $D $(iF)
 
-test: $E
-	atest ex/0.sh && \
-	for e in $E; do $$e; done
+# deps
+$F:; main/main .
 
-install: $F
-	mkdir -p  $T
-	cp frag.h $T
+$E: $F # implicit rule
+$T: $F $E; $(run)
+$D: doc/frag.md; u.doc doc/frag.md > $D
+$(iF): $F; cp $F ../../src/frag.h
 
-.PHONY: clean test install
-clean:; rm -f $F $E
+.PHONY: clean doc
