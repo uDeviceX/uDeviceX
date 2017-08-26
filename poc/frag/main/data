@@ -1,3 +1,3 @@
-./to0  | ./id                     | ./def 'static const int frag_id000[3][3][3] = '
-./to0   | ./dir  | ./tbl  | ./arr | ./def 'static const int frag_to_dir[27][3] = '
+./to  | ./id                     | ./def 'static const int frag_id000[3][3][3] = '
+./to   | ./dir  | ./tbl  | ./arr | ./def 'static const int frag_to_dir[27][3] = '
 ./fro  | ./dir  | ./tbl  | ./arr | ./def 'static const int frag_fro_dir[27][3] = '

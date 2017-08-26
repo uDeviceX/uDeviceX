@@ -1,1 +1,2 @@
-./to0 | ./inv
+# from
+./to | ./inv
