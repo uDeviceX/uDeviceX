@@ -3,7 +3,7 @@ d = frag
 
 # install target
 T = ../../src/$d
-F = $d/ncell.h
+F = $d/common.h
 
 # examples
 E = ex/0 ex/1 ex/2 ex/3

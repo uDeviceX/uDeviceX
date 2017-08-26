@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "frag/ncell.h"
+
+#include "frag/common.h"
+#include "frag/to.h"
+#include "frag/fro.h"
 
 #define XS 10
 #define YS 20
