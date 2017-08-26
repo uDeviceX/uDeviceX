@@ -10,7 +10,7 @@ CXXFLAGS += -I.
 # targets F (files), E (examples), test, D (docs)
 # iF (installed F)
 
-E = ex/0 ex/1 ex/2 ex/3
+E = ex/0 ex/1 ex/2 ex/3 ex/4
 F = frag.h
 
 # rule

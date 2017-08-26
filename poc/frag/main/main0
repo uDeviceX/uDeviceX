@@ -1,7 +1,5 @@
 . ./u
 
-d=$1
-
 e '/* see doc/frag.md */'
 ./to  | ./id                    | ./def 'static const int frag_id000[3][3][3] = '
 cat main/macro/ncell.h
