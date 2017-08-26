@@ -1,4 +1,4 @@
 . u
 . ./main/data
 l
-. ./main/macro
+cat ./main/macro.h
