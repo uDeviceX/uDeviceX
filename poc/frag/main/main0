@@ -1,4 +1,8 @@
 . ./u
-. ./main/data
+./to  | ./id                    | ./def 'static const int frag_id000[3][3][3] = '
+./to  | ./dir  | ./tbl  | ./arr | ./def 'static const int frag_to_dir[27][3] = '
+./fro | ./dir  | ./tbl  | ./arr | ./def 'static const int frag_fro_dir[27][3] = '
 l
-cat ./main/macro.h
+cat main/macro/to.h
+cat main/macro/fro.h
+cat main/macro/ncell.h
