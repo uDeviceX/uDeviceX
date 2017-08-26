@@ -1,3 +1,6 @@
 # TEST: doc.t0
 u.doc ex/hw.md  > doc.out.txt
 
+# TEST: doc.t1
+u.doc ex/3.md  > doc.out.txt
+

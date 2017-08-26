@@ -1,0 +1,22 @@
+# include many files
+
+A
+
+    #include <stdio.h>
+    int main() {
+        fputs("Hello, World!\n", stdout);
+    }
+
+B
+	
+	#include <stdio.h>
+	int main() {
+	    fputs("Hello, World!\n", stdout);
+	}
+
+C
+
+	#include <stdio.h>
+	int main() {
+	    fputs("Hello, World!\n", stdout);
+	}

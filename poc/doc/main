@@ -1,6 +1,6 @@
 "${AWK=awk}" '
 incp($0) {
-    inc($0, "")  # tabulation = 0
+    inc($0, "")  # tabulation = ""
     next
 }
 
@@ -15,11 +15,12 @@ function inc(s, t) { # process
     file(name(s), t)
 }
 
-function file(n, t,   l) {
+function file(n, t,   l) { # name, tab, line
     while (getline l < n > 0) {
 	if (incp(l)) inc(l, t)
 	else print t l
     }
+    close(n)
 }
 
 function name(s,   p, i) {
