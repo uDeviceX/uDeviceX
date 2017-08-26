@@ -1,9 +1,9 @@
 # wherer to put headers?
-d = frag
+d = .
 
 # install target
 T = ../../src/$d
-F = $d/common.h $d/fro.h $d/to.h
+F = $d/frag.h
 
 # examples
 E = ex/0 ex/1 ex/2 ex/3

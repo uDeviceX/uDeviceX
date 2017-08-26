@@ -9,6 +9,8 @@ common () {
 to    ()  { ./to  | ./dir  | ./tbl  | ./arr | ./def 'static const int frag_to_dir[27][3] = '; }
 fro   ()  { ./fro | ./dir  | ./tbl  | ./arr | ./def 'static const int frag_fro_dir[27][3] = '; }
 
-common                             > $d/common.h
-{ to;  cat main/macro/to.h; }      > $d/to.h
-{ fro; cat main/macro/fro.h; }     > $d/fro.h
+common
+l
+{ to;  cat main/macro/to.h; }
+l
+{ fro; cat main/macro/fro.h; }
