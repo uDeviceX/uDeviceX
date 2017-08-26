@@ -221,6 +221,11 @@ namespace dev {
   #include "sim/odstr1.h"
 #elif defined(ODSTR0)
   #include "sim/odstr0.h"
+#elif defined(ODSTR_SAFE)
+  namespace sub {
+    #include "sim/odstr1.h"
+  }
+  #include "sim/odstr.safe.h"
 #else
   #error ODSTR[01] is undefined
 #endif
