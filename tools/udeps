@@ -1,5 +1,20 @@
 #!/bin/bash
 
 U=u/x
-u.u0 "$U" | D=_ G=. c.main "$U"/make "$U"/make/_
+
+build () {
+    u.u0 "$U" | D=_ G=. c.main "$U"/make "$U"/make/_
+}
+
+list () {
+    u.u0 "$U" | D=_ G=. c.act            "$U"/make/_
+}
+
+if test $# -eq 1 -a "$1" = -l
+then list
+else build
+fi
+
+
+
 
