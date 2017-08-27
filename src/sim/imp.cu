@@ -125,15 +125,16 @@ namespace dev {
 }
 
 #include "dec.h"
+#include "force/common.h"
+#include "force/dpd.h"
+#include "force/imp.h"
+
 #include "ini.h"
 #include "fin.h"
 #include "generic.h"
 #include "dump.h"
 #include "tag.h"
 
-#include "force/common.h"
-#include "force/dpd.h"
-#include "force/imp.h"
 
 #define HST (true)
 #define DEV (false)
