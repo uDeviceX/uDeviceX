@@ -58,6 +58,15 @@ static __device__ bool valid_unpacked_p_pu(float x, float y, float z, bool verbo
     return ok;
 }
 
+static __device__ bool valid_vel3(float vx, float vy, float vz, bool verbose) {
+    bool ok = true;
+    ok &= valid_vel(vx, XS, verbose);
+    ok &= valid_vel(vy, YS, verbose);
+    ok &= valid_vel(vz, ZS, verbose);
+
+    return ok;
+}
+
 static __device__ bool valid_p_pu(const Particle *p, bool verbose) {
     float x, y, z;
     x  = p->r[X];  y = p->r[Y];  z = p->r[Z];
