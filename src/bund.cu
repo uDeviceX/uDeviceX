@@ -82,43 +82,7 @@
 
 #include "sdstr.decl.h"
 #include "sdstr.impl.h"
-
-#include "x/type.h"
-  #include "rex/type/remote.h"
-  #include "rex/type/local.h"
-  #include "rex/decl.h"
-
-  #include "k/rex/type.h"
-  #include "k/rex/decl.h"
-  #include "k/rex/common.h"
-  #include "k/rex/x.h" /* TODO */
-  #include "k/rex/pack.h"
-  #include "k/rex/scan.h"
-  #include "k/rex/scatter.h"
-  #include "k/rex/unpack.h"
-
-  #include "rex/ini.h"
-  #include "rex/copy.h"
-  #include "rex/wait.h"
-  #include "rex/halo.h"
-  #include "rex/scan.h"
-  #include "rex/pack.h"
-  #include "rex/send.h"
-  #include "rex/recv.h"
-  #include "rex/unpack.h"
-  #include "rex/fin.h"
-
-#include "x/decl.h"
-#include "x/common.h"
-#include "x/ticketcom.h"
-#include "x/ticketr.h"
-#include "x/tickettags.h"
-#include "x/ticketpack.h"
-#include "x/ticketpinned.h"
-#include "x/ini.h"
-#include "x/fin.h"
-#include "x/imp.h"
-
+#include "x/int.h"
 #include "dpd/local.h"
 
 namespace dpdx {
