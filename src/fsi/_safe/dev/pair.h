@@ -21,7 +21,8 @@ static __device__ void valid_p(float3 r, float3 v) {
     f3xyz(r,  &x,  &y,  &z);
     f3xyz(v, &vx, &vy, &vz);
 
-    assert(dbg::dev::valid_unpacked_p(x, y, z, vx, vy, vz, verbose));
+    assert(dbg::dev::valid_unpacked_p_pu(x, y, z, verbose));
+    assert(dbg::dev::valid_vel3(vx, vy, vz, verbose));
 }
 
 static __device__ void pair0(const Pa l, const Pa r, float rnd, /**/ float *fx, float *fy, float *fz) {
