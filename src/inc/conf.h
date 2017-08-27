@@ -198,11 +198,6 @@
   #define ODSTR1
 #endif
 
-/* which version of sim/update.h to use : siee bund.cu */
-#if !defined(UPDATE1) && !defined(UPDATE_SAFE)
-  #define UPDATE1
-#endif
-
 /* forces in sim:: on/off */
 #if !defined(FORCE0) && !defined(FORCE1)
   #define FORCE1
