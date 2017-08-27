@@ -29,7 +29,7 @@ static __device__ err_type error;
 
 namespace err {
 
-void ini() {
+static void ini() {
     err_type e = NONE;
     CC(d::MemcpyToSymbol(&dev::error, &e, sizeof(err_type)));
 }
@@ -40,7 +40,7 @@ static void errmsg(err_type e, const char *fun, const char *msg) {
     }
 }
 
-void handle(const char *fun, const char *msg) {
+static void handle(const char *fun, const char *msg) {
     err_type err;
     CC(d::MemcpyFromSymbol(&err, &dev::error, sizeof(err_type)));
     errmsg(err, fun, msg);
