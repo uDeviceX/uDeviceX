@@ -7,6 +7,7 @@ set -eu
 
 n=40
 d=/scratch/snx3000/lisergey/u
+Time=00:15:00
 
 s=../../src
 u.conf $s u/x base.h <<EOF
@@ -22,4 +23,4 @@ safe_cp "$d/$n/sdf.dat" .
 
 x=$n y=1 z=1
 u.strtdir  . $x $y $z
-u.batch   $x $y $z ./udx
+u.batch   $x $y $z ./udx $Time
