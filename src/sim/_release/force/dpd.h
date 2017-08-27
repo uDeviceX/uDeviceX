@@ -15,6 +15,4 @@ void forces_dpd() {
     post_expected_recv(&h.tc, &h.tr);
     fremote(h.trnd, h.ts, h.tr, /**/ ff);
     h.tc.first = false;
-
-    dbg::check_ff(o::ff, o::q.n, "flu, dpd forces");
 }
