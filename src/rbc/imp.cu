@@ -8,7 +8,7 @@
 #include "l/m.h"
 #include "l/off.h"
 
-#include "common.h"
+#include "inc/def.h"
 #include "msg.h"
 #include "m.h"
 #include "cc.h"

@@ -61,3 +61,4 @@ $B/tcells/int.o: $S/tcells/int.cpp; $X -I$S/. -I$S/tcells
 $B/wall/exch.o: $S/wall/exch.cpp; $X -I$S/. -I$S/wall
 $B/wall/imp.o: $S/wall/imp.cu; $N -I$S/. -I$S/wall
 $B/wall/int.o: $S/wall/int.cu; $N -I$S/. -I$S/wall
+$B/x/imp.o: $S/x/imp.cu; $N -I$S/. -I$S/x

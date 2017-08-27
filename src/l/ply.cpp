@@ -3,7 +3,7 @@
 #include <string.h>
 #include <assert.h>
 #include "inc/type.h"
-#include "common.h"
+#include "inc/def.h"
 #include "msg.h"
 #include "l/ply.h"
 

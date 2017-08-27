@@ -25,4 +25,5 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/sdf        && \
     d $B/sdstr      && \
     d $B/tcells     && \
-    d $B/wall      
+    d $B/wall       && \
+    d $B/x         

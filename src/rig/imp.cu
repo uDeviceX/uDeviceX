@@ -9,7 +9,7 @@
 #include "d/api.h"
 
 #include "m.h"
-#include "common.h"
+#include "inc/def.h"
 #include "msg.h"
 #include "cc.h"
 #include "mc.h"

@@ -16,7 +16,7 @@
 #include "rnd/imp.h"
 #include "rnd/dev.h"
 
-#include "common.h"
+#include "inc/def.h"
 #include "msg.h"
 #include "m.h"
 #include "cc.h"

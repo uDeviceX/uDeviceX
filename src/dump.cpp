@@ -11,7 +11,7 @@
 #include "l/m.h"
 
 #include "inc/type.h"
-#include "common.h"
+#include "inc/def.h"
 #include "msg.h"
 #include "inc/mpi.h"
 #include "dump.h"

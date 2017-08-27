@@ -5,7 +5,7 @@
 #include "inc/conf.h"
 
 #include "d/api.h"
-#include "common.h"
+#include "inc/def.h"
 #include "msg.h"
 #include "cc.h"
 #include "inc/type.h"

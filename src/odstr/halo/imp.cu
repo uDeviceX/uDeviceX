@@ -5,7 +5,7 @@
 #include "d/q.h"
 #include "d/ker.h"
 
-#include "common.h"
+#include "inc/def.h"
 #include "msg.h"
 #include "m.h"
 #include "cc.h"
