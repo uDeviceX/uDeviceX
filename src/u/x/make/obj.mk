@@ -9,4 +9,4 @@ O = $B/bund.o $B/cc.o $B/clist/imp.o $B/cnt/imp.o $B/common.mpi.o $B/d/api.o $B/
     $B/rbc/int.o $B/rdstr/imp.o $B/rdstr/int.o $B/restart.o $B/rig/imp.o \
     $B/rig/int.o $B/rnd/imp.o $B/scan/imp.o $B/sdf/imp.o $B/sdf/int.o \
     $B/sdstr/imp.o $B/solid.o $B/tcells/imp.o $B/tcells/int.o $B/wall/exch.o \
-    $B/wall/imp.o $B/wall/int.o $B/x/imp.o
+    $B/wall/imp.o $B/wall/int.o
