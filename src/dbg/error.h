@@ -24,7 +24,7 @@ static const char *err_str[NERRORS] = {ERRLIST(make_str)};
 typedef int err_type;
 
 namespace dev {
-__device__ err_type error;
+static __device__ err_type error;
 } // dev
 
 namespace err {

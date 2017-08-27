@@ -43,7 +43,7 @@ static __device__ bool valid_p(const Particle *p, bool verbose) {
     return valid_unpacked_p(x, y, z, vx, vy, vz, verbose);
 }
 
-__global__ void check_pp(const Particle *pp, int n, bool verbose = false) {
+static __global__ void check_pp(const Particle *pp, int n, bool verbose = false) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
     if (!valid_p(pp + i, verbose)) atomicExch(&error, err::INVALID);
@@ -65,7 +65,7 @@ static __device__ bool valid_p_pu(const Particle *p, bool verbose) {
     return valid_unpacked_p_pu(x, y, z, verbose);
 }
 
-__global__ void check_pp_pu(const Particle *pp, int n, bool verbose = false) {
+static __global__ void check_pp_pu(const Particle *pp, int n, bool verbose = false) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
     if (!valid_p_pu(pp + i, verbose)) atomicExch(&error, err::INVALID);
@@ -97,7 +97,7 @@ static __device__ bool valid_f(const Force *f, bool verbose) {
     return valid_unpacked_f(fx, fy, fz, verbose);
 }
 
-__global__ void check_ff(const Force *ff, int n, bool verbose = false) {
+static __global__ void check_ff(const Force *ff, int n, bool verbose = false) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
     if(!valid_f(ff + i, verbose)) atomicExch(&error, err::INVALID);

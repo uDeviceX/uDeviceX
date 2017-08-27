@@ -1,7 +1,6 @@
 #include "dbg/error.h"
 #include "dbg/dev.h"
 namespace dev {
-
 static __device__ void valid_f(float fx, float fy, float fz) {
     enum {X, Y, Z};
     bool verbose = true;
