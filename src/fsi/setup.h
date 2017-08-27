@@ -1,14 +1,14 @@
 namespace fsi {
 static void setup_first() {
-    k_fsi::t::start.channelDesc = cudaCreateChannelDesc<int>();
-    k_fsi::t::start.filterMode = cudaFilterModePoint;
-    k_fsi::t::start.mipmapFilterMode = cudaFilterModePoint;
-    k_fsi::t::start.normalized = 0;
+    dev::t::start.channelDesc = cudaCreateChannelDesc<int>();
+    dev::t::start.filterMode = cudaFilterModePoint;
+    dev::t::start.mipmapFilterMode = cudaFilterModePoint;
+    dev::t::start.normalized = 0;
 
-    k_fsi::t::pp.channelDesc = cudaCreateChannelDesc<float2>();
-    k_fsi::t::pp.filterMode = cudaFilterModePoint;
-    k_fsi::t::pp.mipmapFilterMode = cudaFilterModePoint;
-    k_fsi::t::pp.normalized = 0;
+    dev::t::pp.channelDesc = cudaCreateChannelDesc<float2>();
+    dev::t::pp.filterMode = cudaFilterModePoint;
+    dev::t::pp.mipmapFilterMode = cudaFilterModePoint;
+    dev::t::pp.normalized = 0;
 }
 
 void setup(const Particle *const pp, int n, const int *const cellsstart) {
@@ -21,10 +21,10 @@ void setup(const Particle *const pp, int n, const int *const cellsstart) {
 
     offset = 0;
     if (n)
-        CC(cudaBindTexture(&offset, &k_fsi::t::pp, pp, &k_fsi::t::pp.channelDesc, sizeof(float) * 6 * n));
+        CC(cudaBindTexture(&offset, &dev::t::pp, pp, &dev::t::pp.channelDesc, sizeof(float) * 6 * n));
 
     nc = XS * YS * ZS;
-    CC(cudaBindTexture(&offset, &k_fsi::t::start, cellsstart, &k_fsi::t::start.channelDesc, sizeof(int) * nc));
+    CC(cudaBindTexture(&offset, &dev::t::start, cellsstart, &dev::t::start.channelDesc, sizeof(int) * nc));
                        
 }
 }

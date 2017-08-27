@@ -1,4 +1,4 @@
-namespace k_fsi {
+namespace dev {
 static __device__ void warp2rv(const Particle *p, int n, int i, /**/
                                float  *x, float  *y, float  *z,
                                float *vx, float *vy, float *vz) {

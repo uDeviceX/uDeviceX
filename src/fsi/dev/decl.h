@@ -1,4 +1,4 @@
-namespace k_fsi {
+namespace dev {
 namespace t {
 texture<float2, cudaTextureType1D> pp;
 texture<int, cudaTextureType1D> start;

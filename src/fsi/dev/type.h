@@ -1,4 +1,4 @@
-namespace k_fsi {
+namespace dev {
 struct Pa { /* local particle */
     float x, y, z;
     float vx, vy, vz;
