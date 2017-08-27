@@ -120,9 +120,10 @@ namespace dev {
 #else
   #include "sch/vv.h"
 #endif
-
 #include "dev.h"
+#include "force/dev.h"
 }
+
 #include "dec.h"
 #include "ini.h"
 #include "fin.h"
