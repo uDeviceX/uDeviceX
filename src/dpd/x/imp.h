@@ -1,4 +1,3 @@
-
 void flocal(Particle *pp, int *sstart, const int n, const float seed, /**/ Force *ff) {
     if (n) {
         Texo<float2> texpp;
