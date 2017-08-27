@@ -7,7 +7,6 @@
 #include "m.h" /* mini-MPI and -device */
 #include "d/api.h"
 
-#include "bund.h"
 #include "glb.h"
 
 #include "inc/dev.h"
