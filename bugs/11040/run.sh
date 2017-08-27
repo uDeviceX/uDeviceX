@@ -7,13 +7,12 @@ set -eu
 
 n=40
 d=/scratch/snx3000/lisergey/u
-Time=10:00:00
+Time=00:15:00
 
 s=../../src
 u.conf $s u/x base.h <<EOF
-       DBG_PEEK
+       DBG_NONE
        ODSTR_SAFE
-       KL_SYNC
        run
 EOF
 u.make -j > make.log
