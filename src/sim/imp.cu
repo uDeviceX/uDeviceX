@@ -149,13 +149,7 @@ namespace dev {
 #undef HST
 #undef DEV
 
-#if   defined(UPDATE1)
-  #include "update/release.h"
-#elif defined(UPDATE_SAFE)
-  #include "update/safe.h"
-#else
-  #error UPDATE* is undefined
-#endif
+#include "update.h"
 
 #if   defined(ODSTR1)
   #include "odstr/release.h"

@@ -40,7 +40,7 @@ $B/msg.o: $S/msg.cpp; $X -I$S/.
 $B/odstr/halo/imp.o: $S/odstr/halo/imp.cu; $N -I$S/. -I$S/odstr/halo
 $B/odstr/imp.o: $S/odstr/imp.cu; $N -I$S/. -I$S/odstr
 $B/odstr/int.o: $S/odstr/int.cu; $N -I$S/. -I$S/odstr
-$B/odstr/pack/imp.o: $S/odstr/pack/imp.cu; $N -I$S/. -I$S/odstr/pack -I$S/odstr/pack/_safe
+$B/odstr/pack/imp.o: $S/odstr/pack/imp.cu; $N -I$S/. -I$S/odstr/pack -I$S/odstr/pack/_release
 $B/os.o: $S/os.cpp; $X -I$S/.
 $B/rbc/imp.o: $S/rbc/imp.cu; $N -I$S/. -I$S/rbc
 $B/rbc/int.o: $S/rbc/int.cu; $N -I$S/. -I$S/rbc
@@ -53,7 +53,7 @@ $B/rnd/imp.o: $S/rnd/imp.cpp; $X -I$S/. -I$S/rnd
 $B/scan/imp.o: $S/scan/imp.cu; $N -I$S/. -I$S/scan
 $B/sdf/imp.o: $S/sdf/imp.cu; $N -I$S/. -I$S/sdf
 $B/sdf/int.o: $S/sdf/int.cu; $N -I$S/. -I$S/sdf
-$B/sim/imp.o: $S/sim/imp.cu; $N -I$S/. -I$S/sim -I$S/sim/_safe
+$B/sim/imp.o: $S/sim/imp.cu; $N -I$S/. -I$S/sim -I$S/sim/_release
 $B/solid.o: $S/solid.cu; $N -I$S/.
 $B/tcells/imp.o: $S/tcells/imp.cu; $N -I$S/. -I$S/tcells
 $B/tcells/int.o: $S/tcells/int.cpp; $X -I$S/. -I$S/tcells
