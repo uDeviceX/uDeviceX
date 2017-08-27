@@ -130,14 +130,7 @@ namespace dev {
 
 #include "force/common.h"
 #include "force/dpd.h"
-#if   defined(FORCE1)
-  #include "force1.h"
-#elif defined(FORCE0)
-  #include "force0.h"
-#else
-  #error FORCE[01] is undefined
-#endif
-
+#include "force/imp.h"
 
 #define HST (true)
 #define DEV (false)
