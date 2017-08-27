@@ -1,5 +1,7 @@
 # filter out files in u/
 find . \
+     -type d       -o  \
+     -type f       -o  \
      -name '*.cu'  -o  \
      -name '*.cpp' -o  \
      -name '*.h'    |  \
