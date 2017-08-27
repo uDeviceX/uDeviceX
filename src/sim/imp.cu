@@ -85,6 +85,7 @@
 
 #include "sdstr/dec.h"
 #include "sdstr/imp.h"
+#include "sdstr/templ.h"
 
 namespace dpdx {
 namespace dev {
