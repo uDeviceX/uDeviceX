@@ -7,13 +7,12 @@ set -eu
 
 n=40
 d=/scratch/snx3000/lisergey/u
-Time=00:15:00
+Time=10:00:00
 
 s=../../src
 u.conf $s u/x base.h <<EOF
        DBG_PEEK
        ODSTR_SAFE
-       UPDATE_SAFE
        KL_SYNC
        run
 EOF
