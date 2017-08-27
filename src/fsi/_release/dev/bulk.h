@@ -36,7 +36,7 @@ static __device__ void bulk0(const Pa l, int lid, const Map m, float seed, /**/
 }
 
 static __device__ void bulk1(const Pa l, const Fo f, int i, const Map m, float seed, /**/ float *ff) {
-    float fx, fy, fz; /* "local" force */
+    float fx, fy, fz; /* local force */
     bulk0(l, i, m, seed, /**/ &fx, &fy, &fz, ff);
     atomicAdd(f.x, fx);
     atomicAdd(f.y, fy);
