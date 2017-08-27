@@ -13,10 +13,8 @@ static __device__ void p2rv(const float2 *p, int i, /**/
     assert(dbg::dev::valid_vel3(*vx, *vy, *vz, verbose));
 }
 
-static __device__ Pa pp2p(float2 *pp, int i) {
-    Pa p;
-    p2rv(pp, i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
-    return p;
+static __device__ void pp2p(float2 *pp, int i, /**/ Pa *p) {
+    p2rv(pp, i, /**/ &p->x, &p->y, &p->z,   &p->vx, &p->vy, &p->vz);
 }
 
 static __device__ int p2map(int zplane, int n, const Pa p, /**/ Map *m) {
@@ -52,7 +50,7 @@ static __device__ void bulk2(float2 *pp, int i, int zplane, int n, float seed, /
     Pa p;
     Fo f; /* "local" particle */
     Map m;
-    p = pp2p(pp, i);
+    pp2p(pp, i, /**/ &p);
     f = ff2f(ff, i);
     if (!p2map(zplane, n, p, /**/ &m)) return;
     bulk1(p, f, i, m, seed, /**/ ff0);
