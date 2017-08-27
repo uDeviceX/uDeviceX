@@ -15,6 +15,7 @@ static void bulk0(ParticlesWrap *w) {
     n0 = w->n;
     n1 = wo->n;
 
+    dbg::check_vv(pp, n0, F("B"));
     dbg::check_pp_pu(pp, n0, F("B"));
     KL(dev::bulk, (k_cnf(3*n0)), ((float2*)pp, n0, n1, rnd, (float*)w->f, (float*)wo->f));
 }

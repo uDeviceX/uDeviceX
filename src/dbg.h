@@ -7,4 +7,7 @@ void check_pp_pu(const Particle *pp, int n, const char *M);
 
 /* check if forces are within bounds */
 void check_ff(const    Force *ff, int n, const char *M);
+
+/* check if velocities are sane */
+void check_vv(const    Particle *pp, int n, const char *M);
 } // dbg

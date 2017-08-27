@@ -74,12 +74,22 @@ static __device__ bool valid_p_pu(const Particle *p, bool verbose) {
     return valid_unpacked_p_pu(x, y, z, verbose);
 }
 
+static __device__ bool valid_vv(const Particle *p, bool verbose) {
+    const float *v = p->v;
+    return valid_vel3(v[X], v[Y], v[Z], verbose);
+}
+
 static __global__ void check_pp_pu(const Particle *pp, int n, bool verbose = false) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
     if (!valid_p_pu(pp + i, verbose)) atomicExch(&error, err::INVALID);
 }
 
+static __global__ void check_vv(const Particle *pp, int n, bool verbose = false) {
+    int i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i >= n) return;
+    if (!valid_vv(pp + i, verbose)) atomicExch(&error, err::INVALID);
+}
 
 static __device__ bool valid_acc(float a, int L, bool verbose) {
     float dx = fabs(a * dt * dt);
