@@ -1,5 +1,5 @@
 #!/bin/bash
 
 U=u/x
-u.u0 "$U" | D=_ G=. c.main "$U"/make -- _safe --
+u.u0 "$U" | D=_ G=. c.main "$U"/make "$U"/make/_
 
