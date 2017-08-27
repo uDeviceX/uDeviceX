@@ -124,6 +124,8 @@ namespace dev {
 #include "force/dev.h"
 }
 
+/* local */
+#include "type.h"
 #include "dec.h"
 #include "force/common.h"
 #include "force/dpd.h"
