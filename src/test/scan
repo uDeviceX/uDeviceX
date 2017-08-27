@@ -1,12 +1,12 @@
-# TEST: scan.t0
+# nTEST: scan.t0
 (cd ../cmd; make ) > /dev/null
 u.conf0 u/scan
 { u.make -j;     } > /dev/null
-seq 16 | ./udx >  scan.out.txt
+seq 16 | u.run ./udx >  scan.out.txt
 
-# TEST: scan.t1
+# nTEST: scan.t1
 (cd ../cmd; make ) > /dev/null
 u.conf0 u/scan
 { u.make -j;     } > /dev/null
-seq 64 | ./udx >  scan.out.txt
+seq 64 | u.run ./udx >  scan.out.txt
 
