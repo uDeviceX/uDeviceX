@@ -1,8 +1,4 @@
 void forces(bool wall0) {
-
-    std::vector<ParticlesWrap> w_r;
-    if (solids0) w_r.push_back(ParticlesWrap(s::q.pp, s::q.n, s::ff));
-    if (rbcs)    w_r.push_back(ParticlesWrap(r::q.pp, r::q.n, r::ff));
     clear_forces(o::ff, o::q.n);
     if (solids0) clear_forces(s::ff, s::q.n);
     if (rbcs)    clear_forces(r::ff, r::q.n);
@@ -11,6 +7,9 @@ void forces(bool wall0) {
     if (wall0 && w::q.n) forces_wall();
     forces_rbc();
 
+    std::vector<ParticlesWrap> w_r;
+    if (solids0) w_r.push_back(ParticlesWrap(s::q.pp, s::q.n, s::ff));
+    if (rbcs)    w_r.push_back(ParticlesWrap(r::q.pp, r::q.n, r::ff));
     if (contactforces) forces_cnt(&w_r);
     SolventWrap w_s(o::q.pp, o::q.n, o::ff, o::q.cells->start, o::q.cells->count);
     if (fsiforces)     forces_fsi(&w_s, &w_r);
