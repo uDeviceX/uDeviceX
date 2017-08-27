@@ -11,7 +11,7 @@ Time=00:15:00
 
 s=../../src
 u.conf $s u/x base.h <<EOF
-       DBG_NONE
+       DBG_PEEK
        ODSTR_SAFE
        run
 EOF

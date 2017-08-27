@@ -1,6 +1,6 @@
 static char buf[BUFSIZ];
 #define F(s) fmsg(s, __FILE__, __LINE__)
-const char *fmsg(const char *msg, const char *f, int n) {
+static const char *fmsg(const char *msg, const char *f, int n) {
     sprintf(buf, "%s:%d: %s", f, n, msg);
     return buf;
 }
