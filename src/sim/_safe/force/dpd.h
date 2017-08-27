@@ -9,14 +9,12 @@ void forces_dpd() {
     pack(q.pp, /**/ &h.ts);
     post_send(&h.tc, &h.ts);
 
-    dbg::check_ff(o::ff, o::q.n, F("B"));
     flocal(tz.zip0, tz.zip1, q.n, start, count, trnd.rnd, /**/ ff);
     dbg::check_ff(o::ff, o::q.n, F("A"));
 
     wait_recv(&h.tc);
     recv(&h.tr);
     post_expected_recv(&h.tc, &h.tr);
-    dbg::check_ff(o::ff, o::q.n, F("B"));    
     fremote(h.trnd, h.ts, h.tr, /**/ ff);
     dbg::check_ff(o::ff, o::q.n, F("A"));
     h.tc.first = false;
