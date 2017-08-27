@@ -11,4 +11,4 @@ struct H { /* halo tikets : was h:: */
     dpdr::TicketRIhalo tri;
 };
 
-}} /* namespace */
+} /* namespace */
