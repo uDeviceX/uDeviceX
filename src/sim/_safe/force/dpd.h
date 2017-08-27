@@ -9,7 +9,9 @@ void forces_dpd() {
     pack(q.pp, /**/ &h.ts);
     post_send(&h.tc, &h.ts);
 
+    dbg::check_vv(o::q.pp, o::q.n, F(""));
     flocal(tz.zip0, tz.zip1, q.n, start, count, trnd.rnd, /**/ ff);
+    dbg::check_vv(o::q.pp, o::q.n, F(""));
     dbg::check_ff(o::ff, o::q.n, F("A"));
 
     wait_recv(&h.tc);

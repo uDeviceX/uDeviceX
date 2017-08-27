@@ -27,11 +27,14 @@ void clear_forces(Force* ff, int n) {
 
 void forces_wall() {
     dbg::check_ff(o::ff, o::q.n, F("B"));
+    dbg::check_vv(o::q.pp, o::q.n, F(""));
     dbg::check_vv(s::q.pp, s::q.n, F(""));
+
     if (o::q.n)            wall::interactions(w::qsdf, w::q, w::t, SOLVENT_TYPE, o::q.pp, o::q.n,   /**/ o::ff);
     if (solids0 && s::q.n) wall::interactions(w::qsdf, w::q, w::t, SOLID_TYPE, s::q.pp, s::q.n, /**/ s::ff);
     if (rbcs && r::q.n)    wall::interactions(w::qsdf, w::q, w::t, SOLID_TYPE, r::q.pp, r::q.n, /**/ r::ff);
     dbg::check_ff(o::ff, o::q.n, F("A"));
+    dbg::check_vv(o::q.pp, o::q.n, F(""));
     dbg::check_vv(s::q.pp, s::q.n, F(""));
 }
 

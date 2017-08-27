@@ -7,7 +7,7 @@ set -eu
 
 n=40
 d=/scratch/snx3000/lisergey/u
-Time=00:15:00
+Time=00:25:00
 
 s=../../src
 u.conf $s u/x base.h <<EOF
