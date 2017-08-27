@@ -83,8 +83,8 @@
 #include "x/int.h"
 #include "dpd/local.h"
 
-#include "sdstr.decl.h"
-#include "sdstr.impl.h"
+#include "sdstr/dec.h"
+#include "sdstr/imp.h"
 
 namespace dpdx {
 namespace dev {

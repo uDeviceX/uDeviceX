@@ -1,7 +1,7 @@
 namespace sdstr
 {
 enum {X, Y, Z};
-    
+
 /* decode neighbors linear index to "delta"
    0 -> { 0, 0, 0}
    1 -> { 1, 0, 0}
@@ -43,7 +43,7 @@ void ini(/*io*/ basetags::TagGen *tg) {
     btc = get_tag(tg);
     btp = get_tag(tg);
     bts = get_tag(tg);
-    
+
     _post_recvcnt();
 }
 
@@ -54,10 +54,10 @@ void pack_sendcnt(const Solid *ss_hst, const Particle *pp, const int ns, const i
 
     // decide where to put data
     std::vector<int> dstindices[27];
-        
+
     for (int i = 0; i < ns; ++i) {
         const float *r = ss_hst[i].com;
-            
+
         for (int c = 0; c < 3; ++c)
         vcode[c] = (2 + (r[c] >= -L[c] / 2) + (r[c] >= L[c] / 2)) % 3;
 
@@ -66,18 +66,18 @@ void pack_sendcnt(const Solid *ss_hst, const Particle *pp, const int ns, const i
     }
 
     // resize buufers
-        
+
     for (int i = 0; i < 27; ++i) {
         const int c = dstindices[i].size();
         send_counts[i] = c;
         ssbuf[i].resize(c);
         psbuf[i].resize(c*nv);
     }
-        
+
     nstay = send_counts[0];
 
     // send counts
-        
+
     for (int i = 1; i < 27; ++i)
     l::m::Isend(send_counts + i, 1, MPI_INTEGER, rnk_ne[i], i + btc, cart, &sendcntreq[i - 1]);
 
@@ -130,7 +130,7 @@ int post(const int nv) {
         l::m::Isend(psbuf[i].data(), psbuf[i].size(), datatype::particle, rnk_ne[i], i + btp, cart, &request);
         psendreq.push_back(request);
     }
-        
+
     return nstay + ncome;
 }
 
@@ -184,7 +184,7 @@ void unpack(const int nv, /**/ Solid *ss_hst, Particle *pp) {
     l::m::Waitall(srecvreq.size(), &srecvreq.front(), statuses);
     l::m::Waitall(ssendreq.size(), &ssendreq.front(), statuses);
     srecvreq.clear(); ssendreq.clear();
-        
+
     l::m::Waitall(precvreq.size(), &precvreq.front(), statuses);
     l::m::Waitall(psendreq.size(), &psendreq.front(), statuses);
     precvreq.clear(); psendreq.clear();
