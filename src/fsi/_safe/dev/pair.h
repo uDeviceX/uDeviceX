@@ -34,9 +34,8 @@ static __device__ void pair0(const Pa l, const Pa r, float rnd, /**/ float *fx, 
     v1 = make_float3(l.vx, l.vy, l.vz); v2 = make_float3(r.vx, r.vy, r.vz);
 
     valid_r(r1);
-    valid_v(v1);
-    
     valid_r(r2);
+    valid_v(v1);
     valid_v(v2);
     
     f = forces::dpd(SOLID_TYPE, SOLVENT_TYPE, r1, r2, v1, v2, rnd); /* TODO: type */
