@@ -7,7 +7,7 @@
 #include "m.h" /* mini-MPI and -device */
 #include "d/api.h"
 
-#include "bund.h"
+#include "sim/int.h"
 #include "glb.h"
 
 int main(int argc, char **argv) {
