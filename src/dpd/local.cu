@@ -19,7 +19,7 @@
 
 #if   defined(DEV_CUDA)
   #include "kl.h"
-  #include "forces.h"
+  #include "forces/imp.h"
 
   #include "dpd/imp/type.h"
 

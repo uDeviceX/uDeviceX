@@ -49,7 +49,7 @@
 
 #include "clist/int.h"
 #include "rbc/int.h"
-#include "forces.h"
+#include "forces/imp.h"
 
 #include "k/fsi/type.h"
 #include "k/fsi/decl.h"

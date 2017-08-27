@@ -28,7 +28,7 @@
 #include "sdf/cheap.dev.h"
 
 #include "k/wvel.h"
-#include "forces.h"
+#include "forces/imp.h"
 
 #include "clist/int.h"
 #include "restart.h"

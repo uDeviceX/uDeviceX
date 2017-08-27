@@ -44,7 +44,7 @@
 #include "k/index.h"
 
 #include "clist/int.h"
-#include "forces.h"
+#include "forces/imp.h"
 
 #include "k/cnt/type.h"
 #include "k/cnt/decl.h"
