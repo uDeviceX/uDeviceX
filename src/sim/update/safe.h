@@ -5,19 +5,13 @@ void clear_vel() {
 }
 
 void update_solid() {
-    if (s::q.n) {
-        dbg::check_pp_pu(s::q.pp, s::q.n, F("solid: before"));
+    if (s::q.n)
         update_solid0();
-        dbg::check_pp_pu(s::q.pp, s::q.n, F("solid: after"));
-    }
 }
 
 void update_solvent() {
     using namespace o;
-    dbg::check_ff(ff, q.n, F("update_solvent: force: before"));
-    dbg::check_pp_pu(q.pp, q.n, F("update_solvent: particle: before"));
     KL(dev::update, (k_cnf(q.n)), (dpd_mass, q.pp, ff, q.n));
-    dbg::check_pp_pu(q.pp, q.n, F("update_solvent: particle: after"));
 }
 
 void update_rbc() {
