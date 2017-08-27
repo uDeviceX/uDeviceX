@@ -127,9 +127,9 @@ namespace dev {
 #include "generic.h"
 #include "dump.h"
 #include "tag.h"
-#include "forces/dpd.h"
-#include "forces.h"
 
+#include "forces/common.h"
+#include "forces/dpd.h"
 #if   defined(FORCE1)
   #include "force1.h"
 #elif defined(FORCE0)
