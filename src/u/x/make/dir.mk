@@ -5,6 +5,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/dpd        && \
     d $B/dpdr       && \
     d $B/dual       && \
+    d $B/dump       && \
     d $B/flu        && \
     d $B/fsi        && \
     d $B/hforces    && \
@@ -23,7 +24,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/rnd        && \
     d $B/scan       && \
     d $B/sdf        && \
-    d $B/sim        && \
     d $B/tcells     && \
     d $B/wall       && \
     d $B/x         

@@ -10,7 +10,7 @@ $B/dpd/local.o: $S/dpd/local.cu; $N -I$S/. -I$S/dpd
 $B/dpdr/imp.o: $S/dpdr/imp.cu; $N -I$S/. -I$S/dpdr
 $B/dpdr/int.o: $S/dpdr/int.cu; $N -I$S/. -I$S/dpdr
 $B/dual/imp.o: $S/dual/imp.cpp; $X -I$S/. -I$S/dual
-$B/dump.o: $S/dump.cpp; $X -I$S/.
+$B/dump/imp.o: $S/dump/imp.cpp; $X -I$S/. -I$S/dump
 $B/field.o: $S/field.cpp; $X -I$S/.
 $B/flu/imp.o: $S/flu/imp.cu; $N -I$S/. -I$S/flu
 $B/flu/int.o: $S/flu/int.cu; $N -I$S/. -I$S/flu
@@ -54,7 +54,6 @@ $B/rnd/imp.o: $S/rnd/imp.cpp; $X -I$S/. -I$S/rnd
 $B/scan/imp.o: $S/scan/imp.cu; $N -I$S/. -I$S/scan
 $B/sdf/imp.o: $S/sdf/imp.cu; $N -I$S/. -I$S/sdf
 $B/sdf/int.o: $S/sdf/int.cu; $N -I$S/. -I$S/sdf
-$B/sim/imp.o: $S/sim/imp.cu; $N -I$S/. -I$S/sim
 $B/solid.o: $S/solid.cu; $N -I$S/.
 $B/tcells/imp.o: $S/tcells/imp.cu; $N -I$S/. -I$S/tcells
 $B/tcells/int.o: $S/tcells/int.cpp; $X -I$S/. -I$S/tcells

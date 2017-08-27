@@ -107,7 +107,7 @@ namespace dev {
 #include "bbhalo.decl.h"
 #include "bbhalo.impl.h"
 
-#include "dump.h"
+#include "dump/int.h"
 
 #include "rig/int.h"
 

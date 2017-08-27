@@ -14,7 +14,7 @@
 #include "inc/def.h"
 #include "msg.h"
 #include "inc/mpi.h"
-#include "dump.h"
+#include "dump/int.h"
 #include "os.h"
 
 namespace dump
