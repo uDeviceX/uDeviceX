@@ -84,6 +84,7 @@
 #include "dpd/local.h"
 
 #include "sdstr/dec.h"
+#include "sdstr/dev.h"
 #include "sdstr/imp.h"
 #include "sdstr/templ.h"
 
