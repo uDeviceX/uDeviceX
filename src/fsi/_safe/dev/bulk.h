@@ -1,5 +1,4 @@
 namespace dev {
-
 static __device__ float2 get(const float2 *p) { return __ldg(p); }
 static __device__ void p2rv(const float2 *p, int i, /**/
                             float  *x, float  *y, float  *z,
