@@ -13,16 +13,18 @@ static __device__ void f3xyz(float3 r, float *x, float *y, float *z) {
     *x = r.x; *y = r.y; *z = r.z;
 }
 
-static __device__ void valid_p(float3 r, float3 v) {
+static __device__ bool valid_r(float3 r) {
     float x, y, z;
-    float vx, vy, vz;
     bool verbose = true;
-
     f3xyz(r,  &x,  &y,  &z);
-    f3xyz(v, &vx, &vy, &vz);
+    return dbg::dev::valid_unpacked_p_pu(x, y, z, verbose);
+}
 
-    assert(dbg::dev::valid_unpacked_p_pu(x, y, z, verbose));
-    assert(dbg::dev::valid_vel3(vx, vy, vz, verbose));
+static __device__ bool valid_v(float3 v) {
+    float x, y, z;
+    bool verbose = true;
+    f3xyz(r,  &x,  &y,  &z);
+    return dbg::dev::valid_vel3(x, y, z, verbose);
 }
 
 static __device__ void pair0(const Pa l, const Pa r, float rnd, /**/ float *fx, float *fy, float *fz) {
@@ -31,7 +33,11 @@ static __device__ void pair0(const Pa l, const Pa r, float rnd, /**/ float *fx, 
     r1 = make_float3( l.x,  l.y,  l.z); r2 = make_float3( r.x,  r.y,  r.z);
     v1 = make_float3(l.vx, l.vy, l.vz); v2 = make_float3(r.vx, r.vy, r.vz);
 
-    valid_p(r1, v1); valid_p(r2, v2);
+    valid_r(r1);
+    valid_v(v1);
+    
+    valid_r(r2);
+    valid_v(v2);
     
     f = forces::dpd(SOLID_TYPE, SOLVENT_TYPE, r1, r2, v1, v2, rnd); /* TODO: type */
     *fx = f.x; *fy = f.y; *fz = f.z;
