@@ -1,10 +1,3 @@
-static char buf[BUFSIZ];
-#define F(s) fmsg(s, __FILE__, __LINE__)
-const char *fmsg(const char *msg, const char *f, int n) {
-    sprintf(buf, "%s:%d: %s", f, n, msg);
-    return buf;
-}
-
 void clear_vel() {
     KL(dev::clear_vel, (k_cnf(o::q.n)), (o::q.pp, o::q.n));
     if (solids) KL(dev::clear_vel, (k_cnf(s::q.n)), (s::q.pp, s::q.n));
