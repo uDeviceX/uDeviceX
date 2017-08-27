@@ -41,8 +41,17 @@ void forces_cnt(std::vector<ParticlesWrap> *w_r) {
 }
 
 void forces_fsi(SolventWrap *w_s, std::vector<ParticlesWrap> *w_r) {
-    dbg::check_ff(o::ff, o::q.n, F("B"));
+    using namespace dbg;
+    check_pp_pu(s::q.pp, s::q.n, F(""));
+    check_pp_pu(o::q.pp, o::q.n, F(""));
+    check_ff(o::ff, o::q.n, F(""));
+    check_ff(s::ff, s::q.n, F(""));
+
     fsi::bind(*w_s);
     fsi::bulk(*w_r);
-    dbg::check_ff(o::ff, o::q.n, F("A"));
+
+    check_pp_pu(s::q.pp, s::q.n, F(""));
+    check_pp_pu(o::q.pp, o::q.n, F(""));
+    check_ff(o::ff, o::q.n, F(""));
+    check_ff(s::ff, s::q.n, F(""));
 }
