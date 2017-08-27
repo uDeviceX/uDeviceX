@@ -1,4 +1,3 @@
-$B/bund.o: $S/bund.cu; $N -I$S/.
 $B/cc.o: $S/cc.cpp; $X -I$S/.
 $B/clist/imp.o: $S/clist/imp.cu; $N -I$S/. -I$S/clist
 $B/cnt/imp.o: $S/cnt/imp.cu; $N -I$S/. -I$S/cnt
@@ -54,6 +53,7 @@ $B/rnd/imp.o: $S/rnd/imp.cpp; $X -I$S/. -I$S/rnd
 $B/scan/imp.o: $S/scan/imp.cu; $N -I$S/. -I$S/scan
 $B/sdf/imp.o: $S/sdf/imp.cu; $N -I$S/. -I$S/sdf
 $B/sdf/int.o: $S/sdf/int.cu; $N -I$S/. -I$S/sdf
+$B/sim/imp.o: $S/sim/imp.cu; $N -I$S/. -I$S/sim
 $B/solid.o: $S/solid.cu; $N -I$S/.
 $B/tcells/imp.o: $S/tcells/imp.cu; $N -I$S/. -I$S/tcells
 $B/tcells/int.o: $S/tcells/int.cpp; $X -I$S/. -I$S/tcells
