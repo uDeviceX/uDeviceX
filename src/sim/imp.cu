@@ -38,7 +38,6 @@
 #include "inc/tmp/pinned.h"
 #include "io/field.h"
 #include "io/rbc.h"
-#include "sim/int.h"
 #include "diag.h"
 
 #include "dbg.h"
@@ -80,10 +79,12 @@
 #include "cnt/int.h"
 #include "fsi/int.h"
 
-#include "sdstr.decl.h"
-#include "sdstr.impl.h"
+#include "int.h"
 #include "x/int.h"
 #include "dpd/local.h"
+
+#include "sdstr.decl.h"
+#include "sdstr.impl.h"
 
 namespace dpdx {
 namespace dev {
@@ -108,32 +109,31 @@ namespace dev {
 #include "bbhalo.impl.h"
 
 #include "dump/int.h"
-
 #include "rig/int.h"
 
 namespace sim {
 namespace dev {
 #ifdef FORWARD_EULER
-  #include "sim/sch/euler.h"
+  #include "sch/euler.h"
 #else
-  #include "sim/sch/vv.h"
+  #include "sch/vv.h"
 #endif
 
-#include "sim/dev.h"
+#include "dev.h"
 }
-#include "sim/dec.h"
-#include "sim/ini.h"
-#include "sim/fin.h"
-#include "sim/generic.h"
-#include "sim/dump.h"
-#include "sim/tag.h"
-#include "sim/forces/dpd.h"
-#include "sim/forces.h"
+#include "dec.h"
+#include "ini.h"
+#include "fin.h"
+#include "generic.h"
+#include "dump.h"
+#include "tag.h"
+#include "forces/dpd.h"
+#include "forces.h"
 
 #if   defined(FORCE1)
-  #include "sim/force1.h"
+  #include "force1.h"
 #elif defined(FORCE0)
-  #include "sim/force0.h"
+  #include "force0.h"
 #else
   #error FORCE[01] is undefined
 #endif
@@ -151,27 +151,27 @@ namespace dev {
 #undef DEV
 
 #if   defined(UPDATE1)
-  #include "sim/update/release.h"
+  #include "update/release.h"
 #elif defined(UPDATE_SAFE)
-  #include "sim/update/safe.h"
+  #include "update/safe.h"
 #else
   #error UPDATE* is undefined
 #endif
 
 #if   defined(ODSTR1)
-  #include "sim/odstr/release.h"
+  #include "odstr/release.h"
 #elif defined(ODSTR0)
-  #include "sim/odstr/none.h"
+  #include "odstr/none.h"
 #elif defined(ODSTR_SAFE)
   namespace sub {
-    #include "sim/odstr/release.h"
+    #include "odstr/release.h"
   }
-  #include "sim/odstr/safe.h"
+  #include "odstr/safe.h"
 #else
   #error ODSTR* is undefined
 #endif
 
-#include "sim/step.h"
-#include "sim/run.h"
-#include "sim/imp.h"
+#include "step.h"
+#include "run.h"
+#include "imp.h"
 }
