@@ -127,17 +127,10 @@ namespace dev {
 #include "generic.h"
 #include "dump.h"
 #include "tag.h"
-#include "forces/dpd.h"
-#include "forces.h"
 
-#if   defined(FORCE1)
-  #include "force1.h"
-#elif defined(FORCE0)
-  #include "force0.h"
-#else
-  #error FORCE[01] is undefined
-#endif
-
+#include "force/common.h"
+#include "force/dpd.h"
+#include "force/imp.h"
 
 #define HST (true)
 #define DEV (false)
