@@ -17,10 +17,10 @@ void fin() {
     flu::free_ticketZ(&o::tz);
     flu::free_ticketRND(&o::trnd);
 
-    dpdr::free_ticketcom(&o::h::tc);
-    dpdr::free_ticketrnd(&o::h::trnd);
-    dpdr::free_ticketSh(&o::h::ts);
-    dpdr::free_ticketRh(&o::h::tr);
+    dpdr::free_ticketcom(&o::h.tc);
+    dpdr::free_ticketrnd(&o::h.trnd);
+    dpdr::free_ticketSh(&o::h.ts);
+    dpdr::free_ticketRh(&o::h.tr);
     
     odstr::free_ticketD(&o::td);
     odstr::free_ticketU(&o::tu);
@@ -37,9 +37,9 @@ void fin() {
         odstr::free_ticketI(&o::tt);
         odstr::free_ticketUI(&o::tut);
 
-        dpdr::free_ticketIcom(&o::h::tic);
-        dpdr::free_ticketSIh(&o::h::tsi);
-        dpdr::free_ticketRIh(&o::h::tri);
+        dpdr::free_ticketIcom(&o::h.tic);
+        dpdr::free_ticketSIh(&o::h.tsi);
+        dpdr::free_ticketRIh(&o::h.tri);
         
         mcomm::free_ticketcom(&mc::tc);
         mcomm::free_ticketS(&mc::ts);

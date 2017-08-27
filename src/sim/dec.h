@@ -20,18 +20,8 @@ flu::QuantsI     qt; /* [t]ags            */
 odstr::TicketI   tt; /* [t]ags            */
 odstr::TicketUI tut; /* [u]npack [t]ags   */
 
-/* [h]alo interactions */
-namespace h {
-dpdr::TicketCom tc;
-dpdr::TicketRnd trnd;
-dpdr::TicketShalo ts;
-dpdr::TicketRhalo tr;
-
-/* optional: flags */
-dpdr::TicketICom tic;
-dpdr::TicketSIhalo tsi;
-dpdr::TicketRIhalo tri;
-}
+/* [h]alo interactions : local halos : see type.h */
+H h;
 
 Force *ff;
 Force  ff_hst[MAX_PART_NUM]; /* solvent forces on host    */
