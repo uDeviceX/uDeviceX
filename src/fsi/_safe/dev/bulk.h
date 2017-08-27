@@ -7,6 +7,10 @@ static __device__ void p2rv(const float2 *p, int i, /**/
     s0 = __ldg(p++); s1 = __ldg(p++); s2 = __ldg(p++);
      *x = fst(s0);  *y = scn(s0);  *z = fst(s1);
     *vx = scn(s1); *vy = fst(s2); *vz = scn(s2);
+
+    bool verbose = true;
+    assert(dbg::dev::valid_unpacked_p_pu(*x, *y, *z, verbose));
+    assert(dbg::dev::valid_vel3(*vx, *vy, *vz, verbose));
 }
 
 static __device__ Pa pp2p(float2 *pp, int i) {
