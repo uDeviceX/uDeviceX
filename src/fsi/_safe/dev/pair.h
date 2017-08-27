@@ -9,13 +9,32 @@ static __device__ void valid_f(float fx, float fy, float fz) {
     assert(dbg::dev::valid_f(&f, verbose));
 }
 
+static __device__ void f3xyz(float3 r, float *x, float *y, float *z) {
+    *x = r.x; *y = r.y; *z = r.z;
+}
+
+static __device__ void valid_p(float3 r, float3 v) {
+    float x, y, z;
+    float vx, vy, vz;
+    bool verbose = true;
+
+    f3xyz(r,  &x,  &y,  &z);
+    f3xyz(v, &vx, &vy, &vz);
+
+    assert(dbg::dev::valid_unpacked_p(x, y, z, vx, vy, vz, verbose));
+}
+
 static __device__ void pair0(const Pa l, const Pa r, float rnd, /**/ float *fx, float *fy, float *fz) {
     /* pair force ; l, r: local and remote */
     float3 r1, r2, v1, v2, f;
     r1 = make_float3( l.x,  l.y,  l.z); r2 = make_float3( r.x,  r.y,  r.z);
     v1 = make_float3(l.vx, l.vy, l.vz); v2 = make_float3(r.vx, r.vy, r.vz);
+
+    valid_p(r1, v1); valid_p(r2, v2);
+    
     f = forces::dpd(SOLID_TYPE, SOLVENT_TYPE, r1, r2, v1, v2, rnd); /* TODO: type */
     *fx = f.x; *fy = f.y; *fz = f.z;
+    
     valid_f(*fx, *fy, *fz);
 }
 
