@@ -10,8 +10,14 @@ list () {
     u.u0 "$U" | D=_ G=. c.act            "$U"/make/_
 }
 
-if test $# -eq 1 -a "$1" = -l
+collapse () {
+    u.u0 "$U" | D=_ G=. c.collapse        "$U"/make/_
+}
+
+if   test $# -eq 1 -a "$1" = -l
 then list
+elif test $# -eq 1 -a "$1" = -c
+then collapse
 else build
 fi
 
