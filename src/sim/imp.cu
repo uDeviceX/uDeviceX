@@ -128,8 +128,8 @@ namespace dev {
 #include "dump.h"
 #include "tag.h"
 
-#include "forces/common.h"
-#include "forces/dpd.h"
+#include "force/common.h"
+#include "force/dpd.h"
 #if   defined(FORCE1)
   #include "force1.h"
 #elif defined(FORCE0)
