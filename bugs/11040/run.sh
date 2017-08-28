@@ -8,9 +8,10 @@ set -eu
 n=40
 d=/scratch/snx3000/lisergey/u
 Time=00:25:00
-
+u=u/safe
 s=../../src
-u.conf $s u/safe base.h <<EOF
+
+u.conf $s $u base.h <<EOF
        DBG_PEEK
        ODSTR_SAFE
        run
