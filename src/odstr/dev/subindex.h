@@ -25,7 +25,7 @@ __device__ void checkPav(Part *p) { /* check particle velocity */
     check_vel(v[Z], ZS);
 }
 
-__device__ void subindex0(int i, const int strt[], /*io*/ Part *p, int *counts, /**/ uchar4 *subids) {
+__device__ void subindex0(int i, const int strt[], Part *p, /*io*/ int *counts, /**/ uchar4 *subids) {
     /* i: particle index */
     enum {X, Y, Z};
     Ce c; /* cell coordinates */
@@ -35,7 +35,7 @@ __device__ void subindex0(int i, const int strt[], /*io*/ Part *p, int *counts, 
     regCe(&c, i, /*io*/ counts, subids); /* register */
 }
 
-__global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *counts, /**/ uchar4 *subids) {
+__global__ void subindex(const int n, const int strt[], float2 *pp, /*io*/ int *counts, /**/ uchar4 *subids) {
     enum {X, Y, Z};
     int ws, dw;  /* warp start and shift (lane) */
     Part p; /* [p]article and its [l]ocation in memory */
