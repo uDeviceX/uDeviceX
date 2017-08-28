@@ -10,7 +10,7 @@ static __device__ void p2rv(const float2 *p, int i, /**/
     *vx = scn(s1); *vy = fst(s2); *vz = scn(s2);
 
     bool verbose = true;
-    assert(dbg::dev::valid_unpacked_p_pu(*x, *y, *z, verbose));
+    assert(dbg::dev::valid_unpacked_pos_pu(*x, *y, *z, verbose));
     assert(dbg::dev::valid_vel3(*vx, *vy, *vz, verbose));
 }
 
