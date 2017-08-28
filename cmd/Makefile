@@ -1,7 +1,7 @@
 BIN = $(HOME)/bin
 
 P.common = u.host make/u.make run/u.run u.strtdir u.argp \
-	re/u.re re/u.re.push re/u.re.list re/u.re.clear re/u.re.peek re/u.re.peek0 \
+	re/u.re re/u.re.push re/u.re.list re/u.re.clear re/u.re.peek re/u.re.peek0 re/u.re.peek1 \
 	    utest/u.test u.u0 u.u batch/u.batch exec/u.exec
 P.conf = conf/u.conf conf/u.conf0 conf/u.conf.make conf/u.conf.make0 conf/u.conf.conf conf/u.conf.run conf/u.conf.re
 

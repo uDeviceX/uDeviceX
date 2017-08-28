@@ -3,15 +3,18 @@
 empty () { test ! -d "$d"; }
 write () {
     write0 "$s" "$d"
-    printf 'push: %s\n' "$d" >&2
 }
 
 write0 () {
     local a="$1"
     local b="$2"
-    mkdir "$b"
+    exec0 cp -r -- "$a" "$b"
 }
 
+exec0 () {
+      printf 'cmd: %s\n' "$*"
+      "$@"
+}
 
 for i in `seq 0 1000`
 do  d="$b/$i"
