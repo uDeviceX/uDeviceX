@@ -28,6 +28,12 @@ __device__ void zip(float r[3], float v[3], int ws, int dw, int dwe, /**/
                                      0);
 }
 
+static __device__ int x2c(float x, int L) {
+    int i = (int) floor((double)x + L / 2);
+    check_cel(x, i, L);
+    return i;
+}
+
 __device__ void r2c(float r[3], /**/ int* ix, int* iy, int* iz, int* i) {
     /* position to cell coordinates */
     enum {X, Y, Z};
