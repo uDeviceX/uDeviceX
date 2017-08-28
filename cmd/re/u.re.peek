@@ -17,7 +17,7 @@ last () {
 
     for i in `seq 0 1000`
     do  d="$b/$i"
-	if empty; then u.re.peek0 "$prev"; break; fi
+	if empty; then u.re.peek1 "$prev"; break; fi
 	prev=$i
     done
 
@@ -25,5 +25,5 @@ last () {
 
 if test $Last -eq 1
 then last
-else u.re.peek0 $i
+else u.re.peek1 $i
 fi

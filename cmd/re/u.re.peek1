@@ -5,11 +5,12 @@ i="$1" d="$b/$i"
 # suffix
 su=bop
 
-find0 () {
-    find "$d/flu" -name "*.$su" -type f
-}
+find0 () (
+    cd "$d/flu"
+    find . -name "*.$su" -type f
+)
 
-strip0 () { basename "$1" .bop; }
+strip0 () { basename "$1" ."$su"; }
 strip () {
     while read f; do strip0 "$f"; done
 }
@@ -26,4 +27,5 @@ then
     exit 1
 fi
 
-echo $i $id
+echo "id: $id"
+u.re.peek0 "$i" "$id"

@@ -1,29 +1,31 @@
 . u.conf.re
 
-i="$1" d="$b/$i"
+i="$1"; shift
+id="$1"; shift
 
-# suffix
-su=bop
+d="$b/$i"
 
-find0 () {
-    find "$d/flu" -name "*.$su" -type f
+filter () {
+${AWK=awk} -v id="$id" '
+{
+    d = $1
+    b = basename(d)
+    if (!nump(b))  print d
+    if (eq(b, id)) print d
 }
 
-strip0 () { basename "$1" .bop; }
-strip () {
-    while read f; do strip0 "$f"; done
+function str(a)   { return a "" }
+function eq(a, b) { return str(a) == str(b) }
+
+function nump(n) { return n ~ /^[0-9]*$/}
+
+function basename(s) {
+    sub(/^.*[\/]/, "", s)
+    sub(/\.[^\.]*$/, "", s)
+    return s
 }
 
-# uniq and first
-uni () { awk '!($0 in s){print; s[$0]}'; }
-fst () { awk 'NR == 1'; }
-gid () { find0 | strip | uni | sort -r  | fst; }
+'
+}
 
-id=`gid`
-if test -z "$id"
-then
-    printf 'no id\n' "$id" >&2
-    exit 1
-fi
-
-echo $i $id
+find $d -type f | filter
