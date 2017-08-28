@@ -15,7 +15,7 @@
 #include "dbg/error.h"
 #include "dbg/dev.h"
 
-#include "dbg/switch.h"
+#include "dbg/macro/switch.h"
 
 namespace dbg {
 
