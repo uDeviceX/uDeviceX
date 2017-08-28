@@ -98,7 +98,7 @@ void unpack_ii(const int n, const Recv *r, const Pbufs<int> *rii, /**/ int *ii_r
 
 void subindex(const int n, const Recv *r, /*io*/ Particle *pp_re, int *counts, /**/ uchar4 *subi) {
     KL(dev::shift, (k_cnf(n)), (n, r->strt, /*io*/ (float2*) pp_re));
-    KL(dev::subindex, (k_cnf(n)), (n, r->strt, /*io*/ (float2*) pp_re, counts, /**/ subi));
+    KL(dev::subindex, (k_cnf(n)), (n, r->strt, (float2*) pp_re, /*io*/ counts, /**/ subi));
 }
 
 void scatter(bool remote, const uchar4 *subi, const int n, const int *start, /**/ uint *iidx) {
