@@ -34,7 +34,7 @@ static __device__ int x2c(float x, int L) {
     return i;
 }
 
-__device__ void r2c(float r[3], /**/ int* ix, int* iy, int* iz, int* i) {
+__device__ void r2c(const float r[3], /**/ int* ix, int* iy, int* iz, int* i) {
     /* position to cell coordinates */
     enum {X, Y, Z};
     int x, y, z;

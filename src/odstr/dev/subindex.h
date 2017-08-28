@@ -5,7 +5,7 @@ struct Ce { /* coordinates of a cell */
     int id; /* linear index */
 };
 
-__device__ void Pa2Ce(Part *p, /**/ Ce *c) {
+__device__ void Pa2Ce(const Part *p, /**/ Ce *c) {
     /* particle to cell coordinates */
     r2c(p->r, /**/ &c->ix, &c->iy, &c->iz, &c->id);
 }
@@ -17,7 +17,7 @@ __device__ void regCe(Ce *c, int i, /*io*/ int *counts, /**/ uchar4 *subids) {
     subids[i] = make_uchar4(c->ix, c->iy, c->iz, subindex);
 }
 
-__device__ void checkPav(Part *p) { /* check particle velocity */
+__device__ void checkPav(const Part *p) { /* check particle velocity */
     enum {X, Y, Z};
     const float *v = p->v;
     check_vel(v[X], XS);
@@ -25,7 +25,7 @@ __device__ void checkPav(Part *p) { /* check particle velocity */
     check_vel(v[Z], ZS);
 }
 
-__device__ void subindex0(int i, const int strt[], Part *p, /*io*/ int *counts, /**/ uchar4 *subids) {
+__device__ void subindex0(int i, const int strt[], const Part *p, /*io*/ int *counts, /**/ uchar4 *subids) {
     /* i: particle index */
     enum {X, Y, Z};
     Ce c; /* cell coordinates */
