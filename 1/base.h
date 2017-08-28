@@ -36,7 +36,7 @@
 #define sbounce_back        true
 #define fsiforces           true
 #define walls               true
-#define wall_creation       1
+#define wall_creation       1000
 #define tend                10000
 
 /* FLOW TYPE */
@@ -48,4 +48,4 @@
 #define field_dumps         true
 #define field_freq          100000
 #define strt_dumps          true
-#define strt_freq           10000
+#define strt_freq           100000
