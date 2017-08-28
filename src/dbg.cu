@@ -22,7 +22,7 @@ namespace dbg {
 namespace sub {
 
 void check_pp(const Particle *pp, int n) {
-    KL(dev::check_pp, (k_cnf(n)), (pp, n));
+    KL(dev::check_pos, (k_cnf(n)), (pp, n));
 }
 
 void check_vv(const Particle *pp, int n) {
@@ -30,7 +30,7 @@ void check_vv(const Particle *pp, int n) {
 }
 
 void check_pp_pu(const Particle *pp, int n) {
-    KL(dev::check_pp_pu, (k_cnf(n)), (pp, n));
+    KL(dev::check_pos_pu, (k_cnf(n)), (pp, n));
 }
 
 void check_ff(const Force *ff, int n) {
