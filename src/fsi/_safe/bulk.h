@@ -1,10 +1,6 @@
 namespace fsi {
 static char buf[BUFSIZ];
-#define F(s) fmsg(s, __FILE__, __LINE__)
-static const char *fmsg(const char *msg, const char *f, int n) {
-    sprintf(buf, "%s:%d: %s", f, n, msg);
-    return buf;
-}
+#define F(s) __FILE__, __LINE__, s
 
 static void bulk0(ParticlesWrap *w) {
     int n0, n1;
