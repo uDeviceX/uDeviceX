@@ -249,6 +249,7 @@ void generate_dev(const Solid *ss_dev, const int ns, const float *rr0, const int
     const dim3 nthrd ( 128, 1 );
 
     KL(k_solid::update_r, ( nblck, nthrd ), (rr0, nps, ss_dev, ns, /**/ pp));
+    KL(k_solid::compute_velocity, ( nblck, nthrd ), (ss_dev, ns, nps, /**/ pp));
 }
 
 void mesh2pp_hst(const Solid *ss_hst, const int ns, const Mesh m, /**/ Particle *pp) {
