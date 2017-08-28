@@ -32,10 +32,6 @@ __device__ void readPa(Lo l, /**/ Pa *p) {
     k_read::AOS6f(l.p, l.d, /**/ p->d0, p->d1, p->d2);
 }
 
-__device__ void writePa(Pa *p, /**/ Lo l) {
-    k_write::AOS6f(/**/ l.p, l.d, /*i*/ p->d0, p->d1, p->d2);
-}
-
 __device__ void shiftPa(int r[3], Pa *p) {
     enum {X, Y, Z};
     p->d0.x += r[X];   p->d0.y += r[Y];   p->d1.x += r[Z];
@@ -77,13 +73,7 @@ __device__ void checkPav(Pa *p) { /* check particle velocity */
 __device__ void subindex0(int i, const int strt[], /*io*/ Pa *p, int *counts, /**/ uchar4 *subids) {
     /* i: particle index */
     enum {X, Y, Z};
-    int fid;     /* fragment id */
-    int shift[3];
     Ce c; /* cell coordinates */
-
-    fid  = k_common::fid(strt, i);
-    fid2shift(fid, /**/ shift);
-    shiftPa(shift, p);
 
     Pa2Ce(p, /**/ &c); /* to cell coordinates */
     checkPav(p); /* check velocity */
@@ -102,7 +92,6 @@ __global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *
     readPa(l, /**/ &p);   /* collective */
     if (!endLo(&l, dw))
         subindex0(ws + dw, strt, /*io*/ &p, counts, /**/ subids);
-    writePa(&p, /**/ l); /* collective */
 }
 
 }}} /* namespace */
