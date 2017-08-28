@@ -3,7 +3,13 @@ namespace dev {
 
 enum {X, Y, Z};
 
-static __device__ bool valid_pos(float x, int L, bool verbose) {
+static __device__ err_type valid_real(float x) {
+    if (isnan(x)) return err::NAN_VAL;
+    if (isinf(x)) return err::INF_VAL;
+    return err::NONE;
+}
+
+static __device__ err_type valid_pos(float x, int L, bool verbose) {
     if (x < -L/2 || x > L/2) {
         if (verbose) printf("DBG: x = %g (L = %d)\n", x, L);
         return false;
