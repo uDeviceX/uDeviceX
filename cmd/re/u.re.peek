@@ -1,0 +1,29 @@
+. u.conf.re
+
+Last=1
+while :
+do if test $# -eq 0; then break; fi
+   i="$1"; shift; Last=0
+done
+
+empty () { test ! -d "$d"; }
+
+last () {
+    prev=0 d="$b/$prev"
+    if empty; then
+	printf 'u.re: empty base\n'
+	exit 1
+    fi
+
+    for i in `seq 0 1000`
+    do  d="$b/$i"
+	if empty; then u.re.peek0 "$prev"; break; fi
+	prev=$i
+    done
+
+}
+
+if test $Last -eq 1
+then last
+else u.re.peek0 $i
+fi

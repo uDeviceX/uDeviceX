@@ -1,0 +1,9 @@
+. u.conf.re
+
+empty () { test ! -d "$d"; }
+report () { printf '%s \n' "$d"; }
+
+for i in `seq 0 1000`
+do  d="$b/$i"
+    if empty; then break; else report; fi
+done

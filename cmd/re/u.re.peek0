@@ -1,0 +1,4 @@
+. u.conf.re
+
+i="$1"
+echo "$i"

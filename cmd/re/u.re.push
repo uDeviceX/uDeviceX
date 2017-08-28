@@ -1,2 +1,19 @@
 . u.conf.re
 
+empty () { test ! -d "$d"; }
+write () {
+    write0 "$s" "$d"
+    printf 'push: %s\n' "$d" >&2
+}
+
+write0 () {
+    local a="$1"
+    local b="$2"
+    mkdir "$b"
+}
+
+
+for i in `seq 0 1000`
+do  d="$b/$i"
+    if empty; then write; break; fi
+done

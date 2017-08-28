@@ -1,3 +1,6 @@
+# start dir
+s=strt
+
 # base dir
 b=$SCRATCH/re
 

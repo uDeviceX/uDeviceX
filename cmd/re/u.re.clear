@@ -1,0 +1,3 @@
+. u.conf.re
+
+rm -rf "$b"
