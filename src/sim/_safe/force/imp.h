@@ -1,5 +1,6 @@
 #define OO dbg::check_vv(o::q.pp, o::q.n, F("")), dbg::check_ff(o::ff, o::q.n, F("A")), dbg::check_pp_pu(o::q.pp, o::q.n, F(""))
 #define SS dbg::check_vv(s::q.pp, s::q.n, F("")), dbg::check_ff(s::ff, s::q.n, F("A")), dbg::check_pp_pu(s::q.pp, s::q.n, F(""))
+#define SYNC dSync(); MC(l::m::Barrier(l::m::cart));
 
 void forces(bool wall0) {
     clear_forces(o::ff, o::q.n);

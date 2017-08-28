@@ -1,38 +1,53 @@
 #!/bin/bash
 
-U=u/x # default unit
+u=u/x # default unit
 
 build0 () {
-    u.u0 "$U" | D=_ G=. c.main "$U"/make "$U"/make/_
-}
-
-build1 () {
-    if test ! -d "$U"
-    then printf "udeps: $U is not a directory\n" >&2
-	 exit 1
-    fi
-    build0
+    u.u0 "$u" | D=_ G=. c.main "$u"/make "$u"/make/_
 }
 
 build () {
-    if test $# -ne 0; then U=$1; shift; fi
-    build1
+    build0
 }
 
+
 list () {
-    u.u0 "$U" | D=_ G=. c.act            "$U"/make/_
+    u.u0 "$u" | D=_ G=. c.act            "$u"/make/_
 }
 
 collapse () {
-    u.u0 "$U" | D=_ G=. c.collapse        "$U"/make/_
+    u.u0 "$u" | D=_ G=. c.collapse        "$u"/make/_
 }
 
-if   test $# -eq 1 -a "$1" = -l
-then list
-elif test $# -eq 1 -a "$1" = -c
-then collapse
-else build "$@"
-fi
+arg () {
+    List=0 Collapse=0
+    while :
+    do
+	if   test $# -eq 0;  then break
+	elif test "$1" = -l; then List=1; shift
+	elif test "$1" = -c; then Collapse=1; shift
+	else u="$1"; shift
+	fi
+    done
+}
+
+check () {
+    if test ! -d "$u"
+    then printf "udeps: $u is not a directory\n" >&2
+	 exit 1
+    fi
+}
+
+run () {
+    if   test $List     -eq 1; then list;
+    elif test $Collapse -eq 1; then collapse;
+    else build
+    fi
+}
+
+arg "$@"
+check
+run
 
 
 
