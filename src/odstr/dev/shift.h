@@ -1,13 +1,13 @@
 namespace odstr { namespace sub { namespace dev {
 
-static __device__ void fid2shift(int id, int s[3]) {
+static __device__ void fid2shift(int id, /**/ int s[3]) {
     enum {X, Y, Z};
     s[X] = XS * ((id     + 1) % 3 - 1);
     s[Y] = YS * ((id / 3 + 1) % 3 - 1);
     s[Z] = ZS * ((id / 9 + 1) % 3 - 1);
 }
 
-__device__ void shiftPart(int s[3], Part *p) {
+__device__ void shiftPart(const int s[3], Part *p) {
     enum {X, Y, Z};
     p->r[X] += s[X];
     p->r[Y] += s[Y];
