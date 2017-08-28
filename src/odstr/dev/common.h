@@ -15,32 +15,6 @@ static __device__ void fid2shift(int id, int s[3]) {
     s[Z] = ZS * ((id / 9 + 1) % 3 - 1);
 }
 
-#define DBG
-#ifdef DBG
-static __device__ void check_cel(float x, int i, int L) {
-    if (i < 0 || i >= L) {
-        printf("odstr: i = %d (L = %d) from x = %g\n", i, L, x);
-        assert(0);
-    }
-}
-static __device__ void check_vel(float v, int L) {
-    float dx = fabs(v * dt);
-    if (dx >= L / 2) {
-        printf("odstr: vel: v = %g\n", v);
-        assert(0);
-    }
-}
-#else
-static __device__ void check_cel(float x, int i, int L) {}
-static __device__ void check_vel(float v, int L) {}
-#endif
-
-static __device__ int x2c(float x, int L) {
-    int i = (int) floor((double)x + L / 2);
-    check_cel(x, i, L);
-    return i;
-}
-
 __global__ void scan(const int n, const int size[], /**/ int strt[], int size_pin[]) {
     int tid = threadIdx.x;
     int val = 0, cnt = 0;
