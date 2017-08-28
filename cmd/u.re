@@ -1,1 +1,3 @@
-echo 42
+. u.conf.re
+
+echo preved
