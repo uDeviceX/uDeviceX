@@ -5,7 +5,7 @@ struct Ce { /* coordinates of a cell */
     int id; /* linear index */
 };
 
-static __device__ void Pa2Ce(const Part *p, /**/ Ce *c) {
+static __device__ void Part2Ce(const Part *p, /**/ Ce *c) {
     /* particle to cell coordinates */
     r2c(p->r, /**/ &c->ix, &c->iy, &c->iz, &c->id);
 }
@@ -30,7 +30,7 @@ static __device__ void subindex0(int i, const int strt[], const Part *p, /*io*/ 
     enum {X, Y, Z};
     Ce c; /* cell coordinates */
 
-    Pa2Ce(p, /**/ &c); /* to cell coordinates */
+    Part2Ce(p, /**/ &c); /* to cell coordinates */
     checkPav(p); /* check velocity */
     regCe(&c, i, /*io*/ counts, subids); /* register */
 }
