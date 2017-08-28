@@ -1,33 +1,13 @@
 namespace odstr { namespace sub { namespace dev {
 
-struct Pa { /* local particle */
-    float2 d0, d1, d2;
-};
-
 struct Ce { /* coordinates of a cell */
     int ix, iy, iz;
     int id; /* linear index */
 };
 
-__device__ void readPa(Lo l, /**/ Pa *p) {
-    k_read::AOS6f(l.p, l.d, /**/ p->d0, p->d1, p->d2);
-}
-
-__device__ void Pa2r(Pa *p, /**/ float r[3]) { /* to position */
-    enum {X, Y, Z};
-    r[X] = p->d0.x;   r[Y] = p->d0.y;   r[Z] = p->d1.x;
-}
-
-__device__ void Pa2v(Pa *p, /**/ float v[3]) { /* to velocity */
-    enum {X, Y, Z};
-    v[X] = p->d1.y;   v[Y] = p->d2.x;   v[Z] = p->d2.y;
-}
-
-__device__ void Pa2Ce(Pa *p, /**/ Ce *c) {
+__device__ void Pa2Ce(Part *p, /**/ Ce *c) {
     /* particle to cell coordinates */
-    float r[3];
-    Pa2r(p, /**/ r);
-    r2c(r, /**/ &c->ix, &c->iy, &c->iz, &c->id);
+    r2c(p->r, /**/ &c->ix, &c->iy, &c->iz, &c->id);
 }
 
 __device__ void regCe(Ce *c, int i, /*io*/ int *counts, /**/ uchar4 *subids) {
@@ -37,16 +17,15 @@ __device__ void regCe(Ce *c, int i, /*io*/ int *counts, /**/ uchar4 *subids) {
     subids[i] = make_uchar4(c->ix, c->iy, c->iz, subindex);
 }
 
-__device__ void checkPav(Pa *p) { /* check particle velocity */
+__device__ void checkPav(Part *p) { /* check particle velocity */
     enum {X, Y, Z};
-    float v[3];
-    Pa2v(p, /**/ v);
+    const float *v = p->v;
     check_vel(v[X], XS);
     check_vel(v[Y], YS);
     check_vel(v[Z], ZS);
 }
 
-__device__ void subindex0(int i, const int strt[], /*io*/ Pa *p, int *counts, /**/ uchar4 *subids) {
+__device__ void subindex0(int i, const int strt[], /*io*/ Part *p, int *counts, /**/ uchar4 *subids) {
     /* i: particle index */
     enum {X, Y, Z};
     Ce c; /* cell coordinates */
@@ -59,13 +38,13 @@ __device__ void subindex0(int i, const int strt[], /*io*/ Pa *p, int *counts, /*
 __global__ void subindex(const int n, const int strt[], /*io*/ float2 *pp, int *counts, /**/ uchar4 *subids) {
     enum {X, Y, Z};
     int ws, dw;  /* warp start and shift (lane) */
-    Pa p; /* [p]article and its [l]ocation in memory */
+    Part p; /* [p]article and its [l]ocation in memory */
     Lo l;
 
     warpco(&ws, &dw); /* warp coordinates */
     if (ws >= n) return;
     pp2Lo(pp, n, ws, /**/ &l);
-    readPa(l, /**/ &p);   /* collective */
+    readPart(l, /**/ &p);   /* collective */
     if (!endLo(&l, dw))
         subindex0(ws + dw, strt, /*io*/ &p, counts, /**/ subids);
 }
