@@ -42,6 +42,7 @@
 #include "odstr/dev/check.h"
 #include "odstr/dev/utils.h"
 #include "odstr/dev/subindex.h"
+#include "odstr/dev/shift.h"
 #include "odstr/dev/gather.h"
 
 #include "odstr/buf.h"
@@ -96,6 +97,7 @@ void unpack_ii(const int n, const Recv *r, const Pbufs<int> *rii, /**/ int *ii_r
 }
 
 void subindex(const int n, const Recv *r, /*io*/ Particle *pp_re, int *counts, /**/ uchar4 *subi) {
+    KL(dev::shift, (k_cnf(n)), (n, r->strt, /*io*/ (float2*) pp_re));
     KL(dev::subindex, (k_cnf(n)), (n, r->strt, /*io*/ (float2*) pp_re, counts, /**/ subi));
 }
 
