@@ -1,0 +1,63 @@
+$B/cc.o: $S/cc.cpp; $X -I$S/.
+$B/clist/imp.o: $S/clist/imp.cu; $N -I$S/. -I$S/clist
+$B/cnt/imp.o: $S/cnt/imp.cu; $N -I$S/. -I$S/cnt
+$B/common.mpi.o: $S/common.mpi.cpp; $X -I$S/.
+$B/d/api.o: $S/d/api.cu; $N -I$S/. -I$S/d
+$B/dbg.o: $S/dbg.cu; $N -I$S/.
+$B/diag.o: $S/diag.cpp; $X -I$S/.
+$B/dpd/local.o: $S/dpd/local.cu; $N -I$S/. -I$S/dpd
+$B/dpdr/imp.o: $S/dpdr/imp.cu; $N -I$S/. -I$S/dpdr
+$B/dpdr/int.o: $S/dpdr/int.cu; $N -I$S/. -I$S/dpdr
+$B/dual/imp.o: $S/dual/imp.cpp; $X -I$S/. -I$S/dual
+$B/dump/imp.o: $S/dump/imp.cpp; $X -I$S/. -I$S/dump
+$B/field.o: $S/field.cpp; $X -I$S/.
+$B/flu/imp.o: $S/flu/imp.cu; $N -I$S/. -I$S/flu
+$B/flu/int.o: $S/flu/int.cu; $N -I$S/. -I$S/flu
+$B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/. -I$S/fsi -I$S/fsi/_release
+$B/glb.o: $S/glb.cu; $N -I$S/.
+$B/hforces/imp.o: $S/hforces/imp.cu; $N -I$S/. -I$S/hforces
+$B/io/field.o: $S/io/field.cpp; $X -I$S/. -I$S/io
+$B/io/rbc.o: $S/io/rbc.cpp; $X -I$S/. -I$S/io
+$B/l/linal.o: $S/l/linal.cpp; $X -I$S/. -I$S/l
+$B/l/m.o: $S/l/m.cpp; $X -I$S/. -I$S/l
+$B/l/off.o: $S/l/off.cpp; $X -I$S/. -I$S/l
+$B/l/ply.o: $S/l/ply.cpp; $X -I$S/. -I$S/l
+$B/m.o: $S/m.cpp; $X -I$S/.
+$B/main.o: $S/main.cu; $N -I$S/.
+$B/mbounce/imp.o: $S/mbounce/imp.cu; $N -I$S/. -I$S/mbounce
+$B/mc.o: $S/mc.cpp; $X -I$S/.
+$B/mcomm/imp.o: $S/mcomm/imp.cu; $N -I$S/. -I$S/mcomm
+$B/mcomm/int.o: $S/mcomm/int.cu; $N -I$S/. -I$S/mcomm
+$B/mdstr/imp.o: $S/mdstr/imp.cu; $N -I$S/. -I$S/mdstr
+$B/mdstr/int.o: $S/mdstr/int.cpp; $X -I$S/. -I$S/mdstr
+$B/mesh/bbox.o: $S/mesh/bbox.cu; $N -I$S/. -I$S/mesh
+$B/mesh/collision.o: $S/mesh/collision.cu; $N -I$S/. -I$S/mesh
+$B/mesh/dist.o: $S/mesh/dist.cu; $N -I$S/. -I$S/mesh
+$B/mesh/props.o: $S/mesh/props.cpp; $X -I$S/. -I$S/mesh
+$B/minmax.o: $S/minmax.cu; $N -I$S/.
+$B/mrescue.o: $S/mrescue.cu; $N -I$S/.
+$B/msg.o: $S/msg.cpp; $X -I$S/.
+$B/odstr/halo/imp.o: $S/odstr/halo/imp.cu; $N -I$S/. -I$S/odstr/halo
+$B/odstr/imp.o: $S/odstr/imp.cu; $N -I$S/. -I$S/odstr
+$B/odstr/int.o: $S/odstr/int.cu; $N -I$S/. -I$S/odstr
+$B/odstr/pack/imp.o: $S/odstr/pack/imp.cu; $N -I$S/. -I$S/odstr/pack -I$S/odstr/pack/_release
+$B/os.o: $S/os.cpp; $X -I$S/.
+$B/rbc/imp.o: $S/rbc/imp.cu; $N -I$S/. -I$S/rbc
+$B/rbc/int.o: $S/rbc/int.cu; $N -I$S/. -I$S/rbc
+$B/rdstr/imp.o: $S/rdstr/imp.cu; $N -I$S/. -I$S/rdstr
+$B/rdstr/int.o: $S/rdstr/int.cu; $N -I$S/. -I$S/rdstr
+$B/restart.o: $S/restart.cpp; $X -I$S/.
+$B/rig/imp.o: $S/rig/imp.cu; $N -I$S/. -I$S/rig
+$B/rig/int.o: $S/rig/int.cu; $N -I$S/. -I$S/rig
+$B/rnd/imp.o: $S/rnd/imp.cpp; $X -I$S/. -I$S/rnd
+$B/scan/imp.o: $S/scan/imp.cu; $N -I$S/. -I$S/scan
+$B/sdf/imp.o: $S/sdf/imp.cu; $N -I$S/. -I$S/sdf
+$B/sdf/int.o: $S/sdf/int.cu; $N -I$S/. -I$S/sdf
+$B/sim/imp.o: $S/sim/imp.cu; $N -I$S/. -I$S/sim -I$S/sim/_release
+$B/solid.o: $S/solid.cu; $N -I$S/.
+$B/tcells/imp.o: $S/tcells/imp.cu; $N -I$S/. -I$S/tcells
+$B/tcells/int.o: $S/tcells/int.cpp; $X -I$S/. -I$S/tcells
+$B/wall/exch.o: $S/wall/exch.cpp; $X -I$S/. -I$S/wall
+$B/wall/imp.o: $S/wall/imp.cu; $N -I$S/. -I$S/wall
+$B/wall/int.o: $S/wall/int.cu; $N -I$S/. -I$S/wall
+$B/x/imp.o: $S/x/imp.cu; $N -I$S/. -I$S/x
