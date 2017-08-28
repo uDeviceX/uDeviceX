@@ -81,7 +81,7 @@ static __device__ err_type valid_pos_pu(const Particle *p, bool verbose) {
 static __global__ void check_pos_pu(const Particle *pp, int n, bool verbose = true) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
-    err_type e = valid_pos(pp + i, verbose);
+    err_type e = valid_pos_pu(pp + i, verbose);
     report(e);
 }
 
