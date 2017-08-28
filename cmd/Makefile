@@ -1,6 +1,6 @@
 BIN = $(HOME)/bin
 
-P.common = u.host make/u.make run/u.run u.strtdir u.argp \
+P.common = u.host make/u.make run/u.run u.strtdir u.argp u.re \
     utest/u.test u.u0 u.u batch/u.batch exec/u.exec
 P.conf = conf/u.conf conf/u.conf0 conf/u.conf.make conf/u.conf.make0 conf/u.conf.conf conf/u.conf.run
 
