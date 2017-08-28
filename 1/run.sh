@@ -5,7 +5,7 @@ set -eu
 # load utilities
 . u/`u.host`
 
-n=40
+n=1
 d=/scratch/snx3000/lisergey/u
 Time=00:25:00
 u=u/safe
