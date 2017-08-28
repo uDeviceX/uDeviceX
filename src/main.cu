@@ -21,4 +21,5 @@ int main(int argc, char **argv) {
     else         sim::sim_gen();
     sim::fin();
     m::fin();
+    MSG("end");
 }
