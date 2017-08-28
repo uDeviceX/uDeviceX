@@ -142,9 +142,13 @@ namespace dev {
 #define DEV (false)
 #define DEVICE_SOLID
 #ifdef DEVICE_SOLID
-  #include "0dev/sim.impl.h"
+  #include "0dev/bounce.h"
+  #include "0dev/update.h"
+  #include "0dev/distr.h"
 #else
-  #include "0hst/sim.impl.h"
+  #include "0hst/bounce.h"
+  #include "0hst/update.h"
+  #include "0hst/distr.h"
 #endif
 #undef HST
 #undef DEV
