@@ -9,7 +9,7 @@ n=40
 d=/scratch/snx3000/lisergey/u
 Time=00:25:00
 u=u/safe
-s=../../src
+s=src
 
 u.conf $s $u base.h <<EOF
        DBG_PEEK
