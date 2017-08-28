@@ -3,15 +3,19 @@ namespace dev {
 
 enum {X, Y, Z};
 
-static __device__ err_type valid_float(float a) {
+static __device__ void report(err_type e) {
+    if (e != err::NONE) atomicExch(&error, e);
+}
+
+static __device__ err_type check_float(float a) {
     if (isnan(a)) return err::NAN_VAL;
     if (isinf(a)) return err::INF_VAL;
     return err::NONE;
 }
 
-static __device__ err_type valid_float3(const float a[3]) {
+static __device__ err_type check_float3(const float a[3]) {
     err_type e;
-#define check_ret(A) if ((e = valid_float(A)) != err::NONE) return e
+#define check_ret(A) if ((e = check_float(A)) != err::NONE) return e
     check_ret(a[0]);
     check_ret(a[1]);
     check_ret(a[2]);
@@ -27,15 +31,6 @@ static __device__ bool valid_pos(float x, int L, bool verbose) {
     return true;
 }
 
-static __device__ bool valid_vel(float v, int L, bool verbose) {
-    float dx = fabs(v * dt);
-    if (dx > L/2) {
-        if (verbose) printf("DBG: v = %g (L = %d)\n", v, L);
-        return false;
-    }
-    return true;
-}
-
 static __device__ bool valid_unpacked_pos(float  x, float  y, float  z, bool verbose) {
     bool ok = true;
     ok &= valid_pos(x, XS, verbose);
@@ -45,17 +40,22 @@ static __device__ bool valid_unpacked_pos(float  x, float  y, float  z, bool ver
     return ok;
 }
 
-static __device__ bool valid_pos(const Particle *p, bool verbose) {
+static __device__ err_type valid_pos(const Particle *p, bool verbose) {
     float x, y, z;
+    err_type e;
     x  = p->r[X];  y = p->r[Y];  z = p->r[Z];
-
-    return valid_unpacked_pos(x, y, z, verbose);
+    e = check_float3(p->r);
+    if (e != err::NONE) return e;
+    if (valid_unpacked_pos(x, y, z, verbose)) e = err::NONE;
+    else                                      e = err::INVALID;
+    return e;
 }
 
 static __global__ void check_pos(const Particle *pp, int n, bool verbose = false) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
-    if (!valid_pos(pp + i, verbose)) atomicExch(&error, err::INVALID);
+    err_type e = valid_pos(pp + i, verbose);
+    report(e);
 }
 
 static __device__ bool valid_unpacked_pos_pu(float x, float y, float z, bool verbose) {
@@ -67,6 +67,33 @@ static __device__ bool valid_unpacked_pos_pu(float x, float y, float z, bool ver
     return ok;
 }
 
+static __device__ err_type valid_pos_pu(const Particle *p, bool verbose) {
+    float x, y, z;
+    err_type e;
+    x  = p->r[X];  y = p->r[Y];  z = p->r[Z];
+    e = check_float3(p->r);
+    if (e != err::NONE) return e;
+    if (valid_unpacked_pos_pu(x, y, z, verbose)) e = err::NONE;
+    else                                         e = err::INVALID;
+    return e;
+}
+
+static __global__ void check_pos_pu(const Particle *pp, int n, bool verbose = false) {
+    int i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i >= n) return;
+    err_type e = valid_pos(pp + i, verbose);
+    report(e);
+}
+
+static __device__ bool valid_vel(float v, int L, bool verbose) {
+    float dx = fabs(v * dt);
+    if (dx > L/2) {
+        if (verbose) printf("DBG: v = %g (L = %d)\n", v, L);
+        return false;
+    }
+    return true;
+}
+
 static __device__ bool valid_vel3(float vx, float vy, float vz, bool verbose) {
     bool ok = true;
     ok &= valid_vel(vx, XS, verbose);
@@ -76,28 +103,21 @@ static __device__ bool valid_vel3(float vx, float vy, float vz, bool verbose) {
     return ok;
 }
 
-static __device__ bool valid_pos_pu(const Particle *p, bool verbose) {
-    float x, y, z;
-    x  = p->r[X];  y = p->r[Y];  z = p->r[Z];
-
-    return valid_unpacked_pos_pu(x, y, z, verbose);
-}
-
-static __device__ bool valid_vv(const Particle *p, bool verbose) {
+static __device__ err_type valid_vv(const Particle *p, bool verbose) {
+    err_type e;
     const float *v = p->v;
-    return valid_vel3(v[X], v[Y], v[Z], verbose);
-}
-
-static __global__ void check_pos_pu(const Particle *pp, int n, bool verbose = false) {
-    int i = threadIdx.x + blockIdx.x * blockDim.x;
-    if (i >= n) return;
-    if (!valid_pos_pu(pp + i, verbose)) atomicExch(&error, err::INVALID);
+    e = check_float3(v);
+    if (e != err::NONE) return e;
+    if ( valid_vel3(v[X], v[Y], v[Z], verbose)) e = err::NONE;
+    else                                        e = err::INVALID;
+    return e;
 }
 
 static __global__ void check_vv(const Particle *pp, int n, bool verbose = false) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
-    if (!valid_vv(pp + i, verbose)) atomicExch(&error, err::INVALID);
+    err_type e = valid_vv(pp + i, verbose);
+    report(e);
 }
 
 static __device__ bool valid_acc(float a, int L, bool verbose) {
@@ -122,7 +142,7 @@ static __device__ err_type valid_f(const Force *f, bool verbose) {
     float fx, fy, fz;
     err_type e;
     fx = f->f[X]; fy = f->f[Y]; fz = f->f[Z];
-    e = valid_float3(f->f);
+    e = check_float3(f->f);
     if (e != err::NONE) return e;
     if (valid_unpacked_f(fx, fy, fz, verbose)) e = err::NONE;
     else                                       e = err::INVALID;
@@ -133,7 +153,7 @@ static __global__ void check_ff(const Force *ff, int n, bool verbose = false) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
     err_type e = valid_f(ff + i, verbose);
-    if (e != err::NONE) atomicExch(&error, err::INVALID);
+    report(e);
 }
 
 } // dev
