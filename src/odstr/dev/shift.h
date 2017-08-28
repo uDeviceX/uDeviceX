@@ -7,14 +7,14 @@ static __device__ void fid2shift(int id, /**/ int s[3]) {
     s[Z] = ZS * ((id / 9 + 1) % 3 - 1);
 }
 
-__device__ void shiftPart(const int s[3], Part *p) {
+static __device__ void shiftPart(const int s[3], Part *p) {
     enum {X, Y, Z};
     p->r[X] += s[X];
     p->r[Y] += s[Y];
     p->r[Z] += s[Z];
 }
 
-__device__ void shift_1p(int i, const int strt[], /*io*/ Part *p) {
+static __device__ void shift_1p(int i, const int strt[], /*io*/ Part *p) {
     /* i: particle index */
     enum {X, Y, Z};
     int fid;     /* fragment id */
