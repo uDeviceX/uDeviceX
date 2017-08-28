@@ -8,6 +8,38 @@ __device__ void warpco(/**/ int *ws, int *dw) { /* warp [co]ordinates */
     *ws   = warpSize * warp + blockDim.x * blockIdx.x;
 }
 
+union Part {
+    struct {float2 d0, d1, d2; };
+    struct {float  r[3], v[3]; };
+};
+
+struct Lo { /* particle [lo]cation in memory
+               d: shift in wrap, used for collective access  */
+    float2 *p;
+    int d;
+};
+
+__device__ void pp2Lo(float2 *pp, int n, int ws, /**/ Lo *l) {
+    int dwe; /* warp or buffer end relative to wrap start (`ws') */
+    const int N_FLOAT2_PER_PARTICLE = 3;
+    dwe  = min(warpSize, n - ws);
+    l->p = pp + N_FLOAT2_PER_PARTICLE * ws;
+    l->d = dwe;
+}
+
+__device__ int endLo(Lo *l, int d) { /* is `d' behind the end? */
+    /* `d' relative to wrap start */
+    return d >= l->d;
+}
+
+__device__ void readPart(Lo l, /**/ Part *p) {
+    k_read::AOS6f(l.p, l.d, /**/ p->d0, p->d1, p->d2);
+}
+
+__device__ void writePart(Part *p, /**/ Lo l) {
+    k_write::AOS6f(/**/ l.p, l.d, /*i*/ p->d0, p->d1, p->d2);
+}
+
 __global__ void scan(const int n, const int size[], /**/ int strt[], int size_pin[]) {
     int tid = threadIdx.x;
     int val = 0, cnt = 0;

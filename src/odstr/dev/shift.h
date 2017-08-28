@@ -1,18 +1,5 @@
 namespace odstr { namespace sub { namespace dev {
 
-union Part {
-    struct {float2 d0, d1, d2; };
-    struct {float  r[3], v[3]; };
-};
-
-__device__ void readPart(Lo l, /**/ Part *p) {
-    k_read::AOS6f(l.p, l.d, /**/ p->d0, p->d1, p->d2);
-}
-
-__device__ void writePart(Part *p, /**/ Lo l) {
-    k_write::AOS6f(/**/ l.p, l.d, /*i*/ p->d0, p->d1, p->d2);
-}
-
 static __device__ void fid2shift(int id, int s[3]) {
     enum {X, Y, Z};
     s[X] = XS * ((id     + 1) % 3 - 1);

@@ -4,29 +4,10 @@ struct Pa { /* local particle */
     float2 d0, d1, d2;
 };
 
-struct Lo { /* particle [lo]cation in memory
-               d: shift in wrap, used for collective access  */
-    float2 *p;
-    int d;
-};
-
 struct Ce { /* coordinates of a cell */
     int ix, iy, iz;
     int id; /* linear index */
 };
-
-__device__ void pp2Lo(float2 *pp, int n, int ws, /**/ Lo *l) {
-    int dwe; /* warp or buffer end relative to wrap start (`ws') */
-    const int N_FLOAT2_PER_PARTICLE = 3;
-    dwe  = min(warpSize, n - ws);
-    l->p = pp + N_FLOAT2_PER_PARTICLE * ws;
-    l->d = dwe;
-}
-
-__device__ int endLo(Lo *l, int d) { /* is `d' behind the end? */
-    /* `d' relative to wrap start */
-    return d >= l->d;
-}
 
 __device__ void readPa(Lo l, /**/ Pa *p) {
     k_read::AOS6f(l.p, l.d, /**/ p->d0, p->d1, p->d2);
