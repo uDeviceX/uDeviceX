@@ -41,15 +41,15 @@ static err_type get_err() {
     return e;
 }
 
-static void errmsg(err_type e, const char *fun, const char *msg) {
+static void errmsg(int line, const char *file, err_type e, const char *fun, const char *msg = "") {
     if (e != NONE) {
-        ERR("DBG: ERR (%s): %s %s", fun, err_str[e], msg);
+        ERR("%s: %d: (%s): %s %s", file, line, fun, err_str[e], msg);
     }
 }
 
-static void handle(const char *fun, const char *msg) {
+static void handle(int line, const char *file, const char *fun, const char *msg) {
     err_type e = get_err();
-    errmsg(e, fun, msg);
+    errmsg(line, file, e, fun, msg);
 }
 
 static const char* get_err_str(err_type e) {return err_str[e];}
