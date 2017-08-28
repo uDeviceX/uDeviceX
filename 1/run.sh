@@ -9,7 +9,7 @@ n=40
 d=/scratch/snx3000/lisergey/u
 Time=00:25:00
 u=u/safe
-s=../../src
+s=../src
 
 u.conf $s $u base.h <<EOF
        DBG_PEEK
@@ -18,7 +18,7 @@ u.conf $s $u base.h <<EOF
 EOF
 u.make -j > make.log
 
-safe_cp "$d/$n/sdf.dat" .
+safe_cp "$d/40/sdf.dat" .
 
 x=$n y=1 z=1
 u.strtdir  . $x $y $z
