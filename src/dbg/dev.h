@@ -118,17 +118,22 @@ static __device__ bool valid_unpacked_f(float fx, float fy, float fz, bool verbo
     return ok;
 }
 
-static __device__ bool valid_f(const Force *f, bool verbose) {
+static __device__ err_type valid_f(const Force *f, bool verbose) {
     float fx, fy, fz;
+    err_type e;
     fx = f->f[X]; fy = f->f[Y]; fz = f->f[Z];
-
-    return valid_unpacked_f(fx, fy, fz, verbose);
+    e = valid_float3(f->f);
+    if (e != err::NONE) return e;
+    if (valid_unpacked_f(fx, fy, fz, verbose)) e = err::NONE;
+    else                                       e = err::INVALID;
+    return e;
 }
 
 static __global__ void check_ff(const Force *ff, int n, bool verbose = false) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
-    if(!valid_f(ff + i, verbose)) atomicExch(&error, err::INVALID);
+    err_type e = valid_f(ff + i, verbose);
+    if (e != err::NONE) atomicExch(&error, err::INVALID);
 }
 
 } // dev
