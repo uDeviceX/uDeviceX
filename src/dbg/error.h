@@ -2,9 +2,10 @@ namespace dbg {
 
 namespace err {
 
-#define ERRLIST(_)                              \
-    _(NONE),  /* no error */                    \
-        _(INVALID) /* invalid value */
+#define ERRLIST(_) _(NONE),  /* no error */     \
+        _(INVALID),  /* invalid value */        \
+        _(INF_VAL),  /* inf value */            \
+        _(NAN_VAL)   /* nan value */
 
 #define make_str(s) #s
 #define make_enum(s) s
