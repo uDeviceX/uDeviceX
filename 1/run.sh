@@ -18,7 +18,7 @@ u.conf $s $u base.h <<EOF
 EOF
 u.make -j > make.log
 
-safe_cp "$d/$n/sdf.dat" .
+safe_cp "$d/40/sdf.dat" .
 
 x=$n y=1 z=1
 u.strtdir  . $x $y $z
