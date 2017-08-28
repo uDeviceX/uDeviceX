@@ -1,6 +1,26 @@
 namespace odstr { namespace sub { namespace dev {
 
-__device__ void shift_1p(int i, const int strt[], /*io*/ Pa *p) {
+union Part {
+    struct {float2 d0, d1, d2; };
+    struct {float  r[3], v[3]; };
+};
+
+__device__ void readPart(Lo l, /**/ Part *p) {
+    k_read::AOS6f(l.p, l.d, /**/ p->d0, p->d1, p->d2);
+}
+
+__device__ void writePart(Part *p, /**/ Lo l) {
+    k_write::AOS6f(/**/ l.p, l.d, /*i*/ p->d0, p->d1, p->d2);
+}
+
+__device__ void shiftPart(int s[3], Part *p) {
+    enum {X, Y, Z};
+    p->r[X] += s[X];
+    p->r[Y] += s[Y];
+    p->r[Z] += s[Z];
+}
+
+__device__ void shift_1p(int i, const int strt[], /*io*/ Part *p) {
     /* i: particle index */
     enum {X, Y, Z};
     int fid;     /* fragment id */
@@ -8,21 +28,21 @@ __device__ void shift_1p(int i, const int strt[], /*io*/ Pa *p) {
 
     fid  = k_common::fid(strt, i);
     fid2shift(fid, /**/ shift);
-    shiftPa(shift, p);
+    shiftPart(shift, p);
 }
 
 __global__ void shift(const int n, const int strt[], /*io*/ float2 *pp) {
     int ws, dw;  /* warp start and shift (lane) */
-    Pa p; /* [p]article and its [l]ocation in memory */
+    Part p; /* [p]article and its [l]ocation in memory */
     Lo l;
 
     warpco(&ws, &dw); /* warp coordinates */
     if (ws >= n) return;
     pp2Lo(pp, n, ws, /**/ &l);
-    readPa(l, /**/ &p);   /* collective */
+    readPart(l, /**/ &p);   /* collective */
     if (!endLo(&l, dw))
         shift_1p(ws + dw, strt, /*io*/ &p);
-    writePa(&p, /**/ l); /* collective */
+    writePart(&p, /**/ l); /* collective */
 }
 
 }}} // namespace
