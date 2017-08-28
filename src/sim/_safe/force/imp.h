@@ -1,9 +1,9 @@
 #define O  OP, OF
-#define OP dbg::check_vv(o::q.pp, o::q.n, F("")), dbg::check_pp_pu(o::q.pp, o::q.n, F(""))
+#define OP dbg::check_vv(o::q.pp, o::q.n, F("")), dbg::check_pos_pu(o::q.pp, o::q.n, F(""))
 #define OF dbg::check_ff(o::ff, o::q.n, F("A"))
 
 #define S  OP, OF
-#define SP dbg::check_vv(s::q.pp, s::q.n, F("")), dbg::check_pp_pu(s::q.pp, s::q.n, F(""))
+#define SP dbg::check_vv(s::q.pp, s::q.n, F("")), dbg::check_pos_pu(s::q.pp, s::q.n, F(""))
 #define SF dbg::check_ff(s::ff, s::q.n, F("A"))
 
 #define SYNC dSync(); MC(l::m::Barrier(l::m::cart));
