@@ -1,10 +1,10 @@
 #define O  OP, OF
-#define OP dbg::check_vv(o::q.pp, o::q.n, __FILE__, __LINE__, "vel"), dbg::check_pos_pu(o::q.pp, o::q.n, __FILE__, __LINE__, "pos")
-#define OF dbg::check_ff(o::ff, o::q.n, __FILE__, __LINE__, "ff")
+#define OP dbg::check_vv(o::q.pp, o::q.n, F("vel")), dbg::check_pos_pu(o::q.pp, o::q.n, F("pos"))
+#define OF dbg::check_ff(o::ff, o::q.n, F("ff"))
 
 #define S  OP, OF
-#define SP dbg::check_vv(s::q.pp, s::q.n, __FILE__, __LINE__, "vel"), dbg::check_pos_pu(s::q.pp, s::q.n, __FILE__, __LINE__, "pos")
-#define SF dbg::check_ff(s::ff, s::q.n, __FILE__, __LINE__, "ff")
+#define SP dbg::check_vv(s::q.pp, s::q.n, F("vel")), dbg::check_pos_pu(s::q.pp, s::q.n, F("pos"))
+#define SF dbg::check_ff(s::ff, s::q.n, F("ff"))
 
 #define SYNC dSync(); MC(l::m::Barrier(l::m::cart));
 
