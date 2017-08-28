@@ -1,9 +1,22 @@
 #!/bin/bash
 
-U=u/x
+U=u/x # default unit
+
+build0 () {
+    u.u0 "$U" | D=_ G=. c.main "$U"/make "$U"/make/_
+}
+
+build1 () {
+    if test ! -d "$U"
+    then printf "udeps: $U is not a directory\n" >&2
+	 exit 1
+    fi
+    build0
+}
 
 build () {
-    u.u0 "$U" | D=_ G=. c.main "$U"/make "$U"/make/_
+    if test $# -ne 0; then U=$1; shift; fi
+    build1
 }
 
 list () {
@@ -18,7 +31,7 @@ if   test $# -eq 1 -a "$1" = -l
 then list
 elif test $# -eq 1 -a "$1" = -c
 then collapse
-else build
+else build "$@"
 fi
 
 
