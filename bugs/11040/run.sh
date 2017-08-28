@@ -10,7 +10,7 @@ d=/scratch/snx3000/lisergey/u
 Time=00:25:00
 
 s=../../src
-u.conf $s u/x base.h <<EOF
+u.conf $s u/safe base.h <<EOF
        DBG_PEEK
        ODSTR_SAFE
        run
