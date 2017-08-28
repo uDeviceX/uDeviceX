@@ -7,15 +7,15 @@ static __device__ void report(err_type e) {
     if (e != err::NONE) atomicExch(&error, e);
 }
 
-static __device__ err_type valid_float(float a) {
+static __device__ err_type check_float(float a) {
     if (isnan(a)) return err::NAN_VAL;
     if (isinf(a)) return err::INF_VAL;
     return err::NONE;
 }
 
-static __device__ err_type valid_float3(const float a[3]) {
+static __device__ err_type check_float3(const float a[3]) {
     err_type e;
-#define check_ret(A) if ((e = valid_float(A)) != err::NONE) return e
+#define check_ret(A) if ((e = check_float(A)) != err::NONE) return e
     check_ret(a[0]);
     check_ret(a[1]);
     check_ret(a[2]);
@@ -44,7 +44,7 @@ static __device__ err_type valid_pos(const Particle *p, bool verbose) {
     float x, y, z;
     err_type e;
     x  = p->r[X];  y = p->r[Y];  z = p->r[Z];
-    e = valid_float3(p->r);
+    e = check_float3(p->r);
     if (e != err::NONE) return e;
     if (valid_unpacked_pos(x, y, z, verbose)) e = err::NONE;
     else                                      e = err::INVALID;
@@ -71,7 +71,7 @@ static __device__ err_type valid_pos_pu(const Particle *p, bool verbose) {
     float x, y, z;
     err_type e;
     x  = p->r[X];  y = p->r[Y];  z = p->r[Z];
-    e = valid_float3(p->r);
+    e = check_float3(p->r);
     if (e != err::NONE) return e;
     if (valid_unpacked_pos_pu(x, y, z, verbose)) e = err::NONE;
     else                                         e = err::INVALID;
@@ -106,7 +106,7 @@ static __device__ bool valid_vel3(float vx, float vy, float vz, bool verbose) {
 static __device__ err_type valid_vv(const Particle *p, bool verbose) {
     err_type e;
     const float *v = p->v;
-    e = valid_float3(v);
+    e = check_float3(v);
     if (e != err::NONE) return e;
     if ( valid_vel3(v[X], v[Y], v[Z], verbose)) e = err::NONE;
     else                                        e = err::INVALID;
@@ -142,7 +142,7 @@ static __device__ err_type valid_f(const Force *f, bool verbose) {
     float fx, fy, fz;
     err_type e;
     fx = f->f[X]; fy = f->f[Y]; fz = f->f[Z];
-    e = valid_float3(f->f);
+    e = check_float3(f->f);
     if (e != err::NONE) return e;
     if (valid_unpacked_f(fx, fy, fz, verbose)) e = err::NONE;
     else                                       e = err::INVALID;
