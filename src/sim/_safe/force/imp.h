@@ -1,5 +1,11 @@
-#define OO dbg::check_vv(o::q.pp, o::q.n, F("")), dbg::check_ff(o::ff, o::q.n, F("A")), dbg::check_pp_pu(o::q.pp, o::q.n, F(""))
-#define SS dbg::check_vv(s::q.pp, s::q.n, F("")), dbg::check_ff(s::ff, s::q.n, F("A")), dbg::check_pp_pu(s::q.pp, s::q.n, F(""))
+#define O  OP, OF
+#define OP dbg::check_vv(o::q.pp, o::q.n, F("")), dbg::check_pp_pu(o::q.pp, o::q.n, F(""))
+#define OF dbg::check_ff(o::ff, o::q.n, F("A"))
+
+#define S  OP, OF
+#define SP dbg::check_vv(s::q.pp, s::q.n, F("")), dbg::check_pp_pu(s::q.pp, s::q.n, F(""))
+#define SF dbg::check_ff(s::ff, s::q.n, F("A"))
+
 #define SYNC dSync(); MC(l::m::Barrier(l::m::cart));
 
 void forces(bool wall0) {
@@ -7,34 +13,34 @@ void forces(bool wall0) {
     if (solids0) clear_forces(s::ff, s::q.n);
     if (rbcs)    clear_forces(r::ff, r::q.n);
 
-    OO;
-    SS;
+    O;
+    S;
     forces_dpd();
-    OO;
-    SS;
+    O;
+    S;
 
     if (wall0 && w::q.n) forces_wall();
-    OO;
-    SS;
+    O;
+    S;
 
     forces_rbc();
 
     std::vector<ParticlesWrap> w_r;
     if (solids0) w_r.push_back(ParticlesWrap(s::q.pp, s::q.n, s::ff));
     if (rbcs)    w_r.push_back(ParticlesWrap(r::q.pp, r::q.n, r::ff));
-    OO;
-    SS;
+    O;
+    S;
     if (contactforces) forces_cnt(&w_r);
-    OO;
-    SS;
+    O;
+    S;
     SolventWrap w_s(o::q.pp, o::q.n, o::ff, o::q.cells->start, o::q.cells->count);
     if (fsiforces)     forces_fsi(&w_s, &w_r);
-    OO;
-    SS;
+    O;
+    S;
 
     x::rex(w_r); /* fsi::halo(), cnt::halo() */
-    OO;
-    SS;
+    O;
+    S;
 
     dSync();
 }
