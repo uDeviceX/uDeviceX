@@ -1,5 +1,5 @@
 void odstr() {
-    dbg::check_pp_pu(o::q.pp, o::q.n, F("B"));
+    dbg::check_pos_pu(o::q.pp, o::q.n, F("B"));
     sub::odstr();
-    dbg::check_pp_pu(o::q.pp, o::q.n, F("A"));
+    dbg::check_pos_pu(o::q.pp, o::q.n, F("A"));
 }
