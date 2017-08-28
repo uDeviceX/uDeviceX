@@ -1,5 +1,16 @@
 namespace odstr { namespace sub { namespace dev {
 
+#define SAFE
+#ifdef SAFE
+static __device__ void rescue(int L, float *x) {
+    if (*x < -L/2) *x = -L/2;
+    if (*x >= L/2) *x =  L/2;
+}
+#else
+static __device__ void rescue(int L, float *x) {}
+#endif
+
+
 static __device__ void fid2shift(int id, /**/ int s[3]) {
     enum {X, Y, Z};
     s[X] = XS * ((id     + 1) % 3 - 1);
@@ -9,9 +20,15 @@ static __device__ void fid2shift(int id, /**/ int s[3]) {
 
 static __device__ void shiftPart(const int s[3], Part *p) {
     enum {X, Y, Z};
-    p->r[X] += s[X];
-    p->r[Y] += s[Y];
-    p->r[Z] += s[Z];
+    float *r = p->r;
+    
+    r[X] += s[X];
+    r[Y] += s[Y];
+    r[Z] += s[Z];
+
+    rescue(XS, r + X);
+    rescue(YS, r + Y);
+    rescue(ZS, r + Z);
 }
 
 static __device__ void shift_1p(int i, const int strt[], /*io*/ Part *p) {
