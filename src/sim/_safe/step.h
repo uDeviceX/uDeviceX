@@ -1,33 +1,33 @@
 void step0(float driving_force0, bool wall0, int it) {
-    OO;
-    SS;
+    OP;
+    SP;
     if (solids0) distr_solid();
     if (rbcs)    distr_rbc();
-    OO;
-    SS;
+    OP;
+    SP;
     forces(wall0);
-    OO;
-    SS;
+    O;
+    S;
     dump_diag0(it);
     if (wall0 || solids0) dump_diag_after(it);
     body_force(driving_force0);
-    OO;
-    SS;
+    O;
+    S;
     update_solvent();
-    OO;
-    SS;
+    O;
+    S;
     if (solids0) update_solid();
-    OO;
-    SS;
+    O;
+    S;
     if (rbcs)    update_rbc();
-    OO;
-    SS;
+    O;
+    S;
     if (wall0) bounce();
-    OO;
-    SS;
+    O;
+    S;
     if (sbounce_back && solids0) bounce_solid(it);
-    OO;
-    SS;
+    O;
+    S;
 }
 
 void step(float driving_force0, bool wall0, int it) {
