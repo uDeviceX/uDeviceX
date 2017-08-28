@@ -71,7 +71,7 @@ void sim_gen() {
 }
 
 void sim_strt() {
-    long nsteps = (int)(tend / dt);
+    long nsteps = (long)(tend / dt);
     
     /*Q*/
     flu::strt_quants(restart::BEGIN, &o::q);
