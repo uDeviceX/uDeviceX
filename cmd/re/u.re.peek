@@ -11,7 +11,7 @@ empty () { test ! -d "$d"; }
 last () {
     prev=0 d="$b/$prev"
     if empty; then
-	printf 'u.re: empty base\n'
+	printf 'u.re: empty data base\n'
 	exit 1
     fi
 
