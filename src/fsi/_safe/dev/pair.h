@@ -4,9 +4,7 @@ namespace dev {
 static __device__ void valid_f(float fx, float fy, float fz) {
     enum {X, Y, Z};
     bool verbose = true;
-    Force f;
-    f.f[X] = fx; f.f[Y] = fy; f.f[Z] = fz;
-    assert(dbg::dev::valid_f(&f, verbose) == dbg::err::NONE);
+    assert(dbg::dev::valid_unpacked_f(fx, fy, fz, verbose));
 }
 
 static __device__ void f3xyz(float3 r, float *x, float *y, float *z) {
@@ -17,7 +15,7 @@ static __device__ bool valid_r(float3 r) {
     float x, y, z;
     bool verbose = true;
     f3xyz(r,  &x,  &y,  &z);
-    return dbg::dev::valid_unpacked_pos_pu(x, y, z, verbose) == dbg::err::NONE;
+    return dbg::dev::valid_unpacked_pos_pu(x, y, z, verbose);
 }
 
 static __device__ bool valid_v(float3 v) {
