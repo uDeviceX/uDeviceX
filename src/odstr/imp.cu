@@ -40,7 +40,7 @@
 
 #include "odstr/dev/common.h"
 #include "odstr/dev/check.h"
-#include "odstr/dev/u.h" /* utils */
+#include "odstr/dev/utils.h"
 #include "odstr/dev/subindex.h"
 #include "odstr/dev/gather.h"
 
