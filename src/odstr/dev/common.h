@@ -8,13 +8,6 @@ __device__ void warpco(/**/ int *ws, int *dw) { /* warp [co]ordinates */
     *ws   = warpSize * warp + blockDim.x * blockIdx.x;
 }
 
-static __device__ void fid2shift(int id, int s[3]) {
-    enum {X, Y, Z};
-    s[X] = XS * ((id     + 1) % 3 - 1);
-    s[Y] = YS * ((id / 3 + 1) % 3 - 1);
-    s[Z] = ZS * ((id / 9 + 1) % 3 - 1);
-}
-
 __global__ void scan(const int n, const int size[], /**/ int strt[], int size_pin[]) {
     int tid = threadIdx.x;
     int val = 0, cnt = 0;

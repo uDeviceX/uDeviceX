@@ -13,6 +13,13 @@ __device__ void writePart(Part *p, /**/ Lo l) {
     k_write::AOS6f(/**/ l.p, l.d, /*i*/ p->d0, p->d1, p->d2);
 }
 
+static __device__ void fid2shift(int id, int s[3]) {
+    enum {X, Y, Z};
+    s[X] = XS * ((id     + 1) % 3 - 1);
+    s[Y] = YS * ((id / 3 + 1) % 3 - 1);
+    s[Z] = ZS * ((id / 9 + 1) % 3 - 1);
+}
+
 __device__ void shiftPart(int s[3], Part *p) {
     enum {X, Y, Z};
     p->r[X] += s[X];
