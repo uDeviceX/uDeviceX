@@ -1,34 +1,12 @@
 . u.re.conf
 
-i="$1" d="$b/$i"
+i="$1"; shift
+id="$1"; shift
+d="$b/$i"
 
-: ${AWK=awk}
-
-# suffix
-su=bop
-
+strip () { sed 's,^\./,,g'; }
 find0 () (
-    cd "$d"
-    find . -name "*.$su" -type f
+    cd $d
+    find . -type f | strip
 )
-
-strip0 () { basename "$1" ."$su"; }
-strip () {
-    while read f; do strip0 "$f"; done
-}
-
-# uniq and first and numeric
-uni () { $AWK '!($0 in s){print; s[$0]}'; }
-fst () { $AWK 'NR == 1'; }
-num () { $AWK '/^[0-9]+$/'; }
-
-# get id
-gid () { find0 | strip | num | uni | sort -r  | fst; }
-id=`gid`
-if test -z "$id"
-then
-    printf 'no id\n' "$id" >&2
-    exit 1
-fi
-
-u.re.pick1 "$i" "$id"
+find0 | u.re.pick0 "$id"
