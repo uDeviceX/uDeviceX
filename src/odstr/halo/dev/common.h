@@ -16,7 +16,6 @@ static __global__ void halo(const Particle *pp, const int n, /**/ int *iidx[], i
     if (pid >= n) return;
     const Particle *p = &pp[pid];
     code = box(p->r);
-    reg(
     if (code > 0) {
         entry = atomicAdd(size + code, 1);
         iidx[code][entry] = pid;
