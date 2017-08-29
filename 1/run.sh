@@ -8,10 +8,9 @@ set -eu
 
 n=1
 d=/scratch/snx3000/lisergey/u
-Time=00:15:00
+Time=10:00:00
 u=u/safe
 s=../src
-Restart=1
 
 (cd $s/../cmd; make)
 u.conf $s $u base.h <<EOF
@@ -19,7 +18,7 @@ u.conf $s $u base.h <<EOF
        #ODSTR_SAFE
        run
 EOF
-# u.make -j > make.log
+u.make -j > make.log
 
 safe_cp "$d/$n/sdf.dat" .
 
