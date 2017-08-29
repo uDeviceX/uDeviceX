@@ -1,9 +1,13 @@
 . u.re.conf
 
-empty () { test ! -d "$d"; }
-report () { printf '%s \n' "$d"; }
+i="$1"; shift
+id="$1"; shift
+d="$b/$i"
 
-for i in `seq 0 1000`
-do  d="$b/$i"
-    if empty; then break; else report; fi
-done
+strip () { sed 's,^\./,,g'; }
+find0 () (
+    cd $d
+    find . -type f | strip
+)
+
+find0 | u.re.pick0 "$id"

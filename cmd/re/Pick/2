@@ -59,7 +59,7 @@ prefix () {
    ' "$@"    
 }
 
-u.re.pick1 "$i" "$id" | prefix > "$t"
+u.re.list "$i" "$id" | prefix > "$t"
 
 scn "$t"  | dirname0 | uni | qq | mkdir0
 qq  "$t"                        | cp0
