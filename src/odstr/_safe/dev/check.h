@@ -5,6 +5,7 @@ static __device__ void check_cel(float x, int i, int L) {
         assert(0);
     }
 }
+
 static __device__ void check_vel(float v, int L) {
     float dx = fabs(v * dt);
     if (dx >= L / 2) {
@@ -12,4 +13,12 @@ static __device__ void check_vel(float v, int L) {
         assert(0);
     }
 }
+
+static const float eps = 1e-6f;
+
+static __device__ void rescue(int L, float *x) {
+    if (*x < -L/2) *x = -L/2;
+    if (*x >= L/2) *x =  L/2 - eps;
+}
+
 }}} // namespace
