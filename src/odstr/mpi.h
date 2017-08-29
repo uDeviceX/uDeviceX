@@ -3,12 +3,12 @@ namespace sub {
 
 int lsend(const void *buf, int count, MPI_Datatype datatype, int dest,
            int tag, MPI_Comm comm, MPI_Request *request) {
-    return MPI_Isend(buf, count, datatype, dest, tag, comm, request);
+    return MPI_Isend(buf, count, datatype, dest, tag, l::m::cart, request);
 }
 
 int lrecv(void *buf, int count, MPI_Datatype datatype, int source,
           int tag, MPI_Comm comm, MPI_Request *request) {
-    return MPI_Irecv(buf, count, datatype, source, tag, comm, request);
+    return MPI_Irecv(buf, count, datatype, source, tag, l::m::cart, request);
 }
 
 

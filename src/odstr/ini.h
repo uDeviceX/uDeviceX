@@ -22,7 +22,7 @@ void ini_comm(const MPI_Comm cart, /**/ int rank[], int tags[]) {
         tags[i] = (3 - d[0]) % 3 + 3 * ((3 - d[1]) % 3 + 3 * ((3 - d[2]) % 3));
         int send_coor[3], ranks[3] = {m::coords[0], m::coords[1], m::coords[2]};
         for(int c = 0; c < 3; ++c) send_coor[c] = ranks[c] + d[c];
-        l::m::Cart_rank(cart, send_coor, /**/ rank + i) ;
+        l::m::Cart_rank(l::m::cart, send_coor, /**/ rank + i) ;
     }        
 }
 
