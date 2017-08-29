@@ -5,4 +5,4 @@ $B/l/m.o: $S/l/h/m.h $S/l/m.h
 $B/m.o: $S/inc/conf.h $S/l/m.h $S/m.h $S/mc.h
 $B/mc.o: $B/conf.h $S/inc/conf.h $S/mc.h
 $B/msg.o: $S/m.h $S/msg.h
-$B/u/dbg/main.o: $S/dbg.h $S/glb.h $S/m.h $S/msg.h
+$B/u/dbg/main.o: $S/cc.h $B/conf.h $S/d/api.h $S/dbg.h $S/glb.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/kl.h $S/m.h $S/msg.h

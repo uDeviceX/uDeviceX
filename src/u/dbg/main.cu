@@ -6,10 +6,12 @@
 
 #include "d/api.h"
 
+#include <conf.h>
 #include "inc/conf.h"
 #include "cc.h"
 #include "kl.h"
 #include "inc/type.h"
+#include "inc/dev.h"
 #include "dbg.h"
 
 
@@ -27,14 +29,33 @@ void free() {
     CC(d::Free(ff));
 }
 
-void fill() {}
+namespace dev {
 
-void check() {}
+__global__ void fill(Particle *pp, int n) {
+    int i = threadIdx.x + blockIdx.x * blockDim.x;
+    Particle p;
+    p.r[0] = p.r[1] = p.r[2] = 0;
+    p.v[0] = p.v[1] = p.v[2] = 0;
+
+    if (i >= n) return;
+    if (i < 1) p.r[0] = 1.5 * XS;
+    pp[i] = p;
+}
+} // dev
+
+void fill() {
+    KL(dev::fill, (k_cnf(n)), (pp, n));
+}
+
+void check() {
+    dbg::check_pos(pp, n, __FILE__, __LINE__, "pos");
+}
 
 int main(int argc, char **argv) {
     m::ini(argc, argv);
     alloc();
-    
+    fill();
+    check();
     free();
     m::fin();
 }
