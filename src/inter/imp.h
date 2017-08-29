@@ -1,9 +1,9 @@
 /* see bund.cu for more sim:: functions */
-void create_walls() {
-    int nold = o::q.n;
-    wall::gen_quants(w::qsdf, /**/ &o::q.n, o::q.pp, &w::q);
-    o::q.cells->build(o::q.pp, o::q.n);
-    MSG("solvent particles survived: %d/%d", o::q.n, nold);
+void create_walls(flu::Quants* qflu, sdf::Quants qsdf, wall::Quants *qwall) {
+    int nold = qflu->n;
+    wall::gen_quants(qsdf, /**/ &qflu->n, qflu->pp, qwall);
+    qflu->cells->build(qflu->pp, qflu->n);
+    MSG("solvent particles survived: %d/%d", qflu->n, nold);
 }
 
 void create_solids(flu::Quants* qflu, rig::Quants* qrig) {
