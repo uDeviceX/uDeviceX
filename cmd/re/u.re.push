@@ -1,4 +1,5 @@
-. u.re..conf
+. u.re.conf
+
 empty () { test ! -d "$d"; }
 write () {
     write0 "$s" "$d"
