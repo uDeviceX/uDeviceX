@@ -73,7 +73,7 @@ void ini(const Particle *pp, int n, float pmass, const float *com, const Mesh me
     }
 }
 
-void mesh2pp(const Solid *ss_hst, const int ns, const Mesh m, /**/ Particle *pp) {
+void mesh2pp_hst(const Solid *ss_hst, const int ns, const Mesh m, /**/ Particle *pp) {
     for (int j = 0; j < ns; ++j) {
         const Solid *s = ss_hst + j;
         update_r_hst(m.vv, m.nv, s->com, s->e0, s->e1, s->e2, /**/ pp + j * m.nv);

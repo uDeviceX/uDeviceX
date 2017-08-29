@@ -15,7 +15,7 @@ static void ini0(const Mesh m, int nsolid, int rcount, int idmax, int root, floa
         for (int d = 0; d < 3; ++d)
             model.com[d] = coms[idmax*3 + d];
 
-        solid::ini(r_pp, npsolid, solid_mass, model.com, m, /**/ rr0, &model);
+        rig::ini(r_pp, npsolid, solid_mass, model.com, m, /**/ rr0, &model);
         empty_solid(m, /* io */ rr0, &npsolid);
     }
 

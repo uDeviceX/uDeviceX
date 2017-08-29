@@ -1,12 +1,7 @@
 namespace rig {
 
 void reinit_ft(const int nsolid, /**/ Solid *ss) {
-    for (int i = 0; i < nsolid; ++i) {
-        Solid *s = ss + i;
-            
-        s->fo[X] = s->fo[Y] = s->fo[Z] = 0;
-        s->to[X] = s->to[Y] = s->to[Z] = 0;
-    }
+    reinit_ft_hst(nsolid, /**/ ss);
 }
 
 void update(const Force *ff, const float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *shst) {
@@ -19,12 +14,8 @@ void update(const Force *ff, const float *rr0, int n, int nsolid, /**/ Particle 
     }
 }
 
-void generate(const Solid *ss_hst, const int ns, const float *rr0, const int nps, /**/ Particle *pp) {
-    int start = 0;
-    for (int j = 0; j < ns; ++j) {
-        update_r_hst(rr0, nps, ss_hst[j].com, ss_hst[j].e0, ss_hst[j].e1, ss_hst[j].e2, /**/ pp + start);
-        start += nps;
-    }
+void generate(const Solid *ss, const int ns, const float *rr0, const int nps, /**/ Particle *pp) {
+    generate_hst(ss, ns, rr0, nps, /**/ pp);
 }
 
 void update_mesh(const Solid *ss_hst, const int ns, const Mesh m, /**/ Particle *pp) {

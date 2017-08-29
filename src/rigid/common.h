@@ -19,4 +19,22 @@ void update_r_hst(const float *rr0, const int n, const float *com, const float *
     }
 }
 
+void reinit_ft_hst(const int nsolid, /**/ Solid *ss) {
+    for (int i = 0; i < nsolid; ++i) {
+        Solid *s = ss + i;
+            
+        s->fo[X] = s->fo[Y] = s->fo[Z] = 0;
+        s->to[X] = s->to[Y] = s->to[Z] = 0;
+    }
+}
+
+void generate_hst(const Solid *ss_hst, const int ns, const float *rr0, const int nps, /**/ Particle *pp) {
+    int start = 0;
+    for (int j = 0; j < ns; ++j) {
+        update_r_hst(rr0, nps, ss_hst[j].com, ss_hst[j].e0, ss_hst[j].e1, ss_hst[j].e2, /**/ pp + start);
+        start += nps;
+    }
+}
+
+
 } // rig

@@ -19,7 +19,7 @@
 #include "inc/dev.h"
 #include "texo.h"
 #include "inc/mpi.h"
-#include "solid.h"
+#include "rigid/int.h"
 
 #include "mesh/collision.h"
 #include "mesh/dist.h"
@@ -76,12 +76,12 @@ void gen_from_strt(const int id, int *ns, int *nps, int *n, float *rr0_hst, Soli
 }
 
 void gen_pp_hst(const int ns, const float *rr0_hst, const int nps, /**/ Solid *ss_hst, Particle *pp_hst) {
-    solid::generate_hst(ss_hst, ns, rr0_hst, nps, /**/ pp_hst);
-    solid::reinit_ft_hst(ns, /**/ ss_hst);
+    rig::generate_hst(ss_hst, ns, rr0_hst, nps, /**/ pp_hst);
+    rig::reinit_ft_hst(ns, /**/ ss_hst);
 }
 
 void gen_ipp_hst(const Solid *ss_hst, const int ns, const Mesh m_hst, Particle *i_pp_hst) {
-    solid::mesh2pp_hst(ss_hst, ns, m_hst, /**/ i_pp_hst);
+    rig::mesh2pp_hst(ss_hst, ns, m_hst, /**/ i_pp_hst);
 }
 
 void set_ids(const int ns, Solid *ss_hst, Solid *ss_dev) {
