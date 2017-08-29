@@ -17,8 +17,8 @@
 
 #include "int.h"         /* local to this dir */
 
-#include "dev/reg.h"
-#include "dev/common.h"
+#include "reg.h"
+#include "common.h"
 
 void halo(const Particle *pp, int n, /**/ int **iidx, int *sizes) {
     Dzero(sizes, 27);

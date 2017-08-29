@@ -37,7 +37,7 @@ $B/mesh/props.o: $S/mesh/props.cpp; $X -I$S/. -I$S/mesh
 $B/minmax.o: $S/minmax.cu; $N -I$S/.
 $B/mrescue.o: $S/mrescue.cu; $N -I$S/.
 $B/msg.o: $S/msg.cpp; $X -I$S/.
-$B/odstr/halo/imp.o: $S/odstr/halo/imp.cu; $N -I$S/. -I$S/odstr/halo
+$B/odstr/halo/imp.o: $S/odstr/halo/imp.cu; $N -I$S/. -I$S/odstr/halo -I$S/odstr/halo/_dang
 $B/odstr/imp.o: $S/odstr/imp.cu; $N -I$S/. -I$S/odstr -I$S/odstr/_dang
 $B/odstr/int.o: $S/odstr/int.cu; $N -I$S/. -I$S/odstr -I$S/odstr/_dang
 $B/odstr/pack/imp.o: $S/odstr/pack/imp.cu; $N -I$S/. -I$S/odstr/pack -I$S/odstr/pack/_dang
