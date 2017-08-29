@@ -7,10 +7,11 @@ ${AWK=awk} -v id="$id" '
     f = $1 # file name
     b = basename(f)
     if (!nump(b))  add(f, f)
-    if (eq(b, id)) add(f, transform(f, id))
+    else if (eq(b, id)) add(f, transform(f, id))
 }
 
 function transform(s, id,   lo, hi, n, pre, post) {
+    print s
     lo = rindex(s, id) # cut [lo:hi]
     hi = lo + length(id) - 1
     return substr(s, 1, lo - 1)  "final" substr(s, hi + 1)
@@ -28,13 +29,14 @@ function add(a, b) {
     I++; F[I] = a; T[I] = b
 }
 
-END {
+function dump(   i) {
     for (i = 1; i <= I; i++) {
 	if (i > 1) printf "\n"
 	print F[i]
 	print T[i]
     }
 }
+END { dump() }
 
 function str(a)   { return a "" }
 function eq(a, b) { return str(a) == str(b) }

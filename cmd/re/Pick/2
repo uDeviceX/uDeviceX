@@ -1,12 +1,27 @@
 . u.re.conf
 
+: ${AWK=awk}
+
 i="$1"; shift
 id="$1"; shift
-d="$b/$i"
 
-strip () { sed 's,^\./,,g'; }
-find0 () (
-    cd $d
-    find . -type f | strip
-)
-find0 | u.re.pick0 "$id"
+t=/tmp/pick.$$
+trap 0 1 2 3 15
+
+u.re.pick1 "$i" "$id" > "$t"
+
+scn () {
+   "$AWK" -v RS= \
+   '
+   { print $2 }
+   ' "$@"
+}
+
+dirname0 () {
+   while read f
+   do  dirname -- "$f"
+   done
+}
+uni () { "$AWK" '!($0 in s){print; s[$0]}'; }
+
+scn "$t" | dirname0 | uni
