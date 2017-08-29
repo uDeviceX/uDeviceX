@@ -93,8 +93,6 @@
 
 /* local */
 #include "type.h"
-#include "dec.h"
-
 #include "generic.h"
 #include "imp.h"
 
