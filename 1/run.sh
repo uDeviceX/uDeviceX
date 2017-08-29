@@ -6,7 +6,7 @@ set -eu
 . u/`u.host`
 . u/common
 
-n=40
+n=1
 d=/scratch/snx3000/lisergey/u
 Time=10:00:00
 u=u/x
