@@ -140,7 +140,7 @@ namespace dev {
 
 #define HST (true)
 #define DEV (false)
-//#define DEVICE_SOLID
+#define DEVICE_SOLID
 #ifdef DEVICE_SOLID
   #include "0dev/bounce.h"
   #include "0dev/update.h"
