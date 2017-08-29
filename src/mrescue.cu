@@ -35,6 +35,8 @@ void fin() {
     CC(cudaFree(tags_dev));
 }
 
+static __host__ __device__ float dot(const float a[3], const float b[3]) {return a[0]*b[0] + a[1]*b[1] + a[2]*b[2];}
+
 static __host__ __device__ void project_t(const float *a, const float *b, const float *c,
                            const float *va, const float *vb, const float *vc,
                            const float *r, /**/ float *rp, float *vp, float *n) {
@@ -46,7 +48,6 @@ static __host__ __device__ void project_t(const float *a, const float *b, const 
     n[1] = ab[2]*ac[0] - ab[0]*ac[2];
     n[2] = ab[0]*ac[1] - ab[1]*ac[0];
         
-#define dot(x, y) (x[0]*y[0] + x[1]*y[1] + x[2]*y[2])
     {
         const float s = 1.f / sqrt(dot(n,n));
         n[0] *= s; n[1] *= s; n[2] *= s;
@@ -70,9 +71,7 @@ static __host__ __device__ void project_t(const float *a, const float *b, const 
         u = (ga1 * a22 - ga2 * a12) * fac;
         v = (ga2 * a11 - ga1 * a12) * fac;
     }
-        
-#undef dot
-        
+    
     // project (u,v) onto unit triangle
 
     if ( (v > u - 1) && (v < u + 1) && (v > 1 - u) ) {
