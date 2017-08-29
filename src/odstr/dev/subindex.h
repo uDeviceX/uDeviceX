@@ -12,6 +12,13 @@ static __device__ void Part2r(const Part *p, /**/ float *r) {
     r[Z] = fst(p->d1);
 }
 
+static __device__ void r2Part(float r[3], /**/ Part *p) {
+    enum {X, Y, Z};
+    p->d0.x = r[X];
+    p->d0.y = r[Y];
+    p->d1.x = r[Z];
+}
+
 static  __device__ void Part2v(const Part *p, /**/ float *v) {
     enum {X, Y, Z};
     v[X] = scn(p->d1);

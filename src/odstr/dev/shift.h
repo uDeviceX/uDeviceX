@@ -9,15 +9,17 @@ static __device__ void fid2shift(int id, /**/ int s[3]) {
 
 static __device__ void shiftPart(const int s[3], Part *p) {
     enum {X, Y, Z};
-    float *r = p->r;
-    
+    float r[3];
+    Part2r(p, r);
+
     r[X] += s[X];
     r[Y] += s[Y];
     r[Z] += s[Z];
-
     rescue(XS, r + X);
     rescue(YS, r + Y);
     rescue(ZS, r + Z);
+
+    r2Part(r, p);
 }
 
 static __device__ void shift_1p(int i, const int strt[], /*io*/ Part *p) {
