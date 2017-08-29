@@ -167,6 +167,7 @@ namespace dev {
   #error ODSTR* is undefined
 #endif
 
+#include "rbc.h"
 #include "step.h"
 #include "run.h"
 #include "imp.h"
