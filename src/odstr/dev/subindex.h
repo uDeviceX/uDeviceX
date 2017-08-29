@@ -33,22 +33,12 @@ static __device__ void regCe(Ce *c, int i, /*io*/ int *counts, /**/ uchar4 *subi
     subids[i] = make_uchar4(c->ix, c->iy, c->iz, subindex);
 }
 
-static __device__ void checkPav(const Part *p) { /* check particle velocity */
-    enum {X, Y, Z};
-    float v[3];
-    Part2v(p, v);
-    check_vel(v[X], XS);
-    check_vel(v[Y], YS);
-    check_vel(v[Z], ZS);
-}
-
 static __device__ void subindex0(int i, const int strt[], const Part *p, /*io*/ int *counts, /**/ uchar4 *subids) {
     /* i: particle index */
     enum {X, Y, Z};
     Ce c; /* cell coordinates */
 
     Part2Ce(p, /**/ &c); /* to cell coordinates */
-    checkPav(p); /* check velocity */
     regCe(&c, i, /*io*/ counts, subids); /* register */
 }
 
