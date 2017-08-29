@@ -72,3 +72,6 @@ qq  "$t"                        | cp0    > $cp0
 
 # rm -rf strt && sh -x $md && sh -x $cp0
 u.re.pick1 "$i" "$md" "$cp0"
+
+echo "preved"
+u.re.file "$i" "$id"
