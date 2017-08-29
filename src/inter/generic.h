@@ -14,7 +14,16 @@ static void remove_rbcs(rbc::Quants *q, sdf::Quants qsdf) {
     MSG("%d/%d RBCs survived", q->nc, nc0);
 }
 
-void remove_solids(rig::Quants *q, sdf::Quants qsdf) {
+static void create_solids(flu::Quants* qflu, rig::Quants* qrig) {
+    cD2H(qflu->pp_hst, qflu->pp, qflu->n);
+    rig::gen_quants(/*io*/ qflu->pp_hst, &qflu->n, /**/ qrig);
+    MC(l::m::Barrier(l::m::cart));
+    cH2D(qflu->pp, qflu->pp_hst, qflu->n);
+    MC(l::m::Barrier(l::m::cart));
+    MSG("created %d solids.", qrig->ns);
+}
+
+static void remove_solids(rig::Quants *q, sdf::Quants qsdf) {
     int stay[MAX_SOLIDS];
     int ns0;
     int nip = q->ns * q->m_dev.nv;

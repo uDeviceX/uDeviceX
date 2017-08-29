@@ -1,4 +1,4 @@
 namespace inter {
-void freeze(flu::Quants *qflu, rig::Quants *qrig, rbc::Quants *qrbc, sdf::Quants qsdf);
-void create_walls(flu::Quants* qflu, sdf::Quants qsdf, wall::Quants *qwall);
+void freeze(sdf::Quants qsdf, flu::Quants *qflu, rig::Quants *qrig, rbc::Quants *qrbc);
+void create_walls(sdf::Quants qsdf, flu::Quants* qflu, wall::Quants *qwall);
 }

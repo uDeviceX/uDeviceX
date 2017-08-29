@@ -112,6 +112,7 @@ namespace dev {
 
 #include "dump/int.h"
 #include "rig/int.h"
+#include "inter/int.h"
 
 namespace sim {
 namespace dev {
@@ -133,10 +134,8 @@ namespace dev {
 
 #include "ini.h"
 #include "fin.h"
-#include "generic.h"
 #include "dump.h"
 #include "colors.h"
-
 
 #define HST (true)
 #define DEV (false)
