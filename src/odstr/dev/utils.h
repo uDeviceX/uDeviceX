@@ -1,7 +1,7 @@
 namespace odstr { namespace sub { namespace dev {
 /* utils */
-__device__ float fst(float2 t) { return t->x; }
-__device__ float scn(float2 t) { return t->y; }
+__device__ float fst(float2 t) { return t.x; }
+__device__ float scn(float2 t) { return t.y; }
 
 __device__ void xchg(int dw, /**/ float3 *s0, float3 *s1) { /* collective */
     int src0, src1;
