@@ -17,7 +17,7 @@ float h_A[n], h_B[n], h_C[n]; /* host */
 float *d_A, *d_B, *d_C; /* device */
 #define sz ((n)*sizeof(h_A[0]))
 
-__global__ void add(float *A, float *B, float *C) {
+__global__ void misaligned(float *A, float *B, float *C) {
     int i = blockDim.x * blockIdx.x + threadIdx.x;
     if (i < n) C[i] = A[i] + B[i];
 }
@@ -50,7 +50,7 @@ int main() {
   d_ini();
 
   h2d();
-  add<<<k_cnf(n)>>>(d_A, d_B, d_C);
+  misaligned<<<k_cnf(n)>>>(d_A, d_B, d_C);
   d2h();
 
   int i;
