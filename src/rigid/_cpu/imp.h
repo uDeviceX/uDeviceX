@@ -22,7 +22,7 @@ void update(const Force *ff, const float *rr0, int n, int nsolid, /**/ Particle 
 void generate(const Solid *ss_hst, const int ns, const float *rr0, const int nps, /**/ Particle *pp) {
     int start = 0;
     for (int j = 0; j < ns; ++j) {
-        update_r(rr0, nps, ss_hst[j].com, ss_hst[j].e0, ss_hst[j].e1, ss_hst[j].e2, /**/ pp + start);
+        update_r_hst(rr0, nps, ss_hst[j].com, ss_hst[j].e0, ss_hst[j].e1, ss_hst[j].e2, /**/ pp + start);
         start += nps;
     }
 }
