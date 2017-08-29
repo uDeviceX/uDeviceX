@@ -101,7 +101,7 @@ namespace dev {
 #include "mesh/collision.h"
 #include "mesh/bbox.h"
 
-#include "solid.h"
+#include "rigid/int.h"
 #include "tcells/int.h"
 
 #include "mbounce/imp.h"
@@ -140,7 +140,7 @@ namespace dev {
 
 #define HST (true)
 #define DEV (false)
-#define DEVICE_SOLID
+//#define DEVICE_SOLID
 #ifdef DEVICE_SOLID
   #include "0dev/bounce.h"
   #include "0dev/update.h"
