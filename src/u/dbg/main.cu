@@ -61,8 +61,8 @@ void fill_bugs() {
 
 void check() {
     dbg::check_pos(pp, n, __FILE__, __LINE__, "pos");
-    dbg::check_vv(pp, n, __FILE__, __LINE__, "vel");
-    dbg::check_ff(ff, n, __FILE__, __LINE__, "acc");
+    dbg::check_vv (pp, n, __FILE__, __LINE__, "vel");
+    dbg::check_ff (ff, n, __FILE__, __LINE__, "acc");
 }
 
 int main(int argc, char **argv) {
