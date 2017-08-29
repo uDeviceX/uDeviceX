@@ -72,7 +72,6 @@
 #include "cnt/int.h"
 #include "fsi/int.h"
 
-#include "int.h"
 #include "x/int.h"
 #include "dpd/local.h"
 
@@ -90,6 +89,7 @@
 
 #include "dump/int.h"
 #include "rig/int.h"
+#include "int.h"
 
 /* local */
 #include "generic.h"

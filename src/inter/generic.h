@@ -1,3 +1,4 @@
+namespace inter {
 template <typename T>
 static void remove(T *data, int nv, int *e, int nc) {
     int c; /* c: cell */
@@ -29,4 +30,4 @@ void remove_solids(rig::Quants *q, sdf::Quants qsdf) {
     remove(q->i_pp_hst, q->m_hst.nv, stay, q->ns);
     MSG("sim.impl: %d/%d Solids survived", q->ns, ns0);
 }
-
+} /* namespace */

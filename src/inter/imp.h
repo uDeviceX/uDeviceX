@@ -1,4 +1,4 @@
-/* see bund.cu for more sim:: functions */
+namespace inter {
 void create_walls(flu::Quants* qflu, sdf::Quants qsdf, wall::Quants *qwall) {
     int nold = qflu->n;
     wall::gen_quants(qsdf, /**/ &qflu->n, qflu->pp, qwall);
@@ -22,3 +22,4 @@ void freeze(flu::Quants *qflu, rig::Quants *qrig, rbc::Quants *qrbc, sdf::Quants
     if (walls && solids)  remove_solids(qrig, qsdf);
     if (solids)           rig::set_ids(*qrig);
 }
+} /* namespace */
