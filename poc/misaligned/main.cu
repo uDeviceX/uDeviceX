@@ -17,43 +17,23 @@ float h_A[n], h_B[n], h_C[n]; /* host */
 float *d_A, *d_B, *d_C; /* device */
 #define sz ((n)*sizeof(h_A[0]))
 
-__global__ void misaligned(float *A, float *B, float *C) {
-    int i = blockDim.x * blockIdx.x + threadIdx.x;
-    if (i < n) C[i] = A[i] + B[i];
+/*
+__global__ void func (char* stringInput, int stringSize, int* integerInput, char* dummySpace) {
+    int counter = 0;
+    for(int i=0;i<stringSize;i++)
+       dummySpace[counter++] = stringInput[i];
+    for(int i=0;i<sizeof(int);i++)
+       dummySpace[counter++] = ((char*)integerInput)[i];
+    }
 }
-
-void h_ini() {
-  int i;
-  for (i = 0; i < n; ++i) {
-    h_A[i] =    i;
-    h_B[i] = 10*i;
-  }
-}
+*/
 
 void d_ini() {
   cudaMalloc(&d_A, sz);
   cudaMalloc(&d_B, sz);
-  cudaMalloc(&d_C, sz);
-}
-
-void h2d() {
-  cudaMemcpy(d_A, h_A, sz, cudaMemcpyHostToDevice);
-  cudaMemcpy(d_B, h_B, sz, cudaMemcpyHostToDevice);
-}
-
-void d2h() {
-  cudaMemcpy(h_C, d_C, sz, cudaMemcpyDeviceToHost);
 }
 
 int main() {
-  h_ini();
   d_ini();
-
-  h2d();
-  misaligned<<<k_cnf(n)>>>(d_A, d_B, d_C);
-  d2h();
-
-  int i;
-  for (i = 0; i < n; i++)
-    printf("c[%d] = %2g\n", i, h_C[i]);
+  //  misaligned<<<k_cnf(n)>>>(d_A, d_B, d_C);
 }
