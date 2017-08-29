@@ -22,7 +22,8 @@ static  __device__ void Part2v(const Part *p, /**/ float *v) {
 static __device__ void Part2Ce(const Part *p, /**/ Ce *c) {
     /* particle to cell coordinates */
     float r[3];
-    r2c(p->r, /**/ &c->ix, &c->iy, &c->iz, &c->id);
+    Part2r(p, r);
+    r2c(r, /**/ &c->ix, &c->iy, &c->iz, &c->id);
 }
 
 static __device__ void regCe(Ce *c, int i, /*io*/ int *counts, /**/ uchar4 *subids) {
