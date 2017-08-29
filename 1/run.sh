@@ -16,7 +16,6 @@ Restart=1
 (cd $s/../cmd; make)
 u.conf $s $u base.h <<EOF
        #DBG_PEEK
-       RESTART=true
        #ODSTR_SAFE
        run
 EOF
@@ -24,14 +23,6 @@ EOF
 
 safe_cp "$d/$n/sdf.dat" .
 
-# copy restart db
-safe_re
-
 x=$n y=1 z=1
-
-if test $Restart -eq 1
-then u.re.pick
-else u.strtdir  . $x $y $z
-fi
 
 u.batch   $x $y $z ./udx $Time
