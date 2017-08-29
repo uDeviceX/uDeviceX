@@ -3,7 +3,6 @@ struct TicketD { /* distribution */
     /* base tags */
     int btc, btp;
 
-    MPI_Comm cart;
     int rank[27];
     MPI_Request send_sz_req[27], recv_sz_req[27];
     MPI_Request send_pp_req[27], recv_pp_req[27];
