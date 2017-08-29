@@ -3,8 +3,8 @@
 `daint:/scratch/snx1600/lisergey/udx/gen/n1`
 
     1.9e+03  1.1e+00 [ 1.8e+05 -7.5e+01  6.3e+01]  1.0e+01
-     2.0e+03  1.1e+00 [ 1.8e+05  4.9e+01  4.2e+01]  1.0e+01
-     ../src/sim/_release/0dev/distr.h:2: device-side assert triggered
+    2.0e+03  1.1e+00 [ 1.8e+05  4.9e+01  4.2e+01]  1.0e+01
+    ../src/sim/_release/0dev/distr.h:2: device-side assert triggered
 
 1/.000:
 
