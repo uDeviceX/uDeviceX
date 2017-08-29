@@ -7,6 +7,7 @@ do if test $# -eq 0; then break; fi
 done
 
 empty () { test ! -d "$d"; }
+next  () { u.re.pick3 "$@"; }
 
 last () {
     prev=0 d="$b/$prev"
@@ -17,7 +18,7 @@ last () {
 
     for i in `seq 0 1000`
     do  d="$b/$i"
-	if empty; then u.re.pick1 "$prev"; break; fi
+	if empty; then next $prev; break; fi
 	prev=$i
     done
 
@@ -25,5 +26,5 @@ last () {
 
 if test $Last -eq 1
 then last
-else u.re.pick3 $i
+else next $i
 fi
