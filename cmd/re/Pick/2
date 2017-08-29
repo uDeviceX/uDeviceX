@@ -8,8 +8,7 @@ id="$1"; shift
 t=/tmp/pick.$$
 trap 0 1 2 3 15
 
-u.re.pick1 "$i" "$id" > "$t"
-
+# second
 scn () {
    "$AWK" -v RS= \
    '
@@ -22,18 +21,45 @@ dirname0 () {
    do  dirname -- "$f"
    done
 }
+
+# unique
 uni () { "$AWK" '!($0 in s){print; s[$0]}'; }
 
-# create cp commands
-cp0() {
-   "$AWK" -v q=\' -v RS= \
+qq() { # A -> 'A'
+   "$AWK" -v q=\' \
    '
    function qq(s) { return q s q }
-   { print "cp --", qq($1), qq($2) }
+   NF { print qq($0); next }
+      { print }
+   ' "$@"    
+}
+
+# dump cp commands
+cp0() {
+   "$AWK" -v RS= \
+   '
+   { print "cp --", $1, $2 }
    ' "$@"
 }
 
-# scn "$t" | dirname0 | uni
+# dump mkdir commands
+mkdir0() {
+   "$AWK" \
+   '
+   { print "mkdir -p --", $1 }
+   ' "$@"    
+}
 
-cp0 "$t"
-echo "$b/$i"
+prefix () {
+    "$AWK" -v s="$s" -v d="$b/$i"  -v RS= \
+   '
+   { if (NR > 1) printf "\n"
+     printf "%s/%s\n", d, $1
+     printf "%s/%s\n", s, $2 }
+   ' "$@"    
+}
+
+u.re.list "$i" "$id" | prefix > "$t"
+
+scn "$t"  | dirname0 | uni | qq | mkdir0
+qq  "$t"                        | cp0
