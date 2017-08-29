@@ -63,3 +63,9 @@ namespace a /* all */
 Particle pp_hst[3*MAX_PART_NUM]; /* particles on host */
 }
 
+namespace bb /* bounce back */
+{
+tcells::Quants qtc;
+mbounce::TicketM tm;
+}
+
