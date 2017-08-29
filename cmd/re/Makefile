@@ -3,7 +3,7 @@ B = $(BIN)
 
 # files and prefixes (with dot)
 x = u.re.
-X = push list clear conf pick list list0
+X = push file clear conf pick list list0
 
 y = u.re.pick
 Y = Pick/2 Pick/3
