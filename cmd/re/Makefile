@@ -1,13 +1,13 @@
 BIN = $(HOME)/bin
 B = $(BIN)
 
-P = u.re.push u.re.list u.re.clear u.re.peek u.re.peek0 u.re.peek1
-C = u.re.conf
+# prefix
+p = u.re
+P = push list clear peek peek0 peek1 conf
 
 install:
 	@echo install re tools to $B
 	@mkdir -p $B
-	@cp -- $P $B
-	@cp -- $C $B
+	for f in $P; do cp $p.$$f $B; done
 
 .PHONY: install
