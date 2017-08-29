@@ -7,6 +7,7 @@
 #include "msg.h"
 #include "cc.h"
 #include "d/api.h"
+#include "frag.h"
 
 #include "rnd/imp.h"
 
@@ -152,6 +153,7 @@ void recv_ii(const TicketRhalo *t, /**/ TicketRIhalo *ti) {
 
 // TODO move this to imp
 void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
+    enum {X, Y, Z};
     int i;
     int dx, dy, dz;
     int m0, m1, m2;
@@ -161,9 +163,9 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
     hforces::Rnd26     rnd;
 
     for (i = 0; i < 26; ++i) {
-        dx = (i     + 2) % 3 - 1;
-        dy = (i / 3 + 2) % 3 - 1;
-        dz = (i / 9 + 2) % 3 - 1;
+        dx = frag_to_dir[i][X];
+        dy = frag_to_dir[i][Y];
+        dz = frag_to_dir[i][Z];
 
         m0 = 0 == dx;
         m1 = 0 == dy;
