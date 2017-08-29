@@ -38,8 +38,8 @@ $B/minmax.o: $S/minmax.cu; $N -I$S/.
 $B/mrescue.o: $S/mrescue.cu; $N -I$S/.
 $B/msg.o: $S/msg.cpp; $X -I$S/.
 $B/odstr/halo/imp.o: $S/odstr/halo/imp.cu; $N -I$S/. -I$S/odstr/halo
-$B/odstr/imp.o: $S/odstr/imp.cu; $N -I$S/. -I$S/odstr
-$B/odstr/int.o: $S/odstr/int.cu; $N -I$S/. -I$S/odstr
+$B/odstr/imp.o: $S/odstr/imp.cu; $N -I$S/. -I$S/odstr -I$S/odstr/_safe
+$B/odstr/int.o: $S/odstr/int.cu; $N -I$S/. -I$S/odstr -I$S/odstr/_safe
 $B/odstr/pack/imp.o: $S/odstr/pack/imp.cu; $N -I$S/. -I$S/odstr/pack -I$S/odstr/pack/_safe
 $B/os.o: $S/os.cpp; $X -I$S/.
 $B/rbc/imp.o: $S/rbc/imp.cu; $N -I$S/. -I$S/rbc
@@ -49,6 +49,7 @@ $B/rdstr/int.o: $S/rdstr/int.cu; $N -I$S/. -I$S/rdstr
 $B/restart.o: $S/restart.cpp; $X -I$S/.
 $B/rig/imp.o: $S/rig/imp.cu; $N -I$S/. -I$S/rig
 $B/rig/int.o: $S/rig/int.cu; $N -I$S/. -I$S/rig
+$B/rigid/imp.o: $S/rigid/imp.cu; $N -I$S/. -I$S/rigid -I$S/rigid/_cuda
 $B/rnd/imp.o: $S/rnd/imp.cpp; $X -I$S/. -I$S/rnd
 $B/scan/imp.o: $S/scan/imp.cu; $N -I$S/. -I$S/scan
 $B/sdf/imp.o: $S/sdf/imp.cu; $N -I$S/. -I$S/sdf
