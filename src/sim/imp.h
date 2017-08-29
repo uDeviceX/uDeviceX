@@ -38,7 +38,7 @@ void gen() { /* generate */
 void sim_gen() {
     flu::gen_quants(&o::q);
     if (global_ids)    flu::gen_ids  (o::q.n, &o::qi);
-    if (multi_solvent) flu::gen_tags0(o::q.n, &o::qt);
+    if (multi_solvent) flu::gen_tags0(o::q.n, &o::qc);
     o::q.cells->build(o::q.pp, o::q.n);
     flu::get_ticketZ(o::q, &o::tz);
     flu::get_ticketRND(&o::trnd);
@@ -46,7 +46,7 @@ void sim_gen() {
         rbc::gen_quants("rbc.off", "rbcs-ic.txt", /**/ &r::q);
         rbc::gen_ticket(r::q, &r::tt);
 
-        if (multi_solvent) gen_tags();
+        if (multi_solvent) gen_colors();
     }
     MC(l::m::Barrier(l::m::cart));
   
@@ -60,7 +60,7 @@ void sim_gen() {
         flu::get_ticketZ(o::q, &o::tz);
         flu::get_ticketRND(&o::trnd);
         solids0 = solids;
-        if (rbcs && multi_solvent) gen_tags();
+        if (rbcs && multi_solvent) gen_colors();
         run(wall_creation, nsteps);
     } else {
         solids0 = solids;
@@ -75,8 +75,8 @@ void sim_strt() {
     
     /*Q*/
     flu::strt_quants(restart::BEGIN, &o::q);
-    if (global_ids)    flu::strt_ii("id",   restart::BEGIN, &o::qi);
-    if (multi_solvent) flu::strt_ii("tags", restart::BEGIN, &o::qt);
+    if (global_ids)    flu::strt_ii("id",     restart::BEGIN, &o::qi);
+    if (multi_solvent) flu::strt_ii("colors", restart::BEGIN, &o::qc);
     o::q.cells->build(/* io */ o::q.pp, o::q.n);
 
     if (rbcs) rbc::strt_quants("rbc.off", restart::BEGIN, &r::q);

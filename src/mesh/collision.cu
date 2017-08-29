@@ -185,7 +185,8 @@ void inside_dev(const Particle *pp, const int n, const Mesh m, const Particle *i
    nt: number of triangles per mesh
    nv: number of vertices per mesh
 */
-void get_tags(const Particle *pp, const int n, const Texo<float2> texvert, const Texo<int4> textri, const int nt, const int nv, const int nm, /**/ int *tags) {
+void get_colors(const Particle *pp, const int n, const Texo<float2> texvert, const Texo<int4> textri, const int nt,
+                const int nv, const int nm, /**/ int *tags) {
     if (nm == 0 || n == 0) return;
 
     KL(kernels::init_tags, (k_cnf(n)), (n, /**/ tags));

@@ -17,8 +17,8 @@ void dump_part(int step) {
   }
   // TODO add a switch?
   if (multi_solvent) {
-      cD2H(o::qt.ii_hst, o::qt.ii, o::q.n);
-      dump::intdata(o::qt.ii_hst, o::q.n, "tags_solvent", step);
+      cD2H(o::qc.ii_hst, o::qc.ii, o::q.n);
+      dump::intdata(o::qc.ii_hst, o::q.n, "colors_solvent", step);
   }
   dump::parts(o::q.pp_hst, o::q.n, "solvent", step, /**/ &dumpt);
   
@@ -58,8 +58,8 @@ void dump_strt_templ() { /* template dumps (wall, solid) */
 
 void dump_strt(int id) {
     flu::strt_dump(id, o::q);
-    if (global_ids)    flu::strt_dump_ii("id",   id, o::qi, o::q.n);
-    if (multi_solvent) flu::strt_dump_ii("tags", id, o::qt, o::q.n);
+    if (global_ids)    flu::strt_dump_ii("id",     id, o::qi, o::q.n);
+    if (multi_solvent) flu::strt_dump_ii("colors", id, o::qc, o::q.n);
     if (rbcs)       rbc::strt_dump(id, r::q);
     if (solids)     rig::strt_dump(id, s::q);
 }
