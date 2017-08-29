@@ -37,7 +37,7 @@
 #define fsiforces           true
 #define walls               true
 #define wall_creation       1000
-#define tend                10000
+#define tend                9999999
 
 /* FLOW TYPE */
 #define pushflow            true
