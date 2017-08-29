@@ -31,4 +31,6 @@ then
     exit 1
 fi
 
+printf 'id : %s\n' "$id" >&2
+
 u.re.pick2 "$i" "$id"

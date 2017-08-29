@@ -65,9 +65,10 @@ prefix () {
    ' "$@"    
 }
 
-u.re.list "$i" "$id" | prefix > "$t"
+u.re.file "$i" "$id" | prefix > "$t"
 
 scn "$t"  | dirname0 | uni | qq | mkdir0 > $md
 qq  "$t"                        | cp0    > $cp0
 
-rm -rf strt && sh -x $md && sh -x $cp0
+# rm -rf strt && sh -x $md && sh -x $cp0
+u.re.pick1 "$i" "$md" "$cp0"
