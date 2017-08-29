@@ -48,9 +48,9 @@ void ini() {
     }
     
     if (multi_solvent) {
-        flu::alloc_quantsI(&o::qt);
-        odstr::alloc_ticketI(&tag_gen, &o::tt);
-        odstr::alloc_ticketUI(&o::tut);
+        flu::alloc_quantsI(&o::qc);
+        odstr::alloc_ticketI(&tag_gen, &o::tc);
+        odstr::alloc_ticketUI(&o::tuc);
 
         dpdr::ini_ticketIcom(/*io*/ &tag_gen, /**/ &o::h.tic);
         dpdr::alloc_ticketSIh(/**/ &o::h.tsi);

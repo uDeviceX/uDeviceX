@@ -33,9 +33,9 @@ void fin() {
     }
 
     if (multi_solvent) {
-        flu::free_quantsI(&o::qt);
-        odstr::free_ticketI(&o::tt);
-        odstr::free_ticketUI(&o::tut);
+        flu::free_quantsI(&o::qc);
+        odstr::free_ticketI(&o::tc);
+        odstr::free_ticketUI(&o::tuc);
 
         dpdr::free_ticketIcom(&o::h.tic);
         dpdr::free_ticketSIh(&o::h.tsi);

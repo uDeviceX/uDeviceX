@@ -16,9 +16,9 @@ flu::QuantsI     qi; /* global [i]ds      */
 odstr::TicketI   ti; /* global [i]ds      */
 odstr::TicketUI tui; /* [u]npack [i]ds    */
 
-flu::QuantsI     qt; /* [t]ags            */
-odstr::TicketI   tt; /* [t]ags            */
-odstr::TicketUI tut; /* [u]npack [t]ags   */
+flu::QuantsI     qc; /* [c]olors          */
+odstr::TicketI   tc; /* [c]olors          */
+odstr::TicketUI tuc; /* [u]npack [c]olors */
 
 /* [h]alo interactions : local halos : see type.h */
 H h;
