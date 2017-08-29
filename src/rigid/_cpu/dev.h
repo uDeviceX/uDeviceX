@@ -87,7 +87,7 @@ void update_1s(const Force *ff, const float *rr0, int n, /**/ Particle *pp, Soli
     rot_e(s->om, /**/ s->e2);
     gram_schmidt(/**/ s->e0, s->e1, s->e2);
 
-    update_r(rr0, n, s->com, s->e0, s->e1, s->e2, /**/ pp);
+    update_r_hst(rr0, n, s->com, s->e0, s->e1, s->e2, /**/ pp);
 }
 
 } // dev

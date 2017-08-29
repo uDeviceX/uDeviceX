@@ -14,7 +14,7 @@ void update(const Force *ff, const float *rr0, int n, int nsolid, /**/ Particle 
     const int nps = n / nsolid; /* number of particles per solid */
         
     for (int i = 0; i < nsolid; ++i) {
-        dev::update_hst_1s(ff + start, rr0, nps, /**/ pp + start, shst + i);
+        dev::update_1s(ff + start, rr0, nps, /**/ pp + start, shst + i);
         start += nps;
     }
 }
