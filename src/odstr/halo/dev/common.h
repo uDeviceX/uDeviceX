@@ -10,16 +10,21 @@ static __device__ int box(const float r[3]) {
     return vc[X] + 3 * (vc[Y] + 3 * vc[Z]);
 }
 
-static __global__ void halo(const Particle *pp, const int n, /**/ int *iidx[], int size[]) {
-    int pid, code, entry;
-    pid = threadIdx.x + blockDim.x * blockIdx.x;
-    if (pid >= n) return;
-    const Particle *p = &pp[pid];
-    code = box(p->r);
+/* [reg]ister a particle */
+static __device__ void reg(int pid, int code, /**/ int *iidx[], int size[]) {
+    int entry;
     if (code > 0) {
         entry = atomicAdd(size + code, 1);
         iidx[code][entry] = pid;
     }
+}
+
+static __global__ void halo(const Particle *pp, const int n, /**/ int *iidx[], int size[]) {
+    int pid;
+    pid = threadIdx.x + blockDim.x * blockIdx.x;
+    if (pid >= n) return;
+    const Particle *p = &pp[pid];
+    reg(pid, box(p->r), iidx, size);
 }
 
 } /* namespace */
