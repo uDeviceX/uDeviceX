@@ -1,4 +1,4 @@
-. u.conf.re
+. u.re.conf
 
 empty () { test ! -d "$d"; }
 report () { printf '%s \n' "$d"; }

@@ -1,4 +1,4 @@
-. u.conf.re
+. u.re.conf
 
 exec0 () {
       printf 'cmd: %s\n' "$*"

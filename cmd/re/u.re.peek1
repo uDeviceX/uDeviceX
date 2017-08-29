@@ -1,31 +1,70 @@
-. u.conf.re
+. u.re.conf
 
-i="$1" d="$b/$i"
+i="$1"; shift
+id="$1"; shift
 
-# suffix
-su=bop
+d="$b/$i"
 
-find0 () (
-    cd "$d/flu"
-    find . -name "*.$su" -type f
-)
-
-strip0 () { basename "$1" ."$su"; }
-strip () {
-    while read f; do strip0 "$f"; done
+filter () {
+${AWK=awk} -v id="$id" '
+{ # file lists: F: from; T: to; I: number of files
+    f = $1 # file name
+    b = basename(f)
+    if (!nump(b))  add(f, f)
+    if (eq(b, id)) add(f, transform(f, id))
 }
 
-# uniq and first
-uni () { awk '!($0 in s){print; s[$0]}'; }
-fst () { awk 'NR == 1'; }
-gid () { find0 | strip | uni | sort -r  | fst; }
+function transform(s, id,   lo, hi, n, pre, post) {
+    lo = rindex(s, id) # cut [lo:hi]
+    hi = lo + length(id) - 1
+    return substr(s, 1, lo - 1)  "final" substr(s, hi + 1)
+}
+function rindex(s, t,  ans, i) { # the last index where t occurs
+    for (;;) {
+	ans += i
+	if (!(i = index(s, t))) break
+	s = substr(s, i + 1)
+    }
+    return ans
+}
 
-id=`gid`
-if test -z "$id"
-then
-    printf 'no id\n' "$id" >&2
-    exit 1
-fi
+function add(a, b) {
+    I++; F[I] = a; T[I] = b
+}
 
-echo "id: $id"
-u.re.peek0 "$i" "$id"
+END {
+    for (i = 1; i <= I; i++) {
+	if (i > 1) printf "\n"
+	print F[i]
+	print T[i]
+    }
+}
+
+function str(a)   { return a "" }
+function eq(a, b) { return str(a) == str(b) }
+function nump(n) { return n ~ /^[0-9]*$/}
+
+function affix(s,  i, k, n, c) {
+    n = length(s)
+    for (i = 1; i <= n; i++) {
+	c = substr(s, i, 1)
+	if (eq(c, ".")) k = i
+    }
+    if (!k) return s
+    else    return substr(s, 1, k - 1)
+}
+
+function basename(s) { # strip dirname and suffix
+    sub(/^.*[\/]/, "", s)
+    sub(/\.[^\.]*$/, "", s)
+    return s
+}
+'
+}
+
+strip () { sed 's,^\./,,g'; }
+find0 () (
+    cd $d
+    find . -type f | strip
+)
+find0 | filter

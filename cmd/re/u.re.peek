@@ -1,4 +1,4 @@
-. u.conf.re
+. u.re.conf
 
 Last=1
 while :
@@ -25,5 +25,5 @@ last () {
 
 if test $Last -eq 1
 then last
-else u.re.peek1 $i
+else u.re.peek2 $i
 fi
