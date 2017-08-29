@@ -6,7 +6,7 @@ x = u.re.
 X = push list clear conf pick
 
 y = u.re.pick
-Y = Pick/0 Pick/1 Pick/2
+Y = Pick/0 Pick/1 Pick/2 Pick/3
 
 install:
 	@echo install re tools to $B
