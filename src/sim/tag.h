@@ -1,5 +1,5 @@
-/* set tags of particles according to the RBCs */
-void gen_tags() {
+/* set colors of particles according to the RBCs */
+void gen_colors() {
 
     if (mc::tc.first) mcomm::post_recv(/**/ &mc::tc, &mc::tr);
     mcomm::extents(r::q.pp, r::q.nv, r::q.nc, /**/ &mc::ts);
@@ -15,7 +15,7 @@ void gen_tags() {
     Texo<float2> texvert;
     TE(&texvert, (float2*)mc::tr.pp, nm * 3 * r::q.nv);
 
-    collision::get_tags(o::q.pp, o::q.n, texvert, r::tt.textri, r::q.nt, r::q.nv, nm, /**/ o::qc.ii);
+    collision::get_colors(o::q.pp, o::q.n, texvert, r::tt.textri, r::q.nt, r::q.nv, nm, /**/ o::qc.ii);
 
     texvert.destroy();
     mc::tc.first = false;
