@@ -35,8 +35,8 @@ static __device__ void regCe(Ce *c, int i, /*io*/ int *counts, /**/ uchar4 *subi
 
 static __device__ void checkPav(const Part *p) { /* check particle velocity */
     enum {X, Y, Z};
-    /* float v[3]; */
-    const float *v = p->v;
+    float v[3];
+    Part2v(p, v);
     check_vel(v[X], XS);
     check_vel(v[Y], YS);
     check_vel(v[Z], ZS);
