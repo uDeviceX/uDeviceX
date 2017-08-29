@@ -5,10 +5,18 @@ struct Ce { /* coordinates of a cell */
     int id; /* linear index */
 };
 
-static __device__ void Part2r(const Part *p, /**/ float r) {
+static __device__ void Part2r(const Part *p, /**/ float *r) {
+    enum {X, Y, Z};
+    r[X] = fst(p->d0);
+    r[Y] = scn(p->d0);
+    r[Z] = fst(p->d1);
 }
 
-static  __device__ void Part2v(const Part *p, /**/ float r) {
+static  __device__ void Part2v(const Part *p, /**/ float *v) {
+    enum {X, Y, Z};
+    v[X] = scn(p->d1);
+    v[Y] = fst(p->d2);
+    v[Z] = scn(p->d2);
 }
 
 static __device__ void Part2Ce(const Part *p, /**/ Ce *c) {
