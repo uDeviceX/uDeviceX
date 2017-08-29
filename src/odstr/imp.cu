@@ -35,8 +35,8 @@
 #include "odstr/type.h"
 #include "odstr/imp.h"
 
-#include "odstr/mpi.h"
-#include "odstr/mpi.ii.h"
+#include "odstr/imp/mpi.h"
+#include "odstr/imp/mpi.ii.h"
 
 #include "odstr/dev/common.h"
 #include "dev/check.h"
@@ -45,9 +45,9 @@
 #include "odstr/dev/shift.h"
 #include "odstr/dev/gather.h"
 
-#include "odstr/buf.h"
-#include "odstr/ini.h"
-#include "odstr/fin.h"
+#include "odstr/imp/buf.h"
+#include "odstr/imp/ini.h"
+#include "odstr/imp/fin.h"
 
 namespace odstr {
 namespace sub {
