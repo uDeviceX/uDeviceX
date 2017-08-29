@@ -20,14 +20,14 @@ strip () {
 # uniq and first and numeric
 uni () { $AWK '!($0 in s){print; s[$0]}'; }
 fst () { $AWK 'NR == 1'; }
-num () { $AWK '/^[0-9]+$/'; }
+num_or_final () { $AWK '/^[0-9]+$/ || $0 "" == "final" '; }
 
 # get id
-gid () { find0 | strip | num | uni | sort -r  | fst; }
+gid () { find0 | strip | num_or_final | uni | sort -r  | fst; }
 id=`gid`
 if test -z "$id"
 then
-    printf 'no id\n' "$id" >&2
+    printf 'pick: no id\n' "$id" >&2
     exit 1
 fi
 
