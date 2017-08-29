@@ -4,13 +4,13 @@ static void remove(T *data, int nv, int *e, int nc) {
     for (c = 0; c < nc; c++) cA2A(data + nv*c, data + nv*e[c], nv);
 }
 
-void remove_rbcs() {
+void remove_rbcs(rbc::Quants *q, sdf::Quants qsdf) {
     int stay[MAX_CELL_NUM];
     int nc0;
-    r::q.nc = sdf::who_stays(w::qsdf, r::q.pp, r::q.n, nc0 = r::q.nc, r::q.nv, /**/ stay);
-    r::q.n = r::q.nc * r::q.nv;
-    remove(r::q.pp, r::q.nv, stay, r::q.nc);
-    MSG("%d/%d RBCs survived", r::q.nc, nc0);
+    q->nc = sdf::who_stays(qsdf, q->pp, q->n, nc0 = q->nc, q->nv, /**/ stay);
+    q->n = q->nc * q->nv;
+    remove(q->pp, q->nv, stay, q->nc);
+    MSG("%d/%d RBCs survived", q->nc, nc0);
 }
 
 void remove_solids() {

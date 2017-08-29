@@ -15,10 +15,10 @@ void create_solids() {
     MSG("created %d solids.", s::q.ns);
 }
 
-void freeze() {
+void freeze(rbc::Quants *qrbc, sdf::Quants qsdf) {
     MC(l::m::Barrier(l::m::cart));
     if (solids)           create_solids();
-    if (walls && rbcs  )  remove_rbcs();
+    if (walls && rbcs  )  remove_rbcs(qrbc, qsdf);
     if (walls && solids)  remove_solids();
     if (solids)           rig::set_ids(s::q);
 }
