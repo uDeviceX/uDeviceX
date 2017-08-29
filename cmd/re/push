@@ -2,6 +2,9 @@
 
 empty () { test ! -d "$d"; }
 write () {
+    if test ! -d "$s"
+    then printf 'push: no %s\n' "$s" >&2
+    fi
     write0 "$s" "$d"
 }
 

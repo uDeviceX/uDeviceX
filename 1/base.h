@@ -45,7 +45,7 @@
 
 /* DUMPS */
 #define part_freq           10000
-#define field_dumps         true
+#define field_dumps         false
 #define field_freq          100000
 #define strt_dumps          true
 #define strt_freq           100000
