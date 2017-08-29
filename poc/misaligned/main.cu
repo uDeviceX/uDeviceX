@@ -13,26 +13,25 @@
 #define k_cnf(n) ceiln((n), 128), 128
 
 #define n 5 /* number of elements */
-int  *A;
-char *B;
+char *A, *C;
+int  *B;
 
-/*
-__global__ void func (char* stringInput, int stringSize, int* integerInput, char* dummySpace) {
-    int counter = 0;
-    for(int i=0;i<stringSize;i++)
-       dummySpace[counter++] = stringInput[i];
-    for(int i=0;i<sizeof(int);i++)
-       dummySpace[counter++] = ((char*)integerInput)[i];
-    }
+__global__ void f (char *A, int *B, char *C) {
+    int i, cnt;
+    for (cnt = i = 0; i < n; i++)
+        C[cnt++] = B[i];
+
+    for (cnt = i = 0; i < n; i++)
+        C[cnt++] = ((char*)B)[i];
 }
-*/
 
 void ini() {
     cudaMalloc(&A, n*sizeof(A[0]));
     cudaMalloc(&B, n*sizeof(B[0]));
+    cudaMalloc(&C, n*sizeof(C[0]));    
 }
 
 int main() {
   ini();
-  //  misaligned<<<k_cnf(n)>>>(d_A, d_B, d_C);
+  f<<<k_cnf(n)>>>(A, B, C);
 }
