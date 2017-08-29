@@ -15,4 +15,4 @@ Special case:
 ```
 strt/[code]/[magic name].[ext]
 ```
-example: template frozen particles from rigid bodies: `[magic name]` = frozen
+example: template frozen particles from rigid bodies or walls: `templ`
