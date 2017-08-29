@@ -3,10 +3,10 @@ B = $(BIN)
 
 # files and prefixes (with dot)
 x = u.re.
-X = push file clear conf pick list list0
+X = push list clear conf pick file file0
 
 y = u.re.pick
-Y = Pick/2 Pick/3
+Y = Pick/1 Pick/2 Pick/3
 
 install:
 	@echo install re tools to $B
