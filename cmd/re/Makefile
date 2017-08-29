@@ -1,13 +1,17 @@
 BIN = $(HOME)/bin
 B = $(BIN)
 
-# prefix
-p = u.re
-P = push list clear peek peek0 peek1 conf
+# files and prefixes (with dot)
+x = u.re.
+X = push list clear conf pick
+
+y = u.re.pick
+Y = Pick/0 Pick/1 Pick/2
 
 install:
 	@echo install re tools to $B
-	@mkdir -p $B
-	for f in $P; do cp $p.$$f $B; done
+	@mkdir -p -- $B
+	for f in $X; do cp -- $$f $B/$x`basename $$f`; done
+	for f in $Y; do cp -- $$f $B/$y`basename $$f`; done
 
 .PHONY: install
