@@ -101,7 +101,7 @@ namespace dev {
 #include "mesh/collision.h"
 #include "mesh/bbox.h"
 
-#include "solid.h"
+#include "rigid/int.h"
 #include "tcells/int.h"
 
 #include "mbounce/imp.h"

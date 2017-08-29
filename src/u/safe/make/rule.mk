@@ -49,6 +49,7 @@ $B/rdstr/int.o: $S/rdstr/int.cu; $N -I$S/. -I$S/rdstr
 $B/restart.o: $S/restart.cpp; $X -I$S/.
 $B/rig/imp.o: $S/rig/imp.cu; $N -I$S/. -I$S/rig
 $B/rig/int.o: $S/rig/int.cu; $N -I$S/. -I$S/rig
+$B/rigid/imp.o: $S/rigid/imp.cu; $N -I$S/. -I$S/rigid -I$S/rigid/_cuda
 $B/rnd/imp.o: $S/rnd/imp.cpp; $X -I$S/. -I$S/rnd
 $B/scan/imp.o: $S/scan/imp.cu; $N -I$S/. -I$S/scan
 $B/sdf/imp.o: $S/sdf/imp.cu; $N -I$S/. -I$S/sdf

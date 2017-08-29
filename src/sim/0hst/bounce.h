@@ -1,4 +1,5 @@
-
+void bounce_solid(int it) {
+    
     mesh::get_bboxes_hst(s::q.i_pp_hst, s::q.m_hst.nv, s::q.ns, /**/ s::t.minbb_hst, s::t.maxbb_hst);
 
     /* exchange solid meshes with neighbours */

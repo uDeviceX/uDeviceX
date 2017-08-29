@@ -7,6 +7,6 @@ O = $B/cc.o $B/clist/imp.o $B/cnt/imp.o $B/common.mpi.o $B/d/api.o $B/dbg.o $B/d
     $B/mesh/props.o $B/minmax.o $B/mrescue.o $B/msg.o $B/odstr/halo/imp.o \
     $B/odstr/imp.o $B/odstr/int.o $B/odstr/pack/imp.o $B/os.o $B/rbc/imp.o \
     $B/rbc/int.o $B/rdstr/imp.o $B/rdstr/int.o $B/restart.o $B/rig/imp.o \
-    $B/rig/int.o $B/rnd/imp.o $B/scan/imp.o $B/sdf/imp.o $B/sdf/int.o $B/sim/imp.o \
-    $B/solid.o $B/tcells/imp.o $B/tcells/int.o $B/wall/exch.o $B/wall/imp.o \
-    $B/wall/int.o $B/x/imp.o
+    $B/rig/int.o $B/rigid/imp.o $B/rnd/imp.o $B/scan/imp.o $B/sdf/imp.o \
+    $B/sdf/int.o $B/sim/imp.o $B/solid.o $B/tcells/imp.o $B/tcells/int.o \
+    $B/wall/exch.o $B/wall/imp.o $B/wall/int.o $B/x/imp.o
