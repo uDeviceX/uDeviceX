@@ -12,16 +12,16 @@
 /* a common kernel execution configuration */
 #define k_cnf(n) ceiln((n), 128), 128
 
-#define n 5 /* number of elements */
+#define n 32 /* number of elements */
 char *A, *C;
 int  *B;
 
 __global__ void f (char *A, int *B, char *C) {
     int i, cnt;
-    for (cnt = i = 0; i < n; i++)
+    for (cnt = i = 0; i < n / 2; i++)
         C[cnt++] = B[i];
 
-    for (cnt = i = 0; i < n; i++)
+    for (i = 0; i < n / 2; i++)
         C[cnt++] = ((char*)B)[i];
 }
 
