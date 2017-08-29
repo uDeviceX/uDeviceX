@@ -1,7 +1,8 @@
-$B/cc.o: $S/cc.cpp; $X
-$B/d/api.o: $S/d/api.cu; $N
-$B/l/m.o: $S/l/m.cpp; $X
-$B/m.o: $S/m.cpp; $X
-$B/mc.o: $S/mc.cpp; $X
-$B/msg.o: $S/msg.cpp; $X
-$B/u/dbg/main.o: $S/u/dbg/main.cu; $N
+$B/cc.o: $S/cc.cpp; $X -I$S/.
+$B/d/api.o: $S/d/api.cu; $N -I$S/. -I$S/d
+$B/dbg.o: $S/dbg.cu; $N -I$S/.
+$B/l/m.o: $S/l/m.cpp; $X -I$S/. -I$S/l
+$B/m.o: $S/m.cpp; $X -I$S/.
+$B/mc.o: $S/mc.cpp; $X -I$S/.
+$B/msg.o: $S/msg.cpp; $X -I$S/.
+$B/u/dbg/main.o: $S/u/dbg/main.cu; $N -I$S/.
