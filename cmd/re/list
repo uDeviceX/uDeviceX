@@ -10,4 +10,4 @@ find0 () (
     find . -type f | strip
 )
 
-find0 | u.re.pick0 "$id"
+find0 | u.re.list0 "$id"

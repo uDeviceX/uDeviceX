@@ -6,7 +6,13 @@ i="$1"; shift
 id="$1"; shift
 
 t=/tmp/pick.$$
-trap 0 1 2 3 15
+
+# for mkdir commands
+md=/tmp/md.$$
+
+# for cp commands
+cp0=/tmp/cp0.$$
+trap 'rm -f $md $cp0 $t' 0 1 2 3 15
 
 # second
 scn () {
@@ -61,5 +67,7 @@ prefix () {
 
 u.re.list "$i" "$id" | prefix > "$t"
 
-scn "$t"  | dirname0 | uni | qq | mkdir0
-qq  "$t"                        | cp0
+scn "$t"  | dirname0 | uni | qq | mkdir0 > $md
+qq  "$t"                        | cp0    > $cp0
+
+rm -rf strt && sh -x $md && sh -x $cp0
