@@ -11,15 +11,11 @@ static __device__ int box(const float r[3]) {
 }
 
 static __global__ void halo(const Particle *pp, const int n, /**/ int *iidx[], int size[]) {
-    int pid, code, entry;
+    int pid;
     pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
     const Particle *p = &pp[pid];
-    code = box(p->r);
-    if (code > 0) {
-        entry = atomicAdd(size + code, 1);
-        iidx[code][entry] = pid;
-    }
+    reg(pid, box(p->r), iidx, size);
 }
 
 } /* namespace */
