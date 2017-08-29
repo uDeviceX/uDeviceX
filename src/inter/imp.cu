@@ -92,7 +92,6 @@
 #include "rig/int.h"
 
 /* local */
-#include "type.h"
 #include "generic.h"
 #include "imp.h"
 
