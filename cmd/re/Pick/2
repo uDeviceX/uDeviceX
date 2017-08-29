@@ -24,4 +24,16 @@ dirname0 () {
 }
 uni () { "$AWK" '!($0 in s){print; s[$0]}'; }
 
-scn "$t" | dirname0 | uni
+# create cp commands
+cp0() {
+   "$AWK" -v q=\' -v RS= \
+   '
+   function qq(s) { return q s q }
+   { print "cp --", qq($1), qq($2) }
+   ' "$@"
+}
+
+# scn "$t" | dirname0 | uni
+
+cp0 "$t"
+echo "$b/$i"
