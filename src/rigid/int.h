@@ -8,7 +8,7 @@ void update(const Force *ff, const float *rr0, int n, int nsolid, /**/ Particle 
 
 void generate(const Solid *ss, const int ns, const float *rr0, const int nps, /**/ Particle *pp);
 
-void mesh2pp_hst(const Solid *ss_hst, const int ns, const Mesh m, /**/ Particle *pp);
+void mesh2pp(const Solid *ss_hst, const int ns, const Mesh m, /**/ Particle *pp);
 
 void update_mesh(const Solid *ss, const int ns, const Mesh m, /**/ Particle *pp);
 

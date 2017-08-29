@@ -1,4 +1,7 @@
 
+#include "imp.h"
+#include "dev.h"
+
 namespace rig {
 
 #ifdef spdir // open geometry, use particles    
@@ -53,6 +56,18 @@ void ini(const Particle *pp, int n, float pmass, const float *com, const Mesh me
         float *ro = &rr0[3*ip];
         const float *r0 = pp[ip].r;
         ro[X] = r0[X]-com[X]; ro[Y] = r0[Y]-com[Y]; ro[Z] = r0[Z]-com[Z];
+    }
+}
+
+void mesh2pp(const Solid *ss_hst, const int ns, const Mesh m, /**/ Particle *pp) {
+    for (int j = 0; j < ns; ++j) {
+        const Solid *s = ss_hst + j;
+        update_r(m.vv, m.nv, s->com, s->e0, s->e1, s->e2, /**/ pp + j * m.nv);
+
+        for (int i = 0; i < m.nv; ++i) {
+            float *v = pp[j*m.nv + i].v;
+            v[X] = v[Y] = v[Z] = 0;
+        }
     }
 }
 
