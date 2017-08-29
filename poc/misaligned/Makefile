@@ -1,7 +1,7 @@
 NVCC     = nvcc
 ARCH_VAL = compute_35
 CODE_VAL = sm_35
-OPT      = -O0 --device-debug
+OPT      = -O2
 
 NVCCFLAGS += -arch $(ARCH_VAL) -code $(CODE_VAL)
 NVCCFLAGS += --compiler-options -Wall,-Wextra
