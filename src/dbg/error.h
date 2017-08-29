@@ -43,7 +43,7 @@ static err_type get_err() {
 
 static void errmsg(int line, const char *file, err_type e, const char *fun, const char *msg = "") {
     if (e != NONE) {
-        ERR("%s: %d: (%s): %s %s", file, line, fun, err_str[e], msg);
+        fprintf(stderr, "%s: %d: (%s): %s %s\n", file, line, fun, err_str[e], msg);
     }
 }
 
