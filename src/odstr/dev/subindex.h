@@ -7,6 +7,7 @@ struct Ce { /* coordinates of a cell */
 
 static __device__ void Part2Ce(const Part *p, /**/ Ce *c) {
     /* particle to cell coordinates */
+    float r[3];
     r2c(p->r, /**/ &c->ix, &c->iy, &c->iz, &c->id);
 }
 
@@ -19,6 +20,7 @@ static __device__ void regCe(Ce *c, int i, /*io*/ int *counts, /**/ uchar4 *subi
 
 static __device__ void checkPav(const Part *p) { /* check particle velocity */
     enum {X, Y, Z};
+    float v[3];
     const float *v = p->v;
     check_vel(v[X], XS);
     check_vel(v[Y], YS);
