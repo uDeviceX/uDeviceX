@@ -6,7 +6,7 @@ set -eu
 . u/`u.host`
 . u/common
 
-n=1
+n=40
 d=/scratch/snx3000/lisergey/u
 Time=10:00:00
 u=u/x
@@ -24,4 +24,5 @@ safe_cp "$d/$n/sdf.dat" .
 
 x=$n y=1 z=1
 
-u.batch   $x $y $z ./udx $Time
+u.strtdir . $x $y $z
+u.batch     $x $y $z ./udx $Time
