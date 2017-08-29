@@ -5,6 +5,12 @@ struct Ce { /* coordinates of a cell */
     int id; /* linear index */
 };
 
+static __device__ void Part2r(const Part *p, /**/ float r) {
+}
+
+static  __device__ void Part2v(const Part *p, /**/ float r) {
+}
+
 static __device__ void Part2Ce(const Part *p, /**/ Ce *c) {
     /* particle to cell coordinates */
     float r[3];
@@ -20,7 +26,7 @@ static __device__ void regCe(Ce *c, int i, /*io*/ int *counts, /**/ uchar4 *subi
 
 static __device__ void checkPav(const Part *p) { /* check particle velocity */
     enum {X, Y, Z};
-    float v[3];
+    /* float v[3]; */
     const float *v = p->v;
     check_vel(v[X], XS);
     check_vel(v[Y], YS);
