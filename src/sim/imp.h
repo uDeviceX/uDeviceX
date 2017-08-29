@@ -1,3 +1,19 @@
+void distr_rbc() {
+    rdstr::extents(r::q.pp, r::q.nc, r::q.nv, /**/ &r::tde);
+    rdstr::get_pos(r::q.nc, /**/ &r::tde);
+    rdstr::get_reord(r::q.nc, &r::tde, /**/ &r::tdp);
+    rdstr::pack(r::q.pp, r::q.nv, &r::tdp, /**/ &r::tds);
+    rdstr::post_recv(/**/ &r::tdp, &r::tdc, &r::tdr);
+    rdstr::post_send(r::q.nv, &r::tdp, /**/ &r::tdc, &r::tds);
+    rdstr::wait_recv(/**/ &r::tdc, &r::tdr);
+    r::q.nc = rdstr::unpack(r::q.nv, &r::tdr, &r::tdp, /**/ r::q.pp);
+    r::q.n = r::q.nc * r::q.nv;
+    rdstr::shift(r::q.nv, &r::tdp, /**/ r::q.pp);
+
+    dSync();
+    CC(cudaPeekAtLastError());
+}
+
 void gen() { /* generate */
     run_eq(wall_creation);
     if (walls) {
@@ -24,7 +40,7 @@ void sim_gen() {
         if (multi_solvent) gen_colors();
     }
     MC(l::m::Barrier(l::m::cart));
-  
+
     long nsteps = (long)(tend / dt);
     MSG("will take %ld steps", nsteps);
     if (walls || solids) {
@@ -47,7 +63,7 @@ void sim_gen() {
 
 void sim_strt() {
     long nsteps = (long)(tend / dt);
-    
+
     /*Q*/
     flu::strt_quants(restart::BEGIN, &o::q);
     if (global_ids)    flu::strt_ii("id",     restart::BEGIN, &o::qi);
@@ -78,7 +94,7 @@ void sim_strt() {
 
     MSG("will take %ld steps", nsteps - wall_creation);
     run(wall_creation, nsteps);
-    
+
     /* final strt dump*/
     if (strt_dumps) dump_strt(restart::FINAL);
 }
