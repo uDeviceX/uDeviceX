@@ -1,0 +1,18 @@
+. u.re.conf
+
+: ${AWK=awk}
+
+i="$1"; shift
+md="$1"; shift
+cp0="$1"; shift
+
+exec0 () {
+    printf 'cmd: %s\n' "$*"
+    "$@"
+}
+
+
+exec0 rm -rf "$s" && sh $md && sh $cp0
+
+d="$b/$i"
+printf 'cmd: cp %s/<...> %s/<...>\n' "$d" "$s" >&2
