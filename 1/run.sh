@@ -5,14 +5,15 @@ set -eu
 # load utilities
 . u/`u.host`
 
-n=40
+n=1
 d=/scratch/snx3000/lisergey/u
-Time=10:00:00
+Time=00:15:00
 u=u/safe
 s=../src
 
 u.conf $s $u base.h <<EOF
        DBG_PEEK
+       RESTART=true
        ODSTR_SAFE
        run
 EOF
