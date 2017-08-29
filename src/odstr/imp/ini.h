@@ -16,7 +16,7 @@ static int estimate(const int i) {
     return numberdensity * safety_factor * nhalocells;    
 }
 
-void ini_comm(const MPI_Comm cart, /**/ int rank[], int tags[]) {
+void ini_comm(/**/ int rank[], int tags[]) {
     for (int i = 0; i < 27; ++i) {
         const int d[3] = i2d(i);
         tags[i] = (3 - d[0]) % 3 + 3 * ((3 - d[1]) % 3 + 3 * ((3 - d[2]) % 3));

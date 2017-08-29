@@ -39,7 +39,7 @@ namespace odstr {
 
 void alloc_ticketD(/*io*/ basetags::TagGen *tg, /**/ TicketD *t) {
     l::m::Comm_dup(l::m::cart, &t->cart);
-    sub::ini_comm(t->cart, /**/ t->rank, t->r.tags);
+    sub::ini_comm(/**/ t->rank, t->r.tags);
     sub::ini_S(/**/ &t->s);
     sub::ini_R(&t->s, /**/ &t->r);
     t->first = true;
@@ -93,7 +93,7 @@ void free_work(Work *w) {
 }
 
 void post_recv_ii(const TicketD *td, TicketI *ti) {
-    sub::post_recv_ii(td->cart, td->rank, td->r.tags, ti->bt, /**/ ti->recv_ii_req, &ti->rii);
+    sub::post_recv_ii(td->rank, td->r.tags, ti->bt, /**/ ti->recv_ii_req, &ti->rii);
 }
 
 void pack_pp(const flu::Quants *q, TicketD *t) {
@@ -113,7 +113,7 @@ void pack_ii(const int n, const flu::QuantsI *q, const TicketD *td, TicketI *ti)
 void send_ii(const TicketD *td, TicketI *ti) {
     if (!ti->first) sub::waitall_s(ti->send_ii_req);
     ti->first = false;
-    sub::send_ii(td->cart, td->rank, td->s.size, ti->bt, /**/ &ti->sii, ti->send_ii_req);
+    sub::send_ii(td->rank, td->s.size, ti->bt, /**/ &ti->sii, ti->send_ii_req);
 }
 
 void bulk(flu::Quants *q, TicketD *t) {
