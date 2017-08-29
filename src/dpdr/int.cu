@@ -176,7 +176,7 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
 
         frag.d[i] = {
             (float2*)tr.b.pp.d[i],
-            tr.b.cumdev.d[i],
+            tr.b.cum.d[i],
             dx,
             dy,
             dz,
