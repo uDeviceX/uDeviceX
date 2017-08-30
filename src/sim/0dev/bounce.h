@@ -19,7 +19,7 @@ void bounce_solid(int it) {
     mbounce::collect_rig_dev(s::q.m_dev.nt, nsbb, &bb::tm, /**/ s::t.ss);
 
     if (it % rescue_freq == 0)
-    mrescue::rescue_dev(s::q.m_dev, s::t.i_pp, nsbb, o::q.n, bb::qtc.ss_dev, bb::qtc.cc_dev, bb::qtc.ii_dev, /**/ o::q.pp);
+        mrescue::rescue_dev(s::q.m_dev, s::t.i_pp, nsbb, o::q.n, bb::qtc.ss_dev, bb::qtc.cc_dev, bb::qtc.ii_dev, /**/ o::q.pp);
 
     // send back fo, to
 
