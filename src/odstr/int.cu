@@ -100,8 +100,8 @@ void pack_pp(const flu::Quants *q, TicketD *t) {
         sub::halo(q->pp, q->n, /**/ &t->s);
         sub::scan(q->n, /**/ &t->s);
         sub::pack_pp(q->pp, q->n, /**/ &t->s);
-        dSync();
     }
+    dSync();
 }    
 
 void pack_ii(const int n, const flu::QuantsI *q, const TicketD *td, TicketI *ti) {

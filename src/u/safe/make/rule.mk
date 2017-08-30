@@ -33,7 +33,7 @@ $B/mdstr/imp.o: $S/mdstr/imp.cu; $N -I$S/. -I$S/mdstr
 $B/mdstr/int.o: $S/mdstr/int.cpp; $X -I$S/. -I$S/mdstr
 $B/mesh/bbox.o: $S/mesh/bbox.cu; $N -I$S/. -I$S/mesh
 $B/mesh/collision.o: $S/mesh/collision.cu; $N -I$S/. -I$S/mesh
-$B/mesh/dist.o: $S/mesh/dist.cu; $N -I$S/. -I$S/mesh
+$B/mesh/dist.o: $S/mesh/dist.cpp; $X -I$S/. -I$S/mesh
 $B/mesh/props.o: $S/mesh/props.cpp; $X -I$S/. -I$S/mesh
 $B/minmax.o: $S/minmax.cu; $N -I$S/.
 $B/mrescue.o: $S/mrescue.cu; $N -I$S/.

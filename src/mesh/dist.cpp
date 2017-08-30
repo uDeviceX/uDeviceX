@@ -1,3 +1,5 @@
+#include <math.h>
+
 #include "inc/type.h"
 #include "mesh/dist.h"
 
@@ -5,6 +7,8 @@ namespace mesh
 {
 enum {X, Y, Z};
 
+static float min(float a, float b) {return a < b ? a : b;}
+static float max(float a, float b) {return a < b ? b : a;}
 static float dot(const float x[3], const float y[3]) { return x[0]*y[0] + x[1]*y[1] + x[2]*y[2]; }
 
 static void project_t(const float *a, const float *b, const float *c, const float *r, /**/ float *p) {

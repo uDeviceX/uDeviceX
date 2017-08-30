@@ -117,9 +117,9 @@ namespace dev {
 namespace sim {
 namespace dev {
 #ifdef FORWARD_EULER
-  #include "sch/euler.h"
+  #include "scheme/euler.h"
 #else
-  #include "sch/vv.h"
+  #include "scheme/vv.h"
 #endif
 #include "dev.h"
 #include "force/dev.h"
