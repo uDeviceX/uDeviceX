@@ -23,12 +23,12 @@ static void project_t(const float *a, const float *b, const float *c, const floa
         const float s = 1.f / sqrt(dot(n,n));
         n[0] *= s; n[1] *= s; n[2] *= s;
     }
-        
+
     const float arn = dot(ar, n);
     const float g[3] = {ar[0] - arn * n[0],
                         ar[1] - arn * n[1],
                         ar[2] - arn * n[2]};
-    
+
     float u, v;
     {
         const float ga1 = dot(g, ab);
@@ -38,13 +38,13 @@ static void project_t(const float *a, const float *b, const float *c, const floa
         const float a22 = dot(ac, ac);
 
         const float fac = 1.f / (a11*a22 - a12*a12);
-            
+
         u = (ga1 * a22 - ga2 * a12) * fac;
         v = (ga2 * a11 - ga1 * a12) * fac;
     }
-        
+
     // project (u,v) onto unit triangle
-    
+
     if ( (v > u - 1) && (v < u + 1) && (v > 1 - u) ) {
         const float a_ = 0.5f * (u + v - 1);
         u -= a_;
@@ -54,7 +54,7 @@ static void project_t(const float *a, const float *b, const float *c, const floa
         u = max(min(1.f, u), 0.f);
         v = max(min(v, 1.f-u), 0.f);
     }
-    
+
     // compute projected point
     p[0] = a[0] + u * ab[0] + v * ac[0];
     p[1] = a[1] + u * ab[1] + v * ac[1];
@@ -64,7 +64,7 @@ static void project_t(const float *a, const float *b, const float *c, const floa
 static float dist_from_triangle(const float *a, const float *b, const float *c, const float *r) {
     float p[3];
     project_t(a, b, c, r, /**/ p);
-    
+
     const float dr[3] = {p[0] - r[0], p[1] - r[1], p[2] - r[2]};
     return sqrt(dot(dr, dr));
 }
