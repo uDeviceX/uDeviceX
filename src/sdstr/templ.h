@@ -42,8 +42,9 @@ void pack_sendcnt(const Solid *ss_hst, const Particle *pp, const int ns, const i
         ssbuf[i][j] = ss_hst[id];
 
         if (hst) memcpy(psbuf[i].data() + j*nv, pp + id*nv, nv*sizeof(Particle));
-        else       cD2H(psbuf[i].data() + j*nv, pp + id*nv, nv);
+        else     CC(cudaMemcpyAsync(psbuf[i].data() + j*nv, pp + id*nv, nv * sizeof(Particle), D2H));
     }
+    if (!hst) dSync();
 }
 
 template <bool hst>
