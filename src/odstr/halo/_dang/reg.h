@@ -1,6 +1,6 @@
 namespace dev {
 #define i2d(i) { (i + 1) % 3 - 1, (i / 3 + 1) % 3 - 1, (i / 9 + 1) % 3 - 1 }
-static int estimate(const int i) {
+static int __device__ estimate(const int i) {
     const int d[3] = i2d(i);
     int nhalodir[3] =  {
         d[0] != 0 ? 1 : XS,
@@ -12,8 +12,15 @@ static int estimate(const int i) {
     return numberdensity * safety_factor * nhalocells;
 }
 
-static void check(int size, int fid) {
+static __device__ void report(int size, int fid) {
+}
 
+static __device__ void check(int size, int fid) {
+    if (fid < size) return;
+    else {
+        report(size, fid);
+        assert(0);
+    }
 }
 
 /* [reg]ister a particle */
