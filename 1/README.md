@@ -77,3 +77,11 @@ slurm-*.out:
 
 	:  1.9e+03  1.1e+00 [ 1.8e+05 -4.7e+01  3.9e+01]  1.1e+01
 	: ../src/odstr/imp.cu:61: an illegal memory access was encountered
+
+# git: 29b6fc3, _dang
+
+dang: checks `iidx` buffer overflow
+ODSTR_FACTOR = 3
+
+	 :  1.0e+03  1.1e+00 [ 1.8e+05 -5.6e+01  2.1e+01]  1.0e+01
+	 : ../src/sim/_dang/0dev/distr.h:2: an illegal memory access was encountered
