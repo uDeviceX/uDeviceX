@@ -7,13 +7,13 @@ static _HD_ bool valid(real t) {return (t >= 0 && t <= dt);}
 template <typename real>
 static _HD_ bool cubic_root(real a, real b, real c, real d, /**/ real *h) {
     const real eps = 1e-6;
-        
+    real h1, h2, h3, b_, c_, d_;
+    
     if (fabs(a) > eps) { // cubic
-        const real b_ = b /= a;
-        const real c_ = c /= a;
-        const real d_ = d /= a;
+        b_ = b /= a;
+        c_ = c /= a;
+        d_ = d /= a;
             
-        real h1, h2, h3;
         int nsol = roots::cubic(b_, c_, d_, &h1, &h2, &h3);
 
         if (valid(h1))             {*h = h1; return true;}
@@ -21,13 +21,12 @@ static _HD_ bool cubic_root(real a, real b, real c, real d, /**/ real *h) {
         if (nsol > 2 && valid(h3)) {*h = h3; return true;}
     }
     else if(fabs(b) > eps) { // quadratic
-        real h1, h2;
         if (!roots::quadratic(b, c, d, &h1, &h2)) return false;
         if (valid(h1)) {*h = h1; return true;}
         if (valid(h2)) {*h = h2; return true;}
     }
     else if (fabs(c) > eps) { // linear
-        const real h1 = -d/c;
+        h1 = -d/c;
         if (valid(h1)) {*h = h1; return true;}
     }
     
