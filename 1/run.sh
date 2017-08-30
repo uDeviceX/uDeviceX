@@ -9,13 +9,12 @@ set -eu
 n=1
 d=/scratch/snx3000/lisergey/u
 Time=10:00:00
-u=u/x
+u=u/dang
 s=../src
 
 (cd $s/../cmd; make)
 u.conf $s $u base.h <<EOF
-       #DBG_PEEK
-       #ODSTR_SAFE
+       sbounce_back=false
        run
 EOF
 u.make -j > make.log
