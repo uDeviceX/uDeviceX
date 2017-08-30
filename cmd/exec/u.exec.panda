@@ -1,13 +1,31 @@
 msg () { printf '%s\n' "$*" >&2; }
 exec0() { # echo and exec
-    msg cmd: "$@"; exec "$@"
+    msg cmd:  "$@"
+    if test -z ${DRYRUN+x}
+    then exec "$@"
+    fi
 }
 
-: ${CUDA_MEMCHECK=/usr/local/cuda-8.0/bin/cuda-memcheck}
+val () {
+    if test -z ${VAL+x}; then return; fi    
+    : ${VALGRIND=valgrind}
+    if test -z ${VAL}
+    then exec0  "${VALGRIND}"          "$@"
+    else exec0  "${VALGRIND}" "${VAL}" "$@"
+    fi
+    return 1
+}
 
-if   test -z ${MEM+x}
-then exec0                              "$@"
-elif test -z ${MEM}
-then exec0  "${CUDA_MEMCHECK}"          "$@"
-else exec0  "${CUDA_MEMCHECK}" "${MEM}" "$@"
-fi
+cuda () {
+    if test -z ${MEM+x}; then return; fi
+    : ${CUDA_MEMCHECK=/usr/local/cuda-8.0/bin/cuda-memcheck}
+    if test -z ${MEM}
+    then exec0  "${CUDA_MEMCHECK}"          "$@"
+    else exec0  "${CUDA_MEMCHECK}" "${MEM}" "$@"
+    fi
+    return 1    
+}
+
+normal () { exec0 "$@"; }
+
+cuda "$@" && val "$@" && normal "$@"
