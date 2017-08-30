@@ -79,6 +79,5 @@ void sim_strt() {
     MSG("will take %ld steps", nsteps - wall_creation);
     run(wall_creation, nsteps);
 
-    /* final strt dump*/
     if (strt_dumps) dump_strt(restart::FINAL);
 }
