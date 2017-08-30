@@ -75,14 +75,16 @@ void unpack(const int nv, /**/ Solid *ss_hst, Particle *pp) {
     // copy bulk
     for (int j = 0; j < nstay; ++j) ss_hst[j] = ssbuf[0][j];
 
-    if (hst) memcpy(pp, psbuf[0].data(), nstay*nv*sizeof(Particle));
-    else       cH2D(pp, psbuf[0].data(), nstay*nv);
+    if (nstay) {
+        if (hst) memcpy(pp, psbuf[0].data(), nstay*nv*sizeof(Particle));
+        else       cH2D(pp, psbuf[0].data(), nstay*nv);
+    }
 
     // copy and shift halo
     for (int i = 1, start = nstay; i < 27; ++i) {
         const int count = recv_counts[i];
 
-        if (count > 0) {
+        if (count) {
             shift_copy_ss       (srbuf[i].data(), count,      i, /**/ ss_hst + start);
             shift_copy_pp <hst> (prbuf[i].data(), count * nv, i, /**/ pp + start * nv);
         }
