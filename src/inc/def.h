@@ -33,5 +33,8 @@ enum { /* used in forces.h */
 /* safety factor for dpd halo interactions */
 #define HSAFETY_FACTOR 10.f
 
+/* safety factor for odist fragments */
+#define ODSTR_FACTOR (3.0)
+
 /* write ascii/bin in l/ply.cu */
 #define PLY_WRITE_ASCII
