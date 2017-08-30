@@ -1,6 +1,3 @@
 h=`u.host`
 
-if test ! -z "$MEM"
-then exec u.exec."$h" "$@"
-else exec cuda-memcheck u.exec."$h" "$@"
-fi
+u.exec."$h" "$@"

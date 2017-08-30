@@ -6,11 +6,11 @@ exec0() { # echo and exec
 }
 
 run_one() { # single processor
-    exec0 "$e" "$@"
+    exec0 u.exec "$e" "$@"
 }
 
 run_mpi() {
-    exec0 mpirun.mpich -n $n "$e" $x $y $z "$@"
+    exec0 mpirun.mpich -n $n u.exec "$e" $x $y $z "$@"
 }
 
 n=$1; shift
