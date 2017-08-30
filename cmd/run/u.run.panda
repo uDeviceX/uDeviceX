@@ -15,7 +15,7 @@ env_panda() {
 
 run_mpi() {
     env_panda
-    exec0 mpirun -n $n "$e" $x $y $z "$@"
+    exec0 mpirun -n $n u.exec $x $y $z "$@"
 }
 
 n=$1; shift
