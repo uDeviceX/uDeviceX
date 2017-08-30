@@ -3,11 +3,11 @@ exec0() { # echo and exec
     msg cmd: "$@"; exec "$@"
 }
 
-
 : ${CUDA_MEMCHECK=/usr/local/cuda-8.0/bin/cuda-memcheck}
 
-if test -z "$MEM"
-then exec0                          "$@"
-else
-     exec0  ${CUDA_MEMCHECK} "$MEM" "$@"
+if   test -z ${MEM+x}
+then exec0                              "$@"
+elif test -z ${MEM}
+then exec0  "${CUDA_MEMCHECK}"          "$@"
+else exec0  "${CUDA_MEMCHECK}" "${MEM}" "$@"
 fi

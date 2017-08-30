@@ -3,9 +3,13 @@ exec0() { # echo and exec
     msg cmd: "$@"; exec "$@"
 }
 
-if test -z "$MEM"
-then exec0                          "$@"
+if   test -z ${MEM+x}
+then exec0                             "$@"
+elif test -z ${MEM}
+then
+    . u.load.daint
+    exec0  "${CUDA_MEMCHECK}"          "$@"
 else
-     . u.load.daint
-     exec0  ${CUDA_MEMCHECK} "$MEM" "$@"
+    . u.load.daint
+    exec0  "${CUDA_MEMCHECK}" "${MEM}" "$@"
 fi
