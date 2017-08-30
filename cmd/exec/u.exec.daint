@@ -1,1 +1,11 @@
-exec "$@"
+msg () { printf '%s\n' "$*" >&2; }
+exec0() { # echo and exec
+    msg cmd: "$@"; exec "$@"
+}
+
+if test -z "$MEM"
+then exec0                          "$@"
+else
+     . u.load.daint
+     exec0  ${CUDA_MEMCHECK} "$MEM" "$@"
+fi

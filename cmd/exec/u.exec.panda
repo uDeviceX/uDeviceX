@@ -7,7 +7,7 @@ exec0() { # echo and exec
 : ${CUDA_MEMCHECK=/usr/local/cuda-8.0/bin/cuda-memcheck}
 
 if test -z "$MEM"
-then exec0                   "$@"
+then exec0                          "$@"
 else
-    exec0  ${CUDA_MEMCHECK} "$@"
+     exec0  ${CUDA_MEMCHECK} "$MEM" "$@"
 fi
