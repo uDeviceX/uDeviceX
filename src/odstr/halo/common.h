@@ -10,6 +10,16 @@ static __device__ int box(const float r[3]) {
     return vc[X] + 3 * (vc[Y] + 3 * vc[Z]);
 }
 
+/* [reg]ister a particle */
+static __device__ void reg(int pid, int fid, /**/ int *iidx[], int size[]) {
+    int entry;
+    if (fid > 0) {
+        entry = atomicAdd(size + fid, 1);
+        iidx[fid][entry] = pid;
+        check(size[fid], fid);
+    }
+}
+
 static __global__ void halo(const Particle *pp, const int n, /**/ int *iidx[], int size[]) {
     int pid;
     pid = threadIdx.x + blockDim.x * blockIdx.x;

@@ -23,14 +23,4 @@ static __device__ void check(int size, int fid) {
         assert(0);
     }
 }
-
-/* [reg]ister a particle */
-static __device__ void reg(int pid, int fid, /**/ int *iidx[], int size[]) {
-    int entry;
-    if (fid > 0) {
-        entry = atomicAdd(size + fid, 1);
-        iidx[fid][entry] = pid;
-        check(size[fid], fid);
-    }
-}
 }
