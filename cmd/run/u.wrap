@@ -1,5 +1,4 @@
 # gets ./udx should return something srun can run
-e="$1"; shift
 
 : ${CUDA_MEMCHECK=cuda-memcheck}
 
