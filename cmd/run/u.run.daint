@@ -11,4 +11,4 @@ y=$1; shift
 z=$1; shift
 e=$1; shift # executable
 
-exec0 srun -n $n -u u.exec "$e" $x $y $z "$@"
+exec0 srun -n $n -u "$e" $x $y $z "$@"
