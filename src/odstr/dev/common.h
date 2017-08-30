@@ -2,8 +2,13 @@ namespace odstr { namespace sub { namespace dev {
 
 /* pack an index and [l]ocal/[r]emove flag into one uint */
 __device__ void lr_set(int i, bool rem, /**/ uint *u) {
+    *u  = (uint) i;
+    *u |= rem << 31;
 }
-__device__ int  lr_get(uint u, /**/ bool *rem, int *i) {
+__device__ int  lr_get(uint u, /**/ bool *rem) {
+    *rem = (u >> 31) & 1;
+    u &= ~(1 << 31);
+    return (int) u;
 }
 
 __device__ void warpco(/**/ int *ws, int *dw) { /* warp [co]ordinates */
