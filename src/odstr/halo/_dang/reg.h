@@ -12,7 +12,6 @@ static int __device__ estimate(const int i) {
 }
 
 static __device__ void report(int size, int fid, int cap) {
-    char msg[BUFSIZ];
     printf("%s:%d: %d > %d for fid: %d\n", __FILE__, __LINE__, size, cap, fid);
 }
 
