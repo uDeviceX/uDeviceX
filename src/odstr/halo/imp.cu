@@ -19,7 +19,7 @@
 
 #include "int.h"         /* local to this dir */
 
-#include "reg.h"
+#include "check.h"
 #include "common.h"
 
 void halo(const Particle *pp, int n, /**/ int **iidx, int *sizes) {
