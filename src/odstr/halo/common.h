@@ -24,8 +24,8 @@ static __global__ void halo(const Particle *pp, const int n, /**/ int *iidx[], i
     int pid;
     pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
-    const Particle *p = &pp[pid];
-    reg(pid, box(p->r), iidx, size);
+    const Particle p = pp[pid];
+    reg(pid, box(p.r), iidx, size);
 }
 
 } /* namespace */
