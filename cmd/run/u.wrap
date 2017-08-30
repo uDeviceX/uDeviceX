@@ -1,1 +1,11 @@
-echo preved
+# gets ./udx should return something srun can run
+e="$1"; shift
+
+: ${CUDA_MEMCHECK=cuda-memcheck}
+
+if   test -z ${MEM+x}
+then echo "$1"
+elif test -z ${MEM}
+then echo "${CUDA_MEMCHECK}"          "$@"
+else echo "${CUDA_MEMCHECK}" "${MEM}" "$@"
+fi
