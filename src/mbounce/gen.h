@@ -47,16 +47,16 @@ _HD_ void ang_mom_change(const float r[3], const float v0[3], const float v1[3],
 
 /* shift origin from 0 to R for ang momentum */
 _HD_ void mom_shift_ref(const float R[3], /**/ Momentum *m) {
-    m->L[0] -= R[1] * m->P[2] - R[2] * m->P[1];
-    m->L[1] -= R[2] * m->P[0] - R[0] * m->P[2];
-    m->L[2] -= R[0] * m->P[1] - R[1] * m->P[0];
+    m->L[X] -= R[Y] * m->P[Z] - R[Z] * m->P[Y];
+    m->L[Y] -= R[Z] * m->P[X] - R[X] * m->P[Z];
+    m->L[Z] -= R[X] * m->P[Y] - R[Y] * m->P[X];
 }
 
 static _HD_ bool nz(float a) {return fabs(a) > 1e-6f;}
 
 _HD_ bool nonzero(const Momentum *m) {
-    return nz(m->P[0]) && nz(m->P[1]) && nz(m->P[2]) &&
-        nz(m->L[0]) && nz(m->L[1]) && nz(m->L[2]);
+    return nz(m->P[X]) && nz(m->P[Y]) && nz(m->P[Z]) &&
+        nz(m->L[X]) && nz(m->L[Y]) && nz(m->L[Z]);
 }
 
 } // sub
