@@ -8,9 +8,8 @@ __device__ void warpco(/**/ int *ws, int *dw) { /* warp [co]ordinates */
     *ws   = warpSize * warp + blockDim.x * blockIdx.x;
 }
 
-union Part {
-    struct {float2 d0, d1, d2; };
-    struct {float  r[3], v[3]; };
+struct Part {
+    float2 d0, d1, d2;
 };
 
 struct Lo { /* particle [lo]cation in memory
