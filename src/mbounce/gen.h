@@ -41,8 +41,8 @@ _HD_ void lin_mom_change(const float v0[3], const float v1[3], /**/ float dP[3])
 
 _HD_ void ang_mom_change(const float r[3], const float v0[3], const float v1[3], /**/ float dL[3]) {
     dL[X] = -(r[Y] * v1[Z] - r[Z] * v1[Y]  -  r[Y] * v0[Z] + r[Z] - v0[Y]);
-    dL[X] = -(r[Z] * v1[X] - r[X] * v1[Z]  -  r[Z] * v0[X] + r[X] - v0[Z]);
-    dL[X] = -(r[X] * v1[Y] - r[Y] * v1[X]  -  r[X] * v0[Y] + r[Y] - v0[X]);
+    dL[Y] = -(r[Z] * v1[X] - r[X] * v1[Z]  -  r[Z] * v0[X] + r[X] - v0[Z]);
+    dL[Z] = -(r[X] * v1[Y] - r[Y] * v1[X]  -  r[X] * v0[Y] + r[Y] - v0[X]);
 }
 
 /* shift origin from 0 to R for ang momentum */
