@@ -109,7 +109,7 @@ __global__ void unpack(T *const buf[], const int start[], /**/ T *data) {
 
 __global__ void scatter(const bool remote, const uchar4 *subi, const int n, const int *start,
                         /**/ uint *iidx) {
-    uint pid = threadIdx.x + blockDim.x * blockIdx.x;
+    int pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
     uchar4 entry = subi[pid];
     int subindex = entry.w;
@@ -117,9 +117,7 @@ __global__ void scatter(const bool remote, const uchar4 *subi, const int n, cons
     if (subindex != 255) {
         int cid = entry.x + XS * (entry.y + YS * entry.z);
         int base = __ldg(start + cid);
-
-        pid |= remote << 31;
-        iidx[base + subindex] = pid;
+        lr_set(pid, remote, /**/ &iidx[base + subindex]);
     }
 }
 
@@ -142,13 +140,10 @@ void xchg_aos4f(int srclane0, int srclane1, int start, float3 *s0, float3 *s1) {
 
 __global__ void gather_id(const int *ii_lo, const int *ii_re, int n, const uint *iidx, /**/ int *ii) {
     int spid, data;
+    bool remote;
     const int pid = threadIdx.x + blockIdx.x * blockDim.x;
     if (pid >= n) return;
-
-    spid = iidx[pid];
-    
-    const bool remote = (spid >> 31) & 1;
-    spid &= ~(1 << 31);
+    spid = lr_get(iidx[pid], &remote);
     if (remote) data = ii_re[spid];
     else        data = ii_lo[spid];
 
