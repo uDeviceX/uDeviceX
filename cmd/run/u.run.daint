@@ -2,7 +2,10 @@
 
 msg () { printf '%s\n' "$*" >&2; }
 exec0() { # echo and exec
-    msg cmd: "$@"; exec "$@"
+    msg cmd: "$@"
+    if test -z ${DRYRUN+x}
+    then exec "$@"
+    fi
 }
 
 n=$1; shift # n = x*y*z
