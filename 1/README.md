@@ -49,6 +49,8 @@ slurm-*.out:
 
 # git: ac7afcf, _release
 
+  union means without union.
+
 ## n = 1
 	union/n1
 
@@ -56,16 +58,22 @@ slurm-*.out:
 	: ../src/sim/_release/0dev/distr.h:2: an illegal memory access was encountered
 
 ## n = 40
-	union/n40
+	union/n40, runs for 10h
 
-   runs
+# git: ac7afcf, _release, no solid
+
+## n = 1
+	nosolid/n1, runs for 10h
+
+## n = 40
+	nosolid/n40, runs for 10h
 
 # git: e8ab233, _release
 
    add dSync in front of distr_solid
 
 ## n = 1
-	dsync/n40
+	dsync/n1
 
 	:  1.9e+03  1.1e+00 [ 1.8e+05 -4.7e+01  3.9e+01]  1.1e+01
 	: ../src/odstr/imp.cu:61: an illegal memory access was encountered
