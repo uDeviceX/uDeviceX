@@ -11,7 +11,7 @@ val () {
     : ${VALGRIND=valgrind}
     if test -z ${VAL}
     then exec0  "${VALGRIND}"          "$@"
-    else exec0  "${VALGRIND}" "${VAL}" "$@"
+    else exec0  "${VALGRIND}" ${VAL} "$@"
     fi
     return 1
 }
@@ -21,7 +21,7 @@ cuda () {
     : ${CUDA_MEMCHECK=/usr/local/cuda-8.0/bin/cuda-memcheck}
     if test -z ${MEM}
     then exec0  "${CUDA_MEMCHECK}"          "$@"
-    else exec0  "${CUDA_MEMCHECK}" "${MEM}" "$@"
+    else exec0  "${CUDA_MEMCHECK}" ${MEM} "$@"
     fi
     return 1    
 }

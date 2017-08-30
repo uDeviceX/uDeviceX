@@ -10,3 +10,7 @@ if `VAL` is set `udx` is ran with valgrind
 and `VAL` is used as a list of parameters
 
     VAL= u.test test/*
+
+
+    VAL="--leak-check=full --show-leak-kinds=all"  u.test test/*
+
