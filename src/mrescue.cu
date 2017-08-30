@@ -22,7 +22,7 @@
 
 namespace mrescue
 {
-    
+#define _HD_ __host__ __device__
 int *tags_hst, *tags_dev;
     
 void ini(int n) {
@@ -35,9 +35,9 @@ void fin() {
     CC(cudaFree(tags_dev));
 }
 
-static __host__ __device__ float dot(const float a[3], const float b[3]) {return a[0]*b[0] + a[1]*b[1] + a[2]*b[2];}
+static _HD_ float dot(const float a[3], const float b[3]) {return a[0]*b[0] + a[1]*b[1] + a[2]*b[2];}
 
-static __host__ __device__ void project_t(const float *a, const float *b, const float *c,
+static _HD_ void project_t(const float *a, const float *b, const float *c,
                            const float *va, const float *vb, const float *vc,
                            const float *r, /**/ float *rp, float *vp, float *n) {
     const float ab[3] = {b[0]-a[0], b[1]-a[1], b[2]-a[2]};
@@ -96,7 +96,7 @@ static __host__ __device__ void project_t(const float *a, const float *b, const 
     vp[2] = wa * va[2] + u * vb[2] + v * vc[2];
 }
 
-static __host__ __device__ void rescue_1p(const Particle *vv, const int *tt, const int nt, const int sid, const int nv,
+static _HD_ void rescue_1p(const Particle *vv, const int *tt, const int nt, const int sid, const int nv,
                            const int *tcstarts, const int *tccounts, const int *tcids, unsigned long seed, /**/ Particle *p) {        
     float dr2b = 1000.f, rpb[3] = {0}, vpb[3] = {0}, nb[3] = {0};
 
