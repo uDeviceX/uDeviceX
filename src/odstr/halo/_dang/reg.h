@@ -8,17 +8,19 @@ static int __device__ estimate(const int i) {
         d[2] != 0 ? 1 : ZS
     };
     int nhalocells = nhalodir[0] * nhalodir[1] * nhalodir[2];
-    int safety_factor = 4;
-    return numberdensity * safety_factor * nhalocells;
+    return numberdensity * nhalocells * ODSTR_FACTOR;
 }
 
-static __device__ void report(int size, int fid) {
+static __device__ void report(int size, int fid, int cap) {
+    char msg[BUFSIZ];
+    printf(msg, "%s:%d: %d > %d for fid: %d\n", __FILE__, __LINE__, size, cap, fid);
 }
 
 static __device__ void check(int size, int fid) {
-    if (fid < size) return;
-    else {
-        report(size, fid);
+    int cap;
+    cap = estimate(fid);
+    if (size > cap) {
+        report(size, fid, cap);
         assert(0);
     }
 }

@@ -12,8 +12,7 @@ static int estimate(const int i) {
     };
 
     int nhalocells = nhalodir[0] * nhalodir[1] * nhalodir[2];
-    int safety_factor = 4;
-    return numberdensity * safety_factor * nhalocells;    
+    return numberdensity * nhalocells * ODSTR_FACTOR;
 }
 
 void ini_comm(/**/ int rank[], int tags[]) {
