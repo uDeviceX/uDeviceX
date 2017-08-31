@@ -1,7 +1,6 @@
 namespace cnt {
 void bind(const int *const starts, const int *const cellentries,
           const int nc, std::vector<ParticlesWrap> wr) {
-    int id_and_color = 2;
     size_t textureoffset = 0;
 
     if (nc)
