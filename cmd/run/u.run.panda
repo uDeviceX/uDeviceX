@@ -1,17 +1,23 @@
 . u.utils
 
 run_one() { # single processor
+    env_one
     exec1 `u.wrap "$e"` "$@"
 }
 
-env_panda() {
+env_one() {
+    PATH=/usr/local/cuda-8.0/bin:"$PATH"
+    export PATH
+}
+
+env_mpi() {
     PATH=/usr/lib64/mpich/bin:"$PATH"
     PATH=/usr/local/cuda-8.0/bin:"$PATH"
     export PATH
 }
 
 run_mpi() {
-    env_panda
+    env_mpi
     exec1 mpirun -n $n `u.wrap "$e"` $x $y $z "$@"
 }
 
