@@ -1,4 +1,5 @@
-#define O dbg::check_pos(o::pp, o::n, __FILE__, __LINE__, "op"), dbg::check_vv(o::pp, o::n, __FILE__, __LINE__, "ov")
+#define O dbg::check_pos(o::q.pp, o::q.n, __FILE__, __LINE__, "op"),    \
+        dbg::check_vv(o::q.pp, o::q.n, __FILE__, __LINE__, "ov")
 
 void step0(float driving_force0, bool wall0, int it) {
     if (solids0) distr_solid();

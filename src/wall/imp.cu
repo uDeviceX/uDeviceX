@@ -38,8 +38,7 @@
 #include "wall/imp.h"
 #include "wall/dev.h"
 #include "wall/strt.h"
-
-#include "wall/exch.h" /* see wall/exch.c */
+#include "wall/exch.h"
 
 namespace wall {
 namespace sub {
