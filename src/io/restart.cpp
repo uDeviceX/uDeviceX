@@ -7,7 +7,7 @@
 #include "inc/type.h"
 #include "inc/def.h"
 #include "msg.h"
-#include "m.h"
+#include "mpi/glb.h"
 
 #include "restart.h"
 

@@ -4,7 +4,7 @@
 #include "inc/conf.h"
 #include "inc/def.h"
 #include "msg.h"
-#include "m.h"
+#include "mpi/glb.h"
 #include "mpi/wrapper.h"
 
 #include "basetags.h"

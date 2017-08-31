@@ -7,7 +7,7 @@
 
 #include "inc/type.h"
 #include "io/field.h"
-#include "m.h"
+#include "mpi/glb.h"
 #include "field.h"
 #include "msg.h"
 

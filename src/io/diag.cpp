@@ -5,7 +5,7 @@
 
 #include "msg.h"
 #include "mpi/wrapper.h"
-#include "m.h"
+#include "mpi/glb.h"
 #include "inc/type.h"
 #include "diag.h"
 

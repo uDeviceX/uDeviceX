@@ -10,7 +10,7 @@
 
 #include "inc/def.h"
 #include "msg.h"
-#include "m.h"
+#include "mpi/glb.h"
 #include "cc.h"
 #include "mpi/wrapper.h"
 

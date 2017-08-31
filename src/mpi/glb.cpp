@@ -3,7 +3,7 @@
 #include "mpi/wrapper.h"
 #include "inc/conf.h"
 #include "mc.h"
-#include "m.h"
+#include "mpi/glb.h"
 
 namespace m { /* MPI */
 static const int d = 3;

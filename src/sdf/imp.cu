@@ -2,7 +2,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 
-#include "m.h"
+#include "mpi/glb.h"
 #include "inc/def.h"
 #include "msg.h"
 #include "cc.h"

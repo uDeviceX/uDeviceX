@@ -9,7 +9,7 @@
 #include "d/q.h"
 #include "d/ker.h"
 
-#include "m.h"
+#include "mpi/glb.h"
 #include "inc/def.h"
 #include "msg.h"
 #include "cc.h"

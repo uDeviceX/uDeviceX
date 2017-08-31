@@ -7,7 +7,7 @@
 #include "inc/conf.h"
 
 #include "os.h"
-#include "m.h"     /* MPI */
+#include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "mc.h"
 #include "inc/type.h"

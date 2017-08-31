@@ -7,7 +7,7 @@
 
 #include "inc/type.h"
 #include "mpi/wrapper.h"
-#include "m.h"
+#include "mpi/glb.h"
 
 namespace wall { namespace sub {
 void exch(/*io*/ Particle *pp, int *n) { /* exchange pp(hst) between processors */

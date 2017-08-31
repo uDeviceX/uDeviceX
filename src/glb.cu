@@ -1,6 +1,6 @@
 #include <conf.h>
 #include "inc/conf.h"
-#include "m.h"
+#include "mpi/glb.h"
 #include "d/api.h"
 #include "glb.h"
 

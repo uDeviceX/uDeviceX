@@ -11,7 +11,7 @@
 
 #include "inc/def.h"
 #include "msg.h"
-#include "m.h"
+#include "mpi/glb.h"
 #include "cc.h"
 
 #include "inc/type.h"
