@@ -29,7 +29,7 @@
 #include "dpdr/type.h"
 #include "dpdr/imp.h"
 
-#include "dpdr/dev.h"
+#include "dpdr/dev/common.h"
 #include "dpdr/ini.h"
 #include "dpdr/fin.h"
 #include "dpdr/buf.h"
