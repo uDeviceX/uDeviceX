@@ -43,6 +43,7 @@
 #include "forces/imp.h"
 
 #include "k/cnt/type.h"
+#include "k/cnt/code.h"
 #include "k/cnt/decl.h"
 #include "k/cnt/fetch.h"
 #include "k/cnt/bulk.h"
