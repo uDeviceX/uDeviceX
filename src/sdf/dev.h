@@ -2,13 +2,13 @@ namespace sdf { namespace sub { namespace dev {
 
 __device__ float fst(float2 *t) { return t->x; }
 __device__ float scn(float2 *t) { return t->y; }
-static __device__ void pp2rv(float2 *p, int i, /**/ float r[3], float v[3]) {
+static __device__ void p2rv(float2 *p, int i, /**/ float r[3], float v[3]) {
     enum {X, Y, Z};
     p += 3 * i;
     r[X] = fst(p);   r[Y] = scn(p++); r[Z] = fst(p);
     v[X] = scn(p++); v[Y] = fst(p);   v[Z] = scn(p);
 }
-static __device__ void rv2p(float r[3], float v[3], /**/ float2 *p, int i) {
+static __device__ void rv2p(float r[3], float v[3], int i, /**/ float2 *p) {
     enum {X, Y, Z};
     p += 3 * i;
     p->x   = r[X]; p++->y = r[Y]; p->x = r[Z];
@@ -162,19 +162,17 @@ static __device__ void bounce1(const tex3Dca<float> texsdf, float currsdf,
 }
 
 __global__ void bounce(const tex3Dca<float> texsdf, int n, /**/ float2 *const pp) {
+    enum {X, Y, Z};
+    float r[3], v[3];
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
-    float2 data0 = pp[pid * 3];
-    float2 data1 = pp[pid * 3 + 1];
-    float s = cheap_sdf(texsdf, data0.x, data0.y, data1.x);
+    p2rv(pp, pid, /**/ r, v);
+    float s = cheap_sdf(texsdf, r[X], r[Y], r[Z]);
     if (s >= -1.7320 * XSIZE_WALLCELLS / XTE) {
-        float currsdf = sdf(texsdf, data0.x, data0.y, data1.x);
-        float2 data2 = pp[pid * 3 + 2];
+        float currsdf = sdf(texsdf, r[X], r[Y], r[Z]);
         if (currsdf >= 0) {
-            bounce1(texsdf, currsdf, data0.x, data0.y, data1.x, data1.y, data2.x, data2.y);
-            pp[3 * pid] = data0;
-            pp[3 * pid + 1] = data1;
-            pp[3 * pid + 2] = data2;
+            bounce1(texsdf, currsdf, /*io*/ r[X], r[Y], r[Z], v[X], v[Y], v[Z]);
+            rv2p(r, v, pid, /**/ pp);
         }
     }
 }
