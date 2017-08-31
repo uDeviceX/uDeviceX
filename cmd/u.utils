@@ -13,7 +13,7 @@ exec1() { # "ultimate" : respects DRYRUN
     fi
 }
 
-load1() { # "ultimate" : respects DRYRUN
+module1() { # "ultimate" : respects DRYRUN
     msg load: "$@"
     if test -z ${DRYRUN+x}
     then load "$@"
