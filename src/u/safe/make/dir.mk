@@ -8,12 +8,12 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/dpd        && \
     d $B/dpdr       && \
     d $B/dual       && \
-    d $B/dump       && \
     d $B/flu        && \
     d $B/fsi        && \
     d $B/hforces    && \
     d $B/inter      && \
     d $B/io         && \
+    d $B/io/bop     && \
     d $B/math       && \
     d $B/mbounce    && \
     d $B/mcomm      && \
