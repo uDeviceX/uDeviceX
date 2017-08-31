@@ -4,9 +4,9 @@ static void pre(ParticlesWrap *w, int nw) {
     clear(nw, tp);
     scanA(w, nw, tp);
     scanB(nw, tp);
-    copy_offset(nw, tp, ti);
-    copy_starts(tp, ti);
-    pack(w, nw, tp, buf);
+    copy_offset(nw, tp, /**/ ti);
+    copy_starts(tp, /**/ ti);
+    pack(w, nw, tp, /**/ buf);
 }
 
 static void rex0(ParticlesWrap *w, int nw) {
