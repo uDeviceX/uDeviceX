@@ -43,6 +43,7 @@ static __host__ __device__ void inverse(const float A[6], /**/ float I[6]) {
 
     /* inverse determinant */
     float idet = mx * A[XX] - my * A[XY] + mz * A[XZ];
+    assert( fabs(idet) > 1e-8f );
     idet = 1.f / idet;    
     
     I[XX] =  idet * mx;
