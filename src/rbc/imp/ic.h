@@ -19,7 +19,7 @@ int setup_hst(const char *r_templ, const char *r_state, int nv, Particle *pp) {
     /* fills `pp' with RBCs for this processor */
 
     float rr0[3*MAX_VERT_NUM]; /* rbc template */
-    l::off::vert(r_templ, rr0);
+    off::vert(r_templ, rr0);
 
     int i, j, c, nc = 0;
     int mi[3], L[3] = {XS, YS, ZS};

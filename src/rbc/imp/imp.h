@@ -32,7 +32,7 @@ static void gen_a12(int i0, int *hx, int *hy, /**/ int *a1, int *a2) {
 }
 
 void setup(const char *r_templ, int *faces, int4 *tri, int *adj0, int *adj1) {
-    l::off::faces(r_templ, faces);
+    off::faces(r_templ, faces);
 
     int   *trs4 = new int  [4 * nt];
     for (int ifa = 0, i0 = 0, i1 = 0; ifa < nt; ifa++) {
