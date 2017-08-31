@@ -14,7 +14,7 @@
 
 #include "inc/type.h"
 #include "inc/dev.h"
-#include "texo.h"
+#include "utils/texo.h"
 #include "mesh/collision.h"
 #include "kl.h"
 

@@ -17,8 +17,8 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 
-#include "texo.h"
-#include "te.h"
+#include "utils/texo.h"
+#include "utils/te.h"
 
 #include "inc/tmp/wrap.h"
 #include "inc/tmp/pinned.h"

@@ -17,7 +17,7 @@
 #include "mpi/wrapper.h"
 #include "inc/type.h"
 #include "inc/dev.h"
-#include "texo.h"
+#include "utils/texo.h"
 #include "mpi/type.h"
 #include "rigid/int.h"
 

@@ -29,8 +29,8 @@
 
 #include "dual/type.h"
 #include "dual/int.h"
-#include "texo.h"
-#include "te.h"
+#include "utils/texo.h"
+#include "utils/te.h"
 
 #include "inc/tmp/wrap.h"
 #include "inc/tmp/pinned.h"
