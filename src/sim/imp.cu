@@ -111,7 +111,7 @@ namespace dev {
 #include "bbhalo.decl.h"
 #include "bbhalo.impl.h"
 
-#include "dump/int.h"
+#include "io/bop/imp.h"
 #include "rig/int.h"
 #include "inter/int.h"
 

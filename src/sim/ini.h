@@ -18,7 +18,7 @@ void ini() {
     bbhalo::ini(&tag_gen);
     cnt::ini();
     if (rbcs || solids) x::ini(&tag_gen); /* rex:: */
-    dump::ini(&dumpt);
+    bop::ini(&dumpt);
 
     if (walls) {
         sdf::alloc_quants(&w::qsdf);

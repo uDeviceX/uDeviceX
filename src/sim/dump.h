@@ -13,18 +13,18 @@ void dump_part(int step) {
   cD2H(o::q.pp_hst, o::q.pp, o::q.n);
   if (global_ids) {
       cD2H(o::qi.ii_hst, o::qi.ii, o::q.n);
-      dump::intdata(o::qi.ii_hst, o::q.n, "id_solvent", step);
+      bop::intdata(o::qi.ii_hst, o::q.n, "id_solvent", step);
   }
   // TODO add a switch?
   if (multi_solvent) {
       cD2H(o::qc.ii_hst, o::qc.ii, o::q.n);
-      dump::intdata(o::qc.ii_hst, o::q.n, "colors_solvent", step);
+      bop::intdata(o::qc.ii_hst, o::q.n, "colors_solvent", step);
   }
-  dump::parts(o::q.pp_hst, o::q.n, "solvent", step, /**/ &dumpt);
+  bop::parts(o::q.pp_hst, o::q.n, "solvent", step, /**/ &dumpt);
   
   if(solids0) {
     cD2H(s::q.pp_hst, s::q.pp, s::q.n);
-    dump::parts(s::q.pp_hst, s::q.n, "solid", step, /**/ &dumpt);
+    bop::parts(s::q.pp_hst, s::q.n, "solid", step, /**/ &dumpt);
   }
 }
 

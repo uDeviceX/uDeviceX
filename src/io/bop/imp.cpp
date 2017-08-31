@@ -14,10 +14,11 @@
 #include "inc/def.h"
 #include "msg.h"
 #include "mpi/type.h"
-#include "dump/int.h"
 #include "utils/os.h"
 
-namespace dump
+#include "imp.h"
+
+namespace bop
 {
 void ini(Ticket *t) {
     if (m::rank == 0) os::mkdir(DUMP_BASE "/bop");
@@ -120,4 +121,4 @@ void intdata(const int *ii, const long n, const char *name, const int step) {
 }
 
 #undef PATTERN
-}
+} // bop

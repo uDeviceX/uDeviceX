@@ -1,6 +1,6 @@
 bool solids0;
 
-dump::Ticket dumpt;
+bop::Ticket dumpt;
 basetags::TagGen tag_gen;
 
 namespace o /* s[o]lvent */

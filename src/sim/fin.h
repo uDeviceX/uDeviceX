@@ -2,7 +2,7 @@ void fin() {
     sdstr::fin();
     bbhalo::fin();
     cnt::fin();
-    dump::fin(&dumpt);
+    bop::fin(&dumpt);
     if (rbcs || solids) x::fin(); /* rex:: */
     if (fsiforces)  fsi::fin();
     if (solids) mrescue::fin();

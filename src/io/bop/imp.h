@@ -1,4 +1,4 @@
-namespace dump {
+namespace bop {
 struct Ticket {
     float *w_pp;    // particle workspace
     int mi[3];      // global coordinates of my origin
