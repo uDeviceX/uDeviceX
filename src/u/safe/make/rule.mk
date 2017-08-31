@@ -42,7 +42,6 @@ $B/msg.o: $S/msg.cpp; $X -I$S/.
 $B/odstr/halo/imp.o: $S/odstr/halo/imp.cu; $N -I$S/. -I$S/odstr/halo -I$S/odstr/halo/_safe
 $B/odstr/imp.o: $S/odstr/imp.cu; $N -I$S/. -I$S/odstr -I$S/odstr/_safe
 $B/odstr/int.o: $S/odstr/int.cu; $N -I$S/. -I$S/odstr -I$S/odstr/_safe
-$B/odstr/pack/imp.o: $S/odstr/pack/imp.cu; $N -I$S/. -I$S/odstr/pack
 $B/rbc/imp.o: $S/rbc/imp.cu; $N -I$S/. -I$S/rbc
 $B/rbc/int.o: $S/rbc/int.cu; $N -I$S/. -I$S/rbc
 $B/rdstr/imp.o: $S/rdstr/imp.cu; $N -I$S/. -I$S/rdstr
