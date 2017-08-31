@@ -4,7 +4,7 @@
 #include "mc.h"
 
 #include "inc/type.h"
-#include "inc/mpi.h"
+#include "inc/mpi.type.h"
 
 namespace datatype {
 MPI_Datatype particle, solid;
