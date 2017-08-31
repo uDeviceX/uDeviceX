@@ -1,2 +1,2 @@
-/home/lisergey/bin/u.load.daint: line 6: module: command not found
+load: cray-hdf5-parallel cudatoolkit daint-gpu
 cmd: srun -n 1 -u ./udx 1 1 1
