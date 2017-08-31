@@ -1,4 +1,7 @@
-namespace l { namespace m {
+#include <mpi.h>
+#include "wrapper.h"
+
+namespace m {
 MPI_Comm cart;
 
 int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm) {
@@ -84,4 +87,4 @@ int Type_contiguous(int count, MPI_Datatype oldtype, MPI_Datatype *newtype) {
 int Waitall(int count, MPI_Request array_of_requests[], MPI_Status *array_of_statuses) {
     return MPI_Waitall(count, array_of_requests, array_of_statuses);
 }
-}}
+}
