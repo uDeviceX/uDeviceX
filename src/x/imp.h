@@ -12,7 +12,6 @@ static void pre(ParticlesWrap *w, int nw) {
 
 static void rex0(ParticlesWrap *w, int nw) {
     using namespace rex;
-    pre(w, nw);
     dSync();
     recvF(tc.cart, tc.ranks, tr.tags, tt, ti.counts);
     dSync();
@@ -44,7 +43,10 @@ void rex(std::vector<ParticlesWrap> w0) {
     nw = w0.size();
     w  = w0.data();
     
-    if (nw) rex0(w, nw);
+    if (nw) {
+        pre(w, nw);
+        rex0(w, nw);
+    }
 }
 
 }
