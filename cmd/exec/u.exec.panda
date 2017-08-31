@@ -20,8 +20,8 @@ cuda () {
     if test -z ${MEM+x}; then return; fi
     : ${CUDA_MEMCHECK=/usr/local/cuda-8.0/bin/cuda-memcheck}
     if test -z ${MEM}
-    then exec0  "${CUDA_MEMCHECK}"        "$@"
-    else exec0  "${CUDA_MEMCHECK}" ${MEM} "$@"
+    then exec0  "${CUDA_MEMCHECK}"          "$@"
+    else exec0  "${CUDA_MEMCHECK}" "${MEM}" "$@"
     fi
     return 1    
 }
