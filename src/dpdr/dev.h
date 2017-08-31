@@ -16,10 +16,10 @@ static __device__ void get_box(int i, /**/ int org[3], int ext[3]) {
 static __device__ int h2cid(int hci, const int org[3], const int ext[3]) {
     enum {X, Y, Z};
     int c;
-    int srccellpos[3];
-    int dstcellpos[3] = {hci % ext[X], (hci / ext[X]) % ext[Y], hci / (ext[X] * ext[Y])};
-    for (c = 0; c < 3; ++c) srccellpos[c] = org[c] + dstcellpos[c];
-    return srccellpos[X] + XS * (srccellpos[Y] + YS * srccellpos[Z]);
+    int src[3];
+    int dst[3] = {hci % ext[X], (hci / ext[X]) % ext[Y], hci / (ext[X] * ext[Y])};
+    for (c = 0; c < 3; ++c) src[c] = org[c] + dst[c];
+    return src[X] + XS * (src[Y] + YS * src[Z]);
 }
 
 __global__ void count(const int27 cellpackstarts, const int *start, const int *count, /**/
