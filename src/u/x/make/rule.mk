@@ -41,7 +41,6 @@ $B/odstr/halo/imp.o: $S/odstr/halo/imp.cu; $N -I$S/. -I$S/odstr/halo -I$S/odstr/
 $B/odstr/imp.o: $S/odstr/imp.cu; $N -I$S/. -I$S/odstr -I$S/odstr/_release
 $B/odstr/int.o: $S/odstr/int.cu; $N -I$S/. -I$S/odstr -I$S/odstr/_release
 $B/odstr/pack/imp.o: $S/odstr/pack/imp.cu; $N -I$S/. -I$S/odstr/pack
-$B/os.o: $S/os.cpp; $X -I$S/.
 $B/rbc/imp.o: $S/rbc/imp.cu; $N -I$S/. -I$S/rbc
 $B/rbc/int.o: $S/rbc/int.cu; $N -I$S/. -I$S/rbc
 $B/rdstr/imp.o: $S/rdstr/imp.cu; $N -I$S/. -I$S/rdstr
@@ -58,6 +57,7 @@ $B/tcells/imp.o: $S/tcells/imp.cu; $N -I$S/. -I$S/tcells
 $B/tcells/int.o: $S/tcells/int.cpp; $X -I$S/. -I$S/tcells
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/. -I$S/utils
 $B/utils/mc.o: $S/utils/mc.cpp; $X -I$S/. -I$S/utils
+$B/utils/os.o: $S/utils/os.cpp; $X -I$S/. -I$S/utils
 $B/wall/exch.o: $S/wall/exch.cpp; $X -I$S/. -I$S/wall
 $B/wall/imp.o: $S/wall/imp.cu; $N -I$S/. -I$S/wall
 $B/wall/int.o: $S/wall/int.cu; $N -I$S/. -I$S/wall
