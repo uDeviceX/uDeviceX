@@ -40,8 +40,6 @@
 #include "sim/int.h"
 #include "dbg/imp.h"
 
-#include "restart.h"
-
 #include "k/read.h"
 #include "k/write.h"
 #include "k/common.h"

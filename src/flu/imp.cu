@@ -18,7 +18,7 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "mc.h"
-#include "restart.h"
+#include "io/restart.h"
 
 #include "flu/imp.h"
 

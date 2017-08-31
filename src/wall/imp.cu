@@ -31,7 +31,7 @@
 #include "forces/imp.h"
 
 #include "clist/int.h"
-#include "restart.h"
+#include "io/restart.h"
 
 #include "kl.h"
 

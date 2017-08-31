@@ -23,7 +23,7 @@
 #include "inc/tmp/wrap.h"
 #include "inc/tmp/pinned.h"
 #include "io/rbc.h"
-#include "restart.h"
+#include "io/restart.h"
 
 #include "glb.h"
 

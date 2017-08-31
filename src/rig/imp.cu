@@ -26,7 +26,7 @@
 #include "mesh/bbox.h"
 
 #include "io/ply.h"
-#include "restart.h"
+#include "io/restart.h"
 
 #include "rig/imp.h"
 #include "rig/ic.h"

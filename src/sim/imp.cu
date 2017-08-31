@@ -42,7 +42,7 @@
 
 #include "dbg/imp.h"
 
-#include "restart.h"
+#include "io/restart.h"
 
 #include "glb.h"
 

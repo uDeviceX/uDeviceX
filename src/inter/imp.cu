@@ -10,7 +10,6 @@
 #include "d/ker.h"
 
 #include "l/m.h"
-#include "io/off.h"
 #include "scan/int.h"
 
 #include "rnd/imp.h"
@@ -36,13 +35,9 @@
 
 #include "inc/tmp/wrap.h"
 #include "inc/tmp/pinned.h"
-#include "io/field.h"
-#include "io/rbc.h"
 #include "diag.h"
 
 #include "dbg/imp.h"
-
-#include "restart.h"
 
 #include "glb.h"
 
