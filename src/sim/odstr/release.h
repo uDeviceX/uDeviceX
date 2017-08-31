@@ -18,10 +18,6 @@ static void unpack() {
 
 void odstr() {
     using namespace odstr;
-
-    assert(o::q.n <= MAX_PART_NUM);
-    assert(r::q.n <= MAX_PART_NUM);
-
     post_recv_pp(/**/ &o::td);
     if (global_ids)    post_recv_ii(&o::td, /**/ &o::ti);
     if (multi_solvent) post_recv_ii(&o::td, /**/ &o::tc);
