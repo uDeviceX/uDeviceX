@@ -35,7 +35,6 @@
 
 #include "inc/tmp/wrap.h"
 #include "inc/tmp/pinned.h"
-#include "diag.h"
 
 #include "dbg/imp.h"
 
