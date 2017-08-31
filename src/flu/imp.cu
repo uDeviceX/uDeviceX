@@ -9,7 +9,7 @@
 
 #include "inc/def.h"
 #include "msg.h"
-#include "cc.h"
+#include "utils/cc.h"
 #include "d/api.h"
 #include "d/q.h"
 #include "d/ker.h"
@@ -30,7 +30,7 @@
   #error DEV_* is undefined
 #endif
 
-#include "kl.h"
+#include "utils/kl.h"
 
 namespace flu {
 namespace sub {

@@ -5,7 +5,7 @@
 #include "mpi/glb.h"
 #include "inc/def.h"
 #include "msg.h"
-#include "cc.h"
+#include "utils/cc.h"
 
 #include "d/ker.h"
 #include "d/api.h"

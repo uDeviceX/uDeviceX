@@ -6,7 +6,7 @@
 #include "d/api.h"
 #include "inc/def.h"
 #include "msg.h"
-#include "cc.h"
+#include "utils/cc.h"
 
 #include "inc/dev.h"
 #include "inc/type.h"

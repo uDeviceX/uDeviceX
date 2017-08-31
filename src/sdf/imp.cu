@@ -5,7 +5,7 @@
 #include "mpi/glb.h"
 #include "inc/def.h"
 #include "msg.h"
-#include "cc.h"
+#include "utils/cc.h"
 
 #include "d/q.h"
 #include "d/ker.h"
@@ -15,7 +15,7 @@
 #include "inc/dev.h"
 #include "inc/macro.h"
 
-#include "kl.h"
+#include "utils/kl.h"
 #include "glb.h"
 #include "k/wvel.h"
 

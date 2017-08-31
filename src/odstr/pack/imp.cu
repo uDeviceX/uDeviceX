@@ -9,12 +9,12 @@
 #include "inc/def.h"
 #include "msg.h"
 #include "mpi/glb.h"
-#include "cc.h"
+#include "utils/cc.h"
 
 #include "inc/type.h"
 #include "inc/dev.h"
 
-#include "kl.h"
+#include "utils/kl.h"
 #include "k/common.h"
 #include "dev.h"
 #include "dbg/imp.h"

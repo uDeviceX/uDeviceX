@@ -9,11 +9,11 @@
 #include "d/ker.h"
 #include "d/api.h"
 
-#include "cc.h"
+#include "utils/cc.h"
 #include "inc/type.h"
 #include "inc/dev.h"
 
-#include "kl.h"
+#include "utils/kl.h"
 #include "minmax.h"
 
 #define MAXTHREADS 1024

@@ -12,7 +12,7 @@
 #include "mpi/glb.h"
 #include "inc/def.h"
 #include "msg.h"
-#include "cc.h"
+#include "utils/cc.h"
 #include "mpi/wrapper.h"
 
 #include "inc/type.h"
@@ -20,7 +20,7 @@
 #include "mc.h"
 #include "inc/dev.h"
 
-#include "kl.h"
+#include "utils/kl.h"
 
 #include "mcomm/type.h"
 #include "mcomm/imp.h"

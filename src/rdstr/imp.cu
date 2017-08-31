@@ -11,7 +11,7 @@
 #include "inc/def.h"
 #include "msg.h"
 #include "mpi/glb.h"
-#include "cc.h"
+#include "utils/cc.h"
 #include "mpi/wrapper.h"
 
 #include "inc/type.h"
@@ -19,7 +19,7 @@
 #include "inc/dev.h"
 #include "mc.h"
 
-#include "kl.h"
+#include "utils/kl.h"
 
 #include "minmax.h"
 

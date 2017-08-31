@@ -5,7 +5,7 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 
-#include "kl.h"
+#include "utils/kl.h"
 
 #include "mesh/props.h"
 #include "math/linal.h"

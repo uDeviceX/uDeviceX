@@ -11,7 +11,7 @@
 #include "inc/def.h"
 #include "msg.h"
 #include "mpi/glb.h"
-#include "cc.h"
+#include "utils/cc.h"
 
 #include "dual/type.h"
 #include "dual/int.h"
@@ -24,7 +24,7 @@
 #include "scan/int.h"
 #include "odstr/halo/int.h"
 
-#include "kl.h"
+#include "utils/kl.h"
 
 #include "k/read.h"
 #include "k/write.h"

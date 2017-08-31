@@ -5,11 +5,11 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 
-#include "cc.h"
+#include "utils/cc.h"
 #include "msg.h"
 #include "d/api.h"
 
-#include "kl.h"
+#include "utils/kl.h"
 
 #include "dbg/imp.h"
 #include "dbg/error.h"

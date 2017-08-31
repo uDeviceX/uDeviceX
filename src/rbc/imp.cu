@@ -11,9 +11,9 @@
 #include "msg.h"
 #include "mpi/wrapper.h"
 #include "mpi/glb.h"
-#include "cc.h"
+#include "utils/cc.h"
 
-#include "kl.h"
+#include "utils/kl.h"
 #include "inc/type.h"
 #include "inc/dev.h"
 

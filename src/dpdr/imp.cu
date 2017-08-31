@@ -11,7 +11,7 @@
 #include "inc/def.h"
 #include "msg.h"
 #include "mpi/glb.h"
-#include "cc.h"
+#include "utils/cc.h"
 
 
 #include "rnd/imp.h"
@@ -21,7 +21,7 @@
 #include "mpi/type.h"
 #include "mc.h"
 
-#include "kl.h"
+#include "utils/kl.h"
 
 #include "k/read.h"
 #include "k/common.h"
