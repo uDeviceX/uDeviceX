@@ -21,6 +21,8 @@ install:
 	@echo install cmd tools to $(BIN)
 	@mkdir -p $(BIN) && cp $(P) $(BIN)
 
+test:; u.test test/cmd
+
 re:; $(MAKE) -C re
 
-.PHONY: install re
+.PHONY: install re test
