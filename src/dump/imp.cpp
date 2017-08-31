@@ -13,7 +13,7 @@
 #include "inc/type.h"
 #include "inc/def.h"
 #include "msg.h"
-#include "inc/mpi.h"
+#include "inc/mpi.type.h"
 #include "dump/int.h"
 #include "os.h"
 

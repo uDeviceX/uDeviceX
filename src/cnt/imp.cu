@@ -24,7 +24,6 @@
 #include "kl.h"
 #include "basetags.h"
 #include "inc/type.h"
-#include "inc/mpi.h"
 #include "inc/dev.h"
 
 #include "texo.h"
