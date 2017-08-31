@@ -72,7 +72,7 @@ void pack_ii(const int *ii, int n, const Send *s, Pbufs<int>* sii) {
 
 void count(/**/ Recv *r, int *nhalo) {
     int i;
-    static int size[27], strt[28];
+    int size[27], strt[28];
 
     size[0] = strt[0] = 0;
     for (i = 1; i < 27; ++i)    size[i] = r->size[i];
