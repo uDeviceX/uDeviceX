@@ -64,12 +64,12 @@ static void wfaces0(int *buf, int *faces, int nc, int nv, int nt, MPI_File f) {
 
     b = 0;
     for(c = 0; c < nc; ++c)
-    for(t = 0; t < nt; ++t) {
-        buf[b++] = NVP;
-        buf[b++] = shift + nv*c + faces[3*t    ];
-        buf[b++] = shift + nv*c + faces[3*t + 1];
-        buf[b++] = shift + nv*c + faces[3*t + 2];        
-    }
+        for(t = 0; t < nt; ++t) {
+            buf[b++] = NVP;
+            buf[b++] = shift + nv*c + faces[3*t    ];
+            buf[b++] = shift + nv*c + faces[3*t + 1];
+            buf[b++] = shift + nv*c + faces[3*t + 2];        
+        }
     write(buf, b*sizeof(buf[0]), f);
 }
 
