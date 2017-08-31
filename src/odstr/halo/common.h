@@ -5,6 +5,7 @@ static __device__ int box(const float r[3]) {
     int c;
     int vc[3]; /* vcode */
     int   L[3] = {XS, YS, ZS};
+    check(r);
     for (c = 0; c < 3; ++c)
         vc[c] = (2 + (r[c] >= -L[c]/2) + (r[c] >= L[c]/2)) % 3;
     return vc[X] + 3 * (vc[Y] + 3 * vc[Z]);
