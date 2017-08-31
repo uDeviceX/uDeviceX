@@ -1,5 +1,15 @@
 namespace sdf { namespace sub { namespace dev {
 
+__device__ float fst(float2 *t) { return t->x; }
+__device__ float scn(float2 *t) { return t->y; }
+
+static __device__ void pp2rv(float2 *p, int i, /**/ float r[3], float v[3]) {
+    enum {X, Y, Z};
+    p += 3 * i;
+    r[X] = fst(p);   r[Y] = scn(p++); r[Z] = fst(p);
+    v[X] = scn(p++); v[Y] = fst(p);   v[Z] = scn(p);
+}
+
 static __device__ float sdf(const tex3Dca<float> texsdf, float x, float y, float z) {
     int c;
     float t;
@@ -89,7 +99,7 @@ __global__ void fill(const tex3Dca<float> texsdf, const Particle *const pp, cons
     key[pid] = (int)(sdf0 >= 0) + (int)(sdf0 > 2);
 }
 
-static __device__ void bounce0(const tex3Dca<float> texsdf, float currsdf,
+static __device__ void bounce1(const tex3Dca<float> texsdf, float currsdf,
                                float &x, float &y, float &z,
                                float &vx, float &vy, float &vz) {
     float x0 = x - vx*dt, y0 = y - vy*dt, z0 = z - vz*dt;
@@ -156,7 +166,7 @@ __global__ void bounce(const tex3Dca<float> texsdf, int n, /**/ float2 *const pp
         float currsdf = sdf(texsdf, data0.x, data0.y, data1.x);
         float2 data2 = pp[pid * 3 + 2];
         if (currsdf >= 0) {
-            bounce0(texsdf, currsdf, data0.x, data0.y, data1.x, data1.y, data2.x, data2.y);
+            bounce1(texsdf, currsdf, data0.x, data0.y, data1.x, data1.y, data2.x, data2.y);
             pp[3 * pid] = data0;
             pp[3 * pid + 1] = data1;
             pp[3 * pid + 2] = data2;
