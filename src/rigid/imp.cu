@@ -85,6 +85,10 @@ void mesh2pp_hst(const Solid *ss_hst, const int ns, const Mesh m, /**/ Particle 
     }
 }
 
+static void write_v(FILE *f, const float v[3]) {
+    fprintf(f, "%+.6e %+.6e %+.6e ", v[X], v[Y], v[Z]);
+}
+
 void dump(const int it, const Solid *ss, const Solid *ssbb, int ns, const int *mcoords) {
     static bool first = true;
     char fname[256];
@@ -100,10 +104,6 @@ void dump(const int it, const Solid *ss, const Solid *ssbb, int ns, const int *m
 
         fprintf(fp, "%+.6e ", dt*it);
 
-        auto write_v = [fp] (const float *v) {
-            fprintf(fp, "%+.6e %+.6e %+.6e ", v[X], v[Y], v[Z]);
-        };
-
         // make global coordinates
         float com[3];
         {
@@ -113,16 +113,16 @@ void dump(const int it, const Solid *ss, const Solid *ssbb, int ns, const int *m
             for (int c = 0; c < 3; ++c) com[c] = s->com[c] + mi[c];
         }
             
-        write_v(com);
-        write_v(s->v );
-        write_v(s->om);
-        write_v(s->fo);
-        write_v(s->to);
-        write_v(s->e0);
-        write_v(s->e1);
-        write_v(s->e2);
-        write_v(sbb->fo);
-        write_v(sbb->to);
+        write_v(fp, com);
+        write_v(fp, s->v );
+        write_v(fp, s->om);
+        write_v(fp, s->fo);
+        write_v(fp, s->to);
+        write_v(fp, s->e0);
+        write_v(fp, s->e1);
+        write_v(fp, s->e2);
+        write_v(fp, sbb->fo);
+        write_v(fp, sbb->to);
         fprintf(fp, "\n");
         
         fclose(fp);
