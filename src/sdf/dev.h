@@ -2,12 +2,17 @@ namespace sdf { namespace sub { namespace dev {
 
 __device__ float fst(float2 *t) { return t->x; }
 __device__ float scn(float2 *t) { return t->y; }
-
 static __device__ void pp2rv(float2 *p, int i, /**/ float r[3], float v[3]) {
     enum {X, Y, Z};
     p += 3 * i;
     r[X] = fst(p);   r[Y] = scn(p++); r[Z] = fst(p);
     v[X] = scn(p++); v[Y] = fst(p);   v[Z] = scn(p);
+}
+static __device__ void rv2p(float r[3], float v[3], /**/ float2 *p, int i) {
+    enum {X, Y, Z};
+    p += 3 * i;
+    p->x   = r[X]; p++->y = r[Y]; p->x = r[Z];
+    p++->y = v[X]; p->x   = v[Y]; p->y = v[Z];
 }
 
 static __device__ float sdf(const tex3Dca<float> texsdf, float x, float y, float z) {
