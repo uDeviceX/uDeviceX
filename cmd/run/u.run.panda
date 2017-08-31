@@ -1,13 +1,13 @@
 . u.utils
 
-run_one() { # single processor
-    env_one
-    exec1 `u.wrap "$e"` "$@"
-}
-
 env_one() {
     PATH=/usr/local/cuda-8.0/bin:"$PATH"
     export PATH
+}
+
+run_one() { # single processor
+    env_one
+    exec1 `u.wrap "$e"` "$@"
 }
 
 env_mpi() {
