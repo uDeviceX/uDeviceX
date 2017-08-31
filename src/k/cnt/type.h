@@ -1,6 +1,5 @@
 namespace k_cnt {
-union CellEntry {
+struct CellEntry {
     int pid;
-    uchar4 code;
 };
 }
