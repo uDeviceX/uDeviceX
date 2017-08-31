@@ -19,10 +19,6 @@ __global__ void populate(uchar4 *subindices,
     int mystart = __ldg(cellstart + cellid);
     int slot = mystart + subindex.w;
 
-    CellEntry myentrycell;
-    myentrycell.pid = pid;
-    myentrycell.code.w = soluteid;
-
-    entrycells[slot] = myentrycell;
+    set(soluteid, pid, slot, /**/ entrycells);
 }
 }

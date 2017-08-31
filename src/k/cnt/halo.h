@@ -79,12 +79,8 @@ __global__ void halo(int nparticles_padded, int ncellentries,
             int m2 = (int)(i >= scan2);
             int slot = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
 
-            CellEntry ce;
-            ce.pid = fetchID(slot);
-            int soluteid = ce.code.w;
-            ce.code.w = 0;
-
-            int spid = ce.pid;
+            int soluteid, spid;
+            get(slot, &soluteid, &spid);
 
             int sentry = 3 * spid;
             float2 stmp0 = __ldg(g::csolutes[soluteid] + sentry);

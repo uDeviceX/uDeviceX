@@ -1,12 +1,12 @@
 namespace cnt {
-void bind(const int *const starts, const int *const cellentries,
-          const int ncellentries, std::vector<ParticlesWrap> wr) {
+static void bind(const int *const starts, const int *const cellentries,
+          const int nc, std::vector<ParticlesWrap> wr) {
     size_t textureoffset = 0;
 
-    if (ncellentries)
+    if (nc)
         CC(cudaBindTexture(&textureoffset, &k_cnt::t::id, cellentries,
                            &k_cnt::t::id.channelDesc,
-                           sizeof(int) * ncellentries));
+                           sizeof(int) * nc));
     int ncells = XS * YS * ZS;
     CC(cudaBindTexture(&textureoffset, &k_cnt::t::start, starts,
                        &k_cnt::t::start.channelDesc, sizeof(int) * ncells));
