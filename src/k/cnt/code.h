@@ -8,4 +8,11 @@ static __device__ void get(int slot, /**/ int *soluteid, int *spid) {
     *spid = ce.pid;
 }
 
+static __device__ void set(int soluteid, int pid, int slot, /**/ CellEntry *entrycells) {
+    CellEntry myentrycell;
+    myentrycell.pid = pid;
+    myentrycell.code.w = soluteid;
+    entrycells[slot] = myentrycell;
+}
+
 }
