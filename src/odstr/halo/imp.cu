@@ -23,7 +23,7 @@
 #include "common.h"
 
 void halo(const Particle *pp, int n, /**/ int **iidx, int *sizes) {
-    Dzero(sizes, 27);
+    d::MemsetAsync(sizes, 0, 27 * sizeof(int));
     KL(dev::halo, (k_cnf(n)),(pp, n, /**/ iidx, sizes));
 }
 
