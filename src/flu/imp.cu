@@ -17,7 +17,7 @@
 #include "mpi/wrapper.h"
 #include "inc/type.h"
 #include "inc/dev.h"
-#include "mc.h"
+#include "utils/mc.h"
 #include "io/restart.h"
 
 #include "flu/imp.h"

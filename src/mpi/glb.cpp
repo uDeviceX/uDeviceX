@@ -2,7 +2,7 @@
 #include <mpi.h>
 #include "mpi/wrapper.h"
 #include "inc/conf.h"
-#include "mc.h"
+#include "utils/mc.h"
 #include "mpi/glb.h"
 
 namespace m { /* MPI */

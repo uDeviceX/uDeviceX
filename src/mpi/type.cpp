@@ -1,7 +1,7 @@
 #include <mpi.h>
 
 #include "inc/conf.h"
-#include "mc.h"
+#include "utils/mc.h"
 
 #include "inc/type.h"
 #include "mpi/type.h"

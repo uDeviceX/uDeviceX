@@ -12,7 +12,7 @@
 #include "inc/def.h"
 #include "msg.h"
 #include "utils/cc.h"
-#include "mc.h"
+#include "utils/mc.h"
 
 #include "mpi/wrapper.h"
 #include "inc/type.h"

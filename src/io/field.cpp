@@ -9,7 +9,7 @@
 #include "os.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
-#include "mc.h"
+#include "utils/mc.h"
 #include "inc/type.h"
 #include "io/field.h"
 

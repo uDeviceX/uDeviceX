@@ -18,7 +18,7 @@
 #include "msg.h"
 #include "mpi/glb.h"
 #include "utils/cc.h"
-#include "mc.h"
+#include "utils/mc.h"
 #include "frag.h"
 
 #include "utils/kl.h"
