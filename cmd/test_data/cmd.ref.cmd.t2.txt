@@ -1,2 +1,2 @@
-cmd: module load cray-hdf5-parallel cudatoolkit daint-gpu
+/home/lisergey/bin/u.load.daint: line 6: module: command not found
 cmd: srun -n 1 -u cuda-memcheck ./udx 1 1 1

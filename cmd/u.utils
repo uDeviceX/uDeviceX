@@ -12,3 +12,10 @@ exec1() { # "ultimate" : respects DRYRUN
     then exec "$@"
     fi
 }
+
+load1() { # "ultimate" : respects DRYRUN
+    msg load: "$@"
+    if test -z ${DRYRUN+x}
+    then load "$@"
+    fi
+}
