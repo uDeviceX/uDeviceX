@@ -2,9 +2,9 @@
 
 : ${CUDA_MEMCHECK=cuda-memcheck}
 
-if   test -z ${MEM+x}
+if   test -z "${MEM+x}"
 then echo "$1"
-elif test -z ${MEM}
+elif test -z "${MEM}"
 then echo "${CUDA_MEMCHECK}"        "$@"
 else echo "${CUDA_MEMCHECK}" ${MEM} "$@"
 fi

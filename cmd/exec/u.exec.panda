@@ -5,9 +5,9 @@ exec0() { # echo and exec
 }
 
 val () {
-    if test -z ${VAL+x}; then return; fi    
+    if test -z "${VAL+x}"; then return; fi    
     : ${VALGRIND=valgrind}
-    if test -z ${VAL}
+    if test -z "${VAL}"
     then exec0  "${VALGRIND}"            "$@"
     else exec0  "${VALGRIND}"     ${VAL} "$@"
     fi
@@ -15,9 +15,9 @@ val () {
 }
 
 cuda () {
-    if test -z ${MEM+x}; then return; fi
+    if test -z "${MEM+x}"; then return; fi
     : ${CUDA_MEMCHECK=/usr/local/cuda-8.0/bin/cuda-memcheck}
-    if test -z ${MEM}
+    if test -z "${MEM}"
     then exec0  "${CUDA_MEMCHECK}"          "$@"
     else exec0  "${CUDA_MEMCHECK}" ${MEM}   "$@"
     fi
