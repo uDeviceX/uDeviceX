@@ -1,6 +1,6 @@
 namespace ply {
-void write(const char *fname, const Mesh m)
-{
+
+void write(const char *fname, const Mesh m) {
     int i;
     FILE * f = fopen(fname, "w");
 
@@ -24,4 +24,5 @@ void write(const char *fname, const Mesh m)
 
     fclose(f);
 }
-}
+
+} // ply

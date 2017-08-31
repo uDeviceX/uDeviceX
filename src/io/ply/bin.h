@@ -1,6 +1,5 @@
 namespace ply {
-void write(const char *fname, const Mesh m)
-{
+void write(const char *fname, const Mesh m) {
     FILE * f = fopen(fname, "wb");
 
     assert(f != NULL);
@@ -40,4 +39,4 @@ void write(const char *fname, const Mesh m)
 
     fclose(f);
 }
-}
+} // ply
