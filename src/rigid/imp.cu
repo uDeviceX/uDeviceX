@@ -8,7 +8,7 @@
 #include "kl.h"
 
 #include "mesh/props.h"
-#include "l/linal.h"
+#include "math/linal.h"
 
 #include "int.h"
 #include "common.h"
@@ -63,7 +63,7 @@ void ini(const Particle *pp, int n, float pmass, const float *com, const Mesh me
     s->mass = mesh::volume(mesh) * numberdensity * pmass;
 #endif
         
-    l::linal::inv3x3(I, /**/ s->Iinv);
+    linal::inv3x3(I, /**/ s->Iinv);
         
     /* initial positions */
     for (int ip = 0; ip < n; ++ip) {
