@@ -1,4 +1,6 @@
 D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
+    d $B/algo       && \
+    d $B/algo/scan  && \
     d $B/clist      && \
     d $B/cnt        && \
     d $B/d          && \
@@ -26,7 +28,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/rig        && \
     d $B/rigid      && \
     d $B/rnd        && \
-    d $B/scan       && \
     d $B/sdf        && \
     d $B/sim        && \
     d $B/tcells     && \

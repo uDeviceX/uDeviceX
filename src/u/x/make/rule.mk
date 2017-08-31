@@ -1,3 +1,5 @@
+$B/algo/minmax.o: $S/algo/minmax.cu; $N -I$S/. -I$S/algo
+$B/algo/scan/imp.o: $S/algo/scan/imp.cu; $N -I$S/. -I$S/algo/scan
 $B/clist/imp.o: $S/clist/imp.cu; $N -I$S/. -I$S/clist
 $B/cnt/imp.o: $S/cnt/imp.cu; $N -I$S/. -I$S/cnt
 $B/d/api.o: $S/d/api.cu; $N -I$S/. -I$S/d
@@ -31,7 +33,6 @@ $B/mesh/bbox.o: $S/mesh/bbox.cu; $N -I$S/. -I$S/mesh
 $B/mesh/collision.o: $S/mesh/collision.cu; $N -I$S/. -I$S/mesh
 $B/mesh/dist.o: $S/mesh/dist.cpp; $X -I$S/. -I$S/mesh
 $B/mesh/props.o: $S/mesh/props.cpp; $X -I$S/. -I$S/mesh
-$B/minmax.o: $S/minmax.cu; $N -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/. -I$S/mpi
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/. -I$S/mpi
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/. -I$S/mpi
@@ -49,7 +50,6 @@ $B/rig/imp.o: $S/rig/imp.cu; $N -I$S/. -I$S/rig
 $B/rig/int.o: $S/rig/int.cu; $N -I$S/. -I$S/rig
 $B/rigid/imp.o: $S/rigid/imp.cu; $N -I$S/. -I$S/rigid -I$S/rigid/_cuda
 $B/rnd/imp.o: $S/rnd/imp.cpp; $X -I$S/. -I$S/rnd
-$B/scan/imp.o: $S/scan/imp.cu; $N -I$S/. -I$S/scan
 $B/sdf/imp.o: $S/sdf/imp.cu; $N -I$S/. -I$S/sdf
 $B/sdf/int.o: $S/sdf/int.cu; $N -I$S/. -I$S/sdf
 $B/sim/imp.o: $S/sim/imp.cu; $N -I$S/. -I$S/sim -I$S/sim/_release
