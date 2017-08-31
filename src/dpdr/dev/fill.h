@@ -10,13 +10,14 @@ __global__ void fill(const int27 cellpackstarts, const Particle *pp, const intp2
     /* gid: work group id                */
     /* tid: worker id within the group   */
 
-    gid = (threadIdx.x >> 4) + 2 * blockIdx.x;
+    gid = (2 * threadIdx.x) / warpSize + 2 * blockIdx.x;
+    tid = (2 * threadIdx.x) % warpSize ;
+
     if (gid >= cellpackstarts.d[26]) return;
 
     fid = k_common::fid(cellpackstarts.d, gid);
     hci = gid - cellpackstarts.d[fid];
 
-    tid = threadIdx.x & 0xf;
     src = fragss.d[fid][hci];
     dst = fragcum.d[fid][hci];
     nsrc = min(fragcc.d[fid][hci], fragcapacity.d[fid] - dst);
