@@ -5,7 +5,7 @@ namespace ic {
 static void share0(const int root, /**/ Particle *pp, int *n) {
     std::vector<int> counts(m::size), displs(m::size);
     std::vector<Particle> recvbuf(MAX_PSOLID_NUM);
-    MC(MPI_Gather(n, 1, MPI_INT, counts.data(), 1, MPI_INT, root, l::m::cart) );
+    MC(MPI_Gather(n, 1, MPI_INT, counts.data(), 1, MPI_INT, root, m::cart) );
 
     if (m::rank == root)
     {
@@ -16,7 +16,7 @@ static void share0(const int root, /**/ Particle *pp, int *n) {
 
     MC(MPI_Gatherv(pp, *n,
                    datatype::particle, recvbuf.data(), counts.data(), displs.data(),
-                   datatype::particle, root, l::m::cart) );
+                   datatype::particle, root, m::cart) );
 
     if (m::rank == root) {
         *n = displs.back() + counts.back();

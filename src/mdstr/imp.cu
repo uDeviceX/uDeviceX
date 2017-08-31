@@ -9,7 +9,7 @@
 #include "d/api.h"
 #include "cc.h"
 
-#include "l/m.h"
+#include "mpi/wrapper.h"
 #include "inc/type.h"
 #include "mc.h"
 #include "inc/mpi.type.h"
@@ -26,7 +26,7 @@ enum {X, Y, Z};
 
 void waitall(MPI_Request rr[26]) {
     MPI_Status ss[26];
-    MC(l::m::Waitall(26, rr, ss));
+    MC(m::Waitall(26, rr, ss));
 }
 
 void cancelall(MPI_Request rr[26]) {
@@ -54,12 +54,12 @@ void get_reord(const float *rr, int nm, /**/ int *reord[27], int counts[27]) {
 
 void post_sendc(const int counts[27], MPI_Comm cart, int btc, int rnk_ne[27], /**/ MPI_Request sreqc[26]) {
     for (int i = 1; i < 27; ++i)
-        MC(l::m::Isend(counts + i, 1, MPI_INT, rnk_ne[i], btc + i, cart, sreqc + i - 1));
+        MC(m::Isend(counts + i, 1, MPI_INT, rnk_ne[i], btc + i, cart, sreqc + i - 1));
 }
 
 void post_recvc(MPI_Comm cart, int btc, int ank_ne[27], /**/ int rcounts[27], MPI_Request rreqc[26]) {
     for (int i = 1; i < 27; ++i)
-        MC(l::m::Irecv(rcounts + i, 1, MPI_INT, ank_ne[i], btc + i, cart, rreqc + i - 1));
+        MC(m::Irecv(rcounts + i, 1, MPI_INT, ank_ne[i], btc + i, cart, rreqc + i - 1));
 }
 
 } // sub

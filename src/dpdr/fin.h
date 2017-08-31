@@ -17,7 +17,7 @@ void fin_tcom(const bool first, /**/ MPI_Comm *cart, Reqs *sreq, Reqs *rreq) {
         cancel_Reqs(rreq);
     }
 
-    MC(l::m::Comm_free(cart));
+    MC(m::Comm_free(cart));
 }
 
 void fin_trnd(/**/ rnd::KISS* interrank_trunks[]) {

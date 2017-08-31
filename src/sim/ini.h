@@ -32,7 +32,7 @@ void ini() {
     odstr::alloc_ticketD(&tag_gen, &o::td);
     odstr::alloc_ticketU(&o::tu);
 
-    dpdr::ini_ticketcom(l::m::cart, &tag_gen, &o::h.tc);
+    dpdr::ini_ticketcom(m::cart, &tag_gen, &o::h.tc);
     dpdr::ini_ticketrnd(o::h.tc, /**/ &o::h.trnd);
     dpdr::alloc_ticketSh(/**/ &o::h.ts);
     dpdr::alloc_ticketRh(/**/ &o::h.tr);
@@ -56,7 +56,7 @@ void ini() {
         dpdr::alloc_ticketSIh(/**/ &o::h.tsi);
         dpdr::alloc_ticketRIh(/**/ &o::h.tri);
         
-        mcomm::ini_ticketcom(l::m::cart, /*io*/ &tag_gen, /**/ &mc::tc);
+        mcomm::ini_ticketcom(m::cart, /*io*/ &tag_gen, /**/ &mc::tc);
         mcomm::alloc_ticketS(/**/ &mc::ts);
         mcomm::alloc_ticketR(&mc::ts, /**/ &mc::tr);
     }
@@ -73,5 +73,5 @@ void ini() {
         mbounce::alloc_ticketM(&bb::tm);
     }
 
-    MC(MPI_Barrier(l::m::cart));
+    MC(MPI_Barrier(m::cart));
 }

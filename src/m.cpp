@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <mpi.h>
-#include "l/m.h"
+#include "mpi/wrapper.h"
 #include "inc/conf.h"
 #include "mc.h"
 #include "m.h"
@@ -20,11 +20,11 @@ void ini(int argc, char **argv) {
     MC(MPI_Init(&argc, &argv));
     MC(MPI_Comm_rank(MPI_COMM_WORLD,   &rank));
     MC(MPI_Comm_size(MPI_COMM_WORLD,   &size));
-    MC(MPI_Cart_create(MPI_COMM_WORLD, d, dims, periods, reorder,   &l::m::cart));
-    MC(MPI_Cart_coords(l::m::cart, rank, d,   coords));
+    MC(MPI_Cart_create(MPI_COMM_WORLD, d, dims, periods, reorder,   &m::cart));
+    MC(MPI_Cart_coords(m::cart, rank, d,   coords));
 }
 
 void fin() {
-    MC(l::m::Finalize());
+    MC(m::Finalize());
 }
 }

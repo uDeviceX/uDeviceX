@@ -4,7 +4,7 @@
 #include "inc/conf.h"
 
 #include "msg.h"
-#include "l/m.h"
+#include "mpi/wrapper.h"
 #include "m.h"
 #include "inc/type.h"
 #include "diag.h"
@@ -14,7 +14,7 @@ static float sq(float x) { return x*x; }
 static int reduce(const void *sendbuf0, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op) {
     int root = 0;
     const void *sendbuf = (m::rank == 0 ? MPI_IN_PLACE : sendbuf0);
-    return l::m::Reduce(sendbuf, recvbuf, count, datatype, op, root, l::m::cart);
+    return m::Reduce(sendbuf, recvbuf, count, datatype, op, root, m::cart);
 }
 
 static int sum3(double *v) {

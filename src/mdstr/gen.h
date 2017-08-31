@@ -25,13 +25,13 @@ template <typename T>
 void post_send(int npd, const int counts[27], const pbuf<T> *b, MPI_Comm cart, int bt, int rnk_ne[27],
                /**/ MPI_Request sreq[26]) {
     for (int i = 1; i < 27; ++i)
-        MC(l::m::Isend(b->dd[i], npd * counts[i], MType<T>(), rnk_ne[i], bt + i, cart, sreq + i - 1));
+        MC(m::Isend(b->dd[i], npd * counts[i], MType<T>(), rnk_ne[i], bt + i, cart, sreq + i - 1));
 }
 
 template <typename T>
 void post_recv(MPI_Comm cart, int nmax, int bt, int ank_ne[27], /**/ pbuf<T> *b, MPI_Request rreq[26]) {
     for (int i = 1; i < 27; ++i)
-        MC(l::m::Irecv(b->dd[i], nmax, MType<T>(), ank_ne[i], bt + i, cart, rreq + i - 1));
+        MC(m::Irecv(b->dd[i], nmax, MType<T>(), ank_ne[i], bt + i, cart, rreq + i - 1));
 }
 
 template <typename T, DataLoc LOC>

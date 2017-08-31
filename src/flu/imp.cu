@@ -14,7 +14,7 @@
 #include "d/q.h"
 #include "d/ker.h"
 
-#include "l/m.h"
+#include "mpi/wrapper.h"
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "mc.h"
@@ -67,7 +67,7 @@ int gen(Particle *dev, /*w*/ Particle *hst) {
 
 static void ii_gen0(const long n, int *ii) {
     long i0 = 0;
-    MC(l::m::Exscan(&n, &i0, 1, MPI_LONG, MPI_SUM, l::m::cart));
+    MC(m::Exscan(&n, &i0, 1, MPI_LONG, MPI_SUM, m::cart));
     for (long i = 0; i < n; ++i) ii[i] = i + i0;
 }
 

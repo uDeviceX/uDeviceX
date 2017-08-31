@@ -1,7 +1,7 @@
 namespace rex {
 void wait(std::vector<MPI_Request> &v) {
     MPI_Status s[v.size()];
-    if (v.size()) MC(l::m::Waitall(v.size(), &v.front(), s));
+    if (v.size()) MC(m::Waitall(v.size(), &v.front(), s));
     v.clear();
 }
 

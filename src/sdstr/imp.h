@@ -18,7 +18,7 @@ static void _post_recvcnt() {
     recv_counts[0] = 0;
     for (int i = 1; i < 27; ++i) {
         MPI_Request req;
-        l::m::Irecv(recv_counts + i, 1, MPI_INTEGER, ank_ne[i], i + btc, cart, &req);
+        m::Irecv(recv_counts + i, 1, MPI_INTEGER, ank_ne[i], i + btc, cart, &req);
         recvcntreq.push_back(req);
     }
 }
@@ -30,14 +30,14 @@ static void gen_ne(MPI_Comm cart, /* */ int* rnk_ne, int* ank_ne) {
         int d[3] = i2del(i); /* index to delta */
         int co_ne[3];
         for (int c = 0; c < 3; ++c) co_ne[c] = m::coords[c] + d[c];
-        l::m::Cart_rank(cart, co_ne, &rnk_ne[i]);
+        m::Cart_rank(cart, co_ne, &rnk_ne[i]);
         for (int c = 0; c < 3; ++c) co_ne[c] = m::coords[c] - d[c];
-        l::m::Cart_rank(cart, co_ne, &ank_ne[i]);
+        m::Cart_rank(cart, co_ne, &ank_ne[i]);
     }
 }
 
 void ini(/*io*/ basetags::TagGen *tg) {
-    l::m::Comm_dup(l::m::cart, &cart);
+    m::Comm_dup(m::cart, &cart);
     gen_ne(cart,   rnk_ne, ank_ne); /* generate ranks and anti-ranks */
 
     btc = get_tag(tg);
@@ -50,7 +50,7 @@ void ini(/*io*/ basetags::TagGen *tg) {
 int post(const int nv) {
     {
         MPI_Status statuses[27];
-        l::m::Waitall(recvcntreq.size(), &recvcntreq.front(), statuses);
+        m::Waitall(recvcntreq.size(), &recvcntreq.front(), statuses);
         recvcntreq.clear();
     }
 
@@ -63,25 +63,25 @@ int post(const int nv) {
     }
 
     MPI_Status statuses[26];
-    l::m::Waitall(26, sendcntreq, statuses);
+    m::Waitall(26, sendcntreq, statuses);
 
     for (int i = 1; i < 27; ++i)
     if (srbuf[i].size() > 0) {
         MPI_Request request;
-        l::m::Irecv(srbuf[i].data(), srbuf[i].size(), datatype::solid, ank_ne[i], i + bts, cart, &request);
+        m::Irecv(srbuf[i].data(), srbuf[i].size(), datatype::solid, ank_ne[i], i + bts, cart, &request);
         srecvreq.push_back(request);
 
-        l::m::Irecv(prbuf[i].data(), prbuf[i].size(), datatype::particle, ank_ne[i], i + btp, cart, &request);
+        m::Irecv(prbuf[i].data(), prbuf[i].size(), datatype::particle, ank_ne[i], i + btp, cart, &request);
         precvreq.push_back(request);
     }
 
     for (int i = 1; i < 27; ++i)
     if (ssbuf[i].size() > 0) {
         MPI_Request request;
-        l::m::Isend(ssbuf[i].data(), ssbuf[i].size(), datatype::solid, rnk_ne[i], i + bts, cart, &request);
+        m::Isend(ssbuf[i].data(), ssbuf[i].size(), datatype::solid, rnk_ne[i], i + bts, cart, &request);
         ssendreq.push_back(request);
 
-        l::m::Isend(psbuf[i].data(), psbuf[i].size(), datatype::particle, rnk_ne[i], i + btp, cart, &request);
+        m::Isend(psbuf[i].data(), psbuf[i].size(), datatype::particle, rnk_ne[i], i + btp, cart, &request);
         psendreq.push_back(request);
     }
 
@@ -110,6 +110,6 @@ static void shiftpp_hst(const int n, const float3 s, /**/ Particle *pp) {
 }
 
 void fin() {
-    l::m::Comm_free(&cart);
+    m::Comm_free(&cart);
 }
 }

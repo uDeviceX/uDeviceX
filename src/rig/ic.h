@@ -119,7 +119,7 @@ static void elect(const int *rcounts, const int ns, /**/ int *root, int *idmax) 
         idmax_ = j;
     }
     
-    MPI_Allreduce(localmax, globalmax, 1, MPI_2INT, MPI_MAXLOC, l::m::cart);
+    MPI_Allreduce(localmax, globalmax, 1, MPI_2INT, MPI_MAXLOC, m::cart);
 
     *root = globalmax[1];
     *idmax = idmax_;
@@ -165,7 +165,7 @@ static void empty_solid(const Mesh m, /* io */ float *rr0, int *npsolid) {
 
 void set_ids(const int ns, Solid *ss_hst) {
     int id = 0;
-    MC(MPI_Exscan(&ns, &id, 1, MPI_INT, MPI_SUM, l::m::cart));
+    MC(MPI_Exscan(&ns, &id, 1, MPI_INT, MPI_SUM, m::cart));
 
     for (int j = 0; j < ns; ++j)
     ss_hst[j].id = id++;

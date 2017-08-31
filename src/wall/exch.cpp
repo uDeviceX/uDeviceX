@@ -6,7 +6,7 @@
 #include "inc/conf.h"
 
 #include "inc/type.h"
-#include "l/m.h"
+#include "mpi/wrapper.h"
 #include "m.h"
 
 namespace wall { namespace sub {
@@ -22,7 +22,7 @@ void exch(/*io*/ Particle *pp, int *n) { /* exchange pp(hst) between processors 
       (2 - d[X]) % 3 + 3 * ((2 - d[Y]) % 3 + 3 * ((2 - d[Z]) % 3));
     int co_ne[3], ranks[3] = {m::coords[X], m::coords[Y], m::coords[Z]};
     for (c = 0; c < 3; ++c) co_ne[c] = ranks[c] + d[c];
-    l::m::Cart_rank(l::m::cart, co_ne, dstranks + i);
+    m::Cart_rank(m::cart, co_ne, dstranks + i);
   }
 
   // send local counts - receive remote counts
@@ -31,12 +31,12 @@ void exch(/*io*/ Particle *pp, int *n) { /* exchange pp(hst) between processors 
     MPI_Request reqrecv[26], reqsend[26];
     MPI_Status  statuses[26];
     for (i = 0; i < 26; ++i)
-      l::m::Irecv(remsizes + i, 1, MPI_INTEGER, dstranks[i],
-                  123 + recv_tags[i], l::m::cart, reqrecv + i);
+      m::Irecv(remsizes + i, 1, MPI_INTEGER, dstranks[i],
+                  123 + recv_tags[i], m::cart, reqrecv + i);
     for (i = 0; i < 26; ++i)
-        l::m::Isend(n, 1, MPI_INTEGER, dstranks[i], 123 + i, l::m::cart, reqsend + i);
-    l::m::Waitall(26, reqrecv, statuses);
-    l::m::Waitall(26, reqsend, statuses);
+        m::Isend(n, 1, MPI_INTEGER, dstranks[i], 123 + i, m::cart, reqsend + i);
+    m::Waitall(26, reqrecv, statuses);
+    m::Waitall(26, reqsend, statuses);
   }
 
   std::vector<Particle> remote[26];
@@ -46,16 +46,16 @@ void exch(/*io*/ Particle *pp, int *n) { /* exchange pp(hst) between processors 
     MPI_Request reqrecv[26], reqsend[26];
     MPI_Status  statuses[26];
     for (i = 0; i < 26; ++i)
-      l::m::Irecv(remote[i].data(), isize(remote[i]) * 6, MPI_FLOAT,
-                  dstranks[i], 321 + recv_tags[i], l::m::cart,
+      m::Irecv(remote[i].data(), isize(remote[i]) * 6, MPI_FLOAT,
+                  dstranks[i], 321 + recv_tags[i], m::cart,
                   reqrecv + i);
     for (i = 0; i < 26; ++i)
-      l::m::Isend(pp, (*n) * 6, MPI_FLOAT,
-                  dstranks[i], 321 + i, l::m::cart, reqsend + i);
-    l::m::Waitall(26, reqrecv, statuses);
-    l::m::Waitall(26, reqsend, statuses);
+      m::Isend(pp, (*n) * 6, MPI_FLOAT,
+                  dstranks[i], 321 + i, m::cart, reqsend + i);
+    m::Waitall(26, reqrecv, statuses);
+    m::Waitall(26, reqsend, statuses);
   }
-  l::m::Barrier(l::m::cart);
+  m::Barrier(m::cart);
 
   int L[3] = {XS, YS, ZS}, WM[3] = {XWM, YWM, ZWM};
   float lo[3], hi[3];

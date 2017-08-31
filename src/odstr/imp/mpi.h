@@ -3,18 +3,18 @@ namespace sub {
 
 int lsend(const void *buf, int count, MPI_Datatype datatype, int dest,
            int tag, MPI_Request *request) {
-    return MPI_Isend(buf, count, datatype, dest, tag, l::m::cart, request);
+    return MPI_Isend(buf, count, datatype, dest, tag, m::cart, request);
 }
 
 int lrecv(void *buf, int count, MPI_Datatype datatype, int source,
           int tag, MPI_Request *request) {
-    return MPI_Irecv(buf, count, datatype, source, tag, l::m::cart, request);
+    return MPI_Irecv(buf, count, datatype, source, tag, m::cart, request);
 }
 
 
 void waitall(MPI_Request *reqs) {
     MPI_Status statuses[123];
-    l::m::Waitall(26, reqs, statuses);
+    m::Waitall(26, reqs, statuses);
 }
 
 void waitall_s(MPI_Request *reqs) {
@@ -84,8 +84,8 @@ void send_pp(const int rank[], const int bt, /**/ Send *s, MPI_Request *req) {
 
 /* TODO: this is not used, why? */
 void cancel_recv(/**/ MPI_Request *size_req, MPI_Request *mesg_req) {
-    for(int i = 0; i < 26; ++i) l::m::Cancel(size_req + i) ;
-    for(int i = 0; i < 26; ++i) l::m::Cancel(mesg_req + i) ;
+    for(int i = 0; i < 26; ++i) m::Cancel(size_req + i) ;
+    for(int i = 0; i < 26; ++i) m::Cancel(mesg_req + i) ;
 }
 
 } /* namespace */

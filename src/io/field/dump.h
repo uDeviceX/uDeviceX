@@ -52,7 +52,7 @@ static void dump0(Particle *pp, int n, int nc, /*w*/
     if (!directory_exists) {
         if (m::rank == 0) os::mkdir(DUMP_BASE "/h5");
         directory_exists = true;
-        MC(l::m::Barrier(l::m::cart));
+        MC(m::Barrier(m::cart));
     }
 
     sprintf(path, DUMP_BASE "/h5/flowfields-%04d.h5", id++);

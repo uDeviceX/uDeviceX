@@ -8,7 +8,7 @@
 
 #include "os.h"
 #include "m.h"     /* MPI */
-#include "l/m.h"
+#include "mpi/wrapper.h"
 #include "mc.h"
 #include "inc/type.h"
 #include "io/field.h"

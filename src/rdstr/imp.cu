@@ -12,7 +12,7 @@
 #include "msg.h"
 #include "m.h"
 #include "cc.h"
-#include "l/m.h"
+#include "mpi/wrapper.h"
 
 #include "inc/type.h"
 #include "inc/mpi.type.h"
@@ -36,7 +36,7 @@ enum {X, Y, Z};
 
 void waitall(MPI_Request rr[26]) {
     MPI_Status ss[26];
-    l::m::Waitall(26, rr, ss) ;
+    m::Waitall(26, rr, ss) ;
 }
 
 void cancelall(MPI_Request rr[26]) {

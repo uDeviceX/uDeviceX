@@ -3,7 +3,7 @@ void gen() { /* generate */
     if (walls) {
         dSync();
         sdf::ini(&w::qsdf);
-        MC(l::m::Barrier(l::m::cart));
+        MC(m::Barrier(m::cart));
         inter::create_walls(w::qsdf, /*io*/ &o::q, /**/ &w::q);
     }
     inter::freeze(w::qsdf, /*io*/ &o::q, /**/ &s::q, &r::q);
@@ -23,7 +23,7 @@ void sim_gen() {
 
         if (multi_solvent) gen_colors();
     }
-    MC(l::m::Barrier(l::m::cart));
+    MC(m::Barrier(m::cart));
 
     long nsteps = (long)(tend / dt);
     MSG("will take %ld steps", nsteps);
@@ -67,11 +67,11 @@ void sim_strt() {
     if (rbcs)            rbc::gen_ticket(r::q, &r::tt);
     if (walls && w::q.n) wall::gen_ticket(w::q, &w::t);
 
-    MC(l::m::Barrier(l::m::cart));
+    MC(m::Barrier(m::cart));
     if (walls) {
         dSync();
         sdf::ini(&w::qsdf);
-        MC(l::m::Barrier(l::m::cart));
+        MC(m::Barrier(m::cart));
     }
 
     solids0 = solids;

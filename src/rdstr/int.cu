@@ -11,7 +11,7 @@
 #include "d/api.h"
 
 #include "cc.h"
-#include "l/m.h"
+#include "mpi/wrapper.h"
 
 #include "inc/type.h"
 #include "inc/dev.h"

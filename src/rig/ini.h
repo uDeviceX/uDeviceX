@@ -19,9 +19,9 @@ static void ini0(const Mesh m, int nsolid, int rcount, int idmax, int root, floa
         empty_solid(m, /* io */ rr0, &npsolid);
     }
 
-    MC(MPI_Bcast(&npsolid,       1,   MPI_INT, root, l::m::cart) );
-    MC(MPI_Bcast(rr0,  3 * npsolid, MPI_FLOAT, root, l::m::cart) );
-    MC(MPI_Bcast(&model, 1, datatype::solid, root, l::m::cart) );
+    MC(MPI_Bcast(&npsolid,       1,   MPI_INT, root, m::cart) );
+    MC(MPI_Bcast(rr0,  3 * npsolid, MPI_FLOAT, root, m::cart) );
+    MC(MPI_Bcast(&model, 1, datatype::solid, root, m::cart) );
 
     // filter coms to keep only the ones in my domain
     int id = 0;
@@ -52,7 +52,7 @@ static void ini1(const Mesh m, int nsolid, float *coms, /**/
 {
     int root, idmax;
     elect(rcounts, nsolid, /**/ &root, &idmax);
-    MC(MPI_Bcast(&idmax, 1, MPI_INT, root, l::m::cart));
+    MC(MPI_Bcast(&idmax, 1, MPI_INT, root, m::cart));
 
     int rcount = 0;
     kill(idmax, tags, /**/ s_n, s_pp, &rcount, r_pp);

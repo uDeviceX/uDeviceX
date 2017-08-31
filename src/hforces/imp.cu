@@ -13,7 +13,6 @@
 #include "msg.h"
 #include "m.h"
 #include "cc.h"
-#include "l/m.h"
 
 #include "inc/type.h"
 #include "inc/dev.h"

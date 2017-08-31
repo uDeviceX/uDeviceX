@@ -53,6 +53,6 @@ void setup_from_pos(const char *r_templ, const char *r_state, int nv, /**/ Parti
     /* fills `pp' with RBCs for this processor */
     *nc = setup_hst(r_templ, r_state, nv, pp_hst);
     if (*nc) cH2D(pp, pp_hst, nv * *nc);
-    l::m::Barrier(l::m::cart);
+    m::Barrier(m::cart);
     *n = *nc * nv;
 }

@@ -21,9 +21,9 @@ void gen_ne(MPI_Comm cart, /* */ int* rnk_ne, int* ank_ne) {
         int d[3] = i2del(i); /* index to delta */
         int co_ne[3];
         for (int c = 0; c < 3; ++c) co_ne[c] = m::coords[c] + d[c];
-        l::m::Cart_rank(cart, co_ne, &rnk_ne[i]);
+        m::Cart_rank(cart, co_ne, &rnk_ne[i]);
         for (int c = 0; c < 3; ++c) co_ne[c] = m::coords[c] - d[c];
-        l::m::Cart_rank(cart, co_ne, &ank_ne[i]);
+        m::Cart_rank(cart, co_ne, &ank_ne[i]);
     }
 }
 

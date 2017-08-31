@@ -15,7 +15,7 @@
 
 
 #include "rnd/imp.h"
-#include "l/m.h"
+#include "mpi/wrapper.h"
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "inc/mpi.type.h"
@@ -39,7 +39,7 @@ namespace dpdr {
 namespace sub {
 void wait_req(MPI_Request r[26]) {
     MPI_Status ss[26];
-    MC(l::m::Waitall(26, r, ss));
+    MC(m::Waitall(26, r, ss));
 }
 
 void wait_Reqs(Reqs *r) {
@@ -86,11 +86,11 @@ void copy_ii(const int *np, const intp26 dev, /**/ intp26 hst) {
 void post_send(MPI_Comm cart, const int ranks[], const int *np, const int26 nc, const intp26 cum,
                const Particlep26 pp, int btcs, int btc, int btp, /**/ Reqs *req) {
     for (int i = 0; i < 26; ++i) {
-        MC(l::m::Isend(cum.d[i], nc.d[i], MPI_INT, ranks[i],
+        MC(m::Isend(cum.d[i], nc.d[i], MPI_INT, ranks[i],
                        btcs + i, cart, req->cells + i));
-        MC(l::m::Isend(&np[i], 1, MPI_INT, ranks[i],
+        MC(m::Isend(&np[i], 1, MPI_INT, ranks[i],
                        btc + i, cart, req->counts + i));
-        MC(l::m::Isend(pp.d[i], np[i], datatype::particle, ranks[i],
+        MC(m::Isend(pp.d[i], np[i], datatype::particle, ranks[i],
                        btp + i, cart, req->pp + i));
     }
 }
@@ -99,18 +99,18 @@ void post_send_ii(MPI_Comm cart, const int ranks[], const int *np,
                   const intp26 ii, int bt, /**/ MPI_Request sreq[26]) {
 
     for (int i = 0; i < 26; ++i)
-        MC(l::m::Isend(ii.d[i], np[i], MPI_INT, ranks[i], bt + i, cart, sreq + i));
+        MC(m::Isend(ii.d[i], np[i], MPI_INT, ranks[i], bt + i, cart, sreq + i));
 }
 
 void post_expected_recv(MPI_Comm cart, const int ranks[], const int tags[], const int estimate[], const int26 nc,
                         int btcs, int btc, int btp, /**/
                         Particlep26 pp, int *np, intp26 cum, Reqs *rreq) {
     for (int i = 0; i < 26; ++i) {
-        MC(l::m::Irecv(pp.d[i], estimate[i], datatype::particle, ranks[i],
+        MC(m::Irecv(pp.d[i], estimate[i], datatype::particle, ranks[i],
                        btp + tags[i], cart, rreq->pp + i));
-        MC(l::m::Irecv(cum.d[i], nc.d[i], MPI_INT, ranks[i],
+        MC(m::Irecv(cum.d[i], nc.d[i], MPI_INT, ranks[i],
                        btcs + tags[i], cart, rreq->cells + i));
-        MC(l::m::Irecv(np + i, 1, MPI_INT, ranks[i],
+        MC(m::Irecv(np + i, 1, MPI_INT, ranks[i],
                        btc + tags[i], cart, rreq->counts + i));
     }
 }
@@ -118,7 +118,7 @@ void post_expected_recv(MPI_Comm cart, const int ranks[], const int tags[], cons
 void post_expected_recv_ii(MPI_Comm cart, const int ranks[], const int tags[], const int estimate[],
                            int bt, /**/ intp26 ii, MPI_Request rreq[26]) {
     for (int i = 0; i < 26; ++i)
-        MC(l::m::Irecv(ii.d[i], estimate[i], MPI_INT, ranks[i], bt + tags[i], cart, rreq + i));
+        MC(m::Irecv(ii.d[i], estimate[i], MPI_INT, ranks[i], bt + tags[i], cart, rreq + i));
 }
 
 } // sub

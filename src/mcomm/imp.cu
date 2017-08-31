@@ -13,7 +13,7 @@
 #include "inc/def.h"
 #include "msg.h"
 #include "cc.h"
-#include "l/m.h"
+#include "mpi/wrapper.h"
 
 #include "inc/type.h"
 #include "inc/mpi.type.h"
@@ -40,8 +40,8 @@ void cancel_req(Reqs *r) {
 
 void wait_req(Reqs *r) {
     MPI_Status ss[26];
-    MC(l::m::Waitall(26, r->pp,     ss));
-    MC(l::m::Waitall(26, r->counts, ss));
+    MC(m::Waitall(26, r->pp,     ss));
+    MC(m::Waitall(26, r->counts, ss));
 }
 
 enum {X, Y, Z};
@@ -123,16 +123,16 @@ void pack(const Particle *pp, const int nv, const std::vector<int> travellers[27
 
 void post_recv(MPI_Comm cart, const int ank_ne[26], int btc, int btp, /**/ int counts[27], Particle *pp[27], Reqs *rreqs) {
     for (int i = 0; i < 26; ++i) {
-        MC(l::m::Irecv(counts + i + 1, 1, MPI_INT, ank_ne[i], btc + i, cart, rreqs->counts + i));
-        MC(l::m::Irecv(pp[i + 1], MAX_PART_NUM, datatype::particle, ank_ne[i], btp + i, cart, rreqs->pp + i));
+        MC(m::Irecv(counts + i + 1, 1, MPI_INT, ank_ne[i], btc + i, cart, rreqs->counts + i));
+        MC(m::Irecv(pp[i + 1], MAX_PART_NUM, datatype::particle, ank_ne[i], btp + i, cart, rreqs->pp + i));
     }
 }
 
 void post_send(MPI_Comm cart, const int rnk_ne[26], int btc, int btp, int nv, const int counts[27], const Particle *const pp[27], /**/ Reqs *sreqs) {
     for (int i = 0; i < 26; ++i) {
         const int c = counts[i+1];
-        MC(l::m::Isend(counts + i + 1, 1, MPI_INT, rnk_ne[i], btc + i, cart, sreqs->counts + i));
-        MC(l::m::Isend(pp[i + 1], c * nv, datatype::particle, rnk_ne[i], btp + i, cart, sreqs->pp + i));
+        MC(m::Isend(counts + i + 1, 1, MPI_INT, rnk_ne[i], btc + i, cart, sreqs->counts + i));
+        MC(m::Isend(pp[i + 1], c * nv, datatype::particle, rnk_ne[i], btp + i, cart, sreqs->pp + i));
     }
 }
 

@@ -32,7 +32,7 @@ void pack_sendcnt(const Solid *ss_hst, const Particle *pp, const int ns, const i
     // send counts
 
     for (int i = 1; i < 27; ++i)
-    l::m::Isend(send_counts + i, 1, MPI_INTEGER, rnk_ne[i], i + btc, cart, &sendcntreq[i - 1]);
+    m::Isend(send_counts + i, 1, MPI_INTEGER, rnk_ne[i], i + btc, cart, &sendcntreq[i - 1]);
 
     // copy data into buffers
 
@@ -65,12 +65,12 @@ static void shift_copy_pp(const Particle *pp_src, const int n, const int code, /
 template <bool hst>
 void unpack(const int nv, /**/ Solid *ss_hst, Particle *pp) {
     MPI_Status statuses[26];
-    l::m::Waitall(srecvreq.size(), &srecvreq.front(), statuses);
-    l::m::Waitall(ssendreq.size(), &ssendreq.front(), statuses);
+    m::Waitall(srecvreq.size(), &srecvreq.front(), statuses);
+    m::Waitall(ssendreq.size(), &ssendreq.front(), statuses);
     srecvreq.clear(); ssendreq.clear();
 
-    l::m::Waitall(precvreq.size(), &precvreq.front(), statuses);
-    l::m::Waitall(psendreq.size(), &psendreq.front(), statuses);
+    m::Waitall(precvreq.size(), &precvreq.front(), statuses);
+    m::Waitall(psendreq.size(), &psendreq.front(), statuses);
     precvreq.clear(); psendreq.clear();
 
     // copy bulk

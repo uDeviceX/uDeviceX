@@ -1,6 +1,6 @@
 #include <assert.h>
 #include <mpi.h>
-#include "l/m.h"
+#include "mpi/wrapper.h"
 #include <conf.h>
 #include "inc/conf.h"
 

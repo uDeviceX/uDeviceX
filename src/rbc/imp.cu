@@ -5,11 +5,11 @@
 #include "d/api.h"
 #include "d/ker.h"
 
-#include "l/m.h"
 #include "io/off.h"
 
 #include "inc/def.h"
 #include "msg.h"
+#include "mpi/wrapper.h"
 #include "m.h"
 #include "cc.h"
 

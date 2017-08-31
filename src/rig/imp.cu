@@ -14,7 +14,7 @@
 #include "cc.h"
 #include "mc.h"
 
-#include "l/m.h"
+#include "mpi/wrapper.h"
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "texo.h"
