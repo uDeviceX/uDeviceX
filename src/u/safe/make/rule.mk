@@ -18,11 +18,11 @@ $B/glb.o: $S/glb.cu; $N -I$S/.
 $B/hforces/imp.o: $S/hforces/imp.cu; $N -I$S/. -I$S/hforces
 $B/inter/imp.o: $S/inter/imp.cu; $N -I$S/. -I$S/inter
 $B/io/field.o: $S/io/field.cpp; $X -I$S/. -I$S/io
+$B/io/off.o: $S/io/off.cpp; $X -I$S/. -I$S/io
 $B/io/ply.o: $S/io/ply.cpp; $X -I$S/. -I$S/io
 $B/io/rbc.o: $S/io/rbc.cpp; $X -I$S/. -I$S/io
 $B/l/linal.o: $S/l/linal.cpp; $X -I$S/. -I$S/l
 $B/l/m.o: $S/l/m.cpp; $X -I$S/. -I$S/l
-$B/l/off.o: $S/l/off.cpp; $X -I$S/. -I$S/l
 $B/m.o: $S/m.cpp; $X -I$S/.
 $B/main.o: $S/main.cu; $N -I$S/.
 $B/mbounce/imp.o: $S/mbounce/imp.cu; $N -I$S/. -I$S/mbounce
