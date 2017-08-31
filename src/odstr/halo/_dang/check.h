@@ -21,6 +21,4 @@ static __device__ void check(const float r[3]) {
     report(r);
     assert(0);
 };
-
-
 }
