@@ -16,7 +16,7 @@
 #include "mpi/wrapper.h"
 
 #include "inc/type.h"
-#include "inc/mpi.type.h"
+#include "mpi/type.h"
 #include "mc.h"
 #include "inc/dev.h"
 

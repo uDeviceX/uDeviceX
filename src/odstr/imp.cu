@@ -18,7 +18,7 @@
 
 #include "inc/type.h"
 #include "inc/dev.h"
-#include "inc/mpi.type.h"
+#include "mpi/type.h"
 #include "inc/macro.h"
 
 #include "scan/int.h"

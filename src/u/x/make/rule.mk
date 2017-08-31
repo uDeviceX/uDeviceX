@@ -14,7 +14,6 @@ $B/flu/int.o: $S/flu/int.cu; $N -I$S/. -I$S/flu
 $B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/. -I$S/fsi -I$S/fsi/_release
 $B/glb.o: $S/glb.cu; $N -I$S/.
 $B/hforces/imp.o: $S/hforces/imp.cu; $N -I$S/. -I$S/hforces
-$B/inc/mpi.type.o: $S/inc/mpi.type.cpp; $X -I$S/. -I$S/inc
 $B/inter/imp.o: $S/inter/imp.cu; $N -I$S/. -I$S/inter
 $B/io/diag.o: $S/io/diag.cpp; $X -I$S/. -I$S/io
 $B/io/field.o: $S/io/field.cpp; $X -I$S/. -I$S/io
@@ -36,6 +35,7 @@ $B/mesh/dist.o: $S/mesh/dist.cpp; $X -I$S/. -I$S/mesh
 $B/mesh/props.o: $S/mesh/props.cpp; $X -I$S/. -I$S/mesh
 $B/minmax.o: $S/minmax.cu; $N -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/. -I$S/mpi
+$B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/. -I$S/mpi
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/. -I$S/mpi
 $B/mrescue.o: $S/mrescue.cu; $N -I$S/.
 $B/msg.o: $S/msg.cpp; $X -I$S/.
