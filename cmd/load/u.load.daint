@@ -3,4 +3,4 @@
 # load modules for daint
 #  used by: u.make, u.run.daint
 
-exec1 module load cray-hdf5-parallel cudatoolkit daint-gpu
+module load cray-hdf5-parallel cudatoolkit daint-gpu
