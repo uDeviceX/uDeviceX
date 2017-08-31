@@ -108,15 +108,11 @@ static __device__ void bounce1(const tex3Dca<float> texsdf, float currsdf,
                                float &x, float &y, float &z,
                                float &vx, float &vy, float &vz) {
     float x0 = x - vx*dt, y0 = y - vy*dt, z0 = z - vz*dt;
-    if (sdf(texsdf, x0, y0, z0) >= 0) { /* this is the worst case - 0 position
-                                           was bad already we need to search
-                                           and rescue the particle */
+    if (sdf(texsdf, x0, y0, z0) >= 0) {
         float3 dsdf = grad_sdf(texsdf, x, y, z); float sdf0 = currsdf;
         x -= sdf0 * dsdf.x; y -= sdf0 * dsdf.y; z -= sdf0 * dsdf.z;
         for (int l = 8; l >= 1; --l) {
             if (sdf(texsdf, x, y, z) < 0) {
-                /* we are confused anyway! use particle position as wall
-                   position */
                 k_wvel::bounce_vel(x, y, z, &vx, &vy, &vz); return;
             }
             float jump = 1.1f * sdf0 / (1 << l);
@@ -124,18 +120,6 @@ static __device__ void bounce1(const tex3Dca<float> texsdf, float currsdf,
         }
     }
 
-    /*
-      Bounce back (stage I)
-
-      Find wall position (sdf(wall) = 0): make two steps of Newton's
-      method for the equation phi(t) = 0, where phi(t) = sdf(rr(t))
-      and rr(t) = [x + vx*t, y + vy*t, z + vz*t]. We are going back
-      and `t' is in [-dt, 0].
-
-      dphi = v . grad(sdf). Newton step is t_new = t_old - phi/dphi
-
-      Give up if dsdf is small. Cap `t' to [-dt, 0].
-    */
 #define rr(t) make_float3(x + vx*t, y + vy*t, z + vz*t)
 #define small(phi) (fabs(phi) < 1e-6)
     float3 r, dsdf; float phi, dphi, t = 0;
@@ -151,12 +135,8 @@ static __device__ void bounce1(const tex3Dca<float> texsdf, float currsdf,
 #undef rr
 #undef small
  giveup:
-    /* Bounce back (stage II)
-       change particle position and velocity
-    */
-    float xw = x + t*vx, yw = y + t*vy, zw = z + t*vz; /* wall */
-    x += 2*t*vx; y += 2*t*vy; z += 2*t*vz; /* bouncing relatively to
-                                              wall */
+    float xw = x + t*vx, yw = y + t*vy, zw = z + t*vz;
+    x += 2*t*vx; y += 2*t*vy; z += 2*t*vz;
     k_wvel::bounce_vel(xw, yw, zw, &vx, &vy, &vz);
     if (sdf(texsdf, x, y, z) >= 0) {x = x0; y = y0; z = z0;}
 }
