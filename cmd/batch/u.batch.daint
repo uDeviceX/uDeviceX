@@ -13,11 +13,10 @@ then                   shift
 else Time="--time $1"; shift
 fi
 
-set -x
 Args="-C gpu $Time $@"
 exec1 sbatch -N $n $Args /dev/stdin <<EOF
 #!/bin/bash
 
 . u.load.daint
-srun ./udx $x $y $z
+srun `u.wrap "$e"` $x $y $z
 EOF
