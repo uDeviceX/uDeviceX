@@ -27,7 +27,7 @@
 #include "clist/int.h"
 #include "flu/int.h"
 
-#include "scan/int.h"
+#include "algo/scan/int.h"
 
 #include "odstr/type.h"
 #include "odstr/int.h"

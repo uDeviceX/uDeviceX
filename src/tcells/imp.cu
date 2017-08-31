@@ -11,7 +11,7 @@
 
 #include "inc/type.h"
 #include "inc/dev.h"
-#include "scan/int.h"
+#include "algo/scan/int.h"
 #include "tcells/int.h"
 
 #include "utils/kl.h"

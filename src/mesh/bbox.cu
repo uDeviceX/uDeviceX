@@ -1,5 +1,5 @@
 #include "inc/type.h"
-#include "minmax.h"
+#include "algo/minmax.h"
 
 #include "mesh/bbox.h"
 

@@ -21,7 +21,7 @@
 
 #include "utils/kl.h"
 
-#include "minmax.h"
+#include "algo/minmax.h"
 
 #include "mdstr/buf.h"
 #include "mdstr/gen.h"

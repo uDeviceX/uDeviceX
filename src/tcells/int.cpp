@@ -10,7 +10,7 @@
 #include "d/api.h"
 #include "inc/type.h"
 #include "inc/dev.h"
-#include "scan/int.h"
+#include "algo/scan/int.h"
 
 #include "tcells/int.h"
 #include "tcells/imp.h"

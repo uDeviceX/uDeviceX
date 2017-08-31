@@ -11,14 +11,14 @@
 #include "d/q.h"
 #include "d/ker.h"
 
-#include "scan/int.h"
-#include "scan/dev.h"
+#include "algo/scan/int.h"
+#include "algo/scan/dev.h"
 
 namespace scan {
 #if   defined(DEV_CUDA)
-  #include "scan/cuda/imp.h"
+  #include "algo/scan/cuda/imp.h"
 #elif defined(DEV_CPU)
-  #include "scan/cpu/imp.h"
+  #include "algo/scan/cpu/imp.h"
 #else
   #error DEV_* is undefined
 #endif

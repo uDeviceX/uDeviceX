@@ -21,7 +21,7 @@
 #include "mpi/type.h"
 #include "inc/macro.h"
 
-#include "scan/int.h"
+#include "algo/scan/int.h"
 #include "odstr/halo/int.h"
 
 #include "utils/kl.h"

@@ -14,7 +14,7 @@
 
 #include "inc/type.h"
 #include "inc/dev.h"
-#include "scan/int.h"
+#include "algo/scan/int.h"
 #include "clist/int.h"
 
 namespace clist {

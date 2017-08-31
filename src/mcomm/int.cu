@@ -12,7 +12,7 @@
 #include "inc/type.h"
 #include "inc/tmp/pinned.h"
 
-#include "minmax.h"
+#include "algo/minmax.h"
 
 #include "basetags.h"
 

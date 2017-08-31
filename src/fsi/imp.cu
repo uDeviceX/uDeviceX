@@ -9,7 +9,7 @@
 #include "d/q.h"
 #include "d/ker.h"
 
-#include "scan/int.h"
+#include "algo/scan/int.h"
 
 #include "rnd/imp.h"
 #include "rnd/dev.h"
