@@ -1,3 +1,5 @@
+#define O dbg::check_pos(o::pp, o::n, __FILE__, __LINE__, "op"), dbg::check_vv(o::pp, o::n, __FILE__, __LINE__, "ov")
+
 void step0(float driving_force0, bool wall0, int it) {
     if (solids0) distr_solid();
     if (rbcs)    distr_rbc();
@@ -8,8 +10,11 @@ void step0(float driving_force0, bool wall0, int it) {
     update_solvent();
     if (solids0) update_solid();
     if (rbcs)    update_rbc();
+    O;
     if (wall0) bounce();
+    O;
     if (sbounce_back && solids0) bounce_solid(it);
+    O;
 }
 
 void step(float driving_force0, bool wall0, int it) {
