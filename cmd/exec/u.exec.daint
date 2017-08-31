@@ -1,5 +1,1 @@
-msg () { printf '%s\n' "$*" >&2; }
-exec0() { # echo and exec
-    msg cmd: "$@"
-    exec "$@"
-}
+err "ERR: u.exec.daint shell not be called"

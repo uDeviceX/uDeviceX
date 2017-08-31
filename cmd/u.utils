@@ -1,6 +1,7 @@
 # utils for cmd tools
 
 msg ()  { printf '%s\n' "$*" >&2; }
+err ()  { msg "$@"; exit 1; }
 
 exec0() { # echo and exec
     msg cmd: "$@"
