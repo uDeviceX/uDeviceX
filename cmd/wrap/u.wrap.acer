@@ -1,0 +1,3 @@
+# gets ./udx should return something srun can run
+
+echo "$@"

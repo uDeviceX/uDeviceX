@@ -1,0 +1,25 @@
+. u.utils
+
+val () {
+    if test -z "${VAL+x}"; then return; fi    
+    : ${VALGRIND=valgrind}
+    if test -z "${VAL}"
+    then exec1  "${VALGRIND}"            "$@"
+    else exec1  "${VALGRIND}"     ${VAL} "$@"
+    fi
+    return 1
+}
+
+cuda () {
+    if test -z "${MEM+x}"; then return; fi
+    : ${CUDA_MEMCHECK=/usr/local/cuda-8.0/bin/cuda-memcheck}
+    if test -z "${MEM}"
+    then exec1  "${CUDA_MEMCHECK}"          "$@"
+    else exec1  "${CUDA_MEMCHECK}" ${MEM}   "$@"
+    fi
+    return 1    
+}
+
+normal () { exec1 "$@"; }
+
+cuda "$@" && val "$@" && normal "$@"
