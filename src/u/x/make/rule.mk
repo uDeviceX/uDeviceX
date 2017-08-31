@@ -22,10 +22,10 @@ $B/io/off.o: $S/io/off.cpp; $X -I$S/. -I$S/io
 $B/io/ply.o: $S/io/ply.cpp; $X -I$S/. -I$S/io
 $B/io/rbc.o: $S/io/rbc.cpp; $X -I$S/. -I$S/io
 $B/io/restart.o: $S/io/restart.cpp; $X -I$S/. -I$S/io
-$B/l/linal.o: $S/l/linal.cpp; $X -I$S/. -I$S/l
 $B/l/m.o: $S/l/m.cpp; $X -I$S/. -I$S/l
 $B/m.o: $S/m.cpp; $X -I$S/.
 $B/main.o: $S/main.cu; $N -I$S/.
+$B/math/linal.o: $S/math/linal.cpp; $X -I$S/. -I$S/math
 $B/mbounce/imp.o: $S/mbounce/imp.cu; $N -I$S/. -I$S/mbounce
 $B/mc.o: $S/mc.cpp; $X -I$S/.
 $B/mcomm/imp.o: $S/mcomm/imp.cu; $N -I$S/. -I$S/mcomm

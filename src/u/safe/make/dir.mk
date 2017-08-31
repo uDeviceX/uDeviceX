@@ -14,6 +14,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/inter      && \
     d $B/io         && \
     d $B/l          && \
+    d $B/math       && \
     d $B/mbounce    && \
     d $B/mcomm      && \
     d $B/mdstr      && \
