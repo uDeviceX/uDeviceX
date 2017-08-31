@@ -24,7 +24,7 @@
 #include "kl.h"
 #include "basetags.h"
 #include "inc/type.h"
-#include "inc/mpi.type.h"
+#include "mpi/type.h"
 #include "inc/dev.h"
 
 #include "dual/type.h"

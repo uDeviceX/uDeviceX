@@ -18,7 +18,7 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "texo.h"
-#include "inc/mpi.type.h"
+#include "mpi/type.h"
 #include "rigid/int.h"
 
 #include "mesh/collision.h"

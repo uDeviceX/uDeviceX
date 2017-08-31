@@ -17,7 +17,7 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 
-#include "inc/mpi.type.h"
+#include "mpi/type.h"
 
 #include "k/read.h"
 #include "k/index.h"
