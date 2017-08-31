@@ -38,7 +38,7 @@
 #include "io/field.h"
 #include "io/rbc.h"
 #include "sim/int.h"
-#include "dbg.h"
+#include "dbg/imp.h"
 
 #include "restart.h"
 

@@ -40,7 +40,7 @@
 #include "io/rbc.h"
 #include "diag.h"
 
-#include "dbg.h"
+#include "dbg/imp.h"
 
 #include "restart.h"
 

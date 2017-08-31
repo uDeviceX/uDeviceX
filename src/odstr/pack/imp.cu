@@ -17,6 +17,6 @@
 #include "kl.h"
 #include "k/common.h"
 #include "dev.h"
-#include "dbg.h"
+#include "dbg/imp.h"
 
 #include "imp.h"

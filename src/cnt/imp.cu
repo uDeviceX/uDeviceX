@@ -35,7 +35,7 @@
 #include "inc/tmp/pinned.h"
 #include "io/field.h"
 #include "io/rbc.h"
-#include "dbg.h"
+#include "dbg/imp.h"
 #include "glb.h"
 
 #include "k/read.h"
