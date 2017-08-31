@@ -1,0 +1,16 @@
+# TEST: cmd.t0
+# export UHOST=daint DRYRUN=
+# u.run ./udx  2> cmd.out.txt
+#
+# TEST: cmd.t1
+# export UHOST=panda DRYRUN=
+# u.run ./udx  2> cmd.out.txt
+#
+# TEST: cmd.t2
+# export UHOST=daint DRYRUN= MEM=
+# u.run ./udx  2> cmd.out.txt
+#
+# TEST: cmd.t3
+# export UHOST=panda DRYRUN= MEM=
+# u.run ./udx  2> cmd.out.txt
+#
