@@ -10,8 +10,9 @@ __global__ void fill(const int27 starts, const Particle *pp, const intp26 fragss
     /* gid: work group id                */
     /* tid: worker id within the group   */
 
-    gid = (2 * threadIdx.x) / warpSize + 2 * blockIdx.x;
-    tid = (2 * threadIdx.x) % warpSize ;
+
+    gid = threadIdx.x / (warpSize / 2) + 2 * blockIdx.x;
+    tid = threadIdx.x % (warpSize / 2);
 
     if (gid >= starts.d[26]) return;
 
