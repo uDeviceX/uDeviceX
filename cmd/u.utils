@@ -12,3 +12,10 @@ exec1() { # "ultimate" : respects DRYRUN
     then exec "$@"
     fi
 }
+
+module1() { # "ultimate" : respects DRYRUN
+    msg module: "$@"
+    if test -z ${DRYRUN+x}
+    then module "$@"
+    fi
+}
