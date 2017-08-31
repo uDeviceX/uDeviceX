@@ -22,7 +22,6 @@ $B/io/off.o: $S/io/off.cpp; $X -I$S/. -I$S/io
 $B/io/ply.o: $S/io/ply.cpp; $X -I$S/. -I$S/io
 $B/io/rbc.o: $S/io/rbc.cpp; $X -I$S/. -I$S/io
 $B/io/restart.o: $S/io/restart.cpp; $X -I$S/. -I$S/io
-$B/l/m.o: $S/l/m.cpp; $X -I$S/. -I$S/l
 $B/m.o: $S/m.cpp; $X -I$S/.
 $B/main.o: $S/main.cu; $N -I$S/.
 $B/math/linal.o: $S/math/linal.cpp; $X -I$S/. -I$S/math
@@ -37,6 +36,7 @@ $B/mesh/collision.o: $S/mesh/collision.cu; $N -I$S/. -I$S/mesh
 $B/mesh/dist.o: $S/mesh/dist.cpp; $X -I$S/. -I$S/mesh
 $B/mesh/props.o: $S/mesh/props.cpp; $X -I$S/. -I$S/mesh
 $B/minmax.o: $S/minmax.cu; $N -I$S/.
+$B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/. -I$S/mpi
 $B/mrescue.o: $S/mrescue.cu; $N -I$S/.
 $B/msg.o: $S/msg.cpp; $X -I$S/.
 $B/odstr/halo/imp.o: $S/odstr/halo/imp.cu; $N -I$S/. -I$S/odstr/halo -I$S/odstr/halo/_safe
