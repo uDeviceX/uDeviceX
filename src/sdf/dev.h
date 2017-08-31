@@ -163,16 +163,17 @@ static __device__ void bounce1(const tex3Dca<float> texsdf, float currsdf,
 
 __global__ void bounce(const tex3Dca<float> texsdf, int n, /**/ float2 *const pp) {
     enum {X, Y, Z};
-    float r[3], v[3];
-    int pid = threadIdx.x + blockDim.x * blockIdx.x;
-    if (pid >= n) return;
-    p2rv(pp, pid, /**/ r, v);
-    float s = cheap_sdf(texsdf, r[X], r[Y], r[Z]);
+    float s, currsdf, r[3], v[3];
+    int i;
+    i = threadIdx.x + blockDim.x * blockIdx.x;
+    if (i >= n) return;
+    p2rv(pp, i, /**/ r, v);
+    s = cheap_sdf(texsdf, r[X], r[Y], r[Z]);
     if (s >= -1.7320 * XSIZE_WALLCELLS / XTE) {
-        float currsdf = sdf(texsdf, r[X], r[Y], r[Z]);
+        currsdf = sdf(texsdf, r[X], r[Y], r[Z]);
         if (currsdf >= 0) {
             bounce1(texsdf, currsdf, /*io*/ r[X], r[Y], r[Z], v[X], v[Y], v[Z]);
-            rv2p(r, v, pid, /**/ pp);
+            rv2p(r, v, i, /**/ pp);
         }
     }
 }
