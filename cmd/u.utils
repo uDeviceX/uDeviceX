@@ -1,1 +1,15 @@
 # utils for cmd tools
+
+msg ()  { printf '%s\n' "$*" >&2; }
+
+exec0() { # echo and exec
+    msg cmd: "$@"
+    exec "$@"
+}
+
+exec1() { # echo and exec
+    msg cmd: "$@"
+    if test -z ${DRYRUN+x}
+    then exec "$@"
+    fi
+}
