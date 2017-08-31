@@ -16,7 +16,6 @@ static __device__ void reg(int pid, int fid, /**/ int *iidx[], int size[]) {
     if (fid > 0) {
         entry = atomicAdd(size + fid, 1);
         iidx[fid][entry] = pid;
-        check(size[fid], fid);
     }
 }
 
