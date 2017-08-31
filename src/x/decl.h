@@ -5,7 +5,7 @@ TicketTags   tt;
 TicketPack   tp;
 TicketPinned ti;
 
-int cnt;
+int first;
 Particle *buf;
 Particle *buf_pi;
 

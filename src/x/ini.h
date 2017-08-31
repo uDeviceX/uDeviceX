@@ -1,6 +1,6 @@
 namespace x {
 void ini(/*io*/ basetags::TagGen *g) {
-    cnt = -1; /* TODO: */
+    first = 1;
     ini_ticketcom(&tc);
     ini_ticketr(&tr);
     ini_tickettags(g, &tt);

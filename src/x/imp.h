@@ -1,7 +1,6 @@
 namespace x {
 static void pre(ParticlesWrap *w, int nw) {
     using namespace rex;
-    cnt++;
     clear(nw, tp);
     scanA(w, nw, tp);
     scanB(nw, tp);
@@ -28,7 +27,7 @@ static void rex0(ParticlesWrap *w, int nw) {
     s::waitP();
     r::waitP();
 
-    if (cnt) s::waitA();
+    if (!first) s::waitA(); else first = 0;
     halo(recv_counts); /* fsi::halo(); */
     dSync();
     sendF(tc.cart, tc.ranks, tt, recv_counts); /* (sic) */
