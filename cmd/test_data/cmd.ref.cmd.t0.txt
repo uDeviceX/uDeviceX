@@ -1,2 +1,2 @@
-module: cray-hdf5-parallel cudatoolkit daint-gpu
+module: load cray-hdf5-parallel cudatoolkit daint-gpu
 cmd: srun -n 1 -u ./udx 1 1 1
