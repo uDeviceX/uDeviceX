@@ -1,5 +1,5 @@
 namespace dpdr { namespace sub { namespace dev {
-__global__ void fill(const int27 cellpackstarts, const Particle *pp, const intp26 fragss,
+__global__ void fill(const int27 starts, const Particle *pp, const intp26 fragss,
                      const intp26 fragcc, const intp26 fragcum, const int26 fragcapacity,
                      /**/ intp26 fragindices, Particlep26 fragpp, int *required_bag_size) {
     int gid, fid, hci, tid, src, dst, nsrc, nfloat2s;
@@ -13,10 +13,10 @@ __global__ void fill(const int27 cellpackstarts, const Particle *pp, const intp2
     gid = (2 * threadIdx.x) / warpSize + 2 * blockIdx.x;
     tid = (2 * threadIdx.x) % warpSize ;
 
-    if (gid >= cellpackstarts.d[26]) return;
+    if (gid >= starts.d[26]) return;
 
-    fid = k_common::fid(cellpackstarts.d, gid);
-    hci = gid - cellpackstarts.d[fid];
+    fid = k_common::fid(starts.d, gid);
+    hci = gid - starts.d[fid];
 
     src = fragss.d[fid][hci];
     dst = fragcum.d[fid][hci];
@@ -38,7 +38,7 @@ __global__ void fill(const int27 cellpackstarts, const Particle *pp, const intp2
         spid = src + lpid;
         fragindices.d[fid][dpid] = spid;
     }
-    if (gid + 1 == cellpackstarts.d[fid + 1]) required_bag_size[fid] = dst;
+    if (gid + 1 == starts.d[fid + 1]) required_bag_size[fid] = dst;
 }
 
 __global__ void fill_ii(const int27 cellpackstarts, const int *ii,
