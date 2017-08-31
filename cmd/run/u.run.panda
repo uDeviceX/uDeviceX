@@ -5,7 +5,9 @@ run_one() { # single processor
 }
 
 env_panda() {
-    export PATH=/usr/lib64/mpich/bin:"$PATH"
+    PATH=/usr/lib64/mpich/bin:"$PATH"
+    PATH=/usr/local/cuda-8.0/bin:"$PATH"
+    export PATH
 }
 
 run_mpi() {
