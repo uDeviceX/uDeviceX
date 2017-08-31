@@ -1,0 +1,3 @@
+# memcheck demo
+
+    u.make
