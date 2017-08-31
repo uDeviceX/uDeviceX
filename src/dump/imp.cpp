@@ -15,7 +15,7 @@
 #include "msg.h"
 #include "mpi/type.h"
 #include "dump/int.h"
-#include "os.h"
+#include "utils/os.h"
 
 namespace dump
 {

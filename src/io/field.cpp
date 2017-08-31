@@ -6,7 +6,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 
-#include "os.h"
+#include "utils/os.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "utils/mc.h"
