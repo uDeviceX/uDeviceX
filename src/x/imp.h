@@ -10,17 +10,12 @@ static void pre(ParticlesWrap *w, int nw) {
     pack(w, nw, tp, buf);
 }
 
-static void send() {
-    using namespace rex;
-    recvF(tc.cart, tc.ranks, tr.tags, tt, ti.counts);
-    dSync();
-}
-
 static void rex0(ParticlesWrap *w, int nw) {
     using namespace rex;
     pre(w, nw);
     dSync();
-    send();
+    recvF(tc.cart, tc.ranks, tr.tags, tt, ti.counts);
+    dSync();
 
     /** C **/
     recvC(tc.cart, tc.ranks, tr.tags, tt, recv_counts);
