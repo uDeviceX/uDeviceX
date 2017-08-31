@@ -1,4 +1,4 @@
-#define O dbg::check_pos(o::q.pp, o::q.n, __FILE__, __LINE__, "op"),    \
+#define O dbg::check_pos_pu(o::q.pp, o::q.n, __FILE__, __LINE__, "op"), \
         dbg::check_vv(o::q.pp, o::q.n, __FILE__, __LINE__, "ov")
 
 void step0(float driving_force0, bool wall0, int it) {
