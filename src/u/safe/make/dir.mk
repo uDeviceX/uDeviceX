@@ -2,6 +2,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/clist      && \
     d $B/cnt        && \
     d $B/d          && \
+    d $B/dbg        && \
     d $B/dpd        && \
     d $B/dpdr       && \
     d $B/dual       && \
