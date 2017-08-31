@@ -30,6 +30,8 @@
 #include "dpdr/imp.h"
 
 #include "dpdr/dev/common.h"
+#include "dpdr/dev/fill.h"
+
 #include "dpdr/ini.h"
 #include "dpdr/fin.h"
 #include "dpdr/buf.h"
@@ -61,13 +63,13 @@ void copy_cells(const int27 starts, const int ncells, const intp26 srccells, /**
 void pack(const int27 starts, const int nc, const Particle *pp, const intp26 str,
           const intp26 cnt, const intp26 cum, const int26 capacity, /**/ intp26 ii, Particlep26 pp0, int *bagcounts) {
     CC(d::MemsetAsync(bagcounts, 0, 26 * sizeof(int)));
-    KL(dev::fill_all, ((nc + 1) / 2, 32), (starts, pp, str, cnt, cum, capacity, /**/ ii, pp0, bagcounts));
+    KL(dev::fill, ((nc + 1) / 2, 32), (starts, pp, str, cnt, cum, capacity, /**/ ii, pp0, bagcounts));
 }
 
 void pack_ii(const int27 starts, const int nc, const int *ii, const intp26 str, const intp26 cnt, const intp26 cum,
              const int26 capacity, /**/ intp26 fii) {
     /* fii: fragii */
-    KL(dev::fill_all_ii, ((nc + 1) / 2, 32), (starts, ii, str, cnt, cum, capacity, fii));
+    KL(dev::fill_ii, ((nc + 1) / 2, 32), (starts, ii, str, cnt, cum, capacity, fii));
 }
 
 void copy_pp(const int *np, const Particlep26 dev, /**/ Particlep26 hst) {
