@@ -27,7 +27,7 @@
 
 #include "glb.h"
 
-#include "l/float3.h"
+#include "math/float3.h"
 #include "rbc/imp.h"
 
 namespace rbc {
