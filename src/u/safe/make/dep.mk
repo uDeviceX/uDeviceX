@@ -18,11 +18,11 @@ $B/glb.o: $B/conf.h $S/d/api.h $S/glb.h $S/inc/conf.h $S/m.h
 $B/hforces/imp.o: $S/cc.h $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/forces/imp.h $S/hforces/dev.h $S/hforces/dev.map.h $S/hforces/imp.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/k/common.h $S/k/read.h $S/kl.h $S/l/m.h $S/m.h $S/msg.h $S/rnd/dev.h $S/rnd/imp.h
 $B/inter/imp.o: $S/basetags.h $S/cc.h $S/clist/int.h $S/cnt/int.h $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/dbg/imp.h $S/diag.h $S/dpd/local.h $S/dpdr/int.h $S/dpdr/type.h $S/dual/int.h $S/dual/type.h $S/dump/int.h $S/field.h $S/flu/int.h $S/forces/imp.h $S/frag.h $S/fsi/int.h $S/glb.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/mpi.h $S/inc/tmp/pinned.h $S/inc/tmp/wrap.h $S/inc/type.h $S/inter/imp.h $S/inter/int.h $S/io/field.h $S/io/rbc.h $S/kl.h $S/l/m.h $S/l/off.h $S/m.h $S/mbounce/imp.h $S/mc.h $S/mdstr/buf.h $S/mdstr/int.h $S/mdstr/tic.h $S/mesh/bbox.h $S/mesh/collision.h $S/mrescue.h $S/msg.h $S/odstr/int.h $S/odstr/type.h $S/rbc/int.h $S/rdstr/int.h $S/restart.h $S/rig/int.h $S/rigid/int.h $S/rnd/dev.h $S/rnd/imp.h $S/scan/int.h $S/sdf/int.h $S/sdf/type.h $S/tcells/int.h $S/te.h $S/texo.h $S/wall/int.h $S/x/int.h
 $B/io/field.o: $B/conf.h $S/inc/conf.h $S/inc/type.h $S/io/field.h $S/io/field/dump.h $S/io/field/field.h $S/io/field/grid.h $S/io/field/imp.h $S/io/field/scalar.h $S/io/field/wrapper.h $S/l/m.h $S/m.h $S/mc.h $S/os.h
+$B/io/ply.o: $S/inc/def.h $S/inc/type.h $S/io/ply.h $S/io/ply/ascii.h $S/io/ply/bin.h $S/io/ply/common.h $S/msg.h
 $B/io/rbc.o: $B/conf.h $S/inc/conf.h $S/inc/type.h $S/io/rbc.h $S/io/rbc/imp.h $S/l/m.h $S/m.h $S/mc.h $S/os.h
 $B/l/linal.o: $S/l/h/linal.h $S/l/linal.h
 $B/l/m.o: $S/l/h/m.h $S/l/m.h
 $B/l/off.o: $S/l/h/off.h $S/l/off.h
-$B/l/ply.o: $S/inc/def.h $S/inc/type.h $S/l/h/ply.ascii.h $S/l/h/ply.bin.h $S/l/h/ply.h $S/l/ply.h $S/msg.h
 $B/m.o: $S/inc/conf.h $S/l/m.h $S/m.h $S/mc.h
 $B/main.o: $B/conf.h $S/d/api.h $S/glb.h $S/inc/conf.h $S/m.h $S/msg.h $S/sim/int.h
 $B/mbounce/imp.o: $S/cc.h $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/kl.h $S/m.h $S/mbounce/bbstates.h $S/mbounce/dbg.h $S/mbounce/dev.h $S/mbounce/gen.h $S/mbounce/gen.intersect.h $S/mbounce/gen.tri.h $S/mbounce/hst.h $S/mbounce/imp.h $S/mbounce/roots.h $S/msg.h
@@ -48,7 +48,7 @@ $B/rbc/int.o: $S/basetags.h $S/cc.h $B/conf.h $S/d/api.h $S/d/ker.h $S/glb.h $S/
 $B/rdstr/imp.o: $S/cc.h $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/mpi.h $S/inc/type.h $S/kl.h $S/l/m.h $S/m.h $S/mc.h $S/mdstr/buf.h $S/mdstr/gen.h $S/minmax.h $S/msg.h $S/rdstr/dev.h $S/rdstr/imp.h
 $B/rdstr/int.o: $S/basetags.h $S/cc.h $B/conf.h $S/d/api.h $S/d/ker.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/tmp/pinned.h $S/inc/type.h $S/l/m.h $S/m.h $S/mdstr/buf.h $S/mdstr/int.h $S/mdstr/tic.h $S/msg.h $S/rdstr/imp.h $S/rdstr/int.h $S/texo.h
 $B/restart.o: $B/conf.h $S/inc/conf.h $S/inc/def.h $S/inc/type.h $S/m.h $S/msg.h $S/restart.h
-$B/rig/imp.o: $S/cc.h $B/conf.h $S/d/api.h $S/d/ker.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/mpi.h $S/inc/type.h $S/l/m.h $S/l/ply.h $S/m.h $S/mc.h $S/mesh/bbox.h $S/mesh/collision.h $S/mesh/dist.h $S/msg.h $S/restart.h $S/rig/ic.h $S/rig/imp.h $S/rig/ini.h $S/rig/share.h $S/rigid/int.h $S/texo.h
+$B/rig/imp.o: $S/cc.h $B/conf.h $S/d/api.h $S/d/ker.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/mpi.h $S/inc/type.h $S/io/ply.h $S/l/m.h $S/m.h $S/mc.h $S/mesh/bbox.h $S/mesh/collision.h $S/mesh/dist.h $S/msg.h $S/restart.h $S/rig/ic.h $S/rig/imp.h $S/rig/ini.h $S/rig/share.h $S/rigid/int.h $S/texo.h
 $B/rig/int.o: $S/cc.h $B/conf.h $S/d/api.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/m.h $S/msg.h $S/rig/imp.h $S/rig/int.h
 $B/rigid/imp.o: $B/conf.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/kl.h $S/l/linal.h $S/mesh/props.h $S/rigid/_cuda/dev.h $S/rigid/_cuda/imp.h $S/rigid/common.h $S/rigid/int.h $S/rigid/utils.h
 $B/rnd/imp.o: $S/rnd/imp.h
