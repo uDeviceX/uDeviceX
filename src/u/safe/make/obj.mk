@@ -1,7 +1,7 @@
-O = $B/cc.o $B/clist/imp.o $B/cnt/imp.o $B/d/api.o $B/dbg/imp.o $B/diag.o $B/dpd/local.o \
+O = $B/cc.o $B/clist/imp.o $B/cnt/imp.o $B/d/api.o $B/dbg/imp.o $B/dpd/local.o \
     $B/dpdr/imp.o $B/dpdr/int.o $B/dual/imp.o $B/dump/imp.o $B/field.o $B/flu/imp.o \
     $B/flu/int.o $B/fsi/imp.o $B/glb.o $B/hforces/imp.o $B/inc/mpi.type.o \
-    $B/inter/imp.o $B/io/field.o $B/io/off.o $B/io/ply.o $B/io/rbc.o \
+    $B/inter/imp.o $B/io/diag.o $B/io/field.o $B/io/off.o $B/io/ply.o $B/io/rbc.o \
     $B/io/restart.o $B/l/linal.o $B/l/m.o $B/m.o $B/main.o $B/mbounce/imp.o $B/mc.o \
     $B/mcomm/imp.o $B/mcomm/int.o $B/mdstr/imp.o $B/mdstr/int.o $B/mesh/bbox.o \
     $B/mesh/collision.o $B/mesh/dist.o $B/mesh/props.o $B/minmax.o $B/mrescue.o \

@@ -3,7 +3,6 @@ $B/clist/imp.o: $S/clist/imp.cu; $N -I$S/. -I$S/clist
 $B/cnt/imp.o: $S/cnt/imp.cu; $N -I$S/. -I$S/cnt
 $B/d/api.o: $S/d/api.cu; $N -I$S/. -I$S/d
 $B/dbg/imp.o: $S/dbg/imp.cu; $N -I$S/. -I$S/dbg
-$B/diag.o: $S/diag.cpp; $X -I$S/.
 $B/dpd/local.o: $S/dpd/local.cu; $N -I$S/. -I$S/dpd
 $B/dpdr/imp.o: $S/dpdr/imp.cu; $N -I$S/. -I$S/dpdr
 $B/dpdr/int.o: $S/dpdr/int.cu; $N -I$S/. -I$S/dpdr
@@ -17,6 +16,7 @@ $B/glb.o: $S/glb.cu; $N -I$S/.
 $B/hforces/imp.o: $S/hforces/imp.cu; $N -I$S/. -I$S/hforces
 $B/inc/mpi.type.o: $S/inc/mpi.type.cpp; $X -I$S/. -I$S/inc
 $B/inter/imp.o: $S/inter/imp.cu; $N -I$S/. -I$S/inter
+$B/io/diag.o: $S/io/diag.cpp; $X -I$S/. -I$S/io
 $B/io/field.o: $S/io/field.cpp; $X -I$S/. -I$S/io
 $B/io/off.o: $S/io/off.cpp; $X -I$S/. -I$S/io
 $B/io/ply.o: $S/io/ply.cpp; $X -I$S/. -I$S/io
