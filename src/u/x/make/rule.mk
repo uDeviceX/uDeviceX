@@ -21,6 +21,7 @@ $B/io/field.o: $S/io/field.cpp; $X -I$S/. -I$S/io
 $B/io/off.o: $S/io/off.cpp; $X -I$S/. -I$S/io
 $B/io/ply.o: $S/io/ply.cpp; $X -I$S/. -I$S/io
 $B/io/rbc.o: $S/io/rbc.cpp; $X -I$S/. -I$S/io
+$B/io/restart.o: $S/io/restart.cpp; $X -I$S/. -I$S/io
 $B/l/linal.o: $S/l/linal.cpp; $X -I$S/. -I$S/l
 $B/l/m.o: $S/l/m.cpp; $X -I$S/. -I$S/l
 $B/m.o: $S/m.cpp; $X -I$S/.
@@ -47,7 +48,6 @@ $B/rbc/imp.o: $S/rbc/imp.cu; $N -I$S/. -I$S/rbc
 $B/rbc/int.o: $S/rbc/int.cu; $N -I$S/. -I$S/rbc
 $B/rdstr/imp.o: $S/rdstr/imp.cu; $N -I$S/. -I$S/rdstr
 $B/rdstr/int.o: $S/rdstr/int.cu; $N -I$S/. -I$S/rdstr
-$B/restart.o: $S/restart.cpp; $X -I$S/.
 $B/rig/imp.o: $S/rig/imp.cu; $N -I$S/. -I$S/rig
 $B/rig/int.o: $S/rig/int.cu; $N -I$S/. -I$S/rig
 $B/rigid/imp.o: $S/rigid/imp.cu; $N -I$S/. -I$S/rigid -I$S/rigid/_cuda
