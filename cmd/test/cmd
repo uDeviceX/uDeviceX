@@ -14,3 +14,8 @@
 # export UHOST=panda DRYRUN= MEM=
 # u.run ./udx  2> cmd.out.txt
 #
+# TEST: cmd.t4
+# export UHOST=daint DRYRUN= MEM="-a -b"
+# u.batch ./udx 2> cmd.out.txt
+#
+
