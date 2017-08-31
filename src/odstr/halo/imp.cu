@@ -10,12 +10,12 @@
 #include "inc/def.h"
 #include "msg.h"
 #include "mpi/glb.h"
-#include "cc.h"
+#include "utils/cc.h"
 
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "inc/macro.h"
-#include "kl.h"
+#include "utils/kl.h"
 
 #include "int.h"         /* local to this dir */
 

@@ -8,7 +8,7 @@
 #include "inc/def.h"
 #include "msg.h"
 #include "mpi/glb.h"
-#include "cc.h"
+#include "utils/cc.h"
 
 #include "inc/type.h"
 #include "inc/dev.h"

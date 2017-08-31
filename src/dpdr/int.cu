@@ -5,7 +5,7 @@
 
 #include "inc/def.h"
 #include "msg.h"
-#include "cc.h"
+#include "utils/cc.h"
 #include "d/api.h"
 #include "frag.h"
 

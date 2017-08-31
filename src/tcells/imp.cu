@@ -3,7 +3,7 @@
 #include "inc/conf.h"
 #include "inc/def.h"
 #include "msg.h"
-#include "cc.h"
+#include "utils/cc.h"
 
 #include "d/q.h"
 #include "d/ker.h"
@@ -14,7 +14,7 @@
 #include "scan/int.h"
 #include "tcells/int.h"
 
-#include "kl.h"
+#include "utils/kl.h"
 
 namespace tcells {
 namespace sub {

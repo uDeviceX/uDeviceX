@@ -9,7 +9,7 @@
 #include "d/q.h"
 #include "d/ker.h"
 
-#include "cc.h"
+#include "utils/cc.h"
 #include "dual/type.h"
 
 #include "basetags.h"
@@ -21,7 +21,7 @@
 
 #include "k/read.h"
 #include "k/index.h"
-#include "kl.h"
+#include "utils/kl.h"
 
 #include "rnd/imp.h"
 #include "clist/int.h"

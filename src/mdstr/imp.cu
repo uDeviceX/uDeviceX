@@ -7,7 +7,7 @@
 #include "msg.h"
 #include "mpi/glb.h"
 #include "d/api.h"
-#include "cc.h"
+#include "utils/cc.h"
 
 #include "mpi/wrapper.h"
 #include "inc/type.h"

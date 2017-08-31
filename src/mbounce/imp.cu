@@ -9,14 +9,14 @@
 #include "msg.h"
 
 #include "mpi/glb.h"
-#include "cc.h"
+#include "utils/cc.h"
 #include "d/api.h"
 #include "d/q.h"
 #include "d/ker.h"
 #include "inc/type.h"
 #include "inc/dev.h"
 
-#include "kl.h"
+#include "utils/kl.h"
 
 // #define debug_output
 

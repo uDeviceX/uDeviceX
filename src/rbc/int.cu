@@ -7,7 +7,7 @@
 #include "d/ker.h"
 #include "inc/def.h"
 #include "msg.h"
-#include "cc.h"
+#include "utils/cc.h"
 
 #include "basetags.h"
 #include "inc/type.h"

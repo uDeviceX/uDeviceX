@@ -11,7 +11,7 @@
 #include "d/q.h"
 #include "d/ker.h"
 
-#include "cc.h"
+#include "utils/cc.h"
 
 #include "inc/type.h"
 #include "inc/dev.h"
@@ -33,7 +33,7 @@
 #include "clist/int.h"
 #include "io/restart.h"
 
-#include "kl.h"
+#include "utils/kl.h"
 
 #include "wall/imp.h"
 #include "wall/dev.h"

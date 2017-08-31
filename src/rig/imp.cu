@@ -11,7 +11,7 @@
 #include "mpi/glb.h"
 #include "inc/def.h"
 #include "msg.h"
-#include "cc.h"
+#include "utils/cc.h"
 #include "mc.h"
 
 #include "mpi/wrapper.h"

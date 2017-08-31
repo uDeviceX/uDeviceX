@@ -6,7 +6,7 @@
 
 #include "inc/def.h"
 #include "msg.h"
-#include "cc.h"
+#include "utils/cc.h"
 #include "d/q.h"
 #include "d/ker.h"
 #include "d/api.h"
@@ -18,7 +18,7 @@
 #include "dpd/local.h"
 
 #if   defined(DEV_CUDA)
-  #include "kl.h"
+  #include "utils/kl.h"
   #include "forces/imp.h"
 
   #include "dpd/imp/type.h"

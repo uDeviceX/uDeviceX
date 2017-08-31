@@ -3,7 +3,7 @@
 #include "inc/conf.h"
 #include "inc/def.h"
 #include "msg.h"
-#include "cc.h"
+#include "utils/cc.h"
 
 #include "d/q.h"
 #include "d/ker.h"
@@ -13,7 +13,7 @@
 #include "inc/dev.h"
 #include "utils/texo.h"
 
-#include "kl.h"
+#include "utils/kl.h"
 #include "mesh/collision.h"
 
 namespace collision

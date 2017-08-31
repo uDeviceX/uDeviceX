@@ -17,11 +17,11 @@
 #include "inc/def.h"
 #include "msg.h"
 #include "mpi/glb.h"
-#include "cc.h"
+#include "utils/cc.h"
 #include "mc.h"
 #include "frag.h"
 
-#include "kl.h"
+#include "utils/kl.h"
 #include "basetags.h"
 #include "inc/type.h"
 #include "mpi/type.h"
