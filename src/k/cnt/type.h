@@ -1,5 +1,5 @@
 namespace k_cnt {
-struct CellEntry {
+/*struct CellEntry {
     int pid;
-};
+    };*/
 }
