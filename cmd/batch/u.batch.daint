@@ -1,8 +1,4 @@
-msg () { printf '%s\n' "$*" >&2; }
-exec0() { # echo and exec
-    msg cmd: "$@"
-    exec "$@"
-}
+. u.utils
 
 n=$1; shift
 x=$1; shift
@@ -19,7 +15,7 @@ fi
 
 set -x
 Args="-C gpu $Time $@"
-sbatch -N $n $Args /dev/stdin <<EOF
+exec1 sbatch -N $n $Args /dev/stdin <<EOF
 #!/bin/bash
 
 . u.load.daint

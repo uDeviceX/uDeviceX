@@ -1,6 +1,3 @@
-msg () { printf '%s\n' "$*" >&2; }
-exec0() { # echo and exec
-    msg cmd: "$@"; exec "$@"
-}
+. u.utils
 
-exec0 "$@"
+exec1 "$@"

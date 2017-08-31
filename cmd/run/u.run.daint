@@ -1,12 +1,4 @@
-#!/bin/bash
-
-msg () { printf '%s\n' "$*" >&2; }
-exec0() { # echo and exec
-    msg cmd: "$@"
-    if test -z ${DRYRUN+x}
-    then exec "$@"
-    fi
-}
+. u.utils
 
 n=$1; shift # n = x*y*z
 x=$1; shift
@@ -15,4 +7,4 @@ z=$1; shift
 e=$1; shift # executable
 
 . u.load.daint
-exec0 srun -n $n -u `u.wrap "$e"` $x $y $z "$@"
+exec1 srun -n $n -u `u.wrap "$e"` $x $y $z "$@"

@@ -3,12 +3,10 @@
 msg ()  { printf '%s\n' "$*" >&2; }
 err ()  { msg "$@"; exit 1; }
 
-exec0() { # echo and exec
-    msg cmd: "$@"
-    exec "$@"
-}
+# "intermediate"
+exec0() { exec "$@"; }
 
-exec1() { # echo and exec : respects DRYRUN
+exec1() { # "ultimate" : respects DRYRUN
     msg cmd: "$@"
     if test -z ${DRYRUN+x}
     then exec "$@"
