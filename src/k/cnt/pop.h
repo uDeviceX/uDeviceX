@@ -2,7 +2,7 @@ namespace k_cnt {
 __global__ void populate(uchar4 *subindices,
                          int *cellstart, int nparticles,
                          int soluteid, int ntotalparticles,
-                         CellEntry *entrycells) {
+                         int *entrycells) {
     int warpid = threadIdx.x / warpSize;
     int tid = threadIdx.x % warpSize;
 
