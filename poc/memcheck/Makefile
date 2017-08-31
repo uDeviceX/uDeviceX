@@ -9,7 +9,10 @@ NVCCFLAGS += --compiler-options -Wall,-Wextra
 LIBS   += -lcudart
 M      = main
 
-all: $M
+all: $M check
+
+check: $M
+	MEM= u.run ./main
 
 %: %.cu; $(NVCC) $(NVCCFLAGS) $(OPT) $< -o $@
 
