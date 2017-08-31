@@ -2,25 +2,6 @@
 
 __device__ int x;
 
-__global__ void unaligned_kernel()
-{
-	*(int*) ((char*)&x + 1) = 42;
-}
-
-__device__ void out_of_bounds_function()
-{
-	*(int*) 0x87654320 = 42;
-}
-
-__global__ void out_of_bounds_kernel()
-{
-	out_of_bounds_function();
-}
-
-#include <stdio.h>
-
-__device__ int x;
-
 __global__ void unaligned_kernel(void) {
     *(int*) ((char*)&x + 1) = 42;
 }
