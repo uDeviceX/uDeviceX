@@ -1,0 +1,24 @@
+# gets ./udx should return something srun or mpi can run
+
+: ${CUDA_MEMCHECK=cuda-memcheck}
+: ${VALGRIND=valgrind}
+
+mem () { # cuda memcheck
+    echo "${CUDA_MEMCHECK}" "${MEM}" "$@"
+}
+
+val () { # cuda memcheck
+    echo "${VALGRIND}"      "${VAL}" "$@"
+}
+
+direct () {
+    echo "$@"
+}
+
+##### true if variable is set
+if   test ! -z "${MEM+x}"
+then mem    "$@"
+elif test ! -z "${VAL+x}"
+then val    "$@"
+else direct "$@"
+fi
