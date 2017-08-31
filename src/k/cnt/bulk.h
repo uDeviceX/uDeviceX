@@ -65,13 +65,9 @@ __global__ void bulk(float2 *particles, int np,
         int m2 = (int)(i >= scan2);
         int slot = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
 
-        CellEntry ce;
-        ce.pid = fetchID(slot);
-        int soluteid = ce.code.w;
-
-        ce.code.w = 0;
-
-        int spid = ce.pid;
+        int soluteid;
+        int spid;
+        get(slot, &soluteid, &spid);
 
         if (mysoluteid < soluteid || mysoluteid == soluteid && pid <= spid)
         continue;
