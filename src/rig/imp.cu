@@ -25,7 +25,7 @@
 #include "mesh/dist.h"
 #include "mesh/bbox.h"
 
-#include "l/ply.h"
+#include "io/ply.h"
 #include "restart.h"
 
 #include "rig/imp.h"

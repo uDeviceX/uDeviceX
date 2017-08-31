@@ -5,7 +5,7 @@
 #include "inc/type.h"
 #include "inc/def.h"
 #include "msg.h"
-#include "l/ply.h"
+#include "ply.h"
 
 #ifdef PLY_WRITE_ASCII
   #include "io/ply/ascii.h"
