@@ -41,7 +41,7 @@ void dump_grid() {
 
 void dump_diag_after(int it) { /* after wall */
     if (it % part_freq == 0)
-    rig::dump(it, s::q.ss_dmp, s::t.ss_dmp, s::q.ns, m::coords);
+    rig_dump(it, s::q.ss_dmp, s::t.ss_dmp, s::q.ns, m::coords);
 }
 
 void diag(int it) {
