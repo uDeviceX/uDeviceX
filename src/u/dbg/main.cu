@@ -12,7 +12,7 @@
 #include "kl.h"
 #include "inc/type.h"
 #include "inc/dev.h"
-#include "dbg.h"
+#include "dbg/imp.h"
 
 
 const int n = 100;
