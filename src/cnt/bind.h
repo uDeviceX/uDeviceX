@@ -1,5 +1,5 @@
 namespace cnt {
-void bind(const int *const starts, const int *const cellentries,
+static void bind(const int *const starts, const int *const cellentries,
           const int nc, std::vector<ParticlesWrap> wr) {
     size_t textureoffset = 0;
 
