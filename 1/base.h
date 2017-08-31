@@ -33,7 +33,7 @@
 #define ljsigma             0.3
 #define ljepsilon           0.44
 #define solids              true
-#define sbounce_back        true
+#define sbounce_back        false
 #define fsiforces           true
 #define walls               true
 #define wall_creation       1000
