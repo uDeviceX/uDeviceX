@@ -7,7 +7,7 @@ exec0() { # echo and exec
     exec "$@"
 }
 
-exec1() { # echo and exec
+exec1() { # echo and exec : respects DRYRUN
     msg cmd: "$@"
     if test -z ${DRYRUN+x}
     then exec "$@"
