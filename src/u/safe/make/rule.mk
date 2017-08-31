@@ -23,7 +23,6 @@ $B/io/restart.o: $S/io/restart.cpp; $X -I$S/. -I$S/io
 $B/main.o: $S/main.cu; $N -I$S/.
 $B/math/linal.o: $S/math/linal.cpp; $X -I$S/. -I$S/math
 $B/mbounce/imp.o: $S/mbounce/imp.cu; $N -I$S/. -I$S/mbounce
-$B/mc.o: $S/mc.cpp; $X -I$S/.
 $B/mcomm/imp.o: $S/mcomm/imp.cu; $N -I$S/. -I$S/mcomm
 $B/mcomm/int.o: $S/mcomm/int.cu; $N -I$S/. -I$S/mcomm
 $B/mdstr/imp.o: $S/mdstr/imp.cu; $N -I$S/. -I$S/mdstr
@@ -58,6 +57,7 @@ $B/sim/imp.o: $S/sim/imp.cu; $N -I$S/. -I$S/sim -I$S/sim/_safe
 $B/tcells/imp.o: $S/tcells/imp.cu; $N -I$S/. -I$S/tcells
 $B/tcells/int.o: $S/tcells/int.cpp; $X -I$S/. -I$S/tcells
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/. -I$S/utils
+$B/utils/mc.o: $S/utils/mc.cpp; $X -I$S/. -I$S/utils
 $B/wall/exch.o: $S/wall/exch.cpp; $X -I$S/. -I$S/wall
 $B/wall/imp.o: $S/wall/imp.cu; $N -I$S/. -I$S/wall
 $B/wall/int.o: $S/wall/int.cu; $N -I$S/. -I$S/wall
