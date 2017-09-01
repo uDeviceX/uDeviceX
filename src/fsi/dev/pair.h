@@ -3,7 +3,7 @@ static __device__ void pair0(const Pa l, const Pa r, float rnd, /**/ float *fx, 
     /* pair force ; l, r: local and remote */
     forces::Pa a, b;
     forces::r3v3k2p(l.x, l.y, l.z, l.vx, l.vy, l.vz, SOLID_TYPE, /**/ &a);
-    forces::r3v3k2p(r.x, r.y, r.z, r.vx, r.vy, r.vz, SOLID_TYPE, /**/ &b);
+    forces::r3v3k2p(r.x, r.y, r.z, r.vx, r.vy, r.vz, SOLVENT_TYPE, /**/ &b);
     forces::gen(a, b, rnd, /**/ fx, fy, fz);
 }
 
