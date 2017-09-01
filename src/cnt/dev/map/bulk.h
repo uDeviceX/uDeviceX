@@ -1,3 +1,4 @@
+enum {FULL, EMPTY}; /* map status */
 static __device__ int r2map(int zplane, int n, float x, float y, float z, /**/ Map *m) {
     /* coordinate [r] to map */
     int cnt0, cnt1, cnt2, org0;
@@ -11,7 +12,7 @@ static __device__ int r2map(int zplane, int n, float x, float y, float z, /**/ M
     xcenter = min(XCELLS - 1, max(0, XOFFSET + (int)floorf(x)));
     xstart = max(0, xcenter - 1);
     xcount = min(XCELLS, xcenter + 2) - xstart;
-    if (xcenter - 1 >= XCELLS || xcenter + 2 <= 0) return 0;
+    if (xcenter - 1 >= XCELLS || xcenter + 2 <= 0) return EMPTY;
     ycenter = min(YCELLS - 1, max(0, YOFFSET + (int)floorf(y)));
     zcenter = min(ZCELLS - 1, max(0, ZOFFSET + (int)floorf(z)));
     zmy = zcenter - 1 + zplane;
@@ -43,5 +44,5 @@ static __device__ int r2map(int zplane, int n, float x, float y, float z, /**/ M
 
     m->org0 = org0; m->org1 = org1; m->org2 = org2;
     m->cnt0 = cnt0; m->cnt1 = cnt1; m->cnt2 = cnt2;
-    return 1;
+    return FULL;
 }
