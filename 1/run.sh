@@ -14,7 +14,8 @@ s=../src
 
 (cd $s/../cmd; make)
 u.conf $s $u base.h <<EOF
-       DBG_PEEK
+       DBG_PEEK=true
+       solids=false
        run
 EOF
 u.make -j > make.log
