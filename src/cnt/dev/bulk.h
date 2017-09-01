@@ -1,6 +1,7 @@
 __global__ void bulk(float2 *pp, int n,
                      int ncellentries, int nsolutes,
                      float seed, int mysoluteid, float *ff) {
+    Map m; /* see map/ */
     float fx, fy, fz, rnd;
     forces::Pa a, b;
     int scan1, scan2, ncandidates, spidbase;
