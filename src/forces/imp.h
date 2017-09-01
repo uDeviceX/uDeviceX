@@ -121,9 +121,9 @@ inline __device__ float3 dpd(int t1, int t2,
 inline __device__ float3 generic(Pa A, Pa B, float rnd) {
     /* unpack float3 */
     float fx, fy, fz;
-    dpd0(A.k, B.k,
+    dpd0(A.kind, B.kind,
           A.x,  A.y,  A.z,  B.x,  B.y,  B.z,
-         A.vx, A.vy, A.vz, B.vx, B.vy, V.vz,
+         A.vx, A.vy, A.vz, B.vx, B.vy, B.vz,
          rnd,
          &fx, &fy, &fz);
     return make_float3(fx, fy, fz);
