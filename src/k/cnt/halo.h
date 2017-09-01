@@ -92,6 +92,7 @@ __global__ void halo(int nparticles_padded, int ncellentries,
             float myrandnr = rnd::mean0var1ii(seed, pid, spid);
 
             // check for particle types and compute the DPD force
+            forces::f2k2p(dst0, dst1, dst2, SOLID_TYPE, /**/ &a);
             float3 pos1 = make_float3(dst0.x, dst0.y, dst1.x),
                 pos2 = make_float3(stmp0.x, stmp0.y, stmp1.x);
             float3 vel1 = make_float3(dst1.y, dst2.x, dst2.y),

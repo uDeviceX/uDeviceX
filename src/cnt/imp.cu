@@ -41,6 +41,7 @@
 
 #include "clist/int.h"
 #include "forces/type.h"
+#include "forces/pack.h"
 #include "forces/imp.h"
 
 #include "k/cnt/type.h"
