@@ -24,7 +24,7 @@ inline __device__ void dpd00(int typed, int types,
         return;
     }
 
-    float argwr = 1.f - rij;
+    float argwr = max(1.f - rij, 0.f);
     float wr = wrf(-S_LEVEL, argwr);
 
     x *= invrij;
