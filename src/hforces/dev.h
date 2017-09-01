@@ -29,6 +29,7 @@ static __device__ Pa frag2p(const Frag frag, uint i) {
 }
 
 static __device__ void pair(const Pa l, const Pa r, float rnd, /**/ float *fx, float *fy, float *fz) {
+    forces::Pa a, b;
     forces::dpd0(SOLVENT_TYPE, SOLVENT_TYPE,
                  l.x, l.y, l.z,
                  r.x, r.y, r.z,
