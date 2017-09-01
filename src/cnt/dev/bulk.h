@@ -4,7 +4,7 @@ __global__ void bulk(float2 *pp, int n,
     Map m; /* see map/ */
     float fx, fy, fz, rnd;
     forces::Pa a, b;
-    int cnt0, scan2, ncandidates, spidbase;
+    int cnt0, cnt1, ncandidates, spidbase;
     int deltaspid1, deltaspid2;
     int gid, pid, zplane;
     float2 dst0, dst1, dst2;
@@ -67,17 +67,17 @@ __global__ void bulk(float2 *pp, int n,
         }
 
         cnt0 = count0;
-        scan2 = count0 + count1;
-        ncandidates = scan2 + count2;
+        cnt1 = count0 + count1;
+        ncandidates = cnt1 + count2;
 
         deltaspid1 -= cnt0;
-        deltaspid2 -= scan2;
+        deltaspid2 -= cnt1;
     }
     
     xforce = yforce = zforce = 0;
     for (i = 0; i < ncandidates; ++i) {
         m1 = (int)(i >= cnt0);
-        m2 = (int)(i >= scan2);
+        m2 = (int)(i >= cnt1);
         slot = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
 
         get(slot, &soluteid, &spid);
