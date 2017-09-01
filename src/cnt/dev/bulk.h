@@ -2,6 +2,8 @@ __global__ void bulk(float2 *pp, int n,
                      int ncellentries, int nsolutes,
                      float seed, int mysoluteid, float *ff) {
     Map m; /* see map/ */
+    float x, y, z;
+
     float fx, fy, fz, rnd;
     forces::Pa a, b;
     int cnt0, cnt1, cnt2, org0;
@@ -30,7 +32,9 @@ __global__ void bulk(float2 *pp, int n,
     dst0 = __ldg(pp + 3 * pid + 0);
     dst1 = __ldg(pp + 3 * pid + 1);
     dst2 = __ldg(pp + 3 * pid + 2);
-
+    x = dst0.x;
+    y = dst0.y;
+    z = dst1.x;
 
     {
         xcenter = min(XCELLS - 1, max(0, XOFFSET + (int)floorf(dst0.x)));
