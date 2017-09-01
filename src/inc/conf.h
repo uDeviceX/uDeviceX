@@ -53,6 +53,10 @@
 #define part_dumps (false)
 #endif
 
+#ifndef dump_forces
+#define dump_forces (false)
+#endif
+
 #ifndef part_freq
 #define part_freq (1000)
 #endif
