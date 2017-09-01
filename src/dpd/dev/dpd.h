@@ -2,10 +2,13 @@ static __device__ float3 dpd(int dpid, float4 rdest, float4 udest, float4 rsrc, 
     enum {X, Y, Z};
     float rnd, fx, fy, fz;
     float r1[3], r2[3], v1[3], v2[3];
-    forces::Pa p;
+    forces::Pa a, b;
     rnd = rnd::mean0var1ii( info.seed, xmin( spid, dpid ), xmax( spid, dpid ) );
     f4tof3(rdest, r1); f4tof3(rsrc, r2);
     f4tof3(udest, v1); f4tof3(usrc, v2);
+
+    forces::rvk2p(r1, v1, SOLVENT_TYPE, /**/ &a);
+    forces::rvk2p(r2, v2, SOLVENT_TYPE, /**/ &b);
 
     forces::dpd0(SOLVENT_TYPE, SOLVENT_TYPE,
                      r1[X], r1[Y], r1[Z],
