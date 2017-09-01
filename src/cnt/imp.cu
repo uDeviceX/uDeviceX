@@ -44,6 +44,7 @@
 #include "forces/pack.h"
 #include "forces/imp.h"
 
+namespace cnt {
 namespace dev {
 #include "dev/decl.h"
 #include "dev/fetch.h"
@@ -53,6 +54,7 @@ namespace dev {
 #include "dev/pop.h"
 }
 
+
 #include "cnt/decl.h"
 #include "cnt/bind.h"
 #include "cnt/build.h"
@@ -61,3 +63,5 @@ namespace dev {
 #include "cnt/halo.h"
 #include "cnt/ini.h"
 #include "cnt/setup.h"
+
+} /* namespace */
