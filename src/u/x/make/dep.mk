@@ -25,7 +25,7 @@ $B/io/restart.o: $B/conf.h $S/inc/conf.h $S/inc/def.h $S/inc/type.h $S/io/restar
 $B/io/rig.o: $B/conf.h $S/inc/conf.h $S/inc/type.h
 $B/main.o: $B/conf.h $S/d/api.h $S/glb.h $S/inc/conf.h $S/mpi/glb.h $S/msg.h $S/sim/int.h
 $B/math/linal.o: $S/math/linal.h
-$B/mbounce/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/mbounce/bbstates.h $S/mbounce/dbg.h $S/mbounce/dev.h $S/mbounce/gen.h $S/mbounce/gen.intersect.h $S/mbounce/gen.tri.h $S/mbounce/hst.h $S/mbounce/imp.h $S/mbounce/roots.h $S/mpi/glb.h $S/msg.h $S/utils/cc.h $S/utils/kl.h
+$B/mbounce/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/mbounce/_release/check.h $S/mbounce/bbstates.h $S/mbounce/dbg.h $S/mbounce/dev.h $S/mbounce/gen.h $S/mbounce/gen.intersect.h $S/mbounce/gen.tri.h $S/mbounce/hst.h $S/mbounce/imp.h $S/mbounce/roots.h $S/mpi/glb.h $S/msg.h $S/utils/cc.h $S/utils/kl.h
 $B/mcomm/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/mcomm/dev.h $S/mcomm/fin.h $S/mcomm/imp.h $S/mcomm/ini.h $S/mcomm/type.h $S/mpi/glb.h $S/mpi/type.h $S/mpi/wrapper.h $S/msg.h $S/utils/cc.h $S/utils/kl.h $S/utils/mc.h
 $B/mcomm/int.o: $S/algo/minmax.h $B/conf.h $S/d/api.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/tmp/pinned.h $S/inc/type.h $S/mcomm/imp.h $S/mcomm/int.h $S/mcomm/type.h $S/mpi/basetags.h $S/msg.h $S/utils/cc.h
 $B/mdstr/imp.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/mdstr/dev.h $S/mdstr/imp.h $S/mdstr/ini.h $S/mpi/glb.h $S/mpi/type.h $S/mpi/wrapper.h $S/msg.h $S/utils/cc.h $S/utils/mc.h

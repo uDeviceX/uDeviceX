@@ -20,15 +20,16 @@
 
 // #define debug_output
 
-#include "mbounce/imp.h"
-#include "mbounce/bbstates.h"
-#include "mbounce/dbg.h"
-#include "mbounce/roots.h"
-#include "mbounce/gen.h"
-#include "mbounce/gen.intersect.h"
-#include "mbounce/gen.tri.h"
-#include "mbounce/hst.h"
-#include "mbounce/dev.h"
+#include "imp.h"
+#include "bbstates.h"
+#include "dbg.h"
+#include "roots.h"
+#include "gen.h"
+#include "gen.intersect.h"
+#include "gen.tri.h"
+#include "check.h"
+#include "hst.h"
+#include "dev.h"
 
 namespace mbounce {
 
