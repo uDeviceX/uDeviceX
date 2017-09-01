@@ -61,8 +61,6 @@ __global__ void bulk(float2 *particles, int np,
     }
 
     float xforce = 0, yforce = 0, zforce = 0;
-
-#pragma unroll 3
     for (int i = 0; i < ncandidates; ++i) {
         int m1 = (int)(i >= scan1);
         int m2 = (int)(i >= scan2);
