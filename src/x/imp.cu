@@ -60,6 +60,7 @@
 
 #include "field.h"
 
+#include "forces/type.h"
 #include "forces/imp.h"
 
 #include "sdf/type.h"

@@ -16,6 +16,7 @@
 
 #include "inc/type.h"
 #include "inc/dev.h"
+#include "forces/type.h"
 #include "forces/imp.h"
 #include "k/read.h"
 #include "k/common.h"

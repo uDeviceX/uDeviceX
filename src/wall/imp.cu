@@ -28,6 +28,7 @@
 #include "sdf/cheap.dev.h"
 
 #include "k/wvel.h"
+#include "forces/type.h"
 #include "forces/imp.h"
 
 #include "clist/int.h"
