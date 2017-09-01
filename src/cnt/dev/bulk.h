@@ -1,4 +1,4 @@
-__global__ void bulk(float2 *particles, int np,
+__global__ void bulk(float2 *pp, int n,
                      int ncellentries, int nsolutes,
                      float seed, int mysoluteid, float *ff) {
     float fx, fy, fz, rnd;
@@ -23,11 +23,11 @@ __global__ void bulk(float2 *particles, int np,
     pid = gid / 3;
     zplane = gid % 3;
 
-    if (pid >= np) return;
+    if (pid >= n) return;
 
-    dst0 = __ldg(particles + 3 * pid + 0);
-    dst1 = __ldg(particles + 3 * pid + 1);
-    dst2 = __ldg(particles + 3 * pid + 2);
+    dst0 = __ldg(pp + 3 * pid + 0);
+    dst1 = __ldg(pp + 3 * pid + 1);
+    dst2 = __ldg(pp + 3 * pid + 2);
 
 
     {
