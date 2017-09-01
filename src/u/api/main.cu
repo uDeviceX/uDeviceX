@@ -4,14 +4,13 @@
 #include "inc/conf.h"
 
 #include "msg.h"
-#include "m.h" /* mini-MPI and -device */
+#include "mpi/glb.h"
 #include "d/api.h"
 
-#include "bund.h"
 #include "glb.h"
 
 #include "inc/dev.h"
-#include "cc.h"
+#include "utils/cc.h"
 
 #define N 10
 #define value 10
