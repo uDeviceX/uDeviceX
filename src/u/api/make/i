@@ -1,2 +1,12 @@
-find $U -name '*.cu' -o -name '*.cpp'
-echo msg.cpp m.cpp l/m.cpp cc.cu d/api.cu
+dirs="$U d mpi utils inc"
+for D in ${dirs}
+do
+find $D \
+     -type d       -o  \
+     -name '*.cu'  -o  \
+     -name '*.cpp' -o  \
+     -name '*.h'    |  \
+    grep -v '^\.\/u/'
+done
+
+echo msg.cpp msg.h glb.h glb.cu
