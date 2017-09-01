@@ -23,41 +23,41 @@ inline __device__ void dpd00(int typed, int types,
     float gamma_tbl[] = {gammadpd_solv, gammadpd_solid, gammadpd_wall, gammadpd_rbc};
     float a_tbl[] = {aij_solv, aij_solid, aij_wall, aij_rbc};
 
-    float rij2, invrij, rij;
+    float r2, invr, r;
     float argwr, wr, rdotv, gamma, sigma;
     float f;
     float t2, t4, t6, lj;
     float a;
 
-    rij2 = x * x + y * y + z * z;
-    if (rij2 >= 1) {
+    r2 = x * x + y * y + z * z;
+    if (r2 >= 1) {
         *fx = *fy = *fz = 0;
         return;
     }
-    invrij = rsqrtf(rij2);
-    rij = rij2 * invrij;
+    invr = rsqrtf(r2);
+    r = r2 * invr;
 
-    argwr = max(1.f - rij, 0.f);
+    argwr = max(1.f - r, 0.f);
     wr = wrf(-S_LEVEL, argwr);
 
-    x *= invrij; y *= invrij; z *= invrij;
+    x *= invr; y *= invr; z *= invr;
     rdotv = x * vx + y * vy + z * vz;
 
     gamma = 0.5 * (gamma_tbl[typed] + gamma_tbl[types]);
     a     = 0.5 * (a_tbl[typed] + a_tbl[types]);
     sigma = sqrt(2*gamma*kBT / dt);
 
-    f = (-gamma * wr * rdotv + sigma * rnd) * wr;
+    f  = (-gamma * wr * rdotv + sigma * rnd) * wr;
     f += a * argwr;
 
     bool ss = (typed == SOLID_TYPE) && (types == SOLID_TYPE);
     bool sw = (typed == SOLID_TYPE) && (types ==  WALL_TYPE);
     if (ss || sw) {
         /*hack*/ const float ljsi = ss ? ljsigma : 2 * ljsigma;
-        t2 = ljsi * ljsi * invrij * invrij;
+        t2 = ljsi * ljsi * invr * invr;
         t4 = t2 * t2;
         t6 = t4 * t2;
-        lj = ljepsilon * 24 * invrij * t6 * (2 * t6 - 1);
+        lj = ljepsilon * 24 * invr * t6 * (2 * t6 - 1);
         lj = cap(lj, 0, 1e4);
         f += lj;
     }
