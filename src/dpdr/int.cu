@@ -16,6 +16,8 @@
 #include "inc/dev.h"
 
 #include "hforces/imp.h"
+#include "hforces/cloud/type.h"
+#include "hforces/cloud/int.h"
 
 #include "dpdr/type.h"
 #include "dpdr/int.h"

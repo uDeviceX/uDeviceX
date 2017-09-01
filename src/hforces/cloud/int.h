@@ -1,4 +1,4 @@
 namespace hforces {
-void ini_cloudA(CloudA *c) { };
-void ini_cloudB(CloudB *c) { };
+inline void ini_cloudA(CloudA *c) { };
+inline void ini_cloudB(CloudB *c) { };
 } /* namespace */
