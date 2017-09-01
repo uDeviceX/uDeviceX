@@ -97,7 +97,7 @@ __global__ void interactions(TexSDF_t texsdf, const float2 *const pp, const int 
         int m2 = (int)(i >= scan2);
         int spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
         const float4 r = wpp_fetch(spid);
-        k_wvel::vell(r.x, r.y, r.z, &vx, &vy, &vz);
+        k_wvel::vell(r.x, r.y, r.z, /**/ &vx, &vy, &vz);
         forces::r3v3k2p(r.x, r.y, r.z, vx, vy, vz, WALL_TYPE, /**/ &b);
         rnd = rnd::mean0var1ii(seed, pid, spid);
         forces::gen(a, b, rnd, /**/ &fx, &fy, &fz);
