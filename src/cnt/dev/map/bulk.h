@@ -41,5 +41,7 @@ static __device__ int r2map(int zplane, int n, float x, float y, float z, /**/ M
     org1 -= cnt0;
     org2 -= cnt1;
 
+    m->org0 = org0; m->org1 = org1; m->org2 = org2;
+    m->cnt0 = cnt0; m->cnt1 = cnt1; m->cnt2 = cnt2;
     return 1;
 }
