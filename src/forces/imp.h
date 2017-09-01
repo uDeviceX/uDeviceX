@@ -24,7 +24,10 @@ inline __device__ void dpd00(int typed, int types,
     float a_tbl[] = {aij_solv, aij_solid, aij_wall, aij_rbc};
 
     float r2, invr, r;
-    float argwr, wr, rdotv, gamma, sigma;
+    float wc, wr; /* conservative and random kernels */
+    float rm; /* 1 minus r */
+    float ev; /* (e dot v) */
+    float gamma, sigma;
     float f;
     float t2, t4, t6, lj;
     float a;
@@ -36,19 +39,19 @@ inline __device__ void dpd00(int typed, int types,
     }
     invr = rsqrtf(r2);
     r = r2 * invr;
-
-    argwr = max(1.f - r, 0.f);
-    wr = wrf(-S_LEVEL, argwr);
-
     x *= invr; y *= invr; z *= invr;
-    rdotv = x * vx + y * vy + z * vz;
+
+    rm = max(1 - r, 0.0f);
+    wc = rm;
+    wr = wrf(-S_LEVEL, rm);
+    ev = x*vx + y*vy + z*vz;
 
     gamma = 0.5 * (gamma_tbl[typed] + gamma_tbl[types]);
     a     = 0.5 * (a_tbl[typed] + a_tbl[types]);
     sigma = sqrt(2*gamma*kBT / dt);
 
-    f  = (-gamma * wr * rdotv + sigma * rnd) * wr;
-    f += a * argwr;
+    f  = (-gamma * wr * ev + sigma * rnd) * wr;
+    f +=                                a * wc;
 
     bool ss = (typed == SOLID_TYPE) && (types == SOLID_TYPE);
     bool sw = (typed == SOLID_TYPE) && (types ==  WALL_TYPE);
@@ -62,7 +65,7 @@ inline __device__ void dpd00(int typed, int types,
         f += lj;
     }
 
-    *fx = f * x; *fy = f * y; *fz = f * z;
+    *fx = f*x; *fy = f*y; *fz = f*z;
 }
 
 inline __device__ void dpd0(int typed, int types,
