@@ -1,4 +1,4 @@
-namespace k_cnt {
+namespace dev {
 __global__ void bulk(float2 *particles, int np,
                      int ncellentries, int nsolutes,
                      float *acc, float seed,

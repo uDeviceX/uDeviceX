@@ -4,12 +4,12 @@ static void bind(const int *const starts, const int *const cellentries,
     size_t textureoffset = 0;
 
     if (nc)
-        CC(cudaBindTexture(&textureoffset, &k_cnt::t::id, cellentries,
-                           &k_cnt::t::id.channelDesc,
+        CC(cudaBindTexture(&textureoffset, &dev::t::id, cellentries,
+                           &dev::t::id.channelDesc,
                            sizeof(int) * nc));
     int ncells = XS * YS * ZS;
-    CC(cudaBindTexture(&textureoffset, &k_cnt::t::start, starts,
-                       &k_cnt::t::start.channelDesc, sizeof(int) * ncells));
+    CC(cudaBindTexture(&textureoffset, &dev::t::start, starts,
+                       &dev::t::start.channelDesc, sizeof(int) * ncells));
     int n = wr.size();
 
     int ns[n];
@@ -22,8 +22,8 @@ static void bind(const int *const starts, const int *const cellentries,
         fs[i] = (float*)wr[i].f;
     }
 
-    CC(cudaMemcpyToSymbolAsync(k_cnt::g::ns, ns, sizeof(int)*n, 0, H2D));
-    CC(cudaMemcpyToSymbolAsync(k_cnt::g::csolutes, ps, sizeof(float2*)*n, 0, H2D));
-    CC(cudaMemcpyToSymbolAsync(k_cnt::g::csolutesacc, fs, sizeof(float*)*n, 0, H2D));
+    CC(cudaMemcpyToSymbolAsync(dev::g::ns, ns, sizeof(int)*n, 0, H2D));
+    CC(cudaMemcpyToSymbolAsync(dev::g::csolutes, ps, sizeof(float2*)*n, 0, H2D));
+    CC(cudaMemcpyToSymbolAsync(dev::g::csolutesacc, fs, sizeof(float*)*n, 0, H2D));
 }
 }

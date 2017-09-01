@@ -23,7 +23,7 @@ void build(std::vector<ParticlesWrap> wr) {
     ctr = 0;
     for (int i = 0; i < (int) wr.size(); ++i) {
         ParticlesWrap it = wr[i];
-        KL(k_cnt::populate, (k_cnf(it.n)),
+        KL(dev::populate, (k_cnf(it.n)),
            (indexes->D + ctr, starts, it.n, i, ntotal, entries->D));
         ctr += it.n;
     }

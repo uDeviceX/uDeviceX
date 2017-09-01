@@ -1,4 +1,4 @@
-namespace k_cnt {
+namespace dev {
 __global__ void populate(uchar4 *subindices,
                          int *cellstart, int nparticles,
                          int soluteid, int ntotalparticles,

@@ -1,4 +1,4 @@
-namespace k_cnt {
+namespace dev {
 enum {
     XCELLS = XS,
     YCELLS = YS,

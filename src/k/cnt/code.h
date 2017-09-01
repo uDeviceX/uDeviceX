@@ -1,4 +1,4 @@
-namespace k_cnt { /* particle cell code api */
+namespace dev { /* particle cell code api */
 
 #define NMAX (256*256*256)
 static __device__ void get(int i, /**/ int *s, int *pid) {

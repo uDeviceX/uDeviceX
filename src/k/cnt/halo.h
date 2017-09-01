@@ -1,4 +1,4 @@
-namespace k_cnt {
+namespace dev {
 __global__ void halo(int nparticles_padded, int ncellentries,
                      int nsolutes, float seed) {
     forces::Pa a, b;
