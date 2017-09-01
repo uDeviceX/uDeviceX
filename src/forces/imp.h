@@ -8,6 +8,13 @@ static __device__ float wrf(const int s, float x) {
     return powf(x, 1.f/s);
 }
 
+inline __device__ float cap(float x, float lo, float hi) {
+    if      (x > hi) return hi;
+    else if (x < lo) return lo;
+    else             return x;
+}
+
+
 inline __device__ void dpd00(int typed, int types,
                              float x, float y, float z,
                              float vx, float vy, float vz,
@@ -51,9 +58,10 @@ inline __device__ void dpd00(int typed, int types,
         t2 = ljsi * ljsi * invr2;
         t4 = t2 * t2;
         t6 = t4 * t2;
-        lj = min(1e4f, max(0.f, ljepsilon * 24.f * invrij * t6 * (2.f * t6 - 1.f)));
+        lj = ljepsilon * 24 * invrij * t6 * (2 * t6 - 1);
+        lj = cap(lj, 0, 1e4);
         f += lj;
-    } 
+    }
 
     aij_pair = 0.5 * (aij[typed] + aij[types]);
     f += aij_pair * argwr;
