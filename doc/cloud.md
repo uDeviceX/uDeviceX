@@ -16,7 +16,7 @@ The function uses only API of clouds.
 
 # plan
 
-`forces::gen` takes two Pa and compute force.
+`forces::gen` takes two `Pa` and compute force.
 
     ./dpd/dev/dpd.h:12:    forces::gen(a, b, rnd, &fx, &fy, &fz);
     ./fsi/dev/pair.h:7:    forces::gen(a, b, rnd, /**/ fx, fy, fz);
