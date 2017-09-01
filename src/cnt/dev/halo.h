@@ -25,19 +25,15 @@ __global__ void halo(int nparticles_padded, int ncellentries,
     pid = base + laneid;
     if (base >= nparticles_padded) return;
 
-    {
-        code = k_common::fid(g::starts, base);
-        unpackbase = base - g::starts[code];
-        nunpack = min(32, g::counts[code] - unpackbase);
-
-        if (nunpack == 0) return;
-
-        k_read::AOS6f((float2*)(g::pp[code] + unpackbase),
-                      nunpack, dst0, dst1, dst2);
-
-        dst = (float *)(g::ff[code] + unpackbase);
-    }
-
+    code = k_common::fid(g::starts, base);
+    unpackbase = base - g::starts[code];
+    nunpack = min(32, g::counts[code] - unpackbase);
+    
+    if (nunpack == 0) return;
+    
+    k_read::AOS6f((float2*)(g::pp[code] + unpackbase),
+                  nunpack, dst0, dst1, dst2);
+    dst = (float *)(g::ff[code] + unpackbase);
     k_read::AOS3f(dst, nunpack, xforce, yforce, zforce);
 
     nzplanes = laneid < nunpack ? 3 : 0;
@@ -47,10 +43,8 @@ __global__ void halo(int nparticles_padded, int ncellentries,
         z = dst1.x;
         mapstatus = tex2map(zplane, x, y, z, /**/ &m);
         if (mapstatus == EMPTY) continue;
-        for (i = 0; i < m.cnt2; ++i) {
-            m1 = (int)(i >= m.cnt0);
-            m2 = (int)(i >= m.cnt1);
-            slot = i + (m2 ? m.org2 : m1 ? m.org1 : m.org0);
+        for (i = 0; !endp(m, i); ++i) {
+            slot = m2id(m, i);
             get(slot, &soluteid, &spid);
 
             sentry = 3 * spid;
