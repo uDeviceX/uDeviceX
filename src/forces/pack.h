@@ -14,7 +14,16 @@ inline __device__ void rvk2p(float r[3], float v[3], int kind, /**/ Pa *p) {
 
 inline __device__ float fst(float2 t) { return t.x; }
 inline __device__ float scn(float2 t) { return t.y; }
-inline __device__ void f2k2p(float2 d0, float2 d1, int kind, /**/ Pa *p) {
+inline __device__ void f2k2p(float2 d0, float2 d1, float2 d2, int kind, /**/ Pa *p) {
+    p->x  = fst(d0);
+    p->y  = scn(d0);
+    p->z  = fst(d1);
+
+    p->vx = scn(d1);
+    p->vy = fst(d2);
+    p->vz = scn(d2);
+
+    p->kind = kind;
 }
 
 }
