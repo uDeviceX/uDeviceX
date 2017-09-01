@@ -27,9 +27,9 @@
 #include "rnd/imp.h"
 #include "rnd/dev.h"
 
-#include "hforces/imp.h"
-#include "hforces/dev.map.h"
-#include "hforces/dev.h"
+#include "imp.h"
+#include "dev.map.h"
+#include "dev.h"
 
 namespace hforces {
 
