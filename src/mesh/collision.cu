@@ -87,8 +87,6 @@ void inside_hst(const Particle *pp, const int n, const Mesh m, const Particle *i
 
 namespace kernels
 {
-enum {OUT=-1, IN=1};
-
 __global__ void init_tags(const int n, /**/ int *tags) {
     const int gid = threadIdx.x + blockIdx.x * blockDim.x;
     if (gid < n) tags[gid] = OUT;
