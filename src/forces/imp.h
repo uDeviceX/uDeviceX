@@ -27,7 +27,7 @@ inline __device__ void dpd00(int typed, int types,
     float argwr, wr, rdotv, gamma, sigma;
     float f;
     float t2, t4, t6, lj;
-    float aij_pair;
+    float a;
 
     rij2 = x * x + y * y + z * z;
     if (rij2 >= 1) {
@@ -63,8 +63,8 @@ inline __device__ void dpd00(int typed, int types,
         f += lj;
     }
 
-    aij_pair = 0.5 * (a_tbl[typed] + a_tbl[types]);
-    f += aij_pair * argwr;
+    a = 0.5 * (a_tbl[typed] + a_tbl[types]);
+    f += a * argwr;
 
     *fx = f * x;
     *fy = f * y;
