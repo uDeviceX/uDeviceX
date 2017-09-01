@@ -1,5 +1,5 @@
 ### Build u/safe out of source
-# cTEST: comp.safe.t1
+# TEST: comp.safe.t1
 (cd ../cmd; make ) > /dev/null
 t=/tmp/udx.$$
 trap 'rm -rf $t' 0 1 2 3 15
@@ -17,7 +17,7 @@ mkdir $t
 echo $?  > make.out.status
 
 ### Build u/scan out of source
-# cTEST: comp.scan.t1
+# TEST: comp.scan.t1
 (cd ../cmd; make ) > /dev/null
 t=/tmp/udx.$$
 trap 'rm -rf $t' 0 1 2 3 15
