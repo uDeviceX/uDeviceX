@@ -175,6 +175,7 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
         m1 = 0 == dy;
         m2 = 0 == dz;
 
+        hforces::ini_cloudA(ts.b.pp.d[i], &clouda);
 
         sfrag.d[i] = {
             (float*)ts.b.pp.d[i],
