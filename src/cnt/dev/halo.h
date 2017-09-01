@@ -1,5 +1,4 @@
-__global__ void halo(int nparticles_padded, int ncellentries,
-                     int nsolutes, float seed) {
+__global__ void halo(int nparticles_padded, float seed) {
     Map m;
     int mapstatus;
     float x, y, z;
