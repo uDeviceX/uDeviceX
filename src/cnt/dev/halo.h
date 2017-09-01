@@ -1,6 +1,7 @@
 __global__ void halo(int nparticles_padded, int ncellentries,
                      int nsolutes, float seed) {
     Map m;
+    int mapstatus;
     float x, y, z;
     forces::Pa a, b;
     float fx, fy, fz;
@@ -10,15 +11,7 @@ __global__ void halo(int nparticles_padded, int ncellentries,
     int code, unpackbase;
     float xforce, yforce, zforce;
     int nzplanes, zplane;
-
-    int cnt0, cnt1, cnt2, org0;
-    int org1, org2;
-    int xcenter, xstart, xcount;
-    int ycenter, zcenter, zmy;
-    bool zvalid;
-    int count0, count1, count2;
     float *dst = NULL;
-    int cid0, cid1, cid2;
     int i;
     int m1, m2, slot;
     int soluteid, spid;
@@ -49,56 +42,15 @@ __global__ void halo(int nparticles_padded, int ncellentries,
 
     nzplanes = laneid < nunpack ? 3 : 0;
     for (zplane = 0; zplane < nzplanes; ++zplane) {
-
-        {
-            x = dst0.x;
-            y = dst0.y;
-            z = dst1.x;
-
-            xcenter = XOFFSET + (int)floorf(x);
-            xstart = max(0, xcenter - 1);
-            xcount = min(XCELLS, xcenter + 2) - xstart;
-
-            if (xcenter - 1 >= XCELLS || xcenter + 2 <= 0) continue;
-
-            ycenter = YOFFSET + (int)floorf(y);
-
-            zcenter = ZOFFSET + (int)floorf(z);
-            zmy = zcenter - 1 + zplane;
-            zvalid = zmy >= 0 && zmy < ZCELLS;
-
-            count0 = count1 = count2 = 0;
-
-            if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < YCELLS) {
-                cid0 = xstart + XCELLS * (ycenter - 1 + YCELLS * zmy);
-                org0 = fetchS(cid0);
-                count0 = fetchS(cid0 + xcount) - org0;
-            }
-
-            if (zvalid && ycenter >= 0 && ycenter < YCELLS) {
-                cid1 = xstart + XCELLS * (ycenter + YCELLS * zmy);
-                org1 = fetchS(cid1);
-                count1 = fetchS(cid1 + xcount) - org1;
-            }
-
-            if (zvalid && ycenter + 1 >= 0 && ycenter + 1 < YCELLS) {
-                cid2 = xstart + XCELLS * (ycenter + 1 + YCELLS * zmy);
-                org2 = fetchS(cid2);
-                count2 = fetchS(cid2 + xcount) - org2;
-            }
-
-            cnt0 = count0;
-            cnt1 = count0 + count1;
-            cnt2 = cnt1 + count2;
-
-            org1 -= cnt0;
-            org2 -= cnt1;
-        }
-
-        for (i = 0; i < cnt2; ++i) {
-            m1 = (int)(i >= cnt0);
-            m2 = (int)(i >= cnt1);
-            slot = i + (m2 ? org2 : m1 ? org1 : org0);
+        x = dst0.x;
+        y = dst0.y;
+        z = dst1.x;
+        mapstatus = tex2map(zplane, x, y, z, /**/ &m);
+        if (mapstatus == EMPTY) continue;
+        for (i = 0; i < m.cnt2; ++i) {
+            m1 = (int)(i >= m.cnt0);
+            m2 = (int)(i >= m.cnt1);
+            slot = i + (m2 ? m.org2 : m1 ? m.org1 : m.org0);
             get(slot, &soluteid, &spid);
 
             sentry = 3 * spid;
