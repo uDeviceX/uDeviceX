@@ -7,7 +7,7 @@
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 
-#include "basetags.h"
+#include "mpi/basetags.h"
 #include "mdstr/imp.h"
 #include "mdstr/buf.h"
 #include "mdstr/tic.h"

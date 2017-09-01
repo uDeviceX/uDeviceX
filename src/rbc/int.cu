@@ -9,7 +9,7 @@
 #include "msg.h"
 #include "utils/cc.h"
 
-#include "basetags.h"
+#include "mpi/basetags.h"
 #include "inc/type.h"
 #include "inc/dev.h"
 

@@ -14,7 +14,7 @@
 
 #include "algo/minmax.h"
 
-#include "basetags.h"
+#include "mpi/basetags.h"
 
 #include "mcomm/type.h"
 #include "mcomm/int.h"
