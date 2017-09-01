@@ -4,7 +4,7 @@ __global__ void bulk(float2 *pp, int n,
     Map m; /* see map/ */
     float fx, fy, fz, rnd;
     forces::Pa a, b;
-    int cnt0, cnt1, ncandidates, org0;
+    int cnt0, cnt1, cnt2, org0;
     int org1, org2;
     int gid, pid, zplane;
     float2 dst0, dst1, dst2;
@@ -68,14 +68,14 @@ __global__ void bulk(float2 *pp, int n,
 
         cnt0 = count0;
         cnt1 = count0 + count1;
-        ncandidates = cnt1 + count2;
+        cnt2 = cnt1 + count2;
 
         org1 -= cnt0;
         org2 -= cnt1;
     }
     
     xforce = yforce = zforce = 0;
-    for (i = 0; i < ncandidates; ++i) {
+    for (i = 0; i < cnt2; ++i) {
         m1 = (int)(i >= cnt0);
         m2 = (int)(i >= cnt1);
         slot = i + (m2 ? org2 : m1 ? org1 : org0);
