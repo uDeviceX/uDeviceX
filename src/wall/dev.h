@@ -94,14 +94,12 @@ __global__ void interactions(TexSDF_t texsdf, const float2 *const pp, const int 
 #define mf3 make_float3
     float  x = dst0.zig,  y = dst0.zag,  z = dst1.zig; /* bulk particle  */
     float vx = dst1.zag, vy = dst2.zig, vz = dst2.zag;
-
     for (int i = 0; i < ncandidates; ++i) {
         int m1 = (int)(i >= scan1);
         int m2 = (int)(i >= scan2);
         int spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
 
         const float4 rw = wpp_fetch(spid); /* wall particle */
-
         float vxw, vyw, vzw;
         k_wvel::vell(rw.x, rw.y, rw.z, &vxw, &vyw, &vzw);
         float rnd = rnd::mean0var1ii(seed, pid, spid);
