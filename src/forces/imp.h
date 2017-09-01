@@ -15,6 +15,22 @@ inline __device__ float cap(float x, float lo, float hi) {
 }
 
 
+inline __device__ bool norm(/*io*/ float *px, float *py, float *pz, /**/ float *pr, float *pinvr) {
+    /* noralize vector r = [x, y, z]  ; return 1 if |r| > 1 */
+    float x, y, z, invr, r;
+    float r2;
+    x = *px; y = *py; z = *pz;
+
+    r2 = x*x + y*y + z*z;
+    if (r2 >= 1) return 1;
+    invr = rsqrtf(r2);
+    r = r2 * invr;
+    x *= invr; y *= invr; z *= invr;
+
+    *px = x; *py = y; *pz = z; *pr = r; *pinvr = invr;
+    return 0;
+}
+
 inline __device__ void dpd00(int typed, int types,
                              float x, float y, float z,
                              float vx, float vy, float vz,
