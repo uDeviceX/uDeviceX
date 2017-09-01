@@ -16,7 +16,7 @@ inline __device__ void dpd00(int typed, int types,
     float aij[] = {aij_solv, aij_solid, aij_wall, aij_rbc};
 
     float rij2, invrij, rij;
-    float argwr, wr, rdotv, gammadpd_pair, sigmaf_pair;
+    float argwr, wr, rdotv, gamma, sigmaf_pair;
     float f;
     float invr2, t2, t4, t6, lj;
     float aij_pair;
@@ -38,9 +38,9 @@ inline __device__ void dpd00(int typed, int types,
 
     rdotv = x * vx + y * vy + z * vz;
 
-    gammadpd_pair = 0.5 * (gammadpd[typed] + gammadpd[types]);
-    sigmaf_pair = sqrt(2*gammadpd_pair*kBT / dt);
-    f = (-gammadpd_pair * wr * rdotv + sigmaf_pair * rnd) * wr;
+    gamma = 0.5 * (gammadpd[typed] + gammadpd[types]);
+    sigmaf_pair = sqrt(2*gamma*kBT / dt);
+    f = (-gamma * wr * rdotv + sigmaf_pair * rnd) * wr;
 
     bool ss = (typed == SOLID_TYPE) && (types == SOLID_TYPE);
     bool sw = (typed == SOLID_TYPE) && (types ==  WALL_TYPE);
