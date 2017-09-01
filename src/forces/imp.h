@@ -54,8 +54,7 @@ inline __device__ void dpd00(int typed, int types,
 
     if (ss || sw) {
         /*hack*/ const float ljsi = ss ? ljsigma : 2 * ljsigma;
-        invr2 = invrij * invrij;
-        t2 = ljsi * ljsi * invr2;
+        t2 = ljsi * ljsi * invrij * invrij;
         t4 = t2 * t2;
         t6 = t4 * t2;
         lj = ljepsilon * 24 * invrij * t6 * (2 * t6 - 1);
