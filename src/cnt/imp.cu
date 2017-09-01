@@ -45,7 +45,6 @@
 #include "forces/imp.h"
 
 namespace dev {
-#include "dev/type.h"
 #include "dev/decl.h"
 #include "dev/fetch.h"
 #include "dev/code.h"
