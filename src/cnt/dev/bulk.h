@@ -22,6 +22,7 @@ __global__ void bulk(float2 *pp, int n,
     int spid;
     int sentry;
     float2 stmp0, stmp1, stmp2;
+    int mapstatus;
 
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     pid = gid / 3;
@@ -35,49 +36,14 @@ __global__ void bulk(float2 *pp, int n,
     x = dst0.x;
     y = dst0.y;
     z = dst1.x;
-    r2map(zplane, n, x, y, z, /**/ &m);
-
-    {
-        xcenter = min(XCELLS - 1, max(0, XOFFSET + (int)floorf(x)));
-        xstart = max(0, xcenter - 1);
-        xcount = min(XCELLS, xcenter + 2) - xstart;
-        if (xcenter - 1 >= XCELLS || xcenter + 2 <= 0) return;
-        ycenter = min(YCELLS - 1, max(0, YOFFSET + (int)floorf(y)));
-        zcenter = min(ZCELLS - 1, max(0, ZOFFSET + (int)floorf(z)));
-        zmy = zcenter - 1 + zplane;
-        zvalid = zmy >= 0 && zmy < ZCELLS;
-        count0 = count1 = count2 = 0;
-        if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < YCELLS) {
-            cid0 = xstart + XCELLS * (ycenter - 1 + YCELLS * zmy);
-            org0 = fetchS(cid0);
-            count0 = fetchS(cid0 + xcount) - org0;
-        }
-        if (zvalid && ycenter >= 0 && ycenter < YCELLS) {
-            cid1 = xstart + XCELLS * (ycenter + YCELLS * zmy);
-            org1 = fetchS(cid1);
-            count1 = fetchS(cid1 + xcount) - org1;
-        }
-
-        if (zvalid && ycenter + 1 >= 0 && ycenter + 1 < YCELLS) {
-            cid2 = xstart + XCELLS * (ycenter + 1 + YCELLS * zmy);
-            org2 = fetchS(cid2);
-            count2 = fetchS(cid2 + xcount) - org2;
-        }
-
-        cnt0 = count0;
-        cnt1 = count0 + count1;
-        cnt2 = cnt1 + count2;
-
-        org1 -= cnt0;
-        org2 -= cnt1;
-    }
+    mapstatus = r2map(zplane, n, x, y, z, /**/ &m);
     
+    if (mapstatus == EMPTY) return;
     xforce = yforce = zforce = 0;
-    for (i = 0; i < cnt2; ++i) {
-        m1 = (int)(i >= cnt0);
-        m2 = (int)(i >= cnt1);
-        slot = i + (m2 ? org2 : m1 ? org1 : org0);
-
+    for (i = 0; i < m.cnt2; ++i) {
+        m1 = (int)(i >= m.cnt0);
+        m2 = (int)(i >= m.cnt1);
+        slot = i + (m2 ? m.org2 : m1 ? m.org1 : m.org0);
         get(slot, &soluteid, &spid);
 
         if (mysoluteid < soluteid || mysoluteid == soluteid && pid <= spid)
