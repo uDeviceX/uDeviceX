@@ -120,18 +120,18 @@ __global__ void force(const int27 start, const SFrag26 ssfrag, const Frag26 ffra
     Rnd  rnd;
     SFrag sfrag;
     int gid;
-    int h; /* halo id */
+    int fid; /* fragment id */
     int i; /* particle id */
 
     gid = (threadIdx.x + blockDim.x * blockIdx.x) >> 1;
     if (gid >= start.d[26]) return;
-    h = k_common::fid(start.d, gid);
-    i = gid - start.d[h];
-    sfrag = ssfrag.d[h];
+    fid = k_common::fid(start.d, gid);
+    i = gid - start.d[fid];
+    sfrag = ssfrag.d[fid];
     if (i >= sfrag.n) return;
 
-    frag = ffrag.d[h];
-    rnd = rrnd.d[h];
+    frag = ffrag.d[fid];
+    rnd = rrnd.d[fid];
     force3(sfrag, frag, rnd, i, /**/ ff);
 }
 
