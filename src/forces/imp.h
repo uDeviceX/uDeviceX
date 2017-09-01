@@ -39,7 +39,7 @@ inline __device__ void dpd00(int typed, int types,
     float gamma_tbl[] = {gammadpd_solv, gammadpd_solid, gammadpd_wall, gammadpd_rbc};
     float a_tbl[] = {aij_solv, aij_solid, aij_wall, aij_rbc};
 
-    float r2, invr, r;
+    float invr, r;
     float wc, wr; /* conservative and random kernels */
     float rm; /* 1 minus r */
     float ev; /* (e dot v) */
@@ -48,14 +48,10 @@ inline __device__ void dpd00(int typed, int types,
     float t2, t4, t6, lj;
     float a;
 
-    r2 = x * x + y * y + z * z;
-    if (r2 >= 1) {
+    if (norm(&x, &y, &z, /*o*/ &r, &invr)) {
         *fx = *fy = *fz = 0;
         return;
     }
-    invr = rsqrtf(r2);
-    r = r2 * invr;
-    x *= invr; y *= invr; z *= invr;
 
     rm = max(1 - r, 0.0f);
     wc = rm;
