@@ -42,8 +42,8 @@ inline __device__ void dpd00(int typed, int types,
                              float vx, float vy, float vz,
                              float rnd, float *fx, float *fy, float *fz) {
     /* [tab]les */
-    float gamma_tbl[] = {gammadpd_solv, gammadpd_solid, gammadpd_wall, gammadpd_rbc};
-    float a_tbl[] = {aij_solv, aij_solid, aij_wall, aij_rbc};
+    const float gamma_tbl[] = {gammadpd_solv, gammadpd_solid, gammadpd_wall, gammadpd_rbc};
+    const float a_tbl[] = {aij_solv, aij_solid, aij_wall, aij_rbc};
 
     float invr, r;
     float wc, wr; /* conservative and random kernels */
