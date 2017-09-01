@@ -8,7 +8,8 @@ __global__ void bulk(float2 *pp, int n,
     int gid, pid, zplane;
     float2 dst0, dst1, dst2;
     int xcenter, xstart, xcount;
-    int ycenter, zcenter, zmy, zvalid;
+    int ycenter, zcenter, zmy;
+    bool zvalid;
     int count0, count1, count2;
     int cid0, cid1, cid2;
     float xforce, yforce, zforce;
