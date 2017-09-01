@@ -13,7 +13,7 @@ __global__ void halo(int nparticles_padded, int ncellentries,
     int nzplanes, zplane;
     float *dst = NULL;
     int i;
-    int m1, m2, slot;
+    int slot;
     int soluteid, spid;
     int sentry;
     float2 stmp0, stmp1, stmp2;
@@ -28,9 +28,9 @@ __global__ void halo(int nparticles_padded, int ncellentries,
     code = k_common::fid(g::starts, base);
     unpackbase = base - g::starts[code];
     nunpack = min(32, g::counts[code] - unpackbase);
-    
+
     if (nunpack == 0) return;
-    
+
     k_read::AOS6f((float2*)(g::pp[code] + unpackbase),
                   nunpack, dst0, dst1, dst2);
     dst = (float *)(g::ff[code] + unpackbase);
