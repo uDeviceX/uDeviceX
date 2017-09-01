@@ -1,6 +1,8 @@
 namespace k_cnt {
 __global__ void halo(int nparticles_padded, int ncellentries,
                      int nsolutes, float seed) {
+    forces::Pa a, b;
+
     int laneid = threadIdx.x % warpSize;
     int warpid = threadIdx.x / warpSize;
     int base = 32 * (warpid + 4 * blockIdx.x);
