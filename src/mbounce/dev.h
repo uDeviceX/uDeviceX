@@ -42,7 +42,10 @@ __global__ void bounce(const Force *ff, const Tri *tt, int nt, int nv, const Par
         float dP[3], dL[3];
         lin_mom_change(    p1.v, pn.v, /**/ dP);
         ang_mom_change(rw, p1.v, pn.v, /**/ dL);
-                
+
+        check_pos(pn.r);
+        check_vel(pn.v);
+        
         pp[i] = pn;
 
         atomicAdd(mm[icol].P + X, dP[X]);
