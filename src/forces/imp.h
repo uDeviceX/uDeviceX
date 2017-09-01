@@ -64,6 +64,7 @@ inline __device__ void dpd0(int typed, int types,
                             float vxd, float vyd, float vzd,
                             float vxs, float vys, float vzs,
                             float rnd, float *fx, float *fy, float *fz) {
+    /* to relative coordinates */
     float dx, dy, dz;
     float dvx, dvy, dvz;
     dx = xd - xs; dy = yd - ys; dz = zd - zs;
@@ -75,6 +76,7 @@ inline __device__ float3 dpd(int t1, int t2,
                              float3 r1, float3 r2,
                              float3 v1, float3 v2,
                              float rnd) {
+    /* unpack float3 */
     float fx, fy, fz;
     dpd0(t1, t2,
          r1.x, r1.y, r1.z,
