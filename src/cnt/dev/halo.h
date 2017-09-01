@@ -9,7 +9,7 @@ __global__ void halo(int nparticles_padded, int ncellentries,
     float xforce, yforce, zforce;
     int nzplanes, zplane;
 
-    int scan1, scan2, ncandidates, spidbase;
+    int cnt0, scan2, ncandidates, spidbase;
     int deltaspid1, deltaspid2;
     int xcenter, xstart, xcount;
     int ycenter, zcenter, zmy;
@@ -82,16 +82,16 @@ __global__ void halo(int nparticles_padded, int ncellentries,
                 count2 = fetchS(cid2 + xcount) - deltaspid2;
             }
 
-            scan1 = count0;
+            cnt0 = count0;
             scan2 = count0 + count1;
             ncandidates = scan2 + count2;
 
-            deltaspid1 -= scan1;
+            deltaspid1 -= cnt0;
             deltaspid2 -= scan2;
         }
 
         for (i = 0; i < ncandidates; ++i) {
-            m1 = (int)(i >= scan1);
+            m1 = (int)(i >= cnt0);
             m2 = (int)(i >= scan2);
             slot = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
             get(slot, &soluteid, &spid);
