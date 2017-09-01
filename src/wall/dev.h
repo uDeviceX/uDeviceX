@@ -1,10 +1,6 @@
-namespace wall {
-namespace sub {
-namespace dev {
-
-enum {X, Y, Z};
-
+namespace wall { namespace sub { namespace dev {
 __global__ void particle2float4(const Particle *src, const int n, float4 *dst) {
+    enum {X, Y, Z};
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
     Particle p = src[pid];
@@ -12,6 +8,7 @@ __global__ void particle2float4(const Particle *src, const int n, float4 *dst) {
 }
 
 __global__ void float42particle(const float4 *src, const int n, Particle *dst) {
+    enum {X, Y, Z};
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
     const float4 r = src[pid];
@@ -122,6 +119,5 @@ __global__ void interactions(TexSDF_t texsdf, const float2 *const pp, const int 
 #undef wpp_fetch
 }
 
-} // dev
-} // sub
-} // wall
+}}} /* namespace */
+
