@@ -7,7 +7,7 @@ __global__ void halo(int nparticles_padded, float seed) {
     int laneid, warpid, base, pid;
     int nunpack;
     float2 dst0, dst1, dst2;
-    int code, unpackbase;
+    int fid, unpackbase;
     float xforce, yforce, zforce;
     int nzplanes, zplane;
     float *dst = NULL;
@@ -24,15 +24,15 @@ __global__ void halo(int nparticles_padded, float seed) {
     pid = base + laneid;
     if (base >= nparticles_padded) return;
 
-    code = k_common::fid(g::starts, base);
-    unpackbase = base - g::starts[code];
-    nunpack = min(32, g::counts[code] - unpackbase);
+    fid = k_common::fid(g::starts, base);
+    unpackbase = base - g::starts[fid];
+    nunpack = min(32, g::counts[fid] - unpackbase);
 
     if (nunpack == 0) return;
 
-    k_read::AOS6f((float2*)(g::pp[code] + unpackbase),
+    k_read::AOS6f((float2*)(g::pp[fid] + unpackbase),
                   nunpack, dst0, dst1, dst2);
-    dst = (float *)(g::ff[code] + unpackbase);
+    dst = (float *)(g::ff[fid] + unpackbase);
     k_read::AOS3f(dst, nunpack, xforce, yforce, zforce);
 
     nzplanes = laneid < nunpack ? 3 : 0;
