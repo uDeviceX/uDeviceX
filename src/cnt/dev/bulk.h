@@ -1,7 +1,6 @@
 __global__ void bulk(float2 *particles, int np,
                      int ncellentries, int nsolutes,
-                     float *ff, float seed,
-                     int mysoluteid) {
+                     float seed, int mysoluteid, float *ff) {
     float fx, fy, fz, rnd;
     forces::Pa a, b;
     int scan1, scan2, ncandidates, spidbase;
