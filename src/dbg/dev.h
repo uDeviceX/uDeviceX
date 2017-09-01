@@ -24,7 +24,7 @@ static __device__ err_type check_float3(const float a[3]) {
 }
 
 static __device__ bool valid_pos(float x, int L, bool verbose) {
-    if (x < -L/2 || x > L/2) {
+    if (x < -0.5*L || x > 0.5*L) {
         if (verbose) printf("DBG: x = %g (L = %d)\n", x, L);
         return false;
     }
@@ -60,9 +60,9 @@ static __global__ void check_pos(const Particle *pp, int n, bool verbose = true)
 
 static __device__ bool valid_unpacked_pos_pu(float x, float y, float z, bool verbose) {
     bool ok = true;
-    ok &= valid_pos(x, 3*XS, verbose);
-    ok &= valid_pos(y, 3*YS, verbose);
-    ok &= valid_pos(z, 3*ZS, verbose);
+    ok &= valid_pos(x, XS + 1, verbose);
+    ok &= valid_pos(y, YS + 1, verbose);
+    ok &= valid_pos(z, ZS + 1, verbose);
 
     return ok;
 }
@@ -122,7 +122,7 @@ static __global__ void check_vv(const Particle *pp, int n, bool verbose = true) 
 
 static __device__ bool valid_acc(float a, int L, bool verbose) {
     float dx = fabs(a * dt * dt);
-    if (dx > L/2) {
+    if (dx > 0.5*L) {
         if (verbose) printf("DBG: a = %g (L = %d)\n", a, L);
         return false;
     }
