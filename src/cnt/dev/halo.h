@@ -1,4 +1,5 @@
-__global__ void halo(int nparticles_padded, float seed) {
+__global__ void halo(int n, float seed) {
+    /* n: padded */
     Map m;
     int mapstatus;
     float x, y, z;
@@ -22,7 +23,7 @@ __global__ void halo(int nparticles_padded, float seed) {
     warp = threadIdx.x / warpSize;
     ws = 32 * (warp + 4 * blockIdx.x);
     pid = ws + dw;
-    if (ws >= nparticles_padded) return;
+    if (ws >= n) return;
 
     fid = k_common::fid(g::starts, ws);
     dwe = ws - g::starts[fid];
