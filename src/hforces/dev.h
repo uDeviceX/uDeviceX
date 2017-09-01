@@ -32,14 +32,7 @@ static __device__ void pair(const Pa l, const Pa r, float rnd, /**/ float *fx, f
     forces::Pa a, b;
     forces::r3v3k2p(l.x, l.y, l.z, l.vx, l.vy, l.vz, SOLVENT_TYPE, /**/ &a);
     forces::r3v3k2p(r.x, r.y, r.z, r.vx, r.vy, r.vz, SOLVENT_TYPE, /**/ &b);
-
-    forces::dpd0(SOLVENT_TYPE, SOLVENT_TYPE,
-                 l.x, l.y, l.z,
-                 r.x, r.y, r.z,
-                 l.vx, l.vy, l.vz,
-                 r.vx, r.vy, r.vz,
-                 rnd,
-                 fx, fy, fz);
+    forces::gen(a, b, rnd, /**/ fx, fy, fz);
 }
 
 static __device__ float random(uint lid, uint rid, float seed, int mask) {
