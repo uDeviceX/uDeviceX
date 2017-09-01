@@ -4,6 +4,7 @@ struct CloudA {
 };
 
 struct CloudB {
+    float2 *pp;
 };
 
 } /* namespace */
