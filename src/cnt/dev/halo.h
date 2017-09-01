@@ -19,9 +19,9 @@ __global__ void halo(int n, float seed) {
     float2 stmp0, stmp1, stmp2;
     float rnd;
 
-    dw = threadIdx.x % warpSize;
+    dw =   threadIdx.x % warpSize;
     warp = threadIdx.x / warpSize;
-    ws = 32 * (warp + 4 * blockIdx.x);
+    ws = warpSize * (warp + 4 * blockIdx.x);
     pid = ws + dw;
     if (ws >= n) return;
 
