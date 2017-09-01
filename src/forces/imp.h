@@ -101,7 +101,6 @@ inline __device__ void dpd0(int typed, int types,
     dpd00(typed, types, dx, dy, dz, dvx, dvy, dvz, rnd, /**/ fx, fy, fz);
 }
 
-
 inline __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) { /* generic */
     dpd0(A.kind, B.kind,
           A.x,  A.y,  A.z,  B.x,  B.y,  B.z,
