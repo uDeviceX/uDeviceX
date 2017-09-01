@@ -1,5 +1,7 @@
-namespace collision
-{
+namespace collision {
+
+enum {OUT=-1, IN=1};
+
 int inside_1p(const float *r, const float *vv, const int *tt, const int nt);
 
 /* tags: -1 if outside, i if in ith solid */
