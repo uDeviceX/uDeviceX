@@ -60,9 +60,9 @@ static __global__ void check_pos(const Particle *pp, int n, bool verbose = true)
 
 static __device__ bool valid_unpacked_pos_pu(float x, float y, float z, bool verbose) {
     bool ok = true;
-    ok &= valid_pos(x, 3*XS, verbose);
-    ok &= valid_pos(y, 3*YS, verbose);
-    ok &= valid_pos(z, 3*ZS, verbose);
+    ok &= valid_pos(x, XS + 1, verbose);
+    ok &= valid_pos(y, YS + 1, verbose);
+    ok &= valid_pos(z, ZS + 1, verbose);
 
     return ok;
 }
