@@ -4,7 +4,7 @@ __global__ void bulk(float2 *pp, int n,
     Map m; /* see map/ */
     float fx, fy, fz, rnd;
     forces::Pa a, b;
-    int cnt0, cnt1, ncandidates, spidbase;
+    int cnt0, cnt1, ncandidates, org0;
     int org1, org2;
     int gid, pid, zplane;
     float2 dst0, dst1, dst2;
@@ -50,8 +50,8 @@ __global__ void bulk(float2 *pp, int n,
 
         if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < YCELLS) {
             cid0 = xstart + XCELLS * (ycenter - 1 + YCELLS * zmy);
-            spidbase = fetchS(cid0);
-            count0 = fetchS(cid0 + xcount) - spidbase;
+            org0 = fetchS(cid0);
+            count0 = fetchS(cid0 + xcount) - org0;
         }
 
         if (zvalid && ycenter >= 0 && ycenter < YCELLS) {
@@ -78,7 +78,7 @@ __global__ void bulk(float2 *pp, int n,
     for (i = 0; i < ncandidates; ++i) {
         m1 = (int)(i >= cnt0);
         m2 = (int)(i >= cnt1);
-        slot = i + (m2 ? org2 : m1 ? org1 : spidbase);
+        slot = i + (m2 ? org2 : m1 ? org1 : org0);
 
         get(slot, &soluteid, &spid);
 
