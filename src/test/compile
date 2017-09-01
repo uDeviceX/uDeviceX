@@ -16,6 +16,23 @@ mkdir $t
 )
 echo $?  > make.out.status
 
+### Build u/dang out of source
+# TEST: comp.dang.t1
+(cd ../cmd; make ) > /dev/null
+t=/tmp/udx.$$
+trap 'rm -rf $t' 0 1 2 3 15
+:
+u=u/dang
+s=`pwd`
+mkdir $t
+( cd $t
+  u.conf "$s" "$u" "$s/conf/default.h" <<!
+  run
+!
+  { make clean && u.make -j; } > /dev/null
+)
+echo $?  > make.out.status
+
 ### Build u/scan out of source
 # TEST: comp.scan.t1
 (cd ../cmd; make ) > /dev/null
