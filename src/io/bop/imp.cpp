@@ -78,6 +78,24 @@ static void header_pp_ff(const long n, const char *name, const int step) {
 static void header_ii(const long n, const char *name, const int step) {
     header(n, name, step, "int", "id");
 }
+
+static long write_data(const void *data, long n, size_t bytesperdata, MPI_Datatype datatype, const char *fname) {
+    MPI_File f;
+    MPI_Status status;
+    MPI_Offset base, offset = 0;
+    MPI_Offset len = n * bytesperdata;
+    long ntot = 0;
+
+    MC(m::Reduce(&n, &ntot, 1, MPI_LONG, MPI_SUM, 0, m::cart));
+    MC(MPI_File_open(m::cart, fname, MPI_MODE_CREATE | MPI_MODE_WRONLY, MPI_INFO_NULL, &f));
+    MC(MPI_File_set_size(f, 0));
+    MC(MPI_File_get_position(f, &base)); 
+
+    MC( MPI_Exscan(&len, &offset, 1, MPI_OFFSET, MPI_SUM, m::cart) );
+    MC( MPI_File_write_at_all(f, base + offset, data, n, datatype, &status) ); 
+    MC( MPI_File_close(&f) );
+    return ntot;
+}
     
 void parts(const Particle *pp, const long n, const char *name, const int step, Ticket *t) {
     copy_shift(pp, n, t->mi, /**/ t->w_pp);
@@ -85,22 +103,8 @@ void parts(const Particle *pp, const long n, const char *name, const int step, T
     char fname[256] = {0};
     sprintf(fname, DUMP_BASE "/bop/" PATTERN ".values", name, step / part_freq);
 
-    MPI_File f;
-    MPI_Status status;
-    MPI_Offset base, offset = 0;
-    MPI_Offset len = n * sizeof(Particle);
-
-    long ntot = 0;
-    MC(m::Reduce(&n, &ntot, 1, MPI_LONG, MPI_SUM, 0, m::cart));
-    MC(MPI_File_open(m::cart, fname, MPI_MODE_CREATE | MPI_MODE_WRONLY, MPI_INFO_NULL, &f));
-    MC(MPI_File_set_size(f, 0));
-    MC(MPI_File_get_position(f, &base)); 
-
+    long ntot = write_data(t->w_pp, n, sizeof(Particle), datatype::particle, fname);
     if (m::rank == 0) header_pp(ntot, name, step);
-
-    MC( MPI_Exscan(&len, &offset, 1, MPI_OFFSET, MPI_SUM, m::cart) );
-    MC( MPI_File_write_at_all(f, base + offset, t->w_pp, n, datatype::particle, &status) ); 
-    MC( MPI_File_close(&f) );
 }
 
 void parts_forces(const Particle *pp, const Force *ff, const long n, const char *name, const int step, /*w*/ Ticket *t) {
@@ -109,44 +113,18 @@ void parts_forces(const Particle *pp, const Force *ff, const long n, const char 
     char fname[256] = {0};
     sprintf(fname, DUMP_BASE "/bop/" PATTERN ".values", name, step / part_freq);
 
-    MPI_File f;
-    MPI_Status status;
-    MPI_Offset base, offset = 0;
-    MPI_Offset len = n * (sizeof(Particle) + sizeof(Force));
-
-    long ntot = 0;
-    MC(m::Reduce(&n, &ntot, 1, MPI_LONG, MPI_SUM, 0, m::cart));
-    MC(MPI_File_open(m::cart, fname, MPI_MODE_CREATE | MPI_MODE_WRONLY, MPI_INFO_NULL, &f));
-    MC(MPI_File_set_size(f, 0));
-    MC(MPI_File_get_position(f, &base)); 
-
+    long ntot = write_data(t->w_pp, n, sizeof(Particle) + sizeof(Force), datatype::partforce, fname);
+    
     if (m::rank == 0) header_pp_ff(ntot, name, step);
-
-    MC( MPI_Exscan(&len, &offset, 1, MPI_OFFSET, MPI_SUM, m::cart) );
-    MC( MPI_File_write_at_all(f, base + offset, t->w_pp, n, datatype::particle, &status) ); 
-    MC( MPI_File_close(&f) );
 }
 
 void intdata(const int *ii, const long n, const char *name, const int step) {
     char fname[256] = {0};
     sprintf(fname, DUMP_BASE "/bop/" PATTERN ".values", name, step / part_freq);
 
-    MPI_File f;
-    MPI_Status status;
-    MPI_Offset base, offset = 0;
-    MPI_Offset len = n * sizeof(int);
-
-    long ntot = 0;
-    MC( m::Reduce(&n, &ntot, 1, MPI_LONG, MPI_SUM, 0, m::cart) );
-    MC( MPI_File_open(m::cart, fname, MPI_MODE_CREATE | MPI_MODE_WRONLY, MPI_INFO_NULL, &f) );
-    MC( MPI_File_set_size(f, 0) );
-    MC( MPI_File_get_position(f, &base) ); 
-
+    long ntot = write_data(ii, n, sizeof(int), MPI_INT, fname);
+    
     if (m::rank == 0) header_ii(ntot, name, step);
-
-    MC(MPI_Exscan(&len, &offset, 1, MPI_OFFSET, MPI_SUM, m::cart) );
-    MC(MPI_File_write_at_all(f, base + offset, ii, n, MPI_INT, &status) ); 
-    MC(MPI_File_close(&f) );
 }
 
 #undef PATTERN
