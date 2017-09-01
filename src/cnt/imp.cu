@@ -44,6 +44,7 @@
 #include "forces/pack.h"
 #include "forces/imp.h"
 
+namespace dev {
 #include "dev/type.h"
 #include "dev/decl.h"
 #include "dev/fetch.h"
@@ -51,6 +52,7 @@
 #include "dev/bulk.h"
 #include "dev/halo.h"
 #include "dev/pop.h"
+}
 
 #include "cnt/decl.h"
 #include "cnt/bind.h"

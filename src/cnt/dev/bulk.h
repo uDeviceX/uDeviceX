@@ -1,4 +1,3 @@
-namespace dev {
 __global__ void bulk(float2 *particles, int np,
                      int ncellentries, int nsolutes,
                      float *acc, float seed,
@@ -96,5 +95,4 @@ __global__ void bulk(float2 *particles, int np,
     atomicAdd(acc + 3 * pid + 0, xforce);
     atomicAdd(acc + 3 * pid + 1, yforce);
     atomicAdd(acc + 3 * pid + 2, zforce);
-}
 }

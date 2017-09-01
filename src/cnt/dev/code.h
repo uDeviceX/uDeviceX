@@ -1,5 +1,3 @@
-namespace dev { /* particle cell code api */
-
 #define NMAX (256*256*256)
 static __device__ void get(int i, /**/ int *s, int *pid) {
     /* pid: particle id; s: solute id; i : slot */
@@ -14,7 +12,4 @@ static __device__ void set(int s, int pid, int i, /**/ int *cells) {
     assert(pid < NMAX);
     cells[i] = NMAX * s + pid;
 }
-
-}
-
 #undef NMAX

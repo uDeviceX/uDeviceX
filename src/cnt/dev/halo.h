@@ -1,4 +1,3 @@
-namespace dev {
 __global__ void halo(int nparticles_padded, int ncellentries,
                      int nsolutes, float seed) {
     forces::Pa a, b;
@@ -104,5 +103,4 @@ __global__ void halo(int nparticles_padded, int ncellentries,
     }
 
     k_write::AOS3f(dst, nunpack, xforce, yforce, zforce);
-}
 }

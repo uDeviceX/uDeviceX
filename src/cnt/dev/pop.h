@@ -1,4 +1,3 @@
-namespace dev {
 __global__ void populate(uchar4 *subindices,
                          int *cellstart, int nparticles,
                          int soluteid, int ntotalparticles,
@@ -20,5 +19,4 @@ __global__ void populate(uchar4 *subindices,
     int slot = mystart + subindex.w;
 
     set(soluteid, pid, slot, /**/ entrycells);
-}
 }
