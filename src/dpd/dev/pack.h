@@ -1,4 +1,4 @@
-__device__ void f2tof3(float4 r, /**/ float3 *l) { /* lhs = rhs */
+__device__ void f4tof3(float4 r, /**/ float3 *l) { /* lhs = rhs */
     l->x = r.x; l->y = r.y; l->z = r.z;
 }
 
