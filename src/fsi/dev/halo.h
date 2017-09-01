@@ -16,9 +16,9 @@ static __device__ Pa warp2p(const Particle *pp, int n, int i) {
     return p;
 }
 
-__device__ void halo0(int n1, float seed, int lid, int lane, int unpackbase, int nunpack,
-                      Particle *pp, Force *ff,
-                      /**/ float *ff1) {
+static __device__ void halo0(int n1, float seed, int lid, int lane, int unpackbase, int nunpack,
+                             Particle *pp, Force *ff,
+                             /**/ float *ff1) {
     Pa l, r; /* local and remote particles */
     Fo f;
     float *dst = NULL;
@@ -48,7 +48,7 @@ __device__ void halo0(int n1, float seed, int lid, int lane, int unpackbase, int
     k_write::AOS3f(dst, nunpack, xforce, yforce, zforce);
 }
 
-__device__ void halo1(int n1, float seed, int lid, int base, int lane, /**/ float *ff1) {
+static __device__ void halo1(int n1, float seed, int lid, int base, int lane, /**/ float *ff1) {
     int fid; /* fragment id */
     int start, count;
     Particle *pp;
@@ -76,5 +76,4 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
     i = base + lane;
     halo1(n1, seed, i, base, lane, /**/ ff1);
 }
-
 }
