@@ -15,20 +15,26 @@ inline __device__ float cap(float x, float lo, float hi) {
 }
 
 
+const float EPS = 1e-6;
+enum {OK, BIG, SMALL};
 inline __device__ bool norm(/*io*/ float *px, float *py, float *pz, /**/ float *pr, float *pinvr) {
-    /* noralize vector r = [x, y, z]  ; return 1 if |r| > 1 */
+    /* noralize vector r = [x, y, z], sets |r| and 1/|r| if not big */
     float x, y, z, invr, r;
     float r2;
     x = *px; y = *py; z = *pz;
 
     r2 = x*x + y*y + z*z;
-    if (r2 >= 1) return 1;
-    invr = rsqrtf(r2);
-    r = r2 * invr;
-    x *= invr; y *= invr; z *= invr;
-
-    *px = x; *py = y; *pz = z; *pr = r; *pinvr = invr;
-    return 0;
+    if      (r2 >= 1 )   return BIG;
+    else if (r2 < EPS) {
+        *pr = *px = *py = *pz = 0;
+        return SMALL;
+    } else {
+        invr = rsqrtf(r2);
+        r = r2 * invr;
+        x *= invr; y *= invr; z *= invr;
+        *px = x; *py = y; *pz = z; *pr = r; *pinvr = invr;
+        return OK;
+    }
 }
 
 inline __device__ void dpd00(int typed, int types,
@@ -47,8 +53,10 @@ inline __device__ void dpd00(int typed, int types,
     float f;
     float t2, t4, t6, lj;
     float a;
+    int nstat; /* vector normalization status */
 
-    if (norm(&x, &y, &z, /*o*/ &r, &invr)) {
+    nstat = norm(/*io*/ &x, &y, &z, /*o*/ &r, &invr);
+    if (nstat == BIG) {
         *fx = *fy = *fz = 0;
         return;
     }
