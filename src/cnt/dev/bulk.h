@@ -35,6 +35,7 @@ __global__ void bulk(float2 *pp, int n,
     x = dst0.x;
     y = dst0.y;
     z = dst1.x;
+    r2map(zplane, n, x, y, z, /**/ &m);
 
     {
         xcenter = min(XCELLS - 1, max(0, XOFFSET + (int)floorf(x)));
