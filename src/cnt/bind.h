@@ -1,4 +1,3 @@
-namespace cnt {
 static void bind(const int *const starts, const int *const cellentries,
           const int nc, std::vector<ParticlesWrap> wr) {
     size_t textureoffset = 0;
@@ -25,5 +24,4 @@ static void bind(const int *const starts, const int *const cellentries,
     CC(cudaMemcpyToSymbolAsync(dev::g::ns, ns, sizeof(int)*n, 0, H2D));
     CC(cudaMemcpyToSymbolAsync(dev::g::csolutes, ps, sizeof(float2*)*n, 0, H2D));
     CC(cudaMemcpyToSymbolAsync(dev::g::csolutesacc, fs, sizeof(float*)*n, 0, H2D));
-}
 }

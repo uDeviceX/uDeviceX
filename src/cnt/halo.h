@@ -1,4 +1,3 @@
-namespace cnt {
 void halo(ParticlesWrap halos[26]) {
     int n = 0;
     {
@@ -27,5 +26,4 @@ void halo(ParticlesWrap halos[26]) {
         CC(cudaMemcpyToSymbolAsync(dev::g::ff, ff, sizeof(ff), 0, H2D));
     }
     KL(dev::halo, (k_cnf(n)), (n, entries->S, no, rgen->get_float()));
-}
 }

@@ -1,4 +1,3 @@
-namespace cnt {
 void setup() {
     dev::t::start.channelDesc = cudaCreateChannelDesc<int>();
     dev::t::start.filterMode = cudaFilterModePoint;
@@ -9,5 +8,4 @@ void setup() {
     dev::t::id.filterMode = cudaFilterModePoint;
     dev::t::id.mipmapFilterMode = cudaFilterModePoint;
     dev::t::id.normalized = 0;
-}
 }

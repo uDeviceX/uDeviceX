@@ -1,4 +1,3 @@
-namespace cnt {
 void build(std::vector<ParticlesWrap> wr) {
     /* build cells */
     no = wr.size();
@@ -29,5 +28,4 @@ void build(std::vector<ParticlesWrap> wr) {
     }
 
     bind(starts, entries->D, ntotal, wr);
-}
 }

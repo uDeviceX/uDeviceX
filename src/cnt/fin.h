@@ -1,4 +1,3 @@
-namespace cnt {
 void fin() {
     delete indexes;
     scan::free_work(&ws);
@@ -7,5 +6,4 @@ void fin() {
 
     Dfree(counts);
     Dfree(starts);
-}
 }

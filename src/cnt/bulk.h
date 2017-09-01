@@ -1,4 +1,3 @@
-namespace cnt {
 void bulk(std::vector<ParticlesWrap> wr) {
     float rnd;
     if (wr.size() == 0) return;
@@ -9,4 +8,4 @@ void bulk(std::vector<ParticlesWrap> wr) {
            ((float2*)it.p, it.n, entries->S, wr.size(), rnd, i, (float*)it.f));
     }
 }
-}
+
