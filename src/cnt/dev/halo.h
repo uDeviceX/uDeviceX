@@ -9,8 +9,8 @@ __global__ void halo(int nparticles_padded, int ncellentries,
     float xforce, yforce, zforce;
     int nzplanes, zplane;
 
-    int cnt0, cnt1, ncandidates, spidbase;
-    int deltaspid1, deltaspid2;
+    int cnt0, cnt1, cnt2, org0;
+    int org1, org2;
     int xcenter, xstart, xcount;
     int ycenter, zcenter, zmy;
     bool zvalid;
@@ -66,34 +66,34 @@ __global__ void halo(int nparticles_padded, int ncellentries,
 
             if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < YCELLS) {
                 cid0 = xstart + XCELLS * (ycenter - 1 + YCELLS * zmy);
-                spidbase = fetchS(cid0);
-                count0 = fetchS(cid0 + xcount) - spidbase;
+                org0 = fetchS(cid0);
+                count0 = fetchS(cid0 + xcount) - org0;
             }
 
             if (zvalid && ycenter >= 0 && ycenter < YCELLS) {
                 cid1 = xstart + XCELLS * (ycenter + YCELLS * zmy);
-                deltaspid1 = fetchS(cid1);
-                count1 = fetchS(cid1 + xcount) - deltaspid1;
+                org1 = fetchS(cid1);
+                count1 = fetchS(cid1 + xcount) - org1;
             }
 
             if (zvalid && ycenter + 1 >= 0 && ycenter + 1 < YCELLS) {
                 cid2 = xstart + XCELLS * (ycenter + 1 + YCELLS * zmy);
-                deltaspid2 = fetchS(cid2);
-                count2 = fetchS(cid2 + xcount) - deltaspid2;
+                org2 = fetchS(cid2);
+                count2 = fetchS(cid2 + xcount) - org2;
             }
 
             cnt0 = count0;
             cnt1 = count0 + count1;
-            ncandidates = cnt1 + count2;
+            cnt2 = cnt1 + count2;
 
-            deltaspid1 -= cnt0;
-            deltaspid2 -= cnt1;
+            org1 -= cnt0;
+            org2 -= cnt1;
         }
 
-        for (i = 0; i < ncandidates; ++i) {
+        for (i = 0; i < cnt2; ++i) {
             m1 = (int)(i >= cnt0);
             m2 = (int)(i >= cnt1);
-            slot = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
+            slot = i + (m2 ? org2 : m1 ? org1 : org0);
             get(slot, &soluteid, &spid);
 
             sentry = 3 * spid;
