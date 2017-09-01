@@ -4,15 +4,15 @@
 #include "inc/conf.h"
 
 #include "msg.h"
-#include "m.h" /* mini-MPI and -device */
+#include "mpi/glb.h" /* mini-MPI and -device */
 #include "d/api.h"
 
 #include "glb.h"
 
 #include "inc/dev.h"
-#include "cc.h"
+#include "utils/cc.h"
 
-#include "scan/int.h"
+#include "algo/scan/int.h"
 
 /* see set.cpp */
 void set(/**/ int*, int*);
