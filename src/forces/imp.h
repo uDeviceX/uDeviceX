@@ -53,10 +53,10 @@ inline __device__ void dpd00(int typed, int types,
     float f;
     float t2, t4, t6, lj;
     float a;
-    int nstat; /* vector normalization status */
+    int vnstat; /* vector normalization status */
 
-    nstat = norm(/*io*/ &x, &y, &z, /*o*/ &r, &invr);
-    if (nstat == BIG) {
+    vnstat = norm(/*io*/ &x, &y, &z, /*o*/ &r, &invr);
+    if (vnstat == BIG) {
         *fx = *fy = *fz = 0;
         return;
     }
@@ -69,13 +69,12 @@ inline __device__ void dpd00(int typed, int types,
     gamma = 0.5 * (gamma_tbl[typed] + gamma_tbl[types]);
     a     = 0.5 * (a_tbl[typed] + a_tbl[types]);
     sigma = sqrt(2*gamma*kBT / dt);
-
     f  = (-gamma * wr * ev + sigma * rnd) * wr;
     f +=                                a * wc;
 
     bool ss = (typed == SOLID_TYPE) && (types == SOLID_TYPE);
     bool sw = (typed == SOLID_TYPE) && (types ==  WALL_TYPE);
-    if (ss || sw) {
+    if (vnstat == OK && (ss || sw) ) {
         /*hack*/ const float ljsi = ss ? ljsigma : 2 * ljsigma;
         t2 = ljsi * ljsi * invr * invr;
         t4 = t2 * t2;
