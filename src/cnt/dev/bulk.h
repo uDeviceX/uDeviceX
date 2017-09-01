@@ -37,27 +37,20 @@ __global__ void bulk(float2 *pp, int n,
     z = dst1.x;
 
     {
-        xcenter = min(XCELLS - 1, max(0, XOFFSET + (int)floorf(dst0.x)));
+        xcenter = min(XCELLS - 1, max(0, XOFFSET + (int)floorf(x)));
         xstart = max(0, xcenter - 1);
         xcount = min(XCELLS, xcenter + 2) - xstart;
-
         if (xcenter - 1 >= XCELLS || xcenter + 2 <= 0) return;
-
-        ycenter = min(YCELLS - 1, max(0, YOFFSET + (int)floorf(dst0.y)));
-
-        zcenter = min(ZCELLS - 1, max(0, ZOFFSET + (int)floorf(dst1.x)));
+        ycenter = min(YCELLS - 1, max(0, YOFFSET + (int)floorf(y)));
+        zcenter = min(ZCELLS - 1, max(0, ZOFFSET + (int)floorf(z)));
         zmy = zcenter - 1 + zplane;
         zvalid = zmy >= 0 && zmy < ZCELLS;
-
         count0 = count1 = count2 = 0;
-        
-
         if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < YCELLS) {
             cid0 = xstart + XCELLS * (ycenter - 1 + YCELLS * zmy);
             org0 = fetchS(cid0);
             count0 = fetchS(cid0 + xcount) - org0;
         }
-
         if (zvalid && ycenter >= 0 && ycenter < YCELLS) {
             cid1 = xstart + XCELLS * (ycenter + YCELLS * zmy);
             org1 = fetchS(cid1);
