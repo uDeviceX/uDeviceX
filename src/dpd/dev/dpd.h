@@ -9,13 +9,6 @@ static __device__ float3 dpd(int dpid, float4 rdest, float4 udest, float4 rsrc, 
 
     forces::rvk2p(r1, v1, SOLVENT_TYPE, /**/ &a);
     forces::rvk2p(r2, v2, SOLVENT_TYPE, /**/ &b);
-
-    forces::dpd0(SOLVENT_TYPE, SOLVENT_TYPE,
-                     r1[X], r1[Y], r1[Z],
-                     r2[X], r2[Y], r2[Z],
-                     v1[X], v1[Y], v1[Z],
-                     v2[X], v2[Y], v2[Z],
-                     rnd,
-                     &fx, &fy, &fz);
+    forces::gen(a, b, rnd, &fx, &fy, &fz);
     return make_float3(fx, fy, fz);
 }
