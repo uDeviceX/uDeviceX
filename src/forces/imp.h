@@ -19,13 +19,14 @@ inline __device__ void dpd00(int typed, int types,
                              float x, float y, float z,
                              float vx, float vy, float vz,
                              float rnd, float *fx, float *fy, float *fz) {
-    float gammadpd[] = {gammadpd_solv, gammadpd_solid, gammadpd_wall, gammadpd_rbc};
-    float aij[] = {aij_solv, aij_solid, aij_wall, aij_rbc};
+    /* [tab]les */
+    float gamma_tbl[] = {gammadpd_solv, gammadpd_solid, gammadpd_wall, gammadpd_rbc};
+    float a_tbl[] = {aij_solv, aij_solid, aij_wall, aij_rbc};
 
     float rij2, invrij, rij;
     float argwr, wr, rdotv, gamma, sigma;
     float f;
-    float invr2, t2, t4, t6, lj;
+    float t2, t4, t6, lj;
     float aij_pair;
 
     rij2 = x * x + y * y + z * z;
@@ -45,7 +46,7 @@ inline __device__ void dpd00(int typed, int types,
 
     rdotv = x * vx + y * vy + z * vz;
 
-    gamma = 0.5 * (gammadpd[typed] + gammadpd[types]);
+    gamma = 0.5 * (gamma_tbl[typed] + gamma_tbl[types]);
     sigma = sqrt(2*gamma*kBT / dt);
     f = (-gamma * wr * rdotv + sigma * rnd) * wr;
 
@@ -62,7 +63,7 @@ inline __device__ void dpd00(int typed, int types,
         f += lj;
     }
 
-    aij_pair = 0.5 * (aij[typed] + aij[types]);
+    aij_pair = 0.5 * (a_tbl[typed] + a_tbl[types]);
     f += aij_pair * argwr;
 
     *fx = f * x;
