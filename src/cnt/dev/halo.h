@@ -30,9 +30,8 @@ __global__ void halo(int nparticles_padded, float seed) {
 
     if (nunpack == 0) return;
 
-    k_read::AOS6f((float2*)(g::pp[fid] + dwe),
-                  nunpack, dst0, dst1, dst2);
-    dst = (float *)(g::ff[fid] + dwe);
+    k_read::AOS6f((float2*)(g::pp[fid] + dwe), nunpack, dst0, dst1, dst2);
+    dst = (float*)(g::ff[fid] + dwe);
     k_read::AOS3f(dst, nunpack, xforce, yforce, zforce);
 
     nzplanes = dw < nunpack ? 3 : 0;
