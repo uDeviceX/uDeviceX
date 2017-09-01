@@ -29,6 +29,7 @@
 
 #include "k/wvel.h"
 #include "forces/type.h"
+#include "forces/pack.h"
 #include "forces/imp.h"
 
 #include "clist/int.h"
