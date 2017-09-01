@@ -28,7 +28,7 @@ __global__ void interactions(TexSDF_t texsdf, const float2 *const pp, const int 
                              const Texo<int> texstart, const Texo<float4> texwpp) {
 #define start_fetch(i) (texstart.fetch(i))
 #define   wpp_fetch(i) (texwpp.fetch(i))
-    forces::Pa a, b;
+    forces::Pa a, b;  /* bulk and wall particles */
     float vx, vy, vz; /* wall velocity */
     float fx, fy, fz, rnd;
 
@@ -96,8 +96,7 @@ __global__ void interactions(TexSDF_t texsdf, const float2 *const pp, const int 
         int m1 = (int)(i >= scan1);
         int m2 = (int)(i >= scan2);
         int spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
-
-        const float4 r = wpp_fetch(spid); /* wall particle */
+        const float4 r = wpp_fetch(spid);
         k_wvel::vell(r.x, r.y, r.z, &vx, &vy, &vz);
         forces::r3v3k2p(r.x, r.y, r.z, vx, vy, vz, WALL_TYPE, /**/ &b);
         rnd = rnd::mean0var1ii(seed, pid, spid);
