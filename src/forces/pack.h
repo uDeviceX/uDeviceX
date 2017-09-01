@@ -1,4 +1,16 @@
 namespace forces { /* create Pa from all kinds of garbage */
+inline __device__ void r3v3k2p(float x, float y, float z,
+                               float vx, float vy, float vz,
+                               int kind, Pa *p) {
+    p->x = x;
+    p->y = y;
+    p->z = z;
+    p->vx = vx;
+    p->vy = vy;
+    p->vz = vz;
+    p->kind = kind;
+}
+
 inline __device__ void rvk2p(float r[3], float v[3], int kind, /**/ Pa *p) {
     enum {X, Y, Z};
     p->x = r[X];
