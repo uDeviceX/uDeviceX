@@ -15,42 +15,48 @@ inline __device__ void dpd00(int typed, int types,
     float gammadpd[] = {gammadpd_solv, gammadpd_solid, gammadpd_wall, gammadpd_rbc};
     float aij[] = {aij_solv, aij_solid, aij_wall, aij_rbc};
 
-    float rij2 = x * x + y * y + z * z;
-    float invrij = rsqrtf(rij2);
-    float rij = rij2 * invrij;
+    float rij2, invrij, rij;
+    float argwr, wr, rdotv, gammadpd_pair, sigmaf_pair;
+    float f;
+    float invr2, t2, t4, t6, lj;
+    float aij_pair;
+
+    rij2 = x * x + y * y + z * z;
+    invrij = rsqrtf(rij2);
+    rij = rij2 * invrij;
 
     if (rij2 >= 1) {
         *fx = *fy = *fz = 0;
         return;
     }
 
-    float argwr = max(1.f - rij, 0.f);
-    float wr = wrf(-S_LEVEL, argwr);
+    argwr = max(1.f - rij, 0.f);
+    wr = wrf(-S_LEVEL, argwr);
 
     x *= invrij;
     y *= invrij;
     z *= invrij;
 
-    float rdotv = x * vx + y * vy + z * vz;
+    rdotv = x * vx + y * vy + z * vz;
 
-    float gammadpd_pair = 0.5 * (gammadpd[typed] + gammadpd[types]);
-    float sigmaf_pair = sqrt(2*gammadpd_pair*kBT / dt);
-    float f = (-gammadpd_pair * wr * rdotv + sigmaf_pair * rnd) * wr;
+    gammadpd_pair = 0.5 * (gammadpd[typed] + gammadpd[types]);
+    sigmaf_pair = sqrt(2*gammadpd_pair*kBT / dt);
+    f = (-gammadpd_pair * wr * rdotv + sigmaf_pair * rnd) * wr;
 
     bool ss = (typed == SOLID_TYPE) && (types == SOLID_TYPE);
     bool sw = (typed == SOLID_TYPE) && (types ==  WALL_TYPE);
 
     if (ss || sw) {
         /*hack*/ const float ljsi = ss ? ljsigma : 2 * ljsigma;
-        float invr2 = invrij * invrij;
-        float t2 = ljsi * ljsi * invr2;
-        float t4 = t2 * t2;
-        float t6 = t4 * t2;
-        float lj = min(1e4f, max(0.f, ljepsilon * 24.f * invrij * t6 * (2.f * t6 - 1.f)));
+        invr2 = invrij * invrij;
+        t2 = ljsi * ljsi * invr2;
+        t4 = t2 * t2;
+        t6 = t4 * t2;
+        lj = min(1e4f, max(0.f, ljepsilon * 24.f * invrij * t6 * (2.f * t6 - 1.f)));
         f += lj;
     } 
 
-    float aij_pair = 0.5 * (aij[typed] + aij[types]);
+    aij_pair = 0.5 * (aij[typed] + aij[types]);
     f += aij_pair * argwr;
 
     *fx = f * x;
