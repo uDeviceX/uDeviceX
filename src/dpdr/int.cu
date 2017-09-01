@@ -15,9 +15,9 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 
-#include "hforces/imp.h"
 #include "hforces/cloud/type.h"
 #include "hforces/cloud/int.h"
+#include "hforces/imp.h"
 
 #include "dpdr/type.h"
 #include "dpdr/int.h"
@@ -159,6 +159,8 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
     int i;
     int dx, dy, dz;
     int m0, m1, m2;
+    hforces::CloudA clouda;
+    hforces::CloudB cloudb;
 
     hforces::SFrag26 sfrag;
     hforces::Frag26   frag;
@@ -173,13 +175,16 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
         m1 = 0 == dy;
         m2 = 0 == dz;
 
+
         sfrag.d[i] = {
             (float*)ts.b.pp.d[i],
             ts.b.ii.d[i],
+            clouda,            
             ts.nphst[i]};
 
         frag.d[i] = {
             (float2*)tr.b.pp.d[i],
+            cloudb,
             tr.b.cum.d[i],
             dx,
             dy,
