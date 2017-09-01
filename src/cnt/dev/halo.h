@@ -51,15 +51,19 @@ __global__ void halo(int nparticles_padded, int ncellentries,
     for (zplane = 0; zplane < nzplanes; ++zplane) {
 
         {
-            xcenter = XOFFSET + (int)floorf(dst0.x);
+            x = dst0.x;
+            y = dst0.y;
+            z = dst1.x;
+
+            xcenter = XOFFSET + (int)floorf(x);
             xstart = max(0, xcenter - 1);
             xcount = min(XCELLS, xcenter + 2) - xstart;
 
             if (xcenter - 1 >= XCELLS || xcenter + 2 <= 0) continue;
 
-            ycenter = YOFFSET + (int)floorf(dst0.y);
+            ycenter = YOFFSET + (int)floorf(y);
 
-            zcenter = ZOFFSET + (int)floorf(dst1.x);
+            zcenter = ZOFFSET + (int)floorf(z);
             zmy = zcenter - 1 + zplane;
             zvalid = zmy >= 0 && zmy < ZCELLS;
 
