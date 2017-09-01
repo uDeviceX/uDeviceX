@@ -40,19 +40,18 @@ inline __device__ void dpd00(int typed, int types,
     argwr = max(1.f - rij, 0.f);
     wr = wrf(-S_LEVEL, argwr);
 
-    x *= invrij;
-    y *= invrij;
-    z *= invrij;
-
+    x *= invrij; y *= invrij; z *= invrij;
     rdotv = x * vx + y * vy + z * vz;
 
     gamma = 0.5 * (gamma_tbl[typed] + gamma_tbl[types]);
+    a     = 0.5 * (a_tbl[typed] + a_tbl[types]);
     sigma = sqrt(2*gamma*kBT / dt);
+
     f = (-gamma * wr * rdotv + sigma * rnd) * wr;
+    f += a * argwr;
 
     bool ss = (typed == SOLID_TYPE) && (types == SOLID_TYPE);
     bool sw = (typed == SOLID_TYPE) && (types ==  WALL_TYPE);
-
     if (ss || sw) {
         /*hack*/ const float ljsi = ss ? ljsigma : 2 * ljsigma;
         t2 = ljsi * ljsi * invrij * invrij;
@@ -63,12 +62,7 @@ inline __device__ void dpd00(int typed, int types,
         f += lj;
     }
 
-    a = 0.5 * (a_tbl[typed] + a_tbl[types]);
-    f += a * argwr;
-
-    *fx = f * x;
-    *fy = f * y;
-    *fz = f * z;
+    *fx = f * x; *fy = f * y; *fz = f * z;
 }
 
 inline __device__ void dpd0(int typed, int types,
