@@ -66,9 +66,9 @@ inline __device__ void dpd00(int typed, int types,
     wr = wrf(-S_LEVEL, rm);
     ev = x*vx + y*vy + z*vz;
 
-    gamma = 0.5 * (gamma_tbl[typed] + gamma_tbl[types]);
-    a     = 0.5 * (a_tbl[typed] + a_tbl[types]);
-    sigma = sqrt(2*gamma*kBT / dt);
+    gamma = 0.5f * (gamma_tbl[typed] + gamma_tbl[types]);
+    a     = 0.5f * (a_tbl[typed] + a_tbl[types]);
+    sigma = sqrtf(2*gamma*kBT / dt);
     f  = (-gamma * wr * ev + sigma * rnd) * wr;
     f +=                                a * wc;
 
