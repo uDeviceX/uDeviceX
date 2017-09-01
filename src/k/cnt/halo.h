@@ -2,6 +2,7 @@ namespace k_cnt {
 __global__ void halo(int nparticles_padded, int ncellentries,
                      int nsolutes, float seed) {
     forces::Pa a, b;
+    float fx, fy, fz;
 
     int laneid = threadIdx.x % warpSize;
     int warpid = threadIdx.x / warpSize;
@@ -89,29 +90,18 @@ __global__ void halo(int nparticles_padded, int ncellentries,
             float2 stmp1 = __ldg(g::csolutes[soluteid] + sentry + 1);
             float2 stmp2 = __ldg(g::csolutes[soluteid] + sentry + 2);
 
-            float myrandnr = rnd::mean0var1ii(seed, pid, spid);
+            float rnd = rnd::mean0var1ii(seed, pid, spid);
 
             // check for particle types and compute the DPD force
-            forces::f2k2p(dst0, dst1, dst2, SOLID_TYPE, /**/ &a);
-            float3 pos1 = make_float3(dst0.x, dst0.y, dst1.x),
-                pos2 = make_float3(stmp0.x, stmp0.y, stmp1.x);
-            float3 vel1 = make_float3(dst1.y, dst2.x, dst2.y),
-                vel2 = make_float3(stmp1.y, stmp2.x, stmp2.y);
-            int type1 = SOLID_TYPE;
-            int type2 = SOLID_TYPE;
-            float3 strength = forces::dpd(type1, type2, pos1, pos2, vel1, vel2, myrandnr);
-
-            float xinteraction = strength.x;
-            float yinteraction = strength.y;
-            float zinteraction = strength.z;
-
-            xforce += xinteraction;
-            yforce += yinteraction;
-            zforce += zinteraction;
-
-            atomicAdd(g::csolutesacc[soluteid] + sentry,     -xinteraction);
-            atomicAdd(g::csolutesacc[soluteid] + sentry + 1, -yinteraction);
-            atomicAdd(g::csolutesacc[soluteid] + sentry + 2, -zinteraction);
+            forces::f2k2p(dst0,   dst1,  dst2, SOLID_TYPE, /**/ &a);
+            forces::f2k2p(stmp0, stmp1, stmp2, SOLID_TYPE, /**/ &b);
+            forces::gen(a, b, rnd, &fx, &fy, &fz);
+            xforce += fx;
+            yforce += fy;
+            zforce += fz;
+            atomicAdd(g::csolutesacc[soluteid] + sentry,     -fx);
+            atomicAdd(g::csolutesacc[soluteid] + sentry + 1, -fy);
+            atomicAdd(g::csolutesacc[soluteid] + sentry + 2, -fz);
         }
     }
 
