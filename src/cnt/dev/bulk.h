@@ -1,6 +1,6 @@
 __global__ void bulk(float2 *particles, int np,
                      int ncellentries, int nsolutes,
-                     float *acc, float seed,
+                     float *ff, float seed,
                      int mysoluteid) {
     float fx, fy, fz, rnd;
     forces::Pa a, b;
@@ -101,7 +101,7 @@ __global__ void bulk(float2 *particles, int np,
         atomicAdd(g::csolutesacc[soluteid] + sentry + 2, -fz);
     }
 
-    atomicAdd(acc + 3 * pid + 0, xforce);
-    atomicAdd(acc + 3 * pid + 1, yforce);
-    atomicAdd(acc + 3 * pid + 2, zforce);
+    atomicAdd(ff + 3 * pid + 0, xforce);
+    atomicAdd(ff + 3 * pid + 1, yforce);
+    atomicAdd(ff + 3 * pid + 2, zforce);
 }
