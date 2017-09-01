@@ -22,13 +22,12 @@ inline __device__ void dpd00(int typed, int types,
     float aij_pair;
 
     rij2 = x * x + y * y + z * z;
-    invrij = rsqrtf(rij2);
-    rij = rij2 * invrij;
-
     if (rij2 >= 1) {
         *fx = *fy = *fz = 0;
         return;
     }
+    invrij = rsqrtf(rij2);
+    rij = rij2 * invrij;
 
     argwr = max(1.f - rij, 0.f);
     wr = wrf(-S_LEVEL, argwr);
