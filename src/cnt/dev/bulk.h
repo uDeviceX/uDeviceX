@@ -6,17 +6,10 @@ __global__ void bulk(float2 *pp, int n,
 
     float fx, fy, fz, rnd;
     forces::Pa a, b;
-    int cnt0, cnt1, cnt2, org0;
-    int org1, org2;
     int gid, pid, zplane;
     float2 dst0, dst1, dst2;
-    int xcenter, xstart, xcount;
-    int ycenter, zcenter, zmy;
-    bool zvalid;
-    int count0, count1, count2;
-    int cid0, cid1, cid2;
     float xforce, yforce, zforce;
-    int i, m1, m2, slot;
+    int i, slot;
 
     int soluteid;
     int spid;
@@ -40,12 +33,9 @@ __global__ void bulk(float2 *pp, int n,
     
     if (mapstatus == EMPTY) return;
     xforce = yforce = zforce = 0;
-    for (i = 0; i < m.cnt2; ++i) {
-        m1 = (int)(i >= m.cnt0);
-        m2 = (int)(i >= m.cnt1);
-        slot = i + (m2 ? m.org2 : m1 ? m.org1 : m.org0);
+    for (i = 0; !endp(m, i); ++i) {
+        slot = m2id(m, i);
         get(slot, &soluteid, &spid);
-
         if (mysoluteid < soluteid || mysoluteid == soluteid && pid <= spid)
             continue;
 
