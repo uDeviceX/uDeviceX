@@ -15,16 +15,26 @@ void dump_part(int step) {
       cD2H(o::qi.ii_hst, o::qi.ii, o::q.n);
       bop::intdata(o::qi.ii_hst, o::q.n, "id_solvent", step);
   }
-  // TODO add a switch?
   if (multi_solvent) {
       cD2H(o::qc.ii_hst, o::qc.ii, o::q.n);
       bop::intdata(o::qc.ii_hst, o::q.n, "colors_solvent", step);
   }
-  bop::parts(o::q.pp_hst, o::q.n, "solvent", step, /**/ &dumpt);
+
+  if (dump_forces) {
+      cD2H(o::ff_hst, o::ff, o::q.n);
+      bop::parts_forces(o::q.pp_hst, o::ff_hst, o::q.n, "solvent", step, /**/ &dumpt);
+  } else {
+      bop::parts(o::q.pp_hst, o::q.n, "solvent", step, /**/ &dumpt);
+  }
   
   if(solids0) {
     cD2H(s::q.pp_hst, s::q.pp, s::q.n);
-    bop::parts(s::q.pp_hst, s::q.n, "solid", step, /**/ &dumpt);
+    if (dump_forces) {
+        cD2H(s::ff_hst, s::ff, s::q.n);
+        bop::parts_forces(s::q.pp_hst, s::ff_hst, s::q.n, "solid", step, /**/ &dumpt);
+    } else {
+        bop::parts(s::q.pp_hst, s::q.n, "solid", step, /**/ &dumpt);
+    }
   }
 }
 
