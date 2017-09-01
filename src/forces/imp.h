@@ -40,7 +40,7 @@ inline __device__ void dpd00(int typed, int types,
     invr = rsqrtf(r2);
     r = r2 * invr;
 
-    rm = max(1 - r, 0);
+    rm = max(1 - r, 0.0f);
     wc = rm;
     wr = wrf(-S_LEVEL, rm);
 
