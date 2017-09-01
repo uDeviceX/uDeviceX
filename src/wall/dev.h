@@ -28,6 +28,8 @@ __global__ void interactions(TexSDF_t texsdf, const float2 *const pp, const int 
                              const Texo<int> texstart, const Texo<float4> texwpp) {
 #define start_fetch(i) (texstart.fetch(i))
 #define   wpp_fetch(i) (texwpp.fetch(i))
+    forces::Pa a, b;
+    float fx, fy, fz, rnd;
 
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
     int pid = gid / 3;
