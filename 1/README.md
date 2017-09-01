@@ -1,27 +1,35 @@
-# _dang after Lukas fix
-
-dang/fix/n40
-
-    ../src/odstr/halo/_dang/reg.h:15: 36100 > 12 for fid: 26
-
 # status
 
 `ssh daint sh /scratch/snx1600/lisergey/check`
 
-# nosolid
+# ./FIX/gold/wall0
 
-daint:/scratch/snx1600/lisergey/nsolid/nomem
 
-    :  5.8e+03  1.2e+00 [ 1.9e+05 -5.2e+01 -9.0e+00]  1.1e+01
-    : ../src/dpdr/imp.cu:73: an illegal memory access was encountered
-    srun: error: nid02701: task 0: Exited with exit code 1
-    srun: Terminating job step 3390136.0
+	04 void step0(float driving_force0, bool wall0, int it) {
+    05     if (solids0) distr_solid();
+    06     if (rbcs)    distr_rbc();
+    07     forces(wall0);
+    08     dump_diag0(it);
+    09     if (wall0 || solids0) dump_diag_after(it);
+    10     body_force(driving_force0);
+    11     update_solvent();
+    12     if (solids0) update_solid();
+    13     if (rbcs)    update_rbc();
+    14     O;
+    15     if (wall0) bounce();
+    16     O;
+    17     if (sbounce_back && solids0) bounce_solid(it);
+    18     O;
+    19 }
 
-# solid, XS=16
 
-daint:/scratch/snx1600/lisergey/small16
+    :  1.5e+03  1.2e+00 [ 1.8e+05  2.2e+01 -1.3e+01]  1.0e+01
+    ../src/sim/_dang/step.h:14: (sub::check_pos_pu): NAN_VAL op
+    ../src/sim/_dang/step.h:14: (sub::check_vv): NAN_VAL ov
+    ../src/sim/_dang/step.h:16: (sub::check_pos_pu): NAN_VAL op
+    ../src/sim/_dang/step.h:16: (sub::check_vv): NAN_VAL ov
+    ../src/sim/_dang/step.h:18: (sub::check_pos_pu): NAN_VAL op
+    ../src/sim/_dang/step.h:18: (sub::check_vv): NAN_VAL ov
+    ../src/odstr/halo/_dang/check.h:22: void dev::check(const float *): block: [20,0,0], thread: [106,0,0] Assertion `0` failed.
+    wild particle: [nan nan nan]
 
-    :  3.2e+03  3.5e-02 [ 3.9e+03  8.3e-01 -9.6e+00]  3.2e-01
-    : ../src/sim/_dang/0dev/distr.h:2: an illegal memory access was encountered
-    srun: error: nid06336: task 0: Exited with exit code 1
-    srun: Terminating job step 3392233.0
