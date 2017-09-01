@@ -101,22 +101,6 @@ inline __device__ void dpd0(int typed, int types,
     dpd00(typed, types, dx, dy, dz, dvx, dvy, dvz, rnd, /**/ fx, fy, fz);
 }
 
-inline __device__ float3 dpd(int t1, int t2,
-                             float3 r1, float3 r2,
-                             float3 v1, float3 v2,
-                             float rnd) {
-    /* unpack float3 */
-    float fx, fy, fz;
-    dpd0(t1, t2,
-         r1.x, r1.y, r1.z,
-         r2.x, r2.y, r2.z,
-         v1.x, v1.y, v1.z,
-         v2.x, v2.y, v2.z,
-         rnd,
-         &fx, &fy, &fz);
-
-    return make_float3(fx, fy, fz);
-}
 
 inline __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) { /* generic */
     dpd0(A.kind, B.kind,
