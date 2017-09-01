@@ -30,6 +30,9 @@
 #include "imp.h"
 #include "dev.map.h"
 #include "dev.h"
+#include "cloud/type.h"
+#include "cloud/r.h"
+#include "cloud/get.h"
 
 namespace hforces {
 
