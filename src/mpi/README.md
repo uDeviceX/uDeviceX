@@ -14,3 +14,7 @@ contains rank, size, coords and dims of carthesian communicator
 ## type
 
 usefule mpi datatypes
+
+## basetags
+
+utility for creating unique tags
