@@ -118,4 +118,7 @@ inline __device__ float3 dpd(int t1, int t2,
     return make_float3(fx, fy, fz);
 }
 
-}
+
+} /* namespace */
+
+
