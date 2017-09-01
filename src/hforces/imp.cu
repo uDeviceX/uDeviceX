@@ -44,7 +44,7 @@ void interactions(const SFrag26 ssfrag, const Frag26 ffrag, const Rnd26 rrnd, /*
     int27 start;
     int n; /* number of threads */
     get_start(ssfrag.d, /**/ start.d);
-    n = 2 * start.d[26];
+    n = start.d[26];
         
     KL(dev::force, (k_cnf(n)), (start, ssfrag, ffrag, rrnd, /**/ ff));
 }

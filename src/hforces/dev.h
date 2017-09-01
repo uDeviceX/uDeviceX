@@ -52,7 +52,7 @@ static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, const
     lid = l.id;
 
     *fx = *fy = *fz = 0;
-    for (i = threadIdx.x & 1; !endp(m, i); i += 2) {
+    for (i = 0; !endp(m, i); i ++ ) {
         rid = m2id(m, i);
         r = frag2p(frag, rid);
         pair(l, r, random(lid, rid, rnd.seed, rnd.mask), &x, &y, &z);
@@ -123,7 +123,7 @@ __global__ void force(const int27 start, const SFrag26 ssfrag, const Frag26 ffra
     int fid; /* fragment id */
     int i; /* particle id */
 
-    gid = (threadIdx.x + blockDim.x * blockIdx.x) >> 1;
+    gid = threadIdx.x + blockDim.x * blockIdx.x;
     if (gid >= start.d[26]) return;
     fid = k_common::fid(start.d, gid);
     i = gid - start.d[fid];
