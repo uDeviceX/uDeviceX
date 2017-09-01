@@ -24,7 +24,7 @@ struct Part {
 };
 
 struct Lo { /* particle [lo]cation in memory
-               d: shift in wrap, used for collective access  */
+               d: shift in warp, used for collective access  */
     float2 *p;
     int d;
 };
