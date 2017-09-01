@@ -1,4 +1,4 @@
-static __device__ int tex2map(int zplane, int n1, float x, float y, float z, /**/ Map *m) {
+static __device__ int tex2map(int zplane, float x, float y, float z, /**/ Map *m) {
     int cnt0, cnt1, cnt2, org0;
     int org1, org2;
     int xcenter, xstart, xcount;
