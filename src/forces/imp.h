@@ -118,15 +118,12 @@ inline __device__ float3 dpd(int t1, int t2,
     return make_float3(fx, fy, fz);
 }
 
-inline __device__ float3 gen(Pa A, Pa B, float rnd) { /* generic */
-    /* unpack float3 */
-    float fx, fy, fz;
+inline __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) { /* generic */
     dpd0(A.kind, B.kind,
           A.x,  A.y,  A.z,  B.x,  B.y,  B.z,
          A.vx, A.vy, A.vz, B.vx, B.vy, B.vz,
          rnd,
-         &fx, &fy, &fz);
-    return make_float3(fx, fy, fz);
+         fx, fy, fz);
 }
 
 } /* namespace */
