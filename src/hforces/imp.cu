@@ -33,11 +33,11 @@
 
 namespace hforces {
 
-static void get_start(const SFrag sfrag[26], /**/ unsigned int start[27]) {
+static void get_start(const SFrag sfrag[26], /**/ int start[27]) {
     /* generate padded start */
     int i;
     start[0] = 0;
-    for (i = 0; i < 26; ++i) start[i + 1] = start[i] + 16 * (((unsigned int)sfrag[i].n + 15) / 16);
+    for (i = 0; i < 26; ++i) start[i + 1] = start[i] + 16 * ((sfrag[i].n + 15) / 16);
 }
 
 void interactions(const SFrag26 ssfrag, const Frag26 ffrag, const Rnd26 rrnd, /**/ float *ff) {

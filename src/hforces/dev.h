@@ -119,7 +119,7 @@ __global__ void force(const int27 start, const SFrag26 ssfrag, const Frag26 ffra
     Frag frag;
     Rnd  rnd;
     SFrag sfrag;
-    unsigned int gid;
+    int gid;
     int h; /* halo id */
     int i; /* particle id */
 
