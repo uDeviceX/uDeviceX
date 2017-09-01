@@ -11,7 +11,7 @@ $B/dual/imp.o: $S/dual/imp.cpp; $X -I$S/. -I$S/dual
 $B/field.o: $S/field.cpp; $X -I$S/.
 $B/flu/imp.o: $S/flu/imp.cu; $N -I$S/. -I$S/flu
 $B/flu/int.o: $S/flu/int.cu; $N -I$S/. -I$S/flu
-$B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/. -I$S/fsi -I$S/fsi/_release
+$B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/. -I$S/fsi
 $B/glb.o: $S/glb.cu; $N -I$S/.
 $B/hforces/imp.o: $S/hforces/imp.cu; $N -I$S/. -I$S/hforces
 $B/inter/imp.o: $S/inter/imp.cu; $N -I$S/. -I$S/inter
