@@ -1,9 +1,12 @@
 namespace forces {
 
-template<int s>
-inline            __device__ float wrf(float x)    { return sqrtf(wrf<s - 1>(x)); }
-template<> inline __device__ float wrf<1>(float x) { return sqrtf(x); }
-template<> inline __device__ float wrf<0>(float x) { return x;        }
+static __device__ float wrf(const int s, float x) {
+    if (s == 0) return x;
+    if (s == 1) return sqrtf(x);
+    if (s == 2) return sqrtf(sqrtf(x));
+    if (s == 3) return sqrtf(sqrtf(sqrtf(x)));
+    return powf(x, 1.f/s);
+}
 
 inline __device__ void dpd00(int typed, int types,
                              float x, float y, float z,
@@ -22,7 +25,7 @@ inline __device__ void dpd00(int typed, int types,
     }
 
     float argwr = 1.f - rij;
-    float wr = wrf<-S_LEVEL>(argwr);
+    float wr = wrf(-S_LEVEL, argwr);
 
     x *= invrij;
     y *= invrij;
