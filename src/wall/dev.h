@@ -28,7 +28,8 @@ __global__ void interactions(TexSDF_t texsdf, const float2 *const pp, const int 
                              const Texo<int> texstart, const Texo<float4> texwpp) {
 #define start_fetch(i) (texstart.fetch(i))
 #define   wpp_fetch(i) (texwpp.fetch(i))
-    forces::Pa a, b;
+    forces::Pa a, b;  /* bulk and wall particles */
+    float vx, vy, vz; /* wall velocity */
     float fx, fy, fz, rnd;
 
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
@@ -90,29 +91,18 @@ __global__ void interactions(TexSDF_t texsdf, const float2 *const pp, const int 
     }
 
     float xforce = 0, yforce = 0, zforce = 0;
-
-#define zig x
-#define zag y
-#define mf3 make_float3
-    float  x = dst0.zig,  y = dst0.zag,  z = dst1.zig; /* bulk particle  */
-    float vx = dst1.zag, vy = dst2.zig, vz = dst2.zag;
     forces::f2k2p(dst0, dst1, dst2, type, /**/ &a);
     for (int i = 0; i < ncandidates; ++i) {
         int m1 = (int)(i >= scan1);
         int m2 = (int)(i >= scan2);
         int spid = i + (m2 ? deltaspid2 : m1 ? deltaspid1 : spidbase);
-
-        const float4 rw = wpp_fetch(spid); /* wall particle */
-        float vxw, vyw, vzw;
-        k_wvel::vell(rw.x, rw.y, rw.z, &vxw, &vyw, &vzw);
-        float rnd = rnd::mean0var1ii(seed, pid, spid);
-        float3 strength = forces::dpd(type, WALL_TYPE,
-                                      mf3(x ,  y,  z), mf3(rw.x, rw.y, rw.z),
-                                      mf3(vx, vy, vz), mf3( vxw,  vyw,  vzw), rnd);
-        xforce += strength.x; yforce += strength.y; zforce += strength.z;
+        const float4 r = wpp_fetch(spid);
+        k_wvel::vell(r.x, r.y, r.z, /**/ &vx, &vy, &vz);
+        forces::r3v3k2p(r.x, r.y, r.z, vx, vy, vz, WALL_TYPE, /**/ &b);
+        rnd = rnd::mean0var1ii(seed, pid, spid);
+        forces::gen(a, b, rnd, /**/ &fx, &fy, &fz);
+        xforce += fx; yforce += fy; zforce += fz;
     }
-#undef zig
-#undef zag
     atomicAdd(acc + 3 * pid + 0, xforce);
     atomicAdd(acc + 3 * pid + 1, yforce);
     atomicAdd(acc + 3 * pid + 2, zforce);
