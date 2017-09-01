@@ -4,14 +4,14 @@ namespace dev {
 struct Pa { /* local particle */
     float x, y, z;
     float vx, vy, vz;
-    uint id;
+    int id;
 };
 
 struct Fo { float *x, *y, *z; }; /* force */
 
 static __device__ float fst(float2 p) { return p.x; }
 static __device__ float scn(float2 p) { return p.y; }
-static __device__ void p2rv2(const float2 *p, uint i,
+static __device__ void p2rv2(const float2 *p, int i,
                              float  *x, float  *y, float  *z,
                              float *vx, float *vy, float *vz) {
     float2 s0, s1, s2;
@@ -21,7 +21,7 @@ static __device__ void p2rv2(const float2 *p, uint i,
     *vx = scn(s1); *vy = fst(s2); *vz = scn(s2);
 }
 
-static __device__ Pa frag2p(const Frag frag, uint i) {
+static __device__ Pa frag2p(const Frag frag, int i) {
     Pa p;
     p2rv2(frag.pp, i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
     p.id = i;
@@ -35,7 +35,7 @@ static __device__ void pair(const Pa l, const Pa r, float rnd, /**/ float *fx, f
     forces::gen(a, b, rnd, /**/ fx, fy, fz);
 }
 
-static __device__ float random(uint lid, uint rid, float seed, int mask) {
+static __device__ float random(int lid, uint rid, float seed, int mask) {
     uint a1, a2;
     a1 = mask ? lid : rid;
     a2 = mask ? rid : lid;
@@ -46,8 +46,8 @@ static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, const
                               float *fx, float *fy, float *fz) {
     /* l, r: local and remote particles */
     Pa r;
-    uint i;
-    uint lid, rid; /* ids */
+    int i;
+    int lid, rid; /* ids */
     float x, y, z; /* pair force */
     lid = l.id;
 
@@ -80,7 +80,7 @@ static __device__ void force2(const Frag frag, const Rnd rnd, Pa p, /**/ Fo f) {
     force1(rnd, frag, m, p, f);
 }
 
-static __device__ Fo i2f(const int *ii, float *ff, uint i) {
+static __device__ Fo i2f(const int *ii, float *ff, int i) {
     /* local id and index to force */
     Fo f;
     ff += 3*ii[i];
@@ -88,7 +88,7 @@ static __device__ Fo i2f(const int *ii, float *ff, uint i) {
     return f;
 }
 
-static __device__ void p2rv(const float *p, uint i,
+static __device__ void p2rv(const float *p, int i,
                             float  *x, float  *y, float  *z,
                             float *vx, float *vy, float *vz) {
     p += 6*i;
@@ -96,18 +96,18 @@ static __device__ void p2rv(const float *p, uint i,
     *vx = *(p++); *vy = *(p++); *vz = *(p++);
 }
 
-static __device__ Pa sfrag2p(const SFrag sfrag, uint i) {
+static __device__ Pa sfrag2p(const SFrag sfrag, int i) {
     Pa p;
     p2rv(sfrag.pp,     i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
     p.id = i;
     return p;
 }
 
-static __device__ Fo sfrag2f(const SFrag sfrag, float *ff, uint i) {
+static __device__ Fo sfrag2f(const SFrag sfrag, float *ff, int i) {
     return i2f(sfrag.ii, ff, i);
 }
 
-static __device__ void force3(const SFrag sfrag, const Frag frag, const Rnd rnd, uint i, /**/ float *ff) {
+static __device__ void force3(const SFrag sfrag, const Frag frag, const Rnd rnd, int i, /**/ float *ff) {
     Pa p;
     Fo f;
     p = sfrag2p(sfrag, i);
@@ -120,8 +120,8 @@ __global__ void force(const int27 start, const SFrag26 ssfrag, const Frag26 ffra
     Rnd  rnd;
     SFrag sfrag;
     unsigned int gid;
-    uint h; /* halo id */
-    uint i; /* particle id */
+    int h; /* halo id */
+    int i; /* particle id */
 
     gid = (threadIdx.x + blockDim.x * blockIdx.x) >> 1;
     if (gid >= start.d[26]) return;
