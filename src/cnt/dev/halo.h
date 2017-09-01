@@ -1,5 +1,7 @@
 __global__ void halo(int nparticles_padded, int ncellentries,
                      int nsolutes, float seed) {
+    Map m;
+    float x, y, z;
     forces::Pa a, b;
     float fx, fy, fz;
     int laneid, warpid, base, pid;
@@ -46,7 +48,6 @@ __global__ void halo(int nparticles_padded, int ncellentries,
     k_read::AOS3f(dst, nunpack, xforce, yforce, zforce);
 
     nzplanes = laneid < nunpack ? 3 : 0;
-
     for (zplane = 0; zplane < nzplanes; ++zplane) {
 
         {
