@@ -51,7 +51,7 @@ static void copy_shift_with_forces(const Particle *pp, const Force *ff, const lo
 
 #define PATTERN "%s-%05d"
     
-static void header_pp(const long n, const char *name, const int step, const char *extrafields = "") {
+static void header(const long n, const char *name, const int step, const char *type, const char *fields) {
     char fname[256] = {0};
     sprintf(fname, DUMP_BASE "/bop/" PATTERN ".bop", name, step / part_freq);
         
@@ -62,25 +62,21 @@ static void header_pp(const long n, const char *name, const int step, const char
 
     fprintf(f, "%ld\n", n);
     fprintf(f, "DATA_FILE: " PATTERN ".values\n", name, step / part_freq);
-    fprintf(f, "DATA_FORMAT: float\n");
-    fprintf(f, "VARIABLES: x y z vx vy vz %s\n", extrafields);
+    fprintf(f, "DATA_FORMAT: %s\n", type);
+    fprintf(f, "VARIABLES: %s\n", fields);
     fclose(f);
 }
 
+static void header_pp(const long n, const char *name, const int step) {
+    header(n, name, step, "float", "x y z vx vy vz");
+}
+
+static void header_pp_ff(const long n, const char *name, const int step) {
+    header(n, name, step, "float", "x y z vx vy vz fx fy fz");
+}
+
 static void header_ii(const long n, const char *name, const int step) {
-    char fname[256] = {0};
-    sprintf(fname, DUMP_BASE "/bop/" PATTERN ".bop", name, step / part_freq);
-        
-    FILE *f = fopen(fname, "w");
-
-    if (f == NULL)
-    ERR("could not open <%s>\n", fname);
-
-    fprintf(f, "%ld\n", n);
-    fprintf(f, "DATA_FILE: " PATTERN ".values\n", name, step / part_freq);
-    fprintf(f, "DATA_FORMAT: int\n");
-    fprintf(f, "VARIABLES: id\n");
-    fclose(f);
+    header(n, name, step, "int", "id");
 }
     
 void parts(const Particle *pp, const long n, const char *name, const int step, Ticket *t) {
@@ -124,7 +120,7 @@ void parts_forces(const Particle *pp, const Force *ff, const long n, const char 
     MC(MPI_File_set_size(f, 0));
     MC(MPI_File_get_position(f, &base)); 
 
-    if (m::rank == 0) header_pp(ntot, name, step, "fx fy fz");
+    if (m::rank == 0) header_pp_ff(ntot, name, step);
 
     MC( MPI_Exscan(&len, &offset, 1, MPI_OFFSET, MPI_SUM, m::cart) );
     MC( MPI_File_write_at_all(f, base + offset, t->w_pp, n, datatype::particle, &status) ); 
