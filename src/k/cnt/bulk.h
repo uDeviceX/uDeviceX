@@ -3,6 +3,9 @@ __global__ void bulk(float2 *particles, int np,
                      int ncellentries, int nsolutes,
                      float *acc, float seed,
                      int mysoluteid) {
+    float fx, fy, fz, rnd;
+    forces::Pa a, b;
+
     int gid = threadIdx.x + blockDim.x * blockIdx.x;
     int pid = gid / 3;
     int zplane = gid % 3;

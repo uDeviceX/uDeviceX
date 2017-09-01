@@ -91,8 +91,6 @@ __global__ void halo(int nparticles_padded, int ncellentries,
             float2 stmp2 = __ldg(g::csolutes[soluteid] + sentry + 2);
 
             float rnd = rnd::mean0var1ii(seed, pid, spid);
-
-            // check for particle types and compute the DPD force
             forces::f2k2p(dst0,   dst1,  dst2, SOLID_TYPE, /**/ &a);
             forces::f2k2p(stmp0, stmp1, stmp2, SOLID_TYPE, /**/ &b);
             forces::gen(a, b, rnd, &fx, &fy, &fz);
