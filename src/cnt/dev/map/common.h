@@ -16,4 +16,3 @@ static __device__ uint m2id(const Map m, uint i) {
     id = i + (m2 ? m.org2 : m1 ? m.org1 : m.org0);
     return id;
 }
-}
