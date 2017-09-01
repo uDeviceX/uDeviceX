@@ -39,12 +39,11 @@ inline __device__ void dpd00(int typed, int types,
     }
     invr = rsqrtf(r2);
     r = r2 * invr;
+    x *= invr; y *= invr; z *= invr;
 
     rm = max(1 - r, 0.0f);
     wc = rm;
     wr = wrf(-S_LEVEL, rm);
-
-    x *= invr; y *= invr; z *= invr;
     ev = x*vx + y*vy + z*vz;
 
     gamma = 0.5 * (gamma_tbl[typed] + gamma_tbl[types]);
