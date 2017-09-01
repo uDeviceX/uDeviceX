@@ -5,24 +5,27 @@ __global__ void bulk(float2 *particles, int np,
                      int mysoluteid) {
     float fx, fy, fz, rnd;
     forces::Pa a, b;
+    int scan1, scan2, ncandidates, spidbase;
+    int deltaspid1, deltaspid2;
+    int gid, pid, zplane;
+    float2 dst0, dst1, dst2;
+    int xcenter, xstart, xcount;
 
-    int gid = threadIdx.x + blockDim.x * blockIdx.x;
-    int pid = gid / 3;
-    int zplane = gid % 3;
+    gid = threadIdx.x + blockDim.x * blockIdx.x;
+    pid = gid / 3;
+    zplane = gid % 3;
 
     if (pid >= np) return;
 
-    float2 dst0 = __ldg(particles + 3 * pid + 0);
-    float2 dst1 = __ldg(particles + 3 * pid + 1);
-    float2 dst2 = __ldg(particles + 3 * pid + 2);
+    dst0 = __ldg(particles + 3 * pid + 0);
+    dst1 = __ldg(particles + 3 * pid + 1);
+    dst2 = __ldg(particles + 3 * pid + 2);
 
-    int scan1, scan2, ncandidates, spidbase;
-    int deltaspid1, deltaspid2;
 
     {
-        int xcenter = min(XCELLS - 1, max(0, XOFFSET + (int)floorf(dst0.x)));
-        int xstart = max(0, xcenter - 1);
-        int xcount = min(XCELLS, xcenter + 2) - xstart;
+        xcenter = min(XCELLS - 1, max(0, XOFFSET + (int)floorf(dst0.x)));
+        xstart = max(0, xcenter - 1);
+        xcount = min(XCELLS, xcenter + 2) - xstart;
 
         if (xcenter - 1 >= XCELLS || xcenter + 2 <= 0) return;
 
