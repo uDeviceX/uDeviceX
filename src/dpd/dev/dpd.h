@@ -17,14 +17,14 @@ static __device__ float3 dpd0(float4 ra, float4 va, float4 rb, float4 vb, float 
 
 
 static __device__ float3 dpd1(uint bid, uint aid, float rnd) {
-    float4 xdest, xsrc, va, vb;
-    xdest = fetchF4(bid);
+    float4 ra, rb, va, vb;
+    ra = fetchF4(bid);
     va = fetchF4(xadd(bid, 1u));
 
-    xsrc  = fetchF4(aid);
+    rb  = fetchF4(aid);
     vb  = fetchF4(xadd(aid, 1u));
 
-    return dpd0(xdest, va, xsrc, vb, rnd);
+    return dpd0(ra, va, rb, vb, rnd);
 }
 
 static __device__ float random(uint i, uint j) {
