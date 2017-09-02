@@ -1,6 +1,5 @@
 static __device__ void core( const uint dststart, const uint pshare, const uint tid, const uint spidext )
 {
-    float4 xdest, xsrc, udest, usrc;
     float3 f;
 
     uint item;
@@ -13,12 +12,7 @@ static __device__ void core( const uint dststart, const uint pshare, const uint 
     uint dentry = xscale( dpid, 2.f );
     uint sentry = xscale( spid, 2.f );
 
-    xdest = fetchF4(dentry);
-    xsrc  = fetchF4(sentry);
-    udest = fetchF4(xadd(dentry, 1u));
-    usrc  = fetchF4(xadd(sentry, 1u));
-
-    f = dpd( dpid, xdest, udest, xsrc, usrc, spid );
+    f = dpd(dentry, sentry, dpid, spid);
 
     // the overhead of transposition acc back
     // can be completely killed by changing the integration kernel
