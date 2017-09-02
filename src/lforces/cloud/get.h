@@ -10,4 +10,7 @@ static __device__ void cloud_get(uint i, /**/ forces::Pa *a) { /* local fetch */
 }
 
 static __device__ void cloud_pos(/* dummy c */ int i, /**/ float *x, float *y, float *z) {
+    float4 r;
+    r = fetchF4(i);
+    *x = r.x; *y = r.y; *z = r.z;
 }
