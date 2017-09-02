@@ -43,3 +43,7 @@ forces/use.h
 
      inline __device__ void p2r3(Pa *p, /**/ float *x, float *y, float *z)
 	 inline __device__ void shift(float x, float y, float z, /**/ Pa *p)
+
+Once two particles are extracted they are passed to generic force
+
+    inline __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz)
