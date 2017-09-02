@@ -83,20 +83,6 @@ static __device__ Fo i2f(const int *ii, float *ff, int i) {
     return f;
 }
 
-static __device__ void p2rv(const float *p, int i,
-                            float  *x, float  *y, float  *z,
-                            float *vx, float *vy, float *vz) {
-    p += 6*i;
-     *x = *(p++);  *y = *(p++);  *z = *(p++);
-    *vx = *(p++); *vy = *(p++); *vz = *(p++);
-}
-
-static __device__ forces::Pa sfrag2p(const SFrag sfrag, int i) {
-    forces::Pa p;
-    cloudA_get(sfrag.c, i, &p);
-    return p;
-}
-
 static __device__ Fo sfrag2f(const SFrag sfrag, float *ff, int i) {
     return i2f(sfrag.ii, ff, i);
 }
@@ -104,7 +90,7 @@ static __device__ Fo sfrag2f(const SFrag sfrag, float *ff, int i) {
 static __device__ void force3(const SFrag sfrag, const Frag frag, const Rnd rnd, int i, /**/ float *ff) {
     forces::Pa p;
     Fo f;
-    p = sfrag2p(sfrag, i);
+    cloudA_get(sfrag.c, i, &p);
     f = sfrag2f(sfrag, ff, i);
     force2(frag, rnd, p, i, f);
 }
