@@ -19,9 +19,11 @@ static __device__ float3 dpd0(float4 rdest, float4 udest, float4 rsrc, float4 us
 static __device__ float3 dpd1(uint dentry, uint sentry, float rnd) {
     float4 xdest, xsrc, udest, usrc;
     xdest = fetchF4(dentry);
-    xsrc  = fetchF4(sentry);
     udest = fetchF4(xadd(dentry, 1u));
+
+    xsrc  = fetchF4(sentry);
     usrc  = fetchF4(xadd(sentry, 1u));
+
     return dpd0(xdest, udest, xsrc, usrc, rnd);
 }
 
