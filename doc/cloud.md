@@ -11,7 +11,6 @@ Clouds not `pp` should be arguments of functions which call
 
 # example for src/hforces
 
-
 Initialization of a cloud: called in dpdr/int.cu
 hforces/cloud/int.h
 
@@ -21,7 +20,6 @@ To extract a particle
 hforces/cloud/get.h
 
     __device__ void cloudA_get(CloudA c, int i, /**/ forces::Pa *p)
-
 
 To set/get position from `forces::Pa`
 forces/use.h
@@ -39,7 +37,6 @@ Once two particles are extracted they are passed to generic force
 
     ./dpd/dev/dpd.h:12:    forces::gen(a, b, rnd, &fx, &fy, &fz);
     ./fsi/dev/pair.h:7:    forces::gen(a, b, rnd, /**/ fx, fy, fz);
-    ./hforces/dev.h:35:    forces::gen(a, b, rnd, /**/ fx, fy, fz);
     ./k/cnt/halo.h:96:     forces::gen(a, b, rnd, &fx, &fy, &fz);
     ./k/cnt/bulk.h:87:     forces::gen(a, b, rnd, &fx, &fy, &fz);
     ./wall/dev.h:103:      forces::gen(a, b, rnd, /**/ &fx, &fy, &fz);
