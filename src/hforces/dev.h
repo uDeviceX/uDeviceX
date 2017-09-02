@@ -4,13 +4,11 @@ struct PA {
     forces::Pa p;
     float x, y, z;
     float vx, vy, vz;
-    /*    int id; */
 };
 
 struct PB {
     float x, y, z;
     float vx, vy, vz;
-    /*    int id; */
 };
 
 struct Fo { float *x, *y, *z; }; /* force */
