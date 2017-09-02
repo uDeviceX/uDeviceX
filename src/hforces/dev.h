@@ -1,6 +1,12 @@
 namespace hforces { namespace dev {
 
-struct Pa { /* local particle */
+struct PA { /* local particle */
+    float x, y, z;
+    float vx, vy, vz;
+    int id;
+};
+
+struct PB { /* local particle */
     float x, y, z;
     float vx, vy, vz;
     int id;
@@ -20,18 +26,18 @@ static __device__ void p2rv2(const float2 *p, int i,
     *vx = scn(s1); *vy = fst(s2); *vz = scn(s2);
 }
 
-static __device__ Pa frag2p(const Frag frag, int i) {
-    Pa p;
+static __device__ PB frag2p(const Frag frag, int i) {
+    PB p;
     p2rv2(frag.pp, i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
     p.id = i;
     return p;
 }
 
-static __device__ void pair(const Pa l, const Pa r, float rnd, /**/ float *fx, float *fy, float *fz) {
-    forces::Pa a, b;
-    forces::r3v3k2p(l.x, l.y, l.z, l.vx, l.vy, l.vz, SOLVENT_TYPE, /**/ &a);
-    forces::r3v3k2p(r.x, r.y, r.z, r.vx, r.vy, r.vz, SOLVENT_TYPE, /**/ &b);
-    forces::gen(a, b, rnd, /**/ fx, fy, fz);
+static __device__ void pair(const PA a, const PB b, float rnd, /**/ float *fx, float *fy, float *fz) {
+    forces::Pa a0, b0;
+    forces::r3v3k2p(a.x, a.y, a.z, a.vx, a.vy, a.vz, SOLVENT_TYPE, /**/ &a0);
+    forces::r3v3k2p(b.x, b.y, b.z, b.vx, b.vy, b.vz, SOLVENT_TYPE, /**/ &b0);
+    forces::gen(a0, b0, rnd, /**/ fx, fy, fz);
 }
 
 static __device__ float random(int lid, uint rid, float seed, int mask) {
@@ -41,10 +47,10 @@ static __device__ float random(int lid, uint rid, float seed, int mask) {
     return rnd::mean0var1uu(seed, a1, a2);
 }
 
-static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, const Pa a, /**/
+static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, const PA a, /**/
                               float *fx, float *fy, float *fz) {
     /* l, r: local and remote particles */
-    Pa b;
+    PB b;
     int i;
     int lid, rid; /* ids */
     float x, y, z; /* pair force */
@@ -59,7 +65,7 @@ static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, const
     }
 }
 
-static __device__ void force1(const Rnd rnd, const Frag frag, const Map m, const Pa p, Fo f) {
+static __device__ void force1(const Rnd rnd, const Frag frag, const Map m, const PA p, Fo f) {
     float x, y, z; /* force */
     force0(rnd, frag, m, p, /**/ &x, &y, &z);
     atomicAdd(f.x, x);
@@ -67,7 +73,7 @@ static __device__ void force1(const Rnd rnd, const Frag frag, const Map m, const
     atomicAdd(f.z, z);
 }
 
-static __device__ void force2(const Frag frag, const Rnd rnd, Pa p, /**/ Fo f) {
+static __device__ void force2(const Frag frag, const Rnd rnd, PA p, /**/ Fo f) {
     int dx, dy, dz;
     Map m;
     m = r2map(frag, p.x, p.y, p.z);
@@ -95,8 +101,8 @@ static __device__ void p2rv(const float *p, int i,
     *vx = *(p++); *vy = *(p++); *vz = *(p++);
 }
 
-static __device__ Pa sfrag2p(const SFrag sfrag, int i) {
-    Pa p;
+static __device__ PA sfrag2p(const SFrag sfrag, int i) {
+    PA p;
     p2rv(sfrag.pp,     i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
     p.id = i;
     return p;
@@ -107,7 +113,7 @@ static __device__ Fo sfrag2f(const SFrag sfrag, float *ff, int i) {
 }
 
 static __device__ void force3(const SFrag sfrag, const Frag frag, const Rnd rnd, int i, /**/ float *ff) {
-    Pa p;
+    PA p;
     Fo f;
     p = sfrag2p(sfrag, i);
     f = sfrag2f(sfrag, ff, i);
