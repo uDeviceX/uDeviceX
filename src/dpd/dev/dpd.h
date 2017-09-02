@@ -1,5 +1,4 @@
 static __device__ float3 dpd0(float4 rdest, float4 udest, float4 rsrc, float4 usrc, float rnd) {
-    enum {X, Y, Z};
     float fx, fy, fz;
     float r1[3], r2[3], v1[3], v2[3];
     forces::Pa a, b;
