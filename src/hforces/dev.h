@@ -17,7 +17,7 @@ static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, const
                               float *fx, float *fy, float *fz) {
     forces::Pa b;
     int i;
-    int bid; /* ids */
+    int bid; /* id of b */
     float x, y, z; /* pair force */
 
     *fx = *fy = *fz = 0;
@@ -40,7 +40,9 @@ static __device__ void force1(const Rnd rnd, const Frag frag, const Map m, const
 static __device__ void force2(const Frag frag, const Rnd rnd, forces::Pa p, int id, /**/ Fo f) {
     int dx, dy, dz;
     Map m;
-    m = r2map(frag, p.x, p.y, p.z);
+    float x, y, z;
+    forces::p2r3(&p, /**/ &x, &y, &z);
+    m = r2map(frag, x, y, z);
 
     dx = frag.dx; dy = frag.dy; dz = frag.dz; /* TODO: where it should be? */
     p.x -= dx * XS;
