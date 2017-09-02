@@ -1,4 +1,4 @@
-void flocal0(float4 *zip0, ushort4 *zip1, int np, int *start, int *count, float seed, float *ff) {
+static void flocal0(float4 *zip0, ushort4 *zip1, int np, int *start, int *count, float seed, float *ff) {
     int nx, ny, nz;
     if(!fdpd_init) {
         setup();
