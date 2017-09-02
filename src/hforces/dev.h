@@ -93,7 +93,7 @@ static __device__ void p2rv(const float *p, int i,
 
 static __device__ forces::Pa sfrag2p(const SFrag sfrag, int i) {
     forces::Pa p;
-    p2rv(sfrag.pp,     i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
+    cloudA_get(sfrag.c, i, &p);
     return p;
 }
 
