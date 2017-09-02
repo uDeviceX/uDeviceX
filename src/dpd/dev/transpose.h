@@ -1,6 +1,4 @@
-__global__
-void transpose( const int np )
-{
+static __global__ void transpose( const int np ) {
     __shared__ volatile float  smem[32][96];
     const uint lane = threadIdx.x % warpSize;
     const uint warpid = threadIdx.x / warpSize;

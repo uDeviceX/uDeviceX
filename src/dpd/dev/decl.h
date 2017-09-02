@@ -1,5 +1,5 @@
-__constant__ InfoDPD info;
-__device__ char4 tid2ind[32] = {
+static __constant__ InfoDPD info;
+static __device__ char4 tid2ind[32] = {
     { -1, -1, -1, 0}, {0, -1, -1, 0}, {1, -1, -1, 0},
     { -1,  0, -1, 0}, {0,  0, -1, 0}, {1,  0, -1, 0},
     { -1 , 1, -1, 0}, {0,  1, -1, 0}, {1,  1, -1, 0},
