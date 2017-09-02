@@ -1,4 +1,3 @@
-namespace lforces {
 inline void setup_cloud(/* dummy c */ ) {
     /* call once */
     texParticlesF4.channelDesc = cudaCreateChannelDesc<float4>();
@@ -17,4 +16,3 @@ inline void ini_cloud(float4 *zip0, ushort4 *zip1, int n /* dummy c */ ) {
     CC(cudaBindTexture(&offset, &texParticlesF4, zip0, &texParticlesF4.channelDesc, sizeof(float)*8*n));
     CC(cudaBindTexture(&offset, &texParticlesH4, zip1, &texParticlesH4.channelDesc, sizeof(ushort4)*n));
 };
-} /* namespace */

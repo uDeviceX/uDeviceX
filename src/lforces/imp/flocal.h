@@ -1,10 +1,12 @@
 static void flocal0(float4 *zip0, ushort4 *zip1, int np, int *start, int *count, float seed, float *ff) {
     int nx, ny, nz;
     if(!fdpd_init) {
+        setup_cloud();
         setup();
         fdpd_init = true;
     }
-    tex(zip0, zip1, np, start, count);
+    tex_cells(start, count);
+    ini_cloud(zip0, zip1, np);
     set_info(ff, np, seed);
 
     if (XS % MYCPBX == 0 && YS % MYCPBY == 0 && ZS % MYCPBZ == 0) {
