@@ -38,17 +38,12 @@ static __device__ void force1(const Rnd rnd, const Frag frag, const Map m, const
 }
 
 static __device__ void force2(const Frag frag, const Rnd rnd, forces::Pa p, int id, /**/ Fo f) {
-    int dx, dy, dz;
-    Map m;
     float x, y, z;
+    Map m;
     forces::p2r3(&p, /**/ &x, &y, &z);
     m = r2map(frag, x, y, z);
-
-    dx = frag.dx; dy = frag.dy; dz = frag.dz; /* TODO: where it should be? */
-    p.x -= dx * XS;
-    p.y -= dy * YS;
-    p.z -= dz * ZS;
-    force1(rnd, frag, m, p, id, f);
+    forces::shift(-frag.dx*XS, -frag.dy*YS, -frag.dz*ZS, /**/ &p);
+    force1(rnd, frag, m, p, id, /**/ f);
 }
 
 static __device__ Fo i2f(const int *ii, float *ff, int i) {
