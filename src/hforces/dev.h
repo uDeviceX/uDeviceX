@@ -1,5 +1,4 @@
-namespace hforces {
-namespace dev {
+namespace hforces { namespace dev {
 
 struct Pa { /* local particle */
     float x, y, z;
@@ -23,7 +22,6 @@ static __device__ void p2rv2(const float2 *p, int i,
 
 static __device__ Pa frag2p(const Frag frag, int i) {
     Pa p;
-    forces::Pa* p0 = &p.p;
     p2rv2(frag.pp, i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
     p.id = i;
     return p;
@@ -43,20 +41,20 @@ static __device__ float random(int lid, uint rid, float seed, int mask) {
     return rnd::mean0var1uu(seed, a1, a2);
 }
 
-static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, const Pa l, /**/
+static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, const Pa a, /**/
                               float *fx, float *fy, float *fz) {
     /* l, r: local and remote particles */
-    Pa r;
+    Pa b;
     int i;
     int lid, rid; /* ids */
     float x, y, z; /* pair force */
-    lid = l.id;
+    lid = a.id;
 
     *fx = *fy = *fz = 0;
     for (i = 0; !endp(m, i); i ++ ) {
         rid = m2id(m, i);
-        r = frag2p(frag, rid);
-        pair(l, r, random(lid, rid, rnd.seed, rnd.mask), &x, &y, &z);
+        b = frag2p(frag, rid);
+        pair(a, b, random(lid, rid, rnd.seed, rnd.mask), &x, &y, &z);
         *fx += x; *fy += y; *fz += z;
     }
 }
@@ -136,5 +134,4 @@ __global__ void force(const int27 start, const SFrag26 ssfrag, const Frag26 ffra
     force3(sfrag, frag, rnd, i, /**/ ff);
 }
 
-} // dev
-} // hforces
+}} /* namespace */
