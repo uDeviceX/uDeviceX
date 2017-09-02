@@ -26,10 +26,9 @@ static __device__ PB frag2p(const Frag frag, int i) {
 }
 
 static __device__ void pair(const forces::Pa a, const PB b, float rnd, /**/ float *fx, float *fy, float *fz) {
-    forces::Pa a0, b0;
-    forces::r3v3k2p(a.x, a.y, a.z, a.vx, a.vy, a.vz, SOLVENT_TYPE, /**/ &a0);
+    forces::Pa b0;
     forces::r3v3k2p(b.x, b.y, b.z, b.vx, b.vy, b.vz, SOLVENT_TYPE, /**/ &b0);
-    forces::gen(a0, b0, rnd, /**/ fx, fy, fz);
+    forces::gen(a, b0, rnd, /**/ fx, fy, fz);
 }
 
 static __device__ float random(int aid, int bid, float seed, int mask) {
