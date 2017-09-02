@@ -48,18 +48,18 @@ static __device__ void halo0(const float *ppB, int n1, float seed, int lid, int 
     k_write::AOS3f(dst, nunpack, xforce, yforce, zforce);
 }
 
-static __device__ void halo1(const float *ppB, int n1, float seed, int lid, int base, int dw, /**/ float *ff1) {
+static __device__ void halo1(const float *ppB, int n1, float seed, int lid, int ws, int dw, /**/ float *ff1) {
     int fid; /* fragment id */
     int start, count;
     Particle *pp;
     Force *ff;
     int nunpack, unpackbase;
-    fid = k_common::fid(g::starts, base);
+    fid = k_common::fid(g::starts, ws);
     start = g::starts[fid];
     count = g::counts[fid];
     pp = g::pp[fid];
     ff = g::ff[fid];
-    unpackbase = base - start;
+    unpackbase = ws - start;
     nunpack = min(32, count - unpackbase);
     if (nunpack == 0) return;
 
@@ -67,13 +67,13 @@ static __device__ void halo1(const float *ppB, int n1, float seed, int lid, int 
 }
 
 __global__ void halo(const float *ppB, int n0, int n1, float seed, float *ff1) {
-    int dw, warp, base;
+    int dw, warp, ws;
     int i; /* particle id */
     warp = threadIdx.x / warpSize;
     dw = threadIdx.x % warpSize;
-    base = warpSize * warp + blockDim.x * blockIdx.x;
-    if (base >= n0) return;
-    i = base + dw;
-    halo1(ppB, n1, seed, i, base, dw, /**/ ff1);
+    ws = warpSize * warp + blockDim.x * blockIdx.x;
+    if (ws >= n0) return;
+    i = ws + dw;
+    halo1(ppB, n1, seed, i, ws, dw, /**/ ff1);
 }
 }
