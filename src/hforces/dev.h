@@ -51,15 +51,15 @@ static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, const
                               float *fx, float *fy, float *fz) {
     PB b;
     int i;
-    int aid, rid; /* ids */
+    int aid, bid; /* ids */
     float x, y, z; /* pair force */
     aid = a.id;
 
     *fx = *fy = *fz = 0;
     for (i = 0; !endp(m, i); i ++ ) {
-        rid = m2id(m, i);
-        b = frag2p(frag, rid);
-        pair(a, b, random(aid, rid, rnd.seed, rnd.mask), &x, &y, &z);
+        bid = m2id(m, i);
+        b = frag2p(frag, bid);
+        pair(a, b, random(aid, bid, rnd.seed, rnd.mask), &x, &y, &z);
         *fx += x; *fy += y; *fz += z;
     }
 }
