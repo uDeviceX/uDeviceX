@@ -25,3 +25,21 @@ The function uses only API of clouds.
     ./k/cnt/bulk.h:87:     forces::gen(a, b, rnd, &fx, &fy, &fz);
     ./wall/dev.h:103:      forces::gen(a, b, rnd, /**/ &fx, &fy, &fz);
 
+# example for src/hforces
+
+Initialization of a cloud: called in dpdr
+hforces/cloud/int.h
+
+    inline void ini_cloudA(Particle *pp, CloudA *c)
+
+Device function to get a particle
+hforces/cloud/get.h
+
+    __device__ void cloudA_get(CloudA c, int i, /**/ forces::Pa *p)
+
+
+To set/get position from `forces::Pa`
+src/forces/use.h
+
+     inline __device__ void p2r3(Pa *p, /**/ float *x, float *y, float *z)
+	 inline __device__ void shift(float x, float y, float z, /**/ Pa *p)
