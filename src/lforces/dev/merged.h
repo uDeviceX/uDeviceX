@@ -112,6 +112,9 @@ static __global__ void merged() {
                           "   mov.b32           %0, mystart;"
                           "}" : "=r"( spid ) : "f"( u2f( pid ) ), "f"( u2f( 9u ) ), "f"( u2f( 3u ) ), "f"( u2f( pshare ) ), "f"( u2f( pid ) ), "f"( u2f( nsrc ) ) );
 
+            float xs, ys, zs;
+            float xd, yd, zd;
+
             const float4 xsrc = fetchH4(xmin(spid, lastdst));
 
             for( uint dpid = dststart; dpid < lastdst; dpid = xadd( dpid, 1u ) ) {
