@@ -15,6 +15,15 @@ static __device__ float3 dpd0(float4 ra, float4 va, float4 rb, float4 vb, float 
     return make_float3(fx, fy, fz);
 }
 
+static __device__ void lfetch(uint aid, forces::Pa *a) { /* local fetch */
+    float4 ra, rb, va, vb;
+    ra = fetchF4(aid);
+    va = fetchF4(xadd(aid, 1u));
+
+    float r1[3], v1[3];
+    f4tof3(ra, r1); f4tof3(va, v1);
+    forces::rvk2p(r1, v1, SOLVENT_TYPE, /**/ a);
+}
 
 static __device__ float3 dpd1(uint aid, uint bid, float rnd) {
     float4 ra, rb, va, vb;
