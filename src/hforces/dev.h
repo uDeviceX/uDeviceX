@@ -2,7 +2,6 @@ namespace hforces {
 namespace dev {
 
 struct Pa { /* local particle */
-    forces::Pa p;
     float x, y, z;
     float vx, vy, vz;
     int id;
