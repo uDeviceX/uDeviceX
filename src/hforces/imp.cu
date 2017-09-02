@@ -18,6 +18,7 @@
 #include "inc/dev.h"
 #include "forces/type.h"
 #include "forces/pack.h"
+#include "forces/use.h"
 #include "forces/imp.h"
 #include "k/read.h"
 #include "k/common.h"
