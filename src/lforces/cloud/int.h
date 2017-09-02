@@ -1,5 +1,5 @@
 namespace lforces {
-inline void ini_cloud(Particle *pp, Cloud *c) {
-    c->pp = (float*)pp;
+inline void ini_cloud(Particle *pp, /* dummy c */ ) {
+
 };
 } /* namespace */
