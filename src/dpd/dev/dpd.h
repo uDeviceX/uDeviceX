@@ -1,9 +1,8 @@
-static __device__ float3 dpd0(int dpid, float4 rdest, float4 udest, float4 rsrc, float4 usrc, int spid) {
+static __device__ float3 dpd0(float4 rdest, float4 udest, float4 rsrc, float4 usrc, float rnd) {
     enum {X, Y, Z};
-    float rnd, fx, fy, fz;
+    float fx, fy, fz;
     float r1[3], r2[3], v1[3], v2[3];
     forces::Pa a, b;
-    rnd = rnd::mean0var1ii( info.seed, xmin( spid, dpid ), xmax( spid, dpid ) );
     f4tof3(rdest, r1); f4tof3(rsrc, r2);
     f4tof3(udest, v1); f4tof3(usrc, v2);
 
@@ -26,5 +25,5 @@ static __device__ float3 dpd(uint dentry, uint sentry, uint dpid, uint spid) {
     xsrc  = fetchF4(sentry);
     udest = fetchF4(xadd(dentry, 1u));
     usrc  = fetchF4(xadd(sentry, 1u));
-    return dpd0(dpid, xdest, udest, xsrc, usrc, spid );
+    return dpd0(xdest, udest, xsrc, usrc, rnd);
 }
