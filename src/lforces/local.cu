@@ -28,6 +28,7 @@
   #include "dev/float.h"
   #include "dev/decl.h"
   #include "dev/fetch.h"
+  #include "cloud/get.h"
 
   #define __IMOD(x,y) ((x)-((x)/(y))*(y))
 
