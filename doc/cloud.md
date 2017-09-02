@@ -1,5 +1,12 @@
+# forces::pa
+
+`Pa` is an abstract particle expected by `forces::gen`. Two operation
+are supported:
+
+    p2r3(Pa *p, /**/ float *x, float *y, float *z)
+	shift(float x, float y, float z, /**/ Pa *p)
+
 # intro
-`Pa` is an abstract particle expected by `forces::gen`
 
 Cloud is a family of abstract objects.  A cloud has initialization
 
