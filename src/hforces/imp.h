@@ -10,7 +10,7 @@ struct SFrag { /* "send" fragment */
 };
 
 struct Frag {
-    CloudB c;
+    CloudA c;
     int *start, dx, dy, dz, xcells, ycells, zcells;
     FragType type;
 };

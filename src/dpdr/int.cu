@@ -160,7 +160,7 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
     int dx, dy, dz;
     int m0, m1, m2;
     hforces::CloudA clouda;
-    hforces::CloudB cloudb;
+    hforces::CloudA cloudb;
 
     hforces::SFrag26 sfrag;
     hforces::Frag26   frag;
