@@ -5,7 +5,7 @@ Cloud is a family of abstract objects.  A cloud has initialization
 
     Cloud.ini(pp, [...])
 
-and a operation
+and an operation
 
     Pa = Cloud.cloud_get([...])
 
@@ -13,6 +13,10 @@ Clouds not `pp` should be arguments of functions which call
 `forces::gen`.
 
 # example for src/hforces
+
+`src/hforces` treats particles assymetricly: `A` is "a main particle"
+and `B` is a particle from neighorhood of `A`. There are two
+corresponding clouds `CloudA` and `CloudB`.
 
 Initialization of a cloud: called in dpdr/int.cu
 hforces/cloud/int.h
