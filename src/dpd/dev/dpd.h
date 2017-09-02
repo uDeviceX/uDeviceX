@@ -1,39 +1,23 @@
-static __device__ float3 dpd0(float4 ra, float4 va, float4 rb, float4 vb, float rnd) {
+static __device__ void lfetch(uint i, /**/ forces::Pa *a) { /* local fetch */
+    /* i: particle index */
+    float4 r, v;
+    float r0[3], v0[3];
+
+    r = fetchF4(i);
+    v = fetchF4(xadd(i, 1u));
+    f4tof3(r, r0); f4tof3(v, v0);
+    forces::rvk2p(r0, v0, SOLVENT_TYPE, /**/ a);
+}
+
+static __device__ float3 dpd0(uint aid, uint bid, float rnd) {
     float fx, fy, fz;
+    forces::Pa a, b;
 
-    forces::Pa a;
-    float r1[3], v1[3];
-    f4tof3(ra, r1); f4tof3(va, v1);
-    forces::rvk2p(r1, v1, SOLVENT_TYPE, /**/ &a);
-
-    forces::Pa b;
-    float r2[3], v2[3];
-    f4tof3(rb, r2);  f4tof3(vb, v2);
-    forces::rvk2p(r2, v2, SOLVENT_TYPE, /**/ &b);
+    lfetch(aid, &a);
+    lfetch(aid, &b);
 
     forces::gen(a, b, rnd, &fx, &fy, &fz);
     return make_float3(fx, fy, fz);
-}
-
-static __device__ void lfetch(uint aid, forces::Pa *a) { /* local fetch */
-    float4 ra, rb, va, vb;
-    ra = fetchF4(aid);
-    va = fetchF4(xadd(aid, 1u));
-
-    float r1[3], v1[3];
-    f4tof3(ra, r1); f4tof3(va, v1);
-    forces::rvk2p(r1, v1, SOLVENT_TYPE, /**/ a);
-}
-
-static __device__ float3 dpd1(uint aid, uint bid, float rnd) {
-    float4 ra, rb, va, vb;
-    ra = fetchF4(aid);
-    va = fetchF4(xadd(aid, 1u));
-
-    rb  = fetchF4(bid);
-    vb  = fetchF4(xadd(bid, 1u));
-
-    return dpd0(ra, va, rb, vb, rnd);
 }
 
 static __device__ float random(uint i, uint j) {
@@ -42,5 +26,5 @@ static __device__ float random(uint i, uint j) {
 static __device__ float3 dpd(uint aid, uint bid, uint dpid, uint spid) {
     float rnd;
     rnd = random(spid, dpid); /* (sic) */
-    return dpd1(aid, bid, rnd);
+    return dpd0(aid, bid, rnd);
 }
