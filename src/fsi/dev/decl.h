@@ -1,6 +1,5 @@
 namespace dev {
 namespace t {
-texture<float, cudaTextureType1D> pp;
 texture<int, cudaTextureType1D> start;
 }
 namespace g {

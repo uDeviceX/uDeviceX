@@ -16,7 +16,7 @@ static __device__ Pa warp2p(const Particle *pp, int n, int i) {
     return p;
 }
 
-static __device__ void halo0(int n1, float seed, int lid, int lane, int unpackbase, int nunpack,
+static __device__ void halo0(const float *ppB, int n1, float seed, int lid, int lane, int unpackbase, int nunpack,
                              Particle *pp, Force *ff,
                              /**/ float *ff1) {
     Pa l, r; /* local and remote particles */
@@ -39,7 +39,7 @@ static __device__ void halo0(int n1, float seed, int lid, int lane, int unpackba
         if (!tex2map(zplane, n1, l.x, l.y, l.z, /**/ &m)) continue;
         for (i = 0; !endp(m, i); ++i) {
             rid = m2id(m, i);
-            r = tex2p(rid);
+            pp2p(ppB, rid, /**/ &r);
             f = ff2f(ff1, rid);
             pair(l, r, random(lid, rid, seed), /**/ &xforce, &yforce, &zforce,   f);
         }
@@ -48,7 +48,7 @@ static __device__ void halo0(int n1, float seed, int lid, int lane, int unpackba
     k_write::AOS3f(dst, nunpack, xforce, yforce, zforce);
 }
 
-static __device__ void halo1(int n1, float seed, int lid, int base, int lane, /**/ float *ff1) {
+static __device__ void halo1(const float *ppB, int n1, float seed, int lid, int base, int lane, /**/ float *ff1) {
     int fid; /* fragment id */
     int start, count;
     Particle *pp;
@@ -63,10 +63,10 @@ static __device__ void halo1(int n1, float seed, int lid, int base, int lane, /*
     nunpack = min(32, count - unpackbase);
     if (nunpack == 0) return;
 
-    halo0(n1, seed, lid, lane, unpackbase, nunpack, pp, ff, /**/ ff1);
+    halo0(ppB, n1, seed, lid, lane, unpackbase, nunpack, pp, ff, /**/ ff1);
 }
 
-__global__ void halo(int n0, int n1, float seed, float *ff1) {
+__global__ void halo(const float *ppB, int n0, int n1, float seed, float *ff1) {
     int lane, warp, base;
     int i; /* particle id */
     warp = threadIdx.x / warpSize;
@@ -74,6 +74,6 @@ __global__ void halo(int n0, int n1, float seed, float *ff1) {
     base = warpSize * warp + blockDim.x * blockIdx.x;
     if (base >= n0) return;
     i = base + lane;
-    halo1(n1, seed, i, base, lane, /**/ ff1);
+    halo1(ppB, n1, seed, i, base, lane, /**/ ff1);
 }
 }
