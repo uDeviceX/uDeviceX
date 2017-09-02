@@ -23,7 +23,7 @@ static __device__ void force0(const Rnd rnd, const Frag bfrag, const Map m, cons
     *fx = *fy = *fz = 0;
     for (i = 0; !endp(m, i); i ++ ) {
         bid = m2id(m, i);
-        cloudB_get(bfrag.c, bid, /**/ &b);
+        cloudA_get(bfrag.c, bid, /**/ &b);
         pair(a, b, random(aid, bid, rnd.seed, rnd.mask), &x, &y, &z);
         *fx += x; *fy += y; *fz += z;
     }
