@@ -1,4 +1,4 @@
-static __device__ void cloud_get(uint i, /**/ forces::Pa *a) { /* local fetch */
+static __device__ void cloud_get(uint i, /**/ forces::Pa *p) { /* local fetch */
     /* i: particle index */
     float4 r, v;
     float r0[3], v0[3];
@@ -6,7 +6,7 @@ static __device__ void cloud_get(uint i, /**/ forces::Pa *a) { /* local fetch */
     r = fetchF4(i);
     v = fetchF4(xadd(i, 1u));
     f4tof3(r, r0); f4tof3(v, v0);
-    forces::rvk2p(r0, v0, SOLVENT_TYPE, /**/ a);
+    forces::rvk2p(r0, v0, SOLVENT_TYPE, /**/ p);
 }
 
 static __device__ void cloud_pos(/* dummy c */ int i, /**/ float *x, float *y, float *z) {
