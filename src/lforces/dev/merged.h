@@ -117,10 +117,9 @@ static __global__ void merged() {
             cloud_pos(xmin(spid, lastdst), &xs, &ys, &zs);
             for( uint dpid = dststart; dpid < lastdst; dpid = xadd( dpid, 1u ) ) {
                 cloud_pos(dpid, /**/ &xd, &yd, &zd);
-                const float4 xdest = fetchH4(dpid);
-                const float dx = xdest.x - xs;
-                const float dy = xdest.y - ys;
-                const float dz = xdest.z - zs;
+                const float dx = xd - xs;
+                const float dy = yd - ys;
+                const float dz = zd - zs;
                 const float d2 = dx * dx + dy * dy + dz * dz;
 
                 asm volatile( ".reg .pred interacting;" );
