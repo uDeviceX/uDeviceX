@@ -2,24 +2,6 @@ namespace hforces { namespace dev {
 
 struct Fo { float *x, *y, *z; }; /* force */
 
-static __device__ float fst(float2 p) { return p.x; }
-static __device__ float scn(float2 p) { return p.y; }
-static __device__ void p2rv2(const float2 *p, int i,
-                             float  *x, float  *y, float  *z,
-                             float *vx, float *vy, float *vz) {
-    float2 s0, s1, s2;
-    p += 3*i;
-    s0 = __ldg(p++); s1 = __ldg(p++); s2 = __ldg(p++);
-     *x = fst(s0);  *y = scn(s0);  *z = fst(s1);
-    *vx = scn(s1); *vy = fst(s2); *vz = scn(s2);
-}
-
-static __device__ forces::Pa frag2p(const Frag frag, int i) {
-    forces::Pa p;
-    p2rv2(frag.pp, i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
-    return p;
-}
-
 static __device__ void pair(const forces::Pa a, const forces::Pa b, float rnd, /**/ float *fx, float *fy, float *fz) {
     forces::Pa b0;
     forces::r3v3k2p(b.x, b.y, b.z, b.vx, b.vy, b.vz, SOLVENT_TYPE, /**/ &b0);
