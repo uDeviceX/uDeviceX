@@ -1,11 +1,5 @@
 namespace hforces { namespace dev {
 
-struct PA {
-    forces::Pa p;
-    float x, y, z;
-    float vx, vy, vz;
-};
-
 struct PB {
     float x, y, z;
     float vx, vy, vz;
@@ -31,7 +25,7 @@ static __device__ PB frag2p(const Frag frag, int i) {
     return p;
 }
 
-static __device__ void pair(const PA a, const PB b, float rnd, /**/ float *fx, float *fy, float *fz) {
+static __device__ void pair(const forces::Pa a, const PB b, float rnd, /**/ float *fx, float *fy, float *fz) {
     forces::Pa a0, b0;
     forces::r3v3k2p(a.x, a.y, a.z, a.vx, a.vy, a.vz, SOLVENT_TYPE, /**/ &a0);
     forces::r3v3k2p(b.x, b.y, b.z, b.vx, b.vy, b.vz, SOLVENT_TYPE, /**/ &b0);
@@ -45,7 +39,7 @@ static __device__ float random(int aid, int bid, float seed, int mask) {
     return rnd::mean0var1uu(seed, a1, a2);
 }
 
-static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, const PA a, int aid, /**/
+static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, const forces::Pa a, int aid, /**/
                               float *fx, float *fy, float *fz) {
     PB b;
     int i;
@@ -61,7 +55,7 @@ static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, const
     }
 }
 
-static __device__ void force1(const Rnd rnd, const Frag frag, const Map m, const PA p, int id, Fo f) {
+static __device__ void force1(const Rnd rnd, const Frag frag, const Map m, const forces::Pa p, int id, Fo f) {
     float x, y, z; /* force */
     force0(rnd, frag, m, p, id, /**/ &x, &y, &z);
     atomicAdd(f.x, x);
@@ -69,7 +63,7 @@ static __device__ void force1(const Rnd rnd, const Frag frag, const Map m, const
     atomicAdd(f.z, z);
 }
 
-static __device__ void force2(const Frag frag, const Rnd rnd, PA p, int id, /**/ Fo f) {
+static __device__ void force2(const Frag frag, const Rnd rnd, forces::Pa p, int id, /**/ Fo f) {
     int dx, dy, dz;
     Map m;
     m = r2map(frag, p.x, p.y, p.z);
@@ -97,8 +91,8 @@ static __device__ void p2rv(const float *p, int i,
     *vx = *(p++); *vy = *(p++); *vz = *(p++);
 }
 
-static __device__ PA sfrag2p(const SFrag sfrag, int i) {
-    PA p;
+static __device__ forces::Pa sfrag2p(const SFrag sfrag, int i) {
+    forces::Pa p;
     p2rv(sfrag.pp,     i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
     return p;
 }
@@ -108,7 +102,7 @@ static __device__ Fo sfrag2f(const SFrag sfrag, float *ff, int i) {
 }
 
 static __device__ void force3(const SFrag sfrag, const Frag frag, const Rnd rnd, int i, /**/ float *ff) {
-    PA p;
+    forces::Pa p;
     Fo f;
     p = sfrag2p(sfrag, i);
     f = sfrag2f(sfrag, ff, i);
