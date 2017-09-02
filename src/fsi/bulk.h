@@ -5,7 +5,7 @@ static void bulk0(ParticlesWrap *w) {
     rnd = rgen->get_float();
     n0 = w->n;
     n1 = wo->n;
-    KL(dev::bulk, (k_cnf(3*n0)), ((float2 *)w->p, n0, n1, rnd, (float*)w->f, (float*)wo->f));
+    KL(dev::bulk, (k_cnf(3*n0)), ((float*)w->p, n0, n1, rnd, (float*)w->f, (float*)wo->f));
 }
 
 void bulk(std::vector<ParticlesWrap> wr) {

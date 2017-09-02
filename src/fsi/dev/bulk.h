@@ -1,16 +1,13 @@
 namespace dev {
-static __device__ float2 get(const float2 *p) { return __ldg(p); }
-static __device__ void p2rv(const float2 *p, int i, /**/
+static __device__ void p2rv(const float *p, int i, /**/
                             float  *x, float  *y, float  *z,
                             float *vx, float *vy, float *vz) {
-    float2 s0, s1, s2;
-    p += 3*i;
-    s0 = get(p++); s1 = get(p++); s2 = get(p++);
-     *x = fst(s0);  *y = scn(s0);  *z = fst(s1);
-    *vx = scn(s1); *vy = fst(s2); *vz = scn(s2);
+    i *= 6;
+     *x = p[i++];  *y = p[i++];  *z = p[i++];
+    *vx = p[i++]; *vy = p[i++]; *vz = p[i++];
 }
 
-static __device__ void pp2p(float2 *ppA, int i, /**/ Pa *p) {
+static __device__ void pp2p(float *ppA, int i, /**/ Pa *p) {
     p2rv(ppA, i, /**/ &p->x, &p->y, &p->z,   &p->vx, &p->vy, &p->vz);
 }
 
@@ -43,7 +40,7 @@ static __device__ void bulk1(const Pa l, const Fo f, int i, const Map m, float s
     atomicAdd(f.z, fz);
 }
 
-static __device__ void bulk2(float2 *ppA, int i, int zplane, int n, float seed, /**/ float *ff, float *ff0) {
+static __device__ void bulk2(float *ppA, int i, int zplane, int n, float seed, /**/ float *ff, float *ff0) {
     Pa p;
     Fo f; /* "local" particle */
     Map m;
@@ -53,7 +50,7 @@ static __device__ void bulk2(float2 *ppA, int i, int zplane, int n, float seed, 
     bulk1(p, f, i, m, seed, /**/ ff0);
 }
 
-__global__ void bulk(float2 *ppA, int n0, int n1, float seed, float *ff, float *ff0) {
+__global__ void bulk(float *ppA, int n0, int n1, float seed, float *ff, float *ff0) {
     int gid, i, zplane;
     gid    = threadIdx.x + blockDim.x * blockIdx.x;
     i      = gid / 3;
