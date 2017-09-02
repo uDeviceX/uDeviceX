@@ -49,18 +49,17 @@ static __device__ float random(int aid, int bid, float seed, int mask) {
 
 static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, const PA a, /**/
                               float *fx, float *fy, float *fz) {
-    /* l, r: local and remote particles */
     PB b;
     int i;
-    int lid, rid; /* ids */
+    int aid, rid; /* ids */
     float x, y, z; /* pair force */
-    lid = a.id;
+    aid = a.id;
 
     *fx = *fy = *fz = 0;
     for (i = 0; !endp(m, i); i ++ ) {
         rid = m2id(m, i);
         b = frag2p(frag, rid);
-        pair(a, b, random(lid, rid, rnd.seed, rnd.mask), &x, &y, &z);
+        pair(a, b, random(aid, rid, rnd.seed, rnd.mask), &x, &y, &z);
         *fx += x; *fy += y; *fz += z;
     }
 }
