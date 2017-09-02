@@ -45,6 +45,8 @@
   #include "dev/tex.h"
   #include "dev/transpose.h"
 
+  #include "lforces/cloud/int.h"
+
   #include "imp/decl.h"
   #include "imp/setup.h"
   #include "imp/tex.h"
