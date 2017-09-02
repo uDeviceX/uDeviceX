@@ -16,13 +16,13 @@ static __device__ float3 dpd0(float4 ra, float4 va, float4 rb, float4 vb, float 
 }
 
 
-static __device__ float3 dpd1(uint bid, uint aid, float rnd) {
+static __device__ float3 dpd1(uint aid, uint bid, float rnd) {
     float4 ra, rb, va, vb;
-    ra = fetchF4(bid);
-    va = fetchF4(xadd(bid, 1u));
+    ra = fetchF4(aid);
+    va = fetchF4(xadd(aid, 1u));
 
-    rb  = fetchF4(aid);
-    vb  = fetchF4(xadd(aid, 1u));
+    rb  = fetchF4(bid);
+    vb  = fetchF4(xadd(bid, 1u));
 
     return dpd0(ra, va, rb, vb, rnd);
 }
