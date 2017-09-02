@@ -1,10 +1,5 @@
 namespace hforces { namespace dev {
 
-struct PB {
-    float x, y, z;
-    float vx, vy, vz;
-};
-
 struct Fo { float *x, *y, *z; }; /* force */
 
 static __device__ float fst(float2 p) { return p.x; }
@@ -19,13 +14,13 @@ static __device__ void p2rv2(const float2 *p, int i,
     *vx = scn(s1); *vy = fst(s2); *vz = scn(s2);
 }
 
-static __device__ PB frag2p(const Frag frag, int i) {
-    PB p;
+static __device__ forces::Pa frag2p(const Frag frag, int i) {
+    forces::Pa p;
     p2rv2(frag.pp, i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
     return p;
 }
 
-static __device__ void pair(const forces::Pa a, const PB b, float rnd, /**/ float *fx, float *fy, float *fz) {
+static __device__ void pair(const forces::Pa a, const forces::Pa b, float rnd, /**/ float *fx, float *fy, float *fz) {
     forces::Pa b0;
     forces::r3v3k2p(b.x, b.y, b.z, b.vx, b.vy, b.vz, SOLVENT_TYPE, /**/ &b0);
     forces::gen(a, b0, rnd, /**/ fx, fy, fz);
@@ -40,7 +35,7 @@ static __device__ float random(int aid, int bid, float seed, int mask) {
 
 static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, const forces::Pa a, int aid, /**/
                               float *fx, float *fy, float *fz) {
-    PB b;
+    forces::Pa b;
     int i;
     int bid; /* ids */
     float x, y, z; /* pair force */
@@ -48,7 +43,7 @@ static __device__ void force0(const Rnd rnd, const Frag frag, const Map m, const
     *fx = *fy = *fz = 0;
     for (i = 0; !endp(m, i); i ++ ) {
         bid = m2id(m, i);
-        b = frag2p(frag, bid);
+        cloudB_get(frag.c, bid, /**/ &b);
         pair(a, b, random(aid, bid, rnd.seed, rnd.mask), &x, &y, &z);
         *fx += x; *fy += y; *fz += z;
     }
