@@ -10,7 +10,7 @@ struct PA {
 struct PB {
     float x, y, z;
     float vx, vy, vz;
-    int id;
+    /*    int id; */
 };
 
 struct Fo { float *x, *y, *z; }; /* force */
@@ -30,7 +30,6 @@ static __device__ void p2rv2(const float2 *p, int i,
 static __device__ PB frag2p(const Frag frag, int i) {
     PB p;
     p2rv2(frag.pp, i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
-    p.id = i;
     return p;
 }
 
@@ -41,7 +40,7 @@ static __device__ void pair(const PA a, const PB b, float rnd, /**/ float *fx, f
     forces::gen(a0, b0, rnd, /**/ fx, fy, fz);
 }
 
-static __device__ float random(int lid, uint rid, float seed, int mask) {
+static __device__ float random(int lid, int rid, float seed, int mask) {
     uint a1, a2;
     a1 = mask ? lid : rid;
     a2 = mask ? rid : lid;
