@@ -15,7 +15,7 @@
 #include "rnd/dev.h"
 #include "inc/dev.h"
 #include "inc/type.h"
-#include "dpd/local.h"
+#include "local.h"
 
 #if   defined(DEV_CUDA)
   #include "utils/kl.h"
@@ -23,34 +23,34 @@
   #include "forces/pack.h"
   #include "forces/imp.h"
 
-  #include "dpd/imp/type.h"
+  #include "imp/type.h"
 
-  #include "dpd/dev/float.h"
-  #include "dpd/dev/decl.h"
-  #include "dpd/dev/fetch.h"
+  #include "dev/float.h"
+  #include "dev/decl.h"
+  #include "dev/fetch.h"
 
   #define __IMOD(x,y) ((x)-((x)/(y))*(y))
 
-  #include "dpd/dev/pack.h"
-  #include "dpd/dev/dpd.h"
-  #include "dpd/dev/core.h"
+  #include "dev/pack.h"
+  #include "dev/dpd.h"
+  #include "dev/core.h"
 
   #define MYCPBX  (4)
   #define MYCPBY  (2)
   #define MYCPBZ  (2)
   #define MYWPB   (4)
 
-  #include "dpd/dev/merged.h"
-  #include "dpd/dev/tex.h"
-  #include "dpd/dev/transpose.h"
+  #include "dev/merged.h"
+  #include "dev/tex.h"
+  #include "dev/transpose.h"
 
-  #include "dpd/imp/decl.h"
-  #include "dpd/imp/setup.h"
-  #include "dpd/imp/tex.h"
-  #include "dpd/imp/info.h"
-  #include "dpd/imp/flocal.h"
+  #include "imp/decl.h"
+  #include "imp/setup.h"
+  #include "imp/tex.h"
+  #include "imp/info.h"
+  #include "imp/flocal.h"
 #elif defined(DEV_CPU)
-  #include "dpd/local0.h"
+  #include "local0.h"
 #else
   #error DEV_* is undefined
 #endif
