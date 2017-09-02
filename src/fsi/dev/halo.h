@@ -16,7 +16,7 @@ static __device__ Pa warp2p(const Particle *pp, int n, int i) {
     return p;
 }
 
-static __device__ void halo0(const float *ppB, int n1, float seed, int lid, int lane, int unpackbase, int nunpack,
+static __device__ void halo0(const float *ppB, int n1, float seed, int lid, int dw, int unpackbase, int nunpack,
                              Particle *pp, Force *ff,
                              /**/ float *ff1) {
     Pa l, r; /* local and remote particles */
@@ -34,7 +34,7 @@ static __device__ void halo0(const float *ppB, int n1, float seed, int lid, int 
     dst = (float *)(ff + unpackbase);
 
     xforce = yforce = zforce = 0;
-    nzplanes = lane < nunpack ? 3 : 0;
+    nzplanes = dw < nunpack ? 3 : 0;
     for (zplane = 0; zplane < nzplanes; ++zplane) {
         if (!tex2map(zplane, n1, l.x, l.y, l.z, /**/ &m)) continue;
         for (i = 0; !endp(m, i); ++i) {
@@ -48,7 +48,7 @@ static __device__ void halo0(const float *ppB, int n1, float seed, int lid, int 
     k_write::AOS3f(dst, nunpack, xforce, yforce, zforce);
 }
 
-static __device__ void halo1(const float *ppB, int n1, float seed, int lid, int base, int lane, /**/ float *ff1) {
+static __device__ void halo1(const float *ppB, int n1, float seed, int lid, int base, int dw, /**/ float *ff1) {
     int fid; /* fragment id */
     int start, count;
     Particle *pp;
@@ -63,17 +63,17 @@ static __device__ void halo1(const float *ppB, int n1, float seed, int lid, int 
     nunpack = min(32, count - unpackbase);
     if (nunpack == 0) return;
 
-    halo0(ppB, n1, seed, lid, lane, unpackbase, nunpack, pp, ff, /**/ ff1);
+    halo0(ppB, n1, seed, lid, dw, unpackbase, nunpack, pp, ff, /**/ ff1);
 }
 
 __global__ void halo(const float *ppB, int n0, int n1, float seed, float *ff1) {
-    int lane, warp, base;
+    int dw, warp, base;
     int i; /* particle id */
     warp = threadIdx.x / warpSize;
-    lane = threadIdx.x % warpSize;
+    dw = threadIdx.x % warpSize;
     base = warpSize * warp + blockDim.x * blockIdx.x;
     if (base >= n0) return;
-    i = base + lane;
-    halo1(ppB, n1, seed, i, base, lane, /**/ ff1);
+    i = base + dw;
+    halo1(ppB, n1, seed, i, base, dw, /**/ ff1);
 }
 }
