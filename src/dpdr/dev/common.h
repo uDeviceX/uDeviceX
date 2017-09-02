@@ -104,6 +104,4 @@ __global__ void scan(const int26 fragn, const intp26 fragcc, /**/ intp26 fragcum
         if (sourceid < n) start[sourceid] = myscan - mycount;
     }
 }
-  
-
 }}}  /* namespace */
