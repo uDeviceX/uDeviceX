@@ -13,6 +13,10 @@ static __device__ float3 dpd0(int dpid, float4 rdest, float4 udest, float4 rsrc,
     return make_float3(fx, fy, fz);
 }
 
+static __device__ float random(i, j) {
+    return rnd::mean0var1ii(info.seed, xmin(i, j), xmax(i, j));
+}
+
 static __device__ float3 dpd(uint dentry, uint sentry, uint dpid, uint spid) {
     float4 xdest, xsrc, udest, usrc;
     xdest = fetchF4(dentry);
