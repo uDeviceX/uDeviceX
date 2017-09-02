@@ -12,9 +12,6 @@ static __device__ float3 dpd0(float4 rdest, float4 udest, float4 rsrc, float4 us
     return make_float3(fx, fy, fz);
 }
 
-static __device__ float random(uint i, uint j) {
-    return rnd::mean0var1ii(info.seed, xmin(i, j), xmax(i, j));
-}
 
 static __device__ float3 dpd1(uint dentry, uint sentry, float rnd) {
     float4 xdest, xsrc, udest, usrc;
@@ -25,6 +22,9 @@ static __device__ float3 dpd1(uint dentry, uint sentry, float rnd) {
     return dpd0(xdest, udest, xsrc, usrc, rnd);
 }
 
+static __device__ float random(uint i, uint j) {
+    return rnd::mean0var1ii(info.seed, xmin(i, j), xmax(i, j));
+}
 static __device__ float3 dpd(uint dentry, uint sentry, uint dpid, uint spid) {
     float rnd;
     rnd = random(spid, dpid);
