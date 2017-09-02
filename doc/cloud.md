@@ -27,19 +27,19 @@ The function uses only API of clouds.
 
 # example for src/hforces
 
-Initialization of a cloud: called in dpdr
+Initialization of a cloud: called in dpdr/int.cu
 hforces/cloud/int.h
 
     inline void ini_cloudA(Particle *pp, CloudA *c)
 
-Device function to get a particle
+To extract a particle
 hforces/cloud/get.h
 
     __device__ void cloudA_get(CloudA c, int i, /**/ forces::Pa *p)
 
 
 To set/get position from `forces::Pa`
-src/forces/use.h
+forces/use.h
 
      inline __device__ void p2r3(Pa *p, /**/ float *x, float *y, float *z)
 	 inline __device__ void shift(float x, float y, float z, /**/ Pa *p)
