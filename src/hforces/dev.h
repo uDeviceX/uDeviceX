@@ -2,6 +2,7 @@ namespace hforces {
 namespace dev {
 
 struct Pa { /* local particle */
+    forces::Pa p;
     float x, y, z;
     float vx, vy, vz;
     int id;
@@ -23,6 +24,7 @@ static __device__ void p2rv2(const float2 *p, int i,
 
 static __device__ Pa frag2p(const Frag frag, int i) {
     Pa p;
+    forces::Pa* p0 = &p.p;
     p2rv2(frag.pp, i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
     p.id = i;
     return p;
