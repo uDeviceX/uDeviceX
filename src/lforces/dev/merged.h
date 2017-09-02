@@ -1,4 +1,7 @@
 static __global__ void merged() {
+    float xs, ys, zs;
+    float xd, yd, zd;
+
     asm volatile( ".shared .u32 smem[512];" ::: "memory" );
 
     const uint tid = threadIdx.x;
@@ -111,9 +114,6 @@ static __global__ void merged() {
                           "   sub.f32           mystart, mystart, myscan;"
                           "   mov.b32           %0, mystart;"
                           "}" : "=r"( spid ) : "f"( u2f( pid ) ), "f"( u2f( 9u ) ), "f"( u2f( 3u ) ), "f"( u2f( pshare ) ), "f"( u2f( pid ) ), "f"( u2f( nsrc ) ) );
-
-            float xs, ys, zs;
-            float xd, yd, zd;
             cloud_pos(xmin(spid, lastdst), &xs, &ys, &zs);
             for( uint dpid = dststart; dpid < lastdst; dpid = xadd( dpid, 1u ) ) {
                 cloud_pos(dpid, /**/ &xd, &yd, &zd);
