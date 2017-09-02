@@ -16,7 +16,7 @@ static __device__ Pa warp2p(const Particle *pp, int n, int i) {
     return p;
 }
 
-static __device__ void halo0(const float *ppB, int n1, float seed, int aid, int dw, int dwe, int nunpack,
+static __device__ void halo0(const float *ppB, int nb, float seed, int aid, int dw, int dwe, int nunpack,
                              Particle *pp, Force *ff,
                              /**/ float *ff1) {
     Pa A, B; /* local and remote particles */
@@ -36,7 +36,7 @@ static __device__ void halo0(const float *ppB, int n1, float seed, int aid, int 
     xforce = yforce = zforce = 0;
     nzplanes = dw < nunpack ? 3 : 0;
     for (zplane = 0; zplane < nzplanes; ++zplane) {
-        if (!tex2map(zplane, n1, A.x, A.y, A.z, /**/ &m)) continue;
+        if (!tex2map(zplane, nb, A.x, A.y, A.z, /**/ &m)) continue;
         for (i = 0; !endp(m, i); ++i) {
             bid = m2id(m, i);
             pp2p(ppB, bid, /**/ &B);
@@ -48,7 +48,7 @@ static __device__ void halo0(const float *ppB, int n1, float seed, int aid, int 
     k_write::AOS3f(dst, nunpack, xforce, yforce, zforce);
 }
 
-static __device__ void halo1(const float *ppB, int n1, float seed, int aid, int ws, int dw, /**/ float *ff1) {
+static __device__ void halo1(const float *ppB, int nb, float seed, int aid, int ws, int dw, /**/ float *ff1) {
     int fid; /* fragment id */
     int start, count;
     Particle *pp;
@@ -63,10 +63,10 @@ static __device__ void halo1(const float *ppB, int n1, float seed, int aid, int 
     nunpack = min(32, count - dwe);
     if (nunpack == 0) return;
 
-    halo0(ppB, n1, seed, aid, dw, dwe, nunpack, pp, ff, /**/ ff1);
+    halo0(ppB, nb, seed, aid, dw, dwe, nunpack, pp, ff, /**/ ff1);
 }
 
-__global__ void halo(const float *ppB, int n0, int n1, float seed, float *ff1) {
+__global__ void halo(const float *ppB, int n0, int nb, float seed, float *ff1) {
     int dw, warp, ws;
     int i; /* particle id */
     warp = threadIdx.x / warpSize;
@@ -74,6 +74,6 @@ __global__ void halo(const float *ppB, int n0, int n1, float seed, float *ff1) {
     ws = warpSize * warp + blockDim.x * blockIdx.x;
     if (ws >= n0) return;
     i = ws + dw;
-    halo1(ppB, n1, seed, i, ws, dw, /**/ ff1);
+    halo1(ppB, nb, seed, i, ws, dw, /**/ ff1);
 }
 }
