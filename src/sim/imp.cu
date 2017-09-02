@@ -83,7 +83,7 @@
 
 #include "int.h"
 #include "x/int.h"
-#include "dpd/local.h"
+#include "lforces/local.h"
 
 #include "sdstr/dec.h"
 #include "sdstr/dev.h"
@@ -92,9 +92,9 @@
 
 namespace dpdx {
 namespace dev {
-#include "dpd/x/dev.h"
+#include "lforces/x/dev.h"
 }
-#include "dpd/x/imp.h"
+#include "lforces/x/imp.h"
 }
 
 #include "dpdr/type.h"

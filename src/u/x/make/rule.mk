@@ -4,7 +4,6 @@ $B/clist/imp.o: $S/clist/imp.cu; $N -I$S/. -I$S/clist
 $B/cnt/imp.o: $S/cnt/imp.cu; $N -I$S/. -I$S/cnt
 $B/d/api.o: $S/d/api.cu; $N -I$S/. -I$S/d
 $B/dbg/imp.o: $S/dbg/imp.cu; $N -I$S/. -I$S/dbg
-$B/dpd/local.o: $S/dpd/local.cu; $N -I$S/. -I$S/dpd
 $B/dpdr/imp.o: $S/dpdr/imp.cu; $N -I$S/. -I$S/dpdr
 $B/dpdr/int.o: $S/dpdr/int.cu; $N -I$S/. -I$S/dpdr
 $B/dual/imp.o: $S/dual/imp.cpp; $X -I$S/. -I$S/dual
@@ -23,6 +22,7 @@ $B/io/ply.o: $S/io/ply.cpp; $X -I$S/. -I$S/io
 $B/io/rbc.o: $S/io/rbc.cpp; $X -I$S/. -I$S/io
 $B/io/restart.o: $S/io/restart.cpp; $X -I$S/. -I$S/io
 $B/io/rig.o: $S/io/rig.cpp; $X -I$S/. -I$S/io
+$B/lforces/local.o: $S/lforces/local.cu; $N -I$S/. -I$S/lforces
 $B/main.o: $S/main.cu; $N -I$S/.
 $B/math/linal.o: $S/math/linal.cpp; $X -I$S/. -I$S/math
 $B/mbounce/imp.o: $S/mbounce/imp.cu; $N -I$S/. -I$S/mbounce -I$S/mbounce/_release
