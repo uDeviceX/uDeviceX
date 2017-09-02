@@ -1,12 +1,16 @@
 static __device__ float3 dpd0(float4 rdest, float4 udest, float4 rsrc, float4 usrc, float rnd) {
     float fx, fy, fz;
-    float r1[3], r2[3], v1[3], v2[3];
-    forces::Pa a, b;
-    f4tof3(rdest, r1); f4tof3(rsrc, r2);
-    f4tof3(udest, v1); f4tof3(usrc, v2);
 
+    forces::Pa a;
+    float r1[3], v1[3];
+    f4tof3(rdest, r1); f4tof3(udest, v1);
     forces::rvk2p(r1, v1, SOLVENT_TYPE, /**/ &a);
+
+    forces::Pa b;
+    float r2[3], v2[3];
+    f4tof3(rsrc, r2);  f4tof3(usrc, v2);
     forces::rvk2p(r2, v2, SOLVENT_TYPE, /**/ &b);
+
     forces::gen(a, b, rnd, &fx, &fy, &fz);
     return make_float3(fx, fy, fz);
 }
