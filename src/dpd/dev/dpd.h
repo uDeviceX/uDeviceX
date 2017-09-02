@@ -14,7 +14,7 @@ static __device__ float3 dpd0(uint aid, uint bid, float rnd) {
     forces::Pa a, b;
 
     lfetch(aid, &a);
-    lfetch(aid, &b);
+    lfetch(bid, &b);
 
     forces::gen(a, b, rnd, &fx, &fy, &fz);
     return make_float3(fx, fy, fz);
