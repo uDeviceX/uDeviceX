@@ -16,13 +16,13 @@ static __device__ float3 dpd0(float4 rdest, float4 udest, float4 rsrc, float4 us
 }
 
 
-static __device__ float3 dpd1(uint dentry, uint sentry, float rnd) {
+static __device__ float3 dpd1(uint bid, uint aid, float rnd) {
     float4 xdest, xsrc, udest, usrc;
-    xdest = fetchF4(dentry);
-    udest = fetchF4(xadd(dentry, 1u));
+    xdest = fetchF4(bid);
+    udest = fetchF4(xadd(bid, 1u));
 
-    xsrc  = fetchF4(sentry);
-    usrc  = fetchF4(xadd(sentry, 1u));
+    xsrc  = fetchF4(aid);
+    usrc  = fetchF4(xadd(aid, 1u));
 
     return dpd0(xdest, udest, xsrc, usrc, rnd);
 }
@@ -30,8 +30,8 @@ static __device__ float3 dpd1(uint dentry, uint sentry, float rnd) {
 static __device__ float random(uint i, uint j) {
     return rnd::mean0var1ii(info.seed, xmin(i, j), xmax(i, j));
 }
-static __device__ float3 dpd(uint dentry, uint sentry, uint dpid, uint spid) {
+static __device__ float3 dpd(uint bid, uint aid, uint dpid, uint spid) {
     float rnd;
     rnd = random(spid, dpid);
-    return dpd1(dentry, sentry, rnd);
+    return dpd1(bid, aid, rnd);
 }
