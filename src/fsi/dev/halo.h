@@ -18,7 +18,7 @@ static __device__ Pa warp2p(const Particle *pp, int n, int i) {
 
 static __device__ void halo0(const float *ppB, int nb, float seed, int aid, int dw, int dwe, int nunpack,
                              Particle *pp, Force *ff,
-                             /**/ float *ff1) {
+                             /**/ float *ffB) {
     Pa A, B; /* local and remote particles */
     Fo f;
     float *dst = NULL;
@@ -40,7 +40,7 @@ static __device__ void halo0(const float *ppB, int nb, float seed, int aid, int 
         for (i = 0; !endp(m, i); ++i) {
             bid = m2id(m, i);
             pp2p(ppB, bid, /**/ &B);
-            f = ff2f(ff1, bid);
+            f = ff2f(ffB, bid);
             pair(A, B, random(aid, bid, seed), /**/ &xforce, &yforce, &zforce,   f);
         }
     }
@@ -48,7 +48,7 @@ static __device__ void halo0(const float *ppB, int nb, float seed, int aid, int 
     k_write::AOS3f(dst, nunpack, xforce, yforce, zforce);
 }
 
-static __device__ void halo1(const float *ppB, int nb, float seed, int aid, int ws, int dw, /**/ float *ff1) {
+static __device__ void halo1(const float *ppB, int nb, float seed, int aid, int ws, int dw, /**/ float *ffB) {
     int fid; /* fragment id */
     int start, count;
     Particle *pp;
@@ -63,10 +63,10 @@ static __device__ void halo1(const float *ppB, int nb, float seed, int aid, int 
     nunpack = min(32, count - dwe);
     if (nunpack == 0) return;
 
-    halo0(ppB, nb, seed, aid, dw, dwe, nunpack, pp, ff, /**/ ff1);
+    halo0(ppB, nb, seed, aid, dw, dwe, nunpack, pp, ff, /**/ ffB);
 }
 
-__global__ void halo(const float *ppB, int n0, int nb, float seed, float *ff1) {
+__global__ void halo(const float *ppB, int n0, int nb, float seed, float *ffB) {
     int dw, warp, ws;
     int i; /* particle id */
     warp = threadIdx.x / warpSize;
@@ -74,6 +74,6 @@ __global__ void halo(const float *ppB, int n0, int nb, float seed, float *ff1) {
     ws = warpSize * warp + blockDim.x * blockIdx.x;
     if (ws >= n0) return;
     i = ws + dw;
-    halo1(ppB, nb, seed, i, ws, dw, /**/ ff1);
+    halo1(ppB, nb, seed, i, ws, dw, /**/ ffB);
 }
 }
