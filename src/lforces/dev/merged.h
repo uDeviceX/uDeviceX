@@ -114,7 +114,7 @@ static __global__ void merged() {
 
             float xs, ys, zs;
             float xd, yd, zd;
-
+            cloud_pos(xmin(spid, lastdst), &xs, &ys, &zs);
             const float4 xsrc = fetchH4(xmin(spid, lastdst));
 
             for( uint dpid = dststart; dpid < lastdst; dpid = xadd( dpid, 1u ) ) {
