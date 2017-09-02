@@ -10,14 +10,9 @@ static __device__ float random(uint lid, uint rid, float seed) {
 static __device__ void tex2rv(int i,
                               float  *x, float  *y, float  *z,
                               float *vx, float *vy, float *vz) {
-    float2 s0, s1, s2;
-    i *= 3;
-    s0 = fetchP(i++);
-    s1 = fetchP(i++);
-    s2 = fetchP(i++);
-
-     *x = fst(s0);  *y = scn(s0);  *z = fst(s1);
-    *vx = scn(s1); *vy = fst(s2); *vz = scn(s2);
+    i *= 6;
+     *x = fetchP(i++);  *y = fetchP(i++);  *z = fetchP(i++);
+    *vx = fetchP(i++); *vy = fetchP(i++); *vz = fetchP(i++);
 }
 
 static __device__ Pa tex2p(int i) {

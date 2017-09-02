@@ -5,7 +5,7 @@ static void setup_first() {
     dev::t::start.mipmapFilterMode = cudaFilterModePoint;
     dev::t::start.normalized = 0;
 
-    dev::t::pp.channelDesc = cudaCreateChannelDesc<float2>();
+    dev::t::pp.channelDesc = cudaCreateChannelDesc<float>();
     dev::t::pp.filterMode = cudaFilterModePoint;
     dev::t::pp.mipmapFilterMode = cudaFilterModePoint;
     dev::t::pp.normalized = 0;
