@@ -30,8 +30,8 @@ static __device__ float3 dpd1(uint aid, uint bid, float rnd) {
 static __device__ float random(uint i, uint j) {
     return rnd::mean0var1ii(info.seed, xmin(i, j), xmax(i, j));
 }
-static __device__ float3 dpd(uint bid, uint aid, uint dpid, uint spid) {
+static __device__ float3 dpd(uint aid, uint bid, uint dpid, uint spid) {
     float rnd;
-    rnd = random(spid, dpid);
-    return dpd1(bid, aid, rnd);
+    rnd = random(spid, dpid); /* (sic) */
+    return dpd1(aid, bid, rnd);
 }
