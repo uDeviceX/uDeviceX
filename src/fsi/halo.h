@@ -1,6 +1,7 @@
 namespace fsi {
 void halo(ParticlesWrap halos[26]) {
-    setup(wo->p, wo->n, wo->cellsstart);
+    const Particle *ppB = wo->p;
+    setup(ppB, wo->n, wo->cellsstart);
     int n = 0;
     int counts[26], starts[27];
     for (int i = 0; i < 26; ++i) counts[i] = halos[i].n;
