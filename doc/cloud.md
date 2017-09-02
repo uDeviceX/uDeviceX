@@ -1,10 +1,13 @@
-#intro
-
+# intro
 `Pa` is an abstract particle expected by `forces::gen`
 
-Cloud is a family of abstract objects. Cloud support one operation 
+Cloud is a family of abstract objects.  A cloud has initialization
 
-`Pa = CloudA.cloud_get([...])`
+    Cloud.ini(pp, [...])
+
+and a operation
+
+    Pa = Cloud.cloud_get([...])
 
 Clouds not `pp` should be arguments of functions which call
 `forces::gen`.
