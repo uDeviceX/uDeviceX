@@ -1,5 +1,5 @@
 namespace hforces { namespace dev {
-__device__ void cloudA_get(CloudA c, int i, /**/ forces::Pa *p) {
+__device__ void cloud_get(Cloud c, int i, /**/ forces::Pa *p) {
     float *pp, *r, *v;
     pp = c.pp;
     r = &pp[6*i];

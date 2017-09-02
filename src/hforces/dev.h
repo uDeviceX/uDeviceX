@@ -23,7 +23,7 @@ static __device__ void force0(const Rnd rnd, const Frag bfrag, const Map m, cons
     *fx = *fy = *fz = 0;
     for (i = 0; !endp(m, i); i ++ ) {
         bid = m2id(m, i);
-        cloudA_get(bfrag.c, bid, /**/ &b);
+        cloud_get(bfrag.c, bid, /**/ &b);
         pair(a, b, random(aid, bid, rnd.seed, rnd.mask), &x, &y, &z);
         *fx += x; *fy += y; *fz += z;
     }
@@ -61,7 +61,7 @@ static __device__ Fo sfrag2f(const SFrag frag, float *ff, int i) {
 static __device__ void force3(const SFrag afrag, const Frag bfrag, const Rnd rnd, int i, /**/ float *ff) {
     forces::Pa p;
     Fo f;
-    cloudA_get(afrag.c, i, &p);
+    cloud_get(afrag.c, i, &p);
     f = sfrag2f(afrag, ff, i);
     force2(bfrag, rnd, p, i, f);
 }

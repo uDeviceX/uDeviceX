@@ -159,8 +159,8 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
     int i;
     int dx, dy, dz;
     int m0, m1, m2;
-    hforces::CloudA clouda;
-    hforces::CloudA cloudb;
+    hforces::Cloud clouda;
+    hforces::Cloud cloudb;
 
     hforces::SFrag26 sfrag;
     hforces::Frag26   frag;
@@ -175,8 +175,8 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
         m1 = 0 == dy;
         m2 = 0 == dz;
 
-        hforces::ini_cloudA(ts.b.pp.d[i], &clouda);
-        hforces::ini_cloudA(tr.b.pp.d[i], &cloudb);
+        hforces::ini_cloud(ts.b.pp.d[i], &clouda);
+        hforces::ini_cloud(tr.b.pp.d[i], &cloudb);
 
         sfrag.d[i] = {
             clouda,            

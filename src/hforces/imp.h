@@ -4,13 +4,13 @@ namespace hforces {
 enum FragType { BULK = 0, FACE = 1, EDGE = 2, CORNER = 3 };
 
 struct SFrag { /* "send" fragment */
-    CloudA c;
+    Cloud c;
     int *ii; /* index */
     int n;
 };
 
 struct Frag {
-    CloudA c;
+    Cloud c;
     int *start, dx, dy, dz, xcells, ycells, zcells;
     FragType type;
 };

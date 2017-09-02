@@ -1,5 +1,5 @@
 namespace hforces {
-struct CloudA {
+struct Cloud {
     float *pp;
 };
 } /* namespace */
