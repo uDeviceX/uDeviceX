@@ -16,14 +16,17 @@ static __device__ float random(uint i, uint j) {
     return rnd::mean0var1ii(info.seed, xmin(i, j), xmax(i, j));
 }
 
-static __device__ float3 dpd(uint dentry, uint sentry, uint dpid, uint spid) {
+static __device__ float3 dpd1(uint dentry, uint sentry, float rnd) {
     float4 xdest, xsrc, udest, usrc;
-    float rnd;
-    rnd = random(spid, dpid);
-
     xdest = fetchF4(dentry);
     xsrc  = fetchF4(sentry);
     udest = fetchF4(xadd(dentry, 1u));
     usrc  = fetchF4(xadd(sentry, 1u));
     return dpd0(xdest, udest, xsrc, usrc, rnd);
+}
+
+static __device__ float3 dpd(uint dentry, uint sentry, uint dpid, uint spid) {
+    float rnd;
+    rnd = random(spid, dpid);
+    return dpd1(dentry, sentry, rnd);
 }
