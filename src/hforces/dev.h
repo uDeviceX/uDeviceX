@@ -40,10 +40,10 @@ static __device__ void pair(const PA a, const PB b, float rnd, /**/ float *fx, f
     forces::gen(a0, b0, rnd, /**/ fx, fy, fz);
 }
 
-static __device__ float random(int lid, int rid, float seed, int mask) {
+static __device__ float random(int aid, int bid, float seed, int mask) {
     uint a1, a2;
-    a1 = mask ? lid : rid;
-    a2 = mask ? rid : lid;
+    a1 = mask ? aid : bid;
+    a2 = mask ? bid : aid;
     return rnd::mean0var1uu(seed, a1, a2);
 }
 
