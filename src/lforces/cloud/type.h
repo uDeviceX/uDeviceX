@@ -1,10 +1,6 @@
 namespace lforces {
-struct CloudA {
+struct Cloud {
     float *pp;
-};
-
-struct CloudB {
-    float2 *pp;
 };
 
 } /* namespace */
