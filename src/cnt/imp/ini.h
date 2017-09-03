@@ -1,6 +1,6 @@
 void ini() {
-    Dalloc(&starts, sz);
-    Dalloc(&counts, sz);
+    Dalloc(&g::starts, sz);
+    Dalloc(&g::counts, sz);
     scan::alloc_work(sz, &ws);
     entries = new DeviceBuffer<int>;
     indexes = new DeviceBuffer<uchar4>;

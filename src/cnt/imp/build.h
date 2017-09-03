@@ -7,25 +7,25 @@ void build(std::vector<ParticlesWrap> wr) {
     indexes->resize(ntotal);
     entries->resize(ntotal);
 
-    CC(cudaMemsetAsync(counts, 0, sizeof(*counts)*sz));
+    CC(cudaMemsetAsync(g::counts, 0, sizeof(*g::counts)*sz));
 
 
     int ctr = 0;
     for (int i = 0; i < (int) wr.size(); ++i) {
         ParticlesWrap it = wr[i];
-        KL(k_index::local<true>, (k_cnf(it.n)), (it.n, (float2 *)it.p, counts, indexes->D + ctr));
+        KL(k_index::local<true>, (k_cnf(it.n)), (it.n, (float2 *)it.p, g::counts, indexes->D + ctr));
         ctr += it.n;
     }
 
-    scan::scan(counts, sz, /**/ starts, /*w*/ &ws);
+    scan::scan(g::counts, sz, /**/ g::starts, /*w*/ &ws);
 
     ctr = 0;
     for (int i = 0; i < (int) wr.size(); ++i) {
         ParticlesWrap it = wr[i];
         KL(dev::populate, (k_cnf(it.n)),
-           (indexes->D + ctr, starts, it.n, i, entries->D));
+           (indexes->D + ctr, g::starts, it.n, i, entries->D));
         ctr += it.n;
     }
 
-    bind(starts, entries->D, ntotal, wr);
+    bind(g::starts, entries->D, ntotal, wr);
 }

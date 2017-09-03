@@ -4,6 +4,6 @@ void fin() {
     delete entries;
     delete rgen;
 
-    Dfree(counts);
-    Dfree(starts);
+    Dfree(g::counts);
+    Dfree(g::starts);
 }
