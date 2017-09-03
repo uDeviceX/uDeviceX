@@ -1,5 +1,5 @@
 namespace fsi {
-void halo(ParticlesWrap halos[26], Pap26 PP, Fop26 FF, int nn[26]);
+void halo(Pap26 PP, Fop26 FF, int counts[26]);
 void ini();
 void fin();
 void bind(SolventWrap wrap);
