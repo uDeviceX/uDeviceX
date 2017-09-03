@@ -6,11 +6,7 @@
 #include "inc/conf.h"
 
 #include "d/api.h"
-#include "d/ker.h"
 #include "mpi/wrapper.h"
-#include "algo/scan/int.h"
-#include "rnd/imp.h"
-
 #include "inc/def.h"
 #include "msg.h"
 #include "mpi/glb.h"
@@ -28,13 +24,6 @@
 #include "sim/int.h"
 
 #include "dbg/imp.h"
-
-#include "glb.h"
-
-#include "inc/dev/read.h"
-#include "inc/dev/write.h"
-#include "inc/dev/common.h"
-#include "inc/dev/index.h"
 #include "cnt/int.h"
 #include "fsi/int.h"
 
