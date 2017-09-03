@@ -12,6 +12,7 @@ static __device__ Pa warp2p(const Particle *pp, int i) {
 static __device__ void halo0(const float *ppB, Pa A, float *fA, int nb, float seed, int aid, int dw, int dwe, int nunpack,
                              Particle *pp, Force *ff,
                              /**/ float *ffB) {
+    enum {X, Y, Z};
     Pa B; /* remote particles */
     Fo f;
     float *dst = NULL;
@@ -22,7 +23,6 @@ static __device__ void halo0(const float *ppB, Pa A, float *fA, int nb, float se
     int i;
     int bid; /* remote particle id */
     float xforce, yforce, zforce;
-    dst = (float *)(ff + dwe);
 
     xforce = yforce = zforce = 0;
     nzplanes = dw < nunpack ? 3 : 0;
@@ -36,7 +36,7 @@ static __device__ void halo0(const float *ppB, Pa A, float *fA, int nb, float se
         }
     }
 
-    k_write::AOS3f(dst, nunpack, xforce, yforce, zforce);
+    fA[X] = xforce; fA[Y] = yforce; fA[Z] = zforce;
 }
 
 static __device__ void halo1(const float *ppB, int nb, float seed, int aid, int ws, int dw, /**/ float *ffB) {
@@ -58,6 +58,7 @@ static __device__ void halo1(const float *ppB, int nb, float seed, int aid, int 
     if (nunpack == 0) return;
 
     A = warp2p(pp, aid - start);
+    fA = ff[aid-start].f;
     halo0(ppB, A, fA, nb, seed, aid, dw, dwe, nunpack, pp, ff, /**/ ffB);
 }
 
