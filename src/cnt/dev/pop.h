@@ -1,6 +1,6 @@
 __global__ void populate(uchar4 *subindices,
                          int *cellstart, int nparticles,
-                         int soluteid, int ntotalparticles,
+                         int soluteid, 
                          int *entrycells) {
     int pid, cellid, mystart, slot;
     uchar4 subindex;
