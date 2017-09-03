@@ -1,6 +1,6 @@
 __global__ void bulk(float2 *pp, int n,
-                     int ncellentries, int nsolutes,
-                     float seed, int mysoluteid, float *ff) {
+                     int ncellentries, int nobj,
+                     float seed, int objid0, float *ff) {
     Map m; /* see map/ */
     float x, y, z;
 
@@ -36,7 +36,7 @@ __global__ void bulk(float2 *pp, int n,
     for (i = 0; !endp(m, i); ++i) {
         slot = m2id(m, i);
         get(slot, &objid, &spid);
-        if (mysoluteid < objid || mysoluteid == objid && pid <= spid)
+        if (objid0 < objid || objid0 == objid && pid <= spid)
             continue;
 
         sentry = 3 * spid;
