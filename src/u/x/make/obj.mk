@@ -7,7 +7,7 @@ O = $B/algo/minmax.o $B/algo/scan/imp.o $B/clist/imp.o $B/cnt/imp.o $B/comm/imp.
     $B/mesh/bbox.o $B/mesh/collision.o $B/mesh/dist.o $B/mesh/props.o $B/mpi/glb.o \
     $B/mpi/type.o $B/mpi/wrapper.o $B/mrescue.o $B/msg.o $B/odstr/halo/imp.o \
     $B/odstr/imp.o $B/odstr/int.o $B/rbc/imp.o $B/rbc/int.o $B/rdstr/imp.o \
-    $B/rdstr/int.o $B/rex/imp.o $B/rig/imp.o $B/rig/int.o $B/rigid/imp.o \
-    $B/rnd/imp.o $B/sdf/imp.o $B/sdf/int.o $B/sim/imp.o $B/tcells/imp.o \
-    $B/tcells/int.o $B/utils/cc.o $B/utils/mc.o $B/utils/os.o $B/wall/exch.o \
-    $B/wall/imp.o $B/wall/int.o $B/x/imp.o
+    $B/rdstr/int.o $B/rex/imp.o $B/rex/int.o $B/rig/imp.o $B/rig/int.o \
+    $B/rigid/imp.o $B/rnd/imp.o $B/sdf/imp.o $B/sdf/int.o $B/sim/imp.o \
+    $B/tcells/imp.o $B/tcells/int.o $B/utils/cc.o $B/utils/mc.o $B/utils/os.o \
+    $B/wall/exch.o $B/wall/imp.o $B/wall/int.o

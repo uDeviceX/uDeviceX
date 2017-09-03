@@ -75,7 +75,7 @@
 #include "cnt/int.h"
 #include "fsi/int.h"
 
-#include "x/type.h"
+#include "int/type.h" /* TODO */
   #include "imp/type.h"
   #include "imp/decl.h"
 

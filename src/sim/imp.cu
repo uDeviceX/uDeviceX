@@ -82,7 +82,7 @@
 #include "fsi/int.h"
 
 #include "int.h"
-#include "x/int.h"
+#include "rex/int.h"
 #include "lforces/local.h"
 
 #include "sdstr/dec.h"

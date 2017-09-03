@@ -48,6 +48,7 @@ $B/rbc/int.o: $S/rbc/int.cu; $N -I$S/. -I$S/rbc
 $B/rdstr/imp.o: $S/rdstr/imp.cu; $N -I$S/. -I$S/rdstr
 $B/rdstr/int.o: $S/rdstr/int.cu; $N -I$S/. -I$S/rdstr
 $B/rex/imp.o: $S/rex/imp.cu; $N -I$S/. -I$S/rex
+$B/rex/int.o: $S/rex/int.cu; $N -I$S/. -I$S/rex
 $B/rig/imp.o: $S/rig/imp.cu; $N -I$S/. -I$S/rig
 $B/rig/int.o: $S/rig/int.cu; $N -I$S/. -I$S/rig
 $B/rigid/imp.o: $S/rigid/imp.cu; $N -I$S/. -I$S/rigid -I$S/rigid/_cuda
@@ -63,4 +64,3 @@ $B/utils/os.o: $S/utils/os.cpp; $X -I$S/. -I$S/utils
 $B/wall/exch.o: $S/wall/exch.cpp; $X -I$S/. -I$S/wall
 $B/wall/imp.o: $S/wall/imp.cu; $N -I$S/. -I$S/wall
 $B/wall/int.o: $S/wall/int.cu; $N -I$S/. -I$S/wall
-$B/x/imp.o: $S/x/imp.cu; $N -I$S/. -I$S/x
