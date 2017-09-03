@@ -1,6 +1,6 @@
 namespace x {
 static void pre(ParticlesWrap *w, int nw) {
-    using namespace rex;
+    using namespace sub;
     clear(nw, tp);
     scanA(w, nw, tp);
     scanB(nw, tp);
@@ -10,7 +10,7 @@ static void pre(ParticlesWrap *w, int nw) {
 }
 
 static void rex0(ParticlesWrap *w, int nw) {
-    using namespace rex;
+    using namespace sub;
     dSync();
     recvF(tc.ranks, tr.tags, tt, ti.counts, local);
     dSync();

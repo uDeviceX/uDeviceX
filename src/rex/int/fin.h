@@ -15,7 +15,7 @@ static void fin_remote() {
 
 static void fin_local() {
     int i;
-    rex::LFrag *h;
+    sub::LFrag *h;
     for (i = 0; i < 26; i++) {
         h = &local[i];
         Dfree(h->indexes);

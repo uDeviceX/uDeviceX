@@ -1,4 +1,4 @@
-namespace rex {
+namespace sub {
 void sendF(int ranks[26], x::TicketTags t, int counts[26], Fop26 FF_pi) {
     int i, n;
     reqsendA.resize(26);

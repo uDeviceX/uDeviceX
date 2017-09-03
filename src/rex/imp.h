@@ -1,4 +1,4 @@
-namespace rex {
+namespace sub {
 void ini(LFrag *local);
 void fin();
 void clear(int nw, x::TicketPack tp);

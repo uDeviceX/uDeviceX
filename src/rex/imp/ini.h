@@ -1,4 +1,4 @@
-namespace rex {
+namespace sub {
 static void ini_copy(LFrag *local) {
     int i;
     for (i = 0; i < 26; ++i)

@@ -1,4 +1,4 @@
-namespace rex {
+namespace sub {
 void wait(std::vector<MPI_Request> &v) {
     MPI_Status s[v.size()];
     if (v.size()) MC(m::Waitall(v.size(), &v.front(), s));

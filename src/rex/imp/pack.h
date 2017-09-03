@@ -1,4 +1,4 @@
-namespace rex {
+namespace sub {
 void clear(int nw, x::TicketPack tp) {
     CC(cudaMemsetAsync(tp.starts,  0, sizeof(int) * 27 *  nw));
     CC(cudaMemsetAsync(tp.counts,  0, sizeof(int) * 26 *  nw));

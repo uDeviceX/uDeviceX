@@ -1,4 +1,4 @@
-namespace rex {
+namespace sub {
 void scanA(ParticlesWrap *w, int nw, x::TicketPack tp) {
     int i, n;
     int *o0, *o1; /* offsets */

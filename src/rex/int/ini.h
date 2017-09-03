@@ -29,7 +29,7 @@ static void ini_remote() {
 
 static void ini_local() {
     int i, n;
-    rex::LFrag *h;
+    sub::LFrag *h;
     for (i = 0; i < 26; i++) {
         n = i2max(i);
         h = &local[i];
@@ -44,7 +44,7 @@ void ini(/*io*/ basetags::TagGen *g) {
     ini_tickets(g);
     ini_local();
     ini_remote();
-    rex::ini(local);
+    sub::ini(local);
 }
  
 } /* namespace */
