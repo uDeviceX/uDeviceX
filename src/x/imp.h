@@ -22,17 +22,17 @@ static void rex0(ParticlesWrap *w, int nw) {
     r::waitC();
 
     /** P **/
-    recvP(tc.cart, tc.ranks, tr.tags, tt, recv_counts);
+    recvP(tc.cart, tc.ranks, tr.tags, tt, recv_counts, remote);
     sendP(tc.cart, tc.ranks, tt, ti, buf_pi, ti.counts);
     s::waitP();
     r::waitP();
 
     if (!first) s::waitA(); else first = 0;
 
-    halo(recv_counts); /* fsi::halo(); cnt::halo(); */
+    halo(recv_counts, remote); /* fsi::halo(); cnt::halo(); */
 
     dSync();
-    sendF(tc.cart, tc.ranks, tt, recv_counts); /* (sic) */
+    sendF(tc.cart, tc.ranks, tt, recv_counts, remote); /* (sic) */
     r::waitA();
     unpack(w, nw, tp);
 }

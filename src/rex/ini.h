@@ -16,20 +16,6 @@ static void ini_local() {
     }
 }
 
-static void ini_remote() {
-    int i, n;
-    RFrag* h;
-    for (i = 0; i < 26; i++) {
-        n = i2max(i);
-        h = &remote[i];
-        Palloc0(&h->pp_pi, n);
-        Link(&h->pp, h->pp_pi);
-
-        Palloc0(&h->ff_pi, n);
-        Link(&h->ff, h->ff_pi);
-    }
-}
-
 static void ini_copy() {
     int i;
     for (i = 0; i < 26; ++i)
@@ -45,7 +31,6 @@ static void ini_ff() {
 
 void ini() {
     ini_local();
-    ini_remote();
     ini_copy();
     ini_ff();
 }

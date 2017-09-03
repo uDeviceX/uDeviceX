@@ -20,7 +20,7 @@ void recvC(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t, int coun
     }
 }
 
-void recvP(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t, int counts[26]) {
+void recvP(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t, int counts[26], RFrag *remote) {
     int i, tag, n;
     MPI_Request reqP;
     Particle *p;

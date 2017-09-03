@@ -1,5 +1,5 @@
 namespace rex {
-void halo(int counts[26]) {
+void halo(int counts[26], RFrag *remote) {
     int i, n;
     ParticlesWrap halos[26];
     for (i = 0; i < 26; ++i) {
