@@ -5,7 +5,7 @@ __global__ void halo(int n, float seed) {
     float x, y, z;
     forces::Pa a, b;
     float fx, fy, fz;
-    int dw, warp, ws, pid, start;
+    int dw, warp, ws, aid, start;
     int nunpack;
     float2 dst0, dst1, dst2;
     int fid, dwe;
@@ -22,7 +22,7 @@ __global__ void halo(int n, float seed) {
     dw =   threadIdx.x % warpSize;
     warp = threadIdx.x / warpSize;
     ws = warpSize * (warp + 4 * blockIdx.x);
-    pid = ws + dw;
+    aid = ws + dw;
     if (ws >= n) return;
 
     fid = k_common::fid(g::starts, ws);
@@ -52,7 +52,7 @@ __global__ void halo(int n, float seed) {
             stmp1 = __ldg(g::csolutes[objid] + sentry + 1);
             stmp2 = __ldg(g::csolutes[objid] + sentry + 2);
 
-            rnd = rnd::mean0var1ii(seed, pid, spid);
+            rnd = rnd::mean0var1ii(seed, aid, spid);
             forces::f2k2p(dst0,   dst1,  dst2, SOLID_TYPE, /**/ &a);
             forces::f2k2p(stmp0, stmp1, stmp2, SOLID_TYPE, /**/ &b);
             forces::gen(a, b, rnd, &fx, &fy, &fz);
