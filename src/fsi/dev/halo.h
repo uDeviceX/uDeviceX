@@ -9,8 +9,7 @@ static __device__ Pa warp2p(const Particle *pp, int i) {
     return p;
 }
 
-static __device__ void halo0(const float *ppB, Pa A, float *fA, int nb, float seed, int aid,
-                             Force *ff, /**/ float *ffB) {
+static __device__ void halo0(const float *ppB, Pa A, float *fA, int nb, float seed, int aid, /**/ float *ffB) {
     enum {X, Y, Z};
     Pa B; /* remote particles */
     Fo f;
@@ -49,13 +48,13 @@ static __device__ void halo1(const float *ppB, int nb, float seed, int aid, /**/
     ff = g::ff[fid];
     A = warp2p(pp, aid - start);
     fA = ff[aid-start].f;
-    halo0(ppB, A, fA, nb, seed, aid, ff, /**/ ffB);
+    halo0(ppB, A, fA, nb, seed, aid, /**/ ffB);
 }
 
-__global__ void halo(const float *ppB, int n0, int nb, float seed, float *ffB) {
-    int i; /* particle id */
+__global__ void halo(const float *ppB, int na, int nb, float seed, /**/ float *ffB) {
+    int aid;
     i = threadIdx.x + blockDim.x * blockIdx.x;
-    if (i >= n0) return;
-    halo1(ppB, nb, seed, i, /**/ ffB);
+    if (i >= na) return;
+    halo1(ppB, nb, seed, aid, /**/ ffB);
 }
 }
