@@ -33,7 +33,7 @@ void forces(bool wall0) {
     if (contactforces) forces_cnt(&w_r);
     O;
     S;
-    SolventWrap w_s(o::q.pp, o::q.n, o::ff, o::q.cells->start, o::q.cells->count);
+    SolventWrap w_s(o::q.pp, o::q.n, o::ff, o::q.cells->start);
     if (fsiforces)     forces_fsi(&w_s, &w_r);
     O;
     S;
