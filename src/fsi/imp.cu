@@ -49,7 +49,13 @@
 #include "forces/type.h"
 #include "forces/pack.h"
 #include "forces/imp.h"
+#include "cloud/generic/type.h"
 
+/* local */
+#include "type.h"
+#include "int.h"
+
+/* body */
 namespace fsi {
 namespace dev {
 #include "dev/type.h"

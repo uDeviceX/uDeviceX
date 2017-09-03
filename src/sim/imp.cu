@@ -82,6 +82,8 @@
 #include "odstr/type.h"
 #include "odstr/int.h"
 #include "cnt/int.h"
+
+#include "fsi/type.h"
 #include "fsi/int.h"
 
 #include "int.h"

@@ -1,5 +1,5 @@
 void forces(bool wall0) {
-    SolventWrap w_s;
+    fsi::SolventWrap w_s;
     hforces::Cloud cloud;
 
     clear_forces(o::ff, o::q.n);
@@ -15,7 +15,9 @@ void forces(bool wall0) {
     if (rbcs)    w_r.push_back(ParticlesWrap(r::q.pp, r::q.n, r::ff));
     if (contactforces) forces_cnt(&w_r);
 
+    hforces::ini_cloud(o::q.pp, &cloud);
     w_s.pp = o::q.pp;
+    w_s.c  = cloud;
     w_s.ff = o::ff;
     w_s.n  = o::q.n;
     w_s.starts = o::q.cells->start;

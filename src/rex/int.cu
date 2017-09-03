@@ -25,6 +25,9 @@
 
 #include "dbg/imp.h"
 #include "cnt/int.h"
+
+#include "cloud/generic/type.h"
+#include "fsi/type.h"
 #include "fsi/int.h"
 
 #include "imp/type.h"

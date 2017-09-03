@@ -73,11 +73,14 @@
 #include "odstr/type.h"
 #include "odstr/int.h"
 #include "cnt/int.h"
+
+#include "cloud/generic/type.h"
+#include "fsi/type.h"
 #include "fsi/int.h"
 
 #include "int/type.h" /* TODO */
-  #include "imp/type.h"
-  #include "imp/decl.h"
+#include "imp/type.h"
+#include "imp/decl.h"
 
 namespace dev {
   #include "dev/type.h"
@@ -90,11 +93,11 @@ namespace dev {
   #include "dev/unpack.h"
 } /* namespace */
 
-  #include "imp/ini.h"
-  #include "imp/copy.h"
-  #include "imp/wait.h"
-  #include "imp/scan.h"
-  #include "imp/pack.h"
-  #include "imp/send.h"
-  #include "imp/recv.h"
-  #include "imp/unpack.h"
+#include "imp/ini.h"
+#include "imp/copy.h"
+#include "imp/wait.h"
+#include "imp/scan.h"
+#include "imp/pack.h"
+#include "imp/send.h"
+#include "imp/recv.h"
+#include "imp/unpack.h"

@@ -27,9 +27,3 @@ struct Force {
     float f[3];
 };
 
-struct SolventWrap {
-    Particle *pp;
-    Force *ff;
-    int n; 
-    int *starts;
-};
