@@ -1,4 +1,5 @@
 void forces(bool wall0) {
+    SolventWrap w_s;
     clear_forces(o::ff, o::q.n);
     if (solids0) clear_forces(s::ff, s::q.n);
     if (rbcs)    clear_forces(r::ff, r::q.n);
@@ -12,7 +13,6 @@ void forces(bool wall0) {
     if (rbcs)    w_r.push_back(ParticlesWrap(r::q.pp, r::q.n, r::ff));
     if (contactforces) forces_cnt(&w_r);
 
-    SolventWrap w_s;
     w_s.pp = o::q.pp;
     w_s.ff = o::ff;
     w_s.n  = o::q.n;
