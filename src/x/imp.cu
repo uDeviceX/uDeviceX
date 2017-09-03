@@ -91,7 +91,6 @@
   #include "rex/ini.h"
   #include "rex/copy.h"
   #include "rex/wait.h"
-  #include "rex/halo.h"
   #include "rex/scan.h"
   #include "rex/pack.h"
   #include "rex/send.h"
