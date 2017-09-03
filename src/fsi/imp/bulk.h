@@ -15,6 +15,6 @@ void bulk(std::vector<ParticlesWrap> wr) {
     w = wr.data();
 
     if (n == 0) return;
-    setup(wo->p, wo->n, wo->cellsstart);
+    setup(wo->cellsstart);
     for (i = 0; i < n; i++) bulk0(w++, wo->p);
 }
