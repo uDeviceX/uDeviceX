@@ -1,5 +1,6 @@
 namespace x {
 rex::RFrag remote[26];
+rex::LFrag local[26];
 
 TicketCom    tc;
 TicketR      tr;
