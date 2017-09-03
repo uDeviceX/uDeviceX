@@ -1,4 +1,4 @@
-__global__ void populate(uchar4 *subindices, int *starts, int n, int soluteid, /**/ int *entry) {
+__global__ void populate(uchar4 *subindices, int *starts, int n, int objid, /**/ int *entry) {
     int pid, id, start, slot;
     uchar4 subindex;
 
@@ -10,5 +10,5 @@ __global__ void populate(uchar4 *subindices, int *starts, int n, int soluteid, /
 
     start = __ldg(starts + id);
     slot = start + subindex.w;
-    set(soluteid, pid, slot, /**/ entry);
+    set(objid, pid, slot, /**/ entry);
 }

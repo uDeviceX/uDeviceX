@@ -14,7 +14,7 @@ __global__ void halo(int n, float seed) {
     float *dst = NULL;
     int i;
     int slot;
-    int soluteid, spid;
+    int objid, spid;
     int sentry;
     float2 stmp0, stmp1, stmp2;
     float rnd;
@@ -44,12 +44,12 @@ __global__ void halo(int n, float seed) {
         if (mapstatus == EMPTY) continue;
         for (i = 0; !endp(m, i); ++i) {
             slot = m2id(m, i);
-            get(slot, &soluteid, &spid);
+            get(slot, &objid, &spid);
 
             sentry = 3 * spid;
-            stmp0 = __ldg(g::csolutes[soluteid] + sentry);
-            stmp1 = __ldg(g::csolutes[soluteid] + sentry + 1);
-            stmp2 = __ldg(g::csolutes[soluteid] + sentry + 2);
+            stmp0 = __ldg(g::csolutes[objid] + sentry);
+            stmp1 = __ldg(g::csolutes[objid] + sentry + 1);
+            stmp2 = __ldg(g::csolutes[objid] + sentry + 2);
 
             rnd = rnd::mean0var1ii(seed, pid, spid);
             forces::f2k2p(dst0,   dst1,  dst2, SOLID_TYPE, /**/ &a);
@@ -58,9 +58,9 @@ __global__ void halo(int n, float seed) {
             xforce += fx;
             yforce += fy;
             zforce += fz;
-            atomicAdd(g::csolutesacc[soluteid] + sentry,     -fx);
-            atomicAdd(g::csolutesacc[soluteid] + sentry + 1, -fy);
-            atomicAdd(g::csolutesacc[soluteid] + sentry + 2, -fz);
+            atomicAdd(g::csolutesacc[objid] + sentry,     -fx);
+            atomicAdd(g::csolutesacc[objid] + sentry + 1, -fy);
+            atomicAdd(g::csolutesacc[objid] + sentry + 2, -fz);
         }
     }
 

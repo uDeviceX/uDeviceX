@@ -11,7 +11,7 @@ __global__ void bulk(float2 *pp, int n,
     float xforce, yforce, zforce;
     int i, slot;
 
-    int soluteid;
+    int objid;
     int spid;
     int sentry;
     float2 stmp0, stmp1, stmp2;
@@ -35,14 +35,14 @@ __global__ void bulk(float2 *pp, int n,
     xforce = yforce = zforce = 0;
     for (i = 0; !endp(m, i); ++i) {
         slot = m2id(m, i);
-        get(slot, &soluteid, &spid);
-        if (mysoluteid < soluteid || mysoluteid == soluteid && pid <= spid)
+        get(slot, &objid, &spid);
+        if (mysoluteid < objid || mysoluteid == objid && pid <= spid)
             continue;
 
         sentry = 3 * spid;
-        stmp0 = __ldg(g::csolutes[soluteid] + sentry);
-        stmp1 = __ldg(g::csolutes[soluteid] + sentry + 1);
-        stmp2 = __ldg(g::csolutes[soluteid] + sentry + 2);
+        stmp0 = __ldg(g::csolutes[objid] + sentry);
+        stmp1 = __ldg(g::csolutes[objid] + sentry + 1);
+        stmp2 = __ldg(g::csolutes[objid] + sentry + 2);
 
         rnd = rnd::mean0var1ii(seed, pid, spid);
         forces::f2k2p(dst0,   dst1,  dst2, SOLID_TYPE, /**/ &a);
@@ -51,9 +51,9 @@ __global__ void bulk(float2 *pp, int n,
         xforce += fx;
         yforce += fy;
         zforce += fz;
-        atomicAdd(g::csolutesacc[soluteid] + sentry,     -fx);
-        atomicAdd(g::csolutesacc[soluteid] + sentry + 1, -fy);
-        atomicAdd(g::csolutesacc[soluteid] + sentry + 2, -fz);
+        atomicAdd(g::csolutesacc[objid] + sentry,     -fx);
+        atomicAdd(g::csolutesacc[objid] + sentry + 1, -fy);
+        atomicAdd(g::csolutesacc[objid] + sentry + 2, -fz);
     }
 
     atomicAdd(ff + 3 * pid + 0, xforce);
