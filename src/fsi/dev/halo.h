@@ -1,12 +1,11 @@
 namespace dev {
-static __device__ Pa warp2p(const Particle *pp, int n, int i) {
+static __device__ Pa warp2p(const Particle *pp, int i) {
+    enum {X, Y, Z};
     Pa p;
-    float2 s0, s1, s2;
     pp += i;
-    k_read::AOS6f((float2*)pp, n, s0, s1, s2);
     
-    p.x = fst(s0);  p.y = scn(s0);  p.z = fst(s1);
-    p.vx = scn(s1); p.vy = fst(s2); p.vz = scn(s2);
+     p.x = pp->r[X];  p.y = pp->r[Y];  p.z = pp->r[Z];
+    p.vx = pp->v[X]; p.vy = pp->v[Y]; p.vz = pp->v[Z];
     return p;
 }
 
@@ -47,7 +46,7 @@ static __device__ void halo1(const float *ppB, int nb, float seed, int aid, int 
     Force *ff;
     int nunpack, dwe;
     Pa A;
-    
+
     fid = k_common::fid(g::starts, ws);
     start = g::starts[fid];
     count = g::counts[fid];
@@ -57,7 +56,7 @@ static __device__ void halo1(const float *ppB, int nb, float seed, int aid, int 
     nunpack = min(32, count - dwe);
     if (nunpack == 0) return;
 
-    A = warp2p(pp, nunpack, dwe);
+    A = warp2p(pp, aid - start);
     halo0(ppB, A, nb, seed, aid, dw, dwe, nunpack, pp, ff, /**/ ffB);
 }
 
