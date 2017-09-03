@@ -79,6 +79,7 @@
   #include "imp/type.h"
   #include "imp/decl.h"
 
+namespace dev {
   #include "dev/type.h"
   #include "dev/decl.h"
   #include "dev/common.h"
@@ -87,6 +88,7 @@
   #include "dev/scan.h"
   #include "dev/scatter.h"
   #include "dev/unpack.h"
+} /* namespace */
 
   #include "imp/ini.h"
   #include "imp/copy.h"

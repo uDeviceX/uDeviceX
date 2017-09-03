@@ -1,4 +1,3 @@
-namespace dev {
 enum {FD = 3}; /* number of dimensions in force */
 
 __device__ void unpack0(int fid, int pif, int dim, /**/ float *ff) {
@@ -36,5 +35,4 @@ __global__ void unpack(/**/ float *ff) {
         dim = gid % FD;
         unpack1(pid, dim, /**/ ff);
     }
-}
 }

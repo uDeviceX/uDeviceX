@@ -1,4 +1,3 @@
-namespace dev {
 __device__ void
 pack0(const float2 *pp, int fid,
       int count, int offset, int tstart, int *indexes,
@@ -45,6 +44,4 @@ __global__ void pack(const float2 *pp, /**/ float2 *buf) {
 
     for (ws = lo; ws < hi; ws += step)
         pack1(pp, ws, dw, /**/ buf);
-}
-
 }

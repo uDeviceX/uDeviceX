@@ -1,4 +1,3 @@
-namespace dev {
 static __device__ void pp2xyz_col(const float2 *pp, int n, int i, /**/ float *x, float *y, float *z) {
     /* [col]collective (wrap) */
     Pa p;
@@ -73,5 +72,4 @@ __global__ void scatter(const float2 *pp, int *offsets, int n, /**/ int *counts)
         pid = ws + dw;
         scatter0(pid, x, y, z, offsets, /**/ counts);
     }
-}
 }

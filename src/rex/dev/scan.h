@@ -1,4 +1,3 @@
-namespace dev {
 __device__ void scan_pad(int cnt, int t, /**/ int *starts) {
     int L, scan;
     scan = cnt = 32 * ((cnt + 31) / 32);
@@ -26,6 +25,4 @@ __global__ void scanB(const int *count, /**/ int *starts) {
     cnt = 0;
     if (t < 26) cnt = count[t];
     if (starts) scan_pad(cnt, t, /**/ starts);
-}
-
 }

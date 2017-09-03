@@ -1,4 +1,4 @@
-namespace dev { /* particle and force packing dependent part : TODO : give a name */
+/* particle and force packing dependent part : TODO : give a name */
 __device__ Pa pp2p_col(const float2 *pp, int n, int i) {
     /* pp: array to a particle : [coll]ective */
     Pa p;
@@ -33,5 +33,4 @@ __device__ void shift(int fid, Pa *p) {
     p->s0.x += d[X];
     p->s0.y += d[Y];
     p->s1.x += d[Z];
-}
 }
