@@ -17,19 +17,19 @@ static __device__ void halo0(Pa A, int aid, const float *ppB, int nb, float seed
     Map m;
     int zplane;
     int i, bid;
-    float xforce, yforce, zforce;
+    float fx, fy, fz;
 
-    xforce = yforce = zforce = 0;
+    fx = fy = fz = 0;
     for (zplane = 0; zplane < 3; ++zplane) {
         if (!tex2map(zplane, nb, A.x, A.y, A.z, /**/ &m)) continue;
         for (i = 0; !endp(m, i); ++i) {
             bid = m2id(m, i);
             pp2p(ppB, bid, /**/ &B);
             f = ff2f(ffB, bid);
-            pair(A, B, random(aid, bid, seed), /**/ &xforce, &yforce, &zforce,   f);
+            pair(A, B, random(aid, bid, seed), /**/ &fx, &fy, &fz,   f);
         }
     }
-    fA[X] = xforce; fA[Y] = yforce; fA[Z] = zforce;
+    fA[X] = fx; fA[Y] = fy; fA[Z] = fz;
 }
 
 static __device__ void halo1(int aid, const float *ppB, int nb, float seed, /**/ float *ffB) {
