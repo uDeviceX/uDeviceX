@@ -1,4 +1,4 @@
-void halo(ParticlesWrap halos[26]) {
+void halo(ParticlesWrap halos[26], Pap26 PP, Fop26 FF, int nn[26]) {
     int i, n, s;
     int counts[26], starts[27];
     Force *ff[26];

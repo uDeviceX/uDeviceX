@@ -17,7 +17,7 @@ void halo(int counts[26], RFrag *remote) {
     }
 
     dSync();
-    if (fsiforces)     fsi::halo(halos);
-    if (contactforces) cnt::halo(halos);
+    if (fsiforces)     fsi::halo(halos, PP, FF, nn);
+    if (contactforces) cnt::halo(halos, PP, FF, nn);
 }
 }
