@@ -2,6 +2,7 @@ $B/algo/minmax.o: $S/algo/minmax.cu; $N -I$S/. -I$S/algo
 $B/algo/scan/imp.o: $S/algo/scan/imp.cu; $N -I$S/. -I$S/algo/scan
 $B/clist/imp.o: $S/clist/imp.cu; $N -I$S/. -I$S/clist
 $B/cnt/imp.o: $S/cnt/imp.cu; $N -I$S/. -I$S/cnt
+$B/comm/imp.o: $S/comm/imp.cu; $N -I$S/. -I$S/comm
 $B/d/api.o: $S/d/api.cu; $N -I$S/. -I$S/d
 $B/dbg/imp.o: $S/dbg/imp.cu; $N -I$S/. -I$S/dbg
 $B/dpdr/imp.o: $S/dpdr/imp.cu; $N -I$S/. -I$S/dpdr

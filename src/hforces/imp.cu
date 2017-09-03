@@ -28,8 +28,8 @@
 #include "rnd/imp.h"
 #include "rnd/dev.h"
 
-#include "cloud/type.h"
-#include "cloud/get.h"
+#include "cloud/generic/type.h"
+#include "cloud/generic/get.h"
 
 #include "imp.h"
 #include "dev.map.h"
