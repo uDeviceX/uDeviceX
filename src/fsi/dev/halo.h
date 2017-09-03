@@ -10,10 +10,10 @@ static __device__ Pa warp2p(const Particle *pp, int n, int i) {
     return p;
 }
 
-static __device__ void halo0(const float *ppB, int nb, float seed, int aid, int dw, int dwe, int nunpack,
+static __device__ void halo0(const float *ppB, Pa A, int nb, float seed, int aid, int dw, int dwe, int nunpack,
                              Particle *pp, Force *ff,
                              /**/ float *ffB) {
-    Pa A, B; /* local and remote particles */
+    Pa B; /* remote particles */
     Fo f;
     float *dst = NULL;
 
@@ -23,8 +23,6 @@ static __device__ void halo0(const float *ppB, int nb, float seed, int aid, int 
     int i;
     int bid; /* remote particle id */
     float xforce, yforce, zforce;
-
-    A = warp2p(pp, nunpack, dwe);
     dst = (float *)(ff + dwe);
 
     xforce = yforce = zforce = 0;
@@ -48,6 +46,8 @@ static __device__ void halo1(const float *ppB, int nb, float seed, int aid, int 
     Particle *pp;
     Force *ff;
     int nunpack, dwe;
+    Pa A;
+    
     fid = k_common::fid(g::starts, ws);
     start = g::starts[fid];
     count = g::counts[fid];
@@ -57,7 +57,8 @@ static __device__ void halo1(const float *ppB, int nb, float seed, int aid, int 
     nunpack = min(32, count - dwe);
     if (nunpack == 0) return;
 
-    halo0(ppB, nb, seed, aid, dw, dwe, nunpack, pp, ff, /**/ ffB);
+    A = warp2p(pp, nunpack, dwe);
+    halo0(ppB, A, nb, seed, aid, dw, dwe, nunpack, pp, ff, /**/ ffB);
 }
 
 __global__ void halo(const float *ppB, int n0, int nb, float seed, float *ffB) {
