@@ -38,7 +38,7 @@ void forces(bool wall0) {
     O;
     S;
 
-    x::rex(w_r); /* fsi::halo(), cnt::halo() */
+    rex::rex(w_r); /* fsi::halo(), cnt::halo() */
     O;
     S;
 

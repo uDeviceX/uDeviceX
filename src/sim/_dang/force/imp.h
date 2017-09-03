@@ -14,6 +14,6 @@ void forces(bool wall0) {
     SolventWrap w_s(o::q.pp, o::q.n, o::ff, o::q.cells->start);
     if (fsiforces)     forces_fsi(&w_s, &w_r);
 
-    x::rex(w_r); /* fsi::halo(), cnt::halo() */
+    rex::rex(w_r); /* fsi::halo(), cnt::halo() */
     dSync();
 }
