@@ -2,13 +2,8 @@ __global__ void populate(uchar4 *subindices,
                          int *cellstart, int nparticles,
                          int soluteid, int ntotalparticles,
                          int *entrycells) {
-    int warpid = threadIdx.x / warpSize;
-    int tid = threadIdx.x % warpSize;
-
-    int base = 32 * (warpid + 4 * blockIdx.x);
-    int pid = base + tid;
-    assert(pid == threadIdx.x + blockDim.x * blockIdx.x);
-
+    int pid;
+    pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= nparticles) return;
 
     uchar4 subindex = subindices[pid];
