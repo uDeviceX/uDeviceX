@@ -15,13 +15,12 @@ static __device__ Pa warp2p(const Particle *pp, int i) {
 
 __global__ void halo(int n, float seed) {
     enum {X, Y, Z};
+    Pa A; /* todo: */
     Map m;
     int mapstatus;
-    float x, y, z;
     forces::Pa a, b;
     float fx, fy, fz;
     int aid, start;
-    float2 dst0, dst1, dst2;
     int fid;
     float xforce, yforce, zforce;
     int zplane;
@@ -37,18 +36,13 @@ __global__ void halo(int n, float seed) {
 
     fid = k_common::fid(g::starts, aid);
     start = g::starts[fid];
-    float2 *pp0 = (float2*)g::pp[fid];
-    dst0 = pp0[aid - start];
-    dst1 = pp0[aid - start + 1];
-    dst2 = pp0[aid - start + 2];
+    Pa A;
+    A = warp2p(g::pp[fid], aid - start);    
 
     float *fA;
     fA =g::ff[fid][aid - start].f;
     for (zplane = 0; zplane < 3; ++zplane) {
-        x = dst0.x;
-        y = dst0.y;
-        z = dst1.x;
-        mapstatus = tex2map(zplane, x, y, z, /**/ &m);
+        mapstatus = tex2map(zplane, A.x, A.y, A.z, /**/ &m);
         if (mapstatus == EMPTY) continue;
         for (i = 0; !endp(m, i); ++i) {
             slot = m2id(m, i);
@@ -60,7 +54,7 @@ __global__ void halo(int n, float seed) {
             stmp2 = __ldg(g::csolutes[objid] + sentry + 2);
 
             rnd = rnd::mean0var1ii(seed, aid, spid);
-            forces::f2k2p(dst0,   dst1,  dst2, SOLID_TYPE, /**/ &a);
+            forces::r3v3k2p(A.x, A.y, A.z, A.vx, A.vy, A.vz, SOLID_TYPE, /**/ &a);            
             forces::f2k2p(stmp0, stmp1, stmp2, SOLID_TYPE, /**/ &b);
             forces::gen(a, b, rnd, &fx, &fy, &fz);
             xforce += fx;
