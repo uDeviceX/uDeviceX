@@ -2,7 +2,7 @@ void halo(Pap26 PP, Fop26 FF, int counts[26]) {
     int i, n, s;
     int starts[27];
     const Particle *ppB = wo->p;
-    setup(ppB, wo->n, wo->cellsstart);
+    setup(wo->cellsstart);
     starts[0] = 0;
     for (i = s = 0; i < 26; ++i) starts[i + 1] = (s += counts[i]);
     n = starts[26];
