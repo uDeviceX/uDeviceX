@@ -36,7 +36,6 @@ __global__ void halo(int n, float seed) {
 
     fid = k_common::fid(g::starts, aid);
     start = g::starts[fid];
-    Pa A;
     A = warp2p(g::pp[fid], aid - start);    
 
     float *fA;
