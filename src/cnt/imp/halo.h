@@ -8,7 +8,7 @@ void halo(ParticlesWrap halos[26]) {
     CC(cudaMemcpyToSymbolAsync(dev::g::counts, counts, sizeof(counts), 0, H2D));
 
     starts[0] = 0;
-    for (i = s = 0; i < 26; ++i) starts[i + 1] = (s += 32 * ((halos[i].n + 31) / 32));
+    for (i = s = 0; i < 26; ++i) starts[i + 1] = (s += halos[i].n);
     n = starts[26];
 
     CC(cudaMemcpyToSymbolAsync(dev::g::starts, starts, sizeof(starts), 0, H2D));

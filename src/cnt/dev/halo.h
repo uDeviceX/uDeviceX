@@ -6,12 +6,11 @@ __global__ void halo(int n, float seed) {
     float x, y, z;
     forces::Pa a, b;
     float fx, fy, fz;
-    int dw, warp, ws, aid, start;
-    int nunpack;
+    int aid, start;
     float2 dst0, dst1, dst2;
-    int fid, dwe;
+    int fid;
     float xforce, yforce, zforce;
-    int nzplanes, zplane;
+    int zplane;
     int i;
     int slot;
     int objid, spid;
@@ -19,19 +18,11 @@ __global__ void halo(int n, float seed) {
     float2 stmp0, stmp1, stmp2;
     float rnd;
 
-    dw =   threadIdx.x % warpSize;
-    warp = threadIdx.x / warpSize;
-    ws = warpSize * (warp + 4 * blockIdx.x);
-    aid = ws + dw;
-    if (ws >= n) return;
+    aid = threadIdx.x + blockDim.x * blockIdx.x;
+    if (aid >= n) return;
 
-    fid = k_common::fid(g::starts, ws);
+    fid = k_common::fid(g::starts, aid);
     start = g::starts[fid];
-    dwe = ws - start;
-    nunpack = min(32, g::counts[fid] - dwe);
-
-    if (nunpack == 0) return;
-
     float2 *pp0 = (float2*)g::pp[fid];
     dst0 = pp0[aid - start];
     dst1 = pp0[aid - start + 1];
@@ -39,9 +30,7 @@ __global__ void halo(int n, float seed) {
 
     float *fA;
     fA =g::ff[fid][aid - start].f;
-
-    nzplanes = dw < nunpack ? 3 : 0;
-    for (zplane = 0; zplane < nzplanes; ++zplane) {
+    for (zplane = 0; zplane < 3; ++zplane) {
         x = dst0.x;
         y = dst0.y;
         z = dst1.x;
