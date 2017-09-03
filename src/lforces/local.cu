@@ -32,7 +32,7 @@
   #define __IMOD(x,y) ((x)-((x)/(y))*(y))
 
   #include "dev/pack.h"
-  #include "cloud/get.h"
+  #include "cloud/lforces/get.h"
   #include "dev/dpd.h"
   #include "dev/core.h"
 
@@ -45,7 +45,7 @@
   #include "dev/tex.h"
   #include "dev/transpose.h"
 
-  #include "lforces/cloud/int.h"
+  #include "cloud/lforces/int.h"
 
   #include "imp/decl.h"
   #include "imp/setup.h"
