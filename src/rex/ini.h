@@ -5,7 +5,7 @@ static int i2max(int i) { /* fragment id to maximum size */
 
 static void ini_local() {
     int i, n;
-    LocalHalo *h;
+    LFrag *h;
     for (i = 0; i < 26; i++) {
         n = i2max(i);
         h = &local[i];
@@ -18,7 +18,7 @@ static void ini_local() {
 
 static void ini_remote() {
     int i, n;
-    RemoteHalo* h;
+    RFrag* h;
     for (i = 0; i < 26; i++) {
         n = i2max(i);
         h = &remote[i];

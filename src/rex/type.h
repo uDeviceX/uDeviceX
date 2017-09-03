@@ -1,12 +1,12 @@
 namespace rex {
-struct LocalHalo {
+struct LFrag {
     int* indexes;
 
     Force* ff;
     Force* ff_pi; /* pinned */
 };
 
-struct RemoteHalo {
+struct RFrag {
     Particle* pp;
     Particle* pp_pi; /* pinned */
 
