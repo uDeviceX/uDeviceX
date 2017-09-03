@@ -73,7 +73,7 @@ __global__ void halo(const float *ppB, int n0, int nb, float seed, float *ffB) {
     dw = threadIdx.x % warpSize;
     ws = warpSize * warp + blockDim.x * blockIdx.x;
     if (ws >= n0) return;
-    i = ws + dw;
+    i = threadIdx.x + blockDim.x * blockIdx.x;
     halo1(ppB, nb, seed, i, ws, dw, /**/ ffB);
 }
 }
