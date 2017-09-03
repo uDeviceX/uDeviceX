@@ -64,11 +64,11 @@ namespace dev {
 #include "dev/halo.h"
 }
 
-#include "decl.h"
-#include "setup.h"
-#include "bind.h"
-#include "bulk.h"
-#include "fin.h"
-#include "halo.h"
-#include "ini.h"
+#include "imp/decl.h"
+#include "imp/setup.h"
+#include "imp/bind.h"
+#include "imp/bulk.h"
+#include "imp/fin.h"
+#include "imp/halo.h"
+#include "imp/ini.h"
 }
