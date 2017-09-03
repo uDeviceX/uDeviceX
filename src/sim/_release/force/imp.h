@@ -1,5 +1,7 @@
 void forces(bool wall0) {
     SolventWrap w_s;
+    hforces::Cloud cloud;
+
     clear_forces(o::ff, o::q.n);
     if (solids0) clear_forces(s::ff, s::q.n);
     if (rbcs)    clear_forces(r::ff, r::q.n);
