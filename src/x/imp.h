@@ -12,7 +12,7 @@ static void pre(ParticlesWrap *w, int nw) {
 static void rex0(ParticlesWrap *w, int nw) {
     using namespace rex;
     dSync();
-    recvF(tc.ranks, tr.tags, tt, ti.counts);
+    recvF(tc.ranks, tr.tags, tt, ti.counts, local);
     dSync();
 
     /** C **/

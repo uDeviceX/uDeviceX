@@ -97,7 +97,6 @@
   #include "rex/send.h"
   #include "rex/recv.h"
   #include "rex/unpack.h"
-  #include "rex/fin.h"
 
 #include "x/decl.h"
 #include "x/ticketcom.h"

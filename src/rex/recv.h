@@ -1,5 +1,5 @@
 namespace rex {
-void recvF(int ranks[26], int tags[26], x::TicketTags t, int counts[26]) {
+void recvF(int ranks[26], int tags[26], x::TicketTags t, int counts[26], LFrag *local) {
     int i, count, tag;
     MPI_Request reqA;
     for (i = 0; i < 26; ++i) {
