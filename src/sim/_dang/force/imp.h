@@ -12,7 +12,11 @@ void forces(bool wall0) {
     if (rbcs)    w_r.push_back(ParticlesWrap(r::q.pp, r::q.n, r::ff));
     if (contactforces) forces_cnt(&w_r);
 
-    SolventWrap w_s(o::q.pp, o::q.n, o::ff, o::q.cells->start);
+    SolventWrap w_s;
+    w_s.pp = o::q.pp;
+    w_s.ff = o::ff;
+    w_s.n  = o::q.n;
+    w_s.starts = o::q.cells->start;
     if (fsiforces)     forces_fsi(&w_s, &w_r);
 
     rex::rex(w_r); /* fsi::halo(), cnt::halo() */
