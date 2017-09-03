@@ -80,14 +80,14 @@
   #include "rex/type/local.h"
   #include "rex/decl.h"
 
-  #include "k/rex/type.h"
-  #include "k/rex/decl.h"
-  #include "k/rex/common.h"
-  #include "k/rex/x.h" /* TODO */
-  #include "k/rex/pack.h"
-  #include "k/rex/scan.h"
-  #include "k/rex/scatter.h"
-  #include "k/rex/unpack.h"
+  #include "rex/dev/type.h"
+  #include "rex/dev/decl.h"
+  #include "rex/dev/common.h"
+  #include "rex/dev/x.h" /* TODO */
+  #include "rex/dev/pack.h"
+  #include "rex/dev/scan.h"
+  #include "rex/dev/scatter.h"
+  #include "rex/dev/unpack.h"
 
   #include "rex/ini.h"
   #include "rex/copy.h"
