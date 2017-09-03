@@ -1,18 +1,12 @@
 namespace dev {
-static __device__ void warp2rv(const Particle *p, int n, int i, /**/
-                               float  *x, float  *y, float  *z,
-                               float *vx, float *vy, float *vz) {
-    float2 s0, s1, s2;
-    p += i;
-    k_read::AOS6f((float2*)p, n, s0, s1, s2);
-     *x = fst(s0);  *y = scn(s0);  *z = fst(s1);
-    *vx = scn(s1); *vy = fst(s2); *vz = scn(s2);
-}
-
 static __device__ Pa warp2p(const Particle *pp, int n, int i) {
-    /* NOTE: collective read */
     Pa p;
-    warp2rv(pp, n, i, /**/ &p.x, &p.y, &p.z,   &p.vx, &p.vy, &p.vz);
+    float2 s0, s1, s2;
+    pp += i;
+    k_read::AOS6f((float2*)pp, n, s0, s1, s2);
+    
+    p.x = fst(s0);  p.y = scn(s0);  p.z = fst(s1);
+    p.vx = scn(s1); p.vy = fst(s2); p.vz = scn(s2);
     return p;
 }
 
