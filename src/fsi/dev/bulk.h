@@ -50,7 +50,8 @@ static __device__ void bulk2(float *ppA, const float *ppB, int i, int zplane, in
     bulk1(p, ppB, f, i, m, seed, /**/ ff0);
 }
 
-__global__ void bulk(float *ppA, const float *ppB, int n0, int n1, float seed, float *ff, float *ff0) {
+__global__ void bulk(float *ppA, hforces::Cloud cloud, int n0, int n1, float seed, float *ff, float *ff0) {
+    float *ppB = cloud.pp;
     int gid, i, zplane;
     gid    = threadIdx.x + blockDim.x * blockIdx.x;
     i      = gid / 3;
