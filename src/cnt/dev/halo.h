@@ -1,4 +1,5 @@
 __global__ void halo(int n, float seed) {
+    enum {X, Y, Z};
     /* n: padded */
     Map m;
     int mapstatus;
@@ -11,7 +12,6 @@ __global__ void halo(int n, float seed) {
     int fid, dwe;
     float xforce, yforce, zforce;
     int nzplanes, zplane;
-    float *dst = NULL;
     int i;
     int slot;
     int objid, spid;
@@ -37,8 +37,8 @@ __global__ void halo(int n, float seed) {
     dst1 = pp0[aid - start + 1];
     dst2 = pp0[aid - start + 2];
 
-    dst = (float*)(g::ff[fid] + dwe);
-    k_read::AOS3f(dst, nunpack, xforce, yforce, zforce);
+    float *fA;
+    fA =g::ff[fid][aid - start].f;
 
     nzplanes = dw < nunpack ? 3 : 0;
     for (zplane = 0; zplane < nzplanes; ++zplane) {
@@ -69,5 +69,5 @@ __global__ void halo(int n, float seed) {
         }
     }
 
-    k_write::AOS3f(dst, nunpack, xforce, yforce, zforce);
+    fA[X] = xforce; fA[Y] = yforce; fA[Z] = zforce;
 }
