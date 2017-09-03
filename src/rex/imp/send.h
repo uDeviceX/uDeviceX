@@ -1,5 +1,5 @@
 namespace sub {
-void sendF(int ranks[26], x::TicketTags t, int counts[26], Fop26 FF_pi) {
+void sendF(int ranks[26], rex::TicketTags t, int counts[26], Fop26 FF_pi) {
     int i, n;
     reqsendA.resize(26);
     for (i = 0; i < 26; ++i) {
@@ -8,14 +8,14 @@ void sendF(int ranks[26], x::TicketTags t, int counts[26], Fop26 FF_pi) {
     }
 }
 
-void sendC(int dranks[26], x::TicketTags t, int counts[26]) {
+void sendC(int dranks[26], rex::TicketTags t, int counts[26]) {
     int i;
     reqsendC.resize(26);
     for (i = 0; i < 26; ++i)
         MC(m::Isend(counts + i, 1, MPI_INTEGER, dranks[i], t.btc + i, m::cart, &reqsendC[i]));
 }
 
-void sendP(int ranks[26], x::TicketTags t, x::TicketPinned ti, Particle *pp, int counts[26]) {
+void sendP(int ranks[26], rex::TicketTags t, rex::TicketPinned ti, Particle *pp, int counts[26]) {
     int i, start, count;
     MPI_Request req;
     for (i = 0; i < 26; ++i) {

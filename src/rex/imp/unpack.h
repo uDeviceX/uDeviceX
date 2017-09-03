@@ -1,5 +1,5 @@
 namespace sub {
-void unpack(ParticlesWrap *w, int nw, x::TicketPack tp) {
+void unpack(ParticlesWrap *w, int nw, rex::TicketPack tp) {
     int i, n;
     Force *ff;
     int *o, *c, *s;

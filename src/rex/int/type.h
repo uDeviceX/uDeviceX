@@ -1,4 +1,4 @@
-namespace x {
+namespace rex {
 struct TicketCom { /* ticket communiction */
     int ranks[26];
 };

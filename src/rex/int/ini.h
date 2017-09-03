@@ -1,4 +1,4 @@
-namespace x {
+namespace rex {
 static int i2max(int i) { /* fragment id to maximum size */
     return MAX_OBJ_DENSITY*frag_ncell(i);
 }

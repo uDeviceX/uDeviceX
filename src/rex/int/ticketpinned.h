@@ -1,4 +1,4 @@
-namespace x {
+namespace rex {
 static void ini_ticketpinned(TicketPinned *t) {
     Palloc0(&t->starts, 27);
     Palloc0(&t->counts, 26);

@@ -1,4 +1,4 @@
-namespace x {
+namespace rex {
 static void fin_tickets() {
     Pfree0(buf_pi);
     fin_ticketpack(tp);

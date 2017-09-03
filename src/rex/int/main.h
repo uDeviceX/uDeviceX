@@ -1,4 +1,4 @@
-namespace x {
+namespace rex {
 static void pre(ParticlesWrap *w, int nw) {
     using namespace sub;
     clear(nw, tp);

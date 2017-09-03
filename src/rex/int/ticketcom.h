@@ -1,4 +1,4 @@
-namespace x {
+namespace rex {
 static void ini_ticketcom(/**/ TicketCom *t) {
     int i, c;
     int ne[3], *rank;

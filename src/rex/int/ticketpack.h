@@ -1,4 +1,4 @@
-namespace x {
+namespace rex {
 static void ini_ticketpack(TicketPack *t) {
     Dalloc(&t->tstarts, 27);
     Dalloc(&t->offsets, 27 * (MAX_OBJ_TYPES + 1));

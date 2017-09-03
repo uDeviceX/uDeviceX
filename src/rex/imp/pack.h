@@ -1,11 +1,11 @@
 namespace sub {
-void clear(int nw, x::TicketPack tp) {
+void clear(int nw, rex::TicketPack tp) {
     CC(cudaMemsetAsync(tp.starts,  0, sizeof(int) * 27 *  nw));
     CC(cudaMemsetAsync(tp.counts,  0, sizeof(int) * 26 *  nw));
     CC(cudaMemsetAsync(tp.offsets, 0, sizeof(int) * 26 * (nw + 1)));
 }
 
-static void pack0(ParticlesWrap *w, x::TicketPack tp, int i, /**/ Particle *buf) {
+static void pack0(ParticlesWrap *w, rex::TicketPack tp, int i, /**/ Particle *buf) {
     int *o, *c, *s;
     const Particle *pp = w[i].p;
     o = tp.offsets + 26 *  i;
@@ -17,7 +17,7 @@ static void pack0(ParticlesWrap *w, x::TicketPack tp, int i, /**/ Particle *buf)
     KL(k_rex::pack, (14 * 16, 128), ((float2*)pp, /**/ (float2*)buf));
 }
 
-void pack(ParticlesWrap *w, int nw, x::TicketPack tp, Particle *buf) {
+void pack(ParticlesWrap *w, int nw, rex::TicketPack tp, Particle *buf) {
     int i, n;
     CC(cudaMemcpyToSymbolAsync(k_rex::g::tstarts, tp.tstarts, sizeof(int) * 27, 0, D2D));
     for (i = 0; i < nw; ++i) {

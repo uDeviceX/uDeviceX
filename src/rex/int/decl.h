@@ -1,4 +1,4 @@
-namespace x {
+namespace rex {
 Pap26 PP;
 Fop26 FF;
 

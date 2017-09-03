@@ -17,7 +17,7 @@ void ini() {
     sdstr::ini(&tag_gen);
     bbhalo::ini(&tag_gen);
     cnt::ini();
-    if (rbcs || solids) x::ini(&tag_gen); /* rex:: */
+    if (rbcs || solids) rex::ini(&tag_gen); /* rex:: */
     bop::ini(&dumpt);
 
     if (walls) {

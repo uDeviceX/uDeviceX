@@ -1,4 +1,4 @@
-namespace x {
+namespace rex {
 /* ticket recive */
 static void ini_tickettags(/*io*/ basetags::TagGen *tg, /*o*/ TicketTags *t) {
     t->btc  = get_tag(tg);

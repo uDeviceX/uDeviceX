@@ -1,5 +1,5 @@
 namespace sub {
-void scanA(ParticlesWrap *w, int nw, x::TicketPack tp) {
+void scanA(ParticlesWrap *w, int nw, rex::TicketPack tp) {
     int i, n;
     int *o0, *o1; /* offsets */
     int *c;       /* counts */
@@ -19,7 +19,7 @@ void scanA(ParticlesWrap *w, int nw, x::TicketPack tp) {
     }
 }
 
-void scanB(int nw, x::TicketPack tp) {
+void scanB(int nw, rex::TicketPack tp) {
     KL(k_rex::scanB, (1, 32), (tp.offsets + 26 * nw, /**/ tp.tstarts));
 }
 }
