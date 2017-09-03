@@ -14,7 +14,7 @@ void halo(ParticlesWrap halos[26], Pap26 PP, Fop26 FF, int nn[26]) {
 
     CC(cudaMemcpyToSymbolAsync(dev::g::counts, counts, sizeof(counts), 0, H2D));    
     CC(cudaMemcpyToSymbolAsync(dev::g::starts, starts, sizeof(starts), 0, H2D));
-    CC(cudaMemcpyToSymbolAsync(dev::g::pp, pp, sizeof(pp), 0, H2D));
-    CC(cudaMemcpyToSymbolAsync(dev::g::ff, ff, sizeof(ff), 0, H2D));
+    CC(cudaMemcpyToSymbolAsync(dev::g::pp, PP.d, sizeof(PP.d), 0, H2D));
+    CC(cudaMemcpyToSymbolAsync(dev::g::ff, FF.d, sizeof(FF.d), 0, H2D));
     KL(dev::halo, (k_cnf(n)), ((float*)ppB, n, wo->n, rgen->get_float(), /**/ (float*)wo->f));
 }
