@@ -1,4 +1,6 @@
 namespace x {
+rex::RFrag remote[26];
+
 TicketCom    tc;
 TicketR      tr;
 TicketTags   tt;
