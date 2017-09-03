@@ -29,8 +29,22 @@ static void ini_remote() {
     }
 }
 
+static void ini_local() {
+    int i, n;
+    LFrag *h;
+    for (i = 0; i < 26; i++) {
+        n = i2max(i);
+        h = &local[i];
+        Dalloc(&h->indexes, n);
+
+        Palloc0(&h->ff_pi, n);
+        Link(&h->ff, h->ff_pi);
+    }
+}
+
 void ini(/*io*/ basetags::TagGen *g) {
     ini_tickets(g);
+    ini_local();
     ini_remote();
     rex::ini();
 }
