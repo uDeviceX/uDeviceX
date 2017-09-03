@@ -10,8 +10,7 @@ static __device__ Pa warp2p(const Particle *pp, int i) {
 }
 
 static __device__ void halo0(const float *ppB, Pa A, float *fA, int nb, float seed, int aid,
-                             Particle *pp, Force *ff,
-                             /**/ float *ffB) {
+                             Force *ff, /**/ float *ffB) {
     enum {X, Y, Z};
     Pa B; /* remote particles */
     Fo f;
@@ -50,7 +49,7 @@ static __device__ void halo1(const float *ppB, int nb, float seed, int aid, /**/
     ff = g::ff[fid];
     A = warp2p(pp, aid - start);
     fA = ff[aid-start].f;
-    halo0(ppB, A, fA, nb, seed, aid, pp, ff, /**/ ffB);
+    halo0(ppB, A, fA, nb, seed, aid, ff, /**/ ffB);
 }
 
 __global__ void halo(const float *ppB, int n0, int nb, float seed, float *ffB) {
