@@ -55,7 +55,7 @@ $B/rigid/imp.o: $S/rigid/imp.cu; $N -I$S/. -I$S/rigid -I$S/rigid/_cuda
 $B/rnd/imp.o: $S/rnd/imp.cpp; $X -I$S/. -I$S/rnd
 $B/sdf/imp.o: $S/sdf/imp.cu; $N -I$S/. -I$S/sdf
 $B/sdf/int.o: $S/sdf/int.cu; $N -I$S/. -I$S/sdf
-$B/sim/imp.o: $S/sim/imp.cu; $N -I$S/. -I$S/sim -I$S/sim/_release
+$B/sim/imp.o: $S/sim/imp.cu; $N -I$S/. -I$S/sim
 $B/tcells/imp.o: $S/tcells/imp.cu; $N -I$S/. -I$S/tcells
 $B/tcells/int.o: $S/tcells/int.cpp; $X -I$S/. -I$S/tcells
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/. -I$S/utils
