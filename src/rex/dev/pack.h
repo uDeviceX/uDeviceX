@@ -1,4 +1,4 @@
-namespace k_rex {
+namespace dev {
 __device__ void
 pack0(const float2 *pp, int fid,
       int count, int offset, int tstart, int *indexes,

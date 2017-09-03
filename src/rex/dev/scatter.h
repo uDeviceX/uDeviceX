@@ -1,4 +1,4 @@
-namespace k_rex {
+namespace dev {
 static __device__ void pp2xyz_col(const float2 *pp, int n, int i, /**/ float *x, float *y, float *z) {
     /* [col]collective (wrap) */
     Pa p;

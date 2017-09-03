@@ -1,4 +1,4 @@
-namespace k_rex {
+namespace dev {
 enum {FD = 3}; /* number of dimensions in force */
 
 __device__ void unpack0(int fid, int pif, int dim, /**/ float *ff) {

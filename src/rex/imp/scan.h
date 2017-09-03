@@ -12,14 +12,14 @@ void scanA(ParticlesWrap *w, int nw, rex::TicketPack tp) {
         s  = tp.starts  + 27 *  i;
         n = w[i].n;
         if (n) {
-            CC(cudaMemcpyToSymbolAsync(k_rex::g::offsets, o0, sizeof(int) * 26, 0, D2D));
-            KL(k_rex::scatter, (k_cnf(n)), ((float2*)pp, o0, n, /**/ c));
+            CC(cudaMemcpyToSymbolAsync(dev::g::offsets, o0, sizeof(int) * 26, 0, D2D));
+            KL(dev::scatter, (k_cnf(n)), ((float2*)pp, o0, n, /**/ c));
         }
-        KL(k_rex::scanA, (1, 32), (c, o0, /**/ o1, s));
+        KL(dev::scanA, (1, 32), (c, o0, /**/ o1, s));
     }
 }
 
 void scanB(int nw, rex::TicketPack tp) {
-    KL(k_rex::scanB, (1, 32), (tp.offsets + 26 * nw, /**/ tp.tstarts));
+    KL(dev::scanB, (1, 32), (tp.offsets + 26 * nw, /**/ tp.tstarts));
 }
 }

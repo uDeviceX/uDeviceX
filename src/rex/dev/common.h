@@ -1,4 +1,4 @@
-namespace k_rex {
+namespace dev {
 __device__ float fst(float2 s) { return s.x; }
 __device__ float scn(float2 s) { return s.y; }
 

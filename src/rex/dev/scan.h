@@ -1,4 +1,4 @@
-namespace k_rex {
+namespace dev {
 __device__ void scan_pad(int cnt, int t, /**/ int *starts) {
     int L, scan;
     scan = cnt = 32 * ((cnt + 31) / 32);

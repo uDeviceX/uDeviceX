@@ -11,15 +11,15 @@ static void pack0(ParticlesWrap *w, rex::TicketPack tp, int i, /**/ Particle *bu
     o = tp.offsets + 26 *  i;
     c = tp.counts  + 26 *  i;
     s = tp.starts  + 27 *  i;
-    CC(cudaMemcpyToSymbolAsync(k_rex::g::offsets, o, sizeof(int) * 26, 0, D2D));
-    CC(cudaMemcpyToSymbolAsync(k_rex::g::counts,  c, sizeof(int) * 26, 0, D2D));
-    CC(cudaMemcpyToSymbolAsync(k_rex::g::starts,  s, sizeof(int) * 27, 0, D2D));
-    KL(k_rex::pack, (14 * 16, 128), ((float2*)pp, /**/ (float2*)buf));
+    CC(cudaMemcpyToSymbolAsync(dev::g::offsets, o, sizeof(int) * 26, 0, D2D));
+    CC(cudaMemcpyToSymbolAsync(dev::g::counts,  c, sizeof(int) * 26, 0, D2D));
+    CC(cudaMemcpyToSymbolAsync(dev::g::starts,  s, sizeof(int) * 27, 0, D2D));
+    KL(dev::pack, (14 * 16, 128), ((float2*)pp, /**/ (float2*)buf));
 }
 
 void pack(ParticlesWrap *w, int nw, rex::TicketPack tp, Particle *buf) {
     int i, n;
-    CC(cudaMemcpyToSymbolAsync(k_rex::g::tstarts, tp.tstarts, sizeof(int) * 27, 0, D2D));
+    CC(cudaMemcpyToSymbolAsync(dev::g::tstarts, tp.tstarts, sizeof(int) * 27, 0, D2D));
     for (i = 0; i < nw; ++i) {
         n = w[i].n;
         if (n) pack0(w, tp, i, /**/ buf);
