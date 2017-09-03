@@ -20,14 +20,14 @@ void recvC(int ranks[26], int tags[26], x::TicketTags t, int counts[26]) {
     }
 }
 
-void recvP(int ranks[26], int tags[26], x::TicketTags t, int counts[26], RFrag *remote) {
+void recvP(int ranks[26], int tags[26], x::TicketTags t, int counts[26], Pap26 PP_pi) {
     int i, tag, n;
     MPI_Request reqP;
     Particle *p;
     for (i = 0; i < 26; ++i) {
         tag = t.btp1 + tags[i];
         n = counts[i];
-        p = remote[i].pp_pi;
+        p = PP_pi.d[i];
         MC(m::Irecv(p, n * 6, MPI_FLOAT, ranks[i], tag, m::cart, &reqP));
         reqrecvP.push_back(reqP);
     }

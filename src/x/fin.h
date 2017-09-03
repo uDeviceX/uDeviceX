@@ -10,7 +10,7 @@ static void fin_remote() {
     rex::RFrag* h;
     for (i = 0; i < 26; i++) {
         h = &remote[i];
-        Pfree(h->pp_pi);
+        Pfree(PP_pi.d[i]);
         Pfree(h->ff_pi);
     }
 }

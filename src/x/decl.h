@@ -1,4 +1,8 @@
 namespace x {
+Pap26 PP;
+Fop26 FF;
+Pap26 PP_pi;
+
 rex::RFrag remote[26];
 rex::LFrag local[26];
 

@@ -22,14 +22,16 @@ static void rex0(ParticlesWrap *w, int nw) {
     r::waitC();
 
     /** P **/
-    recvP(tc.ranks, tr.tags, tt, recv_counts, remote);
+    recvP(tc.ranks, tr.tags, tt, recv_counts, PP_pi);
     sendP(tc.ranks, tt, ti, buf_pi, ti.counts);
     s::waitP();
     r::waitP();
 
     if (!first) s::waitA(); else first = 0;
 
-    halo(recv_counts, remote); /* fsi::halo(); cnt::halo(); */
+    dSync();
+    if (fsiforces)     fsi::halo(PP, FF, recv_counts);
+    if (contactforces) cnt::halo(PP, FF, recv_counts);
 
     dSync();
     sendF(tc.ranks, tt, recv_counts, remote); /* (sic) */
