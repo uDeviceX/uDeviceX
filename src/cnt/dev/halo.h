@@ -5,7 +5,7 @@ __global__ void halo(int n, float seed) {
     float x, y, z;
     forces::Pa a, b;
     float fx, fy, fz;
-    int dw, warp, ws, pid;
+    int dw, warp, ws, pid, start;
     int nunpack;
     float2 dst0, dst1, dst2;
     int fid, dwe;
@@ -26,7 +26,8 @@ __global__ void halo(int n, float seed) {
     if (ws >= n) return;
 
     fid = k_common::fid(g::starts, ws);
-    dwe = ws - g::starts[fid];
+    start = g::starts[fid];
+    dwe = ws - start;
     nunpack = min(32, g::counts[fid] - dwe);
 
     if (nunpack == 0) return;
