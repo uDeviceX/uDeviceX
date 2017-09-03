@@ -25,6 +25,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/odstr/halo && \
     d $B/rbc        && \
     d $B/rdstr      && \
+    d $B/rex        && \
     d $B/rig        && \
     d $B/rigid      && \
     d $B/rnd        && \
@@ -32,5 +33,4 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/sim        && \
     d $B/tcells     && \
     d $B/utils      && \
-    d $B/wall       && \
-    d $B/x         
+    d $B/wall      
