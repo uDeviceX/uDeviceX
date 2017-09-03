@@ -32,7 +32,11 @@ __global__ void halo(int n, float seed) {
 
     if (nunpack == 0) return;
 
-    k_read::AOS6f((float2*)(g::pp[fid] + dwe), nunpack, dst0, dst1, dst2);
+    float2 *pp0 = (float2*)g::pp[fid];
+    dst0 = pp0[aid - start];
+    dst1 = pp0[aid - start + 1];
+    dst2 = pp0[aid - start + 2];
+
     dst = (float*)(g::ff[fid] + dwe);
     k_read::AOS3f(dst, nunpack, xforce, yforce, zforce);
 
