@@ -9,15 +9,14 @@ static __device__ Pa warp2p(const Particle *pp, int i) {
     return p;
 }
 
-static __device__ void halo0(const float *ppB, Pa A, float *fA, int nb, float seed, int aid, /**/ float *ffB) {
+static __device__ void halo0(Pa A, int aid, const float *ppB, int nb, float seed, /**/ float *fA, float *ffB) {
     enum {X, Y, Z};
     Pa B; /* remote particles */
     Fo f;
 
     Map m;
     int zplane;
-    int i;
-    int bid; /* remote particle id */
+    int i, bid;
     float xforce, yforce, zforce;
 
     xforce = yforce = zforce = 0;
@@ -30,11 +29,10 @@ static __device__ void halo0(const float *ppB, Pa A, float *fA, int nb, float se
             pair(A, B, random(aid, bid, seed), /**/ &xforce, &yforce, &zforce,   f);
         }
     }
-
     fA[X] = xforce; fA[Y] = yforce; fA[Z] = zforce;
 }
 
-static __device__ void halo1(const float *ppB, int nb, float seed, int aid, /**/ float *ffB) {
+static __device__ void halo1(int aid, const float *ppB, int nb, float seed, /**/ float *ffB) {
     int fid; /* fragment id */
     int start;
     Pa A;
@@ -46,13 +44,13 @@ static __device__ void halo1(const float *ppB, int nb, float seed, int aid, /**/
     A = warp2p(g::pp[fid], aid - start);
     fA = g::ff[fid][aid-start].f;
 
-    halo0(ppB, A, fA, nb, seed, aid, /**/ ffB);
+    halo0(A, aid, ppB, nb, seed, /**/ fA, ffB);
 }
 
 __global__ void halo(const float *ppB, int na, int nb, float seed, /**/ float *ffB) {
     int aid;
     aid = threadIdx.x + blockDim.x * blockIdx.x;
     if (aid >= na) return;
-    halo1(ppB, nb, seed, aid, /**/ ffB);
+    halo1(aid, ppB, nb, seed, /**/ ffB);
 }
 }
