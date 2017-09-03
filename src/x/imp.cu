@@ -76,8 +76,7 @@
 #include "fsi/int.h"
 
 #include "x/type.h"
-  #include "rex/type/remote.h"
-  #include "rex/type/local.h"
+  #include "rex/type.h"
   #include "rex/decl.h"
 
   #include "rex/dev/type.h"

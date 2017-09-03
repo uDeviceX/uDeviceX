@@ -28,7 +28,9 @@ static void rex0(ParticlesWrap *w, int nw) {
     r::waitP();
 
     if (!first) s::waitA(); else first = 0;
-    halo(recv_counts); /* fsi::halo(); */
+
+    halo(recv_counts); /* fsi::halo(); cnt::halo(); */
+
     dSync();
     sendF(tc.cart, tc.ranks, tt, recv_counts); /* (sic) */
     r::waitA();
