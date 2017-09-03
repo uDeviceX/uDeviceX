@@ -9,7 +9,7 @@ static __device__ Pa warp2p(const Particle *pp, int i) {
     return p;
 }
 
-static __device__ void halo0(const float *ppB, Pa A, int nb, float seed, int aid, int dw, int dwe, int nunpack,
+static __device__ void halo0(const float *ppB, Pa A, float *fA, int nb, float seed, int aid, int dw, int dwe, int nunpack,
                              Particle *pp, Force *ff,
                              /**/ float *ffB) {
     Pa B; /* remote particles */
@@ -46,6 +46,7 @@ static __device__ void halo1(const float *ppB, int nb, float seed, int aid, int 
     Force *ff;
     int nunpack, dwe;
     Pa A;
+    float *fA;
 
     fid = k_common::fid(g::starts, ws);
     start = g::starts[fid];
@@ -57,7 +58,7 @@ static __device__ void halo1(const float *ppB, int nb, float seed, int aid, int 
     if (nunpack == 0) return;
 
     A = warp2p(pp, aid - start);
-    halo0(ppB, A, nb, seed, aid, dw, dwe, nunpack, pp, ff, /**/ ffB);
+    halo0(ppB, A, fA, nb, seed, aid, dw, dwe, nunpack, pp, ff, /**/ ffB);
 }
 
 __global__ void halo(const float *ppB, int n0, int nb, float seed, float *ffB) {
