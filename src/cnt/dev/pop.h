@@ -7,6 +7,7 @@ __global__ void populate(uchar4 *subindices,
 
     int base = 32 * (warpid + 4 * blockIdx.x);
     int pid = base + tid;
+    assert(pid == threadIdx.x + blockDim.x * blockIdx.x);
 
     if (pid >= nparticles) return;
 
