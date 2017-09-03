@@ -1,5 +1,5 @@
 namespace rex {
-void recvF(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t, int counts[26]) {
+void recvF(int ranks[26], int tags[26], x::TicketTags t, int counts[26]) {
     int i, count, tag;
     MPI_Request reqA;
     for (i = 0; i < 26; ++i) {
@@ -10,7 +10,7 @@ void recvF(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t, int coun
     }
 }
 
-void recvC(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t, int counts[26]) {
+void recvC(int ranks[26], int tags[26], x::TicketTags t, int counts[26]) {
     int i, tag;
     MPI_Request reqC;
     for (i = 0; i < 26; ++i) {
@@ -20,7 +20,7 @@ void recvC(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t, int coun
     }
 }
 
-void recvP(MPI_Comm cart, int ranks[26], int tags[26], x::TicketTags t, int counts[26], RFrag *remote) {
+void recvP(int ranks[26], int tags[26], x::TicketTags t, int counts[26], RFrag *remote) {
     int i, tag, n;
     MPI_Request reqP;
     Particle *p;

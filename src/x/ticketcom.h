@@ -1,20 +1,13 @@
 namespace x {
-static void ini_ticketcom0(MPI_Comm cart, /**/ int ranks[26]) {
+static void ini_ticketcom(/**/ TicketCom *t) {
     int i, c;
-    int ne[3], d[3];
+    int ne[3], d[3], *rank;
     for (i = 0; i < 26; ++i) {
         i2d(i, /**/ d);
         for (c = 0; c < 3; ++c) ne[c] = m::coords[c] + d[c];
-        MC(m::Cart_rank(cart, ne, ranks + i));
+        rank = &(t->ranks[i]);
+        MC(m::Cart_rank(m::cart, ne, /**/ rank));
     }
 }
 
-static void ini_ticketcom(TicketCom *t) {
-    MC(m::Comm_dup(m::cart, &t->cart));
-    ini_ticketcom0(t->cart, t->ranks);
-}
-
-static void fin_ticketcom(TicketCom t) {
-    MC(m::Comm_free(&t.cart));
-}
 }

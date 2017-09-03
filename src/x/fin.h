@@ -1,7 +1,6 @@
 namespace x {
 static void fin_tickets() {
     Pfree0(buf_pi);
-    fin_ticketcom(tc);
     fin_ticketpack(tp);
     fin_ticketpinned(ti);
 }
