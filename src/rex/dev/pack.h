@@ -26,7 +26,7 @@ __device__ void pack1(const float2 *pp, int ws, int dw, /**/ float2 *buf) {
     wsf = ws - g::starts[fid];
 
     pack0(pp, fid,
-          g::counts[fid], g::offsets[fid], g::tstarts[fid], g::indexes[fid], /**/
+          g::counts[fid], g::offsets[fid], g::tstarts[fid], g::indexes[fid],
           wsf, dw, /**/ buf);
 }
 
