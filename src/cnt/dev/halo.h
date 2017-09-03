@@ -1,3 +1,18 @@
+struct Pa { /* local particle */
+    float x, y, z;
+    float vx, vy, vz;
+};
+
+static __device__ Pa warp2p(const Particle *pp, int i) {
+    enum {X, Y, Z};
+    Pa p;
+    pp += i;
+
+     p.x = pp->r[X];  p.y = pp->r[Y];  p.z = pp->r[Z];
+    p.vx = pp->v[X]; p.vy = pp->v[Y]; p.vz = pp->v[Z];
+    return p;
+}
+
 __global__ void halo(int n, float seed) {
     enum {X, Y, Z};
     Map m;
