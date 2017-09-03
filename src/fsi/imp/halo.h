@@ -1,5 +1,5 @@
 void halo(ParticlesWrap halos[26]) {
-    int n, i, s;
+    int i, n, s;
     int counts[26], starts[27];
     Force *ff[26];
     const Particle *pp[26];
@@ -16,6 +16,5 @@ void halo(ParticlesWrap halos[26]) {
     CC(cudaMemcpyToSymbolAsync(dev::g::pp, pp, sizeof(pp), 0, H2D));
     for (i = 0; i < 26; ++i) ff[i] = halos[i].f;
     CC(cudaMemcpyToSymbolAsync(dev::g::ff, ff, sizeof(ff), 0, H2D));
-
     KL(dev::halo, (k_cnf(n)), ((float*)ppB, n, wo->n, rgen->get_float(), /**/ (float*)wo->f));
 }
