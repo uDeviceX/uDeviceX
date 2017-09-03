@@ -39,10 +39,10 @@
 #include "sim/int.h"
 #include "dbg/imp.h"
 
-#include "k/read.h"
-#include "k/write.h"
-#include "k/common.h"
-#include "k/index.h"
+#include "inc/dev/read.h"
+#include "inc/dev/write.h"
+#include "inc/dev/common.h"
+#include "inc/dev/index.h"
 
 #include "clist/int.h"
 #include "rbc/int.h"

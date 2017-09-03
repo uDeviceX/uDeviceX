@@ -17,7 +17,7 @@
 
 #include "utils/kl.h"
 #include "glb.h"
-#include "k/wvel.h"
+#include "inc/dev/wvel.h"
 
 #include "field.h"
 

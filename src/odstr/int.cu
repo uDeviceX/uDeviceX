@@ -19,8 +19,8 @@
 
 #include "mpi/type.h"
 
-#include "k/read.h"
-#include "k/index.h"
+#include "inc/dev/read.h"
+#include "inc/dev/index.h"
 #include "utils/kl.h"
 
 #include "rnd/imp.h"

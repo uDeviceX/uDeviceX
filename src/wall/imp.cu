@@ -27,7 +27,7 @@
 #include "sdf/int.h"
 #include "sdf/cheap.dev.h"
 
-#include "k/wvel.h"
+#include "inc/dev/wvel.h"
 #include "forces/type.h"
 #include "forces/pack.h"
 #include "forces/imp.h"
