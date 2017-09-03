@@ -1,6 +1,5 @@
 __global__ void halo(int n, float seed) {
     enum {X, Y, Z};
-    /* n: padded */
     Map m;
     int mapstatus;
     float x, y, z;
