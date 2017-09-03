@@ -1,4 +1,3 @@
-namespace fsi {
 static void bulk0(ParticlesWrap *w, const Particle *ppB) {
     int n0, n1;
     float rnd;
@@ -18,5 +17,4 @@ void bulk(std::vector<ParticlesWrap> wr) {
     if (n == 0) return;
     setup(wo->p, wo->n, wo->cellsstart);
     for (i = 0; i < n; i++) bulk0(w++, wo->p);
-}
 }

@@ -1,4 +1,3 @@
-namespace dev {
 static __device__ int tex2map(int zplane, int n1, float x, float y, float z, /**/ Map *m) {
     /* textures to map */
     int xstart, xcount;
@@ -71,5 +70,4 @@ static __device__ int tex2map(int zplane, int n1, float x, float y, float z, /**
     m->org0 = org0; m->org1 = org1; m->org2 = org2;
     m->cnt0 = cnt0; m->cnt1 = cnt1; m->cnt2 = cnt2;
     return 1;
-}
 }

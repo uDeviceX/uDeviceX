@@ -1,4 +1,3 @@
-namespace fsi {
 static void setup_first() {
     dev::t::start.channelDesc = cudaCreateChannelDesc<int>();
     dev::t::start.filterMode = cudaFilterModePoint;
@@ -17,5 +16,4 @@ void setup(const Particle *const pp, int n, const int *const cellsstart) {
     offset = 0;
     nc = XS * YS * ZS;
     CC(cudaBindTexture(&offset, &dev::t::start, cellsstart, &dev::t::start.channelDesc, sizeof(int) * nc));
-}
 }

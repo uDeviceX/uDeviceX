@@ -1,4 +1,3 @@
-namespace fsi {
 void halo(ParticlesWrap halos[26]) {
     int n, i, s;
     int counts[26], starts[27];
@@ -19,5 +18,4 @@ void halo(ParticlesWrap halos[26]) {
     CC(cudaMemcpyToSymbolAsync(dev::g::ff, ff, sizeof(ff), 0, H2D));
 
     KL(dev::halo, (k_cnf(n)), ((float*)ppB, n, wo->n, rgen->get_float(), /**/ (float*)wo->f));
-}
 }

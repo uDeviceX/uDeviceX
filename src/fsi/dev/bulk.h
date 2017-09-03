@@ -1,4 +1,3 @@
-namespace dev {
 static __device__ void p2rv(const float *p, int i, /**/
                             float  *x, float  *y, float  *z,
                             float *vx, float *vy, float *vz) {
@@ -58,5 +57,4 @@ __global__ void bulk(float *ppA, const float *ppB, int n0, int n1, float seed, f
     zplane = gid % 3;
     if (i >= n0) return;
     bulk2(ppA, ppB, i, zplane, n1, seed, ff, ff0);
-}
 }

@@ -1,4 +1,3 @@
-namespace dev {
 static __device__ Pa warp2p(const Particle *pp, int i) {
     enum {X, Y, Z};
     Pa p;
@@ -52,5 +51,4 @@ __global__ void halo(const float *ppB, int na, int nb, float seed, /**/ float *f
     aid = threadIdx.x + blockDim.x * blockIdx.x;
     if (aid >= na) return;
     halo1(aid, ppB, nb, seed, /**/ ffB);
-}
 }

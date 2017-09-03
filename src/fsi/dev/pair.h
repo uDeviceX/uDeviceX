@@ -1,4 +1,3 @@
-namespace dev {
 static __device__ void pair0(const Pa l, const Pa r, float rnd, /**/ float *fx, float *fy, float *fz) {
     /* pair force ; l, r: local and remote */
     forces::Pa a, b;
@@ -15,5 +14,4 @@ static __device__ void pair(const Pa l, const Pa r, float rnd, /**/
     pair0(l, r, rnd, /**/ &x, &y, &z);
     *fx += x; *fy += y; *fz += z;
     atomicAdd(f.x, -x); atomicAdd(f.y, -y); atomicAdd(f.z, -z);
-}
 }

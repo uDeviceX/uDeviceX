@@ -50,6 +50,8 @@
 #include "forces/pack.h"
 #include "forces/imp.h"
 
+namespace fsi {
+namespace dev {
 #include "dev/type.h"
 #include "dev/decl.h"
 #include "dev/fetch.h"
@@ -60,6 +62,7 @@
 #include "dev/pair.h"
 #include "dev/bulk.h"
 #include "dev/halo.h"
+}
 
 #include "decl.h"
 #include "setup.h"
@@ -68,3 +71,4 @@
 #include "fin.h"
 #include "halo.h"
 #include "ini.h"
+}
