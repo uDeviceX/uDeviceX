@@ -34,7 +34,7 @@ static void rex0(ParticlesWrap *w, int nw) {
     if (contactforces) cnt::halo(PP, FF, recv_counts);
 
     dSync();
-    sendF(tc.ranks, tt, recv_counts, remote); /* (sic) */
+    sendF(tc.ranks, tt, recv_counts, FF_pi); /* (sic) */
     r::waitA();
     unpack(w, nw, tp);
 }

@@ -7,11 +7,9 @@ static void fin_tickets() {
 
 static void fin_remote() {
     int i;
-    rex::RFrag* h;
     for (i = 0; i < 26; i++) {
-        h = &remote[i];
         Pfree(PP_pi.d[i]);
-        Pfree(h->ff_pi);
+        Pfree(FF_pi.d[i]);
     }
 }
 

@@ -1,10 +1,10 @@
 namespace rex {
-void sendF(int ranks[26], x::TicketTags t, int counts[26], RFrag *remote) {
+void sendF(int ranks[26], x::TicketTags t, int counts[26], Fop26 FF_pi) {
     int i, n;
     reqsendA.resize(26);
     for (i = 0; i < 26; ++i) {
         n = counts[i];
-        MC(m::Isend(remote[i].ff_pi, 3 * n, MPI_FLOAT, ranks[i], t.btf + i, m::cart, &reqsendA[i]));
+        MC(m::Isend(FF_pi.d[i], 3 * n, MPI_FLOAT, ranks[i], t.btf + i, m::cart, &reqsendA[i]));
     }
 }
 

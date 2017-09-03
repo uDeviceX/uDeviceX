@@ -6,7 +6,4 @@ struct LFrag {
     Force* ff_pi; /* pinned */
 };
 
-struct RFrag {
-    Force* ff_pi; /* pinned */
-};
-}
+} /* namespace */

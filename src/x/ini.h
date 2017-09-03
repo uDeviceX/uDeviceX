@@ -17,15 +17,13 @@ static void ini_tickets(/*io*/ basetags::TagGen *g) {
 
 static void ini_remote() {
     int i, n;
-    rex::RFrag* h;
     for (i = 0; i < 26; i++) {
         n = i2max(i);
-        h = &remote[i];
         Palloc0(&PP_pi.d[i], n);
         Link(&PP.d[i], PP_pi.d[i]);
 
-        Palloc0(&h->ff_pi, n);
-        Link(&FF.d[i], h->ff_pi);
+        Palloc0(&FF_pi.d[i], n);
+        Link(&FF.d[i], FF_pi.d[i]);
     }
 }
 

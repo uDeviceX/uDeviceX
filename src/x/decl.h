@@ -1,9 +1,10 @@
 namespace x {
 Pap26 PP;
 Fop26 FF;
-Pap26 PP_pi;
 
-rex::RFrag remote[26];
+Pap26 PP_pi;
+Fop26 FF_pi;
+
 rex::LFrag local[26];
 
 TicketCom    tc;
