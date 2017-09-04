@@ -24,32 +24,33 @@ namespace sdfdev = sdf::sub::dev;
 typedef const sdf::tex3Dca<float> TexSDF_t;
 
 __global__ void interactions(TexSDF_t texsdf, const float2 *const pp, const int np, const int w_n,
-                             float *const acc, const float seed, const int type,
+                             float *const ff, const float seed, const int type,
                              const Texo<int> texstart, const Texo<float4> texwpp) {
 #define start_fetch(i) (texstart.fetch(i))
 #define   wpp_fetch(i) (texwpp.fetch(i))
     forces::Pa a, b;  /* bulk and wall particles */
     float vx, vy, vz; /* wall velocity */
     float fx, fy, fz, rnd;
+    int gid, pid, zplane;
+    float2 dst0, dst1, dst2;
+    uint scan1, scan2, ncandidates, spidbase;
+    int deltaspid1, deltaspid2;
+    float threshold;
 
-    int gid = threadIdx.x + blockDim.x * blockIdx.x;
-    int pid = gid / 3;
-    int zplane = gid % 3;
+    gid = threadIdx.x + blockDim.x * blockIdx.x;
+    pid = gid / 3;
+    zplane = gid % 3;
 
     if (pid >= np) return;
 
-    float2 dst0 = pp[3 * pid + 0];
-    float2 dst1 = pp[3 * pid + 1];
+    dst0 = pp[3 * pid + 0];
+    dst1 = pp[3 * pid + 1];
 
-    float interacting_threshold =
+    threshold =
         -1 - 1.7320f * ((float)XSIZE_WALLCELLS / (float)XTE);
+    if (sdfdev::cheap_sdf(texsdf, dst0.x, dst0.y, dst1.x) <= threshold) return;
 
-    if (sdfdev::cheap_sdf(texsdf, dst0.x, dst0.y, dst1.x) <= interacting_threshold) return;
-
-    float2 dst2 = pp[3 * pid + 2];
-
-    uint scan1, scan2, ncandidates, spidbase;
-    int deltaspid1, deltaspid2;
+    dst2 = pp[3 * pid + 2];
 
     {
         int xbase = (int)(dst0.x - (-XS / 2 - XWM));
@@ -103,9 +104,9 @@ __global__ void interactions(TexSDF_t texsdf, const float2 *const pp, const int 
         forces::gen(a, b, rnd, /**/ &fx, &fy, &fz);
         xforce += fx; yforce += fy; zforce += fz;
     }
-    atomicAdd(acc + 3 * pid + 0, xforce);
-    atomicAdd(acc + 3 * pid + 1, yforce);
-    atomicAdd(acc + 3 * pid + 2, zforce);
+    atomicAdd(ff + 3 * pid + 0, xforce);
+    atomicAdd(ff + 3 * pid + 1, yforce);
+    atomicAdd(ff + 3 * pid + 2, zforce);
 #undef start_fetch
 #undef wpp_fetch
 }
