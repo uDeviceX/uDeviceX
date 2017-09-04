@@ -130,7 +130,7 @@ inline __device__ void gen1(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, fl
     } else if (ka == S && kb == W) { /* SW */
         ca = cb = RED_COLOR;   ljflag = 1;
     } else {
-        assert(0);
+        //        assert(0);
     }
 }
 
