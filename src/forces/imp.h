@@ -1,5 +1,6 @@
 namespace forces {
 struct DPDparam { float gamma, a, rnd; };
+struct Fo { float *x, *y, *z; }; /* force */
 
 enum {LJ_NONE, LJ_ONE, LJ_TWO};
 
@@ -49,26 +50,21 @@ static __device__ float lj(float invr, float ljsi) {
     return f;
 }
 
-static __device__ void dpd00(int typed, int types,
-                             float x, float y, float z,
+static __device__ void dpd00(float x, float y, float z,
                              float vx, float vy, float vz,
-                             DPDparam p, int ljkind, float *fx, float *fy, float *fz) {
-    /* [tab]les */
-    const float gamma_tbl[] = {gammadpd_solv, gammadpd_solid, gammadpd_wall, gammadpd_rbc};
-    const float a_tbl[] = {aij_solv, aij_solid, aij_wall, aij_rbc};
-
+                             DPDparam p, int ljkind, /**/ Fo f) {
     float invr, r;
     float wc, wr; /* conservative and random kernels */
     float rm; /* 1 minus r */
     float ev; /* (e dot v) */
     float gamma, sigma;
-    float f;
+    float f0;
     float a;
     int vnstat; /* vector normalization status */
 
     vnstat = norm(/*io*/ &x, &y, &z, /*o*/ &r, &invr);
     if (vnstat == BIG) {
-        *fx = *fy = *fz = 0;
+        *f.x = *f.y = *f.z = 0;
         return;
     }
 
@@ -77,36 +73,35 @@ static __device__ void dpd00(int typed, int types,
     wr = wrf(-S_LEVEL, rm);
     ev = x*vx + y*vy + z*vz;
 
-    gamma = 0.5f * (gamma_tbl[typed] + gamma_tbl[types]);
-    a     = 0.5f * (a_tbl[typed] + a_tbl[types]);
+    gamma = p.gamma;
+    a     = p.a;
     sigma = sqrtf(2*gamma*kBT / dt);
-    f  = (-gamma * wr * ev + sigma * p.rnd) * wr;
-    f +=                                  a * wc;
+    f0  = (-gamma * wr * ev + sigma * p.rnd) * wr;
+    f0 +=                                  a * wc;
 
-    bool ss = (typed == SOLID_KIND) && (types == SOLID_KIND);
-    bool sw = (typed == SOLID_KIND) && (types ==  WALL_KIND);
-    if (vnstat == OK && (ss || sw) ) {
-        /*hack*/ const float ljsi = ss ? ljsigma : 2 * ljsigma;
-        f += lj(invr, ljsi);
+    if (vnstat == OK && ljkind != LJ_NONE) {
+        const float ljsi = LJ_ONE ? ljsigma : 2 * ljsigma;
+        f0 += lj(invr, ljsi);
     }
 
-    *fx = f*x; *fy = f*y; *fz = f*z;
+    *f.x = f0*x;
+    *f.y = f0*y;
+    *f.z = f0*z;
 }
 
-static __device__ void gen0(Pa *A, Pa *B, DPDparam p, int ljkind, /**/ float *fx, float *fy, float *fz) {
-    dpd00(A->kind, B->kind,
-          A->x -  B->x,    A->y -  B->y,  A->z -  B->z,
+static __device__ void gen0(Pa *A, Pa *B, DPDparam p, int ljkind, /**/ Fo f) {
+    dpd00(A->x -  B->x,    A->y -  B->y,  A->z -  B->z,
           A->vx - B->vx,   A->vy - B->vy, A->vz - B->vz,          
           p, ljkind,
-          fx, fy, fz);
+          f);
 }
 
-static __device__ void gen1(Pa *A, Pa *B, DPDparam p, int ljkind, /**/ float *fx, float *fy, float *fz) {
-    gen0(A, B, p, ljkind, /**/ fx, fy, fz);
+static __device__ void gen1(Pa *A, Pa *B, DPDparam p, int ljkind, /**/ Fo f) {
+    gen0(A, B, p, ljkind, /**/ f);
 }
 
 static __device__ void gen2(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
-                            /**/ float *fx, float *fy, float *fz) {
+                            /**/ Fo f) {
     DPDparam p;
     if (ca == RED_COLOR || cb == RED_COLOR) {
         p.gamma = gammadpd_solv;
@@ -116,7 +111,7 @@ static __device__ void gen2(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
         p.a     = aij_rbc;
     }
     p.rnd = rnd;
-    gen1(A, B, p, ljkind, /**/ fx, fy, fz);
+    gen1(A, B, p, ljkind, /**/ f);
 }
 
 static __device__ void gen3(Pa *A, Pa *B, float rnd, /**/ float *fx, float *fy, float *fz) {
@@ -124,6 +119,7 @@ static __device__ void gen3(Pa *A, Pa *B, float rnd, /**/ float *fx, float *fy, 
     int ka, kb;
     int ca, cb; /* corrected colors */
     int O, S, W;
+    Fo f; 
     O = SOLVENT_KIND; S = SOLID_KIND; W = WALL_KIND;
     ka = A->kind; kb = B->kind;
     ca = A->color; cb = B->color;
@@ -142,7 +138,9 @@ static __device__ void gen3(Pa *A, Pa *B, float rnd, /**/ float *fx, float *fy, 
     } else {
         //        assert(0);
     }
-    gen2(A, B, ca, cb, ljkind, rnd, /**/ fx, fy, fz);
+
+    f.x = fx; f.y = fy; f.z = fz;
+    gen2(A, B, ca, cb, ljkind, rnd, /**/ f);
 }
 
 static __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
