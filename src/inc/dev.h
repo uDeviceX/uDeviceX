@@ -11,7 +11,7 @@
 #define DEVICE_FUNC (defined (__CUDA_ARCH__) && (__CUDA_ARCH__ > 0))
 
 #define D2D cudaMemcpyDeviceToDevice
-#define D2H cudaMemcpyDeviceToHost
+#define D2H (d::MemcpyDeviceToHost)
 #define H2D cudaMemcpyHostToDevice
 #define H2H cudaMemcpyHostToHost
 #define A2A cudaMemcpyDefault /* "[a]ll to [a]ll" */
