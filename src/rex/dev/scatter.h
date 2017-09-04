@@ -1,7 +1,7 @@
-static __device__ void pp2xyz_col(const float2 *pp, int n, int i, /**/ float *x, float *y, float *z) {
+static __device__ void pp2xyz(const float2 *pp, int i, /**/ float *x, float *y, float *z) {
     /* [col]collective (wrap) */
     Pa p;
-    p = pp2p_col(pp, n, i);
+    p = pp2p(pp, i);
     p2xyz(p, /**/ x, y, z);
 }
 
@@ -67,9 +67,8 @@ __global__ void scatter(const float2 *pp, int *offsets, int n, /**/ int *counts)
     dw   = threadIdx.x % warpSize;
     ws   = warpSize * warp + blockDim.x * blockIdx.x;
     dwe  = min(32, n - ws);
-    pp2xyz_col(pp, dwe, ws, /**/ &x, &y, &z);
-    if (dw < dwe) {
-        pid = ws + dw;
+    pid = ws + dw;
+    pp2xyz(pp, pid, /**/ &x, &y, &z);
+    if (dw < dwe)
         scatter0(pid, x, y, z, offsets, /**/ counts);
-    }
 }
