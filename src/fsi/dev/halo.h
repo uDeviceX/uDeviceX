@@ -46,7 +46,8 @@ static __device__ void halo1(int aid, const float *ppB, int nb, float seed, /**/
     halo0(A, aid, ppB, nb, seed, /**/ fA, ffB);
 }
 
-__global__ void halo(const float *ppB, int na, int nb, float seed, /**/ float *ffB) {
+__global__ void halo(hforces::Cloud cloud, int na, int nb, float seed, /**/ float *ffB) {
+    float *ppB = cloud.pp;
     int aid;
     aid = threadIdx.x + blockDim.x * blockIdx.x;
     if (aid >= na) return;
