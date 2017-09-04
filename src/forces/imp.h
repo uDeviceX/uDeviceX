@@ -52,7 +52,7 @@ static __device__ float lj(float invr, float ljsi) {
 static __device__ void dpd00(int typed, int types,
                              float x, float y, float z,
                              float vx, float vy, float vz,
-                             float rnd, float *fx, float *fy, float *fz) {
+                             float rnd, DPDparam p, int ljkind, float *fx, float *fy, float *fz) {
     /* [tab]les */
     const float gamma_tbl[] = {gammadpd_solv, gammadpd_solid, gammadpd_wall, gammadpd_rbc};
     const float a_tbl[] = {aij_solv, aij_solid, aij_wall, aij_rbc};
@@ -96,9 +96,9 @@ static __device__ void dpd00(int typed, int types,
 static __device__ void gen0(Pa *A, Pa *B, DPDparam p, int ljkind, /**/ float *fx, float *fy, float *fz) {
     dpd00(A->kind, B->kind,
           A->x -  B->x,    A->y -  B->y,  A->z -  B->z,
-         A->vx - B->vx,   A->vy - B->vy, A->vz - B->vz,          
-         p.rnd,
-         fx, fy, fz);
+          A->vx - B->vx,   A->vy - B->vy, A->vz - B->vz,          
+          p.rnd, p, ljkind,
+          fx, fy, fz);
 }
 
 static __device__ void gen1(Pa *A, Pa *B, DPDparam p, int ljkind, /**/ float *fx, float *fy, float *fz) {
