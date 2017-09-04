@@ -47,7 +47,6 @@ inline __device__ float lj(float invr, float ljsi) {
     return cap(f, 0, 1e4);
 }
 
-
 inline __device__ void dpd00(int typed, int types,
                              float x, float y, float z,
                              float vx, float vy, float vz,
@@ -62,7 +61,6 @@ inline __device__ void dpd00(int typed, int types,
     float ev; /* (e dot v) */
     float gamma, sigma;
     float f;
-    float t2, t4, t6, lj;
     float a;
     int vnstat; /* vector normalization status */
 
@@ -87,12 +85,7 @@ inline __device__ void dpd00(int typed, int types,
     bool sw = (typed == SOLID_KIND) && (types ==  WALL_KIND);
     if (vnstat == OK && (ss || sw) ) {
         /*hack*/ const float ljsi = ss ? ljsigma : 2 * ljsigma;
-        t2 = ljsi * ljsi * invr * invr;
-        t4 = t2 * t2;
-        t6 = t4 * t2;
-        lj = ljepsilon * 24 * invr * t6 * (2 * t6 - 1);
-        lj = cap(lj, 0, 1e4);
-        f += lj;
+        f += lj(invr, ljsi);
     }
 
     *fx = f*x; *fy = f*y; *fz = f*z;
@@ -148,7 +141,7 @@ inline __device__ void gen3(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, fl
     } else {
         //        assert(0);
     }
-    gen2(A, B, ca, ca, ljkind, rnd, /**/ fx, fy, fz);
+    gen2(A, B, ca, cb, ljkind, rnd, /**/ fx, fy, fz);
 }
 
 inline __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
