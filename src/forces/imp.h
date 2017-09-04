@@ -61,6 +61,7 @@ inline __device__ void dpd00(int typed, int types,
     float ev; /* (e dot v) */
     float gamma, sigma;
     float f;
+    float t2, t4, t6, lj;
     float a;
     int vnstat; /* vector normalization status */
 
@@ -85,7 +86,12 @@ inline __device__ void dpd00(int typed, int types,
     bool sw = (typed == SOLID_KIND) && (types ==  WALL_KIND);
     if (vnstat == OK && (ss || sw) ) {
         /*hack*/ const float ljsi = ss ? ljsigma : 2 * ljsigma;
-        f += lj(invr, ljsi);
+        t2 = ljsi * ljsi * invr * invr;
+        t4 = t2 * t2;
+        t6 = t4 * t2;
+        lj = ljepsilon * 24 * invr * t6 * (2 * t6 - 1);
+        lj = cap(lj, 0, 1e4);
+        f += lj;
     }
 
     *fx = f*x; *fy = f*y; *fz = f*z;
