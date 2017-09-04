@@ -18,6 +18,7 @@ $B/inter/imp.o: $S/inter/imp.cu; $N -I$S/. -I$S/inter
 $B/io/bop/imp.o: $S/io/bop/imp.cpp; $X -I$S/. -I$S/io/bop
 $B/io/diag.o: $S/io/diag.cpp; $X -I$S/. -I$S/io
 $B/io/field.o: $S/io/field.cpp; $X -I$S/. -I$S/io
+$B/io/fields_grid.o: $S/io/fields_grid.cpp; $X -I$S/. -I$S/io
 $B/io/off.o: $S/io/off.cpp; $X -I$S/. -I$S/io
 $B/io/ply.o: $S/io/ply.cpp; $X -I$S/. -I$S/io
 $B/io/rbc.o: $S/io/rbc.cpp; $X -I$S/. -I$S/io
