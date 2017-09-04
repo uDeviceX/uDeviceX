@@ -6,8 +6,9 @@ static __device__ void p2rv(const float *p, int i, /**/
     *vx = p[i++]; *vy = p[i++]; *vz = p[i++];
 }
 
-static __device__ void pp2p(const float *pp, int i, /**/ Pa *p) {
+static __device__ void pp2p(const float *pp, int i, /**/ Pa *p) { /* TODO gets force::Pa directly */
     p2rv(pp, i, /**/ &p->x, &p->y, &p->z,   &p->vx, &p->vy, &p->vz);
+    p->kind = SOLID_TYPE;
 }
 
 static __device__ int p2map(int zplane, int n, const Pa p, /**/ Map *m) {
@@ -21,13 +22,10 @@ static __device__ void bulk0(const Pa l, hforces::Cloud cloud, int lid, const Ma
     Pa r;
     Fo f;
     int i, rid;
-
-    float *ppB = cloud.pp;
-
     *fx = *fy = *fz = 0; /* local force */
     for (i = 0; !endp(m, i); ++i) {
         rid = m2id(m, i);
-        pp2p(ppB, rid, /**/ &r);
+        hforces::dev::cloud_get(cloud, rid, /**/ &r);
         f = ff2f(ff, rid);
         pair(l, r, random(lid, rid, seed), /**/ fx, fy, fz,   f);
     }
