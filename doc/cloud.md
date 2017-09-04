@@ -19,21 +19,20 @@ and an operation
 Clouds not `pp` should be arguments of functions which call
 `forces::gen`.
 
-# example for src/hforces
+# example
 
-`src/hforces` treats particles assymetricly: `A` is "a main particle"
-and `B` is a particle from neighorhood of `A`. There are two
-corresponding clouds `CloudA` and `CloudB`.
+[src/cloud](../src/cloud)
 
-Initialization of a cloud: called in dpdr/int.cu
-hforces/cloud/int.h
+There are two types of clouds `hforces::` and `lforces::`. `lforces`
+is used only for local dpd forces. And `hforces` is used for `hforces`
+and `fsi`.
 
-    inline void ini_cloudA(Particle *pp, CloudA *c)
+    inline void ini_cloud(Particle *pp, CloudA *c)
 
 To extract a particle
 hforces/cloud/get.h
 
-    __device__ void cloudA_get(CloudA c, int i, /**/ forces::Pa *p)
+    __device__ void cloud_get(CloudA c, int i, /**/ forces::Pa *p)
 
 To set/get position from `forces::Pa`
 forces/use.h
@@ -43,14 +42,6 @@ forces/use.h
 
 Once two particles are extracted they are passed to generic force
 
-    inline __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz)
+    inline __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx,
+    float *fy, float *fz)
 
-# plan
-
-`forces::gen` takes two `Pa` and compute force.
-
-    ./dpd/dev/dpd.h:12:    forces::gen(a, b, rnd, &fx, &fy, &fz);
-    ./fsi/dev/pair.h:7:    forces::gen(a, b, rnd, /**/ fx, fy, fz);
-    ./k/cnt/halo.h:96:     forces::gen(a, b, rnd, &fx, &fy, &fz);
-    ./k/cnt/bulk.h:87:     forces::gen(a, b, rnd, &fx, &fy, &fz);
-    ./wall/dev.h:103:      forces::gen(a, b, rnd, /**/ &fx, &fy, &fz);
