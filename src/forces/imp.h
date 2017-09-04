@@ -1,5 +1,4 @@
 namespace forces {
-
 static __device__ float wrf(const int s, float x) {
     if (s == 0) return x;
     if (s == 1) return sqrtf(x);
@@ -101,12 +100,24 @@ inline __device__ void dpd0(int typed, int types,
     dpd00(typed, types, dx, dy, dz, dvx, dvy, dvz, rnd, /**/ fx, fy, fz);
 }
 
-inline __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) { /* generic */
+inline __device__ void gen2(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
     dpd0(A.kind, B.kind,
-          A.x,  A.y,  A.z,  B.x,  B.y,  B.z,
+         A.x,  A.y,  A.z,  B.x,  B.y,  B.z,
          A.vx, A.vy, A.vz, B.vx, B.vy, B.vz,
          rnd,
          fx, fy, fz);
 }
 
+inline __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
+    int ka, kb;
+    ka = A.kind;
+    kb = B.kind;
+    if (ka > kb) {
+        gen2(B, A, rnd, /**/ fx, fy, fz);
+        *fx = -(*fx);
+        *fy = -(*fy);
+        *fz = -(*fz);
+    } else
+        gen2(A, B, rnd, /**/ fx, fy, fz);
+}
 } /* namespace */
