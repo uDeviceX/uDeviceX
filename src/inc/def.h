@@ -5,6 +5,9 @@ enum { /* used in forces.h */
     RBC_KIND     = 3,
 };
 
+/* RED_BLUE: is a mixed color */
+enum { RED_COLOR,  BLUE_COLOR, RED_BLUE } ;
+
 /* maximum particle number per one processor for static allocation */
 #define MAX_PART_NUM 1000000
 
