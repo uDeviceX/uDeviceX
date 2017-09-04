@@ -49,8 +49,7 @@ void dump_grid() {
     NN nn;
     qq.o = o::q.pp; qq.s = s::q.pp; qq.r = r::q.pp;
     nn.o = o::q.n ; nn.s = s::q.n ;  nn.r = r::q.n;
-    cD2H(a::pp_hst, o::q.pp, o::q.n);
-    h5::dump(a::pp_hst, o::q.n);
+    fields_grid(qq, nn, /*w*/ a::pp_hst);
 }
 
 void dump_diag_after(int it) { /* after wall */
