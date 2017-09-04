@@ -153,18 +153,10 @@ void recv_ii(const TicketRhalo *t, /**/ TicketRIhalo *ti) {
 }
 
 
-// TODO move this to imp
-void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
+static void ini_frags(TicketRhalo tr, /**/ hforces::Frag26 *frag) {
     enum {X, Y, Z};
-    int i;
-    int dx, dy, dz;
-    int m0, m1, m2;
-    hforces::Cloud clouda;
+    int i, dx, dy, dz, m0, m1, m2;;
     hforces::Cloud cloudb;
-
-    hforces::SFrag26 sfrag;
-    hforces::Frag26   frag;
-    hforces::Rnd26     rnd;
 
     for (i = 0; i < 26; ++i) {
         dx = frag_to_dir[i][X];
@@ -174,16 +166,9 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
         m0 = 0 == dx;
         m1 = 0 == dy;
         m2 = 0 == dz;
-
-        hforces::ini_cloud(ts.b.pp.d[i], &clouda);
         hforces::ini_cloud(tr.b.pp.d[i], &cloudb);
-
-        sfrag.d[i] = {
-            clouda,            
-            ts.b.ii.d[i],
-            ts.nphst[i]};
-
-        frag.d[i] = {
+        
+        frag->d[i] = {
             cloudb,
             tr.b.cum.d[i],
             dx,
@@ -193,9 +178,48 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
             1 + m1 * (YS - 1),
             1 + m2 * (ZS - 1),
             (hforces::FragType)(abs(dx) + abs(dy) + abs(dz))};
-
-        rnd.d[i] = {trnd.interrank_trunks[i]->get_float(), trnd.interrank_masks[i]};
     }
+}
+
+static void ini_sfrags(TicketShalo ts, hforces::SFrag26 *sfrag) {
+    hforces::Cloud clouda;    
+
+    for (int i = 0; i < 26; ++i) {
+        hforces::ini_cloud(ts.b.pp.d[i], &clouda);
+
+        sfrag->d[i] = {
+            clouda,            
+            ts.b.ii.d[i],
+            ts.nphst[i]};
+    }
+}
+
+static void ini_rnd(TicketRnd trnd, /**/ hforces::Rnd26 *rnd) {
+    for (int i = 0; i < 26; ++i)
+        rnd->d[i] = {trnd.interrank_trunks[i]->get_float(), trnd.interrank_masks[i]};
+}
+
+
+// void fremote_color(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, TicketSIhalo tis, TicketRIhalo tir, /**/ Force *ff) {
+//     hforces::SFrag26 sfrag;
+//     hforces::Frag26   frag;
+//     hforces::Rnd26     rnd;
+
+//     ini_sfrags(ts, /**/ &sfrag);
+//     ini_frags (tr, /**/ &frag);
+//     ini_rnd (trnd, /**/ &rnd);
+
+//     hforces::interactions(sfrag, frag, rnd, (float*)ff);
+// }
+
+void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
+    hforces::SFrag26 sfrag;
+    hforces::Frag26   frag;
+    hforces::Rnd26     rnd;
+
+    ini_sfrags(ts, /**/ &sfrag);
+    ini_frags (tr, /**/ &frag);
+    ini_rnd (trnd, /**/ &rnd);
 
     hforces::interactions(sfrag, frag, rnd, (float*)ff);
 }
