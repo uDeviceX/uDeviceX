@@ -29,7 +29,7 @@
 #define aD2D(t, f, n) CC(d::MemcpyAsync((t), (f), (n) * sizeof((f)[0]), D2D))
 #define aH2H(t, f, n) CC(cudaMemcpyAsync((t), (f), (n) * sizeof((f)[0]), H2H))  /* [t]to, [f]rom */
 #define aA2A(t, f, n) CC(cudaMemcpyAsync((t), (f), (n) * sizeof((f)[0]), A2A))
-#define aD2H(h, d, n) CC(cudaMemcpyAsync((h), (d), (n) * sizeof((h)[0]), D2H))
+#define aD2H(D, H, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H)))
 #define aH2D(d, h, n) CC(cudaMemcpyAsync((d), (h), (n) * sizeof((h)[0]), H2D))
 #define aH2D0(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
