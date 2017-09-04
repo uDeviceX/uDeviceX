@@ -12,7 +12,9 @@
 #include "utils/cc.h"
 #include "inc/dev.h"
 
-void dump_grid(Particle* hst) {
+#include "fields_grid.h"
+
+void fields_grid(Particle* hst) {
     int nn = 10;
     cD2H(hst, hst, nn);
     h5::dump(hst, nn);
