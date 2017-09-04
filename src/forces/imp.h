@@ -1,4 +1,6 @@
 namespace forces {
+enum {LJ_NONE, LJ_ONE, LJ_TWO};
+
 static __device__ float wrf(const int s, float x) {
     if (s == 0) return x;
     if (s == 1) return sqrtf(x);
