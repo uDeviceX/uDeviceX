@@ -1,5 +1,5 @@
 namespace forces {
-struct DPDParam { float gamma, a, rnd };
+struct DPDparam { float gamma, a, rnd; };
 
 enum {LJ_NONE, LJ_ONE, LJ_TWO};
 
@@ -117,6 +117,15 @@ static __device__ void gen1(Pa *A, Pa *B, float rnd, /**/ float *fx, float *fy, 
 
 static __device__ void gen2(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
                             /**/ float *fx, float *fy, float *fz) {
+    DPDparam p;
+    if (ca == RED_COLOR || cb == RED_COLOR) {
+        p.gamma = gammadpd_solv;
+        p.a     = aij_solv;
+    } else {
+        p.gamma = gammadpd_rbc;
+        p.a     = aij_rbc;
+    }
+    p.rnd = rnd;
     gen1(A, B, rnd, /**/ fx, fy, fz);
 }
 
