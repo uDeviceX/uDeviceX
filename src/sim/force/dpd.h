@@ -8,7 +8,9 @@ void forces_dpd() {
     copy_cells(&h.ts);
     pack(q.pp, /**/ &h.ts);
     post_send(&h.tc, &h.ts);
-    flocal(tz.zip0, tz.zip1, q.n, start, count, trnd.rnd, /**/ ff);
+
+    if (multi_solvent) flocal_color(tz.zip0, tz.zip1, qc.ii, q.n, start, count, trnd.rnd, /**/ ff);
+    else flocal(tz.zip0, tz.zip1, q.n, start, count, trnd.rnd, /**/ ff);
 
     wait_recv(&h.tc);
     recv(&h.tr);

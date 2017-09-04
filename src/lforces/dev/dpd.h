@@ -3,7 +3,9 @@ static __device__ float3 dpd0(uint aid, uint bid, float rnd) {
     forces::Pa a, b;
 
     cloud_get(aid, &a);
+    if (multi_solvent) cloud_get_color(aid, /**/ &a);
     cloud_get(bid, &b);
+    if (multi_solvent) cloud_get_color(bid, /**/ &b);
 
     forces::gen(a, b, rnd, &fx, &fy, &fz);
     return make_float3(fx, fy, fz);
