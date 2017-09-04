@@ -42,12 +42,6 @@
 #define wall_creation       1000
 #define tend                1000000
 
-/* DEBUG */
-//#define KL_NONE
-//#define CC_PEEK
-#define TE_TRACE
-//#define FORCE0
-
 /* FLOW TYPE */
 #define pushflow            true
 #define pushsolid           true
@@ -59,8 +53,3 @@
 #define field_dumps         true
 #define field_freq          1000
 #define strt_dumps          true
-#define strt_freq           50000
-
-/* Part II (added by tools/argp) */
-
-
