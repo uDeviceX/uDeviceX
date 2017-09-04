@@ -14,7 +14,7 @@ pack0(const float2 *pp, int fid,
         p = pp2p(pp, pid);
         shift(fid, &p); /* shift coordinates */
     }
-    p2pp(p, dwe, tstart + offset + wsf, /**/ buf);
+    p2pp(p, tstart + entry, /**/ buf);
 }
 
 __device__ void pack1(const float2 *pp, int ws, int dw, /**/ float2 *buf) {

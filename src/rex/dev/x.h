@@ -7,9 +7,11 @@ __device__ Pa pp2p(const float2 *pp, int i) {
     return p;
 }
 
-__device__ void p2pp(Pa p, int n, int i, /**/ float2 *pp) {
-    /* collective write : p to buffer pp */
-    k_write::AOS6f(pp + 3*i, n, p.s0, p.s1, p.s2);
+__device__ void p2pp(Pa p, int i, /**/ float2 *pp) {
+    i *= 3;
+    pp[i++] = p.s0;
+    pp[i++] = p.s1;
+    pp[i++] = p.s2;
 }
 
 __device__ void p2xyz(const Pa p, /**/ float *x, float *y, float *z) {
