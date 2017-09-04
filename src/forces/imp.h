@@ -16,7 +16,7 @@ inline __device__ float cap(float x, float lo, float hi) {
 }
 
 
-const float EPS = 1e-6;
+static const float EPS = 1e-6;
 enum {OK, BIG, SMALL};
 inline __device__ bool norm(/*io*/ float *px, float *py, float *pz, /**/ float *pr, float *pinvr) {
     /* noralize vector r = [x, y, z], sets |r| and 1/|r| if not big */
