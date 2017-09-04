@@ -102,7 +102,7 @@ inline __device__ void dpd0(int typed, int types,
     dpd00(typed, types, dx, dy, dz, dvx, dvy, dvz, rnd, /**/ fx, fy, fz);
 }
 
-inline __device__ void gen2(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
+inline __device__ void gen2(const Pa A, const Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
     dpd0(A.kind, B.kind,
          A.x,  A.y,  A.z,  B.x,  B.y,  B.z,
          A.vx, A.vy, A.vz, B.vx, B.vy, B.vz,
@@ -110,7 +110,7 @@ inline __device__ void gen2(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, fl
          fx, fy, fz);
 }
 
-inline __device__ void gen3(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
+inline __device__ void gen3(const Pa A, const Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
     int ljkind; /* call LJ? */
     int ka, kb;
     int ca, cb; /* corrected colors */
@@ -136,7 +136,7 @@ inline __device__ void gen3(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, fl
     //    gen2(A, B, ca, cb, ljkind, rnd, /**/ fx, fy, fz);
 }
 
-inline __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
+inline __device__ void gen(const Pa A, const Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
     if (A.kind > B.kind) {
         gen2(B, A, rnd, /**/ fx, fy, fz);
         *fx = -(*fx);
