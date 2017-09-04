@@ -26,13 +26,11 @@ void rig_dump(const int it, const Solid *ss, const Solid *ssbb, int ns, const in
         fprintf(fp, "%+.6e ", dt*it);
 
         // make global coordinates
-        float com[3];
-        {
-            const int L[3] = {XS, YS, ZS};
-            int mi[3];
-            for (int c = 0; c < 3; ++c) mi[c] = (mcoords[c] + 0.5) * L[c];
-            for (int c = 0; c < 3; ++c) com[c] = s->com[c] + mi[c];
-        }
+        float com[3] = {0};
+        const int L[3] = {XS, YS, ZS};
+        int mi[3];
+        for (int c = 0; c < 3; ++c) mi[c] = (mcoords[c] + 0.5) * L[c];
+        for (int c = 0; c < 3; ++c) com[c] = s->com[c] + mi[c];
             
         write_v(fp, com);
         write_v(fp, s->v );
