@@ -21,6 +21,7 @@
   #include "utils/kl.h"
   #include "forces/type.h"
   #include "forces/pack.h"
+  #include "forces/hook.h"
   #include "forces/imp.h"
 
   #include "imp/type.h"
