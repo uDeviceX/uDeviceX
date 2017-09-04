@@ -50,7 +50,7 @@ static __device__ float lj(float invr, float ljsi) {
     return f;
 }
 
-static __device__ void dpd00(float x, float y, float z,
+static __device__ void dpd(float x, float y, float z,
                              float vx, float vy, float vz,
                              DPDparam p, int ljkind, /**/ Fo f) {
     float invr, r;
@@ -90,18 +90,15 @@ static __device__ void dpd00(float x, float y, float z,
 }
 
 static __device__ void gen0(Pa *A, Pa *B, DPDparam p, int ljkind, /**/ Fo f) {
-    dpd00(A->x -  B->x,    A->y -  B->y,  A->z -  B->z,
-          A->vx - B->vx,   A->vy - B->vy, A->vz - B->vz,          
-          p, ljkind,
-          f);
+    dpd(A->x -  B->x,    A->y -  B->y,  A->z -  B->z,
+        A->vx - B->vx,   A->vy - B->vy, A->vz - B->vz,          
+        p, ljkind,
+        f);
 }
 
-static __device__ void gen1(Pa *A, Pa *B, DPDparam p, int ljkind, /**/ Fo f) {
-    gen0(A, B, p, ljkind, /**/ f);
-}
-
-static __device__ void gen2(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
+static __device__ void gen1(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
                             /**/ Fo f) {
+    /* dispatch on color */
     DPDparam p;
     if (ca == RED_COLOR || cb == RED_COLOR) {
         p.gamma = gammadpd_solv;
@@ -111,10 +108,11 @@ static __device__ void gen2(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
         p.a     = aij_rbc;
     }
     p.rnd = rnd;
-    gen1(A, B, p, ljkind, /**/ f);
+    gen0(A, B, p, ljkind, /**/ f);
 }
 
-static __device__ void gen3(Pa *A, Pa *B, float rnd, /**/ float *fx, float *fy, float *fz) {
+static __device__ void gen2(Pa *A, Pa *B, float rnd, /**/ float *fx, float *fy, float *fz) {
+    /* dispatch on kind and pack force */
     int ljkind; /* call LJ? */
     int ka, kb;
     int ca, cb; /* corrected colors */
@@ -140,7 +138,7 @@ static __device__ void gen3(Pa *A, Pa *B, float rnd, /**/ float *fx, float *fy, 
     }
 
     f.x = fx; f.y = fy; f.z = fz;
-    gen2(A, B, ca, cb, ljkind, rnd, /**/ f);
+    gen1(A, B, ca, cb, ljkind, rnd, /**/ f);
 }
 
 static __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
@@ -154,7 +152,7 @@ static __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, flo
         Flip = false;
         pA = &A; pB = &B;
     }
-    gen3(pA, pB, rnd, /**/ fx, fy, fz);
+    gen2(pA, pB, rnd, /**/ fx, fy, fz);
     if (Flip) {
         *fx = -(*fx);
         *fy = -(*fy);
