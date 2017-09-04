@@ -102,21 +102,30 @@ static __device__ void dpd0(int typed, int types,
     dpd00(typed, types, dx, dy, dz, dvx, dvy, dvz, rnd, /**/ fx, fy, fz);
 }
 
-static __device__ void gen2(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
-    dpd0(A.kind, B.kind,
-         A.x,  A.y,  A.z,  B.x,  B.y,  B.z,
-         A.vx, A.vy, A.vz, B.vx, B.vy, B.vz,
+static __device__ void gen2(Pa *A, Pa *B, float rnd, /**/ float *fx, float *fy, float *fz) {
+    dpd0(A->kind, B->kind,
+         A->x,  A->y,  A->z,  B->x,  B->y,  B->z,
+         A->vx, A->vy, A->vz, B->vx, B->vy, B->vz,
          rnd,
          fx, fy, fz);
 }
 
 static __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
+    /* force A.kind <= B.kind */
+    bool Flip;
+    Pa *pA, *pB;
     if (A.kind > B.kind) {
-        gen2(B, A, rnd, /**/ fx, fy, fz);
+        Flip = true;
+        pA = &B; pB = &A;
+    } else {
+        Flip = false;
+        pA = &A; pB = &B;
+    }
+    gen2(pA, pB, rnd, /**/ fx, fy, fz);
+    if (Flip) {
         *fx = -(*fx);
         *fy = -(*fy);
         *fz = -(*fz);
-    } else
-        gen2(A, B, rnd, /**/ fx, fy, fz);
+    }
 }
 } /* namespace */
