@@ -16,22 +16,18 @@
 #define H2H cudaMemcpyHostToHost
 #define A2A cudaMemcpyDefault /* "[a]ll to [a]ll" */
 
-#define cD2D(t, f, n) CC(cudaMemcpy((t), (f), (n) * sizeof((f)[0]), D2D))
-#define cH2H(t, f, n) CC(cudaMemcpy((t), (f), (n) * sizeof((f)[0]), H2H))  /* [t]to, [f]rom */
-#define cA2A(t, f, n) CC(cudaMemcpy((t), (f), (n) * sizeof((f)[0]), A2A))
+#define cD2D(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), D2D))
+#define cH2H(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define cA2A(T, F, n) CC(d::Memcpy((T), (F), (n) * sizeof((F)[0]), A2A))
 
 #define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]),  d::MemcpyDeviceToHost))
-#define cD2H0(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
+#define cH2D(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
 
-#define cH2D(d, h, n) CC(cudaMemcpy((d), (h), (n) * sizeof((h)[0]), H2D))
-#define cH2D0(D, H, n) CC(d::Memcpy((D), (H), (n) * sizeof((H)[0]), H2D))
-
-#define aD2D(t, f, n) CC(d::MemcpyAsync((t), (f), (n) * sizeof((f)[0]), D2D))
-#define aH2H(t, f, n) CC(cudaMemcpyAsync((t), (f), (n) * sizeof((f)[0]), H2H))  /* [t]to, [f]rom */
-#define aA2A(T, F, n) CC(cudaMemcpyAsync((T), (F), (n) * sizeof((f)[0]), A2A))
+#define aD2D(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), D2D))
+#define aH2H(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), H2H))  /* [t]to, [f]rom */
+#define aA2A(T, F, n) CC(d::MemcpyAsync((T), (F), (n) * sizeof((F)[0]), A2A))
 #define aD2H(H, D, n) CC(d::MemcpyAsync((H), (D), (n) * sizeof((H)[0]), D2H))
-#define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((h)[0]), H2D))
-#define aH2D0(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
+#define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
 /* device allocation */
 #define Dfree(d)     CC(cudaFree(d))
