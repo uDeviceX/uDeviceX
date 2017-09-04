@@ -8,8 +8,10 @@ static __device__ Pa warp2p(const Particle *pp, int i) {
     return p;
 }
 
-static __device__ void halo0(Pa A, int aid, const float *ppB, int nb, float seed, /**/ float *fA, float *ffB) {
+static __device__ void halo0(Pa A, int aid, hforces::Cloud cloud, int nb, float seed, /**/ float *fA, float *ffB) {
     enum {X, Y, Z};
+    const float *ppB;
+
     Pa B; /* remote particles */
     Fo f;
 
@@ -31,7 +33,7 @@ static __device__ void halo0(Pa A, int aid, const float *ppB, int nb, float seed
     fA[X] = fx; fA[Y] = fy; fA[Z] = fz;
 }
 
-static __device__ void halo1(int aid, const float *ppB, int nb, float seed, /**/ float *ffB) {
+static __device__ void halo1(int aid, hforces::Cloud cloud, int nb, float seed, /**/ float *ffB) {
     int fid; /* fragment id */
     int start;
     Pa A;
@@ -43,13 +45,12 @@ static __device__ void halo1(int aid, const float *ppB, int nb, float seed, /**/
     A = warp2p(g::pp[fid], aid - start);
     fA = g::ff[fid][aid-start].f;
 
-    halo0(A, aid, ppB, nb, seed, /**/ fA, ffB);
+    halo0(A, aid, cloud, nb, seed, /**/ fA, ffB);
 }
 
 __global__ void halo(hforces::Cloud cloud, int na, int nb, float seed, /**/ float *ffB) {
-    float *ppB = cloud.pp;
     int aid;
     aid = threadIdx.x + blockDim.x * blockIdx.x;
     if (aid >= na) return;
-    halo1(aid, ppB, nb, seed, /**/ ffB);
+    halo1(aid, cloud, nb, seed, /**/ ffB);
 }
