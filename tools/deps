@@ -1,0 +1,4 @@
+# update all units
+for u in u/x u/safe u/dang
+do  ../tools/udeps "$u"
+done
