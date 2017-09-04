@@ -1,6 +1,6 @@
 namespace sub {
 void copy_starts(rex::TicketPack tp, /**/ rex::TicketPinned ti) {
-    CC(cudaMemcpyAsync(ti.starts, tp.tstarts, sizeof(int) * 27, D2H));
+    aD2H(ti.starts, tp.tstarts, 27);
 }
 
 void copy_offset(int nw, rex::TicketPack tp, rex::TicketPinned ti) {
