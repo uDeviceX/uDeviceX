@@ -2,7 +2,7 @@ namespace forces {
 struct DPDparam { float gamma, a, rnd; };
 struct Fo { float *x, *y, *z; }; /* force */
 
-enum {LJ_NONE, LJ_ONE, LJ_TWO};
+enum {LJ_NONE, LJ_ONE, LJ_TWO}; /* lj hack */
 
 static __device__ float wrf(const int s, float x) {
     if (s == 0) return x;
