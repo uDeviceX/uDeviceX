@@ -8,6 +8,7 @@ inline __device__ void cloud_get(Cloud c, int i, /**/ forces::Pa *p) {
 }
 
 inline __device__ void cloud_get_color(Cloud c, int i, /**/ forces::Pa *p) {
-    //p->color = c.cc[i];
+    /********************* :TODO: ***********/
+    /* p->color = c.cc[i]; */
 }
 }} /* namespace */
