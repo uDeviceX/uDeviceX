@@ -96,4 +96,5 @@ void recv(TicketRhalo *t);
 void recv_ii(const TicketRhalo *t, /**/ TicketRIhalo *ti);
 
 void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff);
+void fremote_color(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, TicketSIhalo tis, TicketRIhalo tir, /**/ Force *ff);
 }
