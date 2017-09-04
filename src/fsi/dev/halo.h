@@ -42,7 +42,7 @@ static __device__ void halo1(int aid, hforces::Cloud cloud, int nb, float seed, 
     start = g::starts[fid];
 
     A = warp2p(g::pp[fid], aid - start);
-    A.kind = SOLID_TYPE;
+    A.kind = SOLID_KIND;
 
     fA = g::ff[fid][aid-start].f;
 

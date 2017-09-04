@@ -1,8 +1,8 @@
 enum { /* used in forces.h */
-    SOLVENT_TYPE = 0,
-    SOLID_TYPE   = 1,
-    WALL_TYPE    = 2,
-    RBC_TYPE     = 3,
+    SOLVENT_KIND = 0,
+    SOLID_KIND   = 1,
+    WALL_KIND    = 2,
+    RBC_KIND     = 3,
 };
 
 /* maximum particle number per one processor for static allocation */

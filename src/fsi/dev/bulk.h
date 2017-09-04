@@ -8,7 +8,7 @@ static __device__ void p2rv(const float *p, int i, /**/
 
 static __device__ void pp2p(const float *pp, int i, /**/ Pa *p) { /* TODO gets force::Pa directly */
     p2rv(pp, i, /**/ &p->x, &p->y, &p->z,   &p->vx, &p->vy, &p->vz);
-    p->kind = SOLID_TYPE;
+    p->kind = SOLID_KIND;
 }
 
 static __device__ int p2map(int zplane, int n, const Pa p, /**/ Map *m) {

@@ -72,8 +72,8 @@ inline __device__ void dpd00(int typed, int types,
     f  = (-gamma * wr * ev + sigma * rnd) * wr;
     f +=                                a * wc;
 
-    bool ss = (typed == SOLID_TYPE) && (types == SOLID_TYPE);
-    bool sw = (typed == SOLID_TYPE) && (types ==  WALL_TYPE);
+    bool ss = (typed == SOLID_KIND) && (types == SOLID_KIND);
+    bool sw = (typed == SOLID_KIND) && (types ==  WALL_KIND);
     if (vnstat == OK && (ss || sw) ) {
         /*hack*/ const float ljsi = ss ? ljsigma : 2 * ljsigma;
         t2 = ljsi * ljsi * invr * invr;

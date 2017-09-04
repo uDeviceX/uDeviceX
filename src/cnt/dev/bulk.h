@@ -45,8 +45,8 @@ __global__ void bulk(float2 *pp, int n,
         stmp2 = __ldg(g::csolutes[objid] + sentry + 2);
 
         rnd = rnd::mean0var1ii(seed, pid, spid);
-        forces::f2k2p(dst0,   dst1,  dst2, SOLID_TYPE, /**/ &a);
-        forces::f2k2p(stmp0, stmp1, stmp2, SOLID_TYPE, /**/ &b);
+        forces::f2k2p(dst0,   dst1,  dst2, SOLID_KIND, /**/ &a);
+        forces::f2k2p(stmp0, stmp1, stmp2, SOLID_KIND, /**/ &b);
         forces::gen(a, b, rnd, &fx, &fy, &fz);
         xforce += fx;
         yforce += fy;

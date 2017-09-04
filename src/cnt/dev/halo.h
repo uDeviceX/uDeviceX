@@ -53,8 +53,8 @@ __global__ void halo(int n, float seed) {
             stmp2 = __ldg(g::csolutes[objid] + sentry + 2);
 
             rnd = rnd::mean0var1ii(seed, aid, spid);
-            forces::r3v3k2p(A.x, A.y, A.z, A.vx, A.vy, A.vz, SOLID_TYPE, /**/ &a);            
-            forces::f2k2p(stmp0, stmp1, stmp2, SOLID_TYPE, /**/ &b);
+            forces::r3v3k2p(A.x, A.y, A.z, A.vx, A.vy, A.vz, SOLID_KIND, /**/ &a);
+            forces::f2k2p(stmp0, stmp1, stmp2, SOLID_KIND, /**/ &b);
             forces::gen(a, b, rnd, &fx, &fy, &fz);
             xforce += fx;
             yforce += fy;
