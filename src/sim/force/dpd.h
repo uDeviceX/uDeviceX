@@ -13,6 +13,7 @@ void forces_dpd() {
     wait_recv(&h.tc);
     recv(&h.tr);
     post_expected_recv(&h.tc, &h.tr);
-    fremote(h.trnd, h.ts, h.tr, /**/ ff);
+    if (multi_solvent) fremote_color(h.trnd, h.ts, h.tr, h.tsi, h.tri, /**/ ff);
+    else               fremote(h.trnd, h.ts, h.tr, /**/ ff);
     h.tc.first = false;
 }
