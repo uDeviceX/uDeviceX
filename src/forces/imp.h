@@ -1,4 +1,6 @@
 namespace forces {
+struct DPDParam { float gamma, a, rnd };
+
 enum {LJ_NONE, LJ_ONE, LJ_TWO};
 
 static __device__ float wrf(const int s, float x) {
