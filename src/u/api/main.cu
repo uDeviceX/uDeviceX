@@ -32,7 +32,7 @@ static void fill(int e, int *dev) {
     int hst[N];
     int i;
     for (i = 0; i < N; i++) hst[i] = i;
-    cH2D0(dev, hst, N);
+    cH2D(dev, hst, N);
 }
 
 static void main0() {
