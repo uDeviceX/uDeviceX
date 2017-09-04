@@ -13,7 +13,7 @@ then                   shift
 else Time="--time $1"; shift
 fi
 
-Args="-C gpu $Time $@"
+Args="--output=out.txt --error=err.txt -C gpu $Time $@"
 exec1 sbatch -N $n $Args /dev/stdin <<EOF
 #!/bin/bash
 

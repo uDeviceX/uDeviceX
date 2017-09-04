@@ -1,1 +1,1 @@
-cmd: sbatch -N 1 -C gpu --time 00:10:00 /dev/stdin
+cmd: sbatch -N 1 --output=out.txt --error=err.txt -C gpu --time 00:10:00 /dev/stdin
