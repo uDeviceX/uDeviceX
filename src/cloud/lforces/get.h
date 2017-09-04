@@ -10,7 +10,7 @@ static __device__ void cloud_get(uint i, /**/ forces::Pa *p) { /* local fetch */
 }
 
 inline __device__ void cloud_get_color(uint i, /**/ forces::Pa *p) {
-    p->color = fetchC(i);
+    //p->color = fetchC(i);
 }
 
 static __device__ void cloud_pos(/* dummy c */ int i, /**/ float *x, float *y, float *z) {
