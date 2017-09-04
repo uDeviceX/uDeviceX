@@ -16,25 +16,25 @@ static __device__ int p2map(int zplane, int n, const Pa p, /**/ Map *m) {
     return r2map(zplane, n, p.x, p.y, p.z, m);
 }
 
-static __device__ void bulk0(const Pa l, hforces::Cloud cloud, int lid, const Map m, float seed, /**/
+static __device__ void bulk0(const Pa a, hforces::Cloud cloud, int lid, const Map m, float seed, /**/
                              float *fx, float *fy, float *fz, float *ff) {
-    /* "[l]ocal" and "[r]emote" particles */
-    Pa r;
+    /* "[a]ocal" and "[b]emote" particles */
+    Pa b;
     Fo f;
     int i, rid;
     *fx = *fy = *fz = 0; /* local force */
     for (i = 0; !endp(m, i); ++i) {
         rid = m2id(m, i);
-        hforces::dev::cloud_get(cloud, rid, /**/ &r);
+        hforces::dev::cloud_get(cloud, rid, /**/ &b);
         f = ff2f(ff, rid);
-        pair(l, r, random(lid, rid, seed), /**/ fx, fy, fz,   f);
+        pair(a, b, random(lid, rid, seed), /**/ fx, fy, fz,   f);
     }
 }
 
-static __device__ void bulk1(const Pa l, hforces::Cloud cloud,
+static __device__ void bulk1(const Pa a, hforces::Cloud cloud,
                              const Fo f, int i, const Map m, float seed, /**/ float *ff) {
     float fx, fy, fz; /* local force */
-    bulk0(l, cloud, i, m, seed, /**/ &fx, &fy, &fz, ff);
+    bulk0(a, cloud, i, m, seed, /**/ &fx, &fy, &fz, ff);
     atomicAdd(f.x, fx);
     atomicAdd(f.y, fy);
     atomicAdd(f.z, fz);
