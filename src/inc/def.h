@@ -1,8 +1,5 @@
-enum { /* used in forces.h */
-    SOLVENT_KIND = 0,
-    SOLID_KIND   = 1,
-    WALL_KIND    = 2,
-};
+/* used in forces.h */
+enum {SOLVENT_KIND, SOLID_KIND, WALL_KIND};
 
 /* RED_BLUE: is a mixed color */
 enum {RED_COLOR,  BLUE_COLOR, RED_BLUE};
