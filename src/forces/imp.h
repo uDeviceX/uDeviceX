@@ -102,12 +102,43 @@ static __device__ void dpd0(int typed, int types,
     dpd00(typed, types, dx, dy, dz, dvx, dvy, dvz, rnd, /**/ fx, fy, fz);
 }
 
-static __device__ void gen2(Pa *A, Pa *B, float rnd, /**/ float *fx, float *fy, float *fz) {
+static __device__ void gen1(Pa *A, Pa *B, float rnd, /**/ float *fx, float *fy, float *fz) {
     dpd0(A->kind, B->kind,
          A->x,  A->y,  A->z,  B->x,  B->y,  B->z,
          A->vx, A->vy, A->vz, B->vx, B->vy, B->vz,
          rnd,
          fx, fy, fz);
+}
+
+static __device__ void gen2(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
+                            /**/ float *fx, float *fy, float *fz) {
+    gen1(A, B, rnd, /**/ fx, fy, fz);
+}
+
+static __device__ void gen3(Pa *A, Pa *B, float rnd, /**/ float *fx, float *fy, float *fz) {
+    int ljkind; /* call LJ? */
+    int ka, kb;
+    int ca, cb; /* corrected colors */
+    int O, S, W;
+    O = SOLVENT_KIND; S = SOLID_KIND; W = WALL_KIND;
+    ka = A->kind; kb = B->kind;
+    ca = A->color; cb = B->color;
+    ljkind = LJ_NONE;
+
+    if        (ka == O && kb == O) { /* OO */
+        /* no correction */
+    } else if (ka == O && kb == S) { /* OS */
+        cb = ca;
+    } else if (ka == 0 && kb == W) { /* OW */
+        cb = ca;
+    } else if (ka == S && kb == S) { /* SS */
+        ca = cb = RED_COLOR;   ljkind = LJ_TWO;
+    } else if (ka == S && kb == W) { /* SW */
+        ca = cb = RED_COLOR;   ljkind = LJ_ONE;
+    } else {
+        //        assert(0);
+    }
+    gen2(A, B, ca, cb, ljkind, rnd, /**/ fx, fy, fz);
 }
 
 static __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
@@ -121,7 +152,7 @@ static __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, flo
         Flip = false;
         pA = &A; pB = &B;
     }
-    gen2(pA, pB, rnd, /**/ fx, fy, fz);
+    gen3(pA, pB, rnd, /**/ fx, fy, fz);
     if (Flip) {
         *fx = -(*fx);
         *fy = -(*fy);
