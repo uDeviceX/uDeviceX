@@ -26,7 +26,7 @@ void dump_part(int step) {
   } else {
       bop::parts(o::q.pp_hst, o::q.n, "solvent", step, /**/ &dumpt);
   }
-  
+
   if(solids0) {
     cD2H(s::q.pp_hst, s::q.pp, s::q.n);
     if (dump_forces) {
@@ -45,8 +45,12 @@ void dump_rbcs() {
 }
 
 void dump_grid() {
-  cD2H(a::pp_hst, o::q.pp, o::q.n);
-  h5::dump(a::pp_hst, o::q.n);
+    QQ qq; /* pack for io/field_dumps */
+    NN nn;
+    qq.o = o::q.pp; qq.s = s::q.pp; qq.r = r::q.pp;
+    nn.o = o::q.n ; nn.s = s::q.n ;  nn.r = r::q.n;
+    cD2H(a::pp_hst, o::q.pp, o::q.n);
+    h5::dump(a::pp_hst, o::q.n);
 }
 
 void dump_diag_after(int it) { /* after wall */
