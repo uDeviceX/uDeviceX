@@ -22,6 +22,12 @@ struct Stamp {
     int ranks[NFRAGS], aranks[NFRAGS];
 };
 
+void ini(size_t bsize, int cap[NBAGS], /**/ Bags *b);
+void fin(/**/ Bags *b);
+
+void ini(MPI_Comm comm, /**/ Stamp *s);
+void fin(/**/ Stamp *s);
+
 void post_recv(Bags *b, Stamp *s);
 void post_send(Bags *b, Stamp *s);
 void wait_all(Stamp *s);
