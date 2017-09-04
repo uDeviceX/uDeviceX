@@ -109,7 +109,7 @@ static __device__ void gen1(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
     }
     p.rnd = rnd;
     gen0(A, B, p, ljkind, /**/ f);
-    hook(ca, cb, f.x, f.y, f.z); /* see _snow and _rain */
+    hook(ca, cb, A->x, A->y, A->z, f.x, f.y, f.z); /* see _snow and _rain */
 }
 
 static __device__ bool seteq(int a, int b,   int x, int y) {
