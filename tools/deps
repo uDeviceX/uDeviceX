@@ -1,4 +1,4 @@
 # update all units
-for u in u/x u/safe u/dang
+for u in u/x u/safe u/dang u/snow
 do  ../tools/udeps "$u"
 done
