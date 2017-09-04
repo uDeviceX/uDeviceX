@@ -28,7 +28,7 @@ static __device__ void scatter0(int pid, float x, float y, float z, int *offsets
     int dx, dy, dz;
     int fdir[3]; /* [f]ragment [dir]ection */
     xyz2fdir(x, y, z, fdir);
-    
+
     if (fdir[X] == 0 && fdir[Y] == 0 && fdir[Z] == 0) return;
     // faces
     for (d = 0; d < 3; ++d)
@@ -58,7 +58,7 @@ static __device__ void scatter0(int pid, float x, float y, float z, int *offsets
 __global__ void scatter(const float2 *pp, int *offsets, int n, /**/ int *counts) {
     float x, y, z;
     int pid; /* particle id */
-    pid = threadIdx.x + blockDim.x * blockIdx.x;    
+    pid = threadIdx.x + blockDim.x * blockIdx.x;
 
     pp2xyz(pp, pid, /**/ &x, &y, &z);
     scatter0(pid, x, y, z, offsets, /**/ counts);
