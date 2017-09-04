@@ -111,6 +111,13 @@ static __device__ void gen1(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
     gen0(A, B, p, ljkind, /**/ f);
 }
 
+static __device__ bool seteq(int a, int b,   int x, int y) {
+    /* true if sets {a, b} and {x, y} are equal */
+    bool c1, c2;
+    c1 = (a == x && b == y);
+    c2 = (a == y && b == x);
+    return c1 || c2;
+}
 static __device__ void gen2(Pa *A, Pa *B, float rnd, /**/ float *fx, float *fy, float *fz) {
     /* dispatch on kind and pack force */
     int ljkind; /* call LJ? */
