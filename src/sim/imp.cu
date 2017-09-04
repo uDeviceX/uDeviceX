@@ -34,8 +34,8 @@
 #include "utils/texo.h"
 #include "utils/te.h"
 
-#include "cloud/generic/type.h"
-#include "cloud/generic/int.h"
+#include "cloud/hforces/type.h"
+#include "cloud/hforces/int.h"
 
 #include "inc/tmp/wrap.h"
 #include "inc/tmp/pinned.h"

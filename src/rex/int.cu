@@ -26,7 +26,7 @@
 #include "dbg/imp.h"
 #include "cnt/int.h"
 
-#include "cloud/generic/type.h"
+#include "cloud/hforces/type.h"
 #include "fsi/type.h"
 #include "fsi/int.h"
 
