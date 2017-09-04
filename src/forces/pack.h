@@ -24,6 +24,10 @@ inline __device__ void rvk2p(float r[3], float v[3], int kind, /**/ Pa *p) {
     p->kind = kind;
 }
 
+inline __device__ void c2p(int color, /**/ Pa *p) {
+    p->color = color;
+}
+
 inline __device__ float fst(float2 t) { return t.x; }
 inline __device__ float scn(float2 t) { return t.y; }
 inline __device__ void f2k2p(float2 d0, float2 d1, float2 d2, int kind, /**/ Pa *p) {
