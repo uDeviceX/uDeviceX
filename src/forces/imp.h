@@ -110,39 +110,6 @@ inline __device__ void gen0(const Pa A, const Pa B, float rnd, /**/ float *fx, f
          fx, fy, fz);
 }
 
-inline __device__ void gen2(const Pa A, const Pa B,
-                            int ca, int cb, int ljkind,
-                            float rnd, /**/ float *fx, float *fy, float *fz) {
-    gen0(A, B, rnd, /**/ fx, fy, fz);
-}
-
-inline __device__ void gen3(const Pa A, const Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
-    int ljkind; /* call LJ? */
-    int ka, kb;
-    int ca, cb; /* corrected colors */
-    int O, S, W;
-    O = SOLVENT_KIND; S = SOLID_KIND; W = WALL_KIND;
-    ka = A.kind; kb = B.kind;
-    ca = A.color; cb = B.color;
-    ljkind = LJ_NONE;
-
-    if        (ka == O && kb == O) { /* OO */
-        /* no correction */
-    } else if (ka == O && kb == S) { /* OS */
-        cb = ca;
-    } else if (ka == 0 && kb == W) { /* OW */
-        cb = ca;
-    } else if (ka == S && kb == S) { /* SS */
-        ca = cb = RED_COLOR;   ljkind = LJ_TWO;
-    } else if (ka == S && kb == W) { /* SW */
-        ca = cb = RED_COLOR;   ljkind = LJ_ONE;
-    } else {
-        //        assert(0);
-    }
-    //gen2(A, B, ca, cb, ljkind, rnd, /**/ fx, fy, fz);
-    gen0(A, B, rnd, /**/ fx, fy, fz);
-}
-
 inline __device__ void gen(const Pa A, const Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
     if (A.kind > B.kind) {
         gen0(B, A, rnd, /**/ fx, fy, fz);
