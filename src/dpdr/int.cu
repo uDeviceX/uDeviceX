@@ -199,18 +199,32 @@ static void ini_rnd(TicketRnd trnd, /**/ hforces::Rnd26 *rnd) {
         rnd->d[i] = {trnd.interrank_trunks[i]->get_float(), trnd.interrank_masks[i]};
 }
 
+static void ini_color_frags(TicketRIhalo t, /**/ hforces::Frag26 *frag) {
+    for (int i = 0; i < 26; ++i) {
+        hforces::ini_cloud_color(t.b.ii.d[i], &frag->d[i].c);
+    }
+}
 
-// void fremote_color(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, TicketSIhalo tis, TicketRIhalo tir, /**/ Force *ff) {
-//     hforces::SFrag26 sfrag;
-//     hforces::Frag26   frag;
-//     hforces::Rnd26     rnd;
+static void ini_color_sfrags(TicketSIhalo t, /**/ hforces::SFrag26 *sfrag) {
+    for (int i = 0; i < 26; ++i) {
+        hforces::ini_cloud_color(t.b.ii.d[i], &sfrag->d[i].c);
+    }
+}
 
-//     ini_sfrags(ts, /**/ &sfrag);
-//     ini_frags (tr, /**/ &frag);
-//     ini_rnd (trnd, /**/ &rnd);
+void fremote_color(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, TicketSIhalo tis, TicketRIhalo tir, /**/ Force *ff) {
+    hforces::SFrag26 sfrag;
+    hforces::Frag26   frag;
+    hforces::Rnd26     rnd;
 
-//     hforces::interactions(sfrag, frag, rnd, (float*)ff);
-// }
+    ini_sfrags(ts, /**/ &sfrag);
+    ini_frags (tr, /**/ &frag);
+    ini_rnd (trnd, /**/ &rnd);
+
+    ini_color_frags(tir, /**/ &frag);
+    ini_color_sfrags(tis, /**/ &sfrag);
+
+    hforces::interactions(sfrag, frag, rnd, (float*)ff);
+}
 
 void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
     hforces::SFrag26 sfrag;
