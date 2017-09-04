@@ -56,19 +56,10 @@ static __device__ void scatter0(int pid, float x, float y, float z, int *offsets
 }
 
 __global__ void scatter(const float2 *pp, int *offsets, int n, /**/ int *counts) {
-    int warp;
     float x, y, z;
-    int ws;  /* warp start in global coordinates */
-    int dw;  /* shift relative to `ws' (lane) */
-    int dwe; /* wrap or buffer end relative to `ws' */
     int pid; /* particle id */
+    pid = threadIdx.x + blockDim.x * blockIdx.x;    
 
-    warp = threadIdx.x / warpSize;
-    dw   = threadIdx.x % warpSize;
-    ws   = warpSize * warp + blockDim.x * blockIdx.x;
-    dwe  = min(32, n - ws);
-    pid = ws + dw;
     pp2xyz(pp, pid, /**/ &x, &y, &z);
-    if (dw < dwe)
-        scatter0(pid, x, y, z, offsets, /**/ counts);
+    scatter0(pid, x, y, z, offsets, /**/ counts);
 }

@@ -32,7 +32,6 @@ __global__ void pack(const float2 *pp, /**/ float2 *buf) {
 
     warp = threadIdx.x / warpSize;
     dw   = threadIdx.x % warpSize;
-
     lo = warpSize * warp + blockDim.x * blockIdx.x;
     hi = g::starts[26];
     step = gridDim.x * blockDim.x;
