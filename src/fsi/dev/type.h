@@ -1,6 +1,2 @@
-struct Pa { /* local particle */
-    float x, y, z;
-    float vx, vy, vz;
-};
-
+typedef forces::Pa Pa;
 struct Fo { float *x, *y, *z; }; /* force */
