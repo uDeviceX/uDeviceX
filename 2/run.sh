@@ -2,12 +2,8 @@
 
 set -eu
 
-# load utilities
-. u/`u.host`
-. u/common
 
 n=2
-d=/scratch/snx3000/lisergey/u
 Time=10:00:00
 u=u/dang
 s=../src
