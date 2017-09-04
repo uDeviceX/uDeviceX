@@ -52,7 +52,7 @@ static __device__ float lj(float invr, float ljsi) {
 static __device__ void dpd00(int typed, int types,
                              float x, float y, float z,
                              float vx, float vy, float vz,
-                             float rnd, DPDparam p, int ljkind, float *fx, float *fy, float *fz) {
+                             DPDparam p, int ljkind, float *fx, float *fy, float *fz) {
     /* [tab]les */
     const float gamma_tbl[] = {gammadpd_solv, gammadpd_solid, gammadpd_wall, gammadpd_rbc};
     const float a_tbl[] = {aij_solv, aij_solid, aij_wall, aij_rbc};
@@ -80,8 +80,8 @@ static __device__ void dpd00(int typed, int types,
     gamma = 0.5f * (gamma_tbl[typed] + gamma_tbl[types]);
     a     = 0.5f * (a_tbl[typed] + a_tbl[types]);
     sigma = sqrtf(2*gamma*kBT / dt);
-    f  = (-gamma * wr * ev + sigma * rnd) * wr;
-    f +=                                a * wc;
+    f  = (-gamma * wr * ev + sigma * p.rnd) * wr;
+    f +=                                  a * wc;
 
     bool ss = (typed == SOLID_KIND) && (types == SOLID_KIND);
     bool sw = (typed == SOLID_KIND) && (types ==  WALL_KIND);
@@ -97,7 +97,7 @@ static __device__ void gen0(Pa *A, Pa *B, DPDparam p, int ljkind, /**/ float *fx
     dpd00(A->kind, B->kind,
           A->x -  B->x,    A->y -  B->y,  A->z -  B->z,
           A->vx - B->vx,   A->vy - B->vy, A->vz - B->vz,          
-          p.rnd, p, ljkind,
+          p, ljkind,
           fx, fy, fz);
 }
 
