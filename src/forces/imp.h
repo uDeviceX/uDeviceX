@@ -109,10 +109,7 @@ inline __device__ void gen2(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, fl
 }
 
 inline __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
-    int ka, kb;
-    ka = A.kind;
-    kb = B.kind;
-    if (ka > kb) {
+    if (A.kind > B.kind) {
         gen2(B, A, rnd, /**/ fx, fy, fz);
         *fx = -(*fx);
         *fy = -(*fy);
