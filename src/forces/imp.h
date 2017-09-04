@@ -139,7 +139,8 @@ inline __device__ void gen3(const Pa A, const Pa B, float rnd, /**/ float *fx, f
     } else {
         //        assert(0);
     }
-    gen2(A, B, ca, cb, ljkind, rnd, /**/ fx, fy, fz);
+    //gen2(A, B, ca, cb, ljkind, rnd, /**/ fx, fy, fz);
+    gen0(A, B, rnd, /**/ fx, fy, fz);
 }
 
 inline __device__ void gen(const Pa A, const Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
