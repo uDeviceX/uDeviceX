@@ -82,12 +82,15 @@ __global__ void flocal(const Texo<float2> texpp, const Texo<int> texstart, int n
         float rnd = rnd::mean0var1ii(seed, pid, spid);
 
         float fx, fy, fz;
-        forces::dpd0(SOLVENT_KIND, SOLVENT_KIND,
+        assert(1);
+        /* TODO */
+        fx = fy = fz = 0;
+        /* forces::dpd0(SOLVENT_KIND, SOLVENT_KIND,
                      pd.r[X], pd.r[Y], pd.r[Z],
                      ps.r[X], ps.r[Y], ps.r[Z],
                      pd.v[X], pd.v[Y], pd.v[Z],
                      ps.v[X], ps.v[Y], ps.v[Z],
-                     rnd, &fx, &fy, &fz);
+                     rnd, &fx, &fy, &fz); */
         
         xforce += fx; yforce += fy; zforce += fz;
     }

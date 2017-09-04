@@ -93,24 +93,10 @@ static __device__ void dpd00(int typed, int types,
     *fx = f*x; *fy = f*y; *fz = f*z;
 }
 
-static __device__ void dpd0(int typed, int types,
-                            float xd, float yd, float zd,
-                            float xs, float ys, float zs,
-                            float vxd, float vyd, float vzd,
-                            float vxs, float vys, float vzs,
-                            float rnd, float *fx, float *fy, float *fz) {
-    /* to relative coordinates */
-    float dx, dy, dz;
-    float dvx, dvy, dvz;
-    dx = xd - xs; dy = yd - ys; dz = zd - zs;
-    dvx = vxd - vxs; dvy = vyd - vys; dvz = vzd - vzs;
-    dpd00(typed, types, dx, dy, dz, dvx, dvy, dvz, rnd, /**/ fx, fy, fz);
-}
-
 static __device__ void gen0(Pa *A, Pa *B, DPDparam p, int ljkind, /**/ float *fx, float *fy, float *fz) {
-    dpd0(A->kind, B->kind,
-         A->x,  A->y,  A->z,  B->x,  B->y,  B->z,
-         A->vx, A->vy, A->vz, B->vx, B->vy, B->vz,
+    dpd00(A->kind, B->kind,
+          A->x -  B->x,    A->y -  B->y,  A->z -  B->z,
+         A->vx - B->vx,   A->vy - B->vy, A->vz - B->vz,          
          p.rnd,
          fx, fy, fz);
 }
