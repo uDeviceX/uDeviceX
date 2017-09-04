@@ -131,7 +131,7 @@ inline __device__ void gen3(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, fl
     int O, S, W;
     O = SOLVENT_KIND; S = SOLID_KIND; W = WALL_KIND;
     ka = A.kind; kb = B.kind;
-    ca = A.color; cb = B.color;
+    /*********** ca = A.color; cb = B.color; ************/
     ljkind = LJ_NONE;
 
     if        (ka == O && kb == O) { /* OO */
