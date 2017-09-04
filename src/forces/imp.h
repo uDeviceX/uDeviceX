@@ -109,7 +109,6 @@ inline __device__ void gen2(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, fl
 }
 
 inline __device__ void gen1(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
-    /* 00, 01, 02,     11, 12,        22 */
     int ljflag; /* call LJ? */
     int ka, kb;
     int ca, cb; /* corrected colors */
