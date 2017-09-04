@@ -145,11 +145,11 @@ inline __device__ void gen3(const Pa A, const Pa B, float rnd, /**/ float *fx, f
 
 inline __device__ void gen(const Pa A, const Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
     if (A.kind > B.kind) {
-        gen3(B, A, rnd, /**/ fx, fy, fz);
+        gen0(B, A, rnd, /**/ fx, fy, fz);
         *fx = -(*fx);
         *fy = -(*fy);
         *fz = -(*fz);
     } else
-        gen3(A, B, rnd, /**/ fx, fy, fz);
+        gen0(A, B, rnd, /**/ fx, fy, fz);
 }
 } /* namespace */
