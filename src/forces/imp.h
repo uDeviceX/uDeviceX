@@ -1,4 +1,6 @@
 namespace forces {
+enum {LJ_NONE, LJ_ONE, LJ_TWO};
+
 static __device__ float wrf(const int s, float x) {
     if (s == 0) return x;
     if (s == 1) return sqrtf(x);
@@ -36,6 +38,15 @@ inline __device__ bool norm(/*io*/ float *px, float *py, float *pz, /**/ float *
     }
 }
 
+inline __device__ float lj(float invr, float ljsi) {
+    float t2, t4, t6, f;
+    t2 = ljsi * ljsi * invr * invr;
+    t4 = t2 * t2;
+    t6 = t4 * t2;
+    f = ljepsilon * 24 * invr * t6 * (2 * t6 - 1);
+    return cap(f, 0, 1e4);
+}
+
 inline __device__ void dpd00(int typed, int types,
                              float x, float y, float z,
                              float vx, float vy, float vz,
@@ -50,7 +61,6 @@ inline __device__ void dpd00(int typed, int types,
     float ev; /* (e dot v) */
     float gamma, sigma;
     float f;
-    float t2, t4, t6, lj;
     float a;
     int vnstat; /* vector normalization status */
 
@@ -75,12 +85,7 @@ inline __device__ void dpd00(int typed, int types,
     bool sw = (typed == SOLID_KIND) && (types ==  WALL_KIND);
     if (vnstat == OK && (ss || sw) ) {
         /*hack*/ const float ljsi = ss ? ljsigma : 2 * ljsigma;
-        t2 = ljsi * ljsi * invr * invr;
-        t4 = t2 * t2;
-        t6 = t4 * t2;
-        lj = ljepsilon * 24 * invr * t6 * (2 * t6 - 1);
-        lj = cap(lj, 0, 1e4);
-        f += lj;
+        f += lj(invr, ljsi);
     }
 
     *fx = f*x; *fy = f*y; *fz = f*z;
@@ -100,7 +105,7 @@ inline __device__ void dpd0(int typed, int types,
     dpd00(typed, types, dx, dy, dz, dvx, dvy, dvz, rnd, /**/ fx, fy, fz);
 }
 
-inline __device__ void gen2(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
+inline __device__ void gen1(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
     dpd0(A.kind, B.kind,
          A.x,  A.y,  A.z,  B.x,  B.y,  B.z,
          A.vx, A.vy, A.vz, B.vx, B.vy, B.vz,
@@ -108,15 +113,20 @@ inline __device__ void gen2(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, fl
          fx, fy, fz);
 }
 
-inline __device__ void gen1(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
-    int ljflag; /* call LJ? */
+inline __device__ void gen2(Pa A, Pa B, int ca, int cb, int ljkind, float rnd, /**/
+                            float *fx, float *fy, float *fz) {
+    gen1(A, B, rnd, /**/ fx, fy, fz);
+}
+
+inline __device__ void gen3(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
+    int ljkind; /* call LJ? */
     int ka, kb;
     int ca, cb; /* corrected colors */
     int O, S, W;
     O = SOLVENT_KIND; S = SOLID_KIND; W = WALL_KIND;
     ka = A.kind; kb = B.kind;
     ca = A.color; cb = B.color;
-    ljflag = 0;
+    ljkind = LJ_NONE;
 
     if        (ka == O && kb == O) { /* OO */
         /* no correction */
@@ -125,22 +135,23 @@ inline __device__ void gen1(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, fl
     } else if (ka == 0 && kb == W) { /* OW */
         cb = ca;
     } else if (ka == S && kb == S) { /* SS */
-        ca = cb = RED_COLOR;   ljflag = 1;
+        ca = cb = RED_COLOR;   ljkind = LJ_TWO;
     } else if (ka == S && kb == W) { /* SW */
-        ca = cb = RED_COLOR;   ljflag = 1;
+        ca = cb = RED_COLOR;   ljkind = LJ_ONE;
     } else {
         //        assert(0);
     }
+    gen2(A, B, ca, cb, ljkind, rnd, /**/ fx, fy, fz);
 }
 
 inline __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
     /* sort kind */
     if (A.kind > B.kind) {
-        gen2(B, A, rnd, /**/ fx, fy, fz);
+        gen3(B, A, rnd, /**/ fx, fy, fz);
         *fx = -(*fx);
         *fy = -(*fy);
         *fz = -(*fz);
     } else
-        gen2(A, B, rnd, /**/ fx, fy, fz);
+        gen3(A, B, rnd, /**/ fx, fy, fz);
 }
 } /* namespace */
