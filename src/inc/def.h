@@ -2,7 +2,6 @@ enum { /* used in forces.h */
     SOLVENT_KIND = 0,
     SOLID_KIND   = 1,
     WALL_KIND    = 2,
-    RBC_KIND     = 3,
 };
 
 /* RED_BLUE: is a mixed color */
