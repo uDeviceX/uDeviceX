@@ -9,7 +9,7 @@ static __device__ float wrf(const int s, float x) {
     return powf(x, 1.f/s);
 }
 
-inline __device__ float cap(float x, float lo, float hi) {
+static __device__ float cap(float x, float lo, float hi) {
     if      (x > hi) return hi;
     else if (x < lo) return lo;
     else             return x;
@@ -18,7 +18,7 @@ inline __device__ float cap(float x, float lo, float hi) {
 
 static const float EPS = 1e-6;
 enum {OK, BIG, SMALL};
-inline __device__ bool norm(/*io*/ float *px, float *py, float *pz, /**/ float *pr, float *pinvr) {
+static __device__ bool norm(/*io*/ float *px, float *py, float *pz, /**/ float *pr, float *pinvr) {
     /* noralize vector r = [x, y, z], sets |r| and 1/|r| if not big */
     float x, y, z, invr, r;
     float r2;
@@ -38,7 +38,7 @@ inline __device__ bool norm(/*io*/ float *px, float *py, float *pz, /**/ float *
     }
 }
 
-inline __device__ void dpd00(int typed, int types,
+static __device__ void dpd00(int typed, int types,
                              float x, float y, float z,
                              float vx, float vy, float vz,
                              float rnd, float *fx, float *fy, float *fz) {
@@ -88,7 +88,7 @@ inline __device__ void dpd00(int typed, int types,
     *fx = f*x; *fy = f*y; *fz = f*z;
 }
 
-inline __device__ void dpd0(int typed, int types,
+static __device__ void dpd0(int typed, int types,
                             float xd, float yd, float zd,
                             float xs, float ys, float zs,
                             float vxd, float vyd, float vzd,
@@ -102,7 +102,7 @@ inline __device__ void dpd0(int typed, int types,
     dpd00(typed, types, dx, dy, dz, dvx, dvy, dvz, rnd, /**/ fx, fy, fz);
 }
 
-inline __device__ void gen2(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
+static __device__ void gen2(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
     dpd0(A.kind, B.kind,
          A.x,  A.y,  A.z,  B.x,  B.y,  B.z,
          A.vx, A.vy, A.vz, B.vx, B.vy, B.vz,
@@ -110,7 +110,7 @@ inline __device__ void gen2(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, fl
          fx, fy, fz);
 }
 
-inline __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
+static __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
     if (A.kind > B.kind) {
         gen2(B, A, rnd, /**/ fx, fy, fz);
         *fx = -(*fx);
