@@ -115,7 +115,7 @@ static __device__ bool seteq(int a, int b,   int x, int y) {
     /* true if sets {a, b} and {x, y} are equal */
     return (a == x && b == y) || (a == y && b == x);
 }
-static __device__ void gen2(Pa *A, Pa *B, float rnd, /**/ float *fx, float *fy, float *fz) {
+static __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
     /* dispatch on kind and pack force */
     int ljkind; /* call LJ? */
     int ka, kb;
@@ -123,8 +123,8 @@ static __device__ void gen2(Pa *A, Pa *B, float rnd, /**/ float *fx, float *fy, 
     int O, S, W;
     Fo f; 
     O = SOLVENT_KIND; S = SOLID_KIND; W = WALL_KIND;
-    ka = A->kind; kb = B->kind;
-    ca = A->color; cb = B->color;
+    ka = A.kind; kb = B.kind;
+    ca = A.color; cb = B.color;
     ljkind = LJ_NONE;
 
     if        (ka == O && kb == O) {
@@ -140,27 +140,8 @@ static __device__ void gen2(Pa *A, Pa *B, float rnd, /**/ float *fx, float *fy, 
     } else {
         /* assert(0); */
     }
-
     f.x = fx; f.y = fy; f.z = fz;
-    gen1(A, B, ca, cb, ljkind, rnd, /**/ f);
+    gen1(&A, &B, ca, cb, ljkind, rnd, /**/ f);
 }
 
-static __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
-    /* force A.kind <= B.kind */
-    bool Flip;
-    Pa *pA, *pB;
-    if (A.kind > B.kind) {
-        Flip = true;
-        pA = &B; pB = &A;
-    } else {
-        Flip = false;
-        pA = &A; pB = &B;
-    }
-    gen2(pA, pB, rnd, /**/ fx, fy, fz);
-    if (Flip) {
-        *fx = -(*fx);
-        *fy = -(*fy);
-        *fz = -(*fz);
-    }
-}
 } /* namespace */
