@@ -37,6 +37,16 @@ static __device__ bool norm(/*io*/ float *px, float *py, float *pz, /**/ float *
     }
 }
 
+static __device__ float lj(float invr, float ljsi) {
+    float t2, t4, t6, f;
+    t2 = ljsi * ljsi * invr * invr;
+    t4 = t2 * t2;
+    t6 = t4 * t2;
+    f = ljepsilon * 24 * invr * t6 * (2 * t6 - 1);
+    f = cap(f, 0, 1e4);
+    return f;
+}
+
 static __device__ void dpd00(int typed, int types,
                              float x, float y, float z,
                              float vx, float vy, float vz,
