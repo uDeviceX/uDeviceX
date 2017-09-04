@@ -11,7 +11,7 @@
 #define DEVICE_FUNC (defined (__CUDA_ARCH__) && (__CUDA_ARCH__ > 0))
 
 #define D2D cudaMemcpyDeviceToDevice
-#define D2H (d::MemcpyDeviceToHost)
+#define D2H cudaMemcpyDeviceToHost
 #define H2D cudaMemcpyHostToDevice
 #define H2H cudaMemcpyHostToHost
 #define A2A cudaMemcpyDefault /* "[a]ll to [a]ll" */
@@ -20,7 +20,7 @@
 #define cH2H(t, f, n) CC(cudaMemcpy((t), (f), (n) * sizeof((f)[0]), H2H))  /* [t]to, [f]rom */
 #define cA2A(t, f, n) CC(cudaMemcpy((t), (f), (n) * sizeof((f)[0]), A2A))
 
-#define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
+#define cD2H(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]),  d::MemcpyDeviceToHost))
 #define cD2H0(H, D, n) CC(d::Memcpy((H), (D), (n) * sizeof((H)[0]), D2H))
 
 #define cH2D(d, h, n) CC(cudaMemcpy((d), (h), (n) * sizeof((h)[0]), H2D))
