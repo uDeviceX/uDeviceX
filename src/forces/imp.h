@@ -15,7 +15,6 @@ static __device__ float cap(float x, float lo, float hi) {
     else             return x;
 }
 
-
 static const float EPS = 1e-6;
 enum {OK, BIG, SMALL};
 static __device__ bool norm(/*io*/ float *px, float *py, float *pz, /**/ float *pr, float *pinvr) {
