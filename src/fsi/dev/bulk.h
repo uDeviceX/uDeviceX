@@ -15,12 +15,14 @@ static __device__ int p2map(int zplane, int n, const Pa p, /**/ Map *m) {
     return r2map(zplane, n, p.x, p.y, p.z, m);
 }
 
-static __device__ void bulk0(const Pa l, const float* ppB, int lid, const Map m, float seed, /**/
+static __device__ void bulk0(const Pa l, hforces::Cloud cloud, int lid, const Map m, float seed, /**/
                              float *fx, float *fy, float *fz, float *ff) {
     /* "[l]ocal" and "[r]emote" particles */
     Pa r;
     Fo f;
     int i, rid;
+
+    float *ppB = cloud.pp;
 
     *fx = *fy = *fz = 0; /* local force */
     for (i = 0; !endp(m, i); ++i) {
@@ -31,15 +33,16 @@ static __device__ void bulk0(const Pa l, const float* ppB, int lid, const Map m,
     }
 }
 
-static __device__ void bulk1(const Pa l, const float *ppB, const Fo f, int i, const Map m, float seed, /**/ float *ff) {
+static __device__ void bulk1(const Pa l, hforces::Cloud cloud,
+                             const Fo f, int i, const Map m, float seed, /**/ float *ff) {
     float fx, fy, fz; /* local force */
-    bulk0(l, ppB, i, m, seed, /**/ &fx, &fy, &fz, ff);
+    bulk0(l, cloud, i, m, seed, /**/ &fx, &fy, &fz, ff);
     atomicAdd(f.x, fx);
     atomicAdd(f.y, fy);
     atomicAdd(f.z, fz);
 }
 
-static __device__ void bulk2(float *ppA, const float *ppB, int i, int zplane, int n, float seed,
+static __device__ void bulk2(float *ppA, hforces::Cloud cloud, int i, int zplane, int n, float seed,
                              /**/ float *ff, float *ff0) {
     Pa p;
     Fo f; /* "local" particle */
@@ -47,15 +50,14 @@ static __device__ void bulk2(float *ppA, const float *ppB, int i, int zplane, in
     pp2p(ppA, i, /**/ &p);
     f = ff2f(ff, i);
     if (!p2map(zplane, n, p, /**/ &m)) return;
-    bulk1(p, ppB, f, i, m, seed, /**/ ff0);
+    bulk1(p, cloud, f, i, m, seed, /**/ ff0);
 }
 
 __global__ void bulk(float *ppA, hforces::Cloud cloud, int n0, int n1, float seed, float *ff, float *ff0) {
-    float *ppB = cloud.pp;
     int gid, i, zplane;
     gid    = threadIdx.x + blockDim.x * blockIdx.x;
     i      = gid / 3;
     zplane = gid % 3;
     if (i >= n0) return;
-    bulk2(ppA, ppB, i, zplane, n1, seed, ff, ff0);
+    bulk2(ppA, cloud, i, zplane, n1, seed, ff, ff0);
 }
