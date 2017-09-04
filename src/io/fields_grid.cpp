@@ -14,7 +14,7 @@
 
 #include "fields_grid.h"
 
-void fields_grid(QQ qq, NN nn, /*w*/ Particle* hst) {
+void fields_grid(QQ qq, NN nn, /*w*/ Particle *hst) {
     Particle *o;
     int n;
     o = qq.o;
