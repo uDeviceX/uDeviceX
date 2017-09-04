@@ -40,6 +40,7 @@
 #include "inc/tmp/wrap.h"
 #include "inc/tmp/pinned.h"
 #include "io/field.h"
+#include "io/fields_grid.h"
 #include "io/rbc.h"
 #include "io/rig.h"
 #include "io/diag.h"
