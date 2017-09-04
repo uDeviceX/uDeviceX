@@ -113,10 +113,7 @@ static __device__ void gen1(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
 
 static __device__ bool seteq(int a, int b,   int x, int y) {
     /* true if sets {a, b} and {x, y} are equal */
-    bool c1, c2;
-    c1 = (a == x && b == y);
-    c2 = (a == y && b == x);
-    return c1 || c2;
+    return (a == x && b == y) || (a == y && b == x);
 }
 static __device__ void gen2(Pa *A, Pa *B, float rnd, /**/ float *fx, float *fy, float *fz) {
     /* dispatch on kind and pack force */
@@ -130,18 +127,18 @@ static __device__ void gen2(Pa *A, Pa *B, float rnd, /**/ float *fx, float *fy, 
     ca = A->color; cb = B->color;
     ljkind = LJ_NONE;
 
-    if        (ka == O && kb == O) { /* OO */
+    if        (ka == O && kb == O) {
         /* no correction */
-    } else if (ka == O && kb == S) { /* OS */
-        cb = ca;
-    } else if (ka == 0 && kb == W) { /* OW */
-        cb = ca;
-    } else if (ka == S && kb == S) { /* SS */
+    } else if (ka == S   && kb == S) {
         ca = cb = RED_COLOR;   ljkind = LJ_TWO;
-    } else if (ka == S && kb == W) { /* SW */
+    } else if (seteq(ka, kb,  O, S)) {
+        cb = ca;
+    } else if (seteq(ka, kb,  O, W)) {
+        cb = ca;
+    } else if (seteq(ka, kb,  S, W)) {
         ca = cb = RED_COLOR;   ljkind = LJ_ONE;
     } else {
-        //        assert(0);
+        /* assert(0); */
     }
 
     f.x = fx; f.y = fy; f.z = fz;
