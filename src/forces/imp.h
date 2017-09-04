@@ -110,7 +110,7 @@ inline __device__ void gen0(const Pa A, const Pa B, float rnd, /**/ float *fx, f
          fx, fy, fz);
 }
 
-inline __device__ void gen1(const Pa A, const Pa B,
+inline __device__ void gen2(const Pa A, const Pa B,
                             int ca, int cb, int ljkind,
                             float rnd, /**/ float *fx, float *fy, float *fz) {
     gen0(A, B, rnd, /**/ fx, fy, fz);
