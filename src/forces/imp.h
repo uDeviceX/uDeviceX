@@ -107,12 +107,16 @@ static __device__ void dpd0(int typed, int types,
     dpd00(typed, types, dx, dy, dz, dvx, dvy, dvz, rnd, /**/ fx, fy, fz);
 }
 
-static __device__ void gen1(Pa *A, Pa *B, float rnd, /**/ float *fx, float *fy, float *fz) {
+static __device__ void gen0(Pa *A, Pa *B, float rnd, /**/ float *fx, float *fy, float *fz) {
     dpd0(A->kind, B->kind,
          A->x,  A->y,  A->z,  B->x,  B->y,  B->z,
          A->vx, A->vy, A->vz, B->vx, B->vy, B->vz,
          rnd,
          fx, fy, fz);
+}
+
+static __device__ void gen1(Pa *A, Pa *B, DPDparam p, int ljkind, /**/ float *fx, float *fy, float *fz) {
+    gen0(A, B, p.rnd, /**/ fx, fy, fz);
 }
 
 static __device__ void gen2(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
@@ -126,7 +130,7 @@ static __device__ void gen2(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
         p.a     = aij_rbc;
     }
     p.rnd = rnd;
-    gen1(A, B, rnd, /**/ fx, fy, fz);
+    gen1(A, B, p, ljkind, /**/ fx, fy, fz);
 }
 
 static __device__ void gen3(Pa *A, Pa *B, float rnd, /**/ float *fx, float *fy, float *fz) {
