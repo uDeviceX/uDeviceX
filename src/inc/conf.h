@@ -99,6 +99,10 @@
 #define fsiforces (false)
 #endif
 
+#ifndef empty_solid_particles
+#define empty_solid_particles (true)
+#endif
+
 // spdir: [s]olid [p]eriodic [dir]ection
 // example: an open cylinder along z is periodic along z, so spdir = 2
 #ifdef spdir
