@@ -1,3 +1,6 @@
+#define O {dSync(); dbg::check_pos_pu(o::q.pp, o::q.n, __FILE__, __LINE__, "pp"); dSync();}
+#define F {dSync(); dbg::check_ff    (o::ff, o::q.n, __FILE__, __LINE__, "ff"); dSync();}
+
 void body_force(float driving_force0) {
     if (pushflow)
         KL(dev::body_force, (k_cnf(o::q.n)), (1, o::q.pp, o::ff, o::q.n, driving_force0));
@@ -30,6 +33,12 @@ void forces_cnt(std::vector<ParticlesWrap> *w_r) {
 }
 
 void forces_fsi(fsi::SolventWrap *w_s, std::vector<ParticlesWrap> *w_r) {
+    O;
+    F;
     fsi::bind(*w_s);
+    O;
+    F;
     fsi::bulk(*w_r);
+    O;
+    F;
 }

@@ -1,6 +1,3 @@
-#define O {dSync(); dbg::check_pos_pu(o::q.pp, o::q.n, __FILE__, __LINE__, "pp"); dSync();}
-#define F {dSync(); dbg::check_ff    (o::ff, o::q.n, __FILE__, __LINE__, "ff"); dSync();}
-
 void forces(bool wall0) {
     fsi::SolventWrap w_s;
     hforces::Cloud cloud;
