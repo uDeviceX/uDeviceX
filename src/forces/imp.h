@@ -12,12 +12,15 @@ static __device__ float wrf(const int s, float x) {
 }
 
 enum {CHECK_OK, CHECK_FAIL};
-struct Context {float dx, dy, dz; };
+struct Context {
+    float dx, dy, dz;
+    float f0; /* absolut force */
+};
 static __device__ int check(float f) {
     if (isnan(f)) return CHECK_FAIL; else return CHECK_OK;
 }
 static __device__ void report(Context c) {
-    printf("nan force: dx dy dz: %g %g %g\n", c.dx, c.dy, c.dz);
+    printf("nan force: f0 [dx dy dz]: %g [%g %g %g]\n", c.f0, c.dx, c.dy, c.dz);
     assert(0);
 }
 
@@ -95,7 +98,7 @@ static __device__ void dpd(float x, float y, float z,
 
     if (check(f0) != CHECK_OK) {
         Context c;
-        c.dx = x; c.dy = y; c.dz = z;
+        c.f0 = f0; c.dx = x; c.dy = y; c.dz = z;
         report(c);
     }
 
