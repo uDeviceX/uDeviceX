@@ -5,7 +5,7 @@ set -eu
 
 n=2
 Time=10:00:00
-u=u/dang
+u=u/x
 s=../src
 
 (cd $s/../cmd; make)

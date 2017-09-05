@@ -1,8 +1,0 @@
-set -x
-
-safe_re () {
-    local sd=daint:/scratch/snx1600/lisergey/re
-    if ! test -d "$SCRATCH/re"
-    then scp -r  "$sd" "$SCRATCH/"
-    fi
-}
