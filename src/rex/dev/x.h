@@ -40,8 +40,8 @@ __device__ void shift(int fid, Pa *p) {
     /* fid: fragment id */
     enum {X, Y, Z};
     int d[3]; /* coordinate shift */
-    if (check_p(p)) report(fid);
     i2shift(fid, d);
+    if (check_p(p)) report(fid);
     p->s0.x += d[X];
     p->s0.y += d[Y];
     p->s1.x += d[Z];
