@@ -16,6 +16,14 @@ static __device__ int p2map(int zplane, int n, const Pa p, /**/ Map *m) {
     return r2map(zplane, n, p.x, p.y, p.z, m);
 }
 
+static __device__ float dist(Pa a, Pa b) {
+    float dx, dy, dz;
+    dx = a.x - b.x;
+    dy = a.y - b.y;
+    dz = a.z - b.z;
+    return sqrt(dx*dx + dy*dy + dz*dz);
+}
+
 static __device__ void bulk0(const Pa a, hforces::Cloud cloud, int lid, const Map m, float seed, /**/
                              float *fx, float *fy, float *fz, float *ff) {
     /* "[a]ocal" and "[b]emote" particles */
