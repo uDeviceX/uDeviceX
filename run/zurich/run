@@ -11,14 +11,17 @@ u.conf $s $u conf/zurich.h <<!!!
 { make clean && u.make -j; } > make.log
 sh runfile
 
-id=00001
 merge () {
     trap 'rm -f /tmp/pp.$$ /tmp/ii.$$' 0 1 2 3 15
     bop2txt bop/solvent-$id.bop        > /tmp/pp.$$
     bop2txt bop/colors_solvent-$id.bop > /tmp/ii.$$
-    paste /tmp/pp.$$ /tmp/ii.$$        | awk '$7 == 0' >  red
-    paste /tmp/pp.$$ /tmp/ii.$$        | awk '$7 == 1' > blue
+    paste /tmp/pp.$$ /tmp/ii.$$        | awk '$7 == 0' >  red.$id
+    paste /tmp/pp.$$ /tmp/ii.$$        | awk '$7 == 1' > blue.$id
 }
 
-merge
-printf 'output files: red blue\n'
+for id in 00001 00005 00010
+do merge
+   printf "output files: red.$id blue.$id\n"
+done
+
+
