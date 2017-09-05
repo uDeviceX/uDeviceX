@@ -1,4 +1,3 @@
-namespace flu {
 namespace sub {
 
 int gen(Particle *dev, /*w*/ Particle *hst);
@@ -16,4 +15,3 @@ void strt_dump_ii(const char *subext, const int id, const int n, const int *dev,
 void zip(const Particle *pp, const int n, /**/ float4 *zip0, ushort4 * zip1);
 
 } // sub
-} // flu
