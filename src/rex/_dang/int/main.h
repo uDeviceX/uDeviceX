@@ -1,3 +1,4 @@
+#define O(p, n) {dSync(); dbg::check_pos_pu(p, n, __FILE__, __LINE__, ""); dSync();}
 namespace rex {
 static void pre(ParticlesWrap *w, int nw) {
     using namespace sub;
@@ -30,8 +31,14 @@ static void rex0(ParticlesWrap *w, int nw) {
     if (!first) s::waitA(); else first = 0;
 
     dSync();
+    for (int i = 0; i < 26; i++) {
+        MSG("recv_counts[%d]: %d/%d", i, recv_counts[i], MAX_OBJ_DENSITY*frag_ncell(i));
+        O(PP.d[i], recv_counts[i]);
+    }
     if (fsiforces)     fsi::halo(PP, FF, recv_counts);
+    dSync();
     if (contactforces) cnt::halo(PP, FF, recv_counts);
+    dSync();
 
     dSync();
     sendF(tc.ranks, tt, recv_counts, FF_pi); /* (sic) */
