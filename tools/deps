@@ -1,4 +1,6 @@
 # update all units
 for u in u/x u/safe u/dang u/snow
-do  ../tools/udeps "$u"
+do
+    printf 'upd: %s\n' "$u"
+    ../tools/udeps "$u"
 done
