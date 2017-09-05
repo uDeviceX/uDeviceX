@@ -2,17 +2,30 @@
 namespace rex {
 
 enum {OK, FAIL};
+static struct {
+    float x, y, z;
+    int fid;
+} context;
 static int check_one(Particle p) {
     enum {X, Y, Z};
-    float *r;
-    r = p.r;
-    if (isnan(r[X])) return FAIL;
+    float x, y, z;
+    x = p.r[X]; y = p.r[Y]; z = p.r[Z];
+    if (isnan(x)) {
+        context.x = x;
+        context.y = y;
+        context.z = z;
+        return FAIL;
+    }
     return OK;
 }
 static int check_hst0(Particle *pp, int n) {
-    int i;
-    for (i = 0; i < n; i++)
-        if (check_one(pp[i]) != OK) return FAIL;
+    int fid;
+    for (fid = 0; fid < n; fid++) {
+        if (check_one(pp[fid]) != OK) {
+            context.fid = fid;
+            return FAIL;
+        }
+    }
     return OK;
 }
 static int check_hst(Pap26 PP, int counts[26]) {
@@ -23,7 +36,12 @@ static int check_hst(Pap26 PP, int counts[26]) {
     }
     return OK;
 }
+static void report_hst0() {
+    MSG("hst0: fid : %d", context.fid);
+    MSG("hst0: r   : [%g %g %g]", context.x, context.y, context.z);
+}
 static void report_hst() {
+    report_hst0();
     assert(0);
 }
 
@@ -77,10 +95,10 @@ static void rex0(ParticlesWrap *w, int nw) {
 void rex(std::vector<ParticlesWrap> w0) {
     int nw;
     ParticlesWrap *w;
-    
+
     nw = w0.size();
     w  = w0.data();
-    
+
     if (nw) {
         pre(w, nw);
         rex0(w, nw);
