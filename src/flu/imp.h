@@ -1,6 +1,6 @@
 namespace sub {
 
-int genColor(/*o*/ Particle *dev, int *cc, /*w*/ Particle *hst);
+int genColor(/*o*/ Particle *pp, int *color, /*w*/ Particle *pp_hst, int *color_hst);
 int genGrey(/*o*/ Particle *dev, /*w*/ Particle *hst);
 
 void ii_gen(const int n, int *ii_dev, int *ii_hst);
