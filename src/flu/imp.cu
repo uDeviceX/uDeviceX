@@ -14,6 +14,7 @@
 #include "d/q.h"
 #include "d/ker.h"
 
+#include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "inc/type.h"
 #include "inc/dev.h"
