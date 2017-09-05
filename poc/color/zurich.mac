@@ -1,0 +1,8 @@
+f(x):= a * x + b;
+
+e1: f(-XS/2) =  YS/2;
+e2: f( XS/2) = -YS/2;
+
+so: solve([e1, e2], [a, b]);
+e: factor(XS*subst(so, y - f(x)));
+grind(e);
