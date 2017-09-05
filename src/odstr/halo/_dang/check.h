@@ -1,8 +1,8 @@
 namespace dev {
 static __device__ int  valid0(float r, int L) {
     float lo, hi;
-    lo = -L/2 - 1;
-    hi =  L/2 + 1;
+    lo = -2*L;
+    hi =  2*L;
     return r > lo && r < hi;
 };
 
