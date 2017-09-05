@@ -2,6 +2,7 @@ static __device__ void pp2xyz(const float2 *pp, int i, /**/ float *x, float *y, 
     /* [col]collective (wrap) */
     Pa p;
     p = pp2p(pp, i);
+    if (check_p(&p)) report(i);
     p2xyz(p, /**/ x, y, z);
 }
 
@@ -18,6 +19,7 @@ static __device__ void reg_p(int pid, int dx, int dy, int dz, int *offsets, /**/
     int fid;
     int i; /* particle in fragment coordinates */
     fid = dx + 3 * (dy + 3 * dz);
+    assert(fid < 26);
     i = offsets[fid] + atomicAdd(counts + fid, 1);
     g::indexes[fid][i] = pid;
 }
