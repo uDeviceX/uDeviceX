@@ -59,7 +59,8 @@ __global__ void scatter(const float2 *pp, int *offsets, int n, /**/ int *counts)
     float x, y, z;
     int pid; /* particle id */
     pid = threadIdx.x + blockDim.x * blockIdx.x;
-
+    if (pid >= n) return;
+    
     pp2xyz(pp, pid, /**/ &x, &y, &z);
     scatter0(pid, x, y, z, offsets, /**/ counts);
 }
