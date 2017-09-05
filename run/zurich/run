@@ -21,3 +21,4 @@ merge () {
 }
 
 merge
+printf 'ouput: red blue\n'
