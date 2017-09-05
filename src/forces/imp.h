@@ -100,7 +100,10 @@ static __device__ void gen1(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
                             /**/ Fo f) {
     /* dispatch on color */
     DPDparam p;
-    if (ca == RED_COLOR || cb == RED_COLOR) {
+    if         (!multi_solvent) {
+        p.gamma = gammadpd_solv;
+        p.a     = aij_solv;
+    } else if (ca == RED_COLOR || cb == RED_COLOR) {
         p.gamma = gammadpd_solv;
         p.a     = aij_solv;
     } else {
