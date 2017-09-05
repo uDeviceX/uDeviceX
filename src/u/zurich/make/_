@@ -1,6 +1,9 @@
 # active directories
 # _safe
-_safe
+_release
+# _cpu
 _cuda
 _rain
-_ussr
+
+# color scheme
+_zurich

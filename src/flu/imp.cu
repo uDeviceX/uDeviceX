@@ -33,4 +33,5 @@
 #include "utils/kl.h"
 namespace sub {
 #include "imp/main.h"
+#include "imp/color.h"
 }

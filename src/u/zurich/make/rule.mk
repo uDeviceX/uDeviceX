@@ -9,8 +9,8 @@ $B/dpdr/imp.o: $S/dpdr/imp.cu; $N -I$S/. -I$S/_rain -I$S/dpdr
 $B/dpdr/int.o: $S/dpdr/int.cu; $N -I$S/. -I$S/_rain -I$S/dpdr
 $B/dual/imp.o: $S/dual/imp.cpp; $X -I$S/. -I$S/_rain -I$S/dual
 $B/field.o: $S/field.cpp; $X -I$S/. -I$S/_rain
-$B/flu/imp.o: $S/flu/imp.cu; $N -I$S/. -I$S/_rain -I$S/flu -I$S/flu/_ussr
-$B/flu/int.o: $S/flu/int.cu; $N -I$S/. -I$S/_rain -I$S/flu -I$S/flu/_ussr
+$B/flu/imp.o: $S/flu/imp.cu; $N -I$S/. -I$S/_rain -I$S/flu -I$S/flu/_zurich
+$B/flu/int.o: $S/flu/int.cu; $N -I$S/. -I$S/_rain -I$S/flu -I$S/flu/_zurich
 $B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/. -I$S/_rain -I$S/fsi
 $B/glb.o: $S/glb.cu; $N -I$S/. -I$S/_rain
 $B/hforces/imp.o: $S/hforces/imp.cu; $N -I$S/. -I$S/_rain -I$S/hforces
@@ -27,7 +27,7 @@ $B/io/rig.o: $S/io/rig.cpp; $X -I$S/. -I$S/_rain -I$S/io
 $B/lforces/local.o: $S/lforces/local.cu; $N -I$S/. -I$S/_rain -I$S/lforces
 $B/main.o: $S/main.cu; $N -I$S/. -I$S/_rain
 $B/math/linal.o: $S/math/linal.cpp; $X -I$S/. -I$S/_rain -I$S/math
-$B/mbounce/imp.o: $S/mbounce/imp.cu; $N -I$S/. -I$S/_rain -I$S/mbounce -I$S/mbounce/_dang
+$B/mbounce/imp.o: $S/mbounce/imp.cu; $N -I$S/. -I$S/_rain -I$S/mbounce -I$S/mbounce/_release
 $B/mcomm/imp.o: $S/mcomm/imp.cu; $N -I$S/. -I$S/_rain -I$S/mcomm
 $B/mcomm/int.o: $S/mcomm/int.cu; $N -I$S/. -I$S/_rain -I$S/mcomm
 $B/mdstr/imp.o: $S/mdstr/imp.cu; $N -I$S/. -I$S/_rain -I$S/mdstr
@@ -41,15 +41,15 @@ $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/. -I$S/_rain -I$S/mpi
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/. -I$S/_rain -I$S/mpi
 $B/mrescue.o: $S/mrescue.cu; $N -I$S/. -I$S/_rain
 $B/msg.o: $S/msg.cpp; $X -I$S/. -I$S/_rain
-$B/odstr/halo/imp.o: $S/odstr/halo/imp.cu; $N -I$S/. -I$S/_rain -I$S/odstr/halo -I$S/odstr/halo/_dang
-$B/odstr/imp.o: $S/odstr/imp.cu; $N -I$S/. -I$S/_rain -I$S/odstr -I$S/odstr/_dang
-$B/odstr/int.o: $S/odstr/int.cu; $N -I$S/. -I$S/_rain -I$S/odstr -I$S/odstr/_dang
+$B/odstr/halo/imp.o: $S/odstr/halo/imp.cu; $N -I$S/. -I$S/_rain -I$S/odstr/halo -I$S/odstr/halo/_release
+$B/odstr/imp.o: $S/odstr/imp.cu; $N -I$S/. -I$S/_rain -I$S/odstr -I$S/odstr/_release
+$B/odstr/int.o: $S/odstr/int.cu; $N -I$S/. -I$S/_rain -I$S/odstr -I$S/odstr/_release
 $B/rbc/imp.o: $S/rbc/imp.cu; $N -I$S/. -I$S/_rain -I$S/rbc
 $B/rbc/int.o: $S/rbc/int.cu; $N -I$S/. -I$S/_rain -I$S/rbc
 $B/rdstr/imp.o: $S/rdstr/imp.cu; $N -I$S/. -I$S/_rain -I$S/rdstr
 $B/rdstr/int.o: $S/rdstr/int.cu; $N -I$S/. -I$S/_rain -I$S/rdstr
-$B/rex/imp.o: $S/rex/imp.cu; $N -I$S/. -I$S/_rain -I$S/rex -I$S/rex/_dang
-$B/rex/int.o: $S/rex/int.cu; $N -I$S/. -I$S/_rain -I$S/rex -I$S/rex/_dang
+$B/rex/imp.o: $S/rex/imp.cu; $N -I$S/. -I$S/_rain -I$S/rex -I$S/rex/_release
+$B/rex/int.o: $S/rex/int.cu; $N -I$S/. -I$S/_rain -I$S/rex -I$S/rex/_release
 $B/rig/imp.o: $S/rig/imp.cu; $N -I$S/. -I$S/_rain -I$S/rig
 $B/rig/int.o: $S/rig/int.cu; $N -I$S/. -I$S/_rain -I$S/rig
 $B/rigid/imp.o: $S/rigid/imp.cu; $N -I$S/. -I$S/_rain -I$S/rigid -I$S/rigid/_cuda
