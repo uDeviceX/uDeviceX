@@ -1,5 +1,6 @@
 s=.
 u=u/zurich
+if test $# -ne 0; then u="$1"; shift; fi
 
 run0 () {
 u.conf $s $u conf/zurich.h <<!!!
