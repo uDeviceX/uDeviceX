@@ -124,9 +124,8 @@ static __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, flo
     int ljkind; /* call LJ? */
     int ka, kb;
     int ca, cb; /* corrected colors */
-    int O, S, W;
     Fo f; 
-    O = SOLVENT_KIND; S = SOLID_KIND; W = WALL_KIND;
+    enum {O = SOLVENT_KIND, S = SOLID_KIND, W = WALL_KIND};
     ka = A.kind; kb = B.kind;
     ca = A.color; cb = B.color;
     ljkind = LJ_NONE;
