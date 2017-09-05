@@ -48,7 +48,7 @@ static int gen0(Particle *pp) { /* generate particle positions and velocities */
         /* edge of a cell */
         int xlo = -0.5*XS + ix, ylo = -0.5*YS + iy, zlo = -0.5*ZS + iz;
         for (l = 0; l < nd; l++) {
-            Particle p = Particle();
+            Particle p;
             x = xlo + dr * drand48(), y = ylo + dr * drand48(), z = zlo + dr * drand48();
             p.r[X] = x; p.r[Y] = y; p.r[Z] = z;
             p.v[X] = 0; p.v[Y] = 0; p.v[Z] = 0;
