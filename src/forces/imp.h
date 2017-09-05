@@ -12,8 +12,13 @@ static __device__ float wrf(const int s, float x) {
 }
 
 enum {CHECK_OK, CHECK_FAIL};
+struct Context {float dx, dy, dz; };
 static __device__ int check(float f) {
     if (!isnan(f)) return CHECK_FAIL; else return CHECK_OK;
+}
+static __device__ void report(Context c) {
+    printf("nan force: dx dy dz: %g %g %g\n", c.dx, c.dy, c.dz);
+    assert(0);
 }
 
 static __device__ float cap(float x, float lo, float hi) {
@@ -86,6 +91,12 @@ static __device__ void dpd(float x, float y, float z,
     if (vnstat == NORM_OK && ljkind != LJ_NONE) {
         const float ljsi = LJ_ONE ? ljsigma : 2 * ljsigma;
         f0 += lj(invr, ljsi);
+    }
+
+    if (check(f0) != CHECK_OK) {
+        Context c;
+        c.dx = x; c.dy = y; c.dz = z;
+        report(c);
     }
 
     *f.x = f0*x;
