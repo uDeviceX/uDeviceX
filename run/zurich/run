@@ -1,6 +1,7 @@
 s=.
 u=u/zurich
 
+run0 () {
 u.conf $s $u conf/zurich.h <<!!!
    tend=20.01 part_freq=4000
    pushflow doublepoiseuille
@@ -10,6 +11,13 @@ u.conf $s $u conf/zurich.h <<!!!
 !!!
 { make clean && u.make -j; } > make.log
 sh runfile
+}
+
+run () {
+    if test -z ${DRYRUN+x}
+    then run0
+    fi
+}
 
 merge () {
     trap 'rm -f /tmp/pp.$$ /tmp/ii.$$' 0 1 2 3 15
@@ -19,9 +27,13 @@ merge () {
     paste /tmp/pp.$$ /tmp/ii.$$        | awk '$7 == 1' > blue.$id
 }
 
-for id in 00001 00005 00010
-do merge
-   printf "output files: red.$id blue.$id\n"
-done
+post () {
+    for id in 00001 00005 00010
+    do merge
+       printf "output files: red.$id blue.$id\n"
+    done
+}
 
+run
+post
 
