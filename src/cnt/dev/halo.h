@@ -22,7 +22,7 @@ __global__ void halo(int n, float seed) {
     float fx, fy, fz;
     int aid, start;
     int fid;
-    float xforce, yforce, zforce;
+    float xforce = 0, yforce = 0, zforce = 0;
     int zplane;
     int i;
     int slot;
