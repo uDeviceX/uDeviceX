@@ -5,6 +5,8 @@ enum {OK, FAIL};
 static struct {
     float x, y, z;
     int fid;
+    int n;
+    int i; /* paritcle id */
 } context;
 static int check_one(Particle p) {
     enum {X, Y, Z};
@@ -19,26 +21,31 @@ static int check_one(Particle p) {
     return OK;
 }
 static int check_hst0(Particle *pp, int n) {
-    int fid;
-    for (fid = 0; fid < n; fid++) {
-        if (check_one(pp[fid]) != OK) {
-            context.fid = fid;
+    int i;
+    for (i = 0; i < n; i++) {
+        if (check_one(pp[i]) != OK) {
+            context.i = i;
             return FAIL;
         }
     }
     return OK;
 }
 static int check_hst(Pap26 PP, int counts[26]) {
-    int n, i;
-    for (i = 0; i < 26; i++) {
-        n = counts[i];
-        if (check_hst0(PP.d[i], n) != OK) return FAIL;
+    int n, fid;
+    for (fid = 0; fid < 26; fid++) {
+        n = counts[fid];
+        if (check_hst0(PP.d[fid], n) != OK) {
+            context.fid = fid;
+            context.n = n;
+            return FAIL;
+        }
     }
     return OK;
 }
 static void report_hst0() {
-    MSG("hst0: fid : %d", context.fid);
-    MSG("hst0: r   : [%g %g %g]", context.x, context.y, context.z);
+    MSG("hst0: fid         : %d", context.fid);
+    MSG("hst0: r           : [%g %g %g]", context.x, context.y, context.z);
+    MSG("hst0: fid, n, i   : [%d %d %d]", context.fid, context.n, context.i);    
 }
 static void report_hst() {
     report_hst0();
