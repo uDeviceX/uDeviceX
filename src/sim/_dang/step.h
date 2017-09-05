@@ -17,8 +17,6 @@ void step0(float driving_force0, bool wall0, int it) {
     update_solvent();
     O;
     if (solids0) update_solid();
-    O;
-    if (rbcs)    update_rbc();
 }
 
 void step(float driving_force0, bool wall0, int it) {
