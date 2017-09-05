@@ -13,7 +13,7 @@ __device__ int check_p(Pa *p) {
     while (0);
 /** **/
 
-__device__ float2 get(float2 *pp) { return __ldg(pp); }
+__device__ float2 get(const float2 *pp) { return __ldg(pp); }
 __device__ Pa pp2p(const float2 *pp, int i) {
     /* pp array to a particle */
     Pa p;
