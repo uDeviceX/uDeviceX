@@ -123,8 +123,9 @@ void rex(std::vector<ParticlesWrap> w0) {
     nw = w0.size();
     w  = w0.data();
 
+    for (int i = 0; i < nw; ++i) O(w[i].p, w[i].n);
+    
     if (nw) {
-        O(w->p, w->n);
         pre(w, nw);
         rex0(w, nw);
     }
