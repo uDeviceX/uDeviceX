@@ -17,8 +17,8 @@ merge () {
     trap 'rm -f /tmp/pp.$$ /tmp/ii.$$' 0 1 2 3 15
     bop2txt bop/solvent-$id.bop        > /tmp/pp.$$
     bop2txt bop/colors_solvent-$id.bop > /tmp/ii.$$
-    paste /tmp/pp.$$ /tmp/ii.$$        | awk '$7 == 1' >  red.txt
-    paste /tmp/pp.$$ /tmp/ii.$$        | awk '$7 == 2' > blue.txt
+    paste /tmp/pp.$$ /tmp/ii.$$        | awk '$7 == 0' >  red.txt
+    paste /tmp/pp.$$ /tmp/ii.$$        | awk '$7 == 1' > blue.txt
 }
 
 merge
