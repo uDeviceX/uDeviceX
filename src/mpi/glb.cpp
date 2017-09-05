@@ -1,5 +1,9 @@
 #include <stdlib.h>
 #include <mpi.h>
+
+#include <conf.h>
+#include "inc/conf.h"
+
 #include "mpi/wrapper.h"
 #include "inc/conf.h"
 #include "utils/mc.h"
@@ -9,8 +13,20 @@ namespace m { /* MPI */
 static const int d = 3;
 static int periods[d] = {true, true, true};
 static const bool reorder = false;
-
 int rank, size, coords[d], dims[d];
+
+int lx() {
+    enum {X};
+    return XS * dims[X];
+}
+int ly() {
+    enum {X, Y};
+    return YS * dims[Y];
+}
+int lz() {
+    enum {X, Y, Z};
+    return ZS * dims[Z];
+}
 
 void ini(int argc, char **argv) {
     int i;
