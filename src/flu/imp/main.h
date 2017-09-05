@@ -40,15 +40,6 @@ void ii_gen(const int n, int *ii_dev, int *ii_hst) {
     cH2D(ii_dev, ii_hst, n);
 }
 
-static void tags0_gen0(const long n, int *ii) {
-    for (long i = 0; i < n; ++i) ii[i] = -1;
-}
-
-void tags0_gen(const int n, int *ii_dev, int *ii_hst) {
-    tags0_gen0(n, ii_hst);
-    cH2D(ii_dev, ii_hst, n);
-}
-
 int strt(const int id, Particle *dev, /*w*/ Particle *hst) {
     int n;
     restart::read_pp("flu", id, hst, &n);
