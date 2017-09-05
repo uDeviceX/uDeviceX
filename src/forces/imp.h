@@ -19,7 +19,7 @@ static __device__ float cap(float x, float lo, float hi) {
 }
 
 static const float EPS = 1e-6;
-enum {OK, BIG, SMALL};
+enum {NORM_OK, NORM_BIG, NORM_SMALL};
 static __device__ bool norm(/*io*/ float *px, float *py, float *pz, /**/ float *pr, float *pinvr) {
     /* noralize vector r = [x, y, z], sets |r| and 1/|r| if not big */
     float x, y, z, invr, r;
@@ -27,16 +27,16 @@ static __device__ bool norm(/*io*/ float *px, float *py, float *pz, /**/ float *
     x = *px; y = *py; z = *pz;
 
     r2 = x*x + y*y + z*z;
-    if      (r2 >= 1 )   return BIG;
+    if      (r2 >= 1 )   return NORM_BIG;
     else if (r2 < EPS) {
         *pr = *px = *py = *pz = 0;
-        return SMALL;
+        return NORM_SMALL;
     } else {
         invr = rsqrtf(r2);
         r = r2 * invr;
         x *= invr; y *= invr; z *= invr;
         *px = x; *py = y; *pz = z; *pr = r; *pinvr = invr;
-        return OK;
+        return NORM_OK;
     }
 }
 
@@ -63,7 +63,7 @@ static __device__ void dpd(float x, float y, float z,
     int vnstat; /* vector normalization status */
 
     vnstat = norm(/*io*/ &x, &y, &z, /*o*/ &r, &invr);
-    if (vnstat == BIG) {
+    if (vnstat == NORM_BIG) {
         *f.x = *f.y = *f.z = 0;
         return;
     }
@@ -79,7 +79,7 @@ static __device__ void dpd(float x, float y, float z,
     f0  = (-gamma * wr * ev + sigma * p.rnd) * wr;
     f0 +=                                  a * wc;
 
-    if (vnstat == OK && ljkind != LJ_NONE) {
+    if (vnstat == NORM_OK && ljkind != LJ_NONE) {
         const float ljsi = LJ_ONE ? ljsigma : 2 * ljsigma;
         f0 += lj(invr, ljsi);
     }
