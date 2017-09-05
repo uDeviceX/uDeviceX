@@ -7,7 +7,7 @@ cp data/rig/sphere.ply mesh_solid.ply
 :
 u.conf . u/dang conf/double.poiseuille.h <<!!!
   KL_SYNC
-  solids tend=0.005 part_freq=100
+  solids tend=0.0015 part_freq=100
   pushflow doublepoiseuille field_dumps part_dumps
   wall_creation=0 contactforces=true field_freq=100
   run
