@@ -2,10 +2,10 @@ s=.
 u=u/zurich
 
 u.conf $s $u conf/zurich.h <<!!!
-   tend=2.01 part_freq=4000
+   tend=20.01 part_freq=40000
    pushflow doublepoiseuille
    field_dumps part_dumps
-   field_freq=4000 pushflow
+   field_freq=40000 pushflow
    run
 !!!
 { make clean && u.make -j; } > make.log
