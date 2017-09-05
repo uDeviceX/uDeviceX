@@ -1,17 +1,13 @@
-#### Double poiseuille
-# nTEST: flow.t1
-rm -rf bop h5 diag.txt rbc.off
-:
-export PATH=../tools:$PATH
-(cd ../cmd; make ) > /dev/null
-:
-u.conf conf/double.poiseuille.h <<!!!
+s=.
+u=u/zurich
+
+u.conf $s $u conf/double.poiseuille.h <<!!!
+   multi_solvent
    tend=2.01 part_freq=4000
    pushflow doublepoiseuille
    field_dumps part_dumps
    field_freq=4000 pushflow
    run
 !!!
-(make clean && u.make -j) > /dev/null
+make clean && u.make -j
 sh runfile
-avg_h52.m h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
