@@ -18,7 +18,7 @@ $B/inter/imp.o: $S/algo/scan/int.h $S/clist/int.h $B/conf.h $S/d/api.h $S/d/ker.
 $B/io/bop/imp.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/inc/def.h $S/inc/type.h $S/io/bop/imp.h $S/mpi/glb.h $S/mpi/type.h $S/mpi/wrapper.h $S/msg.h $S/utils/mc.h $S/utils/os.h
 $B/io/diag.o: $B/conf.h $S/inc/conf.h $S/inc/type.h $S/io/diag.h $S/mpi/glb.h $S/mpi/wrapper.h $S/msg.h
 $B/io/field.o: $B/conf.h $S/inc/conf.h $S/inc/type.h $S/io/field.h $S/io/field/dump.h $S/io/field/field.h $S/io/field/grid.h $S/io/field/imp.h $S/io/field/scalar.h $S/io/field/wrapper.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/mc.h $S/utils/os.h
-$B/io/fields_grid.o: $B/conf.h $S/d/api.h $S/field.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/io/fields_grid.h $S/io/fields_grid/solvent.h $S/utils/cc.h
+$B/io/fields_grid.o: $B/conf.h $S/d/api.h $S/field.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/io/fields_grid.h $S/io/fields_grid/all.h $S/io/fields_grid/solvent.h $S/utils/cc.h
 $B/io/off.o: $S/io/off.h $S/io/off/imp.h
 $B/io/ply.o: $S/inc/def.h $S/inc/type.h $S/io/ply.h $S/io/ply/ascii.h $S/io/ply/bin.h $S/io/ply/common.h $S/msg.h
 $B/io/rbc.o: $B/conf.h $S/inc/conf.h $S/inc/type.h $S/io/rbc.h $S/io/rbc/imp.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/mc.h $S/utils/os.h
