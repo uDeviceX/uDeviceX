@@ -41,38 +41,14 @@
 
 #include "glb.h"
 
-#include "inc/dev/read.h"
-#include "inc/dev/write.h"
 #include "inc/dev/common.h"
-#include "inc/dev/index.h"
 
 #include "clist/int.h"
-
-#include "mcomm/type.h"
-#include "mcomm/int.h"
-
-#include "rbc/int.h"
-
-#include "mdstr/buf.h"
-#include "mdstr/tic.h"
-#include "mdstr/int.h"
-#include "rdstr/int.h"
-
-#include "field.h"
 
 #include "forces/type.h"
 #include "forces/hook.h"
 #include "forces/imp.h"
 
-#include "sdf/type.h"
-#include "sdf/int.h"
-
-#include "wall/int.h"
-
-#include "flu/int.h"
-
-#include "odstr/type.h"
-#include "odstr/int.h"
 #include "cnt/int.h"
 
 #include "cloud/hforces/type.h"
