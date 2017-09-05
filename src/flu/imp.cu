@@ -20,12 +20,12 @@
 #include "utils/mc.h"
 #include "io/restart.h"
 
-#include "flu/imp.h"
+#include "imp.h"
 
 #if   defined(DEV_CUDA)
-  #include "flu/dev1.h"
+  #include "dev1.h"
 #elif defined(DEV_CPU)
-  #include "flu/dev0.h"
+  #include "dev0.h"
 #else
   #error DEV_* is undefined
 #endif

@@ -13,8 +13,8 @@
 #include "clist/int.h"
 #include "rnd/imp.h"
 
-#include "flu/int.h"
-#include "flu/imp.h"
+#include "int.h"
+#include "imp.h"
 
 namespace flu {
 
