@@ -71,7 +71,10 @@ void free_ticketRND(/**/ TicketRND *t) {
 }
 
 void gen_quants(Quants *q, QuantsI *qc) {
-    q->n = sub::gen(q->pp, q->pp_hst);
+    if (multi_solvent)
+        q->n = sub::genColor(q->pp, qc->ii, /*w*/ q->pp_hst);
+    else
+        q->n = sub::genGrey(q->pp, /*w*/ q->pp_hst);
 }
 
 void gen_ids(const int n, QuantsI *q) {
