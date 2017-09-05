@@ -14,11 +14,12 @@ __device__ int check_p(Pa *p) {
 /** **/
 
 /* particle and force packing dependent part : TODO : give a name */
+__device__ float2 get(float2 *pp) { return __ldg(pp); }
 __device__ Pa pp2p(const float2 *pp, int i) {
     /* pp array to a particle */
     Pa p;
     pp += 3*i;
-    p.s0 = __ldg(pp++); p.s1 = __ldg(pp++); p.s2 = __ldg(pp++);
+    p.s0 = get(pp++); p.s1 = get(pp++); p.s2 = get(pp++);
     if (check_p(&p)) report(i);
     return p;
 }
