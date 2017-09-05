@@ -1,16 +1,20 @@
+static int min (int x, int y)        { return x < y ? x : y; };
+static int min3(int x, int y, int z) { return min(x, min(y, z)); }
 static void color(Particle *pp, int n, /**/ int *cc) {
-    enum {X, Y};
-    int i, w, b;
-    float x, y;
+    enum {X, Y, Z};
+    int i, r, g;
+    bool inside;
+    float x, y, z, rad;
     Particle p;
-    enum {W = RED_COLOR, B = BLUE_COLOR};
-    for (i = w = b = 0; i < n; i++) {
+    enum {R = RED_COLOR, G = BLUE_COLOR};
+    rad = 0.25*min3(XS, YS, ZS);
+    for (i = r = g = 0; i < n; i++) {
         p = pp[i];
-        x = p.r[X];
-        y = p.r[Y];
-        if (XS*y + YS*x > 0) {cc[i] = W; w++;}
-        else                 {cc[i] = B; b++;}
+        x = p.r[X]; y = p.r[Y]; z = p.r[Z];
+        inside = x*x + y*y + z*z < rad*rad;
+        if (inside) {cc[i] = R; r++;}
+        else        {cc[i] = G; g++;} 
     }
-    MSG("color scheme: Zurich");
-    MSG("white/blue : %d/%d", w, b);
+    MSG("color scheme: Bangladesh");
+    MSG("red/green : %d/%d", r, g);
 }
