@@ -52,6 +52,20 @@ static void report_hst() {
     assert(0);
 }
 
+static void fill(Particle* pp, int n) {
+    enum {X, Y, Z};
+    Particle *p;
+    float *r, *v;
+    int i;
+    for (i = 0; i < n; i++) {
+        p = &pp[i];
+        r = p->r;
+        v = p->v;
+        r[X] = 99; r[Y] = 999; r[Z] = 9999;
+        v[X] = 77; v[Y] = 777; v[Z] = 7777;
+    }
+}
+
 static void pre(ParticlesWrap *w, int nw) {
     using namespace sub;
     clear(nw, tp);
@@ -59,6 +73,9 @@ static void pre(ParticlesWrap *w, int nw) {
     scanB(nw, tp);
     copy_offset(nw, tp, /**/ ti);
     copy_starts(tp, /**/ ti);
+
+    fill(buf_pi, MAX_PART_NUM);
+    
     pack(w, nw, tp, /**/ buf);
 }
 
