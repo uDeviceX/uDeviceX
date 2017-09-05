@@ -25,6 +25,7 @@ static int gen0(Particle *pp) { /* generate particle positions and velocities */
 int gen(Particle *dev, /*w*/ Particle *hst) {
     int n = gen0(hst);
     cH2D(dev, hst, n);
+    color(hst, n);
     return n;
 }
 

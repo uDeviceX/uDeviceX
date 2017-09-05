@@ -1,1 +1,1 @@
-void color(Particle *, int) { }
+static void color(Particle *, int) { }
