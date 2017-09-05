@@ -4,7 +4,7 @@ static void color(Particle *pp, int n, /**/ int *cc) {
     float x;
     Particle p;
     enum {B = BLUE_COLOR, W = RED_COLOR, R = RED_COLOR}; /* white is red in France */
-    for (i = 0; i < 0; i++) {
+    for (i = 0; i < n; i++) {
         p = pp[i];
         x = p.r[X];
         x += 0.5 * XS;
