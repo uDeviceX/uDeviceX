@@ -12,14 +12,14 @@ static int check_one(Particle p) {
 static int check_hst0(Particle *pp, int n) {
     int i;
     for (i = 0; i < n; i++)
-        if (!check_one(pp[i])) return FAIL;
+        if (check_one(pp[i]) != OK) return FAIL;
     return OK;
 }
 static int check_hst(Pap26 PP, int counts[26]) {
     int n, i;
     for (i = 0; i < 26; i++) {
         n = counts[i];
-        if (!check_hst0(PP.d[i], n)) return FAIL;
+        if (check_hst0(PP.d[i], n) != OK) return FAIL;
     }
     return OK;
 }
