@@ -19,7 +19,7 @@ __device__ Pa pp2p(const float2 *pp, int i) {
     Pa p;
     pp += 3*i;
     p.s0 = get(pp++); p.s1 = get(pp++); p.s2 = get(pp++);
-    if (check_p(&p)) report(i);
+    //    if (check_p(&p)) report(i);
     return p;
 }
 
@@ -41,9 +41,9 @@ __device__ void shift(int fid, Pa *p) {
     enum {X, Y, Z};
     int d[3]; /* coordinate shift */
     i2shift(fid, d);
-    if (check_p(p)) report(fid);
+    //    if (check_p(p)) report(fid);
     p->s0.x += d[X];
     p->s0.y += d[Y];
     p->s1.x += d[Z];
-    if (check_p(p)) report(fid);
+    //    if (check_p(p)) report(fid);
 }
