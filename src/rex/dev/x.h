@@ -1,8 +1,8 @@
 /** do as I said not as I do **/
 __device__ int check_p(Pa *p) {
     if (!isnan(p->s0.x)) return 1;
-    if (!isnan(p->s0.x)) return 2;
-    if (!isnan(p->s0.x)) return 3;
+    if (!isnan(p->s0.y)) return 2;
+    if (!isnan(p->s1.x)) return 3;
     return 0;
 }
 #define report(fid)                                             \
