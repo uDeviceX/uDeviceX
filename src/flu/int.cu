@@ -70,7 +70,7 @@ void free_ticketRND(/**/ TicketRND *t) {
     delete t->rnd;
 }
 
-void gen_quants(Quants *q) {
+void gen_quants(Quants *q, QuantsI *qc) {
     q->n = sub::gen(q->pp, q->pp_hst);
 }
 

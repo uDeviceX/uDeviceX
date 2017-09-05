@@ -11,7 +11,7 @@ void gen() { /* generate */
 }
 
 void sim_gen() {
-    flu::gen_quants(&o::q);
+    flu::gen_quants(&o::q, &o::qc);
     if (global_ids)    flu::gen_ids  (o::q.n, &o::qi);
     if (multi_solvent) flu::gen_tags0(o::q.n, &o::qc);
     o::q.cells->build(o::q.pp, o::q.n);

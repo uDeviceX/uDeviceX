@@ -34,7 +34,7 @@ void get_ticketZ(Quants q, /**/ TicketZ *t);
 void get_ticketRND(/**/ TicketRND *t);
 void free_ticketRND(/**/ TicketRND *t);
 
-void gen_quants(Quants *q);
+void gen_quants(Quants *q, QuantsI *qc);
 
 void gen_ids(const int n, QuantsI *q);
 void gen_tags0(const int n, QuantsI *q);
