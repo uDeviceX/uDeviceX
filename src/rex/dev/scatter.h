@@ -2,7 +2,6 @@ static __device__ void pp2xyz(const float2 *pp, int i, /**/ float *x, float *y, 
     /* [col]collective (wrap) */
     Pa p;
     p = pp2p(pp, i);
-    if (check_p(&p)) report(i);
     p2xyz(p, /**/ x, y, z);
 }
 
