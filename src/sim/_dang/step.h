@@ -1,4 +1,4 @@
-#define O {dSync(); dbg::check_pos_pu(o::q.pp, o::q.n, __FILE__, __LINE__, ""); dSync();}
+#define O {dSync(); dbg::check_pos_pu(o::q.pp, o::q.n, __FILE__, __LINE__, "pp"); dSync();}
 
 void step0(float driving_force0, bool wall0, int it) {
     O;

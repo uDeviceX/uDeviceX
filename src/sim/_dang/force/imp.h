@@ -1,5 +1,5 @@
-#define O {dSync(); dbg::check_pos_pu(o::q.pp, o::q.n, __FILE__, __LINE__, ""); dSync();}
-#define F {dSync(); dbg::check_ff    (o::ff, o::q.n, __FILE__, __LINE__, ""); dSync();}
+#define O {dSync(); dbg::check_pos_pu(o::q.pp, o::q.n, __FILE__, __LINE__, "pp"); dSync();}
+#define F {dSync(); dbg::check_ff    (o::ff, o::q.n, __FILE__, __LINE__, "ff"); dSync();}
 
 void forces(bool wall0) {
     fsi::SolventWrap w_s;
@@ -26,7 +26,9 @@ void forces(bool wall0) {
     w_s.starts = o::q.cells->start;
     O;
     F;
+    
     if (fsiforces)     forces_fsi(&w_s, &w_r);
+    
     O;
     F;
     rex::rex(w_r); /* fsi::halo(), cnt::halo() */
