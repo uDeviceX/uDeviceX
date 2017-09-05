@@ -37,8 +37,8 @@
 
 // dump
 
-#ifndef DUMP_ALL_FIELDS
-#define DUMP_ALL_FIELDS (false)
+#ifndef dump_all_fields
+#define dump_all_fields (false)
 #endif
 
 #ifndef DUMP_BASE
