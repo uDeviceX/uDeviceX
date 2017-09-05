@@ -1,7 +1,6 @@
 #include <assert.h>
 #include <vector>
 #include <mpi.h>
-#include <stdint.h>
 #include <conf.h>
 #include "inc/conf.h"
 
@@ -10,10 +9,6 @@
 #include "d/ker.h"
 
 #include "mpi/wrapper.h"
-#include "algo/scan/int.h"
-
-#include "rnd/imp.h"
-#include "rnd/dev.h"
 
 #include "inc/def.h"
 #include "msg.h"
@@ -28,11 +23,6 @@
 #include "mpi/type.h"
 #include "inc/dev.h"
 
-#include "dual/type.h"
-#include "dual/int.h"
-#include "utils/texo.h"
-#include "utils/te.h"
-
 #include "inc/tmp/wrap.h"
 #include "inc/tmp/pinned.h"
 #include "sim/int.h"
@@ -42,8 +32,6 @@
 #include "glb.h"
 
 #include "inc/dev/common.h"
-
-#include "clist/int.h"
 
 #include "forces/type.h"
 #include "forces/hook.h"
