@@ -21,4 +21,4 @@ merge () {
 }
 
 merge
-printf 'ouput: red blue\n'
+printf 'output files: red blue\n'
