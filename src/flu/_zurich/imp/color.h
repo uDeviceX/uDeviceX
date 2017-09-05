@@ -12,5 +12,5 @@ static void color(Particle *pp, int n, /**/ int *cc) {
         else                 {cc[i] = B; b++;}
     }
     MSG("color scheme: Zurich");
-    MSG("white/blue : %d/%d\n", w, b);
+    MSG("white/blue : %d/%d", w, b);
 }
