@@ -48,8 +48,8 @@ $B/rbc/imp.o: $S/rbc/imp.cu; $N -I$S/. -I$S/_rain -I$S/rbc
 $B/rbc/int.o: $S/rbc/int.cu; $N -I$S/. -I$S/_rain -I$S/rbc
 $B/rdstr/imp.o: $S/rdstr/imp.cu; $N -I$S/. -I$S/_rain -I$S/rdstr
 $B/rdstr/int.o: $S/rdstr/int.cu; $N -I$S/. -I$S/_rain -I$S/rdstr
-$B/rex/imp.o: $S/rex/imp.cu; $N -I$S/. -I$S/_rain -I$S/rex
-$B/rex/int.o: $S/rex/int.cu; $N -I$S/. -I$S/_rain -I$S/rex
+$B/rex/imp.o: $S/rex/imp.cu; $N -I$S/. -I$S/_rain -I$S/rex -I$S/rex/_safe
+$B/rex/int.o: $S/rex/int.cu; $N -I$S/. -I$S/_rain -I$S/rex -I$S/rex/_safe
 $B/rig/imp.o: $S/rig/imp.cu; $N -I$S/. -I$S/_rain -I$S/rig
 $B/rig/int.o: $S/rig/int.cu; $N -I$S/. -I$S/_rain -I$S/rig
 $B/rigid/imp.o: $S/rigid/imp.cu; $N -I$S/. -I$S/_rain -I$S/rigid -I$S/rigid/_cuda
