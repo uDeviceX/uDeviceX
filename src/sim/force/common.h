@@ -8,7 +8,7 @@ void body_force(float driving_force0) {
     if (pushrbc && rbcs)
         KL(dev::body_force, (k_cnf(r::q.n)), (rbc_mass, r::q.pp, r::ff, r::q.n, driving_force0));
 }
-  
+
 void forces_rbc() {
     if (rbcs)
         rbc::forces(r::q, r::tt, /**/ r::ff);
