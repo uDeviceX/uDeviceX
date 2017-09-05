@@ -37,6 +37,10 @@
 
 // dump
 
+#ifndef dump_all_fields
+#define dump_all_fields (false)
+#endif
+
 #ifndef DUMP_BASE
 #define DUMP_BASE "."
 #endif
@@ -93,6 +97,10 @@
 
 #ifndef fsiforces
 #define fsiforces (false)
+#endif
+
+#ifndef empty_solid_particles
+#define empty_solid_particles (true)
 #endif
 
 // spdir: [s]olid [p]eriodic [dir]ection

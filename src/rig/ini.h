@@ -16,7 +16,9 @@ static void ini0(const Mesh m, int nsolid, int rcount, int idmax, int root, floa
             model.com[d] = coms[idmax*3 + d];
 
         rig::ini(r_pp, npsolid, solid_mass, model.com, m, /**/ rr0, &model);
+      #if empty_solid_particles
         empty_solid(m, /* io */ rr0, &npsolid);
+      #endif
     }
 
     MC(MPI_Bcast(&npsolid,       1,   MPI_INT, root, m::cart) );

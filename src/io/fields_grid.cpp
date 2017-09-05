@@ -15,4 +15,8 @@
 #include "fields_grid.h"
 
 /* body */
-#include "fields_grid/solvent.h"
+#if dump_all_fields
+  #include "fields_grid/all.h"
+#else
+  #include "fields_grid/solvent.h"
+#endif
