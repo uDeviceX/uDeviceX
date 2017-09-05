@@ -62,7 +62,7 @@ static void fill(Particle* pp, int n) {
         r = p->r;
         v = p->v;
         r[X] = 99; r[Y] = 999; r[Z] = 9999;
-        v[X] = 77; v[Y] = 777; v[Z] = 7777;
+        v[X] = 77; v[Y] = 777; v[Z] = i;
     }
 }
 
