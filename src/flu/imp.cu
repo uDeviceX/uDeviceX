@@ -31,9 +31,6 @@
 #endif
 
 #include "utils/kl.h"
-
-namespace flu {
 namespace sub {
 #include "imp/main.h"
-} // sub
-} // flu
+}
