@@ -9,12 +9,8 @@ void fields_grid(QQ qq, NN nn, /*w*/ Particle *hst) {
 
     int start = 0;
     cD2H(hst + start, o, nn.o); start += nn.o;
-    if (solids0) {
-        cD2H(hst + start, s, nn.s); start += nn.s;
-    }
-    if (rbcs) {
-        cD2H(hst + start, r, nn.r); start += nn.r;
-    }
+    cD2H(hst + start, s, nn.s); start += nn.s;
+    cD2H(hst + start, r, nn.r); start += nn.r;
 
     h5::dump(hst, n);
 }
