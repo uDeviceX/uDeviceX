@@ -1,5 +1,10 @@
 #define O(p, n) {dSync(); dbg::check_pos_pu(p, n, __FILE__, __LINE__, ""); dSync();}
 namespace rex {
+
+static int check_hst(Pap26 PP, int counts[26]) {
+    return 0;
+}
+
 static void pre(ParticlesWrap *w, int nw) {
     using namespace sub;
     clear(nw, tp);
@@ -27,6 +32,7 @@ static void rex0(ParticlesWrap *w, int nw) {
     sendP(tc.ranks, tt, ti, buf_pi, ti.counts);
     s::waitP();
     r::waitP();
+    check_hst(PP_pi, recv_counts);
 
     if (!first) s::waitA(); else first = 0;
 
