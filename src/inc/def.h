@@ -11,7 +11,7 @@ enum {RED_COLOR,  BLUE_COLOR, RED_BLUE};
 #define MAX_PSOLID_NUM 30000
 
 /* maximum number of solids per node */
-#define MAX_SOLIDS 20
+#define MAX_SOLIDS 40
 
 /* maximum number of object types (solid, rbc, ...) */
 #define MAX_OBJ_TYPES 10
