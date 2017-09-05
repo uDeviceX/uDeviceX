@@ -3,13 +3,17 @@ struct DPDparam { float gamma, a, rnd; };
 struct Fo { float *x, *y, *z; }; /* force */
 
 enum {LJ_NONE, LJ_ONE, LJ_TWO}; /* lj hack */
-
 static __device__ float wrf(const int s, float x) {
     if (s == 0) return x;
     if (s == 1) return sqrtf(x);
     if (s == 2) return sqrtf(sqrtf(x));
     if (s == 3) return sqrtf(sqrtf(sqrtf(x)));
     return powf(x, 1.f/s);
+}
+
+enum {CHECK_OK, CHECK_FAIL};
+static __device__ int check(float f) {
+    if (!isnan(f)) return CHECK_FAIL; else return CHECK_OK;
 }
 
 static __device__ float cap(float x, float lo, float hi) {
