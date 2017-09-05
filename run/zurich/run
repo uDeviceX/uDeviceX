@@ -1,8 +1,7 @@
 s=.
 u=u/zurich
 
-u.conf $s $u conf/double.poiseuille.h <<!!!
-   multi_solvent
+u.conf $s $u conf/zurich.h <<!!!
    tend=2.01 part_freq=4000
    pushflow doublepoiseuille
    field_dumps part_dumps
