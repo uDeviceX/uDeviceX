@@ -1,8 +1,30 @@
 #define O(p, n) {dSync(); dbg::check_pos_pu(p, n, __FILE__, __LINE__, ""); dSync();}
 namespace rex {
 
+enum {OK, FAIL};
+static int check_one(Particle p) {
+    enum {X, Y, Z};
+    float *r;
+    r = p.r;
+    if (isnan(r[X])) return FAIL;
+    return OK;
+}
+static int check_hst0(Particle *pp, int n) {
+    int i;
+    for (i = 0; i < n; i++)
+        if (!check_one(pp[i])) return FAIL;
+    return OK;
+}
 static int check_hst(Pap26 PP, int counts[26]) {
-    return 0;
+    int n, i;
+    for (i = 0; i < 26; i++) {
+        n = counts[i];
+        if (!check_hst0(PP.d[i], n)) return FAIL;
+    }
+    return OK;
+}
+static void report_hst() {
+    assert(0);
 }
 
 static void pre(ParticlesWrap *w, int nw) {
@@ -32,7 +54,7 @@ static void rex0(ParticlesWrap *w, int nw) {
     sendP(tc.ranks, tt, ti, buf_pi, ti.counts);
     s::waitP();
     r::waitP();
-    check_hst(PP_pi, recv_counts);
+    if (check_hst(PP_pi, recv_counts) != OK) report_hst();
 
     if (!first) s::waitA(); else first = 0;
 
