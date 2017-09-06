@@ -54,6 +54,7 @@ $B/rig/imp.o: $S/rig/imp.cu; $N -I$S/. -I$S/_rain -I$S/rig
 $B/rig/int.o: $S/rig/int.cu; $N -I$S/. -I$S/_rain -I$S/rig
 $B/rigid/imp.o: $S/rigid/imp.cu; $N -I$S/. -I$S/_rain -I$S/rigid -I$S/rigid/_cuda
 $B/rnd/imp.o: $S/rnd/imp.cpp; $X -I$S/. -I$S/_rain -I$S/rnd
+$B/scheme/imp.o: $S/scheme/imp.cu; $N -I$S/. -I$S/_rain -I$S/scheme
 $B/sdf/imp.o: $S/sdf/imp.cu; $N -I$S/. -I$S/_rain -I$S/sdf
 $B/sdf/int.o: $S/sdf/int.cu; $N -I$S/. -I$S/_rain -I$S/sdf
 $B/sim/imp.o: $S/sim/imp.cu; $N -I$S/. -I$S/_rain -I$S/sim
