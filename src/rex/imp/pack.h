@@ -9,10 +9,10 @@ static int i2max(int i) { /* fragment id to maximum size */
     return MAX_OBJ_DENSITY*frag_ncell(i);
 }
 
-void clear_forces(int nw, LFrag *l) {
+void clear_forces(Fop26 FF) {
     for (int i = 0; i < 26; ++i) {
         int n = i2max(i);
-        CC(cudaMemsetAsync(l[i].ff, 0, sizeof(Force) * n));
+        CC(cudaMemsetAsync(FF.d[i], 0, sizeof(Force) * n));
     }
 }
 
