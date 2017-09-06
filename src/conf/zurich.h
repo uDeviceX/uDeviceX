@@ -22,8 +22,8 @@
 #define aij_rbc          2
 #define aij_wall         10
 
-#define gammadpd_solv     1
-#define gammadpd_rbc     10
+#define gammadpd_solv    1
+#define gammadpd_rbc     100
 #define gammadpd_wall    10
 
 #define ljsigma          0.3        /* RBC-RBC contact LJ interaction parameters */

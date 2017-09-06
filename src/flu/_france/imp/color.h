@@ -11,7 +11,7 @@ static void color(Particle *pp, int n, /**/ int *cc) {
         p = pp[i];
         y = p.r[Y];
         y += 0.5 * ly;
-        y *= 3;
+        y *= 2;
         if      (y <     ly) {cc[i] = B; b++;}
         else if (y < 2 * ly) {cc[i] = W; w++;}
         else                 {cc[i] = R; r++;}
