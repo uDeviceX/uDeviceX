@@ -5,6 +5,17 @@ void clear(int nw, rex::TicketPack tp) {
     CC(cudaMemsetAsync(tp.offsets, 0, sizeof(int) * 26 * (nw + 1)));
 }
 
+static int i2max(int i) { /* fragment id to maximum size */
+    return MAX_OBJ_DENSITY*frag_ncell(i);
+}
+
+void clear_forces(int nw, LFrag *l) {
+    for (int i = 0; i < 26; ++i) {
+        int n = i2max(i);
+        CC(cudaMemsetAsync(l[i].ff, 0, sizeof(Force) * n));
+    }
+}
+
 static void pack0(ParticlesWrap *w, rex::TicketPack tp, int i, /**/ Particle *buf) {
     int *o, *c, *s;
     const Particle *pp = w[i].p;
