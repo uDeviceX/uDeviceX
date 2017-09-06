@@ -25,7 +25,6 @@ static __device__ void halo0(Pa A, int aid, hforces::Cloud cloud, int nb, float 
         for (i = 0; !endp(m, i); ++i) {
             bid = m2id(m, i);
             hforces::dev::cloud_get(cloud, bid, /**/ &B);
-            if (multi_solvent) hforces::dev::cloud_get_color(cloud, bid, /**/ &B);
             f = ff2f(ffB, bid);
             pair(A, B, random(aid, bid, seed), /**/ &fx, &fy, &fz,   f);
         }

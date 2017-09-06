@@ -35,7 +35,6 @@ static __device__ void bulk0(const Pa a, hforces::Cloud cloud, int lid, const Ma
     for (i = 0; !endp(m, i); ++i) {
         rid = m2id(m, i);
         hforces::dev::cloud_get(cloud, rid, /**/ &b);
-        if (multi_solvent) hforces::dev::cloud_get_color(cloud, rid, /**/ &b);
         f = ff2f(ff, rid);
         pair(a, b, random(lid, rid, seed), /**/ fx, fy, fz,   f);
     }

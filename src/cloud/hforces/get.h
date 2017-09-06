@@ -5,9 +5,7 @@ inline __device__ void cloud_get(Cloud c, int i, /**/ forces::Pa *p) {
     r = &pp[6*i];
     v = &pp[6*i + 3];
     forces::rvk2p(r, v, SOLVENT_KIND, /**/ p);
-}
 
-inline __device__ void cloud_get_color(Cloud c, int i, /**/ forces::Pa *p) {
-    p->color = c.cc[i];
+    if (multi_solvent) p->color = c.cc[i];
 }
 }} /* namespace */
