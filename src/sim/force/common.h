@@ -1,12 +1,10 @@
 void body_force(float driving_force0) {
     if (pushflow)
-        KL(dev::body_force, (k_cnf(o::q.n)), (1, o::q.pp, o::ff, o::q.n, driving_force0));
-
+        scheme::body_force(1,          o::q.pp, o::ff, o::q.n, driving_force0);
     if (pushsolid && solids0)
-        KL(dev::body_force, (k_cnf(s::q.n)), (solid_mass, s::q.pp, s::ff, s::q.n, driving_force0));
-
+        scheme::body_force(solid_mass, s::q.pp, s::ff, s::q.n, driving_force0);
     if (pushrbc && rbcs)
-        KL(dev::body_force, (k_cnf(r::q.n)), (rbc_mass, r::q.pp, r::ff, r::q.n, driving_force0));
+        scheme::body_force(rbc_mass,   r::q.pp, r::ff, r::q.n, driving_force0);
 }
 
 void forces_rbc() {
