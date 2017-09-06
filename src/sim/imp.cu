@@ -130,7 +130,6 @@ namespace dev {
   #include "scheme/vv.h"
 #endif
 #include "dev.h"
-#include "force/dev.h"
 }
 
 /* local */
