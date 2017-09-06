@@ -9,7 +9,7 @@ $B/dpdr/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/dpdr/buf.h $S/dpdr/de
 $B/dpdr/int.o: $S/cloud/hforces/int.h $S/cloud/hforces/type.h $B/conf.h $S/d/api.h $S/dpdr/imp.h $S/dpdr/int.h $S/dpdr/type.h $S/frag.h $S/hforces/imp.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/mpi/basetags.h $S/msg.h $S/rnd/imp.h $S/utils/cc.h
 $B/dual/imp.o: $B/conf.h $S/d/api.h $S/dual/int.h $S/dual/type.h $S/inc/conf.h $S/inc/dev.h $S/msg.h $S/utils/cc.h
 $B/field.o: $B/conf.h $S/field.h $S/inc/conf.h $S/inc/type.h $S/io/field.h $S/mpi/glb.h $S/msg.h
-$B/flu/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/flu/_zurich/imp/color.h $S/flu/dev0.h $S/flu/dev1.h $S/flu/imp.h $S/flu/imp/main.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/io/restart.h $S/mpi/wrapper.h $S/msg.h $S/utils/cc.h $S/utils/kl.h $S/utils/mc.h
+$B/flu/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/flu/_zurich/imp/color.h $S/flu/dev0.h $S/flu/dev1.h $S/flu/imp.h $S/flu/imp/main.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/io/restart.h $S/mpi/glb.h $S/mpi/wrapper.h $S/msg.h $S/utils/cc.h $S/utils/kl.h $S/utils/mc.h
 $B/flu/int.o: $S/clist/int.h $B/conf.h $S/d/api.h $S/flu/imp.h $S/flu/int.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/msg.h $S/rnd/imp.h $S/utils/cc.h
 $B/fsi/imp.o: $S/_rain/forces/hook.h $S/algo/scan/int.h $S/clist/int.h $S/cloud/hforces/get.h $S/cloud/hforces/type.h $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/dbg/imp.h $S/dual/int.h $S/dual/type.h $S/forces/imp.h $S/forces/pack.h $S/forces/type.h $S/frag.h $S/fsi/dev/bulk.h $S/fsi/dev/common.h $S/fsi/dev/decl.h $S/fsi/dev/fetch.h $S/fsi/dev/halo.h $S/fsi/dev/map.common.h $S/fsi/dev/map/bulk.h $S/fsi/dev/map/halo.h $S/fsi/dev/pair.h $S/fsi/dev/type.h $S/fsi/imp/bind.h $S/fsi/imp/bulk.h $S/fsi/imp/decl.h $S/fsi/imp/fin.h $S/fsi/imp/halo.h $S/fsi/imp/ini.h $S/fsi/imp/setup.h $S/fsi/int.h $S/fsi/type.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/dev/common.h $S/inc/dev/index.h $S/inc/dev/read.h $S/inc/dev/write.h $S/inc/tmp/pinned.h $S/inc/tmp/wrap.h $S/inc/type.h $S/io/field.h $S/io/rbc.h $S/mpi/basetags.h $S/mpi/glb.h $S/mpi/type.h $S/msg.h $S/rbc/int.h $S/rnd/dev.h $S/rnd/imp.h $S/sim/int.h $S/utils/cc.h $S/utils/kl.h $S/utils/mc.h $S/utils/te.h $S/utils/texo.h
 $B/glb.o: $B/conf.h $S/d/api.h $S/glb.h $S/inc/conf.h $S/mpi/glb.h
@@ -36,7 +36,7 @@ $B/mesh/bbox.o: $S/algo/minmax.h $S/inc/type.h $S/mesh/bbox.h
 $B/mesh/collision.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/mesh/collision.h $S/msg.h $S/utils/cc.h $S/utils/kl.h $S/utils/texo.h
 $B/mesh/dist.o: $S/inc/type.h $S/mesh/dist.h
 $B/mesh/props.o: $S/inc/type.h $S/mesh/props.h
-$B/mpi/glb.o: $S/inc/conf.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/mc.h
+$B/mpi/glb.o: $B/conf.h $S/inc/conf.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/mc.h
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
 $B/mrescue.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/mesh/collision.h $S/mrescue.h $S/msg.h $S/utils/cc.h $S/utils/kl.h $S/utils/texo.h
