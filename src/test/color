@@ -1,5 +1,5 @@
 #### Double poiseuille : Zurich
-# cTEST: flow.t1
+# cTEST: color.t1
 rm -rf bop h5 diag.txt rbc.off
 :
 export PATH=../tools:$PATH
