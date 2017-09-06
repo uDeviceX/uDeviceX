@@ -51,10 +51,6 @@
 #include "glb.h"
 
 #include "inc/dev/read.h"
-#include "inc/dev/write.h"
-#include "inc/dev/common.h"
-#include "inc/dev/index.h"
-
 #include "clist/int.h"
 
 #include "mcomm/type.h"
