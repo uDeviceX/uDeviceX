@@ -125,11 +125,11 @@ namespace dev {
 namespace sim {
 namespace dev {
 #ifdef FORWARD_EULER
-  #include "scheme/euler.h"
+  #include "scheme/imp/euler.h"
 #else
-  #include "scheme/vv.h"
+  #include "scheme/imp/vv.h"
 #endif
-#include "dev.h"
+#include "scheme/dev.h"
 }
 #include "scheme/imp/main.h"
 
