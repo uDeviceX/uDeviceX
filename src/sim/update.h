@@ -10,9 +10,9 @@ void clear_vel(Particle *pp, int n) {
 } /* namespace */
 
 void clear_vel() {
-    KL(dev::clear_vel, (k_cnf(o::q.n)), (o::q.pp, o::q.n));
-    if (solids) KL(dev::clear_vel, (k_cnf(s::q.n)), (s::q.pp, s::q.n));
-    if (rbcs  ) KL(dev::clear_vel, (k_cnf(r::q.n)), (r::q.pp, r::q.n));
+    scheme::clear_vel(o::q.pp, o::q.n);
+    if (solids) scheme::clear_vel(s::q.pp, s::q.n);
+    if (rbcs  ) scheme::clear_vel(r::q.pp, r::q.n);
 }
 
 void update_solid() {
