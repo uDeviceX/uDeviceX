@@ -7,10 +7,8 @@ static __device__ void cloud_get(uint i, /**/ forces::Pa *p) { /* local fetch */
     v = fetchF4(xadd(i, 1u));
     f4tof3(r, r0); f4tof3(v, v0);
     forces::rvk2p(r0, v0, SOLVENT_KIND, /**/ p);
-}
 
-inline __device__ void cloud_get_color(uint i, /**/ forces::Pa *p) {
-    p->color = fetchC(i);
+    if (multi_solvent) p->color = fetchC(i);
 }
 
 static __device__ void cloud_pos(/* dummy c */ int i, /**/ float *x, float *y, float *z) {
