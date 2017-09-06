@@ -65,5 +65,5 @@ __global__ void halo(int n, float seed) {
         }
     }
 
-    fA[X] = xforce; fA[Y] = yforce; fA[Z] = zforce;
+    fA[X] += xforce; fA[Y] += yforce; fA[Z] += zforce;
 }

@@ -30,7 +30,7 @@ static __device__ void halo0(Pa A, int aid, hforces::Cloud cloud, int nb, float 
             pair(A, B, random(aid, bid, seed), /**/ &fx, &fy, &fz,   f);
         }
     }
-    fA[X] = fx; fA[Y] = fy; fA[Z] = fz;
+    fA[X] += fx; fA[Y] += fy; fA[Z] += fz;
 }
 
 static __device__ void halo1(int aid, hforces::Cloud cloud, int nb, float seed, /**/ float *ffB) {
