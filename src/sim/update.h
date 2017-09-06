@@ -8,6 +8,10 @@ void update_solid() {
     if (s::q.n) update_solid0();
 }
 
+void move(float mass, Particle *pp, Force *ff, int n) {
+    KL(dev::update, (k_cnf(n)), (mass, pp, ff, n));
+}
+
 void update_solvent() {
     KL(dev::update, (k_cnf(o::q.n)), (dpd_mass, o::q.pp, o::ff, o::q.n));
 }
