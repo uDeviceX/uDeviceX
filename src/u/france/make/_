@@ -1,0 +1,9 @@
+# active directories
+# _safe
+_release
+# _cpu
+_cuda
+_rain
+
+# color scheme
+_france
