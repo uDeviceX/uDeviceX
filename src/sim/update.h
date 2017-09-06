@@ -1,3 +1,9 @@
+namespace scheme {
+void move(float mass, Particle *pp, Force *ff, int n) {
+    KL(dev::update, (k_cnf(n)), (mass, pp, ff, n));
+}
+} /* namespace */
+
 void clear_vel() {
     KL(dev::clear_vel, (k_cnf(o::q.n)), (o::q.pp, o::q.n));
     if (solids) KL(dev::clear_vel, (k_cnf(s::q.n)), (s::q.pp, s::q.n));
@@ -8,16 +14,12 @@ void update_solid() {
     if (s::q.n) update_solid0();
 }
 
-void move(float mass, Particle *pp, Force *ff, int n) {
-    KL(dev::update, (k_cnf(n)), (mass, pp, ff, n));
-}
-
 void update_solvent() {
-    move(dpd_mass, o::q.pp, o::ff, o::q.n);
+    scheme::move(dpd_mass, o::q.pp, o::ff, o::q.n);
 }
 
 void update_rbc() {
-    move(rbc_mass, r::q.pp, r::ff, r::q.n);
+    scheme::move(rbc_mass, r::q.pp, r::ff, r::q.n);
 }
 
 void bounce() {
