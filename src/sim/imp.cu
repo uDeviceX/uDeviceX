@@ -131,6 +131,8 @@ namespace dev {
 #endif
 #include "dev.h"
 }
+#include "scheme/imp/main.h"
+
 
 /* local */
 #include "type.h"
