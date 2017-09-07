@@ -35,7 +35,7 @@ namespace sub {
 #include "params/rbc.inc0.h"
 #include "rbc/imp/dev0.h"
 #include "rbc/imp/dev.h"
-#include "rbc/imp/imp.h"
+#include "rbc/imp/main.h"
 }
 namespace ic {
 #include "rbc/imp/ic.h"
