@@ -19,7 +19,7 @@ cp data/sdf/channel/sdf.dat sdf.dat
 cp data/rig/sphere.ply mesh_solid.ply
 u.strtdir .
 sh runfile
-
+:
 merge () {
     trap 'rm -f /tmp/pp.$$ /tmp/ii.$$' 0 1 2 3 15
     bop2txt bop/solvent-$id.bop        > /tmp/pp.$$
@@ -27,6 +27,7 @@ merge () {
     paste /tmp/pp.$$ /tmp/ii.$$        | awk '$7 == 0' >  red.$id
     paste /tmp/pp.$$ /tmp/ii.$$        | awk '$7 == 1' > blue.$id
 }
-
+:
 id=00001; merge
 cp blue.$id > red.out.txt
+
