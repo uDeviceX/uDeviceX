@@ -1,6 +1,6 @@
 namespace collision {
 
-enum {OUT=RED_COLOR, IN=BLUE_COLOR};
+enum {OUT=-1, IN=1};
 
 int inside_1p(const float *r, const float *vv, const int *tt, const int nt);
 
