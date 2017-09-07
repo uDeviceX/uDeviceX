@@ -29,15 +29,10 @@
 
 /* FEATURES */
 #define rbcs                    true
-#define solids                  true
-#define sbounce_back            true
-#define empty_solid_particles   false
 #define contactforces           true
 #define ljsigma                 0.3
 #define ljepsilon               0.44
 #define fsiforces               true
-#define walls                   true
-#define wall_creation           10
 #define tend                    1000000
 
 #define multi_solvent           true

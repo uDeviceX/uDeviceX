@@ -5,7 +5,6 @@ cp data/cells/rbc.498.off rbc.off
 export PATH=../tools:$PATH
 (cd ../cmd; make ) > /dev/null
  x=5 y=17 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
- x=11 y=15 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
 echo 8 16 8 > rigs-ic.txt
 :
 u.conf conf/color.rbc.h <<!!!
@@ -16,8 +15,6 @@ u.conf conf/color.rbc.h <<!!!
    run
 !!!
 { make clean &&  u.make -j && make -C ../tools; } > /dev/null
-cp data/sdf/channel/sdf.dat sdf.dat
-cp data/rig/sphere.ply mesh_solid.ply
 u.strtdir .
 sh runfile
 :
