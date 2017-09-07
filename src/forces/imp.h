@@ -114,7 +114,7 @@ static __device__ void dpd(float x, float y, float z,
 
 static __device__ void gen0(Pa *A, Pa *B, DPDparam p, int ljkind, /**/ Fo f) {
     dpd(A->x -  B->x,    A->y -  B->y,  A->z -  B->z,
-        A->vx - B->vx,   A->vy - B->vy, A->vz - B->vz,          
+        A->vx - B->vx,   A->vy - B->vy, A->vz - B->vz,
         p, ljkind,
         f);
 }
@@ -136,7 +136,8 @@ static __device__ void gen1(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
         p.gamma = gammadpd_wall;
         p.a     = aij_wall;
     } else {
-        printf("unknown colors: %d %d\n", ca, cb);
+        printf("unknown kind pair: %ld %ld\n", ca, cb);
+        assert(0);
     }
     p.rnd = rnd;
     gen0(A, B, p, ljkind, /**/ f);
@@ -148,7 +149,7 @@ static __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, flo
     int ljkind; /* call LJ? */
     int ka, kb;
     int ca, cb; /* corrected colors */
-    Fo f; 
+    Fo f;
     enum {O = SOLVENT_KIND, S = SOLID_KIND, W = WALL_KIND};
     ka = A.kind; kb = B.kind;
     ca = A.color; cb = B.color;
@@ -165,6 +166,7 @@ static __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, flo
     } else if (seteq(ka, kb,  S, W)) {
         ca = cb = RED_COLOR;   ljkind = LJ_ONE;
     } else {
+        printf("unknown kind pair: %ld %ld\n", ka, kb);
         assert(0);
     }
     f.x = fx; f.y = fy; f.z = fz;
