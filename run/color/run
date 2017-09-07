@@ -4,7 +4,8 @@ if test $# -ne 0; then u="$1"; shift; fi
 
 run0 () {
 u.conf $s $u conf/zurich.h <<!!!
-   tend=20.01 part_freq=4000
+   part_freq=4000
+   tend=5e-4
    XS=8 YS=8 ZS=8 numberdensity=3
    field_dumps part_dumps force_dumps
    field_freq=40000 pushflow
