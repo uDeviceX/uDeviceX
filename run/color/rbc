@@ -25,6 +25,6 @@ merge () {
     paste /tmp/pp.$$ /tmp/ii.$$        | awk '$7 == 1' > blue.$id
 }
 :
-id=00001; merge
-cp blue.$id blue.out.txt
+#id=00001; merge
+#cp blue.$id blue.out.txt
 
