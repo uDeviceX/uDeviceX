@@ -87,7 +87,7 @@ void post_send(TicketCom *tc, TicketShalo *ts);
 void post_send_ii(const TicketCom *tc, const TicketShalo *ts, /**/ TicketICom *tic, TicketSIhalo *tsi);
 
 void post_expected_recv(TicketCom *tc, TicketRhalo *tr);
-void post_expected_recv_ii(const TicketCom *tc, const TicketRhalo *tr, /**/ TicketICom *tic, TicketSIhalo *tsi);
+void post_expected_recv_ii(const TicketCom *tc, const TicketRhalo *tr, /**/ TicketICom *tic, TicketRIhalo *tri);
 
 void wait_recv(TicketCom *tc);
 void wait_recv_ii(TicketICom *tc);
