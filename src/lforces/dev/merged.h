@@ -114,9 +114,9 @@ static __global__ void merged() {
                           "   sub.f32           mystart, mystart, myscan;"
                           "   mov.b32           %0, mystart;"
                           "}" : "=r"( spid ) : "f"( u2f( pid ) ), "f"( u2f( 9u ) ), "f"( u2f( 3u ) ), "f"( u2f( pshare ) ), "f"( u2f( pid ) ), "f"( u2f( nsrc ) ) );
-            cloud_pos(xmin(spid, lastdst), &xs, &ys, &zs);
+            cloud_pos2(xmin(spid, lastdst), &xs, &ys, &zs);
             for( uint dpid = dststart; dpid < lastdst; dpid = xadd( dpid, 1u ) ) {
-                cloud_pos(dpid, /**/ &xd, &yd, &zd);
+                cloud_pos2(dpid, /**/ &xd, &yd, &zd);
                 const float dx = xd - xs;
                 const float dy = yd - ys;
                 const float dz = zd - zs;
