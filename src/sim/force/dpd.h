@@ -5,6 +5,9 @@ void forces_dpd() {
     int *start = q.cells->start;
     gather_cells(start, count, /**/ &h.ts);
     if (h.tc.first) post_expected_recv(&h.tc, &h.tr);
+    if (multi_solvent && h.tic.first)
+        post_expected_recv_ii(&h.tc, &h.tr, /**/ &h.tic, &h.tsi);
+
     copy_cells(&h.ts);
 
     pack(q.pp, /**/ &h.ts);
@@ -25,7 +28,7 @@ void forces_dpd() {
     recv(&h.tr);
     if (multi_solvent)
         recv_ii(&h.tr, /**/ &h.tri);
- 
+
     post_expected_recv(&h.tc, &h.tr);
     if (multi_solvent)
         post_expected_recv_ii(&h.tc, &h.tr, /**/ &h.tic, &h.tsi);
