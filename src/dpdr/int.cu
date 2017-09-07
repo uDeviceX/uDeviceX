@@ -196,15 +196,13 @@ static void ini_rnd(TicketRnd trnd, /**/ hforces::Rnd26 *rnd) {
 }
 
 static void ini_color_frags(TicketRIhalo t, /**/ hforces::Frag26 *frag) {
-    for (int i = 0; i < 26; ++i) {
+    for (int i = 0; i < 26; ++i)
         hforces::ini_cloud_color(t.b.ii.d[i], &frag->d[i].c);
-    }
 }
 
 static void ini_color_sfrags(TicketSIhalo t, /**/ hforces::SFrag26 *sfrag) {
-    for (int i = 0; i < 26; ++i) {
+    for (int i = 0; i < 26; ++i)
         hforces::ini_cloud_color(t.b.ii.d[i], &sfrag->d[i].c);
-    }
 }
 
 void fremote_color(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, TicketSIhalo tis, TicketRIhalo tir, /**/ Force *ff) {
