@@ -5,8 +5,7 @@ if test $# -ne 0; then u="$1"; shift; fi
 run0 () {
 u.conf $s $u conf/zurich.h <<!!!
    tend=20.01 part_freq=4000
-   pushflow doublepoiseuille
-   field_dumps part_dumps
+   field_dumps part_dumps force_dumps
    field_freq=40000 pushflow
    run
 !!!
