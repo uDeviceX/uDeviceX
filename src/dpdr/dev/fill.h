@@ -42,7 +42,7 @@ __global__ void fill(const int27 starts, const Particle *pp, const intp26 fragss
     if (gid + 1 == starts.d[fid + 1]) required_bag_size[fid] = dst;
 }
 
-__global__ void fill_ii(const int27 cellpackstarts, const int *ii,
+__global__ void fill_ii(const int27 starts, const int *ii,
                         const intp26 fragss, const intp26 fragcc, const intp26 fragcum,
                         const int26 fragcapacity, /**/ intp26 fragii) {
     int gid, fid, hci, tid, src, dst, nsrc;
@@ -56,10 +56,10 @@ __global__ void fill_ii(const int27 cellpackstarts, const int *ii,
     gid = threadIdx.x / (warpSize / 2) + 2 * blockIdx.x;
     tid = threadIdx.x % (warpSize / 2);
 
-    if (gid >= cellpackstarts.d[26]) return;
+    if (gid >= starts.d[26]) return;
 
-    fid = k_common::fid(cellpackstarts.d, gid);
-    hci = gid - cellpackstarts.d[fid];
+    fid = k_common::fid(starts.d, gid);
+    hci = gid - starts.d[fid];
 
     src = fragss.d[fid][hci];
     dst = fragcum.d[fid][hci];
