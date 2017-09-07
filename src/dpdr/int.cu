@@ -155,7 +155,7 @@ void recv_ii(const TicketRhalo *t, /**/ TicketRIhalo *ti) {
 
 static void ini_frags(TicketRhalo tr, /**/ hforces::Frag26 *frag) {
     enum {X, Y, Z};
-    int i, dx, dy, dz, m0, m1, m2;;
+    int i, dx, dy, dz, xcells, ycells, zcells;
     hforces::Cloud cloudb;
 
     for (i = 0; i < 26; ++i) {
@@ -163,20 +163,16 @@ static void ini_frags(TicketRhalo tr, /**/ hforces::Frag26 *frag) {
         dy = frag_to_dir[i][Y];
         dz = frag_to_dir[i][Z];
 
-        m0 = 0 == dx;
-        m1 = 0 == dy;
-        m2 = 0 == dz;
+        xcells = dx == 0 ? XS : 1;
+        ycells = dy == 0 ? YS : 1;
+        zcells = dz == 0 ? ZS : 1;
         hforces::ini_cloud(tr.b.pp.d[i], &cloudb);
         
         frag->d[i] = {
             cloudb,
             tr.b.cum.d[i],
-            dx,
-            dy,
-            dz,
-            1 + m0 * (XS - 1),
-            1 + m1 * (YS - 1),
-            1 + m2 * (ZS - 1),
+            dx, dy, dz,
+            xcells, ycells, zcells,
             (hforces::FragType)(abs(dx) + abs(dy) + abs(dz))};
     }
 }
