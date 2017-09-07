@@ -130,6 +130,8 @@ static __device__ void gen1(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
     } else { /* mixed */
         p.gamma = gammadpd_wall;
         p.a     = aij_wall;
+    } else {
+        assert(0);
     }
     p.rnd = rnd;
     gen0(A, B, p, ljkind, /**/ f);
@@ -162,7 +164,7 @@ static __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, flo
     } else if (seteq(ka, kb,  S, W)) {
         ca = cb = RED_COLOR;   ljkind = LJ_ONE;
     } else {
-        /* assert(0); */
+        assert(0);
     }
     f.x = fx; f.y = fy; f.z = fz;
     gen1(&A, &B, ca, cb, ljkind, rnd, /**/ f);
