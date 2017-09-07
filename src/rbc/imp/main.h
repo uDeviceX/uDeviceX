@@ -74,7 +74,7 @@ void forces(int nc, const Texo<float2> texvert, const Texo<int4> textri, const T
     dim3 avThreads(256, 1);
     dim3 avBlocks(1, nc);
 
-    CC(cudaMemsetAsync(av, 0, nc * 2 * sizeof(float)));
+    Dzero(av, 2*nc);
     KL(dev::area_volume, (avBlocks, avThreads), (texvert, textri, av));
     KL(dev::force, (k_cnf(nc*nv*md)), (texvert, texadj0, texadj1, nc, av, (float*)ff));
 }
