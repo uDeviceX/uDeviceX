@@ -12,7 +12,10 @@ void update_solvent() {
     scheme::move(dpd_mass, o::q.pp, o::ff, o::q.n);
 }
 
-void update_rbc() {
+void update_rbc(long it) {
+    bool cond;
+    cond = multi_solvent && color_freq && it % color_freq == 0;
+    if (cond) {MSG("recolor"); gen_colors();};
     scheme::move(rbc_mass, r::q.pp, r::ff, r::q.n);
 }
 

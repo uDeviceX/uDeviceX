@@ -40,7 +40,7 @@
 #define wall_creation           1000
 #define tend                    1000000
 
-//#define multi_solvent           true
+#define multi_solvent           true
 #define color_freq              100
 
 /* FLOW TYPE */
