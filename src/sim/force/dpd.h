@@ -32,5 +32,7 @@ void forces_dpd() {
     
     if (multi_solvent) fremote_color(h.trnd, h.ts, h.tr, h.tsi, h.tri, /**/ ff);
     else               fremote(h.trnd, h.ts, h.tr, /**/ ff);
+
     h.tc.first = false;
+    h.tic.first = false;
 }
