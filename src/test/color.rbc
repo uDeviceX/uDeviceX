@@ -5,7 +5,8 @@ cp data/cells/rbc.498.off rbc.off
 export PATH=../tools:$PATH
 (cd ../cmd; make ) > /dev/null
  x=5 y=17 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
-x=11 y=15 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
+ x=11 y=15 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
+echo 8 16 8 > rigs-ic.txt
 :
 u.conf conf/color.rbc.h <<!!!
    rbcs tend=1.0 part_freq=500
@@ -29,5 +30,5 @@ merge () {
 }
 :
 id=00001; merge
-cp blue.$id > red.out.txt
+cp blue.$id red.out.txt
 

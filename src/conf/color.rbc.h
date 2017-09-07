@@ -37,7 +37,7 @@
 #define ljepsilon               0.44
 #define fsiforces               true
 #define walls                   true
-#define wall_creation           1000
+#define wall_creation           10
 #define tend                    1000000
 
 #define multi_solvent           true
