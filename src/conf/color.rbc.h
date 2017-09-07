@@ -40,14 +40,8 @@
 #define wall_creation           1000
 #define tend                    1000000
 
-#define multi_solvent           true
+//#define multi_solvent           true
 #define color_freq              100
-
-/* DEBUG */
-//#define KL_NONE
-//#define CC_PEEK
-#define TE_TRACE
-//#define FORCE0
 
 /* FLOW TYPE */
 #define pushflow                true
