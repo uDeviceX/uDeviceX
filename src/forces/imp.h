@@ -2,6 +2,11 @@ namespace forces {
 struct DPDparam { float gamma, a, rnd; };
 struct Fo { float *x, *y, *z; }; /* force */
 
+static __device__ bool seteq(int a, int b,   int x, int y) {
+    /* true if sets {a, b} and {x, y} are equal */
+    return (a == x && b == y) || (a == y && b == x);
+}
+
 enum {LJ_NONE, LJ_ONE, LJ_TWO}; /* lj hack */
 static __device__ float wrf(const int s, float x) {
     if (s == 0) return x;
@@ -127,7 +132,7 @@ static __device__ void gen1(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
     } else if (ca == BLUE_COLOR && cb == BLUE_COLOR) {
         p.gamma = gammadpd_rbc;
         p.a     = aij_rbc;
-    } else { /* mixed */
+    } else if (seteq(ca, cb,   BLUE_COLOR, RED_COLOR)) {
         p.gamma = gammadpd_wall;
         p.a     = aij_wall;
     } else {
@@ -138,10 +143,6 @@ static __device__ void gen1(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
     hook(ca, cb, A->x, A->y, A->z, f.x, f.y, f.z); /* see _snow and _rain */
 }
 
-static __device__ bool seteq(int a, int b,   int x, int y) {
-    /* true if sets {a, b} and {x, y} are equal */
-    return (a == x && b == y) || (a == y && b == x);
-}
 static __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
     /* dispatch on kind and pack force */
     int ljkind; /* call LJ? */
