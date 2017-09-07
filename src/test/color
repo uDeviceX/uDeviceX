@@ -1,5 +1,5 @@
 #### Double poiseuille : Zurich
-# TEST: color.t1
+# nTEST: color.t1
 rm -rf bop h5 diag.txt rbc.off
 :
 export PATH=../tools:$PATH
@@ -15,5 +15,5 @@ u.conf $s $u conf/zurich.h <<!!!
 !!!
 (make clean && u.make -j) > /dev/null
 sh runfile
-avg_h52.m h5/flowfields-0001.h5 > h5.out.txt
+avg_h52.m h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
 
