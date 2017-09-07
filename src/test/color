@@ -8,6 +8,7 @@ s=.
 u=u/france
 u.conf $s $u conf/zurich.h <<!!!
    tend=4.01 part_freq=8000
+   XS=32 YS=4 ZS=4
    pushflow doublepoiseuille
    field_dumps part_dumps
    field_freq=8000
