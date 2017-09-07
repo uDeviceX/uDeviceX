@@ -76,10 +76,10 @@ static int inside_1p(const float *r, const Particle *vv, const int *tt, const in
     
 void inside_hst(const Particle *pp, const int n, const Mesh m, const Particle *i_pp, const int ns, /**/ int *tags) {
     for (int i = 0; i < n; ++i) {
-        tags[i] = -1;
+        tags[i] = RED_COLOR;
         for (int sid = 0; sid < ns; ++sid)
         if (inside_1p(pp[i].r, i_pp + m.nv * sid, m.tt, m.nt)) {
-            tags[i] = sid;
+            tags[i] = BLUE_COLOR;
             break;
         }
     }

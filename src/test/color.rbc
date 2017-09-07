@@ -1,5 +1,5 @@
 #### contact force: two RBCs in double Poiseuille
-# TEST: color.rbc.t1
+# cTEST: color.rbc.t1
 rm -rf bop diag.txt h5 ply rbc.off
 cp data/cells/rbc.498.off rbc.off
 export PATH=../tools:$PATH
@@ -30,5 +30,5 @@ merge () {
 }
 :
 id=00001; merge
-cp blue.$id red.out.txt
+cp blue.$id blue.out.txt
 

@@ -143,13 +143,6 @@ static __device__ void gen1(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
     hook(ca, cb, A->x, A->y, A->z, f.x, f.y, f.z); /* see _snow and _rain */
 }
 
-/** TODO: all rbcs are blue  **/
-static __device__ int color_blind(int c) {
-    if      (c ==  RED_COLOR) return c;
-    else if (c == BLUE_COLOR) return c;
-    else                      return BLUE_COLOR;
-}
-
 static __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
     /* dispatch on kind and pack force */
     int ljkind; /* call LJ? */
@@ -160,9 +153,6 @@ static __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, flo
     ka = A.kind; kb = B.kind;
     ca = A.color; cb = B.color;
     ljkind = LJ_NONE;
-
-    ca = color_blind(ca);
-    cb = color_blind(cb);
 
     if        (ka == O && kb == O) {
         /* no correction */
