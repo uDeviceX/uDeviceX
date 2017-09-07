@@ -31,6 +31,7 @@
 
 #define global_ids       (false)
 #define multi_solvent    (true)
+#define color_freq       (1000)
 
 #define fsiforces        (true)
 #define contactforces    (false)

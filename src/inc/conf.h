@@ -31,6 +31,11 @@
 #define multi_solvent (false)
 #endif
 
+// when to re-color rbcs
+#ifndef color_freq
+#define color_freq    (0)
+#endif
+
 #ifndef global_ids
 #define global_ids (false)
 #endif
