@@ -53,13 +53,14 @@ __global__ void fill_ii(const int27 cellpackstarts, const int *ii,
     /* gid: work group id                */
     /* tid: worker id within the group   */
 
-    gid = (threadIdx.x >> 4) + 2 * blockIdx.x;
+    gid = threadIdx.x / (warpSize / 2) + 2 * blockIdx.x;
+    tid = threadIdx.x % (warpSize / 2);
+
     if (gid >= cellpackstarts.d[26]) return;
 
     fid = k_common::fid(cellpackstarts.d, gid);
     hci = gid - cellpackstarts.d[fid];
 
-    tid = threadIdx.x & 0xf;
     src = fragss.d[fid][hci];
     dst = fragcum.d[fid][hci];
     nsrc = min(fragcc.d[fid][hci], fragcapacity.d[fid] - dst);
