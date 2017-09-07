@@ -136,7 +136,7 @@ static __device__ void gen1(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
         p.gamma = gammadpd_wall;
         p.a     = aij_wall;
     } else {
-        assert(0);
+        printf("unknown colors: %d %d\n", ca, cb);
     }
     p.rnd = rnd;
     gen0(A, B, p, ljkind, /**/ f);
