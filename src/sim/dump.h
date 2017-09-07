@@ -20,7 +20,7 @@ void dump_part(int step) {
       bop::intdata(o::qc.ii_hst, o::q.n, "colors_solvent", step);
   }
 
-  if (dump_forces) {
+  if (force_dumps) {
       cD2H(o::ff_hst, o::ff, o::q.n);
       bop::parts_forces(o::q.pp_hst, o::ff_hst, o::q.n, "solvent", step, /**/ &dumpt);
   } else {
@@ -29,7 +29,7 @@ void dump_part(int step) {
 
   if(solids0) {
     cD2H(s::q.pp_hst, s::q.pp, s::q.n);
-    if (dump_forces) {
+    if (force_dumps) {
         cD2H(s::ff_hst, s::ff, s::q.n);
         bop::parts_forces(s::q.pp_hst, s::ff_hst, s::q.n, "solid", step, /**/ &dumpt);
     } else {

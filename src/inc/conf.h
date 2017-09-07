@@ -57,8 +57,8 @@
 #define part_dumps (false)
 #endif
 
-#ifndef dump_forces
-#define dump_forces (false)
+#ifndef force_dumps
+#define force_dumps (false)
 #endif
 
 #ifndef part_freq
