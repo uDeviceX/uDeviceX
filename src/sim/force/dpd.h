@@ -6,7 +6,7 @@ void forces_dpd() {
     gather_cells(start, count, /**/ &h.ts);
     if (h.tc.first) post_expected_recv(&h.tc, &h.tr);
     if (multi_solvent && h.tic.first)
-        post_expected_recv_ii(&h.tc, &h.tr, /**/ &h.tic, &h.tsi);
+        post_expected_recv_ii(&h.tc, &h.tr, /**/ &h.tic, &h.tri);
 
     copy_cells(&h.ts);
 
@@ -31,7 +31,7 @@ void forces_dpd() {
 
     post_expected_recv(&h.tc, &h.tr);
     if (multi_solvent)
-        post_expected_recv_ii(&h.tc, &h.tr, /**/ &h.tic, &h.tsi);
+        post_expected_recv_ii(&h.tc, &h.tr, /**/ &h.tic, &h.tri);
     
     if (multi_solvent) fremote_color(h.trnd, h.ts, h.tr, h.tsi, h.tri, /**/ ff);
     else               fremote(h.trnd, h.ts, h.tr, /**/ ff);
