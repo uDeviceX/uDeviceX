@@ -1,0 +1,7 @@
+extent 72 24 24
+N            144
+obj_margin 2.0
+plane point 0 23   0 normal 0 -1 0
+plane point 0   1   0 normal 0 1 0
+plane point 0   0 23 normal 0 0 -1
+plane point 0   0   1 normal 0 0 1

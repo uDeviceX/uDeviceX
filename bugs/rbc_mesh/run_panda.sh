@@ -45,6 +45,8 @@ plane point 0   0 $zw normal 0 0 -1
 plane point 0   0   1 normal 0 0 1" > channel.tsdf
 ${GITROOT}/tsdf/tsdf channel.tsdf sdf.dat sdf.vti
 
+cp sdf.vti channel.tsdf sdf.dat ~/1/
+
 # Restart directory structure
 u.strtdir . $NX $NY $NZ
 
