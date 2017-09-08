@@ -17,5 +17,4 @@ __global__ void float42particle(const float4 *src, const int n, Particle *dst) {
     dst[pid] = p;
 }
 
-__device__ int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
 

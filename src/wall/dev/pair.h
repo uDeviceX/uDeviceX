@@ -1,4 +1,5 @@
 namespace sdfdev = sdf::sub::dev;
+__device__ int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
 typedef const sdf::tex3Dca<float> TexSDF_t;
 __global__ void pair(TexSDF_t texsdf, hforces::Cloud cloud, const int np, const int w_n,
                      float *const ff, const float seed, const int type,
