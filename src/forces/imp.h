@@ -24,8 +24,8 @@ static __device__ float cap(float x, float lo, float hi) {
 
 static const float EPS = 1e-6;
 enum {NORM_OK, NORM_BIG, NORM_SMALL};
-static __device__ bool norm(/*io*/ float *px, float *py, float *pz, /**/ float *pr, float *pinvr) {
-    /* noralize vector r = [x, y, z], sets |r| and 1/|r| if not big */
+static __device__ int norm(/*io*/ float *px, float *py, float *pz, /**/ float *pr, float *pinvr) {
+    /* normalize r = [x, y, z], sets |r| and 1/|r| if not big */
     float x, y, z, invr, r;
     float r2;
     x = *px; y = *py; z = *pz;
