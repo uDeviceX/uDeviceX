@@ -45,3 +45,13 @@ Once two particles are extracted they are passed to generic force
     inline __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx,
     float *fy, float *fz)
 
+# bugs
+
+A cloud in
+src/cloud/lforces/get
+has temporal interface which takes `2*pid`
+
+    static __device__ void cloud_get2(uint i, /**/ forces::Pa *p) {
+        assert(i % 2 == 0);
+       cloud_get(i / 2, /**/ p);
+    }
