@@ -156,5 +156,21 @@ static __global__ void check_ff(const Force *ff, int n, bool verbose = true) {
     report(e);
 }
 
+static __device__ err_type valid_color(int c, bool verbose) {
+    if (c != BLUE_COLOR && c != RED_COLOR) {
+        if (verbose) printf("DBG: color = %d\n", c);
+        return err::INVALID;
+    }
+    return err::NONE;
+}
+
+static __global__ void check_cc(const int *cc, int n, bool verbose = true) {
+    int i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i >= n) return;
+    err_type e = valid_color(cc[i], verbose);
+    report(e);
+}
+
+
 } // dev
 } // dbg

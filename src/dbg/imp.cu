@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <conf.h>
+#include "inc/def.h"
 #include "inc/conf.h"
 #include "inc/type.h"
 #include "inc/dev.h"
