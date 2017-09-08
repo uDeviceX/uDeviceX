@@ -31,6 +31,7 @@
 namespace wall {
 #include "int/main.h"
 
+/*** polymorphic ***/
 namespace grey {
   #include "int/pair.h"
 }

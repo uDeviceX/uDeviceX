@@ -51,31 +51,25 @@ namespace dev {
   #include "dev/main.h"
 }
 
-namespace grey {
-  namespace dev {
-    #include "dev/fetch/grey.h"
-    #include "dev/pair.h"
-  }
-}
-
-namespace color {
-  namespace dev {
-    #include "dev/fetch/grey.h"
-    #include "dev/pair.h"
-  }
-}
-
 namespace strt {
   #include "imp/strt.h"
 }
-
 #include "imp/main.h"
 
+/*** polymorphic ***/
 namespace grey {
+  namespace dev {
+    #include "dev/fetch/grey.h"
+    #include "dev/pair.h"
+  }
 #include "imp/pair.h"
 }
 
 namespace color {
+  namespace dev {
+    #include "dev/fetch/color.h"
+    #include "dev/pair.h"
+  }
 #include "imp/pair.h"
 }
 
