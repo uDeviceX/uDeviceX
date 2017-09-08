@@ -37,6 +37,10 @@ void check_pos_pu(const Particle *pp, int n) {
 void check_ff(const Force *ff, int n) {
     KL(dev::check_ff, (k_cnf(n)), (ff, n));
 }
+
+void check_cc(const int *cc, int n) {
+    KL(dev::check_cc, (k_cnf(n)), (cc, n));
+}
 } // sub
 
 void check_pos(const Particle *pp, int n, const char *file, int line, const char *M) {
@@ -50,5 +54,8 @@ void check_pos_pu(const Particle *pp, int n, const char *file, int line, const c
 }
 void check_ff(const Force *ff, int n, const char *file, int line, const char *M) {
     DBG(sub::check_ff, (ff, n), file, line, M);
+}
+void check_cc(const int *cc, int n, const char *file, int line, const char *M) {
+    DBG(sub::check_cc, (cc, n), file, line, M);
 }
 } // dbg

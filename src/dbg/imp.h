@@ -10,4 +10,7 @@ void check_ff(const Force *ff, int n, const char *file, int line, const char *M)
 
 /* check if velocities are sane */
 void check_vv(const Particle *pp, int n, const char *file, int line, const char *M);
+
+/* check if colors exist */
+void check_cc(const int *cc, int n, const char *file, int line, const char *M);
 } // dbg
