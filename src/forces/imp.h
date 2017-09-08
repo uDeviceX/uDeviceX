@@ -107,10 +107,10 @@ static __device__ void gen1(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
     if         (!multi_solvent) {
         p.gamma = gammadpd_solv;
         p.a     = aij_solv;
-    } else if (ca == RED_COLOR && cb == RED_COLOR) {
+    } else if (ca == BLUE_COLOR && cb == BLUE_COLOR) {
         p.gamma = gammadpd_solv;
         p.a     = aij_solv;
-    } else if (ca == BLUE_COLOR && cb == BLUE_COLOR) {
+    } else if (ca == RED_COLOR && cb == RED_COLOR) {
         p.gamma = gammadpd_rbc;
         p.a     = aij_rbc;
     } else if (seteq(ca, cb,   BLUE_COLOR, RED_COLOR)) {
@@ -139,13 +139,13 @@ static __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, flo
     if        (ka == O && kb == O) {
         /* no correction */
     } else if (ka == S   && kb == S) {
-        ca = cb = RED_COLOR;   ljkind = LJ_TWO;
+        ca = cb = RED_BLUE;   ljkind = LJ_TWO;
     } else if (seteq(ka, kb,  O, S)) {
         cb = ca;
     } else if (seteq(ka, kb,  O, W)) {
         cb = ca;
     } else if (seteq(ka, kb,  S, W)) {
-        ca = cb = RED_COLOR;   ljkind = LJ_ONE;
+        ca = cb = RED_BLUE;   ljkind = LJ_ONE;
     } else {
         printf("unknown kind pair: %ld %ld\n", ka, kb);
         assert(0);
