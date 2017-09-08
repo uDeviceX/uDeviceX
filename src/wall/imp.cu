@@ -48,6 +48,7 @@
 
 namespace dev {
   #include "wall/dev/main.h"
+  #include "wall/dev/pair.h"
 }
 
 namespace strt {
