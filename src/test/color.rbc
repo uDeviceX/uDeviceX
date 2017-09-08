@@ -1,0 +1,12 @@
+# one step of rbc with colors
+# TEST: color.rbc.t1
+s=.
+u=u/zurich
+u.conf $s $u conf/zurich.h <<!!!
+   part_freq=4000
+   tend=5e-4
+   XS=8 YS=8 ZS=8 numberdensity=3
+   run
+!!!
+{ make clean && u.make -j; } > make.log
+sh runfile
