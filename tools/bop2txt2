@@ -1,0 +1,31 @@
+# transient interface to bop2txt
+
+usg () {
+    printf \
+'usage: bop2txt2 float.bop -- int.bop
+usage: bop2txt2 float.bop\n' >&2
+    exit 1
+}
+
+main1 () { # one argument
+    if test "$1" = -h; then usg; fi
+    exec bop2txt "$1"
+}
+
+main3 () { # three arguments
+    # f: float; i: int
+    f="$1"; shift
+    shift # skip --
+    i="$1"; shift
+    trap 'rm -f /tmp/f.$$ /tmp/i.$$' 0 1 2 3 15
+    bop2txt "$f" > /tmp/f.$$
+    bop2txt "$i" > /tmp/i.$$
+    paste /tmp/f.$$ /tmp/i.$$
+}
+
+case $#
+in
+    1) main1 "$@" ;;
+    3) main3 "$@" ;;
+    *) usg
+esac
