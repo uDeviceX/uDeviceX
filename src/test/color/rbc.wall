@@ -1,20 +1,21 @@
 # two steps of rbc with colors
-# cTEST: color.rbc.wall.t1
+# TEST: color.rbc.wall.t1
 rm -rf bop diag.txt h5 ply rbc.off
 cp data/cells/rbc.498.off rbc.off
 export PATH=../tools:$PATH
 (cd ../cmd; make ) > /dev/null
 cp data/sdf/cyl1/cyl.dat sdf.dat
-x=10 y=10 z=19; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
+x=4 y=4 z=7.99; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 u.conf conf/double.poiseuille.h <<!!!
    walls wall_creation=1
    field_dumps
    rbcs
-   multi_solvent=true color_freq=1
+   multi_solvent=true
+   color_freq=1
    part_dumps part_freq=1
    tend=1e-3
-   numberdensity=3
-   XS=20 YS=20 ZS=20
+   numberdensity=1
+   XS=8 YS=8 ZS=8
    run
 !!!
 { make clean && u.make -j; } > make.log
