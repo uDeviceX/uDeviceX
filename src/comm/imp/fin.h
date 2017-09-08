@@ -4,5 +4,5 @@ void fin(/**/ Bags *b) {
 }
 
 void fin(/**/ Stamp *s) {
-
+    MC(m::Comm_free(&s->cart));
 }
