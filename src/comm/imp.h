@@ -20,11 +20,13 @@ struct Stamp {
     MPI_Request req[NBAGS]; /* requests */
     int bt;                 /* base tag */
     MPI_Comm cart;
-    int ranks[NFRAGS], aranks[NFRAGS];
+    int rnks[NFRAGS];       /* ranks of neighbors      */
+    int anks[NFRAGS];       /* anti ranks of neighbors */
 };
 
 void ini_no_bulk(size_t bsize, float maxdensity, /**/ Bags *b);
 void ini_full   (size_t bsize, float maxdensity, /**/ Bags *b);
+
 void fin(/**/ Bags *b);
 
 void ini(MPI_Comm comm, /**/ Stamp *s);
