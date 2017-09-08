@@ -8,8 +8,8 @@ export PATH=../tools:$PATH
 x=4 y=4 z=4; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 u.conf conf/double.poiseuille.h <<!!!
    rbcs
-   part_dumps
-   tend=5e-4
+   part_dumps part_freq=1
+   tend=1e-3
    numberdensity=3
    XS=8 YS=8 ZS=8
    run
