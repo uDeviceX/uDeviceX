@@ -57,4 +57,11 @@ namespace strt {
 }
 
 #include "imp/main.h"
+
+namespace wall { namespace grey {
 #include "imp/pair.h"
+}}
+
+namespace wall { namespace color {
+#include "imp/pair.h"
+}}
