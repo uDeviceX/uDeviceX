@@ -23,7 +23,7 @@ __device__ int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
 namespace sdfdev = sdf::sub::dev;
 typedef const sdf::tex3Dca<float> TexSDF_t;
 
-__global__ void interactions(TexSDF_t texsdf, const float2 *const pp, const int np, const int w_n,
+__global__ void interactions(TexSDF_t texsdf, hforces::Cloud cloud, const int np, const int w_n,
                              float *const ff, const float seed, const int type,
                              const Texo<int> texstart, const Texo<float4> texwpp) {
 #define start_fetch(i) (texstart.fetch(i))
@@ -31,8 +31,8 @@ __global__ void interactions(TexSDF_t texsdf, const float2 *const pp, const int 
     forces::Pa a, b;  /* bulk and wall particles */
     float vx, vy, vz; /* wall velocity */
     float fx, fy, fz, rnd;
+    float x, y, z;
     int gid, pid, zplane;
-    float2 dst0, dst1, dst2;
     uint scan1, scan2, ncandidates, spidbase;
     int deltaspid1, deltaspid2;
     float threshold;
@@ -43,19 +43,17 @@ __global__ void interactions(TexSDF_t texsdf, const float2 *const pp, const int 
 
     if (pid >= np) return;
 
-    dst0 = pp[3 * pid + 0];
-    dst1 = pp[3 * pid + 1];
-
+    hforces::dev::cloud_get(cloud, pid, &a);
+    forces::p2r3(&a, /**/ &x, &y, &z);
+    
     threshold =
         -1 - 1.7320f * ((float)XSIZE_WALLCELLS / (float)XTE);
-    if (sdfdev::cheap_sdf(texsdf, dst0.x, dst0.y, dst1.x) <= threshold) return;
-
-    dst2 = pp[3 * pid + 2];
+    if (sdfdev::cheap_sdf(texsdf, x, y, z) <= threshold) return;
 
     {
-        int xbase = (int)(dst0.x - (-XS / 2 - XWM));
-        int ybase = (int)(dst0.y - (-YS / 2 - YWM));
-        int zbase = (int)(dst1.x - (-ZS / 2 - ZWM));
+        int xbase = (int)(x - (-XS / 2 - XWM));
+        int ybase = (int)(y - (-YS / 2 - YWM));
+        int zbase = (int)(z - (-ZS / 2 - ZWM));
 
         xbase = minmax(-XWM+1, XS + XWM - 2, xbase);
         ybase = minmax(-YWM+1, YS + YWM - 2, ybase);
@@ -92,7 +90,7 @@ __global__ void interactions(TexSDF_t texsdf, const float2 *const pp, const int 
     }
 
     float xforce = 0, yforce = 0, zforce = 0;
-    forces::f2k2p(dst0, dst1, dst2, type, /**/ &a);
+
     for (int i = 0; i < ncandidates; ++i) {
         int m1 = (int)(i >= scan1);
         int m2 = (int)(i >= scan2);
