@@ -7,7 +7,7 @@ export PATH=../tools:$PATH
  x=4 y=4 z=4; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 :
 u.conf conf/color.rbc.h <<!!!
-   rbcs tend=5e-4 part_freq=500
+   rbcs tend=1 part_freq=500
    part_dumps   field_freq=500
    XS=8 YS=8 ZS=8 numberdensity=1
    pushflow doublepoiseuille pushrbc
