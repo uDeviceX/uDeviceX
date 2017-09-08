@@ -137,7 +137,7 @@ __device__ Pos tex2Pos(const Texo<float2> texvert, const int id) {
 }
 
 // assume nm blocks along y
-__global__ void compute_tags_tex(const Particle *pp, const int n, const Texo<float2> texvert, const int nv, const Texo<int4> textri, const int nt, /**/ int *tags) {
+__global__ void compute_colors_tex(const Particle *pp, const int n, const Texo<float2> texvert, const int nv, const Texo<int4> textri, const int nt, /**/ int *tags) {
     const int sid = blockIdx.y;
     const int gid = threadIdx.x + blockIdx.x * blockDim.x;
     if (gid >= n) return;
@@ -193,6 +193,6 @@ void get_colors(const Particle *pp, const int n, const Texo<float2> texvert, con
     dim3 thrd(128, 1);
     dim3 blck((127 + n)/128, nm);
 
-    KL(kernels::compute_tags_tex, (blck, thrd), (pp, n, texvert, nv, textri, nt, /**/ tags));
+    KL(kernels::compute_colors_tex, (blck, thrd), (pp, n, texvert, nv, textri, nt, /**/ tags));
 }
 }
