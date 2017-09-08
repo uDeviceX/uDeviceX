@@ -1,30 +1,8 @@
-__global__ void particle2float4(const Particle *src, const int n, float4 *dst) {
-    enum {X, Y, Z};
-    int pid = threadIdx.x + blockDim.x * blockIdx.x;
-    if (pid >= n) return;
-    Particle p = src[pid];
-    dst[pid] = make_float4(p.r[X], p.r[Y], p.r[Z], 0);
-}
-
-__global__ void float42particle(const float4 *src, const int n, Particle *dst) {
-    enum {X, Y, Z};
-    int pid = threadIdx.x + blockDim.x * blockIdx.x;
-    if (pid >= n) return;
-    const float4 r = src[pid];
-    Particle p;
-    p.r[X] = r.x; p.r[Y] = r.y; p.r[Z] = r.z;
-    p.v[X] = p.v[Y] = p.v[Z] = 0;
-    dst[pid] = p;
-}
-
-__device__ int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
-
 namespace sdfdev = sdf::sub::dev;
 typedef const sdf::tex3Dca<float> TexSDF_t;
-
-__global__ void interactions(TexSDF_t texsdf, hforces::Cloud cloud, const int np, const int w_n,
-                             float *const ff, const float seed, const int type,
-                             const Texo<int> texstart, const Texo<float4> texwpp) {
+__global__ void pair(TexSDF_t texsdf, hforces::Cloud cloud, const int np, const int w_n,
+                     float *const ff, const float seed, const int type,
+                     const Texo<int> texstart, const Texo<float4> texwpp) {
 #define start_fetch(i) (texstart.fetch(i))
 #define   wpp_fetch(i) (texwpp.fetch(i))
     forces::Pa a, b;  /* bulk and wall particles */
@@ -42,7 +20,7 @@ __global__ void interactions(TexSDF_t texsdf, hforces::Cloud cloud, const int np
 
     if (pid >= np) return;
 
-    hforces::dev::cloud_get(cloud, pid, &a);
+    fetch(cloud, pid, /**/ &a);
     forces::p2r3(&a, /**/ &x, &y, &z);
     
     threshold =

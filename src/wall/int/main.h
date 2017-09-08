@@ -1,5 +1,3 @@
-namespace wall {
-
 void alloc_quants(Quants *q) {
     q->n = 0;
     q->pp = NULL;
@@ -23,23 +21,17 @@ void free_ticket(Ticket *t) {
 }
 
 void gen_quants(const sdf::Quants qsdf, /**/ int *n, Particle* pp, Quants *q) {
-    sub::gen_quants(qsdf.texsdf, n, pp, &q->n, &q->pp);
+    gen_quants(qsdf.texsdf, n, pp, &q->n, &q->pp);
 }
 
 void strt_quants(Quants *q) {
-    sub::strt_quants(&q->n, &q->pp);
+    strt_quants(&q->n, &q->pp);
 }
 
 void gen_ticket(const Quants q, Ticket *t) {
-    sub::gen_ticket(q.n, q.pp, t->cells, &t->texstart, &t->texpp);
-}
-
-void interactions(const sdf::Quants qsdf, const Quants q, const Ticket t, const int type, hforces::Cloud cloud, const int n, Force *ff) {
-    sub::interactions(qsdf.texsdf, type, cloud, n, t.texstart, t.texpp, q.n, /**/ t.rnd, ff);
+    gen_ticket(q.n, q.pp, t->cells, &t->texstart, &t->texpp);
 }
 
 void strt_dump_templ(const Quants q) {
-    sub::strt_dump_templ(q.n, q.pp);
-}
-
+    strt_dump_templ(q.n, q.pp);
 }
