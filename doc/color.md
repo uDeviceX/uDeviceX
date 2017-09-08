@@ -17,7 +17,7 @@ and passes it to `forces::gen`. See
 [src/forces/imp.h](src/forces/imp.h) which decides which pair force to
 apply based on `int color`. It knows about
 
-	enum {RED_COLOR,  BLUE_COLOR, WHITE_COLOR};
+	enum {RED_COLOR,  BLUE_COLOR};
 	
 And miss-uses `gammadpd_solv`, `gammadpd_rbc` and `gammadpd_wall` to
 set DPD parameters for red-red, blue-blue, and red-blue interactions.
@@ -46,3 +46,11 @@ color schemes are
 * `flu/_france` : flag of france in XY
 
 Example [run/color/run](run/color/run)
+
+# recolor
+
+Re-coloring is controlled by `freq_color` option: how frequent in
+number of timesteps. `freq_color=0` means no re-coloring.
+
+See [run/color/run](run/color/run).
+
