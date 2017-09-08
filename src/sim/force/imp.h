@@ -16,6 +16,7 @@ void forces(bool wall0) {
     if (contactforces) forces_cnt(&w_r);
 
     hforces::ini_cloud(o::q.pp, &cloud);
+    if (multi_solvent) hforces::ini_cloud_color(o::qc.ii, &cloud);
     w_s.pp = o::q.pp;
     w_s.c  = cloud;
     w_s.ff = o::ff;
