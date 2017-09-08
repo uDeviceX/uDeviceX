@@ -28,3 +28,4 @@
 #include "wall/imp.h"
 #include "wall/int.h"
 #include "wall/int/main.h"
+#include "wall/int/pair.h"
