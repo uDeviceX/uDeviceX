@@ -22,9 +22,9 @@ __device__ int minmax(int lo, int hi, int a) { return min(hi, max(lo, a)); }
 namespace sdfdev = sdf::sub::dev;
 typedef const sdf::tex3Dca<float> TexSDF_t;
 
-__global__ void interactions(TexSDF_t texsdf, hforces::Cloud cloud, const int np, const int w_n,
-                             float *const ff, const float seed, const int type,
-                             const Texo<int> texstart, const Texo<float4> texwpp) {
+__global__ void pair(TexSDF_t texsdf, hforces::Cloud cloud, const int np, const int w_n,
+                     float *const ff, const float seed, const int type,
+                     const Texo<int> texstart, const Texo<float4> texwpp) {
 #define start_fetch(i) (texstart.fetch(i))
 #define   wpp_fetch(i) (texwpp.fetch(i))
     forces::Pa a, b;  /* bulk and wall particles */
