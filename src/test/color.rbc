@@ -2,7 +2,8 @@
 # TEST: color.rbc.t1
 s=.
 u=u/zurich
-u.conf $s $u conf/zurich.h <<!!!
+c=conf/double.poiseuille.h
+u.conf $s $u $c <<!!!
    part_freq=4000
    tend=5e-4
    XS=8 YS=8 ZS=8 numberdensity=3
