@@ -64,8 +64,8 @@ void gen_ticket(const Quants q, Ticket *t) {
     sub::gen_ticket(q.n, q.pp, t->cells, &t->texstart, &t->texpp);
 }
 
-void interactions(const sdf::Quants qsdf, const Quants q, const Ticket t, const int type, const Particle *pp, const int n, Force *ff) {
-    sub::interactions(qsdf.texsdf, type, pp, n, t.texstart, t.texpp, q.n, /**/ t.rnd, ff);
+void interactions(const sdf::Quants qsdf, const Quants q, const Ticket t, const int type, hforces::Cloud cloud, const int n, Force *ff) {
+    sub::interactions(qsdf.texsdf, type, cloud, n, t.texstart, t.texpp, q.n, /**/ t.rnd, ff);
 }
 
 void strt_dump_templ(const Quants q) {
