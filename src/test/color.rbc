@@ -1,12 +1,17 @@
 # one step of rbc with colors
 # TEST: color.rbc.t1
-s=.
-u=u/zurich
-c=conf/double.poiseuille.h
-u.conf $s $u $c <<!!!
-   part_freq=4000
+
+rm -rf bop diag.txt h5 ply rbc.off
+cp data/cells/rbc.498.off rbc.off
+export PATH=../tools:$PATH
+(cd ../cmd; make ) > /dev/null
+x=4 y=4 z=4; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
+u.conf conf/double.poiseuille.h <<!!!
+   rbcs
+   part_dumps
    tend=5e-4
-   XS=8 YS=8 ZS=8 numberdensity=3
+   numberdensity=3
+   XS=8 YS=8 ZS=8
    run
 !!!
 { make clean && u.make -j; } > make.log
