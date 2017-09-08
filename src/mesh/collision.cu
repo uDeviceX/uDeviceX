@@ -120,7 +120,8 @@ __global__ void compute_tags(const Particle *pp, const int n, const Particle *vv
     }
 
     // dont consider the case of inside several solids
-    if (count % 2) atomicExch(tags + gid, sid);
+    //if (count % 2) atomicExch(tags + gid, sid);
+    if (count % 2) atomicExch(tags + gid, IN);
 }
 
 union Pos {
