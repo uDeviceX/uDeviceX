@@ -15,35 +15,48 @@ void transform(float* rr0, int nv, float *A, /* output */ Particle *pp) {
     }
 }
 
+static bool read_A(FILE *f, float A[16]) {
+    for (int i = 0; i < 4*4; i++)
+        if (fscanf(f, "%f", &A[i]) != 1) return false;
+    return true;
+}
+
+static void shift2local(const int orig[3], float A[16]) {
+    int c, j;
+    for (c = 0; c < 3; c++) {
+        j = 4 * c + 3;
+        A[j] -= orig[c]; /* in local coordinates */
+    }
+}
+
+static bool inside_subdomain(const int L[3], const float A[16]) {
+    int c, j;
+    for (c = 0; c < 3; c++) {
+        j = 4 * c + 3;
+        if (2*A[j] < -L[c] || 2*A[j] >= L[c]) return false; /* not my RBC */
+    }
+    return true;
+}
+
 int setup_hst(const char *r_templ, const char *r_state, int nv, Particle *pp) {
     /* fills `pp' with RBCs for this processor */
 
     float rr0[3*MAX_VERT_NUM]; /* rbc template */
     off::vert(r_templ, rr0);
 
-    int i, j, c, nc = 0;
+    int c, nc = 0;
     int mi[3], L[3] = {XS, YS, ZS};
     for (c = 0; c < 3; ++c) mi[c] = (m::coords[c] + 0.5) * L[c];
 
     float A[4*4]; /* 4x4 affice transformation matrix */
     FILE *f = fopen(r_state, "r");
-    if (f == NULL)
-    {
-        fprintf(stderr, "cont: Could not open <%s>\n", r_state);
-        exit(1);
-    }
+    if (f == NULL) ERR("Could not open <%s>\n", r_state);
         
-    while (true) {
-        for (i = 0; i < 4*4; i++) if (fscanf(f, "%f", &A[i]) != 1) goto done;
-        for (c = 0; c < 3; c++) {
-            j = 4 * c + 3;
-            A[j] -= mi[c]; /* in local coordinates */
-            if (2*A[j] < -L[c] || 2*A[j] >= L[c]) goto next; /* not my RBC */
-        }
-        transform(rr0, nv, A, &pp[nv*(nc++)]);
-    next: ;
+    while ( read_A(f, /**/ A) ) {
+        shift2local(mi, /**/ A);
+        if ( inside_subdomain(L, A) )
+            transform(rr0, nv, A, &pp[nv*(nc++)]);
     }
- done:
     fclose(f);
     MSG("read %d rbcs", nc);
     return nc;
