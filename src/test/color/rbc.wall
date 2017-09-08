@@ -7,6 +7,7 @@ export PATH=../tools:$PATH
 cp data/sdf/cyl1/cyl.dat sdf.dat
 x=4 y=4 z=7; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 u.conf conf/double.poiseuille.h <<!!!
+   KL_SYNC
    walls wall_creation=1
    field_dumps
    rbcs
