@@ -30,9 +30,13 @@
 
 #include "inc/dev/wvel.h"
 #include "forces/type.h"
+#include "forces/use.h"
 #include "forces/pack.h"
 #include "forces/hook.h"
 #include "forces/imp.h"
+
+#include "cloud/hforces/type.h"
+#include "cloud/hforces/get.h"
 
 #include "clist/int.h"
 #include "io/restart.h"
