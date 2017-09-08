@@ -27,10 +27,8 @@ int setup_hst(const char *r_templ, const char *r_state, int nv, Particle *pp) {
 
     float A[4*4]; /* 4x4 affice transformation matrix */
     FILE *f = fopen(r_state, "r");
-    if (f == NULL)
-    {
-        fprintf(stderr, "cont: Could not open <%s>\n", r_state);
-        exit(1);
+    if (f == NULL) {
+        ERR("Could not open <%s>\n", r_state);
     }
         
     while (true) {
