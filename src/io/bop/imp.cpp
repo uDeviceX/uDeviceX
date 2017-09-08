@@ -75,8 +75,8 @@ static void header_pp_ff(const long n, const char *name, const int step) {
     header(n, name, step, "float", "x y z vx vy vz fx fy fz");
 }
 
-static void header_ii(const long n, const char *name, const int step) {
-    header(n, name, step, "int", "id");
+static void header_ii(const long n, const char *name, const char *fields, const int step) {
+    header(n, name, step, "int", fields);
 }
 
 static long write_data(const void *data, long n, size_t bytesperdata, MPI_Datatype datatype, const char *fname) {
@@ -118,13 +118,21 @@ void parts_forces(const Particle *pp, const Force *ff, const long n, const char 
     if (m::rank == 0) header_pp_ff(ntot, name, step);
 }
 
-void intdata(const int *ii, const long n, const char *name, const int step) {
+static void intdata(const int *ii, const long n, const char *name, const char *fields, const int step) {
     char fname[256] = {0};
     sprintf(fname, DUMP_BASE "/bop/" PATTERN ".values", name, step / part_freq);
 
     long ntot = write_data(ii, n, sizeof(int), MPI_INT, fname);
     
-    if (m::rank == 0) header_ii(ntot, name, step);
+    if (m::rank == 0) header_ii(ntot, name, fields, step);
+}
+
+void ids(const int *ii, const long n, const char *name, const int step) {
+    intdata(ii, n, name, "id", step);
+}
+
+void colors(const int *ii, const long n, const char *name, const int step) {
+    intdata(ii, n, name, "color", step);
 }
 
 #undef PATTERN

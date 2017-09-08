@@ -13,11 +13,11 @@ void dump_part(int step) {
   cD2H(o::q.pp_hst, o::q.pp, o::q.n);
   if (global_ids) {
       cD2H(o::qi.ii_hst, o::qi.ii, o::q.n);
-      bop::intdata(o::qi.ii_hst, o::q.n, "id_solvent", step);
+      bop::ids(o::qi.ii_hst, o::q.n, "id_solvent", step);
   }
   if (multi_solvent) {
       cD2H(o::qc.ii_hst, o::qc.ii, o::q.n);
-      bop::intdata(o::qc.ii_hst, o::q.n, "colors_solvent", step);
+      bop::colors(o::qc.ii_hst, o::q.n, "colors_solvent", step);
   }
 
   if (force_dumps) {
