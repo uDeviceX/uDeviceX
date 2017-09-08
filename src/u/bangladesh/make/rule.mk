@@ -63,6 +63,7 @@ $B/tcells/int.o: $S/tcells/int.cpp; $X -I$S/. -I$S/_rain -I$S/tcells
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/. -I$S/_rain -I$S/utils
 $B/utils/mc.o: $S/utils/mc.cpp; $X -I$S/. -I$S/_rain -I$S/utils
 $B/utils/os.o: $S/utils/os.cpp; $X -I$S/. -I$S/_rain -I$S/utils
+$B/wall/.#int.o: $S/wall/.#int.cu; $N -I$S/. -I$S/_rain -I$S/wall
 $B/wall/exch/imp.o: $S/wall/exch/imp.cpp; $X -I$S/. -I$S/_rain -I$S/wall/exch
 $B/wall/imp.o: $S/wall/imp.cu; $N -I$S/. -I$S/_rain -I$S/wall
 $B/wall/int.o: $S/wall/int.cu; $N -I$S/. -I$S/_rain -I$S/wall
