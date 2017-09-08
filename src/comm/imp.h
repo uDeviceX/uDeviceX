@@ -29,7 +29,7 @@ void ini_full   (size_t bsize, float maxdensity, /**/ Bags *b);
 
 void fin(/**/ Bags *b);
 
-void ini(MPI_Comm comm, /**/ Stamp *s);
+void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s);
 void fin(/**/ Stamp *s);
 
 void post_recv(Bags *b, Stamp *s);
