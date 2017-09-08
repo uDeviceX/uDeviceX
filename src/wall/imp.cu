@@ -48,7 +48,7 @@
 
 namespace dev {
   #include "dev/main.h"
-  #include "dev/grey/fetch.h"
+  #include "dev/fetch/grey.h"
   #include "dev/pair.h"
 }
 
