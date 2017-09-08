@@ -56,7 +56,7 @@ Ru ./src
 
 	 ../run/color/rbc
 
-It tigers an assert src/forces/imp.h:121
+It tigers an assert src/forces/imp.h
 
 	./forces/imp.h:121: void forces::gen1(forces::Pa *, forces::Pa *, int, int, int, float, forces::Fo): block: [0,13,0], thread: [31,0,0] Assertion `0` failed.
 
