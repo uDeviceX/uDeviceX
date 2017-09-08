@@ -9,10 +9,11 @@ enum {
 };
 
 struct Bags {
-    data_t *dev[NBAGS]; /* data on the device         */
-    data_t *hst[NBAGS]; /* data on the host           */
-    int  counts[NBAGS]; /* size of the data           */
-    size_t bsize;       /* size of one datum in bytes */
+    data_t  *dev[NBAGS]; /* data on the device         */
+    data_t  *hst[NBAGS]; /* data on the host           */
+    int   counts[NBAGS]; /* size of the data           */
+    int capacity[NBAGS]; /* capacity of each frag      */
+    size_t bsize;        /* size of one datum in bytes */
 };
 
 struct Stamp {
@@ -22,7 +23,8 @@ struct Stamp {
     int ranks[NFRAGS], aranks[NFRAGS];
 };
 
-void ini(size_t bsize, int cap[NBAGS], /**/ Bags *b);
+void ini_no_bulk(size_t bsize, float maxdensity, /**/ Bags *b);
+void ini_full   (size_t bsize, float maxdensity, /**/ Bags *b);
 void fin(/**/ Bags *b);
 
 void ini(MPI_Comm comm, /**/ Stamp *s);
