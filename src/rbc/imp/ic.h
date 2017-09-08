@@ -15,6 +15,12 @@ void transform(float* rr0, int nv, float *A, /* output */ Particle *pp) {
     }
 }
 
+static bool read_A(FILE *f, float A[16]) {
+    for (int i = 0; i < 4*4; i++)
+        if (fscanf(f, "%f", &A[i]) != 1) return false;
+    return true;
+}
+
 int setup_hst(const char *r_templ, const char *r_state, int nv, Particle *pp) {
     /* fills `pp' with RBCs for this processor */
 
