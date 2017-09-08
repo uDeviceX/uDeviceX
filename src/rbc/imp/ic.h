@@ -38,7 +38,7 @@ int setup_hst(const char *r_templ, const char *r_state, int nv, Particle *pp) {
         for (c = 0; c < 3; c++) {
             j = 4 * c + 3;
             A[j] -= mi[c]; /* in local coordinates */
-            if (2*A[j] < -L[c] || 2*A[j] > L[c]) goto next; /* not my RBC */
+            if (2*A[j] < -L[c] || 2*A[j] >= L[c]) goto next; /* not my RBC */
         }
         transform(rr0, nv, A, &pp[nv*(nc++)]);
     next: ;
