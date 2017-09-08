@@ -1,4 +1,3 @@
-namespace wall { namespace sub { namespace dev {
 __global__ void particle2float4(const Particle *src, const int n, float4 *dst) {
     enum {X, Y, Z};
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
@@ -108,6 +107,3 @@ __global__ void interactions(TexSDF_t texsdf, hforces::Cloud cloud, const int np
 #undef start_fetch
 #undef wpp_fetch
 }
-
-}}} /* namespace */
-
