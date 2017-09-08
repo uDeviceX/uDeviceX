@@ -46,6 +46,14 @@
 #include "wall/imp.h"
 #include "exch/imp.h"
 
+namespace wall { namespace sub { namespace dev {
 #include "wall/dev.h"
+}}}
+
+namespace wall { namespace sub { namespace strt {
 #include "wall/imp/strt.h"
+}}}
+
+namespace wall { namespace sub {
 #include "wall/imp/main.h"
+}}

@@ -1,5 +1,3 @@
-namespace wall {
-namespace sub {
 typedef const sdf::tex3Dca<float> TexSDF_t;
 
 static void freeze0(TexSDF_t texsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n, /*w*/ Particle *hst) {
@@ -71,6 +69,3 @@ void interactions(TexSDF_t texsdf, const int type, hforces::Cloud cloud, const i
 void strt_dump_templ(const int n, const float4 *pp) {
     strt::write(pp, n);
 }
-
-} // sub
-} // wall
