@@ -30,5 +30,12 @@
 
 namespace wall {
 #include "int/main.h"
-#include "int/pair.h"
+
+namespace grey {
+  #include "int/pair.h"
+}
+namespace color {
+  #include "int/pair.h"
+}
+
 }

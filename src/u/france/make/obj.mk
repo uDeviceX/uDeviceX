@@ -10,5 +10,5 @@ O = $B/algo/minmax.o $B/algo/scan/imp.o $B/clist/imp.o $B/cnt/imp.o $B/comm/imp.
     $B/rbc/imp.o $B/rbc/int.o $B/rdstr/imp.o $B/rdstr/int.o $B/rex/imp.o \
     $B/rex/int.o $B/rig/imp.o $B/rig/int.o $B/rigid/imp.o $B/rnd/imp.o \
     $B/scheme/imp.o $B/sdf/imp.o $B/sdf/int.o $B/sim/imp.o $B/tcells/imp.o \
-    $B/tcells/int.o $B/utils/cc.o $B/utils/mc.o $B/utils/os.o $B/wall/.#int.o \
-    $B/wall/exch/imp.o $B/wall/imp.o $B/wall/int.o
+    $B/tcells/int.o $B/utils/cc.o $B/utils/mc.o $B/utils/os.o $B/wall/exch/imp.o \
+    $B/wall/imp.o $B/wall/int.o
