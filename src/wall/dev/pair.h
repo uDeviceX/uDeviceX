@@ -20,7 +20,7 @@ __global__ void pair(TexSDF_t texsdf, hforces::Cloud cloud, const int np, const 
 
     if (pid >= np) return;
 
-    hforces::dev::cloud_get(cloud, pid, &a);
+    fetch(cloud, pid, &a);
     forces::p2r3(&a, /**/ &x, &y, &z);
     
     threshold =
