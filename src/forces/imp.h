@@ -139,13 +139,13 @@ static __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, flo
     if        (ka == O && kb == O) {
         /* no correction */
     } else if (ka == S   && kb == S) {
-        ca = cb = RED_BLUE;   ljkind = LJ_TWO;
+        ca = cb = BLUE_COLOR;   ljkind = LJ_TWO;
     } else if (seteq(ka, kb,  O, S)) {
         cb = ca;
     } else if (seteq(ka, kb,  O, W)) {
         cb = ca;
     } else if (seteq(ka, kb,  S, W)) {
-        ca = cb = RED_BLUE;   ljkind = LJ_ONE;
+        ca = cb = BLUE_COLOR;   ljkind = LJ_ONE;
     } else {
         printf("unknown kind pair: %ld %ld\n", ka, kb);
         assert(0);
