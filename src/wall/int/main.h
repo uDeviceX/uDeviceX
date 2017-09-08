@@ -1,4 +1,3 @@
-namespace wall {
 void alloc_quants(Quants *q) {
     q->n = 0;
     q->pp = NULL;
@@ -35,6 +34,4 @@ void gen_ticket(const Quants q, Ticket *t) {
 
 void strt_dump_templ(const Quants q) {
     strt_dump_templ(q.n, q.pp);
-}
-
 }
