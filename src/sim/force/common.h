@@ -24,9 +24,9 @@ void forces_wall() {
     ini_cloud(r::q.pp, &cr);
     if (multi_solvent) ini_cloud_color(o::qc.ii, &co);
     
-    if (o::q.n)            grey::pair(w::qsdf, w::q, w::t, SOLVENT_KIND, co, o::q.n, /**/ o::ff);
-    if (solids0 && s::q.n) color::pair(w::qsdf, w::q, w::t, SOLID_KIND  , cs, s::q.n, /**/ s::ff);
-    if (rbcs && r::q.n)    color::pair(w::qsdf, w::q, w::t, SOLID_KIND  , cr, r::q.n, /**/ r::ff);
+    if (o::q.n)           color::pair(w::qsdf, w::q, w::t, SOLVENT_KIND, co, o::q.n, /**/ o::ff);
+    if (solids0 && s::q.n) grey::pair(w::qsdf, w::q, w::t, SOLID_KIND  , cs, s::q.n, /**/ s::ff);
+    if (rbcs && r::q.n)    grey::pair(w::qsdf, w::q, w::t, SOLID_KIND  , cr, r::q.n, /**/ r::ff);
 }
 
 void forces_cnt(std::vector<ParticlesWrap> *w_r) {
