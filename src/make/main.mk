@@ -20,7 +20,7 @@ CXXFLAGS  +=  -I$B -I$S
 COMMON     =  -std=c++11 ${OPT}
 NCFLAGS    =           $(CXXFLAGS)
 XCFLAGS    = $(COMMON) $(CXXFLAGS)
-NVCCFLAGS += $(COMMON) -use_fast_math 
+NVCCFLAGS += $(COMMON) -use_fast_math
 LIBS      += -lcudart
 
 N  = $(NVCC)  $(ARCH) $(NVCCFLAGS) --compiler-options '$(NCFLAGS)' -dc $< -c -o $@
@@ -38,7 +38,7 @@ $B/.cookie:;       $D ; touch $@
 # $B/bund.o: $S/bund.cu; $(NN)
 clean:; -rm -f $B/udx $O $B/gpuCode.o $B/.cookie
 
-test:;
-	u.test test/* test/color/*
+test:
+	for f in `find test -type f`; do u.test "$$f"; done
 
 .PHONY: clean test all D
