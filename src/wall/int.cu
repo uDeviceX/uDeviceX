@@ -25,10 +25,10 @@
 #include "forces/type.h"
 #include "cloud/hforces/type.h"
 
-#include "wall/imp.h"
-#include "wall/int.h"
+#include "imp.h"
+#include "int.h"
 
 namespace wall {
-#include "wall/int/main.h"
-#include "wall/int/pair.h"
+#include "int/main.h"
+#include "int/pair.h"
 }

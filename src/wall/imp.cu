@@ -44,16 +44,16 @@
 #include "utils/kl.h"
 #include "exch/imp.h"
 
-#include "wall/imp.h"
+#include "imp.h"
 
 namespace dev {
-  #include "wall/dev/main.h"
-  #include "wall/dev/pair.h"
+  #include "dev/main.h"
+  #include "dev/pair.h"
 }
 
 namespace strt {
-  #include "wall/imp/strt.h"
+  #include "imp/strt.h"
 }
 
-#include "wall/imp/main.h"
-#include "wall/imp/pair.h"
+#include "imp/main.h"
+#include "imp/pair.h"
