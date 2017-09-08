@@ -51,9 +51,18 @@ namespace dev {
   #include "dev/main.h"
 }
 
-namespace dev {
-  #include "dev/fetch/grey.h"
-  #include "dev/pair.h"
+namespace grey {
+  namespace dev {
+    #include "dev/fetch/grey.h"
+    #include "dev/pair.h"
+  }
+}
+
+namespace color {
+  namespace dev {
+    #include "dev/fetch/grey.h"
+    #include "dev/pair.h"
+  }
 }
 
 namespace strt {
