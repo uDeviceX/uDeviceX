@@ -44,8 +44,8 @@
 #include "utils/kl.h"
 
 #include "wall/imp.h"
-#include "wall/dev.h"
 #include "exch/imp.h"
 
+#include "wall/dev.h"
 #include "wall/imp/strt.h"
 #include "wall/imp/main.h"
