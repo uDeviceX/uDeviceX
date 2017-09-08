@@ -147,9 +147,9 @@ static __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, flo
     } else if (ka == S   && kb == S) {
         ca = cb = BLUE_COLOR;   ljkind = LJ_TWO;
     } else if (seteq(ka, kb,  O, S)) {
-        cb = ca;
+        copy_color(ka, kb, O, /**/ &ca, &cb);
     } else if (seteq(ka, kb,  O, W)) {
-        cb = ca;
+        copy_color(ka, kb, O, /**/ &ca, &cb);
     } else if (seteq(ka, kb,  S, W)) {
         ca = cb = BLUE_COLOR;   ljkind = LJ_ONE;
     } else {
