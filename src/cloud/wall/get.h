@@ -1,4 +1,4 @@
-namespace hforces { namespace dev {
+namespace wall { namespace dev {
 inline __device__ void cloud_get(Cloud c, int i, /**/ forces::Pa *p) {
     float *pp, *r, *v;
     pp = c.pp;
