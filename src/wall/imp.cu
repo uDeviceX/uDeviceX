@@ -49,6 +49,9 @@
 namespace wall {
 namespace dev {
   #include "dev/main.h"
+}
+
+namespace dev {
   #include "dev/fetch/grey.h"
   #include "dev/pair.h"
 }
