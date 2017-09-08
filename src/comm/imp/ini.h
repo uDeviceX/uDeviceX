@@ -21,7 +21,7 @@ static void ini_bags(int nfrags, size_t bsize, float maxdensity, /**/ Bags *b) {
 
 void ini_no_bulk(size_t bsize, float maxdensity, /**/ Bags *b) {
     ini_bags(NFRAGS, bsize, maxdensity, /**/ b);
-    b->hst = b->dev = NULL;
+    b->hst[BULK] = b->dev[BULK] = NULL;
 }
 
 void ini_full(size_t bsize, float maxdensity, /**/ Bags *b) {
