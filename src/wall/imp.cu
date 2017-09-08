@@ -42,9 +42,9 @@
 #include "io/restart.h"
 
 #include "utils/kl.h"
+#include "exch/imp.h"
 
 #include "wall/imp.h"
-#include "exch/imp.h"
 
 namespace wall { namespace sub { namespace dev {
 #include "wall/dev.h"
