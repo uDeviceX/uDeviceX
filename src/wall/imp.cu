@@ -56,3 +56,4 @@ namespace strt {
 }
 
 #include "wall/imp/main.h"
+#include "wall/imp/pair.h"

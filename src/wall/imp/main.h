@@ -59,13 +59,6 @@ void gen_ticket(const int w_n, float4 *w_pp, clist::Clist *cells, Texo<int> *tex
     TE(texpp, w_pp, w_n);
 }
 
-void pair(TexSDF_t texsdf, const int type, hforces::Cloud cloud, const int n, const Texo<int> texstart,
-                  const Texo<float4> texpp, const int w_n, /**/ rnd::KISS *rnd, Force *ff) {
-    KL(dev::pair,
-       (k_cnf(3*n)),
-       (texsdf, cloud, n, w_n, (float *)ff, rnd->get_float(), type, texstart, texpp));
-}
-
 void strt_dump_templ(const int n, const float4 *pp) {
     strt::write(pp, n);
 }
