@@ -6,6 +6,12 @@ static __device__ bool seteq(int a, int b,   int x, int y) {
     /* true if sets {a, b} and {x, y} are equal */
     return (a == x && b == y) || (a == y && b == x);
 }
+static __device__ void copy_color(int ka, int kb, int k, /**/ int *ca, int *cb) {
+    /* k: master color: copy color from this kind */
+    if      (ka == k) *cb = *ca;
+    else if (kb == k) *ca = *cb;
+    else assert(0);
+}
 
 enum {LJ_NONE, LJ_ONE, LJ_TWO}; /* lj hack */
 static __device__ float wrf(const int s, float x) {
