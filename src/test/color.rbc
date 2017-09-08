@@ -1,6 +1,5 @@
-# one step of rbc with colors
-# TEST: color.rbc.t1
-
+# two steps of rbc with colors
+# cTEST: color.rbc.t1
 rm -rf bop diag.txt h5 ply rbc.off
 cp data/cells/rbc.498.off rbc.off
 export PATH=../tools:$PATH
@@ -16,3 +15,6 @@ u.conf conf/double.poiseuille.h <<!!!
 !!!
 { make clean && u.make -j; } > make.log
 sh runfile
+:
+bop2txt2 bop/solvent-00001.bop -- bop/colors_solvent-00001.bop > color.out.txt
+
