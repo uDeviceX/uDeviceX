@@ -9,7 +9,7 @@ export PATH=../tools:$PATH
 u.conf conf/color.rbc.h <<!!!
    rbcs tend=5e-4 part_freq=500
    part_dumps   field_freq=500
-   XS=8 YS=8 ZS=8 numberdensity=2
+   XS=8 YS=8 ZS=8 numberdensity=1
    pushflow doublepoiseuille pushrbc
    contactforces
    run
