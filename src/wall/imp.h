@@ -1,6 +1,3 @@
-namespace wall {
-namespace sub {
-
 typedef const sdf::tex3Dca<float> TexSDF_t;
 
 void build_cells(const int n, float4 *pp4, clist::Clist *cells);
@@ -14,6 +11,3 @@ void interactions(TexSDF_t texsdf, const int type, hforces::Cloud cloud, const i
                   const Texo<float4> texpp, const int w_n, /**/ rnd::KISS *rnd, Force *ff);
 
 void strt_dump_templ(const int n, const float4 *pp);
-
-} // sub
-} // wall
