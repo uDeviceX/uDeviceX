@@ -38,6 +38,7 @@ $B/.cookie:;       $D ; touch $@
 # $B/bund.o: $S/bund.cu; $(NN)
 clean:; -rm -f $B/udx $O $B/gpuCode.o $B/.cookie
 
-test:; u.test test/*
+test:;
+	u.test test/* test/color/*
 
 .PHONY: clean test all D
