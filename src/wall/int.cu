@@ -38,4 +38,4 @@ namespace color {
   #include "int/pair.h"
 }
 
-}
+} /* wall */
