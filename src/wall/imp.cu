@@ -47,7 +47,7 @@
 #include "wall/imp.h"
 
 namespace dev {
-  #include "wall/dev.h"
+  #include "wall/dev/main.h"
 }
 
 namespace strt {
