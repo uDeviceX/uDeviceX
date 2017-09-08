@@ -9,7 +9,6 @@
 #include "mpi/wrapper.h"
 #include "mpi/glb.h"
 
-namespace wall { namespace sub {
 void exch(/*io*/ Particle *pp, int *n) { /* exchange pp(hst) between processors */
   #define isize(v) ((int)(v).size()) /* [i]nteger [size] */
   assert(sizeof(Particle) == 6 * sizeof(float)); /* :TODO: dependencies */
@@ -77,5 +76,3 @@ void exch(/*io*/ Particle *pp, int *n) { /* exchange pp(hst) between processors 
     }
   }
 }
-
-}} /* namespace */
