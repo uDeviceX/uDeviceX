@@ -92,7 +92,8 @@ __global__ void init_tags(const int n, const int color, /**/ int *tags) {
     if (gid < n) tags[gid] = color;
 }
 
-// assume ns blocks along y
+/* assume ns blocks along y */
+/* if the ith particle is inside jth mesh, sets tag[i] to j */
 __global__ void compute_tags(const Particle *pp, const int n, const Particle *vv, const int nv, const int *tt, const int nt, /**/ int *tags) {
     const int sid = blockIdx.y;
     const int gid = threadIdx.x + blockIdx.x * blockDim.x;
@@ -121,7 +122,6 @@ __global__ void compute_tags(const Particle *pp, const int n, const Particle *vv
 
     // dont consider the case of inside several solids
     if (count % 2) atomicExch(tags + gid, sid);
-    // if (count % 2) atomicExch(tags + gid, IN);
 }
 
 union Pos {
@@ -136,8 +136,9 @@ __device__ Pos tex2Pos(const Texo<float2> texvert, const int id) {
     return r;
 }
 
-// assume nm blocks along y
-__global__ void compute_colors_tex(const Particle *pp, const int n, const Texo<float2> texvert, const int nv, const Texo<int4> textri, const int nt, /**/ int *tags) {
+/* assume nm blocks along y */
+/* if the ith particle is inside jth mesh, sets tag[i] to IN (see enum in collision.h) */
+__global__ void compute_colors_tex(const Particle *pp, const int n, const Texo<float2> texvert, const int nv, const Texo<int4> textri, const int nt, /**/ int *cc) {
     const int sid = blockIdx.y;
     const int gid = threadIdx.x + blockIdx.x * blockDim.x;
     if (gid >= n) return;
@@ -162,8 +163,7 @@ __global__ void compute_colors_tex(const Particle *pp, const int n, const Texo<f
     }
 
     // dont consider the case of inside several solids
-    //if (count % 2) atomicExch(tags + gid, sid);
-    if (count % 2) atomicExch(tags + gid, IN);
+    if (count % 2) atomicExch(cc + gid, IN);
 }
 }
     
@@ -185,14 +185,14 @@ void inside_dev(const Particle *pp, const int n, const Mesh m, const Particle *i
    nv: number of vertices per mesh
 */
 void get_colors(const Particle *pp, const int n, const Texo<float2> texvert, const Texo<int4> textri, const int nt,
-                const int nv, const int nm, /**/ int *tags) {
+                const int nv, const int nm, /**/ int *cc) {
     if (nm == 0 || n == 0) return;
 
-    KL(kernels::init_tags, (k_cnf(n)), (n, OUT, /**/ tags));
+    KL(kernels::init_tags, (k_cnf(n)), (n, OUT, /**/ cc));
 
     dim3 thrd(128, 1);
     dim3 blck((127 + n)/128, nm);
 
-    KL(kernels::compute_colors_tex, (blck, thrd), (pp, n, texvert, nv, textri, nt, /**/ tags));
+    KL(kernels::compute_colors_tex, (blck, thrd), (pp, n, texvert, nv, textri, nt, /**/ cc));
 }
 }
