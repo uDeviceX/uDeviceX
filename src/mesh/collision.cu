@@ -87,9 +87,9 @@ void inside_hst(const Particle *pp, const int n, const Mesh m, const Particle *i
 
 namespace kernels
 {
-__global__ void init_tags(const int n, /**/ int *tags) {
+__global__ void init_tags(const int n, const int color, /**/ int *tags) {
     const int gid = threadIdx.x + blockIdx.x * blockDim.x;
-    if (gid < n) tags[gid] = OUT;
+    if (gid < n) tags[gid] = color;
 }
 
 // assume ns blocks along y
@@ -120,8 +120,8 @@ __global__ void compute_tags(const Particle *pp, const int n, const Particle *vv
     }
 
     // dont consider the case of inside several solids
-    //if (count % 2) atomicExch(tags + gid, sid);
-    if (count % 2) atomicExch(tags + gid, IN);
+    if (count % 2) atomicExch(tags + gid, sid);
+    // if (count % 2) atomicExch(tags + gid, IN);
 }
 
 union Pos {
@@ -170,7 +170,7 @@ __global__ void compute_tags_tex(const Particle *pp, const int n, const Texo<flo
 void inside_dev(const Particle *pp, const int n, const Mesh m, const Particle *i_pp, const int ns, /**/ int *tags) {
     if (ns == 0 || n == 0) return;
         
-    KL(kernels::init_tags, (k_cnf(n)), (n, /**/ tags));
+    KL(kernels::init_tags, (k_cnf(n)), (n, -1, /**/ tags));
 
     dim3 thrd(128, 1);
     dim3 blck((127 + n)/128, ns);
@@ -188,7 +188,7 @@ void get_colors(const Particle *pp, const int n, const Texo<float2> texvert, con
                 const int nv, const int nm, /**/ int *tags) {
     if (nm == 0 || n == 0) return;
 
-    KL(kernels::init_tags, (k_cnf(n)), (n, /**/ tags));
+    KL(kernels::init_tags, (k_cnf(n)), (n, OUT, /**/ tags));
 
     dim3 thrd(128, 1);
     dim3 blck((127 + n)/128, nm);
