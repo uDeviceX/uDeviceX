@@ -46,6 +46,7 @@
 
 #include "imp.h"
 
+namespace wall {
 namespace dev {
   #include "dev/main.h"
   #include "dev/fetch/grey.h"
@@ -58,10 +59,12 @@ namespace strt {
 
 #include "imp/main.h"
 
-namespace wall { namespace grey {
+namespace grey {
 #include "imp/pair.h"
-}}
+}
 
-namespace wall { namespace color {
+namespace color {
 #include "imp/pair.h"
-}}
+}
+
+} /* wall */
