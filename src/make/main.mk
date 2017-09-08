@@ -38,4 +38,6 @@ $B/.cookie:;       $D ; touch $@
 # $B/bund.o: $S/bund.cu; $(NN)
 clean:; -rm -f $B/udx $O $B/gpuCode.o $B/.cookie
 
-.PHONY = clean all D
+test:; u.test test/*
+
+.PHONY: clean test all D
