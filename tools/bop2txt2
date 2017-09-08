@@ -8,6 +8,7 @@ usage: bop2txt2 float.bop\n' >&2
 }
 
 main1 () { # one argument
+    if test "$1" = -h; then usg; fi
     exec bop2txt "$1"
 }
 
@@ -22,8 +23,6 @@ main3 () { # three arguments
     paste /tmp/f.$$ /tmp/i.$$
 }
 
-if test $# -eq 0;              then usg; fi
-if test $# -eq 1 -a "$1" = -h; then usg; fi
 case $#
 in
     1) main1 "$@" ;;
