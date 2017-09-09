@@ -32,7 +32,7 @@ void ini(int n) {
 
 void fin() {
     delete[] tags_hst;
-    CC(cudaFree(tags_dev));
+    Dfree(tags_dev);
 }
 
 static _HD_ float dot(const float a[3], const float b[3]) {return a[0]*b[0] + a[1]*b[1] + a[2]*b[2];}
