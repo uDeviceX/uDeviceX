@@ -27,7 +27,7 @@ int *tags_hst, *tags_dev;
     
 void ini(int n) {
     tags_hst = new int[n];
-    CC(cudaMalloc(&tags_dev, n*sizeof(int)));
+    Dalloc(&tags_dev, n);
 }
 
 void fin() {
