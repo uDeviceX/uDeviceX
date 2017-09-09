@@ -9,8 +9,8 @@ class Clist {
     }
 
     void build0() {
-        CC(cudaMemsetAsync(start, 0, sizeof(start[0]) * ncells));
-        CC(cudaMemsetAsync(count, 0, sizeof(count[0]) * ncells));
+        DzeroA(start, ncells);
+        DzeroA(count, ncells);
     }
 
 public:
