@@ -147,22 +147,10 @@ namespace sim {
 #undef DEV
 
 #include "update.h"
-
-#if   defined(ODSTR1)
-  #include "odstr/release.h"
-#elif defined(ODSTR0)
-  #include "odstr/none.h"
-#elif defined(ODSTR_SAFE)
-  namespace sub {
-    #include "odstr/release.h"
-  }
-  #include "odstr/safe.h"
-#else
-  #error ODSTR* is undefined
-#endif
-
+#include "odstr.h"
 #include "rbc.h"
 #include "step.h"
 #include "run.h"
 #include "imp.h"
+
 }
