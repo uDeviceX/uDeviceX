@@ -28,7 +28,7 @@ public:
         if (n) buildn(pp, n); else build0();
     }
 
-    ~Clist() { CC(cudaFree(start)); CC(cudaFree(count)); }
+    ~Clist() { Dfree(start); Dfree(count); }
 };
 
 }
