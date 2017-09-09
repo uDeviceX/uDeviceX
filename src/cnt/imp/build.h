@@ -1,4 +1,4 @@
-void build(std::vector<ParticlesWrap> wr) {
+void bind(std::vector<ParticlesWrap> wr) {
     /* build cells */
     no = wr.size();
     int ntotal = 0;

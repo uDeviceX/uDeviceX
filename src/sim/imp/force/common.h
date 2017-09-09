@@ -30,7 +30,7 @@ void forces_wall() {
 }
 
 void forces_cnt(std::vector<ParticlesWrap> *w_r) {
-    cnt::build(*w_r); /* build cells */
+    cnt::bind(*w_r);
     cnt::bulk(*w_r);
 }
 
