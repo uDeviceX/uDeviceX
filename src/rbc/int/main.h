@@ -9,7 +9,7 @@ void alloc_quants(Quants *q) {
     CC(cudaMalloc(&q->tri, q->nt * sizeof(int4)));
     CC(cudaMalloc(&q->adj0, q->nv * RBCmd * sizeof(int)));
     CC(cudaMalloc(&q->adj1, q->nv * RBCmd * sizeof(int)));
-                      
+
     q->tri_hst = new int[MAX_FACE_NUM];
     CC(cudaMalloc(&q->av, 2*MAX_CELL_NUM));
 }

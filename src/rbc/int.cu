@@ -23,5 +23,5 @@
 
 namespace rbc {
 #include "params/rbc.inc0.h"
-#include "rbc/int/imp.h"
+#include "int/main.h"
 }
