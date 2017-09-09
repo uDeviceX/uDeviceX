@@ -22,7 +22,7 @@ void dealloc(Pbufs<T, N> *b) {
     for (int i = 0; i < N; ++i) {
         if (b->dp[i] != NULL) CC(cudaFreeHost(b->hst[i]));
     }
-    CC(cudaFree(b->dev));
+    Dfree(b->dev);
 }
 
 } // sub
