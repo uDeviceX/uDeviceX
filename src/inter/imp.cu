@@ -1,7 +1,5 @@
 #include <assert.h>
-#include <vector>
 #include <mpi.h>
-#include <stdint.h>
 #include <conf.h>
 #include "inc/conf.h"
 
@@ -42,11 +40,9 @@
 #include "flu/int.h"
 #include "rbc/int.h"
 #include "rig/int.h"
-
 #include "forces/type.h"
 #include "cloud/hforces/type.h"
 #include "wall/int.h"
-
 #include "int.h"
 
 /* local */
