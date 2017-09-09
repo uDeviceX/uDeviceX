@@ -7,7 +7,6 @@
 /* globals for all kernels */
 namespace glb {
 __constant__ float r0[3];
-__constant__ float lg[3];
 
 void sim() {
     enum {X, Y, Z};
@@ -28,11 +27,5 @@ void sim() {
     r0_h[Y] = YS*(d[Y]-2*c[Y]-1)/2;
     r0_h[Z] = ZS*(d[Z]-2*c[Z]-1)/2;
     d::MemcpyToSymbol(r0, r0_h, 3*sizeof(*r0_h));
-
-    float lg_h[3]; /* domain size */
-    lg_h[X] = d[X]*XS;
-    lg_h[Y] = d[Y]*YS;
-    lg_h[Z] = d[Z]*ZS;
-    d::MemcpyToSymbol(lg, lg_h, 3*sizeof(*lg_h));
 }
 }
