@@ -21,7 +21,7 @@
 
 #include "inc/tmp/wrap.h"
 #include "inc/tmp/pinned.h"
-#include "sim/int.h"
+#include "sim/imp.h"
 
 #include "dbg/imp.h"
 #include "cnt/int.h"

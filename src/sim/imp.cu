@@ -82,8 +82,6 @@
 
 #include "fsi/type.h"
 #include "fsi/int.h"
-
-#include "int.h"
 #include "rex/int.h"
 #include "lforces/local.h"
 
@@ -119,38 +117,39 @@ namespace dev {
 #include "inter/int.h"
 #include "scheme/int.h"
 
+#include "imp.h"
 namespace sim {
 #include "type.h"
-#include "dec.h"
-#include "force/common.h"
-#include "force/dpd.h"
-#include "force/imp.h"
+#include "imp/dec.h"
+#include "imp/force/common.h"
+#include "imp/force/dpd.h"
+#include "imp/force/imp.h"
 
-#include "ini.h"
-#include "fin.h"
-#include "dump.h"
-#include "colors.h"
+#include "imp/ini.h"
+#include "imp/fin.h"
+#include "imp/dump.h"
+#include "imp/colors.h"
 
 #define HST (true)
 #define DEV (false)
 #define DEVICE_SOLID
 #ifdef DEVICE_SOLID
-  #include "0dev/bounce.h"
-  #include "0dev/update.h"
-  #include "0dev/distr.h"
+  #include "imp/0dev/bounce.h"
+  #include "imp/0dev/update.h"
+  #include "imp/0dev/distr.h"
 #else
-  #include "0hst/bounce.h"
-  #include "0hst/update.h"
-  #include "0hst/distr.h"
+  #include "imp/0hst/bounce.h"
+  #include "imp/0hst/update.h"
+  #include "imp/0hst/distr.h"
 #endif
 #undef HST
 #undef DEV
 
-#include "update.h"
-#include "odstr.h"
-#include "rbc.h"
-#include "step.h"
-#include "run.h"
-#include "imp.h"
+#include "imp/update.h"
+#include "imp/odstr.h"
+#include "imp/rbc.h"
+#include "imp/step.h"
+#include "imp/run.h"
+#include "imp/main.h"
 
 }

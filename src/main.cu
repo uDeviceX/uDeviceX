@@ -7,7 +7,7 @@
 #include "mpi/glb.h"
 #include "d/api.h"
 
-#include "sim/int.h"
+#include "sim/imp.h"
 #include "glb.h"
 
 int main(int argc, char **argv) {
