@@ -10,7 +10,6 @@
 #include "d/ker.h"
 
 #include "mpi/wrapper.h"
-#include "io/off.h"
 #include "algo/scan/int.h"
 
 #include "rnd/imp.h"
@@ -21,7 +20,6 @@
 #include "mpi/glb.h"
 #include "utils/cc.h"
 #include "utils/mc.h"
-#include "frag.h"
 
 #include "utils/kl.h"
 #include "mpi/basetags.h"
@@ -45,9 +43,7 @@
 #include "io/diag.h"
 
 #include "dbg/imp.h"
-
 #include "io/restart.h"
-
 #include "glb.h"
 
 #include "inc/dev/read.h"
@@ -64,14 +60,8 @@
 #include "rdstr/int.h"
 
 #include "field.h"
-
-#include "forces/type.h"
-#include "forces/hook.h"
-#include "forces/imp.h"
-
 #include "sdf/type.h"
 #include "sdf/int.h"
-
 #include "wall/int.h"
 
 #include "flu/int.h"
