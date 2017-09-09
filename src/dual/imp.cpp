@@ -20,6 +20,6 @@ void alloc(I *p, int n) {
 void dealloc(I p) {
     int *D;
     D = p.D;
-    Pfree0(D);
+    Pfree(D);
 }
 }
