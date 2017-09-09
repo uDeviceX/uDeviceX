@@ -119,7 +119,7 @@ namespace dev {
 
 #include "imp.h"
 namespace sim {
-#include "type.h"
+#include "imp/type.h"
 #include "imp/dec.h"
 #include "imp/force/common.h"
 #include "imp/force/dpd.h"
