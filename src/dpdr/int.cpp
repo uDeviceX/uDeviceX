@@ -1,3 +1,5 @@
+#include <math.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include <mpi.h>
 #include <conf.h>
@@ -57,7 +59,7 @@ void alloc_ticketSh(/**/ TicketShalo *t) {
 
 void free_ticketSh(/**/TicketShalo *t) {
     sub::free_Sbufs(/**/ &t->b);
-    CC(cudaFreeHost(t->nphst));
+    Pfree(t->nphst);
 }
 
 void alloc_ticketRh(/**/ TicketRhalo *t) {
