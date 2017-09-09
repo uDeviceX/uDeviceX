@@ -20,7 +20,7 @@
 #include "sdf/type.h"
 #include "sdf/int.h"
 
-#include "clist/int.h"
+#include "clist/imp.h"
 
 #include "forces/type.h"
 #include "cloud/hforces/type.h"

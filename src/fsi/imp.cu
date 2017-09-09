@@ -44,7 +44,7 @@
 #include "inc/dev/common.h"
 #include "inc/dev/index.h"
 
-#include "clist/int.h"
+#include "clist/imp.h"
 #include "rbc/int.h"
 #include "forces/type.h"
 #include "forces/pack.h"
