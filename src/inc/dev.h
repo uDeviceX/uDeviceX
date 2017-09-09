@@ -29,8 +29,7 @@
 #define aH2D(D, H, n) CC(d::MemcpyAsync((D), (H), (n) * sizeof((H)[0]), H2D))
 
 /* device allocation */
-#define Dfree(d)     CC(cudaFree(d))
-#define Dfree0(D)    CC(d::Free(D))
+#define Dfree(D)     CC(d::Free(D))
 
 /* generic device allocation: TODO: */
 #define Dalloc000000(D, sz) d::Malloc((void**)(void*)(D), (sz))

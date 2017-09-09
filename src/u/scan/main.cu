@@ -55,8 +55,8 @@ static void main1() {
 
     main0();
 
-    Dfree0(x);
-    Dfree0(y);
+    Dfree(x);
+    Dfree(y);
 }
 
 int main(int argc, char **argv) {

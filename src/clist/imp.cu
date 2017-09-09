@@ -50,7 +50,7 @@ void build(int n, int xcells, int ycells, int zcells,
     KL(dev::gather, (k_cnf(n)), (pp, ids, n, /**/ ppd));
 
     aD2D(pp, ppd, n);
-    Dfree0(ids);
-    Dfree0(ppd);
+    Dfree(ids);
+    Dfree(ppd);
 }
 }

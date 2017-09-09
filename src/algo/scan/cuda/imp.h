@@ -18,7 +18,7 @@ void alloc_work(int size, /**/ Work *w) {
 }
 
 void free_work(/**/ Work *w) {
-    Dfree0(w->tmp);
-    Dfree0(w->compressed);
+    Dfree(w->tmp);
+    Dfree(w->compressed);
 }
 
