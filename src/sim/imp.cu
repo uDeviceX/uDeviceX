@@ -59,7 +59,6 @@
 #include "mdstr/int.h"
 #include "rdstr/int.h"
 
-#include "field.h"
 #include "sdf/type.h"
 #include "sdf/int.h"
 #include "wall/int.h"
