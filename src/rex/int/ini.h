@@ -11,7 +11,7 @@ static void ini_tickets(/*io*/ basetags::TagGen *g) {
     ini_ticketpack(&tp);
     ini_ticketpinned(&ti);
 
-    Palloc0(&buf_pi, MAX_PART_NUM);
+    Palloc(&buf_pi, MAX_PART_NUM);
     Link(&buf, buf_pi);
 }
 
@@ -19,10 +19,10 @@ static void ini_remote() {
     int i, n;
     for (i = 0; i < 26; i++) {
         n = i2max(i);
-        Palloc0(&PP_pi.d[i], n);
+        Palloc(&PP_pi.d[i], n);
         Link(&PP.d[i], PP_pi.d[i]);
 
-        Palloc0(&FF_pi.d[i], n);
+        Palloc(&FF_pi.d[i], n);
         Link(&FF.d[i], FF_pi.d[i]);
     }
 }
@@ -35,7 +35,7 @@ static void ini_local() {
         h = &local[i];
         Dalloc(&h->indexes, n);
 
-        Palloc0(&h->ff_pi, n);
+        Palloc(&h->ff_pi, n);
         Link(&h->ff, h->ff_pi);
     }
 }

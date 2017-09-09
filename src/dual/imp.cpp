@@ -13,7 +13,7 @@
 
 namespace dual {
 void alloc(I *p, int n) {
-    Palloc0(&p->D, n);
+    Palloc(&p->D, n);
     Link(&p->DP, p->D);
 }
 

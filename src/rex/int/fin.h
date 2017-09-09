@@ -1,6 +1,6 @@
 namespace rex {
 static void fin_tickets() {
-    Pfree0(buf_pi);
+    Pfree(buf_pi);
     fin_ticketpack(tp);
     fin_ticketpinned(ti);
 }

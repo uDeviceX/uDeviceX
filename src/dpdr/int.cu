@@ -47,7 +47,7 @@ void free_ticketrnd(/**/ TicketRnd *tr) {
 void alloc_ticketSh(/**/ TicketShalo *t) {
     sub::ini_ticketSh(/**/ &t->b, &t->estimate, &t->nc);
 
-    Palloc0(&t->nphst, 26);
+    Palloc(&t->nphst, 26);
     Link(&t->npdev, t->nphst);
 
     int s = t->fragstarts.d[0] = 0;

@@ -5,10 +5,10 @@ static void alloc_Bbuf_frag(const int i, const int est, const int nfragcells, /*
     Dalloc(&b->cum.d[i], nfragcells + 1);
     Dalloc(&b->pp.d[i], est);
 
-    Palloc0(&b->cumhst.d[i], nfragcells + 1);
+    Palloc(&b->cumhst.d[i], nfragcells + 1);
     Link(&b->cumdev.d[i], b->cumhst.d[i]);
 
-    Palloc0(&b->pphst.d[i], est);
+    Palloc(&b->pphst.d[i], est);
     Link(&b->ppdev.d[i], b->pphst.d[i]);
 }
 
