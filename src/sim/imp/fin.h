@@ -67,7 +67,7 @@ void fin() {
         rdstr::free_ticketR(&r::tdr);
         rdstr::free_ticketE(&r::tde);
         
-        CC(cudaFree(r::ff));
+        Dfree(r::ff);
     }
     datatype::fin();
 }
