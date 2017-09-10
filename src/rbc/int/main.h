@@ -15,12 +15,12 @@ void alloc_quants(Quants *q) {
 }
 
 void free_quants(Quants *q) {
-    CC(cudaFree(q->pp));
-    CC(cudaFree(q->av));
+    Dfree(q->pp);
+    Dfree(q->av);
 
-    CC(cudaFree(q->tri));
-    CC(cudaFree(q->adj0));
-    CC(cudaFree(q->adj1));
+    Dfree(q->tri);
+    Dfree(q->adj0);
+    Dfree(q->adj1);
 
     delete[] q->tri_hst;
     delete[] q->pp_hst;
