@@ -1,2 +1,2 @@
 module: load cray-hdf5-parallel cudatoolkit daint-gpu
-cmd: srun -n 1 -u --output=cout.txt ./udx 1 1 1
+cmd: srun -n 1 -u ./udx 1 1 1
