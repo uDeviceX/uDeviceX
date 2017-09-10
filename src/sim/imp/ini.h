@@ -1,7 +1,7 @@
 void ini() {
     datatype::ini();
     if (rbcs) {
-        CC(cudaMalloc(&r::ff, MAX_PART_NUM));
+        Dalloc(&r::ff, MAX_PART_NUM);
         rbc::alloc_quants(&r::q);
 
         rdstr::ini_ticketC(&tag_gen, &r::tdc);
