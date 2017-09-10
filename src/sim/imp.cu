@@ -97,8 +97,8 @@ namespace dev {
 #include "mbounce/imp.h"
 #include "mrescue.h"
 
-#include "bbhalo.decl.h"
-#include "bbhalo.impl.h"
+#include "bbhalo/imp/dec.h"
+#include "bbhalo/imp/main.h"
 
 #include "io/bop/imp.h"
 #include "rig/int.h"
