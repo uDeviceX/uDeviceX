@@ -1,6 +1,6 @@
 void post_recv(Bags *b, Stamp *s) {
     for (int i = 0; i < NFRAGS; ++i) {
-        size_t c = b->counts[i] * b->bsize; // TODO: capacity
+        size_t c = b->capacity[i] * b->bsize;
         MC(m::Irecv(b->hst[i], c, MPI_BYTE, s->rnks[i], s->bt + i, s->cart, s->req + i));
     }
 }
