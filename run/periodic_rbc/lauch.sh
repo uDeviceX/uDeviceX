@@ -15,4 +15,13 @@ clean
 setup
 geom
 echo "Domain: $Domain"
-compile ${GITROOT}/src/
+
+u="u/x"
+s="${GITROOT}/src"
+
+u.conf $s $u conf.base.h <<EOF
+    $Domain
+    run
+EOF
+
+compile
