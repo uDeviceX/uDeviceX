@@ -14,7 +14,11 @@ NZ=$1; shift
 clean
 setup
 geom
-echo "Domain: $Domain"
+echo "sub domain: $Domain"
+echo "full domain: $FullDomain"
+
+ic
+restart_dir
 
 u="u/x"
 s="${GITROOT}/src"

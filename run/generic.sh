@@ -24,4 +24,5 @@ geom () {
     LY=$((${NY}*${YS}))
     LZ=$((${NZ}*${ZS}))
     Domain="XS=$XS YS=$YS ZS=$ZS"
+    FullDomain="LX=$LX LY=$LY LZ=$LZ"
 }
