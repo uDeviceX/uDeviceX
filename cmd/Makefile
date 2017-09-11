@@ -8,6 +8,7 @@ P.daint  = load/u.load.daint make/u.make.daint run/u.run.daint \
 	utest/u.test.load.daint batch/u.batch.daint exec/u.exec.daint
 
 P.leonhard  = load/u.load.leonhard make/u.make.leonhard run/u.run.leonhard \
+	batch/u.batch.leonhard
 
 P.panda  = load/u.load.panda make/u.make.panda run/u.run.panda \
 	utest/u.test.load.panda batch/u.batch.panda exec/u.exec.panda
