@@ -3,4 +3,4 @@
 # load modules for leonhard
 #  used by: u.make, u.run.leonhard
 
-module1 load openmpi cuda
+module1 load openmpi cuda hdf5
