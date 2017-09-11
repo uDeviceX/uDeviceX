@@ -87,4 +87,12 @@ int Type_contiguous(int count, MPI_Datatype oldtype, MPI_Datatype *newtype) {
 int Waitall(int count, MPI_Request array_of_requests[], MPI_Status *array_of_statuses) {
     return MPI_Waitall(count, array_of_requests, array_of_statuses);
 }
+
+int Probe(int source, int tag, MPI_Comm comm, MPI_Status *status) {
+    return MPI_Probe(source, tag, comm, status);
+}
+
+int Get_count(const MPI_Status *status, MPI_Datatype datatype, int *count) {
+    return MPI_Get_count(status, datatype, count);
+}
 }
