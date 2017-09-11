@@ -1,7 +1,7 @@
 ARCH_VAL = compute_60
 CODE_VAL = sm_60
 
-LINK = CC
+LINK = mpiCC
 NVCC = nvcc
 
 MPI_CXXFLAGS = -I${OPENMPI_ROOT}/include
