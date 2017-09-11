@@ -41,4 +41,5 @@ EOF
 compile
 copy
 
+cd $RUNDIR
 u.batch $NX $NY $NZ ./udx 04:00
