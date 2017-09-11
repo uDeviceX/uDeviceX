@@ -30,4 +30,4 @@ EOF
 
 compile
 
-u.batch $NX $NY $NZ ./udx
+u.batch $NX $NY $NZ ./udx 04:00
