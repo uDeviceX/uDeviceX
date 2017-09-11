@@ -2,6 +2,7 @@
 
 : ${CUDA_MEMCHECK=cuda-memcheck}
 : ${VALGRIND=valgrind}
+: ${NVPROF=nvprof}
 
 mem () { # cuda memcheck
     echo "${CUDA_MEMCHECK}" "${MEM}" "$@"
@@ -11,7 +12,9 @@ val () { # valgrind
     echo "${VALGRIND}"      "${VAL}" "$@"
 }
 
-
+prof() { # cuda profiler
+    echo "${NVPROF}"        "${PROF}" "$@"
+}
 
 direct () {
     echo "$@"
@@ -19,8 +22,14 @@ direct () {
 
 ##### true if variable is set
 if   test ! -z "${MEM+x}"
-then mem    "$@"
+then
+    mem    "$@"
 elif test ! -z "${VAL+x}"
-then val    "$@"
-else direct "$@"
+then
+    val    "$@"
+elif test ! -z "${PROF+x}"
+then
+    prof   "$@"
+else
+    direct "$@"
 fi
