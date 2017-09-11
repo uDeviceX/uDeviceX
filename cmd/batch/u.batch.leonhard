@@ -15,7 +15,7 @@ then                   shift
 else Time="-W $1"; shift
 fi
 
-rargs="rusage[ngpus_excl_p=$n]"
+rargs="rusage[ngpus_excl_p=$n,mem=4500]"
 ioargs="-oo out.txt -eo err.txt"
 
 . u.load.leonhard
