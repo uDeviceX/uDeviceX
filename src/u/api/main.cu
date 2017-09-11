@@ -43,7 +43,7 @@ static void main0() {
 static void main1() {
     Dalloc(&dev, N);
     main0();
-    Dfree0(dev);
+    Dfree(dev);
 }
 
 int main(int argc, char **argv) {

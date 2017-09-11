@@ -50,7 +50,8 @@ void fin() {
         rig::free_quants(&s::q);
         rig::free_ticket(&s::t);
         scan::free_work(/**/ &s::ws);
-        CC(cudaFree(s::ff)); delete[] s::ff_hst;
+        Dfree(s::ff);
+        free(s::ff_hst);
 
         tcells::free_quants(&bb::qtc);
         mbounce::free_ticketM(&bb::tm);
@@ -66,7 +67,7 @@ void fin() {
         rdstr::free_ticketR(&r::tdr);
         rdstr::free_ticketE(&r::tde);
         
-        CC(cudaFree(r::ff));
+        Dfree(r::ff);
     }
     datatype::fin();
 }

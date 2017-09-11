@@ -1,7 +1,8 @@
+#include <math.h>
 #include <assert.h>
 #include <vector>
 #include <mpi.h>
-#include <stdint.h>
+
 #include <conf.h>
 #include "inc/conf.h"
 
@@ -20,7 +21,6 @@
 #include "inc/dev.h"
 
 #include "inc/tmp/wrap.h"
-#include "inc/tmp/pinned.h"
 #include "sim/imp.h"
 
 #include "dbg/imp.h"

@@ -1,5 +1,5 @@
-namespace bbhalo
-{    
+namespace bbhalo {
+
 MPI_Comm cart;
 MPI_Request sendcntreq[26];
 std::vector<MPI_Request> ssendreq, srecvreq, psendreq, precvreq, recvcntreq;

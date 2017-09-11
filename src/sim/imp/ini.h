@@ -1,7 +1,7 @@
 void ini() {
     datatype::ini();
     if (rbcs) {
-        CC(cudaMalloc(&r::ff, MAX_PART_NUM));
+        Dalloc(&r::ff, MAX_PART_NUM);
         rbc::alloc_quants(&r::q);
 
         rdstr::ini_ticketC(&tag_gen, &r::tdc);
@@ -66,8 +66,8 @@ void ini() {
         rig::alloc_quants(&s::q);
         rig::alloc_ticket(&s::t);
         scan::alloc_work(XS*YS*ZS, /**/ &s::ws);
-        s::ff_hst = new Force[MAX_PART_NUM];
-        CC(cudaMalloc(&s::ff, MAX_PART_NUM * sizeof(Force)));
+        s::ff_hst = (Force*)malloc(sizeof(&s::ff_hst)*MAX_PART_NUM);
+        Dalloc(&s::ff, MAX_PART_NUM);
 
         tcells::alloc_quants(MAX_SOLIDS, &bb::qtc);
         mbounce::alloc_ticketM(&bb::tm);

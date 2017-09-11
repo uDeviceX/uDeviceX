@@ -24,7 +24,7 @@
 #include "utils/kl.h"
 
 #include "rnd/imp.h"
-#include "clist/int.h"
+#include "clist/imp.h"
 #include "flu/int.h"
 
 #include "algo/scan/int.h"

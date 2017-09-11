@@ -9,7 +9,7 @@ void alloc_ticket(Ticket *t) {
 }
 
 void free_quants(Quants *q) {
-    if (q->pp) CC(cudaFree(q->pp));
+    if (q->pp) Dfree(q->pp);
     q->n = 0;
 }
 

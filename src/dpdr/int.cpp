@@ -1,3 +1,5 @@
+#include <math.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include <mpi.h>
 #include <conf.h>
@@ -47,7 +49,7 @@ void free_ticketrnd(/**/ TicketRnd *tr) {
 void alloc_ticketSh(/**/ TicketShalo *t) {
     sub::ini_ticketSh(/**/ &t->b, &t->estimate, &t->nc);
 
-    Palloc0(&t->nphst, 26);
+    Palloc(&t->nphst, 26);
     Link(&t->npdev, t->nphst);
 
     int s = t->fragstarts.d[0] = 0;
@@ -57,7 +59,7 @@ void alloc_ticketSh(/**/ TicketShalo *t) {
 
 void free_ticketSh(/**/TicketShalo *t) {
     sub::free_Sbufs(/**/ &t->b);
-    CC(cudaFreeHost(t->nphst));
+    Pfree(t->nphst);
 }
 
 void alloc_ticketRh(/**/ TicketRhalo *t) {

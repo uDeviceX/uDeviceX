@@ -7,5 +7,5 @@ z=$1; shift
 e=$1; shift # executable
 
 . u.load.daint
-arg="-u --output=cout.txt"
+arg="-u"
 exec1 srun -n $n  $arg `u.wrap "$e"` $x $y $z "$@"

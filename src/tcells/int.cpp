@@ -35,9 +35,9 @@ void free_quants(/**/ Quants *q) {
     delete[] q->cc_hst;
     delete[] q->ii_hst;
 
-    Dfree0(q->ss_dev);
-    Dfree0(q->cc_dev);
-    Dfree0(q->ii_dev);
+    Dfree(q->ss_dev);
+    Dfree(q->cc_dev);
+    Dfree(q->ii_dev);
 }
 
 void build_hst(const Mesh m, const Particle *i_pp, const int ns, /**/ Quants *q) {

@@ -1,8 +1,8 @@
 struct ParticlesWrap {
     const Particle *p;
-    Force *f;
     int n;
-    ParticlesWrap() : p(NULL), f(NULL), n(0) {}
+    Force *f;
+    ParticlesWrap() : p(NULL), n(0), f(NULL)  {}
     ParticlesWrap(const Particle *const p, const int n, Force *f)
         : p(p), n(n), f(f) {}
 };

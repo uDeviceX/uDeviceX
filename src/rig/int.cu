@@ -39,10 +39,10 @@ void free_quants(Quants *q) {
     delete[] q->rr0_hst;
     delete[] q->i_pp_hst;
     
-    Dfree0(q->pp);
-    Dfree0(q->ss);
-    Dfree0(q->rr0);
-    Dfree0(q->i_pp);
+    Dfree(q->pp);
+    Dfree(q->ss);
+    Dfree(q->rr0);
+    Dfree(q->i_pp);
 
     if (q->m_hst.tt) delete[] q->m_hst.tt;
     if (q->m_hst.vv) delete[] q->m_hst.vv;

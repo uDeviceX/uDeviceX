@@ -1,5 +1,6 @@
+/* types local for sim:: */
 namespace o {
-struct H { /* halo tikets : was h:: */
+struct H { /* halo tickets : was h:: */
     dpdr::TicketCom tc;
     dpdr::TicketRnd trnd;
     dpdr::TicketShalo ts;

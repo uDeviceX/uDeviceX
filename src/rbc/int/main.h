@@ -6,21 +6,21 @@ void alloc_quants(Quants *q) {
     q->nt = RBCnt;
     q->nv = RBCnv;
 
-    CC(cudaMalloc(&q->tri, q->nt * sizeof(int4)));
-    CC(cudaMalloc(&q->adj0, q->nv * RBCmd * sizeof(int)));
-    CC(cudaMalloc(&q->adj1, q->nv * RBCmd * sizeof(int)));
-                      
+    Dalloc(&q->tri,  q->nt);
+    Dalloc(&q->adj0, q->nv * RBCmd);
+    Dalloc(&q->adj1, q->nv * RBCmd);
+
     q->tri_hst = new int[MAX_FACE_NUM];
-    CC(cudaMalloc(&q->av, 2*MAX_CELL_NUM));
+    Dalloc(&q->av, 2*MAX_CELL_NUM);
 }
 
 void free_quants(Quants *q) {
-    CC(cudaFree(q->pp));
-    CC(cudaFree(q->av));
+    Dfree(q->pp);
+    Dfree(q->av);
 
-    CC(cudaFree(q->tri));
-    CC(cudaFree(q->adj0));
-    CC(cudaFree(q->adj1));
+    Dfree(q->tri);
+    Dfree(q->adj0);
+    Dfree(q->adj1);
 
     delete[] q->tri_hst;
     delete[] q->pp_hst;

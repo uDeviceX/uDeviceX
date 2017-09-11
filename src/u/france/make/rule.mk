@@ -6,7 +6,7 @@ $B/comm/imp.o: $S/comm/imp.cu; $N -I$S/. -I$S/_rain -I$S/comm
 $B/d/api.o: $S/d/api.cu; $N -I$S/. -I$S/_rain -I$S/d
 $B/dbg/imp.o: $S/dbg/imp.cu; $N -I$S/. -I$S/_rain -I$S/dbg
 $B/dpdr/imp.o: $S/dpdr/imp.cu; $N -I$S/. -I$S/_rain -I$S/dpdr
-$B/dpdr/int.o: $S/dpdr/int.cu; $N -I$S/. -I$S/_rain -I$S/dpdr
+$B/dpdr/int.o: $S/dpdr/int.cpp; $X -I$S/. -I$S/_rain -I$S/dpdr
 $B/dual/imp.o: $S/dual/imp.cpp; $X -I$S/. -I$S/_rain -I$S/dual
 $B/field.o: $S/field.cpp; $X -I$S/. -I$S/_rain
 $B/flu/imp.o: $S/flu/imp.cu; $N -I$S/. -I$S/_rain -I$S/flu -I$S/flu/_france
@@ -49,7 +49,7 @@ $B/rbc/int.o: $S/rbc/int.cu; $N -I$S/. -I$S/_rain -I$S/rbc
 $B/rdstr/imp.o: $S/rdstr/imp.cu; $N -I$S/. -I$S/_rain -I$S/rdstr
 $B/rdstr/int.o: $S/rdstr/int.cu; $N -I$S/. -I$S/_rain -I$S/rdstr
 $B/rex/imp.o: $S/rex/imp.cu; $N -I$S/. -I$S/_rain -I$S/rex -I$S/rex/_release
-$B/rex/int.o: $S/rex/int.cu; $N -I$S/. -I$S/_rain -I$S/rex -I$S/rex/_release
+$B/rex/int.o: $S/rex/int.cpp; $X -I$S/. -I$S/_rain -I$S/rex -I$S/rex/_release
 $B/rig/imp.o: $S/rig/imp.cu; $N -I$S/. -I$S/_rain -I$S/rig
 $B/rig/int.o: $S/rig/int.cu; $N -I$S/. -I$S/_rain -I$S/rig
 $B/rigid/imp.o: $S/rigid/imp.cu; $N -I$S/. -I$S/_rain -I$S/rigid -I$S/rigid/_cuda
