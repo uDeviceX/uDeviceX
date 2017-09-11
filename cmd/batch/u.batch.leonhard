@@ -15,8 +15,8 @@ then                   shift
 else Time="$1"; shift
 fi
 
-Args="-oo out.txt -eo err.txt -R \"rusage[ngpus_excl_p=${n}]\" -W $Time $@"
-exec1 bsub -n $n "$Args" <<EOF
+Args="-oo out.txt -eo err.txt -R rusage[ngpus_excl_p=$n] -W $Time $@"
+exec1 bsub -n $n $Args /dev/stdin <<EOF
 #!/bin/bash
 
 . u.load.leonhard
