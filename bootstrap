@@ -7,15 +7,15 @@
 # $ sh bootstrap
 
 l="atest bop clarity off ri vi udx"
-p=https://github.com/slitvinov
-#p=git@gitlab.ethz.ch:mavt-cse
+#p=https://github.com/slitvinov
+p=git@gitlab.ethz.ch:mavt-cse
 b=solid
 
 git_udx() (
     n=uDeviceX
-    cmd git -q clone "$p/$n" --branch "$b" udx
+    cmd git clone "$p/$n" --branch "$b" udx
 )
-git_all()  { cmd git -q clone "$p/$d" "$d"; }
+git_all()  { cmd git clone "$p/$d" "$d"; }
 pull0()    ( cd0 "$d" && cmd git -q pull )
 install0() ( cd0 "$d" && cmd make install )
 
