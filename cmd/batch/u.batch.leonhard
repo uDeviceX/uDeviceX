@@ -6,17 +6,19 @@ y=$1; shift
 z=$1; shift
 e=$1; shift # executable
 
+# time format: HH.MM
+
 if   test $#   -eq 0
-then Time="--time 00:10:00"
+then Time="00:10"
 elif test "$1"   = -
 then                   shift
-else Time="--time $1"; shift
+else Time="$1"; shift
 fi
 
-Args="-oo=out.txt -eo=err.txt "rusage[ngpus_excl_p=$ngpus]" $Time $@"
-exec1 bsub -N $n $Args /dev/stdin <<EOF
+Args="-oo out.txt -eo err.txt -R \"rusage[ngpus_excl_p=${n}]\" -W $Time $@"
+exec1 bsub -n $n "$Args" <<EOF
 #!/bin/bash
 
 . u.load.leonhard
-srun `u.wrap "$e"` $x $y $z
+`u.wrap "$e"` $x $y $z
 EOF
