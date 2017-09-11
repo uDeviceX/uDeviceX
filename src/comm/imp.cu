@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <mpi.h>
 
 #include <conf.h> 
@@ -5,6 +6,7 @@
 
 #include "frag.h"
 
+#include "msg.h"
 #include "utils/mc.h"
 #include "utils/cc.h"
 #include "d/api.h"

@@ -12,7 +12,7 @@ void post_send(Bags *b, Stamp *s) {
     }
 }
 
-static void recv_bytes_counts(const Stamp *s, /**/ int *counts) {
+static void recv_counts_bytes(const Stamp *s, /**/ int *counts) {
     int i, tag, src;
     MPI_Status stat;
     
@@ -21,6 +21,18 @@ static void recv_bytes_counts(const Stamp *s, /**/ int *counts) {
         src = s->anks[i];
         MC(m::Probe(src, tag, s->cart, /**/ &stat));
         MC(m::Get_count(&stat, MPI_BYTE, counts + i));
+    }
+}
+
+void recv_counts(const Stamp *s, /**/ Bags *b) {
+    int i, c, cc[NFRAGS];
+    recv_counts_bytes(s, /**/ cc);
+
+    for (i = 0; i < NFRAGS; ++i) {
+        c = cc[i] / b->bsize;
+        b->counts[i] = c;
+        if (c >= b->capacity[i])
+            ERR("recv more than capacity.");
     }
 }
 
