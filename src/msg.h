@@ -12,5 +12,5 @@ void print();
 #define ERR(fmt, ...)                           \
     do {                                        \
         MSG(fmt, ##__VA_ARGS__);                \
-        exit(1);                                \
+        assert(0);                              \
     } while(0)

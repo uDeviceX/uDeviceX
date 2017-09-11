@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <mpi.h>
 #include <conf.h>
 #include "inc/conf.h"

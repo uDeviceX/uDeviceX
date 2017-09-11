@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <assert.h>
+
 #include <curand.h>
 #include <curand_kernel.h>
 
