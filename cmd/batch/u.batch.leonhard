@@ -20,4 +20,4 @@ ioargs="-oo out.txt -eo err.txt"
 
 . u.load.leonhard
 
-exec1 bsub -n $n "$ioargs" -R "$rargs" "$Time" $@ `u.wrap "$e"` $x $y $z
+exec1 bsub -n $n $ioargs -R "$rargs" "$Time" "$@" `u.wrap "$e"` $x $y $z
