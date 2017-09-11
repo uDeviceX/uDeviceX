@@ -25,3 +25,5 @@ u.conf $s $u conf.base.h <<EOF
 EOF
 
 compile
+
+u.batch $NX $NY $NZ ./udx
