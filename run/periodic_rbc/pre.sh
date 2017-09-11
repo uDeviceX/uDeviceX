@@ -9,8 +9,3 @@ ic () {
     rm -rf ic_solid.txt
     cp ${GITROOT}/src/data/cells/rbc.498.off rbc.off
 }
-
-restart_dir () {
-    # Restart directory structure
-    u.strtdir . $NX $NY $NZ
-}
