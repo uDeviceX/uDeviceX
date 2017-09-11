@@ -7,9 +7,11 @@ mem () { # cuda memcheck
     echo "${CUDA_MEMCHECK}" "${MEM}" "$@"
 }
 
-val () { # cuda memcheck
+val () { # valgrind
     echo "${VALGRIND}"      "${VAL}" "$@"
 }
+
+
 
 direct () {
     echo "$@"
