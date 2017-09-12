@@ -11,9 +11,10 @@ static void bind(const int *const starts, const int *const cellentries,
                        &dev::t::start.channelDesc, sizeof(int) * ncells));
     int n = wr.size();
 
-    int ns[n];
-    float2 *ps[n];
-    float *fs[n];
+    assert(n <= MAX_OBJ_TYPES);
+    int ns[MAX_OBJ_TYPES];
+    float2 *ps[MAX_OBJ_TYPES];
+    float *fs[MAX_OBJ_TYPES];
 
     for (int i = 0; i < n; ++i) {
         ns[i] = wr[i].n;
