@@ -40,6 +40,7 @@ mkdir -p     "$B"
 
 m="$B/Makefile"
 s="$B/sys.mk"
+c="$B/conf.mk"
 
 write_make; rc=$?
 if test $rc -ne 0; then exit $ERR_BIN_MAKE; fi
