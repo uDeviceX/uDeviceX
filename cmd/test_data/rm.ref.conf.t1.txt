@@ -12,6 +12,7 @@ S = ../../src
 U = u/x
 B = bin.1
 include $B/sys.mk
+include $B/conf.mk
 include $S/make/common.mk
 include $S/$U/make/obj.mk
 
@@ -24,6 +25,7 @@ S = ../../src
 U = u/x
 B = bin.2
 include $B/sys.mk
+include $B/conf.mk
 include $S/make/common.mk
 include $S/$U/make/obj.mk
 

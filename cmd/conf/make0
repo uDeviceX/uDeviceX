@@ -15,6 +15,7 @@ S = $S
 U = $U
 B = $B"'
 include $B/sys.mk
+include $B/conf.mk
 include $S/make/common.mk
 include $S/$U/make/obj.mk
 
