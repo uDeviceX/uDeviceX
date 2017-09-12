@@ -28,6 +28,11 @@ int lz() {
     return ZS * dims[Z];
 }
 
+float x2g(float r) { /* local to global */
+    enum {X};
+    return (m::coords[X] + 0.5)*XS  + r;
+}
+
 void ini(int argc, char **argv) {
     int i;
     dims[0] = dims[1] = dims[2] = 1;
