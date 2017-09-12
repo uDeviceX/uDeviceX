@@ -29,9 +29,9 @@ write_sys () (
     dn=amlucas dh=panda
     n=`whoami` h=`u.host`
 
-    c0="$S/sys/$n.$h"
-    if test ! -f "$c0"; then c0="$S/sys/$dn.$h";  fi
-    if test ! -f "$c0"; then c0="$S/sys/$dn.$dh"; fi
+    c0="$S/make/sys/$n.$h"
+    if test ! -f "$c0"; then c0="$S/make/sys/$dn.$h";  fi
+    if test ! -f "$c0"; then c0="$S/make/sys/$dn.$dh"; fi
     if test ! -f "$c0"; then exit 1             ; fi
     cp "$c0"  "$c"
 )
