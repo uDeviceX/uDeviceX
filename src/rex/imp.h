@@ -14,7 +14,7 @@ void sendC(int dranks[26], rex::TicketTags t, int counts[26]);
 void sendP(int ranks[26], rex::TicketTags t, rex::TicketPinned ti, Particle *pp, int counts[26]);
 void sendF(int ranks[26], rex::TicketTags t, int counts[26], Fop26 FF_pi);
 void unpack(ParticlesWrap *w, int nw, rex::TicketPack tp);
-void clear_forces(Fop26 FF);
+void clear_forces(const int counts[26], Fop26 FF);
 
 namespace s { /* send */
 void waitC();

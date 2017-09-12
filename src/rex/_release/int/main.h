@@ -30,7 +30,7 @@ static void rex0(ParticlesWrap *w, int nw) {
     if (!first) s::waitA(); else first = 0;
 
     dSync();
-    clear_forces(FF);
+    clear_forces(recv_counts, FF);
     if (fsiforces)     fsi::halo(PP, FF, recv_counts);
     if (contactforces) cnt::halo(PP, FF, recv_counts);
 

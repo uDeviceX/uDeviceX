@@ -105,7 +105,7 @@ static void rex0(ParticlesWrap *w, int nw) {
         MSG("recv_counts[%d]: %d/%d", i, recv_counts[i], MAX_OBJ_DENSITY*frag_ncell(i));
         O(PP.d[i], recv_counts[i]);
     }
-    clear_forces(FF);
+    clear_forces(recv_counts, FF);
     if (fsiforces)     fsi::halo(PP, FF, recv_counts);
     dSync();
     if (contactforces) cnt::halo(PP, FF, recv_counts);
