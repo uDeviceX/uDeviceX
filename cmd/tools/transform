@@ -1,0 +1,8 @@
+#!/usr/bin/awk -f
+
+BEGIN {
+    prefix = "u"
+    f = ARGV[1]
+    sub(/\//, ".", f)
+    print "u".f
+}
