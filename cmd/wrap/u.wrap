@@ -3,6 +3,7 @@
 : ${CUDA_MEMCHECK=cuda-memcheck}
 : ${VALGRIND=valgrind}
 : ${NVPROF=nvprof}
+: ${TIME=time}
 
 mem () { # cuda memcheck
     echo "${CUDA_MEMCHECK}" "${MEM}" "$@"
@@ -14,6 +15,10 @@ val () { # valgrind
 
 prof() { # cuda profiler
     echo "${NVPROF}"        "${PROF}" "$@"
+}
+
+tim() { # time
+    echo "${TIME}"          "${TIM}" "$@"
 }
 
 direct () {
@@ -30,6 +35,9 @@ then
 elif test ! -z "${PROF+x}"
 then
     prof   "$@"
+elif test ! -z "${TIM+x}"
+then
+    tim    "$@"
 else
     direct "$@"
 fi
