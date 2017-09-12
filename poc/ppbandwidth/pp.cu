@@ -39,7 +39,7 @@ int main() {
     int n = 100000, ntrials = 10000;
 
     Particle *pp;
-    float4 *pp4;
+    Particle4 *pp4;
 
     cudaEvent_t start, stop;
     float t;
@@ -47,7 +47,7 @@ int main() {
     CC(cudaSetDevice(2));
     
     CC(cudaMalloc(&pp,  n*sizeof(Particle)));
-    CC(cudaMalloc(&pp4, n*2*sizeof(float4)));
+    CC(cudaMalloc(&pp4, n*sizeof(Particle4)));
 
     CC(cudaEventCreate(&start));
     CC(cudaEventCreate(&stop));
@@ -60,11 +60,14 @@ int main() {
     measure(inif, (k_cnf(n)), (n, (float*)pp), n*sizeof(Particle), rwini);
     measure(updf, (k_cnf(n)), (n, (float*)pp), n*sizeof(Particle), rwupd);
 
-    measure(inif4, (k_cnf(n)), (n, pp4), 2*n*sizeof(float4), rwini);
-    measure(updf4, (k_cnf(n)), (n, pp4), 2*n*sizeof(float4), rwupd);
+    measure(inif4, (k_cnf(n)), (n, (float4*) pp4), 2*n*sizeof(float4), rwini);
+    measure(updf4, (k_cnf(n)), (n, (float4*) pp4), 2*n*sizeof(float4), rwupd);
 
-    measure(inif4_2tpp, (k_cnf(2*n)), (n, pp4), 2*n*sizeof(float4), rwini);
-    measure(updf4_2tpp, (k_cnf(2*n)), (n, pp4), 2*n*sizeof(float4), rwupd);
+    measure(inif4_2tpp, (k_cnf(2*n)), (n, (float4*) pp4), 2*n*sizeof(float4), rwini);
+    measure(updf4_2tpp, (k_cnf(2*n)), (n, (float4*) pp4), 2*n*sizeof(float4), rwupd);
+
+    measure(iniP4, (k_cnf(n)), (n, pp4), n*sizeof(Particle4), rwini);
+    measure(updP4, (k_cnf(n)), (n, pp4), n*sizeof(Particle4), rwupd);
 
     CC(cudaFree(pp));
     CC(cudaFree(pp4));
