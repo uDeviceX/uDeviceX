@@ -1,14 +1,14 @@
 void post_recv(Bags *b, Stamp *s) {
     for (int i = 0; i < NFRAGS; ++i) {
         size_t c = b->capacity[i] * b->bsize;
-        MC(m::Irecv(b->hst[i], c, MPI_BYTE, s->anks[i], s->bt + i, s->cart, s->req + i));
+        MC(m::Irecv(b->hst[i], c, MPI_BYTE, s->anks[i], s->bt + i, s->cart, s->rreq + i));
     }
 }
 
 void post_send(Bags *b, Stamp *s) {
     for (int i = 0; i < NFRAGS; ++i) {
         size_t n = b->counts[i] * b->bsize;
-        MC(m::Isend(b->hst[i], n, MPI_BYTE, s->rnks[i], s->bt + i, s->cart, s->req + i));
+        MC(m::Isend(b->hst[i], n, MPI_BYTE, s->rnks[i], s->bt + i, s->cart, s->sreq + i));
     }
 }
 
@@ -36,7 +36,15 @@ void recv_counts(const Stamp *s, /**/ Bags *b) {
     }
 }
 
-void wait_all(Stamp *s) {
-    MPI_Status statuses[NFRAGS];
-    MC(m::Waitall(NFRAGS, s->req, statuses));
+static void wait_all(MPI_Request rr[NFRAGS]) {
+    MPI_Status ss[NFRAGS];
+    MC(m::Waitall(NFRAGS, rr, ss));
+}
+
+void wait_recv(Stamp *s) {
+    wait_all(s->rreq);
+}
+
+void wait_send(Stamp *s) {
+    wait_all(s->sreq);
 }
