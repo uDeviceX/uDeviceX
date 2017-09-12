@@ -43,5 +43,6 @@ copy
 
 cd $RUNDIR
 
-PROF="-o prof.%q{OMPI_COMM_WORLD_RANK}.nvprof"
-u.batch $NX $NY $NZ ./udx 00:30:00
+POPT="--log-file prof.%q{OMPI_COMM_WORLD_RANK}.txt"
+
+PROF=${POPT} u.batch $NX $NY $NZ ./udx 00:30:00
