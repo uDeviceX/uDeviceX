@@ -19,7 +19,7 @@ install:
            cp "$$f" "$B/$$t";                  \
 	done
 
-test:; u.test test/cmd
+test:; u.test test/*
 
 re:; $(MAKE) -C re BIN=$B
 
