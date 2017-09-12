@@ -119,7 +119,7 @@ __global__ void upd_2tpp(int n, float4 *pp) {
 
 void print_bw(const char *fun, float t, size_t nbytes, int neval, int rw) {
     double tav = t / neval;
-    double bw = (nbytes * rw / t) * 1e-6;
+    double bw = (nbytes * rw / tav) * 1e-6;
     printf("%20s : t = %6e [ms], %6e [Gb/s]\n", fun, tav, bw);
 }
 
