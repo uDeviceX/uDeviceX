@@ -1,7 +1,9 @@
 #include <stdio.h>
+#include <mpi.h>
 
 #include "msg.h"
 #include "mpi/glb.h"
+#include "mpi/wrapper.h"
 #include "mpi/basetags.h"
 #include "glb.h"
 
@@ -13,8 +15,8 @@ int main(int argc, char **argv) {
     MSG("Comm unit test!");
 
     basetags::TagGen tg;
-    Bags sendB, recvB;
-    Stamp stamp;
+    comm::Bags sendB, recvB;
+    comm::Stamp stamp;
 
     ini(/**/ &tg);
     ini_no_bulk(sizeof(int), 1, /**/ &sendB);
