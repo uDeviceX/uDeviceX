@@ -1,8 +1,0 @@
-#!/usr/bin/awk -f
-
-BEGIN {
-    f = ARGV[1]
-    sub(/$u./, "", f)
-
-    print f
-}
