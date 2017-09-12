@@ -5,7 +5,7 @@
 BEGIN {
     ERR_ARGP = 6
     
-    h = ARGV[1]; shift()
+    h = ARGV[1]; shift() # [h]eader and [c]onfig files
     c = ARGV[1]; shift()
     nr = count_runs() # [n]umber of runs
     if (nr == 1) conf1(); else confN()
