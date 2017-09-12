@@ -117,10 +117,10 @@ __global__ void upd_2tpp(int n, float4 *pp) {
         CC(cudaEventElapsedTime(&t, start, stop));                      \
     } while (0)
 
-void print_bw(const char *fun, float t, size_t nbytes, int neval, int rw) {
+void print_bw(const char *fun, float t, size_t nbytes, int neval, float rw) {
     double tav = t / neval;
     double bw = (nbytes * rw / tav) * 1e-6;
-    printf("%20s : t = %6e [ms], %6e [Gb/s]\n", fun, tav, bw);
+    printf("%20s : t = %6e [ms], %6e [GB/s]\n", fun, tav, bw);
 }
 
 int main() {
@@ -149,14 +149,14 @@ int main() {
     measure(ini_2tpp, (k_cnf(2*n)), (2*n, pp4), /**/ tini2P4);
     measure(upd_2tpp, (k_cnf(2*n)), (2*n, pp4), /**/ tupd2P4);
 
-    print_bw("ini", tiniP, n*sizeof(Particle), ntrials, 6);
-    print_bw("upd", tupdP, n*sizeof(Particle), ntrials, 9);
+    print_bw("ini", tiniP, n*sizeof(Particle), ntrials, 2./3.);
+    print_bw("upd", tupdP, n*sizeof(Particle), ntrials, 1.5);
 
-    print_bw("ini4", tiniP4, 2*n*sizeof(float4), ntrials, 8);
-    print_bw("upd4", tupdP4, 2*n*sizeof(float4), ntrials, 12);
+    print_bw("ini4", tiniP4, 2*n*sizeof(float4), ntrials, 2./3.);
+    print_bw("upd4", tupdP4, 2*n*sizeof(float4), ntrials, 1.5);
 
-    print_bw("ini4 2tpp", tini2P4, 2*n*sizeof(float4), ntrials, 8);
-    print_bw("upd4 2tpp", tupd2P4, 2*n*sizeof(float4), ntrials, 12);
+    print_bw("ini4 2tpp", tini2P4, 2*n*sizeof(float4), ntrials, 2./3.);
+    print_bw("upd4 2tpp", tupd2P4, 2*n*sizeof(float4), ntrials, 1.5);
 
     CC(cudaFree(pp));
     CC(cudaFree(pp4));
