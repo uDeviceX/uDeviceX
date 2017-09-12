@@ -1,7 +1,7 @@
 static void bind(const int *const starts, const int *const cellentries,
           const int nc, std::vector<ParticlesWrap> wr) {
     size_t textureoffset;
-    itn ncells, n, i;
+    int ncells, n, i;
     int ns[MAX_OBJ_TYPES];
     float2 *ps[MAX_OBJ_TYPES];
     float *fs[MAX_OBJ_TYPES];
