@@ -1,4 +1,5 @@
-# gets ./udx should return something srun or mpi can run
+# gets ./udx
+# returns something srun or mpi can run
 
 : ${CUDA_MEMCHECK=cuda-memcheck}
 : ${VALGRIND=valgrind}
