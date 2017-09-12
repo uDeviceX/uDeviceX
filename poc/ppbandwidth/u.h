@@ -269,4 +269,4 @@ void check(T result, char const *const func, const char *const file, int const l
     }
 }
 
-#define checkCudaErrors(val)           check ( (val), #val, __FILE__, __LINE__ )
+#define CC(val)           check ( (val), #val, __FILE__, __LINE__ )
