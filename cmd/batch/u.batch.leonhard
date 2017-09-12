@@ -7,13 +7,18 @@ z=$1; shift
 e=$1; shift # executable
 
 # time format: HH.MM
+T2L() {
+    echo $@ | awk '{split($0,t,":"); printf( "%s:%s", t[1], t[2] )}'
+}
 
 if   test $#   -eq 0
-then Time="-W 00:10"
+then Time=`T2L "00:10:00"`
 elif test "$1"   = -
 then                   shift
-else Time="-W $1"; shift
+else Time=`T2L "$1"`; shift
 fi
+
+Time="-W $Time"
 
 rargs="rusage[ngpus_excl_p=$n,mem=4500]"
 ioargs="-oo out.txt -eo err.txt"
