@@ -44,4 +44,4 @@ copy
 cd $RUNDIR
 
 PROF="-o prof.%q{OMPI_COMM_WORLD_RANK}.nvprof"
-u.batch $NX $NY $NZ ./udx 04:00
+u.batch $NX $NY $NZ ./udx 00:30:00
