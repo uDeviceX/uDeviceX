@@ -17,6 +17,7 @@ struct Particle4 {
 
 #include "vanilla.h"
 #include "float4.h"
+#include "P4.h"
 
 void print_bw(const char *fun, float t, size_t nbytes, int neval, float rw) {
     double tav = t / neval;
