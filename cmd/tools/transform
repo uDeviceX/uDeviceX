@@ -4,9 +4,9 @@ BEGIN {
     prefix = "u"
     f = ARGV[1]
 
-    sub(/$utest/,  "test/" , f)
+    sub(/^utest\//,  "test/" , f) # special
     sub(/\/main$/, ""      , f)
-    sub(/\//,      "."     , f)
 
+    sub(/\//,      "."     , f)
     printf "%s.%s\n", prefix, f
 }

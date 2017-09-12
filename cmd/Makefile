@@ -16,7 +16,7 @@ install:
 	@mkdir -p $B
 	@for f in $P;                          \
 	do t=`tools/transform "$$f"`;          \
-           echo "$$f";                         \
+           echo "$$f" $$t;                     \
            cp "$$f" "$B/$$t";                  \
 	done
 
