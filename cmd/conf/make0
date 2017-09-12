@@ -36,6 +36,7 @@ write_sys () (
     cp "$s0"  "$s"
 )
 
+write_conf () { cp "$S/make/conf.mk" "$c"; }
 mkdir -p     "$B"
 
 m="$B/Makefile"
@@ -48,4 +49,4 @@ if test $rc -ne 0; then exit $ERR_BIN_MAKE; fi
 write_sys; rc=$?
 if test $rc -ne 0; then exit $ERR_MISSING_MK; fi
 
-
+write_conf
