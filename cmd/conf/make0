@@ -25,7 +25,7 @@ include $S/$U/make/dir.mk
 include $S/$U/make/dep.mk' > "$m"
 }
 
-write_conf () (
+write_sys () (
     dn=amlucas dh=panda
     n=`whoami` h=`u.host`
 
@@ -44,7 +44,7 @@ c="$B/sys.mk"
 write_make; rc=$?
 if test $rc -ne 0; then exit $ERR_BIN_MAKE; fi
 
-write_conf; rc=$?
+write_sys; rc=$?
 if test $rc -ne 0; then exit $ERR_MISSING_MK; fi
 
 
