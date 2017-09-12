@@ -1,4 +1,5 @@
 BIN = $(HOME)/bin
+B = $(BIN)
 
 P.common = u.host make/u.make run/u.run u.strtdir u.argp \
 	    utest/u.test u.u0 u.u batch/u.batch wrap/u.wrap
@@ -20,11 +21,11 @@ P = $(P.common) $(P.conf) $(P.panda) $(P.daint) $(P.acer) $(P.leonhard)
 
 install: re
 install:
-	@echo install cmd tools to $(BIN)
-	@mkdir -p $(BIN) && cp $(P) $(BIN)
+	@echo install cmd tools to $B
+	@mkdir -p $B && cp $P $B
 
 test:; u.test test/cmd
 
-re:; $(MAKE) -C re
+re:; $(MAKE) -C re BIN=$B
 
 .PHONY: install re test
