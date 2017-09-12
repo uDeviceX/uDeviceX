@@ -1,21 +1,12 @@
 BIN = $(HOME)/bin
 B = $(BIN)
 
-P.common = u.host make/u.make run/u.run u.strtdir u.argp \
-	    utest/u.test u.u0 u.u batch/u.batch wrap/u.wrap
-P.conf = conf/u.conf conf/u.conf0 conf/u.conf.make conf/u.conf.make0 conf/u.conf.conf conf/u.conf.run u.utils
-
-P.daint  = load/u.load.daint make/u.make.daint run/u.run.daint \
-	utest/u.test.load.daint batch/u.batch.daint
-
-P.leonhard  = load/u.load.leonhard make/u.make.leonhard run/u.run.leonhard \
-	batch/u.batch.leonhard utest/u.test.load.leonhard
-
-P.panda  = load/u.load.panda make/u.make.panda run/u.run.panda \
-	 batch/u.batch.panda
-
-P.acer   = load/u.load.acer  make/u.make.acer  run/u.run.acer \
-	utest/u.test.load.acer  batch/u.batch.acer
+P.common = host make/main run/main strtdir argp utest/main u0 u batch/main wrap/main
+P.conf =      conf/main conf/make conf/make0 conf/conf conf/run utils
+P.daint     = load/daint    make/daint    run/daint    batch/daint    utest/load.daint 
+P.leonhard  = load/leonhard make/leonhard run/leonhard batch/leonhard utest/load.leonhard
+P.panda     = load/panda    make/panda    run/panda    batch/panda    utest/load.panda
+P.acer      = load/acer     make/acer     run/acer     batch/acer     utest/load.acer  
 
 P = $(P.common) $(P.conf) $(P.panda) $(P.daint) $(P.acer) $(P.leonhard)
 
