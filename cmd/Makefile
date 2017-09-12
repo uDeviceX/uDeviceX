@@ -22,7 +22,12 @@ P = $(P.common) $(P.conf) $(P.panda) $(P.daint) $(P.acer) $(P.leonhard)
 install: re
 install:
 	@echo install cmd tools to $B
-	@mkdir -p $B && cp $P $B
+	@mkdir -p $B
+	@for f in $P;                          \
+	do t=`tools/transform "$$f"`;          \
+           echo "$$f";                         \
+           cp "$$f" "$B/$$t";                  \
+	done
 
 test:; u.test test/cmd
 
