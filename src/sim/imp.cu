@@ -66,7 +66,7 @@
 
 #include "odstr/type.h"
 #include "odstr/int.h"
-#include "cnt/int.h"
+#include "cnt/imp.h"
 
 #include "fsi/type.h"
 #include "fsi/int.h"

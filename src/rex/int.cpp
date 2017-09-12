@@ -24,7 +24,7 @@
 #include "sim/imp.h"
 
 #include "dbg/imp.h"
-#include "cnt/int.h"
+#include "cnt/imp.h"
 
 #include "cloud/hforces/type.h"
 #include "fsi/type.h"
