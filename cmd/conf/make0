@@ -37,7 +37,7 @@ write_sys () (
     cp "$s0"  "$s"
 )
 
-write_conf () { cp "$S/make/conf.mk" "$c"; }
+write_conf () { cp "$S/make/conf/release.mk" "$c"; }
 mkdir -p     "$B"
 
 m="$B/Makefile"
