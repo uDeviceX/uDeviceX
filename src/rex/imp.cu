@@ -25,8 +25,6 @@
 
 #include "inc/tmp/wrap.h"
 #include "inc/tmp/pinned.h"
-#include "sim/imp.h"
-
 #include "dbg/imp.h"
 
 #include "glb.h"
@@ -36,12 +34,6 @@
 #include "forces/type.h"
 #include "forces/hook.h"
 #include "forces/imp.h"
-
-#include "cnt/imp.h"
-
-#include "cloud/hforces/type.h"
-#include "fsi/type.h"
-#include "fsi/int.h"
 
 #include "int/type.h" /* TODO */
 #include "imp/type.h"
