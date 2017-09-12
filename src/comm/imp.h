@@ -17,11 +17,12 @@ struct Bags {
 };
 
 struct Stamp {
-    MPI_Request req[NBAGS]; /* requests */
-    int bt;                 /* base tag */
+    MPI_Request sreq[NBAGS]; /* send requests */
+    MPI_Request rreq[NBAGS]; /* recv requests */
+    int bt;                  /* base tag */
     MPI_Comm cart;
-    int rnks[NFRAGS];       /* ranks of neighbors      */
-    int anks[NFRAGS];       /* anti ranks of neighbors */
+    int rnks[NFRAGS];        /* ranks of neighbors      */
+    int anks[NFRAGS];        /* anti ranks of neighbors */
 };
 
 void ini_no_bulk(size_t bsize, float maxdensity, /**/ Bags *b);
@@ -35,6 +36,7 @@ void fin(/**/ Stamp *s);
 void post_recv(Bags *b, Stamp *s);
 void post_send(Bags *b, Stamp *s);
 void recv_counts(const Stamp *s, /**/ Bags *b);
-void wait_all(Stamp *s);
+void wait_recv(Stamp *s);
+void wait_send(Stamp *s);
 
 } // comm
