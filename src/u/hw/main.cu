@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #include "msg.h"
-#include "m.h" /* mini-MPI and -device */
+#include "mpi/glb.h"
 #include "glb.h"
 
 int main(int argc, char **argv) {
