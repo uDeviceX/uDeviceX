@@ -11,6 +11,10 @@ struct Particle {
     float r[3], v[3];
 };
 
+struct Particle4 {
+    float4 r, v;
+};
+
 
 __global__ void ini(int n, Particle *pp) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
@@ -104,27 +108,55 @@ __global__ void upd_2tpp(int n, float4 *pp) {
         pp[i] = rv;
 }
 
+#define ESC(...) __VA_ARGS__
+#define measure(F, C, A, t) do {                                        \
+        CC(cudaEventRecord(start));                                     \
+        for (int i = 0; i < ntrials; ++i) F <<<ESC C>>> A;              \
+        CC(cudaEventRecord(stop));                                      \
+        CC(cudaEventSynchronize(stop));                                 \
+        CC(cudaEventElapsedTime(&t, start, stop));                      \
+    } while (0)
+
+void print_bw(const char *fun, float t, size_t nbytes, int neval, int rw) {
+    double tav = t / neval;
+    double bw = (nbytes * rw / t) * 1e-6;
+    printf("%20s : t = %6e [ms], %6e [Gb/s]\n", fun, tav, bw);
+}
 
 int main() {
-    int n = 10000, ntrials = 1000;
+    int n = 100000, ntrials = 10000;
     Particle *pp;
     float4 *pp4;
 
+    cudaEvent_t start, stop;
+    float tiniP, tupdP, tiniP4, tupdP4, tini2P4, tupd2P4;
+    tiniP = tupdP = tiniP4 = tupdP4 = tini2P4 = tupd2P4 = 0;
+
+    CC(cudaSetDevice(2));
+    
     CC(cudaMalloc(&pp,  n*sizeof(Particle)));
     CC(cudaMalloc(&pp4, n*2*sizeof(float4)));
 
-    for (int i = 0; i < ntrials; ++i) {
-        ini <<<k_cnf(n)>>> (n, pp);
-        upd <<<k_cnf(n)>>> (n, pp);
+    CC(cudaEventCreate(&start));
+    CC(cudaEventCreate(&stop));
 
-        ini <<<k_cnf(n)>>> (n, pp4);
-        upd <<<k_cnf(n)>>> (n, pp4);
+    measure(ini, (k_cnf(n)), (n, pp), /**/ tiniP);
+    measure(upd, (k_cnf(n)), (n, pp), /**/ tupdP);
 
-        ini_2tpp <<<k_cnf(2*n)>>> (n, pp4);
-        upd_2tpp <<<k_cnf(2*n)>>> (n, pp4);
-    }
-    
-    CC(cudaDeviceSynchronize());
+    measure(ini, (k_cnf(n)), (n, pp4), /**/ tiniP4); 
+    measure(upd, (k_cnf(n)), (n, pp4), /**/ tupdP4);
+
+    measure(ini_2tpp, (k_cnf(2*n)), (2*n, pp4), /**/ tini2P4);
+    measure(upd_2tpp, (k_cnf(2*n)), (2*n, pp4), /**/ tupd2P4);
+
+    print_bw("ini", tiniP, n*sizeof(Particle), ntrials, 6);
+    print_bw("upd", tupdP, n*sizeof(Particle), ntrials, 9);
+
+    print_bw("ini4", tiniP4, 2*n*sizeof(float4), ntrials, 8);
+    print_bw("upd4", tupdP4, 2*n*sizeof(float4), ntrials, 12);
+
+    print_bw("ini4 2tpp", tini2P4, 2*n*sizeof(float4), ntrials, 8);
+    print_bw("upd4 2tpp", tupd2P4, 2*n*sizeof(float4), ntrials, 12);
 
     CC(cudaFree(pp));
     CC(cudaFree(pp4));
