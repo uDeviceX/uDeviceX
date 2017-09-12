@@ -1,3 +1,3 @@
 # local tools
 
-* transform file name
+transform file name for installation

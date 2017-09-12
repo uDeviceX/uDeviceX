@@ -3,6 +3,9 @@
 BEGIN {
     prefix = "u"
     f = ARGV[1]
-    sub(/\//, ".", f)
-    print "u".f
+
+    sub(/\/main$/, "" , f)
+    sub(/\//,      ".", f)
+
+    printf "%s.%s\n", prefix, f
 }
