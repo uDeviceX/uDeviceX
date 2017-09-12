@@ -32,6 +32,14 @@ float x2g(float r) { /* local to global */
     enum {X};
     return (m::coords[X] + 0.5)*XS  + r;
 }
+float y2g(float r) { /* local to global */
+    enum {X, Y};
+    return (m::coords[Y] + 0.5)*YS  + r;
+}
+float z2g(float r) { /* local to global */
+    enum {X, Y, Z};
+    return (m::coords[Z] + 0.5)*ZS  + r;
+}
 
 void ini(int argc, char **argv) {
     int i;
