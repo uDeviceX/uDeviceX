@@ -35,38 +35,33 @@ __global__ void upd(int n, Particle *pp) {
 
 __global__ void ini(int n, float4 *pp) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
-    if (i >= 2*n) return;
+    if (i >= n) return;
+
+    float4 r, v;
+    r = make_float4(0.f, 1.f, 2.f, -1.f);
+    v = make_float4(3.f, 4.f, 5.f, -1.f);
     
-    int slot = i % 2;
-    float4 rv = slot == 0 ?
-        make_float4(0.f, 1.f, 2.f, -1.f) :
-        make_float4(3.f, 4.f, 5.f, -1.f) ;
-    
-    pp[i] = rv;
+    pp[2*i + 0] = r;
+    pp[2*i + 1] = v;
 }
 
 __global__ void upd(int n, float4 *pp) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
-    if (i >= 2*n) return;
-    
-    int slot = i % 2;
-    float4 rv = pp[i];
-    float4 up;
-    up.x = __shfl_down(rv.x, 1);
-    up.y = __shfl_down(rv.y, 1);
-    up.z = __shfl_down(rv.z, 1);
+    if (i >= n) return;
+    float4 r, v;
+    r = pp[2*i + 0];
+    v = pp[2*i + 1];
 
-    if (slot == 0) { // pos
-        rv.x += dt * up.x;
-        rv.y += dt * up.y;
-        rv.z += dt * up.z;
-    }
-    
-    pp[i] = rv;
+    r.x += dt * v.x;
+    r.y += dt * v.y;
+    r.z += dt * v.z;
+        
+    pp[2*i+0] = r;
+    pp[2*i+1] = v;
 }
 
 int main() {
-    int n = 10000, ntrials = 100;
+    int n = 100000, ntrials = 1000;
     Particle *pp;
     float4 *pp4;
 
@@ -77,8 +72,8 @@ int main() {
         ini <<<k_cnf(n)>>> (n, pp);
         upd <<<k_cnf(n)>>> (n, pp);
 
-        ini <<<k_cnf(2*n)>>> (n, pp4);
-        upd <<<k_cnf(2*n)>>> (n, pp4);
+        ini <<<k_cnf(n)>>> (n, pp4);
+        upd <<<k_cnf(n)>>> (n, pp4);
     }
     
     CC(cudaDeviceSynchronize());
