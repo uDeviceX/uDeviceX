@@ -13,5 +13,7 @@ all: $(PROGS)
 
 %: %.cu; $(NVCC) $(NVCCFLAGS) $(OPT) $< -o $@
 
+pp: vanilla.h float4.h
+
 .PHONY: all clean
 clean:; rm -f $(PROGS)
