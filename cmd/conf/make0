@@ -29,17 +29,17 @@ write_sys () (
     dn=amlucas dh=panda
     n=`whoami` h=`u.host`
 
-    c0="$S/make/sys/$n.$h"
-    if test ! -f "$c0"; then c0="$S/make/sys/$dn.$h";  fi
-    if test ! -f "$c0"; then c0="$S/make/sys/$dn.$dh"; fi
-    if test ! -f "$c0"; then exit 1             ; fi
-    cp "$c0"  "$c"
+    s0="$S/make/sys/$n.$h"
+    if test ! -f "$s0"; then s0="$S/make/sys/$dn.$h";  fi
+    if test ! -f "$s0"; then s0="$S/make/sys/$dn.$dh"; fi
+    if test ! -f "$s0"; then exit 1             ; fi
+    cp "$s0"  "$s"
 )
 
 mkdir -p     "$B"
 
 m="$B/Makefile"
-c="$B/sys.mk"
+s="$B/sys.mk"
 
 write_make; rc=$?
 if test $rc -ne 0; then exit $ERR_BIN_MAKE; fi
