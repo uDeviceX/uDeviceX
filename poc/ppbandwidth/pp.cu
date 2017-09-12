@@ -60,19 +60,19 @@ int main() {
     
     float rwini = 1.0, rwupd = 1.5;
     
-    measure(iniP, (k_cnf(n)), (n, pp), n*sizeof(float), rwini);
-    measure(inif, (k_cnf(n)), (n, (float*)pp), n*sizeof(Particle), rwini);
-    measure(inif4, (k_cnf(n)), (n, (float4*) pp4), 2*n*sizeof(float4), rwini);
-    measure(inif4_2tpp, (k_cnf(2*n)), (n, (float4*) pp4), 2*n*sizeof(float4), rwini);
-    measure(iniP4, (k_cnf(n)), (n, pp4), n*sizeof(Particle4), rwini);
+    measure(iniP,       (k_cnf(n)),   (n, pp),            n*sizeof(Particle),  rwini);
+    measure(inif,       (k_cnf(n)),   (n, (float*)pp),    6*n*sizeof(float),   rwini);
+    measure(inif4,      (k_cnf(n)),   (n, (float4*) pp4), 2*n*sizeof(float4),  rwini);
+    measure(inif4_2tpp, (k_cnf(2*n)), (n, (float4*) pp4), 2*n*sizeof(float4),  rwini);
+    measure(iniP4,      (k_cnf(n)),   (n, pp4),           n*sizeof(Particle4), rwini);
 
     printf("\n --------------------------------------------- \n\n");
     
-    measure(updP, (k_cnf(n)), (n, pp), n*sizeof(float), rwupd);
-    measure(updf, (k_cnf(n)), (n, (float*)pp), n*sizeof(Particle), rwupd);
-    measure(updf4, (k_cnf(n)), (n, (float4*) pp4), 2*n*sizeof(float4), rwupd);
-    measure(updf4_2tpp, (k_cnf(2*n)), (n, (float4*) pp4), 2*n*sizeof(float4), rwupd);
-    measure(updP4, (k_cnf(n)), (n, pp4), n*sizeof(Particle4), rwupd);
+    measure(updP,       (k_cnf(n)),   (n, pp),            n*sizeof(Particle),  rwupd);
+    measure(updf,       (k_cnf(n)),   (n, (float*)pp),    6*n*sizeof(float),   rwupd);
+    measure(updf4,      (k_cnf(n)),   (n, (float4*) pp4), 2*n*sizeof(float4),  rwupd);
+    measure(updf4_2tpp, (k_cnf(2*n)), (n, (float4*) pp4), 2*n*sizeof(float4),  rwupd);
+    measure(updP4,      (k_cnf(n)),   (n, pp4),           n*sizeof(Particle4), rwupd);
 
     CC(cudaFree(pp));
     CC(cudaFree(pp4));
