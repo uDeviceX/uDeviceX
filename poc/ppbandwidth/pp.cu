@@ -52,7 +52,13 @@ int main() {
     CC(cudaEventCreate(&start));
     CC(cudaEventCreate(&stop));
 
-    float rwini = 2.0/3.0, rwupd = 1.5;
+    /* rw:
+       fraction of the data which is read or written
+       ini: write r, v -> 1.0
+       upd: read r, v; write r -> 1.5
+     */
+    
+    float rwini = 1.0, rwupd = 1.5;
     
     measure(iniP, (k_cnf(n)), (n, pp), n*sizeof(float), rwini);
     measure(inif, (k_cnf(n)), (n, (float*)pp), n*sizeof(Particle), rwini);
