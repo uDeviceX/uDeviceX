@@ -15,7 +15,7 @@ static int periods[d] = {true, true, true};
 static const bool reorder = false;
 int rank, size, coords[d], dims[d];
 
-int lx() {
+int lx() { /* domain sizes */
     enum {X};
     return XS * dims[X];
 }
