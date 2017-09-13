@@ -18,7 +18,7 @@ void fin(/**/ Clist *c);
 void ini_work(Work *w);
 void fin_work(Work *w);
 
-void build(const Particle *pplo, /**/ Particle *pp, Clist *c /*w*/ Work *w);
-void build(const Particle *pplo, const Particle *ppre, /**/ Particle *pp, Clist *c /*w*/ Work *w);
+void build(const Particle *pplo, /**/ Particle *pp, Clist *c, /*w*/ Work *w);
+void build(const Particle *pplo, const Particle *ppre, /**/ Particle *pp, Clist *c, /*w*/ Work *w);
 
 } /* namespace */
