@@ -54,6 +54,7 @@ void ini(int argc, char **argv) {
 }
 
 void fin() {
+    MC(m::Barrier(m::cart));
     MC(m::Finalize());
 }
 }
