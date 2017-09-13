@@ -5,8 +5,8 @@ static void scan(const int *counts, int n, /**/ int *starts) {
     scan::free_work(&ws);
 }
 
-void build(int n, int xcells, int ycells, int zcells,
-           /**/ Particle *pp, int *starts, int *counts) {
+static void build(int n, int xcells, int ycells, int zcells,
+                  /**/ Particle *pp, int *starts, int *counts) {
     if (!n) return;
 
     int ncells = xcells * ycells * zcells;
