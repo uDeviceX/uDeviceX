@@ -84,7 +84,7 @@ __global__ void get_ids(bool remote, int3 ncells, int n, const int *starts, cons
 
 __device__ void fetch(const Particle *pplo, const Particle *ppre, uint i, /**/ Particle *p) {
     bool remote; int src;
-    src = lr_get(i, /**/ remote);
+    src = lr_get(i, /**/ &remote);
     if (remote) *p = ppre[src];
     else        *p = pplo[src];
 }
@@ -96,6 +96,5 @@ __global__ void gather(const Particle *pplo, const Particle *ppre, const uint *i
     uint code = ii[i];
     fetch(pplo, ppre, code, /**/ pp + i);
 }
-
 
 } // dev
