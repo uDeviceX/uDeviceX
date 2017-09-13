@@ -14,11 +14,20 @@ static void bag2Sarray(dBags bags, Sarray<T*, NFRAGS> *buf) {
         buf->d[i] = (T*) bags.data[i];
 }
 
-void pack(const Map m, const Particle *pp, int n, /**/ dBags bags) {
+void pack_pp(const Map m, const Particle *pp, int n, /**/ dBags bags) {
 
     const int S = sizeof(Particle) / sizeof(float2);
     float2p26 wrap;
     bag2Sarray(bags, &wrap);
 
     KL((dev::pack<float2, S>), (k_cnf(S*n)), ((const float2*)pp, m, /**/ wrap));
+}
+
+void pack_ii(const Map m, const int *ii, int n, /**/ dBags bags) {
+
+    const int S = 1;
+    intp26 wrap;
+    bag2Sarray(bags, &wrap);
+
+    KL((dev::pack<int, S>), (k_cnf(S*n)), (ii, m, /**/ wrap));
 }
