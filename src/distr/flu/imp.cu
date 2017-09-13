@@ -16,14 +16,14 @@
 #include "mpi/basetags.h"
 #include "comm/imp.h"
 
+#include "map.h"
+#include "imp.h"
+
 namespace distr {
 namespace flu {
 using namespace comm;
 
 #include "imp/type.h"
-#include "map.h"
-#include "imp.h"
-
 #include "dev.h"
 #include "imp/ini.h"
 #include "imp/fin.h"

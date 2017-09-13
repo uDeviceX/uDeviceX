@@ -4,13 +4,13 @@
 #include "mpi/basetags.h"
 #include "comm/imp.h"
 
-using namespace comm;
+#include "map.h"
+#include "imp.h"
+
+#include "int.h"
 
 namespace distr {
 namespace flu {
-#include "map.h"
-#include "imp.h"
+
 } // flu
 } // distr
-
-#include "int.h"
