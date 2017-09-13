@@ -18,7 +18,7 @@ namespace distr {
 namespace flu {
 using namespace comm;
 
-#include "type.h"
+#include "imp/type.h"
 #include "map.h"
 #include "dev.h"
 #include "imp/ini.h"
