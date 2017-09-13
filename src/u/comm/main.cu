@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <assert.h>
 #include <mpi.h>
 
 #include "msg.h"
@@ -6,6 +7,7 @@
 #include "mpi/wrapper.h"
 #include "mpi/basetags.h"
 #include "glb.h"
+#include "frag.h"
 
 #include "comm/imp.h"
 
@@ -19,6 +21,27 @@ void fill_bags(comm::Bags *b) {
         c = b->capacity[i] / 2;
         fill_bag(i, c, (int*) b->hst[i]);
         b->counts[i] = c;
+    }
+}
+
+bool comp(const int *a, const int *b, int n) {
+    for (int i = 0; i < n; ++i)
+        if (a[i] != b[i]) {
+            printf("%d != %d for i = %d\n", a[i], b[i], i);
+            return false;
+        }
+    return true;
+}
+
+void compare(const comm::Bags *sb, const comm::Bags *rb) {
+    int i, j, cs, cr;
+    for (i = 0; i < 26; ++i) {
+        j = frag_anti(i);
+        cs = sb->counts[i];
+        cr = rb->counts[j];
+        printf("%d - %d\n", cs, cr);
+        assert(cs == cr);
+        assert(comp((const int*) sb->hst[i], (const int*) rb->hst[j], cs));
     }
 }
 
@@ -41,10 +64,10 @@ int main(int argc, char **argv) {
     post_recv(&recvB, &stamp);
     post_send(&sendB, &stamp);
 
-    recv_counts(&stamp, /**/ &recvB);
-
-    wait_recv(&stamp);
+    wait_recv(&stamp, &recvB);
     wait_send(&stamp);
+
+    compare(&sendB, &recvB);
     
     fin(&sendB);
     fin(&recvB);
