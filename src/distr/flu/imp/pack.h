@@ -8,8 +8,6 @@ void build_map(int n, const Particle *pp, Map m) {
     KL(dev::scan_map, (1, 32), (/**/ m));    
 }
 
-typedef Sarray <float2*, 26> float2p26;
-
 template <typename T>
 static void bag2Sarray(dBags bags, Sarray<T*, 26> *buf) {
     for (int i = 0; i < 26; ++i)
