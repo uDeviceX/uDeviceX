@@ -7,7 +7,6 @@ struct Clist0 {
 
 class Clist {
     int LX, LY, LZ;
-    void buildn(Particle *const pp, const int n);
 public:
     int ncells;
     int *start, *count;

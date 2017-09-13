@@ -5,8 +5,8 @@ static void scan(const int *counts, int n, /**/ int *starts) {
     scan::free_work(&ws);
 }
 
-static void build(int n, int xcells, int ycells, int zcells,
-                  /**/ Particle *pp, int *starts, int *counts) {
+static void buildn(int n, int xcells, int ycells, int zcells,
+                   /**/ Particle *pp, int *starts, int *counts) {
     if (!n) return;
 
     int ncells = xcells * ycells * zcells;
@@ -30,10 +30,6 @@ static void build(int n, int xcells, int ycells, int zcells,
     Dfree(ppd);
 }
 
-void Clist::buildn(Particle *const pp, const int n) {
-    clist::build(n, LX, LY, LZ, /**/ pp, start, count);
-}
-
 static void build0(int n, /**/ int *start, int *count) {
     DzeroA(start, n);
     DzeroA(count, n);
@@ -48,7 +44,7 @@ Clist::Clist(int X, int Y, int Z) {
 
 void Clist::build(Particle *const pp, int n) {
     if (n)
-        buildn(pp, n);
+        buildn(n, LX, LY, LZ, /**/ pp, start, count);
     else
         build0(ncells, /**/ start, count);
 }
