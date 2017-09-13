@@ -30,6 +30,17 @@ static void buildn(int n, int xcells, int ycells, int zcells,
     Dfree(ppd);
 }
 
+void ini(int X, int Y, int Z, /**/ Clist0 *c) {
+    c->LX = X; c->LY = Y; c->LZ = Z;
+    c->ncells = X * Y * Z + 1;
+    Dalloc(&c->start, c->ncells);
+    Dalloc(&c->count, c->ncells);
+}
+
+void fin(Clist0 *c) {
+    Dfree(c->start); Dfree(c->count);
+}
+
 Clist::Clist(int X, int Y, int Z) {
     LX = X; LY = Y; LZ = Z;
     ncells = LX * LY * LZ + 1;
