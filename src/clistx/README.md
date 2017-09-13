@@ -12,6 +12,6 @@ The arrays may have "holes" in it, in which case the particle is not kept in the
 `starts`, `counts`, `pp`
 
 # work:
-* `ee` cell [e]ntries
+* `ee` cell [e]ntries (`lo` and `re` versions)
 * `ii` scattered indices
 * `ws `workspace for scan
