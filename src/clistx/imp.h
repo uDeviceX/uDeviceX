@@ -8,7 +8,7 @@ struct Clist {
 
 struct Work {
     uchar4 *eelo, *eere; /* cell entries */
-    int *ii;
+    uint *ii;
     scan::Work scan;
 };
 
@@ -18,7 +18,7 @@ void fin(/**/ Clist *c);
 void ini_work(const Clist *c, /**/ Work *w);
 void fin_work(Work *w);
 
-void build(const Particle *pplo, /**/ Particle *pp, Clist *c, /*w*/ Work *w);
-void build(const Particle *pplo, const Particle *ppre, /**/ Particle *pp, Clist *c, /*w*/ Work *w);
+void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, /*w*/ Work *w);
+void build(int nlo, int nre, int nout, const Particle *pplo, const Particle *ppre, /**/ Particle *ppout, Clist *c, /*w*/ Work *w);
 
 } /* namespace */
