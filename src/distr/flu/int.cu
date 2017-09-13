@@ -6,6 +6,11 @@
 
 using namespace comm;
 
+namespace distr {
+namespace flu {
 #include "map.h"
 #include "imp.h"
+} // flu
+} // distr
+
 #include "int.h"

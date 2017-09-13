@@ -22,11 +22,14 @@ using namespace comm;
 
 #include "imp/type.h"
 #include "map.h"
+#include "imp.h"
+
 #include "dev.h"
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/pack.h"
 #include "imp/unpack.h"
+
 
 } // flu
 } // distr
