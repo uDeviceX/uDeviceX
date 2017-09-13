@@ -21,8 +21,8 @@ struct Stamp {
     MPI_Request rreq[NBAGS]; /* recv requests */
     int bt;                  /* base tag */
     MPI_Comm cart;
-    int rnks[NFRAGS];        /* ranks of neighbors      */
-    int anks[NFRAGS];        /* anti ranks of neighbors */
+    int ranks[NFRAGS];       /* ranks of neighbors     */
+    int  tags[NFRAGS];       /* tags in bt coordinates */
 };
 
 void ini_no_bulk(size_t bsize, float maxdensity, /**/ Bags *b);

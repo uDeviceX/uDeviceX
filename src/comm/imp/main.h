@@ -1,14 +1,18 @@
 void post_recv(Bags *b, Stamp *s) {
-    for (int i = 0; i < NFRAGS; ++i) {
-        size_t c = b->capacity[i] * b->bsize;
-        MC(m::Irecv(b->hst[i], c, MPI_BYTE, s->anks[i], s->bt + i, s->cart, s->rreq + i));
+    int i, c, tag;
+    for (i = 0; i < NFRAGS; ++i) {
+        c = b->capacity[i] * b->bsize;
+        tag = s->bt + s->tags[i];
+        MC(m::Irecv(b->hst[i], c, MPI_BYTE, s->ranks[i], tag, s->cart, s->rreq + i));
     }
 }
 
 void post_send(Bags *b, Stamp *s) {
-    for (int i = 0; i < NFRAGS; ++i) {
-        size_t n = b->counts[i] * b->bsize;
-        MC(m::Isend(b->hst[i], n, MPI_BYTE, s->rnks[i], s->bt + i, s->cart, s->sreq + i));
+    int i, n, tag;
+    for (i = 0; i < NFRAGS; ++i) {
+        n = b->counts[i] * b->bsize;
+        tag = s->bt + i;
+        MC(m::Isend(b->hst[i], n, MPI_BYTE, s->ranks[i], tag, s->cart, s->sreq + i));
     }
 }
 
