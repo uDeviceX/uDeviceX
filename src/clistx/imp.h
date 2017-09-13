@@ -1,7 +1,7 @@
 namespace clist {
 
 struct Clist {
-    int LX, LY, LZ;
+    int3 dims;
     int ncells;
     int *start, *count;
 };
