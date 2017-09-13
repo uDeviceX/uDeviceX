@@ -41,6 +41,15 @@ void fin(Clist0 *c) {
     Dfree(c->start); Dfree(c->count);
 }
 
+void build0(Clist0 *c, Particle *const pp, int n) {
+    if (n)
+        buildn(n, c->LX, c->LY, c->LZ, /**/ pp, c->start, c->count);
+    else {
+        DzeroA(c->start, c->ncells);
+        DzeroA(c->count, c->ncells);
+    }
+}
+
 Clist::Clist(int X, int Y, int Z) {
     LX = X; LY = Y; LZ = Z;
     ncells = LX * LY * LZ + 1;
