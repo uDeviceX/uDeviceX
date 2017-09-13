@@ -20,6 +20,14 @@ void fin(/**/ hBags *hb, dBags *db) {
     free_pinned_counts(&hb->counts, &db->counts);
 }
 
+void fin(/**/ hBags *hb) {
+   for (int i = 0; i < NBAGS; ++i) {
+        if (hb->data[i]) free(hb->data[i]);
+        hb->data[i] = NULL;
+    }
+   free(hb->counts); hb->counts = NULL;
+}
+
 void fin(/**/ Stamp *s) {
     MC(m::Comm_free(&s->cart));
 }

@@ -62,7 +62,26 @@ void ini_full(size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db) {
 
 /* normal allocation, host only */
 
-// TODO
+static void alloc_one_frag(int i, /**/ hBags *hb) {
+    size_t n = hb->bsize * hb->capacity[i];
+    hb->data[i] = malloc(n);
+}
+
+static void ini_bags(int nfrags, size_t bsize, float maxdensity, /**/ hBags *hb) {
+    hb->bsize = bsize;
+    estimates(nfrags, maxdensity, hb->capacity);
+    for (int i = 0; i < nfrags; ++i) alloc_one_frag(i, /**/ hb);
+    hb->counts = (int*) malloc(nfrags * sizeof(int));
+}
+
+void ini_no_bulk(size_t bsize, float maxdensity, /**/ hBags *hb) {
+    ini_bags(NFRAGS, bsize, maxdensity, /**/ hb);
+    hb->data[BULK] = NULL;
+}
+
+void ini_full(size_t bsize, float maxdensity, /**/ hBags *hb) {
+    ini_bags(NBAGS, bsize, maxdensity, /**/ hb);
+}
 
 /* stamp allocation */
 
