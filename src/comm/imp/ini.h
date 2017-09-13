@@ -7,25 +7,50 @@ static void estimates(int nfrags, float maxd, /**/ int *cap) {
     }
 }
 
-static void alloc_one_pinned_frag(int i, /**/ Bags *b) {
-    size_t n = b->bsize * b->capacity[i];
-    CC(d::alloc_pinned(&b->hst[i], n));
-    CC(d::HostGetDevicePointer(&b->dev[i], b->hst[i], 0));
+/* pinned allocation */
+
+static void alloc_one_pinned_frag(int i, /**/ hBags *hb, dBags *db) {
+    size_t n = hb->bsize * hb->capacity[i];
+    CC(d::alloc_pinned(&hb->data[i], n));
+    CC(d::HostGetDevicePointer(&db->data[i], hb->data[i], 0));
 }
 
-static void ini_bags(int nfrags, size_t bsize, float maxdensity, /**/ Bags *b) {
-    b->bsize = bsize;
-    estimates(nfrags, maxdensity, b->capacity);
-    for (int i = 0; i < nfrags; ++i) alloc_one_pinned_frag(i, /**/ b);
+static void ini_pinned_bags(int nfrags, size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db) {
+    hb->bsize = bsize;
+    estimates(nfrags, maxdensity, hb->capacity);
+    for (int i = 0; i < nfrags; ++i) alloc_one_pinned_frag(i, /**/ hb, db);
 }
 
-void ini_no_bulk(size_t bsize, float maxdensity, /**/ Bags *b) {
-    ini_bags(NFRAGS, bsize, maxdensity, /**/ b);
-    b->hst[BULK] = b->dev[BULK] = NULL;
+void ini_pinned_no_bulk(size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db) {
+    ini_pinned_bags(NFRAGS, bsize, maxdensity, /**/ hb, db);
+    hb->data[BULK] = db->data[BULK] = NULL;
 }
 
-void ini_full(size_t bsize, float maxdensity, /**/ Bags *b) {
-    ini_bags(NBAGS, bsize, maxdensity, /**/ b);
+void ini_pinned_full(size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db) {
+    ini_pinned_bags(NBAGS, bsize, maxdensity, /**/ hb, db);
+}
+
+/* normal allocation */
+
+static void alloc_one_frag(int i, /**/ hBags *hb, dBags *db) {
+    size_t n = hb->bsize * hb->capacity[i];
+    hb->data[i] = malloc(n);
+    CC(d::Malloc(&db->data[i], n));
+}
+
+static void ini_bags(int nfrags, size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db) {
+    hb->bsize = bsize;
+    estimates(nfrags, maxdensity, hb->capacity);
+    for (int i = 0; i < nfrags; ++i) alloc_one_frag(i, /**/ hb, db);
+}
+
+void ini_no_bulk(size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db) {
+    ini_bags(NFRAGS, bsize, maxdensity, /**/ hb, db);
+    hb->data[BULK] = db->data[BULK] = NULL;
+}
+
+void ini_full(size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db) {
+    ini_bags(NBAGS, bsize, maxdensity, /**/ hb, db);
 }
 
 

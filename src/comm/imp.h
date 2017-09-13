@@ -8,9 +8,13 @@ enum {
     NBAGS  = 27, /* fragments + bulk                 */
 };
 
-struct Bags {
-    data_t  *dev[NBAGS]; /* data on the device         */
-    data_t  *hst[NBAGS]; /* data on the host           */
+struct dBags {
+    data_t *data[NBAGS]; /* data on the device         */
+    int         *counts; /* size of the data           */
+};
+
+struct hBags {
+    data_t *data[NBAGS]; /* data on the host           */
     int   counts[NBAGS]; /* size of the data           */
     int capacity[NBAGS]; /* capacity of each frag      */
     size_t bsize;        /* size of one datum in bytes */
@@ -25,18 +29,24 @@ struct Stamp {
     int  tags[NFRAGS];       /* tags in bt coordinates */
 };
 
-void ini_no_bulk(size_t bsize, float maxdensity, /**/ Bags *b);
-void ini_full   (size_t bsize, float maxdensity, /**/ Bags *b);
+/* pinned allocation */
+void ini_pinned_no_bulk(size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db);
+void ini_pinned_full(size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db);
+void fin_pinned(/**/ hBags *hb, dBags *db);
 
-void fin(/**/ Bags *b);
+/* normal allocation */
+void ini_no_bulk(size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db);
+void ini_full(size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db);
+void fin(/**/ hBags *hb, dBags *db);
+
 
 void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s);
 void fin(/**/ Stamp *s);
 
-void post_recv(Bags *b, Stamp *s);
-void post_send(Bags *b, Stamp *s);
+void post_recv(hBags *b, Stamp *s);
+void post_send(hBags *b, Stamp *s);
 
-void wait_recv(Stamp *s, /**/ Bags *b);
+void wait_recv(Stamp *s, /**/ hBags *b);
 void wait_send(Stamp *s);
 
 } // comm

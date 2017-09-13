@@ -16,11 +16,11 @@ void fill_bag(int val, int sz, int *ii) {
     for (int i = 0; i < sz; ++i) ii[i] = -2*val + val*val;
 }
 
-void fill_bags(comm::Bags *b) {
+void fill_bags(comm::hBags *b) {
     int c, i;
     for (i = 0; i < 26; ++i) {
         c = i;
-        fill_bag(i, c, (int*) b->hst[i]);
+        fill_bag(i, c, (int*) b->data[i]);
         b->counts[i] = c;
     }
 }
@@ -31,7 +31,7 @@ void comp(const int *a, const int *b, int n) {
             ERR("%d != %d for i = %d\n", a[i], b[i], i);
 }
 
-void compare(const comm::Bags *sb, const comm::Bags *rb) {
+void compare(const comm::hBags *sb, const comm::hBags *rb) {
     int i, j, cs, cr;
     for (i = 0; i < 26; ++i) {
         j = frag_anti(i);
@@ -39,7 +39,7 @@ void compare(const comm::Bags *sb, const comm::Bags *rb) {
         cr = rb->counts[j];
         
         if (cs != cr) ERR("%d != %d\n", cs, cr);
-        comp((const int*) sb->hst[i], (const int*) rb->hst[j], cs);
+        comp((const int*) sb->data[i], (const int*) rb->data[j], cs);
     }
 }
 
@@ -49,12 +49,13 @@ int main(int argc, char **argv) {
     MSG("Comm unit test!");
 
     basetags::TagGen tg;
-    comm::Bags sendB, recvB;
+    comm::hBags sendB, recvB;
+    comm::dBags senddB, recvdB;
     comm::Stamp stamp;
 
     ini(/**/ &tg);
-    ini_no_bulk(sizeof(int), 26, /**/ &sendB);
-    ini_no_bulk(sizeof(int), 26, /**/ &recvB);
+    ini_no_bulk(sizeof(int), 26, /**/ &sendB, &senddB);
+    ini_no_bulk(sizeof(int), 26, /**/ &recvB, &recvdB);
     ini(m::cart, /*io*/ &tg, /**/ &stamp);
 
     fill_bags(&sendB);
@@ -69,8 +70,8 @@ int main(int argc, char **argv) {
 
     MSG("Passed");
     
-    fin(&sendB);
-    fin(&recvB);
+    fin(&sendB, &senddB);
+    fin(&recvB, &recvdB);
     fin(/**/ &stamp);
     
     m::fin();
