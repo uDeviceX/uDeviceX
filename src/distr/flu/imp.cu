@@ -14,8 +14,14 @@
 #include "mpi/basetags.h"
 #include "comm/imp.h"
 
+namespace distr {
+namespace flu {
+using namespace comm;
 
 #include "map.h"
 #include "dev.h"
 #include "imp/ini.h"
 #include "imp/pack.h"
+
+} // flu
+} // distr
