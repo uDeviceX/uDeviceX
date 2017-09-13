@@ -1,5 +1,5 @@
 static void reini_map(Map m) {
-    CC(d::MemsetAsync(m.counts, 0, 26 * sizeof(int)));
+    CC(d::MemsetAsync(m.counts, 0, NFRAGS * sizeof(int)));
 }
 
 void build_map(int n, const Particle *pp, Map m) {
@@ -9,8 +9,8 @@ void build_map(int n, const Particle *pp, Map m) {
 }
 
 template <typename T>
-static void bag2Sarray(dBags bags, Sarray<T*, 26> *buf) {
-    for (int i = 0; i < 26; ++i)
+static void bag2Sarray(dBags bags, Sarray<T*, NFRAGS> *buf) {
+    for (int i = 0; i < NFRAGS; ++i)
         buf->d[i] = (T*) bags.data[i];
 }
 

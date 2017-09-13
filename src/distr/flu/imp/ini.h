@@ -9,7 +9,6 @@ static void estimates(int nfrags, float maxd, /**/ int *cap) {
 }
 
 void alloc_map(float maxdensity, /**/ Map *m) {
-    enum {NFRAGS = 26};
     CC(d::Malloc((void**) &m->counts,  NFRAGS      * sizeof(int)));
     CC(d::Malloc((void**) &m->starts, (NFRAGS + 1) * sizeof(int)));
 
