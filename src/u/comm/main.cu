@@ -11,8 +11,9 @@
 
 #include "comm/imp.h"
 
+/* generate a unique sequence given a unique val */
 void fill_bag(int val, int sz, int *ii) {
-    for (int i = 0; i < sz; ++i) ii[i] = val;
+    for (int i = 0; i < sz; ++i) ii[i] = -2*val + val*val;
 }
 
 void fill_bags(comm::Bags *b) {
@@ -66,7 +67,7 @@ int main(int argc, char **argv) {
 
     compare(&sendB, &recvB);
 
-    MSG("Passed\n");
+    MSG("Passed");
     
     fin(&sendB);
     fin(&recvB);
