@@ -24,6 +24,7 @@ using namespace comm;
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/pack.h"
+#include "imp/unpack.h"
 
 } // flu
 } // distr
