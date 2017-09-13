@@ -18,7 +18,7 @@ void fill_bag(int val, int sz, int *ii) {
 void fill_bags(comm::Bags *b) {
     int c, i;
     for (i = 0; i < 26; ++i) {
-        c = b->capacity[i] / 2;
+        c = i;
         fill_bag(i, c, (int*) b->hst[i]);
         b->counts[i] = c;
     }
@@ -55,8 +55,8 @@ int main(int argc, char **argv) {
     comm::Stamp stamp;
 
     ini(/**/ &tg);
-    ini_no_bulk(sizeof(int), 1, /**/ &sendB);
-    ini_no_bulk(sizeof(int), 1, /**/ &recvB);
+    ini_no_bulk(sizeof(int), 26, /**/ &sendB);
+    ini_no_bulk(sizeof(int), 26, /**/ &recvB);
     ini(m::cart, /*io*/ &tg, /**/ &stamp);
 
     fill_bags(&sendB);
