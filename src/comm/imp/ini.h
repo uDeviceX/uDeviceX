@@ -30,15 +30,12 @@ void ini_full(size_t bsize, float maxdensity, /**/ Bags *b) {
 
 
 void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s) {
-    int i, c, crd_rnk[3];//, crd_ank[3];
+    int i, c, crd_rnk[3];
     
     for (i = 0; i < NFRAGS; ++i) {
-        for (c = 0; c < 3; ++c) {
+        for (c = 0; c < 3; ++c)
             crd_rnk[c] = m::coords[c] +  frag_to_dir[i][c];
-            //crd_ank[c] = m::coords[c] + frag_fro_dir[i][c];
-        }
         MC(m::Cart_rank(comm, crd_rnk, s->ranks + i));
-        //MC(m::Cart_rank(comm, crd_ank, s->anks + i));
         s->tags[i] = frag_anti(i);
     }
     s->bt = get_tag(tg);
