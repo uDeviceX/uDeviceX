@@ -5,8 +5,8 @@ static void scan(const int *counts, int n, /**/ int *starts) {
     scan::free_work(&ws);
 }
 
-static void build(int n, int xcells, int ycells, int zcells,
-                  /**/ Particle *pp, int *starts, int *counts) {
+static void buildn(int n, int xcells, int ycells, int zcells,
+                   /**/ Particle *pp, int *starts, int *counts) {
     if (!n) return;
 
     int ncells = xcells * ycells * zcells;
@@ -30,13 +30,24 @@ static void build(int n, int xcells, int ycells, int zcells,
     Dfree(ppd);
 }
 
-void Clist::buildn(Particle *const pp, const int n) {
-    clist::build(n, LX, LY, LZ, /**/ pp, start, count);
+void ini(int X, int Y, int Z, /**/ Clist0 *c) {
+    c->LX = X; c->LY = Y; c->LZ = Z;
+    c->ncells = X * Y * Z + 1;
+    Dalloc(&c->start, c->ncells);
+    Dalloc(&c->count, c->ncells);
 }
 
-static void build0(int n, /**/ int *start, int *count) {
-    DzeroA(start, n);
-    DzeroA(count, n);
+void fin(Clist0 *c) {
+    Dfree(c->start); Dfree(c->count);
+}
+
+void build0(Clist0 *c, Particle *const pp, int n) {
+    if (n)
+        buildn(n, c->LX, c->LY, c->LZ, /**/ pp, c->start, c->count);
+    else {
+        DzeroA(c->start, c->ncells);
+        DzeroA(c->count, c->ncells);
+    }
 }
 
 Clist::Clist(int X, int Y, int Z) {
@@ -48,9 +59,11 @@ Clist::Clist(int X, int Y, int Z) {
 
 void Clist::build(Particle *const pp, int n) {
     if (n)
-        buildn(pp, n);
-    else
-        build0(ncells, /**/ start, count);
+        buildn(n, LX, LY, LZ, /**/ pp, start, count);
+    else {
+        DzeroA(start, ncells);
+        DzeroA(count, ncells);
+    }
 }
 
 Clist::~Clist() {
