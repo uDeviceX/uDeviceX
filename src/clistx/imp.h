@@ -8,7 +8,7 @@ struct Clist {
 
 struct Work {
     uchar4 *eelo, *eere; /* cell entries */
-    int *iilo, *iire;
+    int *ii;
     scan::Work ws;
 };
 

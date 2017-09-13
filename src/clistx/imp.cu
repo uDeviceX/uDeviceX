@@ -3,3 +3,7 @@
 
 #include "imp.h"
 
+namespace clist {
+#include "dev.h"
+
+} // clist
