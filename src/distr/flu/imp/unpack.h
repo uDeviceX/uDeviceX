@@ -8,7 +8,6 @@ static int scan(const int n, const int *counts, int27 *starts) {
 }
 
 int unpack(const hBags bags, /**/ Particle *pp) {
-    enum {NFRAGS=26};
     int nhalo, s, i;
     size_t c, bs = bags.bsize;
     int27 starts;
