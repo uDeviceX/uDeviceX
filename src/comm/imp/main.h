@@ -12,21 +12,14 @@ void post_send(Bags *b, Stamp *s) {
     }
 }
 
-static void recv_counts_bytes(const Stamp *s, /**/ int *counts) {
-    int i, tag, src;
-    MPI_Status stat;
-    
-    for (i = 0; i < NFRAGS; ++i) {
-        tag = s->bt + i;
-        src = s->anks[i];
-        MC(m::Probe(src, tag, s->cart, /**/ &stat));
-        MC(m::Get_count(&stat, MPI_BYTE, counts + i));
-    }
+static void get_counts_bytes(const MPI_Status ss[NFRAGS], /**/ int counts[NFRAGS]) {
+    for (int i = 0; i < NFRAGS; ++i)
+        MC(m::Get_count(ss + i, MPI_BYTE, counts + i));
 }
 
-void recv_counts(const Stamp *s, /**/ Bags *b) {
+static void get_counts(const MPI_Status ss[NFRAGS], /**/ Bags *b) {
     int i, c, cc[NFRAGS];
-    recv_counts_bytes(s, /**/ cc);
+    get_counts_bytes(ss, /**/ cc);
 
     for (i = 0; i < NFRAGS; ++i) {
         c = cc[i] / b->bsize;
@@ -36,15 +29,13 @@ void recv_counts(const Stamp *s, /**/ Bags *b) {
     }
 }
 
-static void wait_all(MPI_Request rr[NFRAGS]) {
+void wait_recv(Stamp *s, /**/ Bags *b) {
     MPI_Status ss[NFRAGS];
-    MC(m::Waitall(NFRAGS, rr, ss));
-}
-
-void wait_recv(Stamp *s) {
-    wait_all(s->rreq);
+    MC(m::Waitall(NFRAGS, s->rreq, /**/ ss));
+    get_counts(ss, /**/ b);
 }
 
 void wait_send(Stamp *s) {
-    wait_all(s->sreq);
+    MPI_Status ss[NFRAGS];
+    MC(m::Waitall(NFRAGS, s->sreq, ss));
 }

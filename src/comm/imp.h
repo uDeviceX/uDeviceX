@@ -35,8 +35,8 @@ void fin(/**/ Stamp *s);
 
 void post_recv(Bags *b, Stamp *s);
 void post_send(Bags *b, Stamp *s);
-void recv_counts(const Stamp *s, /**/ Bags *b);
-void wait_recv(Stamp *s);
+
+void wait_recv(Stamp *s, /**/ Bags *b);
 void wait_send(Stamp *s);
 
 } // comm
