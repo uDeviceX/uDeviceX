@@ -24,13 +24,10 @@ void fill_bags(comm::Bags *b) {
     }
 }
 
-bool comp(const int *a, const int *b, int n) {
+void comp(const int *a, const int *b, int n) {
     for (int i = 0; i < n; ++i)
-        if (a[i] != b[i]) {
-            printf("%d != %d for i = %d\n", a[i], b[i], i);
-            return false;
-        }
-    return true;
+        if (a[i] != b[i])
+            ERR("%d != %d for i = %d\n", a[i], b[i], i);
 }
 
 void compare(const comm::Bags *sb, const comm::Bags *rb) {
@@ -39,9 +36,9 @@ void compare(const comm::Bags *sb, const comm::Bags *rb) {
         j = frag_anti(i);
         cs = sb->counts[i];
         cr = rb->counts[j];
-        printf("%d - %d\n", cs, cr);
-        assert(cs == cr);
-        assert(comp((const int*) sb->hst[i], (const int*) rb->hst[j], cs));
+        
+        if (cs != cr) ERR("%d != %d\n", cs, cr);
+        comp((const int*) sb->hst[i], (const int*) rb->hst[j], cs);
     }
 }
 
@@ -68,6 +65,8 @@ int main(int argc, char **argv) {
     wait_send(&stamp);
 
     compare(&sendB, &recvB);
+
+    MSG("Passed\n");
     
     fin(&sendB);
     fin(&recvB);
