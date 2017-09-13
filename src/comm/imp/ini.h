@@ -1,3 +1,4 @@
+// TODO: belongs to fragment?
 static void estimates(int nfrags, float maxd, /**/ int *cap) {
     int i, e;
     for (i = 0; i < nfrags; ++i) {

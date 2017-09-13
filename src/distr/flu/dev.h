@@ -45,9 +45,8 @@ __global__ void build_map(const Particle *pp, const int n, /**/ Map m) {
         add_to_map(pid, fid, /**/ m);
 }
 
-
 template <typename T, int STRIDE>
-__global__ void pack(const T *data, Map m, /**/ T *buf[]) {
+__global__ void pack(const T *data, Map m, /**/ Sarray<T*, 26> buf) {
     int gid, slot;
     int fid; /* [f]ragment [id] */
     int offset, pid, c, d, s;
@@ -55,7 +54,7 @@ __global__ void pack(const T *data, Map m, /**/ T *buf[]) {
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     slot = gid / STRIDE;
     fid = k_common::fid(m.starts, slot);
-    if (slot >= m.starts[27]) return;
+    if (slot >= m.starts[26]) return;
     c = gid % STRIDE;
 
     offset = slot - m.starts[fid];
@@ -64,7 +63,33 @@ __global__ void pack(const T *data, Map m, /**/ T *buf[]) {
     d = c + STRIDE * offset;
     s = c + STRIDE * pid;
     
-    buf[fid][d] = data[s];
+    buf.d[fid][d] = data[s];
+}
+
+/* TODO use frag.h */
+static __device__ void fid2shift(int id, /**/ int s[3]) {
+    enum {X, Y, Z};
+    s[X] = XS * ((id     + 1) % 3 - 1);
+    s[Y] = YS * ((id / 3 + 1) % 3 - 1);
+    s[Z] = ZS * ((id / 9 + 1) % 3 - 1);
+}
+
+static  __device__ void shift_1p(const int s[3], /**/ Particle *p) {
+    enum {X, Y, Z};
+    p->r[X] += s[X];
+    p->r[Y] += s[Y];
+    p->r[Z] += s[Z];
+}
+
+__global__ void shift(const int27 starts, /**/ Particle *pp) {
+    int pid, fid, s[3];
+
+    pid = threadIdx.x + blockDim.x * blockIdx.x;
+    if (pid >= starts.d[26]) return;
+    fid = k_common::fid(starts.d, pid);
+    
+    fid2shift(fid, s);
+    shift_1p(s, /**/ pp + fid);
 }
 
 } // dev

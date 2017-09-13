@@ -5,7 +5,8 @@ $B/cnt/imp.o: $S/_snow/forces/hook.h $S/algo/scan/int.h $S/cnt/dev/bulk.h $S/cnt
 $B/comm/imp.o: $S/comm/imp.h $S/comm/imp/fin.h $S/comm/imp/ini.h $S/comm/imp/main.h $B/conf.h $S/d/api.h $S/frag.h $S/inc/conf.h $S/mpi/basetags.h $S/mpi/glb.h $S/mpi/wrapper.h $S/msg.h $S/utils/cc.h $S/utils/mc.h
 $B/d/api.o: $B/conf.h $S/d/api.h $S/d/common.h $S/d/cpu/imp.h $S/d/cuda/imp.h $S/inc/conf.h $S/msg.h
 $B/dbg/imp.o: $B/conf.h $S/d/api.h $S/dbg/dev.h $S/dbg/error.h $S/dbg/imp.h $S/dbg/macro/switch.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/msg.h $S/utils/cc.h $S/utils/kl.h
-$B/distr/flu/imp.o: $B/conf.h $S/distr/flu/dev.h $S/distr/flu/map.h $S/frag.h $S/inc/dev/common.h $S/inc/type.h
+$B/distr/flu/imp.o: $S/comm/imp.h $B/conf.h $S/d/api.h $S/distr/flu/dev.h $S/distr/flu/imp/fin.h $S/distr/flu/imp/ini.h $S/distr/flu/imp/pack.h $S/distr/flu/imp/type.h $S/distr/flu/imp/unpack.h $S/distr/flu/map.h $S/frag.h $S/inc/conf.h $S/inc/dev.h $S/inc/dev/common.h $S/inc/type.h $S/mpi/basetags.h $S/utils/cc.h $S/utils/kl.h
+$B/distr/flu/int.o: $S/comm/imp.h $S/distr/flu/imp.h $S/distr/flu/int.h $S/distr/flu/map.h $S/inc/type.h $S/mpi/basetags.h
 $B/dpdr/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/dpdr/buf.h $S/dpdr/dev/common.h $S/dpdr/dev/fill.h $S/dpdr/fin.h $S/dpdr/imp.h $S/dpdr/ini.h $S/dpdr/recv.h $S/dpdr/type.h $S/frag.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/dev/common.h $S/inc/dev/read.h $S/inc/type.h $S/mpi/glb.h $S/mpi/type.h $S/mpi/wrapper.h $S/msg.h $S/rnd/imp.h $S/utils/cc.h $S/utils/kl.h $S/utils/mc.h
 $B/dpdr/int.o: $S/cloud/hforces/int.h $S/cloud/hforces/type.h $B/conf.h $S/d/api.h $S/dpdr/imp.h $S/dpdr/int.h $S/dpdr/type.h $S/frag.h $S/hforces/imp.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/mpi/basetags.h $S/msg.h $S/rnd/imp.h $S/utils/cc.h
 $B/dual/imp.o: $B/conf.h $S/d/api.h $S/dual/int.h $S/dual/type.h $S/inc/conf.h $S/inc/dev.h $S/msg.h $S/utils/cc.h
