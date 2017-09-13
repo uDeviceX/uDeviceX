@@ -1,3 +1,4 @@
+// TODO: split remote and bulk subindex?
 
 void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, /*w*/ Work *w) {
     build(nlo, 0, nout, pplo, NULL, /**/ ppout, c, /*w*/ w);

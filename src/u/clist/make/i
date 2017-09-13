@@ -1,0 +1,12 @@
+dirs="$U d mpi algo/scan inc utils"
+for D in ${dirs}
+do
+find $D \
+     -type d       -o  \
+     -name '*.cu'  -o  \
+     -name '*.cpp' -o  \
+     -name '*.h'    |  \
+    grep -v '^\.\/u/'
+done
+
+echo msg.cpp msg.h glb.h glb.cu
