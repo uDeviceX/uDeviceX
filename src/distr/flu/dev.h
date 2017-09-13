@@ -45,9 +45,8 @@ __global__ void build_map(const Particle *pp, const int n, /**/ Map m) {
         add_to_map(pid, fid, /**/ m);
 }
 
-
 template <typename T, int STRIDE>
-__global__ void pack(const T *data, Map m, /**/ T *buf[]) {
+__global__ void pack(const T *data, Map m, /**/ Sarray<T*, 26> buf) {
     int gid, slot;
     int fid; /* [f]ragment [id] */
     int offset, pid, c, d, s;
@@ -55,7 +54,7 @@ __global__ void pack(const T *data, Map m, /**/ T *buf[]) {
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     slot = gid / STRIDE;
     fid = k_common::fid(m.starts, slot);
-    if (slot >= m.starts[27]) return;
+    if (slot >= m.starts[26]) return;
     c = gid % STRIDE;
 
     offset = slot - m.starts[fid];
@@ -64,7 +63,7 @@ __global__ void pack(const T *data, Map m, /**/ T *buf[]) {
     d = c + STRIDE * offset;
     s = c + STRIDE * pid;
     
-    buf[fid][d] = data[s];
+    buf.d[fid][d] = data[s];
 }
 
 } // dev
