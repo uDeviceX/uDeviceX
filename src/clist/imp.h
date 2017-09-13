@@ -1,4 +1,10 @@
 namespace clist {
+struct Clist0 {
+    int LX, LY, LZ;
+    int ncells;
+    int *start, *count;
+};
+
 class Clist {
     int LX, LY, LZ;
     void buildn(Particle *const pp, const int n);
