@@ -9,6 +9,7 @@ void ini(int LX, int LY, int LZ, /**/ Clist *c) {
     CC(d::Malloc((void **) &c->counts, size));
     
 }
+
 void ini_work(Work *w) {
 
 }
