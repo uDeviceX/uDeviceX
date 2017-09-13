@@ -1,3 +1,4 @@
+namespace dev {
 
 enum {
     VALID   = 0,
@@ -31,7 +32,7 @@ static __device__ int get_cid(int3 ncells, uchar4 e) {
     return e.x + ncells.x * (e.y + ncells.y * e.z);
 }
 
-__global__ void subindex(const int n, const Particle *pp, int3 ncells, /*io*/ int *counts, /**/ uchar4 *ee) {
+__global__ void subindex(int3 ncells, int n, const Particle *pp, /*io*/ int *counts, /**/ uchar4 *ee) {
     int i, cid;
     Particle p;
     uchar4 e;
@@ -44,6 +45,57 @@ __global__ void subindex(const int n, const Particle *pp, int3 ncells, /*io*/ in
     e = get_entry(p.r, ncells);
     cid = get_cid(ncells, e);
 
-    if (e.w == VALID)
+    if (e.w != INVALID)
         e.w = atomicAdd(counts + cid, 1);
+
+    ee[i] = e;
 }
+
+
+/* [l]ocal [r]emote encoder, decoder: pack into one int the type (l/r) and the id */
+__device__ void lr_set(int i, bool rem, /**/ uint *u) {
+    *u  = (uint) i;
+    *u |= rem << 31;
+}
+__device__ int  lr_get(uint u, /**/ bool *rem) {
+    *rem = (u >> 31) & 1;
+    u &= ~(1 << 31);
+    return (int) u;
+}
+
+__global__ void get_ids(bool remote, int3 ncells, int n, const int *starts, const uchar4 *ee, /**/ uint *ii) {
+    int i, cid, id, start;
+    uint val;
+    uchar4 e;
+    
+    i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i >= n) return;
+
+    e = ee[i];
+    cid = get_cid(ncells, e);
+
+    if (e.w != INVALID) {
+        start = starts[cid];
+        id = start + e.w;
+        lr_set(i, remote, /**/ &val);
+        ii[id] = val;
+    }
+}
+
+__device__ void fetch(const Particle *pplo, const Particle *ppre, uint i, /**/ Particle *p) {
+    bool remote; int src;
+    src = lr_get(i, /**/ remote);
+    if (remote) *p = ppre[src];
+    else        *p = pplo[src];
+}
+
+__global__ void gather(const Particle *pplo, const Particle *ppre, const uint *ii, int n, /**/ Particle *pp) {
+    int i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i >= n) return;
+    
+    uint code = ii[i];
+    fetch(pplo, ppre, code, /**/ pp + i);
+}
+
+
+} // dev
