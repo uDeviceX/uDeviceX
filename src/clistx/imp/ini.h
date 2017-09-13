@@ -5,8 +5,8 @@ void ini(int LX, int LY, int LZ, /**/ Clist *c) {
     c->ncells = LX * LY * LZ;
 
     size_t size = (c->ncells + 1) * sizeof(int);
-    CC(d::Malloc(&c->starts, size));
-    CC(d::Malloc(&c->counts, size));
+    CC(d::Malloc((void **) &c->starts, size));
+    CC(d::Malloc((void **) &c->counts, size));
     
 }
 void ini_work(Work *w) {

@@ -1,5 +1,10 @@
+#include <conf.h>
+#include "inc/conf.h"
 #include "inc/type.h"
 #include "algo/scan/int.h"
+
+#include "d/api.h"
+#include "utils/cc.h"
 
 #include "imp.h"
 

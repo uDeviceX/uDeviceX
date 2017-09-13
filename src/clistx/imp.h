@@ -3,7 +3,7 @@ namespace clist {
 struct Clist {
     int3 dims;
     int ncells;
-    int *start, *count;
+    int *starts, *counts;
 };
 
 struct Work {
