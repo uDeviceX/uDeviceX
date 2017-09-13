@@ -9,6 +9,11 @@ static void estimates(int nfrags, float maxd, /**/ int *cap) {
 
 /* pinned allocation */
 
+static void alloc_pinned_counts(int n, /**/ int **hc, int **dc) {
+    CC(d::alloc_pinned((void**)hc, n * sizeof(int)));
+    CC(d::HostGetDevicePointer((void**)dc, *hc, 0));
+}
+
 static void alloc_one_pinned_frag(int i, /**/ hBags *hb, dBags *db) {
     size_t n = hb->bsize * hb->capacity[i];
     CC(d::alloc_pinned(&hb->data[i], n));
@@ -19,6 +24,7 @@ static void ini_pinned_bags(int nfrags, size_t bsize, float maxdensity, /**/ hBa
     hb->bsize = bsize;
     estimates(nfrags, maxdensity, hb->capacity);
     for (int i = 0; i < nfrags; ++i) alloc_one_pinned_frag(i, /**/ hb, db);
+    alloc_pinned_counts(nfrags, /**/ &hb->counts, &db->counts);
 }
 
 void ini_pinned_no_bulk(size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db) {
@@ -30,7 +36,7 @@ void ini_pinned_full(size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db) 
     ini_pinned_bags(NBAGS, bsize, maxdensity, /**/ hb, db);
 }
 
-/* normal allocation */
+/* normal allocation; counts are pinned */
 
 static void alloc_one_frag(int i, /**/ hBags *hb, dBags *db) {
     size_t n = hb->bsize * hb->capacity[i];
@@ -42,6 +48,7 @@ static void ini_bags(int nfrags, size_t bsize, float maxdensity, /**/ hBags *hb,
     hb->bsize = bsize;
     estimates(nfrags, maxdensity, hb->capacity);
     for (int i = 0; i < nfrags; ++i) alloc_one_frag(i, /**/ hb, db);
+    alloc_pinned_counts(nfrags, /**/ &hb->counts, &db->counts);
 }
 
 void ini_no_bulk(size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db) {
@@ -53,6 +60,11 @@ void ini_full(size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db) {
     ini_bags(NBAGS, bsize, maxdensity, /**/ hb, db);
 }
 
+/* normal allocation, host only */
+
+// TODO
+
+/* stamp allocation */
 
 void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s) {
     int i, c, crd_rnk[3];

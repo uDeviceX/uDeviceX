@@ -15,7 +15,7 @@ struct dBags {
 
 struct hBags {
     data_t *data[NBAGS]; /* data on the host           */
-    int   counts[NBAGS]; /* size of the data           */
+    int         *counts; /* size of the data           */
     int capacity[NBAGS]; /* capacity of each frag      */
     size_t bsize;        /* size of one datum in bytes */
 };
