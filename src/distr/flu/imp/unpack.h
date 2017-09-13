@@ -7,18 +7,27 @@ static int scan(const int n, const int *counts, int27 *starts) {
     return s;
 }
 
-int unpack(const hBags bags, /**/ Particle *pp) {
-    int nhalo, s, i;
+template <typename T>
+static void unpack(const hBags bags, int27 starts, /**/ T *buf) {
+    int s, i;
     size_t c, bs = bags.bsize;
-    int27 starts;
 
-    nhalo = scan(NFRAGS, bags.counts, &starts);
-
+    assert(bs == sizeof(T));
+    
     for (i = 0; i < NFRAGS; ++i) {
         c = bags.counts[i] * bs;
         s = starts.d[i];
-        CC(d::MemcpyAsync(pp + s, bags.data[i], c, H2D));
+        CC(d::MemcpyAsync(buf + s, bags.data[i], c, H2D));
     }
+}
+
+int unpack_pp(const hBags bags, /**/ Particle *pp) {
+    int nhalo;
+    int27 starts;
+
+    nhalo = scan(NFRAGS, bags.counts, &starts);
+    
+    unpack(bags, starts, /**/ pp);
     
     return nhalo;
 }
