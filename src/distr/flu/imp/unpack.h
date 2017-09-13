@@ -25,9 +25,18 @@ int unpack_pp(const hBags bags, /**/ Particle *pp) {
     int nhalo;
     int27 starts;
 
-    nhalo = scan(NFRAGS, bags.counts, &starts);
-    
+    nhalo = scan(NFRAGS, bags.counts, &starts);    
     unpack(bags, starts, /**/ pp);
+    
+    return nhalo;
+}
+
+int unpack_ii(const hBags bags, /**/ int *ii) {
+    int nhalo;
+    int27 starts;
+
+    nhalo = scan(NFRAGS, bags.counts, &starts);    
+    unpack(bags, starts, /**/ ii);
     
     return nhalo;
 }
