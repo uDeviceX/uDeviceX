@@ -10,38 +10,7 @@
 #include "frag.h"
 
 #include "comm/imp.h"
-
-/* generate a unique sequence given a unique val */
-void fill_bag(int val, int sz, int *ii) {
-    for (int i = 0; i < sz; ++i) ii[i] = -2*val + val*val;
-}
-
-void fill_bags(comm::hBags *b) {
-    int c, i;
-    for (i = 0; i < 26; ++i) {
-        c = i;
-        fill_bag(i, c, (int*) b->data[i]);
-        b->counts[i] = c;
-    }
-}
-
-void comp(const int *a, const int *b, int n) {
-    for (int i = 0; i < n; ++i)
-        if (a[i] != b[i])
-            ERR("%d != %d for i = %d\n", a[i], b[i], i);
-}
-
-void compare(const comm::hBags *sb, const comm::hBags *rb) {
-    int i, j, cs, cr;
-    for (i = 0; i < 26; ++i) {
-        j = frag_anti(i);
-        cs = sb->counts[i];
-        cr = rb->counts[j];
-        
-        if (cs != cr) ERR("%d != %d\n", cs, cr);
-        comp((const int*) sb->data[i], (const int*) rb->data[j], cs);
-    }
-}
+#include "distr/flu/imp.h"
 
 int main(int argc, char **argv) {
     m::ini(argc, argv);
