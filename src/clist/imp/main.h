@@ -30,11 +30,6 @@ static void buildn(int n, int xcells, int ycells, int zcells,
     Dfree(ppd);
 }
 
-static void build0(int n, /**/ int *start, int *count) {
-    DzeroA(start, n);
-    DzeroA(count, n);
-}
-
 Clist::Clist(int X, int Y, int Z) {
     LX = X; LY = Y; LZ = Z;
     ncells = LX * LY * LZ + 1;
@@ -45,8 +40,10 @@ Clist::Clist(int X, int Y, int Z) {
 void Clist::build(Particle *const pp, int n) {
     if (n)
         buildn(n, LX, LY, LZ, /**/ pp, start, count);
-    else
-        build0(ncells, /**/ start, count);
+    else {
+        DzeroA(start, ncells);
+        DzeroA(count, ncells);
+    }
 }
 
 Clist::~Clist() {
