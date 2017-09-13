@@ -10,6 +10,14 @@ void ini(int LX, int LY, int LZ, /**/ Clist *c) {
     
 }
 
-void ini_work(Work *w) {
+void ini_work(const Clist *c, /**/ Work *w) {
+    size_t size;
+    scan::alloc_work(c->ncells, /**/ &w->scan);
 
+    size = MAX_PART_NUM * sizeof(uchar4);
+    CC(d::Malloc((void **) &w->eelo, size));
+    CC(d::Malloc((void **) &w->eere, size));
+
+    size = MAX_PART_NUM * sizeof(uint);
+    CC(d::Malloc((void **) &w->ii, size));
 }

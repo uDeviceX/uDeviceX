@@ -1,5 +1,6 @@
 #include <conf.h>
 #include "inc/conf.h"
+#include "inc/def.h"
 #include "inc/type.h"
 #include "algo/scan/int.h"
 
