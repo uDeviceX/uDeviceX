@@ -50,12 +50,11 @@ int main(int argc, char **argv) {
 
     basetags::TagGen tg;
     comm::hBags sendB, recvB;
-    comm::dBags senddB, recvdB;
     comm::Stamp stamp;
 
     ini(/**/ &tg);
-    ini_no_bulk(sizeof(int), 26, /**/ &sendB, &senddB);
-    ini_no_bulk(sizeof(int), 26, /**/ &recvB, &recvdB);
+    ini_no_bulk(sizeof(int), 26, /**/ &sendB);
+    ini_no_bulk(sizeof(int), 26, /**/ &recvB);
     ini(m::cart, /*io*/ &tg, /**/ &stamp);
 
     fill_bags(&sendB);
@@ -70,8 +69,8 @@ int main(int argc, char **argv) {
 
     MSG("Passed");
     
-    fin(&sendB, &senddB);
-    fin(&recvB, &recvdB);
+    fin(&sendB);
+    fin(&recvB);
     fin(/**/ &stamp);
     
     m::fin();
