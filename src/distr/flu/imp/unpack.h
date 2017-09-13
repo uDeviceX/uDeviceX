@@ -27,6 +27,8 @@ int unpack_pp(const hBags bags, /**/ Particle *pp) {
 
     nhalo = scan(NFRAGS, bags.counts, &starts);    
     unpack(bags, starts, /**/ pp);
+
+    KL(dev::shift, (k_cnf(nhalo)), (starts, /**/ pp));
     
     return nhalo;
 }
