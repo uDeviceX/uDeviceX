@@ -34,9 +34,9 @@ void Clist::buildn(Particle *const pp, const int n) {
     clist::build(n, LX, LY, LZ, /**/ pp, start, count);
 }
 
-void Clist::build0() {
-    DzeroA(start, ncells);
-    DzeroA(count, ncells);
+static void build0(int n, /**/ int *start, int *count) {
+    DzeroA(start, n);
+    DzeroA(count, n);
 }
 
 Clist::Clist(int X, int Y, int Z) {
@@ -47,7 +47,10 @@ Clist::Clist(int X, int Y, int Z) {
 }
 
 void Clist::build(Particle *const pp, int n) {
-    if (n) buildn(pp, n); else build0();
+    if (n)
+        buildn(pp, n);
+    else
+        build0(ncells, /**/ start, count);
 }
 
 Clist::~Clist() {
