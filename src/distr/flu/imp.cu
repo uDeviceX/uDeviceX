@@ -22,6 +22,7 @@ using namespace comm;
 #include "map.h"
 #include "dev.h"
 #include "imp/ini.h"
+#include "imp/fin.h"
 #include "imp/pack.h"
 
 } // flu
