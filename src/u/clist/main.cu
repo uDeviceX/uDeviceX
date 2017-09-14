@@ -84,7 +84,6 @@ void verify(int3 d, const int *starts, const int *counts, const Particle *pp, in
     for (cid = 0; cid < nc; ++cid) {
         s = starts[cid];
         c = counts[cid];
-        // MSG("i = %d, c = %d, s = %d", cid, c, s);
         verify_cell(d, cid, s, c, pp);
     }
 }
@@ -92,9 +91,9 @@ void verify(int3 d, const int *starts, const int *counts, const Particle *pp, in
 int main(int argc, char **argv) {
     m::ini(argc, argv);
 
-    Particle *pp, *ppout;
+    Particle *pplo, *ppre, *ppout;
     Particle *pp_hst;
-    int n = 0, *starts, *counts;
+    int nlo = 0, nre = 0, *starts, *counts, n;
     int3 dims = make_int3(4, 8, 4);
     clist::Clist clist;
     clist::Work work;
@@ -105,14 +104,18 @@ int main(int argc, char **argv) {
     pp_hst = (Particle*) malloc(MAXN * sizeof(Particle));
     counts = (int*) malloc(clist.ncells * sizeof(int));
     starts = (int*) malloc(clist.ncells * sizeof(int));
-    CC(d::Malloc((void**) &pp, MAXN * sizeof(Particle)));
+    CC(d::Malloc((void**) &pplo, MAXN * sizeof(Particle)));
+    CC(d::Malloc((void**) &ppre, MAXN * sizeof(Particle)));
     CC(d::Malloc((void**) &ppout, MAXN * sizeof(Particle)));
        
-    ini_1ppc(dims, /**/ &n, pp_hst);
-    ini_random(dims, 4, /**/ &n, pp_hst);
-    CC(d::Memcpy(pp, pp_hst, n * sizeof(Particle), H2D));
+    ini_1ppc(dims, /**/ &nlo, pp_hst);
+    CC(d::Memcpy(pplo, pp_hst, nlo * sizeof(Particle), H2D));
+    ini_random(dims, 4, /**/ &nre, pp_hst);
+    CC(d::Memcpy(ppre, pp_hst, nre * sizeof(Particle), H2D));
 
-    build(n, n, pp, /**/ ppout, &clist, /*w*/ &work);
+    n = nlo + nre;
+    
+    build(nlo, nre, n, pplo, ppre, /**/ ppout, &clist, /*w*/ &work);
     
     CC(d::Memcpy(counts, clist.counts, clist.ncells * sizeof(int), D2H));
     CC(d::Memcpy(starts, clist.starts, clist.ncells * sizeof(int), D2H));
@@ -120,7 +123,8 @@ int main(int argc, char **argv) {
     
     verify(dims, starts, counts, pp_hst, n);    
 
-    CC(d::Free(pp));
+    CC(d::Free(pplo));
+    CC(d::Free(ppre));
     CC(d::Free(ppout));
     free(counts);
     free(starts);
