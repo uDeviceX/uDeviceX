@@ -27,7 +27,7 @@ void fin() {
     odstr::free_work(&o::w);
 
     distr::flu::fin(/**/ &o::d.p);
-    distr::flu::fin(/**/ &o::d.p);
+    distr::flu::fin(/**/ &o::d.c);
     distr::flu::fin(/**/ &o::d.u);
     
     if (global_ids) {
