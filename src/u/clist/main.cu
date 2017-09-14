@@ -28,9 +28,9 @@ void ini_1ppc(int3 d, int *n, Particle *pp) {
     for (iz = 0; iz < d.z; ++iz)
         for (iy = 0; iy < d.y; ++iy)
             for (ix = 0; ix < d.x; ++ix) {
-                p.r[X] = -d.x + ix * 0.5f + 0.5f;
-                p.r[Y] = -d.y + iy * 0.5f + 0.5f;
-                p.r[Z] = -d.z + iz * 0.5f + 0.5f;
+                p.r[X] = (-d.x + ix) * 0.5f + 0.5f;
+                p.r[Y] = (-d.y + iy) * 0.5f + 0.5f;
+                p.r[Z] = (-d.z + iz) * 0.5f + 0.5f;
                 p.v[X] = p.v[Y] = p.v[Z] = 0.f;
                 i = ix + d.x * (iy + d.z * iz);
                 pp[i] = p;
@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
     Particle *pp, *ppout;
     Particle *pp_hst;
     int n = 0;
-    int3 dims = make_int3(8, 10, 12);
+    int3 dims = make_int3(4, 4, 2);
     clist::Clist clist;
     clist::Work work;
 

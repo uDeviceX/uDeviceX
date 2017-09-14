@@ -1,5 +1,8 @@
 // TODO: split remote and bulk subindex?
 
+#define REMOTE (true)
+#define LOCAL (false)
+
 void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, /*w*/ Work *w) {
     build(nlo, 0, nout, pplo, NULL, /**/ ppout, c, /*w*/ w);
 }
@@ -23,8 +26,11 @@ void build(int nlo, int nre, int nout, const Particle *pplo, const Particle *ppr
 
     scan::scan(cc, nc, /**/ ss, /*w*/ &w->scan);
 
-    if (nlo) KL(dev::get_ids, (k_cnf(nlo)), (true,  dims, nlo, ss, eelo, /**/ ii));
-    if (nre) KL(dev::get_ids, (k_cnf(nre)), (false, dims, nre, ss, eere, /**/ ii));
+    if (nlo) KL(dev::get_ids, (k_cnf(nlo)), (LOCAL,  dims, nlo, ss, eelo, /**/ ii));
+    if (nre) KL(dev::get_ids, (k_cnf(nre)), (REMOTE, dims, nre, ss, eere, /**/ ii));
 
     KL(dev::gather, (k_cnf(nout)), (pplo, ppre, ii, nout, /**/ ppout));
 }
+
+#undef REMOTE
+#undef LOCAL
