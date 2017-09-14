@@ -26,18 +26,14 @@ void ini_1ppc(int3 d, int *n, Particle *pp) {
     Particle p;
     *n = d.x * d.y * d.z;
 
-    for (iz = 0; iz < d.z; ++iz)
+    for (i = 0, iz = 0; iz < d.z; ++iz)
         for (iy = 0; iy < d.y; ++iy)
             for (ix = 0; ix < d.x; ++ix) {
                 p.r[X] = -d.x * 0.5f + ix + 0.5f;
                 p.r[Y] = -d.y * 0.5f + iy + 0.5f;
                 p.r[Z] = -d.z * 0.5f + iz + 0.5f;
                 p.v[X] = p.v[Y] = p.v[Z] = 0.f;
-                i = ix + d.x * (iy + d.z * iz);
-                // MSG("%3f %3f %3f at %d %d %d",
-                //     p.r[X], p.r[Y], p.r[Z], ix, iy, iz);
-
-                pp[i] = p;
+                pp[i++] = p;
             }
 }
 
@@ -74,7 +70,7 @@ void verify(int3 d, const int *starts, const int *counts, const Particle *pp, in
     for (cid = 0; cid < nc; ++cid) {
         s = starts[cid];
         c = counts[cid];
-        MSG("i = %d, c = %d, s = %d", cid, c, s);
+        // MSG("i = %d, c = %d, s = %d", cid, c, s);
         verify_cell(d, cid, s, c, pp);
     }
 }
