@@ -1,6 +1,7 @@
 # clists
 
-Cell lists
+Cell lists  
+Purpose: reorder data according to particle positions
 
 ## possible inputs:
 * local array of particles `pplo`, size `nlo`
