@@ -20,6 +20,15 @@ struct Unpack {
     Particle *ppre;
 };
 
+void ini(Pack *p);
+void ini(Comm *c);
+void ini(Unpack *u);
+
+void fin(Pack *p);
+void fin(Comm *c);
+void fin(Unpack *u);
+
+
 /* map */
 void build_map(int n, const Particle *pp, Pack *p);
 
