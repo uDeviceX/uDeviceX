@@ -18,6 +18,6 @@ static void color(Particle *pp, int n, /**/ int *cc) {
         if (inside) {cc[i] = R; r++;}
         else        {cc[i] = G; g++;}
     }
-    MSG("color scheme: Bangladesh");
+    MSG("color scheme: Korea");
     MSG("red/green : %d/%d", r, g);
 }
