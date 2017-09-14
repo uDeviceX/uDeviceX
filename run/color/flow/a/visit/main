@@ -17,3 +17,4 @@ argv.pop(0) # remove py file
 
 session("visit/s.session")
 sfile("visit/main.png")
+sys.exit()
