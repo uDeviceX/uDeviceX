@@ -3,6 +3,9 @@ namespace flu {
 
 using namespace comm;
 
+void alloc_map(float maxdensity, /**/ Map *m);
+void free_map(/**/ Map *m);
+
 void build_map(int n, const Particle *pp, Map m);
 void pack_pp(const Map m, const Particle *pp, int n, /**/ dBags bags);
 void pack_ii(const Map m, const int *ii, int n, /**/ dBags bags);
