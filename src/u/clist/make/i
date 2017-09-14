@@ -1,4 +1,4 @@
-dirs="$U d mpi algo/scan inc utils clistx"
+dirs="$U d mpi algo/scan inc utils clist"
 for D in ${dirs}
 do
 find $D \
