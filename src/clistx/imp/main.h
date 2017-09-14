@@ -7,15 +7,24 @@ void ini_counts(Clist *c) {
     CC(d::MemsetAsync(c->counts, 0, c->ncells * sizeof(int)));
 }
 
-void subindex_local(int n, const Particle *pp) {
-    // if (nlo) KL(dev::subindex, (k_cnf(nlo)), (dims, nlo, pplo, /*io*/ cc, /**/ eelo));
-    
+static void subindex(int n, const Particle *pp, int3 dims, /**/ int *cc, uchar4 *ee) {
+    if (n) KL(dev::subindex, (k_cnf(n)), (dims, n, pp, /*io*/ cc, /**/ ee));
 }
+
+void subindex_local(int n, const Particle *pp, /**/ Clist *c, Ticket *t) {
+    subindex(n, pp, c->dims, /**/ c->counts, t->eelo);
+}
+
+void subindex_remote(int n, const Particle *pp, /**/ Clist *c, Ticket *t) {
+    subindex(n, pp, c->dims, /**/ c->counts, t->eere);
+}
+
+
+
 
 void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, Ticket *t) {
     build(nlo, 0, nout, pplo, NULL, /**/ ppout, c, t);
 }
-
 
 void build(int nlo, int nre, int nout, const Particle *pplo, const Particle *ppre, /**/ Particle *ppout, Clist *c, Ticket *t) {
     int nc, *cc, *ss;
