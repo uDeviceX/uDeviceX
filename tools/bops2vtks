@@ -42,11 +42,21 @@ main_id () {
     done
 }
 
+mkdir0 () {
+    exec0 mkdir -p -- "$d"
+    mkdir -p -- "$d"
+    if test ! -z ${DRYRUN+x}; then return; fi
+    if ! test -d "$d"
+    then printf 'bops2vtks: cannot create dir %s\n' "$d"
+	 exit 1
+    fi
+}
+
 if test $# -ne 0 -a "$1" = -h; then usg; fi
 
 # output directory
 d="$1"; shift
-mkdir -p -- "$d"
+mkdir0
 
 Id=0
 for f
