@@ -139,6 +139,7 @@ namespace sim {
 
 #include "imp/update.h"
 #include "imp/odstr.h"
+#include "imp/distr.h"
 #include "imp/rbc.h"
 #include "imp/step.h"
 #include "imp/run.h"
