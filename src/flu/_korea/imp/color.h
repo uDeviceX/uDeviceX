@@ -15,7 +15,7 @@ static void color(Particle *pp, int n, /**/ int *cc) {
     for (i = r = g = 0; i < n; i++) {
         p = pp[i];
         x = p.r[X]; y = p.r[Y]; z = p.r[Z];
-        x = m::x2g(x); y = m::x2g(z); y = m::x2g(z);
+        x = m::x2g(x); y = m::y2g(y); z = m::z2g(z);
         x -= x0; y -= y0; z -= z0;
         inside = x*x + y*y + z*z < rad*rad;
         if (inside) {cc[i] = R; r++;}
