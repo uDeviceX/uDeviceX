@@ -1,4 +1,4 @@
-u=u/korea
+u=u/x
 Domain="XS=$XS YS=$YS ZS=$ZS"
 u.conf $s $u $c <<!!!
    tend=4.01 part_freq=800
