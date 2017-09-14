@@ -20,6 +20,9 @@ flu::QuantsI     qc; /* [c]olors          */
 odstr::TicketI   tc; /* [c]olors          */
 odstr::TicketUI tuc; /* [u]npack [c]olors */
 
+/* distribution structure : see type.h */
+Distr d;
+
 /* [h]alo interactions : local halos : see type.h */
 H h;
 
