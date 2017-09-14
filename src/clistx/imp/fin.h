@@ -3,10 +3,10 @@ void fin(/**/ Clist *c) {
     CC(d::Free(c->counts));
 }
 
-void fin_work(Work *w) {
-    scan::free_work(/**/ &w->scan);
+void fin_ticket(Ticket *t) {
+    scan::free_work(/**/ &t->scan);
 
-    CC(d::Free(w->eelo));
-    CC(d::Free(w->eere));
-    CC(d::Free(w->ii));
+    CC(d::Free(t->eelo));
+    CC(d::Free(t->eere));
+    CC(d::Free(t->ii));
 }

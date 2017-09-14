@@ -3,28 +3,37 @@
 #define REMOTE (true)
 #define LOCAL (false)
 
-void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, /*w*/ Work *w) {
-    build(nlo, 0, nout, pplo, NULL, /**/ ppout, c, /*w*/ w);
+void ini_counts(Clist *c) {
+    CC(d::MemsetAsync(c->counts, 0, c->ncells * sizeof(int)));
+}
+
+void subindex_local(int n, const Particle *pp) {
+    // if (nlo) KL(dev::subindex, (k_cnf(nlo)), (dims, nlo, pplo, /*io*/ cc, /**/ eelo));
+    
+}
+
+void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, Ticket *t) {
+    build(nlo, 0, nout, pplo, NULL, /**/ ppout, c, t);
 }
 
 
-void build(int nlo, int nre, int nout, const Particle *pplo, const Particle *ppre, /**/ Particle *ppout, Clist *c, /*w*/ Work *w) {
+void build(int nlo, int nre, int nout, const Particle *pplo, const Particle *ppre, /**/ Particle *ppout, Clist *c, Ticket *t) {
     int nc, *cc, *ss;
     uchar4 *eelo, *eere;
     int3  dims = c->dims;
     nc = c->ncells;
     cc = c->counts;
     ss = c->starts;
-    eelo = w->eelo;
-    eere = w->eere;
-    uint *ii = w->ii;
+    eelo = t->eelo;
+    eere = t->eere;
+    uint *ii = t->ii;
     
     CC(d::MemsetAsync(cc, 0, nc * sizeof(int)));
 
     if (nlo) KL(dev::subindex, (k_cnf(nlo)), (dims, nlo, pplo, /*io*/ cc, /**/ eelo));
     if (nre) KL(dev::subindex, (k_cnf(nre)), (dims, nre, ppre, /*io*/ cc, /**/ eere));
 
-    scan::scan(cc, nc, /**/ ss, /*w*/ &w->scan);
+    scan::scan(cc, nc, /**/ ss, /*w*/ &t->scan);
 
     if (nlo) KL(dev::get_ids, (k_cnf(nlo)), (LOCAL,  dims, nlo, ss, eelo, /**/ ii));
     if (nre) KL(dev::get_ids, (k_cnf(nre)), (REMOTE, dims, nre, ss, eere, /**/ ii));
