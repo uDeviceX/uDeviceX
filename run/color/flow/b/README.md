@@ -1,1 +1,1 @@
-Two colors poiseuille with surface tension
+Two colors poiseuille without surface tension
