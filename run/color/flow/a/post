@@ -1,1 +1,1 @@
-bops2vtks bop/solvent-*.bop -- bop/colors_*.bop
+bops2vtks vtk bop/solvent-*.bop -- bop/colors_*.bop
