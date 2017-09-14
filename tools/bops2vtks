@@ -1,14 +1,11 @@
 usg() {
-    echo 'usage: bops2vtks <0.bop> <1.bop> ... -- <i0.bop> <i1.bop> ...' >&2
-    echo 'usage: bops2vtks <0.bop> <1.bop> ...'                          >&2
+    echo 'usage: bops2vtks <output dir> <0.bop> <1.bop> ... -- <i0.bop> <i1.bop> ...' >&2
+    echo 'usage: bops2vtks <output dir> <0.bop> <1.bop> ...'                          >&2
     exit
 }
 
-if test $# -ne 0 -a "$1" = -h; then usg; fi
-
 bn ()  { basename "$1" .bop; }
 vtk () { echo `bn "$1"`.vtk; }
-
 exec0 () {
     if test -z ${DRYRUN+x}
     then "$@"
@@ -19,7 +16,7 @@ exec0 () {
 main_vanilla () {
     for f
     do v=`vtk "$f"`
-       exec0 bop2vtk "$v" "$f"
+       exec0 bop2vtk "$d/$v" "$f"
     done
 }
 
@@ -41,9 +38,15 @@ main_id () {
     do f=`one_a`; shift_a
        i="$1";    shift
        v=`vtk "$f"`
-       exec0 bop2vtk "$v" "$f" -- "$i"
+       exec0 bop2vtk "$d/$v" "$f" -- "$i"
     done
 }
+
+if test $# -ne 0 -a "$1" = -h; then usg; fi
+
+# output directory
+d="$1"; shift
+mkdir -p -- "$d"
 
 Id=0
 for f
