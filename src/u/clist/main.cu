@@ -37,6 +37,15 @@ void ini_1ppc(int3 d, int *n, Particle *pp) {
             }
 }
 
+void make_holes(int n, int nholes, Particle *pp) {
+    Particle p;
+    for (int i = 0; i < nholes; ++i) {
+        p = pp[i];
+        p.r[X] += 9999.f;
+        pp[i] = p;
+    }
+}
+
 void ini_random(int3 d, int density, int *n, Particle *pp) {
     Particle p;
     int i, N;
@@ -95,6 +104,7 @@ int main(int argc, char **argv) {
     Particle *pp_hst;
     int nlo = 0, nre = 0, *starts, *counts, n;
     int3 dims = make_int3(4, 8, 4);
+    int nholes = 4;
     clist::Clist clist;
     clist::Work work;
 
@@ -109,11 +119,12 @@ int main(int argc, char **argv) {
     CC(d::Malloc((void**) &ppout, MAXN * sizeof(Particle)));
        
     ini_1ppc(dims, /**/ &nlo, pp_hst);
+    make_holes(nlo, nholes, pp_hst);
     CC(d::Memcpy(pplo, pp_hst, nlo * sizeof(Particle), H2D));
     ini_random(dims, 4, /**/ &nre, pp_hst);
     CC(d::Memcpy(ppre, pp_hst, nre * sizeof(Particle), H2D));
 
-    n = nlo + nre;
+    n = nlo + nre - nholes;
     
     build(nlo, nre, n, pplo, ppre, /**/ ppout, &clist, /*w*/ &work);
     
