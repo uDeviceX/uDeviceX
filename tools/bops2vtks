@@ -1,37 +1,66 @@
-#!/bin/bash
-
 usg() {
-    echo 'usage: bops2vtks <0.bop> <1.bop> ... -- <i0.bop> <i1.bop> ...' >&2
-    echo 'usage: bops2vtks <0.bop> <1.bop> ...'                          >&2
+    echo 'usage: bops2vtks <output dir> <0.bop> <1.bop> ... -- <i0.bop> <i1.bop> ...' >&2
+    echo 'usage: bops2vtks <output dir> <0.bop> <1.bop> ...'                          >&2
     exit
+}
+
+bn ()  { basename "$1" .bop; }
+vtk () { echo `bn "$1"`.vtk; }
+exec0 () {
+    if test -z ${DRYRUN+x}
+    then "$@"
+    else printf '%s\n' "$*"
+    fi
+}
+
+main_vanilla () {
+    for f
+    do v=`vtk "$f"`
+       exec0 bop2vtk "$d/$v" "$f"
+    done
+}
+
+# shift global variable $a
+shift0 ()  { shift; echo "$@"; }
+one0  ()  { echo "$1"; }
+shift_a () { a=`shift0 $a`; }
+one_a  () { one0 $a; }
+###
+
+main_id () {
+    a="$@"
+    while test $# -ne 0
+    do f="$1"; shift
+       if test "$f" = --; then break; fi
+    done
+
+    while test $# -ne 0
+    do f=`one_a`; shift_a
+       i="$1";    shift
+       v=`vtk "$f"`
+       exec0 bop2vtk "$d/$v" "$f" -- "$i"
+    done
+}
+
+mkdir0 () {
+    exec0 mkdir -p -- "$d"
+    mkdir -p -- "$d"
+    if test ! -z ${DRYRUN+x}; then return; fi
+    if ! test -d "$d"
+    then printf 'bops2vtks: cannot create dir %s\n' "$d"
+	 exit 1
+    fi
 }
 
 if test $# -ne 0 -a "$1" = -h; then usg; fi
 
-declare -a fbop
-declare -a ibop
+# output directory
+d="$1"; shift
+mkdir0
 
-WF="true"
-C=0
-
-for a in $@; do
-    if test "$a" = "--"; then WF="false"; C=0; continue; fi
-
-    if test "$WF" = "true"; then 
-        fbop[$C]=$a
-    else
-        ibop[$C]=$a
-    fi
-    C=$((C+1))
+Id=0
+for f
+do if test "$f" = --
+   then Id=1; continue; fi
 done
-
-for ((i=0;i<${#fbop[@]};++i)); do
-    fin="${fbop[i]}"
-    if test "$WF" = "true"; then
-        in=$fin
-    else
-        in="$fin -- ${ibop[i]}"
-    fi
-    out="${fin%.bop}.vtk"
-    bop2vtk $out $in
-done
+if test $Id -eq 0; then main_vanilla "$@"; else main_id "$@"; fi
