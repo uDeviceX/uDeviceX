@@ -1,6 +1,9 @@
 s=../../../src
 c=$s/conf/zurich.h
-export s c
+XS=16 YS=16 ZS=16
 
-./main
-./post
+export s c XS YS ZS
+
+./pre
+#./main
+#./post

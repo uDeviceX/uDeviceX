@@ -1,0 +1,7 @@
+# RBCs position + mesh
+# rbc+solid placement
+radius=6.0
+fraction=0
+sc=1.0
+ang=0.785
+plcmt.ro $XS $YS $ZS $radius $fraction $sc $ang /dev/null rbcs-ic.txt
