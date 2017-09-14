@@ -3,15 +3,18 @@
 Cell lists
 
 ## possible inputs:
-* local array of particles `pplo`
-* (optional) remote array of particles `ppre`
+* local array of particles `pplo`, size `nlo`
+* (optional) remote array of particles `ppre`, size `nre`
 
-The arrays may have "holes" in it, in which case the particle is not kept in the cell lists
+The arrays may have "holes" in it, in which case the missing particle is not kept in the cell lists.
+in general, `nlo` is bigger than the number of local particles because of these holes.
 
-# output:
+## output:
 `starts`, `counts`, `pp`
+`pp` has size nout; nout is not equal to nlo + nre in general!
 
-# work:
+## ticket:
 * `ee` cell [e]ntries (`lo` and `re` versions)
 * `ii` scattered indices
 * `ws `workspace for scan
+
