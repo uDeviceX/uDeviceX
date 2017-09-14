@@ -38,7 +38,7 @@ void pack_pp(const Particle *pp, int n, /**/ Pack *p);
 void pack_ii(const int *ii, int n, /**/ Pack *p);
 void pack_cc(const int *cc, int n, /**/ Pack *p);
 
-void download(Pack *p);
+void download(int n, Pack *p);
 
 /* communication */
 void post_recv(Comm *c, Unpack *u);
