@@ -4,6 +4,9 @@
 #include "inc/conf.h"
 
 #include "inc/type.h"
+#include "utils/cc.h"
+#include "d/api.h"
+
 #include "mpi/basetags.h"
 #include "comm/imp.h"
 
