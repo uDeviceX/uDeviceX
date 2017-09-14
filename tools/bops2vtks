@@ -34,7 +34,7 @@ main_id () {
     a="$@"
     while test $# -ne 0
     do f="$1"; shift
-       if test "$f" == --; then break; fi
+       if test "$f" = --; then break; fi
     done
 
     while test $# -ne 0
@@ -47,7 +47,7 @@ main_id () {
 
 Id=0
 for f
-do if test "$f" == --
+do if test "$f" = --
    then Id=1; continue; fi
 done
 if test $Id -eq 0; then main_vanilla "$@"; else main_id "$@"; fi
