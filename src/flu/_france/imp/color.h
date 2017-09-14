@@ -10,7 +10,8 @@ static void color(Particle *pp, int n, /**/ int *cc) {
     for (i = b = w = r = 0; i < n; i++) {
         p = pp[i];
         y = p.r[Y];
-        y += 0.5 * ly;
+        y = m::y2g(y); /* to global */
+
         y *= 2;
         if      (y <     ly) {cc[i] = B; b++;}
         else if (y < 2 * ly) {cc[i] = W; w++;}
