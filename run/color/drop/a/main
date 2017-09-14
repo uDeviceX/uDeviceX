@@ -1,7 +1,7 @@
 u=u/bangladesh
 u.conf $s $u $c <<!!!
    tend=40.01 part_freq=8000
-   XS=4 YS=32 ZS=4
+   XS=16 YS=16 ZS=16
    pushflow doublepoiseuille
    field_dumps part_dumps
    field_freq=8000
