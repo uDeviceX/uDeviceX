@@ -2,6 +2,7 @@ u=u/bangladesh
 u.conf $s $u $c <<!!!
    tend=40.01 part_freq=8000
    XS=16 YS=16 ZS=16
+   kBT=0.00444302
    driving_force=0.2
    pushflow doublepoiseuille
    field_dumps part_dumps
