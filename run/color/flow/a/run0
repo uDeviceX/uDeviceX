@@ -9,5 +9,3 @@ u.conf $s $u $c <<!!!
 !!!
 (make clean && u.make -j) > /dev/null
 sh runfile
-avg_h52.m h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
-
