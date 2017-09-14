@@ -82,19 +82,21 @@ __global__ void get_ids(bool remote, int3 ncells, int n, const int *starts, cons
     }
 }
 
-__device__ void fetch(const Particle *pplo, const Particle *ppre, uint i, /**/ Particle *p) {
+template <typename T>
+__device__ void fetch(const T *ddlo, const T *ddre, uint i, /**/ T *d) {
     bool remote; int src;
     src = lr_get(i, /**/ &remote);
-    if (remote) *p = ppre[src];
-    else        *p = pplo[src];
+    if (remote) *d = ddre[src];
+    else        *d = ddlo[src];
 }
 
-__global__ void gather(const Particle *pplo, const Particle *ppre, const uint *ii, int n, /**/ Particle *pp) {
+template <typename T>
+__global__ void gather(const T *ddlo, const T *ddre, const uint *ii, int n, /**/ T *dd) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
     
     uint code = ii[i];
-    fetch(pplo, ppre, code, /**/ pp + i);
+    fetch(ddlo, ddre, code, /**/ dd + i);
 }
 
 } // dev
