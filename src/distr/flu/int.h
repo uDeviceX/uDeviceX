@@ -55,7 +55,7 @@ void unpack_cc(/**/ Unpack *u);
 using namespace ::flu;
 void bulk(/**/ Quants *q);
 void halo(const Unpack *u, /**/ Quants *q);
-void gather(const Unpack *u, /**/ Quants *q);
+void gather(const Pack *p, const Unpack *u, /**/ Quants *q, QuantsI *qi, QuantsI *qc);
 
 } // flu
 } // distr
