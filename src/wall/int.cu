@@ -21,6 +21,7 @@
 #include "sdf/type.h"
 #include "sdf/int.h"
 
+#include "algo/scan/int.h"
 #include "clist/imp.h"
 
 #include "forces/type.h"

@@ -43,7 +43,7 @@ static void remove_solids(rig::Quants *q, sdf::Quants qsdf) {
 void create_walls(sdf::Quants qsdf, flu::Quants* qflu, wall::Quants *qwall) {
     int nold = qflu->n;
     wall::gen_quants(qsdf, /**/ &qflu->n, qflu->pp, qwall);
-    qflu->cells->build(qflu->pp, qflu->n);
+    flu::build_cells(qflu);
     MSG("solvent particles survived: %d/%d", qflu->n, nold);
 }
 

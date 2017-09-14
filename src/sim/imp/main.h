@@ -12,8 +12,8 @@ void gen() { /* generate */
 
 void sim_gen() {
     flu::gen_quants(&o::q, &o::qc);
+    flu::build_cells(&o::q);
     if (global_ids)    flu::gen_ids  (o::q.n, &o::qi);
-    o::q.cells->build(o::q.pp, o::q.n);
     flu::get_ticketZ(o::q, &o::tz);
     flu::get_ticketRND(&o::trnd);
     if (rbcs) {
@@ -51,7 +51,7 @@ void sim_strt() {
     flu::strt_quants(restart::BEGIN, &o::q);
     if (global_ids)    flu::strt_ii("id",     restart::BEGIN, &o::qi);
     if (multi_solvent) flu::strt_ii("colors", restart::BEGIN, &o::qc);
-    o::q.cells->build(/* io */ o::q.pp, o::q.n);
+    flu::build_cells(&o::q);
 
     if (rbcs) rbc::strt_quants("rbc.off", restart::BEGIN, &r::q);
     dSync();

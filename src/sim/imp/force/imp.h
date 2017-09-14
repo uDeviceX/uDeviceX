@@ -21,7 +21,7 @@ void forces(bool wall0) {
     w_s.c  = cloud;
     w_s.ff = o::ff;
     w_s.n  = o::q.n;
-    w_s.starts = o::q.cells->start;
+    w_s.starts = o::q.cells->starts;
     if (fsiforces)     forces_fsi(&w_s, &w_r);
 
     rex::rex(w_r); /* fsi::halo(), cnt::halo() */
