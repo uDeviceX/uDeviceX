@@ -11,7 +11,7 @@ struct Pack {
 };
 
 struct Comm {
-    Stamp *pp, *ii, *cc;
+    Stamp pp, ii, cc;
 };
 
 struct Unpack {
@@ -21,7 +21,7 @@ struct Unpack {
 };
 
 void ini(float maxdensity, Pack *p);
-void ini(Comm *c);
+void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c);
 void ini(Unpack *u);
 
 void fin(Pack *p);

@@ -9,5 +9,10 @@ void ini(float maxdensity, Pack *p) {
         ini_pinned_no_bulk(sizeof(int), maxdensity, /**/ &p->hcc, &p->dcc);
 }
 
-void ini(Comm *c);
+void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c) {
+    ini(comm, /*io*/ tg, /**/ &c->pp);
+    if (global_ids)    ini(comm, /*io*/ tg, /**/ &c->ii);
+    if (multi_solvent) ini(comm, /*io*/ tg, /**/ &c->cc);
+}
+
 void ini(Unpack *u);
