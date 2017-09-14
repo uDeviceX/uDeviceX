@@ -22,7 +22,7 @@ struct Unpack {
 
 void ini(float maxdensity, Pack *p);
 void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c);
-void ini(Unpack *u);
+void ini(float maxdensity, Unpack *u);
 
 void fin(Pack *p);
 void fin(Comm *c);
@@ -41,7 +41,7 @@ void pack_cc(const int *cc, int n, /**/ Pack *p);
 void post_recv(Comm *c, Unpack *u);
 void post_send(Pack *p, Comm *c);
 void wait_recv(Comm *c, Unpack *u);
-void wait_send(Comm *s);
+void wait_send(Comm *c);
 
 /* unpack */
 void unpack_pp(/**/ Unpack *u);
