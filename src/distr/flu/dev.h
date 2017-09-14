@@ -7,7 +7,7 @@ __device__ int d2fid(const int d[3]) {
         + 9 * ((d[2] + 2) % 3);
 }
 
-
+/* exclusive scan */
 __global__ void scan_map(/**/ Map m) {
     int tid, val, cnt;
     tid = threadIdx.x;
