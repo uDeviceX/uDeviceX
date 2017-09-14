@@ -1,1 +1,1 @@
-Several RBCs in double poiseuille flow
+Several RBCs in double poiseuille flow with different viscosity
