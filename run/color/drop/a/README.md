@@ -1,1 +1,1 @@
-Two colors poiseuille with surface tension
+Drop in double poiseuille with surface tension
