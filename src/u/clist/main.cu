@@ -106,10 +106,10 @@ int main(int argc, char **argv) {
     int3 dims = make_int3(4, 8, 4);
     int nholes = 4;
     clist::Clist clist;
-    clist::Work work;
+    clist::Ticket t;
 
     ini(dims.x, dims.y, dims.z, /**/ &clist);
-    ini_work(&clist, /**/ &work);
+    ini_ticket(&clist, /**/ &t);
 
     pp_hst = (Particle*) malloc(MAXN * sizeof(Particle));
     counts = (int*) malloc(clist.ncells * sizeof(int));
@@ -126,7 +126,7 @@ int main(int argc, char **argv) {
 
     n = nlo + nre - nholes;
     
-    build(nlo, nre, n, pplo, ppre, /**/ ppout, &clist, /*w*/ &work);
+    build(nlo, nre, n, pplo, ppre, /**/ ppout, &clist, &t);
     
     CC(d::Memcpy(counts, clist.counts, clist.ncells * sizeof(int), D2H));
     CC(d::Memcpy(starts, clist.starts, clist.ncells * sizeof(int), D2H));
@@ -142,7 +142,7 @@ int main(int argc, char **argv) {
     free(pp_hst);
 
     fin(/**/ &clist);
-    fin_work(/**/ &work);
+    fin_ticket(/**/ &t);
 
     
     m::fin();
