@@ -16,8 +16,8 @@ struct Comm {
 
 struct Unpack {
     hBags hpp, hii, hcc;
-    int *iire, *ccre;
     Particle *ppre;
+    int *iire, *ccre;
 };
 
 void ini(float maxdensity, Pack *p);

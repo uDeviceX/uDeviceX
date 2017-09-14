@@ -13,4 +13,12 @@ void fin(Comm *c) {
     if (multi_solvent) fin(&c->cc);
 }
 
-void fin(Unpack *u);
+void fin(Unpack *u) {
+    fin(&u->hpp);
+    if (global_ids)    fin(&u->hii);
+    if (multi_solvent) fin(&u->hcc);
+
+    CC(d::Free(u->ppre));
+    if (global_ids)    CC(d::Free(u->iire));
+    if (multi_solvent) CC(d::Free(u->ccre));
+}
