@@ -37,12 +37,16 @@ void ini_1ppc(int3 d, int *n, Particle *pp) {
             }
 }
 
+void verify(int3 dims, const int *starts, const int *counts, const Particle *pp, int n) {
+    
+}
+
 int main(int argc, char **argv) {
     m::ini(argc, argv);
 
     Particle *pp, *ppout;
     Particle *pp_hst;
-    int n = 0;
+    int n = 0, *starts, *counts;
     int3 dims = make_int3(4, 4, 2);
     clist::Clist clist;
     clist::Work work;
@@ -53,15 +57,25 @@ int main(int argc, char **argv) {
     pp_hst = (Particle*) malloc(MAXN * sizeof(Particle));
     CC(d::Malloc((void**) &pp, MAXN * sizeof(Particle)));
     CC(d::Malloc((void**) &ppout, MAXN * sizeof(Particle)));
+    CC(d::Malloc((void**) &counts, clist.ncells * sizeof(Particle)));
+    CC(d::Malloc((void**) &starts, clist.ncells * sizeof(Particle)));
        
     ini_1ppc(dims, /**/ &n, pp_hst);
     CC(d::Memcpy(pp, pp_hst, n * sizeof(Particle), H2D));
 
     build(n, n, pp, /**/ ppout, &clist, /*w*/ &work);
+
+    CC(d::Memcpy(counts, clist.counts, clist.ncells * sizeof(int), D2H));
+    CC(d::Memcpy(starts, clist.starts, clist.ncells * sizeof(int), D2H));
+    CC(d::Memcpy(pp_hst, ppout, n * sizeof(Particle), D2H));
+
+    verify(dims, starts, counts, ppout, n);
     
 
     CC(d::Free(pp));
     CC(d::Free(ppout));
+    CC(d::Free(counts));
+    CC(d::Free(starts));
     free(pp_hst);
 
     fin(/**/ &clist);
