@@ -52,7 +52,10 @@ void unpack_ii(/**/ Unpack *u);
 void unpack_cc(/**/ Unpack *u);
 
 /* cell lists */
-
+using namespace ::flu;
+void bulk(/**/ Quants *q);
+void halo(const Unpack *u, /**/ Quants *q);
+void gather(const Unpack *u, /**/ Quants *q);
 
 } // flu
 } // distr
