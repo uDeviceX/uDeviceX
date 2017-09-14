@@ -1814,19 +1814,19 @@
                 <Field name="windowValid" type="bool">false</Field>
             </Object>
             <Object name="View3DAttributes">
-                <Field name="viewNormal" type="doubleArray" length="3">-0.0222351834503118 0.0131422864654935 0.999666382811481 </Field>
-                <Field name="focus" type="doubleArray" length="3">7.99979138374329 8.00011444091797 7.99987244606018 </Field>
-                <Field name="viewUp" type="doubleArray" length="3">0.0148821477134195 0.999807154230292 -0.0128131194234801 </Field>
+                <Field name="viewNormal" type="doubleArray" length="3">0 0 1 </Field>
+                <Field name="focus" type="doubleArray" length="3">16.0003275871277 8.00030994415283 7.9999897480011 </Field>
+                <Field name="viewUp" type="doubleArray" length="3">0 1 0 </Field>
                 <Field name="viewAngle" type="double">30</Field>
-                <Field name="parallelScale" type="double">13.8553430002169</Field>
-                <Field name="nearPlane" type="double">-27.7106860004338</Field>
-                <Field name="farPlane" type="double">27.7106860004338</Field>
+                <Field name="parallelScale" type="double">19.5951878518028</Field>
+                <Field name="nearPlane" type="double">-39.1903757036057</Field>
+                <Field name="farPlane" type="double">39.1903757036057</Field>
                 <Field name="imagePan" type="doubleArray" length="2">0 0 </Field>
-                <Field name="imageZoom" type="double">1.4641</Field>
+                <Field name="imageZoom" type="double">1.21</Field>
                 <Field name="perspective" type="bool">true</Field>
                 <Field name="eyeAngle" type="double">2</Field>
                 <Field name="centerOfRotationSet" type="bool">false</Field>
-                <Field name="centerOfRotation" type="doubleArray" length="3">7.99979138374329 8.00011444091797 7.99987244606018 </Field>
+                <Field name="centerOfRotation" type="doubleArray" length="3">16.0003275871277 8.00030994415283 7.9999897480011 </Field>
                 <Field name="axis3DScaleFlag" type="bool">false</Field>
                 <Field name="axis3DScales" type="doubleArray" length="3">1 1 1 </Field>
                 <Field name="shear" type="doubleArray" length="3">0 0 1 </Field>
@@ -5971,19 +5971,19 @@
                             <Field name="windowValid" type="bool">false</Field>
                         </Object>
                         <Object name="View3DAttributes">
-                            <Field name="viewNormal" type="doubleArray" length="3">-0.0222351834503118 0.0131422864654935 0.999666382811481 </Field>
-                            <Field name="focus" type="doubleArray" length="3">7.99979138374329 8.00011444091797 7.99987244606018 </Field>
-                            <Field name="viewUp" type="doubleArray" length="3">0.0148821477134195 0.999807154230292 -0.0128131194234801 </Field>
+                            <Field name="viewNormal" type="doubleArray" length="3">0 0 1 </Field>
+                            <Field name="focus" type="doubleArray" length="3">16.0003275871277 8.00030994415283 7.9999897480011 </Field>
+                            <Field name="viewUp" type="doubleArray" length="3">0 1 0 </Field>
                             <Field name="viewAngle" type="double">30</Field>
-                            <Field name="parallelScale" type="double">13.8553430002169</Field>
-                            <Field name="nearPlane" type="double">-27.7106860004338</Field>
-                            <Field name="farPlane" type="double">27.7106860004338</Field>
+                            <Field name="parallelScale" type="double">19.5951878518028</Field>
+                            <Field name="nearPlane" type="double">-39.1903757036057</Field>
+                            <Field name="farPlane" type="double">39.1903757036057</Field>
                             <Field name="imagePan" type="doubleArray" length="2">0 0 </Field>
-                            <Field name="imageZoom" type="double">1.4641</Field>
+                            <Field name="imageZoom" type="double">1.21</Field>
                             <Field name="perspective" type="bool">true</Field>
                             <Field name="eyeAngle" type="double">2</Field>
                             <Field name="centerOfRotationSet" type="bool">false</Field>
-                            <Field name="centerOfRotation" type="doubleArray" length="3">7.99979138374329 8.00011444091797 7.99987244606018 </Field>
+                            <Field name="centerOfRotation" type="doubleArray" length="3">16.0003275871277 8.00030994415283 7.9999897480011 </Field>
                             <Field name="axis3DScaleFlag" type="bool">false</Field>
                             <Field name="axis3DScales" type="doubleArray" length="3">1 1 1 </Field>
                             <Field name="shear" type="doubleArray" length="3">0 0 1 </Field>
@@ -6114,9 +6114,9 @@
                         </Object>
                         <Object name="ViewerPlotList">
                             <Object name="timeSliders">
-                                <Field name="Correlation01" type="int">2</Field>
-                                <Field name="SOURCE00" type="int">2</Field>
-                                <Field name="SOURCE01" type="int">2</Field>
+                                <Field name="Correlation01" type="int">10</Field>
+                                <Field name="SOURCE00" type="int">10</Field>
+                                <Field name="SOURCE01" type="int">10</Field>
                             </Object>
                             <Field name="activeTimeSlider" type="string">Correlation01</Field>
                             <Object name="plot00">
@@ -6129,7 +6129,7 @@
                                 <Field name="realized" type="bool">true</Field>
                                 <Object name="ViewerPlot">
                                     <Field name="plotDescription" type="string"></Field>
-                                    <Field name="cacheIndex" type="int">2</Field>
+                                    <Field name="cacheIndex" type="int">10</Field>
                                     <Field name="spatialExtentsType" type="string">AVT_ORIGINAL_EXTENTS</Field>
                                     <Field name="bgColor" type="doubleArray" length="3">1 1 1 </Field>
                                     <Field name="fgColor" type="doubleArray" length="3">0 0 0 </Field>
@@ -6260,7 +6260,7 @@
                                 <Field name="realized" type="bool">true</Field>
                                 <Object name="ViewerPlot">
                                     <Field name="plotDescription" type="string"></Field>
-                                    <Field name="cacheIndex" type="int">2</Field>
+                                    <Field name="cacheIndex" type="int">10</Field>
                                     <Field name="spatialExtentsType" type="string">AVT_ORIGINAL_EXTENTS</Field>
                                     <Field name="bgColor" type="doubleArray" length="3">1 1 1 </Field>
                                     <Field name="fgColor" type="doubleArray" length="3">0 0 0 </Field>
@@ -6391,7 +6391,7 @@
                                 <Field name="realized" type="bool">true</Field>
                                 <Object name="ViewerPlot">
                                     <Field name="plotDescription" type="string"></Field>
-                                    <Field name="cacheIndex" type="int">2</Field>
+                                    <Field name="cacheIndex" type="int">10</Field>
                                     <Field name="spatialExtentsType" type="string">AVT_ORIGINAL_EXTENTS</Field>
                                     <Field name="bgColor" type="doubleArray" length="3">1 1 1 </Field>
                                     <Field name="fgColor" type="doubleArray" length="3">0 0 0 </Field>

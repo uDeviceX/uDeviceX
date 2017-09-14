@@ -1,11 +1,11 @@
 u=u/korea
 u.conf $s $u $c <<!!!
    tend=40.01 part_freq=8000
-   XS=16 YS=16 ZS=16
+   XS=32 YS=16 ZS=16
    gammadpd_solv=1 gammadpd_rbc=1 gammadpd_wall=1
    aij_solv=2 aij_rbc=2 aij_wall=10
-   kBT=0.000444302
-   driving_force=0.1
+   kBT=0.444302
+   driving_force=0.025
    pushflow doublepoiseuille
    field_dumps part_dumps
    field_freq=8000
