@@ -1,0 +1,4 @@
+s=../../../../src
+c=$s/conf/zurich.h
+export s c
+sh -x ./run0
