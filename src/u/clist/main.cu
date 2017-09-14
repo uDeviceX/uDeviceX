@@ -37,6 +37,20 @@ void ini_1ppc(int3 d, int *n, Particle *pp) {
             }
 }
 
+void ini_random(int3 d, int density, int *n, Particle *pp) {
+    Particle p;
+    int i, N;
+    N = *n = d.x * d.y * d.z * density;
+
+    for (i = 0; i < N; ++i) {
+        p.r[X] = (-0.5 + 0.999 * drand48()) * d.x;
+        p.r[Y] = (-0.5 + 0.999 * drand48()) * d.y;
+        p.r[Z] = (-0.5 + 0.999 * drand48()) * d.z;
+        p.v[X] = p.v[Y] = p.v[Z] = 0.f;
+        pp[i] = p;
+    }
+}
+
 int3 ccoords(int3 d, int cid) {
     int3 c;
     c.x = cid % d.x;
@@ -95,17 +109,14 @@ int main(int argc, char **argv) {
     CC(d::Malloc((void**) &ppout, MAXN * sizeof(Particle)));
        
     ini_1ppc(dims, /**/ &n, pp_hst);
+    ini_random(dims, 4, /**/ &n, pp_hst);
     CC(d::Memcpy(pp, pp_hst, n * sizeof(Particle), H2D));
 
     build(n, n, pp, /**/ ppout, &clist, /*w*/ &work);
-    MSG("cell lists built");
-
-    dSync();
     
     CC(d::Memcpy(counts, clist.counts, clist.ncells * sizeof(int), D2H));
     CC(d::Memcpy(starts, clist.starts, clist.ncells * sizeof(int), D2H));
     CC(d::Memcpy(pp_hst, ppout, n * sizeof(Particle), D2H));
-    MSG("cell lists transfered on host");
     
     verify(dims, starts, counts, pp_hst, n);    
 
