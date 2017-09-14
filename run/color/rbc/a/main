@@ -1,7 +1,7 @@
 u=u/x
 Domain="XS=$XS YS=$YS ZS=$ZS"
 u.conf $s $u $c <<!!!
-   tend=4.01 part_freq=800
+   tend=40.01 part_freq=8000
    $Domain
    recolor=100
    aij_solv=2 aij_rbc=2 aij_wall=4
