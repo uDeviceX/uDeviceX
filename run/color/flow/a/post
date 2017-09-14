@@ -2,4 +2,4 @@ d=vtk
 echo "dump to $d/" >&2
 bops2vtks "$d" bop/solvent-*.bop -- bop/colors_*.bop
 
-$s../tools/avg_h52.m h5/flowfields-0001.h5
+$s/../tools/avg_h52.m h5/flowfields-0010.h5 > prof.txt
