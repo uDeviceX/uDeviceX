@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 usg() {
     echo "usage: ./bop2ids <0.bop> <1.bop> ... -- <i0.bop> <i1.bop> ..."
