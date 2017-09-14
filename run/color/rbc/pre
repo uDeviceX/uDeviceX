@@ -1,6 +1,6 @@
 # RBCs position + mesh
 # rbc+solid placement
-radius=6.0
+radius=4.0
 fraction=0
 sc=1.0
 ang=0.785
