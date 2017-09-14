@@ -1,5 +1,5 @@
 $B/algo/scan/imp.o: $S/algo/scan/imp.cu; $N -I$S/. -I$S/algo/scan
-$B/clistx/imp.o: $S/clistx/imp.cu; $N -I$S/. -I$S/clistx
+$B/clist/imp.o: $S/clist/imp.cu; $N -I$S/. -I$S/clist
 $B/d/api.o: $S/d/api.cu; $N -I$S/. -I$S/d
 $B/glb.o: $S/glb.cu; $N -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/. -I$S/mpi

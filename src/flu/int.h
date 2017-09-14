@@ -1,10 +1,11 @@
 namespace flu {
 
 struct Quants {
-    Particle *pp, *pp0; /* particles on device  */
-    int       n;        /* particle number      */
-    clist::Clist *cells;       /* cell lists           */
-    Particle *pp_hst;   /* particles on host    */
+    Particle *pp, *pp0;    /* particles on device  */
+    int       n;           /* particle number      */
+    clist::Clist cells;   /* cell lists           */
+    clist::Ticket tcells; /* cell lists ticket    */
+    Particle *pp_hst;      /* particles on host    */
 }; 
 
 struct QuantsI {
@@ -43,5 +44,7 @@ void strt_ii(const char *subext, const int id, QuantsI *q);
 
 void strt_dump(const int id, const Quants q);
 void strt_dump_ii(const char *subext, const int id, const QuantsI q, const int n);
+
+void build_cells(/**/ Quants *q);
 
 } // flu

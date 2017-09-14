@@ -15,17 +15,19 @@ static void freeze(TexSDF_t texsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle 
     free(hst);
 }
 
-void build_cells(const int n, float4 *pp4, clist::Clist *cells) {
+void build_cells(const int n, float4 *pp4, clist::Clist *cells, clist::Ticket *tcells) {
     if (n == 0) return;
 
-    Particle *pp;
-    CC(cudaMalloc(&pp, n * sizeof(Particle)));
+    Particle *pp, *pp0;
+    CC(cudaMalloc(&pp,  n * sizeof(Particle)));
+    CC(cudaMalloc(&pp0, n * sizeof(Particle)));
 
     KL(dev::float42particle, (k_cnf(n)), (pp4, n, /**/ pp));
-    cells->build(pp, n);
-    KL(dev::particle2float4, (k_cnf(n)), (pp, n, /**/ pp4));
+    clist::build(n, n, pp, /**/ pp0, cells, tcells);
+    KL(dev::particle2float4, (k_cnf(n)), (pp0, n, /**/ pp4));
 
     CC(cudaFree(pp));
+    CC(cudaFree(pp0));
 }
 
 void gen_quants(TexSDF_t texsdf, /**/ int *o_n, Particle *o_pp, int *w_n, float4 **w_pp) {
@@ -51,11 +53,11 @@ void strt_quants(int *w_n, float4 **w_pp) {
     CC(cudaFree(pptmp));
 }
 
-void gen_ticket(const int w_n, float4 *w_pp, clist::Clist *cells, Texo<int> *texstart, Texo<float4> *texpp) {
+void gen_ticket(const int w_n, float4 *w_pp, clist::Clist *cells, clist::Ticket *tcells, Texo<int> *texstart, Texo<float4> *texpp) {
 
-    build_cells(w_n, /**/ w_pp, cells);
+    build_cells(w_n, /**/ w_pp, cells, tcells);
     
-    TE(texstart, cells->start, cells->ncells);
+    TE(texstart, cells->starts, cells->ncells);
     TE(texpp, w_pp, w_n);
 }
 

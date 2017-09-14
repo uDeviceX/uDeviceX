@@ -1,71 +1,60 @@
-static void scan(const int *counts, int n, /**/ int *starts) {
-    scan::Work ws;
-    scan::alloc_work(n, /**/ &ws);
-    scan::scan(counts, n, /**/ starts, /*w*/ &ws);
-    scan::free_work(&ws);
+// TODO: split remote and bulk subindex?
+
+#define REMOTE (true)
+#define LOCAL (false)
+
+void ini_counts(/**/ Clist *c) {
+    CC(d::MemsetAsync(c->counts, 0, c->ncells * sizeof(int)));
 }
 
-static void buildn(int n, int xcells, int ycells, int zcells,
-                   /**/ Particle *pp, int *starts, int *counts) {
-    if (!n) return;
-
-    int ncells = xcells * ycells * zcells;
-    if (!ncells) return;
-    int3 cells = make_int3(xcells, ycells, zcells);
-
-    int *ids;
-    Particle *ppd;
-    Dalloc(&ids, n);
-    Dalloc(&ppd, n);
-
-    CC(d::MemsetAsync(counts, 0, ncells * sizeof(int)));
-    KL(dev::get_counts, (k_cnf(n)), (pp, n, cells, /**/ counts));
-    scan(counts, ncells, /**/ starts);
-    DzeroA(counts, ncells);
-    KL(dev::get_ids, (k_cnf(n)), (pp, starts, n, cells, /**/ counts, ids));
-    KL(dev::gather, (k_cnf(n)), (pp, ids, n, /**/ ppd));
-
-    aD2D(pp, ppd, n);
-    Dfree(ids);
-    Dfree(ppd);
+static void subindex(int n, const Particle *pp, int3 dims, /**/ int *cc, uchar4 *ee) {
+    if (n) KL(dev::subindex, (k_cnf(n)), (dims, n, pp, /*io*/ cc, /**/ ee));
 }
 
-void ini(int X, int Y, int Z, /**/ Clist0 *c) {
-    c->LX = X; c->LY = Y; c->LZ = Z;
-    c->ncells = X * Y * Z + 1;
-    Dalloc(&c->start, c->ncells);
-    Dalloc(&c->count, c->ncells);
+void subindex_local(int n, const Particle *pp, /**/ Clist *c, Ticket *t) {
+    subindex(n, pp, c->dims, /**/ c->counts, t->eelo);
 }
 
-void fin(Clist0 *c) {
-    Dfree(c->start); Dfree(c->count);
+void subindex_remote(int n, const Particle *pp, /**/ Clist *c, Ticket *t) {
+    subindex(n, pp, c->dims, /**/ c->counts, t->eere);
 }
 
-void build0(Clist0 *c, Particle *const pp, int n) {
-    if (n)
-        buildn(n, c->LX, c->LY, c->LZ, /**/ pp, c->start, c->count);
-    else {
-        DzeroA(c->start, c->ncells);
-        DzeroA(c->count, c->ncells);
-    }
+void build_map(int nlo, int nre, /**/ Clist *c, Ticket *t) {
+    int nc, *cc, *ss;
+    uchar4 *eelo, *eere;
+    uint *ii = t->ii;
+    int3 dims = c->dims;
+    nc = c->ncells;
+    cc = c->counts;
+    ss = c->starts;
+    eelo = t->eelo;
+    eere = t->eere;
+        
+    scan::scan(cc, nc, /**/ ss, /*w*/ &t->scan);
+
+    if (nlo) KL(dev::get_ids, (k_cnf(nlo)), (LOCAL,  dims, nlo, ss, eelo, /**/ ii));
+    if (nre) KL(dev::get_ids, (k_cnf(nre)), (REMOTE, dims, nre, ss, eere, /**/ ii));    
 }
 
-Clist::Clist(int X, int Y, int Z) {
-    LX = X; LY = Y; LZ = Z;
-    ncells = LX * LY * LZ + 1;
-    Dalloc(&start, ncells);
-    Dalloc(&count, ncells);
+void gather_pp(const Particle *pplo, const Particle *ppre, const Ticket *t, int nout, /**/ Particle *ppout) {
+    KL(dev::gather, (k_cnf(nout)), (pplo, ppre, t->ii, nout, /**/ ppout));
 }
 
-void Clist::build(Particle *const pp, int n) {
-    if (n)
-        buildn(n, LX, LY, LZ, /**/ pp, start, count);
-    else {
-        DzeroA(start, ncells);
-        DzeroA(count, ncells);
-    }
+void gather_ii(const int *iilo, const int *iire, const Ticket *t, int nout, /**/ int *iiout) {
+    KL(dev::gather, (k_cnf(nout)), (iilo, iire, t->ii, nout, /**/ iiout));
 }
 
-Clist::~Clist() {
-    Dfree(start); Dfree(count);
+void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, Ticket *t) {
+    build(nlo, 0, nout, pplo, NULL, /**/ ppout, c, t);
 }
+
+void build(int nlo, int nre, int nout, const Particle *pplo, const Particle *ppre, /**/ Particle *ppout, Clist *c, Ticket *t) {
+    ini_counts(/**/ c);
+    subindex_local (nlo, pplo, /**/ c, t);
+    subindex_remote(nre, ppre, /**/ c, t);
+    build_map(nlo, nre, /**/ c, t);    
+    gather_pp(pplo, ppre, t, nout, ppout);
+}
+
+#undef REMOTE
+#undef LOCAL

@@ -38,6 +38,7 @@
 #include "cloud/hforces/type.h"
 #include "cloud/hforces/get.h"
 
+#include "algo/scan/int.h"
 #include "clist/imp.h"
 #include "io/restart.h"
 

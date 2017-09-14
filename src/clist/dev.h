@@ -1,48 +1,102 @@
-static __device__ int encode(int ix, int iy, int iz, int3 ncells) {
-    return ix + ncells.x * (iy + iz * ncells.y);
+namespace dev {
+
+enum {
+    VALID   = 0,
+    INVALID = 255
+};
+
+static __device__ bool valid_cell(int ix, int iy, int iz, int3 ncells) {
+    return
+        (ix >= 0) && (ix < ncells.x) &&
+        (iy >= 0) && (iy < ncells.y) &&
+        (iz >= 0) && (iz < ncells.z);
 }
 
-static __device__ int get_cid(const float *r, int3 ncells) {
+static __device__ uchar4 get_entry(const float *r, int3 ncells) {
     enum {X, Y, Z};
-    int ix = (int)floor(r[X] + 0.5*ncells.x);
-    int iy = (int)floor(r[Y] + 0.5*ncells.y);
-    int iz = (int)floor(r[Z] + 0.5*ncells.z);
-
-    ix = min(ncells.x - 1, max(0, ix));
-    iy = min(ncells.y - 1, max(0, iy));
-    iz = min(ncells.z - 1, max(0, iz));
+    uchar4 e;
+    int ix, iy, iz;
     
-    return encode(ix, iy, iz, ncells);
+    ix = (int)floor(r[X] + 0.5*ncells.x);
+    iy = (int)floor(r[Y] + 0.5*ncells.y);
+    iz = (int)floor(r[Z] + 0.5*ncells.z);
+
+    if (valid_cell(ix, iy, iz, ncells)) e.w =   VALID;
+    else                                e.w = INVALID;
+
+    e.x = ix; e.y = iy; e.z = iz;
+    return e;
 }
 
-__global__ void get_counts(const Particle *pp, const int n, int3 ncells, /**/ int *counts) {
+static __device__ int get_cid(int3 ncells, uchar4 e) {
+    return e.x + ncells.x * (e.y + ncells.y * e.z);
+}
+
+__global__ void subindex(int3 ncells, int n, const Particle *pp, /*io*/ int *counts, /**/ uchar4 *ee) {
+    int i, cid;
+    Particle p;
+    uchar4 e;
+    
+    i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i >= n) return;
+    
+    p = pp[i];
+
+    e = get_entry(p.r, ncells);
+    cid = get_cid(ncells, e);
+
+    if (e.w != INVALID)
+        e.w = atomicAdd(counts + cid, 1);
+
+    ee[i] = e;
+}
+
+
+/* [l]ocal [r]emote encoder, decoder: pack into one int the type (l/r) and the id */
+__device__ void lr_set(int i, bool rem, /**/ uint *u) {
+    *u  = (uint) i;
+    *u |= rem << 31;
+}
+__device__ int  lr_get(uint u, /**/ bool *rem) {
+    *rem = (u >> 31) & 1;
+    u &= ~(1 << 31);
+    return (int) u;
+}
+
+__global__ void get_ids(bool remote, int3 ncells, int n, const int *starts, const uchar4 *ee, /**/ uint *ii) {
+    int i, cid, id, start;
+    uint val;
+    uchar4 e;
+    
+    i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i >= n) return;
+
+    e = ee[i];
+    cid = get_cid(ncells, e);
+
+    if (e.w != INVALID) {
+        start = starts[cid];
+        id = start + e.w;
+        lr_set(i, remote, /**/ &val);
+        ii[id] = val;
+    }
+}
+
+template <typename T>
+__device__ void fetch(const T *ddlo, const T *ddre, uint i, /**/ T *d) {
+    bool remote; int src;
+    src = lr_get(i, /**/ &remote);
+    if (remote) *d = ddre[src];
+    else        *d = ddlo[src];
+}
+
+template <typename T>
+__global__ void gather(const T *ddlo, const T *ddre, const uint *ii, int n, /**/ T *dd) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
     
-    const Particle p = pp[i];
-    const int cid = get_cid(p.r, ncells);
-
-    atomicAdd(counts + cid, 1);
+    uint code = ii[i];
+    fetch(ddlo, ddre, code, /**/ dd + i);
 }
 
-__global__ void get_ids(const Particle *pp, const int *starts, const int n, int3 ncells, /**/ int *counts, int *ids) {
-    int i = threadIdx.x + blockIdx.x * blockDim.x;
-    if (i >= n) return;
-    
-    const Particle p = pp[i];
-    int cid = get_cid(p.r, ncells);
-    const int start = starts[cid];
-
-    const int id = start + atomicAdd(counts + cid, 1);
-    ids[i] = id;
-}
-
-__global__ void gather(const Particle *pps, const int *ids, int n, /**/ Particle *ppd) {
-    int i = threadIdx.x + blockIdx.x * blockDim.x;
-    if (i >= n) return;
-    
-    const Particle p = pps[i];
-    const int     id = ids[i];
-
-    ppd[id] = p;
-}
+} // dev

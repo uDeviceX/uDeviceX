@@ -24,10 +24,10 @@
 #include "utils/kl.h"
 
 #include "rnd/imp.h"
+#include "algo/scan/int.h"
 #include "clist/imp.h"
 #include "flu/int.h"
 
-#include "algo/scan/int.h"
 
 #include "odstr/type.h"
 #include "odstr/int.h"
@@ -116,7 +116,7 @@ void send_ii(const TicketD *td, TicketI *ti) {
 }
 
 void bulk(flu::Quants *q, TicketD *t) {
-    int n = q->n, *count = q->cells->count;
+    int n = q->n, *count = q->cells.counts;
     DzeroA(count, XS*YS*ZS);
     KL(k_index::local<false>, (k_cnf(n)),(n, (float2*)q->pp, /*io*/ count, /*o*/ t->subi_lo));
 }
@@ -128,8 +128,8 @@ void recv_ii(TicketI *t) {
 void unpack_pp(const TicketD *td, /**/ flu::Quants *q, TicketU *tu, /*w*/ Work *w) {
     const int nhalo = td->nhalo;
     
-    int *start = q->cells->start;
-    int *count = q->cells->count;
+    int *start = q->cells.starts;
+    int *count = q->cells.counts;
     
     if (nhalo) {
         sub::unpack_pp(nhalo, &td->r, /**/ tu->pp_re);
@@ -151,7 +151,7 @@ void gather_pp(const TicketD *td, /**/ flu::Quants *q, TicketU *tu, flu::TicketZ
     const int nhalo = td->nhalo, nbulk = td->nbulk;
     
     int n = q->n;
-    int *start = q->cells->start;
+    int *start = q->cells.starts;
     
     Particle *pp = q->pp, *pp0 = q->pp0;
 

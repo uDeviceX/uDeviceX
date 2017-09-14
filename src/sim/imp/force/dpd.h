@@ -1,8 +1,8 @@
 void forces_dpd() {
     using namespace dpdr;
     using namespace o;
-    int *count = q.cells->count;
-    int *start = q.cells->start;
+    int *count = q.cells.counts;
+    int *start = q.cells.starts;
     gather_cells(start, count, /**/ &h.ts);
     if (h.tc.first) post_expected_recv(&h.tc, &h.tr);
     if (multi_solvent && h.tic.first)

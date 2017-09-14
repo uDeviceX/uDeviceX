@@ -10,6 +10,7 @@
 #include "utils/cc.h"
 #include "inc/type.h"
 #include "inc/dev.h"
+#include "algo/scan/int.h"
 #include "clist/imp.h"
 #include "rnd/imp.h"
 
@@ -22,13 +23,15 @@ void alloc_quants(Quants *q) {
     q->n = 0;
     Dalloc(&q->pp, MAX_PART_NUM);
     Dalloc(&q->pp0, MAX_PART_NUM);
-    q->cells = new clist::Clist(XS, YS, ZS);
+    ini(XS, YS, ZS, /**/ &q->cells);
+    ini_ticket(&q->cells, /**/ &q->tcells);
     q->pp_hst = new Particle[MAX_PART_NUM];
 }
 
 void free_quants(Quants *q) {
     CC(cudaFree(q->pp)); CC(cudaFree(q->pp0));
-    delete q->cells;
+    fin(&q->cells);
+    fin_ticket(&q->tcells);
     delete[] q->pp_hst;
 }
 
@@ -95,6 +98,13 @@ void strt_dump(const int id, const Quants q) {
 
 void strt_dump_ii(const char *subext, const int id, const QuantsI q, const int n) {
     sub::strt_dump_ii(subext, id, n, q.ii, /* w */ q.ii_hst);
+}
+
+void build_cells(/**/ Quants *q) {
+    clist::build(q->n, q->n, q->pp, /**/ q->pp0, &q->cells, &q->tcells);
+    // swap
+    Particle *tmp = q->pp;
+    q->pp = q->pp0; q->pp0 = tmp;
 }
 
 } // flu
