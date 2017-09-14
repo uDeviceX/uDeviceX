@@ -2,5 +2,5 @@ s=../../../../src
 c=$s/conf/zurich.h
 export s c
 
-./sim
+./main
 ./post
