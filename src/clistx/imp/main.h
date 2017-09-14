@@ -3,7 +3,7 @@
 #define REMOTE (true)
 #define LOCAL (false)
 
-void ini_counts(Clist *c) {
+void ini_counts(/**/ Clist *c) {
     CC(d::MemsetAsync(c->counts, 0, c->ncells * sizeof(int)));
 }
 
@@ -49,27 +49,11 @@ void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist 
 }
 
 void build(int nlo, int nre, int nout, const Particle *pplo, const Particle *ppre, /**/ Particle *ppout, Clist *c, Ticket *t) {
-    int nc, *cc, *ss;
-    uchar4 *eelo, *eere;
-    int3  dims = c->dims;
-    nc = c->ncells;
-    cc = c->counts;
-    ss = c->starts;
-    eelo = t->eelo;
-    eere = t->eere;
-    uint *ii = t->ii;
-    
-    CC(d::MemsetAsync(cc, 0, nc * sizeof(int)));
-
-    if (nlo) KL(dev::subindex, (k_cnf(nlo)), (dims, nlo, pplo, /*io*/ cc, /**/ eelo));
-    if (nre) KL(dev::subindex, (k_cnf(nre)), (dims, nre, ppre, /*io*/ cc, /**/ eere));
-
-    scan::scan(cc, nc, /**/ ss, /*w*/ &t->scan);
-
-    if (nlo) KL(dev::get_ids, (k_cnf(nlo)), (LOCAL,  dims, nlo, ss, eelo, /**/ ii));
-    if (nre) KL(dev::get_ids, (k_cnf(nre)), (REMOTE, dims, nre, ss, eere, /**/ ii));
-
-    KL(dev::gather, (k_cnf(nout)), (pplo, ppre, ii, nout, /**/ ppout));
+    ini_counts(/**/ c);
+    subindex_local (nlo, pplo, /**/ c, t);
+    subindex_remote(nre, ppre, /**/ c, t);
+    build_map(nlo, nre, /**/ c, t);    
+    gather_pp(pplo, ppre, t, nout, ppout);
 }
 
 #undef REMOTE
