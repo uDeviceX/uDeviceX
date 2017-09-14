@@ -12,7 +12,7 @@ static bool blue(float x, float y, float z) {
     int lx, ly, lz; /* domain */
     float x0, y0, z0, r;
     lx = m::lx(); ly = m::ly(); lz = m::lz();
-    x0 = 0.25*lx; y0 = 0.4*ly; z0 = 0.5*lz;
+    x0 = 0.25*lx; y0 = 0.6*ly; z0 = 0.5*lz;
     x -= x0; y -= y0; z -= z0;
     r = rad();
     return x*x + y*y + z*z < r*r;
@@ -21,7 +21,7 @@ static bool red(float x, float y, float z) {
     int lx, ly, lz; /* domain */
     float x0, y0, z0, r;
     lx = m::lx(); ly = m::ly(); lz = m::lz();
-    x0 = 0.75*lx; y0 = 0.6*ly; z0 = 0.5*lz;
+    x0 = 0.75*lx; y0 = 0.4*ly; z0 = 0.5*lz;
     x -= x0; y -= y0; z -= z0;
     r = rad();
     return x*x + y*y + z*z < r*r;
@@ -32,7 +32,7 @@ static void color(Particle *pp, int n, /**/ int *cc) {
     int i, w, b, r;
     float x, y, z;
     Particle p;
-    enum {W = RED_COLOR, B = BLUE_COLOR, R = BLUE_COLOR};
+    enum {W = BLUE_COLOR, B = RED_COLOR, R = RED_COLOR};
     for (i = w = b = r = 0; i < n; i++) {
         p = pp[i];
         x = p.r[X]; y = p.r[Y]; z = p.r[Z];
