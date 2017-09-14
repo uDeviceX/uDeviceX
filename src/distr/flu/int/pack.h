@@ -2,12 +2,14 @@
 
 void build_map(int n, const Particle *pp, Pack *p) {
     build_map(n, pp, p->map);
+    dSync();
 }
 
 /* pack */
 
 void pack_pp(const Particle *pp, int n, /**/ Pack *p) {
     pack_pp(p->map, pp, n, /**/ p->dpp);
+    dSync();
 }
 
 void pack_ii(const int *ii, int n, /**/ Pack *p) {
@@ -19,7 +21,8 @@ void pack_cc(const int *cc, int n, /**/ Pack *p) {
 }
 
 void download(int n, Pack *p) {
-    dSync();
+    CC(d::Memcpy(p->hpp.counts, p->map.counts, 26 * sizeof(int), D2H));
+
     int nhalo, i, c;
     for (i = nhalo = 0; i < NFRAGS; ++i) {
         c = p->hpp.counts[i];

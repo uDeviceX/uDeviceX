@@ -22,6 +22,9 @@ void distribute_flu() {
     
     halo(&d.u, /**/ &q);
     gather(&d.p, &d.u, /**/ &q, &qi, &qc);
+
+    dSync();
     
-    flu::get_ticketZ(q, /**/ &tz);    
+    flu::get_ticketZ(q, /**/ &tz);
+    dSync();
 }
