@@ -14,5 +14,7 @@ void step0(float driving_force0, bool wall0, int it) {
 
 void step(float driving_force0, bool wall0, int it) {
     odstr();
+    // MSG("Yeah %d", o::q.n);
+    //distribute_flu();
     step0(driving_force0, wall0, it);
 }
