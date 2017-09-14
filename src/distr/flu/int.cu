@@ -4,8 +4,14 @@
 #include "inc/conf.h"
 
 #include "inc/type.h"
+#include "inc/dev.h"
 #include "utils/cc.h"
 #include "d/api.h"
+
+#include "rnd/imp.h"
+#include "algo/scan/int.h"
+#include "clist/imp.h"
+#include "flu/int.h"
 
 #include "mpi/basetags.h"
 #include "comm/imp.h"
@@ -24,9 +30,6 @@ namespace flu {
 #include "int/pack.h"
 #include "int/com.h"
 #include "int/unpack.h"
-
-/* cell lists */
-
 
 } // flu
 } // distr

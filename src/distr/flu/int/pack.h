@@ -17,3 +17,13 @@ void pack_ii(const int *ii, int n, /**/ Pack *p) {
 void pack_cc(const int *cc, int n, /**/ Pack *p) {
     pack_ii(p->map, cc, n, /**/ p->dcc);
 }
+
+void download(int n, Pack *p) {
+    dSync();
+    int nhalo, i, c;
+    for (i = nhalo = 0; i < NFRAGS; ++i) {
+        c = p->hpp.counts[i];
+        nhalo += c;
+    }
+    p->nbulk = n - nhalo;
+}
