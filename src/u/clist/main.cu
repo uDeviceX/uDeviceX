@@ -40,7 +40,7 @@ void ini_1ppc(int3 d, int *n, Particle *pp) {
 int main(int argc, char **argv) {
     m::ini(argc, argv);
 
-    Particle *pp;
+    Particle *pp, *ppout;
     Particle *pp_hst;
     int n = 0;
     int3 dims = make_int3(8, 10, 12);
@@ -52,13 +52,16 @@ int main(int argc, char **argv) {
 
     pp_hst = (Particle*) malloc(MAXN * sizeof(Particle));
     CC(d::Malloc((void**) &pp, MAXN * sizeof(Particle)));
+    CC(d::Malloc((void**) &ppout, MAXN * sizeof(Particle)));
        
     ini_1ppc(dims, /**/ &n, pp_hst);
     CC(d::Memcpy(pp, pp_hst, n * sizeof(Particle), H2D));
 
+    build(n, n, pp, /**/ ppout, &clist, /*w*/ &work);
     
 
     CC(d::Free(pp));
+    CC(d::Free(ppout));
     free(pp_hst);
 
     fin(/**/ &clist);
