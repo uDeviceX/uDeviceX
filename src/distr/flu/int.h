@@ -20,7 +20,7 @@ struct Unpack {
     Particle *ppre;
 };
 
-void ini(Pack *p);
+void ini(float maxdensity, Pack *p);
 void ini(Comm *c);
 void ini(Unpack *u);
 
