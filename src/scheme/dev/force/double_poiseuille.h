@@ -1,4 +1,4 @@
-__global__ void body_force(float mass, Particle* pp, Force* ff, int n, float driving_force0) {
+__global__ void force(float mass, Particle* pp, Force* ff, int n, float driving_force0) {
     enum {X, Y, Z};
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
