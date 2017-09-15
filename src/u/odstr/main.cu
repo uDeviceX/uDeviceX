@@ -83,6 +83,7 @@ bool valid(int3 d, const int *starts, const int *counts, const Particle *pp, int
 }
 
 int main(int argc, char **argv) {
+    m::ini(argc, argv);
     
     Particle *pp, *ppout;
     Particle *pp_hst;
@@ -128,4 +129,6 @@ int main(int argc, char **argv) {
 
     fin(/**/ &clist);
     fin_ticket(/**/ &t);
+
+    m::fin();
 }
