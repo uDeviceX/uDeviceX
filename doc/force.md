@@ -7,4 +7,5 @@ Types of body forces is controled by `FORCE_*` parameters
 * `FORCE_CONSTANT`
 * `FORCE_4ROLLER`
 
-`driving_force` is an amplitude of the force
+Amplitude for all forces is given by
+  `FORCE_PAR_A`
