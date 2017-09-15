@@ -13,4 +13,8 @@ void check_vv(const Particle *pp, int n, const char *file, int line, const char 
 
 /* check if colors exist */
 void check_cc(const int *cc, int n, const char *file, int line, const char *M);
+
+/* check if particles are in correct cells */
+void check_cells(int nx, int ny, int nz, const int *ss, const int *cc, const Particle *pp,
+                 const char *file, int line, const char *M);
 } // dbg
