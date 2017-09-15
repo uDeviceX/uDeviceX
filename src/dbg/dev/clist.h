@@ -2,7 +2,7 @@ static __device__ int3 cell_coords(int3 L, int cid) {
     int3 c;
     c.x = cid % L.x;
     c.z = cid / (L.y * L.x);
-    c.y = (cid - L.y * L.x * L.z) / L.x;
+    c.y = (cid - L.y * L.x * c.z) / L.x;
     return c;
 }
 
