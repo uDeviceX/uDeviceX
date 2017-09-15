@@ -21,6 +21,8 @@ void pack_cc(const int *cc, int n, /**/ Pack *p) {
 
 void download(int n, Pack *p) {
     CC(d::Memcpy(p->hpp.counts, p->map.counts, 26 * sizeof(int), D2H));
+    if (global_ids)    CC(d::Memcpy(p->hii.counts, p->map.counts, 26 * sizeof(int), D2H));
+    if (multi_solvent) CC(d::Memcpy(p->hcc.counts, p->map.counts, 26 * sizeof(int), D2H));
 
     int nhalo, i, c;
     for (i = nhalo = 0; i < NFRAGS; ++i) {
