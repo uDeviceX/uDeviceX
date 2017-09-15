@@ -9,7 +9,6 @@ void build_map(int n, const Particle *pp, Pack *p) {
 
 void pack_pp(const Particle *pp, int n, /**/ Pack *p) {
     pack_pp(p->map, pp, n, /**/ p->dpp);
-    dSync();
 }
 
 void pack_ii(const int *ii, int n, /**/ Pack *p) {
