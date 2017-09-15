@@ -51,6 +51,12 @@ __global__ void subindex(int3 ncells, int n, const Particle *pp, /*io*/ int *cou
     ee[i] = e;
 }
 
+/* used for debugging purpose */
+__global__ void ini_ids(int n, /**/ uint *ii) {
+    int i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i >= n) return;
+    ii[i] = 1<<30;
+}
 
 /* [l]ocal [r]emote encoder, decoder: pack into one int the type (l/r) and the id */
 __device__ void lr_set(int i, bool rem, /**/ uint *u) {
