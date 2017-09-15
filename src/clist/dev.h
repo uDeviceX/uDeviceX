@@ -5,34 +5,35 @@ enum {
     INVALID = 255
 };
 
-static __device__ bool valid_cell(int ix, int iy, int iz, int3 ncells) {
+static __device__ bool inside(const float r[3], int3 L) {
+    enum {X, Y, Z};
     return
-        (ix >= 0) && (ix < ncells.x) &&
-        (iy >= 0) && (iy < ncells.y) &&
-        (iz >= 0) && (iz < ncells.z);
+        (r[X] >= -L.x/2) && (r[X] < L.x/2) &&
+        (r[Y] >= -L.y/2) && (r[Y] < L.y/2) &&
+        (r[Z] >= -L.z/2) && (r[Z] < L.z/2)  ;
 }
 
-static __device__ uchar4 get_entry(const float *r, int3 ncells) {
+static __device__ uchar4 get_entry(const float *r, int3 L) {
     enum {X, Y, Z};
     uchar4 e;
     int ix, iy, iz;
     
-    ix = (int)floor(r[X] + ncells.x/2);
-    iy = (int)floor(r[Y] + ncells.y/2);
-    iz = (int)floor(r[Z] + ncells.z/2);
+    ix = (int)floor(r[X] + L.x/2);
+    iy = (int)floor(r[Y] + L.y/2);
+    iz = (int)floor(r[Z] + L.z/2);
 
-    if (valid_cell(ix, iy, iz, ncells)) e.w =   VALID;
-    else                                e.w = INVALID;
+    if (inside(r, L)) e.w =   VALID;
+    else                   e.w = INVALID;
 
     e.x = ix; e.y = iy; e.z = iz;
     return e;
 }
 
-static __device__ int get_cid(int3 ncells, uchar4 e) {
-    return e.x + ncells.x * (e.y + ncells.y * e.z);
+static __device__ int get_cid(int3 L, uchar4 e) {
+    return e.x + L.x * (e.y + L.y * e.z);
 }
 
-__global__ void subindex(int3 ncells, int n, const Particle *pp, /*io*/ int *counts, /**/ uchar4 *ee) {
+__global__ void subindex(int3 L, int n, const Particle *pp, /*io*/ int *counts, /**/ uchar4 *ee) {
     int i, cid;
     Particle p;
     uchar4 e;
@@ -42,8 +43,8 @@ __global__ void subindex(int3 ncells, int n, const Particle *pp, /*io*/ int *cou
     
     p = pp[i];
 
-    e = get_entry(p.r, ncells);
-    cid = get_cid(ncells, e);
+    e = get_entry(p.r, L);
+    cid = get_cid(L, e);
 
     if (e.w != INVALID)
         e.w = atomicAdd(counts + cid, 1);
@@ -69,7 +70,7 @@ __device__ int  lr_get(uint u, /**/ bool *rem) {
     return (int) u;
 }
 
-__global__ void get_ids(bool remote, int3 ncells, int n, const int *starts, const uchar4 *ee, /**/ uint *ii) {
+__global__ void get_ids(bool remote, int3 L, int n, const int *starts, const uchar4 *ee, /**/ uint *ii) {
     int i, cid, id, start;
     uint val;
     uchar4 e;
@@ -78,7 +79,7 @@ __global__ void get_ids(bool remote, int3 ncells, int n, const int *starts, cons
     if (i >= n) return;
 
     e = ee[i];
-    cid = get_cid(ncells, e);
+    cid = get_cid(L, e);
 
     if (e.w != INVALID) {
         start = starts[cid];
