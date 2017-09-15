@@ -14,7 +14,16 @@
 
 #include "dbg/imp.h"
 #include "dbg/error.h"
-#include "dbg/dev.h"
+
+namespace dbg {
+namespace dev {
+#include "dbg/dev/common.h"
+#include "dbg/dev/pos.h"
+#include "dbg/dev/vel.h"
+#include "dbg/dev/force.h"
+#include "dbg/dev/color.h"
+} // dev
+} // dbg
 
 #include "dbg/macro/switch.h"
 
