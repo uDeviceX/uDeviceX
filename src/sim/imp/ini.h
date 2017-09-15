@@ -32,11 +32,11 @@ void ini() {
     odstr::alloc_ticketD(&tag_gen, &o::td);
     odstr::alloc_ticketU(&o::tu);
 
-    // // TODO
-    // float maxdensity = 3 * numberdensity;
-    // distr::flu::ini(maxdensity, /**/ &o::d.p);
-    // distr::flu::ini(m::cart, /**/ &tag_gen, /**/ &o::d.c);
-    // distr::flu::ini(maxdensity, /**/ &o::d.u);
+    // TODO
+    float maxdensity = 3 * numberdensity;
+    distr::flu::ini(maxdensity, /**/ &o::d.p);
+    distr::flu::ini(m::cart, /**/ &tag_gen, /**/ &o::d.c);
+    distr::flu::ini(maxdensity, /**/ &o::d.u);
 
     dpdr::ini_ticketcom(m::cart, &tag_gen, &o::h.tc);
     dpdr::ini_ticketrnd(o::h.tc, /**/ &o::h.trnd);

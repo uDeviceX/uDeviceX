@@ -26,9 +26,9 @@ void fin() {
     odstr::free_ticketU(&o::tu);
     odstr::free_work(&o::w);
 
-    // distr::flu::fin(/**/ &o::d.p);
-    // distr::flu::fin(/**/ &o::d.c);
-    // distr::flu::fin(/**/ &o::d.u);
+    distr::flu::fin(/**/ &o::d.p);
+    distr::flu::fin(/**/ &o::d.c);
+    distr::flu::fin(/**/ &o::d.u);
     
     if (global_ids) {
         flu::free_quantsI(&o::qi);
