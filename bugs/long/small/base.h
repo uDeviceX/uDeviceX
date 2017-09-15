@@ -46,7 +46,7 @@
 //#define FORCE0
 
 /* FLOW TYPE */
-#define driving_force       0.18
+#define FORCE_PAR_A       0.18
 
 /* DUMPS */
 #define part_freq           10000

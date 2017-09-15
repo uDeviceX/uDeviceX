@@ -43,7 +43,7 @@
 #define TE_TRACE
 
 /* FLOW TYPE */
-#define driving_force       0.05
+#define FORCE_PAR_A       0.05
 
 /* DUMPS */
 #define field_dumps         true
