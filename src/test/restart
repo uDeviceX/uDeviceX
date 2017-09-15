@@ -145,7 +145,7 @@ u.conf conf/double.poiseuille.h <<!!!
    run
    FORCE_DOUBLE_POISEUILLE
    RESTART=true
-   pushflow=true tend=0.7
+   tend=0.7
    BASE_STRT_READ=\"bin.1\"
    BASE_STRT_DUMP=\"bin.2\"
    run

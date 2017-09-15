@@ -3,7 +3,7 @@ u.conf $s $u $c <<!!!
    tend=40.01 part_freq=8000
    XS=4 YS=32 ZS=4
    aij_solv=2 aij_rbc=2 aij_wall=2
-   pushflow FORCE_DOUBLE_POISEUILLE
+   FORCE_DOUBLE_POISEUILLE
    field_dumps part_dumps
    field_freq=8000
    run

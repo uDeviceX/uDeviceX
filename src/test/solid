@@ -66,7 +66,7 @@ x=8    y=8 z=8; echo $x $y $z >> rigs-ic.txt
 :
 u.conf conf/around.h <<!!!
    solids tend=1.0 part_freq=500 walls wall_creation=100 kBT=1e-7
-   field_dumps part_dumps field_freq=500 pushflow
+   field_dumps part_dumps field_freq=500 FORCE_CONSTANT
     run
 !!!
 { make clean && u.make -j && make -C ../tools; } > /dev/null
@@ -85,7 +85,7 @@ x=8    y=8 z=8; echo $x $y $z >> rigs-ic.txt
 :
 u.conf conf/around.h <<!!!
    XS=8 solids tend=1.0 part_freq=500 walls wall_creation=100 kBT=1e-7
-   field_dumps part_dumps field_freq=500 pushflow
+   field_dumps part_dumps field_freq=500 FORCE_CONSTANT
     run
 !!!
 { make clean && u.make -j && make -C ../tools; } > /dev/null

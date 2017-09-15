@@ -8,7 +8,7 @@ u.conf $s $u $c <<!!!
    gammadpd_solv=1 gammadpd_rbc=100 gammadpd_wall=1
    kBT=0.000444302
    driving_force=0.6
-   pushflow FORCE_DOUBLE_POISEUILLE
+   FORCE_DOUBLE_POISEUILLE
    rbcs
    field_dumps part_dumps
    field_freq=8000

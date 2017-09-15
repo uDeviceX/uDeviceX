@@ -43,7 +43,7 @@ cp data/sdf/wall1/wall.dat sdf.dat
 u.conf conf/poiseuille.h <<!!!
    tend=2.0 part_freq=300 walls wall_creation=100
    field_dumps part_dumps field_freq=300
-   pushflow
+   FORCE_CONSTANT
    run
 !!!
 (make clean && u.make -j) > /dev/null
@@ -59,7 +59,7 @@ cp data/sdf/cyl1/cyl.dat sdf.dat
 :
 u.conf conf/poiseuille.h <<!!!
    tend=4.0 part_freq=300 walls wall_creation=100
-   field_dumps part_dumps field_freq=300 pushflow
+   field_dumps part_dumps field_freq=300 FORCE_CONSTANT
    run
 !!!
 :
