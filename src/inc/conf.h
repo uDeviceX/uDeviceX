@@ -219,3 +219,8 @@
 #if !defined(FORCE0) && !defined(FORCE1)
   #define FORCE1
 #endif
+
+/* body force */
+#if !defined(FORCE_NONE) && !defined(FORCE_DOUBLE_POISEUILLE) && !defined(FORCE_4ROLLER)
+  #define FORCE_NONE
+#endif
