@@ -52,9 +52,7 @@ void ini() {
         dpdr::ini_ticketIcom(/*io*/ &tag_gen, /**/ &o::h.tic);
         dpdr::alloc_ticketSIh(/**/ &o::h.tsi);
         dpdr::alloc_ticketRIh(/**/ &o::h.tri);
-    }
 
-    if (solids || rbcs) {
         mcomm::ini_ticketcom(m::cart, /*io*/ &tag_gen, /**/ &mc::tc);
         mcomm::alloc_ticketS(/**/ &mc::ts);
         mcomm::alloc_ticketR(&mc::ts, /**/ &mc::tr);

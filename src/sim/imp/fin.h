@@ -36,9 +36,7 @@ void fin() {
         dpdr::free_ticketIcom(&o::h.tic);
         dpdr::free_ticketSIh(&o::h.tsi);
         dpdr::free_ticketRIh(&o::h.tri);
-    }
 
-    if (solids || rbcs) {
         mcomm::free_ticketcom(&mc::tc);
         mcomm::free_ticketS(&mc::ts);
         mcomm::free_ticketR(&mc::tr);
