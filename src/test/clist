@@ -1,0 +1,8 @@
+#### random particles
+# TEST: clist.t0
+(cd ../cmd; make ) > /dev/null
+(cd ../pre/units; make ) > /dev/null
+u.conf0 u/clist
+{ u.make -j;     } > /dev/null
+X=4; Y=6; Z=8; N=128
+../pre/units/gen_random $X $Y $Z $N | ./udx $X $Y $Z > clist.out.txt
