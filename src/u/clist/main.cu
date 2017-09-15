@@ -44,29 +44,32 @@ bool valid(int c, int d, float x) {
     return (x >= c - 0.5 * d) && (x < c + 1 - 0.5 * d);
 }
 
-void verify_cell(int3 d, int cid, int s, int c, const Particle *pp) {
+bool valid_cell(int3 d, int cid, int s, int c, const Particle *pp) {
     int i, j;
     Particle p;
     int3 cell = ccoords(d, cid);
     for (i = 0; i < c; ++i) {
         j = s + i;
         p = pp[j];
-        MSG("%3f %3f %3f at %d %d %d",
-            p.r[X], p.r[Y], p.r[Z], cell.x, cell.y, cell.z);
-        assert(valid(cell.x, d.x, p.r[X]));
-        assert(valid(cell.y, d.y, p.r[Y]));
-        assert(valid(cell.z, d.z, p.r[Z]));
+        // MSG("%3f %3f %3f at %d %d %d",
+        //     p.r[X], p.r[Y], p.r[Z], cell.x, cell.y, cell.z);
+        if ( ! valid(cell.x, d.x, p.r[X]) ||
+             ! valid(cell.y, d.y, p.r[Y]) ||
+             ! valid(cell.z, d.z, p.r[Z])  )
+            return false;
     }
+    return true;
 }
 
-void verify(int3 d, const int *starts, const int *counts, const Particle *pp, int n) {
+bool valid(int3 d, const int *starts, const int *counts, const Particle *pp, int n) {
     int cid, s, c, nc;
     nc = d.x * d.y * d.z;
     for (cid = 0; cid < nc; ++cid) {
         s = starts[cid];
         c = counts[cid];
-        verify_cell(d, cid, s, c, pp);
+        if (!valid_cell(d, cid, s, c, pp)) return false;
     }
+    return true;
 }
 
 int main(int argc, char **argv) {
@@ -97,8 +100,11 @@ int main(int argc, char **argv) {
     CC(d::Memcpy(starts, clist.starts, clist.ncells * sizeof(int), D2H));
     CC(d::Memcpy(pp_hst, ppout, n * sizeof(Particle), D2H));
     
-    verify(dims, starts, counts, pp_hst, n);    
-
+    if (valid(dims, starts, counts, pp_hst, n))
+        printf("0\n");
+    else
+        printf("1\n");
+        
     CC(d::Free(pp));
     CC(d::Free(ppout));
     free(counts);
