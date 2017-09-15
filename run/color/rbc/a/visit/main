@@ -1,0 +1,27 @@
+#!/usr/bin/env visit.cli
+
+from visit import *
+from sys   import argv
+
+def sfile(n):
+    s = SaveWindowAttributes()
+    s.fileName = n
+    s.format = s.PNG
+    s.progressive = 0
+    s.family      = 0
+    SetSaveWindowAttributes(s)
+    SaveWindow()
+
+def stime(t, n):
+    SetTimeSliderState(t)
+    sfile(n)
+
+def session(s): RestoreSession(s, 0)
+argv.pop(0) # remove py file
+
+session("visit/s.session")
+
+SetTimeSliderState(7)
+stime(7 , "visit/main.07.png")
+stime(10, "visit/main.10.png")
+sys.exit()
