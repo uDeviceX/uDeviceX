@@ -97,7 +97,7 @@ __global__ void shift(const int27 starts, /**/ Particle *pp) {
     fid = k_common::fid(starts.d, pid);
     
     fid2shift(fid, s);
-    shift_1p(s, /**/ pp + fid);
+    shift_1p(s, /**/ pp + pid);
 }
 
 } // dev
