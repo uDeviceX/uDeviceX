@@ -1,17 +1,17 @@
 u=u/x
 Domain="XS=$XS YS=$YS ZS=$ZS"
 u.conf $s $u $c <<!!!
-   tend=40.01 part_freq=8000
+   tend=40.01
    $Domain
    recolor=100
    aij_solv=2 aij_rbc=2 aij_wall=2
    gammadpd_solv=1 gammadpd_rbc=1 gammadpd_wall=1
    kBT=0.000444302
    FORCE_PAR_A=0.6
-   FORCE_DOUBLE_POISEUILLE
+   FORCE_4ROLLER
    rbcs
    field_dumps part_dumps
-   field_freq=8000
+   part_freq=8000  field_freq=8000
    run
 !!!
 (make clean && u.make -j) > /dev/null
