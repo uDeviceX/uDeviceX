@@ -16,7 +16,7 @@
 #define rbc_mass         0.5        /* RBC particle mass     */
 #define solid_mass       0.5        /* solid particle mass   */
 #define gamma_dot        5.0       /* shear rate */
-#define driving_force    3.333e-2  /* flow acceleration for Poiseuille setup */
+#define FORCE_PAR_A    3.333e-2  /* flow acceleration for Poiseuille setup */
 
 #define aij_solv         2.667  /* aij for the solvent  */
 #define aij_rbc          2.667  /* aij for the RBC membrane */

@@ -16,7 +16,7 @@
 #define rbc_mass         0.5        /* RBC particle mass     */
 #define solid_mass       0.5        /* solid particle mass   */
 #define gamma_dot        5.0        /* shear rate */
-#define driving_force    0.6        /* flow acceleration */
+#define FORCE_PAR_A    0.6        /* flow acceleration */
 
 #define aij_solv         2
 #define aij_rbc          2

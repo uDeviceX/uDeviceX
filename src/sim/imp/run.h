@@ -7,5 +7,5 @@ void run_eq(long te) { /* equilibrate */
 void run(long ts, long te) {
     dump_strt_templ(); /* :TODO: is it the right place? */
     /* ts, te: time start and end */
-    for (long it = ts; it < te; ++it) step(driving_force, walls, it);
+    for (long it = ts; it < te; ++it) step(FORCE_PAR_A, walls, it);
 }

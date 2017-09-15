@@ -11,8 +11,8 @@
   #define shear_z (false)
 #endif
 
-#ifndef driving_force
-#define driving_force (2.0)
+#ifndef FORCE_PAR_A
+#define FORCE_PAR_A (2.0)
 #endif
 
 #ifndef contactforces
