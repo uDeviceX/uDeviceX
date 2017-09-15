@@ -1,6 +1,6 @@
 s=../../../../src
 c=$s/conf/zurich.h
-XS=32 YS=32 ZS=32
+XS=32 YS=32 ZS=16
 
 export s c XS YS ZS
 
