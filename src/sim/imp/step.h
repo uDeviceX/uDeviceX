@@ -13,7 +13,6 @@ void step0(float driving_force0, bool wall0, int it) {
 }
 
 void step(float driving_force0, bool wall0, int it) {
-    odstr();
-    //distribute_flu();
+    distribute_flu();
     step0(driving_force0, wall0, it);
 }
