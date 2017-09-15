@@ -2,7 +2,6 @@
 
 void build_map(int n, const Particle *pp, Pack *p) {
     build_map(n, pp, p->map);
-    dSync();
 }
 
 /* pack */
