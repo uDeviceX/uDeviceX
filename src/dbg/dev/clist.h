@@ -9,7 +9,7 @@ static __device__ int3 cell_coords(int3 L, int cid) {
 static __device__ bool at_coord(float x, int c, int L, bool verbose, const char *dir) {
     x += L/2;
     if ((x < c) || (x >= c + 1)) {
-        if (verbose) printf("Particle out of its cell : %s = %g, c = %g\n", dir, x, c);
+        if (verbose) printf("Particle out of its cell : %s = %g, c = %d, L = %d\n", dir, x, c, L);
         return false;
     }
     return true;
