@@ -15,4 +15,4 @@ u.conf $s $u $c <<!!!
    run
 !!!
 (make clean && u.make -j) > /dev/null
-sh runfile
+u.batch ./udx
