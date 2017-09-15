@@ -84,15 +84,20 @@ bool valid(int3 d, const int *starts, const int *counts, const Particle *pp, int
 }
 
 int main(int argc, char **argv) {
-    m::ini(argc, argv);
-
+    
     Particle *pp, *ppout;
     Particle *pp_hst;
-    int n = 0, *starts, *counts;
-    int3 dims = make_int3(6, 8, 4);
+    int n = 0, *starts, *counts, iargs;
+    int3 dims;
     clist::Clist clist;
     clist::Ticket t;
 
+    if (argc != 4) return 1;
+    iargs = 1;
+    dims.x = atoi(argv[iargs++]);
+    dims.y = atoi(argv[iargs++]);
+    dims.z = atoi(argv[iargs++]);
+    
     ini(dims.x, dims.y, dims.z, /**/ &clist);
     ini_ticket(&clist, /**/ &t);
 
@@ -126,6 +131,4 @@ int main(int argc, char **argv) {
 
     fin(/**/ &clist);
     fin_ticket(/**/ &t);
-    
-    m::fin();
 }
