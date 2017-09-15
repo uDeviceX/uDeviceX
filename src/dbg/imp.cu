@@ -22,6 +22,7 @@ namespace dev {
 #include "dbg/dev/vel.h"
 #include "dbg/dev/force.h"
 #include "dbg/dev/color.h"
+#include "dbg/dev/clist.h"
 } // dev
 } // dbg
 
