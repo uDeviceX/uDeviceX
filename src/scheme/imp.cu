@@ -22,7 +22,7 @@ namespace dev {
 #else
   #include "scheme/imp/vv.h"
 #endif
-#include "scheme/dev.h"
+#include "scheme/dev/main.h"
 }
 #include "scheme/imp/main.h"
 }
