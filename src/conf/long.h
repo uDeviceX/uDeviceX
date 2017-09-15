@@ -46,7 +46,6 @@
 //#define FORCE0
 
 /* FLOW TYPE */
-#define pushflow            false
 #define driving_force       0.18
 
 /* DUMPS */

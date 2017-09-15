@@ -54,7 +54,6 @@
 #define       field_freq  (2000)
 #define       part_dumps (false)
 #define        part_freq  (1000)
-#define         pushflow (false)
 #define        pushsolid (false)
 #define          pushrbc (false)
 #define             tend    (50)

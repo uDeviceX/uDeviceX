@@ -45,7 +45,6 @@
 #define TE_TRACE
 
 /* FLOW TYPE */
-#define pushflow            true
 #define driving_force       0.18
 
 /* DUMPS */

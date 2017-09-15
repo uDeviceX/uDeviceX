@@ -5,7 +5,6 @@
 	  run 1000
 	  freeze
       part_freq=2
-	  pushflow
 	  run 1000
 
 It generates

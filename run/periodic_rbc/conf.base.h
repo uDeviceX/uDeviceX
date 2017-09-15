@@ -40,7 +40,6 @@
 #define tend                    10
 
 /* FLOW TYPE */
-#define pushflow                true
 #define pushrbc                 false
 #define driving_force           0.2
 

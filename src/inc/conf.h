@@ -11,12 +11,8 @@
   #define shear_z (false)
 #endif
 
-#ifndef pushflow
-  #define pushflow (false)
-#else
-  #ifndef driving_force
-  #define driving_force (2.0)
-  #endif
+#ifndef driving_force
+#define driving_force (2.0)
 #endif
 
 #ifndef contactforces

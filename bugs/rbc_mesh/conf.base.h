@@ -47,7 +47,6 @@
 //#define FORCE0
 
 /* FLOW TYPE */
-#define pushflow                true
 #define pushsolid               true
 #define pushrbc                 false
 #define driving_force           0.2
