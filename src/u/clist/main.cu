@@ -21,43 +21,15 @@ enum {X,Y,Z};
 
 #define MAXN 10000
 
-void ini_1ppc(int3 d, int *n, Particle *pp) {
-    int i, ix, iy, iz;
+void read(int *n, Particle *pp) {
+    int i;
     Particle p;
-    *n = d.x * d.y * d.z;
-
-    for (i = 0, iz = 0; iz < d.z; ++iz)
-        for (iy = 0; iy < d.y; ++iy)
-            for (ix = 0; ix < d.x; ++ix) {
-                p.r[X] = -d.x * 0.5f + ix + 0.5f;
-                p.r[Y] = -d.y * 0.5f + iy + 0.5f;
-                p.r[Z] = -d.z * 0.5f + iz + 0.5f;
-                p.v[X] = p.v[Y] = p.v[Z] = 0.f;
-                pp[i++] = p;
-            }
-}
-
-void make_holes(int n, int nholes, Particle *pp) {
-    Particle p;
-    for (int i = 0; i < nholes; ++i) {
-        p = pp[i];
-        p.r[X] += 9999.f;
-        pp[i] = p;
-    }
-}
-
-void ini_random(int3 d, int density, int *n, Particle *pp) {
-    Particle p;
-    int i, N;
-    N = *n = d.x * d.y * d.z * density;
-
-    for (i = 0; i < N; ++i) {
-        p.r[X] = (-0.5 + 0.999 * drand48()) * d.x;
-        p.r[Y] = (-0.5 + 0.999 * drand48()) * d.y;
-        p.r[Z] = (-0.5 + 0.999 * drand48()) * d.z;
-        p.v[X] = p.v[Y] = p.v[Z] = 0.f;
-        pp[i] = p;
-    }
+    i = 0;
+    while (scanf("%f %f %f %f %f %f",
+                 &p.r[X], &p.r[Y], &p.r[Z],
+                 &p.v[X], &p.v[Y], &p.v[Z]) == 6)
+        pp[i++] = p;
+    *n = i;
 }
 
 int3 ccoords(int3 d, int cid) {
@@ -79,8 +51,8 @@ void verify_cell(int3 d, int cid, int s, int c, const Particle *pp) {
     for (i = 0; i < c; ++i) {
         j = s + i;
         p = pp[j];
-        // MSG("%3f %3f %3f at %d %d %d",
-        //     p.r[X], p.r[Y], p.r[Z], cell.x, cell.y, cell.z);
+        MSG("%3f %3f %3f at %d %d %d",
+            p.r[X], p.r[Y], p.r[Z], cell.x, cell.y, cell.z);
         assert(valid(cell.x, d.x, p.r[X]));
         assert(valid(cell.y, d.y, p.r[Y]));
         assert(valid(cell.z, d.z, p.r[Z]));
@@ -100,11 +72,10 @@ void verify(int3 d, const int *starts, const int *counts, const Particle *pp, in
 int main(int argc, char **argv) {
     m::ini(argc, argv);
 
-    Particle *pplo, *ppre, *ppout;
+    Particle *pp, *ppout;
     Particle *pp_hst;
-    int nlo = 0, nre = 0, *starts, *counts, n;
-    int3 dims = make_int3(4, 8, 4);
-    int nholes = 4;
+    int n = 0, *starts, *counts;
+    int3 dims = make_int3(6, 8, 4);
     clist::Clist clist;
     clist::Ticket t;
 
@@ -114,19 +85,13 @@ int main(int argc, char **argv) {
     pp_hst = (Particle*) malloc(MAXN * sizeof(Particle));
     counts = (int*) malloc(clist.ncells * sizeof(int));
     starts = (int*) malloc(clist.ncells * sizeof(int));
-    CC(d::Malloc((void**) &pplo, MAXN * sizeof(Particle)));
-    CC(d::Malloc((void**) &ppre, MAXN * sizeof(Particle)));
+    CC(d::Malloc((void**) &pp, MAXN * sizeof(Particle)));
     CC(d::Malloc((void**) &ppout, MAXN * sizeof(Particle)));
-       
-    ini_1ppc(dims, /**/ &nlo, pp_hst);
-    make_holes(nlo, nholes, pp_hst);
-    CC(d::Memcpy(pplo, pp_hst, nlo * sizeof(Particle), H2D));
-    ini_random(dims, 4, /**/ &nre, pp_hst);
-    CC(d::Memcpy(ppre, pp_hst, nre * sizeof(Particle), H2D));
 
-    n = nlo + nre - nholes;
+    read(&n, pp_hst);
+    CC(d::Memcpy(pp, pp_hst, n * sizeof(Particle), H2D));
     
-    build(nlo, nre, n, pplo, ppre, /**/ ppout, &clist, &t);
+    build(n, n, pp, /**/ ppout, &clist, &t);
     
     CC(d::Memcpy(counts, clist.counts, clist.ncells * sizeof(int), D2H));
     CC(d::Memcpy(starts, clist.starts, clist.ncells * sizeof(int), D2H));
@@ -134,8 +99,7 @@ int main(int argc, char **argv) {
     
     verify(dims, starts, counts, pp_hst, n);    
 
-    CC(d::Free(pplo));
-    CC(d::Free(ppre));
+    CC(d::Free(pp));
     CC(d::Free(ppout));
     free(counts);
     free(starts);
@@ -143,7 +107,6 @@ int main(int argc, char **argv) {
 
     fin(/**/ &clist);
     fin_ticket(/**/ &t);
-
     
     m::fin();
 }
