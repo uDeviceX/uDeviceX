@@ -32,7 +32,7 @@ void gather(const Pack *p, const Unpack *u, /**/ Quants *q, QuantsI *qi, QuantsI
     
     build_map(nold, nhalo, /**/ &q->cells, &q->tcells);
 
-    gather_pp(pp, u->ppre, &q->tcells, nold, /**/ pp0);
+    gather_pp(pp, u->ppre, &q->tcells, n, /**/ pp0);
 
     int *ii, *ii0, *cc, *cc0;
     ii = qi->ii; ii0 = qi->ii0;
