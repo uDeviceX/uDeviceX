@@ -47,7 +47,7 @@
 
 /* FLOW TYPE */
 #define pushrbc                 false
-#define driving_force           0.2
+#define FORCE_PAR_A           0.2
 
 /* DUMPS */
 #define dump_all_fields         true

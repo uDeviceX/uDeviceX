@@ -12,7 +12,7 @@
 #define rbc_mass         0.5        /* ratio of RBC particle mass to solvent particle mass */
 #define solid_mass       0.5        /* ratio of solid particle mass to solvent particle mass */
 #define gamma_dot        5.0        /* shear rate */
-#define driving_force    0.0333333  /* flow acceleration for Poiseuille setup */
+#define FORCE_PAR_A    0.0333333  /* flow acceleration for Poiseuille setup */
 
 #define aij_solv         2.6666667  /* aij for the solvent */
 #define aij_rbc          2.6666667  /* aij for the RBC membrane */
@@ -42,7 +42,7 @@
 // #define gammadpd_rbc        8.f
 // #define gammadpd_solid      8.f
 // #define gammadpd_wall       8.f
-// #define driving_force       0.f
+// #define FORCE_PAR_A       0.f
 
 // #define ljsigma          0.3f       /* RBC-RBC contact LJ interaction parameters */
 // #define ljepsilon        0.44f
