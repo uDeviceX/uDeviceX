@@ -51,7 +51,7 @@ static __device__ err_type valid_pos(const Particle *p, bool verbose) {
     return e;
 }
 
-static __global__ void check_pos(const Particle *pp, int n, bool verbose = true) {
+__global__ void check_pos(const Particle *pp, int n, bool verbose = true) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
     err_type e = valid_pos(pp + i, verbose);
@@ -78,7 +78,7 @@ static __device__ err_type valid_pos_pu(const Particle *p, bool verbose) {
     return e;
 }
 
-static __global__ void check_pos_pu(const Particle *pp, int n, bool verbose = true) {
+__global__ void check_pos_pu(const Particle *pp, int n, bool verbose = true) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
     err_type e = valid_pos_pu(pp + i, verbose);
@@ -113,7 +113,7 @@ static __device__ err_type valid_vv(const Particle *p, bool verbose) {
     return e;
 }
 
-static __global__ void check_vv(const Particle *pp, int n, bool verbose = true) {
+__global__ void check_vv(const Particle *pp, int n, bool verbose = true) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
     err_type e = valid_vv(pp + i, verbose);
@@ -149,7 +149,7 @@ static __device__ err_type valid_f(const Force *f, bool verbose) {
     return e;
 }
 
-static __global__ void check_ff(const Force *ff, int n, bool verbose = true) {
+__global__ void check_ff(const Force *ff, int n, bool verbose = true) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
     err_type e = valid_f(ff + i, verbose);
@@ -164,7 +164,7 @@ static __device__ err_type valid_color(int c, bool verbose) {
     return err::NONE;
 }
 
-static __global__ void check_cc(const int *cc, int n, bool verbose = true) {
+__global__ void check_cc(const int *cc, int n, bool verbose = true) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
     err_type e = valid_color(cc[i], verbose);
