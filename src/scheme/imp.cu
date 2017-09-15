@@ -18,14 +18,10 @@
 namespace scheme {
 namespace dev {
 #ifdef FORWARD_EULER
-  #include "scheme/imp/euler.h"
+  #include "imp/euler.h"
 #else
-  #include "scheme/imp/vv.h"
+  #include "imp/vv.h"
 #endif
-#include "scheme/dev/main.h"
-}
-
-/*
 #if   defined(FORCE_NONE)
   #include "dev/force/none.h"
 #elif defined(FORCE_DOUBLE_POISEUILLE)
@@ -33,7 +29,11 @@ namespace dev {
 #elif defined(FORCE_4ROLLER)
   #include "dev/force/4roller.h"
 #else
-  #error DEV_* is undefined
+  #error FORCE_* is undefined
 #endif
-*/
-}
+
+#include "dev/main.h"
+} /* namespace */
+
+#include "imp/main.h"
+} /* namespace */
