@@ -69,9 +69,16 @@ __global__ void pack(const T *data, Map m, /**/ Sarray<T*, 26> buf) {
 /* TODO use frag.h */
 static __device__ void fid2shift(int id, /**/ int s[3]) {
     enum {X, Y, Z};
-    s[X] = XS * ((id     + 1) % 3 - 1);
-    s[Y] = YS * ((id / 3 + 1) % 3 - 1);
-    s[Z] = ZS * ((id / 9 + 1) % 3 - 1);
+    s[X] = XS * ((id     + 2) % 3 - 1);
+    s[Y] = YS * ((id / 3 + 2) % 3 - 1);
+    s[Z] = ZS * ((id / 9 + 2) % 3 - 1);
+}
+
+static __device__ void check(const float r[3]) {
+    enum {X, Y, Z};
+    if (r[X] < -XS/2 || r[X] >= XS/2) printf("x out of range: %f\n", r[X]);
+    if (r[Y] < -YS/2 || r[Y] >= YS/2) printf("y out of range: %f\n", r[Y]);
+    if (r[Z] < -ZS/2 || r[Z] >= ZS/2) printf("z out of range: %f\n", r[Z]);
 }
 
 static  __device__ void shift_1p(const int s[3], /**/ Particle *p) {
@@ -79,6 +86,7 @@ static  __device__ void shift_1p(const int s[3], /**/ Particle *p) {
     p->r[X] += s[X];
     p->r[Y] += s[Y];
     p->r[Z] += s[Z];
+    check(p->r);
 }
 
 __global__ void shift(const int27 starts, /**/ Particle *pp) {
