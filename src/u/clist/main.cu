@@ -86,16 +86,14 @@ int main(int argc, char **argv) {
     
     Particle *pp, *ppout;
     Particle *pp_hst;
-    int n = 0, *starts, *counts, iargs;
+    int n = 0, *starts, *counts;
     int3 dims;
     clist::Clist clist;
     clist::Ticket t;
 
-    if (argc != 4) return 1;
-    iargs = 1;
-    dims.x = atoi(argv[iargs++]);
-    dims.y = atoi(argv[iargs++]);
-    dims.z = atoi(argv[iargs++]);
+    dims.x = XS;
+    dims.y = YS;
+    dims.z = ZS;
     
     ini(dims.x, dims.y, dims.z, /**/ &clist);
     ini_ticket(&clist, /**/ &t);
