@@ -51,6 +51,11 @@ void check_ff(const Force *ff, int n) {
 void check_cc(const int *cc, int n) {
     KL(dev::check_cc, (k_cnf(n)), (cc, n));
 }
+
+void check_cells(int3 ncells, const int *ss, const int *cc, const Particle *pp) {
+    int n = ncells.x * ncells.y * ncells.z;
+    KL(dev::check_clist, (k_cnf(n)), (ncells, ss, cc, pp));
+}
 } // sub
 
 void check_pos(const Particle *pp, int n, const char *file, int line, const char *M) {

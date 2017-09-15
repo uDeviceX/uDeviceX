@@ -48,7 +48,7 @@ static __device__ err_type valid_cell(int3 L, int cid, int s, int c, const Parti
     return e;
 }
 
-__global__ void check_clist(int3 ncells, const int *ss, const int *cc, const Particle *pp, bool verbose) {
+__global__ void check_clist(int3 ncells, const int *ss, const int *cc, const Particle *pp, bool verbose = true) {
     int i, c, s;
     i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= ncells.x * ncells.y * ncells.z) return;
