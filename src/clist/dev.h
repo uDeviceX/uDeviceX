@@ -17,9 +17,9 @@ static __device__ uchar4 get_entry(const float *r, int3 ncells) {
     uchar4 e;
     int ix, iy, iz;
     
-    ix = (int)floor(r[X] + 0.5*ncells.x);
-    iy = (int)floor(r[Y] + 0.5*ncells.y);
-    iz = (int)floor(r[Z] + 0.5*ncells.z);
+    ix = (int)floor(r[X] + ncells.x/2);
+    iy = (int)floor(r[Y] + ncells.y/2);
+    iz = (int)floor(r[Z] + ncells.z/2);
 
     if (valid_cell(ix, iy, iz, ncells)) e.w =   VALID;
     else                                e.w = INVALID;
