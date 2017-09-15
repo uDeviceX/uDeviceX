@@ -7,6 +7,5 @@ void run_eq(long te) { /* equilibrate */
 void run(long ts, long te) {
     dump_strt_templ(); /* :TODO: is it the right place? */
     /* ts, te: time start and end */
-    float driving_force0 = pushflow ? driving_force : 0;
-    for (long it = ts; it < te; ++it) step(driving_force0, walls, it);
+    for (long it = ts; it < te; ++it) step(driving_force, walls, it);
 }

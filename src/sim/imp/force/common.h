@@ -1,6 +1,5 @@
 void body_force(float driving_force0) {
-    if (pushflow)
-        scheme::force(1,          o::q.pp, o::ff, o::q.n, driving_force0);
+    scheme::force(1,          o::q.pp, o::ff, o::q.n, driving_force0);
     if (pushsolid && solids0)
         scheme::force(solid_mass, s::q.pp, s::ff, s::q.n, driving_force0);
     if (pushrbc && rbcs)
