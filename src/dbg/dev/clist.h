@@ -6,10 +6,10 @@ static __device__ int3 cell_coords(int3 L, int cid) {
     return c;
 }
 
-static __device__ bool at_coord(float x, int c, int L, bool verbose) {
+static __device__ bool at_coord(float x, int c, int L, bool verbose, const char *dir) {
     x += L/2;
     if ((x < c) || (x >= c + 1)) {
-        if (verbose) printf("Particle out of its cell: x = %g, c = %g\n", x, c);
+        if (verbose) printf("Particle out of its cell : %s = %g, c = %g\n", dir, x, c);
         return false;
     }
     return true;
@@ -17,9 +17,9 @@ static __device__ bool at_coord(float x, int c, int L, bool verbose) {
 
 static __device__ bool at_coords(const float r[3], int3 coords, int3 L, bool verbose) {
     bool ok = true;
-    ok &= at_coord(r[X], coords.x, L.x, verbose);
-    ok &= at_coord(r[Y], coords.y, L.y, verbose);
-    ok &= at_coord(r[Z], coords.z, L.z, verbose);
+    ok &= at_coord(r[X], coords.x, L.x, verbose, "x");
+    ok &= at_coord(r[Y], coords.y, L.y, verbose, "y");
+    ok &= at_coord(r[Z], coords.z, L.z, verbose, "z");
     return ok;
 }
 
