@@ -32,6 +32,17 @@ void read(int *n, Particle *pp) {
     *n = i;
 }
 
+void print_cells(int3 L, const int *ss, const int *cc) {
+    int i, n, s, c;
+    n = L.x * L.y * L.z;
+
+    for (i = 0; i < n; ++i) {
+        s = ss[i];
+        c = cc[i];
+        printf("%d\n%d\n", s, c);
+    }
+}
+
 int3 ccoords(int3 d, int cid) {
     int3 c;
     c.x = cid % d.x;
@@ -104,7 +115,9 @@ int main(int argc, char **argv) {
         printf("0\n");
     else
         printf("1\n");
-        
+
+    print_cells(dims, starts, counts);
+    
     CC(d::Free(pp));
     CC(d::Free(ppout));
     free(counts);
