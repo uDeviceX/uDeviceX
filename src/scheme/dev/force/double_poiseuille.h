@@ -10,4 +10,3 @@ __global__ void force(float mass, Particle *pp, Force *ff, int n, float driving_
     if (d <= 0) driving_force0 *= -1;
     f[X] += mass*driving_force0;
 }
-
