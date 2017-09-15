@@ -5313,8 +5313,8 @@
         </Object>
         <Object name="ViewerSubject">
             <Object name="SourceMap">
-                <Field name="SOURCE00" type="string">localhost:/home/lisergey/udx/solid/run/color/two/l/f.visit</Field>
-                <Field name="SOURCE01" type="string">localhost:/home/lisergey/udx/solid/run/color/two/l/p.visit</Field>
+                <Field name="SOURCE00" type="string">localhost:/home/lisergey/udx/solid/run/color/rbc/a/f.visit</Field>
+                <Field name="SOURCE01" type="string">localhost:/home/lisergey/udx/solid/run/color/rbc/a/p.visit</Field>
             </Object>
             <Object name="SourcePlugins">
                 <Field name="localhost:/home/lisergey/falcon/h5/wall.xmf" type="string">Xdmf_1.0</Field>
@@ -5323,8 +5323,8 @@
                 <Field name="localhost:/home/lisergey/lukas/gx100/src/ply/rbcs-*.ply database" type="string">PLY_1.0</Field>
                 <Field name="localhost:/home/lisergey/tmp/0000000.vtk" type="string">VTK_1.0</Field>
                 <Field name="localhost:/home/lisergey/udx/bop/poc/o.vtk" type="string">VTK_1.0</Field>
-                <Field name="localhost:/home/lisergey/udx/solid/run/color/two/l/f.visit" type="string">Xdmf_1.0</Field>
-                <Field name="localhost:/home/lisergey/udx/solid/run/color/two/l/p.visit" type="string">VTK_1.0</Field>
+                <Field name="localhost:/home/lisergey/udx/solid/run/color/rbc/a/f.visit" type="string">Xdmf_1.0</Field>
+                <Field name="localhost:/home/lisergey/udx/solid/run/color/rbc/a/p.visit" type="string">VTK_1.0</Field>
                 <Field name="localhost:/home/lisergey/udx/uq/tools/efit/sk.out.ply" type="string">PLY_1.0</Field>
                 <Field name="localhost:/home/lisergey/work/gcyl/cross/o/*.vtk database" type="string">VTK_1.0</Field>
                 <Field name="localhost:/home/lisergey/work/udx/bop/poc/d.vtk" type="string">VTK_1.0</Field>
