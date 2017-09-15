@@ -4,7 +4,7 @@ u.conf $s $u $c <<!!!
    XS=16 YS=16 ZS=16
    kBT=0.00444302
    driving_force=0.2
-   pushflow doublepoiseuille
+   pushflow FORCE_DOUBLE_POISEUILLE
    field_dumps part_dumps
    field_freq=8000
    run

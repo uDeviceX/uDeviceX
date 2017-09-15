@@ -7,7 +7,7 @@ __global__ void force(float mass, Particle* pp, Force* ff, int n, float driving_
 
     float d = r[Y] - glb::r0[Y]; /* coordinate relative to domain
                                      center */
-    if (doublepoiseuille && d <= 0) driving_force0 *= -1;
+    if (d <= 0) driving_force0 *= -1;
     f[X] += mass*driving_force0;
 }
 

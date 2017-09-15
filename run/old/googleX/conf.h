@@ -42,7 +42,6 @@
 
 #define pushflow            true
 #define driving_force       0.02
-#define doublepoiseuille    false
 #define gamma_dot           0.0
 
 #define walls               true

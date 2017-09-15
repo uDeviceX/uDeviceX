@@ -35,7 +35,7 @@
 #undef              _aij_out
 #undef              _aij_rbc
 #undef            b2_ellipse
-#undef      doublepoiseuille
+#undef      FORCE_DOUBLE_POISEUILLE
 #undef          _gammadpd_in
 #undef         _gammadpd_out
 #undef         _gammadpd_rbc
@@ -58,7 +58,7 @@
 #define             _aij_out   (0.0)    /* */
 #define             _aij_rbc   (0.0)    /* */
 #define           b2_ellipse     (4)    /* */
-#define     doublepoiseuille (false)
+#define     FORCE_DOUBLE_POISEUILLE (false)
 #define         _gammadpd_in   (0.0)    /* */
 #define        _gammadpd_out   (0.0)    /* */
 #define        _gammadpd_rbc   (0.0)    /* */

@@ -8,7 +8,7 @@ cp data/cells/rbc.498.off  rbc.off
 :
 u.conf conf/double.poiseuille.h <<!!!
    tend=0.01 part_freq=4000
-   doublepoiseuille
+   FORCE_DOUBLE_POISEUILLE
    field_dumps part_dumps
    field_freq=4000 wall_creation=0
    BASE_STRT_DUMP=\"bin.1\"
@@ -140,7 +140,7 @@ u.conf conf/double.poiseuille.h <<!!!
    solids contactforces tend=0.1 part_freq=100
    wall_creation=199 part_dumps
    BASE_STRT_DUMP=\"bin.1\"
-   pushflow=false doublepoiseuille
+   pushflow=false FORCE_DOUBLE_POISEUILLE
    strt_dumps=true
    strt_freq=10000
    RESTART=false

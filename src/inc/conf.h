@@ -11,10 +11,6 @@
   #define shear_z (false)
 #endif
 
-#ifndef doublepoiseuille
-#define doublepoiseuille (false)
-#endif
-
 #ifndef pushflow
   #define pushflow (false)
 #else

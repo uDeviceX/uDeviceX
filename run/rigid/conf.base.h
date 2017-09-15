@@ -48,7 +48,6 @@
 // #define ljepsilon        0.44f
 
 #define contactforces    (false)
-#define doublepoiseuille (false)
 #define       strt_dumps  (true)
 #define        strt_freq  (5000)
 #define      field_dumps (false)

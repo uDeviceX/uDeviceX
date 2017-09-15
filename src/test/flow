@@ -7,7 +7,7 @@ export PATH=../tools:$PATH
 :
 u.conf conf/double.poiseuille.h <<!!!
    tend=2.01 part_freq=4000
-   pushflow doublepoiseuille
+   pushflow FORCE_DOUBLE_POISEUILLE
    field_dumps part_dumps
    field_freq=4000 
    run
