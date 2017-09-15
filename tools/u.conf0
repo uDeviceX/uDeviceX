@@ -1,0 +1,6 @@
+# a simple interface to u.conf
+u="$1"; shift
+
+u.conf . "$u" default.h <<<!
+run
+!
