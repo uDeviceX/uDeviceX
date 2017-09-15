@@ -29,9 +29,6 @@ void ini() {
     flu::alloc_quants(&o::q);
     flu::alloc_ticketZ(&o::tz);
 
-    odstr::alloc_ticketD(&tag_gen, &o::td);
-    odstr::alloc_ticketU(&o::tu);
-
     // TODO
     float maxdensity = 3 * numberdensity;
     distr::flu::ini(maxdensity, /**/ &o::d.p);
@@ -43,25 +40,21 @@ void ini() {
     dpdr::alloc_ticketSh(/**/ &o::h.ts);
     dpdr::alloc_ticketRh(/**/ &o::h.tr);
 
-    odstr::alloc_work(&o::w);
-
     Dalloc(&o::ff, MAX_PART_NUM);
 
     if (global_ids) {
         flu::alloc_quantsI(&o::qi);
-        odstr::alloc_ticketI(&tag_gen, &o::ti);
-        odstr::alloc_ticketUI(&o::tui);
     }
     
     if (multi_solvent) {
         flu::alloc_quantsI(&o::qc);
-        odstr::alloc_ticketI(&tag_gen, &o::tc);
-        odstr::alloc_ticketUI(&o::tuc);
 
         dpdr::ini_ticketIcom(/*io*/ &tag_gen, /**/ &o::h.tic);
         dpdr::alloc_ticketSIh(/**/ &o::h.tsi);
         dpdr::alloc_ticketRIh(/**/ &o::h.tri);
-        
+    }
+
+    if (solids || rbcs) {
         mcomm::ini_ticketcom(m::cart, /*io*/ &tag_gen, /**/ &mc::tc);
         mcomm::alloc_ticketS(/**/ &mc::ts);
         mcomm::alloc_ticketR(&mc::ts, /**/ &mc::tr);
