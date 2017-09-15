@@ -8,7 +8,6 @@ cp data/cells/rbc.498.off  rbc.off
 :
 u.conf conf/double.poiseuille.h <<!!!
    tend=0.01 part_freq=4000
-   FORCE_DOUBLE_POISEUILLE
    field_dumps part_dumps
    field_freq=4000 wall_creation=0
    BASE_STRT_DUMP=\"bin.1\"
@@ -18,7 +17,7 @@ u.conf conf/double.poiseuille.h <<!!!
    run
    tend=2.01
    RESTART=true
-   pushflow=true
+   FORCE_DOUBLE_POISEUILLE
    BASE_STRT_READ=\"bin.1\"
    BASE_STRT_DUMP=\"bin.2\"
    run
@@ -43,7 +42,6 @@ u.conf conf/couette.h <<!!!
    tend=0.5 part_freq=4000
    field_dumps part_dumps field_freq=4000
    walls wall_creation=100 shear_z
-   pushflow=false
    BASE_STRT_DUMP=\"bin.1\"
    strt_dumps=true
    strt_freq=10000
@@ -51,7 +49,7 @@ u.conf conf/couette.h <<!!!
    run
    tend=2.01
    RESTART=true
-   pushflow=true
+   FORCE_CONSTANT
    BASE_STRT_READ=\"bin.1\"
    BASE_STRT_DUMP=\"bin.2\"
    run
@@ -81,7 +79,8 @@ u.conf conf/couette.h <<!!!
    RESTART=false
    run
    RESTART=true
-   pushflow pushrbc
+   FORCE_CONSTANT
+   pushrbc
    BASE_STRT_READ=\"bin.1\"
    BASE_STRT_DUMP=\"bin.2\"
    run
@@ -113,7 +112,7 @@ u.conf conf/around.h <<!!!
    RESTART=false
    run
    RESTART=true
-   pushflow pushrbc tend=3.0
+   FORCE_CONSTANT pushrbc tend=3.0
    BASE_STRT_READ=\"bin.1\"
    BASE_STRT_DUMP=\"bin.2\"
    run
@@ -140,11 +139,11 @@ u.conf conf/double.poiseuille.h <<!!!
    solids contactforces tend=0.1 part_freq=100
    wall_creation=199 part_dumps
    BASE_STRT_DUMP=\"bin.1\"
-   pushflow=false FORCE_DOUBLE_POISEUILLE
    strt_dumps=true
    strt_freq=10000
    RESTART=false
    run
+   FORCE_DOUBLE_POISEUILLE
    RESTART=true
    pushflow=true tend=0.7
    BASE_STRT_READ=\"bin.1\"

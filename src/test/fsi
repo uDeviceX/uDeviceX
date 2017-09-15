@@ -9,7 +9,7 @@ export PATH=../tools:$PATH
 u.conf conf/double.poiseuille.h <<!!!
    rbcs tend=2.0 part_freq=1500
    part_dumps   field_freq=1500
-   pushflow FORCE_DOUBLE_POISEUILLE
+   FORCE_DOUBLE_POISEUILLE
    pushrbc=false fsiforces=false
    run
 !!!
@@ -28,7 +28,7 @@ x=5 y=17 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 u.conf conf/double.poiseuille.h <<!!!
    rbcs tend=2.0 part_freq=1500
    part_dumps   field_freq=1500
-   pushflow FORCE_DOUBLE_POISEUILLE
+   FORCE_DOUBLE_POISEUILLE
    pushrbc=false fsiforces=true
    run
 !!!
@@ -48,7 +48,7 @@ u.conf conf/double.poiseuille.h <<!!!
    YS=16
    rbcs tend=2.0 part_freq=1500
    part_dumps   field_freq=1500
-   pushflow FORCE_DOUBLE_POISEUILLE
+   FORCE_DOUBLE_POISEUILLE
    pushrbc=false fsiforces=true
    run
 !!!

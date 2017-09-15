@@ -8,9 +8,9 @@ cp data/cells/rbc.498.off  rbc.off
 :
 u.conf conf/double.poiseuille.h <<!!!
    tend=2.01 part_freq=4000
-   pushflow FORCE_DOUBLE_POISEUILLE
+   FORCE_DOUBLE_POISEUILLE
    field_dumps part_dumps
-   field_freq=4000 pushflow
+   field_freq=4000
    run
    run
 !!!
@@ -28,12 +28,11 @@ cp data/cells/rbc.498.off  rbc.off
 :
 u.conf conf/double.poiseuille.h <<!!!
     tend=2.01 part_freq=4000
-    pushflow FORCE_DOUBLE_POISEUILLE
+    FORCE_DOUBLE_POISEUILLE
     field_dumps part_dumps
     field_freq=4000
-    pushflow=true
     run
-    pushflow=false
+    FORCE_NONE
     run
 !!!
 (make clean && u.make -j) > /dev/null

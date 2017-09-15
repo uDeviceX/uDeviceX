@@ -12,7 +12,7 @@ u.conf conf/double.poiseuille.h <<!!!
    rbcs tend=2.0 part_freq=1500
    solids sbounce_back wall_creation=1
    part_dumps field_freq=1500
-   pushflow pushrbc FORCE_DOUBLE_POISEUILLE
+   pushrbc FORCE_DOUBLE_POISEUILLE
    contactforces
    run
 !!!
@@ -34,7 +34,7 @@ u.conf conf/double.poiseuille.h <<!!!
    rbcs tend=2.0 part_freq=1500
    solids sbounce_back wall_creation=1
    part_dumps field_freq=1500
-   pushflow pushrbc FORCE_DOUBLE_POISEUILLE
+   pushrbc FORCE_DOUBLE_POISEUILLE
    run
 !!!
 { make clean &&  u.make -j && make -C ../tools; } > /dev/null

@@ -10,7 +10,7 @@ x=17.75 y=8 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
 :
 u.conf conf/double.poiseuille.h <<!!!
    kBT=1e-7 tend=2.1 part_freq=100 field_freq=300
-   pushflow FORCE_DOUBLE_POISEUILLE rbcs
+   FORCE_DOUBLE_POISEUILLE rbcs
    field_dumps part_dumps
    run
 !!!

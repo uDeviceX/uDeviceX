@@ -25,8 +25,8 @@ cp data/cells/rbc.498.off  rbc.off
 :
 u.conf conf/double.poiseuille.h <<!!!
    kBT=1e-7 tend=2.1 part_freq=100 field_freq=300
-   pushflow FORCE_DOUBLE_POISEUILLE DBG_PEEK
-   field_dumps part_dumps pushflow
+   FORCE_DOUBLE_POISEUILLE DBG_PEEK
+   field_dumps part_dumps
    run
 !!!
 { make clean && u.make -j; } > /dev/null
