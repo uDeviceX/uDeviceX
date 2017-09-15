@@ -68,8 +68,6 @@
 #include "comm/imp.h"
 #include "distr/flu/map.h"
 #include "distr/flu/int.h"
-#include "odstr/type.h"
-#include "odstr/int.h"
 #include "cnt/imp.h"
 
 #include "fsi/type.h"

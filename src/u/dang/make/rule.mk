@@ -43,9 +43,6 @@ $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/. -I$S/_rain -I$S/mpi
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/. -I$S/_rain -I$S/mpi
 $B/mrescue.o: $S/mrescue.cu; $N -I$S/. -I$S/_rain
 $B/msg.o: $S/msg.cpp; $X -I$S/. -I$S/_rain
-$B/odstr/halo/imp.o: $S/odstr/halo/imp.cu; $N -I$S/. -I$S/_rain -I$S/odstr/halo -I$S/odstr/halo/_dang
-$B/odstr/imp.o: $S/odstr/imp.cu; $N -I$S/. -I$S/_rain -I$S/odstr -I$S/odstr/_dang
-$B/odstr/int.o: $S/odstr/int.cu; $N -I$S/. -I$S/_rain -I$S/odstr -I$S/odstr/_dang
 $B/rbc/imp.o: $S/rbc/imp.cu; $N -I$S/. -I$S/_rain -I$S/rbc
 $B/rbc/int.o: $S/rbc/int.cu; $N -I$S/. -I$S/_rain -I$S/rbc
 $B/rdstr/imp.o: $S/rdstr/imp.cu; $N -I$S/. -I$S/_rain -I$S/rdstr
