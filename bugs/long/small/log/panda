@@ -1,3 +1,0 @@
-Fatal error in PMPI_Isend: Internal MPI error!, error stack:
-PMPI_Isend(146): MPI_Isend(buf=0x2048a0a00, count=0, MPI_FLOAT, dest=0, tag=903, comm=0x84000003, request=0x56e7678) failed
-(unknown)(): Internal MPI error!
