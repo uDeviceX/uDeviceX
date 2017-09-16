@@ -5363,7 +5363,7 @@
                     <Object name="ViewerWindow">
                         <Field name="windowSize" type="intArray" length="2">721 721 </Field>
                         <Field name="windowImageSize" type="intArray" length="2">721 661 </Field>
-                        <Field name="windowLocation" type="intArray" length="2">364 43 </Field>
+                        <Field name="windowLocation" type="intArray" length="2">378 102 </Field>
                         <Field name="maintainView" type="bool">false</Field>
                         <Field name="cameraView" type="bool">false</Field>
                         <Field name="viewExtentsType" type="string">AVT_ORIGINAL_EXTENTS</Field>
