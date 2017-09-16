@@ -8,6 +8,7 @@
 #include "utils/cc.h"
 #include "utils/kl.h"
 #include "inc/dev.h"
+#include "inc/dev/common.h"
 #include "inc/type.h"
 
 #include "frag/imp.h"
