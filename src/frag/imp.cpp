@@ -1,3 +1,5 @@
+#include <conf.h>
+#include "inc/conf.h"
 #include "frag/imp.h"
 
 void frag_estimates(int nfrags, float maxd, /**/ int *cap) {
