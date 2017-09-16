@@ -4,6 +4,8 @@ namespace rbc {
 using namespace comm;
 
 struct Map {
+    int counts[NBAGS]; /* number of cells leaving in each fragment */
+    int   *ids[NBAGS]; /* indices of leaving cells                 */
 };
 
 struct Pack {
