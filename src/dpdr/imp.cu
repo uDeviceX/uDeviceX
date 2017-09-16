@@ -75,15 +75,13 @@ void pack_ii(const int27 starts, const int nc, const int *ii, const intp26 str, 
 void copy_pp(const int *np, const Particlep26 dev, /**/ Particlep26 hst) {
     dSync();
     for (int i = 0; i < 26; ++i)
-        if (np[i])
-            CC(cudaMemcpyAsync(hst.d[i], dev.d[i], sizeof(Particle) * np[i], D2H));
+        if (np[i]) aD2H(hst.d[i], dev.d[i], np[i]);
 }
 
 void copy_ii(const int *np, const intp26 dev, /**/ intp26 hst) {
     dSync();
     for (int i = 0; i < 26; ++i)
-        if (np[i])
-            CC(cudaMemcpyAsync(hst.d[i], dev.d[i], sizeof(int) * np[i], D2H));
+        if (np[i]) aD2H(hst.d[i], dev.d[i], np[i]);
 }
 
 void post_send(MPI_Comm cart, const int ranks[], const int *np, const int26 nc, const intp26 cum,
