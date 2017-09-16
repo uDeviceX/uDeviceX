@@ -14,9 +14,9 @@ enum {frag_bulk = 26};
                    (((i) / 9 + 2) % 3 - 1))
 
 /* direction to fragment id                    */
-#define d2i(d) (((d[0] + 2) % 3)                \
-                + 3 * ((d[1] + 2) % 3)          \
-                + 9 * ((d[2] + 2) % 3))         \
+#define d2i(x, y, z) ((((x) + 2) % 3)           \
+                      + 3 * (((y) + 2) % 3)     \
+                      + 9 * (((z) + 2) % 3))    \
 
 
 /* number of cells in direction x, y, z        */
@@ -31,5 +31,12 @@ enum {frag_bulk = 26};
             i2d(i, 1),                          \
             i2d(i, 2)))
 
+/* anti direction to fragment id                */
+#define ad2i(x, y, z) d2i((-x), (-y), (-z))
+
+/* anti fragment                                */
+#define anti(i) f2i(-i2d((i), 0),               \
+                    -i2d((i), 1),               \
+                    -i2d((i), 2))
 
 }
