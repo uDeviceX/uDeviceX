@@ -16,8 +16,7 @@ enum {bulk = 26};
 /* direction to fragment id                    */
 #define d2i(x, y, z) ((((x) + 2) % 3)           \
                       + 3 * (((y) + 2) % 3)     \
-                      + 9 * (((z) + 2) % 3))    \
-
+                      + 9 * (((z) + 2) % 3))
 
 /* number of cells in direction x, y, z        */
 #define ncell0(x, y, z)                         \
