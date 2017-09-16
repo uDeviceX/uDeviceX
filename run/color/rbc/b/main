@@ -1,3 +1,4 @@
+set -xeu
 u=u/x
 
 Domain="XS=$XS YS=$YS ZS=$ZS"
