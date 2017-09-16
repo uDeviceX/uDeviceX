@@ -17,7 +17,6 @@
 
 #include "algo/minmax.h"
 
-
 #include "distr/map/type.h"
 #include "type.h"
 #include "imp.h"
