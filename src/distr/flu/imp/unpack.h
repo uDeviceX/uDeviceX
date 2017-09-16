@@ -17,7 +17,7 @@ static void unpack(const hBags bags, int27 starts, /**/ T *buf) {
     for (i = 0; i < NFRAGS; ++i) {
         c = bags.counts[i] * bs;
         s = starts.d[i];
-        CC(d::MemcpyAsync(buf + s, bags.data[i], c, H2D));
+        if (c) CC(d::MemcpyAsync(buf + s, bags.data[i], c, H2D));
     }
 }
 

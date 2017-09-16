@@ -22,29 +22,21 @@ void fin() {
     dpdr::free_ticketSh(&o::h.ts);
     dpdr::free_ticketRh(&o::h.tr);
     
-    odstr::free_ticketD(&o::td);
-    odstr::free_ticketU(&o::tu);
-    odstr::free_work(&o::w);
-
-    // distr::flu::fin(/**/ &o::d.p);
-    // distr::flu::fin(/**/ &o::d.c);
-    // distr::flu::fin(/**/ &o::d.u);
+    distr::flu::fin(/**/ &o::d.p);
+    distr::flu::fin(/**/ &o::d.c);
+    distr::flu::fin(/**/ &o::d.u);
     
     if (global_ids) {
         flu::free_quantsI(&o::qi);
-        odstr::free_ticketI(&o::ti);
-        odstr::free_ticketUI(&o::tui);
     }
 
     if (multi_solvent) {
         flu::free_quantsI(&o::qc);
-        odstr::free_ticketI(&o::tc);
-        odstr::free_ticketUI(&o::tuc);
-
+    
         dpdr::free_ticketIcom(&o::h.tic);
         dpdr::free_ticketSIh(&o::h.tsi);
         dpdr::free_ticketRIh(&o::h.tri);
-        
+
         mcomm::free_ticketcom(&mc::tc);
         mcomm::free_ticketS(&mc::ts);
         mcomm::free_ticketR(&mc::tr);

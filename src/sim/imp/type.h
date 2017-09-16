@@ -1,5 +1,7 @@
 /* types local for sim:: */
 namespace o {
+
+/* distribution tickets */
 struct Distr {
     distr::flu::Pack p;
     distr::flu::Comm c;

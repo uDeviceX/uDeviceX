@@ -1,46 +1,134 @@
 #include <stdio.h>
 #include <assert.h>
-#include <mpi.h>
+
+#include <conf.h>
+#include "inc/conf.h"
 
 #include "msg.h"
-#include "mpi/glb.h"
-#include "mpi/wrapper.h"
-#include "mpi/basetags.h"
-#include "glb.h"
-#include "frag.h"
+#include "d/api.h"
 
-#include "comm/imp.h"
-#include "distr/flu/imp.h"
+#include "glb.h"
+
+#include "inc/dev.h"
+#include "inc/type.h"
+#include "utils/cc.h"
+
+#include "algo/scan/int.h"
+#include "clist/imp.h"
+
+enum {X,Y,Z};
+
+#define MAXN 10000
+
+void read(int *n, Particle *pp) {
+    int i;
+    Particle p;
+    i = 0;
+    while (scanf("%f %f %f %f %f %f",
+                 &p.r[X], &p.r[Y], &p.r[Z],
+                 &p.v[X], &p.v[Y], &p.v[Z]) == 6)
+        pp[i++] = p;
+    *n = i;
+}
+
+void print_cells(int3 L, const int *ss, const int *cc) {
+    int i, n, s, c;
+    n = L.x * L.y * L.z;
+
+    for (i = 0; i < n; ++i) {
+        s = ss[i];
+        c = cc[i];
+        printf("%d\n%d\n", s, c);
+    }
+}
+
+int3 ccoords(int3 d, int cid) {
+    int3 c;
+    c.x = cid % d.x;
+    c.z = cid / (d.y * d.x);
+    c.y = (cid - d.y * d.x * c.z) / d.x;
+    return c;
+}
+
+bool valid(int c, int d, float x) {
+    return (x >= c - 0.5 * d) && (x < c + 1 - 0.5 * d);
+}
+
+bool valid_cell(int3 d, int cid, int s, int c, const Particle *pp) {
+    int i, j;
+    Particle p;
+    int3 cell = ccoords(d, cid);
+    for (i = 0; i < c; ++i) {
+        j = s + i;
+        p = pp[j];
+        // MSG("%3f %3f %3f at %d %d %d",
+        //     p.r[X], p.r[Y], p.r[Z], cell.x, cell.y, cell.z);
+        if ( ! valid(cell.x, d.x, p.r[X]) ||
+             ! valid(cell.y, d.y, p.r[Y]) ||
+             ! valid(cell.z, d.z, p.r[Z])  )
+            return false;
+    }
+    return true;
+}
+
+bool valid(int3 d, const int *starts, const int *counts, const Particle *pp, int n) {
+    int cid, s, c, nc;
+    nc = d.x * d.y * d.z;
+    for (cid = 0; cid < nc; ++cid) {
+        s = starts[cid];
+        c = counts[cid];
+        if (!valid_cell(d, cid, s, c, pp)) return false;
+    }
+    return true;
+}
 
 int main(int argc, char **argv) {
     m::ini(argc, argv);
-    MSG("mpi size: %d", m::size);
-    MSG("Comm unit test!");
-
-    basetags::TagGen tg;
-    comm::hBags sendB, recvB;
-    comm::Stamp stamp;
-
-    ini(/**/ &tg);
-    ini_no_bulk(sizeof(int), 26, /**/ &sendB);
-    ini_no_bulk(sizeof(int), 26, /**/ &recvB);
-    ini(m::cart, /*io*/ &tg, /**/ &stamp);
-
-    fill_bags(&sendB);
-
-    post_recv(&recvB, &stamp);
-    post_send(&sendB, &stamp);
-
-    wait_recv(&stamp, &recvB);
-    wait_send(&stamp);
-
-    compare(&sendB, &recvB);
-
-    MSG("Passed");
     
-    fin(&sendB);
-    fin(&recvB);
-    fin(/**/ &stamp);
+    Particle *pp, *ppout;
+    Particle *pp_hst;
+    int n = 0, *starts, *counts;
+    int3 dims;
+    clist::Clist clist;
+    clist::Ticket t;
+
+    dims.x = XS;
+    dims.y = YS;
+    dims.z = ZS;
     
+    ini(dims.x, dims.y, dims.z, /**/ &clist);
+    ini_ticket(&clist, /**/ &t);
+
+    pp_hst = (Particle*) malloc(MAXN * sizeof(Particle));
+    counts = (int*) malloc(clist.ncells * sizeof(int));
+    starts = (int*) malloc(clist.ncells * sizeof(int));
+    CC(d::Malloc((void**) &pp, MAXN * sizeof(Particle)));
+    CC(d::Malloc((void**) &ppout, MAXN * sizeof(Particle)));
+
+    read(&n, pp_hst);
+    CC(d::Memcpy(pp, pp_hst, n * sizeof(Particle), H2D));
+    
+    build(n, n, pp, /**/ ppout, &clist, &t);
+    
+    CC(d::Memcpy(counts, clist.counts, clist.ncells * sizeof(int), D2H));
+    CC(d::Memcpy(starts, clist.starts, clist.ncells * sizeof(int), D2H));
+    CC(d::Memcpy(pp_hst, ppout, n * sizeof(Particle), D2H));
+    
+    if (valid(dims, starts, counts, pp_hst, n))
+        printf("0\n");
+    else
+        printf("1\n");
+
+    print_cells(dims, starts, counts);
+    
+    CC(d::Free(pp));
+    CC(d::Free(ppout));
+    free(counts);
+    free(starts);
+    free(pp_hst);
+
+    fin(/**/ &clist);
+    fin_ticket(/**/ &t);
+
     m::fin();
 }

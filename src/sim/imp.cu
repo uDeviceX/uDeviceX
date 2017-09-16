@@ -68,8 +68,6 @@
 #include "comm/imp.h"
 #include "distr/flu/map.h"
 #include "distr/flu/int.h"
-#include "odstr/type.h"
-#include "odstr/int.h"
 #include "cnt/imp.h"
 
 #include "fsi/type.h"
@@ -138,7 +136,6 @@ namespace sim {
 #undef DEV
 
 #include "imp/update.h"
-#include "imp/odstr.h"
 #include "imp/distr.h"
 #include "imp/rbc.h"
 #include "imp/step.h"

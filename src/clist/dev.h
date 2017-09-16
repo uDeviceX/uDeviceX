@@ -17,13 +17,14 @@ static __device__ uchar4 get_entry(const float *r, int3 L) {
     enum {X, Y, Z};
     uchar4 e;
     int ix, iy, iz;
-    
-    ix = (int)floor(r[X] + L.x/2);
-    iy = (int)floor(r[Y] + L.y/2);
-    iz = (int)floor(r[Z] + L.z/2);
+
+    /* must be done in double precision */
+    ix = (int) ((double) r[X] + L.x/2);
+    iy = (int) ((double) r[Y] + L.y/2);
+    iz = (int) ((double) r[Z] + L.z/2);
 
     if (inside(r, L)) e.w =   VALID;
-    else                   e.w = INVALID;
+    else              e.w = INVALID;
 
     e.x = ix; e.y = iy; e.z = iz;
     return e;

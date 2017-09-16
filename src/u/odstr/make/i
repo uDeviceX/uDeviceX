@@ -1,6 +1,12 @@
-find $U -name '*.cu' -o -name '*.cpp' -o -name '*.h'
-echo \
-d/api.cu d/api.h d/common.h d/cpu/imp.h d/cuda/imp.h glb.cu           \
-glb.h inc/conf.h mpi/glb.cpp mpi/glb.h mpi/wrapper.cpp mpi/wrapper.h  \
-mpi/wrapper.h msg.cpp msg.h utils/mc.cpp utils/mc.h mpi/basetags.h    \
-comm/imp.h comm/imp.cu comm/imp/*.h frag.h utils/cc.h utils/cc.cpp utils/cc/*.h
+dirs="$U d mpi algo/scan inc utils clist"
+for D in ${dirs}
+do
+find $D \
+     -type d       -o  \
+     -name '*.cu'  -o  \
+     -name '*.cpp' -o  \
+     -name '*.h'    |  \
+    grep -v '^\.\/u/'
+done
+
+echo msg.cpp msg.h glb.h glb.cu

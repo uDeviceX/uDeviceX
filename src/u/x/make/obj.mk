@@ -6,9 +6,8 @@ O = $B/algo/minmax.o $B/algo/scan/imp.o $B/clist/imp.o $B/cnt/imp.o $B/comm/imp.
     $B/io/restart.o $B/io/rig.o $B/lforces/local.o $B/main.o $B/math/linal.o \
     $B/mbounce/imp.o $B/mcomm/imp.o $B/mcomm/int.o $B/mdstr/imp.o $B/mdstr/int.o \
     $B/mesh/bbox.o $B/mesh/collision.o $B/mesh/dist.o $B/mesh/props.o $B/mpi/glb.o \
-    $B/mpi/type.o $B/mpi/wrapper.o $B/mrescue.o $B/msg.o $B/odstr/halo/imp.o \
-    $B/odstr/imp.o $B/odstr/int.o $B/rbc/imp.o $B/rbc/int.o $B/rdstr/imp.o \
-    $B/rdstr/int.o $B/rex/imp.o $B/rex/int.o $B/rig/imp.o $B/rig/int.o \
-    $B/rigid/imp.o $B/rnd/imp.o $B/scheme/imp.o $B/sdf/imp.o $B/sdf/int.o \
-    $B/sim/imp.o $B/tcells/imp.o $B/tcells/int.o $B/utils/cc.o $B/utils/mc.o \
-    $B/utils/os.o $B/wall/exch/imp.o $B/wall/imp.o $B/wall/int.o
+    $B/mpi/type.o $B/mpi/wrapper.o $B/mrescue.o $B/msg.o $B/rbc/imp.o $B/rbc/int.o \
+    $B/rdstr/imp.o $B/rdstr/int.o $B/rex/imp.o $B/rex/int.o $B/rig/imp.o \
+    $B/rig/int.o $B/rigid/imp.o $B/rnd/imp.o $B/scheme/imp.o $B/sdf/imp.o \
+    $B/sdf/int.o $B/sim/imp.o $B/tcells/imp.o $B/tcells/int.o $B/utils/cc.o \
+    $B/utils/mc.o $B/utils/os.o $B/wall/exch/imp.o $B/wall/imp.o $B/wall/int.o

@@ -1,5 +1,3 @@
-// TODO: split remote and bulk subindex?
-
 #define REMOTE (true)
 #define LOCAL (false)
 
