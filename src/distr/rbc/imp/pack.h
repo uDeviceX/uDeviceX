@@ -20,12 +20,7 @@ void pack_pp(int nc, int nv, const Particle *pp, /**/ Pack *p) {
 }
 
 void download(int nc, Pack *p) {
+    int *cc = p->hpp.counts;
     CC(d::Memcpy(p->hpp.counts, p->map.counts, NBAGS * sizeof(int), D2H));
-
-    int nhalo, i, c;
-    for (i = nhalo = 0; i < NBAGS; ++i) {
-        c = p->hpp.counts[i];
-        nhalo += c;
-    }
-    p->nbulk = nc - nhalo;
+    p->nbulk = cc[frag_bulk];
 }
