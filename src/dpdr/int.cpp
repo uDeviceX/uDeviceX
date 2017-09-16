@@ -9,7 +9,7 @@
 #include "msg.h"
 #include "utils/cc.h"
 #include "d/api.h"
-#include "frag.h"
+#include "frag/imp.h"
 
 #include "rnd/imp.h"
 
@@ -161,9 +161,9 @@ static void ini_frags(TicketRhalo tr, /**/ hforces::Frag26 *frag) {
     hforces::Cloud cloudb;
 
     for (i = 0; i < 26; ++i) {
-        dx = frag_to_dir[i][X];
-        dy = frag_to_dir[i][Y];
-        dz = frag_to_dir[i][Z];
+        dx = frag_i2d(i,X);
+        dy = frag_i2d(i,Y);
+        dz = frag_i2d(i,Z);
 
         xcells = dx == 0 ? XS : 1;
         ycells = dy == 0 ? YS : 1;

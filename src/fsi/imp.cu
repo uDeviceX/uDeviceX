@@ -19,7 +19,7 @@
 #include "mpi/glb.h"
 #include "utils/cc.h"
 #include "utils/mc.h"
-#include "frag.h"
+#include "frag/imp.h"
 
 #include "utils/kl.h"
 #include "mpi/basetags.h"

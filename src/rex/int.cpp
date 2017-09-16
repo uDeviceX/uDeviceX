@@ -13,7 +13,7 @@
 #include "mpi/glb.h"
 #include "utils/cc.h"
 #include "utils/mc.h"
-#include "frag.h"
+#include "frag/imp.h"
 
 #include "mpi/basetags.h"
 #include "inc/type.h"
