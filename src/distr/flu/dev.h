@@ -59,12 +59,11 @@ __global__ void pack(const T *data, Map m, /**/ Sarray<T*, 26> buf) {
     buf.d[fid][d] = data[s];
 }
 
-/* TODO use frag.h */
 static __device__ void fid2shift(int id, /**/ int s[3]) {
     enum {X, Y, Z};
-    s[X] = XS * ((id     + 2) % 3 - 1);
-    s[Y] = YS * ((id / 3 + 2) % 3 - 1);
-    s[Z] = ZS * ((id / 9 + 2) % 3 - 1);
+    s[X] = XS * frag_i2d(id, X);
+    s[Y] = YS * frag_i2d(id, Y);
+    s[Z] = ZS * frag_i2d(id, Z);
 }
 
 static __device__ void check(const float r[3]) {
