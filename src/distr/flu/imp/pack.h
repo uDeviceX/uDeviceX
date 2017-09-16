@@ -1,13 +1,3 @@
-static void reini_map(Map m) {
-    CC(d::MemsetAsync(m.counts, 0, NFRAGS * sizeof(int)));
-}
-
-static void build_map(int n, const Particle *pp, Map m) {
-    reini_map(/**/ m);
-    KL(dev::build_map, (k_cnf(n)), (pp, n, /**/ m));
-    KL(dev::scan_map, (1, 32), (/**/ m));    
-}
-
 template <typename T>
 static void bag2Sarray(dBags bags, Sarray<T*, NFRAGS> *buf) {
     for (int i = 0; i < NFRAGS; ++i)
@@ -31,14 +21,6 @@ static void pack_ii(const Map m, const int *ii, int n, /**/ dBags bags) {
 
     KL((dev::pack<int, S>), (k_cnf(S*n)), (ii, m, /**/ wrap));
 }
-
-/* map */
-
-void build_map(int n, const Particle *pp, Pack *p) {
-    build_map(n, pp, p->map);
-}
-
-/* pack */
 
 void pack_pp(const Particle *pp, int n, /**/ Pack *p) {
     pack_pp(p->map, pp, n, /**/ p->dpp);
