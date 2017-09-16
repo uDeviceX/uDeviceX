@@ -1,3 +1,4 @@
+namespace dev {
 
 __global__ void build_map(const float *rr, const int n, /**/ Map m) {
     int i, fid;
@@ -6,7 +7,7 @@ __global__ void build_map(const float *rr, const int n, /**/ Map m) {
     const float *r = rr + 3 * i;
 
     fid = get_fid(r);
-
-    if (fid != frag_bulk)
-        add_to_map(pid, fid, /**/ m);
+    add_to_map(i, fid, /**/ m);
 }
+
+} //dev
