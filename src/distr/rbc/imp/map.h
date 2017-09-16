@@ -1,23 +1,14 @@
-static void reini_map(int n, const float *rr, /**/ Map *map) {
-    
+static void reini_map(Map m) {
+    CC(d::MemsetAsync(m.counts, 0, NBAGS * sizeof(int)));
 }
 
-static int get_fid(const float r[3]) {
-    enum {X, Y, Z};
-    int x, y, z;
-    x = -1 + (r[X] >= -XS/2) + (r[X] >= XS/2);
-    y = -1 + (r[Y] >= -YS/2) + (r[Y] >= YS/2);
-    z = -1 + (r[Z] >= -ZS/2) + (r[Z] >= ZS/2);
-    return frag_d2i(x, y, z);
+static void build_map(int n, const float3 *minext, const float3 *maxext, /**/ Map m) {
+    reini_map(/**/ m);
+    KL(dev::build_map, (k_cnf(n)), (n, minext, maxext, /**/ m));
+    KL(dev::scan_map<NBAGS>, (1, 32), (/**/ m));
 }
 
-static void build_map(int n, const float *rr, /**/ Map *map) { 
-    int i, fid, dst;
-    for (i = 0; i < n; ++i) {
-        fid = get_fid(rr + 3 * i);
-        
-        dst = map->counts[fid]++;
-        map->ids[fid][dst] = i;
-    }
+void build_map(int nc, int nv, const Particle *pp, Pack *p) {
+    minmax(pp, nv, nc, /**/ p->minext, p->maxext);
+    build_map(nc, p->minext, p->maxext, /**/  p->map);
 }
-
