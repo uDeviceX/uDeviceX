@@ -1,13 +1,3 @@
-// TODO: belongs to fragment?
-static void estimates(int nfrags, float maxd, /**/ int *cap) {
-    int i, e;
-    for (i = 0; i < nfrags; ++i) {
-        e = frag_ncell(i);
-        e = (int) (e * maxd);
-        cap[i] = e;
-    }
-}
-
 /* pinned allocation */
 
 static void alloc_pinned_counts(int n, /**/ int **hc, int **dc) {
@@ -23,7 +13,7 @@ static void alloc_one_pinned_frag(int i, /**/ hBags *hb, dBags *db) {
 
 static void ini_pinned_bags(int nfrags, size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db) {
     hb->bsize = bsize;
-    estimates(nfrags, maxdensity, hb->capacity);
+    frag_estimates(nfrags, maxdensity, hb->capacity);
     for (int i = 0; i < nfrags; ++i) alloc_one_pinned_frag(i, /**/ hb, db);
     alloc_pinned_counts(nfrags, /**/ &hb->counts, &db->counts);
 }
@@ -47,7 +37,7 @@ static void alloc_one_frag(int i, /**/ hBags *hb, dBags *db) {
 
 static void ini_bags(int nfrags, size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db) {
     hb->bsize = bsize;
-    estimates(nfrags, maxdensity, hb->capacity);
+    frag_estimates(nfrags, maxdensity, hb->capacity);
     for (int i = 0; i < nfrags; ++i) alloc_one_frag(i, /**/ hb, db);
     alloc_pinned_counts(nfrags, /**/ &hb->counts, &db->counts);
 }
@@ -70,7 +60,7 @@ static void alloc_one_frag(int i, /**/ hBags *hb) {
 
 static void ini_bags(int nfrags, size_t bsize, float maxdensity, /**/ hBags *hb) {
     hb->bsize = bsize;
-    estimates(nfrags, maxdensity, hb->capacity);
+    frag_estimates(nfrags, maxdensity, hb->capacity);
     for (int i = 0; i < nfrags; ++i) alloc_one_frag(i, /**/ hb);
     hb->counts = (int*) malloc(nfrags * sizeof(int));
 }
@@ -91,7 +81,7 @@ void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s) {
     
     for (i = 0; i < NFRAGS; ++i) {
         for (c = 0; c < 3; ++c)
-            crd_rnk[c] = m::coords[c] +  frag_to_dir[i][c];
+            crd_rnk[c] = m::coords[c] + frag_i2d(i,c);
         MC(m::Cart_rank(comm, crd_rnk, s->ranks + i));
         s->tags[i] = frag_anti(i);
     }
