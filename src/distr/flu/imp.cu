@@ -20,6 +20,7 @@
 #include "mpi/basetags.h"
 #include "comm/imp.h"
 
+#include "distr/map/type.h"
 #include "type.h"
 #include "imp.h"
 
@@ -28,6 +29,7 @@ namespace flu {
 using namespace comm;
 
 #include "imp/type.h"
+#include "distr/map/dev.h"
 #include "dev.h"
 #include "imp/ini.h"
 #include "imp/fin.h"
