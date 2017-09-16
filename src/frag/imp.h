@@ -10,6 +10,10 @@ enum {frag_bulk = 26};
                         (((i) / 3 + 2) % 3 - 1) :       \
                         (((i) / 9 + 2) % 3 - 1))
 
+#define frag_i2d3(i) { frag_i2d((i), 0),        \
+            frag_i2d((i), 1),                   \
+            frag_i2d((i), 2)}
+
 /* direction to fragment id                    */
 #define frag_d2i(x, y, z) ((((x) + 2) % 3)              \
                            + 3 * (((y) + 2) % 3)        \
