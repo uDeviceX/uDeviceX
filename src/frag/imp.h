@@ -34,3 +34,7 @@ enum {frag_bulk = 26};
 #define frag_anti(i) frag_d2i(-frag_i2d((i), 0),        \
                               -frag_i2d((i), 1),        \
                               -frag_i2d((i), 2))
+
+
+/* fill capacities given a maximum density        */
+void frag_estimates(int nfrags, float maxd, /**/ int *cap);

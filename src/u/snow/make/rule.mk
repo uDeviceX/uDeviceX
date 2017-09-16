@@ -13,6 +13,7 @@ $B/dual/imp.o: $S/dual/imp.cpp; $X -I$S/. -I$S/_snow -I$S/dual
 $B/field.o: $S/field.cpp; $X -I$S/. -I$S/_snow
 $B/flu/imp.o: $S/flu/imp.cu; $N -I$S/. -I$S/_snow -I$S/flu -I$S/flu/_ussr
 $B/flu/int.o: $S/flu/int.cu; $N -I$S/. -I$S/_snow -I$S/flu -I$S/flu/_ussr
+$B/frag/imp.o: $S/frag/imp.cpp; $X -I$S/. -I$S/_snow -I$S/frag
 $B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/. -I$S/_snow -I$S/fsi
 $B/glb.o: $S/glb.cu; $N -I$S/. -I$S/_snow
 $B/hforces/imp.o: $S/hforces/imp.cu; $N -I$S/. -I$S/_snow -I$S/hforces
