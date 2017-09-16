@@ -1,18 +1,40 @@
 namespace distr {
 namespace flu {
 
-using namespace comm;
+void ini(float maxdensity, Pack *p);
+void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c);
+void ini(float maxdensity, Unpack *u);
 
-void alloc_map(float maxdensity, /**/ Map *m);
-void free_map(/**/ Map *m);
+void fin(Pack *p);
+void fin(Comm *c);
+void fin(Unpack *u);
 
-void build_map(int n, const Particle *pp, Map m);
-void pack_pp(const Map m, const Particle *pp, int n, /**/ dBags bags);
-void pack_ii(const Map m, const int *ii, int n, /**/ dBags bags);
+/* map */
+void build_map(int n, const Particle *pp, Pack *p);
 
-int unpack_pp(const hBags bags, /**/ Particle *pp);
-int unpack_ii(const hBags bags, /**/ int *ii);
+/* pack */
+void pack_pp(const Particle *pp, int n, /**/ Pack *p);
+void pack_ii(const int *ii, int n, /**/ Pack *p);
+void pack_cc(const int *cc, int n, /**/ Pack *p);
 
+void download(int n, Pack *p);
+
+/* communication */
+void post_recv(Comm *c, Unpack *u);
+void post_send(Pack *p, Comm *c);
+void wait_recv(Comm *c, Unpack *u);
+void wait_send(Comm *c);
+
+/* unpack */
+void unpack_pp(/**/ Unpack *u);
+void unpack_ii(/**/ Unpack *u);
+void unpack_cc(/**/ Unpack *u);
+
+/* cell lists */
+using namespace ::flu;
+void bulk(/**/ Quants *q);
+void halo(const Unpack *u, /**/ Quants *q);
+void gather(const Pack *p, const Unpack *u, /**/ Quants *q, QuantsI *qi, QuantsI *qc);
 
 } // flu
 } // distr

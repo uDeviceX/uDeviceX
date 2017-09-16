@@ -1,4 +1,3 @@
-
 static int scan(const int n, const int *counts, int27 *starts) {
     int i, s;
     starts->d[0] = 0;
@@ -21,7 +20,7 @@ static void unpack(const hBags bags, int27 starts, /**/ T *buf) {
     }
 }
 
-int unpack_pp(const hBags bags, /**/ Particle *pp) {
+static int unpack_pp(const hBags bags, /**/ Particle *pp) {
     int nhalo;
     int27 starts;
 
@@ -33,7 +32,7 @@ int unpack_pp(const hBags bags, /**/ Particle *pp) {
     return nhalo;
 }
 
-int unpack_ii(const hBags bags, /**/ int *ii) {
+static int unpack_ii(const hBags bags, /**/ int *ii) {
     int nhalo;
     int27 starts;
 
@@ -41,4 +40,18 @@ int unpack_ii(const hBags bags, /**/ int *ii) {
     unpack(bags, starts, /**/ ii);
     
     return nhalo;
+}
+
+void unpack_pp(/**/ Unpack *u) {
+    int nhalo;
+    nhalo = unpack_pp(u->hpp, /**/ u->ppre);
+    u->nhalo = nhalo;
+}
+
+void unpack_ii(/**/ Unpack *u) {
+    unpack_ii(u->hii, /**/ u->iire);
+}
+
+void unpack_cc(/**/ Unpack *u) {
+    unpack_ii(u->hcc, /**/ u->ccre);
 }

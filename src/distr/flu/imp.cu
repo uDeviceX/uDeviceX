@@ -12,11 +12,15 @@
 #include "inc/dev.h"
 #include "frag/imp.h"
 
+#include "rnd/imp.h"
+#include "algo/scan/int.h"
+#include "clist/imp.h"
+#include "flu/int.h"
 
 #include "mpi/basetags.h"
 #include "comm/imp.h"
 
-#include "map.h"
+#include "type.h"
 #include "imp.h"
 
 namespace distr {
@@ -28,8 +32,9 @@ using namespace comm;
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/pack.h"
+#include "imp/com.h"
 #include "imp/unpack.h"
-
+#include "imp/gather.h"
 
 } // flu
 } // distr
