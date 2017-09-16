@@ -1,12 +1,5 @@
 namespace dev {
 
-/* TODO put in frag.h */
-__device__ int d2fid(const int d[3]) {
-    return ((d[0] + 2) % 3)
-        + 3 * ((d[1] + 2) % 3)
-        + 9 * ((d[2] + 2) % 3);
-}
-
 /* exclusive scan */
 __global__ void scan_map(/**/ Map m) {
     int tid, val, cnt;
@@ -20,11 +13,11 @@ __global__ void scan_map(/**/ Map m) {
 
 __device__ int get_fid(const float r[3]) {
     enum {X, Y, Z};
-    int d[3];
-    d[X] = -1 + (r[X] >= -XS/2) + (r[X] >= XS/2);
-    d[Y] = -1 + (r[Y] >= -YS/2) + (r[Y] >= YS/2);
-    d[Z] = -1 + (r[Z] >= -ZS/2) + (r[Z] >= ZS/2);
-    return d2fid(d);
+    int x, y, z;
+    x = -1 + (r[X] >= -XS/2) + (r[X] >= XS/2);
+    y = -1 + (r[Y] >= -YS/2) + (r[Y] >= YS/2);
+    z = -1 + (r[Z] >= -ZS/2) + (r[Z] >= ZS/2);
+    return frag_d2i(x, y, z);
 }
 
 __device__ void add_to_map(int pid, int fid, Map m) {

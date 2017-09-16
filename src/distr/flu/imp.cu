@@ -10,7 +10,7 @@
 #include "inc/type.h"
 #include "inc/dev/common.h"
 #include "inc/dev.h"
-#include "frag.h"
+#include "frag/imp.h"
 
 
 #include "mpi/basetags.h"
