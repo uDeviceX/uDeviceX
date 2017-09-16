@@ -19,7 +19,7 @@ void pack_pp(int nc, int nv, const Particle *pp, /**/ Pack *p) {
     pack_pp(p->map, nc, nv,  pp, /**/ p->dpp);
 }
 
-void download(int nc, Pack *p) {
+void download(Pack *p) {
     int *cc = p->hpp.counts;
     CC(d::Memcpy(p->hpp.counts, p->map.counts, NBAGS * sizeof(int), D2H));
     p->nbulk = cc[frag_bulk];
