@@ -1,4 +1,4 @@
-enum {frag_bulk};
+enum {frag_bulk = 26};
 
 /* use macros so we don't need nvcc to compile */
 /* see /poc/communication                      */
