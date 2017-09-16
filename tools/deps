@@ -1,5 +1,5 @@
 # update all units
-for u in u/korea u/bangladesh u/comm u/dang u/france u/hw u/safe u/snow u/x
+for u in u/korea u/bangladesh u/comm u/dang u/clist u/france u/hw u/safe u/snow u/x
 do
     printf 'upd: %s\n' "$u"
     ../tools/udeps "$u"
