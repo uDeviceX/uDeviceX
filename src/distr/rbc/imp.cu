@@ -29,6 +29,7 @@ using namespace comm;
 #include "distr/map/dev.h"
 #include "dev.h"
 #include "imp/map.h"
+#include "imp/pack.h"
 
 } // rbc
 } // distr
