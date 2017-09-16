@@ -6,9 +6,9 @@ __global__ void scan_map(/**/ Map m) {
     tid = threadIdx.x;
     val = 0;    
 
-    if (tid < 26) cnt = val = m.counts[tid];
+    if (tid < NFRAGS) cnt = val = m.counts[tid];
     for (int L = 1; L < 32; L <<= 1) val += (tid >= L) * __shfl_up(val, L) ;
-    if (tid < 27) m.starts[tid] = val - cnt;
+    if (tid <= NFRAGS) m.starts[tid] = val - cnt;
 }
 
 static __device__ int get_fid(const float r[3]) {
