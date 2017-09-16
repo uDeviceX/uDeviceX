@@ -1,10 +1,11 @@
 CXX = gcc
 CXXFLAGS = -O3 -Wall -Wpedantic
 
-all: deltas
+P = deltas frag
+all: $P
 
-deltas: deltas.cpp
+%: %.cpp
 	$(CXX) $(CXXFLAGS) $^ -o $@ 
 
 clean:
-	rm -rf deltas
+	rm -rf $P

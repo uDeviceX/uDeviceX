@@ -1,4 +1,4 @@
-namespace frag {
+#include <stdio.h>
 
 enum {bulk = 26};
 
@@ -39,4 +39,33 @@ enum {bulk = 26};
                     -i2d((i), 1),               \
                     -i2d((i), 2))
 
+void print_i2d() {
+    int i;
+    for (i = 0; i < bulk + 1; ++i)
+        printf("%2d -- (%2d %2d %2d)\n", i,
+               i2d(i, 0), i2d(i, 1), i2d(i, 2));
+}
+
+void print_d2i() {
+    int x, y, z;
+    for (z = 0; z < 3; ++z)
+        for (y = 0; y < 3; ++y)
+            for (x = 0; x < 3; ++x)
+                printf("(%2d %2d %2d) -- %2d\n",
+                       x-1, y-1, z-1, d2i(x-1, y-1, z-1));
+}
+
+void printanti() {
+   int i;
+    for (i = 0; i < bulk + 1; ++i)
+        printf("%2d -- %2d\n", i, anti(i));
+}
+
+int main() {
+    printf("\ni2d\n");
+    print_i2d();
+    printf("\nd2i\n");
+    print_d2i();
+    printf("\nanti\n");
+    printanti();
 }
