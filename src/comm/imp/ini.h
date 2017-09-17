@@ -4,6 +4,43 @@ static void alloc_counts(int n, /**/ int **hc) {
     *hc = (int*) malloc(n * sizeof(int));
 }
 
+/* generic allocation */
+static void alloc_one_pair(int i, AllocMod mod, /**/ hBags *hb, dBags *db) {
+    size_t n = hb->capacity[i] * hb->bsize;
+    
+    switch (mod) {
+    case HST_ONLY:
+        hb->data[i] = (data_t*) malloc(n);
+        break;
+    case DEV_ONLY:
+        CC(d::Malloc((void**) &db->data[i], n));
+        break;
+    case PINNED:
+        CC(d::alloc_pinned(&hb->data[i], n));
+        CC(d::HostGetDevicePointer(&db->data[i], hb->data[i], 0));
+        break;
+    case NONE:
+    default:
+        break;
+    }
+}
+
+void ini(AllocMod fmod, AllocMod bmod, size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db) {
+    hb->bsize = bsize;
+    frag_estimates(NBAGS, maxdensity, hb->capacity);
+
+    /* fragments */
+    for (int i = 0; i < NFRAGS; ++i)
+        alloc_one_pair(i, fmod, /**/ hb, db);
+
+    /* bulk */
+    alloc_one_pair(frag_bulk, bmod, /**/ hb, db);
+
+    alloc_counts(NBAGS, /**/ &hb->counts);
+}
+
+
+
 static void alloc_one_pinned_frag(int i, /**/ hBags *hb, dBags *db) {
     size_t n = hb->bsize * hb->capacity[i];
     CC(d::alloc_pinned(&hb->data[i], n));
@@ -72,6 +109,7 @@ void ini_no_bulk(size_t bsize, float maxdensity, /**/ hBags *hb) {
 void ini_full(size_t bsize, float maxdensity, /**/ hBags *hb) {
     ini_bags(NBAGS, bsize, maxdensity, /**/ hb);
 }
+
 
 /* stamp allocation */
 
