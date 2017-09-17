@@ -1,7 +1,7 @@
 /* pinned allocation */
 
 static void alloc_counts(int n, /**/ int **hc) {
-    CC(d::alloc_pinned((void**)hc, n * sizeof(int)));
+    hb->counts = (int*) malloc(nfrags * sizeof(int));
 }
 
 static void alloc_one_pinned_frag(int i, /**/ hBags *hb, dBags *db) {
@@ -61,7 +61,7 @@ static void ini_bags(int nfrags, size_t bsize, float maxdensity, /**/ hBags *hb)
     hb->bsize = bsize;
     frag_estimates(nfrags, maxdensity, hb->capacity);
     for (int i = 0; i < nfrags; ++i) alloc_one_frag(i, /**/ hb);
-    hb->counts = (int*) malloc(nfrags * sizeof(int));
+    alloc_counts(nfrags, /**/ &hb->counts);
 }
 
 void ini_no_bulk(size_t bsize, float maxdensity, /**/ hBags *hb) {

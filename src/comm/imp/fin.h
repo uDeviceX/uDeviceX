@@ -1,6 +1,5 @@
 static void free_counts(int **hc) {
-    if (*hc) CC(d::FreeHost(*hc));
-    *hc = NULL;
+    free(*hc); *hc = NULL;
 }
 
 void fin_pinned(/**/ hBags *hb, dBags *db) {
@@ -25,7 +24,7 @@ void fin(/**/ hBags *hb) {
         if (hb->data[i]) free(hb->data[i]);
         hb->data[i] = NULL;
     }
-   free(hb->counts); hb->counts = NULL;
+   free_counts(&hb->counts);
 }
 
 void fin(/**/ Stamp *s) {
