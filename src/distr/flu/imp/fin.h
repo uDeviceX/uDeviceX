@@ -7,10 +7,10 @@ static void free_map(/**/ Map *m) {
 
 void fin(Pack *p) {
     free_map(/**/ &p->map);
-    fin_pinned(/**/ &p->hpp, &p->dpp);
+    fin(PINNED, NONE, /**/ &p->hpp, &p->dpp);
 
-    if (global_ids)    fin_pinned(/**/ &p->hii, &p->dii);
-    if (multi_solvent) fin_pinned(/**/ &p->hcc, &p->dcc);
+    if (global_ids)    fin(PINNED, NONE, /**/ &p->hii, &p->dii);
+    if (multi_solvent) fin(PINNED, NONE, /**/ &p->hcc, &p->dcc);
 }
 
 void fin(Comm *c) {
@@ -21,9 +21,9 @@ void fin(Comm *c) {
 }
 
 void fin(Unpack *u) {
-    fin(&u->hpp);
-    if (global_ids)    fin(&u->hii);
-    if (multi_solvent) fin(&u->hcc);
+    fin(HST_ONLY, NONE, &u->hpp, NULL);
+    if (global_ids)    fin(HST_ONLY, NONE, &u->hii, NULL);
+    if (multi_solvent) fin(HST_ONLY, NONE, &u->hcc, NULL);
 
     CC(d::Free(u->ppre));
     if (global_ids)    CC(d::Free(u->iire));
