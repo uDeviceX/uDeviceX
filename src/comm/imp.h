@@ -8,9 +8,16 @@ enum {
     NBAGS  = 27, /* fragments + bulk                 */
 };
 
+/* Allocation mod for bags */
+enum AllocMod {
+    HST_ONLY,  /* only host bags allocated    */
+    DEV_ONLY,  /* only device bags allocated  */
+    PINNED,    /* both host and device pinned */
+    NONE       /* no allocation               */
+};
+
 struct dBags {
     data_t *data[NBAGS]; /* data on the device         */
-    int         *counts; /* size of the data           */
 };
 
 struct hBags {
