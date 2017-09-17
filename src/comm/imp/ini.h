@@ -5,7 +5,7 @@ static void alloc_counts(int n, /**/ int **hc) {
 }
 
 /* generic allocation */
-static void alloc_one_pair(int i, AllocMod mod, /**/ hBags *hb, dBags *db) {
+static void alloc_pair(int i, AllocMod mod, /**/ hBags *hb, dBags *db) {
     size_t n = hb->capacity[i] * hb->bsize;
     
     switch (mod) {
@@ -31,15 +31,13 @@ void ini(AllocMod fmod, AllocMod bmod, size_t bsize, float maxdensity, /**/ hBag
 
     /* fragments */
     for (int i = 0; i < NFRAGS; ++i)
-        alloc_one_pair(i, fmod, /**/ hb, db);
+        alloc_pair(i, fmod, /**/ hb, db);
 
     /* bulk */
-    alloc_one_pair(frag_bulk, bmod, /**/ hb, db);
+    alloc_pair(frag_bulk, bmod, /**/ hb, db);
 
     alloc_counts(NBAGS, /**/ &hb->counts);
 }
-
-
 
 static void alloc_one_pinned_frag(int i, /**/ hBags *hb, dBags *db) {
     size_t n = hb->bsize * hb->capacity[i];
