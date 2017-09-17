@@ -39,21 +39,6 @@ struct Stamp {
 void ini(AllocMod fmod, AllocMod bmod, size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db);
 void fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
 
-/* pinned allocation */
-void ini_pinned_no_bulk(size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db);
-void ini_pinned_full(size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db);
-void fin_pinned(/**/ hBags *hb, dBags *db);
-
-/* normal allocation */
-void ini_no_bulk(size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db);
-void ini_full(size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db);
-void fin(/**/ hBags *hb, dBags *db);
-
-/* normal allocation host only */
-void ini_no_bulk(size_t bsize, float maxdensity, /**/ hBags *hb);
-void ini_full(size_t bsize, float maxdensity, /**/ hBags *hb);
-void fin(/**/ hBags *hb);
-
 /* stamp alloc */
 void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s);
 void fin(/**/ Stamp *s);
