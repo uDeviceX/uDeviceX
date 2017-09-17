@@ -1,7 +1,7 @@
 /* pinned allocation */
 
 static void alloc_counts(int n, /**/ int **hc) {
-    hb->counts = (int*) malloc(nfrags * sizeof(int));
+    *hc = (int*) malloc(n * sizeof(int));
 }
 
 static void alloc_one_pinned_frag(int i, /**/ hBags *hb, dBags *db) {
