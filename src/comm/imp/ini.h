@@ -1,8 +1,7 @@
 /* pinned allocation */
 
-static void alloc_pinned_counts(int n, /**/ int **hc, int **dc) {
+static void alloc_counts(int n, /**/ int **hc) {
     CC(d::alloc_pinned((void**)hc, n * sizeof(int)));
-    CC(d::HostGetDevicePointer((void**)dc, *hc, 0));
 }
 
 static void alloc_one_pinned_frag(int i, /**/ hBags *hb, dBags *db) {
@@ -15,7 +14,7 @@ static void ini_pinned_bags(int nfrags, size_t bsize, float maxdensity, /**/ hBa
     hb->bsize = bsize;
     frag_estimates(nfrags, maxdensity, hb->capacity);
     for (int i = 0; i < nfrags; ++i) alloc_one_pinned_frag(i, /**/ hb, db);
-    alloc_pinned_counts(nfrags, /**/ &hb->counts, &db->counts);
+    alloc_counts(nfrags, /**/ &hb->counts);
 }
 
 void ini_pinned_no_bulk(size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db) {
@@ -39,7 +38,7 @@ static void ini_bags(int nfrags, size_t bsize, float maxdensity, /**/ hBags *hb,
     hb->bsize = bsize;
     frag_estimates(nfrags, maxdensity, hb->capacity);
     for (int i = 0; i < nfrags; ++i) alloc_one_frag(i, /**/ hb, db);
-    alloc_pinned_counts(nfrags, /**/ &hb->counts, &db->counts);
+    alloc_counts(nfrags, /**/ &hb->counts);
 }
 
 void ini_no_bulk(size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db) {

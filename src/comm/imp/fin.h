@@ -1,6 +1,6 @@
-static void free_pinned_counts(int **hc, int **dc) {
+static void free_counts(int **hc) {
     if (*hc) CC(d::FreeHost(*hc));
-    *hc = *dc = NULL;
+    *hc = NULL;
 }
 
 void fin_pinned(/**/ hBags *hb, dBags *db) {
@@ -8,7 +8,7 @@ void fin_pinned(/**/ hBags *hb, dBags *db) {
         if (hb->data[i]) CC(d::FreeHost(hb->data[i]));
         db->data[i] = hb->data[i] = NULL;
     }
-    free_pinned_counts(&hb->counts, &db->counts);
+    free_counts(&hb->counts);
 }
 
 void fin(/**/ hBags *hb, dBags *db) {
@@ -17,7 +17,7 @@ void fin(/**/ hBags *hb, dBags *db) {
         if (db->data[i]) CC(d::Free(db->data[i]));
         db->data[i] = hb->data[i] = NULL;
     }
-    free_pinned_counts(&hb->counts, &db->counts);
+    free_counts(&hb->counts);
 }
 
 void fin(/**/ hBags *hb) {
