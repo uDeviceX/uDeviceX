@@ -1,2 +1,9 @@
-x=8 y=8 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
+# RBCs position + mesh
+# rbc+solid placement
+radius=4.0
+fraction=0
+sc=1.0
+ang=0.785
+plcmt.ro $XS $YS $ZS $radius $fraction $sc $ang /dev/null rbcs-ic.txt
+
 cp $s/data/cells/rbc.498.off rbc.off
