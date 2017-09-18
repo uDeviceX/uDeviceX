@@ -102,7 +102,7 @@ static void rex0(ParticlesWrap *w, int nw) {
 
     dSync();
     for (int i = 0; i < 26; i++) {
-        MSG("recv_counts[%d]: %d/%d", i, recv_counts[i], MAX_OBJ_DENSITY*frag_ncell(i));
+        // MSG("recv_counts[%d]: %d/%d", i, recv_counts[i], MAX_OBJ_DENSITY*frag_ncell(i));
         O(PP.d[i], recv_counts[i]);
     }
     clear_forces(recv_counts, FF);
