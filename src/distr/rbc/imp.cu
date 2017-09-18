@@ -10,6 +10,7 @@
 #include "inc/dev.h"
 #include "inc/dev/common.h"
 #include "inc/type.h"
+#include "inc/def.h"
 
 #include "frag/imp.h"
 
@@ -27,7 +28,10 @@ namespace rbc {
 using namespace comm;
 
 #include "distr/map/dev.h"
+#include "distr/map/imp.h"
 #include "dev.h"
+#include "imp/ini.h"
+#include "imp/fin.h"
 #include "imp/map.h"
 #include "imp/pack.h"
 #include "imp/com.h"

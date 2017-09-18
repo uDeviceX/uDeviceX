@@ -1,15 +1,13 @@
 namespace distr {
 namespace rbc {
 
-void ini(float maxdensity, Pack *p);
+void ini(int nv, Pack *p);
 void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c);
-void ini(float maxdensity, Unpack *u);
+void ini(int nv, Unpack *u);
 
 void fin(Pack *p);
 void fin(Comm *c);
 void fin(Unpack *u);
-
-void link_bulk(Pack *p, Unpack *U);
 
 void build_map(int nc, int nv, const Particle *pp, Pack *p);
 void pack_pp(int nc, int nv, const Particle *pp, /**/ Pack *p);
