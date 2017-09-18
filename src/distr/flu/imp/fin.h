@@ -1,12 +1,5 @@
-static void free_map(/**/ Map *m) {
-    CC(d::Free(m->counts));
-    CC(d::Free(m->starts));    
-    for (int i = 0; i < NFRAGS; ++i)
-        CC(d::Free(m->ids[i]));
-}
-
 void fin(Pack *p) {
-    free_map(/**/ &p->map);
+    fin_map(/**/ &p->map);
     fin(PINNED, NONE, /**/ &p->hpp, &p->dpp);
 
     if (global_ids)    fin(PINNED, NONE, /**/ &p->hii, &p->dii);

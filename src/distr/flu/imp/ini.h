@@ -3,19 +3,11 @@ static void get_capacity(float maxdensity, /**/ int capacity[NBAGS]) {
     capacity[frag_bulk] = 0;    
 }
 
-static void alloc_map(const int capacity[NBAGS], /**/ Map *m) {
-    CC(d::Malloc((void**) &m->counts,  NFRAGS      * sizeof(int)));
-    CC(d::Malloc((void**) &m->starts, (NFRAGS + 1) * sizeof(int)));
-
-    for (int i = 0; i < NFRAGS; ++i)
-        CC(d::Malloc((void**) &m->ids[i], capacity[i] * sizeof(int)));
-}
-
 void ini(float maxdensity, Pack *p) {
     int capacity[NBAGS];
     get_capacity(maxdensity, /**/ capacity);
 
-    alloc_map(capacity, /**/ &p->map);
+    ini_map(capacity, /**/ &p->map);
     
     ini(PINNED, NONE, sizeof(Particle), capacity, /**/ &p->hpp, &p->dpp);
     if (global_ids)    ini(PINNED, NONE, sizeof(int), capacity, /**/ &p->hii, &p->dii);
