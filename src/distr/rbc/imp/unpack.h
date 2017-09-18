@@ -4,7 +4,7 @@ void unpack_bulk(const Pack *p, /**/ rbc::Quants *q) {
     nv = q->nv;
     n = nc * nv;
     
-    if (n) CC(d::MemcpyAsync(q->pp, p->dpp.data[frag_bulk], n * nv * sizeof(Particle), D2D));
+    if (n) CC(d::MemcpyAsync(q->pp, p->dpp.data[frag_bulk], n * sizeof(Particle), D2D));
     q->nc = nc;
     q->n = n;
 }
