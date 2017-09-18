@@ -1,6 +1,7 @@
 void step0(float driving_force0, bool wall0, int it) {
     if (solids0) distr_solid();
-    if (rbcs)    distr_rbc();
+    // if (rbcs)    distr_rbc();
+    if (rbcs)    distribute_rbc();
     forces(wall0);
     dump_diag0(it);
     if (wall0 || solids0) dump_diag_after(it);
