@@ -33,5 +33,18 @@ void distribute_flu() {
 
 void distribute_rbc() {
     using namespace r;
-    /* TODO */
+
+    build_map(r::q.nc, r::q.nv, r::q.pp, /**/ &r::d.p);
+    pack_pp(r::q.nc, r::q.nv, r::q.pp, /**/ &r::d.p);
+    download(/**/&r::d.p);
+
+    post_recv(&r::d.c, &r::d.u);
+    post_send(&r::d.p, &r::d.c);
+
+    unpack_bulk(&r::d.p, /**/ &r::q);
+    
+    wait_recv(&r::d.c, &r::d.u);
+    wait_send(&r::d.c);
+
+    unpack_halo(&r::d.u, /**/ &r::q);
 }
