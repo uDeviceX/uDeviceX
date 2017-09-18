@@ -53,10 +53,13 @@ int main(int argc, char **argv) {
     basetags::TagGen tg;
     hBags sendB, recvB;
     Stamp stamp;
+    int capacity[NBAGS];
+    float maxdensity = 26.f;
+    frag_estimates(NBAGS, maxdensity, /**/ capacity);
 
     ini(/**/ &tg);
-    ini(HST_ONLY, NONE, sizeof(int), 26, /**/ &sendB, NULL);
-    ini(HST_ONLY, NONE, sizeof(int), 26, /**/ &recvB, NULL);
+    ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &sendB, NULL);
+    ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &recvB, NULL);
     ini(m::cart, /*io*/ &tg, /**/ &stamp);
 
     fill_bags(&sendB);

@@ -36,7 +36,7 @@ struct Stamp {
     int  tags[NFRAGS];       /* tags in bt coordinates */
 };
 
-void ini(AllocMod fmod, AllocMod bmod, size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db);
+void ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
 void fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
 
 /* stamp alloc */

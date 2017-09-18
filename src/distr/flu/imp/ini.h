@@ -12,9 +12,14 @@ static void alloc_map(float maxdensity, /**/ Map *m) {
 
 void ini(float maxdensity, Pack *p) {
     alloc_map(maxdensity, /**/ &p->map);
-    ini(PINNED, NONE, sizeof(Particle), maxdensity, /**/ &p->hpp, &p->dpp);
-    if (global_ids)    ini(PINNED, NONE, sizeof(int), maxdensity, /**/ &p->hii, &p->dii);
-    if (multi_solvent) ini(PINNED, NONE, sizeof(int), maxdensity, /**/ &p->hcc, &p->dcc);
+
+    int capacity[NBAGS];
+    frag_estimates(NBAGS, maxdensity, /**/ capacity);
+    capacity[frag_bulk] = 0;
+
+    ini(PINNED, NONE, sizeof(Particle), capacity, /**/ &p->hpp, &p->dpp);
+    if (global_ids)    ini(PINNED, NONE, sizeof(int), capacity, /**/ &p->hii, &p->dii);
+    if (multi_solvent) ini(PINNED, NONE, sizeof(int), capacity, /**/ &p->hcc, &p->dcc);
 }
 
 void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c) {
@@ -32,9 +37,13 @@ static int nhalocells() {
 }
 
 void ini(float maxdensity, Unpack *u) {
-    ini(HST_ONLY, NONE, sizeof(Particle), maxdensity, /**/ &u->hpp, NULL);
-    if (global_ids)    ini(HST_ONLY, NONE, sizeof(int), maxdensity, /**/ &u->hii, NULL);
-    if (multi_solvent) ini(HST_ONLY, NONE, sizeof(int), maxdensity, /**/ &u->hcc, NULL);
+    int capacity[NBAGS];
+    frag_estimates(NBAGS, maxdensity, /**/ capacity);
+    capacity[frag_bulk] = 0;
+
+    ini(HST_ONLY, NONE, sizeof(Particle), capacity, /**/ &u->hpp, NULL);
+    if (global_ids)    ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &u->hii, NULL);
+    if (multi_solvent) ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &u->hcc, NULL);
 
     int maxparts = (int) (nhalocells() * maxdensity) + 1;
     CC(d::Malloc((void**) &u->ppre, maxparts * sizeof(Particle)));

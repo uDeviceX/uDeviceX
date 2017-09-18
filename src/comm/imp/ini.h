@@ -25,9 +25,9 @@ static void alloc_pair(int i, AllocMod mod, /**/ hBags *hb, dBags *db) {
     }
 }
 
-void ini(AllocMod fmod, AllocMod bmod, size_t bsize, float maxdensity, /**/ hBags *hb, dBags *db) {
+void ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db) {
     hb->bsize = bsize;
-    frag_estimates(NBAGS, maxdensity, hb->capacity);
+    memcpy(hb->capacity, capacity, NBAGS * sizeof(int));
 
     /* fragments */
     for (int i = 0; i < NFRAGS; ++i)
