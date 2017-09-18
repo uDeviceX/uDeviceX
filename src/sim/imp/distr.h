@@ -1,3 +1,5 @@
+/* the following functions will need to be splitted in the future 
+   for performance reasons */
 
 void distribute_flu() {
     using namespace o;
@@ -27,4 +29,9 @@ void distribute_flu() {
     
     flu::get_ticketZ(q, /**/ &tz);
     dSync();
+}
+
+void distribute_rbc() {
+    using namespace r;
+    /* TODO */
 }
