@@ -4,6 +4,8 @@
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "msg.h"
+
 #include "utils/cc.h"
 #include "utils/kl.h"
 #include "d/api.h"
