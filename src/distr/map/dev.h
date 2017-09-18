@@ -5,7 +5,7 @@ template <int NCOUNTS>
 __global__ void scan_map(/**/ Map m) {
     int tid, val, cnt;
     tid = threadIdx.x;
-    val = 0;    
+    val = 0, cnt = 0;    
 
     if (tid < NCOUNTS) cnt = val = m.counts[tid];
     for (int L = 1; L < 32; L <<= 1) val += (tid >= L) * __shfl_up(val, L) ;
