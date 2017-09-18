@@ -15,7 +15,9 @@ void ini(int nv, Pack *p) {
     get_capacity(nv, numc, /**/ capacity);
 
     ini_map(NBAGS, numc, /**/ &p->map);
-    ini(PINNED, DEV_ONLY, sizeof(Particle), capacity, /**/ &p->hpp, &p->dpp);
+
+    /* one datum is here a full RBC, so bsize is nv * sizeof(Particle) */
+    ini(PINNED, DEV_ONLY, nv * sizeof(Particle), capacity, /**/ &p->hpp, &p->dpp);
 
     CC(d::Malloc((void**) &p->minext, MAX_CELL_NUM * sizeof(float3)));
     CC(d::Malloc((void**) &p->maxext, MAX_CELL_NUM * sizeof(float3)));
@@ -30,5 +32,6 @@ void ini(int nv, Unpack *u) {
     get_num_capacity(/**/ numc);
     get_capacity(nv, numc, /**/ capacity);
 
-    ini(HST_ONLY, NONE, sizeof(Particle), capacity, /**/ &u->hpp, NULL);
+    /* one datum is here a full RBC, so bsize is nv * sizeof(Particle) */
+    ini(HST_ONLY, NONE, nv * sizeof(Particle), capacity, /**/ &u->hpp, NULL);
 }
