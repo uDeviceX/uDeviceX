@@ -20,6 +20,5 @@ void pack_pp(int nc, int nv, const Particle *pp, /**/ Pack *p) {
 }
 
 void download(Pack *p) {
-    int *cc = p->hpp.counts;
-    CC(d::Memcpy(cc, p->map.counts, NBAGS * sizeof(int), D2H));
+    CC(d::Memcpy(p->hpp.counts, p->map.counts, NBAGS * sizeof(int), D2H));
 }
