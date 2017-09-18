@@ -1,3 +1,0 @@
-OpenGUI("-nosplash", "-noconfig")
-
-
