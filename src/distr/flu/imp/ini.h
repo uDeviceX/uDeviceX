@@ -1,22 +1,22 @@
+static void get_capacity(float maxdensity, /**/ int capacity[NBAGS]) {
+    frag_estimates(NBAGS, maxdensity, /**/ capacity);
+    capacity[frag_bulk] = 0;    
+}
 
-static void alloc_map(float maxdensity, /**/ Map *m) {
+static void alloc_map(const int capacity[NBAGS], /**/ Map *m) {
     CC(d::Malloc((void**) &m->counts,  NFRAGS      * sizeof(int)));
     CC(d::Malloc((void**) &m->starts, (NFRAGS + 1) * sizeof(int)));
 
-    int e[NFRAGS], i;
-    frag_estimates(NFRAGS, maxdensity, /**/ e);
-
-    for (i = 0; i < NFRAGS; ++i)
-        CC(d::Malloc((void**) &m->ids[i], e[i] * sizeof(int)));
+    for (int i = 0; i < NFRAGS; ++i)
+        CC(d::Malloc((void**) &m->ids[i], capacity[i] * sizeof(int)));
 }
 
 void ini(float maxdensity, Pack *p) {
-    alloc_map(maxdensity, /**/ &p->map);
-
     int capacity[NBAGS];
-    frag_estimates(NBAGS, maxdensity, /**/ capacity);
-    capacity[frag_bulk] = 0;
+    get_capacity(maxdensity, /**/ capacity);
 
+    alloc_map(capacity, /**/ &p->map);
+    
     ini(PINNED, NONE, sizeof(Particle), capacity, /**/ &p->hpp, &p->dpp);
     if (global_ids)    ini(PINNED, NONE, sizeof(int), capacity, /**/ &p->hii, &p->dii);
     if (multi_solvent) ini(PINNED, NONE, sizeof(int), capacity, /**/ &p->hcc, &p->dcc);
@@ -38,8 +38,7 @@ static int nhalocells() {
 
 void ini(float maxdensity, Unpack *u) {
     int capacity[NBAGS];
-    frag_estimates(NBAGS, maxdensity, /**/ capacity);
-    capacity[frag_bulk] = 0;
+    get_capacity(maxdensity, /**/ capacity);
 
     ini(HST_ONLY, NONE, sizeof(Particle), capacity, /**/ &u->hpp, NULL);
     if (global_ids)    ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &u->hii, NULL);
