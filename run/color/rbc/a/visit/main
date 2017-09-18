@@ -12,16 +12,9 @@ def sfile(n):
     SetSaveWindowAttributes(s)
     SaveWindow()
 
-def stime(t, n):
-    SetTimeSliderState(t)
-    sfile(n)
-
 def session(s): RestoreSession(s, 0)
 argv.pop(0) # remove py file
 
 session("visit/s.session")
-
-SetTimeSliderState(7)
-stime(7 , "visit/main.07.png")
-stime(10, "visit/main.10.png")
+sfile("visit/main.png")
 sys.exit()

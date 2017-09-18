@@ -4,6 +4,6 @@ XS=32 YS=32 ZS=32
 
 export s c XS YS ZS
 
-./pre
-./main
+#./pre
+#./main
 ./post
