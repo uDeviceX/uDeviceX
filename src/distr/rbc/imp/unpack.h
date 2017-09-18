@@ -1,22 +1,29 @@
-
-// TODO smarter bulk
-static int unpack_pp(int nv, const hBags bags, /**/ Particle *pp) {
-    int s, c;
-    size_t bs = bags.bsize;
-
-    /* bulk */
-    c = bags.counts[frag_bulk];
-    if (c) CC(d::MemcpyAsync(pp + s, bags.data[frag_bulk], c * bs, D2D));
-
-    s = c * nv;
+void unpack_bulk(const Pack *p, /**/ rbc::Quants *q) {
+    int nc, nv, n;
+    nc = p->hpp.counts[frag_bulk];
+    nv = q->nv;
+    n = nc * nv;
     
-    /* collect fragments */ 
-    for (i = 0; i < NFRAGS; ++i) {
-        c = bags.counts[i];
-        if (c) CC(d::MemcpyAsync(pp + s, bags.data[i], c * bs, H2D));
-        s += c * nv;
-    }
+    if (n) CC(d::MemcpyAsync(q->pp, p->dpp.data[frag_bulk], n * nv * sizeof(Particle), D2D));
+    q->nc = nc;
+    q->n = n;
+}
 
-    /* shift */
-    // TODO
+void unpack_halo(const Unpack *u, /**/ rbc::Quants *q) {
+    int nc, nv, n, i, s, nctot;
+    size_t size;
+    nv = q->nv;
+    s = q->n;
+    nctot = q->nc;
+    
+    for (i = 0; i < NFRAGS; ++i) {
+        nc = u->hpp.counts[i];
+        n  = nc * nv; 
+        size = n * sizeof(Particle);
+        if (nc) CC(d::MemcpyAsync(q->pp + s, u->hpp.data[i], size, H2D));
+        s += n;
+        nctot += nc;
+    }
+    q->n = s;
+    q->nc = nctot;
 }
