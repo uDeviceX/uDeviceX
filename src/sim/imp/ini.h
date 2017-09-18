@@ -1,17 +1,20 @@
 void ini() {
+    basetags::ini(&tag_gen);
     datatype::ini();
     if (rbcs) {
         Dalloc(&r::ff, MAX_PART_NUM);
         rbc::alloc_quants(&r::q);
 
+        // distr::rbc::ini(r::q.nv, /**/ &r::d.p);
+        // distr::rbc::ini(m::cart, /**/ &tag_gen, /**/ &r::d.c);
+        // distr::rbc::ini(r::q.nv, /**/ &r::d.u);
+        
         rdstr::ini_ticketC(&tag_gen, &r::tdc);
         rdstr::ini_ticketP(MAX_PART_NUM, &r::tdp);
         rdstr::ini_ticketS(&tag_gen, &r::tds);
         rdstr::ini_ticketR(&r::tds, &r::tdr);
         rdstr::alloc_ticketE(&r::tde);
     }
-
-    basetags::ini(&tag_gen);
     
     if (fsiforces) fsi::ini();
     sdstr::ini(&tag_gen);

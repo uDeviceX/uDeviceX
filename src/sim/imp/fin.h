@@ -57,6 +57,10 @@ void fin() {
         rbc::free_quants(&r::q);
         rbc::destroy_textures(&r::tt);
 
+        // distr::rbc::fin(/**/ &r::d.p);
+        // distr::rbc::fin(/**/ &r::d.c);
+        // distr::rbc::fin(/**/ &r::d.u);
+        
         rdstr::free_ticketC(&r::tdc);
         rdstr::free_ticketP(&r::tdp);
         rdstr::free_ticketS(&r::tds);
