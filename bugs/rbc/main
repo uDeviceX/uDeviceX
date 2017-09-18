@@ -16,4 +16,4 @@ u.conf $s $u $c <<!!!
    run
 !!!
 (make clean && u.make -j) > /dev/null
-u.batch ./udx
+u.run ./udx
