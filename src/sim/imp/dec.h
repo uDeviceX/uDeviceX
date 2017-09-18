@@ -27,6 +27,9 @@ namespace r /* [r]bc */
 rbc::Quants q;
 rbc::TicketT tt;
 
+/* distribution structure : see type.h */
+Distr d;
+
 /* [d]istribute [t]ickets */
 rdstr::TicketC tdc;
 rdstr::TicketP tdp;

@@ -20,4 +20,15 @@ struct H { /* halo tickets : was h:: */
     dpdr::TicketRIhalo tri;
 };
 
-} /* namespace */
+} // o
+
+namespace r {
+
+/* distribution tickets */
+struct Distr {
+    distr::rbc::Pack p;
+    distr::rbc::Comm c;
+    distr::rbc::Unpack u;
+};
+
+} // r

@@ -69,6 +69,9 @@
 #include "distr/map/type.h"
 #include "distr/flu/type.h"
 #include "distr/flu/imp.h"
+#include "distr/rbc/type.h"
+#include "distr/rbc/imp.h"
+
 #include "cnt/imp.h"
 
 #include "fsi/type.h"
