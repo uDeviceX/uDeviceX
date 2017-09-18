@@ -6,4 +6,8 @@ see [bootstrap](bootstrap)
 
 run from src/
 
-    ../tools/deps
+	../tools/deps
+
+# interactive session on daint
+
+	salloc -C gpu --time=00:30:00 --nodes=4
