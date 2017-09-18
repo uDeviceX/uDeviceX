@@ -5,6 +5,7 @@
 #include "inc/conf.h"
 
 #include "d/api.h"
+#include "d/ker.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
 #include "inc/dev.h"
@@ -12,8 +13,11 @@
 #include "inc/type.h"
 #include "inc/def.h"
 
-#include "frag/imp.h"
+#include "msg.h"
+#include "utils/texo.h"
+#include "rbc/int.h"
 
+#include "frag/imp.h"
 #include "mpi/basetags.h"
 #include "comm/imp.h"
 
@@ -35,7 +39,7 @@ using namespace comm;
 #include "imp/map.h"
 #include "imp/pack.h"
 #include "imp/com.h"
-
+#include "imp/unpack.h"
 
 } // rbc
 } // distr

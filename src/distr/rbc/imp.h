@@ -18,5 +18,9 @@ void post_send(Pack *p, Comm *c);
 void wait_recv(Comm *c, Unpack *u);
 void wait_send(Comm *c);
 
+using namespace ::rbc;
+void unpack_bulk(const Pack *p, /**/ rbc::Quants *q);
+void unpack_halo(const Unpack *u, /**/ rbc::Quants *q);
+
 } // rbc
 } // distr
