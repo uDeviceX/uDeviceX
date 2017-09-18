@@ -8,7 +8,6 @@ struct Pack {
     float3 *minext, *maxext;
     dBags dpp;
     hBags hpp;
-    int nbulk;
 };
 
 struct Comm {
