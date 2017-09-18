@@ -38,13 +38,15 @@ void distribute_rbc() {
     pack_pp(r::q.nc, r::q.nv, r::q.pp, /**/ &r::d.p);
     download(/**/&r::d.p);
 
-    post_recv(&r::d.c, &r::d.u);
     post_send(&r::d.p, &r::d.c);
+    post_recv(&r::d.c, &r::d.u);
 
     unpack_bulk(&r::d.p, /**/ &r::q);
-    
-    wait_recv(&r::d.c, &r::d.u);
+
     wait_send(&r::d.c);
+    wait_recv(&r::d.c, &r::d.u);
+
 
     unpack_halo(&r::d.u, /**/ &r::q);
+    dSync();
 }
