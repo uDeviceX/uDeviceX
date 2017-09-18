@@ -14,7 +14,7 @@ void ini(int nv, Pack *p) {
     get_num_capacity(/**/ numc);
     get_capacity(nv, numc, /**/ capacity);
 
-    ini_map(numc, /**/ &p->map);
+    ini_map(NBAGS, numc, /**/ &p->map);
     ini(PINNED, DEV_ONLY, sizeof(Particle), capacity, /**/ &p->hpp, &p->dpp);
 
     CC(d::Malloc((void**) &p->minext, MAX_CELL_NUM * sizeof(float3)));

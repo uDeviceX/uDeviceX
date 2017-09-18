@@ -1,5 +1,5 @@
 void fin(Pack *p) {
-    fin_map(/**/ &p->map);
+    fin_map(NFRAGS, /**/ &p->map);
     fin(PINNED, NONE, /**/ &p->hpp, &p->dpp);
 
     if (global_ids)    fin(PINNED, NONE, /**/ &p->hii, &p->dii);

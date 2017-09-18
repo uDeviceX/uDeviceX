@@ -7,7 +7,7 @@ void ini(float maxdensity, Pack *p) {
     int capacity[NBAGS];
     get_capacity(maxdensity, /**/ capacity);
 
-    ini_map(capacity, /**/ &p->map);
+    ini_map(NFRAGS, capacity, /**/ &p->map);
     
     ini(PINNED, NONE, sizeof(Particle), capacity, /**/ &p->hpp, &p->dpp);
     if (global_ids)    ini(PINNED, NONE, sizeof(int), capacity, /**/ &p->hii, &p->dii);
