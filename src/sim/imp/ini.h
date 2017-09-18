@@ -5,9 +5,9 @@ void ini() {
         Dalloc(&r::ff, MAX_PART_NUM);
         rbc::alloc_quants(&r::q);
 
-        // distr::rbc::ini(r::q.nv, /**/ &r::d.p);
-        // distr::rbc::ini(m::cart, /**/ &tag_gen, /**/ &r::d.c);
-        // distr::rbc::ini(r::q.nv, /**/ &r::d.u);
+        distr::rbc::ini(r::q.nv, /**/ &r::d.p);
+        distr::rbc::ini(m::cart, /**/ &tag_gen, /**/ &r::d.c);
+        distr::rbc::ini(r::q.nv, /**/ &r::d.u);
         
         rdstr::ini_ticketC(&tag_gen, &r::tdc);
         rdstr::ini_ticketP(MAX_PART_NUM, &r::tdp);

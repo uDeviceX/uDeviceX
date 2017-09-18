@@ -1,7 +1,0 @@
-f="$1"; shift
-
-time0 () { /usr/bin/time -f "%e" make -B "$f" > /dev/null; }
-time1 () { time0 2>&1; }
-
-t=`time1`
-printf "%s %s\n" $t "$f"
