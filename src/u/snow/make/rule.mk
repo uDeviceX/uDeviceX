@@ -7,6 +7,7 @@ $B/d/api.o: $S/d/api.cu; $N -I$S/. -I$S/_snow -I$S/d
 $B/dbg/imp.o: $S/dbg/imp.cu; $N -I$S/. -I$S/_snow -I$S/dbg
 $B/distr/flu/imp.o: $S/distr/flu/imp.cu; $N -I$S/. -I$S/_snow -I$S/distr/flu
 $B/distr/rbc/imp.o: $S/distr/rbc/imp.cu; $N -I$S/. -I$S/_snow -I$S/distr/rbc
+$B/distr/rig/imp.o: $S/distr/rig/imp.cu; $N -I$S/. -I$S/_snow -I$S/distr/rig
 $B/dpdr/imp.o: $S/dpdr/imp.cu; $N -I$S/. -I$S/_snow -I$S/dpdr
 $B/dpdr/int.o: $S/dpdr/int.cpp; $X -I$S/. -I$S/_snow -I$S/dpdr
 $B/dual/imp.o: $S/dual/imp.cpp; $X -I$S/. -I$S/_snow -I$S/dual
