@@ -1,0 +1,3 @@
+set -ue
+
+cp $s/data/sdf/yplates1/yplates.dat sdf.dat
