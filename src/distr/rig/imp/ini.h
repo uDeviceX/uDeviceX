@@ -17,7 +17,8 @@ void ini(int nv, Pack *p) {
 }
 
 void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c) {
-    ini(comm, /*io*/ tg, /**/ &c->pp);
+    ini(comm, /*io*/ tg, /**/ &c->ipp);
+    ini(comm, /*io*/ tg, /**/ &c->ss);
 }
 
 void ini(int nv, Unpack *u) {
@@ -25,7 +26,7 @@ void ini(int nv, Unpack *u) {
     get_num_capacity(/**/ numc);
 
     /* one datum is here a full RBC, so bsize is nv * sizeof(Particle) */
-    ini(HST_ONLY, NONE, nv * sizeof(Particle), numc, /**/ &u->hpp, NULL);
+    ini(HST_ONLY, NONE, nv * sizeof(Particle), numc, /**/ &u->hipp, NULL);
 
     ini(HST_ONLY, NONE, sizeof(Solid), numc, /**/ &u->hss, NULL);
 }
