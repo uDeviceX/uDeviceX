@@ -1,6 +1,6 @@
 u=u/bangladesh
 
-Walls="walls wall_creation=1000 shear_y gamma_dot=0.01"
+Walls="walls wall_creation=1000 shear_y gamma_dot=0.1"
 u.conf $s $u $c <<!!!
    $Walls
    tend=40.01 part_freq=8000
