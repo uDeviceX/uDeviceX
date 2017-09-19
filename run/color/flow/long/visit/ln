@@ -1,0 +1,1 @@
+vi.ln l l/p.visit vtk/*.vtk -- l/f.visit h5/flowfields-*.xmf
