@@ -33,37 +33,4 @@ __global__ void pack(const T *data, Map m, /**/ Sarray<T*, 26> buf) {
     buf.d[fid][d] = data[s];
 }
 
-static __device__ void fid2shift(int id, /**/ int s[3]) {
-    enum {X, Y, Z};
-    s[X] = XS * frag_i2d(id, X);
-    s[Y] = YS * frag_i2d(id, Y);
-    s[Z] = ZS * frag_i2d(id, Z);
-}
-
-static __device__ void check(const float r[3]) {
-    enum {X, Y, Z};
-    if (r[X] < -XS/2 || r[X] >= XS/2) printf("x out of range: %f\n", r[X]);
-    if (r[Y] < -YS/2 || r[Y] >= YS/2) printf("y out of range: %f\n", r[Y]);
-    if (r[Z] < -ZS/2 || r[Z] >= ZS/2) printf("z out of range: %f\n", r[Z]);
-}
-
-static  __device__ void shift_1p(const int s[3], /**/ Particle *p) {
-    enum {X, Y, Z};
-    p->r[X] += s[X];
-    p->r[Y] += s[Y];
-    p->r[Z] += s[Z];
-    check(p->r);
-}
-
-__global__ void shift(const int27 starts, /**/ Particle *pp) {
-    int pid, fid, s[3];
-
-    pid = threadIdx.x + blockDim.x * blockIdx.x;
-    if (pid >= starts.d[26]) return;
-    fid = k_common::fid(starts.d, pid);
-    
-    fid2shift(fid, s);
-    shift_1p(s, /**/ pp + pid);
-}
-
 } // dev
