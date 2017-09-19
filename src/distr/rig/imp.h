@@ -9,8 +9,8 @@ void fin(Pack *p);
 void fin(Comm *c);
 void fin(Unpack *u);
 
-void build_map(int ns, int nv, const Particle *pp, Pack *p);
-void pack_pp(int ns, int nv, const Particle *pp, /**/ Pack *p);
+void build_map(int ns, const Solid *ss, /**/ Pack *p);
+void pack(int ns, int nv, const Solid *ss, const Particle *ipp, /**/ Pack *p);
 void download(Pack *p);
 
 void post_recv(Comm *c, Unpack *u);
