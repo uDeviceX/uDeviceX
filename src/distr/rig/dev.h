@@ -33,19 +33,19 @@ __global__ void pack_pp(int nv, const Particle *pp, Map m, /**/ Sarray<Particle*
     buf.d[fid][dst] = pp[src];
 }
 
-// __global__ void pack_ss(int n, const Solid *ss, Map m, /**/ Sarray<Solid*, 27> buf) {
-//     int i, cid, fid;
-//     int dst, src, offset;
-//     i = threadIdx.x + blockDim.x * blockIdx.x;
+__global__ void pack_ss(const Solid *ss, Map m, /**/ Sarray<Solid*, 27> buf) {
+    int i, fid; /* [f]ragment [id] */
+    int d, s;
     
-//     if (i >= n) return;
-//     fid = k_common::fid(m.starts, i);
+    i = threadIdx.x + blockDim.x * blockIdx.x;
+    fid = k_common::fid(m.starts, i);
+    if (i >= m.starts[27]) return;
+
+    d = i - m.starts[fid];
+    s = __ldg(m.ids[fid] + d);
     
-//     dst = i - m.starts[fid];; 
-//     src = m.ids[fid][offset];
-    
-//     buf.d[fid][dst] = pp[src];
-// }
+    buf.d[fid][d] = ss[s];
+}
 
 
 static __device__ void fid2shift(int id, /**/ int s[3]) {
