@@ -5,7 +5,6 @@
 #include "inc/conf.h"
 
 #include "d/api.h"
-#include "d/ker.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
 #include "inc/dev.h"
@@ -14,21 +13,19 @@
 #include "inc/def.h"
 
 #include "msg.h"
-#include "utils/texo.h"
-#include "rbc/int.h"
 
 #include "frag/imp.h"
 #include "mpi/basetags.h"
 #include "comm/imp.h"
 
-#include "algo/minmax.h"
+#include "rig/int.h"
 
 #include "distr/map/type.h"
 #include "type.h"
 #include "imp.h"
 
 namespace distr {
-namespace rbc {
+namespace rig {
 using namespace comm;
 
 #include "distr/map/dev.h"
@@ -42,5 +39,5 @@ using namespace comm;
 #include "imp/com.h"
 #include "imp/unpack.h"
 
-} // rbc
+} // rig
 } // distr
