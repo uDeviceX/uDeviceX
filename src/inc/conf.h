@@ -213,6 +213,7 @@
 #endif
 
 /* body force */
-#if !defined(FORCE_NONE) && !defined(FORCE_DOUBLE_POISEUILLE) && !defined(FORCE_4ROLLER) && !defined(FORCE_CONSTANT)
+#if !defined(FORCE_NONE) && !defined(FORCE_DOUBLE_POISEUILLE) && \
+    !defined(FORCE_4ROLLER) && !defined(FORCE_CONSTANT)
   #define FORCE_NONE
 #endif
