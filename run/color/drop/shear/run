@@ -3,7 +3,6 @@ c=$s/conf/zurich.h
 export s c
 
 h=`u.host`
-
 run_acer() {
     ./post
 }
@@ -13,7 +12,4 @@ run_dain() {
     ./main
 }
 
-if test $h = acer
-then run_acer
-else run_dain
-fi
+if test $h = acer; then run_acer; else run_dain; fi

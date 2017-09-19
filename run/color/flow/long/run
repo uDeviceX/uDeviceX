@@ -2,5 +2,14 @@ s=../../../../src
 c=$s/conf/zurich.h
 export s c
 
-./main
-#./post
+h=`u.host`
+run_acer() {
+    ./post
+}
+
+run_dain() {
+    ./pre
+    ./main
+}
+
+if test $h = acer; then run_acer; else run_dain; fi
