@@ -20,7 +20,7 @@ __global__ void build_map(int n, const float3 *minext, const float3 *maxext, /**
 }
 
 __global__ void pack_pp(int nv, const Particle *pp, Map m, /**/ Sarray<Particle*, 27> buf) {
-    int i, cid, fid;
+    int i, cid, fid, scid;
     int dst, src, offset;
     i   = threadIdx.x + blockDim.x * blockIdx.x;
     cid = blockIdx.y;
@@ -29,9 +29,10 @@ __global__ void pack_pp(int nv, const Particle *pp, Map m, /**/ Sarray<Particle*
     fid = k_common::fid(m.starts, cid);
 
     offset = cid - m.starts[fid];
+    scid    = m.ids[fid][offset];
     
     dst = nv * offset + i; 
-    src = nv * cid    + i;
+    src = nv * scid   + i;
     
     buf.d[fid][dst] = pp[src];
 }
