@@ -49,6 +49,6 @@
 
 /* local */
 namespace inter {
-#include "imp/main.h"
 #include "imp/color.h"
+#include "imp/main.h"
 }

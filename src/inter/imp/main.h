@@ -57,3 +57,9 @@ void freeze(sdf::Quants qsdf, flu::Quants *qflu, rig::Quants *qrig, rbc::Quants 
 void color_hst(Particle *pp, int n, /**/ int *cc) {
     color(pp, n, /**/ cc);
 }
+
+void color_dev(Particle *pp, int n, /*o*/ int *cc, /*w*/ Particle *pp_hst, int *cc_hst) {
+    cD2H(pp_hst, pp, n);
+    color(pp_hst, n, /**/ cc_hst);
+    cH2D(cc, cc_hst, n);
+}
