@@ -1,0 +1,4 @@
+# utilities
+
+# [a]wk [e]xpression
+ae () { awk "BEGIN {print $*}"; }
