@@ -1,9 +1,10 @@
 s=../../../../src
 c=$s/conf/zurich.h
 XS=32 YS=32 ZS=32
+nx=2 ny=2 nz=1
 
-export s c XS YS ZS
+export s c XS YS ZS nx ny nz
 
-#./pre
-#./main
-./post
+./pre
+./main
+#./post
