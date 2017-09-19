@@ -43,7 +43,12 @@
 #include "forces/type.h"
 #include "cloud/hforces/type.h"
 #include "wall/int.h"
+
 #include "imp.h"
+#include "color.h"
 
 /* local */
+namespace inter {
 #include "imp/main.h"
+#include "imp/color.h"
+}

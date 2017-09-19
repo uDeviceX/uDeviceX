@@ -20,6 +20,7 @@
 #include "inc/dev.h"
 #include "utils/mc.h"
 #include "io/restart.h"
+#include "inter/color.h"
 
 #include "imp.h"
 
@@ -33,6 +34,5 @@
 
 #include "utils/kl.h"
 namespace sub {
-#include "imp/color.h"
 #include "imp/main.h"
 }

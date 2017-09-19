@@ -1,6 +1,6 @@
 static int min (int x, int y)        { return x < y ? x : y; };
 static int min3(int x, int y, int z) { return min(x, min(y, z)); }
-static void color(Particle *pp, int n, /**/ int *cc) {
+void color(Particle *pp, int n, /**/ int *cc) {
     enum {X, Y, Z};
     int lx, ly, lz; /* domain */
     int i, r, g;

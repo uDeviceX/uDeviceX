@@ -1,4 +1,3 @@
-namespace inter {
 template <typename T>
 static void remove(T *data, int nv, int *e, int nc) {
     int c; /* c: cell */
@@ -54,4 +53,3 @@ void freeze(sdf::Quants qsdf, flu::Quants *qflu, rig::Quants *qrig, rbc::Quants 
     if (walls && solids)  remove_solids(qrig, qsdf);
     if (solids)           rig::set_ids(*qrig);
 }
-} /* namespace */
