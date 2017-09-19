@@ -3,18 +3,23 @@ namespace rig {
 
 using namespace comm;
 
+/* 
+ ipp: particles of the mesh
+ ss:  "Solid" structures 
+*/
+
 struct Pack {
     Map map;
-    dBags dpp, dss;
-    hBags hpp, dss;
+    dBags dipp, dss;
+    hBags hipp, dss;
 };
 
 struct Comm {
-    Stamp pp, ss;
+    Stamp ipp, ss;
 };
 
 struct Unpack {
-    hBags hpp, hss;
+    hBags hipp, hss;
 };
 
 } // rig
