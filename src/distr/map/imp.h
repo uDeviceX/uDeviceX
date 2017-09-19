@@ -15,3 +15,7 @@ void fin_map(int nfrags, /**/ Map *m) {
     for (int i = 0; i < nfrags; ++i)
         CC(d::Free(m->ids[i]));
 }
+
+void reini_map(int nfrags, /**/ Map m) {
+    CC(d::MemsetAsync(m.counts, 0, nfrags * sizeof(int)));
+}
