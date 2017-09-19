@@ -10,5 +10,5 @@ u.conf $s $u $c <<!!!
    field_freq=8000
    run
 !!!
-{make clean && u.make -j; } > make.log
+(make clean && u.make -j) > make.log
 u.batch ./udx
