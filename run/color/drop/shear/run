@@ -4,4 +4,4 @@ export s c
 
 ./pre
 ./main
-./post
+#./post
