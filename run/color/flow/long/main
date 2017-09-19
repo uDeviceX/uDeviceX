@@ -6,6 +6,7 @@ u.conf $s $u $c <<!!!
    aij_solv=2 aij_rbc=2 aij_wall=4
    gammadpd_solv=1 gammadpd_rbc=5 gammadpd_wall=2.24
    FORCE_DOUBLE_POISEUILLE
+   FORCE_PAR_A=0.1
    field_dumps part_dumps
    field_freq=80000
    run
