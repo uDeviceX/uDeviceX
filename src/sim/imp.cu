@@ -108,7 +108,7 @@ namespace dev {
 
 #include "io/bop/imp.h"
 #include "rig/int.h"
-#include "inter/int.h"
+#include "inter/imp.h"
 #include "scheme/int.h"
 
 #include "imp.h"
