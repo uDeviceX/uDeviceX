@@ -1,0 +1,3 @@
+vi.ln l                          \
+l/f.visit h5/flowfields-*.xmf -- \
+l/r.visit r/*.ply
