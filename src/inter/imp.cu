@@ -20,6 +20,7 @@
 #include "mpi/basetags.h"
 #include "inc/type.h"
 #include "mpi/type.h"
+#include "mpi/glb.h"
 #include "inc/dev.h"
 
 #include "dual/type.h"
