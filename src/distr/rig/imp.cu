@@ -18,6 +18,8 @@
 #include "mpi/basetags.h"
 #include "comm/imp.h"
 
+#include "rig/int.h"
+
 #include "distr/map/type.h"
 #include "type.h"
 #include "imp.h"
