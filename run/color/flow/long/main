@@ -1,10 +1,11 @@
 u=u/france
 u.conf $s $u $c <<!!!
-   tend=40.01 part_freq=8000
+   tend=400.01 part_freq=80000
    XS=4 YS=32 ZS=4
+   gammadpd_solv=1 gammadpd_rbc=5 gammadpd_wall=2.24
    FORCE_DOUBLE_POISEUILLE
    field_dumps part_dumps
-   field_freq=8000
+   field_freq=80000
    run
 !!!
 (make clean && u.make -j) > /dev/null
