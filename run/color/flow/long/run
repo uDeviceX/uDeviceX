@@ -3,4 +3,4 @@ c=$s/conf/zurich.h
 export s c
 
 ./main
-./post
+#./post

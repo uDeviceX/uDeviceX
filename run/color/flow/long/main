@@ -1,4 +1,5 @@
 u=u/france
+Time=00:30:00
 u.conf $s $u $c <<!!!
    tend=400.01 part_freq=80000
    XS=4 YS=32 ZS=4
@@ -9,4 +10,4 @@ u.conf $s $u $c <<!!!
    run
 !!!
 (make clean && u.make -j) > /dev/null
-sh runfile
+u.batch ./udx $Time
