@@ -1,3 +1,3 @@
 namespace inter {
-void color(Particle *pp, int n, /**/ int *cc);
+void color_hst(Particle *pp, int n, /**/ int *cc);
 }

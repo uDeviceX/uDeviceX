@@ -53,3 +53,7 @@ void freeze(sdf::Quants qsdf, flu::Quants *qflu, rig::Quants *qrig, rbc::Quants 
     if (walls && solids)  remove_solids(qrig, qsdf);
     if (solids)           rig::set_ids(*qrig);
 }
+
+void color_hst(Particle *pp, int n, /**/ int *cc) {
+    color(pp, n, /**/ cc);
+}
