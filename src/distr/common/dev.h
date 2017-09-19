@@ -1,5 +1,24 @@
 namespace dev {
 
+/* pack packets of nv particles into 27 buffers according to map  */
+__global__ void pack_pp_packets(int nv, const Particle *pp, Map m, /**/ Sarray<Particle*, 27> buf) {
+    int i, cid, fid, scid;
+    int dst, src, offset;
+    i   = threadIdx.x + blockDim.x * blockIdx.x;
+    cid = blockIdx.y;
+
+    if (i >= nv) return;
+    fid = k_common::fid(m.starts, cid);
+
+    offset = cid - m.starts[fid];
+    scid   = m.ids[fid][offset];
+    
+    dst = nv * offset + i; 
+    src = nv * scid   + i;
+    
+    buf.d[fid][dst] = pp[src];
+}
+
 static __device__ void fid2shift(int id, /**/ int s[3]) {
     enum {X, Y, Z};
     s[X] = XS * frag_i2d(id, X);

@@ -15,24 +15,6 @@ __global__ void build_map(int n, const Solid *ss, /**/ Map m) {
     add_to_map(i, fid, /**/ m);
 }
 
-__global__ void pack_pp(int nv, const Particle *pp, Map m, /**/ Sarray<Particle*, 27> buf) {
-    int i, sid, fid, ssid;
-    int dst, src, offset;
-    i   = threadIdx.x + blockDim.x * blockIdx.x;
-    sid = blockIdx.y;
-
-    if (i >= nv) return;
-    fid = k_common::fid(m.starts, sid);
-
-    offset = sid - m.starts[fid];
-    ssid    = m.ids[fid][offset];
-    
-    dst = nv * offset + i; 
-    src = nv * ssid   + i;
-    
-    buf.d[fid][dst] = pp[src];
-}
-
 __global__ void pack_ss(const Solid *ss, Map m, /**/ Sarray<Solid*, 27> buf) {
     int i, fid; /* [f]ragment [id] */
     int d, s;
