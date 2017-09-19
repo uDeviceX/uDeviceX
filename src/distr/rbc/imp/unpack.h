@@ -22,7 +22,7 @@ void unpack_halo(const Unpack *u, /**/ rbc::Quants *q) {
         size = n * sizeof(Particle);
         if (nc) {
             CC(d::MemcpyAsync(q->pp + s, u->hpp.data[i], size, H2D));
-            KL(dev::shift, (k_cnf(n)), (n, i, /**/ q->pp + s));
+            KL(dev::shift_one_frag, (k_cnf(n)), (n, i, /**/ q->pp + s));
         }
         s += n;
         nctot += nc;

@@ -32,6 +32,7 @@ namespace rbc {
 using namespace comm;
 
 #include "distr/map/dev.h"
+#include "distr/common/dev.h"
 #include "distr/map/imp.h"
 #include "dev.h"
 #include "imp/ini.h"
