@@ -61,12 +61,6 @@ void fin() {
         distr::rbc::fin(/**/ &r::d.c);
         distr::rbc::fin(/**/ &r::d.u);
         
-        rdstr::free_ticketC(&r::tdc);
-        rdstr::free_ticketP(&r::tdp);
-        rdstr::free_ticketS(&r::tds);
-        rdstr::free_ticketR(&r::tdr);
-        rdstr::free_ticketE(&r::tde);
-        
         Dfree(r::ff);
     }
     datatype::fin();

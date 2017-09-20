@@ -30,13 +30,6 @@ rbc::TicketT tt;
 /* distribution structure : see type.h */
 Distr d;
 
-/* [d]istribute [t]ickets */
-rdstr::TicketC tdc;
-rdstr::TicketP tdp;
-rdstr::TicketE tde;
-rdstr::TicketS tds;
-rdstr::TicketR tdr;
-
 Force     *ff;
 }
 

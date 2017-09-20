@@ -8,12 +8,6 @@ void ini() {
         distr::rbc::ini(r::q.nv, /**/ &r::d.p);
         distr::rbc::ini(m::cart, /**/ &tag_gen, /**/ &r::d.c);
         distr::rbc::ini(r::q.nv, /**/ &r::d.u);
-        
-        rdstr::ini_ticketC(&tag_gen, &r::tdc);
-        rdstr::ini_ticketP(MAX_PART_NUM, &r::tdp);
-        rdstr::ini_ticketS(&tag_gen, &r::tds);
-        rdstr::ini_ticketR(&r::tds, &r::tdr);
-        rdstr::alloc_ticketE(&r::tde);
     }
     
     if (fsiforces) fsi::ini();
