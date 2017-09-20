@@ -22,10 +22,10 @@ static int gen0(Particle *pp) { /* generate particle positions and velocities */
     return n;
 }
 
-int genColor(/*o*/ Particle *pp, int *color0, /*w*/ Particle *pp_hst, int *color0_hst) {
+int genColor(/*o*/ Particle *pp, int *color, /*w*/ Particle *pp_hst, int *color_hst) {
     int n = gen0(pp_hst);
-    color(pp_hst, n, /**/ color0_hst);
-    cH2D(color0, color0_hst, n);
+    inter::color_hst(pp_hst, n, /**/ color_hst);
+    cH2D(color, color_hst, n);
     cH2D(   pp,    pp_hst, n);
     return n;
 }

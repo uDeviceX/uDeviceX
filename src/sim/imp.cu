@@ -109,7 +109,9 @@ namespace dev {
 #include "bbhalo/imp/main.h"
 
 #include "io/bop/imp.h"
-#include "inter/int.h"
+
+#include "inter/imp.h"
+#include "inter/color.h"
 #include "scheme/int.h"
 
 #include "imp.h"

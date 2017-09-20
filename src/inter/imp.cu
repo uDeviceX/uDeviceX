@@ -20,6 +20,7 @@
 #include "mpi/basetags.h"
 #include "inc/type.h"
 #include "mpi/type.h"
+#include "mpi/glb.h"
 #include "inc/dev.h"
 
 #include "dual/type.h"
@@ -43,7 +44,12 @@
 #include "forces/type.h"
 #include "cloud/hforces/type.h"
 #include "wall/int.h"
-#include "int.h"
+
+#include "imp.h"
+#include "color.h"
 
 /* local */
-#include "imp.h"
+namespace inter {
+#include "imp/color.h"
+#include "imp/main.h"
+}

@@ -8,7 +8,6 @@ run_acer() {
 }
 
 run_dain() {
-    ./pre
     ./main
 }
 

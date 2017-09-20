@@ -8,6 +8,15 @@ void gen() { /* generate */
     }
     inter::freeze(w::qsdf, /*io*/ &o::q, /**/ &s::q, &r::q);
     clear_vel();
+
+    if (multi_solvent) {
+        Particle *pp = o::q.pp;
+        int n = o::q.n;
+        int *cc = o::qc.ii;
+        Particle *pp_hst = a::pp_hst;
+        int *cc_hst = o::qc.ii_hst;
+        inter::color_dev(pp, n, /*o*/ cc, /*w*/ pp_hst, cc_hst);
+    }
 }
 
 void sim_gen() {
