@@ -34,19 +34,40 @@ void distribute_flu() {
 void distribute_rbc() {
     using namespace r;
 
-    build_map(r::q.nc, r::q.nv, r::q.pp, /**/ &r::d.p);
-    pack_pp(r::q.nc, r::q.nv, r::q.pp, /**/ &r::d.p);
-    download(/**/&r::d.p);
+    build_map(q.nc, q.nv, q.pp, /**/ &d.p);
+    pack_pp(q.nc, q.nv, q.pp, /**/ &d.p);
+    download(/**/&d.p);
 
-    post_send(&r::d.p, &r::d.c);
-    post_recv(&r::d.c, &r::d.u);
+    post_send(&d.p, &d.c);
+    post_recv(&d.c, &d.u);
 
-    unpack_bulk(&r::d.p, /**/ &r::q);
+    unpack_bulk(&d.p, /**/ &q);
 
-    wait_send(&r::d.c);
-    wait_recv(&r::d.c, &r::d.u);
+    wait_send(&d.c);
+    wait_recv(&d.c, &d.u);
 
 
-    unpack_halo(&r::d.u, /**/ &r::q);
+    unpack_halo(&d.u, /**/ &q);
+    dSync();
+}
+
+void distribute_rig() {
+    using namespace s;
+    int nv;
+    nv = q.m_dev.nv;
+    build_map(q.ns, q.ss, /**/ &d.p);
+    pack(q.ns, nv, q.ss, q.i_pp, /**/ &d.p);
+    download(/**/&d.p);
+
+    post_send(&d.p, &d.c);
+    post_recv(&d.c, &d.u);
+
+    unpack_bulk(&d.p, /**/ &q);
+
+    wait_send(&d.c);
+    wait_recv(&d.c, &d.u);
+
+
+    unpack_halo(&d.u, /**/ &q);
     dSync();
 }

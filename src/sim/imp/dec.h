@@ -46,6 +46,9 @@ rig::Quants q;
 rig::TicketBB t;
 scan::Work ws; /* work for scan */
 Force *ff, *ff_hst;
+
+/* distribution structure : see type.h */
+Distr d;
 }
 
 /*** see int/wall.h ***/
