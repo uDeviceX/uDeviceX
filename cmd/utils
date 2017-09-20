@@ -20,6 +20,17 @@ module1() { # "ultimate" : respects DRYRUN
     fi
 }
 
+mpiexec_vanila () {
+    local n="$1"; shift
+    exec1 mpiexec -n "$n" "$@"
+}
+
+mpiexec_robin () { # round-robin over UDEVICES=0,1,2
+    local n="$1"; shift
+    echo "robin"
+    exec1 mpiexec -n "$n" "$@"
+}
+
 mpiexec0() {
-    exec1 mpiexec "$@"
+    if test -z ${UDEVICES+x}; then mpiexec_vanila "$@"; else mpiexec_robin "$@"; fi
 }

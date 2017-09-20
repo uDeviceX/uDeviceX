@@ -18,7 +18,7 @@ env_mpi() {
 
 run_mpi() {
     env_mpi
-    mpiexec0 -n $n `u.wrap "$e"` $x $y $z "$@"
+    mpiexec0 $n `u.wrap "$e"` $x $y $z "$@"
 }
 
 n=$1; shift
