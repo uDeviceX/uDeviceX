@@ -12,7 +12,7 @@ M      = main
 all: $M check
 
 check: $M
-	MEM= u.run ./main
+	MEM='--tool initcheck' u.run ./main
 
 %: %.cu; $(NVCC) $(NVCCFLAGS) $(OPT) $< -o $@
 
