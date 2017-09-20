@@ -25,9 +25,9 @@ function to_com(   i) {
 function mom(   i) { # moment of intertia tensor
     for (i = 1; i <= n; i++) {
 	x = xx[i]; y = yy[i]; z = zz[i]
-	XX += x*x; XY += x*y; XZ += x*z
-	           YY += y*y; YZ += y*z
-	                      ZZ += z*z
+	XX += y*y + z*z; XY += -x*y;       XZ += -x*z
+	                 YY += x*x + z*z;  YZ += -y*z
+	                                   ZZ += x*x + y*y
     }
     XX/=n; XY/=n; XZ/=n; YY/=n; YZ/=n; ZZ/=n
 }
