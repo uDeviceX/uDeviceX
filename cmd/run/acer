@@ -5,7 +5,7 @@ run_one() { # single processor
 }
 
 run_mpi() {
-    exec1 mpirun.mpich -n $n `u.wrap "$e"` $x $y $z "$@"
+    exec1 mpiexec.mpich -n $n `u.wrap "$e"` $x $y $z "$@"
 }
 
 n=$1; shift
