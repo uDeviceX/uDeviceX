@@ -67,7 +67,8 @@ void distribute_rig() {
     wait_send(&d.c);
     wait_recv(&d.c, &d.u);
 
-
     unpack_halo(&d.u, /**/ &q);
+
+    rig::generate(q.ss, q.ns, q.rr0, q.nps, /**/ q.pp);
     dSync();
 }
