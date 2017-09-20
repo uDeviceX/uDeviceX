@@ -19,3 +19,7 @@ module1() { # "ultimate" : respects DRYRUN
     then module "$@"
     fi
 }
+
+mpiexec0() {
+    exec1 mpiexec "$@"
+}
