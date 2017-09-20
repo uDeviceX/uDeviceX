@@ -22,11 +22,9 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/math      && \
     d $B/mbounce   && \
     d $B/mcomm     && \
-    d $B/mdstr     && \
     d $B/mesh      && \
     d $B/mpi       && \
     d $B/rbc       && \
-    d $B/rdstr     && \
     d $B/rex       && \
     d $B/rig       && \
     d $B/rigid     && \

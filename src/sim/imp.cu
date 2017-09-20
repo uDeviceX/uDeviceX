@@ -55,11 +55,6 @@
 #include "rbc/int.h"
 #include "rig/int.h"
 
-#include "mdstr/buf.h"
-#include "mdstr/tic.h"
-#include "mdstr/int.h"
-#include "rdstr/int.h"
-
 #include "sdf/type.h"
 #include "sdf/int.h"
 #include "wall/int.h"

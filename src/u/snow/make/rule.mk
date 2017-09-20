@@ -34,8 +34,6 @@ $B/math/linal.o: $S/math/linal.cpp; $X -I$S/. -I$S/_snow -I$S/math
 $B/mbounce/imp.o: $S/mbounce/imp.cu; $N -I$S/. -I$S/_snow -I$S/mbounce -I$S/mbounce/_dang
 $B/mcomm/imp.o: $S/mcomm/imp.cu; $N -I$S/. -I$S/_snow -I$S/mcomm
 $B/mcomm/int.o: $S/mcomm/int.cu; $N -I$S/. -I$S/_snow -I$S/mcomm
-$B/mdstr/imp.o: $S/mdstr/imp.cu; $N -I$S/. -I$S/_snow -I$S/mdstr
-$B/mdstr/int.o: $S/mdstr/int.cpp; $X -I$S/. -I$S/_snow -I$S/mdstr
 $B/mesh/bbox.o: $S/mesh/bbox.cu; $N -I$S/. -I$S/_snow -I$S/mesh
 $B/mesh/collision.o: $S/mesh/collision.cu; $N -I$S/. -I$S/_snow -I$S/mesh
 $B/mesh/dist.o: $S/mesh/dist.cpp; $X -I$S/. -I$S/_snow -I$S/mesh
@@ -47,8 +45,6 @@ $B/mrescue.o: $S/mrescue.cu; $N -I$S/. -I$S/_snow
 $B/msg.o: $S/msg.cpp; $X -I$S/. -I$S/_snow
 $B/rbc/imp.o: $S/rbc/imp.cu; $N -I$S/. -I$S/_snow -I$S/rbc
 $B/rbc/int.o: $S/rbc/int.cu; $N -I$S/. -I$S/_snow -I$S/rbc
-$B/rdstr/imp.o: $S/rdstr/imp.cu; $N -I$S/. -I$S/_snow -I$S/rdstr
-$B/rdstr/int.o: $S/rdstr/int.cu; $N -I$S/. -I$S/_snow -I$S/rdstr
 $B/rex/imp.o: $S/rex/imp.cu; $N -I$S/. -I$S/_snow -I$S/rex -I$S/rex/_dang
 $B/rex/int.o: $S/rex/int.cpp; $X -I$S/. -I$S/_snow -I$S/rex -I$S/rex/_dang
 $B/rig/imp.o: $S/rig/imp.cu; $N -I$S/. -I$S/_snow -I$S/rig
