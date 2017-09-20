@@ -1,0 +1,7 @@
+#!/usr/bin/awk -f
+
+# computes gyration tensor of x, y, z file
+# output: XX XY XZ YY YZ ZZ
+
+
+
