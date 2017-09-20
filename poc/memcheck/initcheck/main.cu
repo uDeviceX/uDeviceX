@@ -4,7 +4,7 @@
 int *a;
 
 __global__ void uninit(int *a) {
-    a[0] = 42;
+    /* a[0] = 42; */
     printf("a[0]: %d\n", a[0]);
 }
 
