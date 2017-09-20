@@ -63,13 +63,14 @@ void distribute_rig() {
     post_recv(&d.c, &d.u);
 
     unpack_bulk(&d.p, /**/ &q);
-
+    q.n = q.ns * q.nps;
+    
     wait_send(&d.c);
     wait_recv(&d.c, &d.u);
 
     unpack_halo(&d.u, /**/ &q);
 
-    q.n = q.ns * q.nps;    
+    q.n = q.ns * q.nps;
     rig::generate(q.ss, q.ns, q.rr0, q.nps, /**/ q.pp);
     dSync();
 }
