@@ -6,6 +6,8 @@ usg() {
 
 bn ()  { basename "$1" .bop; }
 vtk () { echo `bn "$1"`.vtk; }
+txt () { echo `bn "$1"`.txt; }
+
 exec0 () {
     if test -z ${DRYRUN+x}
     then "$@"
@@ -15,8 +17,8 @@ exec0 () {
 
 main_vanilla () {
     for f
-    do v=`vtk "$f"`
-       exec0 bop2vtk "$d/$v" "$f"
+    do o=`out "$f"`
+       Exec "$d/$o" "$f"
     done
 }
 
@@ -37,8 +39,8 @@ main_id () {
     while test $# -ne 0
     do f=`one_a`; shift_a
        i="$1";    shift
-       v=`vtk "$f"`
-       exec0 bop2vtk "$d/$v" "$f" -- "$i"
+       o=`out "$f"`
+       Exec "$d/$o" "$f" -- "$i"
     done
 }
 
@@ -53,7 +55,21 @@ mkdir0 () {
 }
 
 name=`basename "$0"`
-name=preved
+case $name in
+    bops2vtks) Exec () { exec0 bop2vtk "$@"
+		       }
+    	       out () { vtk "$@"; }
+	       ;;
+    bops2txts) Exec () { local o="$1"; shift
+			 exec0 bop2txt2 "$@" > "$o"
+		       }
+	       out  () { txt "$@"; }
+	       ;;
+    *)         printf '%s: unknown script name\n' "$name"
+	       exit 1
+	       ;;
+esac
+
 if test $# -ne 0 -a "$1" = -h; then usg; fi
 
 # output directory

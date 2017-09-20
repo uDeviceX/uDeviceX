@@ -20,7 +20,7 @@ main3 () { # three arguments
     trap 'rm -f /tmp/f.$$ /tmp/i.$$' 0 1 2 3 15
     bop2txt "$f" > /tmp/f.$$
     bop2txt "$i" > /tmp/i.$$
-    paste /tmp/f.$$ /tmp/i.$$
+    paste -d ' ' /tmp/f.$$ /tmp/i.$$
 }
 
 case $#

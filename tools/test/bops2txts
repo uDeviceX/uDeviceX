@@ -1,0 +1,7 @@
+# TEST: bops2txts.t0
+t=/tmp/out.$$
+id=00010
+#trap 'rm -rf $t' 0 1 2 3 15
+bops2txts $t test_data/solvent-$id.bop -- test_data/colors_solvent-$id.bop
+cp $t/solvent-$id.txt sol.out.txt
+
