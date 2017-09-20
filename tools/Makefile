@@ -14,5 +14,7 @@ install_cnf:; mkdir -p $(CNF) && cp $(C)   $(CNF)
 
 ply2punto: ply2punto.cpp
 
-.PHONY: clean all install_cnf install_exs install
+test:; u.test test/*
+
+.PHONY: clean all install_cnf install_exs install test
 clean: ; rm -rf ply2punto
