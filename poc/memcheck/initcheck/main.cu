@@ -1,10 +1,10 @@
 #include <stdio.h>
 
-#define N 10
+#define N 1
 int *a;
 
 __global__ void uninit(int *a) {
-    print
+    printf("a[0]: %d\n", a[0]);
 }
 
 
