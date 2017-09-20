@@ -25,7 +25,7 @@ void ini(int nv, Unpack *u) {
     int numc[NBAGS];
     get_num_capacity(/**/ numc);
 
-    /* one datum is here a full RBC, so bsize is nv * sizeof(Particle) */
+    /* one datum is here a full mesh, so bsize is nv * sizeof(Particle) */
     ini(HST_ONLY, NONE, nv * sizeof(Particle), numc, /**/ &u->hipp, NULL);
 
     ini(HST_ONLY, NONE, sizeof(Solid), numc, /**/ &u->hss, NULL);
