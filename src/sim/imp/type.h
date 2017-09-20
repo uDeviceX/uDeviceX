@@ -32,3 +32,14 @@ struct Distr {
 };
 
 } // r
+
+namespace s {
+
+/* distribution tickets */
+struct Distr {
+    distr::rig::Pack p;
+    distr::rig::Comm c;
+    distr::rig::Unpack u;
+};
+
+} // s

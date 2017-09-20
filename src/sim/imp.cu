@@ -51,7 +51,9 @@
 #include "mcomm/type.h"
 #include "mcomm/int.h"
 
+#include "flu/int.h"
 #include "rbc/int.h"
+#include "rig/int.h"
 
 #include "mdstr/buf.h"
 #include "mdstr/tic.h"
@@ -62,8 +64,6 @@
 #include "sdf/int.h"
 #include "wall/int.h"
 
-#include "flu/int.h"
-
 
 #include "comm/imp.h"
 #include "distr/map/type.h"
@@ -71,6 +71,8 @@
 #include "distr/flu/imp.h"
 #include "distr/rbc/type.h"
 #include "distr/rbc/imp.h"
+#include "distr/rig/type.h"
+#include "distr/rig/imp.h"
 
 #include "cnt/imp.h"
 
@@ -107,7 +109,6 @@ namespace dev {
 #include "bbhalo/imp/main.h"
 
 #include "io/bop/imp.h"
-#include "rig/int.h"
 #include "inter/int.h"
 #include "scheme/int.h"
 
