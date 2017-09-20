@@ -1,5 +1,6 @@
 namespace exch {
 namespace obj {
+using namespace comm;
 
 struct Map {
     int *counts;      /* number of entities leaving in each fragment */

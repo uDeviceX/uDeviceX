@@ -12,6 +12,13 @@ __device__ int map_code(int3 L, const float r[3]) {
     return frag_d2i(x, y, z);
 }
 
+__device__ void add_to_map(int soluteid, int pid, int fid, Map m) {
+    int ientry, centry;
+    centry = soluteid * NBAGS + fid;
+    ientry = atomicAdd(m.counts + centry, 1);
+    m.ids[fid][ientry] = pid;
+}
+
 __device__ int add_faces(int j, const int d[3], /**/ int fids[MAX_DSTS]) {
     for (int c = 0; c < 3; ++c) {
         if (d[c]) {
@@ -48,5 +55,16 @@ __device__ int map_decode(int code, /**/ int fids[MAX_DSTS]) {
     return j;
 }
 
+__global__ void build_map(int3 L, int soluteid, int n, const Particle *pp, /**/ Map map) {
+    int pid, fid;
+    pid = threadIdx.x + blockIdx.x * blockDim.x;
+    if (pid >= n) return;
+    const Particle p = pp[pid];
+
+    fid = map_code(L, p.r);
+
+    if (fid != frag_bulk)
+        add_to_map(soluteid, pid, fid, /**/ map);
+}
 
 } // dev
