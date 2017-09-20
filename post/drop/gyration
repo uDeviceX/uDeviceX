@@ -3,5 +3,40 @@
 # computes gyration tensor of x, y, z file
 # output: XX XY XZ YY YZ ZZ
 
+NF {
+    n++
+    xx[n] = $1; yy[n] = $2; zz[n] = $3
+}
 
+function com(   i) { # compute [c]enter [o]f [m]ass
+    xc = yc = zc = 0
+    for (i = 1; i <= n; i++) {
+	xc += xx[i]; yc += yy[i]; zc += zz[i];
+    }
+    xc /= n; yc /= n; zc /= n
+}
+
+function to_com(   i) {
+   for (i = 1; i <= n; i++) {
+       xx[i] -= xc; yy[i] -= yc; zz[i] -= zc
+   }
+}
+
+function gyr(   i) { # Gyration tensor
+    for (i = 1; i <= n; i++) {
+	x = xx[i]; y = yy[i]; z = zz[i]
+	XX += x*x; XY += x*y; XZ += x*z
+	           YY += y*y; YZ += y*z
+	                      ZZ += z*z
+    }
+    XX/=n; XY/=n; XZ/=n; YY/=n; YZ/=n; ZZ/=n
+}
+
+END {
+    com()
+    to_com()
+    gyr()
+
+    print XX, XY, XZ, YY, YZ, ZZ
+}
 
