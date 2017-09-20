@@ -1,0 +1,36 @@
+#!/usr/bin/awk -f
+
+# format mpiexec command
+# mpiexec -np 1 "$@" : -np 1 echo 2 "$@"
+
+BEGIN {
+    env = "-env" # -x for openmpi
+
+    nd = split(ENVIRON["UDEVICES"], dd, ",")
+    np  = ENVIRON["n"] # number of processors
+    mpiexec = ENVIRON["mpiexec"]
+
+    args = format_args()
+
+    id = ip = 1
+    for (;;) {
+	cmd[ip] = sprintf("-np 1 %s CUDA_VISIBLE_DEVICES=%d %s", env, dd[id], args)
+	id++; if (id > nd) id = 1
+	ip++; if (ip > np) break
+    }
+
+    s = mpiexec " "
+    for (i = 1; i in cmd; i++) {
+	if (i > 1) s = s " : "
+	s = s cmd[i]
+    }
+    print s
+}
+
+function format_args(   i, s) {
+    for (i = 1; i in ARGV; i++) {
+	if (i > 1) s = s " "
+	s = s ARGV[i]
+    }
+    return s
+}

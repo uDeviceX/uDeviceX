@@ -26,9 +26,10 @@ mpiexec_vanila () {
 }
 
 mpiexec_robin () { # round-robin over UDEVICES=0,1,2
-    local n="$1"; shift
-    echo "robin"
-    exec1 mpiexec -n "$n" "$@"
+    local n cmd
+    n="$1"; shift
+    cmd=`mpiexec="${MPIEXEC-mpiexec}" n=$n u.robin "$@"`
+    exec1 $cmd
 }
 
 mpiexec0() {
