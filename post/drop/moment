@@ -2,6 +2,9 @@
 
 # computes moment of inertia tensor of x, y, z file
 # output: XX XY XZ YY YZ ZZ
+#
+# Weisstein, Eric W. "Moment of Inertia."
+# http://mathworld.wolfram.com/MomentofInertia.html
 
 NF {
     n++
