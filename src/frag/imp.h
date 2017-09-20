@@ -23,6 +23,9 @@ enum {frag_bulk = 26};
                            + 3 * (((y) + 2) % 3)        \
                            + 9 * (((z) + 2) % 3))
 
+#define frag_d32i(d) frag_d2i(d[0], d[1], d[2])
+
+
 /* number of cells in direction x, y, z        */
 #define frag_ncell0(x, y, z)                    \
     ((((x) == 0 ? (XS) : 1)) *                  \
