@@ -9,7 +9,6 @@ void unpack_bulk(const Pack *p, /**/ rig::Quants *q) {
         CC(d::MemcpyAsync(  q->ss,  p->dss.data[frag_bulk],   ns * sizeof(Solid), D2D));
     }
     q->ns = ns;
-    q->n = n;
 }
 
 static void shift(int fid, float r[3]) {
@@ -47,6 +46,5 @@ void unpack_halo(const Unpack *u, /**/ rig::Quants *q) {
         strtp += n;
         strts += ns;
     }
-    q->n  = strtp;
     q->ns = strts;
 }
