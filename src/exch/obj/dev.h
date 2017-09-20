@@ -15,34 +15,27 @@ __device__ int map_code(int3 L, const float r[3]) {
 }
 
 __device__ int add_faces(int j, const int d[3], /**/ int fids[MAX_DSTS]) {
-    int c, code;
-    for (int c = 0; c < 3; ++c) {
+    for (c = 0; c < 3; ++c) {
         if (d[c]) {
             int df[3] = {0, 0, 0}; df[c] = d[c];
-            code = frag_d2i(df[X], df[Y], df[Z]);
-            fids[j++] = code;
+            fids[j++] = frag_d32i(df);
         }
     }
     return j;
 }
 
 __device__ int add_edges(int j, const int d[3], /**/ int fids[MAX_DSTS]) {
-    int c, code;
-    for (c = 0; c < 3; ++c) {
+    for (int c = 0; c < 3; ++c) {
         int de[3] = {d[X], d[Y], d[Z]}; de[c] = 0;
-        if (de[(c + 1) % 3] && de[(c + 2) % 3]) {
-            code = frag_d2i(de[X], de[Y], de[Z]);
-            fids[j++] = code;
-        }
+        if (de[(c + 1) % 3] && de[(c + 2) % 3])
+            fids[j++] = frag_d32i(de);
     }
     return j;
 }
 
 __device__ int add_cornr(int j, const int d[3], /**/ int fids[MAX_DSTS]) {
-    if (d[X] && d[Y] && d[Z]) {
-        int code = d2i(d[X], d[Y], d[Z]);
-        fids[j++] = code;
-    }
+    if (d[X] && d[Y] && d[Z])
+        fids[j++] = frag_d32i(d);
     return j;
 }
 
