@@ -26,8 +26,8 @@ void unpack_halo(const Unpack *u, /**/ rig::Quants *q) {
     int ns, nv, n, i, strtp, strts;
     size_t szp, szs;
     nv = q->m_dev.nv;
-    strtp = q->n;
     strts = q->ns;
+    strtp = strts * nv;
     
     for (i = 0; i < NFRAGS; ++i) {
         ns = u->hss.counts[i];

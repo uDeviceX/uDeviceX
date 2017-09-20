@@ -25,8 +25,6 @@ void distribute_flu() {
     halo(&d.u, /**/ &q);
     gather(&d.p, &d.u, /**/ &q, &qi, &qc);
 
-    dSync();
-    
     flu::get_ticketZ(q, /**/ &tz);
     dSync();
 }
@@ -46,7 +44,6 @@ void distribute_rbc() {
     wait_send(&d.c);
     wait_recv(&d.c, &d.u);
 
-
     unpack_halo(&d.u, /**/ &q);
     dSync();
 }
@@ -63,7 +60,6 @@ void distribute_rig() {
     post_recv(&d.c, &d.u);
 
     unpack_bulk(&d.p, /**/ &q);
-    q.n = q.ns * q.nps;
     
     wait_send(&d.c);
     wait_recv(&d.c, &d.u);
