@@ -26,8 +26,7 @@ void ini() {
     flu::alloc_quants(&o::q);
     flu::alloc_ticketZ(&o::tz);
 
-    // TODO
-    float maxdensity = 3 * numberdensity;
+    float maxdensity = ODSTR_FACTOR * numberdensity;
     distr::flu::ini(maxdensity, /**/ &o::d.p);
     distr::flu::ini(m::cart, /**/ &tag_gen, /**/ &o::d.c);
     distr::flu::ini(maxdensity, /**/ &o::d.u);
