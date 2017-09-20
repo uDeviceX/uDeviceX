@@ -31,6 +31,8 @@ void alloc_quants(Quants *q) {
     q->i_pp_hst = new Particle[MAX_PART_NUM];
 
     q->ss_dmp = new Solid[MAX_SOLIDS];
+
+    sub::load_solid_mesh("mesh_solid.ply", /**/ &q->m_dev, &q->m_hst);
 }
 
 void free_quants(Quants *q) {
@@ -89,7 +91,6 @@ static void cpy_H2D(Quants q) {
 }
 
 void gen_quants(Particle *opp, int *on, Quants *q) {
-    sub::load_solid_mesh("mesh_solid.ply", /**/ &q->m_dev, &q->m_hst);
     sub::gen_from_solvent(q->m_hst, /**/ opp, on, /**/ &q->ns, &q->nps, &q->n, q->rr0_hst, q->ss_hst, q->pp_hst);
     sub::gen_pp_hst(q->ns, q->rr0_hst, q->nps, /**/ q->ss_hst, q->pp_hst);
     sub::gen_ipp_hst(q->ss_hst, q->ns, q->m_hst, /**/ q->i_pp_hst);
@@ -97,7 +98,6 @@ void gen_quants(Particle *opp, int *on, Quants *q) {
 }
 
 void strt_quants(const int id, Quants *q) {
-    sub::load_solid_mesh("mesh_solid.ply", /**/ &q->m_dev, &q->m_hst);
     sub::gen_from_strt(id, /**/ &q->ns, &q->nps, &q->n, q->rr0_hst, q->ss_hst);
     sub::gen_pp_hst(q->ns, q->rr0_hst, q->nps, /**/ q->ss_hst, q->pp_hst);
     sub::gen_ipp_hst(q->ss_hst, q->ns, q->m_hst, /**/ q->i_pp_hst);
