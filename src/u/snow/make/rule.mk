@@ -11,6 +11,7 @@ $B/distr/rig/imp.o: $S/distr/rig/imp.cu; $N -I$S/. -I$S/_snow -I$S/distr/rig
 $B/dpdr/imp.o: $S/dpdr/imp.cu; $N -I$S/. -I$S/_snow -I$S/dpdr
 $B/dpdr/int.o: $S/dpdr/int.cpp; $X -I$S/. -I$S/_snow -I$S/dpdr
 $B/dual/imp.o: $S/dual/imp.cpp; $X -I$S/. -I$S/_snow -I$S/dual
+$B/exch/obj/imp.o: $S/exch/obj/imp.cu; $N -I$S/. -I$S/_snow -I$S/exch/obj
 $B/field.o: $S/field.cpp; $X -I$S/. -I$S/_snow
 $B/flu/imp.o: $S/flu/imp.cu; $N -I$S/. -I$S/_snow -I$S/flu
 $B/flu/int.o: $S/flu/int.cu; $N -I$S/. -I$S/_snow -I$S/flu
