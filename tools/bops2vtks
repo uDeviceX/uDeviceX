@@ -1,9 +1,6 @@
-n="$0"
-echo $n >&2
-
 usg() {
-    echo 'usage: bops2vtks <output dir> <0.bop> <1.bop> ... -- <i0.bop> <i1.bop> ...' >&2
-    echo 'usage: bops2vtks <output dir> <0.bop> <1.bop> ...'                          >&2
+    echo "usage: $name <output dir> <0.bop> <1.bop> ... -- <i0.bop> <i1.bop> ..." >&2
+    echo "usage: $name <output dir> <0.bop> <1.bop> ..."                          >&2
     exit
 }
 
@@ -50,11 +47,13 @@ mkdir0 () {
     mkdir -p -- "$d"
     if test ! -z ${DRYRUN+x}; then return; fi
     if ! test -d "$d"
-    then printf 'bops2vtks: cannot create dir %s\n' "$d"
+    then printf '%s: cannot create dir %s\n' "$name" "$d"
 	 exit 1
     fi
 }
 
+name=`basename "$0"`
+name=preved
 if test $# -ne 0 -a "$1" = -h; then usg; fi
 
 # output directory
