@@ -34,5 +34,4 @@ void unpack_ff(const UnpackF *u, const Pack *p, int nw, /**/ ForcesWrap *ww) {
     Forcep26 wrap;
     bag2Sarray(u->dff, &wrap);
     unpack_ff(NFRAGS, wrap, p->map, nw, /**/ ww);
-
 }
