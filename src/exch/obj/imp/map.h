@@ -29,7 +29,6 @@ static void scan_map(int nw, int nfrags, /**/ Map map) {
         oon = map.offsets + (i + 1) * stride;
         KL(dev::scan2d, (1, 32), (cc, oo, /**/ oon, ss));
     }
-    KL(dev::scan1d, (1, 32), (oon, /**/ map.totstarts));
 }
 
 static void build_map(int nw, const ParticlesWrap *ww, /**/ Map map) {
