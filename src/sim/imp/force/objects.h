@@ -1,3 +1,13 @@
+void forces_cnt(std::vector<PaWrap> *pwr, std::vector<FoWrap> *fwr) {
+    cnt::bind(*pwr, *fwr);
+    cnt::bulk(*pwr, *fwr);
+}
+
+void forces_fsi(fsi::SolventWrap *w_s, std::vector<PaWrap> *pwr, std::vector<FoWrap> *fwr) {
+    fsi::bind(*w_s);
+    fsi::bulk(*pwr, *fwr);
+}
+
 void forces_objects() {
     fsi::SolventWrap w_s;
     hforces::Cloud cloud;
