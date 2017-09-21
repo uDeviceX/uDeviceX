@@ -10,7 +10,7 @@ void post_send(Pack *p, Comm *c);
 void wait_recv(Comm *c, Unpack *u);
 void wait_send(Comm *c);
 
-void upload();
+void upload(Unpack *u);
 void download_ff();
 
 void post_recv_ff(Comm *c, UnpackF *u);
