@@ -32,8 +32,12 @@ static void scan_map(int nw, int nfrags, /**/ Map map) {
     KL(dev::scan1d, (1, 32), (oon, /**/ map.totstarts));
 }
 
-void build_map(int nw, const ParticlesWrap *ww, /**/ Map map) {
+static void build_map(int nw, const ParticlesWrap *ww, /**/ Map map) {
     reini_map(nw, NFRAGS, /**/ map);
     fill_map(nw, ww, /**/ map);
     scan_map(nw, NFRAGS, /**/ map);
+}
+
+void build_map(int nw, const ParticlesWrap *ww, /**/ Pack *p) {
+    build_map(nw, ww, /**/ p->map);
 }
