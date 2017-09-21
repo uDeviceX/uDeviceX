@@ -1,3 +1,3 @@
 # moved
 
-Moved to `git@github.com:slitvinov/urun.git`
+Moved to `git@gitlab.ethz.ch:mavt-cse/urun`
