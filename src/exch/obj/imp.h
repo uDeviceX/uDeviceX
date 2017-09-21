@@ -1,6 +1,14 @@
 namespace exch {
 namespace obj {
 
+void ini(int maxd, Pack *p);
+void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c);
+void ini(int maxd, Unpack *u);
+void ini(int maxd, PackF *p);
+void ini(int maxd, UnpackF *u);
+
+
+
 void build_map(int nw, const ParticlesWrap *ww, /**/ Pack *p);
 void pack(int nw, const ParticlesWrap *ww, Map map, /**/ Pack *p);
 void download(Pack *p);
