@@ -19,19 +19,19 @@ void ini(int maxd, Unpack *u) {
     int cap[NFRAGS];
     frag_estimates(NFRAGS, maxd, /**/ cap);
 
-    ini(PINNED, NONE, sizeof(Particle), cap, /**/ &u->hpp, &u->dpp);
+    ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &u->hpp, &u->dpp);
 }
 
 void ini(int maxd, PackF *p) {
     int cap[NFRAGS];
     frag_estimates(NFRAGS, maxd, /**/ cap);
 
-    ini(PINNED, NONE, sizeof(Force), cap, /**/ &p->hff, &p->dff);
+    ini(PINNED_DEV, NONE, sizeof(Force), cap, /**/ &p->hff, &p->dff);
 }
 
 void ini(int maxd, UnpackF *u) {
     int cap[NFRAGS];
     frag_estimates(NFRAGS, maxd, /**/ cap);
 
-    ini(PINNED, NONE, sizeof(Force), cap, /**/ &u->hff, &u->dff);
+    ini(PINNED_DEV, NONE, sizeof(Force), cap, /**/ &u->hff, &u->dff);
 }
