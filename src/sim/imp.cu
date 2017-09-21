@@ -76,6 +76,10 @@
 #include "rex/int.h"
 #include "lforces/local.h"
 
+#include "exch/obj/map.h"
+#include "exch/obj/type.h"
+#include "exch/obj/imp.h"
+
 #include "sdstr/dec.h"
 #include "sdstr/dev.h"
 #include "sdstr/imp.h"
