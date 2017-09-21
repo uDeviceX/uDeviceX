@@ -33,7 +33,7 @@ void forces_cnt(std::vector<PaWrap> *pwr, std::vector<FoWrap> *fwr) {
     cnt::bulk(*pwr, *fwr);
 }
 
-void forces_fsi(fsi::SolventWrap *w_s, std::vector<ParticlesWrap> *w_r, std::vector<PaWrap> *pwr, std::vector<FoWrap> *fwr) {
+void forces_fsi(fsi::SolventWrap *w_s, std::vector<PaWrap> *pwr, std::vector<FoWrap> *fwr) {
     fsi::bind(*w_s);
     fsi::bulk(*pwr, *fwr);
 }
