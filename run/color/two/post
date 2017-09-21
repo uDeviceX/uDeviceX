@@ -1,3 +1,0 @@
-d=vtk
-echo "dump to $d/" >&2
-bops2vtks "$d" bop/solvent-*.bop -- bop/colors_*.bop
