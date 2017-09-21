@@ -14,7 +14,15 @@ void ini() {
     // sdstr::ini(&tag_gen);
     bbhalo::ini(&tag_gen);
     cnt::ini();
-    if (rbcs || solids) rex::ini(&tag_gen); /* rex:: */
+    if (rbcs || solids) rex::ini(&tag_gen);
+    // if (rbcs || solids) {
+    //     ini(MAX_OBJ_TYPES, MAX_OBJ_DENSITY, &rs::e.p);
+    //     ini(m::cart, /*io*/ &tag_gen, /**/ &rs::e.c);
+    //     ini(MAX_OBJ_DENSITY, &rs::e.u);
+    //     ini(MAX_OBJ_DENSITY, &rs::e.pf);
+    //     ini(MAX_OBJ_DENSITY, &rs::e.uf);
+    // }
+    
     bop::ini(&dumpt);
 
     if (walls) {
