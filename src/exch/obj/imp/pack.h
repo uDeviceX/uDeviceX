@@ -27,6 +27,40 @@ void pack(int nw, const ParticlesWrap *ww, Map map, /**/ Pack *p) {
     pack_pp(NFRAGS, nw, ww, p->map, /**/ wrap);
 }
 
-void download(Pack *p) {
-    CC(d::Memcpy(p->hpp.counts, p->map.counts, NFRAGS * sizeof(int), D2H));    
+void download(int nw, Pack *p) {
+    int *src, *dst;
+    size_t sz = NBAGS * sizeof(int);
+    src = p->map.offsets + nw * NBAGS;
+    dst = p->hpp.counts;
+    CC(d::Memcpy(dst, src, sz, D2H));    
+}
+
+static void clear_forces(int nfrags, /**/ PackF *p) {
+    int i, c;
+    size_t sz;
+    for (i = 0; i < nfrags; ++i) {
+        c = p->hff.counts[i];
+        sz = c * p->hff.bsize;
+        if (c) CC(d::MemsetAsync(p->dff.data[i], 0, sz));
+    }   
+}
+
+void reini_ff(const Pack *p, PackF *pf) {
+    size_t sz = NBAGS * sizeof(int);
+    memcpy(pf->hff.counts, p->hpp.counts, sz);
+    clear_forces(NFRAGS, /**/ pf);
+}
+
+void download_ff(PackF *p) {
+    int i, c;
+    size_t sz;
+    data_t *src, *dst;
+    for (i = 0; i < NFRAGS; ++i) {
+        c = p->hff.counts[i];
+        sz = c * p->hff.bsize;
+        src = p->dff.data[i];
+        dst = p->hff.data[i];
+        if (c) CC(d::MemcpyAsync(dst, src, sz, D2H));
+    }
+    dSync();
 }
