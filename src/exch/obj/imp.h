@@ -7,7 +7,11 @@ void ini(int maxd, Unpack *u);
 void ini(int maxd, PackF *p);
 void ini(int maxd, UnpackF *u);
 
-
+void fin(Pack *p);
+void fin(Comm *c);
+void fin(Unpack *u);
+void fin(PackF *p);
+void fin(UnpackF *u);
 
 void build_map(int nw, const ParticlesWrap *ww, /**/ Pack *p);
 void pack(int nw, const ParticlesWrap *ww, Map map, /**/ Pack *p);
