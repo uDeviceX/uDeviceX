@@ -10,10 +10,11 @@ enum {
 
 /* Allocation mod for bags */
 enum AllocMod {
-    HST_ONLY,  /* only host bags allocated    */
-    DEV_ONLY,  /* only device bags allocated  */
-    PINNED,    /* both host and device pinned */
-    NONE       /* no allocation               */
+    HST_ONLY,   /* only host bags allocated                 */
+    DEV_ONLY,   /* only device bags allocated               */
+    PINNED,     /* both host and device pinned              */
+    PINNED_DEV, /* host pinned; device global memory on gpu */
+    NONE        /* no allocation                            */
 };
 
 struct dBags {
