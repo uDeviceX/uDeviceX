@@ -6,7 +6,7 @@
 # $ curl https://raw.githubusercontent.com/slitvinov/uDeviceX/solid/bootstrap -o bootstrap
 # $ sh bootstrap
 
-l="atest bop clarity off ri vi udx"
+l="atest bop clarity off ri vi urun udx"
 #p=https://github.com/slitvinov
 p=git@gitlab.ethz.ch:mavt-cse
 b=solid
