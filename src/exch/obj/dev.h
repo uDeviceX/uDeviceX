@@ -56,15 +56,16 @@ __device__ int map_decode(int code, /**/ int fids[MAX_DSTS]) {
 }
 
 __global__ void build_map(int3 L, int soluteid, int n, const Particle *pp, /**/ Map map) {
-    int pid, fid;
+    int pid, fid, fids[MAX_DSTS], ndsts, j;
     pid = threadIdx.x + blockIdx.x * blockDim.x;
     if (pid >= n) return;
     const Particle p = pp[pid];
 
     fid = map_code(L, p.r);
+    ndsts = map_decode(fid, /**/ fids);
 
-    if (fid != frag_bulk)
-        add_to_map(soluteid, pid, fid, /**/ map);
+    for (j = 0; j < ndsts; ++j)
+        add_to_map(soluteid, pid, fids[j], /**/ map);
 }
 
 } // dev
