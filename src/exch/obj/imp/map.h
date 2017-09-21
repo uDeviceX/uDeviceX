@@ -11,8 +11,8 @@ static void add_wrap_to_map(int wid, int n, const Particle *pp, Map map) {
     KL(dev::build_map, (k_cnf(n)), (L, wid, pp, n, /**/ map));
 }
 
-static void fill_map(int nw, const ParticleWrap *ww, /**/ Map *map) {
-    ParticleWrap *w;
+static void fill_map(int nw, const ParticlesWrap *ww, /**/ Map *map) {
+    ParticlesWrap *w;
     for (int i = 0; i < nw; ++i) {
         w = ww + i;
         add_wrap_to_map(i, w->n, w->pp, /**/ map);
@@ -32,7 +32,7 @@ static void scan_map(int nw, int nfrags, /**/ Map map) {
     KL(dev::scan2d, (1, 32), (oon, /**/ map.totstarts));
 }
 
-void build_map(int nw, const ParticleWrap *ww, /**/ Map *map) {
+void build_map(int nw, const ParticlesWrap *ww, /**/ Map *map) {
     reini_map(nw, NFRAGS, /**/ map);
     fill_map(nw, ww, /**/ map);
     scan_map(nw, NFRAGS, /**/ map);

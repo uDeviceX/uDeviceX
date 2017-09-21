@@ -1,6 +1,11 @@
 namespace exch {
 namespace obj {
 
+struct ParticlesWrap {
+    int n;
+    const Particle *pp;
+}
+
 struct Pack {
 
 };
