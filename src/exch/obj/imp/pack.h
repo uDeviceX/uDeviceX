@@ -20,17 +20,12 @@ void pack(int nw, const ParticlesWrap *ww, Map map, /**/ Pack *p) {
     pack_pp(NFRAGS, nw, ww, p->map, /**/ wrap);
 }
 
-Pap26 download(int nw, Pack *p) {
+void download(int nw, Pack *p) {
     int *src, *dst;
     size_t sz = NBAGS * sizeof(int);
     src = p->map.offsets + nw * NBAGS;
     dst = p->hpp.counts;
     CC(d::Memcpy(dst, src, sz, D2H));
-
-    Pap26 wrap;
-    bag2Sarray(p->dpp, &wrap);
-    return wrap;
-
 }
 
 static void clear_forces(int nfrags, /**/ PackF *p) {

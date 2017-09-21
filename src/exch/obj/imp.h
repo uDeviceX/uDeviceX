@@ -15,14 +15,15 @@ void fin(UnpackF *u);
 
 void build_map(int nw, const ParticlesWrap *ww, /**/ Pack *p);
 void pack(int nw, const ParticlesWrap *ww, Map map, /**/ Pack *p);
-Pap26 download(Pack *p);
+void download(Pack *p);
 
 void post_recv(Comm *c, Unpack *u);
 void post_send(Pack *p, Comm *c);
 void wait_recv(Comm *c, Unpack *u);
 void wait_send(Comm *c);
 
-void upload(Unpack *u);
+int26 get_counts(Unpack *u);
+Pap26 upload(Unpack *u);
 Fop26 reini_ff(const Pack *p, PackF *pf);
 
 void download_ff(PackF *p);

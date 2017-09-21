@@ -14,8 +14,12 @@ static void upload(int nfrags, const hBags h, /**/ dBags d) {
     }    
 }
 
-void upload(Unpack *u) {
+Pap26 upload(Unpack *u) {
     upload(NFRAGS, u->hpp, /**/ u->dpp);
+    
+    Pap26 wrap;
+    bag2Sarray(u->dpp, &wrap);
+    return wrap;
 }
 
 static void unpack_ff(int nfrags, Fop26 ff, Map map, int nw, /**/ ForcesWrap *ww) {
