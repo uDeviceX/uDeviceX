@@ -1,17 +1,21 @@
-void upload(Unpack *u) {
+static void upload(int nfrags, const hBags h, /**/ dBags d) {
     int i, c;
     size_t sz;
     data_t *src, *dst;
 
-    for (i = 0; i < NFRAGS; ++i) {
-        c = u->hpp.counts[i];
+    for (i = 0; i < nfrags; ++i) {
+        c = h.counts[i];
         if (c) {
-            sz  = u->hpp.bsize * c;
-            dst = u->dpp.data[i];
-            src = u->hpp.data[i];
+            sz  = h.bsize * c;
+            dst = d.data[i];
+            src = h.data[i];
             CC(d::MemcpyAsync(dst, src, sz, H2D));
         }
-    }
+    }    
+}
+
+void upload(Unpack *u) {
+    upload(NFRAGS, u->hpp, /**/ u->dpp);
 }
 
 static void unpack_ff(int nfrags, Forcep26 ff, Map map, int nw, /**/ ForcesWrap *ww) {
@@ -32,6 +36,7 @@ static void unpack_ff(int nfrags, Forcep26 ff, Map map, int nw, /**/ ForcesWrap 
 
 void unpack_ff(const UnpackF *u, const Pack *p, int nw, /**/ ForcesWrap *ww) {
     Forcep26 wrap;
+    upload(NFRAGS, u->hff, /**/ u->dff);
     bag2Sarray(u->dff, &wrap);
     unpack_ff(NFRAGS, wrap, p->map, nw, /**/ ww);
 }
