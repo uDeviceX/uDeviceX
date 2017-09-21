@@ -27,3 +27,19 @@ struct Force {
     float f[3];
 };
 
+typedef Sarray<int, 26>       int26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+
+/* particles wrap */
+struct PaWrap {
+    int n;
+    const Particle *pp;
+};
+
+/* forces wrap */
+struct FoWrap {
+    int n;
+    Force *ff;
+};
+

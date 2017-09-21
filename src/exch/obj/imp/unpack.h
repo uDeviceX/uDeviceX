@@ -22,10 +22,10 @@ Pap26 upload(Unpack *u) {
     return wrap;
 }
 
-static void unpack_ff(int nfrags, Fop26 ff, Map map, int nw, /**/ ForcesWrap *ww) {
+static void unpack_ff(int nfrags, Fop26 ff, Map map, int nw, /**/ FoWrap *ww) {
     int i, stride;
     stride = nfrags + 1;
-    const ForcesWrap *w;
+    const FoWrap *w;
     PackHelper ph;
     
     for (i = 0; i < nw; ++i) {
@@ -38,7 +38,7 @@ static void unpack_ff(int nfrags, Fop26 ff, Map map, int nw, /**/ ForcesWrap *ww
     }
 }
 
-void unpack_ff(const UnpackF *u, const Pack *p, int nw, /**/ ForcesWrap *ww) {
+void unpack_ff(const UnpackF *u, const Pack *p, int nw, /**/ FoWrap *ww) {
     Fop26 wrap;
     upload(NFRAGS, u->hff, /**/ u->dff);
     bag2Sarray(u->dff, &wrap);

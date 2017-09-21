@@ -1,7 +1,7 @@
-static void pack_pp(int nfrags, int nw, const ParticlesWrap *ww, Map map, /**/ Pap26 buf) {
+static void pack_pp(int nfrags, int nw, const PaWrap *ww, Map map, /**/ Pap26 buf) {
     int i, stride;
     stride = nfrags + 1;
-    const ParticlesWrap *w;
+    const PaWrap *w;
     PackHelper ph;
     
     for (i = 0; i < nw; ++i) {
@@ -14,7 +14,7 @@ static void pack_pp(int nfrags, int nw, const ParticlesWrap *ww, Map map, /**/ P
     }
 }
 
-void pack(int nw, const ParticlesWrap *ww, Map map, /**/ Pack *p) {
+void pack(int nw, const PaWrap *ww, Map map, /**/ Pack *p) {
     Pap26 wrap;
     bag2Sarray(p->dpp, &wrap);
     pack_pp(NFRAGS, nw, ww, p->map, /**/ wrap);
