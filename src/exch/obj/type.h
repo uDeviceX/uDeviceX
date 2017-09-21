@@ -6,6 +6,11 @@ struct ParticlesWrap {
     const Particle *pp;
 };
 
+struct ForcesWrap {
+    int n;
+    Force *ff;
+};
+
 struct Pack {
     Map map;
     dBags dpp;
