@@ -1,4 +1,11 @@
-void pack_pp(int nfrags, int nw, const ParticlesWrap *ww, Map map, /**/ Particlep26 buf) {
+// TODO this should be in common place
+template <typename T>
+static void bag2Sarray(dBags bags, Sarray<T*, NFRAGS> *buf) {
+    for (int i = 0; i < NFRAGS; ++i)
+        buf->d[i] = (T*) bags.data[i];
+}
+
+static void pack_pp(int nfrags, int nw, const ParticlesWrap *ww, Map map, /**/ Particlep26 buf) {
     int i, stride;
     stride = nfrags + 1;
     const ParticlesWrap *w;
@@ -14,3 +21,8 @@ void pack_pp(int nfrags, int nw, const ParticlesWrap *ww, Map map, /**/ Particle
     }
 }
 
+void pack(int nw, const ParticlesWrap *ww, Map map, /**/ Pack *p) {
+    Particlep26 wrap;
+    bag2Sarray(p->dpp, &wrap);
+    pack_pp(NFRAGS, nw, ww, p->map, /**/ wrap);
+}
