@@ -4,11 +4,6 @@ static void get_num_capacity(/**/ int numc[NBAGS]) {
         numc[i] = MAX_CELL_NUM;
 }
 
-static void get_capacity(int nv, const int numc[NBAGS], /**/ int capacity[NBAGS]) {
-    for (int i = 0; i < NBAGS; ++i)
-        capacity[i] = nv * numc[i];
-}
-
 void ini(int nv, Pack *p) {
     int numc[NBAGS];
     get_num_capacity(/**/ numc);
