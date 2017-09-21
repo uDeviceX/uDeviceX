@@ -22,13 +22,13 @@ struct Unpack {
 };
 
 struct PackF {
-    dBags ff;
-    hBags ff;
+    dBags dff;
+    hBags hff;
 };
 
 struct UnpackF {
-    hBags ff;
-    dBags ff;
+    hBags hff;
+    dBags dff;
 };
 
 } // obj
