@@ -1,9 +1,14 @@
-static void fin_map(Map * map) {
-    // TODO
+static void fin_map(int nfrags, Map *map) {
+    CC(d::Free(map->counts));
+    CC(d::Free(map->starts));
+    CC(d::Free(map->offsets));
+
+    for (int i = 0; i < nfrags; ++i)
+        CC(d::Free(map->ids[i]));
 }
 
 void fin(Pack *p) {
-    fin_map(/**/ &p->map);
+    fin_map(NFRAGS, /**/ &p->map);
     fin(PINNED, NONE, /**/ &p->hpp, &p->dpp);
 }
 
