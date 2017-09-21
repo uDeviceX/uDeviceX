@@ -28,6 +28,8 @@ using namespace comm;
 #include "imp/type.h"
 #include "dev.h"
 #include "map.h"
+#include "imp/ini.h"
+#include "imp/fin.h"
 #include "imp/map.h"
 #include "imp/pack.h"
 #include "imp/com.h"
