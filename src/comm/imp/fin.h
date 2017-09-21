@@ -13,6 +13,10 @@ static void free_pair(int i, AllocMod mod, /**/ hBags *hb, dBags *db) {
     case PINNED:
         CC(d::FreeHost(hb->data[i]));
         break;
+    case PINNED_DEV:
+        CC(d::FreeHost(hb->data[i]));
+        CC(d::Free(db->data[i]));
+        break;
     case NONE:
     default:
         break;
