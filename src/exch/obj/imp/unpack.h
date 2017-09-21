@@ -6,10 +6,14 @@ void upload(Unpack *u) {
     for (i = 0; i < NFRAGS; ++i) {
         c = u->hpp.counts[i];
         if (c) {
-            sz = c * u->hpp.bsize;
+            sz  = u->hpp.bsize * c;
             dst = u->dpp.data[i];
             src = u->hpp.data[i];
             CC(d::MemcpyAsync(dst, src, sz, H2D));
         }
     }
+}
+
+void unpack_ff() {
+
 }
