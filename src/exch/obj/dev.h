@@ -104,16 +104,19 @@ static __device__ void pack_p(const Particle *pp, int offset, int *indices, int 
 }
 
 __global__ void pack_pp(const Particle *pp, PackHelper ph, /**/ Particlep26 buf) {
-    int gid, fid, frag_i;
+    int gid, fid, frag_i, hi, step;
     gid = threadIdx.x + blockDim.x * blockIdx.x;
-    if (gid >= ph.starts[26]) return;
-    
-    fid = k_common::fid(ph.starts, gid);
+    hi = ph.starts[26];
+    step = gridDim.x * blockDim.x;
 
-    /* index in the fragment coordinates */ 
-    frag_i = gid - ph.starts[fid];
+    for (  ; gid < hi; gid += step) {
+        fid = k_common::fid(ph.starts, gid);
 
-    pack_p(pp, ph.offsets[fid], ph.indices[fid], frag_i, /**/ buf.d[fid]);
+        /* index in the fragment coordinates */ 
+        frag_i = gid - ph.starts[fid];
+        
+        pack_p(pp, ph.offsets[fid], ph.indices[fid], frag_i, /**/ buf.d[fid]);
+    }
 }
 
 } // dev
