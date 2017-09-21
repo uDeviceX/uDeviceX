@@ -96,4 +96,24 @@ __global__ void scan1d(const int *count, /**/ int *starts) {
 }
 
 
+static __device__ void pack_p(const Particle *pp, int offset, int *indices, int i, /**/ Particle *buf) {
+    int dst, src;
+    dst = offset + i;
+    src = __ldg(indices + dst);
+    buf[dst] = pp[src];
+}
+
+__global__ void pack_pp(const Particle *pp, PackHelper ph, /**/ Particlep26 buf) {
+    int gid, fid, frag_i;
+    gid = threadIdx.x + blockDim.x * blockIdx.x;
+    if (gid >= ph.starts[26]) return;
+    
+    fid = k_common::fid(ph.starts, gid);
+
+    /* index in the fragment coordinates */ 
+    frag_i = gid - ph.starts[fid];
+
+    pack_p(pp, ph.offsets[fid], ph.indices[fid], frag_i, /**/ buf.d[fid]);
+}
+
 } // dev
