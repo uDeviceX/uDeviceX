@@ -119,6 +119,7 @@ namespace sim {
 #include "imp/dec.h"
 #include "imp/force/common.h"
 #include "imp/force/dpd.h"
+#include "imp/force/objects.h"
 #include "imp/force/imp.h"
 
 #include "imp/ini.h"
