@@ -1,6 +1,10 @@
 namespace exch {
 namespace obj {
 
+typedef Sarray<int, 26>       int26;
+typedef Sarray<Particle*, 26> Pap26;
+typedef Sarray<Force*,    26> Fop26;
+
 struct ParticlesWrap {
     int n;
     const Particle *pp;

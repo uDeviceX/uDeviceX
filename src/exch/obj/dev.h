@@ -103,7 +103,7 @@ static __device__ void pack_p(const Particle *pp, int offset, int *indices, int 
     buf[dst] = pp[src];
 }
 
-__global__ void pack_pp(const Particle *pp, PackHelper ph, /**/ Particlep26 buf) {
+__global__ void pack_pp(const Particle *pp, PackHelper ph, /**/ Pap26 buf) {
     int gid, fid, frag_i, hi, step;
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     hi = ph.starts[26];
@@ -133,7 +133,7 @@ static __device__ void unpack_f(const Force *hff, int offset, int *indices, int 
     atomicAdd(ff[dst].f + Z, f.f[Z]);
 }
 
-__global__ void unpack_ff(Forcep26 hff, PackHelper ph, /**/ Force *ff) {
+__global__ void unpack_ff(Fop26 hff, PackHelper ph, /**/ Force *ff) {
     int gid, fid, frag_i, hi, step;
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     hi = ph.starts[26];

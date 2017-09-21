@@ -22,8 +22,9 @@ void post_send(Pack *p, Comm *c);
 void wait_recv(Comm *c, Unpack *u);
 void wait_send(Comm *c);
 
-void upload(Unpack *u);
-void reini_ff(const Pack *p, PackF *pf);
+int26 get_counts(Unpack *u);
+Pap26 upload(Unpack *u);
+Fop26 reini_ff(const Pack *p, PackF *pf);
 
 void download_ff(PackF *p);
 
