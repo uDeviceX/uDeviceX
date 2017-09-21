@@ -28,8 +28,8 @@ void forces_wall() {
     if (rbcs && r::q.n)    grey::pair(w::qsdf, w::q, w::t, SOLID_KIND  , cr, r::q.n, /**/ r::ff);
 }
 
-void forces_cnt(std::vector<ParticlesWrap> *w_r, std::vector<PaWrap> *pwr, std::vector<FoWrap> *fwr) {
-    cnt::bind(*w_r);
+void forces_cnt(std::vector<PaWrap> *pwr, std::vector<FoWrap> *fwr) {
+    cnt::bind(*pwr, *fwr);
     cnt::bulk(*pwr, *fwr);
 }
 

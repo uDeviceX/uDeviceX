@@ -1,5 +1,5 @@
 static void bind(const int *const starts, const int *const cellentries,
-          const int nc, std::vector<ParticlesWrap> wr) {
+                 const int nc, std::vector<PaWrap> pwr, std::vector<FoWrap> fwr) {
     size_t textureoffset;
     int ncells, n, i;
     int ns[MAX_OBJ_TYPES];
@@ -14,12 +14,12 @@ static void bind(const int *const starts, const int *const cellentries,
     ncells = XS * YS * ZS;
     CC(cudaBindTexture(&textureoffset, &dev::t::start, starts,
                        &dev::t::start.channelDesc, sizeof(int) * ncells));
-    n = wr.size();
+    n = pwr.size();
     assert(n <= MAX_OBJ_TYPES);
     for (i = 0; i < n; ++i) {
-        ns[i] = wr[i].n;
-        ps[i] = (float2*)wr[i].p;
-        fs[i] = (float*)wr[i].f;
+        ns[i] = pwr[i].n;
+        ps[i] = (float2*)pwr[i].pp;
+        fs[i] = (float*)fwr[i].ff;
     }
 
     CC(cudaMemcpyToSymbolAsync(dev::g::ns, ns, sizeof(int)*n, 0, H2D));

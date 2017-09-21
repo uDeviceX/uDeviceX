@@ -1,8 +1,8 @@
-void bind(std::vector<ParticlesWrap> wr) {
+void bind(std::vector<PaWrap> pwr, std::vector<FoWrap> fwr) {
     /* build cells */
-    no = wr.size();
+    no = pwr.size();
     int ntotal = 0;
-    for (int i = 0; i < (int) wr.size(); ++i) ntotal += wr[i].n;
+    for (int i = 0; i < (int) pwr.size(); ++i) ntotal += pwr[i].n;
 
     indexes->resize(ntotal);
     entries->resize(ntotal);
@@ -11,21 +11,21 @@ void bind(std::vector<ParticlesWrap> wr) {
 
 
     int ctr = 0;
-    for (int i = 0; i < (int) wr.size(); ++i) {
-        ParticlesWrap it = wr[i];
-        KL(k_index::local<true>, (k_cnf(it.n)), (it.n, (float2 *)it.p, g::counts, indexes->D + ctr));
+    for (int i = 0; i < (int) pwr.size(); ++i) {
+        PaWrap it = pwr[i];
+        KL(k_index::local<true>, (k_cnf(it.n)), (it.n, (float2 *)it.pp, g::counts, indexes->D + ctr));
         ctr += it.n;
     }
 
     scan::scan(g::counts, sz, /**/ g::starts, /*w*/ &ws);
 
     ctr = 0;
-    for (int i = 0; i < (int) wr.size(); ++i) {
-        ParticlesWrap it = wr[i];
+    for (int i = 0; i < (int) pwr.size(); ++i) {
+        PaWrap it = pwr[i];
         KL(dev::populate, (k_cnf(it.n)),
            (indexes->D + ctr, g::starts, it.n, i, entries->D));
         ctr += it.n;
     }
 
-    bind(g::starts, entries->D, ntotal, wr);
+    bind(g::starts, entries->D, ntotal, pwr, fwr);
 }
