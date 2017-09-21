@@ -26,3 +26,7 @@ void pack(int nw, const ParticlesWrap *ww, Map map, /**/ Pack *p) {
     bag2Sarray(p->dpp, &wrap);
     pack_pp(NFRAGS, nw, ww, p->map, /**/ wrap);
 }
+
+void download(Pack *p) {
+    CC(d::Memcpy(p->hpp.counts, p->map.counts, NFRAGS * sizeof(int), D2H));    
+}
