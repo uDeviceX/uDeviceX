@@ -76,10 +76,14 @@
 #include "rex/int.h"
 #include "lforces/local.h"
 
-#include "sdstr/dec.h"
-#include "sdstr/dev.h"
-#include "sdstr/imp.h"
-#include "sdstr/templ.h"
+#include "exch/obj/map.h"
+#include "exch/obj/type.h"
+#include "exch/obj/imp.h"
+
+// #include "sdstr/dec.h"
+// #include "sdstr/dev.h"
+// #include "sdstr/imp.h"
+// #include "sdstr/templ.h"
 
 namespace dpdx {
 namespace dev {
@@ -128,11 +132,11 @@ namespace sim {
 #ifdef DEVICE_SOLID
   #include "imp/0dev/bounce.h"
   #include "imp/0dev/update.h"
-  #include "imp/0dev/distr.h"
+  // #include "imp/0dev/distr.h"
 #else
   #include "imp/0hst/bounce.h"
   #include "imp/0hst/update.h"
-  #include "imp/0hst/distr.h"
+  // #include "imp/0hst/distr.h"
 #endif
 #undef HST
 #undef DEV

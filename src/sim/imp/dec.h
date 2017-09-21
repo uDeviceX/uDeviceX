@@ -12,7 +12,6 @@ flu::TicketRND trnd; /* random            */
 flu::QuantsI     qi; /* global [i]ds      */
 flu::QuantsI     qc; /* [c]olors          */
 
-/* distribution structure : see type.h */
 Distr d;
 
 /* [h]alo interactions : local halos : see type.h */
@@ -27,7 +26,6 @@ namespace r /* [r]bc */
 rbc::Quants q;
 rbc::TicketT tt;
 
-/* distribution structure : see type.h */
 Distr d;
 
 Force     *ff;
@@ -40,7 +38,6 @@ rig::TicketBB t;
 scan::Work ws; /* work for scan */
 Force *ff, *ff_hst;
 
-/* distribution structure : see type.h */
 Distr d;
 }
 
@@ -55,6 +52,11 @@ wall::Ticket t;
 namespace a /* all */
 {
 Particle pp_hst[3*MAX_PART_NUM]; /* particles on host */
+}
+
+namespace rs /* objects */
+{
+Exch e;
 }
 
 namespace mc /* mesh communication */

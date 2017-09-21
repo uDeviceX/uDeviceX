@@ -1,7 +1,7 @@
 /* types local for sim:: */
 namespace o {
 
-/* distribution tickets */
+/* distribution */
 struct Distr {
     distr::flu::Pack p;
     distr::flu::Comm c;
@@ -24,7 +24,7 @@ struct H { /* halo tickets : was h:: */
 
 namespace r {
 
-/* distribution tickets */
+/* distribution */
 struct Distr {
     distr::rbc::Pack p;
     distr::rbc::Comm c;
@@ -35,7 +35,7 @@ struct Distr {
 
 namespace s {
 
-/* distribution tickets */
+/* distribution */
 struct Distr {
     distr::rig::Pack p;
     distr::rig::Comm c;
@@ -43,3 +43,16 @@ struct Distr {
 };
 
 } // s
+
+namespace rs {
+
+/* force exchange */
+struct Exch {
+    exch::obj::Pack p;
+    exch::obj::Unpack u;
+    exch::obj::PackF pf;
+    exch::obj::UnpackF uf;
+    exch::obj::Comm c;
+};
+
+}
