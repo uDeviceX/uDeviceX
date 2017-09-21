@@ -18,7 +18,7 @@ void upload(Unpack *u) {
     upload(NFRAGS, u->hpp, /**/ u->dpp);
 }
 
-static void unpack_ff(int nfrags, Forcep26 ff, Map map, int nw, /**/ ForcesWrap *ww) {
+static void unpack_ff(int nfrags, Fop26 ff, Map map, int nw, /**/ ForcesWrap *ww) {
     int i, stride;
     stride = nfrags + 1;
     const ForcesWrap *w;
@@ -35,7 +35,7 @@ static void unpack_ff(int nfrags, Forcep26 ff, Map map, int nw, /**/ ForcesWrap 
 }
 
 void unpack_ff(const UnpackF *u, const Pack *p, int nw, /**/ ForcesWrap *ww) {
-    Forcep26 wrap;
+    Fop26 wrap;
     upload(NFRAGS, u->hff, /**/ u->dff);
     bag2Sarray(u->dff, &wrap);
     unpack_ff(NFRAGS, wrap, p->map, nw, /**/ ww);

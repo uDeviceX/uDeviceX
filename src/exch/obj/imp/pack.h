@@ -1,4 +1,4 @@
-static void pack_pp(int nfrags, int nw, const ParticlesWrap *ww, Map map, /**/ Particlep26 buf) {
+static void pack_pp(int nfrags, int nw, const ParticlesWrap *ww, Map map, /**/ Pap26 buf) {
     int i, stride;
     stride = nfrags + 1;
     const ParticlesWrap *w;
@@ -15,17 +15,22 @@ static void pack_pp(int nfrags, int nw, const ParticlesWrap *ww, Map map, /**/ P
 }
 
 void pack(int nw, const ParticlesWrap *ww, Map map, /**/ Pack *p) {
-    Particlep26 wrap;
+    Pap26 wrap;
     bag2Sarray(p->dpp, &wrap);
     pack_pp(NFRAGS, nw, ww, p->map, /**/ wrap);
 }
 
-void download(int nw, Pack *p) {
+Pap26 download(int nw, Pack *p) {
     int *src, *dst;
     size_t sz = NBAGS * sizeof(int);
     src = p->map.offsets + nw * NBAGS;
     dst = p->hpp.counts;
-    CC(d::Memcpy(dst, src, sz, D2H));    
+    CC(d::Memcpy(dst, src, sz, D2H));
+
+    Pap26 wrap;
+    bag2Sarray(p->dpp, &wrap);
+    return wrap;
+
 }
 
 static void clear_forces(int nfrags, /**/ PackF *p) {
@@ -38,10 +43,14 @@ static void clear_forces(int nfrags, /**/ PackF *p) {
     }   
 }
 
-void reini_ff(const Pack *p, PackF *pf) {
+Fop26 reini_ff(const Pack *p, PackF *pf) {
     size_t sz = NBAGS * sizeof(int);
     memcpy(pf->hff.counts, p->hpp.counts, sz);
     clear_forces(NFRAGS, /**/ pf);
+
+    Fop26 wrap;
+    bag2Sarray(pf->dff, &wrap);
+    return wrap;
 }
 
 void download_ff(PackF *p) {
