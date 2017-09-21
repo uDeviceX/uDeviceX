@@ -20,7 +20,16 @@ static void fill_map(int nw, const ParticleWrap *ww, /**/ Map *map) {
 }
 
 static void scan_map(int nw, int nfrags, /**/ Map map) {
-    // TODO
+    int i, *cc, *ss, *oo, *oon, stride;
+    stride = nfrags + 1;
+    for (i = 0; i < nw; ++i) {
+        cc  = map.counts  + i * stride;
+        ss  = map.starts  + i * stride;
+        oo  = map.offsets + i * stride;
+        oon = map.offsets + (i + 1) * stride;
+        KL(dev::scan2d, (1, 32), (cc, oo, /**/ oon, ss));
+    }
+    KL(dev::scan2d, (1, 32), (oon, /**/ map.totstarts));
 }
 
 void build_map(int nw, const ParticleWrap *ww, /**/ Map *map) {
