@@ -217,3 +217,9 @@
     !defined(FORCE_4ROLLER) && !defined(FORCE_CONSTANT)
   #define FORCE_NONE
 #endif
+
+/* a radius of the spherical drop */
+#ifndef BANGLADESH_R
+  #define BANGLADESH_R (4)
+#endif
+
