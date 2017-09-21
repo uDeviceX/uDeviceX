@@ -76,15 +76,13 @@ static __device__ void scan_pad(int cnt, int t, /**/ int *starts) {
 }
 
 __global__ void scanA(const int *counts, const int *oldtcounts, /**/ int *tcounts, int *starts) {
-    int t, cnt, newcount;
+    int t, cnt, newcnt;
     t = threadIdx.x;
     cnt = 0;
     if (t < 26) {
         cnt = counts[t];
-        if (tcounts && oldtcounts) {
-            newcount = cnt + oldtcounts[t];
-            tcounts[t] = newcount;
-        }
+        newcnt = cnt + oldtcounts[t];
+        tcounts[t] = newcnt;
     }
     if (starts) scan_pad(cnt, t, /**/ starts);
 }
