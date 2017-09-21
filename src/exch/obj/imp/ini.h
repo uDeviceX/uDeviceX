@@ -17,7 +17,7 @@ void ini(int nw, int maxd, Pack *p) {
     int cap[NFRAGS];
     frag_estimates(NFRAGS, maxd, /**/ cap);
 
-    ini_map(nw, NBAGS, cap, /**/ &p->map);
+    ini_map(nw, NFRAGS, cap, /**/ &p->map);
     ini(PINNED, NONE, sizeof(Particle), cap, /**/ &p->hpp, &p->dpp);
 }
 
