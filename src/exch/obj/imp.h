@@ -14,7 +14,7 @@ void fin(PackF *p);
 void fin(UnpackF *u);
 
 void build_map(int nw, const PaWrap *ww, /**/ Pack *p);
-void pack(int nw, const PaWrap *ww, Map map, /**/ Pack *p);
+void pack(int nw, const PaWrap *ww, /**/ Pack *p);
 void download(Pack *p);
 
 void post_recv(Comm *c, Unpack *u);

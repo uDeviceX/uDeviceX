@@ -14,7 +14,7 @@ static void pack_pp(int nfrags, int nw, const PaWrap *ww, Map map, /**/ Pap26 bu
     }
 }
 
-void pack(int nw, const PaWrap *ww, Map map, /**/ Pack *p) {
+void pack(int nw, const PaWrap *ww, /**/ Pack *p) {
     Pap26 wrap;
     bag2Sarray(p->dpp, &wrap);
     pack_pp(NFRAGS, nw, ww, p->map, /**/ wrap);
