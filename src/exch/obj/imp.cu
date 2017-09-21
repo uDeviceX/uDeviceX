@@ -19,6 +19,7 @@
 
 #include "map.h"
 #include "type.h"
+#include "imp.h"
 
 namespace exch {
 namespace obj {
@@ -29,6 +30,8 @@ using namespace comm;
 #include "map.h"
 #include "imp/map.h"
 #include "imp/pack.h"
+#include "imp/com.h"
+#include "imp/unpack.h"
 
 } // obj
 } // exch
