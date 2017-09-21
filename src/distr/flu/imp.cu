@@ -21,6 +21,7 @@
 
 #include "mpi/basetags.h"
 #include "comm/imp.h"
+#include "comm/utils.h"
 
 #include "distr/map/type.h"
 #include "type.h"

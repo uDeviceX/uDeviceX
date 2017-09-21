@@ -1,9 +1,3 @@
-template <typename T>
-static void bag2Sarray(dBags bags, Sarray<T*, NFRAGS> *buf) {
-    for (int i = 0; i < NFRAGS; ++i)
-        buf->d[i] = (T*) bags.data[i];
-}
-
 static void pack_pp(const Map m, const Particle *pp, int n, /**/ dBags bags) {
 
     const int S = sizeof(Particle) / sizeof(float2);

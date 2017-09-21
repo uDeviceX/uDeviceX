@@ -20,6 +20,7 @@
 #include "frag/imp.h"
 #include "mpi/basetags.h"
 #include "comm/imp.h"
+#include "comm/utils.h"
 
 #include "algo/minmax.h"
 
