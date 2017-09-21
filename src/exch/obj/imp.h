@@ -15,7 +15,7 @@ void fin(UnpackF *u);
 
 void build_map(int nw, const PaWrap *ww, /**/ Pack *p);
 void pack(int nw, const PaWrap *ww, /**/ Pack *p);
-void download(Pack *p);
+void download(int nw, Pack *p);
 
 void post_recv(Comm *c, Unpack *u);
 void post_send(Pack *p, Comm *c);
@@ -33,7 +33,7 @@ void post_send_ff(PackF *p, Comm *c);
 void wait_recv_ff(Comm *c, UnpackF *u);
 void wait_send_ff(Comm *c);
 
-void unpack_ff();
+void unpack_ff(const UnpackF *u, const Pack *p, int nw, /**/ FoWrap *ww);
 
 } // obj
 } // exch

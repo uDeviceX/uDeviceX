@@ -1,3 +1,9 @@
+int26 get_counts(Unpack *u) {
+    int26 cc;
+    memcpy(cc.d, u->hpp.counts, NFRAGS * sizeof(int));
+    return cc;
+}
+
 static void upload(int nfrags, const hBags h, /**/ dBags d) {
     int i, c;
     size_t sz;
