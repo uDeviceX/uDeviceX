@@ -2,6 +2,15 @@
 #include <assert.h>
 
 #include "inc/type.h"
+#include "inc/dev.h"
+#include "inc/dev/common.h"
+
+#include <conf.h>
+#include "inc/conf.h"
+
+#include "d/api.h"
+#include "utils/cc.h"
+#include "utils/kl.h"
 
 #include "frag/imp.h"
 #include "mpi/basetags.h"
@@ -9,12 +18,17 @@
 
 
 #include "map.h"
+#include "type.h"
 
 namespace exch {
 namespace obj {
 using namespace comm;
 
+#include "imp/type.h"
 #include "dev.h"
+#include "map.h"
+#include "imp/map.h"
+#include "imp/pack.h"
 
 } // obj
 } // exch
