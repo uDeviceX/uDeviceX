@@ -1,0 +1,23 @@
+#!/usr/bin/env octave-qf
+
+1;
+
+function D = read(f)
+  fi = {'u', 'v', 'w'};
+  D = load(f, fi{:});
+  D = structfun(@squeeze, D, "UniformOutput", false);
+endfunction
+
+function S = add0(S, D)
+  S = D;
+endfunction
+
+function S = add(S, D)
+  if (isempty(S)); S = D; else S = add0(S, D); endif
+endfunction
+
+D = read(argv(){1});
+S = D;
+S = add(S, D);
+
+
