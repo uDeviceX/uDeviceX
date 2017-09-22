@@ -61,10 +61,8 @@ Exch e;
 
 namespace mc /* mesh communication */
 {
-mcomm::TicketCom tc;
-mcomm::TicketM   tm;
-mcomm::TicketS   ts;
-mcomm::TicketR   tr;
+Exch e;
+Particle *pp;
 }
 
 namespace bb /* bounce back */

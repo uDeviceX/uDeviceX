@@ -1,9 +1,7 @@
 void fin() {
-    // sdstr::fin();
     bbhalo::fin();
     cnt::fin();
     bop::fin(&dumpt);
-    if (rbcs || solids) rex::fin();
     if (rbcs || solids) {
         fin(&rs::e.p);
         fin(&rs::e.c);
@@ -45,9 +43,10 @@ void fin() {
         dpdr::free_ticketSIh(&o::h.tsi);
         dpdr::free_ticketRIh(&o::h.tri);
 
-        mcomm::free_ticketcom(&mc::tc);
-        mcomm::free_ticketS(&mc::ts);
-        mcomm::free_ticketR(&mc::tr);
+        fin(/**/ &mc::e.p);
+        fin(/**/ &mc::e.c);
+        fin(/**/ &mc::e.u);
+        Dfree(mc::pp);
     }
     
     if (solids) {

@@ -34,8 +34,6 @@ $B/lforces/local.o: $S/lforces/local.cu; $N -I$S/. -I$S/_rain -I$S/lforces
 $B/main.o: $S/main.cu; $N -I$S/. -I$S/_rain
 $B/math/linal.o: $S/math/linal.cpp; $X -I$S/. -I$S/_rain -I$S/math
 $B/mbounce/imp.o: $S/mbounce/imp.cu; $N -I$S/. -I$S/_rain -I$S/mbounce -I$S/mbounce/_release
-$B/mcomm/imp.o: $S/mcomm/imp.cu; $N -I$S/. -I$S/_rain -I$S/mcomm
-$B/mcomm/int.o: $S/mcomm/int.cu; $N -I$S/. -I$S/_rain -I$S/mcomm
 $B/mesh/bbox.o: $S/mesh/bbox.cu; $N -I$S/. -I$S/_rain -I$S/mesh
 $B/mesh/collision.o: $S/mesh/collision.cu; $N -I$S/. -I$S/_rain -I$S/mesh
 $B/mesh/dist.o: $S/mesh/dist.cpp; $X -I$S/. -I$S/_rain -I$S/mesh
@@ -47,8 +45,6 @@ $B/mrescue.o: $S/mrescue.cu; $N -I$S/. -I$S/_rain
 $B/msg.o: $S/msg.cpp; $X -I$S/. -I$S/_rain
 $B/rbc/imp.o: $S/rbc/imp.cu; $N -I$S/. -I$S/_rain -I$S/rbc
 $B/rbc/int.o: $S/rbc/int.cu; $N -I$S/. -I$S/_rain -I$S/rbc
-$B/rex/imp.o: $S/rex/imp.cu; $N -I$S/. -I$S/_rain -I$S/rex -I$S/rex/_release
-$B/rex/int.o: $S/rex/int.cpp; $X -I$S/. -I$S/_rain -I$S/rex -I$S/rex/_release
 $B/rig/imp.o: $S/rig/imp.cu; $N -I$S/. -I$S/_rain -I$S/rig
 $B/rig/int.o: $S/rig/int.cu; $N -I$S/. -I$S/_rain -I$S/rig
 $B/rigid/imp.o: $S/rigid/imp.cu; $N -I$S/. -I$S/_rain -I$S/rigid -I$S/rigid/_cuda

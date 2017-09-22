@@ -34,7 +34,6 @@
 #include "cloud/hforces/type.h"
 #include "cloud/hforces/int.h"
 
-#include "inc/tmp/wrap.h"
 #include "inc/tmp/pinned.h"
 #include "io/fields_grid.h"
 #include "io/rbc.h"
@@ -47,9 +46,6 @@
 
 #include "inc/dev/read.h"
 #include "clist/imp.h"
-
-#include "mcomm/type.h"
-#include "mcomm/int.h"
 
 #include "flu/int.h"
 #include "rbc/int.h"
@@ -73,24 +69,14 @@
 
 #include "fsi/type.h"
 #include "fsi/int.h"
-#include "rex/int.h"
 #include "lforces/local.h"
 
 #include "exch/map/type.h"
 #include "exch/obj/type.h"
 #include "exch/obj/imp.h"
 
-// #include "sdstr/dec.h"
-// #include "sdstr/dev.h"
-// #include "sdstr/imp.h"
-// #include "sdstr/templ.h"
-
-namespace dpdx {
-namespace dev {
-#include "lforces/x/dev.h"
-}
-#include "lforces/x/imp.h"
-}
+#include "exch/mesh/type.h"
+#include "exch/mesh/imp.h"
 
 #include "dpdr/type.h"
 #include "dpdr/int.h"
