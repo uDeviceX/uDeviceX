@@ -12,6 +12,15 @@ __device__ int map_code(int3 L, const float r[3]) {
     return frag_d2i(x, y, z);
 }
 
+__device__ int map_code_box(int3 L, float3 lo, float3 hi) {
+    int x, y, z;
+    x = -1 + (lo.x >= -L.x / 2) + (hi.x >= L.x / 2);
+    y = -1 + (lo.y >= -L.y / 2) + (hi.y >= L.y / 2);
+    z = -1 + (lo.z >= -L.z / 2) + (hi.z >= L.z / 2);
+
+    return frag_d2i(x, y, z);
+}
+
 static __device__ void add_to_map(int soluteid, int pid, int fid, Map m) {
     int ientry, centry;
     centry = soluteid * NBAGS + fid;

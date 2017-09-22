@@ -22,11 +22,7 @@ void pack(int nw, const PaWrap *ww, /**/ Pack *p) {
 
 void download(int nw, Pack *p) {
     if (!nw) return;
-    int *src, *dst;
-    size_t sz = NBAGS * sizeof(int);
-    src = p->map.offsets + nw * NBAGS;
-    dst = p->hpp.counts;
-    CC(d::Memcpy(dst, src, sz, D2H));
+    download_counts(nw, p->map, /**/ p->hpp.counts);
 }
 
 static void clear_forces(int nfrags, /**/ PackF *p) {

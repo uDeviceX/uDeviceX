@@ -41,3 +41,10 @@ void scan_map(int nw, int nfrags, /**/ Map map) {
         KL(dev::scan2d, (1, 32), (cc, oo, /**/ oon, ss));
     }
 }
+
+void download_counts(int nw, Map map, /**/ int counts[]) {
+    int *src;
+    size_t sz = NBAGS * sizeof(int);
+    src = map.offsets + nw * NBAGS;
+    CC(d::Memcpy(counts, src, sz, D2H));
+}
