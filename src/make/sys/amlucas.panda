@@ -10,4 +10,4 @@ HDF5_CXXFLAGS = -I${HDF5_DIR}/include
 HDF5_LIBS     = -L${HDF5_DIR}/lib -Wl,-rpath -Wl,${HDF5_DIR}/lib -lhdf5
 NVCC_LIBS = -L${NVCC_DIR}/lib64 -Wl,-rpath -Wl,${NVCC_DIR}/lib64
 
-CXXFLAGS += -Wall -Wextra -Wno-unused-parameter
+CXXFLAGS += -Wall -Wextra -Wno-unused-parameter -Wno-unused-function
