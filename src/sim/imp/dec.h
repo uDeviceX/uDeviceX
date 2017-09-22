@@ -65,6 +65,8 @@ mcomm::TicketCom tc;
 mcomm::TicketM   tm;
 mcomm::TicketS   ts;
 mcomm::TicketR   tr;
+
+Exch e;
 }
 
 namespace bb /* bounce back */

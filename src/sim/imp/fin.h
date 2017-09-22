@@ -48,6 +48,10 @@ void fin() {
         mcomm::free_ticketcom(&mc::tc);
         mcomm::free_ticketS(&mc::ts);
         mcomm::free_ticketR(&mc::tr);
+
+        fin(/**/ &mc::e.p);
+        fin(/**/ &mc::e.c);
+        fin(/**/ &mc::e.u);
     }
     
     if (solids) {

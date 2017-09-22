@@ -60,6 +60,10 @@ void ini() {
         mcomm::ini_ticketcom(m::cart, /*io*/ &tag_gen, /**/ &mc::tc);
         mcomm::alloc_ticketS(/**/ &mc::ts);
         mcomm::alloc_ticketR(&mc::ts, /**/ &mc::tr);
+
+        ini(MAX_VERT_NUM, MAX_CELL_NUM, &mc::e.p);
+        ini(m::cart, /*io*/ &tag_gen, /**/ &mc::e.c);
+        ini(MAX_VERT_NUM, MAX_CELL_NUM, &mc::e.u);
     }
     
     if (solids) {
