@@ -11,4 +11,4 @@ from `Quants` stucture:
 ### optional:
 From `QuantsI` structure:
 * Global Ids (useful for postprocessing; activated with the `global_ids` option)
-* Tags (for different solvents) : TODO
+* Colors (for different solvents, e.g. drops, inner/outer solvent for rbcs) 
