@@ -27,7 +27,7 @@ END {
 
 function sqrt0(x) {
     if (x < 0) err("ellipsoid0: wrong axis: " x)
-    return x
+    return sqrt(x)
 }
 function less(i, j) { return S[i] < S[j] }
 function swap(i, j) { if (less(i, j)) swap0(i, j) }
