@@ -1,18 +1,3 @@
-static void ini_map(int nw, int nfrags, int cap[], /**/ Map *map) {
-    int i, c;
-    size_t sz;
-    sz = (nw + 1) * (nfrags + 1) * sizeof(int);
-    CC(d::Malloc((void**) &map->counts,  sz));
-    CC(d::Malloc((void**) &map->starts,  sz));
-    CC(d::Malloc((void**) &map->offsets, sz));
-
-    for (i = 0; i < nfrags; ++i) {
-        c = cap[i];
-        sz = c * sizeof(int);
-        CC(d::Malloc((void**) &map->ids[i], sz));
-    }
-}
-
 void ini(int nw, int maxd, Pack *p) {
     int cap[NFRAGS];
     frag_estimates(NFRAGS, maxd, /**/ cap);
