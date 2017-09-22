@@ -44,27 +44,28 @@ void forces_objects() {
 void forces_objects_new() {
     fsi::SolventWrap w_s;
     hforces::Cloud cloud;
-    std::vector<PaWrap> pwr;
-    std::vector<FoWrap> fwr;
-
+    PaWrap pw[MAX_OBJ_TYPES];
+    FoWrap fw[MAX_OBJ_TYPES];
+    int nw = 0;
+    
     if (solids0) {
-        pwr.push_back({s::q.n, s::q.pp});
-        fwr.push_back({s::q.n, s::ff});
+        pw[nw] = {s::q.n, s::q.pp};
+        fw[nw] = {s::q.n, s::ff};
+        ++nw;
     }
     if (rbcs) {
-        pwr.push_back({r::q.n, r::q.pp});
-        fwr.push_back({r::q.n, r::ff});
+        pw[nw] = {r::q.n, r::q.pp};
+        fw[nw] = {r::q.n, r::ff};
+        ++nw;
     }
-    // TODO rm std::vector
-    int nw = pwr.size();
 
     if (!nw) return;
 
     /* Prepare and send the data */
     
     using namespace rs;
-    build_map(nw, pwr.data(), /**/ &e.p);
-    pack(nw, pwr.data(), /**/ &e.p);
+    build_map(nw, pw, /**/ &e.p);
+    pack(nw, pw, /**/ &e.p);
     download(nw, /**/ &e.p);
 
     post_send(&e.p, &e.c);
@@ -81,8 +82,8 @@ void forces_objects_new() {
     w_s.n  = o::q.n;
     w_s.starts = o::q.cells.starts;
 
-    if (contactforces) forces_cnt(pwr.size(), pwr.data(), fwr.data());
-    if (fsiforces)     forces_fsi(&w_s, pwr.size(), pwr.data(), fwr.data());
+    if (contactforces) forces_cnt(nw, pw, fw);
+    if (fsiforces)     forces_fsi(&w_s, nw, pw, fw);
 
     /* recv data and halo interactions  */
 
@@ -106,6 +107,6 @@ void forces_objects_new() {
     wait_send_ff(&e.c);    
     wait_recv_ff(&e.c, &e.uf);
 
-    unpack_ff(&e.uf, &e.p, nw, /**/ fwr.data());
+    unpack_ff(&e.uf, &e.p, nw, /**/ fw);
 }
 
