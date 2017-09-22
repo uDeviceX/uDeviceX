@@ -1,4 +1,4 @@
-P = eigval eigval0 ellipsoid ellipsoid0 gyration moment
+P = deformation deformation0 eigval eigval0 ellipsoid ellipsoid0 gyration moment
 BIN = $(HOME)/bin
 B = $(BIN)
 
