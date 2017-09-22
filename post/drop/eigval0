@@ -2,6 +2,17 @@
 
 1;
 
+function err(f, varargin); fprintf(stderr(), f, varargin{:}); endfunction
+function usg()
+  err("usage: echo XX XY XZ YY YZ ZZ | eigval0\n");
+  err("compute eignvlue of symmetric matrix");
+  exit(1);
+endfunction
+function r = eq(a, b); r = strcmp(a, b); endfunction
+function r = help()
+  r = numel(argv()) == 1 && eq(argv(){1}, "-h");
+endfunction
+
 function e = eigval0(a)
   i = 1;
   X  = i++; Y = i++; Z = i++;
@@ -22,6 +33,9 @@ function e = eigval0(a)
   e = eig(A);
 endfunction
 
-a = dlmread(stdin());
+if help(); usg(); endif
+a = dlmread(stdin()); n = numel(a);
+if n != 6; err("eigval0: %d != 6", n); exit(1); endif
+
 e = eigval0(a);
 printf("%.16g %.16g %.16g\n", e);
