@@ -12,6 +12,8 @@
 #include "utils/cc.h"
 #include "utils/kl.h"
 
+#include "algo/minmax.h"
+
 #include "frag/imp.h"
 #include "mpi/basetags.h"
 #include "comm/imp.h"
@@ -19,7 +21,7 @@
 
 #include "exch/map/type.h"
 #include "type.h"
-// #include "imp.h"
+#include "imp.h"
 
 namespace exch {
 namespace mesh {
