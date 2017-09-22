@@ -76,7 +76,7 @@
 #include "rex/int.h"
 #include "lforces/local.h"
 
-#include "exch/obj/map.h"
+#include "exch/map/type.h"
 #include "exch/obj/type.h"
 #include "exch/obj/imp.h"
 

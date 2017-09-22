@@ -17,7 +17,7 @@
 #include "comm/imp.h"
 #include "comm/utils.h"
 
-#include "map.h"
+#include "exch/map/type.h"
 #include "type.h"
 #include "imp.h"
 
@@ -25,9 +25,9 @@ namespace exch {
 namespace obj {
 using namespace comm;
 
+#include "exch/map/dev.h"
 #include "imp/type.h"
 #include "dev.h"
-#include "map.h"
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/map.h"
