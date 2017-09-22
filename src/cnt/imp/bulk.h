@@ -1,12 +1,12 @@
-void bulk(std::vector<PaWrap> pwr, std::vector<FoWrap> fwr) {
+void bulk(int nw, PaWrap *pw, FoWrap *fw) {
     float rnd;
-    if (pwr.size() == 0) return;
-    for (int i = 0; i < (int) pwr.size(); ++i) {
-        PaWrap pit = pwr[i];
-        FoWrap fit = fwr[i];
+    if (nw == 0) return;
+    for (int i = 0; i < nw; ++i) {
+        PaWrap pit = pw[i];
+        FoWrap fit = fw[i];
         rnd = rgen->get_float();
         KL(dev::bulk, (k_cnf(3 * pit.n)),
-           ((float2*)pit.pp, pit.n, entries->S, pwr.size(), rnd, i, (float*)fit.ff));
+           ((float2*)pit.pp, pit.n, entries->S, nw, rnd, i, (float*)fit.ff));
     }
 }
 

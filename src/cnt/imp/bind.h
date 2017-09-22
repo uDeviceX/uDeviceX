@@ -1,7 +1,7 @@
 static void bind(const int *const starts, const int *const cellentries,
-                 const int nc, std::vector<PaWrap> pwr, std::vector<FoWrap> fwr) {
+                 const int nc, int nw, PaWrap *pw, FoWrap *fw) {
     size_t textureoffset;
-    int ncells, n, i;
+    int ncells, i;
     int ns[MAX_OBJ_TYPES];
     float2 *ps[MAX_OBJ_TYPES];
     float *fs[MAX_OBJ_TYPES];
@@ -14,15 +14,15 @@ static void bind(const int *const starts, const int *const cellentries,
     ncells = XS * YS * ZS;
     CC(cudaBindTexture(&textureoffset, &dev::t::start, starts,
                        &dev::t::start.channelDesc, sizeof(int) * ncells));
-    n = pwr.size();
-    assert(n <= MAX_OBJ_TYPES);
-    for (i = 0; i < n; ++i) {
-        ns[i] = pwr[i].n;
-        ps[i] = (float2*)pwr[i].pp;
-        fs[i] = (float*)fwr[i].ff;
+
+    assert(nw <= MAX_OBJ_TYPES);
+    for (i = 0; i < nw; ++i) {
+        ns[i] = pw[i].n;
+        ps[i] = (float2*)pw[i].pp;
+        fs[i] = (float*)fw[i].ff;
     }
 
-    CC(cudaMemcpyToSymbolAsync(dev::g::ns, ns, sizeof(int)*n, 0, H2D));
-    CC(cudaMemcpyToSymbolAsync(dev::g::csolutes, ps, sizeof(float2*)*n, 0, H2D));
-    CC(cudaMemcpyToSymbolAsync(dev::g::csolutesacc, fs, sizeof(float*)*n, 0, H2D));
+    CC(cudaMemcpyToSymbolAsync(dev::g::ns, ns, sizeof(int)*nw, 0, H2D));
+    CC(cudaMemcpyToSymbolAsync(dev::g::csolutes, ps, sizeof(float2*)*nw, 0, H2D));
+    CC(cudaMemcpyToSymbolAsync(dev::g::csolutesacc, fs, sizeof(float*)*nw, 0, H2D));
 }

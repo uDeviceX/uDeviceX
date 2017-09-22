@@ -1,6 +1,6 @@
-void forces_cnt(std::vector<PaWrap> *pwr, std::vector<FoWrap> *fwr) {
-    cnt::bind(*pwr, *fwr);
-    cnt::bulk(*pwr, *fwr);
+void forces_cnt(int nw, PaWrap *pw, FoWrap *fw) {
+    cnt::bind(nw, pw, fw);
+    cnt::bulk(nw, pw, fw);
 }
 
 void forces_fsi(fsi::SolventWrap *w_s, int nw, PaWrap *pw, FoWrap *fw) {
@@ -23,7 +23,7 @@ void forces_objects() {
         fwr.push_back({r::q.n, r::ff});
     }
 
-    if (contactforces) forces_cnt(&pwr, &fwr);
+    if (contactforces) forces_cnt(pwr.size(), pwr.data(), fwr.data());
 
     hforces::ini_cloud(o::q.pp, &cloud);
     if (multi_solvent) hforces::ini_cloud_color(o::qc.ii, &cloud);
@@ -81,7 +81,7 @@ void forces_objects_new() {
     w_s.n  = o::q.n;
     w_s.starts = o::q.cells.starts;
 
-    if (contactforces) forces_cnt(&pwr, &fwr);
+    if (contactforces) forces_cnt(pwr.size(), pwr.data(), fwr.data());
     if (fsiforces)     forces_fsi(&w_s, pwr.size(), pwr.data(), fwr.data());
 
     /* recv data and halo interactions  */
