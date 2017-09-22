@@ -1,1 +1,1 @@
-echo 42
+u.moment "$@" | u.eigval0
