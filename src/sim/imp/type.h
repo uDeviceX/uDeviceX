@@ -55,4 +55,14 @@ struct Exch {
     exch::obj::Comm c;
 };
 
-}
+} // rs
+
+namespace mc {
+
+struct Exch {
+    exch::mesh::Pack p;
+    exch::mesh::Comm c;
+    exch::mesh::Unpack u;    
+};
+
+} // mc

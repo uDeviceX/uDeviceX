@@ -80,6 +80,10 @@
 #include "exch/obj/type.h"
 #include "exch/obj/imp.h"
 
+#include "exch/mesh/type.h"
+#include "exch/mesh/imp.h"
+
+
 // #include "sdstr/dec.h"
 // #include "sdstr/dev.h"
 // #include "sdstr/imp.h"
