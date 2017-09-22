@@ -88,7 +88,7 @@ void forces_objects_new() {
     wait_recv(&e.c, &e.u);
 
     int26 hcc = get_counts(&e.u);
-    Pap26 hpp = upload(&e.u);
+    Pap26 hpp = upload_shift(&e.u);
     Fop26 hff = reini_ff(&e.p, &e.pf);
 
     if (fsiforces)     fsi::halo(hpp, hff, hcc.d);

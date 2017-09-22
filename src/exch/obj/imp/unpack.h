@@ -20,9 +20,22 @@ static void upload(int nfrags, const hBags h, /**/ dBags d) {
     }    
 }
 
-Pap26 upload(Unpack *u) {
+static void shift_pp(int nfrags, const int counts[], /**/ dBags d) {
+    int i, n;
+    Particle *pp;
+
+    for (i = 0; i < nfrags; ++i) {
+        n = counts[i];
+        if (n) {
+            pp = (Particle *) d.data[i];
+            KL(dev::shift_one_frag, (k_cnf(n)), (n, i, /**/ pp));
+        }
+    }    
+}
+
+Pap26 upload_shift(Unpack *u) {
     upload(NFRAGS, u->hpp, /**/ u->dpp);
-    
+    shift_pp(NFRAGS, u->hpp.counts, /**/ u->dpp);    
     Pap26 wrap;
     bag2Sarray(u->dpp, &wrap);
     return wrap;
