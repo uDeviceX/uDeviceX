@@ -22,3 +22,22 @@ void fin_map(int nfrags, Map *map) {
         CC(d::Free(map->ids[i]));
 }
 
+void reini_map(int nw, int nfrags, /**/ Map map) {
+    size_t sz;
+    sz = (nw + 1) * (nfrags + 1) * sizeof(int);
+    CC(d::MemsetAsync(map.counts,  0, sz));
+    CC(d::MemsetAsync(map.starts,  0, sz));
+    CC(d::MemsetAsync(map.offsets, 0, sz));
+}
+
+void scan_map(int nw, int nfrags, /**/ Map map) {
+    int i, *cc, *ss, *oo, *oon, stride;
+    stride = nfrags + 1;
+    for (i = 0; i < nw; ++i) {
+        cc  = map.counts  + i * stride;
+        ss  = map.starts  + i * stride;
+        oo  = map.offsets + i * stride;
+        oon = map.offsets + (i + 1) * stride;
+        KL(dev::scan2d, (1, 32), (cc, oo, /**/ oon, ss));
+    }
+}
