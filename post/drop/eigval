@@ -1,6 +1,6 @@
 usg() {
     echo 'usage: u.eigval [XYZ columns file]' >&2
-    echo 'compuet eigvalus of angular momentum tensor' >&2
+    echo 'compute eigenvalues of angular momentum tensor' >&2
     exit
 }
 
