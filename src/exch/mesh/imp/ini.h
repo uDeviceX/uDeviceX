@@ -11,6 +11,9 @@ void ini(int nv, int max_mesh_num, Pack *p) {
 
     ini_map(1, NFRAGS, cap, /**/ &p->map);
     ini(PINNED, NONE, msz, cap, /**/ &p->hpp, &p->dpp);
+
+    CC(d::Malloc((void**) &p->minext, max_mesh_num * sizeof(float3)));
+    CC(d::Malloc((void**) &p->maxext, max_mesh_num * sizeof(float3)));
 }
 
 void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c) {

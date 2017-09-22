@@ -3,6 +3,7 @@ namespace mesh {
 
 struct Pack {
     Map map;
+    float3 *minext, *maxext;
     dBags dpp;
     hBags hpp;
 };

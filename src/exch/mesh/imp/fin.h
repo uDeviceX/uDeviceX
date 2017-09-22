@@ -1,6 +1,8 @@
 void fin(Pack *p) {
     fin_map(NFRAGS, /**/ &p->map);
     fin(PINNED, NONE, /**/ &p->hpp, &p->dpp);
+    CC(d::Free(p->minext));
+    CC(d::Free(p->maxext));
 }
 
 void fin(Comm *c) {
