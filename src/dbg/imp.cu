@@ -76,7 +76,6 @@ void check_cc(const int *cc, int n, const char *file, int line, const char *M) {
 
 void check_cells(int nx, int ny, int nz, const int *ss, const int *cc, const Particle *pp,
                  const char *file, int line, const char *M) {
-    int3 ncells = make_int3(nx, ny, nz);
-    DBG(sub::check_cells, (ncells, ss, cc, pp), file, line, M);
+    DBG(sub::check_cells, (make_int3(nx, ny, nz), ss, cc, pp), file, line, M);
 }
 } // dbg

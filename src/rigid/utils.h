@@ -19,7 +19,7 @@ static _HD_ void normalize(/**/ float *v) {
     v[X] *= s; v[Y] *= s; v[Z] *= s;
 }
 
-static _HD_ void gram_schmidt(/**/ float *e0, float *e1, float *e2) {
+_HD_ void gram_schmidt(/**/ float *e0, float *e1, float *e2) {
     /* :TODO: use better more stable version of Gram-Schmidt */
     normalize(e0);
 
@@ -31,7 +31,7 @@ static _HD_ void gram_schmidt(/**/ float *e0, float *e1, float *e2) {
     normalize(e2);
 }
 
-static _HD_ void rot_e(const float *om, /**/ float *e) {
+_HD_ void rot_e(const float *om, /**/ float *e) {
     const float omx = om[X], omy = om[Y], omz = om[Z];
     const float ex = e[X], ey = e[Y], ez = e[Z];
 
