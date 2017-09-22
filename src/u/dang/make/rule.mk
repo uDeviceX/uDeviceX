@@ -45,8 +45,6 @@ $B/mrescue.o: $S/mrescue.cu; $N -I$S/. -I$S/_rain
 $B/msg.o: $S/msg.cpp; $X -I$S/. -I$S/_rain
 $B/rbc/imp.o: $S/rbc/imp.cu; $N -I$S/. -I$S/_rain -I$S/rbc
 $B/rbc/int.o: $S/rbc/int.cu; $N -I$S/. -I$S/_rain -I$S/rbc
-$B/rex/imp.o: $S/rex/imp.cu; $N -I$S/. -I$S/_rain -I$S/rex -I$S/rex/_dang
-$B/rex/int.o: $S/rex/int.cpp; $X -I$S/. -I$S/_rain -I$S/rex -I$S/rex/_dang
 $B/rig/imp.o: $S/rig/imp.cu; $N -I$S/. -I$S/_rain -I$S/rig
 $B/rig/int.o: $S/rig/int.cu; $N -I$S/. -I$S/_rain -I$S/rig
 $B/rigid/imp.o: $S/rigid/imp.cu; $N -I$S/. -I$S/_rain -I$S/rigid -I$S/rigid/_cuda

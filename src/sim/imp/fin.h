@@ -2,7 +2,6 @@ void fin() {
     bbhalo::fin();
     cnt::fin();
     bop::fin(&dumpt);
-    if (rbcs || solids) rex::fin();
     if (rbcs || solids) {
         fin(&rs::e.p);
         fin(&rs::e.c);

@@ -70,7 +70,6 @@
 
 #include "fsi/type.h"
 #include "fsi/int.h"
-#include "rex/int.h"
 #include "lforces/local.h"
 
 #include "exch/map/type.h"

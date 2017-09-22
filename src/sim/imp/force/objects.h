@@ -28,44 +28,6 @@ void forces_objects() {
 
     if (!nw) return;
 
-    if (contactforces) forces_cnt(nw, pw, fw);
-
-    hforces::ini_cloud(o::q.pp, &cloud);
-    if (multi_solvent) hforces::ini_cloud_color(o::qc.ii, &cloud);
-    w_s.pp = o::q.pp;
-    w_s.c  = cloud;
-    w_s.ff = o::ff;
-    w_s.n  = o::q.n;
-    w_s.starts = o::q.cells.starts;
-    if (fsiforces)     forces_fsi(&w_s, nw, pw, fw);
-
-    /* temporary */
-    std::vector<ParticlesWrap> w_r;
-    if (solids0) w_r.push_back(ParticlesWrap(s::q.pp, s::q.n, s::ff));
-    if (rbcs)    w_r.push_back(ParticlesWrap(r::q.pp, r::q.n, r::ff));
-    rex::rex(w_r); /* fsi::halo(), cnt::halo() */
-}
-
-void forces_objects_new() {
-    fsi::SolventWrap w_s;
-    hforces::Cloud cloud;
-    PaWrap pw[MAX_OBJ_TYPES];
-    FoWrap fw[MAX_OBJ_TYPES];
-    int nw = 0;
-    
-    if (solids0) {
-        pw[nw] = {s::q.n, s::q.pp};
-        fw[nw] = {s::q.n, s::ff};
-        ++nw;
-    }
-    if (rbcs) {
-        pw[nw] = {r::q.n, r::q.pp};
-        fw[nw] = {r::q.n, r::ff};
-        ++nw;
-    }
-
-    if (!nw) return;
-
     /* Prepare and send the data */
     
     using namespace rs;
