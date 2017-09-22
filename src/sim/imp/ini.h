@@ -11,7 +11,7 @@ void ini() {
     }
     
     if (fsiforces) fsi::ini();
-    // sdstr::ini(&tag_gen);
+
     bbhalo::ini(&tag_gen);
     cnt::ini();
     if (rbcs || solids) rex::ini(&tag_gen);

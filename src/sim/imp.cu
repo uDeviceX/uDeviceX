@@ -80,12 +80,6 @@
 #include "exch/mesh/type.h"
 #include "exch/mesh/imp.h"
 
-
-// #include "sdstr/dec.h"
-// #include "sdstr/dev.h"
-// #include "sdstr/imp.h"
-// #include "sdstr/templ.h"
-
 namespace dpdx {
 namespace dev {
 #include "lforces/x/dev.h"
