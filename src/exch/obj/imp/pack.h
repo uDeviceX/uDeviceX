@@ -38,9 +38,9 @@ static void clear_forces(int nfrags, /**/ PackF *p) {
     }   
 }
 
-Fop26 reini_ff(const Pack *p, PackF *pf) {
+Fop26 reini_ff(const Unpack *u, PackF *pf) {
     size_t sz = NBAGS * sizeof(int);
-    memcpy(pf->hff.counts, p->hpp.counts, sz);
+    memcpy(pf->hff.counts, u->hpp.counts, sz);
     clear_forces(NFRAGS, /**/ pf);
 
     Fop26 wrap;

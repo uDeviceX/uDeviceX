@@ -24,7 +24,7 @@ void wait_send(Comm *c);
 
 int26 get_counts(Unpack *u);
 Pap26 upload_shift(Unpack *u);
-Fop26 reini_ff(const Pack *p, PackF *pf);
+Fop26 reini_ff(const Unpack *u, PackF *pf);
 
 void download_ff(PackF *p);
 

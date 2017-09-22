@@ -89,7 +89,7 @@ void forces_objects_new() {
 
     int26 hcc = get_counts(&e.u);
     Pap26 hpp = upload_shift(&e.u);
-    Fop26 hff = reini_ff(&e.p, &e.pf);
+    Fop26 hff = reini_ff(&e.u, &e.pf);
 
     if (fsiforces)     fsi::halo(hpp, hff, hcc.d);
     if (contactforces) cnt::halo(hpp, hff, hcc.d);
