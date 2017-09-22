@@ -1,3 +1,25 @@
-usg () {
-    :
+usg() {
+    echo 'usage: u.deformation [XYZ columns file]..' >&2
+    echo 'compute degree of deformation' >&2
+    exit
 }
+
+zero () { u.ellipsoid | u.deformation0; }
+one  () {
+    if test "$1" = -h
+    then usg
+    else one0 "$@"
+    fi
+}
+many () {
+    for i
+    do one0 "$i"
+    done
+}
+one0  () { u.ellipsoid "$@" | u.deformation0; }
+
+case $# in
+    0) zero      ;;
+    1) one  "$@" ;;
+    *) many "$@" ;;
+esac
