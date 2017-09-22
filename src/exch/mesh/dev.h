@@ -24,7 +24,7 @@ static __device__ void pack_p(int nv, const Particle *pp, int vid, int frag_mid,
     buf[dst] = pp[src];
 }
 
-__global__ void pack_pp_packet(int nv, const Particle *pp, Map map, /**/ Pap26 buf) {
+__global__ void pack_mesh(int nv, const Particle *pp, Map map, /**/ Pap26 buf) {
     int gid, hi, step, fid, mid, vid, frag_mid;
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     hi = map.starts[26] * nv;
