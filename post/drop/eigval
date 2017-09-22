@@ -1,1 +1,9 @@
+usg() {
+    echo 'usage: u.eigval [XYZ columns file]' >&2
+    echo 'compuet eigvalus of angular momentum tensor' >&2
+    exit
+}
+
+if test $# -ne 0 -a "$1" = -h; then usg; fi
+
 u.moment "$@" | u.eigval0

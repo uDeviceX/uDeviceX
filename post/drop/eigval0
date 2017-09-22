@@ -4,7 +4,7 @@
 
 function err(f, varargin); fprintf(stderr(), f, varargin{:}); endfunction
 function usg()
-  err("usage: echo XX XY XZ YY YZ ZZ | eigval0\n");
+  err("usage: echo XX XY XZ YY YZ ZZ | u.eigval0\n");
   err("compute eignvlue of symmetric matrix");
   exit(1);
 endfunction
