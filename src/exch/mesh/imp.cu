@@ -18,7 +18,7 @@
 #include "comm/utils.h"
 
 #include "exch/map/type.h"
-// #include "type.h"
+#include "type.h"
 // #include "imp.h"
 
 namespace exch {

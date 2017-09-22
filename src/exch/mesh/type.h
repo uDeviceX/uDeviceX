@@ -1,5 +1,5 @@
 namespace exch {
-namespace bb {
+namespace mesh {
 
 struct Pack {
     Map map;
@@ -8,7 +8,7 @@ struct Pack {
 };
 
 struct Comm {
-    Stamp pp, ff;
+    Stamp pp;
 };
 
 struct Unpack {
@@ -16,15 +16,5 @@ struct Unpack {
     dBags dpp;
 };
 
-struct PackF {
-    dBags dff;
-    hBags hff;
-};
-
-struct UnpackF {
-    hBags hff;
-    dBags dff;
-};
-
-} // bb
+} // mesh
 } // exch
