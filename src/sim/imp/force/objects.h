@@ -11,19 +11,24 @@ void forces_fsi(fsi::SolventWrap *w_s, int nw, PaWrap *pw, FoWrap *fw) {
 void forces_objects() {
     fsi::SolventWrap w_s;
     hforces::Cloud cloud;
-    std::vector<PaWrap> pwr;
-    std::vector<FoWrap> fwr;
-
+    PaWrap pw[MAX_OBJ_TYPES];
+    FoWrap fw[MAX_OBJ_TYPES];
+    int nw = 0;
+    
     if (solids0) {
-        pwr.push_back({s::q.n, s::q.pp});
-        fwr.push_back({s::q.n, s::ff});
+        pw[nw] = {s::q.n, s::q.pp};
+        fw[nw] = {s::q.n, s::ff};
+        ++nw;
     }
     if (rbcs) {
-        pwr.push_back({r::q.n, r::q.pp});
-        fwr.push_back({r::q.n, r::ff});
+        pw[nw] = {r::q.n, r::q.pp};
+        fw[nw] = {r::q.n, r::ff};
+        ++nw;
     }
 
-    if (contactforces) forces_cnt(pwr.size(), pwr.data(), fwr.data());
+    if (!nw) return;
+
+    if (contactforces) forces_cnt(nw, pw, fw);
 
     hforces::ini_cloud(o::q.pp, &cloud);
     if (multi_solvent) hforces::ini_cloud_color(o::qc.ii, &cloud);
@@ -32,7 +37,7 @@ void forces_objects() {
     w_s.ff = o::ff;
     w_s.n  = o::q.n;
     w_s.starts = o::q.cells.starts;
-    if (fsiforces)     forces_fsi(&w_s, pwr.size(), pwr.data(), fwr.data());
+    if (fsiforces)     forces_fsi(&w_s, nw, pw, fw);
 
     /* temporary */
     std::vector<ParticlesWrap> w_r;
