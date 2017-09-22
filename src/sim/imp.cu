@@ -48,9 +48,6 @@
 #include "inc/dev/read.h"
 #include "clist/imp.h"
 
-#include "mcomm/type.h"
-#include "mcomm/int.h"
-
 #include "flu/int.h"
 #include "rbc/int.h"
 #include "rig/int.h"

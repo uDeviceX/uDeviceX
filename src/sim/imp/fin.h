@@ -45,10 +45,6 @@ void fin() {
         dpdr::free_ticketSIh(&o::h.tsi);
         dpdr::free_ticketRIh(&o::h.tri);
 
-        mcomm::free_ticketcom(&mc::tc);
-        mcomm::free_ticketS(&mc::ts);
-        mcomm::free_ticketR(&mc::tr);
-
         fin(/**/ &mc::e.p);
         fin(/**/ &mc::e.c);
         fin(/**/ &mc::e.u);
