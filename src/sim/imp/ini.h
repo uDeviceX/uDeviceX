@@ -64,6 +64,7 @@ void ini() {
         ini(MAX_VERT_NUM, MAX_CELL_NUM, &mc::e.p);
         ini(m::cart, /*io*/ &tag_gen, /**/ &mc::e.c);
         ini(MAX_VERT_NUM, MAX_CELL_NUM, &mc::e.u);
+        Dalloc(&mc::pp, MAX_PART_NUM);
     }
     
     if (solids) {

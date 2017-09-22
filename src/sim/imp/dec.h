@@ -67,6 +67,7 @@ mcomm::TicketS   ts;
 mcomm::TicketR   tr;
 
 Exch e;
+Particle *pp;
 }
 
 namespace bb /* bounce back */

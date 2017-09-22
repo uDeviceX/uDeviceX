@@ -52,6 +52,7 @@ void fin() {
         fin(/**/ &mc::e.p);
         fin(/**/ &mc::e.c);
         fin(/**/ &mc::e.u);
+        Dfree(mc::pp);
     }
     
     if (solids) {
