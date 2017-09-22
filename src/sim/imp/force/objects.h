@@ -58,6 +58,8 @@ void forces_objects_new() {
     // TODO rm std::vector
     int nw = pwr.size();
 
+    if (!nw) return;
+
     /* Prepare and send the data */
     
     using namespace rs;
