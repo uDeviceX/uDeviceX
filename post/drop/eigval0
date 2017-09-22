@@ -1,22 +1,27 @@
 #!/usr/bin/env octave-qf
 
+1;
+
+function e = eigval0(a)
+  i = 1;
+  X  = i++; Y = i++; Z = i++;
+
+  i = 1;
+  XX = i++; XY = i++; XZ = i++;
+  YY = i++; YZ = i++;
+  ZZ = i++;
+
+  A = zeros(3);
+  A(X,X)          = a(XX);
+  A(X,Y) = A(Y,X) = a(XY);
+  A(X,Z) = A(Z,X) = a(XZ);
+  A(Y,Y)          = a(YY);
+  A(Y,Z) = A(Z,Y) = a(YZ);
+  A(Z,Z)          = a(ZZ);
+
+  e = eig(A);
+endfunction
+
 a = dlmread(stdin());
-
-i = 1;
-X  = i++; Y = i++; Z = i++;
-
-i = 1;
-XX = i++; XY = i++; XZ = i++;
-          YY = i++; YZ = i++;
-                    ZZ = i++;
-
-A = zeros(3);
-A(X,X)          = a(XX);
-A(X,Y) = A(Y,X) = a(XY);
-A(X,Z) = A(Z,X) = a(XZ);
-A(Y,Y)          = a(YY);
-A(Y,Z) = A(Z,Y) = a(YZ);
-A(Z,Z)          = a(ZZ);
-
-e = eig(A);
+e = eigval0(a);
 printf("%.16g %.16g %.16g\n", e);
