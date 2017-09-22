@@ -9,10 +9,6 @@ void pack(int nv, const Particle *pp, /**/ Pack *p) {
 }
 
 void download(Pack *p) {
-    int *src, *dst;
-    size_t sz = NBAGS * sizeof(int);
-    src = p->map.offsets + NBAGS;
-    dst = p->hpp.counts;
-    CC(d::Memcpy(dst, src, sz, D2H));
+    download_counts(1, p->map, /**/ p->hpp.counts);
 }
 
