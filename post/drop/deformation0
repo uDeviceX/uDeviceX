@@ -1,1 +1,20 @@
-:
+#!/usr/bin/awk -f
+
+{
+    i = 1
+    a = $i; i++
+    b = $i; i++
+    c = $i; i++
+}
+
+END {
+    # largest and smallest
+    L = max3(a, b, c)
+    S = min3(a, b, c)
+    print (L - S)/(L + S)
+}
+
+function max3(a, b, c) { return max(a, max(b, c)) }
+function min3(a, b, c) { return min(a, min(b, c)) }
+function max(a, b) { return a > b ? a : b }
+function min(a, b) { return a > b ? b : a }x
