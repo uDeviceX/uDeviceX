@@ -15,13 +15,13 @@ void ini() {
     bbhalo::ini(&tag_gen);
     cnt::ini();
     if (rbcs || solids) rex::ini(&tag_gen);
-    // if (rbcs || solids) {
-    //     ini(MAX_OBJ_TYPES, MAX_OBJ_DENSITY, &rs::e.p);
-    //     ini(m::cart, /*io*/ &tag_gen, /**/ &rs::e.c);
-    //     ini(MAX_OBJ_DENSITY, &rs::e.u);
-    //     ini(MAX_OBJ_DENSITY, &rs::e.pf);
-    //     ini(MAX_OBJ_DENSITY, &rs::e.uf);
-    // }
+    if (rbcs || solids) {
+        ini(MAX_OBJ_TYPES, MAX_OBJ_DENSITY, &rs::e.p);
+        ini(m::cart, /*io*/ &tag_gen, /**/ &rs::e.c);
+        ini(MAX_OBJ_DENSITY, &rs::e.u);
+        ini(MAX_OBJ_DENSITY, &rs::e.pf);
+        ini(MAX_OBJ_DENSITY, &rs::e.uf);
+    }
     
     bop::ini(&dumpt);
 
