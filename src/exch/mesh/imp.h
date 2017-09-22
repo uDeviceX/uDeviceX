@@ -18,7 +18,7 @@ void post_send(Pack *p, Comm *c);
 void wait_recv(Comm *c, Unpack *u);
 void wait_send(Comm *c);
 
-
+void unpack(int nv, const Unpack *u, /**/ int *nmhalo, Particle *pp);
 
 } // mesh
 } // exch
