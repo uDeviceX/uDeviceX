@@ -1,4 +1,1 @@
-#!/usr/bin/awk -f
-BEGIN {
-      
-}
+u.eigval "$@" | u.ellipsoid0
