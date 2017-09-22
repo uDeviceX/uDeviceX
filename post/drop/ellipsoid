@@ -1,1 +1,25 @@
-u.eigval "$@" | u.ellipsoid0
+usg() {
+    echo 'usage: u.ellipsoid [XYZ columns file]..' >&2
+    echo 'compute axis of equivalent ellipsoid' >&2
+    exit
+}
+
+zero () { u.eigval      | u.ellipsoid0; }
+one  () {
+    if test "$1" = -h
+    then usg
+    else one0 "$@"
+    fi
+}
+many () {
+    for i
+    do one0 "$i"
+    done
+}
+one0  () { u.eigval "$@" | u.ellipsoid0; }
+
+case $# in
+    0) zero      ;;
+    1) one  "$@" ;;
+    *) many "$@" ;;
+esac
