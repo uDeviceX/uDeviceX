@@ -38,5 +38,6 @@ static void build_map(int nw, const PaWrap *ww, /**/ Map map) {
 }
 
 void build_map(int nw, const PaWrap *ww, /**/ Pack *p) {
+    if (!nw) return;
     build_map(nw, ww, /**/ p->map);
 }
