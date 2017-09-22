@@ -1,0 +1,38 @@
+#!/usr/bin/awk -f
+# see poc/3x3/ellipsoid
+
+{
+    i = 1
+    S[i] = $i; i++
+    S[i] = $i; i++
+    S[i] = $i; i++
+
+}
+
+function sort() {
+    swap(2, 3)
+    swap(1, 2)
+    swap(2, 3)
+}
+
+function unpack() { A = S[1]; B = S[2]; C = S[3] }
+END {
+    sort()
+    unpack()
+    a2 =  (5*(C+B-A))/2
+    b2 =  (5*(C-B+A))/2
+    c2 = -(5*(C-B-A))/2
+    print sqrt0(a2), sqrt0(b2), sqrt0(c2)
+}
+
+function sqrt0(x) {
+    if (x < 0) err("ellipsoid0: wrong axis: " x)
+    return x
+}
+function less(i, j) { return S[i] < S[j] }
+function swap(i, j) { if (less(i, j)) swap0(i, j) }
+function swap0(i, j,   t) { t = S[i]; S[i] = S[j]; S[j] = t }
+function err(s) {
+    printf "%s\n", s | "cat >&2"
+    exit(1)
+}

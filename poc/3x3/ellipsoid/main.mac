@@ -1,0 +1,8 @@
+e: [
+  A = 1/5*(b2 + c2),
+  B = 1/5*(a2 + c2),
+  C = 1/5*(a2 + b2)
+  ];
+
+s: factor(linsolve(e, [a2, b2, c2]));
+grind(s);
