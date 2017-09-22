@@ -1,0 +1,3 @@
+# TEST: deformation.t0
+./deformation data/tri > deformation.out.txt
+

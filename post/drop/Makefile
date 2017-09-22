@@ -6,4 +6,6 @@ install:
 	mkdir -p "$B"
 	for f in $P; do cp $$f "$B"/u.$$f; done
 
-.PHONY: install
+test:; u.test test/deformation
+
+.PHONY: install test
