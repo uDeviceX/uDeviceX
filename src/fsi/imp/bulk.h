@@ -10,15 +10,10 @@ static void bulk0(PaWrap *pw, FoWrap *fw, hforces::Cloud cloud) {
                                   rnd, (float*)fw->ff, (float*)wo->ff));
 }
 
-void bulk(std::vector<PaWrap> pwr, std::vector<FoWrap> fwr) {
-    int i, n;
-    PaWrap *pw; /* wrap */
-    FoWrap *fw; /* wrap */
-    n = pwr.size();
-    pw = pwr.data();
-    fw = fwr.data();
+void bulk(int nw, PaWrap *pw, FoWrap *fw) {
+    int i;
 
-    if (n == 0) return;
+    if (nw == 0) return;
     setup(wo->starts);
-    for (i = 0; i < n; i++) bulk0(pw++, fw++, wo->c);
+    for (i = 0; i < nw; i++) bulk0(pw++, fw++, wo->c);
 }

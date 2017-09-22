@@ -3,9 +3,9 @@ void forces_cnt(std::vector<PaWrap> *pwr, std::vector<FoWrap> *fwr) {
     cnt::bulk(*pwr, *fwr);
 }
 
-void forces_fsi(fsi::SolventWrap *w_s, std::vector<PaWrap> *pwr, std::vector<FoWrap> *fwr) {
+void forces_fsi(fsi::SolventWrap *w_s, int nw, PaWrap *pw, FoWrap *fw) {
     fsi::bind(*w_s);
-    fsi::bulk(*pwr, *fwr);
+    fsi::bulk(nw, pw, fw);
 }
 
 void forces_objects() {
@@ -32,7 +32,7 @@ void forces_objects() {
     w_s.ff = o::ff;
     w_s.n  = o::q.n;
     w_s.starts = o::q.cells.starts;
-    if (fsiforces)     forces_fsi(&w_s, &pwr, &fwr);
+    if (fsiforces)     forces_fsi(&w_s, pwr.size(), pwr.data(), fwr.data());
 
     /* temporary */
     std::vector<ParticlesWrap> w_r;
@@ -82,7 +82,7 @@ void forces_objects_new() {
     w_s.starts = o::q.cells.starts;
 
     if (contactforces) forces_cnt(&pwr, &fwr);
-    if (fsiforces)     forces_fsi(&w_s, &pwr, &fwr);
+    if (fsiforces)     forces_fsi(&w_s, pwr.size(), pwr.data(), fwr.data());
 
     /* recv data and halo interactions  */
 

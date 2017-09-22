@@ -3,5 +3,5 @@ void halo(Pap26 PP, Fop26 FF, int counts[26]);
 void ini();
 void fin();
 void bind(SolventWrap wrap);
-void bulk(std::vector<PaWrap> pwr, std::vector<FoWrap> fwr);
+void bulk(int nw, PaWrap *pw, FoWrap *fw);
 }

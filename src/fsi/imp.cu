@@ -1,5 +1,4 @@
 #include <assert.h>
-#include <vector>
 #include <mpi.h>
 #include <stdint.h>
 #include <conf.h>
