@@ -21,6 +21,7 @@ void pack(int nw, const PaWrap *ww, /**/ Pack *p) {
 }
 
 void download(int nw, Pack *p) {
+    if (!nw) return;
     int *src, *dst;
     size_t sz = NBAGS * sizeof(int);
     src = p->map.offsets + nw * NBAGS;
