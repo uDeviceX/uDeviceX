@@ -23,10 +23,10 @@
 #define aij_solid        2.667  /* aij for the solid */
 #define aij_wall         2.667  /* aij for the wall */
 
-#define gammadpd_solv    8.0  /* gamma for the solvent */
-#define gammadpd_rbc     8.0  /* gamma for the RBC membrane */
+#define gdpd_b    8.0  /* gamma for the solvent */
+#define gdpd_r     8.0  /* gamma for the RBC membrane */
 #define gammadpd_solid   8.0  /* gamma for the solid */
-#define gammadpd_wall    8.0  /* gamma for the wall */
+#define gdpd_rb    8.0  /* gamma for the wall */
 
 #define global_ids       (false)
 #define multi_solvent    (false)

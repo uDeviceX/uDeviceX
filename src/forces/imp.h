@@ -111,16 +111,16 @@ static __device__ void gen1(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
     /* dispatch on color */
     DPDparam p;
     if         (!multi_solvent) {
-        p.gamma = gammadpd_solv;
+        p.gamma = gdpd_b;
         p.a     = aij_solv;
     } else if (ca == BLUE_COLOR && cb == BLUE_COLOR) {
-        p.gamma = gammadpd_solv;
+        p.gamma = gdpd_b;
         p.a     = aij_solv;
     } else if (ca == RED_COLOR && cb == RED_COLOR) {
-        p.gamma = gammadpd_rbc;
+        p.gamma = gdpd_r;
         p.a     = aij_rbc;
     } else if (seteq(ca, cb,   BLUE_COLOR, RED_COLOR)) {
-        p.gamma = gammadpd_wall;
+        p.gamma = gdpd_rb;
         p.a     = aij_wall;
     } else {
         printf("unknown color pair: %ld %ld\n", ca, cb);

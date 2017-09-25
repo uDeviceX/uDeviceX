@@ -22,10 +22,10 @@
 #define aij_rbc          2.6666667  /* aij for the RBC membrane */
 #define aij_solid        2.6666667  /* aij for the solid */
 #define aij_wall         2.6666667  /* aij for the wall */
-#define gammadpd_solv    8.0        /* gamma for the solvent */
-#define gammadpd_rbc     8.0        /* gamma for the RBC membrane */
+#define gdpd_b    8.0        /* gamma for the solvent */
+#define gdpd_r     8.0        /* gamma for the RBC membrane */
 #define gammadpd_solid   8.0        /* gamma for the solid */
-#define gammadpd_wall    8.0        /* gamma for the wall */
+#define gdpd_rb    8.0        /* gamma for the wall */
 
 #define ljsigma          0.3        /* RBC-RBC contact LJ interaction parameters */
 #define ljepsilon        0.44

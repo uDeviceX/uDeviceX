@@ -22,9 +22,9 @@
 #define aij_rbc          2
 #define aij_wall         10
 
-#define gammadpd_solv    1
-#define gammadpd_rbc     100
-#define gammadpd_wall    10
+#define gdpd_b    1
+#define gdpd_r     100
+#define gdpd_rb    10
 
 #define ljsigma          0.3        /* RBC-RBC contact LJ interaction parameters */
 #define ljepsilon        0.44

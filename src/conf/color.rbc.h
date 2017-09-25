@@ -19,10 +19,10 @@
 #define aij_rbc                 2.6667
 #define aij_solid               2.6667
 #define aij_wall                2.6667
-#define gammadpd_solv           8.0
-#define gammadpd_rbc            12.0
+#define gdpd_b           8.0
+#define gdpd_r            12.0
 #define gammadpd_solid          8.0
-#define gammadpd_wall           8.0
+#define gdpd_rb           8.0
 #define dpd_mass                1.0
 #define rbc_mass                1.0
 #define solid_mass              1.0

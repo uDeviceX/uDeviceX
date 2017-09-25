@@ -21,10 +21,10 @@
 #define aij_rbc             (75.0/numberdensity)
 #define aij_solid           (75.0/numberdensity)
 #define aij_wall            (75.0/numberdensity)
-#define gammadpd_solv       40.0
-#define gammadpd_rbc        40.0
+#define gdpd_b       40.0
+#define gdpd_r        40.0
 #define gammadpd_solid      40.0
-#define gammadpd_wall       40.0
+#define gdpd_rb       40.0
 #define dpd_mass            1.0
 #define rbc_mass            1.0
 #define solid_mass          1.0
