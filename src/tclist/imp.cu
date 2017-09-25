@@ -16,13 +16,10 @@
 #include "utils/kl.h"
 
 #include "imp.h"
+#include "utils.h"
 
 namespace tclist {
 #define BBOX_MARGIN 0.1f
-
-/* maximum number of triangles per solute 
-   this is used to encode the solute id */
-#define MAXT (256*256*256) 
 
 #include "dev.h"
 

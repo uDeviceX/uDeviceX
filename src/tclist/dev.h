@@ -25,10 +25,6 @@ static  __device__ void tbbox(const float3 A, const float3 B, const float3 C, /*
     hi->z = max3(A.z, B.z, C.z) + BBOX_MARGIN;
 }
 
-static __device__ int encode(int soluteid, int id) {
-    return soluteid * MAXT + id;
-}
-
 __global__ void countt(const int nt, const int4 *tt, const int nv, const Particle *pp, const int ns, /**/ int *counts) {
     const int thid = threadIdx.x + blockIdx.x * blockDim.x;
     float3 A, B, C, lo, hi;
