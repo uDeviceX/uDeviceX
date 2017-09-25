@@ -6,6 +6,11 @@ static void report() {
 }
 
 void restrain(const int *cc, int n, long it, /**/ Particle *pp) {
+    bool cond;
+    int freq;
     restrain::vel(cc, n, RED_COLOR, /**/ pp);
-    if (it % RESTRAIN_REPORT_FREQ == 0) report();
+
+    freq = RESTRAIN_REPORT_FREQ;
+    cond = freq > 0 && it % freq == 0;
+    if (cond) report();
 }
