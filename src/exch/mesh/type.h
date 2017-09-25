@@ -17,5 +17,21 @@ struct Unpack {
     dBags dpp;
 };
 
+/* optional structures for sending momenta back */
+
+struct PackM {
+    dBags dmm;
+    hBags hmm;
+};
+
+struct CommM {
+    Stamp mm;
+};
+
+struct UnpackM {
+    dBags dmm;
+    hBags hmm;
+};
+
 } // mesh
 } // exch
