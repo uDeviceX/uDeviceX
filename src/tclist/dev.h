@@ -25,8 +25,8 @@ static  __device__ void tbbox(const float3 A, const float3 B, const float3 C, /*
     hi->z = max3(A.z, B.z, C.z) + BBOX_MARGIN;
 }
 
-static int encode(int soluteid, int id) {
-    return soluteid * MAXC + id;
+static __device__ int encode(int soluteid, int id) {
+    return soluteid * MAXT + id;
 }
 
 __global__ void countt(const int nt, const int4 *tt, const int nv, const Particle *pp, const int ns, /**/ int *counts) {
@@ -67,7 +67,7 @@ __global__ void countt(const int nt, const int4 *tt, const int nv, const Particl
     }
 }
 
-__global__ void fill_ids(const int nt, const int4 *tt, const int nv, const Particle *pp, const int ns, const int *starts, /**/ int *counts, int *ids) {
+__global__ void fill_ids(int soluteid, const int nt, const int4 *tt, const int nv, const Particle *pp, const int ns, const int *starts, /**/ int *counts, int *ids) {
     const int thid = threadIdx.x + blockIdx.x * blockDim.x;
     float3 A, B, C, lo, hi;
     int3 t;
@@ -105,7 +105,7 @@ __global__ void fill_ids(const int nt, const int4 *tt, const int nv, const Parti
         subindex = atomicAdd(counts + cid, 1);
         start = starts[cid];
 
-        ids[start + subindex] = thid;
+        ids[start + subindex] = encode(soluteid, thid);
     }
 }
 } // dev

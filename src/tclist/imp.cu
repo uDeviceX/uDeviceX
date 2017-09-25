@@ -19,13 +19,15 @@
 
 namespace tclist {
 #define BBOX_MARGIN 0.1f
-#define MAXC (256*256*256)
+
+/* maximum number of triangles per solute 
+   this is used to encode the solute id */
+#define MAXT (256*256*256) 
 
 #include "dev.h"
 
 void ini(int Lx, int Ly, int Lz, int maxtriangles, /**/ TClist *c) {
     int ncells = Lx * Ly * Lz;
-    assert(ncells < MAXC);
     
     c->ncells = ncells;
     c->dims = make_int3(Lx, Ly, Lz);
@@ -50,6 +52,8 @@ void reini(/**/ TClist *c) {
 
 static void countt(int nt, int nv, const int4 *tt, const int nm, const Particle *pp, /**/ int *cc) {
     if (nm == 0) return;
+    if (nt * nm >= MAXT) ERR("Too many triangles");
+        
     KL(dev::countt, (k_cnf(nm*nt)), (nt, tt, nv, pp, nm, /**/ cc));
 }
 
@@ -62,9 +66,9 @@ void scan(/**/ TClist *c, /*w*/ scan::Work *w) {
     CC(d::MemsetAsync(c->cc, 0, c->ncells * sizeof(int)));
 }
 
-void fill(int nt, int nv, const int4 *tt, const int nm, const Particle *pp, /**/ TClist *c) {
+void fill(int soluteid, int nt, int nv, const int4 *tt, const int nm, const Particle *pp, /**/ TClist *c) {
     if (nm == 0) return;
-    KL(dev::fill_ids, (k_cnf(nm*nt)), (nt, tt, nv, pp, nm, c->ss, /**/ c->cc, c->ii));
+    KL(dev::fill_ids, (k_cnf(nm*nt)), (soluteid, nt, tt, nv, pp, nm, c->ss, /**/ c->cc, c->ii));
 }
 
 } // tclist
