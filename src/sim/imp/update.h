@@ -9,6 +9,7 @@ void update_solid() {
 }
 
 void update_solvent() {
+    scheme::restrain(o::qc.ii, o::q.n, /**/ o::q.pp);
     scheme::move(dpd_mass, o::q.pp, o::ff, o::q.n);
 }
 
