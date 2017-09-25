@@ -8,15 +8,21 @@ function D = read(f)
   D = structfun(@squeeze, D, "UniformOutput", false);
 endfunction
 
-function S = add0(S, D, f); S.(f) += D.(f); endfunction
-function S = add1(S, D)
+function S = add0(S, D, n, f)
+  s = S.(f); x = D.(f);
+  # moving sum
+  s  = (n - 1) * s + x;
+  s /= n;
+  S.(f) = s;
+endfunction
+function S = add1(S, D, n)
   ff = fieldnames(S);
-  n = numel(ff);
-  for i = 1:n; f = ff{i}; S = add0(S, D, f); endfor
+  nf = numel(ff);
+  for i = 1:nf; f = ff{i}; S = add0(S, D, n, f); endfor
 endfunction
 
-function S = add(S, D)
-  if (isempty(S)); S = D; else S = add1(S, D); endif
+function S = add(S, D, n)
+  if n == 1; S = D; else S = add1(S, D, n); endif
 endfunction
 
 function values(S)
@@ -89,9 +95,9 @@ function r = hd(); global a; r = a{1}; endfunction
 
 ini();
 o = hd(); shift();
-S = {};
+n = 1; S = {};
 while c() > 0
   D = read(hd()); shift();
-  S = add(S, D);
+  S = add(S, D, n++);
 endwhile
 write(S)
