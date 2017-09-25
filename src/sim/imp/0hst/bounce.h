@@ -17,7 +17,7 @@ void bounce_solid(int it) {
     mbounce::collect_rig_dev(s::q.m_hst.nt, nsbb, &bb::tm, /**/ s::t.ss_hst);
 
     if (it % rescue_freq == 0)
-        mrescue::rescue_hst(s::q.m_hst, s::t.i_pp_hst, nsbb, o::q.n, bb::qtc.ss_hst, bb::qtc.cc_hst, bb::qtc.ii_hst, /**/ o::q.pp_hst);
+        mrescue::rescue_hst(s::q.m_hst.nt, s::q.m_hst.nv, s::q.m_hst.tt, s::t.i_pp_hst, nsbb, o::q.n, bb::qtc.ss_hst, bb::qtc.cc_hst, bb::qtc.ii_hst, /**/ o::q.pp_hst);
 
     cH2D(o::q.pp, o::q.pp_hst, o::q.n);
 
