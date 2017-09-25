@@ -3,7 +3,7 @@
 1;
 
 function D = read(f)
-  D = load(f);
+  D = load(f, "u", "v", "w");
   D = orderfields(D); # alphabetically
   D = structfun(@squeeze, D, "UniformOutput", false);
 endfunction
@@ -20,8 +20,16 @@ function values(S)
   fin_val();
 endfunction
 
+function S = cellfun0(f, S, varargin)
+  S = cellfun(f, S, "UniformOutput", false, varargin{:});
+endfunction
+
 function values0(S)
-  w_val(S.u, "single");
+  S = struct2cell(S);
+  S = cellfun0(@(v) v(:), S);
+  S = horzcat(S{:});
+  S = S'(:);
+  w_val(S, "single");
 endfunction
 
 function w_bov(fmt, varargin)
@@ -32,19 +40,18 @@ endfunction
 
 function w_val(v)
   global val_f
-  size(v)
   fwrite(val_f, v, "single");
 endfunction
 
 function bov0(S)
   sz = size(S.u);
-				# dc = numel(fieldnames(S));
-  dc = 1;
+  dc = numel(fieldnames(S));
   fn = "o.values";
+  vn = "V";
   w_bov("DATA_FILE: %s", fn)
   w_bov("DATA_SIZE: %d %d %d", sz)
   w_bov("DATA_FORMAT: FLOAT")
-  w_bov("VARIABLE: D")
+  w_bov("VARIABLE: %s", vn)
   w_bov("DATA_COMPONENTS: %d", dc)
   w_bov("CENTERING: zonal")
   w_bov("DATA_ENDIAN: LITTLE")
