@@ -3,15 +3,20 @@
 1;
 
 function D = read(f)
-  D = load(f, "u", "v", "w");
+  D = load(f);
   D = orderfields(D); # alphabetically
   D = structfun(@squeeze, D, "UniformOutput", false);
 endfunction
 
-function S = add0(S, D); S = D; endfunction
+function S = add0(S, D, f); S.(f) += D.(f); endfunction
+function S = add1(S, D)
+  ff = fieldnames(S);
+  n = numel(ff);
+  for i = 1:n; f = ff{i}; S = add0(S, D, f); endfor
+endfunction
 
 function S = add(S, D)
-  if (isempty(S)); S = D; else S = add0(S, D); endif
+  if (isempty(S)); S = D; else S = add1(S, D); endif
 endfunction
 
 function values(S)
@@ -76,8 +81,17 @@ function write(S)
   values(S)
 endfunction
 
-D = read(argv(){1});
-S = D;
-S = add(S, D);
+function ini(); global a; a = argv();     endfunction
+function r = c(); global a; r = numel(a); endfunction
+function shift(); global a; a = {a{2:end}}; endfunction
+# [h]ea[d]
+function r = hd(); global a; r = a{1}; endfunction
 
+ini();
+o = hd(); shift();
+S = {};
+while c() > 0
+  D = read(hd()); shift();
+  S = add(S, D);
+endwhile
 write(S)
