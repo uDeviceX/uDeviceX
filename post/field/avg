@@ -3,8 +3,7 @@
 1;
 
 function D = read(f)
-  fi = {'u', 'v', 'w'};
-  D = load(f, fi{:});
+  D = load(f);
   D = structfun(@squeeze, D, "UniformOutput", false);
 endfunction
 
@@ -20,4 +19,5 @@ D = read(argv(){1});
 S = D;
 S = add(S, D);
 
+fieldnames(S)
 
