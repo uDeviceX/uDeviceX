@@ -2,6 +2,12 @@
 
 1;
 
+function usg()
+  msg("usage: u.avg o.bov [field.h5]..\n");
+  msg("average field files");
+  exit(1);
+endfunction
+function msg(fmt, varargin); fprintf(stderr(), fmt, varargin{:}); endfunction
 function D = read(f)
   D = load(f);
   D = orderfields(D); # alphabetically
@@ -20,7 +26,6 @@ function S = add1(S, D, n)
   nf = numel(ff);
   for i = 1:nf; f = ff{i}; S = add0(S, D, n, f); endfor
 endfunction
-
 function S = add(S, D, n)
   if n == 1; S = D; else S = add1(S, D, n); endif
 endfunction
@@ -93,8 +98,11 @@ function r = c(); global a; r = numel(a); endfunction
 function shift(); global a; a = {a{2:end}}; endfunction
 # [h]ea[d]
 function r = hd(); global a; r = a{1}; endfunction
+function r = eq(a, b); r = strcmp(a, b); endfunction
 
 ini();
+if eq(hd(), "-h"); usg(); endif
+
 o = hd(); shift();
 n = 1; S = {};
 while c() > 0
