@@ -1,21 +1,21 @@
 namespace dev
 {
 
-template <typename T> __host__ __device__ T min3(T a, T b, T c) {return min(a, min(b, c));}
-template <typename T> __host__ __device__ T max3(T a, T b, T c) {return max(a, max(b, c));}
+template <typename T> __device__ T min3(T a, T b, T c) {return min(a, min(b, c));}
+template <typename T> __device__ T max3(T a, T b, T c) {return max(a, max(b, c));}
 
-static __host__ __device__ float3 loadr(const Particle *pp, int i) {
+static  __device__ float3 loadr(const Particle *pp, int i) {
     Particle p = pp[i];
     enum {X, Y, Z};
     return make_float3(p.r[X], p.r[Y], p.r[Z]);
 }
 
-static __host__ __device__ int3 loadt(const int4 *tt, int i) {
+static  __device__ int3 loadt(const int4 *tt, int i) {
     int4 t = tt[i];
     return make_int3(t.x, t.y, t.z);
 }
 
-static __host__ __device__ void tbbox(const float3 A, const float3 B, const float3 C, /**/ float3 *lo, float3 *hi) {
+static  __device__ void tbbox(const float3 A, const float3 B, const float3 C, /**/ float3 *lo, float3 *hi) {
     lo->x = min3(A.x, B.x, C.x) - BBOX_MARGIN;
     lo->y = min3(A.y, B.y, C.y) - BBOX_MARGIN;
     lo->z = min3(A.z, B.z, C.z) - BBOX_MARGIN;
@@ -23,6 +23,10 @@ static __host__ __device__ void tbbox(const float3 A, const float3 B, const floa
     hi->y = max3(A.y, B.y, C.y) + BBOX_MARGIN;
     hi->x = max3(A.x, B.x, C.x) + BBOX_MARGIN;
     hi->z = max3(A.z, B.z, C.z) + BBOX_MARGIN;
+}
+
+static int encode(int soluteid, int id) {
+    return soluteid * MAXC + id;
 }
 
 __global__ void countt(const int nt, const int4 *tt, const int nv, const Particle *pp, const int ns, /**/ int *counts) {

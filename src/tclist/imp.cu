@@ -1,23 +1,25 @@
 #include <stdio.h>
+#include <assert.h>
+
 #include <conf.h>
 #include "inc/conf.h"
 #include "inc/def.h"
 #include "msg.h"
-#include "utils/cc.h"
 
-#include "d/q.h"
-#include "d/ker.h"
 #include "d/api.h"
 
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "algo/scan/int.h"
+
+#include "utils/cc.h"
 #include "utils/kl.h"
 
 #include "imp.h"
 
 namespace tclist {
 #define BBOX_MARGIN 0.1f
+#define MAXC (256*256*256)
 
 #include "dev.h"
 
