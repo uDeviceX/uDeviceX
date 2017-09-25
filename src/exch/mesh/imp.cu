@@ -27,6 +27,7 @@ namespace exch {
 namespace mesh {
 using namespace comm;
 #include "exch/map/dev.h"
+#include "exch/common/type.h"
 #include "exch/common/dev.h"
 #include "dev.h"
 

@@ -24,9 +24,8 @@
 namespace exch {
 namespace obj {
 using namespace comm;
-#include "imp/type.h"
-
 #include "exch/map/dev.h"
+#include "exch/common/type.h"
 #include "exch/common/dev.h"
 #include "dev.h"
 

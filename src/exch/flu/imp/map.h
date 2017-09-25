@@ -1,4 +1,3 @@
-
 static void fill_map(int n, const Particle *pp, /**/ Map map) {
     int3 L = make_int3(XS-2, YS-2, ZS-2);    
     KL(dev::build_map, (k_cnf(n)), (L, 0, n, pp, /**/ map));
