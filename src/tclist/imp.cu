@@ -24,7 +24,9 @@ namespace tclist {
 #include "dev.h"
 
 void ini(int Lx, int Ly, int Lz, int maxtriangles, /**/ TClist *c) {
-    int ncells = Lx * Ly * Lz; 
+    int ncells = Lx * Ly * Lz;
+    assert(ncells < MAXC);
+    
     c->ncells = ncells;
     c->dims = make_int3(Lx, Ly, Lz);
 
