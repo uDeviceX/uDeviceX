@@ -16,7 +16,9 @@ __global__ void clear_vel(Particle *pp, int n)  {
     for(int c = 0; c < 3; ++c) pp[pid].v[c] = 0;
 }
 
-namespace restrain_drop {
+
+/* restrain drop kernels */
+namespace rd {
 
 __device__ float3 sumv;
 __device__ int indrop;
@@ -36,7 +38,7 @@ static __device__ int warpReduceSum(int v) {
     return v;
 }
 
-__global__ void reduce_vel(int color, int n, const Particle *pp, const int *cc) {
+__global__ void sum_vel(int color, int n, const Particle *pp, const int *cc) {
     int i, valid, nvalid;
     i = threadIdx.x + blockDim.x * blockIdx.x;
     
@@ -61,6 +63,22 @@ __global__ void reduce_vel(int color, int n, const Particle *pp, const int *cc) 
         atomicAdd(&sumv.z, v.z);
         atomicAdd(&indrop, nvalid);
     }
+}
+
+__global__ void shift_vel(float3 v, int n, Particle *pp) {
+    enum {X, Y, Z};
+    int i;
+    i = threadIdx.x + blockDim.x * blockIdx.x;
+
+    if (i >= n) return;
+
+    Particle p = pp[i];
+    
+    p.v[X] -= v.x;
+    p.v[Y] -= v.y;
+    p.v[Z] -= v.z;
+
+    pp[i] = p;
 }
 
 } // restrain_drop

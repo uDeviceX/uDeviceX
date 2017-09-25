@@ -35,9 +35,11 @@ static float3 avg_v() {
     return make_float3(v[X], v[Y], v[Z]);
 }
 
-void restrain_drop_vel(int color, int n, const Particle *pp, const int *cc) {
+void restrain_drop_vel(int color, int n, Particle *pp, const int *cc) {
     reini();
     KL(dev::rd::sum_vel, (k_cnf(n)), (color, n, pp, cc));
 
-    
+    float3 vavg = avg_v();
+
+    KL(dev::rd::shift_vel, (k_cnf(n)), (vavg, n, /**/ pp));
 }
