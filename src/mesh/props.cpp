@@ -69,19 +69,19 @@ static void M_2(const float *A, const float *B, const float *C, /**/ float *res)
 #undef Cy
 #undef Cz
 
-#define load_t(m, tid) {m.vv[3*tid + 0], m.vv[3*tid + 1], m.vv[3*tid + 2]}
+#define load_t(vv, tid) {vv[3*tid + 0], vv[3*tid + 1], vv[3*tid + 2]}
 
-float volume(const Mesh mesh) {
+float volume(int nt, const int *tt, const float *vv) {
     float Vtot = 0;
         
-    for (int it = 0; it < mesh.nt; ++it) {
-        const int t1 = mesh.tt[3*it + 0];
-        const int t2 = mesh.tt[3*it + 1];
-        const int t3 = mesh.tt[3*it + 2];
+    for (int it = 0; it < nt; ++it) {
+        const int t1 = tt[3*it + 0];
+        const int t2 = tt[3*it + 1];
+        const int t3 = tt[3*it + 2];
 
-        const float A[3] = load_t(mesh, t1);
-        const float B[3] = load_t(mesh, t2);
-        const float C[3] = load_t(mesh, t3);
+        const float A[3] = load_t(vv, t1);
+        const float B[3] = load_t(vv, t2);
+        const float C[3] = load_t(vv, t3);
 
         float V = 0;            
         M_0(A, B, C, /**/ &V);
@@ -91,17 +91,17 @@ float volume(const Mesh mesh) {
     return Vtot;
 }
 
-void center_of_mass(const Mesh mesh, /**/ float *com) {
+void center_of_mass(int nt, const int *tt, const float *vv, /**/ float *com) {
     float Vtot = 0, M1tot[3] = {0};
         
-    for (int it = 0; it < mesh.nt; ++it) {
-        const int t1 = mesh.tt[3*it + 0];
-        const int t2 = mesh.tt[3*it + 1];
-        const int t3 = mesh.tt[3*it + 2];
+    for (int it = 0; it < nt; ++it) {
+        const int t1 = tt[3*it + 0];
+        const int t2 = tt[3*it + 1];
+        const int t3 = tt[3*it + 2];
 
-        const float A[3] = load_t(mesh, t1);
-        const float B[3] = load_t(mesh, t2);
-        const float C[3] = load_t(mesh, t3);
+        const float A[3] = load_t(vv, t1);
+        const float B[3] = load_t(vv, t2);
+        const float C[3] = load_t(vv, t3);
 
         float V = 0, M1[3];
             
@@ -123,17 +123,17 @@ static void shift(const float s[3], /**/ float a[3]) {
     a[X] -= s[X]; a[Y] -= s[Y]; a[Z] -= s[Z];
 }
     
-void inertia_tensor(const Mesh mesh, const float *com, const float density, /**/ float *I) {
+void inertia_tensor(int nt, const int *tt, const float *vv, const float *com, const float density, /**/ float *I) {
     memset(I, 0, 6 * sizeof(float));
         
-    for (int it = 0; it < mesh.nt; ++it) {
-        const int t1 = mesh.tt[3*it + 0];
-        const int t2 = mesh.tt[3*it + 1];
-        const int t3 = mesh.tt[3*it + 2];
+    for (int it = 0; it < nt; ++it) {
+        const int t1 = tt[3*it + 0];
+        const int t2 = tt[3*it + 1];
+        const int t3 = tt[3*it + 2];
 
-        float A[3] = load_t(mesh, t1);
-        float B[3] = load_t(mesh, t2);
-        float C[3] = load_t(mesh, t3);
+        float A[3] = load_t(vv, t1);
+        float B[3] = load_t(vv, t2);
+        float C[3] = load_t(vv, t3);
 
         shift(com, /**/ A);
         shift(com, /**/ B);

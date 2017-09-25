@@ -37,16 +37,16 @@ static void init_I_frompp(const Particle *pp, int n, float pmass, const float *c
     for (int c = 0; c < 6; ++c) I[c] *= pmass;
 }
 #else
-static void init_I_fromm(float pmass, const Mesh mesh, /**/ float *I) {
+static void init_I_fromm(float pmass, const Mesh m, /**/ float *I) {
     float com[3] = {0};
-    mesh::center_of_mass(mesh, /**/ com);
-    mesh::inertia_tensor(mesh, com, numberdensity, /**/ I);
+    mesh::center_of_mass(m.nt, m.tt, m.vv, /**/ com);
+    mesh::inertia_tensor(m.nt, m.tt, m.vv, com, numberdensity, /**/ I);
 
     for (int c = 0; c < 6; ++c) I[c] *= pmass;
 }
 #endif
     
-void ini(const Particle *pp, int n, float pmass, const float *com, const Mesh mesh, /**/ float *rr0, Solid *s) {
+void ini(const Particle *pp, int n, float pmass, const float *com, const Mesh m, /**/ float *rr0, Solid *s) {
     s->v[X] = s->v[Y] = s->v[Z] = 0; 
     s->om[X] = s->om[Y] = s->om[Z] = 0; 
 
@@ -61,8 +61,8 @@ void ini(const Particle *pp, int n, float pmass, const float *com, const Mesh me
     init_I_frompp(pp, n, pmass, com, /**/ I);
     s->mass = n*pmass;
 #else
-    init_I_fromm(pmass, mesh, /**/ I);
-    s->mass = mesh::volume(mesh) * numberdensity * pmass;
+    init_I_fromm(pmass, m, /**/ I);
+    s->mass = mesh::volume(m.nt, m.tt, m.vv) * numberdensity * pmass;
 #endif
         
     linal::inv3x3(I, /**/ s->Iinv);
