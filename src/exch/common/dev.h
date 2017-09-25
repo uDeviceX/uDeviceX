@@ -1,5 +1,28 @@
 namespace dev {
 
+static __device__ void pack_p(const Particle *pp, int offset, int *indices, int i, /**/ Particle *buf) {
+    int dst, src;
+    dst = offset + i;
+    src = __ldg(indices + dst);
+    buf[dst] = pp[src];
+}
+
+__global__ void pack_pp(const Particle *pp, PackHelper ph, /**/ Pap26 buf) {
+    int gid, fid, frag_i, hi, step;
+    gid = threadIdx.x + blockDim.x * blockIdx.x;
+    hi = ph.starts[26];
+    step = gridDim.x * blockDim.x;
+
+    for (  ; gid < hi; gid += step) {
+        fid = k_common::fid(ph.starts, gid);
+
+        /* index in the fragment coordinates */ 
+        frag_i = gid - ph.starts[fid];
+        
+        pack_p(pp, ph.offsets[fid], ph.indices[fid], frag_i, /**/ buf.d[fid]);
+    }
+}
+
 // TODO this is copy/paste from distr/common
 static __device__ void fid2shift(int id, /**/ int s[3]) {
     enum {X, Y, Z};

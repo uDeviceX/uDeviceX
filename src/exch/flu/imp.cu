@@ -15,7 +15,7 @@
 #include "frag/imp.h"
 #include "mpi/basetags.h"
 #include "comm/imp.h"
-// #include "comm/utils.h"
+#include "comm/utils.h"
 
 #include "exch/map/type.h"
 #include "type.h"
@@ -25,6 +25,7 @@ namespace exch {
 namespace flu {
 using namespace comm;
 #include "exch/map/dev.h"
+#include "exch/common/type.h"
 #include "exch/common/dev.h"
 #include "dev.h"
 

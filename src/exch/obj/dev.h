@@ -13,29 +13,6 @@ __global__ void build_map(int3 L, int soluteid, int n, const Particle *pp, /**/ 
         add_to_map(soluteid, pid, fids[j], /**/ map);
 }
 
-static __device__ void pack_p(const Particle *pp, int offset, int *indices, int i, /**/ Particle *buf) {
-    int dst, src;
-    dst = offset + i;
-    src = __ldg(indices + dst);
-    buf[dst] = pp[src];
-}
-
-__global__ void pack_pp(const Particle *pp, PackHelper ph, /**/ Pap26 buf) {
-    int gid, fid, frag_i, hi, step;
-    gid = threadIdx.x + blockDim.x * blockIdx.x;
-    hi = ph.starts[26];
-    step = gridDim.x * blockDim.x;
-
-    for (  ; gid < hi; gid += step) {
-        fid = k_common::fid(ph.starts, gid);
-
-        /* index in the fragment coordinates */ 
-        frag_i = gid - ph.starts[fid];
-        
-        pack_p(pp, ph.offsets[fid], ph.indices[fid], frag_i, /**/ buf.d[fid]);
-    }
-}
-
 static __device__ void unpack_f(const Force *hff, int offset, int *indices, int i, /**/ Force *ff) {
     enum {X, Y, Z};
     int dst, src;
