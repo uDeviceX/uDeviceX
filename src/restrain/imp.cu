@@ -20,7 +20,7 @@
 
 #include "imp.h"
 
-namespace restrain_vel {
+namespace restrain {
 namespace dev {
 #include "dev/main.h"
 }

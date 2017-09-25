@@ -17,7 +17,7 @@ static __device__ int warpReduceSum(int v) {
     return v;
 }
 
-__global__ void sum_vel(int color, int n, const Particle *pp, const int *cc) {
+static __global__ void sum_vel(int color, int n, const Particle *pp, const int *cc) {
     int i, valid, nvalid;
     i = threadIdx.x + blockDim.x * blockIdx.x;
     
@@ -44,7 +44,7 @@ __global__ void sum_vel(int color, int n, const Particle *pp, const int *cc) {
     }
 }
 
-__global__ void shift_vel(float3 v, int n, Particle *pp) {
+static __global__ void shift_vel(float3 v, int n, Particle *pp) {
     enum {X, Y, Z};
     int i;
     i = threadIdx.x + blockDim.x * blockIdx.x;
