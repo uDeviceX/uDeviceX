@@ -1,0 +1,22 @@
+# two steps of rbc with colors
+# cTEST: color.drop.t1
+rm -rf bop diag.txt h5
+export PATH=../tools:$PATH
+(cd ../cmd; make ) > /dev/null
+s=.
+u=u/bangladesh
+Domain="XS=16 YS=16 ZS=16"
+Walls="walls wall_creation=1 shear_y gamma_dot=10"
+u.conf $s $u conf/zurich.h <<!!!
+   $Domain
+   $Walls
+   tend=40.01 part_freq=80000 field_freq=80000
+   kBT=0.00444302
+   field_dumps part_dumps
+   run
+!!!
+{ make clean && u.make -j; } > make.log
+sh runfile
+bop2txt2 bop/solvent-00001.bop -- bop/colors_solvent-00001.bop | 
+  awk '{print $7}' | sort -g > color.out.txt
+
