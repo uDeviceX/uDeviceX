@@ -80,7 +80,7 @@ static __device__ void dpd(float x, float y, float z,
 
     rm = max(1 - r, 0.0f);
     wc = rm;
-    wr = wrf(-S_LEVEL, rm);
+    wr = wrf(S_LEVEL, rm);
     ev = x*vx + y*vy + z*vz;
 
     gamma = p.gamma;
