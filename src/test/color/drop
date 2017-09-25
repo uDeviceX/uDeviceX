@@ -11,6 +11,7 @@ Walls="walls wall_creation=1 shear_y gamma_dot=10"
 u.conf $s $u conf/zurich.h <<!!!
    $Domain
    $Walls
+   numberdensity=2
    tend=40.01 part_freq=80000 field_freq=80000
    kBT=0.00444302
    field_dumps part_dumps
