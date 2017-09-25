@@ -24,7 +24,7 @@ static float3 avg_v() {
     CC(d::MemcpyFromSymbol(&n, &dev::rd::indrop,  sizeof(int)));
 
     MC(m::Allreduce(&n, MPI_IN_PLACE, 1, MPI_INT  , MPI_SUM, m::cart));
-    MC(m::Allreduce(&v, MPI_IN_PLACE, 3, MPI_FLOAT, MPI_SUM, m::cart));
+    MC(m::Allreduce( v, MPI_IN_PLACE, 3, MPI_FLOAT, MPI_SUM, m::cart));
 
     enum {X, Y, Z};
     if (n) {
