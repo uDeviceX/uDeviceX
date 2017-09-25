@@ -16,6 +16,7 @@
 #include "inc/dev.h"
 #include "glb.h"
 
+#include "mpi/glb.h"
 #include "mpi/wrapper.h"
 
 #include "imp.h"

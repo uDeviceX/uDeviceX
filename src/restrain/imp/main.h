@@ -6,8 +6,8 @@ static int reduce(const void *sendbuf0, void *recvbuf, int count, MPI_Datatype d
     return m::Reduce(sendbuf, recvbuf, count, datatype, op, root, m::cart);
 }
 
-static int sum3(double *v) {
-    return reduce(&v, m::rank == 0 ? &v : NULL, 3, MPI_DOUBLE, MPI_SUM);
+static int sum_f3(float *v) {
+    return reduce(&v, m::rank == 0 ? &v : NULL, 3, MPI_FLOAT, MPI_SUM);
 }
 
 static int sum_i(int *v) {
@@ -22,14 +22,13 @@ static void reini() {
 }
 
 static float3 avg_v() {
+    enum {X, Y, Z};
     int n; float v[3];
     CC(d::MemcpyFromSymbol( v, &dev::sumv, sizeof(float3)));
     CC(d::MemcpyFromSymbol(&n, &dev::indrop,  sizeof(int)));
 
-    MC(m::Allreduce(&n, MPI_IN_PLACE, 1, MPI_INT  , MPI_SUM, m::cart));
-    MC(m::Allreduce( v, MPI_IN_PLACE, 3, MPI_FLOAT, MPI_SUM, m::cart));
-
-    enum {X, Y, Z};
+    sum_i (&n);
+    sum_f3( v);
     if (n) {
         v[X] /= n;
         v[Y] /= n;
