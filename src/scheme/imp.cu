@@ -14,7 +14,8 @@
 #include "inc/dev.h"
 #include "glb.h"
 
-#include "int.h"
+#include "imp.h"
+
 namespace scheme {
 namespace dev {
 #ifdef FORWARD_EULER
@@ -33,7 +34,6 @@ namespace dev {
 #else
   #error FORCE_* is undefined
 #endif
-
 #include "dev/main.h"
 } /* namespace */
 
