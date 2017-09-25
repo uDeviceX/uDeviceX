@@ -69,17 +69,17 @@ static float dist_from_triangle(const float *a, const float *b, const float *c, 
     return sqrt(dot(dr, dr));
 }
 
-float dist_from_mesh(const Mesh m, const float *r0) {
+float dist_from_mesh(int nt, const int *tt, const float *vv, const float *r0) {
     float dmin = 1e5f;
 
-    for (int it = 0; it < m.nt; ++it) {
-        const int i1 = m.tt[3*it + 0];
-        const int i2 = m.tt[3*it + 1];
-        const int i3 = m.tt[3*it + 2];
+    for (int it = 0; it < nt; ++it) {
+        const int i1 = tt[3*it + 0];
+        const int i2 = tt[3*it + 1];
+        const int i3 = tt[3*it + 2];
 
-        const float *A = m.vv + 3*i1;
-        const float *B = m.vv + 3*i2;
-        const float *C = m.vv + 3*i3;
+        const float *A = vv + 3*i1;
+        const float *B = vv + 3*i2;
+        const float *C = vv + 3*i3;
 
         const float d = dist_from_triangle(A, B, C, r0);
 

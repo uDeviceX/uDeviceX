@@ -1,3 +1,3 @@
 namespace mesh {
-float dist_from_mesh(const Mesh m, const float *r0);
+float dist_from_mesh(int nt, const int *tt, const float *vv, const float *r0);
 }
