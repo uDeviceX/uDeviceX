@@ -17,6 +17,7 @@
 #include "glb.h"
 
 #include "mpi/wrapper.h"
+#include "restrain/imp.h"
 
 #include "imp.h"
 
