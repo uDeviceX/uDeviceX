@@ -26,6 +26,10 @@ void ini(int num_mom_per_mesh, int max_mesh_num, PackM *p);
 void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ CommM *c);
 void ini(int num_mom_per_mesh, int max_mesh_num, UnpackM *u);
 
+void fin(PackM *p);
+void fin(CommM *c);
+void fin(UnpackM *u);
+
 
 } // mesh
 } // exch

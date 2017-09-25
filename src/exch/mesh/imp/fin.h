@@ -12,3 +12,17 @@ void fin(Comm *c) {
 void fin(Unpack *u) {
     fin(PINNED_DEV, NONE, /**/ &u->hpp, &u->dpp);
 }
+
+
+
+void fin(PackM *p) {
+    fin(PINNED, NONE, /**/ &p->hmm, &p->dmm);
+}
+
+void fin(CommM *c) {
+    fin(&c->mm);
+}
+
+void fin(UnpackM *u) {
+    fin(PINNED_DEV, NONE, /**/ &u->hmm, &u->dmm);
+}
