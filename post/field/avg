@@ -9,6 +9,7 @@ function usg()
 endfunction
 function msg(fmt, varargin); fprintf(stderr(), fmt, varargin{:}); endfunction
 function D = read(f)
+  if (!fexist(f)); msg("u.avg: wrong file: %s", f); exit(1); endif
   D = load(f);
   D = orderfields(D); # alphabetically
   D = structfun(@squeeze, D, "UniformOutput", false);
@@ -86,6 +87,7 @@ function bov(S, o, val_name)
 endfunction
 
 function write(S, o)
+  if isempty(S); msg("u.avg: no data"); exit(1); endif
   [dir, name] = fileparts(o);
   val_name = strcat(name, ".values");
   val_full = fullfile(dir, val_name);
@@ -99,6 +101,7 @@ function shift(); global a; a = {a{2:end}}; endfunction
 # [h]ea[d]
 function r = hd(); global a; r = a{1}; endfunction
 function r = eq(a, b); r = strcmp(a, b); endfunction
+function r = fexist(f); r = exist(f, "file"); endfunction
 
 ini();
 if eq(hd(), "-h"); usg(); endif
