@@ -97,7 +97,7 @@
 
 #include "inter/imp.h"
 #include "inter/color.h"
-#include "scheme/int.h"
+#include "scheme/imp.h"
 
 #include "imp.h"
 namespace sim {
