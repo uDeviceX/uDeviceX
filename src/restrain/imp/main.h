@@ -21,12 +21,20 @@ static void reini() {
     CC(d::MemcpyToSymbol(&dev::indrop, &zeroi,  sizeof(int)));
 }
 
+/* device to host */
+static void d2h(int *n, float v[3]) {
+    enum {X, Y, Z};
+    float3 u;
+    CC(d::MemcpyFromSymbol(&u, &dev::sumv,    sizeof(float3)));
+    CC(d::MemcpyFromSymbol(&n, &dev::indrop,  sizeof(int)));
+    v[X] = u.x; v[Y] = u.y; v[Z] = u.z;
+}
+
 static float3 avg_v() {
     enum {X, Y, Z};
-    int n; float v[3];
-    CC(d::MemcpyFromSymbol( v, &dev::sumv, sizeof(float3)));
-    CC(d::MemcpyFromSymbol(&n, &dev::indrop,  sizeof(int)));
-
+    int n;
+    float v[3];
+    d2h(&n, v);
     sum_i (&n);
     sum_f3( v);
     if (n) {
