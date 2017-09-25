@@ -7,7 +7,7 @@ void step0(float driving_force0, bool wall0, int it) {
     dump_diag0(it);
     if (wall0 || solids0) dump_diag_after(it);
     body_force(driving_force0);
-    update_solvent();
+    update_solvent(it);
     if (solids0) update_solid();
     if (rbcs)    update_rbc(it);
     if (wall0) bounce();

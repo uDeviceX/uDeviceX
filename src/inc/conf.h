@@ -227,3 +227,8 @@
 #ifndef RESTRAIN_RED_VEL
   #define RESTRAIN_RED_VEL (false)
 #endif
+
+/* MSG frequency */
+#ifndef RESTRAIN_PAR_REPORT_FREQ
+  #define RESTRAIN_PAR_REPORT_FREQ (1000)
+#endif

@@ -8,8 +8,8 @@ void update_solid() {
     if (s::q.n) update_solid0();
 }
 
-void update_solvent() {
-    scheme::restrain(o::qc.ii, o::q.n, /**/ o::q.pp);
+void update_solvent(long it) {
+    scheme::restrain(o::qc.ii, o::q.n, it, /**/ o::q.pp);
     scheme::move(dpd_mass, o::q.pp, o::ff, o::q.n);
 }
 
