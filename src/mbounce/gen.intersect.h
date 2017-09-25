@@ -91,10 +91,8 @@ static _HD_ BBState intersect_triangle(const float *s10, const float *s20, const
         const real c = dot(nt, dr0) + dot(n0, dv);
         const real d = dot(n0, dr0);        
         
-        if (!cubic_root(a, b, c, d, &hl)) {
-            // printf("failed : %g %g %g %g\n", a, b, c, d);
+        if (!cubic_root(a, b, c, d, &hl))
             return BB_HFAIL;
-        }
     }
 
     if (hl > *h)
