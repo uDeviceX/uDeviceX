@@ -229,6 +229,6 @@
 #endif
 
 /* MSG frequency */
-#ifndef RESTRAIN_PAR_REPORT_FREQ
-  #define RESTRAIN_PAR_REPORT_FREQ (1000)
+#ifndef RESTRAIN_REPORT_FREQ
+  #define RESTRAIN_REPORT_FREQ (1000)
 #endif
