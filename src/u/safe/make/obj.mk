@@ -1,6 +1,6 @@
 O = $B/algo/minmax.o $B/algo/scan/imp.o $B/clist/imp.o $B/cnt/imp.o $B/comm/imp.o \
     $B/d/api.o $B/dbg/imp.o $B/distr/flu/imp.o $B/distr/rbc/imp.o \
-    $B/distr/rig/imp.o $B/dpdr/imp.o $B/dpdr/int.o $B/dual/imp.o $B/exch/flu/imp.o \
+    $B/distr/rig/imp.o $B/dpdr/imp.o $B/dpdr/int.o $B/exch/flu/imp.o \
     $B/exch/mesh/imp.o $B/exch/obj/imp.o $B/field.o $B/flu/imp.o $B/flu/int.o \
     $B/frag/imp.o $B/fsi/imp.o $B/glb.o $B/hforces/imp.o $B/inter/imp.o \
     $B/io/bop/imp.o $B/io/diag.o $B/io/field.o $B/io/fields_grid.o $B/io/off.o \

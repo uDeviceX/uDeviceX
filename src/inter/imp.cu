@@ -23,9 +23,6 @@
 #include "mpi/glb.h"
 #include "inc/dev.h"
 
-#include "dual/type.h"
-#include "dual/int.h"
-
 #include "inc/tmp/pinned.h"
 
 #include "dbg/imp.h"

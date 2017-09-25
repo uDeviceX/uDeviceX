@@ -10,7 +10,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/distr/rbc && \
     d $B/distr/rig && \
     d $B/dpdr      && \
-    d $B/dual      && \
     d $B/exch/flu  && \
     d $B/exch/mesh && \
     d $B/exch/obj  && \
