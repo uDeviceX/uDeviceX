@@ -33,7 +33,7 @@ void packM(const int counts[], const Momentum *mm, /**/ PackM *p) {
     pack_mom(counts, mm, /**/ wrap);
 }
 
-void download(PackM *p) {
+void downloadM(PackM *p) {
     dSync(); // wait for pack_mom to complete
 }
 
