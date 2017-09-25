@@ -45,6 +45,7 @@ $B/mrescue.o: $S/mrescue.cu; $N -I$S/. -I$S/_snow
 $B/msg.o: $S/msg.cpp; $X -I$S/. -I$S/_snow
 $B/rbc/imp.o: $S/rbc/imp.cu; $N -I$S/. -I$S/_snow -I$S/rbc
 $B/rbc/int.o: $S/rbc/int.cu; $N -I$S/. -I$S/_snow -I$S/rbc
+$B/restrain/imp.o: $S/restrain/imp.cu; $N -I$S/. -I$S/_snow -I$S/restrain
 $B/rig/imp.o: $S/rig/imp.cu; $N -I$S/. -I$S/_snow -I$S/rig
 $B/rig/int.o: $S/rig/int.cu; $N -I$S/. -I$S/_snow -I$S/rig
 $B/rigid/imp.o: $S/rigid/imp.cu; $N -I$S/. -I$S/_snow -I$S/rigid -I$S/rigid/_cuda
