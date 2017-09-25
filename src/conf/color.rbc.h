@@ -17,11 +17,9 @@
 #define dt                      5e-4
 #define adpd_b                2.6667
 #define adpd_r                 2.6667
-#define aij_solid               2.6667
 #define adpd_br                2.6667
 #define gdpd_b           8.0
 #define gdpd_r            12.0
-#define gammadpd_solid          8.0
 #define gdpd_br           8.0
 #define dpd_mass                1.0
 #define rbc_mass                1.0

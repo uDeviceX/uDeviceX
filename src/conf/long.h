@@ -19,11 +19,9 @@
 #define dt                  0.0005
 #define adpd_b            (75.0/numberdensity)
 #define adpd_r             (75.0/numberdensity)
-#define aij_solid           (75.0/numberdensity)
 #define adpd_br            (75.0/numberdensity)
 #define gdpd_b       40.0
 #define gdpd_r        40.0
-#define gammadpd_solid      40.0
 #define gdpd_br       40.0
 #define dpd_mass            1.0
 #define rbc_mass            1.0

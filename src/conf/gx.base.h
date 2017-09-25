@@ -17,11 +17,9 @@
 
 #define adpd_b            5
 #define adpd_r             5
-#define aij_solid           5
 #define adpd_br            5
 #define gdpd_b       8.0
 #define gdpd_r        8.0
-#define gammadpd_solid      8.0
 #define gdpd_br       8.0
 
 #define ljsigma          0.3        /* RBC-RBC contact LJ interaction parameters */
