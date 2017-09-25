@@ -4,20 +4,73 @@
 
 function D = read(f)
   D = load(f);
+  D = orderfields(D); # alphabetically
   D = structfun(@squeeze, D, "UniformOutput", false);
 endfunction
 
-function S = add0(S, D)
-  S = D;
-endfunction
+function S = add0(S, D); S = D; endfunction
 
 function S = add(S, D)
   if (isempty(S)); S = D; else S = add0(S, D); endif
+endfunction
+
+function values(S)
+  ini_val("o.values");
+  values0(S)
+  fin_val();
+endfunction
+
+function values0(S)
+  w_val(S.u, "single");
+endfunction
+
+function w_bov(fmt, varargin)
+  global bov_f
+  fmt = strcat(fmt, "\n");
+  fprintf(bov_f, fmt, varargin{:});
+endfunction
+
+function w_val(v)
+  global val_f
+  size(v)
+  fwrite(val_f, v, "single");
+endfunction
+
+function bov0(S)
+  sz = size(S.u);
+				# dc = numel(fieldnames(S));
+  dc = 1;
+  fn = "o.values";
+  w_bov("DATA_FILE: %s", fn)
+  w_bov("DATA_SIZE: %d %d %d", sz)
+  w_bov("DATA_FORMAT: FLOAT")
+  w_bov("VARIABLE: D")
+  w_bov("DATA_COMPONENTS: %d", dc)
+  w_bov("CENTERING: zonal")
+  w_bov("DATA_ENDIAN: LITTLE")
+  w_bov("BRICK_ORIGIN: 0 0 0")
+  w_bov("BRICK_SIZE: %d %d %d", sz)
+endfunction
+
+function ini_bov(f); global bov_f; bov_f = fopen(f, "w"); endfunction
+function fin_bov();  global bov_f; fclose(bov_f);         endfunction
+
+function ini_val(f); global val_f; val_f = fopen(f, "w"); endfunction
+function fin_val();  global val_f; fclose(val_f);         endfunction
+
+function bov(S)
+  ini_bov("o.bov");
+  bov0(S);
+  fin_bov();
+endfunction
+
+function write(S)
+  bov(S)
+  values(S)
 endfunction
 
 D = read(argv(){1});
 S = D;
 S = add(S, D);
 
-fieldnames(S)
-
+write(S)
