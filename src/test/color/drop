@@ -12,7 +12,7 @@ u.conf $s $u conf/zurich.h <<!!!
    $Domain
    $Walls
    numberdensity=2
-   tend=40.01 part_freq=80000 field_freq=80000
+   tend=4.01 part_freq=8000 field_freq=8000
    kBT=0.00444302
    field_dumps part_dumps
    run
