@@ -1,4 +1,4 @@
 namespace ply {
-void write(const char *fname, const Mesh m);
-void read(const char *fname, Mesh *m);
+void write(const char *fname, int nt, int nv, const int *tt, const float *vv);
+void read(const char *fname, int *nt, int *nv, int **tt, float **vv);
 }

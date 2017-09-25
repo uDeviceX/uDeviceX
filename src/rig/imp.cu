@@ -37,7 +37,7 @@ namespace rig {
 namespace sub {
 
 void load_solid_mesh(const char *fname, Mesh *dev, Mesh *hst) {
-    ply::read(fname, /**/ hst);
+    ply::read(fname, /**/ &hst->nt, &hst->nv, &hst->tt, &hst->vv);
 
     dev->nv = hst->nv;
     dev->nt = hst->nt;

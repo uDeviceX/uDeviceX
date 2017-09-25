@@ -1,5 +1,5 @@
 namespace ply {
-void write(const char *fname, const Mesh m) {
+void write(const char *fname, int nt, int nv, const int *tt, const float *vv) {
     FILE * f = fopen(fname, "wb");
 
     assert(f != NULL);
@@ -16,24 +16,24 @@ void write(const char *fname, const Mesh m) {
                 "element face %d\n"
                 "property list int int vertex_index\n"
                 "end_header\n",
-                m.nv, m.nt);
+                nv, nt);
 
         fwrite(header, sizeof(char), strlen(header), f);
     }
 
-    fwrite(m.vv, sizeof(float), 3 * m.nv, f);
+    fwrite(vv, sizeof(float), 3 * nv, f);
 
-    int *ibuf = new int[4 * m.nt];
+    int *ibuf = new int[4 * nt];
 
-    for (int i = 0; i < m.nt; ++i)
+    for (int i = 0; i < nt; ++i)
         {
             ibuf[4*i + 0] = 3;
-            ibuf[4*i + 1] = m.tt[3*i + 0];
-            ibuf[4*i + 2] = m.tt[3*i + 1];
-            ibuf[4*i + 3] = m.tt[3*i + 2];
+            ibuf[4*i + 1] = tt[3*i + 0];
+            ibuf[4*i + 2] = tt[3*i + 1];
+            ibuf[4*i + 3] = tt[3*i + 2];
         }
 
-    fwrite(ibuf, sizeof(int), 4 * m.nt, f);
+    fwrite(ibuf, sizeof(int), 4 * nt, f);
 
     delete[] ibuf;
 

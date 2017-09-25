@@ -9,7 +9,7 @@ static bool prop(const char *pname, const char *str) {
     return true;
 }
 
-void read(const char *fname, Mesh *m) {
+void read(const char *fname, int *nt, int *nv, int **tt, float **vv) {
     FILE *f = fopen(fname, "r");
 
     if (f == NULL) {
@@ -18,7 +18,7 @@ void read(const char *fname, Mesh *m) {
     }
 
     int l = 0;
-    m->nt = m->nv = -1;
+    *nt = *nv = -1;
 
 #define BUFSIZE 256 // max number of chars per line
 #define MAXLINES 64 // max number of line for header
@@ -32,37 +32,36 @@ void read(const char *fname, Mesh *m) {
 
         const int checker = fscanf(f, " %[^\n]" xstr(BUFSIZE) "c", cbuf);
 
-        if (checker != 1)
-            {
-                fprintf(stderr, "Something went wrong reading <%s>\n", fname);
-                exit(1);
-            }
+        if (checker != 1) {
+            fprintf(stderr, "Something went wrong reading <%s>\n", fname);
+            exit(1);
+        }
 
         int ibuf;
-        if (sscanf(cbuf, "element vertex %d", &ibuf) == 1) m->nv = ibuf;
-        else if (sscanf(cbuf, "element face %d", &ibuf) == 1) m->nt = ibuf;
+        if    (sscanf(cbuf, "element vertex %d", &ibuf) == 1) *nv = ibuf;
+        else if (sscanf(cbuf, "element face %d", &ibuf) == 1) *nt = ibuf;
         else if (prop("end_header", cbuf)) break;
     }
 
-    if (l >= MAXLINES || m->nt == -1 || m->nv == -1) {
+    if (l >= MAXLINES || *nt == -1 || *nv == -1) {
         printf("Something went wrong, did not catch end_header\n");
         exit(1);
     }
 
-    m->tt = new int[3 * m->nt];
-    m->vv = new float[3 * m->nv];
+    *tt = new int[3 * *nt];
+    *vv = new float[3 * *nv];
 
-    for (int i = 0; i < m->nv; ++i)
+    for (int i = 0; i < *nv; ++i)
         fscanf(f, "%f %f %f\n",
-               m->vv + 3*i + 0,
-               m->vv + 3*i + 1,
-               m->vv + 3*i + 2);
+               *vv + 3*i + 0,
+               *vv + 3*i + 1,
+               *vv + 3*i + 2);
 
-    for (int i = 0; i < m->nt; ++i)
+    for (int i = 0; i < *nt; ++i)
         fscanf(f, "%*d %d %d %d\n",
-               m->tt + 3*i + 0,
-               m->tt + 3*i + 1,
-               m->tt + 3*i + 2);
+               *tt + 3*i + 0,
+               *tt + 3*i + 1,
+               *tt + 3*i + 2);
 
     fclose(f);
 }
