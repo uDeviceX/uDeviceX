@@ -1,0 +1,27 @@
+# drop in poiseuille flow
+# cTEST: color.drop.mpi.t1
+rm -rf bop diag.txt h5
+export PATH=../tools:$PATH
+(cd ../cmd; make ) > /dev/null
+s=.
+u=u/bangladesh
+cp $s/data/sdf/yplates1/yplates.dat sdf.dat
+Domain="XS=8 YS=8 ZS=16"
+Walls="walls wall_creation=1"
+Force="FORCE_CONSTANT"
+u.conf $s $u conf/zurich.h <<!!!
+   $Domain
+   $Walls
+   $Force
+   RESTRAIN_RED_VEL
+   numberdensity=2
+   tend=4.01 part_freq=8000 field_freq=8000
+   kBT=0.00444302
+   field_dumps part_dumps
+   run
+!!!
+{ make clean && u.make -j; } > make.log
+u.run 2 2 1 ./udx
+cm() { awk '$7 == 1 {n++; x+=$1; y+=$2; z+=$3} END {print x/n, y/n, z/n}'; }
+ ../tools/bop2txt2 bop/solvent-00001.bop -- bop/colors_solvent-00001.bop | \
+		    cm > drop.out.txt
