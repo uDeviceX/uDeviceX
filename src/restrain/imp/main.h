@@ -1,5 +1,19 @@
 static float3 vavg; /* average velocity */
 
+static int reduce(const void *sendbuf0, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op) {
+    int root = 0;
+    const void *sendbuf = (m::rank == 0 ? MPI_IN_PLACE : sendbuf0);
+    return m::Reduce(sendbuf, recvbuf, count, datatype, op, root, m::cart);
+}
+
+static int sum3(double *v) {
+    return reduce(&v, m::rank == 0 ? &v : NULL, 3, MPI_DOUBLE, MPI_SUM);
+}
+
+static int sum_i(int *v) {
+    return reduce(v, v, 1, MPI_INT, MPI_SUM);
+}
+
 static void reini() {
     int zeroi = 0;
     float3 zerof3 = make_float3(0.f, 0.f, 0.f);
