@@ -18,13 +18,13 @@
 #define gamma_dot        5.0        /* shear rate */
 #define FORCE_PAR_A      0.6        /* flow acceleration */
 
-#define aij_solv         2
-#define aij_rbc          2
-#define aij_wall         10
+#define adpd_b         2
+#define adpd_r          2
+#define adpd_br         10
 
 #define gdpd_b    1
 #define gdpd_r     100
-#define gdpd_rb    10
+#define gdpd_br    10
 
 #define ljsigma          0.3        /* RBC-RBC contact LJ interaction parameters */
 #define ljepsilon        0.44

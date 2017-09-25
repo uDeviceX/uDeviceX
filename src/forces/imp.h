@@ -112,16 +112,16 @@ static __device__ void gen1(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
     DPDparam p;
     if         (!multi_solvent) {
         p.gamma = gdpd_b;
-        p.a     = aij_solv;
+        p.a     = adpd_b;
     } else if (ca == BLUE_COLOR && cb == BLUE_COLOR) {
         p.gamma = gdpd_b;
-        p.a     = aij_solv;
+        p.a     = adpd_b;
     } else if (ca == RED_COLOR && cb == RED_COLOR) {
         p.gamma = gdpd_r;
-        p.a     = aij_rbc;
+        p.a     = adpd_r;
     } else if (seteq(ca, cb,   BLUE_COLOR, RED_COLOR)) {
-        p.gamma = gdpd_rb;
-        p.a     = aij_wall;
+        p.gamma = gdpd_br;
+        p.a     = adpd_br;
     } else {
         printf("unknown color pair: %ld %ld\n", ca, cb);
         assert(0);

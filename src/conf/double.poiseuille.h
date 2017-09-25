@@ -18,14 +18,14 @@
 #define gamma_dot        5.0        /* shear rate */
 #define FORCE_PAR_A    6.6666667  /* flow acceleration for Poiseuille setup */
 
-#define aij_solv         2.6666667  /* aij for the solvent */
-#define aij_rbc          2.6666667  /* aij for the RBC membrane */
+#define adpd_b         2.6666667  /* aij for the solvent */
+#define adpd_r          2.6666667  /* aij for the RBC membrane */
 #define aij_solid        2.6666667  /* aij for the solid */
-#define aij_wall         2.6666667  /* aij for the wall */
+#define adpd_br         2.6666667  /* aij for the wall */
 #define gdpd_b    8.0        /* gamma for the solvent */
 #define gdpd_r     8.0        /* gamma for the RBC membrane */
 #define gammadpd_solid   8.0        /* gamma for the solid */
-#define gdpd_rb    8.0        /* gamma for the wall */
+#define gdpd_br    8.0        /* gamma for the wall */
 
 #define ljsigma          0.3        /* RBC-RBC contact LJ interaction parameters */
 #define ljepsilon        0.44
