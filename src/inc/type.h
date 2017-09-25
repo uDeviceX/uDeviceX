@@ -27,6 +27,10 @@ struct Force {
     float f[3];
 };
 
+struct Momentum {
+    float P[3], L[3]; /* linear and angular momentum */
+};
+
 typedef Sarray<int, 26>       int26;
 typedef Sarray<Particle*, 26> Pap26;
 typedef Sarray<Force*,    26> Fop26;
