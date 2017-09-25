@@ -11,6 +11,7 @@ $B/distr/rig/imp.o: $S/distr/rig/imp.cu; $N -I$S/. -I$S/_rain -I$S/distr/rig
 $B/dpdr/imp.o: $S/dpdr/imp.cu; $N -I$S/. -I$S/_rain -I$S/dpdr
 $B/dpdr/int.o: $S/dpdr/int.cpp; $X -I$S/. -I$S/_rain -I$S/dpdr
 $B/dual/imp.o: $S/dual/imp.cpp; $X -I$S/. -I$S/_rain -I$S/dual
+$B/exch/flu/imp.o: $S/exch/flu/imp.cu; $N -I$S/. -I$S/_rain -I$S/exch/flu
 $B/exch/mesh/imp.o: $S/exch/mesh/imp.cu; $N -I$S/. -I$S/_rain -I$S/exch/mesh
 $B/exch/obj/imp.o: $S/exch/obj/imp.cu; $N -I$S/. -I$S/_rain -I$S/exch/obj
 $B/field.o: $S/field.cpp; $X -I$S/. -I$S/_rain
