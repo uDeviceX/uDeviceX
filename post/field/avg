@@ -25,8 +25,8 @@ function S = add(S, D, n)
   if n == 1; S = D; else S = add1(S, D, n); endif
 endfunction
 
-function values(S)
-  ini_val("o.values");
+function values(S, name)
+  ini_val(name);
   values0(S)
   fin_val();
 endfunction
@@ -54,15 +54,13 @@ function w_val(v)
   fwrite(val_f, v, "single");
 endfunction
 
-function bov0(S)
+function bov0(S, val_name)
   sz = size(S.u);
   dc = numel(fieldnames(S));
-  fn = "o.values";
-  vn = "V";
-  w_bov("DATA_FILE: %s", fn)
+  w_bov("DATA_FILE: %s", val_name)
   w_bov("DATA_SIZE: %d %d %d", sz)
   w_bov("DATA_FORMAT: FLOAT")
-  w_bov("VARIABLE: %s", vn)
+  w_bov("VARIABLE: D")
   w_bov("DATA_COMPONENTS: %d", dc)
   w_bov("CENTERING: zonal")
   w_bov("DATA_ENDIAN: LITTLE")
@@ -76,15 +74,18 @@ function fin_bov();  global bov_f; fclose(bov_f);         endfunction
 function ini_val(f); global val_f; val_f = fopen(f, "w"); endfunction
 function fin_val();  global val_f; fclose(val_f);         endfunction
 
-function bov(S)
-  ini_bov("o.bov");
-  bov0(S);
+function bov(S, o, val_name)
+  ini_bov(o);
+  bov0(S, val_name);
   fin_bov();
 endfunction
 
-function write(S)
-  bov(S)
-  values(S)
+function write(S, o)
+  [dir, name] = fileparts(o);
+  val_name = strcat(name, ".values");
+  val_full = fullfile(dir, val_name);
+  values(S, val_full);
+  bov(S, o, val_name)
 endfunction
 
 function ini(); global a; a = argv();     endfunction
@@ -100,4 +101,4 @@ while c() > 0
   D = read(hd()); shift();
   S = add(S, D, n++);
 endwhile
-write(S)
+write(S, o)
