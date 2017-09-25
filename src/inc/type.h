@@ -32,8 +32,10 @@ struct Momentum {
 };
 
 typedef Sarray<int, 26>       int26;
+typedef Sarray<int, 27>       int27;
 typedef Sarray<Particle*, 26> Pap26;
 typedef Sarray<Force*,    26> Fop26;
+typedef Sarray<Momentum*, 26> Mop26;
 
 /* particles wrap */
 struct PaWrap {
