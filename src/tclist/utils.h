@@ -8,6 +8,9 @@ static __device__ int encode(int soluteid, int id) {
     return soluteid * MAXT + id;
 }
 
-
+static __device__ void decode(int code, /**/ int *soluteid, int *id) {
+    *soluteid = code / MAXT;
+    *id       = code % MAXT;
+}
 
 } // tclist
