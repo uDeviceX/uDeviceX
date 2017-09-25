@@ -42,6 +42,11 @@ namespace dev {
 } /* namespace */
 
 #include "imp/main.h"
+
+#if RESTRAIN_RED_VEL
+#include "imp/restrain/red_vel.h"
+#else
 #include "imp/restrain/none.h"
+#endif
 
 } /* namespace */

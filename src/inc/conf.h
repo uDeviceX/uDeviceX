@@ -224,6 +224,6 @@
 #endif
 
 /* make a center of mass velocity zero? */
-#ifndef RESTRAIN_BLUE_VEL
-  #define RESTRAIN_BLUE_VEL (false)
+#ifndef RESTRAIN_RED_VEL
+  #define RESTRAIN_RED_VEL (false)
 #endif
