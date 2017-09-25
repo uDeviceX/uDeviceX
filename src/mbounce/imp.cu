@@ -43,19 +43,19 @@ void free_ticketM(TicketM *t) {
     delete[] t->mm_hst;
 }
 
-void bounce_hst(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
+void bounce_hst(const Force *ff, int nt, int nv, const int *tt, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
                 const int n, const int totnt, /**/ Particle *pp, TicketM *t) {
     sub::dbg::ini_hst();
     
     if (totnt && n) {
         memset(t->mm_hst, 0, totnt * sizeof(Momentum));
-        sub::hst::bounce(ff, m.tt, m.nt, m.nv, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, t->mm_hst);
+        sub::hst::bounce(ff, tt, nt, nv, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, t->mm_hst);
     }
     
     sub::dbg::report_hst();
 }
 
-void bounce_dev(const Force *ff, const Mesh m, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
+void bounce_dev(const Force *ff, int nt, int nv, const int *tt, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
                 const int n, const int totnt, /**/ Particle *pp, TicketM *t) {
     sub::dbg::ini_dev();
     
@@ -63,7 +63,7 @@ void bounce_dev(const Force *ff, const Mesh m, const Particle *i_pp, const int *
         CC(cudaMemsetAsync(t->mm_dev, 0, totnt * sizeof(Momentum)));        
         KL(sub::dev::bounce,
            (k_cnf(n)),
-           (ff, m.tt, m.nt, m.nv, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, t->mm_dev));
+           (ff, tt, nt, nv, i_pp, tcellstarts, tcellcounts, tids, n, /**/ pp, t->mm_dev));
     }
     
     sub::dbg::report_dev();

@@ -32,7 +32,8 @@ void alloc_quants(Quants *q) {
 
     q->ss_dmp = new Solid[MAX_SOLIDS];
 
-    sub::load_solid_mesh("mesh_solid.ply", /**/ &q->m_dev, &q->m_hst);
+    sub::load_solid_mesh("mesh_solid.ply", /**/ &q->nt, &q->nv,
+                         &q->htt, &q->dtt, &q->hvv, &q->dvv);
 }
 
 void free_quants(Quants *q) {
@@ -46,11 +47,11 @@ void free_quants(Quants *q) {
     Dfree(q->rr0);
     Dfree(q->i_pp);
 
-    if (q->m_hst.tt) delete[] q->m_hst.tt;
-    if (q->m_hst.vv) delete[] q->m_hst.vv;
+    if (q->htt) delete[] q->htt;
+    if (q->hvv) delete[] q->hvv;
 
-    if (q->m_dev.tt) CC(cudaFree(q->m_dev.tt));
-    if (q->m_dev.vv) CC(cudaFree(q->m_dev.vv));
+    if (q->dtt) CC(cudaFree(q->dtt));
+    if (q->dvv) CC(cudaFree(q->dvv));
 
     delete[] q->ss_dmp;
 }
@@ -84,23 +85,23 @@ void free_ticket(TicketBB *t) {
 }
 
 static void cpy_H2D(Quants q) {
-    cH2D(q.i_pp, q.i_pp_hst, q.ns * q.m_hst.nv);
+    cH2D(q.i_pp, q.i_pp_hst, q.ns * q.nv);
     cH2D(q.ss,   q.ss_hst,   q.ns);
     cH2D(q.rr0,  q.rr0_hst,  q.nps * 3);
     cH2D(q.pp,   q.pp_hst,   q.n);
 }
 
 void gen_quants(Particle *opp, int *on, Quants *q) {
-    sub::gen_from_solvent(q->m_hst, /**/ opp, on, /**/ &q->ns, &q->nps, &q->n, q->rr0_hst, q->ss_hst, q->pp_hst);
+    sub::gen_from_solvent(q->nt, q->nv, q->htt, q->hvv, /**/ opp, on, /**/ &q->ns, &q->nps, &q->n, q->rr0_hst, q->ss_hst, q->pp_hst);
     sub::gen_pp_hst(q->ns, q->rr0_hst, q->nps, /**/ q->ss_hst, q->pp_hst);
-    sub::gen_ipp_hst(q->ss_hst, q->ns, q->m_hst, /**/ q->i_pp_hst);
+    sub::gen_ipp_hst(q->ss_hst, q->ns, q->nv, q->hvv, /**/ q->i_pp_hst);
     cpy_H2D(*q);
 }
 
 void strt_quants(const int id, Quants *q) {
     sub::gen_from_strt(id, /**/ &q->ns, &q->nps, &q->n, q->rr0_hst, q->ss_hst);
     sub::gen_pp_hst(q->ns, q->rr0_hst, q->nps, /**/ q->ss_hst, q->pp_hst);
-    sub::gen_ipp_hst(q->ss_hst, q->ns, q->m_hst, /**/ q->i_pp_hst);
+    sub::gen_ipp_hst(q->ss_hst, q->ns, q->nv, q->hvv, /**/ q->i_pp_hst);
     cpy_H2D(*q);
 }
 

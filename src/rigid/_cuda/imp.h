@@ -34,11 +34,11 @@ void generate(const Solid *ss, const int ns, const float *rr0, const int nps, /*
     KL(dev::compute_velocity, ( nblck, nthrd ), (ss, ns, nps, /**/ pp));
 }
 
-void update_mesh(const Solid *ss, const int ns, const Mesh m, /**/ Particle *pp) {
+void update_mesh(const Solid *ss, const int ns, int nv, const float *vv, /**/ Particle *pp) {
     const dim3 nthrd(128, 1);
-    const dim3 nblck((m.nv + 127)/128, ns);
+    const dim3 nblck((nv + 127)/128, ns);
 
-    KL(dev::update_mesh, ( nblck, nthrd ), (ss, m.vv, m.nv, /**/ pp));
+    KL(dev::update_mesh, ( nblck, nthrd ), (ss, vv, nv, /**/ pp));
 }
 
 } // rig

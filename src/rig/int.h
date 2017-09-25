@@ -5,8 +5,12 @@ struct Quants {
     Particle *pp_hst, *pp;
     Solid *ss_hst, *ss;
     float *rr0_hst, *rr0;
-    Mesh m_hst, m_dev;
-    Particle *i_pp_hst, *i_pp;
+
+    /* mesh related quantities */
+    int nt, nv;                   /* number of [t]riangles and [v]ertices                          */
+    int *htt, *dtt;               /* trinagle indices of [h]ost and [d]evice                       */
+    float *hvv, *dvv;             /* vertices of [h]ost and [d]evice (template)                    */
+    Particle *i_pp_hst, *i_pp;    /* particles representing all meshes of all solids of that node  */
 
     Solid *ss_dmp;
 };

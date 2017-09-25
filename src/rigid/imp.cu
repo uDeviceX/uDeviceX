@@ -37,16 +37,16 @@ static void init_I_frompp(const Particle *pp, int n, float pmass, const float *c
     for (int c = 0; c < 6; ++c) I[c] *= pmass;
 }
 #else
-static void init_I_fromm(float pmass, const Mesh m, /**/ float *I) {
+static void init_I_fromm(float pmass, int nt, const int *tt, const float *vv, /**/ float *I) {
     float com[3] = {0};
-    mesh::center_of_mass(m.nt, m.tt, m.vv, /**/ com);
-    mesh::inertia_tensor(m.nt, m.tt, m.vv, com, numberdensity, /**/ I);
+    mesh::center_of_mass(nt, tt, vv, /**/ com);
+    mesh::inertia_tensor(nt, tt, vv, com, numberdensity, /**/ I);
 
     for (int c = 0; c < 6; ++c) I[c] *= pmass;
 }
 #endif
     
-void ini(const Particle *pp, int n, float pmass, const float *com, const Mesh m, /**/ float *rr0, Solid *s) {
+void ini(const Particle *pp, int n, float pmass, const float *com, int nt, const int *tt, const float *vv, /**/ float *rr0, Solid *s) {
     s->v[X] = s->v[Y] = s->v[Z] = 0; 
     s->om[X] = s->om[Y] = s->om[Z] = 0; 
 
@@ -61,8 +61,8 @@ void ini(const Particle *pp, int n, float pmass, const float *com, const Mesh m,
     init_I_frompp(pp, n, pmass, com, /**/ I);
     s->mass = n*pmass;
 #else
-    init_I_fromm(pmass, m, /**/ I);
-    s->mass = mesh::volume(m.nt, m.tt, m.vv) * numberdensity * pmass;
+    init_I_fromm(pmass, nt, tt, vv, /**/ I);
+    s->mass = mesh::volume(nt, tt, vv) * numberdensity * pmass;
 #endif
         
     linal::inv3x3(I, /**/ s->Iinv);
@@ -75,13 +75,13 @@ void ini(const Particle *pp, int n, float pmass, const float *com, const Mesh m,
     }
 }
 
-void mesh2pp_hst(const Solid *ss_hst, const int ns, const Mesh m, /**/ Particle *pp) {
+void mesh2pp_hst(const Solid *ss_hst, const int ns, int nv, const float *vv, /**/ Particle *pp) {
     for (int j = 0; j < ns; ++j) {
         const Solid *s = ss_hst + j;
-        update_r_hst(m.vv, m.nv, s->com, s->e0, s->e1, s->e2, /**/ pp + j * m.nv);
+        update_r_hst(vv, nv, s->com, s->e0, s->e1, s->e2, /**/ pp + j * nv);
 
-        for (int i = 0; i < m.nv; ++i) {
-            float *v = pp[j*m.nv + i].v;
+        for (int i = 0; i < nv; ++i) {
+            float *v = pp[j*nv + i].v;
             v[X] = v[Y] = v[Z] = 0;
         }
     }

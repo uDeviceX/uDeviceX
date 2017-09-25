@@ -73,7 +73,7 @@ void ini() {
         tcells::alloc_quants(MAX_SOLIDS, &bb::qtc);
         mbounce::alloc_ticketM(&bb::tm);
 
-        int nv = s::q.m_dev.nv;
+        int nv = s::q.nv;
         distr::rig::ini(nv, &s::d.p);
         distr::rig::ini(m::cart, /*io*/ &tag_gen, /**/ &s::d.c);
         distr::rig::ini(nv, &s::d.u);

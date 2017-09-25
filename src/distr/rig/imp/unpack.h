@@ -1,7 +1,7 @@
 void unpack_bulk(const Pack *p, /**/ rig::Quants *q) {
     int ns, nv, n;
     ns = p->hipp.counts[frag_bulk];
-    nv = q->m_dev.nv;
+    nv = q->nv;
     n = ns * nv;
     
     if (ns) {
@@ -25,7 +25,7 @@ static void shift_ss_one_frag(int n, int fid, Solid *ss) {
 void unpack_halo(const Unpack *u, /**/ rig::Quants *q) {
     int ns, nv, n, i, strtp, strts;
     size_t szp, szs;
-    nv = q->m_dev.nv;
+    nv = q->nv;
     strts = q->ns;
     strtp = strts * nv;
     

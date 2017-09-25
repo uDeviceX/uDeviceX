@@ -25,8 +25,8 @@ static void create_solids(flu::Quants* qflu, rig::Quants* qrig) {
 static void remove_solids(rig::Quants *q, sdf::Quants qsdf) {
     int stay[MAX_SOLIDS];
     int ns0;
-    int nip = q->ns * q->m_dev.nv;
-    q->ns = sdf::who_stays(qsdf, q->i_pp, nip, ns0 = q->ns, q->m_dev.nv, /**/ stay);
+    int nip = q->ns * q->nv;
+    q->ns = sdf::who_stays(qsdf, q->i_pp, nip, ns0 = q->ns, q->nv, /**/ stay);
     q->n  = q->ns * q->nps;
     remove(q->pp,       q->nps,      stay, q->ns);
     remove(q->pp_hst,   q->nps,      stay, q->ns);
@@ -34,8 +34,8 @@ static void remove_solids(rig::Quants *q, sdf::Quants qsdf) {
     remove(q->ss,       1,           stay, q->ns);
     remove(q->ss_hst,   1,           stay, q->ns);
 
-    remove(q->i_pp,     q->m_dev.nv, stay, q->ns);
-    remove(q->i_pp_hst, q->m_hst.nv, stay, q->ns);
+    remove(q->i_pp,     q->nv, stay, q->ns);
+    remove(q->i_pp_hst, q->nv, stay, q->ns);
     MSG("sim.impl: %d/%d Solids survived", q->ns, ns0);
 }
 

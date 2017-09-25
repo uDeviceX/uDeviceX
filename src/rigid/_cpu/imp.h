@@ -18,15 +18,15 @@ void generate(const Solid *ss, const int ns, const float *rr0, const int nps, /*
     generate_hst(ss, ns, rr0, nps, /**/ pp);
 }
 
-void update_mesh(const Solid *ss_hst, const int ns, const Mesh m, /**/ Particle *pp) {
+void update_mesh(const Solid *ss_hst, const int ns, int nv, const float *vv, /**/ Particle *pp) {
     for (int j = 0; j < ns; ++j) {
         const Solid *s = ss_hst + j;
                         
-        for (int i = 0; i < m.nv; ++i) {
-            const float* ro = m.vv + 3*i;
-            const Particle p0 = pp[j * m.nv + i];
-            float *r = pp[j * m.nv + i].r;
-            float *v = pp[j * m.nv + i].v;
+        for (int i = 0; i < nv; ++i) {
+            const float* ro = vv + 3*i;
+            const Particle p0 = pp[j * nv + i];
+            float *r = pp[j * nv + i].r;
+            float *v = pp[j * nv + i].v;
                 
             const float x = ro[X], y = ro[Y], z = ro[Z];
             r[X] = x * s->e0[X] + y * s->e1[X] + z * s->e2[X] + s->com[X];

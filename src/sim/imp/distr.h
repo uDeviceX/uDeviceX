@@ -50,8 +50,8 @@ void distribute_rbc() {
 
 void distribute_rig() {
     using namespace s;
-    int nv;
-    nv = q.m_dev.nv;
+    int nv = q.nv;
+
     build_map(q.ns, q.ss, /**/ &d.p);
     pack(q.ns, nv, q.ss, q.i_pp, /**/ &d.p);
     download(/**/&d.p);

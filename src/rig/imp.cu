@@ -36,24 +36,21 @@
 namespace rig {
 namespace sub {
 
-void load_solid_mesh(const char *fname, Mesh *dev, Mesh *hst) {
-    ply::read(fname, /**/ &hst->nt, &hst->nv, &hst->tt, &hst->vv);
+void load_solid_mesh(const char *fname, int *nt, int *nv, int **tt_hst, int **tt_dev, float **vv_hst, float **vv_dev) {
+    ply::read(fname, /**/ nt, nv, tt_hst, vv_hst);
 
-    dev->nv = hst->nv;
-    dev->nt = hst->nt;
+    CC(cudaMalloc(tt_dev, 3 * *nt * sizeof(int)));
+    CC(cudaMalloc(vv_dev, 3 * *nv * sizeof(float)));
 
-    CC(cudaMalloc(&dev->tt, 3 * dev->nt * sizeof(int)));
-    CC(cudaMalloc(&dev->vv, 3 * dev->nv * sizeof(float)));
-
-    cH2D(dev->tt, hst->tt, 3 * dev->nt);
-    cH2D(dev->vv, hst->vv, 3 * dev->nv);
+    cH2D(*tt_dev, *tt_hst, 3 * *nt);
+    cH2D(*vv_dev, *vv_hst, 3 * *nv);
 }
 
-void gen_from_solvent(const Mesh m_hst,  /* io */ Particle *opp, int *on,
+void gen_from_solvent(int nt, int nv, const int *tt, const float *vv, /* io */ Particle *opp, int *on,
                       /* o */ int *ns, int *nps, int *n, float *rr0_hst, Solid *ss_hst, Particle *pp_hst) {
     // generate models
     MSG("start solid ini");
-    ic::ini("rigs-ic.txt", m_hst, /**/ ns, nps, rr0_hst, ss_hst, on, opp, pp_hst);
+    ic::ini("rigs-ic.txt", nt, nv, tt, vv, /**/ ns, nps, rr0_hst, ss_hst, on, opp, pp_hst);
     MSG("done solid ini");
 
     *n = *ns * (*nps);
@@ -80,8 +77,8 @@ void gen_pp_hst(const int ns, const float *rr0_hst, const int nps, /**/ Solid *s
     rig::reinit_ft_hst(ns, /**/ ss_hst);
 }
 
-void gen_ipp_hst(const Solid *ss_hst, const int ns, const Mesh m_hst, Particle *i_pp_hst) {
-    rig::mesh2pp_hst(ss_hst, ns, m_hst, /**/ i_pp_hst);
+void gen_ipp_hst(const Solid *ss_hst, const int ns, int nv, const float *vv, Particle *i_pp_hst) {
+    rig::mesh2pp_hst(ss_hst, ns, nv, vv, /**/ i_pp_hst);
 }
 
 void set_ids(const int ns, Solid *ss_hst, Solid *ss_dev) {
