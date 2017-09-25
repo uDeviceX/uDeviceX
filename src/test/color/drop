@@ -1,4 +1,4 @@
-# two steps of rbc with colors
+# drop in poiseuille flow
 # cTEST: color.drop.t1
 rm -rf bop diag.txt h5
 export PATH=../tools:$PATH
@@ -24,3 +24,5 @@ sh runfile
 cm() { awk '$7 == 1 {n++; x+=$1; y+=$2; z+=$3} END {print x/n, y/n, z/n}'; }
  ../tools/bop2txt2 bop/solvent-00001.bop -- bop/colors_solvent-00001.bop | \
 		    cm > drop.out.txt
+
+ 
