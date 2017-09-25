@@ -20,7 +20,7 @@ static _HD_ bool cubic_root(real a, real b, real c, real d, /**/ real *h) {
         if (nsol > 1 && valid(h2)) {*h = h2; return true;}
         if (nsol > 2 && valid(h3)) {*h = h3; return true;}
     }
-    else if(fabs(b) > eps) { // quadratic
+    else if (fabs(b) > eps) { // quadratic
         if (!roots::quadratic(b, c, d, &h1, &h2)) return false;
         if (valid(h1)) {*h = h1; return true;}
         if (valid(h2)) {*h = h2; return true;}
@@ -32,7 +32,7 @@ static _HD_ bool cubic_root(real a, real b, real c, real d, /**/ real *h) {
     
     return false;
 }
-    
+
 /* see Fedosov PhD Thesis */
 static _HD_ BBState intersect_triangle(const float *s10, const float *s20, const float *s30,
                                        const float *vs1, const float *vs2, const float *vs3,
