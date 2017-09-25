@@ -218,7 +218,7 @@ static _HD_ void rescue_1p(const Particle *vv, const int *tt, const int nt, cons
     
 void rescue_hst(const Mesh m, const Particle *i_pp, const int ns, const int n,
                 const int *tcstarts, const int *tccounts, const int *tcids, /**/ Particle *pp) {
-    collision::inside_hst(pp, n, m, i_pp, ns, /**/ tags_hst);
+    collision::inside_hst(pp, n, m.nt, m.nv, m.tt, i_pp, ns, /**/ tags_hst);
 
     for (int i = 0; i < n; ++i) {
         const int tag = tags_hst[i];
@@ -246,7 +246,7 @@ void rescue_dev(const Mesh m, const Particle *i_pp, const int ns, const int n,
                 const int *tcstarts, const int *tccounts, const int *tcids, /**/ Particle *pp) {
     if (ns == 0 || n == 0) return;
         
-    collision::inside_dev(pp, n, m, i_pp, ns, /**/ tags_dev);
+    collision::inside_dev(pp, n, m.nt, m.nv, m.tt, i_pp, ns, /**/ tags_dev);
     KL(rescue_dev_k, ( k_cnf(n) ), (i_pp, m.tt, m.nt, m.nv, tcstarts, tccounts, tcids, tags_dev, n, rand(), /**/ pp));
 }
 }

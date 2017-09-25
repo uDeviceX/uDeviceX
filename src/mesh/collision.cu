@@ -76,11 +76,11 @@ static int inside_1p(const float *r, const Particle *vv, const int *tt, const in
     return c%2;
 }
     
-void inside_hst(const Particle *pp, const int n, const Mesh m, const Particle *i_pp, const int ns, /**/ int *tags) {
+void inside_hst(const Particle *pp, const int n, int nt, int nv, const int *tt, const Particle *i_pp, const int ns, /**/ int *tags) {
     for (int i = 0; i < n; ++i) {
         tags[i] = -1;
         for (int sid = 0; sid < ns; ++sid)
-        if (inside_1p(pp[i].r, i_pp + m.nv * sid, m.tt, m.nt)) {
+        if (inside_1p(pp[i].r, i_pp + nv * sid, tt, nt)) {
             tags[i] = sid;
             break;
         }
@@ -169,7 +169,7 @@ __global__ void compute_colors_tex(const Particle *pp, const int n, const Texo<f
 }
 }
     
-void inside_dev(const Particle *pp, const int n, const Mesh m, const Particle *i_pp, const int ns, /**/ int *tags) {
+void inside_dev(const Particle *pp, const int n, int nt, int nv, const int *tt, const Particle *i_pp, const int ns, /**/ int *tags) {
     if (ns == 0 || n == 0) return;
         
     KL(kernels::init_tags, (k_cnf(n)), (n, -1, /**/ tags));
@@ -177,7 +177,7 @@ void inside_dev(const Particle *pp, const int n, const Mesh m, const Particle *i
     dim3 thrd(128, 1);
     dim3 blck((127 + n)/128, ns);
 
-    KL(kernels::compute_tags, (blck, thrd), (pp, n, i_pp, m.nv, m.tt, m.nt, /**/ tags));
+    KL(kernels::compute_tags, (blck, thrd), (pp, n, i_pp, nv, tt, nt, /**/ tags));
 }
 
 /* 
