@@ -41,11 +41,11 @@ void free_quants(/**/ Quants *q) {
 }
 
 void build_hst(const Mesh m, const Particle *i_pp, const int ns, /**/ Quants *q) {
-    sub::build_hst(m, i_pp, ns, /**/ q->ss_hst, q->cc_hst, q->ii_hst);
+    sub::build_hst(m.nt, m.nv, m.tt, i_pp, ns, /**/ q->ss_hst, q->cc_hst, q->ii_hst);
 }
 
 void build_dev(const Mesh m, const Particle *i_pp, const int ns, /**/ Quants *q, /*w*/ scan::Work *w) {
-    sub::build_dev(m, i_pp, ns, /**/ q->ss_dev, q->cc_dev, q->ii_dev, /*w*/ w);
+    sub::build_dev(m.nt, m.nv, m.tt, i_pp, ns, /**/ q->ss_dev, q->cc_dev, q->ii_dev, /*w*/ w);
 }
 
 } // tcells

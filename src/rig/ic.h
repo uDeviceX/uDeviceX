@@ -144,12 +144,12 @@ static void kill(const int idmax, const int *tags, /**/ int *s_n, Particle *s_pp
     *r_n = rcount;
 }
 
-static void empty_solid(const Mesh m, /* io */ float *rr0, int *npsolid) {
+static void empty_solid(int nt, const int *tt, const float *vv, /* io */ float *rr0, int *npsolid) {
     const int n0 = *npsolid;
     int j = 0;
     for (int i = 0; i < n0; ++i) {
         const float *r0 = rr0 + 3*i;
-        const float d = mesh::dist_from_mesh(m.nt, m.tt, m.vv, r0);
+        const float d = mesh::dist_from_mesh(nt, tt, vv, r0);
         //if (d> 5) ERR("d = %f", d);
         if (d <= 1) {
             rr0[3*j + X] = r0[X];

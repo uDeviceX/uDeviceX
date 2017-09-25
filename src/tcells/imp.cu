@@ -132,12 +132,12 @@ static void exscan(const int *counts, int *starts) {
     starts[i] = starts[i-1] + counts[i-1];
 }
     
-void build_hst(const Mesh m, const Particle *i_pp, const int ns, /**/ int *starts, int *counts, int *ids) {
-    countt(m.nt, m.tt, m.nv, i_pp, ns, /**/ counts);
+void build_hst(int nt, int nv, const int *tt, const Particle *i_pp, const int ns, /**/ int *starts, int *counts, int *ids) {
+    countt(nt, tt, nv, i_pp, ns, /**/ counts);
 
     exscan(counts, starts);
 
-    fill_ids(m.nt, m.tt, m.nv, i_pp, ns, starts, /**/ counts, ids);
+    fill_ids(nt, tt, nv, i_pp, ns, starts, /**/ counts, ids);
 }
 
 namespace tckernels
@@ -218,16 +218,16 @@ __global__ void fill_ids(const int nt, const int *tt, const int nv, const Partic
 }
 }
 
-void build_dev(const Mesh m, const Particle *i_pp, const int ns, /**/ int *starts, int *counts, int *ids, /*w*/ scan::Work *w) {
+void build_dev(int nt, int nv, const int *tt, const Particle *i_pp, const int ns, /**/ int *starts, int *counts, int *ids, /*w*/ scan::Work *w) {
     CC(cudaMemsetAsync(counts, 0, NCELLS * sizeof(int)));
     CC(cudaMemsetAsync(starts, 0, NCELLS * sizeof(int)));
 
     if (ns == 0) return;
     
-    KL(tckernels::countt, (k_cnf(ns*m.nt)), (m.nt, m.tt, m.nv, i_pp, ns, /**/ counts));
+    KL(tckernels::countt, (k_cnf(ns*nt)), (nt, tt, nv, i_pp, ns, /**/ counts));
     scan::scan(counts, NCELLS, /**/ starts, /*w*/ w);
     CC(cudaMemsetAsync(counts, 0, NCELLS * sizeof(int)));
-    KL(tckernels::fill_ids, (k_cnf(ns*m.nt)), (m.nt, m.tt, m.nv, i_pp, ns, starts, /**/ counts, ids));
+    KL(tckernels::fill_ids, (k_cnf(ns*nt)), (nt, tt, nv, i_pp, ns, starts, /**/ counts, ids));
 }
 
 } // sub
