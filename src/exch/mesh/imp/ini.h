@@ -27,3 +27,24 @@ void ini(int nv, int max_mesh_num, Unpack *u) {
 
     ini(PINNED_DEV, NONE, msz, cap, /**/ &u->hpp, &u->dpp);
 }
+
+
+void ini(int num_mom_per_mesh, int max_mesh_num, PackM *p) {
+    int cap[NFRAGS];
+    size_t msz = num_mom_per_mesh * sizeof(Momentum);
+    get_capacity(NFRAGS, max_mesh_num, /**/ cap);
+
+    ini(PINNED, NONE, msz, cap, /**/ &p->hmm, &p->dmm);
+}
+
+void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ CommM *c) {
+    ini(comm, /*io*/ tg, /**/ &c->mm);
+}
+
+void ini(int num_mom_per_mesh, int max_mesh_num, UnpackM *u) {
+    int cap[NFRAGS];
+    size_t msz = num_mom_per_mesh * sizeof(Momentum);
+    get_capacity(NFRAGS, max_mesh_num, /**/ cap);
+
+    ini(PINNED_DEV, NONE, msz, cap, /**/ &u->hmm, &u->dmm);
+}
