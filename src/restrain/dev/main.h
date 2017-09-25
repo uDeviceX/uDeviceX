@@ -1,6 +1,6 @@
 /* restrain drop kernels */
-__device__ float3 sumv;
-__device__ int indrop;
+static __device__ float3 sumv;
+static __device__ int indrop;
 
 static __device__ float3 warpReduceSumf3(float3 v) {
     for (int offset = warpSize>>1; offset > 0; offset >>= 1) {

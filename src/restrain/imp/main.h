@@ -1,3 +1,5 @@
+static float3 vavg; /* average velocity */
+
 static void reini() {
     int zeroi = 0;
     float3 zerof3 = make_float3(0.f, 0.f, 0.f);
@@ -22,11 +24,16 @@ static float3 avg_v() {
     return make_float3(v[X], v[Y], v[Z]);
 }
 
-void vel(int color, int n, Particle *pp, const int *cc) {
+void vel(const int *cc, int n, int color, /**/ Particle *pp) {
     reini();
     KL(dev::sum_vel, (k_cnf(n)), (color, n, pp, cc));
 
-    float3 vavg = avg_v();
+    vavg = avg_v();
 
     KL(dev::shift_vel, (k_cnf(n)), (vavg, n, /**/ pp));
+}
+
+void vcm(float *v) {
+    enum {X, Y, Z};
+    v[X] = vavg.x; v[Y] = vavg.y; v[Z] = vavg.z;
 }
