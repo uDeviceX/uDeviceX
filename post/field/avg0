@@ -3,13 +3,13 @@
 1;
 
 function usg()
-  msg("usage: ls -1 *.h5 | u.avg o.bov\n");
+  msg("usage: ls -1 *.h5 | u.avg0 o.bov\n");
   msg("average field files");
   exit(1);
 endfunction
 function msg(fmt, varargin); fprintf(stderr(), fmt, varargin{:}); endfunction
 function D = read(f)
-  if (!fexist(f)); msg("u.avg: wrong file: %s", f); exit(1); endif
+  if (!fexist(f)); msg("u.avg0: wrong file: %s", f); exit(1); endif
   D = load(f);
   D = orderfields(D); # alphabetically
   D = structfun(@squeeze, D, "UniformOutput", false);
@@ -87,7 +87,7 @@ function bov(S, o, val_name)
 endfunction
 
 function write(S, o)
-  if isempty(S); msg("u.avg: no data"); exit(1); endif
+  if isempty(S); msg("u.avg0: no data"); exit(1); endif
   [dir, name] = fileparts(o);
   val_name = strcat(name, ".values");
   val_full = fullfile(dir, val_name);
