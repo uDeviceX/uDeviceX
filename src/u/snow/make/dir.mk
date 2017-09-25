@@ -34,7 +34,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/sdf       && \
     d $B/sim       && \
     d $B/tcells    && \
-    d $B/tricells  && \
+    d $B/tclist    && \
     d $B/utils     && \
     d $B/wall      && \
     d $B/wall/exch
