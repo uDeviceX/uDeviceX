@@ -7,8 +7,7 @@ namespace meshbb {
     _(BB_SUCCESS)   /* succesfully bounced                       */ \
     _(BB_NOCROSS)   /* did not cross the plane                   */ \
     _(BB_WTRIANGLE) /* [w]rong triangle                          */ \
-    _(BB_HFAIL)     /* no time solution h                        */ \
-    _(BB_HNEXT)     /* h triangle is not the first to be crossed */
+    _(BB_HFAIL)     /* no time solution h                        */
     
 enum BBState {
     bbstates(make_enum)
