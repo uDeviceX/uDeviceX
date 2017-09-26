@@ -17,4 +17,4 @@ END {
 function max3(a, b, c) { return max(a, max(b, c)) }
 function min3(a, b, c) { return min(a, min(b, c)) }
 function max(a, b) { return a > b ? a : b }
-function min(a, b) { return a > b ? b : a }x
+function min(a, b) { return a > b ? b : a }
