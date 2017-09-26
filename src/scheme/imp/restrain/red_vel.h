@@ -1,4 +1,4 @@
-static void report() {
+static void report0() {
     enum {X, Y, Z};
     int n;
     float v[3];
@@ -6,12 +6,15 @@ static void report() {
     MSG("restrain RED: n = %d [% .3e % .3e % .3e]", n, v[X], v[Y], v[Z]);
 }
 
-void restrain(const int *cc, int n, long it, /**/ Particle *pp) {
+static void report(int it) {
     bool cond;
     int freq;
-    restrain::vel(cc, n, RED_COLOR, /**/ pp);
-
     freq = RESTRAIN_REPORT_FREQ;
     cond = freq > 0 && it % freq == 0;
-    if (cond) report();
+    if (cond) report0();
+}
+
+void restrain(const int *cc, int n, long it, /**/ Particle *pp) {
+    restrain::vel(cc, n, RED_COLOR, /**/ pp);
+    report(it);
 }
