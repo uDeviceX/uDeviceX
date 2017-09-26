@@ -6,7 +6,9 @@
 #include "utils/kl.h"
 #include "utils/cc.h"
 #include "inc/type.h"
+#include "d/api.h"
 
+#include "imp.h"
 #include "bbstates.h"
 #include "dbg.h"
 
@@ -17,5 +19,17 @@ enum {MAX_COL = 4};
 #include "dev/utils.h"
 #include "dev/intersection.h"
 #include "dev/main.h"
+
+void ini(int maxpp, /**/ BBdata *d) {
+    CC(d::Malloc((void**) d->ncols,   maxpp * sizeof(int)));
+    CC(d::Malloc((void**) d->datacol, maxpp * MAX_COL * sizeof(float4)));
+    CC(d::Malloc((void**) d->idcol,   maxpp * MAX_COL * sizeof(int)));
+}
+
+void fin(/**/ BBdata *d) {
+    CC(d::Free(d->ncols));
+    CC(d::Free(d->datacol));
+    CC(d::Free(d->idcol));    
+}
 
 } // meshbb
