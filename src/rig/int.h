@@ -8,7 +8,8 @@ struct Quants {
 
     /* mesh related quantities */
     int nt, nv;                   /* number of [t]riangles and [v]ertices                          */
-    int *htt, *dtt;               /* trinagle indices of [h]ost and [d]evice                       */
+    int4 *htt;                    /* triangle indices of [h]ost and [d]evice                       */
+    int4 *dtt;
     float *hvv, *dvv;             /* vertices of [h]ost and [d]evice (template)                    */
     Particle *i_pp_hst, *i_pp;    /* particles representing all meshes of all solids of that node  */
 

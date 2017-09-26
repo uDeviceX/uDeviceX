@@ -1,4 +1,3 @@
-namespace meshbb {
 namespace dbg {
 
 #ifdef debug_output
@@ -56,4 +55,3 @@ void report_dev() {}
 #endif // debug_output
 
 } // dbg
-} // meshbb

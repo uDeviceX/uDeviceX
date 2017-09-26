@@ -98,7 +98,7 @@ static _HD_ void project_t(const float *a, const float *b, const float *c,
     vp[2] = wa * va[2] + u * vb[2] + v * vc[2];
 }
 
-static _HD_ void rescue_1p(const Particle *vv, const int *tt, const int nt, const int sid, const int nv,
+static _HD_ void rescue_1p(const Particle *vv, const int4 *tt, const int nt, const int sid, const int nv,
                            const int *tcstarts, const int *tccounts, const int *tcids, unsigned long seed, /**/ Particle *p) {        
     float dr2b = 1000.f, rpb[3] = {0}, vpb[3] = {0}, nb[3] = {0};
 
@@ -131,13 +131,11 @@ static _HD_ void rescue_1p(const Particle *vv, const int *tt, const int nt, cons
             const int tid  = btid % nt;
             const int mid  = btid / nt;
 
-            const int t1 = mid * nv + tt[3*tid + 0];
-            const int t2 = mid * nv + tt[3*tid + 1];
-            const int t3 = mid * nv + tt[3*tid + 2];
-            
-            const Particle pa = vv[t1];
-            const Particle pb = vv[t2];
-            const Particle pc = vv[t3];
+            int4 t = tt[tid];
+        
+            const Particle pa = vv[mid * nv + t.x];
+            const Particle pb = vv[mid * nv + t.y];
+            const Particle pc = vv[mid * nv + t.z];
                         
             float rp[3], n[3], vp[3];
             project_t(pa.r, pb.r, pc.r, pa.v, pb.v, pc.v, p->r, /**/ rp, vp, n);
@@ -169,13 +167,11 @@ static _HD_ void rescue_1p(const Particle *vv, const int *tt, const int nt, cons
         const int tid = rand() % nt;
 #endif
 
-        const int t1 = sid * nv + tt[3*tid + 0];
-        const int t2 = sid * nv + tt[3*tid + 1];
-        const int t3 = sid * nv + tt[3*tid + 2];
+        int4 t = tt[tid];
 
-        const Particle pa = vv[t1];
-        const Particle pb = vv[t2];
-        const Particle pc = vv[t3];
+        const Particle pa = vv[sid * nv + t.x];
+        const Particle pb = vv[sid * nv + t.y];
+        const Particle pc = vv[sid * nv + t.z];
             
         rpb[0] = (pa.r[0] + pb.r[0] + pc.r[0]) * 0.333333f;
         rpb[1] = (pa.r[1] + pb.r[1] + pc.r[1]) * 0.333333f;
@@ -216,7 +212,7 @@ static _HD_ void rescue_1p(const Particle *vv, const int *tt, const int nt, cons
 #undef eps
 }
     
-void rescue_hst(int nt, int nv, const int *tt, const Particle *i_pp, const int ns, const int n,
+void rescue_hst(int nt, int nv, const int4 *tt, const Particle *i_pp, const int ns, const int n,
                 const int *tcstarts, const int *tccounts, const int *tcids, /**/ Particle *pp) {
     collision::inside_hst(pp, n, nt, nv, tt, i_pp, ns, /**/ tags_hst);
 
@@ -228,7 +224,7 @@ void rescue_hst(int nt, int nv, const int *tt, const Particle *i_pp, const int n
     }
 }
 
-static __global__ void rescue_dev_k(const Particle *vv, const int *tt, const int nt, const int nv,
+static __global__ void rescue_dev_k(const Particle *vv, const int4 *tt, const int nt, const int nv,
                                     const int *tcstarts, const int *tccounts, const int *tcids, const int *tags, const int n,
                                     unsigned long seed, /**/ Particle *pp) {
     const int i = threadIdx.x + blockIdx.x * blockDim.x;
@@ -242,7 +238,7 @@ static __global__ void rescue_dev_k(const Particle *vv, const int *tt, const int
     pp[i] = p;
 }
     
-void rescue_dev(int nt, int nv, const int *tt, const Particle *i_pp, const int ns, const int n,
+void rescue_dev(int nt, int nv, const int4 *tt, const Particle *i_pp, const int ns, const int n,
                 const int *tcstarts, const int *tccounts, const int *tcids, /**/ Particle *pp) {
     if (ns == 0 || n == 0) return;
         

@@ -1,5 +1,3 @@
-namespace meshbb {
-
 #define make_enum(a) a ,
 #define make_str(a) #a ,
 
@@ -19,5 +17,3 @@ static const char *bbstatenames[] = {bbstates(make_str)};
 #undef bbstates
 #undef make_enum
 #undef make_str
-
-} // meshbb

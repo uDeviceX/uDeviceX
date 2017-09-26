@@ -81,7 +81,7 @@ static void make_local(const int n, /**/ float *coms) {
 }
 
 static void count_pp_inside(const Particle *s_pp, const int n, const float *coms, const int ns,
-                            const int *tt, const float *vv, const int nt,
+                            const int4 *tt, const float *vv, const int nt,
                             /**/ int *tags, int *rcounts) {
     for (int j = 0; j < ns; ++j) rcounts[j] = 0;
 
@@ -144,7 +144,7 @@ static void kill(const int idmax, const int *tags, /**/ int *s_n, Particle *s_pp
     *r_n = rcount;
 }
 
-static void empty_solid(int nt, const int *tt, const float *vv, /* io */ float *rr0, int *npsolid) {
+static void empty_solid(int nt, const int4 *tt, const float *vv, /* io */ float *rr0, int *npsolid) {
     const int n0 = *npsolid;
     int j = 0;
     for (int i = 0; i < n0; ++i) {

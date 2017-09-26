@@ -36,10 +36,11 @@ static __host__ __device__ void loadr(const Particle *pp, int i, /**/ float r[3]
     r[Z] = p.r[Z];
 }
 
-static __host__ __device__ void loadt(const int *tt, int i, /**/ int t[3]) {
-    t[0] = tt[3*i + 0];
-    t[1] = tt[3*i + 1];
-    t[2] = tt[3*i + 2];
+static __host__ __device__ void loadt(const int4 *tt, int i, /**/ int t[3]) {
+    int4 t4 = tt[i];
+    t[0] = t4.x;
+    t[1] = t4.y;
+    t[2] = t4.z;
 }
 
 static __host__ __device__ void tbbox(const float *A, const float *B, const float *C, float *bb) {
@@ -51,7 +52,7 @@ static __host__ __device__ void tbbox(const float *A, const float *B, const floa
     bb[2*Z + 1] = max3(A[Z], B[Z], C[Z]) + BBOX_MARGIN;
 }
     
-static void countt(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, /**/ int *counts) {
+static void countt(const int nt, const int4 *tt, const int nv, const Particle *pp, const int ns, /**/ int *counts) {
     memset(counts, 0, NCELLS * sizeof(int));
     float A[3], B[3], C[3], bbox[6];
     int t[3];
@@ -85,7 +86,7 @@ static void countt(const int nt, const int *tt, const int nv, const Particle *pp
     }
 }
 
-static void fill_ids(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, const int *starts, /**/ int *counts, int *ids) {
+static void fill_ids(const int nt, const int4 *tt, const int nv, const Particle *pp, const int ns, const int *starts, /**/ int *counts, int *ids) {
     memset(counts, 0, NCELLS * sizeof(int));
     float A[3], B[3], C[3], bbox[6];
     int t[3];
@@ -132,7 +133,7 @@ static void exscan(const int *counts, int *starts) {
     starts[i] = starts[i-1] + counts[i-1];
 }
     
-void build_hst(int nt, int nv, const int *tt, const Particle *i_pp, const int ns, /**/ int *starts, int *counts, int *ids) {
+void build_hst(int nt, int nv, const int4 *tt, const Particle *i_pp, const int ns, /**/ int *starts, int *counts, int *ids) {
     countt(nt, tt, nv, i_pp, ns, /**/ counts);
 
     exscan(counts, starts);
@@ -142,7 +143,7 @@ void build_hst(int nt, int nv, const int *tt, const Particle *i_pp, const int ns
 
 namespace tckernels
 {
-__global__ void countt(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, /**/ int *counts) {
+__global__ void countt(const int nt, const int4 *tt, const int nv, const Particle *pp, const int ns, /**/ int *counts) {
     const int thid = threadIdx.x + blockIdx.x * blockDim.x;
     float A[3], B[3], C[3], bbox[6];
     int t[3];
@@ -178,7 +179,7 @@ __global__ void countt(const int nt, const int *tt, const int nv, const Particle
     }
 }
 
-__global__ void fill_ids(const int nt, const int *tt, const int nv, const Particle *pp, const int ns, const int *starts, /**/ int *counts, int *ids) {
+__global__ void fill_ids(const int nt, const int4 *tt, const int nv, const Particle *pp, const int ns, const int *starts, /**/ int *counts, int *ids) {
     const int thid = threadIdx.x + blockIdx.x * blockDim.x;
     float A[3], B[3], C[3], bbox[6];
     int t[3];
@@ -218,7 +219,7 @@ __global__ void fill_ids(const int nt, const int *tt, const int nv, const Partic
 }
 }
 
-void build_dev(int nt, int nv, const int *tt, const Particle *i_pp, const int ns, /**/ int *starts, int *counts, int *ids, /*w*/ scan::Work *w) {
+void build_dev(int nt, int nv, const int4 *tt, const Particle *i_pp, const int ns, /**/ int *starts, int *counts, int *ids, /*w*/ scan::Work *w) {
     CC(cudaMemsetAsync(counts, 0, NCELLS * sizeof(int)));
     CC(cudaMemsetAsync(starts, 0, NCELLS * sizeof(int)));
 

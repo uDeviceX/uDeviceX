@@ -9,7 +9,7 @@ static bool prop(const char *pname, const char *str) {
     return true;
 }
 
-void read(const char *fname, int *nt, int *nv, int **tt, float **vv) {
+void read(const char *fname, int *nt, int *nv, int4 **tt, float **vv) {
     FILE *f = fopen(fname, "r");
 
     if (f == NULL) {
@@ -48,7 +48,7 @@ void read(const char *fname, int *nt, int *nv, int **tt, float **vv) {
         exit(1);
     }
 
-    *tt = new int[3 * *nt];
+    *tt = new int4[*nt];
     *vv = new float[3 * *nv];
 
     for (int i = 0; i < *nv; ++i)
@@ -57,11 +57,11 @@ void read(const char *fname, int *nt, int *nv, int **tt, float **vv) {
                *vv + 3*i + 1,
                *vv + 3*i + 2);
 
-    for (int i = 0; i < *nt; ++i)
-        fscanf(f, "%*d %d %d %d\n",
-               *tt + 3*i + 0,
-               *tt + 3*i + 1,
-               *tt + 3*i + 2);
+    int4 t; t.z = 0;
+    for (int i = 0; i < *nt; ++i) {
+        fscanf(f, "%*d %d %d %d\n", &t.x, &t.y, &t.z);
+        (*tt)[i] = t;
+    }
 
     fclose(f);
 }

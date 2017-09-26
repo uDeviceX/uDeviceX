@@ -37,7 +37,7 @@ static void init_I_frompp(const Particle *pp, int n, float pmass, const float *c
     for (int c = 0; c < 6; ++c) I[c] *= pmass;
 }
 #else
-static void init_I_fromm(float pmass, int nt, const int *tt, const float *vv, /**/ float *I) {
+static void init_I_fromm(float pmass, int nt, const int4 *tt, const float *vv, /**/ float *I) {
     float com[3] = {0};
     mesh::center_of_mass(nt, tt, vv, /**/ com);
     mesh::inertia_tensor(nt, tt, vv, com, numberdensity, /**/ I);
@@ -46,7 +46,7 @@ static void init_I_fromm(float pmass, int nt, const int *tt, const float *vv, /*
 }
 #endif
     
-void ini(const Particle *pp, int n, float pmass, const float *com, int nt, const int *tt, const float *vv, /**/ float *rr0, Solid *s) {
+void ini(const Particle *pp, int n, float pmass, const float *com, int nt, const int4 *tt, const float *vv, /**/ float *rr0, Solid *s) {
     s->v[X] = s->v[Y] = s->v[Z] = 0; 
     s->om[X] = s->om[Y] = s->om[Z] = 0; 
 

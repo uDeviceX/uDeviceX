@@ -1,3 +1,4 @@
+#include <vector_types.h>
 #include <stdio.h>
 #include <math.h>
 
@@ -40,11 +41,11 @@ void free_quants(/**/ Quants *q) {
     Dfree(q->ii_dev);
 }
 
-void build_hst(int nt, int nv, const int *tt, const Particle *i_pp, const int ns, /**/ Quants *q) {
+void build_hst(int nt, int nv, const int4 *tt, const Particle *i_pp, const int ns, /**/ Quants *q) {
     sub::build_hst(nt, nv, tt, i_pp, ns, /**/ q->ss_hst, q->cc_hst, q->ii_hst);
 }
 
-void build_dev(int nt, int nv, const int *tt, const Particle *i_pp, const int ns, /**/ Quants *q, /*w*/ scan::Work *w) {
+void build_dev(int nt, int nv, const int4 *tt, const Particle *i_pp, const int ns, /**/ Quants *q, /*w*/ scan::Work *w) {
     sub::build_dev(nt, nv, tt, i_pp, ns, /**/ q->ss_dev, q->cc_dev, q->ii_dev, /*w*/ w);
 }
 

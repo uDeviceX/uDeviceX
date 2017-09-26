@@ -2,7 +2,7 @@ namespace rig {
 namespace sub {
 namespace ic {
 
-static void ini0(int nt, const int *tt, const float *vv, int nsolid, int rcount, int idmax, int root, float *coms, /**/
+static void ini0(int nt, const int4 *tt, const float *vv, int nsolid, int rcount, int idmax, int root, float *coms, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, Particle *r_pp) {
     Solid model;
     // share model to everyone
@@ -47,7 +47,7 @@ static void ini0(int nt, const int *tt, const float *vv, int nsolid, int rcount,
     set_ids(nsolid, /**/ ss);
 }
 
-static void ini1(int nt, const int *tt, const float *vv, int nsolid, float *coms, /**/
+static void ini1(int nt, const int4 *tt, const float *vv, int nsolid, float *coms, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp,
                  /*w*/ int *tags, int *rcounts)
 {
@@ -65,14 +65,14 @@ static void ini1(int nt, const int *tt, const float *vv, int nsolid, float *coms
     ini0(nt, tt, vv, nsolid, rcount, idmax, root, coms, /**/ ns, nps, rr0, ss, r_pp);
 }
 
-static void ini2(int nt, const int *tt, const float *vv, int nsolid, float *coms, /**/
+static void ini2(int nt, const int4 *tt, const float *vv, int nsolid, float *coms, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp,
                  /*w*/ int *tags, int *rcounts) {
     count_pp_inside(s_pp, *s_n, coms, nsolid, tt, vv, nt, /**/ tags, rcounts);
     ini1(nt, tt, vv, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ tags, rcounts);
 }
 
-static void ini3(int nt, const int *tt, const float *vv, int nsolid, float *coms, /**/
+static void ini3(int nt, const int4 *tt, const float *vv, int nsolid, float *coms, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp) {
     int *tags = new int[*s_n];
     int *rcounts = new int[nsolid];
@@ -81,7 +81,7 @@ static void ini3(int nt, const int *tt, const float *vv, int nsolid, float *coms
     delete[] tags;
 }
 
-static void ini4(const char *fname, int nt, int nv, const int *tt, const float *vv, /**/
+static void ini4(const char *fname, int nt, int nv, const int4 *tt, const float *vv, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp,
                  /*w*/ float *coms) {
     float3 minbb, maxbb;
@@ -93,7 +93,7 @@ static void ini4(const char *fname, int nt, int nv, const int *tt, const float *
     ini3(nt, tt, vv, nsolid, coms, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp);
 }
 
-void ini(const char *fname, int nt, int nv, const int *tt, const float *vv, /**/
+void ini(const char *fname, int nt, int nv, const int4 *tt, const float *vv, /**/
          int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp) {
     float *coms = new float[MAX_SOLIDS * 3 * 10];
     ini4(fname, nt, nv, tt, vv, /**/ ns, nps, rr0, ss, s_n, s_pp, r_pp, /*w*/ coms);

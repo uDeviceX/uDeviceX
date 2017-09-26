@@ -8,6 +8,6 @@ struct Quants {
 void alloc_quants(int max_num_mesh, /**/ Quants *q);
 void free_quants(/**/ Quants *q);
 
-void build_hst(int nt, int nv, const int *tt, const Particle *i_pp, const int ns, /**/ Quants *q);
-void build_dev(int nt, int nv, const int *tt, const Particle *i_pp, const int ns, /**/ Quants *q, /*w*/ scan::Work *w);
+void build_hst(int nt, int nv, const int4 *tt, const Particle *i_pp, const int ns, /**/ Quants *q);
+void build_dev(int nt, int nv, const int4 *tt, const Particle *i_pp, const int ns, /**/ Quants *q, /*w*/ scan::Work *w);
 }
