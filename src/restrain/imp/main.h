@@ -27,7 +27,7 @@ static void d2h(int *n, float v[3]) {
     enum {X, Y, Z};
     float3 u;
     CC(d::MemcpyFromSymbol(&u, &dev::sumv,    sizeof(float3)));
-    CC(d::MemcpyFromSymbol(&n, &dev::indrop,  sizeof(int)));
+    CC(d::MemcpyFromSymbol( n, &dev::indrop,  sizeof(int)));
     v[X] = u.x; v[Y] = u.y; v[Z] = u.z;
 }
 
