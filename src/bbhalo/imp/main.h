@@ -164,7 +164,7 @@ void pack_sendcnt(const Solid *ss_hst, const int ns, const Particle *pp, const i
 int post(const int nps) {
     {
         MPI_Status statuses[recvcntreq.size()];
-        m::Waitall(recvcntreq.size(), &recvcntreq.front(), statuses);
+        MC(m::Waitall(recvcntreq.size(), &recvcntreq.front(), statuses));
         recvcntreq.clear();
     }
 
@@ -177,7 +177,7 @@ int post(const int nps) {
     }
 
     MPI_Status statuses[26];
-    m::Waitall(26, sendcntreq, statuses);
+    MC(m::Waitall(26, sendcntreq, statuses));
 
     for (int i = 1; i < 27; ++i) {
         if (srhalo[i].size() > 0) {
@@ -207,12 +207,12 @@ int post(const int nps) {
 template <bool tohst>
 void unpack(const int nps, /**/ Solid *ss_buf, Particle *pp_buf) {
     MPI_Status statuses[26];
-    m::Waitall(srecvreq.size(), &srecvreq.front(), statuses);
-    m::Waitall(ssendreq.size(), &ssendreq.front(), statuses);
+    MC(m::Waitall(srecvreq.size(), &srecvreq.front(), statuses));
+    MC(m::Waitall(ssendreq.size(), &ssendreq.front(), statuses));
     srecvreq.clear(); ssendreq.clear();
         
-    m::Waitall(precvreq.size(), &precvreq.front(), statuses);
-    m::Waitall(psendreq.size(), &psendreq.front(), statuses);
+    MC(m::Waitall(precvreq.size(), &precvreq.front(), statuses));
+    MC(m::Waitall(psendreq.size(), &psendreq.front(), statuses));
     precvreq.clear(); psendreq.clear();
         
     const int nbulk = sshalo[0].size();
@@ -290,8 +290,8 @@ void post_back() {
 
 void unpack_back(/**/ Solid *ss_hst) {
     MPI_Status statuses[26];
-    m::Waitall(srecvreq.size(), &srecvreq.front(), statuses);
-    m::Waitall(ssendreq.size(), &ssendreq.front(), statuses);
+    MC(m::Waitall(srecvreq.size(), &srecvreq.front(), statuses));
+    MC(m::Waitall(ssendreq.size(), &ssendreq.front(), statuses));
     srecvreq.clear();
     ssendreq.clear();
 
