@@ -128,7 +128,6 @@ static __device__ void gen1(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
     }
     p.rnd = rnd;
     gen0(A, B, p, ljkind, /**/ f);
-    hook(ca, cb, A->x, A->y, A->z, f.x, f.y, f.z); /* see _snow and _rain */
 }
 
 static __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
