@@ -36,17 +36,17 @@
 namespace rig {
 namespace sub {
 
-void load_solid_mesh(const char *fname, int *nt, int *nv, int **tt_hst, int **tt_dev, float **vv_hst, float **vv_dev) {
+void load_solid_mesh(const char *fname, int *nt, int *nv, int4 **tt_hst, int4 **tt_dev, float **vv_hst, float **vv_dev) {
     ply::read(fname, /**/ nt, nv, tt_hst, vv_hst);
 
-    CC(cudaMalloc(tt_dev, 3 * *nt * sizeof(int)));
+    CC(cudaMalloc(tt_dev, *nt * sizeof(int4)));
     CC(cudaMalloc(vv_dev, 3 * *nv * sizeof(float)));
 
-    cH2D(*tt_dev, *tt_hst, 3 * *nt);
+    cH2D(*tt_dev, *tt_hst, *nt);
     cH2D(*vv_dev, *vv_hst, 3 * *nv);
 }
 
-void gen_from_solvent(int nt, int nv, const int *tt, const float *vv, /* io */ Particle *opp, int *on,
+void gen_from_solvent(int nt, int nv, const int4 *tt, const float *vv, /* io */ Particle *opp, int *on,
                       /* o */ int *ns, int *nps, int *n, float *rr0_hst, Solid *ss_hst, Particle *pp_hst) {
     // generate models
     MSG("start solid ini");

@@ -48,7 +48,7 @@ static __host__ __device__ bool in_tetrahedron(const float *x, const float *A, c
         same_side(x, D, AB, AC, A);
 }
     
-int inside_1p(const float *r, const float *vv, const int *tt, const int nt) {
+int inside_1p(const float *r, const float *vv, const int4 *tt, const int nt) {
     int c = 0;
     float origin[3] = {0, 0, 0};
 #ifdef spdir
@@ -56,13 +56,13 @@ int inside_1p(const float *r, const float *vv, const int *tt, const int nt) {
 #endif
         
     for (int i = 0; i < nt; ++i) {
-        const int *t = tt + 3 * i;
-        if (in_tetrahedron(r, vv + 3*t[0], vv + 3*t[1], vv + 3*t[2], origin)) ++c;
+        int4 t = tt[i];
+        if (in_tetrahedron(r, vv + 3*t.x, vv + 3*t.y, vv + 3*t.z, origin)) ++c;
     }
     return c%2;
 }
 
-static int inside_1p(const float *r, const Particle *vv, const int *tt, const int nt) {
+static int inside_1p(const float *r, const Particle *vv, const int4 *tt, const int nt) {
     int c = 0;
     float origin[3] = {0, 0, 0};
 #ifdef spdir
@@ -70,13 +70,13 @@ static int inside_1p(const float *r, const Particle *vv, const int *tt, const in
 #endif
 
     for (int i = 0; i < nt; ++i) {
-        const int *t = tt + 3 * i;
-        if (in_tetrahedron(r, vv[t[0]].r, vv[t[1]].r, vv[t[2]].r, origin)) ++c;
+        int4 t = tt[i];
+        if (in_tetrahedron(r, vv[t.x].r, vv[t.y].r, vv[t.z].r, origin)) ++c;
     }
     return c%2;
 }
     
-void inside_hst(const Particle *pp, const int n, int nt, int nv, const int *tt, const Particle *i_pp, const int ns, /**/ int *tags) {
+void inside_hst(const Particle *pp, const int n, int nt, int nv, const int4 *tt, const Particle *i_pp, const int ns, /**/ int *tags) {
     for (int i = 0; i < n; ++i) {
         tags[i] = -1;
         for (int sid = 0; sid < ns; ++sid)
@@ -96,7 +96,7 @@ __global__ void init_tags(const int n, const int color, /**/ int *tags) {
 
 /* assume ns blocks along y */
 /* if the ith particle is inside jth mesh, sets tag[i] to j */
-__global__ void compute_tags(const Particle *pp, const int n, const Particle *vv, const int nv, const int *tt, const int nt, /**/ int *tags) {
+__global__ void compute_tags(const Particle *pp, const int n, const Particle *vv, const int nv, const int4 *tt, const int nt, /**/ int *tags) {
     const int sid = blockIdx.y;
     const int gid = threadIdx.x + blockIdx.x * blockDim.x;
     if (gid >= n) return;
@@ -111,9 +111,10 @@ __global__ void compute_tags(const Particle *pp, const int n, const Particle *vv
 
         
     for (int i = 0; i < nt; ++i) {
-        const int t1 = sid * nv + tt[3*i + 0];
-        const int t2 = sid * nv + tt[3*i + 1];
-        const int t3 = sid * nv + tt[3*i + 2];
+        int4 t = tt[i];
+        const int t1 = sid * nv + t.x;
+        const int t2 = sid * nv + t.y;
+        const int t3 = sid * nv + t.z;
 
         const float a[3] = {vv[t1].r[0], vv[t1].r[1], vv[t1].r[2]};
         const float b[3] = {vv[t2].r[0], vv[t2].r[1], vv[t2].r[2]};
@@ -169,7 +170,7 @@ __global__ void compute_colors_tex(const Particle *pp, const int n, const Texo<f
 }
 }
     
-void inside_dev(const Particle *pp, const int n, int nt, int nv, const int *tt, const Particle *i_pp, const int ns, /**/ int *tags) {
+void inside_dev(const Particle *pp, const int n, int nt, int nv, const int4 *tt, const Particle *i_pp, const int ns, /**/ int *tags) {
     if (ns == 0 || n == 0) return;
         
     KL(kernels::init_tags, (k_cnf(n)), (n, -1, /**/ tags));

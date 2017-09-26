@@ -43,7 +43,7 @@ void free_ticketM(TicketM *t) {
     delete[] t->mm_hst;
 }
 
-void bounce_hst(const Force *ff, int nt, int nv, const int *tt, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
+void bounce_hst(const Force *ff, int nt, int nv, const int4 *tt, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
                 const int n, const int totnt, /**/ Particle *pp, TicketM *t) {
     sub::dbg::ini_hst();
     
@@ -55,7 +55,7 @@ void bounce_hst(const Force *ff, int nt, int nv, const int *tt, const Particle *
     sub::dbg::report_hst();
 }
 
-void bounce_dev(const Force *ff, int nt, int nv, const int *tt, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
+void bounce_dev(const Force *ff, int nt, int nv, const int4 *tt, const Particle *i_pp, const int *tcellstarts, const int *tcellcounts, const int *tids,
                 const int n, const int totnt, /**/ Particle *pp, TicketM *t) {
     sub::dbg::ini_dev();
     
