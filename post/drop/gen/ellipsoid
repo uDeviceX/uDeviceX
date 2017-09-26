@@ -2,13 +2,13 @@
 # generate an ellipsoid
 
 function ini() {
-    a = 1; b = 2; c = 3
-    N = 2000
+    a = 3; b = 1; c = 8
+    N = 10000
     Lx = Ly = Lz = 6
 
-    xl = -Lx/2; xh = Lx/2
-    yl = -Ly/2; yh = Ly/2
-    zl = -Lz/2; zh = Lz/2
+    xl = -a; xh = a
+    yl = -b; yh = b
+    zl = -c; zh = c
 }
 
 function gen(   x, y, z) {
