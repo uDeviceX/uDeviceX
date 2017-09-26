@@ -111,17 +111,6 @@ namespace sim {
 #include "imp/dump.h"
 #include "imp/colors.h"
 
-#define HST (true)
-#define DEV (false)
-#define DEVICE_SOLID
-#ifdef DEVICE_SOLID
-  #include "imp/0dev/bounce.h"
-#else
-  #include "imp/0hst/bounce.h"
-#endif
-#undef HST
-#undef DEV
-
 #include "imp/update.h"
 #include "imp/distr.h"
 #include "imp/step.h"
