@@ -1,0 +1,41 @@
+#!/usr/bin/awk -f
+
+BEGIN {
+    X = 1; Y = 2; Z = 3; pi = 3.141592653589793
+
+    A = X; B = Y; p = pi/4
+}
+
+NF {
+    n++
+    rr[n,X] = $1
+    rr[n,Y] = $2
+    rr[n,Z] = $3
+}
+
+END {
+    rot()
+    write()
+}
+
+function rot0(   x0, y0, c, s) {
+    c = cos(p); s = sin(p)
+    x0 = c*x - s*y
+    y0 = s*x + c*y
+    x = x0; y = y0
+}
+
+function rot(   i) {
+    for (i = 1; i <= n; i++) {
+	x = rr[i, A]; y = rr[i, B]
+	rot0()
+	rr[i, A] = x; rr[i, B] = y
+    }
+}
+
+function write(   i, x, y, z) {
+    for (i = 1; i <= n; i++) {
+	x = rr[i, X]; y = rr[i, Y]; z = rr[i, Z]
+	print x, y, z
+    }
+}
