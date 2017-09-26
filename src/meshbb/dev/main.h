@@ -72,7 +72,7 @@ static __device__ void revert(float h, Particle *p) {
     p->r[Z] -= p->v[Z] * h;
 }
 
-__global__ void find_collisions(int nm, int nt, int nv, const int4 *tt, const Particle *i_pp,
+__global__ void find_collisions(int nm, int nt, const int4 *tt, const Particle *i_pp,
                                 int3 L, const int *starts, const int *counts, const Particle *pp, const Force *ff,
                                 /**/ int *ncol, float4 *datacol, int *idcol) {
     
@@ -198,6 +198,8 @@ __global__ void perform_collisions(int n, const int *ncol, const float4 *datacol
 
     bounce_back(&p0, rw, vw, d.x, /**/ &p);
     pp[i] = p;
+
+    // TODO momentum
 }
 
 } // dev
