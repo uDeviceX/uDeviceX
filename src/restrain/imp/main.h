@@ -54,7 +54,7 @@ void vel(const int *cc, int n, int color, /**/ Particle *pp) {
 
     vavg = avg_v();
 
-    KL(dev::shift_vel, (k_cnf(n)), (vavg, n, /**/ pp));
+    KL(dev::shift_vel, (k_cnf(n)), (color, vavg, n, cc, /**/ pp));
 }
 
 void stat(int *n, float *v) {
