@@ -143,47 +143,4 @@ static _device_ BBState intersect_triangle(const float *s10, const float *s20, c
 #undef apxb
 }
 
-static _device_ void revert_r(Particle *p) {
-    p->r[X] -= dt * p->v[X];
-    p->r[Y] -= dt * p->v[Y];
-    p->r[Z] -= dt * p->v[Z];
-}
-
-static _device_ void loadt(const int *tt, int it, /**/ int *t1, int *t2, int *t3) {
-    *t1 = tt[3*it + 0];
-    *t2 = tt[3*it + 1];
-    *t3 = tt[3*it + 2];    
-}
-
-static _device_ void loadt(const int4 *tt, int it, /**/ int *t1, int *t2, int *t3) {
-    int4 t = tt[it];
-    *t1 = t.x;
-    *t2 = t.y;
-    *t3 = t.z;
-}
-
-template <typename Tri>
-_device_ bool find_better_intersection(const Tri *tt, const int it, const Particle *i_pp, const Particle *p0, /* io */ float *h, /**/ float *rw, float *vw) {
-    // load data
-    int t1, t2, t3;
-    Particle pA, pB, pC;
-
-    loadt(tt, it, /**/ &t1, &t2, &t3);
-    
-    pA = i_pp[t1];
-    pB = i_pp[t2];
-    pC = i_pp[t3];
-
-    revert_r(&pA);
-    revert_r(&pB);
-    revert_r(&pC);
-    
-    const BBState bbstate = intersect_triangle(pA.r, pB.r, pC.r, pA.v, pB.v, pC.v, p0, /* io */ h, /**/ rw, vw);
-
-    dbg::log_states(bbstate);
-    
-    return bbstate == BB_SUCCESS;
-}
-
-
 } // dev
