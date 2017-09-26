@@ -1,0 +1,8 @@
+# generate an ellipsoid
+
+BEGIN {
+    Lx = Ly = Lz = 3
+    xl = -Lx/2; xh = Lx/2
+    yl = -Ly/2; yh = Ly/2
+    zl = -Lz/2; zh = Lz/2
+}
