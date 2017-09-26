@@ -58,7 +58,6 @@ void select_collisions(int n, /**/ BBdata d) {
 
 
 void bounce(int n, BBdata d, const Force *ff, int nt, const int4 *tt, const Particle *i_pp, /**/ Particle *pp, Momentum *mm) {
-    
     KL(dev::perform_collisions, (k_cnf(n)),
        (n, d.ncols, d.datacol, d.idcol, ff, nt, tt, i_pp, /**/ pp, mm));
 }

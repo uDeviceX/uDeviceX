@@ -5,7 +5,13 @@ void clear_vel() {
 }
 
 void update_solid() {
-    if (s::q.n) update_solid0();
+    if (!s::q.n) return;
+
+    rig::update(s::ff, s::q.rr0, s::q.n, s::q.ns, /**/ s::q.pp, s::q.ss);
+    rig::update_mesh(s::q.ss, s::q.ns, s::q.nv, s::q.dvv, /**/ s::q.i_pp);
+    // for dump
+    cD2H(s::q.ss_dmp, s::q.ss, s::q.ns);
+    rig::reinit_ft(s::q.ns, /**/ s::q.ss);
 }
 
 void update_solvent(long it) {

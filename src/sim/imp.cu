@@ -116,12 +116,8 @@ namespace sim {
 #define DEVICE_SOLID
 #ifdef DEVICE_SOLID
   #include "imp/0dev/bounce.h"
-  #include "imp/0dev/update.h"
-  // #include "imp/0dev/distr.h"
 #else
   #include "imp/0hst/bounce.h"
-  #include "imp/0hst/update.h"
-  // #include "imp/0hst/distr.h"
 #endif
 #undef HST
 #undef DEV
