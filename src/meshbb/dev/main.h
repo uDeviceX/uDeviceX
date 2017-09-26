@@ -95,9 +95,34 @@ __global__ void find_collisions(int nm, int nt, int nv, const int4 *tt, const Pa
     }
 }
 
-// __global__ void select_collisions() {
+__global__ void select_collisions(int n, /**/ int *ncol, float4 *datacol, int *idcol) {
+    int i, c, j, dst, src, argmin;
+    float tmin;
+    float4 d;
+    i = threadIdx.x + blockIdx.x * blockDim.x;
 
-// }
+    if (i >= n) return;
+
+    c = ncol[i];
+
+    argmin = 0; tmin = 2*dt;
+    for (j = 0; j < c; ++j) {
+        src = MAX_COL * i + j;
+        d = datacol[src];
+        if (d.x < tmin) {
+            argmin = j;
+            tmin = d.x;
+        }
+    }
+
+    if (c) {
+        src = MAX_COL * i + argmin;
+        dst = MAX_COL * i;
+        idcol[dst]   = idcol[src];
+        datacol[dst] = datacol[src];
+        ncol[i] = 1; /* we can use find_collisions again */
+    }
+}
 
 // __golbal__ void perform_collisions() {
 
