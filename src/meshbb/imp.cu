@@ -9,12 +9,15 @@
 #include "d/api.h"
 
 #include "imp.h"
-#include "bbstates.h"
-#include "dbg.h"
 
 namespace meshbb {
-enum {MAX_COL = 4};
 
+/* conf */
+enum {MAX_COL = 4};
+#define dbg_output
+
+#include "bbstates.h"
+#include "dbg.h"
 #include "dev/roots.h"
 #include "dev/utils.h"
 #include "dev/intersection.h"
