@@ -36,7 +36,7 @@ static __global__ void sum_vel(int color, int n, const Particle *pp, const int *
     v  = warpReduceSumf3(v);
     nvalid = warpReduceSum(valid);
 
-    if (threadIdx.x == 0 && nvalid > 0) {
+    if ((threadIdx.x % warpSize == 0) && nvalid > 0) {
         atomicAdd(&sumv.x, v.x);
         atomicAdd(&sumv.y, v.y);
         atomicAdd(&sumv.z, v.z);
