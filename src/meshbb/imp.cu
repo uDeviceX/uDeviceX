@@ -22,6 +22,7 @@ enum {MAX_COL = 4};
 #include "dev/roots.h"
 #include "dev/utils.h"
 #include "dev/intersection.h"
+#include "dev/collect.h"
 #include "dev/main.h"
 
 void ini(int maxpp, /**/ BBdata *d) {
