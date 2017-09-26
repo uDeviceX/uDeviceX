@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <stdio.h>
 
 #include <conf.h>
 #include "inc/conf.h"
@@ -14,7 +15,7 @@ namespace meshbb {
 
 /* conf */
 enum {MAX_COL = 4};
-#define dbg_output
+#define debug_output
 
 #include "bbstates.h"
 #include "dbg.h"

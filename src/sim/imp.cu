@@ -86,6 +86,7 @@
 #include "tcells/int.h"
 
 #include "mbounce/imp.h"
+#include "meshbb/imp.h"
 #include "mrescue.h"
 
 #include "bbhalo/imp/dec.h"
