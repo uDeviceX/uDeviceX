@@ -11,7 +11,7 @@ Debug="KL_SYNC"
 
 u.conf $s $u $c <<!!!
    BANGLADESH_R=3
-   numberdensity=6
+   numberdensity=3
    $A $Gamma kBT=1 S_LEVEL=0
    $Walls
    $Domain
