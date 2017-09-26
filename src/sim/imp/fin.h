@@ -42,13 +42,15 @@ void fin() {
         dpdr::free_ticketIcom(&o::h.tic);
         dpdr::free_ticketSIh(&o::h.tsi);
         dpdr::free_ticketRIh(&o::h.tri);
+    }
 
+    if (multi_solvent && rbcs) {
         fin(/**/ &mc::e.p);
         fin(/**/ &mc::e.c);
         fin(/**/ &mc::e.u);
         Dfree(mc::pp);
     }
-    
+
     if (solids) {
         rig::free_quants(&s::q);
         rig::free_ticket(&s::t);

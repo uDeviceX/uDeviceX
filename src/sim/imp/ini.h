@@ -55,7 +55,9 @@ void ini() {
         dpdr::ini_ticketIcom(/*io*/ &tag_gen, /**/ &o::h.tic);
         dpdr::alloc_ticketSIh(/**/ &o::h.tsi);
         dpdr::alloc_ticketRIh(/**/ &o::h.tri);
+    }
 
+    if (multi_solvent && rbcs) {
         ini(MAX_VERT_NUM, MAX_CELL_NUM, &mc::e.p);
         ini(m::cart, /*io*/ &tag_gen, /**/ &mc::e.c);
         ini(MAX_VERT_NUM, MAX_CELL_NUM, &mc::e.u);
