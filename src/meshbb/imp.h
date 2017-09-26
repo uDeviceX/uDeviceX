@@ -9,7 +9,7 @@ struct BBdata {
 void ini(int maxpp, /**/ BBdata *d);
 void fin(/**/ BBdata *d);
 
-
+void reini(int n, /**/ BBdata d);
 void find_collisions(int nm, int nt, const int4 *tt, const Particle *i_pp, int3 L,
                      const int *starts, const int *counts, const Particle *pp, const Force *ff, /**/ BBdata d);
 void select_collisions(int n, /**/ BBdata d);
