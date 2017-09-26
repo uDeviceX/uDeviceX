@@ -33,7 +33,7 @@ $B/io/rig.o: $B/conf.h $S/inc/conf.h $S/inc/type.h
 $B/lforces/local.o: $S/_rain/forces/hook.h $S/cloud/lforces/get.h $S/cloud/lforces/int.h $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/forces/imp.h $S/forces/pack.h $S/forces/type.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/lforces/dev/core.h $S/lforces/dev/decl.h $S/lforces/dev/dpd.h $S/lforces/dev/fetch.h $S/lforces/dev/float.h $S/lforces/dev/merged.h $S/lforces/dev/pack.h $S/lforces/dev/tex.h $S/lforces/dev/transpose.h $S/lforces/imp/decl.h $S/lforces/imp/flocal.h $S/lforces/imp/info.h $S/lforces/imp/setup.h $S/lforces/imp/tex.h $S/lforces/imp/type.h $S/lforces/local.h $S/lforces/local0.h $S/msg.h $S/rnd/dev.h $S/rnd/imp.h $S/utils/cc.h $S/utils/kl.h
 $B/main.o: $B/conf.h $S/d/api.h $S/glb.h $S/inc/conf.h $S/mpi/glb.h $S/msg.h $S/sim/imp.h
 $B/math/linal.o: $S/math/linal.h
-$B/mbounce/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/mbounce/_release/check.h $S/mbounce/bbstates.h $S/mbounce/dbg.h $S/mbounce/dev.h $S/mbounce/gen.h $S/mbounce/gen.intersect.h $S/mbounce/gen.tri.h $S/mbounce/hst.h $S/mbounce/imp.h $S/mbounce/roots.h $S/mpi/glb.h $S/msg.h $S/utils/cc.h $S/utils/kl.h
+$B/mbounce/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/mbounce/_safe/check.h $S/mbounce/bbstates.h $S/mbounce/dbg.h $S/mbounce/dev.h $S/mbounce/gen.h $S/mbounce/gen.intersect.h $S/mbounce/gen.tri.h $S/mbounce/hst.h $S/mbounce/imp.h $S/mbounce/roots.h $S/mpi/glb.h $S/msg.h $S/utils/cc.h $S/utils/kl.h
 $B/mesh/bbox.o: $S/algo/minmax.h $S/inc/type.h $S/mesh/bbox.h
 $B/mesh/collision.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/mesh/collision.h $S/msg.h $S/utils/cc.h $S/utils/kl.h $S/utils/texo.h
 $B/mesh/dist.o: $S/inc/type.h $S/mesh/dist.h
@@ -61,6 +61,6 @@ $B/tclist/imp.o: $S/algo/scan/int.h $B/conf.h $S/d/api.h $S/inc/conf.h $S/inc/de
 $B/utils/cc.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/msg.h $S/utils/cc/common.h
 $B/utils/mc.o: $B/conf.h $S/inc/conf.h $S/utils/mc.h
 $B/utils/os.o: $S/utils/os.h
-$B/wall/exch/imp.o: $B/conf.h $S/inc/conf.h $S/inc/type.h $S/mpi/glb.h $S/mpi/wrapper.h
+$B/wall/exch/imp.o: $B/conf.h $S/inc/conf.h $S/inc/type.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/mc.h
 $B/wall/imp.o: $S/_rain/forces/hook.h $S/algo/scan/int.h $S/clist/imp.h $S/cloud/hforces/get.h $S/cloud/hforces/type.h $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/forces/imp.h $S/forces/pack.h $S/forces/type.h $S/forces/use.h $S/glb.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/dev/wvel.h $S/inc/macro.h $S/inc/type.h $S/io/restart.h $S/msg.h $S/rnd/dev.h $S/rnd/imp.h $S/sdf/cheap.dev.h $S/sdf/int.h $S/sdf/type.h $S/utils/cc.h $S/utils/kl.h $S/utils/te.h $S/utils/texo.h $S/wall/dev/fetch/color.h $S/wall/dev/fetch/grey.h $S/wall/dev/main.h $S/wall/dev/pair.h $S/wall/exch/imp.h $S/wall/imp.h $S/wall/imp/main.h $S/wall/imp/pair.h $S/wall/imp/strt.h
 $B/wall/int.o: $S/algo/scan/int.h $S/clist/imp.h $S/cloud/hforces/type.h $B/conf.h $S/d/api.h $S/d/ker.h $S/forces/type.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/mpi/glb.h $S/msg.h $S/rnd/imp.h $S/sdf/int.h $S/sdf/type.h $S/utils/cc.h $S/utils/texo.h $S/wall/imp.h $S/wall/int.h $S/wall/int/main.h $S/wall/int/pair.h

@@ -33,7 +33,7 @@ $B/io/rig.o: $S/io/rig.cpp; $X -I$S/. -I$S/_rain -I$S/io
 $B/lforces/local.o: $S/lforces/local.cu; $N -I$S/. -I$S/_rain -I$S/lforces
 $B/main.o: $S/main.cu; $N -I$S/. -I$S/_rain
 $B/math/linal.o: $S/math/linal.cpp; $X -I$S/. -I$S/_rain -I$S/math
-$B/mbounce/imp.o: $S/mbounce/imp.cu; $N -I$S/. -I$S/_rain -I$S/mbounce -I$S/mbounce/_release
+$B/mbounce/imp.o: $S/mbounce/imp.cu; $N -I$S/. -I$S/_rain -I$S/mbounce -I$S/mbounce/_safe
 $B/mesh/bbox.o: $S/mesh/bbox.cu; $N -I$S/. -I$S/_rain -I$S/mesh
 $B/mesh/collision.o: $S/mesh/collision.cu; $N -I$S/. -I$S/_rain -I$S/mesh
 $B/mesh/dist.o: $S/mesh/dist.cpp; $X -I$S/. -I$S/_rain -I$S/mesh
