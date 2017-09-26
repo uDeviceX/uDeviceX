@@ -2,7 +2,7 @@ static void report() {
     enum {X, Y, Z};
     int n;
     float v[3];
-    restrain::stat(/**/ v, *n);
+    restrain::stat(/**/ v, &n);
     MSG("restrain RED: n = %d [% .3e % .3e % .3e]", n, v[X], v[Y], v[Z]);
 }
 
