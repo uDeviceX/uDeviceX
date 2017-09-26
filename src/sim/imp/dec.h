@@ -69,5 +69,8 @@ namespace bb /* bounce back */
 {
 tcells::Quants qtc;
 mbounce::TicketM tm;
+
+meshbb::BBdata bbd;
+Momentum *mm;
 }
 
