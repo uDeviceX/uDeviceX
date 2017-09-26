@@ -34,8 +34,8 @@ static __device__ bool cubic_root(real a, real b, real c, real d, /**/ real *h) 
 
 /* see Fedosov PhD Thesis */
 static __device__ BBState intersect_triangle(const float *s10, const float *s20, const float *s30,
-                                           const float *vs1, const float *vs2, const float *vs3,
-                                           const Particle *p0,  /**/ float *h, float *u, float *v) {
+                                             const float *vs1, const float *vs2, const float *vs3,
+                                             const Particle *p0,  /**/ float *h, float *u, float *v) {
     typedef double real;
         
 #define diff(a, b) {a[X] - b[X], a[Y] - b[Y], a[Z] - b[Z]}
