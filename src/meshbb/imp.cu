@@ -24,9 +24,9 @@ enum {MAX_COL = 4};
 #include "dev/main.h"
 
 void ini(int maxpp, /**/ BBdata *d) {
-    CC(d::Malloc((void**) d->ncols,   maxpp * sizeof(int)));
-    CC(d::Malloc((void**) d->datacol, maxpp * MAX_COL * sizeof(float4)));
-    CC(d::Malloc((void**) d->idcol,   maxpp * MAX_COL * sizeof(int)));
+    CC(d::Malloc((void**) &d->ncols,   maxpp * sizeof(int)));
+    CC(d::Malloc((void**) &d->datacol, maxpp * MAX_COL * sizeof(float4)));
+    CC(d::Malloc((void**) &d->idcol,   maxpp * MAX_COL * sizeof(int)));
 }
 
 void fin(/**/ BBdata *d) {
