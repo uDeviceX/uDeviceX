@@ -1,0 +1,8 @@
+set -eu
+
+s=../../src
+c=$s/conf/zurich.h
+export s c
+
+./pre
+./main
