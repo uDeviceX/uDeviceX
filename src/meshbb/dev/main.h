@@ -124,8 +124,72 @@ __global__ void select_collisions(int n, /**/ int *ncol, float4 *datacol, int *i
     }
 }
 
-// __golbal__ void perform_collisions() {
+static __device__ void revert(float h, Particle *p) {
+    enum {X, Y, Z};
+    p->r[X] -= p->v[X] * h;
+    p->r[Y] -= p->v[Y] * h;
+    p->r[Z] -= p->v[Z] * h;
+}
 
-// }
+static __device__ void get_collision_point(const float4 dcol, int id, int nt, const int4 *tt, const Particle *i_pp,
+                                           /**/ float rw[3], float vw[3]) {
+    enum {X, Y, Z};
+    int4 t;
+    Particle A, B, C;
+    int tid, mid;
+    float h, u, v, w;
+    tid = id % nt;
+    mid = id / nt;
+
+    t = tt[tid];
+    A = i_pp[mid * nt + t.x];
+    B = i_pp[mid * nt + t.y];
+    C = i_pp[mid * nt + t.z];
+
+    /* d.x is collision time */
+    h = dt - dcol.x;
+    revert(h, &A);
+    revert(h, &B);
+    revert(h, &C);
+
+    u = dcol.y;
+    v = dcol.z;
+    w = 1.f - u - v;
+
+    rw[X] = w * A.r[X] + u * B.r[X] + v * C.r[X];
+    rw[Y] = w * A.r[Y] + u * B.r[Y] + v * C.r[Y];
+    rw[Z] = w * A.r[Z] + u * B.r[Z] + v * C.r[Z];
+
+    vw[X] = w * A.v[X] + u * B.v[X] + v * C.v[X];
+    vw[Y] = w * A.v[Y] + u * B.v[Y] + v * C.v[Y];
+    vw[Z] = w * A.v[Z] + u * B.v[Z] + v * C.v[Z];    
+}
+
+__global__ void perform_collisions(int n, const int *ncol, const float4 *datacol, const int *idcol,
+                                   const Force *ff, int nt, const int4 *tt, const Particle *i_pp,
+                                   /**/ Particle *pp, Momentum *mm) {
+    int i, id, entry;
+    float4 d;
+    Particle p, p0;
+    Force f;
+    float rw[3], vw[3];
+    i = threadIdx.x + blockIdx.x * blockDim.x;
+
+    if (i >= n || ncol[i] == 0) return;
+
+    entry = i * MAX_COL;
+    id = idcol[entry];
+    d  = datacol[entry];
+
+    p = pp[i];
+    f = ff[i];
+    
+    rvprev(p.r, p.v, f.f, /**/ p0.r, p0.v);
+
+    get_collision_point(d, id, nt, tt, i_pp, /**/ rw, vw);
+
+    bounce_back(&p0, rw, vw, d.x, /**/ &p);
+    pp[i] = p;
+}
 
 } // dev
