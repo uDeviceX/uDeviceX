@@ -39,18 +39,20 @@ static __device__ void get_cells(int3 L, const Particle *A, const Particle *B, c
     *hi = max3(ca, cb, cc);
 }
 
-static __device__ void find_collisions_cell(int tid, int start, int count, const Particle *pp,
+static __device__ void find_collisions_cell(int tid, int start, int count, const Particle *pp, const Force *ff,
                                             const Particle *A, const Particle *B, const Particle *C,
                                             /**/ int *ncol, float4 *datacol, int *idcol) {
     int i, entry;
-    Particle p;
+    Particle p, p0; Force f;
     BBState state;
     float tc, u, v;
     
     for (i = start; i < start + count; ++i) {
         p = pp[i];
+        f = ff[i];
+        rvprev(p.r, p.v, f.f, /**/ p0.r, p0.v);
 
-        state = intersect_triangle(A->r, B->r, C->r, A->v, B->v, C->v, &p, /*io*/ &tc, /**/ &u, &v);
+        state = intersect_triangle(A->r, B->r, C->r, A->v, B->v, C->v, &p0, /*io*/ &tc, /**/ &u, &v);
 
         if (state == BB_SUCCESS) {
             entry = atomicAdd(ncol + i, 1);
@@ -69,7 +71,7 @@ static __device__ void revert(float h, Particle *p) {
 }
 
 __global__ void find_collisions(int nm, int nt, int nv, const int4 *tt, const Particle *i_pp,
-                                int3 L, const int *starts, const int *counts, const Particle *pp,
+                                int3 L, const int *starts, const int *counts, const Particle *pp, const Force *ff,
                                 /**/ int *ncol, float4 *datacol, int *idcol) {
     
     int gid, mid, tid, ix, iy, iz, cid;
@@ -100,7 +102,7 @@ __global__ void find_collisions(int nm, int nt, int nv, const int4 *tt, const Pa
             for (ix = str.x; ix < end.x; ++ix) {
                 cid = ix + L.x * (iy + L.y * iz);
                 
-                find_collisions_cell(tid, starts[cid], counts[cid], pp, &A, &B, &C, /**/ ncol, datacol, idcol);
+                find_collisions_cell(tid, starts[cid], counts[cid], pp, ff, &A, &B, &C, /**/ ncol, datacol, idcol);
             }
         }
     }
