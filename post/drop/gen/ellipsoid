@@ -1,8 +1,40 @@
+#!/usr/bin/awk -f
 # generate an ellipsoid
 
-BEGIN {
-    Lx = Ly = Lz = 3
+function ini() {
+    a = 1; b = 2; c = 3
+    N = 2000
+    Lx = Ly = Lz = 6
+
     xl = -Lx/2; xh = Lx/2
     yl = -Ly/2; yh = Ly/2
     zl = -Lz/2; zh = Lz/2
 }
+
+function gen(   x, y, z) {
+    while (n < N) {
+	x = rndx(); y = rndy(); z = rndz()
+	if (!inside(x, y, z)) continue
+	n++; xx[n] = x; yy[n] = y; zz[n] = z
+    }
+}
+
+function write(   i) {
+    for (i = 1; i <= N; i++)
+	print xx[i], yy[i], zz[i]
+}
+
+BEGIN {
+    ini()
+    gen()
+    write()
+}
+
+function rnd(l, h) { return l + (h - l)*rand() }
+function rndx()    { return rnd(xl, xh) }
+function rndy()    { return rnd(yl, yh) }
+function rndz()    { return rnd(zl, zh) }
+
+function inside(x, y, z)    { return ellipsoid(x, y, z) }
+function ellipsoid(x, y, z) { return x^2/a^2 + y^2/b^2 + z^2/c^2 < 1 }
+
