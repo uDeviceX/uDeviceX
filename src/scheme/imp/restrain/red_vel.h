@@ -1,8 +1,9 @@
 static void report() {
     enum {X, Y, Z};
+    int n;
     float v[3];
-    restrain::vcm(/**/ v);
-    MSG("restrain RED velocity: [% .3e % .3e % .3e]", v[X], v[Y], v[Z]);
+    restrain::stat(/**/ v, *n);
+    MSG("restrain RED: n = %d [% .3e % .3e % .3e]", n, v[X], v[Y], v[Z]);
 }
 
 void restrain(const int *cc, int n, long it, /**/ Particle *pp) {

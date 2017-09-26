@@ -57,7 +57,8 @@ void vel(const int *cc, int n, int color, /**/ Particle *pp) {
     KL(dev::shift_vel, (k_cnf(n)), (vavg, n, /**/ pp));
 }
 
-void vcm(float *v) {
+void stat(int *n, float *v) {
     enum {X, Y, Z};
     v[X] = vavg.x; v[Y] = vavg.y; v[Z] = vavg.z;
+    *n = N;
 }
