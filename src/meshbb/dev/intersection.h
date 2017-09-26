@@ -35,7 +35,7 @@ static _device_ bool cubic_root(real a, real b, real c, real d, /**/ real *h) {
 /* see Fedosov PhD Thesis */
 static _device_ BBState intersect_triangle(const float *s10, const float *s20, const float *s30,
                                            const float *vs1, const float *vs2, const float *vs3,
-                                           const Particle *p0,  /*io*/ float *h, /**/ float *rw, float *vw) {
+                                           const Particle *p0,  /**/ float *h, float *u, float *v) {
     typedef double real;
         
 #define diff(a, b) {a[X] - b[X], a[Y] - b[Y], a[Z] - b[Z]}
@@ -94,9 +94,6 @@ static _device_ BBState intersect_triangle(const float *s10, const float *s20, c
             return BB_HFAIL;
     }
 
-    if (hl > *h)
-        return BB_HNEXT;
-
     const real rwl[3] = {r0[X] + hl * v0[X],
                          r0[Y] + hl * v0[Y],
                          r0[Z] + hl * v0[Z]};
@@ -117,23 +114,15 @@ static _device_ BBState intersect_triangle(const float *s10, const float *s20, c
 
     const real fac = 1.f / (a11*a22 - a12*a12);
             
-    const real u = (ga1 * a22 - ga2 * a12) * fac;
-    const real v = (ga2 * a11 - ga1 * a12) * fac;
+    const real ul = (ga1 * a22 - ga2 * a12) * fac;
+    const real vl = (ga2 * a11 - ga1 * a12) * fac;
 
-    if ((u < 0) || (v < 0) || (u+v > 1))
+    if ((ul < 0) || (vl < 0) || (ul+vl > 1))
         return BB_WTRIANGLE;
 
     *h = hl;
-        
-    rw[X] = rwl[X];
-    rw[Y] = rwl[Y];
-    rw[Z] = rwl[Z];
-
-    // linear interpolation of velocity vw
-    const real w = 1 - u - v;
-    vw[X] = w * vs1[X] + u * vs2[X] + v * vs3[X];
-    vw[Y] = w * vs1[Y] + u * vs2[Y] + v * vs3[Y];
-    vw[Z] = w * vs1[Z] + u * vs2[Z] + v * vs3[Z];
+    *u = ul;
+    *v = vl;
     
     return BB_SUCCESS;
 
