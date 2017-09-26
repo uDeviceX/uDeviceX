@@ -1,5 +1,4 @@
-
-subdirs=build_smesh msd disp
+subdirs=build_smesh msd disp drop field
 .PHONY: install $(subdirs)
 
 install: $(subdirs)
