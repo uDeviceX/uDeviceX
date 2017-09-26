@@ -178,9 +178,10 @@ __global__ void perform_collisions(int n, const int *ncol, const float4 *datacol
                                    /**/ Particle *pp, Momentum *mm) {
     int i, id, entry;
     float4 d;
-    Particle p, p0;
+    Particle p1, p0, pn;
     Force f;
     float rw[3], vw[3];
+    Momentum m;
     i = threadIdx.x + blockIdx.x * blockDim.x;
 
     if (i >= n || ncol[i] == 0) return;
@@ -189,17 +190,28 @@ __global__ void perform_collisions(int n, const int *ncol, const float4 *datacol
     id = idcol[entry];
     d  = datacol[entry];
 
-    p = pp[i];
-    f = ff[i];
+    p1 = pp[i];
+    f  = ff[i];
     
-    rvprev(p.r, p.v, f.f, /**/ p0.r, p0.v);
+    rvprev(p1.r, p1.v, f.f, /**/ p0.r, p0.v);
 
     get_collision_point(d, id, nt, tt, i_pp, /**/ rw, vw);
 
-    bounce_back(&p0, rw, vw, d.x, /**/ &p);
-    pp[i] = p;
+    bounce_back(&p0, rw, vw, d.x, /**/ &pn);
+    pp[i] = pn;
 
-    // TODO momentum
+    /* add momentum */
+
+    lin_mom_change(    p1.v, pn.v, /**/ m.P);
+    ang_mom_change(rw, p1.v, pn.v, /**/ m.L);
+
+    atomicAdd(mm[id].P + X, m.P[X]);
+    atomicAdd(mm[id].P + Y, m.P[Y]);
+    atomicAdd(mm[id].P + Z, m.P[Z]);
+
+    atomicAdd(mm[id].L + X, m.L[X]);
+    atomicAdd(mm[id].L + Y, m.L[Y]);
+    atomicAdd(mm[id].L + Z, m.L[Z]);
 }
 
 } // dev
