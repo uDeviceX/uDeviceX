@@ -1,4 +1,5 @@
 static float3 vavg; /* average velocity */
+static int       N;
 
 static int reduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op) {
     return m::Allreduce(sendbuf, recvbuf, count, datatype, op, m::cart);
@@ -30,6 +31,7 @@ static void d2h(int *n, float v[3]) {
     v[X] = u.x; v[Y] = u.y; v[Z] = u.z;
 }
 
+static void setn(int n) { N = n; }
 static float3 avg_v() {
     enum {X, Y, Z};
     int n;
@@ -42,6 +44,7 @@ static float3 avg_v() {
         v[Y] /= n;
         v[Z] /= n;
     }
+    setn(n);
     return make_float3(v[X], v[Y], v[Z]);
 }
 
