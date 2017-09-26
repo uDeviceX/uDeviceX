@@ -1,5 +1,5 @@
 #### freeze after high temp
-# cTEST: freeze.t0
+# nTEST: freeze.t0
 export PATH=../tools:$PATH
 rm -rf bop h5 diag.txt
 c=conf/zurich.h
@@ -16,5 +16,5 @@ u.conf $c <<!!!
 (make clean && u.make -j) > make.log
 sh runfile
 :
-avg_h52.m h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
+avg_h52.m h5/flowfields-0001.h5 | uscale 0.01 > h5.out.txt
 
