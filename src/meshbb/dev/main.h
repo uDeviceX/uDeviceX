@@ -31,17 +31,17 @@ static __device__ int3 max3(int3 a, int3 b, int3 c) {
 static __device__ void get_cells(int3 L, const Particle *A, const Particle *B, const Particle *C,
                           /**/ int3 *lo, int3 *hi) {
     int3 ca, cb, cc;
-    ca = get_cidx(L, A.r);
-    cb = get_cidx(L, B.r);
-    cc = get_cidx(L, C.r);
+    ca = get_cidx(L, A->r);
+    cb = get_cidx(L, B->r);
+    cc = get_cidx(L, C->r);
 
     *lo = min3(ca, cb, cc);
     *hi = max3(ca, cb, cc);
 }
 
-static __device__ find_collisions_cell(int tid, int start, int count, const Particle *pp,
-                                       const Particle *A, const Particle *B, const Particle *C,
-                                       /**/ int *ncol, float4 *datacol, int *idcol) {
+static __device__ void find_collisions_cell(int tid, int start, int count, const Particle *pp,
+                                            const Particle *A, const Particle *B, const Particle *C,
+                                            /**/ int *ncol, float4 *datacol, int *idcol) {
     int i, entry;
     Particle p;
     BBState state;
@@ -50,7 +50,7 @@ static __device__ find_collisions_cell(int tid, int start, int count, const Part
     for (i = start; i < start + count; ++i) {
         p = pp[i];
 
-        state = intersect_triangle(A.r, B.r, C.r, A.v, B.v, C.v, p, /*io*/ &tc, /**/ &u, &v);
+        state = intersect_triangle(A->r, B->r, C->r, A->v, B->v, C->v, &p, /*io*/ &tc, /**/ &u, &v);
 
         if (state == BB_SUCCESS) {
             entry = atomicAdd(ncol + i, 1);
@@ -66,10 +66,10 @@ __global__ void find_collisions(int nm, int nt, int nv, const int4 *tt, const Pa
                                 /**/ int *ncol, float4 *datacol, int *idcol) {
     
     int gid, mid, tid, ix, iy, iz, cid;
-    Particle A, B, C, p;
+    Particle A, B, C;
     int4 tri;
     int3 str, end;
-    gid = threadIdx.x + blockIdx.x * blockDim.x
+    gid = threadIdx.x + blockIdx.x * blockDim.x;
 
     if (gid >= nm * nt) return;
 
@@ -82,7 +82,7 @@ __global__ void find_collisions(int nm, int nt, int nv, const int4 *tt, const Pa
     B = i_pp[mid * nt + tri.y];
     C = i_pp[mid * nt + tri.z];
 
-    get_cells(L, A, B, C, /**/ &str, &end);
+    get_cells(L, &A, &B, &C, /**/ &str, &end);
     
     for (iz = str.z; iz < end.z; ++iz) {
         for (iy = str.y; iy < end.y; ++iy) {
@@ -95,12 +95,12 @@ __global__ void find_collisions(int nm, int nt, int nv, const int4 *tt, const Pa
     }
 }
 
-__global__ void select_collisions() {
+// __global__ void select_collisions() {
 
-}
+// }
 
-__golbal__ void perform_collisions() {
+// __golbal__ void perform_collisions() {
 
-}
+// }
 
 } // dev

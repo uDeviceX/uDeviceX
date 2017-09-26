@@ -1,10 +1,10 @@
 namespace dev {
 
 template <typename real>
-static _device_ bool valid(real t) {return (t >= 0 && t <= dt);}
+static __device__ bool valid(real t) {return (t >= 0 && t <= dt);}
 
 template <typename real>
-static _device_ bool cubic_root(real a, real b, real c, real d, /**/ real *h) {
+static __device__ bool cubic_root(real a, real b, real c, real d, /**/ real *h) {
     const real eps = 1e-6;
     real h1, h2, h3, b_, c_, d_;
     
@@ -33,7 +33,7 @@ static _device_ bool cubic_root(real a, real b, real c, real d, /**/ real *h) {
 }
 
 /* see Fedosov PhD Thesis */
-static _device_ BBState intersect_triangle(const float *s10, const float *s20, const float *s30,
+static __device__ BBState intersect_triangle(const float *s10, const float *s20, const float *s30,
                                            const float *vs1, const float *vs2, const float *vs3,
                                            const Particle *p0,  /**/ float *h, float *u, float *v) {
     typedef double real;
