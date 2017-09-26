@@ -61,6 +61,9 @@ void fin() {
         tcells::free_quants(&bb::qtc);
         mbounce::free_ticketM(&bb::tm);
 
+        fin(/**/ &bb::bbd);
+        Dfree(bb::mm);
+
         distr::rig::fin(&s::d.p);
         distr::rig::fin(&s::d.c);
         distr::rig::fin(&s::d.u);
