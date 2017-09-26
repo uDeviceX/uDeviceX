@@ -38,6 +38,7 @@ $B/mesh/bbox.o: $S/mesh/bbox.cu; $N -I$S/. -I$S/_snow -I$S/mesh
 $B/mesh/collision.o: $S/mesh/collision.cu; $N -I$S/. -I$S/_snow -I$S/mesh
 $B/mesh/dist.o: $S/mesh/dist.cpp; $X -I$S/. -I$S/_snow -I$S/mesh
 $B/mesh/props.o: $S/mesh/props.cpp; $X -I$S/. -I$S/_snow -I$S/mesh
+$B/meshbb/imp.o: $S/meshbb/imp.cu; $N -I$S/. -I$S/_snow -I$S/meshbb
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/. -I$S/_snow -I$S/mpi
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/. -I$S/_snow -I$S/mpi
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/. -I$S/_snow -I$S/mpi
