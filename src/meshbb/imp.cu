@@ -64,4 +64,8 @@ void bounce(int n, BBdata d, const Force *ff, int nt, const int4 *tt, const Part
        (n, d.ncols, d.datacol, d.idcol, ff, nt, tt, i_pp, /**/ pp, mm));
 }
 
+void collect_momentum(const Momentum *mm, int ns, int nt, /**/ Solid *ss) {
+    KL(dev::collect_rig_mom, (k_cnf(ns * nt)), (mm, ns, nt, /**/ ss));
+}
+
 } // meshbb
