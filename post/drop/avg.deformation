@@ -1,1 +1,19 @@
-echo 42
+usg() {
+    echo 'usage: u.avg.deformation [XYZ columns file]..' >&2
+    echo 'compute deformation using average axis'        >&2
+    exit
+}
+
+avg () {
+    awk '
+    {
+        S += $1; L += $3
+    }
+    END {
+        print (L - S)/(L + S)
+    }
+    '
+}
+
+if test $# -ne 0 -a "$1" = -h; then usg; exit; fi
+u.ellipsoid "$@" | avg
