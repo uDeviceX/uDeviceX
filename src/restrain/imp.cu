@@ -15,8 +15,6 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "glb.h"
-
-#include "mpi/glb.h" /* TODO: remove */
 #include "mpi/wrapper.h"
 
 #include "imp.h"
