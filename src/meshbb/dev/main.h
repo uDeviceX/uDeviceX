@@ -61,6 +61,13 @@ static __device__ void find_collisions_cell(int tid, int start, int count, const
     }
 }
 
+static __device__ void revert(float h, Particle *p) {
+    enum {X, Y, Z};
+    p->r[X] -= p->v[X] * h;
+    p->r[Y] -= p->v[Y] * h;
+    p->r[Z] -= p->v[Z] * h;
+}
+
 __global__ void find_collisions(int nm, int nt, int nv, const int4 *tt, const Particle *i_pp,
                                 int3 L, const int *starts, const int *counts, const Particle *pp,
                                 /**/ int *ncol, float4 *datacol, int *idcol) {
@@ -81,6 +88,10 @@ __global__ void find_collisions(int nm, int nt, int nv, const int4 *tt, const Pa
     A = i_pp[mid * nt + tri.x];
     B = i_pp[mid * nt + tri.y];
     C = i_pp[mid * nt + tri.z];
+
+    revert(dt, &A);
+    revert(dt, &B);
+    revert(dt, &C);
 
     get_cells(L, &A, &B, &C, /**/ &str, &end);
     
@@ -122,13 +133,6 @@ __global__ void select_collisions(int n, /**/ int *ncol, float4 *datacol, int *i
         datacol[dst] = datacol[src];
         ncol[i] = 1; /* we can use find_collisions again */
     }
-}
-
-static __device__ void revert(float h, Particle *p) {
-    enum {X, Y, Z};
-    p->r[X] -= p->v[X] * h;
-    p->r[Y] -= p->v[Y] * h;
-    p->r[Z] -= p->v[Z] * h;
 }
 
 static __device__ void get_collision_point(const float4 dcol, int id, int nt, const int4 *tt, const Particle *i_pp,
