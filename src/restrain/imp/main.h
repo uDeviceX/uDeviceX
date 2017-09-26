@@ -16,7 +16,7 @@ static int sum_i(int *v) {
 
 static void reini() {
     int zeroi = 0;
-    float3 zerof3 = make_float3(0.f, 0.f, 0.f);
+    float3 zerof3 = make_float3(0, 0, 0);
     CC(d::MemcpyToSymbol(&dev::sumv,   &zerof3, sizeof(float3)));
     CC(d::MemcpyToSymbol(&dev::indrop, &zeroi,  sizeof(int)));
 }
