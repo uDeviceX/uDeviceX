@@ -54,6 +54,8 @@ static __device__ void find_collisions_cell(int tid, int start, int count, const
 
         state = intersect_triangle(A->r, B->r, C->r, A->v, B->v, C->v, &p0, /*io*/ &tc, /**/ &u, &v);
 
+        dbg::log_states(state);
+        
         if (state == BB_SUCCESS) {
             entry = atomicAdd(ncol + i, 1);
             entry += i * MAX_COL;
