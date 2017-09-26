@@ -33,16 +33,20 @@ void fin(/**/ BBdata *d) {
 }
 
 void reini(int n, /**/ BBdata d) {
-
+    CC(d::MemsetAsync(d.ncols, 0, n * sizeof(int)));
 }
 
 void find_collisions(int nm, int nt, const int4 *tt, const Particle *i_pp, int3 L,
                      const int *starts, const int *counts, const Particle *pp, const Force *ff,
                      /**/ BBdata d) {
+    dbg::ini_dev();
+    
     if (!nm) return;
 
     KL(dev::find_collisions, (k_cnf(nm * nt)),
        (nm, nt, tt, i_pp, L, starts, counts, pp, ff, /**/ d.ncols, d.datacol, d.idcol));
+
+    dbg::report_dev();
 }
 
 void select_collisions(int n, /**/ BBdata d) {
