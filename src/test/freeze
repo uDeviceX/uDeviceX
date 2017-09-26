@@ -6,7 +6,7 @@ c=conf/zurich.h
 cp data/sdf/yplates1/yplates.dat sdf.dat
 u.conf $c <<!!!
    numberdensity=3
-   walls wall_creation=10 shear_y gamma_dot=100.0
+   walls wall_creation=10 shear_y
    S_LEVEL=0 kBT=1 adpd_b=12.5 gdpd_b=5.61125
    XS=12 YS=32 ZS=12
    dt=0.05 tend=41 part_freq=800 field_freq=800
@@ -16,5 +16,5 @@ u.conf $c <<!!!
 (make clean && u.make -j) > make.log
 sh runfile
 :
-avg_h5.m h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
+avg_h52.m h5/flowfields-0001.h5 | uscale 0.01 > h5.out.txt
 
