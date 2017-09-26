@@ -20,7 +20,7 @@ $B/frag/imp.o: $S/frag/imp.cpp; $X -I$S/. -I$S/frag
 $B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/. -I$S/fsi
 $B/glb.o: $S/glb.cu; $N -I$S/.
 $B/hforces/imp.o: $S/hforces/imp.cu; $N -I$S/. -I$S/hforces
-$B/inter/imp.o: $S/inter/imp.cu; $N -I$S/. -I$S/inter -I$S/inter/_france
+$B/inter/imp.o: $S/inter/imp.cu; $N -I$S/. -I$S/inter -I$S/inter/_bangladesh
 $B/io/bop/imp.o: $S/io/bop/imp.cpp; $X -I$S/. -I$S/io/bop
 $B/io/diag.o: $S/io/diag.cpp; $X -I$S/. -I$S/io
 $B/io/field.o: $S/io/field.cpp; $X -I$S/. -I$S/io

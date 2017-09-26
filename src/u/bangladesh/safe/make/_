@@ -1,8 +1,8 @@
 # active directories
-# _safe
-_release
+_safe
+#_release
 # _cpu
 _cuda
 
 # color scheme
-_france
+_bangladesh
