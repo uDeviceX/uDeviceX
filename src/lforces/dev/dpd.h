@@ -6,7 +6,7 @@ static __device__ float3 dpd0(uint aid, uint bid, float rnd) {
     cloud_get2(aid, &a);
     cloud_get2(bid, &b);
     forces::f32f(&fx, &fy, &fz, /**/ &f);
-    forces::gen(a, b, rnd, &fx, &fy, &fz);
+    forces::genf(a, b, rnd, /**/ f);
     return make_float3(fx, fy, fz);
 }
 
