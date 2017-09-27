@@ -21,12 +21,11 @@ static __device__ T3 max3T3(T3 a, T3 b, T3 c) {
     return v;
 }
 
-static __device__ int3 get_cidx(int3 L, const float r[3]) {
-    enum {X, Y, Z};
+static __device__ int3 get_cidx(int3 L, float3 r) {
     int3 c;
-    c.x = floor((double) r[X] + L.x/2);
-    c.y = floor((double) r[Y] + L.y/2);
-    c.z = floor((double) r[Z] + L.z/2);
+    c.x = floor((double) r.x + L.x/2);
+    c.y = floor((double) r.y + L.y/2);
+    c.z = floor((double) r.z + L.z/2);
 
     c.x = min(L.x, max(0, c.x));
     c.y = min(L.y, max(0, c.y));
@@ -34,15 +33,16 @@ static __device__ int3 get_cidx(int3 L, const float r[3]) {
     return c;
 }
 
-static __device__ void get_cells(int3 L, const Particle *A, const Particle *B, const Particle *C,
-                                 /**/ int3 *lo, int3 *hi) {
-    int3 ca, cb, cc;
-    ca = get_cidx(L, A->r);
-    cb = get_cidx(L, B->r);
-    cc = get_cidx(L, C->r);
+static __device__ void get_cells(int3 L, float tol, float3 A, float3 B, float3 C, /**/ int3 *lo, int3 *hi) {
+    float3 lf, hf;
+    lf = min3T3(A, B, C);
+    hf = max3T3(A, B, C);
 
-    *lo = min3T3(ca, cb, cc);
-    *hi = max3T3(ca, cb, cc);
+    lf.x -= tol; lf.y -= tol; lf.z -= tol;
+    hf.x += tol; hf.y += tol; hf.z += tol;
+    
+    *lo = get_cidx(L, lf);
+    *hi = get_cidx(L, hf);
 }
 
 static __device__ void find_collisions_cell(int tid, int start, int count, const Particle *pp, const Force *ff,
@@ -78,6 +78,11 @@ static __device__ void revert(float h, Particle *p) {
     p->r[Z] -= p->v[Z] * h;
 }
 
+static __device__ float3 p2f3(const Particle *p) {
+    enum {X, Y, Z};
+    return make_float3(p->r[X], p->r[Y], p->r[Z]);
+}
+
 __global__ void find_collisions(int nm, int nt, const int4 *tt, const Particle *i_pp,
                                 int3 L, const int *starts, const int *counts, const Particle *pp, const Force *ff,
                                 /**/ int *ncol, float4 *datacol, int *idcol) {
@@ -103,7 +108,7 @@ __global__ void find_collisions(int nm, int nt, const int4 *tt, const Particle *
     revert(dt, &B);
     revert(dt, &C);
 
-    get_cells(L, &A, &B, &C, /**/ &str, &end);
+    get_cells(L, 1e-1f, p2f3(&A), p2f3(&B), p2f3(&C), /**/ &str, &end);
     
     for (iz = str.z; iz <= end.z; ++iz) {
         for (iy = str.y; iy <= end.y; ++iy) {
