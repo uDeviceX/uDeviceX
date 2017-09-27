@@ -27,9 +27,9 @@ static __device__ int3 get_cidx(int3 L, float3 r) {
     c.y = floor((double) r.y + L.y/2);
     c.z = floor((double) r.z + L.z/2);
 
-    c.x = min(L.x, max(0, c.x));
-    c.y = min(L.y, max(0, c.y));
-    c.z = min(L.z, max(0, c.z));
+    c.x = min(L.x-1, max(0, c.x));
+    c.y = min(L.y-1, max(0, c.y));
+    c.z = min(L.z-1, max(0, c.z));
     return c;
 }
 
@@ -178,7 +178,7 @@ static __device__ void get_collision_point(const float4 dcol, int id, int nt, co
 
     u = dcol.y;
     v = dcol.z;
-    w = 1.0 - u - v;
+    w = 1 - u - v;
 
     rw[X] = w * A.r[X] + u * B.r[X] + v * C.r[X];
     rw[Y] = w * A.r[Y] + u * B.r[Y] + v * C.r[Y];
