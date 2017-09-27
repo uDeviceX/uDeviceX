@@ -1,14 +1,6 @@
-static __device__ void core0(const uint dststart, const uint pshare, const uint tid, const uint spidext) {
+static __device__ void core0(uint dpid, uint spid, uint spidext) {
     float fx, fy, fz;
     forces::Fo f;
-
-    uint item;
-    uint offset = xmad( tid, 4.f, pshare );
-    asm volatile( "ld.volatile.shared.u32 %0, [%1+1024];" : "=r"( item ) : "r"( offset ) : "memory" );
-    uint2 pid = __unpack_8_24( item );
-    uint dpid = xadd( dststart, pid.x );
-    uint spid = pid.y;
-
     forces::f32f(&fx, &fy, &fz, /**/ &f);
     dpd(dpid, spid, /**/ f);
 
@@ -32,6 +24,12 @@ static __device__ void core0(const uint dststart, const uint pshare, const uint 
 }
 
 static __device__ void core(const uint dststart, const uint pshare, const uint tid, const uint spidext) {
-    core0(dststart, pshare, tid, spidext);
+    uint item;
+    uint offset = xmad( tid, 4.f, pshare );
+    asm volatile( "ld.volatile.shared.u32 %0, [%1+1024];" : "=r"( item ) : "r"( offset ) : "memory" );
+    uint2 pid = __unpack_8_24( item );
+    uint dpid = xadd( dststart, pid.x );
+    uint spid = pid.y;
+    core0(dpid, spid, spidext);
 }
 
