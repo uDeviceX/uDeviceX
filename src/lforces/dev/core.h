@@ -1,5 +1,4 @@
-static __device__ void core( const uint dststart, const uint pshare, const uint tid, const uint spidext )
-{
+static __device__ void core0(const uint dststart, const uint pshare, const uint tid, const uint spidext) {
     float fx, fy, fz;
     forces::Fo f;
 
@@ -31,3 +30,8 @@ static __device__ void core( const uint dststart, const uint pshare, const uint 
         atomicAdd( acc + 64, -fz );
     }
 }
+
+static __device__ void core(const uint dststart, const uint pshare, const uint tid, const uint spidext) {
+    core0(dststart, pshare, tid, spidext);
+}
+
