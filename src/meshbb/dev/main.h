@@ -88,7 +88,7 @@ static __device__ float3 p2f3(const Particle *p) {
     return make_float3(p->r[X], p->r[Y], p->r[Z]);
 }
 
-__global__ void find_collisions(int nm, int nt, const int4 *tt, const Particle *i_pp,
+__global__ void find_collisions(int nm, int nt, int nv, const int4 *tt, const Particle *i_pp,
                                 int3 L, const int *starts, const int *counts, const Particle *pp, const Force *ff,
                                 /**/ int *ncol, float4 *datacol, int *idcol) {
     
@@ -105,9 +105,9 @@ __global__ void find_collisions(int nm, int nt, const int4 *tt, const Particle *
 
     tri = tt[tid];
 
-    A = i_pp[mid * nt + tri.x];
-    B = i_pp[mid * nt + tri.y];
-    C = i_pp[mid * nt + tri.z];
+    A = i_pp[mid * nv + tri.x];
+    B = i_pp[mid * nv + tri.y];
+    C = i_pp[mid * nv + tri.z];
 
     revert_r(dt, &A);
     revert_r(dt, &B);
@@ -155,7 +155,7 @@ __global__ void select_collisions(int n, /**/ int *ncol, float4 *datacol, int *i
     }
 }
 
-static __device__ void get_collision_point(const float4 dcol, int id, int nt, const int4 *tt, const Particle *i_pp,
+static __device__ void get_collision_point(const float4 dcol, int id, int nt, int nv, const int4 *tt, const Particle *i_pp,
                                            /**/ float rw[3], float vw[3]) {
     enum {X, Y, Z};
     int4 t;
@@ -166,9 +166,9 @@ static __device__ void get_collision_point(const float4 dcol, int id, int nt, co
     mid = id / nt;
 
     t = tt[tid];
-    A = i_pp[mid * nt + t.x];
-    B = i_pp[mid * nt + t.y];
-    C = i_pp[mid * nt + t.z];
+    A = i_pp[mid * nv + t.x];
+    B = i_pp[mid * nv + t.y];
+    C = i_pp[mid * nv + t.z];
 
     /* d.x is collision time */
     h = dt - dcol.x;
@@ -190,7 +190,7 @@ static __device__ void get_collision_point(const float4 dcol, int id, int nt, co
 }
 
 __global__ void perform_collisions(int n, const int *ncol, const float4 *datacol, const int *idcol,
-                                   const Force *ff, int nt, const int4 *tt, const Particle *i_pp,
+                                   const Force *ff, int nt, int nv, const int4 *tt, const Particle *i_pp,
                                    /**/ Particle *pp, Momentum *mm) {
     int i, id, entry;
     float4 d;
@@ -211,7 +211,7 @@ __global__ void perform_collisions(int n, const int *ncol, const float4 *datacol
     
     rvprev(p1.r, p1.v, f.f, /**/ p0.r, p0.v);
 
-    get_collision_point(d, id, nt, tt, i_pp, /**/ rw, vw);
+    get_collision_point(d, id, nt, nv, tt, i_pp, /**/ rw, vw);
 
     bounce_back(&p0, rw, vw, d.x, /**/ &pn);
     pp[i] = pn;

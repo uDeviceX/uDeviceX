@@ -10,10 +10,10 @@ void ini(int maxpp, /**/ BBdata *d);
 void fin(/**/ BBdata *d);
 
 void reini(int n, /**/ BBdata d);
-void find_collisions(int nm, int nt, const int4 *tt, const Particle *i_pp, int3 L,
+void find_collisions(int nm, int nt, int nv, const int4 *tt, const Particle *i_pp, int3 L,
                      const int *starts, const int *counts, const Particle *pp, const Force *ff, /**/ BBdata d);
 void select_collisions(int n, /**/ BBdata d);
-void bounce(int n, BBdata d, const Force *ff, int nt, const int4 *tt, const Particle *i_pp, /**/ Particle *pp, Momentum *mm);
+void bounce(int n, BBdata d, const Force *ff, int nt, int nv, const int4 *tt, const Particle *i_pp, /**/ Particle *pp, Momentum *mm);
 
 void collect_momentum(const Momentum *mm, int ns, int nt, /**/ Solid *ss);
 
