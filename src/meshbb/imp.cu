@@ -17,6 +17,7 @@ namespace meshbb {
 enum {MAX_COL = 4};
 #define debug_output
 
+#include "type.h"
 #include "bbstates.h"
 #include "dbg.h"
 #include "dev/roots.h"
