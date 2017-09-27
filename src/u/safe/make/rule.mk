@@ -57,7 +57,6 @@ $B/sdf/int.o: $S/sdf/int.cu; $N -I$S/. -I$S/sdf
 $B/sim/imp.o: $S/sim/imp.cu; $N -I$S/. -I$S/sim
 $B/tcells/imp.o: $S/tcells/imp.cu; $N -I$S/. -I$S/tcells
 $B/tcells/int.o: $S/tcells/int.cpp; $X -I$S/. -I$S/tcells
-$B/tclist/imp.o: $S/tclist/imp.cu; $N -I$S/. -I$S/tclist
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/. -I$S/utils
 $B/utils/mc.o: $S/utils/mc.cpp; $X -I$S/. -I$S/utils
 $B/utils/os.o: $S/utils/os.cpp; $X -I$S/. -I$S/utils
