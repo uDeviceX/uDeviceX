@@ -1,5 +1,26 @@
 namespace dev {
 
+template <typename T> static __device__ T min3(T a, T b, T c) {return min(a, min(b, c));}
+template <typename T> static __device__ T max3(T a, T b, T c) {return max(a, max(b, c));}
+
+template <typename T3>
+static __device__ T3 min3T3(T3 a, T3 b, T3 c) {
+    T3 v;
+    v.x = min3(a.x, b.x, c.x);
+    v.y = min3(a.y, b.y, c.y);
+    v.z = min3(a.z, b.z, c.z);
+    return v;
+}
+
+template <typename T3>
+static __device__ T3 max3T3(T3 a, T3 b, T3 c) {
+    T3 v;
+    v.x = max3(a.x, b.x, c.x);
+    v.y = max3(a.y, b.y, c.y);
+    v.z = max3(a.z, b.z, c.z);
+    return v;
+}
+
 static __device__ int3 get_cidx(int3 L, const float r[3]) {
     enum {X, Y, Z};
     int3 c;
@@ -13,30 +34,15 @@ static __device__ int3 get_cidx(int3 L, const float r[3]) {
     return c;
 }
 
-static __device__ int min3(int a, int b, int c) {return min(a, min(b, c));}
-static __device__ int max3(int a, int b, int c) {return max(a, max(b, c));}
-
-static __device__ int3 min3(int3 a, int3 b, int3 c) {
-    return make_int3(min3(a.x, b.x, c.x),
-                     min3(a.y, b.y, c.y),
-                     min3(a.z, b.z, c.z));
-}
-
-static __device__ int3 max3(int3 a, int3 b, int3 c) {
-    return make_int3(max3(a.x, b.x, c.x),
-                     max3(a.y, b.y, c.y),
-                     max3(a.z, b.z, c.z));
-}
-
 static __device__ void get_cells(int3 L, const Particle *A, const Particle *B, const Particle *C,
-                          /**/ int3 *lo, int3 *hi) {
+                                 /**/ int3 *lo, int3 *hi) {
     int3 ca, cb, cc;
     ca = get_cidx(L, A->r);
     cb = get_cidx(L, B->r);
     cc = get_cidx(L, C->r);
 
-    *lo = min3(ca, cb, cc);
-    *hi = max3(ca, cb, cc);
+    *lo = min3T3(ca, cb, cc);
+    *hi = max3T3(ca, cb, cc);
 }
 
 static __device__ void find_collisions_cell(int tid, int start, int count, const Particle *pp, const Force *ff,
