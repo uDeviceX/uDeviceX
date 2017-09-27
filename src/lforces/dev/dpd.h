@@ -1,6 +1,7 @@
 static __device__ float3 dpd0(uint aid, uint bid, float rnd) {
     float fx, fy, fz;
     forces::Pa a, b;
+    forces::Fo f;
 
     cloud_get2(aid, &a);
     cloud_get2(bid, &b);
