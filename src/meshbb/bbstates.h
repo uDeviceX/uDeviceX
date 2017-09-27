@@ -5,7 +5,8 @@
     _(BB_SUCCESS)   /* succesfully bounced                       */ \
     _(BB_NOCROSS)   /* did not cross the plane                   */ \
     _(BB_WTRIANGLE) /* [w]rong triangle                          */ \
-    _(BB_HFAIL)     /* no time solution h                        */
+    _(BB_HFAIL)     /* no time solution h                        */ \
+    _(BB_MAXCOL)    /* maximum number of collisions reached      */
     
 enum BBState {
     bbstates(make_enum)
