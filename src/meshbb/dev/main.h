@@ -59,15 +59,20 @@ static __device__ void find_collisions_cell(int tid, int start, int count, const
         rvprev(p.r, p.v, f.f, /**/ p0.r, p0.v);
 
         state = intersect_triangle(A->r, B->r, C->r, A->v, B->v, C->v, &p0, /*io*/ &tc, /**/ &u, &v);
-
-        dbg::log_states(state);
         
         if (state == BB_SUCCESS) {
             entry = atomicAdd(ncol + i, 1);
+
+            if (entry >= MAX_COL) {
+                state = BB_MAXCOL;
+                break;
+            }
+            
             entry += i * MAX_COL;
             datacol[entry] = make_float4(tc, u, v, 0);
             idcol[entry] = tid;
-        }            
+        }
+        dbg::log_states(state);
     }
 }
 
@@ -108,7 +113,7 @@ __global__ void find_collisions(int nm, int nt, const int4 *tt, const Particle *
     revert(dt, &B);
     revert(dt, &C);
 
-    get_cells(L, 1e-1f, p2f3(&A), p2f3(&B), p2f3(&C), /**/ &str, &end);
+    get_cells(L, 5e-1f, p2f3(&A), p2f3(&B), p2f3(&C), /**/ &str, &end);
     
     for (iz = str.z; iz <= end.z; ++iz) {
         for (iy = str.y; iy <= end.y; ++iy) {
