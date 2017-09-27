@@ -13,7 +13,7 @@ static __device__ float3 dpd0(uint aid, uint bid, float rnd) {
 static __device__ float random(uint i, uint j) {
     return rnd::mean0var1ii(info.seed, xmin(i, j), xmax(i, j));
 }
-static __device__ float3 dpd(uint aid, uint bid) {
+static __device__ float3 dpd(uint aid, uint bid, forces::Fo *f) {
     float rnd;
     rnd = random(aid, bid); /* (sic) */
     return dpd0(aid, bid, rnd);

@@ -10,7 +10,7 @@ static __device__ void core( const uint dststart, const uint pshare, const uint 
     uint dpid = xadd( dststart, pid.x );
     uint spid = pid.y;
 
-    f0 = dpd(dpid, spid);
+    f0 = dpd(dpid, spid, /**/ &f);
 
     // the overhead of transposition acc back
     // can be completely killed by changing the integration kernel
