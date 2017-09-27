@@ -157,4 +157,8 @@ static __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, flo
     gen1(&A, &B, ca, cb, ljkind, rnd, /**/ f);
 }
 
+static __device__ void genf(Pa A, Pa B, float rnd, /**/ Fo f) {
+    gen(A, B, rnd, /**/ f.x, f.y, f.z);
+}
+
 } /* namespace */
