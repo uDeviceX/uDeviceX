@@ -38,4 +38,9 @@ inline __device__ void f2k2p(float2 d0, float2 d1, float2 d2, int kind, /**/ Pa 
     p->kind = kind;
 }
 
+/* "three pointers to float to Fo" */
+inline __device__ void f32f(float *x, float *y, float *z, /**/ Fo *f) {
+    f->x = x; f->y = y; f->z = z;
+}
+
 }
