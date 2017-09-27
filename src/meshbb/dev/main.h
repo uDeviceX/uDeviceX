@@ -99,9 +99,9 @@ __global__ void find_collisions(int nm, int nt, const int4 *tt, const Particle *
 
     get_cells(L, &A, &B, &C, /**/ &str, &end);
     
-    for (iz = str.z; iz < end.z; ++iz) {
-        for (iy = str.y; iy < end.y; ++iy) {
-            for (ix = str.x; ix < end.x; ++ix) {
+    for (iz = str.z; iz <= end.z; ++iz) {
+        for (iy = str.y; iy <= end.y; ++iy) {
+            for (ix = str.x; ix <= end.x; ++ix) {
                 cid = ix + L.x * (iy + L.y * iz);
                 
                 find_collisions_cell(tid, starts[cid], counts[cid], pp, ff, &A, &B, &C, /**/ ncol, datacol, idcol);
