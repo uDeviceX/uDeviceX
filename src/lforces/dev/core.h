@@ -4,19 +4,19 @@ static __device__ void core0(uint dpid, uint spid, uint spidext) {
     forces::f32f(&fx, &fy, &fz, /**/ &f);
     dpd(dpid, spid, /**/ f);
     uint off  = dpid & 0x0000001FU;
-    uint base = xdiv( dpid, 1 / 32.f );
-    float* acc = info.ff + xmad( base, 96.f, off );
-    atomicAdd( acc     , fx );
-    atomicAdd( acc + 32, fy );
-    atomicAdd( acc + 64, fz );
+    uint base = xdiv(dpid, 1 / 32.f);
+    float* acc = info.ff + xmad(base, 96.f, off);
+    atomicAdd(acc     , fx);
+    atomicAdd(acc + 32, fy);
+    atomicAdd(acc + 64, fz);
 
-    if( spid < spidext ) {
+    if (spid < spidext) {
         uint off  = spid & 0x0000001FU;
-        uint base = xdiv( spid, 1 / 32.f );
-        float* acc = info.ff + xmad( base, 96.f, off );
-        atomicAdd( acc     , -fx );
-        atomicAdd( acc + 32, -fy );
-        atomicAdd( acc + 64, -fz );
+        uint base = xdiv(spid, 1 / 32.f);
+        float* acc = info.ff + xmad(base, 96.f, off);
+        atomicAdd(acc     , -fx);
+        atomicAdd(acc + 32, -fy);
+        atomicAdd(acc + 64, -fz);
     }
 }
 
@@ -29,4 +29,3 @@ static __device__ void core(const uint dststart, const uint pshare, const uint t
     uint spid = pid.y;
     core0(dpid, spid, spidext);
 }
-
