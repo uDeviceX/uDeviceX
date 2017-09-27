@@ -21,9 +21,3 @@ static __device__ void cloud_pos(/* dummy c */ int i, /**/ float *x, float *y, f
     r = fetchH4(i);
     *x = r.x; *y = r.y; *z = r.z;
 }
-
-/** TODO: aid, bid are 2*pid in local */
-static __device__ void cloud_get2(uint i, /**/ forces::Pa *p) {
-    assert(i % 2 == 0);
-    cloud_get(i / 2, /**/ p);
-}
