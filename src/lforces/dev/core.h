@@ -2,7 +2,6 @@ static __device__ void core( const uint dststart, const uint pshare, const uint 
 {
     float fx, fy, fz;
     forces::Fo f;
-    forces::f32f(&fx, &fy, &fz, /**/ &f);
 
     uint item;
     uint offset = xmad( tid, 4.f, pshare );
@@ -11,6 +10,7 @@ static __device__ void core( const uint dststart, const uint pshare, const uint 
     uint dpid = xadd( dststart, pid.x );
     uint spid = pid.y;
 
+    forces::f32f(&fx, &fy, &fz, /**/ &f);
     dpd(dpid, spid, /**/ f);
 
     // the overhead of transposition acc back
