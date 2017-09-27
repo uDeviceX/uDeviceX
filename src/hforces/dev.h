@@ -3,7 +3,9 @@ namespace hforces { namespace dev {
 struct Fo { float *x, *y, *z; }; /* force */
 
 static __device__ void pair(const forces::Pa a, const forces::Pa b, float rnd, /**/ float *fx, float *fy, float *fz) {
-    forces::gen(a, b, rnd, /**/ fx, fy, fz);
+    forces::Fo f;
+    forces::f32f(fx, fy, fz, /**/ &f);
+    forces::genf(a, b, rnd, /**/ f);
 }
 
 static __device__ float random(int aid, int bid, float seed, int mask) {
