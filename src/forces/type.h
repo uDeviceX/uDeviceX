@@ -4,4 +4,7 @@ struct Pa {
     int kind; /* flu, rig et ct. */
     int color;
 };
+struct Fo { /* force */
+    float *x, *y, *z;
+};
 }

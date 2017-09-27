@@ -1,7 +1,5 @@
 namespace forces {
 struct DPDparam { float gamma, a, rnd; };
-struct Fo { float *x, *y, *z; }; /* force */
-
 static __device__ bool seteq(int a, int b,   int x, int y) {
     /* true if sets {a, b} and {x, y} are equal */
     return (a == x && b == y) || (a == y && b == x);
