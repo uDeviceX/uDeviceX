@@ -70,13 +70,14 @@ void bounce_solid_new(long it) {
     cH2D(s::t.ss, s::t.ss_hst, nsbb);
     
     /* new part */
-    int n, nm, nt, *ss, *cc;
+    int n, nm, nt, nv, *ss, *cc;
     int4 *tt;
     Particle *pp, *i_pp;
     int3 L = make_int3(XS, YS, ZS);
     
     nm = s::q.ns;
     nt = s::q.nt;
+    nv = s::q.nv;
     tt = s::q.dtt;
     i_pp = s::t.i_pp;
 
@@ -86,10 +87,12 @@ void bounce_solid_new(long it) {
     ss = o::q.cells.starts;
     
     meshbb::reini(n, /**/ bb::bbd);
-    meshbb::find_collisions(nm, nt, tt, i_pp, L, ss, cc, pp, o::ff, /**/ bb::bbd);
+    meshbb::find_collisions(nm, nt, nv, tt, i_pp, L, ss, cc, pp, o::ff, /**/ bb::bbd);
     meshbb::select_collisions(n, /**/ bb::bbd);
-    meshbb::bounce(n, bb::bbd, o::ff, nt, tt, i_pp, /**/ pp, bb::mm);
+    meshbb::bounce(n, bb::bbd, o::ff, nt, nv, tt, i_pp, /**/ pp, bb::mm);
 
+    meshbb::collect_momentum(bb::mm, nm, nt, /**/ s::t.ss);
+    
     /* end new part  */
 
     if (it % rescue_freq == 0)
