@@ -58,7 +58,7 @@ static __device__ void find_collisions_cell(int tid, int start, int count, const
         f = ff[i];
         rvprev(p.r, p.v, f.f, /**/ p0.r, p0.v);
 
-        state = intersect_triangle(A->r, B->r, C->r, A->v, B->v, C->v, &p0, /*io*/ &tc, /**/ &u, &v);
+        state = intersect_triangle(A->r, B->r, C->r, A->v, B->v, C->v, &p0, /**/ &tc, &u, &v);
         
         if (state == BB_SUCCESS) {
             entry = atomicAdd(ncol + i, 1);
@@ -67,7 +67,7 @@ static __device__ void find_collisions_cell(int tid, int start, int count, const
                 state = BB_MAXCOL;
                 break;
             }
-            
+
             entry += i * MAX_COL;
             datacol[entry] = make_float4(tc, u, v, 0);
             idcol[entry] = tid;
@@ -76,7 +76,7 @@ static __device__ void find_collisions_cell(int tid, int start, int count, const
     }
 }
 
-static __device__ void revert(float h, Particle *p) {
+static __device__ void revert_r(float h, Particle *p) {
     enum {X, Y, Z};
     p->r[X] -= p->v[X] * h;
     p->r[Y] -= p->v[Y] * h;
@@ -109,9 +109,9 @@ __global__ void find_collisions(int nm, int nt, const int4 *tt, const Particle *
     B = i_pp[mid * nt + tri.y];
     C = i_pp[mid * nt + tri.z];
 
-    revert(dt, &A);
-    revert(dt, &B);
-    revert(dt, &C);
+    revert_r(dt, &A);
+    revert_r(dt, &B);
+    revert_r(dt, &C);
 
     get_cells(L, 5e-1f, p2f3(&A), p2f3(&B), p2f3(&C), /**/ &str, &end);
     
@@ -172,13 +172,13 @@ static __device__ void get_collision_point(const float4 dcol, int id, int nt, co
 
     /* d.x is collision time */
     h = dt - dcol.x;
-    revert(h, &A);
-    revert(h, &B);
-    revert(h, &C);
+    revert_r(h, &A);
+    revert_r(h, &B);
+    revert_r(h, &C);
 
     u = dcol.y;
     v = dcol.z;
-    w = 1.f - u - v;
+    w = 1.0 - u - v;
 
     rw[X] = w * A.r[X] + u * B.r[X] + v * C.r[X];
     rw[Y] = w * A.r[Y] + u * B.r[Y] + v * C.r[Y];
