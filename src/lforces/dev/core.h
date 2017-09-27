@@ -3,9 +3,6 @@ static __device__ void core0(uint dpid, uint spid, uint spidext) {
     forces::Fo f;
     forces::f32f(&fx, &fy, &fz, /**/ &f);
     dpd(dpid, spid, /**/ f);
-
-    // the overhead of transposition acc back
-    // can be completely killed by changing the integration kernel
     uint off  = dpid & 0x0000001FU;
     uint base = xdiv( dpid, 1 / 32.f );
     float* acc = info.ff + xmad( base, 96.f, off );
