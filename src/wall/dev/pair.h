@@ -9,7 +9,9 @@ static __global__ void pair(TexSDF_t texsdf, hforces::Cloud cloud, int np, int w
 
     if (pid >= np) return;
     fetch(cloud, pid, /**/ &a);
-    pair0(a, pid, zplane,
-          texsdf, w_n, ff, seed,
-          texstart, texwpp);
+
+    /* call from polymorphic */
+    wall::dev::pair0(a, pid, zplane,
+                     texsdf, w_n, ff, seed,
+                     texstart, texwpp);
 }

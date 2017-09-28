@@ -49,6 +49,12 @@
 namespace wall {
 namespace dev {
   #include "dev/main.h"
+  namespace map {
+    #include "dev/map/type.h"
+    #include "dev/map/ini.h"
+    #include "dev/map/use.h"
+  }
+  #include "dev/pair0.h"
 }
 
 namespace strt {
@@ -56,17 +62,10 @@ namespace strt {
 }
 #include "imp/main.h"
 
-namespace map {
-  #include "dev/map/type.h"
-  #include "dev/map/ini.h"
-  #include "dev/map/use.h"
-}
-
 /*** polymorphic ***/
 namespace grey {
   namespace dev {
     #include "dev/fetch/grey.h"
-    #include "dev/pair0.h"
     #include "dev/pair.h"
   }
   #include "imp/pair.h"
@@ -75,7 +74,6 @@ namespace grey {
 namespace color {
   namespace dev {
     #include "dev/fetch/color.h"
-    #include "dev/pair0.h"
     #include "dev/pair.h"
   }
   #include "imp/pair.h"
