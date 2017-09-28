@@ -1,7 +1,7 @@
 namespace sdfdev = sdf::sub::dev;
 typedef const sdf::tex3Dca<float> TexSDF_t;
-static __global__ void pair(TexSDF_t texsdf, hforces::Cloud cloud, const int np, const int w_n,
-                            float *const ff, const float seed,
+static __global__ void pair(TexSDF_t texsdf, hforces::Cloud cloud, int np, int w_n,
+                            float *ff, float seed,
                             const Texo<int> texstart, const Texo<float4> texwpp) {
 #define   wpp_fetch(i) (texwpp.fetch(i))
     map::Map m;
