@@ -13,7 +13,7 @@ __global__ void pair(TexSDF_t texsdf, hforces::Cloud cloud, const int np, const 
     float fx, fy, fz, rnd;
     float x, y, z;
     int gid, pid, zplane;
-    uint cnt0, cnt1, ncandidates, org0;
+    uint cnt0, cnt1, cnt2, org0;
     int org1, org2;
     float threshold;
 
@@ -63,7 +63,7 @@ __global__ void pair(TexSDF_t texsdf, hforces::Cloud cloud, const int np, const 
 
         cnt0 = count0;
         cnt1 = count0 + count1;
-        ncandidates = cnt1 + count2;
+        cnt2 = cnt1 + count2;
 
         org1 -= cnt0;
         org2 -= cnt1;
@@ -71,7 +71,7 @@ __global__ void pair(TexSDF_t texsdf, hforces::Cloud cloud, const int np, const 
 
     float xforce = 0, yforce = 0, zforce = 0;
 
-    for (int i = 0; i < ncandidates; ++i) {
+    for (int i = 0; i < cnt2; ++i) {
         int m1 = (int)(i >= cnt0);
         int m2 = (int)(i >= cnt1);
         int spid = i + (m2 ? org2 : m1 ? org1 : org0);
