@@ -7,7 +7,6 @@ __global__ void pair(TexSDF_t texsdf, hforces::Cloud cloud, const int np, const 
 #define start_fetch(i) (texstart.fetch(i))
 #define   wpp_fetch(i) (texwpp.fetch(i))
     map::Map m;
-
     forces::Pa a, b;  /* bulk and wall particles */
     float vx, vy, vz; /* wall velocity */
     float fx, fy, fz, rnd;
@@ -22,13 +21,13 @@ __global__ void pair(TexSDF_t texsdf, hforces::Cloud cloud, const int np, const 
     zplane = gid % 3;
 
     if (pid >= np) return;
-
     fetch(cloud, pid, /**/ &a);
     forces::p2r3(&a, /**/ &x, &y, &z);
-
     threshold =
         -1 - 1.7320f * ((float)XSIZE_WALLCELLS / (float)XTE);
     if (sdfdev::cheap_sdf(texsdf, x, y, z) <= threshold) return;
+
+    map::ini(zplane, texstart, w_n, x, y, z, /**/ &m);
 
     {
         int xbase = (int)(x - (-XS / 2 - XWM));
