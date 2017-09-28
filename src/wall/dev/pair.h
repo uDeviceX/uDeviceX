@@ -1,6 +1,6 @@
 static __global__ void pair(TexSDF_t texsdf, hforces::Cloud cloud, int np, int w_n,
-                            float *ff, float seed,
-                            const Texo<int> texstart, const Texo<float4> texwpp) {
+                            float seed, const Texo<int> texstart, const Texo<float4> texwpp, /**/
+                            float *ff) {
     forces::Pa a; /* bulk particle */
     int gid, pid, zplane;
     gid = threadIdx.x + blockDim.x * blockIdx.x;
