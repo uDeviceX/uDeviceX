@@ -67,7 +67,7 @@ static __device__ bool nonzero(const Momentum *m) {
         nz(m->L[X]) && nz(m->L[Y]) && nz(m->L[Z]);
 }
 
-__global__ void compress(int nt, int nm, const Momentum *mm, /**/ int *counts, int *subids) {
+__global__ void subindex_compress(int nt, int nm, const Momentum *mm, /**/ int *counts, int *subids) {
     int i, mid, subid;
     Momentum m;
     i = threadIdx.x + blockIdx.x * blockDim.x;
@@ -82,6 +82,22 @@ __global__ void compress(int nt, int nm, const Momentum *mm, /**/ int *counts, i
     else
         subid = SKIP;
     subids[i] = subid;
+}
+
+__global__ void compress(int nt, int nm, const Momentum *mm, const int *starts, const int *subids, /**/ int *ids, Momentum *mmc) {
+    int i, mid, subid, entry;
+    i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i >= nt * nm) return;
+    
+    mid = i / nt;
+
+    subid = subids[i];
+
+    if (subid == SKIP) return;
+    
+    entry = subid + starts[mid];
+    mmc[entry] = mm[i];
+    ids[i] = i;
 }
 
 } // dev
