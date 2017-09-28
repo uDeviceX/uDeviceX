@@ -7,11 +7,11 @@ struct Wa { /* local wall data */
 };
 
 namespace grey {
-void force(hforces::Cloud cloud, const int n, rnd::KISS *rnd, Wa wa, /**/ Force *ff);
+void force(hforces::Cloud cloud, int n, rnd::KISS *rnd, Wa wa, /**/ Force *ff);
 }
 
 namespace color {
-void force(hforces::Cloud cloud, const int n, rnd::KISS *rnd, Wa wa, /**/ Force *ff);
-           
+void force(hforces::Cloud cloud, int n, rnd::KISS *rnd, Wa wa, /**/ Force *ff);
+
 }
 } /* namespace */
