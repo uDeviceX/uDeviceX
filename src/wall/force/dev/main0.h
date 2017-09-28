@@ -5,6 +5,7 @@ static __device__ void force0(forces::Pa a, int aid, int zplane,
     forces::Pa b;  /* wall particles */
     float vx, vy, vz; /* wall velocity */
     float fx, fy, fz, rnd;
+    forces::Fo f;
     float x, y, z;
     float threshold;
     int i, bid;
