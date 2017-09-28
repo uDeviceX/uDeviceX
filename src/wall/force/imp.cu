@@ -47,7 +47,8 @@
 namespace wall {
 
 /*** generitc ***/
-namespace dev { namespace map {
+namespace dev {
+  namespace map {
     #include "dev/map/type.h"
     #include "dev/map/ini.h"
     #include "dev/map/use.h"
@@ -71,5 +72,4 @@ namespace color {
   }
   #include "imp/pair.h"
 }
-
 }
