@@ -1,9 +1,10 @@
 namespace dev {
 
-template <typename real>
+typedef double real;
+typedef double3 real3;
+
 static __device__ bool valid(real t) {return (t >= 0 && t <= dt);}
 
-template <typename real>
 static __device__ bool cubic_root(real a, real b, real c, real d, /**/ real *h) {
     const real eps = 1e-6;
     real h1, h2, h3, b_, c_, d_;
@@ -36,8 +37,6 @@ static __device__ bool cubic_root(real a, real b, real c, real d, /**/ real *h) 
 static __device__ BBState intersect_triangle(const real3_t *s10, const real3_t *s20, const real3_t *s30,
                                              const real3_t *vs1, const real3_t *vs2, const real3_t *vs3,
                                              const rPa *p0,  /**/ real_t *h, real_t *u, real_t *v) {
-    typedef double real;
-    typedef double3 real3;
     
     real3 a1, a2, at1, at2, n0, nt, ntt, dr0;
 
