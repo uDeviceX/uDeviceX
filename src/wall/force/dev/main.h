@@ -8,7 +8,6 @@ static __global__ void force(hforces::Cloud cloud, int np, float seed, Wa wa, /*
     if (pid >= np) return;
     fetch(cloud, pid, /**/ &a);
 
-    /* call from polymorphic */
-    wall::dev::force0(a, pid, zplane,
-                      seed, wa, /**/ ff);
+    /* call generic function from polymorphic */
+    wall::dev::force0(a, pid, zplane, seed, wa, /**/ ff);
 }
