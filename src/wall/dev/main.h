@@ -16,5 +16,3 @@ __global__ void float42particle(const float4 *src, const int n, Particle *dst) {
     p.v[X] = p.v[Y] = p.v[Z] = 0;
     dst[pid] = p;
 }
-
-
