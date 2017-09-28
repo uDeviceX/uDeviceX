@@ -2,8 +2,8 @@ namespace wall {
 typedef const sdf::tex3Dca<float> TexSDF_t;
 struct Wa { /* local wall data */
     TexSDF_t texsdf;
-    Texo<float4> texpp;
     Texo<int> texstart;
+    Texo<float4> texpp;
     int w_n;
 };
 
