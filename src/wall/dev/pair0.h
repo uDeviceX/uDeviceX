@@ -1,24 +1,17 @@
 namespace sdfdev = sdf::sub::dev;
 typedef const sdf::tex3Dca<float> TexSDF_t;
-static __global__ void pair0(TexSDF_t texsdf, hforces::Cloud cloud, int np, int w_n,
-                             float *ff, float seed,
+static __global__ void pair0(forces::Pa a, int pid, int zplane,
+                             TexSDF_t texsdf, int w_n, float *ff, float seed,
                              const Texo<int> texstart, const Texo<float4> texwpp) {
 #define   wpp_fetch(i) (texwpp.fetch(i))
     map::Map m;
-    forces::Pa a, b;  /* bulk and wall particles */
+    forces::Pa b;  /* wall particles */
     float vx, vy, vz; /* wall velocity */
     float fx, fy, fz, rnd;
     float x, y, z;
-    int gid, pid, zplane;
     float threshold;
     int i, spid;
 
-    gid = threadIdx.x + blockDim.x * blockIdx.x;
-    pid = gid / 3;
-    zplane = gid % 3;
-
-    if (pid >= np) return;
-    fetch(cloud, pid, /**/ &a);
     forces::p2r3(&a, /**/ &x, &y, &z);
     threshold =
         -1 - 1.7320f * ((float)XSIZE_WALLCELLS / (float)XTE);
