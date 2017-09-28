@@ -1,8 +1,8 @@
 namespace sdfdev = sdf::sub::dev;
 typedef const sdf::tex3Dca<float> TexSDF_t;
-__global__ void pair(TexSDF_t texsdf, hforces::Cloud cloud, const int np, const int w_n,
-                     float *const ff, const float seed,
-                     const Texo<int> texstart, const Texo<float4> texwpp) {
+static __global__ void pair(TexSDF_t texsdf, hforces::Cloud cloud, const int np, const int w_n,
+                            float *const ff, const float seed,
+                            const Texo<int> texstart, const Texo<float4> texwpp) {
 #define   wpp_fetch(i) (texwpp.fetch(i))
     map::Map m;
     forces::Pa a, b;  /* bulk and wall particles */
