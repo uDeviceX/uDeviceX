@@ -1,6 +1,11 @@
 namespace wall {
-
 typedef const sdf::tex3Dca<float> TexSDF_t;
+struct Wa { /* local wall data */
+    TexSDF_t texsdf;
+    Texo<float4> texpp;
+    Texo<int> texstart;
+    int w_n;
+};
 
 void build_cells(const int n, float4 *pp4, clist::Clist *cells);
 
