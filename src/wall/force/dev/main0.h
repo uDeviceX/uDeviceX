@@ -1,7 +1,6 @@
 namespace sdfdev = sdf::sub::dev;
 static __device__ void force0(forces::Pa a, int aid, int zplane,
                               float seed, Wa wa, /**/ float *ff) {
-#define   wpp_fetch(i) (wa.pp.fetch(i))
     map::Map m;
     forces::Pa b;  /* wall particles */
     float vx, vy, vz; /* wall velocity */
@@ -19,7 +18,7 @@ static __device__ void force0(forces::Pa a, int aid, int zplane,
     float xforce = 0, yforce = 0, zforce = 0;
     for (i = 0; !map::endp(m, i); ++i) {
         bid = map::m2id(m, i);
-        const float4 r = wpp_fetch(bid);
+        const float4 r = wa.pp.fetch(bid);
         k_wvel::vell(r.x, r.y, r.z, /**/ &vx, &vy, &vz);
         forces::r3v3k2p(r.x, r.y, r.z, vx, vy, vz, WALL_KIND, /**/ &b);
         rnd = rnd::mean0var1ii(seed, aid, bid);
@@ -29,5 +28,4 @@ static __device__ void force0(forces::Pa a, int aid, int zplane,
     atomicAdd(ff + 3 * aid + 0, xforce);
     atomicAdd(ff + 3 * aid + 1, yforce);
     atomicAdd(ff + 3 * aid + 2, zforce);
-#undef wpp_fetch
 }
