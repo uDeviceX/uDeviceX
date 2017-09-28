@@ -8,7 +8,7 @@ static __device__ void force0(forces::Pa a, int aid, int zplane,
     float fx, fy, fz, rnd;
     float x, y, z;
     float threshold;
-    int i, spid;
+    int i, bid;
 
     forces::p2r3(&a, /**/ &x, &y, &z);
     threshold =
@@ -18,11 +18,11 @@ static __device__ void force0(forces::Pa a, int aid, int zplane,
     map::ini(zplane, wa.start, wa.n, x, y, z, /**/ &m);
     float xforce = 0, yforce = 0, zforce = 0;
     for (i = 0; !map::endp(m, i); ++i) {
-        spid = map::m2id(m, i);
-        const float4 r = wpp_fetch(spid);
+        bid = map::m2id(m, i);
+        const float4 r = wpp_fetch(bid);
         k_wvel::vell(r.x, r.y, r.z, /**/ &vx, &vy, &vz);
         forces::r3v3k2p(r.x, r.y, r.z, vx, vy, vz, WALL_KIND, /**/ &b);
-        rnd = rnd::mean0var1ii(seed, aid, spid);
+        rnd = rnd::mean0var1ii(seed, aid, bid);
         forces::gen(a, b, rnd, /**/ &fx, &fy, &fz);
         xforce += fx; yforce += fy; zforce += fz;
     }
