@@ -66,9 +66,10 @@ namespace map {
 namespace grey {
   namespace dev {
     #include "dev/fetch/grey.h"
+    #include "dev/pair0.h"
     #include "dev/pair.h"
   }
-#include "imp/pair.h"
+  #include "imp/pair.h"
 }
 
 namespace color {
