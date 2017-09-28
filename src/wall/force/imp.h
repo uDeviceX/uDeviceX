@@ -1,19 +1,18 @@
 namespace wall {
-typedef const sdf::tex3Dca<float> TexSDF_t;
 struct Wa { /* local wall data */
-    TexSDF_t texsdf;
+    sdf::Tex_t texsdf;
     Texo<int> texstart;
     Texo<float4> texpp;
     int w_n;
 };
 
 namespace grey {
-void force(TexSDF_t texsdf, hforces::Cloud cloud, const int n, const Texo<int> texstart,
+void force(sdf::Tex_t texsdf, hforces::Cloud cloud, const int n, const Texo<int> texstart,
            const Texo<float4> texpp, const int w_n, /**/ rnd::KISS *rnd, Force *ff);
 }
 
 namespace color {
-void force(TexSDF_t texsdf, hforces::Cloud cloud, const int n, const Texo<int> texstart,
+void force(sdf::Tex_t texsdf, hforces::Cloud cloud, const int n, const Texo<int> texstart,
            const Texo<float4> texpp, const int w_n, /**/ rnd::KISS *rnd, Force *ff);
 }
 } /* namespace */

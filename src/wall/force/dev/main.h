@@ -1,4 +1,4 @@
-static __global__ void force(TexSDF_t texsdf, hforces::Cloud cloud, int np, int w_n,
+static __global__ void force(sdf::Tex_t texsdf, hforces::Cloud cloud, int np, int w_n,
                              float seed, const Texo<int> texstart, const Texo<float4> texwpp, /**/
                              float *ff) {
     forces::Pa a; /* bulk particle */

@@ -1,5 +1,4 @@
 namespace sdf {
-
 /* 3D texture object binded to  cuda array */
 template <typename T>
 struct tex3Dca {
@@ -31,5 +30,5 @@ struct tex3Dca {
 
     void destroy() {CC(cudaDestroyTextureObject(to));}
 };
-
-}
+typedef tex3Dca<float> Tex_t;
+} /* namespace */
