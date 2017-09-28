@@ -183,9 +183,23 @@ static __device__ void get_collision_point(const float4 dcol, rPa A, rPa B, rPa 
     vw->z = w * A.v.z + u * B.v.z + v * C.v.z;    
 }
 
-// static __device__ int get_side(const float r[3], const float A[3], const float B[3], const float C[3]) {
-//     float n[3], a[3], b[3];
-// }
+static __device__ void push_particle(const real3_t *A, const real3_t *B, const real3_t *C, real_t l, /**/ real3_t *r) {
+    real3_t n, a, b;
+    real_t s;
+    
+    diff(B, A, /**/ &a);
+    diff(C, A, /**/ &b);
+    cross(&a, &b, /**/ &n);
+    s = dot(&n, &n);
+    s = rsqrtf(s);
+    n.x *= s;
+    n.y *= s;
+    n.z *= s;
+
+    r->x += l*n.x;
+    r->y += l*n.y;
+    r->z += l*n.z;
+}
 
 __global__ void perform_collisions(int n, const int *ncol, const float4 *datacol, const int *idcol,
                                    const Force *ff, int nt, int nv, const int4 *tt, const Particle *i_pp,
@@ -196,6 +210,8 @@ __global__ void perform_collisions(int n, const int *ncol, const float4 *datacol
     Force f;
     real3_t rw, vw;
     Momentum m;
+    const real_t eps = 1e-2;
+
     i = threadIdx.x + blockIdx.x * blockDim.x;
 
     if (i >= n || ncol[i] == 0) return;
@@ -214,6 +230,8 @@ __global__ void perform_collisions(int n, const int *ncol, const float4 *datacol
     get_collision_point(d, A, B, C, /**/ &rw, &vw);
 
     bounce_back(&p0, &rw, &vw, d.x, /**/ &pn);
+
+    push_particle(&A.r, &B.r, &C.r, d.w * eps, /**/ &pn.r);
     
     pp[i] = rP2P(&pn);
 
