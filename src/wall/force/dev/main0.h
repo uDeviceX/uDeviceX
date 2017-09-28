@@ -1,5 +1,5 @@
 namespace sdfdev = sdf::sub::dev;
-static __device__ void force0(forces::Pa a, int pid, int zplane,
+static __device__ void force0(forces::Pa a, int aid, int zplane,
                               float seed, Wa wa, /**/ float *ff) {
 #define   wpp_fetch(i) (wa.pp.fetch(i))
     map::Map m;
@@ -22,12 +22,12 @@ static __device__ void force0(forces::Pa a, int pid, int zplane,
         const float4 r = wpp_fetch(spid);
         k_wvel::vell(r.x, r.y, r.z, /**/ &vx, &vy, &vz);
         forces::r3v3k2p(r.x, r.y, r.z, vx, vy, vz, WALL_KIND, /**/ &b);
-        rnd = rnd::mean0var1ii(seed, pid, spid);
+        rnd = rnd::mean0var1ii(seed, aid, spid);
         forces::gen(a, b, rnd, /**/ &fx, &fy, &fz);
         xforce += fx; yforce += fy; zforce += fz;
     }
-    atomicAdd(ff + 3 * pid + 0, xforce);
-    atomicAdd(ff + 3 * pid + 1, yforce);
-    atomicAdd(ff + 3 * pid + 2, zforce);
+    atomicAdd(ff + 3 * aid + 0, xforce);
+    atomicAdd(ff + 3 * aid + 1, yforce);
+    atomicAdd(ff + 3 * aid + 2, zforce);
 #undef wpp_fetch
 }
