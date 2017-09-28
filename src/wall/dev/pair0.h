@@ -1,6 +1,6 @@
 namespace sdfdev = sdf::sub::dev;
 typedef const sdf::tex3Dca<float> TexSDF_t;
-static __global__ void pair0(forces::Pa a, int pid, int zplane,
+static __device__ void pair0(forces::Pa a, int pid, int zplane,
                              TexSDF_t texsdf, int w_n, float *ff, float seed,
                              const Texo<int> texstart, const Texo<float4> texwpp) {
 #define   wpp_fetch(i) (texwpp.fetch(i))
