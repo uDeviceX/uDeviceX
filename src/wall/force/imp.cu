@@ -45,7 +45,6 @@
 #include "imp.h"
 
 namespace wall {
-
 /*** generitc ***/
 namespace dev {
   namespace map {

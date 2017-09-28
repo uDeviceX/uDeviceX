@@ -18,24 +18,11 @@
 #include "inc/dev.h"
 #include "utils/texo.h"
 #include "utils/te.h"
-
 #include "inc/macro.h"
-
-#include "rnd/imp.h"
-#include "rnd/dev.h"
 
 #include "sdf/type.h"
 #include "sdf/int.h"
 #include "sdf/cheap.dev.h"
-
-#include "inc/dev/wvel.h"
-#include "forces/type.h"
-#include "forces/use.h"
-#include "forces/pack.h"
-#include "forces/imp.h"
-
-#include "cloud/hforces/type.h"
-#include "cloud/hforces/get.h"
 
 #include "algo/scan/int.h"
 #include "clist/imp.h"
