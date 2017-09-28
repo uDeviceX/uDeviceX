@@ -1,5 +1,3 @@
-typedef const sdf::tex3Dca<float> TexSDF_t;
-
 static void freeze0(TexSDF_t texsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n, /*w*/ Particle *hst) {
     sdf::bulk_wall(texsdf, /*io*/ pp, n, /*o*/ hst, w_n); /* sort into bulk-frozen */
     MSG("before exch: bulk/frozen : %d/%d", *n, *w_n);
