@@ -1,3 +1,4 @@
+namespace wall {
 typedef const sdf::tex3Dca<float> TexSDF_t;
 struct Wa { /* local wall data */
     TexSDF_t texsdf;
@@ -24,3 +25,4 @@ void pair(TexSDF_t texsdf, hforces::Cloud cloud, const int n, const Texo<int> te
 }
 
 void strt_dump_templ(const int n, const float4 *pp);
+}

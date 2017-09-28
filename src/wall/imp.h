@@ -1,3 +1,4 @@
+namespace wall {
 typedef const sdf::tex3Dca<float> TexSDF_t;
 void build_cells(const int n, float4 *pp4, clist::Clist *cells);
 
@@ -17,3 +18,4 @@ void pair(TexSDF_t texsdf, hforces::Cloud cloud, const int n, const Texo<int> te
 }
 
 void strt_dump_templ(const int n, const float4 *pp);
+}

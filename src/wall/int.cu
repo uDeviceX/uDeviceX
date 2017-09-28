@@ -27,6 +27,7 @@
 #include "forces/type.h"
 #include "cloud/hforces/type.h"
 
+#include "force/imp.h"
 #include "imp.h"
 #include "int.h"
 

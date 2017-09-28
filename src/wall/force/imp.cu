@@ -44,14 +44,16 @@
 #include "utils/kl.h"
 #include "imp.h"
 
+namespace wall {
+
 /*** generitc ***/
-namespace sub { namespace dev { namespace map {
+namespace dev { namespace map {
     #include "dev/map/type.h"
     #include "dev/map/ini.h"
     #include "dev/map/use.h"
   }
   #include "dev/pair0.h"
-}}
+}
 
 /*** polymorphic ***/
 namespace grey {
@@ -68,4 +70,6 @@ namespace color {
     #include "dev/pair.h"
   }
   #include "imp/pair.h"
+}
+
 }

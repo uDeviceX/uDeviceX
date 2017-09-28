@@ -43,10 +43,10 @@
 
 #include "utils/kl.h"
 #include "exch/imp.h"
-#include "force/imp.h"
 
 #include "imp.h"
 
+namespace wall {
 namespace dev {
   #include "dev/main.h"
 }
@@ -55,4 +55,4 @@ namespace strt {
   #include "imp/strt.h"
 }
 #include "imp/main.h"
-
+}
