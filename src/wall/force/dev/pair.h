@@ -1,6 +1,6 @@
-static __global__ void pair(TexSDF_t texsdf, hforces::Cloud cloud, int np, int w_n,
-                            float seed, const Texo<int> texstart, const Texo<float4> texwpp, /**/
-                            float *ff) {
+static __global__ void force(TexSDF_t texsdf, hforces::Cloud cloud, int np, int w_n,
+                             float seed, const Texo<int> texstart, const Texo<float4> texwpp, /**/
+                             float *ff) {
     forces::Pa a; /* bulk particle */
     int gid, pid, zplane;
     gid = threadIdx.x + blockDim.x * blockIdx.x;
@@ -11,7 +11,7 @@ static __global__ void pair(TexSDF_t texsdf, hforces::Cloud cloud, int np, int w
     fetch(cloud, pid, /**/ &a);
 
     /* call from polymorphic */
-    wall::dev::pair0(a, pid, zplane,
+    wall::dev::force0(a, pid, zplane,
                      texsdf, w_n, seed,
                      texstart, texwpp, ff);
 }

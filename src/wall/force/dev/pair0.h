@@ -1,8 +1,8 @@
 namespace sdfdev = sdf::sub::dev;
-static __device__ void pair0(forces::Pa a, int pid, int zplane,
-                             TexSDF_t texsdf, int w_n, float seed,
-                             const Texo<int> texstart, const Texo<float4> texwpp, /**/
-                             float *ff) {
+static __device__ void force0(forces::Pa a, int pid, int zplane,
+                              TexSDF_t texsdf, int w_n, float seed,
+                              const Texo<int> texstart, const Texo<float4> texwpp, /**/
+                              float *ff) {
 #define   wpp_fetch(i) (texwpp.fetch(i))
     map::Map m;
     forces::Pa b;  /* wall particles */
