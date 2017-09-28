@@ -11,7 +11,7 @@ static __global__ void pair(TexSDF_t texsdf, hforces::Cloud cloud, int np, int w
     fetch(cloud, pid, /**/ &a);
 
     /* call from polymorphic */
-    wall::dev::pair0(a, pid, zplane,
-                     texsdf, w_n, seed,
-                     texstart, texwpp, ff);
+    dev::pair0(a, pid, zplane,
+               texsdf, w_n, seed,
+               texstart, texwpp, ff);
 }
