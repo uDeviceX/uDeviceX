@@ -88,8 +88,8 @@ static __device__ float3 p2f3(const Particle *p) {
     return make_float3(p->r[X], p->r[Y], p->r[Z]);
 }
 
-static __device__ int fetch_triangle(int id, int nt, int nv, const int4 *tt, const Particle *i_pp,
-                                     /**/ Particle *A, Particle *B, Particle *C) {
+static __device__ void fetch_triangle(int id, int nt, int nv, const int4 *tt, const Particle *i_pp,
+                                      /**/ Particle *A, Particle *B, Particle *C) {
     int4 t;
     int tid, mid;
     tid = id % nt;
@@ -99,21 +99,20 @@ static __device__ int fetch_triangle(int id, int nt, int nv, const int4 *tt, con
     *A = i_pp[mid * nv + t.x];
     *B = i_pp[mid * nv + t.y];
     *C = i_pp[mid * nv + t.z];
-    return tid;
 }
 
 __global__ void find_collisions(int nm, int nt, int nv, const int4 *tt, const Particle *i_pp,
                                 int3 L, const int *starts, const int *counts, const Particle *pp, const Force *ff,
                                 /**/ int *ncol, float4 *datacol, int *idcol) {
     
-    int gid, tid, ix, iy, iz, cid;
+    int gid, ix, iy, iz, cid;
     Particle A, B, C;
     int3 str, end;
     gid = threadIdx.x + blockIdx.x * blockDim.x;
 
     if (gid >= nm * nt) return;
 
-    tid = fetch_triangle(gid, nt, nv, tt, i_pp, /**/ &A, &B, &C);
+    fetch_triangle(gid, nt, nv, tt, i_pp, /**/ &A, &B, &C);
 
     revert_r(dt, &A);
     revert_r(dt, &B);
@@ -126,7 +125,7 @@ __global__ void find_collisions(int nm, int nt, int nv, const int4 *tt, const Pa
             for (ix = str.x; ix <= end.x; ++ix) {
                 cid = ix + L.x * (iy + L.y * iz);
                 
-                find_collisions_cell(tid, starts[cid], counts[cid], pp, ff, &A, &B, &C, /**/ ncol, datacol, idcol);
+                find_collisions_cell(gid, starts[cid], counts[cid], pp, ff, &A, &B, &C, /**/ ncol, datacol, idcol);
             }
         }
     }
