@@ -5,5 +5,5 @@ void force(const sdf::Quants qsdf, const Quants q, const Ticket t, hforces::Clou
     wa.texpp  = t.texpp;
     wa.w_n      = q.n;
 
-    force(qsdf.texsdf, cloud, n, t.texstart, t.texpp, q.n, t.rnd, wa, /**/ ff);
+    force(cloud, n, t.rnd, wa, /**/ ff);
 }

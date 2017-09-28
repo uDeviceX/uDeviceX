@@ -7,12 +7,11 @@ struct Wa { /* local wall data */
 };
 
 namespace grey {
-void force(sdf::Tex_t texsdf, hforces::Cloud cloud, const int n, const Texo<int> texstart,
-           const Texo<float4> texpp, const int w_n, /**/ rnd::KISS *rnd, Wa wa, Force *ff);
+void force(hforces::Cloud cloud, const int n, rnd::KISS *rnd, Wa wa, /**/ Force *ff);
 }
 
 namespace color {
-void force(sdf::Tex_t texsdf, hforces::Cloud cloud, const int n, const Texo<int> texstart,
-           const Texo<float4> texpp, const int w_n, /**/ rnd::KISS *rnd, Wa wa, Force *ff);
+void force(hforces::Cloud cloud, const int n, rnd::KISS *rnd, Wa wa, /**/ Force *ff);
+           
 }
 } /* namespace */
