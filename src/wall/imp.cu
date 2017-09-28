@@ -56,6 +56,11 @@ namespace strt {
 }
 #include "imp/main.h"
 
+namespace map {
+  #include "dev/map/type.h"
+  #include "dev/map/use.h"
+}
+
 /*** polymorphic ***/
 namespace grey {
   namespace dev {
