@@ -33,89 +33,92 @@ static __device__ bool cubic_root(real a, real b, real c, real d, /**/ real *h) 
 }
 
 /* see Fedosov PhD Thesis */
-static __device__ BBState intersect_triangle(const float *s10, const float *s20, const float *s30,
-                                             const float *vs1, const float *vs2, const float *vs3,
-                                             const Particle *p0,  /**/ float *h, float *u, float *v) {
+static __device__ BBState intersect_triangle(const real3_t *s10, const real3_t *s20, const real3_t *s30,
+                                             const real3_t *vs1, const real3_t *vs2, const real3_t *vs3,
+                                             const rPa *p0,  /**/ real_t *h, real_t *u, real_t *v) {
     typedef double real;
-        
-#define diff(a, b) {a[X] - b[X], a[Y] - b[Y], a[Z] - b[Z]}
-#define cross(a, b) {a[Y] * b[Z] - a[Z] * b[Y], a[Z] * b[X] - a[X] * b[Z], a[X] * b[Y] - a[Y] * b[X]}
-#define dot(a, b) (a[X]*b[X] + a[Y]*b[Y] + a[Z]*b[Z])
-#define apxb(a, x, b) {a[X] + (real) x * b[X], a[Y] + (real) x * b[Y], a[Z] + (real) x * b[Z]} 
-        
-    const float *r0 = p0->r;
-    const float *v0 = p0->v;
+    typedef double3 real3;
     
-    const real a1[3] = diff(s20, s10);
-    const real a2[3] = diff(s30, s10);
-    
-    const real at1[3] = diff(vs2, vs1);
-    const real at2[3] = diff(vs3, vs1);
+    real3 a1, a2, at1, at2, n0, nt, ntt, dr0;
 
-    // n(t) = n + t*nt + t^2 * ntt
-    const real n0[3] = cross(a1, a2);
-    const real ntt[3] = cross(at1, at2);
-    const real nt[3] = {a1[Y] * at2[Z] - a1[Z] * at2[Y]  +  at1[Y] * a2[Z] - at1[Z] * a2[Y],
-                        a1[Z] * at2[X] - a1[X] * at2[Z]  +  at1[Z] * a2[X] - at1[X] * a2[Z],
-                        a1[X] * at2[Y] - a1[Y] * at2[X]  +  at1[X] * a2[Y] - at1[Y] * a2[X]};
+    diff(s20, s10, /**/ &a1);
+    diff(s30, s10, /**/ &a2);
+
+    diff(vs2, vs1, /**/ &at1);
+    diff(vs3, vs1, /**/ &at2);
+
+    /* n(t) = n + t*nt + t^2 * ntt */
+    cross(&a1, &a2, /**/ &n0);
+    cross(&at1, &at2, /**/ &ntt);
+
+    nt.x = a1.y * at2.z - a1.z * at2.y  +  at1.y * a2.z - at1.z * a2.y;
+    nt.y = a1.z * at2.x - a1.x * at2.z  +  at1.z * a2.x - at1.x * a2.z;
+    nt.z = a1.x * at2.y - a1.y * at2.x  +  at1.x * a2.y - at1.y * a2.x;
     
-    const real dr0[3] = diff(r0, s10);
+    diff(&p0->r, s10, /**/ &dr0);
         
-    // check intersection with plane
+    /* check intersection with plane */
     {
-        const real r1[3] = apxb(r0, dt, v0);
-        const real s11[3] = apxb(s10, dt, vs1);
+        real3 r1, s11, n1, dr1;
+        real b0, b1;
+        
+        apxb(&p0->r, dt, &p0->v, /**/ &r1);
+        apxb(s10, dt, vs1, /**/ &s11);
 
-        const real n1[3] = {n0[X] + (real) dt * (nt[X] + (real) dt * ntt[X]),
-                            n0[Y] + (real) dt * (nt[Y] + (real) dt * ntt[Y]),
-                            n0[Z] + (real) dt * (nt[Z] + (real) dt * ntt[Z])};
-            
-        const real dr1[3] = diff(r1, s11);
+        n1.x = n0.x + dt * (nt.x + dt * ntt.x);
+        n1.y = n0.y + dt * (nt.y + dt * ntt.y);
+        n1.z = n0.z + dt * (nt.z + dt * ntt.z);
 
-        const real b0 = dot(dr0, n0);
-        const real b1 = dot(dr1, n1);
+        diff(&r1, &s11, /**/ &dr1);
+        
+        b0 = dot(&dr0, &n0);
+        b1 = dot(&dr1, &n1);
 
         if (b0 * b1 > 0)
             return BB_NOCROSS;
     }
 
-    // find intersection time with plane
+    /* find intersection time with plane */
     real hl;
 
     {
-        const real dv[3] = diff(v0, vs1);
+        real3 dv;
+        real a, b, c, d;
+
+        diff(&p0->v, vs1, /**/ &dv);
         
-        const real a = dot(ntt, dv);
-        const real b = dot(ntt, dr0) + dot(nt, dv);
-        const real c = dot(nt, dr0) + dot(n0, dv);
-        const real d = dot(n0, dr0);        
+        a = dot(&ntt, &dv);
+        b = dot(&ntt, &dr0) + dot(&nt, &dv);
+        c = dot(&nt,  &dr0) + dot(&n0, &dv);
+        d = dot(&n0, &dr0);        
         
         if (!cubic_root(a, b, c, d, &hl))
             return BB_HFAIL;
     }
 
-    const real rwl[3] = {r0[X] + hl * v0[X],
-                         r0[Y] + hl * v0[Y],
-                         r0[Z] + hl * v0[Z]};
+    real3 rwl, g, a1_, a2_;
+    real ga1, ga2, a11, a22, a12, fac, ul, vl;
 
-    // check if inside triangle
-    const real g[3] = {rwl[X] - s10[X] - hl * vs1[X],
-                       rwl[Y] - s10[Y] - hl * vs1[Y],
-                       rwl[Z] - s10[Z] - hl * vs1[Z]};
+    apxb(&p0->r, hl, &p0->v, /**/ &rwl);
 
-    const real a1_[3] = apxb(a1, hl, at1);
-    const real a2_[3] = apxb(a2, hl, at2);
+    /* check if inside triangle */
+    g.x = rwl.x - s10->x - hl * vs1->x;
+    g.y = rwl.y - s10->y - hl * vs1->y;
+    g.z = rwl.z - s10->z - hl * vs1->z;
+
+    apxb(&a1, hl, &at1, /**/ &a1_);
+    apxb(&a2, hl, &at2, /**/ &a2_);
             
-    const real ga1 = dot(g, a1_);
-    const real ga2 = dot(g, a2_);
-    const real a11 = dot(a1_, a1_);
-    const real a12 = dot(a1_, a2_);
-    const real a22 = dot(a2_, a2_);
+    ga1 = dot(&g, &a1_);
+    ga2 = dot(&g, &a2_);
+    a11 = dot(&a1_, &a1_);
+    a12 = dot(&a1_, &a2_);
+    a22 = dot(&a2_, &a2_);
 
-    const real fac = 1.f / (a11*a22 - a12*a12);
+    fac = 1.0 / (a11*a22 - a12*a12);
             
-    const real ul = (ga1 * a22 - ga2 * a12) * fac;
-    const real vl = (ga2 * a11 - ga1 * a12) * fac;
+    ul = (ga1 * a22 - ga2 * a12) * fac;
+    vl = (ga2 * a11 - ga1 * a12) * fac;
 
     if ((ul < 0) || (vl < 0) || (ul+vl > 1))
         return BB_WTRIANGLE;
@@ -125,11 +128,6 @@ static __device__ BBState intersect_triangle(const float *s10, const float *s20,
     *v = vl;
     
     return BB_SUCCESS;
-
-#undef diff
-#undef cross
-#undef dot
-#undef apxb
 }
 
 } // dev

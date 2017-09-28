@@ -3,45 +3,48 @@ namespace dev {
 enum {X, Y, Z};
 
 // TODO belongs to scheme/ ?
+// BB assumes r0 + v0 dt = r1 for now
 #ifdef FORWARD_EULER
-__device__ void rvprev(const float *r1, const float *v1, const float *f0, /**/ float *r0, float *v0) {
-    for (int c = 0; c < 3; ++c) {
-        v0[c] = v1[c] - f0[c] * dt;
-        r0[c] = r1[c] - v0[c] * dt;
-    }
+__device__ void rvprev(const real3_t *r1, const real3_t *v1, const float *f0, /**/ real3_t *r0, real3_t *v0) {
+    enum {X, Y, Z};
+    v0->x = v1->x - f0[X] * dt;
+    v0->y = v1->y - f0[Y] * dt;
+    v0->z = v1->z - f0[Z] * dt;
+    
+    r0->x = r1->x - v0->x * dt;
+    r0->y = r1->y - v0->y * dt;
+    r0->z = r1->z - v0->z * dt;
 }
 #else // velocity-verlet
-__device__ void rvprev(const float *r1, const float *v1, const float *, /**/ float *r0, float *v0) {
-    for (int c = 0; c < 3; ++c) {
-        r0[c] = r1[c] - v1[c] * dt;
-        //v0[c] = v1[c] - f0[c] * dt;
+__device__ void rvprev(const real3_t *r1, const real3_t *v1, const float *, /**/ real3_t *r0, real3_t *v0) {
+    r0->x = r1->x - v1->x * dt;    
+    r0->y = r1->y - v1->y * dt;
+    r0->z = r1->z - v1->z * dt;    
 
-        // BB assumes r0 + v0 dt = r1 for now
-        v0[c] = v1[c];
-    }
+    *v0 = *v1;
 }
 #endif
 
-__device__ void bounce_back(const Particle *p0, const float *rw, const float *vw, const float h, /**/ Particle *pn) {
-    pn->v[X] = 2 * vw[X] - p0->v[X];
-    pn->v[Y] = 2 * vw[Y] - p0->v[Y];
-    pn->v[Z] = 2 * vw[Z] - p0->v[Z];
+__device__ void bounce_back(const rPa *p0, const real3_t *rw, const real3_t *vw, const real_t h, /**/ rPa *pn) {
+    pn->v.x = 2 * vw->x - p0->v.x;
+    pn->v.y = 2 * vw->y - p0->v.y;
+    pn->v.z = 2 * vw->z - p0->v.z;
 
-    pn->r[X] = rw[X] + (dt-h) * pn->v[X];
-    pn->r[Y] = rw[Y] + (dt-h) * pn->v[Y];
-    pn->r[Z] = rw[Z] + (dt-h) * pn->v[Z];
+    pn->r.x = rw->x + (dt-h) * pn->v.x;
+    pn->r.y = rw->y + (dt-h) * pn->v.y;
+    pn->r.z = rw->z + (dt-h) * pn->v.z;
 }
 
-__device__ void lin_mom_change(const float v0[3], const float v1[3], /**/ float dP[3]) {
-    dP[X] = -(v1[X] - v0[X]);
-    dP[Y] = -(v1[Y] - v0[Y]);
-    dP[Z] = -(v1[Z] - v0[Z]);
+__device__ void lin_mom_change(const real3_t v0, const real3_t v1, /**/ float dP[3]) {
+    dP[X] = -(v1.x - v0.x);
+    dP[Y] = -(v1.y - v0.y);
+    dP[Z] = -(v1.z - v0.z);
 }
 
-__device__ void ang_mom_change(const float r[3], const float v0[3], const float v1[3], /**/ float dL[3]) {
-    dL[X] = -(r[Y] * v1[Z] - r[Z] * v1[Y]  -  r[Y] * v0[Z] + r[Z] - v0[Y]);
-    dL[Y] = -(r[Z] * v1[X] - r[X] * v1[Z]  -  r[Z] * v0[X] + r[X] - v0[Z]);
-    dL[Z] = -(r[X] * v1[Y] - r[Y] * v1[X]  -  r[X] * v0[Y] + r[Y] - v0[X]);
+__device__ void ang_mom_change(const real3_t r, const real3_t v0, const real3_t v1, /**/ float dL[3]) {
+    dL[X] = -(r.y * v1.z - r.z * v1.y  -  r.y * v0.z + r.z - v0.y);
+    dL[Y] = -(r.z * v1.x - r.x * v1.z  -  r.z * v0.x + r.x - v0.z);
+    dL[Z] = -(r.x * v1.y - r.y * v1.x  -  r.x * v0.y + r.y - v0.x);
 }
 
 /* shift origin from 0 to R for ang momentum */
