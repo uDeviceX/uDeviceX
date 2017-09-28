@@ -21,7 +21,7 @@ static __device__ T3 max3T3(T3 a, T3 b, T3 c) {
     return v;
 }
 
-static __device__ int3 get_cidx(int3 L, float3 r) {
+static __device__ int3 get_cidx(int3 L, real3_t r) {
     int3 c;
     c.x = floor((double) r.x + L.x/2);
     c.y = floor((double) r.y + L.y/2);
@@ -33,8 +33,8 @@ static __device__ int3 get_cidx(int3 L, float3 r) {
     return c;
 }
 
-static __device__ void get_cells(int3 L, float tol, float3 A, float3 B, float3 C, /**/ int3 *lo, int3 *hi) {
-    float3 lf, hf;
+static __device__ void get_cells(int3 L, float tol, real3_t A, real3_t B, real3_t C, /**/ int3 *lo, int3 *hi) {
+    real3_t lf, hf;
     lf = min3T3(A, B, C);
     hf = max3T3(A, B, C);
 
@@ -51,7 +51,7 @@ static __device__ void find_collisions_cell(int tid, int start, int count, const
     int i, entry;
     rPa p, p0; Force f;
     BBState state;
-    float tc, u, v;
+    real_t tc, u, v;
     
     for (i = start; i < start + count; ++i) {
         p = P2rP(pp + i);
