@@ -75,6 +75,7 @@ namespace grey {
 namespace color {
   namespace dev {
     #include "dev/fetch/color.h"
+    #include "dev/pair0.h"
     #include "dev/pair.h"
   }
 #include "imp/pair.h"
