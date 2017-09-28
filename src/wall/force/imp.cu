@@ -44,7 +44,6 @@
 #include "utils/kl.h"
 #include "imp.h"
 
-namespace wall {
 namespace dev {
   namespace map {
     #include "dev/map/type.h"
@@ -70,5 +69,3 @@ namespace color {
   }
   #include "imp/pair.h"
 }
-
-} /* force */
