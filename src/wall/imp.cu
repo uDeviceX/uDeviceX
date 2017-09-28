@@ -78,7 +78,7 @@ namespace color {
     #include "dev/pair0.h"
     #include "dev/pair.h"
   }
-#include "imp/pair.h"
+  #include "imp/pair.h"
 }
 
 } /* wall */
