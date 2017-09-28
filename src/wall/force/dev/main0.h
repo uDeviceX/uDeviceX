@@ -1,9 +1,7 @@
 namespace sdfdev = sdf::sub::dev;
 static __device__ void force0(forces::Pa a, int pid, int zplane,
-                              sdf::Tex_t texsdf, int w_n, float seed,
-                              const Texo<int> texstart, const Texo<float4> texwpp, /**/
-                              float *ff) {
-#define   wpp_fetch(i) (texwpp.fetch(i))
+                              float seed, Wa wa, /**/ float *ff) {
+#define   wpp_fetch(i) (wa.texpp.fetch(i))
     map::Map m;
     forces::Pa b;  /* wall particles */
     float vx, vy, vz; /* wall velocity */
@@ -15,9 +13,9 @@ static __device__ void force0(forces::Pa a, int pid, int zplane,
     forces::p2r3(&a, /**/ &x, &y, &z);
     threshold =
         -1 - 1.7320f * ((float)XSIZE_WALLCELLS / (float)XTE);
-    if (sdfdev::cheap_sdf(texsdf, x, y, z) <= threshold) return;
+    if (sdfdev::cheap_sdf(wa.texsdf, x, y, z) <= threshold) return;
 
-    map::ini(zplane, texstart, w_n, x, y, z, /**/ &m);
+    map::ini(zplane, wa.texstart, wa.w_n, x, y, z, /**/ &m);
     float xforce = 0, yforce = 0, zforce = 0;
     for (i = 0; !map::endp(m, i); ++i) {
         spid = map::m2id(m, i);

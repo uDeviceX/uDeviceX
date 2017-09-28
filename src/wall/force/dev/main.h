@@ -12,6 +12,5 @@ static __global__ void force(sdf::Tex_t texsdf, hforces::Cloud cloud, int np, in
 
     /* call from polymorphic */
     wall::dev::force0(a, pid, zplane,
-                     texsdf, w_n, seed,
-                     texstart, texwpp, ff);
+                      seed, wa, /**/ ff);
 }
