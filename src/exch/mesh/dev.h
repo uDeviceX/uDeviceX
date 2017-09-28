@@ -54,4 +54,34 @@ __global__ void pack_mom(int27 starts, const Momentum *mm, /**/ Mop26 buf) {
     buf.d[fid][dst] = mm[gid];
 }
 
+/* compress kernels */
+
+enum {SKIP=-1};
+
+// TODO this is copy paste from meshbb, might be removed from there
+static __device__ bool nz(float a) {return fabs(a) > 1e-6f;}
+
+static __device__ bool nonzero(const Momentum *m) {
+    enum {X, Y, Z};
+    return nz(m->P[X]) && nz(m->P[Y]) && nz(m->P[Z]) &&
+        nz(m->L[X]) && nz(m->L[Y]) && nz(m->L[Z]);
+}
+
+__global__ void compress(int nt, int nm, const Momentum *mm, /**/ int *counts, int *subids) {
+    int i, mid, subid;
+    Momentum m;
+    i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i >= nt * nm) return;
+    
+    mid = i / nt;
+
+    m = mm[i];
+
+    if (nonzero(&m))
+        subid = atomicAdd(counts + mid, 1);
+    else
+        subid = SKIP;
+    subids[i] = subid;
+}
+
 } // dev
