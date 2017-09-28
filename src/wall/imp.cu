@@ -58,6 +58,7 @@ namespace strt {
 
 namespace map {
   #include "dev/map/type.h"
+  #include "dev/map/ini.h"
   #include "dev/map/use.h"
 }
 
