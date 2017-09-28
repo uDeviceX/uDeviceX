@@ -23,7 +23,7 @@ void forces_wall() {
     ini_cloud(r::q.pp, &cr);
     if (multi_solvent) ini_cloud_color(o::qc.ii, &co);
     
-    if (o::q.n)           color::pair(w::qsdf, w::q, w::t, co, o::q.n, /**/ o::ff);
-    if (solids0 && s::q.n) grey::pair(w::qsdf, w::q, w::t, cs, s::q.n, /**/ s::ff);
-    if (rbcs && r::q.n)    grey::pair(w::qsdf, w::q, w::t, cr, r::q.n, /**/ r::ff);
+    if (o::q.n)           color::force(w::qsdf, w::q, w::t, co, o::q.n, /**/ o::ff);
+    if (solids0 && s::q.n) grey::force(w::qsdf, w::q, w::t, cs, s::q.n, /**/ s::ff);
+    if (rbcs && r::q.n)    grey::force(w::qsdf, w::q, w::t, cr, r::q.n, /**/ r::ff);
 }

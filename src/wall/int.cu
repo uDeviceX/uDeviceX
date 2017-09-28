@@ -27,6 +27,7 @@
 #include "forces/type.h"
 #include "cloud/hforces/type.h"
 
+#include "force/imp.h"
 #include "imp.h"
 #include "int.h"
 
@@ -35,10 +36,10 @@ namespace wall {
 
 /*** polymorphic ***/
 namespace grey {
-  #include "int/pair.h"
+  #include "int/force.h"
 }
 namespace color {
-  #include "int/pair.h"
+  #include "int/force.h"
 }
 
 } /* wall */

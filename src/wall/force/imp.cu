@@ -36,36 +36,37 @@
 
 #include "cloud/hforces/type.h"
 #include "cloud/hforces/get.h"
-
 #include "algo/scan/int.h"
 #include "clist/imp.h"
-#include "io/restart.h"
 
 #include "utils/kl.h"
 #include "imp.h"
 
+namespace wall {
+/*** generitc ***/
 namespace dev {
   namespace map {
     #include "dev/map/type.h"
     #include "dev/map/ini.h"
     #include "dev/map/use.h"
   }
-  #include "dev/pair0.h"
+  #include "dev/main0.h"
 }
 
 /*** polymorphic ***/
 namespace grey {
   namespace dev {
     #include "dev/fetch/grey.h"
-    #include "dev/pair.h"
+    #include "dev/main.h"
   }
-  #include "imp/pair.h"
+  #include "imp/main.h"
 }
 
 namespace color {
   namespace dev {
     #include "dev/fetch/color.h"
-    #include "dev/pair.h"
+    #include "dev/main.h"
   }
-  #include "imp/pair.h"
+  #include "imp/main.h"
+}
 }
