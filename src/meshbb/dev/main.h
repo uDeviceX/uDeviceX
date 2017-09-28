@@ -51,14 +51,14 @@ static __device__ void find_collisions_cell(int tid, int start, int count, const
     int i, entry;
     rPa p, p0; Force f;
     BBState state;
-    real_t tc, u, v;
+    real_t tc, u, v, s;
     
     for (i = start; i < start + count; ++i) {
         p = P2rP(pp + i);
         f = ff[i];
         rvprev(&p.r, &p.v, f.f, /**/ &p0.r, &p0.v);
 
-        state = intersect_triangle(&A->r, &B->r, &C->r, &A->v, &B->v, &C->v, &p0, /**/ &tc, &u, &v);
+        state = intersect_triangle(&A->r, &B->r, &C->r, &A->v, &B->v, &C->v, &p0, /**/ &tc, &u, &v, &s);
         
         if (state == BB_SUCCESS) {
             entry = atomicAdd(ncol + i, 1);
@@ -69,7 +69,7 @@ static __device__ void find_collisions_cell(int tid, int start, int count, const
             }
 
             entry += i * MAX_COL;
-            datacol[entry] = make_float4(tc, u, v, 0);
+            datacol[entry] = make_float4(tc, u, v, s);
             idcol[entry] = tid;
         }
         dbg::log_states(state);

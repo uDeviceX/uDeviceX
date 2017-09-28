@@ -36,7 +36,7 @@ static __device__ bool cubic_root(real a, real b, real c, real d, /**/ real *h) 
 /* see Fedosov PhD Thesis */
 static __device__ BBState intersect_triangle(const real3_t *s10, const real3_t *s20, const real3_t *s30,
                                              const real3_t *vs1, const real3_t *vs2, const real3_t *vs3,
-                                             const rPa *p0,  /**/ real_t *h, real_t *u, real_t *v) {
+                                             const rPa *p0,  /**/ real_t *h, real_t *u, real_t *v, real_t *s) {
     
     real3 a1, a2, at1, at2, n0, nt, ntt, dr0;
 
@@ -73,6 +73,9 @@ static __device__ BBState intersect_triangle(const real3_t *s10, const real3_t *
         b0 = dot(&dr0, &n0);
         b1 = dot(&dr1, &n1);
 
+        /* sign : which side does the particle belong? */
+        *s = b0 > 0 ? 1 : -1;
+        
         if (b0 * b1 > 0)
             return BB_NOCROSS;
     }
