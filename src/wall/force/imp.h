@@ -1,9 +1,9 @@
 namespace wall {
 struct Wa { /* local wall data */
-    sdf::Tex_t texsdf;
-    Texo<int> texstart;
-    Texo<float4> texpp;
-    int w_n;
+    sdf::Tex_t sdf;
+    Texo<int> start;
+    Texo<float4> pp;
+    int n;
 };
 
 namespace grey {
