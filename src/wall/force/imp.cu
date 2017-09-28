@@ -50,23 +50,23 @@ namespace dev {
     #include "dev/map/ini.h"
     #include "dev/map/use.h"
   }
-  #include "dev/pair0.h"
+  #include "dev/main0.h"
 }
 
 /*** polymorphic ***/
 namespace grey {
   namespace dev {
     #include "dev/fetch/grey.h"
-    #include "dev/pair.h"
+    #include "dev/main.h"
   }
-  #include "imp/pair.h"
+  #include "imp/main.h"
 }
 
 namespace color {
   namespace dev {
     #include "dev/fetch/color.h"
-    #include "dev/pair.h"
+    #include "dev/main.h"
   }
-  #include "imp/pair.h"
+  #include "imp/main.h"
 }
 }

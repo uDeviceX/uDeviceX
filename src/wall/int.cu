@@ -36,10 +36,10 @@ namespace wall {
 
 /*** polymorphic ***/
 namespace grey {
-  #include "int/pair.h"
+  #include "int/force.h"
 }
 namespace color {
-  #include "int/pair.h"
+  #include "int/force.h"
 }
 
 } /* wall */
