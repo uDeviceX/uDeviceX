@@ -46,7 +46,6 @@
 
 #include "imp.h"
 
-namespace wall {
 namespace dev {
   #include "dev/main.h"
   namespace map {
@@ -79,4 +78,3 @@ namespace color {
   #include "imp/pair.h"
 }
 
-} /* wall */
