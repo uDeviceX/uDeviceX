@@ -14,12 +14,12 @@ struct Ticket {
 
 namespace grey {
 void pair(const sdf::Quants qsdf, const Quants q, const Ticket t,
-          const int type, hforces::Cloud cloud, const int n, Force *ff);
+          hforces::Cloud cloud, const int n, Force *ff);
 }
 
 namespace color {
 void pair(const sdf::Quants qsdf, const Quants q, const Ticket t,
-          const int type, hforces::Cloud cloud, const int n, Force *ff);
+          hforces::Cloud cloud, const int n, Force *ff);
 }
 
 void alloc_quants(Quants *q);
