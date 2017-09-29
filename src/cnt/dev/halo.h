@@ -1,12 +1,6 @@
-struct Pa { /* local particle */
-    float x, y, z;
-    float vx, vy, vz;
-};
-
 static __device__ void pp2p(Particle *pp, int i, /**/
                           forces::Pa *a) {
     float *r, *v;
-
     pp += i;
     r = pp->r;
     v = pp->v;
