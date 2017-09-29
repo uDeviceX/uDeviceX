@@ -1,6 +1,6 @@
 static const int NVP = 3; /* number of vertices per face */
 
-static void shift0(Particle* f, /**/ Particle* t) {
+static void shift0(const Particle* f, /**/ Particle* t) {
     enum {X, Y, Z};
     int *co;
     co = m::coords;
@@ -9,7 +9,7 @@ static void shift0(Particle* f, /**/ Particle* t) {
     t->r[Z] = f->r[Z] + 0.5*ZS + co[Z]*ZS;
 }
 
-static void shift(Particle *f, int n, /**/ Particle *t) {
+static void shift(const Particle *f, int n, /**/ Particle *t) {
     /* f, t: from, to */
     int i;
     for (i = 0; i < n; i++) shift0(f++, t++);
@@ -48,13 +48,13 @@ static void header(int nc0, int nv, int nt, MPI_File f) {
     write(s, sz, f);
 }
 
-static void vert(Particle *pp, int nc, int nv, MPI_File f) {
+static void vert(const Particle *pp, int nc, int nv, MPI_File f) {
     int n;
     n = nc * nv;
     write(pp, sizeof(Particle) * n, f);
 }
 
-static void wfaces0(int *buf, int *faces, int nc, int nv, int nt, MPI_File f) {
+static void wfaces0(int *buf, const int *faces, int nc, int nv, int nt, MPI_File f) {
     /* write faces */
     int c, t, b;  /* cell, triangle, buffer index */
     int n, shift;
@@ -73,7 +73,7 @@ static void wfaces0(int *buf, int *faces, int nc, int nv, int nt, MPI_File f) {
     write(buf, b*sizeof(buf[0]), f);
 }
 
-static void wfaces(int *faces, int nc, int nv, int nt, MPI_File f) {
+static void wfaces(const int *faces, int nc, int nv, int nt, MPI_File f) {
     int *buf; /* buffer for faces */
     int sz;
     sz = (1 + NVP) * nc * nt * sizeof(int);
@@ -82,14 +82,14 @@ static void wfaces(int *faces, int nc, int nv, int nt, MPI_File f) {
     free(buf);
 }
 
-static void dump0(Particle *pp, int *faces,
+static void dump0(const Particle *pp, const int *faces,
                   int nc, int nv, int nt, MPI_File f) {
     header(nc,        nv, nt, f);
     vert(pp,      nc, nv,     f);
     wfaces(faces, nc, nv, nt, f);
 }
 
-static void dump1(Particle  *pp, int *faces, int nc, int nv, int nt, MPI_File f) {
+static void dump1(const Particle *pp, const int *faces, int nc, int nv, int nt, MPI_File f) {
     int sz, n;
     Particle* pp0;
     n = nc * nv;
@@ -100,7 +100,7 @@ static void dump1(Particle  *pp, int *faces, int nc, int nv, int nt, MPI_File f)
     free(pp0);
 }
 
-static void dump2(Particle  *pp, int *faces, int nc, int nv, int nt, const char *fn) {
+static void dump2(const Particle *pp, const int *faces, int nc, int nv, int nt, const char *fn) {
     MPI_File f;
     MPI_File_open(m::cart, fn, MPI_MODE_WRONLY |  MPI_MODE_CREATE, MPI_INFO_NULL, &f);
     MPI_File_set_size(f, 0);
@@ -108,7 +108,7 @@ static void dump2(Particle  *pp, int *faces, int nc, int nv, int nt, const char 
     MPI_File_close(&f);
 }
 
-void rbc_dump(Particle *pp, int *faces, int nc, int nv, int nt, int id) {
+void rbc_dump(const Particle *pp, const int *faces, int nc, int nv, int nt, int id) {
     const char *fmt = DUMP_BASE "/r/%05d.ply";
     char f[BUFSIZ]; /* file name */
     sprintf(f, fmt, id);

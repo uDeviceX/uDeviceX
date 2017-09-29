@@ -1,1 +1,1 @@
-void rbc_dump(Particle *p, int* triplets, int nc, int nv, int nt, int id);
+void rbc_dump(const Particle *pp, const int *faces, int nc, int nv, int nt, int id);
