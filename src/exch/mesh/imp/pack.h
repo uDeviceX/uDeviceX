@@ -24,7 +24,7 @@ static void compress_mom(int nt, int nm, const Momentum *mm, /**/ MMap *m, int *
     KL(dev::compress, (k_cnf(nt * nm)), (nt, nm, mm, m->ss, m->subids, /**/ ids, mmc));
 }
 
-static void pack_mom(int nt, int nm, const int counts[NFRAGS], const Momentum *mm,
+static void pack_mom(int nt, const int counts[NFRAGS], const Momentum *mm,
                      /**/ MMap maps[NFRAGS], int *ibuf[NFRAGS], Momentum *mbuf[NFRAGS]) {
     int i, s, c;
 
@@ -34,11 +34,9 @@ static void pack_mom(int nt, int nm, const int counts[NFRAGS], const Momentum *m
     }
 }
 
-// void packM(const int counts[], const Momentum *mm, /**/ PackM *p) {
-//     Mop26 wrap;
-//     bag2Sarray(p->dmm, &wrap);
-//     pack_mom(counts, mm, /**/ wrap);
-// }
+void packM(int nt, const int counts[NFRAGS], const Momentum *mm, /**/ PackM *p) {
+    pack_mom(nt, counts, mm, /**/ p->maps, (int **) p->dii.data, (Momentum **) p->dmm.data);
+}
 
 void downloadM(PackM *p) {
     dSync(); // wait for pack_mom to complete
