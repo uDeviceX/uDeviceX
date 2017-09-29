@@ -39,7 +39,7 @@ __device__ void halo0(forces::Pa a, int aid, float seed,
             get(slot, &objid, &bid);
             fetch_b(c::PP[objid], bid, /**/ &b);
             rnd = rnd::mean0var1ii(seed, aid, bid);
-            forces::gen(a, b, rnd, &fx, &fy, &fz);
+            pair(a, b, rnd, /**/ &fx, &fy, &fz);
             xforce += fx;
             yforce += fy;
             zforce += fz;
