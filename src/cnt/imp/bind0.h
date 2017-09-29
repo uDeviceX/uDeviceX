@@ -11,8 +11,8 @@ static void bind0(const int *const starts, const int *const cellentries,
                            &dev::c::id.channelDesc,
                            sizeof(int) * nc));
     ncells = XS * YS * ZS;
-    CC(cudaBindTexture(&textureoffset, &dev::c::start, starts,
-                       &dev::c::start.channelDesc, sizeof(int) * ncells));
+    CC(cudaBindTexture(&textureoffset, &dev::c::starts, starts,
+                       &dev::c::starts.channelDesc, sizeof(int) * ncells));
 
     assert(nw <= MAX_OBJ_TYPES);
     for (i = 0; i < nw; ++i) {

@@ -4,13 +4,13 @@ enum {
     ZOFFSET = ZS / 2
 };
 
-namespace c {
-texture<int, cudaTextureType1D> start, id;
+namespace c { /* common */
+texture<int, cudaTextureType1D> starts, id;
 __constant__ const float2 *PP[MAX_OBJ_TYPES];
 __constant__ float *FF[MAX_OBJ_TYPES];
 }
 
-namespace h {
+namespace h { /* halo */
 __constant__ int starts[27];
 __constant__ Particle *pp[26];
 __constant__ Force *ff[26];
