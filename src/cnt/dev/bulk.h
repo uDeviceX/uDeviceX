@@ -1,5 +1,4 @@
 __global__ void bulk(float2 *pp, int n,
-                     int ncellentries,
                      float seed, int objid0, float *ff) {
     Map m; /* see map/ */
     float x, y, z;
