@@ -25,7 +25,11 @@ __global__ void collect_rig_mom(int ns, int nt, int nv, const int4 *tt, const Pa
         dr.y -= 0.333333 * (A.r.y + B.r.y + C.r.y);
         dr.z -= 0.333333 * (A.r.z + B.r.z + C.r.z);
 
-        mom_shift_ref(dr, /**/ &m); 
+        mom_shift_ref(dr, /**/ &m);
+
+        m.L[X] += dr.y * m.P[Z] - dr.z * m.P[Y];
+        m.L[Y] += dr.z * m.P[X] - dr.x * m.P[Z];
+        m.L[Z] += dr.x * m.P[Y] - dr.y * m.P[X];
 
         const float fac = dpd_mass / dt;
         
