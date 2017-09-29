@@ -1,7 +1,7 @@
 enum {
-    XOFFSET = XCELLS / 2,
-    YOFFSET = YCELLS / 2,
-    ZOFFSET = ZCELLS / 2
+    XOFFSET = XS / 2,
+    YOFFSET = YS / 2,
+    ZOFFSET = ZS / 2
 };
 
 namespace c {
