@@ -139,7 +139,7 @@ __global__ void compress(int nt, int nm, const Momentum *mm, const int *starts, 
 }
 
 
-static void __device__ addMom(const Momentum src, /**/ Momentum *dst) {
+static __device__ void addMom(const Momentum src, /**/ Momentum *dst) {
     enum {X, Y, Z};
     atomicAdd(dst->P + X, src.P[X]);
     atomicAdd(dst->P + Y, src.P[Y]);
@@ -150,7 +150,7 @@ static void __device__ addMom(const Momentum src, /**/ Momentum *dst) {
     atomicAdd(dst->L + Z, src.L[Z]);
 }
 
-static __device__ void unpack_frag(int nt, int i, const int *hii, const Momentum *hmm, const int *mapii, /**/ Momentum *mm) {
+static __device__ void unpack_mom_frag(int nt, int i, const int *hii, const Momentum *hmm, const int *mapii, /**/ Momentum *mm) {
     int hid, hmid, tid, lmid, lid;
     
     hid = hii[i];        /* global index in frag                */
@@ -164,7 +164,7 @@ static __device__ void unpack_frag(int nt, int i, const int *hii, const Momentum
     addMom(hmm[i], /**/ mm + lid);
 }
 
-__global__ void unpack(int nt, int27 fragstarts, intp26 hii, Mop26 hmm, Map map, /**/ Momentum *mm) {
+__global__ void unpack_mom(int nt, int27 fragstarts, intp26 hii, Mop26 hmm, Map map, /**/ Momentum *mm) {
     int i, fid;
     i = threadIdx.x + blockIdx.x * blockDim.x;
 
@@ -174,7 +174,7 @@ __global__ void unpack(int nt, int27 fragstarts, intp26 hii, Mop26 hmm, Map map,
 
     i -= fragstarts.d[fid];
     
-    unpack_frag(nt, i, hii.d[fid], hmm.d[fid], map.ids[fid], /**/ mm);
+    unpack_mom_frag(nt, i, hii.d[fid], hmm.d[fid], map.ids[fid], /**/ mm);
 }
 
 } // dev
