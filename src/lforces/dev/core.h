@@ -1,5 +1,4 @@
 static __device__ void core0(uint dpid, uint spid, uint spidext) {
-    float fx, fy, fz;
     forces::FoFo f;
     dpd(dpid, spid, /**/ &f);
     uint off  = dpid & 0x0000001FU;
@@ -13,9 +12,9 @@ static __device__ void core0(uint dpid, uint spid, uint spidext) {
         uint off  = spid & 0x0000001FU;
         uint base = xdiv(spid, 1 / 32.f);
         float* acc = info.ff + xmad(base, 96.f, off);
-        atomicAdd(acc     , -fx);
-        atomicAdd(acc + 32, -fy);
-        atomicAdd(acc + 64, -fz);
+        atomicAdd(acc     , -f.x);
+        atomicAdd(acc + 32, -f.y);
+        atomicAdd(acc + 64, -f.z);
     }
 }
 
