@@ -7,5 +7,5 @@ DeviceBuffer<int> *entries;
 namespace g {
 scan::Work ws;
 int *starts, *counts;
-}
 rnd::KISS* rgen;
+}

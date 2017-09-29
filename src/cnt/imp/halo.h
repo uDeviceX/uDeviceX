@@ -9,5 +9,5 @@ void halo(Pap26 PP, Fop26 FF, int counts[26]) {
     CC(cudaMemcpyToSymbolAsync(dev::g::starts, starts, sizeof(starts), 0, H2D));
     CC(cudaMemcpyToSymbolAsync(dev::g::pp, PP.d, 26*sizeof(PP.d[0]), 0, H2D));
     CC(cudaMemcpyToSymbolAsync(dev::g::ff, FF.d, 26*sizeof(FF.d[0]), 0, H2D));
-    KL(dev::halo, (k_cnf(n)), (n, rgen->get_float()));
+    KL(dev::halo, (k_cnf(n)), (n, g::rgen->get_float()));
 }
