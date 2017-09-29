@@ -95,9 +95,6 @@ void bounce_solid_new(long it) {
     
     /* end new part  */
 
-    if (it % rescue_freq == 0)
-        mrescue::rescue_dev(s::q.nt, s::q.nv, s::q.dtt, s::t.i_pp, nsbb, o::q.n, bb::qtc.ss_dev, bb::qtc.cc_dev, bb::qtc.ii_dev, /**/ o::q.pp);
-
     // send back fo, to
 
     cD2H(s::t.ss_hst, s::t.ss, nsbb);
