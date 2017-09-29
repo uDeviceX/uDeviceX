@@ -15,11 +15,11 @@ void ini() {
     bbhalo::ini(&tag_gen);
     cnt::ini();
     if (rbcs || solids) {
-        ini(MAX_OBJ_TYPES, MAX_OBJ_DENSITY, &rs::e.p);
-        ini(m::cart, /*io*/ &tag_gen, /**/ &rs::e.c);
-        ini(MAX_OBJ_DENSITY, &rs::e.u);
-        ini(MAX_OBJ_DENSITY, &rs::e.pf);
-        ini(MAX_OBJ_DENSITY, &rs::e.uf);
+        exch::obj::ini(MAX_OBJ_TYPES, MAX_OBJ_DENSITY, &rs::e.p);
+        exch::obj::ini(m::cart, /*io*/ &tag_gen, /**/ &rs::e.c);
+        exch::obj::ini(MAX_OBJ_DENSITY, &rs::e.u);
+        exch::obj::ini(MAX_OBJ_DENSITY, &rs::e.pf);
+        exch::obj::ini(MAX_OBJ_DENSITY, &rs::e.uf);
     }
     
     bop::ini(&dumpt);
@@ -58,9 +58,9 @@ void ini() {
     }
 
     if (multi_solvent && rbcs) {
-        ini(MAX_VERT_NUM, MAX_CELL_NUM, &mc::e.p);
-        ini(m::cart, /*io*/ &tag_gen, /**/ &mc::e.c);
-        ini(MAX_VERT_NUM, MAX_CELL_NUM, &mc::e.u);
+        exch::mesh::ini(MAX_VERT_NUM, MAX_CELL_NUM, &mc::e.p);
+        exch::mesh::ini(m::cart, /*io*/ &tag_gen, /**/ &mc::e.c);
+        exch::mesh::ini(MAX_VERT_NUM, MAX_CELL_NUM, &mc::e.u);
         Dalloc(&mc::pp, MAX_PART_NUM);
     }
     

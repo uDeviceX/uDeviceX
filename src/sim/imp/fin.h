@@ -3,11 +3,11 @@ void fin() {
     cnt::fin();
     bop::fin(&dumpt);
     if (rbcs || solids) {
-        fin(&rs::e.p);
-        fin(&rs::e.c);
-        fin(&rs::e.u);
-        fin(&rs::e.pf);
-        fin(&rs::e.uf);
+        exch::obj::fin(&rs::e.p);
+        exch::obj::fin(&rs::e.c);
+        exch::obj::fin(&rs::e.u);
+        exch::obj::fin(&rs::e.pf);
+        exch::obj::fin(&rs::e.uf);
     }
 
     if (fsiforces)  fsi::fin();
@@ -45,9 +45,9 @@ void fin() {
     }
 
     if (multi_solvent && rbcs) {
-        fin(/**/ &mc::e.p);
-        fin(/**/ &mc::e.c);
-        fin(/**/ &mc::e.u);
+        exch::mesh::fin(/**/ &mc::e.p);
+        exch::mesh::fin(/**/ &mc::e.c);
+        exch::mesh::fin(/**/ &mc::e.u);
         Dfree(mc::pp);
     }
 
