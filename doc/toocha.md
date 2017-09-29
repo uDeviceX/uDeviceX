@@ -8,7 +8,7 @@ clean, Supported operations are
 
 analogies to
 
-	a = 0
+	a  = 0
 	b += a
 
 # toocha
@@ -16,14 +16,14 @@ analogies to
 Toocha (heavy cloud in Russian) is an abstract object. It act like a
 pointer to `Fo`. Supported operations are
 
-	shift(Toocha *t, int i)
+	shift(int i, /**/ Toocha *t)
 
-	plus (Toocha  t,  Fo f)
-	minus(Toocha  t,  Fo f)
+	plus  (Fo f, /**/ Toocha t)
+	minus (Fo f, /**/ Toocha t)
 
 analogies to
 
 	t += i
-	
+
 	(*t) += f
-	(*t) -= f	
+	(*t) -= f
