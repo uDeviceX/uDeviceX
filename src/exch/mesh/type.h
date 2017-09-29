@@ -24,6 +24,7 @@ struct MMap { /* map for compression of Momentum */
 };
 
 struct PackM {
+    MMap maps[NFRAGS];
     dBags dmm;
     hBags hmm;
 };
