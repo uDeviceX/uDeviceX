@@ -1,28 +1,30 @@
-static void bind(const int *const starts, const int *const cellentries,
-                 const int nc, int nw, PaWrap *pw, FoWrap *fw) {
-    size_t textureoffset;
-    int ncells, i;
-    int ns[MAX_OBJ_TYPES];
-    float2 *ps[MAX_OBJ_TYPES];
-    float *fs[MAX_OBJ_TYPES];
+void bind(int nw, PaWrap *pw, FoWrap *fw) {
+    /* build cells */
+    int ntotal = 0;
+    for (int i = 0; i < nw; ++i) ntotal += pw[i].n;
 
-    textureoffset = 0;
-    if (nc)
-        CC(cudaBindTexture(&textureoffset, &dev::t::id, cellentries,
-                           &dev::t::id.channelDesc,
-                           sizeof(int) * nc));
-    ncells = XS * YS * ZS;
-    CC(cudaBindTexture(&textureoffset, &dev::t::start, starts,
-                       &dev::t::start.channelDesc, sizeof(int) * ncells));
+    g::indexes->resize(ntotal);
+    g::entries->resize(ntotal);
 
-    assert(nw <= MAX_OBJ_TYPES);
-    for (i = 0; i < nw; ++i) {
-        ns[i] = pw[i].n;
-        ps[i] = (float2*)pw[i].pp;
-        fs[i] = (float*)fw[i].ff;
+    CC(cudaMemsetAsync(g::counts, 0, sizeof(*g::counts)*g::sz));
+
+    int ctr = 0;
+    for (int i = 0; i < nw; ++i) {
+        PaWrap it = pw[i];
+        KL(k_index::local<true>, (k_cnf(it.n)), (it.n, (float2 *)it.pp, g::counts, g::indexes->D + ctr));
+        ctr += it.n;
     }
 
-    CC(cudaMemcpyToSymbolAsync(dev::g::ns, ns, sizeof(int)*nw, 0, H2D));
-    CC(cudaMemcpyToSymbolAsync(dev::g::csolutes, ps, sizeof(float2*)*nw, 0, H2D));
-    CC(cudaMemcpyToSymbolAsync(dev::g::csolutesacc, fs, sizeof(float*)*nw, 0, H2D));
+    scan::scan(g::counts, g::sz,
+               /**/ g::starts, /*w*/ &g::ws);
+
+    ctr = 0;
+    for (int i = 0; i < nw; ++i) {
+        PaWrap it = pw[i];
+        KL(dev::populate, (k_cnf(it.n)),
+           (g::indexes->D + ctr, g::starts, it.n, i, g::entries->D));
+        ctr += it.n;
+    }
+
+    bind0(g::starts, g::entries->D, ntotal, nw, pw, fw);
 }
