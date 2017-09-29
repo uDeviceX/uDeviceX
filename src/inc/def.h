@@ -19,8 +19,8 @@ enum {BLUE_COLOR, RED_COLOR};
 #define MAX_OBJ_DENSITY (100)
 
 /* maximum number of faces and vertices per one RBC */
-#define MAX_FACE_NUM 5000
-#define MAX_VERT_NUM 10000
+#define MAX_FACE_NUM 1000
+#define MAX_VERT_NUM 2000
 
 /* maximum number of red blood cells per node */
 #define MAX_CELL_NUM 100
