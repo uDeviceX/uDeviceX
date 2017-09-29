@@ -32,6 +32,7 @@
 #include "inc/dev/index.h"
 
 #include "forces/type.h"
+#include "forces/use.h"
 #include "forces/pack.h"
 #include "forces/imp.h"
 
