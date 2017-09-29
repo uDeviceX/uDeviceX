@@ -12,7 +12,6 @@ texture<int, cudaTextureType1D> start, id;
 }
 
 namespace g {
-__constant__ int ns[MAX_OBJ_TYPES];
 __constant__ const float2 *csolutes[MAX_OBJ_TYPES];
 __constant__ float *csolutesacc[MAX_OBJ_TYPES];
 
