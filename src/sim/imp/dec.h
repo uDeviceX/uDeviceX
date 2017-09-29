@@ -26,7 +26,7 @@ namespace r /* [r]bc */
 rbc::Quants q;
 rbc::TicketT tt;
 
-Distr d;
+RbcDistr d;
 
 Force     *ff;
 }

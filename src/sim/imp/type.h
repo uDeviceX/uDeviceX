@@ -22,16 +22,12 @@ struct H { /* halo tickets : was h:: */
 
 } // o
 
-namespace r {
-
-/* distribution */
-struct Distr {
+/* rbc distribution */
+struct RbcDistr {
     distr::rbc::Pack p;
     distr::rbc::Comm c;
     distr::rbc::Unpack u;
 };
-
-} // r
 
 /* rigid distribution */
 struct RigDistr {

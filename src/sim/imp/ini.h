@@ -1,3 +1,12 @@
+void ini_obj_exch(MPI_Comm comm, basetags::TagGen *tg, Sexch *e) {
+    using namespace exch::obj;
+    ini(MAX_OBJ_TYPES, MAX_OBJ_DENSITY, &e->p);
+    ini(comm, /*io*/ tg, /**/ &e->c);
+    ini(MAX_OBJ_DENSITY, &e->u);
+    ini(MAX_OBJ_DENSITY, &e->pf);
+    ini(MAX_OBJ_DENSITY, &e->uf);    
+}
+
 void ini() {
     basetags::ini(&tag_gen);
     datatype::ini();
@@ -14,13 +23,9 @@ void ini() {
 
     bbhalo::ini(&tag_gen);
     cnt::ini();
-    if (rbcs || solids) {
-        exch::obj::ini(MAX_OBJ_TYPES, MAX_OBJ_DENSITY, &rs::e.p);
-        exch::obj::ini(m::cart, /*io*/ &tag_gen, /**/ &rs::e.c);
-        exch::obj::ini(MAX_OBJ_DENSITY, &rs::e.u);
-        exch::obj::ini(MAX_OBJ_DENSITY, &rs::e.pf);
-        exch::obj::ini(MAX_OBJ_DENSITY, &rs::e.uf);
-    }
+
+    if (rbcs || solids)
+        ini_obj_exch(m::cart, &tag_gen, &rs::e);
     
     bop::ini(&dumpt);
 
