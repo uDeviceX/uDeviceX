@@ -78,7 +78,7 @@ void bounce_solid_v1(long it) {
     nt = s::q.nt;
     nv = s::q.nv;
     tt = s::q.dtt;
-    i_pp = s::t.i_pp;
+    i_pp = s::q.i_pp;
 
     n  = o::q.n;
     pp = o::q.pp;
