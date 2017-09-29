@@ -128,7 +128,7 @@ static __device__ void gen1(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
     gen0(A, B, p, ljkind, /**/ f);
 }
 
-static __device__ void genf(Pa A, Pa B, float rnd, /**/ Fo f) {
+static __device__ void gen(Pa A, Pa B, float rnd, /**/ Fo f) {
     /* dispatch on kind and pack force */
     int ljkind; /* call LJ? */
     int ka, kb;

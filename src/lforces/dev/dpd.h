@@ -3,7 +3,7 @@ static __device__ void dpd0(uint aid, uint bid, float rnd, /**/ forces::Fo f) {
 
     cloud_get(aid, &a);
     cloud_get(bid, &b);
-    forces::genf(a, b, rnd, /**/ f);
+    forces::gen(a, b, rnd, /**/ f);
 }
 
 static __device__ float random(uint i, uint j) {
