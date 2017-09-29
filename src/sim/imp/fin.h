@@ -83,6 +83,9 @@ void fin() {
         distr::rig::fin(&s::d.p);
         distr::rig::fin(&s::d.c);
         distr::rig::fin(&s::d.u);
+
+        if (sbounce_back)
+            fin_bb_exch(/**/ &s::e);
     }
 
     if (rbcs) {

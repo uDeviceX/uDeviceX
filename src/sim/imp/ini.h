@@ -98,6 +98,9 @@ void ini() {
         distr::rig::ini(nv, &s::d.p);
         distr::rig::ini(m::cart, /*io*/ &tag_gen, /**/ &s::d.c);
         distr::rig::ini(nv, &s::d.u);
+
+        if (sbounce_back)
+            ini_bb_exch(m::cart, /*io*/ &tag_gen, /**/ &s::e);
     }
 
     MC(MPI_Barrier(m::cart));
