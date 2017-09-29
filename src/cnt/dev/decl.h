@@ -9,11 +9,11 @@ enum {
 
 namespace c {
 texture<int, cudaTextureType1D> start, id;
+__constant__ const float2 *csolutes[MAX_OBJ_TYPES];
+__constant__ float *csolutesacc[MAX_OBJ_TYPES];
 }
 
 namespace g {
-__constant__ const float2 *csolutes[MAX_OBJ_TYPES];
-__constant__ float *csolutesacc[MAX_OBJ_TYPES];
 
 __constant__ int starts[27];
 __constant__ Particle *pp[26];
