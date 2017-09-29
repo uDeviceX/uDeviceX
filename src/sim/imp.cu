@@ -66,7 +66,7 @@
 #include "cnt/imp.h"
 
 #include "fsi/type.h"
-#include "fsi/int.h"
+#include "fsi/imp.h"
 #include "lforces/local.h"
 
 #include "exch/map/type.h"

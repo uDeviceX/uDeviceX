@@ -50,7 +50,7 @@
 
 /* local */
 #include "type.h"
-#include "int.h"
+#include "imp.h"
 
 /* body */
 namespace fsi {
