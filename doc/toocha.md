@@ -21,8 +21,8 @@ a pointer to `Fo`. Supported operations are
 	plus0 (Fo f, /**/ Toocha t)
 	minus0(Fo f, /**/ Toocha t)
 
-	plus  (Fo f, /**/ Toocha t, int i)
-	minus (Fo f, /**/ Toocha t, int i)
+	plus  (Fo f, int i, /**/ Toocha t)
+	minus (Fo f, int i, /**/ Toocha t)
 
 analogies to
 
@@ -33,3 +33,8 @@ analogies to
 
 	t[i] += f
 	t[i] -= f
+
+Toocha can be build from `Force*` and `Stress*`
+
+	ini_toocha(Force *ff,             /**/ Toocha *t)
+	ini_toocha(Force *ff, Stress *ss, /**/ Toocha *t)
