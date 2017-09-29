@@ -25,6 +25,23 @@ __device__ void rvprev(const real3_t *r1, const real3_t *v1, const float *, /**/
 }
 #endif
 
+__device__ void fetch_triangle(int id, int nt, int nv, const int4 *tt, const Particle *i_pp,
+                               /**/ rPa *A, rPa *B, rPa *C) {
+    int4 t;
+    int tid, mid;
+    tid = id % nt;
+    mid = id / nt;
+
+    t = tt[tid];
+    t.x += mid * nv;
+    t.y += mid * nv;
+    t.z += mid * nv;
+    
+    *A = P2rP( i_pp + t.x );
+    *B = P2rP( i_pp + t.y );
+    *C = P2rP( i_pp + t.z );
+}
+
 __device__ void bounce_back(const rPa *p0, const real3_t *rw, const real3_t *vw, const real_t h, /**/ rPa *pn) {
     pn->v.x = 2 * vw->x - p0->v.x;
     pn->v.y = 2 * vw->y - p0->v.y;
@@ -48,10 +65,10 @@ __device__ void ang_mom_change(const real3_t r, const real3_t v0, const real3_t 
 }
 
 /* shift origin from 0 to R for ang momentum */
-__device__ void mom_shift_ref(const float R[3], /**/ Momentum *m) {
-    m->L[X] -= R[Y] * m->P[Z] - R[Z] * m->P[Y];
-    m->L[Y] -= R[Z] * m->P[X] - R[X] * m->P[Z];
-    m->L[Z] -= R[X] * m->P[Y] - R[Y] * m->P[X];
+__device__ void mom_shift_ref(const real3_t r, /**/ Momentum *m) {
+    m->L[X] -= r.y * m->P[Z] - r.z * m->P[Y];
+    m->L[Y] -= r.z * m->P[X] - r.x * m->P[Z];
+    m->L[Z] -= r.x * m->P[Y] - r.y * m->P[X];
 }
 
 static __device__ bool nz(float a) {return fabs(a) > 1e-6f;}

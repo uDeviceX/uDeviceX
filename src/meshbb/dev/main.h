@@ -83,23 +83,6 @@ static __device__ void revert_r(float h, rPa *p) {
     p->r.z -= p->v.z * h;
 }
 
-static __device__ void fetch_triangle(int id, int nt, int nv, const int4 *tt, const Particle *i_pp,
-                                      /**/ rPa *A, rPa *B, rPa *C) {
-    int4 t;
-    int tid, mid;
-    tid = id % nt;
-    mid = id / nt;
-
-    t = tt[tid];
-    t.x += mid * nv;
-    t.y += mid * nv;
-    t.z += mid * nv;
-    
-    *A = P2rP( i_pp + t.x );
-    *B = P2rP( i_pp + t.y );
-    *C = P2rP( i_pp + t.z );
-}
-
 __global__ void find_collisions(int nm, int nt, int nv, const int4 *tt, const Particle *i_pp,
                                 int3 L, const int *starts, const int *counts, const Particle *pp, const Force *ff,
                                 /**/ int *ncol, float4 *datacol, int *idcol) {
@@ -235,8 +218,13 @@ __global__ void perform_collisions(int n, const int *ncol, const float4 *datacol
     
     pp[i] = rP2P(&pn);
 
-    /* add momentum */
-
+    /* add momentum (ang mom in ref of the triangle com) */
+    /* shift in new ref */
+    
+    rw.x -= 0.333333 * (A.r.x + B.r.x + C.r.x);
+    rw.y -= 0.333333 * (A.r.y + B.r.y + C.r.y);
+    rw.z -= 0.333333 * (A.r.z + B.r.z + C.r.z);
+    
     lin_mom_change(    p1.v, pn.v, /**/ m.P);
     ang_mom_change(rw, p1.v, pn.v, /**/ m.L);
 

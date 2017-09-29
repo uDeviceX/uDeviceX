@@ -15,7 +15,7 @@ namespace meshbb {
 
 /* conf */
 enum {MAX_COL = 4};
-// #define debug_output
+#define debug_output
 
 #include "type.h"
 #include "bbstates.h"
@@ -65,8 +65,9 @@ void bounce(int n, BBdata d, const Force *ff, int nt, int nv, const int4 *tt, co
        (n, d.ncols, d.datacol, d.idcol, ff, nt, nv, tt, i_pp, /**/ pp, mm));
 }
 
-void collect_momentum(const Momentum *mm, int ns, int nt, /**/ Solid *ss) {
-    KL(dev::collect_rig_mom, (k_cnf(ns * nt)), (mm, ns, nt, /**/ ss));
+
+void collect_momentum(int ns, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Solid *ss) {
+    KL(dev::collect_rig_mom, (k_cnf(ns * nt)), (ns, nt, nv, tt, pp, mm, /**/ ss));
 }
 
 } // meshbb

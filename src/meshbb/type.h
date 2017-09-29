@@ -65,3 +65,4 @@ __device__ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
     c->y = a->y + x * b->y;
     c->z = a->z + x * b->z;
 }
+
