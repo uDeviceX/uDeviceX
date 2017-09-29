@@ -44,13 +44,11 @@ void ini(int nt, int max_mesh_num, PackM *p) {
     
     ini(PINNED,   NONE, sizeof(Momentum), mcap, /**/ &p->hmm, &p->dmm);
     ini(PINNED,   NONE, sizeof(int)     , mcap, /**/ &p->hii, &p->dii);
-    ini(HST_ONLY, NONE, sizeof(int)     , cap , /**/ &p->hcc, NULL);
 }
 
 void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ CommM *c) {
     ini(comm, /*io*/ tg, /**/ &c->mm);
     ini(comm, /*io*/ tg, /**/ &c->ii);
-    ini(comm, /*io*/ tg, /**/ &c->cc);
 }
 
 void ini(int nt, int max_mesh_num, UnpackM *u) {
@@ -61,5 +59,4 @@ void ini(int nt, int max_mesh_num, UnpackM *u) {
 
     ini(PINNED_DEV, NONE, sizeof(Momentum), mcap, /**/ &u->hmm, &u->dmm);
     ini(PINNED_DEV, NONE, sizeof(int)     , mcap, /**/ &u->hii, &u->dii);
-    ini(HST_ONLY,   NONE, sizeof(int)     , cap , /**/ &u->hcc, NULL);
 }
