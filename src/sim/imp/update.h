@@ -14,7 +14,7 @@ void update_solid() {
     rig::reinit_ft(s::q.ns, /**/ s::q.ss);
 }
 
-void bounce_solid(long it) {
+void bounce_solid_old(long it) {
 #define DEV (false)
     mesh::get_bboxes_dev(s::q.i_pp, s::q.nv, s::q.ns, /**/ s::t.minbb_dev, s::t.maxbb_dev);
 
@@ -53,7 +53,7 @@ void bounce_solid(long it) {
 #undef DEV
 }
 
-void bounce_solid_new(long it) {
+void bounce_solid_v1(long it) {
 #define DEV (false)
     mesh::get_bboxes_dev(s::q.i_pp, s::q.nv, s::q.ns, /**/ s::t.minbb_dev, s::t.maxbb_dev);
 
@@ -68,8 +68,7 @@ void bounce_solid_new(long it) {
     bbhalo::unpack <DEV> (s::q.nv, /**/ s::t.ss_hst, s::t.i_pp);
 
     cH2D(s::t.ss, s::t.ss_hst, nsbb);
-    
-    /* new part */
+
     int n, nm, nt, nv, *ss, *cc;
     int4 *tt;
     Particle *pp, *i_pp;
@@ -93,8 +92,6 @@ void bounce_solid_new(long it) {
 
     meshbb::collect_momentum(bb::mm, nm, nt, /**/ s::t.ss);
     
-    /* end new part  */
-
     // send back fo, to
 
     cD2H(s::t.ss_hst, s::t.ss, nsbb);
@@ -110,7 +107,7 @@ void bounce_solid_new(long it) {
 #undef DEV
 }
 
-void bounce_solute(long it) {
+void bounce_solid_v2(long it) {
     int n, nm, nt, nv, *ss, *cc, nmhalo, counts[comm::NFRAGS];
     int4 *tt;
     Particle *pp, *i_pp;
@@ -145,6 +142,8 @@ void bounce_solute(long it) {
     /* perform bounce back */
     
     meshbb::reini(n, /**/ bb::bbd);
+    CC(d::MemsetAsync(bb::mm, 0, nt * (nm + nmhalo) * sizeof(Momentum)));
+
     meshbb::find_collisions(nm + nmhalo, nt, nv, tt, i_pp, L, ss, cc, pp, o::ff, /**/ bb::bbd);
     meshbb::select_collisions(n, /**/ bb::bbd);
     meshbb::bounce(n, bb::bbd, o::ff, nt, nv, tt, i_pp, /**/ pp, bb::mm);
@@ -165,7 +164,7 @@ void bounce_solute(long it) {
     exch::mesh::unpack_mom(nt, &s::e.p, &s::e.um, /**/ bb::mm);
     
     /* gather bb momentum */
-    meshbb::collect_momentum(bb::mm, nm, nt, /**/ s::t.ss);
+    meshbb::collect_momentum(bb::mm, nm, nt, /**/ s::q.ss);
 }
 
 void update_solvent(long it) {

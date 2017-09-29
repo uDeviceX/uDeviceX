@@ -11,7 +11,9 @@ void step0(float driving_force0, bool wall0, int it) {
     if (solids0) update_solid();
     if (rbcs)    update_rbc(it);
     if (wall0) bounce();
-    if (sbounce_back && solids0) bounce_solid(it);
+    if (sbounce_back && solids0) bounce_solid_old(it);
+    // if (sbounce_back && solids0) bounce_solid_v1(it);
+    // if (sbounce_back && solids0) bounce_solid_v2(it);
 }
 
 void step(float driving_force0, bool wall0, int it) {
