@@ -43,7 +43,7 @@
 #include "imp.h"
 
 namespace wall {
-/*** generitc ***/
+/*** generic ***/
 namespace dev {
   namespace map {
     #include "dev/map/type.h"
