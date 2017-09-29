@@ -1,7 +1,4 @@
 enum {
-    XCELLS = XS,
-    YCELLS = YS,
-    ZCELLS = ZS,
     XOFFSET = XCELLS / 2,
     YOFFSET = YCELLS / 2,
     ZOFFSET = ZCELLS / 2
