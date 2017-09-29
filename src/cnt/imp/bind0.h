@@ -21,5 +21,5 @@ static void bind0(const int *const starts, const int *const cellentries,
     }
 
     CC(cudaMemcpyToSymbolAsync(dev::c::csolutes, ps, sizeof(float2*)*nw, 0, H2D));
-    CC(cudaMemcpyToSymbolAsync(dev::c::csolutesacc, fs, sizeof(float*)*nw, 0, H2D));
+    CC(cudaMemcpyToSymbolAsync(dev::c::FF, fs, sizeof(float*)*nw, 0, H2D));
 }
