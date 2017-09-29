@@ -1,6 +1,6 @@
 static __device__ void pair0(const Pa a, const Pa b, float rnd, /**/ float *fx, float *fy, float *fz) {
     forces::Fo f;
-    forces::genf(a, b, rnd, /**/ &f);
+    forces::gen(a, b, rnd, /**/ &f);
     *fx = f.x; *fy = f.y; *fz = f.z;
 }
 

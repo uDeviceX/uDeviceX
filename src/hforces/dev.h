@@ -5,7 +5,7 @@ struct Fo { float *x, *y, *z; }; /* force */
 static __device__ void pair(const forces::Pa a, const forces::Pa b, float rnd,
                             /**/ float *fx, float *fy, float *fz) {
     forces::Fo f;
-    forces::genf(a, b, rnd, /**/ &f);
+    forces::gen(a, b, rnd, /**/ &f);
     *fx = f.x; *fy = f.y; *fz = f.z;
 }
 

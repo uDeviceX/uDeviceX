@@ -23,7 +23,7 @@ static __device__ void force0(forces::Pa a, int aid, int zplane,
         k_wvel::vell(r.x, r.y, r.z, /**/ &vx, &vy, &vz);
         forces::r3v3k2p(r.x, r.y, r.z, vx, vy, vz, WALL_KIND, /**/ &b);
         rnd = rnd::mean0var1ii(seed, aid, bid);
-        forces::genf(a, b, rnd, /**/ &f);
+        forces::gen(a, b, rnd, /**/ &f);
         xforce += f.x; yforce += f.y; zforce += f.z;
     }
     atomicAdd(ff + 3 * aid + 0, xforce);
