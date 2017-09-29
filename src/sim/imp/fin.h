@@ -1,14 +1,18 @@
+void fin_obj_exch(Sexch *e) {
+    using namespace exch::obj;
+    fin(&e->p);
+    fin(&e->c);
+    fin(&e->u);
+    fin(&e->pf);
+    fin(&e->uf);
+}
+
 void fin() {
     bbhalo::fin();
     cnt::fin();
     bop::fin(&dumpt);
-    if (rbcs || solids) {
-        exch::obj::fin(&rs::e.p);
-        exch::obj::fin(&rs::e.c);
-        exch::obj::fin(&rs::e.u);
-        exch::obj::fin(&rs::e.pf);
-        exch::obj::fin(&rs::e.uf);
-    }
+    if (rbcs || solids)
+        fin_obj_exch(&rs::e);
 
     if (fsiforces)  fsi::fin();
     if (solids) mrescue::fin();
