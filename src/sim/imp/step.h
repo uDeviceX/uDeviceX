@@ -1,6 +1,4 @@
 void step0(float driving_force0, bool wall0, int it) {
-    // if (solids0) distr_solid();
-    // if (rbcs)    distr_rbc();
     if (solids0) distribute_rig();
     if (rbcs)    distribute_rbc();
     forces(wall0);
@@ -11,8 +9,8 @@ void step0(float driving_force0, bool wall0, int it) {
     if (solids0) update_solid();
     if (rbcs)    update_rbc(it);
     if (wall0) bounce();
+
     if (sbounce_back && solids0) bounce_solid_old(it);
-    // if (sbounce_back && solids0) bounce_solid_v1(it);
     // if (sbounce_back && solids0) bounce_solid_v2(it);
 }
 
