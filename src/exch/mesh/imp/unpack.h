@@ -35,6 +35,32 @@ void upload(UnpackM *u) {
     upload_bags(&u->hii, &u->dii);
 }
 
-void unpack_mom(const Pack *p, const UnpackM *u) {
+static int accumulate(int n, const int *cc) {
+    int i, s;
+    for (i = s = 0; i < n; ++i) s += cc[i];
+    return s;
+}
 
+static int get_fragstarts(int nfrags, const int *cc[], const int ncc[], /**/ int *starts) {
+    int i, c, s;
+    starts[0] = s = 0;
+    for (i = 0; i < nfrags; ++i) {
+        c = accumulate(ncc[i], cc[i]);
+        starts[i+1] = (s += c);
+    }
+    return s;
+}
+
+void unpack_mom(int nt, const Pack *p, const UnpackM *u, /**/ Momentum *mm) {
+    intp26 wrapii;
+    Mop26 wrapmm;
+    int27 fragstarts;
+    int n;
+    
+    bag2Sarray(u->dmm, &wrapmm);
+    bag2Sarray(u->dii, &wrapii);
+
+    n = get_fragstarts(NFRAGS, (const int**) u->hcc.data, u->hcc.counts, /**/ fragstarts.d);
+    
+    KL(dev::unpack_mom, (k_cnf(n)), (nt, fragstarts, wrapii, wrapmm, p->map, /**/ mm));
 }
