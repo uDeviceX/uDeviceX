@@ -41,6 +41,7 @@ void post_send(PackM *p, CommM *c);
 void wait_recv(CommM *c, UnpackM *u);
 void wait_send(CommM *c);
 
+void upload(UnpackM *u);
 
 } // mesh
 } // exch
