@@ -5,7 +5,7 @@ static void setup_first() {
     dev::t::start.normalized = 0;
 }
 
-void setup(const int *const cellsstart) {
+static void setup(const int *const cellsstart) {
     size_t offset;
     int nc;
     if (firsttime) {
