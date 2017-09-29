@@ -1,7 +1,7 @@
 void ini() {
     Dalloc(&g::starts, sz);
     Dalloc(&g::counts, sz);
-    scan::alloc_work(sz, &ws);
+    scan::alloc_work(sz, &g::ws);
     entries = new DeviceBuffer<int>;
     indexes = new DeviceBuffer<uchar4>;
     rgen = new rnd::KISS;

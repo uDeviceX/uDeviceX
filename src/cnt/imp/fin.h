@@ -1,6 +1,6 @@
 void fin() {
     delete indexes;
-    scan::free_work(&ws);
+    scan::free_work(&g::ws);
     delete entries;
     delete rgen;
 

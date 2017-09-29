@@ -4,8 +4,8 @@ int no; /* number of objects */
 DeviceBuffer<uchar4> *indexes;
 DeviceBuffer<int> *entries;
 
-scan::Work ws;
 namespace g {
+scan::Work ws;
 int *starts, *counts;
 }
 rnd::KISS* rgen;
