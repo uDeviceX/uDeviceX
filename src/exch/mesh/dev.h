@@ -80,6 +80,7 @@ static __device__ int warpScan(int val) {
     return val;
 }
 
+/* exclusive scan on one block */
 template<int NWARP>
 __global__ void block_scan(int n, const int *cc, /**/ int *ss) {
     assert(n < blockDim.x);
