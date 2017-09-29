@@ -33,12 +33,12 @@ __global__ void halo(int n, float seed) {
     aid = threadIdx.x + blockDim.x * blockIdx.x;
     if (aid >= n) return;
 
-    fid = k_common::fid(g::starts, aid);
-    start = g::starts[fid];
-    A = pp2p(g::pp[fid], aid - start);
+    fid = k_common::fid(h::starts, aid);
+    start = h::starts[fid];
+    A = pp2p(h::pp[fid], aid - start);
 
     float *fA;
-    fA =g::ff[fid][aid - start].f;
+    fA =h::ff[fid][aid - start].f;
     for (zplane = 0; zplane < 3; ++zplane) {
         mapstatus = tex2map(zplane, A.x, A.y, A.z, /**/ &m);
         if (mapstatus == EMPTY) continue;
@@ -47,9 +47,9 @@ __global__ void halo(int n, float seed) {
             get(slot, &objid, &spid);
 
             sentry = 3 * spid;
-            stmp0 = __ldg(g::csolutes[objid] + sentry);
-            stmp1 = __ldg(g::csolutes[objid] + sentry + 1);
-            stmp2 = __ldg(g::csolutes[objid] + sentry + 2);
+            stmp0 = __ldg(c::PP[objid] + sentry);
+            stmp1 = __ldg(c::PP[objid] + sentry + 1);
+            stmp2 = __ldg(c::PP[objid] + sentry + 2);
 
             rnd = rnd::mean0var1ii(seed, aid, spid);
             forces::r3v3k2p(A.x, A.y, A.z, A.vx, A.vy, A.vz, SOLID_KIND, /**/ &a);
@@ -58,9 +58,9 @@ __global__ void halo(int n, float seed) {
             xforce += fx;
             yforce += fy;
             zforce += fz;
-            atomicAdd(g::csolutesacc[objid] + sentry,     -fx);
-            atomicAdd(g::csolutesacc[objid] + sentry + 1, -fy);
-            atomicAdd(g::csolutesacc[objid] + sentry + 2, -fz);
+            atomicAdd(c::FF[objid] + sentry,     -fx);
+            atomicAdd(c::FF[objid] + sentry + 1, -fy);
+            atomicAdd(c::FF[objid] + sentry + 2, -fz);
         }
     }
 

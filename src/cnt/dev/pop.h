@@ -6,7 +6,7 @@ __global__ void populate(uchar4 *subindices, int *starts, int n, int objid, /**/
     if (pid >= n) return;
     subindex = subindices[pid];
     if (subindex.x == 255 && subindex.y == 255 && subindex.z == 255) return;
-    id = subindex.x + XCELLS * (subindex.y + YCELLS * subindex.z);
+    id = subindex.x + XS * (subindex.y + YS * subindex.z);
 
     start = __ldg(starts + id);
     slot = start + subindex.w;

@@ -1,5 +1,4 @@
 __global__ void bulk(float2 *pp, int n,
-                     int ncellentries, int nobj,
                      float seed, int objid0, float *ff) {
     Map m; /* see map/ */
     float x, y, z;
@@ -40,9 +39,9 @@ __global__ void bulk(float2 *pp, int n,
             continue;
 
         sentry = 3 * spid;
-        stmp0 = __ldg(g::csolutes[objid] + sentry);
-        stmp1 = __ldg(g::csolutes[objid] + sentry + 1);
-        stmp2 = __ldg(g::csolutes[objid] + sentry + 2);
+        stmp0 = __ldg(c::PP[objid] + sentry);
+        stmp1 = __ldg(c::PP[objid] + sentry + 1);
+        stmp2 = __ldg(c::PP[objid] + sentry + 2);
 
         rnd = rnd::mean0var1ii(seed, pid, spid);
         forces::f2k2p(dst0,   dst1,  dst2, SOLID_KIND, /**/ &a);
@@ -51,9 +50,9 @@ __global__ void bulk(float2 *pp, int n,
         xforce += fx;
         yforce += fy;
         zforce += fz;
-        atomicAdd(g::csolutesacc[objid] + sentry,     -fx);
-        atomicAdd(g::csolutesacc[objid] + sentry + 1, -fy);
-        atomicAdd(g::csolutesacc[objid] + sentry + 2, -fz);
+        atomicAdd(c::FF[objid] + sentry,     -fx);
+        atomicAdd(c::FF[objid] + sentry + 1, -fy);
+        atomicAdd(c::FF[objid] + sentry + 2, -fz);
     }
 
     atomicAdd(ff + 3 * pid + 0, xforce);

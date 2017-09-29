@@ -9,32 +9,32 @@ static __device__ int tex2map(int zplane, float x, float y, float z, /**/ Map *m
 
     xcenter = XOFFSET + (int)floorf(x);
     xstart = max(0, xcenter - 1);
-    xcount = min(XCELLS, xcenter + 2) - xstart;
+    xcount = min(XS, xcenter + 2) - xstart;
 
-    if (xcenter - 1 >= XCELLS || xcenter + 2 <= 0) return EMPTY;
+    if (xcenter - 1 >= XS || xcenter + 2 <= 0) return EMPTY;
 
     ycenter = YOFFSET + (int)floorf(y);
 
     zcenter = ZOFFSET + (int)floorf(z);
     zmy = zcenter - 1 + zplane;
-    zvalid = zmy >= 0 && zmy < ZCELLS;
+    zvalid = zmy >= 0 && zmy < ZS;
 
     count0 = count1 = count2 = 0;
 
-    if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < YCELLS) {
-        cid0 = xstart + XCELLS * (ycenter - 1 + YCELLS * zmy);
+    if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < YS) {
+        cid0 = xstart + XS * (ycenter - 1 + YS * zmy);
         org0 = fetchS(cid0);
         count0 = fetchS(cid0 + xcount) - org0;
     }
 
-    if (zvalid && ycenter >= 0 && ycenter < YCELLS) {
-        cid1 = xstart + XCELLS * (ycenter + YCELLS * zmy);
+    if (zvalid && ycenter >= 0 && ycenter < YS) {
+        cid1 = xstart + XS * (ycenter + YS * zmy);
         org1 = fetchS(cid1);
         count1 = fetchS(cid1 + xcount) - org1;
     }
 
-    if (zvalid && ycenter + 1 >= 0 && ycenter + 1 < YCELLS) {
-        cid2 = xstart + XCELLS * (ycenter + 1 + YCELLS * zmy);
+    if (zvalid && ycenter + 1 >= 0 && ycenter + 1 < YS) {
+        cid2 = xstart + XS * (ycenter + 1 + YS * zmy);
         org2 = fetchS(cid2);
         count2 = fetchS(cid2 + xcount) - org2;
     }

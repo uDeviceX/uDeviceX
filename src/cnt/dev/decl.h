@@ -1,22 +1,17 @@
 enum {
-    XCELLS = XS,
-    YCELLS = YS,
-    ZCELLS = ZS,
-    XOFFSET = XCELLS / 2,
-    YOFFSET = YCELLS / 2,
-    ZOFFSET = ZCELLS / 2
+    XOFFSET = XS / 2,
+    YOFFSET = YS / 2,
+    ZOFFSET = ZS / 2
 };
 
-namespace t {
-texture<int, cudaTextureType1D> start, id;
+namespace c { /* common */
+texture<int, cudaTextureType1D> starts, id;
+__constant__ const float2 *PP[MAX_OBJ_TYPES];
+__constant__ float *FF[MAX_OBJ_TYPES];
 }
 
-namespace g {
-__constant__ int ns[MAX_OBJ_TYPES];
-__constant__ const float2 *csolutes[MAX_OBJ_TYPES];
-__constant__ float *csolutesacc[MAX_OBJ_TYPES];
-
-__constant__ int starts[27], counts[26];
+namespace h { /* halo */
+__constant__ int starts[27];
 __constant__ Particle *pp[26];
 __constant__ Force *ff[26];
 }
