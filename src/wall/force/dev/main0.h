@@ -1,4 +1,3 @@
-namespace sdfdev = sdf::sub::dev;
 static __device__ void fetch_wall(Texo<float4> pp, int i, /**/ forces::Pa *a) {
     float vx, vy, vz; /* wall velocity */
     float4 r;
@@ -9,6 +8,7 @@ static __device__ void fetch_wall(Texo<float4> pp, int i, /**/ forces::Pa *a) {
 
 static __device__ void force0(forces::Pa a, int aid, int zplane,
                               float seed, Wa wa, /**/ float *ff) {
+    namespace sdfdev = sdf::sub::dev;
     map::Map m;
     forces::Pa b;  /* wall particles */
     float rnd;
