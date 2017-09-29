@@ -26,16 +26,16 @@ struct MMap { /* map for compression of Momentum */
 struct PackM {
     MMap maps[NFRAGS];
     dBags dmm, dii;
-    hBags hmm, hii;
+    hBags hmm, hii, hcc;
 };
 
 struct CommM {
-    Stamp mm, ii;
+    Stamp mm, ii, cc;
 };
 
 struct UnpackM {
     dBags dmm, dii;
-    hBags hmm, hii;
+    hBags hmm, hii, hcc;
 };
 
 } // mesh
