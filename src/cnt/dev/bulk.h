@@ -11,7 +11,7 @@ __global__ void bulk(float2 *pp, int n,
     int i, slot;
 
     int objid;
-    int spid;
+    int bid;
     int sentry;
     float2 stmp0, stmp1, stmp2;
     int mapstatus;
@@ -34,16 +34,16 @@ __global__ void bulk(float2 *pp, int n,
     xforce = yforce = zforce = 0;
     for (i = 0; !endp(m, i); ++i) {
         slot = m2id(m, i);
-        get(slot, &objid, &spid);
-        if (objid0 < objid || objid0 == objid && aid <= spid)
+        get(slot, &objid, &bid);
+        if (objid0 < objid || objid0 == objid && aid <= bid)
             continue;
 
-        sentry = 3 * spid;
+        sentry = 3 * bid;
         stmp0 = __ldg(c::PP[objid] + sentry);
         stmp1 = __ldg(c::PP[objid] + sentry + 1);
         stmp2 = __ldg(c::PP[objid] + sentry + 2);
 
-        rnd = rnd::mean0var1ii(seed, aid, spid);
+        rnd = rnd::mean0var1ii(seed, aid, bid);
         forces::f2k2p(dst0,   dst1,  dst2, SOLID_KIND, /**/ &a);
         forces::f2k2p(stmp0, stmp1, stmp2, SOLID_KIND, /**/ &b);
         forces::gen(a, b, rnd, &fx, &fy, &fz);
