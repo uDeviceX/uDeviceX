@@ -34,7 +34,7 @@
 
 #include "inc/tmp/pinned.h"
 #include "io/fields_grid.h"
-#include "io/rbc.h"
+#include "io/mesh.h"
 #include "io/rig.h"
 #include "io/diag.h"
 

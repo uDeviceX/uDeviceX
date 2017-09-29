@@ -22,7 +22,6 @@
 #include "utils/te.h"
 
 #include "inc/tmp/pinned.h"
-#include "io/rbc.h"
 #include "io/restart.h"
 
 #include "glb.h"

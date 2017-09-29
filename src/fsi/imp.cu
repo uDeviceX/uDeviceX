@@ -30,8 +30,6 @@
 #include "utils/te.h"
 
 #include "inc/tmp/pinned.h"
-#include "io/field.h"
-#include "io/rbc.h"
 #include "sim/imp.h"
 #include "dbg/imp.h"
 
