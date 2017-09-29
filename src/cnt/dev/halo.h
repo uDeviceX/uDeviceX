@@ -33,12 +33,12 @@ __global__ void halo(int n, float seed) {
     aid = threadIdx.x + blockDim.x * blockIdx.x;
     if (aid >= n) return;
 
-    fid = k_common::fid(g::starts, aid);
-    start = g::starts[fid];
-    A = pp2p(g::pp[fid], aid - start);
+    fid = k_common::fid(h::starts, aid);
+    start = h::starts[fid];
+    A = pp2p(h::pp[fid], aid - start);
 
     float *fA;
-    fA =g::ff[fid][aid - start].f;
+    fA =h::ff[fid][aid - start].f;
     for (zplane = 0; zplane < 3; ++zplane) {
         mapstatus = tex2map(zplane, A.x, A.y, A.z, /**/ &m);
         if (mapstatus == EMPTY) continue;

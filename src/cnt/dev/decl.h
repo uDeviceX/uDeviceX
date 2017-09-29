@@ -13,8 +13,7 @@ __constant__ const float2 *csolutes[MAX_OBJ_TYPES];
 __constant__ float *csolutesacc[MAX_OBJ_TYPES];
 }
 
-namespace g {
-
+namespace h {
 __constant__ int starts[27];
 __constant__ Particle *pp[26];
 __constant__ Force *ff[26];
