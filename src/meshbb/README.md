@@ -17,9 +17,14 @@ each particle has a list of a maximum of `MAX_COL` collisions. Each entry contai
 
 ## Momentum transfer
 
+### Gather momentum
+
 Each triangle gets a contribution of bounce back, stored in `Momentum` structure.
 Linear Momentum is straight forward but angular momentum needs a referential coordinate.  
 We choose here the center of mass of the triangle as it is independent on the domain, therefore communication 
 do not need special care.  
 
+### collect momentum
 
+Momentum should be transfered to the different objects.
+For Rigid objets it needs to be shifted in the referencial of the object.
