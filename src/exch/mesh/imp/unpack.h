@@ -16,6 +16,10 @@ void unpack(int nv, const Unpack *u, /**/ int *nmhalo, Particle *pp) {
     *nmhalo = nmtot;
 }
 
+void get_num_frag_mesh(const Unpack *u, /**/ int cc[NFRAGS]) {
+    memcpy(cc, u->hpp.counts, NFRAGS * sizeof(int));
+}
+
 /* momentum */
 static void upload_bags(const hBags *h, dBags *d) {
     int i, c;
