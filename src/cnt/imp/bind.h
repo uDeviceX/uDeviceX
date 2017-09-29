@@ -15,9 +15,7 @@ void bind(int nw, PaWrap *pw, FoWrap *fw) {
         ctr += it.n;
     }
 
-    scan::scan(g::counts, g::sz,
-               /**/ g::starts, /*w*/ &g::ws);
-
+    scan::scan(g::counts, g::sz, /**/ g::starts, /*w*/ &g::ws);
     ctr = 0;
     for (int i = 0; i < nw; ++i) {
         PaWrap it = pw[i];
