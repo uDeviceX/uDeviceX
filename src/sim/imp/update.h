@@ -90,7 +90,7 @@ void bounce_solid_v1(long it) {
     meshbb::select_collisions(n, /**/ bb::bbd);
     meshbb::bounce(n, bb::bbd, o::ff, nt, nv, tt, i_pp, /**/ pp, bb::mm);
 
-    meshbb::collect_momentum(bb::mm, nm, nt, /**/ s::t.ss);
+    meshbb::collect_momentum(nm, nt, nv, tt, i_pp, bb::mm, /**/ s::t.ss);
     
     // send back fo, to
 
@@ -164,7 +164,7 @@ void bounce_solid_v2(long it) {
     exch::mesh::unpack_mom(nt, &s::e.p, &s::e.um, /**/ bb::mm);
     
     /* gather bb momentum */
-    meshbb::collect_momentum(bb::mm, nm, nt, /**/ s::q.ss);
+    meshbb::collect_momentum(nm, nt, nv, tt, i_pp, bb::mm, /**/ s::q.ss);
 }
 
 void update_solvent(long it) {
