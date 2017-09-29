@@ -128,12 +128,11 @@ static __device__ void gen1(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
     gen0(A, B, p, ljkind, /**/ f);
 }
 
-static __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, float *fz) {
+static __device__ void genf(Pa A, Pa B, float rnd, /**/ Fo f) {
     /* dispatch on kind and pack force */
     int ljkind; /* call LJ? */
     int ka, kb;
     int ca, cb; /* corrected colors */
-    Fo f;
     enum {O = SOLVENT_KIND, S = SOLID_KIND, W = WALL_KIND};
     ka = A.kind; kb = B.kind;
     ca = A.color; cb = B.color;
@@ -153,12 +152,7 @@ static __device__ void gen(Pa A, Pa B, float rnd, /**/ float *fx, float *fy, flo
         printf("unknown kind pair: %ld %ld\n", ka, kb);
         assert(0);
     }
-    f.x = fx; f.y = fy; f.z = fz;
     gen1(&A, &B, ca, cb, ljkind, rnd, /**/ f);
-}
-
-static __device__ void genf(Pa A, Pa B, float rnd, /**/ Fo f) {
-    gen(A, B, rnd, /**/ f.x, f.y, f.z);
 }
 
 } /* namespace */
