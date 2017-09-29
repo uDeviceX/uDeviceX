@@ -53,8 +53,13 @@ void dump_grid() {
 }
 
 void dump_diag_after(int it) { /* after wall */
-    if (it % part_freq == 0)
-    rig_dump(it, s::q.ss_dmp, s::t.ss_dmp, s::q.ns, m::coords);
+    static int id = 0;
+    if (it % part_freq == 0) {
+        rig_dump(it, s::q.ss_dmp, s::t.ss_dmp, s::q.ns, m::coords);
+
+        cD2H(a::pp_hst, s::q.i_pp, s::q.ns * s::q.nv);
+        rig_mesh_dump(a::pp_hst, s::q.htt, s::q.ns, s::q.nv, s::q.nt, id++);
+    }
 }
 
 void diag(int it) {
