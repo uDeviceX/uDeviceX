@@ -25,7 +25,7 @@ __global__ void halo(int n, float seed) {
     int zplane;
     int i;
     int slot;
-    int objid, spid;
+    int objid, bid;
     int sentry;
     float2 stmp0, stmp1, stmp2;
     float rnd;
@@ -44,14 +44,14 @@ __global__ void halo(int n, float seed) {
         if (mapstatus == EMPTY) continue;
         for (i = 0; !endp(m, i); ++i) {
             slot = m2id(m, i);
-            get(slot, &objid, &spid);
+            get(slot, &objid, &bid);
 
-            sentry = 3 * spid;
+            sentry = 3 * bid;
             stmp0 = __ldg(c::PP[objid] + sentry);
             stmp1 = __ldg(c::PP[objid] + sentry + 1);
             stmp2 = __ldg(c::PP[objid] + sentry + 2);
 
-            rnd = rnd::mean0var1ii(seed, aid, spid);
+            rnd = rnd::mean0var1ii(seed, aid, bid);
             forces::r3v3k2p(A.x, A.y, A.z, A.vx, A.vy, A.vz, SOLID_KIND, /**/ &a);
             forces::f2k2p(stmp0, stmp1, stmp2, SOLID_KIND, /**/ &b);
             forces::gen(a, b, rnd, &fx, &fy, &fz);
