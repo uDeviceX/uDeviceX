@@ -1,5 +1,4 @@
-static __device__ void pp2p(Particle *pp, int i, /**/
-                          forces::Pa *a) {
+static __device__ void pp2p(Particle *pp, int i, /**/ forces::Pa *a) {
     float *r, *v;
     pp += i;
     r = pp->r;
@@ -16,31 +15,22 @@ static __device__ void fetch_b(const float2 *pp, int i, /**/ forces::Pa *b) {
     forces::f2k2p(s0, s1, s2, SOLID_KIND, /**/ b);
 }
 
-__global__ void halo(int n, float seed) {
+__device__ void halo0(forces::Pa a, int aid, float seed,
+                      /**/ float *fA) {
     enum {X, Y, Z};
     Map m;
     int mapstatus;
-    forces::Pa a, b;
+    forces::Pa b;
     float fx, fy, fz;
     float x, y, z;
-    int aid, start;
-    int fid;
     float xforce = 0, yforce = 0, zforce = 0;
     int zplane;
     int i;
     int slot;
     int objid, bid, sentry;
     float rnd;
-    float *fA;
 
-    aid = threadIdx.x + blockDim.x * blockIdx.x;
-    if (aid >= n) return;
-
-    fid = k_common::fid(h::starts, aid);
-    start = h::starts[fid];
-    pp2p(h::pp[fid], aid - start, &a);
     forces::p2r3(&a, /**/ &x, &y, &z);
-    fA = h::ff[fid][aid - start].f;
     for (zplane = 0; zplane < 3; ++zplane) {
         mapstatus = tex2map(zplane, x, y, z, /**/ &m);
         if (mapstatus == EMPTY) continue;
@@ -61,4 +51,20 @@ __global__ void halo(int n, float seed) {
         }
     }
     fA[X] += xforce; fA[Y] += yforce; fA[Z] += zforce;
+}
+
+__global__ void halo(int n, float seed) {
+    int aid, start;
+    int fid;
+    forces::Pa a;
+    float *fA;    
+    
+    aid = threadIdx.x + blockDim.x * blockIdx.x;
+    if (aid >= n) return;
+
+    fid = k_common::fid(h::starts, aid);
+    start = h::starts[fid];
+    pp2p(h::pp[fid], aid - start, &a);
+    fA = h::ff[fid][aid - start].f;
+    halo0(a, aid, seed, /**/ fA);
 }
