@@ -19,7 +19,7 @@ struct Unpack {
 
 /* optional structures for sending momenta back */
 
-struct MMap { /* map for compression of Momentum */
+struct MMap { /* map for compression of Momentum (support structure only) */
     int *cc, *ss, *subids;
 };
 
