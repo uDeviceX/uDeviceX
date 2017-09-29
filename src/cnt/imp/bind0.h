@@ -7,12 +7,12 @@ static void bind0(const int *const starts, const int *const cellentries,
 
     textureoffset = 0;
     if (nc)
-        CC(cudaBindTexture(&textureoffset, &dev::t::id, cellentries,
-                           &dev::t::id.channelDesc,
+        CC(cudaBindTexture(&textureoffset, &dev::c::id, cellentries,
+                           &dev::c::id.channelDesc,
                            sizeof(int) * nc));
     ncells = XS * YS * ZS;
-    CC(cudaBindTexture(&textureoffset, &dev::t::start, starts,
-                       &dev::t::start.channelDesc, sizeof(int) * ncells));
+    CC(cudaBindTexture(&textureoffset, &dev::c::start, starts,
+                       &dev::c::start.channelDesc, sizeof(int) * ncells));
 
     assert(nw <= MAX_OBJ_TYPES);
     for (i = 0; i < nw; ++i) {

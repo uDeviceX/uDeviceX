@@ -7,7 +7,7 @@ enum {
     ZOFFSET = ZCELLS / 2
 };
 
-namespace t {
+namespace c {
 texture<int, cudaTextureType1D> start, id;
 }
 
