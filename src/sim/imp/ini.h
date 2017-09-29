@@ -1,10 +1,21 @@
-static void ini_obj_exch(MPI_Comm comm, basetags::TagGen *tg, Sexch *e) {
+static void ini_obj_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Sexch *e) {
     using namespace exch::obj;
     ini(MAX_OBJ_TYPES, MAX_OBJ_DENSITY, &e->p);
     ini(comm, /*io*/ tg, /**/ &e->c);
     ini(MAX_OBJ_DENSITY, &e->u);
     ini(MAX_OBJ_DENSITY, &e->pf);
     ini(MAX_OBJ_DENSITY, &e->uf);    
+}
+
+static void ini_bb_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ BBexch *e) {
+    using namespace exch::mesh;
+    ini(MAX_VERT_NUM, MAX_CELL_NUM, &e->p);
+    ini(m::cart, /*io*/ &tag_gen, /**/ &e->c);
+    ini(MAX_VERT_NUM, MAX_CELL_NUM, &e->u);
+
+    ini(MAX_FACE_NUM, MAX_CELL_NUM, &e->pm);
+    ini(comm, /*io*/ tg, /**/ &e->cm);
+    ini(MAX_FACE_NUM, MAX_CELL_NUM, &e->um);
 }
 
 void ini() {

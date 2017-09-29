@@ -1,4 +1,4 @@
-static void fin_obj_exch(Sexch *e) {
+static void fin_obj_exch(/**/ Sexch *e) {
     using namespace exch::obj;
     fin(&e->p);
     fin(&e->c);
@@ -6,6 +6,18 @@ static void fin_obj_exch(Sexch *e) {
     fin(&e->pf);
     fin(&e->uf);
 }
+
+static void fin_bb_exch(/**/ BBexch *e) {
+    using namespace exch::mesh;
+    fin(&e->p);
+    fin(&e->c);
+    fin(&e->u);
+
+    fin(&e->pm);
+    fin(&e->cm);
+    fin(&e->um);
+}
+
 
 void fin() {
     bbhalo::fin();
