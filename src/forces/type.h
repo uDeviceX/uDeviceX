@@ -5,9 +5,6 @@ struct Pa {
     int color;
 };
 struct Fo { /* force */
-    float *x, *y, *z;
-};
-struct FoFo { /* force */
     float x, y, z;
 };
 }

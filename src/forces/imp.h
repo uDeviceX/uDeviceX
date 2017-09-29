@@ -60,7 +60,7 @@ static __device__ float lj(float invr, float ljsi) {
 
 static __device__ void dpd(float x, float y, float z,
                              float vx, float vy, float vz,
-                             DPDparam p, int ljkind, /**/ FoFo *f) {
+                             DPDparam p, int ljkind, /**/ Fo *f) {
     float invr, r;
     float wc, wr; /* conservative and random kernels */
     float rm; /* 1 minus r */
@@ -97,7 +97,7 @@ static __device__ void dpd(float x, float y, float z,
     f->z = f0*z;
 }
 
-static __device__ void gen0(Pa *A, Pa *B, DPDparam p, int ljkind, /**/ FoFo *f) {
+static __device__ void gen0(Pa *A, Pa *B, DPDparam p, int ljkind, /**/ Fo *f) {
     dpd(A->x -  B->x,    A->y -  B->y,  A->z -  B->z,
         A->vx - B->vx,   A->vy - B->vy, A->vz - B->vz,
         p, ljkind,
@@ -105,7 +105,7 @@ static __device__ void gen0(Pa *A, Pa *B, DPDparam p, int ljkind, /**/ FoFo *f) 
 }
 
 static __device__ void gen1(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
-                            /**/ FoFo *f) {
+                            /**/ Fo *f) {
     /* dispatch on color */
     DPDparam p;
     if         (!multi_solvent) {
@@ -128,7 +128,7 @@ static __device__ void gen1(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
     gen0(A, B, p, ljkind, /**/ f);
 }
 
-static __device__ void genf(Pa A, Pa B, float rnd, /**/ FoFo *f) {
+static __device__ void gen(Pa A, Pa B, float rnd, /**/ Fo *f) {
     /* dispatch on kind and pack force */
     int ljkind; /* call LJ? */
     int ka, kb;
@@ -153,12 +153,6 @@ static __device__ void genf(Pa A, Pa B, float rnd, /**/ FoFo *f) {
         assert(0);
     }
     gen1(&A, &B, ca, cb, ljkind, rnd, /**/ f);
-}
-
-static __device__ void gen(Pa A, Pa B, float rnd, /**/ Fo f) {
-    FoFo fofo;
-    genf(A, B, rnd, &fofo);
-    *f.x = fofo.x; *f.y = fofo.y; *f.z = fofo.z;
 }
 
 } /* namespace */

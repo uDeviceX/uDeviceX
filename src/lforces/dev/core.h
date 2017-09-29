@@ -1,5 +1,5 @@
 static __device__ void core0(uint dpid, uint spid, uint spidext) {
-    forces::FoFo f;
+    forces::Fo f;
     dpd(dpid, spid, /**/ &f);
     uint off  = dpid & 0x0000001FU;
     uint base = xdiv(dpid, 1 / 32.f);
