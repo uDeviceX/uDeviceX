@@ -10,7 +10,7 @@ void alloc_quants(Quants *q) {
     Dalloc(&q->adj0, q->nv * RBCmd);
     Dalloc(&q->adj1, q->nv * RBCmd);
 
-    q->tri_hst = new int[MAX_FACE_NUM];
+    q->tri_hst = new int4[MAX_FACE_NUM];
     Dalloc(&q->av, 2*MAX_CELL_NUM);
 }
 

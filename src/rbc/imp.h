@@ -1,6 +1,6 @@
 namespace rbc {
 namespace sub {
-void setup(const char *r_templ, int *faces, int4 *tri, int *adj0, int *adj1);
+void setup(const char *r_templ, int4 *faces, int4 *tri, int *adj0, int *adj1);
 void setup_from_strt(const int id, /**/ Particle *pp, int *nc, int *n, /*w*/ Particle *pp_hst);
 void setup_textures(int4 *tri, Texo<int4> *textri, int *adj0, Texo<int> *texadj0,
                     int *adj1, Texo<int> *texadj1, Particle *pp, Texo<float2> *texvert);

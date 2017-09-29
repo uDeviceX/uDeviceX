@@ -5,7 +5,7 @@ struct Quants {
     int *adj0, *adj1;      /* adjacency lists */
     int4 *tri;             /* triangles */
 
-    int *tri_hst;
+    int4 *tri_hst;
     float *av;
 };
 

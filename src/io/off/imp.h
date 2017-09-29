@@ -3,7 +3,7 @@ namespace off {
    [1] https://en.wikipedia.org/wiki/OFF_(file_format) */
 
 /* return faces: f0[0] f1[0] f2[0]   f0[1] f1[1] ... */
-void faces(const char *f, int* faces) {
+void faces(const char *f, int4* faces) {
     char buf[BUFSIZ];
     FILE *fd = fopen(f, "r");
     if (fd == NULL) {
@@ -16,11 +16,11 @@ void faces(const char *f, int* faces) {
     fscanf(fd, "%d %d %*d", &nv, &nf); /* skip `ne' and all vertices */
     for (int iv = 0; iv < nv;  iv++) fscanf(fd, "%*e %*e %*e");
 
-    int ifa = 0, ib = 0;
-    for (/*   */ ; ifa < nf; ifa++) {
-        int f0, f1, f2;
-        fscanf(fd, "%*d %d %d %d", &f0, &f1, &f2);
-        faces[ib++] = f0; faces[ib++] = f1; faces[ib++] = f2;
+    int4 t;
+    t.w = 0;
+    for (int ifa = 0; ifa < nf; ifa++) {
+        fscanf(fd, "%*d %d %d %d", &t.x, &t.y, &t.z);
+        faces[ifa] = t;
     }
     fclose(fd);
 }

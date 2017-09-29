@@ -31,25 +31,19 @@ static void gen_a12(int i0, int *hx, int *hy, /**/ int *a1, int *a2) {
     }  while (c != mi);
 }
 
-void setup(const char *r_templ, int *faces, int4 *tri, int *adj0, int *adj1) {
+void setup(const char *r_templ, int4 *faces, int4 *tri, int *adj0, int *adj1) {
     off::faces(r_templ, faces);
 
-    int   *trs4 = new int  [4 * nt];
-    for (int ifa = 0, i0 = 0, i1 = 0; ifa < nt; ifa++) {
-        trs4 [i0++] = faces[i1++]; trs4[i0++] = faces[i1++]; trs4[i0++] = faces[i1++];
-        trs4 [i0++] = 0;
-    }
-
-    cH2D(tri, (int4*) trs4, nt);
-    delete[] trs4;
+    cH2D(tri, faces, nt);
 
     int hx[nv*md], hy[nv*md], a1[nv*md], a2[nv*md];
     int i;
     for (i = 0; i < nv*md; i++) hx[i] = a1[i] = a2[i] = -1;
 
+    int4 t;
     for (int ifa = 0; ifa < nt; ifa++) {
-        i = 3*ifa;
-        int f0 = faces[i++], f1 = faces[i++], f2 = faces[i++];
+        t = faces[ifa];
+        int f0 = t.x, f1 = t.y, f2 = t.z;
         reg(f0, f1, f2,   hx, hy); /* register an edge */
         reg(f1, f2, f0,   hx, hy);
         reg(f2, f0, f1,   hx, hy);
