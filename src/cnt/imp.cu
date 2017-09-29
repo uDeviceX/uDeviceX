@@ -40,6 +40,7 @@ namespace cnt {
 namespace dev {
 #include "dev/decl.h"
 #include "dev/fetch.h"
+#include "dev/pair.h"
 #include "dev/map/common.h"
 #include "dev/map/halo.h"
 #include "dev/map/bulk.h"
