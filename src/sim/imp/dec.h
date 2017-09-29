@@ -39,6 +39,7 @@ scan::Work ws; /* work for scan */
 Force *ff, *ff_hst;
 
 Distr d;
+BBexch e;
 }
 
 /*** see int/wall.h ***/
