@@ -44,10 +44,8 @@ struct Distr {
 
 } // s
 
-namespace rs {
-
-/* force exchange */
-struct Exch {
+/* solute exchanger */
+struct Sexch {
     exch::obj::Pack p;
     exch::obj::Unpack u;
     exch::obj::PackF pf;
@@ -55,14 +53,9 @@ struct Exch {
     exch::obj::Comm c;
 };
 
-} // rs
-
-namespace mc {
-
-struct Exch {
+/* mesh exchanger */
+struct Mexch {
     exch::mesh::Pack p;
     exch::mesh::Comm c;
-    exch::mesh::Unpack u;    
+    exch::mesh::Unpack u;
 };
-
-} // mc
