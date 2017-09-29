@@ -7,9 +7,9 @@ static void ini_rnd() {
 
 void ini() {
     ini_rnd();
-    Dalloc(&g::starts, sz);
-    Dalloc(&g::counts, sz);
-    scan::alloc_work(sz, &g::ws);
-    entries = new DeviceBuffer<int>;
-    indexes = new DeviceBuffer<uchar4>;
+    Dalloc(&g::starts, g::sz);
+    Dalloc(&g::counts, g::sz);
+    scan::alloc_work(g::sz, &g::ws);
+    g::entries = new DeviceBuffer<int>;
+    g::indexes = new DeviceBuffer<uchar4>;
 }

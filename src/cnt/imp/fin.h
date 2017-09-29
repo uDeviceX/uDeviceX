@@ -1,7 +1,7 @@
 void fin() {
-    delete indexes;
+    delete g::indexes;
     scan::free_work(&g::ws);
-    delete entries;
+    delete g::entries;
     delete g::rgen;
 
     Dfree(g::counts);
