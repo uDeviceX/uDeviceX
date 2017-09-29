@@ -84,6 +84,55 @@ __global__ void subindex_compress(int nt, int nm, const Momentum *mm, /**/ int *
     subids[i] = subid;
 }
 
+/* inclusive scan */
+static __device__ int warpScan(int val) {
+    int tid;
+    tid = threadIdx.x % warpSize;
+    for (int L = 1; L < 32; L <<= 1) val += (tid >= L) * __shfl_up(val, L) ;
+    return val;
+}
+
+template<int NWARP>
+__global__ void block_scan(int n, const int *cc, /**/ int *ss) {
+    assert(n < blockDim.x);
+    assert(gridDim.x == 1);
+    //static_assert(NWARP <= 32);
+    int i, tid, wid, lid, val, cnt, ws;
+    tid = threadIdx.x;
+    wid = tid / warpSize;
+    lid = tid % warpSize;
+    
+    i = tid + blockIdx.x * blockDim.x;
+
+    __shared__ int warp_cnt[NWARP];
+
+    cnt = val = 0;
+
+    if (i < n) cnt = cc[i];
+
+    val = warpScan(cnt);
+
+    if (lid == warpSize - 1) warp_cnt[wid] = val;
+
+    __syncthreads();
+
+    if (wid == 0) {
+        int v, c;
+        v = c = 0;
+        if (lid < NWARP) c = warp_cnt[lid];
+        v = warpScan(c);
+        if (lid < NWARP) warp_cnt[lid] = v - c;
+    }
+
+    __syncthreads();
+    
+    ws = warp_cnt[wid];
+
+    val += ws;
+    
+    if (i < n) ss[i] = val - cnt;
+}
+
 __global__ void compress(int nt, int nm, const Momentum *mm, const int *starts, const int *subids, /**/ int *ids, Momentum *mmc) {
     int i, mid, subid, entry;
     i = threadIdx.x + blockIdx.x * blockDim.x;
