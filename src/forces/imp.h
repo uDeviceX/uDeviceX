@@ -60,7 +60,7 @@ static __device__ float lj(float invr, float ljsi) {
 
 static __device__ void dpd(float x, float y, float z,
                              float vx, float vy, float vz,
-                             DPDparam p, int ljkind, /**/ Fo *f) {
+                             DPDparam p, int ljkind, /**/ FoFo *f) {
     float invr, r;
     float wc, wr; /* conservative and random kernels */
     float rm; /* 1 minus r */
@@ -72,7 +72,7 @@ static __device__ void dpd(float x, float y, float z,
 
     vnstat = norm(/*io*/ &x, &y, &z, /*o*/ &r, &invr);
     if (vnstat == NORM_BIG) {
-        *f->x = *f->y = *f->z = 0;
+        f->x = f->y = f->z = 0;
         return;
     }
 
@@ -92,12 +92,12 @@ static __device__ void dpd(float x, float y, float z,
         f0 += lj(invr, ljsi);
     }
 
-    *f->x = f0*x;
-    *f->y = f0*y;
-    *f->z = f0*z;
+    f->x = f0*x;
+    f->y = f0*y;
+    f->z = f0*z;
 }
 
-static __device__ void gen0(Pa *A, Pa *B, DPDparam p, int ljkind, /**/ Fo *f) {
+static __device__ void gen0(Pa *A, Pa *B, DPDparam p, int ljkind, /**/ FoFo *f) {
     dpd(A->x -  B->x,    A->y -  B->y,  A->z -  B->z,
         A->vx - B->vx,   A->vy - B->vy, A->vz - B->vz,
         p, ljkind,
@@ -105,7 +105,7 @@ static __device__ void gen0(Pa *A, Pa *B, DPDparam p, int ljkind, /**/ Fo *f) {
 }
 
 static __device__ void gen1(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
-                            /**/ Fo *f) {
+                            /**/ FoFo *f) {
     /* dispatch on color */
     DPDparam p;
     if         (!multi_solvent) {
@@ -128,7 +128,7 @@ static __device__ void gen1(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
     gen0(A, B, p, ljkind, /**/ f);
 }
 
-static __device__ void genf(Pa A, Pa B, float rnd, /**/ Fo *f) {
+static __device__ void genf(Pa A, Pa B, float rnd, /**/ FoFo *f) {
     /* dispatch on kind and pack force */
     int ljkind; /* call LJ? */
     int ka, kb;
@@ -156,7 +156,9 @@ static __device__ void genf(Pa A, Pa B, float rnd, /**/ Fo *f) {
 }
 
 static __device__ void gen(Pa A, Pa B, float rnd, /**/ Fo f) {
-    genf(A, B, rnd, &f);
+    FoFo fofo;
+    genf(A, B, rnd, &fofo);
+    *f.x = fofo.x; *f.y = fofo.y; *f.z = fofo.z;
 }
 
 } /* namespace */
