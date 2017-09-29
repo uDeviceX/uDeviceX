@@ -7,4 +7,7 @@ struct Pa {
 struct Fo { /* force */
     float *x, *y, *z;
 };
+struct FoFo { /* force */
+    float x, y, z;
+};
 }
