@@ -6,6 +6,7 @@ struct Pa { /* local particle */
 static __device__ Pa pp2p(const Particle *pp, int i) {
     enum {X, Y, Z};
     Pa p;
+    forces::Pa a;
     pp += i;
      p.x = pp->r[X];  p.y = pp->r[Y];  p.z = pp->r[Z];
     p.vx = pp->v[X]; p.vy = pp->v[Y]; p.vz = pp->v[Z];
