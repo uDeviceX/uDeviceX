@@ -56,12 +56,12 @@ Particle pp_hst[3*MAX_PART_NUM]; /* particles on host */
 
 namespace rs /* objects */
 {
-Exch e;
+Sexch e;
 }
 
 namespace mc /* mesh communication */
 {
-Exch e;
+Mexch e;
 Particle *pp;
 }
 
