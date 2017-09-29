@@ -3,11 +3,10 @@ struct Pa { /* local particle */
     float vx, vy, vz;
 };
 
-static __device__ Pa warp2p(const Particle *pp, int i) {
+static __device__ Pa pp2p(const Particle *pp, int i) {
     enum {X, Y, Z};
     Pa p;
     pp += i;
-
      p.x = pp->r[X];  p.y = pp->r[Y];  p.z = pp->r[Z];
     p.vx = pp->v[X]; p.vy = pp->v[Y]; p.vz = pp->v[Z];
     return p;
@@ -36,7 +35,7 @@ __global__ void halo(int n, float seed) {
 
     fid = k_common::fid(g::starts, aid);
     start = g::starts[fid];
-    A = warp2p(g::pp[fid], aid - start);    
+    A = pp2p(g::pp[fid], aid - start);
 
     float *fA;
     fA =g::ff[fid][aid - start].f;
