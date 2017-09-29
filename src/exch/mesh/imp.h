@@ -42,6 +42,7 @@ void wait_recv(CommM *c, UnpackM *u);
 void wait_send(CommM *c);
 
 void upload(UnpackM *u);
+void unpack_mom(int nt, const Pack *p, const UnpackM *u, /**/ Momentum *mm);
 
 } // mesh
 } // exch
