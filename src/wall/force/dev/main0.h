@@ -5,7 +5,7 @@ static __device__ void force0(forces::Pa a, int aid, int zplane,
     forces::Pa b;  /* wall particles */
     float vx, vy, vz; /* wall velocity */
     float fx, fy, fz, rnd;
-    forces::Fo f;
+    forces::FoFo f;
     float x, y, z;
     float threshold;
     int i, bid;
@@ -23,9 +23,8 @@ static __device__ void force0(forces::Pa a, int aid, int zplane,
         k_wvel::vell(r.x, r.y, r.z, /**/ &vx, &vy, &vz);
         forces::r3v3k2p(r.x, r.y, r.z, vx, vy, vz, WALL_KIND, /**/ &b);
         rnd = rnd::mean0var1ii(seed, aid, bid);
-        forces::f32f(&fx, &fy, &fz, /**/ &f);
-        forces::gen(a, b, rnd, /**/ f);
-        xforce += fx; yforce += fy; zforce += fz;
+        forces::genf(a, b, rnd, /**/ &f);
+        xforce += f.x; yforce += f.y; zforce += f.z;
     }
     atomicAdd(ff + 3 * aid + 0, xforce);
     atomicAdd(ff + 3 * aid + 1, yforce);
