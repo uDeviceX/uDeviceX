@@ -1,4 +1,4 @@
-void ini_obj_exch(MPI_Comm comm, basetags::TagGen *tg, Sexch *e) {
+static void ini_obj_exch(MPI_Comm comm, basetags::TagGen *tg, Sexch *e) {
     using namespace exch::obj;
     ini(MAX_OBJ_TYPES, MAX_OBJ_DENSITY, &e->p);
     ini(comm, /*io*/ tg, /**/ &e->c);
