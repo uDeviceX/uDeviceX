@@ -15,9 +15,18 @@ void fin(Unpack *u) {
 
 /* Momentum struct */
 
+static void fin_map(/**/ MMap *map) {
+    CC(d::Free(map->cc));
+    CC(d::Free(map->ss));
+    CC(d::Free(map->subids));
+}
+
 void fin(PackM *p) {
     fin(PINNED, NONE, /**/ &p->hmm, &p->dmm);
     fin(PINNED, NONE, /**/ &p->hii, &p->dii);
+
+    for (int i = 0; i < NFRAGS; ++i)
+        fin_map(&p->maps[i]);
 }
 
 void fin(CommM *c) {

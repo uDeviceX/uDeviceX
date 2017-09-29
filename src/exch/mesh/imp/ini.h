@@ -36,11 +36,21 @@ static void get_mcap(int nfrags, int nt, const int *cap, /**/ int *mcap) {
         mcap[i] = nt * cap[i];
 }
 
+static void ini_map(int nt, int max_mesh_num, MMap *map) {
+    size_t sz = max_mesh_num * sizeof(int);
+    CC(d::Malloc((void**) &map->cc, sz));
+    CC(d::Malloc((void**) &map->ss, sz));
+    CC(d::Malloc((void**) &map->subids, sz * nt));
+}
+
 void ini(int nt, int max_mesh_num, PackM *p) {
-    int cap[NFRAGS], mcap[NFRAGS];
+    int i, cap[NFRAGS], mcap[NFRAGS];
 
     get_capacity(NFRAGS, max_mesh_num, /**/ cap);
     get_mcap(NFRAGS, nt, cap, /**/ mcap);
+
+    for (i = 0; i < NFRAGS; ++i)
+        ini_map(mcap[i], cap[i], /**/ &p->maps[i]);
     
     ini(PINNED,   NONE, sizeof(Momentum), mcap, /**/ &p->hmm, &p->dmm);
     ini(PINNED,   NONE, sizeof(int)     , mcap, /**/ &p->hii, &p->dii);
