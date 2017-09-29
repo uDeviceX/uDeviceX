@@ -13,6 +13,16 @@ void download(Pack *p) {
 }
 
 
+
+static void compress_mom(int nt, int nm, const Momentum *mm, /**/ MMap m, int *ids, Momentum *mmc) {
+    KL(dev::subindex_compress, (k_cnf(nt * nm)), (nt, nm, mm, /**/ m.cc, m.subids));
+
+    enum {BLCK=1, THRD=1024, WRP=32};
+    KL(dev::block_scan<THRD/WRP>, (BLCK, THRD), (nm, m.cc, /**/ m.ss));
+
+    KL(dev::compress, (k_cnf(nt * nm)), (nt, nm, mm, m.ss, m.subids, /**/ ids, mmc));
+}
+
 static int27 scan(const int cc[26]) {
     int i, s;
     int27 ss;
