@@ -19,6 +19,10 @@ struct Unpack {
 
 /* optional structures for sending momenta back */
 
+struct MMap { /* map for compression of Momentum */
+    int *cc, *ss, *subids;
+};
+
 struct PackM {
     dBags dmm;
     hBags hmm;
