@@ -1,4 +1,4 @@
-# forces::pa
+# forces::Pa
 
 `Pa` is an abstract particle expected by `forces::gen`. Two operation
 are supported:
