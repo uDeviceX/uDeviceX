@@ -51,9 +51,9 @@ __global__ void bulk(float2 *pp, int n,
         xforce += fx;
         yforce += fy;
         zforce += fz;
-        atomicAdd(c::csolutesacc[objid] + sentry,     -fx);
-        atomicAdd(c::csolutesacc[objid] + sentry + 1, -fy);
-        atomicAdd(c::csolutesacc[objid] + sentry + 2, -fz);
+        atomicAdd(c::FF[objid] + sentry,     -fx);
+        atomicAdd(c::FF[objid] + sentry + 1, -fy);
+        atomicAdd(c::FF[objid] + sentry + 2, -fz);
     }
 
     atomicAdd(ff + 3 * pid + 0, xforce);

@@ -58,9 +58,9 @@ __global__ void halo(int n, float seed) {
             xforce += fx;
             yforce += fy;
             zforce += fz;
-            atomicAdd(c::csolutesacc[objid] + sentry,     -fx);
-            atomicAdd(c::csolutesacc[objid] + sentry + 1, -fy);
-            atomicAdd(c::csolutesacc[objid] + sentry + 2, -fz);
+            atomicAdd(c::FF[objid] + sentry,     -fx);
+            atomicAdd(c::FF[objid] + sentry + 1, -fy);
+            atomicAdd(c::FF[objid] + sentry + 2, -fz);
         }
     }
 
