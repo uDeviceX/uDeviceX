@@ -39,16 +39,6 @@ void packM(int nt, const int counts[NFRAGS], const Momentum *mm, /**/ PackM *p) 
 }
 
 void downloadM(const int counts[NFRAGS], PackM *p) {
-    int i, nm;
-    data_t *src, *dst;
-
-    for (i = 0; i < NFRAGS; ++i) {
-        nm = counts[i];
-        src = p->maps[i].cc;
-        dst = p->hcc.data[i];
-        CC(d::MemcpyAsync(dst, src, nm * sizeof(int), D2H));
-    }
-
     dSync();
 }
 

@@ -18,17 +18,14 @@ void fin(Unpack *u) {
 void fin(PackM *p) {
     fin(PINNED, NONE, /**/ &p->hmm, &p->dmm);
     fin(PINNED, NONE, /**/ &p->hii, &p->dii);
-    fin(HST_ONLY, NONE, /**/ &p->hcc, NULL);
 }
 
 void fin(CommM *c) {
     fin(&c->mm);
     fin(&c->ii);
-    fin(&c->cc);
 }
 
 void fin(UnpackM *u) {
     fin(PINNED_DEV, NONE, /**/ &u->hmm, &u->dmm);
     fin(PINNED_DEV, NONE, /**/ &u->hii, &u->dii);
-    fin(HST_ONLY, NONE, /**/ &u->hcc, NULL);
 }
