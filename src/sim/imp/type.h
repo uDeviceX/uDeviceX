@@ -33,16 +33,12 @@ struct Distr {
 
 } // r
 
-namespace s {
-
-/* distribution */
-struct Distr {
+/* rigid distribution */
+struct RigDistr {
     distr::rig::Pack p;
     distr::rig::Comm c;
     distr::rig::Unpack u;
 };
-
-} // s
 
 /* solute exchanger */
 struct Sexch {

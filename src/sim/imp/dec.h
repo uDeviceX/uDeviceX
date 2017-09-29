@@ -38,7 +38,7 @@ rig::TicketBB t;
 scan::Work ws; /* work for scan */
 Force *ff, *ff_hst;
 
-Distr d;
+RigDistr d;
 BBexch e;
 }
 
