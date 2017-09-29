@@ -110,6 +110,64 @@ void bounce_solid_new(long it) {
 #undef DEV
 }
 
+void bounce_solute(long it) {
+    int n, nm, nt, nv, *ss, *cc, nmhalo, counts[comm::NFRAGS];
+    int4 *tt;
+    Particle *pp, *i_pp;
+    int3 L = make_int3(XS, YS, ZS);
+    
+    nm = s::q.ns;
+    nt = s::q.nt;
+    nv = s::q.nv;
+    tt = s::q.dtt;
+    i_pp = s::t.i_pp;
+
+    n  = o::q.n;
+    pp = o::q.pp;
+    cc = o::q.cells.counts;
+    ss = o::q.cells.starts;
+
+    /* send meshes to frags */
+
+    exch::mesh::build_map(nm, nv, i_pp, /**/ &s::e.p);
+    exch::mesh::pack(nv, i_pp, /**/ &s::e.p);
+    exch::mesh::download(&s::e.p);
+
+    exch::mesh::post_send(&s::e.p, &s::e.c);
+    exch::mesh::post_recv(&s::e.c, &s::e.u);
+
+    exch::mesh::wait_send(&s::e.c);
+    exch::mesh::wait_recv(&s::e.c, &s::e.u);
+
+    /* unpack at the end of current mesh buffer */
+    exch::mesh::unpack(nv, &s::e.u, /**/ &nmhalo, i_pp + nm * nv);
+    
+    /* perform bounce back */
+    
+    meshbb::reini(n, /**/ bb::bbd);
+    meshbb::find_collisions(nm + nmhalo, nt, nv, tt, i_pp, L, ss, cc, pp, o::ff, /**/ bb::bbd);
+    meshbb::select_collisions(n, /**/ bb::bbd);
+    meshbb::bounce(n, bb::bbd, o::ff, nt, nv, tt, i_pp, /**/ pp, bb::mm);
+
+    /* send momentum back */
+
+    exch::mesh::get_num_frag_mesh(&s::e.u, /**/ counts);
+    
+    exch::mesh::packM(nt, counts, bb::mm + nm * nt, /**/ &s::e.pm);
+    exch::mesh::downloadM(counts, /**/ &s::e.pm);
+
+    exch::mesh::post_recv(&s::e.cm, &s::e.um);
+    exch::mesh::post_send(&s::e.pm, &s::e.cm);
+    exch::mesh::wait_recv(&s::e.cm, &s::e.um);
+    exch::mesh::wait_send(&s::e.cm);
+
+    exch::mesh::upload(&s::e.um);
+    exch::mesh::unpack_mom(nt, &s::e.p, &s::e.um, /**/ bb::mm);
+    
+    /* gather bb momentum */
+    meshbb::collect_momentum(bb::mm, nm, nt, /**/ s::t.ss);
+}
+
 void update_solvent(long it) {
     scheme::restrain(o::qc.ii, o::q.n, it, /**/ o::q.pp);
     scheme::move(dpd_mass, o::q.pp, o::ff, o::q.n);
