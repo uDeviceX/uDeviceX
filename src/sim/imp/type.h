@@ -36,8 +36,8 @@ struct RigDistr {
     distr::rig::Unpack u;
 };
 
-/* solute exchanger */
-struct Sexch {
+/* object exchanger for forces */
+struct Objexch {
     exch::obj::Pack p;
     exch::obj::Unpack u;
     exch::obj::PackF pf;

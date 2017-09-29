@@ -1,4 +1,4 @@
-static void fin_obj_exch(/**/ Sexch *e) {
+static void fin_obj_exch(/**/ Objexch *e) {
     using namespace exch::obj;
     fin(&e->p);
     fin(&e->c);
