@@ -1,6 +1,8 @@
 namespace exch {
 namespace mesh {
 
+/* mesh exchanger */
+
 void ini(int nv, int max_mesh_num, Pack *p);
 void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c);
 void ini(int nv, int max_mesh_num, Unpack *u);
@@ -21,7 +23,7 @@ void wait_send(Comm *c);
 void unpack(int nv, const Unpack *u, /**/ int *nmhalo, Particle *pp);
 
 
-/* optional: back momentum communication */
+/* optional: (back) momentum exchanger */
 
 void ini(int num_mom_per_mesh, int max_mesh_num, PackM *p);
 void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ CommM *c);
