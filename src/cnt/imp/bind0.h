@@ -20,6 +20,6 @@ static void bind0(const int *const starts, const int *const cellentries,
         fs[i] = (float*)fw[i].ff;
     }
 
-    CC(cudaMemcpyToSymbolAsync(dev::c::csolutes, ps, sizeof(float2*)*nw, 0, H2D));
+    CC(cudaMemcpyToSymbolAsync(dev::c::PP, ps, sizeof(float2*)*nw, 0, H2D));
     CC(cudaMemcpyToSymbolAsync(dev::c::FF, fs, sizeof(float*)*nw, 0, H2D));
 }

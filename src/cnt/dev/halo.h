@@ -47,9 +47,9 @@ __global__ void halo(int n, float seed) {
             get(slot, &objid, &spid);
 
             sentry = 3 * spid;
-            stmp0 = __ldg(c::csolutes[objid] + sentry);
-            stmp1 = __ldg(c::csolutes[objid] + sentry + 1);
-            stmp2 = __ldg(c::csolutes[objid] + sentry + 2);
+            stmp0 = __ldg(c::PP[objid] + sentry);
+            stmp1 = __ldg(c::PP[objid] + sentry + 1);
+            stmp2 = __ldg(c::PP[objid] + sentry + 2);
 
             rnd = rnd::mean0var1ii(seed, aid, spid);
             forces::r3v3k2p(A.x, A.y, A.z, A.vx, A.vy, A.vz, SOLID_KIND, /**/ &a);
