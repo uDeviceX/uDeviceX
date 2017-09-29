@@ -42,18 +42,6 @@ __global__ void pack_mesh(int nv, const Particle *pp, Map map, /**/ Pap26 buf) {
     }
 }
 
-__global__ void pack_mom(int27 starts, const Momentum *mm, /**/ Mop26 buf) {
-    int gid, fid, dst;
-    gid = threadIdx.x + blockDim.x * blockIdx.x;
-    if (gid >= starts.d[26]) return;
-    fid = k_common::fid(starts.d, gid);
-    
-    /* index in the fragment coordinates */ 
-    dst = gid - starts.d[fid];
-
-    buf.d[fid][dst] = mm[gid];
-}
-
 /* compress kernels */
 
 enum {SKIP=-1};
