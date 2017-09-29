@@ -33,8 +33,8 @@ void fin(PackM *p);
 void fin(CommM *c);
 void fin(UnpackM *u);
 
-void packM(const int counts[], const Momentum *mm, /**/ PackM *p);
-void downloadM(PackM *p);
+void packM(int nt, const int counts[NFRAGS], const Momentum *mm, /**/ PackM *p);
+void downloadM(const int counts[NFRAGS], PackM *p);
 
 void post_recv(CommM *c, UnpackM *u);
 void post_send(PackM *p, CommM *c);
