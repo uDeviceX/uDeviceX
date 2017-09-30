@@ -14,7 +14,6 @@ static __device__ void merged0(uint mystart, uint mycount, uint tid, uint pshare
                   "r"( xmad( tid, 8.f, pshare ) ),
                   "r"( mystart ) :
                   "memory" );
-
     asm( "{ .reg .pred   p;"
          "  .reg .f32    myscan, theirscan;"
          "   mov.b32     myscan, %0;"
@@ -30,8 +29,6 @@ static __device__ void merged0(uint mystart, uint mycount, uint tid, uint pshare
          "@p add.f32     myscan, theirscan, myscan;"
          "   mov.b32     %0, myscan;"
          "}" : "+r"( myscan ) );
-
-
     asm volatile( "{    .reg .pred lt15;"
                   "      setp.lt.f32 lt15, %0, %1;"
                   "@lt15 st.volatile.shared.u32 [%2+4], %3;"
