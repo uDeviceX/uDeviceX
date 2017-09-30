@@ -3,7 +3,7 @@ static __device__ float sqdist(float x, float y, float z,   float x0, float y0, 
     return x*x + y*y + z*z;
 }
 
-static __device__ void merged1(int cid, uint tid, uint pshare) {
+static __device__ void merged0(int cid, uint tid, uint pshare) {
     float xs, ys, zs;
     float xd, yd, zd;
     float d2;
@@ -127,6 +127,23 @@ static __device__ void merged1(int cid, uint tid, uint pshare) {
         core( dststart, pshare, tid, spidext );
     }
     nb = 0;
+}
+
+static __device__ void merged1(int cid, uint tid, uint pshare) {
+    uint mystart, mycount;
+    mystart = mycount = 0;
+    asm( "{  .reg .pred vc;"
+         "   .reg .u32  foo, bar;"
+         "    setp.lt.f32     vc, %2, %3;"
+         "    setp.ge.and.f32 vc, %5, 0.0, vc;"
+         "    setp.lt.and.s32 vc, %4, %6, vc;"
+         "    selp.s32 %0, 1, 0, vc;"
+         "@vc tex.1d.v4.s32.s32 {%0, %1, foo, bar}, [texStartAndCount, %4];"
+         "}" :
+         "+r"( mystart ), "+r"( mycount )  :
+         "f"( u2f( tid ) ), "f"( u2f( 14u ) ), "r"( cid ), "f"( i2f( cid ) ),
+         "r"( info.nxyz ) );
+    merged0(cid, tid, pshare);
 }
 
 static __device__ void merged2(uint it, int cbase, uint tid, uint pshare) {
