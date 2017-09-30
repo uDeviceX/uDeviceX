@@ -3,14 +3,14 @@ static __global__ void merged() {
     float xd, yd, zd;
     uint tid, wid, pshare;
     int cbase;
+    char4 offs;
 
     asm volatile( ".shared .u32 smem[512];" ::: "memory" );
 
     tid = threadIdx.x;
     wid = threadIdx.y;
     pshare = xscale( threadIdx.y, 256.f );
-    const char4 offs = __ldg( tid2ind + tid );
-
+    offs = __ldg( tid2ind + tid );
     cbase = blockIdx.z * MYCPBZ * info.ncells.x * info.ncells.y +
         blockIdx.y * MYCPBY * info.ncells.x +
         blockIdx.x * MYCPBX + wid +
