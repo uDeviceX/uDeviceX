@@ -1,15 +1,17 @@
 static __global__ void merged() {
     float xs, ys, zs;
     float xd, yd, zd;
+    uint tid, wid, pshare;
+    int cbase;
 
     asm volatile( ".shared .u32 smem[512];" ::: "memory" );
 
-    const uint tid = threadIdx.x;
-    const uint wid = threadIdx.y;
-    const uint pshare = xscale( threadIdx.y, 256.f );
+    tid = threadIdx.x;
+    wid = threadIdx.y;
+    pshare = xscale( threadIdx.y, 256.f );
     const char4 offs = __ldg( tid2ind + tid );
 
-    const int cbase = blockIdx.z * MYCPBZ * info.ncells.x * info.ncells.y +
+    cbase = blockIdx.z * MYCPBZ * info.ncells.x * info.ncells.y +
         blockIdx.y * MYCPBY * info.ncells.x +
         blockIdx.x * MYCPBX + wid +
         offs.z * info.ncells.x * info.ncells.y +
