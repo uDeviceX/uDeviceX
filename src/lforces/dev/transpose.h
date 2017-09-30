@@ -1,3 +1,4 @@
+#define __IMOD(x,y) ((x)-((x)/(y))*(y))
 static __global__ void transpose( const int np ) {
     __shared__ volatile float  smem[32][96];
     const uint lane = threadIdx.x % warpSize;
@@ -13,3 +14,4 @@ static __global__ void transpose( const int np ) {
         info.ff[ base + 64 ] = smem[warpid][ xmad( __IMOD( lane + 64, 3 ), 32.f, ( lane + 64 ) / 3 ) ];
     }
 }
+#undef __IMOD

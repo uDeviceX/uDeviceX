@@ -30,8 +30,6 @@
   #include "dev/decl.h"
   #include "dev/fetch.h"
 
-  #define __IMOD(x,y) ((x)-((x)/(y))*(y))
-
   #include "dev/pack.h"
   #include "cloud/lforces/get.h"
   #include "dev/dpd.h"
