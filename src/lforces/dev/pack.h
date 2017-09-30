@@ -1,8 +1,3 @@
-__device__ void f4tof3(float4 r, /**/ float l[3]) {
-    enum {X, Y, Z};
-    l[X] = r.x; l[Y] = r.y; l[Z] = r.z;
-}
-
 __inline__ __device__ uint __lanemask_lt()
 {
     uint mask;
