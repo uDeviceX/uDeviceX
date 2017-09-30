@@ -1,6 +1,9 @@
 static __device__ void merged0(uint it, int cbase, uint tid, uint pshare) {
     float xs, ys, zs;
     float xd, yd, zd;
+    float dx, dy, dz, d2;
+    uint mystart, mycount, myscan;
+
     int cid;
     asm( "{  .reg .pred    p;"
          "   .reg .f32     incf;"
@@ -15,7 +18,7 @@ static __device__ void merged0(uint it, int cbase, uint tid, uint pshare) {
          "=r"( cid ) : "r"( cbase ), "f"( u2f( it ) ), "f"( u2f( 2u ) ), "f"( i2f( info.ncells.y ) ), "f"( u2f( ( it & 1u ) ^ ( it >> 1 ) ) ),
          "r"( info.ncells.x ) );
 
-    uint mystart = 0, mycount = 0, myscan;
+    mystart = mycount = 0;
     asm( "{  .reg .pred vc;"
          "   .reg .u32  foo, bar;"
          "    setp.lt.f32     vc, %2, %3;"
@@ -99,12 +102,12 @@ static __device__ void merged0(uint it, int cbase, uint tid, uint pshare) {
                       "   mov.b32           %0, mystart;"
                       "}" : "=r"( spid ) : "f"( u2f( pid ) ), "f"( u2f( 9u ) ), "f"( u2f( 3u ) ), "f"( u2f( pshare ) ), "f"( u2f( pid ) ), "f"( u2f( nsrc ) ) );
         cloud_pos(xmin(spid, lastdst), &xs, &ys, &zs);
-        for( uint dpid = dststart; dpid < lastdst; dpid = xadd( dpid, 1u ) ) {
+        for(uint dpid = dststart; dpid < lastdst; dpid = xadd( dpid, 1u ) ) {
             cloud_pos(dpid, /**/ &xd, &yd, &zd);
-            const float dx = xd - xs;
-            const float dy = yd - ys;
-            const float dz = zd - zs;
-            const float d2 = dx * dx + dy * dy + dz * dz;
+            dx = xd - xs;
+            dy = yd - ys;
+            dz = zd - zs;
+            d2 = dx * dx + dy * dy + dz * dz;
 
             asm volatile( ".reg .pred interacting;" );
             uint overview;
@@ -125,13 +128,11 @@ static __device__ void merged0(uint it, int cbase, uint tid, uint pshare) {
             if( nb >= 32u ) {
                 core( dststart, pshare, tid, spidext );
                 nb = xsub( nb, 32u );
-
                 asm volatile( "{ .reg .u32 tmp;"
                               "   ld.volatile.shared.u32 tmp, [%0+1024+128];"
                               "   st.volatile.shared.u32 [%0+1024], tmp;"
                               "}" :: "r"( xmad( tid, 4.f, pshare ) ) : "memory" );
             }
-
         }
     }
 
@@ -145,9 +146,7 @@ static __global__ void merged() {
     uint tid, wid, pshare;
     int cbase;
     char4 offs;
-
     asm volatile( ".shared .u32 smem[512];" ::: "memory" );
-
     tid = threadIdx.x;
     wid = threadIdx.y;
     pshare = xscale( threadIdx.y, 256.f );
