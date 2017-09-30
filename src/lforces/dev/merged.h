@@ -128,7 +128,7 @@ static __device__ void merged2(uint it, int cbase, uint tid, uint pshare) {
 }
 
 static __global__ void merged() {
-    uint tid, wid, pshare;
+    uint tid, wid, pshare, it;
     int cbase;
     char4 offs;
     asm volatile( ".shared .u32 smem[512];" ::: "memory" );
@@ -142,6 +142,6 @@ static __global__ void merged() {
         offs.z * info.ncells.x * info.ncells.y +
         offs.y * info.ncells.x +
         offs.x;
-    for(uint it = 0; it < 4 ; it = xadd( it, 1u ) )
+    for (it = 0; it < 4 ; it = xadd( it, 1u ))
         merged2(it, cbase, tid, pshare);
 }
