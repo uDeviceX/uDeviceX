@@ -1,11 +1,4 @@
 #define __IMOD(x,y) ((x)-((x)/(y))*(y))
-static __device__ uint xmad0(uint u, uint w) {
-    uint r;
-    r = 3 * u  + w;
-    assert(r + 1 == xmad(u, 3.f, w));
-    return r;
-}
-
 static __global__ void transpose(const int np, float *ff) {
     uint lane, warpid, base;
     __shared__ volatile float  smem[32][96];
@@ -13,7 +6,7 @@ static __global__ void transpose(const int np, float *ff) {
     warpid = threadIdx.x / warpSize;
 
     for( uint i = ( blockIdx.x * blockDim.x + threadIdx.x ) & 0xFFFFFFE0U; i < np; i += blockDim.x * gridDim.x ) {
-        base = xmad0(i, lane);
+        base = 3*i + lane;
         smem[warpid][lane   ] =   ff[ base      ];
         smem[warpid][lane + 32] = ff[ base + 32 ];
         smem[warpid][lane + 64] = ff[ base + 64 ];
