@@ -18,41 +18,35 @@
 #include "inc/type.h"
 #include "local.h"
 
-#if   defined(DEV_CUDA)
-  #include "utils/kl.h"
-  #include "forces/type.h"
-  #include "forces/pack.h"
-  #include "forces/imp.h"
+#include "utils/kl.h"
+#include "forces/type.h"
+#include "forces/pack.h"
+#include "forces/imp.h"
 
-  #include "imp/type.h"
+#include "imp/type.h"
 
-  #include "dev/float.h"
-  #include "dev/decl.h"
-  #include "dev/fetch.h"
+#include "dev/float.h"
+#include "dev/decl.h"
+#include "dev/fetch.h"
 
-  #include "dev/pack.h"
-  #include "cloud/lforces/get.h"
-  #include "dev/dpd.h"
-  #include "dev/core.h"
+#include "dev/pack.h"
+#include "cloud/lforces/get.h"
+#include "dev/dpd.h"
+#include "dev/core.h"
 
-  #define MYCPBX  (4)
-  #define MYCPBY  (2)
-  #define MYCPBZ  (2)
-  #define MYWPB   (4)
+#define MYCPBX  (4)
+#define MYCPBY  (2)
+#define MYCPBZ  (2)
+#define MYWPB   (4)
 
-  #include "dev/merged.h"
-  #include "dev/tex.h"
-  #include "dev/transpose.h"
+#include "dev/merged.h"
+#include "dev/tex.h"
+#include "dev/transpose.h"
 
-  #include "cloud/lforces/int.h"
+#include "cloud/lforces/int.h"
 
-  #include "imp/decl.h"
-  #include "imp/setup.h"
-  #include "imp/tex.h"
-  #include "imp/info.h"
-  #include "imp/flocal.h"
-#elif defined(DEV_CPU)
-  #include "local0.h"
-#else
-  #error DEV_* is undefined
-#endif
+#include "imp/decl.h"
+#include "imp/setup.h"
+#include "imp/tex.h"
+#include "imp/info.h"
+#include "imp/flocal.h"
