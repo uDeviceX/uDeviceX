@@ -25,7 +25,7 @@ static void launch(int np) {
         ny = YS / MYCPBY;
         nz = ZS / MYCPBZ;
         KL(merged, (dim3(nx, ny, nz), dim3(32, MYWPB)), ());
-        KL(transpose, (28, 1024), (np));
+        KL(transpose, (28, 1024), (np, info.ff));
         CC(cudaPeekAtLastError());
     } else {
         fprintf(stderr, "Incompatible grid config\n");
