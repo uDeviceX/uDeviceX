@@ -1,7 +1,12 @@
+static __device__ float sqdist(float x, float y, float z,   float x0, float y0, float z0) {
+    x -= x0; y -= y0; z -= z0;
+    return x*x + y*y + z*z;
+}
+
 static __device__ void merged0(uint it, int cbase, uint tid, uint pshare) {
     float xs, ys, zs;
     float xd, yd, zd;
-    float dx, dy, dz, d2;
+    float d2;
     uint mystart, mycount, myscan;
 
     int cid;
@@ -104,10 +109,7 @@ static __device__ void merged0(uint it, int cbase, uint tid, uint pshare) {
         cloud_pos(xmin(spid, lastdst), &xs, &ys, &zs);
         for(uint dpid = dststart; dpid < lastdst; dpid = xadd( dpid, 1u ) ) {
             cloud_pos(dpid, /**/ &xd, &yd, &zd);
-            dx = xd - xs;
-            dy = yd - ys;
-            dz = zd - zs;
-            d2 = dx * dx + dy * dy + dz * dz;
+            d2 = sqdist(xd, yd, zd,   xs, ys, zs);
 
             asm volatile( ".reg .pred interacting;" );
             uint overview;
