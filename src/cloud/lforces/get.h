@@ -1,3 +1,8 @@
+static __device__ void f4tof3(float4 r, /**/ float l[3]) {
+    enum {X, Y, Z};
+    l[X] = r.x; l[Y] = r.y; l[Z] = r.z;
+}
+
 static __device__ void tex2rv(uint i, /**/ float r[3], float v[3]) {
     float4 r4, v4;
 
