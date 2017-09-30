@@ -41,7 +41,7 @@ void flocal(float4 *zip0, ushort4 *zip1, int n, int *start, int *count,
     setup_flocal();
     ini_flocal(zip0, zip1, n, start, count, rnd->get_float(), (float*)ff);
     launch(n);
-    transpose0(n, (float*)ff);
+    transpose0(n, ff);
 }
 
 void flocal_color(float4 *zip0, ushort4 *zip1, int *colors, int n, int *start, int *count,
@@ -51,5 +51,5 @@ void flocal_color(float4 *zip0, ushort4 *zip1, int *colors, int n, int *start, i
     ini_flocal(zip0, zip1, n, start, count, rnd->get_float(), (float*)ff);
     ini_flocal_color(colors, n);
     launch(n);
-    transpose0(n, (float*)ff);
+    transpose0(n, ff);
 }
