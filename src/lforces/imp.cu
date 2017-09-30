@@ -16,7 +16,7 @@
 #include "rnd/dev.h"
 #include "inc/dev.h"
 #include "inc/type.h"
-#include "local.h"
+#include "imp.h"
 
 #include "utils/kl.h"
 #include "forces/type.h"
