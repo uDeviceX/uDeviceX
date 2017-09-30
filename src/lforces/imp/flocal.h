@@ -1,8 +1,13 @@
+static void setup_flocal0() {
+    setup_cloud();
+    if (multi_solvent) setup_cloud_color();
+    setup();
+}
+
 static void setup_flocal() {
+    static bool fdpd_init = false;
     if (!fdpd_init) {
-        setup_cloud();
-        if (multi_solvent) setup_cloud_color();
-        setup();
+        setup_flocal0();
         fdpd_init = true;
     }
 }

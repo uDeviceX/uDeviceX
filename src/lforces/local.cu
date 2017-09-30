@@ -45,7 +45,6 @@
 
 #include "cloud/lforces/int.h"
 
-#include "imp/decl.h"
 #include "imp/setup.h"
 #include "imp/tex.h"
 #include "imp/info.h"
