@@ -25,7 +25,6 @@ static void launch(int np) {
         ny = YS / MYCPBY;
         nz = ZS / MYCPBZ;
         KL(merged, (dim3(nx, ny, nz), dim3(32, MYWPB)), ());
-        KL(transpose, (28, 1024), (np, info.ff));
         CC(cudaPeekAtLastError());
     } else {
         fprintf(stderr, "Incompatible grid config\n");
@@ -36,12 +35,15 @@ static void ini_flocal_color(int *cc, int n) {
     ini_cloud_color(cc, n);
 }
 
+static void transpose0(int n, /*io*/ float *ff) { KL(transpose, (28, 1024), (n, ff)); }
+
 void flocal(float4 *zip0, ushort4 *zip1, int n, int *start, int *count,
-	    rnd::KISS* rnd, /**/ Force *ff) {
+            rnd::KISS* rnd, /**/ Force *ff) {
     if (n <= 0) return;
     setup_flocal();
     ini_flocal(zip0, zip1, n, start, count, rnd->get_float(), (float*)ff);
     launch(n);
+    transpose0(n, (float*)ff);
 }
 
 void flocal_color(float4 *zip0, ushort4 *zip1, int *colors, int n, int *start, int *count,
@@ -51,4 +53,5 @@ void flocal_color(float4 *zip0, ushort4 *zip1, int *colors, int n, int *start, i
     ini_flocal(zip0, zip1, n, start, count, rnd->get_float(), (float*)ff);
     ini_flocal_color(colors, n);
     launch(n);
+    transpose0(n, (float*)ff);
 }
