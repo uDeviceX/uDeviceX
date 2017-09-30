@@ -16,12 +16,13 @@
 #include "rnd/dev.h"
 #include "inc/dev.h"
 #include "inc/type.h"
-#include "imp.h"
+#include "transpose/imp.h"
 
 #include "utils/kl.h"
 #include "forces/type.h"
 #include "forces/pack.h"
 #include "forces/imp.h"
+#include "imp.h"
 
 #include "imp/type.h"
 
@@ -41,12 +42,9 @@
 
 #include "dev/merged.h"
 #include "dev/tex.h"
-#include "dev/transpose.h"
-
 #include "cloud/lforces/int.h"
 
 #include "imp/setup.h"
 #include "imp/tex.h"
 #include "imp/info.h"
-#include "imp/transpose.h"
 #include "imp/main.h"

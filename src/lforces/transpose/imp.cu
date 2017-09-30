@@ -16,37 +16,11 @@
 #include "rnd/dev.h"
 #include "inc/dev.h"
 #include "inc/type.h"
+#include "utils/kl.h"
+
 #include "imp.h"
 
-#include "utils/kl.h"
-#include "forces/type.h"
-#include "forces/pack.h"
-#include "forces/imp.h"
+#include "lforces/dev/float.h"
+#include "dev/main.h"
 
-#include "imp/type.h"
-
-#include "dev/float.h"
-#include "dev/decl.h"
-#include "dev/fetch.h"
-
-#include "dev/pack.h"
-#include "cloud/lforces/get.h"
-#include "dev/dpd.h"
-#include "dev/core.h"
-
-#define MYCPBX  (4)
-#define MYCPBY  (2)
-#define MYCPBZ  (2)
-#define MYWPB   (4)
-
-#include "dev/merged.h"
-#include "dev/tex.h"
-#include "dev/transpose.h"
-
-#include "cloud/lforces/int.h"
-
-#include "imp/setup.h"
-#include "imp/tex.h"
-#include "imp/info.h"
-#include "imp/transpose.h"
 #include "imp/main.h"
