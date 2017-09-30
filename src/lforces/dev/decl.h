@@ -14,5 +14,5 @@ static __device__ char4 tid2ind[32] = {
 };
 static texture<float4, cudaTextureType1D> texParticlesF4;
 static texture<ushort4, cudaTextureType1D, cudaReadModeNormalizedFloat> texParticlesH4;
-static texture<uint2, cudaTextureType1D> texStartAndCount;
+texture<uint2, cudaTextureType1D> texStartAndCount;
 static texture<int, cudaTextureType1D> texColor;
