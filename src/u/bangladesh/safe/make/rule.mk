@@ -30,7 +30,7 @@ $B/io/off.o: $S/io/off.cpp; $X -I$S/. -I$S/io
 $B/io/ply.o: $S/io/ply.cpp; $X -I$S/. -I$S/io
 $B/io/restart.o: $S/io/restart.cpp; $X -I$S/. -I$S/io
 $B/io/rig.o: $S/io/rig.cpp; $X -I$S/. -I$S/io
-$B/lforces/local.o: $S/lforces/local.cu; $N -I$S/. -I$S/lforces
+$B/lforces/imp.o: $S/lforces/imp.cu; $N -I$S/. -I$S/lforces
 $B/main.o: $S/main.cu; $N -I$S/.
 $B/math/linal.o: $S/math/linal.cpp; $X -I$S/. -I$S/math
 $B/mbounce/imp.o: $S/mbounce/imp.cu; $N -I$S/. -I$S/mbounce -I$S/mbounce/_safe
