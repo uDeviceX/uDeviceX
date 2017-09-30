@@ -12,7 +12,7 @@ static __device__ char4 tid2ind[32] = {
     { 0,  0,  0, 0}, {0,  0,  0, 0}, {0,  0,  0, 0},
     { 0,  0,  0, 0}, {0,  0,  0, 0}
 };
-texture<float4, cudaTextureType1D> texParticlesF4;
-texture<ushort4, cudaTextureType1D, cudaReadModeNormalizedFloat> texParticlesH4;
-texture<uint2, cudaTextureType1D> texStartAndCount;
-texture<int, cudaTextureType1D> texColor;
+static texture<float4, cudaTextureType1D> texParticlesF4;
+static texture<ushort4, cudaTextureType1D, cudaReadModeNormalizedFloat> texParticlesH4;
+static texture<uint2, cudaTextureType1D> texStartAndCount;
+static texture<int, cudaTextureType1D> texColor;
