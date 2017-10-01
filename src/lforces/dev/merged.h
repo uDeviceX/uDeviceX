@@ -9,10 +9,10 @@ static __device__ void merged1(uint dststart, uint lastdst, uint nsrc, uint spid
     float xd, yd, zd;
     float d2;
     uint nb = 0;
-    for( uint p = 0; p < nsrc; p = xadd( p, 32u ) ) {
+    for (uint p = 0; p < nsrc; p = xadd(p, 32u)) {
         const uint pid = p + tid;
         uint spid;
-        asm volatile( "{ .reg .pred p, q, r;" // TODO: HOW TO USE LDS.128
+        asm volatile( "{ .reg .pred p, q, r;"
                       "  .reg .f32  key;"
                       "  .reg .f32  scan3, scan6, scan9;"
                       "  .reg .f32  mystart, myscan;"
@@ -71,8 +71,9 @@ static __device__ void merged1(uint dststart, uint lastdst, uint nsrc, uint spid
             }
         }
     }
-    if( tid < nb ) {
-        core( dststart, pshare, tid, spidext );
+
+    if (tid < nb) {
+        core(dststart, pshare, tid, spidext);
     }
     nb = 0;
 }
@@ -97,7 +98,7 @@ static __device__ void merged3(uint mystart, uint mycount, uint tid, uint pshare
                   "r"(mystart) :
                   "memory");
     myscan  = mycount;
-    asmb::scan(&myscan);    
+    asmb::scan(&myscan);
     asm volatile("{    .reg .pred lt15;"
                  "      setp.lt.f32 lt15, %0, %1;"
                  "@lt15 st.volatile.shared.u32 [%2+4], %3;"
