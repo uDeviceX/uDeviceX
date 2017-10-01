@@ -20,10 +20,7 @@ static __device__ void merged1(uint dststart, uint lastdst, uint nsrc, uint spid
             if( nb >= 32u ) {
                 core( dststart, pshare, tid, spidext );
                 nb = xsub( nb, 32u );
-                asm volatile( "{ .reg .u32 tmp;"
-                              "   ld.volatile.shared.u32 tmp, [%0+1024+128];"
-                              "   st.volatile.shared.u32 [%0+1024], tmp;"
-                              "}" :: "r"( xmad( tid, 4.f, pshare ) ) : "memory" );
+                asmb::write(tid, pshare);
             }
         }
     }
