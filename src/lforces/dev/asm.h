@@ -55,6 +55,7 @@ static __device__ void scan(uint *pscan) {
     *pscan = myscan;
 }
 
+/* source particle id? */
 static __device__ uint id(uint pid, uint nsrc, uint tid, uint pshare) {
     uint spid;
     asm volatile("{ .reg .pred p, q, r;"
