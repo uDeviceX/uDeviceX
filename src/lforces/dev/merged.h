@@ -73,17 +73,15 @@ static __global__ void merged() {
     uint tid, wid, pshare, it;
     int cbase;
     char4 offs;
+    int3 nc;
     asm volatile( ".shared .u32 smem[512];" ::: "memory" );
     tid = threadIdx.x;
     wid = threadIdx.y;
     pshare = 256*wid;
     offs = tid2ind[tid];
-    cbase = blockIdx.z * MYCPBZ * info.ncells.x * info.ncells.y +
-        blockIdx.y * MYCPBY * info.ncells.x +
-        blockIdx.x * MYCPBX + wid +
-        offs.z * info.ncells.x * info.ncells.y +
-        offs.y * info.ncells.x +
-        offs.x;
+    nc   = info.ncells;
+    cbase = blockIdx.z * MYCPBZ * nc.x * nc.y + blockIdx.y * MYCPBY * nc.x + blockIdx.x * MYCPBX + wid +
+            offs.z *              nc.x * nc.y + offs.y *              nc.x + offs.x;
     for (it = 0; it < 4; it++)
         merged5(it, cbase, tid, pshare);
 }
