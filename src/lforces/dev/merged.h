@@ -5,9 +5,7 @@ static __device__ float sqdist(float x, float y, float z,   float x0, float y0, 
 
 static __device__ void merged0(uint spid, uint dststart, uint lastdst, uint spidext, uint tid, uint pshare,
                                /**/ uint *pnb) {
-    float xs, ys, zs;
-    float xd, yd, zd;
-    float d2;
+    float xs, ys, zs,   xd, yd, zd, d2;
     uint dpid, nb;
 
     nb = *pnb;
