@@ -113,7 +113,7 @@ static __device__ void merged1(uint mystart, uint mycount, uint tid, uint pshare
     asm volatile("{    .reg .pred lt15;"
                  "      setp.lt.f32 lt15, %0, %1;"
                  "@lt15 st.volatile.shared.u32 [%2+4], %3;"
-                 "}":: "f"(u2f(tid)), "f"(u2f(15u)), "r"(xmad( tid, 8.f, pshare)), "r"(xsub(myscan, mycount)) : "memory");
+                 "}":: "f"(u2f(tid)), "f"(u2f(15u)), "r"(xmad(tid, 8.f, pshare)), "r"(xsub(myscan, mycount)) : "memory");
     merged0(mystart, mycount, myscan, tid, pshare);
 }
 
