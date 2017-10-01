@@ -29,27 +29,12 @@ static __device__ void merged0(uint spid, uint dststart, uint lastdst, uint spid
 
 static __device__ void merged1(uint dststart, uint lastdst, uint nsrc, uint spidext,
                                uint tid, uint pshare) {
-    float xs, ys, zs;
-    float xd, yd, zd;
-    float d2;
-    uint p, spid, dpid, nb = 0;
+    uint p, spid, nb = 0;
     for (p = 0; p < nsrc; p += 32) {
         spid = asmb::id(p + tid, nsrc, tid, pshare);
-        cloud_pos(xmin(spid, lastdst), &xs, &ys, &zs);
-        for (dpid = dststart; dpid < lastdst; dpid++) {
-            cloud_pos(dpid, /**/ &xd, &yd, &zd);
-            d2 = sqdist(xd, yd, zd,   xs, ys, zs);
-            asmb::inc(d2, spid, dpid, dststart, lastdst, pshare, /*io*/ &nb);
-            if (nb >= 32u) {
-                core(dststart, pshare, tid, spidext );
-                nb = xsub( nb, 32u );
-                asmb::write(tid, pshare);
-            }
-        }
+        merged0(spid, dststart, lastdst, spidext, tid, pshare, /**/ &nb);
     }
-    if (tid < nb) {
-        core(dststart, pshare, tid, spidext);
-   }
+    if (tid < nb) core(dststart, pshare, tid, spidext);
 }
 
 static __device__ void merged2(uint tid, uint pshare) {
