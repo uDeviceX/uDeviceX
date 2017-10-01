@@ -1,6 +1,6 @@
 static __device__ float* id2ff(uint pid) {
     uint off, base;
-    float* ff;
+    float *ff;
     off  = pid & 0x0000001FU;
     base = xdiv(pid, 1 / 32.f);
     ff = info.ff + xmad(base, 96.f, off);
