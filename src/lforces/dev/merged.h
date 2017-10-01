@@ -17,7 +17,7 @@ static __device__ void merged1(uint dststart, uint lastdst, uint nsrc, uint spid
             cloud_pos(dpid, /**/ &xd, &yd, &zd);
             d2 = sqdist(xd, yd, zd,   xs, ys, zs);
             asmb::inc(d2, spid, dpid, dststart, lastdst, pshare, /*io*/ &nb);
-            if( nb >= 32u ) {
+            if (nb >= 32u) {
                 core(dststart, pshare, tid, spidext );
                 nb = xsub( nb, 32u );
                 asmb::write(tid, pshare);
