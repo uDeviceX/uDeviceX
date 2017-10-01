@@ -77,7 +77,7 @@ static __global__ void merged() {
     tid = threadIdx.x;
     wid = threadIdx.y;
     pshare = 256*wid;
-    offs = __ldg(tid2ind + tid);
+    offs = tid2ind[tid];
     cbase = blockIdx.z * MYCPBZ * info.ncells.x * info.ncells.y +
         blockIdx.y * MYCPBY * info.ncells.x +
         blockIdx.x * MYCPBX + wid +
