@@ -3,23 +3,13 @@ static __device__ float sqdist(float x, float y, float z,   float x0, float y0, 
     return x*x + y*y + z*z;
 }
 
-static __device__ void merged1(uint mystart, uint mycount, uint myscan, uint tid, uint pshare) {
+static __device__ void merged0(uint dststart, uint lastdst, uint nsrc,
+                               uint spidext, uint mystart, uint myscan, uint tid, uint pshare) {
     float xs, ys, zs;
     float xd, yd, zd;
     float d2;
-    uint x13, y13, y14; // TODO: LDS.128
-    asm volatile( "ld.volatile.shared.v2.u32 {%0,%1}, [%3+104];" // 104 = 13 x 8-byte uint2
-                  "ld.volatile.shared.u32     %2,     [%3+116];" // 116 = 14 x 8-bute uint2 + .y
-                  : "=r"( x13 ), "=r"( y13 ), "=r"( y14 ) : "r"( pshare ) : "memory" );
-    const uint dststart = x13;
-    const uint lastdst  = xsub( xadd( dststart, y14 ), y13 );
-    const uint nsrc     = y14;
-    const uint spidext  = x13;
-
     uint nb = 0;
-
     for( uint p = 0; p < nsrc; p = xadd( p, 32u ) ) {
-
         const uint pid = p + tid;
         uint spid;
         asm volatile( "{ .reg .pred p, q, r;" // TODO: HOW TO USE LDS.128
@@ -81,11 +71,23 @@ static __device__ void merged1(uint mystart, uint mycount, uint myscan, uint tid
             }
         }
     }
-
     if( tid < nb ) {
         core( dststart, pshare, tid, spidext );
     }
     nb = 0;
+}
+
+static __device__ void merged1(uint mystart, uint myscan, uint tid, uint pshare) {
+    uint dststart, lastdst, nsrc, spidext;
+    uint x13, y13, y14;
+    asm volatile( "ld.volatile.shared.v2.u32 {%0,%1}, [%3+104];" // 104 = 13 x 8-byte uint2
+                  "ld.volatile.shared.u32     %2,     [%3+116];" // 116 = 14 x 8-bute uint2 + .y
+                  : "=r"(x13), "=r"(y13), "=r"(y14) : "r"(pshare) : "memory" );
+    dststart = x13;
+    lastdst  = xsub(xadd(dststart, y14), y13);
+    nsrc     = y14;
+    spidext  = x13;
+    merged0(dststart, lastdst, nsrc, spidext, mystart, myscan, tid, pshare);
 }
 
 static __device__ void merged2(uint mystart, uint mycount, uint tid, uint pshare) {
@@ -101,7 +103,7 @@ static __device__ void merged2(uint mystart, uint mycount, uint tid, uint pshare
                  "      setp.lt.f32 lt15, %0, %1;"
                  "@lt15 st.volatile.shared.u32 [%2+4], %3;"
                  "}":: "f"(u2f(tid)), "f"(u2f(15u)), "r"(xmad(tid, 8.f, pshare)), "r"(xsub(myscan, mycount)) : "memory");
-    merged1(mystart, mycount, myscan, tid, pshare);
+    merged1(mystart, myscan, tid, pshare);
 }
 
 static __device__ void merged3(int cid, uint tid, uint pshare) {
