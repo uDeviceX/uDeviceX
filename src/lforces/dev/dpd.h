@@ -1,6 +1,5 @@
 static __device__ void dpd0(uint aid, uint bid, float rnd, /**/ forces::Fo *f) {
     forces::Pa a, b;
-
     cloud_get(aid, &a);
     cloud_get(bid, &b);
     forces::gen(a, b, rnd, /**/ f);
