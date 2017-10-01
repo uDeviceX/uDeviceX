@@ -90,11 +90,11 @@ static __device__ void merged0(uint mystart, uint mycount, uint myscan, uint tid
 
 static __device__ void merged1(uint mystart, uint mycount, uint tid, uint pshare) {
     uint myscan;
-    myscan  = mycount;
     asm volatile("st.volatile.shared.u32 [%0], %1;" ::
                   "r"(xmad(tid, 8.f, pshare)),
                   "r"(mystart) :
                   "memory");
+    myscan  = mycount;
     asm("{ .reg .pred   p;"
         "  .reg .f32    myscan, theirscan;"
         "   mov.b32     myscan, %0;"
