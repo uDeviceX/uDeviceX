@@ -11,39 +11,11 @@ static __device__ void merged1(uint dststart, uint lastdst, uint nsrc, uint spid
     uint p, spid, pid, nb = 0;
     for (p = 0; p < nsrc; p = xadd(p, 32u)) {
         pid = p + tid;
-        asm volatile( "{ .reg .pred p, q, r;"
-                      "  .reg .f32  key;"
-                      "  .reg .f32  scan3, scan6, scan9;"
-                      "  .reg .f32  mystart, myscan;"
-                      "  .reg .s32  array;"
-                      "  .reg .f32  array_f;"
-                      "   mov.b32           array, %4;"
-                      "   ld.shared.f32     scan9,  [array +  9*8 + 4];"
-                      "   setp.ge.f32       p, %1, scan9;"
-                      "   selp.f32          key, %2, 0.0, p;"
-                      "   mov.b32           array_f, array;"
-                      "   fma.f32.rm        array_f, key, 8.0, array_f;"
-                      "   mov.b32 array,    array_f;"
-                      "   ld.shared.f32     scan3, [array + 3*8 + 4];"
-                      "   setp.ge.f32       p, %1, scan3;"
-                      "@p add.f32           key, key, %3;"
-                      "   setp.lt.f32       p, key, %2;"
-                      "   setp.lt.and.f32   p, %5, %6, p;"
-                      "   ld.shared.f32     scan6, [array + 6*8 + 4];"
-                      "   setp.ge.and.f32   q, %1, scan6, p;"
-                      "@q add.f32           key, key, %3;"
-                      "   fma.f32.rm        array_f, key, 8.0, %4;"
-                      "   mov.b32           array, array_f;"
-                      "   ld.shared.v2.f32 {mystart, myscan}, [array];"
-                      "   add.f32           mystart, mystart, %1;"
-                      "   sub.f32           mystart, mystart, myscan;"
-                      "   mov.b32           %0, mystart;"
-                      "}" : "=r"( spid ) : "f"( u2f( pid ) ), "f"( u2f( 9u ) ), "f"( u2f( 3u ) ), "f"( u2f( pshare ) ), "f"( u2f( pid ) ), "f"( u2f( nsrc ) ) );
+        spid = asmb::id(pid, nsrc, tid, pshare);
         cloud_pos(xmin(spid, lastdst), &xs, &ys, &zs);
         for(uint dpid = dststart; dpid < lastdst; dpid = xadd( dpid, 1u ) ) {
             cloud_pos(dpid, /**/ &xd, &yd, &zd);
             d2 = sqdist(xd, yd, zd,   xs, ys, zs);
-
             asm volatile( ".reg .pred interacting;" );
             uint overview;
             asm( "   setp.lt.ftz.f32  interacting, %3, 1.0;"
@@ -53,12 +25,10 @@ static __device__ void merged1(uint dststart, uint lastdst, uint nsrc, uint spid
                  "=r"( overview ) : "f"( u2f( dpid ) ), "f"( u2f( spid ) ), "f"( d2 ), "f"( u2f( 1u ) ), "f"( u2f( lastdst ) ) );
 
             const uint insert = xadd( nb, i2u( __popc( overview & __lanemask_lt() ) ) );
-
             asm volatile( "@interacting st.volatile.shared.u32 [%0+1024], %1;" : :
                           "r"( xmad( insert, 4.f, pshare ) ),
                           "r"( __pack_8_24( xsub( dpid, dststart ), spid ) ) :
                           "memory" );
-
             nb = xadd( nb, i2u( __popc( overview ) ) );
             if( nb >= 32u ) {
                 core( dststart, pshare, tid, spidext );
@@ -70,7 +40,6 @@ static __device__ void merged1(uint dststart, uint lastdst, uint nsrc, uint spid
             }
         }
     }
-
     if (tid < nb) {
         core(dststart, pshare, tid, spidext);
     }
