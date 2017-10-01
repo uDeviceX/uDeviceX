@@ -55,3 +55,36 @@ static __device__ void scan(uint *pscan) {
     *pscan = myscan;
 }
 
+static __device__ uint id(uint pid, uint nsrc, uint tid, uint pshare) {
+    uint spid;
+    asm volatile("{ .reg .pred p, q, r;"
+                 "  .reg .f32  key;"
+                 "  .reg .f32  scan3, scan6, scan9;"
+                 "  .reg .f32  mystart, myscan;"
+                 "  .reg .s32  array;"
+                 "  .reg .f32  array_f;"
+                 "   mov.b32           array, %4;"
+                 "   ld.shared.f32     scan9,  [array +  9*8 + 4];"
+                 "   setp.ge.f32       p, %1, scan9;"
+                 "   selp.f32          key, %2, 0.0, p;"
+                 "   mov.b32           array_f, array;"
+                 "   fma.f32.rm        array_f, key, 8.0, array_f;"
+                 "   mov.b32 array,    array_f;"
+                 "   ld.shared.f32     scan3, [array + 3*8 + 4];"
+                 "   setp.ge.f32       p, %1, scan3;"
+                 "@p add.f32           key, key, %3;"
+                 "   setp.lt.f32       p, key, %2;"
+                 "   setp.lt.and.f32   p, %5, %6, p;"
+                 "   ld.shared.f32     scan6, [array + 6*8 + 4];"
+                 "   setp.ge.and.f32   q, %1, scan6, p;"
+                 "@q add.f32           key, key, %3;"
+                 "   fma.f32.rm        array_f, key, 8.0, %4;"
+                 "   mov.b32           array, array_f;"
+                 "   ld.shared.v2.f32 {mystart, myscan}, [array];"
+                 "   add.f32           mystart, mystart, %1;"
+                 "   sub.f32           mystart, mystart, myscan;"
+                 "   mov.b32           %0, mystart;"
+                 "}" : "=r"(spid) : "f"(u2f(pid)),    "f"(u2f(9u)),  "f"(u2f(3u)),
+                                    "f"(u2f(pshare)), "f"(u2f(pid)), "f"(u2f(nsrc)));
+    return spid;
+}
