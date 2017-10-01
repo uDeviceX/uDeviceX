@@ -75,7 +75,6 @@ static __device__ void merged1(uint dststart, uint lastdst, uint nsrc, uint spid
     if (tid < nb) {
         core(dststart, pshare, tid, spidext);
     }
-    nb = 0;
 }
 
 static __device__ void merged2(uint mystart, uint myscan, uint tid, uint pshare) {
