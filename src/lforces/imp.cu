@@ -28,7 +28,9 @@
 
 #include "dev/float.h"
 #include "dev/decl.h"
+namespace asmb {
 #include "dev/asm.h"
+}
 #include "dev/fetch.h"
 
 #include "dev/pack.h"

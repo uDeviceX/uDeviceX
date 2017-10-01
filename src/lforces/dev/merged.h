@@ -95,21 +95,8 @@ static __device__ void merged1(uint mystart, uint mycount, uint tid, uint pshare
                   "r"(mystart) :
                   "memory");
     myscan  = mycount;
-    asm("{ .reg .pred   p;"
-        "  .reg .f32    myscan, theirscan;"
-        "   mov.b32     myscan, %0;"
-        "   shfl.up.b32 theirscan|p, myscan, 0x1, 0x0;"
-        "@p add.f32     myscan, theirscan, myscan;"
-        "   shfl.up.b32 theirscan|p, myscan, 0x2, 0x0;"
-        "@p add.f32     myscan, theirscan, myscan;"
-        "   shfl.up.b32 theirscan|p, myscan, 0x4, 0x0;"
-        "@p add.f32     myscan, theirscan, myscan;"
-        "   shfl.up.b32 theirscan|p, myscan, 0x8, 0x0;"
-        "@p add.f32     myscan, theirscan, myscan;"
-        "   shfl.up.b32 theirscan|p, myscan, 0x10, 0x0;"
-        "@p add.f32     myscan, theirscan, myscan;"
-        "   mov.b32     %0, myscan;"
-        "}" : "+r"(myscan));
+    asmb::scan(&myscan);
+    
     asm volatile("{    .reg .pred lt15;"
                  "      setp.lt.f32 lt15, %0, %1;"
                  "@lt15 st.volatile.shared.u32 [%2+4], %3;"
@@ -117,16 +104,15 @@ static __device__ void merged1(uint mystart, uint mycount, uint tid, uint pshare
     merged0(mystart, mycount, myscan, tid, pshare);
 }
 
-
 static __device__ void merged2(int cid, uint tid, uint pshare) {
     uint mystart, mycount;
-    c2loc(cid, tid, /**/ &mystart, &mycount);
+    asmb::c2loc(cid, tid, /**/ &mystart, &mycount);
     merged1(mystart, mycount, tid, pshare);
 }
 
 static __device__ void merged3(uint it, int cbase, uint tid, uint pshare) {
     int cid;
-    cid = get_cid(it, cbase);
+    cid = asmb::get_cid(it, cbase);
     merged2(cid, tid, pshare);
 }
 
