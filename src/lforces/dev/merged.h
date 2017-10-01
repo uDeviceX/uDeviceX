@@ -3,7 +3,7 @@ static __device__ float sqdist(float x, float y, float z,   float x0, float y0, 
     return x*x + y*y + z*z;
 }
 
-static __device__ void merged0(uint mystart, uint mycount, uint myscan, uint tid, uint pshare) {
+static __device__ void merged1(uint mystart, uint mycount, uint myscan, uint tid, uint pshare) {
     float xs, ys, zs;
     float xd, yd, zd;
     float d2;
@@ -88,7 +88,7 @@ static __device__ void merged0(uint mystart, uint mycount, uint myscan, uint tid
     nb = 0;
 }
 
-static __device__ void merged1(uint mystart, uint mycount, uint tid, uint pshare) {
+static __device__ void merged2(uint mystart, uint mycount, uint tid, uint pshare) {
     uint myscan;
     asm volatile("st.volatile.shared.u32 [%0], %1;" ::
                   "r"(xmad(tid, 8.f, pshare)),
@@ -101,19 +101,19 @@ static __device__ void merged1(uint mystart, uint mycount, uint tid, uint pshare
                  "      setp.lt.f32 lt15, %0, %1;"
                  "@lt15 st.volatile.shared.u32 [%2+4], %3;"
                  "}":: "f"(u2f(tid)), "f"(u2f(15u)), "r"(xmad(tid, 8.f, pshare)), "r"(xsub(myscan, mycount)) : "memory");
-    merged0(mystart, mycount, myscan, tid, pshare);
+    merged1(mystart, mycount, myscan, tid, pshare);
 }
 
-static __device__ void merged2(int cid, uint tid, uint pshare) {
+static __device__ void merged3(int cid, uint tid, uint pshare) {
     uint mystart, mycount;
     asmb::c2loc(cid, tid, /**/ &mystart, &mycount);
-    merged1(mystart, mycount, tid, pshare);
+    merged2(mystart, mycount, tid, pshare);
 }
 
-static __device__ void merged3(uint it, int cbase, uint tid, uint pshare) {
+static __device__ void merged4(uint it, int cbase, uint tid, uint pshare) {
     int cid;
     cid = asmb::get_cid(it, cbase);
-    merged2(cid, tid, pshare);
+    merged3(cid, tid, pshare);
 }
 
 static __global__ void merged() {
@@ -132,5 +132,5 @@ static __global__ void merged() {
         offs.y * info.ncells.x +
         offs.x;
     for (it = 0; it < 4 ; it = xadd( it, 1u ))
-        merged3(it, cbase, tid, pshare);
+        merged4(it, cbase, tid, pshare);
 }
