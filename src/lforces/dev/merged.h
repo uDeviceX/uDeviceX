@@ -91,29 +91,29 @@ static __device__ void merged0(uint mystart, uint mycount, uint myscan, uint tid
 static __device__ void merged1(uint mystart, uint mycount, uint tid, uint pshare) {
     uint myscan;
     myscan  = mycount;
-    asm volatile( "st.volatile.shared.u32 [%0], %1;" ::
-                  "r"( xmad( tid, 8.f, pshare ) ),
-                  "r"( mystart ) :
-                  "memory" );
-    asm( "{ .reg .pred   p;"
-         "  .reg .f32    myscan, theirscan;"
-         "   mov.b32     myscan, %0;"
-         "   shfl.up.b32 theirscan|p, myscan, 0x1, 0x0;"
-         "@p add.f32     myscan, theirscan, myscan;"
-         "   shfl.up.b32 theirscan|p, myscan, 0x2, 0x0;"
-         "@p add.f32     myscan, theirscan, myscan;"
-         "   shfl.up.b32 theirscan|p, myscan, 0x4, 0x0;"
-         "@p add.f32     myscan, theirscan, myscan;"
-         "   shfl.up.b32 theirscan|p, myscan, 0x8, 0x0;"
-         "@p add.f32     myscan, theirscan, myscan;"
-         "   shfl.up.b32 theirscan|p, myscan, 0x10, 0x0;"
-         "@p add.f32     myscan, theirscan, myscan;"
-         "   mov.b32     %0, myscan;"
-         "}" : "+r"( myscan ) );
-    asm volatile( "{    .reg .pred lt15;"
-                  "      setp.lt.f32 lt15, %0, %1;"
-                  "@lt15 st.volatile.shared.u32 [%2+4], %3;"
-                  "}":: "f"( u2f( tid ) ), "f"( u2f( 15u ) ), "r"( xmad( tid, 8.f, pshare ) ), "r"( xsub( myscan, mycount ) ) : "memory" );
+    asm volatile("st.volatile.shared.u32 [%0], %1;" ::
+                  "r"(xmad(tid, 8.f, pshare)),
+                  "r"(mystart) :
+                  "memory");
+    asm("{ .reg .pred   p;"
+        "  .reg .f32    myscan, theirscan;"
+        "   mov.b32     myscan, %0;"
+        "   shfl.up.b32 theirscan|p, myscan, 0x1, 0x0;"
+        "@p add.f32     myscan, theirscan, myscan;"
+        "   shfl.up.b32 theirscan|p, myscan, 0x2, 0x0;"
+        "@p add.f32     myscan, theirscan, myscan;"
+        "   shfl.up.b32 theirscan|p, myscan, 0x4, 0x0;"
+        "@p add.f32     myscan, theirscan, myscan;"
+        "   shfl.up.b32 theirscan|p, myscan, 0x8, 0x0;"
+        "@p add.f32     myscan, theirscan, myscan;"
+        "   shfl.up.b32 theirscan|p, myscan, 0x10, 0x0;"
+        "@p add.f32     myscan, theirscan, myscan;"
+        "   mov.b32     %0, myscan;"
+        "}" : "+r"(myscan));
+    asm volatile("{    .reg .pred lt15;"
+                 "      setp.lt.f32 lt15, %0, %1;"
+                 "@lt15 st.volatile.shared.u32 [%2+4], %3;"
+                 "}":: "f"(u2f(tid)), "f"(u2f(15u)), "r"(xmad( tid, 8.f, pshare)), "r"(xsub(myscan, mycount)) : "memory");
     merged0(mystart, mycount, myscan, tid, pshare);
 }
 
