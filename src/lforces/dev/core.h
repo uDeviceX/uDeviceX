@@ -18,7 +18,7 @@ static __device__ void core0(uint dpid, uint spid, uint spidext) {
     }
 }
 
-static __device__ void core(const uint dststart, const uint pshare, const uint tid, const uint spidext) {
+static __device__ void core(uint dststart, uint pshare, uint tid, uint spidext) {
     uint item, offset, dpid, spid;
     uint2 pid;
     offset = xmad( tid, 4.f, pshare );
