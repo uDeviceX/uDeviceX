@@ -123,14 +123,14 @@ static __global__ void merged() {
     asm volatile( ".shared .u32 smem[512];" ::: "memory" );
     tid = threadIdx.x;
     wid = threadIdx.y;
-    pshare = xscale( threadIdx.y, 256.f );
-    offs = __ldg( tid2ind + tid );
+    pshare = xscale(threadIdx.y, 256.f);
+    offs = __ldg(tid2ind + tid);
     cbase = blockIdx.z * MYCPBZ * info.ncells.x * info.ncells.y +
         blockIdx.y * MYCPBY * info.ncells.x +
         blockIdx.x * MYCPBX + wid +
         offs.z * info.ncells.x * info.ncells.y +
         offs.y * info.ncells.x +
         offs.x;
-    for (it = 0; it < 4 ; it = xadd( it, 1u ))
+    for (it = 0; it < 4 ; it = xadd(it, 1u))
         merged4(it, cbase, tid, pshare);
 }
