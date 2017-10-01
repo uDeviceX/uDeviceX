@@ -3,7 +3,7 @@ static __device__ float sqdist(float x, float y, float z,   float x0, float y0, 
     return x*x + y*y + z*z;
 }
 
-static __device__ void merged0(uint mystart, uint mycount, uint tid, uint pshare) {
+static __device__ void merged1(uint mystart, uint mycount, uint tid, uint pshare) {
     float xs, ys, zs;
     float xd, yd, zd;
     float d2;
@@ -115,16 +115,16 @@ static __device__ void merged0(uint mystart, uint mycount, uint tid, uint pshare
     nb = 0;
 }
 
-static __device__ void merged1(int cid, uint tid, uint pshare) {
+static __device__ void merged2(int cid, uint tid, uint pshare) {
     uint mystart, mycount;
     c2loc(cid, tid, /**/ &mystart, &mycount);
-    merged0(mystart, mycount, tid, pshare);
+    merged1(mystart, mycount, tid, pshare);
 }
 
-static __device__ void merged2(uint it, int cbase, uint tid, uint pshare) {
+static __device__ void merged3(uint it, int cbase, uint tid, uint pshare) {
     int cid;
     cid = get_cid(it, cbase);
-    merged1(cid, tid, pshare);
+    merged2(cid, tid, pshare);
 }
 
 static __global__ void merged() {
@@ -143,5 +143,5 @@ static __global__ void merged() {
         offs.y * info.ncells.x +
         offs.x;
     for (it = 0; it < 4 ; it = xadd( it, 1u ))
-        merged2(it, cbase, tid, pshare);
+        merged3(it, cbase, tid, pshare);
 }
