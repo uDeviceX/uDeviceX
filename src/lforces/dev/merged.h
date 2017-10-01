@@ -3,8 +3,8 @@ static __device__ float sqdist(float x, float y, float z,   float x0, float y0, 
     return x*x + y*y + z*z;
 }
 
-static __device__ void merged0(uint dststart, uint lastdst, uint nsrc,
-                               uint spidext, uint mystart, uint myscan, uint tid, uint pshare) {
+static __device__ void merged0(uint dststart, uint lastdst, uint nsrc, uint spidext,
+                               uint mystart, uint myscan, uint tid, uint pshare) {
     float xs, ys, zs;
     float xd, yd, zd;
     float d2;
