@@ -19,12 +19,7 @@ static __device__ void core0(uint dpid, uint spid, uint spidext) {
 }
 
 static __device__ void core(uint dststart, uint pshare, uint tid, uint spidext) {
-    uint item, offset, dpid, spid;
-    uint2 pid;
-    offset = xmad( tid, 4.f, pshare );
-    asm volatile( "ld.volatile.shared.u32 %0, [%1+1024];" : "=r"( item ) : "r"( offset ) : "memory" );
-    pid = __unpack_8_24( item );
-    dpid = xadd( dststart, pid.x );
-    spid = pid.y;
+    uint dpid, spid;
+    asmb::get_pair(dststart, pshare, tid, /**/ &dpid, &spid);
     core0(dpid, spid, spidext);
 }

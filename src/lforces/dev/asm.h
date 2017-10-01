@@ -120,3 +120,14 @@ static __device__ void write(uint tid, uint pshare) {
                   "   st.volatile.shared.u32 [%0+1024], tmp;"
                   "}" :: "r"(xmad(tid, 4.f, pshare)) : "memory");
 }
+
+static __device__ void get_pair(uint dststart, uint pshare, uint tid, /**/ uint *dpid, uint *spid) {
+    uint item, offset;
+    uint2 pid;
+    offset = xmad(tid, 4.f, pshare);
+    asm volatile( "ld.volatile.shared.u32 %0, [%1+1024];" : "=r"( item ) : "r"( offset ) : "memory" );
+    pid = __unpack_8_24(item);
+
+    *dpid = xadd(dststart, pid.x);
+    *spid = pid.y;
+}
