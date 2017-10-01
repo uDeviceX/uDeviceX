@@ -89,3 +89,27 @@ static __device__ uint id(uint pid, uint nsrc, uint tid, uint pshare) {
                                     "f"(u2f(pshare)), "f"(u2f(pid)), "f"(u2f(nsrc)));
     return spid;
 }
+
+/* increase `nb' counter? */
+static __device__ void inc(float d2, uint spid, uint dpid,
+                           uint dststart, uint lastdst, uint pshare,
+                           /**/ uint *pnb) {
+    uint nb;
+    uint overview, insert;
+    nb = *pnb;
+
+    asm volatile( ".reg .pred interacting;" );
+    asm( "   setp.lt.ftz.f32  interacting, %3, 1.0;"
+         "   setp.ne.and.f32  interacting, %1, %2, interacting;"
+         "   setp.lt.and.f32  interacting, %2, %5, interacting;"
+         "   vote.ballot.b32  %0, interacting;" :
+         "=r"( overview ) : "f"( u2f( dpid ) ), "f"( u2f( spid ) ), "f"( d2 ), "f"( u2f( 1u ) ), "f"( u2f( lastdst ) ) );
+    insert = xadd( nb, i2u( __popc( overview & __lanemask_lt() ) ) );
+    asm volatile( "@interacting st.volatile.shared.u32 [%0+1024], %1;" : :
+                  "r"( xmad( insert, 4.f, pshare ) ),
+                  "r"( __pack_8_24( xsub( dpid, dststart ), spid ) ) :
+                  "memory" );
+    nb = xadd( nb, i2u( __popc( overview ) ) );
+
+    *pnb = nb;
+}
