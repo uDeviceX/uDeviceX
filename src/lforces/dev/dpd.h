@@ -10,6 +10,6 @@ static __device__ float random(uint i, uint j) {
 }
 static __device__ void dpd(uint aid, uint bid, /**/ forces::Fo *f) {
     float rnd;
-    rnd = random(aid, bid); /* (sic) */
+    rnd = random(aid, bid);
     dpd0(aid, bid, rnd, /**/ f);
 }
