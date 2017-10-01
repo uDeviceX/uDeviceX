@@ -33,3 +33,25 @@ static __device__ void c2loc(int cid, uint tid, /**/ uint *pstart, uint *pcout) 
 
     *pstart = mystart; *pcout  = mycount;
 }
+
+static __device__ void scan(uint *pscan) {
+    uint myscan;
+    myscan = *pscan;
+    asm("{ .reg .pred   p;"
+        "  .reg .f32    myscan, theirscan;"
+        "   mov.b32     myscan, %0;"
+        "   shfl.up.b32 theirscan|p, myscan, 0x1, 0x0;"
+        "@p add.f32     myscan, theirscan, myscan;"
+        "   shfl.up.b32 theirscan|p, myscan, 0x2, 0x0;"
+        "@p add.f32     myscan, theirscan, myscan;"
+        "   shfl.up.b32 theirscan|p, myscan, 0x4, 0x0;"
+        "@p add.f32     myscan, theirscan, myscan;"
+        "   shfl.up.b32 theirscan|p, myscan, 0x8, 0x0;"
+        "@p add.f32     myscan, theirscan, myscan;"
+        "   shfl.up.b32 theirscan|p, myscan, 0x10, 0x0;"
+        "@p add.f32     myscan, theirscan, myscan;"
+        "   mov.b32     %0, myscan;"
+        "}" : "+r"(myscan));
+    *pscan = myscan;
+}
+
