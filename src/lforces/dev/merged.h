@@ -16,20 +16,7 @@ static __device__ void merged1(uint dststart, uint lastdst, uint nsrc, uint spid
         for(uint dpid = dststart; dpid < lastdst; dpid = xadd( dpid, 1u ) ) {
             cloud_pos(dpid, /**/ &xd, &yd, &zd);
             d2 = sqdist(xd, yd, zd,   xs, ys, zs);
-            asm volatile( ".reg .pred interacting;" );
-            uint overview;
-            asm( "   setp.lt.ftz.f32  interacting, %3, 1.0;"
-                 "   setp.ne.and.f32  interacting, %1, %2, interacting;"
-                 "   setp.lt.and.f32  interacting, %2, %5, interacting;"
-                 "   vote.ballot.b32  %0, interacting;" :
-                 "=r"( overview ) : "f"( u2f( dpid ) ), "f"( u2f( spid ) ), "f"( d2 ), "f"( u2f( 1u ) ), "f"( u2f( lastdst ) ) );
-
-            const uint insert = xadd( nb, i2u( __popc( overview & __lanemask_lt() ) ) );
-            asm volatile( "@interacting st.volatile.shared.u32 [%0+1024], %1;" : :
-                          "r"( xmad( insert, 4.f, pshare ) ),
-                          "r"( __pack_8_24( xsub( dpid, dststart ), spid ) ) :
-                          "memory" );
-            nb = xadd( nb, i2u( __popc( overview ) ) );
+            asmb::inc(d2, spid, dpid, dststart, lastdst, pshare, /*io*/ &nb);
             if( nb >= 32u ) {
                 core( dststart, pshare, tid, spidext );
                 nb = xsub( nb, 32u );
