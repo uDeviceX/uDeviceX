@@ -12,6 +12,6 @@ static void tex_cells(int *start, int *count) {
 
     size_t offset;
     KL(tex, (64, 512), (start_and_count, start, count, ncells));
-    CC(cudaBindTexture( &offset, &texStartAndCount, start_and_count, &texStartAndCount.channelDesc, sizeof( uint2 ) * ncells));
-
+    CC(cudaBindTexture( &offset, &texStartAndCount, start_and_count,
+                        &texStartAndCount.channelDesc, sizeof( uint2 ) * ncells));
 }
