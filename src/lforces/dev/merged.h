@@ -3,37 +3,10 @@ static __device__ float sqdist(float x, float y, float z,   float x0, float y0, 
     return x*x + y*y + z*z;
 }
 
-static __device__ void merged1(uint mystart, uint mycount, uint tid, uint pshare) {
+static __device__ void merged0(uint mystart, uint mycount, uint myscan, uint tid, uint pshare) {
     float xs, ys, zs;
     float xd, yd, zd;
     float d2;
-    uint myscan;
-
-    myscan  = mycount;
-    asm volatile( "st.volatile.shared.u32 [%0], %1;" ::
-                  "r"( xmad( tid, 8.f, pshare ) ),
-                  "r"( mystart ) :
-                  "memory" );
-    asm( "{ .reg .pred   p;"
-         "  .reg .f32    myscan, theirscan;"
-         "   mov.b32     myscan, %0;"
-         "   shfl.up.b32 theirscan|p, myscan, 0x1, 0x0;"
-         "@p add.f32     myscan, theirscan, myscan;"
-         "   shfl.up.b32 theirscan|p, myscan, 0x2, 0x0;"
-         "@p add.f32     myscan, theirscan, myscan;"
-         "   shfl.up.b32 theirscan|p, myscan, 0x4, 0x0;"
-         "@p add.f32     myscan, theirscan, myscan;"
-         "   shfl.up.b32 theirscan|p, myscan, 0x8, 0x0;"
-         "@p add.f32     myscan, theirscan, myscan;"
-         "   shfl.up.b32 theirscan|p, myscan, 0x10, 0x0;"
-         "@p add.f32     myscan, theirscan, myscan;"
-         "   mov.b32     %0, myscan;"
-         "}" : "+r"( myscan ) );
-    asm volatile( "{    .reg .pred lt15;"
-                  "      setp.lt.f32 lt15, %0, %1;"
-                  "@lt15 st.volatile.shared.u32 [%2+4], %3;"
-                  "}":: "f"( u2f( tid ) ), "f"( u2f( 15u ) ), "r"( xmad( tid, 8.f, pshare ) ), "r"( xsub( myscan, mycount ) ) : "memory" );
-
     uint x13, y13, y14; // TODO: LDS.128
     asm volatile( "ld.volatile.shared.v2.u32 {%0,%1}, [%3+104];" // 104 = 13 x 8-byte uint2
                   "ld.volatile.shared.u32     %2,     [%3+116];" // 116 = 14 x 8-bute uint2 + .y
@@ -114,6 +87,36 @@ static __device__ void merged1(uint mystart, uint mycount, uint tid, uint pshare
     }
     nb = 0;
 }
+
+static __device__ void merged1(uint mystart, uint mycount, uint tid, uint pshare) {
+    uint myscan;
+    myscan  = mycount;
+    asm volatile( "st.volatile.shared.u32 [%0], %1;" ::
+                  "r"( xmad( tid, 8.f, pshare ) ),
+                  "r"( mystart ) :
+                  "memory" );
+    asm( "{ .reg .pred   p;"
+         "  .reg .f32    myscan, theirscan;"
+         "   mov.b32     myscan, %0;"
+         "   shfl.up.b32 theirscan|p, myscan, 0x1, 0x0;"
+         "@p add.f32     myscan, theirscan, myscan;"
+         "   shfl.up.b32 theirscan|p, myscan, 0x2, 0x0;"
+         "@p add.f32     myscan, theirscan, myscan;"
+         "   shfl.up.b32 theirscan|p, myscan, 0x4, 0x0;"
+         "@p add.f32     myscan, theirscan, myscan;"
+         "   shfl.up.b32 theirscan|p, myscan, 0x8, 0x0;"
+         "@p add.f32     myscan, theirscan, myscan;"
+         "   shfl.up.b32 theirscan|p, myscan, 0x10, 0x0;"
+         "@p add.f32     myscan, theirscan, myscan;"
+         "   mov.b32     %0, myscan;"
+         "}" : "+r"( myscan ) );
+    asm volatile( "{    .reg .pred lt15;"
+                  "      setp.lt.f32 lt15, %0, %1;"
+                  "@lt15 st.volatile.shared.u32 [%2+4], %3;"
+                  "}":: "f"( u2f( tid ) ), "f"( u2f( 15u ) ), "r"( xmad( tid, 8.f, pshare ) ), "r"( xsub( myscan, mycount ) ) : "memory" );
+    merged0(mystart, mycount, myscan, tid, pshare);
+}
+
 
 static __device__ void merged2(int cid, uint tid, uint pshare) {
     uint mystart, mycount;
