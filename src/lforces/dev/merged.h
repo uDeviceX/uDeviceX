@@ -9,7 +9,7 @@ static __device__ void merged1(uint dststart, uint lastdst, uint nsrc, uint spid
     float xd, yd, zd;
     float d2;
     uint p, spid, pid, nb = 0;
-    for (p = 0; p < nsrc; p = xadd(p, 32u)) {
+    for (p = 0; p < nsrc; p+=32) {
         pid = p + tid;
         spid = asmb::id(pid, nsrc, tid, pshare);
         cloud_pos(xmin(spid, lastdst), &xs, &ys, &zs);
