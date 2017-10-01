@@ -8,10 +8,9 @@ static __device__ void merged1(uint dststart, uint lastdst, uint nsrc, uint spid
     float xs, ys, zs;
     float xd, yd, zd;
     float d2;
-    uint nb = 0;
-    for (uint p = 0; p < nsrc; p = xadd(p, 32u)) {
-        const uint pid = p + tid;
-        uint spid;
+    uint p, spid, pid, nb = 0;
+    for (p = 0; p < nsrc; p = xadd(p, 32u)) {
+        pid = p + tid;
         asm volatile( "{ .reg .pred p, q, r;"
                       "  .reg .f32  key;"
                       "  .reg .f32  scan3, scan6, scan9;"
