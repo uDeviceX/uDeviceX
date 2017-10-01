@@ -28,12 +28,11 @@
 
 #include "dev/float.h"
 #include "dev/decl.h"
+#include "dev/pack.h"
 namespace asmb {
 #include "dev/asm.h"
 }
 #include "dev/fetch.h"
-
-#include "dev/pack.h"
 #include "cloud/lforces/get.h"
 #include "dev/dpd.h"
 #include "dev/core.h"
