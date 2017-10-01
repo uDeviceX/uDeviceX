@@ -3,6 +3,30 @@ static __device__ float sqdist(float x, float y, float z,   float x0, float y0, 
     return x*x + y*y + z*z;
 }
 
+static __device__ void merged0(uint spid, uint dststart, uint lastdst, uint spidext, uint tid, uint pshare,
+                               /**/ uint *pnb) {
+    float xs, ys, zs;
+    float xd, yd, zd;
+    float d2;
+    uint dpid, nb;
+
+    nb = *pnb;
+
+    cloud_pos(xmin(spid, lastdst), &xs, &ys, &zs);
+    for (dpid = dststart; dpid < lastdst; dpid++) {
+        cloud_pos(dpid, /**/ &xd, &yd, &zd);
+        d2 = sqdist(xd, yd, zd,   xs, ys, zs);
+        asmb::inc(d2, spid, dpid, dststart, lastdst, pshare, /*io*/ &nb);
+        if (nb >= 32u) {
+            core(dststart, pshare, tid, spidext );
+            nb = xsub(nb, 32u);
+            asmb::write(tid, pshare);
+        }
+    }
+
+    *pnb = nb;
+}
+
 static __device__ void merged1(uint dststart, uint lastdst, uint nsrc, uint spidext,
                                uint tid, uint pshare) {
     float xs, ys, zs;
@@ -25,7 +49,7 @@ static __device__ void merged1(uint dststart, uint lastdst, uint nsrc, uint spid
     }
     if (tid < nb) {
         core(dststart, pshare, tid, spidext);
-    }
+   }
 }
 
 static __device__ void merged2(uint tid, uint pshare) {
