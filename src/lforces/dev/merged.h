@@ -84,6 +84,6 @@ static __global__ void merged() {
         offs.z * info.ncells.x * info.ncells.y +
         offs.y * info.ncells.x +
         offs.x;
-    for (it = 0; it < 4 ; it = xadd(it, 1u))
+    for (it = 0; it < 4; it++)
         merged5(it, cbase, tid, pshare);
 }
