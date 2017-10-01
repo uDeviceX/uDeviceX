@@ -9,11 +9,11 @@ static __device__ void merged1(uint dststart, uint lastdst, uint nsrc, uint spid
     float xd, yd, zd;
     float d2;
     uint p, spid, pid, nb = 0;
-    for (p = 0; p < nsrc; p+=32) {
+    for (p = 0; p < nsrc; p += 32) {
         pid = p + tid;
         spid = asmb::id(pid, nsrc, tid, pshare);
         cloud_pos(xmin(spid, lastdst), &xs, &ys, &zs);
-        for (uint dpid = dststart; dpid < lastdst; dpid = xadd( dpid, 1u ) ) {
+        for (uint dpid = dststart; dpid < lastdst; dpid++) {
             cloud_pos(dpid, /**/ &xd, &yd, &zd);
             d2 = sqdist(xd, yd, zd,   xs, ys, zs);
             asmb::inc(d2, spid, dpid, dststart, lastdst, pshare, /*io*/ &nb);
