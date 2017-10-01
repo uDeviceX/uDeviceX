@@ -113,3 +113,10 @@ static __device__ void inc(float d2, uint spid, uint dpid,
 
     *pnb = nb;
 }
+
+static __device__ void write(uint tid, uint pshare) {
+    asm volatile( "{ .reg .u32 tmp;"
+                  "   ld.volatile.shared.u32 tmp, [%0+1024+128];"
+                  "   st.volatile.shared.u32 [%0+1024], tmp;"
+                  "}" :: "r"( xmad( tid, 4.f, pshare ) ) : "memory" );
+}
