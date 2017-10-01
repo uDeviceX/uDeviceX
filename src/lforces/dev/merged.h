@@ -3,7 +3,7 @@ static __device__ float sqdist(float x, float y, float z,   float x0, float y0, 
     return x*x + y*y + z*z;
 }
 
-static __device__ void merged0(uint dststart, uint lastdst, uint nsrc, uint spidext,
+static __device__ void merged1(uint dststart, uint lastdst, uint nsrc, uint spidext,
                                uint mystart, uint myscan, uint tid, uint pshare) {
     float xs, ys, zs;
     float xd, yd, zd;
@@ -77,7 +77,7 @@ static __device__ void merged0(uint dststart, uint lastdst, uint nsrc, uint spid
     nb = 0;
 }
 
-static __device__ void merged1(uint mystart, uint myscan, uint tid, uint pshare) {
+static __device__ void merged2(uint mystart, uint myscan, uint tid, uint pshare) {
     uint dststart, lastdst, nsrc, spidext;
     uint x13, y13, y14;
     asm volatile( "ld.volatile.shared.v2.u32 {%0,%1}, [%3+104];" // 104 = 13 x 8-byte uint2
@@ -87,35 +87,34 @@ static __device__ void merged1(uint mystart, uint myscan, uint tid, uint pshare)
     lastdst  = xsub(xadd(dststart, y14), y13);
     nsrc     = y14;
     spidext  = x13;
-    merged0(dststart, lastdst, nsrc, spidext, mystart, myscan, tid, pshare);
+    merged1(dststart, lastdst, nsrc, spidext, mystart, myscan, tid, pshare);
 }
 
-static __device__ void merged2(uint mystart, uint mycount, uint tid, uint pshare) {
+static __device__ void merged3(uint mystart, uint mycount, uint tid, uint pshare) {
     uint myscan;
     asm volatile("st.volatile.shared.u32 [%0], %1;" ::
                   "r"(xmad(tid, 8.f, pshare)),
                   "r"(mystart) :
                   "memory");
     myscan  = mycount;
-    asmb::scan(&myscan);
-    
+    asmb::scan(&myscan);    
     asm volatile("{    .reg .pred lt15;"
                  "      setp.lt.f32 lt15, %0, %1;"
                  "@lt15 st.volatile.shared.u32 [%2+4], %3;"
                  "}":: "f"(u2f(tid)), "f"(u2f(15u)), "r"(xmad(tid, 8.f, pshare)), "r"(xsub(myscan, mycount)) : "memory");
-    merged1(mystart, myscan, tid, pshare);
+    merged2(mystart, myscan, tid, pshare);
 }
 
-static __device__ void merged3(int cid, uint tid, uint pshare) {
+static __device__ void merged4(int cid, uint tid, uint pshare) {
     uint mystart, mycount;
     asmb::c2loc(cid, tid, /**/ &mystart, &mycount);
-    merged2(mystart, mycount, tid, pshare);
+    merged3(mystart, mycount, tid, pshare);
 }
 
-static __device__ void merged4(uint it, int cbase, uint tid, uint pshare) {
+static __device__ void merged5(uint it, int cbase, uint tid, uint pshare) {
     int cid;
     cid = asmb::get_cid(it, cbase);
-    merged3(cid, tid, pshare);
+    merged4(cid, tid, pshare);
 }
 
 static __global__ void merged() {
@@ -134,5 +133,5 @@ static __global__ void merged() {
         offs.y * info.ncells.x +
         offs.x;
     for (it = 0; it < 4 ; it = xadd(it, 1u))
-        merged4(it, cbase, tid, pshare);
+        merged5(it, cbase, tid, pshare);
 }
