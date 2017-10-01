@@ -8,18 +8,15 @@ static __device__ float* id2ff(uint pid) {
 }
 static __device__ void core0(uint dpid, uint spid, uint spidext) {
     forces::Fo f;
+    float *ff;
     dpd(dpid, spid, /**/ &f);
-    uint off  = dpid & 0x0000001FU;
-    uint base = xdiv(dpid, 1 / 32.f);
-    float* ff = info.ff + xmad(base, 96.f, off);
+    ff = id2ff(dpid);
     atomicAdd(ff     , f.x);
     atomicAdd(ff + 32, f.y);
     atomicAdd(ff + 64, f.z);
 
     if (spid < spidext) {
-        uint off  = spid & 0x0000001FU;
-        uint base = xdiv(spid, 1 / 32.f);
-        float* ff = info.ff + xmad(base, 96.f, off);
+        ff = id2ff(spid);
         atomicAdd(ff     , -f.x);
         atomicAdd(ff + 32, -f.y);
         atomicAdd(ff + 64, -f.z);
