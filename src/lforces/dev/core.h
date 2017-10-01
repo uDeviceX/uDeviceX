@@ -1,3 +1,11 @@
+static __device__ float* id2ff(uint id) {
+    uint off, base;
+    float* ff;
+    off  = dpid & 0x0000001FU;
+    base = xdiv(dpid, 1 / 32.f);
+    ff = info.ff + xmad(base, 96.f, off);
+    return ff;
+}
 static __device__ void core0(uint dpid, uint spid, uint spidext) {
     forces::Fo f;
     dpd(dpid, spid, /**/ &f);
