@@ -16,20 +16,10 @@ analogies to
 Toocha (heavy cloud in Russian) is an abstract object which acts like
 a pointer to `Fo`. Supported operations are
 
-	shift(int i, /**/ Toocha *t)
-
-	plus0 (Fo f, /**/ Toocha t)
-	minus0(Fo f, /**/ Toocha t)
-
 	plus  (Fo f, int i, /**/ Toocha t)
 	minus (Fo f, int i, /**/ Toocha t)
 
 analogies to
-
-	t += i
-
-	(*t) += f
-	(*t) -= f
 
 	t[i] += f
 	t[i] -= f
