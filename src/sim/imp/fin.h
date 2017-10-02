@@ -18,6 +18,12 @@ static void fin_bb_exch(/**/ BBexch *e) {
     fin(&e->um);
 }
 
+static void fin_rbc_distr(/**/ RbcDistr *d) {
+    using namespace distr::rbc;
+    fin(/**/ &d->p);
+    fin(/**/ &d->c);
+    fin(/**/ &d->u);
+}
 
 void fin() {
     bbhalo::fin();
@@ -92,9 +98,7 @@ void fin() {
         rbc::free_quants(&r::q);
         rbc::destroy_textures(&r::tt);
 
-        distr::rbc::fin(/**/ &r::d.p);
-        distr::rbc::fin(/**/ &r::d.c);
-        distr::rbc::fin(/**/ &r::d.u);
+        fin_rbc_distr(/**/ &r::d);
         
         Dfree(r::ff);
     }
