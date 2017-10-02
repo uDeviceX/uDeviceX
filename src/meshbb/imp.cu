@@ -70,4 +70,8 @@ void collect_rig_momentum(int ns, int nt, int nv, const int4 *tt, const Particle
     KL(dev::collect_rig_mom, (k_cnf(ns * nt)), (ns, nt, nv, tt, pp, mm, /**/ ss));
 }
 
+void collect_rbc_momentum(int nc, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Force *ff) {
+    KL(dev::collect_rbc_mom, (k_cnf(nc * nt)), (nc, nt, nv, tt, pp, mm, /**/ ff));
+}
+
 } // meshbb

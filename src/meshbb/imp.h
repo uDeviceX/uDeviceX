@@ -16,6 +16,6 @@ void select_collisions(int n, /**/ BBdata d);
 void bounce(int n, BBdata d, const Force *ff, int nt, int nv, const int4 *tt, const Particle *i_pp, /**/ Particle *pp, Momentum *mm);
 
 void collect_rig_momentum(int ns, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Solid *ss);
-// void collect_momentum(int ns, int nt, int nv, const int4 *tt, const Momentum *mm, /**/ Particle *pp);
+void collect_rbc_momentum(int nc, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Force *ff);
 
 } // meshbb
