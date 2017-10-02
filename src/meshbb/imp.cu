@@ -66,7 +66,7 @@ void bounce(int n, BBdata d, const Force *ff, int nt, int nv, const int4 *tt, co
 }
 
 
-void collect_momentum(int ns, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Solid *ss) {
+void collect_rig_momentum(int ns, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Solid *ss) {
     KL(dev::collect_rig_mom, (k_cnf(ns * nt)), (ns, nt, nv, tt, pp, mm, /**/ ss));
 }
 

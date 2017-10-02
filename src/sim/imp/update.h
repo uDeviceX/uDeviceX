@@ -110,7 +110,7 @@ void bounce_solid_v2(long it) {
     exch::mesh::unpack_mom(nt, &s::e.p, &s::e.um, /**/ bb::mm);
     
     /* gather bb momentum */
-    meshbb::collect_momentum(nm, nt, nv, tt, i_pp, bb::mm, /**/ s::q.ss);
+    meshbb::collect_rig_momentum(nm, nt, nv, tt, i_pp, bb::mm, /**/ s::q.ss);
 }
 
 void update_solvent(long it) {

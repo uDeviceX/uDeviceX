@@ -15,7 +15,7 @@ void find_collisions(int nm, int nt, int nv, const int4 *tt, const Particle *i_p
 void select_collisions(int n, /**/ BBdata d);
 void bounce(int n, BBdata d, const Force *ff, int nt, int nv, const int4 *tt, const Particle *i_pp, /**/ Particle *pp, Momentum *mm);
 
-void collect_momentum(int ns, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Solid *ss);
-/* TODO collect for rbcs */
+void collect_rig_momentum(int ns, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Solid *ss);
+// void collect_momentum(int ns, int nt, int nv, const int4 *tt, const Momentum *mm, /**/ Particle *pp);
 
 } // meshbb
