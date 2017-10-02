@@ -43,5 +43,44 @@ __global__ void collect_rig_mom(int ns, int nt, int nv, const int4 *tt, const Pa
     }
 }
 
+static __device__ void addForce(const real3_t f, int i, Force *ff) {
+    enum {X, Y, Z};
+    atomicAdd(ff[i].f + X, f.x);
+    atomicAdd(ff[i].f + Y, f.y);
+    atomicAdd(ff[i].f + Z, f.z);
+}
+
+__global__ void collect_rbc_mom(int nc, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Force *ff) {
+    int i, cid, tid;
+    int4 t;
+    i = threadIdx.x + blockDim.x * blockIdx.x;
+
+    tid = i % nt;
+    cid = i / nt;
+
+    if (cid >= nc) return;
+
+    Momentum m = mm[i];
+
+    if (nonzero(&m)) {
+        rPa A, B, C;
+        real3_t fa, fb, fc;
+
+        t = tt[tid];
+        t.x += cid * nv;
+        t.y += cid * nv;
+        t.z += cid * nv;
+        
+        A = P2rP( pp + t.x );
+        B = P2rP( pp + t.y );
+        C = P2rP( pp + t.z );
+
+        M2f(m, A.r, B.r, C.r, /**/ &fa, &fb, &fc);
+
+        addForce(fa, t.x, /**/ ff);
+        addForce(fb, t.y, /**/ ff);
+        addForce(fc, t.z, /**/ ff);
+    }
+}
 
 } // dev
