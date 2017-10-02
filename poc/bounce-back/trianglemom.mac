@@ -16,9 +16,14 @@ y(u, v) := transf(u, v, yA, yB, yC) - transf(u0, v0, yA, yB, yC)$
 z(u, v) := transf(u, v, zA, zB, zC) - transf(u0, v0, zA, zB, zC)$
 */
 
-x(u, v) := transf(u, v, xA, xB, xC);
-y(u, v) := transf(u, v, yA, yB, yC);
-z(u, v) := transf(u, v, zA, zB, zC);
+/* center of mass */
+cx: (xA + xB + xC) / 3;
+cy: (yA + yB + yC) / 3;
+cz: (zA + zB + zC) / 3;
+
+x(u, v) := transf(u, v, xA, xB, xC) - cx;
+y(u, v) := transf(u, v, yA, yB, yC) - cy;
+z(u, v) := transf(u, v, zA, zB, zC) - cz;
 
 /* density */
 area: Jacobian;
