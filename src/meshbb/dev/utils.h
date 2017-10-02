@@ -79,47 +79,45 @@ __device__ bool nonzero(const Momentum *m) {
 }
 
 enum {XX, XY, XZ, YY, YZ, ZZ};
-/* see /poc/bounce-back/inertia.cpp */
+/* see /poc/bounce-back/trianglemom.mac */
 
-static __device__ float Moment(const int d, const float A[3], const float B[3], const float C[3]) {
-    return 0.25f * (A[d] * A[d] +
-                    A[d] * B[d] +
-                    B[d] * B[d] +
-                    (A[d] + B[d]) * C[d] +
-                    C[d] * C[d]);
+/* inertia tensor w.r.t. com of triangle */
+static __device__ void compute_I(const real3_t a, const real3_t b, const real3_t c, /**/ real_t I[6]) {
+
+    real3_t M, d, e;
+    const real_t inv_12 = 1.f/12.f;
+    const real_t inv_24 = 1.f/24.f;
+
+    M.x = inv_12 * (a.x * a.x - a.x * b.x + b.x * b.x - c.x * (a.x + b.x) + c.x * c.x);
+    M.y = inv_12 * (a.y * a.y - a.y * b.y + b.y * b.y - c.y * (a.y + b.y) + c.y * c.y);
+    M.z = inv_12 * (a.z * a.z - a.z * b.z + b.z * b.z - c.z * (a.z + b.z) + c.z * c.z);
+
+    d.x = 2 * a.x - b.x - c.x;
+    d.y = 2 * b.x - a.x - c.x;
+    d.z = 2 * c.x - a.x - b.x;
+
+    e.x = 2 * a.y - b.y - c.y;
+    e.y = 2 * b.y - a.y - c.y;
+    e.z = 2 * c.y - a.y - b.y;
+
+    I[XX] = M.y + M.z;
+    I[YY] = M.x + M.z;
+    I[ZZ] = M.x + M.y;
+
+    I[XY] = - inv_24 * (d.x * a.y + d.y * b.y + d.z * c.y);
+    I[XZ] = - inv_24 * (d.x * a.z + d.y * b.z + d.z * c.z);
+    I[YZ] = - inv_24 * (e.x * a.z + e.y * b.z + e.z * c.z);
 }
 
-static __device__ void compute_I(const float A[3], const float B[3], const float C[3], /**/ float I[6]) {
-    
-    const float Mxx = Moment(X, A, B, C);
-    const float Myy = Moment(Y, A, B, C);
-    const float Mzz = Moment(Z, A, B, C);
-
-    const float D1 = C[X] + B[X] + 2 * A[X];
-    const float D2 = C[X] + 2 * B[X] + A[X];
-    const float D3 = 2 * C[X] + B[X] + A[X];
-
-    const float D4 = C[Y] + B[Y] + 2 * A[Y];
-    const float D5 = C[Y] + 2 * B[Y] + A[Y];
-    const float D6 = 2 * C[Y] + B[Y] + A[Y];
-    
-    I[XX] = Myy + Mzz;
-    I[XY] = -0.125f * (D1 * A[Y] + D2 * B[Y] + D3 * C[Y]);
-    I[XY] = -0.125f * (D1 * A[Z] + D2 * B[Z] + D3 * C[Z]);
-    I[YY] = Mzz + Mxx;
-    I[YZ] = -0.125f * (D4 * A[Z] + D5 * B[Z] + D6 * C[Z]);
-    I[ZZ] = Myy + Mxx;
-}
-
-static __device__ void inverse(const float A[6], /**/ float I[6]) {
+static __device__ void inverse(const real_t A[6], /**/ real_t I[6]) {
 
     /* minors */
-    const float mx = A[YY] * A[ZZ] - A[YZ] * A[YZ];
-    const float my = A[XY] * A[ZZ] - A[XZ] * A[YZ];
-    const float mz = A[XY] * A[YZ] - A[XZ] * A[YY];
+    const real_t mx = A[YY] * A[ZZ] - A[YZ] * A[YZ];
+    const real_t my = A[XY] * A[ZZ] - A[XZ] * A[YZ];
+    const real_t mz = A[XY] * A[YZ] - A[XZ] * A[YY];
 
     /* inverse determinant */
-    float idet = mx * A[XX] - my * A[XY] + mz * A[XZ];
+    real_t idet = mx * A[XX] - my * A[XY] + mz * A[XZ];
     assert( fabs(idet) > 1e-8f );
     idet = 1.f / idet;    
     
@@ -131,31 +129,42 @@ static __device__ void inverse(const float A[6], /**/ float I[6]) {
     I[ZZ] =  idet * (A[XX] * A[YY] - A[XY] * A[XY]);
 }
 
-static __device__ void v2f(const float r[3], const float om[3], const float v[3], /**/ float f[3]) {
+static __device__ void v2f(const real3_t r, const real3_t om, const real3_t v, /**/ real3_t *f) {
     const float fac = rbc_mass / dt;
-    f[X] = fac * (v[X] + r[Y] * om[Z] - r[Z] * om[Y]);
-    f[Y] = fac * (v[Y] + r[Z] * om[X] - r[X] * om[Z]);
-    f[Z] = fac * (v[Z] + r[X] * om[Y] - r[Y] * om[X]);
+    f->x = fac * (v.x + r.y * om.z - r.z * om.y);
+    f->y = fac * (v.y + r.z * om.x - r.x * om.z);
+    f->z = fac * (v.z + r.x * om.y - r.y * om.x);
 }
 
-__device__ void M2f(const Momentum m, const float a[3], const float b[3], const float c[3],
-              /**/ float fa[3], float fb[3], float fc[3]) {
+__device__ void M2f(const Momentum m, real3_t a, real3_t b, real3_t c,
+                    /**/ real3_t *fa, real3_t *fb, real3_t *fc) {
 
-    float I[6] = {0}, Iinv[6], om[3], v[3];
-    const float fac = 1.f / (3.f * rbc_mass);
+    real_t I[6] = {0}, Iinv[6];
+    real3_t om, v, com;
+
+    const real_t fac = 1.f / (3.f * rbc_mass);
     
     compute_I(a, b, c, /**/ I);
     inverse(I, /**/ Iinv);
 
-    /* angular velocity to be added (w.r.t. origin) */
-    om[X] = fac * (I[XX] * m.L[X] + I[XY] * m.L[Y] + I[XZ] * m.L[Z]);
-    om[Y] = fac * (I[XY] * m.L[X] + I[YY] * m.L[Y] + I[YZ] * m.L[Z]);
-    om[Z] = fac * (I[XZ] * m.L[X] + I[YZ] * m.L[Y] + I[ZZ] * m.L[Z]);
+    /* angular velocity to be added (w.r.t. com of triangle) */
+    om.x = fac * (I[XX] * m.L[X] + I[XY] * m.L[Y] + I[XZ] * m.L[Z]);
+    om.y = fac * (I[XY] * m.L[X] + I[YY] * m.L[Y] + I[YZ] * m.L[Z]);
+    om.z = fac * (I[XZ] * m.L[X] + I[YZ] * m.L[Y] + I[ZZ] * m.L[Z]);
 
     /* linear velocity to be added */
-    v[X] =  fac * (m.P[X]);
-    v[Y] =  fac * (m.P[Y]);
-    v[Z] =  fac * (m.P[Z]);
+    v.x =  fac * (m.P[X]);
+    v.y =  fac * (m.P[Y]);
+    v.z =  fac * (m.P[Z]);
+
+    /* referential is com of triangle, shift it */
+    com.x = 0.333333f * (a.x + b.x + c.x);
+    com.y = 0.333333f * (a.y + b.y + c.y);
+    com.z = 0.333333f * (a.z + b.z + c.z);
+
+    a.x -= com.x;
+    a.y -= com.y;
+    a.z -= com.z;
 
     v2f(a, om, v, /**/ fa);
     v2f(b, om, v, /**/ fb);
