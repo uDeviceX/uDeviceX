@@ -25,6 +25,14 @@ static void ini_rbc_distr(int nv, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /*
     ini(nv, /**/ &d->u);
 }
 
+static void ini_rig_distr(int nv, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ RigDistr *d) {
+    using namespace distr::rig;
+    ini(nv, /**/ &d->p);
+    ini(comm, /*io*/ tg, /**/ &d->c);
+    ini(nv, /**/ &d->u);
+}
+
+
 void ini() {
     basetags::ini(&tag_gen);
     datatype::ini();
@@ -99,10 +107,7 @@ void ini() {
         ini(MAX_PART_NUM, /**/ &bb::bbd);
         Dalloc(&bb::mm, MAX_PART_NUM);
 
-        int nv = s::q.nv;
-        distr::rig::ini(nv, &s::d.p);
-        distr::rig::ini(m::cart, /*io*/ &tag_gen, /**/ &s::d.c);
-        distr::rig::ini(nv, &s::d.u);
+        ini_rig_distr(s::q.nv, m::cart, /*io*/ &tag_gen, /**/ &s::d);
 
         if (sbounce_back)
             ini_bb_exch(m::cart, /*io*/ &tag_gen, /**/ &s::e);

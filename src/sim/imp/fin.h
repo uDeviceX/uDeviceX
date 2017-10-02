@@ -25,6 +25,13 @@ static void fin_rbc_distr(/**/ RbcDistr *d) {
     fin(/**/ &d->u);
 }
 
+static void fin_rig_distr(/**/ RigDistr *d) {
+    using namespace distr::rig;
+    fin(/**/ &d->p);
+    fin(/**/ &d->c);
+    fin(/**/ &d->u);
+}
+
 void fin() {
     bbhalo::fin();
     cnt::fin();
@@ -86,10 +93,8 @@ void fin() {
         fin(/**/ &bb::bbd);
         Dfree(bb::mm);
 
-        distr::rig::fin(&s::d.p);
-        distr::rig::fin(&s::d.c);
-        distr::rig::fin(&s::d.u);
-
+        fin_rig_distr(/**/ &s::d);
+        
         if (sbounce_back)
             fin_bb_exch(/**/ &s::e);
     }
