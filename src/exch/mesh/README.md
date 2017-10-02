@@ -4,11 +4,11 @@
 mesh exchanger: exchange overlapping meshes accross nodes  
 used for coloring solvent  
 
-## options (TODO)
+## options
 * send back total linear and angular momentum of each rig object (rig bounce-back)
 * send back linear and angular momentum for each triangle (rbc bounce-back)
 
-## compressed Momentum arrays `mm` (TODO)
+## compressed Momentum arrays `mm`
 
 most triangle do not collide with pp at every timestep -> compress `mm`
 
