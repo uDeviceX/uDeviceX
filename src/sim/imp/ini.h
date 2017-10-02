@@ -18,6 +18,13 @@ static void ini_bb_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ BBexch 
     ini(MAX_FACE_NUM, MAX_CELL_NUM, &e->um);
 }
 
+static void ini_rbc_distr(int nv, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ RbcDistr *d) {
+    using namespace distr::rbc;
+    ini(nv, /**/ &d->p);
+    ini(comm, /**/ tg, /**/ &d->c);
+    ini(nv, /**/ &d->u);
+}
+
 void ini() {
     basetags::ini(&tag_gen);
     datatype::ini();
@@ -25,9 +32,7 @@ void ini() {
         Dalloc(&r::ff, MAX_PART_NUM);
         rbc::alloc_quants(&r::q);
 
-        distr::rbc::ini(r::q.nv, /**/ &r::d.p);
-        distr::rbc::ini(m::cart, /**/ &tag_gen, /**/ &r::d.c);
-        distr::rbc::ini(r::q.nv, /**/ &r::d.u);
+        ini_rbc_distr(r::q.nv, m::cart, /*io*/ &tag_gen, /**/ &r::d);
     }
     
     if (fsiforces) fsi::ini();
