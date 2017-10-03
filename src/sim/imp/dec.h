@@ -12,7 +12,7 @@ flu::TicketRND trnd; /* random            */
 flu::QuantsI     qi; /* global [i]ds      */
 flu::QuantsI     qc; /* [c]olors          */
 
-Distr d;
+FluDistr d;
 
 /* [h]alo interactions : local halos : see type.h */
 H h;

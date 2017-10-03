@@ -18,6 +18,13 @@ static void fin_bb_exch(/**/ BBexch *e) {
     fin(&e->um);
 }
 
+static void fin_flu_distr(/**/ FluDistr *d) {
+    using namespace distr::flu;
+    fin(/**/ &d->p);
+    fin(/**/ &d->c);
+    fin(/**/ &d->u);
+}
+
 static void fin_rbc_distr(/**/ RbcDistr *d) {
     using namespace distr::rbc;
     fin(/**/ &d->p);
@@ -56,10 +63,8 @@ void fin() {
     dpdr::free_ticketrnd(&o::h.trnd);
     dpdr::free_ticketSh(&o::h.ts);
     dpdr::free_ticketRh(&o::h.tr);
-    
-    distr::flu::fin(/**/ &o::d.p);
-    distr::flu::fin(/**/ &o::d.c);
-    distr::flu::fin(/**/ &o::d.u);
+
+    fin_flu_distr(/**/ &o::d);
     
     if (global_ids) {
         flu::free_quantsI(&o::qi);

@@ -18,6 +18,14 @@ static void ini_bb_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ BBexch 
     ini(MAX_FACE_NUM, MAX_CELL_NUM, &e->um);
 }
 
+static void ini_flu_distr(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ FluDistr *d) {
+    using namespace distr::flu;
+    float maxdensity = ODSTR_FACTOR * numberdensity;
+    ini(maxdensity, /**/ &d->p);
+    ini(comm, /**/ tg, /**/ &d->c);
+    ini(maxdensity, /**/ &d->u);
+}
+
 static void ini_rbc_distr(int nv, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ RbcDistr *d) {
     using namespace distr::rbc;
     ini(nv, /**/ &d->p);
@@ -31,7 +39,6 @@ static void ini_rig_distr(int nv, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /*
     ini(comm, /*io*/ tg, /**/ &d->c);
     ini(nv, /**/ &d->u);
 }
-
 
 void ini() {
     basetags::ini(&tag_gen);
@@ -62,10 +69,7 @@ void ini() {
     flu::alloc_quants(&o::q);
     flu::alloc_ticketZ(&o::tz);
 
-    float maxdensity = ODSTR_FACTOR * numberdensity;
-    distr::flu::ini(maxdensity, /**/ &o::d.p);
-    distr::flu::ini(m::cart, /**/ &tag_gen, /**/ &o::d.c);
-    distr::flu::ini(maxdensity, /**/ &o::d.u);
+    ini_flu_distr(m::cart, /*io*/ &tag_gen, /**/ &o::d);
 
     dpdr::ini_ticketcom(m::cart, &tag_gen, &o::h.tc);
     dpdr::ini_ticketrnd(o::h.tc, /**/ &o::h.trnd);
