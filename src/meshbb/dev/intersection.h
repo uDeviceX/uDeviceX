@@ -6,15 +6,15 @@ typedef double3 real3;
 static __device__ bool valid(real t) {return (t >= 0 && t <= dt);}
 
 static __device__ bool cubic_root(real a, real b, real c, real d, /**/ real *h) {
-    const real eps = 1e-6;
-    real h1, h2, h3, b_, c_, d_;
+    const real eps = 1e-8;
+    real h1, h2, h3;
     
     if (fabs(a) > eps) { // cubic
-        b_ = b /= a;
-        c_ = c /= a;
-        d_ = d /= a;
+        b /= a;
+        c /= a;
+        d /= a;
             
-        int nsol = roots::cubic(b_, c_, d_, &h1, &h2, &h3);
+        int nsol = roots::cubic(b, c, d, &h1, &h2, &h3);
 
         if (valid(h1))             {*h = h1; return true;}
         if (nsol > 1 && valid(h2)) {*h = h2; return true;}
