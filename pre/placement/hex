@@ -43,7 +43,7 @@ BEGIN {
 	   ngen++
        }
     }
-    printf "cph: generated: %d cells\n", ngen > "/dev/stderr"
+    msg(sprintf("hex: generated: %d cells", ngen))
 }
 
 function msg(s) { printf "%s\n", s | "cat >&2" }
