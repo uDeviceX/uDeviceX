@@ -7,12 +7,17 @@ static void ini_obj_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Objexc
     ini(MAX_OBJ_DENSITY, &e->uf);    
 }
 
-static void ini_bb_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ BBexch *e) {
+static void ini_mesh_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Mexch *e) {
     using namespace exch::mesh;
     ini(MAX_VERT_NUM, MAX_CELL_NUM, &e->p);
     ini(m::cart, /*io*/ &tag_gen, /**/ &e->c);
     ini(MAX_VERT_NUM, MAX_CELL_NUM, &e->u);
+}
 
+static void ini_bb_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ BBexch *e) {
+    ini_mesh_exch(comm, /*io*/ tg, /**/ e);
+
+    using namespace exch::mesh;
     ini(MAX_FACE_NUM, MAX_CELL_NUM, &e->pm);
     ini(comm, /*io*/ tg, /**/ &e->cm);
     ini(MAX_FACE_NUM, MAX_CELL_NUM, &e->um);
@@ -91,9 +96,7 @@ void ini() {
     }
 
     if (multi_solvent && rbcs) {
-        exch::mesh::ini(MAX_VERT_NUM, MAX_CELL_NUM, &mc::e.p);
-        exch::mesh::ini(m::cart, /*io*/ &tag_gen, /**/ &mc::e.c);
-        exch::mesh::ini(MAX_VERT_NUM, MAX_CELL_NUM, &mc::e.u);
+        ini_mesh_exch(m::cart, /*io*/ &tag_gen, &mc::e);
         Dalloc(&mc::pp, MAX_PART_NUM);
     }
     

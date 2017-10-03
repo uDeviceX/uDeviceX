@@ -7,12 +7,17 @@ static void fin_obj_exch(/**/ Objexch *e) {
     fin(&e->uf);
 }
 
-static void fin_bb_exch(/**/ BBexch *e) {
+static void fin_mesh_exch(/**/ Mexch *e) {
     using namespace exch::mesh;
     fin(&e->p);
     fin(&e->c);
     fin(&e->u);
+}
 
+static void fin_bb_exch(/**/ BBexch *e) {
+    fin_mesh_exch(/**/ e);
+    
+    using namespace exch::mesh;
     fin(&e->pm);
     fin(&e->cm);
     fin(&e->um);
@@ -79,9 +84,7 @@ void fin() {
     }
 
     if (multi_solvent && rbcs) {
-        exch::mesh::fin(/**/ &mc::e.p);
-        exch::mesh::fin(/**/ &mc::e.c);
-        exch::mesh::fin(/**/ &mc::e.u);
+        fin_mesh_exch(/**/ &mc::e);
         Dfree(mc::pp);
     }
 
