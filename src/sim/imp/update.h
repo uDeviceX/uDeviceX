@@ -125,7 +125,7 @@ void update_rbc(long it) {
     scheme::move(rbc_mass, r::q.pp, r::ff, r::q.n);
 }
 
-void bounce() {
+void bounce_wall() {
     sdf::bounce(&w::qsdf, o::q.n, /**/ o::q.pp);
     // if (rbcs) sdf::bounce(&w::qsdf, r::q.n, /**/ r::q.pp);
 }
