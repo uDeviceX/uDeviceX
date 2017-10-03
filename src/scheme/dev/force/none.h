@@ -1,1 +1,1 @@
-__global__ void force(float, float, int, const Particle*, /**/ Force*) { }
+__global__ void force(float, Fparams, int, const Particle*, /**/ Force*) { }
