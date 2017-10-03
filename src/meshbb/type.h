@@ -1,3 +1,6 @@
+// typedef double   real_t;
+// typedef double3 real3_t;
+
 typedef float   real_t;
 typedef float3 real3_t;
 
