@@ -1,38 +1,35 @@
 namespace dev {
-#define sq(a) ((a)*(a))
-#define abscross2(a, b)                         \
-    (sq((a).y*(b).z - (a).z*(b).y) +            \
-     sq((a).z*(b).x - (a).x*(b).z) +            \
-     sq((a).x*(b).y - (a).y*(b).x))
-#define abscross(a, b) sqrtf(abscross2(a, b)) /* |a x b| */
-
-#define cross(a, b) make_float3                 \
-    ((a).y*(b).z - (a).z*(b).y,                 \
-     (a).z*(b).x - (a).x*(b).z,                 \
-     (a).x*(b).y - (a).y*(b).x)
 
 /* forces from one triangle */  
-__device__ float3 tri(float3 r1, float3 r2, float3 r3, float area, float volume) {
+__device__ float3 tri(const float3 r1, const float3 r2, const float3 r3, const float area, const float volume) {
     float Ak, A0, n_2, coefArea, coeffVol,
         r, xx, IbforceI_wcl, kp, IbforceI_pow, ka0, kv0, x0, l0, lmax,
         kbToverp;
 
-    float3 x21 = r2 - r1, x32 = r3 - r2, x31 = r3 - r1;
-    float3 nn = cross(x21, x31); /* normal */
+    float3 x21, x32, x31, nn, f = make_float3(0, 0, 0);
+
+    diff(&r2, &r1, /**/ &x21);
+    diff(&r3, &r2, /**/ &x32);
+    diff(&r3, &r1, /**/ &x31);
+
+    cross(&x21, &x31, /**/ &nn); /* normal */
 
     Ak = 0.5 * sqrtf(dot(nn, nn));
 
     A0 = RBCtotArea / (2.0 * RBCnv - 4.);
     n_2 = 1.0 / Ak;
     ka0 = RBCka / RBCtotArea;
-    coefArea =
-        -0.25f * (ka0 * (area - RBCtotArea) * n_2) -
-        RBCkd * (Ak - A0) / (4. * A0 * Ak);
+    coefArea = -0.25f * (ka0 * (area - RBCtotArea) * n_2)
+        - RBCkd * (Ak - A0) / (4. * A0 * Ak);
 
     kv0 = RBCkv / (6.0 * RBCtotVolume);
     coeffVol = kv0 * (volume - RBCtotVolume);
-    float3 addFArea = coefArea * cross(nn, x32);
-    float3 addFVolume = coeffVol * cross(r3, r2);
+
+    float3 nnx32, r3r2;
+    cross(&nn, &x32, /**/ &nnx32);
+    axpy(&nnx32, coefArea, /**/ &f); /* area force */
+    cross(&r3, &r2, /**/ &r3r2);
+    axpy(&r3r2, coeffVol, /**/ &f); /* vol force */
 
     r = sqrtf(dot(x21, x21));
     r = r < 0.0001f ? 0.0001f : r;
@@ -51,16 +48,23 @@ __device__ float3 tri(float3 r1, float3 r2, float3 r3, float area, float volume)
             (4 * RBCp * (x0 - 1) * (x0 - 1));
     IbforceI_pow = -kp / powf(r, RBCmpow) / r;
 
-    return addFArea + addFVolume + (IbforceI_wcl + IbforceI_pow) * x21;
+    axpy(&x21, IbforceI_wcl + IbforceI_pow, /**/ &f); /* wcl and pow forces */
+    return f;
 }
 
 __device__ float3 visc(float3 r1, float3 r2,
                        float3 u1, float3 u2) {
-    float3 du = u2 - u1, dr = r1 - r2;
-    float gammaC = RBCgammaC, gammaT = 3.0 * RBCgammaC;
+    const float gammaC = RBCgammaC, gammaT = 3.0 * RBCgammaC;
+    float3 du, dr, f = make_float3(0, 0, 0);
+    diff(&u2, &u1, /**/ &du);
+    diff(&r1, &r2, /**/ &dr);
 
-    return gammaT                             * du +
-        gammaC * dot(du, dr) / dot(dr, dr) * dr;
+    const float fac = dot<float>(&du, &dr) / dot<float>(&dr, &dr); 
+    
+    axpy(&du, gammaT      , /**/ &f);
+    axpy(&dr, gammaC * fac, /**/ &f);
+    
+    return f;
 }
 
 /* forces from one dihedral */
@@ -70,11 +74,19 @@ __device__ float3 dihedral(float3 r1, float3 r2, float3 r3,
     float overIksiI, overIdzeI, cosTheta, IsinThetaI2, sinTheta_1,
         beta, b11, b12, phi, sint0kb, cost0kb;
 
-    float3 ksi = cross(r1 - r2, r1 - r3), dze = cross(r3 - r4, r2 - r4);
-    overIksiI = rsqrtf(dot(ksi, ksi));
-    overIdzeI = rsqrtf(dot(dze, dze));
+    float3 r12, r13, r34, r24, ksi, dze;
+    diff(&r1, &r2, /**/ &r12);
+    diff(&r1, &r3, /**/ &r13);
+    diff(&r3, &r4, /**/ &r34);
+    diff(&r2, &r4, /**/ &r24);
 
-    cosTheta = dot(ksi, dze) * overIksiI * overIdzeI;
+    cross(&r12, &r13, /**/ &ksi);
+    cross(&r34, &r24, /**/ &dze);    
+
+    overIksiI = rsqrtf(dot<float>(&ksi, &ksi));
+    overIdzeI = rsqrtf(dot<float>(&dze, &dze));
+
+    cosTheta = dot<float>(&ksi, &dze) * overIksiI * overIdzeI;
     IsinThetaI2 = 1.0f - cosTheta * cosTheta;
 
     sinTheta_1 = copysignf
@@ -90,17 +102,41 @@ __device__ float3 dihedral(float3 r1, float3 r2, float3 r3,
     b12 =  beta * overIksiI * overIdzeI;
 
     if (update == 1) {
-        return b11 * cross(ksi, r3 - r2) + b12 * cross(dze, r3 - r2);
-    } else if (update == 2) {
+        float3 r32, f1, f;
+        diff(&r3, &r2, /**/ &r32);
+        cross(&ksi, &r32, /**/ &f);
+        cross(&dze, &r32, /**/ &f1);
+        scal(b11, /**/ &f);
+        axpy(&f1, b12, /**/ &f);
+        return f;
+    }
+    else if (update == 2) {
+        float3 f, f1, f2, f3;
         float b22 = -beta * cosTheta * overIdzeI * overIdzeI;
-        return  b11 *  cross(ksi, r1 - r3) +
-            b12 * (cross(ksi, r3 - r4) + cross(dze, r1 - r3)) +
-            b22 *  cross(dze, r3 - r4);
-    } else
-    return make_float3(0, 0, 0);
+
+        cross(&ksi, &r13, /**/ &f);
+        cross(&ksi, &r34, /**/ &f1);
+        cross(&dze, &r13, /**/ &f2);
+        cross(&dze, &r34, /**/ &f3);
+
+        scal(b11, /**/ &f);
+        add(&f2, /**/ &f1);
+        axpy(&f1, b12, /**/ &f);
+        axpy(&f3, b22, /**/ &f);
+        
+        return f;
+    }
+    else
+        return make_float3(0, 0, 0);
 }
 
-__device__ float area0(float3 v0, float3 r1, float3 r2) { return 0.5f * abscross(r1 - v0, r2 - v0); }
+__device__ float area0(const float3 v0, const float3 r1, const float3 r2) {
+    float3 x1, x2, n;
+    diff(&r1, &v0, /**/ &x1);
+    diff(&r2, &v0, /**/ &x2);
+    cross(&x1, &x2, /**/ &n);
+    return 0.5f * sqrtf(dot<float>(&n, &n));
+}
 __device__ float volume0(float3 v0, float3 r1, float3 r2) {
     return                                      \
         0.1666666667f *
