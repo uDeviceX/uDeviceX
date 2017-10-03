@@ -16,6 +16,7 @@ void step(scheme::Fparams *fpar, bool wall0, int it) {
     if (VCON) {
         sample(it, o::q.n, o::q.pp, o::q.cells.starts, /**/ &o::vcont);
         adjust(it, /**/ &o::vcont, fpar);
+        log(it, &o::vcont);
     }
     
     if (wall0) bounce_wall();

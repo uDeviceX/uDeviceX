@@ -248,6 +248,10 @@
   #define VCON_ADJUST_FREQ (500)
 #endif
 
+#ifndef VCON_LOG_FREQ
+  #define VCON_LOG_FREQ (0)
+#endif
+
 #ifndef VCON_VX
   #define VCON_VX (1.f)
 #endif

@@ -19,3 +19,4 @@ void fin(/**/ PidVCont *cont);
 
 void sample(int n, const Particle *pp, const int *starts, /**/ PidVCont *c);
 float3 adjustF(/**/ PidVCont *c);
+void log(const PidVCont *c);

@@ -19,3 +19,8 @@ void adjust(long id, /**/ PidVCont *c, scheme::Fparams *fpar) {
         fpar->c = f.z;
     }
 }
+
+void log(long id, const PidVCont *c) {
+    if (valid_step(id, VCON_LOG_FREQ))
+        log(c);
+}
