@@ -9,6 +9,8 @@
 #include "inc/type.h"
 #include "d/api.h"
 
+#include "math/dev.h"
+
 #include "imp.h"
 
 namespace meshbb {

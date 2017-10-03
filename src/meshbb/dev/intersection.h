@@ -70,8 +70,8 @@ static __device__ BBState intersect_triangle(const real3_t *s10, const real3_t *
 
         diff(&r1, &s11, /**/ &dr1);
         
-        b0 = dot(&dr0, &n0);
-        b1 = dot(&dr1, &n1);
+        b0 = dot<real>(&dr0, &n0);
+        b1 = dot<real>(&dr1, &n1);
 
         /* sign : which side does the particle belong? */
         *s = b0 > 0 ? 1 : -1;
@@ -89,10 +89,10 @@ static __device__ BBState intersect_triangle(const real3_t *s10, const real3_t *
 
         diff(&p0->v, vs1, /**/ &dv);
         
-        a = dot(&ntt, &dv);
-        b = dot(&ntt, &dr0) + dot(&nt, &dv);
-        c = dot(&nt,  &dr0) + dot(&n0, &dv);
-        d = dot(&n0, &dr0);        
+        a = dot<real>(&ntt, &dv);
+        b = dot<real>(&ntt, &dr0) + dot<real>(&nt, &dv);
+        c = dot<real>(&nt,  &dr0) + dot<real>(&n0, &dv);
+        d = dot<real>(&n0, &dr0);        
         
         if (!cubic_root(a, b, c, d, &hl))
             return BB_HFAIL;
@@ -111,11 +111,11 @@ static __device__ BBState intersect_triangle(const real3_t *s10, const real3_t *
     apxb(&a1, hl, &at1, /**/ &a1_);
     apxb(&a2, hl, &at2, /**/ &a2_);
             
-    ga1 = dot(&g, &a1_);
-    ga2 = dot(&g, &a2_);
-    a11 = dot(&a1_, &a1_);
-    a12 = dot(&a1_, &a2_);
-    a22 = dot(&a2_, &a2_);
+    ga1 = dot<real>(&g, &a1_);
+    ga2 = dot<real>(&g, &a2_);
+    a11 = dot<real>(&a1_, &a1_);
+    a12 = dot<real>(&a1_, &a2_);
+    a22 = dot<real>(&a2_, &a2_);
 
     fac = 1.0 / (a11*a22 - a12*a12);
             

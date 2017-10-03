@@ -173,7 +173,7 @@ static __device__ void push_particle(const real3_t *A, const real3_t *B, const r
     diff(B, A, /**/ &a);
     diff(C, A, /**/ &b);
     cross(&a, &b, /**/ &n);
-    s = dot(&n, &n);
+    s = dot<real_t>(&n, &n);
     s = rsqrtf(s);
     n.x *= s;
     n.y *= s;
