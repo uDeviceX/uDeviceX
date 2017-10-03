@@ -1,4 +1,4 @@
-__global__ void force(float mass, Particle *pp, Force *ff, int n, float driving_force0) {
+__global__ void force(float mass, float driving_force0, int n, const Particle *pp, /**/ Force *ff) {
     enum {X, Y};
     int pid;
     float fx, fy, *f;
