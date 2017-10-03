@@ -1,6 +1,20 @@
 /* use templates here because we might have mixed float/double
    see intersection routine                                    */
 
+template <typename T1, typename T2>
+__device__ void scal(const T1 a, /*io*/ T2 *b) {
+    b->x *= a;
+    b->y *= a;
+    b->z *= a;
+}
+
+template <typename T1, typename T2>
+__device__ void add(const T1 *a, /*io*/ T2 *b) {
+    b->x += a->x;
+    b->y += a->y;
+    b->z += a->z;
+}
+
 template <typename T1, typename T2, typename T3>
 __device__ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
     c->x = a->x - b->x;
@@ -27,10 +41,18 @@ __device__ void scalmult(const T1 *a, const T2 x, /**/ const T3 *b) {
     b->z = a->z * x;
 }
 
+
 template <typename T1, typename T2, typename T3, typename T4>
 __device__ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
     c->x = a->x + x * b->x;
     c->y = a->y + x * b->y;
     c->z = a->z + x * b->z;
+}
+
+template <typename T1, typename T2, typename T3>
+__device__ void axpy(const T1 *a, const T2 x, /*io*/ T3 *y) {
+    y->x += x * a->x;
+    y->y += x * a->y;
+    y->z += x * a->z;
 }
 
