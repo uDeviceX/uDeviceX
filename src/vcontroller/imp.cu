@@ -1,4 +1,5 @@
 #include <mpi.h>
+#include <assert.h>
 
 #include <conf.h>
 #include "inc/conf.h"
@@ -8,18 +9,31 @@
 #include "d/api.h"
 #include "mpi/wrapper.h"
 #include "utils/cc.h"
+#include "utils/kl.h"
 #include "utils/mc.h"
 
+#include "math/dev.h"
+
 #include "imp.h"
+#include "dev.h"
+
+static void reini_sampler(/**/ PidVCont *c) {
+    int3 L = c->L;
+    int ncells = L.x * L.y * L.z;
+
+    if (ncells) CC(d::MemsetAsync(c->gridvel, 0, ncells * sizeof(float3)));
+
+    c->nsamples = 0;
+}
 
 void ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCont *c) {
     int ncells, nchunks;
     c->L = L;
     c->target = vtarget;
+    c->factor = factor;
     c->Kp = 2;
     c->Ki = 1;
     c->Kd = 8;
-    c->nsamples = 0;
 
     MC(m::Comm_dup(comm, &c->comm));
 
@@ -33,6 +47,10 @@ void ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCont *c) 
 
     c->f = c->sume = make_float3(0, 0, 0);
     c->olde = vtarget;
+
+    MC(m::Allreduce(&ncells, &c->totncells, 1, MPI_INT, MPI_SUM, c->comm));
+    
+    reini_sampler(/**/ c);
 }
 
 void fin(/**/ PidVCont *c) {
@@ -41,11 +59,50 @@ void fin(/**/ PidVCont *c) {
     MC(m::Comm_free(&c->comm));
 }
 
-void sample(int n, const Particle *pp, /**/ PidVCont *c) {
+void sample(int n, const Particle *pp, const int *starts, /**/ PidVCont *c) {
+    int3 L = c->L;
+    
+    dim3 block(8, 8, 1);
+    dim3 grid(ceiln(L.x, block.x),
+              ceiln(L.y, block.y),
+              ceiln(L.z, block.z));
 
-    ++c->nsamples;
+    KL(dev::sample, (grid, block), (L, starts, (float2 *) pp, /**/ c->gridvel));
+    
+    c->nsamples ++;
 }
 
 float3 adjustF(/**/ PidVCont *c) {
+    int3 L = c->L;
+    int ncells, nchunks;
+    ncells = L.x * L.y * L.z;
+    nchunks = ceiln(ncells, 32);
+
+    KL(dev::reduceByWarp, (nchunks, 32), (c->gridvel, ncells, /**/ c->davgvel));
+    dSync();
+
+    float3 vcur = make_float3(0, 0, 0), e, de;
+
+    for (int i = 0; i < nchunks; ++i)
+        add(c->avgvel + i, /**/ &vcur);
+
+    MC(m::Allreduce(MPI_IN_PLACE, &vcur.x, 3, MPI_FLOAT, MPI_SUM, c->comm));
+
+    const float fac = 1.0 / (c->totncells * c->nsamples);
+    
+    scal(fac, /**/ &vcur); 
+
+    diff(&c->target, &vcur, /**/ &e);
+    diff(&e, &c->olde, /**/ &de);
+    add(&e, /**/ &c->sume);
+
+    c->f = make_float3(0, 0, 0);
+
+    axpy(&e,       c->factor * c->Kp, /**/ &c->f);
+    axpy(&c->sume, c->factor * c->Ki, /**/ &c->f);
+    axpy(&de,      c->factor * c->Kd, /**/ &c->f);
+
+    reini_sampler(/**/c);
+    
     return c->f;
 }
