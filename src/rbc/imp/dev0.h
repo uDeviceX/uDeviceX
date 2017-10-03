@@ -14,7 +14,7 @@ __device__ float3 tri(const float3 r1, const float3 r2, const float3 r3, const f
 
     cross(&x21, &x31, /**/ &nn); /* normal */
 
-    Ak = 0.5 * sqrtf(dot(nn, nn));
+    Ak = 0.5 * sqrtf(dot<float>(&nn, &nn));
 
     A0 = RBCtotArea / (2.0 * RBCnv - 4.);
     n_2 = 1.0 / Ak;
@@ -31,7 +31,7 @@ __device__ float3 tri(const float3 r1, const float3 r2, const float3 r3, const f
     cross(&r3, &r2, /**/ &r3r2);
     axpy(&r3r2, coeffVol, /**/ &f); /* vol force */
 
-    r = sqrtf(dot(x21, x21));
+    r = sqrtf(dot<float>(&x21, &x21));
     r = r < 0.0001f ? 0.0001f : r;
     l0 = sqrt(A0 * 4.0 / sqrt(3.0));
     lmax = l0 / RBCx0;
@@ -74,11 +74,12 @@ __device__ float3 dihedral(float3 r1, float3 r2, float3 r3,
     float overIksiI, overIdzeI, cosTheta, IsinThetaI2, sinTheta_1,
         beta, b11, b12, phi, sint0kb, cost0kb;
 
-    float3 r12, r13, r34, r24, ksi, dze;
+    float3 r12, r13, r34, r24, r41, ksi, dze, ksimdze;
     diff(&r1, &r2, /**/ &r12);
     diff(&r1, &r3, /**/ &r13);
     diff(&r3, &r4, /**/ &r34);
     diff(&r2, &r4, /**/ &r24);
+    diff(&r4, &r1, /**/ &r41);
 
     cross(&r12, &r13, /**/ &ksi);
     cross(&r34, &r24, /**/ &dze);    
@@ -89,9 +90,11 @@ __device__ float3 dihedral(float3 r1, float3 r2, float3 r3,
     cosTheta = dot<float>(&ksi, &dze) * overIksiI * overIdzeI;
     IsinThetaI2 = 1.0f - cosTheta * cosTheta;
 
+    diff(&ksi, &dze, /**/ &ksimdze);
+    
     sinTheta_1 = copysignf
         (rsqrtf(max(IsinThetaI2, 1.0e-6f)),
-         dot(ksi - dze, r4 - r1)); // ">" because the normals look inside
+         dot<float>(&ksimdze, &r41)); // ">" because the normals look inside
 
     phi = RBCphi / 180.0 * M_PI;
     sint0kb = sin(phi) * RBCkb;

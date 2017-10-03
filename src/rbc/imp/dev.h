@@ -107,8 +107,11 @@ __device__ float3 adj_dihedrals(const Texo<float2> texvert, const Texo<int> texa
         const Pos r2 = tex2Pos(texvert, offset + i2);
         const Pos r3 = tex2Pos(texvert, offset + i3);
         const Pos r4 = tex2Pos(texvert, offset + i4);
-
-        return dihedral<1>(r0, r2.r, r1.r, r4.r) + dihedral<2>(r1.r, r0, r2.r, r3.r);
+        float3 fd1, fd2;
+        fd1 = dihedral<1>(r0, r2.r, r1.r, r4.r);
+        fd2 = dihedral<2>(r1.r, r0, r2.r, r3.r);
+        add(&fd1, /**/ &fd2);
+        return fd2; 
     }
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
 }
