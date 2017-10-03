@@ -232,3 +232,15 @@
 #ifndef RESTRAIN_REPORT_FREQ
   #define RESTRAIN_REPORT_FREQ (1000)
 #endif
+
+
+/*           Velocity controller           */
+
+#ifndef VCON_SAMPLE_FREQ
+  #define VCON_SAMPLE_FREQ (10)
+#endif
+
+#ifndef VCON_ADJUST_FREQ
+  #define VCON_ADJUST_FREQ (500)
+#endif
+
