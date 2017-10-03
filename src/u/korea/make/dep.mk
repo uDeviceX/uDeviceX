@@ -39,7 +39,7 @@ $B/mesh/bbox.o: $S/algo/minmax.h $S/inc/type.h $S/mesh/bbox.h
 $B/mesh/collision.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/mesh/collision.h $S/msg.h $S/utils/cc.h $S/utils/kl.h $S/utils/texo.h
 $B/mesh/dist.o: $S/inc/type.h $S/mesh/dist.h
 $B/mesh/props.o: $S/inc/type.h $S/mesh/props.h
-$B/meshbb/imp.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/meshbb/bbstates.h $S/meshbb/dbg.h $S/meshbb/dev/collect.h $S/meshbb/dev/intersection.h $S/meshbb/dev/main.h $S/meshbb/dev/roots.h $S/meshbb/dev/utils.h $S/meshbb/imp.h $S/meshbb/type.h $S/utils/cc.h $S/utils/kl.h
+$B/meshbb/imp.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/math/dev.h $S/meshbb/bbstates.h $S/meshbb/dbg.h $S/meshbb/dev/collect.h $S/meshbb/dev/intersection.h $S/meshbb/dev/main.h $S/meshbb/dev/roots.h $S/meshbb/dev/utils.h $S/meshbb/imp.h $S/meshbb/type.h $S/utils/cc.h $S/utils/kl.h
 $B/mpi/glb.o: $B/conf.h $S/inc/conf.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/mc.h
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
