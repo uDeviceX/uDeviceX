@@ -45,6 +45,12 @@ static void ini_rig_distr(int nv, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /*
     ini(nv, /**/ &d->u);
 }
 
+static void ini_vcont(MPI_Comm comm, /**/ PidVCont *c) {
+    int3 L = {XS, YS, ZS};
+    float3 V = {VCON_VX, VCON_VY, VCON_VZ};
+    ini(comm, L, V, VCON_FACTOR, /**/ c);
+}
+
 void ini() {
     basetags::ini(&tag_gen);
     datatype::ini();
@@ -54,7 +60,8 @@ void ini() {
 
         ini_rbc_distr(r::q.nv, m::cart, /*io*/ &tag_gen, /**/ &r::d);
     }
-    
+
+    if (VCON) ini_vcont(m::cart, /**/ &o::vcont);
     if (fsiforces) fsi::ini();
 
     bbhalo::ini(&tag_gen);
