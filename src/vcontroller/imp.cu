@@ -114,5 +114,5 @@ float3 adjustF(/**/ PidVCont *c) {
 void log(const PidVCont *c) {
     float3 e = c->olde;
     float3 f = c->f;
-    MSG("vcont : [% .3e % .3e % .3e] [% .3e % .3e % .3e]", e.x, e.y, e.z, f.x, f.y, f.z);
+    MSG("vcont :\n\t[% .3e % .3e % .3e]\n\t[% .3e % .3e % .3e]", e.x, e.y, e.z, f.x, f.y, f.z);
 }
