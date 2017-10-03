@@ -1,6 +1,6 @@
 #!/bin/bash
 
-awk '
+"${AWK-awk}" '
 function usg() {
     msg("usage: <stream> | plcmt.select <f> <A.txt> <B.txt>")
     msg("  n*f random lines of stream in <A.txt> and n*(1-f) in <B.txt> (f: fraction between 0 and 1)")

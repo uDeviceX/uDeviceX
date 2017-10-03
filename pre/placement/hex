@@ -1,6 +1,6 @@
 #!/bin/bash
 
-awk '
+"${AWK-awk}" '
 function usg() {
     msg("usage: plcmt.hex <Lx> <Ly> <Lx> <r>")
     msg("  prints coordiantes of hexagonal closed packing of spheres")
