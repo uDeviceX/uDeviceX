@@ -38,7 +38,7 @@ __device__ Part tex2Part(const Texo<float2> texvert, const int id) {
 __device__ float3 adj_tris(const Texo<float2> texvert, const Texo<int> texadj0,
                            const Part p0, const float *av) {
     int pid, lid, idrbc, offset, neighid, i1, i2;
-    float3 f;
+    float3 f, fv;
     bool valid;
 
     pid     = (threadIdx.x + blockDim.x * blockIdx.x) / md;
@@ -58,7 +58,8 @@ __device__ float3 adj_tris(const Texo<float2> texvert, const Texo<int> texadj0,
         const Pos  r2 = tex2Pos(texvert, offset + i2);
 
         f  = tri(p0.r, p1.r, r2.r, av[2 * idrbc], av[2 * idrbc + 1]);
-        f += visc(p0.r, p1.r, p0.v, p1.v);
+        fv = visc(p0.r, p1.r, p0.v, p1.v);
+        add(&fv, /**/ &f);
         return f;
     }
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
@@ -119,13 +120,15 @@ __device__ float3 adj_dihedrals(const Texo<float2> texvert, const Texo<int> texa
 __global__ void force(const Texo<float2> texvert, const Texo<int> texadj0, const Texo<int> texadj1,
                       int nc, const float *__restrict__ av, float *ff) {
     int pid = (threadIdx.x + blockDim.x * blockIdx.x) / md;
-
+    float3 f, fd;
+    
     if (pid < nc * nv) {
         const Part p0 = tex2Part(texvert, pid);
 
         /* all triangles and dihedrals adjusting to vertex `pid` */
-        float3 f = adj_tris(texvert, texadj0, p0, av);
-        f += adj_dihedrals(texvert, texadj0, texadj1, p0.r);
+        f  = adj_tris(texvert, texadj0, p0, av);
+        fd = adj_dihedrals(texvert, texadj0, texadj1, p0.r);
+        add(&fd, /**/ &f);
 
         if (f.x > -1.0e9f) {
             atomicAdd(&ff[3 * pid + 0], f.x);
