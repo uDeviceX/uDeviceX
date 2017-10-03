@@ -2,7 +2,8 @@ __global__ void force(float mass, Fparams fpar, int n, const Particle *pp, /**/ 
     enum {X, Y};
     int pid;
     float fx, fy, *f;
-    float x, y, lx, ly, *r;
+    float x, y, lx, ly;
+    const float *r;
     const float PI = 3.141592653589793;
 
     pid = threadIdx.x + blockDim.x * blockIdx.x;

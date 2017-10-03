@@ -3,7 +3,8 @@ __global__ void force(float mass, Fparams fpar, int n, const Particle *pp, /**/ 
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
 
-    float *r = pp[pid].r, *f = ff[pid].f;
+    const float *r = pp[pid].r;
+    float       *f = ff[pid].f;
 
     float d = r[Y] - glb::r0[Y]; /* coordinate relative to domain
                                      center */
