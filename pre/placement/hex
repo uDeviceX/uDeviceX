@@ -21,14 +21,17 @@ function indomain(x, y, z) {
     return 1
 }
 
-BEGIN {
+function arg() {
     if (ARGV[1] == "-h") usg();
     Lx = ARGV[1]; shift()
     Ly = ARGV[1]; shift()
     Lz = ARGV[1]; shift()
     r  = ARGV[1]; shift()
     if (ARGC == 0) { msg("plcmt.hex: arguments error"); usg() } 
+}
 
+BEGIN {
+    arg()
     nmax = 100  # should be a big number, TODO:
     for (i=0; i<nmax; i++) for (j=0; j<nmax; j++) for (k=0; k<nmax; k++) {
        # https://en.wikipedia.org/wiki/Close-packing_of_equal_spheres#Simple_hcp_lattice
