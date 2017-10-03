@@ -37,6 +37,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/sim               && \
     d $B/tcells            && \
     d $B/utils             && \
+    d $B/vcontroller       && \
     d $B/wall              && \
     d $B/wall/exch         && \
     d $B/wall/force       
