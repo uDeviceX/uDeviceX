@@ -8,8 +8,8 @@ __device__ void diff(const T1 *a, const T2 *b, /**/ T3 *c) {
     c->z = a->z - b->z;
 }
 
-template <typename T1, typename T2>
-__device__ float dot(const T1 *a, const T2 *b) {
+template <typename T1, typename T2, typename T3>
+__device__ T1 dot(const T2 *a, const T3 *b) {
     return a->x * b->x + a->y * b->y + a->z * b->z;
 }
 
