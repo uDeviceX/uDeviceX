@@ -30,5 +30,5 @@ plcmt.p2mat $s $a     $pr > $R
 # sc=1 ang=0
 # plcmt.ro 10 20 30 $radius     $fraction    $sc $ang     solid.ic rbc.ic
 # :
-# cat solid.ic rbc.ic             >    test.out.txt
+# (sort solid.ic; sort rbc.ic) > test.out.txt
 #
