@@ -98,9 +98,9 @@ float3 adjustF(/**/ PidVCont *c) {
 
     c->f = make_float3(0, 0, 0);
 
-    axpy(&e,       c->factor * c->Kp, /**/ &c->f);
-    axpy(&c->sume, c->factor * c->Ki, /**/ &c->f);
-    axpy(&de,      c->factor * c->Kd, /**/ &c->f);
+    axpy(c->factor * c->Kp, &e,       /**/ &c->f);
+    axpy(c->factor * c->Ki, &c->sume, /**/ &c->f);
+    axpy(c->factor * c->Kd, &de,      /**/ &c->f);
 
     reini_sampler(/**/c);
     

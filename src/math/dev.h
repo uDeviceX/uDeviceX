@@ -52,9 +52,9 @@ _HD_ void apxb(const T1 *a, const T2 x, const T3 *b, /**/ T4 *c) {
 }
 
 template <typename T1, typename T2, typename T3>
-_HD_ void axpy(const T1 *a, const T2 x, /*io*/ T3 *y) {
-    y->x += x * a->x;
-    y->y += x * a->y;
-    y->z += x * a->z;
+_HD_ void axpy(const T1 a, const T2 *x, /*io*/ T3 *y) {
+    y->x += a * x->x;
+    y->y += a * x->y;
+    y->z += a * x->z;
 }
 

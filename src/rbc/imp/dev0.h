@@ -27,9 +27,9 @@ __device__ float3 tri(const float3 r1, const float3 r2, const float3 r3, const f
 
     float3 nnx32, r3r2;
     cross(&nn, &x32, /**/ &nnx32);
-    axpy(&nnx32, coefArea, /**/ &f); /* area force */
+    axpy(coefArea, &nnx32, /**/ &f); /* area force */
     cross(&r3, &r2, /**/ &r3r2);
-    axpy(&r3r2, coeffVol, /**/ &f); /* vol force */
+    axpy(coeffVol, &r3r2, /**/ &f); /* vol force */
 
     r = sqrtf(dot<float>(&x21, &x21));
     r = r < 0.0001f ? 0.0001f : r;
@@ -48,7 +48,7 @@ __device__ float3 tri(const float3 r1, const float3 r2, const float3 r3, const f
             (4 * RBCp * (x0 - 1) * (x0 - 1));
     IbforceI_pow = -kp / powf(r, RBCmpow) / r;
 
-    axpy(&x21, IbforceI_wcl + IbforceI_pow, /**/ &f); /* wcl and pow forces */
+    axpy(IbforceI_wcl + IbforceI_pow, &x21, /**/ &f); /* wcl and pow forces */
     return f;
 }
 
@@ -61,8 +61,8 @@ __device__ float3 visc(float3 r1, float3 r2,
 
     const float fac = dot<float>(&du, &dr) / dot<float>(&dr, &dr); 
     
-    axpy(&du, gammaT      , /**/ &f);
-    axpy(&dr, gammaC * fac, /**/ &f);
+    axpy(gammaT      , &du, /**/ &f);
+    axpy(gammaC * fac, &dr, /**/ &f);
     
     return f;
 }
@@ -110,7 +110,7 @@ __device__ float3 dihedral(float3 r1, float3 r2, float3 r3,
         cross(&ksi, &r32, /**/ &f);
         cross(&dze, &r32, /**/ &f1);
         scal(b11, /**/ &f);
-        axpy(&f1, b12, /**/ &f);
+        axpy(b12, &f1, /**/ &f);
         return f;
     }
     else if (update == 2) {
@@ -124,8 +124,8 @@ __device__ float3 dihedral(float3 r1, float3 r2, float3 r3,
 
         scal(b11, /**/ &f);
         add(&f2, /**/ &f1);
-        axpy(&f1, b12, /**/ &f);
-        axpy(&f3, b22, /**/ &f);
+        axpy(b12, &f1, /**/ &f);
+        axpy(b22, &f3, /**/ &f);
         
         return f;
     }
