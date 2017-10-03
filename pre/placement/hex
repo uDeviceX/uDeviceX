@@ -9,8 +9,6 @@ function usg() {
 
 function abs(x)  { return x<0?x*-1:x}
 function asin(x) { return atan2(x, sqrt(abs(1-x*x))) }
-function pi() { return 2*asin(1)}
-
 function indomain(x, y, z) {
     if (x+r>Lx) return 0
     if (x-r<0 ) return 0
@@ -45,9 +43,14 @@ BEGIN {
     }
     msg(sprintf("hex: generated: %d cells", ngen))
 }
-
 function msg(s) { printf "%s\n", s | "cat >&2" }
-function shift(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }
+function shift() {
+    if (ARGC == 0) {
+	msg("plcmt.hex: not enougth arguments")
+	exit(1)
+    } else shift0()
+}
+function shift0(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }
 ' "$@"
 
 # TEST: plcmt.hex.t0
