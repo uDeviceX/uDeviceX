@@ -68,3 +68,21 @@ sh runfile
 mid_h5.m h5/flowfields-0026.h5 > h5.out.txt
 
 
+#### 4 roller mills
+# nTEST: flow.t5
+rm -rf bop h5 diag.txt rbc.off
+:
+export PATH=../tools:$PATH
+(cd ../cmd; make ) > /dev/null
+:
+u.conf conf/default.h <<!!!
+   tend=2.01 part_freq=4000
+   FORCE_4ROLLER
+   FORCE_PAR_A=0.2
+   field_dumps part_dumps
+   field_freq=4000 
+   run
+!!!
+(make clean && u.make -j) > /dev/null
+sh runfile
+avg_h52.m h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
