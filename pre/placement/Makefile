@@ -9,6 +9,6 @@ install:;
 	mkdir -p $(BIN)
 	for f in $P; do \
 	    cp $$f $B/$p.$$f; \
-        done
+	done
 
 .PHONY: install
