@@ -45,7 +45,7 @@
 #include "inc/dev/read.h"
 #include "clist/imp.h"
 
-#include "xflu/imp.h"
+#include "flu/imp.h"
 #include "rbc/int.h"
 #include "rig/int.h"
 
