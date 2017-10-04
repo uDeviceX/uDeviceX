@@ -53,11 +53,7 @@ struct Mexch {
 };
 
 /* bounce back exchanger */
-struct BBexch {
-    exch::mesh::Pack p;
-    exch::mesh::Comm c;
-    exch::mesh::Unpack u;
-
+struct BBexch : Mexch {
     exch::mesh::PackM pm;
     exch::mesh::CommM cm;
     exch::mesh::UnpackM um;

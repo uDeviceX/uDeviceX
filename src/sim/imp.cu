@@ -45,7 +45,7 @@
 #include "inc/dev/read.h"
 #include "clist/imp.h"
 
-#include "flu/int.h"
+#include "flu/imp.h"
 #include "rbc/int.h"
 #include "rig/int.h"
 
@@ -98,6 +98,8 @@
 #include "inter/color.h"
 #include "scheme/imp.h"
 
+#include "vcontroller/imp.h"
+
 #include "imp.h"
 namespace sim {
 #include "imp/type.h"
@@ -110,7 +112,9 @@ namespace sim {
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/dump.h"
+
 #include "imp/colors.h"
+#include "imp/vcont.h"
 
 #include "imp/update.h"
 #include "imp/distr.h"

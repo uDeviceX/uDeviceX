@@ -19,6 +19,9 @@ H h;
 
 Force *ff;
 Force  ff_hst[MAX_PART_NUM]; /* solvent forces on host    */
+
+/* velocity controller */
+PidVCont vcont;
 }
 
 namespace r /* [r]bc */

@@ -17,7 +17,7 @@
 #include "rnd/imp.h"
 #include "algo/scan/int.h"
 #include "clist/imp.h"
-#include "flu/int.h"
+#include "flu/imp.h"
 
 #include "mpi/basetags.h"
 #include "comm/imp.h"

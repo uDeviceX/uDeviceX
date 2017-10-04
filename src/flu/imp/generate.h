@@ -1,3 +1,17 @@
+static void zip(const Particle *pp, const int n, /**/ float4 *zip0, ushort4 * zip1) {
+    assert(sizeof(Particle) == 6 * sizeof(float)); /* :TODO: implicit dependency */
+    KL(dev::zip,
+       ((n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)),
+       (zip0, zip1, (float*)pp, n));
+}
+
+void get_ticketZ(Quants q, /**/ TicketZ *t) {
+    if (q.n == 0) return;
+    float4  *zip0 = t->zip0;
+    ushort4 *zip1 = t->zip1;
+    zip(q.pp, q.n, /**/ zip0, zip1);
+}
+
 static int gen0(Particle *pp) { /* generate particle positions and velocities */
     enum {X, Y, Z};
     assert(XS * YS * ZS * numberdensity < MAX_PART_NUM);
@@ -22,7 +36,7 @@ static int gen0(Particle *pp) { /* generate particle positions and velocities */
     return n;
 }
 
-int genColor(/*o*/ Particle *pp, int *color, /*w*/ Particle *pp_hst, int *color_hst) {
+static int genColor(/*o*/ Particle *pp, int *color, /*w*/ Particle *pp_hst, int *color_hst) {
     int n = gen0(pp_hst);
     inter::color_hst(pp_hst, n, /**/ color_hst);
     cH2D(color, color_hst, n);
@@ -30,10 +44,17 @@ int genColor(/*o*/ Particle *pp, int *color, /*w*/ Particle *pp_hst, int *color_
     return n;
 }
 
-int genGrey(/*o*/ Particle *dev, /*w*/ Particle *hst) {
+static int genGrey(/*o*/ Particle *dev, /*w*/ Particle *hst) {
     int n = gen0(hst);
     cH2D(dev, hst, n);
     return n;
+}
+
+void gen_quants(Quants *q, QuantsI *qc) {
+    if (multi_solvent)
+        q->n = genColor(q->pp, qc->ii, /*w*/ q->pp_hst, qc->ii_hst);
+    else
+        q->n = genGrey(q->pp, /*w*/ q->pp_hst);
 }
 
 static void ii_gen0(const long n, int *ii) {
@@ -42,38 +63,11 @@ static void ii_gen0(const long n, int *ii) {
     for (long i = 0; i < n; ++i) ii[i] = i + i0;
 }
 
-void ii_gen(const int n, int *ii_dev, int *ii_hst) {
+static void ii_gen(const int n, int *ii_dev, int *ii_hst) {
     ii_gen0(n, ii_hst);
     cH2D(ii_dev, ii_hst, n);
 }
 
-int strt(const int id, Particle *dev, /*w*/ Particle *hst) {
-    int n;
-    restart::read_pp("flu", id, hst, &n);
-    if (n) cH2D(dev, hst, n);
-    return n;
-}
-
-int strt_ii(const char *subext, const int id, int *dev, /*w*/ int *hst) {
-    int n;
-    restart::read_ii("flu", subext, id, hst, &n);
-    if (n) cH2D(dev, hst, n);
-    return n;
-}
-
-void strt_dump(const int id, const int n, const Particle *dev, Particle *hst) {
-    if (n) cD2H(hst, dev, n);
-    restart::write_pp("flu", id, hst, n);
-}
-
-void strt_dump_ii(const char *subext, const int id, const int n, const int *dev, int *hst) {
-    if (n) cD2H(hst, dev, n);
-    restart::write_ii("flu", subext, id, hst, n);
-}
-
-void zip(const Particle *pp, const int n, /**/ float4 *zip0, ushort4 * zip1) {
-    assert(sizeof(Particle) == 6 * sizeof(float)); /* :TODO: implicit dependency */
-    KL(dev::zip,
-       ((n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)),
-       (zip0, zip1, (float*)pp, n));
+void gen_ids(const int n, QuantsI *q) {
+    ii_gen(n, q->ii, q->ii_hst);
 }

@@ -7,12 +7,17 @@ static void ini_obj_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Objexc
     ini(MAX_OBJ_DENSITY, &e->uf);    
 }
 
-static void ini_bb_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ BBexch *e) {
+static void ini_mesh_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Mexch *e) {
     using namespace exch::mesh;
     ini(MAX_VERT_NUM, MAX_CELL_NUM, &e->p);
     ini(m::cart, /*io*/ &tag_gen, /**/ &e->c);
     ini(MAX_VERT_NUM, MAX_CELL_NUM, &e->u);
+}
 
+static void ini_bb_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ BBexch *e) {
+    ini_mesh_exch(comm, /*io*/ tg, /**/ e);
+
+    using namespace exch::mesh;
     ini(MAX_FACE_NUM, MAX_CELL_NUM, &e->pm);
     ini(comm, /*io*/ tg, /**/ &e->cm);
     ini(MAX_FACE_NUM, MAX_CELL_NUM, &e->um);
@@ -40,6 +45,12 @@ static void ini_rig_distr(int nv, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /*
     ini(nv, /**/ &d->u);
 }
 
+static void ini_vcont(MPI_Comm comm, /**/ PidVCont *c) {
+    int3 L = {XS, YS, ZS};
+    float3 V = {VCON_VX, VCON_VY, VCON_VZ};
+    ini(comm, L, V, VCON_FACTOR, /**/ c);
+}
+
 void ini() {
     basetags::ini(&tag_gen);
     datatype::ini();
@@ -49,7 +60,8 @@ void ini() {
 
         ini_rbc_distr(r::q.nv, m::cart, /*io*/ &tag_gen, /**/ &r::d);
     }
-    
+
+    if (VCON) ini_vcont(m::cart, /**/ &o::vcont);
     if (fsiforces) fsi::ini();
 
     bbhalo::ini(&tag_gen);
@@ -66,9 +78,10 @@ void ini() {
         wall::alloc_ticket(&w::t);
     }
 
-    flu::alloc_quants(&o::q);
-    flu::alloc_ticketZ(&o::tz);
-
+    flu::ini(&o::q);
+    flu::ini(&o::tz);
+    flu::ini(&o::trnd);
+    
     ini_flu_distr(m::cart, /*io*/ &tag_gen, /**/ &o::d);
 
     dpdr::ini_ticketcom(m::cart, &tag_gen, &o::h.tc);
@@ -79,21 +92,19 @@ void ini() {
     Dalloc(&o::ff, MAX_PART_NUM);
 
     if (global_ids) {
-        flu::alloc_quantsI(&o::qi);
+        flu::ini(&o::qi);
     }
     
     if (multi_solvent) {
-        flu::alloc_quantsI(&o::qc);
-
+        flu::ini(&o::qc);
+        
         dpdr::ini_ticketIcom(/*io*/ &tag_gen, /**/ &o::h.tic);
         dpdr::alloc_ticketSIh(/**/ &o::h.tsi);
         dpdr::alloc_ticketRIh(/**/ &o::h.tri);
     }
 
     if (multi_solvent && rbcs) {
-        exch::mesh::ini(MAX_VERT_NUM, MAX_CELL_NUM, &mc::e.p);
-        exch::mesh::ini(m::cart, /*io*/ &tag_gen, /**/ &mc::e.c);
-        exch::mesh::ini(MAX_VERT_NUM, MAX_CELL_NUM, &mc::e.u);
+        ini_mesh_exch(m::cart, /*io*/ &tag_gen, &mc::e);
         Dalloc(&mc::pp, MAX_PART_NUM);
     }
     

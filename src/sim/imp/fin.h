@@ -7,12 +7,17 @@ static void fin_obj_exch(/**/ Objexch *e) {
     fin(&e->uf);
 }
 
-static void fin_bb_exch(/**/ BBexch *e) {
+static void fin_mesh_exch(/**/ Mexch *e) {
     using namespace exch::mesh;
     fin(&e->p);
     fin(&e->c);
     fin(&e->u);
+}
 
+static void fin_bb_exch(/**/ BBexch *e) {
+    fin_mesh_exch(/**/ e);
+    
+    using namespace exch::mesh;
     fin(&e->pm);
     fin(&e->cm);
     fin(&e->um);
@@ -46,6 +51,7 @@ void fin() {
     if (rbcs || solids)
         fin_obj_exch(&rs::e);
 
+    if (VCON) fin(/**/ &o::vcont);
     if (fsiforces)  fsi::fin();
     if (solids) mrescue::fin();
 
@@ -55,9 +61,9 @@ void fin() {
         wall::free_ticket(&w::t);
     }
 
-    flu::free_quants(&o::q);
-    flu::free_ticketZ(&o::tz);
-    flu::free_ticketRND(&o::trnd);
+    flu::fin(&o::q);
+    flu::fin(&o::tz);
+    flu::fin(&o::trnd);
 
     dpdr::free_ticketcom(&o::h.tc);
     dpdr::free_ticketrnd(&o::h.trnd);
@@ -67,11 +73,11 @@ void fin() {
     fin_flu_distr(/**/ &o::d);
     
     if (global_ids) {
-        flu::free_quantsI(&o::qi);
+        flu::fin(&o::qi);
     }
 
     if (multi_solvent) {
-        flu::free_quantsI(&o::qc);
+        flu::fin(&o::qc);
     
         dpdr::free_ticketIcom(&o::h.tic);
         dpdr::free_ticketSIh(&o::h.tsi);
@@ -79,9 +85,7 @@ void fin() {
     }
 
     if (multi_solvent && rbcs) {
-        exch::mesh::fin(/**/ &mc::e.p);
-        exch::mesh::fin(/**/ &mc::e.c);
-        exch::mesh::fin(/**/ &mc::e.u);
+        fin_mesh_exch(/**/ &mc::e);
         Dfree(mc::pp);
     }
 

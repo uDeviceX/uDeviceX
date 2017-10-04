@@ -1,4 +1,3 @@
-namespace sub {
 namespace dev {
 
 __global__ void zip(float4 *__restrict zip0,
@@ -41,4 +40,4 @@ __global__ void zip(float4 *__restrict zip0,
                      __float2half_rn(smem[warpid * 192 + lane * 6 + 2]), 0);
 }
 
-}} /* namespace */
+} // dev
