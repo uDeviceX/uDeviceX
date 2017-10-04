@@ -34,9 +34,10 @@ void fin(/**/ TicketZ *t);
 void ini(/**/ TicketRND *t);
 void fin(/**/ TicketRND *t);
 
+void get_ticketZ(Quants q, /**/ TicketZ *t);
+
 void gen_quants(Quants *q, QuantsI *qc);
 void gen_ids(const int n, QuantsI *q);
-void get_ticketZ(Quants q, /**/ TicketZ *t);
 
 void strt_quants(const int id, Quants *q);
 void strt_ii(const char *subext, const int id, QuantsI *q);
