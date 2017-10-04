@@ -78,9 +78,10 @@ void ini() {
         wall::alloc_ticket(&w::t);
     }
 
-    flu::alloc_quants(&o::q);
-    flu::alloc_ticketZ(&o::tz);
-
+    flu::ini(&o::q);
+    flu::ini(&o::tz);
+    flu::ini(&o::trnd);
+    
     ini_flu_distr(m::cart, /*io*/ &tag_gen, /**/ &o::d);
 
     dpdr::ini_ticketcom(m::cart, &tag_gen, &o::h.tc);
@@ -91,12 +92,12 @@ void ini() {
     Dalloc(&o::ff, MAX_PART_NUM);
 
     if (global_ids) {
-        flu::alloc_quantsI(&o::qi);
+        flu::ini(&o::qi);
     }
     
     if (multi_solvent) {
-        flu::alloc_quantsI(&o::qc);
-
+        flu::ini(&o::qc);
+        
         dpdr::ini_ticketIcom(/*io*/ &tag_gen, /**/ &o::h.tic);
         dpdr::alloc_ticketSIh(/**/ &o::h.tsi);
         dpdr::alloc_ticketRIh(/**/ &o::h.tri);

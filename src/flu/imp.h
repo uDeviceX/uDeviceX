@@ -22,22 +22,21 @@ struct TicketRND { /* random */
     rnd::KISS *rnd;
 };
 
-void alloc_quants(Quants *q);
-void free_quants(Quants *q);
+void ini(Quants *q);
+void fin(Quants *q);
 
-void alloc_quantsI(QuantsI *q);
-void free_quantsI(QuantsI *q);
+void ini(QuantsI *q);
+void fin(QuantsI *q);
 
-void alloc_ticketZ(/**/ TicketZ *t);
-void free_ticketZ(/**/ TicketZ *t);
-void get_ticketZ(Quants q, /**/ TicketZ *t);
+void ini(/**/ TicketZ *t);
+void fin(/**/ TicketZ *t);
 
-void get_ticketRND(/**/ TicketRND *t);
-void free_ticketRND(/**/ TicketRND *t);
+void ini(/**/ TicketRND *t);
+void fin(/**/ TicketRND *t);
 
 void gen_quants(Quants *q, QuantsI *qc);
-
 void gen_ids(const int n, QuantsI *q);
+void get_ticketZ(Quants q, /**/ TicketZ *t);
 
 void strt_quants(const int id, Quants *q);
 void strt_ii(const char *subext, const int id, QuantsI *q);

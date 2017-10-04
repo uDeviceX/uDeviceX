@@ -61,9 +61,9 @@ void fin() {
         wall::free_ticket(&w::t);
     }
 
-    flu::free_quants(&o::q);
-    flu::free_ticketZ(&o::tz);
-    flu::free_ticketRND(&o::trnd);
+    flu::fin(&o::q);
+    flu::fin(&o::tz);
+    flu::fin(&o::trnd);
 
     dpdr::free_ticketcom(&o::h.tc);
     dpdr::free_ticketrnd(&o::h.trnd);
@@ -73,11 +73,11 @@ void fin() {
     fin_flu_distr(/**/ &o::d);
     
     if (global_ids) {
-        flu::free_quantsI(&o::qi);
+        flu::fin(&o::qi);
     }
 
     if (multi_solvent) {
-        flu::free_quantsI(&o::qc);
+        flu::fin(&o::qc);
     
         dpdr::free_ticketIcom(&o::h.tic);
         dpdr::free_ticketSIh(&o::h.tsi);
