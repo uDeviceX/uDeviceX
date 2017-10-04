@@ -34,7 +34,7 @@
 
 #include "sdf/type.h"
 #include "sdf/int.h"
-#include "flu/int.h"
+#include "xflu/imp.h"
 #include "rbc/int.h"
 #include "rig/int.h"
 #include "forces/type.h"
