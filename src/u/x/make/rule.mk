@@ -15,7 +15,6 @@ $B/exch/mesh/imp.o: $S/exch/mesh/imp.cu; $N -I$S/. -I$S/exch/mesh
 $B/exch/obj/imp.o: $S/exch/obj/imp.cu; $N -I$S/. -I$S/exch/obj
 $B/field.o: $S/field.cpp; $X -I$S/.
 $B/flu/imp.o: $S/flu/imp.cu; $N -I$S/. -I$S/flu
-$B/flu/int.o: $S/flu/int.cu; $N -I$S/. -I$S/flu
 $B/frag/imp.o: $S/frag/imp.cpp; $X -I$S/. -I$S/frag
 $B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/. -I$S/fsi
 $B/glb.o: $S/glb.cu; $N -I$S/.
