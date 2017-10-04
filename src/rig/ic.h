@@ -9,14 +9,14 @@ enum {X, Y, Z};
 
 static int read_coms(const char *fname, /**/ float* coms) {
     int nsolids = 0;
-    FILE *f = fopen(fname, "r"); 
+    FILE *f = fopen(fname, "r");
 
-    if (f == NULL) 
-    ERR("Could not open %s.\n", fname);
-    
+    if (f == NULL)
+        ERR("Could not open %s.\n", fname);
+
     float x, y, z;
     int i = 0;
-        
+
     while (fscanf(f, "%f %f %f\n", &x, &y, &z) == 3) {
         coms[3*i + X] = x;
         coms[3*i + Y] = y;
@@ -47,8 +47,8 @@ static int duplicate_PBC(const float3 minbb, const float3 maxbb, int n, /**/ flo
 #endif
             auto dupls2 = dupls;
             for (f3& r : dupls2)
-            r.x[d] += Lg[d] * sign;
-            dupls.insert(dupls.end(), dupls2.begin(), dupls2.end());      
+                r.x[d] += Lg[d] * sign;
+            dupls.insert(dupls.end(), dupls2.begin(), dupls2.end());
         };
 
         if (r0.x[0] + minbb.x < 0) duplicate(0, +1);
@@ -62,7 +62,7 @@ static int duplicate_PBC(const float3 minbb, const float3 maxbb, int n, /**/ flo
         // k from 1: do not reinsert the original
         for (int k = 1; k < (int) dupls.size(); ++k) {
             for (int d = 0; d < 3; ++d)
-            coms[3*id + d] = dupls[k].x[d];
+                coms[3*id + d] = dupls[k].x[d];
 
             ++id;
         }
@@ -76,8 +76,8 @@ static void make_local(const int n, /**/ float *coms) {
     for (int c = 0; c < 3; ++c) mi[c] = (m::coords[c] + 0.5) * L[c];
 
     for (int j = 0; j < n; ++j)
-    for (int d = 0; d < 3; ++d)
-    coms[3*j + d] -= mi[d];
+        for (int d = 0; d < 3; ++d)
+            coms[3*j + d] -= mi[d];
 }
 
 static void count_pp_inside(const Particle *s_pp, const int n, const float *coms, const int ns,
@@ -86,7 +86,7 @@ static void count_pp_inside(const Particle *s_pp, const int n, const float *coms
     for (int j = 0; j < ns; ++j) rcounts[j] = 0;
 
     const float R = (XS > YS) ? (XS > ZS ? XS : ZS) : (YS > ZS ? YS : ZS);
-    
+
     for (int ip = 0; ip < n; ++ip) {
         const Particle p = s_pp[ip]; const float *r0 = p.r;
         int tag = -1;
@@ -94,7 +94,7 @@ static void count_pp_inside(const Particle *s_pp, const int n, const float *coms
             const float *com = coms + 3*j;
             const float r[3] = {r0[X]-com[X], r0[Y]-com[Y], r0[Z]-com[Z]};
 
-            const float r2 = r[X]*r[X] + r[Y]*r[Y] + r[Z]*r[Z];     
+            const float r2 = r[X]*r[X] + r[Y]*r[Y] + r[Z]*r[Z];
 
             if (r2 < R*R && collision::inside_1p(r, vv, tt, nt)) {
                 ++rcounts[j];
@@ -103,22 +103,22 @@ static void count_pp_inside(const Particle *s_pp, const int n, const float *coms
         }
 
         if (tag == -1)
-        tags[ip] = tag;
+            tags[ip] = tag;
     }
 
     for (int j = 0; j < ns; ++j)
-    DBG("Found %d particles in solid %d", rcounts[j], j);
+        DBG("Found %d particles in solid %d", rcounts[j], j);
 }
 
 static void elect(const int *rcounts, const int ns, /**/ int *root, int *idmax) {
     int localmax[2] = {0, m::rank}, globalmax[2] = {0, m::rank}, idmax_ = 0;
 
     for (int j = 0; j < ns; ++j)
-    if (localmax[0] < rcounts[j]) {
-        localmax[0] = rcounts[j];
-        idmax_ = j;
-    }
-    
+        if (localmax[0] < rcounts[j]) {
+            localmax[0] = rcounts[j];
+            idmax_ = j;
+        }
+
     MPI_Allreduce(localmax, globalmax, 1, MPI_2INT, MPI_MAXLOC, m::cart);
 
     *root = globalmax[1];
@@ -135,11 +135,11 @@ static void kill(const int idmax, const int *tags, /**/ int *s_n, Particle *s_pp
         const int tag = tags[ip];
 
         if (tag == -1)         // solvent
-        s_pp[scount++] = p;
+            s_pp[scount++] = p;
         else if (tag == idmax) // elected solid
-        r_pp[rcount++] = p;
+            r_pp[rcount++] = p;
     }
-        
+
     *s_n = scount;
     *r_n = rcount;
 }
@@ -168,7 +168,7 @@ void set_ids(const int ns, Solid *ss_hst) {
     MC(MPI_Exscan(&ns, &id, 1, MPI_INT, MPI_SUM, m::cart));
 
     for (int j = 0; j < ns; ++j)
-    ss_hst[j].id = id++;
+        ss_hst[j].id = id++;
 }
 
 } // ic
