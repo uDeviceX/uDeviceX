@@ -31,11 +31,6 @@ namespace rbc {
 
 #include "params/rbc.inc0.h"
 
-// /* [m]aximumd [d]egree, number of vertices, number of triangles */
-// #define md ( RBCmd )
-// #define nv ( RBCnv )
-// #define nt ( RBCnt )
-
 #include "dev/forces.h"
 #include "dev/main.h"
 
@@ -44,6 +39,5 @@ namespace rbc {
 #include "imp/generate.h"
 #include "imp/start.h"
 #include "imp/main.h"
-
 
 } // rbc
