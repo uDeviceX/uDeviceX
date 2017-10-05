@@ -36,8 +36,11 @@ namespace rbc {
 
 #include "imp/ini.h"
 #include "imp/fin.h"
+
+#include "imp/setup.h"
 #include "imp/generate.h"
 #include "imp/start.h"
+
 #include "imp/main.h"
 
 } // rbc
