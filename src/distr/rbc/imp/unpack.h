@@ -1,5 +1,5 @@
 static int unpack_bulk_pp(const Pack *p, /**/ Particle *pp) {
-    int nc = p->hii.counts[frag_bulk];
+    int nc = p->hpp.counts[frag_bulk];
     void *src = p->dpp.data[frag_bulk];
     size_t sz = nc * p->hpp.bsize;
     
