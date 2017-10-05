@@ -25,6 +25,7 @@ struct MMap { /* map for compression of Momentum (support structure only) */
 
 struct PackM {
     MMap maps[NFRAGS];
+    int *cchst, *ccdev; /* helper to collect counts */
     dBags dmm, dii;
     hBags hmm, hii;
 };
@@ -37,6 +38,8 @@ struct UnpackM {
     dBags dmm, dii;
     hBags hmm, hii;
 };
+
+typedef Sarray<MMap, 26> MMap26;
 
 } // mesh
 } // exch

@@ -27,6 +27,8 @@ void fin(PackM *p) {
 
     for (int i = 0; i < NFRAGS; ++i)
         fin_map(&p->maps[i]);
+
+    CC(d::FreeHost(p->cchst));
 }
 
 void fin(CommM *c) {

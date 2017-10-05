@@ -54,6 +54,9 @@ void ini(int nt, int max_mesh_num, PackM *p) {
     
     ini(PINNED,   NONE, sizeof(Momentum), mcap, /**/ &p->hmm, &p->dmm);
     ini(PINNED,   NONE, sizeof(int)     , mcap, /**/ &p->hii, &p->dii);
+
+    CC(d::alloc_pinned((void**) &p->cchst, 26 * sizeof(int)));
+    CC(d::HostGetDevicePointer((void**) &p->ccdev, p->cchst, 0));
 }
 
 void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ CommM *c) {
