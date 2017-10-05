@@ -34,6 +34,7 @@ namespace rbc {
 
 #include "dev/forces.h"
 #include "dev/main.h"
+#include "dev/com.h"
 
 #include "imp/ini.h"
 #include "imp/fin.h"

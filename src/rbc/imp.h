@@ -19,6 +19,10 @@ struct TicketT {
     Texo <int4> textri;
 };
 
+struct ComHelper {
+    float3 *dcom;  /* helper to compute centers of mass on device */
+    float3 *hcom;  /* centers of mass on host                     */
+};
 
 void ini(Quants *q);
 void fin(Quants *q);
@@ -31,5 +35,7 @@ void strt_quants(const char *r_templ, const int id, Quants *q);
 void strt_dump(const int id, const Quants q);
 
 void forces(const Quants q, const TicketT t, /**/ Force *ff);
+
+void get_com(int nm, int nv, const Particle *pp, /**/ ComHelper *com);
 
 } // rbc
