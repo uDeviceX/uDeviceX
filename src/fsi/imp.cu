@@ -39,7 +39,7 @@
 #include "inc/dev/index.h"
 
 #include "clist/imp.h"
-#include "rbc/int.h"
+#include "xrbc/imp.h"
 #include "forces/type.h"
 #include "forces/pack.h"
 #include "forces/imp.h"

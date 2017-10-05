@@ -15,7 +15,7 @@
 
 #include "msg.h"
 #include "utils/texo.h"
-#include "rbc/int.h"
+#include "xrbc/imp.h"
 
 #include "frag/imp.h"
 #include "mpi/basetags.h"
