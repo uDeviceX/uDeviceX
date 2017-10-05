@@ -20,8 +20,8 @@ struct TicketT {
 };
 
 struct ComHelper {
-    float3 *dcom;  /* helper to compute centers of mass on device */
-    float3 *hcom;  /* centers of mass on host                     */
+    float3 *drr;  /* helper to compute centers of mass on device */
+    float3 *hrr;  /* centers of mass on host                     */
 };
 
 void ini(Quants *q);
