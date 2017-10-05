@@ -56,7 +56,7 @@ void ini() {
     datatype::ini();
     if (rbcs) {
         Dalloc(&r::ff, MAX_PART_NUM);
-        rbc::alloc_quants(&r::q);
+        rbc::ini(&r::q);
 
         ini_rbc_distr(r::q.nv, m::cart, /*io*/ &tag_gen, /**/ &r::d);
     }

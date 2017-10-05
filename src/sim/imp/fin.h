@@ -109,8 +109,8 @@ void fin() {
     }
 
     if (rbcs) {
-        rbc::free_quants(&r::q);
-        rbc::destroy_textures(&r::tt);
+        rbc::fin(&r::q);
+        rbc::fin_ticket(&r::tt);
 
         fin_rbc_distr(/**/ &r::d);
         
