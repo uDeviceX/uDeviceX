@@ -42,16 +42,22 @@ static int unpack_ii(const hBags bags, /**/ int *ii) {
     return nhalo;
 }
 
-void unpack_pp(/**/ Unpack *u) {
+static void unpack_pp(/**/ Unpack *u) {
     int nhalo;
     nhalo = unpack_pp(u->hpp, /**/ u->ppre);
     u->nhalo = nhalo;
 }
 
-void unpack_ii(/**/ Unpack *u) {
+static void unpack_ii(/**/ Unpack *u) {
     unpack_ii(u->hii, /**/ u->iire);
 }
 
-void unpack_cc(/**/ Unpack *u) {
+static void unpack_cc(/**/ Unpack *u) {
     unpack_ii(u->hcc, /**/ u->ccre);
+}
+
+void unpack(/**/ Unpack *u) {
+    unpack_pp(/**/ u);
+    if (global_ids)    unpack_ii(/**/ u);
+    if (multi_solvent) unpack_cc(/**/ u);
 }

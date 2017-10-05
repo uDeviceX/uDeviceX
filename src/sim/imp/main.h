@@ -12,17 +12,17 @@ void gen() { /* generate */
     if (multi_solvent) {
         Particle *pp = o::q.pp;
         int n = o::q.n;
-        int *cc = o::qc.ii;
+        int *cc = o::q.cc;
         Particle *pp_hst = a::pp_hst;
-        int *cc_hst = o::qc.ii_hst;
+        int *cc_hst = o::q.cc_hst;
         inter::color_dev(pp, n, /*o*/ cc, /*w*/ pp_hst, cc_hst);
     }
 }
 
 void sim_gen() {
-    flu::gen_quants(&o::q, &o::qc);
+    flu::gen_quants(&o::q);
     flu::build_cells(&o::q);
-    if (global_ids)    flu::gen_ids  (o::q.n, &o::qi);
+    if (global_ids)    flu::gen_ids  (o::q.n, &o::q);
     flu::get_ticketZ(o::q, &o::tz);
     if (rbcs) {
         rbc::gen_quants("rbc.off", "rbcs-ic.txt", /**/ &r::q);
@@ -56,8 +56,6 @@ void sim_strt() {
 
     /*Q*/
     flu::strt_quants(restart::BEGIN, &o::q);
-    if (global_ids)    flu::strt_ii("id",     restart::BEGIN, &o::qi);
-    if (multi_solvent) flu::strt_ii("colors", restart::BEGIN, &o::qc);
     flu::build_cells(&o::q);
 
     if (rbcs) rbc::strt_quants("rbc.off", restart::BEGIN, &r::q);

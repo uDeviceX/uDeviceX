@@ -12,10 +12,10 @@ void fin(Unpack *u);
 /* map */
 void build_map(int n, const Particle *pp, Pack *p);
 
+using namespace ::flu;
+
 /* pack */
-void pack_pp(const Particle *pp, int n, /**/ Pack *p);
-void pack_ii(const int *ii, int n, /**/ Pack *p);
-void pack_cc(const int *cc, int n, /**/ Pack *p);
+void pack(const Quants *q, /**/ Pack *p);
 
 void download(int n, Pack *p);
 
@@ -26,15 +26,12 @@ void wait_recv(Comm *c, Unpack *u);
 void wait_send(Comm *c);
 
 /* unpack */
-void unpack_pp(/**/ Unpack *u);
-void unpack_ii(/**/ Unpack *u);
-void unpack_cc(/**/ Unpack *u);
+void unpack(/**/ Unpack *u);
 
 /* cell lists */
-using namespace ::flu;
 void bulk(/**/ Quants *q);
 void halo(const Unpack *u, /**/ Quants *q);
-void gather(const Pack *p, const Unpack *u, /**/ Quants *q, QuantsI *qi, QuantsI *qc);
+void gather(const Pack *p, const Unpack *u, /**/ Quants *q);
 
 } // flu
 } // distr

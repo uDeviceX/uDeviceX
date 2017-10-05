@@ -70,13 +70,7 @@ void fin() {
 
     fin_flu_distr(/**/ &o::d);
     
-    if (global_ids) {
-        flu::fin(&o::qi);
-    }
-
     if (multi_solvent) {
-        flu::fin(&o::qc);
-    
         dpdr::free_ticketIcom(&o::h.tic);
         dpdr::free_ticketSIh(&o::h.tsi);
         dpdr::free_ticketRIh(&o::h.tri);

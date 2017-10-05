@@ -5,9 +5,7 @@ void distribute_flu() {
     using namespace o;
     
     build_map(q.n, q.pp, /**/ &d.p);
-    pack_pp(q.pp, q.n, /**/ &d.p);
-    if (global_ids)    pack_ii(qi.ii, q.n, /**/ &d.p);
-    if (multi_solvent) pack_cc(qc.ii, q.n, /**/ &d.p);
+    pack(&q, /**/ &d.p);
     download(q.n, /**/ &d.p);
 
     post_send(&d.p, &d.c);
@@ -18,12 +16,10 @@ void distribute_flu() {
     wait_send(&d.c);
     wait_recv(&d.c, &d.u);
     
-    unpack_pp(/**/ &d.u);
-    if (global_ids)    unpack_ii(/**/ &d.u);
-    if (multi_solvent) unpack_cc(/**/ &d.u);
+    unpack(/**/ &d.u);
     
     halo(&d.u, /**/ &q);
-    gather(&d.p, &d.u, /**/ &q, &qi, &qc);
+    gather(&d.p, &d.u, /**/ &q);
 
     flu::get_ticketZ(q, /**/ &tz);
     dSync();

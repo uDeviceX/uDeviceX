@@ -21,7 +21,7 @@ void forces_wall() {
     ini_cloud(o::q.pp, &co);
     ini_cloud(s::q.pp, &cs);
     ini_cloud(r::q.pp, &cr);
-    if (multi_solvent) ini_cloud_color(o::qc.ii, &co);
+    if (multi_solvent) ini_cloud_color(o::q.cc, &co);
     
     if (o::q.n)           color::force(w::qsdf, w::q, w::t, co, o::q.n, /**/ o::ff);
     if (solids0 && s::q.n) grey::force(w::qsdf, w::q, w::t, cs, s::q.n, /**/ s::ff);

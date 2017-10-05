@@ -26,7 +26,7 @@ void gen_colors() {
     Texo<float2> texvert;
     TE(&texvert, (float2*) pp, 3 * nm * nv);
     
-    collision::get_colors(o::q.pp, o::q.n, texvert, r::tt.textri, r::q.nt, nv, nm, /**/ o::qc.ii);
+    collision::get_colors(o::q.pp, o::q.n, texvert, r::tt.textri, r::q.nt, nv, nm, /**/ o::q.cc);
 
     texvert.destroy();
 }

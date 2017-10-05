@@ -9,9 +9,6 @@ flu::Quants       q;
 flu::TicketZ     tz; /* [z]ip             */
 flu::TicketRND trnd; /* random            */
 
-flu::QuantsI     qi; /* global [i]ds      */
-flu::QuantsI     qc; /* [c]olors          */
-
 FluDistr d;
 
 /* [h]alo interactions : local halos : see type.h */

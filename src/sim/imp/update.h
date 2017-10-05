@@ -78,7 +78,7 @@ void bounce_solid(long it) {
 }
 
 void update_solvent(long it) {
-    scheme::restrain(o::qc.ii, o::q.n, it, /**/ o::q.pp);
+    scheme::restrain(o::q.cc, o::q.n, it, /**/ o::q.pp);
     scheme::move(dpd_mass, o::q.pp, o::ff, o::q.n);
 }
 

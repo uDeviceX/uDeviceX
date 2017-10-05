@@ -12,12 +12,12 @@ void dev2hst() { /* device to host  data transfer */
 void dump_part(int step) {
   cD2H(o::q.pp_hst, o::q.pp, o::q.n);
   if (global_ids) {
-      cD2H(o::qi.ii_hst, o::qi.ii, o::q.n);
-      bop::ids(o::qi.ii_hst, o::q.n, "id_solvent", step);
+      cD2H(o::q.ii_hst, o::q.ii, o::q.n);
+      bop::ids(o::q.ii_hst, o::q.n, "id_solvent", step);
   }
   if (multi_solvent) {
-      cD2H(o::qc.ii_hst, o::qc.ii, o::q.n);
-      bop::colors(o::qc.ii_hst, o::q.n, "colors_solvent", step);
+      cD2H(o::q.cc_hst, o::q.cc, o::q.n);
+      bop::colors(o::q.cc_hst, o::q.n, "colors_solvent", step);
   }
 
   if (force_dumps) {
@@ -76,8 +76,6 @@ void dump_strt_templ() { /* template dumps (wall, solid) */
 
 void dump_strt(int id) {
     flu::strt_dump(id, o::q);
-    if (global_ids)    flu::strt_dump_ii("id",     id, o::qi, o::q.n);
-    if (multi_solvent) flu::strt_dump_ii("colors", id, o::qc, o::q.n);
     if (rbcs)       rbc::strt_dump(id, r::q);
     if (solids)     rig::strt_dump(id, s::q);
 }

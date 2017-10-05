@@ -41,7 +41,7 @@ void forces_objects() {
     /* bulk interactions */
     
     hforces::ini_cloud(o::q.pp, &cloud);
-    if (multi_solvent) hforces::ini_cloud_color(o::qc.ii, &cloud);
+    if (multi_solvent) hforces::ini_cloud_color(o::q.cc, &cloud);
 
     w_s.pp = o::q.pp;
     w_s.c  = cloud;

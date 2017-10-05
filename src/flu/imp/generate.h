@@ -50,9 +50,9 @@ static int genGrey(/*o*/ Particle *dev, /*w*/ Particle *hst) {
     return n;
 }
 
-void gen_quants(Quants *q, QuantsI *qc) {
+void gen_quants(Quants *q) {
     if (multi_solvent)
-        q->n = genColor(q->pp, qc->ii, /*w*/ q->pp_hst, qc->ii_hst);
+        q->n = genColor(q->pp, q->cc, /*w*/ q->pp_hst, q->cc_hst);
     else
         q->n = genGrey(q->pp, /*w*/ q->pp_hst);
 }
@@ -68,6 +68,6 @@ static void ii_gen(const int n, int *ii_dev, int *ii_hst) {
     cH2D(ii_dev, ii_hst, n);
 }
 
-void gen_ids(const int n, QuantsI *q) {
+void gen_ids(const int n, Quants *q) {
     ii_gen(n, q->ii, q->ii_hst);
 }

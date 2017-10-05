@@ -7,7 +7,7 @@ void halo(const Unpack *u, /**/ Quants *q) {
     subindex_remote(u->nhalo, u->ppre, /**/ &q->cells, &q->tcells);
 }
 
-void gather(const Pack *p, const Unpack *u, /**/ Quants *q, QuantsI *qi, QuantsI *qc) {
+void gather(const Pack *p, const Unpack *u, /**/ Quants *q) {
     int n, nold, nhalo, nbulk;
     Particle *pp, *pp0;
     nold = q->n;
@@ -21,8 +21,8 @@ void gather(const Pack *p, const Unpack *u, /**/ Quants *q, QuantsI *qi, QuantsI
     gather_pp(pp, u->ppre, &q->tcells, n, /**/ pp0);
 
     int *ii, *ii0, *cc, *cc0;
-    ii = qi->ii; ii0 = qi->ii0;
-    cc = qc->ii; cc0 = qc->ii0;
+    ii = q->ii; ii0 = q->ii0;
+    cc = q->cc; cc0 = q->cc0;
     
     if (global_ids)    gather_ii(ii, u->iire, &q->tcells, n, /**/ ii0);
     if (multi_solvent) gather_ii(cc, u->ccre, &q->tcells, n, /**/ cc0);
@@ -35,12 +35,12 @@ void gather(const Pack *p, const Unpack *u, /**/ Quants *q, QuantsI *qi, QuantsI
     q->pp0 = pp;
 
     if (global_ids) {
-        qi->ii = ii0;
-        qi->ii0 = ii;
+        q->ii = ii0;
+        q->ii0 = ii;
     }
 
     if (multi_solvent) {
-        qc->ii = cc0;
-        qc->ii0 = cc;
+        q->cc = cc0;
+        q->cc0 = cc;
     }
 }

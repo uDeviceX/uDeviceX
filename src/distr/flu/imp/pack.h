@@ -16,16 +16,10 @@ static void pack_ii(const Map m, const int *ii, int n, /**/ dBags bags) {
     KL((dev::pack<int, S>), (k_cnf(S*n)), (ii, m, /**/ wrap));
 }
 
-void pack_pp(const Particle *pp, int n, /**/ Pack *p) {
-    pack_pp(p->map, pp, n, /**/ p->dpp);
-}
-
-void pack_ii(const int *ii, int n, /**/ Pack *p) {
-    pack_ii(p->map, ii, n, /**/ p->dii);
-}
-
-void pack_cc(const int *cc, int n, /**/ Pack *p) {
-    pack_ii(p->map, cc, n, /**/ p->dcc);
+void pack(const Quants *q, /**/ Pack *p) {
+    pack_pp(p->map, q->pp, q->n, /**/ p->dpp);
+    if (global_ids)    pack_ii(p->map, q->ii, q->n, /**/ p->dii);
+    if (multi_solvent) pack_ii(p->map, q->cc, q->n, /**/ p->dcc);
 }
 
 void download(int n, Pack *p) {

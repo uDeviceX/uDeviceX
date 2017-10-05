@@ -12,13 +12,13 @@ void forces_dpd() {
 
     pack(q.pp, /**/ &h.ts);
     if (multi_solvent)
-        pack_ii(qc.ii, &h.ts, /**/ &h.tsi);
+        pack_ii(q.cc, &h.ts, /**/ &h.tsi);
 
     post_send(&h.tc, &h.ts);
     if (multi_solvent)
         post_send_ii(&h.tc, &h.ts, /**/ &h.tic, &h.tsi);
  
-    if (multi_solvent) flocal_color(tz.zip0, tz.zip1, qc.ii, q.n, start, count, trnd.rnd, /**/ ff);
+    if (multi_solvent) flocal_color(tz.zip0, tz.zip1, q.cc, q.n, start, count, trnd.rnd, /**/ ff);
     else flocal(tz.zip0, tz.zip1, q.n, start, count, trnd.rnd, /**/ ff);
 
     wait_recv(&h.tc);

@@ -89,14 +89,8 @@ void ini() {
     dpdr::alloc_ticketRh(/**/ &o::h.tr);
 
     Dalloc(&o::ff, MAX_PART_NUM);
-
-    if (global_ids) {
-        flu::ini(&o::qi);
-    }
     
     if (multi_solvent) {
-        flu::ini(&o::qc);
-        
         dpdr::ini_ticketIcom(/*io*/ &tag_gen, /**/ &o::h.tic);
         dpdr::alloc_ticketSIh(/**/ &o::h.tsi);
         dpdr::alloc_ticketRIh(/**/ &o::h.tri);
