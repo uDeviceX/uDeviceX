@@ -8,14 +8,24 @@ struct Pack {
     float3 *minext, *maxext;
     dBags dpp;
     hBags hpp;
+
+    /* optional: ids */
+    Map hmap;
+    hBags hii;
 };
 
 struct Comm {
     Stamp pp;
+
+    /* optional: ids */
+    Stamp ii;
 };
 
 struct Unpack {
     hBags hpp;
+
+    /* optional: ids */
+    hBags hii;
 };
 
 } // rbc
