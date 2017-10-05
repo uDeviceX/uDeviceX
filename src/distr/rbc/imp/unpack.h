@@ -1,27 +1,62 @@
-static void unpack_bulk_ii(int nc, const Pack *p, /**/ int *ii) {
+static int unpack_bulk_pp(const Pack *p, /**/ Particle *pp) {
+    int nc = p->hii.counts[frag_bulk];
+    void *src = p->dpp.data[frag_bulk];
+    size_t sz = nc * p->hpp.bsize;
+    
+    if (nc)
+        CC(d::MemcpyAsync(pp, src, sz, D2D));
+    return nc;
+}
+
+static void unpack_bulk_ii(const Pack *p, /**/ int *ii) {
+    int nc = p->hii.counts[frag_bulk];
     void *src = p->hii.data[frag_bulk];
     memcpy(ii, src, nc * sizeof(int));
 }
 
 void unpack_bulk(const Pack *p, /**/ rbc::Quants *q) {
     int nc, nv, n;
-    nc = p->hpp.counts[frag_bulk];
     nv = q->nv;
+
+    nc = unpack_bulk_pp(p, /**/ q->pp);
     n = nc * nv;
-    
-    if (n) CC(d::MemcpyAsync(q->pp, p->dpp.data[frag_bulk], n * sizeof(Particle), D2D));
-    q->nc = nc;
-    q->n = n;
 
     if (rbc_ids)
-        unpack_bulk_ii(nc, p, /**/ q->ii);
+        unpack_bulk_ii(p, /**/ q->ii);
+
+    q->nc = nc;
+    q->n = n;
 }
 
-static void unpack_halo_ii(const hBags *hii, /**/ int *ii) {
+static int unpack_halo_pp(int nc0, int nv, const hBags *hpp, /**/ Particle *pp) {
+    void *src;
+    Particle *dst;
+    int i, s, c, n;
+    size_t sz, bsz;
+    bsz = hpp->bsize;
+    
+    s = nc0;
+    for (i = 0; i < NFRAGS; ++i) {
+        c   = hpp->counts[i];
+        src = hpp->data[i];
+        dst = pp + s * nv;
+        
+        if (c) {
+            n = c * nv;
+            sz = c * bsz;
+            CC(d::MemcpyAsync(dst, src, sz, H2D));
+            KL(dev::shift_one_frag, (k_cnf(n)), (n, i, /**/ dst));
+        }
+        s += c;
+    }
+    return s;
+}
+
+static void unpack_halo_ii(int nc0, const hBags *hii, /**/ int *ii) {
     void *src;
     int i, s, c;
 
-    s = 0;
+    s = nc0;
     for (i = 0; i < NFRAGS; ++i) {
         c   = hii->counts[i];
         src = hii->data[i];        
@@ -31,27 +66,16 @@ static void unpack_halo_ii(const hBags *hii, /**/ int *ii) {
 }
 
 void unpack_halo(const Unpack *u, /**/ rbc::Quants *q) {
-    int nc, nv, n, i, s, nctot;
-    size_t size;
-    nv = q->nv;
-    s = q->n;
-    nctot = q->nc;
-    
-    for (i = 0; i < NFRAGS; ++i) {
-        nc = u->hpp.counts[i];
-        n  = nc * nv; 
-        size = n * sizeof(Particle);
-        if (nc) {
-            CC(d::MemcpyAsync(q->pp + s, u->hpp.data[i], size, H2D));
-            KL(dev::shift_one_frag, (k_cnf(n)), (n, i, /**/ q->pp + s));
-        }
-        s += n;
-        nctot += nc;
-    }
+    int nc0, nc, nv;
+
+    nc0 = q->nc;
+    nv  = q->nv;
+
+    nc = unpack_halo_pp(nc0, nv, &u->hpp, /**/ q->pp);
 
     if (rbc_ids)
-        unpack_halo_ii(&u->hii, /**/ q->ii + q->nc);
+        unpack_halo_ii(nc0, &u->hii, /**/ q->ii);
 
-    q->n = s;
-    q->nc = nctot;
+    q->n = nc * nv;
+    q->nc = nc;
 }
