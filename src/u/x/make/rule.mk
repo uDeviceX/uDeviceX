@@ -45,7 +45,6 @@ $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/. -I$S/mpi
 $B/mrescue.o: $S/mrescue.cu; $N -I$S/.
 $B/msg.o: $S/msg.cpp; $X -I$S/.
 $B/rbc/imp.o: $S/rbc/imp.cu; $N -I$S/. -I$S/rbc
-$B/rbc/int.o: $S/rbc/int.cu; $N -I$S/. -I$S/rbc
 $B/restrain/imp.o: $S/restrain/imp.cu; $N -I$S/. -I$S/restrain
 $B/rig/imp.o: $S/rig/imp.cu; $N -I$S/. -I$S/rig
 $B/rig/int.o: $S/rig/int.cu; $N -I$S/. -I$S/rig

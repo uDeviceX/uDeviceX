@@ -35,7 +35,7 @@
 #include "sdf/type.h"
 #include "sdf/int.h"
 #include "flu/imp.h"
-#include "xrbc/imp.h"
+#include "rbc/imp.h"
 #include "rig/int.h"
 #include "forces/type.h"
 #include "cloud/hforces/type.h"
