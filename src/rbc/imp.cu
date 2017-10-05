@@ -41,6 +41,6 @@ namespace rbc {
 #include "imp/generate.h"
 #include "imp/start.h"
 
-#include "imp/main.h"
+#include "imp/forces.h"
 
 } // rbc
