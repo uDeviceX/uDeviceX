@@ -45,7 +45,6 @@ static void fin_rig_distr(/**/ RigDistr *d) {
 }
 
 void fin() {
-    bbhalo::fin();
     cnt::fin();
     bop::fin(&dumpt);
     if (rbcs || solids)
@@ -91,13 +90,9 @@ void fin() {
 
     if (solids) {
         rig::free_quants(&s::q);
-        rig::free_ticket(&s::t);
         scan::free_work(/**/ &s::ws);
         Dfree(s::ff);
         free(s::ff_hst);
-
-        tcells::free_quants(&bb::qtc);
-        mbounce::free_ticketM(&bb::tm);
 
         fin(/**/ &bb::bbd);
         Dfree(bb::mm);

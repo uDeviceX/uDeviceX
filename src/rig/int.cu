@@ -30,7 +30,8 @@ void alloc_quants(Quants *q) {
     q->rr0_hst  = new float[3 * MAX_PART_NUM];
     q->i_pp_hst = new Particle[MAX_PART_NUM];
 
-    q->ss_dmp = new Solid[MAX_SOLIDS];
+    q->ss_dmp    = new Solid[MAX_SOLIDS];
+    q->ss_dmp_bb = new Solid[MAX_SOLIDS];
 
     sub::load_solid_mesh("mesh_solid.ply", /**/ &q->nt, &q->nv,
                          &q->htt, &q->dtt, &q->hvv, &q->dvv);
@@ -54,6 +55,7 @@ void free_quants(Quants *q) {
     if (q->dvv) CC(cudaFree(q->dvv));
 
     delete[] q->ss_dmp;
+    delete[] q->ss_dmp_bb;
 }
 
 void alloc_ticket(TicketBB *t) {

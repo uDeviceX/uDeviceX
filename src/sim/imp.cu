@@ -89,9 +89,6 @@
 #include "meshbb/imp.h"
 #include "mrescue.h"
 
-#include "bbhalo/imp/dec.h"
-#include "bbhalo/imp/main.h"
-
 #include "io/bop/imp.h"
 
 #include "inter/imp.h"

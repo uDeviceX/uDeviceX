@@ -13,7 +13,7 @@ struct Quants {
     float *hvv, *dvv;             /* vertices of [h]ost and [d]evice (template)                    */
     Particle *i_pp_hst, *i_pp;    /* particles representing all meshes of all solids of that node  */
 
-    Solid *ss_dmp;
+    Solid *ss_dmp, *ss_dmp_bb;
 };
 
 struct TicketBB {

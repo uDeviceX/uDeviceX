@@ -37,7 +37,6 @@ Force     *ff;
 namespace s /* rigid bodies */
 {
 rig::Quants q;
-rig::TicketBB t;
 scan::Work ws; /* work for scan */
 Force *ff, *ff_hst;
 
@@ -71,9 +70,6 @@ Particle *pp;
 
 namespace bb /* bounce back */
 {
-tcells::Quants qtc;
-mbounce::TicketM tm;
-
 meshbb::BBdata bbd;
 Momentum *mm;
 }

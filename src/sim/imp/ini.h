@@ -64,7 +64,6 @@ void ini() {
     if (VCON) ini_vcont(m::cart, /**/ &o::vcont);
     if (fsiforces) fsi::ini();
 
-    bbhalo::ini(&tag_gen);
     cnt::ini();
 
     if (rbcs || solids)
@@ -111,13 +110,9 @@ void ini() {
     if (solids) {
         mrescue::ini(MAX_PART_NUM);
         rig::alloc_quants(&s::q);
-        rig::alloc_ticket(&s::t);
         scan::alloc_work(XS*YS*ZS, /**/ &s::ws);
         s::ff_hst = (Force*)malloc(sizeof(&s::ff_hst)*MAX_PART_NUM);
         Dalloc(&s::ff, MAX_PART_NUM);
-
-        tcells::alloc_quants(MAX_SOLIDS, &bb::qtc);
-        mbounce::alloc_ticketM(&bb::tm);
 
         ini(MAX_PART_NUM, /**/ &bb::bbd);
         Dalloc(&bb::mm, MAX_PART_NUM);
