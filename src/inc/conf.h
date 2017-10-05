@@ -32,6 +32,10 @@
 #define global_ids (false)
 #endif
 
+#ifndef rbc_ids
+#define rbc_ids (false)
+#endif
+
 // dump
 
 #ifndef dump_all_fields
