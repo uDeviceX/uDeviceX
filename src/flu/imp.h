@@ -3,13 +3,21 @@ namespace flu {
 struct Quants {
     Particle *pp, *pp0;    /* particles on device  */
     int       n;           /* particle number      */
-    clist::Clist cells;   /* cell lists           */
-    clist::Ticket tcells; /* cell lists ticket    */
+    clist::Clist cells;    /* cell lists           */
+    clist::Ticket tcells;  /* cell lists ticket    */
     Particle *pp_hst;      /* particles on host    */
+
+    /* optional data */
+
+    int *ii, *ii0;  /* global ids on device */
+    int *ii_hst;    /* global ids on host   */
+
+    int *cc, *cc0;  /* colors on device */
+    int *cc_hst;    /* colors on host   */    
 }; 
 
 struct QuantsI {
-    int *ii, *ii0; /* int data on device */
+    int *ii, *ii0;
     int *ii_hst;   /* int data on host   */
 };
 
