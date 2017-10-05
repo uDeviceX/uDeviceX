@@ -53,7 +53,7 @@ void bounce_solid_old(long it) {
 #undef DEV
 }
 
-void bounce_solid_v2(long it) {
+void bounce_solid(long it) {
     int n, nm, nt, nv, *ss, *cc, nmhalo, counts[comm::NFRAGS];
     int4 *tt;
     Particle *pp, *i_pp;

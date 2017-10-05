@@ -21,6 +21,5 @@ void step(scheme::Fparams *fpar, bool wall0, int it) {
     
     if (wall0) bounce_wall();
 
-    if (sbounce_back && solids0) bounce_solid_old(it);
-    // if (sbounce_back && solids0) bounce_solid_v2(it);
+    if (sbounce_back && solids0) bounce_solid(it);
 }
