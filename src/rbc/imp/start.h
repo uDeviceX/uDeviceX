@@ -1,5 +1,8 @@
+#define CODE "rbc"
+#define IDEXT "ids"
+
 static void setup_from_strt(int nv, const int id, /**/ Particle *pp, int *nc, int *n, /*w*/ Particle *pp_hst) {
-    restart::read_pp("rbc", id, pp_hst, n);
+    restart::read_pp(CODE, id, pp_hst, n);
     *nc = *n / nv;
     
     if (*n) cH2D(pp, pp_hst, *n);
@@ -7,7 +10,7 @@ static void setup_from_strt(int nv, const int id, /**/ Particle *pp, int *nc, in
 
 static void ids_from_strt(const int id, /**/ int *ii) {
     int nc;
-    restart::read_ii("rbc", "ids", id, ii, &nc);
+    restart::read_ii(CODE, IDEXT, id, ii, &nc);
 }
 
 void strt_quants(const char *r_templ, const int id, Quants *q) {
@@ -25,11 +28,11 @@ void strt_quants(const char *r_templ, const int id, Quants *q) {
 static void strt_dump(const int id, const int n, const Particle *pp, /*w*/ Particle *pp_hst) {
     if (n) cD2H(pp_hst, pp, n);
 
-    restart::write_pp("rbc", id, pp_hst, n);
+    restart::write_pp(CODE, id, pp_hst, n);
 }
 
 static void strt_dump_ii(const int id, const int nc, const int *ii) {
-    restart::write_ii("rbc", "ids", id, ii, nc);
+    restart::write_ii(CODE, IDEXT, id, ii, nc);
 }
 
 
@@ -39,3 +42,6 @@ void strt_dump(const int id, const Quants q) {
     if (rbc_ids)
         strt_dump_ii(id, q.nc, q.ii);
 }
+
+#undef CODE
+#undef IDEXT
