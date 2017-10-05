@@ -6,8 +6,11 @@ void fin(Quants *q) {
     Dfree(q->adj0);
     Dfree(q->adj1);
 
-    delete[] q->tri_hst;
-    delete[] q->pp_hst;
+    free(q->tri_hst);
+    free(q->pp_hst);
+
+    if (rbc_ids)
+        free(q->ii);
 }
 
 void fin_ticket(TicketT *t) {

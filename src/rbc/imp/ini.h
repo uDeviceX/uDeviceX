@@ -1,7 +1,7 @@
 void ini(Quants *q) {
     q->n = q->nc = 0;
     Dalloc(&q->pp, MAX_PART_NUM);
-    q->pp_hst = new Particle[MAX_PART_NUM];
+    q->pp_hst = (Particle*) malloc(MAX_PART_NUM * sizeof(Particle));
 
     q->nt = RBCnt;
     q->nv = RBCnv;
@@ -10,8 +10,11 @@ void ini(Quants *q) {
     Dalloc(&q->adj0, q->nv * RBCmd);
     Dalloc(&q->adj1, q->nv * RBCmd);
 
-    q->tri_hst = new int4[MAX_FACE_NUM];
+    q->tri_hst = (int4*) malloc(MAX_FACE_NUM * sizeof(int4));
     Dalloc(&q->av, 2*MAX_CELL_NUM);
+
+    if (rbc_ids)
+        q->ii = (int*) malloc(MAX_CELL_NUM * sizeof(int));
 }
 
 static void setup_textures(int md, int nt, int nv, int4 *tri, Texo<int4> *textri, int *adj0, Texo<int> *texadj0,
