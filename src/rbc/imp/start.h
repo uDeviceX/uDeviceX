@@ -5,6 +5,11 @@ static void setup_from_strt(int nv, const int id, /**/ Particle *pp, int *nc, in
     if (*n) cH2D(pp, pp_hst, *n);
 }
 
+static void ids_from_strt(const int id, /**/ int *ii) {
+    int nc;
+    restart::read_ii("rbc", "ids", id, ii, &nc);
+}
+
 void strt_quants(const char *r_templ, const int id, Quants *q) {
     int md, nt, nv;
     md = RBCmd;
@@ -12,6 +17,9 @@ void strt_quants(const char *r_templ, const int id, Quants *q) {
     nv = RBCnv;
     setup(md, nt, nv, r_templ, /**/ q->tri_hst, q->tri, q->adj0, q->adj1);
     setup_from_strt(nv, id, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
+
+    if (rbc_ids)
+        ids_from_strt(id, /**/ q->ii);
 }
 
 static void strt_dump(const int id, const int n, const Particle *pp, /*w*/ Particle *pp_hst) {
@@ -20,6 +28,14 @@ static void strt_dump(const int id, const int n, const Particle *pp, /*w*/ Parti
     restart::write_pp("rbc", id, pp_hst, n);
 }
 
+static void strt_dump_ii(const int id, const int nc, const int *ii) {
+    restart::write_ii("rbc", "ids", id, ii, nc);
+}
+
+
 void strt_dump(const int id, const Quants q) {
     strt_dump(id, q.n, q.pp, /*w*/ q.pp_hst);
+
+    if (rbc_ids)
+        strt_dump_ii(id, q.nc, q.ii);
 }
