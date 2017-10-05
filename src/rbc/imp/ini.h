@@ -32,3 +32,9 @@ void gen_ticket(const Quants q, TicketT *t) {
     nv = RBCnv;
     setup_textures(md, nt, nv, q.tri, &t->textri, q.adj0, &t->texadj0, q.adj1, &t->texadj1, q.pp, &t->texvert);
 }
+
+void ini(int maxcells, /**/ ComHelper *com) {
+    size_t sz = maxcells * sizeof(float3);
+    CC(d::alloc_pinned((void**) &com->hrr, sz));
+    CC(d::Malloc((void**) &com->drr, sz));
+}

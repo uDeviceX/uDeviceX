@@ -30,6 +30,9 @@ void fin(Quants *q);
 void gen_ticket(const Quants q, TicketT *t);
 void fin_ticket(TicketT *t);
 
+void ini(int maxcells, /**/ ComHelper *com);
+void fin(/**/ ComHelper *com);
+
 void gen_quants(const char *r_templ, const char *r_state, Quants *q);
 void strt_quants(const char *r_templ, const int id, Quants *q);
 void strt_dump(const int id, const Quants q);
