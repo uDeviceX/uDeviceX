@@ -83,11 +83,8 @@
 #include "mesh/bbox.h"
 
 #include "rigid/int.h"
-#include "tcells/int.h"
 
-#include "mbounce/imp.h"
 #include "meshbb/imp.h"
-#include "mrescue.h"
 
 #include "io/bop/imp.h"
 

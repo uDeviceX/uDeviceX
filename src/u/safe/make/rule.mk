@@ -33,7 +33,6 @@ $B/lforces/imp.o: $S/lforces/imp.cu; $N -I$S/. -I$S/lforces
 $B/lforces/transpose/imp.o: $S/lforces/transpose/imp.cu; $N -I$S/. -I$S/lforces/transpose
 $B/main.o: $S/main.cu; $N -I$S/.
 $B/math/linal.o: $S/math/linal.cpp; $X -I$S/. -I$S/math
-$B/mbounce/imp.o: $S/mbounce/imp.cu; $N -I$S/. -I$S/mbounce -I$S/mbounce/_safe
 $B/mesh/bbox.o: $S/mesh/bbox.cu; $N -I$S/. -I$S/mesh
 $B/mesh/collision.o: $S/mesh/collision.cu; $N -I$S/. -I$S/mesh
 $B/mesh/dist.o: $S/mesh/dist.cpp; $X -I$S/. -I$S/mesh
@@ -42,7 +41,6 @@ $B/meshbb/imp.o: $S/meshbb/imp.cu; $N -I$S/. -I$S/meshbb
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/. -I$S/mpi
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/. -I$S/mpi
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/. -I$S/mpi
-$B/mrescue.o: $S/mrescue.cu; $N -I$S/.
 $B/msg.o: $S/msg.cpp; $X -I$S/.
 $B/rbc/imp.o: $S/rbc/imp.cu; $N -I$S/. -I$S/rbc
 $B/restrain/imp.o: $S/restrain/imp.cu; $N -I$S/. -I$S/restrain
@@ -54,8 +52,6 @@ $B/scheme/imp.o: $S/scheme/imp.cu; $N -I$S/. -I$S/scheme
 $B/sdf/imp.o: $S/sdf/imp.cu; $N -I$S/. -I$S/sdf
 $B/sdf/int.o: $S/sdf/int.cu; $N -I$S/. -I$S/sdf
 $B/sim/imp.o: $S/sim/imp.cu; $N -I$S/. -I$S/sim
-$B/tcells/imp.o: $S/tcells/imp.cu; $N -I$S/. -I$S/tcells
-$B/tcells/int.o: $S/tcells/int.cpp; $X -I$S/. -I$S/tcells
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/. -I$S/utils
 $B/utils/mc.o: $S/utils/mc.cpp; $X -I$S/. -I$S/utils
 $B/utils/os.o: $S/utils/os.cpp; $X -I$S/. -I$S/utils

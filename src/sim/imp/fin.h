@@ -52,8 +52,7 @@ void fin() {
 
     if (VCON) fin(/**/ &o::vcont);
     if (fsiforces)  fsi::fin();
-    if (solids) mrescue::fin();
-
+    
     if (walls) {
         sdf::free_quants(&w::qsdf);
         wall::free_quants(&w::q);

@@ -108,7 +108,6 @@ void ini() {
     }
     
     if (solids) {
-        mrescue::ini(MAX_PART_NUM);
         rig::alloc_quants(&s::q);
         scan::alloc_work(XS*YS*ZS, /**/ &s::ws);
         s::ff_hst = (Force*)malloc(sizeof(&s::ff_hst)*MAX_PART_NUM);

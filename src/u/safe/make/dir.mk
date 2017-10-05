@@ -23,7 +23,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/lforces           && \
     d $B/lforces/transpose && \
     d $B/math              && \
-    d $B/mbounce           && \
     d $B/mesh              && \
     d $B/meshbb            && \
     d $B/mpi               && \
@@ -35,7 +34,6 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/scheme            && \
     d $B/sdf               && \
     d $B/sim               && \
-    d $B/tcells            && \
     d $B/utils             && \
     d $B/vcontroller       && \
     d $B/wall              && \
