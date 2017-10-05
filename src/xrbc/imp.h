@@ -1,4 +1,5 @@
 namespace rbc {
+
 struct Quants {
     int n, nc;             /* number of particles, cells            */
     Particle *pp, *pp_hst; /* vertices particles on host and device */
@@ -26,4 +27,4 @@ void destroy_textures(TicketT *t);
 void forces(const Quants q, const TicketT t, /**/ Force *ff);
 void strt_dump(const int id, const Quants q);
 
-}
+} // rbc

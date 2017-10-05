@@ -1,4 +1,4 @@
-static void setup_from_strt(const int id, /**/ Particle *pp, int *nc, int *n, /*w*/ Particle *pp_hst) {
+static void setup_from_strt(int nv, const int id, /**/ Particle *pp, int *nc, int *n, /*w*/ Particle *pp_hst) {
     restart::read_pp("rbc", id, pp_hst, n);
     *nc = *n / nv;
     
@@ -6,8 +6,12 @@ static void setup_from_strt(const int id, /**/ Particle *pp, int *nc, int *n, /*
 }
 
 void strt_quants(const char *r_templ, const int id, Quants *q) {
-    sub::setup(r_templ, /**/ q->tri_hst, q->tri, q->adj0, q->adj1);
-    sub::setup_from_strt(id, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
+    int md, nt, nv;
+    md = RBCmd;
+    nt = RBCnt;
+    nv = RBCnv;
+    setup(md, nt, nv, r_templ, /**/ q->tri_hst, q->tri, q->adj0, q->adj1);
+    setup_from_strt(nv, id, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
 }
 
 static void strt_dump(const int id, const int n, const Particle *pp, /*w*/ Particle *pp_hst) {
@@ -17,5 +21,5 @@ static void strt_dump(const int id, const int n, const Particle *pp, /*w*/ Parti
 }
 
 void strt_dump(const int id, const Quants q) {
-    sub::strt_dump(id, q.n, q.pp, /*w*/ q.pp_hst);
+    strt_dump(id, q.n, q.pp, /*w*/ q.pp_hst);
 }

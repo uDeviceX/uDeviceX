@@ -1,16 +1,16 @@
-static void reg(int f, int x, int y,  /**/ int *hx, int *hy) { /* register an edge */
+static void reg(int md, int f, int x, int y,  /**/ int *hx, int *hy) { /* register an edge */
     int j = f*md;
     while (hx[j] != -1) j++;
     hx[j] = x; hy[j] = y;
 }
 
-static int nxt(int i, int x, int *hx, int *hy) { /* next */
+static int nxt(int md, int i, int x, int *hx, int *hy) { /* next */
     i *= md;
     while (hx[i] != x) i++;
     return hy[i];
 }
 
-static void gen_a12(int i0, int *hx, int *hy, /**/ int *a1, int *a2) {
+static void gen_a12(int md, int i0, int *hx, int *hy, /**/ int *a1, int *a2) {
     int lo = i0*md, hi = lo + md, mi = hx[lo];
     int i;
     for (i = lo + 1; (i < hi) && (hx[i] != -1); i++)
@@ -19,14 +19,14 @@ static void gen_a12(int i0, int *hx, int *hy, /**/ int *a1, int *a2) {
     int c = mi, c0;
     i = lo;
     do {
-        c     = nxt(i0, c0 = c, hx, hy);
+        c     = nxt(md, i0, c0 = c, hx, hy);
         a1[i] = c0;
-        a2[i] = nxt(c, c0, hx, hy);
+        a2[i] = nxt(md, c, c0, hx, hy);
         i++;
     }  while (c != mi);
 }
 
-static void setup(const char *r_templ, int4 *faces, int4 *tri, int *adj0, int *adj1) {
+static void setup(int md, int nt, int nv, const char *r_templ, int4 *faces, int4 *tri, int *adj0, int *adj1) {
     off::faces(r_templ, faces);
 
     cH2D(tri, faces, nt);
@@ -39,12 +39,12 @@ static void setup(const char *r_templ, int4 *faces, int4 *tri, int *adj0, int *a
     for (int ifa = 0; ifa < nt; ifa++) {
         t = faces[ifa];
         int f0 = t.x, f1 = t.y, f2 = t.z;
-        reg(f0, f1, f2,   hx, hy); /* register an edge */
-        reg(f1, f2, f0,   hx, hy);
-        reg(f2, f0, f1,   hx, hy);
+        reg(md, f0, f1, f2,   hx, hy); /* register an edge */
+        reg(md, f1, f2, f0,   hx, hy);
+        reg(md, f2, f0, f1,   hx, hy);
     }
-    for (i = 0; i < nv; i++) gen_a12(i, hx, hy, /**/ a1, a2);
-
+    for (i = 0; i < nv; i++) gen_a12(md, i, hx, hy, /**/ a1, a2);
+    
     cH2D(adj0, a1, nv*md);
     cH2D(adj1, a2, nv*md);
 }
@@ -123,6 +123,10 @@ static void setup_from_pos(const char *r_templ, const char *r_state, int nv, /**
 }
 
 void gen_quants(const char *r_templ, const char *r_state, Quants *q) {
-    sub::setup(r_templ, /**/ q->tri_hst, q->tri, q->adj0, q->adj1);
-    ic::setup_from_pos(r_templ, r_state, q->nv, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
+    int md, nt, nv;
+    md = RBCmd;
+    nt = RBCnt;
+    nv = RBCnv;
+    setup(md, nt, nv, r_templ, /**/ q->tri_hst, q->tri, q->adj0, q->adj1);
+    setup_from_pos(r_templ, r_state, q->nv, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
 }

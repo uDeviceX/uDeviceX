@@ -1,10 +1,5 @@
 namespace dev {
 
-/* [m]aximumd [d]egree, number of vertices, number of triangles */
-#define md ( RBCmd )
-#define nv ( RBCnv )
-#define nt ( RBCnt )
-
 /* particle - float2 union */
 union Part {
     float2 f2[3];
@@ -32,7 +27,7 @@ __device__ Part tex2Part(const Texo<float2> texvert, const int id) {
     return p;
 }
 
-__device__ float3 adj_tris(const Texo<float2> texvert, const Texo<int> texadj0,
+__device__ float3 adj_tris(int md, int nv, const Texo<float2> texvert, const Texo<int> texadj0,
                            const Part p0, const float *av) {
     int pid, lid, idrbc, offset, neighid, i1, i2;
     float3 f, fv;
@@ -62,7 +57,7 @@ __device__ float3 adj_tris(const Texo<float2> texvert, const Texo<int> texadj0,
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
 }
 
-__device__ float3 adj_dihedrals(const Texo<float2> texvert, const Texo<int> texadj0,
+__device__ float3 adj_dihedrals(int md, int nv, const Texo<float2> texvert, const Texo<int> texadj0,
                                 const Texo<int> texadj1, float3 r0) {
     int pid, lid, offset, neighid;
     int i1, i2, i3, i4;
@@ -114,7 +109,7 @@ __device__ float3 adj_dihedrals(const Texo<float2> texvert, const Texo<int> texa
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
 }
 
-__global__ void force(const Texo<float2> texvert, const Texo<int> texadj0, const Texo<int> texadj1,
+__global__ void force(int md, int nv, const Texo<float2> texvert, const Texo<int> texadj0, const Texo<int> texadj1,
                       int nc, const float *__restrict__ av, float *ff) {
     int pid = (threadIdx.x + blockDim.x * blockIdx.x) / md;
     float3 f, fd;
@@ -123,8 +118,8 @@ __global__ void force(const Texo<float2> texvert, const Texo<int> texadj0, const
         const Part p0 = tex2Part(texvert, pid);
 
         /* all triangles and dihedrals adjusting to vertex `pid` */
-        f  = adj_tris(texvert, texadj0, p0, av);
-        fd = adj_dihedrals(texvert, texadj0, texadj1, p0.r);
+        f  = adj_tris(md, nv, texvert, texadj0, p0, av);
+        fd = adj_dihedrals(md, nv, texvert, texadj0, texadj1, p0.r);
         add(&fd, /**/ &f);
 
         if (f.x > -1.0e9f) {
@@ -143,7 +138,7 @@ __device__ float2 warpReduceSum(float2 val) {
     return val;
 }
 
-__global__ void area_volume(const Texo<float2> texvert, const Texo<int4> textri, float *totA_V) {
+__global__ void area_volume(int nt, int nv, const Texo<float2> texvert, const Texo<int4> textri, float *totA_V) {
     float2 a_v = make_float2(0.0f, 0.0f);
     int cid = blockIdx.y;
 
@@ -160,12 +155,9 @@ __global__ void area_volume(const Texo<float2> texvert, const Texo<int4> textri,
     }
     a_v = warpReduceSum(a_v);
     if ((threadIdx.x & (warpSize - 1)) == 0) {
-        atomicAdd(&totA_V[2 * cid + 0], fst(a_v));
-        atomicAdd(&totA_V[2 * cid + 1], scn(a_v));
+        atomicAdd(&totA_V[2 * cid + 0], a_v.x);
+        atomicAdd(&totA_V[2 * cid + 1], a_v.y);
     }
 }
 
-#undef md
-#undef nv
-#undef nt
 } // dev
