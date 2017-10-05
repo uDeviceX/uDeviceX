@@ -16,7 +16,7 @@ static void pack_ii(const Map m, int nc, const int *ii, /**/ hBags bags) {
 
     int i, c, j, src;
     for (i = 0; i < NBAGS; ++i) {
-        c = m.counts[j];
+        c = m.counts[i];
         for (j = 0; j < c; ++j) {
             src = m.ids[i][j];
             wrap.d[i][j] = ii[src];

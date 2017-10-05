@@ -21,6 +21,7 @@ static void unpack_halo_ii(const hBags *hii, /**/ int *ii) {
     void *src;
     int i, s, c;
 
+    s = 0;
     for (i = 0; i < NFRAGS; ++i) {
         c   = hii->counts[i];
         src = hii->data[i];        
