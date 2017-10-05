@@ -19,3 +19,26 @@ void fin_map(int nfrags, /**/ Map *m) {
 void reini_map(int nfrags, /**/ Map m) {
     CC(d::MemsetAsync(m.counts, 0, nfrags * sizeof(int)));
 }
+
+void ini_host_map(int nfrags, const int capacity[], /**/ Map *m) {
+    m->counts = (int*) malloc( nfrags      * sizeof(int));
+    m->starts = (int*) malloc((nfrags + 1) * sizeof(int));
+
+    int i, c;
+    for (i = 0; i < nfrags; ++i) {
+        c = capacity[i];
+        if (c) m->ids[i] = (int*) malloc(c * sizeof(int));
+    }
+}
+
+void fin_host_map(int nfrags, /**/ Map *m) {
+    free(m->counts);
+    free(m->starts);    
+    for (int i = 0; i < nfrags; ++i)
+        free(m->ids[i]);
+}
+
+void reini_host_map(int nfrags, /**/ Map m) {
+    memset(m.counts, 0, nfrags * sizeof(int));
+}
+
