@@ -10,7 +10,7 @@ static void pack_pp(const Map m, int nc, int nv, const Particle *pp, /**/ dBags 
 }
 
 /* all data (including map) on host */
-static void pack_ii(const Map m, int nc, const int *ii, /**/ dBags bags) {
+static void pack_ii(const Map m, int nc, const int *ii, /**/ hBags bags) {
     Sarray<int*, NBAGS> wrap;
     bag2Sarray(bags, &wrap);
 
@@ -27,10 +27,16 @@ static void pack_ii(const Map m, int nc, const int *ii, /**/ dBags bags) {
 void pack(const rbc::Quants *q, /**/ Pack *p) {
     pack_pp(p->map, q->nc, q->nv, q->pp, /**/ p->dpp);
 
-    // if (rbc_ids)
-    //     pack_ii(p->hmap, nc, ii, /**/ p->hii);
+    if (rbc_ids) {
+        mapD2H(NBAGS, &p->map, /**/ &p->hmap);
+        dSync();
+        pack_ii(p->hmap, q->nc, q->ii, /**/ p->hii);
+    }
 }
 
 void download(Pack *p) {
-    CC(d::Memcpy(p->hpp.counts, p->map.counts, NBAGS * sizeof(int), D2H));
+    size_t sz = NBAGS * sizeof(int);
+    CC(d::Memcpy(p->hpp.counts, p->map.counts, sz, D2H));
+    if (rbc_ids)
+        memcpy(p->hii.counts, p->hmap.counts, sz);
 }
