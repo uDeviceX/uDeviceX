@@ -9,7 +9,7 @@ static void pack_pp(const Map m, int nc, int nv, const Particle *pp, /**/ dBags 
     KL((dev::pack_pp_packets), (blck, thrd), (nv, pp, m, /**/ wrap));
 }
 
-void pack_pp(int nc, int nv, const Particle *pp, /**/ Pack *p) {
+void pack(int nc, int nv, const Particle *pp, /**/ Pack *p) {
     pack_pp(p->map, nc, nv,  pp, /**/ p->dpp);
 }
 
