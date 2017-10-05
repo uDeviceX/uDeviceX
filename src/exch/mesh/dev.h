@@ -85,7 +85,7 @@ template<int NWARP>
 __global__ void block_scan(int n, const int *cc, /**/ int *ss) {
     assert(n < blockDim.x);
     assert(gridDim.x == 1);
-    //static_assert(NWARP <= 32);
+
     int i, tid, wid, lid, val, cnt, ws;
     tid = threadIdx.x;
     wid = tid / warpSize;
@@ -119,7 +119,7 @@ __global__ void block_scan(int n, const int *cc, /**/ int *ss) {
 
     val += ws;
     
-    if (i < n) ss[i] = val - cnt;
+    if (i <= n) ss[i] = val - cnt;
 }
 
 __global__ void compress(int nt, int nm, const Momentum *mm, const int *starts, const int *subids, /**/ int *ids, Momentum *mmc) {
@@ -138,6 +138,14 @@ __global__ void compress(int nt, int nm, const Momentum *mm, const int *starts, 
     ids[i] = i;
 }
 
+__global__ void collect_counts(int26 nm, MMap26 mm, /**/ int *counts) {
+    int i, c, end;
+    i = threadIdx.x;
+    if (i > 26) return;
+    end = nm.d[i];
+    c = mm.d[i].ss[end];
+    counts[i] = c;
+}
 
 static __device__ void addMom(const Momentum src, /**/ Momentum *dst) {
     enum {X, Y, Z};
