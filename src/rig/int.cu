@@ -58,34 +58,6 @@ void free_quants(Quants *q) {
     delete[] q->ss_dmp_bb;
 }
 
-void alloc_ticket(TicketBB *t) {
-    Dalloc(&t->minbb_dev, MAX_SOLIDS);
-    Dalloc(&t->maxbb_dev, MAX_SOLIDS);
-    Dalloc(&t->i_pp, MAX_PART_NUM);
-    Dalloc(&t->ss ,  MAX_SOLIDS);
-    
-    t->minbb_hst = new float3[MAX_SOLIDS];
-    t->maxbb_hst = new float3[MAX_SOLIDS];
-    t->ss_hst   = new Solid[MAX_SOLIDS];
-    t->i_pp_hst = new Particle[MAX_PART_NUM];
-
-    t->ss_dmp = new Solid[MAX_SOLIDS];
-}
-
-void free_ticket(TicketBB *t) {
-    CC(d::Free(t->minbb_dev));
-    CC(d::Free(t->maxbb_dev));
-    CC(d::Free(t->i_pp));
-    CC(d::Free(t->ss));
-
-    delete[] t->minbb_hst;
-    delete[] t->maxbb_hst;
-    delete[] t->ss_hst;
-    delete[] t->i_pp_hst;
-
-    delete[] t->ss_dmp;
-}
-
 static void cpy_H2D(Quants q) {
     cH2D(q.i_pp, q.i_pp_hst, q.ns * q.nv);
     cH2D(q.ss,   q.ss_hst,   q.ns);
