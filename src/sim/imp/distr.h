@@ -33,7 +33,7 @@ void distribute_rbc() {
     using namespace r;
 
     build_map(q.nc, q.nv, q.pp, /**/ &d.p);
-    pack(q.nc, q.nv, q.pp, /**/ &d.p);
+    pack(&q, /**/ &d.p);
     download(/**/&d.p);
 
     post_send(&d.p, &d.c);

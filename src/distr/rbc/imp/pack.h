@@ -24,8 +24,8 @@ static void pack_ii(const Map m, int nc, const int *ii, /**/ dBags bags) {
     }
 }
 
-void pack(int nc, int nv, const Particle *pp, /**/ Pack *p) {
-    pack_pp(p->map, nc, nv,  pp, /**/ p->dpp);
+void pack(const rbc::Quants *q, /**/ Pack *p) {
+    pack_pp(p->map, q->nc, q->nv, q->pp, /**/ p->dpp);
 
     // if (rbc_ids)
     //     pack_ii(p->hmap, nc, ii, /**/ p->hii);
