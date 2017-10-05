@@ -1,5 +1,4 @@
-/* use templates here because we might have mixed float/double
-   see intersection routine                                    */
+/* use templates here because we might have mixed float/double */
 
 #define _HD_ __host__ __device__
 
