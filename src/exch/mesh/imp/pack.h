@@ -44,6 +44,19 @@ void packM(int nt, const int counts[NFRAGS], const Momentum *mm, /**/ PackM *p) 
 }
 
 void downloadM(const int counts[NFRAGS], PackM *p) {
+    MMap26 mm;
+    int26 ii;
+    size_t sz;
+    sz = NFRAGS * sizeof(int);
+    
+    memcpy(ii.d, counts, sz);
+    memcpy(mm.d, p->maps, NFRAGS * sizeof(MMap));
+
+    KL(dev::collect_counts, (32, 1), (ii, mm, /**/ p->ccdev));
+
     dSync();
+
+    memcpy(p->hmm.counts, p->cchst, sz);
+    memcpy(p->hii.counts, p->cchst, sz);
 }
 
