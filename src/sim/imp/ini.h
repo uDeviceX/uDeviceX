@@ -103,7 +103,7 @@ void ini() {
     }
 
     if (multi_solvent && rbcs) {
-        ini_mesh_exch(MAX_VERT_NUM, MAX_CELL_NUM, m::cart, /*io*/ &tag_gen, &mc::e);
+        ini_mesh_exch(r::q.nv, MAX_CELL_NUM, m::cart, /*io*/ &tag_gen, &mc::e);
         Dalloc(&mc::pp, MAX_PART_NUM);
     }
     
