@@ -29,6 +29,8 @@ rbc::TicketT tt;
 RbcDistr d;
 
 Force     *ff;
+
+rbc::ComHelper com; /* helper to compute center of masses */
 }
 
 namespace s /* rigid bodies */

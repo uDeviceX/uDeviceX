@@ -21,6 +21,7 @@ $B/glb.o: $S/glb.cu; $N -I$S/.
 $B/hforces/imp.o: $S/hforces/imp.cu; $N -I$S/. -I$S/hforces
 $B/inter/imp.o: $S/inter/imp.cu; $N -I$S/. -I$S/inter -I$S/inter/_france
 $B/io/bop/imp.o: $S/io/bop/imp.cpp; $X -I$S/. -I$S/io/bop
+$B/io/com.o: $S/io/com.cpp; $X -I$S/. -I$S/io
 $B/io/diag.o: $S/io/diag.cpp; $X -I$S/. -I$S/io
 $B/io/field.o: $S/io/field.cpp; $X -I$S/. -I$S/io
 $B/io/fields_grid.o: $S/io/fields_grid.cpp; $X -I$S/. -I$S/io

@@ -66,6 +66,19 @@
 #define part_freq (1000)
 #endif
 
+#ifndef rbc_com_dumps
+#define rbc_com_dumps (false)
+#endif
+
+/* assert */
+#if rbc_com_dumps && !rbc_ids
+    #error "Need rbc ids for rbc_com_dumps"
+#endif
+
+#ifndef rbc_com_freq
+#define rbc_com_freq (1000)
+#endif
+
 // solid 
 
 #ifndef solids

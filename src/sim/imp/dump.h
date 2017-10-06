@@ -44,6 +44,13 @@ void dump_rbcs() {
   rbc_mesh_dump(a::pp_hst, r::q.tri_hst, r::q.nc, r::q.nv, r::q.nt, id++);
 }
 
+void dump_rbc_coms() {
+    static int id = 0;
+    int nc = r::q.nc;
+    get_com(r::q.nc, r::q.nv, r::q.pp, /**/ &r::com);
+    dump_com(id++, nc, r::q.ii, r::com.hrr);
+}
+
 void dump_grid() {
     QQ qq; /* pack for io/field_dumps */
     NN nn;
@@ -88,4 +95,5 @@ void dump_diag0(int it) { /* generic dump */
     }
     if (field_dumps && it % field_freq == 0) dump_grid();
     if (strt_dumps  && it % strt_freq == 0)  dump_strt(it / strt_freq);
+    if (rbc_com_dumps && it % rbc_com_freq == 0) dump_rbc_coms();
 }

@@ -37,6 +37,7 @@
 #include "io/mesh.h"
 #include "io/rig.h"
 #include "io/diag.h"
+#include "io/com.h"
 
 #include "dbg/imp.h"
 #include "io/restart.h"

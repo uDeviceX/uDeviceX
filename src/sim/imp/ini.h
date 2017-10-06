@@ -59,6 +59,9 @@ void ini() {
         rbc::ini(&r::q);
 
         ini_rbc_distr(r::q.nv, m::cart, /*io*/ &tag_gen, /**/ &r::d);
+
+        if (rbc_com_dumps)
+            rbc::ini(MAX_CELL_NUM, /**/ &r::com);
     }
 
     if (VCON) ini_vcont(m::cart, /**/ &o::vcont);
