@@ -135,6 +135,10 @@
 /* maximum allowed degree of vertex in triangulated mesh */
 #define RBCmd 7
 
+#ifndef dump_rbc_com
+#define dump_rbc_com (false)
+#endif
+
 // walls
 
 #ifndef walls
