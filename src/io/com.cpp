@@ -10,6 +10,8 @@
 #include "mpi/glb.h"
 // #include "utils/mc.h"
 
+#include "utils/os.h"
+
 #include "msg.h"
 
 static void write(int n, const int *ii, const float3 *rr, /**/ FILE *f) {
@@ -27,7 +29,8 @@ void dump_com(long id, int n, const int *ii, const float3 *rr) {
     FILE *f;
     
     if (m::rank == 0) {
-        sprintf(fname, DUMP_BASE "com/%04ld.txt", id);
+        os::mkdir(DUMP_BASE "/com");
+        sprintf(fname, DUMP_BASE "/com/%04ld.txt", id);
         f = fopen(fname, "w");
         write(n, ii, rr, /**/ f);
         fclose(f);
