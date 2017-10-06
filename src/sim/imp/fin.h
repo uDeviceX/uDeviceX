@@ -103,6 +103,9 @@ void fin() {
         fin_rbc_distr(/**/ &r::d);
         
         Dfree(r::ff);
+
+        if (rbc_com_dumps)
+            rbc::fin(/**/ &r::com);
     }
     datatype::fin();
 }
