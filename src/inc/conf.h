@@ -66,6 +66,14 @@
 #define part_freq (1000)
 #endif
 
+#ifndef rbc_com_dumps
+#define rbc_com_dumps (false)
+#endif
+
+#ifndef rbc_com_freq
+#define rbc_com_freq (1000)
+#endif
+
 // solid 
 
 #ifndef solids
@@ -134,10 +142,6 @@
 
 /* maximum allowed degree of vertex in triangulated mesh */
 #define RBCmd 7
-
-#ifndef dump_rbc_com
-#define dump_rbc_com (false)
-#endif
 
 // walls
 
