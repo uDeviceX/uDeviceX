@@ -95,4 +95,5 @@ void dump_diag0(int it) { /* generic dump */
     }
     if (field_dumps && it % field_freq == 0) dump_grid();
     if (strt_dumps  && it % strt_freq == 0)  dump_strt(it / strt_freq);
+    if (rbc_com_dumps && it % rbc_com_freq == 0) dump_rbc_coms();
 }
