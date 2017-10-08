@@ -14,7 +14,7 @@ static void report(int it) {
     if (cond) report0();
 }
 
-void restrain(const int *cc, NN nn, long it, /**/ QQ qq) {
-    restrain::grey::vel(cc, RED_COLOR, nn.r, /**/ qq.r);
+void restrain(const int*, NN nn, long it, /**/ QQ qq) {
+    restrain::grey::vel(nn.r, /**/ qq.r);
     report(it);
 }
