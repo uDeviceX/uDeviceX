@@ -40,5 +40,14 @@ namespace dev {
 #include "imp/color/main.h"
 }
 
+namespace grey {
+namespace dev {
+#include "dev/grey/map.h"
+#include "dev/main.h"
+}
+#include "imp/main0.h"
+#include "imp/grey/main.h"
+}
+
 }
 
