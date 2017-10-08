@@ -21,6 +21,7 @@
 
 namespace restrain {
 namespace dev {
+#include "dev/color/map.h"
 #include "dev/dec.h"
 #include "dev/util.h"
 #include "dev/main.h"
