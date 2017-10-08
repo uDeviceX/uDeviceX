@@ -1,8 +1,3 @@
-namespace g {
-static float3 v;
-static int    n;
-}
-
 static void reini() {
     int zeroi = 0;
     float3 zerof3 = make_float3(0, 0, 0);
@@ -19,12 +14,9 @@ static void d2h(int *n, float v[3]) {
     v[X] = u.x; v[Y] = u.y; v[Z] = u.z;
 }
 
-static void setn(int n)    { g::n = n; }
-static void setv(float3 v) { g::v = v; }
-static float3 avg_v() {
+static void avg_v(/**/ float *v) {
     enum {X, Y, Z};
     int n;
-    float v[3];
     d2h(&n, v);
     sum::i (&n);
     sum::f3( v);
@@ -33,22 +25,23 @@ static float3 avg_v() {
         v[Y] /= n;
         v[Z] /= n;
     }
-    setn(n);
-    return make_float3(v[X], v[Y], v[Z]);
+    stat::setn(n);
 }
 
 void vel(const int *cc, int n, int color, /**/ Particle *pp) {
+    enum {X, Y, Z};
+
     float3 v;
+    float  u[3];
+
     reini();
     KL(dev::sum_vel, (k_cnf(n)), (color, n, pp, cc));
 
-    v = avg_v();
+    avg_v(/**/ u);
+    v = make_float3(u[X], u[Y], u[Z]);
     KL(dev::shift_vel, (k_cnf(n)), (color, v, n, cc, /**/ pp));
-    setv(v);
+
+    stat::setv(u);
 }
 
-void stat(int *n, float *v) { /* report statistics */
-    enum {X, Y, Z};
-    v[X] = g::v.x; v[Y] = g::v.y; v[Z] = g::v.z;
-    *n = g::n;
-}
+void stat(/**/ int *n, float *v) { stat::get(/**/ n, v); }
