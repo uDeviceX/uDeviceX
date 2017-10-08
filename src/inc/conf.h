@@ -15,6 +15,9 @@
 #if !defined(GDOT_FLAT) && !defined(GDOT_DUPIRE_UP) && !defined(GDOT_DUPIRE_DOWN)
   #define GDOT_FLAT
 #endif
+#ifndef GDOT_REPORT_FREQ
+  #define GDOT_REPORT_FREQ (1000)
+#endif
 
 #ifndef FORCE_PAR_A
 #define FORCE_PAR_A (2.0)
