@@ -10,7 +10,7 @@ static float ff(long it, long nsteps) {
 }
 
 static void report0(float gd) {
-    MSG("GDOT_DUPIRE_UP: gd = %g\n", gd);
+    MSG("GDOT_DUPIRE_UP: gd = %g", gd);
 }
 
 static void report(long i, float gd) {
