@@ -3,9 +3,9 @@ namespace forces {
 #include "imp/main.h"
 
 #if    defined(DPD_CHARGE)
-  #include "charge/main.h"
+  #include "imp/charge/main.h"
 #elif  defined(DPD_GRAVITY)
-  #include "gravity/main.h"
+  #include "imp/gravity/main.h"
 #else
   #error DPD_* is undefined
 #endif
