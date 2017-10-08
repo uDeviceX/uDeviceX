@@ -91,8 +91,12 @@ void update_rbc(long it) {
 
 void restrain(long it) {
     scheme::QQ qq;
+    scheme::NN nn;
     qq.o = o::q.pp;
     qq.r = r::q.pp;
+
+    nn.o = o::q.n;
+    nn.r = r::q.n;
     scheme::restrain(o::q.cc, o::q.n, it, /**/ qq);
 }
 
