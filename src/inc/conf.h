@@ -285,3 +285,8 @@
   #define VCON_FACTOR (0.08f)
 #endif
 
+/* how mass effects dpd forces: like "gravity" ~ mi*mj or like
+   "charge" -- no dependencies on mass */
+#if !defined(DPD_GRAVITY) && !defined(DPD_CHARGE)
+  #define DPD_CHARGE
+#endif
