@@ -1,5 +1,8 @@
 static __device__ void gen0(Pa A, Pa B, float ma, float mb, float rnd, /**/ Fo *f) {
+    float s; /* scale */
+    s = ma * mb;
     force(A, B, rnd, /**/ f);
+    f->x *= s; f->y *= s; f->z *= s;
 }
 
 static __device__ void gen(Pa A, Pa B, float rnd, /**/ Fo *f) {
