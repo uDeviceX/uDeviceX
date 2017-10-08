@@ -38,7 +38,7 @@ namespace dev {
 }
 #include "imp/main0.h"
 #include "imp/color/main.h"
-
+}
 
 }
 
