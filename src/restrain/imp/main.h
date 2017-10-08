@@ -28,11 +28,13 @@ static void avg_v(/**/ float *v) {
     stat::setn(n);
 }
 
-void vel(const int *cc, int n, int color, /**/ Particle *pp) {
+void vel(const int *cc, int color, int n, /**/ Particle *pp) {
     enum {X, Y, Z};
 
     float3 v;
     float  u[3];
+
+    assert(color < 10);
 
     reini();
     KL(dev::sum_vel, (k_cnf(n)), (color, n, pp, cc));
