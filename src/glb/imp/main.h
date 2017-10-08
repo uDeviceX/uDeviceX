@@ -1,4 +1,3 @@
-
 void sim() {
     enum {X, Y, Z};
     /* all coordinates are relative to the center of the sub-domain;
@@ -19,3 +18,8 @@ void sim() {
     r0_h[Z] = ZS*(d[Z]-2*c[Z]-1)/2;
     d::MemcpyToSymbol(r0, r0_h, 3*sizeof(*r0_h));
 }
+
+static void set_gd(float g) {
+    d::MemcpyToSymbol(&gd, &g, sizeof(float));
+}
+
