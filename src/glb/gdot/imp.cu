@@ -1,5 +1,8 @@
+#include <stdio.h>
 #include <conf.h>
 #include "inc/conf.h"
+
+#include "msg.h"
 
 #include "imp.h"
 

@@ -13,18 +13,18 @@ static void report0(float gd) {
     MSG("GDOT_DUPIRE_UP: gd = %g\n", gd);
 }
 
-static void report(float gd) {
+static void report(long i, float gd) {
     bool cond;
     int freq;
     freq = GDOT_REPORT_FREQ;
-    cond = freq > 0 && it % freq == 0;
+    cond = freq > 0 && i % freq == 0;
     if (cond) report0(gd);
 }
 
 float f0() {               return ff(0, 1); }
-float  f(long s, long e) {
+float  f(long i, long e) {
     float gd;
-    gd = ff(s, e);
-    report(gd);
+    gd = ff(i, e);
+    report(i, gd);
     return gd;
 }
