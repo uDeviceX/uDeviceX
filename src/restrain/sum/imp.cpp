@@ -8,4 +8,6 @@
 #include "imp.h"
 
 /* body */
+namespace sum {
 #include "imp/main.h"
+}

@@ -1,2 +1,4 @@
-void sum_f3(float *v);
-void sum_i(int *v);
+namespace sum {
+void f3(float *v);
+void i(int *v);
+}

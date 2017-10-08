@@ -26,8 +26,8 @@ static float3 avg_v() {
     int n;
     float v[3];
     d2h(&n, v);
-    sum_i (&n);
-    sum_f3( v);
+    sum::i (&n);
+    sum::f3( v);
     if (n) {
         v[X] /= n;
         v[Y] /= n;
