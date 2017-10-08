@@ -1,5 +1,7 @@
-static float3 vavg; /* average velocity */
-static int       N;
+namespace g {
+static float3 v;
+static int    n;
+}
 
 static void reduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op) {
     MC(m::Allreduce(sendbuf, recvbuf, count, datatype, op, m::cart));
@@ -31,7 +33,8 @@ static void d2h(int *n, float v[3]) {
     v[X] = u.x; v[Y] = u.y; v[Z] = u.z;
 }
 
-static void setn(int n) { N = n; }
+static void setn(int n)    { g::n = n; }
+static void setv(float3 v) { g::v = v; }
 static float3 avg_v() {
     enum {X, Y, Z};
     int n;
@@ -49,16 +52,17 @@ static float3 avg_v() {
 }
 
 void vel(const int *cc, int n, int color, /**/ Particle *pp) {
+    float3 v;
     reini();
     KL(dev::sum_vel, (k_cnf(n)), (color, n, pp, cc));
 
-    vavg = avg_v();
-
-    KL(dev::shift_vel, (k_cnf(n)), (color, vavg, n, cc, /**/ pp));
+    v = avg_v();
+    KL(dev::shift_vel, (k_cnf(n)), (color, v, n, cc, /**/ pp));
+    setv(v);
 }
 
-void stat(int *n, float *v) {
+void stat(int *n, float *v) { /* report statistics */
     enum {X, Y, Z};
-    v[X] = vavg.x; v[Y] = vavg.y; v[Z] = vavg.z;
-    *n = N;
+    v[X] = g::v.x; v[Y] = g::v.y; v[Z] = g::v.z;
+    *n = g::n;
 }
