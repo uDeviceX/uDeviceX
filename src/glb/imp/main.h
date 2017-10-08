@@ -23,4 +23,8 @@ static void set_gd(float g) { /* gamma dot */
     d::MemcpyToSymbol(&gd, &g, sizeof(float));
 }
 
-void sim() { set_r0(); }
+void sim()  {
+    set_r0();
+    set_gd(gamma_dot);
+}
+void step() { }

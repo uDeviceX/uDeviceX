@@ -1,6 +1,7 @@
 namespace k_wvel {
 inline __device__ void vell(float x, float y, float z,
                             float *vx, float *vy, float *vz) {
+    assert(gamma_dot == glb::gd);
     enum {X, Y, Z};
     *vx = *vy = *vz = 0;
 #if shear_z
