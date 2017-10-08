@@ -1,2 +1,2 @@
-void restrain(const int*, int, long, /**/ QQ) {
+void restrain(const int*, NN, long, /**/ QQ) {
 }

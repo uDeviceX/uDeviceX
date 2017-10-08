@@ -97,7 +97,7 @@ void restrain(long it) {
 
     nn.o = o::q.n;
     nn.r = r::q.n;
-    scheme::restrain(o::q.cc, o::q.n, it, /**/ qq);
+    scheme::restrain(o::q.cc, nn, it, /**/ qq);
 }
 
 void bounce_wall() {
