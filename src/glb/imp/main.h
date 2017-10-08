@@ -5,9 +5,9 @@ void sim()  {
     gd = gdot::f0();
     set_gd(gd);
 }
-void step(long s, long e) {
+void step(long i, long e) {
     float gd;
 
-    gd = gdot::f(s, e);
+    gd = gdot::f(i, e);
     set_gd(gd);
 }

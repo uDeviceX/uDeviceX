@@ -1,11 +1,10 @@
-#error preved
 static float ff(long it, long nsteps) {
     float gd = 0;
     int i, n = 8;
     for (i = 1; i <= n; i++)
         if (n*it < i*nsteps) {
             gd =  2.0*i/n*gamma_dot;
-            break
+            break;
         }
     return gd;
 }
