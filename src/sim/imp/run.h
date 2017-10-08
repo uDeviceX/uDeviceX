@@ -11,6 +11,7 @@ void run_eq(long te) { /* equilibrate */
 }
 
 void run(long ts, long te) {
+    long it; /* current timestep */
     dump_strt_templ(); /* :TODO: is it the right place? */
 
     scheme::Fparams fpar = {
@@ -20,6 +21,9 @@ void run(long ts, long te) {
     };
     
     /* ts, te: time start and end */
-    for (long it = ts; it < te; ++it) step(&fpar, walls, it);
+    for (it = ts; it < te; ++it) {
+        glb::step(it - ts, te - ts); /* kernel globals */
+        step(&fpar, walls, it);
+    }
     distribute_flu();
 }
