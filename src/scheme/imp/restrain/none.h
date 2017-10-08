@@ -1,2 +1,2 @@
-void restrain(const int*, int, long, /**/ Particle*) {
+void restrain(const int*, int, long, /**/ QQ) {
 }

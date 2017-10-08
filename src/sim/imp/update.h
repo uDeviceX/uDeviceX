@@ -90,7 +90,10 @@ void update_rbc(long it) {
 }
 
 void restrain(long it) {
-    scheme::restrain(o::q.cc, o::q.n, it, /**/ o::q.pp);
+    scheme::QQ qq;
+    qq.o = o::q.pp;
+    qq.r = r::q.pp;
+    scheme::restrain(o::q.cc, o::q.n, it, /**/ qq);
 }
 
 void bounce_wall() {
