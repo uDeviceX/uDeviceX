@@ -11,6 +11,11 @@
   #define shear_z (false)
 #endif
 
+/* gamma_dot time profile */
+#if !defined(GDOT_FLAT) && !defined(GDOT_DUPIRE_UP) && !defined(GDOT_DUPIRE_DOWN)
+  #define GDOT_FLAT
+#endif
+
 #ifndef FORCE_PAR_A
 #define FORCE_PAR_A (2.0)
 #endif
