@@ -7,5 +7,6 @@
 
 namespace glb {
 #include "imp/dec.h"
+#include "imp/util.h"
 #include "imp/main.h"
 }
