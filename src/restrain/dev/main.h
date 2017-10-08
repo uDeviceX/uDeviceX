@@ -1,6 +1,7 @@
 namespace g {
-static __device__ float3 sumv;
-static __device__ int indrop;
+/* velocity and number of particles in restrain group */
+static __device__ float3 v; 
+static __device__ int    n;
 }
 
 static __global__ void sum_vel(int color, int n, const Particle *pp, const int *cc) {
@@ -23,10 +24,10 @@ static __global__ void sum_vel(int color, int n, const Particle *pp, const int *
     nvalid = warpReduceSum(valid);
 
     if ((threadIdx.x % warpSize == 0) && nvalid > 0) {
-        atomicAdd(&g::sumv.x, v.x);
-        atomicAdd(&g::sumv.y, v.y);
-        atomicAdd(&g::sumv.z, v.z);
-        atomicAdd(&g::indrop, nvalid);
+        atomicAdd(&g::v.x, v.x);
+        atomicAdd(&g::v.y, v.y);
+        atomicAdd(&g::v.z, v.z);
+        atomicAdd(&g::n, nvalid);
     }
 }
 

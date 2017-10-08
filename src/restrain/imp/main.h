@@ -18,16 +18,16 @@ static void sum_i(int *v) {
 static void reini() {
     int zeroi = 0;
     float3 zerof3 = make_float3(0, 0, 0);
-    CC(d::MemcpyToSymbol(&dev::g::sumv,   &zerof3, sizeof(float3)));
-    CC(d::MemcpyToSymbol(&dev::g::indrop, &zeroi,  sizeof(int)));
+    CC(d::MemcpyToSymbol(&dev::g::v, &zerof3, sizeof(float3)));
+    CC(d::MemcpyToSymbol(&dev::g::n, &zeroi,  sizeof(int)));
 }
 
 /* device to host */
 static void d2h(int *n, float v[3]) {
     enum {X, Y, Z};
     float3 u;
-    CC(d::MemcpyFromSymbol(&u, &dev::g::sumv,    sizeof(float3)));
-    CC(d::MemcpyFromSymbol( n, &dev::g::indrop,  sizeof(int)));
+    CC(d::MemcpyFromSymbol(&u, &dev::g::v, sizeof(float3)));
+    CC(d::MemcpyFromSymbol( n, &dev::g::n, sizeof(int)));
     v[X] = u.x; v[Y] = u.y; v[Z] = u.z;
 }
 
