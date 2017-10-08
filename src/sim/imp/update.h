@@ -77,8 +77,8 @@ void bounce_solid(long it) {
     cD2H(s::q.ss_dmp_bb, s::q.ss, nm);
 }
 
+
 void update_solvent(long it) {
-    scheme::restrain(o::q.cc, o::q.n, it, /**/ o::q.pp);
     scheme::move(dpd_mass, o::q.pp, o::ff, o::q.n);
 }
 
@@ -87,6 +87,10 @@ void update_rbc(long it) {
     cond = multi_solvent && color_freq && it % color_freq == 0;
     if (cond) {MSG("recolor"); gen_colors();};
     scheme::move(rbc_mass, r::q.pp, r::ff, r::q.n);
+}
+
+void restrain() {
+    scheme::restrain(o::q.cc, o::q.n, it, /**/ o::q.pp);
 }
 
 void bounce_wall() {

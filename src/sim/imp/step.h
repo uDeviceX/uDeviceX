@@ -8,7 +8,8 @@ void step(scheme::Fparams *fpar, bool wall0, int it) {
     dump_diag0(it);
     if (wall0 || solids0) dump_diag_after(it);
     body_force(*fpar);
-    
+
+    restrain();
     update_solvent(it);
     if (solids0) update_solid();
     if (rbcs)    update_rbc(it);
