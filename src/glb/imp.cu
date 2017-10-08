@@ -5,7 +5,6 @@
 
 #include "imp.h"
 
-/* globals for all kernels */
 namespace glb {
 #include "imp/dec.h"
 #include "imp/main.h"
