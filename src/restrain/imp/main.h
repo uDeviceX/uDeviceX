@@ -1,6 +1,7 @@
 void vel(const int *cc, int color, int n, /**/ Particle *pp) {
     enum {X, Y, Z};
     dev::Map m;
+    m.cc = cc; m.color = color;
 
     float3 v;
     float  u[3];
