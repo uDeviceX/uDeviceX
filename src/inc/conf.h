@@ -255,7 +255,7 @@
 #endif
 
 /* RBC membrain parameter sets */
-#if !defined(RBC_PARAMS_TEST) && !defined(RBC_PARAMS_LINA) && \
+#if !defined(RBC_PARAMS_TEST) && !defined(RBC_PARAMS_LINA)
   #define RBC_PARAMS_TEST
 #endif
 

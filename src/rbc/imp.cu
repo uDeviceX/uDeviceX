@@ -31,7 +31,7 @@
 namespace rbc {
 
 #if   defined(RBC_PARAMS_TEST)
-   #include "params/rbc.inc0.h"
+   #include "params/test.h"
 #elif defined(RBC_PARAMS_LINA)
    #include "params/lina.h"
 #else
