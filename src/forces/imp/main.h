@@ -18,9 +18,9 @@ static __device__ float lj(float invr, float ljsi) {
     return f;
 }
 
-static __device__ void dpd(float x, float y, float z,
-                             float vx, float vy, float vz,
-                             DPDparam p, int ljkind, /**/ Fo *f) {
+static __device__ void force0(float x, float y, float z,
+                              float vx, float vy, float vz,
+                              DPDparam p, int ljkind, /**/ Fo *f) {
     float invr, r;
     float wc, wr; /* conservative and random kernels */
     float rm; /* 1 minus r */
@@ -57,15 +57,15 @@ static __device__ void dpd(float x, float y, float z,
     f->z = f0*z;
 }
 
-static __device__ void gen0(Pa *A, Pa *B, DPDparam p, int ljkind, /**/ Fo *f) {
-    dpd(A->x -  B->x,    A->y -  B->y,  A->z -  B->z,
-        A->vx - B->vx,   A->vy - B->vy, A->vz - B->vz,
-        p, ljkind,
-        f);
+static __device__ void force1(Pa *A, Pa *B, DPDparam p, int ljkind, /**/ Fo *f) {
+    force0(A->x -  B->x,    A->y -  B->y,  A->z -  B->z,
+           A->vx - B->vx,   A->vy - B->vy, A->vz - B->vz,
+           p, ljkind,
+           f);
 }
 
-static __device__ void gen1(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
-                            /**/ Fo *f) {
+static __device__ void force2(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
+                              /**/ Fo *f) {
     /* dispatch on color */
     DPDparam p;
     if         (!multi_solvent) {
@@ -85,10 +85,10 @@ static __device__ void gen1(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
         assert(0);
     }
     p.rnd = rnd;
-    gen0(A, B, p, ljkind, /**/ f);
+    force1(A, B, p, ljkind, /**/ f);
 }
 
-static __device__ void gen2(Pa A, Pa B, float rnd, /**/ Fo *f) {
+static __device__ void force(Pa A, Pa B, float rnd, /**/ Fo *f) {
     /* dispatch on kind and pack force */
     int ljkind; /* call LJ? */
     int ka, kb;
@@ -112,5 +112,5 @@ static __device__ void gen2(Pa A, Pa B, float rnd, /**/ Fo *f) {
         printf("unknown kind pair: %ld %ld\n", ka, kb);
         assert(0);
     }
-    gen1(&A, &B, ca, cb, ljkind, rnd, /**/ f);
+    force2(&A, &B, ca, cb, ljkind, rnd, /**/ f);
 }
