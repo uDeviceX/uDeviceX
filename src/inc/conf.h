@@ -254,9 +254,9 @@
   #define RESTRAIN_NONE
 #endif
 
-/* make a center of mass velocity zero? */
+/* RBC membrain parameter sets */
 #if !defined(RBC_PARAMS_TEST) && !defined(RBC_PARAMS_LINA) && \
-    !defined(RBC_PARAMS_TEST
+  #define RBC_PARAMS_TEST
 #endif
 
 /* MSG frequency */
