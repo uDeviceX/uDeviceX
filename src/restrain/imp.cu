@@ -35,6 +35,6 @@ namespace dev {
 
 /* polymorphic part */
 namespace restrain { namespace color {
-#include "imp/main.h"
+#include "imp/color/main.h"
 }}
 
