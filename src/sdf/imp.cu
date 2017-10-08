@@ -16,7 +16,7 @@
 #include "inc/macro.h"
 
 #include "utils/kl.h"
-#include "glb.h"
+#include "glb/imp.h"
 #include "inc/dev/wvel.h"
 
 #include "field.h"

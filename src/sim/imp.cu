@@ -41,7 +41,7 @@
 
 #include "dbg/imp.h"
 #include "io/restart.h"
-#include "glb.h"
+#include "glb/imp.h"
 
 #include "inc/dev/read.h"
 #include "clist/imp.h"

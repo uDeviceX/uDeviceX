@@ -2,7 +2,8 @@
 #include "inc/conf.h"
 #include "mpi/glb.h"
 #include "d/api.h"
-#include "glb.h"
+
+#include "imp.h"
 
 /* globals for all kernels */
 namespace glb {
