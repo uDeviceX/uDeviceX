@@ -1,4 +1,4 @@
-void sim() {
+static void set_r0() {
     enum {X, Y, Z};
     /* all coordinates are relative to the center of the sub-domain;
        Example: (dims[X] = 3, `XS' is sub-domain size):
@@ -23,3 +23,4 @@ static void set_gd(float g) { /* gamma dot */
     d::MemcpyToSymbol(&gd, &g, sizeof(float));
 }
 
+void sim() { set_r0(); }
