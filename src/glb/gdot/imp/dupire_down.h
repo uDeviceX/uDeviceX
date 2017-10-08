@@ -1,5 +1,5 @@
 float f0() {
-    return gamma_dot;
+    return 0.5*gamma_dot;
 }
 
 float  f(long, long) {
