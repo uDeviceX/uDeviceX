@@ -1,12 +1,12 @@
 static __global__ void sum(int color, int n, const Particle *pp, const int *cc) {
-    int i, valid, nvalid;
+    int i, good, nvalid;
     i = threadIdx.x + blockDim.x * blockIdx.x;
     
     float3 v = make_float3(0, 0, 0);
 
-    valid = (i < n) && (cc[i] == color);
+    good = (i < n) && (cc[i] == color);
 
-    if (valid) {
+    if (good) {
         enum {X, Y, Z};
         const Particle p = pp[i]; 
         v.x = p.v[X];
@@ -15,7 +15,7 @@ static __global__ void sum(int color, int n, const Particle *pp, const int *cc) 
     }
 
     v  = warpReduceSumf3(v);
-    nvalid = warpReduceSum(valid);
+    nvalid = warpReduceSum(good);
 
     if ((threadIdx.x % warpSize == 0) && nvalid > 0) {
         atomicAdd(&g::v.x, v.x);
