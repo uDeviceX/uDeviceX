@@ -21,6 +21,7 @@
 
 namespace restrain {
 namespace dev {
+#include "dev/util.h"
 #include "dev/main.h"
 }
 #include "imp/main.h"
