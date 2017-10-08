@@ -1,13 +1,13 @@
-static __global__ void sum(int color, int n, const Particle *pp, const int *cc) {
+static __global__ void sum(Map m, int n, const Particle *pp) {
     int i, good;
     i = threadIdx.x + blockDim.x * blockIdx.x;
-    good = (i < n) && (cc[i] == color);
+    good = (i < n) && (m.cc[i] == m.color);
     sum0(good, pp, i);
 }
 
-static __global__ void shift(int color, float3 v, int n, const int *cc, /**/ Particle *pp) {
+static __global__ void shift(Map m, float3 v, int n, /**/ Particle *pp) {
     int i;
     i = threadIdx.x + blockDim.x * blockIdx.x;
-    if (i >= n || cc[i] != color) return;
+    if (i >= n || m.cc[i] != m.color) return;
     shift0(i, v, /**/ pp);
 }

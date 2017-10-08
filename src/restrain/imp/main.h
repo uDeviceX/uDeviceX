@@ -5,11 +5,11 @@ void vel0(dev::Map m, int n, /**/ Particle *pp) {
     float  u[3];
 
     reini();
-    KL(dev::sum, (k_cnf(n)), (m.color, n, pp, m.cc));
+    KL(dev::sum, (k_cnf(n)), (m, n, pp));
 
     avg_v(/**/ u);
     v = make_float3(u[X], u[Y], u[Z]);
-    KL(dev::shift, (k_cnf(n)), (m.color, v, n, m.cc, /**/ pp));
+    KL(dev::shift, (k_cnf(n)), (m, v, n, /**/ pp));
 
     stat::setv(u);
 }
