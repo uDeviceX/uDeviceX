@@ -28,5 +28,6 @@ namespace dev {
 #include "dev/main.h"
 }
 #include "imp/common.h"
+#include "imp/main0.h"
 #include "imp/main.h"
 }
