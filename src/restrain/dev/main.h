@@ -1,5 +1,5 @@
 static __device__ void sum0(int good, const Particle *pp, int i) {
-    int nvalid;
+    int ngood;
     float3 v;
     
     if (good) {
@@ -13,13 +13,13 @@ static __device__ void sum0(int good, const Particle *pp, int i) {
     }
 
     v  = warpReduceSumf3(v);
-    nvalid = warpReduceSum(good);
+    ngood = warpReduceSum(good);
 
-    if ((threadIdx.x % warpSize == 0) && nvalid > 0) {
+    if ((threadIdx.x % warpSize == 0) && ngood > 0) {
         atomicAdd(&g::v.x, v.x);
         atomicAdd(&g::v.y, v.y);
         atomicAdd(&g::v.z, v.z);
-        atomicAdd(&g::n, nvalid);
+        atomicAdd(&g::n, ngood);
     }
 }
 
