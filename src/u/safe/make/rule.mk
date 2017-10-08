@@ -17,6 +17,7 @@ $B/field.o: $S/field.cpp; $X -I$S/.
 $B/flu/imp.o: $S/flu/imp.cu; $N -I$S/. -I$S/flu
 $B/frag/imp.o: $S/frag/imp.cpp; $X -I$S/. -I$S/frag
 $B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/. -I$S/fsi
+$B/glb/imp.o: $S/glb/imp.cu; $N -I$S/. -I$S/glb
 $B/hforces/imp.o: $S/hforces/imp.cu; $N -I$S/. -I$S/hforces
 $B/inter/imp.o: $S/inter/imp.cu; $N -I$S/. -I$S/inter -I$S/inter/_ussr
 $B/io/bop/imp.o: $S/io/bop/imp.cpp; $X -I$S/. -I$S/io/bop

@@ -1,7 +1,7 @@
 $B/algo/scan/imp.o: $S/algo/scan/imp.cu; $N -I$S/. -I$S/algo/scan
 $B/clist/imp.o: $S/clist/imp.cu; $N -I$S/. -I$S/clist
 $B/d/api.o: $S/d/api.cu; $N -I$S/. -I$S/d
-$B/glb.o: $S/glb.cu; $N -I$S/.
+$B/glb/imp.o: $S/glb/imp.cu; $N -I$S/. -I$S/glb
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/. -I$S/mpi
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/. -I$S/mpi
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/. -I$S/mpi
