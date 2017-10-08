@@ -1,9 +1,3 @@
-namespace g {
-/* velocity and number of particles in restrain group */
-static __device__ float3 v; 
-static __device__ int    n;
-}
-
 static __global__ void sum_vel(int color, int n, const Particle *pp, const int *cc) {
     int i, valid, nvalid;
     i = threadIdx.x + blockDim.x * blockIdx.x;

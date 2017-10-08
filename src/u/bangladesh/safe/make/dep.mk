@@ -44,7 +44,7 @@ $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
 $B/msg.o: $S/mpi/glb.h $S/msg.h
 $B/rbc/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/io/off.h $S/io/restart.h $S/math/dev.h $S/mpi/glb.h $S/mpi/wrapper.h $S/msg.h $S/params/rbc.inc0.h $S/rbc/dev/com.h $S/rbc/dev/forces.h $S/rbc/dev/main.h $S/rbc/imp.h $S/rbc/imp/com.h $S/rbc/imp/fin.h $S/rbc/imp/forces.h $S/rbc/imp/generate.h $S/rbc/imp/ini.h $S/rbc/imp/setup.h $S/rbc/imp/start.h $S/utils/cc.h $S/utils/kl.h $S/utils/mc.h $S/utils/te.h $S/utils/texo.h
-$B/restrain/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/msg.h $S/restrain/dev/main.h $S/restrain/dev/util.h $S/restrain/imp.h $S/restrain/imp/main.h $S/restrain/stat/imp.h $S/restrain/sum/imp.h $S/utils/cc.h $S/utils/kl.h
+$B/restrain/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/msg.h $S/restrain/dev/dec.h $S/restrain/dev/main.h $S/restrain/dev/util.h $S/restrain/imp.h $S/restrain/imp/main.h $S/restrain/stat/imp.h $S/restrain/sum/imp.h $S/utils/cc.h $S/utils/kl.h
 $B/restrain/stat/imp.o: $S/restrain/stat/imp.h $S/restrain/stat/imp/dec.h $S/restrain/stat/imp/main.h
 $B/restrain/sum/imp.o: $B/conf.h $S/inc/conf.h $S/mpi/wrapper.h $S/restrain/sum/imp.h $S/restrain/sum/imp/main.h $S/utils/mc.h
 $B/rig/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/io/ply.h $S/io/restart.h $S/mesh/bbox.h $S/mesh/collision.h $S/mesh/dist.h $S/mpi/glb.h $S/mpi/type.h $S/mpi/wrapper.h $S/msg.h $S/rig/ic.h $S/rig/imp.h $S/rig/ini.h $S/rig/share.h $S/rigid/int.h $S/utils/cc.h $S/utils/mc.h $S/utils/texo.h
