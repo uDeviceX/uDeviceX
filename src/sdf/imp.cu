@@ -34,11 +34,6 @@ struct Tex { /* simplifies communication between ini[0123..] */
     tex3Dca<float> *t;
 };
 
-struct Wa { /* local wall data */
-    tex3Dca<float> texsdf;
-    float gd;
-};
-
 static void ini0(float *D, /**/ struct Tex te) {
     cudaMemcpy3DParms copyParams;
     memset(&copyParams, 0, sizeof(copyParams));
@@ -156,10 +151,6 @@ int who_stays(const tex3Dca<float> texsdf, Particle *pp, int n, int nc, int nv, 
 }
 
 void bounce(const tex3Dca<float> texsdf, int n, /**/ Particle *pp) {
-    Wa wa;
-    wa.texsdf = texsdf;
-    wa.gd     = gamma_dot;
-
     KL(dev::bounce, (k_cnf(n)), (texsdf, n, /**/ (float2*) pp));
 }
 
