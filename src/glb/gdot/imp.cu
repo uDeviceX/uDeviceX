@@ -4,5 +4,5 @@
 #include "imp.h"
 
 namespace gdot {
-#include "imp/main.h"
+#include "imp/main/flat.h"
 }
