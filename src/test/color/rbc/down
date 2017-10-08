@@ -8,7 +8,7 @@ cp data/sdf/wall1/wall.dat sdf.dat
 x=8 y=8 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 :
 u.conf conf/couette.h <<!!!
-   GDOT_DUPIRE_UP   GDOT_REPORT_FREQ=100
+   GDOT_DUPIRE_DOWN   GDOT_REPORT_FREQ=100
    RESTRAIN_RBC_VEL RESTRAIN_REPORT_FREQ=1000 rbc_mass=0.5
    rbcs tend=0.5 part_freq=300  walls  wall_creation=100
    field_dumps part_dumps field_freq=300 shear_z
