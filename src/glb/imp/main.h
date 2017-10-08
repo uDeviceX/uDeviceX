@@ -19,7 +19,7 @@ void sim() {
     d::MemcpyToSymbol(r0, r0_h, 3*sizeof(*r0_h));
 }
 
-static void set_gd(float g) { /* gamm dot */
+static void set_gd(float g) { /* gamma dot */
     d::MemcpyToSymbol(&gd, &g, sizeof(float));
 }
 
