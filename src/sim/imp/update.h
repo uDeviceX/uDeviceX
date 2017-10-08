@@ -89,7 +89,7 @@ void update_rbc(long it) {
     scheme::move(rbc_mass, r::q.pp, r::ff, r::q.n);
 }
 
-void restrain() {
+void restrain(long it) {
     scheme::restrain(o::q.cc, o::q.n, it, /**/ o::q.pp);
 }
 
