@@ -45,6 +45,8 @@ $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/. -I$S/mpi
 $B/msg.o: $S/msg.cpp; $X -I$S/.
 $B/rbc/imp.o: $S/rbc/imp.cu; $N -I$S/. -I$S/rbc
 $B/restrain/imp.o: $S/restrain/imp.cu; $N -I$S/. -I$S/restrain
+$B/restrain/sum/.#imp.o: $S/restrain/sum/.#imp.cpp; $X -I$S/. -I$S/restrain/sum
+$B/restrain/sum/imp.o: $S/restrain/sum/imp.cpp; $X -I$S/. -I$S/restrain/sum
 $B/rig/imp.o: $S/rig/imp.cu; $N -I$S/. -I$S/rig
 $B/rig/int.o: $S/rig/int.cu; $N -I$S/. -I$S/rig
 $B/rigid/imp.o: $S/rigid/imp.cu; $N -I$S/. -I$S/rigid -I$S/rigid/_cuda
