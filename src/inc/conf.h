@@ -254,11 +254,15 @@
   #define RESTRAIN_NONE
 #endif
 
+/* make a center of mass velocity zero? */
+#if !defined(RBC_PARAMS_TEST) && !defined(RBC_PARAMS_LINA) && \
+    !defined(RBC_PARAMS_TEST
+#endif
+
 /* MSG frequency */
 #ifndef RESTRAIN_REPORT_FREQ
   #define RESTRAIN_REPORT_FREQ (1000)
 #endif
-
 
 /*           Velocity controller           */
 

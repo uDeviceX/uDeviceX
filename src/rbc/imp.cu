@@ -30,7 +30,13 @@
 
 namespace rbc {
 
-#include "params/rbc.inc0.h"
+#if   defined(RBC_PARAMS_TEST)
+   #include "params/rbc.inc0.h"
+#elif defined(RBC_PARAMS_LINA)
+   #include "params/lina.h"
+#else
+   #error RBC_PARAMS_* is undefined
+#endif
 
 #include "dev/forces.h"
 #include "dev/main.h"
