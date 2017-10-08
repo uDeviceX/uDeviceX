@@ -3,7 +3,7 @@ static void report0() {
     int n;
     float v[3];
     restrain::stat(/**/ &n, v);
-    MSG("restrain RED: n = %d [% .3e % .3e % .3e]", n, v[X], v[Y], v[Z]);
+    MSG("restrain RBC: n = %d [% .3e % .3e % .3e]", n, v[X], v[Y], v[Z]);
 }
 
 static void report(int it) {
@@ -15,6 +15,6 @@ static void report(int it) {
 }
 
 void restrain(const int *cc, NN nn, long it, /**/ QQ qq) {
-    restrain::color::vel(cc, RED_COLOR, nn.o, /**/ qq.o);
+    restrain::grey::vel(cc, RED_COLOR, nn.r, /**/ qq.r);
     report(it);
 }
