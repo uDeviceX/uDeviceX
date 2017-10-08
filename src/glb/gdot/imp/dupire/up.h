@@ -12,19 +12,3 @@ static float ff(long it, long nsteps) {
 static void report0(long i, long e, float gd) {
     MSG("GDOT_DUPIRE_UP: gd = %6.2g : step %07ld/%07ld", gd, i, e);
 }
-
-static void report(long i, long e, float gd) {
-    bool cond;
-    int freq;
-    freq = GDOT_REPORT_FREQ;
-    cond = freq > 0 && i % freq == 0;
-    if (cond) report0(i, e, gd);
-}
-
-float f0() {               return ff(0, 1); }
-float  f(long i, long e) {
-    float gd;
-    gd = ff(i, e);
-    report(i, e, gd);
-    return gd;
-}
