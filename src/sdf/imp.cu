@@ -35,7 +35,7 @@ struct Tex { /* simplifies communication between ini[0123..] */
 };
 
 struct Wa { /* local wall data */
-    const tex3Dca<float> texsdf;
+    tex3Dca<float> texsdf;
     float gd;
 };
 
