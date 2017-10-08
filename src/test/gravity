@@ -1,5 +1,5 @@
 #### RBC with "dpd gravity"
-# cTEST: gravity.t0
+# nTEST: gravity.t0
 rm -rf bop diag.txt h5 ply rbc.off
 cp data/cells/rbc.498.off rbc.off
 export PATH=../tools:$PATH
