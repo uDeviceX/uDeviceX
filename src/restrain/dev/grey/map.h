@@ -1,2 +1,2 @@
 struct Map { };
-static __device__ int validp(const Map, int) { return 1; }
+static __device__ int goodp(const Map, int) { return 1; }
