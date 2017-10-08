@@ -1,4 +1,3 @@
-namespace forces {
 struct DPDparam { float gamma, a, rnd; };
 static __device__ bool seteq(int a, int b,   int x, int y) {
     /* true if sets {a, b} and {x, y} are equal */
@@ -154,5 +153,3 @@ static __device__ void gen(Pa A, Pa B, float rnd, /**/ Fo *f) {
     }
     gen1(&A, &B, ca, cb, ljkind, rnd, /**/ f);
 }
-
-} /* namespace */
