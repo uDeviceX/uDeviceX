@@ -241,8 +241,9 @@
 #endif
 
 /* make a center of mass velocity zero? */
-#ifndef RESTRAIN_RED_VEL
-  #define RESTRAIN_RED_VEL (false)
+#if !defined(RESTRAIN_RED_VEL) && !defined(RESTRAIN_RBC_VEL) && \
+    !defined(RESTRAIN_NONE)
+  #define RESTRAIN_NONE
 #endif
 
 /* MSG frequency */

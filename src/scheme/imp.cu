@@ -44,10 +44,14 @@ namespace dev {
 
 #include "imp/main.h"
 
-#if RESTRAIN_RED_VEL
-#include "imp/restrain/red_vel.h"
+#if   defined(RESTRAIN_NONE)
+  #include "imp/restrain/none.h"
+#elif defined(RESTRAIN_RED_VEL)
+  #include "imp/restrain/red_vel.h"
+#elif defined(RESTRAIN_RBC_VEL)
+  #include "imp/restrain/rbc_vel.h"
 #else
-#include "imp/restrain/none.h"
+  #error RESTRAIN_* is undefined
 #endif
 
 } /* namespace */
