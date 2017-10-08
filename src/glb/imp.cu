@@ -4,6 +4,7 @@
 #include "d/api.h"
 
 #include "imp.h"
+#include "gdot/imp.h"
 
 namespace glb {
 #include "imp/dec.h"

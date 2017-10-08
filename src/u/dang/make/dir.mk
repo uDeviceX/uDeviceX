@@ -17,6 +17,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/frag              && \
     d $B/fsi               && \
     d $B/glb               && \
+    d $B/glb/gdot          && \
     d $B/hforces           && \
     d $B/inter             && \
     d $B/io                && \
