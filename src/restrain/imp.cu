@@ -19,6 +19,7 @@
 
 #include "imp.h"
 
+/* common part */
 namespace restrain {
 namespace dev {
 #include "dev/color/map.h"
@@ -27,7 +28,13 @@ namespace dev {
 #include "dev/main0.h"
 #include "dev/main.h"
 }
+
 #include "imp/common.h"
 #include "imp/main0.h"
-#include "imp/main.h"
 }
+
+/* polymorphic part */
+namespace restrain { namespace color {
+#include "imp/main.h"
+}}
+

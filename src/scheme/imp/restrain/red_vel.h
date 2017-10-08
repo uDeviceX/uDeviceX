@@ -15,6 +15,6 @@ static void report(int it) {
 }
 
 void restrain(const int *cc, int n, long it, /**/ Particle *pp) {
-    restrain::vel(cc, RED_COLOR, n, /**/ pp);
+    restrain::color::vel(cc, RED_COLOR, n, /**/ pp);
     report(it);
 }
