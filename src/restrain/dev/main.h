@@ -1,5 +1,7 @@
+namespace g {
 static __device__ float3 sumv;
 static __device__ int indrop;
+}
 
 static __global__ void sum_vel(int color, int n, const Particle *pp, const int *cc) {
     int i, valid, nvalid;
@@ -21,10 +23,10 @@ static __global__ void sum_vel(int color, int n, const Particle *pp, const int *
     nvalid = warpReduceSum(valid);
 
     if ((threadIdx.x % warpSize == 0) && nvalid > 0) {
-        atomicAdd(&sumv.x, v.x);
-        atomicAdd(&sumv.y, v.y);
-        atomicAdd(&sumv.z, v.z);
-        atomicAdd(&indrop, nvalid);
+        atomicAdd(&g::sumv.x, v.x);
+        atomicAdd(&g::sumv.y, v.y);
+        atomicAdd(&g::sumv.z, v.z);
+        atomicAdd(&g::indrop, nvalid);
     }
 }
 
