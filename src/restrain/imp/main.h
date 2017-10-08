@@ -37,11 +37,11 @@ void vel(const int *cc, int color, int n, /**/ Particle *pp) {
     assert(color < 10);
 
     reini();
-    KL(dev::sum_vel, (k_cnf(n)), (color, n, pp, cc));
+    KL(dev::sum, (k_cnf(n)), (color, n, pp, cc));
 
     avg_v(/**/ u);
     v = make_float3(u[X], u[Y], u[Z]);
-    KL(dev::shift_vel, (k_cnf(n)), (color, v, n, cc, /**/ pp));
+    KL(dev::shift, (k_cnf(n)), (color, v, n, cc, /**/ pp));
 
     stat::setv(u);
 }

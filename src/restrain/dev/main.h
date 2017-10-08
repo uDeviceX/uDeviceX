@@ -1,4 +1,4 @@
-static __global__ void sum_vel(int color, int n, const Particle *pp, const int *cc) {
+static __global__ void sum(int color, int n, const Particle *pp, const int *cc) {
     int i, valid, nvalid;
     i = threadIdx.x + blockDim.x * blockIdx.x;
     
@@ -25,7 +25,7 @@ static __global__ void sum_vel(int color, int n, const Particle *pp, const int *
     }
 }
 
-static __global__ void shift_vel(int color, float3 v, int n, const int *cc, /**/ Particle *pp) {
+static __global__ void shift(int color, float3 v, int n, const int *cc, /**/ Particle *pp) {
     enum {X, Y, Z};
     int i;
     i = threadIdx.x + blockDim.x * blockIdx.x;
