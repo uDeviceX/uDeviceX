@@ -5,10 +5,10 @@ inline __device__ void vell(float x, float y, float z,
     *vx = *vy = *vz = 0;
 #if shear_z
     float *r = glb::r0;
-    *vx = gamma_dot * (z - r[Z]);
+    *vx = glb::gd * (z - r[Z]);
 #elif shear_y
     float *r = glb::r0;    
-    *vx = gamma_dot * (y - r[Y]);
+    *vx = glb::gd * (y - r[Y]);
 #endif
 }
 
