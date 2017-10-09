@@ -7,7 +7,7 @@
 #include "mpi/glb.h" /* mini-MPI and -device */
 #include "d/api.h"
 
-#include "glb.h"
+#include "glb/imp.h"
 
 #include "inc/dev.h"
 #include "utils/cc.h"
