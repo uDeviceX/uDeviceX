@@ -1,23 +1,40 @@
 set -ue
 . ./util
 
-safe_cp /scratch/snx1600/lisergey/pachinko/big/sdf.dat sdf.dat
+small  () { nx=7   ny=2 nz=1; }
+normal () { nx=14  ny=4 nz=1; }
+big    () { nx=28  ny=8 nz=1; }
 
-small  () { x=7   y=2 z=1; }
-normal () { x=14  y=4 z=1; }
-big    () { x=28  y=8 z=1; }
+rbc    () {
+    local r fr sc ang
+    r=6.0
+    fr=0
+    sc=1.0
+    ang=0.785
+    plcmt.ro $rx $ry $rz     $r $fr $sc $ang /dev/null rbcs-ic.txt
+}
 
 s=../src
 u=u/x
 c=conf.def.h
 
-normal
-Force="pushflow driving_force=0.1"
+#safe_cp /scratch/snx1600/lisergey/pachinko/big/sdf.dat sdf.dat
+
+xs=64 ys=52 zs=56
+Domain="XS=$xs YS=$ys ZS=$zs"
+
+small # sets nx, ny, nz
+geom # compute lx, ly, lz; rbc region: rx, ry, rz
+
+Force="pushflow driving_force=10.0"
+Rbc="rbcs"; rbc
 
 u.conf "$s" "$u" "$c" <<!
+    $Domain
     $Force
+    $Rbc
     run
 !
 { make clean && u.make -j; } > /dev/null
-u.strtdir . $x $y $z
-u.batch $x $y $z ./udx 30:00
+u.strtdir . $nx $ny $nz
+u.batch     $nx $ny $nz ./udx 30:00

@@ -12,3 +12,12 @@ safe_cp () {
     fi
     exec0 ln -s "$f" "$t"
 }
+
+ae () {
+    awk 'BEGIN {print '"$@"'}'
+}
+
+geom () {
+    lx=`ae $nx*$xs` ly=`ae $ny*$ys` lz=`ae $nz*$zs`
+    rx=$lx          ry=`ae $ly/4`   rz=$lz
+}
