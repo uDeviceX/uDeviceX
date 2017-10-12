@@ -1,4 +1,12 @@
+static void check_size() {
+    assert(r::q.nc < MAX_CELL_NUM);
+    assert(r::q.n < MAX_PART_NUM);
+    assert(o::q.n < MAX_PART_NUM);
+}
+
 void step(scheme::Fparams *fpar, bool wall0, int it) {
+    check_size();
+    
     distribute_flu();
     if (solids0) distribute_rig();
     if (rbcs)    distribute_rbc();
