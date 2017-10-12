@@ -2,8 +2,12 @@ msg () { printf ': %s\n' "$*" >&2; }
 
 exec0 () { msg "$@"; "$@"; }
 safe_cp () {
-    # from/to
-    local f t
+    # from/to and host
+    local f t h
+
+    h=`u.host`
+    if test $h != daint; then return; fi
+    
     f="$1"; shift
     t="$1"; shift
     if test ! -f "$f"
@@ -11,4 +15,22 @@ safe_cp () {
 	 exit 1
     fi
     exec0 ln -s "$f" "$t"
+}
+
+ae () {
+    awk 'BEGIN {print '"$@"'}'
+}
+
+geom () {
+    lx=`ae $nx*$xs` ly=`ae $ny*$ys` lz=`ae $nz*$zs`
+    rx=$lx          ry=`ae $ly/4`   rz=$lz
+}
+
+plcmt () { # uses rx, ry, rz: [r]bc region
+    local r fr sc ang
+    r="$1"; shift
+    fr=0
+    sc=1.0
+    ang=0.785
+    plcmt.ro $rx $ry $rz     $r $fr $sc $ang /dev/null rbcs-ic.txt
 }
