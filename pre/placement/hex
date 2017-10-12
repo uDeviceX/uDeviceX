@@ -19,6 +19,18 @@ function indomain(x, y, z) {
     return 1
 }
 
+function indomain_marg(x, y, z) { # margin
+    if (x-r>Lx) return 0
+    if (x+r<0 ) return 0
+
+    if (y-r>Ly) return 0
+    if (y+r<0 ) return 0
+
+    if (z-r>Lz) return 0
+    if (z+r<0 ) return 0
+    return 1
+}
+
 function arg() {
     if (ARGV[1] == "-h") usg();
     Lx = ARGV[1]; shift()
@@ -51,9 +63,11 @@ function loop_y() {
     }
 }
 
-function loop_z() {
-    for (k = 0; k < nmax; k++) {
-	z = 2*sqrt(6)/3*k; z *= r
+function loop_z(   s) {
+    s = 2*sqrt(6)/3 * r # scale
+    for (k = 0; ; k++) {
+	z = s * k
+	if (!indomain_marg(0, 0, z)) break
 	loop_y()
     }
 }
