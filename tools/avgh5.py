@@ -18,10 +18,10 @@ vx = vx.value
 vx = vx.reshape(nx, ny, nz)
 vx =  np.sum(vx, (0,1)) / (nx * ny)
 
-zz = np.arange(nz) - nz/2
+zz = np.arange(nz) + 0.5 - nz / 2
 
 vx = vx.reshape(nz, 1)
 zz = zz.reshape(nz, 1)
-np.savetxt(sys.stdout, np.concatenate((zz, vx), axis=1));
+np.savetxt(sys.stdout, np.concatenate((zz, vx), axis=1), "%g %g");
 
 f.close()
