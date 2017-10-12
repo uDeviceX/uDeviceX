@@ -31,7 +31,6 @@ function arg() {
 function gen() {
     nmax = 50  # should be a big number, TODO:
     for (k=-nmax; k<nmax; k++) for (i=-nmax; i<nmax; i++) for (j=-nmax; j<nmax; j++) {
-       # https://en.wikipedia.org/wiki/Close-packing_of_equal_spheres#Simple_hcp_lattice
        x = 2*i + ((j+k) % 2)
        y = sqrt(3) * (j + 1/3*(k % 2))
        z = 2*sqrt(6)/3*k
@@ -57,6 +56,9 @@ function shift() {
 }
 function shift0(  i) { for (i = 2; i < ARGC; i++) ARGV[i-1] = ARGV[i]; ARGC-- }
 ' "$@"
+
+# ref
+# https://en.wikipedia.org/wiki/Close-packing_of_equal_spheres#Simple_hcp_lattice
 
 # TEST: plcmt.hex.t0
 #  plcmt.hex 42 52 20 2 | sort > p.out.txt
