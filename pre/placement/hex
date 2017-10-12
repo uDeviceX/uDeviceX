@@ -29,10 +29,6 @@ function arg() {
 }
 
 function loop0() {
-    x = 2*i + ((j+k) % 2)
-    y = sqrt(3) * (j + 1/3*(k % 2))
-    z = 2*sqrt(6)/3*k
-    x*=r; y*=r; z*=r
     if (indomain(x, y, z)) {
 	print x, y, z
 	ngen++
@@ -40,15 +36,27 @@ function loop0() {
 }
 
 function loop_x() {
-    for (j=-nmax; j<nmax; j++) loop0()
+    for (i=-nmax; i<nmax; i++) {
+	x = 2*i + ((j+k) % 2)
+	x *= r
+	loop0()
+    }
 }
 
 function loop_y() {
-    for (i=-nmax; i<nmax; i++) loop_x()
+    for (j=-nmax; j<nmax; j++) {
+	y = sqrt(3) * (j + 1/3*(k % 2))
+	y *= r
+	loop_x()
+    }
 }
 
 function loop_z() {
-    for (k=-nmax; k<nmax; k++) loop_y()
+    for (k=-nmax; k<nmax; k++) {
+	z = 2*sqrt(6)/3*k
+	z *= r
+	loop_y()
+    }
 }
 
 function gen() {
