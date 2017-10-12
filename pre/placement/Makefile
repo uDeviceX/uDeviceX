@@ -11,4 +11,6 @@ install:;
 	    cp $$f $B/$p.$$f; \
 	done
 
-.PHONY: install
+test:; u.test $P
+
+.PHONY: install test
