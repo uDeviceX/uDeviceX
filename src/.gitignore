@@ -4,6 +4,8 @@ conf.mk
 *.out.txt
 h5/
 bop/
+s/
+r/
 bin.*/
 runfile
 
