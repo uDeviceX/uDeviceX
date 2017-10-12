@@ -57,6 +57,7 @@ static int setup_hst(const char *r_templ, const char *r_state, int nv, Particle 
         if ( inside_subdomain(L, A) )
             transform(rr0, nv, A, &pp[nv*(nc++)]);
     }
+    assert(nc < MAX_CELL_NUM);
     fclose(f);
     MSG("read %d rbcs", nc);
     return nc;
