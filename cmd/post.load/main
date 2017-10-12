@@ -1,4 +1,0 @@
-#!/bin/bash
-
-h=`u.host`
-. u.post.load."$h"
