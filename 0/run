@@ -3,7 +3,7 @@ set -ux
 
 safe_cp /scratch/snx1600/lisergey/pachinko/big/sdf.dat sdf.dat
 
-s=src
+s=../src
 u=u/safe
 c=conf.def.h
 #x=14 y=4 z=1
