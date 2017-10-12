@@ -64,7 +64,3 @@
 #define field_freq              2000
 #define strt_dumps              false
 #define strt_freq               100000
-
-/* Part II (added by tools/argp) */
-
-
