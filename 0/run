@@ -1,4 +1,4 @@
-set -ux
+set -ue
 . ./util
 
 safe_cp /scratch/snx1600/lisergey/pachinko/big/sdf.dat sdf.dat
@@ -10,9 +10,12 @@ big    () { x=28  y=8 z=1; }
 s=../src
 u=u/x
 c=conf.def.h
+
 normal
+Force="pushflow driving_force=0.1"
 
 u.conf "$s" "$u" "$c" <<!
+    $Force
     run
 !
 { make clean && u.make -j; } > /dev/null
