@@ -1,7 +1,6 @@
 #### Couette pinned sphere
 # nTEST: solid.t1
 rm -rf h5 bop diag.txt solid_diag.txt
-export PATH=../tools:$PATH
 (cd ../cmd; make ) > /dev/null
 cp data/sdf/wall1/wall.dat sdf.dat
 echo -e "16 16 16" > rigs-ic.txt
@@ -15,12 +14,11 @@ u.conf conf/test.h <<!!!
 !!!
 (make clean && u.make -j && make -C ../tools) > /dev/null
 sh runfile
-avgh5 1 u 2 h5/flowfields-0001.h5 | sed -n '4,29p' | uscale 0.5 > h5.out.txt
+u.avgh5 1 u 2 h5/flowfields-0001.h5 | sed -n '4,29p' | uscale 0.5 > h5.out.txt
 
 #### Double poiseuille non pinned sphere
 # nTEST: solid.t2
 rm -rf h5 bop diag.txt solid_diag.txt
-export PATH=../tools:$PATH
 (cd ../cmd; make ) > /dev/null
 echo -e "8 16 8" > rigs-ic.txt
 cp data/rig/sphere.ply mesh_solid.ply
@@ -38,7 +36,6 @@ cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt
 #### Couette pinned cylinder
 # nTEST: solid.t3
 rm -rf h5 bop diag.txt solid_diag.txt
-export PATH=../tools:$PATH
 (cd ../cmd; make ) > /dev/null
 cp data/sdf/yplates1/yplates.dat sdf.dat
 echo -e "16 16 8" > rigs-ic.txt
@@ -52,12 +49,11 @@ u.conf conf/test.h <<!!!
 !!!
 (make clean && u.make -j && make -C ../tools) > /dev/null
 sh runfile
-avgh5 1 u 2 h5/flowfields-0001.h5 | sed -n '4,29p' | uscale 0.5 > h5.out.txt
+u.avgh5 1 u 2 h5/flowfields-0001.h5 | sed -n '4,29p' | uscale 0.5 > h5.out.txt
 
 #### two solids around cylinder with one solid removed by the wall
 # nTEST: solid.t4
 rm -rf h5 bop diag.txt solid_diag.txt
-export PATH=../tools:$PATH
 (cd ../cmd; make ) > /dev/null
 cp data/sdf/cyl1/cyl.dat sdf.dat
 cp data/rig/sphere_R1.ply mesh_solid.ply

@@ -2,7 +2,6 @@
 # nTEST: flow.t1
 rm -rf bop h5 diag.txt rbc.off
 :
-export PATH=../tools:$PATH
 (cd ../cmd; make ) > /dev/null
 :
 u.conf conf/double.poiseuille.h <<!!!
@@ -14,13 +13,12 @@ u.conf conf/double.poiseuille.h <<!!!
 !!!
 (make clean && u.make -j) > /dev/null
 sh runfile
-avgh5 0 u 1 h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
+u.avgh5 0 u 1 h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
 
 #### Plates : shear
 # nTEST: flow.t2
 rm -rf bop h5 diag.txt rbc.off
 :
-export PATH=../tools:$PATH
 cp data/sdf/wall1/wall.dat sdf.dat
 :
 u.conf conf/test.h <<!!!
@@ -31,13 +29,12 @@ u.conf conf/test.h <<!!!
 !!!
 (make clean && u.make -j) > /dev/null
 sh runfile
-avgh5 1 u 2 h5/flowfields-0003.h5 | uscale 0.3 > h5.out.txt
+u.avgh5 1 u 2 h5/flowfields-0003.h5 | uscale 0.3 > h5.out.txt
 
 #### Plates : poiseuille
 # nTEST: flow.t3
 rm -rf bop h5 diag.txt rbc.off
 :
-export PATH=../tools:$PATH
 cp data/sdf/wall1/wall.dat sdf.dat
 :
 u.conf conf/poiseuille.h <<!!!
@@ -48,13 +45,12 @@ u.conf conf/poiseuille.h <<!!!
 !!!
 (make clean && u.make -j) > /dev/null
 sh runfile
-avgh5 1 u 2 h5/flowfields-0013.h5 > h5.out.txt
+u.avgh5 1 u 2 h5/flowfields-0013.h5 > h5.out.txt
 
 #### flow around cylinder
 # nTEST: flow.t4
 rm -rf bop h5 diag.txt rbc.off
 :
-export PATH=../tools:$PATH
 cp data/sdf/cyl1/cyl.dat sdf.dat
 :
 u.conf conf/poiseuille.h <<!!!
@@ -65,14 +61,13 @@ u.conf conf/poiseuille.h <<!!!
 :
 (make clean && u.make -j) > /dev/null
 sh runfile
-avgh5 1 u 1 h5/flowfields-0026.h5 > h5.out.txt
+u.avgh5 1 u 1 h5/flowfields-0026.h5 > h5.out.txt
 
 
 #### 4 roller mills
 # nTEST: flow.t5
 rm -rf bop h5 diag.txt rbc.off
 :
-export PATH=../tools:$PATH
 (cd ../cmd; make ) > /dev/null
 :
 u.conf conf/default.h <<!!!
@@ -85,4 +80,4 @@ u.conf conf/default.h <<!!!
 !!!
 (make clean && u.make -j) > /dev/null
 sh runfile
-avgh5 0 u 1 h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
+u.avgh5 0 u 1 h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt

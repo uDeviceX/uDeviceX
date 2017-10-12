@@ -2,7 +2,6 @@
 # nTEST: wall.t0
 rm -rf bop h5 diag.txt rbc.off
 :
-export PATH=../tools:$PATH
 cp data/sdf/wall1/wall.dat sdf.dat
 :
 u.conf conf/test.h <<!!!
@@ -14,4 +13,4 @@ u.conf conf/test.h <<!!!
 !!!
 { make clean && u.make -j; } > /dev/null
 u.run 1 1 3 ./udx
-avgh5 1 u 2 h5/flowfields-0003.h5 | uscale 0.1 > h5.out.txt
+u.avgh5 1 u 2 h5/flowfields-0003.h5 | uscale 0.1 > h5.out.txt
