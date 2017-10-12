@@ -5,15 +5,6 @@ small  () { nx=7   ny=2 nz=1; }
 normal () { nx=14  ny=4 nz=1; }
 big    () { nx=28  ny=8 nz=1; }
 
-rbc    () {
-    local r fr sc ang
-    r=6.0
-    fr=0
-    sc=1.0
-    ang=0.785
-    plcmt.ro $rx $ry $rz     $r $fr $sc $ang /dev/null rbcs-ic.txt
-}
-
 s=../src
 u=u/x
 c=conf.def.h
@@ -27,7 +18,9 @@ small # sets nx, ny, nz
 geom # compute lx, ly, lz; rbc region: rx, ry, rz
 
 Force="pushflow driving_force=10.0"
-Rbc="rbcs"; rbc
+
+Rbc="rbcs"
+radius=6; plcmt $radius
 
 u.conf "$s" "$u" "$c" <<!
     $Domain
