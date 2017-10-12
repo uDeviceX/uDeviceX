@@ -19,16 +19,11 @@ function indomain(x, y, z) {
     return 1
 }
 
-function indomain_marg(x, y, z) { # margin
-    if (x-r>Lx) return 0
-    if (x+r<0 ) return 0
-
-    if (y-r>Ly) return 0
-    if (y+r<0 ) return 0
-
-    if (z-r>Lz) return 0
-    if (z+r<0 ) return 0
-    return 1
+function over(x, y, z) { # over "rigth" boundary to the domain?
+    if (x-r>Lx) return 1
+    if (y-r>Ly) return 1
+    if (z-r>Lz) return 1
+    return 0
 }
 
 function arg() {
@@ -48,17 +43,17 @@ function loop0() {
 }
 
 function loop_x() {
-    for (i=-nmax; i<nmax; i++) {
-	x = 2*i + ((j+k) % 2)
-	x *= r
+    for (i=-nmax ;; i++) {
+	x = 2*i + ((j+k) % 2); x *= r
+	if (over(x, y, z)) break
 	loop0()
     }
 }
 
-function loop_y() {
-    for (j=-nmax; j<nmax; j++) {
-	y = sqrt(3) * (j + 1/3*(k % 2))
-	y *= r
+function loop_y(   s) {
+    for (j=-nmax ;; j++) {
+	y = sqrt(3) * (j + 1/3*(k % 2)); y *= r
+	if (over(-nmax, y, z)) break
 	loop_x()
     }
 }
@@ -67,7 +62,7 @@ function loop_z(   s) {
     s = 2*sqrt(6)/3 * r # scale
     for (k = 0; ; k++) {
 	z = s * k
-	if (!indomain_marg(0, 0, z)) break
+	if (over(-nmax, -nmax, z)) break
 	loop_y()
     }
 }
