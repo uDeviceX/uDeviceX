@@ -14,7 +14,7 @@ u.conf conf/double.poiseuille.h <<!!!
 !!!
 (make clean && u.make -j) > /dev/null
 sh runfile
-avg_h52.m h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
+avgh5 0 u 1 h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
 
 #### Plates : shear
 # nTEST: flow.t2
@@ -31,7 +31,7 @@ u.conf conf/test.h <<!!!
 !!!
 (make clean && u.make -j) > /dev/null
 sh runfile
-avg_h5.m h5/flowfields-0003.h5 | uscale 0.3 > h5.out.txt
+avgh5 1 u 0 h5/flowfields-0003.h5 | uscale 0.3 > h5.out.txt
 
 #### Plates : poiseuille
 # nTEST: flow.t3
@@ -48,7 +48,7 @@ u.conf conf/poiseuille.h <<!!!
 !!!
 (make clean && u.make -j) > /dev/null
 sh runfile
-avg_h5.m h5/flowfields-0013.h5 > h5.out.txt
+avgh5 1 u 0 h5/flowfields-0013.h5 > h5.out.txt
 
 #### flow around cylinder
 # nTEST: flow.t4
@@ -65,7 +65,7 @@ u.conf conf/poiseuille.h <<!!!
 :
 (make clean && u.make -j) > /dev/null
 sh runfile
-mid_h5.m h5/flowfields-0026.h5 > h5.out.txt
+avgh5 1 u 1 h5/flowfields-0026.h5 > h5.out.txt
 
 
 #### 4 roller mills
@@ -85,4 +85,4 @@ u.conf conf/default.h <<!!!
 !!!
 (make clean && u.make -j) > /dev/null
 sh runfile
-avg_h52.m h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
+avgh5 0 u 1 h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
