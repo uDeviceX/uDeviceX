@@ -25,7 +25,7 @@ function arg() {
     Ly = ARGV[1]; shift()
     Lz = ARGV[1]; shift()
     r  = ARGV[1]; shift()
-    if (ARGC == 0) { msg("plcmt.hex: arguments error"); usg() } 
+    if (ARGC == 0) { msg("plcmt.hex: arguments error"); usg() }
 }
 
 function gen() {
