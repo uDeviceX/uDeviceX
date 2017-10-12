@@ -1,5 +1,16 @@
 set -ux
-. util
+. ./util
 
 safe_cp /scratch/snx1600/lisergey/pachinko/big/sdf.dat sdf.dat
 
+s=../../src
+u=u/x
+c=conf.def.h
+x=1 y=1 z=1
+
+u.conf "$s" "$u" "$c" <<!
+    run
+!
+{ make clean && u.make -j; } > /dev/null
+u.strtdir . $x $y $z
+u.batch $x $y $z ./udx 30:00
