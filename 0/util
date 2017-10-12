@@ -23,7 +23,7 @@ ae () {
 
 geom () {
     lx=`ae $nx*$xs` ly=`ae $ny*$ys` lz=`ae $nz*$zs`
-    rx=$lx          ry=`ae $ly/4`   rz=$lz
+    rx=$lx          ry=`ae $ly/2`   rz=$lz
 }
 
 plcmt () { # uses rx, ry, rz: [r]bc region
