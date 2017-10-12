@@ -1,11 +1,14 @@
+msg () { printf ': %s\n' "$*" >&2; }
+
+exec0 () { msg "$@"; "$@"; }
 safe_cp () {
     # from/to
     local f t
     f="$1"; shift
-    t="$2"; shift
+    t="$1"; shift
     if test ! -f "$f"
-    then printf 'not a file: %s\n' "$s"
+    then msg "not a file: $f"
 	 exit 1
     fi
-    ln -s "$f" "$t"
+    exec0 ln -s "$f" "$t"
 }

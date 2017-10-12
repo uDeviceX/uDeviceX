@@ -1,2 +1,5 @@
+set -ux
 . util
+
+safe_cp /scratch/snx1600/lisergey/pachinko/big/sdf.dat sdf.dat
 
