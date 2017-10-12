@@ -5,23 +5,36 @@ import numpy as np
 import h5py as h5
 
 argv = sys.argv
-if len(argv) != 2:
-    print "usage: %s <file.h5>" % argv[0]
+if len(argv) != 5:
+    print "usage: %s <dump_coords [0/1]> <field [density/u/v/w]> <remaining dir [0/1/2]> <file.h5>" % argv[0]
     exit(1)
 
-f = h5.File(argv[1], "r")
+dump_coords = int(argv[1])
+field = argv[2]
+adir = int(argv[3])
+fname = argv[4]
+    
+f = h5.File(fname, "r")
 
-vx = f['u']
-(nx, ny, nz, nu) = vx.shape
+ff = f[field]
+(nx, ny, nz, nu) = ff.shape
+nn = [nx, ny, nz]
 
-vx = vx.value
-vx = vx.reshape(nz, ny, nx)
-vx =  np.sum(vx, (1,2)) / (nx * ny)
+av1=(adir+1)%3
+av2=(adir+2)%3
 
-zz = np.arange(nz) + 0.5 - nz / 2
+ff = ff.value
+ff = ff.reshape(nz, ny, nx)
+ff =  np.sum(ff, (av1,av2)) / (nn[av1] * nn[av2])
 
-vx = vx.reshape(nz, 1)
-zz = zz.reshape(nz, 1)
-np.savetxt(sys.stdout, np.concatenate((zz, vx), axis=1), "%g %g");
+nc = nn[adir]
+cc = np.arange(nc) + 0.5 - nc / 2
+
+if dump_coords:
+    ff = ff.reshape(nc, 1)
+    cc = cc.reshape(nc, 1)
+    np.savetxt(sys.stdout, np.concatenate((cc, ff), axis=1), "%g %g");
+else:
+    np.savetxt(sys.stdout, ff, "%g");
 
 f.close()
