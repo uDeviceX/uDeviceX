@@ -6,7 +6,8 @@ safe_cp /scratch/snx1600/lisergey/pachinko/big/sdf.dat sdf.dat
 s=../../src
 u=u/x
 c=conf.def.h
-x=1 y=1 z=1
+#x=1 y=1 z=1
+x=14 y=4 z=1
 
 u.conf "$s" "$u" "$c" <<!
     run
