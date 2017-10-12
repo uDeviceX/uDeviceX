@@ -4,9 +4,9 @@ static void tex_cells(int *start, int *count) {
     static int last_nc;
     if (!start_and_count || last_nc < ncells) {
         if (start_and_count) {
-            cudaFree(start_and_count);
+            CC(d::Free(start_and_count));
         }
-        cudaMalloc(&start_and_count, sizeof(uint2)*ncells );
+        CC(d::Malloc((void **) &start_and_count, sizeof(uint2)*ncells ));
         last_nc = ncells;
     }
 

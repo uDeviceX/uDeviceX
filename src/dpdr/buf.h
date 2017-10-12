@@ -13,11 +13,11 @@ static void alloc_Bbuf_frag(const int i, const int est, const int nfragcells, /*
 }
 
 static void free_Bbuf_frag(const int i, /**/ Bbufs *b) {
-    CC(cudaFree(b->cum.d[i]));
-    CC(cudaFree(b->pp.d[i]));
+    CC(d::Free(b->cum.d[i]));
+    CC(d::Free(b->pp.d[i]));
         
-    CC(cudaFreeHost(b->cumhst.d[i]));
-    CC(cudaFreeHost(b->pphst.d[i]));
+    CC(d::FreeHost(b->cumhst.d[i]));
+    CC(d::FreeHost(b->pphst.d[i]));
 }
 
 static void alloc_Sbuf_frag(const int i, const int est, const int nfragcells, /**/ Sbufs *b) {
@@ -29,9 +29,9 @@ static void alloc_Sbuf_frag(const int i, const int est, const int nfragcells, /*
 
 static void free_Sbuf_frag(const int i, /**/ Sbufs *b) {
     free_Bbuf_frag(i, /**/ b);
-    CC(cudaFree(b->str.d[i]));
-    CC(cudaFree(b->cnt.d[i]));
-    CC(cudaFree(b->ii.d[i]));
+    CC(d::Free(b->str.d[i]));
+    CC(d::Free(b->cnt.d[i]));
+    CC(d::Free(b->ii.d[i]));
 }
 
 void alloc_Sbufs(const int26 estimates, const int26 nfragcells, /**/ Sbufs *b) {
@@ -63,14 +63,14 @@ void free_Rbufs(/**/ Rbufs *b) {
 }
 
 static void alloc_Ibuf_frag(const int i, const int est, /**/ Ibuf *b) {
-    CC(cudaMalloc(&b->ii.d[i], est * sizeof(int)));
+    CC(d::Malloc((void **) &b->ii.d[i], est * sizeof(int)));
 
     CC(cudaHostAlloc(&b->iihst.d[i], est * sizeof(int), cudaHostAllocMapped));
     CC(cudaHostGetDevicePointer(&b->iidev.d[i], b->iihst.d[i], 0));
 }
 
 static void free_Ibuf_frag(const int i, /**/ Ibuf *b) {
-    CC(cudaFree(b->ii.d[i]));
+    CC(d::Free(b->ii.d[i]));
     CC(cudaFreeHost(b->iihst.d[i]));
 }
 

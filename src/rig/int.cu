@@ -51,8 +51,8 @@ void free_quants(Quants *q) {
     if (q->htt) delete[] q->htt;
     if (q->hvv) delete[] q->hvv;
 
-    if (q->dtt) CC(cudaFree(q->dtt));
-    if (q->dvv) CC(cudaFree(q->dvv));
+    if (q->dtt) CC(d::Free(q->dtt));
+    if (q->dvv) CC(d::Free(q->dvv));
 
     delete[] q->ss_dmp;
     delete[] q->ss_dmp_bb;

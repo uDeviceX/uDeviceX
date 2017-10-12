@@ -117,7 +117,7 @@ void bulk_wall(const tex3Dca<float> texsdf, /*io*/ Particle *s_pp, int *s_n, /*o
     int *keys;
     Dalloc(&keys, MAX_PART_NUM);
     bulk_wall0(texsdf, s_pp, s_n, w_pp, w_n, keys);
-    CC(cudaFree(keys));
+    CC(d::Free(keys));
 }
 
 /* bulk predicate : is in bulk? */
@@ -144,9 +144,9 @@ static int who_stays1(const tex3Dca<float> texsdf, Particle *pp, int n, int nc, 
 
 int who_stays(const tex3Dca<float> texsdf, Particle *pp, int n, int nc, int nv, /**/ int *stay) {
     int *keys;
-    CC(cudaMalloc(&keys, n*sizeof(keys[0])));
+    CC(d::Malloc((void **) &keys, n*sizeof(keys[0])));
     nc = who_stays1(texsdf, pp, n, nc, nv, /**/ stay, /*w*/ keys);
-    CC(cudaFree(keys));
+    CC(d::Free(keys));
     return nc;
 }
 

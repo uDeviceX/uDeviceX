@@ -230,9 +230,9 @@ void minmax(const Particle * const rbc, int size, int n, float3 *minrbc, float3 
             }
 
             if (ptoblockds != NULL)
-            CC(cudaFree(ptoblockds));
+                CC(d::Free(ptoblockds));
 
-            CC(cudaMalloc((void **)&ptoblockds,sizeof(sblockds_t) * n));
+            CC(d::Malloc((void **)&ptoblockds,sizeof(sblockds_t) * n));
 
             cH2D(ptoblockds, h_ptoblockds, n);
 
