@@ -8,15 +8,17 @@ static int scan(const int n, const int *counts, int27 *starts) {
 
 template <typename T>
 static void unpack(const hBags bags, int27 starts, /**/ T *buf) {
-    int s, i;
-    size_t c, bs = bags.bsize;
+    int c, s, i;
+    size_t sz, bs = bags.bsize;
 
     assert(bs == sizeof(T));
     
     for (i = 0; i < NFRAGS; ++i) {
-        c = bags.counts[i] * bs;
+        c = bags.counts[i];
+        sz = c * bs;
         s = starts.d[i];
-        if (c) CC(d::MemcpyAsync(buf + s, bags.data[i], c, H2D));
+        if (c)
+            CC(d::MemcpyAsync(buf + s, bags.data[i], sz, H2D));
     }
 }
 

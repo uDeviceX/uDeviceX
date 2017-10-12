@@ -30,7 +30,8 @@ static void upload_bags(const hBags *h, dBags *d) {
         sz = c * h->bsize;
         src = h->data[i];
         dst = d->data[i];
-        CC(d::MemcpyAsync(dst, src, sz, H2D));
+        if (sz)
+            CC(d::MemcpyAsync(dst, src, sz, H2D));
     }
 }
 

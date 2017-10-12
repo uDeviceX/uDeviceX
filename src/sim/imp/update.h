@@ -49,7 +49,8 @@ void bounce_solid(long it) {
     /* perform bounce back */
     
     meshbb::reini(n, /**/ bb::bbd);
-    CC(d::MemsetAsync(bb::mm, 0, nt * (nm + nmhalo) * sizeof(Momentum)));
+    if (nm + nmhalo)
+        CC(d::MemsetAsync(bb::mm, 0, nt * (nm + nmhalo) * sizeof(Momentum)));
 
     meshbb::find_collisions(nm + nmhalo, nt, nv, tt, i_pp, L, ss, cc, pp, o::ff, /**/ bb::bbd);
     meshbb::select_collisions(n, /**/ bb::bbd);

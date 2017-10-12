@@ -25,6 +25,7 @@ void fin_map(int nfrags, Map *map) {
 void reini_map(int nw, int nfrags, /**/ Map map) {
     size_t sz;
     sz = (nw + 1) * (nfrags + 1) * sizeof(int);
+    if (sz == 0) return;
     CC(d::MemsetAsync(map.counts,  0, sz));
     CC(d::MemsetAsync(map.starts,  0, sz));
     CC(d::MemsetAsync(map.offsets, 0, sz));

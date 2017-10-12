@@ -1,5 +1,5 @@
 static void reini(int nm, /**/ float3 *rr) {
-    CC(d::MemsetAsync(rr, 0, nm * sizeof(float3)));
+    if (nm) CC(d::MemsetAsync(rr, 0, nm * sizeof(float3)));
 }
 
 static void reduce(int nm, int nv, const Particle *pp, /**/ float3 *rr) {
@@ -10,7 +10,7 @@ static void reduce(int nm, int nv, const Particle *pp, /**/ float3 *rr) {
 }
 
 static void download(int nm, const float3 *drr, /**/ float3 *hrr) {
-    CC(d::Memcpy(hrr, drr, nm * sizeof(float3), D2H));
+    if (nm) CC(d::Memcpy(hrr, drr, nm * sizeof(float3), D2H));
 }
 
 static void normalize(int nm, int nv, /**/ float3 *hrr) {

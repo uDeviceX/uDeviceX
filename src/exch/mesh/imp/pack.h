@@ -15,7 +15,7 @@ void download(Pack *p) {
 
 
 static void reini_map(int nm, /**/ MMap *m) {
-    CC(d::MemsetAsync(m->cc, 0, nm * sizeof(int)));
+    if (nm) CC(d::MemsetAsync(m->cc, 0, nm * sizeof(int)));
 }
 
 static void compress_mom(int nt, int nm, const Momentum *mm, /**/ MMap *m, int *ids, Momentum *mmc) {

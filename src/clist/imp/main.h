@@ -2,7 +2,7 @@
 #define LOCAL (false)
 
 void ini_counts(/**/ Clist *c) {
-    CC(d::MemsetAsync(c->counts, 0, c->ncells * sizeof(int)));
+    if (c->ncells) CC(d::MemsetAsync(c->counts, 0, c->ncells * sizeof(int)));
 }
 
 static void subindex(int n, const Particle *pp, int3 dims, /**/ int *cc, uchar4 *ee) {
@@ -38,11 +38,11 @@ void build_map(int nlo, int nre, /**/ Clist *c, Ticket *t) {
 }
 
 void gather_pp(const Particle *pplo, const Particle *ppre, const Ticket *t, int nout, /**/ Particle *ppout) {
-    KL(dev::gather, (k_cnf(nout)), (pplo, ppre, t->ii, nout, /**/ ppout));
+    if (nout) KL(dev::gather, (k_cnf(nout)), (pplo, ppre, t->ii, nout, /**/ ppout));
 }
 
 void gather_ii(const int *iilo, const int *iire, const Ticket *t, int nout, /**/ int *iiout) {
-    KL(dev::gather, (k_cnf(nout)), (iilo, iire, t->ii, nout, /**/ iiout));
+    if (nout) KL(dev::gather, (k_cnf(nout)), (iilo, iire, t->ii, nout, /**/ iiout));
 }
 
 void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, Ticket *t) {

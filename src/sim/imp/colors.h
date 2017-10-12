@@ -14,7 +14,7 @@ void gen_colors() {
     post_send(&e.p, &e.c);
     post_recv(&e.c, &e.u);
 
-    CC(d::MemcpyAsync(pp, r::q.pp, nm * nv * sizeof(Particle), D2D));
+    if (nm * nv) CC(d::MemcpyAsync(pp, r::q.pp, nm * nv * sizeof(Particle), D2D));
     
     wait_send(&e.c);
     wait_recv(&e.c, &e.u);
