@@ -25,7 +25,7 @@ av2=(adir+2)%3
 
 ff = ff.value
 ff = ff.reshape(nz, ny, nx)
-ff =  np.sum(ff, (av1,av2)) / (nn[av1] * nn[av2])
+ff =  np.sum(ff, (2-av1,2-av2)) / (nn[av1] * nn[av2])
 
 nc = nn[adir]
 cc = np.arange(nc) + 0.5 - nc / 2

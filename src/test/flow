@@ -31,7 +31,7 @@ u.conf conf/test.h <<!!!
 !!!
 (make clean && u.make -j) > /dev/null
 sh runfile
-avgh5 1 u 0 h5/flowfields-0003.h5 | uscale 0.3 > h5.out.txt
+avgh5 1 u 2 h5/flowfields-0003.h5 | uscale 0.3 > h5.out.txt
 
 #### Plates : poiseuille
 # nTEST: flow.t3
@@ -48,7 +48,7 @@ u.conf conf/poiseuille.h <<!!!
 !!!
 (make clean && u.make -j) > /dev/null
 sh runfile
-avgh5 1 u 0 h5/flowfields-0013.h5 > h5.out.txt
+avgh5 1 u 2 h5/flowfields-0013.h5 > h5.out.txt
 
 #### flow around cylinder
 # nTEST: flow.t4
