@@ -1,0 +1,16 @@
+#!/usr/bin/awk -f
+
+# "unmatrix" [i]nitial [c]ondtions for RBCs: print x, y, z
+
+{
+    for (i = 1; i <= NF; i++) a[n++] = $i
+}
+
+END {
+    for (i = 0; i in a; i++) {
+	r = i % 16
+	if (r == 3)         printf "%s ",   a[i]
+	if (r == 3 + 4)     printf "%s ",   a[i]
+	if (r == 3 + 4 + 4) printf "%s\n",  a[i]
+    }
+}
