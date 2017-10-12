@@ -31,7 +31,7 @@ u.conf conf/double.poiseuille.h <<!!!
 !!!
 { make clean && u.make -j; } > /dev/null
 u.run 2 1 1 ./udx
-avg_h52.m h5/flowfields-0013.h5 | uscale 10 > h5.out.txt
+avgh5 0 u 1 h5/flowfields-0013.h5 | uscale 10 > h5.out.txt
 
 ####
 # nTEST: mpi.t3
@@ -68,5 +68,5 @@ u.conf conf/poiseuille.h <<!!!
 !!!
 { make clean && u.make -j; } > /dev/null
 u.run 1 1 2 ./udx
-avg_h5.m h5/flowfields-0013.h5 | uscale 100 > h5.out.txt
+avgh5 1 u 2 h5/flowfields-0013.h5 | uscale 100 > h5.out.txt
 
