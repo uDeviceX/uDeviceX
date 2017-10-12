@@ -52,15 +52,14 @@ function loop_y() {
 }
 
 function loop_z() {
-    for (k=-nmax; k<nmax; k++) {
-	z = 2*sqrt(6)/3*k
-	z *= r
+    for (k = 0; k < nmax; k++) {
+	z = 2*sqrt(6)/3*k; z *= r
 	loop_y()
     }
 }
 
 function gen() {
-    nmax = 50  # should be a big number, TODO:
+    nmax = 100  # should be a big number, TODO:
     loop_z()
 }
 
