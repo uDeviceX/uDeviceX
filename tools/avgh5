@@ -17,7 +17,7 @@ fname = argv[4]
 f = h5.File(fname, "r")
 
 ff = f[field]
-(nx, ny, nz, nu) = ff.shape
+(nz, ny, nx, nu) = ff.shape
 nn = [nx, ny, nz]
 
 av1=(adir+1)%3
