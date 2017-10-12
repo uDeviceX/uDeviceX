@@ -3,14 +3,16 @@ set -ux
 
 safe_cp /scratch/snx1600/lisergey/pachinko/big/sdf.dat sdf.dat
 
+small  () { x=7   y=2 z=1; }
+normal () { x=14  y=4 z=1; }
+big    () { x=28  y=8 z=1; }
+
 s=../src
-u=u/safe
+u=u/x
 c=conf.def.h
-#x=14 y=4 z=1
-x=28  y=8 z=1
+normal
 
 u.conf "$s" "$u" "$c" <<!
-    KL_SYNC=true CC_SYNC=true
     run
 !
 { make clean && u.make -j; } > /dev/null
