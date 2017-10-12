@@ -1,5 +1,3 @@
-#!/bin/bash
-
 "${AWK-awk}" '
 function usg() {
     msg("usage: plcmt.hex <Lx> <Ly> <Lx> <r>")

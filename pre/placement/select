@@ -1,5 +1,3 @@
-#!/bin/bash
-
 "${AWK-awk}" '
 function usg() {
     msg("usage: <stream> | plcmt.select <f> <A.txt> <B.txt>")

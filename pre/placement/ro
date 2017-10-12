@@ -1,5 +1,3 @@
-#!/bin/bash
-
 usg0 () {
     echo 'usage: plcmt.ro <Lx> <Ly> <Lz> <r>     <f>    <sc> <ang>     <solid.out> <rbc.out>'
     echo '   ro(`rbc and solid`) : create initial conditons for rbc and solid'
