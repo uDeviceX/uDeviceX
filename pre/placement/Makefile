@@ -3,7 +3,7 @@ BIN = $(HOME)/bin
 B = $(BIN)
 
 p = plcmt
-P = p2mat hex select ro
+P = p2mat hex select ro unmat
 
 install:;
 	mkdir -p $(BIN)
