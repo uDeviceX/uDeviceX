@@ -2,7 +2,6 @@
 # nTEST: strt.t0
 rm -rf bop h5 diag.txt rbc.off
 :
-export PATH=../tools:$PATH
 (cd ../cmd; make ) > /dev/null
 cp data/cells/rbc.498.off  rbc.off
 :
@@ -16,13 +15,12 @@ u.conf conf/double.poiseuille.h <<!!!
 !!!
 (make clean && u.make -j) > /dev/null
 sh runfile
-avg_h52.m h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
+u.avgh5 0 u 1 h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
 
 #### two consequent runs
 # nTEST: strt.t1
 rm -rf bop h5 diag.txt rbc.off
 :
-export PATH=../tools:$PATH
 (cd ../cmd; make ) > /dev/null
 cp data/cells/rbc.498.off  rbc.off
 :
@@ -37,5 +35,5 @@ u.conf conf/double.poiseuille.h <<!!!
 !!!
 (make clean && u.make -j) > /dev/null
 sh runfile
-avg_h52.m h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
+u.avgh5 0 u 1 h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
 
