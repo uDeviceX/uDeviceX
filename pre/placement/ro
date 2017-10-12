@@ -1,5 +1,3 @@
-#!/bin/bash
-
 usg0 () {
     echo 'usage: plcmt.ro <Lx> <Ly> <Lz> <r>     <f>    <sc> <ang>     <solid.out> <rbc.out>'
     echo '   ro(`rbc and solid`) : create initial conditons for rbc and solid'
@@ -28,7 +26,7 @@ plcmt.p2mat $s $a     $pr > $R
 # x=10 y=20 y=30 radius=1
 # fraction=0.1
 # sc=1 ang=0
-# plcmt.ro 10 20 30 $radius     $fraction    $sc $ang     solid.ic rbc.ic
+# SEED=1234 plcmt.ro 10 20 30 $radius     $fraction    $sc $ang     solid.ic rbc.ic
 # :
 # (sort solid.ic; sort rbc.ic) > test.out.txt
 #

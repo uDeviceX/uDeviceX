@@ -1,5 +1,3 @@
-#!/bin/bash
-
 "${AWK-awk}" '
 function usg() {
     msg("usage: <stream of positions> | plcmt.p2mat <scale> <angle/rnd>")
@@ -18,6 +16,7 @@ function cell(x, y, z, p) {
 }
 
 BEGIN {
+    ini_random()
     if (ARGV[1] == "-h") usg()
     s = ARGC > 1 ? ARGV[1] : 1; shift()
     p = ARGC > 1 ? ARGV[1] : 0; shift()
@@ -29,6 +28,7 @@ BEGIN {
     else            cell(x, y, z,     p)
 }
 
+function ini_random () { if ("SEED" in ENVIRON) srand(ENVIRON["SEED"]) }
 function rnd() {
     pi = 3.1415926
     return 2*pi*rand()
