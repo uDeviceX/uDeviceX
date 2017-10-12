@@ -1,3 +1,5 @@
 #! /bin/sh
 
+u.post.load
+
 exec u.avgh5.py "$@"
