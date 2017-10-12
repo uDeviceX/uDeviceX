@@ -50,7 +50,7 @@ u.conf conf/around.h <<!!!
 !!!
 { make clean && u.make -j; } > /dev/null
 u.run 3 1 1 ./udx
-mid_h5.m h5/flowfields-0001.h5 > h5.out.txt
+avgh5 1 u 2 h5/flowfields-0001.h5 > h5.out.txt
 
 #### Poiseuille
 # sTEST: mpi.t4
