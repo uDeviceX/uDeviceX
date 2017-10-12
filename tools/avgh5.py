@@ -16,7 +16,7 @@ vx = f['u']
 
 vx = vx.value
 vx = vx.reshape(nx, ny, nz)
-vx =  sum(sum(vx)) / (nx * ny)
+vx =  np.sum(vx, (0,1)) / (nx * ny)
 
 zz = np.arange(nz) - nz/2
 
