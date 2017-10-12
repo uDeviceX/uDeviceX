@@ -6,8 +6,10 @@ normal () { nx=14  ny=4 nz=1; }
 big    () { nx=28  ny=8 nz=1; }
 
 s=../src
-u=u/x
 c=conf.def.h
+
+u=u/safe
+Safe="KL_SYNC CC_SYNC"
 
 safe_cp /scratch/snx1600/lisergey/pachinko/big/sdf.dat sdf.dat
 
@@ -23,6 +25,7 @@ Rbc="rbcs"
 radius=6; plcmt $radius
 
 u.conf "$s" "$u" "$c" <<!
+    $Safe
     $Domain
     $Force
     $Rbc
