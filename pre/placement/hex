@@ -29,7 +29,7 @@ function arg() {
 }
 
 function gen() {
-    nmax = 100  # should be a big number, TODO:
+    nmax = 50  # should be a big number, TODO:
     for (i=-nmax; i<nmax; i++) for (j=-nmax; j<nmax; j++) for (k=-nmax; k<nmax; k++) {
        # https://en.wikipedia.org/wiki/Close-packing_of_equal_spheres#Simple_hcp_lattice
        x = 2*i + ((j+k) % 2)
