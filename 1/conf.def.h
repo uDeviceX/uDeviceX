@@ -49,7 +49,3 @@
 #define part_freq               20000
 #define field_dumps             true
 #define field_freq              20000
-
-/* Part II (added by tools/argp) */
-
-
