@@ -9,9 +9,9 @@ static void ini_obj_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Objexc
 
 static void ini_mesh_exch(int nv, int max_m, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Mexch *e) {
     using namespace exch::mesh;
-    ini(nv, MAX_CELL_NUM, &e->p);
-    ini(m::cart, /*io*/ &tag_gen, /**/ &e->c);
-    ini(nv, MAX_CELL_NUM, &e->u);
+    ini(nv, max_m, &e->p);
+    ini(comm, /*io*/ &tag_gen, /**/ &e->c);
+    ini(nv, max_m, &e->u);
 }
 
 static void ini_bb_exch(int nt, int nv, int max_m, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ BBexch *e) {
