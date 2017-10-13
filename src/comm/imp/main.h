@@ -29,7 +29,7 @@ static void get_counts(const MPI_Status ss[NFRAGS], /**/ hBags *b) {
         c = cc[i] / b->bsize;
         b->counts[i] = c;
         if (c >= b->capacity[i])
-            ERR("recv more than capacity.");
+            ERR("recv more than capacity in fragment %d : (%ld / %ld)", i, (long) c, (long) b->capacity[i]);
     }
 }
 
