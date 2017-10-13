@@ -50,7 +50,7 @@ void ini(int nt, int max_mesh_num, PackM *p) {
     get_mcap(NFRAGS, nt, cap, /**/ mcap);
 
     for (i = 0; i < NFRAGS; ++i)
-        ini_map(mcap[i], cap[i], /**/ &p->maps[i]);
+        ini_map(nt, cap[i], /**/ &p->maps[i]);
     
     ini(PINNED,   NONE, sizeof(Momentum), mcap, /**/ &p->hmm, &p->dmm);
     ini(PINNED,   NONE, sizeof(int)     , mcap, /**/ &p->hii, &p->dii);
