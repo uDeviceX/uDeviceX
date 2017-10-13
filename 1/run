@@ -7,16 +7,15 @@ normal () { nx=12  ny=2 nz=2; }
 s=../src
 c=conf.def.h
 
-u=u/safe
+u=u/x
 Safe="KL_SYNC CC_SYNC"
 
 safe_cp /scratch/snx1600/lisergey/channel/sdf.dat sdf.dat
 
 xs=32 ys=32 zs=32
 Domain="XS=$xs YS=$ys ZS=$zs"
-
 normal # sets nx, ny, nz
-geom # compute lx, ly, lz
+geom   # compute lx, ly, lz
 
 u.conf "$s" "$u" "$c" <<!
     $Safe
