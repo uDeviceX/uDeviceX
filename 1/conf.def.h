@@ -1,9 +1,9 @@
 /* Part I (conf.base.h) */
 
 /* DOMAIN */
-#define XS                      64
-#define YS                      52
-#define ZS                      56
+#define XS                      32
+#define YS                      32
+#define ZS                      32
 #define XWM                     6
 #define YWM                     6
 #define ZWM                     6
@@ -13,54 +13,43 @@
 
 /* DPD */
 #define numberdensity           4
-#define kBT                     0.0444
-#define dt                      1e-3
+#define kBT                     1.0
+#define dt                      0.0005
 #define dpd_mass                1.0
 #define rbc_mass                1.0
 #define solid_mass              1.0
 
-//#define aij_solv                2.6667
-//#define aij_rbc                 2.6667
-//#define aij_solid               2.6667
-//#define aij_wall                2.6667
-//#define gammadpd_solv           8.0
-//#define gammadpd_rbc            8.0
-//#define gammadpd_solid          8.0
-//#define gammadpd_wall           8.0
-
-#define adpd_b         2.6
-#define adpd_r         2.6
-#define adpd_br        2.6
-
-#define gdpd_b         8.0
-#define gdpd_r         8.0
-#define gdpd_br        8.0
-
+#define adpd_b                  (75.0/numberdensity)    /* solvent */
+#define adpd_r                  (75.0/numberdensity)    /* RBC */
+#define adpd_br                 (75.0/numberdensity)    /* wall */
+#define gdpd_b                  4.5                     /* solvent */
+#define gdpd_r                  4.5                     /* RBC */
+#define gdpd_br                 4.5                     /* wall */
 
 /* FEATURES */
-#define rbcs                    false
-#define multi_solvent           false
-#define color_freq              500
+#define FORCE_CONSTANT
+#define FORCE_PAR_A           0.0005
+#define solids                  true
+#define sbounce_back            false
+#define empty_solid_particles   false
 #define contactforces           true
+#define fsiforces               true
 #define ljsigma                 0.3
 #define ljepsilon               0.44
-#define fsiforces               true
 #define walls                   true
 #define wall_creation           1000
-#define tend                    1000000
-
-/* DEBUG */
-#define TE_TRACE
+#define tend                    100000
 
 /* FLOW TYPE */
 #define pushflow                true
-#define pushrbc                 false
-#define driving_force           0.001
+#define pushsolid               true
 
 /* DUMPS */
 #define dump_all_fields         true
-#define part_freq               2000
+#define part_freq               20000
 #define field_dumps             true
-#define field_freq              2000
-#define strt_dumps              false
-#define strt_freq               100000
+#define field_freq              20000
+
+/* Part II (added by tools/argp) */
+
+
