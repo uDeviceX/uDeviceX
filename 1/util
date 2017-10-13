@@ -18,17 +18,6 @@ safe_cp () {
 }
 
 ae () { awk 'BEGIN {print '"$@"'}'; }
-
 geom () {
     lx=`ae $nx*$xs` ly=`ae $ny*$ys` lz=`ae $nz*$zs`
-    rx=$lx          ry=`ae $ly/3`   rz=$lz
-}
-
-plcmt () { # uses rx, ry, rz: [r]bc region
-    local r fr sc ang
-    r="$1"; shift
-    fr=0
-    sc=1.0
-    ang=0.785
-    plcmt.ro $rx $ry $rz     $r $fr $sc $ang /dev/null rbcs-ic.txt
 }
