@@ -66,8 +66,6 @@ void read_rnd(/**/ float *prnd) {
     s = getenv("RND");
     if (s == NULL) rnd = 0;
     else           rnd = atof(s);
-    fprintf(stderr, "rnd: %g\n", rnd);
-
     *prnd = rnd;
 }
 
