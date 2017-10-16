@@ -57,7 +57,7 @@ int read_pa(Pa *a) {
 void read_rnd(int c, char **a, /**/ float *rnd) {
     if   (c < 2) *rnd = 0;
     else         *rnd = atof(a[1]);
-    fprintf(stderr, "rnd: %g\n", rnd);
+    fprintf(stderr, "rnd: %g\n", *rnd);
 }
 
 void main0(int argc, char **argv) {
