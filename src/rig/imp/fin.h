@@ -1,4 +1,4 @@
-void free_quants(Quants *q) {
+void fin(Quants *q) {
     delete[] q->pp_hst;
     delete[] q->ss_hst;
     delete[] q->rr0_hst;

@@ -82,7 +82,7 @@ void fin() {
     }
 
     if (solids) {
-        rig::free_quants(&s::q);
+        rig::fin(&s::q);
         scan::free_work(/**/ &s::ws);
         Dfree(s::ff);
         free(s::ff_hst);

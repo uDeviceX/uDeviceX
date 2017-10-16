@@ -105,7 +105,7 @@ void ini() {
     }
     
     if (solids) {
-        rig::alloc_quants(&s::q);
+        rig::ini(&s::q);
         scan::alloc_work(XS*YS*ZS, /**/ &s::ws);
         s::ff_hst = (Force*)malloc(sizeof(&s::ff_hst)*MAX_PART_NUM);
         Dalloc(&s::ff, MAX_PART_NUM);

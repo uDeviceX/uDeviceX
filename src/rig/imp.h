@@ -16,8 +16,8 @@ struct Quants {
     Solid *ss_dmp, *ss_dmp_bb;
 };
 
-void alloc_quants(Quants *q);
-void free_quants(Quants *q);
+void ini(Quants *q);
+void fin(Quants *q);
 
 void gen_quants(Particle *opp, int *on, Quants *q);
 void strt_quants(const int id, Quants *q);
