@@ -20,7 +20,7 @@
 #include "comm/imp.h"
 #include "comm/utils.h"
 
-#include "rig/int.h"
+#include "rig/imp.h"
 
 #include "distr/map/type.h"
 #include "type.h"

@@ -36,7 +36,7 @@
 #include "sdf/int.h"
 #include "flu/imp.h"
 #include "rbc/imp.h"
-#include "rig/int.h"
+#include "rig/imp.h"
 #include "forces/type.h"
 #include "cloud/hforces/type.h"
 #include "wall/int.h"

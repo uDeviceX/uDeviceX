@@ -1,3 +1,3 @@
 # rig
 
-hiwi for Solid : rigid objects
+hiwi for rigid objects

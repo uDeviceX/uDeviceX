@@ -1,19 +1,30 @@
 namespace rig {
-namespace sub {
 
-void load_solid_mesh(const char *fname, int *nt, int *nv, int4 **tt_hst, int4 **tt_dev, float **vv_hst, float **vv_dev);
+struct Quants {
+    int n, ns, nps;              /* number of particles (total), solid, particle per solid        */
+    Particle *pp_hst, *pp;       /* particles on hst and device                                   */
+    Solid    *ss_hst, *ss;       /* rigid strutures                                               */
+    float   *rr0_hst, *rr0;      /* frozen particle templates                                     */
 
-void gen_from_solvent(int nt, int nv, const int4 *tt, const float *vv,  /* io */ Particle *opp, int *on,
-                      /* o */ int *ns, int *nps, int *n, float *rr0_hst, Solid *ss_hst, Particle *pp_hst);
+    /* mesh related quantities */
+    int nt, nv;                   /* number of [t]riangles and [v]ertices                          */
+    int4 *htt;                    /* triangle indices of [h]ost and [d]evice                       */
+    int4 *dtt;
+    float *hvv, *dvv;             /* vertices of [h]ost and [d]evice (template)                    */
+    Particle *i_pp_hst, *i_pp;    /* particles representing all meshes of all solids of that node  */
 
-void gen_from_strt(const int id, int *ns, int *nps, int *n, float *rr0_hst, Solid *ss_hst);
-void gen_pp_hst(const int ns, const float *rr0_hst, const int nps, /**/ Solid *ss_hst, Particle *pp_hst);
-void gen_ipp_hst(const Solid *ss_hst, const int ns, int nv, const float *vv, Particle *i_pp_hst);
+    Solid *ss_dmp, *ss_dmp_bb;
+};
 
-void set_ids(const int ns, Solid *ss_hst, Solid *ss_dev);
+void alloc_quants(Quants *q);
+void free_quants(Quants *q);
 
-void strt_dump_templ(const int nps, const float *rr0_hst);
-void strt_dump(const int id, const int ns, const Solid *ss);
+void gen_quants(Particle *opp, int *on, Quants *q);
+void strt_quants(const int id, Quants *q);
 
-} // sub
+void set_ids(Quants q);
+
+void strt_dump_templ(const Quants q);
+void strt_dump(const int id, const Quants q);
+
 } // rig

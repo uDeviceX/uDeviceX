@@ -48,7 +48,7 @@
 
 #include "flu/imp.h"
 #include "rbc/imp.h"
-#include "rig/int.h"
+#include "rig/imp.h"
 
 #include "sdf/type.h"
 #include "sdf/int.h"
