@@ -11,9 +11,9 @@ void post_send(Pack *p, Comm *c) {
 }
 
 void wait_recv(Comm *c, Unpack *u) {
-    wait_recv(&c->pp, &u->hpp);
-    if (global_ids)    wait_recv(&c->ii, &u->hii);
-    if (multi_solvent) wait_recv(&c->cc, &u->hcc);
+    UC(wait_recv(&c->pp, &u->hpp));
+    if (global_ids)    UC(wait_recv(&c->ii, &u->hii));
+    if (multi_solvent) UC(wait_recv(&c->cc, &u->hcc));
 }
 
 void wait_send(Comm *c) {

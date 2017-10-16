@@ -8,6 +8,8 @@
 
 #include "utils/cc.h"
 #include "utils/kl.h"
+#include "utils/error.h"
+
 #include "d/api.h"
 #include "inc/type.h"
 #include "inc/dev/common.h"

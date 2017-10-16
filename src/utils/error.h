@@ -3,9 +3,17 @@
 
 #define report_error() UdxError::report(__FILE__, __LINE__)
 
+
+/* udx check */
+#define UC(f) do {                              \
+    f;                                          \
+    report_error();                             \
+    } while (0)
+
+
 namespace UdxError {
 void signal(const char *file, int line); 
 void signal_extra(const char *file, int line, const char *fmt, ...);
 
-void report(int line, const char *file);
+void report(const char *file, int line);
 }
