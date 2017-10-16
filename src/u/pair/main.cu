@@ -48,11 +48,18 @@ void write_pa(Pa *a) {
            a->x, a->y, a->z, a->vx, a->vy, a->vz, a->kind, a->color);
 }
 
-void read_pa(Pa *a) {
-    scanf("%f %f %f   %f %f %f   %d %d",
-          &a->x, &a->y, &a->z, &a->vx, &a->vy, &a->vz,
-          &a->kind, &a->color);
+void read_pa0(const char *s, Pa *a) {
+    sscanf(s,
+           "%f %f %f   %f %f %f   %d %d",
+           &a->x, &a->y, &a->z, &a->vx, &a->vy, &a->vz,
+           &a->kind, &a->color);
     write_pa(a);
+}
+
+void read_pa(Pa *a) {
+    char s[BUFSIZ];
+    fgets(s, BUFSIZ - 1, stdin);
+    read_pa0(s, /**/ a);
 }
 
 void main0() {
