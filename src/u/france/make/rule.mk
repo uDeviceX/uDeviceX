@@ -57,6 +57,7 @@ $B/sdf/imp.o: $S/sdf/imp.cu; $N -I$S/. -I$S/sdf
 $B/sdf/int.o: $S/sdf/int.cu; $N -I$S/. -I$S/sdf
 $B/sim/imp.o: $S/sim/imp.cu; $N -I$S/. -I$S/sim
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/. -I$S/utils
+$B/utils/error.o: $S/utils/error.cpp; $X -I$S/. -I$S/utils
 $B/utils/mc.o: $S/utils/mc.cpp; $X -I$S/. -I$S/utils
 $B/utils/os.o: $S/utils/os.cpp; $X -I$S/. -I$S/utils
 $B/vcontroller/imp.o: $S/vcontroller/imp.cu; $N -I$S/. -I$S/vcontroller
