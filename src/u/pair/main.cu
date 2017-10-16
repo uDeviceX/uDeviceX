@@ -44,7 +44,6 @@ void read_pa0(const char *s, Pa *a) {
            "%f %f %f   %f %f %f   %d %d",
            &a->x, &a->y, &a->z, &a->vx, &a->vy, &a->vz,
            &a->kind, &a->color);
-    write_pa(a);
 }
 
 enum {OK, END, FAIL};
