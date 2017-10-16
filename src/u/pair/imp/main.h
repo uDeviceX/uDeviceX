@@ -15,24 +15,30 @@ void pair(Pa a, Pa b, float rnd) {
 }
 
 void write_pa(Pa a) {
-    printf("[ %g %g %g ] [ %g %g %g ] [kc: %d %d]\n",
-           a.x, a.y, a.z, a.vx, a.vy, a.vz, a.kind, a.color);
+    fprintf(stderr, "[ %g %g %g ] [ %g %g %g ] [kc: %d %d]\n",
+            a.x, a.y, a.z, a.vx, a.vy, a.vz, a.kind, a.color);
 }
 
-int eq(char *a, char *b) { return strcmp(a, b) == 0; }
-
+int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
 void err(const char *s) {
     fprintf(stderr, "%s\n", s);
+    exit(2);
 }
-int decode_kind(char *s) {
-    if      (eq(s, "SOLVENT") || eq(s, "O") || eq(s, "0")) return SOLVENT_KIND;
-    else if (eq(s, "SOLID")   || eq(s, "S") || eq(s, "1")) return SOLID_KIND;
-    else if (eq(s, "WALL")    || eq(s, "W") || eq(s, "2")) return WALL_KIND;
+int decode_kind(const char *s) {
+    int r;
+    if      (eq(s, "SOLVENT") || eq(s, "O") || eq(s, "0")) r = SOLVENT_KIND;
+    else if (eq(s, "SOLID")   || eq(s, "S") || eq(s, "1")) r = SOLID_KIND;
+    else if (eq(s, "WALL")    || eq(s, "W") || eq(s, "2")) r = WALL_KIND;
     else err("unknow kind");
+    return r;
 }
 
 int decode_color(char *s) {
-    return 0;
+    int r;
+    if      (eq(s, "BLUE") || eq(s, "B") || eq(s, "0")) r = BLUE_COLOR;
+    else if (eq(s, "RED")  || eq(s, "R") || eq(s, "1")) r = RED_COLOR;    
+    else err("unknow color");
+    return r;
 }
 
 void read_pa0(const char *s, Pa *a) {
@@ -72,6 +78,8 @@ void main0() {
     for (;;) {
         if (read_pa(&a) == END) break;
         if (read_pa(&b) == END) break;
+        write_pa(a);
+        write_pa(b);
         pair(a, b, rnd);
     }
 }
