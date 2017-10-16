@@ -1,15 +1,11 @@
-struct UdxError {
-    enum Type {SUCCESS, FAILED} status;
-    char msg[256];
-};
+#define signal_error() UdxError::signal(__FILE__, __LINE__)
+#define signal_error_extra(fmt, ...) UdxError::signal_extra(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
 
-#define err_fill(e, t, frmt, ...) do {                                  \
-        e.status = t;                                                   \
-        sprintf(e.msg, "%s: %d: " frmt, __FILE__, __LINE__, ##__VA_ARGS__); \
-    } while (0)
+#define report_error() UdxError::report(__FILE__, __LINE__)
 
-#define err_handle(e) do {                      \
-        err_handle0(e, __FILE__, __LINE__);     \
-    } while (0)
+namespace UdxError {
+void signal(const char *file, int line); 
+void signal_extra(const char *file, int line, const char *fmt, ...);
 
-void err_handle0(const UdxError e, const char *file, const int line);
+void report(int line, const char *file);
+}
