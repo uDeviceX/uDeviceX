@@ -9,6 +9,8 @@
 #include "utils/cc.h"
 #include "utils/kl.h"
 #include "inc/def.h"
+#include "inc/dev.h"
+#include "d/api.h"
 
 #include "forces/type.h"
 #include "forces/use.h"
@@ -40,5 +42,6 @@ __global__ void main() {
 int main(int argc, char **argv) {
     m::ini(argc, argv);
     KL(dev::main, (1, 1), ());
+    dSync();
     m::fin();
 }
