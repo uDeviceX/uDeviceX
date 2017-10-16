@@ -15,8 +15,8 @@ void pair(Pa a, Pa b, float rnd) {
 }
 
 void write_pa(Pa a) {
-    printf("[ %g %g %g ] [ %g %g %g ] [kc: %d %d]\n",
-           a.x, a.y, a.z, a.vx, a.vy, a.vz, a.kind, a.color);
+    fprintf(stderr, "[ %g %g %g ] [ %g %g %g ] [kc: %d %d]\n",
+            a.x, a.y, a.z, a.vx, a.vy, a.vz, a.kind, a.color);
 }
 
 int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
