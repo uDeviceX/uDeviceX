@@ -3,7 +3,6 @@
 #include <conf.h>
 #include "inc/conf.h"
 
-#include "msg.h"
 #include "mpi/glb.h"
 #include "glb/imp.h"
 
@@ -40,8 +39,6 @@ __global__ void main() {
 
 int main(int argc, char **argv) {
     m::ini(argc, argv);
-    MSG("mpi size: %d", m::size);
-    MSG("Hello world!");
     KL(dev::main, (1, 1), ());
     m::fin();
 }
