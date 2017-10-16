@@ -54,16 +54,22 @@ int read_pa(Pa *a) {
     return OK;
 }
 
-void read_rnd(int c, char **a, /**/ float *rnd) {
-    if   (c < 2) *rnd = 0;
-    else         *rnd = atof(a[1]);
-    fprintf(stderr, "rnd: %g\n", *rnd);
+void read_rnd(/**/ float *prnd) {
+    char *s;
+    float rnd;
+
+    s = getenv("RND");
+    if (s == NULL) rnd = 0;
+    else           rnd = atof(s);
+    fprintf(stderr, "rnd: %g\n", rnd);
+
+    *prnd = rnd;
 }
 
-void main0(int argc, char **argv) {
+void main0() {
     Pa a, b;
     float rnd;
-    read_rnd(argc, argv, &rnd);
+    read_rnd(&rnd);
     for (;;) {
         if (read_pa(&a) == END) break;
         if (read_pa(&b) == END) break;
@@ -73,6 +79,6 @@ void main0(int argc, char **argv) {
 
 int main(int argc, char **argv) {
     m::ini(argc, argv);
-    main0(argc, argv);
+    main0();
     m::fin();
 }
