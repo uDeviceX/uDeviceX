@@ -127,7 +127,7 @@ static void elect(const int *rcounts, const int ns, /**/ int *root, int *idmax) 
 }
 
 static void kill(const int idmax, const int *tags, /**/ int *s_n, Particle *s_pp, int *r_n, Particle *r_pp) {
-    int scount, rcount, i;
+    int scount, rcount, i, tag;
     Particle p;
     scount = rcount = 0;
 
