@@ -4,5 +4,5 @@ $B/glb/imp.o: $B/conf.h $S/d/api.h $S/glb/gdot/imp.h $S/glb/imp.h $S/glb/imp/dec
 $B/mpi/glb.o: $B/conf.h $S/inc/conf.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
 $B/msg.o: $S/mpi/glb.h $S/msg.h
-$B/u/pair/main.o: $S/glb/imp.h $S/mpi/glb.h $S/msg.h
+$B/u/pair/main.o: $B/conf.h $S/forces/imp.h $S/forces/pack.h $S/forces/type.h $S/forces/use.h $S/glb/imp.h $S/inc/conf.h $S/mpi/glb.h $S/msg.h $S/utils/cc.h $S/utils/kl.h
 $B/utils/mc.o: $B/conf.h $S/inc/conf.h $S/utils/mc.h

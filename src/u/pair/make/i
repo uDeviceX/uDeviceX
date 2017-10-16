@@ -1,5 +1,12 @@
-find $U  -name '*.cu' -o -name '*.cpp' -o -name '*.h'
-find glb -name '*.cu' -o -name '*.cpp' -o -name '*.h'
+find0 () {
+    find "$1" -name '*.cu' -o -name '*.cpp' -o -name '*.h'
+}
+
+find0 forces
+find0 glb
+find0 $U
+
+echo utils/kl.h utils/cc.h
 
 echo \
 d/api.cu d/api.h d/common.h d/cpu/imp.h d/cuda/imp.h \
