@@ -15,7 +15,7 @@ void pair(Pa a, Pa b, float rnd) {
 }
 
 void write_pa(Pa a) {
-    fprintf(stderr, "[ %g %g %g ] [ %g %g %g ] [kc: %d %d]\n",
+    fprintf(stderr, "[ %.2g %.2g %.2g ] [ %.2g %.2g %.2g ] [kc: %d %d]\n",
             a.x, a.y, a.z, a.vx, a.vy, a.vz, a.kind, a.color);
 }
 
