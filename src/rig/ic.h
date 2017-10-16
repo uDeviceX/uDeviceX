@@ -110,9 +110,9 @@ static void count_pp_inside(const Particle *s_pp, const int n, const float *coms
 }
 
 static void elect(const int *rcounts, const int ns, /**/ int *root, int *idmax) {
-    int localmax[2] = {0, m::rank}, globalmax[2] = {0, m::rank}, idmax_ = 0;
+    int j, localmax[2] = {0, m::rank}, globalmax[2] = {0, m::rank}, idmax_ = 0;
 
-    for (int j = 0; j < ns; ++j)
+    for (j = 0; j < ns; ++j)
         if (localmax[0] < rcounts[j]) {
             localmax[0] = rcounts[j];
             idmax_ = j;
@@ -147,8 +147,9 @@ static void kill(const int idmax, const int *tags, /**/ int *s_n, Particle *s_pp
 
 static void empty_solid(int nt, const int4 *tt, const float *vv, /* io */ float *rr0, int *npsolid) {
     const int n0 = *npsolid;
-    int j = 0;
-    for (int i = 0; i < n0; ++i) {
+    int i, j;
+
+    for (i = j = 0; i < n0; ++i) {
         const float *r0 = rr0 + 3*i;
         const float d = mesh::dist_from_mesh(nt, tt, vv, r0);
         //if (d> 5) ERR("d = %f", d);
@@ -165,10 +166,10 @@ static void empty_solid(int nt, const int4 *tt, const float *vv, /* io */ float 
 }
 
 void set_ids(const int ns, Solid *ss_hst) {
-    int id = 0;
+    int id = 0, j;
     MC(MPI_Exscan(&ns, &id, 1, MPI_INT, MPI_SUM, m::cart));
 
-    for (int j = 0; j < ns; ++j)
+    for (j = 0; j < ns; ++j)
         ss_hst[j].id = id++;
 }
 
