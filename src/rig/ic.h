@@ -8,15 +8,14 @@ enum {X, Y, Z};
 #define DBG(frmt, ...)
 
 static int read_coms(const char *fname, /**/ float* coms) {
-    int nsolids = 0;
+    int i, nsolids;
     FILE *f = fopen(fname, "r");
-
+    float x, y, z;
+    
     if (f == NULL)
         ERR("Could not open %s.\n", fname);
 
-    float x, y, z;
-    int i = 0;
-
+    i = 0;
     while (fscanf(f, "%f %f %f\n", &x, &y, &z) == 3) {
         coms[3*i + X] = x;
         coms[3*i + Y] = y;
