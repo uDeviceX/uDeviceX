@@ -1,0 +1,5 @@
+# cTEST: pair.0
+u.conf0 u/pair
+{ u.make -j;     } > /dev/null
+u.run ./udx < ../data/2 > pair.out.txt
+
