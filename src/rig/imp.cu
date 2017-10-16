@@ -30,7 +30,7 @@
 #include "mesh/dist.h"
 #include "mesh/bbox.h"
 
-#include "rigid/int.h"
+#include "rigid/imp.h"
 
 namespace rig {
 

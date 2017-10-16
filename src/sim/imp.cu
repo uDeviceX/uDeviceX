@@ -83,7 +83,7 @@
 #include "mesh/collision.h"
 #include "mesh/bbox.h"
 
-#include "rigid/int.h"
+#include "rigid/imp.h"
 
 #include "meshbb/imp.h"
 

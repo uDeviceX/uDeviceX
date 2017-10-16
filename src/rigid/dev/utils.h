@@ -1,6 +1,3 @@
-namespace rig {
-namespace dev {
-
 static _HD_ float dot(const float *v, const float *u) {
     return v[X]*u[X] + v[Y]*u[Y] + v[Z]*u[Z];
 }
@@ -41,6 +38,3 @@ _HD_ void rot_e(const float *om, /**/ float *e) {
 
     e[X] += vx*dt; e[Y] += vy*dt; e[Z] += vz*dt;
 }
-
-} // dev
-} // rig

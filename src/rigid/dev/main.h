@@ -1,6 +1,3 @@
-namespace rig {
-namespace dev {
-
 __global__ void rot_referential(const int ns, Solid *ss) {
     if (threadIdx.x < ns) {
         Solid s = ss[threadIdx.x];
@@ -175,6 +172,3 @@ __global__ void update_mesh(const Solid *ss_dev, const float *vv, const int nv, 
         pp[vid] = p;
     }
 }
-
-} // dev
-} // rig

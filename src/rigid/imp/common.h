@@ -1,11 +1,3 @@
-namespace rig {
-
-enum {X, Y, Z};
-enum {XX, XY, XZ, YY, YZ, ZZ};
-enum {YX = XY, ZX = XZ, ZY = YZ};
-
-#define _HD_ __host__ __device__
-
 void update_r_hst(const float *rr0, const int n, const float *com, const float *e0, const float *e1, const float *e2, /**/ Particle *pp) {
     for (int ip = 0; ip < n; ++ip) {
         float *r0 = pp[ip].r;
@@ -35,6 +27,3 @@ void generate_hst(const Solid *ss_hst, const int ns, const float *rr0, const int
         start += nps;
     }
 }
-
-
-} // rig
