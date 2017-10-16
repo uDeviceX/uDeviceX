@@ -127,11 +127,13 @@ static void elect(const int *rcounts, const int ns, /**/ int *root, int *idmax) 
 }
 
 static void kill(const int idmax, const int *tags, /**/ int *s_n, Particle *s_pp, int *r_n, Particle *r_pp) {
-    int scount = 0, rcount = 0;
+    int scount, rcount, i;
+    Particle p;
+    scount = rcount = 0;
 
-    for (int ip = 0; ip < *s_n; ++ip) {
-        Particle p = s_pp[ip];
-        const int tag = tags[ip];
+    for (i = 0; i < *s_n; ++i) {
+        p = s_pp[i];
+        tag = tags[i];
 
         if (tag == -1)         // solvent
             s_pp[scount++] = p;
