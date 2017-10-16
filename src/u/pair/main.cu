@@ -29,15 +29,6 @@ __global__ void main(Pa a, Pa b, float rnd) {
 }
 } /* namespace */
 
-void ini_pa(float x, float y, float z,
-            float vx, float vy, float vz,
-            int k, int c, /**/ Pa *a) {
-    a->x  = x;  a->y  = y;  a->z =  z;
-    a->vx = vx; a->vy = y; a->vz = vz;
-    a->kind = k;
-    a->color = c;
-}
-
 void pair(Pa a, Pa b, float rnd) {
     KL(dev::main, (1, 1), (a, b, rnd));
     dSync();
@@ -56,20 +47,24 @@ void read_pa0(const char *s, Pa *a) {
     write_pa(a);
 }
 
-void read_pa(Pa *a) {
+enum {OK, END, FAIL};
+int read_pa(Pa *a) {
     char s[BUFSIZ];
-    fgets(s, BUFSIZ - 1, stdin);
+    if (fgets(s, BUFSIZ - 1, stdin) == NULL) return END;
     read_pa0(s, /**/ a);
+    return OK;
 }
 
 void main0() {
     Pa a, b;
     float rnd;
-
-    read_pa(&a);
-    ini_pa(0.1,0.1,0.1, 0,0,0, SOLID_KIND, BLUE_COLOR, /**/ &b);
     rnd = 0;
-    pair(a, b, rnd);
+
+    for (;;) {
+        if (read_pa(&a) == END) break;
+        if (read_pa(&b) == END) break;
+        pair(a, b, rnd);
+    }
 }
 
 int main(int argc, char **argv) {
