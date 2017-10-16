@@ -54,11 +54,16 @@ int read_pa(Pa *a) {
     return OK;
 }
 
-void main0() {
+void read_rnd(int c, char **a, /**/ float *rnd) {
+    if   (c < 2) *rnd = 0;
+    else         *rnd = atof(a[1]);
+    fprintf(stderr, "rnd: %g\n", rnd);
+}
+
+void main0(int argc, char **argv) {
     Pa a, b;
     float rnd;
-    rnd = 0;
-
+    read_rnd(argc, argv, &rnd);
     for (;;) {
         if (read_pa(&a) == END) break;
         if (read_pa(&b) == END) break;
@@ -68,6 +73,6 @@ void main0() {
 
 int main(int argc, char **argv) {
     m::ini(argc, argv);
-    main0();
+    main0(argc, argv);
     m::fin();
 }
