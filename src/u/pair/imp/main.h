@@ -78,6 +78,8 @@ void main0() {
     for (;;) {
         if (read_pa(&a) == END) break;
         if (read_pa(&b) == END) break;
+        write_pa(a);
+        write_pa(b);
         pair(a, b, rnd);
     }
 }
