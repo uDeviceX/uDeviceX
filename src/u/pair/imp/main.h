@@ -14,9 +14,9 @@ void pair(Pa a, Pa b, float rnd) {
     dSync();
 }
 
-void write_pa(Pa *a) {
+void write_pa(Pa a) {
     printf("[ %g %g %g ] [ %g %g %g ] [kc: %d %d]\n",
-           a->x, a->y, a->z, a->vx, a->vy, a->vz, a->kind, a->color);
+           a.x, a.y, a.z, a.vx, a.vy, a.vz, a.kind, a.color);
 }
 
 void read_pa0(const char *s, Pa *a) {
