@@ -19,6 +19,9 @@ Build
 
 # Run
 
+Particles coordinates, velocities, kinds, and colors are provided via
+`stdin`. An example is in [src/data/pair/2](../../src/data/pair/2).
+
 	s=<path to src>
 	./udx < $s/data/pair/2
 
