@@ -17,14 +17,11 @@
 #include "forces/imp.h"
 
 namespace dev {
-__global__ void main(forces::Pa a, forces::Pa b) {
+__global__ void main(forces::Pa a, forces::Pa b, float rnd) {
     forces::Fo f;
-    float rnd;
-    rnd = 0.0;
     forces::gen(a, b, rnd, /**/ &f);
     printf("fo: %g %g %g\n", f.x, f.y, f.z);
 }
-
 }
 
 void ini_pa(float x, float y, float z,
@@ -37,14 +34,15 @@ void ini_pa(float x, float y, float z,
 }
 
 int main(int argc, char **argv) {
-    m::ini(argc, argv);
+    forces::Pa a, b;
+    float rnd;
     
-    forces::Pa a;
-    forces::Pa b;
+    m::ini(argc, argv);
     ini_pa(0,0,0, 0,0,0, SOLID_KIND, BLUE_COLOR, /**/ &a);
     ini_pa(0.1,0.1,0.1, 0,0,0, SOLID_KIND, BLUE_COLOR, /**/ &b);
+    rnd = 0;
     
-    KL(dev::main, (1, 1), (a, b));
+    KL(dev::main, (1, 1), (a, b, rnd));
     dSync();
     m::fin();
 }
