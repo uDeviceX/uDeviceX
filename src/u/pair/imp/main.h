@@ -19,11 +19,30 @@ void write_pa(Pa a) {
            a.x, a.y, a.z, a.vx, a.vy, a.vz, a.kind, a.color);
 }
 
+int eq(char *a, char *b) { return strcmp(a, b) == 0; }
+
+void err(const char *s) {
+    fprintf(stderr, "%s\n", s);
+}
+int decode_kind(char *s) {
+    if      (eq(s, "SOLVENT") || eq(s, "O") || eq(s, "0")) return SOLVENT_KIND;
+    else if (eq(s, "SOLID")   || eq(s, "S") || eq(s, "1")) return SOLID_KIND;
+    else if (eq(s, "WALL")    || eq(s, "W") || eq(s, "2")) return WALL_KIND;
+    else err("unknow kind");
+}
+
+int decode_color(char *s) {
+    return 0;
+}
+
 void read_pa0(const char *s, Pa *a) {
+    char kind[BUFSIZ], color[BUFSIZ];
     sscanf(s,
-           "%f %f %f   %f %f %f   %d %d",
+           "%f %f %f   %f %f %f   %s %s",
            &a->x, &a->y, &a->z, &a->vx, &a->vy, &a->vz,
-           &a->kind, &a->color);
+           kind, color);
+    a->kind  = decode_kind(kind);
+    a->color = decode_color(color);
 }
 
 enum {OK, END, FAIL};
