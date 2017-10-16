@@ -8,13 +8,14 @@
 
 namespace UdxError {
 
-static int err_line, err_status;
-static char *err_file, err_msg[BUFSIZ];
+static int err_line, err_status = 0;
+static const char *err_file;
+static char err_msg[BUFSIZ];
 
 void signal(const char *file, int line) {
     err_line = line;
     err_status = 1;
-    strcpy(err_file, file);
+    err_file = file;
     memset(err_msg, 0, sizeof(err_msg));
 }
 
@@ -26,9 +27,11 @@ void signal_extra(const char *file, int line, const char *fmt, ...) {
     va_end(ap);    
 }
 
-void report(int line, const char *file) {
-    ERR("%s: %d: Error: %s;  called from:\n"
-        "%s: %d\n", err_file, err_line, err_msg, file, line);
+void report(const char *file, int line) {
+    if (err_status) {
+        ERR("%s: %d: Error: %s;  called from:\n"
+            ": %s: %d\n", err_file, err_line, err_msg, file, line);
+    }
 }
 
 } /* UdxError */

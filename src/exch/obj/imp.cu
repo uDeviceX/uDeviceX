@@ -11,6 +11,7 @@
 #include "d/api.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
+#include "utils/error.h"
 
 #include "frag/imp.h"
 #include "mpi/basetags.h"

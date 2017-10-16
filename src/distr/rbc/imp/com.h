@@ -9,8 +9,8 @@ void post_send(Pack *p, Comm *c) {
 }
 
 void wait_recv(Comm *c, Unpack *u) {
-    wait_recv(&c->pp, &u->hpp);
-    if (rbc_ids) wait_recv(&c->ii, &u->hii);
+    UC(wait_recv(&c->pp, &u->hpp));
+    if (rbc_ids) UC(wait_recv(&c->ii, &u->hii));
 }
 
 void wait_send(Comm *c) {

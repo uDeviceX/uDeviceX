@@ -9,6 +9,7 @@
 #include "msg.h"
 #include "utils/mc.h"
 #include "utils/cc.h"
+#include "utils/error.h"
 #include "d/api.h"
 #include "mpi/wrapper.h"
 #include "mpi/basetags.h"

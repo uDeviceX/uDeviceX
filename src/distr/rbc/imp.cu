@@ -8,6 +8,8 @@
 #include "d/ker.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
+#include "utils/error.h"
+
 #include "inc/dev.h"
 #include "inc/dev/common.h"
 #include "inc/type.h"
