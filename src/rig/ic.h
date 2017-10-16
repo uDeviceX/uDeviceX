@@ -22,7 +22,7 @@ static int read_coms(const char *fname, /**/ float* coms) {
         coms[3*i + Y] = y;
         coms[3*i + Z] = z;
         i++;
-        assert(i < MAX_SOLIDS);
+        assert(i <= MAX_SOLIDS);
     }
     nsolids = i;
     DBG("have read %d solids", nsolids);
