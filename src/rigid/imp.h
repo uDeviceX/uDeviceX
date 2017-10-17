@@ -9,5 +9,4 @@ void generate_hst(const Solid *ss, const int ns, const float *rr0, const int nps
 void mesh2pp_hst(const Solid *ss_hst, const int ns, int nv, const float *vv, /**/ Particle *pp);
 
 void update_mesh(const Solid *ss, const int ns, int nv, const float *vv, /**/ Particle *pp);
-void dump(const int it, const Solid *ss, const Solid *ssbb, int nsolid, const int *mcoords);
 }
