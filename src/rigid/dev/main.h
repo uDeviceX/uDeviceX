@@ -1,12 +1,14 @@
 __global__ void rot_referential(const int ns, Solid *ss) {
-    if (threadIdx.x < ns) {
-        Solid s = ss[threadIdx.x];
+    int i;
+    i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i < ns) {
+        Solid s = ss[i];
         rot_e(s.om, /**/ s.e0);
         rot_e(s.om, /**/ s.e1);
         rot_e(s.om, /**/ s.e2);
-            
+
         gram_schmidt(/**/ s.e0, s.e1, s.e2);
-        ss[threadIdx.x] = s;
+        ss[i] = s;
     }
 }
 
@@ -99,54 +101,14 @@ __global__ void update_om_v(const int ns, Solid *ss) {
     }
 }
 
-__global__ void compute_velocity(const int nps, const Solid *ss, /**/ Particle *pp) {
-    const int pid = threadIdx.x + blockIdx.x * blockDim.x;
-    const int sid = blockIdx.y;
-
-    const int i = sid * nps + pid;
-        
-    const Solid s = ss[sid];
-        
-    const float omx = s.om[X], omy = s.om[Y], omz = s.om[Z];
-        
-    if (pid < nps) {
-        float *r0 = pp[i].r, *v0 = pp[i].v;
-
-        const float x = r0[X]-s.com[X];
-        const float y = r0[Y]-s.com[Y];
-        const float z = r0[Z]-s.com[Z];
-            
-        v0[X] = s.v[X] + omy*z - omz*y;
-        v0[Y] = s.v[Y] + omz*x - omx*z;
-        v0[Z] = s.v[Z] + omx*y - omy*x;
-    }
-}
-
 __global__ void update_com(const int ns, Solid *ss) {
-    const int sid = threadIdx.x / 3;
-    const int c   = threadIdx.x % 3;
+    int sid, c, i;
+    i = threadIdx.x + blockIdx.x * blockDim.x;
+    sid = i / 3;
+    c   = i % 3;
 
     if (sid < ns)
         ss[sid].com[c] += ss[sid].v[c]*dt;
-}
-
-__global__ void update_r(const int nps, const float *rr0, const Solid *ss, /**/ Particle *pp) {
-    const int pid = threadIdx.x + blockIdx.x * blockDim.x;
-    const int sid = blockIdx.y;
-
-    const int i = sid * nps + pid;
-
-    const Solid s = ss[sid];
-        
-    if (pid < nps) {
-        float *r0 = pp[i].r;
-        const float *ro = &rr0[3*pid];
-        const float x = ro[X], y = ro[Y], z = ro[Z];
-
-        r0[X] = s.com[X] + x*s.e0[X] + y*s.e1[X] + z*s.e2[X];
-        r0[Y] = s.com[Y] + x*s.e0[Y] + y*s.e1[Y] + z*s.e2[Y];
-        r0[Z] = s.com[Z] + x*s.e0[Z] + y*s.e1[Z] + z*s.e2[Z];
-    }
 }
 
 __global__ void update_pp(const int nps, const float *rr0, const Solid *ss, /**/ Particle *pp) {
