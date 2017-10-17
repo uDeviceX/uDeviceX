@@ -21,19 +21,20 @@ void reinit_ft_hst(const int nsolid, /**/ Solid *ss) {
 }
 
 void generate_hst(const Solid *ss_hst, const int ns, const float *rr0, const int nps, /**/ Particle *pp) {
-    int start = 0;
-    for (int j = 0; j < ns; ++j) {
+    int j, start;
+    for (j = start = 0; j < ns; ++j) {
         update_r_hst(rr0, nps, ss_hst[j].com, ss_hst[j].e0, ss_hst[j].e1, ss_hst[j].e2, /**/ pp + start);
         start += nps;
     }
 }
 
 void mesh2pp_hst(const Solid *ss_hst, const int ns, int nv, const float *vv, /**/ Particle *pp) {
-    for (int j = 0; j < ns; ++j) {
+    int i, j;
+    for (j = 0; j < ns; ++j) {
         const Solid *s = ss_hst + j;
         update_r_hst(vv, nv, s->com, s->e0, s->e1, s->e2, /**/ pp + j * nv);
 
-        for (int i = 0; i < nv; ++i) {
+        for (i = 0; i < nv; ++i) {
             float *v = pp[j*nv + i].v;
             v[X] = v[Y] = v[Z] = 0;
         }
