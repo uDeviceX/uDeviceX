@@ -27,10 +27,11 @@ static __device__ void atomicAdd3(float d[3], const float s[3]) {
 }
 
 __global__ void add_f_to(const int nps, const Particle *pp, const Force *ff, /**/ Solid *ss) {
-    const int gid = blockIdx.x * blockDim.x + threadIdx.x;
-    const int sid = blockIdx.y;
+    int gid, sid, i;
+    gid = blockIdx.x * blockDim.x + threadIdx.x;
+    sid = blockIdx.y;
 
-    const int i = sid * nps + gid;
+    i = sid * nps + gid;
         
     Force    f = {0, 0, 0};
     Particle p = {0, 0, 0, 0, 0, 0};
