@@ -13,7 +13,7 @@ static void freeze(sdf::Tex_t texsdf, /*io*/ Particle *pp, int *n, /*o*/ Particl
     free(hst);
 }
 
-void build_cells(const int n, float4 *pp4, clist::Clist *cells, clist::Ticket *tcells) {
+void build_cells(const int n, float4 *pp4, clist::Clist *cells, clist::Map *tcells) {
     if (n == 0) return;
 
     Particle *pp, *pp0;
@@ -52,7 +52,7 @@ void strt_quants(int *w_n, float4 **w_pp) {
     CC(d::Free(pptmp));
 }
 
-void gen_ticket(const int w_n, float4 *w_pp, clist::Clist *cells, clist::Ticket *tcells, Texo<int> *texstart, Texo<float4> *texpp) {
+void gen_ticket(const int w_n, float4 *w_pp, clist::Clist *cells, clist::Map *tcells, Texo<int> *texstart, Texo<float4> *texpp) {
 
     build_cells(w_n, /**/ w_pp, cells, tcells);
     

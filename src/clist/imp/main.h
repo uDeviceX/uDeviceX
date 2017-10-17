@@ -9,15 +9,15 @@ static void subindex(int n, const Particle *pp, int3 dims, /**/ int *cc, uchar4 
     if (n) KL(dev::subindex, (k_cnf(n)), (dims, n, pp, /*io*/ cc, /**/ ee));
 }
 
-void subindex_local(int n, const Particle *pp, /**/ Clist *c, Ticket *t) {
+void subindex_local(int n, const Particle *pp, /**/ Clist *c, Map *t) {
     subindex(n, pp, c->dims, /**/ c->counts, t->eelo);
 }
 
-void subindex_remote(int n, const Particle *pp, /**/ Clist *c, Ticket *t) {
+void subindex_remote(int n, const Particle *pp, /**/ Clist *c, Map *t) {
     subindex(n, pp, c->dims, /**/ c->counts, t->eere);
 }
 
-void build_map(int nlo, int nre, /**/ Clist *c, Ticket *t) {
+void build_map(int nlo, int nre, /**/ Clist *c, Map *t) {
     int nc, *cc, *ss;
     uchar4 *eelo, *eere;
     uint *ii = t->ii;
@@ -37,19 +37,19 @@ void build_map(int nlo, int nre, /**/ Clist *c, Ticket *t) {
     if (nre) KL(dev::get_ids, (k_cnf(nre)), (REMOTE, dims, nre, ss, eere, /**/ ii));    
 }
 
-void gather_pp(const Particle *pplo, const Particle *ppre, const Ticket *t, int nout, /**/ Particle *ppout) {
+void gather_pp(const Particle *pplo, const Particle *ppre, const Map *t, int nout, /**/ Particle *ppout) {
     if (nout) KL(dev::gather, (k_cnf(nout)), (pplo, ppre, t->ii, nout, /**/ ppout));
 }
 
-void gather_ii(const int *iilo, const int *iire, const Ticket *t, int nout, /**/ int *iiout) {
+void gather_ii(const int *iilo, const int *iire, const Map *t, int nout, /**/ int *iiout) {
     if (nout) KL(dev::gather, (k_cnf(nout)), (iilo, iire, t->ii, nout, /**/ iiout));
 }
 
-void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, Ticket *t) {
+void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, Map *t) {
     build(nlo, 0, nout, pplo, NULL, /**/ ppout, c, t);
 }
 
-void build(int nlo, int nre, int nout, const Particle *pplo, const Particle *ppre, /**/ Particle *ppout, Clist *c, Ticket *t) {
+void build(int nlo, int nre, int nout, const Particle *pplo, const Particle *ppre, /**/ Particle *ppout, Clist *c, Map *t) {
     ini_counts(/**/ c);
     subindex_local (nlo, pplo, /**/ c, t);
     subindex_remote(nre, ppre, /**/ c, t);

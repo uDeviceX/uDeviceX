@@ -3,7 +3,7 @@ void fin(/**/ Clist *c) {
     CC(d::Free(c->counts));
 }
 
-void fin_ticket(Ticket *t) {
+void fin_ticket(Map *t) {
     scan::free_work(/**/ &t->scan);
 
     CC(d::Free(t->eelo));
