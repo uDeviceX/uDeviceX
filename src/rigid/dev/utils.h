@@ -7,12 +7,8 @@ static __device__ void reject(/**/ float *v, float *u) {
     v[X] -= d*u[X]; v[Y] -= d*u[Y]; v[Z] -= d*u[Z];
 }
 
-static __device__ float norm(const float *v) {
-    return sqrt(v[X]*v[X] + v[Y]*v[Y] + v[Z]*v[Z]);
-}
-
 static __device__ void normalize(/**/ float *v) {
-    const float s = 1.f / norm(v);
+    const float s = rsqrtf(dot(v, v));
     v[X] *= s; v[Y] *= s; v[Z] *= s;
 }
 

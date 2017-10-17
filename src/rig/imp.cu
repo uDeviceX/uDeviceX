@@ -18,8 +18,6 @@
 
 #include "generate/rig/imp.h"
 
-#include "rigid/imp.h"
-
 namespace rig {
 
 #include "imp/ini.h"
