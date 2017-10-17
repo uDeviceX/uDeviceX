@@ -16,13 +16,7 @@ static int R(cudaError_t e) {
     }
 }
 
-int ini() {
-    /* panda specific for multi-gpu testing
-       int device = m::rank % 2 ? 0 : 2; */
-    // int device = 2;
-    // return R(cudaSetDevice(device));
-    return 0;
-}
+int ini() { return 0; }
 
 int alloc_pinned(void **pHost, size_t size) {
     return R(cudaHostAlloc(pHost, size, cudaHostAllocMapped));
