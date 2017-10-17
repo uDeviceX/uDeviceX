@@ -1,14 +1,36 @@
+#include <mpi.h>
+#include <assert.h>
+#include <stdio.h>
+#include <vector>
+
+
 #include <conf.h>
 #include "inc/conf.h"
+#include "inc/def.h"
+
+#include "mpi/wrapper.h"
+#include "mpi/type.h"
+#include "mpi/glb.h"
+#include "utils/mc.h"
+
+#include "msg.h"
 
 #include "inc/type.h"
-#include "rig/imp.h"
 
 #include "math/linal.h"
 #include "mesh/props.h"
+#include "mesh/dist.h"
+#include "mesh/bbox.h"
+#include "d/ker.h"
+#include "utils/cc.h"
+#include "utils/texo.h"
+#include "mesh/collision.h"
 
 #include "imp.h"
 
 namespace gen {
+#include "imp/ic.h"
+#include "imp/share.h"
 #include "imp/ini_props.h"
+#include "imp/main.h"
 }

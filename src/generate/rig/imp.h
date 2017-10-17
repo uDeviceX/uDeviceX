@@ -1,1 +1,2 @@
-void gen_rig_quants(/* io */ int *on, Particle *opp, /**/ rig::Quants *q);
+void gen_rig_from_solvent(int nt, int nv, const int4 *tt, const float *vv, /* io */ Particle *opp, int *on,
+                          /* o */ int *ns, int *nps, int *n, float *rr0_hst, Solid *ss_hst, Particle *pp_hst);
