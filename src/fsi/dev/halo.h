@@ -32,7 +32,7 @@ static __device__ void halo0(Pa A, int aid, hforces::Cloud cloud, int nb, float 
     fA[X] += fx; fA[Y] += fy; fA[Z] += fz;
 }
 
-static __device__ void halo1(int27 starts, int aid, hforces::Cloud cloud, int nb, float seed, /**/ float *ffB) {
+static __device__ void halo1(int27 starts, Pap26 pp, Fop26 ff, int aid, hforces::Cloud cloud, int nb, float seed, /**/ float *ffB) {
     int fid; /* fragment id */
     int start;
     Pa A;
@@ -41,17 +41,17 @@ static __device__ void halo1(int27 starts, int aid, hforces::Cloud cloud, int nb
     fid = k_common::fid(starts.d, aid);
     start = starts.d[fid];
 
-    A = warp2p(g::pp[fid], aid - start);
+    A = warp2p(pp.d[fid], aid - start);
     A.kind = SOLID_KIND;
 
-    fA = g::ff[fid][aid-start].f;
+    fA = ff.d[fid][aid-start].f;
 
     halo0(A, aid, cloud, nb, seed, /**/ fA, ffB);
 }
 
-__global__ void halo(int27 starts, hforces::Cloud cloud, int na, int nb, float seed, /**/ float *ffB) {
+__global__ void halo(int27 starts, Pap26 pp, Fop26 ff, hforces::Cloud cloud, int na, int nb, float seed, /**/ float *ffB) {
     int aid;
     aid = threadIdx.x + blockDim.x * blockIdx.x;
     if (aid >= na) return;
-    halo1(starts, aid, cloud, nb, seed, /**/ ffB);
+    halo1(starts, pp, ff, aid, cloud, nb, seed, /**/ ffB);
 }
