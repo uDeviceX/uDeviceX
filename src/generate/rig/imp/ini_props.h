@@ -1,5 +1,8 @@
 #ifdef spdir // open geometry, use particles    
 static void init_I_frompp(const Particle *pp, int n, float pmass, const float *com, /**/ float *I) {
+    enum {XX, XY, XZ, YY, YZ, ZZ};
+    enum {YX = XY, ZX = XZ, ZY = YZ};
+
     for (int c = 0; c < 6; ++c) I[c] = 0;
 
     for (int ip = 0; ip < n; ++ip) {
