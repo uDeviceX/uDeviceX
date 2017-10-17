@@ -15,18 +15,18 @@ struct Map {
 void ini(int LX, int LY, int LZ, /**/ Clist *c);
 void fin(/**/ Clist *c);
 
-void ini_ticket(const Clist *c, /**/ Map *t);
-void fin_ticket(Map *t);
+void ini_ticket(const Clist *c, /**/ Map *m);
+void fin_ticket(Map *m);
 
 
 void ini_counts(Clist *c);
-void subindex_local(int n, const Particle *pp, /**/ Clist *c, Map *t);
-void subindex_remote(int n, const Particle *pp, /**/ Clist *c, Map *t);
-void build_map(int nlo, int nre, /**/ Clist *c, Map *t);
-void gather_pp(const Particle *pplo, const Particle *ppre, const Map *t, int nout, /**/ Particle *ppout);
-void gather_ii(const int *iilo, const int *iire, const Map *t, int nout, /**/ int *iiout);
+void subindex_local(int n, const Particle *pp, /**/ Clist *c, Map *m);
+void subindex_remote(int n, const Particle *pp, /**/ Clist *c, Map *m);
+void build_map(int nlo, int nre, /**/ Clist *c, Map *m);
+void gather_pp(const Particle *pplo, const Particle *ppre, const Map *m, int nout, /**/ Particle *ppout);
+void gather_ii(const int *iilo, const int *iire, const Map *m, int nout, /**/ int *iiout);
 
-void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, Map *t);
-void build(int nlo, int nre, int nout, const Particle *pplo, const Particle *ppre, /**/ Particle *ppout, Clist *c, Map *t);
+void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, Map *m);
+void build(int nlo, int nre, int nout, const Particle *pplo, const Particle *ppre, /**/ Particle *ppout, Clist *c, Map *m);
 
 } /* namespace */

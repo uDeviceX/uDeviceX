@@ -3,10 +3,10 @@ void fin(/**/ Clist *c) {
     CC(d::Free(c->counts));
 }
 
-void fin_ticket(Map *t) {
-    scan::free_work(/**/ &t->scan);
+void fin_ticket(Map *m) {
+    scan::free_work(/**/ &m->scan);
 
-    CC(d::Free(t->eelo));
-    CC(d::Free(t->eere));
-    CC(d::Free(t->ii));
+    CC(d::Free(m->eelo));
+    CC(d::Free(m->eere));
+    CC(d::Free(m->ii));
 }

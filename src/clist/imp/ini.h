@@ -10,14 +10,14 @@ void ini(int LX, int LY, int LZ, /**/ Clist *c) {
     
 }
 
-void ini_ticket(const Clist *c, /**/ Map *t) {
+void ini_ticket(const Clist *c, /**/ Map *m) {
     size_t size;
-    scan::alloc_work(c->ncells, /**/ &t->scan);
+    scan::alloc_work(c->ncells, /**/ &m->scan);
 
     size = MAX_PART_NUM * sizeof(uchar4);
-    CC(d::Malloc((void **) &t->eelo, size));
-    CC(d::Malloc((void **) &t->eere, size));
+    CC(d::Malloc((void **) &m->eelo, size));
+    CC(d::Malloc((void **) &m->eere, size));
 
     size = MAX_PART_NUM * sizeof(uint);
-    CC(d::Malloc((void **) &t->ii, size));
+    CC(d::Malloc((void **) &m->ii, size));
 }
