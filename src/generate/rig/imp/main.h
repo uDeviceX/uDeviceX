@@ -40,7 +40,7 @@ static void gen0(int nt, const int4 *tt, const float *vv, int nsolid, int rcount
     *ns = nsolid = id;
     *nps = npsolid;
 
-    set_ids(nsolid, /**/ ss);
+    set_rig_ids(nsolid, /**/ ss);
 }
 
 static void gen1(int nt, const int4 *tt, const float *vv, int nsolid, float *coms, /**/
@@ -96,10 +96,10 @@ void gen(const char *fname, int nt, int nv, const int4 *tt, const float *vv, /**
     delete[] coms;
 }
 
-void gen_from_solvent(int nt, int nv, const int4 *tt, const float *vv, /* io */ Particle *opp, int *on,
-                      /* o */ int *ns, int *nps, int *n, float *rr0_hst, Solid *ss_hst, Particle *pp_hst) {
+void gen_rig_from_solvent(int nt, int nv, const int4 *tt, const float *vv, /* io */ Particle *opp, int *on,
+                          /* o */ int *ns, int *nps, int *n, float *rr0_hst, Solid *ss_hst, Particle *pp_hst) {
     // generate models
-    MSG("start rigig gen");
+    MSG("start rigid gen");
     gen("rigs-ic.txt", nt, nv, tt, vv, /**/ ns, nps, rr0_hst, ss_hst, on, opp, pp_hst);
     MSG("done rigid gen");
 
