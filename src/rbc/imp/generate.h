@@ -38,6 +38,11 @@ static bool inside_subdomain(const int L[3], const float A[16]) {
     return true;
 }
 
+static void assert_nc() {
+    if (nc < MAX_CELL_NUM) return;
+    ERR("nc = %d >= MAX_CELL_NUM = %d", nc, MAX_CELL_NUM);
+    assert(0);
+}
 static int setup_hst(const char *r_templ, const char *r_state, int nv, Particle *pp) {
     /* fills `pp' with RBCs for this processor */
 
@@ -57,7 +62,7 @@ static int setup_hst(const char *r_templ, const char *r_state, int nv, Particle 
         if ( inside_subdomain(L, A) )
             transform(rr0, nv, A, &pp[nv*(nc++)]);
     }
-    assert(nc < MAX_CELL_NUM);
+    assert_nc(nc);
     fclose(f);
     MSG("read %d rbcs", nc);
     return nc;
