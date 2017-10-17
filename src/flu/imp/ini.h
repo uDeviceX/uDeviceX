@@ -9,7 +9,7 @@ void ini(Quants *q) {
     Dalloc(&q->pp, MAX_PART_NUM);
     Dalloc(&q->pp0, MAX_PART_NUM);
     ini(XS, YS, ZS, /**/ &q->cells);
-    ini_ticket(&q->cells, /**/ &q->tcells);
+    ini_ticket(&q->cells, /**/ &q->mcells);
     q->pp_hst = new Particle[MAX_PART_NUM];
 
     if (global_ids)    ini_ii(&q->ii, &q->ii0, &q->ii_hst);

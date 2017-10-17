@@ -1,10 +1,10 @@
 void bulk(/**/ Quants *q) {
     ini_counts(&q->cells);
-    subindex_local(q->n, q->pp, /**/ &q->cells, &q->tcells);
+    subindex_local(q->n, q->pp, /**/ &q->cells, &q->mcells);
 }
 
 void halo(const Unpack *u, /**/ Quants *q) {
-    subindex_remote(u->nhalo, u->ppre, /**/ &q->cells, &q->tcells);
+    subindex_remote(u->nhalo, u->ppre, /**/ &q->cells, &q->mcells);
 }
 
 void gather(const Pack *p, const Unpack *u, /**/ Quants *q) {
@@ -16,16 +16,16 @@ void gather(const Pack *p, const Unpack *u, /**/ Quants *q) {
     n = nbulk + nhalo;
     pp = q->pp; pp0 = q->pp0;    
     
-    build_map(nold, nhalo, /**/ &q->cells, &q->tcells);
+    build_map(nold, nhalo, /**/ &q->cells, &q->mcells);
 
-    gather_pp(pp, u->ppre, &q->tcells, n, /**/ pp0);
+    gather_pp(pp, u->ppre, &q->mcells, n, /**/ pp0);
 
     int *ii, *ii0, *cc, *cc0;
     ii = q->ii; ii0 = q->ii0;
     cc = q->cc; cc0 = q->cc0;
     
-    if (global_ids)    gather_ii(ii, u->iire, &q->tcells, n, /**/ ii0);
-    if (multi_solvent) gather_ii(cc, u->ccre, &q->tcells, n, /**/ cc0);
+    if (global_ids)    gather_ii(ii, u->iire, &q->mcells, n, /**/ ii0);
+    if (multi_solvent) gather_ii(cc, u->ccre, &q->mcells, n, /**/ cc0);
 
     q->n = n;
 

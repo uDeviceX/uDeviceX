@@ -9,26 +9,26 @@ static void subindex(int n, const Particle *pp, int3 dims, /**/ int *cc, uchar4 
     if (n) KL(dev::subindex, (k_cnf(n)), (dims, n, pp, /*io*/ cc, /**/ ee));
 }
 
-void subindex_local(int n, const Particle *pp, /**/ Clist *c, Map *t) {
-    subindex(n, pp, c->dims, /**/ c->counts, t->eelo);
+void subindex_local(int n, const Particle *pp, /**/ Clist *c, Map *m) {
+    subindex(n, pp, c->dims, /**/ c->counts, m->eelo);
 }
 
-void subindex_remote(int n, const Particle *pp, /**/ Clist *c, Map *t) {
-    subindex(n, pp, c->dims, /**/ c->counts, t->eere);
+void subindex_remote(int n, const Particle *pp, /**/ Clist *c, Map *m) {
+    subindex(n, pp, c->dims, /**/ c->counts, m->eere);
 }
 
-void build_map(int nlo, int nre, /**/ Clist *c, Map *t) {
+void build_map(int nlo, int nre, /**/ Clist *c, Map *m) {
     int nc, *cc, *ss;
     uchar4 *eelo, *eere;
-    uint *ii = t->ii;
+    uint *ii = m->ii;
     int3 dims = c->dims;
     nc = c->ncells;
     cc = c->counts;
     ss = c->starts;
-    eelo = t->eelo;
-    eere = t->eere;
+    eelo = m->eelo;
+    eere = m->eere;
         
-    scan::scan(cc, nc, /**/ ss, /*w*/ &t->scan);
+    scan::scan(cc, nc, /**/ ss, /*w*/ &m->scan);
 
     /* used for debugging purpose */    
     // if (nlo + nre) KL(dev::ini_ids, (k_cnf(nlo+nre)), (nlo+nre, /**/ ii));
@@ -37,24 +37,24 @@ void build_map(int nlo, int nre, /**/ Clist *c, Map *t) {
     if (nre) KL(dev::get_ids, (k_cnf(nre)), (REMOTE, dims, nre, ss, eere, /**/ ii));    
 }
 
-void gather_pp(const Particle *pplo, const Particle *ppre, const Map *t, int nout, /**/ Particle *ppout) {
-    if (nout) KL(dev::gather, (k_cnf(nout)), (pplo, ppre, t->ii, nout, /**/ ppout));
+void gather_pp(const Particle *pplo, const Particle *ppre, const Map *m, int nout, /**/ Particle *ppout) {
+    if (nout) KL(dev::gather, (k_cnf(nout)), (pplo, ppre, m->ii, nout, /**/ ppout));
 }
 
-void gather_ii(const int *iilo, const int *iire, const Map *t, int nout, /**/ int *iiout) {
-    if (nout) KL(dev::gather, (k_cnf(nout)), (iilo, iire, t->ii, nout, /**/ iiout));
+void gather_ii(const int *iilo, const int *iire, const Map *m, int nout, /**/ int *iiout) {
+    if (nout) KL(dev::gather, (k_cnf(nout)), (iilo, iire, m->ii, nout, /**/ iiout));
 }
 
-void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, Map *t) {
-    build(nlo, 0, nout, pplo, NULL, /**/ ppout, c, t);
+void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, Map *m) {
+    build(nlo, 0, nout, pplo, NULL, /**/ ppout, c, m);
 }
 
-void build(int nlo, int nre, int nout, const Particle *pplo, const Particle *ppre, /**/ Particle *ppout, Clist *c, Map *t) {
+void build(int nlo, int nre, int nout, const Particle *pplo, const Particle *ppre, /**/ Particle *ppout, Clist *c, Map *m) {
     ini_counts(/**/ c);
-    subindex_local (nlo, pplo, /**/ c, t);
-    subindex_remote(nre, ppre, /**/ c, t);
-    build_map(nlo, nre, /**/ c, t);    
-    gather_pp(pplo, ppre, t, nout, ppout);
+    subindex_local (nlo, pplo, /**/ c, m);
+    subindex_remote(nre, ppre, /**/ c, m);
+    build_map(nlo, nre, /**/ c, m);    
+    gather_pp(pplo, ppre, m, nout, ppout);
 }
 
 #undef REMOTE
