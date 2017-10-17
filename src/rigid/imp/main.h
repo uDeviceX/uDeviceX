@@ -37,15 +37,3 @@ void update_mesh(const Solid *ss, const int ns, int nv, const float *vv, /**/ Pa
 
     KL(dev::update_mesh, ( nblck, nthrd ), (ss, vv, nv, /**/ pp));
 }
-
-void mesh2pp_hst(const Solid *ss_hst, const int ns, int nv, const float *vv, /**/ Particle *pp) {
-    for (int j = 0; j < ns; ++j) {
-        const Solid *s = ss_hst + j;
-        update_r_hst(vv, nv, s->com, s->e0, s->e1, s->e2, /**/ pp + j * nv);
-
-        for (int i = 0; i < nv; ++i) {
-            float *v = pp[j*nv + i].v;
-            v[X] = v[Y] = v[Z] = 0;
-        }
-    }
-}
