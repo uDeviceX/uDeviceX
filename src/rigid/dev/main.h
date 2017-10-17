@@ -96,7 +96,7 @@ __global__ void update_om_v(const int ns, Solid *ss) {
     }
 }
 
-__global__ void compute_velocity(const Solid *ss, const int ns, const int nps, /**/ Particle *pp) {
+__global__ void compute_velocity(const int nps, const Solid *ss, /**/ Particle *pp) {
     const int pid = threadIdx.x + blockIdx.x * blockDim.x;
     const int sid = blockIdx.y;
 
@@ -124,10 +124,10 @@ __global__ void update_com(const int ns, Solid *ss) {
     const int c   = threadIdx.x % 3;
 
     if (sid < ns)
-    ss[sid].com[c] += ss[sid].v[c]*dt;
+        ss[sid].com[c] += ss[sid].v[c]*dt;
 }
 
-__global__ void update_r(const float *rr0, const int nps, const Solid *ss, const int nsolid, /**/ Particle *pp) {
+__global__ void update_r(const int nps, const float *rr0, const Solid *ss, /**/ Particle *pp) {
     const int pid = threadIdx.x + blockIdx.x * blockDim.x;
     const int sid = blockIdx.y;
 
@@ -146,7 +146,7 @@ __global__ void update_r(const float *rr0, const int nps, const Solid *ss, const
     }
 }
 
-__global__ void update_mesh(const Solid *ss_dev, const float *vv, const int nv, /**/ Particle *pp) {
+__global__ void update_mesh(const Solid *ss_dev, const int nv, const float *vv, /**/ Particle *pp) {
     const int sid = blockIdx.y; // solid Id
     const Solid *s = ss_dev + sid;
 
