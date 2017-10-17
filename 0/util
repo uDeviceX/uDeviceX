@@ -1,3 +1,7 @@
+small  () { nx=7   ny=2 nz=1; }
+normal () { nx=14  ny=4 nz=1; }
+big    () { nx=28  ny=8 nz=1; }
+
 msg () { printf ': %s\n' "$*" >&2; }
 
 exec0 () { msg "$@"; "$@"; }
