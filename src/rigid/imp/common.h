@@ -1,4 +1,4 @@
-void update_r_hst(const float *rr0, const int n, const float *com, const float *e0, const float *e1, const float *e2, /**/ Particle *pp) {
+static void update_r_hst(const float *rr0, const int n, const float *com, const float *e0, const float *e1, const float *e2, /**/ Particle *pp) {
     for (int ip = 0; ip < n; ++ip) {
         float *r0 = pp[ip].r;
         const float* ro = &rr0[3*ip];
