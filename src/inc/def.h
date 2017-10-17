@@ -4,7 +4,7 @@ enum {SOLVENT_KIND, SOLID_KIND, WALL_KIND};
 enum {BLUE_COLOR, RED_COLOR};
 
 /* maximum particle number per one processor for static allocation */
-#define MAX_PART_NUM 1000000
+#define MAX_PART_NUM (XS*YS*ZS*numberdensity*3)
 
 /* maximum number of particles per solid */
 #define MAX_PSOLID_NUM 30000
