@@ -18,7 +18,7 @@ static __device__ void warpReduceSumf3(float *x) {
     }
 }
 
-__global__ void add_f_to(const Particle *pp, const Force *ff, const int nps, const int ns, Solid *ss) {
+__global__ void add_f_to(const int nps, const Particle *pp, const Force *ff, /**/ Solid *ss) {
     const int gid = blockIdx.x * blockDim.x + threadIdx.x;
     const int sid = blockIdx.y;
 

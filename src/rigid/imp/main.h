@@ -10,7 +10,7 @@ void update(const Force *ff, const float *rr0, int n, int ns, /**/ Particle *pp,
     const dim3 nblck ( (127 + nps) / 128, ns );
     const dim3 nthrd ( 128, 1 );
         
-    KL(dev::add_f_to, ( nblck, nthrd ), (pp, ff, nps, ns, /**/ ss));
+    KL(dev::add_f_to, ( nblck, nthrd ), (nps, pp, ff, /**/ ss));
     KL(dev::update_om_v, (1, ns), (ns, /**/ ss));
     KL(dev::compute_velocity, ( nblck, nthrd ), (ss, ns, nps, /**/ pp));
 
