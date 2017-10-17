@@ -160,11 +160,3 @@ static void empty_solid(int nt, const int4 *tt, const float *vv, /* io */ float 
     MSG("Template solid: keep %d out of %d particles", j, n0);
     *npsolid = j;
 }
-
-void set_ids(const int ns, Solid *ss_hst) {
-    int id = 0, j;
-    MC(MPI_Exscan(&ns, &id, 1, MPI_INT, MPI_SUM, m::cart));
-
-    for (j = 0; j < ns; ++j)
-        ss_hst[j].id = id++;
-}
