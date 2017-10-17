@@ -6,17 +6,11 @@
 #include "inc/dev.h"
 #include "utils/cc.h"
 #include "d/api.h"
-
 #include "utils/kl.h"
-
-#include "mesh/props.h"
-#include "math/linal.h"
 
 #include "imp.h"
 
-
 namespace rig {
-
 
 enum {X, Y, Z};
 enum {XX, XY, XZ, YY, YZ, ZZ};
