@@ -3,8 +3,7 @@ static void gen0(int nt, const int4 *tt, const float *vv, int nsolid, int rcount
     Solid model;
     // share model to everyone
     int npsolid = 0;
-    if (m::rank == root)
-    {
+    if (m::rank == root) {
         npsolid = rcount;
         if (!npsolid) ERR("No particles remaining in root node.\n");
         for (int d = 0; d < 3; ++d)
@@ -45,8 +44,7 @@ static void gen0(int nt, const int4 *tt, const float *vv, int nsolid, int rcount
 
 static void gen1(int nt, const int4 *tt, const float *vv, int nsolid, float *coms, /**/
                  int *ns, int *nps, float *rr0, Solid *ss, int *s_n, Particle *s_pp, Particle *r_pp,
-                 /*w*/ int *tags, int *rcounts)
-{
+                 /*w*/ int *tags, int *rcounts) {
     int root, idmax;
     elect(rcounts, nsolid, /**/ &root, &idmax);
     MC(MPI_Bcast(&idmax, 1, MPI_INT, root, m::cart));
