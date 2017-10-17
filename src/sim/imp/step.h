@@ -11,6 +11,8 @@ void step(scheme::Fparams *fpar, bool wall0, int it) {
     if (solids0) distribute_rig();
     if (rbcs)    distribute_rbc();
 
+    check_size();
+    
     forces(wall0);
 
     dump_diag0(it);
