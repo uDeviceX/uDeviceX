@@ -63,6 +63,6 @@ void distribute_rig() {
     unpack_halo(&d.u, /**/ &q);
 
     q.n = q.ns * q.nps;
-    rig::generate(q.ss, q.ns, q.rr0, q.nps, /**/ q.pp);
+    rig::generate(q.ns, q.ss, q.nps, q.rr0, /**/ q.pp);
     dSync();
 }
