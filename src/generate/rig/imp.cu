@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <vector>
 
-
 #include <conf.h>
 #include "inc/conf.h"
 #include "inc/def.h"
@@ -22,6 +21,7 @@
 #include "mesh/dist.h"
 #include "mesh/bbox.h"
 #include "d/ker.h"
+#include "d/api.h"
 #include "utils/cc.h"
 #include "utils/texo.h"
 #include "mesh/collision.h"
