@@ -6,13 +6,13 @@ static void check_size() {
 
 void step(scheme::Fparams *fpar, bool wall0, int it) {
     check_size();
-    
+
     distribute_flu();
     if (solids0) distribute_rig();
     if (rbcs)    distribute_rbc();
 
     check_size();
-    
+
     forces(wall0);
 
     dump_diag0(it);
@@ -29,7 +29,7 @@ void step(scheme::Fparams *fpar, bool wall0, int it) {
         adjust(it, /**/ &o::vcont, fpar);
         log(it, &o::vcont);
     }
-    
+
     if (wall0) bounce_wall();
 
     if (sbounce_back && solids0) bounce_solid(it);
