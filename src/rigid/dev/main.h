@@ -18,6 +18,12 @@ static __device__ void warpReduceSumf3(float *x) {
     }
 }
 
+static __device__ void atomicAdd3(float d[3], const float s[3]) { 
+    atomicAdd(d + X, s[X]);
+    atomicAdd(d + Y, s[Y]);
+    atomicAdd(d + Z, s[Z]);
+}
+
 __global__ void add_f_to(const int nps, const Particle *pp, const Force *ff, /**/ Solid *ss) {
     const int gid = blockIdx.x * blockDim.x + threadIdx.x;
     const int sid = blockIdx.y;
@@ -44,20 +50,15 @@ __global__ void add_f_to(const int nps, const Particle *pp, const Force *ff, /**
     warpReduceSumf3(to);
 
     if ((threadIdx.x & (warpSize - 1)) == 0) {
-        atomicAdd(ss[sid].fo + X, f.f[X]);
-        atomicAdd(ss[sid].fo + Y, f.f[Y]);
-        atomicAdd(ss[sid].fo + Z, f.f[Z]);
-
-        atomicAdd(ss[sid].to + X, to[X]);
-        atomicAdd(ss[sid].to + Y, to[Y]);
-        atomicAdd(ss[sid].to + Z, to[Z]);
+        atomicAdd3(ss[sid].fo, f.f);
+        atomicAdd3(ss[sid].to, to);
     }
 }
 
-__global__ void reinit_ft(const int nsolid, Solid *ss) {
+__global__ void reinit_ft(const int ns, Solid *ss) {
     const int gid = blockIdx.x * blockDim.x + threadIdx.x;
 
-    if (gid < nsolid) {
+    if (gid < ns) {
         Solid *s = ss + gid;
         s->fo[X] = s->fo[Y] = s->fo[Z] = 0.f;
         s->to[X] = s->to[Y] = s->to[Z] = 0.f;
@@ -65,8 +66,10 @@ __global__ void reinit_ft(const int nsolid, Solid *ss) {
 }
 
 __global__ void update_om_v(const int ns, Solid *ss) {
-    if (threadIdx.x < ns) {
-        Solid s = ss[threadIdx.x];
+    const int gid = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (gid < ns) {
+        Solid s = ss[gid];
         const float *A = s.Iinv, *b = s.to;
 
         const float dom[3] = {A[XX]*b[X] + A[XY]*b[Y] + A[XZ]*b[Z],
