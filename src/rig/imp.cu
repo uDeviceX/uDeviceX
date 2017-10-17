@@ -16,29 +16,11 @@
 
 #include "imp.h"
 
-/* TODO clear this mess (includes belong to ic) */
-#include <mpi.h>
-#include <vector>
-#include "mpi/wrapper.h"
-#include "mpi/glb.h"
-#include "mpi/type.h"
-#include "utils/mc.h"
-
-#include "d/ker.h"
-#include "utils/texo.h"
-#include "mesh/collision.h"
-#include "mesh/dist.h"
-#include "mesh/bbox.h"
+#include "generate/rig/imp.h"
 
 #include "rigid/imp.h"
 
 namespace rig {
-
-/* TODO clear this mess */
-#include "imp/ic2.h"
-#include "imp/ic1.h"
-#include "imp/ic0.h"
-
 
 #include "imp/ini.h"
 #include "imp/fin.h"

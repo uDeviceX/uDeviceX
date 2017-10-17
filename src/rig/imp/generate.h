@@ -1,22 +1,12 @@
-static void gen_from_solvent(int nt, int nv, const int4 *tt, const float *vv, /* io */ Particle *opp, int *on,
-                      /* o */ int *ns, int *nps, int *n, float *rr0_hst, Solid *ss_hst, Particle *pp_hst) {
-    // generate models
-    MSG("start solid ini");
-    ic::ini("rigs-ic.txt", nt, nv, tt, vv, /**/ ns, nps, rr0_hst, ss_hst, on, opp, pp_hst);
-    MSG("done solid ini");
-
-    *n = *ns * (*nps);
-}
-
 void gen_quants(/* io */ Particle *opp, int *on, /**/ Quants *q) {
-    gen_from_solvent(q->nt, q->nv, q->htt, q->hvv, /* io */ opp, on, /**/ &q->ns, &q->nps, &q->n, q->rr0_hst, q->ss_hst, q->pp_hst);
+    gen::gen_rig_from_solvent(q->nt, q->nv, q->htt, q->hvv, /* io */ opp, on, /**/ &q->ns, &q->nps, &q->n, q->rr0_hst, q->ss_hst, q->pp_hst);
     gen_pp_hst(q->ns, q->rr0_hst, q->nps, /**/ q->ss_hst, q->pp_hst);
     gen_ipp_hst(q->ss_hst, q->ns, q->nv, q->hvv, /**/ q->i_pp_hst);
     cpy_H2D(q);
 }
 
 static void set_ids(const int ns, /**/ Solid *ss_hst, Solid *ss_dev) {
-    ic::set_ids(ns, /**/ ss_hst);
+    gen::set_rig_ids(ns, /**/ ss_hst);
     if (ns) cH2D(ss_dev, ss_hst, ns);
 }
 
