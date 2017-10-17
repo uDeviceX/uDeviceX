@@ -1,9 +1,9 @@
 namespace distr {
 namespace rbc {
 
-void ini(int nv, Pack *p);
+void ini(int maxc, int nv, Pack *p);
 void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c);
-void ini(int nv, Unpack *u);
+void ini(int maxc, int nv, Unpack *u);
 
 void fin(Pack *p);
 void fin(Comm *c);

@@ -33,9 +33,9 @@ static void ini_flu_distr(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ FluDi
 
 static void ini_rbc_distr(int nv, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ RbcDistr *d) {
     using namespace distr::rbc;
-    ini(nv, /**/ &d->p);
+    ini(MAX_CELL_NUM, nv, /**/ &d->p);
     ini(comm, /**/ tg, /**/ &d->c);
-    ini(nv, /**/ &d->u);
+    ini(MAX_CELL_NUM, nv, /**/ &d->u);
 }
 
 static void ini_rig_distr(int nv, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ RigDistr *d) {
