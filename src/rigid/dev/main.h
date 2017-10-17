@@ -149,6 +149,40 @@ __global__ void update_r(const int nps, const float *rr0, const Solid *ss, /**/ 
     }
 }
 
+__global__ void update_pp(const int nps, const float *rr0, const Solid *ss, /**/ Particle *pp) {
+    int pid, sid, i;
+    Solid s;
+    float x, y, z, dx, dy, dz, omx, omy, omz;
+    Particle p;
+    const float *r0;
+    pid = threadIdx.x + blockIdx.x * blockDim.x;
+    sid = blockIdx.y;
+    i = sid * nps + pid;
+
+    s = ss[sid];
+    omx = s.om[X]; omy = s.om[Y]; omz = s.om[Z];
+    
+    if (pid < nps) {
+        p = pp[i];
+        r0 = &rr0[3*pid];
+        x = r0[X]; y = r0[Y]; z = r0[Z];
+
+        dx = x * s.e0[X] + y * s.e1[X] + z * s.e2[X];
+        dy = x * s.e0[Y] + y * s.e1[Y] + z * s.e2[Y];
+        dz = x * s.e0[Z] + y * s.e1[Z] + z * s.e2[Z];
+
+        p.v[X] = s.v[X] + omy * dz - omz * dy;
+        p.v[Y] = s.v[Y] + omz * dx - omx * dz;
+        p.v[Z] = s.v[Z] + omx * dy - omy * dx;        
+        
+        p.r[X] = s.com[X] + dx;
+        p.r[Y] = s.com[Y] + dy;
+        p.r[Z] = s.com[Z] + dz;
+
+        pp[i] = p;
+    }
+}
+
 __global__ void update_mesh(const Solid *ss_dev, const int nv, const float *vv, /**/ Particle *pp) {
     const int sid = blockIdx.y; // solid Id
     const Solid *s = ss_dev + sid;
