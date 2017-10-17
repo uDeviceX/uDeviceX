@@ -1,6 +1,5 @@
 namespace rig
 {
-void ini(const Particle *pp, int n, float pmass, const float *com, int nt, const int4 *tt, const float *vv, /**/ float *rr0, Solid *s);
 void reinit_ft(const int nsolid, /**/ Solid *ss);
 void reinit_ft_hst(const int nsolid, /**/ Solid *ss);
 void update(const Force *ff, const float *rr0, int n, int nsolid, /**/ Particle *pp, Solid *ss);
