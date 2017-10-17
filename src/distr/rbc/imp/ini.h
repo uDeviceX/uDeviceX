@@ -1,7 +1,7 @@
 static void get_num_capacity(int maxnc, /**/ int numc[NBAGS]) {
     // TODO save memory here?
     for (int i = 0; i < NBAGS; ++i)
-        numc[i] = MAX_CELL_NUM;
+        numc[i] = maxnc;
 }
 
 void ini(int maxnc, int nv, Pack *p) {

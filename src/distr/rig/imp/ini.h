@@ -1,12 +1,12 @@
-static void get_num_capacity(/**/ int numc[NBAGS]) {
+static void get_num_capacity(int maxns, /**/ int numc[NBAGS]) {
     // TODO save memory here?
     for (int i = 0; i < NBAGS; ++i)
-        numc[i] = MAX_SOLIDS;
+        numc[i] = maxns;
 }
 
-void ini(int nv, Pack *p) {
+void ini(int maxns, int nv, Pack *p) {
     int numc[NBAGS];
-    get_num_capacity(/**/ numc);
+    get_num_capacity(maxns, /**/ numc);
 
     ini_map(NBAGS, numc, /**/ &p->map);
 
@@ -21,9 +21,9 @@ void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c) {
     ini(comm, /*io*/ tg, /**/ &c->ss);
 }
 
-void ini(int nv, Unpack *u) {
+void ini(int maxns, int nv, Unpack *u) {
     int numc[NBAGS];
-    get_num_capacity(/**/ numc);
+    get_num_capacity(maxns, /**/ numc);
 
     /* one datum is here a full mesh, so bsize is nv * sizeof(Particle) */
     ini(HST_ONLY, NONE, nv * sizeof(Particle), numc, /**/ &u->hipp, NULL);

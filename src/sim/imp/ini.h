@@ -40,9 +40,9 @@ static void ini_rbc_distr(int nv, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /*
 
 static void ini_rig_distr(int nv, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ RigDistr *d) {
     using namespace distr::rig;
-    ini(nv, /**/ &d->p);
+    ini(MAX_SOLIDS, nv, /**/ &d->p);
     ini(comm, /*io*/ tg, /**/ &d->c);
-    ini(nv, /**/ &d->u);
+    ini(MAX_SOLIDS, nv, /**/ &d->u);
 }
 
 static void ini_vcont(MPI_Comm comm, /**/ PidVCont *c) {
