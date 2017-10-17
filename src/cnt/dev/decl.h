@@ -11,7 +11,6 @@ __constant__ float *FF[MAX_OBJ_TYPES];
 }
 
 namespace h { /* halo */
-__constant__ int starts[27];
 __constant__ Particle *pp[26];
 __constant__ Force *ff[26];
 }

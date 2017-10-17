@@ -53,7 +53,7 @@ __device__ void halo0(forces::Pa a, int aid, float seed,
     fA[X] += xforce; fA[Y] += yforce; fA[Z] += zforce;
 }
 
-__global__ void halo(int n, float seed) {
+__global__ void halo(int27 starts, int n, float seed) {
     int aid, start;
     int fid;
     forces::Pa a;
@@ -62,8 +62,8 @@ __global__ void halo(int n, float seed) {
     aid = threadIdx.x + blockDim.x * blockIdx.x;
     if (aid >= n) return;
 
-    fid = k_common::fid(h::starts, aid);
-    start = h::starts[fid];
+    fid = k_common::fid(starts.d, aid);
+    start = starts.d[fid];
     pp2p(h::pp[fid], aid - start, &a);
     fA = h::ff[fid][aid - start].f;
     halo0(a, aid, seed, /**/ fA);
