@@ -32,7 +32,7 @@ plcmt () { # uses rx, ry, rz: [r]bc region
     local r fr sc ang
     r="$1"; shift
     fr=0
-    sc=1.0
+    sc="$1"; shift
     ang=0.785
     plcmt.ro $rx $ry $rz     $r $fr $sc $ang /dev/null rbcs-ic.txt
 }

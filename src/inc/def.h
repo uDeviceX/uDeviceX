@@ -23,7 +23,7 @@ enum {BLUE_COLOR, RED_COLOR};
 #define MAX_VERT_NUM 2000
 
 /* maximum number of red blood cells per node */
-#define MAX_CELL_NUM 200
+#define MAX_CELL_NUM 1000
 
 /* maximum texture size in bytes */
 #define MAX_TEXO_SIZE 5000000
