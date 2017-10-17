@@ -38,7 +38,7 @@ static bool inside_subdomain(const int L[3], const float A[16]) {
     return true;
 }
 
-static void assert_nc() {
+static void assert_nc(int nc) {
     if (nc < MAX_CELL_NUM) return;
     ERR("nc = %d >= MAX_CELL_NUM = %d", nc, MAX_CELL_NUM);
     assert(0);
