@@ -53,20 +53,8 @@ __global__ void subindex(int3 L, int n, const Particle *pp, /*io*/ int *counts, 
     ee[i] = e;
 }
 
-/* [l]ocal [r]emote encoder, decoder: pack into one int the type (l/r) and the id */
-__device__ void lr_set(int i, bool rem, /**/ uint *u) {
-    *u  = (uint) i;
-    *u |= rem << 31;
-}
-__device__ int  lr_get(uint u, /**/ bool *rem) {
-    *rem = (u >> 31) & 1;
-    u &= ~(1 << 31);
-    return (int) u;
-}
-
-__global__ void get_ids(bool remote, int3 L, int n, const int *starts, const uchar4 *ee, /**/ uint *ii) {
+__global__ void get_ids(int array_id, int3 L, int n, const int *starts, const uchar4 *ee, /**/ uint *ii) {
     int i, cid, id, start;
-    uint val;
     uchar4 e;
     
     i = threadIdx.x + blockIdx.x * blockDim.x;
@@ -78,17 +66,16 @@ __global__ void get_ids(bool remote, int3 L, int n, const int *starts, const uch
     if (e.w != INVALID) {
         start = starts[cid];
         id = start + e.w;
-        lr_set(i, remote, /**/ &val);
-        ii[id] = val;
+        ii[id] = encode_id(array_id, i);
     }
 }
 
 template <typename T>
 __device__ void fetch(const T *ddlo, const T *ddre, uint i, /**/ T *d) {
-    bool remote; int src;
-    src = lr_get(i, /**/ &remote);
-    if (remote) *d = ddre[src];
-    else        *d = ddlo[src];
+    int src, array_id;
+    decode_id(i, /**/ &array_id, &src);
+    if (array_id) *d = ddre[src];
+    else          *d = ddlo[src];
 }
 
 template <typename T>
