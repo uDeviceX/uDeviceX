@@ -13,6 +13,9 @@ one    () { nx=1   ny=1 nz=1; g_one; geom; full; }
 
 msg () { printf ': %s\n' "$*" >&2; }
 
+p_lina () { Param="RBC_PARAMS_LINA DPD_GRAVITY"; }
+p_test () { Param=                             ; }
+
 exec0 () { msg "$@"; "$@"; }
 safe_cp () {
     # from/to and host

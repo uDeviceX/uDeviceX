@@ -14,9 +14,10 @@ Domain="XS=$xs YS=$ys ZS=$zs"
 # one, small, normal, big
 big
 
-Force="FORCE_CONSTANT FORCE_PAR_A=0.025"
+Force="FORCE_CONSTANT FORCE_PAR_A=0.00625"
 Rbc="rbcs"
 radius=3.5 sc=0.75; plcmt $radius $sc
+p_test # p_test or p_lina
 #Rbc=
 
 Color="multi_solvent=true"
@@ -26,6 +27,7 @@ u.conf "$s" "$u" "$c" <<!
     $Domain
     $Force
     $Rbc
+    $Param
     run
 !
 { make clean && u.make -j; } > .make.log
