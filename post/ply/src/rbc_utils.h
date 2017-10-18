@@ -1,6 +1,4 @@
 #include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 
 float env2f(const char* n) { /* read a float from env. */
   char* v_ch = getenv(n);
