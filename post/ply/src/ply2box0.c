@@ -21,10 +21,6 @@ float xp1, xp2, yp1, yp2, zp1, zp2;
 int   nv; /* number of vertices */
 int   nf; /* number of faces */
 
-#define NVMAX 20000000
-#define NFMAX 20000000
-#define NRMAX 20000000
-
 #define NVAR  6 /* x, y, z, vx, vy, vz */
 #define NV_PER_FACE 3
 
