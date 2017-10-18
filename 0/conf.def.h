@@ -13,7 +13,7 @@
 
 /* DPD */
 #define numberdensity           4
-#define kBT                     0.0444
+#define kBT                     0.00444302
 #define dt                      1e-3
 #define dpd_mass                1.0
 #define rbc_mass                0.5
@@ -23,9 +23,9 @@
 #define adpd_r         2.6
 #define adpd_br        2.6
 
-#define gdpd_b         8.0
-#define gdpd_r         8.0
-#define gdpd_br        8.0
+#define gdpd_b         1.0
+#define gdpd_r         5.0
+#define gdpd_br        3.0
 
 
 /* FEATURES */
