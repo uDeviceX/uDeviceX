@@ -13,6 +13,11 @@
 #define NVMAX 20000000
 #define NVAR  6 /* x, y, z, vx, vy, vz */
 
+void usg() {
+    fprintf(stderr, "usage: ply2punto <in.ply>\n");
+    exit(2);
+}
+
 static float  buf[NVAR*NVMAX];
 static FILE* fd;
 
@@ -77,9 +82,6 @@ void read_file(const char* fn) {
 }
 
 int main(int argc, const char** argv) {
-    if (argc != 2) {
-        fprintf(stderr, "(ply2punto) Usage: ply2punto <in.ply>\n");
-        exit(1);
-    }
+    if (argc != 2) usg();
     read_file(argv[1]);
 }
