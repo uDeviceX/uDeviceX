@@ -40,9 +40,6 @@
 #define wall_creation           1000
 #define tend                    1000000
 
-/* DEBUG */
-#define TE_TRACE
-
 /* FLOW TYPE */
 #define pushflow                true
 #define pushrbc                 false
