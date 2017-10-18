@@ -27,20 +27,20 @@ int   nf; /* number of faces */
 #define NVAR  6 /* x, y, z, vx, vy, vz */
 #define NV_PER_FACE 3
 
-float buf[NVAR*NVMAX]; /* buffer for vertices */
-float  xx[NVMAX],  yy[NVMAX],  zz[NVMAX];
-float vvx[NVMAX], vvy[NVMAX], vvz[NVMAX];
-int   bbv[NVMAX]; /* banned vertices */
-int    idx[NVMAX]; /* old to new vertices index convertion */
-int   rrbc[NVMAX]; /* vertices to RBC index */
+float *buf;
+float  *xx,  *yy,  *zz;
+float *vvx, *vvy, *vvz;
+int   *bbv; /* banned vertices */
+int   *idx; /* old to new vertices index convertion */
+int   *rrbc; /* vertices to RBC index */
 
-int  bbr[NRMAX]; /* banned RBCs */
+int  *bbr; /* banned RBCs */
 
 /* vertex indexes in one face */
-int ff1[NFMAX], ff2[NFMAX], ff3[NFMAX];
-int bbf[NFMAX]; /* banned faces */
+int *ff1, *ff2, *ff3;
+int *bbf; /* banned faces */
 
-int ibuf[NFMAX*(NV_PER_FACE + 1)]; /* buffer for faces */
+int *ibuf;
 
 void init() {
   nb  = env2d("nb");
@@ -85,10 +85,44 @@ void read_faces(FILE* fd) {
   }
 }
 
+void* ealloc(size_t sz) {
+    void *p;
+    p = malloc(sz);
+    if (p == NULL) {
+        fprintf(stderr, "fail to alloc: %ld\n", sz);
+        exit(-2);
+    }
+    return p;
+}
+
+void balloc() {
+    buf = ealloc(NVAR*nv*sizeof(buf[0]));
+    xx = ealloc(nv*sizeof(xx[0]));
+    yy = ealloc(nv*sizeof(yy[0]));
+    zz = ealloc(nv*sizeof(yy[0]));
+
+    vvx = ealloc(nv*sizeof(vvx[0]));
+    vvy = ealloc(nv*sizeof(vvy[0]));
+    vvz = ealloc(nv*sizeof(vvz[0]));
+
+    bbv = ealloc(nv*sizeof(bbv[0]));
+    idx = ealloc(nv*sizeof(idx[0]));
+    rrbc = ealloc(nv*sizeof(rrbc[0]));
+    bbr =  ealloc(nv*sizeof(bbr[0]));
+
+    ff1 = ealloc(nf*sizeof(ff1[0]));
+    ff2 = ealloc(nf*sizeof(ff2[0]));
+    ff3 = ealloc(nf*sizeof(ff3[0]));
+
+    bbf = ealloc(nf*sizeof(bbf[0]));
+    ibuf = ealloc(nf*(NV_PER_FACE + 1)*sizeof(ibuf[0]));
+}
+
 void read_file(const char* fn) {
   fprintf(stderr, "(box) reading: %s\n", fn);
   FILE* fd = safe_fopen(fn, "r");
   read_header(fd);
+  balloc();
   read_vertices(fd);
   read_faces(fd);
   fclose(fd);
