@@ -7,8 +7,6 @@ c=conf.def.h
 u=u/safe
 Safe="KL_SYNC CC_SYNC"
 
-Domain="XS=$xs YS=$ys ZS=$zs"
-
 # sets nx, ny, nz; compute lx, ly, lz; rbc region: rx, ry, rz
 # one, small, normal, big
 one
@@ -20,6 +18,7 @@ p_lina # p_test or p_lina
 #Rbc=
 
 Color="multi_solvent=true"
+Domain="XS=$xs YS=$ys ZS=$zs"
 u.conf "$s" "$u" "$c" <<!
     $Safe
     $Color
