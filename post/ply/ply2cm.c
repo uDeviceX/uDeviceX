@@ -10,12 +10,12 @@
 #include <stdio.h>
 #include <string.h>
 
-#define NVMAX 8000000
+#define NVMAX 20000000
 #define NVAR  6 /* x, y, z, vx, vy, vz */
 float  buf[NVAR*NVMAX];
 FILE* fd;
 
-char line[1024]; /* a line from a file */
+char line[BUFSIZ]; /* a line from a file */
 int n; /* number of vertices */
 int nv = 498;
 
