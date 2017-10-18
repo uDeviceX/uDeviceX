@@ -4,3 +4,9 @@ trap 'rm -r $t' 0 1 2 3 4 15
 u.strt.cp data/s0 $t
 cat $t/final.bop          > cp.out.txt
 
+# TEST: cp.1
+t=/tmp/cp.$$
+trap 'rm -r $t' 0 1 2 3 4 15
+u.strt.cp data/s1 $t
+cat $t/final.bop $t/final.values  > cp.out.txt
+
