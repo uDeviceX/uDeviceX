@@ -64,9 +64,18 @@ void write() {
     }
 }
 
+FILE *efopen(const char *path, const char *mode) {
+    FILE *f;
+    f = fopen(path, mode);
+    if (f == NULL) {
+        fprintf(stderr, "fail to open file %s\n", path);
+        exit(-2);
+    }
+    return f;
+}
+
 void read_file(const char* fn) {
-    fprintf(stderr, "(ply2punto) reading: %s\n", fn);
-    fd = fopen(fn, "r");
+    fd = efopen(fn, "r");
     read_header();
     read();
     write();
