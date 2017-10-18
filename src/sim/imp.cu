@@ -19,6 +19,7 @@
 #include "mpi/glb.h"
 #include "utils/cc.h"
 #include "utils/mc.h"
+#include "utils/error.h"
 
 #include "utils/kl.h"
 #include "mpi/basetags.h"
