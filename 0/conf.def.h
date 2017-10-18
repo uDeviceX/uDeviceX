@@ -19,15 +19,6 @@
 #define rbc_mass                0.5
 #define solid_mass              1.0
 
-//#define aij_solv                2.6667
-//#define aij_rbc                 2.6667
-//#define aij_solid               2.6667
-//#define aij_wall                2.6667
-//#define gammadpd_solv           8.0
-//#define gammadpd_rbc            8.0
-//#define gammadpd_solid          8.0
-//#define gammadpd_wall           8.0
-
 #define adpd_b         2.6
 #define adpd_r         2.6
 #define adpd_br        2.6
