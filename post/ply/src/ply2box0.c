@@ -30,15 +30,15 @@ int   nf; /* number of faces */
 float buf[NVAR*NVMAX]; /* buffer for vertices */
 float  xx[NVMAX],  yy[NVMAX],  zz[NVMAX];
 float vvx[NVMAX], vvy[NVMAX], vvz[NVMAX];
-bool  bbv[NVMAX]; /* banned vertices */
+int   bbv[NVMAX]; /* banned vertices */
 int    idx[NVMAX]; /* old to new vertices index convertion */
 int   rrbc[NVMAX]; /* vertices to RBC index */
 
-bool  bbr[NRMAX]; /* banned RBCs */
+int  bbr[NRMAX]; /* banned RBCs */
 
 /* vertex indexes in one face */
 int ff1[NFMAX], ff2[NFMAX], ff3[NFMAX];
-bool bbf[NFMAX]; /* banned faces */
+int bbf[NFMAX]; /* banned faces */
 
 int ibuf[NFMAX*(NV_PER_FACE + 1)]; /* buffer for faces */
 
@@ -53,7 +53,6 @@ FILE* fd_nl;
 char line[1024];
 void init_nl(FILE* fd) {fd_nl = fd;}
 void nl() { /* read [n]ext [l]ine; sets `line' */
-  size_t len;
   fgets(line, sizeof(line), fd_nl);
 }
 
@@ -80,10 +79,9 @@ void read_vertices(FILE* fd) {
 
 void read_faces(FILE* fd) {
   safe_fread(ibuf, nf*(NV_PER_FACE+1), sizeof(int), fd);
-  int nvpf;
   for (int ifa = 0, ib = 0; ifa < nf; ++ifa) {
-    nvpf = ibuf[ib++];
-    ff1[ifa] = ibuf[ib++]; ff2[ifa] = ibuf[ib++]; ff3[ifa] = ibuf[ib++];
+      ib++; /* skip number of vertices per face */
+      ff1[ifa] = ibuf[ib++]; ff2[ifa] = ibuf[ib++]; ff3[ifa] = ibuf[ib++];
   }
 }
 
@@ -118,7 +116,7 @@ void write_file_version(FILE* fd) {
 
 void write_header(FILE* fd) {
     pr("Created with vrbc utils\n");
-};
+}
 
 void write_format(FILE* fd) {
   pr("BINARY\n"); /* ASCII, BINARY */
@@ -136,7 +134,7 @@ void write_vertices(FILE* fd) {
     SF(xx[iv]); SF(yy[iv]); SF(zz[iv]);
   }
   fwrite(buf, ib, sizeof(float), fd);
-};
+}
 
 #define SI(f) ibuf[ib++] = LongSwap(f);
 void write_cells(FILE* fd) {
@@ -151,7 +149,7 @@ void write_cells(FILE* fd) {
     SI(NV_PER_FACE); SI(f1); SI(f2); SI(f3);
   }
   fwrite(ibuf, ib, sizeof(int), fd);
-};
+}
 
 void write_cells_attributes(FILE* fd) {
   int ncell = cnf();
@@ -197,7 +195,7 @@ void index_vertices() {
 void ban_faces() {
   for (int f1, f2, f3, ifa = 0; ifa < nf; ++ifa) {
     f1 = ff1[ifa]; f2 = ff2[ifa]; f3 = ff3[ifa];
-    if (bbv[f1] || bbv[f2] || bbv[f3]) bbf[ifa] = true;
+    if (bbv[f1] || bbv[f2] || bbv[f3]) bbf[ifa] = 1;
   }
 }
 
@@ -206,13 +204,12 @@ void clear_faces() {
   ban_faces();
 }
 
-template <typename T>
-bool inside(T a, T lo, T hi) {return (lo < a) && (a < hi);};
+int inside(float a, float lo, float hi) {return (lo < a) && (a < hi);}
 
 void keep_region() {
   int nrbc = nv / nb, irbc;
   for (irbc = 0; irbc < nrbc; irbc++)
-    bbr[irbc] = true;
+    bbr[irbc] = 1;
 
   float x, y, z;
   for (int iv = 0; iv < nv; iv++) {
@@ -221,7 +218,7 @@ void keep_region() {
     if (!inside(y, yp1, yp2)) continue;
     if (!inside(z, zp1, zp2)) continue;
 
-    bbr[irbc] = false;
+    bbr[irbc] = 0;
   }
 }
 
@@ -237,7 +234,7 @@ void bbv2bbr() { /* ban RBC if any of its vertices is banned */
   int rbc, iv;
   for (iv = 0; iv < nv; ++iv) {
     if (!bbv[iv]) continue;
-    rbc = rrbc[iv]; bbr[rbc] = true;
+    rbc = rrbc[iv]; bbr[rbc] = 1;
   }
 }
 
@@ -246,7 +243,7 @@ void bbr2bbv() { /* ban all vertices of banned RBCs */
   for (iv = 0; iv < nv; ++iv) {
     rbc = rrbc[iv];
     if (!bbr[rbc]) continue;
-    bbv[iv] = true;
+    bbv[iv] = 1;
   }
 }
 

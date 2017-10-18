@@ -4,12 +4,12 @@ B = $(BIN)
 CFLAGS=-O3 -Wall -Wextra -std=c99 -pedantic
 p = u
 P = ply2cm0 ply2box0
-ply2box0: endian.h
+ply2box0: endian.h rbc_utils.h
 
 install: $P
 	mkdir -p "$B"
 	install0 () ( cp $$f $B/$p.$$f; )    ;  \
 	for f in $P; do install0; done
 
-clean:; rm ply2cm
+clean:; rm -f $P
 .PHONY: clean install

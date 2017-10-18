@@ -1,16 +1,8 @@
 #ifndef RBC_UTILS_H
 #define RBC_UTILS_H
-#include <cstdlib>
-#include <cstdio>
-#include <cstring>
-
-template <typename NType>
-long gnp(FILE* fd, long nvar) { /* return a number of points in the file
-				   (assuming NType and `NVAR' per lines) */
-  long sz;
-  fseek(fd, 0L, SEEK_END); sz = ftell(fd); fseek(fd, 0, SEEK_SET);
-  return sz / sizeof(NType) / nvar;
-}
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 float env2f(const char* n) { /* read a float from env. */
   char* v_ch = getenv(n);
@@ -52,19 +44,4 @@ size_t safe_fread(void *ptr, size_t size, size_t nmemb, FILE *stream) {
   }
   return rc;
 }
-
-char* trim(char* s) { /* remove trailing and leading blanks, tabs,
-			   new lines */
-  /* trailing */
-  int n;
-  for (n = std::strlen(s)-1; n >= 0; n--)
-    if (s[n] != ' ' && s[n] != '\t' && s[n] != '\n')
-      break;
-  s[n+1] = '\0';
-
-  /* and leading */
-  while (s[0] != '\0' && (s[0] == ' ' || s[0] == '\t')) s++;
-  return s;
-}
-
 #endif
