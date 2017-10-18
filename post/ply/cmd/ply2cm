@@ -1,7 +1,8 @@
 usg () {
-    msg 'ply2cm    [file]     > [xyz file]'
-    msg 'ply2cm    [input dir]  [output dir]'
-    msg 'ply2cm -r [input dir]  [output dir]'
+    msg 'ply2cm    [file]      > [xyz file]'
+    msg 'ply2cm -p [input dir] > [punto]'
+    msg 'ply2cm    [input dir]   [output dir]'
+    msg 'ply2cm -r [input dir]   [output dir]'
     msg 'convert ply files to xyz columns'
     msg ' with -r [output dir] is relative to [input dir]'
     exit
@@ -19,7 +20,7 @@ run_file () { e exec u.ply2cm0 "$@"; }
 run_dir() {
     local f b
     e mkdir -p "$o"
-    for f in $i/*.ply
+    for f in "$i"/*.ply
     do
 	b=`basename $f .ply`
 	b="$o/$b.xyz"
@@ -39,11 +40,23 @@ abs () {
     run_dir
 }
 
+punto () {
+    for f in "$i"/*.ply
+    do
+	e u.ply2cm0 "$f"
+	echo ""
+    done
+}
+
 dir () {
-    if test "$1" = -r
+    if test "$1" = -p
     then shift
-	 rel "$@"
-    else abs "$@"
+	 punto "$@"
+    else if test "$1" = -r
+	 then shift
+	      rel "$@"
+	 else abs "$@"
+	 fi
     fi
 }
 
