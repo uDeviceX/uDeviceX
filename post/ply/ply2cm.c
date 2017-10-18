@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define NVMAX 1000000
+#define NVMAX 8000000
 #define NVAR  6 /* x, y, z, vx, vy, vz */
 float  buf[NVAR*NVMAX];
 FILE* fd;
