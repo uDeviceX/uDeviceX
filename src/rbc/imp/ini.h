@@ -22,7 +22,7 @@ static void setup_textures(int md, int nt, int nv, int4 *tri, Texo<int4> *textri
     TE(texadj0, adj0, nv*md);
     TE(texadj1, adj1, nv*md);
     TE(textri,  tri,  nt);
-    TE(texvert, (float2*)pp, 3*MAX_CELL_NUM*MAX_VERT_NUM);
+    TE(texvert, (float2*)pp, 3*MAX_CELL_NUM*nv);
 }
 
 void gen_ticket(const Quants q, TicketT *t) {
