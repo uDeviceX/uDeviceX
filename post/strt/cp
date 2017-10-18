@@ -1,8 +1,17 @@
 set -eu
 
+usg () {
+    msg 'u.strt.cp [strt dir] [new strt dir]'
+    msg 'copies restart directory'
+    msg 'final.* or [biggerst timestep].* becomes final.* in [new strt dir]'
+    exit
+}
+
 msg () { echo >&2 "$*"; }
 err () { msg "$@"; exit 2; }
 e   () { msg "cmd: $*"; eval "$@"; }
+
+if test $# -ne 0 -a "$1" = -h; then usg; fi
 
 i="$1"; shift
 o="$1"; shift
@@ -49,7 +58,7 @@ file () {
     else cp_normal "$d" "$b"
     fi
 }
-numfile () { echo "$1" | grep -s '^[0-9][0-9]*\.'; }
+numfile () { echo "$1" | grep -q '^[0-9][0-9]*\.'; }
 
 dir ()  {
     local d
