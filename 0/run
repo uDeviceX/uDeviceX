@@ -10,14 +10,13 @@ Safe="KL_SYNC CC_SYNC"
 xs=64 ys=52 zs=56
 Domain="XS=$xs YS=$ys ZS=$zs"
 
-       # one, small, normal, big
-one    # sets nx, ny, nz
-       # compute lx, ly, lz; rbc region: rx, ry, rz
+# sets nx, ny, nz; compute lx, ly, lz; rbc region: rx, ry, rz
+# one, small, normal, big
+big
 
 Force="FORCE_CONSTANT FORCE_PAR_A=0.025"
-
 Rbc="rbcs"
-radius=5.0 sc=0.75; plcmt $radius $sc
+radius=3.5 sc=0.75; plcmt $radius $sc
 #Rbc=
 
 Color="multi_solvent=true"
