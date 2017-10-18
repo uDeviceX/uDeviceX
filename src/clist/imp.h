@@ -27,6 +27,5 @@ void gather_pp(const Particle *pplo, const Particle *ppre, const Map *m, int nou
 void gather_ii(const int *iilo, const int *iire, const Map *m, int nout, /**/ int *iiout);
 
 void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, Map *m);
-// void build(int nlo, int nre, int nout, const Particle *pplo, const Particle *ppre, /**/ Particle *ppout, Clist *c, Map *m);
 
 } /* namespace */
