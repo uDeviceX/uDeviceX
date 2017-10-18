@@ -51,7 +51,7 @@ static int setup_hst0(float *rr0, const char *r_state, int nv, Particle *pp) {
     float A[4*4]; /* 4x4 affice transformation matrix */
     FILE *f = fopen(r_state, "r");
     if (f == NULL) ERR("Could not open <%s>\n", r_state);
-        
+
     while ( read_A(f, /**/ A) ) {
         shift2local(mi, /**/ A);
         if ( inside_subdomain(L, A) )
@@ -64,9 +64,15 @@ static int setup_hst0(float *rr0, const char *r_state, int nv, Particle *pp) {
 }
 
 static int setup_hst(const char *r_templ, const char *r_state, int nv, /**/ Particle *pp) {
-    float rr0[3*MAX_VERT_NUM]; /* rbc template */
+    float *rr0;
+    int nc;
+    rr0 = (float*) malloc(3*nv*sizeof(float));
+
     off::vert(r_templ, rr0);
-    return setup_hst0(rr0, r_state, nv, pp);
+    nc = setup_hst0(rr0, r_state, nv, pp);
+
+    free(rr0);
+    return nc;
 }
 
 static void setup_from_pos(const char *r_templ, const char *r_state, int nv, /**/ Particle *pp, int *nc, int *n, /* storage */ Particle *pp_hst) {
