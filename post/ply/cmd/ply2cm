@@ -1,1 +1,12 @@
-echo test
+usg () {
+    msg 'ply2cm    [file]     > [xyz file]'
+    msg 'ply2cm    [input dir]  [output dir]'
+    msg 'ply2cm -r [input dir]  [output dir]'
+    msg 'convert ply files to xyz columns'
+    msg ' with -r [output dir] is relative to [input dir]'
+    exit
+}
+
+msg () { echo >&2 "$@"; }
+
+if test $# -ne 0 -a "$1" = -h; then usg; fi
