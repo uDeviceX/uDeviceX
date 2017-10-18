@@ -16,7 +16,7 @@ geom   # compute lx, ly, lz; rbc region: rx, ry, rz
 Force="FORCE_CONSTANT FORCE_PAR_A=0.025"
 
 Rbc="rbcs"
-radius=5.0 sc=0.75; plcmt $radius $sc
+radius=3.0 sc=0.75; plcmt $radius $sc
 #Rbc=
 
 Color="multi_solvent=true"

@@ -4,7 +4,7 @@ enum {SOLVENT_KIND, SOLID_KIND, WALL_KIND};
 enum {BLUE_COLOR, RED_COLOR};
 
 /* maximum particle number per one processor for static allocation */
-#define MAX_PART_NUM (XS*YS*ZS*numberdensity*3)
+#define MAX_PART_NUM (3*XS*YS*ZS*numberdensity)
 
 /* maximum number of particles per solid */
 #define MAX_PSOLID_NUM 30000
@@ -26,7 +26,7 @@ enum {BLUE_COLOR, RED_COLOR};
 #define MAX_CELL_NUM 500
 
 /* maximum texture size in bytes */
-#define MAX_TEXO_SIZE 5000000
+#define MAX_TEXO_SIZE 10000000
 
 /* safety factor for dpd halo interactions */
 #define HSAFETY_FACTOR 10.f
