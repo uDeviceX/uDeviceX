@@ -44,7 +44,7 @@ punto () {
     local f
     i="$1"; shift
     First=1
-    for f in "$i"/*.ply
+    for f in `find "$i" -name '*.ply' | sort -g`
     do
 	if test $First -eq 1; then First=0; else echo ''; fi
 	e u.ply2cm0 "$f"
