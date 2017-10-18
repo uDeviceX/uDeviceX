@@ -41,10 +41,13 @@ abs () {
 }
 
 punto () {
+    local f
+    i="$1"; shift
+    First=1
     for f in "$i"/*.ply
     do
+	if test $First -eq 1; then First=0; else echo ''; fi
 	e u.ply2cm0 "$f"
-	echo ""
     done
 }
 
