@@ -7,6 +7,45 @@ usg () {
     exit
 }
 
+e () {
+    msg "cmd: $*"
+    eval "$@"
+}
+
 msg () { echo >&2 "$@"; }
 
-if test $# -ne 0 -a "$1" = -h; then usg; fi
+run_file () { e exec u.ply2cm0 "$@"; }
+
+run_dir() {
+    local f b
+    e mkdir -p "$o"
+    for f in $i/*.ply
+    do
+	b=`basename $f .ply`
+	b="$o/$b.xyz"
+	e u.ply2cm0 "$f" '>' "$b"
+    done
+}
+
+rel () {
+    i="$1"; shift
+    o="$i"/"$1"; shift
+    run_dir
+}
+
+abs () {
+    i="$1"; shift
+    o="$1"; shift
+    run_dir
+}
+
+dir () {
+    if test "$1" = -r
+    then shift
+	 rel "$@"
+    else abs "$@"
+    fi
+}
+
+if   test $# -ne 0 -a "$1" = -h; then usg; fi
+if   test -f "$1";      then run_file "$1"; else dir "$@"; fi
