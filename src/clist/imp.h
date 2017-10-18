@@ -14,8 +14,8 @@ struct Clist {
 
 struct Map {
     uchar4 *eelo, *eere; /* cell entries */
-    uint *ii;
-    scan::Work scan;
+    uint *ii;            /* codes containing: indices of data to fetch and array id from which to fetch */
+    scan::Work scan;     /* scan workspace */
 };
 
 void ini(int LX, int LY, int LZ, /**/ Clist *c);
