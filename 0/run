@@ -7,14 +7,13 @@ c=conf.def.h
 u=u/safe
 Safe="KL_SYNC CC_SYNC"
 
-xs=64 ys=52 zs=56
 Domain="XS=$xs YS=$ys ZS=$zs"
 
 # sets nx, ny, nz; compute lx, ly, lz; rbc region: rx, ry, rz
 # one, small, normal, big
 one
 
-Force="FORCE_CONSTANT FORCE_PAR_A=0.025"
+Force="FORCE_CONSTANT FORCE_PAR_A=0.00625"
 Rbc="rbcs"
 radius=3.5 sc=0.75; plcmt $radius $sc
 p_lina # p_test or p_lina
