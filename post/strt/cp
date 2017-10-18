@@ -4,18 +4,13 @@ usg () {
     msg 'u.strt.cp [strt dir] [new strt dir]'
     msg 'copies restart directory'
     msg 'final.* or [biggerst timestep].* becomes final.* in [new strt dir]'
+    msg 'BUGS: naive logic based on sorting'
     exit
 }
 
 msg () { echo >&2 "$*"; }
 err () { msg "$@"; exit 2; }
 e   () { msg "cmd: $*"; eval "$@"; }
-
-if test $# -ne 0 -a "$1" = -h; then usg; fi
-
-i="$1"; shift
-o="$1"; shift
-
 main ()  { dir "$@"; }
 mkdir0 () {
     d="$1"; shift
@@ -77,4 +72,7 @@ dir0 () {
     done
 }
 
+if test $# -ne 0 -a "$1" = -h; then usg; fi
+i="$1"; shift
+o="$1"; shift
 main .
