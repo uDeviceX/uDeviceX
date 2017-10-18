@@ -6,10 +6,10 @@ g_one  () {
     safe_cp /scratch/snx1600/lisergey/pachinko/post/sdf.dat sdf.dat
 }
 
-small  () { nx=7   ny=2 nz=1; g_big; }
-normal () { nx=14  ny=4 nz=1; g_big; }
-big    () { nx=28  ny=8 nz=1; g_big; }
-one    () { nx=1   ny=1 nz=1; g_one; }
+small  () { nx=7   ny=2 nz=1; g_big; geom; part; }
+normal () { nx=14  ny=4 nz=1; g_big; geom; part; }
+big    () { nx=28  ny=8 nz=1; g_big; geom; part; }
+one    () { nx=1   ny=1 nz=1; g_one; geom; full; }
 
 msg () { printf ': %s\n' "$*" >&2; }
 
@@ -32,10 +32,11 @@ safe_cp () {
 
 ae () { awk 'BEGIN {print '"$@"'}'; }
 
-geom () {
-    lx=`ae $nx*$xs` ly=`ae $ny*$ys` lz=`ae $nz*$zs`
-    rx=$lx          ry=`ae $ly/3`   rz=$lz
-}
+geom () { lx=`ae $nx*$xs` ly=`ae $ny*$ys` lz=`ae $nz*$zs`; }
+
+## fill with RBCs
+part () { rx=$lx          ry=`ae $ly/3`   rz=$lz; }
+full () { rx=$lx          ry=$ly          rz=$lz; }
 
 plcmt () { # uses rx, ry, rz: [r]bc region
     local r fr sc ang
