@@ -10,7 +10,6 @@ P.acer      = load/acer     make/acer     run/acer     batch/acer     utest/load
 
 P = $(P.common) $(P.conf) $(P.panda) $(P.daint) $(P.acer) $(P.leonhard)
 
-install: re
 install:
 	@echo install cmd tools to $B
 	@mkdir -p $B
