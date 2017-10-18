@@ -1,0 +1,6 @@
+# TEST: cp.0
+t=/tmp/cp.$$
+trap 'rm -r $t' 0 1 2 3 4 15
+u.strt.cp data/s0 $t
+cat $t/final.bop          > cp.out.txt
+

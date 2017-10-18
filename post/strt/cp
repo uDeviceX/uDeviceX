@@ -73,6 +73,8 @@ dir0 () {
 }
 
 if test $# -ne 0 -a "$1" = -h; then usg; fi
+if test $# -ne 2; then err need two arguments; fi
+
 i="$1"; shift
 o="$1"; shift
 main .
