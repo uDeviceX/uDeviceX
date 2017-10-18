@@ -29,9 +29,6 @@ void build_map(int nlo, int nre, /**/ Clist *c, Map *m) {
     eere = m->eere;
         
     scan::scan(cc, nc, /**/ ss, /*w*/ &m->scan);
-
-    /* used for debugging purpose */    
-    // if (nlo + nre) KL(dev::ini_ids, (k_cnf(nlo+nre)), (nlo+nre, /**/ ii));
    
     if (nlo) KL(dev::get_ids, (k_cnf(nlo)), (LOCAL,  dims, nlo, ss, eelo, /**/ ii));
     if (nre) KL(dev::get_ids, (k_cnf(nre)), (REMOTE, dims, nre, ss, eere, /**/ ii));    
