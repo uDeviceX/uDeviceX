@@ -10,7 +10,7 @@ void usg() {
     exit(2);
 }
 
-static float  buf[NVAR*NVMAX];
+static float  *buf;
 static FILE* fd;
 
 static char line[BUFSIZ]; /* a line from a file */
@@ -74,12 +74,28 @@ FILE *efopen(const char *path, const char *mode) {
     return f;
 }
 
+void balloc() {
+    size_t sz;
+    sz = NVAR * n * sizeof(buf[0]);
+    buf = malloc(sz);
+    if (buf == NULL) {
+        fprintf(stderr, "fail to alloc: %ld\n", sz);
+        exit(2);
+    }
+    
+}
+
+void bfree() { free(buf); }
+
+
 void read_file(const char* fn) {
     fd = efopen(fn, "r");
     read_header();
+    balloc();
     read();
-    write();
     fclose(fd);
+    write();
+    bfree();
 }
 
 int main(int argc, const char** argv) {
