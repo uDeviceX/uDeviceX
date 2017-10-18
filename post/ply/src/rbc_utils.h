@@ -1,5 +1,3 @@
-#ifndef RBC_UTILS_H
-#define RBC_UTILS_H
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -44,4 +42,3 @@ size_t safe_fread(void *ptr, size_t size, size_t nmemb, FILE *stream) {
   }
   return rc;
 }
-#endif
