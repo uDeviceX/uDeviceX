@@ -45,17 +45,18 @@ void gather_ii(const int *iilo, const int *iire, const Map *m, int nout, /**/ in
     if (nout) KL(dev::gather, (k_cnf(nout)), (iilo, iire, m->ii, nout, /**/ iiout));
 }
 
-void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, Map *m) {
-    build(nlo, 0, nout, pplo, NULL, /**/ ppout, c, m);
-}
-
-void build(int nlo, int nre, int nout, const Particle *pplo, const Particle *ppre, /**/ Particle *ppout, Clist *c, Map *m) {
+static void build(int nlo, int nre, int nout, const Particle *pplo, const Particle *ppre, /**/ Particle *ppout, Clist *c, Map *m) {
     ini_counts(/**/ c);
     subindex_local (nlo, pplo, /**/ c, m);
     subindex_remote(nre, ppre, /**/ c, m);
     build_map(nlo, nre, /**/ c, m);    
     gather_pp(pplo, ppre, m, nout, ppout);
 }
+
+void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, Map *m) {
+    build(nlo, 0, nout, pplo, NULL, /**/ ppout, c, m);
+}
+
 
 #undef REMOTE
 #undef LOCAL
