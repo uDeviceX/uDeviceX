@@ -42,12 +42,8 @@ static void assert_nc(int nc) {
     if (nc < MAX_CELL_NUM) return;
     ERR("nc = %d >= MAX_CELL_NUM = %d", nc, MAX_CELL_NUM);
 }
-static int setup_hst(const char *r_templ, const char *r_state, int nv, Particle *pp) {
-    /* fills `pp' with RBCs for this processor */
 
-    float rr0[3*MAX_VERT_NUM]; /* rbc template */
-    off::vert(r_templ, rr0);
-
+static int setup_hst0(float *rr0, const char *r_state, int nv, Particle *pp) {
     int c, nc = 0;
     int mi[3], L[3] = {XS, YS, ZS};
     for (c = 0; c < 3; ++c) mi[c] = (m::coords[c] + 0.5) * L[c];
@@ -65,6 +61,12 @@ static int setup_hst(const char *r_templ, const char *r_state, int nv, Particle 
     fclose(f);
     MSG("read %d rbcs", nc);
     return nc;
+}
+
+static int setup_hst(const char *r_templ, const char *r_state, int nv, /**/ Particle *pp) {
+    float rr0[3*MAX_VERT_NUM]; /* rbc template */
+    off::vert(r_templ, rr0);
+    return setup_hst0(rr0, r_state, nv, pp);
 }
 
 static void setup_from_pos(const char *r_templ, const char *r_state, int nv, /**/ Particle *pp, int *nc, int *n, /* storage */ Particle *pp_hst) {
