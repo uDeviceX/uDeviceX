@@ -3,7 +3,9 @@ B = $(BIN)
 
 CFLAGS=-O3 -Wall -Wextra -std=c99 -pedantic
 p = u
-P = ply2cm0
+P = ply2cm0 ply2box0
+ply2box0: endian.h
+
 install: $P
 	mkdir -p "$B"
 	install0 () ( cp $$f $B/$p.$$f; )    ;  \
