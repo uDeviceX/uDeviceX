@@ -1,5 +1,3 @@
-#include <stdlib.h>
-
 float env2f(const char* n) { /* read a float from env. */
   char* v_ch = getenv(n);
   if (v_ch == NULL) {
