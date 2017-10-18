@@ -7,23 +7,19 @@ c=conf.def.h
 u=u/safe
 Safe="KL_SYNC CC_SYNC"
 
-safe_cp /scratch/snx1600/lisergey/pachinko/big/sdf.dat sdf.dat
-
 xs=64 ys=52 zs=56
 Domain="XS=$xs YS=$ys ZS=$zs"
 
-normal  # sets nx, ny, nz
+one    # sets nx, ny, nz
 geom   # compute lx, ly, lz; rbc region: rx, ry, rz
 
-Force="FORCE_CONSTANT FORCE_PAR_A=0.05"
+Force="FORCE_CONSTANT FORCE_PAR_A=0.025"
 
 Rbc="rbcs"
-radius=3.5 sc=0.75; plcmt $radius $sc
+radius=5.0 sc=0.75; plcmt $radius $sc
 #Rbc=
 
 Color="multi_solvent=true"
-#Color=
-
 u.conf "$s" "$u" "$c" <<!
     $Safe
     $Color
