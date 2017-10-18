@@ -12,12 +12,12 @@ Domain="XS=$xs YS=$ys ZS=$zs"
 
 # sets nx, ny, nz; compute lx, ly, lz; rbc region: rx, ry, rz
 # one, small, normal, big
-big
+one
 
-Force="FORCE_CONSTANT FORCE_PAR_A=0.00625"
+Force="FORCE_CONSTANT FORCE_PAR_A=0.025"
 Rbc="rbcs"
 radius=3.5 sc=0.75; plcmt $radius $sc
-p_test # p_test or p_lina
+p_lina # p_test or p_lina
 #Rbc=
 
 Color="multi_solvent=true"
