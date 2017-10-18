@@ -12,19 +12,26 @@
 
 #define NVMAX 20000000
 #define NVAR  6 /* x, y, z, vx, vy, vz */
-float  buf[NVAR*NVMAX];
-FILE* fd;
 
-char line[BUFSIZ]; /* a line from a file */
-int n; /* number of vertices */
-int nv = 498;
+static float  buf[NVAR*NVMAX];
+static FILE* fd;
+
+static char line[BUFSIZ]; /* a line from a file */
+static int n; /* number of vertices */
+static int nv = 498;
 
 int comment_line() { /* returns true for a comment line in ply */
     char *pre = "comment";
     return strncmp(pre, line, strlen(pre)) == 0;
 }
 
-#define nl() fgets(line, sizeof(line), fd) /* [n]ext [l]ine */
+void efgets(char *s, int size, FILE *f) {
+    if (NULL != fgets(s, size, f)) return;
+    fprintf(stderr, "fail to read string\n");
+    exit(2);
+}
+
+#define nl() efgets(line, sizeof(line), fd) /* [n]ext [l]ine */
 void read_header() {
     nl(); /* ply */
     nl(); /* format binary_little_endian 1.0 */
@@ -39,10 +46,12 @@ void read_header() {
 }
 #undef nl
 
-void read() {
-    fread(buf, NVAR*n, sizeof(float), fd);
+void eread(void *p, size_t size, size_t nmemb, FILE *f) {
+    if (fread(p, size, nmemb, f)) return;
+    fprintf(stderr, "fail to read binary data\n");
+    exit(2);
 }
-
+void read() { eread(buf, NVAR*n, sizeof(float), fd); }
 void write() {
     int iv, ib, j;
     float x, y, z;
