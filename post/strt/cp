@@ -1,1 +1,71 @@
-echo 42
+set -eu
+
+msg () { echo >&2 "$*"; }
+err () { msg "$@"; exit 2; }
+e   () { msg "cmd: $*"; eval "$@"; }
+
+i="$1"; shift
+o="$1"; shift
+
+main ()  { dir "$@"; }
+mkdir0 () {
+    d="$1"; shift
+    e mkdir -p "$d"
+    if test ! -d "$d"; then err fail to create "$d"; fi
+}
+
+cp_normal () {
+    local d b
+    d="$1"; shift
+    b="$1"; shift
+    e cp --  "$i/$d/$b" "$o/$d/$b"
+}
+safe_cp () {
+    local d t
+    d="$1"; shift
+    t="$1"; shift
+    if test -f "$t"; then continue; fi
+    e cp -- "$d" "$t"
+}
+cp_final () {
+    local d b fin trg dest
+    d="$1"; shift
+    b="$1"; shift
+    fin=`get_fin "$b"`
+    dest="$i/$d/$b"
+    trg="$o/$d/$fin"
+    safe_cp "$dest" "$trg"
+}
+get_fin () {
+    echo "$1" | sed 's/^[0-9][0-9]*/final/1'
+}
+
+file () {
+    local d b
+    d="$1"; shift
+    b="$1"; shift
+    if numfile "$b"
+    then cp_final  "$d" "$b"
+    else cp_normal "$d" "$b"
+    fi
+}
+numfile () { echo "$1" | grep -s '^[0-9][0-9]*\.'; }
+
+dir ()  {
+    local d
+    d="$1"
+    mkdir0 "$o/$d"
+    dir0 "$@";
+}
+dir0 () {
+    local d b
+    d="$1"; shift;
+    for f in `ls -r "$i/$d"/*`
+    do  b=`basename "$f"`
+	if   test -d "$f"; then dir  "$d/$b"
+	elif test -r "$f"; then file "$d" "$b"
+	fi
+    done
+}
+
+main .
