@@ -1,17 +1,21 @@
-static void check_size() {
-    assert(r::q.nc < MAX_CELL_NUM);
-    assert(r::q.n < MAX_PART_NUM);
-    assert(o::q.n < MAX_PART_NUM);
+static void check_size(long n, long max) {
+    if (n < 0 || n >= max)
+        signal_error_extra("wrong size: %ld / %ld", n, max);
 }
 
 void step(scheme::Fparams *fpar, bool wall0, int it) {
-    check_size();
-
+    
+    UC(check_size(r::q.nc, MAX_CELL_NUM));
+    UC(check_size(r::q.n , MAX_PART_NUM));
+    UC(check_size(o::q.n , MAX_PART_NUM));
+    
     distribute_flu();
     if (solids0) distribute_rig();
     if (rbcs)    distribute_rbc();
 
-    check_size();
+    UC(check_size(r::q.nc, MAX_CELL_NUM));
+    UC(check_size(r::q.n , MAX_PART_NUM));
+    UC(check_size(o::q.n , MAX_PART_NUM));
 
     forces(wall0);
 
