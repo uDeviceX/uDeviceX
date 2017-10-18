@@ -30,4 +30,4 @@ u.conf "$s" "$u" "$c" <<!
 !
 { make clean && u.make -j; } > .make.log
 u.strtdir . $nx $ny $nz
-u.batch     $nx $ny $nz ./udx 00:30:00
+u.batch     $nx $ny $nz ./udx 04:00:00
