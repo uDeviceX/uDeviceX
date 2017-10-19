@@ -7,25 +7,22 @@ c=conf.def.h
 u=u/safe
 Safe="KL_SYNC CC_SYNC"
 
-xs=64 ys=52 zs=56
+# domain size: one, small, normal, big
+one
+
+force=1.25e-02
+Force="FORCE_CONSTANT FORCE_PAR_A=$force"
+radius=3.5; rbc1       # rbc[1]
+p_lina                 # p_[test|lina]
+
 Domain="XS=$xs YS=$ys ZS=$zs"
-
-# sets nx, ny, nz; compute lx, ly, lz; rbc region: rx, ry, rz
-# one, small, normal, big
-big
-
-Force="FORCE_CONSTANT FORCE_PAR_A=0.025"
-Rbc="rbcs"
-radius=3.5 sc=0.75; plcmt $radius $sc
-#Rbc=
-
-Color="multi_solvent=true"
 u.conf "$s" "$u" "$c" <<!
     $Safe
-    $Color
     $Domain
     $Force
     $Rbc
+    $Param
+    $Bop
     run
 !
 { make clean && u.make -j; } > .make.log

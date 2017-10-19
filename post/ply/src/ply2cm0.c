@@ -98,7 +98,10 @@ void read_file(const char* fn) {
     bfree();
 }
 
+int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
 int main(int argc, const char** argv) {
+    if (argc > 1 && eq(argv[1], "-h")) usg();
     if (argc != 2) usg();
+    
     read_file(argv[1]);
 }

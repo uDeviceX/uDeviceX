@@ -12,34 +12,25 @@
 #define ZBBM                    1.f
 
 /* DPD */
-#define numberdensity           4
-#define kBT                     0.0444
-#define dt                      1e-3
+#define numberdensity           10
+#define kBT                     0.00444302
+#define dt                      5e-4
 #define dpd_mass                1.0
-#define rbc_mass                1.0
+#define rbc_mass                0.5
 #define solid_mass              1.0
-
-//#define aij_solv                2.6667
-//#define aij_rbc                 2.6667
-//#define aij_solid               2.6667
-//#define aij_wall                2.6667
-//#define gammadpd_solv           8.0
-//#define gammadpd_rbc            8.0
-//#define gammadpd_solid          8.0
-//#define gammadpd_wall           8.0
 
 #define adpd_b         2.6
 #define adpd_r         2.6
 #define adpd_br        2.6
 
-#define gdpd_b         8.0
-#define gdpd_r         8.0
-#define gdpd_br        8.0
+#define gdpd_b         1.0
+#define gdpd_r         5.0
+#define gdpd_br        3.0
 
 
 /* FEATURES */
 #define rbcs                    false
-#define multi_solvent           false
+#define multi_solvent           true
 #define color_freq              500
 #define contactforces           true
 #define ljsigma                 0.3
@@ -49,9 +40,6 @@
 #define wall_creation           1000
 #define tend                    1000000
 
-/* DEBUG */
-#define TE_TRACE
-
 /* FLOW TYPE */
 #define pushflow                true
 #define pushrbc                 false
@@ -59,8 +47,8 @@
 
 /* DUMPS */
 #define dump_all_fields         true
-#define part_freq               2000
+#define part_freq               5000
 #define field_dumps             true
-#define field_freq              2000
-#define strt_dumps              false
+#define field_freq              5000
+#define strt_dumps              true
 #define strt_freq               100000

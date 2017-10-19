@@ -1,17 +1,29 @@
 g_big  () {
     safe_cp /scratch/snx1600/lisergey/pachinko/big/sdf.dat sdf.dat
+    xs=64 ys=52 zs=56
+    geom
 }
 
 g_one  () {
     safe_cp /scratch/snx1600/lisergey/pachinko/post/sdf.dat sdf.dat
+    xs=32 ys=56 zs=60
+    geom
 }
+geom () { lx=`ae $nx*$xs` ly=`ae $ny*$ys` lz=`ae $nz*$zs`; }
+bop0 () { Bop= ; }
+bop1 () { Bop="part_dumps=true force_dumps=true"; }
+rbc0 () { Rbc= ;                                  }
+rbc1 () { Rbc="rbcs"; sc=0.75; plcmt $radius $sc; }
 
-small  () { nx=7   ny=2 nz=1; g_big; geom; part; }
-normal () { nx=14  ny=4 nz=1; g_big; geom; part; }
-big    () { nx=28  ny=8 nz=1; g_big; geom; part; }
-one    () { nx=1   ny=1 nz=1; g_one; geom; full; }
+small  () { nx=7   ny=2 nz=1; g_big; part; bop0; }
+normal () { nx=14  ny=4 nz=1; g_big; part; bop0; }
+big    () { nx=28  ny=8 nz=1; g_big; part; bop0; }
+one    () { nx=1   ny=1 nz=1; g_one; full; bop1; }
 
 msg () { printf ': %s\n' "$*" >&2; }
+
+p_lina () { Param="RBC_PARAMS_LINA DPD_GRAVITY"; }
+p_test () { Param=                             ; }
 
 exec0 () { msg "$@"; "$@"; }
 safe_cp () {
@@ -31,8 +43,6 @@ safe_cp () {
 }
 
 ae () { awk 'BEGIN {print '"$@"'}'; }
-
-geom () { lx=`ae $nx*$xs` ly=`ae $ny*$ys` lz=`ae $nz*$zs`; }
 
 ## fill with RBCs
 part () { rx=$lx          ry=`ae $ly/3`   rz=$lz; }

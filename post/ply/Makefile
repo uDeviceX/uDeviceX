@@ -1,13 +1,5 @@
-BIN = $(HOME)/bin/
-B = $(BIN)
-
-CFLAGS=-O3 -Wall -Wextra -std=c99 -pedantic
-ply2cm: ply2cm.c
-
-clean:; rm ply2cm
+D = cmd src
 
 install:
-	mkdir -p $B
-	cp ply2cm $B
-
-.PHONY: clean install
+	install0 () ( cd "$$d" ; make install); \
+	for d in $D; do install0; done

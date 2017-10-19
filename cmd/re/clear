@@ -1,8 +1,0 @@
-. u.re.conf
-
-exec0 () {
-      printf 'cmd: %s\n' "$*"
-      "$@"
-}
-
-exec0 rm -rf "$b"
