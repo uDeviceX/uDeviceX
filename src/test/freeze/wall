@@ -9,22 +9,12 @@ cp data/sdf/wall1/wall.dat sdf.dat
 u.conf conf/couette.h <<!!!
    tend=0.5 part_freq=4000
    field_dumps part_dumps field_freq=4000
-   walls wall_creation=100 shear_z
-   BASE_STRT_DUMP=\"bin.1\"
+   walls wall_creation=1 shear_z
    strt_dumps=true
-   strt_freq=10000
-   RESTART=false
-   run
-   tend=2.01
-   RESTART=true
-   FORCE_CONSTANT
-   BASE_STRT_READ=\"bin.1\"
-   BASE_STRT_DUMP=\"bin.2\"
    run
 !!!
 :
-u.strtdir bin.1
-u.strtdir bin.2
+u.strtdir .
 (make clean && u.make -j) > /dev/null
 sh runfile
 u.avgh5 0 u 1 h5/flowfields-0000.h5 | uscale 0.1 > h5.out.txt
