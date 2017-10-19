@@ -5,7 +5,7 @@ M = main
 $M :  $M.c
 	$(MPICC) $< -o $@
 	@echo
-	@echo 'Type `make run` to run'
+	@echo '`make run` to run'
 
 run: $M
 run:; @$(MPIEXEC) -np 2 ./$M

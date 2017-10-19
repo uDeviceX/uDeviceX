@@ -12,6 +12,7 @@ MPI_Status status[123];
 
 #define TAG 0
 #define COMM MPI_COMM_WORLD
+MPI_Comm comm;
 
 void send() {
   int dest = RECV;
