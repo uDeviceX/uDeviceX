@@ -1,4 +1,3 @@
 # TEST: avg.t0
 u.avg o.bov data/ff.h5
 cp o.bov    o.out.txt
-

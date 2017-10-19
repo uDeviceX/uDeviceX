@@ -16,4 +16,3 @@ u.conf $c <<!!!
 sh runfile
 :
 u.avgh5 0 u 1 h5/flowfields-0001.h5 | uscale 0.01 > h5.out.txt
-

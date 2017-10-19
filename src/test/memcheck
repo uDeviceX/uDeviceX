@@ -15,4 +15,3 @@ u.conf . u/dang conf/double.poiseuille.h <<!!!
 !!!
 (make clean && u.make -j && make -C ../tools) > /dev/null
 MEM= sh runfile | awk '/========= ERROR SUMMARY:/'         > mem.out.txt
-

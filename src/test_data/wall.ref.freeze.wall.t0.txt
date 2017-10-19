@@ -1,0 +1,4 @@
+46802
+DATA_FILE: templ.values
+DATA_FORMAT: float
+VARIABLES: x y z vx vy vz

@@ -121,11 +121,7 @@ void bulk_wall(const tex3Dca<float> texsdf, /*io*/ Particle *s_pp, int *s_n, /*o
 }
 
 /* bulk predicate : is in bulk? */
-static bool bulkp(int *keys, int i) {
-    int k; cD2H(&k, &keys[i], 1);
-    return k == W_BULK;
-}
-
+static bool bulkp(int *keys, int i) { return keys[i] == W_BULK; }
 static int who_stays0(int *keys, int nc, int nv, /*o*/ int *stay) {
     int c, v;  /* cell and vertex */
     int s = 0; /* how many stays? */
@@ -137,15 +133,20 @@ static int who_stays0(int *keys, int nc, int nv, /*o*/ int *stay) {
     return s;
 }
 
-static int who_stays1(const tex3Dca<float> texsdf, Particle *pp, int n, int nc, int nv, /**/ int *stay, /*w*/ int *keys) {
-    KL(dev::fill, (k_cnf(n)), (texsdf, pp, n, keys));
-    return who_stays0(keys, nc, nv, /**/ stay);
+static int who_stays1(int *keys, int n, int nc, int nv, /*o*/ int *stay) {
+    int nc0, *keys_hst;
+    keys_hst = (int*)malloc(n*sizeof(int));
+    cD2H(keys_hst, keys, n);
+    nc0 = who_stays0(keys_hst, nc, nv, /**/ stay);
+    free(keys_hst);
+    return nc0;
 }
 
 int who_stays(const tex3Dca<float> texsdf, Particle *pp, int n, int nc, int nv, /**/ int *stay) {
     int *keys;
     CC(d::Malloc((void **) &keys, n*sizeof(keys[0])));
-    nc = who_stays1(texsdf, pp, n, nc, nv, /**/ stay, /*w*/ keys);
+    KL(dev::fill, (k_cnf(n)), (texsdf, pp, n, keys));
+    nc = who_stays1(keys, n, nc, nv, /**/ stay);
     CC(d::Free(keys));
     return nc;
 }

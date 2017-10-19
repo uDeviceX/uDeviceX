@@ -8,7 +8,7 @@ u.conf conf/double.poiseuille.h <<!!!
    tend=2.01 part_freq=4000
    FORCE_DOUBLE_POISEUILLE
    field_dumps part_dumps
-   field_freq=4000 
+   field_freq=4000
    run
 !!!
 (make clean && u.make -j) > /dev/null
@@ -59,7 +59,7 @@ u.conf conf/default.h <<!!!
    FORCE_4ROLLER
    FORCE_PAR_A=0.2
    field_dumps part_dumps
-   field_freq=4000 
+   field_freq=4000
    run
 !!!
 (make clean && u.make -j) > /dev/null

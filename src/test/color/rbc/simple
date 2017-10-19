@@ -17,7 +17,7 @@ u.conf conf/double.poiseuille.h <<!!!
 { make clean && u.make -j; } > make.log
 sh runfile
 :
-bop2txt2 bop/solvent-00001.bop -- bop/colors_solvent-00001.bop | 
+bop2txt2 bop/solvent-00001.bop -- bop/colors_solvent-00001.bop |
   awk '{print $7}' | sort -g > color.out.txt
 
 # two steps of rbcs with colors crossing subdomain
@@ -41,6 +41,5 @@ u.conf conf/double.poiseuille.h <<!!!
 { make clean && u.make -j; } > make.log
 sh runfile
 :
-bop2txt2 bop/solvent-00001.bop -- bop/colors_solvent-00001.bop | 
+bop2txt2 bop/solvent-00001.bop -- bop/colors_solvent-00001.bop |
   awk '{print $7}' | sort -g > color.out.txt
-

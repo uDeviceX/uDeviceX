@@ -22,6 +22,5 @@ u.conf conf/double.poiseuille.h <<!!!
 { make clean && u.make -j; } > make.log
 sh runfile
 :
-bop2txt2 bop/solvent-00001.bop -- bop/colors_solvent-00001.bop | 
+bop2txt2 bop/solvent-00001.bop -- bop/colors_solvent-00001.bop |
   awk '{s+=$7} END {print s >= 25 && s <= 30}' > color.out.txt
-

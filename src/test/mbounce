@@ -11,7 +11,7 @@ u.conf conf/double.poiseuille.h <<!!!
    tend=0.5 part_freq=100
    field_dumps part_dumps
    wall_creation=0
-   field_freq=100 fsiforces=false 
+   field_freq=100 fsiforces=false
    run
 !!!
 (make clean && u.make -j && make -C ../tools) > /dev/null
@@ -31,10 +31,9 @@ u.conf conf/double.poiseuille.h <<!!!
    tend=0.5 part_freq=100
    FORCE_DOUBLE_POISEUILLE
    field_dumps part_dumps
-   wall_creation=0 field_freq=100 
+   wall_creation=0 field_freq=100
    run
 !!!
 (make clean && u.make -j && make -C ../tools) > /dev/null
 sh runfile
 cat solid_diag_0000.txt | awk '{print $2, $5, $8}' | uscale 5 > sdiag.out.txt
-
