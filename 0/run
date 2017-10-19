@@ -5,10 +5,10 @@ s=../src
 c=conf.def.h
 
 # [01]
-safe0
+safe1
 
 # domain size: oneA,    oneB, small, normal, big
-oneB
+big
 
 force=1.25e-02
 Force="FORCE_CONSTANT FORCE_PAR_A=$force"
