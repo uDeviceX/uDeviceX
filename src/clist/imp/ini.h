@@ -10,7 +10,7 @@ void ini(int LX, int LY, int LZ, /**/ Clist *c) {
     
 }
 
-void ini_ticket(const Clist *c, /**/ Map *m) {
+void ini_map(const Clist *c, /**/ Map *m) {
     size_t size;
     scan::alloc_work(c->ncells, /**/ &m->scan);
 

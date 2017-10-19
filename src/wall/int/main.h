@@ -6,7 +6,7 @@ void alloc_quants(Quants *q) {
 void alloc_ticket(Ticket *t) {
     t->rnd   = new rnd::KISS;
     ini(XS + 2 * XWM, YS + 2 * YWM, ZS + 2 * ZWM, /**/ &t->cells);
-    ini_ticket(&t->cells, /**/ &t->mcells);
+    ini_map(&t->cells, /**/ &t->mcells);
 }
 
 void free_quants(Quants *q) {
@@ -19,7 +19,7 @@ void free_ticket(Ticket *t) {
     t->texstart.destroy();
     t->texpp.destroy();
     fin(&t->cells);
-    fin_ticket(&t->mcells);
+    fin_map(&t->mcells);
 }
 
 void gen_quants(const sdf::Quants qsdf, /**/ int *n, Particle* pp, Quants *q) {

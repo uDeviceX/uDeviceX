@@ -1,5 +1,4 @@
-#define REMOTE (true)
-#define LOCAL (false)
+enum {LOCAL, REMOTE};
 
 void ini_counts(/**/ Clist *c) {
     if (c->ncells) CC(d::MemsetAsync(c->counts, 0, c->ncells * sizeof(int)));
@@ -29,34 +28,24 @@ void build_map(int nlo, int nre, /**/ Clist *c, Map *m) {
     eere = m->eere;
         
     scan::scan(cc, nc, /**/ ss, /*w*/ &m->scan);
-
-    /* used for debugging purpose */    
-    // if (nlo + nre) KL(dev::ini_ids, (k_cnf(nlo+nre)), (nlo+nre, /**/ ii));
    
     if (nlo) KL(dev::get_ids, (k_cnf(nlo)), (LOCAL,  dims, nlo, ss, eelo, /**/ ii));
     if (nre) KL(dev::get_ids, (k_cnf(nre)), (REMOTE, dims, nre, ss, eere, /**/ ii));    
 }
 
 void gather_pp(const Particle *pplo, const Particle *ppre, const Map *m, int nout, /**/ Particle *ppout) {
-    if (nout) KL(dev::gather, (k_cnf(nout)), (pplo, ppre, m->ii, nout, /**/ ppout));
+    Sarray <const Particle*, 2> src = {pplo, ppre};
+    if (nout) KL(dev::gather, (k_cnf(nout)), (src, m->ii, nout, /**/ ppout));
 }
 
 void gather_ii(const int *iilo, const int *iire, const Map *m, int nout, /**/ int *iiout) {
-    if (nout) KL(dev::gather, (k_cnf(nout)), (iilo, iire, m->ii, nout, /**/ iiout));
-}
-
-static void build(int nlo, int nre, int nout, const Particle *pplo, const Particle *ppre, /**/ Particle *ppout, Clist *c, Map *m) {
-    ini_counts(/**/ c);
-    subindex_local (nlo, pplo, /**/ c, m);
-    subindex_remote(nre, ppre, /**/ c, m);
-    build_map(nlo, nre, /**/ c, m);    
-    gather_pp(pplo, ppre, m, nout, ppout);
+    Sarray <const int*, 2> src = {iilo, iire};
+    if (nout) KL(dev::gather, (k_cnf(nout)), (src, m->ii, nout, /**/ iiout));
 }
 
 void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, Map *m) {
-    build(nlo, 0, nout, pplo, NULL, /**/ ppout, c, m);
+    ini_counts(/**/ c);
+    subindex_local (nlo, pplo, /**/ c, m);
+    build_map(nlo, 0, /**/ c, m);    
+    gather_pp(pplo, NULL, m, nout, ppout);
 }
-
-
-#undef REMOTE
-#undef LOCAL

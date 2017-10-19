@@ -13,6 +13,7 @@
 #include "utils/kl.h"
 
 #include "imp.h"
+#include "code.h"
 
 namespace clist {
 #include "dev.h"
