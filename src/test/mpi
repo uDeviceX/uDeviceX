@@ -66,4 +66,3 @@ u.conf conf/poiseuille.h <<!!!
 { make clean && u.make -j; } > /dev/null
 u.run 1 1 2 ./udx
 u.avgh5 1 u 2 h5/flowfields-0013.h5 | uscale 100 > h5.out.txt
-

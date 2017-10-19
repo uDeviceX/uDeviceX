@@ -9,4 +9,3 @@ seq 16 | u.run ./udx >  scan.out.txt
 u.conf0 u/scan
 { u.make -j;     } > /dev/null
 seq 64 | u.run ./udx >  scan.out.txt
-
