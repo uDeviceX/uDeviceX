@@ -1,4 +1,5 @@
 set -uex
+
 . ./util
 . ./tsdf
 
