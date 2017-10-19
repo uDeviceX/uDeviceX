@@ -1,7 +1,7 @@
 MPICC = mpicc
 MPIEXEC = mpiexec
 
-send :  send.c; $(MPICC) $< -o $@
+main :  main.c; $(MPICC) $< -o $@
 run: send
 run:; $(MPIEXEC) -np 2 ./send
 
