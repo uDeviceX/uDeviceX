@@ -1,5 +1,5 @@
 #### velocity controller test
-# cTEST: flow.t1
+# cTEST: vcon.t0
 rm -rf bop h5 diag.txt rbc.off
 :
 (cd ../cmd; make ) > /dev/null
