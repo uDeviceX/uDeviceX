@@ -8,7 +8,7 @@ u=u/safe
 Safe="KL_SYNC CC_SYNC"
 
 # domain size: one, small, normal, big
-one
+big
 
 force=1.25e-02
 Force="FORCE_CONSTANT FORCE_PAR_A=$force"

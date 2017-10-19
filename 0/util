@@ -4,11 +4,18 @@ g_big  () {
     geom
 }
 
-g_one  () {
+g_oneA () {
     safe_cp /scratch/snx1600/lisergey/pachinko/post/sdf.dat sdf.dat
     xs=32 ys=56 zs=60
     geom
 }
+
+g_oneB () {
+    safe_cp /scratch/snx1600/lisergey/pachinko/post/sdf.dat sdf.dat
+    xs=32 ys=56 zs=60
+    geom
+}
+
 geom () { lx=`ae $nx*$xs` ly=`ae $ny*$ys` lz=`ae $nz*$zs`; }
 bop0 () { Bop= ; }
 bop1 () { Bop="part_dumps=true force_dumps=true"; }
@@ -18,7 +25,9 @@ rbc1 () { Rbc="rbcs"; sc=0.75; plcmt $radius $sc; }
 small  () { nx=7   ny=2 nz=1; g_big; part; bop0; }
 normal () { nx=14  ny=4 nz=1; g_big; part; bop0; }
 big    () { nx=28  ny=8 nz=1; g_big; part; bop0; }
-one    () { nx=1   ny=1 nz=1; g_one; full; bop1; }
+
+oneA   () { nx=1   ny=1 nz=1; g_oneA; full; bop1; }
+oneB   () { nx=1   ny=1 nz=1; g_oneB; full; bop1; }
 
 msg () { printf ': %s\n' "$*" >&2; }
 
