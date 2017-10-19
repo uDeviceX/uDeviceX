@@ -28,4 +28,3 @@ u.strtdir bin.2
 (make clean && u.make -j) > /dev/null
 sh runfile
 u.avgh5 0 u 1 h5/flowfields-0000.h5 | uscale 0.1 > h5.out.txt
-
