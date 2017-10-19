@@ -140,6 +140,7 @@ static int who_stays0(int *keys, int nc, int nv, /*o*/ int *stay) {
 static int who_stays1(int *keys, int n, int nc, int nv, /*o*/ int *stay) {
     int nc0, *keys_hst;
     keys_hst = (int*)malloc(n*sizeof(int));
+    cD2H(keys_hst, keys, n);
     nc0 = who_stays0(keys, nc, nv, /**/ stay);
     free(keys_hst);
     return nc0;
