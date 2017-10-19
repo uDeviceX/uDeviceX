@@ -68,7 +68,7 @@ void gen_name(const bool read, const char *code, const int id, const char *ext, 
 
 namespace bopwrite {
 void header_pp(const char *bop, const char *rel, const long n) {
-    FILE *f = fopen(bop, "w"); CF(f, bop);
+    FILE *f = fopen(bop, "w"); CF(f, bop); /* TODO */
     
     fprintf(f, "%ld\n", n);
     fprintf(f, "DATA_FILE: %s\n", rel);
