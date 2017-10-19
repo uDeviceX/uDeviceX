@@ -6,7 +6,7 @@ rm -rf bop h5 diag.txt rbc.off
 :
 u.conf conf/double.poiseuille.h <<!!!
    tend=2.01 part_freq=4000
-   FORCE_DOUBLE_POISEUILLE
+   VCON=true VCON_LOG_FREQ=100 VCON_VX=1 VCON_VY=1
    field_dumps part_dumps
    field_freq=4000
    run
