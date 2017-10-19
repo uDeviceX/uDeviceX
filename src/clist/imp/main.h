@@ -1,5 +1,4 @@
-#define REMOTE (true)
-#define LOCAL (false)
+enum {LOCAL, REMOTE};
 
 void ini_counts(/**/ Clist *c) {
     if (c->ncells) CC(d::MemsetAsync(c->counts, 0, c->ncells * sizeof(int)));
@@ -55,7 +54,3 @@ static void build(int nlo, int nre, int nout, const Particle *pplo, const Partic
 void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, Map *m) {
     build(nlo, 0, nout, pplo, NULL, /**/ ppout, c, m);
 }
-
-
-#undef REMOTE
-#undef LOCAL
