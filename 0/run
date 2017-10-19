@@ -1,5 +1,6 @@
 set -ue
 . ./util
+. ./tsdf
 
 s=../src
 c=conf.def.h
@@ -7,8 +8,8 @@ c=conf.def.h
 # [01]
 safe1
 
-# domain size: oneA,    oneB, small, normal, big
-big
+# domain types: oneA,    oneB, cyl, small, normal, big
+cyl
 
 force=1.25e-02
 Force="FORCE_CONSTANT FORCE_PAR_A=$force"

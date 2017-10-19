@@ -1,0 +1,22 @@
+tsdf_ini() {
+    cd $s/../tsdf
+    make && make install
+}
+
+tsdf0 () {
+    t=/tmp/t
+    echo "$1" > "$t"
+    tsdf "$t" sdf.dat
+}
+
+tsdf_cyl () {
+    local c
+    tsdf_ini
+    c="
+extent           $xs        $ys        $zs
+N          `ae 3*$xs` `ae 3*$ys` `ae 3*$zs`
+obj_margin 3.0
+cylinder axis 0 0 1 point xc yc zc radius Lx/4
+"
+    tsdf0 "$c"
+}
