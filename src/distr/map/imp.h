@@ -24,6 +24,9 @@ void reini_map(int nfrags, /**/ Map m) {
     CC(d::MemsetAsync(m.counts, 0, nfrags * sizeof(int)));
 }
 
+void download_counts(int nfrags, /**/ Map *m) {
+    CC(d::MemcpyAsync(m->hcounts, m->counts, nfrags * sizeof(int), D2H));
+}
 
 void ini_host_map(int nfrags, const int capacity[], /**/ Map *m) {
     m->counts = (int*) malloc( nfrags      * sizeof(int));
