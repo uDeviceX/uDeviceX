@@ -89,14 +89,14 @@ int main(int argc, char **argv) {
     int n = 0, *starts, *counts;
     int3 dims;
     clist::Clist clist;
-    clist::Ticket t;
+    clist::Map m;
 
     dims.x = XS;
     dims.y = YS;
     dims.z = ZS;
     
     ini(dims.x, dims.y, dims.z, /**/ &clist);
-    ini_ticket(&clist, /**/ &t);
+    ini_map(&clist, /**/ &m);
 
     pp_hst = (Particle*) malloc(MAXN * sizeof(Particle));
     counts = (int*) malloc(clist.ncells * sizeof(int));
@@ -107,7 +107,7 @@ int main(int argc, char **argv) {
     read(&n, pp_hst);
     CC(d::Memcpy(pp, pp_hst, n * sizeof(Particle), H2D));
     
-    build(n, n, pp, /**/ ppout, &clist, &t);
+    build(n, n, pp, /**/ ppout, &clist, &m);
     
     CC(d::Memcpy(counts, clist.counts, clist.ncells * sizeof(int), D2H));
     CC(d::Memcpy(starts, clist.starts, clist.ncells * sizeof(int), D2H));
@@ -127,5 +127,5 @@ int main(int argc, char **argv) {
     free(pp_hst);
 
     fin(/**/ &clist);
-    fin_ticket(/**/ &t);
+    fin_map(/**/ &m);
 }
