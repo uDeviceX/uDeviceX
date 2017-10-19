@@ -28,7 +28,7 @@ void step(scheme::Fparams *fpar, bool wall0, int it) {
     if (solids0) update_solid();
     if (rbcs)    update_rbc(it);
 
-    if (wall0 && VCON) {
+    if (VCON) {
         sample(it, o::q.n, o::q.pp, o::q.cells.starts, /**/ &o::vcont);
         adjust(it, /**/ &o::vcont, fpar);
         log(it, &o::vcont);
