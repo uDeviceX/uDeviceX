@@ -2,16 +2,20 @@ void ini_map(int nfrags, const int capacity[], /**/ Map *m) {
     CC(d::Malloc((void**) &m->counts,  nfrags      * sizeof(int)));
     CC(d::Malloc((void**) &m->starts, (nfrags + 1) * sizeof(int)));
 
+    CC(d::alloc_pinned((void**) &m->hcounts,  nfrags      * sizeof(int)));
+    
     int i, c;
     for (i = 0; i < nfrags; ++i) {
         c = capacity[i];
         if (c) CC(d::Malloc((void**) &m->ids[i], c * sizeof(int)));
     }
+    
 }
 
 void fin_map(int nfrags, /**/ Map *m) {
     CC(d::Free(m->counts));
-    CC(d::Free(m->starts));    
+    CC(d::Free(m->starts));
+    CC(d::FreeHost(m->hcounts));    
     for (int i = 0; i < nfrags; ++i)
         CC(d::Free(m->ids[i]));
 }
