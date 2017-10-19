@@ -1,12 +1,16 @@
-#### velocity controller test
-# cTEST: vcon.t0
+#### velocity controller for flow around cylinder
+# TEST: vcon.t0
+set -eu
 rm -rf bop h5 diag.txt rbc.off
 :
+cp data/sdf/cyl1/cyl.dat sdf.dat
 (cd ../cmd; make ) > /dev/null
 :
 u.conf conf/double.poiseuille.h <<!!!
-   tend=2.01 part_freq=4000
-   VCON=true VCON_LOG_FREQ=100 VCON_VX=1 VCON_VY=1
+   numberdensity=1
+   tend=2.01 part_freq=4000 walls wall_creation=1
+   VCON=true VCON_SAMPLE_FREQ=100 VCON_LOG_FREQ=1000
+   VCON_VX=10.0 VCON_VY=10.0
    field_dumps part_dumps
    field_freq=4000
    run
