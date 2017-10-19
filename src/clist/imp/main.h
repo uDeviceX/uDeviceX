@@ -35,11 +35,13 @@ void build_map(int nlo, int nre, /**/ Clist *c, Map *m) {
 }
 
 void gather_pp(const Particle *pplo, const Particle *ppre, const Map *m, int nout, /**/ Particle *ppout) {
-    if (nout) KL(dev::gather, (k_cnf(nout)), (pplo, ppre, m->ii, nout, /**/ ppout));
+    Sarray <const Particle*, 2> src = {pplo, ppre};
+    if (nout) KL(dev::gather, (k_cnf(nout)), (src, m->ii, nout, /**/ ppout));
 }
 
 void gather_ii(const int *iilo, const int *iire, const Map *m, int nout, /**/ int *iiout) {
-    if (nout) KL(dev::gather, (k_cnf(nout)), (iilo, iire, m->ii, nout, /**/ iiout));
+    Sarray <const int*, 2> src = {iilo, iire};
+    if (nout) KL(dev::gather, (k_cnf(nout)), (src, m->ii, nout, /**/ iiout));
 }
 
 static void build(int nlo, int nre, int nout, const Particle *pplo, const Particle *ppre, /**/ Particle *ppout, Clist *c, Map *m) {

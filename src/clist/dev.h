@@ -70,21 +70,20 @@ __global__ void get_ids(int array_id, int3 L, int n, const int *starts, const uc
     }
 }
 
-template <typename T>
-__device__ void fetch(const T *ddlo, const T *ddre, uint i, /**/ T *d) {
-    int src, array_id;
-    decode_id(i, /**/ &array_id, &src);
-    if (array_id) *d = ddre[src];
-    else          *d = ddlo[src];
+template <typename T, int N>
+__device__ void fetch(const Sarray<const T*, N> src, uint i, /**/ T *d) {
+    int src_id, array_id;
+    decode_id(i, /**/ &array_id, &src_id);
+    *d = src.d[array_id][src_id];
 }
 
-template <typename T>
-__global__ void gather(const T *ddlo, const T *ddre, const uint *ii, int n, /**/ T *dd) {
+template <typename T, int N>
+__global__ void gather(const Sarray<const T*, N> src, const uint *ii, int n, /**/ T *dd) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
     
     uint code = ii[i];
-    fetch(ddlo, ddre, code, /**/ dd + i);
+    fetch(src, code, /**/ dd + i);
 }
 
 } // dev
