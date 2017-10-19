@@ -29,8 +29,8 @@ static void write(const void * const ptr, const int nbytes32, MPI_File f) {
 
 static void header(int nc0, int nv, int nt, MPI_File f) {
     int nc; /* total number of cells */
-    int sz;
-    char s[BUFSIZ];
+    int sz = 0;
+    char s[BUFSIZ] = {0};
     nc = 0;
     m::Reduce(&nc0, &nc, 1, MPI_INT, MPI_SUM, 0, m::cart) ;
     if (m::rank == 0)
@@ -43,8 +43,6 @@ static void header(int nc0, int nv, int nt, MPI_File f) {
                      "element face  %d  \n"
                      "property list int int vertex_index\n"
                      "end_header\n", nv*nc, nt*nc);
-    else
-        sz = 0;
     write(s, sz, f);
 }
 
@@ -93,7 +91,7 @@ static void dump0(const Particle *pp, const int4 *faces,
 
 static void dump1(const Particle *pp, const int4 *faces, int nc, int nv, int nt, MPI_File f) {
     int sz, n;
-    Particle* pp0;
+    Particle *pp0;
     n = nc * nv;
     sz = n*sizeof(Particle);
     pp0 = (Particle*)malloc(sz);
