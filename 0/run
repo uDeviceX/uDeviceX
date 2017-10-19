@@ -4,11 +4,11 @@ set -ue
 s=../src
 c=conf.def.h
 
-u=u/safe
-Safe="KL_SYNC CC_SYNC"
+# [01]
+safe0
 
 # domain size: oneA,    oneB, small, normal, big
-big
+oneB
 
 force=1.25e-02
 Force="FORCE_CONSTANT FORCE_PAR_A=$force"
