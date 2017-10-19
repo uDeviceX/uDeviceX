@@ -12,5 +12,5 @@ M      = main
 all: $M
 %: %.cu; $(NVCC) $(NVCCFLAGS) $(OPT) $< -o $@
 
-.PHONY: all clean
 clean:; rm -f $M
+.PHONY: all clean
