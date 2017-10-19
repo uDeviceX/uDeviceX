@@ -1,9 +1,11 @@
 MPICC = mpicc
 MPIEXEC = mpiexec
+M = main
 
-main :  main.c; $(MPICC) $< -o $@
-run: send
-run:; $(MPIEXEC) -np 2 ./send
+$M :  $M.c; $(MPICC) $< -o $@
 
-clean:; rm -f send
+run: $M
+run:; $(MPIEXEC) -np 2 ./$M
+
+clean:; rm -f $M
 .PHONY: clean run
