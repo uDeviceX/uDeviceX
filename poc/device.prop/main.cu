@@ -14,5 +14,6 @@ void GetDeviceProperties(struct cudaDeviceProp *prop) {
 int main() {
     cudaDeviceProp p;
     GetDeviceProperties(&p);
-    printf("totalGlobalMem = %ld\n", p.totalGlobalMem);
+    printf("totalGlobalMem: %09ld\n", p.totalGlobalMem);
+    printf("maxTexture1D  : %09ld\n", p.maxTexture1D);
 }
