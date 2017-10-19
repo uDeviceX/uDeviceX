@@ -103,7 +103,7 @@ void restrain(long it) {
 
 void bounce_wall() {
     sdf::bounce(&w::qsdf, o::q.n, /**/ o::q.pp);
-    // if (rbcs) sdf::bounce(&w::qsdf, r::q.n, /**/ r::q.pp);
+    if (rbcs) sdf::bounce(&w::qsdf, r::q.n, /**/ r::q.pp);
 }
 
 void bounce_rbc() {

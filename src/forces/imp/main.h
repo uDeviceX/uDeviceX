@@ -107,7 +107,7 @@ static __device__ void force(Pa A, Pa B, float rnd, /**/ Fo *f) {
     } else if (seteq(ka, kb,  O, W)) {
         copy_color(ka, kb, O, /**/ &ca, &cb);
     } else if (seteq(ka, kb,  S, W)) {
-        ca = cb = BLUE_COLOR;   ljkind = LJ_ONE;
+        ca = cb = BLUE_COLOR;
     } else {
         printf("unknown kind pair: %ld %ld\n", ka, kb);
         assert(0);
