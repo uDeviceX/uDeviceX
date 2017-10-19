@@ -8,7 +8,7 @@ void fin(Quants *q) {
     CC(d::Free(q->pp));
     CC(d::Free(q->pp0));
     fin(&q->cells);
-    fin_ticket(&q->mcells);
+    fin_map(&q->mcells);
     delete[] q->pp_hst;
 
     if (global_ids)    fin_ii(q->ii, q->ii0, q->ii_hst);
