@@ -14,7 +14,7 @@ tsdf_cyl () {
     tsdf_ini
     c="
 extent           $xs        $ys        $zs
-N          `ae 3*$xs` `ae 3*$ys` `ae 3*$zs`
+N          `ae 2*$xs` `ae 2*$ys` `ae 2*$zs`
 obj_margin 3.0
 cylinder axis 0 0 1 point xc yc zc radius Lx/4
 "

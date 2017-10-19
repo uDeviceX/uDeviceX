@@ -1,4 +1,4 @@
-set -ue
+set -uex
 . ./util
 . ./tsdf
 
