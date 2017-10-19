@@ -31,9 +31,11 @@ void pack(const Quants *q, /**/ Pack *p) {
 }
 
 void download(int n, Pack *p) {
-    CC(d::Memcpy(p->hpp.counts, p->map.counts, NFRAGS * sizeof(int), D2H));
-    if (global_ids)    CC(d::Memcpy(p->hii.counts, p->map.counts, NFRAGS * sizeof(int), D2H));
-    if (multi_solvent) CC(d::Memcpy(p->hcc.counts, p->map.counts, NFRAGS * sizeof(int), D2H));
+    dSync(); /* wait for pack kernels */
+    const size_t sz = NFRAGS * sizeof(int);
+    memcpy(p->hpp.counts, p->map.hcounts, sz);
+    if (global_ids)    memcpy(p->hii.counts, p->map.hcounts, sz);
+    if (multi_solvent) memcpy(p->hcc.counts, p->map.hcounts, sz);
 
     int nhalo, i, c;
     for (i = nhalo = 0; i < NFRAGS; ++i) {
