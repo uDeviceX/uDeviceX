@@ -30,7 +30,7 @@
 
 /* FEATURES */
 #define rbcs                    false
-#define multi_solvent           false
+#define multi_solvent           true
 #define color_freq              500
 #define contactforces           true
 #define ljsigma                 0.3
