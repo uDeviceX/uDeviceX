@@ -2,8 +2,9 @@
 #include <vector>
 #include <assert.h>
 
-#include "conf.h"
+#include <conf.h>
 #include "inc/conf.h"
+#include "inc/def.h"
 
 #include "utils/mc.h"
 
@@ -73,6 +74,7 @@ void exch(/*io*/ Particle *pp, int *n) { /* exchange pp(hst) between processors 
                 p.r[c] += d[c] * L[c];
                 if (p.r[c] < lo[c] || p.r[c] >= hi[c]) goto next;
             }
+            assert(*n + 1 < MAX_PART_NUM);
             pp[(*n)++] = p;
         next: ;
         }
