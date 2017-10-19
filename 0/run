@@ -17,7 +17,6 @@ radius=3.5 sc=0.75; plcmt $radius $sc
 p_lina # p_test or p_lina
 #Rbc=
 
-Color="multi_solvent=true"
 Domain="XS=$xs YS=$ys ZS=$zs"
 u.conf "$s" "$u" "$c" <<!
     $Safe
@@ -26,6 +25,7 @@ u.conf "$s" "$u" "$c" <<!
     $Force
     $Rbc
     $Param
+    $Bop
     run
 !
 { make clean && u.make -j; } > .make.log
