@@ -10,9 +10,10 @@ g_one  () {
     geom
 }
 geom () { lx=`ae $nx*$xs` ly=`ae $ny*$ys` lz=`ae $nz*$zs`; }
-
 bop0 () { Bop= ; }
 bop1 () { Bop="part_dumps=true force_dumps=true"; }
+rbc0 () { Rbc= ;                                  }
+rbc1 () { Rbc="rbcs"; sc=0.75; plcmt $radius $sc; }
 
 small  () { nx=7   ny=2 nz=1; g_big; part; bop0; }
 normal () { nx=14  ny=4 nz=1; g_big; part; bop0; }
