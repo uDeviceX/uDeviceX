@@ -4,15 +4,15 @@ g_big  () {
     geom
 }
 
-g_oneA () {
+g_oneA () { # sizes from the file
     safe_cp /scratch/snx1600/lisergey/pachinko/post/sdf.dat sdf.dat
     xs=32 ys=56 zs=60
     geom
 }
 
-g_oneB () {
+g_oneB () { # sizes from big sdf
     safe_cp /scratch/snx1600/lisergey/pachinko/post/sdf.dat sdf.dat
-    xs=32 ys=56 zs=60
+    xs=64 ys=52 zs=56
     geom
 }
 
@@ -41,7 +41,7 @@ safe_cp () {
 
     h=`u.host`
     if test $h != daint; then return; fi
-    
+
     f="$1"; shift
     t="$1"; shift
     if test ! -f "$f"
