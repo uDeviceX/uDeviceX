@@ -13,7 +13,7 @@ static void freeze(int maxn, sdf::Tex_t texsdf, /*io*/ Particle *pp, int *n, /*o
     free(hst);
 }
 
-void gen_quants(int maxn, sdf::Tex_t texsdf, /**/ int *o_n, Particle *o_pp, int *w_n, float4 **w_pp) {
+static void gen_quants(int maxn, sdf::Tex_t texsdf, /**/ int *o_n, Particle *o_pp, int *w_n, float4 **w_pp) {
     Particle *frozen;
     CC(d::Malloc((void **) &frozen, maxn * sizeof(Particle)));
     freeze(maxn, texsdf, o_pp, o_n, frozen, w_n);
@@ -23,6 +23,10 @@ void gen_quants(int maxn, sdf::Tex_t texsdf, /**/ int *o_n, Particle *o_pp, int 
     
     CC(d::Free(frozen));
     dSync();
+}
+
+void gen_quants(int maxn, const sdf::Quants qsdf, /**/ int *n, Particle* pp, Quants *q) {
+    gen_quants(maxn, qsdf.texsdf, n, pp, &q->n, &q->pp);
 }
 
 static void build_cells(const int n, float4 *pp4, clist::Clist *cells, clist::Map *mcells) {
@@ -40,10 +44,14 @@ static void build_cells(const int n, float4 *pp4, clist::Clist *cells, clist::Ma
     CC(d::Free(pp0));
 }
 
-void gen_ticket(const int w_n, float4 *w_pp, clist::Clist *cells, clist::Map *mcells, Texo<int> *texstart, Texo<float4> *texpp) {
+static void gen_ticket(const int w_n, float4 *w_pp, clist::Clist *cells, clist::Map *mcells, Texo<int> *texstart, Texo<float4> *texpp) {
 
     build_cells(w_n, /**/ w_pp, cells, mcells);
     
     TE(texstart, cells->starts, cells->ncells);
     TE(texpp, w_pp, w_n);
+}
+
+void gen_ticket(const Quants q, Ticket *t) {
+    gen_ticket(q.n, q.pp, &t->cells, &t->mcells, &t->texstart, &t->texpp);
 }
