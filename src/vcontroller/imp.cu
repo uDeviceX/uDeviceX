@@ -62,7 +62,7 @@ void fin(/**/ PidVCont *c) {
     MC(m::Comm_free(&c->comm));
 }
 
-void sample(int n, const Particle *pp, const int *starts, /**/ PidVCont *c) {
+void sample(int n, const Particle *pp, const int *starts, const int *counts, /**/ PidVCont *c) {
     int3 L = c->L;
     
     dim3 block(8, 8, 1);
@@ -70,7 +70,7 @@ void sample(int n, const Particle *pp, const int *starts, /**/ PidVCont *c) {
               ceiln(L.y, block.y),
               ceiln(L.z, block.z));
 
-    KL(dev::sample, (grid, block), (L, starts, (float2 *) pp, /**/ c->gridvel));
+    KL(dev::sample, (grid, block), (L, starts, counts, (float2 *) pp, /**/ c->gridvel));
     
     c->nsamples ++;
 }

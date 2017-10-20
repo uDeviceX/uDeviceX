@@ -4,9 +4,9 @@ static bool valid_step(long id, const int freq) {
     return (freq != 0) && (id % freq == 0);
 }
 
-void sample(long id, int n, const Particle *pp, const int *starts, /**/ PidVCont *c) {
+void sample(long id, int n, const Particle *pp, const int *starts, const int *counts, /**/ PidVCont *c) {
     if (valid_step(id, VCON_SAMPLE_FREQ))
-        sample(n, pp, starts, /**/ c);
+        sample(n, pp, starts, counts, /**/ c);
 }
 
 void adjust(long id, /**/ PidVCont *c, scheme::Fparams *fpar) {
