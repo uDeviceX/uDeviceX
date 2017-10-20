@@ -29,7 +29,7 @@ void step(scheme::Fparams *fpar, bool wall0, int it) {
     if (rbcs)    update_rbc(it);
 
     if (VCON && wall0) {
-        sample(it, o::q.n, o::q.pp, o::q.cells.starts, /**/ &o::vcont);
+        sample(it, o::q.n, o::q.pp, o::q.cells.starts, o::q.cells.counts, /**/ &o::vcont);
         adjust(it, /**/ &o::vcont, fpar);
         log(it, &o::vcont);
     }
