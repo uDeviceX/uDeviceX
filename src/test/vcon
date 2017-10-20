@@ -1,5 +1,5 @@
 #### velocity controller for flow around cylinder
-# nTEST: vcon.t0
+# cTEST: vcon.t0
 set -eu
 rm -rf bop h5 diag.txt rbc.off
 :
@@ -11,8 +11,8 @@ u.conf conf/double.poiseuille.h <<!!!
    tend=2.01 part_freq=4000 walls wall_creation=1
    VCON=true VCON_SAMPLE_FREQ=1 VCON_LOG_FREQ=500
    VCON_ADJUST_FREQ=500
-   VCON_VX=1.0
-   FORCE_CONSTANT
+   VCON_VX=1.0 VCON_VY=1.0 
+   FORCE_CONSTANT FORCE_PAR_A=0
    field_dumps part_dumps
    field_freq=4000
    run
