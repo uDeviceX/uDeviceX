@@ -14,7 +14,8 @@ void post_send(hBags *b, Stamp *s) {
         tag = s->bt + i;
 
         if (n >= b->capacity[i])
-            signal_error_extra("sending more than capacity in fragment %d : (%ld / %ld)", i, (long) n, (long) b->capacity[i]);
+            signal_error_extra("sending more than capacity in fragment %d : (%ld / %ld)",
+                               i, (long) n, (long) b->capacity[i]);
 
         MC(m::Isend(b->data[i], n, MPI_BYTE, s->ranks[i], tag, s->cart, s->sreq + i));
     }
