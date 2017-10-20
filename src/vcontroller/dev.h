@@ -39,13 +39,13 @@ __device__ float3 warpReduceSum(float3 val) {
 __global__ void reduceByWarp(const float3 * const __restrict__ vel, const uint ncells, /**/ float3 *res) {
     assert(blockDim.x == 32);
     int i, c;
-    float3 v;
+    float3 v = make_float3(0, 0, 0);
     i = threadIdx.x + blockIdx.x * blockDim.x;
     c = blockIdx.x; /* [c]hunk id */
 
-    if (i >= ncells) return;
-
-    v = vel[i];
+    if (i < ncells)
+        v = vel[i];
+    
     v = warpReduceSum(v);
 
     if ((threadIdx.x % warpSize) == 0)
