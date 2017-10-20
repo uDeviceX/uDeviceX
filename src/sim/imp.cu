@@ -53,7 +53,7 @@
 
 #include "sdf/type.h"
 #include "sdf/int.h"
-#include "wall/int.h"
+#include "wall/imp.h"
 
 
 #include "comm/imp.h"

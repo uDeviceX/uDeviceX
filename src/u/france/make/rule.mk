@@ -64,4 +64,3 @@ $B/vcontroller/imp.o: $S/vcontroller/imp.cu; $N -I$S/. -I$S/vcontroller
 $B/wall/exch/imp.o: $S/wall/exch/imp.cpp; $X -I$S/. -I$S/wall/exch
 $B/wall/force/imp.o: $S/wall/force/imp.cu; $N -I$S/. -I$S/wall/force
 $B/wall/imp.o: $S/wall/imp.cu; $N -I$S/. -I$S/wall
-$B/wall/int.o: $S/wall/int.cu; $N -I$S/. -I$S/wall
