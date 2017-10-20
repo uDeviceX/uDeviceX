@@ -1,4 +1,3 @@
-/* RBCnv is defined in `argp' */
 #define         RBCx0 ( 0.5    )
 #define          RBCp ( 0.003  )
 #define         RBCka ( 4900.0        /2 )
