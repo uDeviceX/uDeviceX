@@ -4,8 +4,8 @@ void post_recv(Comm *c, Unpack *u) {
 }
 
 void post_send(Pack *p, Comm *c) {
-    post_send(&p->hipp, &c->ipp);
-    post_send(&p->hss, &c->ss);
+    UC(post_send(&p->hipp, &c->ipp));
+    UC(post_send(&p->hss, &c->ss));
 }
 
 void wait_recv(Comm *c, Unpack *u) {

@@ -3,7 +3,7 @@ void post_recv(Comm *c, Unpack *u) {
 }
 
 void post_send(Pack *p, Comm *c) {
-    post_send(&p->hpp, &c->pp);
+    UC(post_send(&p->hpp, &c->pp));
 }
 
 void wait_recv(Comm *c, Unpack *u) {
@@ -19,7 +19,7 @@ void post_recv_ff(Comm *c, UnpackF *u) {
 }
 
 void post_send_ff(PackF *p, Comm *c) {
-    post_send(&p->hff, &c->ff);
+    UC(post_send(&p->hff, &c->ff));
 }
 
 void wait_recv_ff(Comm *c, UnpackF *u) {

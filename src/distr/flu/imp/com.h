@@ -5,9 +5,9 @@ void post_recv(Comm *c, Unpack *u) {
 }
 
 void post_send(Pack *p, Comm *c) {
-    post_send(&p->hpp, &c->pp);
-    if (global_ids)    post_send(&p->hii, &c->ii);
-    if (multi_solvent) post_send(&p->hcc, &c->cc);
+    UC(post_send(&p->hpp, &c->pp));
+    if (global_ids)    UC(post_send(&p->hii, &c->ii));
+    if (multi_solvent) UC(post_send(&p->hcc, &c->cc));
 }
 
 void wait_recv(Comm *c, Unpack *u) {

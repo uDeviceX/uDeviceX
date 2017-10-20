@@ -4,8 +4,8 @@ void post_recv(Comm *c, Unpack *u) {
 }
 
 void post_send(Pack *p, Comm *c) {
-    post_send(&p->hpp, &c->pp);
-    if (rbc_ids) post_send(&p->hii, &c->ii);
+    UC(post_send(&p->hpp, &c->pp));
+    if (rbc_ids) UC(post_send(&p->hii, &c->ii));
 }
 
 void wait_recv(Comm *c, Unpack *u) {
