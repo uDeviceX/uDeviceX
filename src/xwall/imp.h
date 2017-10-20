@@ -1,10 +1,36 @@
 namespace wall {
-void build_cells(const int n, float4 *pp4, clist::Clist *cells);
+struct Quants {
+    float4 *pp;
+    int n;
+};
 
-void gen_quants(int maxn, sdf::Tex_t texsdf, /**/ int *o_n, Particle *o_pp, int *w_n, float4 **w_pp);
-void strt_quants(int maxn, int *w_n, float4 **w_pp);
+struct Ticket {
+    rnd::KISS *rnd;
+    clist::Clist cells;
+    clist::Map mcells;
+    Texo<int> texstart;
+    Texo<float4> texpp;
+};
 
-void gen_ticket(const int w_n, float4 *w_pp, clist::Clist *cells, clist::Map *mcells, Texo<int> *texstart, Texo<float4> *texpp);
+namespace grey {
+void force(const sdf::Quants qsdf, const Quants q, const Ticket t, hforces::Cloud cloud, const int n, Force *ff);
+}
 
-void strt_dump_templ(const int n, const float4 *pp);
+namespace color {
+void force(const sdf::Quants qsdf, const Quants q, const Ticket t, hforces::Cloud cloud, const int n, Force *ff);
+}
+
+void alloc_quants(Quants *q);
+void alloc_ticket(Ticket *t);
+
+void free_quants(Quants *q);
+void free_ticket(Ticket *t);
+
+void gen_quants(int maxn, const sdf::Quants qsdf, /**/ int *n, Particle* pp, Quants *q);
+void strt_quants(int maxn, Quants *q);
+
+void gen_ticket(const Quants q, Ticket *t);
+
+void strt_dump_templ(const Quants q);
+
 }
