@@ -7,11 +7,12 @@
 
 namespace mpicheck {
 void check(int code, const char *file, int line) {
-    char error_string[BUFSIZ];
-    int sz;
+    char s[BUFSIZ];
+    int n;
     if (code == MPI_SUCCESS) return;
 
-    MPI_Error_string(code, error_string, /**/ &sz);
-    fprintf(stderr, "%s:%d: %s", file, line, error_string);
+    MPI_Error_string(code, /**/ s, &n);
+    s[n + 1] = '\n';
+    fprintf(stderr, "%s:%d: %s\n", file, line, s);
 }
 } // mpicheck
