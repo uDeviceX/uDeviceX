@@ -1,4 +1,4 @@
-set -uex
+set -ue
 
 . ./util
 . ./tsdf
@@ -10,7 +10,7 @@ c=conf.def.h
 safe1
 
 # domain types: oneA,    oneB, cyl, small, normal, big
-cyl
+box
 
 force=1.25e-02
 Force="FORCE_CONSTANT FORCE_PAR_A=$force"
@@ -29,4 +29,5 @@ u.conf "$s" "$u" "$c" <<!
 !
 { make clean && u.make -j; } > .make.log
 u.strtdir . $nx $ny $nz
-u.batch     $nx $ny $nz ./udx 04:00:00
+
+run

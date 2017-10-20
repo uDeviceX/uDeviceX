@@ -1,6 +1,10 @@
 tsdf_ini() (
     cd "$s"/../tsdf
-    make && make install
+    { make && make install; } > .make.log
+    if test $? -ne 0
+    then echo >&2 'tsdf_ini fails'
+         exit
+    fi
 )
 
 tsdf0 () {

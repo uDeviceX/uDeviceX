@@ -81,3 +81,12 @@ plcmt () { # uses rx, ry, rz: [r]bc region
     ang=0.785
     plcmt.ro $rx $ry $rz     $r $fr $sc $ang /dev/null rbcs-ic.txt
 }
+
+run () {
+    local h
+    h=`u.host`
+    if test $h = panda
+    then u.run     $nx $ny $nz ./udx
+    else u.batch   $nx $ny $nz ./udx 04:00:00
+    fi
+}
