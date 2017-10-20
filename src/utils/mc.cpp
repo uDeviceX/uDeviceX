@@ -1,19 +1,18 @@
-#include <mpi.h>
 #include <stdio.h>
+#include <assert.h>
+#include <mpi.h>
 
 #include <conf.h>
 #include "inc/conf.h"
-
 #include "mc.h"
+#include "msg.h"
 
 namespace mpicheck {
 void check(int code, const char *file, int line) {
-    if (code != MPI_SUCCESS) {
-        char error_string[2048];
-        int length_of_error_string = sizeof(error_string);
-        MPI_Error_string(code, error_string, &length_of_error_string);
-        printf("mpiAssert: %s %d %s\n", file, line, error_string);
-        MPI_Abort(MPI_COMM_WORLD, code);
-    }
+    char error_string[BUFSIZ];
+    int sz;
+    if (code != MPI_SUCCESS) return;
+    MPI_Error_string(code, error_string, /**/ &sz);
+    ERR("%s:%d: %s", file, line, error_string);
 }
 } // mpicheck
