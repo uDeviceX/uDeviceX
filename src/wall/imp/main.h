@@ -1,7 +1,7 @@
-static void freeze0(sdf::Tex_t texsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n, /*w*/ Particle *hst) {
+static void freeze0(int maxn, sdf::Tex_t texsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n, /*w*/ Particle *hst) {
     sdf::bulk_wall(texsdf, /*io*/ pp, n, /*o*/ hst, w_n); /* sort into bulk-frozen */
     MSG("before exch: bulk/frozen : %d/%d", *n, *w_n);
-    exch(/*io*/ hst, w_n);
+    exch(maxn, /*io*/ hst, w_n);
     cH2D(dev, hst, *w_n);
     MSG("after  exch: bulk/frozen : %d/%d", *n, *w_n);
 }
@@ -9,7 +9,7 @@ static void freeze0(sdf::Tex_t texsdf, /*io*/ Particle *pp, int *n, /*o*/ Partic
 static void freeze(int maxn, sdf::Tex_t texsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n) {
     Particle *hst;
     hst = (Particle*)malloc(maxn * sizeof(Particle));
-    freeze0(texsdf, /*io*/ pp, n, /*o*/ dev, w_n, /*w*/ hst);
+    freeze0(maxn, texsdf, /*io*/ pp, n, /*o*/ dev, w_n, /*w*/ hst);
     free(hst);
 }
 

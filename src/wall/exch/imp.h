@@ -1,1 +1,1 @@
-void exch(/*io*/ Particle *pp, int *n);
+void exch(int maxn, /*io*/ Particle *pp, int *n);
