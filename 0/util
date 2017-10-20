@@ -17,7 +17,7 @@ g_oneB () { # sizes from big sdf
 }
 
 g_cyl () { #
-    xs=64 ys=52 zs=56
+    xs=32 ys=32 zs=32
     tsdf_cyl
     geom
 }

@@ -10,7 +10,7 @@ c=conf.def.h
 safe1
 
 # domain types: oneA,    oneB, cyl, small, normal, big
-box
+cyl
 
 force=1.25e-02
 Force="FORCE_CONSTANT FORCE_PAR_A=$force"

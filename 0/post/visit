@@ -1,9 +1,6 @@
 set -u
 
-rm0() { test -f "$1" && rm "$1"; } ### TODO ###
-vi () { visit 2>.visit -nosplash -noconfig -sessionfile "$1"; }
+vi () { visit 2>.visit 1>/dev/null -nosplash -noconfig -sessionfile `pwd`/"$1"; }
 
-rm0 r/00000.ply
-
-vi.ln /tmp/l/r.visit r/*.ply -- /tmp/l/w.visit h5/wall.xmf
-vi `pwd`/post/s.session
+vi.ln /tmp/l/r.visit r -- /tmp/l/w.visit h5/wall.xmf
+vi post/s.session
