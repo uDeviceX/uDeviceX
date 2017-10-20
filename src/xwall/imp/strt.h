@@ -1,4 +1,4 @@
-void read(int maxn, /**/ float4 *pp, int *n) {
+static void read(int maxn, /**/ float4 *pp, int *n) {
     Particle *pphst, *ppdev;
     size_t sz = maxn * sizeof(Particle);
     pphst = (Particle *) malloc(sz);
@@ -14,7 +14,7 @@ void read(int maxn, /**/ float4 *pp, int *n) {
     free(pphst);
 }
 
-void write(const float4 *pp, const int n) {
+static void write(const float4 *pp, const int n) {
     Particle *pphst, *ppdev;
     size_t sz = n * sizeof(Particle);
 
@@ -30,3 +30,18 @@ void write(const float4 *pp, const int n) {
     free(pphst);
 }
 
+void strt_quants(int maxn, int *w_n, float4 **w_pp) {
+    float4 * pptmp;
+    CC(d::Malloc((void **) &pptmp, maxn * sizeof(float4)));
+    strt::read(maxn, pptmp, w_n);
+
+    if (*w_n) {
+        CC(d::Malloc((void **) w_pp, *w_n * sizeof(float4)));
+        cD2D(*w_pp, pptmp, *w_n);
+    }
+    CC(d::Free(pptmp));
+}
+
+void strt_dump_templ(const int n, const float4 *pp) {
+    strt::write(pp, n);
+}
