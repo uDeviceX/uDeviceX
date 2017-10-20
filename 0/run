@@ -7,15 +7,15 @@ s=../src
 c=conf.def.h
 
 # [01]
-safe1
+safe0
 
 # domain types: oneA,    oneB, cyl, small, normal, big
 cyl
 
-force=1.25e-02
+force=1e-1
 Force="FORCE_CONSTANT FORCE_PAR_A=$force"
-radius=3.5; rbc1       # rbc[1]
-p_lina                 # p_[test|lina]
+sc=0.75 radius=3.5 rbc1 # rbc[1]
+p_lina                  # p_[test|lina]
 
 Domain="XS=$xs YS=$ys ZS=$zs"
 u.conf "$s" "$u" "$c" <<!

@@ -32,7 +32,7 @@ geom () { lx=`ae $nx*$xs` ly=`ae $ny*$ys` lz=`ae $nz*$zs`; }
 bop0 () { Bop= ; }
 bop1 () { Bop="part_dumps=true force_dumps=true"; }
 rbc0 () { Rbc= ;                                  }
-rbc1 () { Rbc="rbcs"; sc=0.75; plcmt $radius $sc; }
+rbc1 () { Rbc="rbcs"; plcmt $radius $sc;          }
 
 small  () { nx=7   ny=2 nz=1; g_big; part;  bop0; }
 normal () { nx=14  ny=4 nz=1; g_big; part;  bop0; }
@@ -46,7 +46,7 @@ msg () { printf ': %s\n' "$*" >&2; }
 
 p_lina () { # sets Param
     local A Gamma Rbc Time
-    Time="dt=0.0003"
+    Time="dt=1e-4"
     A="    adpd_b=2.66667  adpd_r=2.66667 adpd_br=2.66667"
     Gamma="gdpd_b=11.5     gdpd_r=5       gdpd_br=8.25"
     Rbc="RBC_PARAMS_LINA DPD_GRAVITY"
