@@ -1,5 +1,5 @@
 #### velocity controller for flow around cylinder
-# TEST: vcon.t0
+# nTEST: vcon.t0
 set -eu
 rm -rf bop h5 diag.txt rbc.off
 :
@@ -9,12 +9,14 @@ cp data/sdf/cyl1/cyl.dat sdf.dat
 u.conf conf/double.poiseuille.h <<!!!
    numberdensity=1
    tend=2.01 part_freq=4000 walls wall_creation=1
-   VCON=true VCON_SAMPLE_FREQ=100 VCON_LOG_FREQ=1000
-   VCON_VX=10.0 VCON_VY=10.0
+   VCON=true VCON_SAMPLE_FREQ=1 VCON_LOG_FREQ=500
+   VCON_ADJUST_FREQ=500
+   VCON_VX=1.0
+   FORCE_CONSTANT
    field_dumps part_dumps
    field_freq=4000
    run
 !!!
 (make clean && u.make -j) > /dev/null
 sh runfile
-u.avgh5 0 u 1 h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
+u.avgh5 0 u 2 h5/flowfields-0001.h5 | uscale 0.1 > h5.out.txt
