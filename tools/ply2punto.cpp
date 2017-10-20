@@ -56,9 +56,9 @@ void read_file(const char* fn) {
 }
 
 int main(int argc, const char** argv) {
-  if (argc != 2) {
-    fprintf(stderr, "(ply2punto) Usage: ply2punto <in.ply>\n");
-    exit(1);
-  }
-  read_file(argv[1]);
+    int i;
+    for (i = 1; i < argc; i++) {
+        if (i > 1) printf("\n");
+        read_file(argv[i]);
+    }
 }
