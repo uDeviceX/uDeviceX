@@ -1,5 +1,13 @@
-static void get_capacity(float maxdensity, /**/ int capacity[NBAGS]) {
-    frag_estimates(NBAGS, maxdensity, /**/ capacity);
+static int estimate_max_flux(int fid, int maxd) {
+    int e, nfaces, d[] = frag_i2d3(fid);
+    nfaces = abs(d[0]) + abs(d[1]) + abs(d[2]);
+    e = maxd * frag_ncell(fid) * nfaces;
+    return e;
+}
+
+static void get_capacity(float maxd, /**/ int capacity[NBAGS]) {
+    for (int i = 0; i < NFRAGS; ++i)
+        capacity[i] = estimate_max_flux(i, maxd);
     capacity[frag_bulk] = 0;    
 }
 
