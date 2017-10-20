@@ -22,12 +22,12 @@ void free_ticket(Ticket *t) {
     fin_map(&t->mcells);
 }
 
-void gen_quants(const sdf::Quants qsdf, /**/ int *n, Particle* pp, Quants *q) {
-    gen_quants(qsdf.texsdf, n, pp, &q->n, &q->pp);
+void gen_quants(int maxn, const sdf::Quants qsdf, /**/ int *n, Particle* pp, Quants *q) {
+    gen_quants(maxn, qsdf.texsdf, n, pp, &q->n, &q->pp);
 }
 
-void strt_quants(Quants *q) {
-    strt_quants(&q->n, &q->pp);
+void strt_quants(int maxn, Quants *q) {
+    strt_quants(maxn, &q->n, &q->pp);
 }
 
 void gen_ticket(const Quants q, Ticket *t) {

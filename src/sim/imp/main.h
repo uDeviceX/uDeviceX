@@ -4,7 +4,7 @@ void gen() { /* generate */
         dSync();
         sdf::ini(&w::qsdf);
         MC(m::Barrier(m::cart));
-        inter::create_walls(w::qsdf, /*io*/ &o::q, /**/ &w::q);
+        inter::create_walls(MAX_PART_NUM, w::qsdf, /*io*/ &o::q, /**/ &w::q);
     }
     inter::freeze(w::qsdf, /*io*/ &o::q, /**/ &s::q, &r::q);
     clear_vel();
@@ -63,7 +63,7 @@ void sim_strt() {
 
     if (solids) rig::strt_quants(restart::BEGIN, &s::q);
 
-    if (walls) wall::strt_quants(&w::q);
+    if (walls) wall::strt_quants(MAX_PART_NUM, &w::q);
 
     /*T*/
     flu::get_ticketZ(o::q, &o::tz);

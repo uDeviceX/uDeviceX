@@ -12,7 +12,7 @@
 #include "mpi/wrapper.h"
 #include "mpi/glb.h"
 
-void exch(/*io*/ Particle *pp, int *n) { /* exchange pp(hst) between processors */
+void exch(int maxn, /*io*/ Particle *pp, int *n) { /* exchange pp(hst) between processors */
 #define isize(v) ((int)(v).size()) /* [i]nteger [size] */
     assert(sizeof(Particle) == 6 * sizeof(float)); /* :TODO: dependencies */
     enum {X, Y, Z};
@@ -74,7 +74,7 @@ void exch(/*io*/ Particle *pp, int *n) { /* exchange pp(hst) between processors 
                 p.r[c] += d[c] * L[c];
                 if (p.r[c] < lo[c] || p.r[c] >= hi[c]) goto next;
             }
-            assert(*n + 1 < MAX_PART_NUM);
+            assert(*n + 1 < maxn);
             pp[(*n)++] = p;
         next: ;
         }
