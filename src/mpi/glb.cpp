@@ -45,8 +45,9 @@ void ini(int argc, char **argv) {
     int i;
     dims[0] = dims[1] = dims[2] = 1;
     for (i = 1; i < argc && i <= 3; i++) dims[i - 1] = atoi(argv[i]);
-    
-    MC(MPI_Init(&argc, &argv));
+
+    MPI_Init(&argc, &argv);
+    MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
     MC(MPI_Comm_rank(MPI_COMM_WORLD,   &rank));
     MC(MPI_Comm_size(MPI_COMM_WORLD,   &size));
     MC(MPI_Cart_create(MPI_COMM_WORLD, d, dims, periods, reorder,   &m::cart));
