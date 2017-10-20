@@ -63,7 +63,7 @@ void sim_strt() {
 
     if (solids) rig::strt_quants(restart::BEGIN, &s::q);
 
-    if (walls) wall::strt_quants(&w::q);
+    if (walls) wall::strt_quants(MAX_PART_NUM, &w::q);
 
     /*T*/
     flu::get_ticketZ(o::q, &o::tz);

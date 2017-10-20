@@ -6,9 +6,9 @@ static void freeze0(sdf::Tex_t texsdf, /*io*/ Particle *pp, int *n, /*o*/ Partic
     MSG("after  exch: bulk/frozen : %d/%d", *n, *w_n);
 }
 
-static void freeze(sdf::Tex_t texsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n) {
+static void freeze(int maxn, sdf::Tex_t texsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n) {
     Particle *hst;
-    hst = (Particle*)malloc(MAX_PART_NUM*sizeof(Particle));
+    hst = (Particle*)malloc(maxn * sizeof(Particle));
     freeze0(texsdf, /*io*/ pp, n, /*o*/ dev, w_n, /*w*/ hst);
     free(hst);
 }
@@ -28,10 +28,10 @@ void build_cells(const int n, float4 *pp4, clist::Clist *cells, clist::Map *mcel
     CC(d::Free(pp0));
 }
 
-void gen_quants(sdf::Tex_t texsdf, /**/ int *o_n, Particle *o_pp, int *w_n, float4 **w_pp) {
+void gen_quants(int maxn, sdf::Tex_t texsdf, /**/ int *o_n, Particle *o_pp, int *w_n, float4 **w_pp) {
     Particle *frozen;
-    CC(d::Malloc((void **) &frozen, sizeof(Particle) * MAX_PART_NUM));
-    freeze(texsdf, o_pp, o_n, frozen, w_n);
+    CC(d::Malloc((void **) &frozen, maxn * sizeof(Particle)));
+    freeze(maxn, texsdf, o_pp, o_n, frozen, w_n);
     MSG("consolidating wall");
     CC(d::Malloc((void **) w_pp, *w_n * sizeof(float4)));
     KL(dev::particle2float4, (k_cnf(*w_n)), (frozen, *w_n, /**/ *w_pp));
@@ -40,10 +40,10 @@ void gen_quants(sdf::Tex_t texsdf, /**/ int *o_n, Particle *o_pp, int *w_n, floa
     dSync();
 }
 
-void strt_quants(int *w_n, float4 **w_pp) {
+void strt_quants(int maxn, int *w_n, float4 **w_pp) {
     float4 * pptmp;
-    CC(d::Malloc((void **) &pptmp, MAX_PART_NUM * sizeof(float4)));
-    strt::read(pptmp, w_n);
+    CC(d::Malloc((void **) &pptmp, maxn * sizeof(float4)));
+    strt::read(maxn, pptmp, w_n);
 
     if (*w_n) {
         CC(d::Malloc((void **) w_pp, *w_n * sizeof(float4)));
