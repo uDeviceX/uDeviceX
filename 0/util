@@ -109,7 +109,7 @@ forceA () { # uses $force
 
 forceB () { # uses $v and $shift
     local p
-    p=`ae "atan2(1,$shift)"`
+    p=`ae "atan2(-1,$shift)"`
     vx=`ae "$v*cos($p)"`
     vy=`ae "$v*sin($p)"`
     forceB0
