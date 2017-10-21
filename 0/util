@@ -81,7 +81,7 @@ strt1 () {
     h=`u.host`
     Restart="RESTART=true"
     if test $h = acer; then return; fi
-    cp -r $HOME/strt0      strt
+    cp -r $HOME/strt1      strt
 }
 
 ae () { awk 'BEGIN {print '"$@"'}'; }
