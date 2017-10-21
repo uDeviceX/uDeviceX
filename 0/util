@@ -128,6 +128,6 @@ run () {
     h=`u.host`
     if test $h = panda
     then u.run     $nx $ny $nz ./udx
-    else u.batch   $nx $ny $nz ./udx 04:00:00
+    else u.batch   $nx $ny $nz ./udx 08:00:00
     fi
 }
