@@ -1,0 +1,11 @@
+. u.punto.util
+
+prog=u.punto.append
+
+usg () {
+    msg "$prog"' [A.punto] [B.punto] > [out.punto]'
+    msg 'append snapshot B to every snapshot in A'
+    exit
+}
+
+if test $# -ne 0 -a "$1" = -h; then usg; fi

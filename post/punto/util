@@ -2,3 +2,6 @@ e () {
   echo "cmd: $*"
   eval "$@"
 }
+
+msg () { echo >&2 "$*"; }
+err () { msg "$prog: $@"; exit 2; }

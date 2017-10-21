@@ -1,7 +1,7 @@
 BIN = $(HOME)/bin
 B = $(BIN)
 
-P = merge util
+P = append util
 
 # prefix
 p = u.punto
