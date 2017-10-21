@@ -77,7 +77,10 @@ strt0 () {
 }
 
 strt1 () {
+    local h
+    h=`u.host`
     Restart="RESTART=true"
+    if test $h = acer; then return; fi
     cp -r $HOME/strt0      strt
 }
 
@@ -97,6 +100,10 @@ plcmt () { # uses rx, ry, rz: [r]bc region
     sc="$1"; shift
     ang=0.785
     plcmt.ro $rx $ry $rz     $r $fr $sc $ang /dev/null rbcs-ic.txt
+}
+
+forceA () { # uses force
+    Force="FORCE_CONSTANT FORCE_PAR_A=$force"
 }
 
 run () {
