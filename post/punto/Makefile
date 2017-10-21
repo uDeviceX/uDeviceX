@@ -1,7 +1,7 @@
 BIN = $(HOME)/bin
 B = $(BIN)
 
-P = append util
+P = append circle util
 
 # prefix
 p = u.punto

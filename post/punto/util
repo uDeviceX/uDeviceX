@@ -1,3 +1,5 @@
+: ${AWK=awk}
+
 e () {
   echo "cmd: $*"
   eval "$@"

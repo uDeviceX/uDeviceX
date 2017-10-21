@@ -1,0 +1,29 @@
+. u.punto.util
+
+prog=u.punto.circle
+
+usg () {
+    msg "$prog"' x y r > [out.punto]'
+    msg 'make a circle with center (x, y) and radius r'
+    exit
+}
+
+if test $# -ne 0 -a "$1" = -h; then usg; fi
+
+if test $# -ne 3; then err 'needs three arguments'; fi
+x="$1"; shift
+y="$1"; shift
+r="$1"; shift
+
+"$AWK" -v x="$x" -v y="$y" -v r="$r" '
+BEGIN {
+   N = 20; z = 0
+   pi = 3.141592653589793
+   for (i = 1; i <= N; i++) {
+       p = 2*pi * (i - 1) / N
+       x = r*cos(p)
+       y = r*sin(p)
+       print x, y, z
+   }
+}
+'
