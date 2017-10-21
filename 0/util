@@ -81,6 +81,7 @@ strt1 () {
     h=`u.host`
     Restart="RESTART=true"
     if test $h = acer; then return; fi
+    mkdir -p h5                         # TODO
     cp -r $HOME/strt0      strt
 }
 
