@@ -1,0 +1,11 @@
+set -u
+
+# exclude one
+ex () { ls r/*.ply | fgrep -v r/00000.ply; }
+ply2punto `ex` > p.dat
+
+awk 'NF{print $1, $2, $3, 100} !NF{print}' p.dat > c.dat
+
+
+
+punto -bg grey -c c.dat
