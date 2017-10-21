@@ -15,7 +15,7 @@ x="$1"; shift
 y="$1"; shift
 r="$1"; shift
 
-"$AWK" -v x="$x" -v y="$y" -v r="$r" '
+"$AWK" -v x0="$x" -v y0="$y" -v r="$r" '
 BEGIN {
    N = 20; z = 0
    pi = 3.141592653589793
@@ -23,6 +23,9 @@ BEGIN {
        p = 2*pi * (i - 1) / N
        x = r*cos(p)
        y = r*sin(p)
+
+       x += x0
+       y += y0
        print x, y, z
    }
 }
