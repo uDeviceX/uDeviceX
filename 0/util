@@ -107,12 +107,21 @@ forceA () { # uses $force
     Force="FORCE_CONSTANT FORCE_PAR_A=$force"
 }
 
-forceB () { # uses $vx $vy
-    local a b
-    a="VCON=true VCON_SAMPLE_FREQ=1 VCON_LOG_FREQ=500 VCON_ADJUST_FREQ=500"
-    b="VCON_VX=$vx VCON_VY=$vy"
-    Force="$a $b"
+forceB () { # uses $v and $shift
+    local p
+    p=`ae "atan2(1,$shift)"`
+    vx=`ae "$v*cos($p)"`
+    vy=`ae "$v*sin($p)"`
+    forceB0
 }
+forceB0 () { # uses $vx $vy
+    local a b c
+    a="VCON=true VCON_SAMPLE_FREQ=1 VCON_LOG_FREQ=500 VCON_ADJUST_FREQ=1000"
+    b="VCON_VX=$vx VCON_VY=$vy"
+    c="FORCE_CONSTANT FORCE_PAR_A=0"
+    Force="$a $b $c"
+}
+
 
 run () {
     local h
