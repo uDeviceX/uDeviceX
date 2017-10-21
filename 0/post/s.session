@@ -2721,8 +2721,8 @@
                 <Field name="parallelScale" type="double">27.712812921102</Field>
                 <Field name="nearPlane" type="double">-55.4256258422041</Field>
                 <Field name="farPlane" type="double">55.4256258422041</Field>
-                <Field name="imagePan" type="doubleArray" length="2">0 0 </Field>
-                <Field name="imageZoom" type="double">1</Field>
+                <Field name="imagePan" type="doubleArray" length="2">0.0771191061284643 0.055733182383806 </Field>
+                <Field name="imageZoom" type="double">2.14358881</Field>
                 <Field name="perspective" type="bool">false</Field>
                 <Field name="eyeAngle" type="double">2</Field>
                 <Field name="centerOfRotationSet" type="bool">false</Field>
@@ -6853,8 +6853,8 @@
                             <Field name="parallelScale" type="double">27.712812921102</Field>
                             <Field name="nearPlane" type="double">-55.4256258422041</Field>
                             <Field name="farPlane" type="double">55.4256258422041</Field>
-                            <Field name="imagePan" type="doubleArray" length="2">0 0 </Field>
-                            <Field name="imageZoom" type="double">1</Field>
+                            <Field name="imagePan" type="doubleArray" length="2">0.0771191061284643 0.055733182383806 </Field>
+                            <Field name="imageZoom" type="double">2.14358881</Field>
                             <Field name="perspective" type="bool">false</Field>
                             <Field name="eyeAngle" type="double">2</Field>
                             <Field name="centerOfRotationSet" type="bool">false</Field>
