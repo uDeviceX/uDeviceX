@@ -12,6 +12,9 @@ safe0
 # domain types: oneA,    oneB, cyl, small, normal, big
 cyl
 
+# [01]
+strt1
+
 force=1e-1
 Force="FORCE_CONSTANT FORCE_PAR_A=$force"
 sc=0.75 radius=3.5 rbc1 # rbc[1]
@@ -25,9 +28,9 @@ u.conf "$s" "$u" "$c" <<!
     $Rbc
     $Param
     $Bop
+    $Restart
     run
 !
 { make clean && u.make -j; } > .make.log
-u.strtdir . $nx $ny $nz
 
 run

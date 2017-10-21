@@ -71,6 +71,16 @@ safe_cp () {
     exec0 ln -s "$f" "$t"
 }
 
+strt0 () {
+    Restart= ;
+    u.strtdir . $nx $ny $nz
+}
+
+strt1 () {
+    Restart="RESTART=true"
+    cp -r $HOME/strt0      strt
+}
+
 ae () { awk 'BEGIN {print '"$@"'}'; }
 
 ## fill with RBCs
