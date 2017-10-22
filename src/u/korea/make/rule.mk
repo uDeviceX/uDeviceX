@@ -36,7 +36,7 @@ $B/io/restart.o: $S/io/restart.cpp; $X -I$S/io -I$S/.
 $B/io/rig.o: $S/io/rig.cpp; $X -I$S/io -I$S/.
 $B/lforces/imp.o: $S/lforces/imp.cu; $N -I$S/lforces -I$S/.
 $B/lforces/transpose/imp.o: $S/lforces/transpose/imp.cu; $N -I$S/lforces/transpose -I$S/.
-$B/main.o: $S/main.cu; $N -I$S/.
+$B/main.o: $S/main.cpp; $X -I$S/.
 $B/math/linal.o: $S/math/linal.cpp; $X -I$S/math -I$S/.
 $B/meshbb/imp.o: $S/meshbb/imp.cu; $N -I$S/meshbb -I$S/.
 $B/mesh/bbox.o: $S/mesh/bbox.cu; $N -I$S/mesh -I$S/.
