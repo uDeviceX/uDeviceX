@@ -12,5 +12,5 @@ void fields_grid(QQ qq, NN nn, /*w*/ Particle *hst) {
     cD2H(hst + start, s, nn.s); start += nn.s;
     cD2H(hst + start, r, nn.r); start += nn.r;
 
-    h5::dump(hst, n);
+    io::field::dump(hst, n);
 }

@@ -14,11 +14,11 @@
 
 #include "imp.h"
 
-namespace h5 {
+namespace io { namespace field {
 #include "imp/main.h"
 #include "imp/grid.h"
 #include "imp/wrapper.h"
 #include "imp/field.h"
 #include "imp/dump.h"
 #include "imp/scalar.h"
-}
+}}
