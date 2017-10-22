@@ -40,6 +40,8 @@ $B/.cookie:;       $D ; touch $@
 clean:; -rm -f $B/udx $O $B/gpuCode.o $B/.cookie
 
 test:
-	atest `find test -type f`
+	@echo log to atest.log
+	@atest 2>&1 `find test -type f`       | tee atest.log
+
 
 .PHONY: clean test all D
