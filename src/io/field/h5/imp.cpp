@@ -1,3 +1,18 @@
+#include <hdf5.h>
+#include <math.h>
+#include <stdlib.h>
+
+#include <conf.h>
+#include "inc/conf.h"
+
+#include "utils/os.h"
+#include "mpi/glb.h"
+#include "mpi/wrapper.h"
+#include "utils/mc.h"
+#include "inc/type.h"
+#include "imp.h"
+
+namespace h5 {
 static void write(const char * const path2h5,
                   const float * const channeldata[],
                   const char * const * const channelnames, const int nchannels) {
@@ -35,4 +50,5 @@ static void write(const char * const path2h5,
 
     H5Sclose(filespace_simple);
     H5Fclose(file_id);
+}
 }

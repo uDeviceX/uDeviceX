@@ -25,6 +25,7 @@ $B/inter/imp.o: $S/inter/imp.cu; $N -I$S/inter -I$S/inter/_korea -I$S/.
 $B/io/bop/imp.o: $S/io/bop/imp.cpp; $X -I$S/io/bop -I$S/.
 $B/io/com.o: $S/io/com.cpp; $X -I$S/io -I$S/.
 $B/io/diag.o: $S/io/diag.cpp; $X -I$S/io -I$S/.
+$B/io/field/h5/imp.o: $S/io/field/h5/imp.cpp; $X -I$S/io/field/h5 -I$S/.
 $B/io/field/imp.o: $S/io/field/imp.cpp; $X -I$S/io/field -I$S/.
 $B/io/fields_grid.o: $S/io/fields_grid.cpp; $X -I$S/io -I$S/.
 $B/io/field/xmf/imp.o: $S/io/field/xmf/imp.cpp; $X -I$S/io/field/xmf -I$S/.
