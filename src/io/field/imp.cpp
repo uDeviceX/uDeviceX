@@ -1,5 +1,4 @@
 #include <hdf5.h>
-#include <string>
 #include <math.h>
 #include <stdlib.h>
 
