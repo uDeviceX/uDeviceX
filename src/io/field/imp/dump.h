@@ -1,4 +1,3 @@
-namespace h5 {
 static int minmax(int lo, int hi, int x) {
     return \
         x <= lo ? lo :
@@ -72,5 +71,4 @@ void dump(Particle *pp, int n) {
     u[Z] = (float*)malloc(sz);
     dump0(pp, n, nc, /*w*/ rho, u);
     free(rho); free(u[X]); free(u[Y]); free(u[Z]);
-}
 }
