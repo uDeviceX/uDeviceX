@@ -12,7 +12,6 @@
 #include "algo/scan/int.h"
 
 #include "rnd/imp.h"
-#include "rnd/dev.h"
 
 #include "inc/def.h"
 #include "msg.h"
