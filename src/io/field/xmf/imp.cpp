@@ -47,10 +47,16 @@ static void grid(FILE * f, const char * const path, const char * const *names, i
     fprintf(f, "   </Grid>\n");
 }
 
+static void xsuffix(char *i, /**/ char *o) {
+    /* replace suffix by `xmf'? */
+    sprintf(o, "%s.xmf", std::string(i).substr(0, std::string(i).find_last_of(".h5") - 2).data());
+}
+
 void write(const char* path, const char * const * const names, int n) {
     char w[BUFSIZ];
     FILE *f;
-    sprintf(w, "%s.xmf", std::string(path).substr(0, std::string(path).find_last_of(".h5") - 2).data());
+
+    xsuffix(path, /**/ w);
     f = fopen(w, "w");
     header(f);
     grid(f, std::string(path).substr(std::string(path).find_last_of("/") + 1).c_str(), names, n);
