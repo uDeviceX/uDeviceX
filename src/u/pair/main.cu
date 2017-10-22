@@ -6,7 +6,6 @@
 #include "inc/conf.h"
 
 #include "mpi/glb.h"
-#include "glb/imp.h"
 
 #include "utils/cc.h"
 #include "utils/kl.h"
