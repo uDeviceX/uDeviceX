@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdio.h>
 
 #include <conf.h>
 #include "inc/conf.h"
@@ -7,7 +8,6 @@
 #include "imp.h"
 
 namespace xmf {
-
 static void header(FILE *f) {
     fprintf(f, "<?xml version=\"1.0\" ?>\n");
     fprintf(f, "<!DOCTYPE Xdmf SYSTEM \"Xdmf.dtd\" []>\n");
