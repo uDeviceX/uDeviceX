@@ -1,0 +1,1 @@
+maxima --batch-string='disp(42);'

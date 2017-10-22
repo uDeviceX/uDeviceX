@@ -1,0 +1,3 @@
+maxima --very-quiet -r='
+print(42)$
+'
