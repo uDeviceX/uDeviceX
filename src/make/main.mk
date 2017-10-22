@@ -17,7 +17,7 @@ ARCH     ?= -arch compute_35 -code sm_35
 OPT	 ?= -O2 -g
 
 CXXFLAGS  +=  -I$B -I$S
-COMMON    +=   ${OPT}
+COMMON    +=  -std=c++11 ${OPT}
 
 NCFLAGS    =           $(CXXFLAGS)
 XCFLAGS    = $(COMMON) $(CXXFLAGS)
