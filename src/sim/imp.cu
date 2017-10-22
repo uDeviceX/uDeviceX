@@ -20,7 +20,6 @@
 #include "utils/mc.h"
 #include "utils/error.h"
 
-#include "utils/kl.h"
 #include "mpi/basetags.h"
 #include "inc/type.h"
 #include "mpi/type.h"
