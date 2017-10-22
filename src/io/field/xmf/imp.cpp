@@ -52,6 +52,12 @@ static void xsuffix(char *i, /**/ char *o) {
     sprintf(o, "%s.xmf", std::string(i).substr(0, std::string(i).find_last_of(".h5") - 2).data());
 }
 
+void basename(char *i, /**/ char *o) {
+    cahr *t;
+    t = std::string(path).substr(std::string(path).find_last_of("/") + 1).c_str();
+    strncpy(o, t, BUFSIZ - 1); /* o = t */
+}
+
 void write(const char* path, const char * const * const names, int n) {
     char w[BUFSIZ];
     FILE *f;
@@ -59,7 +65,9 @@ void write(const char* path, const char * const * const names, int n) {
     xsuffix(path, /**/ w);
     f = fopen(w, "w");
     header(f);
-    grid(f, std::string(path).substr(std::string(path).find_last_of("/") + 1).c_str(), names, n);
+
+    basename(path, /**/ w);
+    grid(f, w, names, n);
     epilogue(f);
     fclose(f);
 }
