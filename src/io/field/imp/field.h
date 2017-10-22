@@ -36,5 +36,5 @@ void fields(const char * const path2h5,
     H5Sclose(filespace_simple);
     H5Fclose(file_id);
 
-    if (!m::rank) wrapper(path2h5, channelnames, nchannels);
+    if (!m::rank) xmf::write(path2h5, channelnames, nchannels);
 }

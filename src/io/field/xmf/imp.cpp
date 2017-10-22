@@ -6,6 +6,8 @@
 #include "mpi/glb.h"
 #include "imp.h"
 
+namespace xmf {
+
 static void header(FILE *f) {
     fprintf(f, "<?xml version=\"1.0\" ?>\n");
     fprintf(f, "<!DOCTYPE Xdmf SYSTEM \"Xdmf.dtd\" []>\n");
@@ -45,7 +47,7 @@ static void grid(FILE * f, const char * const path, const char * const *names, i
     fprintf(f, "   </Grid>\n");
 }
 
-void wrapper(const char* path, const char * const * const names, int n) {
+void write(const char* path, const char * const * const names, int n) {
     char w[BUFSIZ];
     FILE *f;
     sprintf(w, "%s.xmf", std::string(path).substr(0, std::string(path).find_last_of(".h5") - 2).data());
@@ -55,3 +57,5 @@ void wrapper(const char* path, const char * const * const names, int n) {
     epilogue(f);
     fclose(f);
 }
+
+} /* namespace */
