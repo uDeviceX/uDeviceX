@@ -1,4 +1,3 @@
-#include <string>
 #include <string.h>
 
 #include <conf.h>
@@ -48,15 +47,21 @@ static void grid(FILE * f, const char * const path, const char * const *names, i
     fprintf(f, "   </Grid>\n");
 }
 
+static int eq(const char *a, const char *b) { return !strcmp(a, b); }
 static void xsuffix(const char *i, /**/ char *o) {
-    /* replace suffix by `xmf'? */
-    sprintf(o, "%s.xmf", std::string(i).substr(0, std::string(i).find_last_of(".h5") - 2).data());
+    /* replace suffix .h5 by .xmf */
+    char s[] = ".h5";
+    int n;
+    n = strlen(i) - strlen(s);
+    if (n >= 0 && eq(i + n, s)) strncpy(o, i, n);
+    else                        strcpy (o, i);
+    strcat(o, ".xmf");
 }
-
 static void basename(const char *i, /**/ char *o) {
-    const char *t;
-    t = std::string(i).substr(std::string(i).find_last_of("/") + 1).c_str();
-    strncpy(o, t, BUFSIZ - 1); /* o = t */
+    const char *p;
+    p = i;
+    while (*i != '\0') if (*i++ == '/') p = i;
+    strcpy(o, p);
 }
 
 void write(const char* path, const char * const * const names, int n) {
