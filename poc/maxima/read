@@ -1,0 +1,8 @@
+: ${MAXIMA=maxima}
+
+"$MAXIMA" --very-quiet -r='
+f: ?open("/dev/stdin") $
+x: ?read\-line(f, false, '"'"'end)$
+print(x)                          $
+?close(f)                         $
+' "$@"
