@@ -31,7 +31,6 @@
 #include "cloud/hforces/type.h"
 #include "cloud/hforces/int.h"
 
-#include "inc/tmp/pinned.h"
 #include "io/fields_grid.h"
 #include "io/mesh.h"
 #include "io/rig.h"

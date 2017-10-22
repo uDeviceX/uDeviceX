@@ -23,8 +23,6 @@
 #include "mpi/glb.h"
 #include "inc/dev.h"
 
-#include "inc/tmp/pinned.h"
-
 #include "dbg/imp.h"
 
 #include "utils/texo.h"

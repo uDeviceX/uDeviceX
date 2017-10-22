@@ -29,7 +29,6 @@
 #include "utils/texo.h"
 #include "utils/te.h"
 
-#include "inc/tmp/pinned.h"
 #include "sim/imp.h"
 #include "dbg/imp.h"
 

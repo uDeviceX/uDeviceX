@@ -57,6 +57,7 @@ $B/rnd/imp.o: $S/rnd/imp.cpp; $X -I$S/rnd -I$S/.
 $B/scheme/imp.o: $S/scheme/imp.cu; $N -I$S/scheme -I$S/.
 $B/sdf/imp.o: $S/sdf/imp.cu; $N -I$S/sdf -I$S/.
 $B/sdf/int.o: $S/sdf/int.cu; $N -I$S/sdf -I$S/.
+$B/sim/imp.o: $S/sim/imp.cpp; $X -I$S/sim -I$S/.
 $B/sim/imp.o: $S/sim/imp.cu; $N -I$S/sim -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/utils -I$S/.
