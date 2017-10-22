@@ -53,7 +53,7 @@ static void xsuffix(const char *i, /**/ char *o) {
     sprintf(o, "%s.xmf", std::string(i).substr(0, std::string(i).find_last_of(".h5") - 2).data());
 }
 
-void basename(const char *i, /**/ char *o) {
+static void basename(const char *i, /**/ char *o) {
     const char *t;
     t = std::string(i).substr(std::string(i).find_last_of("/") + 1).c_str();
     strncpy(o, t, BUFSIZ - 1); /* o = t */
