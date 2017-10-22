@@ -11,11 +11,13 @@
 #include "mpi/wrapper.h"
 #include "utils/mc.h"
 #include "inc/type.h"
-#include "io/field.h"
 
-#include "io/field/imp.h"
-#include "io/field/grid.h"
-#include "io/field/wrapper.h"
-#include "io/field/field.h"
-#include "io/field/dump.h"
-#include "io/field/scalar.h"
+#include "imp.h"
+
+#include "imp/main.h"
+#include "imp/grid.h"
+#include "imp/wrapper.h"
+#include "imp/field.h"
+#include "imp/dump.h"
+#include "imp/scalar.h"
+

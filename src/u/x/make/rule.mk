@@ -13,7 +13,6 @@ $B/dpdr/int.o: $S/dpdr/int.cpp; $X -I$S/dpdr -I$S/.
 $B/exch/flu/imp.o: $S/exch/flu/imp.cu; $N -I$S/exch/flu -I$S/.
 $B/exch/mesh/imp.o: $S/exch/mesh/imp.cu; $N -I$S/exch/mesh -I$S/.
 $B/exch/obj/imp.o: $S/exch/obj/imp.cu; $N -I$S/exch/obj -I$S/.
-$B/field.o: $S/field.cpp; $X -I$S/.
 $B/flu/imp.o: $S/flu/imp.cu; $N -I$S/flu -I$S/.
 $B/frag/imp.o: $S/frag/imp.cpp; $X -I$S/frag -I$S/.
 $B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/fsi -I$S/.
@@ -25,7 +24,7 @@ $B/inter/imp.o: $S/inter/imp.cu; $N -I$S/inter -I$S/inter/_ussr -I$S/.
 $B/io/bop/imp.o: $S/io/bop/imp.cpp; $X -I$S/io/bop -I$S/.
 $B/io/com.o: $S/io/com.cpp; $X -I$S/io -I$S/.
 $B/io/diag.o: $S/io/diag.cpp; $X -I$S/io -I$S/.
-$B/io/field.o: $S/io/field.cpp; $X -I$S/io -I$S/.
+$B/io/field/imp.o: $S/io/field/imp.cpp; $X -I$S/io/field -I$S/.
 $B/io/fields_grid.o: $S/io/fields_grid.cpp; $X -I$S/io -I$S/.
 $B/io/mesh.o: $S/io/mesh.cpp; $X -I$S/io -I$S/.
 $B/io/off.o: $S/io/off.cpp; $X -I$S/io -I$S/.
