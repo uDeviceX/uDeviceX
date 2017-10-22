@@ -1,16 +1,13 @@
 #include <assert.h>
-#include <vector>
 #include <mpi.h>
 #include <conf.h>
 #include "inc/conf.h"
 
 #include "d/api.h"
-#include "d/q.h"
 #include "d/ker.h"
 
 #include "mpi/wrapper.h"
 #include "algo/scan/int.h"
-
 #include "rnd/imp.h"
 
 #include "inc/def.h"
@@ -40,7 +37,6 @@
 #include "dbg/imp.h"
 #include "io/restart.h"
 #include "glb/set.h"
-
 #include "clist/imp.h"
 
 #include "flu/imp.h"
@@ -50,7 +46,6 @@
 #include "sdf/type.h"
 #include "sdf/int.h"
 #include "wall/imp.h"
-
 
 #include "comm/imp.h"
 #include "distr/map/type.h"
@@ -83,7 +78,6 @@
 #include "rigid/imp.h"
 
 #include "meshbb/imp.h"
-
 #include "io/bop/imp.h"
 
 #include "inter/imp.h"
