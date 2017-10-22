@@ -1,11 +1,17 @@
 set -u
 
+lx=24 ly=24 lz=24
 xc=12 yc=12 r=8
 
 # exclude one
 ex () { ls r/*.ply | fgrep -v r/00000.ply; }
 ply2punto `ex` > p.dat
-u.punto.circle $xc $yc $r  > ci
+
+u.punto.circle $xc $yc $r  >  ci
+
 u.punto.append p.dat ci    > c.dat
 
-punto -bg grey -fg white c.dat
+punto "$@" -B 0:0:0:$lx:$ly:$lz:0:0:0:0:0:0:0:0 c.dat
+
+### punto bug
+# -B 0:0:0:24:24:24:0:0:0:0:0:0:0:0
