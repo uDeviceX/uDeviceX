@@ -6,7 +6,6 @@
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "mpi/basetags.h"
-#include "glb/imp.h"
 #include "frag/imp.h"
 
 #include "comm/imp.h"

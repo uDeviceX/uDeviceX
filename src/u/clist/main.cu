@@ -7,8 +7,6 @@
 #include "msg.h"
 #include "d/api.h"
 
-#include "glb/imp.h"
-
 #include "inc/dev.h"
 #include "inc/type.h"
 #include "utils/cc.h"

@@ -14,7 +14,7 @@
 #include "utils/kl.h"
 #include "inc/type.h"
 #include "inc/dev.h"
-#include "glb/imp.h"
+#include "glb/get.h"
 
 #include "mpi/wrapper.h"
 #include "restrain/imp.h"

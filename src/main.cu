@@ -8,7 +8,7 @@
 #include "d/api.h"
 
 #include "sim/imp.h"
-#include "glb/imp.h"
+#include "glb/set.h"
 
 int main(int argc, char **argv) {
     m::ini(argc, argv);

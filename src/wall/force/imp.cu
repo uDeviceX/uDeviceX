@@ -6,7 +6,7 @@
 #include "inc/conf.h"
 #include "inc/def.h"
 #include "msg.h"
-#include "glb/imp.h"
+#include "glb/get.h"
 
 #include "d/api.h"
 #include "d/q.h"
