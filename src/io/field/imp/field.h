@@ -1,6 +1,6 @@
-static void fields(const char * const path2h5,
-            const float * const channeldata[],
-            const char * const * const channelnames, const int nchannels) {
+static void write(const char * const path2h5,
+                  const float * const channeldata[],
+                  const char * const * const channelnames, const int nchannels) {
     int i;
     hid_t plist_id_access = H5Pcreate(H5P_FILE_ACCESS);
     H5Pset_fapl_mpio(plist_id_access, m::cart, MPI_INFO_NULL);
@@ -35,6 +35,4 @@ static void fields(const char * const path2h5,
 
     H5Sclose(filespace_simple);
     H5Fclose(file_id);
-
-    if (!m::rank) xmf::write(path2h5, channelnames, nchannels);
 }
