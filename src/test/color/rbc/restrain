@@ -1,5 +1,5 @@
 #### restrain memrain of RBC
-# TEST: rbc.restrain.t0
+# nTEST: rbc.restrain.t0
 rm -rf bop diag.txt h5 ply rbc.off
 cp data/cells/rbc.498.off rbc.off
 export PATH=../tools:$PATH
