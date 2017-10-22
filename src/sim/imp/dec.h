@@ -72,4 +72,3 @@ namespace bb /* bounce back */
 meshbb::BBdata bbd;
 Momentum *mm;
 }
-
