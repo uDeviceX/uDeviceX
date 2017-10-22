@@ -1,4 +1,5 @@
 #include <string>
+#include <string.h>
 
 #include <conf.h>
 #include "inc/conf.h"
@@ -47,14 +48,14 @@ static void grid(FILE * f, const char * const path, const char * const *names, i
     fprintf(f, "   </Grid>\n");
 }
 
-static void xsuffix(char *i, /**/ char *o) {
+static void xsuffix(const char *i, /**/ char *o) {
     /* replace suffix by `xmf'? */
     sprintf(o, "%s.xmf", std::string(i).substr(0, std::string(i).find_last_of(".h5") - 2).data());
 }
 
-void basename(char *i, /**/ char *o) {
-    cahr *t;
-    t = std::string(path).substr(std::string(path).find_last_of("/") + 1).c_str();
+void basename(const char *i, /**/ char *o) {
+    const char *t;
+    t = std::string(i).substr(std::string(i).find_last_of("/") + 1).c_str();
     strncpy(o, t, BUFSIZ - 1); /* o = t */
 }
 
