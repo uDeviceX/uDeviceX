@@ -53,7 +53,7 @@ static void xsuffix(const char *i, /**/ char *o) {
     char s[] = ".h5";
     int n;
     n = strlen(i) - strlen(s);
-    if (n >= 0 && eq(i + n, s)) strncpy(o, i, n);
+    if (n >= 0 && eq(i + n, s)) {strncpy(o, i, n); o[n] = '\0';}
     else                        strcpy (o, i);
     strcat(o, ".xmf");
 }
