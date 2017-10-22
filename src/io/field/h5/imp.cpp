@@ -13,9 +13,9 @@
 #include "imp.h"
 
 namespace h5 {
-static void write(const char * const path2h5,
-                  const float * const channeldata[],
-                  const char * const * const channelnames, const int nchannels) {
+void write(const char * const path2h5,
+           const float * const channeldata[],
+           const char * const * const channelnames, const int nchannels) {
     int i;
     hid_t plist_id_access = H5Pcreate(H5P_FILE_ACCESS);
     H5Pset_fapl_mpio(plist_id_access, m::cart, MPI_INFO_NULL);
