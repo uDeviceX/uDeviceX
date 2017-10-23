@@ -14,6 +14,7 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "utils/texo.h"
+#include "utils/texo.dev.h"
 
 #include "utils/kl.h"
 #include "mesh/collision.h"
@@ -134,8 +135,8 @@ union Pos {
 
 __device__ Pos tex2Pos(const Texo<float2> texvert, const int id) {
     Pos r;
-    r.f2[0] = texvert.fetch(3 * id + 0);
-    r.f2[1] = texvert.fetch(3 * id + 1);
+    r.f2[0] = fetch(texvert, 3 * id + 0);
+    r.f2[1] = fetch(texvert, 3 * id + 1);
     return r;
 }
 
@@ -156,7 +157,7 @@ __global__ void compute_colors_tex(const Particle *pp, const int n, const Texo<f
 
     int mbase = nv * sid;
     for (int i = 0; i < nt; ++i) {
-        const int4 t = textri.fetch(i);
+        const int4 t = fetch(textri, i);
 
         const Pos a = tex2Pos(texvert, mbase + t.x);
         const Pos b = tex2Pos(texvert, mbase + t.y);

@@ -1,7 +1,7 @@
 static __device__ void fetch_wall(Texo<float4> pp, int i, /**/ forces::Pa *a) {
     float vx, vy, vz; /* wall velocity */
     float4 r;
-    r = pp.fetch(i);
+    r = fetch(pp, i);
     k_wvel::vell(r.x, r.y, r.z, /**/ &vx, &vy, &vz);
     forces::r3v3k2p(r.x, r.y, r.z, vx, vy, vz, WALL_KIND, /**/ a);
 }

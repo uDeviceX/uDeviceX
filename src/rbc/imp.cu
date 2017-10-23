@@ -18,6 +18,7 @@
 #include "utils/kl.h"
 #include "utils/te.h"
 #include "utils/texo.h"
+#include "utils/texo.dev.h"
 
 #include "utils/mc.h"
 #include "mpi/wrapper.h"

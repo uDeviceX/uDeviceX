@@ -17,6 +17,7 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "utils/texo.h"
+#include "utils/texo.dev.h"
 #include "utils/te.h"
 
 #include "inc/macro.h"

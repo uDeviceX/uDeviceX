@@ -5,8 +5,8 @@ void free_quants(Quants *q) {
 
 void free_ticket(Ticket *t) {
     delete t->rnd;
-    t->texstart.destroy();
-    t->texpp.destroy();
+    destroy(&t->texstart);
+    destroy(&t->texpp);
     fin(&t->cells);
     fin_map(&t->mcells);
 }

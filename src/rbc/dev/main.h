@@ -14,16 +14,16 @@ union Pos {
 
 __device__ Pos tex2Pos(const Texo<float2> texvert, const int id) {
     Pos r;
-    r.f2[0] = texvert.fetch(3 * id + 0);
-    r.f2[1] = texvert.fetch(3 * id + 1);
+    r.f2[0] = fetch(texvert, 3 * id + 0);
+    r.f2[1] = fetch(texvert, 3 * id + 1);
     return r;
 }
 
 __device__ Part tex2Part(const Texo<float2> texvert, const int id) {
     Part p;
-    p.f2[0] = texvert.fetch(3 * id + 0);
-    p.f2[1] = texvert.fetch(3 * id + 1);
-    p.f2[2] = texvert.fetch(3 * id + 2);
+    p.f2[0] = fetch(texvert, 3 * id + 0);
+    p.f2[1] = fetch(texvert, 3 * id + 1);
+    p.f2[2] = fetch(texvert, 3 * id + 2);
     return p;
 }
 
@@ -38,12 +38,12 @@ __device__ float3 adj_tris(int md, int nv, const Texo<float2> texvert, const Tex
     lid   = pid % nv;
     idrbc = pid / nv;
     offset = idrbc * nv;
-    i1 = texadj0.fetch(neighid + md * lid);
+    i1 = fetch(texadj0, neighid + md * lid);
     valid = i1 != -1;
 
-    i2 = texadj0.fetch(((neighid + 1) % md) + md * lid);
+    i2 = fetch(texadj0, ((neighid + 1) % md) + md * lid);
     if (i2 == -1 && valid)
-    i2 = texadj0.fetch(0 + md * lid);
+        i2 = fetch(texadj0, 0 + md * lid);
 
     if (valid) {
         const Part p1 = tex2Part(texvert, offset + i1);
@@ -80,20 +80,20 @@ __device__ float3 adj_dihedrals(int md, int nv, const Texo<float2> texvert, cons
       dihedrals: 0124, 0123
     */
 
-    i1 = texadj0.fetch(neighid + md * lid);
+    i1 = fetch(texadj0, neighid + md * lid);
     valid = i1 != -1;
 
-    i2 = texadj0.fetch(((neighid + 1) % md) + md * lid);
+    i2 = fetch(texadj0, ((neighid + 1) % md) + md * lid);
 
     if (i2 == -1 && valid) {
-        i2 = texadj0.fetch(0 + md * lid);
-        i3 = texadj0.fetch(1 + md * lid);
+        i2 = fetch(texadj0, 0 + md * lid);
+        i3 = fetch(texadj0, 1 + md * lid);
     } else {
-        i3 = texadj0.fetch(((neighid + 2) % md) + md * lid);
-        if (i3 == -1 && valid) i3 = texadj0.fetch(0 + md * lid);
+        i3 = fetch(texadj0, ((neighid + 2) % md) + md * lid);
+        if (i3 == -1 && valid) i3 = fetch(texadj0, 0 + md * lid);
     }
 
-    i4 = texadj1.fetch(neighid + md * lid);
+    i4 = fetch(texadj1, neighid + md * lid);
 
     if (valid) {
         const Pos r1 = tex2Pos(texvert, offset + i1);
@@ -144,7 +144,7 @@ __global__ void area_volume(int nt, int nv, const Texo<float2> texvert, const Te
 
     for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < nt;
          i += blockDim.x * gridDim.x) {
-        int4 ids = textri.fetch(i);
+        int4 ids = fetch(textri, i);
 
         const Pos r0 = tex2Pos(texvert, ids.x + cid * nv);
         const Pos r1 = tex2Pos(texvert, ids.y + cid * nv);

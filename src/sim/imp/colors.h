@@ -28,5 +28,5 @@ void gen_colors() {
     
     collision::get_colors(o::q.pp, o::q.n, texvert, r::tt.textri, r::q.nt, nv, nm, /**/ o::q.cc);
 
-    texvert.destroy();
+    destroy(&texvert);
 }
