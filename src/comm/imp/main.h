@@ -8,15 +8,16 @@ void post_recv(hBags *b, Stamp *s) {
 }
 
 void post_send(const hBags *b, Stamp *s) {
-    int i, n, tag;
+    int i, n, c, cap, tag;
     for (i = 0; i < NFRAGS; ++i) {
-        n = b->counts[i] * b->bsize;
+        c = b->counts[i];
+        cap = b->capacity[i];
+        n = c * b->bsize;
         tag = s->bt + i;
 
-        /*        if (n >= b->capacity[i])
-                   signal_error_extra("sending more than capacity in fragment %d : (%ld / %ld)",
-                                       i, (long) n, (long) b->capacity[i]);
-        */
+        if (n >= cap)
+            signal_error_extra("sending more than capacity in fragment %d : (%ld / %ld)",
+                               i, (long) n, (long) cap);
 
         MC(m::Isend(b->data[i], n, MPI_BYTE, s->ranks[i], tag, s->cart, s->sreq + i));
     }
