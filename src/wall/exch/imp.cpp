@@ -23,24 +23,25 @@ enum {
     LZ = ZS + 2 * ZWM
 };
 
-static bool is_inside(int fid, const Particle p) {
+static void shift(int fid, float r[3]) {
     enum {X, Y, Z};
     const int d[3] = frag_i2d3(fid);
-    float r[3] = {
-        p.r[X] + d[X] * XS,
-        p.r[Y] + d[Y] * YS,
-        p.r[Z] + d[Z] * ZS
-    };
-    
+    r[X] += d[X] * XS;
+    r[Y] += d[Y] * YS;
+    r[Z] += d[Z] * ZS;
+}
+
+static bool is_inside(const Particle p) {
+    enum {X, Y, Z};
     return
-        r[X] >=  -0.5 * LX && r[X] < 0.5 * LX &&
-        r[Y] >=  -0.5 * LY && r[Y] < 0.5 * LY &&
-        r[Z] >=  -0.5 * LZ && r[Z] < 0.5 * LZ;
+        p.r[X] >= -0.5 * LX && p.r[X] < 0.5 * LX &&
+        p.r[Y] >= -0.5 * LY && p.r[Y] < 0.5 * LY &&
+        p.r[Z] >= -0.5 * LZ && p.r[Z] < 0.5 * LZ;
 }
 
 static void fill_bags(int n, const Particle *pp, hBags *b) {
     int i, j, *cc, c;
-    Particle p, **dst;
+    Particle p0, p, **dst;
 
     cc  = b->counts;
     dst = (Particle **) b->data;
@@ -48,9 +49,11 @@ static void fill_bags(int n, const Particle *pp, hBags *b) {
     memset(cc, 0, NBAGS * sizeof(int));
     
     for (i = 0; i < n; ++i) {
-        p = pp[i];
+        p0 = pp[i];
         for (j = 0; j < NFRAGS; ++j) {
-            if (is_inside(i, p)) {
+            p = p0;
+            shift(j, p.r);
+            if (is_inside(p)) {
                 c = cc[i] ++;
                 dst[i][c] = p;
             }
