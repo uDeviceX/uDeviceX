@@ -7,7 +7,7 @@ void post_recv(hBags *b, Stamp *s) {
     }
 }
 
-void post_send(hBags *b, Stamp *s) {
+void post_send(const hBags *b, Stamp *s) {
     int i, n, tag;
     for (i = 0; i < NFRAGS; ++i) {
         n = b->counts[i] * b->bsize;

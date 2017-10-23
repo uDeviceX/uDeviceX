@@ -46,7 +46,7 @@ void fin(/**/ Stamp *s);
 
 /* communication */
 void post_recv(hBags *b, Stamp *s);
-void post_send(hBags *b, Stamp *s);
+void post_send(const hBags *b, Stamp *s);
 
 void wait_recv(Stamp *s, /**/ hBags *b);
 void wait_send(Stamp *s);
