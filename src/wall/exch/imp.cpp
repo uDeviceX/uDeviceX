@@ -1,82 +1,103 @@
 #include <mpi.h>
-#include <vector>
-#include <assert.h>
+#include <stdio.h>
+#include <string.h>
 
 #include <conf.h>
 #include "inc/conf.h"
-#include "inc/def.h"
 
-#include "utils/mc.h"
+#include "mpi/basetags.h"
+#include "mpi/glb.h"
+#include "mpi/wrapper.h"
+#include "frag/imp.h"
+#include "comm/imp.h"
 
 #include "inc/type.h"
-#include "mpi/wrapper.h"
-#include "mpi/glb.h"
 
-void exch(int maxn, /*io*/ Particle *pp, int *n) { /* exchange pp(hst) between processors */
-#define isize(v) ((int)(v).size()) /* [i]nteger [size] */
-    assert(sizeof(Particle) == 6 * sizeof(float)); /* :TODO: dependencies */
+#include "utils/error.h"
+
+using namespace comm;
+
+enum {
+    LX = XS + 2 * XWM,
+    LY = YS + 2 * YWM,
+    LZ = ZS + 2 * ZWM
+};
+
+static bool is_inside(int fid, const Particle p) {
     enum {X, Y, Z};
-    int i, j, c;
-    int dstranks[26], remsizes[26], recv_tags[26];
-    for (i = 0; i < 26; ++i) {
-        int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
-        recv_tags[i] =
-            (2 - d[X]) % 3 + 3 * ((2 - d[Y]) % 3 + 3 * ((2 - d[Z]) % 3));
-        int co_ne[3], ranks[3] = {m::coords[X], m::coords[Y], m::coords[Z]};
-        for (c = 0; c < 3; ++c) co_ne[c] = ranks[c] + d[c];
-        MC(m::Cart_rank(m::cart, co_ne, dstranks + i));
-    }
+    const int d[3] = frag_i2d3(fid);
+    float r[3] = {
+        p.r[X] + d[X] * XS,
+        p.r[Y] + d[Y] * YS,
+        p.r[Z] + d[Z] * ZS
+    };
+    
+    return
+        r[X] >=  -0.5 * LX && r[X] < 0.5 * LX &&
+        r[Y] >=  -0.5 * LY && r[Y] < 0.5 * LY &&
+        r[Z] >=  -0.5 * LZ && r[Z] < 0.5 * LZ;
+}
 
-    // send local counts - receive remote counts
-    {
-        for (i = 0; i < 26; ++i) remsizes[i] = -1;
-        MPI_Request reqrecv[26], reqsend[26];
-        MPI_Status  statuses[26];
-        for (i = 0; i < 26; ++i)
-            MC(m::Irecv(remsizes + i, 1, MPI_INTEGER, dstranks[i],
-                        123 + recv_tags[i], m::cart, reqrecv + i));
-        for (i = 0; i < 26; ++i)
-            MC(m::Isend(n, 1, MPI_INTEGER, dstranks[i], 123 + i, m::cart, reqsend + i));
-        MC(m::Waitall(26, reqrecv, statuses));
-        MC(m::Waitall(26, reqsend, statuses));
-    }
+static void fill_bags(int n, const Particle *pp, hBags *b) {
+    int i, j, *cc, c;
+    Particle p, **dst;
 
-    std::vector<Particle> remote[26];
-    // send local data - receive remote data
-    {
-        for (i = 0; i < 26; ++i) remote[i].resize(remsizes[i]);
-        MPI_Request reqrecv[26], reqsend[26];
-        MPI_Status  statuses[26];
-        for (i = 0; i < 26; ++i)
-            MC(m::Irecv(remote[i].data(), isize(remote[i]) * 6, MPI_FLOAT,
-                        dstranks[i], 321 + recv_tags[i], m::cart,
-                        reqrecv + i));
-        for (i = 0; i < 26; ++i)
-            MC(m::Isend(pp, (*n) * 6, MPI_FLOAT,
-                        dstranks[i], 321 + i, m::cart, reqsend + i));
-        MC(m::Waitall(26, reqrecv, statuses));
-        MC(m::Waitall(26, reqsend, statuses));
-    }
-    MC(m::Barrier(m::cart));
+    cc  = b->counts;
+    dst = (Particle **) b->data;
 
-    int L[3] = {XS, YS, ZS}, WM[3] = {XWM, YWM, ZWM};
-    float lo[3], hi[3];
-    for (c = 0; c < 3; c ++) {
-        lo[c] = -0.5*L[c] - WM[c];
-        hi[c] =  0.5*L[c] + WM[c];
-    }
-
-    for (i = 0; i < 26; ++i) {
-        int d[3] = {(i + 2) % 3 - 1, (i / 3 + 2) % 3 - 1, (i / 9 + 2) % 3 - 1};
-        for (j = 0; j < isize(remote[i]); ++j) {
-            Particle p = remote[i][j];
-            for (c = 0; c < 3; ++c) {
-                p.r[c] += d[c] * L[c];
-                if (p.r[c] < lo[c] || p.r[c] >= hi[c]) goto next;
+    memset(cc, 0, NBAGS * sizeof(int));
+    
+    for (i = 0; i < n; ++i) {
+        p = pp[i];
+        for (j = 0; j < NFRAGS; ++j) {
+            if (is_inside(i, p)) {
+                c = cc[i] ++;
+                dst[i][c] = p;
             }
-            assert(*n + 1 < maxn);
-            pp[(*n)++] = p;
-        next: ;
         }
     }
+}
+
+static void communicate(const hBags *s, Stamp *c, hBags *r) {
+    UC(post_send(s, c));
+    post_recv(r, c);
+    wait_send(c);
+    UC(wait_recv(c, /**/ r));
+}
+
+static void unpack(int maxn, const hBags *b, /*io*/ int *n, Particle *pp) {
+    int i, j, k, c;
+    const Particle *src;
+    k = *n;
+    for (j = 0; j < NFRAGS; ++j) {
+        c = b->counts[j];
+        src = (const Particle *) b->data[j];
+        for (i = 0; i < c; ++i) {
+            pp[k] = src[i];
+            ++k;
+        }
+    }
+    *n = k;
+}
+
+/* exchange pp(hst) between processors to get a wall margin */
+void exch(int maxn, /*io*/ Particle *pp, int *n) {
+    hBags send, recv;
+    Stamp stamp;
+    basetags::TagGen tg;
+    int i, capacity[NBAGS];
+
+    for (i = 0; i < NBAGS; ++i) capacity[i] = maxn;
+    ini(HST_ONLY, NONE, sizeof(Particle), capacity, &send, NULL);
+    ini(HST_ONLY, NONE, sizeof(Particle), capacity, &recv, NULL);
+    ini(&tg);
+    ini(m::cart, &tg, &stamp);
+
+    fill_bags(*n, pp, /**/ &send);
+    communicate(&send, /**/ &stamp, &recv);
+    unpack(maxn, &recv, /**/ n, pp);
+    
+    fin(HST_ONLY, NONE, &send, NULL);
+    fin(HST_ONLY, NONE, &recv, NULL);
+    fin(&stamp);
 }
