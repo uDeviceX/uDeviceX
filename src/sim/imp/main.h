@@ -5,13 +5,17 @@ enum {
     (ZS + 2*ZWM)
 };
 
+enum {
+    MAXNWALL = NCELLSWALL * numberdensity * 2 
+};
+
 void gen() { /* generate */
     run_eq(wall_creation);
     if (walls) {
         dSync();
         sdf::ini(&w::qsdf);
         MC(m::Barrier(m::cart));
-        inter::create_walls(NCELLSWALL, w::qsdf, /*io*/ &o::q, /**/ &w::q);
+        inter::create_walls(MAXNWALL, w::qsdf, /*io*/ &o::q, /**/ &w::q);
     }
     inter::freeze(w::qsdf, /*io*/ &o::q, /**/ &s::q, &r::q);
     clear_vel();
@@ -70,7 +74,7 @@ void sim_strt() {
 
     if (solids) rig::strt_quants(restart::BEGIN, &s::q);
 
-    if (walls) wall::strt_quants(NCELLSWALL, &w::q);
+    if (walls) wall::strt_quants(MAXNWALL, &w::q);
 
     /*T*/
     flu::get_ticketZ(o::q, &o::tz);
