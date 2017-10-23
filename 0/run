@@ -17,7 +17,7 @@ strt1
 
 # force[AB]
 # force=1e-1; forceA
-v=0.4; shift=7; forceB
+v=0.8; shift=$1; forceB
 
 sc=0.75 radius=3.0 rbc1 # rbc[1]
 p_lina                  # p_[test|lina]
