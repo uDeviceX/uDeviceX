@@ -6,29 +6,30 @@ inline void sz_check(int n) {
 
 template<typename T>
 struct Texo {
-    cudaTextureObject_t to;
-
-    __device__ __forceinline__
-    const T fetch(const int i) const {return Tfetch(T, to, i);}
-
-    void setup0(T *data, int n) {
-        sz_check(n);
-
-        cudaResourceDesc resD;
-        cudaTextureDesc  texD;
-
-        memset(&resD, 0, sizeof(resD));
-        resD.resType = cudaResourceTypeLinear;
-        resD.res.linear.devPtr = data;
-        resD.res.linear.sizeInBytes = n * sizeof(T);
-        resD.res.linear.desc = cudaCreateChannelDesc<T>();
-
-        memset(&texD, 0, sizeof(texD));
-        texD.normalizedCoords = 0;
-        texD.readMode = cudaReadModeElementType;
-
-        CC(cudaCreateTextureObject(&to, &resD, &texD, NULL));
-    }
-
-    void destroy() {CC(cudaDestroyTextureObject(to));}
+    cudaTextureObject_t d;
 };
+
+template<typename T>
+void setup0(T *data, int n, /**/ Texo<T> *to) {
+    sz_check(n);
+    
+    cudaResourceDesc resD;
+    cudaTextureDesc  texD;
+    
+    memset(&resD, 0, sizeof(resD));
+    resD.resType = cudaResourceTypeLinear;
+    resD.res.linear.devPtr = data;
+    resD.res.linear.sizeInBytes = n * sizeof(T);
+    resD.res.linear.desc = cudaCreateChannelDesc<T>();
+    
+    memset(&texD, 0, sizeof(texD));
+    texD.normalizedCoords = 0;
+    texD.readMode = cudaReadModeElementType;
+    
+    CC(cudaCreateTextureObject(&to->d, &resD, &texD, NULL));
+}
+
+template<typename T>
+void destroy(/**/ Texo<T> *to) {
+    CC(cudaDestroyTextureObject(to->d));
+}
