@@ -16,7 +16,7 @@ enum {BLUE_COLOR, RED_COLOR};
 #define MAX_OBJ_TYPES 2
 
 /* maximum number density of particles of the objects */
-#define MAX_OBJ_DENSITY (100)
+#define MAX_OBJ_DENSITY (500)
 
 /* maximum number of faces and vertices per one RBC */
 #define MAX_FACE_NUM 1000
