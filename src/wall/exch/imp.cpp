@@ -1,6 +1,7 @@
 #include <mpi.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 
 #include <conf.h>
 #include "inc/conf.h"
@@ -14,6 +15,7 @@
 #include "inc/type.h"
 
 #include "utils/error.h"
+#include "msg.h"
 
 using namespace comm;
 
@@ -68,6 +70,13 @@ static void communicate(const hBags *s, Stamp *c, hBags *r) {
     UC(wait_recv(c, /**/ r));
 }
 
+static void check_counts(int maxn, int n0, const hBags *b) {
+    int i, c = n0;
+    for (i = 0; i < NFRAGS; ++i) c += b->counts[i];
+    if (c >= maxn)
+        ERR("Too many particles for wall : %d / %d\n", c, maxn);
+}
+
 static void unpack(int maxn, const hBags *b, /*io*/ int *n, Particle *pp) {
     int i, j, k, c;
     const Particle *src;
@@ -98,6 +107,7 @@ void exch(int maxn, /*io*/ Particle *pp, int *n) {
 
     fill_bags(*n, pp, /**/ &send);
     communicate(&send, /**/ &stamp, &recv);
+    check_counts(maxn, *n, &recv);
     unpack(maxn, &recv, /**/ n, pp);
     
     fin(HST_ONLY, NONE, &send, NULL);
