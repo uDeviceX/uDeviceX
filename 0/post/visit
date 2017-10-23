@@ -1,6 +1,6 @@
-set -u
+set -ue
 
-b=$HOME/D/r3/s10/0
+b=${1-$HOME/D/r3/s10/0}
 
 vi () { visit 2>.visit 1>/dev/null -nosplash -noconfig -sessionfile `pwd`/"$1"; }
 

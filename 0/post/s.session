@@ -321,186 +321,6 @@
             </Object>
             <Object name="ExpressionList">
                 <Object name="Expression">
-                    <Field name="name" type="string">operators/ConnectedComponents/mesh</Field>
-                    <Field name="definition" type="string">"cell_constant(&lt;mesh&gt;, 0.)"</Field>
-                    <Field name="hidden" type="bool">false</Field>
-                    <Field name="type" type="string">ScalarMeshVar</Field>
-                    <Field name="fromDB" type="bool">false</Field>
-                    <Field name="fromOperator" type="bool">true</Field>
-                    <Field name="operatorName" type="string">ConnectedComponents</Field>
-                    <Field name="meshName" type="string"></Field>
-                    <Field name="dbName" type="string">__none__</Field>
-                    <Field name="autoExpression" type="bool">false</Field>
-                </Object>
-                <Object name="Expression">
-                    <Field name="name" type="string">operators/DataBinning/1D/mesh</Field>
-                    <Field name="definition" type="string">"cell_constant(&lt;mesh&gt;, 0)"</Field>
-                    <Field name="hidden" type="bool">false</Field>
-                    <Field name="type" type="string">CurveMeshVar</Field>
-                    <Field name="fromDB" type="bool">false</Field>
-                    <Field name="fromOperator" type="bool">true</Field>
-                    <Field name="operatorName" type="string">DataBinning</Field>
-                    <Field name="meshName" type="string"></Field>
-                    <Field name="dbName" type="string">__none__</Field>
-                    <Field name="autoExpression" type="bool">false</Field>
-                </Object>
-                <Object name="Expression">
-                    <Field name="name" type="string">operators/DataBinning/2D/mesh</Field>
-                    <Field name="definition" type="string">"cell_constant(&lt;mesh&gt;, 0)"</Field>
-                    <Field name="hidden" type="bool">false</Field>
-                    <Field name="type" type="string">ScalarMeshVar</Field>
-                    <Field name="fromDB" type="bool">false</Field>
-                    <Field name="fromOperator" type="bool">true</Field>
-                    <Field name="operatorName" type="string">DataBinning</Field>
-                    <Field name="meshName" type="string"></Field>
-                    <Field name="dbName" type="string">__none__</Field>
-                    <Field name="autoExpression" type="bool">false</Field>
-                </Object>
-                <Object name="Expression">
-                    <Field name="name" type="string">operators/DataBinning/3D/mesh</Field>
-                    <Field name="definition" type="string">"cell_constant(&lt;mesh&gt;, 0)"</Field>
-                    <Field name="hidden" type="bool">false</Field>
-                    <Field name="type" type="string">ScalarMeshVar</Field>
-                    <Field name="fromDB" type="bool">false</Field>
-                    <Field name="fromOperator" type="bool">true</Field>
-                    <Field name="operatorName" type="string">DataBinning</Field>
-                    <Field name="meshName" type="string"></Field>
-                    <Field name="dbName" type="string">__none__</Field>
-                    <Field name="autoExpression" type="bool">false</Field>
-                </Object>
-                <Object name="Expression">
-                    <Field name="name" type="string">operators/Flux/mesh</Field>
-                    <Field name="definition" type="string">"cell_constant(&lt;mesh&gt;, 0.)"</Field>
-                    <Field name="hidden" type="bool">false</Field>
-                    <Field name="type" type="string">ScalarMeshVar</Field>
-                    <Field name="fromDB" type="bool">false</Field>
-                    <Field name="fromOperator" type="bool">true</Field>
-                    <Field name="operatorName" type="string">Flux</Field>
-                    <Field name="meshName" type="string"></Field>
-                    <Field name="dbName" type="string">__none__</Field>
-                    <Field name="autoExpression" type="bool">false</Field>
-                </Object>
-                <Object name="Expression">
-                    <Field name="name" type="string">operators/Lineout/wall</Field>
-                    <Field name="definition" type="string">"cell_constant(&lt;wall&gt;, 0.)"</Field>
-                    <Field name="hidden" type="bool">false</Field>
-                    <Field name="type" type="string">CurveMeshVar</Field>
-                    <Field name="fromDB" type="bool">false</Field>
-                    <Field name="fromOperator" type="bool">true</Field>
-                    <Field name="operatorName" type="string">Lineout</Field>
-                    <Field name="meshName" type="string"></Field>
-                    <Field name="dbName" type="string">__none__</Field>
-                    <Field name="autoExpression" type="bool">false</Field>
-                </Object>
-                <Object name="Expression">
-                    <Field name="name" type="string">operators/ModelFit/model</Field>
-                    <Field name="definition" type="string">"point_constant(&lt;mesh&gt;, 0)"</Field>
-                    <Field name="hidden" type="bool">false</Field>
-                    <Field name="type" type="string">ScalarMeshVar</Field>
-                    <Field name="fromDB" type="bool">false</Field>
-                    <Field name="fromOperator" type="bool">true</Field>
-                    <Field name="operatorName" type="string">ModelFit</Field>
-                    <Field name="meshName" type="string">mesh</Field>
-                    <Field name="dbName" type="string">__none__</Field>
-                    <Field name="autoExpression" type="bool">false</Field>
-                </Object>
-                <Object name="Expression">
-                    <Field name="name" type="string">operators/ModelFit/distance</Field>
-                    <Field name="definition" type="string">"point_constant(&lt;mesh&gt;, 0)"</Field>
-                    <Field name="hidden" type="bool">false</Field>
-                    <Field name="type" type="string">ScalarMeshVar</Field>
-                    <Field name="fromDB" type="bool">false</Field>
-                    <Field name="fromOperator" type="bool">true</Field>
-                    <Field name="operatorName" type="string">ModelFit</Field>
-                    <Field name="meshName" type="string">mesh</Field>
-                    <Field name="dbName" type="string">__none__</Field>
-                    <Field name="autoExpression" type="bool">false</Field>
-                </Object>
-                <Object name="Expression">
-                    <Field name="name" type="string">operators/StatisticalTrends/Sum/wall</Field>
-                    <Field name="definition" type="string">"cell_constant(&lt;wall&gt;, 0.)"</Field>
-                    <Field name="hidden" type="bool">false</Field>
-                    <Field name="type" type="string">ScalarMeshVar</Field>
-                    <Field name="fromDB" type="bool">false</Field>
-                    <Field name="fromOperator" type="bool">true</Field>
-                    <Field name="operatorName" type="string">StatisticalTrends</Field>
-                    <Field name="meshName" type="string"></Field>
-                    <Field name="dbName" type="string">__none__</Field>
-                    <Field name="autoExpression" type="bool">false</Field>
-                </Object>
-                <Object name="Expression">
-                    <Field name="name" type="string">operators/StatisticalTrends/Mean/wall</Field>
-                    <Field name="definition" type="string">"cell_constant(&lt;wall&gt;, 0.)"</Field>
-                    <Field name="hidden" type="bool">false</Field>
-                    <Field name="type" type="string">ScalarMeshVar</Field>
-                    <Field name="fromDB" type="bool">false</Field>
-                    <Field name="fromOperator" type="bool">true</Field>
-                    <Field name="operatorName" type="string">StatisticalTrends</Field>
-                    <Field name="meshName" type="string"></Field>
-                    <Field name="dbName" type="string">__none__</Field>
-                    <Field name="autoExpression" type="bool">false</Field>
-                </Object>
-                <Object name="Expression">
-                    <Field name="name" type="string">operators/StatisticalTrends/Variance/wall</Field>
-                    <Field name="definition" type="string">"cell_constant(&lt;wall&gt;, 0.)"</Field>
-                    <Field name="hidden" type="bool">false</Field>
-                    <Field name="type" type="string">ScalarMeshVar</Field>
-                    <Field name="fromDB" type="bool">false</Field>
-                    <Field name="fromOperator" type="bool">true</Field>
-                    <Field name="operatorName" type="string">StatisticalTrends</Field>
-                    <Field name="meshName" type="string"></Field>
-                    <Field name="dbName" type="string">__none__</Field>
-                    <Field name="autoExpression" type="bool">false</Field>
-                </Object>
-                <Object name="Expression">
-                    <Field name="name" type="string">"operators/StatisticalTrends/Std. Dev./wall"</Field>
-                    <Field name="definition" type="string">"cell_constant(&lt;wall&gt;, 0.)"</Field>
-                    <Field name="hidden" type="bool">false</Field>
-                    <Field name="type" type="string">ScalarMeshVar</Field>
-                    <Field name="fromDB" type="bool">false</Field>
-                    <Field name="fromOperator" type="bool">true</Field>
-                    <Field name="operatorName" type="string">StatisticalTrends</Field>
-                    <Field name="meshName" type="string"></Field>
-                    <Field name="dbName" type="string">__none__</Field>
-                    <Field name="autoExpression" type="bool">false</Field>
-                </Object>
-                <Object name="Expression">
-                    <Field name="name" type="string">operators/StatisticalTrends/Slope/wall</Field>
-                    <Field name="definition" type="string">"cell_constant(&lt;wall&gt;, 0.)"</Field>
-                    <Field name="hidden" type="bool">false</Field>
-                    <Field name="type" type="string">ScalarMeshVar</Field>
-                    <Field name="fromDB" type="bool">false</Field>
-                    <Field name="fromOperator" type="bool">true</Field>
-                    <Field name="operatorName" type="string">StatisticalTrends</Field>
-                    <Field name="meshName" type="string"></Field>
-                    <Field name="dbName" type="string">__none__</Field>
-                    <Field name="autoExpression" type="bool">false</Field>
-                </Object>
-                <Object name="Expression">
-                    <Field name="name" type="string">operators/StatisticalTrends/Residuals/wall</Field>
-                    <Field name="definition" type="string">"cell_constant(&lt;wall&gt;, 0.)"</Field>
-                    <Field name="hidden" type="bool">false</Field>
-                    <Field name="type" type="string">ScalarMeshVar</Field>
-                    <Field name="fromDB" type="bool">false</Field>
-                    <Field name="fromOperator" type="bool">true</Field>
-                    <Field name="operatorName" type="string">StatisticalTrends</Field>
-                    <Field name="meshName" type="string"></Field>
-                    <Field name="dbName" type="string">__none__</Field>
-                    <Field name="autoExpression" type="bool">false</Field>
-                </Object>
-                <Object name="Expression">
-                    <Field name="name" type="string">operators/SurfaceNormal/mesh</Field>
-                    <Field name="definition" type="string">"cell_constant(&lt;mesh&gt;, 0.)"</Field>
-                    <Field name="hidden" type="bool">false</Field>
-                    <Field name="type" type="string">VectorMeshVar</Field>
-                    <Field name="fromDB" type="bool">false</Field>
-                    <Field name="fromOperator" type="bool">true</Field>
-                    <Field name="operatorName" type="string">SurfaceNormal</Field>
-                    <Field name="meshName" type="string"></Field>
-                    <Field name="dbName" type="string">__none__</Field>
-                    <Field name="autoExpression" type="bool">false</Field>
-                </Object>
-                <Object name="Expression">
                     <Field name="name" type="string">operators/ConnectedComponents/PLY_mesh</Field>
                     <Field name="definition" type="string">"cell_constant(&lt;PLY_mesh&gt;, 0.)"</Field>
                     <Field name="hidden" type="bool">false</Field>
@@ -797,6 +617,30 @@
                     <Field name="fromOperator" type="bool">true</Field>
                     <Field name="operatorName" type="string">Lineout</Field>
                     <Field name="meshName" type="string"></Field>
+                    <Field name="dbName" type="string">__none__</Field>
+                    <Field name="autoExpression" type="bool">false</Field>
+                </Object>
+                <Object name="Expression">
+                    <Field name="name" type="string">operators/ModelFit/model</Field>
+                    <Field name="definition" type="string">"point_constant(&lt;PLY_mesh&gt;, 0)"</Field>
+                    <Field name="hidden" type="bool">false</Field>
+                    <Field name="type" type="string">ScalarMeshVar</Field>
+                    <Field name="fromDB" type="bool">false</Field>
+                    <Field name="fromOperator" type="bool">true</Field>
+                    <Field name="operatorName" type="string">ModelFit</Field>
+                    <Field name="meshName" type="string">PLY_mesh</Field>
+                    <Field name="dbName" type="string">__none__</Field>
+                    <Field name="autoExpression" type="bool">false</Field>
+                </Object>
+                <Object name="Expression">
+                    <Field name="name" type="string">operators/ModelFit/distance</Field>
+                    <Field name="definition" type="string">"point_constant(&lt;PLY_mesh&gt;, 0)"</Field>
+                    <Field name="hidden" type="bool">false</Field>
+                    <Field name="type" type="string">ScalarMeshVar</Field>
+                    <Field name="fromDB" type="bool">false</Field>
+                    <Field name="fromOperator" type="bool">true</Field>
+                    <Field name="operatorName" type="string">ModelFit</Field>
+                    <Field name="meshName" type="string">PLY_mesh</Field>
                     <Field name="dbName" type="string">__none__</Field>
                     <Field name="autoExpression" type="bool">false</Field>
                 </Object>
@@ -2714,19 +2558,19 @@
                 <Field name="windowValid" type="bool">false</Field>
             </Object>
             <Object name="View3DAttributes">
-                <Field name="viewNormal" type="doubleArray" length="3">-0.0626546687144328 -0.00273344891093853 0.998031522921664 </Field>
-                <Field name="focus" type="doubleArray" length="3">16 16 16 </Field>
-                <Field name="viewUp" type="doubleArray" length="3">-0.00773155337629315 0.999967572159029 0.00225337807874918 </Field>
+                <Field name="viewNormal" type="doubleArray" length="3">0 0 1 </Field>
+                <Field name="focus" type="doubleArray" length="3">11.6822395324707 11.6385450363159 12 </Field>
+                <Field name="viewUp" type="doubleArray" length="3">0 1 0 </Field>
                 <Field name="viewAngle" type="double">30</Field>
-                <Field name="parallelScale" type="double">27.712812921102</Field>
-                <Field name="nearPlane" type="double">-55.4256258422041</Field>
-                <Field name="farPlane" type="double">55.4256258422041</Field>
-                <Field name="imagePan" type="doubleArray" length="2">0.0771191061284643 0.055733182383806 </Field>
-                <Field name="imageZoom" type="double">2.14358881</Field>
+                <Field name="parallelScale" type="double">22.0980443034695</Field>
+                <Field name="nearPlane" type="double">-44.1960886069389</Field>
+                <Field name="farPlane" type="double">44.1960886069389</Field>
+                <Field name="imagePan" type="doubleArray" length="2">0 0 </Field>
+                <Field name="imageZoom" type="double">1</Field>
                 <Field name="perspective" type="bool">false</Field>
                 <Field name="eyeAngle" type="double">2</Field>
                 <Field name="centerOfRotationSet" type="bool">false</Field>
-                <Field name="centerOfRotation" type="doubleArray" length="3">16 16 16 </Field>
+                <Field name="centerOfRotation" type="doubleArray" length="3">11.6822395324707 11.6385450363159 12 </Field>
                 <Field name="axis3DScaleFlag" type="bool">false</Field>
                 <Field name="axis3DScales" type="doubleArray" length="3">1 1 1 </Field>
                 <Field name="shear" type="doubleArray" length="3">0 0 1 </Field>
@@ -6238,7 +6082,7 @@
                     <Object name="ViewerWindow">
                         <Field name="windowSize" type="intArray" length="2">738 738 </Field>
                         <Field name="windowImageSize" type="intArray" length="2">738 678 </Field>
-                        <Field name="windowLocation" type="intArray" length="2">364 26 </Field>
+                        <Field name="windowLocation" type="intArray" length="2">626 17 </Field>
                         <Field name="maintainView" type="bool">false</Field>
                         <Field name="cameraView" type="bool">false</Field>
                         <Field name="viewExtentsType" type="string">AVT_ORIGINAL_EXTENTS</Field>
@@ -6594,12 +6438,12 @@
                             <Field name="legendInfoFlag" type="bool">false</Field>
                             <Object name="backgroundColor">
                                 <Object name="ColorAttribute">
-                                    <Field name="color" type="unsignedCharArray" length="4">255 255 255 255 </Field>
+                                    <Field name="color" type="unsignedCharArray" length="4">77 77 77 255 </Field>
                                 </Object>
                             </Object>
                             <Object name="foregroundColor">
                                 <Object name="ColorAttribute">
-                                    <Field name="color" type="unsignedCharArray" length="4">0 0 0 255 </Field>
+                                    <Field name="color" type="unsignedCharArray" length="4">255 0 255 255 </Field>
                                 </Object>
                             </Object>
                             <Field name="gradientBackgroundStyle" type="string">Radial</Field>
@@ -6846,19 +6690,19 @@
                             <Field name="windowValid" type="bool">false</Field>
                         </Object>
                         <Object name="View3DAttributes">
-                            <Field name="viewNormal" type="doubleArray" length="3">-0.0626546687144328 -0.00273344891093853 0.998031522921664 </Field>
-                            <Field name="focus" type="doubleArray" length="3">16 16 16 </Field>
-                            <Field name="viewUp" type="doubleArray" length="3">-0.00773155337629315 0.999967572159029 0.00225337807874918 </Field>
+                            <Field name="viewNormal" type="doubleArray" length="3">0 0 1 </Field>
+                            <Field name="focus" type="doubleArray" length="3">11.6822395324707 11.6385450363159 12 </Field>
+                            <Field name="viewUp" type="doubleArray" length="3">0 1 0 </Field>
                             <Field name="viewAngle" type="double">30</Field>
-                            <Field name="parallelScale" type="double">27.712812921102</Field>
-                            <Field name="nearPlane" type="double">-55.4256258422041</Field>
-                            <Field name="farPlane" type="double">55.4256258422041</Field>
-                            <Field name="imagePan" type="doubleArray" length="2">0.0771191061284643 0.055733182383806 </Field>
-                            <Field name="imageZoom" type="double">2.14358881</Field>
+                            <Field name="parallelScale" type="double">22.0980443034695</Field>
+                            <Field name="nearPlane" type="double">-44.1960886069389</Field>
+                            <Field name="farPlane" type="double">44.1960886069389</Field>
+                            <Field name="imagePan" type="doubleArray" length="2">0 0 </Field>
+                            <Field name="imageZoom" type="double">1</Field>
                             <Field name="perspective" type="bool">false</Field>
                             <Field name="eyeAngle" type="double">2</Field>
                             <Field name="centerOfRotationSet" type="bool">false</Field>
-                            <Field name="centerOfRotation" type="doubleArray" length="3">16 16 16 </Field>
+                            <Field name="centerOfRotation" type="doubleArray" length="3">11.6822395324707 11.6385450363159 12 </Field>
                             <Field name="axis3DScaleFlag" type="bool">false</Field>
                             <Field name="axis3DScales" type="doubleArray" length="3">1 1 1 </Field>
                             <Field name="shear" type="doubleArray" length="3">0 0 1 </Field>
@@ -6939,7 +6783,7 @@
                                 <Field name="intAttribute2" type="int">5</Field>
                                 <Field name="intAttribute3" type="int">1</Field>
                                 <Field name="doubleVector1" type="doubleVector"></Field>
-                                <Field name="stringVector1" type="stringVector"></Field>
+                                <Field name="stringVector1" type="stringVector">"" </Field>
                                 <Field name="stringVector2" type="stringVector">"Whole mesh (PLY_mesh)" </Field>
                             </Object>
                         </Object>
@@ -6961,16 +6805,16 @@
                                 <Field name="pluginID" type="string">Contour_1.0</Field>
                                 <Field name="sourceID" type="string">SOURCE01</Field>
                                 <Field name="variableName" type="string">wall</Field>
-                                <Field name="active" type="bool">true</Field>
+                                <Field name="active" type="bool">false</Field>
                                 <Field name="hidden" type="bool">false</Field>
                                 <Field name="realized" type="bool">true</Field>
                                 <Object name="ViewerPlot">
                                     <Field name="plotDescription" type="string"></Field>
                                     <Field name="cacheIndex" type="int">0</Field>
                                     <Field name="spatialExtentsType" type="string">AVT_ORIGINAL_EXTENTS</Field>
-                                    <Field name="bgColor" type="doubleArray" length="3">1 1 1 </Field>
-                                    <Field name="fgColor" type="doubleArray" length="3">0 0 0 </Field>
-                                    <Field name="expandedFlag" type="bool">false</Field>
+                                    <Field name="bgColor" type="doubleArray" length="3">0.301960784313725 0.301960784313725 0.301960784313725 </Field>
+                                    <Field name="fgColor" type="doubleArray" length="3">1 0 1 </Field>
+                                    <Field name="expandedFlag" type="bool">true</Field>
                                     <Field name="followsTime" type="bool">true</Field>
                                     <Object name="ContourAttributes">
                                         <Object name="defaultPalette">
@@ -6987,10 +6831,10 @@
                                         <Field name="colorTableName" type="string">Default</Field>
                                         <Field name="legendFlag" type="bool">true</Field>
                                         <Field name="lineStyle" type="int">0</Field>
-                                        <Field name="lineWidth" type="int">0</Field>
+                                        <Field name="lineWidth" type="int">9</Field>
                                         <Object name="singleColor">
                                             <Object name="ColorAttribute">
-                                                <Field name="color" type="unsignedCharArray" length="4">0 255 255 59 </Field>
+                                                <Field name="color" type="unsignedCharArray" length="4">0 0 0 255 </Field>
                                             </Object>
                                         </Object>
                                         <Field name="contourNLevels" type="int">10</Field>
@@ -7002,7 +6846,7 @@
                                         <Field name="min" type="double">0</Field>
                                         <Field name="max" type="double">1</Field>
                                         <Field name="scaling" type="string">Linear</Field>
-                                        <Field name="wireframe" type="bool">false</Field>
+                                        <Field name="wireframe" type="bool">true</Field>
                                         <Field name="invertColorTable" type="bool">false</Field>
                                     </Object>
                                     <Object name="plotKeyframes">
@@ -7024,10 +6868,10 @@
                                                     <Field name="colorTableName" type="string">Default</Field>
                                                     <Field name="legendFlag" type="bool">true</Field>
                                                     <Field name="lineStyle" type="int">0</Field>
-                                                    <Field name="lineWidth" type="int">0</Field>
+                                                    <Field name="lineWidth" type="int">9</Field>
                                                     <Object name="singleColor">
                                                         <Object name="ColorAttribute">
-                                                            <Field name="color" type="unsignedCharArray" length="4">0 255 255 59 </Field>
+                                                            <Field name="color" type="unsignedCharArray" length="4">0 0 0 255 </Field>
                                                         </Object>
                                                     </Object>
                                                     <Field name="contourNLevels" type="int">10</Field>
@@ -7039,7 +6883,7 @@
                                                     <Field name="min" type="double">0</Field>
                                                     <Field name="max" type="double">1</Field>
                                                     <Field name="scaling" type="string">Linear</Field>
-                                                    <Field name="wireframe" type="bool">false</Field>
+                                                    <Field name="wireframe" type="bool">true</Field>
                                                     <Field name="invertColorTable" type="bool">false</Field>
                                                 </Object>
                                             </Object>
@@ -7067,19 +6911,19 @@
                                 <Field name="pluginID" type="string">Subset_1.0</Field>
                                 <Field name="sourceID" type="string">SOURCE00</Field>
                                 <Field name="variableName" type="string">PLY_mesh</Field>
-                                <Field name="active" type="bool">false</Field>
+                                <Field name="active" type="bool">true</Field>
                                 <Field name="hidden" type="bool">false</Field>
                                 <Field name="realized" type="bool">true</Field>
                                 <Object name="ViewerPlot">
                                     <Field name="plotDescription" type="string"></Field>
                                     <Field name="cacheIndex" type="int">0</Field>
                                     <Field name="spatialExtentsType" type="string">AVT_ORIGINAL_EXTENTS</Field>
-                                    <Field name="bgColor" type="doubleArray" length="3">1 1 1 </Field>
-                                    <Field name="fgColor" type="doubleArray" length="3">0 0 0 </Field>
-                                    <Field name="expandedFlag" type="bool">false</Field>
+                                    <Field name="bgColor" type="doubleArray" length="3">0.301960784313725 0.301960784313725 0.301960784313725 </Field>
+                                    <Field name="fgColor" type="doubleArray" length="3">1 0 1 </Field>
+                                    <Field name="expandedFlag" type="bool">true</Field>
                                     <Field name="followsTime" type="bool">true</Field>
                                     <Object name="SubsetAttributes">
-                                        <Field name="colorType" type="string">ColorByMultipleColors</Field>
+                                        <Field name="colorType" type="string">ColorBySingleColor</Field>
                                         <Field name="colorTableName" type="string">Default</Field>
                                         <Field name="invertColorTable" type="bool">false</Field>
                                         <Field name="filledFlag" type="bool">true</Field>
@@ -7100,7 +6944,7 @@
                                         </Object>
                                         <Field name="subsetNames" type="stringVector">"Whole mesh (PLY_mesh)" </Field>
                                         <Field name="subsetType" type="string">Mesh</Field>
-                                        <Field name="opacity" type="double">1</Field>
+                                        <Field name="opacity" type="double">0.403921568627451</Field>
                                         <Field name="wireframe" type="bool">false</Field>
                                         <Field name="drawInternal" type="bool">false</Field>
                                         <Field name="smoothingLevel" type="int">0</Field>
@@ -7115,7 +6959,7 @@
                                             <Field name="indices" type="intVector">0 </Field>
                                             <Object name="attributes">
                                                 <Object name="SubsetAttributes">
-                                                    <Field name="colorType" type="string">ColorByMultipleColors</Field>
+                                                    <Field name="colorType" type="string">ColorBySingleColor</Field>
                                                     <Field name="colorTableName" type="string">Default</Field>
                                                     <Field name="invertColorTable" type="bool">false</Field>
                                                     <Field name="filledFlag" type="bool">true</Field>
@@ -7136,7 +6980,7 @@
                                                     </Object>
                                                     <Field name="subsetNames" type="stringVector">"Whole mesh (PLY_mesh)" </Field>
                                                     <Field name="subsetType" type="string">Mesh</Field>
-                                                    <Field name="opacity" type="double">1</Field>
+                                                    <Field name="opacity" type="double">0.403921568627451</Field>
                                                     <Field name="wireframe" type="bool">false</Field>
                                                     <Field name="drawInternal" type="bool">false</Field>
                                                     <Field name="smoothingLevel" type="int">0</Field>
