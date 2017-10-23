@@ -54,8 +54,8 @@ static void fill_bags(int n, const Particle *pp, hBags *b) {
             p = p0;
             shift(j, p.r);
             if (is_inside(p)) {
-                c = cc[i] ++;
-                dst[i][c] = p;
+                c = cc[j] ++;
+                dst[j][c] = p;
             }
         }
     }
