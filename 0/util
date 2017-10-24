@@ -43,6 +43,15 @@ cyl    () { nx=1   ny=1 nz=1; g_cyl;  full; bop1; }
 box    () { nx=1   ny=1 nz=1; g_box;  full; bop1; }
 
 msg () { printf ': %s\n' "$*" >&2; }
+p_stick () { # sets Param
+    local A As Gamma Rbc Time
+    Time="dt=1e-4"
+    A="    adpd_b=2.66667  adpd_r=2.66667 adpd_br=2.66667"
+    As="  adpd_sw=$sw"
+    Gamma="gdpd_b=5        gdpd_r=15      gdpd_br=7.5"
+    Rbc="RBC_PARAMS_LINA DPD_GRAVITY"
+    Param="$A $As $Gamma $Rbc $Time"
+}
 
 p_lina () { # sets Param
     local A Gamma Rbc Time
