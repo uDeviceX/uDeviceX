@@ -13,14 +13,14 @@ safe0
 narrow
 
 # [01]
-strt1
+strt0
 
 # force[AB]
 # force=1e-1; forceA
 v=0.4; shift=10; forceB
 
 sc=0.75 radius=3.0 rbc1 # rbc[1]
-sw=$1;  p_stick         # p_[test|lina|stick]
+p_lina                  # p_[test|lina|stick]
 
 Domain="XS=$xs YS=$ys ZS=$zs"
 u.conf "$s" "$u" "$c" <<!
