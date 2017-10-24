@@ -64,9 +64,40 @@ static __device__ void force1(Pa *A, Pa *B, DPDparam p, int ljkind, /**/ Fo *f) 
            f);
 }
 
+static __device__ void fill_g(float g[N_COLOR][N_COLOR]) {
+    enum {B = BLUE_COLOR, R = RED_COLOR, S = SOLID_COLOR, W = WALL_COLOR};
+
+    g[B][B] = gdpd_b; g[R][R] = gdpd_r; g[S][S] = gdpd_b;
+
+    g[B][R] = g[R][B] = gdpd_br;
+    g[B][S] = g[S][B] = gdpd_b;
+    g[B][W] = g[W][B] = gdpd_b;
+
+    g[R][S] = g[S][R] = gdpd_r;
+    g[R][W] = g[W][R] = gdpd_r;
+
+    g[S][W] = g[W][S] = gdpd_b;
+}
+
+static __device__ void fill_a(float a[N_COLOR][N_COLOR]) {
+    enum {B = BLUE_COLOR, R = RED_COLOR, S = SOLID_COLOR, W = WALL_COLOR};
+
+    a[B][B] = adpd_b; a[R][R] = adpd_r; a[S][S] = adpd_b;
+
+    a[B][R] = a[R][B] = adpd_br;
+    a[B][S] = a[S][B] = adpd_b;
+    a[B][W] = a[W][B] = adpd_b;
+
+    a[R][S] = a[S][R] = adpd_r;
+    a[R][W] = a[W][R] = adpd_r;
+
+    a[S][W] = a[W][S] = adpd_b;
+}
+
 static __device__ void force2(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
                               /**/ Fo *f) {
-    float gamma[N_COLOR][N_COLOR];
+    float g[N_COLOR][N_COLOR], a[N_COLOR][N_COLOR];
+    fill_g(/**/ g); fill_a(/**/ a);
 
     /* dispatch on color */
     DPDparam p;
