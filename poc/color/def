@@ -1,0 +1,22 @@
+#!/usr/bin/awk -f
+
+# generate defaults for colors
+
+function write(   s) {
+    s = t
+    gsub(/%a%/, a, s)
+    gsub(/%p%/, p, s)
+    gsub(/%d%/, d, s)
+    print s
+}
+
+BEGIN {
+    while (getline < "def.templ" > 0)
+	t = t $0 "\n"
+}
+
+NF {
+    a = $1; d = $2;
+    p = "g"; write()
+    p = "a"; write()
+}
