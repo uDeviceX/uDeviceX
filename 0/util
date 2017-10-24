@@ -22,6 +22,12 @@ g_cyl () { #
     geom
 }
 
+g_narrow () { # cylinder + narrow walls
+    xs=24 ys=24 zs=16
+    tsdf_narrow
+    geom
+}
+
 g_box () { #
     xs=64 ys=52 zs=56
     tsdf_box
