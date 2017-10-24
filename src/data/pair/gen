@@ -1,5 +1,11 @@
 #!/usr/bin/awk -f
 
+function ini() {
+    nc = 0; C[++nc] = "BLUE"; C[++nc] = "RED"
+    nk = 0; K[++nk] = "SOLVENT"; K[++nk] = "SOLID"; K[++nk] = "WALL"
+    n = 100
+}
+
 function rnd(l, h) { return (h-l)*rand() + l}
 function r()      { return rnd(-1 ,  1) }
 function v()      { return rnd(-10, 10) }
@@ -16,10 +22,7 @@ function color()    { return C[randint(nc)] }
 function kind()     { return K[randint(nk)] }
 
 BEGIN {
-    nc = 0; C[++nc] = "BLUE"; C[++nc] = "RED"
-    nk = 0; K[++nk] = "SOLVENT"; K[++nk] = "SOLID"; K[++nk] = "WALL"
-
-    n = 10
+    ini()
     while (n--) {
 	gen(); write()
 	gen(); write()
