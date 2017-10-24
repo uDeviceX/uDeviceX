@@ -51,4 +51,4 @@
 #define field_dumps             true
 #define field_freq              10000
 #define strt_dumps              true
-#define strt_freq               1000000
+#define strt_freq               10000
