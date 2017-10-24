@@ -9,11 +9,14 @@ function ini() {
 function rnd(l, h) { return (h-l)*rand() + l}
 function r()      { return rnd(-1 ,  1) }
 function v()      { return rnd(-10, 10) }
-function gen()      {
+function gen0()      {
     x = r(); y = r(); z = r()
     vx = v(); vy = v(); vz = v()
     k = kind(); c = color()
 }
+
+function genA() { gen0() }
+function genB() { gen0(); if (k == "WALL") genB() }
 function write() {
     print x, y, z, vx, vy, vz, k, c
 }
@@ -24,7 +27,7 @@ function kind()     { return K[randint(nk)] }
 BEGIN {
     ini()
     while (n--) {
-	gen(); write()
-	gen(); write()
+	genA(); write()
+	genB(); write()
     }
 }
