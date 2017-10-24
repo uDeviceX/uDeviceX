@@ -1,6 +1,7 @@
 /* used in forces.h */
 enum {SOLVENT_KIND, SOLID_KIND, WALL_KIND};
 
+#define N_COLOR (4)
 enum {BLUE_COLOR, RED_COLOR, /* solvent colors */
       SOLID_COLOR, WALL_COLOR};
 
