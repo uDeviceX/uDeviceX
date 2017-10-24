@@ -5,7 +5,10 @@ u.conf0 u/pair
 u.run $b/udx < $s/data/pair/2 > pair.out.txt
 
 # TEST: pair.1
-s=. b=.
-u.conf0 u/pair
+s=. b=. c=conf/default.h
+u.conf $s u/pair $c <<!
+run
+!
+
 { u.make clean && u.make -j;     } > /dev/null
 u.run $b/udx < $s/data/pair/rnd > pair.out.txt
