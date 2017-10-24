@@ -1,1 +1,1 @@
-all:; ./def < def.values 
+all:; ./def < def.values
