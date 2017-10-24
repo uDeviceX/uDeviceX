@@ -66,7 +66,7 @@ static __device__ void force1(Pa *A, Pa *B, DPDparam p, int ljkind, /**/ Fo *f) 
 
 static __device__ void force2(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
                               /**/ Fo *f) {
-    const float gamma[N_COLOR][N_COLOR];
+    float gamma[N_COLOR][N_COLOR];
 
     /* dispatch on color */
     DPDparam p;
