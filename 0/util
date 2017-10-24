@@ -98,7 +98,8 @@ strt1 () {
     Restart="RESTART=true"
     if test $h = acer; then return; fi
     mkdir -p h5                         # TODO
-    cp -r $HOME/strt3      strt
+    if test -d strt; then rm strt; fi
+    cp -r $HOME/strt3  strt
 }
 
 ae () { awk 'BEGIN {print '"$@"'}'; }
