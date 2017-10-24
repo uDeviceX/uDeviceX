@@ -99,12 +99,32 @@ void ini(cudaArray *arrsdf, tex3Dca<float> *texsdf) {
     delete[] D;
 }
 
+/* sort solvent particle into remaining in solvent and turning into wall according to keys (all on hst) */
+static void split_wall_solvent(const int *keys, /*io*/ int *s_n, Particle *s_pp, /**/ int *w_n, Particle *w_pp) {
+    int n = *s_n;
+    Particle p;
+    int k, ia = 0, is = 0, iw = 0; /* all, solvent, wall */
+
+    for (ia = 0; ia < n; ++ia) {
+        k = keys[ia];
+        p = s_pp[ia];
+        
+        if      (k == W_BULK) s_pp[is++] = p;
+        else if (k == W_WALL) w_pp[iw++] = p;
+    }
+    *s_n = is;
+    *w_n = iw;
+}
+
 /* sort solvent particle (dev) into remaining in solvent (dev) and turning into wall (hst)*/
 static void bulk_wall0(const tex3Dca<float> texsdf, /*io*/ Particle *s_pp, int* s_n,
                        /*o*/ Particle *w_pp, int *w_n, /*w*/ int *keys) {
     int n = *s_n;
     int k, a = 0, b = 0, w = 0; /* all, bulk, wall */
+
     KL(dev::fill,(k_cnf(n)), (texsdf, s_pp, n, keys));
+
+
     for (/* */ ; a < n; a++) {
         cD2H(&k, &keys[a], 1);
         if      (k == W_BULK) {cD2D(&s_pp[b], &s_pp[a], 1); b++;}
