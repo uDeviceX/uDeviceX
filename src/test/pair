@@ -3,3 +3,9 @@ s=. b=.
 u.conf0 u/pair
 { u.make clean && u.make -j;     } > /dev/null
 u.run $b/udx < $s/data/pair/2 > pair.out.txt
+
+# cTEST: pair.1
+s=. b=.
+u.conf0 u/pair
+{ u.make clean && u.make -j;     } > /dev/null
+u.run $b/udx < $s/data/pair/rnd > pair.out.txt
