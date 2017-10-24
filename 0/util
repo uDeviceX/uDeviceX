@@ -40,13 +40,14 @@ bop1 () { Bop="part_dumps=true force_dumps=true"; }
 rbc0 () { Rbc= ;                                  }
 rbc1 () { Rbc="rbcs"; plcmt $radius $sc;          }
 
-small  () { nx=7   ny=2 nz=1; g_big; part;  bop0; }
-normal () { nx=14  ny=4 nz=1; g_big; part;  bop0; }
-big    () { nx=28  ny=8 nz=1; g_big; part;  bop0; }
-oneA   () { nx=1   ny=1 nz=1; g_oneA; full; bop1; }
-oneB   () { nx=1   ny=1 nz=1; g_oneB; full; bop1; }
-cyl    () { nx=1   ny=1 nz=1; g_cyl;  full; bop1; }
-box    () { nx=1   ny=1 nz=1; g_box;  full; bop1; }
+small  () { nx=7   ny=2 nz=1; g_big;    part; bop0; }
+normal () { nx=14  ny=4 nz=1; g_big;    part; bop0; }
+big    () { nx=28  ny=8 nz=1; g_big;    part; bop0; }
+oneA   () { nx=1   ny=1 nz=1; g_oneA;   full; bop1; }
+oneB   () { nx=1   ny=1 nz=1; g_oneB;   full; bop1; }
+cyl    () { nx=1   ny=1 nz=1; g_cyl;    full; bop1; }
+narrow () { nx=1   ny=1 nz=1; g_narrow; full; bop1; }
+box    () { nx=1   ny=1 nz=1; g_box;    full; bop1; }
 
 msg () { printf ': %s\n' "$*" >&2; }
 p_stick () { # sets Param
