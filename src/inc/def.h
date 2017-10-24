@@ -1,7 +1,8 @@
 /* used in forces.h */
 enum {SOLVENT_KIND, SOLID_KIND, WALL_KIND};
 
-enum {BLUE_COLOR, RED_COLOR};
+enum {BLUE_COLOR, RED_COLOR, /* solvent colors */
+      SOLID_COLOR, WALL_COLOR};
 
 /* maximum particle number per one processor for static allocation */
 #define MAX_PART_NUM (3*XS*YS*ZS*numberdensity)
