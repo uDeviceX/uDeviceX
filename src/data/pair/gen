@@ -1,0 +1,27 @@
+#!/usr/bin/awk -f
+
+function rnd(l, h) { return (h-l)*rand() + l}
+function r()      { return rnd(-1 ,  1) }
+function v()      { return rnd(-10, 10) }
+function gen()      {
+    x = r(); y = r(); z = r()
+    vx = v(); vy = v(); vz = v()
+    k = kind(); c = color()
+}
+function write() {
+    print x, y, z, vx, vy, vz, k, c
+}
+function randint(n) { return int(n * rand()) + 1 }
+function color()    { return C[randint(nc)] }
+function kind()     { return K[randint(nk)] }
+
+BEGIN {
+    nc = 0; C[++nc] = "BLUE"; C[++nc] = "RED"
+    nk = 0; K[++nk] = "SOLVENT"; K[++nk] = "SOLID"; K[++nk] = "WALL"
+
+    n = 10
+    while (n--) {
+	gen(); write()
+	gen(); write()
+    }
+}
