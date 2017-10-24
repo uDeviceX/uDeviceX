@@ -97,7 +97,6 @@ static __device__ void fill_a(float a[N_COLOR][N_COLOR]) {
 static __device__ void color2par(int ca, int cb, /**/ DPDparam *p) {
     enum {B = BLUE_COLOR, R = RED_COLOR, S = SOLID_COLOR, W = WALL_COLOR};
     float g[N_COLOR][N_COLOR], a[N_COLOR][N_COLOR];
-
     fill_g(/**/ g); fill_a(/**/ a);
     if         (!multi_solvent) {
         p->gamma = g[B][B];
@@ -106,13 +105,13 @@ static __device__ void color2par(int ca, int cb, /**/ DPDparam *p) {
         p->gamma = g[ca][cb];
         p->a     = a[ca][cb];
     }
+    p->rnd = rnd;
 }
 
 static __device__ void force2(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
                               /**/ Fo *f) {
     DPDparam p;
     color2par(ca, cb, &p);
-    p.rnd = rnd;
     force1(A, B, p, ljkind, /**/ f);
 }
 
