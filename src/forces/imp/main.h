@@ -94,29 +94,24 @@ static __device__ void fill_a(float a[N_COLOR][N_COLOR]) {
     a[S][W] = a[W][S] = adpd_b;
 }
 
+static __device__ void color2par(int ca, int cb, /**/ DPDparam *p) {
+    enum {B = BLUE_COLOR, R = RED_COLOR, S = SOLID_COLOR, W = WALL_COLOR};
+    float g[N_COLOR][N_COLOR], a[N_COLOR][N_COLOR];
+
+    fill_g(/**/ g); fill_a(/**/ a);
+    if         (!multi_solvent) {
+        p->gamma = g[B][B];
+        p->a     = a[B][B];
+    } else {
+        p->gamma = g[ca][cb];
+        p->a     = a[ca][cb];
+    }
+}
+
 static __device__ void force2(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
                               /**/ Fo *f) {
-    float g[N_COLOR][N_COLOR], a[N_COLOR][N_COLOR];
-    fill_g(/**/ g); fill_a(/**/ a);
-
-    /* dispatch on color */
     DPDparam p;
-    if         (!multi_solvent) {
-        p.gamma = gdpd_b;
-        p.a     = adpd_b;
-    } else if (ca == BLUE_COLOR && cb == BLUE_COLOR) {
-        p.gamma = gdpd_b;
-        p.a     = adpd_b;
-    } else if (ca == RED_COLOR && cb == RED_COLOR) {
-        p.gamma = gdpd_r;
-        p.a     = adpd_r;
-    } else if (seteq(ca, cb,   BLUE_COLOR, RED_COLOR)) {
-        p.gamma = gdpd_br;
-        p.a     = adpd_br;
-    } else {
-        printf("unknown color pair: %ld %ld\n", ca, cb);
-        assert(0);
-    }
+    color2par(ca, cb, &p);
     p.rnd = rnd;
     force1(A, B, p, ljkind, /**/ f);
 }
