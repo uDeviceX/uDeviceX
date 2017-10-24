@@ -3,7 +3,7 @@
 function ini() {
     nc = 0; C[++nc] = "BLUE"; C[++nc] = "RED"
     nk = 0; K[++nk] = "SOLVENT"; K[++nk] = "SOLID"; K[++nk] = "WALL"
-    n = 100
+    n = 1000
 }
 
 function rnd(l, h) { return (h-l)*rand() + l}
