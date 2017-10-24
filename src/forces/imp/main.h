@@ -105,39 +105,32 @@ static __device__ void color2par(int ca, int cb, /**/ DPDparam *p) {
         p->gamma = g[ca][cb];
         p->a     = a[ca][cb];
     }
-    p->rnd = rnd;
 }
 
 static __device__ void force2(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
                               /**/ Fo *f) {
     DPDparam p;
-    color2par(ca, cb, &p);
+    color2par(ca, cb, &p); p.rnd = rnd;
     force1(A, B, p, ljkind, /**/ f);
 }
 
-static __device__ void force(Pa A, Pa B, float rnd, /**/ Fo *f) {
-    /* dispatch on kind and pack force */
-    int ljkind; /* call LJ? */
-    int ka, kb;
-    int ca, cb; /* corrected colors */
+static __device__ int kind2color(int k, int c) {
     enum {O = SOLVENT_KIND, S = SOLID_KIND, W = WALL_KIND};
+    if (k == SOLID_KIND) c = SOLID_COLOR;
+    if (k == WALL_KIND ) c = WALL_COLOR;
+    return c;
+}
+
+static __device__ void force(Pa A, Pa B, float rnd, /**/ Fo *f) {
+    enum {O = SOLVENT_KIND, S = SOLID_KIND, W = WALL_KIND};
+    int ljkind;
+    int ka, kb;
+    int ca, cb;
     ka = A.kind; kb = B.kind;
     ca = A.color; cb = B.color;
     ljkind = LJ_NONE;
-
-    if        (ka == O && kb == O) {
-        /* no correction */
-    } else if (ka == S   && kb == S) {
-        ca = cb = BLUE_COLOR;   ljkind = LJ_TWO;
-    } else if (seteq(ka, kb,  O, S)) {
-        copy_color(ka, kb, O, /**/ &ca, &cb);
-    } else if (seteq(ka, kb,  O, W)) {
-        copy_color(ka, kb, O, /**/ &ca, &cb);
-    } else if (seteq(ka, kb,  S, W)) {
-        ca = cb = BLUE_COLOR;
-    } else {
-        printf("unknown kind pair: %ld %ld\n", ka, kb);
-        assert(0);
-    }
+    if (ka == S && kb == S) ljkind = LJ_TWO;
+    ca = kind2color(ka, ca);
+    cb = kind2color(kb, cb);
     force2(&A, &B, ca, cb, ljkind, rnd, /**/ f);
 }
