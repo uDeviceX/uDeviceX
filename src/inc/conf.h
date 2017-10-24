@@ -303,3 +303,23 @@
 #if !defined(DPD_GRAVITY) && !defined(DPD_CHARGE)
   #define DPD_CHARGE
 #endif
+
+#ifndef gdpd_bs
+  #define gdpd_bs gdpd_b
+#endif
+#ifndef gdpd_bw
+  #define gdpd_bw gdpd_b
+#endif
+#ifndef gdpd_rw
+  #define gdpd_rw gdpd_r
+#endif
+
+#ifndef adpd_bs
+  #define adpd_bs adpd_b
+#endif
+#ifndef adpd_bw
+  #define adpd_bw adpd_b
+#endif
+#ifndef adpd_rw
+  #define adpd_rw adpd_r
+#endif
