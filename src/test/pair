@@ -4,7 +4,7 @@ u.conf0 u/pair
 { u.make clean && u.make -j;     } > /dev/null
 u.run $b/udx < $s/data/pair/2 > pair.out.txt
 
-# TEST: pair.1
+# nTEST: pair.1
 s=. b=. c=conf/default.h
 u.conf $s u/pair $c <<!
 multi_solvent=false
