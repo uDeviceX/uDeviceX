@@ -9,7 +9,8 @@ void pack(int nv, const Particle *pp, /**/ Pack *p) {
 }
 
 void download(Pack *p) {
-    download_counts(1, p->map, /**/ p->hpp.counts);
+    int nw = 1;
+    download_counts(nw, NFRAGS, p->map, /**/ p->hpp.counts);
 }
 
 
