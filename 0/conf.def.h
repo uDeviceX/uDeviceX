@@ -14,7 +14,7 @@
 /* DPD */
 #define numberdensity           10
 #define kBT                     0.00444302
-#define dt                      5e-4
+#define dt                      1e-3
 #define dpd_mass                1.0
 #define rbc_mass                0.5
 #define solid_mass              1.0
