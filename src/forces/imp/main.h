@@ -70,13 +70,13 @@ static __device__ void fill_g(float g[N_COLOR][N_COLOR]) {
     g[B][B] = gdpd_b; g[R][R] = gdpd_r; g[S][S] = gdpd_b;
 
     g[B][R] = g[R][B] = gdpd_br;
-    g[B][S] = g[S][B] = gdpd_b;
-    g[B][W] = g[W][B] = gdpd_b;
+    g[B][S] = g[S][B] = gdpd_bs;
+    g[B][W] = g[W][B] = gdpd_bw;
 
-    g[R][S] = g[S][R] = gdpd_r;
-    g[R][W] = g[W][R] = gdpd_r;
+    g[R][S] = g[S][R] = gdpd_rs;
+    g[R][W] = g[W][R] = gdpd_rw;
 
-    g[S][W] = g[W][S] = gdpd_b;
+    g[S][W] = g[W][S] = gdpd_sw;
 }
 
 static __device__ void fill_a(float a[N_COLOR][N_COLOR]) {
@@ -85,13 +85,13 @@ static __device__ void fill_a(float a[N_COLOR][N_COLOR]) {
     a[B][B] = adpd_b; a[R][R] = adpd_r; a[S][S] = adpd_b;
 
     a[B][R] = a[R][B] = adpd_br;
-    a[B][S] = a[S][B] = adpd_b;
-    a[B][W] = a[W][B] = adpd_b;
+    a[B][S] = a[S][B] = adpd_bs;
+    a[B][W] = a[W][B] = adpd_bw;
 
-    a[R][S] = a[S][R] = adpd_r;
-    a[R][W] = a[W][R] = adpd_r;
+    a[R][S] = a[S][R] = adpd_rs;
+    a[R][W] = a[W][R] = adpd_rw;
 
-    a[S][W] = a[W][S] = adpd_b;
+    a[S][W] = a[W][S] = adpd_sw;
 }
 
 static __device__ void color2par(int ca, int cb, /**/ DPDparam *p) {
