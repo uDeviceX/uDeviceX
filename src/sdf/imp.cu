@@ -119,18 +119,20 @@ static void split_wall_solvent(const int *keys, /*io*/ int *s_n, Particle *s_pp,
 /* sort solvent particle (dev) into remaining in solvent (dev) and turning into wall (hst)*/
 static void bulk_wall0(const tex3Dca<float> texsdf, /*io*/ Particle *s_pp, int* s_n,
                        /*o*/ Particle *w_pp, int *w_n, /*w*/ int *keys) {
-    int n = *s_n;
-    int k, a = 0, b = 0, w = 0; /* all, bulk, wall */
-
+    int n = *s_n, *keys_hst;
+    Particle *s_pp_hst;
+    s_pp_hst = (Particle *) malloc(n * sizeof(Particle));
+    keys_hst = (int *) malloc(n * sizeof(int));
+    
     KL(dev::fill,(k_cnf(n)), (texsdf, s_pp, n, keys));
+    cD2H(keys_hst, keys, n);
+    cD2H(s_pp_hst, s_pp, n);
 
-
-    for (/* */ ; a < n; a++) {
-        cD2H(&k, &keys[a], 1);
-        if      (k == W_BULK) {cD2D(&s_pp[b], &s_pp[a], 1); b++;}
-        else if (k == W_WALL) {cD2H(&w_pp[w], &s_pp[a], 1); w++;}
-    }
-    *s_n = b; *w_n = w;
+    split_wall_solvent(keys_hst, /*io*/ s_n, s_pp_hst, /**/ w_n, w_pp);
+    cH2D(s_pp, s_pp_hst, *s_n);
+                       
+    free(s_pp_hst);
+    free(keys_hst);
 }
 
 void bulk_wall(const tex3Dca<float> texsdf, /*io*/ Particle *s_pp, int *s_n, /*o*/ Particle *w_pp, int *w_n) {
