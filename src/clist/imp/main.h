@@ -8,12 +8,16 @@ static void subindex(int n, const Particle *pp, int3 dims, /**/ int *cc, uchar4 
     if (n) KL(dev::subindex, (k_cnf(n)), (dims, n, pp, /*io*/ cc, /**/ ee));
 }
 
+void subindex(int aid, int n, const Particle *pp, /**/ Clist *c, Map *m) {
+    subindex(n, pp, c->dims, /**/ c->counts, m->ee[aid]);
+}
+
 void subindex_local(int n, const Particle *pp, /**/ Clist *c, Map *m) {
-    subindex(n, pp, c->dims, /**/ c->counts, m->ee[LOCAL]);
+    subindex(LOCAL, n, pp, /**/ c, m);
 }
 
 void subindex_remote(int n, const Particle *pp, /**/ Clist *c, Map *m) {
-    subindex(n, pp, c->dims, /**/ c->counts, m->ee[REMOTE]);
+    subindex(REMOTE, n, pp, /**/ c, m);
 }
 
 void build_map(const int nn[], /**/ Clist *c, Map *m) {
