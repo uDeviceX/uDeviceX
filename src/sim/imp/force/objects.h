@@ -62,7 +62,7 @@ void forces_objects() {
     Fop26 hff = reini_ff(&e.u, &e.pf);
 
     if (fsiforces)     fsi::halo(hpp, hff, hcc.d);
-    if (contactforces) cnt::halo(nw, pw, hpp, hff, hcc.d);
+    if (contactforces) cnt::halo(nw, pw, fw, hpp, hff, hcc.d);
 
     /* send the forces back */ 
     
