@@ -16,7 +16,7 @@ static __device__ void fetch_b(const float2 *pp, int i, /**/ forces::Pa *b) {
 }
 
 __device__ void halo0(const float2pWraps lpp, forces::Pa a, int aid, float seed,
-                      /**/ float *fA) {
+                      /**/ ForcepWraps lff, float *fA) {
     enum {X, Y, Z};
     Map m;
     int mapstatus;
@@ -45,16 +45,16 @@ __device__ void halo0(const float2pWraps lpp, forces::Pa a, int aid, float seed,
             zforce += fz;
             
             sentry = 3 * bid;
-            atomicAdd(c::FF[objid] + sentry,     -fx);
-            atomicAdd(c::FF[objid] + sentry + 1, -fy);
-            atomicAdd(c::FF[objid] + sentry + 2, -fz);
+            atomicAdd(lff.d[objid] + sentry,     -fx);
+            atomicAdd(lff.d[objid] + sentry + 1, -fy);
+            atomicAdd(lff.d[objid] + sentry + 2, -fz);
         }
     }
     fA[X] += xforce; fA[Y] += yforce; fA[Z] += zforce;
 }
 
 __global__ void halo(float seed, const int27 starts, const float2pWraps lpp,
-                     int n, Pap26 hpp, Fop26 hff) {
+                     int n, Pap26 hpp, /**/ ForcepWraps lff, Fop26 hff) {
     int aid, start;
     int fid;
     forces::Pa a;
@@ -67,5 +67,5 @@ __global__ void halo(float seed, const int27 starts, const float2pWraps lpp,
     start = starts.d[fid];
     pp2p(hpp.d[fid], aid - start, &a);
     fA = hff.d[fid][aid - start].f;
-    halo0(lpp, a, aid, seed, /**/ fA);
+    halo0(lpp, a, aid, seed, /**/ lff, fA);
 }
