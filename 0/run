@@ -4,27 +4,24 @@ set -ue
 . ./tsdf
 
 s=../src
+u=u/x
 c=conf.def.h
 
-# [01]
-safe0
-
 # domain types: oneA,    oneB, cyl, narrow small, normal, big
-narrow
+cyl
 
 # [01]
-strt0
+strt1
 
 # force[AB]
 # force=1e-1; forceA
-v=0.8; shift=10; forceB
+v=0.4; shift=10; forceB
 
-sc=0.75 radius=3.0 rbc1 # rbc[1]
-sw=$1;  p_stick         # p_[test|lina|stick]
+sc=0.55 radius=2.8 rbc1  # rbc[1]
+p_lina                   # p_[test|lina|stick]
 
 Domain="XS=$xs YS=$ys ZS=$zs"
 u.conf "$s" "$u" "$c" <<!
-    $Safe
     $Domain
     $Force
     $Rbc

@@ -17,7 +17,7 @@ g_oneB () { # sizes from big sdf
 }
 
 g_cyl () { #
-    xs=24 ys=24 zs=24
+    xs=24 ys=24 zs=12
     tsdf_cyl
     geom
 }
@@ -55,7 +55,7 @@ p_stick () { # sets Param
     Time="dt=1e-4"
     A="    adpd_b=2.66667  adpd_r=2.66667 adpd_br=2.66667"
     As="  adpd_sw=$sw"
-    Gamma="gdpd_b=5        gdpd_r=15      gdpd_br=7.5"
+    Gamma="gdpd_b=11.5     gdpd_r=5       gdpd_br=8.25"
     Rbc="RBC_PARAMS_LINA DPD_GRAVITY"
     Param="$A $As $Gamma $Rbc $Time"
 }
@@ -64,7 +64,7 @@ p_lina () { # sets Param
     local A Gamma Rbc Time
     Time="dt=1e-4"
     A="    adpd_b=2.66667  adpd_r=2.66667 adpd_br=2.66667"
-    Gamma="gdpd_b=5        gdpd_r=15      gdpd_br=7.5"
+    Gamma="gdpd_b=11.5     gdpd_r=5       gdpd_br=8.25"
     Rbc="RBC_PARAMS_LINA DPD_GRAVITY"
     Param="$A $Gamma $Rbc $Time"
 }
@@ -98,7 +98,8 @@ strt1 () {
     Restart="RESTART=true"
     if test $h = acer; then return; fi
     mkdir -p h5                         # TODO
-    cp -r $HOME/strt0      strt
+    if test -d strt; then rm -r strt; fi
+    cp -r $HOME/strt0  strt
 }
 
 ae () { awk 'BEGIN {print '"$@"'}'; }
@@ -106,9 +107,6 @@ ae () { awk 'BEGIN {print '"$@"'}'; }
 ## fill with RBCs
 part () { rx=$lx          ry=`ae $ly/3`   rz=$lz; }
 full () { rx=$lx          ry=$ly          rz=$lz; }
-
-safe1 () { u=u/safe; Safe="KL_SYNC CC_SYNC"; }
-safe0 () { u=u/x;    Safe= ;}
 
 plcmt () { # uses rx, ry, rz: [r]bc region
     local r fr sc ang
