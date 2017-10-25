@@ -35,6 +35,9 @@
 #include "forces/pack.h"
 #include "forces/imp.h"
 
+
+#include "clist/code.h"
+
 namespace cnt {
 
 typedef Sarray<const float2*, MAX_OBJ_TYPES> float2pWraps;

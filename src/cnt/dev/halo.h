@@ -29,6 +29,7 @@ __device__ void halo0(const float2pWraps lpp, forces::Pa a, int aid, float seed,
     int slot;
     int objid, bid, sentry;
     float rnd;
+    uint code;
 
     forces::p2r3(&a, /**/ &x, &y, &z);
     for (zplane = 0; zplane < 3; ++zplane) {
@@ -36,7 +37,8 @@ __device__ void halo0(const float2pWraps lpp, forces::Pa a, int aid, float seed,
         if (mapstatus == EMPTY) continue;
         for (i = 0; !endp(m, i); ++i) {
             slot = m2id(m, i);
-            get(slot, &objid, &bid);
+            code = fetchID(slot);
+            clist::decode_id(code, &objid, &bid);
             fetch_b(lpp.d[objid], bid, /**/ &b);
             rnd = rnd::mean0var1ii(seed, aid, bid);
             pair(a, b, rnd, /**/ &fx, &fy, &fz);

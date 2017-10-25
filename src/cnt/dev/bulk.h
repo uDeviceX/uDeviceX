@@ -16,6 +16,8 @@ __global__ void bulk(int n, const float2 *pp, const float2pWraps lpp,
     float2 stmp0, stmp1, stmp2;
     int mapstatus;
 
+    uint code;
+    
     gid = threadIdx.x + blockDim.x * blockIdx.x;
     aid = gid / 3;
     zplane = gid % 3;
@@ -34,7 +36,8 @@ __global__ void bulk(int n, const float2 *pp, const float2pWraps lpp,
     xforce = yforce = zforce = 0;
     for (i = 0; !endp(m, i); ++i) {
         slot = m2id(m, i);
-        get(slot, &objid, &bid);
+        code = fetchID(slot);
+        clist::decode_id(code, &objid, &bid);
         if (objid0 < objid || objid0 == objid && aid <= bid)
             continue;
 
