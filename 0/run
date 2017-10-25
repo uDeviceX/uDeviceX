@@ -11,7 +11,7 @@ c=conf.def.h
 cyl
 
 # [01]
-strt1
+strt0
 
 # force[AB]
 # force=1e-1; forceA
