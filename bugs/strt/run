@@ -1,7 +1,8 @@
 set -eu
 
 ini () {
-    s=../../../bak.0/src
+    #s=../../../bak.0/src
+    s=../../src
     u=u/safe
     c=conf.def.h
 }
@@ -27,4 +28,3 @@ ini
 conf
 cp0
 run
-
