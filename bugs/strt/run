@@ -1,0 +1,16 @@
+set -eu
+
+s=../../src
+u=u/safe
+c=conf.def.h
+
+u.conf "$s" "$u" "$c" <<!
+run
+!
+
+if test -d strt; then rm -r strt; fi
+cp -r /scratch/lisergey/s0 strt
+
+u.strtdir .
+{ make clean && u.make -j; } > .make.log
+sh runfile
