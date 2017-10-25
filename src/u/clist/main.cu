@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
     dims.z = ZS;
     
     ini(dims.x, dims.y, dims.z, /**/ &clist);
-    ini_map(&clist, /**/ &m);
+    ini_map(1, &clist, /**/ &m);
 
     pp_hst = (Particle*) malloc(MAXN * sizeof(Particle));
     counts = (int*) malloc(clist.ncells * sizeof(int));
