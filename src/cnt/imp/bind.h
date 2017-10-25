@@ -1,8 +1,7 @@
 static void bind0(const int *const starts, const int *const cellentries,
                   const int nc, int nw, PaWrap *pw, FoWrap *fw) {
     size_t textureoffset;
-    int ncells, i;
-    float *fs[MAX_OBJ_TYPES];
+    int ncells;
 
     textureoffset = 0;
     if (nc)
@@ -14,11 +13,6 @@ static void bind0(const int *const starts, const int *const cellentries,
                        &dev::c::starts.channelDesc, sizeof(int) * ncells));
 
     assert(nw <= MAX_OBJ_TYPES);
-    for (i = 0; i < nw; ++i) {
-        fs[i] = (float*)fw[i].ff;
-    }
-
-    CC(cudaMemcpyToSymbolAsync(dev::c::FF, fs, sizeof(float*)*nw, 0, H2D));
 }
 
 void bind(int nw, PaWrap *pw, FoWrap *fw) {
