@@ -23,7 +23,7 @@ g_cyl () { #
 }
 
 g_cyl3 () { #
-    xs=24 ys=24 zs=12
+    xs=64 ys=24 zs=12
     tsdf_cyl3
     geom
 }
@@ -52,7 +52,7 @@ big    () { nx=28  ny=8 nz=1; g_big;    part; bop0; }
 oneA   () { nx=1   ny=1 nz=1; g_oneA;   full; bop1; }
 oneB   () { nx=1   ny=1 nz=1; g_oneB;   full; bop1; }
 cyl    () { nx=1   ny=1 nz=1; g_cyl;    full; bop1; }
-cyl3   () { nx=3   ny=1 nz=1; g_cyl3;   full; bop1; }
+cyl3   () { nx=1   ny=1 nz=1; g_cyl3;   full; bop1; }
 narrow () { nx=1   ny=1 nz=1; g_narrow; full; bop1; }
 box    () { nx=1   ny=1 nz=1; g_box;    full; bop1; }
 
