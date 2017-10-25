@@ -4,14 +4,14 @@ set -ue
 . ./tsdf
 
 s=../src
-u=u/x
+u=u/safe
 c=conf.def.h
 
 # domain types: oneA,    oneB, cyl, cyl3, narrow small, normal, big
 cyl3
 
 # [01]
-strt0
+strt1
 
 # force[AB]
 # force=1e-1; forceA
