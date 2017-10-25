@@ -21,10 +21,10 @@ mkdir0 () {
 bop_cp () {
     local f t b
     f="$1"; shift; t="$1"; shift
-    b=`basename "$t"`
+    b=`basename "$t" .bop`
     "${AWK-awk}" -v b="$b" '
       $1 == "DATA_FILE:" { 
-         print "DATA_FILE: ", b
+         print "DATA_FILE: " b ".values"
          next
       }
       { print }
