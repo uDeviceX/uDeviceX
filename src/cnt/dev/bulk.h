@@ -50,9 +50,9 @@ __global__ void bulk(int n, const float2 *pp, const float2pWraps lpp,
         xforce += fx;
         yforce += fy;
         zforce += fz;
-        atomicAdd(c::FF[objid] + sentry,     -fx);
-        atomicAdd(c::FF[objid] + sentry + 1, -fy);
-        atomicAdd(c::FF[objid] + sentry + 2, -fz);
+        atomicAdd(lff.d[objid] + sentry,     -fx);
+        atomicAdd(lff.d[objid] + sentry + 1, -fy);
+        atomicAdd(lff.d[objid] + sentry + 2, -fz);
     }
 
     atomicAdd(ff + 3 * aid + 0, xforce);
