@@ -5,17 +5,25 @@ static float2pWraps convert(int nw, PaWrap *pw) {
     return w;
 }
 
+static ForcepWraps convert(int nw, FoWrap *fw) {
+    ForcepWraps w = {0};
+    for (int i = 0; i < nw; ++i)
+        w.d[i] = (float *) fw[i].ff;
+    return w;
+}
+
 void bulk(int nw, PaWrap *pw, FoWrap *fw) {
     float rnd;
     if (nw == 0) return;
-    float2pWraps w = convert(nw, pw);    
+    float2pWraps lpp = convert(nw, pw);
+    ForcepWraps  lff = convert(nw, fw);
 
     for (int i = 0; i < nw; ++i) {
         PaWrap pit = pw[i];
         FoWrap fit = fw[i];
         rnd = g::rgen->get_float();
         KL(dev::bulk, (k_cnf(3 * pit.n)),
-           (pit.n, (const float2*)pit.pp, w, rnd, i, (float*)fit.ff));
+           (pit.n, (const float2*)pit.pp, lpp, rnd, i, /**/ lff, (float*)fit.ff));
     }
 }
 

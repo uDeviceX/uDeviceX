@@ -38,6 +38,7 @@
 namespace cnt {
 
 typedef Sarray<const float2*, MAX_OBJ_TYPES> float2pWraps;
+typedef Sarray<      float *, MAX_OBJ_TYPES>  ForcepWraps;
 
 namespace dev {
 #include "dev/decl.h"
