@@ -1,7 +1,7 @@
 set -eu
 
 ini () {
-    s=../../src
+    s=../../../bak.0/src
     u=u/safe
     c=conf.def.h
 }
