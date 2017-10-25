@@ -106,7 +106,7 @@ strt1 () {
     if test $h = acer; then return; fi
     mkdir -p h5                         # TODO
     if test -d strt; then rm -r strt; fi
-    cp -r $HOME/strt0  strt
+    cp -r /scratch/lisergey/s0  strt
 }
 
 ae () { awk 'BEGIN {print '"$@"'}'; }
