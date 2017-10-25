@@ -53,8 +53,8 @@ __device__ void halo0(const float2pWraps lpp, forces::Pa a, int aid, float seed,
     fA[X] += xforce; fA[Y] += yforce; fA[Z] += zforce;
 }
 
-__global__ void halo(const int27 starts, const float2pWraps lpp,
-                     Pap26 hpp, Fop26 hff, int n, float seed) {
+__global__ void halo(float seed, const int27 starts, const float2pWraps lpp,
+                     int n, Pap26 hpp, Fop26 hff) {
     int aid, start;
     int fid;
     forces::Pa a;

@@ -7,5 +7,5 @@ void halo(int nw, PaWrap *pw, Pap26 PP, Fop26 FF, int counts[26]) {
 
     auto lpp = convert(nw, pw);
     
-    KL(dev::halo, (k_cnf(n)), (starts, lpp, PP, FF, n, g::rgen->get_float()));
+    KL(dev::halo, (k_cnf(n)), (g::rgen->get_float(), starts, lpp, n, PP, /**/ FF));
 }
