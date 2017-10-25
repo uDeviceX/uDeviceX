@@ -1,16 +1,30 @@
 set -eu
 
-s=../../src
-u=u/safe
-c=conf.def.h
+ini () {
+    s=../../src
+    u=u/safe
+    c=conf.def.h
+}
 
-u.conf "$s" "$u" "$c" <<!
-run
+conf () {
+    u.conf "$s" "$u" "$c" <<!
+    run
 !
+}
 
-if test -d strt; then rm -r strt; fi
-cp -r /scratch/lisergey/s0 strt
+cp0 () {
+    if test -d strt; then rm -r strt; fi
+    cp -r /scratch/lisergey/s0 strt
+}
 
-u.strtdir .
-{ make clean && u.make -j; } > .make.log
-sh runfile
+run () {
+    u.strtdir .
+    { make clean && u.make -j; } > .make.log
+    sh runfile
+}
+
+ini
+conf
+cp0
+run
+
