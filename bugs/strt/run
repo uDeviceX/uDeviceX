@@ -9,6 +9,7 @@ ini () {
 
 conf () {
     u.conf "$s" "$u" "$c" <<!
+    KL_SYNC CC_SYNC
     run
 !
 }
