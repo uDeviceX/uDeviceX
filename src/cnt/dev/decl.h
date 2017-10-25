@@ -6,6 +6,6 @@ enum {
 
 namespace c { /* common */
 texture<int, cudaTextureType1D> starts, id;
-__constant__ const float2 *PP[MAX_OBJ_TYPES];
+// __constant__ const float2 *PP[MAX_OBJ_TYPES];
 __constant__ float *FF[MAX_OBJ_TYPES];
 }

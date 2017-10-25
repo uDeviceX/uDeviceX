@@ -15,7 +15,7 @@ static __device__ void fetch_b(const float2 *pp, int i, /**/ forces::Pa *b) {
     forces::f2k2p(s0, s1, s2, SOLID_KIND, /**/ b);
 }
 
-__device__ void halo0(forces::Pa a, int aid, float seed,
+__device__ void halo0(const float2pWraps lpp, forces::Pa a, int aid, float seed,
                       /**/ float *fA) {
     enum {X, Y, Z};
     Map m;
@@ -37,7 +37,7 @@ __device__ void halo0(forces::Pa a, int aid, float seed,
         for (i = 0; !endp(m, i); ++i) {
             slot = m2id(m, i);
             get(slot, &objid, &bid);
-            fetch_b(c::PP[objid], bid, /**/ &b);
+            fetch_b(lpp.d[objid], bid, /**/ &b);
             rnd = rnd::mean0var1ii(seed, aid, bid);
             pair(a, b, rnd, /**/ &fx, &fy, &fz);
             xforce += fx;
@@ -53,7 +53,8 @@ __device__ void halo0(forces::Pa a, int aid, float seed,
     fA[X] += xforce; fA[Y] += yforce; fA[Z] += zforce;
 }
 
-__global__ void halo(int27 starts, Pap26 hpp, Fop26 hff, int n, float seed) {
+__global__ void halo(const int27 starts, const float2pWraps lpp,
+                     Pap26 hpp, Fop26 hff, int n, float seed) {
     int aid, start;
     int fid;
     forces::Pa a;
@@ -66,5 +67,5 @@ __global__ void halo(int27 starts, Pap26 hpp, Fop26 hff, int n, float seed) {
     start = starts.d[fid];
     pp2p(hpp.d[fid], aid - start, &a);
     fA = hff.d[fid][aid - start].f;
-    halo0(a, aid, seed, /**/ fA);
+    halo0(lpp, a, aid, seed, /**/ fA);
 }
