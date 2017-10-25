@@ -9,28 +9,29 @@ static void subindex(int n, const Particle *pp, int3 dims, /**/ int *cc, uchar4 
 }
 
 void subindex_local(int n, const Particle *pp, /**/ Clist *c, Map *m) {
-    subindex(n, pp, c->dims, /**/ c->counts, m->eelo);
+    subindex(n, pp, c->dims, /**/ c->counts, m->ee[LOCAL]);
 }
 
 void subindex_remote(int n, const Particle *pp, /**/ Clist *c, Map *m) {
-    subindex(n, pp, c->dims, /**/ c->counts, m->eere);
+    subindex(n, pp, c->dims, /**/ c->counts, m->ee[REMOTE]);
 }
 
-void build_map(int nlo, int nre, /**/ Clist *c, Map *m) {
-    int nc, *cc, *ss;
-    uchar4 *eelo, *eere;
+void build_map(const int nn[], /**/ Clist *c, Map *m) {
+    int nc, *cc, *ss, n, i;
+    const uchar4 *ee;
     uint *ii = m->ii;
     int3 dims = c->dims;
     nc = c->ncells;
     cc = c->counts;
     ss = c->starts;
-    eelo = m->eelo;
-    eere = m->eere;
         
     scan::scan(cc, nc, /**/ ss, /*w*/ &m->scan);
-   
-    if (nlo) KL(dev::get_ids, (k_cnf(nlo)), (LOCAL,  dims, nlo, ss, eelo, /**/ ii));
-    if (nre) KL(dev::get_ids, (k_cnf(nre)), (REMOTE, dims, nre, ss, eere, /**/ ii));    
+
+    for (i = 0; i < m->nA; ++i) {
+        n = nn[i];
+        ee = m->ee[i];
+        if (n) KL(dev::get_ids, (k_cnf(n)), (i, dims, n, ss, ee, /**/ ii));
+    }
 }
 
 void gather_pp(const Particle *pplo, const Particle *ppre, const Map *m, int nout, /**/ Particle *ppout) {
@@ -44,8 +45,9 @@ void gather_ii(const int *iilo, const int *iire, const Map *m, int nout, /**/ in
 }
 
 void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, Map *m) {
+    const int nn[] = {nlo, 0};
     ini_counts(/**/ c);
     subindex_local (nlo, pplo, /**/ c, m);
-    build_map(nlo, 0, /**/ c, m);    
+    build_map(nn, /**/ c, m);    
     gather_pp(pplo, NULL, m, nout, ppout);
 }

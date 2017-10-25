@@ -13,7 +13,8 @@ struct Clist {
 };
 
 struct Map {
-    uchar4 *eelo, *eere; /* cell entries */
+    int nA;              /* number of source arrays to build the cell lists, e.g remote+bulk -> 2 */
+    uchar4 *ee[MAXA];    /* cell entries */
     uint *ii;            /* codes containing: indices of data to fetch and array id from which to fetch */
     scan::Work scan;     /* scan workspace */
 };
@@ -21,14 +22,14 @@ struct Map {
 void ini(int LX, int LY, int LZ, /**/ Clist *c);
 void fin(/**/ Clist *c);
 
-void ini_map(const Clist *c, /**/ Map *m);
+void ini_map(int nA, const Clist *c, /**/ Map *m);
 void fin_map(Map *m);
 
 
 void ini_counts(Clist *c);
 void subindex_local(int n, const Particle *pp, /**/ Clist *c, Map *m);
 void subindex_remote(int n, const Particle *pp, /**/ Clist *c, Map *m);
-void build_map(int nlo, int nre, /**/ Clist *c, Map *m);
+void build_map(const int nn[], /**/ Clist *c, Map *m);
 void gather_pp(const Particle *pplo, const Particle *ppre, const Map *m, int nout, /**/ Particle *ppout);
 void gather_ii(const int *iilo, const int *iire, const Map *m, int nout, /**/ int *iiout);
 

@@ -6,7 +6,7 @@ void fin(/**/ Clist *c) {
 void fin_map(Map *m) {
     scan::free_work(/**/ &m->scan);
 
-    CC(d::Free(m->eelo));
-    CC(d::Free(m->eere));
+    for (int i = 0; i < m->nA; ++i)
+        CC(d::Free(m->ee[i]));
     CC(d::Free(m->ii));
 }

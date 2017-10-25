@@ -10,13 +10,17 @@ void ini(int LX, int LY, int LZ, /**/ Clist *c) {
     
 }
 
-void ini_map(const Clist *c, /**/ Map *m) {
+void ini_map(int nA, const Clist *c, /**/ Map *m) {
     size_t size;
     scan::alloc_work(c->ncells, /**/ &m->scan);
 
     size = MAX_PART_NUM * sizeof(uchar4);
-    CC(d::Malloc((void **) &m->eelo, size));
-    CC(d::Malloc((void **) &m->eere, size));
+
+    m->nA = nA;
+    assert(nA <= MAXA);
+    
+    for (int i = 0; i < nA; ++i)
+        CC(d::Malloc((void **) &m->ee[i], size));
 
     size = MAX_PART_NUM * sizeof(uint);
     CC(d::Malloc((void **) &m->ii, size));

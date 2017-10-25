@@ -15,8 +15,9 @@ void gather(const Pack *p, const Unpack *u, /**/ Quants *q) {
     nbulk = p->nbulk;
     n = nbulk + nhalo;
     pp = q->pp; pp0 = q->pp0;    
-    
-    build_map(nold, nhalo, /**/ &q->cells, &q->mcells);
+
+    const int nn[] = {nold, nhalo};
+    build_map(nn, /**/ &q->cells, &q->mcells);
 
     gather_pp(pp, u->ppre, &q->mcells, n, /**/ pp0);
 
