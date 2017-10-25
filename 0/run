@@ -7,11 +7,11 @@ s=../src
 u=u/x
 c=conf.def.h
 
-# domain types: oneA,    oneB, cyl, narrow small, normal, big
-cyl
+# domain types: oneA,    oneB, cyl, cyl3, narrow small, normal, big
+cyl3
 
 # [01]
-strt1
+strt0
 
 # force[AB]
 # force=1e-1; forceA
