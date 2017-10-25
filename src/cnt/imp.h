@@ -1,4 +1,11 @@
 namespace cnt {
+
+struct Contact {
+    clist::Clist cells;
+    clist::Map cmap;
+    rnd::KISS* rgen;
+};
+
 void halo(int nw, PaWrap *pw, FoWrap *fw, Pap26 PP, Fop26 FF, int counts[26]);
 void ini();
 void fin();
