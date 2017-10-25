@@ -1,4 +1,4 @@
-__global__ void bulk(int n, const float2 *pp, 
+__global__ void bulk(int n, const float2 *pp, const float2pWraps wpp,
                      float seed, int objid0, /**/ float *ff) {
     Map m; /* see map/ */
     float x, y, z;
@@ -39,9 +39,9 @@ __global__ void bulk(int n, const float2 *pp,
             continue;
 
         sentry = 3 * bid;
-        stmp0 = __ldg(c::PP[objid] + sentry);
-        stmp1 = __ldg(c::PP[objid] + sentry + 1);
-        stmp2 = __ldg(c::PP[objid] + sentry + 2);
+        stmp0 = __ldg(wpp.d[objid] + sentry + 0);
+        stmp1 = __ldg(wpp.d[objid] + sentry + 1);
+        stmp2 = __ldg(wpp.d[objid] + sentry + 2);
 
         rnd = rnd::mean0var1ii(seed, aid, bid);
         forces::f2k2p(dst0,   dst1,  dst2, SOLID_KIND, /**/ &a);

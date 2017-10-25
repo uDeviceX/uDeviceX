@@ -36,6 +36,9 @@
 #include "forces/imp.h"
 
 namespace cnt {
+
+typedef Sarray<const float2*, MAX_OBJ_TYPES> float2pWraps;
+
 namespace dev {
 #include "dev/decl.h"
 #include "dev/fetch.h"
