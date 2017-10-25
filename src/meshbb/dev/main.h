@@ -1,5 +1,7 @@
 namespace dev {
 
+static const real_t TOL = 0.1;
+
 template <typename T> static __device__ T min3(T a, T b, T c) {return min(a, min(b, c));}
 template <typename T> static __device__ T max3(T a, T b, T c) {return max(a, max(b, c));}
 
@@ -100,7 +102,7 @@ __global__ void find_collisions(int nm, int nt, int nv, const int4 *tt, const Pa
     revert_r(dt, &B);
     revert_r(dt, &C);
 
-    get_cells(L, 5e-1f, A.r, B.r, C.r, /**/ &str, &end);
+    get_cells(L, TOL, A.r, B.r, C.r, /**/ &str, &end);
     
     for (iz = str.z; iz <= end.z; ++iz) {
         for (iy = str.y; iy <= end.y; ++iy) {

@@ -14,13 +14,29 @@ tsdf0 () {
 }
 
 tsdf_cyl () {
-    local c
+    local c rad
+    rad=6.67 # 10*sc=0.66
     tsdf_ini
     c="
 extent           $xs        $ys        $zs
 N          `ae 2*$xs` `ae 2*$ys` `ae 2*$zs`
 obj_margin 3.0
-cylinder axis 0 0 1 point xc yc zc radius Lx/3
+cylinder axis 0 0 1 point xc yc zc radius $rad
+"
+    tsdf0 "$c"
+}
+
+tsdf_cyl3 () {
+    local c rad
+    rad=6.67 # 10*sc=0.66
+    tsdf_ini
+    c="
+extent           $xs        $ys        $zs
+N          `ae 2*$xs` `ae 2*$ys` `ae 2*$zs`
+obj_margin 3.0
+cylinder axis 0 0 1 point 1*Lx/6 yc zc radius $rad
+cylinder axis 0 0 1 point 3*Lx/6 yc zc radius $rad
+cylinder axis 0 0 1 point 5*Lx/6 yc zc radius $rad
 "
     tsdf0 "$c"
 }
