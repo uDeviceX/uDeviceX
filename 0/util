@@ -105,8 +105,12 @@ strt1 () {
     Restart="RESTART=true"
     if test $h = acer; then return; fi
     mkdir -p h5                         # TODO
+
     if test -d strt; then rm -r strt; fi
-    cp -r /scratch/lisergey/s0  strt
+    if test `u.host` = daint
+    then cp -r /scratch/snx3000/lisergey strt
+    else cp -r /scratch/lisergey/s0      strt
+    fi
 }
 
 ae () { awk 'BEGIN {print '"$@"'}'; }
