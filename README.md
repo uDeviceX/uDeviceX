@@ -2,6 +2,10 @@
 
 see [bootstrap](bootstrap)
 
+# install toolls
+
+    make
+
 # after adding files
 
 run from src/
