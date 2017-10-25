@@ -20,3 +20,12 @@ Special case:
 strt/[code]/[magic name].[ext]
 ```
 example: template frozen particles from rigid bodies or walls: `templ`
+
+# strt copy
+
+Copy directory with restarts `u.strt.cp` to a safe place. To run from
+restart copy it back to `start` and set `RESTART=true`.
+
+    u.strt.cp [strt dir] [new strt dir]
+    copies restart directory
+    final.* or [biggerst timestep].* becomes final.* in [new strt dir]
