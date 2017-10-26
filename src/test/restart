@@ -9,7 +9,7 @@ u.conf conf/double.poiseuille.h <<!!!
    tend=0.01 part_freq=4000
    field_dumps part_dumps
    field_freq=4000 wall_creation=0
-   BASE_STRT_DUMP=\"bin.1\"
+   BASE_STRT_DUMP=\"bin.1/strt\"
    strt_dumps=true
    strt_freq=10000
    RESTART=false
@@ -17,8 +17,8 @@ u.conf conf/double.poiseuille.h <<!!!
    tend=2.01
    RESTART=true
    FORCE_DOUBLE_POISEUILLE
-   BASE_STRT_READ=\"bin.1\"
-   BASE_STRT_DUMP=\"bin.2\"
+   BASE_STRT_READ=\"bin.1/strt\"
+   BASE_STRT_DUMP=\"bin.2/strt\"
    run
 !!!
 :
@@ -40,7 +40,7 @@ u.conf conf/couette.h <<!!!
    tend=0.5 part_freq=4000
    field_dumps part_dumps field_freq=4000
    walls wall_creation=100 shear_z
-   BASE_STRT_DUMP=\"bin.1\"
+   BASE_STRT_DUMP=\"bin.1/strt\"
    strt_dumps=true
    strt_freq=10000
    RESTART=false
@@ -48,8 +48,8 @@ u.conf conf/couette.h <<!!!
    tend=2.01
    RESTART=true
    FORCE_CONSTANT
-   BASE_STRT_READ=\"bin.1\"
-   BASE_STRT_DUMP=\"bin.2\"
+   BASE_STRT_READ=\"bin.1/strt\"
+   BASE_STRT_DUMP=\"bin.2/strt\"
    run
 !!!
 :
@@ -71,7 +71,7 @@ x=0.75 y=8 z=12; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 u.conf conf/couette.h <<!!!
    rbcs tend=0.5 part_freq=300
    wall_creation=0
-   BASE_STRT_DUMP=\"bin.1\"
+   BASE_STRT_DUMP=\"bin.1/strt\"
    strt_dumps=true
    strt_freq=10000
    RESTART=false
@@ -79,8 +79,8 @@ u.conf conf/couette.h <<!!!
    RESTART=true
    FORCE_CONSTANT
    pushrbc
-   BASE_STRT_READ=\"bin.1\"
-   BASE_STRT_DUMP=\"bin.2\"
+   BASE_STRT_READ=\"bin.1/strt\"
+   BASE_STRT_DUMP=\"bin.2/strt\"
    run
 !!!
 :
@@ -104,15 +104,15 @@ x=8    y=8 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >> rbcs-ic.txt
 u.conf conf/around.h <<!!!
   rbcs tend=0.5 part_freq=5000
    wall_creation=999 walls kBT=1e-7
-   BASE_STRT_DUMP=\"bin.1\"
+   BASE_STRT_DUMP=\"bin.1/strt\"
    strt_dumps=true
    strt_freq=10000
    RESTART=false
    run
    RESTART=true
    FORCE_CONSTANT pushrbc tend=3.0
-   BASE_STRT_READ=\"bin.1\"
-   BASE_STRT_DUMP=\"bin.2\"
+   BASE_STRT_READ=\"bin.1/strt\"
+   BASE_STRT_DUMP=\"bin.2/strt\"
    run
 !!!
 :
@@ -136,7 +136,7 @@ cp data/rig/ellipsoid.ply mesh_solid.ply
 u.conf conf/double.poiseuille.h <<!!!
    solids contactforces tend=0.1 part_freq=100
    wall_creation=199 part_dumps
-   BASE_STRT_DUMP=\"bin.1\"
+   BASE_STRT_DUMP=\"bin.1/strt\"
    strt_dumps=true
    strt_freq=10000
    RESTART=false
@@ -144,8 +144,8 @@ u.conf conf/double.poiseuille.h <<!!!
    FORCE_DOUBLE_POISEUILLE
    RESTART=true
    tend=0.7
-   BASE_STRT_READ=\"bin.1\"
-   BASE_STRT_DUMP=\"bin.2\"
+   BASE_STRT_READ=\"bin.1/strt\"
+   BASE_STRT_DUMP=\"bin.2/strt\"
    run
 !!!
 :

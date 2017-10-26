@@ -173,11 +173,11 @@
 #endif
 
 #ifndef BASE_STRT_DUMP 
-#define BASE_STRT_DUMP "."
+#define BASE_STRT_DUMP "./src"
 #endif
 
 #ifndef BASE_STRT_READ
-#define BASE_STRT_READ "."
+#define BASE_STRT_READ "./src"
 #endif
 
 #ifndef strt_dumps
