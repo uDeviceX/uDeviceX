@@ -1,4 +1,4 @@
-__global__ void populate(uchar4 *subindices, int *starts, int n, int objid, /**/ int *entry) {
+__global__ void populate(uchar4 *subindices, int *starts, int n, int objid, /**/ uint *entry) {
     int pid, id, start, slot;
     uchar4 subindex;
 

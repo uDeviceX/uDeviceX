@@ -10,7 +10,7 @@ void ini() {
     Dalloc(&g::starts, g::sz);
     Dalloc(&g::counts, g::sz);
     scan::alloc_work(g::sz, &g::ws);
-    g::entries = new DeviceBuffer<int>;
+    g::entries = new DeviceBuffer<uint>;
     g::indexes = new DeviceBuffer<uchar4>;
 }
 

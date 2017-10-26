@@ -1,20 +1,3 @@
-static void bind0(const int *const starts, const int *const cellentries,
-                  const int nc, int nw, PaWrap *pw, FoWrap *fw) {
-    size_t textureoffset;
-    int ncells;
-
-    textureoffset = 0;
-    if (nc)
-        CC(cudaBindTexture(&textureoffset, &dev::c::id, cellentries,
-                           &dev::c::id.channelDesc,
-                           sizeof(int) * nc));
-    ncells = XS * YS * ZS;
-    CC(cudaBindTexture(&textureoffset, &dev::c::starts, starts,
-                       &dev::c::starts.channelDesc, sizeof(int) * ncells));
-
-    assert(nw <= MAX_OBJ_TYPES);
-}
-
 void bind(int nw, PaWrap *pw, FoWrap *fw) {
     /* build cells */
     int ntotal = 0;
@@ -40,8 +23,6 @@ void bind(int nw, PaWrap *pw, FoWrap *fw) {
            (g::indexes->D + ctr, g::starts, it.n, i, g::entries->D));
         ctr += it.n;
     }
-
-    bind0(g::starts, g::entries->D, ntotal, nw, pw, fw);
 }
 
 

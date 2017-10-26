@@ -1,4 +1,4 @@
-__global__ void bulk(const int *cellstarts, int n, const float2 *pp, const float2pWraps lpp,
+__global__ void bulk(const int *cellstarts, const uint *ids, int n, const float2 *pp, const float2pWraps lpp,
                      float seed, int objid0, /**/ ForcepWraps lff, float *ff) {
     Map m; /* see map/ */
     float x, y, z;
@@ -36,7 +36,7 @@ __global__ void bulk(const int *cellstarts, int n, const float2 *pp, const float
     xforce = yforce = zforce = 0;
     for (i = 0; !endp(m, i); ++i) {
         slot = m2id(m, i);
-        code = fetchID(slot);
+        code = ids[slot];
         clist::decode_id(code, &objid, &bid);
         if (objid0 < objid || objid0 == objid && aid <= bid)
             continue;
