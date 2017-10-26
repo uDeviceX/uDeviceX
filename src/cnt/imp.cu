@@ -55,10 +55,8 @@ namespace dev {
 #include "dev/halo.h"
 }
 
-#include "imp/bind.h"
 #include "imp/bulk.h"
-#include "imp/fin.h"
 #include "imp/halo.h"
-#include "imp/ini.h"
+#include "imp/main.h"
 
 } /* namespace */
