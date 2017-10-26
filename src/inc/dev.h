@@ -49,25 +49,3 @@
 /* [d]evice [a]synchronous set */
 #define DsetA(P, v, n) CC(d::MemsetAsync(P, v, (n)*sizeof(*(P))))
 #define DzeroA(P, n)   DsetA(P, 0, n)
-
-template <typename T> struct DeviceBuffer {
-    /* `C': capacity; `S': size; `D' : data*/
-private:
-    int C;
-public:
-    int S; T *D;
-    explicit DeviceBuffer(int n = 0) : C(0), S(0), D(NULL) { resize(n); }
-    ~DeviceBuffer() {
-        if (D != NULL) CC(cudaFree(D));
-        D = NULL;
-    }
-
-    void resize(int n) {
-        S = n;
-        if (C >= n) return;
-        if (D != NULL) CC(cudaFree(D));
-        int conservative_estimate = (int)ceil(1.1 * n);
-        C = 128 * ((conservative_estimate + 129) / 128);
-        CC(cudaMalloc(&D, sizeof(T) * C));
-    }
-};
