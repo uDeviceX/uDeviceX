@@ -107,6 +107,10 @@ void sample(const float org[3], const float spa[3], const int N0[3], const float
             }
 #undef DDD
 #undef OOO
+#undef i2r
+#undef i2x
+#undef i2y
+#undef i2z
 }
 
 static void scale0(int N[3], float s, int x, int y, int z, /**/ float *D) {
