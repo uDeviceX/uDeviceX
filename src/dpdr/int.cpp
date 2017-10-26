@@ -171,11 +171,15 @@ static void ini_frags(TicketRhalo tr, /**/ hforces::Frag26 *frag) {
         hforces::ini_cloud(tr.b.pp.d[i], &cloudb);
         
         frag->d[i] = {
-            cloudb,
-            tr.b.cum.d[i],
-            dx, dy, dz,
-            xcells, ycells, zcells,
-            (hforces::FragType)(abs(dx) + abs(dy) + abs(dz))};
+            .c     = cloudb,
+            .start = tr.b.cum.d[i],
+            .dx = dx,
+            .dy = dy,
+            .dz = dz,
+            .xcells = xcells,
+            .ycells = ycells,
+            .zcells = zcells,
+            .type = (hforces::FragType)(abs(dx) + abs(dy) + abs(dz))};
     }
 }
 
@@ -186,15 +190,18 @@ static void ini_sfrags(TicketShalo ts, hforces::SFrag26 *sfrag) {
         hforces::ini_cloud(ts.b.pp.d[i], &clouda);
 
         sfrag->d[i] = {
-            clouda,            
-            ts.b.ii.d[i],
-            ts.nphst[i]};
+            .c  = clouda,            
+            .ii = ts.b.ii.d[i],
+            .n  = ts.nphst[i]};
     }
 }
 
 static void ini_rnd(TicketRnd trnd, /**/ hforces::Rnd26 *rnd) {
     for (int i = 0; i < 26; ++i)
-        rnd->d[i] = {trnd.interrank_trunks[i]->get_float(), trnd.interrank_masks[i]};
+        rnd->d[i] = {
+            .seed = trnd.interrank_trunks[i]->get_float(),
+            .mask = trnd.interrank_masks[i]
+        };
 }
 
 static void ini_color_frags(TicketRIhalo t, /**/ hforces::Frag26 *frag) {
