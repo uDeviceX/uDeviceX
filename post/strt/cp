@@ -18,18 +18,40 @@ mkdir0 () {
     if test ! -d "$d"; then err fail to create "$d"; fi
 }
 
+bop_cp () {
+    local f t b
+    f="$1"; shift; t="$1"; shift
+    b=`basename "$t" .bop`
+    "${AWK-awk}" -v b="$b" '
+      $1 == "DATA_FILE:" { 
+         print "DATA_FILE: " b ".values"
+         next
+      }
+      { print }
+    ' "$f" > "$t"
+}
+bopp () { # bop?
+    echo "$1" | grep -s '\.bop$'
+}
+cp0 () {
+    local f t
+    f="$1"; shift; t="$1"; shift
+    if bopp "$f"
+    then   bop_cp    "$f" "$t"
+    else e     cp -- "$f" "$t"
+    fi
+}
 cp_normal () {
     local d b
-    d="$1"; shift
-    b="$1"; shift
-    e cp --  "$i/$d/$b" "$o/$d/$b"
+    d="$1"; shift; b="$1"; shift
+    cp0 "$i/$d/$b" "$o/$d/$b"
 }
 safe_cp () {
     local d t
     d="$1"; shift
     t="$1"; shift
     if test -f "$t"; then continue; fi
-    e cp -- "$d" "$t"
+    cp0 "$d" "$t"
 }
 cp_final () {
     local d b fin trg dest

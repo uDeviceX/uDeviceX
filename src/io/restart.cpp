@@ -127,7 +127,7 @@ void read_pp(const char *code, const int id, Particle *pp, int *n) {
     char bop[BS] = {0}, val[BS] = {0};
     gen_name(READ, code, id, "bop"   , /**/ bop);
     gen_name(READ, code, id, "values", /**/ val);
-    DBG("reading <%s> and <%s>", bop, val);
+    MSG("reading <%s> and <%s>", bop, val);
     bopread::read_n(bop, &np);
     bopread::data(val, np, pp);
     *n = np;

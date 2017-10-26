@@ -1,2 +1,5 @@
-0002
+0
+DATA_FILE: final.values
+DATA_FORMAT: float
+VARIABLES: x y z vx vy vz
 0002
