@@ -32,10 +32,8 @@
 #include "sim/imp.h"
 #include "dbg/imp.h"
 
-#include "inc/dev/read.h"
 #include "inc/dev/write.h"
 #include "inc/dev/common.h"
-#include "inc/dev/index.h"
 
 #include "clist/imp.h"
 #include "forces/type.h"
