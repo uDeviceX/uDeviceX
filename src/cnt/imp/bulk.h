@@ -23,7 +23,7 @@ void bulk(int nw, PaWrap *pw, FoWrap *fw) {
         FoWrap fit = fw[i];
         rnd = g::rgen->get_float();
         KL(dev::bulk, (k_cnf(3 * pit.n)),
-           (pit.n, (const float2*)pit.pp, lpp, rnd, i, /**/ lff, (float*)fit.ff));
+           (g::starts, pit.n, (const float2*)pit.pp, lpp, rnd, i, /**/ lff, (float*)fit.ff));
     }
 }
 

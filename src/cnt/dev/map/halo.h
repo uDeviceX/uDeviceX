@@ -1,4 +1,4 @@
-static __device__ int tex2map(int zplane, float x, float y, float z, /**/ Map *m) {
+static __device__ int tex2map(int zplane, float x, float y, float z, const int *starts, /**/ Map *m) {
     int cnt0, cnt1, cnt2, org0;
     int org1, org2;
     int xcenter, xstart, xcount;
@@ -23,20 +23,20 @@ static __device__ int tex2map(int zplane, float x, float y, float z, /**/ Map *m
 
     if (zvalid && ycenter - 1 >= 0 && ycenter - 1 < YS) {
         cid0 = xstart + XS * (ycenter - 1 + YS * zmy);
-        org0 = fetchS(cid0);
-        count0 = fetchS(cid0 + xcount) - org0;
+        org0 = starts[cid0];
+        count0 = starts[cid0 + xcount] - org0;
     }
 
     if (zvalid && ycenter >= 0 && ycenter < YS) {
         cid1 = xstart + XS * (ycenter + YS * zmy);
-        org1 = fetchS(cid1);
-        count1 = fetchS(cid1 + xcount) - org1;
+        org1 = starts[cid1];
+        count1 = starts[cid1 + xcount] - org1;
     }
 
     if (zvalid && ycenter + 1 >= 0 && ycenter + 1 < YS) {
         cid2 = xstart + XS * (ycenter + 1 + YS * zmy);
-        org2 = fetchS(cid2);
-        count2 = fetchS(cid2 + xcount) - org2;
+        org2 = starts[cid2];
+        count2 = starts[cid2 + xcount] - org2;
     }
 
     cnt0 = count0;
