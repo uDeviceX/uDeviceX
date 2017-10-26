@@ -13,7 +13,11 @@ static __device__ bool inside(const float r[3], int3 L) {
         (r[Z] >= -L.z/2) && (r[Z] < L.z/2)  ;
 }
 
-static __device__ uchar4 get_entry(const float *r, int3 L) {
+static __device__ int project_cid(int i, const int Lh) {
+    return i < -Lh ? -Lh : i >= Lh ? Lh - 1 : i;
+}
+
+static __device__ uchar4 get_entry(const bool project, const float *r, int3 L) {
     enum {X, Y, Z};
     uchar4 e;
     int ix, iy, iz;
@@ -23,8 +27,14 @@ static __device__ uchar4 get_entry(const float *r, int3 L) {
     iy = (int) ((double) r[Y] + L.y/2);
     iz = (int) ((double) r[Z] + L.z/2);
 
-    if (inside(r, L)) e.w =   VALID;
-    else              e.w = INVALID;
+    if (project) {
+        ix = project_cid(ix, L.x/2);
+        iy = project_cid(iy, L.y/2);
+        iz = project_cid(iz, L.z/2);
+    }
+    
+    if (project || inside(r, L)) e.w =   VALID;
+    else                         e.w = INVALID;
 
     e.x = ix; e.y = iy; e.z = iz;
     return e;
@@ -45,7 +55,7 @@ __global__ void subindex(bool project, int3 L, int n, const Particle *pp, /*io*/
     
     p = pp[i];
 
-    e = get_entry(p.r, L);
+    e = get_entry(project, p.r, L);
     cid = get_cid(L, e);
 
     if (e.w != INVALID)
