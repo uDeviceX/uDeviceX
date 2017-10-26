@@ -12,6 +12,8 @@ struct PidVCont {
     float3 *davgvel;          /* device pointer of the above      */
 
     MPI_Comm comm;
+
+    FILE *fdump;              /* output file for logging info     */
 };
 
 void ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCont *c);
