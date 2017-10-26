@@ -45,8 +45,13 @@ namespace cnt {
 typedef Sarray<const float2*, MAX_OBJ_TYPES> float2pWraps;
 typedef Sarray<      float *, MAX_OBJ_TYPES>  ForcepWraps;
 
+enum {
+    XOFFSET = XS / 2,
+    YOFFSET = YS / 2,
+    ZOFFSET = ZS / 2
+};
+
 namespace dev {
-#include "dev/decl.h"
 #include "dev/pair.h"
 #include "dev/map/common.h"
 #include "dev/map/halo.h"
