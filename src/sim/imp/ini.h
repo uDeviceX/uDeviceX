@@ -68,6 +68,7 @@ void ini() {
     if (fsiforces) fsi::ini();
 
     cnt::ini();
+    cnt::ini(&rs::c);
 
     if (rbcs || solids)
         ini_obj_exch(m::cart, &tag_gen, &rs::e);

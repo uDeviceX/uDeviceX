@@ -59,6 +59,7 @@ Particle pp_hst[3*MAX_PART_NUM]; /* particles on host */
 namespace rs /* objects */
 {
 Objexch e;
+cnt::Contact c;
 }
 
 namespace mc /* mesh communication */
