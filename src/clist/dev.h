@@ -13,8 +13,8 @@ static __device__ bool inside(const float r[3], int3 L) {
         (r[Z] >= -L.z/2) && (r[Z] < L.z/2)  ;
 }
 
-static __device__ int project_cid(int i, const int Lh) {
-    return i < -Lh ? -Lh : i >= Lh ? Lh - 1 : i;
+static __device__ int project_cid(int i, const int L) {
+    return i < 0 ? 0 : i >= L ? L - 1 : i;
 }
 
 static __device__ uchar4 get_entry(const bool project, const float *r, int3 L) {
@@ -28,9 +28,9 @@ static __device__ uchar4 get_entry(const bool project, const float *r, int3 L) {
     iz = (int) ((double) r[Z] + L.z/2);
 
     if (project) {
-        ix = project_cid(ix, L.x/2);
-        iy = project_cid(iy, L.y/2);
-        iz = project_cid(iz, L.z/2);
+        ix = project_cid(ix, L.x);
+        iy = project_cid(iy, L.y);
+        iz = project_cid(iz, L.z);
     }
     
     if (project || inside(r, L)) e.w =   VALID;
