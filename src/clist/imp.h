@@ -25,15 +25,18 @@ void fin(/**/ Clist *c);
 void ini_map(int nA, const Clist *c, /**/ Map *m);
 void fin_map(Map *m);
 
-
 void ini_counts(Clist *c);
 void subindex(int aid, int n, const Particle *pp, /**/ Clist *c, Map *m);
+void build_map(const int nn[], /**/ Clist *c, Map *m);
+
+/* special for fluid distribution */
 void subindex_local(int n, const Particle *pp, /**/ Clist *c, Map *m);
 void subindex_remote(int n, const Particle *pp, /**/ Clist *c, Map *m);
-void build_map(const int nn[], /**/ Clist *c, Map *m);
+
 void gather_pp(const Particle *pplo, const Particle *ppre, const Map *m, int nout, /**/ Particle *ppout);
 void gather_ii(const int *iilo, const int *iire, const Map *m, int nout, /**/ int *iiout);
 
+/* quick cell build for single array */
 void build(int nlo, int nout, const Particle *pplo, /**/ Particle *ppout, Clist *c, Map *m);
 
 } /* namespace */
