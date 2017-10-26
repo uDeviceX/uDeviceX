@@ -47,7 +47,6 @@ typedef Sarray<      float *, MAX_OBJ_TYPES>  ForcepWraps;
 
 namespace dev {
 #include "dev/decl.h"
-#include "dev/fetch.h"
 #include "dev/pair.h"
 #include "dev/map/common.h"
 #include "dev/map/halo.h"
