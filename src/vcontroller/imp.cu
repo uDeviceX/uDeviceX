@@ -33,6 +33,7 @@ void ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCont *c) 
     int ncells, nchunks;
     c->L = L;
     c->target = vtarget;
+    c->current = make_float3(0, 0, 0);
     c->factor = factor;
     c->Kp = 2;
     c->Ki = 1;
@@ -93,7 +94,9 @@ float3 adjustF(/**/ PidVCont *c) {
 
     const float fac = 1.0 / (c->totncells * c->nsamples);
     
-    scal(fac, /**/ &vcur); 
+    scal(fac, /**/ &vcur);
+
+    c->current = vcur;
 
     diff(&c->target, &vcur, /**/ &e);
     diff(&e, &c->olde, /**/ &de);
@@ -112,8 +115,8 @@ float3 adjustF(/**/ PidVCont *c) {
 }
 
 void log(const PidVCont *c) {
-    float3 e = c->olde;
+    float3 v = c->current;
     float3 f = c->f;
-    MSG("vcont :\n\t[ % .3e % .3e % .3e ]\n\t[ % .3e % .3e % .3e ]",
-        e.x, e.y, e.z, f.x, f.y, f.z);
+    MSG("vcont [v] [f] :\n\t[ % .3e % .3e % .3e ]\n\t[ % .3e % .3e % .3e ]",
+        v.x, v.y, v.z, f.x, f.y, f.z);
 }
