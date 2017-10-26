@@ -17,6 +17,8 @@ struct Particle4 {
 
 #include "vanilla.h"
 #include "float4.h"
+#include "float3.h"
+#include "float2.h"
 #include "P4.h"
 
 void print_bw(const char *fun, float t, size_t nbytes, int neval, float rw) {
@@ -43,8 +45,6 @@ int main() {
 
     cudaEvent_t start, stop;
     float t;
-
-    CC(cudaSetDevice(2));
     
     CC(cudaMalloc(&pp,  n*sizeof(Particle)));
     CC(cudaMalloc(&pp4, n*sizeof(Particle4)));
@@ -62,6 +62,12 @@ int main() {
     
     measure(iniP,       (k_cnf(n)),   (n, pp),            n*sizeof(Particle),  rwini);
     measure(inif,       (k_cnf(n)),   (n, (float*)pp),    6*n*sizeof(float),   rwini);
+
+    measure(inif2,      (k_cnf(n)),   (n, (float2*) pp),  3*n*sizeof(float2),  rwini);
+        
+    measure(inif3,      (k_cnf(n)),   (n, (float3*) pp),  2*n*sizeof(float3),  rwini);
+    measure(inif3_2tpp, (k_cnf(2*n)), (n, (float3*) pp),  2*n*sizeof(float3),  rwini);
+
     measure(inif4,      (k_cnf(n)),   (n, (float4*) pp4), 2*n*sizeof(float4),  rwini);
     measure(inif4_2tpp, (k_cnf(2*n)), (n, (float4*) pp4), 2*n*sizeof(float4),  rwini);
     measure(iniP4,      (k_cnf(n)),   (n, pp4),           n*sizeof(Particle4), rwini);
@@ -70,6 +76,12 @@ int main() {
     
     measure(updP,       (k_cnf(n)),   (n, pp),            n*sizeof(Particle),  rwupd);
     measure(updf,       (k_cnf(n)),   (n, (float*)pp),    6*n*sizeof(float),   rwupd);
+
+    measure(updf2,      (k_cnf(n)),   (n, (float2*) pp), 3*n*sizeof(float2),  rwupd);
+    
+    measure(updf3,      (k_cnf(n)),   (n, (float3*) pp), 2*n*sizeof(float3),  rwupd);
+    measure(updf3_2tpp, (k_cnf(2*n)), (n, (float3*) pp), 2*n*sizeof(float3),  rwupd);
+
     measure(updf4,      (k_cnf(n)),   (n, (float4*) pp4), 2*n*sizeof(float4),  rwupd);
     measure(updf4_2tpp, (k_cnf(2*n)), (n, (float4*) pp4), 2*n*sizeof(float4),  rwupd);
     measure(updP4,      (k_cnf(n)),   (n, pp4),           n*sizeof(Particle4), rwupd);

@@ -19,13 +19,13 @@ namespace restart {
 enum {X, Y, Z};
 
 /* pattern : 
-   sing processor  : base/strt/code/id.ext
-   mult processors : base/strt/code/XXX.YYY.ZZZ/id.ext
+   sing processor  : base/code/id.ext
+   mult processors : base/code/XXX.YYY.ZZZ/id.ext
    base depends on read/write
  */
 #define PF    "%s.%s"
-#define DIR_S "%s/strt/%s/"                 PF
-#define DIR_M "%s/strt/%s/%03d.%03d.%03d/"  PF
+#define DIR_S "%s/%s/"                 PF
+#define DIR_M "%s/%s/%03d.%03d.%03d/"  PF
 
 #define READ (true)
 #define DUMP (false)

@@ -9,16 +9,27 @@
 #include "inc/dev.h"
 #include "d/api.h"
 #include "mpi/wrapper.h"
+#include "mpi/glb.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
 #include "utils/mc.h"
-
-#include "msg.h"
 
 #include "math/dev.h"
 
 #include "imp.h"
 #include "dev.h"
+
+static void ini_dump(FILE **f) {
+    *f = NULL;
+    if (m::rank) return;
+    *f = fopen(DUMP_BASE "/vcont.txt", "w");
+    fprintf(*f, "#vx vy vz fx fy fz\n");        
+}
+
+static void fin_dump(FILE *f) {
+    if (m::rank) return;
+    fclose(f);
+}
 
 static void reini_sampler(/**/ PidVCont *c) {
     int3 L = c->L;
@@ -33,6 +44,7 @@ void ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCont *c) 
     int ncells, nchunks;
     c->L = L;
     c->target = vtarget;
+    c->current = make_float3(0, 0, 0);
     c->factor = factor;
     c->Kp = 2;
     c->Ki = 1;
@@ -54,12 +66,15 @@ void ini(MPI_Comm comm, int3 L, float3 vtarget, float factor, /**/ PidVCont *c) 
     MC(m::Allreduce(&ncells, &c->totncells, 1, MPI_INT, MPI_SUM, c->comm));
     
     reini_sampler(/**/ c);
+
+    ini_dump(&c->fdump);
 }
 
 void fin(/**/ PidVCont *c) {
     CC(d::Free(c->gridvel));
     CC(d::FreeHost(c->avgvel));
     MC(m::Comm_free(&c->comm));
+    fin_dump(c->fdump);
 }
 
 void sample(int n, const Particle *pp, const int *starts, const int *counts, /**/ PidVCont *c) {
@@ -93,7 +108,9 @@ float3 adjustF(/**/ PidVCont *c) {
 
     const float fac = 1.0 / (c->totncells * c->nsamples);
     
-    scal(fac, /**/ &vcur); 
+    scal(fac, /**/ &vcur);
+
+    c->current = vcur;
 
     diff(&c->target, &vcur, /**/ &e);
     diff(&e, &c->olde, /**/ &de);
@@ -112,8 +129,9 @@ float3 adjustF(/**/ PidVCont *c) {
 }
 
 void log(const PidVCont *c) {
-    float3 e = c->olde;
+    if (m::rank) return;
+    float3 v = c->current;
     float3 f = c->f;
-    MSG("vcont :\n\t[ % .3e % .3e % .3e ]\n\t[ % .3e % .3e % .3e ]",
-        e.x, e.y, e.z, f.x, f.y, f.z);
+    fprintf(c->fdump, "%.g %.g %.g %.g %.g %.g\n",
+            v.x, v.y, v.z, f.x, f.y, f.z);
 }

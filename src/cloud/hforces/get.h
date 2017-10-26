@@ -1,10 +1,11 @@
 namespace hforces { namespace dev {
 inline __device__ void common(Cloud c, int i, /**/ forces::Pa *p) {
-    float *pp, *r, *v;
-    pp = c.pp;
-    r = &pp[6*i];
-    v = &pp[6*i + 3];
-    forces::rvk2p(r, v, SOLVENT_KIND, /**/ p);
+    const float2 *pp = (const float2 *) c.pp;
+    float2 s0, s1, s2;
+    s0 = __ldg(pp + 3*i + 0);
+    s1 = __ldg(pp + 3*i + 1);
+    s2 = __ldg(pp + 3*i + 2);
+    forces::f2k2p(s0, s1, s2, SOLVENT_KIND, /**/ p);
 }
 
 inline __device__ void cloud_get_p(Cloud c, int i, /**/ forces::Pa *p) {

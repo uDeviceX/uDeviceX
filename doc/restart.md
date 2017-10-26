@@ -1,12 +1,14 @@
-#  file format
+# restart
 
-Restart stores simulation variables of solvent, wall, rbcs and rigid
-bodies under the following file naming:
+Restart stores simulation variables of solvent, wall, rbcs and rigid bodies
+
+## file format
 
 ```
-strt/[code]/[XXX].[YYY].[ZZZ]/[ttt].[ext]
+[basedir]/[code]/[XXX].[YYY].[ZZZ]/[ttt].[ext]
 ```
 where:
+* `[basedir]` is the base diretory for restart (default: `./strt`
 * `[code]` is `flu` (solvent), `wall`, `rbc` or `rig` (rigid bodies)
 * `[XXX].[YYY].[ZZZ]` are the coordinates of the processor (no dir if
   single processor)
@@ -17,7 +19,7 @@ where:
 
 Special case:
 ```
-strt/[code]/[magic name].[ext]
+[basedir]/[code]/[magic name].[ext]
 ```
 example: template frozen particles from rigid bodies or walls: `templ`
 

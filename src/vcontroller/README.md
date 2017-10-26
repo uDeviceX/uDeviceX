@@ -1,3 +1,3 @@
 # vcontroller
 
-velocity controller via adjusting a constant (through space) force
+velocity PID controller via adjusting a constant (through space) force
