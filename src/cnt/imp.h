@@ -13,6 +13,8 @@ void ini(Contact *c);
 void fin(Contact *c);
 
 void bind(int nw, PaWrap *pw, FoWrap *fw);
-void bulk(int nw, PaWrap *pw, FoWrap *fw);
-void halo(int nw, PaWrap *pw, FoWrap *fw, Pap26 PP, Fop26 FF, int counts[26]);
+
+void build_cells(int nw, const PaWrap *pw, /**/ Contact *c);
+void bulk(const Contact *c, int nw, PaWrap *pw, FoWrap *fw);
+void halo(const Contact *c, int nw, PaWrap *pw, FoWrap *fw, Pap26 PP, Fop26 FF, int counts[26]);
 }

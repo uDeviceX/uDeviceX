@@ -1,6 +1,6 @@
 void forces_cnt(int nw, PaWrap *pw, FoWrap *fw) {
     cnt::bind(nw, pw, fw);
-    cnt::bulk(nw, pw, fw);
+    cnt::bulk(&rs::c, nw, pw, fw);
 }
 
 void forces_fsi(fsi::SolventWrap *w_s, int nw, PaWrap *pw, FoWrap *fw) {
@@ -62,7 +62,7 @@ void forces_objects() {
     Fop26 hff = reini_ff(&e.u, &e.pf);
 
     if (fsiforces)     fsi::halo(hpp, hff, hcc.d);
-    if (contactforces) cnt::halo(nw, pw, fw, hpp, hff, hcc.d);
+    if (contactforces) cnt::halo(&rs::c, nw, pw, fw, hpp, hff, hcc.d);
 
     /* send the forces back */ 
     
