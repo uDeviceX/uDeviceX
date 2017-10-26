@@ -51,13 +51,10 @@ namespace dev {
 #include "dev/map/common.h"
 #include "dev/map/halo.h"
 #include "dev/map/bulk.h"
-#include "dev/code.h"
 #include "dev/bulk.h"
 #include "dev/halo.h"
-#include "dev/pop.h"
 }
 
-#include "imp/decl.h"
 #include "imp/bind.h"
 #include "imp/bulk.h"
 #include "imp/fin.h"
