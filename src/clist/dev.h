@@ -34,7 +34,8 @@ static __device__ int get_cid(int3 L, uchar4 e) {
     return e.x + L.x * (e.y + L.y * e.z);
 }
 
-__global__ void subindex(int3 L, int n, const Particle *pp, /*io*/ int *counts, /**/ uchar4 *ee) {
+/* project:: if particle is outside of domain L, include it in closest cell */
+__global__ void subindex(bool project, int3 L, int n, const Particle *pp, /*io*/ int *counts, /**/ uchar4 *ee) {
     int i, cid;
     Particle p;
     uchar4 e;

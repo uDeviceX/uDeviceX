@@ -26,7 +26,7 @@ void ini_map(int nA, const Clist *c, /**/ Map *m);
 void fin_map(Map *m);
 
 void ini_counts(Clist *c);
-void subindex(int aid, int n, const Particle *pp, /**/ Clist *c, Map *m);
+void subindex(bool project, int aid, int n, const Particle *pp, /**/ Clist *c, Map *m);
 void build_map(const int nn[], /**/ Clist *c, Map *m);
 
 /* special for fluid distribution */

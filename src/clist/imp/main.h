@@ -4,20 +4,20 @@ void ini_counts(/**/ Clist *c) {
     if (c->ncells) CC(d::MemsetAsync(c->counts, 0, c->ncells * sizeof(int)));
 }
 
-static void subindex(int n, const Particle *pp, int3 dims, /**/ int *cc, uchar4 *ee) {
-    if (n) KL(dev::subindex, (k_cnf(n)), (dims, n, pp, /*io*/ cc, /**/ ee));
+static void subindex(bool project, int n, const Particle *pp, int3 dims, /**/ int *cc, uchar4 *ee) {
+    if (n) KL(dev::subindex, (k_cnf(n)), (project, dims, n, pp, /*io*/ cc, /**/ ee));
 }
 
-void subindex(int aid, int n, const Particle *pp, /**/ Clist *c, Map *m) {
-    subindex(n, pp, c->dims, /**/ c->counts, m->ee[aid]);
+void subindex(bool project, int aid, int n, const Particle *pp, /**/ Clist *c, Map *m) {
+    subindex(project, n, pp, c->dims, /**/ c->counts, m->ee[aid]);
 }
 
 void subindex_local(int n, const Particle *pp, /**/ Clist *c, Map *m) {
-    subindex(LOCAL, n, pp, /**/ c, m);
+    subindex(false, LOCAL, n, pp, /**/ c, m);
 }
 
 void subindex_remote(int n, const Particle *pp, /**/ Clist *c, Map *m) {
-    subindex(REMOTE, n, pp, /**/ c, m);
+    subindex(false, REMOTE, n, pp, /**/ c, m);
 }
 
 void build_map(const int nn[], /**/ Clist *c, Map *m) {
