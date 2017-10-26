@@ -32,7 +32,6 @@
 #include "sim/imp.h"
 #include "dbg/imp.h"
 
-#include "inc/dev/write.h"
 #include "inc/dev/common.h"
 
 #include "clist/imp.h"

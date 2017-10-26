@@ -23,7 +23,6 @@
 
 #include "utils/kl.h"
 
-#include "inc/dev/read.h"
 #include "inc/dev/common.h"
 
 #include "dpdr/type.h"
