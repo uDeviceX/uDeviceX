@@ -43,8 +43,6 @@ int main() {
 
     cudaEvent_t start, stop;
     float t;
-
-    CC(cudaSetDevice(2));
     
     CC(cudaMalloc(&pp,  n*sizeof(Particle)));
     CC(cudaMalloc(&pp4, n*sizeof(Particle4)));
