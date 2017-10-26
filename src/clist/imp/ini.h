@@ -4,7 +4,7 @@ void ini(int LX, int LY, int LZ, /**/ Clist *c) {
     c->dims.z = LZ;
     c->ncells = LX * LY * LZ;
 
-    size_t size = (c->ncells + 1) * sizeof(int);
+    size_t size = (c->ncells + 16) * sizeof(int);
     CC(d::Malloc((void **) &c->starts, size));
     CC(d::Malloc((void **) &c->counts, size));
     
@@ -22,6 +22,6 @@ void ini_map(int nA, const Clist *c, /**/ Map *m) {
     for (int i = 0; i < nA; ++i)
         CC(d::Malloc((void **) &m->ee[i], size));
 
-    size = MAX_PART_NUM * sizeof(uint);
+    size = nA * MAX_PART_NUM * sizeof(uint);
     CC(d::Malloc((void **) &m->ii, size));
 }

@@ -1,7 +1,7 @@
 enum {LOCAL, REMOTE};
 
 void ini_counts(/**/ Clist *c) {
-    if (c->ncells) CC(d::MemsetAsync(c->counts, 0, c->ncells * sizeof(int)));
+    if (c->ncells) CC(d::MemsetAsync(c->counts, 0, (c->ncells + 16) * sizeof(int)));
 }
 
 static void subindex(bool project, int n, const Particle *pp, int3 dims, /**/ int *cc, uchar4 *ee) {
@@ -29,7 +29,7 @@ void build_map(const int nn[], /**/ Clist *c, Map *m) {
     cc = c->counts;
     ss = c->starts;
         
-    scan::scan(cc, nc, /**/ ss, /*w*/ &m->scan);
+    scan::scan(cc, nc + 16, /**/ ss, /*w*/ &m->scan);
 
     for (i = 0; i < m->nA; ++i) {
         n = nn[i];
