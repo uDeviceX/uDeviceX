@@ -67,7 +67,7 @@ void ini() {
     if (VCON) ini_vcont(m::cart, /**/ &o::vcont);
     if (fsiforces) fsi::ini();
 
-    cnt::ini();
+    // cnt::ini();
     cnt::ini(&rs::c);
 
     if (rbcs || solids)

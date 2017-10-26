@@ -1,5 +1,5 @@
 void forces_cnt(int nw, PaWrap *pw, FoWrap *fw) {
-    cnt::bind(nw, pw, fw);
+    cnt::build_cells(nw, pw, /**/ &rs::c);
     cnt::bulk(&rs::c, nw, pw, fw);
 }
 

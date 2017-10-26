@@ -45,7 +45,7 @@ static void fin_rig_distr(/**/ RigDistr *d) {
 }
 
 void fin() {
-    cnt::fin();
+    // cnt::fin();
     cnt::fin(&rs::c);
     bop::fin(&dumpt);
     if (rbcs || solids)
