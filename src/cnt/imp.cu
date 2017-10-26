@@ -63,6 +63,5 @@ namespace dev {
 #include "imp/fin.h"
 #include "imp/halo.h"
 #include "imp/ini.h"
-#include "imp/setup.h"
 
 } /* namespace */
