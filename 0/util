@@ -71,7 +71,7 @@ p_lina () { # sets Param
     local A Gamma Rbc Time
     Time="dt=1e-4"
     A="    adpd_b=2.66667  adpd_r=2.66667 adpd_br=2.66667"
-    Gamma="gdpd_b=11.5     gdpd_r=5       gdpd_br=8.25"
+    Gamma="gdpd_b=5        gdpd_r=15      gdpd_br=8.25"
     Rbc="RBC_PARAMS_LINA DPD_GRAVITY"
     Param="$A $Gamma $Rbc $Time"
 }
@@ -108,8 +108,8 @@ strt1 () {
 
     if test -d strt; then rm -r strt; fi
     if test `u.host` = daint
-    then cp -r /scratch/snx3000/lisergey strt
-    else cp -r /scratch/lisergey/s0      strt
+    then cp -r /scratch/snx3000/lisergey/s0 strt
+    else cp -r /scratch/lisergey/s0         strt
     fi
 }
 
