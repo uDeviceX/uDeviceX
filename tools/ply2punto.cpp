@@ -10,6 +10,11 @@
 #include <stdio.h>
 #include <string.h>
 
+void usg() {
+	fprintf(stderr, "ply2punt 1.ply 2.ply .. > punto.dat\n");
+	exit(0);
+}
+
 #define NVMAX 1000000
 #define NVAR  6 /* x, y, z, vx, vy, vz */
 float  buf[NVAR*NVMAX];
@@ -64,8 +69,15 @@ void read_file(const char* fn) {
   fclose(fd);
 }
 
+int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
+
+void help(int c, const char** a) {
+	if (c > 1 && eq(a[1], "-h")) usg();
+}
+
 int main(int argc, const char** argv) {
     int i;
+	help(argc, argv);
     for (i = 1; i < argc; i++) {
         if (i > 1) printf("\n");
         read_file(argv[i]);
