@@ -87,7 +87,7 @@
 #define rbc_com_freq (1000)
 #endif
 
-// solid 
+// solid
 
 #ifndef solids
 #define solids (false)
@@ -172,12 +172,12 @@
 #define RESTART (false)
 #endif
 
-#ifndef BASE_STRT_DUMP 
-#define BASE_STRT_DUMP "."
+#ifndef BASE_STRT_DUMP
+#define BASE_STRT_DUMP "strt"
 #endif
 
 #ifndef BASE_STRT_READ
-#define BASE_STRT_READ "."
+#define BASE_STRT_READ "strt"
 #endif
 
 #ifndef strt_dumps
