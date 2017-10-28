@@ -54,7 +54,7 @@ __device__ float3 tri(const float3 r1, const float3 r2, const float3 r3, const f
 
 __device__ float3 visc(float3 r1, float3 r2,
                        float3 u1, float3 u2) {
-    const float gammaC = RBCgammaC, gammaT = 3.0 * RBCgammaC;
+    const float gammaC = RBCgammaC, gammaT = RBCgammaT;
     float3 du, dr, f = make_float3(0, 0, 0);
     diff(&u2, &u1, /**/ &du);
     diff(&r1, &r2, /**/ &dr);

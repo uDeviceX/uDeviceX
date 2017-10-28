@@ -5,6 +5,7 @@
 #define         RBCkd ( 5000        )
 #define         RBCkv ( 7500.0      )
 #define     RBCgammaC ( 52.0        )
+#define     RBCgammaT ( 0.0         )
 #define        RBCkbT ( 0.0444      )
 #define       RBCmpow ( 2.0         )
 #define        RBCphi ( 6.97        )
