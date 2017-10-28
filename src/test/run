@@ -1,3 +1,16 @@
 ### Run out of source
 # TEST: run.0
-t=/tmp/udx.$$
+t=/tmp/udx.run.$$
+mkdir $t
+trap 'rm -r $t' 0 1 2 3 15
+u=u/x s=`pwd` c="$s/conf/default.h"
+(
+   cd $t
+   u.conf "$s" "$u" "$c" <<!
+   strt_dumps=true tend=5e-4
+   run
+!
+   { make clean && u.make -j; } > "$s"/make.log
+   u.strtdir .
+   sh runfile
+)
