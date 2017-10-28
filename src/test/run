@@ -13,4 +13,5 @@ u=u/x s=`pwd` c="$s/conf/default.h"
    { make clean && u.make -j; } > "$s"/make.log
    u.strtdir .
    sh runfile
-)
+   echo $?
+) > run.out.status
