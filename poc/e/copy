@@ -2,8 +2,11 @@ msg () { echo >&2 "$@"; }
 err () { msg "u.copy: $@"; exit 2; }
 usg () { msg 'u.copy source.. directory'
 	 msg 'copy source to current directory on local host'
-	 exit 0
-       }
+	 exit 0; }
+
+e0 () { msg ": $@"
+	eval "$@"; }
+r  () { e0 "ssh -o StrictHostKeyChecking=no -p $P localhost '$*'"; }
 
 case $# in
     0) err missing file operand ;;
@@ -12,9 +15,7 @@ case $# in
        ;;
 esac
 
-
-
 d="$1"; shift
 for c; do shift; set -- "$@" "$d"; d="$c"; done
 
-echo $d
+r pwd
