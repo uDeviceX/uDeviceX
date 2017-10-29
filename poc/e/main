@@ -1,0 +1,10 @@
+set -eu
+
+: ${A=$HOME/D}
+: ${H=daint}
+: ${D=/scratch/snx3000/lisergey}
+
+# port
+: ${P=2000}
+
+eval "exec ssh -R $P:localhost:22 $H '$*'"
