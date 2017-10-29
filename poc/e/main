@@ -21,4 +21,4 @@ e   () {
 }
 
 L="`pwd`"
-e "P=\"$P\" L=\"$L\"; export P L; $@"
+e "P=$P L=\"$L\"; export P L; $@"
