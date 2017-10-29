@@ -1,0 +1,5 @@
+for f
+do
+    echo "$L:$P"
+    echo $f
+done

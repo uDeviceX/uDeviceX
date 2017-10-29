@@ -1,10 +1,24 @@
 set -eu
 
-: ${A=$HOME/D}
 : ${H=daint}
-: ${D=/scratch/snx3000/lisergey}
+: ${R=/scratch/snx3000/lisergey}
+: ${A=$HOME/D}
+
+: ${D=e}
 
 # port
 : ${P=2000}
 
-eval "exec ssh -R $P:localhost:22 $H '$*'"
+msg () { echo >&2 "$*"; }
+
+e0 () {
+     msg ": $@"
+     eval "$@"
+}
+
+e   () {
+    e0 "ssh -R $P:localhost:22 $H '$*'"
+}
+
+L="`pwd`"
+e "P=\"$P\" L=\"$L\"; export P L; $@"
