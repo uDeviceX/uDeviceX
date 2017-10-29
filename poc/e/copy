@@ -8,6 +8,10 @@ e0 () { msg ": $@"
 	eval "$@"; }
 r  () { e0 "ssh -o StrictHostKeyChecking=no -p $P localhost '$*'"; }
 
+cp0 () { t="$1"; shift
+	 d="$1"; shift
+	 e0 scp -r -P $P "$t" localhost:"$d" ; }
+
 case $# in
     0) err missing file operand ;;
     1) if test "$1" = -h; then usg; fi
@@ -18,4 +22,5 @@ esac
 d="$1"; shift
 for c; do shift; set -- "$@" "$d"; d="$c"; done
 
-r mkdir -p "$L/$d"
+r mkdir -p -- "$L/$d"
+for f; do cp0 "$f" "$L/$d"; done
