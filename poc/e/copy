@@ -1,5 +1,20 @@
-for f
-do
-    echo "$L:$P"
-    echo $f
-done
+msg () { echo >&2 "$@"; }
+err () { msg "u.copy: $@"; exit 2; }
+usg () { msg 'u.copy source.. directory'
+	 msg 'copy source to current directory on local host'
+	 exit 0
+       }
+
+case $# in
+    0) err missing file operand ;;
+    1) if test "$1" = -h; then usg; fi
+       err missing destination after \'"$1"\'
+       ;;
+esac
+
+
+
+d="$1"; shift
+for c; do shift; set -- "$@" "$d"; d="$c"; done
+
+echo $d
