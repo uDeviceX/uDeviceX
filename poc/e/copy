@@ -19,8 +19,8 @@ case $# in
        ;;
 esac
 
+# get last arg
 d="$1"; shift
 for c; do shift; set -- "$@" "$d"; d="$c"; done
 
-r mkdir -p -- "$L/$d"
-for f; do cp0 "$f" "$L/$d"; done
+cp0 "$@" "$L/$d"

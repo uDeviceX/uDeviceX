@@ -16,8 +16,15 @@ e0 () {
      eval "$@"
 }
 
-e   () {
+e1   () {
     e0 "ssh -R $P:localhost:22 $H '$*'"
+}
+
+e () {
+    if test "$D" = .
+    then e1 "                                          $@"
+    else e1 "mkdir -p -- \"$R/$D\" &&  cd \"$R/$D\" && $@"
+    fi
 }
 
 L="`pwd`"
