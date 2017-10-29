@@ -18,4 +18,4 @@ esac
 d="$1"; shift
 for c; do shift; set -- "$@" "$d"; d="$c"; done
 
-r pwd
+r echo "$L/$d"
