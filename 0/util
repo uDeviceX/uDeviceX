@@ -70,9 +70,9 @@ p_stick () { # sets Param
 p_lina () { # sets Param
     local A Gamma Rbc Time
     Time="dt=1e-4"
-    A="    adpd_b=2.66667  adpd_r=2.66667 adpd_br=2.66667"
-    Gamma="gdpd_b=5        gdpd_r=25      gdpd_br=15"
-    Rbc="RBC_PARAMS_LINA DPD_GRAVITY"
+    A="adpd_b=2.66  adpd_r=2.66 adpd_br=2.66"
+    Gamma="gdpd_b=5        gdpd_r=5      gdpd_br=5"
+    Rbc="RBC_PARAMS_LINA DPD_GRAVITY rbc_mass=1.0"
     Param="$A $Gamma $Rbc $Time"
 }
 p_test () { Param=                             ; }

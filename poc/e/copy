@@ -18,4 +18,4 @@ esac
 d="$1"; shift
 for c; do shift; set -- "$@" "$d"; d="$c"; done
 
-r echo "$L/$d"
+r mkdir -p "$L/$d"
