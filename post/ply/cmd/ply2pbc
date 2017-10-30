@@ -28,6 +28,18 @@ rel () {
     fi
 }
 
+is_num () {
+    echo "$1" | awk '{if ($0 == $0 + 0) exit(0); else exit(1); }'
+}
+
+req_num () {
+    if ! is_num "$1"; then err 'u.ply2pbc: not a number '"$1"; fi
+}
+
+req_arg () {
+    if test "$1" -eq 0; then err 'u.ply2pbc: need more arguments'; fi
+}
+
 if test $# -ne 0 -a "$1" = -h; then usg; fi
 
 Rel=0
@@ -39,21 +51,23 @@ do shift
    fi
 done
 
-X="$1"; shift
-Y="$1"; shift
-Z="$1"; shift
+X="$1"; shift; req_num "$X"
+Y="$1"; shift; req_num "$Y"
+Z="$1"; shift; req_num "$Z"
 i="$1"; shift
-
-o="$1"; shift
-rel # update o?
 
 if test ! -d "$i"
 then err 'not a directory: '"$i"
 fi
+req_arg $#
 
-e mkdir -p "$o"
+o="$1"; shift
+rel # update o?
+
+
+e mkdir '2>/dev/null'  -p "$o"
 if test ! -d "$o"
-then err 'fail to create directory: '"$o"
+then err 'u.ply2pbc: fail to create directory '"$o"
 fi
 
 find0 "$i" | sort | u.ply2pbc0 $X $Y $Z "$o"

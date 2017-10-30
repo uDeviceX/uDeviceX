@@ -248,4 +248,5 @@ int main(int argc, const char** argv) {
         write_file(o);
         x0 = x; y0 = y; z0 = z;
     }
+    if (Fst) fprintf(stderr, "ply2pbc0: warning: no input files\n");
 }
