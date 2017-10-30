@@ -1,8 +1,9 @@
 #!/usr/bin/awk -f
 
-function i2x(i) { return i/(N-1) }
+function i2x(i) { return lo + (hi - lo)*i/(N-1) }
 
 BEGIN {
+    lo = -2; hi = 2
     N = 100
     for (i = 0; i < N; i++) {
 	x = i2x(i)
