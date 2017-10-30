@@ -83,7 +83,6 @@ void balloc() {
 }
 
 void read_file(const char* fn) {
-    fprintf(stderr, "(box) reading: %s\n", fn);
     FILE* fd = safe_fopen(fn, "r");
     read_header(fd);
     balloc();
