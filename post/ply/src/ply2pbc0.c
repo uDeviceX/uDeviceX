@@ -1,10 +1,3 @@
-/*
-
-Usage:
-nb=498 u.ply2pbc0 [output dir] [ply file]..
-
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "endian.h"
