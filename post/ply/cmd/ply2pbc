@@ -1,9 +1,9 @@
 usg () {
-    msg 'u.ply2pbc X Y Z    [input dir]   [output dir]'
-    msg 'u.ply2pbc X Y Z -r [input dir]   [output dir]'
+    msg 'u.ply2pbc X Y Z    [output dir] [input dir]'
+    msg 'u.ply2pbc X Y Z -r [output dir] [input dir]'
     msg 'unwraps periodic images. X, Y, Z: domain sizes'
     msg ' with -r [output dir] is relative to [input dir]'
-    msg 'Ex. u.ply2pbc 144 24 24 -r r ../unwrp'
+    msg 'Example: u.ply2pbc 144 24 24 -r ../unwrp r '
     exit
 }
 
@@ -51,19 +51,16 @@ do shift
    fi
 done
 
-X="$1"; shift; req_num "$X"
-Y="$1"; shift; req_num "$Y"
-Z="$1"; shift; req_num "$Z"
-i="$1"; shift
+req_arg $#; X="$1"; shift; req_num "$X"
+req_arg $#; Y="$1"; shift; req_num "$Y"
+req_arg $#; Z="$1"; shift; req_num "$Z"
+req_arg $#; o="$1"; shift
+req_arg $#; i="$1"; shift
 
 if test ! -d "$i"
 then err 'not a directory: '"$i"
 fi
-req_arg $#
-
-o="$1"; shift
 rel # update o?
-
 
 e mkdir '2>/dev/null'  -p "$o"
 if test ! -d "$o"
