@@ -19,7 +19,7 @@ e () {
 msg () { echo >&2 "$@"; }
 
 find0 () {
-    e find "$1" -maxdepth 1 -name '*.ply'
+    find "$1" -maxdepth 1 -name '*.ply'
 }
 
 rel () {
@@ -56,4 +56,4 @@ if test ! -d "$o"
 then err 'fail to create directory: '"$o"
 fi
 
-find0 "$i" '|' sort '|' u.ply2pbc0 $X $Y $Z "$o"
+find0 "$i" | sort | u.ply2pbc0 $X $Y $Z "$o"
