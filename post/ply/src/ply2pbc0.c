@@ -7,13 +7,10 @@ nb=498 u.ply2pbc0 [output dir] [ply file]..
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include "endian.h"
 #include "rbc_utils.h"
 
 float X, Y, Z;
-
-float xp1, xp2, yp1, yp2, zp1, zp2;
 
 int   nv; /* number of vertices */
 int   nf; /* number of faces */
@@ -24,16 +21,9 @@ int   nf; /* number of faces */
 float *buf;
 float  *xx,  *yy,  *zz;
 float *vvx, *vvy, *vvz;
-int   *bbv; /* banned vertices */
-int   *idx; /* old to new vertices index convertion */
-int   *rrbc; /* vertices to RBC index */
-
-int  *bbr; /* banned RBCs */
 
 /* vertex indexes in one face */
 int *ff1, *ff2, *ff3;
-int *bbf; /* banned faces */
-
 int *ibuf;
 
 FILE* fd_nl;
@@ -92,16 +82,10 @@ void balloc() {
     vvy = ealloc(nv*sizeof(vvy[0]));
     vvz = ealloc(nv*sizeof(vvz[0]));
 
-    bbv = ealloc(nv*sizeof(bbv[0]));
-    idx = ealloc(nv*sizeof(idx[0]));
-    rrbc = ealloc(nv*sizeof(rrbc[0]));
-    bbr =  ealloc(nv*sizeof(bbr[0]));
-
     ff1 = ealloc(nf*sizeof(ff1[0]));
     ff2 = ealloc(nf*sizeof(ff2[0]));
     ff3 = ealloc(nf*sizeof(ff3[0]));
 
-    bbf = ealloc(nf*sizeof(bbf[0]));
     ibuf = ealloc(nf*(NV_PER_FACE + 1)*sizeof(ibuf[0]));
 }
 
@@ -115,21 +99,6 @@ void read_file(const char* fn) {
   fclose(fd);
 }
 
-int cnv() { /* get number of not banned vertices */
-  int ans, iv;
-  for (iv = 0, ans = 0; iv < nv; ++iv)
-    if (!bbv[iv]) ans ++;
-  return ans;
-}
-
-int cnf() { /* get number of not banned faces */
-  int ans, ifa;
-  for (ifa = 0, ans = 0; ifa < nf; ++ifa)
-    if (!bbf[ifa]) ans ++;
-  return ans;
-}
-
-int reidx(int f) {return idx[f];}
 #define pr(...) fprintf (fd, __VA_ARGS__)
 void write_file_version(FILE* fd) {
   pr("# vtk DataFile Version 2.0\n");
@@ -147,11 +116,10 @@ void write_format(FILE* fd) {
 void write_vertices(FILE* fd) {
   const char* const dataType = "float";
   pr("DATASET POLYDATA\n");
-  pr("POINTS %d %s\n", cnv(), dataType);
+  pr("POINTS %d %s\n", nv, dataType);
 
   int ib, iv;
   for (iv=0, ib=0; iv<nv; ++iv) {
-    if (bbv[iv]) continue;
     SF(xx[iv]); SF(yy[iv]); SF(zz[iv]);
   }
   fwrite(buf, ib, sizeof(float), fd);
@@ -159,37 +127,27 @@ void write_vertices(FILE* fd) {
 
 #define SI(f) ibuf[ib++] = LongSwap(f);
 void write_cells(FILE* fd) {
-  int ncell = cnf();
-  int size = (1 + NV_PER_FACE)*ncell;
+  int size = (1 + NV_PER_FACE)*nf;
   pr("\n");
-  pr("POLYGONS %d %d\n", ncell, size);
+  pr("POLYGONS %d %d\n", nf, size);
   int ib = 0;
   for (int f1, f2, f3, ifa = 0; ifa < nf; ++ifa) {
-    if (bbf[ifa]) continue;
-    f1 = reidx(ff1[ifa]); f2 = reidx(ff2[ifa]); f3 = reidx(ff3[ifa]);
+    f1 = ff1[ifa]; f2 = ff2[ifa]; f3 = ff3[ifa];
     SI(NV_PER_FACE); SI(f1); SI(f2); SI(f3);
   }
   fwrite(ibuf, ib, sizeof(int), fd);
 }
 
 void write_cells_attributes(FILE* fd) {
-  int ncell = cnf();
+    int ifa, ib;
   const char* const dataType = "float";
   const char* const dataName = "s";
 
   pr("\n");
-  pr("CELL_DATA %d\n", ncell);
+  pr("CELL_DATA %d\n", nf);
   pr("SCALARS %s %s\n", dataName, dataType);
   pr("LOOKUP_TABLE default\n");
-  int ifa, f1, irbc, ib = 0, crbc = -1, iv_rbc = 0;
-  for (ifa = 0; ifa < nf; ++ifa) { /* color faces with face id inside
-                                      one cell */
-    if (bbf[ifa]) continue;
-    f1 = ff1[ifa]; irbc = rrbc[f1];
-    if (irbc != crbc) {iv_rbc = 0; crbc = irbc;} /* new cell */
-    else               iv_rbc ++;                /* old cell */
-    SF(iv_rbc);
-  }
+  for (ifa = ib = 0; ifa < nf; ++ifa) SF(ifa); 
   fwrite(buf, ib, sizeof(float), fd);
 }
 
@@ -205,21 +163,18 @@ void write_file(const char* fn) {
   fclose(fd);
 }
 
-void index_vertices() {
-  int iv, ivn;
-  for (iv = ivn = 0; iv < nv; ++iv) {
-    if (bbv[iv]) continue;
-    idx[iv] = ivn++;
-  }
-}
-
 int main(int argc, const char** argv) {
+    if (argc != 6) {
+        fprintf(stderr, "ply2pbc0: needs five arguments\n");
+        exit(2);
+    }
+    
   int i = 1;
   X = atof(argv[i++]);
   Y = atof(argv[i++]);
   Z = atof(argv[i++]);
   fprintf(stderr, "XYZ: %g %g %g\n", X, Y, Z);
 
-  read_file(argv[1]);
-  write_file(argv[2]);
+  read_file(argv[i++]);
+  write_file(argv[i++]);
 }
