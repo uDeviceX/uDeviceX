@@ -23,36 +23,36 @@ FILE* fd_nl;
 char line[1024];
 void init_nl(FILE* fd) {fd_nl = fd;}
 void nl() { /* read [n]ext [l]ine; sets `line' */
-  fgets(line, sizeof(line), fd_nl);
+    fgets(line, sizeof(line), fd_nl);
 }
 
 void read_header(FILE* fd) {
-  init_nl(fd);
-  nl(); /* ply */
-  nl(); /* format binary_little_endian 1.0 */
-  /* element vertex %nv% */
-  nl(); sscanf(line, "element vertex %d\n", &nv);
-  nl(); nl(); nl(); nl(); nl(); nl(); /* property float [xyzuvw] */
+    init_nl(fd);
+    nl(); /* ply */
+    nl(); /* format binary_little_endian 1.0 */
+    /* element vertex %nv% */
+    nl(); sscanf(line, "element vertex %d\n", &nv);
+    nl(); nl(); nl(); nl(); nl(); nl(); /* property float [xyzuvw] */
 
-  nl(); sscanf(line, "element face %d\n", &nf);
-  nl(); /* property list int int vertex_index */
-  nl(); /* end_header */
+    nl(); sscanf(line, "element face %d\n", &nf);
+    nl(); /* property list int int vertex_index */
+    nl(); /* end_header */
 }
 
 void read_vertices(FILE* fd) {
-  safe_fread(buf, NVAR*nv, sizeof(float), fd);
-  for (int iv=0, ib=0; iv<nv; ++iv) {
-     xx[iv] = buf[ib++];  yy[iv] = buf[ib++];  zz[iv] = buf[ib++];
-    vvx[iv] = buf[ib++]; vvy[iv] = buf[ib++]; vvz[iv] = buf[ib++];
-  }
+    safe_fread(buf, NVAR*nv, sizeof(float), fd);
+    for (int iv=0, ib=0; iv<nv; ++iv) {
+        xx[iv] = buf[ib++];  yy[iv] = buf[ib++];  zz[iv] = buf[ib++];
+        vvx[iv] = buf[ib++]; vvy[iv] = buf[ib++]; vvz[iv] = buf[ib++];
+    }
 }
 
 void read_faces(FILE* fd) {
-  safe_fread(ibuf, nf*(NV_PER_FACE+1), sizeof(int), fd);
-  for (int ifa = 0, ib = 0; ifa < nf; ++ifa) {
-      ib++; /* skip number of vertices per face */
-      ff1[ifa] = ibuf[ib++]; ff2[ifa] = ibuf[ib++]; ff3[ifa] = ibuf[ib++];
-  }
+    safe_fread(ibuf, nf*(NV_PER_FACE+1), sizeof(int), fd);
+    for (int ifa = 0, ib = 0; ifa < nf; ++ifa) {
+        ib++; /* skip number of vertices per face */
+        ff1[ifa] = ibuf[ib++]; ff2[ifa] = ibuf[ib++]; ff3[ifa] = ibuf[ib++];
+    }
 }
 
 void* ealloc(size_t sz) {
@@ -83,18 +83,18 @@ void balloc() {
 }
 
 void read_file(const char* fn) {
-  fprintf(stderr, "(box) reading: %s\n", fn);
-  FILE* fd = safe_fopen(fn, "r");
-  read_header(fd);
-  balloc();
-  read_vertices(fd);
-  read_faces(fd);
-  fclose(fd);
+    fprintf(stderr, "(box) reading: %s\n", fn);
+    FILE* fd = safe_fopen(fn, "r");
+    read_header(fd);
+    balloc();
+    read_vertices(fd);
+    read_faces(fd);
+    fclose(fd);
 }
 
 #define pr(...) fprintf (fd, __VA_ARGS__)
 void write_file_version(FILE* fd) {
-  pr("# vtk DataFile Version 2.0\n");
+    pr("# vtk DataFile Version 2.0\n");
 }
 
 void write_header(FILE* fd) {
@@ -102,58 +102,58 @@ void write_header(FILE* fd) {
 }
 
 void write_format(FILE* fd) {
-  pr("BINARY\n"); /* ASCII, BINARY */
+    pr("BINARY\n"); /* ASCII, BINARY */
 }
 
 #define SF(f) buf[ib++] = FloatSwap((f));
 void write_vertices(FILE* fd) {
-  const char* const dataType = "float";
-  pr("DATASET POLYDATA\n");
-  pr("POINTS %d %s\n", nv, dataType);
+    const char* const dataType = "float";
+    pr("DATASET POLYDATA\n");
+    pr("POINTS %d %s\n", nv, dataType);
 
-  int ib, iv;
-  for (iv=0, ib=0; iv<nv; ++iv) {
-    SF(xx[iv]); SF(yy[iv]); SF(zz[iv]);
-  }
-  fwrite(buf, ib, sizeof(float), fd);
+    int ib, iv;
+    for (iv=0, ib=0; iv<nv; ++iv) {
+        SF(xx[iv]); SF(yy[iv]); SF(zz[iv]);
+    }
+    fwrite(buf, ib, sizeof(float), fd);
 }
 
 #define SI(f) ibuf[ib++] = LongSwap(f);
 void write_cells(FILE* fd) {
-  int size = (1 + NV_PER_FACE)*nf;
-  pr("\n");
-  pr("POLYGONS %d %d\n", nf, size);
-  int ib = 0;
-  for (int f1, f2, f3, ifa = 0; ifa < nf; ++ifa) {
-    f1 = ff1[ifa]; f2 = ff2[ifa]; f3 = ff3[ifa];
-    SI(NV_PER_FACE); SI(f1); SI(f2); SI(f3);
-  }
-  fwrite(ibuf, ib, sizeof(int), fd);
+    int size = (1 + NV_PER_FACE)*nf;
+    pr("\n");
+    pr("POLYGONS %d %d\n", nf, size);
+    int ib = 0;
+    for (int f1, f2, f3, ifa = 0; ifa < nf; ++ifa) {
+        f1 = ff1[ifa]; f2 = ff2[ifa]; f3 = ff3[ifa];
+        SI(NV_PER_FACE); SI(f1); SI(f2); SI(f3);
+    }
+    fwrite(ibuf, ib, sizeof(int), fd);
 }
 
 void write_cells_attributes(FILE* fd) {
     int ifa, ib;
-  const char* const dataType = "float";
-  const char* const dataName = "s";
+    const char* const dataType = "float";
+    const char* const dataName = "s";
 
-  pr("\n");
-  pr("CELL_DATA %d\n", nf);
-  pr("SCALARS %s %s\n", dataName, dataType);
-  pr("LOOKUP_TABLE default\n");
-  for (ifa = ib = 0; ifa < nf; ++ifa) SF(ifa); 
-  fwrite(buf, ib, sizeof(float), fd);
+    pr("\n");
+    pr("CELL_DATA %d\n", nf);
+    pr("SCALARS %s %s\n", dataName, dataType);
+    pr("LOOKUP_TABLE default\n");
+    for (ifa = ib = 0; ifa < nf; ++ifa) SF(ifa); 
+    fwrite(buf, ib, sizeof(float), fd);
 }
 
 void write_file(const char* fn) {
-  fprintf(stderr, "(rw) writing: %s\n", fn);
-  FILE* fd = safe_fopen(fn, "w");
-  write_file_version(fd);
-  write_header(fd);
-  write_format(fd);
-  write_vertices(fd);
-  write_cells(fd);
-  write_cells_attributes(fd);
-  fclose(fd);
+    fprintf(stderr, "(rw) writing: %s\n", fn);
+    FILE* fd = safe_fopen(fn, "w");
+    write_file_version(fd);
+    write_header(fd);
+    write_format(fd);
+    write_vertices(fd);
+    write_cells(fd);
+    write_cells_attributes(fd);
+    fclose(fd);
 }
 
 int main(int argc, const char** argv) {
@@ -162,12 +162,13 @@ int main(int argc, const char** argv) {
         exit(2);
     }
     
-  int i = 1;
-  X = atof(argv[i++]);
-  Y = atof(argv[i++]);
-  Z = atof(argv[i++]);
-  fprintf(stderr, "XYZ: %g %g %g\n", X, Y, Z);
+    int i = 1;
+    X = atof(argv[i++]);
+    Y = atof(argv[i++]);
+    Z = atof(argv[i++]);
+    fprintf(stderr, "XYZ: %g %g %g\n", X, Y, Z);
 
-  read_file(argv[i++]);
-  write_file(argv[i++]);
+    read_file(argv[i++]);
+  
+    //write_file(argv[i++]);
 }
