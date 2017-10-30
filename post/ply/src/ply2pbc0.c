@@ -82,15 +82,6 @@ void balloc() {
     ibuf = ealloc(nf*(NV_PER_FACE + 1)*sizeof(ibuf[0]));
 }
 
-void read_file(const char* fn) {
-    FILE* fd = safe_fopen(fn, "r");
-    read_header(fd);
-    balloc();
-    read_vertices(fd);
-    read_faces(fd);
-    fclose(fd);
-}
-
 #define pr(...) fprintf (fd, __VA_ARGS__)
 void write_file_version(FILE* fd) {
     pr("# vtk DataFile Version 2.0\n");
@@ -156,18 +147,26 @@ void write_file(const char* fn) {
 }
 
 int main(int argc, const char** argv) {
+    int i;
+    FILE *fd;
+    
     if (argc != 6) {
         fprintf(stderr, "ply2pbc0: needs five arguments\n");
         exit(2);
     }
-    
-    int i = 1;
+
+    i = 1;
     X = atof(argv[i++]);
     Y = atof(argv[i++]);
     Z = atof(argv[i++]);
     fprintf(stderr, "XYZ: %g %g %g\n", X, Y, Z);
 
-    read_file(argv[i++]);
+    fd = safe_fopen(argv[i++], "r");
+    read_header(fd);
+    balloc();
+    read_vertices(fd);
+    read_faces(fd);
+    fclose(fd);    
   
     //write_file(argv[i++]);
 }
