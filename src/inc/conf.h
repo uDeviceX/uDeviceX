@@ -316,7 +316,6 @@
   #define DPD_CHARGE
 #endif
 
-
 /*** see poc/color */
 #ifndef gdpd_bw
   #define gdpd_bw gdpd_b

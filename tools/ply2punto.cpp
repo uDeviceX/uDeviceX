@@ -1,11 +1,3 @@
-/*
-  Write x y z from ply file to stdio
-
-  Usage:
-  ./ply2punto <in.ply>
-
-*/
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
