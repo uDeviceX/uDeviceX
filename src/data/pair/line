@@ -1,0 +1,12 @@
+#!/usr/bin/awk -f
+
+function i2x(i) { return i/(N-1) }
+
+BEGIN {
+    N = 100
+    for (i = 0; i < N; i++) {
+	x = i2x(i)
+	print 0, 0, 0, 0, 0, 0, "SOLVENT", "BLUE"
+	print x, 0, 0, 0, 0, 0, "SOLVENT", "BLUE"
+    }
+}
