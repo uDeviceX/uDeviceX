@@ -9,6 +9,7 @@
 
 #include "flux.h"
 
+namespace recolor {
 namespace dev {
 __global__ void flux(int dir, int color, int n, const Particle *pp, int *cc) {
     int i;
@@ -30,3 +31,4 @@ void flux(int dir, int color, int n, const Particle *pp, int *cc) {
     if (m::coords[dir] == m::dims[dir])
         KL(dev::flux, (k_cnf(n)), (dir, color, n, pp, cc));
 }
+} // recolor
