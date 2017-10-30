@@ -36,6 +36,18 @@
 #define color_freq    (0)
 #endif
 
+// recoloring options
+
+#ifndef RECOLOR_FLUX
+#define RECOLOR_FLUX (false)
+#endif
+
+#ifndef COL_FLUX_DIR
+#define COL_FLUX_DIR (0)
+#endif
+
+// global ids for solvent, rbcs
+
 #ifndef global_ids
 #define global_ids (false)
 #endif
