@@ -1,5 +1,5 @@
-O = $B/algo/minmax.o $B/algo/scan/imp.o $B/clist/imp.o $B/cnt/imp.o $B/comm/imp.o \
-    $B/d/api.o $B/dbg/imp.o $B/distr/flu/imp.o $B/distr/rbc/imp.o \
+O = $B/algo/minmax.o $B/algo/scan/imp.o $B/clist/imp.o $B/cnt/imp.o $B/color/flux.o \
+    $B/comm/imp.o $B/d/api.o $B/dbg/imp.o $B/distr/flu/imp.o $B/distr/rbc/imp.o \
     $B/distr/rig/imp.o $B/dpdr/imp.o $B/dpdr/int.o $B/exch/flu/imp.o \
     $B/exch/mesh/imp.o $B/exch/obj/imp.o $B/field.o $B/flu/imp.o $B/frag/imp.o \
     $B/fsi/imp.o $B/generate/rig/imp.o $B/glb/gdot/imp.o $B/glb/imp.o \
