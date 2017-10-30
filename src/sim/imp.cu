@@ -86,6 +86,8 @@
 
 #include "vcontroller/imp.h"
 
+#include "color/flux.h"
+
 #include "imp.h"
 namespace sim {
 #include "imp/type.h"

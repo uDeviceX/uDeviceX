@@ -30,3 +30,8 @@ void gen_colors() {
 
     destroy(&texvert);
 }
+
+void recolor_flux() {
+    if (RECOLOR_FLUX)    
+        recolor::flux(COL_FLUX_DIR, RED_COLOR, o::q.n, o::q.pp, /**/ o::q.cc);
+}
