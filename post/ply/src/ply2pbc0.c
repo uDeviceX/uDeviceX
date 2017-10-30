@@ -206,9 +206,21 @@ void upd_img(float x,  float  y, float  z,
     upd_img0(z, z0, iz);
 }
 
+char *fline(char *f) {
+    int n;
+    char *r;
+    r = fgets(f, BUFSIZ - 1, stdin);
+    if (r != NULL) {
+        n = strlen(f);
+        if (n > 0) f[n - 1] = '\0';
+    }
+    return r;
+}
+
 int main(int argc, const char** argv) {
     int i;
-    const char *o; /* output file */
+    char f[BUFSIZ]; /* intput file */
+    const char *o; /* output dir */
     int Fst;
     float x0, y0, z0;
     float  x,  y,  z;
@@ -218,14 +230,16 @@ int main(int argc, const char** argv) {
     Y = atof(argv[i++]);
     Z = atof(argv[i++]);
     o = argv[i++];
+    
     ix = iy = iz = 0;
-    for (Fst = 1 ; i < argc; i++) {
+    Fst = 1;
+    while (fline(/**/ f) != NULL) {
         if (Fst) {
             Fst = 0;
-            read_fst(argv[i]);
+            read_fst(f);
             compute_cm(/**/ &x, &y, &z);
         } else {
-            read_rst(argv[i]);
+            read_rst(f);
             compute_cm(/**/  &x,  &y,  &z);
             upd_img(x, y, z, x0, y0, z0, /*io*/
                     &ix, &iy, &iz);
