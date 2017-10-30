@@ -1,9 +1,15 @@
 usg () {
-    msg 'ply2pbc X Y Z    [input dir]   [output dir]'
-    msg 'ply2pbc X Y Z -r [input dir]   [output dir]'
+    msg 'u.ply2pbc X Y Z    [input dir]   [output dir]'
+    msg 'u.ply2pbc X Y Z -r [input dir]   [output dir]'
     msg 'unwraps periodic images. X, Y, Z: domain sizes'
     msg ' with -r [output dir] is relative to [input dir]'
+    msg 'Ex. u.ply2pbc 144 24 24 -r r ../unwrp'
     exit
+}
+
+err () {
+    msg "$@"
+    exit 2
 }
 
 e () {
@@ -11,3 +17,43 @@ e () {
     eval "$@"
 }
 msg () { echo >&2 "$@"; }
+
+find0 () {
+    e find "$1" -maxdepth 1 -name '*.ply'
+}
+
+rel () {
+    if test "$Rel" -eq 1
+    then o="$i"/"$o"
+    fi
+}
+
+if test $# -ne 0 -a "$1" = -h; then usg; fi
+
+Rel=0
+for c
+do shift
+   if test "$c" = -r
+   then Rel=1
+   else set -- "$@" "$c"
+   fi
+done
+
+X="$1"; shift
+Y="$1"; shift
+Z="$1"; shift
+i="$1"; shift
+
+o="$1"; shift
+rel # update o?
+
+if test ! -d "$i"
+then err 'not a directory: '"$i"
+fi
+
+e mkdir -p "$o"
+if test ! -d "$o"
+then err 'fail to create directory: '"$o"
+fi
+
+find0 "$i" '|' sort '|' u.ply2pbc0 $X $Y $Z "$o"
