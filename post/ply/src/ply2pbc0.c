@@ -20,7 +20,7 @@ int *ff1, *ff2, *ff3;
 int *ibuf;
 
 FILE* fd_nl;
-char line[1024];
+char line[BUFSIZ];
 void init_nl(FILE* fd) {fd_nl = fd;}
 void nl() { /* read [n]ext [l]ine; sets `line' */
     fgets(line, sizeof(line), fd_nl);
@@ -130,11 +130,11 @@ void write_cells_attributes(FILE* fd) {
     pr("CELL_DATA %d\n", nf);
     pr("SCALARS %s %s\n", dataName, dataType);
     pr("LOOKUP_TABLE default\n");
-    for (ifa = ib = 0; ifa < nf; ++ifa) SF(ifa); 
+    for (ifa = ib = 0; ifa < nf; ++ifa) SF(ifa);
     fwrite(buf, ib, sizeof(float), fd);
 }
 
-void write_file(const char* fn) {
+void write_file0(const char* fn) {
     fprintf(stderr, "(rw) writing: %s\n", fn);
     FILE* fd = safe_fopen(fn, "w");
     write_file_version(fd);
@@ -146,27 +146,96 @@ void write_file(const char* fn) {
     fclose(fd);
 }
 
-int main(int argc, const char** argv) {
-    int i;
+void write_file(const char *d) {
+    static int i = 0;
+    char fn[BUFSIZ];
+    sprintf(fn, "%s/%05d.vtk", d, i++);
+    write_file0(fn);
+}
+
+void read_fst(const char *fn) {
+    /* read and alloc */
     FILE *fd;
-    
-    if (argc != 6) {
-        fprintf(stderr, "ply2pbc0: needs five arguments\n");
-        exit(2);
-    }
-
-    i = 1;
-    X = atof(argv[i++]);
-    Y = atof(argv[i++]);
-    Z = atof(argv[i++]);
-    fprintf(stderr, "XYZ: %g %g %g\n", X, Y, Z);
-
-    fd = safe_fopen(argv[i++], "r");
+    fd = safe_fopen(fn, "r");
     read_header(fd);
     balloc();
     read_vertices(fd);
     read_faces(fd);
-    fclose(fd);    
-  
-    //write_file(argv[i++]);
+    fclose(fd);
+}
+
+void read_rst(const char *fn) {
+    /* just read */
+    FILE *fd;
+    fd = safe_fopen(fn, "r");
+    read_header(fd);
+    read_vertices(fd);
+    read_faces(fd);
+    fclose(fd);
+}
+
+void compute_cm(/**/ float *px, float *py, float *pz) {
+    float x, y, z;
+    int iv;
+    x = y = z = 0;
+    for (iv = 0; iv < nv; iv++) {
+        x += xx[iv]; y += yy[iv]; z += zz[iv];
+    }
+    x /= nv; y /= nv; z /= nv;
+    fprintf(stderr, "xyz: %g %g %g\n", x, y, z);
+
+    *px = x; *py = y; *pz = z;
+}
+
+void shift(int ix, int iy, int iz) {
+    int iv;
+    if (ix == 0 && iy == 0 && iz == 0) return;
+    for (iv = 0; iv < nv; iv++) {
+        xx[iv] += ix*X;
+        yy[iv] += iy*Y;
+        zz[iv] += iz*Z;
+    }
+}
+
+void upd_img0(float r, float r0, int *i) {
+    if       (r - r0 >  X/2) (*i)--;
+    else if  (r - r0 < -X/2) (*i)++;
+}
+
+void upd_img(float x,  float  y, float  z,
+             float x0, float y0, float z0,
+             int *ix, int *iy, int *iz) {
+    upd_img0(x, x0, ix);
+    upd_img0(y, y0, iy);
+    upd_img0(z, z0, iz);
+}
+
+int main(int argc, const char** argv) {
+    int i;
+    const char *o; /* output file */
+    int Fst;
+    float x0, y0, z0;
+    float  x,  y,  z;
+    int ix, iy, iz; /* periodic image index */
+    i = 1;
+    X = atof(argv[i++]);
+    Y = atof(argv[i++]);
+    Z = atof(argv[i++]);
+    o = argv[i++];
+    ix = iy = iz = 0;
+    for (Fst = 1 ; i < argc; i++) {
+        if (Fst) {
+            Fst = 0;
+            read_fst(argv[i]);
+            compute_cm(/**/ &x, &y, &z);
+        } else {
+            read_rst(argv[i]);
+            compute_cm(/**/  &x,  &y,  &z);
+            upd_img(x, y, z, x0, y0, z0, /*io*/
+                    &ix, &iy, &iz);
+            shift(ix, iy, iz);
+        }
+        write_file(o);
+        x0 = x; y0 = y; z0 = z;
+    }
 }
