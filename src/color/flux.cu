@@ -27,8 +27,9 @@ __global__ void flux(int dir, int color, int n, const Particle *pp, int *cc) {
 
 void flux(int dir, int color, int n, const Particle *pp, int *cc) {
     assert(dir >= 0 && dir <= 2);
-
-    if (m::coords[dir] == m::dims[dir])
+    assert(multi_solvent);
+        
+    if (m::coords[dir] == m::dims[dir] - 1)
         KL(dev::flux, (k_cnf(n)), (dir, color, n, pp, cc));
 }
 } // recolor
