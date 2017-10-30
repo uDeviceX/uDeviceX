@@ -1,0 +1,13 @@
+usg () {
+    msg 'ply2pbc X Y Z    [input dir]   [output dir]'
+    msg 'ply2pbc X Y Z -r [input dir]   [output dir]'
+    msg 'unwraps periodic images. X, Y, Z: domain sizes'
+    msg ' with -r [output dir] is relative to [input dir]'
+    exit
+}
+
+e () {
+    msg "cmd: $*"
+    eval "$@"
+}
+msg () { echo >&2 "$@"; }
