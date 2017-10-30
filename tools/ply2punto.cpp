@@ -69,7 +69,7 @@ void help(int c, const char** a) {
 
 int main(int argc, const char** argv) {
     int i;
-	help(argc, argv);
+    help(argc, argv);
     for (i = 1; i < argc; i++) {
         if (i > 1) printf("\n");
         read_file(argv[i]);
