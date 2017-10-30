@@ -21,9 +21,12 @@ Build
 
 Particles coordinates, velocities, kinds, and colors are provided via
 `stdin`. An example is in [src/data/pair/2](../../src/data/pair/2).
+If `RND` is set it is used as a scale of random force for all pairs.
 
 	s=<path to src>
-	./udx < $s/data/pair/2
+	./udx        < $s/data/pair/2
+	RND=42 ./udx < $s/data/pair/2
+
 
 Returns force between two particles
 
