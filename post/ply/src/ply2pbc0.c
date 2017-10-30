@@ -4,7 +4,6 @@
 #include "rbc_utils.h"
 
 float X, Y, Z;
-
 int   nv; /* number of vertices */
 int   nf; /* number of faces */
 
@@ -135,7 +134,6 @@ void write_cells_attributes(FILE* fd) {
 }
 
 void write_file0(const char* fn) {
-    fprintf(stderr, "(rw) writing: %s\n", fn);
     FILE* fd = safe_fopen(fn, "w");
     write_file_version(fd);
     write_header(fd);
@@ -182,8 +180,6 @@ void compute_cm(/**/ float *px, float *py, float *pz) {
         x += xx[iv]; y += yy[iv]; z += zz[iv];
     }
     x /= nv; y /= nv; z /= nv;
-    fprintf(stderr, "xyz: %g %g %g\n", x, y, z);
-
     *px = x; *py = y; *pz = z;
 }
 
