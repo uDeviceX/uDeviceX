@@ -1,10 +1,14 @@
+set -eu
+
 . ./util
 
+nx=3 ny=1 nz=1
 u.conf ../src u/safe conf.def.h <<!
 run
 !
 
 u.make -j
 
-u.strtdir . 3 1 1
+u.strtdir . $nx $ny $nz
+export UDEVICES=0,1
 run
