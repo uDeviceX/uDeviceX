@@ -1,4 +1,4 @@
-CXX=gcc
+CXX=g++
 CXXFLAGS = -Wpedantic -Wall -Wextra -O3
 
 %.o: %.c; $(CXX) $(CXXFLAGS) $(OPT) -c $< -o $@
