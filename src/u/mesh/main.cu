@@ -13,4 +13,11 @@
 #include "inc/dev.h"
 #include "d/api.h"
 
+#include "inc/type.h"
+#include "msg.h"
+
+#include "utils/cc.h"
+#include "utils/texo.h"
+#include "mesh/collision.h"
+
 #include "imp/main.h"
