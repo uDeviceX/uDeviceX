@@ -1,6 +1,6 @@
 . ./util
 
-u.conf ../src u/safe conf.def.h <<!
+u.conf ../src u/x conf.def.h <<!
 run
 !
 
