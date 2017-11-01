@@ -7,4 +7,4 @@ to run. Example,
 
 For multi-node runs `UDEVICES` is used to select devices. Example
 
-    UDEVICES=0,1 ./udx
+    UDEVICES=1,2 ./udx

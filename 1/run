@@ -10,5 +10,4 @@ run
 u.make -j
 
 u.strtdir . $nx $ny $nz
-export UDEVICES=0,1
 run
