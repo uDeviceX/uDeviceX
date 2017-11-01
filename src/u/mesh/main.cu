@@ -13,8 +13,4 @@
 #include "inc/dev.h"
 #include "d/api.h"
 
-#include "forces/type.h"
-#include "forces/use.h"
-#include "forces/imp.h"
-
 #include "imp/main.h"
