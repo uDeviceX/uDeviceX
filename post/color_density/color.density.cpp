@@ -16,7 +16,7 @@ static void usg() {
     exit(1);
 }
 
-void parse(int argc, char **argv, /**/ Args *a) {
+static void parse(int argc, char **argv, /**/ Args *a) {
     if (argc != 6) usg();
     int iarg = 1;
     a->lx = atoi(argv[iarg++]);
@@ -24,6 +24,26 @@ void parse(int argc, char **argv, /**/ Args *a) {
     a->lz = atoi(argv[iarg++]);
     a->bop_s = argv[iarg++];
     a->bop_c = argv[iarg++];
+}
+
+static bool valid(int i, int l) {return i >= 0 && i < l;}
+
+static void collect(long n, const float *pp, const int *cc, int lx, int ly, int lz, float *grid) {
+    enum {X, Y, Z};
+    long i, ix, iy, iz, cid;
+    const float *r;
+    for (i = 0; i < n; ++i) {
+        r = pp + 6 * i;
+
+        ix = (int) r[X];
+        iy = (int) r[Y];
+        iz = (int) r[Z];
+
+        if (valid(ix, lx) && valid(iy, ly) && valid(iz, lz)) {
+            cid = ix + lx * (iy + ly * iz);
+            grid[cid] += cc[i];
+        }
+    }
 }
 
 int main(int argc, char **argv) {
