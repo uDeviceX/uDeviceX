@@ -16,10 +16,9 @@ void piramid(/**/ float *v, int4 *t, int *nt) {
 
     i = 0;
     add_tri(0, 1, 2, /**/ &t[i++]);
-    add_tri(3, 1, 0, /**/ &t[i++]);
+    add_tri(0, 3, 1, /**/ &t[i++]);
+    add_tri(0, 2, 3, /**/ &t[i++]);
     add_tri(1, 3, 2, /**/ &t[i++]);
-    add_tri(3, 2, 0, /**/ &t[i++]);
-
     *nt = i;
 }
 
