@@ -48,3 +48,5 @@
 #define part_freq               50000
 #define field_dumps             true
 #define field_freq              50000
+#define strt_dumps              true
+#define strt_freq               500000
