@@ -1,5 +1,3 @@
-/* Part I (conf.base.h) */
-
 /* DOMAIN */
 #define XS                      32
 #define YS                      32
@@ -50,7 +48,3 @@
 #define part_freq               50000
 #define field_dumps             true
 #define field_freq              50000
-
-/* Part II (added by tools/argp) */
-
-
