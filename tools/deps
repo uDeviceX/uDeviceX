@@ -1,3 +1,5 @@
+set -ue
+
 # update all units
 one () {
     local u
