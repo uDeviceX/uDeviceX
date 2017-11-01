@@ -1,0 +1,8 @@
+. ./util
+
+u.conf ../src u/safe conf.def.h <<!
+run
+!
+
+u.strtdir 3 1 1
+run
