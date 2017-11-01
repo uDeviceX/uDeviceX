@@ -29,7 +29,7 @@ static void rr2pp(const float *rr, const int n, Particle *pp) {
     }
 }
 
-void strt_dump_templ(const int nps, const float *rr0_hst) {
+static void strt_dump_templ0(const int nps, const float *rr0_hst) {
     Particle *pp = new Particle[nps];
     rr2pp(rr0_hst, nps, pp);
 
@@ -37,6 +37,11 @@ void strt_dump_templ(const int nps, const float *rr0_hst) {
     
     delete[] pp;
 }
+
+void strt_dump_templ(Quants q) {
+    strt_dump_templ0(q.nps, q.rr0_hst);
+}
+
 
 static void strt_dump(const int id, const int ns, const Solid *ss) {
     restart::write_ss("rig", id, ss, ns);
