@@ -9,10 +9,10 @@ void add_tri (int x, int y, int z, /**/ int4 *t) { (*t).x = x; (*t).y = y; (*t).
 void piramid(/**/ float *v, int4 *t, int *nt) {
     int i;
     i = 0;
-    add_vert(0, 0, 0, /**/ &v[i+=3]);
-    add_vert(1, 0, 0, /**/ &v[i+=3]);
-    add_vert(0, 1, 0, /**/ &v[i+=3]);
-    add_vert(0, 0, 1, /**/ &v[i+=3]);
+    add_vert(0, 0, 0, /**/ &v[3*i++]);
+    add_vert(1, 0, 0, /**/ &v[3*i++]);
+    add_vert(0, 1, 0, /**/ &v[3*i++]);
+    add_vert(0, 0, 1, /**/ &v[3*i++]);
 
     i = 0;
     add_tri(0, 1, 2, /**/ &t[i++]);
