@@ -1,5 +1,6 @@
 #include "stdio.h"
 #include "stdlib.h"
+#include "string.h"
 
 #include "bop_reader.h"
 extern "C" {
@@ -33,6 +34,9 @@ static void collect(long n, const float *pp, const int *cc, int lx, int ly, int 
     enum {X, Y, Z};
     long i, ix, iy, iz, cid;
     const float *r;
+
+    memset(grid, 0, lx*ly*lz*sizeof(float));
+
     for (i = 0; i < n; ++i) {
         r = pp + 6 * i;
 
@@ -56,7 +60,7 @@ int main(int argc, char **argv) {
     parse(argc, argv, /**/ &a);
 
     grid = (float*) malloc(a.lx * a.ly * a.lz * sizeof(float));
-    
+        
     init(&bop_s);
     init(&bop_c);
 
