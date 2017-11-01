@@ -1,0 +1,8 @@
+run () {
+    local h
+    h=`u.host`
+    if test $h = panda
+    then u.run     $nx $ny $nz ./udx
+    else u.batch   $nx $ny $nz ./udx 08:00:00
+    fi
+}
