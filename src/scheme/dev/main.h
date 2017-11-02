@@ -10,7 +10,7 @@ __global__ void update(float mass, Particle* pp, Force* ff, int n) {
     update0(mass, f, /**/ r, v);
 }
 
-__global__ void clear_vel(Particle *pp, int n)  {
+__global__ void clear_vel(int n, /**/ Particle *pp)  {
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
     for(int c = 0; c < 3; ++c) pp[pid].v[c] = 0;

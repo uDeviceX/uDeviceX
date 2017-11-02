@@ -1,7 +1,7 @@
 void clear_vel() {
-    scheme::clear_vel(o::q.pp, o::q.n);
-    if (solids) scheme::clear_vel(s::q.pp, s::q.n);
-    if (rbcs  ) scheme::clear_vel(r::q.pp, r::q.n);
+    scheme::clear_vel(o::q.n, o::q.pp);
+    if (solids) scheme::clear_vel(s::q.n, s::q.pp);
+    if (rbcs  ) scheme::clear_vel(r::q.n, r::q.pp);
 }
 
 void update_solid() {
