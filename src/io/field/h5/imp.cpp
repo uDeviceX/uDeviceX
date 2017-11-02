@@ -17,7 +17,7 @@ struct IDs {
     hid_t file;
 };
 
-void create(const char *const path, /**/ IDs *ids) {
+static void create(const char *const path, /**/ IDs *ids) {
     hid_t plist, file;
     herr_t rc;
 
