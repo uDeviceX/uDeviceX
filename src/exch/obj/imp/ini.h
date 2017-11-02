@@ -1,6 +1,10 @@
+static void estimates(int nfrags, int maxd, int *cap) {
+    frag_estimates(nfrags, maxd, /**/ cap);
+}
+
 void ini(int nw, int maxd, Pack *p) {
     int cap[NFRAGS];
-    frag_estimates(NFRAGS, maxd, /**/ cap);
+    estimates(NFRAGS, maxd, /**/ cap);
 
     ini_map(nw, NFRAGS, cap, /**/ &p->map);
     ini(PINNED, NONE, sizeof(Particle), cap, /**/ &p->hpp, &p->dpp);
@@ -20,14 +24,14 @@ void ini(int maxd, Unpack *u) {
 
 void ini(int maxd, PackF *p) {
     int cap[NFRAGS];
-    frag_estimates(NFRAGS, maxd, /**/ cap);
+    estimates(NFRAGS, maxd, /**/ cap);
 
     ini(PINNED_DEV, NONE, sizeof(Force), cap, /**/ &p->hff, &p->dff);
 }
 
 void ini(int maxd, UnpackF *u) {
     int cap[NFRAGS];
-    frag_estimates(NFRAGS, maxd, /**/ cap);
+    estimates(NFRAGS, maxd, /**/ cap);
 
     ini(PINNED_DEV, NONE, sizeof(Force), cap, /**/ &u->hff, &u->dff);
 }
