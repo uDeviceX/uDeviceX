@@ -80,14 +80,14 @@ void bounce_solid(long it) {
 
 
 void update_solvent(long it) {
-    scheme::move(dpd_mass, o::q.pp, o::ff, o::q.n);
+    scheme::move(dpd_mass, o::q.n, o::ff, o::q.pp);
 }
 
 void update_rbc(long it) {
     bool cond;
     cond = multi_solvent && color_freq && it % color_freq == 0;
     if (cond) {MSG("recolor"); gen_colors();};
-    scheme::move(rbc_mass, r::q.pp, r::ff, r::q.n);
+    scheme::move(rbc_mass, r::q.n, r::ff, r::q.pp);
 }
 
 void restrain(long it) {

@@ -1,5 +1,6 @@
-__global__ void update(float mass, Particle* pp, Force* ff, int n) {
-    float *r, *v, *f;
+__global__ void update(float mass, Particle* pp, const Force *ff, int n) {
+    float *r, *v;
+    const float *f;
     int pid;
     pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;

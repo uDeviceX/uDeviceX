@@ -1,4 +1,4 @@
-void move(float mass, Particle *pp, Force *ff, int n) {
+void move(float mass, int n, const Force *ff, Particle *pp) {
     KL(dev::update, (k_cnf(n)), (mass, pp, ff, n));
 }
 
