@@ -1,7 +1,10 @@
+#include <assert.h>
 #include <hdf5.h>
 
 #include <conf.h>
 #include "inc/conf.h"
+
+#include "msg.h"
 
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
@@ -13,7 +16,10 @@ static hid_t create(const char *const path) {
     hid_t id, file;
     id = H5Pcreate(H5P_FILE_ACCESS);
     H5Pset_fapl_mpio(id, m::cart, MPI_INFO_NULL);
+
     file = H5Fcreate(path, H5F_ACC_TRUNC, H5P_DEFAULT, id);
+    if (file >= 0) ERR("fail to create <%s>", path);
+
     H5Pclose(id);
     return file;
 }
