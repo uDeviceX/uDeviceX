@@ -25,8 +25,7 @@
 #include "utils/texo.h"
 #include "utils/te.h"
 
-#include "cloud/hforces/type.h"
-#include "cloud/hforces/int.h"
+#include "cloud/imp.h"
 
 #include "io/fields_grid.h"
 #include "io/mesh.h"

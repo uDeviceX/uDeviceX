@@ -33,7 +33,7 @@
 #include "io/restart.h"
 
 #include "forces/type.h"
-#include "cloud/hforces/type.h"
+#include "cloud/imp.h"
 
 #include "exch/imp.h"
 #include "force/imp.h"
