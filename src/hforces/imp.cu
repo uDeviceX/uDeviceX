@@ -28,8 +28,8 @@
 #include "rnd/imp.h"
 #include "rnd/dev.h"
 
-#include "cloud/hforces/type.h"
-#include "cloud/hforces/get.h"
+#include "cloud/imp.h"
+#include "cloud/dev.h"
 
 #include "imp.h"
 #include "dev.map.h"

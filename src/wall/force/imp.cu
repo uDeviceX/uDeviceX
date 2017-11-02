@@ -35,8 +35,8 @@
 #include "forces/pack.h"
 #include "forces/imp.h"
 
-#include "cloud/hforces/type.h"
-#include "cloud/hforces/get.h"
+#include "cloud/imp.h"
+#include "cloud/dev.h"
 #include "algo/scan/int.h"
 #include "clist/imp.h"
 

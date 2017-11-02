@@ -59,9 +59,9 @@ void dump_grid() {
     fields_grid(qq, nn, /*w*/ a::pp_hst);
 }
 
-void dump_diag_after(int it) { /* after wall */
-    static int id = 0;
-    if (it % part_freq == 0) {
+void dump_diag_after(int it, bool wall0, bool solid0) { /* after wall */
+    if (solid0 && it % part_freq == 0) {
+        static int id = 0;
         rig_dump(it, s::q.ss_dmp, s::q.ss_dmp_bb, s::q.ns, m::coords);
 
         cD2H(a::pp_hst, s::q.i_pp, s::q.ns * s::q.nv);

@@ -36,7 +36,7 @@
 #include "rbc/imp.h"
 #include "rig/imp.h"
 #include "forces/type.h"
-#include "cloud/hforces/type.h"
+#include "cloud/imp.h"
 #include "wall/imp.h"
 
 #include "imp.h"

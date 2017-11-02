@@ -8,7 +8,7 @@ static __device__ Pa warp2p(const Particle *pp, int i) {
     return p;
 }
 
-static __device__ void halo0(Pa A, int aid, hforces::Cloud cloud, int nb, float seed, /**/ float *fA, float *ffB) {
+static __device__ void halo0(Pa A, int aid, Cloud cloud, int nb, float seed, /**/ float *fA, float *ffB) {
     enum {X, Y, Z};
 
     Pa B; /* remote particles */
@@ -24,7 +24,7 @@ static __device__ void halo0(Pa A, int aid, hforces::Cloud cloud, int nb, float 
         if (!tex2map(zplane, nb, A.x, A.y, A.z, /**/ &m)) continue;
         for (i = 0; !endp(m, i); ++i) {
             bid = m2id(m, i);
-            hforces::dev::cloud_get(cloud, bid, /**/ &B);
+            cloud_get(cloud, bid, /**/ &B);
             f = ff2f(ffB, bid);
             pair(A, B, random(aid, bid, seed), /**/ &fx, &fy, &fz,   f);
         }
@@ -32,7 +32,7 @@ static __device__ void halo0(Pa A, int aid, hforces::Cloud cloud, int nb, float 
     fA[X] += fx; fA[Y] += fy; fA[Z] += fz;
 }
 
-static __device__ void halo1(int27 starts, Pap26 pp, Fop26 ff, int aid, hforces::Cloud cloud, int nb, float seed, /**/ float *ffB) {
+static __device__ void halo1(int27 starts, Pap26 pp, Fop26 ff, int aid, Cloud cloud, int nb, float seed, /**/ float *ffB) {
     int fid; /* fragment id */
     int start;
     Pa A;
@@ -49,7 +49,7 @@ static __device__ void halo1(int27 starts, Pap26 pp, Fop26 ff, int aid, hforces:
     halo0(A, aid, cloud, nb, seed, /**/ fA, ffB);
 }
 
-__global__ void halo(int27 starts, Pap26 pp, Fop26 ff, hforces::Cloud cloud, int na, int nb, float seed, /**/ float *ffB) {
+__global__ void halo(int27 starts, Pap26 pp, Fop26 ff, Cloud cloud, int na, int nb, float seed, /**/ float *ffB) {
     int aid;
     aid = threadIdx.x + blockDim.x * blockIdx.x;
     if (aid >= na) return;

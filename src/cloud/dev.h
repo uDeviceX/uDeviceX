@@ -1,4 +1,3 @@
-namespace hforces { namespace dev {
 inline __device__ void common(Cloud c, int i, /**/ forces::Pa *p) {
     const float2 *pp = (const float2 *) c.pp;
     float2 s0, s1, s2;
@@ -16,4 +15,3 @@ inline __device__ void cloud_get(Cloud c, int i, /**/ forces::Pa *p) {
     common(c, i, /**/ p);
     if (multi_solvent) p->color = c.cc[i];
 }
-}} /* namespace */

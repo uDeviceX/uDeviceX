@@ -1,4 +1,4 @@
-static __global__ void force(hforces::Cloud cloud, int np, float seed, Wa wa, /**/ float *ff) {
+static __global__ void force(Cloud cloud, int np, float seed, Wa wa, /**/ float *ff) {
     forces::Pa a; /* bulk particle */
     int gid, aid, zplane;
     gid = threadIdx.x + blockDim.x * blockIdx.x;

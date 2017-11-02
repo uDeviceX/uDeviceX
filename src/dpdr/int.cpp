@@ -17,8 +17,7 @@
 #include "inc/type.h"
 #include "inc/dev.h"
 
-#include "cloud/hforces/type.h"
-#include "cloud/hforces/int.h"
+#include "cloud/imp.h"
 #include "hforces/imp.h"
 
 #include "dpdr/type.h"
@@ -158,7 +157,7 @@ void recv_ii(const TicketRhalo *t, /**/ TicketRIhalo *ti) {
 static void ini_frags(TicketRhalo tr, /**/ hforces::Frag26 *frag) {
     enum {X, Y, Z};
     int i, dx, dy, dz, xcells, ycells, zcells;
-    hforces::Cloud cloudb = {0, 0};
+    Cloud cloudb = {0, 0};
 
     for (i = 0; i < 26; ++i) {
         dx = frag_i2d(i,X);
@@ -168,7 +167,7 @@ static void ini_frags(TicketRhalo tr, /**/ hforces::Frag26 *frag) {
         xcells = dx == 0 ? XS : 1;
         ycells = dy == 0 ? YS : 1;
         zcells = dz == 0 ? ZS : 1;
-        hforces::ini_cloud(tr.b.pp.d[i], &cloudb);
+        ini_cloud(tr.b.pp.d[i], &cloudb);
         
         frag->d[i] = {
             .c     = cloudb,
@@ -184,10 +183,10 @@ static void ini_frags(TicketRhalo tr, /**/ hforces::Frag26 *frag) {
 }
 
 static void ini_sfrags(TicketShalo ts, hforces::SFrag26 *sfrag) {
-    hforces::Cloud clouda = {0, 0};    
+    Cloud clouda = {0, 0};    
 
     for (int i = 0; i < 26; ++i) {
-        hforces::ini_cloud(ts.b.pp.d[i], &clouda);
+        ini_cloud(ts.b.pp.d[i], &clouda);
 
         sfrag->d[i] = {
             .c  = clouda,            
@@ -206,12 +205,12 @@ static void ini_rnd(TicketRnd trnd, /**/ hforces::Rnd26 *rnd) {
 
 static void ini_color_frags(TicketRIhalo t, /**/ hforces::Frag26 *frag) {
     for (int i = 0; i < 26; ++i)
-        hforces::ini_cloud_color(t.b.ii.d[i], &frag->d[i].c);
+        ini_cloud_color(t.b.ii.d[i], &frag->d[i].c);
 }
 
 static void ini_color_sfrags(TicketSIhalo t, /**/ hforces::SFrag26 *sfrag) {
     for (int i = 0; i < 26; ++i)
-        hforces::ini_cloud_color(t.b.ii.d[i], &sfrag->d[i].c);
+        ini_cloud_color(t.b.ii.d[i], &sfrag->d[i].c);
 }
 
 void fremote_color(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, TicketSIhalo tis, TicketRIhalo tir, /**/ Force *ff) {

@@ -1,7 +1,7 @@
 namespace fsi {
 struct SolventWrap {
     Particle *pp;
-    hforces::Cloud c;
+    Cloud c;
     Force *ff;
     int n; 
     int *starts;

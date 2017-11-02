@@ -1,4 +1,4 @@
-void force(const sdf::Quants qsdf, const Quants q, const Ticket t, hforces::Cloud cloud, const int n, Force *ff) {
+void force(const sdf::Quants qsdf, const Quants q, const Ticket t, Cloud cloud, const int n, Force *ff) {
     Wa wa; /* local wall data */
     wa.sdf = qsdf.texsdf;
     wa.start = t.texstart;

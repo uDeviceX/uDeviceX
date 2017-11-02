@@ -152,7 +152,7 @@ static void dump1(const int N[3], const float* D, /*w*/ float* W) {
     io::field::scalar(W, "wall");
 }
 
-void *emalloc(size_t size) {
+static void *emalloc(size_t size) {
     void *p;
     p = malloc(size);
     if (p == NULL)
@@ -161,7 +161,7 @@ void *emalloc(size_t size) {
 }
 void dump(const int N[], const float* D) {
     float *W;
-    W = (float*)malloc(XS*YS*ZS*sizeof(float));
+    W = (float*)emalloc(XS*YS*ZS*sizeof(float));
     dump1(N, D, /*w*/ W);
     free(W);
 }

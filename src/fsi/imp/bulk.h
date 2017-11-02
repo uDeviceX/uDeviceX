@@ -1,4 +1,4 @@
-static void bulk0(PaWrap *pw, FoWrap *fw, hforces::Cloud cloud) {
+static void bulk0(PaWrap *pw, FoWrap *fw, Cloud cloud) {
     int n0, n1;
     float rnd;
     const Particle *ppA = pw->pp;
