@@ -1,2 +1,3 @@
-module: load cray-hdf5-parallel cudatoolkit daint-gpu
+module: load cudatoolkit daint-gpu
+module: load cray-hdf5-parallel
 cmd: srun -n 1 cuda-memcheck ./udx 1 1 1

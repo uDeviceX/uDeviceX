@@ -1,6 +1,16 @@
 . u.utils
 
-# load modules for daint
-#  used by: u.make, u.run.daint
+module1 load cudatoolkit daint-gpu
 
-module1 load cray-hdf5-parallel cudatoolkit daint-gpu
+hdf () {
+    module1 load "$1"
+    if test $? -ne 0
+    then err fail to load "$1"
+    fi
+}
+
+: ${HDF5_VERSION=default}
+case $HDF5_VERSION in
+    default) hdf cray-hdf5-parallel ;;
+    *)       hdf cray-hdf5-parallel/${HDF5_VERSION} ;;
+esac
