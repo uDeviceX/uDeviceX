@@ -54,11 +54,11 @@ static void write0(hid_t file_id,
     H5Sclose(filespace_simple);
 }
 
-void write(const char * const path2h5,
+void write(const char * const path,
            const float * const channeldata[],
            const char * const * const channelnames, const int nchannels) {
     hid_t file_id;
-    file_id = create(path2h5);
+    file_id = create(path);
     write0(file_id, channeldata, channelnames, nchannels);
     close(file_id);
 }
