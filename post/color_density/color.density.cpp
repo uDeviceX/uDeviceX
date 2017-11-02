@@ -86,9 +86,6 @@ int main(int argc, char **argv) {
     read(a.bop_s, /**/ &bop_s);
     read(a.bop_c, /**/ &bop_c);
 
-    summary(&bop_s);
-    summary(&bop_c);
-
     collect_p2m(bop_s.n, bop_s.fdata, bop_c.idata, a.lx, a.ly, a.lz, /**/ grid);    
     
     bov.nx = a.lx; bov.ny = a.ly; bov.nz = a.lz;
