@@ -57,7 +57,6 @@ static void write0(hid_t file_id,
 void write(const char * const path2h5,
            const float * const channeldata[],
            const char * const * const channelnames, const int nchannels) {
-    int i;
     hid_t file_id;
     file_id = create(path2h5);
     write0(file_id, channeldata, channelnames, nchannels);
