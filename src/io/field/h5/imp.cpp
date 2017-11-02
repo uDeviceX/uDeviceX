@@ -18,7 +18,7 @@ static hid_t create(const char *const path) {
     H5Pset_fapl_mpio(id, m::cart, MPI_INFO_NULL);
 
     file = H5Fcreate(path, H5F_ACC_TRUNC, H5P_DEFAULT, id);
-    if (file >= 0) ERR("fail to create <%s>", path);
+    if (file < 0) ERR("fail to create <%s>", path);
 
     H5Pclose(id);
     return file;
@@ -27,6 +27,7 @@ static hid_t create(const char *const path) {
 static void close(hid_t file_id) {
     herr_t rc;
     rc = H5Fclose(file_id);
+    if (rc < 0) ERR("fail to close <%s>", path);
 }
 
 static void write0(hid_t file_id,
