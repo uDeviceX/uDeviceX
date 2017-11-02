@@ -42,11 +42,11 @@ static void close(IDs ids, const char *path) {
         ERR("fail to close plist id <%s>", path);
 }
 
-void write_float(hid_t dataset_id,
-                 hid_t mem_space_id,
-                 hid_t file_space_id,
-                 hid_t xfer_plist_id,
-                 const void *buf) {
+static void write_float(hid_t dataset_id,
+                        hid_t mem_space_id,
+                        hid_t file_space_id,
+                        hid_t xfer_plist_id,
+                        const void *buf) {
     herr_t rc;
     rc = H5Dwrite(dataset_id, H5T_NATIVE_FLOAT, mem_space_id, file_space_id, xfer_plist_id, buf);
     if (rc < 0)
