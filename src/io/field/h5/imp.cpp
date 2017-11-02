@@ -42,6 +42,17 @@ static void close(IDs ids, const char *path) {
         ERR("fail to close plist id <%s>", path);
 }
 
+void write_float(hid_t dataset_id,
+                 hid_t mem_space_id,
+                 hid_t file_space_id,
+                 hid_t xfer_plist_id,
+                 const void *buf) {
+    herr_t rc;
+    rc = H5Dwrite(dataset_id, H5T_NATIVE_FLOAT, mem_space_id, file_space_id, xfer_plist_id, buf);
+    if (rc < 0)
+        ERR("fail to write data set");
+}
+
 static void write0(hid_t file_id,
                    const float * const channeldata[],
                    const char * const * const channelnames, const int nchannels) {
@@ -63,7 +74,7 @@ static void write0(hid_t file_id,
         H5Sselect_hyperslab(filespace, H5S_SELECT_SET, start, NULL, extent, NULL);
 
         hid_t memspace = H5Screate_simple(4, extent, NULL);
-        H5Dwrite(dset_id, H5T_NATIVE_FLOAT, memspace, filespace, plist_id, channeldata[i]);
+        write_float(dset_id, memspace, filespace, plist_id, channeldata[i]);
 
         H5Sclose(memspace);
         H5Sclose(filespace);
