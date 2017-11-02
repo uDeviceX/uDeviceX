@@ -21,7 +21,6 @@ void create(const char *const path, /**/ IDs *ids) {
     hid_t plist, file;
     plist = H5Pcreate(H5P_FILE_ACCESS);
     if (plist < 0) ERR("fail to create plist for <%s>", path);
-
     H5Pset_fapl_mpio(plist, m::cart, MPI_INFO_NULL);
 
     file = H5Fcreate(path, H5F_ACC_TRUNC, H5P_DEFAULT, plist);
