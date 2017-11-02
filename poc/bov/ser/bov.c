@@ -36,7 +36,7 @@ void write(const char *b, float *D,
            int ncomp) {
     char bov[BUFSIZ], val[BUFSIZ];
     size_t size;
-    
+
     strcpy(bov, b); strcat(bov, ".bov");
     strcpy(val, b); strcat(val, ".value");
 
