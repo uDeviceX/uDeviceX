@@ -1,6 +1,6 @@
 namespace hforces {
 struct Cloud {
-    float *pp;
-    int *cc;   /* colors */
+    const float *pp;
+    const int *cc;   /* colors */
 };
 } /* namespace */
