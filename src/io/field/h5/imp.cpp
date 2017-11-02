@@ -9,12 +9,13 @@
 
 namespace h5 {
 
-static hid_t create(const char * const path) {
-    hid_t plist_id_access = H5Pcreate(H5P_FILE_ACCESS);
-    H5Pset_fapl_mpio(plist_id_access, m::cart, MPI_INFO_NULL);
-    hid_t file_id = H5Fcreate(path, H5F_ACC_TRUNC, H5P_DEFAULT, plist_id_access);
-    H5Pclose(plist_id_access);
-    return file_id;
+static hid_t create(const char *const path) {
+    hid_t id, file;
+    id = H5Pcreate(H5P_FILE_ACCESS);
+    H5Pset_fapl_mpio(id, m::cart, MPI_INFO_NULL);
+    file = H5Fcreate(path, H5F_ACC_TRUNC, H5P_DEFAULT, id);
+    H5Pclose(id);
+    return file;
 }
 
 static void close(hid_t file_id) {
