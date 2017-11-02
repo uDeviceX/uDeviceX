@@ -8,16 +8,24 @@
 #include "imp.h"
 
 namespace h5 {
-void write(const char * const path2h5,
-           const float * const channeldata[],
-           const char * const * const channelnames, const int nchannels) {
-    int i;
+
+static hid_t create(const char * const path) {
     hid_t plist_id_access = H5Pcreate(H5P_FILE_ACCESS);
     H5Pset_fapl_mpio(plist_id_access, m::cart, MPI_INFO_NULL);
-
-    hid_t file_id = H5Fcreate(path2h5, H5F_ACC_TRUNC, H5P_DEFAULT, plist_id_access);
+    hid_t file_id = H5Fcreate(path, H5F_ACC_TRUNC, H5P_DEFAULT, plist_id_access);
     H5Pclose(plist_id_access);
+    return file_id;
+}
 
+static void close(hid_t file_id) {
+    herr_t rc;
+    rc = H5Fclose(file_id);
+}
+
+static void write0(hid_t file_id,
+                   const float * const channeldata[],
+                   const char * const * const channelnames, const int nchannels) {
+    int i;
     const int L[3] = { XS, YS, ZS };
     hsize_t globalsize[4] = {(hsize_t) m::dims[2] * L[2], (hsize_t) m::dims[1] * L[1], (hsize_t) m::dims[0] * L[0], 1};
     hid_t filespace_simple = H5Screate_simple(4, globalsize, NULL);
@@ -44,6 +52,16 @@ void write(const char * const path2h5,
     }
 
     H5Sclose(filespace_simple);
-    H5Fclose(file_id);
 }
+
+void write(const char * const path2h5,
+           const float * const channeldata[],
+           const char * const * const channelnames, const int nchannels) {
+    int i;
+    hid_t file_id;
+    file_id = create(path2h5);
+    write0(file_id, channeldata, channelnames, nchannels);
+    close(file_id);
 }
+
+} /* namespace */
