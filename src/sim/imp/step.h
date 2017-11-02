@@ -20,7 +20,7 @@ void step(scheme::Fparams *fpar, bool wall0, int it) {
     forces(wall0);
 
     dump_diag0(it);
-    if (wall0 || solids0) dump_diag_after(it);
+    dump_diag_after(it, wall0, solids0);
     body_force(*fpar);
 
     restrain(it);
