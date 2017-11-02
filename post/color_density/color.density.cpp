@@ -28,26 +28,45 @@ static void parse(int argc, char **argv, /**/ Args *a) {
     a->bov   = argv[iarg++];
 }
 
-static bool valid(int i, int l) {return i >= 0 && i < l;}
+static void p2m_1cid(float wx, float wy, float wz, int ix, int iy, int iz, int lx, int ly, int lz, /**/ float *grid) {
+    int i;
+    ix = (ix + lx) % lx;
+    iy = (iy + ly) % ly;
+    iz = (iz + lz) % lz;
+    i = ix + lx * (iy + ly * iz);
+    grid[i] += wx * wy * wz;
+}
 
-static void collect(long n, const float *pp, const int *cc, int lx, int ly, int lz, /**/ float *grid) {
+static void collect_p2m(long n, const float *pp, const int *cc, int lx, int ly, int lz, /**/ float *grid) {
     enum {X, Y, Z};
-    long i, ix, iy, iz, cid;
+    long i, ix, iy, iz;
+    float x, y, z;
     const float *r;
 
     memset(grid, 0, lx*ly*lz*sizeof(float));
 
     for (i = 0; i < n; ++i) {
+        if (cc[i] == 0) continue;
+
         r = pp + 6 * i;
 
         ix = (int) r[X];
         iy = (int) r[Y];
         iz = (int) r[Z];
 
-        if (valid(ix, lx) && valid(iy, ly) && valid(iz, lz)) {
-            cid = ix + lx * (iy + ly * iz);
-            grid[cid] += cc[i];
-        }
+        x = r[X] - ix;
+        y = r[Y] - iy;
+        z = r[Z] - iz;
+
+        p2m_1cid(1.f - x, 1.f - y, 1.f - z,     ix    , iy    , iz    ,    lx, ly, lz, /**/ grid);
+        p2m_1cid(      x, 1.f - y, 1.f - z,     ix + 1, iy    , iz    ,    lx, ly, lz, /**/ grid);
+        p2m_1cid(1.f - x,       y, 1.f - z,     ix    , iy + 1, iz    ,    lx, ly, lz, /**/ grid);
+        p2m_1cid(      x,       y, 1.f - z,     ix + 1, iy + 1, iz    ,    lx, ly, lz, /**/ grid);
+
+        p2m_1cid(1.f - x, 1.f - y,       z,     ix    , iy    , iz + 1,    lx, ly, lz, /**/ grid);
+        p2m_1cid(      x, 1.f - y,       z,     ix + 1, iy    , iz + 1,    lx, ly, lz, /**/ grid);
+        p2m_1cid(1.f - x,       y,       z,     ix    , iy + 1, iz + 1,    lx, ly, lz, /**/ grid);
+        p2m_1cid(      x,       y,       z,     ix + 1, iy + 1, iz + 1,    lx, ly, lz, /**/ grid);
     }
 }
 
@@ -70,7 +89,7 @@ int main(int argc, char **argv) {
     summary(&bop_s);
     summary(&bop_c);
 
-    collect(bop_s.n, bop_s.fdata, bop_c.idata, a.lx, a.ly, a.lz, /**/ grid);    
+    collect_p2m(bop_s.n, bop_s.fdata, bop_c.idata, a.lx, a.ly, a.lz, /**/ grid);    
     
     bov.nx = a.lx; bov.ny = a.ly; bov.nz = a.lz;
     bov.lx = a.lx; bov.ly = a.ly; bov.lz = a.lz;
