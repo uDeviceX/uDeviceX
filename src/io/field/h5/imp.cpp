@@ -24,7 +24,7 @@ static hid_t create(const char *const path) {
     return file;
 }
 
-static void close(hid_t file_id) {
+static void close(hid_t file_id, const char *path) {
     herr_t rc;
     rc = H5Fclose(file_id);
     if (rc < 0) ERR("fail to close <%s>", path);
@@ -68,7 +68,7 @@ void write(const char * const path,
     hid_t file_id;
     file_id = create(path);
     write0(file_id, channeldata, channelnames, nchannels);
-    close(file_id);
+    close(file_id, path);
 }
 
 } /* namespace */
