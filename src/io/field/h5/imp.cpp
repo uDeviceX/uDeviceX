@@ -63,11 +63,11 @@ static void write0(hid_t file_id,
 }
 
 void write(const char * const path,
-           const float * const channeldata[],
-           const char * const * const channelnames, const int nchannels) {
+           const float * const data[],
+           const char * const * const names, const int n) {
     hid_t file_id;
     file_id = create(path);
-    write0(file_id, channeldata, channelnames, nchannels);
+    write0(file_id, data, names, n);
     close(file_id, path);
 }
 
