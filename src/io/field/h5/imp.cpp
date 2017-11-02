@@ -12,22 +12,29 @@
 
 namespace h5 {
 
-static hid_t create(const char *const path) {
-    hid_t id, file;
-    id = H5Pcreate(H5P_FILE_ACCESS);
-    H5Pset_fapl_mpio(id, m::cart, MPI_INFO_NULL);
+struct IDs {
+    hid_t plist;
+    hid_t file;
+};
 
-    file = H5Fcreate(path, H5F_ACC_TRUNC, H5P_DEFAULT, id);
+void create(const char *const path, /**/ IDs *ids) {
+    hid_t plist, file;
+    plist = H5Pcreate(H5P_FILE_ACCESS);
+    H5Pset_fapl_mpio(plist, m::cart, MPI_INFO_NULL);
+
+    file = H5Fcreate(path, H5F_ACC_TRUNC, H5P_DEFAULT, plist);
     if (file < 0) ERR("fail to create <%s>", path);
 
-    H5Pclose(id);
-    return file;
+    ids->plist = plist;
+    ids->file  = file;
 }
 
-static void close(hid_t file_id, const char *path) {
-    herr_t rc;
-    rc = H5Fclose(file_id);
-    if (rc < 0) ERR("fail to close <%s>", path);
+static void close(IDs ids, const char *path) {
+    if (H5Pclose(ids.plist) < 0) 
+        ERR("fail to close file  id <%s>", path);
+    
+    if (H5Fclose(ids.file) < 0) 
+        ERR("fail to close plist id <%s>", path);
 }
 
 static void write0(hid_t file_id,
@@ -65,10 +72,10 @@ static void write0(hid_t file_id,
 void write(const char * const path,
            const float * const data[],
            const char * const * const names, const int n) {
-    hid_t file_id;
-    file_id = create(path);
-    write0(file_id, data, names, n);
-    close(file_id, path);
+    IDs ids;
+    create(path, /**/ &ids);
+    write0(ids.file, data, names, n);
+    close(ids, path);
 }
 
 } /* namespace */
