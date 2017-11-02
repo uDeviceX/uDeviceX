@@ -9,7 +9,7 @@ enum {BLUE_COLOR, RED_COLOR, /* solvent colors */
 #define MAX_PART_NUM (3*XS*YS*ZS*numberdensity)
 
 /* maximum number of particles per solid */
-#define MAX_PSOLID_NUM 30000
+#define MAX_PSOLID_NUM 12000
 
 /* maximum number of solids per node */
 #define MAX_SOLIDS 40
@@ -18,7 +18,7 @@ enum {BLUE_COLOR, RED_COLOR, /* solvent colors */
 #define MAX_OBJ_TYPES 2
 
 /* maximum number density of particles of the objects */
-#define MAX_OBJ_DENSITY (500)
+#define MAX_OBJ_DENSITY (30)
 
 /* maximum number of faces and vertices per one RBC */
 #define MAX_FACE_NUM 1000

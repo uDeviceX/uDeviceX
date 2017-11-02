@@ -1,10 +1,12 @@
 static void ini_obj_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Objexch *e) {
     using namespace exch::obj;
-    ini(MAX_OBJ_TYPES, MAX_OBJ_DENSITY, &e->p);
+    int maxpsolid = MAX_PSOLID_NUM;
+    
+    ini(MAX_OBJ_TYPES, MAX_OBJ_DENSITY, maxpsolid, &e->p);
     ini(comm, /*io*/ tg, /**/ &e->c);
-    ini(MAX_OBJ_DENSITY, &e->u);
-    ini(MAX_OBJ_DENSITY, &e->pf);
-    ini(MAX_OBJ_DENSITY, &e->uf);    
+    ini(MAX_OBJ_DENSITY, maxpsolid, &e->u);
+    ini(MAX_OBJ_DENSITY, maxpsolid, &e->pf);
+    ini(MAX_OBJ_DENSITY, maxpsolid, &e->uf);    
 }
 
 static void ini_mesh_exch(int nv, int max_m, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Mexch *e) {
