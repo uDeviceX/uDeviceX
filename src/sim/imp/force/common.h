@@ -17,7 +17,7 @@ void clear_forces(Force* ff, int n) {
 
 void forces_wall() {
     using namespace wall;
-    hforces::Cloud co, cs, cr;
+    Cloud co, cs, cr;
     ini_cloud(o::q.pp, &co);
     ini_cloud(s::q.pp, &cs);
     ini_cloud(r::q.pp, &cr);

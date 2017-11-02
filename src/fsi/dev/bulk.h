@@ -25,7 +25,7 @@ static __device__ float dist(Pa a, Pa b) {
     return sqrt(dx*dx + dy*dy + dz*dz);
 }
 
-static __device__ void bulk0(const Pa a, hforces::Cloud cloud, int lid, const Map m, float seed, /**/
+static __device__ void bulk0(const Pa a, Cloud cloud, int lid, const Map m, float seed, /**/
                              float *fx, float *fy, float *fz, float *ff) {
     /* "[a]ocal" and "[b]emote" particles */
     Pa b;
@@ -34,13 +34,13 @@ static __device__ void bulk0(const Pa a, hforces::Cloud cloud, int lid, const Ma
     *fx = *fy = *fz = 0; /* local force */
     for (i = 0; !endp(m, i); ++i) {
         rid = m2id(m, i);
-        hforces::dev::cloud_get(cloud, rid, /**/ &b);
+        cloud_get(cloud, rid, /**/ &b);
         f = ff2f(ff, rid);
         pair(a, b, random(lid, rid, seed), /**/ fx, fy, fz,   f);
     }
 }
 
-static __device__ void bulk1(const Pa a, hforces::Cloud cloud,
+static __device__ void bulk1(const Pa a, Cloud cloud,
                              const Fo f, int i, const Map m, float seed, /**/ float *ff) {
     float fx, fy, fz; /* local force */
     bulk0(a, cloud, i, m, seed, /**/ &fx, &fy, &fz, ff);
@@ -49,7 +49,7 @@ static __device__ void bulk1(const Pa a, hforces::Cloud cloud,
     atomicAdd(f.z, fz);
 }
 
-static __device__ void bulk2(float *ppA, hforces::Cloud cloud, int i, int zplane, int n, float seed,
+static __device__ void bulk2(float *ppA, Cloud cloud, int i, int zplane, int n, float seed,
                              /**/ float *ff, float *ff0) {
     Pa p;
     Fo f; /* "local" particle */
@@ -60,7 +60,7 @@ static __device__ void bulk2(float *ppA, hforces::Cloud cloud, int i, int zplane
     bulk1(p, cloud, f, i, m, seed, /**/ ff0);
 }
 
-__global__ void bulk(float *ppA, hforces::Cloud cloud, int n0, int n1, float seed, float *ff, float *ff0) {
+__global__ void bulk(float *ppA, Cloud cloud, int n0, int n1, float seed, float *ff, float *ff0) {
     int gid, i, zplane;
     gid    = threadIdx.x + blockDim.x * blockIdx.x;
     i      = gid / 3;
