@@ -31,7 +31,7 @@ int ienv(const char *name, int def) {
 
 void report(int i, int n) {
     if (n > 100 && i % 100 == 0)
-        printf(": %06d/%06d\n", i, n);
+        fprintf(stderr, ": %06d/%06d\n", i, n);
 }
 
 void main0(int c, char **v) {
