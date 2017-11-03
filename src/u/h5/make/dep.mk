@@ -5,5 +5,5 @@ $B/io/field/h5/imp.o: $S/inc/conf.h $S/mpi/wrapper.h $S/io/field/h5/imp.h $S/msg
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h $S/mpi/glb.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
 $B/msg.o: $S/msg.h $S/mpi/glb.h
-$B/u/hdf/main.o: $S/io/field/h5/imp.h $S/msg.h $S/mpi/glb.h
+$B/u/h5/main.o: $S/io/field/h5/imp.h $S/msg.h $S/mpi/glb.h
 $B/utils/mc.o: $S/inc/conf.h $S/utils/mc.h $B/conf.h
