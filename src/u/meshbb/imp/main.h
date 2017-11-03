@@ -2,11 +2,17 @@
 #define NV 1000
 #define NT 1000
 
-static struct Mesh {
+struct MeshHst {
     int nf, nv;
-    float vert[3*NV];
-    int4  faces[NT];
-} M;
+    float *vert;
+    int4  *faces;
+};
+
+struct MeshDev {
+    int nf, nv;
+    Particle *pp;
+    int4  *faces;
+};
 
 static clist::Clist cells;
 static clist::Map  mcells;
@@ -40,9 +46,16 @@ static void write_point(float *r, int inside) {
     printf("%g %g %g %d\n", r[X], r[Y], r[Z], inside);
 }
 
-static void read_off(const char *path) {
-    M.nv = off::vert(path,  M.vert);
-    M.nf = off::faces(path, M.faces);
+static void read_off(const char *path, /**/ MeshHst *M) {
+    int nf, nv;
+    float vert[3*NV];
+    int4  faces[NT];
+
+    nv = off::vert(path,  vert);
+    nf = off::faces(path, faces);
+
+    M->nv = nv; M->nf = nf;
+    M->vert = vert; M->faces = faces;
 }
 
 static void main0(const char *path) {
@@ -57,24 +70,22 @@ static void main0(const char *path) {
 
     int3 L = make_int3(XS, YS, ZS);
 
-    read_off(path);
-
     n = 1;
     ns = 1;
-    nv = M.nv;
-    nt = M.nf;
-    tt = M.faces;
+    //    nv = M.nv;
+    //    nt = M.nf;
+    //    tt = M.faces;
 
     Dalloc(&ff, MAX_PART_NUM);
     Dalloc(&i_pp, MAX_PART_NUM);
     Dalloc(&pp, MAX_PART_NUM);
     Dalloc(&pp0, MAX_PART_NUM);
-    
+
     clist::ini(XS, YS, ZS, /**/ &cells);
     clist::ini_map(2, &cells, /**/ &mcells);
     cc = cells.counts;
     ss = cells.starts;
-    
+
     clist::build(n, n, pp, /**/ pp0, &cells, &mcells);
     meshbb::ini(MAX_PART_NUM, /**/ &bbd);
 
@@ -86,17 +97,24 @@ static void main0(const char *path) {
     }
 }
 
-static void main1() {
+
+
+static void main1(const char *path) {
+    MeshHst M;
+    read_off(path, &M);
+}
+
+static void main2() {
     const char *path;
     path = argv[argc - 1]; lshift();
 
     m::ini(argc, argv);
-    main0(path);
+    main1(path);
     m::fin();
 }
 
 int main(int argc0, char **argv0) {
     argc = argc0;
     argv = argv0;
-    main1();
+    main2();
 }
