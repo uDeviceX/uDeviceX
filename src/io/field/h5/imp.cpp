@@ -87,7 +87,8 @@ static void write0(hid_t file_id,
 }
 
 void write(const char *path, float **data,
-           const char **names, int n) {
+           const char **names, int n,
+           int sx, int sy, int sz) {
     IDs ids;
     create(path, /**/ &ids);
     write0(ids.file, data, names, n);
