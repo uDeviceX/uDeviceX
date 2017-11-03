@@ -3,11 +3,11 @@
 
 #include "bov.h"
 
-static void header0(FILE *f, const char *bov,
+static void header0(FILE *f, const char *val,
                     int ox, int oy, int oz,
                     int sx, int sy, int sz,
                     int ncomp) {
-    fprintf(f, "DATA_FILE: bov.values\n");
+    fprintf(f, "DATA_FILE: %s\n", val);
     fprintf(f, "DATA_SIZE: %d %d %d\n", sx, sy, sz);
     fprintf(f, "VARIABLE: D\n");
     fprintf(f, "CENTERING: zonal\n");
@@ -37,8 +37,8 @@ void write(const char *b, float *D,
     char bov[BUFSIZ], val[BUFSIZ];
     size_t size;
 
-    strcpy(bov, b); strcat(bov, ".bov");
-    strcpy(val, b); strcat(val, ".value");
+    strncpy(bov, b); strncat(bov, ".bov");
+    strncpy(val, b); strncat(val, ".value");
 
     header(bov, val, ox, oy, oz, sx, sy, sz, ncomp);
     size = sx * sy * sz * ncomp;
