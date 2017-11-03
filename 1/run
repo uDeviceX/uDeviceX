@@ -2,7 +2,7 @@ set -eu
 
 . ./util
 
-export HDF5_VERSION=1.8.16
+# export HDF5_VERSION=1.8.16
 make -C .. -s install
 
 nx=3 ny=1 nz=1
