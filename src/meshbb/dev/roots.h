@@ -23,7 +23,7 @@ __device__ bool quadratic(real a, real b, real c, real *h0, real *h1) {
 
 template <typename real>
 __device__ int cubic(real a, real b, real c, 
-               real *x0, real *x1, real *x2) {
+                     real *x0, real *x1, real *x2) {
     real q = (a * a - 3 * b);
     real r = (2 * a * a * a - 9 * a * b + 27 * c);
 
