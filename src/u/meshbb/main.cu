@@ -18,7 +18,7 @@
 
 #include "utils/cc.h"
 #include "utils/texo.h"
-#include "mesh/collision.h"
+#include "meshbb/imp.h"
 
 #include "io/off.h"
 

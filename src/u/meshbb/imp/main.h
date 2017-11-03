@@ -8,6 +8,8 @@ struct Mesh {
     int4  faces[NT];
 } M;
 
+meshbb::BBdata bbd;
+
 static int    argc;
 static char **argv;
 /* left shift */
@@ -45,8 +47,9 @@ static void main0(const char *path) {
     float r[3];
     int inside;
     read_off(path);
+    meshbb::ini(MAX_PART_NUM, /**/ &bbd);
+    
     while (read_point(r) != END) {
-        inside = collision::inside_1p(r, M.vert, M.faces, M.nf);
         write_point(r, inside);
     }
 }

@@ -4,10 +4,7 @@ $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
 $B/glb/gdot/imp.o: $S/glb/gdot/imp.cu; $N -I$S/glb/gdot -I$S/.
 $B/glb/imp.o: $S/glb/imp.cu; $N -I$S/glb -I$S/.
 $B/io/off.o: $S/io/off.cpp; $X -I$S/io -I$S/.
-$B/mesh/bbox.o: $S/mesh/bbox.cu; $N -I$S/mesh -I$S/.
-$B/mesh/collision.o: $S/mesh/collision.cu; $N -I$S/mesh -I$S/.
-$B/mesh/dist.o: $S/mesh/dist.cpp; $X -I$S/mesh -I$S/.
-$B/mesh/props.o: $S/mesh/props.cpp; $X -I$S/mesh -I$S/.
+$B/meshbb/imp.o: $S/meshbb/imp.cu; $N -I$S/meshbb -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
