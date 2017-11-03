@@ -1,4 +1,3 @@
-$B/algo/minmax.o: $S/inc/conf.h $S/inc/type.h $S/d/q.h $S/utils/cc.h $S/inc/def.h $S/inc/dev.h $S/d/api.h $S/msg.h $B/conf.h $S/utils/kl.h $S/algo/minmax.h $S/d/ker.h
 $B/algo/scan/imp.o: $S/algo/scan/int.h $S/inc/conf.h $S/d/q.h $S/utils/cc.h $S/inc/def.h $S/algo/scan/dev.h $S/algo/scan/cpu/imp.h $S/d/api.h $S/msg.h $S/inc/dev.h $B/conf.h $S/utils/kl.h $S/algo/scan/cuda/imp.h $S/d/ker.h
 $B/clist/imp.o: $S/clist/imp/fin.h $S/clist/code.h $S/algo/scan/int.h $S/inc/conf.h $S/inc/type.h $S/clist/imp.h $S/utils/cc.h $S/inc/def.h $S/clist/dev.h $S/clist/imp/ini.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/clist/imp/main.h $S/utils/kl.h
 $B/d/api.o: $S/d/cpu/imp.h $S/inc/conf.h $S/d/common.h $S/d/api.h $S/msg.h $B/conf.h $S/d/cuda/imp.h

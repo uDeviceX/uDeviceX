@@ -1,4 +1,3 @@
-$B/algo/minmax.o: $S/algo/minmax.cu; $N -I$S/algo -I$S/.
 $B/algo/scan/imp.o: $S/algo/scan/imp.cu; $N -I$S/algo/scan -I$S/.
 $B/clist/imp.o: $S/clist/imp.cu; $N -I$S/clist -I$S/.
 $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
