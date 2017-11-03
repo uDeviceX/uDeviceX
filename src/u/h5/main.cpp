@@ -29,11 +29,16 @@ int ienv(const char *name, int def) {
     else return atoi(v);
 }
 
+void report(int i, int n) {
+    if (n > 100 && i % 100 == 0)
+        printf(": %06d/%06d\n", i, n);
+}
+
 void main0(int c, char **v) {
     int n, i;
     n = ienv("ndump", 1000);
     for (i = 0; i < n; i++) {
-        printf(": %06d/%06d\n", i, n);
+        report(i, n);
         dump(32 * 32 * 32);
     }
 }
