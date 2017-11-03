@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<!DOCTYPE Xdmf SYSTEM "Xdmf.dtd" []>
+<Xdmf Version="2.0">
+ <Domain>
+   <Grid Name="mesh" GridType="Uniform">
+     <Topology TopologyType="3DCORECTMesh" Dimensions="33 17 5"/>
+     <Geometry GeometryType="ORIGIN_DXDYDZ">
+       <DataItem Name="Origin" Dimensions="3" NumberType="Float" Precision="4" Format="XML">
+        0.000000e+00 0.000000e+00 0.000000e+00
+       </DataItem>
+       <DataItem Name="Spacing" Dimensions="3" NumberType="Float" Precision="4" Format="XML">
+        1.000000e+00 1.000000e+00 1.000000e+00
+       </DataItem>
+     </Geometry>
+     <Attribute Name="density" AttributeType="Scalar" Center="Cell">
+       <DataItem Dimensions="32 16 4 1" NumberType="Float" Precision="4" Format="HDF">
+        o.h5:/density
+       </DataItem>
+     </Attribute>
+     <Attribute Name="u" AttributeType="Scalar" Center="Cell">
+       <DataItem Dimensions="32 16 4 1" NumberType="Float" Precision="4" Format="HDF">
+        o.h5:/u
+       </DataItem>
+     </Attribute>
+     <Attribute Name="v" AttributeType="Scalar" Center="Cell">
+       <DataItem Dimensions="32 16 4 1" NumberType="Float" Precision="4" Format="HDF">
+        o.h5:/v
+       </DataItem>
+     </Attribute>
+     <Attribute Name="w" AttributeType="Scalar" Center="Cell">
+       <DataItem Dimensions="32 16 4 1" NumberType="Float" Precision="4" Format="HDF">
+        o.h5:/w
+       </DataItem>
+     </Attribute>
+   </Grid>
+ </Domain>
+</Xdmf>
