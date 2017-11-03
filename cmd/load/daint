@@ -9,7 +9,7 @@ hdf () {
     fi
 }
 
-: ${HDF5_VERSION=default}
+: ${HDF5_VERSION=1.8.16}
 case $HDF5_VERSION in
     default) hdf cray-hdf5-parallel ;;
     *)       hdf cray-hdf5-parallel/${HDF5_VERSION} ;;
