@@ -1,6 +1,7 @@
 /* off files
    [1] https://en.wikipedia.org/wiki/OFF_(file_format) */
 
+static int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
 /* return faces: f0[0] f1[0] f2[0]   f0[1] f1[1] ... */
 int faces(const char *f, int4* faces) {
     char buf[BUFSIZ];
@@ -10,6 +11,11 @@ int faces(const char *f, int4* faces) {
         exit(2);
     }
     fgets(buf, sizeof buf, fd); /* skip OFF */
+
+    if (eq(buf, "OFF")) {
+        fprintf(stderr, "off: expecting OFF <%s> : %s\n", f, buf);
+        exit(2);
+    }
 
     int nv, nf;
     fscanf(fd, "%d %d %*d", &nv, &nf); /* skip `ne' and all vertices */
