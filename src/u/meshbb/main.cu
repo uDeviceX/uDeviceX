@@ -18,6 +18,9 @@
 
 #include "utils/cc.h"
 #include "utils/texo.h"
+
+#include "algo/scan/int.h"
+#include "clist/imp.h"
 #include "meshbb/imp.h"
 
 #include "io/off.h"
