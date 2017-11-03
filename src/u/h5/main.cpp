@@ -42,15 +42,15 @@ void get_path(int i, char *p) {
 }
 
 void main0(int c, char **v) {
-    int n, i;
+    int ndump, i;
     char path[BUFSIZ];
     int sx, sy, sz;
     
-    n = ienv("ndump", 1000);
+    ndump = ienv("ndump", 1000);
     sx = 4; sy = 8; sz = 16;
-    for (i = 0; i < n; i++) {
+    for (i = 0; i < ndump; i++) {
         get_path(i, /**/ path);
-        report(i, n, path);
+        report(i, ndump, path);
         dump(path, sx, sy, sz);
     }
 }
