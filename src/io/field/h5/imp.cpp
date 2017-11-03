@@ -51,7 +51,7 @@ static void write_float(hid_t dataset_id,
 }
 
 static void write0(hid_t file_id,
-                   const float *channeldata[],
+                   float *channeldata[],
                    const char **channelnames,
                    int nchannels,
                    int xs, int ys, int zs) {
