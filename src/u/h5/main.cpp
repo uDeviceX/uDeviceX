@@ -31,9 +31,9 @@ int ienv(const char *name, int def) {
     else return atoi(v);
 }
 
-void report(int i, int n) {
+void report(int i, int n, char *path) {
     if (n > 100 && i % 100 == 0)
-        MSG("%06d/%06d", i, n);
+        MSG("%06d/%06d: %s", i, n, path);
 }
 
 void main0(int c, char **v) {
@@ -41,8 +41,8 @@ void main0(int c, char **v) {
     char path[BUFSIZ];
     n = ienv("ndump", 1000);
     for (i = 0; i < n; i++) {
-        report(i, n);
         sprintf(path, "i.%06d.h5", i);
+        report(i, n, path);
         dump(path, 32 * 32 * 32);
     }
 }
