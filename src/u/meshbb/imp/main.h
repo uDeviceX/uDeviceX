@@ -97,11 +97,24 @@ static void main0(const char *path) {
     }
 }
 
+static void vert2pp(int n, float *pp0, /**/ Particle *pp) {
+    enum {X, Y, Z};
+    float *r0, *r, *v;
+    int i;
+    for (i = 0; i < n; i++) {
+        r0 = &pp0[3*i];
+        r = pp[i].r; v = pp[i].v;
+        r[X] = r0[X]; r[Y] = r0[Y]; r[Z] = r0[Z];
+        v[X] = v[Y] = v[Z] = 0;
+    }
+}
+
 static void main1(MeshHst h) {
     MeshDev d;
     int nf, nv, i;
     Particle pp[NV];
     nv = h.nv; nf = h.nf;
+    vert2pp(nv, h.vert, /**/ pp);
 
     Dalloc(&d.pp,    nv);
     Dalloc(&d.faces, nf);
