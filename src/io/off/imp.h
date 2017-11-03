@@ -8,7 +8,7 @@ int faces(const char *f, int4* faces) {
     char buf[BUFSIZ];
     FILE *fd = fopen(f, "r");
     if (fd == NULL) {
-        fprintf(stderr, "off: fail to open <%s>\n", f);
+        fprintf(stderr, "off:faces fail to open <%s>\n", f);
         exit(2);
     }
     fgets(buf, sizeof buf, fd); /* skip OFF */
@@ -36,7 +36,7 @@ int vert(const char *f, float* vert) {
     char buf[BUFSIZ];
     FILE *fd = fopen(f, "r");
     if (fd == NULL) {
-        fprintf(stderr, "off: Could not open <%s>", f);
+        fprintf(stderr, "off:vert fail to open <%s>\n", f);
         exit(2);
     }
     fgets(buf, sizeof buf, fd); /* skip OFF */
