@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <conf.h>
+#include "inc/conf.h"
+
 #include "msg.h"
 #include "mpi/glb.h"
 
@@ -13,6 +16,7 @@ void dump(const char *path, int nc) {
     float *rho, *u[3];
     const char *names[] = { "density", "u", "v", "w" };
 
+    nc = XS * YS * ZS;
     sz = nc*sizeof(rho[0]);
     rho  = (float*)malloc(sz);
     u[X] = (float*)malloc(sz);
