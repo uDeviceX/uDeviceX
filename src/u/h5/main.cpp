@@ -41,7 +41,7 @@ void report(int i, int n, char *path) {
 }
 
 void get_path(int i, char *p) {
-    sprintf(p, "i.%06d.h5", i);
+    sprintf(p, "i.h5");
 }
 
 void main0(int c, char **v) {
