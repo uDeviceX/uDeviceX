@@ -65,19 +65,17 @@ static void main0(const char *path) {
     nt = M.nf;
     tt = M.faces;
 
-    cc = o::q.cells.counts;
-    ss = o::q.cells.starts;
-
-    Dalloc(ff);
-    Dalloc(i_pp, MAX_PART_NUM);
-    Dalloc(pp, MAX_PART_NUM);
-    Dalloc(pp0, MAX_PART_NUM);
+    Dalloc(&ff, MAX_PART_NUM);
+    Dalloc(&i_pp, MAX_PART_NUM);
+    Dalloc(&pp, MAX_PART_NUM);
+    Dalloc(&pp0, MAX_PART_NUM);
     
     clist::ini(XS, YS, ZS, /**/ &cells);
     clist::ini_map(2, &cells, /**/ &mcells);
-
+    cc = cells.counts;
+    ss = cells.starts;
     
-    clist::build(n, n, pp, /**/ pp0, cells, mcells);
+    clist::build(n, n, pp, /**/ pp0, &cells, &mcells);
     meshbb::ini(MAX_PART_NUM, /**/ &bbd);
 
     while (read_point(r) != END) {
