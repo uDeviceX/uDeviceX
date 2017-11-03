@@ -2,6 +2,12 @@
 #define NV 1000
 #define NT 1000
 
+struct Mesh {
+    int nf, nv;
+    float vert;
+    int4 faces;
+} M;
+
 static int    argc;
 static char **argv;
 /* left shift */
@@ -51,10 +57,16 @@ static void write_point(float *r, int inside) {
     printf("%g %g %g %d\n", r[X], r[Y], r[Z], inside);
 }
 
-static void main0() {
+static void read_mesh(const char *path) {
+    M.nv = off::vert(path,  &M.vert);
+    M.nf = off::faces(path, &M.faces);
+}
+
+static void main0(const char *path) {
     float r[3], vv[3*NT];
     int4  tt[NT];
     int nt, inside;
+    read_mesh(path);
     piramid(vv, tt, &nt);
     while (read_point(r) != END) {
         inside = collision::inside_1p(r, vv, tt, nt);
@@ -62,8 +74,17 @@ static void main0() {
     }
 }
 
-int main(int argc0, char **argv0) {
+static void main1() {
+    const char *path;
+    path = argv[argc - 1]; lshift();
+    
     m::ini(argc, argv);
-    main0();
+    main0(path);
     m::fin();
+}
+
+int main(int argc0, char **argv0) {
+    argc = argc0;
+    argv = argv0;
+    main1();
 }

@@ -4,5 +4,7 @@ f () ( for d; do f0 "$d"; done )
 f algo glb utils d mpi mesh inc $U
 echo msg.cpp msg.h
 
+echo io/off.h io/off.cpp io/off/imp.h
+
 # directories
 echo $U $U/imp

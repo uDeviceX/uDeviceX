@@ -20,4 +20,6 @@
 #include "utils/texo.h"
 #include "mesh/collision.h"
 
+#include "io/off.h"
+
 #include "imp/main.h"
