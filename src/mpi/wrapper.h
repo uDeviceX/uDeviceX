@@ -7,6 +7,7 @@ int Cancel(MPI_Request *request);
 int Cart_rank(MPI_Comm comm, const int coords[], int *rank);
 int Comm_dup(MPI_Comm comm, MPI_Comm *newcomm);
 int Comm_free(MPI_Comm *comm);
+int Comm_rank(MPI_Comm comm, int *rank);
 int Exscan(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
 int Errhandler_set(MPI_Comm comm, MPI_Errhandler errhandler);
 int File_close(MPI_File *fh);

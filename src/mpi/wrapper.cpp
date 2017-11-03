@@ -28,6 +28,10 @@ int Comm_free(MPI_Comm *comm) {
     return MPI_Comm_free(comm);
 }
 
+int Comm_rank(MPI_Comm comm, int *rank) {
+    return MPI_Comm_rank(comm, rank);
+}
+
 int Errhandler_set(MPI_Comm comm, MPI_Errhandler errhandler) {
     return MPI_Errhandler_set(comm, errhandler);
 }
