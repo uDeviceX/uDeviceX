@@ -7,7 +7,7 @@ void faces(const char *f, int4* faces) {
     FILE *fd = fopen(f, "r");
     if (fd == NULL) {
         fprintf(stderr, "off: Could not open <%s>", f);
-        exit(1);
+        exit(2);
     }
     fgets(buf, sizeof buf, fd); /* skip OFF */
 
@@ -28,6 +28,11 @@ void faces(const char *f, int4* faces) {
 void vert(const char *f, float* vert) {
     char buf[BUFSIZ];
     FILE *fd = fopen(f, "r");
+    if (fd == NULL) {
+        fprintf(stderr, "off: Could not open <%s>", f);
+        exit(2);
+    }
+    
     fgets(buf, sizeof buf, fd); /* skip OFF */
 
     int nv;
