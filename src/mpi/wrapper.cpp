@@ -32,6 +32,10 @@ int Comm_rank(MPI_Comm comm, int *rank) {
     return MPI_Comm_rank(comm, rank);
 }
 
+int Comm_size( MPI_Comm comm, int *size ) {
+    return MPI_Comm_size(comm, size);
+}
+
 int Errhandler_set(MPI_Comm comm, MPI_Errhandler errhandler) {
     return MPI_Errhandler_set(comm, errhandler);
 }
