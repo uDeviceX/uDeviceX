@@ -53,7 +53,7 @@ static void read_off(const char *path, /**/ MeshHst *M) {
     M->nv = nv; M->nf = nf;
 }
 
-static void main0(const char *path) {
+static void main000(const char *path) {
     float r[3];
     int inside;
     int n, ns, nv, nt;
@@ -105,7 +105,7 @@ static void vert2pp(int n, float *pp0, /**/ Particle *pp) {
     }
 }
 
-static void read_particles(/**/ int *pn, Particle *pp) {
+static void read_particles0(/**/ int *pn, Particle *pp) {
     enum {X, Y, Z};
     Particle p;
     float r[3];
@@ -118,10 +118,33 @@ static void read_particles(/**/ int *pn, Particle *pp) {
     *pn = i;
 }
 
+static void read_particles(/**/ int *pn, Particle *d) {
+    int n;
+    Particle h[NV];
+
+    read_particles0(&n, h);
+    cH2D(d, h, n);
+    *pn = n;
+}
+
+static void main0(MeshDev m, int n, Particle* pp) {
+    Particle pp0[NV];
+    clist::Clist cells;
+    clist::Map  mcells;
+
+    clist::ini(XS, YS, ZS, /**/ &cells);
+    clist::ini_map(2, &cells, /**/ &mcells);
+    clist::build(n, n, pp, /**/ pp0, &cells, &mcells);
+
+    fprintf(stderr, "preved\n");
+}
+
 static void main1(MeshDev m) {
+    enum {X, Y, Z};
     int n;
     Particle pp[NV];
     read_particles(/**/ &n, pp);
+    main0(m, n, pp);
 }
 
 static void main2(MeshHst h) {
@@ -143,7 +166,7 @@ static void main3(const char *path) {
     int4  faces[NT];
     MeshHst M;
     M.vert = vert; M.faces = faces;
-    
+
     read_off(path, /**/ &M);
     main2(M);
 }
