@@ -53,8 +53,11 @@ void ini(int argc, char **argv) {
         fprintf(stderr, ": m::Init failed\n");
         exit(2);
     }
+    if (m::Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN) != MPI_SUCCESS) {
+        fprintf(stderr, ": m::Errhandler_set\n");
+        exit(2);
+    }
 
-    m::Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
     MC(m::Comm_rank(MPI_COMM_WORLD,   &rank));
     MC(m::Comm_size(MPI_COMM_WORLD,   &size));
     MC(m::Cart_create(MPI_COMM_WORLD, d, dims, periods, reorder,   &m::cart));
