@@ -47,9 +47,14 @@ static void set_dims(int argc, char **argv) {
     for (i = 1; i < argc && i <= 3; i++) dims[i - 1] = atoi(argv[i]);
 }
 void ini(int argc, char **argv) {
+    int rc;
     set_dims(argc, argv);
 
-    m::Init(&argc, &argv);
+    if (m::Init(&argc, &argv) != MPI_SUCCESS) {
+        fprintf(stderr, ": m::Init failed\n");
+        exit(2);
+    }
+
     m::Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
     MC(m::Comm_rank(MPI_COMM_WORLD,   &rank));
     MC(m::Comm_size(MPI_COMM_WORLD,   &size));
