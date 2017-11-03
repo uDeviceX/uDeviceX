@@ -26,7 +26,7 @@ void dump(const char *path, int nc) {
     float *data[] = { rho, u[X], u[Y], u[Z] };
     h5::write(path, data, names, 4, XS, YS, ZS);
     free(rho); free(u[X]); free(u[Y]); free(u[Z]);
-    if (m::rank == 0) xmf::write(path, names, 4);
+    if (m::rank == 0) xmf::write(path, names, 4, XS, YS, ZS);
 }
 
 int ienv(const char *name, int def) {

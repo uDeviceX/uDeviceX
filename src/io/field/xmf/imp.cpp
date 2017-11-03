@@ -1,9 +1,6 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <conf.h>
-#include "inc/conf.h"
-
 #include "mpi/glb.h"
 #include "imp.h"
 
@@ -20,12 +17,12 @@ static void epilogue(FILE *f) {
     fprintf(f, "</Xdmf>\n");
 }
 
-static void grid(FILE * f, const char *path, const char **names, int n) {
+static void grid(FILE * f, const char *path, const char **names, int n, int sx, int sy, int sz) {
     enum {X, Y, Z};
     int i;
     int *d, G[3]; /* domain size */
     d = m::dims;
-    G[X] = XS*d[X]; G[Y] = YS*d[Y]; G[Z] = ZS*d[Z];
+    G[X] = sx*d[X]; G[Y] = sy*d[Y]; G[Z] = sz*d[Z];
 
     fprintf(f, "   <Grid Name=\"mesh\" GridType=\"Uniform\">\n");
     fprintf(f, "     <Topology TopologyType=\"3DCORECTMesh\" Dimensions=\"%d %d %d\"/>\n", 1 + G[Z], 1 + G[Y], 1 + G[X]);
@@ -64,7 +61,7 @@ static void basename(const char *i, /**/ char *o) {
     strcpy(o, p);
 }
 
-void write(const char *path, const char **names, int ncomp) {
+void write(const char *path, const char **names, int ncomp, int sx, int sy, int sz) {
     char w[BUFSIZ];
     FILE *f;
 
@@ -73,7 +70,7 @@ void write(const char *path, const char **names, int ncomp) {
     header(f);
 
     basename(path, /**/ w);
-    grid(f, w, names, ncomp);
+    grid(f, w, names, ncomp, sx, sy, sz);
     epilogue(f);
     fclose(f);
 }
