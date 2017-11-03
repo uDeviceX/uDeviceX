@@ -31,7 +31,7 @@ int ienv(const char *name, int def) {
 
 void main0(int c, char **v) {
     int n, i;
-    n = ienv("n", 1000);
+    n = ienv("ndump", 1000);
     for (i = 0; i < n; i++) {
         printf(": %05d/%05d\n", i, n);
         dump(32 * 32 * 32);
