@@ -54,8 +54,9 @@ static void write_float(hid_t dataset_id,
 }
 
 static void write0(hid_t file_id,
-                   const float * const channeldata[],
-                   const char * const * const channelnames, const int nchannels) {
+                   const float *channeldata[],
+                   const char **channelnames,
+                   int nchannels) {
     int i;
     const int L[3] = { XS, YS, ZS };
     hsize_t globalsize[4] = {(hsize_t) m::dims[2] * L[2], (hsize_t) m::dims[1] * L[1], (hsize_t) m::dims[0] * L[0], 1};
@@ -85,9 +86,9 @@ static void write0(hid_t file_id,
     H5Sclose(filespace_simple);
 }
 
-void write(const char * const path,
-           const float * const data[],
-           const char * const * const names, const int n) {
+void write(const char  *path,
+           const float *data[],
+           const char **names, int n) {
     IDs ids;
     create(path, /**/ &ids);
     write0(ids.file, data, names, n);

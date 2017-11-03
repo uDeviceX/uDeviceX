@@ -51,7 +51,7 @@ void main0(int c, char **v) {
     for (i = 0; i < n; i++) {
         get_path(i, /**/ path);
         report(i, n, path);
-        dump(path, 32 * 32 * 32);
+        dump(path, XS * XS * XS);
     }
 }
 
