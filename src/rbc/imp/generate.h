@@ -66,7 +66,7 @@ static int setup_hst0(float *rr0, const char *r_state, int nv, Particle *pp) {
 static void vert(const char *f, int n0, /**/ float *vert) {
     int n;
     n = off::vert(f, vert);
-    if (n0 == n)
+    if (n0 != n)
         ERR("wrong vert number in <%s> : %d != %d", f, n0, n);
 }
 static int setup_hst(const char *r_templ, const char *r_state, int nv, /**/ Particle *pp) {
