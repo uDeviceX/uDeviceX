@@ -27,7 +27,7 @@
 
 /* FEATURES */
 #define FORCE_CONSTANT
-#define FORCE_PAR_A             0.0061
+#define FORCE_PAR_A             0.00073
 #define solids                  true
 #define sbounce_back            true
 #define empty_solid_particles   true
