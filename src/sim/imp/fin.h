@@ -87,7 +87,7 @@ void fin() {
         Dfree(s::ff);
         free(s::ff_hst);
 
-        fin(/**/ &bb::bbd);
+        meshbb::fin(/**/ &bb::bbd);
         Dfree(bb::mm);
 
         fin_rig_distr(/**/ &s::d);

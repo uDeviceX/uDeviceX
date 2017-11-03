@@ -112,7 +112,7 @@ void ini() {
         s::ff_hst = (Force*)malloc(sizeof(&s::ff_hst)*MAX_PART_NUM);
         Dalloc(&s::ff, MAX_PART_NUM);
 
-        ini(MAX_PART_NUM, /**/ &bb::bbd);
+        meshbb::ini(MAX_PART_NUM, /**/ &bb::bbd);
         Dalloc(&bb::mm, MAX_PART_NUM);
 
         ini_rig_distr(s::q.nv, m::cart, /*io*/ &tag_gen, /**/ &s::d);
