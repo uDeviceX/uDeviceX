@@ -30,7 +30,7 @@ static void gfaces(const char *f, int n0, /**/ int4 *faces) {
     /* get faces */
     int n;
     n = off::faces(f, faces);
-    if (n0 == n)
+    if (n0 != n)
         ERR("wrong faces number in <%s> : %d != %d", f, n0, n);
 }
 static void setup(int md, int nt, int nv, const char *r_templ, int4 *faces, int4 *tri, int *adj0, int *adj1) {
