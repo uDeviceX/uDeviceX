@@ -1,32 +1,29 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <conf.h>
-#include "inc/conf.h"
-
 #include "msg.h"
 #include "mpi/glb.h"
 
 #include "io/field/h5/imp.h"
 #include "io/field/xmf/imp.h"
 
-void dump(const char *path, int nc) {
+void dump(const char *path, int sx, int sy, int sz) {
     enum {X, Y, Z};
-    int sz;
+    int size, nc;
     float *rho, *u[3];
     const char *names[] = { "density", "u", "v", "w" };
 
-    nc = XS * YS * ZS;
-    sz = nc*sizeof(rho[0]);
-    rho  = (float*)malloc(sz);
-    u[X] = (float*)malloc(sz);
-    u[Y] = (float*)malloc(sz);
-    u[Z] = (float*)malloc(sz);
+    nc = sx * sy * sz;
+    size = nc*sizeof(rho[0]);
+    rho  = (float*)malloc(size);
+    u[X] = (float*)malloc(size);
+    u[Y] = (float*)malloc(size);
+    u[Z] = (float*)malloc(size);
 
     float *data[] = { rho, u[X], u[Y], u[Z] };
-    h5::write(path, data, names, 4, XS, YS, ZS);
+    h5::write(path, data, names, 4, sx, sy, sz);
     free(rho); free(u[X]); free(u[Y]); free(u[Z]);
-    if (m::rank == 0) xmf::write(path, names, 4, XS, YS, ZS);
+    if (m::rank == 0) xmf::write(path, names, 4, sx, sy, sz);
 }
 
 int ienv(const char *name, int def) {
@@ -47,11 +44,14 @@ void get_path(int i, char *p) {
 void main0(int c, char **v) {
     int n, i;
     char path[BUFSIZ];
+    int sx, sy, sz;
+    
     n = ienv("ndump", 1000);
+    sx = 4; sy = 8; sz = 16;
     for (i = 0; i < n; i++) {
         get_path(i, /**/ path);
         report(i, n, path);
-        dump(path, XS * XS * XS);
+        dump(path, sx, sy, sz);
     }
 }
 
