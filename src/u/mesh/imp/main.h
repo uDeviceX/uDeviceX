@@ -25,7 +25,7 @@ void piramid(/**/ float *v, int4 *t, int *nt) {
 void read_point0(const char *s, float *r) {
     enum {X, Y, Z};
     sscanf(s, "%f %f %f", &r[X], &r[Y], &r[Z]);
- }
+}
 
 enum {OK, END, FAIL};
 int read_point(float *r) {
