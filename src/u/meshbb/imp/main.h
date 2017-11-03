@@ -41,6 +41,7 @@ static int read_particle(float *r) {
     read_particle0(s, /**/ r);
     return OK;
 }
+
 static void write_particle(float *r, int inside) {
     enum {X, Y, Z};
     printf("%g %g %g %d\n", r[X], r[Y], r[Z], inside);
@@ -51,44 +52,6 @@ static void read_off(const char *path, /**/ MeshHst *M) {
     nv = off::vert(path,  M->vert);
     nf = off::faces(path, M->faces);
     M->nv = nv; M->nf = nf;
-}
-
-static void main000(const char *path) {
-    float r[3];
-    int inside;
-    int n, ns, nv, nt;
-    int4 *tt;
-
-    Particle *i_pp, *pp, *pp0;
-    Force *ff;
-    int *ss, *cc;
-
-    int3 L = make_int3(XS, YS, ZS);
-
-    n = 1;
-    ns = 1;
-    //    nv = M.nv;
-    //    nt = M.nf;
-    //    tt = M.faces;
-
-    Dalloc(&ff, MAX_PART_NUM);
-    Dalloc(&i_pp, MAX_PART_NUM);
-    Dalloc(&pp, MAX_PART_NUM);
-    Dalloc(&pp0, MAX_PART_NUM);
-
-    clist::ini(XS, YS, ZS, /**/ &cells);
-    clist::ini_map(2, &cells, /**/ &mcells);
-    cc = cells.counts;
-    ss = cells.starts;
-
-    clist::build(n, n, pp, /**/ pp0, &cells, &mcells);
-    meshbb::ini(MAX_PART_NUM, /**/ &bbd);
-
-    while (read_particle(r) != END) {
-        meshbb::reini(n, /**/ bbd);
-        meshbb::find_collisions(ns, nt, nv, tt, i_pp, L, ss, cc, pp, ff, /**/ bbd);
-        write_particle(r, inside);
-    }
 }
 
 static void vert2pp(int n, float *pp0, /**/ Particle *pp) {
@@ -122,13 +85,31 @@ static void read_particles(/**/ int *pn, Particle *d) {
     int n;
     Particle h[NV];
 
-    read_particles0(&n, h);
+    read_particles0(/**/ &n, h);
     cH2D(d, h, n);
     *pn = n;
 }
 
-static void main0(MeshDev m, int n, Particle* pp) {
-    Particle pp0[NV];
+static void main0(MeshDev m, int n, Particle *pp, Force *ff, clist::Clist cells,
+                  meshbb::BBdata bdb) {
+    int ns;
+    ns = 1;
+    int3 L;
+    L = make_int3(XS, YS, ZS);
+
+    meshbb::ini(MAX_PART_NUM, &bbd);
+    meshbb::reini(n, /**/ bbd);
+    meshbb::find_collisions(ns, m.nf, m.nv, m.faces,    pp, L, cells.starts, cells.counts, pp, ff, /**/ bbd);
+}
+
+static void main1(MeshDev m, int n, Particle *pp, Force *ff, clist::Clist cells) {
+    meshbb::BBdata bbd;
+    meshbb::ini(MAX_PART_NUM, /**/ &bbd);
+    main0(m, n, pp, ff, cells, bbd);
+    meshbb::fin(&bbd);
+}
+
+static void main2(MeshDev m, int n, Particle *pp, Force *ff, Particle *pp0) {
     clist::Clist cells;
     clist::Map  mcells;
 
@@ -136,18 +117,33 @@ static void main0(MeshDev m, int n, Particle* pp) {
     clist::ini_map(2, &cells, /**/ &mcells);
     clist::build(n, n, pp, /**/ pp0, &cells, &mcells);
 
-    fprintf(stderr, "preved\n");
+    main1(m, n, pp, ff, cells);
+
+    clist::fin(&cells);
+    clist::fin_map(&mcells);
 }
 
-static void main1(MeshDev m) {
+static void main3(MeshDev m, int n, Particle* pp) {
+    Particle *pp0;
+    Force *ff;
+    Dalloc(&pp0, n); Dalloc(&ff, n);
+    main2(m, n, pp, ff, pp0);
+    Dfree(pp0); Dfree(ff);
+}
+
+static void main4(MeshDev m) {
     enum {X, Y, Z};
     int n;
-    Particle pp[NV];
+    Particle *pp;
+    Dalloc(&pp, NV);
+
     read_particles(/**/ &n, pp);
-    main0(m, n, pp);
+    main3(m, n, pp);
+
+    Dfree(pp);
 }
 
-static void main2(MeshHst h) {
+static void main5(MeshHst h) {
     MeshDev d;
     Particle pp[NV];
     vert2pp(h.nv, h.vert, /**/ pp);
@@ -158,30 +154,33 @@ static void main2(MeshHst h) {
     cH2D(d.pp,    pp,      h.nv);
     cH2D(d.faces, h.faces, h.nf);
     d.nv = h.nv; d.nf = h.nf;
-    main1(d);
+    main4(d);
+
+    Dfree(d.pp);
+    Dfree(d.faces);
 }
 
-static void main3(const char *path) {
+static void main6(const char *path) {
     float vert[3*NV];
     int4  faces[NT];
     MeshHst M;
     M.vert = vert; M.faces = faces;
 
     read_off(path, /**/ &M);
-    main2(M);
+    main5(M);
 }
 
-static void main4() {
+static void main7() {
     const char *path;
     path = argv[argc - 1]; lshift();
 
     m::ini(argc, argv);
-    main3(path);
+    main6(path);
     m::fin();
 }
 
 int main(int argc0, char **argv0) {
     argc = argc0;
     argv = argv0;
-    main4();
+    main7();
 }
