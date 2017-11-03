@@ -9,7 +9,7 @@
 
 void dump(const char *path, int sx, int sy, int sz) {
     enum {X, Y, Z};
-    int size, nc;
+    size_t size, nc;
     float *rho, *u[3];
     const char *names[] = { "density", "u", "v", "w" };
 
