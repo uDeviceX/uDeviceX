@@ -2,13 +2,15 @@
 #define NV 1000
 #define NT 1000
 
-struct Mesh {
+static struct Mesh {
     int nf, nv;
     float vert[3*NV];
     int4  faces[NT];
 } M;
 
-meshbb::BBdata bbd;
+static clist::Clist cells;
+static clist::Map  mcells;
+static meshbb::BBdata bbd;
 
 static int    argc;
 static char **argv;

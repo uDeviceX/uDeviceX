@@ -1,7 +1,7 @@
 f0 () { find "$1" -name '*.cu' -o -name '*.cpp' -o -name '*.h' -type f ; }
 f () ( for d; do f0 "$d"; done )
 
-f algo glb utils d mpi meshbb inc $U
+f algo clist glb utils d mpi meshbb inc $U
 echo msg.cpp msg.h
 
 echo io/off.h io/off.cpp io/off/imp.h math/dev.h
