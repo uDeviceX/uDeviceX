@@ -50,7 +50,7 @@ void ini(int argc, char **argv) {
     set_dims(argc, argv);
 
     m::Init(&argc, &argv);
-    MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
+    m::Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
     MC(MPI_Comm_rank(MPI_COMM_WORLD,   &rank));
     MC(MPI_Comm_size(MPI_COMM_WORLD,   &size));
     MC(MPI_Cart_create(MPI_COMM_WORLD, d, dims, periods, reorder,   &m::cart));

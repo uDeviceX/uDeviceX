@@ -8,6 +8,7 @@ int Cart_rank(MPI_Comm comm, const int coords[], int *rank);
 int Comm_dup(MPI_Comm comm, MPI_Comm *newcomm);
 int Comm_free(MPI_Comm *comm);
 int Exscan(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
+int Errhandler_set(MPI_Comm comm, MPI_Errhandler errhandler);
 int File_close(MPI_File *fh);
 int File_get_position(MPI_File fh, MPI_Offset *offset);
 int File_open(MPI_Comm comm, const char *filename, int amode, MPI_Info info, MPI_File *fh);

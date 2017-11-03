@@ -28,6 +28,10 @@ int Comm_free(MPI_Comm *comm) {
     return MPI_Comm_free(comm);
 }
 
+int Errhandler_set(MPI_Comm comm, MPI_Errhandler errhandler) {
+    return MPI_Errhandler_set(comm, errhandler);
+}
+
 int Exscan(const void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm) {
     return MPI_Exscan(sendbuf, recvbuf, count, datatype, op, comm);
 }
