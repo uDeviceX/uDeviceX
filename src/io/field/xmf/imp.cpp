@@ -20,7 +20,7 @@ static void epilogue(FILE *f) {
     fprintf(f, "</Xdmf>\n");
 }
 
-static void grid(FILE * f, const char * const path, const char * const *names, int n) {
+static void grid(FILE * f, const char *path, const char **names, int n) {
     enum {X, Y, Z};
     int i;
     int *d, G[3]; /* domain size */
@@ -64,7 +64,7 @@ static void basename(const char *i, /**/ char *o) {
     strcpy(o, p);
 }
 
-void write(const char* path, const char * const * const names, int n) {
+void write(const char *path, const char **names, int ncomp) {
     char w[BUFSIZ];
     FILE *f;
 
@@ -73,7 +73,7 @@ void write(const char* path, const char * const * const names, int n) {
     header(f);
 
     basename(path, /**/ w);
-    grid(f, w, names, n);
+    grid(f, w, names, ncomp);
     epilogue(f);
     fclose(f);
 }
