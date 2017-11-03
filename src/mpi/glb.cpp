@@ -49,7 +49,7 @@ static void set_dims(int argc, char **argv) {
 void ini(int argc, char **argv) {
     set_dims(argc, argv);
 
-    MPI_Init(&argc, &argv);
+    m::Init(&argc, &argv);
     MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
     MC(MPI_Comm_rank(MPI_COMM_WORLD,   &rank));
     MC(MPI_Comm_size(MPI_COMM_WORLD,   &size));

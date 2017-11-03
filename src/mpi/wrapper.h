@@ -15,6 +15,7 @@ int File_seek(MPI_File fh, MPI_Offset offset, int whence);
 int File_set_size(MPI_File fh, MPI_Offset size);
 int File_write_at_all(MPI_File fh, MPI_Offset offset, const void *buf, int count, MPI_Datatype datatype, MPI_Status *status);
 int Finalize(void);
+int Init(int *argc, char ***argv);
 int Irecv(void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Request *request);
 int Isend(const void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request);
 int Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status *status);
