@@ -23,9 +23,15 @@ void dump(int nc) {
     free(rho); free(u[X]); free(u[Y]); free(u[Z]);
 }
 
+int ienv(const char *name, int def) {
+    char *v;
+    if ( (v = getenv(name))  == NULL ) return def;
+    else return atoi(v);
+}
+
 void main0(int c, char **v) {
     int n, i;
-    n = atoi(getenv("n"));
+    n = ienv("n", 1000);
     for (i = 0; i < n; i++) {
         printf(": %05d/%05d\n", i, n);
         dump(32 * 32 * 32);
