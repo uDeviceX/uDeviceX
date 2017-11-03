@@ -2,7 +2,7 @@
    [1] https://en.wikipedia.org/wiki/OFF_(file_format) */
 
 /* return faces: f0[0] f1[0] f2[0]   f0[1] f1[1] ... */
-void faces(const char *f, int4* faces) {
+int faces(const char *f, int4* faces) {
     char buf[BUFSIZ];
     FILE *fd = fopen(f, "r");
     if (fd == NULL) {
@@ -22,17 +22,17 @@ void faces(const char *f, int4* faces) {
         faces[ifa] = t;
     }
     fclose(fd);
+
+    return nf;
 }
 
-/* return vertices */
-void vert(const char *f, float* vert) {
+int vert(const char *f, float* vert) {
     char buf[BUFSIZ];
     FILE *fd = fopen(f, "r");
     if (fd == NULL) {
         fprintf(stderr, "off: Could not open <%s>", f);
         exit(2);
     }
-    
     fgets(buf, sizeof buf, fd); /* skip OFF */
 
     int nv;
@@ -45,4 +45,6 @@ void vert(const char *f, float* vert) {
     }
 
     fclose(fd);
+
+    return nv;
 }
