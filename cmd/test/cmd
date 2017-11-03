@@ -1,28 +1,27 @@
 # TEST: cmd.t0
-# export UHOST=daint DRYRUN=
-# u.run ./udx  2> cmd.out.txt
-#
+export UHOST=daint DRYRUN=
+u.run ./udx  2> cmd.out.txt
+
 # TEST: cmd.t1
-# export UHOST=panda DRYRUN=
-# u.run ./udx  2> cmd.out.txt
-#
+export UHOST=panda DRYRUN=
+u.run ./udx  2> cmd.out.txt
+
 # TEST: cmd.t2
-# export UHOST=daint DRYRUN= MEM=
-# u.run ./udx  2> cmd.out.txt
-#
+export UHOST=daint DRYRUN= MEM=
+u.run ./udx  2> cmd.out.txt
+
 # TEST: cmd.t3
-# export UHOST=panda DRYRUN= MEM=
-# u.run ./udx  2> cmd.out.txt
-#
+export UHOST=panda DRYRUN= MEM=
+u.run ./udx  2> cmd.out.txt
+
 # TEST: cmd.t4
-# export UHOST=daint DRYRUN= MEM="-a -b"
-# u.batch ./udx 2> cmd.out.txt
-#
+export UHOST=daint DRYRUN= MEM="-a -b"
+u.batch ./udx 2> cmd.out.txt
+
 # TEST: cmd.t5
-# export UHOST=daint DRYRUN= VAL=
-# u.run ./udx  2> cmd.out.txt
-#
+export UHOST=daint DRYRUN= VAL=
+u.run ./udx  2> cmd.out.txt
+
 # TEST: cmd.t6
-# export UHOST=daint DRYRUN= HDF5_VERSION=1.8.16
-# u.run ./udx  2> cmd.out.txt
-#
+export UHOST=daint DRYRUN= HDF5_VERSION=1.8.16
+u.run ./udx  2> cmd.out.txt
