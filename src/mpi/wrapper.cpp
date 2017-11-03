@@ -16,6 +16,11 @@ int Cancel(MPI_Request *request) {
     return MPI_Cancel(request);
 }
 
+int Cart_create(MPI_Comm comm_old, int ndims, const int dims[],
+                const int periods[], int reorder, MPI_Comm *comm_cart) {
+    return MPI_Cart_create(comm_old, ndims, dims, periods, reorder, comm_cart);
+}
+
 int Cart_rank(MPI_Comm comm, const int coords[], int *rank) {
     return MPI_Cart_rank(comm, coords, rank);
 }

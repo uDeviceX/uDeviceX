@@ -5,6 +5,8 @@ int Allreduce(const void *sendbuf, void *recvbuf, int count, MPI_Datatype dataty
 int Barrier(MPI_Comm comm);
 int Cancel(MPI_Request *request);
 int Cart_rank(MPI_Comm comm, const int coords[], int *rank);
+int Cart_create(MPI_Comm comm_old, int ndims, const int dims[],
+                const int periods[], int reorder, MPI_Comm *comm_cart);
 int Comm_dup(MPI_Comm comm, MPI_Comm *newcomm);
 int Comm_free(MPI_Comm *comm);
 int Comm_rank(MPI_Comm comm, int *rank);

@@ -53,7 +53,7 @@ void ini(int argc, char **argv) {
     m::Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
     MC(m::Comm_rank(MPI_COMM_WORLD,   &rank));
     MC(m::Comm_size(MPI_COMM_WORLD,   &size));
-    MC(MPI_Cart_create(MPI_COMM_WORLD, d, dims, periods, reorder,   &m::cart));
+    MC(m::Cart_create(MPI_COMM_WORLD, d, dims, periods, reorder,   &m::cart));
     MC(MPI_Cart_coords(m::cart, rank, d,   coords));
 }
 
