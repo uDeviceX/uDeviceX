@@ -7,6 +7,8 @@
 #include "inc/dev.h"
 #include "mpi/glb.h"
 
+#include "msg.h"
+
 #include "flux.h"
 
 namespace recolor {
