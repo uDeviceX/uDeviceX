@@ -7,5 +7,5 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/io        && \
     d $B/mesh      && \
     d $B/mpi       && \
-    d $B/u/mesh    && \
+    d $B/u/meshbb  && \
     d $B/utils    
