@@ -47,7 +47,6 @@ static void set_dims(int argc, char **argv) {
     for (i = 1; i < argc && i <= 3; i++) dims[i - 1] = atoi(argv[i]);
 }
 void ini(int argc, char **argv) {
-    int rc;
     set_dims(argc, argv);
 
     if (m::Init(&argc, &argv) != MPI_SUCCESS) {
