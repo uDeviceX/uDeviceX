@@ -5,6 +5,7 @@
 #include "mpi/glb.h"
 
 #include "io/field/h5/imp.h"
+#include "io/field/xmf/imp.h"
 
 void dump(int nc) {
     enum {X, Y, Z};
@@ -21,6 +22,7 @@ void dump(int nc) {
     float *data[] = { rho, u[X], u[Y], u[Z] };
     h5::write("main.h5", data, names, 4);
     free(rho); free(u[X]); free(u[Y]); free(u[Z]);
+    if (m::rank == 0) xmf::write("main.h5", names, 4);
 }
 
 int ienv(const char *name, int def) {
