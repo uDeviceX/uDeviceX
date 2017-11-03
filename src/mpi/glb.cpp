@@ -54,7 +54,7 @@ void ini(int argc, char **argv) {
     MC(m::Comm_rank(MPI_COMM_WORLD,   &rank));
     MC(m::Comm_size(MPI_COMM_WORLD,   &size));
     MC(m::Cart_create(MPI_COMM_WORLD, d, dims, periods, reorder,   &m::cart));
-    MC(MPI_Cart_coords(m::cart, rank, d,   coords));
+    MC(m::Cart_coords(m::cart, rank, d,   coords));
 }
 
 void fin() {

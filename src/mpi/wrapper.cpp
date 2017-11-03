@@ -21,6 +21,10 @@ int Cart_create(MPI_Comm comm_old, int ndims, const int dims[],
     return MPI_Cart_create(comm_old, ndims, dims, periods, reorder, comm_cart);
 }
 
+int Cart_coords(MPI_Comm comm, int rank, int maxdims, int coords[]) {
+    return MPI_Cart_coords(comm, rank, maxdims, coords);
+}
+
 int Cart_rank(MPI_Comm comm, const int coords[], int *rank) {
     return MPI_Cart_rank(comm, coords, rank);
 }
