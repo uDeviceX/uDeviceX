@@ -40,12 +40,16 @@ void report(int i, int n, char *path) {
         MSG("%06d/%06d: %s", i, n, path);
 }
 
+void get_path(int i, char *p) {
+    sprintf(p, "i.%06d.h5", i);
+}
+
 void main0(int c, char **v) {
     int n, i;
     char path[BUFSIZ];
     n = ienv("ndump", 1000);
     for (i = 0; i < n; i++) {
-        sprintf(path, "i.%06d.h5", i);
+        get_path(i, /**/ path);
         report(i, n, path);
         dump(path, 32 * 32 * 32);
     }
