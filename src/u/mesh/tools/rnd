@@ -10,8 +10,11 @@ BEGIN {
     N = ARGV[1]
     if (!length(N)) N = 100
 
-    xl = yl = zl = -1.5
-    xh = yh = zh =  1.5
+    ext = ARGV[2]
+    if (!length(ext)) ext = 5
+
+    xl = yl = zl = -5
+    xh = yh = zh =  5
 
     while (N--) {
 	rnd3()

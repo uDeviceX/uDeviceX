@@ -4,8 +4,8 @@
 
 struct Mesh {
     int nf, nv;
-    float vert;
-    int4 faces;
+    float vert[3*NV];
+    int4  faces[NT];
 } M;
 
 static int    argc;
@@ -17,27 +17,6 @@ static void lshift() {
         fprintf(stderr, "h5: not enough args\n");
         exit(2);
     }
-}
-
-static void add_vert(float x, float y, float z, /**/ float *v) {
-    enum {X, Y, Z};
-    v[X] = x; v[Y] = y; v[Z] = z;
-}
-static void add_tri (int x, int y, int z, /**/ int4 *t) { (*t).x = x; (*t).y = y; (*t).z = z; }
-static void piramid(/**/ float *v, int4 *t, int *nt) {
-    int i;
-    i = 0;
-    add_vert(0, 0, 0, /**/ &v[3*i++]);
-    add_vert(1, 0, 0, /**/ &v[3*i++]);
-    add_vert(0, 1, 0, /**/ &v[3*i++]);
-    add_vert(0, 0, 1, /**/ &v[3*i++]);
-
-    i = 0;
-    add_tri(0, 1, 2, /**/ &t[i++]);
-    add_tri(0, 3, 1, /**/ &t[i++]);
-    add_tri(0, 2, 3, /**/ &t[i++]);
-    add_tri(1, 3, 2, /**/ &t[i++]);
-    *nt = i;
 }
 
 static void read_point0(const char *s, float *r) {
@@ -57,19 +36,17 @@ static void write_point(float *r, int inside) {
     printf("%g %g %g %d\n", r[X], r[Y], r[Z], inside);
 }
 
-static void read_mesh(const char *path) {
-    M.nv = off::vert(path,  &M.vert);
-    M.nf = off::faces(path, &M.faces);
+static void read_off(const char *path) {
+    M.nv = off::vert(path,  M.vert);
+    M.nf = off::faces(path, M.faces);
 }
 
 static void main0(const char *path) {
-    float r[3], vv[3*NT];
-    int4  tt[NT];
-    int nt, inside;
-    read_mesh(path);
-    piramid(vv, tt, &nt);
+    float r[3];
+    int inside;
+    read_off(path);
     while (read_point(r) != END) {
-        inside = collision::inside_1p(r, vv, tt, nt);
+        inside = collision::inside_1p(r, M.vert, M.faces, M.nf);
         write_point(r, inside);
     }
 }
