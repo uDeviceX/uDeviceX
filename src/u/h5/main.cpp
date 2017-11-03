@@ -7,7 +7,7 @@
 #include "io/field/h5/imp.h"
 #include "io/field/xmf/imp.h"
 
-void dump(int nc) {
+void dump(const char *path, int nc) {
     enum {X, Y, Z};
     int sz;
     float *rho, *u[3];
@@ -20,9 +20,9 @@ void dump(int nc) {
     u[Z] = (float*)malloc(sz);
 
     float *data[] = { rho, u[X], u[Y], u[Z] };
-    h5::write("main.h5", data, names, 4);
+    h5::write(path, data, names, 4);
     free(rho); free(u[X]); free(u[Y]); free(u[Z]);
-    if (m::rank == 0) xmf::write("main.h5", names, 4);
+    if (m::rank == 0) xmf::write(path, names, 4);
 }
 
 int ienv(const char *name, int def) {
@@ -38,10 +38,12 @@ void report(int i, int n) {
 
 void main0(int c, char **v) {
     int n, i;
+    char path[BUFSIZ];
     n = ienv("ndump", 1000);
     for (i = 0; i < n; i++) {
         report(i, n);
-        dump(32 * 32 * 32);
+        sprintf(path, "i.%06d.h5", i);
+        dump(path, 32 * 32 * 32);
     }
 }
 
