@@ -97,24 +97,33 @@ static void main0(const char *path) {
     }
 }
 
+static void main1(MeshHst h) {
+    MeshDev d;
+    int nf, nv, i;
+    Particle pp[NV];
+    nv = h.nv; nf = h.nf;
 
-
-static void main1(const char *path) {
-    MeshHst M;
-    read_off(path, &M);
+    Dalloc(&d.pp,    nv);
+    Dalloc(&d.faces, nf);
 }
 
-static void main2() {
+static void main2(const char *path) {
+    MeshHst M;
+    read_off(path, &M);
+    main1(M);
+}
+
+static void main3() {
     const char *path;
     path = argv[argc - 1]; lshift();
 
     m::ini(argc, argv);
-    main1(path);
+    main2(path);
     m::fin();
 }
 
 int main(int argc0, char **argv0) {
     argc = argc0;
     argv = argv0;
-    main2();
+    main3();
 }
