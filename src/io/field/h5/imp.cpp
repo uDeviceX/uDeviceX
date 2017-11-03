@@ -86,8 +86,7 @@ static void write0(hid_t file_id,
     H5Sclose(filespace_simple);
 }
 
-void write(const char  *path,
-           const float *data[],
+void write(const char *path, float **data,
            const char **names, int n) {
     IDs ids;
     create(path, /**/ &ids);
