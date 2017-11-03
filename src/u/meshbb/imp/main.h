@@ -51,9 +51,9 @@ static void main0(const char *path) {
     int n, ns, nv, nt;
     int4 *tt;
 
-    Particle *i_pp; /* TODO */
-    Particle *pp;
-    Force *ff;     /* TODO */
+    Particle *i_pp, *pp, *pp0;
+    Force *ff;
+    int *ss, *cc;
 
     int3 L = make_int3(XS, YS, ZS);
 
@@ -64,11 +64,25 @@ static void main0(const char *path) {
     nv = M.nv;
     nt = M.nf;
     tt = M.faces;
+
+    cc = o::q.cells.counts;
+    ss = o::q.cells.starts;
+
+    Dalloc(ff);
+    Dalloc(i_pp, MAX_PART_NUM);
+    Dalloc(pp, MAX_PART_NUM);
+    Dalloc(pp0, MAX_PART_NUM);
+    
+    clist::ini(XS, YS, ZS, /**/ &cells);
+    clist::ini_map(2, &cells, /**/ &mcells);
+
+    
+    clist::build(n, n, pp, /**/ pp0, cells, mcells);
     meshbb::ini(MAX_PART_NUM, /**/ &bbd);
 
     while (read_point(r) != END) {
         meshbb::reini(n, /**/ bbd);
-        //        meshbb::find_collisions(ns, nt, nv, tt, i_pp, L, ss, cc, pp, ff, /**/ bbd);
+        meshbb::find_collisions(ns, nt, nv, tt, i_pp, L, ss, cc, pp, ff, /**/ bbd);
 
         write_point(r, inside);
     }
