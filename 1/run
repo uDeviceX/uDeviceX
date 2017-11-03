@@ -2,10 +2,12 @@ set -eu
 
 . ./util
 
-# export HDF5_VERSION=1.8.16
+#export HDF5_VERSION=default
 make -C .. -s install
 
-nx=3 ny=1 nz=1
+cp /scratch/snx3000/lisergey/sdf.dat sdf.dat
+
+nx=6 ny=2 nz=2
 u.conf ../src u/x conf.def.h <<!
 run
 !
