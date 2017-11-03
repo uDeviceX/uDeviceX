@@ -37,8 +37,8 @@ void write(const char *b, float *D,
     char bov[BUFSIZ], val[BUFSIZ];
     size_t size;
 
-    strncpy(bov, b); strncat(bov, ".bov");
-    strncpy(val, b); strncat(val, ".value");
+    strcpy(bov, b); strcat(bov, ".bov");
+    strcpy(val, b); strcat(val, ".value");
 
     header(bov, val, ox, oy, oz, sx, sy, sz, ncomp);
     size = sx * sy * sz * ncomp;
