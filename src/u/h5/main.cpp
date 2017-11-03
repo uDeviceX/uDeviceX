@@ -45,7 +45,7 @@ int ienv(const char *name, int def) {
 }
 
 void report(int i, int n, const char *path) {
-    MSG("writting %s", path);
+    MSG("write %s", path);
 }
 
 void main0(const char *path) {
