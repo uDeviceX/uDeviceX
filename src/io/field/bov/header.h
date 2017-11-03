@@ -1,4 +1,4 @@
-void write_header(const char *fhname, const char *fdname, int nx, int ny, int nz, int ncmp, const char varname) {
+void write_header(const char *fhname, const char *fdname, int nx, int ny, int nz, int ncmp, const char *varname) {
     FILE *f;
     long Lx, Ly, Lz;
     
@@ -6,7 +6,7 @@ void write_header(const char *fhname, const char *fdname, int nx, int ny, int nz
     Ly = m::coords[1] * ny;
     Lz = m::coords[2] * nz;
 
-    f = safe_open(fhname, "w");
+    f = fopen(fhname, "w");
     
     fprintf(f, "DATA_FILE: %s\n", fdname);
     fprintf(f, "DATA_SIZE: %ld %ld %ld\n", Lx, Ly, Lz);
@@ -14,7 +14,7 @@ void write_header(const char *fhname, const char *fdname, int nx, int ny, int nz
     fprintf(f, "VARIABLE: %s\n", varname);
     fprintf(f, "DATA_ENDIAN: LITTLE\n");
     fprintf(f, "CENTERING: zonal\n");
-    fprintf(f, "BRICK_ORIGIN: %g %g %g\n", 0, 0, 0);
+    fprintf(f, "BRICK_ORIGIN: %g %g %g\n", 0., 0., 0.);
     fprintf(f, "BRICK_SIZE: %g %g %g\n", (double) Lx, (double) Ly, (double) Lz);
     fprintf(f, "DATA_COMPONENTS: %d\n", ncmp);
     
