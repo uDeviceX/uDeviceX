@@ -1,6 +1,6 @@
 # clists
 
-Cell lists  
+Cell lists
 Purpose: reorder data according to particle positions
 
 ## possible inputs:
@@ -12,11 +12,10 @@ in general, `nlo` is bigger than the number of local particles because of these 
 
 ## output:
 `starts`, `counts`, `pp`
-`pp` has size `nout`  
+`pp` has size `nout`
 `nout` is __not__ equal to nlo + nre in general!
 
 ## ticket:
 * `ee` cell [e]ntries (`lo` and `re` versions)
 * `ii` scattered indices
 * `ws `workspace for scan
-
