@@ -33,7 +33,7 @@ int ienv(const char *name, int def) {
 
 void report(int i, int n) {
     if (n > 100 && i % 100 == 0)
-        MSG("%06d/%06d\n", i, n);
+        MSG("%06d/%06d", i, n);
 }
 
 void main0(int c, char **v) {
