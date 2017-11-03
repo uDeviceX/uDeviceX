@@ -1,4 +1,3 @@
-namespace off {
 /* off files
    [1] https://en.wikipedia.org/wiki/OFF_(file_format) */
 
@@ -42,4 +41,3 @@ void vert(const char *f, float* vert) {
 
     fclose(fd);
 }
-} // off
