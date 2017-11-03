@@ -13,7 +13,7 @@ int faces(const char *f, int4* faces) {
     fgets(buf, sizeof buf, fd); /* skip OFF */
 
     if (!eq(buf, "OFF")) {
-        fprintf(stderr, "off: expecting OFF <%s> : %s\n", f, buf);
+        fprintf(stderr, "off: expecting [OFF] <%s> : [%s]\n", f, buf);
         exit(2);
     }
 
