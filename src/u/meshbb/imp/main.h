@@ -46,10 +46,28 @@ static void read_off(const char *path) {
 static void main0(const char *path) {
     float r[3];
     int inside;
+    int n, ns, nv, nt;
+    int4 *tt;
+
+    Particle *i_pp; /* TODO */
+    Particle *pp;
+    Force *ff;     /* TODO */
+
+    int3 L = make_int3(XS, YS, ZS);
+
     read_off(path);
+
+    n = 1;
+    ns = 1;
+    nv = M.nv;
+    nt = M.nf;
+    tt = M.faces;
     meshbb::ini(MAX_PART_NUM, /**/ &bbd);
-    
+
     while (read_point(r) != END) {
+        meshbb::reini(n, /**/ bbd);
+        //        meshbb::find_collisions(ns, nt, nv, tt, i_pp, L, ss, cc, pp, ff, /**/ bbd);
+
         write_point(r, inside);
     }
 }
@@ -57,7 +75,7 @@ static void main0(const char *path) {
 static void main1() {
     const char *path;
     path = argv[argc - 1]; lshift();
-    
+
     m::ini(argc, argv);
     main0(path);
     m::fin();
