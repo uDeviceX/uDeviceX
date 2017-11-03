@@ -1,9 +1,6 @@
 #include <assert.h>
 #include <hdf5.h>
 
-#include <conf.h>
-#include "inc/conf.h"
-
 #include "msg.h"
 
 #include "mpi/glb.h"
@@ -56,9 +53,10 @@ static void write_float(hid_t dataset_id,
 static void write0(hid_t file_id,
                    const float *channeldata[],
                    const char **channelnames,
-                   int nchannels) {
+                   int nchannels,
+                   int xs, int ys, int zs) {
     int i;
-    const int L[3] = { XS, YS, ZS };
+    const int L[3] = { xs, ys, zs};
     hsize_t globalsize[4] = {(hsize_t) m::dims[2] * L[2], (hsize_t) m::dims[1] * L[1], (hsize_t) m::dims[0] * L[0], 1};
     hid_t filespace_simple = H5Screate_simple(4, globalsize, NULL);
 
@@ -87,11 +85,13 @@ static void write0(hid_t file_id,
 }
 
 void write(const char *path, float **data,
-           const char **names, int n,
+           const char **names, int ncomp,
            int sx, int sy, int sz) {
+    /* ncomp: number of component,
+       sx, sy, sz: sizes */
     IDs ids;
     create(path, /**/ &ids);
-    write0(ids.file, data, names, n);
+    write0(ids.file, data, names, ncomp, sx, sy, sz);
     close(ids, path);
 }
 
