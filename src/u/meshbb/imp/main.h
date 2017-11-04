@@ -79,7 +79,7 @@ static void read_particles0(/**/ int *pn, Particle *pp) {
     float r[3], v[3];
     int rc, i;
     for (i = 0; /**/ ; i++) {
-        rc = read_rv(r, v); 
+        rc = read_rv(r, v);
         if (rc == END) break;
         if (rc == FAIL) ERR("fail to read particle");
         p.r[X] = r[X]; p.r[Y] = r[Y]; p.r[Z] = r[Z];
@@ -101,9 +101,18 @@ static void read_particles(/**/ int *pn, Particle *d) {
 static void main0(int n, meshbb::BBdata bdb) {
     int i;
     int ncols[MAX_PART_NUM];
-    cD2H(ncols, bdb.ncols, n);
-    for (i = 0; i < n; i++)
-        MSG("ncols[%d] = %d", i, ncols[i]);
+    float4 datacol[MAX_PART_NUM];
+
+    cD2H(ncols,   bdb.ncols,   n);
+    cD2H(datacol, bdb.datacol, n);
+
+    for (i = 0; i < n; i++) {
+        if (!ncols[i]) continue;
+        MSG("ncols[%d] = %d", i, ncols[i]    );
+        MSG("t    [%d] = %.16e", i, datacol[i].x);
+        MSG("u    [%d] = %.16e", i, datacol[i].y);
+        MSG("v    [%d] = %.16e", i, datacol[i].z);
+    }
 }
 
 static void main1(MeshDev m, int n, Particle *pp, Force *ff, clist::Clist cells,
@@ -115,7 +124,7 @@ static void main1(MeshDev m, int n, Particle *pp, Force *ff, clist::Clist cells,
 
     meshbb::ini(MAX_PART_NUM, &bbd);
     meshbb::reini(n, /**/ bbd);
-    meshbb::find_collisions(ns, m.nf, m.nv, m.faces,    pp, L, cells.starts, cells.counts, pp, ff, /**/ bbd);
+    meshbb::find_collisions(ns, m.nf, m.nv, m.faces, m.pp,   L, cells.starts, cells.counts,   pp, ff, /**/ bbd);
 
     main0(n, bbd);
 
@@ -125,7 +134,7 @@ static void main1(MeshDev m, int n, Particle *pp, Force *ff, clist::Clist cells,
 static void main2(MeshDev m, int n, Particle *pp, Force *ff, clist::Clist cells) {
     meshbb::BBdata bbd;
     meshbb::ini(MAX_PART_NUM, /**/ &bbd);
-    main1(m, n, pp, ff, cells, bbd);
+    main1(m, n, pp, ff, cells, /**/ bbd);
     meshbb::fin(&bbd);
 }
 
