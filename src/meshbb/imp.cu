@@ -17,11 +17,9 @@ namespace meshbb {
 
 /* conf */
 enum {MAX_COL = 4};
-// #define debug_output
 
 #include "type.h"
 #include "bbstates.h"
-#include "dbg.h"
 #include "dev/roots.h"
 #include "dev/utils.h"
 #include "dev/intersection.h"
@@ -47,14 +45,9 @@ void reini(int n, /**/ BBdata d) {
 void find_collisions(int nm, int nt, int nv, const int4 *tt, const Particle *i_pp, int3 L,
                      const int *starts, const int *counts, const Particle *pp, const Force *ff,
                      /**/ BBdata d) {
-    dbg::ini_dev();
-    
     if (!nm) return;
-
     KL(dev::find_collisions, (k_cnf(nm * nt)),
        (nm, nt, nv, tt, i_pp, L, starts, counts, pp, ff, /**/ d.ncols, d.datacol, d.idcol));
-
-    dbg::report_dev();
 }
 
 void select_collisions(int n, /**/ BBdata d) {
