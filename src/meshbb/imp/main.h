@@ -26,13 +26,11 @@ void select_collisions(int n, /**/ BBdata d) {
     KL(dev::select_collisions, (k_cnf(n)), (n, /**/ d.ncols, d.datacol, d.idcol));
 }
 
-
 void bounce(int n, BBdata d, const Force *ff, int nt, int nv, const int4 *tt, const Particle *i_pp,
             /**/ Particle *pp, Momentum *mm) {
     KL(dev::perform_collisions, (k_cnf(n)),
        (n, d.ncols, d.datacol, d.idcol, ff, nt, nv, tt, i_pp, /**/ pp, mm));
 }
-
 
 void collect_rig_momentum(int ns, int nt, int nv, const int4 *tt, const Particle *pp, const Momentum *mm, /**/ Solid *ss) {
     KL(dev::collect_rig_mom, (k_cnf(ns * nt)), (ns, nt, nv, tt, pp, mm, /**/ ss));
