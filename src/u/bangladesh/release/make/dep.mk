@@ -39,7 +39,7 @@ $B/lforces/imp.o: $S/inc/conf.h $S/lforces/imp/info.h $S/lforces/dev/merged.h $S
 $B/lforces/transpose/imp.o: $S/inc/conf.h $S/inc/type.h $S/d/q.h $S/lforces/transpose/imp.h $S/utils/cc.h $S/inc/def.h $S/inc/dev.h $S/d/api.h $S/msg.h $B/conf.h $S/lforces/transpose/imp/main.h $S/utils/kl.h $S/lforces/transpose/dev/main.h $S/d/ker.h
 $B/main.o: $S/inc/conf.h $S/glb/set.h $S/d/api.h $S/msg.h $B/conf.h $S/sim/imp.h $S/mpi/glb.h
 $B/math/linal.o: $S/math/linal.h
-$B/meshbb/imp.o: $S/meshbb/bbstates.h $S/inc/conf.h $S/meshbb/dev/collect.h $S/inc/type.h $S/meshbb/imp.h $S/meshbb/dev/roots.h $S/utils/cc.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/meshbb/type.h $S/utils/kl.h $S/math/dev.h $S/meshbb/dev/intersection.h $S/meshbb/dev/utils.h $S/meshbb/dev/main.h
+$B/meshbb/imp.o: $S/meshbb/bbstates.h $S/inc/conf.h $S/meshbb/dev/collect.h $S/inc/type.h $S/meshbb/imp.h $S/meshbb/dev/roots.h $S/utils/cc.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/meshbb/imp/main.h $S/meshbb/type.h $S/utils/kl.h $S/math/dev.h $S/meshbb/dev/intersection.h $S/meshbb/dev/utils.h $S/meshbb/dev/main.h
 $B/mesh/bbox.o: $S/inc/type.h $S/algo/minmax.h $S/mesh/bbox.h
 $B/mesh/collision.o: $S/inc/conf.h $S/inc/type.h $S/d/q.h $S/utils/cc.h $S/inc/def.h $S/inc/dev.h $S/d/api.h $S/msg.h $B/conf.h $S/utils/texo.h $S/utils/kl.h $S/utils/texo.dev.h $S/mesh/collision.h $S/d/ker.h
 $B/mesh/dist.o: $S/inc/type.h $S/mesh/dist.h
