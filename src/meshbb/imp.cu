@@ -22,15 +22,19 @@ enum {MAX_COL = 4};
 #include "bbstates.h"
 #include "dev/roots.h"
 #include "dev/utils.h"
+#include "dev/cubic_root/main.h"
+#ifdef MESHBB_LOG_ROOTS
+  #include "dev/cubic_root/log_root1.h"
+#else
+  #include "dev/cubic_root/log_root0.h"
+#endif
 #include "dev/intersection.h"
 #include "dev/collect.h"
 #include "dev/main.h"
 
 #ifdef MESHBB_LOG_ROOTS
-  #include "dev/cubic_root/log_root1.h"
   #include "imp/find_collisions/log_root1.h"
 #else
-  #include "dev/cubic_root/log_root0.h"
   #include "imp/find_collisions/log_root0.h"
 #endif
 #include "imp/main.h"

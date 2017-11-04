@@ -1,6 +1,9 @@
 namespace dev {
-
+typedef double real;
+typedef double3 real3;
 enum {X, Y, Z};
+
+static __device__ bool valid(real t) {return (t >= 0 && t <= dt);}
 
 // TODO belongs to scheme/ ?
 // BB assumes r0 + v0 dt = r1 for now

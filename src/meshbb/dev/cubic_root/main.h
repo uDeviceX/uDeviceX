@@ -1,3 +1,4 @@
+namespace dev {
 static __device__ bool cubic_root0(real a, real b, real c, real d, /**/ real *h) {
     const real eps = 1e-8;
     real h1, h2, h3;
@@ -24,4 +25,5 @@ static __device__ bool cubic_root0(real a, real b, real c, real d, /**/ real *h)
     }
     
     return false;
+}
 }
