@@ -74,7 +74,6 @@ static __device__ void find_collisions_cell(int tid, int start, int count, const
             datacol[entry] = make_float4(tc, u, v, s);
             idcol[entry] = tid;
         }
-        dbg::log_states(state);
     }
 }
 
