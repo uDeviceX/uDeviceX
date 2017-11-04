@@ -10,6 +10,7 @@
 #include "d/api.h"
 
 #include "math/dev.h"
+#include "msg.h"
 
 #include "imp.h"
 
