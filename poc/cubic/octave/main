@@ -1,0 +1,17 @@
+#!/usr/bin/env octave-qf
+
+f = argv(){1};
+
+D = dlmread(f);
+n = size(D, 1)
+
+vv = hh = zeros(n, 1);
+for i=1:n
+  c = D(i,   1:4);
+  h = D(i,  5e-4);
+  hh(i) = h;
+  vv(i) = polyval(c, h);
+endfor
+
+dlmwrite("d", [hh, vv], ' ');
+
