@@ -17,4 +17,4 @@ u.conf conf/double.poiseuille.h <<!!!
 (make clean && u.make -j && make -C ../tools) > /dev/null
 sh runfile 2>/dev/null
 :
-awk '$NF == :log_roots: { $NF == ""; print}' .000 > cubic.txt
+awk '$NF == ":log_root:" { $NF = ""; print}' .000 > cubic.txt

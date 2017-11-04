@@ -8,8 +8,7 @@ static void log_cubic_dump0(int n, dev::CubicInfo *cci) {
     dev::CubicInfo ci;
     for (i = 0; i < n; i++) {
         ci = cci[i];
-        if (!ci.status)
-            MSG("%.16e %.16e %.16e %.16e %.16e %d :log_root:", ci.a, ci.b, ci.c, ci.d, ci.h, ci.status);
+        MSG("%.16e %.16e %.16e %.16e %.16e %d :log_root:", ci.a, ci.b, ci.c, ci.d, ci.h, ci.status);
     }
 }
 static void log_cubic_dump() {
