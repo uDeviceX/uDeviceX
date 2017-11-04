@@ -100,6 +100,8 @@ static void main0(MeshDev m, int n, Particle *pp, Force *ff, clist::Clist cells,
     meshbb::ini(MAX_PART_NUM, &bbd);
     meshbb::reini(n, /**/ bbd);
     meshbb::find_collisions(ns, m.nf, m.nv, m.faces,    pp, L, cells.starts, cells.counts, pp, ff, /**/ bbd);
+
+    meshbb::fin(&bbd);
 }
 
 static void main1(MeshDev m, int n, Particle *pp, Force *ff, clist::Clist cells) {
