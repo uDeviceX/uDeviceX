@@ -26,13 +26,12 @@ enum {MAX_COL = 4};
 #include "dev/collect.h"
 #include "dev/main.h"
 
-#include "imp/main.h"
-
 #ifdef MESHBB_LOG_ROOTS
-#include "imp/find_collisions/log_root1.h"
+  #include "dev/cubic_root/log_root1.h"
+  #include "imp/find_collisions/log_root1.h"
 #else
-#include "imp/find_collisions/log_root0.h"
+  #include "dev/cubic_root/log_root0.h"
+  #include "imp/find_collisions/log_root0.h"
 #endif
-
-
+#include "imp/main.h"
 } /* meshbb */
