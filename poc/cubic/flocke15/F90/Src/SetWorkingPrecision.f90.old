@@ -1,0 +1,18 @@
+!! ----------------------------------------------------------------------------------
+!! MODULE SetWorkingPrecision
+!!
+!!    This module sets the working precision (wp) and the working precision
+!!    output format (wpFormat). Both are currently set to double precision.
+!!
+!! ----------------------------------------------------------------------------------
+
+module SetWorkingPrecision
+  integer,           parameter :: spKind   = kind (0.e0)
+  integer,           parameter :: dpKind   = kind (0.d0)
+  integer,           parameter :: qpKind   = kind (0.q0)
+  character (len=*), parameter :: spFormat = "(a,es18.8,a,es18.8,a)"
+  character (len=*), parameter :: dpFormat = "(a,es25.16,a,es25.16,a)"
+  character (len=*), parameter :: qpFormat = "(a,es43.34,a,es43.34,a)"
+  integer,           parameter :: wp       = dpKind
+  character (len=*), parameter :: wpFormat = dpFormat
+end module SetWorkingPrecision
