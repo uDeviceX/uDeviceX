@@ -1,5 +1,5 @@
 #### Double poiseuille non pinned sphere
-# nTEST: mbounce.log_roots.t1
+# snTEST: mbounce.log_roots.t1
 export PATH=../tools:$PATH
 (cd ../cmd; make ) > /dev/null
 rm -rf h5 bop diag.txt solid_diag.txt
