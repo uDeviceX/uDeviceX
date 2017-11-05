@@ -17,7 +17,6 @@ def read(f):
     return [xyz, uvw]
 
 def ellipsoid(xyz):
-    """ return a/b and rotation matrix """
     X, Y = 0, 1
     [center, radii, evecs, v, chi2] = efit.ellipsoid(xyz)
     q = radii[X]/radii[Y]
