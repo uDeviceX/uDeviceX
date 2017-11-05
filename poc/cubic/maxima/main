@@ -1,5 +1,11 @@
-disc(a, b, c):= b^2 - a*c;
+/* A numerically stable cubic equation solver
 
+[1] W. Kahan, "To Solve a Real Cubic Equation"
+http://people.eecs.berkeley.edu/~wkahan/Math128/Cubic.pdf
+
+*/
+
+disc(a, b, c):= b^2 - a*c;
 sgn(x):= if x > 0 then 1 elseif x = 0 then 0 else -1;
 
 qdrtc(A, B, C):= block(
