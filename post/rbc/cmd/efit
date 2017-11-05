@@ -12,5 +12,17 @@ def center(f):
     [center, radii, evecs, v, chi2] = efit.ellipsoid(f)
     print radii[0], radii[1], radii[2]
 
+def keller(f):
+    na = np.array
+
+    f = PlyData.read(f)
+    f = f["vertex"]
+    # x = na(f['x'])
+    # y = na(f['y'])
+    # vx = na(f['u'])
+    # vy = na(f['v'])
+    print f['u']
+
 for f in sys.argv[1:]:
-    center(f)
+    # center(f)
+    keller(f)

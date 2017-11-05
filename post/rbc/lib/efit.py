@@ -2,7 +2,12 @@ import numpy as np
 import math
 import os
 
+def dbl(x, y, z):
+    return \
+        [x.astype("double"), y.astype("double"), z.astype("double")]
+
 def ellipsoid0(x, y, z):
+    [x, y, z] = dbl(x, y, z)
     D = [ x * x + y * y - 2 * z * z,
           x * x + z * z - 2 * y * y,
           2 * x * y,
@@ -58,11 +63,21 @@ def ellipsoid0(x, y, z):
     return center, radii, evecs, v, chi2
 
 def ellipsoid(X):
-    X = X.astype('double')
-    x = X[:,0]
-    y = X[:,1]
-    z = X[:,2]
+    x = X[:,0]; y = X[:,1]; z = X[:,2]
     return ellipsoid0(x, y, z)
+
+def keller(x, y, vx, vy, q):
+    """
+    Mean squarer fit of Keller-Skalak frequency (`fr').
+    q = a/b, [vx, vy] ~ [fr*a/b*y, -fr*b/a*x]
+    """
+    sm = np.sum
+    svxy, svyx = sm(vx*y), sm(vy*x)
+    sxx,   syy = sm( x*x), sm( y*y)
+    q2 = q**2
+    q4 = q**4
+    fr = (q*(q2*svxy-svyx))/(q4*syy+sxx)
+    return fr
 
 # Ref:
 # http://www.mathworks.com/matlabcentral/fileexchange/24693-ellipsoid-fit
