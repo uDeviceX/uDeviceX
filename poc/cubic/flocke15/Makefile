@@ -1,34 +1,33 @@
 F95FLAGS = -O2 -g # -gline -u -dcfuns -C -C=undefined
 F95LINKFLAGS = $(F95FLAGS)
 F95 = gfortran
-P = polynomialRootsTimings polynomialRootsCompare
-OBJS = SetWorkingPrecision.o JenkinsTraubSolver.o \
-       Polynomial234RootSolvers.o
+P = Timings Compare
+OBJS = Precision.o JenkinsTraubSolver.o \
+       Solvers.o
 
 all: $P
 %.o : %.mod
 %.o: %.f90; $(F95) $(F95FLAGS) -o $@ -c $<
 %: %.o; $(F95) $(F95LINKFLAGS) -o $@ $^
 
-polynomialRootsTimings: $(OBJS) PolynomialRootsTimings.o
+Timings: $(OBJS) Timings.o
 	$(F95) $(F95LINKFLAGS) -o $@ $^
 
-polynomialRootsCompare: $(OBJS) PolynomialRootsCompare.o
+Compare: $(OBJS) Compare.o
 	$(F95) $(F95LINKFLAGS) -o $@ $^
 
-PolynomialRootsTimings.o: JenkinsTraubSolver.o \
-			Polynomial234RootSolvers.o \
-			SetWorkingPrecision.o
+Timings.o: JenkinsTraubSolver.o \
+			Solvers.o \
+			Precision.o
 
-PolynomialRootsCompare.o: JenkinsTraubSolver.o \
-			Polynomial234RootSolvers.o \
-			SetWorkingPrecision.o
+Compare.o: JenkinsTraubSolver.o \
+			Solvers.o \
+			Precision.o
 
-JenkinsTraubSolver.o: SetWorkingPrecision.o
+JenkinsTraubSolver.o: Precision.o
+Solvers.o: Precision.o
 
-Polynomial234rootSolvers.o: SetWorkingPrecision.o
-
-SetWorkingPrecision.o:
+Precision.o:
 
 .PHONY: clean
 clean:
