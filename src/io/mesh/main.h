@@ -49,8 +49,6 @@ static void header(int nc0, int nv, int nt, MPI_File f) {
 static void vert(const Particle *pp, int nc, int nv, MPI_File f) {
     int n;
     n = nc * nv;
-    fprintf(stderr, "r: %g %g %g\n", pp[0].r[0], pp[0].r[0], pp[0].r[0]);
-    fprintf(stderr, "v: %g %g %g\n", pp[0].v[0], pp[0].v[0], pp[0].v[0]);
     write(pp, sizeof(Particle) * n, f);
 }
 
