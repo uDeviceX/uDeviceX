@@ -21,49 +21,20 @@ def ellipsoid(xyz):
     X, Y = 0, 1
     [center, radii, evecs, v, chi2] = efit.ellipsoid(xyz)
     q = radii[X]/radii[Y]
-    return center, q, evecs
+    return center, q
 
 
 def keller(xyz, uvw, q):
-    X, Y = 0, 1
-
     x  = xyz[:, X];  y = xyz[:, Y]
     vx = uvw[:, X]; vy = uvw[:, Y]
-
     fr  = efit.keller    (x, y, vx, vy, q)
     res = efit.keller_res(x, y, vx, vy, q,  fr)
     return fr, res
 
 for f in sys.argv[1:]:
     X, Y, Z = 0, 1, 2
-
     [xyz, uvw] = read(f)
-
-    center, q, R = ellipsoid(xyz)
-
-    xyz[:, X] -= center[X]
-    xyz[:, Y] -= center[Y]
-    xyz[:, Z] -= center[Z]
-    uvw -= np.mean(uvw, axis=0)
-
-    R0 = np.copy(R)
-    R[:, Y] = -R0[:, Z]
-    R[:, Z] = -R0[:, Y]
-
-    uvw = np.dot(xyz + uvw, R) - np.dot(xyz, R)
-    xyz = np.dot(xyz, R)
+    center, q = ellipsoid(xyz)
     write("ooo", xyz, uvw)
-
     fr, res = keller(xyz, uvw, q)
     print q, fr, res
-
-exit
-
-"""
-for f in sys.argv[1:]:
-    X, Y, Z = 0, 1, 2
-    r = center(f)
-    q = r[X]/r[Y]
-    fr, res = keller(f, q)
-    print q, fr
-"""
