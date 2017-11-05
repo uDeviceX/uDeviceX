@@ -1,4 +1,4 @@
-D = lib
+D = lib cmd
 
 install:
 	install0 () ( cd "$$d" && make install); \
