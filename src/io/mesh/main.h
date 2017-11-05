@@ -1,10 +1,18 @@
 static const int NVP = 3; /* number of vertices per face */
 
+static void copy_v(const Particle *f, /**/ Particle *t) {
+    enum {X, Y, Z};
+    t->v[X] = f->v[X];
+    t->v[Y] = f->v[Y];
+    t->v[Z] = f->v[Z];
+}
 static void shift(const Particle *f, int n, /**/ Particle *t) {
-    /* f, t: from, to 
+    /* f, t: from, to
        see mesh/shift/     */
     int i;
-    for (i = 0; i < n; i++) shift0(f++, t++);
+    for (i = 0; i < n; i++) {
+        shift0(f, t); copy_v(f, t); f++; t++;
+    }
 }
 
 static void write(const void * const ptr, const int nbytes32, MPI_File f) {
@@ -41,6 +49,8 @@ static void header(int nc0, int nv, int nt, MPI_File f) {
 static void vert(const Particle *pp, int nc, int nv, MPI_File f) {
     int n;
     n = nc * nv;
+    fprintf(stderr, "r: %g %g %g\n", pp[0].r[0], pp[0].r[0], pp[0].r[0]);
+    fprintf(stderr, "v: %g %g %g\n", pp[0].v[0], pp[0].v[0], pp[0].v[0]);
     write(pp, sizeof(Particle) * n, f);
 }
 
