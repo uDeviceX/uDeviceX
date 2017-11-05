@@ -10,19 +10,21 @@ def center(f):
     f = f["vertex"]
     f = np.array([f[p] for p in ('x', 'y', 'z')]).T
     [center, radii, evecs, v, chi2] = efit.ellipsoid(f)
-    print radii[0], radii[1], radii[2]
+    return radii
 
-def keller(f):
+def keller(f, q):
     na = np.array
-
     f = PlyData.read(f)
     f = f["vertex"]
-    # x = na(f['x'])
-    # y = na(f['y'])
-    # vx = na(f['u'])
-    # vy = na(f['v'])
-    print f['u']
+    x = na(f['x']); y = na(f['y'])
+    vx = na(f['u']); vy = na(f['v'])
+    fr  = efit.keller    (x, y, vx, vy, q)
+    res = efit.keller_res(x, y, vx, vy, q,   fr)
+    return fr, res
 
 for f in sys.argv[1:]:
-    # center(f)
-    keller(f)
+    X, Y, Z = 0, 1, 2
+    r = center(f)
+    q = r[X]/r[Y]
+    fr, res = keller(f, q)
+    print q, fr

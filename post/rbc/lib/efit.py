@@ -66,6 +66,17 @@ def ellipsoid(X):
     x = X[:,0]; y = X[:,1]; z = X[:,2]
     return ellipsoid0(x, y, z)
 
+def keller_res(x, y, vx0, vy0, q,  fr):
+    """
+    Mean squarer residues of the Keller-Skalak fit
+    q = a/b, [vx, vy] ~ [fr*a/b*y, -fr*b/a*x]
+    """
+    vx =  fr*q    *y
+    vy = -fr*(1/q)*x
+    dvx = vx - vx0
+    dvy = vy - vy0
+    return [np.mean(dvx**2), np.mean(dvy**2)]
+
 def keller(x, y, vx, vy, q):
     """
     Mean squarer fit of Keller-Skalak frequency (`fr').
