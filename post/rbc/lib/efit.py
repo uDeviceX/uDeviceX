@@ -61,6 +61,33 @@ def ellipsoid(X):
     x = X[:,0]; y = X[:,1]; z = X[:,2]
     return ellipsoid0(x, y, z)
 
+def rot0(x0, y0, phi):
+    c, s = np.cos(phi), np.sin(phi)
+    x = c*x0 - s*y0
+    y = s*x0 + c*y0
+    return [x, y]
+
+def rot(x, y, vx, vy, phi):
+    [x, y]   = rot0(x, y, phi)
+    [vx, vy] = rot0(vx, vy, phi)
+    return x, y, vx, vy
+
+def keller_phi0(x, y, vx, vy, q, phi):
+    [x, y, vx, vy] = rot(x, y, vx, vy, -phi) # clock-wise
+    fr = keller(x, y, vx, vy, q)
+    res = keller_res(x, y, vx, vy, q,   fr)
+    return fr, res
+
+def keller_phi(x, y, vx, vy, q):
+    n = 100
+    m_res = 1e42
+    for phi in np.linspace(0, np.pi/2, n):
+        fr, res = keller_phi0(x, y, vx, vy, q,  phi)
+        if res < m_res:
+            m_res, m_fr, m_phi = res, fr, phi
+    return m_fr, m_phi, m_res
+
+
 def keller_res(x, y, vx0, vy0, q,  fr):
     """
     Mean squarer residues of the Keller-Skalak fit
@@ -70,7 +97,7 @@ def keller_res(x, y, vx0, vy0, q,  fr):
     vy = -fr*(1/q)*x
     dvx = vx - vx0
     dvy = vy - vy0
-    return [np.mean(dvx**2), np.mean(dvy**2)]
+    return np.mean(dvx**2) + np.mean(dvy**2)
 
 def keller(x, y, vx, vy, q):
     """
