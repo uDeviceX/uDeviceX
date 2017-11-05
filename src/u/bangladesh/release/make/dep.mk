@@ -30,7 +30,7 @@ $B/io/field/h5/imp.o: $S/mpi/wrapper.h $S/io/field/h5/imp.h $S/msg.h $S/mpi/glb.
 $B/io/field/imp.o: $S/io/field/imp/scalar.h $S/utils/os.h $S/inc/conf.h $S/io/field/xmf/imp.h $S/inc/type.h $S/mpi/wrapper.h $S/io/field/imp.h $S/io/field/h5/imp.h $S/io/field/imp/dump.h $S/utils/mc.h $B/conf.h $S/mpi/glb.h
 $B/io/fields_grid.o: $S/inc/conf.h $S/inc/type.h $S/utils/cc.h $S/io/fields_grid.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/io/field/imp.h $S/io/fields_grid/solvent.h $S/io/fields_grid/all.h
 $B/io/field/xmf/imp.o: $S/io/field/xmf/imp.h $S/mpi/glb.h
-$B/io/mesh.o: $S/utils/os.h $S/inc/conf.h $S/io/mesh.h $S/inc/type.h $S/io/mesh/main.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h $S/mpi/glb.h
+$B/io/mesh.o: $S/utils/os.h $S/inc/conf.h $S/io/mesh.h $S/inc/type.h $S/io/mesh/shift/edge.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h $S/io/mesh/main.h $S/io/mesh/shift/center.h $S/mpi/glb.h
 $B/io/off.o: $S/io/off/imp.h $S/io/off.h
 $B/io/ply.o: $S/io/ply/ascii.h $S/inc/type.h $S/inc/def.h $S/io/ply.h $S/msg.h $S/io/ply/bin.h $S/io/ply/common.h
 $B/io/restart.o: $S/inc/conf.h $S/inc/type.h $S/inc/def.h $S/msg.h $B/conf.h $S/io/restart.h $S/mpi/glb.h
