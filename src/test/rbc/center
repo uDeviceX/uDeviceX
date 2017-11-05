@@ -1,5 +1,5 @@
 #### periodic box: dumped relativly to domain center
-# nTEST: center.0
+# nTEST: rbc.center.0
 rm -rf bop diag.txt h5 ply rbc.off
 cp data/cells/rbc.498.off rbc.off
 export PATH=../tools:$PATH
@@ -17,7 +17,7 @@ sh runfile
 ply2punto r/00003.ply | uscale 100 > ply.out.txt
 
 #### periodic box: dumped relativly to the center with mpi
-# nTEST: center.1
+# nTEST: rbc.center.1
 rm -rf bop diag.txt h5 ply rbc.off
 cp data/cells/rbc.498.off rbc.off
 export PATH=../tools:$PATH
