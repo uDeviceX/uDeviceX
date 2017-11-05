@@ -1,5 +1,4 @@
     MODULE SetWorkingPrecision
-USE, INTRINSIC :: f90_kind
 ! ..
 ! .. Intrinsic Functions ..
       INTRINSIC KIND
@@ -10,7 +9,7 @@ USE, INTRINSIC :: f90_kind
 !     INTEGER, PARAMETER :: dkind = SELECTED_REAL_KIND(p=15, r=307)
       INTEGER, PARAMETER :: spKind = KIND(0.0E0)
       INTEGER, PARAMETER :: dpKind = KIND(0.0D0)
-      INTEGER, PARAMETER :: qpKind = quad
+      INTEGER, PARAMETER :: qpKind = selected_real_kind (32)
 ! Set the precision for the whole package
       INTEGER, PARAMETER :: wp = dpkind
 ! To change the default package precision to single precision

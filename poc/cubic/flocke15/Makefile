@@ -11,10 +11,10 @@
 vpath %.f90 ../Src
 
 # Now define the compiler and option flags.
-F95FLAGS = -gline -u -dcfuns -C -C=undefined
+F95FLAGS = -O2 -g # -gline -u -dcfuns -C -C=undefined
 F95LINKFLAGS = $(F95FLAGS)
 
-F95 = nagfor
+F95 = gfortran
 
 executables = polynomialRootsTimings polynomialRootsCompare
 
