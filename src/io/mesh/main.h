@@ -1,6 +1,6 @@
 static const int NVP = 3; /* number of vertices per face */
 
-static void shift0(const Particle* f, /**/ Particle* t) {
+static void shift0(const Particle *f, /**/ Particle *t) {
     enum {X, Y, Z};
     t->r[X] = m::x2g(f->r[X]);
     t->r[Y] = m::y2g(f->r[Y]);
