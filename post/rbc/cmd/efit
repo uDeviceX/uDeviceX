@@ -5,26 +5,65 @@ import sys
 import numpy as np
 import efit
 
-def center(f):
-    f = PlyData.read(f)
-    f = f["vertex"]
-    f = np.array([f[p] for p in ('x', 'y', 'z')]).T
-    [center, radii, evecs, v, chi2] = efit.ellipsoid(f)
-    return radii
+def write(f, xyz, uvw):
+    D = np.hstack( (xyz, uvw) )
+    np.savetxt(f, D)
 
-def keller(f, q):
-    na = np.array
+def read(f):
     f = PlyData.read(f)
     f = f["vertex"]
-    x = na(f['x']); y = na(f['y'])
-    vx = na(f['u']); vy = na(f['v'])
+    xyz = np.array([f[p] for p in ('x', 'y', 'z')]).T
+    uvw = np.array([f[p] for p in ('u', 'v', 'w')]).T
+    return [xyz, uvw]
+
+def ellipsoid(xyz):
+    """ return a/b and rotation matrix """
+    X, Y = 0, 1
+    [center, radii, evecs, v, chi2] = efit.ellipsoid(xyz)
+    q = radii[X]/radii[Y]
+    return center, q, evecs
+
+
+def keller(xyz, uvw, q):
+    X, Y = 0, 1
+
+    x  = xyz[:, X];  y = xyz[:, Y]
+    vx = uvw[:, X]; vy = uvw[:, Y]
+
     fr  = efit.keller    (x, y, vx, vy, q)
-    res = efit.keller_res(x, y, vx, vy, q,   fr)
+    res = efit.keller_res(x, y, vx, vy, q,  fr)
     return fr, res
 
+for f in sys.argv[1:]:
+    X, Y, Z = 0, 1, 2
+
+    [xyz, uvw] = read(f)
+
+    center, q, R = ellipsoid(xyz)
+
+    xyz[:, X] -= center[X]
+    xyz[:, Y] -= center[Y]
+    xyz[:, Z] -= center[Z]
+    uvw -= np.mean(uvw, axis=0)
+
+    R0 = np.copy(R)
+    R[:, Y] = -R0[:, Z]
+    R[:, Z] = -R0[:, Y]
+
+    uvw = np.dot(xyz + uvw, R) - np.dot(xyz, R)
+    xyz = np.dot(xyz, R)
+    write("ooo", xyz, uvw)
+
+    fr, res = keller(xyz, uvw, q)
+    print q, fr, res
+
+exit
+
+"""
 for f in sys.argv[1:]:
     X, Y, Z = 0, 1, 2
     r = center(f)
     q = r[X]/r[Y]
     fr, res = keller(f, q)
     print q, fr
+"""

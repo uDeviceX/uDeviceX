@@ -49,11 +49,6 @@ def ellipsoid0(x, y, z):
     sgns = np.sign(evals)
     radii = np.sqrt(sgns / evals)
 
-    # orient the eigenvectors so that they are aligned with the axes
-    if np.dot(evecs[:,0], np.array([1, 0, 0])) < 0: evecs[:,0] *= -1
-    if np.dot(evecs[:,1], np.array([0, 1, 0])) < 0: evecs[:,1] *= -1
-    if np.dot(evecs[:,2], np.array([0, 0, 1])) < 0: evecs[:,2] *= -1
-
     # calculate difference of the fitted points from the actual data normalized by the conic radii
     d = np.array([x - center[0], y - center[1], z - center[2]]) # shift data to origin
     d = np.dot(d.T, evecs) # rotate to cardinal axes of the conic
