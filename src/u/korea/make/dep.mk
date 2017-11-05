@@ -30,7 +30,7 @@ $B/io/field/h5/imp.o: $S/mpi/wrapper.h $S/io/field/h5/imp.h $S/msg.h $S/mpi/glb.
 $B/io/field/imp.o: $S/io/field/imp/scalar.h $S/utils/os.h $S/inc/conf.h $S/io/field/xmf/imp.h $S/inc/type.h $S/mpi/wrapper.h $S/io/field/imp.h $S/io/field/h5/imp.h $S/io/field/imp/dump.h $S/utils/mc.h $B/conf.h $S/mpi/glb.h
 $B/io/fields_grid.o: $S/inc/conf.h $S/inc/type.h $S/utils/cc.h $S/io/fields_grid.h $S/inc/dev.h $S/d/api.h $B/conf.h $S/io/field/imp.h $S/io/fields_grid/solvent.h $S/io/fields_grid/all.h
 $B/io/field/xmf/imp.o: $S/io/field/xmf/imp.h $S/mpi/glb.h
-$B/io/mesh.o: $S/utils/os.h $S/inc/conf.h $S/io/mesh.h $S/inc/type.h $S/io/mesh/imp.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h $S/mpi/glb.h
+$B/io/mesh.o: $S/utils/os.h $S/inc/conf.h $S/io/mesh.h $S/inc/type.h $S/io/mesh/shift/edge.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h $S/io/mesh/main.h $S/io/mesh/shift/center.h $S/mpi/glb.h
 $B/io/off.o: $S/io/off/imp.h $S/io/off.h
 $B/io/ply.o: $S/io/ply/ascii.h $S/inc/type.h $S/inc/def.h $S/io/ply.h $S/msg.h $S/io/ply/bin.h $S/io/ply/common.h
 $B/io/restart.o: $S/inc/conf.h $S/inc/type.h $S/inc/def.h $S/msg.h $B/conf.h $S/io/restart.h $S/mpi/glb.h
@@ -39,7 +39,7 @@ $B/lforces/imp.o: $S/inc/conf.h $S/lforces/imp/info.h $S/lforces/dev/merged.h $S
 $B/lforces/transpose/imp.o: $S/inc/conf.h $S/inc/type.h $S/d/q.h $S/lforces/transpose/imp.h $S/utils/cc.h $S/inc/def.h $S/inc/dev.h $S/d/api.h $S/msg.h $B/conf.h $S/lforces/transpose/imp/main.h $S/utils/kl.h $S/lforces/transpose/dev/main.h $S/d/ker.h
 $B/main.o: $S/inc/conf.h $S/glb/set.h $S/d/api.h $S/msg.h $B/conf.h $S/sim/imp.h $S/mpi/glb.h
 $B/math/linal.o: $S/math/linal.h
-$B/meshbb/imp.o: $S/meshbb/bbstates.h $S/inc/conf.h $S/meshbb/imp/find_collisions/log_root1.h $S/meshbb/dev/collect.h $S/inc/type.h $S/meshbb/dev/cubic_root/main.h $S/meshbb/imp.h $S/meshbb/dev/roots.h $S/utils/cc.h $S/meshbb/dev/cubic_root/log_root0.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/meshbb/imp/main.h $S/meshbb/type.h $S/utils/kl.h $S/meshbb/imp/find_collisions/log_root0.h $S/math/dev.h $S/meshbb/dev/intersection.h $S/meshbb/dev/utils.h $S/meshbb/dev/main.h $S/meshbb/dev/cubic_root/log_root1.h
+$B/meshbb/imp.o: $S/meshbb/bbstates.h $S/inc/conf.h $S/meshbb/imp/find_collisions/log_root1.h $S/meshbb/dev/collect.h $S/inc/type.h $S/meshbb/dev/cubic_root/main.h $S/meshbb/imp.h $S/meshbb/dev/roots.h $S/utils/cc.h $S/meshbb/dev/cubic_root/log_root0.h $S/msg.h $S/d/api.h $S/inc/dev.h $B/conf.h $S/meshbb/imp/main.h $S/meshbb/type.h $S/utils/kl.h $S/meshbb/imp/find_collisions/log_root0.h $S/math/dev.h $S/meshbb/dev/intersection.h $S/meshbb/dev/utils.h $S/meshbb/dev/main.h $S/meshbb/dev/cubic_root/log_root1.h
 $B/mesh/bbox.o: $S/inc/type.h $S/algo/minmax.h $S/mesh/bbox.h
 $B/mesh/collision.o: $S/inc/conf.h $S/inc/type.h $S/d/q.h $S/utils/cc.h $S/inc/def.h $S/inc/dev.h $S/d/api.h $S/msg.h $B/conf.h $S/utils/texo.h $S/utils/kl.h $S/utils/texo.dev.h $S/mesh/collision.h $S/d/ker.h
 $B/mesh/dist.o: $S/inc/type.h $S/mesh/dist.h

@@ -12,4 +12,12 @@
 #include "io/mesh.h"
 
 #include "utils/mc.h"
-#include "io/mesh/imp.h"
+
+#if   defined(MESH_SHIFT_EDGE)
+   #include "mesh/shift/edge.h"
+#elif defined(MESH_SHIFT_CENTER)
+   #include "mesh/shift/center.h"
+#else
+   #error     MESH_SHIFT_* is undefined
+#endif
+#include "mesh/main.h"

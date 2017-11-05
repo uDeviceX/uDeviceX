@@ -90,6 +90,11 @@
 #define rbc_com_dumps (false)
 #endif
 
+/* dump meshes relative to the domain edge or domain center? */
+#if !defined(MESH_SHIFT_EDGE) && !defined(MESH_SHIFT_CENTER)
+  #define MESH_SHIFT_EDGE
+#endif
+
 /* assert */
 #if rbc_com_dumps && !rbc_ids
     #error "Need rbc ids for rbc_com_dumps"
@@ -98,6 +103,7 @@
 #ifndef rbc_com_freq
 #define rbc_com_freq (1000)
 #endif
+
 
 // solid
 

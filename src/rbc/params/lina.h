@@ -1,6 +1,5 @@
 #define         RBCx0 ( 0.457       )
 #define          RBCp ( 0.000906667 )
-#define          RBCp ( 90.06667    )
 #define         RBCka ( 4900.0      )
 #define         RBCkb ( 44.4444     )
 #define         RBCkd ( 5000        )

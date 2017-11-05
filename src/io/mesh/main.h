@@ -1,16 +1,8 @@
 static const int NVP = 3; /* number of vertices per face */
 
-static void shift0(const Particle* f, /**/ Particle* t) {
-    enum {X, Y, Z};
-    int *co;
-    co = m::coords;
-    t->r[X] = f->r[X] + 0.5*XS + co[X]*XS;
-    t->r[Y] = f->r[Y] + 0.5*YS + co[Y]*YS;
-    t->r[Z] = f->r[Z] + 0.5*ZS + co[Z]*ZS;
-}
-
 static void shift(const Particle *f, int n, /**/ Particle *t) {
-    /* f, t: from, to */
+    /* f, t: from, to 
+       see mesh/shift/     */
     int i;
     for (i = 0; i < n; i++) shift0(f++, t++);
 }

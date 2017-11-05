@@ -28,17 +28,30 @@ int lz() {
     return ZS * dims[Z];
 }
 
-float x2g(float r) { /* local to global */
+float x2g(float r) { /* local to domain edge  */
     enum {X};
     return (m::coords[X] + 0.5)*XS  + r;
 }
-float y2g(float r) { /* local to global */
+float y2g(float r) {
     enum {X, Y};
     return (m::coords[Y] + 0.5)*YS  + r;
 }
-float z2g(float r) { /* local to global */
+float z2g(float r) {
     enum {X, Y, Z};
     return (m::coords[Z] + 0.5)*ZS  + r;
+}
+
+float x2c(float r) { /* local to domain center */
+    enum {X};
+    return (m::coords[X] + 0.5 - 0.5*dims[X])*XS  + r;
+}
+float y2c(float r) {
+    enum {X, Y};
+    return (m::coords[Y] + 0.5 - 0.5*dims[Y])*YS  + r;
+}
+float z2c(float r) {
+    enum {X, Y, Z};
+    return (m::coords[Z] + 0.5 - 0.5*dims[Z])*ZS  + r;
 }
 
 static void set_dims(int argc, char **argv) {
