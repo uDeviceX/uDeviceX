@@ -1,33 +1,33 @@
 F95FLAGS = -O2 -g # -gline -u -dcfuns -C -C=undefined
 F95LINKFLAGS = $(F95FLAGS)
 F95 = gfortran
-P = Timings Compare
-OBJS = Precision.o Jenkins.o \
-       Solvers.o
+P = timings compare
+OBJS = precision.o jenkins.o \
+       solvers.o
 
 all: $P
 %.o : %.mod
 %.o: %.f90; $(F95) $(F95FLAGS) -o $@ -c $<
 %: %.o; $(F95) $(F95LINKFLAGS) -o $@ $^
 
-Timings: $(OBJS) Timings.o
+timings: $(OBJS) timings.o
 	$(F95) $(F95LINKFLAGS) -o $@ $^
 
-Compare: $(OBJS) Compare.o
+compare: $(OBJS) compare.o
 	$(F95) $(F95LINKFLAGS) -o $@ $^
 
-Timings.o: Jenkins.o \
-			Solvers.o \
-			Precision.o
+timings.o: jenkins.o \
+			solvers.o \
+			precision.o
 
-Compare.o: Jenkins.o \
-			Solvers.o \
-			Precision.o
+compare.o: jenkins.o \
+			solvers.o \
+			precision.o
 
-Jenkins.o: Precision.o
-Solvers.o: Precision.o
+jenkins.o: precision.o
+solvers.o: precision.o
 
-Precision.o:
+precision.o:
 
 .PHONY: clean
 clean:
