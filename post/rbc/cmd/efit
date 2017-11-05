@@ -33,4 +33,4 @@ for f in sys.argv[1:]:
     [xyz, uvw] = read(f)
     center, q = ellipsoid(xyz)
     fr, phi, res = keller(xyz, uvw, q)
-    print fr, 180*phi/np.pi, res
+    print fr, q, 180*phi/np.pi, res
