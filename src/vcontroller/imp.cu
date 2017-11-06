@@ -13,6 +13,7 @@
 #include "utils/cc.h"
 #include "utils/kl.h"
 #include "utils/mc.h"
+#include "msg.h"
 
 #include "math/dev.h"
 

@@ -11,6 +11,7 @@
 #include "d/api.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
+#include "msg.h"
 
 #include "imp.h"
 #include "code.h"

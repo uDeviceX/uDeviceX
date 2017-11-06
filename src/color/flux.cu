@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <assert.h>
 
 #include <conf.h>
@@ -8,6 +9,7 @@
 #include "d/api.h"
 #include "inc/dev.h"
 #include "mpi/glb.h"
+#include "msg.h"
 
 #include "flux.h"
 

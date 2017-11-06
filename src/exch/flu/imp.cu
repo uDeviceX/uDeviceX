@@ -16,6 +16,7 @@
 #include "mpi/basetags.h"
 #include "comm/imp.h"
 #include "comm/utils.h"
+#include "msg.h"
 
 #include "exch/map/type.h"
 #include "type.h"

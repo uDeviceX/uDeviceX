@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <assert.h>
 
 #include <conf.h>
 #include "inc/conf.h"
@@ -7,6 +8,7 @@
 #include "utils/cc.h"
 #include "d/api.h"
 #include "utils/kl.h"
+#include "msg.h"
 
 #include "imp.h"
 

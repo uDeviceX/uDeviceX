@@ -12,6 +12,7 @@
 #include "utils/cc.h"
 #include "utils/kl.h"
 #include "utils/error.h"
+#include "msg.h"
 
 #include "algo/minmax.h"
 
