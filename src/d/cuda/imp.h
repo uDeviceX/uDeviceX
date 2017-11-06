@@ -74,3 +74,7 @@ int FreeHost (void *hstPtr) {
 int DeviceSynchronize (void) {
     return R(cudaDeviceSynchronize());
 }
+
+int PeekAtLastError(void) {
+    return R(cudaPeekAtLastError());
+}

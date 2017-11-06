@@ -17,4 +17,5 @@ int MemcpyAsync (void * dst, const void * src, size_t count, int kind, Stream_t 
 int Free (void *devPtr);
 int FreeHost (void *hstPtr);
 int DeviceSynchronize (void);
+int PeekAtLastError(void);
 }

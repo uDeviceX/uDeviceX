@@ -60,3 +60,7 @@ int FreeHost (void *hstPtr) {
 int DeviceSynchronize (void) {
     return 0;
 }
+
+int PeekAtLastError(void) {
+    return 0;
+}
