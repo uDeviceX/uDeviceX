@@ -6,6 +6,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "msg.h"
 #include "inc/def.h"
 #include "inc/dev.h"
 #include "inc/type.h"
@@ -16,8 +17,6 @@
 #include "utils/mc.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
-
-#include "msg.h"
 
 #include "algo/scan/int.h"
 #include "clist/imp.h"

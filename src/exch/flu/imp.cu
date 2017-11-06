@@ -1,12 +1,13 @@
 #include <mpi.h>
 #include <assert.h>
 
+#include <conf.h>
+#include "inc/conf.h"
+
+#include "msg.h"
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "inc/dev/common.h"
-
-#include <conf.h>
-#include "inc/conf.h"
 
 #include "d/api.h"
 #include "utils/cc.h"
@@ -16,7 +17,6 @@
 #include "mpi/basetags.h"
 #include "comm/imp.h"
 #include "comm/utils.h"
-#include "msg.h"
 
 #include "exch/map/type.h"
 #include "type.h"

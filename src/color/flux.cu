@@ -3,13 +3,13 @@
 
 #include <conf.h>
 #include "inc/conf.h"
+#include "msg.h"
 #include "inc/type.h"
 #include "utils/kl.h"
 #include "utils/cc.h"
 #include "d/api.h"
 #include "inc/dev.h"
 #include "mpi/glb.h"
-#include "msg.h"
 
 #include "flux.h"
 

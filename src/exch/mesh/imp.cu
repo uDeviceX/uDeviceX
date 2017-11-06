@@ -1,18 +1,18 @@
 #include <mpi.h>
 #include <assert.h>
 
+#include <conf.h>
+#include "inc/conf.h"
+
+#include "msg.h"
 #include "inc/type.h"
 #include "inc/dev.h"
 #include "inc/dev/common.h"
-
-#include <conf.h>
-#include "inc/conf.h"
 
 #include "d/api.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
 #include "utils/error.h"
-#include "msg.h"
 
 #include "algo/minmax.h"
 

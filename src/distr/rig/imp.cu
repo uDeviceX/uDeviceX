@@ -4,6 +4,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "msg.h"
 #include "d/api.h"
 #include "utils/cc.h"
 #include "utils/kl.h"
@@ -12,8 +13,6 @@
 #include "inc/dev/common.h"
 #include "inc/type.h"
 #include "inc/def.h"
-
-#include "msg.h"
 
 #include "frag/imp.h"
 #include "mpi/basetags.h"

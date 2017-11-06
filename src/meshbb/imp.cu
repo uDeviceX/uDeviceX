@@ -3,6 +3,8 @@
 
 #include <conf.h>
 #include "inc/conf.h"
+
+#include "msg.h"
 #include "inc/dev.h"
 #include "utils/kl.h"
 #include "utils/cc.h"
@@ -10,7 +12,6 @@
 #include "d/api.h"
 
 #include "math/dev.h"
-#include "msg.h"
 
 #include "imp.h"
 
