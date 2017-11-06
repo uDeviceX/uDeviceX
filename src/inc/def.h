@@ -20,9 +20,6 @@ enum {BLUE_COLOR, RED_COLOR, /* solvent colors */
 /* maximum number density of particles of the objects */
 #define MAX_OBJ_DENSITY (30)
 
-/* maximum number of faces and vertices per one RBC */
-#define MAX_FACE_NUM 1000
-
 /* maximum number of red blood cells per node */
 #define MAX_CELL_NUM 1000
 

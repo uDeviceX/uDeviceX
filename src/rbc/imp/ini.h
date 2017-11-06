@@ -10,7 +10,7 @@ void ini(Quants *q) {
     Dalloc(&q->adj0, q->nv * RBCmd);
     Dalloc(&q->adj1, q->nv * RBCmd);
 
-    q->tri_hst = (int4*) malloc(MAX_FACE_NUM * sizeof(int4));
+    q->tri_hst = (int4*) malloc(RBCnt * sizeof(int4));
     Dalloc(&q->av, 2*MAX_CELL_NUM);
 
     if (rbc_ids)
