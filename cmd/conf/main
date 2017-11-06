@@ -7,7 +7,7 @@ usg() {
 ...
 !
 Creates Makefile, runfile, bin[.N] directories; populates bin[.N] with
-components of of makefiles and conf.h' >&2
+`components of makefiles and conf.h' >&2
     exit
 }
 
