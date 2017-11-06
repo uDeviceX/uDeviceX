@@ -3,7 +3,7 @@
 #define KL_AFTER(s)                             \
     do {                                        \
         dSync();                                \
-        CC(cudaPeekAtLastError());              \
+        CC(d::PeekAtLastError());               \
     } while(0)
 
 namespace kl { inline void msg(int, int, int,   int, int, int) { }; }
