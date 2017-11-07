@@ -56,6 +56,8 @@ static void ini_vcont(MPI_Comm comm, /**/ PidVCont *c) {
 static void ini_colorer(int nv, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Colorer *c) {
     ini_mesh_exch(nv, MAX_CELL_NUM, comm, /*io*/ tg, &c->e);
     Dalloc(&c->pp, MAX_PART_NUM);
+    Dalloc(&c->minext, MAX_CELL_NUM);
+    Dalloc(&c->maxext, MAX_CELL_NUM);
 }
 
 void ini() {

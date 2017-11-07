@@ -60,6 +60,7 @@ struct BBexch : Mexch {
 };
 
 struct Colorer {
-    Mexch e;      /* mesh exchanger     */
-    Particle *pp; /* particle workspace */
+    Mexch e;                 /* mesh exchanger     */
+    Particle *pp;            /* particle workspace */
+    float3 *minext, *maxext; /* bounding boxes     */
 };

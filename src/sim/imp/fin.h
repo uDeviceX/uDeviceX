@@ -47,6 +47,8 @@ static void fin_rig_distr(/**/ RigDistr *d) {
 static void fin_colorer(Colorer *c) {
     fin_mesh_exch(/**/ &c->e);
     Dfree(c->pp);
+    Dfree(c->minext);
+    Dfree(c->maxext);
 }
 
 void fin() {
