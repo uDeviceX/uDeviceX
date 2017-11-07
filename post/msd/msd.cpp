@@ -3,6 +3,7 @@
 #include <cstring>
 #include <cmath>
 
+#include "bop_common.h"
 #include "bop_reader.h"
 
 #include "macros.h"

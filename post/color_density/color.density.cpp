@@ -2,6 +2,7 @@
 #include "stdlib.h"
 #include "string.h"
 
+#include "bop_common.h"
 #include "bop_reader.h"
 extern "C" {
 #include "bov.h"
