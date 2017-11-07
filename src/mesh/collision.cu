@@ -177,7 +177,7 @@ void inside_dev(const Particle *pp, const int n, int nt, int nv, const int4 *tt,
     KL(kernels::init_tags, (k_cnf(n)), (n, -1, /**/ tags));
 
     dim3 thrd(128, 1);
-    dim3 blck((127 + n)/128, ns);
+    dim3 blck(ceiln(n, 128), ns);
 
     KL(kernels::compute_tags, (blck, thrd), (pp, n, i_pp, nv, tt, nt, /**/ tags));
 }
@@ -195,7 +195,7 @@ void get_colors(const Particle *pp, const int n, const Texo<float2> texvert, con
     KL(kernels::init_tags, (k_cnf(n)), (n, OUT, /**/ cc));
 
     dim3 thrd(128, 1);
-    dim3 blck((127 + n)/128, nm);
+    dim3 blck(ceiln(n, 128), nm);
 
     KL(kernels::compute_colors_tex, (blck, thrd), (pp, n, texvert, nv, textri, nt, /**/ cc));
 }
