@@ -44,6 +44,11 @@ static void fin_rig_distr(/**/ RigDistr *d) {
     fin(/**/ &d->u);
 }
 
+static void fin_colorer(Colorer *c) {
+    fin_mesh_exch(/**/ &c->e);
+    Dfree(c->pp);
+}
+
 void fin() {
     cnt::fin(&rs::c);
     bop::fin(&dumpt);
