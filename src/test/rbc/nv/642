@@ -2,7 +2,7 @@
 # nTEST: rbc.nv642.0
 rm -rf bop diag.txt h5 ply rbc.off
 nv=642
-cp data/cells/rbc.$nv.off rbc.off
+cp data/cells/rbc/$nv.off rbc.off
 export PATH=../tools:$PATH
 (cd ../cmd; make ) > /dev/null
 x=4 y=6 z=8
