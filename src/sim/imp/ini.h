@@ -106,10 +106,8 @@ void ini() {
         dpdr::alloc_ticketRIh(/**/ &o::h.tri);
     }
 
-    if (multi_solvent && rbcs) {
-        ini_mesh_exch(r::q.nv, MAX_CELL_NUM, m::cart, /*io*/ &tag_gen, &mc::e);
-        Dalloc(&mc::pp, MAX_PART_NUM);
-    }
+    if (multi_solvent && rbcs)
+        ini_colorer(r::q.nv, m::cart, /*io*/ &tag_gen, /**/ &colorer);
     
     if (solids) {
         rig::ini(&s::q);

@@ -62,11 +62,7 @@ Objexch e;
 cnt::Contact c;
 }
 
-namespace mc /* mesh communication */
-{
-Mexch e;
-Particle *pp;
-}
+Colorer colorer;
 
 namespace bb /* bounce back */
 {

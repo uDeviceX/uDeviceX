@@ -39,7 +39,7 @@ void sim_gen() {
         rbc::gen_quants("rbc.off", "rbcs-ic.txt", /**/ &r::q);
         rbc::gen_ticket(r::q, &r::tt);
 
-        if (multi_solvent) gen_colors();
+        if (multi_solvent) gen_colors(&colorer);
     }
     MC(m::Barrier(m::cart));
 
@@ -52,7 +52,7 @@ void sim_gen() {
         if (walls && w::q.n) wall::gen_ticket(w::q, &w::t);
         flu::get_ticketZ(o::q, &o::tz);
         solids0 = solids;
-        if (rbcs && multi_solvent) gen_colors();
+        if (rbcs && multi_solvent) gen_colors(&colorer);
         run(wall_creation, nsteps);
     } else {
         solids0 = solids;

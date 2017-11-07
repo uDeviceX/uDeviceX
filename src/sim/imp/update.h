@@ -86,7 +86,7 @@ void update_solvent(long it) {
 void update_rbc(long it) {
     bool cond;
     cond = multi_solvent && color_freq && it % color_freq == 0;
-    if (cond) {MSG("recolor"); gen_colors();};
+    if (cond) {MSG("recolor"); gen_colors(&colorer);};
     scheme::move(rbc_mass, r::q.n, r::ff, r::q.pp);
 }
 

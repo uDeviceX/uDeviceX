@@ -81,10 +81,8 @@ void fin() {
         dpdr::free_ticketRIh(&o::h.tri);
     }
 
-    if (multi_solvent && rbcs) {
-        fin_mesh_exch(/**/ &mc::e);
-        Dfree(mc::pp);
-    }
+    if (multi_solvent && rbcs)
+        fin_colorer(/**/ &colorer);
 
     if (solids) {
         rig::fin(&s::q);

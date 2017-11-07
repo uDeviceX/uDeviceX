@@ -1,30 +1,28 @@
 /* set colors of particles according to the RBCs */
 
-void gen_colors() {
+void gen_colors(Colorer *c) {
     int nm, nv, nmhalo;
     nm = r::q.nc;
     nv = r::q.nv;
 
-    using namespace mc;
+    build_map(nm, nv, r::q.pp, /**/ &c->e.p);
+    pack(nv, r::q.pp, /**/ &c->e.p);
+    download(&c->e.p);
+
+    post_send(&c->e.p, &c->e.c);
+    post_recv(&c->e.c, &c->e.u);
+
+    if (nm * nv) CC(d::MemcpyAsync(c->pp, r::q.pp, nm * nv * sizeof(Particle), D2D));
     
-    build_map(nm, nv, r::q.pp, /**/ &e.p);
-    pack(nv, r::q.pp, /**/ &e.p);
-    download(&e.p);
+    wait_send(&c->e.c);
+    wait_recv(&c->e.c, &c->e.u);
 
-    post_send(&e.p, &e.c);
-    post_recv(&e.c, &e.u);
-
-    if (nm * nv) CC(d::MemcpyAsync(pp, r::q.pp, nm * nv * sizeof(Particle), D2D));
-    
-    wait_send(&e.c);
-    wait_recv(&e.c, &e.u);
-
-    unpack(nv, &e.u, /**/ &nmhalo, pp + nm * nv);
+    unpack(nv, &c->e.u, /**/ &nmhalo, c->pp + nm * nv);
     nm += nmhalo;
 
     /* tmp texture object; TODO: make a ticket? */
     Texo<float2> texvert;
-    TE(&texvert, (float2*) pp, 3 * nm * nv);
+    TE(&texvert, (float2*) c->pp, 3 * nm * nv);
     
     collision::get_colors(o::q.pp, o::q.n, texvert, r::tt.textri, r::q.nt, nv, nm, /**/ o::q.cc);
 
