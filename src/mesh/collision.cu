@@ -140,9 +140,18 @@ __device__ Pos tex2Pos(const Texo<float2> texvert, const int id) {
     return r;
 }
 
+static __device__ bool inside_box(const float r[3], float3 lo, float3 hi) {
+    enum {X, Y, Z};
+    return
+        r[X] >= lo.x && r[X] <= hi.x &&
+        r[Y] >= lo.y && r[Y] <= hi.y &&
+        r[Z] >= lo.z && r[Z] <= hi.z;
+}
+
 /* assume nm blocks along y */
 /* if the ith particle is inside jth mesh, sets tag[i] to IN (see enum in collision.h) */
-__global__ void compute_colors_tex(const Particle *pp, const int n, const Texo<float2> texvert, const int nv, const Texo<int4> textri, const int nt, /**/ int *cc) {
+__global__ void compute_colors_tex(const Particle *pp, const int n, const Texo<float2> texvert, const int nv, const Texo<int4> textri,
+                                   const int nt, const float3 *minext, const float3 *maxext, /**/ int *cc) {
     const int sid = blockIdx.y;
     const int gid = threadIdx.x + blockIdx.x * blockDim.x;
     if (gid >= n) return;
@@ -150,6 +159,12 @@ __global__ void compute_colors_tex(const Particle *pp, const int n, const Texo<f
     int count = 0;
 
     const Particle p = pp[gid];
+
+    float3 lo, hi;
+    lo = minext[sid];
+    hi = maxext[sid];
+    if (!inside_box(p.r, lo, hi)) return;
+    
     float origin[3] = {0, 0, 0};
 #ifdef spdir
     origin[spdir] = p.r[spdir];
@@ -199,6 +214,6 @@ void get_colors(const Particle *pp, const int n, const Texo<float2> texvert, con
     dim3 thrd(THR, 1);
     dim3 blck(ceiln(n, THR), nm);
 
-    KL(kernels::compute_colors_tex, (blck, thrd), (pp, n, texvert, nv, textri, nt, /**/ cc));
+    KL(kernels::compute_colors_tex, (blck, thrd), (pp, n, texvert, nv, textri, nt, minext, maxext, /**/ cc));
 }
 }
