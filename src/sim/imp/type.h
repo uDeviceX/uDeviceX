@@ -58,3 +58,8 @@ struct BBexch : Mexch {
     exch::mesh::CommM cm;
     exch::mesh::UnpackM um;
 };
+
+struct Colorer {
+    Mexch e;      /* mesh exchanger     */
+    Particle *pp; /* particle workspace */
+};
