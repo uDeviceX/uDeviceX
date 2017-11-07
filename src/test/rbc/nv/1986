@@ -1,5 +1,5 @@
 #### periodic box: dumped relativly to domain center
-# cTEST: rbc.nv1986.0
+# nTEST: rbc.nv1986.0
 rm -rf bop diag.txt h5 ply rbc.off
 nv=1986
 cp data/cells/rbc.$nv.off rbc.off
