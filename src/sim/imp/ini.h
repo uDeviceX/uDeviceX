@@ -53,6 +53,11 @@ static void ini_vcont(MPI_Comm comm, /**/ PidVCont *c) {
     ini(comm, L, V, VCON_FACTOR, /**/ c);
 }
 
+static void ini_colorer(int nv, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Colorer *c) {
+    ini_mesh_exch(nv, MAX_CELL_NUM, comm, /*io*/ tg, &c->e);
+    Dalloc(&c->pp, MAX_PART_NUM);
+}
+
 void ini() {
     basetags::ini(&tag_gen);
     datatype::ini();
