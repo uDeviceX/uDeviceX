@@ -190,7 +190,7 @@ void inside_dev(const Particle *pp, const int n, int nt, int nv, const int4 *tt,
    nv: number of vertices per mesh
 */
 void get_colors(const Particle *pp, const int n, const Texo<float2> texvert, const Texo<int4> textri, const int nt,
-                const int nv, const int nm, /**/ int *cc) {
+                const int nv, const int nm, const float3 *minext, const float3 *maxext, /**/ int *cc) {
     if (nm == 0 || n == 0) return;
 
     KL(kernels::init_tags, (k_cnf(n)), (n, OUT, /**/ cc));
