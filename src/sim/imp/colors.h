@@ -20,6 +20,9 @@ void gen_colors(Colorer *c) {
     unpack(nv, &c->e.u, /**/ &nmhalo, c->pp + nm * nv);
     nm += nmhalo;
 
+    /* compute extents */
+    minmax(c->pp, nv, nm, /**/ c->minext, c->maxext);
+
     /* tmp texture object; TODO: make a ticket? */
     Texo<float2> texvert;
     TE(&texvert, (float2*) c->pp, 3 * nm * nv);

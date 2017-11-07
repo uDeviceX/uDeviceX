@@ -7,7 +7,6 @@
 #include "d/ker.h"
 
 #include "mpi/wrapper.h"
-#include "algo/scan/int.h"
 #include "rnd/imp.h"
 
 #include "inc/def.h"
@@ -24,6 +23,8 @@
 
 #include "utils/texo.h"
 #include "utils/te.h"
+#include "algo/scan/int.h"
+#include "algo/minmax.h"
 
 #include "cloud/imp.h"
 
