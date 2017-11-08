@@ -4,7 +4,7 @@
 #define         RBCkb ( 100.0        )
 #define         RBCkd ( 5000.0       )
 #define         RBCkv ( 5000.0       )
-#define     RBCgammaC ( 52.0         )
+#define     RBCgammaC ( 200.0        )
 #define     RBCgammaT ( 0.0          )
 #define        RBCkbT ( 0.0444444    )
 #define       RBCmpow ( 2.0          )
