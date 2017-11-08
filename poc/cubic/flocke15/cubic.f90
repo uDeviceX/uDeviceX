@@ -33,6 +33,8 @@ program cubic
   c2 = c2/c3; c1 = c1/c3; c0 = c0/c3
   call cubicRoots (c2,c1,c0, nReal, r (1:3,1:2))
 
-  write (*, '(6e23.16)') r(1, 1), r(1, 2), r(2, 1), r(2, 2), r(3, 1), r(3, 2)
+  write (*, '(i2)'), nReal
+  write (*, '(' // '6' // 'e24.16' // ')') &
+       r(1, 1), r(1, 2), r(2, 1), r(2, 2), r(3, 1), r(3, 2)
 
 end program cubic
