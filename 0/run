@@ -11,13 +11,11 @@ c=conf.def.h
 cyl3
 
 # [01]
-strt1
+nv=642 sc=0.55 radius=2.8
+strt0
 
-# force[AB]
-# force=1e-1; forceA
-v=$1; shift=15; forceB
+v=$1; shift=15; force
 
-sc=0.55 radius=2.8 rbc1  # rbc[1]
 p_lina                   # p_[test|lina|stick]
 
 Domain="XS=$xs YS=$ys ZS=$zs"
