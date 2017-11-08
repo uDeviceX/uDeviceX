@@ -81,63 +81,8 @@ void MSD_seq(char **ffpp, char **ffii, const int nin, /**/ float *out) {
 }
 
 int main(int argc, char **argv) {
-
-    if (argc < 7) {
-        fprintf(stderr,
-                "Usage: po.msd <optional args> <X> <Y> <Z> <inpp-*.bop> -- <inii-*.bop>\n"
-                "Optional arguments:\n"
-                "\t-t0step <t0step> : step (int) for averaging over t0 (default: Nfiles)\n");
-        exit(1);
-    }
-    int iarg = 1;
-
-    int t0step = -1;
-    
-    // check if optional arguments
-    if (strcmp(argv[iarg], "-t0step") == 0) {
-        iarg++;
-        t0step = atoi(argv[iarg++]);
-    }
-    
-    X = atoi(argv[iarg++]);
-    Y = atoi(argv[iarg++]);
-    Z = atoi(argv[iarg++]);
-
-    const int sep = separator(argc, argv);
-    const int nin = sep - iarg;
-
-    if (nin < 2) ERR("Need more than one file\n");
-
-    char **ffpp = argv + iarg;
-    char **ffii = ffpp + nin + 1;
-
-    float *msds    = new float[nin-1];
-    float *submsds = new float[nin-1];
-    int   *counts  = new   int[nin-1];
-    
-    memset(msds,   0, (nin-1)*sizeof(float));
-    memset(counts, 0, (nin-1)*sizeof(int));
-
-    t0step = t0step == -1 ? nin : t0step;
-    
-    for (int t0 = 0; t0 < nin-1; t0 += t0step) {
-        memset(submsds, 0, (nin-1)*sizeof(float));
-
-        MSD_seq(ffpp + t0, ffii + t0, nin - t0, /**/ submsds);
-
-        for (int i = 0; i < nin-1-t0; ++i) {
-            ++counts[i];
-            msds[i] += submsds[i];
-        }
-    }
-
-    // average
-    for (int i = 0; i < nin - 1; ++i) {
-        const int c = counts[i] ? counts[i] : 1;
-        msds[i] /= c;
-    }
-    
-    for (int i = 0; i < nin - 1; ++i) printf("%.6e\n", msds[i]);    
-    delete[] msds; delete[] submsds;
-    return 0;
+    const char *f, *i;
+    f = argv[1];
+    i = argv[2];
+    fprintf(stderr, "fi: <%s> <%s>\n", f, i);
 }
