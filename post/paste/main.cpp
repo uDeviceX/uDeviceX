@@ -80,10 +80,14 @@ void MSD_seq(char **ffpp, char **ffii, const int nin, /**/ float *out) {
     finalize(&dpp0); finalize(&dii0);    
 }
 
-void main0(const char *f0, const char *i0) {
+void main0(BopData *f, BopData *i) {
+}
+
+void main1(const char *f0, const char *i0) {
     BopData f, i;
     init(&f); init(&i);
     read_data(f0, &f, i0, &i);
+    main0(&f, &i);
     finalize(&f);  finalize(&i);
 }
 
@@ -91,6 +95,6 @@ int main(int argc, char **argv) {
     const char *f, *i; /* [f]loat, [i]neger */
     f = argv[1];
     i = argv[2];
-    fprintf(stderr, "fi: <%s> <%s>\n", f, i);
-    main0(f, i);
+    fprintf(stderr, "<%s> <%s>\n", f, i);
+    main1(f, i);
 }
