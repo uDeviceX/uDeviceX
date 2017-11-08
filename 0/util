@@ -23,7 +23,7 @@ g_cyl () { #
 }
 
 g_cyl3 () { #
-    xs=64 ys=24 zs=12
+    xs=72 ys=28 zs=12
     tsdf_cyl3
     geom
 }

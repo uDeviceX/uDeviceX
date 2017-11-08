@@ -28,7 +28,7 @@ cylinder axis 0 0 1 point xc yc zc radius $rad
 
 tsdf_cyl3 () {
     local c rad
-    rad=6.67 # 10*sc=0.66
+    rad=7.5
     tsdf_ini
     c="
 extent           $xs        $ys        $zs
