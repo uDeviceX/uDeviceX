@@ -44,7 +44,11 @@ geom () { lx=`ae $nx*$xs` ly=`ae $ny*$ys` lz=`ae $nz*$zs`; }
 bop0 () { Bop= ; }
 bop1 () { Bop="part_dumps=true force_dumps=true";  }
 rbc0 () { Rbc=;                                    }
-rbc1 () { Rbc="RBCnv=$nv rbcs"; plcmt $radius $sc; }
+rbc1 () {
+    Rbc="RBCnv=$nv rbcs"
+    cp ../src/data/cells/rbc/$nv.off  rbc.off
+    plcmt $radius $sc
+}
 
 small  () { nx=7   ny=2 nz=1; g_big;    part; bop0; }
 normal () { nx=14  ny=4 nz=1; g_big;    part; bop0; }
@@ -99,7 +103,6 @@ strt0 () {
     u.strtdir . $nx $ny $nz
     rbc1
 }
-
 strt1 () {
     local h
     h=`u.host`
@@ -112,6 +115,7 @@ strt1 () {
     then cp -r /scratch/snx3000/lisergey/s0 strt
     else cp -r /scratch/lisergey/s0         strt
     fi
+    rbc1
 }
 
 ae () { awk 'BEGIN {print '"$@"'}'; }
