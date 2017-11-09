@@ -4,22 +4,23 @@ import sys
 import numpy as np
 import h5py as h5
 
+def err(s): sys.stderr.write(s)
 def shift(a):
     return a.pop(0)
-
 def fopen(n):
     try:
         f = h5.File(fname, "r")
     except IOError:
-        sys.stderr.write("u.avgh5: fails to open <%s>\n" % n)
+        err("u.avgh5: fails to open <%s>\n" % n)
         sys.exit(2)
+    return f
 
 argv = sys.argv
 argc = len(argv)
 
 if argc < 5:
-    print "usage: %s <dump_coords [0/1]> <field [density/u/v/w]> <remaining dir [0/1/2]> <file0.h5> <file1.h5> ..." % argv[0]
-    exit(1)
+    err("usage: %s <dump_coords [0/1]> <[density/u/v/w]> <remaining dir [0/1/2]> <file0.h5> <file1.h5> ...\n" % argv[0])
+    exit(0)
 
 shift(argv);
 dump_coords = int(shift(argv))
