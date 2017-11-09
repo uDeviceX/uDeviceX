@@ -1,15 +1,22 @@
 namespace k_wvel {
+inline __device__ float vell0(float y, float z, float gd) {
+    float v, *r;
+    enum {X, Y, Z};
+    r = glb::r0;
+    v = 0.0;
+#if   WVEL_PAR_Z
+    v = glb::gd * (z - r[Z]);
+#elif WVEL_PAR_Y
+    v = glb::gd * (y - r[Y]);
+#endif
+    return v;
+}
+
 inline __device__ void vell(float x, float y, float z,
                             float *vx, float *vy, float *vz) {
-    enum {X, Y, Z};
-    *vx = *vy = *vz = 0;
-#if   WVEL_PAR_Z
-    float *r = glb::r0;
-    *vx = glb::gd * (z - r[Z]);
-#elif WVEL_PAR_Y
-    float *r = glb::r0;    
-    *vx = glb::gd * (y - r[Y]);
-#endif
+    *vx = vell0(y, z, glb::gd);
+    *vy = 0;
+    *vz = 0;
 }
 
 inline __device__ void bounce_vel(float   xw, float   yw, float   zw, /* wall */
