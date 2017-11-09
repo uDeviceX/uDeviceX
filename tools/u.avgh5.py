@@ -4,15 +4,21 @@ import sys
 import numpy as np
 import h5py as h5
 
+def shift(a):
+    return a.pop(0)
+
 argv = sys.argv
-if len(argv) != 5:
+argc = len(argv)
+
+if argc != 5:
     print "usage: %s <dump_coords [0/1]> <field [density/u/v/w]> <remaining dir [0/1/2]> <file.h5>" % argv[0]
     exit(1)
 
-dump_coords = int(argv[1])
-field = argv[2]
-adir = int(argv[3])
-fname = argv[4]
+shift(argv);
+dump_coords = int(shift(argv))
+field = shift(argv)
+adir = int(shift(argv))
+fname = shift(argv);
     
 f = h5.File(fname, "r")
 
@@ -25,7 +31,7 @@ av2=(adir+2)%3
 
 ff = ff.value
 ff = ff.reshape(nz, ny, nx)
-ff =  np.sum(ff, (2-av1,2-av2)) / (nn[av1] * nn[av2])
+ff = np.sum(ff, (2-av1,2-av2)) / (nn[av1] * nn[av2])
 
 nc = nn[adir]
 cc = np.arange(nc) + 0.5 - nc / 2
