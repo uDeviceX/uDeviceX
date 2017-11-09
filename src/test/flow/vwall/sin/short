@@ -1,0 +1,15 @@
+#### Plates : walls are oscillating vx = A*sin(w*t) 
+# nTEST: flow.vwall.sin.short
+rm -rf bop h5 diag.txt rbc.off
+:
+cp data/sdf/wall1/wall.dat sdf.dat
+:
+u.conf conf/poiseuille.h <<!!!
+   WVEL_SIN WVEL_PAR_Z   WVEL_PAR_A=10 WVEL_PAR_W=3.141592   WVEL_LOG_FREQ=1000
+   tend=2.0 part_freq=300 walls wall_creation=100
+   field_dumps part_dumps field_freq=300
+   run
+!!!
+{ make clean && u.make -j; } > /dev/null
+sh runfile
+u.avgh5 1 u 2 h5/flowfields-001[0123].h5 | uscale 0.1 > h5.out.txt
