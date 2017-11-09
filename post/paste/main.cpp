@@ -5,7 +5,7 @@
 #include <assert.h>
 
 #include "bop_common.h"
-#include "bop_reader.h"
+#include "bop_serial.h"
 
 #include "macros.h"
 #include "pp_id.h"
@@ -54,7 +54,9 @@ void buffer(BopData *f, BopData *i, /**/ long *pnw, void *b) {
     n = f->n;
     nf = f->nvars;
     ni = i->nvars;
-    buffer0(n, f->fdata, nf, i->idata, ni, /**/ pnw, b);
+    buffer0(n,
+            (float*)f->data, nf,
+            (int*  )i->data, ni, /**/ pnw, b);
 }
 
 
@@ -90,10 +92,9 @@ void main3(BopData *f, BopData *i) {
 
 void main4(const char *f0, const char *i0) {
     BopData f, i;
-    init(&f); init(&i);
     read_data(f0, &f, i0, &i);
     main3(&f, &i);
-    finalize(&f);  finalize(&i);
+    bop_free(&f);  bop_free(&i);
 }
 
 int main(int argc, char **argv) {
