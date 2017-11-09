@@ -15,8 +15,8 @@
 #endif
 
 /* WVEL_PAR_A time profile */
-#if !defined(GDOT_FLAT) && !defined(GDOT_DUPIRE_UP) && !defined(GDOT_DUPIRE_DOWN) && !defined(GDOT_SIN)
-  #define GDOT_FLAT
+#if !defined(WALL_FLAT) && !defined(GDOT_DUPIRE_UP) && !defined(GDOT_DUPIRE_DOWN) && !defined(GDOT_SIN)
+  #define WALL_FLAT
 #endif
 #ifndef GDOT_REPORT_FREQ
   #define GDOT_REPORT_FREQ (1000)
