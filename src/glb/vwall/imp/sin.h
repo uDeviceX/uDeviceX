@@ -1,5 +1,5 @@
-#ifndef WVEL_PAR_A
-#error  WVEL_PAR_A is not set
+#ifndef VWALL_PAR_A
+#error  VWALL_PAR_A is not set
 #endif
 
 #ifndef WVEL_PAR_W
@@ -20,7 +20,7 @@ static void report(long i, long e, float gd) {
 
 static float gdot(float t) {
     float A, w;
-    A = WVEL_PAR_A;
+    A = VWALL_PAR_A;
     w = WVEL_PAR_W;
     return A*sin(t);
 }
