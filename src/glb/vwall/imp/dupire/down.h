@@ -3,12 +3,12 @@ static float ff(long it, long nsteps) {
     int i, n = 8;
     for (i = 1; i <= n; i++)
         if (n*it < i*nsteps) {
-            gd =  2.0*(n-i+1)/n*VWALL_PAR_A;
+            gd =  2.0*(n-i+1)/n*WVEL_PAR_A;
             break;
         }
     return gd;
 }
 
 static void report0(long i, long e, float gd) {
-    MSG("VWALL_DUPIRE_DOWN: gd = %6.2g : step %07ld/%07ld", gd, i, e);
+    MSG("WVEL_DUPIRE_DOWN: gd = %6.2g : step %07ld/%07ld", gd, i, e);
 }

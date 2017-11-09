@@ -8,15 +8,15 @@
 namespace vwall {
 #if   defined(WALL_FLAT)
   #include "imp/flat.h"
-#elif defined(VWALL_DUPIRE_UP)
+#elif defined(WVEL_DUPIRE_UP)
   #include "imp/dupire/up.h"
   #include "imp/dupire/common.h"
-#elif defined(VWALL_DUPIRE_DOWN)
+#elif defined(WVEL_DUPIRE_DOWN)
   #include "imp/dupire/down.h"
   #include "imp/dupire/common.h"
-#elif defined(VWALL_SIN)
+#elif defined(WVEL_SIN)
   #include "imp/sin.h"
 #else
-  #error VWALL_* is not defined
+  #error WVEL_* is not defined
 #endif
 }

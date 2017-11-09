@@ -1,13 +1,13 @@
-#ifndef VWALL_PAR_A
-#error  VWALL_PAR_A is not set
+#ifndef WVEL_PAR_A
+#error  WVEL_PAR_A is not set
 #endif
 
-#ifndef VWALL_PAR_W
-#error  VWALL_PAR_W is not set
+#ifndef WVEL_PAR_W
+#error  WVEL_PAR_W is not set
 #endif
 
 static void report0(float gd) {
-    MSG("VWALL_SIN: gd = %6.2g", gd);
+    MSG("WVEL_SIN: gd = %6.2g", gd);
 }
 
 static void report(long i, long e, float gd) {
@@ -20,8 +20,8 @@ static void report(long i, long e, float gd) {
 
 static float gdot(float t) {
     float A, w;
-    A = VWALL_PAR_A;
-    w = VWALL_PAR_W;
+    A = WVEL_PAR_A;
+    w = WVEL_PAR_W;
     return A*sin(t);
 }
 
