@@ -4,4 +4,11 @@ subdirs=build_smesh disp drop field msd
 install: $(subdirs)
 
 $(subdirs):
-	@make install -C $@
+	make install -C $@
+
+clean:
+	make clean -C build_smesh
+	make clean -C disp
+	make clean -C msd
+
+.PHONY: $(subdirs) clean install
