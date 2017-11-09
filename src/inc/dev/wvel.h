@@ -1,15 +1,23 @@
 namespace k_wvel {
+inline __device__ float dist(float y, float z, float y0, float z0) {
+#if   WVEL_PAR_Y
+    return y - y0;
+#elif WVEL_PAR_Z
+    return z - z0;
+#else
+    return 0;
+#endif
+}
 inline __device__ float vell0(float y, float z, float gd) {
-    float v, *r;
+    float v, d, *r;
     enum {X, Y, Z};
     r = glb::r0;
-    v = 0.0;
-#if   WVEL_PAR_Z
-    v = glb::gd * (z - r[Z]);
-#elif WVEL_PAR_Y
-    v = glb::gd * (y - r[Y]);
+    d = dist(y, z, r[Y], r[Z]);
+    v = gd * d;
+#ifdef WVEL_SIN
+    return (d < 0) ? v : 0;
 #endif
-    return v;
+    return           v;
 }
 
 inline __device__ void vell(float x, float y, float z,
