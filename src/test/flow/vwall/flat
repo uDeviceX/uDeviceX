@@ -5,11 +5,11 @@ rm -rf bop h5 diag.txt rbc.off
 cp data/sdf/wall1/wall.dat sdf.dat
 :
 u.conf conf/poiseuille.h <<!!!
-   WVEL_FLAT WVEL_PAR_A=10
+   WVEL_FLAT WVEL_PAR_Z WVEL_PAR_A=10
    tend=2.0 part_freq=300 walls wall_creation=100
    field_dumps part_dumps field_freq=300
    run
 !!!
 { make clean && u.make -j; } > /dev/null
 sh runfile
-u.avgh5 1 u 2 h5/flowfields-0013.h5 > h5.out.txt
+u.avgh5 1 u 2 h5/flowfields-001[013].h5 > h5.out.txt

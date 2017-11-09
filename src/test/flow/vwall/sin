@@ -5,7 +5,7 @@ rm -rf bop h5 diag.txt rbc.off
 cp data/sdf/wall1/wall.dat sdf.dat
 :
 u.conf conf/poiseuille.h <<!!!
-   WVEL_SIN WVEL_PAR_A=10 WVEL_PAR_W=3.141592
+   WVEL_SIN WVEL_PAR_Z   WVEL_PAR_A=10 WVEL_PAR_W=3.141592   WVEL_LOG_FREQ=1000
    tend=2.0 part_freq=300 walls wall_creation=100
    field_dumps part_dumps field_freq=300
    run
