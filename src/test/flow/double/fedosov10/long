@@ -1,15 +1,16 @@
 # doi: 10.1063/1.3366658; J. Chem. Phys. 132, 144103 (2010)
 # dr   ~ a, g*dv, sigma
 # dr^3 ~ 1/nd
+# dr   ~ f
 # sigma^2 = 2*gamma*kbT
-# n=3  rc=2 a=25   gamma=4.5 sigma=3.0 kbT=1.0  m=0.25 dt=0.005 domain=50x20x10
+# n=3  rc=2 a=25   gamma=4.5 sigma=3.0 kbT=1.0  m=0.25 dt=0.005 f=0.25 domain=50x20x10
 # n=24 rc=1 a=12.5 gamma=4.5 sigma=1.5 kbT=0.25 m=0.25 dt=0.005
 #
 # cTEST: flow.double.fedosov10.long
 :
 u.conf conf/double.poiseuille.h <<!!!
    S_LEVEL=2 kBT=0.25 numberdensity=24 adpd_b=12.5 gdpd_b=4.5 dt=0.005
-   FORCE_DOUBLE_POISEUILLE FORCE_PAR_A=0.055
+   FORCE_DOUBLE_POISEUILLE FORCE_PAR_A=0.125
    XS=12 YS=24 ZS=6
    field_dumps part_dumps
    tend=100.01 part_freq=2000 field_freq=2000
