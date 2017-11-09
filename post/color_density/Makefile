@@ -10,7 +10,7 @@ BOV=$(HOME)/prefix/bov/
 BOP=$(HOME)/prefix/bop/
 
 CXXFLAGS += -I$(BOV)/include
-LIBS     += -L$(BOV)/lib -lbov
+LIBS     += -L$(BOV)/lib -lbov -lbov_serial
 CXXFLAGS += -I$(BOP)/include
 LIBS     += -L$(BOP)/lib -lbop
 

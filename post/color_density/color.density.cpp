@@ -4,9 +4,9 @@
 
 #include "bop_common.h"
 #include "bop_serial.h"
-extern "C" {
+
 #include "bov.h"
-}
+#include "bov_serial.h"
 
 struct Args {
     int lx, ly, lz;
@@ -14,7 +14,7 @@ struct Args {
 };
 
 static void usg() {
-    fprintf(stderr, "usg: u.color.density Lx Ly Lz <solvent.bop> <colors.bop> <out.bov>\n");
+    fprintf(stderr, "usg: u.color.density Lx Ly Lz <solvent.bop> <colors.bop> <out>\n");
     exit(1);
 }
 
@@ -99,12 +99,17 @@ int main(int argc, char **argv) {
     sprintf(bov.var, "color density");
     bov.ncmp = 1;    
 
-    write_bov(a.bov, &bov);
+    bov_alloc(sizeof(float), &bov);
+
+    bov_write_header(a.bov, &bov);
+    bov_write_values(a.bov, &bov);
     
     free(grid);
     
     bop_free(&bop_s);
     bop_free(&bop_c);
+
+    bov_free(&bov);
 
     return 0;
 }
