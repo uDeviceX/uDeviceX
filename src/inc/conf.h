@@ -14,16 +14,16 @@
   #define WVEL_PAR_Z (false)
 #endif
 
-/* WVEL_PAR_A time profile */
+/* fall velocity time profile */
 #if !defined(WVEL_FLAT) && !defined(WVEL_DUPIRE_UP) && !defined(WVEL_DUPIRE_DOWN) && !defined(WVEL_SIN)
-  #define WALL_FLAT
+  #define WVEL_FLAT
 #endif
 #ifndef WVEL_LOG_FREQ
   #define WVEL_LOG_FREQ (1000)
 #endif
 
 #ifndef FORCE_PAR_A
-#define FORCE_PAR_A (2.0)
+  #define FORCE_PAR_A (2.0)
 #endif
 
 #ifndef contactforces
