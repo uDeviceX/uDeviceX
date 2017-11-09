@@ -7,7 +7,7 @@ static void report(long i, long e, float gd) {
 }
 
 float f0() {               return ff(0, 1); }
-float  f(long i, long e) {
+float  f(long i, long e, float) {
     float gd;
     gd = ff(i, e);
     report(i, e, gd);

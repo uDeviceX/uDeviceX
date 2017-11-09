@@ -5,9 +5,9 @@ void sim()  {
     gd = vwall::f0();
     set_gd(gd);
 }
-void step(long s, long e, float) {
+void step(long s, long e, float dt0) {
     float gd;
 
-    gd = vwall::f(s, e);
+    gd = vwall::f(s, e, dt0);
     set_gd(gd);
 }
