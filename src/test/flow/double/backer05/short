@@ -5,7 +5,7 @@ u.conf conf/double.poiseuille.h <<!!!
    FORCE_DOUBLE_POISEUILLE FORCE_PAR_A=0.055
    XS=24 YS=12 ZS=24
    field_dumps part_dumps
-   tend=1.01 part_freq=1 field_freq=1
+   tend=1.01 part_freq=1000 field_freq=1000
    run
 !!!
 { make clean && u.make -j; } > /dev/null
