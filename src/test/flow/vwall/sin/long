@@ -2,7 +2,7 @@
 # cTEST: flow.vwall.sin.long
 rm -rf bop h5 diag.txt
 :
-cp data/sdf/wall1/wall.dat sdf.dat
+cp data/sdf/zplates1/main.dat sdf.dat
 :
 : pi/20
 w=0.1570796326794897
