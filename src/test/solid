@@ -9,7 +9,7 @@ cp data/rig/sphere.ply mesh_solid.ply
 u.conf conf/test.h <<!!!
    tend=2.01 part_freq=1000 walls wall_creation=1
    field_dumps part_dumps field_freq=1000
-   solids sbounce_back pin_com dt=1e-3 shear_z
+   solids sbounce_back pin_com dt=1e-3 VWALL_PAR_Z
    run
 !!!
 (make clean && u.make -j && make -C ../tools) > /dev/null
@@ -44,7 +44,7 @@ cp data/rig/cyl.ply mesh_solid.ply
 u.conf conf/test.h <<!!!
    tend=2.01 part_freq=1000 walls wall_creation=100
    field_dumps part_dumps field_freq=1000 ZS=16
-   solids spdir=2 sbounce_back dt=1e-3 shear_y
+   solids spdir=2 sbounce_back dt=1e-3 VWALL_PAR_Y
    run
 !!!
 (make clean && u.make -j && make -C ../tools) > /dev/null

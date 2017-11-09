@@ -5,7 +5,7 @@ c=conf/zurich.h
 cp data/sdf/yplates1/yplates.dat sdf.dat
 u.conf $c <<!!!
    numberdensity=3
-   walls wall_creation=10 shear_y
+   walls wall_creation=10 VWALL_PAR_Y
    S_LEVEL=0 kBT=1 adpd_b=12.5 gdpd_b=5.61125
    XS=12 YS=32 ZS=12
    dt=0.05 tend=41 part_freq=800 field_freq=800

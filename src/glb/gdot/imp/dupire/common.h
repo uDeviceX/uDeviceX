@@ -1,7 +1,7 @@
 static void report(long i, long e, float gd) {
     bool cond;
     int freq;
-    freq = GDOT_REPORT_FREQ;
+    freq = WVEL_LOG_FREQ;
     cond = freq > 0 && i % freq == 0;
     if (cond) report0(i, e, gd);
 }

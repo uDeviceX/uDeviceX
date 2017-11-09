@@ -10,16 +10,16 @@
 
 #ifndef WVEL_PAR_A
   #define WVEL_PAR_A (0.0)
-  #define shear_y (false)
-  #define shear_z (false)
+  #define VWALL_PAR_Y (false)
+  #define VWALL_PAR_Z (false)
 #endif
 
 /* WVEL_PAR_A time profile */
-#if !defined(WALL_FLAT) && !defined(GDOT_DUPIRE_UP) && !defined(GDOT_DUPIRE_DOWN) && !defined(GDOT_SIN)
+#if !defined(WALL_FLAT) && !defined(VWALL_DUPIRE_UP) && !defined(VWALL_DUPIRE_DOWN) && !defined(VWALL_SIN)
   #define WALL_FLAT
 #endif
-#ifndef GDOT_REPORT_FREQ
-  #define GDOT_REPORT_FREQ (1000)
+#ifndef WVEL_LOG_FREQ
+  #define WVEL_LOG_FREQ (1000)
 #endif
 
 #ifndef FORCE_PAR_A

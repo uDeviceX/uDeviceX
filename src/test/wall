@@ -8,7 +8,7 @@ u.conf conf/test.h <<!!!
    XS=12 YS=12 ZS=12
    tend=1.0 part_freq=300 walls wall_creation=1
    field_dumps part_dumps field_freq=300
-   shear_z
+   VWALL_PAR_Z
    run
 !!!
 { make clean && u.make -j; } > /dev/null

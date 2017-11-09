@@ -3,10 +3,10 @@ inline __device__ void vell(float x, float y, float z,
                             float *vx, float *vy, float *vz) {
     enum {X, Y, Z};
     *vx = *vy = *vz = 0;
-#if shear_z
+#if VWALL_PAR_Z
     float *r = glb::r0;
     *vx = glb::gd * (z - r[Z]);
-#elif shear_y
+#elif VWALL_PAR_Y
     float *r = glb::r0;    
     *vx = glb::gd * (y - r[Y]);
 #endif
