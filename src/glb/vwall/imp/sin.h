@@ -6,6 +6,18 @@
 #error  WVEL_PAR_W is not set
 #endif
 
+static void report0(float gd) {
+    MSG("VWALL_SIN: gd = %6.2g", gd);
+}
+
+static void report(long i, long e, float gd) {
+    bool cond;
+    int freq;
+    freq = WVEL_LOG_FREQ;
+    cond = freq > 0 && i % freq == 0;
+    if (cond) report0(gd);
+}
+
 static float gdot(float t) {
     float A, w;
     A = WVEL_PAR_A;
