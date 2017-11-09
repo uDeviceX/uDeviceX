@@ -1,5 +1,4 @@
-# Double poiseuille doi: 10.1063/1.1883163; J. Chem. Phys. 122, 154503
-#(2005)
+# doi: 10.1063/1.1883163; J. Chem. Phys. 122, 154503 (2005)
 # snTEST: flow.t1
 rm -rf bop h5 diag.txt
 :
