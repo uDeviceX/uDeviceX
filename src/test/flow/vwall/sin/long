@@ -10,7 +10,7 @@ inf=999999999
 : pi/20
 w=0.1570796326794897
 dt=1e-3
-DPD="S_LEVEL=0 kBT=0.33333 numberdensity=10 adpd_b=3 gdpd_b=4.5 dt=$dt"
+DPD="S_LEVEL=0 kBT=0.0 numberdensity=10 adpd_b=3 gdpd_b=4.5 dt=$dt"
 Domain="XS=12 YS=12 ZS=12"
 Wvel="WVEL_SIN WVEL_PAR_Z   WVEL_PAR_A=0.1 WVEL_PAR_W=$w WVEL_LOG_FREQ=1000"
 u.conf conf/poiseuille.h <<!
@@ -24,7 +24,7 @@ u.strtdir && make0 && sh runfile
 u.conf conf/poiseuille.h <<!
    $DPD $Domain $Wvel walls
    RESTART=true
-   field_dumps field_freq=100 tend=40.0
+   field_dumps field_freq=100 part_dumps part_freq=100 tend=40.0
    run
 !
 make0 && mkdir -p h5 && sh runfile
