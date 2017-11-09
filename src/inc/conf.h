@@ -10,12 +10,12 @@
 
 #ifndef WVEL_PAR_A
   #define WVEL_PAR_A (0.0)
-  #define VWALL_PAR_Y (false)
-  #define VWALL_PAR_Z (false)
+  #define WVEL_PAR_Y (false)
+  #define WVEL_PAR_Z (false)
 #endif
 
 /* WVEL_PAR_A time profile */
-#if !defined(WVEL_FLAT) && !defined(VWALL_DUPIRE_UP) && !defined(VWALL_DUPIRE_DOWN) && !defined(VWALL_SIN)
+#if !defined(WVEL_FLAT) && !defined(WVEL_DUPIRE_UP) && !defined(WVEL_DUPIRE_DOWN) && !defined(WVEL_SIN)
   #define WALL_FLAT
 #endif
 #ifndef WVEL_LOG_FREQ
