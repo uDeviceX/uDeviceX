@@ -5,8 +5,15 @@ int separator(int argc, char **argv) {
 }
 
 void read_data(const char *fpp, BopData *dpp, const char *fii, BopData *dii) {
-    read(fpp, dpp);
-    read(fii, dii);
+    char fdname[CBUFSIZE];
+
+    bop_read_header(fpp, dpp, fdname);
+    bop_alloc(dpp);
+    bop_read_values(fdname, dpp);
+    
+    bop_read_header(fii, dii, fdname);
+    bop_alloc(dii);
+    bop_read_values(fdname, dii);
 
     if (dpp->type != FLOAT && dpp->type != FASCII) ERR("expected float data form <%s>\n", fpp);
     if (dii->type != INT   && dii->type != IASCII) ERR("expected int data form <%s>\n", fii);
