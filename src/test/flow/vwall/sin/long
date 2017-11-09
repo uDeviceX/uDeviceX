@@ -8,7 +8,7 @@ cp data/sdf/zplates1/main.dat sdf.dat
 w=0.1570796326794897
 u.conf conf/poiseuille.h <<!!!
    S_LEVEL=0 kBT=0.33333 numberdensity=10 adpd_b=3 gdpd_b=20.25 dt=1e-4
-   XS=16 YS=16 ZS=16
+   XS=12 YS=12 ZS=12
    WVEL_SIN WVEL_PAR_Z   WVEL_PAR_A=1 WVEL_PAR_W=$w WVEL_LOG_FREQ=1000
    tend=2.0 part_freq=300 walls wall_creation=100
    field_dumps part_dumps field_freq=300
