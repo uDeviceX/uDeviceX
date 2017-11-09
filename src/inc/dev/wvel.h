@@ -16,8 +16,9 @@ inline __device__ float vell0(float y, float z, float gd) {
     v = gd * d;
 #ifdef WVEL_SIN
     return (d < 0) ? v : 0;
-#endif
+#else
     return           v;
+#endif
 }
 
 inline __device__ void vell(float x, float y, float z,
