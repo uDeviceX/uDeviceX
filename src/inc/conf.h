@@ -8,13 +8,13 @@
   #define S_LEVEL (2)
 #endif
 
-#ifndef VWALL_PAR_A
-  #define VWALL_PAR_A (0.0)
+#ifndef WVEL_PAR_A
+  #define WVEL_PAR_A (0.0)
   #define VWALL_PAR_Y (false)
   #define VWALL_PAR_Z (false)
 #endif
 
-/* VWALL_PAR_A time profile */
+/* WVEL_PAR_A time profile */
 #if !defined(WVEL_FLAT) && !defined(VWALL_DUPIRE_UP) && !defined(VWALL_DUPIRE_DOWN) && !defined(VWALL_SIN)
   #define WALL_FLAT
 #endif
