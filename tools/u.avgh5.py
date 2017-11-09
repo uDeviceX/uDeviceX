@@ -7,6 +7,13 @@ import h5py as h5
 def shift(a):
     return a.pop(0)
 
+def fopen(n):
+    try:
+        f = h5.File(fname, "r")
+    except IOError:
+        sys.stderr.write("u.avgh5: fails to open <%s>\n" % n)
+        sys.exit(2)
+
 argv = sys.argv
 argc = len(argv)
 
@@ -23,8 +30,7 @@ fff = []
 i = 0
 
 for fname in argv:
-    f = h5.File(fname, "r")
-
+    f = fopen(fname)
     ff = f[field]
     (nz, ny, nx, nu) = ff.shape
     nn = [nx, ny, nz]
