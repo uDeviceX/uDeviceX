@@ -23,8 +23,6 @@ fff = []
 i = 0
 
 for fname in argv:
-    print "%s"%fname
-    
     f = h5.File(fname, "r")
 
     ff = f[field]
