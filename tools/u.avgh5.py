@@ -10,8 +10,8 @@ def shift(a):
 argv = sys.argv
 argc = len(argv)
 
-if argc != 5:
-    print "usage: %s <dump_coords [0/1]> <field [density/u/v/w]> <remaining dir [0/1/2]> <file.h5>" % argv[0]
+if argc < 5:
+    print "usage: %s <dump_coords [0/1]> <field [density/u/v/w]> <remaining dir [0/1/2]> <file0.h5> <file1.h5> ..." % argv[0]
     exit(1)
 
 shift(argv);
