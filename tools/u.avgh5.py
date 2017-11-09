@@ -22,8 +22,7 @@ adir = int(shift(argv))
 fff = []
 i = 0
 
-while (len(argv)):
-    fname = shift(argv)
+for fname in argv:
     print "%s"%fname
     
     f = h5.File(fname, "r")
