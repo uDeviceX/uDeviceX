@@ -1,12 +1,11 @@
-# doi: 10.1063/1.1883163; J. Chem. Phys. 122, 154503 (2005)
-# sTEST: flow.double.backer05
+# cTEST: flow.double.backer05.short
 :
 u.conf conf/double.poiseuille.h <<!!!
    S_LEVEL=0 kBT=0.5 numberdensity=6 adpd_b=0 gdpd_b=20.25 dt=0.001
    FORCE_DOUBLE_POISEUILLE FORCE_PAR_A=0.055
    XS=24 YS=12 ZS=24
    field_dumps part_dumps
-   tend=800.01 part_freq=200 field_freq=200
+   tend=1.01 part_freq=1000 field_freq=1000
    run
 !!!
 (make clean && u.make -j) > /dev/null
