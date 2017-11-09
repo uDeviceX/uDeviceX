@@ -22,7 +22,7 @@ void run(long ts, long te) {
     
     /* ts, te: time start and end */
     for (it = ts; it < te; ++it) {
-        glb::step(it - ts, te - ts); /* kernel globals */
+        glb::step(it - ts, te - ts, dt); /* set kernel globals */
         step(&fpar, walls, it);
     }
     distribute_flu();
