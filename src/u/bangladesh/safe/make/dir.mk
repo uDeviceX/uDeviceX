@@ -19,7 +19,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/fsi               && \
     d $B/generate/rig      && \
     d $B/glb               && \
-    d $B/glb/gdot          && \
+    d $B/glb/vwall         && \
     d $B/hforces           && \
     d $B/inter             && \
     d $B/io                && \
