@@ -1,11 +1,11 @@
-#### Plates : Couette
-# cTEST: flow.vwall.flat
+#### Plates : walls are oscillating vx = A*sin(w*t) 
+# cTEST: flow.vwall.sin
 rm -rf bop h5 diag.txt rbc.off
 :
 cp data/sdf/wall1/wall.dat sdf.dat
 :
 u.conf conf/poiseuille.h <<!!!
-   VWALL_FLAT VWALL_PAR_A=10
+   VWALL_SIN VWALL_PAR_A=10 VWALL_PAR_W=3.141592
    tend=2.0 part_freq=300 walls wall_creation=100
    field_dumps part_dumps field_freq=300
    run
