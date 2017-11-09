@@ -5,7 +5,7 @@
 #include "msg.h"
 #include "imp.h"
 
-namespace gdot {
+namespace vwall {
 #if   defined(WALL_FLAT)
   #include "imp/flat.h"
 #elif defined(VWALL_DUPIRE_UP)
