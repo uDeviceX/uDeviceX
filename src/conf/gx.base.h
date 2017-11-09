@@ -13,7 +13,7 @@
 #define rbc_mass         0.5        /* RBC particle mass     */
 #define solid_mass       0.5        /* solid particle mass   */
 
-#define gamma_dot        0.0        /* shear rate */
+#define WVEL_PAR_A        0.0        /* shear rate */
 
 #define adpd_b            5
 #define adpd_r             5

@@ -15,7 +15,7 @@
 #define dpd_mass         1.0        /* solvent particle mass */
 #define rbc_mass         0.5        /* RBC particle mass     */
 #define solid_mass       0.5        /* solid particle mass   */
-#define gamma_dot        5.0       /* shear rate */
+#define WVEL_PAR_A        5.0       /* shear rate */
 #define FORCE_PAR_A    3.333e-2  /* flow acceleration for Poiseuille setup */
 
 #define adpd_b         2.667  /* aij for the solvent  */

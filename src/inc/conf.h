@@ -15,7 +15,7 @@
 #endif
 
 /* gamma_dot time profile */
-#if !defined(GDOT_FLAT) && !defined(GDOT_DUPIRE_UP) && !defined(GDOT_DUPIRE_DOWN)
+#if !defined(GDOT_FLAT) && !defined(GDOT_DUPIRE_UP) && !defined(GDOT_DUPIRE_DOWN) && !defined(GDOT_SIN)
   #define GDOT_FLAT
 #endif
 #ifndef GDOT_REPORT_FREQ
