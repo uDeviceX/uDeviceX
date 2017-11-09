@@ -4,7 +4,7 @@
 #include <cmath>
 
 #include "bop_common.h"
-#include "bop_reader.h"
+#include "bop_serial.h"
 
 #include "macros.h"
 #include "pp_id.h"
@@ -43,11 +43,14 @@ float MSD(const float *rr0, const float *rr, const float *ddL, const int buffsiz
 void MSD_seq(char **ffpp, char **ffii, const int nin, /**/ float *out) {
 
     BopData dpp0, dii0, dpp, dii;
-    init(&dpp0); init(&dii0);
+    const int *ii0, *ii;
+    const float *pp0, *pp;
     
     read_data(ffpp[0], &dpp0, ffii[0], &dii0);
-
-    const int buffsize = max_index(dii0.idata, dii0.n) + 1;
+    pp0 = (const float *) dpp0.data;
+    ii0 = (const   int *) dii0.data;
+    
+    const int buffsize = max_index(ii0, dii0.n) + 1;
 
     float *rr0 = new float[3*buffsize]; /* initial  positions     */
     float *rrc = new float[3*buffsize]; /* current  positions     */
@@ -56,28 +59,28 @@ void MSD_seq(char **ffpp, char **ffii, const int nin, /**/ float *out) {
 
     memset(rr0, 0, 3*buffsize*sizeof(float));
     memset(ddL, 0, 3*buffsize*sizeof(float));
-    pp2rr_sorted(dii0.idata, dpp0.fdata, dpp0.n, dpp0.nvars, /**/ rr0);
+    pp2rr_sorted(ii0, pp0, dpp0.n, dpp0.nvars, /**/ rr0);
     memcpy(rrp, rr0, 3*buffsize*sizeof(float));
     
     for (int i = 1; i < nin; ++i) {
-        init(&dpp);  init(&dii);
-        // printf("%s -- %s\n", ffpp[i], ffii[i]);
         
         read_data(ffpp[i], &dpp, ffii[i], &dii);
+        pp = (const float *) dpp.data;
+        ii = (const   int *) dii.data;
 
         memset(rrc, 0, 3*buffsize*sizeof(float));
-        pp2rr_sorted(dii.idata, dpp.fdata, dpp.n, dpp.nvars, /**/ rrc);
+        pp2rr_sorted(ii, pp, dpp.n, dpp.nvars, /**/ rrc);
         updddL(rrp, rrc, buffsize, /**/ ddL);
 
         out[i-1] = MSD(rr0, rrc, ddL, buffsize, dpp.n);
         
-        finalize(&dpp);  finalize(&dii);
+        bop_free(&dpp);  bop_free(&dii);
         memcpy(rrp, rrc, 3*buffsize*sizeof(float));
     }
 
     delete[] rr0; delete[] rrc;
     delete[] rrp; delete[] ddL;
-    finalize(&dpp0); finalize(&dii0);    
+    bop_free(&dpp0); bop_free(&dii0);    
 }
 
 int main(int argc, char **argv) {
