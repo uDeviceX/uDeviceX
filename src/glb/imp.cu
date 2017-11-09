@@ -2,7 +2,7 @@
 #include "inc/conf.h"
 #include "mpi/glb.h"
 #include "d/api.h"
-#include "vwall/imp.h"
+#include "wvel/imp.h"
 
 #include "glb/set.h"
 #include "glb/get.h"

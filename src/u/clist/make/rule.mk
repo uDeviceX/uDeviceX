@@ -2,7 +2,7 @@ $B/algo/scan/imp.o: $S/algo/scan/imp.cu; $N -I$S/algo/scan -I$S/.
 $B/clist/imp.o: $S/clist/imp.cu; $N -I$S/clist -I$S/.
 $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
 $B/glb/imp.o: $S/glb/imp.cu; $N -I$S/glb -I$S/.
-$B/glb/vwall/imp.o: $S/glb/vwall/imp.cu; $N -I$S/glb/vwall -I$S/.
+$B/glb/wvel/imp.o: $S/glb/wvel/imp.cu; $N -I$S/glb/wvel -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.

@@ -20,7 +20,7 @@ $B/frag/imp.o: $S/frag/imp.cpp; $X -I$S/frag -I$S/.
 $B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/fsi -I$S/.
 $B/generate/rig/imp.o: $S/generate/rig/imp.cu; $N -I$S/generate/rig -I$S/.
 $B/glb/imp.o: $S/glb/imp.cu; $N -I$S/glb -I$S/.
-$B/glb/vwall/imp.o: $S/glb/vwall/imp.cu; $N -I$S/glb/vwall -I$S/.
+$B/glb/wvel/imp.o: $S/glb/wvel/imp.cu; $N -I$S/glb/wvel -I$S/.
 $B/hforces/imp.o: $S/hforces/imp.cu; $N -I$S/hforces -I$S/.
 $B/inter/imp.o: $S/inter/imp.cu; $N -I$S/inter -I$S/inter/_korea -I$S/.
 $B/io/bop/imp.o: $S/io/bop/imp.cpp; $X -I$S/io/bop -I$S/.
