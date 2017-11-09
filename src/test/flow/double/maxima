@@ -1,3 +1,5 @@
+/* Navier-Stokes equation for Poiseuille flow  */
+
 e: -mu*'diff(v, x, 2)  = g $
 
 s: ode2(e, v, x) $
