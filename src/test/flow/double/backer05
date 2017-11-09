@@ -1,5 +1,5 @@
 # doi: 10.1063/1.1883163; J. Chem. Phys. 122, 154503 (2005)
-# sTEST: flow.t1
+# sTEST: flow.double.backer05
 rm -rf bop h5 diag.txt
 :
 (cd ../cmd; make ) > /dev/null
