@@ -13,9 +13,9 @@ u.conf conf/double.poiseuille.h <<!!!
    FORCE_DOUBLE_POISEUILLE FORCE_PAR_A=0.125
    XS=12 YS=24 ZS=6
    field_dumps part_dumps
-   tend=100.01 part_freq=2000 field_freq=2000
+   tend=50.01 part_freq=1000 field_freq=1000
    run
 !!!
 (make clean && u.make -j) > /dev/null
 sh runfile
-u.avgh5 1 u 1 h5/flowfields-000[5-9].h5 | uscale 0.1 > h5.out.txt
+u.avgh5 1 u 1 h5/flowfields-000[5-9].h5 | uscale 10 > h5.out.txt
