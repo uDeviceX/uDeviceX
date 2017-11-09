@@ -4,8 +4,7 @@
 #include <cmath>
 
 #include "bop_common.h"
-#include "bop_reader.h"
-#include "bop_writer.h"
+#include "bop_serial.h"
 
 #include "macros.h"
 #include "pp_id.h"
@@ -46,7 +45,7 @@ void outname(const char *inrr, char *out) {
     const int l = strlen(inrr);
     memcpy(out, inrr, l * sizeof(char));
     const int strt = l - 4;
-    const char newext[] = ".disp.bop";
+    const char newext[] = ".disp";
     memcpy(out + strt, newext, sizeof(newext));
 }
 
@@ -64,24 +63,19 @@ void dump(const Type type, const char *fout, const float *rr, const float *ddr, 
 
     /* dump */
     BopData d;
-    init(&d);
     d.n = j;
     d.nvars = 6;
     d.type = type;
-    d.vars = new Cbuf[d.nvars];
-    strncpy(d.vars[0].c, "x", 4);
-    strncpy(d.vars[1].c, "y", 4);
-    strncpy(d.vars[2].c, "z", 4);
-    strncpy(d.vars[3].c, "dx", 4);
-    strncpy(d.vars[4].c, "dy", 4);
-    strncpy(d.vars[5].c, "dz", 4);
+    strcpy(d.vars, "x y z dx dy dz");
 
-    d.fdata = new float[d.n * d.nvars];
-    memcpy(d.fdata, work, d.n * d.nvars * sizeof(float));
-
-    write(fout, d);
+    bop_alloc(&d);
     
-    finalize(&d);
+    memcpy(d.data, work, d.n * d.nvars * sizeof(float));
+
+    bop_write_header(fout, &d);
+    bop_write_values(fout, &d);
+    
+    bop_free(&d);
 }
 
 int main(int argc, char **argv) {
@@ -103,11 +97,15 @@ int main(int argc, char **argv) {
     char **ffii = ffpp + nin + 1;
     
     BopData dpp, dii;
-
-    init(&dpp); init(&dii);
+    const int *ii;
+    const float *pp;
+    
     read_data(ffpp[0], &dpp, ffii[0], &dii);
 
-    const int buffsize = max_index(dii.idata, dii.n) + 1;
+    pp = (const float *) dpp.data;
+    ii = (const int *) dii.data;
+    
+    const int buffsize = max_index(ii, dii.n) + 1;
 
     float *rrc = new float[3*buffsize]; /* current  positions     */
     float *rrp = new float[3*buffsize]; /* previous positions     */
@@ -116,28 +114,30 @@ int main(int argc, char **argv) {
     int  *tags = new int[buffsize];     /* tags: particle with this id or not? */
 
     memset(rrp, 0, 3*buffsize*sizeof(float));
-    pp2rr_sorted(dii.idata, dpp.fdata, dpp.n, dpp.nvars, /**/ rrp);
+    pp2rr_sorted(ii, pp, dpp.n, dpp.nvars, /**/ rrp);
 
     empty_tags(buffsize, /**/ tags);
-    compute_tags(dii.idata, dii.n, /**/ tags);
+    compute_tags(ii, dii.n, /**/ tags);
 
-    finalize(&dpp); finalize(&dii);
+    bop_free(&dpp); bop_free(&dii);
     
     for (int i = 0; i < nin-1; ++i) {
-        init(&dpp);  init(&dii);
         char fout[1024] = {0};
         outname(ffpp[i], /**/ fout);
         printf("%s -- %s -> %s\n", ffpp[i], ffii[i], fout);
 
         read_data(ffpp[i+1], &dpp, ffii[i+1], &dii);
-        pp2rr_sorted(dii.idata, dpp.fdata, dpp.n, dpp.nvars, /**/ rrc);
+        pp = (const float *) dpp.data;
+        ii = (const int *) dii.data;
+
+        pp2rr_sorted(ii, pp, dpp.n, dpp.nvars, /**/ rrc);
 
         disp(rrp, rrc, buffsize, /**/ ddr);
 
         dump(dpp.type, fout, rrp, ddr, tags, buffsize, /*w*/ rrw);
-        compute_tags(dii.idata, dii.n, /**/ tags);
+        compute_tags(ii, dii.n, /**/ tags);
         
-        finalize(&dpp);  finalize(&dii);
+        bop_free(&dpp);  bop_free(&dii);
 
         {   /* swap */
             float *const tmp = rrp;
