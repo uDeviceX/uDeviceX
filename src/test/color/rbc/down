@@ -8,10 +8,10 @@ cp data/sdf/wall1/wall.dat sdf.dat
 x=8 y=8 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 :
 u.conf conf/couette.h <<!!!
-   VWALL_DUPIRE_DOWN   WVEL_LOG_FREQ=100
+   WVEL_DUPIRE_DOWN   WVEL_LOG_FREQ=100
    RESTRAIN_RBC_VEL RESTRAIN_REPORT_FREQ=1000 rbc_mass=0.5
    rbcs tend=0.5 part_freq=300  walls  wall_creation=100
-   field_dumps part_dumps field_freq=300 VWALL_PAR_Z
+   field_dumps part_dumps field_freq=300 WVEL_PAR_Z
    run
 !!!
 { make clean && u.make -j && make -C ../tools; } > /dev/null
