@@ -6,7 +6,7 @@
 #include "imp.h"
 
 namespace vwall {
-#if   defined(WALL_FLAT)
+#if   defined(WVEL_FLAT)
   #include "imp/flat.h"
 #elif defined(WVEL_DUPIRE_UP)
   #include "imp/dupire/up.h"
