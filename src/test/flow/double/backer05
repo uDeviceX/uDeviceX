@@ -5,10 +5,12 @@ rm -rf bop h5 diag.txt rbc.off
 (cd ../cmd; make ) > /dev/null
 :
 u.conf conf/double.poiseuille.h <<!!!
-   tend=2.01 part_freq=4000
-   FORCE_DOUBLE_POISEUILLE
+   S_LEVEL=1
+   FORCE_DOUBLE_POISEUILLE FORCE_PAR_A=0.055
+   kBT=0.5 numberdensity=6 adpd_b=0 gdpd_b=20.25
+   XS=12 YS=12 ZS=12
    field_dumps part_dumps
-   field_freq=4000
+   tend=2.01 part_freq=4000 field_freq=4000
    run
 !!!
 (make clean && u.make -j) > /dev/null
