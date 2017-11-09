@@ -1,8 +1,9 @@
 // solvent
 
-/* DPD kernel envelop parameter: random and dissipative kernels
-   wr = (1-r)^S_LEVEL
-   wd = (1-r)^(2*S_LEVEL) */
+/* DPD kernel envelop parameter: random and dissipative kernels (wd = wr^2)
+   0: wr = 1 - r
+   1: wr = (1 - r)^(1/2)
+   2: wr = (1 - r)^(1/4) */
 #ifndef S_LEVEL
   #define S_LEVEL (2)
 #endif
