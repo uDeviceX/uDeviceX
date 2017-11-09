@@ -3,7 +3,7 @@ static float ff(long it, long nsteps) {
     int i, n = 8;
     for (i = 1; i <= n; i++)
         if (n*it < i*nsteps) {
-            gd =  2.0*i/n*gamma_dot;
+            gd =  2.0*i/n*WVEL_PAR_A;
             break;
         }
     return gd;

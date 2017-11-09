@@ -1,7 +1,7 @@
 float f0() {
-    return gamma_dot;
+    return WVEL_PAR_A;
 }
 
 float  f(long, long) {
-    return gamma_dot;
+    return WVEL_PAR_A;
 }

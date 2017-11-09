@@ -8,13 +8,13 @@
   #define S_LEVEL (2)
 #endif
 
-#ifndef gamma_dot
-  #define gamma_dot (0.0)
+#ifndef WVEL_PAR_A
+  #define WVEL_PAR_A (0.0)
   #define shear_y (false)
   #define shear_z (false)
 #endif
 
-/* gamma_dot time profile */
+/* WVEL_PAR_A time profile */
 #if !defined(GDOT_FLAT) && !defined(GDOT_DUPIRE_UP) && !defined(GDOT_DUPIRE_DOWN) && !defined(GDOT_SIN)
   #define GDOT_FLAT
 #endif
