@@ -3,7 +3,7 @@
 #include "string.h"
 
 #include "bop_common.h"
-#include "bop_reader.h"
+#include "bop_serial.h"
 extern "C" {
 #include "bov.h"
 }
@@ -76,18 +76,21 @@ int main(int argc, char **argv) {
     BopData bop_s, bop_c;
     BovDesc bov;
     float *grid;
-
+    char fdname[CBUFSIZE];
+    
     parse(argc, argv, /**/ &a);
 
     grid = (float*) malloc(a.lx * a.ly * a.lz * sizeof(float));
-        
-    init(&bop_s);
-    init(&bop_c);
+    
+    bop_read_header(a.bop_s, /**/ &bop_s, fdname);
+    bop_alloc(/**/ &bop_s);
+    bop_read_values(fdname, /**/ &bop_s);
 
-    read(a.bop_s, /**/ &bop_s);
-    read(a.bop_c, /**/ &bop_c);
+    bop_read_header(a.bop_c, /**/ &bop_c, fdname);
+    bop_alloc(/**/ &bop_c);
+    bop_read_values(fdname, /**/ &bop_c);
 
-    collect_p2m(bop_s.n, bop_s.fdata, bop_c.idata, a.lx, a.ly, a.lz, /**/ grid);    
+    collect_p2m(bop_s.n, (const float*) bop_s.data, (const int*) bop_c.data, a.lx, a.ly, a.lz, /**/ grid);    
     
     bov.nx = a.lx; bov.ny = a.ly; bov.nz = a.lz;
     bov.lx = a.lx; bov.ly = a.ly; bov.lz = a.lz;
@@ -100,8 +103,8 @@ int main(int argc, char **argv) {
     
     free(grid);
     
-    finalize(&bop_s);
-    finalize(&bop_c);
+    bop_free(&bop_s);
+    bop_free(&bop_c);
 
     return 0;
 }
