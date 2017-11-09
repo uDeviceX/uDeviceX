@@ -13,3 +13,6 @@ is chosen by setting one of the variables:
 
 * `WVEL_DUPIRE_UP`
 * `WVEL_DUPIRE_DOWN`
+
+Direction of the velocity can be changed if `VWALL_PAR_Y` or
+`VWALL_PAR_X` is set.
