@@ -8,11 +8,12 @@ make0 () { { make clean && u.make -j; } > /dev/null ; }
 :
 inf=999999999
 : pi/20
+A=0.2
 w=0.1570796326794897
 dt=1e-3
-DPD="S_LEVEL=0 kBT=0.0 numberdensity=10 adpd_b=3 gdpd_b=4.5 dt=$dt"
+DPD="multi_solvent=true S_LEVEL=0 kBT=0.333333 numberdensity=10 adpd_b=3 adpd_bw=0.9257 gdpd_b=4.5 dt=$dt"
 Domain="XS=12 YS=12 ZS=12"
-Wvel="WVEL_SIN WVEL_PAR_Z   WVEL_PAR_A=0.1 WVEL_PAR_W=$w WVEL_LOG_FREQ=1000"
+Wvel="WVEL_SIN WVEL_PAR_Z   WVEL_PAR_A=$A WVEL_PAR_W=$w WVEL_LOG_FREQ=1000"
 u.conf conf/poiseuille.h <<!
    $DPD $Domain $Wvel walls
    strt_dumps strt_freq=$inf
