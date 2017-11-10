@@ -1,0 +1,6 @@
+#! /bin/sh
+
+h=`u.host`
+. u.post.load.$h
+
+exec u.2davgh5.py "$@"
