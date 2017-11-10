@@ -1,3 +1,34 @@
 #!/usr/bin/awk -f
 
+function ini() {
+    lo = 0; hi = 10; n = 100
+    t   = 1
+    om  = 1
+    mu  = 1
+    vel0 = 1
+}
 
+function x2i(i) {
+    return lo + (hi - lo)/(n - 1)*i
+}
+
+function v0(x, t) {
+    s = sqrt(2)
+    return exp(-x/s) * sin(t - x/s)
+}
+
+function v(x, t,   vel) {
+    x = x/sqrt(mu/om)
+    t = om*t
+    vel = v0(x, t)
+    return vel0*vel
+}
+
+BEGIN {
+    ini()
+    for (i = 0; i < n; i++) {
+	x  = x2i(i)
+	vel = v(x, t)
+	print x, vel
+    }
+}
