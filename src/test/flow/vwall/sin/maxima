@@ -1,3 +1,6 @@
+/* Panton, R. L. (2006). Incompressible flow. John Wiley & Sons.
+   11.4. STOKES’S OSCILLATING PLATE */
+
 e(v):= diff(v, t) - mu*diff(v, x, 2) $
 
 X: x/sqrt(mu/om);
