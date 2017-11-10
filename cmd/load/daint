@@ -1,16 +1,5 @@
 . u.utils
 
-module1 load cudatoolkit daint-gpu
-
-hdf () {
-    module1 load "$1"
-    if test $? -ne 0
-    then err fail to load "$1"
-    fi
-}
-
-: ${HDF5_VERSION=1.8.16}
-case $HDF5_VERSION in
-    default) hdf cray-hdf5-parallel ;;
-    *)       hdf cray-hdf5-parallel/${HDF5_VERSION} ;;
-esac
+module1 load cudatoolkit
+module1 load daint-gpu
+module1 load cray-hdf5-parallel
