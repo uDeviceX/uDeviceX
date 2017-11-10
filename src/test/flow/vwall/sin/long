@@ -1,5 +1,5 @@
 #### Plates : walls are oscillating vx = A*sin(w*t) 
-# cTEST: flow.vwall.sin.long
+# sTEST: flow.vwall.sin.long
 rm -rf bop h5 diag.txt
 :
 cp data/sdf/zplates1/main.dat sdf.dat
