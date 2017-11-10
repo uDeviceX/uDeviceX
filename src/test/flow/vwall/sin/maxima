@@ -1,0 +1,11 @@
+e(v):= diff(v, t) - mu*diff(v, x, 2) $
+
+X: x/sqrt(mu/om);
+T: om*t;
+
+V: exp(-X/sqrt(2)) * sin(T - X/sqrt(2));
+
+v: v0*V;
+
+expand(e(v)); /* should be 0 */
+subst(x = 0, v); /* should be `sin(om*t)*v0` */

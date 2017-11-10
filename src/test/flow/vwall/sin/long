@@ -15,7 +15,7 @@ t0=10.0 t1=80.0 t2=40.0
 wall_creation=9999
 : ::
 DPD="multi_solvent=true S_LEVEL=0 kBT=0.333333 numberdensity=10 adpd_b=3 adpd_bw=0.9257 gdpd_b=4.5 dt=$dt"
-Domain="XS=36 YS=36 ZS=12"
+Domain="XS=48 YS=48 ZS=12"
 Wvel="WVEL_SIN WVEL_PAR_Z   WVEL_PAR_A=$A WVEL_PAR_W=$w WVEL_LOG_FREQ=1000"
 : ::
 u.conf conf/poiseuille.h <<!
