@@ -1,13 +1,21 @@
 #### Plates : walls are oscillating vx = A*sin(w*t) 
-# nTEST: flow.vwall.sin.short
+# sTEST: flow.vwall.sin.short
 rm -rf bop h5 diag.txt rbc.off
 :
-cp data/sdf/wall1/wall.dat sdf.dat
+cp data/sdf/zplates1/main.dat sdf.dat
 :
+A=0.2
+w=0.15707963267949
+dt=1e-3
+DPD="multi_solvent=true S_LEVEL=0 kBT=0.333333 numberdensity=10 adpd_b=3 adpd_bw=0.9257 gdpd_b=4.5 dt=$dt"
+Domain="XS=12 YS=12 ZS=12"
+Wvel="WVEL_SIN WVEL_PAR_Z   WVEL_PAR_A=$A WVEL_PAR_W=$w WVEL_LOG_FREQ=1000"
 u.conf conf/poiseuille.h <<!!!
-   WVEL_SIN WVEL_PAR_Z   WVEL_PAR_A=10 WVEL_PAR_W=3.141592   WVEL_LOG_FREQ=1000
-   tend=2.0 part_freq=300 walls wall_creation=100
-   field_dumps part_dumps field_freq=300
+   $DPD
+   $Domain
+   $Wvel
+   tend=30.01  walls wall_creation=1000
+   field_dumps part_dumps field_freq=2400 part_freq=2400
    run
 !!!
 { make clean && u.make -j; } > /dev/null

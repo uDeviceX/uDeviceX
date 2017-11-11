@@ -3,7 +3,8 @@ CXXFLAGS+=-std=c++11 -O3 -Wall
 BIN=$(HOME)/bin
 CNF=$(HOME)/.udx # config directory
 
-EXS=argp argp.awk ply2punto ply.sc ply.sxyz ply.2off off.2cm bop2txt2 u.conf0 u.avgh5 u.avgh5.py
+EXS=argp argp.awk ply2punto ply.sc ply.sxyz ply.2off off.2cm bop2txt2 u.conf0 \
+	u.avgh5 u.avgh5.py u.2davgh5 u.2davgh5.py
 C=u.sh # configs
 
 all: ply2punto

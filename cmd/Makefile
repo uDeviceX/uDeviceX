@@ -18,7 +18,7 @@ install:
            cp "$$f" "$B/$$t";                  \
 	done
 
-test:; u.test test/*
+test:; atest test/*
 
 re:; $(MAKE) -C re BIN=$B
 

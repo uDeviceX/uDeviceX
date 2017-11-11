@@ -95,7 +95,7 @@ static __device__ void fill_a(float a[N_COLOR][N_COLOR]) {
 }
 
 static __device__ void color2par(int ca, int cb, /**/ DPDparam *p) {
-    enum {B = BLUE_COLOR, R = RED_COLOR, S = SOLID_COLOR, W = WALL_COLOR};
+    enum {B = BLUE_COLOR};
     float g[N_COLOR][N_COLOR], a[N_COLOR][N_COLOR];
     fill_g(/**/ g); fill_a(/**/ a);
     if         (!multi_solvent) {

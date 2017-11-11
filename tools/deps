@@ -8,6 +8,6 @@ one () {
     ../tools/udeps "$u"
 }
 
-for u in u/korea u/bangladesh/release u/bangladesh/safe u/comm u/dang u/clist u/france u/hw u/safe u/x u/pair
+for u in u/korea u/bangladesh/release u/bangladesh/safe u/comm u/dang u/clist u/france u/hw u/safe u/x u/pair u/h5 u/scan
 do one "$u"
 done
