@@ -48,7 +48,6 @@ $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/type.o: $S/mpi/type.cpp; $X -I$S/mpi -I$S/.
 $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
 $B/msg.o: $S/msg.cpp; $X -I$S/.
-$B/rbc/.main/imp.o: $S/rbc/.main/imp.cu; $N -I$S/rbc/.main -I$S/.
 $B/rbc/main/imp.o: $S/rbc/main/imp.cu; $N -I$S/rbc/main -I$S/.
 $B/restrain/imp.o: $S/restrain/imp.cu; $N -I$S/restrain -I$S/.
 $B/restrain/stat/imp.o: $S/restrain/stat/imp.cpp; $X -I$S/restrain/stat -I$S/.
