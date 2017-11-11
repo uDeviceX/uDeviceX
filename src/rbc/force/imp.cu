@@ -29,7 +29,7 @@
 
 #include "imp.h"
 
-namespace rbc { namespace force {
+namespace rbc { namespace main {
 
 namespace dev {
 #if   defined(RBC_PARAMS_TEST)
