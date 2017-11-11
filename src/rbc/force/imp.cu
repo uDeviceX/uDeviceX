@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <assert.h>
-#include <mpi.h>
 
 #include <conf.h>
 #include "inc/conf.h"
@@ -19,13 +18,6 @@
 #include "utils/te.h"
 #include "utils/texo.h"
 #include "utils/texo.dev.h"
-
-#include "utils/mc.h"
-#include "mpi/wrapper.h"
-#include "mpi/glb.h"
-
-#include "io/off.h"
-#include "io/restart.h"
 
 #include "rbc/type.h"
 #include "imp.h"

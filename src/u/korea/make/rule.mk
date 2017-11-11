@@ -51,7 +51,6 @@ $B/msg.o: $S/msg.cpp; $X -I$S/.
 $B/rbc/com/imp.o: $S/rbc/com/imp.cu; $N -I$S/rbc/com -I$S/.
 $B/rbc/force/imp.o: $S/rbc/force/imp.cu; $N -I$S/rbc/force -I$S/.
 $B/rbc/main/imp.o: $S/rbc/main/imp.cpp; $X -I$S/rbc/main -I$S/.
-$B/rbc/main/imp.o: $S/rbc/main/imp.cu; $N -I$S/rbc/main -I$S/.
 $B/restrain/imp.o: $S/restrain/imp.cu; $N -I$S/restrain -I$S/.
 $B/restrain/stat/imp.o: $S/restrain/stat/imp.cpp; $X -I$S/restrain/stat -I$S/.
 $B/restrain/sum/imp.o: $S/restrain/sum/imp.cpp; $X -I$S/restrain/sum -I$S/.
