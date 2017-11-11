@@ -1,6 +1,4 @@
 static void forces(int nc, const Texo<float2> texvert, const Texo<int> texadj0, const Texo<int> texadj1, float* av, Force *ff) {
-    dim3 avThreads(256, 1);
-    dim3 avBlocks(1, nc);
     int md, nv;
     md = RBCmd;
     nv = RBCnv;
