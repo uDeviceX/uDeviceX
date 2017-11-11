@@ -27,6 +27,7 @@
 #include "io/off.h"
 #include "io/restart.h"
 
+#include "rbc/type.h"
 #include "imp.h"
 
 namespace rbc { namespace main {
