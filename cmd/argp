@@ -6,10 +6,6 @@ function kvsplit(s, kv,    n, t, i) { # key-value split of a string
     return n
 }
 
-function keyp(k) { # key starts with a minus
-    return k ~ /^-/
-}
-
 # key and value
 function getk(s) {sub(/^-/, "", s); sub(/=.*/, "", s); return s}
 function getv(s) {sub(/^-/, "", s); sub(/.*=/, "", s); return s}
