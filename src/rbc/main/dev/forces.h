@@ -1,5 +1,3 @@
-namespace dev {
-
 /* forces from one triangle */  
 __device__ float3 tri(const float3 r1, const float3 r2, const float3 r3, const float area, const float volume) {
     float Ak, A0, n_2, coefArea, coeffVol,
@@ -147,5 +145,3 @@ __device__ float volume0(float3 v0, float3 r1, float3 r2) {
          (v0.z*r1.x-v0.x*r1.z)*r2.y +
          (v0.y*r1.z-v0.z*r1.y)*r2.x);
 }
-
-} // dev

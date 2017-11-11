@@ -1,5 +1,3 @@
-namespace dev {
-
 /* particle - float2 union */
 union Part {
     float2 f2[3];
@@ -159,5 +157,3 @@ __global__ void area_volume(int nt, int nv, const Texo<float2> texvert, const Te
         atomicAdd(&totA_V[2 * cid + 1], a_v.y);
     }
 }
-
-} // dev

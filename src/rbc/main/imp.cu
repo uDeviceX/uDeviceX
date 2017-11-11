@@ -29,8 +29,9 @@
 
 #include "imp.h"
 
-namespace rbc {
+namespace rbc { namespace main {
 
+namespace dev {
 #if   defined(RBC_PARAMS_TEST)
    #include "params/test.h"
 #elif defined(RBC_PARAMS_LINA)
@@ -38,10 +39,9 @@ namespace rbc {
 #else
    #error RBC_PARAMS_* is undefined
 #endif
-
 #include "dev/forces.h"
 #include "dev/main.h"
-#include "dev/com.h"
+}
 
 #include "imp/ini.h"
 #include "imp/fin.h"
@@ -51,6 +51,5 @@ namespace rbc {
 #include "imp/start.h"
 
 #include "imp/forces.h"
-#include "imp/com.h"
 
-} // rbc
+}} /* namespace */
