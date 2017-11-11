@@ -10,38 +10,38 @@ void dev2hst() { /* device to host  data transfer */
 }
 
 void dump_part(int step) {
-  cD2H(o::q.pp_hst, o::q.pp, o::q.n);
-  if (global_ids) {
-      cD2H(o::q.ii_hst, o::q.ii, o::q.n);
-      bop::ids(o::q.ii_hst, o::q.n, "id_solvent", step);
-  }
-  if (multi_solvent) {
-      cD2H(o::q.cc_hst, o::q.cc, o::q.n);
-      bop::colors(o::q.cc_hst, o::q.n, "colors_solvent", step);
-  }
-
-  if (force_dumps) {
-      cD2H(o::ff_hst, o::ff, o::q.n);
-      bop::parts_forces(o::q.pp_hst, o::ff_hst, o::q.n, "solvent", step, /**/ &dumpt);
-  } else {
-      bop::parts(o::q.pp_hst, o::q.n, "solvent", step, /**/ &dumpt);
-  }
-
-  if(solids0) {
-    cD2H(s::q.pp_hst, s::q.pp, s::q.n);
-    if (force_dumps) {
-        cD2H(s::ff_hst, s::ff, s::q.n);
-        bop::parts_forces(s::q.pp_hst, s::ff_hst, s::q.n, "solid", step, /**/ &dumpt);
-    } else {
-        bop::parts(s::q.pp_hst, s::q.n, "solid", step, /**/ &dumpt);
+    cD2H(o::q.pp_hst, o::q.pp, o::q.n);
+    if (global_ids) {
+        cD2H(o::q.ii_hst, o::q.ii, o::q.n);
+        bop::ids(o::q.ii_hst, o::q.n, "id_solvent", step);
     }
-  }
+    if (multi_solvent) {
+        cD2H(o::q.cc_hst, o::q.cc, o::q.n);
+        bop::colors(o::q.cc_hst, o::q.n, "colors_solvent", step);
+    }
+
+    if (force_dumps) {
+        cD2H(o::ff_hst, o::ff, o::q.n);
+        bop::parts_forces(o::q.pp_hst, o::ff_hst, o::q.n, "solvent", step, /**/ &dumpt);
+    } else {
+        bop::parts(o::q.pp_hst, o::q.n, "solvent", step, /**/ &dumpt);
+    }
+
+    if(solids0) {
+        cD2H(s::q.pp_hst, s::q.pp, s::q.n);
+        if (force_dumps) {
+            cD2H(s::ff_hst, s::ff, s::q.n);
+            bop::parts_forces(s::q.pp_hst, s::ff_hst, s::q.n, "solid", step, /**/ &dumpt);
+        } else {
+            bop::parts(s::q.pp_hst, s::q.n, "solid", step, /**/ &dumpt);
+        }
+    }
 }
 
 void dump_rbcs() {
-  static int id = 0;
-  cD2H(a::pp_hst, r::q.pp, r::q.n);
-  rbc_mesh_dump(a::pp_hst, r::q.tri_hst, r::q.nc, r::q.nv, r::q.nt, id++);
+    static int id = 0;
+    cD2H(a::pp_hst, r::q.pp, r::q.n);
+    rbc_mesh_dump(a::pp_hst, r::q.tri_hst, r::q.nc, r::q.nv, r::q.nt, id++);
 }
 
 void dump_rbc_coms() {
