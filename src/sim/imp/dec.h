@@ -24,7 +24,7 @@ PidVCont vcont;
 namespace r /* [r]bc */
 {
 rbc::Quants q;
-rbc::main::TicketT tt;
+rbc::force::TicketT tt;
 
 RbcDistr d;
 

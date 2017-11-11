@@ -43,6 +43,7 @@
 
 #include "rbc/type.h"
 #include "rbc/main/imp.h"
+#include "rbc/force/imp.h"
 #include "rbc/com/imp.h"
 
 #include "rig/imp.h"

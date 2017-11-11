@@ -103,7 +103,7 @@ void fin() {
 
     if (rbcs) {
         rbc::main::fin(&r::q);
-        rbc::main::fin_ticket(&r::tt);
+        rbc::force::fin_ticket(&r::tt);
 
         fin_rbc_distr(/**/ &r::d);
         

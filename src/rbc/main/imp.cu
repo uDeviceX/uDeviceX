@@ -31,26 +31,11 @@
 #include "imp.h"
 
 namespace rbc { namespace main {
-
-namespace dev {
-#if   defined(RBC_PARAMS_TEST)
-   #include "params/test.h"
-#elif defined(RBC_PARAMS_LINA)
-   #include "params/lina.h"
-#else
-   #error RBC_PARAMS_* is undefined
-#endif
-#include "dev/forces.h"
-#include "dev/main.h"
-}
-
 #include "imp/ini.h"
 #include "imp/fin.h"
 
 #include "imp/setup.h"
 #include "imp/generate.h"
 #include "imp/start.h"
-
-#include "imp/forces.h"
 
 }} /* namespace */
