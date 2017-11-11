@@ -96,7 +96,7 @@ static void gen_ids(long nc, /**/ int *ii) {
         ii[i] = i + i0;
 }
 
-void gen_quants(const char *r_templ, const char *r_state, Quants *q) {
+void gen_quants(const char *r_templ, const char *r_state, /**/ Quants *q) {
     int md, nt, nv;
     md = RBCmd;
     nt = RBCnt;
