@@ -130,18 +130,3 @@ __device__ float3 dihedral(float3 r1, float3 r2, float3 r3,
     else
         return make_float3(0, 0, 0);
 }
-
-__device__ float area0(const float3 r0, const float3 r1, const float3 r2) {
-    float3 x1, x2, n;
-    diff(&r1, &r0, /**/ &x1);
-    diff(&r2, &r0, /**/ &x2);
-    cross(&x1, &x2, /**/ &n);
-    return 0.5f * sqrtf(dot<float>(&n, &n));
-}
-__device__ float volume0(float3 r0, float3 r1, float3 r2) {
-    return
-        0.1666666667f *
-        ((r0.x*r1.y-r0.y*r1.x)*r2.z +
-         (r0.z*r1.x-r0.x*r1.z)*r2.y +
-         (r0.y*r1.z-r0.z*r1.y)*r2.x);
-}

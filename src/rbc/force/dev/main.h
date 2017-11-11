@@ -127,33 +127,3 @@ __global__ void force(int md, int nv, const Texo<float2> texvert, const Texo<int
         }
     }
 }
-
-__device__ float2 warpReduceSum(float2 val) {
-    for (int offset = warpSize / 2; offset > 0; offset /= 2) {
-        val.x += __shfl_down(val.x, offset);
-        val.y += __shfl_down(val.y, offset);
-    }
-    return val;
-}
-
-__global__ void area_volume(int nt, int nv, const Texo<float2> texvert, const Texo<int4> textri, float *totA_V) {
-    float2 a_v = make_float2(0.0f, 0.0f);
-    int cid = blockIdx.y;
-
-    for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < nt;
-         i += blockDim.x * gridDim.x) {
-        int4 ids = fetch(textri, i);
-
-        const Pos r0 = tex2Pos(texvert, ids.x + cid * nv);
-        const Pos r1 = tex2Pos(texvert, ids.y + cid * nv);
-        const Pos r2 = tex2Pos(texvert, ids.z + cid * nv);
-
-        a_v.x += area0(r0.r, r1.r, r2.r);
-        a_v.y += volume0(r0.r, r1.r, r2.r);
-    }
-    a_v = warpReduceSum(a_v);
-    if ((threadIdx.x & (warpSize - 1)) == 0) {
-        atomicAdd(&totA_V[2 * cid + 0], a_v.x);
-        atomicAdd(&totA_V[2 * cid + 1], a_v.y);
-    }
-}

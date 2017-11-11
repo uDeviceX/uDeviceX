@@ -20,6 +20,7 @@
 #include "utils/texo.dev.h"
 
 #include "rbc/type.h"
+#include "area_volume/imp.h"
 #include "imp.h"
 
 namespace rbc { namespace force {
