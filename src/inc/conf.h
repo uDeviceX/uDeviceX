@@ -155,7 +155,6 @@
 #define pin_axis (true)
 #endif
 
-
 // rbc
 #ifndef rbcs
 #define rbcs (false)
@@ -166,6 +165,8 @@
 #endif
 /* [n]umber of [t]riangles (Euler formula) */
 #define RBCnt ( 2*(RBCnv) - 4 )
+/* maximum allowed degree of a vertex */
+#define RBCmd 7
 
 #ifndef rbounce_back
 #define rbounce_back (false)
@@ -175,11 +176,7 @@
 #define pushrbc (false)
 #endif
 
-/* maximum allowed degree of vertex in triangulated mesh */
-#define RBCmd 7
-
 // walls
-
 #ifndef walls
 #define walls (false)
 #endif
