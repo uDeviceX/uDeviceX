@@ -3,8 +3,8 @@
 #include <mpi.h>
 
 #include <conf.h>
-
 #include "inc/conf.h"
+
 #include "inc/def.h"
 #include "inc/type.h"
 #include "inc/dev.h"
