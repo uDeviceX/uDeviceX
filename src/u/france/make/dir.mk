@@ -33,7 +33,8 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/mesh              && \
     d $B/meshbb            && \
     d $B/mpi               && \
-    d $B/rbc               && \
+    d $B/rbc/.main         && \
+    d $B/rbc/main          && \
     d $B/restrain          && \
     d $B/restrain/stat     && \
     d $B/restrain/sum      && \

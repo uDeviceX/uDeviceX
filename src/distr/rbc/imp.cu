@@ -17,7 +17,7 @@
 #include "inc/def.h"
 
 #include "utils/texo.h"
-#include "rbc/imp.h"
+#include "rbc/main/imp.h"
 
 #include "frag/imp.h"
 #include "mpi/basetags.h"

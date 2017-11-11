@@ -40,7 +40,7 @@
 #include "clist/imp.h"
 
 #include "flu/imp.h"
-#include "rbc/imp.h"
+#include "rbc/main/imp.h"
 #include "rig/imp.h"
 
 #include "sdf/type.h"
