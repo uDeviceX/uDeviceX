@@ -1,8 +1,8 @@
-static void forces0(int nc, const Texo<float2> texvert, const Texo<int> texadj0, const Texo<int> texadj1, float* av, Force *ff) {
+static void forces0(int nc, const Texo<float2> vert, const Texo<int> adj0, const Texo<int> adj1, float* av, Force *ff) {
     int md, nv;
     md = RBCmd;
     nv = RBCnv;
-    KL(dev::force, (k_cnf(nc*nv*md)), (md, nv, texvert, texadj0, texadj1, nc, av, (float*)ff));
+    KL(dev::force, (k_cnf(nc*nv*md)), (md, nv, vert, adj0, adj1, nc, av, (float*)ff));
 }
 
 void forces(const Quants q, const TicketT t, /**/ Force *ff) {
