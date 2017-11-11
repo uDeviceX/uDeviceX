@@ -139,7 +139,7 @@ __device__ float area0(const float3 v0, const float3 r1, const float3 r2) {
     return 0.5f * sqrtf(dot<float>(&n, &n));
 }
 __device__ float volume0(float3 v0, float3 r1, float3 r2) {
-    return                                      \
+    return
         0.1666666667f *
         ((v0.x*r1.y-v0.y*r1.x)*r2.z +
          (v0.z*r1.x-v0.x*r1.z)*r2.y +
