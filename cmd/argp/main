@@ -11,7 +11,7 @@ function getk(s) {sub(/^-/, "", s); sub(/=.*/, "", s); return s}
 function getv(s) {sub(/^-/, "", s); sub(/.*=/, "", s); return s}
 
 function err(c) {
-    printf "(argp) cannot parse: \"%s\"\n", c | "cat 1>&2"
+    printf "u.argp: cannot parse: \"%s\"\n", c | "cat 1>&2"
     exit(1)
 }
 
