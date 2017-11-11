@@ -9,8 +9,8 @@ O = $B/algo/minmax.o $B/algo/scan/imp.o $B/clist/imp.o $B/cnt/imp.o $B/color/flu
     $B/io/rig.o $B/lforces/imp.o $B/lforces/transpose/imp.o $B/main.o \
     $B/math/linal.o $B/mesh/bbox.o $B/mesh/collision.o $B/mesh/dist.o \
     $B/mesh/props.o $B/meshbb/imp.o $B/mpi/glb.o $B/mpi/type.o $B/mpi/wrapper.o \
-    $B/msg.o $B/rbc/main/imp.o $B/restrain/imp.o $B/restrain/stat/imp.o \
-    $B/restrain/sum/imp.o $B/rig/imp.o $B/rigid/imp.o $B/rnd/imp.o $B/scheme/imp.o \
-    $B/sdf/imp.o $B/sdf/int.o $B/sim/imp.o $B/utils/cc.o $B/utils/error.o \
-    $B/utils/mc.o $B/utils/os.o $B/vcontroller/imp.o $B/wall/exch/imp.o \
-    $B/wall/force/imp.o $B/wall/imp.o
+    $B/msg.o $B/rbc/com/imp.o $B/rbc/main/imp.o $B/restrain/imp.o \
+    $B/restrain/stat/imp.o $B/restrain/sum/imp.o $B/rig/imp.o $B/rigid/imp.o \
+    $B/rnd/imp.o $B/scheme/imp.o $B/sdf/imp.o $B/sdf/int.o $B/sim/imp.o \
+    $B/utils/cc.o $B/utils/error.o $B/utils/mc.o $B/utils/os.o \
+    $B/vcontroller/imp.o $B/wall/exch/imp.o $B/wall/force/imp.o $B/wall/imp.o
