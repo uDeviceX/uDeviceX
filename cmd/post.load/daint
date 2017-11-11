@@ -1,3 +1,8 @@
 . u.utils
 
-module1 load daint-gpu cray-python h5py/2.7.0-CrayGNU-17.08-python2-serial
+module1 load daint-gpu
+module1 load cray-python
+
+module1 unload cray-hdf5-parallel
+module1 load h5py/2.7.0-CrayGNU-17.08-python2-serial
+
