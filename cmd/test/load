@@ -1,0 +1,11 @@
+# TEST: load.0
+h=`u.host`
+. u.load.$h && . u.post.load.$h && echo ok > load.out.txt
+
+# TEST: load.1
+h=`u.host`
+	       . u.post.load.$h && echo ok > load.out.txt
+
+# TEST: load.2
+h=`u.host`
+. u.load.$h &&                     echo ok > load.out.txt
