@@ -1,5 +1,3 @@
-namespace dev {
-
 // TODO put all warpReduce/scan in one common place
 static __device__ float3 warpReduceSum(float3 v) {
     for (int offset = warpSize>>1; offset > 0; offset >>= 1) {
@@ -10,7 +8,7 @@ static __device__ float3 warpReduceSum(float3 v) {
     return v;
 }
 
-__global__ void reduce_position(int nv, const Particle *pp, /**/ float3 *rr) {
+static __global__ void reduce_position(int nv, const Particle *pp, /**/ float3 *rr) {
     int mid, i;
     float3 r;
     i   = threadIdx.x + blockIdx.x * blockDim.x;
@@ -34,5 +32,3 @@ __global__ void reduce_position(int nv, const Particle *pp, /**/ float3 *rr) {
         atomicAdd(&rr[mid].z, r.z);
     }
 }
-
-} // dev

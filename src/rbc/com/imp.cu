@@ -29,9 +29,11 @@
 
 #include "imp.h"
 
-namespace rbc {
+namespace rbc { namespace com {
+namespace dev {
 #include "dev/main.h"
+}
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/com.h"
-} // rbc
+} } /* namespace */
