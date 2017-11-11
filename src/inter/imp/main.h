@@ -4,7 +4,7 @@ static void remove(T *data, int nv, int *e, int nc) {
     for (c = 0; c < nc; c++) cA2A(data + nv*c, data + nv*e[c], nv);
 }
 
-static void remove_rbcs(rbc::Quants *q, sdf::Quants qsdf) {
+static void remove_rbcs(rbc::main::Quants *q, sdf::Quants qsdf) {
     int stay[MAX_CELL_NUM];
     int nc0;
     q->nc = sdf::who_stays(qsdf, q->pp, q->n, nc0 = q->nc, q->nv, /**/ stay);
@@ -46,7 +46,7 @@ void create_walls(int maxn, sdf::Quants qsdf, flu::Quants* qflu, wall::Quants *q
     MSG("solvent particles survived: %d/%d", qflu->n, nold);
 }
 
-void freeze(sdf::Quants qsdf, flu::Quants *qflu, rig::Quants *qrig, rbc::Quants *qrbc) {
+void freeze(sdf::Quants qsdf, flu::Quants *qflu, rig::Quants *qrig, rbc::main::Quants *qrbc) {
     MC(m::Barrier(m::cart));
     if (solids)           create_solids(qflu, qrig);
     if (walls && rbcs  )  remove_rbcs(qrbc, qsdf);

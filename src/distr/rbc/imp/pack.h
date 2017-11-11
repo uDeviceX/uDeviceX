@@ -24,7 +24,7 @@ static void pack_ii(const Map m, int nc, const int *ii, /**/ hBags bags) {
     }
 }
 
-void pack(const rbc::Quants *q, /**/ Pack *p) {
+void pack(const rbc::main::Quants *q, /**/ Pack *p) {
     pack_pp(p->map, q->nc, q->nv, q->pp, /**/ p->dpp);
 
     if (rbc_ids) {

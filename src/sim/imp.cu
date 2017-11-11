@@ -41,6 +41,7 @@
 
 #include "flu/imp.h"
 #include "rbc/main/imp.h"
+#include "rbc/com/imp.h"
 #include "rig/imp.h"
 
 #include "sdf/type.h"

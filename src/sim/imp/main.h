@@ -36,8 +36,8 @@ void sim_gen() {
     if (global_ids)    flu::gen_ids  (o::q.n, &o::q);
     flu::get_ticketZ(o::q, &o::tz);
     if (rbcs) {
-        rbc::gen_quants("rbc.off", "rbcs-ic.txt", /**/ &r::q);
-        rbc::gen_ticket(r::q, &r::tt);
+        rbc::main::gen_quants("rbc.off", "rbcs-ic.txt", /**/ &r::q);
+        rbc::main::gen_ticket(r::q, &r::tt);
 
         if (multi_solvent) gen_colors(&colorer);
     }
@@ -69,7 +69,7 @@ void sim_strt() {
     flu::strt_quants(restart::BEGIN, &o::q);
     flu::build_cells(&o::q);
 
-    if (rbcs) rbc::strt_quants("rbc.off", restart::BEGIN, &r::q);
+    if (rbcs) rbc::main::strt_quants("rbc.off", restart::BEGIN, &r::q);
     dSync();
 
     if (solids) rig::strt_quants(restart::BEGIN, &s::q);
@@ -78,7 +78,7 @@ void sim_strt() {
 
     /*T*/
     flu::get_ticketZ(o::q, &o::tz);
-    if (rbcs)            rbc::gen_ticket(r::q, &r::tt);
+    if (rbcs)            rbc::main::gen_ticket(r::q, &r::tt);
     if (walls && w::q.n) wall::gen_ticket(w::q, &w::t);
 
     MC(m::Barrier(m::cart));

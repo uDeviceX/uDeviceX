@@ -83,7 +83,7 @@ void dump_strt_templ() { /* template dumps (wall, solid) */
 
 void dump_strt(int id) {
     flu::strt_dump(id, o::q);
-    if (rbcs)       rbc::strt_dump(id, r::q);
+    if (rbcs)       rbc::main::strt_dump(id, r::q);
     if (solids)     rig::strt_dump(id, s::q);
 }
 

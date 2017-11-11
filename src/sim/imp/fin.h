@@ -102,15 +102,15 @@ void fin() {
     }
 
     if (rbcs) {
-        rbc::fin(&r::q);
-        rbc::fin_ticket(&r::tt);
+        rbc::main::fin(&r::q);
+        rbc::main::fin_ticket(&r::tt);
 
         fin_rbc_distr(/**/ &r::d);
         
         Dfree(r::ff);
 
         if (rbc_com_dumps)
-            rbc::fin(/**/ &r::com);
+            rbc::com::fin(/**/ &r::com);
     }
     datatype::fin();
 }

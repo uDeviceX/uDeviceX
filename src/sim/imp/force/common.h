@@ -8,7 +8,7 @@ void body_force(scheme::Fparams fpar) {
 
 void forces_rbc() {
     if (rbcs)
-        rbc::forces(r::q, r::tt, /**/ r::ff);
+        rbc::main::forces(r::q, r::tt, /**/ r::ff);
 }
 
 void clear_forces(Force* ff, int n) {

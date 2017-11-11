@@ -1,5 +1,4 @@
-namespace rbc {
-
+namespace rbc { namespace main {
 struct Quants {
     int n, nc;             /* number of particles, cells            */
     Particle *pp, *pp_hst; /* vertices particles on host and device */
@@ -41,4 +40,4 @@ void forces(const Quants q, const TicketT t, /**/ Force *ff);
 
 void get_com(int nm, int nv, const Particle *pp, /**/ ComHelper *com);
 
-} // rbc
+}} /* namespace */

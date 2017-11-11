@@ -23,14 +23,14 @@ PidVCont vcont;
 
 namespace r /* [r]bc */
 {
-rbc::Quants q;
-rbc::TicketT tt;
+rbc::main::Quants q;
+rbc::main::TicketT tt;
 
 RbcDistr d;
 
 Force     *ff;
 
-rbc::ComHelper com; /* helper to compute center of masses */
+rbc::com::ComHelper com; /* helper to compute center of masses */
 }
 
 namespace s /* rigid bodies */
