@@ -157,7 +157,6 @@
 
 
 // rbc
-
 #ifndef rbcs
 #define rbcs (false)
 #endif
@@ -165,6 +164,8 @@
 #ifndef RBCnv
 #define RBCnv (498)
 #endif
+/* [n]umber of [t]riangles (Euler formula) */
+#define RBCnt ( 2*(RBCnv) - 4 )
 
 #ifndef rbounce_back
 #define rbounce_back (false)

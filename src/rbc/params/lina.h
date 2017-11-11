@@ -10,6 +10,5 @@
 #define       RBCmpow ( 2.0          )
 #define        RBCphi ( 6.97219932574)
 
-#define         RBCnt ( 2*(RBCnv) - 4 )
 #define    RBCtotArea ( 2.509e-4*(RBCnv)*(RBCnv)        * 1.05 )
 #define  RBCtotVolume ( 2.159e-7*(RBCnv)*(RBCnv)*(RBCnv))
