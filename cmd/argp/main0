@@ -10,9 +10,16 @@ function kvsplit(s, kv,    n, t, i) { # key-value split of a string
 function getk(s) {sub(/^-/, "", s); sub(/=.*/, "", s); return s}
 function getv(s) {sub(/^-/, "", s); sub(/.*=/, "", s); return s}
 
-function err(c) {
-    printf "u.argp: cannot parse: \"%s\"\n", c | "cat 1>&2"
-    exit(1)
+# c language id?
+function cid(s)      { return s ~ /^[A-Za-z_][A-Za-z_0-9]*/ }
+function assert_k(k, cur) {
+    if   (cid(k)) return
+    err("u.argp: invalid parameter: " cur)
+}
+
+function err(s) {
+    printf s "\n" | "cat >&2"
+    exit(Exit = 1)
 }
 
 function boolp(k) { # not = means boolean
@@ -25,22 +32,14 @@ BEGIN {
 
     while (iarg < ARGC)  {
 	cur = ARGV[iarg++]
-	k = getk(cur)
+	k = getk(cur);                  assert_k(k, cur)
 	if (boolp(cur)) kv[k] = "true"
 	else            kv[k] = getv(cur)
     }
     ARGC = 2 # to read the first argument as a file
-
-    printf "/* Part I (%s) */\n\n", file
 }
-
-{ # print the file
-    print
-}
-
 function max(a, b) {return a > b ? a : b}
-
-END {
+function write() {
     for (k in kv) { # collect maximum length for formatting
 	v = kv[k]
 	sk = max(length(k), sk)
@@ -48,7 +47,7 @@ END {
     }
 
     # dump output
-    printf "\n/* Part II (added by tools/argp) */\n\n", FILENAME
+    printf "\n"
     u_tmpl = sprintf("#undef  %%%ss", sk)
     d_tmpl = sprintf("#define %%%ss %%%ss", sk, sv + 2) # with brackets
 
@@ -68,4 +67,13 @@ END {
     }
     close("sort")
 }
+
+{
+    print
+}
+
+END {
+    if (Exit) exit(Exit); else write()
+}
+
 ' "$@"

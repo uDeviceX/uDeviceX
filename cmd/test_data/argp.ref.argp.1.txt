@@ -1,5 +1,3 @@
-/* Part I (data/double.poiseuille.h) */
-
 #define XS   16
 #define YS   32
 #define ZS   16
@@ -47,7 +45,5 @@
 #define wall_creation    (5000)
 #define walls            (false)
 #define RBCnv            (498)
-
-/* Part II (added by tools/argp) */
 
 
