@@ -1,0 +1,3 @@
+# TEST: host.0
+export UHOST=daint
+u.host              > host.out.txt
