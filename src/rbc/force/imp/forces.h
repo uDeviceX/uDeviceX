@@ -6,7 +6,14 @@ static void forces(int nc, const Texo<float2> texvert, const Texo<int> texadj0, 
 }
 
 static void area_volume(int nc, const Texo<float2> texvert, const Texo<int4> textri, /**/ float *av) {
-    dim3 avThreads(256, 1);
+    dim3 avThreads(256, 1);__device__ float area0(const float3 v0, const float3 r1, const float3 r2) {
+    float3 x1, x2, n;
+    diff(&r1, &v0, /**/ &x1);
+    diff(&r2, &v0, /**/ &x2);
+    cross(&x1, &x2, /**/ &n);
+    return 0.5f * sqrtf(dot<float>(&n, &n));
+}
+
     dim3 avBlocks(1, nc);
     int nt, nv;
     nt = RBCnt;

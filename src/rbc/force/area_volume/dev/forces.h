@@ -1,4 +1,4 @@
-/* forces from one triangle */  
+/* forces from one triangle */
 __device__ float3 tri(const float3 r1, const float3 r2, const float3 r3, const float area, const float volume) {
     float Ak, A0, n_2, coefArea, coeffVol,
         r, xx, IbforceI_wcl, kp, IbforceI_pow, ka0, kv0, x0, l0, lmax,
@@ -57,11 +57,11 @@ __device__ float3 visc(float3 r1, float3 r2,
     diff(&u2, &u1, /**/ &du);
     diff(&r1, &r2, /**/ &dr);
 
-    const float fac = dot<float>(&du, &dr) / dot<float>(&dr, &dr); 
-    
+    const float fac = dot<float>(&du, &dr) / dot<float>(&dr, &dr);
+
     axpy(gammaT      , &du, /**/ &f);
     axpy(gammaC * fac, &dr, /**/ &f);
-    
+
     return f;
 }
 
@@ -80,7 +80,7 @@ __device__ float3 dihedral(float3 r1, float3 r2, float3 r3,
     diff(&r4, &r1, /**/ &r41);
 
     cross(&r12, &r13, /**/ &ksi);
-    cross(&r34, &r24, /**/ &dze);    
+    cross(&r34, &r24, /**/ &dze);
 
     overIksiI = rsqrtf(dot<float>(&ksi, &ksi));
     overIdzeI = rsqrtf(dot<float>(&dze, &dze));
@@ -89,7 +89,7 @@ __device__ float3 dihedral(float3 r1, float3 r2, float3 r3,
     IsinThetaI2 = 1.0f - cosTheta * cosTheta;
 
     diff(&ksi, &dze, /**/ &ksimdze);
-    
+
     sinTheta_1 = copysignf
         (rsqrtf(max(IsinThetaI2, 1.0e-6f)),
          dot<float>(&ksimdze, &r41)); // ">" because the normals look inside
@@ -124,7 +124,7 @@ __device__ float3 dihedral(float3 r1, float3 r2, float3 r3,
         add(&f2, /**/ &f1);
         axpy(b12, &f1, /**/ &f);
         axpy(b22, &f3, /**/ &f);
-        
+
         return f;
     }
     else
