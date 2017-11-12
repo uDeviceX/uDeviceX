@@ -6,8 +6,9 @@ void body_force(scheme::Fparams fpar) {
         scheme::force(rbc_mass, fpar, r::q.n, r::q.pp, /**/ r::ff);
 }
 
-void forces_rbc() {
-    if (rbcs) rbc::force::apply(r::q, r::tt, /**/ r::ff);
+void forces_rbc () {
+    rbc::force::apply(r::q, r::tt, /**/ r::ff);
+    if (RBC_STRETCH) rbc::stretch::apply(r::q.nc, r::q.pp, r::stretch, /**/ r::ff);
 }
 
 void clear_forces(Force* ff, int n) {

@@ -5,7 +5,7 @@ void forces(bool wall0) {
 
     forces_dpd();
     if (wall0 && w::q.n) forces_wall();
-    forces_rbc();
+    if (rbcs) forces_rbc();
 
     forces_objects();
     
