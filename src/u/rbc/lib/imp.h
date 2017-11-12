@@ -1,1 +1,1 @@
-void main1();
+void run(const char *cell, const char *ic);

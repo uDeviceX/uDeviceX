@@ -23,16 +23,16 @@
 
 #include "imp.h"
 
-static void main0(rbc::Quants q) {
+static void run0(const char *cell, const char *ic, rbc::Quants q) {
     rbc::force::TicketT tt;
-    rbc::main::gen_quants("rbc.off", "rbcs-ic.txt", /**/ &q);
+    rbc::main::gen_quants(cell, ic, /**/ &q);
     rbc::force::gen_ticket(q, &tt);
     rbc::force::fin_ticket(&tt);
 }
 
-void main1() {
+void run(const char *cell, const char *ic) {
     rbc::Quants q;
     rbc::main::ini(&q);
-    main0(q);
+    run0(cell, ic, q);
     rbc::main::fin(&q);
 }
