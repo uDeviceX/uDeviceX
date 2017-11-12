@@ -3,7 +3,6 @@ static void   dealloc(Fo *f) { Dfree(f->f); }
 static float *halloc(int n)  { /* host alloc */
     return (float*)emalloc(3*n*sizeof(float));
 }
-
 static int read3(FILE *f, float *h) {
     enum {X, Y, Z};
     int n;
