@@ -6,6 +6,6 @@ struct Helper {
 
 void ini(int maxcells, /**/ Helper *com);
 void fin(/**/ Helper *com);
-void get_com(int nm, int nv, const Particle *pp, /**/ Helper *com);
+void get(int nm, int nv, const Particle *pp, /**/ Helper *com);
 
 }} /* namespace */
