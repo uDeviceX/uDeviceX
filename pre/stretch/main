@@ -1,4 +1,5 @@
 msg () { echo >&2 "$@"; }
+err () { msg "u.stretch: $@"; exit 2; }
 usg () {
    msg 'u.stretch A N  rbc.off     > rbc.stretch'
    msg 'u.stretch A N% rbc.off     > rbc.stretch'
@@ -9,3 +10,12 @@ usg () {
 }
 
 if test $# -ne 0 -a "$1" = -h; then usg; fi
+
+if test $# -ne 3; then err not enough arguments; fi
+
+A="$1"; shift
+N="$1"; shift
+off="$1"; shift
+
+if test ! -r "$off"; then err not a file: "$off"; fi
+
