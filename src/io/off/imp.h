@@ -2,9 +2,13 @@
    [1] https://en.wikipedia.org/wiki/OFF_(file_format) */
 
 static int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
-
+static void assert_nf(int n, int max, const char *f) {
+    if (n <= max) return;
+    fprintf(stderr, "off:faces nf = %d < max = %d\n in <%s>\n", n, max, f);
+    exit(2);
+}
 /* return faces: f0[0] f1[0] f2[0]   f0[1] f1[1] ... */
-int faces(const char *f, int4* faces) {
+int faces(const char *f, int max, int4* faces) {
     char buf[BUFSIZ];
     FILE *fd = fopen(f, "r");
     if (fd == NULL) {
@@ -19,6 +23,8 @@ int faces(const char *f, int4* faces) {
 
     int nv, nf;
     fscanf(fd, "%d %d %*d", &nv, &nf); /* skip `ne' and all vertices */
+    assert_nf(nf, max, f);
+    
     for (int iv = 0; iv < nv;  iv++) fscanf(fd, "%*e %*e %*e");
 
     int4 t;

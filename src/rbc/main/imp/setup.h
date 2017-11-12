@@ -29,7 +29,7 @@ static void gen_a12(int md, int i0, int *hx, int *hy, /**/ int *a1, int *a2) {
 static void gfaces(const char *f, int n0, /**/ int4 *faces) {
     /* get faces */
     int n;
-    n = off::faces(f, faces);
+    n = off::faces(f, n0, faces);
     if (n0 != n)
         ERR("wrong faces number in <%s> : %d != %d", f, n0, n);
 }
