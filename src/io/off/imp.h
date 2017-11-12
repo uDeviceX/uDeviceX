@@ -38,7 +38,12 @@ int faces(const char *f, int max, int4* faces) {
     return nf;
 }
 
-int vert(const char *f, float* vert) {
+static void assert_nv(int n, int max, const char *f) {
+    if (n <= max) return;
+    fprintf(stderr, "off:vert nv = %d < max = %d in <%s>\n", n, max, f);
+    exit(2);
+}
+int vert(const char *f, int max, float* vert) {
     char buf[BUFSIZ];
     FILE *fd = fopen(f, "r");
     if (fd == NULL) {
@@ -49,6 +54,8 @@ int vert(const char *f, float* vert) {
 
     int nv;
     fscanf(fd, "%d %*d %*d", &nv); /* skip `nf' and `ne' */
+    assert_nv(nv, max, f);
+    
     int iv = 0, ib = 0;
     for (/*   */ ; iv < nv;  iv++) {
         float x, y, z;

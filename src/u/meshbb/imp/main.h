@@ -54,8 +54,8 @@ static void write_particle(Particle p) {
 
 static void read_off(const char *path, /**/ MeshHst *M) {
     int nf, nv;
-    nv = off::vert(path,  M->vert);
-    nf = off::faces(path, M->faces);
+    nv = off::vert(path,  NV, M->vert);
+    nf = off::faces(path, NT, M->faces);
     M->nv = nv; M->nf = nf;
 }
 
