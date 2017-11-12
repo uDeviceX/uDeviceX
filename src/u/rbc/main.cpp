@@ -29,9 +29,9 @@ void lshift() {
 int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
 void main1() {
     const char *cell, *ic;
-    cell = argv[argc - 1]; lshift();
-    if (eq(cell, "-h")) usg();
     ic   = argv[argc - 1]; lshift();
+    cell = argv[argc - 1]; lshift();
+    if (eq(cell, "-h") || eq(ic, "-h")) usg();
     m::ini(argc, argv);
     run(cell, ic);
     m::fin();
