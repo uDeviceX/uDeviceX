@@ -4,7 +4,7 @@
 static int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
 static void assert_nf(int n, int max, const char *f) {
     if (n <= max) return;
-    fprintf(stderr, "off:faces nf = %d < max = %d\n in <%s>\n", n, max, f);
+    fprintf(stderr, "off:faces nf = %d < max = %d in <%s>\n", n, max, f);
     exit(2);
 }
 /* return faces: f0[0] f1[0] f2[0]   f0[1] f1[1] ... */
