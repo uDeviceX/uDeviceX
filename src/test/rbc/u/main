@@ -3,7 +3,7 @@
 S=`pwd`
 U=u/rbc
 C=conf/default.h
-
+:
 nv=642
 u.conf $S $U $C <<!!!
        RBCnv=$nv
