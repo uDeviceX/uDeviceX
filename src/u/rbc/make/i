@@ -3,3 +3,6 @@ f () ( for d; do f0 "$d"; done )
 
 f $U inc rbc mpi d math utils io
 echo inc/conf.h msg.cpp msg.h 
+
+# add dir
+echo $U $U/lib

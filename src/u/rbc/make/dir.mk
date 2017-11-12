@@ -12,4 +12,5 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/rbc/force/area_volume && \
     d $B/rbc/main              && \
     d $B/u/rbc                 && \
+    d $B/u/rbc/lib             && \
     d $B/utils                
