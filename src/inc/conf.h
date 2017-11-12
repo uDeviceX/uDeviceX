@@ -90,7 +90,11 @@
 #endif
 
 #ifndef rbc_com_dumps
-#define rbc_com_dumps (false)
+  #define rbc_com_dumps (false)
+#endif
+
+#ifndef RBC_STRETCH
+  #define RBC_STRETCH (false)
 #endif
 
 /* dump meshes relative to the domain edge or domain center? */
