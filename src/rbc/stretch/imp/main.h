@@ -1,15 +1,35 @@
-static void alloc(int n, Fo *f) { Dalloc(&f->f, n); }
-static void dealloc(Fo *f) { Dfree(f->f); }
+static void   alloc(int n, Fo *f) { Dalloc(&f->f, 3*n); }
+static void   dealloc(Fo *f) { Dfree(f->f); }
+static float *halloc(int n)  { /* host alloc */
+    return (float*)emalloc(3*n*sizeof(float));
+}
 
-void ini0(const char* path, int n, float *h, /**/ float *d) {
-
+static int read3(FILE *f, float *h) {
+    enum {X, Y, Z};
+    int n;
+    n = fscanf(f, "%f %f %f\n", &h[X], &h[Y], &h[Z]);
+    return n;
+}
+static void read(FILE *f, int n, /**/ float *h) {
+    int i;
+    i = 0;
+    for (/**/ ; i < n && read3(f, h) == 3;   i++, h += 3)
+        ;
+    if (i != n) ERR("got %d != %d lines", i, n);
+}
+static void ini0(const char* path, int n, float *h, /**/ float *d) {
+    MSG("reading <%s>", path);
+    FILE *f = efopen(path, "r");
+    read(f, n , /**/ h);
+    cH2D(d, h, n);
+    fclose(f);
 }
 
 void ini(const char* path, int n, /**/ Fo *f) {
     float *d, *h; /* device and host */
     alloc(n, f);
     d = f->f;
-    h = (float*) malloc(3*n*sizeof(float));
+    h = halloc(n);
     ini0(path, n, /*w*/ h, /**/ d);
     free(h);
 }

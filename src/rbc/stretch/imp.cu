@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <assert.h>
+
 #include <conf.h>
 #include "inc/conf.h"
 
@@ -15,6 +18,7 @@
 #include "imp.h"
 namespace rbc { namespace sretch {
 #include "imp/type.h"
+#include "imp/util.h"
 #include "imp/main.h"
 
 }} /* namespace */

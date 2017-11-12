@@ -37,6 +37,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/rbc/force             && \
     d $B/rbc/force/area_volume && \
     d $B/rbc/main              && \
+    d $B/rbc/stretch           && \
     d $B/restrain              && \
     d $B/restrain/stat         && \
     d $B/restrain/sum          && \
