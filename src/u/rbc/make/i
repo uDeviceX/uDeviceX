@@ -1,5 +1,5 @@
 f0 () { find "$1" -name '*.cu' -o -name '*.cpp' -o -name '*.h' -type f ; }
 f () ( for d; do f0 "$d"; done )
 
-f $U rbc mpi d
-echo inc/conf.h msg.cpp msg.h utils/mc.cpp utils/mc.h
+f $U inc rbc mpi d math utils io
+echo inc/conf.h msg.cpp msg.h 
