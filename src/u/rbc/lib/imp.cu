@@ -13,6 +13,7 @@
 
 #include "utils/te.h"
 #include "utils/texo.h"
+#include "utils/cc.h"
 
 #include "rbc/type.h"
 #include "rbc/main/imp.h"
