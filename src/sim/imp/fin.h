@@ -109,8 +109,9 @@ void fin() {
         
         Dfree(r::ff);
 
-        if (rbc_com_dumps)
-            rbc::com::fin(/**/ &r::com);
+        if (rbc_com_dumps) rbc::com::fin(/**/ &r::com);
+        if (RBC_STRETCH)   rbc::stretch::fin(/**/ r::stretch);
+            
     }
     datatype::fin();
 }

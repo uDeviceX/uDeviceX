@@ -1,4 +1,4 @@
-namespace rbc { namespace sretch {
+namespace rbc { namespace stretch {
 
 /* force */
 struct Fo;

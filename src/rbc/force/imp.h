@@ -8,6 +8,6 @@ struct TicketT {
 
 void gen_ticket(const Quants q, TicketT *t);
 void fin_ticket(TicketT *t);
-void forces(const Quants q, const TicketT t, /**/ Force *ff);
+void apply(const Quants q, const TicketT t, /**/ Force *ff);
 
 }} /* namespace */

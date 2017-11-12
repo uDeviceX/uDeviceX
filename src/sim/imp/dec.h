@@ -30,7 +30,8 @@ RbcDistr d;
 
 Force     *ff;
 
-rbc::com::Helper com; /* helper to compute center of masses */
+rbc::com::Helper  com;      /* helper to compute center of masses */
+rbc::stretch::Fo *stretch;  /* helper to apply stretching [fo]rce to cells */
 }
 
 namespace s /* rigid bodies */
