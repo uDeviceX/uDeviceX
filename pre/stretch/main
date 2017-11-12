@@ -19,3 +19,4 @@ off="$1"; shift
 
 if test ! -r "$off"; then err not a file: "$off"; fi
 
+u.stretch0 "$A" "$N" "$off"
