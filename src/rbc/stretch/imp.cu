@@ -16,7 +16,7 @@
 #include "utils/kl.h"
 
 #include "imp.h"
-namespace rbc { namespace sretch {
+namespace rbc { namespace stretch {
 #include "imp/type.h"
 #include "imp/util.h"
 #include "imp/main.h"
