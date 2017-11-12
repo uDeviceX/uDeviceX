@@ -8,4 +8,4 @@ void ini(int maxcells, /**/ ComHelper *com);
 void fin(/**/ ComHelper *com);
 void get_com(int nm, int nv, const Particle *pp, /**/ ComHelper *com);
 
-} } /* namespace */
+}} /* namespace */
