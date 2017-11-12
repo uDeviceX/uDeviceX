@@ -20,7 +20,7 @@ static void ini0(const char* path, int n, float *h, /**/ float *d) {
     MSG("reading <%s>", path);
     FILE *f = efopen(path, "r");
     read(f, n , /**/ h);
-    cH2D(d, h, n);
+    cH2D(d, h, 3*n);
     fclose(f);
 }
 void ini1(const char* path, int n, /**/ Fo *f) {
@@ -31,10 +31,11 @@ void ini1(const char* path, int n, /**/ Fo *f) {
     ini0(path, n, /*w*/ h, /**/ d);
     free(h);
 }
-void ini(const char* path, int n, /**/ Fo **fp) {
+void ini(const char* path, int nv, /**/ Fo **fp) {
     Fo *f;
     f = (Fo*) malloc(sizeof(Fo));
-    ini1(path, n, f);
+    ini1(path, nv, f);
+    f->nv = nv;
     *fp = f;
 }
 
@@ -43,6 +44,9 @@ void fin(Fo *f) {
     free(f);
 }
 
-void apply(int nm, const Particle*, const Fo*, /**/ Force*) {
-
+void apply(int nm, const Fo *f, /**/ Force *ff) {
+    int n, nv;
+    nv = f->nv;
+    n  = nm * nv;
+    if (n) KL(dev::apply, (k_cnf(n)), (n, nv, f->f, /**/ ff));
 }
