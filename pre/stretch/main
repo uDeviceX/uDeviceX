@@ -2,7 +2,7 @@ msg () { echo >&2 "$@"; }
 usg () {
    msg 'u.stretch A N  rbc.off     > rbc.stretch'
    msg 'u.stretch A N% rbc.off     > rbc.stretch'
-   msg 'create stretch file'
+   msg 'create stretch file: add force A in X to rightmost and -A to leftmost vertices'
    msg 'A: total force [L/T^2], N number or percent of vertices to stretch in each of the directions'
    msg 'Example. u.stretch 10.0 5% rbc.off > rbc.stretch'
    exit
