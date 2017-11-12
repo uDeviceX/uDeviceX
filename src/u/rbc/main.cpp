@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 
 #include "mpi/glb.h"
@@ -9,6 +10,13 @@
 
 static int    argc;
 static char **argv;
+
+void usg() {
+    fprintf(stderr, "usage: ./udx cell.off ic.dat\n");
+    fprintf(stderr, "rbc client\n");
+    exit(1);
+}
+
 /* left shift */
 void lshift() {
     argc--;
@@ -18,9 +26,11 @@ void lshift() {
     }
 }
 
+int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
 void main1() {
     const char *cell, *ic;
     cell = argv[argc - 1]; lshift();
+    if (eq(cell, "-h")) usg();
     ic   = argv[argc - 1]; lshift();
     m::ini(argc, argv);
     run(cell, ic);
