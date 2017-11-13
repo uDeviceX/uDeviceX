@@ -42,7 +42,7 @@ static __device__ float3 adj_tris(const Texo<float2> vert,  const Part p0, const
 
 static __device__ float3 adj_dihedrals(const Texo<float2> vert, float3 r0, Map *m) {
     float3 fd1, fd2;
-    Pos r1, r2, r3, r3;
+    Pos r1, r2, r3, r4;
     r1 = tex2Pos(vert, m->i1);
     r2 = tex2Pos(vert, m->i2);
     r3 = tex2Pos(vert, m->i3);
