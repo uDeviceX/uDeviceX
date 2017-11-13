@@ -1,7 +1,33 @@
-static void setup_edg0(rbc::adj::Map m, /**/ EdgInfo *edg) {
+static void diff(float *a, float *b, /**/ float *c) {
+    enum {X, Y, Z};
+    c[X] = a[X] - b[X];
+    c[Y] = a[Y] - b[Y];
+    c[Z] = a[Z] - b[Z];
+}
+
+static float vabs(float *a) {
+    enum {X, Y, Z};
+    float r;
+    r = a[X]*a[X] + a[Y]*a[Y] + a[Z]*a[Z];
+    return sqrt(r);
+}
+                 
+static void setup_edg0(float *rr, rbc::adj::Map m, /**/ EdgInfo *edg) {
     int i0, i1, i2;
+    float *r0, *r1, *r2;
+    float r01[3], r12[3], r20[3];
+    float a, b, c;
+
     i0 = m.i0; i1 = m.i1; i2 = m.i2;
-    MSG("i012: %d %d %d", i0, i1, i2);
+
+    r0 = &rr[i0]; r1 = &rr[i1]; r2 = &rr[i2];
+
+    diff(r0, r1, /**/ r01);
+    diff(r1, r2, /**/ r12);
+    diff(r2, r0, /**/ r20);
+
+    a = vabs(r01); b = vabs(r12); c = vabs(r20);
+    MSG("i012: %g %g %g", a, b, c);
 }
 
 static void setup_edg1(int md, int nv, int *adj0, int *adj1, float *rr, /**/ EdgInfo *edg) {
@@ -11,7 +37,7 @@ static void setup_edg1(int md, int nv, int *adj0, int *adj1, float *rr, /**/ Edg
     for (i = 0; i < md*nv; i++) {
         valid = rbc::adj::hst(md, nv, i, adj0, adj1, /**/ &m);
         if (!valid) continue;
-        setup_edg0(m, /**/ &edg[i]);
+        setup_edg0(rr, m, /**/ &edg[i]);
     }
 }
 
