@@ -6,8 +6,8 @@ CXXFLAGS = -Wpedantic -Wall -Wextra -O3
 
 
 INST_BIN=~/bin
-BOV=$(HOME)/prefix/bov/
-BOP=$(HOME)/prefix/bop/
+BOV=$(HOME)/prefix/bov
+BOP=$(HOME)/prefix/bop
 
 CXXFLAGS += -I$(BOV)/include
 LIBS     += -L$(BOV)/lib -lbov -lbov_serial
