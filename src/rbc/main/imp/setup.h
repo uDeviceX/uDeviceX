@@ -22,7 +22,7 @@ static void setup_edg1(int md, int nv, int *adj0, int *adj1, float *rr, /**/ Edg
     int valid, i;
     rbc::adj::Map m;
 
-    for (i = 0; i < md*nv; i++) {
+    for (i = 0; i <= md*nv; i++) {
         valid = rbc::adj::hst(md, nv, i, adj0, adj1, /**/ &m);
         if (!valid) continue;
         setup_edg0(rr, m, /**/ &edg[i]);
