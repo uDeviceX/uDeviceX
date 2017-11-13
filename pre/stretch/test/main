@@ -1,0 +1,6 @@
+# TEST: main.0
+u.stretch 0.1 5% data/rbc/642.off       > main.out.txt
+
+# TEST: main.1
+export STRETCH_DEBUG=
+u.stretch 0.1 5% data/rbc/642.off       > main.out.txt

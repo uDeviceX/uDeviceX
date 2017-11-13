@@ -1,11 +1,9 @@
-// solvent
-
-/* DPD kernel envelop parameter: random and dissipative kernels (wd = wr^2)
-   0: wr = 1 - r
-   1: wr = (1 - r)^(1/2)
-   2: wr = (1 - r)^(1/4) */
-#ifndef S_LEVEL
-  #define S_LEVEL (2)
+/* how wall velocity is changing in time?  */
+#if !defined(WVEL_FLAT) && !defined(WVEL_DUPIRE_UP) && !defined(WVEL_DUPIRE_DOWN) && !defined(WVEL_SIN)
+  #define WVEL_FLAT
+#endif
+#ifndef WVEL_LOG_FREQ
+  #define WVEL_LOG_FREQ (1000)
 #endif
 
 #ifndef WVEL_PAR_A
@@ -14,53 +12,47 @@
   #define WVEL_PAR_Z (false)
 #endif
 
-/* fall velocity time profile */
-#if !defined(WVEL_FLAT) && !defined(WVEL_DUPIRE_UP) && !defined(WVEL_DUPIRE_DOWN) && !defined(WVEL_SIN)
-  #define WVEL_FLAT
-#endif
-#ifndef WVEL_LOG_FREQ
-  #define WVEL_LOG_FREQ (1000)
-#endif
-
+/* magnituted of body force
+   see doc/body_force.md */
 #ifndef FORCE_PAR_A
   #define FORCE_PAR_A (2.0)
 #endif
 
+/* object-object, cell-object, and cell-cell contact force */
 #ifndef contactforces
 #define contactforces (false)
 #endif
 
+/* should solvent have colors? 
+   see doc/color.md */
 #ifndef multi_solvent
 #define multi_solvent (false)
 #endif
 
-// when to re-color rbcs
+/* when to re-color rbcs */
 #ifndef color_freq
 #define color_freq    (0)
 #endif
 
-// recoloring options
-
+/* recolor solvent crossing periodic boundary ? */
 #ifndef RECOLOR_FLUX
 #define RECOLOR_FLUX (false)
 #endif
-
 #ifndef COL_FLUX_DIR
 #define COL_FLUX_DIR (0)
 #endif
 
-// global ids for solvent, rbcs
-
+/* ids for solvent */
 #ifndef global_ids
 #define global_ids (false)
 #endif
 
+/* ids for cell */
 #ifndef rbc_ids
 #define rbc_ids (false)
 #endif
 
 // dump
-
 #ifndef dump_all_fields
 #define dump_all_fields (false)
 #endif
@@ -93,6 +85,8 @@
   #define rbc_com_dumps (false)
 #endif
 
+/* stretch cell? 
+   see doc/stretch.md */
 #ifndef RBC_STRETCH
   #define RBC_STRETCH (false)
 #endif
@@ -251,15 +245,6 @@
   #define DEV_CUDA
 #endif
 
-#if !defined(ODSTR0) && !defined(ODSTR1) && !defined(ODSTR_SAFE)
-  #define ODSTR1
-#endif
-
-/* forces in sim:: on/off */
-#if !defined(FORCE0) && !defined(FORCE1)
-  #define FORCE1
-#endif
-
 /* body force */
 #if !defined(FORCE_NONE) && !defined(FORCE_DOUBLE_POISEUILLE) && \
     !defined(FORCE_4ROLLER) && !defined(FORCE_CONSTANT)
@@ -288,7 +273,6 @@
 #endif
 
 /*           Velocity controller           */
-
 #ifndef VCON
   #define VCON (false)
 #endif
@@ -325,6 +309,14 @@
    "charge" -- no dependencies on mass */
 #if !defined(DPD_GRAVITY) && !defined(DPD_CHARGE)
   #define DPD_CHARGE
+#endif
+
+/* DPD kernel envelop parameter: random and dissipative kernels (wd = wr^2)
+   0: wr = 1 - r
+   1: wr = (1 - r)^(1/2)
+   2: wr = (1 - r)^(1/4) */
+#ifndef S_LEVEL
+  #define S_LEVEL (2)
 #endif
 
 /*** see poc/color */

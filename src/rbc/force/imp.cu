@@ -26,6 +26,7 @@
 namespace rbc { namespace force {
 
 namespace dev {
+#include "dev/map.h"
 #if   defined(RBC_PARAMS_TEST)
    #include "params/test.h"
 #elif defined(RBC_PARAMS_LINA)

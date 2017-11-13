@@ -28,7 +28,7 @@ static void write(int n, Particle *p, Force *f) {
 }
 
 static void run0(rbc::Quants q, rbc::force::TicketT t, Force *f) {
-    rbc::force::forces(q, t, /**/ f);
+    rbc::force::apply(q, t, /**/ f);
     write(q.n, q.pp, f);
 }
 

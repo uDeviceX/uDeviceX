@@ -6,6 +6,7 @@ off="$1"; shift
 function arg() {
     if (N !~ /%$/) return
     sub(/%$/, "", N)
+    if ("STRETCH_DEBUG" in ENVIRON) Debug = 1
     Percent = 1
 }
 function nxt() {
@@ -27,10 +28,15 @@ function read(   i) {
     }
 }
 function num(x) { return x + 0 }
-function write0(i,    fy, fz) {
+function write0(i,    fy, fz, x, y, z) {
     fx = num(ff[i])
     fy = fz = 0
-    print fx, fy, fz
+    if (!Debug)
+	print fx, fy, fz
+    else {
+	x = xx[i]; y = yy[i]; z = zz[i]
+	print x, y, z, fx, fy, fz
+    }
 }
 function write(   i) {
     for (i = 0; i < nv; i++) write0(i)
@@ -48,7 +54,7 @@ function less(i, j) {
 function add0(i,   k) {
     for (k in M) {
 	if (less(i, k)) {
-	    delete M[k]; M[i]; break
+	    delete M[k]; M[i]; i = k
 	}
     }
 }
@@ -56,7 +62,6 @@ function add(i,   k) {
     if (m < N) { M[i]; m++}
     else add0(i)
 }
-
 function select0() {
     split("", M); m = 0
     for (i = 0; i < nv; i++) add(i)
