@@ -255,15 +255,6 @@
   #define DEV_CUDA
 #endif
 
-#if !defined(ODSTR0) && !defined(ODSTR1) && !defined(ODSTR_SAFE)
-  #define ODSTR1
-#endif
-
-/* forces in sim:: on/off */
-#if !defined(FORCE0) && !defined(FORCE1)
-  #define FORCE1
-#endif
-
 /* body force */
 #if !defined(FORCE_NONE) && !defined(FORCE_DOUBLE_POISEUILLE) && \
     !defined(FORCE_4ROLLER) && !defined(FORCE_CONSTANT)
