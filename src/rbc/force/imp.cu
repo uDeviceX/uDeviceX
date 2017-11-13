@@ -20,13 +20,16 @@
 #include "utils/texo.dev.h"
 
 #include "rbc/type.h"
+
+#include "rbc/adj/type.h"
+#include "rbc/adj/dev.h"
+
 #include "area_volume/imp.h"
+
 #include "imp.h"
 
 namespace rbc { namespace force {
-
 namespace dev {
-#include "dev/map.h"
 #if   defined(RBC_PARAMS_TEST)
    #include "params/test.h"
 #elif defined(RBC_PARAMS_LINA)

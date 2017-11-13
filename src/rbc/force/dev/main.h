@@ -25,7 +25,8 @@ static __device__ Part tex2Part(const Texo<float2> vert, int id) {
     return p;
 }
 
-static __device__ float3 adj_tris(const Texo<float2> vert,  const Part p0, const float *av, Map *m) {
+static __device__ float3 adj_tris(const Texo<float2> vert,  const Part p0, const float *av,
+                                  rbc::adj::Map *m) {
     float3 f, fv;
     int i1, i2, rbc;
     i1 = m->i1; i2 = m->i2; rbc = m->rbc;
@@ -40,7 +41,8 @@ static __device__ float3 adj_tris(const Texo<float2> vert,  const Part p0, const
 
 }
 
-static __device__ float3 adj_dihedrals(const Texo<float2> vert, float3 r0, Map *m) {
+static __device__ float3 adj_dihedrals(const Texo<float2> vert, float3 r0,
+                                       rbc::adj::Map *m) {
     float3 fd1, fd2;
     Pos r1, r2, r3, r4;
     r1 = tex2Pos(vert, m->i1);
@@ -57,14 +59,14 @@ static __global__ void force(int md, int nv, const Texo<float2> vert, const Texo
                              int nc, const float *__restrict__ av, float *ff) {
     int i, pid;
     float3 f, fd;
-    Map m;
+    rbc::adj::Map m;
     int valid;
 
     i = threadIdx.x + blockDim.x * blockIdx.x;
     pid = i / md;
 
     if (pid >= nc * nv) return;
-    valid = map(md, nv, i, adj0, adj1, /**/ &m);
+    valid = rbc::adj::map(md, nv, i, adj0, adj1, /**/ &m);
     if (!valid) return;
 
     const Part p0 = tex2Part(vert, m.i0);
