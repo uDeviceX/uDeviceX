@@ -48,7 +48,7 @@ $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h $S/mpi/glb.
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
 $B/msg.o: $S/msg.h $S/mpi/glb.h
-$B/rbc/adj/imp.o: $S/inc/conf.h $S/rbc/type.h $S/inc/type.h $S/io/restart.h $S/mpi/wrapper.h $S/rbc/adj/imp.h $S/io/off.h $S/utils/cc.h $S/inc/def.h $S/utils/mc.h $S/d/api.h $S/msg.h $S/inc/dev.h $B/conf.h $S/rbc/adj/imp/main.h $S/mpi/glb.h
+$B/rbc/adj/imp.o: $S/rbc/adj/imp.h $S/rbc/adj/imp/ini.h $S/msg.h $S/rbc/adj/type.h $S/rbc/adj/imp/map.h
 $B/rbc/com/imp.o: $S/rbc/com/imp/fin.h $S/inc/conf.h $S/rbc/com/imp/com.h $S/inc/type.h $S/rbc/com/imp.h $S/utils/cc.h $S/inc/def.h $S/rbc/com/imp/ini.h $S/d/api.h $S/msg.h $S/inc/dev.h $B/conf.h $S/utils/kl.h $S/math/dev.h $S/rbc/com/dev/main.h $S/d/ker.h
 $B/rbc/force/area_volume/imp.o: $S/inc/conf.h $S/rbc/force/area_volume/imp.h $S/utils/cc.h $S/inc/def.h $S/d/api.h $S/msg.h $S/inc/dev.h $B/conf.h $S/rbc/force/area_volume/imp/main.h $S/utils/texo.h $S/utils/texo.dev.h $S/utils/kl.h $S/math/dev.h $S/rbc/force/area_volume/dev/main.h $S/d/ker.h
 $B/rbc/force/imp.o: $S/rbc/force/imp/fin.h $S/rbc/force/params/lina.h $S/rbc/force/params/test.h $S/rbc/force/dev/map.h $S/rbc/force/area_volume/imp.h $S/inc/conf.h $S/rbc/type.h $S/inc/type.h $S/rbc/force/imp.h $S/utils/cc.h $S/inc/def.h $S/rbc/force/imp/ini.h $S/rbc/force/dev/forces.h $S/d/api.h $S/msg.h $S/inc/dev.h $B/conf.h $S/utils/texo.h $S/rbc/force/imp/forces.h $S/utils/texo.dev.h $S/utils/te.h $S/utils/kl.h $S/math/dev.h $S/rbc/force/dev/main.h $S/d/ker.h

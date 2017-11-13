@@ -4,6 +4,8 @@
 #include <vector_types.h>
 
 #include "msg.h"
+
+#include "type.h"
 #include "imp.h"
 
 namespace rbc { namespace adj {
