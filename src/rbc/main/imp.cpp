@@ -26,6 +26,7 @@
 #include "rbc/type.h"
 #include "rbc/adj/type.h"
 #include "rbc/adj/imp.h"
+#include "rbc/gen/imp.h"
 
 #include "imp.h"
 
