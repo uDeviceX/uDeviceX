@@ -26,19 +26,8 @@ static void gen_a12(int md, int i0, int *hx, int *hy, /**/ int *a1, int *a2) {
     }  while (c != mi);
 }
 
-static void gfaces(const char *f, int n0, /**/ int4 *faces) {
-    /* get faces */
-    int n;
-    n = off::faces(f, n0, faces);
-    if (n0 != n)
-        ERR("wrong faces number in <%s> : %d != %d", f, n0, n);
-}
-static void setup(int md, int nt, int nv, const char *r_templ, int4 *faces, int4 *tri, int *adj0, int *adj1) {
-    gfaces(r_templ, nt, /**/ faces);
-
-    cH2D(tri, faces, nt);
-
-    int hx[nv*md], hy[nv*md], a1[nv*md], a2[nv*md];
+void ini(int md, int nt, int nv, int4 *faces, /**/ int *a1, int *a2) {
+    int hx[nv*md], hy[nv*md];
     int i;
     for (i = 0; i < nv*md; i++) hx[i] = a1[i] = a2[i] = -1;
 
@@ -51,7 +40,4 @@ static void setup(int md, int nt, int nv, const char *r_templ, int4 *faces, int4
         reg(md, f2, f0, f1,   hx, hy);
     }
     for (i = 0; i < nv; i++) gen_a12(md, i, hx, hy, /**/ a1, a2);
-    
-    cH2D(adj0, a1, nv*md);
-    cH2D(adj1, a2, nv*md);
 }
