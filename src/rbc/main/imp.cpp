@@ -24,6 +24,8 @@
 #include "io/restart.h"
 
 #include "rbc/type.h"
+#include "rbc/adj/imp.h"
+
 #include "imp.h"
 
 namespace rbc { namespace main {
