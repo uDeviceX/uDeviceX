@@ -3,7 +3,6 @@
 struct Map {
     int valid; /* == 0 if not valid */
     int i0, i1, i2, i3, i4;
-
     int rbc; /* cell id */
 };
 
