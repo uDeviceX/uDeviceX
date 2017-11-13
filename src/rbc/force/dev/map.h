@@ -33,12 +33,8 @@ static __device__ void ini_map(int md, int nv, int i, const Texo<int> adj0, cons
     }
     i4 = fetch(adj1, k + j);
 
-    offset  = (i0 / nv) * nv;
-    i1 += offset;
-    i2 += offset;
-    i3 += offset;
-    i4 += offset;
-
+    offset  = (i0 / nv) * nv; /* no i0 */
+    i1 += offset; i2 += offset; i3 += offset; i4 += offset;
     m->i0 = i0; m->i1 = i1; m->i2 = i2; m->i3 = i3; m->i4 = i4;
     m->valid = 1;
 }
