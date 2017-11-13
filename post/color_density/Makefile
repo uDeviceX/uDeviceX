@@ -23,7 +23,7 @@ all: $(PROGS)
 color.density.o: color.density.cpp
 
 
-.PHONY: clean install
+.PHONY: clean install test
 clean:; rm -rf $(PROGS)
 
 install:
@@ -31,3 +31,5 @@ install:
 	install0 () ( cp $$f $(INST_BIN)/$P.$$f; )    ;  \
 	for f in $(PI); do install0; done
 
+test:
+	atest color.density.cpp
