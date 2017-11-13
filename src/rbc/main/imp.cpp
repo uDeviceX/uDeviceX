@@ -31,6 +31,7 @@
 #include "imp.h"
 
 namespace rbc { namespace main {
+#include "imp/util.h"
 #include "imp/ini.h"
 #include "imp/fin.h"
 
