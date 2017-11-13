@@ -96,7 +96,7 @@ int main(int argc, char **argv) {
     
     bov.nx = a.lx; bov.ny = a.ly; bov.nz = a.lz;
     bov.lx = a.lx; bov.ly = a.ly; bov.lz = a.lz;
-    bov.ox = 0;    bov.oy = 0;    bov.oz = 0;
+    bov.ox = -0.5;    bov.oy = -0.5;    bov.oz = -0.5;
     bov.data = grid;
     sprintf(bov.var, "color density");
     bov.ncmp = 1;    
