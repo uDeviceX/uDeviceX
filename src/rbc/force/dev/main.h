@@ -90,7 +90,6 @@ static __device__ float3 adj_dihedrals(int md, int nv, const Texo<float2> vert, 
         i3 = fetch(adj0, ((neighid + 2) % md) + md * lid);
         if (i3 == -1 && valid) i3 = fetch(adj0, 0 + md * lid);
     }
-
     i4 = fetch(adj1, neighid + md * lid);
 
     if (valid) {
