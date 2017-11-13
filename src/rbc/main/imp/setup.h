@@ -20,7 +20,7 @@ static void setup_edg0(float *rr, rbc::adj::Map m, /**/ EdgInfo *edg) {
 
     i0 = m.i0; i1 = m.i1; i2 = m.i2;
 
-    r0 = &rr[i0]; r1 = &rr[i1]; r2 = &rr[i2];
+    r0 = &rr[3*i0]; r1 = &rr[3*i1]; r2 = &rr[3*i2];
 
     diff(r0, r1, /**/ r01);
     diff(r1, r2, /**/ r12);
