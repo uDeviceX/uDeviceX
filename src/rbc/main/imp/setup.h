@@ -5,7 +5,7 @@ static void gfaces(const char *f, int n0, /**/ int4 *faces) {
     if (n0 != n)
         ERR("wrong faces number in <%s> : %d != %d", f, n0, n);
 }
-static void setup(int md, int nt, int nv, const char *r_templ, int4 *faces, int4 *tri, int *adj0, int *adj1) {
+static void setup(int md, int nt, int nv, const char *r_templ, /**/ int4 *faces, int4 *tri, int *adj0, int *adj1) {
     gfaces(r_templ, nt, /**/ faces);
 
     int a1[nv*md], a2[nv*md];
