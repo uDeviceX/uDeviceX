@@ -102,7 +102,7 @@ void gen_quants(const char *r_templ, const char *r_state, /**/ Quants *q) {
     nt = RBCnt;
     nv = RBCnv;
     setup(md, nt, nv, r_templ, /**/ q->tri_hst, q->tri, q->adj0, q->adj1);
-    MSG("gen_quants: %d\n", nv);
+    MSG("gen_quants: %d\n", q->nv);
     setup_from_pos(r_templ, r_state, q->nv, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
 
     if (rbc_ids)
