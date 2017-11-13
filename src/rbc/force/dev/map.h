@@ -3,6 +3,8 @@
 struct Map {
     int valid; /* == 0 if not valid */
     int i0, i1, i2, i3, i4;
+
+    int rbc; /* cell id */
 };
 
 static __device__ void ini_map(int md, int nv, int i, const Texo<int> adj0, const Texo<int> adj1, /**/ Map *m) {
@@ -33,8 +35,11 @@ static __device__ void ini_map(int md, int nv, int i, const Texo<int> adj0, cons
     }
     i4 = fetch(adj1, k + j);
 
-    offset  = (i0 / nv) * nv; /* no i0 */
-    i1 += offset; i2 += offset; i3 += offset; i4 += offset;
+    rbc = i0 / nv;
+    offset = rbc * nv;
+    i1 += offset; i2 += offset; i3 += offset; i4 += offset; /* no i0 */
+
+    m->rbc = rbc;
     m->i0 = i0; m->i1 = i1; m->i2 = i2; m->i3 = i3; m->i4 = i4;
     m->valid = 1;
 }
