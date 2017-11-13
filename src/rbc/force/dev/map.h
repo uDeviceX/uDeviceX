@@ -4,7 +4,7 @@ struct Map {
     int rbc; /* cell id */
 };
 
-static __device__ int ini_map(int md, int nv, int i, const Texo<int> adj0, const Texo<int> adj1, /**/ Map *m) {
+static __device__ int map(int md, int nv, int i, const Texo<int> adj0, const Texo<int> adj1, /**/ Map *m) {
     int i0, i1, i2, i3, i4;
     int rbc, offset, j, k;
 
