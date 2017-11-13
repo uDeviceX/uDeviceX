@@ -58,13 +58,14 @@ static __global__ void force(int md, int nv, const Texo<float2> vert, const Texo
     int i, pid;
     float3 f, fd;
     Map m;
+    int valid;
 
     i = threadIdx.x + blockDim.x * blockIdx.x;
     pid = i / md;
 
     if (pid >= nc * nv) return;
-    ini_map(md, nv, i, adj0, adj1, /**/ &m);
-    if (!m.valid) return;
+    valid = ini_map(md, nv, i, adj0, adj1, /**/ &m);
+    if (!valid) return;
 
     const Part p0 = tex2Part(vert, m.i0);
 

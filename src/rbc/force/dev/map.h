@@ -1,12 +1,11 @@
 /* helps to find indices for triangles and dihedrals */
 
 struct Map {
-    int valid; /* == 0 if not valid */
     int i0, i1, i2, i3, i4;
     int rbc; /* cell id */
 };
 
-static __device__ void ini_map(int md, int nv, int i, const Texo<int> adj0, const Texo<int> adj1, /**/ Map *m) {
+static __device__ int ini_map(int md, int nv, int i, const Texo<int> adj0, const Texo<int> adj1, /**/ Map *m) {
     int i0, i1, i2, i3, i4;
     int rbc, offset, j, k;
 
@@ -18,11 +17,7 @@ static __device__ void ini_map(int md, int nv, int i, const Texo<int> adj0, cons
 
     k   = (i0 % nv) * md;
     i1 = fetch(adj0, k + j);
-    if (i1 == -1) {
-        m->valid = 0;
-        m->i0 = i0;
-        return ;
-    }
+    if (i1 == -1) return 0; /* invalid */
 
     i2 = fetch(adj0, k + ((j + 1) % md));
     if (i2 == -1) {
@@ -42,5 +37,5 @@ static __device__ void ini_map(int md, int nv, int i, const Texo<int> adj0, cons
 
     m->rbc = rbc;
     m->i0 = i0; m->i1 = i1; m->i2 = i2; m->i3 = i3; m->i4 = i4;
-    m->valid = 1;
+    return 1;
 }
