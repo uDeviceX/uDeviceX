@@ -39,6 +39,8 @@ static __device__ void ini_map(int md, int nv, int i, const Texo<int> adj0, cons
     offset = rbc * nv;
     i1 += offset; i2 += offset; i3 += offset; i4 += offset; /* no i0 */
 
+    assert(rbc < MAX_CELL_NUM);
+
     m->rbc = rbc;
     m->i0 = i0; m->i1 = i1; m->i2 = i2; m->i3 = i3; m->i4 = i4;
     m->valid = 1;
