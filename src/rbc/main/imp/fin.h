@@ -16,5 +16,5 @@ static void fin_edg(Quants *q) { Dfree(q->edg); }
 void fin(Quants *q) {
     fin_common(q);
     if (rbc_ids) fin_ids(q);
-    //if (RBC_STRESS_FREE) fin_edg(q);
+    if (RBC_STRESS_FREE) fin_edg(q);
 }

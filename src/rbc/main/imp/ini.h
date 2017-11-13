@@ -20,5 +20,5 @@ static void ini_edg(Quants *q) { Dalloc(&q->edg, q->nv * RBCmd); }
 void ini(Quants *q) {
     ini_common(q);
     if (rbc_ids) ini_ids(q);
-    //if (RBC_STRESS_FREE) ini_edg(q);
+    if (RBC_STRESS_FREE) ini_edg(q);
 }
