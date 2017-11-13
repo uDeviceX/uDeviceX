@@ -10,7 +10,7 @@ struct Quants {
     int *adj0, *adj1;      /* adjacency lists on device                 */
     int4 *tri, *tri_hst;   /* triangles: vertex indices                 */
 
-    float *edj;            /* edge data for stress-free model           */
+    float *edg;            /* edge data for stress-free model           */
 };
 
 } /* namespace */
