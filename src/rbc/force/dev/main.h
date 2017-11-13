@@ -11,6 +11,7 @@ union Pos {
 };
 
 static __device__ Pos tex2Pos(const Texo<float2> vert, int id, int jd) {
+    assert(jd == id);
     Pos r;
     r.f2[0] = fetch(vert, 3 * id + 0);
     r.f2[1] = fetch(vert, 3 * id + 1);
@@ -18,6 +19,7 @@ static __device__ Pos tex2Pos(const Texo<float2> vert, int id, int jd) {
 }
 
 static __device__ Part tex2Part(const Texo<float2> vert, int id, int jd) {
+    assert(jd == id);
     Part p;
     p.f2[0] = fetch(vert, 3 * id + 0);
     p.f2[1] = fetch(vert, 3 * id + 1);
@@ -114,18 +116,18 @@ static __global__ void force(int md, int nv, const Texo<float2> vert, const Texo
 
     i = threadIdx.x + blockDim.x * blockIdx.x;
     pid = i / md;
-    
+
     if (pid >= nc * nv) return;
     ini_map(md, nv, i, adj0, adj1, /**/ &m);
     if (!m.valid) return;
-        
+
     const Part p0 = tex2Part(vert, pid,   m.i0);
 
     /* all triangles and dihedrals adjusting to vertex `pid` */
     f  = adj_tris(md, nv, vert, adj0, p0, av,    &m);
     fd = adj_dihedrals(md, nv, vert, adj0, adj1, p0.r,    &m);
     add(&fd, /**/ &f);
-    
+
     if (f.x > -1.0e9f) {
         atomicAdd(&ff[3 * pid + 0], f.x);
         atomicAdd(&ff[3 * pid + 1], f.y);
