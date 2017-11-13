@@ -10,14 +10,14 @@ union Pos {
     struct { float3 r; float dummy; };
 };
 
-__device__ Pos tex2Pos(const Texo<float2> vert, const int id) {
+static __device__ Pos tex2Pos(const Texo<float2> vert, const int id) {
     Pos r;
     r.f2[0] = fetch(vert, 3 * id + 0);
     r.f2[1] = fetch(vert, 3 * id + 1);
     return r;
 }
 
-__device__ Part tex2Part(const Texo<float2> vert, const int id) {
+static __device__ Part tex2Part(const Texo<float2> vert, const int id) {
     Part p;
     p.f2[0] = fetch(vert, 3 * id + 0);
     p.f2[1] = fetch(vert, 3 * id + 1);
@@ -25,8 +25,8 @@ __device__ Part tex2Part(const Texo<float2> vert, const int id) {
     return p;
 }
 
-__device__ float3 adj_tris(int md, int nv, const Texo<float2> vert, const Texo<int> adj0,
-                           const Part p0, const float *av) {
+static __device__ float3 adj_tris(int md, int nv, const Texo<float2> vert, const Texo<int> adj0,
+                                  const Part p0, const float *av) {
     int pid, lid, idrbc, offset, neighid, i1, i2;
     float3 f, fv;
     bool valid;
@@ -55,8 +55,8 @@ __device__ float3 adj_tris(int md, int nv, const Texo<float2> vert, const Texo<i
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
 }
 
-__device__ float3 adj_dihedrals(int md, int nv, const Texo<float2> vert, const Texo<int> adj0,
-                                const Texo<int> adj1, float3 r0) {
+static __device__ float3 adj_dihedrals(int md, int nv, const Texo<float2> vert, const Texo<int> adj0,
+                                       const Texo<int> adj1, float3 r0) {
     int pid, lid, offset, neighid;
     int i1, i2, i3, i4;
     bool valid;
@@ -107,8 +107,8 @@ __device__ float3 adj_dihedrals(int md, int nv, const Texo<float2> vert, const T
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
 }
 
-__global__ void force(int md, int nv, const Texo<float2> vert, const Texo<int> adj0, const Texo<int> adj1,
-                      int nc, const float *__restrict__ av, float *ff) {
+static __global__ void force(int md, int nv, const Texo<float2> vert, const Texo<int> adj0, const Texo<int> adj1,
+                             int nc, const float *__restrict__ av, float *ff) {
     int pid = (threadIdx.x + blockDim.x * blockIdx.x) / md;
     float3 f, fd;
     
