@@ -8,13 +8,7 @@
   #define S_LEVEL (2)
 #endif
 
-#ifndef WVEL_PAR_A
-  #define WVEL_PAR_A (0.0)
-  #define WVEL_PAR_Y (false)
-  #define WVEL_PAR_Z (false)
-#endif
-
-/* fall velocity time profile */
+/* how wall velocity is changing in time?  */
 #if !defined(WVEL_FLAT) && !defined(WVEL_DUPIRE_UP) && !defined(WVEL_DUPIRE_DOWN) && !defined(WVEL_SIN)
   #define WVEL_FLAT
 #endif
@@ -22,45 +16,53 @@
   #define WVEL_LOG_FREQ (1000)
 #endif
 
+#ifndef WVEL_PAR_A
+  #define WVEL_PAR_A (0.0)
+  #define WVEL_PAR_Y (false)
+  #define WVEL_PAR_Z (false)
+#endif
+
+/* magnituted of body force
+   see doc/body_force.md */
 #ifndef FORCE_PAR_A
   #define FORCE_PAR_A (2.0)
 #endif
 
+/* object-object, cell-object, and cell-cell contact force */
 #ifndef contactforces
 #define contactforces (false)
 #endif
 
+/* should solvent have colors? 
+   see doc/color.md */
 #ifndef multi_solvent
 #define multi_solvent (false)
 #endif
 
-// when to re-color rbcs
+/* when to re-color rbcs */
 #ifndef color_freq
 #define color_freq    (0)
 #endif
 
-// recoloring options
-
+/* recolor solvent crossing periodic boundary ? */
 #ifndef RECOLOR_FLUX
 #define RECOLOR_FLUX (false)
 #endif
-
 #ifndef COL_FLUX_DIR
 #define COL_FLUX_DIR (0)
 #endif
 
-// global ids for solvent, rbcs
-
+/* ids for solvent */
 #ifndef global_ids
 #define global_ids (false)
 #endif
 
+/* ids for cell */
 #ifndef rbc_ids
 #define rbc_ids (false)
 #endif
 
 // dump
-
 #ifndef dump_all_fields
 #define dump_all_fields (false)
 #endif
@@ -93,6 +95,8 @@
   #define rbc_com_dumps (false)
 #endif
 
+/* stretch cell? 
+   see doc/stretch.md */
 #ifndef RBC_STRETCH
   #define RBC_STRETCH (false)
 #endif
