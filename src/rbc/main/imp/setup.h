@@ -2,7 +2,7 @@ static void setup_edg0(float *rr, rbc::adj::Map m, /**/ EdgInfo *edg) {
     int i0, i1, i2;
     float *r0, *r1, *r2;
     float r01[3], r12[3], r20[3];
-    float a, b, c;
+    float a, b, c, A;
 
     i0 = m.i0; i1 = m.i1; i2 = m.i2;
 
@@ -13,7 +13,9 @@ static void setup_edg0(float *rr, rbc::adj::Map m, /**/ EdgInfo *edg) {
     diff(r2, r0, /**/ r20);
 
     a = vabs(r01); b = vabs(r12); c = vabs(r20);
-    MSG("i012: %g", heron(a, b, c));
+    A = heron(a, b, c);
+
+    edg->a = a; edg->b = b; edg->c = c; edg->A = A;
 }
 
 static void setup_edg1(int md, int nv, int *adj0, int *adj1, float *rr, /**/ EdgInfo *edg) {
@@ -24,6 +26,7 @@ static void setup_edg1(int md, int nv, int *adj0, int *adj1, float *rr, /**/ Edg
         valid = rbc::adj::hst(md, nv, i, adj0, adj1, /**/ &m);
         if (!valid) continue;
         setup_edg0(rr, m, /**/ &edg[i]);
+        MSG("A: %g", edg[i].A);
     }
 }
 
