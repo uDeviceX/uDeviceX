@@ -5,10 +5,12 @@ struct Quants {
     float *av;             /* area and volume on device             */
 
     int *ii;               /* global ids (on host) */
-    
+
     int nt, nv;            /* number of triangles and vertices per mesh */
     int *adj0, *adj1;      /* adjacency lists on device                 */
     int4 *tri, *tri_hst;   /* triangles: vertex indices                 */
+
+    float *edj;            /* edge data for stress-free model           */
 };
 
 } /* namespace */
