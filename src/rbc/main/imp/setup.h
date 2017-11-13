@@ -26,7 +26,7 @@ static void setup_edg1(int md, int nv, int *adj0, int *adj1, float *rr, /**/ Edg
         valid = rbc::adj::hst(md, nv, i, adj0, adj1, /**/ &m);
         if (!valid) continue;
         setup_edg0(rr, m, /**/ &edg[i]);
-        MSG("A: %g", edg[i].A);
+        MSG("A: %g %g %g", edg[i].a, edg[i].b, edg[i].c);
     }
 }
 
