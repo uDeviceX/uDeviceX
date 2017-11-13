@@ -1,10 +1,29 @@
-static void setup_edg(int md, int nv, int *a0, int *a1, /**/ EdgInfo *dev) {
+static void setup_edg0(rbc::adj::Map m, /**/ EdgInfo *edg) {
+    int i0, i1, i2;
+    i0 = m.i0; i1 = m.i1; i2 = m.i2;
+    MSG("i012: %d %d %d", i0, i1, i2);
+}
+
+static void setup_edg1(int md, int nv, int *adj0, int *adj1, float *rr, /**/ EdgInfo *edg) {
+    int valid, i;
+    rbc::adj::Map m;
+
+    for (i = 0; i < md*nv; i++) {
+        valid = rbc::adj::hst(md, nv, i, adj0, adj1, /**/ &m);
+        if (!valid) continue;
+        setup_edg0(m, /**/ &edg[i]);
+    }
+}
+
+static void setup_edg(int md, int nv, int *adj0, int *adj1, /**/ EdgInfo *dev) {
     float *rr;
     EdgInfo *hst;
     hst = (EdgInfo*) malloc(md*nv*sizeof(EdgInfo));
     rr = (float*)    malloc(3*nv*sizeof(float));
 
     evert("rbc.off", nv, /**/ rr);
+    setup_edg1(md, nv, adj0, adj1, rr, /**/ hst);
+
     cH2D(dev, hst, md*nv);
 
     free(hst); free(rr);
