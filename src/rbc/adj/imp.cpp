@@ -7,5 +7,6 @@
 #include "imp.h"
 
 namespace rbc { namespace adj {
-#include "imp/main.h"
+#include "imp/ini.h"
+#include "imp/map.h"
 }} /* namespace */
