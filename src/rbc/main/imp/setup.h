@@ -17,7 +17,7 @@ static void evert(const char *f, int n0, /**/ float *vert) {
 static void setup_edg(int md, int nt, int nv, int4 *faces, /**/ EdgInfo *edg) {
     float *rr;
     rr = (float*) malloc(3*nv*sizeof(float));
-    evert("rbc.edg", nv, rr);
+    evert("rbc.off", nv, /**/ rr);
     free(rr);
 }
 
