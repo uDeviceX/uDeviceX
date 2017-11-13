@@ -13,7 +13,7 @@ static void setup_edg0(float *rr, rbc::adj::Map m, /**/ EdgInfo *edg) {
     diff(r2, r0, /**/ r20);
 
     a = vabs(r01); b = vabs(r12); c = vabs(r20);
-    MSG("i012: %g %g %g", a, b, c);
+    MSG("i012: %g", heron(a, b, c));
 }
 
 static void setup_edg1(int md, int nv, int *adj0, int *adj1, float *rr, /**/ EdgInfo *edg) {
