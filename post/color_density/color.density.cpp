@@ -117,3 +117,13 @@ int main(int argc, char **argv) {
 
     return 0;
 }
+
+/*
+
+  # nTEST: colden.t0
+  # make 
+  # t=grid
+  # ./color.density 16 32 12 data/test.bop data/colors.bop $t
+  # bop2txt $t.bov > colden.out.txt
+
+*/
