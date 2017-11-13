@@ -8,36 +8,37 @@ struct Map {
 static __device__ void ini_map(int md, int nv, int i, const Texo<int> adj0, const Texo<int> adj1, /**/ Map *m) {
     int i0, i1, i2, i3, i4;
     int valid;
-    int lid, idrbc, offset, neighid;
-    
+    int offset, j, k;
+
     assert(md == RBCmd);
     assert(nv == RBCnv);
 
-    i0 =      i / md;
-    neighid = i % md;
-    
-    lid   = i0 % nv;
-    idrbc = i0 / nv;
-    
-    offset = idrbc * nv;
-    i1 = fetch(adj0, neighid + md * lid);
-    valid = i1 != -1;
+    i0 = i / md;
+    j  = i % md;
 
-    i2 = fetch(adj0, ((neighid + 1) % md) + md * lid);
-    if (i2 == -1 && valid) {
-        i2 = fetch(adj0, 0 + md * lid);
-        i3 = fetch(adj0, 1 + md * lid);
-    } else {
-        i3 = fetch(adj0, ((neighid + 2) % md) + md * lid);
-        if (i3 == -1 && valid) i3 = fetch(adj0, 0 + md * lid);
+    k   = (i0 % nv) * md;
+    i1 = fetch(adj0, k + j);
+    if (i1 == -1) {
+        m->valid = 0;
+        return ;
     }
-    i4 = fetch(adj1, neighid + md * lid);
 
+    i2 = fetch(adj0, k + ((j + 1) % md));
+    if (i2 == -1) {
+        i2 = fetch(adj0, k    );
+        i3 = fetch(adj0, k + 1);
+    } else {
+        i3 = fetch(adj0, k + ((j + 2) % md));
+        if (i3 == -1) i3 = fetch(adj0, k);
+    }
+    i4 = fetch(adj1, k + j);
+
+    offset  = (i0 / nv) * nv;
     i1 += offset;
     i2 += offset;
     i3 += offset;
     i4 += offset;
 
     m->i0 = i0; m->i1 = i1; m->i2 = i2; m->i3 = i3; m->i4 = i4;
-    m->valid = valid;
+    m->valid = 1;
 }
