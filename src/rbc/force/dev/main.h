@@ -67,14 +67,11 @@ static __global__ void force(int md, int nv, const Texo<float2> vert, const Texo
 
     const Part p0 = tex2Part(vert, m.i0);
 
-    /* all triangles and dihedrals adjusting to vertex `pid` */
     f  = adj_tris(vert, p0, av,    &m);
     fd = adj_dihedrals(vert, p0.r, &m);
     add(&fd, /**/ &f);
 
-    if (f.x > -1.0e9f) {
-        atomicAdd(&ff[3 * pid + 0], f.x);
-        atomicAdd(&ff[3 * pid + 1], f.y);
-        atomicAdd(&ff[3 * pid + 2], f.z);
-    }
+    atomicAdd(&ff[3 * pid + 0], f.x);
+    atomicAdd(&ff[3 * pid + 1], f.y);
+    atomicAdd(&ff[3 * pid + 2], f.z);
 }
