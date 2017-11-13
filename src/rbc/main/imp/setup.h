@@ -1,17 +1,3 @@
-static void diff(float *a, float *b, /**/ float *c) {
-    enum {X, Y, Z};
-    c[X] = a[X] - b[X];
-    c[Y] = a[Y] - b[Y];
-    c[Z] = a[Z] - b[Z];
-}
-
-static float vabs(float *a) {
-    enum {X, Y, Z};
-    float r;
-    r = a[X]*a[X] + a[Y]*a[Y] + a[Z]*a[Z];
-    return sqrt(r);
-}
-                 
 static void setup_edg0(float *rr, rbc::adj::Map m, /**/ EdgInfo *edg) {
     int i0, i1, i2;
     float *r0, *r1, *r2;
