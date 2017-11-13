@@ -27,3 +27,9 @@ static float vabs(float *a) {
     r = a[X]*a[X] + a[Y]*a[Y] + a[Z]*a[Z];
     return sqrt(r);
 }
+
+static float heron(float a, float b, float c) {
+  float s;
+  s = (a+b+c)/2;
+  return sqrt(s*(s-a)*(s-b)*(s-c));
+}
