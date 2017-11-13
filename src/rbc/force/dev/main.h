@@ -101,17 +101,23 @@ static __device__ float3 adj_dihedrals(int md, int nv, const Texo<float2> vert, 
         fd1 = dihedral<1>(r0, r2.r, r1.r, r4.r);
         fd2 = dihedral<2>(r1.r, r0, r2.r, r3.r);
         add(&fd1, /**/ &fd2);
-        return fd2; 
+        return fd2;
     }
     return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
 }
 
 static __global__ void force(int md, int nv, const Texo<float2> vert, const Texo<int> adj0, const Texo<int> adj1,
                              int nc, const float *__restrict__ av, float *ff) {
-    int pid = (threadIdx.x + blockDim.x * blockIdx.x) / md;
+    int i, pid;
     float3 f, fd;
+    Map m;
+
+    i = threadIdx.x + blockDim.x * blockIdx.x;
+    pid = i / md;
     
     if (pid < nc * nv) {
+        ini_map(md, nv, i, adj0, adj1, /**/ &m);
+
         const Part p0 = tex2Part(vert, pid);
 
         /* all triangles and dihedrals adjusting to vertex `pid` */
