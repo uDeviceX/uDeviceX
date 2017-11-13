@@ -1,13 +1,3 @@
-// solvent
-
-/* DPD kernel envelop parameter: random and dissipative kernels (wd = wr^2)
-   0: wr = 1 - r
-   1: wr = (1 - r)^(1/2)
-   2: wr = (1 - r)^(1/4) */
-#ifndef S_LEVEL
-  #define S_LEVEL (2)
-#endif
-
 /* how wall velocity is changing in time?  */
 #if !defined(WVEL_FLAT) && !defined(WVEL_DUPIRE_UP) && !defined(WVEL_DUPIRE_DOWN) && !defined(WVEL_SIN)
   #define WVEL_FLAT
@@ -283,7 +273,6 @@
 #endif
 
 /*           Velocity controller           */
-
 #ifndef VCON
   #define VCON (false)
 #endif
@@ -320,6 +309,14 @@
    "charge" -- no dependencies on mass */
 #if !defined(DPD_GRAVITY) && !defined(DPD_CHARGE)
   #define DPD_CHARGE
+#endif
+
+/* DPD kernel envelop parameter: random and dissipative kernels (wd = wr^2)
+   0: wr = 1 - r
+   1: wr = (1 - r)^(1/2)
+   2: wr = (1 - r)^(1/4) */
+#ifndef S_LEVEL
+  #define S_LEVEL (2)
 #endif
 
 /*** see poc/color */
