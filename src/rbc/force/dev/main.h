@@ -40,55 +40,16 @@ static __device__ float3 adj_tris(const Texo<float2> vert,  const Part p0, const
 
 }
 
-static __device__ float3 adj_dihedrals(int md, int nv, const Texo<float2> vert, const Texo<int> adj0,
-                                       const Texo<int> adj1, float3 r0, Map *m) {
-    int pid, lid, offset, neighid;
-    int i1, i2, i3, i4;
-    bool valid;
-
-    pid     = (threadIdx.x + blockDim.x * blockIdx.x) / md;
-    neighid = (threadIdx.x + blockDim.x * blockIdx.x) % md;
-
-    offset = (pid / nv) * nv;
-    lid =     pid % nv;
-
-    /*
-      r4
-      /   \
-      r1 --> r2 --> r3
-      \   /
-      V
-      r0
-
-      dihedrals: 0124, 0123
-    */
-
-    i1 = fetch(adj0, neighid + md * lid);
-    valid = i1 != -1;
-
-    i2 = fetch(adj0, ((neighid + 1) % md) + md * lid);
-
-    if (i2 == -1 && valid) {
-        i2 = fetch(adj0, 0 + md * lid);
-        i3 = fetch(adj0, 1 + md * lid);
-    } else {
-        i3 = fetch(adj0, ((neighid + 2) % md) + md * lid);
-        if (i3 == -1 && valid) i3 = fetch(adj0, 0 + md * lid);
-    }
-    i4 = fetch(adj1, neighid + md * lid);
-
-    if (valid) {
-        const Pos r1 = tex2Pos(vert, m->i1);
-        const Pos r2 = tex2Pos(vert, m->i2);
-        const Pos r3 = tex2Pos(vert, m->i3);
-        const Pos r4 = tex2Pos(vert, m->i4);
-        float3 fd1, fd2;
-        fd1 = dihedral<1>(r0, r2.r, r1.r, r4.r);
-        fd2 = dihedral<2>(r1.r, r0, r2.r, r3.r);
-        add(&fd1, /**/ &fd2);
-        return fd2;
-    }
-    return make_float3(-1.0e10f, -1.0e10f, -1.0e10f);
+static __device__ float3 adj_dihedrals(const Texo<float2> vert, float3 r0, Map *m) {
+    float3 fd1, fd2;
+    const Pos r1 = tex2Pos(vert, m->i1);
+    const Pos r2 = tex2Pos(vert, m->i2);
+    const Pos r3 = tex2Pos(vert, m->i3);
+    const Pos r4 = tex2Pos(vert, m->i4);
+    fd1 = dihedral<1>(r0, r2.r, r1.r, r4.r);
+    fd2 = dihedral<2>(r1.r, r0, r2.r, r3.r);
+    add(&fd1, /**/ &fd2);
+    return fd2;
 }
 
 static __global__ void force(int md, int nv, const Texo<float2> vert, const Texo<int> adj0, const Texo<int> adj1,
@@ -108,7 +69,7 @@ static __global__ void force(int md, int nv, const Texo<float2> vert, const Texo
 
     /* all triangles and dihedrals adjusting to vertex `pid` */
     f  = adj_tris(vert, p0, av,    &m);
-    fd = adj_dihedrals(md, nv, vert, adj0, adj1, p0.r,    &m);
+    fd = adj_dihedrals(vert, p0.r, &m);
     add(&fd, /**/ &f);
 
     if (f.x > -1.0e9f) {
