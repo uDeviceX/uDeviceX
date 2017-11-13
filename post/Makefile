@@ -10,5 +10,11 @@ clean:
 	make clean -C build_smesh
 	make clean -C disp
 	make clean -C msd
+	make clean -C color_density
 
-.PHONY: $(subdirs) clean install
+test:
+	make test -C color_density
+	make test -C disp
+
+
+.PHONY: $(subdirs) clean install test
