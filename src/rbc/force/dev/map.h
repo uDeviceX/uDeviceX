@@ -9,7 +9,7 @@ struct Map {
 
 static __device__ void ini_map(int md, int nv, int i, const Texo<int> adj0, const Texo<int> adj1, /**/ Map *m) {
     int i0, i1, i2, i3, i4;
-    int offset, j, k;
+    int rbc, offset, j, k;
 
     assert(md == RBCmd);
     assert(nv == RBCnv);
