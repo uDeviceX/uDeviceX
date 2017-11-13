@@ -1,4 +1,9 @@
 namespace rbc {
+struct EdgInfo {
+    float a, b, c; /* equilibrium lengths of the edges */
+    float A;       /* equilibrium triangle area */
+};
+
 struct Quants {
     int n, nc;             /* number of particles, cells            */
     Particle *pp, *pp_hst; /* vertices particles on host and device */
@@ -10,7 +15,7 @@ struct Quants {
     int *adj0, *adj1;      /* adjacency lists on device                 */
     int4 *tri, *tri_hst;   /* triangles: vertex indices                 */
 
-    float *edg;            /* edge data for stress-free model           */
+    EdgInfo *edg;
 };
 
 } /* namespace */
