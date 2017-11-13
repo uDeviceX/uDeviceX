@@ -77,10 +77,12 @@ int main(int argc, char **argv) {
     BovDesc bov;
     float *grid;
     char fdname[CBUFSIZE];
+    size_t sz;
     
     parse(argc, argv, /**/ &a);
 
-    grid = (float*) malloc(a.lx * a.ly * a.lz * sizeof(float));
+    sz = a.lx * a.ly * a.lz * sizeof(float);
+    grid = (float*) malloc(sz);
     
     bop_read_header(a.bop_s, /**/ &bop_s, fdname);
     bop_alloc(/**/ &bop_s);
@@ -100,6 +102,8 @@ int main(int argc, char **argv) {
     bov.ncmp = 1;    
 
     bov_alloc(sizeof(float), &bov);
+
+    memcpy(bov.data, grid, sz);
 
     bov_write_header(a.bov, &bov);
     bov_write_values(a.bov, &bov);
