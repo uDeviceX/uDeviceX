@@ -268,7 +268,7 @@
 #endif
 
 #ifndef RBC_STRESS_FREE
-  #define RBC_STRESS_FREE (false)
+  #define RBC_STRESS_FREE (true) /* TODOOOOOOOOOOOOOOOOO */
 #endif
 
 /* MSG frequency */
