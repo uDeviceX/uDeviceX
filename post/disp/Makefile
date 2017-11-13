@@ -29,4 +29,7 @@ disp.o: disp.cpp $(C)/macros.h $(C)/pp_id.h
 clean:
 	rm -rf *.o $(EXECS)
 
-.PHONY: clean all install
+test:
+	atest disp.cpp
+
+.PHONY: clean all install test
