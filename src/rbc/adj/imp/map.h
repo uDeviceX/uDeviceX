@@ -1,7 +1,7 @@
 static int fetch(int *adj, int i) { return adj[i]; }
 int map(int md, int i, int *adj0, int *adj1, /**/ Map *m) {
     int i0, i1, i2, i3, i4;
-    int rbc, offset, j, k;
+    int rbc, j, k;
 
     i0 = i / md;
     j  = i % md;

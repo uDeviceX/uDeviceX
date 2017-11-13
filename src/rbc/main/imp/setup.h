@@ -15,7 +15,7 @@ static void setup(int md, int nt, int nv, const char *r_templ, /**/ int4 *faces,
     rbc::adj::Map m;
     for (i = 0; i < nv * md; i++) {
         rbc::adj::map(md, i, a1, a2, /**/ &m);
-        MSG("i01234: %d %d %d %d %d\n", m.i0, m.i1, m.i2, m.i3, m.i4);
+        MSG("i01234: %d %d %d %d %d", m.i0, m.i1, m.i2, m.i3, m.i4);
     }
 
     cH2D(tri, faces, nt);
