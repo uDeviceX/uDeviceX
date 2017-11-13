@@ -93,10 +93,10 @@ static __device__ float3 adj_dihedrals(int md, int nv, const Texo<float2> vert, 
     i4 = fetch(adj1, neighid + md * lid);
 
     if (valid) {
-        const Pos r1 = tex2Pos(vert, offset + i1, 0);
-        const Pos r2 = tex2Pos(vert, offset + i2, 0);
-        const Pos r3 = tex2Pos(vert, offset + i3, 0);
-        const Pos r4 = tex2Pos(vert, offset + i4, 0);
+        const Pos r1 = tex2Pos(vert, offset + i1, m->i1);
+        const Pos r2 = tex2Pos(vert, offset + i2, m->i2);
+        const Pos r3 = tex2Pos(vert, offset + i3, m->i3);
+        const Pos r4 = tex2Pos(vert, offset + i4, m->i4);
         float3 fd1, fd2;
         fd1 = dihedral<1>(r0, r2.r, r1.r, r4.r);
         fd2 = dihedral<2>(r1.r, r0, r2.r, r3.r);
