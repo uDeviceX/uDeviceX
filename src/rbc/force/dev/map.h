@@ -19,6 +19,7 @@ static __device__ void ini_map(int md, int nv, int i, const Texo<int> adj0, cons
     i1 = fetch(adj0, k + j);
     if (i1 == -1) {
         m->valid = 0;
+        m->i0 = i0;
         return ;
     }
 
