@@ -48,7 +48,7 @@ function less(i, j) {
 function add0(i,   k) {
     for (k in M) {
 	if (less(i, k)) {
-	    delete M[k]; M[i]; break
+	    delete M[k]; M[i]; i = k
 	}
     }
 }
@@ -56,7 +56,6 @@ function add(i,   k) {
     if (m < N) { M[i]; m++}
     else add0(i)
 }
-
 function select0() {
     split("", M); m = 0
     for (i = 0; i < nv; i++) add(i)
