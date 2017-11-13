@@ -66,7 +66,7 @@ static __global__ void force(int md, int nv, const Texo<float2> vert, const Texo
     pid = i / md;
 
     if (pid >= nc * nv) return;
-    valid = rbc::adj::map(md, nv, i, adj0, adj1, /**/ &m);
+    valid = rbc::adj::dev(md, nv, i, adj0, adj1, /**/ &m);
     if (!valid) return;
 
     const Part p0 = tex2Part(vert, m.i0);
