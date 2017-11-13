@@ -4,8 +4,9 @@ rm -rf bop diag.txt h5 ply rbc.off
 :
 A=1e4
 nv=642
-cp data/cells/rbc/$nv.off                                 rbc.off
-u.stretch $A 5% data/cells/rbc/$nv.off                 > rbc.stretch
+cell=data/cells/rbc/$nv.off
+cp              $cell           rbc.off
+u.stretch $A 5% $cell         > rbc.stretch
 :
 x=4 y=6 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 :
