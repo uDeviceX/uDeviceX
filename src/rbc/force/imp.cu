@@ -38,8 +38,13 @@ namespace dev {
    #error RBC_PARAMS_* is undefined
 #endif
 #include "dev/common.h"
-#include "dev/shape.h"
-#include "dev/force.h"
+#if   RBC_STRESS_FREE
+  #include "dev/stress_free1/shape.h"
+  #include "dev/stress_free1/force.h"
+#else
+  #include "dev/stress_free0/shape.h"
+  #include "dev/stress_free0/force.h"
+#endif
 #include "dev/main.h"
 }
 
