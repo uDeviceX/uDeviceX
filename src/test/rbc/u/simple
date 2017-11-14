@@ -1,0 +1,13 @@
+#### check forces on a cell
+# nTEST: rbc.u.simple
+S=`pwd`
+U=u/rbc
+C=conf/default.h
+:
+nv=642
+u.conf $S $U $C <<!!!
+       RBCnv=$nv
+       run
+!!!
+{ u.make -j;     } > /dev/null
+u.run ./udx data/cells/rbc/$nv.off data/ic/two  >  forces.out.txt
