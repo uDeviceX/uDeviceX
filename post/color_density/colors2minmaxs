@@ -1,7 +1,7 @@
 #!/bin/sh
 
 usg() {
-    echo "usage: u.colors2minmax <T0> <T1> <0.bov> <1.bov> ..." >&2
+    echo "usage: u.colors2minmax <XT> <T0> <T1> <0.bov> <1.bov> ..." >&2
     exit
 }
 
@@ -15,7 +15,7 @@ exec0 () {
 main () {
     while test $# -ne 0
     do i="$1";    shift
-       Exec $T0 $T1 "$i"
+       Exec $XT $T0 $T1 "$i"
     done
 }
 
@@ -23,6 +23,7 @@ Exec () { exec0 u.color.minmax "$@"; }
 
 if test $# -ne 0 -a "$1" = -h; then usg; fi
 
+XT="$1"; shift
 T0="$1"; shift
 T1="$1"; shift
 
