@@ -11,7 +11,7 @@ static void fin_common(Quants *q) {
 }
 
 static void fin_ids(Quants *q) { free(q->ii);   }
-static void fin_edg(Quants *q) { Dfree(q->edg); }
+static void fin_edg(Quants *q) { Dfree(q->shape.edg); }
 
 void fin(Quants *q) {
     fin_common(q);
