@@ -26,7 +26,7 @@ static __device__ float3 farea(float3 x21, float3 x31, float3 x32,   float a0, f
 }
 
 static __device__ float sq(float x) { return x * x; }
-static __device__ float3 fspring(float3 x21, float l0, float A0) {
+static __device__ float3 fspring(float3 x21, float l0) {
   #define wlc_r(r) (kbT*(4*sq(r)-9*lmax*r+6*sq(lmax)))/(4*lmax*p*sq(r-lmax))
     float m;
     float  r, fwlc, fpow, lmax, kbT, p, x0;
@@ -56,7 +56,7 @@ static __device__ float3 tri0(float3 r1, float3 r2, float3 r3,
     fv = fvolume(r2, r3, volume);
     add(&fv, /**/ &f);
 
-    fs = fspring(x21,  l0, A0);
+    fs = fspring(x21,  l0);
     add(&fs, /**/ &f);
 
     return f;
