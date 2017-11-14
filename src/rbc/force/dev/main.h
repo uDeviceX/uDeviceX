@@ -77,6 +77,7 @@ static __global__ void force(int md, int nv, int nc,
     const Part p0 = tex2Part(vert, m.i0);
 
     f  = adj_tris(vert, p0, av,    shape0, &m);
+    if (RBC_STRESS_FREE) printf("f: %g %g %g\n", f.x, f.y, f.z);
     fd = adj_dihedrals(vert, p0.r, shape0, &m);
     add(&fd, /**/ &f);
 
