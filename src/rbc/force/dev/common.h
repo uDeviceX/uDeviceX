@@ -9,19 +9,9 @@ static __device__ float3 fvolume(float3 r2, float3 r3, float v) {
     return f;
 }
 
-__device__ float3 tri0(float3 r1, float3 r2, float3 r3,
-                       float x0, float A0,
-                       float area, float volume) {
-    float Ak, n_2, coefArea,
-        r, xx, IbforceI_wcl, kp, IbforceI_pow, ka0, l0, lmax,
-        kbToverp;
-    float3 fv;
-    float3 nnx32;
-    float3 x21, x32, x31, nn, f = make_float3(0, 0, 0);
-
-    diff(&r2, &r1, /**/ &x21);
-    diff(&r3, &r2, /**/ &x32);
-    diff(&r3, &r1, /**/ &x31);
+static __device__ float3 farea(float3 x21, float3 x31, float3 x32,   float A0, float area) {
+    float3 nn, nnx32, f;
+    float Ak, n_2, ka0, coefArea;
 
     cross(&x21, &x31, /**/ &nn); /* normal */
     Ak = 0.5 * sqrtf(dot<float>(&nn, &nn));
@@ -30,6 +20,24 @@ __device__ float3 tri0(float3 r1, float3 r2, float3 r3,
     coefArea = -0.25f * (ka0 * (area - RBCtotArea) * n_2) - RBCkd * (Ak - A0) / (4. * A0 * Ak);
     cross(&nn, &x32, /**/ &nnx32);
     axpy(coefArea, &nnx32, /**/ &f); /* area force */
+
+    return f;
+}
+
+__device__ float3 tri0(float3 r1, float3 r2, float3 r3,
+                       float x0, float A0,
+                       float area, float volume) {
+    float  r, xx, IbforceI_wcl, kp, IbforceI_pow, l0, lmax,
+        kbToverp;
+    float3 fv, fa;
+    float3 x21, x32, x31, f = make_float3(0, 0, 0);
+
+    diff(&r2, &r1, /**/ &x21);
+    diff(&r3, &r2, /**/ &x32);
+    diff(&r3, &r1, /**/ &x31);
+
+    fa = farea(x21, x32, x32,   A0, area);
+    add(&fa, /**/ &f);
 
     fv = fvolume(r2, r3, volume);
     add(&fv, /**/ &f);
