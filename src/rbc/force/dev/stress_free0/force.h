@@ -1,7 +1,7 @@
 __device__ float3 tri(float3 r1, float3 r2, float3 r3, Shape0 shape, float area, float volume) {
     float l0, A0;
-    l0 = sqrt(A0 * 4.0 / sqrt(3.0));
     A0 = RBCtotArea / (2.0 * RBCnv - 4.);
+    l0 = sqrt(A0 * 4.0 / sqrt(3.0));
     return tri0(r1, r2, r3,   l0, A0,   area, volume);
 }
 
