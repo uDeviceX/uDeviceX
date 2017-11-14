@@ -18,7 +18,9 @@ void gen_quants(const char *r_templ, const char *r_state, /**/ Quants *q) {
     md = RBCmd;
     nt = RBCnt;
     nv = RBCnv;
-    setup(md, nt, nv, r_templ, /**/ q->shape.edg, q->tri_hst, q->tri, q->adj0, q->adj1);
+    setup(md, nt, nv, r_templ, /**/
+          q->shape.edg, &q->shape.totArea,
+          q->tri_hst, q->tri, q->adj0, q->adj1);
     setup_from_pos(r_templ, r_state, q->nv, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
     if (rbc_ids)
         gen_ids(q->nc, /**/ q->ii);

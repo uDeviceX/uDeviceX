@@ -3,7 +3,10 @@ struct Edg {
     float a, b, c; /* equilibrium lengths of the edges */
     float A;       /* equilibrium triangle area */
 };
-struct Shape { Edg *edg; };
+struct Shape {
+    Edg *edg;
+    float totArea;
+};
 
 struct Quants {
     int n, nc;             /* number of particles, cells            */
