@@ -32,6 +32,6 @@ copy it back to `start` and set `RESTART=true`.
 
 	u.strt.cp [strt dir] [new strt dir]
 	copies restart directory
-	final.* or [biggerst timestep].* becomes final.* in [new strt dir]
+	final.* or [biggest timestep].* becomes final.* in [new strt dir]
 
 `h5` is not recreated after restart use `mkdir -p h5`.
