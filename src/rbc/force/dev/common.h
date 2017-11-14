@@ -54,7 +54,7 @@ static __device__ float3 tri0(float3 r1, float3 r2, float3 r3,
     add(&fa, /**/ &f);
 
     fv = fvolume(r2, r3, volume);
-    add(&fv, /**/ &f);
+    //    add(&fv, /**/ &f);
 
     fs = fspring(x21,  l0, A0);
     add(&fs, /**/ &f);
