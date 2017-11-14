@@ -15,7 +15,7 @@ static void setup_shape0(float *rr, rbc::adj::Map m, /**/ Edg *edg) {
     a = vabs(r01); b = vabs(r12); c = vabs(r20);
     A = heron(a, b, c);
 
-    edg->a = a; edg->b = b; edg->c = c; edg->A = A;
+    edg->a = a; edg->A = A;
 }
 
 static void setup_shape1(int md, int nv, int *adj0, int *adj1, float *rr, /**/

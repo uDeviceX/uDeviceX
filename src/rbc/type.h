@@ -1,7 +1,7 @@
 namespace rbc {
 struct Edg {
-    float a, b, c; /* equilibrium lengths of the edges */
-    float A;       /* equilibrium triangle area */
+    float a; /* equilibrium edge lengths */
+    float A; /* equilibrium triangle area */
 };
 struct Shape {
     Edg *edg;
