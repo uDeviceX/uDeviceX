@@ -3,7 +3,7 @@ __device__ float3 tri(float3 r1, float3 r2, float3 r3, Shape0 shape, float area,
     l0 = shape.a;
     A0 = shape.A;
     totArea = shape.totArea;
-    return tri0(r1, r2, r3,   l0, A0,   area, volume);
+    return tri0(r1, r2, r3,   l0, A0, totArea,   area, volume);
 }
 
 __device__ float3 dih(float3 r0, float3 r1, float3 r2, float3 r3, float3 r4) {

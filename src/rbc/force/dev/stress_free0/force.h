@@ -4,7 +4,7 @@ __device__ float3 tri(float3 r1, float3 r2, float3 r3, Shape0 shape, float area,
     totArea = RBCtotArea; nv = RBCnv;
     A0 = totArea / (2.0 * nv - 4.0);
     l0 = sqrt(A0 * 4.0 / sqrt(3.0));
-    return tri0(r1, r2, r3,   l0, A0,   area, volume);
+    return tri0(r1, r2, r3,   l0, A0, totArea,   area, volume);
 }
 
 __device__ float3 dih(float3 r0, float3 r1, float3 r2, float3 r3, float3 r4) {

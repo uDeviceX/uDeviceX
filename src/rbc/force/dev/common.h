@@ -9,10 +9,10 @@ static __device__ float3 fvolume(float3 r2, float3 r3, float v) {
     return f;
 }
 
-static __device__ float3 farea(float3 x21, float3 x31, float3 x32,   float a0, float A) {
+static __device__ float3 farea(float3 x21, float3 x31, float3 x32,   float a0, float A0, float A) {
     float3 nn, nnx32, f;
-    float A0, a, f0, fa, fA, ka, kA;
-    A0 = RBCtotArea; ka = RBCkd; kA = RBCka;
+    float a, f0, fa, fA, ka, kA;
+    ka = RBCkd; kA = RBCka;
 
     cross(&x21, &x31, /**/ &nn); /* normal */
     cross(&nn, &x32, /**/ &nnx32);
@@ -41,7 +41,7 @@ static __device__ float3 fspring(float3 x21, float l0) {
 }
 
 static __device__ float3 tri0(float3 r1, float3 r2, float3 r3,
-                              float l0, float A0,
+                              float l0, float A0, float totArea,
                               float area, float volume) {
     float3 fv, fa, fs;
     float3 x21, x32, x31, f = make_float3(0, 0, 0);
@@ -50,7 +50,7 @@ static __device__ float3 tri0(float3 r1, float3 r2, float3 r3,
     diff(&r3, &r2, /**/ &x32);
     diff(&r3, &r1, /**/ &x31);
 
-    fa = farea(x21, x31, x32,   A0, area);
+    fa = farea(x21, x31, x32,   A0, totArea, area);
     add(&fa, /**/ &f);
 
     fv = fvolume(r2, r3, volume);
