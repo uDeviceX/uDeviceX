@@ -1,11 +1,20 @@
-/* forces from one triangle */
+__device__ float3 fvolume(float3 r2, float3 r3, float volume) {
+    float k, coeff;
+    float3 f, n;
+    cross(&r3, &r2, /**/ &n);
+    k = RBCkv / (6.0 * RBCtotVolume);
+    coeff = k * (volume - RBCtotVolume);
+    axpy(coeff, &n, /**/ &f);
+    return f;
+}
+
 __device__ float3 tri0(float3 r1, float3 r2, float3 r3,
                        float x0, float A0,
                        float area, float volume) {
     float Ak, n_2, coefArea, coeffVol,
         r, xx, IbforceI_wcl, kp, IbforceI_pow, ka0, kv0, l0, lmax,
         kbToverp;
-    float fv;
+    float3 fv;
     float3 nnx32, r3r2;
     float3 x21, x32, x31, nn, f = make_float3(0, 0, 0);
 
@@ -14,20 +23,15 @@ __device__ float3 tri0(float3 r1, float3 r2, float3 r3,
     diff(&r3, &r1, /**/ &x31);
 
     cross(&x21, &x31, /**/ &nn); /* normal */
-
     Ak = 0.5 * sqrtf(dot<float>(&nn, &nn));
     n_2 = 1.0 / Ak;
     ka0 = RBCka / RBCtotArea;
-    coefArea = -0.25f * (ka0 * (area - RBCtotArea) * n_2)
-        - RBCkd * (Ak - A0) / (4. * A0 * Ak);
-
-    kv0 = RBCkv / (6.0 * RBCtotVolume);
-    coeffVol = kv0 * (volume - RBCtotVolume);
-
+    coefArea = -0.25f * (ka0 * (area - RBCtotArea) * n_2) - RBCkd * (Ak - A0) / (4. * A0 * Ak);
     cross(&nn, &x32, /**/ &nnx32);
     axpy(coefArea, &nnx32, /**/ &f); /* area force */
-    cross(&r3, &r2, /**/ &r3r2);
-    axpy(coeffVol, &r3r2, /**/ &f); /* vol force */
+    
+    fv = fvolume(r2, r3, volume);
+    add(&fv, /**/ &f);
 
     r = sqrtf(dot<float>(&x21, &x21));
     r = r < 0.0001f ? 0.0001f : r;
