@@ -1,7 +1,7 @@
 #!/bin/sh
 
 usg() {
-    echo "usage: colors2minmax <T0> <T1> <0.bov> <1.bov> ..." >&2
+    echo "usage: u.colors2minmax <T0> <T1> <0.bov> <1.bov> ..." >&2
     exit
 }
 
@@ -19,7 +19,7 @@ main () {
     done
 }
 
-Exec () { exec0 colors2minmaxs "$@"; }
+Exec () { exec0 u.color.minmax "$@"; }
 
 if test $# -ne 0 -a "$1" = -h; then usg; fi
 
