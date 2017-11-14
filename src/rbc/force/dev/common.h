@@ -4,7 +4,7 @@ static __device__ float3 fvolume(float3 r2, float3 r3, float v) {
     kv = RBCkv; v0 = RBCtotVolume;
 
     cross(&r3, &r2, /**/ &n);
-    f0 = kv * (v - v0) / (6*v0) ;
+    f0 = kv * (v - v0) / (6 * v0);
     axpy(f0, &n, /**/ &f);
     return f;
 }
@@ -25,24 +25,10 @@ static __device__ float3 farea(float3 x21, float3 x31, float3 x32,   float a0, f
     return f;
 }
 
-__device__ float3 tri0(float3 r1, float3 r2, float3 r3,
-                       float x0, float A0,
-                       float area, float volume) {
-    float  r, xx, IbforceI_wcl, kp, IbforceI_pow, l0, lmax,
-        kbToverp;
-    float3 fv, fa;
-    float3 x21, x32, x31, f = make_float3(0, 0, 0);
-
-    diff(&r2, &r1, /**/ &x21);
-    diff(&r3, &r2, /**/ &x32);
-    diff(&r3, &r1, /**/ &x31);
-
-    fa = farea(x21, x31, x32,   A0, area);
-    add(&fa, /**/ &f);
-
-    fv = fvolume(r2, r3, volume);
-    add(&fv, /**/ &f);
-
+static __device__ float3 fspring(float3 x21, float x0, float A0) {
+    float  r, xx, IbforceI_wcl, kp, IbforceI_pow, l0, lmax, kbToverp;
+    float3 f;
+    
     r = sqrtf(dot<float>(&x21, &x21));
     r = r < 0.0001f ? 0.0001f : r;
     l0 = sqrt(A0 * 4.0 / sqrt(3.0));
@@ -58,8 +44,29 @@ __device__ float3 tri0(float3 r1, float3 r2, float3 r3,
             (RBCkbT * x0 * (4 * x0 * x0 - 9 * x0 + 6) * l0 * l0) /
             (4 * RBCp * (x0 - 1) * (x0 - 1));
     IbforceI_pow = -kp / powf(r, RBCmpow) / r;
-
     axpy(IbforceI_wcl + IbforceI_pow, &x21, /**/ &f); /* wcl and pow forces */
+    return f;
+}
+
+__device__ float3 tri0(float3 r1, float3 r2, float3 r3,
+                       float x0, float A0,
+                       float area, float volume) {
+    float3 fv, fa, fs;
+    float3 x21, x32, x31, f = make_float3(0, 0, 0);
+
+    diff(&r2, &r1, /**/ &x21);
+    diff(&r3, &r2, /**/ &x32);
+    diff(&r3, &r1, /**/ &x31);
+
+    fa = farea(x21, x31, x32,   A0, area);
+    add(&fa, /**/ &f);
+
+    fv = fvolume(r2, r3, volume);
+    add(&fv, /**/ &f);
+
+    fs = fspring(x21,  x0, A0);
+    add(&fs, /**/ &f);
+
     return f;
 }
 
