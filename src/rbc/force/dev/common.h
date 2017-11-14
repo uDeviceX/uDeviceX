@@ -1,4 +1,4 @@
-__device__ float3 fvolume(float3 r2, float3 r3, float v) {
+static __device__ float3 fvolume(float3 r2, float3 r3, float v) {
     float kv, v0, f0;
     float3 f, n;
     kv = RBCkv; v0 = RBCtotVolume;
