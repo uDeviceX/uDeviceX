@@ -15,10 +15,10 @@ static void ini_common(Quants *q) {
 }
 
 static void ini_ids(Quants *q) { q->ii = (int*) malloc(MAX_CELL_NUM * sizeof(int)); }
-static void ini_edg(Quants *q) { Dalloc(&q->shape.edg, q->nv * RBCmd); }
+static void ini_shape(Quants *q) { Dalloc(&q->shape.edg, q->nv * RBCmd); }
 
 void ini(Quants *q) {
     ini_common(q);
     if (rbc_ids) ini_ids(q);
-    if (RBC_STRESS_FREE) ini_edg(q);
+    if (RBC_STRESS_FREE) ini_shape(q);
 }
