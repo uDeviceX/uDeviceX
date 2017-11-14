@@ -38,6 +38,7 @@ namespace dev {
    #error RBC_PARAMS_* is undefined
 #endif
 #include "dev/forces.h"
+#include "dev/shape.h"
 #include "dev/main.h"
 }
 
