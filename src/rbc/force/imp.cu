@@ -39,6 +39,7 @@ namespace dev {
 #endif
 #include "dev/common.h"
 #include "dev/shape.h"
+#include "dev/force.h"
 #include "dev/main.h"
 }
 

@@ -1,5 +1,5 @@
 /* forces from one triangle */
-__device__ float3 tri(const float3 r1, const float3 r2, const float3 r3, const float area, const float volume) {
+__device__ float3 tri0(const float3 r1, const float3 r2, const float3 r3, const float area, const float volume) {
     float Ak, A0, n_2, coefArea, coeffVol,
         r, xx, IbforceI_wcl, kp, IbforceI_pow, ka0, kv0, x0, l0, lmax,
         kbToverp;
@@ -67,8 +67,7 @@ __device__ float3 visc(float3 r1, float3 r2,
 
 /* forces from one dihedral */
 template <int update>
-__device__ float3 dihedral(float3 r1, float3 r2, float3 r3,
-                           float3 r4) {
+__device__ float3 dih0(float3 r1, float3 r2, float3 r3, float3 r4) {
     float overIksiI, overIdzeI, cosTheta, IsinThetaI2, sinTheta_1,
         beta, b11, b12, phi, sint0kb, cost0kb;
 
