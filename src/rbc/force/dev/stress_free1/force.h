@@ -1,4 +1,7 @@
 __device__ float3 tri(float3 r1, float3 r2, float3 r3, Shape0 shape, float area, float volume) {
+    float x0, A0;
+    x0 = shape.a;
+    A0 = shape.A;
     return tri0(r1, r2, r3, area, volume);
 }
 
