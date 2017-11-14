@@ -30,7 +30,6 @@ static __device__ float3 fspring(float3 x21, float x0, float A0) {
     float3 f;
     
     r = sqrtf(dot<float>(&x21, &x21));
-    r = r < 0.0001f ? 0.0001f : r;
     l0 = sqrt(A0 * 4.0 / sqrt(3.0));
     lmax = l0 / x0;
     xx = r / lmax;
