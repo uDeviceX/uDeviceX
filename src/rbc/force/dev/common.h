@@ -27,18 +27,18 @@ static __device__ float3 farea(float3 x21, float3 x31, float3 x32,   float a0, f
 
 static __device__ float sq(float x) { return x * x; }
 static __device__ float3 fspring(float3 x21, float x0, float A0) {
-    float  r, IbforceI_wcl, kp, IbforceI_pow, l0, lmax, kbT, p;
+  #define wlc_r(r) (kbT*(4*sq(r)-9*lmax*r+6*sq(lmax)))/(4*lmax*p*sq(r-lmax))
+    float m;
+    float  r, fwlc, fpow, l0, lmax, kbT, p, kp;
     float3 f;
-    kbT = RBCkbT; p = RBCp;
-
+    kbT = RBCkbT; p = RBCp; m = RBCmpow;
     r = sqrtf(dot<float>(&x21, &x21));
     l0 = sqrt(A0 * 4.0 / sqrt(3.0));
     lmax = l0 / x0;
-
-    IbforceI_wcl = (kbT*(4*sq(r)-9*lmax*r+6*sq(lmax)))/(4*lmax*p*sq(r-lmax));
-    kp =(kbT*x0*(4*x0*x0-9*x0+6)*l0*l0)/(4*p*(x0-1)*(x0-1));
-    IbforceI_pow = -kp / powf(r, RBCmpow) / r;
-    axpy(IbforceI_wcl + IbforceI_pow, &x21, /**/ &f); /* wcl and pow forces */
+    fwlc = wlc_r(r);
+    kp = powf(r, m) * wlc_r(l0);
+    fpow = - kp / powf(r, m) / r;
+    axpy(fwlc + fpow, &x21, /**/ &f);
     return f;
 }
 

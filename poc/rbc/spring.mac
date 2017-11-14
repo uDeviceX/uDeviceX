@@ -1,5 +1,9 @@
-x: l / lmax;
-W: kbT * lmax / (4*p) * (3 * x^2 - 2 * x^3) / (1 - x);
-P: kp/l^m;
+x: 'r / 'lmax $
+W: 'kbT * 'lmax / (4*'p) * (3 * x^2 - 2 * x^3) / (1 - x) $ /* Fedosov10 */
+F: factor(diff(W, 'r)) / 'r;
+define(wlc(r),  F);
+define(pow(r), -kp/r^m);
 
-factor(diff(W, l));
+e: pow(l0) = 'wlc(l0);
+
+factor(linsolve(e, kp));
