@@ -20,7 +20,6 @@ static __device__ float3 farea(float3 x21, float3 x31, float3 x32,   float A0, f
     coefArea = -0.25f * (ka0 * (area - RBCtotArea) * n_2) - RBCkd * (Ak - A0) / (4. * A0 * Ak);
     cross(&nn, &x32, /**/ &nnx32);
     axpy(coefArea, &nnx32, /**/ &f); /* area force */
-
     return f;
 }
 
