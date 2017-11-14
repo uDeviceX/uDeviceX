@@ -36,7 +36,7 @@ static __device__ float3 fspring(float3 x21, float x0, float A0) {
 
     kbToverp = RBCkbT / RBCp;
     IbforceI_wcl =
-            kbToverp * (0.25f / ((1.0f - xx) * (1.0f - xx)) - 0.25f + xx) /
+            kbToverp * (0.25 / ((1 - xx) * (1 - xx)) - 0.25 + xx) /
             r;
 
     kp =

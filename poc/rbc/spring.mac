@@ -1,0 +1,5 @@
+x: l / lmax;
+W: kbT * lmax / (4*p) * (3 * x^2 - 2 * x^3) / (1 - x);
+P: kp/l^m;
+
+factor(diff(W, l));
