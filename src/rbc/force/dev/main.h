@@ -26,6 +26,7 @@ static __device__ Part tex2Part(const Texo<float2> vert, int id) {
 }
 
 static __device__ float3 adj_tris(const Texo<float2> vert,  const Part p0, const float *av,
+                                  const Shape0 shape,
                                   rbc::adj::Map *m) {
     float3 f, fv;
     int i1, i2, rbc;
@@ -38,10 +39,10 @@ static __device__ float3 adj_tris(const Texo<float2> vert,  const Part p0, const
     fv = visc(p0.r, p1.r, p0.v, p1.v);
     add(&fv, /**/ &f);
     return f;
-
 }
 
 static __device__ float3 adj_dihedrals(const Texo<float2> vert, float3 r0,
+                                       const Shape0 shape,
                                        rbc::adj::Map *m) {
     float3 fd1, fd2;
     Pos r1, r2, r3, r4;
@@ -77,8 +78,8 @@ static __global__ void force(int md, int nv, int nc,
 
     const Part p0 = tex2Part(vert, m.i0);
 
-    f  = adj_tris(vert, p0, av,    &m);
-    fd = adj_dihedrals(vert, p0.r, &m);
+    f  = adj_tris(vert, p0, av,    shape0, &m);
+    fd = adj_dihedrals(vert, p0.r, shape0, &m);
     add(&fd, /**/ &f);
 
     atomicAdd(&ff[3 * pid + 0], f.x);
