@@ -1,4 +1,4 @@
-static void setup_edg0(float *rr, rbc::adj::Map m, /**/ EdgInfo *edg) {
+static void setup_edg0(float *rr, rbc::adj::Map m, /**/ Edg *edg) {
     int i0, i1, i2;
     float *r0, *r1, *r2;
     float r01[3], r12[3], r20[3];
@@ -18,7 +18,7 @@ static void setup_edg0(float *rr, rbc::adj::Map m, /**/ EdgInfo *edg) {
     edg->a = a; edg->b = b; edg->c = c; edg->A = A;
 }
 
-static void setup_edg1(int md, int nv, int *adj0, int *adj1, float *rr, /**/ EdgInfo *edg) {
+static void setup_edg1(int md, int nv, int *adj0, int *adj1, float *rr, /**/ Edg *edg) {
     int valid, i;
     rbc::adj::Map m;
 
@@ -30,10 +30,10 @@ static void setup_edg1(int md, int nv, int *adj0, int *adj1, float *rr, /**/ Edg
     }
 }
 
-static void setup_edg(int md, int nv, int *adj0, int *adj1, /**/ EdgInfo *dev) {
+static void setup_edg(int md, int nv, int *adj0, int *adj1, /**/ Edg *dev) {
     float *rr;
-    EdgInfo *hst;
-    hst = (EdgInfo*) malloc(md*nv*sizeof(EdgInfo));
+    Edg *hst;
+    hst = (Edg*) malloc(md*nv*sizeof(EdgInfo));
     rr = (float*)    malloc(3*nv*sizeof(float));
 
     evert("rbc.off", nv, /**/ rr);
@@ -45,7 +45,7 @@ static void setup_edg(int md, int nv, int *adj0, int *adj1, /**/ EdgInfo *dev) {
 }
 
 static void setup(int md, int nt, int nv, const char *r_templ, /**/
-                  EdgInfo *edg, int4 *faces, int4 *tri, int *adj0, int *adj1) {
+                  Edg *edg, int4 *faces, int4 *tri, int *adj0, int *adj1) {
     int a0[nv*md], a1[nv*md];
     efaces(r_templ, nt, /**/ faces);
     rbc::adj::ini(md, nt, nv, faces, /**/ a0, a1);
