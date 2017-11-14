@@ -26,14 +26,13 @@ static __device__ float3 farea(float3 x21, float3 x31, float3 x32,   float a0, f
 }
 
 static __device__ float sq(float x) { return x * x; }
-static __device__ float3 fspring(float3 x21, float x0, float A0) {
+static __device__ float3 fspring(float3 x21, float l0, float A0) {
   #define wlc_r(r) (kbT*(4*sq(r)-9*lmax*r+6*sq(lmax)))/(4*lmax*p*sq(r-lmax))
     float m;
-    float  r, fwlc, fpow, l0, lmax, kbT, p, kp;
+    float  r, fwlc, fpow, lmax, kbT, p, x0;
     float3 f;
-    kbT = RBCkbT; p = RBCp; m = RBCmpow;
+    kbT = RBCkbT; p = RBCp; m = RBCmpow; x0 = RBCx0;
     r = sqrtf(dot<float>(&x21, &x21));
-    l0 = sqrt(A0 * 4.0 / sqrt(3.0));
     lmax = l0 / x0;
     fwlc =   wlc_r(r); /* make fwlc + fpow = 0 for r = l0 */
     fpow = - wlc_r(l0) * powf(l0, m + 1) / powf(r, m + 1);
@@ -42,7 +41,7 @@ static __device__ float3 fspring(float3 x21, float x0, float A0) {
 }
 
 static __device__ float3 tri0(float3 r1, float3 r2, float3 r3,
-                              float x0, float A0,
+                              float l0, float A0,
                               float area, float volume) {
     float3 fv, fa, fs;
     float3 x21, x32, x31, f = make_float3(0, 0, 0);
@@ -57,7 +56,7 @@ static __device__ float3 tri0(float3 r1, float3 r2, float3 r3,
     fv = fvolume(r2, r3, volume);
     add(&fv, /**/ &f);
 
-    fs = fspring(x21,  x0, A0);
+    fs = fspring(x21,  l0, A0);
     add(&fs, /**/ &f);
 
     return f;
