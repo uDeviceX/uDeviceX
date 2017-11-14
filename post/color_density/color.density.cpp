@@ -9,21 +9,27 @@
 #include "bov_serial.h"
 
 struct Args {
-    int lx, ly, lz;
+    float lx, ly, lz;
+    int nx, ny, nz;
     char *bop_s, *bop_c, *bov;
 };
 
 static void usg() {
-    fprintf(stderr, "usg: u.color.density Lx Ly Lz <solvent.bop> <colors.bop> <out>\n");
+    fprintf(stderr, "usg: u.color.density nx ny nz Lx Ly Lz <solvent.bop> <colors.bop> <out>\n");
     exit(1);
 }
 
 static void parse(int argc, char **argv, /**/ Args *a) {
-    if (argc != 7) usg();
+    if (argc != 10) usg();
     int iarg = 1;
-    a->lx = atoi(argv[iarg++]);
-    a->ly = atoi(argv[iarg++]);
-    a->lz = atoi(argv[iarg++]);
+    a->nx = atoi(argv[iarg++]);
+    a->ny = atoi(argv[iarg++]);
+    a->nz = atoi(argv[iarg++]);
+
+    a->lx = atof(argv[iarg++]);
+    a->ly = atof(argv[iarg++]);
+    a->lz = atof(argv[iarg++]);
+
     a->bop_s = argv[iarg++];
     a->bop_c = argv[iarg++];
     a->bov   = argv[iarg++];
@@ -123,7 +129,7 @@ int main(int argc, char **argv) {
   # nTEST: colden.t0
   # make 
   # t=grid
-  # ./color.density 16 32 12 data/test.bop data/colors.bop $t
+  # ./color.density 16 32 12 16 32 12 data/test.bop data/colors.bop $t
   # bop2txt $t.bov > colden.out.txt
 
 */
