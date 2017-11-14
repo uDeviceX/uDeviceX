@@ -72,7 +72,7 @@ static __global__ void force(int md, int nv, int nc,
     if (pid >= nc * nv) return;
     valid = rbc::adj::dev(md, nv, i, adj0, adj1, /**/ &m);
     if (!valid) return;
-    if (RBC_STRESS_FREE) edg_shape(i, shape, /**/ &shape0);
+    if (RBC_STRESS_FREE) edg_shape(i / nv, shape, /**/ &shape0);
 
     const Part p0 = tex2Part(vert, m.i0);
 
