@@ -9,17 +9,17 @@ static __device__ float3 fvolume(float3 r2, float3 r3, float v) {
     return f;
 }
 
-static __device__ float3 farea(float3 x21, float3 x31, float3 x32,   float A0, float area) {
+static __device__ float3 farea(float3 x21, float3 x31, float3 x32,   float a0, float A) {
     float3 nn, nnx32, f;
-    float Ak, ka0, coefArea;
+    float Ak, ka0, f0;
 
     cross(&x21, &x31, /**/ &nn); /* normal */
     Ak = 0.5 * sqrtf(dot<float>(&nn, &nn));
-    ka0 = RBCka / RBCtotArea;
-    coefArea = -   ka0 * (area - RBCtotArea) / (4 * Ak)
-               - RBCkd * (Ak - A0)           / (4. * A0 * Ak);
+    ka0 = RBCka / RBCtotA;
+    f0 = -   ka0 * (A - RBCtotA) / (4 * Ak)
+         - RBCkd * (Ak - a0)           / (4. * a0 * Ak);
     cross(&nn, &x32, /**/ &nnx32);
-    axpy(coefArea, &nnx32, /**/ &f); /* area force */
+    axpy(coefA, &nnx32, /**/ &f);
     return f;
 }
 
