@@ -26,7 +26,6 @@ static void setup_shape1(int md, int nv, int *adj0, int *adj1, float *rr, /**/ E
         valid = rbc::adj::hst(md, nv, i, adj0, adj1, /**/ &m);
         if (!valid) continue;
         setup_shape0(rr, m, /**/ &edg[i]);
-        MSG("A: %g %g %g", edg[i].a, edg[i].b, edg[i].c);
     }
 }
 
