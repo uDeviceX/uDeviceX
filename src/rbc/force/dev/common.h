@@ -1,7 +1,9 @@
 /* forces from one triangle */
-__device__ float3 tri0(float3 r1, float3 r2, float3 r3, float area, float volume) {
-    float Ak, A0, n_2, coefArea, coeffVol,
-        r, xx, IbforceI_wcl, kp, IbforceI_pow, ka0, kv0, x0, l0, lmax,
+__device__ float3 tri0(float3 r1, float3 r2, float3 r3,
+                       float x0, float A0,
+                       float area, float volume) {
+    float Ak, n_2, coefArea, coeffVol,
+        r, xx, IbforceI_wcl, kp, IbforceI_pow, ka0, kv0, l0, lmax,
         kbToverp;
 
     float3 x21, x32, x31, nn, f = make_float3(0, 0, 0);
@@ -13,8 +15,6 @@ __device__ float3 tri0(float3 r1, float3 r2, float3 r3, float area, float volume
     cross(&x21, &x31, /**/ &nn); /* normal */
 
     Ak = 0.5 * sqrtf(dot<float>(&nn, &nn));
-
-    A0 = RBCtotArea / (2.0 * RBCnv - 4.);
     n_2 = 1.0 / Ak;
     ka0 = RBCka / RBCtotArea;
     coefArea = -0.25f * (ka0 * (area - RBCtotArea) * n_2)
@@ -32,7 +32,7 @@ __device__ float3 tri0(float3 r1, float3 r2, float3 r3, float area, float volume
     r = sqrtf(dot<float>(&x21, &x21));
     r = r < 0.0001f ? 0.0001f : r;
     l0 = sqrt(A0 * 4.0 / sqrt(3.0));
-    lmax = l0 / RBCx0;
+    lmax = l0 / x0;
     xx = r / lmax;
 
     kbToverp = RBCkbT / RBCp;
@@ -40,7 +40,6 @@ __device__ float3 tri0(float3 r1, float3 r2, float3 r3, float area, float volume
             kbToverp * (0.25f / ((1.0f - xx) * (1.0f - xx)) - 0.25f + xx) /
             r;
 
-    x0 = RBCx0;
     kp =
             (RBCkbT * x0 * (4 * x0 * x0 - 9 * x0 + 6) * l0 * l0) /
             (4 * RBCp * (x0 - 1) * (x0 - 1));
