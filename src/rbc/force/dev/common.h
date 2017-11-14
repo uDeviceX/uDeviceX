@@ -25,19 +25,17 @@ static __device__ float3 farea(float3 x21, float3 x31, float3 x32,   float a0, f
     return f;
 }
 
+static __device__ float sq(float x) { return x * x; }
 static __device__ float3 fspring(float3 x21, float x0, float A0) {
-    float  r, xx, IbforceI_wcl, kp, IbforceI_pow, l0, lmax, kbToverp;
+    float  r, IbforceI_wcl, kp, IbforceI_pow, l0, lmax, kbT, p;
     float3 f;
-    
+    kbT = RBCkbT; p = RBCp;
+
     r = sqrtf(dot<float>(&x21, &x21));
     l0 = sqrt(A0 * 4.0 / sqrt(3.0));
     lmax = l0 / x0;
-    xx = r / lmax;
 
-    kbToverp = RBCkbT / RBCp;
-    IbforceI_wcl =
-            kbToverp * (0.25 / ((1 - xx) * (1 - xx)) - 0.25 + xx) /
-            r;
+    IbforceI_wcl = (kbT*(4*sq(r)-9*lmax*r+6*sq(lmax)))/(4*lmax*p*sq(r-lmax));
 
     kp =
             (RBCkbT * x0 * (4 * x0 * x0 - 9 * x0 + 6) * l0 * l0) /
