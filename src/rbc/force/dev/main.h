@@ -1,3 +1,18 @@
+/*******/
+struct Shape0 { /* info for one edge :TODO: */
+    float a, b, c;
+    float A;
+};
+static void __device__ edg_shape(int i, Shape shape, /**/ Shape0 *shape0) {
+    Edg edg;
+    edg = shape.edg[i];
+    shape0->a = edg.a;
+    shape0->b = edg.b;
+    shape0->c = edg.c;
+    shape0->A = edg.A;
+}
+/********/
+
 /* particle - float2 union */
 union Part {
     float2 f2[3];
@@ -64,6 +79,7 @@ static __global__ void force(int md, int nv, int nc,
     int i, pid;
     float3 f, fd;
     rbc::adj::Map m;
+    Shape0 shape0;
     int valid;
 
     i = threadIdx.x + blockDim.x * blockIdx.x;
@@ -72,6 +88,7 @@ static __global__ void force(int md, int nv, int nc,
     if (pid >= nc * nv) return;
     valid = rbc::adj::dev(md, nv, i, adj0, adj1, /**/ &m);
     if (!valid) return;
+    if (RBC_STRESS_FREE) edg_shape(i, shape, /**/ &shape0);
 
     const Part p0 = tex2Part(vert, m.i0);
 
