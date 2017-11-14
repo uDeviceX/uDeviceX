@@ -50,8 +50,8 @@ static __device__ float3 adj_dihedrals(const Texo<float2> vert, float3 r0,
     r2 = tex2Pos(vert, m->i2);
     r3 = tex2Pos(vert, m->i3);
     r4 = tex2Pos(vert, m->i4);
-    fd1 = dihedral<1>(r0, r2.r, r1.r, r4.r);
-    fd2 = dihedral<2>(r1.r, r0, r2.r, r3.r);
+    fd1 = dih<1>(r0, r2.r, r1.r, r4.r);
+    fd2 = dih<2>(r1.r, r0, r2.r, r3.r);
     add(&fd1, /**/ &fd2);
     return fd2;
 }
