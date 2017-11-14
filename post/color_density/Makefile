@@ -14,13 +14,14 @@ LIBS     += -L$(BOV)/lib -lbov -lbov_serial
 CXXFLAGS += -I$(BOP)/include
 LIBS     += -L$(BOP)/lib -lbop
 
-PROGS=color.density
-PI=$(PROGS) bops2colordensity
+PROGS=color.density color.minmax
+PI=$(PROGS) bops2colordensity colors2minmaxs
 P=u
 
 all: $(PROGS)
 
 color.density.o: color.density.cpp
+color.minmax.o: color.minmax.cpp
 
 
 .PHONY: clean install test
