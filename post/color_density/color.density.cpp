@@ -44,7 +44,8 @@ static void p2m_1cid(float wx, float wy, float wz, int ix, int iy, int iz, int n
     grid[i] += wx * wy * wz;
 }
 
-static void collect_p2m(long n, const float *pp, const int *cc, int nx, int ny, int nz, /**/ float *grid) {
+static void collect_p2m(long n, const float *pp, const int *cc,
+                        int nx, int ny, int nz, float dx, float dy, float dz, /**/ float *grid) {
     enum {X, Y, Z};
     long i, ix, iy, iz;
     float x, y, z;
@@ -81,7 +82,7 @@ int main(int argc, char **argv) {
     Args a;
     BopData bop_s, bop_c;
     BovDesc bov;
-    float *grid;
+    float *grid, dx, dy, dz;
     char fdname[CBUFSIZE];
     size_t sz;
     
@@ -98,8 +99,12 @@ int main(int argc, char **argv) {
     bop_alloc(/**/ &bop_c);
     bop_read_values(fdname, /**/ &bop_c);
 
+    dx = a.lx / a.nx;
+    dy = a.ly / a.ny;
+    dz = a.lz / a.nz;
+    
     collect_p2m(bop_s.n, (const float*) bop_s.data, (const int*) bop_c.data,
-                a.nx, a.ny, a.nz, /**/ grid);    
+                a.nx, a.ny, a.nz, dx, dy, dz, /**/ grid);    
     
     bov.nx = a.nx; bov.ny = a.ny; bov.nz = a.nz;
     bov.lx = a.lx; bov.ly = a.ly; bov.lz = a.lz;
