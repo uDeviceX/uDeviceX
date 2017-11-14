@@ -78,7 +78,7 @@ static __global__ void force(int md, int nv, int nc,
 
     f  = adj_tris(vert, p0, av,    shape0, &m);
     if (RBC_STRESS_FREE) printf("f: %g %g %g\n", f.x, f.y, f.z);
-    // fd = adj_dihedrals(vert, p0.r, shape0, &m);
+    fd = adj_dihedrals(vert, p0.r, shape0, &m);
     add(&fd, /**/ &f);
 
     atomicAdd(&ff[3 * pid + 0], f.x);
