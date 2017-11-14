@@ -18,7 +18,8 @@ static __device__ float3 farea(float3 x21, float3 x31, float3 x32,   float a0, f
     cross(&nn, &x32, /**/ &nnx32);
     a = 0.5 * sqrtf(dot<float>(&nn, &nn));
 
-    fA = - kA * (A - A0) / (4 * A0 * a);
+    //fA = - kA * (A - A0) / (4 * A0 * a); fA = 0;
+    
     fa = - ka * (a - a0) / (4 * a0 * a);
     f0 = fA + fa;
     axpy(f0, &nnx32, /**/ &f);
@@ -51,7 +52,7 @@ static __device__ float3 tri0(float3 r1, float3 r2, float3 r3,
     diff(&r3, &r1, /**/ &x31);
 
     fa = farea(x21, x31, x32,   A0, totArea, area);
-    //    add(&fa, /**/ &f);
+    add(&fa, /**/ &f);
 
     fv = fvolume(r2, r3, volume);
     //add(&fv, /**/ &f);
