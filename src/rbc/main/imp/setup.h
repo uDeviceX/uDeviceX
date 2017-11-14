@@ -2,7 +2,7 @@ static void setup_edg0(float *rr, rbc::adj::Map m, /**/ EdgInfo *edg) {
     int i0, i1, i2;
     float *r0, *r1, *r2;
     float r01[3], r12[3], r20[3];
-    float a, b, c, A;
+    float a, b, c, A; /* edges and area */
 
     i0 = m.i0; i1 = m.i1; i2 = m.i2;
 
