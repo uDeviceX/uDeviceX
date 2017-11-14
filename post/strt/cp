@@ -3,7 +3,7 @@ set -eu
 usg () {
     msg 'u.strt.cp [strt dir] [new strt dir]'
     msg 'copies restart directory'
-    msg 'final.* or [biggerst timestep].* becomes final.* in [new strt dir]'
+    msg 'final.* or [biggest timestep].* becomes final.* in [new strt dir]'
     msg 'BUGS: naive logic based on sorting'
     exit
 }
