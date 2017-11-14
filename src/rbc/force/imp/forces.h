@@ -2,7 +2,7 @@ static void apply0(int nc, const Texo<float2> vert, const Texo<int> adj0, const 
     int md, nv;
     md = RBCmd;
     nv = RBCnv;
-    KL(dev::force, (k_cnf(nc*nv*md)), (md, nv, vert, adj0, adj1, nc, av, /**/ (float*)ff));
+    KL(dev::force, (k_cnf(nc*nv*md)), (md, nv, nc, vert, adj0, adj1, av, /**/ (float*)ff));
 }
 
 void apply(const Quants q, const TicketT t, /**/ Force *ff) {

@@ -55,8 +55,10 @@ static __device__ float3 adj_dihedrals(const Texo<float2> vert, float3 r0,
     return fd2;
 }
 
-static __global__ void force(int md, int nv, const Texo<float2> vert, const Texo<int> adj0, const Texo<int> adj1,
-                             int nc, const float *__restrict__ av, float *ff) {
+static __global__ void force(int md, int nv, int nc, const Texo<float2> vert, const Texo<int> adj0, const Texo<int> adj1,
+                             const float *__restrict__ av, float *ff) {
+    assert(md == RBCmd);
+    assert(nv == RBCnv);
     int i, pid;
     float3 f, fd;
     rbc::adj::Map m;
