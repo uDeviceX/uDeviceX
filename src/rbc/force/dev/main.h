@@ -72,12 +72,11 @@ static __global__ void force(int md, int nv, int nc,
     if (pid >= nc * nv) return;
     valid = rbc::adj::dev(md, nv, i, adj0, adj1, /**/ &m);
     if (!valid) return;
-    if (RBC_STRESS_FREE) edg_shape(i % (md * nv), shape, /**/ &shape0);
+    edg_shape(i % (md * nv), shape, /**/ &shape0);
 
     const Part p0 = tex2Part(vert, m.i0);
 
     f  = adj_tris(vert, p0, av,    shape0, &m);
-    if (RBC_STRESS_FREE) printf("f: %g %g %g\n", f.x, f.y, f.z);
     fd = adj_dihedrals(vert, p0.r, shape0, &m);
     add(&fd, /**/ &f);
 
