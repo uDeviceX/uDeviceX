@@ -33,7 +33,7 @@ static void setup_shape1(int md, int nv, int *adj0, int *adj1, float *rr, /**/ E
 static void setup_shape(int md, int nv, int *adj0, int *adj1, /**/ Edg *dev) {
     float *rr;
     Edg *hst;
-    hst = (Edg*) malloc(md*nv*sizeof(EdgInfo));
+    hst = (Edg*) malloc(md*nv*sizeof(Edg));
     rr = (float*)    malloc(3*nv*sizeof(float));
 
     evert("rbc.off", nv, /**/ rr);
