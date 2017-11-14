@@ -44,16 +44,12 @@ static __device__ float3 adj_tris(const Texo<float2> vert,  const Part p0, const
 static __device__ float3 adj_dihedrals(const Texo<float2> vert, float3 r0,
                                        const Shape0 shape,
                                        rbc::adj::Map *m) {
-    float3 fd1, fd2;
     Pos r1, r2, r3, r4;
     r1 = tex2Pos(vert, m->i1);
     r2 = tex2Pos(vert, m->i2);
     r3 = tex2Pos(vert, m->i3);
     r4 = tex2Pos(vert, m->i4);
-    fd1 = dih<1>(r0, r2.r, r1.r, r4.r);
-    fd2 = dih<2>(r1.r, r0, r2.r, r3.r);
-    add(&fd1, /**/ &fd2);
-    return fd2;
+    return dih(r0, r1.r, r2.r, r3.r, r4.r);
 }
 
 static __global__ void force(int md, int nv, int nc,
