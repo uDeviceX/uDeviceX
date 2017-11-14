@@ -63,9 +63,9 @@ static void collect_p2m(long n, const float *pp, const int *cc,
         iy1 = (iy0 + 1) % ny;
         iz1 = (iz0 + 1) % nz;
         
-        x = r[X] - ix0;
-        y = r[Y] - iy0;
-        z = r[Z] - iz0;
+        x = (r[X] - ix0 * dx) / dx;
+        y = (r[Y] - iy0 * dy) / dy;
+        z = (r[Z] - iz0 * dz) / dz;
 
         p2m_1cid(1.f - x, 1.f - y, 1.f - z,     ix0, iy0, iz0,    nx, ny, /**/ grid);
         p2m_1cid(      x, 1.f - y, 1.f - z,     ix1, iy0, iz0,    nx, ny, /**/ grid);
