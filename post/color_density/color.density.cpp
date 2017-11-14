@@ -35,11 +35,8 @@ static void parse(int argc, char **argv, /**/ Args *a) {
     a->bov   = argv[iarg++];
 }
 
-static void p2m_1cid(float wx, float wy, float wz, int ix, int iy, int iz, int nx, int ny, int nz, /**/ float *grid) {
+static void p2m_1cid(float wx, float wy, float wz, int ix, int iy, int iz, int nx, int ny, /**/ float *grid) {
     int i;
-    ix = (ix + nx) % nx;
-    iy = (iy + ny) % ny;
-    iz = (iz + nz) % nz;
     i = ix + nx * (iy + ny * iz);
     grid[i] += wx * wy * wz;
 }
@@ -47,34 +44,38 @@ static void p2m_1cid(float wx, float wy, float wz, int ix, int iy, int iz, int n
 static void collect_p2m(long n, const float *pp, const int *cc,
                         int nx, int ny, int nz, float dx, float dy, float dz, /**/ float *grid) {
     enum {X, Y, Z};
-    long i, ix, iy, iz;
-    float x, y, z;
+    long i, ix0, iy0, iz0, ix1, iy1, iz1;
+    float x, y, z; // weights
     const float *r;
 
-    memset(grid, 0, nx*ny*nz*sizeof(float));
+    memset(grid, 0, nx * ny * nz * sizeof(float));
 
     for (i = 0; i < n; ++i) {
         if (cc[i] == 0) continue;
 
         r = pp + 6 * i;
 
-        ix = (int) r[X];
-        iy = (int) r[Y];
-        iz = (int) r[Z];
+        ix0 = (int) (r[X] / dx);
+        iy0 = (int) (r[Y] / dy);
+        iz0 = (int) (r[Z] / dz);
 
-        x = r[X] - ix;
-        y = r[Y] - iy;
-        z = r[Z] - iz;
+        ix1 = (ix0 + 1) % nx;
+        iy1 = (iy0 + 1) % ny;
+        iz1 = (iz0 + 1) % nz;
+        
+        x = r[X] - ix0;
+        y = r[Y] - iy0;
+        z = r[Z] - iz0;
 
-        p2m_1cid(1.f - x, 1.f - y, 1.f - z,     ix    , iy    , iz    ,    nx, ny, nz, /**/ grid);
-        p2m_1cid(      x, 1.f - y, 1.f - z,     ix + 1, iy    , iz    ,    nx, ny, nz, /**/ grid);
-        p2m_1cid(1.f - x,       y, 1.f - z,     ix    , iy + 1, iz    ,    nx, ny, nz, /**/ grid);
-        p2m_1cid(      x,       y, 1.f - z,     ix + 1, iy + 1, iz    ,    nx, ny, nz, /**/ grid);
+        p2m_1cid(1.f - x, 1.f - y, 1.f - z,     ix0, iy0, iz0,    nx, ny, /**/ grid);
+        p2m_1cid(      x, 1.f - y, 1.f - z,     ix1, iy0, iz0,    nx, ny, /**/ grid);
+        p2m_1cid(1.f - x,       y, 1.f - z,     ix0, iy1, iz0,    nx, ny, /**/ grid);
+        p2m_1cid(      x,       y, 1.f - z,     ix1, iy1, iz0,    nx, ny, /**/ grid);
 
-        p2m_1cid(1.f - x, 1.f - y,       z,     ix    , iy    , iz + 1,    nx, ny, nz, /**/ grid);
-        p2m_1cid(      x, 1.f - y,       z,     ix + 1, iy    , iz + 1,    nx, ny, nz, /**/ grid);
-        p2m_1cid(1.f - x,       y,       z,     ix    , iy + 1, iz + 1,    nx, ny, nz, /**/ grid);
-        p2m_1cid(      x,       y,       z,     ix + 1, iy + 1, iz + 1,    nx, ny, nz, /**/ grid);
+        p2m_1cid(1.f - x, 1.f - y,       z,     ix0, iy0, iz1,    nx, ny, /**/ grid);
+        p2m_1cid(      x, 1.f - y,       z,     ix1, iy0, iz1,    nx, ny, /**/ grid);
+        p2m_1cid(1.f - x,       y,       z,     ix0, iy1, iz1,    nx, ny, /**/ grid);
+        p2m_1cid(      x,       y,       z,     ix1, iy1, iz1,    nx, ny, /**/ grid);
     }
 }
 
