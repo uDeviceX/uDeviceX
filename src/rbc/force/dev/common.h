@@ -11,11 +11,11 @@ __device__ float3 fvolume(float3 r2, float3 r3, float volume) {
 __device__ float3 tri0(float3 r1, float3 r2, float3 r3,
                        float x0, float A0,
                        float area, float volume) {
-    float Ak, n_2, coefArea, coeffVol,
-        r, xx, IbforceI_wcl, kp, IbforceI_pow, ka0, kv0, l0, lmax,
+    float Ak, n_2, coefArea,
+        r, xx, IbforceI_wcl, kp, IbforceI_pow, ka0, l0, lmax,
         kbToverp;
     float3 fv;
-    float3 nnx32, r3r2;
+    float3 nnx32;
     float3 x21, x32, x31, nn, f = make_float3(0, 0, 0);
 
     diff(&r2, &r1, /**/ &x21);
