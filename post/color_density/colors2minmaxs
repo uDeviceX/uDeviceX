@@ -1,0 +1,29 @@
+#!/bin/sh
+
+usg() {
+    echo "usage: colors2minmax <T0> <T1> <0.bov> <1.bov> ..." >&2
+    exit
+}
+
+exec0 () {
+    if test -z ${DRYRUN+x}
+    then "$@"
+    else printf '%s\n' "$*"
+    fi
+}
+
+main () {
+    while test $# -ne 0
+    do i="$1";    shift
+       Exec $T0 $T1 "$i"
+    done
+}
+
+Exec () { exec0 colors2minmaxs "$@"; }
+
+if test $# -ne 0 -a "$1" = -h; then usg; fi
+
+T0="$1"; shift
+T1="$1"; shift
+
+main "$@"
