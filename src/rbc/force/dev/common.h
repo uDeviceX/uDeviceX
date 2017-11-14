@@ -20,7 +20,7 @@ static __device__ float3 farea(float3 x21, float3 x31, float3 x32,   float a0, f
 
     fA = - kA * (A - A0) / (4 * A0 * a);
     fa = - ka * (a - a0) / (4 * a0 * a);
-    f0 = fa; /* TOOOOOOOOOOOOOOOOODO */
+    f0 = fa;
     axpy(f0, &nnx32, /**/ &f);
     return f;
 }
@@ -54,7 +54,7 @@ static __device__ float3 tri0(float3 r1, float3 r2, float3 r3,
     add(&fa, /**/ &f);
 
     fv = fvolume(r2, r3, volume);
-    //    add(&fv, /**/ &f);
+    add(&fv, /**/ &f);
 
     fs = fspring(x21,  l0, A0);
     add(&fs, /**/ &f);
