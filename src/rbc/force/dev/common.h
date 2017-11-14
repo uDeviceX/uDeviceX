@@ -20,7 +20,7 @@ static __device__ float3 farea(float3 x21, float3 x31, float3 x32,   float a0, f
     f0 = -   ka0 * (A - A0) / (4 * a)
          - RBCkd * (a - a0)           / (4. * a0 * a);
     cross(&nn, &x32, /**/ &nnx32);
-    axpy(coefA, &nnx32, /**/ &f);
+    axpy(f0, &nnx32, /**/ &f);
     return f;
 }
 
