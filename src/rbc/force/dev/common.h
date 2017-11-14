@@ -20,6 +20,7 @@ __device__ float3 tri0(float3 r1, float3 r2, float3 r3,
     coefArea = -0.25f * (ka0 * (area - RBCtotArea) * n_2)
         - RBCkd * (Ak - A0) / (4. * A0 * Ak);
 
+    float fv;
     kv0 = RBCkv / (6.0 * RBCtotVolume);
     coeffVol = kv0 * (volume - RBCtotVolume);
 
