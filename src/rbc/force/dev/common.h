@@ -1,4 +1,4 @@
-/* forces from one triangle */  
+/* forces from one triangle */
 __device__ float3 tri(const float3 r1, const float3 r2, const float3 r3, const float area, const float volume) {
     float Ak, A0, n_2, coefArea, coeffVol,
         r, xx, IbforceI_wcl, kp, IbforceI_pow, ka0, kv0, x0, l0, lmax,
