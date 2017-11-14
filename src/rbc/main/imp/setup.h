@@ -31,6 +31,8 @@ static void setup_shape1(int md, int nv, int *adj0, int *adj1, float *rr, /**/
         setup_shape0(rr, m, /**/ &edg[i]);
         totArea += edg[i].A;
     }
+    totArea /= 3; /* seen every face three times */
+
     MSG("totArea: %g", totArea);
     *ptotArea = totArea;
 }
