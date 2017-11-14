@@ -5,7 +5,8 @@ __device__ float3 tri0(float3 r1, float3 r2, float3 r3,
     float Ak, n_2, coefArea, coeffVol,
         r, xx, IbforceI_wcl, kp, IbforceI_pow, ka0, kv0, l0, lmax,
         kbToverp;
-
+    float fv;
+    float3 nnx32, r3r2;
     float3 x21, x32, x31, nn, f = make_float3(0, 0, 0);
 
     diff(&r2, &r1, /**/ &x21);
@@ -23,7 +24,6 @@ __device__ float3 tri0(float3 r1, float3 r2, float3 r3,
     kv0 = RBCkv / (6.0 * RBCtotVolume);
     coeffVol = kv0 * (volume - RBCtotVolume);
 
-    float3 nnx32, r3r2;
     cross(&nn, &x32, /**/ &nnx32);
     axpy(coefArea, &nnx32, /**/ &f); /* area force */
     cross(&r3, &r2, /**/ &r3r2);
