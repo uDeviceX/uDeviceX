@@ -267,6 +267,10 @@
   #define RBC_PARAMS_TEST
 #endif
 
+#ifndef RBC_STRESS_FREE
+  #define RBC_STRESS_FREE (false)
+#endif
+
 /* MSG frequency */
 #ifndef RESTRAIN_REPORT_FREQ
   #define RESTRAIN_REPORT_FREQ (1000)

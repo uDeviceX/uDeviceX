@@ -25,7 +25,9 @@ static __device__ Part tex2Part(const Texo<float2> vert, int id) {
     return p;
 }
 
-static __device__ float3 adj_tris(const Texo<float2> vert,  const Part p0, const float *av, Map *m) {
+static __device__ float3 adj_tris(const Texo<float2> vert,  const Part p0, const float *av,
+                                  const Shape0 shape,
+                                  rbc::adj::Map *m) {
     float3 f, fv;
     int i1, i2, rbc;
     i1 = m->i1; i2 = m->i2; rbc = m->rbc;
@@ -37,40 +39,47 @@ static __device__ float3 adj_tris(const Texo<float2> vert,  const Part p0, const
     fv = visc(p0.r, p1.r, p0.v, p1.v);
     add(&fv, /**/ &f);
     return f;
-
 }
 
-static __device__ float3 adj_dihedrals(const Texo<float2> vert, float3 r0, Map *m) {
+static __device__ float3 adj_dihedrals(const Texo<float2> vert, float3 r0,
+                                       const Shape0 shape,
+                                       rbc::adj::Map *m) {
     float3 fd1, fd2;
     Pos r1, r2, r3, r4;
     r1 = tex2Pos(vert, m->i1);
     r2 = tex2Pos(vert, m->i2);
     r3 = tex2Pos(vert, m->i3);
     r4 = tex2Pos(vert, m->i4);
-    fd1 = dihedral<1>(r0, r2.r, r1.r, r4.r);
-    fd2 = dihedral<2>(r1.r, r0, r2.r, r3.r);
+    fd1 = dih<1>(r0, r2.r, r1.r, r4.r);
+    fd2 = dih<2>(r1.r, r0, r2.r, r3.r);
     add(&fd1, /**/ &fd2);
     return fd2;
 }
 
-static __global__ void force(int md, int nv, const Texo<float2> vert, const Texo<int> adj0, const Texo<int> adj1,
-                             int nc, const float *__restrict__ av, float *ff) {
+static __global__ void force(int md, int nv, int nc,
+                             const Texo<float2> vert, const Texo<int> adj0, const Texo<int> adj1,
+                             const Shape shape,
+                             const float *__restrict__ av, /**/ float *ff) {
+    assert(md == RBCmd);
+    assert(nv == RBCnv);
     int i, pid;
     float3 f, fd;
-    Map m;
+    rbc::adj::Map m;
+    Shape0 shape0;
     int valid;
 
     i = threadIdx.x + blockDim.x * blockIdx.x;
     pid = i / md;
 
     if (pid >= nc * nv) return;
-    valid = ini_map(md, nv, i, adj0, adj1, /**/ &m);
+    valid = rbc::adj::dev(md, nv, i, adj0, adj1, /**/ &m);
     if (!valid) return;
+    if (RBC_STRESS_FREE) edg_shape(i, shape, /**/ &shape0);
 
     const Part p0 = tex2Part(vert, m.i0);
 
-    f  = adj_tris(vert, p0, av,    &m);
-    fd = adj_dihedrals(vert, p0.r, &m);
+    f  = adj_tris(vert, p0, av,    shape0, &m);
+    fd = adj_dihedrals(vert, p0.r, shape0, &m);
     add(&fd, /**/ &f);
 
     atomicAdd(&ff[3 * pid + 0], f.x);

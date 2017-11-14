@@ -28,10 +28,10 @@ example: template frozen particles from rigid bodies or walls: `templ`
 Use `u.strt.cp` to a copy `strt` to a safe place. To run from restart
 copy it back to `start` and set `RESTART=true`.
 
-	$ u.start -h
+	$ u.start.cp -h
 
 	u.strt.cp [strt dir] [new strt dir]
 	copies restart directory
-	final.* or [biggerst timestep].* becomes final.* in [new strt dir]
+	final.* or [biggest timestep].* becomes final.* in [new strt dir]
 
 `h5` is not recreated after restart use `mkdir -p h5`.

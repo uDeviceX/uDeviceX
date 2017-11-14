@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <math.h>
 #include <vector_types.h>
 #include <mpi.h>
 
@@ -24,9 +25,14 @@
 #include "io/restart.h"
 
 #include "rbc/type.h"
+#include "rbc/adj/type.h"
+#include "rbc/adj/imp.h"
+#include "rbc/gen/imp.h"
+
 #include "imp.h"
 
 namespace rbc { namespace main {
+#include "imp/util.h"
 #include "imp/ini.h"
 #include "imp/fin.h"
 

@@ -1,0 +1,15 @@
+#### check forces on a cell
+# cTEST: rbc.u.stree.free
+S=`pwd`
+U=u/rbc
+C=conf/default.h
+:
+nv=642
+cell=$S/data/cells/rbc/$nv.off
+u.conf $S $U $C <<!!!
+       RBCnv=$nv RBC_STRESS_FREE
+       run
+!!!
+{ u.make -j;     } > /dev/null
+cp          $cell rbc.off 
+u.run ./udx rbc.off data/ic/two  >  forces.out.txt

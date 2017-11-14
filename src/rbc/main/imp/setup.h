@@ -1,57 +1,57 @@
-static void reg(int md, int f, int x, int y,  /**/ int *hx, int *hy) { /* register an edge */
-    int j = f*md;
-    while (hx[j] != -1) j++;
-    hx[j] = x; hy[j] = y;
+static void setup_shape0(float *rr, rbc::adj::Map m, /**/ Edg *edg) {
+    int i0, i1, i2;
+    float *r0, *r1, *r2;
+    float r01[3], r12[3], r20[3];
+    float a, b, c, A; /* edges and area */
+
+    i0 = m.i0; i1 = m.i1; i2 = m.i2;
+
+    r0 = &rr[3*i0]; r1 = &rr[3*i1]; r2 = &rr[3*i2];
+
+    diff(r0, r1, /**/ r01);
+    diff(r1, r2, /**/ r12);
+    diff(r2, r0, /**/ r20);
+
+    a = vabs(r01); b = vabs(r12); c = vabs(r20);
+    A = heron(a, b, c);
+
+    edg->a = a; edg->b = b; edg->c = c; edg->A = A;
 }
 
-static int nxt(int md, int i, int x, int *hx, int *hy) { /* next */
-    i *= md;
-    while (hx[i] != x) i++;
-    return hy[i];
-}
+static void setup_shape1(int md, int nv, int *adj0, int *adj1, float *rr, /**/ Edg *edg) {
+    int valid, i;
+    rbc::adj::Map m;
 
-static void gen_a12(int md, int i0, int *hx, int *hy, /**/ int *a1, int *a2) {
-    int lo = i0*md, hi = lo + md, mi = hx[lo];
-    int i;
-    for (i = lo + 1; (i < hi) && (hx[i] != -1); i++)
-        if (hx[i] < mi) mi = hx[i]; /* minimum */
-
-    int c = mi, c0;
-    i = lo;
-    do {
-        c     = nxt(md, i0, c0 = c, hx, hy);
-        a1[i] = c0;
-        a2[i] = nxt(md, c, c0, hx, hy);
-        i++;
-    }  while (c != mi);
-}
-
-static void gfaces(const char *f, int n0, /**/ int4 *faces) {
-    /* get faces */
-    int n;
-    n = off::faces(f, n0, faces);
-    if (n0 != n)
-        ERR("wrong faces number in <%s> : %d != %d", f, n0, n);
-}
-static void setup(int md, int nt, int nv, const char *r_templ, int4 *faces, int4 *tri, int *adj0, int *adj1) {
-    gfaces(r_templ, nt, /**/ faces);
-
-    cH2D(tri, faces, nt);
-
-    int hx[nv*md], hy[nv*md], a1[nv*md], a2[nv*md];
-    int i;
-    for (i = 0; i < nv*md; i++) hx[i] = a1[i] = a2[i] = -1;
-
-    int4 t;
-    for (int ifa = 0; ifa < nt; ifa++) {
-        t = faces[ifa];
-        int f0 = t.x, f1 = t.y, f2 = t.z;
-        reg(md, f0, f1, f2,   hx, hy); /* register an edge */
-        reg(md, f1, f2, f0,   hx, hy);
-        reg(md, f2, f0, f1,   hx, hy);
+    for (i = 0; i < md*nv; i++) {
+        valid = rbc::adj::hst(md, nv, i, adj0, adj1, /**/ &m);
+        if (!valid) continue;
+        setup_shape0(rr, m, /**/ &edg[i]);
+        MSG("A: %g %g %g", edg[i].a, edg[i].b, edg[i].c);
     }
-    for (i = 0; i < nv; i++) gen_a12(md, i, hx, hy, /**/ a1, a2);
-    
-    cH2D(adj0, a1, nv*md);
-    cH2D(adj1, a2, nv*md);
+}
+
+static void setup_shape(int md, int nv, int *adj0, int *adj1, /**/ Edg *dev) {
+    float *rr;
+    Edg *hst;
+    hst = (Edg*) malloc(md*nv*sizeof(Edg));
+    rr = (float*)malloc(3*nv*sizeof(float));
+
+    evert("rbc.off", nv, /**/ rr);
+    setup_shape1(md, nv, adj0, adj1, rr, /**/ hst);
+
+    cH2D(dev, hst, md*nv);
+
+    free(hst); free(rr);
+}
+
+static void setup(int md, int nt, int nv, const char *r_templ, /**/
+                  Edg *edg, int4 *faces, int4 *tri, int *adj0, int *adj1) {
+    int a0[nv*md], a1[nv*md];
+    efaces(r_templ, nt, /**/ faces);
+    rbc::adj::ini(md, nt, nv, faces, /**/ a0, a1);
+
+    if (RBC_STRESS_FREE) setup_shape(md, nv, a0, a1, /**/ edg);
+    cH2D(tri, faces, nt);
+    cH2D(adj0, a0, nv*md);
+    cH2D(adj1, a1, nv*md);
 }

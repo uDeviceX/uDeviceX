@@ -7,10 +7,13 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/io/field/xmf          && \
     d $B/math                  && \
     d $B/mpi                   && \
+    d $B/rbc/adj               && \
     d $B/rbc/com               && \
     d $B/rbc/force             && \
     d $B/rbc/force/area_volume && \
+    d $B/rbc/gen               && \
     d $B/rbc/main              && \
+    d $B/rbc/stretch           && \
     d $B/u/rbc                 && \
     d $B/u/rbc/lib             && \
     d $B/utils                

@@ -1,4 +1,4 @@
-void fin(Quants *q) {
+static void fin_common(Quants *q) {
     Dfree(q->pp);
     Dfree(q->av);
 
@@ -8,7 +8,13 @@ void fin(Quants *q) {
 
     free(q->tri_hst);
     free(q->pp_hst);
+}
 
-    if (rbc_ids)
-        free(q->ii);
+static void fin_ids(Quants *q) { free(q->ii);   }
+static void fin_shape(Quants *q) { Dfree(q->shape.edg); }
+
+void fin(Quants *q) {
+    fin_common(q);
+    if (rbc_ids) fin_ids(q);
+    if (RBC_STRESS_FREE) fin_shape(q);
 }

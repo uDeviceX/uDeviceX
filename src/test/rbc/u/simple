@@ -1,5 +1,5 @@
 #### check forces on a cell
-# nTEST: rbc.u.main
+# nTEST: rbc.u.simple
 S=`pwd`
 U=u/rbc
 C=conf/default.h
