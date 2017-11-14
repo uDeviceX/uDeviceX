@@ -11,15 +11,14 @@ static __device__ float3 fvolume(float3 r2, float3 r3, float v) {
 
 static __device__ float3 farea(float3 x21, float3 x31, float3 x32,   float a0, float A) {
     float3 nn, nnx32, f;
-    float A0, a, ka0, f0;
-    A0 = RBCtotArea;
+    float A0, a, f0, ka, kA;
+    A0 = RBCtotArea; ka = RBCkd; kA = RBCka;
 
     cross(&x21, &x31, /**/ &nn); /* normal */
-    a = 0.5 * sqrtf(dot<float>(&nn, &nn));
-    ka0 = RBCka / A0;
-    f0 = -   ka0 * (A - A0) / (4 * a)
-         - RBCkd * (a - a0)           / (4. * a0 * a);
     cross(&nn, &x32, /**/ &nnx32);
+    a = 0.5 * sqrtf(dot<float>(&nn, &nn));
+    f0 = - kA * (A - A0) / (4 * A0 * a)
+         - ka * (a - a0) / (4 * a0 * a);
     axpy(f0, &nnx32, /**/ &f);
     return f;
 }
