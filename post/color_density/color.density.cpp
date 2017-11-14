@@ -139,4 +139,10 @@ int main(int argc, char **argv) {
   # ./color.density 16 32 12 16 32 12 data/test.bop data/colors.bop $t
   # bop2txt $t.bov > colden.out.txt
 
+  # nTEST: colden.t1
+  # make 
+  # t=grid
+  # ./color.density 32 64 24 16 32 12 data/test.bop data/colors.bop $t
+  # bop2txt $t.bov > colden.out.txt
+
 */
