@@ -36,8 +36,8 @@ static __device__ float3 fspring(float3 x21, float x0, float A0) {
     l0 = sqrt(A0 * 4.0 / sqrt(3.0));
     lmax = l0 / x0;
     fwlc = wlc_r(r);
-    //kp = powf(l0, m) * wlc_r(l0);
-    kp =(kbT*x0*(4*x0*x0-9*x0+6)*l0*l0)/(4*p*(x0-1)*(x0-1));
+    kp = powf(l0, m) * wlc_r(l0) / l0;
+    //kp =(kbT*x0*(4*x0*x0-9*x0+6)*l0*l0)/(4*p*(x0-1)*(x0-1));
     fpow = - kp / powf(r, m) / r;
     axpy(fwlc + fpow, &x21, /**/ &f);
     return f;
