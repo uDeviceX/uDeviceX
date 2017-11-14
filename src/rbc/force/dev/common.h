@@ -48,9 +48,9 @@ static __device__ float3 fspring(float3 x21, float x0, float A0) {
     return f;
 }
 
-__device__ float3 tri0(float3 r1, float3 r2, float3 r3,
-                       float x0, float A0,
-                       float area, float volume) {
+static __device__ float3 tri0(float3 r1, float3 r2, float3 r3,
+                              float x0, float A0,
+                              float area, float volume) {
     float3 fv, fa, fs;
     float3 x21, x32, x31, f = make_float3(0, 0, 0);
 
@@ -70,8 +70,7 @@ __device__ float3 tri0(float3 r1, float3 r2, float3 r3,
     return f;
 }
 
-__device__ float3 visc(float3 r1, float3 r2,
-                       float3 u1, float3 u2) {
+static __device__ float3 visc(float3 r1, float3 r2, float3 u1, float3 u2) {
     const float gammaC = RBCgammaC, gammaT = RBCgammaT;
     float3 du, dr, f = make_float3(0, 0, 0);
     diff(&u2, &u1, /**/ &du);
@@ -86,8 +85,7 @@ __device__ float3 visc(float3 r1, float3 r2,
 }
 
 /* forces from one dihedral */
-template <int update>
-__device__ float3 dih0(float3 r1, float3 r2, float3 r3, float3 r4) {
+template <int update> __device__ float3 dih0(float3 r1, float3 r2, float3 r3, float3 r4) {
     float overIksiI, overIdzeI, cosTheta, IsinThetaI2, sinTheta_1,
         beta, b11, b12, phi, sint0kb, cost0kb;
 
