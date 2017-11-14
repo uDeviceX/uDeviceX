@@ -31,7 +31,7 @@ static void setup_shape1(int md, int nv, int *adj0, int *adj1, float *rr, /**/
         setup_shape0(rr, m, /**/ &edg[i]);
         totArea += edg[i].A;
     }
-    MSG("totArea: %g\n", totArea);
+    MSG("totArea: %g", totArea);
     *ptotArea = totArea;
 }
 
