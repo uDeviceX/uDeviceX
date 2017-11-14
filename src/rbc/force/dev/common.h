@@ -36,10 +36,7 @@ static __device__ float3 fspring(float3 x21, float x0, float A0) {
     lmax = l0 / x0;
 
     IbforceI_wcl = (kbT*(4*sq(r)-9*lmax*r+6*sq(lmax)))/(4*lmax*p*sq(r-lmax));
-
-    kp =
-            (kbT * x0 * (4 * x0 * x0 - 9 * x0 + 6) * l0 * l0) /
-            (4 * p * (x0 - 1) * (x0 - 1));
+    kp =(kbT*x0*(4*x0*x0-9*x0+6)*l0*l0)/(4*p*(x0-1)*(x0-1));
     IbforceI_pow = -kp / powf(r, RBCmpow) / r;
     axpy(IbforceI_wcl + IbforceI_pow, &x21, /**/ &f); /* wcl and pow forces */
     return f;
