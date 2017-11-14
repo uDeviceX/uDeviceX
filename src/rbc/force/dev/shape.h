@@ -3,6 +3,7 @@ struct Shape0 { /* info for one edge :TODO: */
     float A;
 };
 
+/* extract edge specific shape info */
 static void __device__ edg_shape(int i, Shape shape, /**/ Shape0 *shape0) {
     Edg edg;
     edg = shape.edg[i];
