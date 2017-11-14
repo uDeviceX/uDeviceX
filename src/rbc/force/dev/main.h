@@ -30,12 +30,14 @@ static __device__ float3 adj_tris(const Texo<float2> vert,  const Part p0, const
                                   rbc::adj::Map *m) {
     float3 f, fv;
     int i1, i2, rbc;
+    float area, volume;
     i1 = m->i1; i2 = m->i2; rbc = m->rbc;
 
     const Part p1 = tex2Part(vert, i1);
     const Pos  r2 = tex2Pos(vert,  i2);
 
-    f  = tri(p0.r, p1.r, r2.r, av[2 * rbc], av[2 * rbc + 1]);
+    area = av[2*rbc]; volume = av[2 * rbc + 1];
+    f  = tri(p0.r, p1.r, r2.r, shape, area, volume);
     fv = visc(p0.r, p1.r, p0.v, p1.v);
     add(&fv, /**/ &f);
     return f;

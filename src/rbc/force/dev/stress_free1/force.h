@@ -1,4 +1,4 @@
-__device__ float3 tri(float3 r1, float3 r2, float3 r3, float area, float volume) {
+__device__ float3 tri(float3 r1, float3 r2, float3 r3, Shape0 shape, float area, float volume) {
     return tri0(r1, r2, r3, area, volume);
 }
 
