@@ -1,10 +1,11 @@
-__device__ float3 fvolume(float3 r2, float3 r3, float volume) {
-    float k, coeff;
+__device__ float3 fvolume(float3 r2, float3 r3, float v) {
+    float kv, v0, f0;
     float3 f, n;
+    kv = RBCkv; v0 = RBCtotVolume;
+
     cross(&r3, &r2, /**/ &n);
-    k = RBCkv / (6.0 * RBCtotVolume);
-    coeff = k * (volume - RBCtotVolume);
-    axpy(coeff, &n, /**/ &f);
+    f0 = kv * (v - v0) / (6*v0) ;
+    axpy(f0, &n, /**/ &f);
     return f;
 }
 
@@ -29,7 +30,7 @@ __device__ float3 tri0(float3 r1, float3 r2, float3 r3,
     coefArea = -0.25f * (ka0 * (area - RBCtotArea) * n_2) - RBCkd * (Ak - A0) / (4. * A0 * Ak);
     cross(&nn, &x32, /**/ &nnx32);
     axpy(coefArea, &nnx32, /**/ &f); /* area force */
-    
+
     fv = fvolume(r2, r3, volume);
     add(&fv, /**/ &f);
 
@@ -60,11 +61,11 @@ __device__ float3 visc(float3 r1, float3 r2,
     diff(&u2, &u1, /**/ &du);
     diff(&r1, &r2, /**/ &dr);
 
-    const float fac = dot<float>(&du, &dr) / dot<float>(&dr, &dr); 
-    
+    const float fac = dot<float>(&du, &dr) / dot<float>(&dr, &dr);
+
     axpy(gammaT      , &du, /**/ &f);
     axpy(gammaC * fac, &dr, /**/ &f);
-    
+
     return f;
 }
 
@@ -82,7 +83,7 @@ __device__ float3 dih0(float3 r1, float3 r2, float3 r3, float3 r4) {
     diff(&r4, &r1, /**/ &r41);
 
     cross(&r12, &r13, /**/ &ksi);
-    cross(&r34, &r24, /**/ &dze);    
+    cross(&r34, &r24, /**/ &dze);
 
     overIksiI = rsqrtf(dot<float>(&ksi, &ksi));
     overIdzeI = rsqrtf(dot<float>(&dze, &dze));
@@ -91,7 +92,7 @@ __device__ float3 dih0(float3 r1, float3 r2, float3 r3, float3 r4) {
     IsinThetaI2 = 1.0f - cosTheta * cosTheta;
 
     diff(&ksi, &dze, /**/ &ksimdze);
-    
+
     sinTheta_1 = copysignf
         (rsqrtf(max(IsinThetaI2, 1.0e-6f)),
          dot<float>(&ksimdze, &r41)); // ">" because the normals look inside
@@ -126,7 +127,7 @@ __device__ float3 dih0(float3 r1, float3 r2, float3 r3, float3 r4) {
         add(&f2, /**/ &f1);
         axpy(b12, &f1, /**/ &f);
         axpy(b22, &f3, /**/ &f);
-        
+
         return f;
     }
     else
