@@ -18,7 +18,8 @@ static __device__ float3 farea(float3 x21, float3 x31, float3 x32,   float a0, f
     cross(&nn, &x32, /**/ &nnx32);
     a = 0.5 * sqrtf(dot<float>(&nn, &nn));
 
-    //fA = - kA * (A - A0) / (4 * A0 * a); fA = 0;
+    fA = - kA * (A - A0) / (4 * A0 * a);
+    printf("A0/A: %g %g\n", A0, A);
     
     fa = - ka * (a - a0) / (4 * a0 * a);
     f0 = fA + fa;
