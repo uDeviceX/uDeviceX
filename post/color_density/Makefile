@@ -15,7 +15,7 @@ CXXFLAGS += -I$(BOP)/include
 LIBS     += -L$(BOP)/lib -lbop
 
 PROGS=color.density color.minmax
-PI=$(PROGS) bops2colordensity
+PI=$(PROGS) bops2colordensity colors2minmaxs
 P=u
 
 all: $(PROGS)
