@@ -36,7 +36,7 @@ __device__ float3 tri0(float3 r1, float3 r2, float3 r3,
     diff(&r3, &r2, /**/ &x32);
     diff(&r3, &r1, /**/ &x31);
 
-    fa = farea(x21, x32, x32,   A0, area);
+    fa = farea(x21, x31, x32,   A0, area);
     add(&fa, /**/ &f);
 
     fv = fvolume(r2, r3, volume);
