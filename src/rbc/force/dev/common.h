@@ -21,6 +21,7 @@ static __device__ float3 farea(float3 x21, float3 x31, float3 x32,   float a0, f
     fA = - kA * (A - A0) / (4 * A0 * a);
     fa = - ka * (a - a0) / (4 * a0 * a);
     f0 = fA + fa;
+    if (RBC_STRESS_FREE) printf("fa: %g\n", fa);
     axpy(f0, &nnx32, /**/ &f);
     return f;
 }
