@@ -4,6 +4,8 @@
 #include "msg.h"
 #include "mpi/glb.h"
 
+#include "rbc/rnd/imp.h"
+
 static int    argc;
 static char **argv;
 
@@ -17,14 +19,20 @@ void lshift() {
 }
 
 void main0() {
+    rbc::rnd::D *rnd;
+    rbc::rnd::ini(rnd);
+    rbc::rnd::fin(rnd);
+}
+
+void main1() {
     m::ini(argc, argv);
     MSG("mpi size: %d", m::size);
-    MSG("Hello world!");
+    main0();
     m::fin();
 }
 
 int main(int argc0, char **argv0) {
     argc = argc0;
     argv = argv0;
-    main0();
+    main1();
 }
