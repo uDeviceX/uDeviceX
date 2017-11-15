@@ -21,7 +21,7 @@ void usg() {
 void lshift() {
     argc--;
     if (argc < 1) {
-        fprintf(stderr, "u/rbc: not enough args\n");
+        fprintf(stderr, "u/rbc/force: not enough args\n");
         exit(2);
     }
 }
