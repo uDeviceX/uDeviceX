@@ -1,8 +1,14 @@
 static long decode_seed_env() {
     char *s;
     s = getenv("RBC_RND");
-    if   (s == NULL) return 0;
-    else             return atol(s);
+    if   (s == NULL) {
+        MSG("RBC_RND is not set");
+        return 0;
+    }
+    else  {
+        MSG("RBC_RND = %s", s);
+        return atol(s);
+    }
 }
 static long decode_seed_time() {
     long t;
