@@ -21,8 +21,8 @@ void fin(D *d) {
 }
 
 static void assert_n(int n, int max, const char *s) {
-    if (n > max) return;
-    ERR("%s: n = %d > max = %d", s, n , max);
+    if (n > max)
+        ERR("%s: n = %d > max = %d", s, n , max);
 }
 void gen(D *d, int n) {
     assert_n(n, d->max, "rbc::rnd::gen");
