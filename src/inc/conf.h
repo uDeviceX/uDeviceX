@@ -85,10 +85,13 @@
   #define rbc_com_dumps (false)
 #endif
 
-/* stretch cell? 
-   see doc/stretch.md */
+/* stretch cell?  see doc/stretch.md */
 #ifndef RBC_STRETCH
   #define RBC_STRETCH (false)
+#endif
+
+#ifndef RBC_RND
+   #define RBC_RND (false)
 #endif
 
 /* dump meshes relative to the domain edge or domain center? */
