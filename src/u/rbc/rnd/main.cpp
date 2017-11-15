@@ -1,8 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <conf.h>
+#include "inc/conf.h"
+
 #include "msg.h"
 #include "mpi/glb.h"
+#include "d/api.h"
+#include "inc/dev.h"
+#include "utils/cc.h"
 
 #include "rbc/rnd/imp.h"
 
@@ -20,7 +26,7 @@ void lshift() {
 
 void main0() {
     rbc::rnd::D *rnd;
-    rbc::rnd::ini(rnd);
+    rbc::rnd::ini(&rnd, 10);
     rbc::rnd::fin(rnd);
 }
 
