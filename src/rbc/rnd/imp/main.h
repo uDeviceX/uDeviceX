@@ -1,8 +1,8 @@
 static void ini0(D *d, int n, long seed) {
     Dalloc(&d->r, n);
-    CU(curandCreateGenerator(&d->g, CURAND_RNG_PSEUDO_DEFAULT));
+    CU(api::CreateGenerator(&d->g));
     seed = decode_seed(seed);
-    CU(curandSetPseudoRandomGeneratorSeed(d->g,  seed));
+    CU(api::SetPseudoRandomGeneratorSeed(d->g,  seed));
     d->max = n;
 }
 void ini(D **pd, int n, long seed) {
@@ -14,7 +14,7 @@ void ini(D **pd, int n, long seed) {
 
 static void fin0(D *d) {
     Dfree(d->r);
-    CU(curandDestroyGenerator(d->g));
+    CU(api::DestroyGenerator(d->g));
 }
 void fin(D *d) {
     fin0(d);
@@ -28,9 +28,7 @@ static void assert_n(int n, int max, const char *s) {
 
 void gen(D *d, int n) {
     assert_n(n, d->max, "rbc::rnd::gen");
-    float mean, std;
-    mean = 0; std = 1;
-    CU(curandGenerateNormal(d->g, d->r, n, mean, std));
+    api::GenerateNormal(d->g, d->r, n);
 }
 
 float get_hst(const D *d, int i) {
