@@ -20,7 +20,7 @@ void fin(D *d) {
     free(d);
 }
 
-static assert_n(int n, int max, const char *s) {
+static void assert_n(int n, int max, const char *s) {
     if (n > max) return;
     ERR("%s: n = %d > max = %d", s, n , max);
 }
