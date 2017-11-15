@@ -6,4 +6,4 @@
 
 ## DEV
 
-[coding style and conventions](/src/doc/DEV/conventions.md)
+[coding style and conventions](/doc/DEV/conventions.md)
