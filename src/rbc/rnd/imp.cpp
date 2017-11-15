@@ -19,5 +19,6 @@
 
 namespace rbc { namespace rnd {
 #include "imp/macro.h"
+#include "imp/seed.h"
 #include "imp/main.h"
 }} /* namespace */
