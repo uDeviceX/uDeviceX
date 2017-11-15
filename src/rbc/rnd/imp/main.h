@@ -1,21 +1,21 @@
-static int decode_seed_env() {
+static long decode_seed_env() {
     char *s;
     s = getenv("RBC_RND");
     if   (s == NULL) return 0;
-    else             return atoi(s);
+    else             return atol(s);
 }
-static int decode_seed_time() {
-    int t;
+static long decode_seed_time() {
+    long t;
     t = os::time();
-    MSG("t: %d", t);
+    MSG("t: %ld", t);
     return t;
 }
-static int decode_seed(int seed) {
+static int decode_seed(long seed) {
     if      (seed == ENV )  return decode_seed_env();
     else if (seed == TIME) return decode_seed_time();
     else return seed;
 }
-static void ini0(D *d, int n, int seed) {
+static void ini0(D *d, int n, long seed) {
     Dalloc(&d->r, n);
     CU(curandCreateGenerator(&d->g, CURAND_RNG_PSEUDO_DEFAULT));
     seed = decode_seed(seed);

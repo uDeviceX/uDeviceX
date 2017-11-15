@@ -20,5 +20,5 @@ void mkdir(const char *path) {
         exit(1);
     }
 }
-int time() { return time_t(NULL); }
+long time() { return time_t(NULL); }
 }
