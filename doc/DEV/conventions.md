@@ -14,7 +14,7 @@ for emacs users: see [cstyle/emacs.md](cstyle/emacs.md)
 
 ### functions
 
-* function names should be descriptive on its own or inside its namespace
+* a function name should be descriptive on its own or inside its namespace
 
 ## file structure
 
