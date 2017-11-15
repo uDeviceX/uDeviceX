@@ -18,7 +18,7 @@ static int DestroyGenerator0(curandGenerator_t g) {
 int DestroyGenerator(Generator_t s) {
     int rc;
     rc = DestroyGenerator0(s->g);
-    free(s);
+    //    free(s);
     return rc;
 }
 
