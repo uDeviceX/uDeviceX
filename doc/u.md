@@ -1,24 +1,28 @@
 # [u]nits
 
-* [x](x/) "standard" udx unit
-* [hw](hw/) "Hello world!"
+uDeviceX consists of units. They are implemented in [/src/u/](/src/u/).  
+See the [units](/doc/units/) folder for documentation of specific units.  
 
-# Build and run
+example:
+* [x](/src/u/x/) "standard" udx unit
+* [hw](/src/u/hw/) "Hello world!"
 
-From `/src`
+## Build and run
 
-	u.conf0 ./u/hw
+Compile unit `A`: from `/src`
+
+	u.conf0 ./u/A
 	u.make -j
 
-# Update make file fragments
+## Update make file fragments
 
 From `/src`
 
-	u.u u/x
+	u.u u/A
 
 updates `hw/make/*.mk` files
 
-# Create a new module
+## Create a new unit
 
 From `src`
 
