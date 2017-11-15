@@ -8,7 +8,7 @@
 #define     RBCgammaT ( 0.0          )
 #define        RBCkbT ( 0.0444444    )
 #define       RBCmpow ( 2.0          )
-#define        RBCphi ( 6.97219932574)
+#define        RBCphi ( 0.0          )
 
 #define    RBCtotArea ( 2.509e-4*(RBCnv)*(RBCnv)         * 0.774)
 #define  RBCtotVolume ( 2.159e-7*(RBCnv)*(RBCnv)*(RBCnv) * 0.758)
