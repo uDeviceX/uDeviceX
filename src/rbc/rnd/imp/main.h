@@ -24,12 +24,14 @@ static void assert_n(int n, int max, const char *s) {
     if (n > max)
         ERR("%s: n = %d > max = %d", s, n , max);
 }
+
 void gen(D *d, int n) {
     assert_n(n, d->max, "rbc::rnd::gen");
     float mean, std;
     mean = 0; std = 1;
     CU(curandGenerateNormal(d->g, d->r, n, mean, std));
 }
+
 float get_hst(const D *d, int i) {
     float x;
     float *r;
