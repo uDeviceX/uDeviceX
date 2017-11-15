@@ -12,12 +12,12 @@ for emacs users: see [cstyle/emacs.md](cstyle/emacs.md)
 * names of global variables should be as descriptive as possible
 * arrays of simple structures `x` have names `xx`, eg. `pp` is an array of particles, `cc` is an array of colors, `ii` is an array of indices
 * array of small dimentionality may use an enum type for readability, e.g.
-``` c++
-	enum {X, Y, Z};
-	int r[3];
-	r[X] = rx;
-	r[Y] = ry;
-	r[Z] = rz;
+```
+enum {X, Y, Z};
+int r[3];
+r[X] = rx;
+r[Y] = ry;
+r[Z] = rz;
 ```
 
 ### functions
