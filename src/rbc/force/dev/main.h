@@ -54,8 +54,8 @@ static __device__ float3 adj_dihedrals(const Texo<float2> vert, float3 r0,
     return dih(r0, r1.r, r2.r, r3.r, r4.r);
 }
 
-static __global__ void force(int md, int nv, int nc,
-                             const Texo<float2> vert, const Texo<int> adj0, const Texo<int> adj1,
+static __global__ void force(int md, int nv, int nc, const Texo<float2> vert, rbc::rnd::D *rnd,
+                             const Texo<int> adj0, const Texo<int> adj1,
                              const Shape shape,
                              const float *__restrict__ av, /**/ float *ff) {
     assert(md == RBCmd);
