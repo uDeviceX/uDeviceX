@@ -35,9 +35,11 @@ void main0(rbc::rnd::D *rnd, int n) {
 }
 
 void main1() {
-    int n = 10;
+    int n, seed;
+    n = 10;
+    seed = 0;
     rbc::rnd::D *rnd;
-    rbc::rnd::ini(&rnd, n);
+    rbc::rnd::ini(&rnd, n, seed);
     main0(rnd, n);
     rbc::rnd::fin(rnd);
 }

@@ -1,13 +1,13 @@
-static void ini0(D *d, int n) {
+static void ini0(D *d, int n, int seed) {
     Dalloc(&d->r, n);
     CU(curandCreateGenerator(&d->g, CURAND_RNG_PSEUDO_DEFAULT));
-    CU(curandSetPseudoRandomGeneratorSeed(d->g,  1234ULL));
+    CU(curandSetPseudoRandomGeneratorSeed(d->g,  seed));
     d->max = n;
 }
-void ini(D **pd, int n) {
+void ini(D **pd, int n, int seed) {
     D* d;
     d = (D*)malloc(sizeof(D));
-    ini0(d, n);
+    ini0(d, n, seed);
     *pd = d;
 }
 
