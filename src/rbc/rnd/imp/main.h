@@ -25,7 +25,7 @@ static void assert_n(int n, int max, const char *s) {
     ERR("%s: n = %d > max = %d", s, n , max);
 }
 void gen(D *d, int n) {
-    assert_n(n, d->max, "rbc::gen");
+    assert_n(n, d->max, "rbc::rnd::gen");
     float mean, std;
     mean = 0; std = 1;
     CU(curandGenerateNormal(d->g, d->r, n, mean, std));
@@ -33,6 +33,7 @@ void gen(D *d, int n) {
 float get_hst(const D *d, int i) {
     float x;
     float *r;
+    assert_n(i, d->max, "rbc::rnd::get_hst");
     r = d->r;
     cD2H(&x, &r[i], 1);
     return x;
