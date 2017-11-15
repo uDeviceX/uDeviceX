@@ -5,3 +5,5 @@
 ## USER
 
 ## DEV
+
+[coding style and conventions](/src/doc/DEV/conventions.md)
