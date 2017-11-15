@@ -24,8 +24,8 @@ $B/rbc/gen/imp.o: $S/rbc/gen/imp.cpp; $X -I$S/rbc/gen -I$S/.
 $B/rbc/main/imp.o: $S/rbc/main/imp.cpp; $X -I$S/rbc/main -I$S/.
 $B/rbc/rnd/imp.o: $S/rbc/rnd/imp.cpp; $X -I$S/rbc/rnd -I$S/.
 $B/rbc/stretch/imp.o: $S/rbc/stretch/imp.cu; $N -I$S/rbc/stretch -I$S/.
-$B/u/rbc/lib/imp.o: $S/u/rbc/lib/imp.cu; $N -I$S/u/rbc/lib -I$S/.
-$B/u/rbc/main.o: $S/u/rbc/main.cpp; $X -I$S/u/rbc -I$S/.
+$B/u/rbc/force/lib/imp.o: $S/u/rbc/force/lib/imp.cu; $N -I$S/u/rbc/force/lib -I$S/.
+$B/u/rbc/force/main.o: $S/u/rbc/force/main.cpp; $X -I$S/u/rbc/force -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.
 $B/utils/error.o: $S/utils/error.cpp; $X -I$S/utils -I$S/.
 $B/utils/mc.o: $S/utils/mc.cpp; $X -I$S/utils -I$S/.

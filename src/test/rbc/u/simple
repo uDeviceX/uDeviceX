@@ -1,7 +1,7 @@
 #### check forces on a cell
 # nTEST: rbc.u.simple
 S=`pwd`
-U=u/rbc
+U=u/rbc/force
 C=conf/default.h
 :
 nv=642

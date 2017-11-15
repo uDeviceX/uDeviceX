@@ -1,3 +1,3 @@
 void ini() { }
 void fin() { }
-void gen() { }
+void nxt() { }

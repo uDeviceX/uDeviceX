@@ -1,7 +1,7 @@
 #### check forces on a cell
-# cTEST: rbc.u.stree.free
+# nTEST: rbc.u.stree.free
 S=`pwd`
-U=u/rbc
+U=u/rbc/force
 C=conf/default.h
 :
 nv=642
