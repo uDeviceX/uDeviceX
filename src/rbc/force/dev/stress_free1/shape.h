@@ -5,7 +5,7 @@ struct Shape0 { /* info for one edge :TODO: */
 };
 
 /* extract edge specific shape info */
-static void __device__ edg_shape(int i, Shape shape, /**/ Shape0 *shape0) {
+static void __device__ edg_shape(Shape shape, int i, /**/ Shape0 *shape0) {
     assert ( i < RBCnv * RBCmd);
     Edg edg;
     edg = shape.edg[i];
