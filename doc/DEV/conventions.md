@@ -15,3 +15,4 @@
   * interface `A/imp.h`
   * implementation can be done in separate files inside `A/imp/` folder
   * cuda code should be inside `A/dev.h` or, if multiple files, `A/dev/` folder
+* modules can have submodules, which follow the same structure as above, e.g. submodule `B` inside module `A` belongs to `A/B/` folder
