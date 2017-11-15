@@ -1,6 +1,6 @@
 struct Generator_st { curandGenerator_t g; };
 
-static int CreateGenerator0(curandGenerator_t* g) {
+static int CreateGenerator0(curandGenerator_t *g) {
     return curandCreateGenerator(g, CURAND_RNG_PSEUDO_DEFAULT);
 }
 int CreateGenerator(Generator_t *pg) {
@@ -18,7 +18,7 @@ static int DestroyGenerator0(curandGenerator_t g) {
 int DestroyGenerator(Generator_t s) {
     int rc;
     rc = DestroyGenerator0(s->g);
-    //    free(s);
+    free(s);
     return rc;
 }
 
