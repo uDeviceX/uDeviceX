@@ -1,5 +1,7 @@
 void ini0(D* d, int n) {
     Dalloc(&d->r, n);
+    CU(curandCreateGenerator(&d->g, CURAND_RNG_PSEUDO_DEFAULT));
+    CU(curandSetPseudoRandomGeneratorSeed(d->g,  1234ULL));
 }
 void ini(D** pd, int n) {
     D* d;

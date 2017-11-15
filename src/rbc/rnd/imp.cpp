@@ -1,4 +1,7 @@
 #include <stdlib.h>
+#include <stdio.h>
+#include <assert.h>
+#include <curand.h>
 
 #include <conf.h>
 #include "inc/conf.h"
@@ -14,5 +17,6 @@
 #include "type.h"
 
 namespace rbc { namespace rnd {
+#include "imp/macro.h"
 #include "imp/main.h"
 }} /* namespace */

@@ -23,6 +23,7 @@ NCFLAGS    =           $(CXXFLAGS)
 XCFLAGS    = $(COMMON) $(CXXFLAGS)
 NVCCFLAGS += $(COMMON) -use_fast_math
 LIBS      += -lcudart
+LIBS      += -lcurand
 
 N  = $(NVCC)  $(ARCH) $(NVCCFLAGS) --compiler-options '$(NCFLAGS)' -dc $< -c -o $@
 X  = $(NVCC)  $(ARCH)              --compiler-options '$(XCFLAGS)'     $< -c -o $@
