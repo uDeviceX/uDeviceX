@@ -15,6 +15,11 @@ for emacs users: see [cstyle/emacs.md](cstyle/emacs.md)
 ### functions
 
 * a function name should be descriptive on its own or inside its namespace
+* arguments are ordered as follow:
+  * input is at the beginning
+  * input/output come after input and start with `/* io */`
+  * output comes after input/output and start with `/**/` or `/* o */` depending on the context
+  * workspace comes at the end ans starts with `/* w */`
 
 ## file structure
 
