@@ -1,7 +1,8 @@
-void ini0(D *d, int n) {
+static void ini0(D *d, int n) {
     Dalloc(&d->r, n);
     CU(curandCreateGenerator(&d->g, CURAND_RNG_PSEUDO_DEFAULT));
     CU(curandSetPseudoRandomGeneratorSeed(d->g,  1234ULL));
+    d->max = n;
 }
 void ini(D **pd, int n) {
     D* d;
@@ -10,7 +11,7 @@ void ini(D **pd, int n) {
     *pd = d;
 }
 
-void fin0(D *d) {
+static void fin0(D *d) {
     Dfree(d->r);
     CU(curandDestroyGenerator(d->g));
 }
@@ -18,7 +19,13 @@ void fin(D *d) {
     fin0(d);
     free(d);
 }
+
+static assert_n(int n, int max, const char *s) {
+    if (n > max) return;
+    ERR("%s: n = %d > max = %d", s, n , max);
+}
 void gen(D *d, int n) {
+    assert_n(n, d->max, "rbc::gen");
     float mean, std;
     mean = 0; std = 1;
     CU(curandGenerateNormal(d->g, d->r, n, mean, std));
