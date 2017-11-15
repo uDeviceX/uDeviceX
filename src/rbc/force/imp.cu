@@ -31,11 +31,11 @@
 namespace rbc { namespace force {
 namespace dev {
 #if   defined(RBC_PARAMS_TEST)
-   #include "params/test.h"
+  #include "params/test.h"
 #elif defined(RBC_PARAMS_LINA)
-   #include "params/lina.h"
+  #include "params/lina.h"
 #else
-   #error RBC_PARAMS_* is undefined
+  #error RBC_PARAMS_* is undefined
 #endif
 #include "dev/common.h"
 #if   RBC_STRESS_FREE
