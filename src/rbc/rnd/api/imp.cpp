@@ -8,5 +8,13 @@
 #include "imp.h"
 
 namespace rbc { namespace rnd { namespace api {
-#include "imp/cuda.h"
-}}}
+
+#if   defined(DEV_CUDA)
+  #include "imp/cuda.h"
+#elif defined(DEV_CPU)
+  #include "imp/cpu.h"
+#else
+  #error DEV_* is undefined
+#endif
+
+}}} /* namespace */
