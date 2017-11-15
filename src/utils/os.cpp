@@ -3,6 +3,7 @@
 
 #include <sys/stat.h>
 #include <errno.h>
+#include <time.h>
 
 #include "os.h"
 
@@ -19,4 +20,5 @@ void mkdir(const char *path) {
         exit(1);
     }
 }
+int time() { return time_t(NULL); }
 }

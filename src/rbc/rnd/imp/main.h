@@ -1,6 +1,24 @@
+static int decode_seed_env() {
+    char *s;
+    s = getenv("RBC_RND");
+    if   (s == NULL) return 0;
+    else             return atoi(s);
+}
+static int decode_seed_time() {
+    int t;
+    t = os::time();
+    MSG("t: %d", t);
+    return t;
+}
+static int decode_seed(int seed) {
+    if      (seed == ENV )  return decode_seed_env();
+    else if (seed == TIME) return decode_seed_time();
+    else return seed;
+}
 static void ini0(D *d, int n, int seed) {
     Dalloc(&d->r, n);
     CU(curandCreateGenerator(&d->g, CURAND_RNG_PSEUDO_DEFAULT));
+    seed = decode_seed(seed);
     CU(curandSetPseudoRandomGeneratorSeed(d->g,  seed));
     d->max = n;
 }

@@ -6,6 +6,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "utils/os.h"
 #include "msg.h"
 #include "mpi/glb.h"
 #include "d/api.h"
