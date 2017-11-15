@@ -8,7 +8,7 @@ one () {
     ../tools/udeps "$u"
 }
 
-l="u/bangladesh/release u/bangladesh/safe u/clist
+l="u/bangladesh u/clist
 u/comm u/dang u/france
 u/h5 u/hw u/korea
 u/pair u/rbc/force u/rbc/rnd u/safe
