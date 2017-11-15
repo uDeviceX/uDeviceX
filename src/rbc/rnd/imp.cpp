@@ -14,6 +14,7 @@
 
 #include "utils/cc.h"
 
+#include "api/type.h"
 #include "api/imp.h"
 #include "type.h"
 #include "imp.h"

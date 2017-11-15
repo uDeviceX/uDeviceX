@@ -6,6 +6,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "type.h"
 #include "imp.h"
 
 namespace rbc { namespace rnd { namespace api {
