@@ -8,6 +8,7 @@ static void setup_first() {
 static void setup(const int *const cellsstart) {
     size_t offset;
     int nc;
+    static bool firsttime = true;
     if (firsttime) {
         setup_first();
         firsttime = false;
