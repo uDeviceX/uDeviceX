@@ -22,7 +22,7 @@ static void ini0(D *d, int n, long seed) {
     CU(curandSetPseudoRandomGeneratorSeed(d->g,  seed));
     d->max = n;
 }
-void ini(D **pd, int n, int seed) {
+void ini(D **pd, int n, long seed) {
     D* d;
     d = (D*)malloc(sizeof(D));
     ini0(d, n, seed);
