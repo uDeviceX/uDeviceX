@@ -20,5 +20,5 @@ void mkdir(const char *path) {
         exit(1);
     }
 }
-long time() { return time(NULL); }
+long time() { return ::time(NULL); }
 }
