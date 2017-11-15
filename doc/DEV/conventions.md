@@ -33,8 +33,8 @@
 * a module is implemented inside its own directory `A`
   * it has its own object `A/imp.cu` or `A/imp.cpp`
   * interface `A/imp.h`
-  * implementation can be done in separate files inside `A/imp/` folder
-  * cuda code should be inside `A/dev.h` or, if multiple files, `A/dev/` folder
+  * implementation can be done in separate files inside `A/imp/` directory
+  * cuda code should be inside `A/dev.h` or, if multiple files, `A/dev/` directory
 * modules can have submodules, which follow the same structure as above, e.g. submodule `B` inside module `A` belongs to `A/B/` directory
 
 ## style
