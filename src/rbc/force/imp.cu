@@ -19,6 +19,7 @@
 #include "utils/texo.h"
 #include "utils/texo.dev.h"
 
+#include "rbc/rnd/imp.h"
 #include "rbc/type.h"
 
 #include "rbc/adj/type.h"
