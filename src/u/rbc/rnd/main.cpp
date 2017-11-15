@@ -27,6 +27,7 @@ void lshift() {
 void main0(rbc::rnd::D *rnd, int n) {
     int i;
     float x;
+    rbc::rnd::gen(rnd, n);
     for (i = 0; i < n; i++) {
         x = rbc::rnd::get_hst(rnd, i);
         printf("%g\n", x);

@@ -18,7 +18,7 @@ void fin(D *d) {
     fin0(d);
     free(d);
 }
-void nxt(D *d, int n) {
+void gen(D *d, int n) {
     float mean, std;
     mean = 0; std = 1;
     CU(curandGenerateNormal(d->g, d->r, n, mean, std));
