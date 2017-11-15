@@ -25,6 +25,8 @@ void gen(D *d, int n) {
 }
 float get_hst(const D *d, int i) {
     float x;
-    cD2H(&x, &d[i], 1);
+    float *r;
+    r = d->r;
+    cD2H(&x, &r[i], 1);
     return x;
 }
