@@ -11,6 +11,14 @@ for emacs users: see [cstyle/emacs.md](cstyle/emacs.md)
 * names of local variables are short and should be understandable from the context
 * names of global variables should be as descriptive as possible
 * arrays of simple structures `x` have names `xx`, eg. `pp` is an array of particles, `cc` is an array of colors, `ii` is an array of indices
+* array of small dimentionality may use an enum type for readability, e.g.
+``` c++
+	enum {X, Y, Z};
+	int r[3];
+	r[X] = rx;
+	r[Y] = ry;
+	r[Z] = rz;
+```
 
 ### functions
 
@@ -20,6 +28,7 @@ for emacs users: see [cstyle/emacs.md](cstyle/emacs.md)
   * input/output come after input and start with `/* io */`
   * output comes after input/output and start with `/**/` or `/* o */` depending on the context
   * workspace comes at the end ans starts with `/* w */`
+* do **not** use references, use pointers instead (it is easier to see how the variable is passed from the caller point of view)
 
 ## file structure
 
