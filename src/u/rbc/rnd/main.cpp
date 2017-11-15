@@ -24,21 +24,32 @@ void lshift() {
     }
 }
 
-void main0() {
-    rbc::rnd::D *rnd;
-    rbc::rnd::ini(&rnd, 10);
-    rbc::rnd::fin(rnd);
+void main0(rbc::rnd::D *rnd, int n) {
+    int i;
+    float x;
+    for (i = 0; i < n; i++) {
+        x = rbc::rnd::get_hst(rnd, i);
+        printf("%g\n", x);
+    }
 }
 
 void main1() {
+    int n = 10;
+    rbc::rnd::D *rnd;
+    rbc::rnd::ini(&rnd, n);
+    main0(rnd, n);
+    rbc::rnd::fin(rnd);
+}
+
+void main2() {
     m::ini(argc, argv);
     MSG("mpi size: %d", m::size);
-    main0();
+    main1();
     m::fin();
 }
 
 int main(int argc0, char **argv0) {
     argc = argc0;
     argv = argv0;
-    main1();
+    main2();
 }
