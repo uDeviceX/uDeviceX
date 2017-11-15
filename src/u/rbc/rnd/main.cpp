@@ -38,7 +38,7 @@ void main1() {
     int n;
     long seed;
     n = 10;
-    seed = rbc::rnd::TIME;
+    seed = rbc::rnd::ENV;
     rbc::rnd::D *rnd;
     rbc::rnd::ini(&rnd, n, seed);
     main0(rnd, n);
