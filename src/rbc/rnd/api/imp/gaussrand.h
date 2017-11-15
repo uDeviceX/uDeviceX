@@ -1,4 +1,5 @@
-/* Knuth and due originally to Marsaglia */
+/* Gaussian rnd with mean = 0 and std = 1
+   Knuth and due originally to Marsaglia */
 double gaussrand() {
     static double V1, V2, S;
     static int phase = 0;
