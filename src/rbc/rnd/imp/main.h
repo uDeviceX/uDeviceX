@@ -1,9 +1,8 @@
 static void ini0(D *d, int n, long seed) {
     Dalloc(&d->r, n);
-    d->g = (api::Generator_t*) malloc(sizeof(api::Generator_t));
-    CU(api::CreateGenerator(d->g));
+    CU(api::CreateGenerator(&d->g));
     seed = decode_seed(seed);
-    CU(api::SetPseudoRandomGeneratorSeed(*d->g,  seed));
+    CU(api::SetPseudoRandomGeneratorSeed(d->g,  seed));
     d->max = n;
 }
 void ini(D **pd, int n, long seed) {
@@ -15,8 +14,7 @@ void ini(D **pd, int n, long seed) {
 
 static void fin0(D *d) {
     Dfree(d->r);
-    free(d->g);
-    CU(api::DestroyGenerator(*d->g));
+    CU(api::DestroyGenerator(d->g));
 }
 void fin(D *d) {
     fin0(d);
@@ -30,7 +28,7 @@ static void assert_n(int n, int max, const char *s) {
 
 void gen(D *d, int n) {
     assert_n(n, d->max, "rbc::rnd::gen");
-    api::GenerateNormal(*d->g, d->r, n);
+    api::GenerateNormal(d->g, d->r, n);
 }
 
 float get_hst(const D *d, int i) {
