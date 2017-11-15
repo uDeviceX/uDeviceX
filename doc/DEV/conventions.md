@@ -1,9 +1,5 @@
 # coding conventions
 
-## style
-
-for emacs users: see [cstyle/emacs.md](cstyle/emacs.md)
-
 ## naming
 
 ### variables
@@ -41,4 +37,7 @@ for emacs users: see [cstyle/emacs.md](cstyle/emacs.md)
   * cuda code should be inside `A/dev.h` or, if multiple files, `A/dev/` folder
 * modules can have submodules, which follow the same structure as above, e.g. submodule `B` inside module `A` belongs to `A/B/` folder
 
+## style
+
+for emacs users: see [cstyle/emacs.md](cstyle/emacs.md)
 
