@@ -54,6 +54,7 @@ $B/rbc/force/area_volume/imp.o: $S/rbc/force/area_volume/imp.cu; $N -I$S/rbc/for
 $B/rbc/force/imp.o: $S/rbc/force/imp.cu; $N -I$S/rbc/force -I$S/.
 $B/rbc/gen/imp.o: $S/rbc/gen/imp.cpp; $X -I$S/rbc/gen -I$S/.
 $B/rbc/main/imp.o: $S/rbc/main/imp.cpp; $X -I$S/rbc/main -I$S/.
+$B/rbc/rnd/api/imp.o: $S/rbc/rnd/api/imp.cpp; $X -I$S/rbc/rnd/api -I$S/.
 $B/rbc/rnd/imp.o: $S/rbc/rnd/imp.cpp; $X -I$S/rbc/rnd -I$S/.
 $B/rbc/stretch/imp.o: $S/rbc/stretch/imp.cu; $N -I$S/rbc/stretch -I$S/.
 $B/restrain/imp.o: $S/restrain/imp.cu; $N -I$S/restrain -I$S/.

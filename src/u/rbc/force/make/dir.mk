@@ -14,6 +14,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/rbc/gen               && \
     d $B/rbc/main              && \
     d $B/rbc/rnd               && \
+    d $B/rbc/rnd/api           && \
     d $B/rbc/stretch           && \
     d $B/u/rbc/force           && \
     d $B/u/rbc/force/lib       && \
