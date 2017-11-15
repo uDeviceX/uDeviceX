@@ -1,5 +1,6 @@
 #include <stddef.h>
 #include <stdlib.h>
+#include <math.h>
 #include <curand.h>
 
 #include <conf.h>
