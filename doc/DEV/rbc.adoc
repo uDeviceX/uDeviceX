@@ -1,12 +1,20 @@
-== rbc
+= rbc
+
+== Intro
+
+
+
+== Components
 
 * link:com[com] compute center of mass
 * link:com[main] initialization, restart
 * link:force[force] internal forces
-* link:force/area_volume[force/area_volume] compute area and volume of the mesh
-* link:adj[adj] adjacency list --- manage a structure to pack mesh data
+* link:force/area_volume[force/area_volume] compute area and volume of
+  the mesh
+* link:adj[adj] adjacency list --- manage a structure to pack mesh to
+  read on device.
 * link:gen[gen] generate `pp` from cell template (`rbc.off`) and initial condition
-files (`rbcs-ic.txt`)
+  files (`rbcs-ic.txt`)
 * link:rnd[rnd] random numbers for internal forces
 * link:rnd/api[rnd/api] low level api for random number generator
 
