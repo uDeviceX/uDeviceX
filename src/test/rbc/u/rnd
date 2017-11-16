@@ -6,8 +6,9 @@ C=conf/default.h
 :
 nv=642
 u.conf $S $U $C <<!!!
-       RBCnv=$nv
+       RBCnv=$nv RBC_RND
        run
 !!!
 { u.make -j;     } > /dev/null
+export RBC_RND=42
 u.run ./udx data/cells/rbc/$nv.off data/ic/two  >  forces.out.txt
