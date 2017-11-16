@@ -25,6 +25,9 @@
 #include "rbc/adj/type.h"
 #include "rbc/adj/dev.h"
 
+#include "rbc/rnd/api/imp.h"
+#include "rbc/rnd/type.h"
+
 #include "area_volume/imp.h"
 
 #include "imp.h"

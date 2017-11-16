@@ -5,7 +5,7 @@ static void apply0(int nc,
     int md, nv;
     md = RBCmd;
     nv = RBCnv;
-    KL(dev::force, (k_cnf(nc*nv*md)), (md, nv, nc, vert, rnd,
+    KL(dev::force, (k_cnf(nc*nv*md)), (md, nv, nc, vert, rnd->r,
                                        adj0, adj1, shape, av, /**/ (float*)ff));
 }
 
