@@ -1,0 +1,13 @@
+== rbc
+
+* com compute center of mass
+* main initialization, restart
+* force internal forces
+* force/area_volume compute area and volume of the mesh
+* adj adjacency list --- manage a structure to pack mesh data
+* gen generate `pp` from cell template (`rbc.off`) and initial condition
+files (`rbcs-ic.txt`)
+* rnd random numbers for internal forces
+* rnd/api low level api for random number generator
+
+See also u/rbc, src/test/rbccom, src/test/rbc
