@@ -1,3 +1,5 @@
 == Intro
 
+include::main/intro.adoc[]
+
 == Tests
