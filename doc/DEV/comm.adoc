@@ -39,9 +39,17 @@ NONE        /* no allocation                            */
 
 === ini
 
-Given two structures `hBags` and `dBags`, `ini` allocates the buffers on host and device. `ini` expects 2 allocation modes:
+[source,c++]
+----
+void ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db); //<1>
+void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s); //<2>
+----
+
+<1> Given two structures `hBags` and `dBags`, `ini` allocates the buffers on host and device. `ini` expects 2 allocation modes:
 * `fmod`: allocation mode for fragment buffers
 * `bmod`: allocation mode for bulk buffer
+
+<2> initialize `Stamp` structure
 
 === fin
 
