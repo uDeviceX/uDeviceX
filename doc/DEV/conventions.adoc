@@ -40,4 +40,4 @@ r[Z] = rz;
 
 == style
 
-for emacs users: see [cstyle/emacs.md](cstyle/emacs.md)
+for emacs users: see link:emacs[cstyle/emacs.adoc]
