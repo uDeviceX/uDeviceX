@@ -39,6 +39,7 @@ namespace dev {
   #error RBC_PARAMS_* is undefined
 #endif
 #include "dev/common.h"
+
 #if   RBC_STRESS_FREE
   #include "dev/stress_free1/shape.h"
   #include "dev/stress_free1/force.h"
@@ -46,6 +47,14 @@ namespace dev {
   #include "dev/stress_free0/shape.h"
   #include "dev/stress_free0/force.h"
 #endif
+
+#if   RBC_RND
+  #include "dev/rnd1/main.h"
+#else
+  #include "dev/rnd0/main.h"
+#endif
+
+
 #include "dev/main.h"
 }
 
