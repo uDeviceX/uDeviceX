@@ -6,6 +6,7 @@ generic communicator with "halo".
 
 ## data structures
 
+
 * `hBags`: buffers on the host, contains all necessary information of the data to communicate:
   * `data`: host buffer containing the data
   * `counts`: number of items per fragment
@@ -19,3 +20,36 @@ generic communicator with "halo".
   * `ranks`: ranks of the neighbors in the grid (who do I send to?)
   * `tags`: tags used by neighbors to send messages
   
+## allocation mod
+
+User can choose how the buffers are allocated with the enum type `AllocMod`.
+This is used in the funcion `ini` and `fin`. allocation mode and free mode are assumed to be the same.  
+
+currently supported allocation modes:
+
+	HST_ONLY,   /* only host bags allocated                 */
+    DEV_ONLY,   /* only device bags allocated               */
+    PINNED,     /* both host and device pinned              */
+    PINNED_DEV, /* host pinned; device global memory on gpu */
+    NONE        /* no allocation                            */
+
+## interface
+
+### ini
+
+Given two structures `hBags` and `dBags`, `ini` allocates the buffers on host and device. `ini` expects 2 allocation modes:
+* `fmod`: allocation mode for fragment buffers
+* `bmod`: allocation mode for bulk buffer
+
+### fin
+
+free memory allocated by `ini`
+
+### communication
+
+	void post_recv(hBags *b, Stamp *s);
+	void post_send(const hBags *b, Stamp *s);
+
+	void wait_recv(Stamp *s, /**/ hBags *b);
+	void wait_send(Stamp *s);
+
