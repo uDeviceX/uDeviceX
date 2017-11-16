@@ -41,7 +41,7 @@ NONE        /* no allocation                            */
 
 [source,c++]
 ----
-void ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db); //<1>
+void ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
 ----
 
 Given two structures `hBags` and `dBags`, `ini` allocates the buffers on host and device. `ini` expects 2 allocation modes:
@@ -50,7 +50,7 @@ Given two structures `hBags` and `dBags`, `ini` allocates the buffers on host an
 
 [source,c++]
 ----
-void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s); //<2>
+void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s);
 ----
 initialize `Stamp` structure
 
@@ -62,24 +62,24 @@ free memory allocated by `ini`
 
 [source,c++]
 ----
-void post_recv(hBags *b, Stamp *s); //<1>
+void post_recv(hBags *b, Stamp *s);
 ----
 call MPI asynchroneous recv and store requests in `s`
 
 [source,c++]
 ----
-void post_send(const hBags *b, Stamp *s);  //<2>
+void post_send(const hBags *b, Stamp *s);
 ----
 call MPI asynchroneous send and store requests in `s`
 
 [source,c++]
 ----
-void wait_recv(Stamp *s, /**/ hBags *b); //<3>
+void wait_recv(Stamp *s, /**/ hBags *b);
 ----
 wait for recv requests
 
 [source,c++]
 ----
-void wait_send(Stamp *s); //<4>
+void wait_send(Stamp *s);
 ----
 wait for send requests
