@@ -1,8 +1,8 @@
 == rbc
 
-* com compute center of mass
-* main initialization, restart
-* force internal forces
+* link:com[com] compute center of mass
+* link:com[main] initialization, restart
+* link:force[force] internal forces
 * force/area_volume compute area and volume of the mesh
 * adj adjacency list --- manage a structure to pack mesh data
 * gen generate `pp` from cell template (`rbc.off`) and initial condition
