@@ -1,6 +1,7 @@
 m=main
-a=--backend=html4
-$m.html: $m.adoc; asciidoc $a $<
+a=--backend=xhtml11
+$m.html: $m.adoc main.conf
+	asciidoc -f main.conf $a $<
 
 .PHONY: clean
 
