@@ -17,6 +17,7 @@
 
 #include "rbc/type.h"
 #include "rbc/main/imp.h"
+#include "rbc/rnd/imp.h"
 #include "rbc/force/imp.h"
 
 #include "mpi/glb.h"
