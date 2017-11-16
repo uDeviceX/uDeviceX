@@ -3,11 +3,11 @@
 * link:com[com] compute center of mass
 * link:com[main] initialization, restart
 * link:force[force] internal forces
-* force/area_volume compute area and volume of the mesh
-* adj adjacency list --- manage a structure to pack mesh data
-* gen generate `pp` from cell template (`rbc.off`) and initial condition
+* link:force/area_volume[force/area_volume] compute area and volume of the mesh
+* link:adj[adj] adjacency list --- manage a structure to pack mesh data
+* link:gen[gen] generate `pp` from cell template (`rbc.off`) and initial condition
 files (`rbcs-ic.txt`)
-* rnd random numbers for internal forces
-* rnd/api low level api for random number generator
+* link:rnd[rnd] random numbers for internal forces
+* link:rnd/api[rnd/api] low level api for random number generator
 
 See also u/rbc, src/test/rbccom, src/test/rbc
