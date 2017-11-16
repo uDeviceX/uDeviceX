@@ -6,4 +6,4 @@
 
 == DEV
 
-link:/doc/DEV/conventions.md[coding style and conventions]
+link:/doc/DEV/conventions.adoc[coding style and conventions]
