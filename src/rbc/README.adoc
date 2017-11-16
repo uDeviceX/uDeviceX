@@ -10,4 +10,4 @@ files (`rbcs-ic.txt`)
 * link:rnd[rnd] random numbers for internal forces
 * link:rnd/api[rnd/api] low level api for random number generator
 
-See also u/rbc, src/test/rbccom, src/test/rbc
+See also link:src/u/rbc[], link:src/test/rbccom[], link:src/test/rbc[]
