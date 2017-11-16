@@ -1,6 +1,4 @@
-#!/bin/bash
-
-msg () { printf '%s\n' "$@" | cat >&2; }
+msg () { echo >&2 "$@"; }
 usg () {
     msg  'adapts udx to systems'
     msg  './configure [source dir] [unit dir]'
