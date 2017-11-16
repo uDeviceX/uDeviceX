@@ -8,17 +8,17 @@ generic communicator with "halo".
 
 
 * `hBags`: buffers on the host, contains all necessary information of the data to communicate:
-  * `data`: host buffer containing the data
-  * `counts`: number of items per fragment
-  * `capacity`: maximum number of items of buffers `data`
-  * `bsize`: size (in bytes) of one item
+** `data`: host buffer containing the data
+** `counts`: number of items per fragment
+** `capacity`: maximum number of items of buffers `data`
+** `bsize`: size (in bytes) of one item
 * `dBags`: buffers on the device
 * `Stamp`: contains the communication related variables:
-  * `sreq`, `rreq`: send and receive requests
-  * `bt`: base tag: tag of one exchange is `bt + fid`, where `fid` is the fragment id
-  * `cart`: cartesian communicator
-  * `ranks`: ranks of the neighbors in the grid (who do I send to?)
-  * `tags`: tags used by neighbors to send messages
+** `sreq`, `rreq`: send and receive requests
+** `bt`: base tag: tag of one exchange is `bt + fid`, where `fid` is the fragment id
+** `cart`: cartesian communicator
+** `ranks`: ranks of the neighbors in the grid (who do I send to?)
+** `tags`: tags used by neighbors to send messages
   
 == allocation mod
 
@@ -40,8 +40,8 @@ NONE        /* no allocation                            */
 === ini
 
 Given two structures `hBags` and `dBags`, `ini` allocates the buffers on host and device. `ini` expects 2 allocation modes:
-- `fmod`: allocation mode for fragment buffers
-- `bmod`: allocation mode for bulk buffer
+* `fmod`: allocation mode for fragment buffers
+* `bmod`: allocation mode for bulk buffer
 
 === fin
 
