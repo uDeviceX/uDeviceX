@@ -1,0 +1,13 @@
+#### check if hello world unit compiles and runs
+# cTEST: hw.0
+set -eu
+S=`pwd`
+U=u/hw
+C=conf/default.h
+:
+nv=642
+u.conf $S $U $C <<!!!
+       run
+!!!
+{ u.make -j;     } > /dev/null
+u.run ./udx && echo ok          > hw.out.txt
