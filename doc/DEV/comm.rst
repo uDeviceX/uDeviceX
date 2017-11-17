@@ -1,0 +1,79 @@
+comm
+====
+
+generic communicator with "halo"
+
+purpose
+----
+
+Communicate data with neighboring nodes
+
+data structures
+----
+
+* `hBags`: buffers on the host, contains all necessary information of the data to communicate:
+  * `data`: host buffer containing the data
+  * `counts`: number of items per fragment
+  * `capacity`: maximum number of items of buffers `data`
+  * `bsize`: size (in bytes) of one item
+* `dBags`: buffers on the device
+* `Stamp`: contains the communication related variables:
+  * `sreq`, `rreq`: send and receive requests
+  * `bt`: base tag: tag of one exchange is `bt + fid`, where `fid` is the fragment id
+  * `cart`: cartesian communicator
+  * `ranks`: ranks of the neighbors in the grid (who do I send to?)
+  * `tags`: tags used by neighbors to send messages
+
+allocation mod
+----
+
+User can choose how the buffers are allocated with the enum type `AllocMod`.
+This is used in the funcion `ini` and `fin`. allocation mode and free mode are assumed to be the same
+
+currently supported allocation modes:
+.. code-block: c++
+   HST_ONLY,   /* only host bags allocated                 */
+   DEV_ONLY,   /* only device bags allocated               */
+   PINNED,     /* both host and device pinned              */
+   PINNED_DEV, /* host pinned; device global memory on gpu */
+   NONE        /* no allocation                            */
+
+interface
+----
+ini
++++
+
+.. code-block: c++
+   void ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
+
+Given two structures `hBags` and `dBags`, `ini` allocates the buffers on host and device. `ini` expects 2 allocation modes:
+* `fmod`: allocation mode for fragment buffers
+* `bmod`: allocation mode for bulk buffer
+
+.. code-block: c++
+   void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s);
+initialize `Stamp` structure
+
+fin
++++
+
+free memory allocated by `ini`
+
+communication
+++++
+
+.. code-block: c++
+   void post_recv(hBags *b, Stamp *s);
+call MPI asynchroneous recv and store requests in `s`
+
+.. code-block: c++
+   void post_send(const hBags *b, Stamp *s);
+call MPI asynchroneous send and store requests in `s`
+
+.. code-block: c++
+   void wait_recv(Stamp *s, /**/ hBags *b);
+wait for recv requests
+
+.. code-block: c++
+   void wait_send(Stamp *s);
+wait for send requests
