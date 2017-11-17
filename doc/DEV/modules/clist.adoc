@@ -25,3 +25,20 @@ struct Clist {
 
 === Map
 
+Helper to reorder the arrays
+
+[source,c++]
+----
+struct Map {
+    int nA;              /* number of source arrays to build the cell lists, e.g remote+bulk -> 2 */
+    uchar4 *ee[MAXA];    /* cell entries */
+    uint *ii;            /* codes containing: indices of data to fetch and array id from which to fetch */
+    scan::Work scan;     /* scan workspace */
+};
+----
+
+* `nA` number of source arrays
+* `ee` cell entries: one array per source array, containing a list of
+  `uchar4` with entries (xcid, ycid, zcid, sid)
+* `ii` view of indices of particles to fetch
+* `scan` scan workspace, see link:/doc/DEV/modules/scan.adoc[scan]
