@@ -1,6 +1,3 @@
-#ifndef _PARTICLES_KERNEL_H_
-#define _PARTICLES_KERNEL_H_
-
 #if USE_TEX
 // textures for particle position and velocity
 texture<float4, 1, cudaReadModeElementType> oldPosTex;
@@ -317,5 +314,3 @@ void collideD(float4 *newVel,               // output: new velocity
     uint originalIndex = gridParticleIndex[index];
     newVel[originalIndex] = make_float4(vel + force, 0.0f);
 }
-
-#endif
