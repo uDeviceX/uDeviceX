@@ -1,8 +1,5 @@
-# architecture
-TARGET_ARCH ?= $(shell uname -m)
-TARGET_SIZE := $(shell getconf LONG_BIT)
 NVCC          = nvcc
-NVCCFLAGS += -g -O3
+NVCCFLAGS += -g
 
 ALL_CCFLAGS :=
 ALL_CCFLAGS += $(NVCCFLAGS)
