@@ -75,14 +75,14 @@ all: main
 particleSystem.o:particleSystem.cpp
 	$(EXEC) $(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
 
-particleSystem_cuda.o:particleSystem_cuda.cu
+system_cuda.o:system_cuda.cu
 	$(EXEC) $(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
 
 main.o:main.cpp
 	$(EXEC) $(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
 
-main: particleSystem.o particleSystem_cuda.o main.o
+main: particleSystem.o system_cuda.o main.o
 	$(EXEC) $(NVCC) $(ALL_LDFLAGS) $(GENCODE_FLAGS) -o $@ $+ $(LIBRARIES)
 
 clean:
-	rm -f particles particleSystem.o particleSystem_cuda.o particles.o
+	rm -f particles particleSystem.o system_cuda.o particles.o
