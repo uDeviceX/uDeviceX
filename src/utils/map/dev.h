@@ -17,6 +17,28 @@ __device__ void ini(hforces::Frag *frag, float x, float y, float z, /**/ M *m) {
     m->i = -1;
 }
 
+enum {OK, END};
+__device__ int nxt_xyz0(int *pdx, int *pdy, int *pdz) {
+    int dx, dy, dz;
+    dx = *pdx; dy = *pdy; dz = *pdz;
+    if (++dx <= 1) goto ok; else dx = -1;
+    if (++dy <= 1) goto ok; else dy = -1;
+    if (++dz <= 1) goto ok; else goto end;
+ ok:
+    *pdx = dx; *pdy = dy; *pdz = dz;
+    return OK;
+ end:
+    return END;
+}
+
+__device__ int valid(int dx0, int dy0, int dz0,
+                     int dx , int dy, int dz) {
+    return
+        (dx0 == 0 || (dx0 == dx)) &&
+        (dy0 == 0 || (dy0 == dy)) &&
+        (dz0 == 0 || (dz0 == dz));
+}
+
 __device__ int nxt(/**/ M* m) {
     if (m->i == -1) {
         return 0;
