@@ -30,7 +30,7 @@ static __device__ Map r2map(const Frag frag, float x, float y, float z) {
     int xs, ys, zs; /* size */
     int dx, dy, dz;
     int row, col, ncols;
-    int* start;
+    const int* start;
     Map m;
 
     dx = frag.dx; dy = frag.dy; dz = frag.dz;
