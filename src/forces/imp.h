@@ -2,6 +2,16 @@ namespace forces {
 #include "imp/util.h"
 #include "imp/main.h"
 
+#ifndef multi_solvent
+  #error multi_solvent is undefined
+#endif
+
+#if    multi_solvent==true
+  #include "imp/color/col2par.h"
+#else
+  #endif   "imp/grey/col2par.h"
+#endif
+
 #if    defined(DPD_CHARGE)
   #include "imp/charge/main.h"
 #elif  defined(DPD_GRAVITY)
