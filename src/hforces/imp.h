@@ -5,13 +5,14 @@ enum FragType { BULK = 0, FACE = 1, EDGE = 2, CORNER = 3 };
 
 struct SFrag { /* "send" fragment */
     Cloud c;
-    int *ii; /* index */
+    const int *ii; /* index */
     int n;
 };
 
 struct Frag {
     Cloud c;
-    int *start, dx, dy, dz, xcells, ycells, zcells;
+    const int *start;
+    int dx, dy, dz, xcells, ycells, zcells;
     FragType type;
 };
 
