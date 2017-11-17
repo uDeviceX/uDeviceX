@@ -5,7 +5,7 @@
 #define DO_TIMING 0
 
 #include <helper_functions.h>
-#include "particles_kernel.cuh"
+#include "kernel.cuh"
 #include "vector_functions.h"
 
 // Particle system class

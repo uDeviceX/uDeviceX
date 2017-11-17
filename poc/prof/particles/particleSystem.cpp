@@ -1,6 +1,6 @@
 #include "particleSystem.h"
 #include "particleSystem.cuh"
-#include "particles_kernel.cuh"
+#include "kernel.cuh"
 
 #include <cuda_runtime.h>
 #include <helper_cuda.h>

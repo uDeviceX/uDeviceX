@@ -20,7 +20,7 @@
 #include <math.h>
 #include "helper_math.h"
 #include "math_constants.h"
-#include "particles_kernel.cuh"
+#include "kernel.cuh"
 
 #if USE_TEX
 // textures for particle position and velocity
@@ -207,7 +207,7 @@ void reorderDataAndFindCellStartD(uint   *cellStart,        // output: cell star
         // Now use the sorted index to reorder the pos and vel data
         uint sortedIndex = gridParticleIndex[index];
         float4 pos = FETCH(oldPos, sortedIndex);       // macro does either global read or texture fetch
-        float4 vel = FETCH(oldVel, sortedIndex);       // see particles_kernel.cuh
+        float4 vel = FETCH(oldVel, sortedIndex);       // see kernel.cuh
 
         sortedPos[index] = pos;
         sortedVel[index] = vel;
