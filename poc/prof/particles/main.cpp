@@ -2,6 +2,7 @@
 #include <cuda_runtime.h>
 #include <helper_functions.h>
 #include "vector_functions.h"
+#include "kernel.cuh"
 #include "system.h"
 
 #define MAX_EPSILON_ERROR 5.00f

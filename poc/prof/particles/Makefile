@@ -85,4 +85,4 @@ main: system.o system_cuda.o main.o
 	$(EXEC) $(NVCC) $(ALL_LDFLAGS) $(GENCODE_FLAGS) -o $@ $+ $(LIBRARIES)
 
 clean:
-	rm -f main system.o system_cuda.o particles.o
+	rm -f main main.o system.o system_cuda.o
