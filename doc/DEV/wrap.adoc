@@ -46,7 +46,7 @@ cmd: srun -n 1 -u valgrind --option ./udx 1 1 1
 
 if `PROF` is set is ran with `nvprof`
 
-See also link:poc/ppbandwidth[poc/ppbandwidth]
+See also link:poc/prof/ppbandwidth[poc/ppbandwidth]
 
 [[tim]]
 == TIM
