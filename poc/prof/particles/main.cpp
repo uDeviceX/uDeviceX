@@ -1,6 +1,7 @@
 // CUDA runtime
 #include <cuda_runtime.h>
-
+#include <helper_functions.h>
+#include "vector_functions.h"
 #include "system.h"
 
 #define MAX_EPSILON_ERROR 5.00f
@@ -61,7 +62,6 @@ float modelView[16];
 const int frameCheckNumber = 4;
 unsigned int frameCount = 0;
 unsigned int g_TotalErrors = 0;
-char        *g_refFile = NULL;
 
 const char *sSDKsample = "CUDA Particles Simulation";
 
@@ -160,55 +160,25 @@ main(int argc, char **argv)
         {
             gridDim = getCmdLineArgumentInt(argc, (const char **) argv, "grid");
         }
-
-        if (checkCmdLineFlag(argc, (const char **)argv, "file"))
-        {
-            getCmdLineArgumentString(argc, (const char **)argv, "file", &g_refFile);
-            fpsLimit = frameCheckNumber;
-            numIterations = 1;
-        }
     }
 
     gridSize.x = gridSize.y = gridSize.z = gridDim;
     printf("grid: %d x %d x %d = %d cells\n", gridSize.x, gridSize.y, gridSize.z, gridSize.x*gridSize.y*gridSize.z);
     printf("particles: %d\n", numParticles);
 
-    bool benchmark = checkCmdLineFlag(argc, (const char **) argv, "benchmark") != 0;
 
     if (checkCmdLineFlag(argc, (const char **) argv, "i"))
     {
         numIterations = getCmdLineArgumentInt(argc, (const char **) argv, "i");
     }
 
-    if (g_refFile)
-    {
-        cudaInit(argc, argv);
-    }
-    else
-    {
-        if (checkCmdLineFlag(argc, (const char **)argv, "device"))
-        {
-            printf("[%s]\n", argv[0]);
-            printf("   Does not explicitly support -device=n in OpenGL mode\n");
-            printf("   To use -device=n, the sample must be running w/o OpenGL\n\n");
-            printf(" > %s -device=n -file=<*.bin>\n", argv[0]);
-            printf("exiting...\n");
-            exit(EXIT_SUCCESS);
-        }
-    }
+    cudaInit(argc, argv);
 
     initParticleSystem(numParticles, gridSize);
     initParams();
 
-    if (benchmark || g_refFile)
-    {
-        if (numIterations <= 0)
-        {
-            numIterations = 300;
-        }
-
-        runBenchmark(numIterations, argv[0]);
-    }
+    if (numIterations <= 0) numIterations = 300;
+    runBenchmark(numIterations, argv[0]);
 
     if (psystem)
     {
