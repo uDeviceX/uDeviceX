@@ -6,5 +6,5 @@ test for different Particle representation in cuda
 
 ```
 make
-nvprof ./pp
+PROF= u.run ./pp
 ```

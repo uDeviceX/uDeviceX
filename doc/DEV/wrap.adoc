@@ -19,7 +19,7 @@ MEM='--leakcheck --blocking'              u.test test/*
 MEM='--tool initcheck'                    u.test test/*
 ....
 
-see also poc/memcheck
+see also link:poc/memcheck[poc/memcheck]
 
 [[val]]
 == VAL
@@ -45,6 +45,8 @@ cmd: srun -n 1 -u valgrind --option ./udx 1 1 1
 == PROF
 
 if `PROF` is set is ran with `nvprof`
+
+See also link:poc/ppbandwidth[poc/ppbandwidth]
 
 [[tim]]
 == TIM
