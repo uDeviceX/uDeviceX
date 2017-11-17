@@ -104,7 +104,7 @@ static __device__ void color2par(int ca, int cb, /**/ DPDparam *p) {
     fill_g(/**/ gg); fill_a(/**/ aa);
     if         (!multi_solvent) {
         p->gamma = g0(B,B);
-        p->a     = g0(B,B);
+        p->a     = a0(B,B);
     } else {
         p->gamma = g0(ca,cb);
         p->a     = a0(ca,cb);
