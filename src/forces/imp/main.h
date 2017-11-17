@@ -1,4 +1,19 @@
 struct DPDparam { float gamma, a, rnd; };
+
+enum {B = BLUE_COLOR, R = RED_COLOR, S = SOLID_COLOR, W = WALL_COLOR};
+__constant__ static float gg[N_COLOR][N_COLOR] = {
+    {gdpd_b ,  gdpd_br,  gdpd_bs, gdpd_bw},
+    {gdpd_br,  gdpd_r ,  gdpd_rs, gdpd_rw},
+    {gdpd_bs,  gdpd_rs,  -99999 , gdpd_sw},
+    {gdpd_bw,  gdpd_rw,  gdpd_sw, -99999 }
+};
+__constant__ static float aa[N_COLOR][N_COLOR] = {
+    {adpd_b ,  adpd_br,  adpd_bs, adpd_bw},
+    {adpd_br,  adpd_r ,  adpd_rs, adpd_rw},
+    {adpd_bs,  adpd_rs,  -99999 , adpd_sw},
+    {adpd_bw,  adpd_rw,  adpd_sw, -99999 }
+};
+
 enum {LJ_NONE, LJ_ONE, LJ_TWO}; /* lj hack */
 static __device__ float wrf(const int s, float x) {
     if (s == 0) return x;
@@ -64,53 +79,14 @@ static __device__ void force1(Pa *A, Pa *B, DPDparam p, int ljkind, /**/ Fo *f) 
            f);
 }
 
-static __device__ void fill_g(float *gg) {
-    enum {B = BLUE_COLOR, R = RED_COLOR, S = SOLID_COLOR, W = WALL_COLOR};
-  #define g0(x, y) gg[(y) * N_COLOR + (x)]
-    g0(B,B) = gdpd_b; g0(R,R) = gdpd_r; g0(S,S) = gdpd_b;
-
-    g0(B,R) = g0(R,B) = gdpd_br;
-    g0(B,S) = g0(S,B) = gdpd_bs;
-    g0(B,W) = g0(W,B) = gdpd_bw;
-
-    g0(R,S) = g0(S,R) = gdpd_rs;
-    g0(R,W) = g0(W,R) = gdpd_rw;
-
-    g0(S,W) = g0(W,S) = gdpd_sw;
-  #undef g0
-}
-
-static __device__ void fill_a(float *aa) {
-    enum {B = BLUE_COLOR, R = RED_COLOR, S = SOLID_COLOR, W = WALL_COLOR};
-  #define a0(x, y) aa[(y) * N_COLOR + (x)]
-    a0(B,B) = adpd_b; a0(R,R) = adpd_r; a0(S,S) = adpd_b;
-
-    a0(B,R) = a0(R,B) = adpd_br;
-    a0(B,S) = a0(S,B) = adpd_bs;
-    a0(B,W) = a0(W,B) = adpd_bw;
-
-    a0(R,S) = a0(S,R) = adpd_rs;
-    a0(R,W) = a0(W,R) = adpd_rw;
-
-    a0(S,W) = a0(W,S) = adpd_sw;
-  #undef a0
-}
-
 static __device__ void color2par(int ca, int cb, /**/ DPDparam *p) {
-  #define a0(x, y) aa[(y) * N_COLOR + (x)]
-  #define g0(x, y) gg[(y) * N_COLOR + (x)]    
-    enum {B = BLUE_COLOR};
-    float gg[N_COLOR*N_COLOR], aa[N_COLOR*N_COLOR];
-    fill_g(/**/ gg); fill_a(/**/ aa);
     if         (!multi_solvent) {
-        p->gamma = g0(B,B);
-        p->a     = a0(B,B);
+        p->gamma = gg[B][B];
+        p->a     = aa[B][B];
     } else {
-        p->gamma = g0(ca,cb);
-        p->a     = a0(ca,cb);
+        p->gamma = gg[ca][cb];
+        p->a     = aa[ca][cb];
     }
-  #undef g0
-  #undef a0
 }
 
 static __device__ void force2(Pa *A, Pa *B, int ca, int cb, int ljkind, float rnd,
