@@ -1,13 +1,12 @@
+#include <helper_functions.h>
+#include "vector_functions.h"
 #include "system.h"
 #include "system.cuh"
-#include "kernel.cuh"
 
 #include <cuda_runtime.h>
 #include <helper_cuda.h>
 
 #include <assert.h>
-#include <math.h>
-#include <memory.h>
 
 #ifndef CUDART_PI_F
 #define CUDART_PI_F         3.141592654f

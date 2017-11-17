@@ -4,9 +4,7 @@
 #define DEBUG_GRID 0
 #define DO_TIMING 0
 
-#include <helper_functions.h>
 #include "kernel.cuh"
-#include "vector_functions.h"
 
 // Particle system class
 class ParticleSystem
