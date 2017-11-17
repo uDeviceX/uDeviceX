@@ -1,12 +1,21 @@
-# memory check
+# wrappers
 
-if `MEM` is set `udx` is ran with cuda-memcheck
-and `MEM` is used as a list of parameters
+## intro
+
+`u.run` respects several environment variables to modify the way `udx`
+is run
+
+## MEM
+
+if `MEM` is set `udx` is ran with `cuda-memcheck` and `MEM` is used as
+a list of parameters
 
     MEM= u.test test/*
 	MEM='--leakcheck --blocking'              u.test test/*
 	MEM='--tool initcheck'                    u.test test/*
 
+
+## VAL
 
 if `VAL` is set `udx` is ran with valgrind and `VAL` is used as a list
 of parameters.
@@ -22,3 +31,11 @@ of parameters.
     cmd: srun -n 1 -u valgrind --option ./udx 1 1 1
 
 see also [poc/memcheck](poc/memcheck)
+
+## PROF
+
+if `PROF` is set is ran with `nvprof`
+
+## TIM
+
+if `TIM` is set is ran with `time`
