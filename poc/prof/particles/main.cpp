@@ -1,7 +1,7 @@
 // CUDA runtime
 #include <cuda_runtime.h>
 
-#include "particleSystem.h"
+#include "system.h"
 
 #define MAX_EPSILON_ERROR 5.00f
 #define THRESHOLD         0.30f

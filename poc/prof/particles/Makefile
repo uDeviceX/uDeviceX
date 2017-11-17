@@ -72,7 +72,7 @@ endif
 # Target rules
 all: main
 
-particleSystem.o:particleSystem.cpp
+system.o:system.cpp
 	$(EXEC) $(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
 
 system_cuda.o:system_cuda.cu
@@ -81,8 +81,8 @@ system_cuda.o:system_cuda.cu
 main.o:main.cpp
 	$(EXEC) $(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
 
-main: particleSystem.o system_cuda.o main.o
+main: system.o system_cuda.o main.o
 	$(EXEC) $(NVCC) $(ALL_LDFLAGS) $(GENCODE_FLAGS) -o $@ $+ $(LIBRARIES)
 
 clean:
-	rm -f particles particleSystem.o system_cuda.o particles.o
+	rm -f particles system.o system_cuda.o particles.o
