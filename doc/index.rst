@@ -1,9 +1,13 @@
-= index
+index
+====
 
-== How to use this documentation
+How to use this documentation
+----
 
-== USER
+USER
+----
 
-== DEV
+DEV
+---
 
-link:/doc/DEV/conventions.adoc[coding style and conventions]
+`doc </doc/DEV/conventions.adoc>`_
