@@ -25,13 +25,12 @@ namespace dev {
 
 void main0() {
     KL(dev::main, (1, 1), ());
+    CC(d::PeekAtLastError());
     dSync();
 }
 
 int main(int argc, char **argv) {
     m::ini(argc, argv);
-    MSG("mpi size: %d", m::size);
     main0();
-    MSG("Hello world!");
     m::fin();
 }

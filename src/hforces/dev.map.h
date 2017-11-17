@@ -1,5 +1,4 @@
-namespace hforces {
-namespace dev {
+namespace hforces { namespace dev {
 
 struct Map { /* helps to find remote particle */
     int  org0, org1, org2;
@@ -116,5 +115,4 @@ static __device__ Map r2map(const Frag frag, float x, float y, float z) {
     return m;
 }
 
-} // dev
-} // hforces
+} } /* namespace */
