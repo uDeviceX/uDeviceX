@@ -84,6 +84,7 @@ static __device__ Map r2map(const Frag frag, float x, float y, float z) {
         org2   = get(start);
         count2 = get(start + col) - org2;
     }
+    assert(get(start + col) >= 0);
     cnt1 = cnt0 + count1;
     cnt2 = cnt1 + count2;
 
