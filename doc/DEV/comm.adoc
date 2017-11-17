@@ -19,11 +19,11 @@ generic communicator with "halo".
 ** `cart`: cartesian communicator
 ** `ranks`: ranks of the neighbors in the grid (who do I send to?)
 ** `tags`: tags used by neighbors to send messages
-  
+
 == allocation mod
 
 User can choose how the buffers are allocated with the enum type `AllocMod`.
-This is used in the funcion `ini` and `fin`. allocation mode and free mode are assumed to be the same.  
+This is used in the funcion `ini` and `fin`. allocation mode and free mode are assumed to be the same
 
 currently supported allocation modes:
 [source,c++]
@@ -41,15 +41,18 @@ NONE        /* no allocation                            */
 
 [source,c++]
 ----
-void ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db); //<1>
-void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s); //<2>
+void ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
 ----
 
-<1> Given two structures `hBags` and `dBags`, `ini` allocates the buffers on host and device. `ini` expects 2 allocation modes:
+Given two structures `hBags` and `dBags`, `ini` allocates the buffers on host and device. `ini` expects 2 allocation modes:
 * `fmod`: allocation mode for fragment buffers
 * `bmod`: allocation mode for bulk buffer
 
-<2> initialize `Stamp` structure
+[source,c++]
+----
+void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s);
+----
+initialize `Stamp` structure
 
 === fin
 
@@ -59,14 +62,24 @@ free memory allocated by `ini`
 
 [source,c++]
 ----
-void post_recv(hBags *b, Stamp *s); //<1>
-void post_send(const hBags *b, Stamp *s);  //<2>
-
-void wait_recv(Stamp *s, /**/ hBags *b); //<3>
-void wait_send(Stamp *s); //<4>
+void post_recv(hBags *b, Stamp *s);
 ----
+call MPI asynchroneous recv and store requests in `s`
 
-<1> MPI_IRecv
-<2> MPI_ISend
-<3> wait for recv
-<4> wait for send
+[source,c++]
+----
+void post_send(const hBags *b, Stamp *s);
+----
+call MPI asynchroneous send and store requests in `s`
+
+[source,c++]
+----
+void wait_recv(Stamp *s, /**/ hBags *b);
+----
+wait for recv requests
+
+[source,c++]
+----
+void wait_send(Stamp *s);
+----
+wait for send requests
