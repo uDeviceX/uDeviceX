@@ -1,5 +1,6 @@
 #include <helper_functions.h>
 #include "vector_functions.h"
+#include "kernel.cuh"
 #include "system.h"
 #include "system.cuh"
 

@@ -1,11 +1,3 @@
-#ifndef __PARTICLESYSTEM_H__
-#define __PARTICLESYSTEM_H__
-
-#define DEBUG_GRID 0
-#define DO_TIMING 0
-
-#include "kernel.cuh"
-
 // Particle system class
 class ParticleSystem
 {
@@ -175,5 +167,3 @@ class ParticleSystem
 
         uint m_solverIterations;
 };
-
-#endif // __PARTICLESYSTEM_H__
