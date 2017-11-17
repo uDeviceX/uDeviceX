@@ -78,7 +78,7 @@ __global__ void update_om_v(const int ns, Solid *ss) {
         const float dom[3] = {A[XX]*b[X] + A[XY]*b[Y] + A[XZ]*b[Z],
                               A[YX]*b[X] + A[YY]*b[Y] + A[YZ]*b[Z],
                               A[ZX]*b[X] + A[ZY]*b[Y] + A[ZZ]*b[Z]};
-            
+
         s.om[X] += dom[X]*dt;
         s.om[Y] += dom[Y]*dt;
         s.om[Z] += dom[Z]*dt;
@@ -91,32 +91,15 @@ __global__ void update_om_v(const int ns, Solid *ss) {
         if (pin_com) {
             s.v[X] = s.v[Y] = s.v[Z] = 0.f;
         }
-        else if (pin_comx || pin_comy || pin_comz) {
-            if (pin_comx) {
-                s.v[X] = 0.f;
-                const float sc = dt/s.mass;
-                if (!pin_comy) {s.v[Y] += s.fo[Y] * sc;}
-                if (!pin_comz) {s.v[Z] += s.fo[Z] * sc;}
-            }
-            if (pin_comy) {
-                s.v[Y] = 0.f;
-                const float sc = dt/s.mass;
-                if (!pin_comx) {s.v[X] += s.fo[X] * sc;}
-                if (!pin_comz) {s.v[Z] += s.fo[Z] * sc;}
-            }
-            if (pin_comz) {
-                s.v[Z] = 0.f;
-                const float sc = dt/s.mass;
-                if (!pin_comx) {s.v[X] += s.fo[X] * sc;}
-                if (!pin_comy) {s.v[Y] += s.fo[Y] * sc;}
-            }
-        }
         else {
             const float sc = dt/s.mass;
-                
             s.v[X] += s.fo[X] * sc;
             s.v[Y] += s.fo[Y] * sc;
             s.v[Z] += s.fo[Z] * sc;
+
+            if (pin_comx) s.v[X] = 0.f;
+            if (pin_comy) s.v[Y] = 0.f;
+            if (pin_comz) s.v[Z] = 0.f;
         }
 
         ss[threadIdx.x] = s;
