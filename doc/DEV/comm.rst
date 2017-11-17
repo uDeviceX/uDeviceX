@@ -31,7 +31,7 @@ User can choose how the buffers are allocated with the enum type `AllocMod`.
 This is used in the funcion `ini` and `fin`. allocation mode and free mode are assumed to be the same
 
 currently supported allocation modes:
-.. code-block: c++
+.. code-block:: c++
    HST_ONLY,   /* only host bags allocated                 */
    DEV_ONLY,   /* only device bags allocated               */
    PINNED,     /* both host and device pinned              */
@@ -43,14 +43,14 @@ interface
 ini
 +++
 
-.. code-block: c++
+.. code-block:: c++
    void ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
 
 Given two structures `hBags` and `dBags`, `ini` allocates the buffers on host and device. `ini` expects 2 allocation modes:
 * `fmod`: allocation mode for fragment buffers
 * `bmod`: allocation mode for bulk buffer
 
-.. code-block: c++
+.. code-block:: c++
    void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s);
 initialize `Stamp` structure
 
@@ -62,18 +62,18 @@ free memory allocated by `ini`
 communication
 ++++
 
-.. code-block: c++
+.. code-block:: c++
    void post_recv(hBags *b, Stamp *s);
 call MPI asynchroneous recv and store requests in `s`
 
-.. code-block: c++
+.. code-block:: c++
    void post_send(const hBags *b, Stamp *s);
 call MPI asynchroneous send and store requests in `s`
 
-.. code-block: c++
+.. code-block:: c++
    void wait_recv(Stamp *s, /**/ hBags *b);
 wait for recv requests
 
-.. code-block: c++
+.. code-block:: c++
    void wait_send(Stamp *s);
 wait for send requests
