@@ -11,7 +11,7 @@
 #include "thrust/iterator/zip_iterator.h"
 #include "thrust/sort.h"
 
-#include "particles_kernel_impl.cuh"
+#include "kernel_impl.cuh"
 
 extern "C"
 {
