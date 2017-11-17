@@ -19,6 +19,7 @@ static __device__ int m2id(const Map m, int i) {
     return id;
 }
 
+static __device__ int get(const int *a) { return __ldg(a); }
 static __device__ Map r2map(const Frag frag, float x, float y, float z) {
     /* coordinate [r] to map */
     int org0, org1, org2;
@@ -30,7 +31,7 @@ static __device__ Map r2map(const Frag frag, float x, float y, float z) {
     int xs, ys, zs; /* size */
     int dx, dy, dz;
     int row, col, ncols;
-    int* start;
+    const int* start;
     Map m;
 
     dx = frag.dx; dy = frag.dy; dz = frag.dz;
@@ -68,20 +69,20 @@ static __device__ Map r2map(const Frag frag, float x, float y, float z) {
         col = max(xs, max(ys, zs));
 
     start = frag.start + basecid;
-    org0 = __ldg(start);
-    cnt0 = __ldg(start + col) - org0;
+    org0 = get(start);
+    cnt0 = get(start + col) - org0;
     start += ncols;
 
     org1   = org2 = 0;
     count1 = count2 = 0;
     if (row > 1) {
-        org1   = __ldg(start);
-        count1 = __ldg(start + col) - org1;
+        org1   = get(start);
+        count1 = get(start + col) - org1;
         start += ncols;
     }
     if (row > 2) {
-        org2   = __ldg(start);
-        count2 = __ldg(start + col) - org2;
+        org2   = get(start);
+        count2 = get(start + col) - org2;
     }
     cnt1 = cnt0 + count1;
     cnt2 = cnt1 + count2;
