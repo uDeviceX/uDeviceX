@@ -123,6 +123,18 @@
 #define pin_com (false)
 #endif
 
+#ifndef pin_comx
+#define pin_comx (false)
+#endif
+
+#ifndef pin_comy
+#define pin_comy (false)
+#endif
+
+#ifndef pin_comz
+#define pin_comz (false)
+#endif
+
 #ifndef pin_axis
 #define pin_axis (false)
 #endif
