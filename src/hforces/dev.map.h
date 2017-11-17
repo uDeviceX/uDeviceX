@@ -19,7 +19,22 @@ static __device__ int m2id(const Map m, int i) {
     return id;
 }
 
-static __device__ int get(const int *a) { return __ldg(a); }
+static __device__ int get(const int *a) { return *a; }
+static __device__ void assert_start(const int *start, long col, long org2, long count2,
+                                    float x, float y, float z, const Frag frag) {
+    if (get(start + col) >= 0) return;
+    long g;
+    g = get(start + col);
+    printf("org2/count2/get:   %ld %ld %ld\n", org2, count2, g);
+    printf("xyz:   %g %g %g\n", x, y, z);
+    printf("XYZ:   %d %d %d\n", XS, YS, ZS);
+    assert(0);
+}
+static __device__ void assert_nc(int i, int nc, int lineno) {
+    if (i < nc) return;
+    printf("%s:%d: i/nc: %ld %ld\n", __FILE__, lineno, (long)i, (long)nc);
+    assert(0);
+}
 static __device__ Map r2map(const Frag frag, float x, float y, float z) {
     /* coordinate [r] to map */
     int org0, org1, org2;
@@ -33,8 +48,12 @@ static __device__ Map r2map(const Frag frag, float x, float y, float z) {
     int row, col, ncols;
     const int* start;
     Map m;
+    int fid, nc, b; /* TODO */
 
     dx = frag.dx; dy = frag.dy; dz = frag.dz;
+    
+    fid = frag_d2i(dx, dy, dz);
+    nc  = frag_ncell(fid) + 1;
 
     basecid = 0; xs = 1; ys = 1; zs = 1;
     if (dz == 0) {
@@ -68,23 +87,24 @@ static __device__ Map r2map(const Frag frag, float x, float y, float z) {
     } else if (frag.type == EDGE)
         col = max(xs, max(ys, zs));
 
-    start = frag.start + basecid;
+    b = 0;
+    start = frag.start + basecid; b += basecid; assert_nc(b, nc, __LINE__);
     org0 = get(start);
     cnt0 = get(start + col) - org0;
-    start += ncols;
+    start += ncols;               b += ncols;  assert_nc(b, nc, __LINE__);
 
     org1   = org2 = 0;
     count1 = count2 = 0;
     if (row > 1) {
         org1   = get(start);
         count1 = get(start + col) - org1;
-        start += ncols;
+        start += ncols;          b += ncols;   assert_nc(b, nc, __LINE__);
     }
     if (row > 2) {
         org2   = get(start);
-        count2 = get(start + col) - org2;
+        count2 = get(start + col) - org2;      assert_nc(b + col, nc, __LINE__);
     }
-    assert(get(start + col) >= 0);
+    assert_start(start, col, org2, count2, x, y, z, frag);
     cnt1 = cnt0 + count1;
     cnt2 = cnt1 + count2;
 

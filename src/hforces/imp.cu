@@ -10,6 +10,8 @@
 #include "d/q.h"
 #include "d/api.h"
 
+#include "frag/imp.h"
+
 #include "inc/def.h"
 #include "msg.h"
 #include "mpi/glb.h"
