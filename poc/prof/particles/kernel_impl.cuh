@@ -16,10 +16,7 @@
 #ifndef _PARTICLES_KERNEL_H_
 #define _PARTICLES_KERNEL_H_
 
-#include <stdio.h>
-#include <math.h>
 #include "helper_math.h"
-#include "math_constants.h"
 #include "kernel.cuh"
 
 #if USE_TEX
