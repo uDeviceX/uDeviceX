@@ -10,6 +10,13 @@
 #include "utils/cc.h"
 
 #include "utils/kl.h"
+
+#include "inc/def.h"
+#include "inc/type.h"
+
+#include "cloud/imp.h"
+#include "hforces/imp.h"
+
 #include "utils/map/dev.h"
 
 namespace dev {
