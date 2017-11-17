@@ -1,0 +1,27 @@
+= clists
+
+Cell lists
+Purpose: reorder data according to particle positions into cells
+
+== data structures
+
+=== Clist
+
+Helpers to find which particles are in which cells.
+
+[source,c++]
+----
+struct Clist {
+    int3 dims;
+    int ncells;
+    int *starts, *counts;
+};
+----
+
+* `dims` dimesnsions of the grid
+* `ncells` number of cells
+* `counts` number of particles per cell
+* `starts` exclusive prefic scan of the above
+
+=== Map
+
