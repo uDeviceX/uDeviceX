@@ -31,6 +31,7 @@ User can choose how the buffers are allocated with the enum type `AllocMod`.
 This is used in the funcion `ini` and `fin`. allocation mode and free mode are assumed to be the same
 
 currently supported allocation modes:
+
 .. code-block:: c
    HST_ONLY,   /* only host bags allocated                 */
    DEV_ONLY,   /* only device bags allocated               */
