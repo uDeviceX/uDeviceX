@@ -1,3 +1,0 @@
-= particles
-
-An example is taken from cuda samples.
