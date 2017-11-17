@@ -2,7 +2,7 @@
 # cTEST: hw.0
 set -eu
 S=`pwd`
-U=u/hw
+U=u/hw/hst
 C=conf/default.h
 :
 nv=642

@@ -5,7 +5,7 @@ See the [units](/doc/units/) folder for documentation of specific units.
 
 example:
 * [x](/src/u/x/) "standard" udx unit
-* [hw](/src/u/hw/) "Hello world!"
+* [hw](/src/u/hw/hst) "Hello world!"
 
 ## Build and run
 
@@ -34,11 +34,11 @@ list of [i]ncluded files. `e` returns a list of [e]xcluded files. The
 `i` list "minus" `e` list is used as a source. `e` file is
 optional. In other words `e` "black lists" files returned by `i`.
 
-For `i` and `e` the variable `$U` is set to `u/hw`.
+For `i` and `e` the variable `$U` is set to `u/hw/hst`.
 
 Run
 
-	u.u u/hw
+	u.u u/hw/hst
 
-Add `u/hw/make/dep.mk u/hw/make/obj.mk u/hw/make/dir.mk
-u/hw/make/rule.mk` to git.
+Add `u/hw/hst/make/dep.mk u/hw/hst/make/obj.mk u/hw/hstmake/dir.mk
+u/hw/hst/make/rule.mk` to git.
