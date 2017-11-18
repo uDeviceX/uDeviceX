@@ -6,3 +6,23 @@ __device__ void assert_frag(int i, const Frag frag) {
     assert(xs * ys * zs == frag_ncell(i));
     assert(frag_d2i(dx, dy, dz) == i);
 }
+
+__device__ void assert_rc(const Frag frag, int id, int row, int col, int jump) {
+    int fid, n;
+    int dx, dy, dz;
+    assert(row == 1 || row == 2 || row == 3);
+    assert(col == 1 || col == 2 || col == 3);
+
+    dx = frag.dx; dy = frag.dy; dz = frag.dz;
+    assert(dx == -1 || dx == 0 || dx == 1);
+    assert(dy == -1 || dy == 0 || dy == 1);
+    assert(dz == -1 || dz == 0 || dz == 1);
+    fid  = frag_d2i(dx, dy, dz);
+    nmax = frag_ncell(fid) + 1;
+
+    for (j = 0 ; j < row; j++) {
+        assert(i       < nmax);
+        assert(i + col < nmax);
+        i += jump;
+    }
+}

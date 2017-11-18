@@ -77,8 +77,10 @@ static __device__ void xyz2rc(int type,
     int row, col, jump;
     if      (type == FACE)
         xyz2rc_face(dx, dy, dz, xc, yc, zc, xs, ys, zs, /**/ &row, &col, &jump);
-    else if (type == EDGE)
+    else if (type == EDGE) {
+        row = jump = 1;
         col = max(xs, max(ys, zs));
+    }
     else if (type == CORNER) {
         row = col = jump = 1;
     } else {
