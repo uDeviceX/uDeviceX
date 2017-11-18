@@ -63,7 +63,7 @@ static __device__  void r2size(int r, int nc, int S, /**/ int *pl, int *ps) {
 }
 static __device__ Map r2map(const Frag frag, float x, float y, float z) {
     /* coordinate [r] to map */
-    int basecid;
+    int id;
     int xl, yl, zl; /* low */
     int xs, ys, zs; /* size */
     int dx, dy, dz;
@@ -73,23 +73,12 @@ static __device__ Map r2map(const Frag frag, float x, float y, float z) {
     dx = frag.dx; dy = frag.dy; dz = frag.dz;
     xc = frag.xcells; yc = frag.ycells; zc = frag.zcells;
 
-    basecid = 0; xs = 1; ys = 1; zs = 1;
-    if (dz == 0) {
-        r2size(z, zc, ZS, /**/ &zl, &zs);
-        basecid = zl;
-    }
-
-    basecid *= yc;
-    if (dy == 0) {
-        r2size(y, yc, YS, /**/ &yl, &ys);
-        basecid += yl;
-    }
-
-    basecid *= xc;
-    if (dx == 0) {
-        r2size(x, xc, XS, /**/ &xl, &xs);
-        basecid += xl;
-    }
+    id = 0; xs = ys = zs = 1;
+    if (dz == 0) {r2size(z, zc, ZS, /**/ &zl, &zs); id += zl;}
+    id *= yc;
+    if (dy == 0) {r2size(y, yc, YS, /**/ &yl, &ys); id += yl;}
+    id *= xc;
+    if (dx == 0) {r2size(x, xc, XS, /**/ &xl, &xs); id += xl;}
 
     row = col = ncols = 1;
     if (frag.type == FACE) {
@@ -98,7 +87,7 @@ static __device__ Map r2map(const Frag frag, float x, float y, float z) {
         ncols = dx ? yc : xc;
     } else if (frag.type == EDGE)
         col = max(xs, max(ys, zs));
-    return r2map0(frag, basecid, row, col, ncols);
+    return r2map0(frag, id, row, col, ncols);
 }
 
 } } /* namespace */
