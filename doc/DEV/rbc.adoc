@@ -2,7 +2,7 @@
 
 == Intro
 
-
+Red blood cell.
 
 == Components
 
@@ -11,11 +11,14 @@
 * link:edg[edg] store information for every edge (host)
 * link:com[main] initialization, restart
 * link:force[force] internal forces
-* link:force/area_volume[force/area_volume] compute area and volume of
-  the mesh
+* link:force/area_volume[force/area_volume] compute area and volume
 * link:gen[gen] generate `pp` from cell template (`rbc.off`) and initial condition
   files (`rbcs-ic.txt`)
 * link:rnd[rnd] random numbers for internal forces
 * link:rnd/api[rnd/api] low level api for random number generator
 
 See also link:src/u/rbc[], link:src/test/rbccom[], link:src/test/rbc[]
+
+== Cell templates
+
+See link:src/data/cells[src/data/cells]
