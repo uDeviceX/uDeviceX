@@ -18,7 +18,7 @@ static void setup_shape0(float *rr, rbc::adj::Map m, /**/ Edg *edg) {
     edg->a = a; edg->A = A;
 }
 
-static void setup_shape1(int md, int nv, int *adj0, int *adj1, float *rr, /**/
+static void setup_shape1(int md, int nv, rbc::adj::Hst *Adj, float *rr, /**/
                          Edg *edg, float *ptotArea) {
     int valid, i;
     rbc::adj::Map m;
@@ -26,7 +26,7 @@ static void setup_shape1(int md, int nv, int *adj0, int *adj1, float *rr, /**/
 
     totArea = 0;
     for (i = 0; i < md*nv; i++) {
-        valid = rbc::adj::hst0(md, nv, i, adj0, adj1, /**/ &m);
+        valid = rbc::adj::hst(md, nv, i, Adj, /**/ &m);
         if (!valid) continue;
         setup_shape0(rr, m, /**/ &edg[i]);
         totArea += edg[i].A;
@@ -37,14 +37,14 @@ static void setup_shape1(int md, int nv, int *adj0, int *adj1, float *rr, /**/
     *ptotArea = totArea;
 }
 
-static void setup_shape(int md, int nv, int *adj0, int *adj1, /**/ Edg *dev, float *totArea) {
+static void setup_shape(int md, int nv, rbc::adj::Hst *Adj, /**/ Edg *dev, float *totArea) {
     float *rr;
     Edg *hst;
     hst = (Edg*) malloc(md*nv*sizeof(Edg));
     rr = (float*)malloc(3*nv*sizeof(float));
 
     evert("rbc.off", nv, /**/ rr);
-    setup_shape1(md, nv, adj0, adj1, rr, /**/ hst, totArea);
+    setup_shape1(md, nv, Adj, rr, /**/ hst, totArea);
 
     cH2D(dev, hst, md*nv);
 
@@ -54,12 +54,13 @@ static void setup_shape(int md, int nv, int *adj0, int *adj1, /**/ Edg *dev, flo
 static void setup(int md, int nt, int nv, const char *r_templ, /**/
                   Edg *edg, float *totArea, int4 *faces, int4 *tri, int *adj0, int *adj1) {
     rbc::adj::Hst Adj;
-    int a0[nv*md], a1[nv*md];
     efaces(r_templ, nt, /**/ faces);
-    rbc::adj::ini0(md, nt, nv, faces, /**/ a0, a1);
+    rbc::adj::ini(md, nt, nv, faces, /**/ &Adj);
 
-    if (RBC_STRESS_FREE) setup_shape(md, nv, a0, a1, /**/ edg, totArea);
+    if (RBC_STRESS_FREE) setup_shape(md, nv, &Adj, /**/ edg, totArea);
     cH2D(tri, faces, nt);
-    cH2D(adj0, a0, nv*md);
-    cH2D(adj1, a1, nv*md);
+    cH2D(adj0, Adj.adj0, nv*md); /* TODO */
+    cH2D(adj1, Adj.adj1, nv*md);
+
+    rbc::adj::fin(&Adj);
 }
