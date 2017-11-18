@@ -69,6 +69,14 @@ static __device__ void force3(const SFrag afrag, const Frag bfrag, const Rnd rnd
     force2(bfrag, rnd, p, i, f);
 }
 
+__device__ void assert_frag(int i, const Frag frag) {
+    int xs, ys, zs; /* sizes */
+    int dx, dy, dz;
+    xs = frag.xcells; ys = frag.ycells; zs = frag.zcells;
+    dx = frag.dx; dy = frag.dy; dz = frag.dz;
+    assert(xs * ys * zs == frag_ncell(i));
+    assert(frag_d2i(dx, dy, dz) == i);
+}
 __global__ void force(const int27 start, const SFrag26 ssfrag, const Frag26 ffrag, const Rnd26 rrnd, /**/ float *ff) {
     Frag frag;
     Rnd  rnd;
@@ -85,6 +93,8 @@ __global__ void force(const int27 start, const SFrag26 ssfrag, const Frag26 ffra
     if (i >= sfrag.n) return;
 
     frag = ffrag.d[fid];
+    assert_frag(fid, frag);
+
     rnd = rrnd.d[fid];
     force3(sfrag, frag, rnd, i, /**/ ff);
 }
