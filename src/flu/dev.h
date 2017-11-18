@@ -1,14 +1,15 @@
 namespace dev {
 __device__ ushort f2s(float x) { return __float2half_rn(x); }
-__global__ void zip(float4 *zip0, ushort4 *zip1, const float *pp, const uint n) {
+__global__ void zip(int  n, const float *pp, /**/ float4 *zip0, ushort4 *zip1) {
     enum {X, Y, Z};
     assert(sizeof(Particle) == 6*sizeof(float));
     int i;
     const float *r, *v;
     float x, y, z;
     float vx, vy, vz;
-
     i = threadIdx.x + blockDim.x * blockIdx.x;
+    if (i >= n) return;
+    
     r = &pp[6*i];
     v = &pp[6*i + 3];
 

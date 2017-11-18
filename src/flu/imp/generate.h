@@ -1,15 +1,13 @@
-static void zip(const Particle *pp, const int n, /**/ float4 *zip0, ushort4 * zip1) {
+static void zip(const int n, const Particle *pp, /**/ float4 *zip0, ushort4 * zip1) {
     assert(sizeof(Particle) == 6 * sizeof(float)); /* :TODO: implicit dependency */
-    KL(dev::zip,
-       ((n + 1023) / 1024, 1024, 1024 * 6 * sizeof(float)),
-       (zip0, zip1, (float*)pp, n));
+    KL(dev::zip, (k_cnf(n)), (n, (float*)pp, zip0, zip1));
 }
 
 void get_ticketZ(Quants q, /**/ TicketZ *t) {
     if (q.n == 0) return;
     float4  *zip0 = t->zip0;
     ushort4 *zip1 = t->zip1;
-    zip(q.pp, q.n, /**/ zip0, zip1);
+    zip(q.n, q.pp, /**/ zip0, zip1);
 }
 
 static int gen0(Particle *pp) { /* generate particle positions and velocities */
