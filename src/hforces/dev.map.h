@@ -19,15 +19,14 @@ static __device__ int m2id(const Map m, int i) {
 }
 
 static __device__ int get(const int *a) { return *a; }
-static __device__ Map r2map0(const Frag frag,
+static __device__ Map r2map0(const int *start,
                              int basecid, int row, int col, int jump) {
     int org0, org1, org2;
     int cnt0, cnt1, cnt2;
     int count1, count2;
-    const int* start;
     Map m;
 
-    start = frag.start + basecid;
+    start +=  basecid;
     org0 = get(start);
     cnt0 = get(start + col) - org0;
     start += jump;
@@ -138,7 +137,7 @@ static __device__ Map r2map(const Frag frag, float x, float y, float z) {
            xc, yc, zc,
            xs, ys, zs,
            &row, &col, &jump);
-    return r2map0(frag, id, row, col, jump);
+    return r2map0(frag.start, id, row, col, jump);
 }
 
 } } /* namespace */
