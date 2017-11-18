@@ -9,18 +9,18 @@
 #include "imp.h"
 
 namespace anti {
-static void ini0(int md, int nv, rbc::adj::Hst *adj, /**/ int *hst, /*w*/ int *hx, int *hy) {
+static void ini0(int md, int nv, adj::Hst *adj, /**/ int *hst, /*w*/ int *hx, int *hy) {
     int valid, i;
-    rbc::adj::Map m;
+    adj::Map m;
     
-    edg::ini(md, nv, hx);
+    edg::ini(md, nv, /**/ hx);
     for (i = 0; i < md*nv; i++) {
-        valid = rbc::adj::hst(md, nv, i, adj, /**/ &m);
+        valid = adj::hst(md, nv, i, adj, /**/ &m);
         if (!valid) continue;
     }
 }
 
-void ini(int md, int nv, rbc::adj::Hst *adj, /**/ int *anti) {
+void ini(int md, int nv, adj::Hst *adj, /**/ int *anti) {
     int n;
     int *hst, *hx, *hy;
     n = md*nv;

@@ -1,4 +1,4 @@
-static void setup_edg0(float *rr, rbc::adj::Map m, /**/ Edg *edg) {
+static void setup_edg0(float *rr, adj::Map m, /**/ Edg *edg) {
     int i0, i1, i2;
     float *r0, *r1, *r2;
     float r01[3], r12[3], r20[3];
@@ -18,15 +18,15 @@ static void setup_edg0(float *rr, rbc::adj::Map m, /**/ Edg *edg) {
     edg->a = a; edg->A = A;
 }
 
-static void setup_edg1(int md, int nv, rbc::adj::Hst *adj, float *rr, /**/
+static void setup_edg1(int md, int nv, adj::Hst *adj, float *rr, /**/
                        Edg *edg, float *ptotArea) {
     int valid, i;
-    rbc::adj::Map m;
+    adj::Map m;
     float totArea;
 
     totArea = 0;
     for (i = 0; i < md*nv; i++) {
-        valid = rbc::adj::hst(md, nv, i, adj, /**/ &m);
+        valid = adj::hst(md, nv, i, adj, /**/ &m);
         if (!valid) continue;
         setup_edg0(rr, m, /**/ &edg[i]);
         totArea += edg[i].A;
@@ -37,7 +37,7 @@ static void setup_edg1(int md, int nv, rbc::adj::Hst *adj, float *rr, /**/
     *ptotArea = totArea;
 }
 
-static void setup_edg(int md, int nv, rbc::adj::Hst *adj, /**/ Edg *dev, float *totArea) {
+static void setup_edg(int md, int nv, adj::Hst *adj, /**/ Edg *dev, float *totArea) {
     float *rr;
     Edg *hst;
     hst = (Edg*) malloc(md*nv*sizeof(Edg));
@@ -51,7 +51,7 @@ static void setup_edg(int md, int nv, rbc::adj::Hst *adj, /**/ Edg *dev, float *
     free(hst); free(rr);
 }
 
-static void setup_anti(int md, int nv, rbc::adj::Hst *adj, /**/ int *dev) {
+static void setup_anti(int md, int nv, adj::Hst *adj, /**/ int *dev) {
     int n;
     int *hst, *hx, *hy;
     n = md*nv;
@@ -68,8 +68,8 @@ static void setup_anti(int md, int nv, rbc::adj::Hst *adj, /**/ int *dev) {
 
 static void setup0(int md, int nt, int nv, int4 *faces, /**/
                    int *anti, Edg *edg, float *totArea, int *adj0, int *adj1) {
-    rbc::adj::Hst adj;
-    rbc::adj::ini(md, nt, nv, faces, /**/ &adj);
+    adj::Hst adj;
+    adj::ini(md, nt, nv, faces, /**/ &adj);
 
     if (RBC_STRESS_FREE) setup_edg(md,  nv, &adj, /**/ edg, totArea);
     if (RBC_RND)         setup_anti(md, nv, &adj, /**/ anti);
@@ -77,7 +77,7 @@ static void setup0(int md, int nt, int nv, int4 *faces, /**/
     cH2D(adj0, adj.adj0, nv*md); /* TODO */
     cH2D(adj1, adj.adj1, nv*md);
 
-    rbc::adj::fin(&adj);
+    adj::fin(&adj);
 }
 
 static void setup(int md, int nt, int nv, const char *r_templ, /**/

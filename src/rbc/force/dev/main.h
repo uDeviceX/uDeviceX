@@ -27,7 +27,7 @@ static __device__ Part tex2Part(const Texo<float2> vert, int id) {
 
 static __device__ float3 adj_tris(const Texo<float2> vert,  const Part p0, const float *av,
                                   const Shape0 shape, const Rnd0 rnd,
-                                  rbc::adj::Map *m) {
+                                  adj::Map *m) {
     float3 f, fv, fr;
     int i1, i2, rbc;
     float area, volume;
@@ -49,7 +49,7 @@ static __device__ float3 adj_tris(const Texo<float2> vert,  const Part p0, const
 
 static __device__ float3 adj_dihedrals(const Texo<float2> vert, float3 r0,
                                        const Shape0 shape,
-                                       rbc::adj::Map *m) {
+                                       adj::Map *m) {
     Pos r1, r2, r3, r4;
     r1 = tex2Pos(vert, m->i1);
     r2 = tex2Pos(vert, m->i2);
@@ -66,7 +66,7 @@ static __global__ void force(int md, int nv, int nc, const Texo<float2> vert, fl
     assert(nv == RBCnv);
     int i, pid;
     float3 f, fd;
-    rbc::adj::Map m;
+    adj::Map m;
     Shape0 shape0;
     Rnd0   rnd0;
     int valid;
@@ -75,7 +75,7 @@ static __global__ void force(int md, int nv, int nc, const Texo<float2> vert, fl
     pid = i / md;
 
     if (pid >= nc * nv) return;
-    valid = rbc::adj::dev(md, nv, i, adj0, adj1, /**/ &m);
+    valid = adj::dev(md, nv, i, adj0, adj1, /**/ &m);
     if (!valid) return;
     edg_shape(shape, i % (md * nv),  /**/ &shape0);
     edg_rnd(    rnd, i,              /**/ &rnd0);

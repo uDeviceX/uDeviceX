@@ -9,8 +9,8 @@
 #include "type.h"
 #include "imp.h"
 
-namespace rbc { namespace adj {
+namespace adj {
 #include "imp/ini.h"
 #include "imp/fin.h"
 #include "imp/map.h"
-}} /* namespace */
+} /* namespace */
