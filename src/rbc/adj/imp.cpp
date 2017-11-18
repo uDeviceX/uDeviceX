@@ -10,5 +10,6 @@
 
 namespace rbc { namespace adj {
 #include "imp/ini.h"
+#include "imp/fin.h"
 #include "imp/map.h"
 }} /* namespace */
