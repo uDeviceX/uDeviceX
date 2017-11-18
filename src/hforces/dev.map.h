@@ -18,29 +18,28 @@ static __device__ int m2id(const Map m, int i) {
     return id;
 }
 
-static __device__ int get(const int *a) { return *a; }
+static __device__ int get(const int *a, int i) { return a[i]; }
 static __device__ Map r2map0(const int *start,
-                             int basecid, int row, int col, int jump) {
+                             int i, int row, int col, int jump) {
     int org0, org1, org2;
     int cnt0, cnt1, cnt2;
     int count1, count2;
     Map m;
 
-    start +=  basecid;
-    org0 = get(start);
-    cnt0 = get(start + col) - org0;
+    org0 = get(start, i);
+    cnt0 = get(start, i + col) - org0;
     start += jump;
 
     org1   = org2 = 0;
     count1 = count2 = 0;
     if (row > 1) {
-        org1   = get(start);
-        count1 = get(start + col) - org1;
+        org1   = get(start,       i);
+        count1 = get(start, i + col) - org1;
         start += jump;
     }
     if (row > 2) {
-        org2   = get(start);
-        count2 = get(start + col) - org2;
+        org2   = get(start,       i);
+        count2 = get(start, i + col) - org2;
     }
     cnt1 = cnt0 + count1;
     cnt2 = cnt1 + count2;
