@@ -2,7 +2,7 @@
 
 == Intro
 
-Red blood cell.
+Red blood cell. link:type.h[src/rbc/type.h] defines `struct rbc::Quants`
 
 == Components
 
