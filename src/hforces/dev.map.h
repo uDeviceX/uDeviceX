@@ -54,17 +54,25 @@ static __device__ Map r2map0(const Frag frag,
     return m;
 }
 
+static __device__ void xyz2rc_face(int dx, int dy, int dz,
+                                   int xc, int yc, int zc,
+                                   int xs, int ys, int zs,
+                                   /**/ int *prow, int *pcol, int *pncols) {
+    int row, col, ncols;
+    row = dz ? ys : zs;
+    col = dx ? ys : xs;
+    ncols = dx ? yc : xc;
+    *prow = row; *pcol = col; *pncols = ncols;
+}
+
 static __device__ void xyz2rc(int type,
                               int dx, int dy, int dz, /* fragment information */
                               int xc, int yc, int zc,
                               int xs, int ys, int zs, /* size */
                               /**/ int *prow, int *pcol, int *pncols) {
     int row, col, ncols;
-    if      (type == FACE) {
-        row = dz ? ys : zs;
-        col = dx ? ys : xs;
-        ncols = dx ? yc : xc;
-    }
+    if      (type == FACE)
+        xyz2rc_face(dx, dy, dz, xc, yc, zc, xs, ys, zs, /**/ &row, &col, &ncols);
     else if (type == EDGE)
         col = max(xs, max(ys, zs));
     else if (type == CORNER) {
@@ -84,7 +92,6 @@ static __device__  void r2size(float r, int nc, int S, /**/ int *pl, int *ps) {
     s = min(nc, i + 2) - l;
     *pl = l; *ps = s;
 }
-
 
 static __device__ Map r2map(const Frag frag, float x, float y, float z) {
     /* coordinate [r] to map */
