@@ -20,7 +20,7 @@ static __device__ int m2id(const Map m, int i) {
 
 static __device__ int get(const int *a) { return *a; }
 static __device__ Map r2map0(const Frag frag,
-                             int basecid, int row, int col, int ncols) {
+                             int basecid, int row, int col, int jump) {
     int org0, org1, org2;
     int cnt0, cnt1, cnt2;
     int count1, count2;
@@ -30,14 +30,14 @@ static __device__ Map r2map0(const Frag frag,
     start = frag.start + basecid;
     org0 = get(start);
     cnt0 = get(start + col) - org0;
-    start += ncols;
+    start += jump;
 
     org1   = org2 = 0;
     count1 = count2 = 0;
     if (row > 1) {
         org1   = get(start);
         count1 = get(start + col) - org1;
-        start += ncols;
+        start += jump;
     }
     if (row > 2) {
         org2   = get(start);
@@ -64,36 +64,46 @@ static __device__ int facep(int dx, int dy, int dz) { /* face? */
 static __device__ void xyz2rc_face(int dx, int dy, int dz,
                                    int xc, int yc, int zc,
                                    int xs, int ys, int zs,
-                                   /**/ int *prow, int *pcol, int *pncols) {
+                                   /**/ int *prow, int *pcol, int *pjump) {
+    int row, col, jump;
     if (!facep(dx, dy, dz)) {
         printf("xyz: %d %d %d\n", dx, dy, dz);
         assert(0);
     }
-    int row, col, ncols;
-    row = dz ? ys : zs;
-    col = dx ? ys : xs;
-    ncols = dx ? yc : xc;
-    *prow = row; *pcol = col; *pncols = ncols;
+    if (dx) {
+        row   = zs;
+        col   = ys;
+        jump = yc;
+    } else if (dy) {
+        row   = zs;
+        col   = xs;
+        jump = xc;
+    } else { /* (dz) */
+        row   = ys;
+        col   = xs;
+        jump = xc;
+    }
+    *prow = row; *pcol = col; *pjump = jump;
 }
 
 static __device__ void xyz2rc(int type,
                               int dx, int dy, int dz, /* fragment information */
                               int xc, int yc, int zc,
                               int xs, int ys, int zs, /* size */
-                              /**/ int *prow, int *pcol, int *pncols) {
-    int row, col, ncols;
+                              /**/ int *prow, int *pcol, int *pjump) {
+    int row, col, jump;
     if      (type == FACE)
-        xyz2rc_face(dx, dy, dz, xc, yc, zc, xs, ys, zs, /**/ &row, &col, &ncols);
+        xyz2rc_face(dx, dy, dz, xc, yc, zc, xs, ys, zs, /**/ &row, &col, &jump);
     else if (type == EDGE)
         col = max(xs, max(ys, zs));
     else if (type == CORNER) {
-        row = col = ncols = 1;
+        row = col = jump = 1;
     } else {
         printf("%s:%d: illigal fragmant type: %d [%d %d %d]\n",
                __FILE__, __LINE__, type, dx, dy, dz);
         assert(0);
     }
-    *prow = row; *pcol = col; *pncols = ncols;
+    *prow = row; *pcol = col; *pjump = jump;
 }
 
 static __device__  void r2size(float r, int nc, int S, /**/ int *pl, int *ps) {
@@ -111,7 +121,7 @@ static __device__ Map r2map(const Frag frag, float x, float y, float z) {
     int xs, ys, zs; /* size */
     int dx, dy, dz;
     int xc, yc, zc;
-    int row, col, ncols;
+    int row, col, jump;
 
     dx = frag.dx; dy = frag.dy; dz = frag.dz;
     xc = frag.xcells; yc = frag.ycells; zc = frag.zcells;
@@ -127,8 +137,8 @@ static __device__ Map r2map(const Frag frag, float x, float y, float z) {
            dx, dy, dz,
            xc, yc, zc,
            xs, ys, zs,
-           &row, &col, &ncols);
-    return r2map0(frag, id, row, col, ncols);
+           &row, &col, &jump);
+    return r2map0(frag, id, row, col, jump);
 }
 
 } } /* namespace */
