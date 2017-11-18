@@ -51,12 +51,17 @@ static void setup_edg(int md, int nv, rbc::adj::Hst *adj, /**/ Edg *dev, float *
     free(hst); free(rr);
 }
 
+static void setup_anti(int md, int nv, rbc::adj::Hst *adj, /**/ int *anti) {
+}
+
 static void setup0(int md, int nt, int nv, int4 *faces, /**/
-                   Edg *edg, float *totArea, int *adj0, int *adj1) {
+                   int *anti, Edg *edg, float *totArea, int *adj0, int *adj1) {
     rbc::adj::Hst adj;
     rbc::adj::ini(md, nt, nv, faces, /**/ &adj);
 
-    if (RBC_STRESS_FREE) setup_edg(md, nv, &adj, /**/ edg, totArea);
+    if (RBC_STRESS_FREE) setup_edg(md,  nv, &adj, /**/ edg, totArea);
+    if (RBC_RND)         setup_anti(md, nv, &adj, /**/ anti);
+    
     cH2D(adj0, adj.adj0, nv*md); /* TODO */
     cH2D(adj1, adj.adj1, nv*md);
 
@@ -64,8 +69,9 @@ static void setup0(int md, int nt, int nv, int4 *faces, /**/
 }
 
 static void setup(int md, int nt, int nv, const char *r_templ, /**/
-                  Edg *edg, float *totArea, int4 *faces, int4 *tri, int *adj0, int *adj1) {
+                  int *anti, Edg *edg, float *totArea, int4 *faces, int4 *tri,
+                  int *adj0, int *adj1) {
     efaces(r_templ, nt, /**/ faces);
-    setup0(md, nt, nv, faces, /**/ edg, totArea, adj0, adj1);
+    setup0(md, nt, nv, faces, /**/ anti, edg, totArea, adj0, adj1);
     cH2D(tri, faces, nt);
 }

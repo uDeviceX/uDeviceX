@@ -1,9 +1,11 @@
 namespace rbc {
 struct Edg {
-    float a; /* equilibrium edge lengths */
-    float A; /* equilibrium triangle area */
+    float a; /* equilibrium edge lengths and triangle area */
+    float A;
 };
 struct Shape {
+    int *anti; /* every edge is visited twice, what is an id of
+                  another visit? */
     Edg *edg;
     float totArea;
 };
