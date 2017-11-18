@@ -1,6 +1,6 @@
-struct Shape0 { /* info for one edge :TODO: */
-    float a;
-    float A;
+struct Shape0 {
+    float a; /* edge equilibrium lengths */
+    float A; /* local area */
     float totArea;
 };
 
