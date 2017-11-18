@@ -53,17 +53,14 @@ static void setup_edg(int md, int nv, adj::Hst *adj, /**/ Edg *dev, float *totAr
 
 static void setup_anti(int md, int nv, adj::Hst *adj, /**/ int *dev) {
     int n;
-    int *hst, *hx, *hy;
+    int *hst;
     n = md*nv;
     hst = (int*)malloc(n*sizeof(int));
-    hx  = (int*)malloc(n*sizeof(int));
-    hy  = (int*)malloc(n*sizeof(int));
     
-    //   setup_anti0(md, nv, adj, /**/ hst, /*w*/ hx, hy);
+    anti::ini(md, nv, adj, /**/ hst);
     cH2D(dev, hst, n);
     
     free(hst);
-    free(hx); free(hy);
 }
 
 static void setup0(int md, int nt, int nv, int4 *faces, /**/
