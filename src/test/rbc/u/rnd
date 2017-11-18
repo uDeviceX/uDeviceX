@@ -11,4 +11,4 @@ u.conf $S $U $C <<!!!
 !!!
 { u.make -j;     } > /dev/null
 export RBC_RND=42
-u.run ./udx data/cells/rbc/$nv.off data/ic/two  >  forces.out.txt
+u.run ./udx data/cells/rbc/$nv.off data/ic/two  | uscale 10 >  forces.out.txt
