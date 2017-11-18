@@ -1,9 +1,5 @@
 namespace dev {
-
-__global__ void zip(float4 *__restrict zip0,
-                    ushort4 *__restrict zip1,
-                    const float *__restrict pp,
-                    const uint n) {
+__global__ void zip(float4 *zip0, ushort4 *zip1, const float *pp, const uint n) {
     extern __shared__ volatile float smem[];
 
     uint warpid = threadIdx.x / warpSize;
@@ -12,7 +8,6 @@ __global__ void zip(float4 *__restrict zip0,
     uint i = (blockIdx.x * blockDim.x + threadIdx.x) & 0xFFFFFFE0U;
 
     float2 *base = (float2 *)(pp + i * 6);
-#pragma unroll 3
     for (uint j = lane; j < 96; j += 32) {
         float2 u = base[j];
         // NVCC bug: no operator = between volatile float2 and float2
@@ -40,4 +35,4 @@ __global__ void zip(float4 *__restrict zip0,
                      __float2half_rn(smem[warpid * 192 + lane * 6 + 2]), 0);
 }
 
-} // dev
+}
