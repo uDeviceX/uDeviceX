@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include "msg.h"
 
+#include "imp.h"
+
 namespace edg {
 void ini(int md, int nv, /**/ int *hx) {
     int n, i;

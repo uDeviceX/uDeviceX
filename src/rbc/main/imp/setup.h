@@ -51,7 +51,30 @@ static void setup_edg(int md, int nv, rbc::adj::Hst *adj, /**/ Edg *dev, float *
     free(hst); free(rr);
 }
 
-static void setup_anti(int md, int nv, rbc::adj::Hst *adj, /**/ int *anti) {
+static void setup_anti0(int md, int nv, rbc::adj::Hst *adj, /**/ int *hst, /*w*/ int *hx, int *hy) {
+    int valid, i;
+    rbc::adj::Map m;
+    
+    //    edg::ini(md, nv, hx);
+    for (i = 0; i < md*nv; i++) {
+        valid = rbc::adj::hst(md, nv, i, adj, /**/ &m);
+        if (!valid) continue;
+    }
+}
+
+static void setup_anti(int md, int nv, rbc::adj::Hst *adj, /**/ int *dev) {
+    int n;
+    int *hst, *hx, *hy;
+    n = md*nv;
+    hst = (int*)malloc(n*sizeof(int));
+    hx  = (int*)malloc(n*sizeof(int));
+    hy  = (int*)malloc(n*sizeof(int));
+    
+    setup_anti0(md, nv, adj, /**/ hst, /*w*/ hx, hy);
+    cH2D(dev, hst, n);
+    
+    free(hst);
+    free(hx); free(hy);
 }
 
 static void setup0(int md, int nt, int nv, int4 *faces, /**/
@@ -61,7 +84,7 @@ static void setup0(int md, int nt, int nv, int4 *faces, /**/
 
     if (RBC_STRESS_FREE) setup_edg(md,  nv, &adj, /**/ edg, totArea);
     if (RBC_RND)         setup_anti(md, nv, &adj, /**/ anti);
-    
+
     cH2D(adj0, adj.adj0, nv*md); /* TODO */
     cH2D(adj1, adj.adj1, nv*md);
 
