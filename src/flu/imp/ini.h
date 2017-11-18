@@ -19,7 +19,7 @@ void ini(Quants *q) {
 
 void ini(/**/ TicketZ *t) {
     Dalloc(&t->zip0, 2*MAX_PART_NUM);
-    Dalloc(&t->zip1, 2*MAX_PART_NUM);
+    Dalloc(&t->zip1, 2*MAX_PART_NUM); /* ? */
 }
 
 void ini(/**/ TicketRND *t) {

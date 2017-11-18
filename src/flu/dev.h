@@ -1,38 +1,23 @@
 namespace dev {
+__device__ ushort f2s(float x) { return __float2half_rn(x); }
 __global__ void zip(float4 *zip0, ushort4 *zip1, const float *pp, const uint n) {
-    extern __shared__ volatile float smem[];
+    enum {X, Y, Z};
+    assert(sizeof(Particle) == 6*sizeof(float));
+    int i;
+    const float *r, *v;
+    float x, y, z;
+    float vx, vy, vz;
 
-    uint warpid = threadIdx.x / warpSize;
-    uint lane = threadIdx.x % warpSize;
+    i = threadIdx.x + blockDim.x * blockIdx.x;
+    r = &pp[6*i];
+    v = &pp[6*i + 3];
 
-    uint i = (blockIdx.x * blockDim.x + threadIdx.x) & 0xFFFFFFE0U;
+    x =  r[X];  y = r[Y];  z = r[Z];
+    vx = v[X]; vy = v[Y]; vz = v[Z];
 
-    float2 *base = (float2 *)(pp + i * 6);
-    for (uint j = lane; j < 96; j += 32) {
-        float2 u = base[j];
-        // NVCC bug: no operator = between volatile float2 and float2
-        asm volatile("st.volatile.shared.v2.f32 [%0], {%1, %2};"
-                     :
-                     : "r"((warpid * 96 + j) * 8), "f"(u.x), "f"(u.y)
-                     : "memory");
-    }
-    // SMEM: XYZUVW XYZUVW ...
-    uint pid = lane / 2;
-    const uint x_or_v = (lane % 2) * 3;
-    zip0[i * 2 + lane] =
-        make_float4(smem[warpid * 192 + pid * 6 + x_or_v + 0],
-                    smem[warpid * 192 + pid * 6 + x_or_v + 1],
-                    smem[warpid * 192 + pid * 6 + x_or_v + 2], 0);
-    pid += 16;
-    zip0[i * 2 + lane + 32] =
-        make_float4(smem[warpid * 192 + pid * 6 + x_or_v + 0],
-                    smem[warpid * 192 + pid * 6 + x_or_v + 1],
-                    smem[warpid * 192 + pid * 6 + x_or_v + 2], 0);
-
-    zip1[i + lane] =
-        make_ushort4(__float2half_rn(smem[warpid * 192 + lane * 6 + 0]),
-                     __float2half_rn(smem[warpid * 192 + lane * 6 + 1]),
-                     __float2half_rn(smem[warpid * 192 + lane * 6 + 2]), 0);
+    zip0[2*i]     = make_float4(x,   y,  z, 0);
+    zip0[2*i + 1] = make_float4(vx, vy, vz, 0);
+    zip1[i] = make_ushort4(f2s(x), f2s(y), f2s(z), 0);
 }
 
-}
+} /* namespace */
