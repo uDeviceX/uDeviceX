@@ -26,7 +26,7 @@ static void gen_a12(int md, int i0, int *hx, int *hy, /**/ int *a1, int *a2) {
     }  while (c != mi);
 }
 
-void ini0(int md, int nt, int nv, int4 *faces, /**/ int *a1, int *a2) {
+static void ini0(int md, int nt, int nv, int4 *faces, /**/ int *a1, int *a2) {
     int hx[nv*md], hy[nv*md];
     int i;
     for (i = 0; i < nv*md; i++) hx[i] = a1[i] = a2[i] = -1;
