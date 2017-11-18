@@ -64,12 +64,14 @@ static __device__ void xyz2rc(int type,
         row = dz ? ys : zs;
         col = dx ? ys : xs;
         ncols = dx ? yc : xc;
-    } else if (type == EDGE)
+    }
+    else if (type == EDGE)
         col = max(xs, max(ys, zs));
     else if (type == CORNER) {
         row = col = ncols = 1;
     } else {
-        printf("%s:%d: illigal fragmant type: %d\n", __FILE__, __LINE__, type);
+        printf("%s:%d: illigal fragmant type: %d [%d %d %d]\n",
+               __FILE__, __LINE__, type, dx, dy, dz);
         assert(0);
     }
     *prow = row; *pcol = col; *pncols = ncols;
@@ -84,7 +86,7 @@ static __device__  void r2size(int r, int nc, int S, /**/ int *pl, int *ps) {
 }
 static __device__ Map r2map(const Frag frag, float x, float y, float z) {
     /* coordinate [r] to map */
-    int id;
+    int id; /* base id */
     int xl, yl, zl; /* low */
     int xs, ys, zs; /* size */
     int dx, dy, dz;
