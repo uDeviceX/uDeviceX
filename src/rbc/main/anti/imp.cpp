@@ -33,7 +33,6 @@ static void get(int md, int nv, adj::Hst *adj, int *hx, int *hy, /**/ int *anti)
         /* invert i1 and i0 */
         j = edg::get(md, i1, i0, hx, hy);
         anti[i] = j;
-        MSG("anti: %d %d %d %d", i0, i1, i, j);
     }
 }
 
