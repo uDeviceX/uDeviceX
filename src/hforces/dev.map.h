@@ -7,7 +7,6 @@ struct Map { /* helps to find remote particle */
 
 /* true if `i' bigger than the number of remote particles */
 static __device__ int endp(const Map m, int i) { return i >= m.cnt2; }
-
 static __device__ int m2id(const Map m, int i) {
     /* return remote particle id */
     int m1, m2;
@@ -19,38 +18,26 @@ static __device__ int m2id(const Map m, int i) {
 }
 
 static __device__ int get(const int *a, int i) { return a[i]; }
-static __device__ Map r2map0(const int *start,
-                             int i, int row, int col, int jump) {
-    int org0, org1, org2;
-    int cnt0, cnt1, cnt2;
-    int count1, count2;
+static __device__ Map r2map0(const int *start, int i, int row, int col, int jump) {
+    int j;
+    int o[3] = {0}, c[3] = {0};
     Map m;
+    assert(row == 1 || row == 2 || row == 3);
+    assert(col == 1 || col == 2 || col == 3);
 
-    org0 = get(start, i);
-    cnt0 = get(start, i + col) - org0;
-    start += jump;
-
-    org1   = org2 = 0;
-    count1 = count2 = 0;
-    if (row > 1) {
-        org1   = get(start,       i);
-        count1 = get(start, i + col) - org1;
-        start += jump;
+    for (j = 0 ; j < row; j++) {
+        o[j] = get(start, i);
+        c[j] = get(start, i + col) - o[j];
+        i += jump;
     }
-    if (row > 2) {
-        org2   = get(start,       i);
-        count2 = get(start, i + col) - org2;
-    }
-    cnt1 = cnt0 + count1;
-    cnt2 = cnt1 + count2;
+    c[1] += c[0]; c[2] += c[1];
+    o[1] -= c[0]; o[2] -= c[1];
 
-    org1 -= cnt0;
-    org2 -= cnt1;
-
-    m.org0 = org0; m.org1 = org1; m.org2 = org2;
-    m.cnt0 = cnt0; m.cnt1 = cnt1; m.cnt2 = cnt2;
+    m.org0 = o[0]; m.org1 = o[1]; m.org2 = o[2];
+    m.cnt0 = c[0]; m.cnt1 = c[1]; m.cnt2 = c[2];
     return m;
 }
+
 
 static __device__ int facep(int dx, int dy, int dz) { /* face? */
     int x, y, z;
