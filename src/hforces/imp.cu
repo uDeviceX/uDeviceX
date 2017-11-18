@@ -38,6 +38,7 @@
 namespace hforces {
 namespace dev {
 #include "dev/map.h"
+#include "dev/dbg.h"
 #include "dev/main.h"
 }
 

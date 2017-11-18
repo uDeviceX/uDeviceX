@@ -1,6 +1,6 @@
 $B/d/api.o: $S/d/cpu/imp.h $S/inc/conf.h $S/d/common.h $S/d/api.h $S/msg.h $B/conf.h $S/d/cuda/imp.h
 $B/frag/imp.o: $S/inc/conf.h $B/conf.h $S/frag/imp.h
-$B/hforces/imp.o: $S/hforces/dev/map.h $S/cloud/dev.h $S/inc/conf.h $S/cloud/imp.h $S/forces/imp.h $S/inc/type.h $S/d/q.h $S/hforces/imp.h $S/inc/dev/common.h $S/rnd/dev.h $S/utils/cc.h $S/inc/def.h $S/rnd/imp.h $S/inc/dev.h $S/msg.h $S/d/api.h $B/conf.h $S/hforces/imp/main.h $S/forces/pack.h $S/utils/kl.h $S/forces/type.h $S/frag/imp.h $S/hforces/dev/main.h $S/forces/use.h $S/mpi/glb.h $S/d/ker.h
+$B/hforces/imp.o: $S/hforces/dev/map.h $S/cloud/dev.h $S/inc/conf.h $S/cloud/imp.h $S/forces/imp.h $S/inc/type.h $S/d/q.h $S/hforces/imp.h $S/inc/dev/common.h $S/rnd/dev.h $S/utils/cc.h $S/inc/def.h $S/rnd/imp.h $S/inc/dev.h $S/msg.h $S/d/api.h $B/conf.h $S/hforces/imp/main.h $S/forces/pack.h $S/utils/kl.h $S/forces/type.h $S/frag/imp.h $S/hforces/dev/main.h $S/hforces/dev/dbg.h $S/forces/use.h $S/mpi/glb.h $S/d/ker.h
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h $S/mpi/glb.h
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
