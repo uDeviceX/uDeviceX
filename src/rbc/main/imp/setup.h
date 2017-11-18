@@ -51,17 +51,6 @@ static void setup_edg(int md, int nv, rbc::adj::Hst *adj, /**/ Edg *dev, float *
     free(hst); free(rr);
 }
 
-static void setup_anti0(int md, int nv, rbc::adj::Hst *adj, /**/ int *hst, /*w*/ int *hx, int *hy) {
-    int valid, i;
-    rbc::adj::Map m;
-    
-    //    edg::ini(md, nv, hx);
-    for (i = 0; i < md*nv; i++) {
-        valid = rbc::adj::hst(md, nv, i, adj, /**/ &m);
-        if (!valid) continue;
-    }
-}
-
 static void setup_anti(int md, int nv, rbc::adj::Hst *adj, /**/ int *dev) {
     int n;
     int *hst, *hx, *hy;
@@ -70,7 +59,7 @@ static void setup_anti(int md, int nv, rbc::adj::Hst *adj, /**/ int *dev) {
     hx  = (int*)malloc(n*sizeof(int));
     hy  = (int*)malloc(n*sizeof(int));
     
-    setup_anti0(md, nv, adj, /**/ hst, /*w*/ hx, hy);
+    //   setup_anti0(md, nv, adj, /**/ hst, /*w*/ hx, hy);
     cH2D(dev, hst, n);
     
     free(hst);
