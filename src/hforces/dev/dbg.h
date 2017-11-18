@@ -7,9 +7,11 @@ __device__ void assert_frag(int i, const Frag frag) {
     assert(frag_d2i(dx, dy, dz) == i);
 }
 
-__device__ void assert_rc(const Frag frag, int id, int row, int col, int jump) {
-    int fid, n;
+__device__ void assert_rc(const Frag frag, int i, int row, int col, int jump) {
+    /* i: base cell id */
+    int fid, nmax;
     int dx, dy, dz;
+    int j;
     assert(row == 1 || row == 2 || row == 3);
     assert(col == 1 || col == 2 || col == 3);
 
