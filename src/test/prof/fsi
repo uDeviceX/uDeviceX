@@ -6,12 +6,12 @@ export PATH=../tools:$PATH
 x=5 y=17 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 :
 u.conf conf/double.poiseuille.h <<!!!
-   numberdensity=1
-   XS=8 YS=8 ZS=8
+   numberdensity=10
+   XS=4 YS=4 ZS=4
    tend=1.0 part_freq=1500
    part_dumps   field_freq=1500
    FORCE_DOUBLE_POISEUILLE
-   pushrbc=false fsiforces=false multi_solvent=true
+   pushrbc=false fsiforces=true multi_solvent=true
    run
 !!!
 { make clean &&  u.make -j && make -C ../tools; } > /dev/null
