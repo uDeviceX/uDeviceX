@@ -77,13 +77,15 @@ static __device__ void xyz2rc(int type,
     *prow = row; *pcol = col; *pncols = ncols;
 }
 
-static __device__  void r2size(int r, int nc, int S, /**/ int *pl, int *ps) {
+static __device__  void r2size(float r, int nc, int S, /**/ int *pl, int *ps) {
     int i, s, l;
     i = (int)(r + S/2);
     l = max(0,  i - 1);
     s = min(nc, i + 2) - l;
     *pl = l; *ps = s;
 }
+
+
 static __device__ Map r2map(const Frag frag, float x, float y, float z) {
     /* coordinate [r] to map */
     int id; /* base id */
@@ -96,12 +98,13 @@ static __device__ Map r2map(const Frag frag, float x, float y, float z) {
     dx = frag.dx; dy = frag.dy; dz = frag.dz;
     xc = frag.xcells; yc = frag.ycells; zc = frag.zcells;
 
-    id = 0; xs = ys = zs = 1;
+    id = 0; xs = 1; ys = 1; zs = 1;
     if (dz == 0) {r2size(z, zc, ZS, /**/ &zl, &zs); id += zl;}
     id *= yc;
     if (dy == 0) {r2size(y, yc, YS, /**/ &yl, &ys); id += yl;}
     id *= xc;
     if (dx == 0) {r2size(x, xc, XS, /**/ &xl, &xs); id += xl;}
+
     xyz2rc(frag.type,
            dx, dy, dz,
            xc, yc, zc,
