@@ -4,7 +4,7 @@ struct Map { /* one edge info */
     int rbc; /* cell id */
 };
 
-struct AdjHst { /* adjacency lists */
+struct Hst { /* adjacency lists */
     int *adj0;
     int *adj1;
 };

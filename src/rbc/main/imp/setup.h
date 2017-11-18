@@ -53,6 +53,7 @@ static void setup_shape(int md, int nv, int *adj0, int *adj1, /**/ Edg *dev, flo
 
 static void setup(int md, int nt, int nv, const char *r_templ, /**/
                   Edg *edg, float *totArea, int4 *faces, int4 *tri, int *adj0, int *adj1) {
+    rbc::adj::Hst Adj;
     int a0[nv*md], a1[nv*md];
     efaces(r_templ, nt, /**/ faces);
     rbc::adj::ini0(md, nt, nv, faces, /**/ a0, a1);

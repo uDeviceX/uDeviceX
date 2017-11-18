@@ -42,12 +42,12 @@ void ini0(int md, int nt, int nv, int4 *faces, /**/ int *a1, int *a2) {
     for (i = 0; i < nv; i++) gen_a12(md, i, hx, hy, /**/ a1, a2);
 }
 
-static void alloc(int n, AdjHst *A) {
+static void alloc(int n, Hst *A) {
     A->adj0 = (int*)malloc(n*sizeof(int));
     A->adj1 = (int*)malloc(n*sizeof(int));
 }
 
-void ini(int md, int nt, int nv, int4 *faces, /**/ AdjHst *A) {
+void ini(int md, int nt, int nv, int4 *faces, /**/ Hst *A) {
     int *a1, *a2;
     alloc(nv*nt, /**/ A);
     a1 = A->adj0; /* sic */
