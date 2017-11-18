@@ -19,19 +19,49 @@ static __device__ int m2id(const Map m, int i) {
 }
 
 static __device__ int get(const int *a) { return *a; }
-static __device__ Map r2map(const Frag frag, float x, float y, float z) {
-    /* coordinate [r] to map */
+static __device__ Map r2map0(const Frag frag,
+                             int basecid, int row, int col, int ncols) {
     int org0, org1, org2;
     int cnt0, cnt1, cnt2;
     int count1, count2;
+    const int* start;
+    Map m;
+
+    start = frag.start + basecid;
+    org0 = get(start);
+    cnt0 = get(start + col) - org0;
+    start += ncols;
+
+    org1   = org2 = 0;
+    count1 = count2 = 0;
+    if (row > 1) {
+        org1   = get(start);
+        count1 = get(start + col) - org1;
+        start += ncols;
+    }
+    if (row > 2) {
+        org2   = get(start);
+        count2 = get(start + col) - org2;
+    }
+    cnt1 = cnt0 + count1;
+    cnt2 = cnt1 + count2;
+
+    org1 -= cnt0;
+    org2 -= cnt1;
+
+    m.org0 = org0; m.org1 = org1; m.org2 = org2;
+    m.cnt0 = cnt0; m.cnt1 = cnt1; m.cnt2 = cnt2;
+    return m;
+}
+
+static __device__ Map r2map(const Frag frag, float x, float y, float z) {
+    /* coordinate [r] to map */
     int basecid;
     int xcid, ycid, zcid;
     int xl, yl, zl; /* low */
     int xs, ys, zs; /* size */
     int dx, dy, dz;
     int row, col, ncols;
-    const int* start;
-    Map m;
 
     dx = frag.dx; dy = frag.dy; dz = frag.dz;
     
@@ -66,32 +96,7 @@ static __device__ Map r2map(const Frag frag, float x, float y, float z) {
         ncols = dx ? frag.ycells : frag.xcells;
     } else if (frag.type == EDGE)
         col = max(xs, max(ys, zs));
-
-    start = frag.start + basecid;
-    org0 = get(start);
-    cnt0 = get(start + col) - org0;
-    start += ncols;
-
-    org1   = org2 = 0;
-    count1 = count2 = 0;
-    if (row > 1) {
-        org1   = get(start);
-        count1 = get(start + col) - org1;
-        start += ncols;
-    }
-    if (row > 2) {
-        org2   = get(start);
-        count2 = get(start + col) - org2;
-    }
-    cnt1 = cnt0 + count1;
-    cnt2 = cnt1 + count2;
-
-    org1 -= cnt0;
-    org2 -= cnt1;
-
-    m.org0 = org0; m.org1 = org1; m.org2 = org2;
-    m.cnt0 = cnt0; m.cnt1 = cnt1; m.cnt2 = cnt2;
-    return m;
+    return r2map0(frag, basecid, row, col, ncols);
 }
 
 } } /* namespace */
