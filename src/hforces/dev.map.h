@@ -60,7 +60,7 @@ static __device__ void xyz2rc(int type,
                               int xs, int ys, int zs, /* size */
                               /**/ int *prow, int *pcol, int *pncols) {
     int row, col, ncols;
-    if         (type == FACE) {
+    if      (type == FACE) {
         row = dz ? ys : zs;
         col = dx ? ys : xs;
         ncols = dx ? yc : xc;
