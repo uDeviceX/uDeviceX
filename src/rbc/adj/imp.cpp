@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <vector_types.h>
 
-#include "rbc/edj/imp.h"
+#include "rbc/edg/imp.h"
 #include "msg.h"
 
 #include "type.h"

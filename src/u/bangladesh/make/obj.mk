@@ -9,7 +9,7 @@ O = $B/algo/minmax.o $B/algo/scan/imp.o $B/clist/imp.o $B/cnt/imp.o $B/color/flu
     $B/io/rig.o $B/lforces/imp.o $B/lforces/transpose/imp.o $B/main.o \
     $B/math/linal.o $B/mesh/bbox.o $B/mesh/collision.o $B/mesh/dist.o \
     $B/mesh/props.o $B/meshbb/imp.o $B/mpi/glb.o $B/mpi/type.o $B/mpi/wrapper.o \
-    $B/msg.o $B/rbc/adj/imp.o $B/rbc/com/imp.o $B/rbc/edj/imp.o \
+    $B/msg.o $B/rbc/adj/imp.o $B/rbc/com/imp.o $B/rbc/edg/imp.o \
     $B/rbc/force/area_volume/imp.o $B/rbc/force/imp.o $B/rbc/gen/imp.o \
     $B/rbc/main/imp.o $B/rbc/rnd/api/imp.o $B/rbc/rnd/imp.o $B/rbc/stretch/imp.o \
     $B/restrain/imp.o $B/restrain/stat/imp.o $B/restrain/sum/imp.o $B/rig/imp.o \
