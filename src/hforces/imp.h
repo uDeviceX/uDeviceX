@@ -28,4 +28,4 @@ typedef Sarray<  Rnd, 26>   Rnd26;
 
 void interactions(const SFrag26 ssfrag, const Frag26 ffrag, const Rnd26 rrnd, /**/ float *ff);
 
-} // hforces
+} /* namespace */

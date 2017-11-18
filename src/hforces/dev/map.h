@@ -1,5 +1,3 @@
-namespace hforces { namespace dev {
-
 struct Map { /* helps to find remote particle */
     int  org0, org1, org2;
     int cnt0, cnt1, cnt2;
@@ -125,5 +123,3 @@ static __device__ Map r2map(const Frag frag, float x, float y, float z) {
            &row, &col, &jump);
     return r2map0(frag.start, id, row, col, jump);
 }
-
-} } /* namespace */

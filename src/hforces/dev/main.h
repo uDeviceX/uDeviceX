@@ -1,5 +1,3 @@
-namespace hforces { namespace dev {
-
 struct Fo { float *x, *y, *z; }; /* force */
 
 static __device__ void pair(const forces::Pa a, const forces::Pa b, float rnd,
@@ -98,5 +96,3 @@ __global__ void force(const int27 start, const SFrag26 ssfrag, const Frag26 ffra
     rnd = rrnd.d[fid];
     force3(sfrag, frag, rnd, i, /**/ ff);
 }
-
-}} /* namespace */
