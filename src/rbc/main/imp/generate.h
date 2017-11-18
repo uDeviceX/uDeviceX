@@ -1,4 +1,5 @@
-static void setup_from_pos(const char *r_templ, const char *r_state, int nv, /**/ Particle *pp, int *nc, int *n, /* storage */ Particle *pp_hst) {
+static void setup_from_pos(const char *r_templ, const char *r_state, int nv, /**/
+                           Particle *pp, int *nc, int *n, /* storage */ Particle *pp_hst) {
     /* fills `pp' with RBCs for this processor */
     *nc = rbc::gen::main(r_templ, r_state, nv, pp_hst);
     if (*nc) cH2D(pp, pp_hst, nv * *nc);

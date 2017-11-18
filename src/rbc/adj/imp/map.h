@@ -1,5 +1,5 @@
 static int fetch(int *adj, int i) { return adj[i]; }
-int hst(int md, int nv, int i, int *adj0, int *adj1, /**/ Map *m) {
+static int hst0(int md, int nv, int i, int *adj0, int *adj1, /**/ Map *m) {
     int i0, i1, i2, i3, i4;
     int j, k;
     assert(i < md * nv);
@@ -23,4 +23,11 @@ int hst(int md, int nv, int i, int *adj0, int *adj1, /**/ Map *m) {
 
     m->i0 = i0; m->i1 = i1; m->i2 = i2; m->i3 = i3; m->i4 = i4;
     return 1;
+}
+
+int hst(int md, int nv, int i, Hst *A, /**/ Map *m) {
+    int *adj0, *adj1;
+    adj0 = A->adj0;
+    adj1 = A->adj1;
+    return hst0(md, nv, i, adj0, adj1, m);
 }
