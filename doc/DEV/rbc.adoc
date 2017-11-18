@@ -6,13 +6,13 @@
 
 == Components
 
+* link:adj[adj] adjacency list --- a structure to pack mesh to read on device
 * link:com[com] compute center of mass
+* link:edg[edg] store information for every edge (host)
 * link:com[main] initialization, restart
 * link:force[force] internal forces
 * link:force/area_volume[force/area_volume] compute area and volume of
   the mesh
-* link:adj[adj] adjacency list --- manage a structure to pack mesh to
-  read on device.
 * link:gen[gen] generate `pp` from cell template (`rbc.off`) and initial condition
   files (`rbcs-ic.txt`)
 * link:rnd[rnd] random numbers for internal forces
