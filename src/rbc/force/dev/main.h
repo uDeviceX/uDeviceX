@@ -77,8 +77,8 @@ static __global__ void force(int md, int nv, int nc, const Texo<float2> vert, fl
     if (pid >= nc * nv) return;
     valid = rbc::adj::dev(md, nv, i, adj0, adj1, /**/ &m);
     if (!valid) return;
-    edg_shape(shape, i % (md * nv), /**/ &shape0);
-    edg_rnd(    rnd, i,             /**/ &rnd0);
+    edg_shape(shape, i % (md * nv),  /**/ &shape0);
+    edg_rnd(    rnd, i,              /**/ &rnd0);
 
     const Part p0 = tex2Part(vert, m.i0);
 
