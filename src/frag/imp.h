@@ -38,6 +38,12 @@ enum {frag_bulk = 26};
                  frag_i2d(i, 1),                \
                  frag_i2d(i, 2)))
 
+/* number of cells in anti-fragment i          */
+#define frag_ancell(i)                          \
+    (frag_ncell0(-frag_i2d(i, 0),               \
+                 -frag_i2d(i, 1),               \
+                 -frag_i2d(i, 2)))
+
 /* anti direction to fragment id                */
 #define frag_ad2i(x, y, z) frag_d2i((-x), (-y), (-z))
 
