@@ -1,4 +1,4 @@
-static void setup_shape0(float *rr, rbc::adj::Map m, /**/ Edg *edg) {
+static void setup_edg0(float *rr, rbc::adj::Map m, /**/ Edg *edg) {
     int i0, i1, i2;
     float *r0, *r1, *r2;
     float r01[3], r12[3], r20[3];
@@ -18,7 +18,7 @@ static void setup_shape0(float *rr, rbc::adj::Map m, /**/ Edg *edg) {
     edg->a = a; edg->A = A;
 }
 
-static void setup_shape1(int md, int nv, rbc::adj::Hst *Adj, float *rr, /**/
+static void setup_edg1(int md, int nv, rbc::adj::Hst *Adj, float *rr, /**/
                          Edg *edg, float *ptotArea) {
     int valid, i;
     rbc::adj::Map m;
@@ -28,7 +28,7 @@ static void setup_shape1(int md, int nv, rbc::adj::Hst *Adj, float *rr, /**/
     for (i = 0; i < md*nv; i++) {
         valid = rbc::adj::hst(md, nv, i, Adj, /**/ &m);
         if (!valid) continue;
-        setup_shape0(rr, m, /**/ &edg[i]);
+        setup_edg0(rr, m, /**/ &edg[i]);
         totArea += edg[i].A;
     }
     totArea /= 3; /* seen every face three times */
@@ -37,14 +37,14 @@ static void setup_shape1(int md, int nv, rbc::adj::Hst *Adj, float *rr, /**/
     *ptotArea = totArea;
 }
 
-static void setup_shape(int md, int nv, rbc::adj::Hst *Adj, /**/ Edg *dev, float *totArea) {
+static void setup_edg(int md, int nv, rbc::adj::Hst *Adj, /**/ Edg *dev, float *totArea) {
     float *rr;
     Edg *hst;
     hst = (Edg*) malloc(md*nv*sizeof(Edg));
     rr = (float*)malloc(3*nv*sizeof(float));
 
     evert("rbc.off", nv, /**/ rr);
-    setup_shape1(md, nv, Adj, rr, /**/ hst, totArea);
+    setup_edg1(md, nv, Adj, rr, /**/ hst, totArea);
 
     cH2D(dev, hst, md*nv);
 
@@ -57,7 +57,7 @@ static void setup(int md, int nt, int nv, const char *r_templ, /**/
     efaces(r_templ, nt, /**/ faces);
     rbc::adj::ini(md, nt, nv, faces, /**/ &Adj);
 
-    if (RBC_STRESS_FREE) setup_shape(md, nv, &Adj, /**/ edg, totArea);
+    if (RBC_STRESS_FREE) setup_edg(md, nv, &Adj, /**/ edg, totArea);
     cH2D(tri, faces, nt);
     cH2D(adj0, Adj.adj0, nv*md); /* TODO */
     cH2D(adj1, Adj.adj1, nv*md);
