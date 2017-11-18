@@ -51,16 +51,21 @@ static void setup_edg(int md, int nv, rbc::adj::Hst *Adj, /**/ Edg *dev, float *
     free(hst); free(rr);
 }
 
-static void setup(int md, int nt, int nv, const char *r_templ, /**/
-                  Edg *edg, float *totArea, int4 *faces, int4 *tri, int *adj0, int *adj1) {
+static void setup0(int md, int nt, int nv, int4 *faces, /**/
+                   Edg *edg, float *totArea, int *adj0, int *adj1) {
     rbc::adj::Hst Adj;
-    efaces(r_templ, nt, /**/ faces);
     rbc::adj::ini(md, nt, nv, faces, /**/ &Adj);
 
     if (RBC_STRESS_FREE) setup_edg(md, nv, &Adj, /**/ edg, totArea);
-    cH2D(tri, faces, nt);
     cH2D(adj0, Adj.adj0, nv*md); /* TODO */
     cH2D(adj1, Adj.adj1, nv*md);
 
     rbc::adj::fin(&Adj);
+}
+
+static void setup(int md, int nt, int nv, const char *r_templ, /**/
+                  Edg *edg, float *totArea, int4 *faces, int4 *tri, int *adj0, int *adj1) {
+    efaces(r_templ, nt, /**/ faces);
+    setup0(md, nt, nv, faces, /**/ edg, totArea, adj0, adj1);
+    cH2D(tri, faces, nt);
 }
