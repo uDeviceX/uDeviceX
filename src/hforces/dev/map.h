@@ -123,5 +123,6 @@ static __device__ Map r2map(const Frag frag, float x, float y, float z) {
            xc, yc, zc,
            xs, ys, zs,
            &row, &col, &jump);
+    assert_rc(frag, id, row, col, jump);
     return r2map0(frag.start, id, row, col, jump);
 }
