@@ -56,8 +56,6 @@ namespace dev {
 #else
   #include "dev/rnd0/main.h"
 #endif
-
-
 #include "dev/main.h"
 }
 
