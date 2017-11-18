@@ -54,6 +54,27 @@ static __device__ Map r2map0(const Frag frag,
     return m;
 }
 
+static __device__ void xyz2rc(int type,
+                              int dx, int dy, int dz, /* fragment information */
+                              int xc, int yc, int zc,
+                              int xs, int ys, int zs, /* size */
+                              /**/ int *prow, int *pcol, int *pncols) {
+    int row, col, ncols;
+    if         (type == FACE) {
+        row = dz ? ys : zs;
+        col = dx ? ys : xs;
+        ncols = dx ? yc : xc;
+    } else if (type == EDGE)
+        col = max(xs, max(ys, zs));
+    else if (type == CORNER) {
+        row = col = ncols = 1;
+    } else {
+        printf("%s:%d: illigal fragmant type: %d\n", __FILE__, __LINE__, type);
+        assert(0);
+    }
+    *prow = row; *pcol = col; *pncols = ncols;
+}
+
 static __device__  void r2size(int r, int nc, int S, /**/ int *pl, int *ps) {
     int i, s, l;
     i = (int)(r + S/2);
@@ -79,14 +100,11 @@ static __device__ Map r2map(const Frag frag, float x, float y, float z) {
     if (dy == 0) {r2size(y, yc, YS, /**/ &yl, &ys); id += yl;}
     id *= xc;
     if (dx == 0) {r2size(x, xc, XS, /**/ &xl, &xs); id += xl;}
-
-    row = col = ncols = 1;
-    if (frag.type == FACE) {
-        row = dz ? ys : zs;
-        col = dx ? ys : xs;
-        ncols = dx ? yc : xc;
-    } else if (frag.type == EDGE)
-        col = max(xs, max(ys, zs));
+    xyz2rc(frag.type,
+           dx, dy, dz,
+           xc, yc, zc,
+           xs, ys, zs,
+           &row, &col, &ncols);
     return r2map0(frag, id, row, col, ncols);
 }
 

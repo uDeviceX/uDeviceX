@@ -7,8 +7,8 @@ x=5 y=17 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 >  rbcs-ic.txt
 :
 u.conf conf/double.poiseuille.h <<!!!
    numberdensity=1
-   XS=4 YS=4 ZS=4
-   rbcs tend=2.0 part_freq=1500
+   XS=8 YS=8 ZS=8
+   tend=1.0 part_freq=1500
    part_dumps   field_freq=1500
    FORCE_DOUBLE_POISEUILLE
    pushrbc=false fsiforces=false multi_solvent=true
@@ -16,4 +16,4 @@ u.conf conf/double.poiseuille.h <<!!!
 !!!
 { make clean &&  u.make -j && make -C ../tools; } > /dev/null
 sh runfile
-ply2punto r/00002.ply > ply.out.txt
+ply2punto r/00001.ply > ply.out.txt
