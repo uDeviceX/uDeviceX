@@ -50,6 +50,7 @@ $B/mpi/wrapper.o: $S/mpi/wrapper.cpp; $X -I$S/mpi -I$S/.
 $B/msg.o: $S/msg.cpp; $X -I$S/.
 $B/rbc/adj/imp.o: $S/rbc/adj/imp.cpp; $X -I$S/rbc/adj -I$S/.
 $B/rbc/com/imp.o: $S/rbc/com/imp.cu; $N -I$S/rbc/com -I$S/.
+$B/rbc/edj/imp.o: $S/rbc/edj/imp.cu; $N -I$S/rbc/edj -I$S/.
 $B/rbc/force/area_volume/imp.o: $S/rbc/force/area_volume/imp.cu; $N -I$S/rbc/force/area_volume -I$S/.
 $B/rbc/force/imp.o: $S/rbc/force/imp.cu; $N -I$S/rbc/force -I$S/.
 $B/rbc/gen/imp.o: $S/rbc/gen/imp.cpp; $X -I$S/rbc/gen -I$S/.
