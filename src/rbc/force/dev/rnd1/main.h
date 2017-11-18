@@ -2,8 +2,7 @@ struct Rnd0 { float r; };
 
 static __device__ void edg_rnd(Shape shape, int i0, float* rnd, int  j, /**/ Rnd0 *rnd0) {
     /* i0: edge index; j: vertex index */
-    assert(i0  < RBCmd * RBCnv);
-    assert(j < MAX_CELL_NUM * RBCnv);
+    assert(i0  < RBCmd * RBCnv); assert(j < MAX_CELL_NUM * RBCnv);
     int i1;
     i1 = shape.anti[i0];
     if (i1 > i0) j = j - i0 + i1;
@@ -12,10 +11,10 @@ static __device__ void edg_rnd(Shape shape, int i0, float* rnd, int  j, /**/ Rnd
 }
 
 static __device__ float  frnd0(float rnd) {
-    float f0, g, T;
+    float f, g, T;
     g = RBCgammaC; T = RBCkbT;
-    f0  = sqrtf(2*g*T/dt)*rnd;
-    return f0;
+    f  = sqrtf(2*g*T/dt)*rnd;
+    return f;
 }
 
 static __device__ float3 frnd(float3 r1, float3 r2, const Rnd0 rnd) { /* random force */
