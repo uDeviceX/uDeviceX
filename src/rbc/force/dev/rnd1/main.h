@@ -1,9 +1,18 @@
 struct Rnd0 { float r; };
 
-static __device__ void edg_rnd(float *rnd, int i, /**/ Rnd0 *rnd0)  {
+static __device__ void edg_rnd(Shape shape, int i0, float* rnd, int  j0, /**/ Rnd0 *rnd0) {
     /* i: edge index */
-    assert(i < MAX_CELL_NUM * RBCnv);
-    rnd0->r = rnd[i];
+    assert(i0  < RBCmd * RBCnv);
+    assert(j0 < MAX_CELL_NUM * RBCnv);
+    int i1, j1;
+    float r0, r1;
+    
+    i1 = shape.anti[i0];
+    j1 = j0 - i0 + i1;
+    r0 = rnd[j0]; r1 = rnd[j1];
+    rnd0->r = (r0 + r1)/2;
+    
+    assert(j1 < MAX_CELL_NUM * RBCnv);    
 }
 
 static __device__ float  frnd0(float rnd) {
