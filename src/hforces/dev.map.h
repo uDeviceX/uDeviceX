@@ -56,16 +56,19 @@ static __device__ Map r2map0(const Frag frag,
 
 static __device__ int facep(int dx, int dy, int dz) { /* face? */
     int x, y, z;
-    x = !dx &&  dy &&  dz;
-    y =  dx && !dy &&  dz;
-    z =  dx &&  dy && !dz;
+    x =  dx  && !dy && !dz;
+    y =  !dx &&  dy && !dz;
+    z =  !dx && !dy &&  dz;
     return x || y || z;
 }
 static __device__ void xyz2rc_face(int dx, int dy, int dz,
                                    int xc, int yc, int zc,
                                    int xs, int ys, int zs,
                                    /**/ int *prow, int *pcol, int *pncols) {
-    assert(facep(dx, dy, dz));
+    if (!facep(dx, dy, dz)) {
+        printf("xyz: %d %d %d\n", dx, dy, dz);
+        assert(0);
+    }
     int row, col, ncols;
     row = dz ? ys : zs;
     col = dx ? ys : xs;
