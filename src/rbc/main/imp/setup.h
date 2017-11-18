@@ -57,7 +57,7 @@ static void setup_anti(int md, int nv, adj::Hst *adj, /**/ int *dev) {
     n = md*nv;
     hst = (int*)malloc(n*sizeof(int));
     
-    //    anti::ini(md, nv, adj, /**/ hst);
+    anti::ini(md, nv, adj, /**/ hst);
     cH2D(dev, hst, n);
     
     free(hst);

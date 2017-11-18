@@ -45,11 +45,11 @@ static void ini0(int md, int nv, adj::Hst *adj, /**/ int *anti, /*w*/ int *hx, i
 
 void ini(int md, int nv, adj::Hst *adj, /**/ int *anti) {
     int n;
-    int *hst, *hx, *hy;
+    int *hx, *hy;
     n = md*nv;
     hx  = (int*)malloc(n*sizeof(int));
     hy  = (int*)malloc(n*sizeof(int));
-    ini0(md, nv, adj, /**/ hst, /*w*/ hx, hy);
+    ini0(md, nv, adj, /**/ anti, /*w*/ hx, hy);
     free(hx); free(hy);
 }
 
