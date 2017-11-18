@@ -4,8 +4,8 @@ struct Edg {
     float A;
 };
 struct Shape {
-    float* anti; /* every edge is visited twice, what is an id of
-                    another visit? */
+    int *anti; /* every edge is visited twice, what is an id of
+                  another visit? */
     Edg *edg;
     float totArea;
 };
