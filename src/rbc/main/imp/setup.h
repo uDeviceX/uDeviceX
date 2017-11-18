@@ -18,15 +18,15 @@ static void setup_edg0(float *rr, rbc::adj::Map m, /**/ Edg *edg) {
     edg->a = a; edg->A = A;
 }
 
-static void setup_edg1(int md, int nv, rbc::adj::Hst *Adj, float *rr, /**/
-                         Edg *edg, float *ptotArea) {
+static void setup_edg1(int md, int nv, rbc::adj::Hst *adj, float *rr, /**/
+                       Edg *edg, float *ptotArea) {
     int valid, i;
     rbc::adj::Map m;
     float totArea;
 
     totArea = 0;
     for (i = 0; i < md*nv; i++) {
-        valid = rbc::adj::hst(md, nv, i, Adj, /**/ &m);
+        valid = rbc::adj::hst(md, nv, i, adj, /**/ &m);
         if (!valid) continue;
         setup_edg0(rr, m, /**/ &edg[i]);
         totArea += edg[i].A;
@@ -37,14 +37,14 @@ static void setup_edg1(int md, int nv, rbc::adj::Hst *Adj, float *rr, /**/
     *ptotArea = totArea;
 }
 
-static void setup_edg(int md, int nv, rbc::adj::Hst *Adj, /**/ Edg *dev, float *totArea) {
+static void setup_edg(int md, int nv, rbc::adj::Hst *adj, /**/ Edg *dev, float *totArea) {
     float *rr;
     Edg *hst;
     hst = (Edg*) malloc(md*nv*sizeof(Edg));
     rr = (float*)malloc(3*nv*sizeof(float));
 
     evert("rbc.off", nv, /**/ rr);
-    setup_edg1(md, nv, Adj, rr, /**/ hst, totArea);
+    setup_edg1(md, nv, adj, rr, /**/ hst, totArea);
 
     cH2D(dev, hst, md*nv);
 
@@ -53,14 +53,14 @@ static void setup_edg(int md, int nv, rbc::adj::Hst *Adj, /**/ Edg *dev, float *
 
 static void setup0(int md, int nt, int nv, int4 *faces, /**/
                    Edg *edg, float *totArea, int *adj0, int *adj1) {
-    rbc::adj::Hst Adj;
-    rbc::adj::ini(md, nt, nv, faces, /**/ &Adj);
+    rbc::adj::Hst adj;
+    rbc::adj::ini(md, nt, nv, faces, /**/ &adj);
 
-    if (RBC_STRESS_FREE) setup_edg(md, nv, &Adj, /**/ edg, totArea);
-    cH2D(adj0, Adj.adj0, nv*md); /* TODO */
-    cH2D(adj1, Adj.adj1, nv*md);
+    if (RBC_STRESS_FREE) setup_edg(md, nv, &adj, /**/ edg, totArea);
+    cH2D(adj0, adj.adj0, nv*md); /* TODO */
+    cH2D(adj1, adj.adj1, nv*md);
 
-    rbc::adj::fin(&Adj);
+    rbc::adj::fin(&adj);
 }
 
 static void setup(int md, int nt, int nv, const char *r_templ, /**/
