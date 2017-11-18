@@ -1,15 +1,3 @@
-static void reg(int md, int f, int x, int y,  /**/ int *hx, int *hy) { /* register an edge */
-    int j = f*md;
-    while (hx[j] != -1) j++;
-    hx[j] = x; hy[j] = y;
-}
-
-static int nxt(int md, int i, int x, int *hx, int *hy) { /* next */
-    i *= md;
-    while (hx[i] != x) i++;
-    return hy[i];
-}
-
 static void gen_a12(int md, int i0, int *hx, int *hy, /**/ int *a1, int *a2) {
     int lo = i0*md, hi = lo + md, mi = hx[lo];
     int i;
@@ -19,9 +7,9 @@ static void gen_a12(int md, int i0, int *hx, int *hy, /**/ int *a1, int *a2) {
     int c = mi, c0;
     i = lo;
     do {
-        c     = nxt(md, i0, c0 = c, hx, hy);
+        c     = edg::get(md, i0, c0 = c, hx, hy);
         a1[i] = c0;
-        a2[i] = nxt(md, c, c0, hx, hy);
+        a2[i] = edg::get(md, c, c0, hx, hy);
         i++;
     }  while (c != mi);
 }
@@ -29,15 +17,16 @@ static void gen_a12(int md, int i0, int *hx, int *hy, /**/ int *a1, int *a2) {
 static void ini0(int md, int nt, int nv, int4 *faces, /**/ int *a1, int *a2) {
     int hx[nv*md], hy[nv*md];
     int i;
-    for (i = 0; i < nv*md; i++) hx[i] = a1[i] = a2[i] = -1;
+    for (i = 0; i < nv*md; i++) a1[i] = a2[i] = -1;
+    edg::ini(nv, md, hx);
 
     int4 t;
     for (int ifa = 0; ifa < nt; ifa++) {
         t = faces[ifa];
         int f0 = t.x, f1 = t.y, f2 = t.z;
-        reg(md, f0, f1, f2,   hx, hy); /* register an edge */
-        reg(md, f1, f2, f0,   hx, hy);
-        reg(md, f2, f0, f1,   hx, hy);
+        edg::set(md, f0, f1, f2,   hx, hy); /* register an edge */
+        edg::set(md, f1, f2, f0,   hx, hy);
+        edg::set(md, f2, f0, f1,   hx, hy);
     }
     for (i = 0; i < nv; i++) gen_a12(md, i, hx, hy, /**/ a1, a2);
 }
