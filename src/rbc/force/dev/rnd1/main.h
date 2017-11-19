@@ -6,7 +6,7 @@ static __device__ void edg_rnd(Shape shape, int i0, float* rnd, int  j, /**/ Rnd
     int i1;
     i1 = shape.anti[i0];
     if (i1 > i0) j = j - i0 + i1;
-    assert(j < MAX_CELL_NUM * RBCnv);
+    assert(j < MAX_CELL_NUM * RBCnv * RBCmd);
     rnd0->r = rnd[j];
 }
 
