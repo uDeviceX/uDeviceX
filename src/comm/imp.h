@@ -37,18 +37,18 @@ struct Stamp {
     int  tags[NFRAGS];       /* tags in bt coordinates */
 };
 
-void ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
-void fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
+int ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db);
+int fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db);
 
 /* stamp alloc */
-void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s);
-void fin(/**/ Stamp *s);
+int ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s);
+int fin(/**/ Stamp *s);
 
 /* communication */
-void post_recv(hBags *b, Stamp *s);
-void post_send(const hBags *b, Stamp *s);
+int post_recv(hBags *b, Stamp *s);
+int post_send(const hBags *b, Stamp *s);
 
-void wait_recv(Stamp *s, /**/ hBags *b);
-void wait_send(Stamp *s);
+int wait_recv(Stamp *s, /**/ hBags *b);
+int wait_send(Stamp *s);
 
 } // comm

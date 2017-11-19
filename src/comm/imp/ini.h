@@ -29,7 +29,7 @@ static void alloc_pair(int i, AllocMod mod, /**/ hBags *hb, dBags *db) {
     }
 }
 
-void ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db) {
+int ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /**/ hBags *hb, dBags *db) {
     hb->bsize = bsize;
     memcpy(hb->capacity, capacity, NBAGS * sizeof(int));
 
@@ -41,11 +41,12 @@ void ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], 
     alloc_pair(frag_bulk, bmod, /**/ hb, db);
 
     alloc_counts(NBAGS, /**/ &hb->counts);
+    return 0;
 }
 
 /* stamp allocation */
 
-void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s) {
+int ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s) {
     int i, c, crd_rnk[3];
     
     for (i = 0; i < NFRAGS; ++i) {
@@ -56,4 +57,5 @@ void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s) {
     }
     s->bt = get_tag(tg);
     MC(m::Comm_dup(comm, &s->cart));
+    return 0;
 }
