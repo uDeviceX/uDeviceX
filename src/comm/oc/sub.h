@@ -1,9 +1,8 @@
 #define COMM_MC(F)                              \
     do {                                        \
         oc::mpi_check((F), __FILE__, __LINE__); \
-        if (os::status() != 0) os::report();    \
+        if (oc::status() != 0) oc::report();    \
     } while (0)
-
 
 /* interface used by comm */
 namespace comm { namespace oc {
