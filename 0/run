@@ -13,9 +13,10 @@ normal
 
 nv=642 sc=0.55 radius=3.2
 strt0
+rbc0
 
 freq=20000
-com1
+com0
 
 sfree0
 
@@ -24,7 +25,7 @@ p_lina                   # p_[test|lina|stick]
 
 Domain="XS=$xs YS=$ys ZS=$zs walls wall_creation=1000"
 u.conf "$s" "$u" "$c" <<!
-    dt=1e-4 part_freq=$freq contactforces
+    dt=1e-6 part_freq=$freq contactforces RBC_RND=false
     $Domain
     $Force
     $Rbc

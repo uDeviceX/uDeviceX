@@ -44,7 +44,7 @@ g_box () { #
 geom () { lx=`ae $nx*$xs` ly=`ae $ny*$ys` lz=`ae $nz*$zs`; }
 bop0 () { Bop= ; }
 bop1 () { Bop="part_dumps=true force_dumps=true";  }
-rbc0 () { Rbc=;                                    }
+rbc0 () { Rbc="rbcs=false";                        }
 rbc1 () {
     Rbc="RBCnv=$nv rbcs"
     cp ../src/data/cells/rbc/$nv.off  rbc.off
@@ -85,7 +85,6 @@ safe_cp () {
 strt0 () {
     Restart=
     u.strtdir . $nx $ny $nz
-    rbc1
 }
 strt1 () {
     local h
@@ -99,7 +98,6 @@ strt1 () {
     then cp -r /scratch/snx3000/lisergey/s0 strt
     else cp -r /scratch/lisergey/s0         strt
     fi
-    rbc1
 }
 
 ae () { awk 'BEGIN {print '"$@"'}'; }
