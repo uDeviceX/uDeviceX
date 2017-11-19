@@ -49,7 +49,6 @@
 #define       DPD_GRAVITY       true
 #define        field_freq      10000
 #define         fsiforces       true
-#define MESH_SHIFT_CENTER      true
 #define        part_dumps      true
 
 #define              rbcs       true
