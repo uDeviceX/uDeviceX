@@ -22,6 +22,7 @@
 
 #include "frag/imp.h"
 #include "mpi/basetags.h"
+#include "comm/oc/imp.h"
 #include "comm/imp.h"
 #include "comm/utils.h"
 
