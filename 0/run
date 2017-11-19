@@ -14,17 +14,21 @@ nv=642 sc=0.55 radius=2.8
 # [01]
 strt0
 
+freq=20000
+com1
+
 v=$1; shift=15; force
 p_lina                   # p_[test|lina|stick]
 
 Domain="XS=$xs YS=$ys ZS=$zs walls wall_creation=1000"
 u.conf "$s" "$u" "$c" <<!
-    dt=1e-4
+    dt=1e-4 part_freq=$freq
     $Domain
     $Force
     $Rbc
     $Param
     $Bop
+    $Com
     $Restart
     run
 !

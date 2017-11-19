@@ -131,6 +131,14 @@ force0 () { # uses $vx $vy
     Force="$a $b $c"
 }
 
+com0 () {
+   Com= ;
+}
+
+com1 () {
+  Com="rbc_com_freq=$freq rbc_ids=true rbc_com_dumps=true"
+}
+
 run () {
     local h
     h=`u.host`
