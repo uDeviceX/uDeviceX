@@ -55,7 +55,6 @@
 #define              rbcs       true
 #define             RBCnv       642
 #define   RBC_PARAMS_LINA       true
-#define  RESTRAIN_RBC_VEL       true
 
 #define     wall_creation       1000
 #define        WVEL_PAR_A        (0)

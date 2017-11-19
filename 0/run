@@ -10,16 +10,16 @@ c=$s/conf/lina.h
 # domain types: oneA,    oneB, cyl, cyl3, narrow small, normal, big
 cyl3
 
-# [01]
 nv=642 sc=0.55 radius=2.8
+# [01]
 strt0
 
 v=$1; shift=15; force
-
 p_lina                   # p_[test|lina|stick]
 
 Domain="XS=$xs YS=$ys ZS=$zs walls wall_creation=1000"
 u.conf "$s" "$u" "$c" <<!
+    dt=1e-4
     $Domain
     $Force
     $Rbc
