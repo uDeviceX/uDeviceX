@@ -9,9 +9,9 @@ c=$s/conf/lina.h
 
 # domain types: oneA,    oneB, cyl, cyl3, narrow small, normal, big
 #cyl3
-big
+normal
 
-nv=642 sc=0.55 radius=2.8
+nv=642 sc=0.55 radius=3.2
 strt0
 
 freq=20000
@@ -24,7 +24,7 @@ p_lina                   # p_[test|lina|stick]
 
 Domain="XS=$xs YS=$ys ZS=$zs walls wall_creation=1000"
 u.conf "$s" "$u" "$c" <<!
-    dt=1e-4 part_freq=$freq
+    dt=1e-4 part_freq=$freq contactforces
     $Domain
     $Force
     $Rbc
