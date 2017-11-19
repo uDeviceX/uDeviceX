@@ -7,7 +7,7 @@ cp data/cells/rbc/498.off rbc.off
 rbc0 () {
    r=1.5 fr=0 sc=0.25 ang=rnd
    plcmt.ro $xs $ys $zs     $r $fr $sc $ang /dev/null rbcs-ic.txt
-   Rbc="rbcs multi_solvent=false color_freq=1000 fsiforces contactforces"
+   Rbc="rbcs multi_solvent fsiforces contactforces color_freq=1000"
 }
 rbc1 () {
     Rbc=

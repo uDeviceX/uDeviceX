@@ -338,6 +338,16 @@
   #define S_LEVEL (2)
 #endif
 
+/*** TODO ***/
+#ifndef gdpd_s
+  #define gdpd_s gdpd_b
+#endif
+
+#ifndef adpd_s
+  #define adpd_s adpd_b
+#endif
+/**********/
+
 /*** see poc/color */
 #ifndef gdpd_bw
   #define gdpd_bw gdpd_b
