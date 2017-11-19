@@ -1,3 +1,3 @@
 # simulation configs
 
-See also: tools/argp src/test/
+See also: src/test
