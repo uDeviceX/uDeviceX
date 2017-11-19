@@ -14,5 +14,6 @@ void check(int code, const char *file, int line) {
     MPI_Error_string(code, /**/ s, &n);
     s[n + 1] = '\n';
     fprintf(stderr, "%s:%d: %s\n", file, line, s);
+    assert(0);
 }
 } // mpicheck
