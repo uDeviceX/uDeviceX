@@ -11,11 +11,12 @@ c=$s/conf/lina.h
 cyl3
 
 nv=642 sc=0.55 radius=2.8
-# [01]
 strt0
 
 freq=20000
 com1
+
+sfree0
 
 v=$1; shift=15; force
 p_lina                   # p_[test|lina|stick]
@@ -26,6 +27,7 @@ u.conf "$s" "$u" "$c" <<!
     $Domain
     $Force
     $Rbc
+    $Sfree
     $Param
     $Bop
     $Com
