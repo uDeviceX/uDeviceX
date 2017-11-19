@@ -1,3 +1,12 @@
+msg () { echo >&2 "$@"; }
+usg () {
+    msg 'u.doc i.md > o.md'
+    msg '  expand @include in i.md'
+    exit
+}
+
+if test $# -ne 0 -a $1 = -h; then usg; fi
+
 "${AWK=awk}" '
 incp($0) {
     inc($0, "")  # tabulation = ""
