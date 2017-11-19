@@ -1,0 +1,29 @@
+# many rbcs with colors and fsi
+# cTEST: color.rbc.many
+set -x
+rm -rf bop diag.txt h5 ply rbc.off
+cp data/cells/rbc/498.off rbc.off
+:
+rbc0 () {
+   r=1.5 fr=0 sc=0.25 ang=rnd
+   plcmt.ro $xs $ys $zs     $r $fr $sc $ang /dev/null rbcs-ic.txt
+   Rbc="rbcs multi_solvent=false color_freq=1000 fsiforces contactforces"
+}
+rbc1 () {
+    Rbc=
+}
+:
+xs=16 ys=16 zs=16
+rbc0
+:
+u.conf conf/double.poiseuille.h <<!
+   XS=$xs YS=$ys ZS=$zs 
+   $Rbc
+   part_dumps part_freq=1500 field_freq=1500
+   tend=2.0 dt=1e-6
+   run
+!
+{ make clean && u.make -j; } > make.log
+sh runfile
+:
+ply2punto r/00002.ply > ply.out.txt
