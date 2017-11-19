@@ -18,7 +18,7 @@ v=$1; shift=15; force
 
 p_lina                   # p_[test|lina|stick]
 
-Domain="XS=$xs YS=$ys ZS=$zs"
+Domain="XS=$xs YS=$ys ZS=$zs walls wall_creation=1000"
 u.conf "$s" "$u" "$c" <<!
     $Domain
     $Force
