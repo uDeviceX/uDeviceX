@@ -1,6 +1,6 @@
 void post_recv(Comm *c, Unpack *u) {
-    post_recv(&u->hpp, &c->pp);
-    if (rbc_ids) post_recv(&u->hii, &c->ii);
+    OC(post_recv(&u->hpp, &c->pp));
+    if (rbc_ids) OC(post_recv(&u->hii, &c->ii));
 }
 
 void post_send(Pack *p, Comm *c) {

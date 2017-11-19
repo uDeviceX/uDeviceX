@@ -1,5 +1,5 @@
 void post_recv(Comm *c, Unpack *u) {
-    post_recv(&u->hpp, &c->pp);
+    OC(post_recv(&u->hpp, &c->pp));
 }
 
 void post_send(Pack *p, Comm *c) {
@@ -18,8 +18,8 @@ void wait_send(Comm *c) {
 /* momentum */
 
 void post_recv(CommM *c, UnpackM *u) {
-    post_recv(&u->hmm, &c->mm);
-    post_recv(&u->hii, &c->ii);
+    OC(post_recv(&u->hmm, &c->mm));
+    OC(post_recv(&u->hii, &c->ii));
 }
 
 void post_send(PackM *p, CommM *c) {

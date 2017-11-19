@@ -1,7 +1,7 @@
 void post_recv(Comm *c, Unpack *u) {
-    post_recv(&u->hpp, &c->pp);
-    if (global_ids)    post_recv(&u->hii, &c->ii);
-    if (multi_solvent) post_recv(&u->hcc, &c->cc);
+    OC(post_recv(&u->hpp, &c->pp));
+    if (global_ids)    OC(post_recv(&u->hii, &c->ii));
+    if (multi_solvent) OC(post_recv(&u->hcc, &c->cc));
 }
 
 void post_send(Pack *p, Comm *c) {

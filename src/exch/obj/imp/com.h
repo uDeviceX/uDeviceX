@@ -1,5 +1,5 @@
 void post_recv(Comm *c, Unpack *u) {
-    post_recv(&u->hpp, &c->pp);
+    OC(post_recv(&u->hpp, &c->pp));
 }
 
 void post_send(Pack *p, Comm *c) {
@@ -15,7 +15,7 @@ void wait_send(Comm *c) {
 }
 
 void post_recv_ff(Comm *c, UnpackF *u) {
-    post_recv(&u->hff, &c->ff);
+    OC(post_recv(&u->hff, &c->ff));
 }
 
 void post_send_ff(PackF *p, Comm *c) {
