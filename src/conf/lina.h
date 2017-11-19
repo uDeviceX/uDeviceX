@@ -36,6 +36,7 @@
 /* FLOW TYPE */
 #define WVEL_FLAT               true
 #define driving_force           0.001
+#define           shear_y       true
 
 /* DUMPS */
 #define dump_all_fields         true
@@ -56,7 +57,5 @@
 #define   RBC_PARAMS_LINA       true
 #define  RESTRAIN_RBC_VEL       true
 
-
-#define           shear_y       true
 #define     wall_creation       1000
 #define        WVEL_PAR_A        (0)
