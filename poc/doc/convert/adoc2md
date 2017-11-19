@@ -1,1 +1,1 @@
-echo 42
+eval u.adoc2md0 "$@"

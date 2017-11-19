@@ -1,1 +1,20 @@
-echo 42
+set -u
+
+: ${DBG=0}
+
+msg () { echo >&2 "$@"; }
+e0 () {
+   if test $DBG != 0; then msg "cmd: $@"; fi
+   eval "$@"
+}
+e () {
+   e0 "$@"
+   if test $? -ne 0; then msg "fail: $@"; exit 2; fi
+}
+
+i=$1; shift
+t=/tmp/adoc2md.$$.xml; >$t
+trap 'rm -f $t' 0 1 2 3 15
+
+e asciidoc -o $t --backend=docbook "$i"
+e pandoc --atx-headers -f docbook -t markdown "$t"
