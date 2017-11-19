@@ -9,7 +9,8 @@ c=$s/conf/lina.h
 
 # domain types: oneA,    oneB, cyl, cyl3, narrow small, normal, big
 #cyl3
-normal
+#normal
+big
 
 nv=642 sc=0.55 radius=3.2
 strt0
@@ -25,7 +26,7 @@ p_lina                   # p_[test|lina|stick]
 
 Domain="XS=$xs YS=$ys ZS=$zs walls wall_creation=1000"
 u.conf "$s" "$u" "$c" <<!
-    dt=1e-6 part_freq=$freq contactforces RBC_RND=false
+    dt=1e-4 part_freq=$freq contactforces
     $Domain
     $Force
     $Rbc
@@ -38,4 +39,4 @@ u.conf "$s" "$u" "$c" <<!
 !
 { make clean && u.make -j; } > .make.log
 
-run
+RBC_RND=123456 run
