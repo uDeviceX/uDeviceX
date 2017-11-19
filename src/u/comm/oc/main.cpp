@@ -10,13 +10,7 @@
 #include "comm/imp.h"
 
 void main0() {
-    using namespace comm;
-    basetags::TagGen tg;
-    Stamp stamp;
-    int capacity[NBAGS];
-    float maxdensity = 26;
-    frag_estimates(NBAGS, maxdensity, /**/ capacity);
-    ini(/**/ &tg);
+    OC(comm::comm_error());
 }
 
 int main(int argc, char **argv) {

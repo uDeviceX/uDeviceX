@@ -51,4 +51,7 @@ int post_send(const hBags *b, Stamp *s);
 int wait_recv(Stamp *s, /**/ hBags *b);
 int wait_send(Stamp *s);
 
+int  mpi_error(); /* always mpi error for oc testing */
+int comm_error(); /* always comm error */
+
 } // comm

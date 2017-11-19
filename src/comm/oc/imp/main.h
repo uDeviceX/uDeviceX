@@ -1,5 +1,4 @@
 #define MAX_CONTEXT 10
-
 static char oc_file[BUFSIZ];
 static int  oc_line;
 
@@ -19,12 +18,12 @@ void before(const char *file, int line) {
 int  error(int rc) { return rc || mpi_status; }
 void report() {
     int i;
-    MSG("comm error");
+    MSG("<< comm error");
     MSG("%s:%d:", oc_file, oc_line);
-    MSG("  %s:%d: %s", mpi_file, mpi_line, mpi_err);
-    if (n_context > 0) MSG("context:");
+    if (mpi_status != 0) MSG("%s:%d: %s", mpi_file, mpi_line, mpi_err);
+    if (n_context > 0)   MSG("context:");
     for (i = 0; i < n_context; i++) MSG("%s", context[n_context]);
-    ERR("comm error");
+    ERR(">> comm error");
 }
 
 int status() { return mpi_status; }
@@ -32,4 +31,7 @@ void mpi_check(int code, const char *file, int line) {
     int n;
     if (code == MPI_SUCCESS) return;
     MPI_Error_string(code, /**/ mpi_err, &n); mpi_err[n + 1] = '\n';
+    mpi_status = 1;
+    strcpy(mpi_file, file);
+    mpi_line = line;
 }
