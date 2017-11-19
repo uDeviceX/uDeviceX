@@ -5,7 +5,7 @@ set -ue
 
 s=../src
 u=u/safe
-c=conf.def.h
+c=$s/conf/lina.h
 
 # domain types: oneA,    oneB, cyl, cyl3, narrow small, normal, big
 cyl3

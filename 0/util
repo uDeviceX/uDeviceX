@@ -61,25 +61,8 @@ narrow () { nx=1   ny=1 nz=1; g_narrow; full; bop1; }
 box    () { nx=1   ny=1 nz=1; g_box;    full; bop1; }
 
 msg () { printf ': %s\n' "$*" >&2; }
-p_stick () { # sets Param
-    local A As Gamma Rbc Time
-    Time="dt=1e-4"
-    A="    adpd_b=2.66667  adpd_r=2.66667 adpd_br=2.66667"
-    As="  adpd_sw=$sw"
-    Gamma="gdpd_b=11.5     gdpd_r=5       gdpd_br=8.25"
-    Rbc="RBC_PARAMS_LINA DPD_GRAVITY"
-    Param="$A $As $Gamma $Rbc $Time"
-}
-
-p_lina () { # sets Param
-    local A Gamma Rbc Time
-    Time="dt=1e-4"
-    A="adpd_b=2.66  adpd_r=2.66 adpd_br=2.66               adpd_bs=0.0 adpd_rs=0.0"
-    Gamma="gdpd_b=5        gdpd_r=5      gdpd_br=5"
-    Rbc="RBC_PARAMS_LINA DPD_GRAVITY rbc_mass=0.25"
-    Param="$A $Gamma $Rbc $Time"
-}
-p_test () { Param=                             ; }
+p_lina () { Param=                            ; }
+p_test () { Param=                            ; }
 
 exec0 () { msg "$@"; "$@"; }
 safe_cp () {
