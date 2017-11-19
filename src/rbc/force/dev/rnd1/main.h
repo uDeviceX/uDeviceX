@@ -2,7 +2,7 @@ struct Rnd0 { float r; };
 
 static __device__ void edg_rnd(Shape shape, int i0, float* rnd, int  j, /**/ Rnd0 *rnd0) {
     /* i0: edge index; j: vertex index */
-    assert(i0  < RBCmd * RBCnv); assert(j < MAX_CELL_NUM * RBCnv * RBCmd);
+    assert(i0  < RBCnv * RBCmd); assert(j < MAX_CELL_NUM * RBCnv * RBCmd);
     int i1;
     i1 = shape.anti[i0];
     if (i1 > i0) j = j - i0 + i1;
