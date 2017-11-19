@@ -49,13 +49,11 @@
 #define       DPD_GRAVITY       true
 #define        field_freq      10000
 #define         fsiforces       true
-#define MESH_SHIFT_CENTER      true
 #define        part_dumps      true
 
 #define              rbcs       true
 #define             RBCnv       642
 #define   RBC_PARAMS_LINA       true
-#define  RESTRAIN_RBC_VEL       true
 
 #define     wall_creation       1000
 #define        WVEL_PAR_A        (0)

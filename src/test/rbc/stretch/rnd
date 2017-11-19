@@ -13,7 +13,7 @@ x=8 y=8 z=8; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 :
 u.conf conf/lina.h <<!
    rbcs
-   RBC_STRETCH
+   RBC_STRETCH RESTRAIN_RBC_VEL MESH_SHIFT_CENTER
    XS=16 YS=16 ZS=16 RBCnv=$nv
    tend=0.01 part_freq=300
    run

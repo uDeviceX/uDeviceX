@@ -7,4 +7,5 @@ z=$1; shift
 e=$1; shift # executable
 
 . u.load.daint
+ulimit -c unlimited
 exec1 srun -n $n `u.wrap "$e"` $x $y $z "$@"
