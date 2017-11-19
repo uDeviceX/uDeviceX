@@ -10,7 +10,7 @@ void gen_colors(Colorer *c) {
     download(&c->e.p);
 
     post_send(&c->e.p, &c->e.c);
-    OC(post_recv(&c->e.c, &c->e.u));
+    post_recv(&c->e.c, &c->e.u);
 
     if (nm * nv) CC(d::MemcpyAsync(c->pp, r::q.pp, nm * nv * sizeof(Particle), D2D));
     
