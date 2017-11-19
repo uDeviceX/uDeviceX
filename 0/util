@@ -79,6 +79,7 @@ safe_cp () {
     then msg "not a file: $f"
 	 exit 1
     fi
+    if test -f "$t"; then exec0 rm -f "$t"; fi
     exec0 ln -s "$f" "$t"
 }
 
