@@ -15,11 +15,6 @@ __constant__ static float aa[N_COLOR][N_COLOR] = {
 }
 static __device__ void color2par(int ca, int cb, /**/ DPDparam *p) {
     using namespace g;
-    if         (!multi_solvent) {
-        p->gamma = gg[B][B];
-        p->a     = aa[B][B];
-    } else {
-        p->gamma = gg[ca][cb];
-        p->a     = aa[ca][cb];
-    }
+    p->gamma = gg[ca][cb];
+    p->a     = aa[ca][cb];
 }
