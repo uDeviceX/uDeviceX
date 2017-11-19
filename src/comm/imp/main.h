@@ -3,7 +3,7 @@ void post_recv(hBags *b, Stamp *s) {
     for (i = 0; i < NFRAGS; ++i) {
         c = b->capacity[i] * b->bsize;
         tag = s->bt + s->tags[i];
-        MC(m::Irecv(b->data[i], c, MPI_BYTE, s->ranks[i], tag, s->cart, s->rreq + i));
+        COMM_MC(m::Irecv(b->data[i], c, MPI_BYTE, s->ranks[i], tag, s->cart, s->rreq + i));
     }
 }
 
@@ -17,7 +17,6 @@ void post_send(const hBags *b, Stamp *s) {
 
         if (c >= cap)
             signal_error_extra("sending more than capacity in fragment %d : (%ld / %ld)", i, (long) c, (long) cap);
-
         MC(m::Isend(b->data[i], n, MPI_BYTE, s->ranks[i], tag, s->cart, s->sreq + i));
     }
 }

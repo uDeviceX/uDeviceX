@@ -1,4 +1,5 @@
 $B/comm/imp.o: $S/comm/imp.cu; $N -I$S/comm -I$S/.
+$B/comm/oc/imp.o: $S/comm/oc/imp.cpp; $X -I$S/comm/oc -I$S/.
 $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
 $B/frag/imp.o: $S/frag/imp.cpp; $X -I$S/frag -I$S/.
 $B/mpi/glb.o: $S/mpi/glb.cpp; $X -I$S/mpi -I$S/.

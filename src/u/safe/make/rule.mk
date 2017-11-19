@@ -4,6 +4,7 @@ $B/clist/imp.o: $S/clist/imp.cu; $N -I$S/clist -I$S/.
 $B/cnt/imp.o: $S/cnt/imp.cu; $N -I$S/cnt -I$S/.
 $B/color/flux.o: $S/color/flux.cu; $N -I$S/color -I$S/.
 $B/comm/imp.o: $S/comm/imp.cu; $N -I$S/comm -I$S/.
+$B/comm/oc/imp.o: $S/comm/oc/imp.cpp; $X -I$S/comm/oc -I$S/.
 $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
 $B/dbg/imp.o: $S/dbg/imp.cu; $N -I$S/dbg -I$S/.
 $B/distr/flu/imp.o: $S/distr/flu/imp.cu; $N -I$S/distr/flu -I$S/.

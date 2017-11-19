@@ -15,6 +15,7 @@
 #include "mpi/basetags.h"
 #include "mpi/glb.h"
 
+#include "oc/sub.h" /* private interface of oc */
 #include "imp.h"
 
 // imp

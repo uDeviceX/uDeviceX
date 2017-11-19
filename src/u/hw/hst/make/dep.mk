@@ -1,4 +1,5 @@
-$B/comm/imp.o: $S/comm/imp/fin.h $S/inc/conf.h $S/utils/error.h $S/mpi/basetags.h $S/mpi/wrapper.h $S/comm/imp.h $S/utils/cc.h $S/comm/imp/ini.h $S/d/api.h $S/utils/mc.h $S/msg.h $B/conf.h $S/comm/imp/main.h $S/frag/imp.h $S/mpi/glb.h
+$B/comm/imp.o: $S/comm/imp/fin.h $S/comm/oc/sub.h $S/inc/conf.h $S/utils/error.h $S/mpi/basetags.h $S/mpi/wrapper.h $S/comm/imp.h $S/utils/cc.h $S/comm/imp/ini.h $S/d/api.h $S/utils/mc.h $S/msg.h $B/conf.h $S/comm/imp/main.h $S/frag/imp.h $S/mpi/glb.h
+$B/comm/oc/imp.o: $S/comm/oc/sub.h $S/comm/oc/imp.h $S/msg.h $S/comm/oc/imp/main.h
 $B/d/api.o: $S/d/cpu/imp.h $S/inc/conf.h $S/d/common.h $S/d/api.h $S/msg.h $B/conf.h $S/d/cuda/imp.h
 $B/frag/imp.o: $S/inc/conf.h $B/conf.h $S/frag/imp.h
 $B/mpi/glb.o: $S/inc/conf.h $S/mpi/wrapper.h $S/utils/mc.h $B/conf.h $S/mpi/glb.h
