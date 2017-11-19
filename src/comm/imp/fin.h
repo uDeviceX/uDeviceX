@@ -35,6 +35,6 @@ int fin(AllocMod fmod, AllocMod bmod, /**/ hBags *hb, dBags *db) {
 }
 
 int fin(/**/ Stamp *s) {
-    MC(m::Comm_free(&s->cart));
+    COMM_MC(m::Comm_free(&s->cart));
     return 0;
 }

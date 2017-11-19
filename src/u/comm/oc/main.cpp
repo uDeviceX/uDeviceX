@@ -4,11 +4,19 @@
 #include "msg.h"
 #include "mpi/glb.h"
 #include "mpi/basetags.h"
+#include "frag/imp.h"
 
 #include "comm/oc/imp.h"
 #include "comm/imp.h"
 
 void main0() {
+    using namespace comm;
+    basetags::TagGen tg;
+    Stamp stamp;
+    int capacity[NBAGS];
+    float maxdensity = 26;
+    frag_estimates(NBAGS, maxdensity, /**/ capacity);
+    ini(/**/ &tg);
 }
 
 int main(int argc, char **argv) {

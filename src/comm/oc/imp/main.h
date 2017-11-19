@@ -16,7 +16,7 @@ void before(const char *file, int line) {
     strcpy(oc_file, file);
     oc_line = line;
 }
-int  error(int rc) { return rc == 0 && mpi_status == 0; }
+int  error(int rc) { return rc || mpi_status; }
 void report() {
     int i;
     MSG("comm error");

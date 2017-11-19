@@ -12,5 +12,4 @@ $B/u/comm/main/main.o: $S/comm/imp.h $S/mpi/basetags.h $S/mpi/wrapper.h $S/msg.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/d/api.h $S/msg.h $B/conf.h
 $B/utils/error.o: $S/msg.h $S/utils/error.h
 $B/utils/mc.o: $S/inc/conf.h $S/utils/mc.h $B/conf.h
-$B/utils/mc.o: $S/inc/conf.h $S/utils/mc.h $B/conf.h
 $B/utils/os.o: $S/utils/os.h

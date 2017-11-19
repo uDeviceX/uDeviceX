@@ -6,8 +6,10 @@
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "mpi/basetags.h"
+
 #include "frag/imp.h"
 
+#include "comm/oc/imp.h"
 #include "comm/imp.h"
 
 using namespace comm;
@@ -56,26 +58,26 @@ int main(int argc, char **argv) {
     float maxdensity = 26.f;
     frag_estimates(NBAGS, maxdensity, /**/ capacity);
 
-    ini(/**/ &tg);
-    ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &sendB, NULL);
-    ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &recvB, NULL);
-    ini(m::cart, /*io*/ &tg, /**/ &stamp);
+    basetags::ini(/**/ &tg);
+    OC(ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &sendB, NULL));
+    OC(ini(HST_ONLY, NONE,sizeof(int), capacity, /**/ &recvB, NULL));
+    OC(ini(m::cart, /*io*/ &tg, /**/ &stamp));
 
     fill_bags(&sendB);
 
-    post_recv(&recvB, &stamp);
-    post_send(&sendB, &stamp);
+    OC(post_recv(&recvB, &stamp));
+    OC(post_send(&sendB, &stamp));
 
-    wait_recv(&stamp, &recvB);
-    wait_send(&stamp);
+    OC(wait_recv(&stamp, &recvB));
+    OC(wait_send(&stamp));
 
     compare(&sendB, &recvB);
 
     MSG("Passed");
     
-    fin(HST_ONLY, NONE, &sendB, NULL);
-    fin(HST_ONLY, NONE, &recvB, NULL);
-    fin(/**/ &stamp);
+    OC(fin(HST_ONLY, NONE, &sendB, NULL));
+    OC(fin(HST_ONLY, NONE, &recvB, NULL));
+    OC(fin(/**/ &stamp));
     
     m::fin();
 }

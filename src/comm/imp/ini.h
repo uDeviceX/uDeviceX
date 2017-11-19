@@ -52,10 +52,10 @@ int ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Stamp *s) {
     for (i = 0; i < NFRAGS; ++i) {
         for (c = 0; c < 3; ++c)
             crd_rnk[c] = m::coords[c] + frag_i2d(i,c);
-        MC(m::Cart_rank(comm, crd_rnk, s->ranks + i));
+        COMM_MC(m::Cart_rank(comm, crd_rnk, s->ranks + i));
         s->tags[i] = frag_anti(i);
     }
     s->bt = get_tag(tg);
-    MC(m::Comm_dup(comm, &s->cart));
+    COMM_MC(m::Comm_dup(comm, &s->cart));
     return 0;
 }
