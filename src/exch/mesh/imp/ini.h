@@ -9,15 +9,15 @@ void ini(int nv, int max_mesh_num, Pack *p) {
     size_t msz = nv * sizeof(Particle);
     get_capacity(NFRAGS, max_mesh_num, /**/ cap);
 
-    ini_map(1, NFRAGS, cap, /**/ &p->map);
-    ini(PINNED, NONE, msz, cap, /**/ &p->hpp, &p->dpp);
+    UC(ini_map(1, NFRAGS, cap, /**/ &p->map));
+    UC(ini(PINNED, NONE, msz, cap, /**/ &p->hpp, &p->dpp));
 
     CC(d::Malloc((void**) &p->minext, max_mesh_num * sizeof(float3)));
     CC(d::Malloc((void**) &p->maxext, max_mesh_num * sizeof(float3)));
 }
 
 void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c) {
-    ini(comm, /*io*/ tg, /**/ &c->pp);
+    UC(ini(comm, /*io*/ tg, /**/ &c->pp));
 }
 
 void ini(int nv, int max_mesh_num, Unpack *u) {
@@ -25,7 +25,7 @@ void ini(int nv, int max_mesh_num, Unpack *u) {
     size_t msz = nv * sizeof(Particle);
     get_capacity(NFRAGS, max_mesh_num, /**/ cap);
 
-    ini(PINNED_DEV, NONE, msz, cap, /**/ &u->hpp, &u->dpp);
+    UC(ini(PINNED_DEV, NONE, msz, cap, /**/ &u->hpp, &u->dpp));
 }
 
 
@@ -50,18 +50,18 @@ void ini(int nt, int max_mesh_num, PackM *p) {
     get_mcap(NFRAGS, nt, cap, /**/ mcap);
 
     for (i = 0; i < NFRAGS; ++i)
-        ini_map(nt, cap[i], /**/ &p->maps[i]);
+        UC(ini_map(nt, cap[i], /**/ &p->maps[i]));
     
-    ini(PINNED,   NONE, sizeof(Momentum), mcap, /**/ &p->hmm, &p->dmm);
-    ini(PINNED,   NONE, sizeof(int)     , mcap, /**/ &p->hii, &p->dii);
+    UC(ini(PINNED,   NONE, sizeof(Momentum), mcap, /**/ &p->hmm, &p->dmm));
+    UC(ini(PINNED,   NONE, sizeof(int)     , mcap, /**/ &p->hii, &p->dii));
 
     CC(d::alloc_pinned((void**) &p->cchst, 26 * sizeof(int)));
     CC(d::HostGetDevicePointer((void**) &p->ccdev, p->cchst, 0));
 }
 
 void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ CommM *c) {
-    ini(comm, /*io*/ tg, /**/ &c->mm);
-    ini(comm, /*io*/ tg, /**/ &c->ii);
+    UC(ini(comm, /*io*/ tg, /**/ &c->mm));
+    UC(ini(comm, /*io*/ tg, /**/ &c->ii));
 }
 
 void ini(int nt, int max_mesh_num, UnpackM *u) {
@@ -70,6 +70,6 @@ void ini(int nt, int max_mesh_num, UnpackM *u) {
     get_capacity(NFRAGS, max_mesh_num, /**/ cap);
     get_mcap(NFRAGS, nt, cap, /**/ mcap);
 
-    ini(PINNED_DEV, NONE, sizeof(Momentum), mcap, /**/ &u->hmm, &u->dmm);
-    ini(PINNED_DEV, NONE, sizeof(int)     , mcap, /**/ &u->hii, &u->dii);
+    UC(ini(PINNED_DEV, NONE, sizeof(Momentum), mcap, /**/ &u->hmm, &u->dmm));
+    UC(ini(PINNED_DEV, NONE, sizeof(int)     , mcap, /**/ &u->hii, &u->dii));
 }

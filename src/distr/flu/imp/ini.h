@@ -15,17 +15,17 @@ void ini(float maxdensity, Pack *p) {
     int capacity[NBAGS];
     get_capacity(maxdensity, /**/ capacity);
 
-    ini_map(NFRAGS, capacity, /**/ &p->map);
+    UC(ini_map(NFRAGS, capacity, /**/ &p->map));
     
-    ini(PINNED, NONE, sizeof(Particle), capacity, /**/ &p->hpp, &p->dpp);
-    if (global_ids)    ini(PINNED, NONE, sizeof(int), capacity, /**/ &p->hii, &p->dii);
-    if (multi_solvent) ini(PINNED, NONE, sizeof(int), capacity, /**/ &p->hcc, &p->dcc);
+    UC(ini(PINNED, NONE, sizeof(Particle), capacity, /**/ &p->hpp, &p->dpp));
+    if (global_ids)    UC(ini(PINNED, NONE, sizeof(int), capacity, /**/ &p->hii, &p->dii));
+    if (multi_solvent) UC(ini(PINNED, NONE, sizeof(int), capacity, /**/ &p->hcc, &p->dcc));
 }
 
 void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c) {
-    ini(comm, /*io*/ tg, /**/ &c->pp);
-    if (global_ids)    ini(comm, /*io*/ tg, /**/ &c->ii);
-    if (multi_solvent) ini(comm, /*io*/ tg, /**/ &c->cc);
+    UC(ini(comm, /*io*/ tg, /**/ &c->pp));
+    if (global_ids)    UC(ini(comm, /*io*/ tg, /**/ &c->ii));
+    if (multi_solvent) UC(ini(comm, /*io*/ tg, /**/ &c->cc));
 }
 
 static int nhalocells() {
@@ -40,9 +40,9 @@ void ini(float maxdensity, Unpack *u) {
     int capacity[NBAGS];
     get_capacity(maxdensity, /**/ capacity);
 
-    ini(HST_ONLY, NONE, sizeof(Particle), capacity, /**/ &u->hpp, NULL);
-    if (global_ids)    ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &u->hii, NULL);
-    if (multi_solvent) ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &u->hcc, NULL);
+    UC(ini(HST_ONLY, NONE, sizeof(Particle), capacity, /**/ &u->hpp, NULL));
+    if (global_ids)    UC(ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &u->hii, NULL));
+    if (multi_solvent) UC(ini(HST_ONLY, NONE, sizeof(int), capacity, /**/ &u->hcc, NULL));
 
     int maxparts = (int) (nhalocells() * maxdensity) + 1;
     CC(d::Malloc((void**) &u->ppre, maxparts * sizeof(Particle)));
