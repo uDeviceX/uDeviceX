@@ -78,7 +78,7 @@ void report(const char *file, int line) {
     if (err_status) {
         stack_dump();
         ERR("%s: %d: Error: %s\n"
-            "backtrace:\n%s\n",
+            "backtrace:\n%s",
             err_file, err_line, err_msg, back_trace);
     }
 }
