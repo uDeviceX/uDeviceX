@@ -1,5 +1,8 @@
-#define signal_error() UdxError::signal(__FILE__, __LINE__)
-#define signal_error_extra(fmt, ...) UdxError::signal_extra(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
+#define signal_error()                          \
+    UdxError::signal(__FILE__, __LINE__)
+
+#define signal_error_extra(fmt, ...)                                    \
+    UdxError::signal_extra(__FILE__, __LINE__, fmt, ##__VA_ARGS__)
 
 /* udx check */
 #define UC(f) do {                              \
