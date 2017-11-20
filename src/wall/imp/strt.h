@@ -1,7 +1,7 @@
 static void read(int maxn, /**/ float4 *pp, int *n) {
     Particle *pphst, *ppdev;
     size_t sz = maxn * sizeof(Particle);
-    emalloc(sz, (void**) &pphst);
+    UC(emalloc(sz, (void**) &pphst));
 
     restart::read_pp("wall", restart::TEMPL, /**/ pphst, n);
 
@@ -18,7 +18,7 @@ static void write(int n, const float4 *pp) {
     Particle *pphst, *ppdev;
     size_t sz = n * sizeof(Particle);
 
-    emalloc(sz, (void**) &pphst);
+    UC(emalloc(sz, (void**) &pphst));
     if (n) {
         CC(d::Malloc((void **) &ppdev, n * sizeof(Particle)));
         KL(dev::float42particle , (k_cnf(n)), (pp, n, /**/ ppdev));

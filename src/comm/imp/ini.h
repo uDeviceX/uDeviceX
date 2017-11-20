@@ -1,7 +1,7 @@
 /* pinned allocation */
 
 static void alloc_counts(int n, /**/ int **hc) {
-    emalloc(n * sizeof(int), (void**) hc);
+    UC(emalloc(n * sizeof(int), (void**) hc));
 }
 
 /* generic allocation */
@@ -10,7 +10,7 @@ static void alloc_pair(int i, AllocMod mod, /**/ hBags *hb, dBags *db) {
     
     switch (mod) {
     case HST_ONLY:
-        emalloc(n, (void**) &hb->data[i]);
+        UC(emalloc(n, (void**) &hb->data[i]));
         break;
     case DEV_ONLY:
         CC(d::Malloc((void**) &db->data[i], n));

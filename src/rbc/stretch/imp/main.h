@@ -25,13 +25,13 @@ void ini1(const char* path, int n, /**/ Fo *f) {
     float *d, *h; /* device and host */
     alloc(n, f);
     d = f->f;
-    emalloc(3 * n * sizeof(float), (void**) &h);
+    UC(emalloc(3 * n * sizeof(float), (void**) &h));
     ini0(path, n, /*w*/ h, /**/ d);
     free(h);
 }
 void ini(const char* path, int nv, /**/ Fo **fp) {
     Fo *f;
-    emalloc(sizeof(Fo), (void**) &f);
+    UC(emalloc(sizeof(Fo), (void**) &f));
     ini1(path, nv, f);
     f->nv = nv;
     *fp = f;

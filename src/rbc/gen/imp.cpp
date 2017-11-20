@@ -12,6 +12,7 @@
 
 #include "msg.h"
 
+#include "utils/error.h"
 #include "utils/halloc.h"
 #include "utils/mc.h"
 #include "mpi/wrapper.h"

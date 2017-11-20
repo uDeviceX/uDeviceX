@@ -29,14 +29,14 @@ void download_counts(int nfrags, /**/ Map *m) {
 }
 
 void ini_host_map(int nfrags, const int capacity[], /**/ Map *m) {
-    emalloc( nfrags      * sizeof(int), (void**) &m->counts);
-    emalloc((nfrags + 1) * sizeof(int), (void**) &m->starts);
+    UC(emalloc( nfrags      * sizeof(int), (void**) &m->counts));
+    UC(emalloc((nfrags + 1) * sizeof(int), (void**) &m->starts));
 
     int i, c;
     for (i = 0; i < nfrags; ++i) {
         c = capacity[i];
         if (c)
-            emalloc(c * sizeof(int), (void**) &m->ids[i]);
+            UC(emalloc(c * sizeof(int), (void**) &m->ids[i]));
     }
 }
 

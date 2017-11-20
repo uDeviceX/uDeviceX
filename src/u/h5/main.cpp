@@ -29,10 +29,10 @@ void dump(const char *path, int sx, int sy, int sz) {
 
     nc = sx * sy * sz;
     size = nc*sizeof(rho[0]);
-    emalloc(size, (void**) &rho);
-    malloc(size, (void**) &u[X]);
-    emalloc(size, (void**) &u[Y]);
-    emalloc(size, (void**) &u[Z]);
+    UC(emalloc(size, (void**) &rho));
+    UC(emalloc(size, (void**) &u[X]));
+    UC(emalloc(size, (void**) &u[Y]));
+    UC(emalloc(size, (void**) &u[Z]));
 
     float *data[] = { rho, u[X], u[Y], u[Z] };
     h5::write(path, data, names, 4, sx, sy, sz);

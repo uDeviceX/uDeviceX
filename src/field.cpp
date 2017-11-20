@@ -6,6 +6,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "utils/error.h"
 #include "utils/halloc.h"
 #include "inc/type.h"
 #include "io/field/imp.h"
@@ -155,7 +156,7 @@ static void dump1(const int N[3], const float* D, /*w*/ float* W) {
 
 void dump(const int N[], const float* D) {
     float *W;
-    emalloc(XS*YS*ZS*sizeof(float), (void**) &W);
+    UC(emalloc(XS*YS*ZS*sizeof(float), (void**) &W));
     dump1(N, D, /*w*/ W);
     free(W);
 }

@@ -73,7 +73,7 @@ static void vert(const char *f, int n0, /**/ float *vert) {
 int main(const char *r_templ, const char *r_state, int nv, /**/ Particle *pp) {
     float *rr0;
     int nc;
-    emalloc(3*nv*sizeof(float), (void**) &rr0);
+    UC(emalloc(3*nv*sizeof(float), (void**) &rr0));
 
     vert(r_templ, nv, /**/ rr0);
     nc = setup_hst0(rr0, r_state, nv, pp);

@@ -9,6 +9,6 @@ $B/msg.o: $S/mpi/glb.h $S/msg.h
 $B/u/hw/hst/main.o: $S/mpi/glb.h $S/msg.h
 $B/utils/cc.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/msg.h $S/utils/cc/common.h
 $B/utils/error.o: $S/msg.h $S/utils/error.h
-$B/utils/halloc.o: $S/utils/halloc.h
+$B/utils/halloc.o: $S/utils/error.h $S/utils/halloc.h
 $B/utils/mc.o: $B/conf.h $S/inc/conf.h $S/utils/mc.h
 $B/utils/os.o: $S/utils/os.h
