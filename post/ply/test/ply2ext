@@ -1,0 +1,2 @@
+# TEST: ply2ext.0
+u.ply2ext data/rbc.ply data/rbc.ply > ext.out.txt

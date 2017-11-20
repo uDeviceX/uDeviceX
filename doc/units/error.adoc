@@ -1,6 +1,6 @@
 = error unit
 
-a simple unit to test error handling `UC` (see link:/doc/DEV/modules/utils/error.adoc[error])
+a unit to test error handling `UC` (see link:/doc/DEV/modules/utils/error.adoc[error])
 
 [source,c++]
 ----
