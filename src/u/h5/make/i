@@ -6,4 +6,5 @@ io/field/h5/imp.cpp  io/field/h5/imp.h                          \
 io/field/xmf/imp.cpp io/field/xmf/imp.h                         \
 d/api.cu d/api.h d/common.h d/cpu/imp.h d/cuda/imp.h            \
 inc/conf.h mpi/glb.cpp mpi/glb.h mpi/wrapper.cpp mpi/wrapper.h  \
-mpi/wrapper.h msg.cpp msg.h utils/mc.cpp utils/mc.h utils/halloc.cpp utils/halloc.h
+mpi/wrapper.h msg.cpp msg.h utils/mc.cpp utils/mc.h             \
+utils/halloc.cpp utils/halloc.h utils/error.cpp utils/error.h
