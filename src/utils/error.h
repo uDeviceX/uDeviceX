@@ -3,7 +3,7 @@
 
 /* udx check */
 #define UC(f) do {                              \
-        UdxError::before(__LINE__, __FILE__);   \
+        UdxError::before(__FILE__, __LINE__);   \
         f;                                      \
         UdxError::report(__FILE__, __LINE__);   \
         UdxError::after();                      \
