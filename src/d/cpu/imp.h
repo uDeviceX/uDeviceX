@@ -3,12 +3,12 @@
 
 int ini() { return 0; }
 int alloc_pinned(void **pHost, size_t size) {
-    emalloc(size, pHost);
+    UC(emalloc(size, pHost));
     return 0;
 }
 
 int Malloc(void **p, size_t size) {
-    emalloc(size, p);
+    UC(emalloc(size, p));
     return 0;
 }
 

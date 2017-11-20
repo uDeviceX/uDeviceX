@@ -113,7 +113,7 @@ void ini() {
     if (solids) {
         rig::ini(&s::q);
         scan::alloc_work(XS*YS*ZS, /**/ &s::ws);
-        emalloc(sizeof(&s::ff_hst)*MAX_PART_NUM, (void**) &s::ff_hst);
+        UC(emalloc(sizeof(&s::ff_hst)*MAX_PART_NUM, (void**) &s::ff_hst));
         Dalloc(&s::ff, MAX_PART_NUM);
 
         meshbb::ini(MAX_PART_NUM, /**/ &bb::bbd);

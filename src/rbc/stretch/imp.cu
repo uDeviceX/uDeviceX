@@ -12,6 +12,7 @@
 
 #include "d/api.h"
 #include "d/ker.h"
+#include "utils/error.h"
 #include "utils/halloc.h"
 #include "utils/cc.h"
 #include "utils/kl.h"

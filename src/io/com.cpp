@@ -60,7 +60,7 @@ void dump_com(long id, int n, const int *ii, const float3 *rr) {
     char fname[256] = {0}, *data;
     long nchar = 0;
     
-    emalloc(MAX_CHAR_PER_LINE * n * sizeof(char), (void**) &data);
+    UC(emalloc(MAX_CHAR_PER_LINE * n * sizeof(char), (void**) &data));
 
     if (m::rank == 0) os::mkdir(DUMP_BASE "/com");
 

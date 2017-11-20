@@ -40,8 +40,8 @@ static void setup_edg1(int md, int nv, adj::Hst *adj, float *rr, /**/
 static void setup_edg(int md, int nv, adj::Hst *adj, /**/ Edg *dev, float *totArea) {
     float *rr;
     Edg *hst;
-    emalloc(md*nv*sizeof(Edg), (void**) &hst);
-    emalloc(3*nv*sizeof(float), (void**) &rr);
+    UC(emalloc(md*nv*sizeof(Edg), (void**) &hst));
+    UC(emalloc(3*nv*sizeof(float), (void**) &rr));
 
     evert("rbc.off", nv, /**/ rr);
     setup_edg1(md, nv, adj, rr, /**/ hst, totArea);
@@ -55,7 +55,7 @@ static void setup_anti(int md, int nv, adj::Hst *adj, /**/ int *dev) {
     int n;
     int *hst;
     n = md*nv;
-    emalloc(n*sizeof(int), (void**) &hst);
+    UC(emalloc(n*sizeof(int), (void**) &hst));
     
     anti::ini(md, nv, adj, /**/ hst);
     cH2D(dev, hst, n);

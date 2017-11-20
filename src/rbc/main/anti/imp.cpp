@@ -4,6 +4,7 @@
 #include <vector_types.h>
 
 #include "msg.h"
+#include "utils/error.h"
 #include "utils/halloc.h"
 
 #include "rbc/adj/type.h"
@@ -47,8 +48,8 @@ void ini(int md, int nv, adj::Hst *adj, /**/ int *anti) {
     int n;
     int *hx, *hy;
     n = md*nv;
-    emalloc(n*sizeof(int), (void**) &hx);
-    emalloc(n*sizeof(int), (void**) &hy);
+    UC(emalloc(n*sizeof(int), (void**) &hx));
+    UC(emalloc(n*sizeof(int), (void**) &hy));
     ini0(md, nv, adj, /**/ anti, /*w*/ hx, hy);
     free(hx); free(hy);
 }

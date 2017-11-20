@@ -77,7 +77,7 @@ static void wfaces(const int4 *faces, int nc, int nv, int nt, MPI_File f) {
     int *buf; /* buffer for faces */
     int sz;
     sz = (1 + NVP) * nc * nt * sizeof(int);
-    emalloc(sz, (void**) &buf);
+    UC(emalloc(sz, (void**) &buf));
     wfaces0(buf, faces, nc, nv, nt, f);
     free(buf);
 }
@@ -94,7 +94,7 @@ static void dump1(const Particle *pp, const int4 *faces, int nc, int nv, int nt,
     Particle *pp0;
     n = nc * nv;
     sz = n*sizeof(Particle);
-    emalloc(sz, (void**) &pp0);
+    UC(emalloc(sz, (void**) &pp0));
     shift(pp, n, /**/ pp0); /* copy-shift to global coordinates */
     dump0(pp0, faces, nc, nv, nt, f);
     free(pp0);
