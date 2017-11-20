@@ -6,7 +6,7 @@ $B/mpi/glb.o: $B/conf.h $S/inc/conf.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/mc.
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
 $B/msg.o: $S/mpi/glb.h $S/msg.h
-$B/u/hw/hst/main.o: $S/mpi/glb.h $S/msg.h
+$B/u/error/main.o: $S/mpi/glb.h $S/msg.h $S/utils/error.h
 $B/utils/cc.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/msg.h $S/utils/cc/common.h
 $B/utils/error.o: $S/msg.h $S/utils/error.h
 $B/utils/halloc.o: $S/utils/error.h $S/utils/halloc.h
