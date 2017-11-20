@@ -76,6 +76,7 @@ void signal_extra(const char *file, int line, const char *fmt, ...) {
 bool error() {return err_status || mpi_status || cuda_status;}
 void report(const char *file, int line) {
     if (err_status) {
+        stack_dump();
         ERR("%s: %d: Error: %s\n"
             "backtrace:\n%s\n",
             err_file, err_line, err_msg, back_trace);
