@@ -1,0 +1,12 @@
+= utils/error
+
+Custom error handling with context.
+
+== Usage
+
+* an error can be raised by the use of one of the following macros:
+** `signal_error` will raise an error with no additional information
+** `signal_error_extra(fmt, ...)` will raise an error with extra
+   information formatted by the caller in a prinf format fashion
+* use macro `UC` on any function which might contain an error signal in
+one of the subfunctions.
