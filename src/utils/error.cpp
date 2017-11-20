@@ -14,6 +14,13 @@ static int err_line, err_status = 0;
 static const char *err_file;
 static char err_msg[BUFSIZ];
 
+/* context for MPI errors */
+// TODO
+static int mpi_status = 0; 
+
+/* context for CUDA errors */
+// TODO
+static int cuda_status = 0;
 
 /* stack used to dump backtrace in case of error */
 enum {MAX_TRACE = 128};
@@ -66,6 +73,7 @@ void signal_extra(const char *file, int line, const char *fmt, ...) {
     va_end(ap);    
 }
 
+bool error() {return err_status || mpi_status || cuda_status;}
 void report(const char *file, int line) {
     if (err_status) {
         ERR("%s: %d: Error: %s\n"
