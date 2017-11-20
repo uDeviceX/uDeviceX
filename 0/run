@@ -19,7 +19,7 @@ com1
 
 sfree1
 
-v=$1; shift=0; force
+v=$1; shift=inf; force
 p_lina                   # p_[test|lina|stick]
 
 Domain="XS=$xs YS=$ys ZS=$zs walls wall_creation=1000"
