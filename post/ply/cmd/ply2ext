@@ -1,1 +1,10 @@
-echo 42
+usg () {
+    msg 'ply2ext   [file..]    > xy.txt'
+    msg 'computes max(x) - min(x), max(y) - min(y)'
+    msg 'for every file'
+    exit
+}
+
+msg () { echo >&2 "$@"; }
+
+ply2punto "$@" | u.ply2ext0

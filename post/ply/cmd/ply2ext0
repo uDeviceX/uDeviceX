@@ -1,0 +1,29 @@
+usg () {
+    msg 'ply2ext  <  punto.dat    > xy.txt'
+    msg 'computes max(x) - min(x), max(y) - min(y)'
+    exit
+}
+msg () { echo >&2 "$@"; }
+
+"${AWK-awk}" '
+BEGIN { ini() }
+function ini() {
+    lx = ly = lz =  1e42
+    hx = hy = hz = -1e42
+}
+function max(x, y) { return (x > y) ? x : y }
+function min(x, y) { return (x < y) ? x : y }
+function dump(ex, ey, ez) {
+    ex = hx - lx; ey = hy - ly; ez = hz - lz
+    print ex, ey, ez
+}
+function umin() {
+    lx = min(x, lx); ly = min(y, ly); lz = min(z, lz)
+}
+function umax() {
+    hx = max(x, hx); hy = max(y, hy); hz = max(z, hz)
+}
+NF != 0 { x = $1; y = $2; z = $3; umin(); umax()  }
+NF == 0 { dump(); ini() }
+END     { if (NR > 0) dump() }
+'
