@@ -6,6 +6,7 @@
 #include "inc/def.h"
 #include "msg.h"
 #include "utils/cc.h"
+#include "utils/halloc.h"
 
 #include "d/q.h"
 #include "d/ker.h"
@@ -121,8 +122,8 @@ static void bulk_wall0(const tex3Dca<float> texsdf, /*io*/ Particle *s_pp, int* 
                        /*o*/ Particle *w_pp, int *w_n, /*w*/ int *keys) {
     int n = *s_n, *keys_hst;
     Particle *s_pp_hst;
-    s_pp_hst = (Particle *) malloc(n * sizeof(Particle));
-    keys_hst = (int *) malloc(n * sizeof(int));
+    emalloc(n * sizeof(Particle), (void**) &s_pp_hst);
+    emalloc(n * sizeof(int), (void**) &keys_hst);
     
     KL(dev::fill,(k_cnf(n)), (texsdf, s_pp, n, keys));
     cD2H(keys_hst, keys, n);
@@ -157,7 +158,7 @@ static int who_stays0(int *keys, int nc, int nv, /*o*/ int *stay) {
 
 static int who_stays1(int *keys, int n, int nc, int nv, /*o*/ int *stay) {
     int nc0, *keys_hst;
-    keys_hst = (int*)malloc(n*sizeof(int));
+    emalloc(n*sizeof(int), (void**) &keys_hst);
     cD2H(keys_hst, keys, n);
     nc0 = who_stays0(keys_hst, nc, nv, /**/ stay);
     free(keys_hst);

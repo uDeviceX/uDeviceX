@@ -6,7 +6,7 @@ static int CreateGenerator0(curandGenerator_t *g) {
 int CreateGenerator(Generator_t *pg) {
     int rc;
     Generator_st *s;
-    s = (Generator_st*)malloc(sizeof(Generator_st));
+    emalloc(sizeof(Generator_st), (void**) &s);
     rc = CreateGenerator0(&s->g);
     *pg = s;
     return rc;

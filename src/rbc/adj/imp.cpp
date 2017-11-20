@@ -3,6 +3,8 @@
 #include <assert.h>
 #include <vector_types.h>
 
+#include "utils/halloc.h"
+
 #include "rbc/edg/imp.h"
 #include "msg.h"
 

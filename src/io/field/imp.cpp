@@ -4,7 +4,7 @@
 
 #include <conf.h>
 #include "inc/conf.h"
-
+#include "utils/halloc.h"
 #include "utils/os.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"

@@ -12,6 +12,7 @@
 #include "inc/def.h"
 #include "msg.h"
 #include "mpi/glb.h"
+#include "utils/halloc.h"
 #include "utils/cc.h"
 #include "utils/mc.h"
 #include "utils/error.h"

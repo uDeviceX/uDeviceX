@@ -6,6 +6,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "utils/halloc.h"
 #include "inc/type.h"
 #include "io/field/imp.h"
 #include "mpi/glb.h"
@@ -152,16 +153,9 @@ static void dump1(const int N[3], const float* D, /*w*/ float* W) {
     io::field::scalar(W, "wall");
 }
 
-static void *emalloc(size_t size) {
-    void *p;
-    p = malloc(size);
-    if (p == NULL)
-        ERR("out of memory: requested: %ld", size);
-    return p;
-}
 void dump(const int N[], const float* D) {
     float *W;
-    W = (float*)emalloc(XS*YS*ZS*sizeof(float));
+    emalloc(XS*YS*ZS*sizeof(float), (void**) &W);
     dump1(N, D, /*w*/ W);
     free(W);
 }

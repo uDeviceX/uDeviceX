@@ -6,6 +6,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 #include "utils/os.h"
+#include "utils/halloc.h"
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "inc/type.h"

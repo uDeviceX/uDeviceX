@@ -7,6 +7,7 @@
 #include "frag/imp.h"
 
 #include "msg.h"
+#include "utils/halloc.h"
 #include "utils/mc.h"
 #include "utils/cc.h"
 #include "utils/error.h"

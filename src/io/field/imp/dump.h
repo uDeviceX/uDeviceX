@@ -66,10 +66,11 @@ void dump(Particle *pp, int n) {
     float *rho, *u[3];
     nc = XS * YS * ZS;
     sz = nc*sizeof(rho[0]);
-    rho  =  (float*)malloc(sz);
-    u[X] = (float*)malloc(sz);
-    u[Y] = (float*)malloc(sz);
-    u[Z] = (float*)malloc(sz);
+
+    emalloc(sz, (void**) &rho);
+    emalloc(sz, (void**) &u[X]);
+    emalloc(sz, (void**) &u[Y]);
+    emalloc(sz, (void**) &u[Z]);
     dump0(pp, n, nc, /*w*/ rho, u);
     free(rho); free(u[X]); free(u[Y]); free(u[Z]);
 }

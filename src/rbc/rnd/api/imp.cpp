@@ -6,6 +6,8 @@
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "utils/halloc.h"
+
 #include "type.h"
 #include "imp.h"
 

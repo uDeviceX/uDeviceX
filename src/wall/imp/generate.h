@@ -8,7 +8,7 @@ static void freeze0(int maxn, sdf::Tex_t texsdf, /*io*/ Particle *pp, int *n, /*
 
 static void freeze(int maxn, sdf::Tex_t texsdf, /*io*/ Particle *pp, int *n, /*o*/ Particle *dev, int *w_n) {
     Particle *hst;
-    hst = (Particle*)malloc(maxn * sizeof(Particle));
+    emalloc(maxn * sizeof(Particle), (void**) &hst);
     freeze0(maxn, texsdf, /*io*/ pp, n, /*o*/ dev, w_n, /*w*/ hst);
     free(hst);
 }

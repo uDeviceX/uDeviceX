@@ -32,8 +32,8 @@ static void ini0(int md, int nt, int nv, int4 *faces, /**/ int *a1, int *a2) {
 }
 
 static void alloc(int n, Hst *A) {
-    A->adj0 = (int*)malloc(n*sizeof(int));
-    A->adj1 = (int*)malloc(n*sizeof(int));
+    emalloc(n*sizeof(int), (void**) &A->adj0);
+    emalloc(n*sizeof(int), (void**) &A->adj1);
 }
 
 void ini(int md, int nt, int nv, int4 *faces, /**/ Hst *A) {

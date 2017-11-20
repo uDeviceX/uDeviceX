@@ -11,6 +11,7 @@
 #include "mpi/glb.h"
 #include "utils/mc.h"
 
+#include "utils/halloc.h"
 #include "utils/os.h"
 #include "utils/error.h"
 
@@ -59,7 +60,7 @@ void dump_com(long id, int n, const int *ii, const float3 *rr) {
     char fname[256] = {0}, *data;
     long nchar = 0;
     
-    data = (char *) malloc(MAX_CHAR_PER_LINE * n * sizeof(char));
+    emalloc(MAX_CHAR_PER_LINE * n * sizeof(char), (void**) &data);
 
     if (m::rank == 0) os::mkdir(DUMP_BASE "/com");
 

@@ -15,6 +15,7 @@
 #include "msg.h"
 
 #include "d/api.h"
+#include "utils/halloc.h"
 #include "utils/cc.h"
 
 #include "utils/mc.h"

@@ -12,6 +12,7 @@
 #include "d/api.h"
 #include "inc/dev.h"
 
+#include "utils/halloc.h"
 #include "utils/cc.h"
 
 #include "api/type.h"

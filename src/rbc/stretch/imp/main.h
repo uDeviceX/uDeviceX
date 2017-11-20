@@ -1,8 +1,6 @@
 static void   alloc(int n, Fo *f) { Dalloc(&f->f, 3*n); }
 static void   dealloc(Fo *f) { Dfree(f->f); }
-static float *halloc(int n)  { /* host alloc */
-    return (float*)emalloc(3*n*sizeof(float));
-}
+
 static int read3(FILE *f, float *h) {
     enum {X, Y, Z};
     int n;
@@ -27,13 +25,13 @@ void ini1(const char* path, int n, /**/ Fo *f) {
     float *d, *h; /* device and host */
     alloc(n, f);
     d = f->f;
-    h = halloc(n);
+    emalloc(3 * n * sizeof(float), (void**) &h);
     ini0(path, n, /*w*/ h, /**/ d);
     free(h);
 }
 void ini(const char* path, int nv, /**/ Fo **fp) {
     Fo *f;
-    f = (Fo*) malloc(sizeof(Fo));
+    emalloc(sizeof(Fo), (void**) &f);
     ini1(path, nv, f);
     f->nv = nv;
     *fp = f;
