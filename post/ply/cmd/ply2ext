@@ -7,4 +7,6 @@ usg () {
 
 msg () { echo >&2 "$@"; }
 
+if test $# -eq 0 -a $1 = -h; then usg; fi
+
 ply2punto "$@" | u.ply2ext0

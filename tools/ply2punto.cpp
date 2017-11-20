@@ -3,7 +3,7 @@
 #include <string.h>
 
 void usg() {
-	fprintf(stderr, "ply2punt 1.ply 2.ply .. > punto.dat\n");
+	fprintf(stderr, "ply2punt0 1.ply 2.ply .. > punto.dat\n");
 	exit(0);
 }
 
