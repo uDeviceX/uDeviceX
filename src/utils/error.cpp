@@ -34,7 +34,7 @@ static void stack_pop() {
 }
 
 static void stack_push(const char *file, int line) {
-    sprintf(stack[stack_sz], ":%s:%d", file, line);
+    sprintf(stack[stack_sz], ": %s: %d:", file, line);
     ++ stack_sz;
     assert (stack_sz < MAX_TRACE);
 }
