@@ -9,6 +9,7 @@
 
 #include "inc/dev.h"
 #include "inc/type.h"
+#include "utils/halloc.h"
 #include "utils/cc.h"
 
 #include "algo/scan/int.h"
@@ -96,9 +97,9 @@ int main(int argc, char **argv) {
     ini(dims.x, dims.y, dims.z, /**/ &clist);
     ini_map(1, &clist, /**/ &m);
 
-    pp_hst = (Particle*) malloc(MAXN * sizeof(Particle));
-    counts = (int*) malloc(clist.ncells * sizeof(int));
-    starts = (int*) malloc(clist.ncells * sizeof(int));
+    emalloc(MAXN * sizeof(Particle), (void**) &pp_hst);
+    emalloc(clist.ncells * sizeof(int), (void**) &counts);
+    emalloc(clist.ncells * sizeof(int), (void**) &starts);
     CC(d::Malloc((void**) &pp, MAXN * sizeof(Particle)));
     CC(d::Malloc((void**) &ppout, MAXN * sizeof(Particle)));
 

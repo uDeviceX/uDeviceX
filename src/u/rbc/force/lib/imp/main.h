@@ -15,8 +15,8 @@ static void write(int n, Particle *p, Force *f) {
     Particle *p_hst;
     Force *f_hst;
 
-    p_hst = (Particle*) malloc(n*sizeof(Particle));
-    f_hst = (Force*)    malloc(n*sizeof(Force));
+    emalloc(n*sizeof(Particle), (void**) &p_hst);
+    emalloc(n*sizeof(Force),    (void**) &f_hst);
 
     cD2H(p_hst, p, n);
     cD2H(f_hst, f, n);

@@ -4,6 +4,8 @@
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "utils/halloc.h"
+
 #include "d/api.h"
 #include "msg.h"
 

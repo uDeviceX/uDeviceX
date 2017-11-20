@@ -4,6 +4,8 @@
 #include "msg.h"
 #include "mpi/glb.h"
 
+#include "utils/halloc.h"
+
 #include "io/field/h5/imp.h"
 #include "io/field/xmf/imp.h"
 
@@ -27,10 +29,10 @@ void dump(const char *path, int sx, int sy, int sz) {
 
     nc = sx * sy * sz;
     size = nc*sizeof(rho[0]);
-    rho  = (float*)malloc(size);
-    u[X] = (float*)malloc(size);
-    u[Y] = (float*)malloc(size);
-    u[Z] = (float*)malloc(size);
+    emalloc(size, (void**) &rho);
+    malloc(size, (void**) &u[X]);
+    emalloc(size, (void**) &u[Y]);
+    emalloc(size, (void**) &u[Z]);
 
     float *data[] = { rho, u[X], u[Y], u[Z] };
     h5::write(path, data, names, 4, sx, sy, sz);
