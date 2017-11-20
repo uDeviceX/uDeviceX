@@ -1,7 +1,7 @@
 BIN = $(HOME)/bin
 B = $(BIN)
 
-P = ply2cm ply2pbc
+P = ply2cm ply2pbc ply2ext
 
 # prefix
 p = u
