@@ -2,10 +2,8 @@
 
 a unit to test error handling `UC` (see link:/doc/DEV/modules/utils/error.adoc[error])
 
-[source,c++]
-----
 include::src/u/error/main.cpp[]
-----
+
 
 The function `bar` triggers an error with extra message.
 When calling `bar()` with the macro `UC`, the backtrace (all levels
