@@ -12,6 +12,7 @@
 
 #include "inc/def.h"
 #include "msg.h"
+#include "utils/error.h"
 #include "utils/cc.h"
 #include "utils/mc.h"
 #include "frag/imp.h"
