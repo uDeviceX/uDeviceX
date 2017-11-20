@@ -9,6 +9,6 @@ $B/rnd/imp.o: $S/rnd/imp.h
 $B/u/map/main.o: $S/cloud/imp.h $B/conf.h $S/d/api.h $S/hforces/imp.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/mpi/glb.h $S/msg.h $S/u/map/dev.h $S/utils/cc.h $S/utils/kl.h $S/utils/map/dev.h
 $B/utils/cc.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/msg.h $S/utils/cc/common.h
 $B/utils/error.o: $S/msg.h $S/utils/error.h
-$B/utils/halloc.o: $S/utils/halloc.h
+$B/utils/halloc.o: $S/utils/error.h $S/utils/halloc.h
 $B/utils/mc.o: $B/conf.h $S/inc/conf.h $S/utils/mc.h
 $B/utils/os.o: $S/utils/os.h

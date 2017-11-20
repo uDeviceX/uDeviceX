@@ -7,7 +7,7 @@ static void ini0(D *d, int n, long seed) {
 }
 void ini(D **pd, int n, long seed) {
     D* d;
-    emalloc(sizeof(D), (void**) &d);
+    UC(emalloc(sizeof(D), (void**) &d));
     ini0(d, n, seed);
     *pd = d;
 }

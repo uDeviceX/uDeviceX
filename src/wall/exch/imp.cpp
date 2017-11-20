@@ -101,10 +101,10 @@ void exch(int maxn, /*io*/ Particle *pp, int *n) {
     int i, capacity[NBAGS];
 
     for (i = 0; i < NBAGS; ++i) capacity[i] = maxn;
-    ini(HST_ONLY, NONE, sizeof(Particle), capacity, &send, NULL);
-    ini(HST_ONLY, NONE, sizeof(Particle), capacity, &recv, NULL);
+    UC(ini(HST_ONLY, NONE, sizeof(Particle), capacity, &send, NULL));
+    UC(ini(HST_ONLY, NONE, sizeof(Particle), capacity, &recv, NULL));
     ini(&tg);
-    ini(m::cart, &tg, &stamp);
+    UC(ini(m::cart, &tg, &stamp));
 
     fill_bags(*n, pp, /**/ &send);
     communicate(&send, /**/ &stamp, &recv);

@@ -6,7 +6,7 @@ enum {
 };
 
 enum {
-    MAXNWALL = NCELLSWALL * numberdensity * 2 
+    MAXNWALL = NCELLSWALL * numberdensity
 };
 
 void gen() { /* generate */

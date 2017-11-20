@@ -1,7 +1,7 @@
 static void ini_common(Quants *q) {
     q->n = q->nc = 0;
     Dalloc(&q->pp, MAX_PART_NUM);
-    emalloc(MAX_PART_NUM * sizeof(Particle), (void**) &q->pp_hst);
+    UC(emalloc(MAX_PART_NUM * sizeof(Particle), (void**) &q->pp_hst));
 
     q->nt = RBCnt;
     q->nv = RBCnv;
@@ -10,11 +10,11 @@ static void ini_common(Quants *q) {
     Dalloc(&q->adj0, q->nv * RBCmd);
     Dalloc(&q->adj1, q->nv * RBCmd);
 
-    emalloc(RBCnt * sizeof(int4), (void**) &q->tri_hst);
+    UC(emalloc(RBCnt * sizeof(int4), (void**) &q->tri_hst));
     Dalloc(&q->av, 2*MAX_CELL_NUM);
 }
 
-static void ini_ids(Quants *q) { emalloc(MAX_CELL_NUM * sizeof(int), (void**) &q->ii); }
+static void ini_ids(Quants *q) { UC(emalloc(MAX_CELL_NUM * sizeof(int), (void**) &q->ii)); }
 static void ini_edg(Quants *q)  { Dalloc(&q->shape.edg,  q->nv * RBCmd); }
 static void ini_anti(Quants *q) { Dalloc(&q->shape.anti, q->nv * RBCmd); }
 

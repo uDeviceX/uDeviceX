@@ -1,7 +1,7 @@
 /* pinned allocation */
 
 static void alloc_counts(int n, /**/ int **hc) {
-    emalloc(n * sizeof(int), (void**) hc);
+    UC(emalloc(n * sizeof(int), (void**) hc));
 }
 
 /* generic allocation */
@@ -10,7 +10,7 @@ static void alloc_pair(int i, AllocMod mod, /**/ hBags *hb, dBags *db) {
     
     switch (mod) {
     case HST_ONLY:
-        emalloc(n, (void**) &hb->data[i]);
+        UC(emalloc(n, (void**) &hb->data[i]));
         break;
     case DEV_ONLY:
         CC(d::Malloc((void**) &db->data[i], n));
@@ -35,12 +35,12 @@ int ini(AllocMod fmod, AllocMod bmod, size_t bsize, const int capacity[NBAGS], /
 
     /* fragments */
     for (int i = 0; i < NFRAGS; ++i)
-        alloc_pair(i, fmod, /**/ hb, db);
+        UC(alloc_pair(i, fmod, /**/ hb, db));
 
     /* bulk */
-    alloc_pair(frag_bulk, bmod, /**/ hb, db);
+    UC(alloc_pair(frag_bulk, bmod, /**/ hb, db));
 
-    alloc_counts(NBAGS, /**/ &hb->counts);
+    UC(alloc_counts(NBAGS, /**/ &hb->counts));
     return 0;
 }
 

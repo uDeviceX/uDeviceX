@@ -2,59 +2,59 @@ static void ini_obj_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Objexc
     using namespace exch::obj;
     int maxpsolid = MAX_PSOLID_NUM;
     
-    ini(MAX_OBJ_TYPES, MAX_OBJ_DENSITY, maxpsolid, &e->p);
-    ini(comm, /*io*/ tg, /**/ &e->c);
-    ini(MAX_OBJ_DENSITY, maxpsolid, &e->u);
-    ini(MAX_OBJ_DENSITY, maxpsolid, &e->pf);
-    ini(MAX_OBJ_DENSITY, maxpsolid, &e->uf);    
+    UC(ini(MAX_OBJ_TYPES, MAX_OBJ_DENSITY, maxpsolid, &e->p));
+    UC(ini(comm, /*io*/ tg, /**/ &e->c));
+    UC(ini(MAX_OBJ_DENSITY, maxpsolid, &e->u));
+    UC(ini(MAX_OBJ_DENSITY, maxpsolid, &e->pf));
+    UC(ini(MAX_OBJ_DENSITY, maxpsolid, &e->uf));
 }
 
 static void ini_mesh_exch(int nv, int max_m, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Mexch *e) {
     using namespace exch::mesh;
-    ini(nv, max_m, &e->p);
-    ini(comm, /*io*/ &tag_gen, /**/ &e->c);
-    ini(nv, max_m, &e->u);
+    UC(ini(nv, max_m, &e->p));
+    UC(ini(comm, /*io*/ &tag_gen, /**/ &e->c));
+    UC(ini(nv, max_m, &e->u));
 }
 
 static void ini_bb_exch(int nt, int nv, int max_m, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ BBexch *e) {
-    ini_mesh_exch(nv, max_m, comm, /*io*/ tg, /**/ e);
+    UC(ini_mesh_exch(nv, max_m, comm, /*io*/ tg, /**/ e));
 
     using namespace exch::mesh;
-    ini(nt, max_m, &e->pm);
-    ini(comm, /*io*/ tg, /**/ &e->cm);
-    ini(nt, max_m, &e->um);
+    UC(ini(nt, max_m, &e->pm));
+    UC(ini(comm, /*io*/ tg, /**/ &e->cm));
+    UC(ini(nt, max_m, &e->um));
 }
 
 static void ini_flu_distr(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ FluDistr *d) {
     using namespace distr::flu;
     float maxdensity = ODSTR_FACTOR * numberdensity;
-    ini(maxdensity, /**/ &d->p);
-    ini(comm, /**/ tg, /**/ &d->c);
-    ini(maxdensity, /**/ &d->u);
+    UC(ini(maxdensity, /**/ &d->p));
+    UC(ini(comm, /**/ tg, /**/ &d->c));
+    UC(ini(maxdensity, /**/ &d->u));
 }
 
 static void ini_rbc_distr(int nv, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ RbcDistr *d) {
     using namespace distr::rbc;
-    ini(MAX_CELL_NUM, nv, /**/ &d->p);
-    ini(comm, /**/ tg, /**/ &d->c);
-    ini(MAX_CELL_NUM, nv, /**/ &d->u);
+    UC(ini(MAX_CELL_NUM, nv, /**/ &d->p));
+    UC(ini(comm, /**/ tg, /**/ &d->c));
+    UC(ini(MAX_CELL_NUM, nv, /**/ &d->u));
 }
 
 static void ini_rig_distr(int nv, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ RigDistr *d) {
     using namespace distr::rig;
-    ini(MAX_SOLIDS, nv, /**/ &d->p);
-    ini(comm, /*io*/ tg, /**/ &d->c);
-    ini(MAX_SOLIDS, nv, /**/ &d->u);
+    UC(ini(MAX_SOLIDS, nv, /**/ &d->p));
+    UC(ini(comm, /*io*/ tg, /**/ &d->c));
+    UC(ini(MAX_SOLIDS, nv, /**/ &d->u));
 }
 
 static void ini_vcont(MPI_Comm comm, /**/ PidVCont *c) {
     int3 L = {XS, YS, ZS};
     float3 V = {VCON_VX, VCON_VY, VCON_VZ};
-    ini(comm, L, V, VCON_FACTOR, /**/ c);
+    UC(ini(comm, L, V, VCON_FACTOR, /**/ c));
 }
 
 static void ini_colorer(int nv, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Colorer *c) {
-    ini_mesh_exch(nv, MAX_CELL_NUM, comm, /*io*/ tg, &c->e);
+    UC(ini_mesh_exch(nv, MAX_CELL_NUM, comm, /*io*/ tg, &c->e));
     Dalloc(&c->pp, MAX_PART_NUM);
     Dalloc(&c->minext, MAX_CELL_NUM);
     Dalloc(&c->maxext, MAX_CELL_NUM);
@@ -67,7 +67,7 @@ void ini() {
         Dalloc(&r::ff, MAX_PART_NUM);
         rbc::main::ini(&r::q);
 
-        ini_rbc_distr(r::q.nv, m::cart, /*io*/ &tag_gen, /**/ &r::d);
+        UC(ini_rbc_distr(r::q.nv, m::cart, /*io*/ &tag_gen, /**/ &r::d));
         if (rbc_com_dumps) rbc::com::ini(MAX_CELL_NUM, /**/ &r::com);
         if (RBC_STRETCH)   rbc::stretch::ini("rbc.stretch", r::q.nv, /**/ &r::stretch);
     }
@@ -78,7 +78,7 @@ void ini() {
     cnt::ini(&rs::c);
 
     if (rbcs || solids)
-        ini_obj_exch(m::cart, &tag_gen, &rs::e);
+        UC(ini_obj_exch(m::cart, &tag_gen, &rs::e));
     
     bop::ini(&dumpt);
 
@@ -92,7 +92,7 @@ void ini() {
     flu::ini(&o::tz);
     flu::ini(&o::trnd);
     
-    ini_flu_distr(m::cart, /*io*/ &tag_gen, /**/ &o::d);
+    UC(ini_flu_distr(m::cart, /*io*/ &tag_gen, /**/ &o::d));
 
     dpdr::ini_ticketcom(m::cart, &tag_gen, &o::h.tc);
     dpdr::ini_ticketrnd(o::h.tc, /**/ &o::h.trnd);
@@ -108,21 +108,21 @@ void ini() {
     }
 
     if (multi_solvent && rbcs)
-        ini_colorer(r::q.nv, m::cart, /*io*/ &tag_gen, /**/ &colorer);
+        UC(ini_colorer(r::q.nv, m::cart, /*io*/ &tag_gen, /**/ &colorer));
     
     if (solids) {
         rig::ini(&s::q);
         scan::alloc_work(XS*YS*ZS, /**/ &s::ws);
-        emalloc(sizeof(&s::ff_hst)*MAX_PART_NUM, (void**) &s::ff_hst);
+        UC(emalloc(sizeof(&s::ff_hst)*MAX_PART_NUM, (void**) &s::ff_hst));
         Dalloc(&s::ff, MAX_PART_NUM);
 
         meshbb::ini(MAX_PART_NUM, /**/ &bb::bbd);
         Dalloc(&bb::mm, MAX_PART_NUM);
 
-        ini_rig_distr(s::q.nv, m::cart, /*io*/ &tag_gen, /**/ &s::d);
+        UC(ini_rig_distr(s::q.nv, m::cart, /*io*/ &tag_gen, /**/ &s::d));
 
         if (sbounce_back)
-            ini_bb_exch(s::q.nt, s::q.nv, MAX_CELL_NUM, m::cart, /*io*/ &tag_gen, /**/ &s::e);
+            UC(ini_bb_exch(s::q.nt, s::q.nv, MAX_CELL_NUM, m::cart, /*io*/ &tag_gen, /**/ &s::e));
     }
 
     MC(MPI_Barrier(m::cart));
