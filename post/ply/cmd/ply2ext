@@ -1,6 +1,6 @@
 usg () {
     msg 'ply2ext   [file..]    > xy.txt'
-    msg 'computes max(x) - min(x), max(y) - min(y)'
+    msg 'computes max(x) - min(x), max(y) - min(y), max(z) - min(z)'
     msg 'for every file'
     exit
 }
