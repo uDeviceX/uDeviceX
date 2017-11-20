@@ -12,6 +12,9 @@
 
 
 namespace UdxError {
+void before(int line, const char *file);
+void after();
+
 void signal(const char *file, int line); 
 void signal_extra(const char *file, int line, const char *fmt, ...);
 
