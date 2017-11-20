@@ -14,8 +14,6 @@ void foo() {
 
 int main(int argc, char **argv) {
     m::ini(argc, argv);
-    MSG("mpi size: %d", m::size);
-    MSG("Hello world!");
     UC(foo());
     m::fin();
 }
