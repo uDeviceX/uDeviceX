@@ -27,6 +27,13 @@ static void write(const void * const ptr, const int nbytes32, MPI_File f) {
     MC(MPI_File_seek(f, ntotal, MPI_SEEK_CUR));
 }
 
+static int reduce(int n0) {
+    int n;
+    n = 0;
+    m::Reduce(&n0, &n, 1, MPI_INT, MPI_SUM, 0, m::cart);
+    return n;
+}
+
 static void header(int nc0, int nv, int nt, MPI_File f) {
     int nc; /* total number of cells */
     int sz = 0;
