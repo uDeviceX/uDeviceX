@@ -14,7 +14,7 @@ void all(const void * const ptr, const int nbytes32, File *fp) {
 int rootp() { return m::rank == 0; }
 void one(const void * const ptr, int sz0, File *fp) {
     int sz;
-    sz = (rootp()) ? sz0 : 0;
+    sz = rootp() ? sz0 : 0;
     all(ptr, sz, fp);
 }
 
