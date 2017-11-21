@@ -102,7 +102,7 @@ void rbc_mesh_dump(const Particle *pp, const int4 *faces, int nc, int nv, int nt
     const char *fmt = DUMP_BASE "/r/%05d.ply";
     char f[BUFSIZ]; /* file name */
     sprintf(f, fmt, id);
-    if (m::rank == 0) os::mkdir(DUMP_BASE "/r");
+    if (write::rootp()) os::mkdir(DUMP_BASE "/r");
     dump2(pp, faces, nc, nv, nt, f);
 }
 
@@ -110,6 +110,6 @@ void rig_mesh_dump(const Particle *pp, const int4 *faces, int nc, int nv, int nt
     const char *fmt = DUMP_BASE "/s/%05d.ply";
     char f[BUFSIZ]; /* file name */
     sprintf(f, fmt, id);
-    if (m::rank == 0) os::mkdir(DUMP_BASE "/s");
+    if (write::rootp()) os::mkdir(DUMP_BASE "/s");
     dump2(pp, faces, nc, nv, nt, f);
 }
