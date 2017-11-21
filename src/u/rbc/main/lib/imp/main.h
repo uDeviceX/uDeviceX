@@ -10,7 +10,7 @@ static void dump0(rbc::Quants q, const char *f) {
 
 static void dump(rbc::Quants q) {
     static int id = 0;
-    const char f[BUFSIZ];
+    char f[BUFSIZ];
     sprintf(f, "%05d.ply", id++);
     MSG("%s\n",f);
     dump0(q, f);
