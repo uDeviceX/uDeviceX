@@ -1,3 +1,5 @@
 = RBC
 
-Runs RBC without solvent.
+Runs RBC without solvent and contact forces.
+
+See also link:src/test/rbc/u/main[src/test/rbc/u/main]
