@@ -86,10 +86,10 @@ static void dump1(const Particle *pp, const int4 *faces, int nc, int nv, int nt,
 }
 
 static void dump2(const Particle *pp, const int4 *faces, int nc, int nv, int nt, const char *fn) {
-    write::File f;
+    write::File *f;
     write::fopen(fn, /**/ &f);
-    dump1(pp, faces, nc, nv, nt, &f);
-    write::fclose(&f);
+    dump1(pp, faces, nc, nv, nt, f);
+    write::fclose(f);
 }
 
 void rbc_mesh_dump(const Particle *pp, const int4 *faces, int nc, int nv, int nt, int id) {

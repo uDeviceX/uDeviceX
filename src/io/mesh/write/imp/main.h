@@ -1,3 +1,4 @@
+struct File { MPI_File f; };
 void all(const void * const ptr, const int nbytes32, File *fp) {
     MPI_File f = fp->f;
     MPI_Offset base;
@@ -31,9 +32,10 @@ int reduce(int n0, /**/ int* n) {
     return 0;
 }
 
-int fopen(const char *fn, /**/ File *fp) {
-    MC(MPI_File_open(m::cart, fn, MPI_MODE_WRONLY |  MPI_MODE_CREATE, MPI_INFO_NULL, &fp->f));
-    MC(MPI_File_set_size(fp->f, 0));
+int fopen(const char *fn, /**/ File **fp) {
+    *fp = (File*)malloc(sizeof(File));
+    MC(MPI_File_open(m::cart, fn, MPI_MODE_WRONLY |  MPI_MODE_CREATE, MPI_INFO_NULL, &(*fp)->f));
+    MC(MPI_File_set_size((*fp)->f, 0));
     return 0;
 }
 
@@ -41,5 +43,6 @@ int fclose(File *fp) {
     MPI_File f;
     f = fp->f;
     MC(MPI_File_close(&f));
+    free(fp);
     return 0;
 }
