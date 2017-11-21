@@ -4,6 +4,7 @@
 #include <conf.h>
 #include "inc/conf.h"
 
+#include "utils/error.h"
 #include "utils/halloc.h"
 
 #include "d/api.h"
