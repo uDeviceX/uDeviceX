@@ -22,7 +22,8 @@
 #include "rbc/rnd/imp.h"
 #include "rbc/type.h"
 
-#include "rbc/adj/type.h"
+#include "rbc/adj/type/common.h"
+#include "rbc/adj/type/dev.h"
 #include "rbc/adj/dev.h"
 
 #include "rbc/rnd/api/imp.h"

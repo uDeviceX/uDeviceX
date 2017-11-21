@@ -27,7 +27,8 @@
 #include "io/restart.h"
 
 #include "rbc/type.h"
-#include "rbc/adj/type.h"
+#include "rbc/adj/type/common.h"
+#include "rbc/adj/type/hst.h"
 #include "rbc/adj/imp.h"
 #include "rbc/gen/imp.h"
 
