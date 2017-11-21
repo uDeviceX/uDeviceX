@@ -5,12 +5,21 @@ $B/io/diag.o: $B/conf.h $S/inc/conf.h $S/inc/type.h $S/io/diag.h $S/mpi/glb.h $S
 $B/io/field/h5/imp.o: $S/io/field/h5/imp.h $S/mpi/glb.h $S/mpi/wrapper.h $S/msg.h
 $B/io/field/imp.o: $B/conf.h $S/inc/conf.h $S/inc/type.h $S/io/field/h5/imp.h $S/io/field/imp.h $S/io/field/imp/dump.h $S/io/field/imp/scalar.h $S/io/field/xmf/imp.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/error.h $S/utils/halloc.h $S/utils/mc.h $S/utils/os.h
 $B/io/field/xmf/imp.o: $S/io/field/xmf/imp.h $S/mpi/glb.h
+<<<<<<< HEAD
 $B/io/fields_grid.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/io/field/imp.h $S/io/fields_grid.h $S/io/fields_grid/all.h $S/io/fields_grid/solvent.h $S/msg.h $S/utils/cc.h
 $B/io/mesh/imp.o: $B/conf.h $S/inc/conf.h $S/inc/type.h $S/io/mesh/imp.h $S/io/mesh/imp/main.h $S/io/mesh/imp/shift/center.h $S/io/mesh/imp/shift/edge.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/error.h $S/utils/halloc.h $S/utils/mc.h $S/utils/os.h
 $B/io/off.o: $S/io/off.h $S/io/off/imp.h
 $B/io/ply.o: $S/inc/def.h $S/inc/type.h $S/io/ply.h $S/io/ply/ascii.h $S/io/ply/bin.h $S/io/ply/common.h $S/msg.h
 $B/io/restart.o: $B/conf.h $S/inc/conf.h $S/inc/def.h $S/inc/type.h $S/io/restart.h $S/mpi/glb.h $S/msg.h
 $B/io/rig.o: $B/conf.h $S/inc/conf.h $S/inc/type.h
+=======
+$B/io/mesh/imp.o: $S/utils/os.h $S/inc/conf.h $S/io/mesh/imp/shift/center.h $S/utils/error.h $S/io/mesh/imp/shift/edge.h $S/inc/type.h $S/io/mesh/imp.h $B/conf.h $S/io/mesh/imp/main.h $S/utils/halloc.h $S/io/mesh/write/imp.h $S/mpi/glb.h
+$B/io/mesh/write/imp.o: $S/inc/conf.h $S/mpi/wrapper.h $S/io/mesh/write/imp.h $S/utils/mc.h $B/conf.h $S/io/mesh/write/imp/main.h $S/mpi/glb.h
+$B/io/off.o: $S/io/off/imp.h $S/io/off.h
+$B/io/ply.o: $S/io/ply/ascii.h $S/inc/type.h $S/inc/def.h $S/io/ply.h $S/msg.h $S/io/ply/bin.h $S/io/ply/common.h
+$B/io/restart.o: $S/inc/conf.h $S/inc/type.h $S/inc/def.h $S/msg.h $B/conf.h $S/io/restart.h $S/mpi/glb.h
+$B/io/rig.o: $S/inc/conf.h $S/inc/type.h $B/conf.h
+>>>>>>> fbad0960ded672549863666e0193788074ef6222
 $B/math/linal.o: $S/math/linal.h
 $B/mpi/glb.o: $B/conf.h $S/inc/conf.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/mc.h
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h

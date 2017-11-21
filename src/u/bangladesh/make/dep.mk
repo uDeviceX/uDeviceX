@@ -30,6 +30,7 @@ $B/io/diag.o: $B/conf.h $S/inc/conf.h $S/inc/type.h $S/io/diag.h $S/mpi/glb.h $S
 $B/io/field/h5/imp.o: $S/io/field/h5/imp.h $S/mpi/glb.h $S/mpi/wrapper.h $S/msg.h
 $B/io/field/imp.o: $B/conf.h $S/inc/conf.h $S/inc/type.h $S/io/field/h5/imp.h $S/io/field/imp.h $S/io/field/imp/dump.h $S/io/field/imp/scalar.h $S/io/field/xmf/imp.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/error.h $S/utils/halloc.h $S/utils/mc.h $S/utils/os.h
 $B/io/field/xmf/imp.o: $S/io/field/xmf/imp.h $S/mpi/glb.h
+<<<<<<< HEAD
 $B/io/fields_grid.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/io/field/imp.h $S/io/fields_grid.h $S/io/fields_grid/all.h $S/io/fields_grid/solvent.h $S/msg.h $S/utils/cc.h
 $B/io/mesh/imp.o: $B/conf.h $S/inc/conf.h $S/inc/type.h $S/io/mesh/imp.h $S/io/mesh/imp/main.h $S/io/mesh/imp/shift/center.h $S/io/mesh/imp/shift/edge.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/error.h $S/utils/halloc.h $S/utils/mc.h $S/utils/os.h
 $B/io/off.o: $S/io/off.h $S/io/off/imp.h
@@ -39,6 +40,17 @@ $B/io/rig.o: $B/conf.h $S/inc/conf.h $S/inc/type.h
 $B/lforces/imp.o: $S/cloud/lforces/get.h $S/cloud/lforces/int.h $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/forces/imp.h $S/forces/pack.h $S/forces/type.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/lforces/dev/asm.h $S/lforces/dev/core.h $S/lforces/dev/decl.h $S/lforces/dev/dpd.h $S/lforces/dev/fetch.h $S/lforces/dev/float.h $S/lforces/dev/merged.h $S/lforces/dev/pack.h $S/lforces/dev/tex.h $S/lforces/imp.h $S/lforces/imp/info.h $S/lforces/imp/main.h $S/lforces/imp/setup.h $S/lforces/imp/tex.h $S/lforces/imp/type.h $S/lforces/transpose/imp.h $S/msg.h $S/rnd/dev.h $S/rnd/imp.h $S/utils/cc.h $S/utils/kl.h
 $B/lforces/transpose/imp.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/lforces/transpose/dev/main.h $S/lforces/transpose/imp.h $S/lforces/transpose/imp/main.h $S/msg.h $S/utils/cc.h $S/utils/kl.h
 $B/main.o: $B/conf.h $S/d/api.h $S/glb/set.h $S/inc/conf.h $S/mpi/glb.h $S/msg.h $S/sim/imp.h
+=======
+$B/io/mesh/imp.o: $S/utils/os.h $S/inc/conf.h $S/io/mesh/imp/shift/center.h $S/utils/error.h $S/io/mesh/imp/shift/edge.h $S/inc/type.h $S/io/mesh/imp.h $B/conf.h $S/io/mesh/imp/main.h $S/utils/halloc.h $S/io/mesh/write/imp.h $S/mpi/glb.h
+$B/io/mesh/write/imp.o: $S/inc/conf.h $S/mpi/wrapper.h $S/io/mesh/write/imp.h $S/utils/mc.h $B/conf.h $S/io/mesh/write/imp/main.h $S/mpi/glb.h
+$B/io/off.o: $S/io/off/imp.h $S/io/off.h
+$B/io/ply.o: $S/io/ply/ascii.h $S/inc/type.h $S/inc/def.h $S/io/ply.h $S/msg.h $S/io/ply/bin.h $S/io/ply/common.h
+$B/io/restart.o: $S/inc/conf.h $S/inc/type.h $S/inc/def.h $S/msg.h $B/conf.h $S/io/restart.h $S/mpi/glb.h
+$B/io/rig.o: $S/inc/conf.h $S/inc/type.h $B/conf.h
+$B/lforces/imp.o: $S/inc/conf.h $S/lforces/imp/info.h $S/lforces/dev/merged.h $S/lforces/dev/core.h $S/lforces/dev/asm.h $S/lforces/dev/pack.h $S/lforces/dev/decl.h $S/forces/imp.h $S/inc/type.h $S/d/q.h $S/lforces/dev/fetch.h $S/lforces/imp.h $S/lforces/imp/setup.h $S/rnd/dev.h $S/utils/cc.h $S/inc/def.h $S/lforces/dev/tex.h $S/lforces/dev/dpd.h $S/inc/dev.h $S/rnd/imp.h $S/d/api.h $S/msg.h $B/conf.h $S/lforces/imp/main.h $S/lforces/imp/tex.h $S/forces/pack.h $S/lforces/transpose/imp.h $S/lforces/imp/type.h $S/utils/kl.h $S/cloud/lforces/int.h $S/cloud/lforces/get.h $S/lforces/dev/float.h $S/forces/type.h $S/d/ker.h
+$B/lforces/transpose/imp.o: $S/inc/conf.h $S/inc/type.h $S/d/q.h $S/lforces/transpose/imp.h $S/utils/cc.h $S/inc/def.h $S/inc/dev.h $S/d/api.h $S/msg.h $B/conf.h $S/lforces/transpose/imp/main.h $S/utils/kl.h $S/lforces/transpose/dev/main.h $S/d/ker.h
+$B/main.o: $S/inc/conf.h $S/glb/set.h $S/d/api.h $S/msg.h $B/conf.h $S/sim/imp.h $S/mpi/glb.h
+>>>>>>> fbad0960ded672549863666e0193788074ef6222
 $B/math/linal.o: $S/math/linal.h
 $B/mesh/bbox.o: $S/algo/minmax.h $S/inc/type.h $S/mesh/bbox.h
 $B/mesh/collision.o: $B/conf.h $S/d/api.h $S/d/ker.h $S/d/q.h $S/inc/conf.h $S/inc/def.h $S/inc/dev.h $S/inc/type.h $S/mesh/collision.h $S/msg.h $S/utils/cc.h $S/utils/kl.h $S/utils/texo.dev.h $S/utils/texo.h

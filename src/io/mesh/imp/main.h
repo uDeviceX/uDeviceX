@@ -15,39 +15,12 @@ static void shift(const Particle *f, int n, /**/ Particle *t) {
     }
 }
 
-static void write(const void * const ptr, const int nbytes32, MPI_File f) {
-    MPI_Offset base;
-    MPI_Offset offset = 0, nbytes = nbytes32;
-    MPI_Status status;
-    MPI_Offset ntotal = 0;
-    MC(MPI_File_get_position(f, &base));
-    MC(MPI_Exscan(&nbytes, &offset, 1, MPI_OFFSET, MPI_SUM, m::cart));
-    MC(MPI_File_write_at_all(f, base + offset, ptr, nbytes, MPI_CHAR, &status));
-    MC(MPI_Allreduce(&nbytes, &ntotal, 1, MPI_OFFSET, MPI_SUM, m::cart) );
-    MC(MPI_File_seek(f, ntotal, MPI_SEEK_CUR));
-}
-
-static int reduce(int n0) {
-    int n;
-    n = 0;
-    MC(m::Reduce(&n0, &n, 1, MPI_INT, MPI_SUM, 0, m::cart));
-    return n;
-}
-/* root predicate */
-static int rootp() { return m::rank == 0; }
-static void write_once(const void * const ptr,
-                       int sz0, MPI_File f) {
-    int sz;
-    sz = (rootp()) ? sz0 : 0;
-    write(ptr, sz, f);
-}
-
-static void header(int nc0, int nv, int nt, MPI_File f) {
+static void header(int nc0, int nv, int nt, write::File *f) {
     int nc; /* total number of cells */
     int sz = 0;
     char s[BUFSIZ] = {0};
-    nc = reduce(nc0);
-    if (rootp())
+    write::reduce(nc0, &nc);
+    if (write::rootp())
         sz = sprintf(s,
                      "ply\n"
                      "format binary_little_endian 1.0\n"
@@ -57,26 +30,24 @@ static void header(int nc0, int nv, int nt, MPI_File f) {
                      "element face  %d  \n"
                      "property list int int vertex_index\n"
                      "end_header\n", nv*nc, nt*nc);
-    write_once(s, sz, f);
+    write::one(s, sz, f);
 }
 
-static void vert(const Particle *pp, int nc, int nv, MPI_File f) {
+static void vert(const Particle *pp, int nc, int nv, write::File *f) {
     int n;
     n = nc * nv;
-    write(pp, sizeof(Particle) * n, f);
+    write::all(pp, sizeof(Particle) * n, f);
 }
 
-static void wfaces0(int *buf, const int4 *faces, int nc, int nv, int nt, MPI_File f) {
+static void wfaces0(int *buf, const int4 *faces, int nc, int nv, int nt, write::File *f) {
     /* write faces */
     int c, t, b;  /* cell, triangle, buffer index */
     int n, shift;
     n = nc * nv;
-    shift = 0;
-    MPI_Exscan(&n, &shift, 1, MPI_INTEGER, MPI_SUM, m::cart);
+    write::shift(n, &shift);
 
-    b = 0;
     int4 tri;
-    for(c = 0; c < nc; ++c)
+    for(b = c = 0; c < nc; ++c)
         for(t = 0; t < nt; ++t) {
             tri = faces[t];
             buf[b++] = NVP;
@@ -84,10 +55,10 @@ static void wfaces0(int *buf, const int4 *faces, int nc, int nv, int nt, MPI_Fil
             buf[b++] = shift + nv*c + tri.y;
             buf[b++] = shift + nv*c + tri.z;
         }
-    write(buf, b*sizeof(buf[0]), f);
+    write::all(buf, b*sizeof(buf[0]), f);
 }
 
-static void wfaces(const int4 *faces, int nc, int nv, int nt, MPI_File f) {
+static void wfaces(const int4 *faces, int nc, int nv, int nt, write::File *f) {
     int *buf; /* buffer for faces */
     int sz;
     sz = (1 + NVP) * nc * nt * sizeof(int);
@@ -97,13 +68,13 @@ static void wfaces(const int4 *faces, int nc, int nv, int nt, MPI_File f) {
 }
 
 static void dump0(const Particle *pp, const int4 *faces,
-                  int nc, int nv, int nt, MPI_File f) {
+                  int nc, int nv, int nt, write::File *f) {
     header(nc,        nv, nt, f);
     vert(pp,      nc, nv,     f);
     wfaces(faces, nc, nv, nt, f);
 }
 
-static void dump1(const Particle *pp, const int4 *faces, int nc, int nv, int nt, MPI_File f) {
+static void dump1(const Particle *pp, const int4 *faces, int nc, int nv, int nt, write::File *f) {
     int sz, n;
     Particle *pp0;
     n = nc * nv;
@@ -115,25 +86,24 @@ static void dump1(const Particle *pp, const int4 *faces, int nc, int nv, int nt,
 }
 
 static void dump2(const Particle *pp, const int4 *faces, int nc, int nv, int nt, const char *fn) {
-    MPI_File f;
-    MPI_File_open(m::cart, fn, MPI_MODE_WRONLY |  MPI_MODE_CREATE, MPI_INFO_NULL, &f);
-    MPI_File_set_size(f, 0);
+    write::File *f;
+    write::fopen(fn, /**/ &f);
     dump1(pp, faces, nc, nv, nt, f);
-    MPI_File_close(&f);
+    write::fclose(f);
 }
 
-void rbc_mesh_dump(const Particle *pp, const int4 *faces, int nc, int nv, int nt, int id) {
+void rbc(const Particle *pp, const int4 *faces, int nc, int nv, int nt, int id) {
     const char *fmt = DUMP_BASE "/r/%05d.ply";
     char f[BUFSIZ]; /* file name */
     sprintf(f, fmt, id);
-    if (m::rank == 0) os::mkdir(DUMP_BASE "/r");
+    if (write::rootp()) os::mkdir(DUMP_BASE "/r");
     dump2(pp, faces, nc, nv, nt, f);
 }
 
-void rig_mesh_dump(const Particle *pp, const int4 *faces, int nc, int nv, int nt, int id) {
+void rig(const Particle *pp, const int4 *faces, int nc, int nv, int nt, int id) {
     const char *fmt = DUMP_BASE "/s/%05d.ply";
     char f[BUFSIZ]; /* file name */
     sprintf(f, fmt, id);
-    if (m::rank == 0) os::mkdir(DUMP_BASE "/s");
+    if (write::rootp()) os::mkdir(DUMP_BASE "/s");
     dump2(pp, faces, nc, nv, nt, f);
 }

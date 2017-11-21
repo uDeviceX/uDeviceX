@@ -6,9 +6,15 @@ $B/glb/wvel/imp.o: $B/conf.h $S/glb/wvel/imp.h $S/glb/wvel/imp/dupire/common.h $
 $B/mpi/glb.o: $B/conf.h $S/inc/conf.h $S/mpi/glb.h $S/mpi/wrapper.h $S/utils/mc.h
 $B/mpi/type.o: $S/inc/conf.h $S/inc/type.h $S/mpi/type.h $S/utils/mc.h
 $B/mpi/wrapper.o: $S/mpi/wrapper.h
+<<<<<<< HEAD
 $B/msg.o: $S/mpi/glb.h $S/msg.h
 $B/u/clist/main.o: $S/algo/scan/int.h $S/clist/imp.h $B/conf.h $S/d/api.h $S/inc/conf.h $S/inc/dev.h $S/inc/type.h $S/msg.h $S/utils/cc.h $S/utils/error.h $S/utils/halloc.h
 $B/utils/cc.o: $B/conf.h $S/d/api.h $S/inc/conf.h $S/msg.h $S/utils/cc/common.h
+=======
+$B/msg.o: $S/msg.h $S/mpi/glb.h
+$B/u/clist/main.o: $S/algo/scan/int.h $S/inc/conf.h $S/utils/error.h $S/inc/type.h $S/utils/cc.h $S/inc/dev.h $S/d/api.h $S/msg.h $B/conf.h $S/utils/halloc.h $S/clist/imp.h
+$B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/d/api.h $S/msg.h $B/conf.h
+>>>>>>> fbad0960ded672549863666e0193788074ef6222
 $B/utils/error.o: $S/msg.h $S/utils/error.h
 $B/utils/halloc.o: $S/utils/error.h $S/utils/halloc.h
 $B/utils/mc.o: $B/conf.h $S/inc/conf.h $S/utils/mc.h
