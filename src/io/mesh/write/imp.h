@@ -1,9 +1,12 @@
 namespace write {
 struct File { MPI_File f; };
-void all(const void *const ptr, const int sz, File*);
+void all(const void *const, const int sz, File*);
 int rootp();
-void one(const void *const ptr, int sz, File*);
-int shift(int n, /**/ int *shift0);
+int one(const void *const, int sz, File*);
+
+int shift(int, /**/ int*);
+int reduce(int, /**/ int*);
+
 int fopen(const char*, /**/ File*);
 int fclose(File*);
 }

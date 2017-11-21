@@ -12,7 +12,7 @@ void all(const void * const ptr, const int nbytes32, File *fp) {
 }
 /* root predicate */
 int rootp() { return m::rank == 0; }
-void one(const void * const ptr, int sz0, File *fp) {
+int one(const void * const ptr, int sz0, File *fp) {
     int sz;
     sz = rootp() ? sz0 : 0;
     all(ptr, sz, fp);
@@ -21,6 +21,13 @@ void one(const void * const ptr, int sz0, File *fp) {
 int shift(int n, int *shift0) {
     *shift0 = 0;
     MC(MPI_Exscan(&n, shift0, 1, MPI_INTEGER, MPI_SUM, m::cart));
+    return 0;
+}
+
+int reduce(int n0, /**/ int* n) {
+    int n;
+    *n = 0;
+    MC(m::Reduce(&n0, n, 1, MPI_INT, MPI_SUM, 0, m::cart));
     return 0;
 }
 

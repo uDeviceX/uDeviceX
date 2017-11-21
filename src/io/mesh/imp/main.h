@@ -15,17 +15,11 @@ static void shift(const Particle *f, int n, /**/ Particle *t) {
     }
 }
 
-static int reduce(int n0) {
-    int n;
-    n = 0;
-    MC(m::Reduce(&n0, &n, 1, MPI_INT, MPI_SUM, 0, m::cart));
-    return n;
-}
 static void header(int nc0, int nv, int nt, write::File *f) {
     int nc; /* total number of cells */
     int sz = 0;
     char s[BUFSIZ] = {0};
-    nc = reduce(nc0);
+    write::reduce(nc0, &nc);
     if (write::rootp())
         sz = sprintf(s,
                      "ply\n"
