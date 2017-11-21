@@ -8,7 +8,7 @@ static void dump(rbc::Quants q) {
                  
 static void run0(rbc::Quants q, rbc::force::TicketT t, Force *f) {
     rbc::force::apply(q, t, /**/ f);
-    dump(q);
+    //    dump(q);
 }
 
 static void run1(rbc::Quants q, rbc::force::TicketT t) {
