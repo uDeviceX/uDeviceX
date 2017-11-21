@@ -30,7 +30,7 @@ static void write(const void * const ptr, const int nbytes32, MPI_File f) {
 static int reduce(int n0) {
     int n;
     n = 0;
-    m::Reduce(&n0, &n, 1, MPI_INT, MPI_SUM, 0, m::cart);
+    MC(m::Reduce(&n0, &n, 1, MPI_INT, MPI_SUM, 0, m::cart));
     return n;
 }
 
@@ -38,8 +38,7 @@ static void header(int nc0, int nv, int nt, MPI_File f) {
     int nc; /* total number of cells */
     int sz = 0;
     char s[BUFSIZ] = {0};
-    nc = 0;
-    m::Reduce(&nc0, &nc, 1, MPI_INT, MPI_SUM, 0, m::cart) ;
+    nc = reduce(nc0);
     if (m::rank == 0)
         sz = sprintf(s,
                      "ply\n"
