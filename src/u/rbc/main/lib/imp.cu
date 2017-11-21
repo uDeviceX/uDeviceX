@@ -23,6 +23,8 @@
 #include "rbc/rnd/imp.h"
 #include "rbc/force/imp.h"
 
+#include "io/mesh/imp.h"
+
 #include "mpi/glb.h"
 
 #include "imp.h"

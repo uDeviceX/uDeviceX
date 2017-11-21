@@ -1,35 +1,14 @@
-static void write0(Particle p, Force f0) {
-    enum {X, Y, Z};
-    float *r, *f;
-    r = p.r;
-    f = f0.f;
-    printf("%g %g %g %g %g %g\n", r[X], r[Y], r[Z], f[X], f[Y], f[Z]);
+static void dump(rbc::Quants q) {
+    Particle pp[999999];
+    const char *f = "r.ply";
+    static int id = 0;
+    cD2H(pp, q.pp, q.n);
+    io::mesh::main(q.pp, q.tri_hst, q.nc, q.nv, q.nt, f);
 }
-
-static void write1(int n, Particle *p, Force *f) {
-    int i;
-    for (i = 0; i < n; i++) write0(p[i], f[i]);
-}
-
-static void write(int n, Particle *p, Force *f) {
-    Particle *p_hst;
-    Force *f_hst;
-
-    UC(emalloc(n*sizeof(Particle), (void**) &p_hst));
-    UC(emalloc(n*sizeof(Force),    (void**) &f_hst));
-
-    cD2H(p_hst, p, n);
-    cD2H(f_hst, f, n);
-
-    write1(n, p_hst, f_hst);
-
-    free(p_hst);
-    free(f_hst);
-}
-
+                 
 static void run0(rbc::Quants q, rbc::force::TicketT t, Force *f) {
     rbc::force::apply(q, t, /**/ f);
-    write(q.n, q.pp, f);
+    dump(q);
 }
 
 static void run1(rbc::Quants q, rbc::force::TicketT t) {
