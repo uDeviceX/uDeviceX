@@ -1,5 +1,5 @@
 #### periodic box: stretch
-# nTEST: rbc.u.main.0
+# cTEST: rbc.u.main.0
 rm -rf bop diag.txt h5 ply rbc.off
 :
 S=`pwd`
