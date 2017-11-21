@@ -22,7 +22,7 @@ static void run0(rbc::Quants q, rbc::force::TicketT t, rbc::stretch::Fo* stretch
     rbc::stretch::apply(q.nc, stretch, /**/ f);
     for (i = 0; i < 1000; i++) {
         scheme::move(rbc_mass, q.n, f, q.pp);
-        if (i % 1 == 100) dump(q);
+        if (i % 100 == 0) dump(q);
     }
 }
 
