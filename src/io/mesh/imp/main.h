@@ -36,13 +36,13 @@ static void header(int nc0, int nv, int nt, MPI_File f) {
                      "element face  %d  \n"
                      "property list int int vertex_index\n"
                      "end_header\n", nv*nc, nt*nc);
-    write::one(s, sz, f);
+    write::one(s, sz, &f);
 }
 
 static void vert(const Particle *pp, int nc, int nv, MPI_File f) {
     int n;
     n = nc * nv;
-    write::all(pp, sizeof(Particle) * n, f);
+    write::all(pp, sizeof(Particle) * n, &f);
 }
 
 static void wfaces0(int *buf, const int4 *faces, int nc, int nv, int nt, MPI_File f) {
@@ -63,7 +63,7 @@ static void wfaces0(int *buf, const int4 *faces, int nc, int nv, int nt, MPI_Fil
             buf[b++] = shift + nv*c + tri.y;
             buf[b++] = shift + nv*c + tri.z;
         }
-    write::all(buf, b*sizeof(buf[0]), f);
+    write::all(buf, b*sizeof(buf[0]), &f);
 }
 
 static void wfaces(const int4 *faces, int nc, int nv, int nt, MPI_File f) {

@@ -1,4 +1,8 @@
-static void all(const void * const ptr, const int nbytes32, MPI_File f) {
+struct FILE { MPI_File f; };
+
+static void all(const void * const ptr, const int nbytes32, MPI_File *fp) {
+    MPI_File f = *fp;
+
     MPI_Offset base;
     MPI_Offset offset = 0, nbytes = nbytes32;
     MPI_Status status;
@@ -11,7 +15,7 @@ static void all(const void * const ptr, const int nbytes32, MPI_File f) {
 }
 /* root predicate */
 static int rootp() { return m::rank == 0; }
-static void one(const void * const ptr, int sz0, MPI_File f) {
+static void one(const void * const ptr, int sz0, MPI_File *f) {
     int sz;
     sz = (rootp()) ? sz0 : 0;
     all(ptr, sz, f);
@@ -27,4 +31,3 @@ static int fclose(MPI_File *f) {
     MC(MPI_File_close(f));
     return 0;
 }
-
