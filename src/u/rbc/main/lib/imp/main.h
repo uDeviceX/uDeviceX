@@ -20,9 +20,9 @@ static void run0(rbc::Quants q, rbc::force::TicketT t, rbc::stretch::Fo* stretch
     int i;
     rbc::force::apply(q, t, /**/ f);
     rbc::stretch::apply(q.nc, stretch, /**/ f);
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < 1000; i++) {
         scheme::move(rbc_mass, q.n, f, q.pp);
-        if (i % 1 == 0) dump(q);
+        if (i % 1 == 100) dump(q);
     }
 }
 
