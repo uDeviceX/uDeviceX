@@ -19,7 +19,7 @@ static __device__ int frag2bulk(int hci, const int org[3], const int ext[3]) {
     return src[X] + XS * (src[Y] + YS * src[Z]);
 }
 
-__global__ void count(const int27 cellpackstarts, const int *start, const int *count, /**/
+__global__ void count_cells(const int27 cellpackstarts, const int *start, const int *count, /**/
                       intp26 fragss, intp26 fragcc) {
     enum {X, Y, Z};
     int gid;
@@ -33,11 +33,11 @@ __global__ void count(const int27 cellpackstarts, const int *start, const int *c
     fid = k_common::fid(cellpackstarts.d, gid);
     hci = gid - cellpackstarts.d[fid];
 
-    get_box(fid, /**/ org, ext);
+    get_frag_box(fid, /**/ org, ext);
     nhc = ext[X] * ext[Y] * ext[Z];
 
     if (hci < nhc) {
-        cid = h2cid(hci, org, ext);
+        cid = frag2bulk(hci, org, ext);
         fragss.d[fid][hci] = start[cid];
         fragcc.d[fid][hci] = count[cid];
     } else if (hci == nhc) {

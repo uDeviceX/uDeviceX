@@ -24,10 +24,11 @@
 
 namespace exch {
 namespace flu {
-
-#include "dev/count.h"
-
 using namespace comm;
+
+namespace dev {
+#include "dev/count.h"
+} // dev
 
 #include "imp/ini.h"
 #include "imp/fin.h"
