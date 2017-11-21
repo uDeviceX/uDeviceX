@@ -34,7 +34,7 @@ $B/restrain/imp.o: $S/inc/conf.h $S/restrain/dev/grey/map.h $S/restrain/imp/colo
 $B/restrain/stat/imp.o: $S/restrain/stat/imp.h $S/restrain/stat/imp/main.h $S/restrain/stat/imp/dec.h
 $B/restrain/sum/imp.o: $S/inc/conf.h $S/mpi/wrapper.h $S/restrain/sum/imp.h $S/utils/mc.h $B/conf.h $S/restrain/sum/imp/main.h
 $B/scheme/imp.o: $S/scheme/dev/force/double_poiseuille.h $S/scheme/dev/force/none.h $S/inc/conf.h $S/inc/type.h $S/d/q.h $S/scheme/dev/force/constant.h $S/mpi/wrapper.h $S/scheme/imp/vv.h $S/scheme/imp.h $S/utils/cc.h $S/inc/def.h $S/inc/dev.h $S/utils/mc.h $S/msg.h $S/d/api.h $B/conf.h $S/scheme/imp/main.h $S/scheme/imp/restrain/red_vel.h $S/scheme/dev/force/4roller.h $S/utils/kl.h $S/scheme/imp/euler.h $S/restrain/imp.h $S/glb/get.h $S/scheme/imp/restrain/rbc_vel.h $S/scheme/imp/restrain/none.h $S/scheme/dev/main.h $S/d/ker.h
-$B/u/rbc/main/lib/imp.o: $S/inc/conf.h $S/rbc/type.h $S/utils/error.h $S/inc/type.h $S/io/mesh/imp.h $S/u/rbc/main/lib/imp.h $S/utils/cc.h $S/inc/def.h $S/rbc/main/imp.h $S/inc/dev.h $S/msg.h $S/d/api.h $B/conf.h $S/u/rbc/main/lib/imp/main.h $S/utils/texo.h $S/utils/halloc.h $S/utils/te.h $S/scheme/imp.h $S/rbc/force/imp.h $S/mpi/glb.h $S/rbc/rnd/imp.h
+$B/u/rbc/main/lib/imp.o: $S/inc/conf.h $S/rbc/type.h $S/utils/error.h $S/rbc/stretch/imp.h $S/inc/type.h $S/io/mesh/imp.h $S/u/rbc/main/lib/imp.h $S/io/diag.h $S/utils/cc.h $S/inc/def.h $S/rbc/main/imp.h $S/inc/dev.h $S/msg.h $S/d/api.h $B/conf.h $S/u/rbc/main/lib/imp/main.h $S/utils/texo.h $S/utils/halloc.h $S/utils/te.h $S/scheme/imp.h $S/rbc/force/imp.h $S/mpi/glb.h $S/rbc/rnd/imp.h
 $B/u/rbc/main/main.o: $S/u/rbc/main/lib/imp.h $S/mpi/glb.h
 $B/utils/cc.o: $S/utils/cc/common.h $S/inc/conf.h $S/d/api.h $S/msg.h $B/conf.h
 $B/utils/error.o: $S/msg.h $S/utils/error.h

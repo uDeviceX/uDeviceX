@@ -27,6 +27,8 @@
 #include "scheme/imp.h"
 
 #include "io/mesh/imp.h"
+#include "io/diag.h"
+
 #include "mpi/glb.h"
 
 #include "imp.h"
