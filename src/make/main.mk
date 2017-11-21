@@ -25,10 +25,10 @@ NVCCFLAGS += $(COMMON) -use_fast_math -restrict
 LIBS      += -lcudart
 LIBS      += -lcurand
 
-LOG = @echo $< $@
-N  = $(LOG); $(NVCC)  $(ARCH) $(NVCCFLAGS) --compiler-options '$(NCFLAGS)' -dc $< -c -o $@
-X  = $(LOG); $(NVCC)  $(ARCH)              --compiler-options '$(XCFLAGS)'     $< -c -o $@
-L  = $(LOG); $(NVCC)  $(ARCH) -dlink $O $(NVCCLIBS) -o $B/gpuCode.o && \
+LOG = @echo $< $@;
+N  = $(LOG) $(NVCC)  $(ARCH) $(NVCCFLAGS) --compiler-options '$(NCFLAGS)' -dc $< -c -o $@
+X  = $(LOG) $(NVCC)  $(ARCH)              --compiler-options '$(XCFLAGS)'     $< -c -o $@
+L  = $(LOG) $(NVCC)  $(ARCH) -dlink $O $(NVCCLIBS) -o $B/gpuCode.o && \
 	$(LINK)  $B/gpuCode.o $O $(LIBS) -o $@
 
 $B/udx: $O; $L
