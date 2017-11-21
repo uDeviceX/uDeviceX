@@ -16,6 +16,7 @@ int one(const void * const ptr, int sz0, File *fp) {
     int sz;
     sz = rootp() ? sz0 : 0;
     all(ptr, sz, fp);
+    return 0;
 }
 
 int shift(int n, int *shift0) {
@@ -25,7 +26,6 @@ int shift(int n, int *shift0) {
 }
 
 int reduce(int n0, /**/ int* n) {
-    int n;
     *n = 0;
     MC(m::Reduce(&n0, n, 1, MPI_INT, MPI_SUM, 0, m::cart));
     return 0;
