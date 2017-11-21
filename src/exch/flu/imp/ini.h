@@ -1,4 +1,3 @@
-
 void ini(int maxd, Pack *p) {
     int i, nc, cap[NBAGS], ncs[NBAGS];
     size_t sz;
@@ -11,6 +10,9 @@ void ini(int maxd, Pack *p) {
         sz = (nc + 1) * sizeof(int);
         d::Malloc((void**) &p->bcc.d[i], sz);
         d::Malloc((void**) &p->bss.d[i], sz);
+
+        sz = cap[i] * sizeof(int);
+        d::Malloc((void**) &p->bii.d[i], sz);
     }
     ncs[BULK] = 0;
     

@@ -8,10 +8,12 @@ namespace flu {
   bcc: (bulk counts): cell starts in bulk coordinates
   bss: (bulk starts): cell starts in bulk coordinates
   fss: (fragment starts): cell starts in fragment coordinates
+
+  bii: indices of the particles in bulk coordinates
 */
 
 struct Pack {
-    intp26 bcc, bss;
+    intp26 bcc, bss, bii;
     comm::dBags dpp, dcc, dfss;
     comm::hBags hpp, hcc, hfss;
 };
