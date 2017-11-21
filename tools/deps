@@ -11,7 +11,7 @@ one () {
 l="u/bangladesh u/clist
 u/comm/main u/comm/oc u/france
 u/h5 u/hw/hst u/hw/dev u/korea
-u/pair u/rbc/force u/rbc/rnd u/map u/safe
+u/pair u/rbc/force u/rbc/rnd u/safe
 u/scan u/x"
 
 for u in $l
