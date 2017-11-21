@@ -5,7 +5,6 @@ static void dump(rbc::Quants q) {
     n = q.nc * q.nv;
     UC(emalloc(n*sizeof(Particle), (void**)&pp));
     cD2H(pp, q.pp, q.n);
-    MSG("dump: %05d", i);
     io::mesh::rbc(pp, q.tri_hst, q.nc, q.nv, q.nt, i++);
     diagnostics(pp, n, i);
     free(pp);
