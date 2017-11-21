@@ -154,6 +154,19 @@ void recv_ii(const TicketRhalo *t, /**/ TicketRIhalo *ti) {
 }
 
 
+static void ini_local_frags(TicketShalo ts, hforces::LFrag26 *lfrags) {
+    Cloud clouda = {0, 0};    
+
+    for (int i = 0; i < 26; ++i) {
+        ini_cloud(ts.b.pp.d[i], &clouda);
+
+        lfrags->d[i] = {
+            .c  = clouda,            
+            .ii = ts.b.ii.d[i],
+            .n  = ts.nphst[i]};
+    }
+}
+
 static void ini_frags(TicketRhalo tr, /**/ hforces::Frag26 *frag) {
     enum {X, Y, Z};
     int i, dx, dy, dz, xcells, ycells, zcells;
@@ -182,19 +195,6 @@ static void ini_frags(TicketRhalo tr, /**/ hforces::Frag26 *frag) {
     }
 }
 
-static void ini_sfrags(TicketShalo ts, hforces::LFrag26 *lfrags) {
-    Cloud clouda = {0, 0};    
-
-    for (int i = 0; i < 26; ++i) {
-        ini_cloud(ts.b.pp.d[i], &clouda);
-
-        lfrags->d[i] = {
-            .c  = clouda,            
-            .ii = ts.b.ii.d[i],
-            .n  = ts.nphst[i]};
-    }
-}
-
 static void ini_rnd(TicketRnd trnd, /**/ hforces::Rnd26 *rnd) {
     for (int i = 0; i < 26; ++i)
         rnd->d[i] = {
@@ -208,7 +208,7 @@ static void ini_color_frags(TicketRIhalo t, /**/ hforces::Frag26 *frag) {
         ini_cloud_color(t.b.ii.d[i], &frag->d[i].c);
 }
 
-static void ini_color_sfrags(TicketSIhalo t, /**/ hforces::LFrag26 *lfrags) {
+static void ini_color_local_frags(TicketSIhalo t, /**/ hforces::LFrag26 *lfrags) {
     for (int i = 0; i < 26; ++i)
         ini_cloud_color(t.b.ii.d[i], &lfrags->d[i].c);
 }
@@ -218,12 +218,12 @@ void fremote_color(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, TicketSIhalo 
     hforces::Frag26   frag;
     hforces::Rnd26     rnd;
 
-    ini_sfrags(ts, /**/ &lfrags);
+    ini_local_frags(ts, /**/ &lfrags);
     ini_frags (tr, /**/ &frag);
     ini_rnd (trnd, /**/ &rnd);
 
+    ini_color_local_frags(tis, /**/ &lfrags);
     ini_color_frags(tir, /**/ &frag);
-    ini_color_sfrags(tis, /**/ &lfrags);
 
     hforces::interactions(lfrags, frag, rnd, (float*)ff);
 }
@@ -233,7 +233,7 @@ void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
     hforces::Frag26   frag;
     hforces::Rnd26     rnd;
 
-    ini_sfrags(ts, /**/ &lfrags);
+    ini_local_frags(ts, /**/ &lfrags);
     ini_frags (tr, /**/ &frag);
     ini_rnd (trnd, /**/ &rnd);
 
