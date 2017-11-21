@@ -15,7 +15,7 @@ static void run0(rbc::Quants q, rbc::force::TicketT t, rbc::stretch::Fo* stretch
     long nsteps = (long)(tend / dt);
     MSG("will take %ld steps", nsteps);
     for (i = 0; i < nsteps; i++) {
-        DzeroA(f, q.n);
+        Dzero(f, q.n);
         rbc::force::apply(q, t, /**/ f);
         rbc::stretch::apply(q.nc, stretch, /**/ f);
         scheme::move(rbc_mass, q.n, f, q.pp);
