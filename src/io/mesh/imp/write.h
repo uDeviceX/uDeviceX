@@ -1,8 +1,6 @@
 struct File { MPI_File f; };
-
 static void all(const void * const ptr, const int nbytes32, File *fp) {
     MPI_File f = fp->f;
-
     MPI_Offset base;
     MPI_Offset offset = 0, nbytes = nbytes32;
     MPI_Status status;
@@ -19,6 +17,13 @@ static void one(const void * const ptr, int sz0, File *fp) {
     int sz;
     sz = (rootp()) ? sz0 : 0;
     all(ptr, sz, fp);
+}
+
+static int shift(int n) {
+    int shift0;
+    shift0 = 0;
+    MPI_Exscan(&n, &shift0, 1, MPI_INTEGER, MPI_SUM, m::cart);
+    return shift0;
 }
 
 static int fopen(const char *fn, /**/ File *fp) {

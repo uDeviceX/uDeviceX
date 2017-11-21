@@ -50,12 +50,10 @@ static void wfaces0(int *buf, const int4 *faces, int nc, int nv, int nt, write::
     int c, t, b;  /* cell, triangle, buffer index */
     int n, shift;
     n = nc * nv;
-    shift = 0;
-    MPI_Exscan(&n, &shift, 1, MPI_INTEGER, MPI_SUM, m::cart);
+    shift = write::shift(n);
 
-    b = 0;
     int4 tri;
-    for(c = 0; c < nc; ++c)
+    for(b = c = 0; c < nc; ++c)
         for(t = 0; t < nt; ++t) {
             tri = faces[t];
             buf[b++] = NVP;
