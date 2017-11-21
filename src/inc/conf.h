@@ -109,6 +109,13 @@
 #endif
 
 
+// dpd
+
+#ifndef dpd_mass
+#define dpd_mass 1.0
+#endif
+
+
 // solid
 
 #ifndef solids
@@ -147,6 +154,10 @@
 #define rescue_freq (100)
 #endif
 
+#ifndef pushflow
+#define pushflow (false)
+#endif
+
 #ifndef pushsolid
 #define pushsolid (false)
 #endif
@@ -171,6 +182,10 @@
 // rbc
 #ifndef rbcs
 #define rbcs (false)
+#endif
+
+#ifndef rbc_mass
+#define rbc_mass dpd_mass
 #endif
 
 #ifndef RBCnv
