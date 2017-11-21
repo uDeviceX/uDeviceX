@@ -1,6 +1,6 @@
 static void dump(rbc::Quants q) {
     Particle pp[999999];
-    const char *f = "r.ply";
+    const char f[] = "r.ply";
     static int id = 0;
     cD2H(pp, q.pp, q.n);
     io::mesh::main(q.pp, q.tri_hst, q.nc, q.nv, q.nt, f);
@@ -8,7 +8,7 @@ static void dump(rbc::Quants q) {
                  
 static void run0(rbc::Quants q, rbc::force::TicketT t, Force *f) {
     rbc::force::apply(q, t, /**/ f);
-    //    dump(q);
+    dump(q);
 }
 
 static void run1(rbc::Quants q, rbc::force::TicketT t) {
