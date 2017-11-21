@@ -22,5 +22,7 @@
 #else
    #error     MESH_SHIFT_* is undefined
 #endif
+namespace write {
 #include "imp/write.h"
+}
 #include "imp/main.h"
