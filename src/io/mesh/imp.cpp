@@ -24,4 +24,4 @@ namespace io { namespace mesh {
 #endif
 #include "imp/main.h"
 
-} /* namespace */
+}} /* namespace */
