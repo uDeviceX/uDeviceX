@@ -22,3 +22,9 @@ static int fopen(const char *fn, /**/ MPI_File *f) {
     MC(MPI_File_set_size(*f, 0));
     return 0;
 }
+
+static int fclose(MPI_File *f) {
+    MC(MPI_File_close(f));
+    return 0;
+}
+
