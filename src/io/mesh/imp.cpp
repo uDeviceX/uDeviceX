@@ -11,15 +11,15 @@
 #include "mpi/glb.h"
 #include "mpi/wrapper.h"
 #include "inc/type.h"
-#include "io/mesh.h"
-
 #include "utils/mc.h"
 
+#include "imp.h"
+
 #if   defined(MESH_SHIFT_EDGE)
-   #include "mesh/shift/edge.h"
+   #include "imp/shift/edge.h"
 #elif defined(MESH_SHIFT_CENTER)
-   #include "mesh/shift/center.h"
+   #include "imp/shift/center.h"
 #else
    #error     MESH_SHIFT_* is undefined
 #endif
-#include "mesh/main.h"
+#include "imp/main.h"

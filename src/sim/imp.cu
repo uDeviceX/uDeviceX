@@ -30,7 +30,7 @@
 #include "cloud/imp.h"
 
 #include "io/fields_grid.h"
-#include "io/mesh.h"
+#include "io/mesh/imp.h"
 #include "io/rig.h"
 #include "io/diag.h"
 #include "io/com.h"
