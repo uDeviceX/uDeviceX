@@ -1,29 +1,27 @@
 namespace exch {
 namespace flu {
 
-struct Pack {
-    Map map;
-    dBags dpp;
-    hBags hpp;
+/*
+  pp: exchanged particles 
+  cc: colors of the above
+
+  bcc: (bulk counts): cell starts in bulk coordinates
+  bss: (bulk starts): cell starts in bulk coordinates
+  fss: (fragment starts): cell starts in fragment coordinates
+*/
+
+struct Pack {    
+    comm::dBags dpp, dcc, dfss;
+    comm::hBags hpp, hcc, hfss;
 };
 
 struct Comm {
-    Stamp pp, ff;
+    comm::Stamp pp, cc, fss;
 };
 
 struct Unpack {
-    hBags hpp;
-    dBags dpp;
-};
-
-struct PackF {
-    dBags dff;
-    hBags hff;
-};
-
-struct UnpackF {
-    hBags hff;
-    dBags dff;
+    comm::hBags hpp, hcc, hfss;
+    comm::dBags dpp, dcc, dfss;
 };
 
 } // flu
