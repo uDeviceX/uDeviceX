@@ -27,7 +27,7 @@ namespace flu {
 using namespace comm;
 
 namespace dev {
-#include "dev/count.h"
+#include "dev/map.h"
 } // dev
 
 #include "imp/ini.h"
