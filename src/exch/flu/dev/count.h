@@ -1,4 +1,3 @@
-
 /* return origin and extents of the cells of fragment i */
 static __device__ void get_frag_box(int i, /**/ int org[3], int ext[3]) {
     int d[3] = frag_i2d3(i);
@@ -19,11 +18,10 @@ static __device__ int frag2bulk(int hci, const int org[3], const int ext[3]) {
     return src[X] + XS * (src[Y] + YS * src[Z]);
 }
 
-__global__ void count_cells(const int27 cellpackstarts, const int *start, const int *count, /**/
-                      intp26 fragss, intp26 fragcc) {
+__global__ void count_cells(const int27 cellpackstarts, const int *start, const int *count,
+                            /**/ intp26 fragss, intp26 fragcc) {
     enum {X, Y, Z};
-    int gid;
-    int fid; /* fragment id */
+    int gid, fid; /* fragment id */
     int nhc; /* number of halo cells */
     int cid, hci; /* bulk and halo cell ids */
     int org[3], ext[3]; /* fragment origin and extend */
