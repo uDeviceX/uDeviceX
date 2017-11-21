@@ -1,22 +1,28 @@
-static void dump(rbc::Quants q) {
+static void dump0(rbc::Quants q, const char *f) {
     int n;
     Particle *pp;
-    const char f[] = "r.ply";
-    static int id = 0;
-
     n = q.nc * q.nv;
     UC(emalloc(n*sizeof(Particle), (void**)&pp));
-
     cD2H(pp, q.pp, q.n);
     io::mesh::main(pp, q.tri_hst, q.nc, q.nv, q.nt, f);
-
     free(pp);
 }
 
+static void dump(rbc::Quants q) {
+    static int id = 0;
+    const char f[BUFSIZ];
+    sprintf(f, "%05d.ply", id++);
+    MSG("%s\n",f);
+    dump0(q, f);
+}
+
 static void run0(rbc::Quants q, rbc::force::TicketT t, Force *f) {
+    int i;
     rbc::force::apply(q, t, /**/ f);
-    scheme::move(rbc_mass, q.n, f, q.pp);
-    dump(q);
+    for (i = 0; i < 1000; i++) {
+        scheme::move(rbc_mass, q.n, f, q.pp);
+        if (i % 10 == 0) dump(q);
+    }
 }
 
 static void run1(rbc::Quants q, rbc::force::TicketT t) {
