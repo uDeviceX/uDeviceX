@@ -33,7 +33,7 @@ namespace dev {
 #include "imp/ini.h"
 #include "imp/fin.h"
 // #include "imp/map.h"
-// #include "imp/pack.h"
+#include "imp/pack.h"
 // #include "imp/com.h"
 // #include "imp/unpack.h"
 
