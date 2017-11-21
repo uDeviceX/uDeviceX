@@ -70,7 +70,7 @@ __global__ void scan(const int26 fragn, const intp26 fragcc, /**/ intp26 fragcum
         if (tid == 0) myscan += lastval;
 
         for (L = 1; L < 32; L <<= 1) {
-            i val = __shfl_up(myscan, L);
+            val = __shfl_up(myscan, L);
             if (laneid >= L) myscan += val;
         }
 
