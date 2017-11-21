@@ -50,7 +50,7 @@ static void wfaces0(int *buf, const int4 *faces, int nc, int nv, int nt, write::
     int c, t, b;  /* cell, triangle, buffer index */
     int n, shift;
     n = nc * nv;
-    shift = write::shift(n);
+    write::shift(n, &shift);
 
     int4 tri;
     for(b = c = 0; c < nc; ++c)

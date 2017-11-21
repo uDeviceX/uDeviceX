@@ -19,11 +19,10 @@ static void one(const void * const ptr, int sz0, File *fp) {
     all(ptr, sz, fp);
 }
 
-static int shift(int n) {
-    int shift0;
-    shift0 = 0;
-    MPI_Exscan(&n, &shift0, 1, MPI_INTEGER, MPI_SUM, m::cart);
-    return shift0;
+static int shift(int n, int *shift0) {
+    *shift0 = 0;
+    MC(MPI_Exscan(&n, shift0, 1, MPI_INTEGER, MPI_SUM, m::cart));
+    return 0;
 }
 
 static int fopen(const char *fn, /**/ File *fp) {
