@@ -16,7 +16,6 @@ $B/exch/flu/imp.o: $S/exch/flu/imp.cu; $N -I$S/. -I$S/exch/flu
 $B/exch/mesh/imp.o: $S/exch/mesh/imp.cu; $N -I$S/. -I$S/exch/mesh
 $B/exch/obj/imp.o: $S/exch/obj/imp.cu; $N -I$S/. -I$S/exch/obj
 $B/field.o: $S/field.cpp; $X -I$S/.
-<<<<<<< HEAD
 $B/flu/imp.o: $S/flu/imp.cu; $N -I$S/. -I$S/flu
 $B/frag/imp.o: $S/frag/imp.cpp; $X -I$S/. -I$S/frag
 $B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/. -I$S/fsi
@@ -33,37 +32,13 @@ $B/io/field/imp.o: $S/io/field/imp.cpp; $X -I$S/. -I$S/io/field
 $B/io/field/xmf/imp.o: $S/io/field/xmf/imp.cpp; $X -I$S/. -I$S/io/field/xmf
 $B/io/fields_grid.o: $S/io/fields_grid.cpp; $X -I$S/. -I$S/io
 $B/io/mesh/imp.o: $S/io/mesh/imp.cpp; $X -I$S/. -I$S/io/mesh
+$B/io/mesh/write/imp.o: $S/io/mesh/write/imp.cpp; $X -I$S/. -I$S/io/mesh/write
 $B/io/off.o: $S/io/off.cpp; $X -I$S/. -I$S/io
 $B/io/ply.o: $S/io/ply.cpp; $X -I$S/. -I$S/io
 $B/io/restart.o: $S/io/restart.cpp; $X -I$S/. -I$S/io
 $B/io/rig.o: $S/io/rig.cpp; $X -I$S/. -I$S/io
 $B/lforces/imp.o: $S/lforces/imp.cu; $N -I$S/. -I$S/lforces
 $B/lforces/transpose/imp.o: $S/lforces/transpose/imp.cu; $N -I$S/. -I$S/lforces/transpose
-=======
-$B/flu/imp.o: $S/flu/imp.cu; $N -I$S/flu -I$S/.
-$B/frag/imp.o: $S/frag/imp.cpp; $X -I$S/frag -I$S/.
-$B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/fsi -I$S/.
-$B/generate/rig/imp.o: $S/generate/rig/imp.cu; $N -I$S/generate/rig -I$S/.
-$B/glb/imp.o: $S/glb/imp.cu; $N -I$S/glb -I$S/.
-$B/glb/wvel/imp.o: $S/glb/wvel/imp.cu; $N -I$S/glb/wvel -I$S/.
-$B/hforces/imp.o: $S/hforces/imp.cu; $N -I$S/hforces -I$S/.
-$B/inter/imp.o: $S/inter/imp.cu; $N -I$S/inter -I$S/inter/_korea -I$S/.
-$B/io/bop/imp.o: $S/io/bop/imp.cpp; $X -I$S/io/bop -I$S/.
-$B/io/com.o: $S/io/com.cpp; $X -I$S/io -I$S/.
-$B/io/diag.o: $S/io/diag.cpp; $X -I$S/io -I$S/.
-$B/io/field/h5/imp.o: $S/io/field/h5/imp.cpp; $X -I$S/io/field/h5 -I$S/.
-$B/io/field/imp.o: $S/io/field/imp.cpp; $X -I$S/io/field -I$S/.
-$B/io/fields_grid.o: $S/io/fields_grid.cpp; $X -I$S/io -I$S/.
-$B/io/field/xmf/imp.o: $S/io/field/xmf/imp.cpp; $X -I$S/io/field/xmf -I$S/.
-$B/io/mesh/imp.o: $S/io/mesh/imp.cpp; $X -I$S/io/mesh -I$S/.
-$B/io/mesh/write/imp.o: $S/io/mesh/write/imp.cpp; $X -I$S/io/mesh/write -I$S/.
-$B/io/off.o: $S/io/off.cpp; $X -I$S/io -I$S/.
-$B/io/ply.o: $S/io/ply.cpp; $X -I$S/io -I$S/.
-$B/io/restart.o: $S/io/restart.cpp; $X -I$S/io -I$S/.
-$B/io/rig.o: $S/io/rig.cpp; $X -I$S/io -I$S/.
-$B/lforces/imp.o: $S/lforces/imp.cu; $N -I$S/lforces -I$S/.
-$B/lforces/transpose/imp.o: $S/lforces/transpose/imp.cu; $N -I$S/lforces/transpose -I$S/.
->>>>>>> fbad0960ded672549863666e0193788074ef6222
 $B/main.o: $S/main.cpp; $X -I$S/.
 $B/math/linal.o: $S/math/linal.cpp; $X -I$S/. -I$S/math
 $B/mesh/bbox.o: $S/mesh/bbox.cu; $N -I$S/. -I$S/mesh
