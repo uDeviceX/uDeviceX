@@ -10,7 +10,8 @@ namespace flu {
   fss: (fragment starts): cell starts in fragment coordinates
 */
 
-struct Pack {    
+struct Pack {
+    intp26 bcc, bss;
     comm::dBags dpp, dcc, dfss;
     comm::hBags hpp, hcc, hfss;
 };
