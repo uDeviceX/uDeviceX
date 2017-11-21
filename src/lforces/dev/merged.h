@@ -75,7 +75,7 @@ static __device__ void merged5(uint it, int cbase, uint tid, uint pshare) {
     merged4(cid, tid, pshare);
 }
 
-static __global__ void merged() {
+__global__ void merged() {
     uint tid, wid, pshare, it;
     int cbase;
     char4 offs;

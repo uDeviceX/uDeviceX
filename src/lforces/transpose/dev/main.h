@@ -1,7 +1,7 @@
 #define __IMOD(x,y) ((x)-((x)/(y))*(y))
 
 static __device__ uint idx(int a, int b) { return 32 * a  + b; }
-static __global__ void transpose(const int np, float *ff) {
+__global__ void transpose(const int np, float *ff) {
     uint lane, warpid, base;
     __shared__ volatile float  smem[32][96];
     lane = threadIdx.x % warpSize;

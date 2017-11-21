@@ -9,7 +9,7 @@ static __device__ void apply1(int i, int nv, float *f, Force *ff) {
     apply0(&f[3*k], /**/ ff[i].f);
 }
 
-static __global__ void apply(int n, int nv, float *f, Force *ff) {
+__global__ void apply(int n, int nv, float *f, Force *ff) {
     int i;
     i = threadIdx.x + blockDim.x * blockIdx.x;
     if (i >= n) return;
