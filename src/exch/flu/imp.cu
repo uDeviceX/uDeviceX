@@ -26,12 +26,7 @@
 namespace exch {
 namespace flu {
 using namespace comm;
-#include "exch/map/dev.h"
-#include "exch/common/type.h"
-#include "exch/common/dev.h"
 #include "dev.h"
-
-#include "exch/map/imp.h"
 
 #include "imp/ini.h"
 #include "imp/fin.h"
