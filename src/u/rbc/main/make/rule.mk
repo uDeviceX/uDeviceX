@@ -1,4 +1,6 @@
 $B/d/api.o: $S/d/api.cu; $N -I$S/d -I$S/.
+$B/glb/imp.o: $S/glb/imp.cu; $N -I$S/glb -I$S/.
+$B/glb/wvel/imp.o: $S/glb/wvel/imp.cu; $N -I$S/glb/wvel -I$S/.
 $B/io/bop/imp.o: $S/io/bop/imp.cpp; $X -I$S/io/bop -I$S/.
 $B/io/com.o: $S/io/com.cpp; $X -I$S/io -I$S/.
 $B/io/diag.o: $S/io/diag.cpp; $X -I$S/io -I$S/.
@@ -28,6 +30,10 @@ $B/rbc/main/imp.o: $S/rbc/main/imp.cpp; $X -I$S/rbc/main -I$S/.
 $B/rbc/rnd/api/imp.o: $S/rbc/rnd/api/imp.cpp; $X -I$S/rbc/rnd/api -I$S/.
 $B/rbc/rnd/imp.o: $S/rbc/rnd/imp.cpp; $X -I$S/rbc/rnd -I$S/.
 $B/rbc/stretch/imp.o: $S/rbc/stretch/imp.cu; $N -I$S/rbc/stretch -I$S/.
+$B/restrain/imp.o: $S/restrain/imp.cu; $N -I$S/restrain -I$S/.
+$B/restrain/stat/imp.o: $S/restrain/stat/imp.cpp; $X -I$S/restrain/stat -I$S/.
+$B/restrain/sum/imp.o: $S/restrain/sum/imp.cpp; $X -I$S/restrain/sum -I$S/.
+$B/scheme/imp.o: $S/scheme/imp.cu; $N -I$S/scheme -I$S/.
 $B/u/rbc/main/lib/imp.o: $S/u/rbc/main/lib/imp.cu; $N -I$S/u/rbc/main/lib -I$S/.
 $B/u/rbc/main/main.o: $S/u/rbc/main/main.cpp; $X -I$S/u/rbc/main -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.

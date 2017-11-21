@@ -1,5 +1,7 @@
 D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/d                     && \
+    d $B/glb                   && \
+    d $B/glb/wvel              && \
     d $B/io                    && \
     d $B/io/bop                && \
     d $B/io/field              && \
@@ -20,6 +22,10 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/rbc/rnd               && \
     d $B/rbc/rnd/api           && \
     d $B/rbc/stretch           && \
+    d $B/restrain              && \
+    d $B/restrain/stat         && \
+    d $B/restrain/sum          && \
+    d $B/scheme                && \
     d $B/u/rbc/main            && \
     d $B/u/rbc/main/lib        && \
     d $B/utils                
