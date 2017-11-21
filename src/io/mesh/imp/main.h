@@ -15,7 +15,8 @@ static void shift(const Particle *f, int n, /**/ Particle *t) {
     }
 }
 
-static void write(const void * const ptr, const int nbytes32, MPI_File f) {
+static void write(const void * const ptr,
+                  const int nbytes32, MPI_File f) {
     MPI_Offset base;
     MC(MPI_File_get_position(f, &base));
     MPI_Offset offset = 0, nbytes = nbytes32;
@@ -34,12 +35,21 @@ static int reduce(int n0) {
     return n;
 }
 
+static void write_once(const void * const ptr,
+                       int sz0, MPI_File f) {
+    int sz;
+    sz = (m::rank == 0) ? sz0 : 0;
+    write(ptr, sz, f);
+}
+/* root predicate */
+static int rootp() { return m::rank == 0; }
+
 static void header(int nc0, int nv, int nt, MPI_File f) {
     int nc; /* total number of cells */
     int sz = 0;
     char s[BUFSIZ] = {0};
     nc = reduce(nc0);
-    if (m::rank == 0)
+    if (rootp())
         sz = sprintf(s,
                      "ply\n"
                      "format binary_little_endian 1.0\n"
@@ -49,7 +59,7 @@ static void header(int nc0, int nv, int nt, MPI_File f) {
                      "element face  %d  \n"
                      "property list int int vertex_index\n"
                      "end_header\n", nv*nc, nt*nc);
-    write(s, sz, f);
+    write_once(s, sz, f);
 }
 
 static void vert(const Particle *pp, int nc, int nv, MPI_File f) {
