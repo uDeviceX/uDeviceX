@@ -1,18 +1,18 @@
 set -ue
-
 # update all units
+
+l="u/bangladesh u/clist
+u/comm/main u/comm/oc u/france
+u/h5 u/hw/hst u/hw/dev u/korea
+u/pair u/rbc/force u/rbc/rnd u/rbc/main u/safe
+u/scan u/x"
+
 one () {
     local u
     u="$1"; shift
     printf 'upd: %s\n' "$u"
     ../tools/udeps "$u"
 }
-
-l="u/bangladesh u/clist
-u/comm/main u/comm/oc u/france
-u/h5 u/hw/hst u/hw/dev u/korea
-u/pair u/rbc/force u/rbc/rnd u/safe
-u/scan u/x"
 
 for u in $l
 do one "$u"
