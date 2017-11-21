@@ -16,3 +16,9 @@ static void one(const void * const ptr, int sz0, MPI_File f) {
     sz = (rootp()) ? sz0 : 0;
     all(ptr, sz, f);
 }
+
+static int fopen(const char *fn, /**/ MPI_File *f) {
+    MC(MPI_File_open(m::cart, fn, MPI_MODE_WRONLY |  MPI_MODE_CREATE, MPI_INFO_NULL, f));
+    MC(MPI_File_set_size(*f, 0));
+    return 0;
+}

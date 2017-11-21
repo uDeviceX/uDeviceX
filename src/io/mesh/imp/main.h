@@ -95,8 +95,7 @@ static void dump1(const Particle *pp, const int4 *faces, int nc, int nv, int nt,
 
 static void dump2(const Particle *pp, const int4 *faces, int nc, int nv, int nt, const char *fn) {
     MPI_File f;
-    MPI_File_open(m::cart, fn, MPI_MODE_WRONLY |  MPI_MODE_CREATE, MPI_INFO_NULL, &f);
-    MPI_File_set_size(f, 0);
+    write::fopen(fn, /**/ &f);
     dump1(pp, faces, nc, nv, nt, f);
     MPI_File_close(&f);
 }
