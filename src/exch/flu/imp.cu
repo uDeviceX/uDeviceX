@@ -23,17 +23,17 @@
 #include "type.h"
 #include "imp.h"
 
-namespace exch {
-namespace flu {
-using namespace comm;
-#include "dev.h"
+// namespace exch {
+// namespace flu {
+// using namespace comm;
+// #include "dev.h"
 
-#include "imp/ini.h"
-#include "imp/fin.h"
-#include "imp/map.h"
-#include "imp/pack.h"
-#include "imp/com.h"
-#include "imp/unpack.h"
+// #include "imp/ini.h"
+// #include "imp/fin.h"
+// #include "imp/map.h"
+// #include "imp/pack.h"
+// #include "imp/com.h"
+// #include "imp/unpack.h"
 
-} // flu
-} // exch
+// } // flu
+// } // exch
