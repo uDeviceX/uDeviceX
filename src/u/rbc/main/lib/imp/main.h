@@ -19,7 +19,7 @@ static void dump(rbc::Quants q) {
 static void run0(rbc::Quants q, rbc::force::TicketT t, rbc::stretch::Fo* stretch, Force *f) {
     int i;
     for (i = 0; i < 1000; i++) {
-        scheme::clear_forces(ff, q.n);
+        DzeroA(f, q.n)
         rbc::force::apply(q, t, /**/ f);
         rbc::stretch::apply(q.nc, stretch, /**/ f);
         scheme::move(rbc_mass, q.n, f, q.pp);
