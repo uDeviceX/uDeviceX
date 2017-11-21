@@ -92,7 +92,7 @@ static void dump2(const Particle *pp, const int4 *faces, int nc, int nv, int nt,
     write::fclose(f);
 }
 
-void rbc_mesh_dump(const Particle *pp, const int4 *faces, int nc, int nv, int nt, int id) {
+void rbc(const Particle *pp, const int4 *faces, int nc, int nv, int nt, int id) {
     const char *fmt = DUMP_BASE "/r/%05d.ply";
     char f[BUFSIZ]; /* file name */
     sprintf(f, fmt, id);
@@ -100,7 +100,7 @@ void rbc_mesh_dump(const Particle *pp, const int4 *faces, int nc, int nv, int nt
     dump2(pp, faces, nc, nv, nt, f);
 }
 
-void rig_mesh_dump(const Particle *pp, const int4 *faces, int nc, int nv, int nt, int id) {
+void rig(const Particle *pp, const int4 *faces, int nc, int nv, int nt, int id) {
     const char *fmt = DUMP_BASE "/s/%05d.ply";
     char f[BUFSIZ]; /* file name */
     sprintf(f, fmt, id);
