@@ -19,9 +19,9 @@ static void dump(rbc::Quants q) {
 static void run0(rbc::Quants q, rbc::force::TicketT t, Force *f) {
     int i;
     rbc::force::apply(q, t, /**/ f);
-    for (i = 0; i < 1000; i++) {
+    for (i = 0; i < 10; i++) {
         scheme::move(rbc_mass, q.n, f, q.pp);
-        if (i % 10 == 0) dump(q);
+        if (i % 1 == 0) dump(q);
     }
 }
 
