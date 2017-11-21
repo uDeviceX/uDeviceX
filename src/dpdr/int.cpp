@@ -182,13 +182,13 @@ static void ini_frags(TicketRhalo tr, /**/ hforces::Frag26 *frag) {
     }
 }
 
-static void ini_sfrags(TicketShalo ts, hforces::SFrag26 *sfrag) {
+static void ini_sfrags(TicketShalo ts, hforces::LFrag26 *lfrags) {
     Cloud clouda = {0, 0};    
 
     for (int i = 0; i < 26; ++i) {
         ini_cloud(ts.b.pp.d[i], &clouda);
 
-        sfrag->d[i] = {
+        lfrags->d[i] = {
             .c  = clouda,            
             .ii = ts.b.ii.d[i],
             .n  = ts.nphst[i]};
@@ -208,35 +208,35 @@ static void ini_color_frags(TicketRIhalo t, /**/ hforces::Frag26 *frag) {
         ini_cloud_color(t.b.ii.d[i], &frag->d[i].c);
 }
 
-static void ini_color_sfrags(TicketSIhalo t, /**/ hforces::SFrag26 *sfrag) {
+static void ini_color_sfrags(TicketSIhalo t, /**/ hforces::LFrag26 *lfrags) {
     for (int i = 0; i < 26; ++i)
-        ini_cloud_color(t.b.ii.d[i], &sfrag->d[i].c);
+        ini_cloud_color(t.b.ii.d[i], &lfrags->d[i].c);
 }
 
 void fremote_color(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, TicketSIhalo tis, TicketRIhalo tir, /**/ Force *ff) {
-    hforces::SFrag26 sfrag;
+    hforces::LFrag26 lfrags;
     hforces::Frag26   frag;
     hforces::Rnd26     rnd;
 
-    ini_sfrags(ts, /**/ &sfrag);
+    ini_sfrags(ts, /**/ &lfrags);
     ini_frags (tr, /**/ &frag);
     ini_rnd (trnd, /**/ &rnd);
 
     ini_color_frags(tir, /**/ &frag);
-    ini_color_sfrags(tis, /**/ &sfrag);
+    ini_color_sfrags(tis, /**/ &lfrags);
 
-    hforces::interactions(sfrag, frag, rnd, (float*)ff);
+    hforces::interactions(lfrags, frag, rnd, (float*)ff);
 }
 
 void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
-    hforces::SFrag26 sfrag;
+    hforces::LFrag26 lfrags;
     hforces::Frag26   frag;
     hforces::Rnd26     rnd;
 
-    ini_sfrags(ts, /**/ &sfrag);
+    ini_sfrags(ts, /**/ &lfrags);
     ini_frags (tr, /**/ &frag);
     ini_rnd (trnd, /**/ &rnd);
 
-    hforces::interactions(sfrag, frag, rnd, (float*)ff);
+    hforces::interactions(lfrags, frag, rnd, (float*)ff);
 }
 }
