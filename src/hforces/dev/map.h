@@ -99,7 +99,7 @@ static __device__  void r2size(float r, int nc, int S, /**/ int *pl, int *ps) {
     *pl = l; *ps = s;
 }
 
-static __device__ Map r2map(const Frag frag, float x, float y, float z) {
+static __device__ Map r2map(const RFrag frag, float x, float y, float z) {
     /* coordinate [r] to map */
     int id; /* base id */
     int xl, yl, zl; /* low */

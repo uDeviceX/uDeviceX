@@ -4,6 +4,7 @@
 #include "msg.h"
 #include "mpi/glb.h"
 
+#include "utils/error.h"
 #include "utils/halloc.h"
 
 #include "io/field/h5/imp.h"

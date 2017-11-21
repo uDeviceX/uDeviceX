@@ -154,7 +154,20 @@ void recv_ii(const TicketRhalo *t, /**/ TicketRIhalo *ti) {
 }
 
 
-static void ini_frags(TicketRhalo tr, /**/ hforces::Frag26 *frag) {
+static void ini_local_frags(TicketShalo ts, hforces::LFrag26 *lfrags) {
+    Cloud clouda = {0, 0};    
+
+    for (int i = 0; i < 26; ++i) {
+        ini_cloud(ts.b.pp.d[i], &clouda);
+
+        lfrags->d[i] = {
+            .c  = clouda,            
+            .ii = ts.b.ii.d[i],
+            .n  = ts.nphst[i]};
+    }
+}
+
+static void ini_remote_frags(TicketRhalo tr, /**/ hforces::RFrag26 *rfrags) {
     enum {X, Y, Z};
     int i, dx, dy, dz, xcells, ycells, zcells;
     Cloud cloudb = {0, 0};
@@ -169,7 +182,7 @@ static void ini_frags(TicketRhalo tr, /**/ hforces::Frag26 *frag) {
         zcells = dz == 0 ? ZS : 1;
         ini_cloud(tr.b.pp.d[i], &cloudb);
         
-        frag->d[i] = {
+        rfrags->d[i] = {
             .c     = cloudb,
             .start = tr.b.cum.d[i],
             .dx = dx,
@@ -182,19 +195,6 @@ static void ini_frags(TicketRhalo tr, /**/ hforces::Frag26 *frag) {
     }
 }
 
-static void ini_sfrags(TicketShalo ts, hforces::SFrag26 *sfrag) {
-    Cloud clouda = {0, 0};    
-
-    for (int i = 0; i < 26; ++i) {
-        ini_cloud(ts.b.pp.d[i], &clouda);
-
-        sfrag->d[i] = {
-            .c  = clouda,            
-            .ii = ts.b.ii.d[i],
-            .n  = ts.nphst[i]};
-    }
-}
-
 static void ini_rnd(TicketRnd trnd, /**/ hforces::Rnd26 *rnd) {
     for (int i = 0; i < 26; ++i)
         rnd->d[i] = {
@@ -203,40 +203,40 @@ static void ini_rnd(TicketRnd trnd, /**/ hforces::Rnd26 *rnd) {
         };
 }
 
-static void ini_color_frags(TicketRIhalo t, /**/ hforces::Frag26 *frag) {
+static void ini_color_local_frags(TicketSIhalo t, /**/ hforces::LFrag26 *lfrags) {
     for (int i = 0; i < 26; ++i)
-        ini_cloud_color(t.b.ii.d[i], &frag->d[i].c);
+        ini_cloud_color(t.b.ii.d[i], &lfrags->d[i].c);
 }
 
-static void ini_color_sfrags(TicketSIhalo t, /**/ hforces::SFrag26 *sfrag) {
+static void ini_color_remote_frags(TicketRIhalo t, /**/ hforces::RFrag26 *rfrags) {
     for (int i = 0; i < 26; ++i)
-        ini_cloud_color(t.b.ii.d[i], &sfrag->d[i].c);
+        ini_cloud_color(t.b.ii.d[i], &rfrags->d[i].c);
 }
 
 void fremote_color(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, TicketSIhalo tis, TicketRIhalo tir, /**/ Force *ff) {
-    hforces::SFrag26 sfrag;
-    hforces::Frag26   frag;
-    hforces::Rnd26     rnd;
+    hforces::LFrag26 lfrags;
+    hforces::RFrag26 rfrags;
+    hforces::Rnd26   rnd;
 
-    ini_sfrags(ts, /**/ &sfrag);
-    ini_frags (tr, /**/ &frag);
+    ini_local_frags(ts, /**/ &lfrags);
+    ini_remote_frags (tr, /**/ &rfrags);
     ini_rnd (trnd, /**/ &rnd);
 
-    ini_color_frags(tir, /**/ &frag);
-    ini_color_sfrags(tis, /**/ &sfrag);
+    ini_color_local_frags(tis, /**/ &lfrags);
+    ini_color_remote_frags(tir, /**/ &rfrags);
 
-    hforces::interactions(sfrag, frag, rnd, (float*)ff);
+    hforces::interactions(lfrags, rfrags, rnd, (float*)ff);
 }
 
 void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
-    hforces::SFrag26 sfrag;
-    hforces::Frag26   frag;
-    hforces::Rnd26     rnd;
+    hforces::LFrag26 lfrags;
+    hforces::RFrag26 rfrags;
+    hforces::Rnd26   rnd;
 
-    ini_sfrags(ts, /**/ &sfrag);
-    ini_frags (tr, /**/ &frag);
+    ini_local_frags(ts, /**/ &lfrags);
+    ini_remote_frags (tr, /**/ &rfrags);
     ini_rnd (trnd, /**/ &rnd);
 
-    hforces::interactions(sfrag, frag, rnd, (float*)ff);
+    hforces::interactions(lfrags, rfrags, rnd, (float*)ff);
 }
 }

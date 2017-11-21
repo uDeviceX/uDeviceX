@@ -1,4 +1,4 @@
-__device__ void assert_frag(int i, const Frag frag) {
+__device__ void assert_frag(int i, const RFrag frag) {
     int xs, ys, zs; /* sizes */
     int dx, dy, dz;
     xs = frag.xcells; ys = frag.ycells; zs = frag.zcells;
@@ -7,7 +7,7 @@ __device__ void assert_frag(int i, const Frag frag) {
     assert(frag_d2i(dx, dy, dz) == i);
 }
 
-__device__ void assert_rc(const Frag frag, int i, int row, int col, int jump) {
+__device__ void assert_rc(const RFrag frag, int i, int row, int col, int jump) {
     /* i: base cell id */
     int fid, nmax;
     int dx, dy, dz;

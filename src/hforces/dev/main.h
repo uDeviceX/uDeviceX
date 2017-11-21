@@ -14,7 +14,7 @@ static __device__ float random(int aid, int bid, float seed, int mask) {
     return rnd::mean0var1uu(seed, a1, a2);
 }
 
-static __device__ void force0(const Rnd rnd, const Frag bfrag, const Map m, const forces::Pa a, int aid, /**/
+static __device__ void force0(const Rnd rnd, const RFrag bfrag, const Map m, const forces::Pa a, int aid, /**/
                               float *fx, float *fy, float *fz) {
     forces::Pa b;
     int i;
@@ -30,7 +30,7 @@ static __device__ void force0(const Rnd rnd, const Frag bfrag, const Map m, cons
     }
 }
 
-static __device__ void force1(const Rnd rnd, const Frag frag, const Map m, const forces::Pa p, int id, Fo f) {
+static __device__ void force1(const Rnd rnd, const RFrag frag, const Map m, const forces::Pa p, int id, Fo f) {
     float x, y, z; /* force */
     force0(rnd, frag, m, p, id, /**/ &x, &y, &z);
     atomicAdd(f.x, x);
@@ -38,7 +38,7 @@ static __device__ void force1(const Rnd rnd, const Frag frag, const Map m, const
     atomicAdd(f.z, z);
 }
 
-static __device__ void force2(const Frag frag, const Rnd rnd, forces::Pa p, int id, /**/ Fo f) {
+static __device__ void force2(const RFrag frag, const Rnd rnd, forces::Pa p, int id, /**/ Fo f) {
     float x, y, z;
     Map m;
     forces::p2r3(&p, /**/ &x, &y, &z);
@@ -55,11 +55,11 @@ static __device__ Fo i2f(const int *ii, float *ff, int i) {
     return f;
 }
 
-static __device__ Fo sfrag2f(const SFrag frag, float *ff, int i) {
+static __device__ Fo sfrag2f(const LFrag frag, float *ff, int i) {
     return i2f(frag.ii, ff, i);
 }
 
-static __device__ void force3(const SFrag afrag, const Frag bfrag, const Rnd rnd, int i, /**/ float *ff) {
+static __device__ void force3(const LFrag afrag, const RFrag bfrag, const Rnd rnd, int i, /**/ float *ff) {
     forces::Pa p;
     Fo f;
     cloud_get(afrag.c, i, &p);
@@ -67,10 +67,10 @@ static __device__ void force3(const SFrag afrag, const Frag bfrag, const Rnd rnd
     force2(bfrag, rnd, p, i, f);
 }
 
-__global__ void force(const int27 start, const SFrag26 ssfrag, const Frag26 ffrag, const Rnd26 rrnd, /**/ float *ff) {
-    Frag frag;
+__global__ void force(const int27 start, const LFrag26 lfrags, const RFrag26 rfrags, const Rnd26 rrnd, /**/ float *ff) {
     Rnd  rnd;
-    SFrag sfrag;
+    RFrag rfrag;
+    LFrag lfrag;
     int gid;
     int fid; /* fragment id */
     int i; /* particle id */
@@ -79,12 +79,12 @@ __global__ void force(const int27 start, const SFrag26 ssfrag, const Frag26 ffra
     if (gid >= start.d[26]) return;
     fid = k_common::fid(start.d, gid);
     i = gid - start.d[fid];
-    sfrag = ssfrag.d[fid];
-    if (i >= sfrag.n) return;
+    lfrag = lfrags.d[fid];
+    if (i >= lfrag.n) return;
 
-    frag = ffrag.d[fid];
-    assert_frag(fid, frag);
+    rfrag = rfrags.d[fid];
+    assert_frag(fid, rfrag);
 
     rnd = rrnd.d[fid];
-    force3(sfrag, frag, rnd, i, /**/ ff);
+    force3(lfrag, rfrag, rnd, i, /**/ ff);
 }

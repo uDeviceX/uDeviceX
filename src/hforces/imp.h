@@ -3,13 +3,13 @@ namespace hforces {
 /* fragment */
 enum FragType { BULK = 0, FACE = 1, EDGE = 2, CORNER = 3 };
 
-struct SFrag { /* "send" fragment */
+struct LFrag { /* "local" fragment */
     Cloud c;
     const int *ii; /* index */
     int n;
 };
 
-struct Frag {
+struct RFrag { /* "remote" fragment */
     Cloud c;
     const int *start;
     int dx, dy, dz, xcells, ycells, zcells;
@@ -22,10 +22,10 @@ struct Rnd {
 };
 
 typedef Sarray<int, 27> int27;
-typedef Sarray<SFrag, 26> SFrag26;
-typedef Sarray< Frag, 26>  Frag26;
+typedef Sarray<LFrag, 26> LFrag26;
+typedef Sarray<RFrag, 26> RFrag26;
 typedef Sarray<  Rnd, 26>   Rnd26;
 
-void interactions(const SFrag26 ssfrag, const Frag26 ffrag, const Rnd26 rrnd, /**/ float *ff);
+void interactions(const LFrag26 lfrags, const RFrag26 rfrags, const Rnd26 rrnd, /**/ float *ff);
 
 } /* namespace */
