@@ -1,4 +1,4 @@
-struct FILE { MPI_File f; };
+struct File { MPI_File f; };
 
 static void all(const void * const ptr, const int nbytes32, MPI_File *fp) {
     MPI_File f = *fp;
