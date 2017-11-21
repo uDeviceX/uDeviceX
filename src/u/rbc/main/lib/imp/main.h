@@ -1,5 +1,5 @@
 static void dump(rbc::Quants q) {
-    Particle pp[999999];
+    Particle pp[9999];
     const char f[] = "r.ply";
     static int id = 0;
     cD2H(pp, q.pp, q.n);
