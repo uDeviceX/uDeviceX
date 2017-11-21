@@ -1,16 +1,16 @@
 
 /* return origin and extents of the cells of fragment i */
-static __device__ void get_frag_box(int3 dims, int i, /**/ int org[3], int ext[3]) {
+static __device__ void get_frag_box(int i, /**/ int org[3], int ext[3]) {
     int d[3] = frag_i2d3(i);
-    int c, L[3] = {dims.x, dims.y, dims.z};
+    int c, L[3] = {XS, YS, ZS};
     for (c = 0; c < 3; ++c) {
         org[c] = (d[c] == 1) ? L[c] - 1 : 0;
         ext[c] = (d[c] == 0) ? L[c]     : 1;
     }
 }
 
-/* halo to bulk cell id */
-static __device__ int h2cid(int hci, const int org[3], const int ext[3]) {
+/* convert cellid from frag coordinates to bulk coordinates */
+static __device__ int frag2bulk(int hci, const int org[3], const int ext[3]) {
     enum {X, Y, Z};
     int c;
     int src[3];

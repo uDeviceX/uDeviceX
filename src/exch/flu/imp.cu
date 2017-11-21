@@ -24,7 +24,8 @@
 
 namespace exch {
 namespace flu {
-// #include "dev.h"
+
+#include "dev/count.h"
 
 using namespace comm;
 
