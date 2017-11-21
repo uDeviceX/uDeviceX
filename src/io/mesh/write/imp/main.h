@@ -1,4 +1,3 @@
-struct File { MPI_File f; };
 void all(const void * const ptr, const int nbytes32, File *fp) {
     MPI_File f = fp->f;
     MPI_Offset base;

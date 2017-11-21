@@ -1,5 +1,5 @@
 namespace write {
-struct File;
+struct File { MPI_File f; };
 void all(const void *const ptr, const int sz, File*);
 int rootp();
 void one(const void *const ptr, int sz, File*);
