@@ -1,9 +1,13 @@
 static void dump(rbc::Quants q) {
-    Particle pp[999];
+    Particle *pp;
+    UC(emalloc(n*sizeof(Particle), (void**)&pp));
+    
     const char f[] = "r.ply";
     static int id = 0;
     cD2H(pp, q.pp, q.n);
     io::mesh::main(pp, q.tri_hst, q.nc, q.nv, q.nt, f);
+
+    free(pp);
 }
                  
 static void run0(rbc::Quants q, rbc::force::TicketT t, Force *f) {
