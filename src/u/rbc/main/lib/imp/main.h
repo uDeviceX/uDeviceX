@@ -12,7 +12,7 @@ static void dump(rbc::Quants q) {
     static int id = 0;
     char f[BUFSIZ];
     sprintf(f, "%05d.ply", id++);
-    MSG("%s\n",f);
+    MSG("%s",f);
     dump0(q, f);
 }
 
