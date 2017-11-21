@@ -1,17 +1,18 @@
 static void dump(rbc::Quants q) {
     int n;
     Particle *pp;
-    UC(emalloc(n*sizeof(Particle), (void**)&pp));
-
     const char f[] = "r.ply";
     static int id = 0;
+
     n = q.nc * q.nv;
+    UC(emalloc(n*sizeof(Particle), (void**)&pp));
+
     cD2H(pp, q.pp, q.n);
     io::mesh::main(pp, q.tri_hst, q.nc, q.nv, q.nt, f);
 
     free(pp);
 }
-                 
+
 static void run0(rbc::Quants q, rbc::force::TicketT t, Force *f) {
     rbc::force::apply(q, t, /**/ f);
     scheme::move(rbc_mass, q.n, f, q.pp);
