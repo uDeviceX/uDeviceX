@@ -15,19 +15,23 @@ static void all(const void * const ptr, const int nbytes32, MPI_File *fp) {
 }
 /* root predicate */
 static int rootp() { return m::rank == 0; }
-static void one(const void * const ptr, int sz0, MPI_File *f) {
+static void one(const void * const ptr, int sz0, MPI_File *fp) {
     int sz;
     sz = (rootp()) ? sz0 : 0;
-    all(ptr, sz, f);
+    all(ptr, sz, fp);
 }
 
-static int fopen(const char *fn, /**/ MPI_File *f) {
-    MC(MPI_File_open(m::cart, fn, MPI_MODE_WRONLY |  MPI_MODE_CREATE, MPI_INFO_NULL, f));
-    MC(MPI_File_set_size(*f, 0));
+static int fopen(const char *fn, /**/ MPI_File *fp) {
+    MPI_File f;
+    f = *fp;
+    MC(MPI_File_open(m::cart, fn, MPI_MODE_WRONLY |  MPI_MODE_CREATE, MPI_INFO_NULL, &f));
+    MC(MPI_File_set_size(f, 0));
     return 0;
 }
 
-static int fclose(MPI_File *f) {
-    MC(MPI_File_close(f));
+static int fclose(MPI_File *fp) {
+    MPI_File f;
+    f = *fp;
+    MC(MPI_File_close(&f));
     return 0;
 }
