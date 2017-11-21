@@ -6,6 +6,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/io/field/h5           && \
     d $B/io/field/xmf          && \
     d $B/io/mesh               && \
+    d $B/io/mesh/write         && \
     d $B/math                  && \
     d $B/mpi                   && \
     d $B/rbc/adj               && \

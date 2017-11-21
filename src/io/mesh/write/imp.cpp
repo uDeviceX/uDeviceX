@@ -12,15 +12,9 @@
 #include "mpi/wrapper.h"
 #include "inc/type.h"
 #include "utils/mc.h"
-#include "write/imp.h"
 
 #include "imp.h"
 
-#if   defined(MESH_SHIFT_EDGE)
-   #include "imp/shift/edge.h"
-#elif defined(MESH_SHIFT_CENTER)
-   #include "imp/shift/center.h"
-#else
-   #error     MESH_SHIFT_* is undefined
-#endif
+namespace write {
 #include "imp/main.h"
+}
