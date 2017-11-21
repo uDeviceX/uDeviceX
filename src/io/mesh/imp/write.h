@@ -22,10 +22,8 @@ static void one(const void * const ptr, int sz0, File *fp) {
 }
 
 static int fopen(const char *fn, /**/ File *fp) {
-    MPI_File f;
-    f = fp->f;
-    MC(MPI_File_open(m::cart, fn, MPI_MODE_WRONLY |  MPI_MODE_CREATE, MPI_INFO_NULL, &f));
-    MC(MPI_File_set_size(f, 0));
+    MC(MPI_File_open(m::cart, fn, MPI_MODE_WRONLY |  MPI_MODE_CREATE, MPI_INFO_NULL, &fp->f));
+    MC(MPI_File_set_size(fp->f, 0));
     return 0;
 }
 
