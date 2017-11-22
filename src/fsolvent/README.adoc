@@ -1,0 +1,15 @@
+= fsolvent
+
+solvent forces
+
+== bulk
+
+solvent bulk interactions
+
+== halo
+
+interactions with solvent of neighbouring subdomains
+
+== RND
+
+holders for random number generators
