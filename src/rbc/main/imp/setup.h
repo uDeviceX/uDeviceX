@@ -40,7 +40,7 @@ static void setup_edg1(int md, int nv, adj::Hst *adj, float *rr, /**/
 static void setup_edg(int md, int nv, adj::Hst *adj, /**/ Edg *dev, float *totArea) {
     float *rr;
     Edg *hst;
-    const *char fn = "rbc.stress.free";
+    const char *fn = "rbc.stress.free";
 
     UC(emalloc(md*nv*sizeof(Edg), (void**) &hst));
     UC(emalloc(3*nv*sizeof(float), (void**) &rr));
