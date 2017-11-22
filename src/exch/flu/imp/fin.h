@@ -2,6 +2,7 @@ void fin(Pack *p) {
     for (int i = 0; i < NFRAGS; ++i) {
         d::Free(p->bcc.d[i]);
         d::Free(p->bss.d[i]);
+        d::Free(p->fss.d[i]);
         d::Free(p->bii.d[i]);
     }
     

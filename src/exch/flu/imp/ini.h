@@ -11,7 +11,9 @@ void ini(int maxd, Pack *p) {
         sz = nc * sizeof(int);
         d::Malloc((void**) &p->bcc.d[i], sz);
         d::Malloc((void**) &p->bss.d[i], sz);
-
+        d::Malloc((void**) &p->fss.d[i], sz);
+        p->hfss.counts[i] = nc;
+        
         sz = cap[i] * sizeof(int);
         d::Malloc((void**) &p->bii.d[i], sz);
     }
