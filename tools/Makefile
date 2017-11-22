@@ -1,4 +1,4 @@
-CXXFLAGS+=-std=c++11 -O3 -Wall
+CFLAGS += -O3 -Wall
 
 BIN=$(HOME)/bin
 CNF=$(HOME)/.udx # config directory
@@ -14,7 +14,7 @@ install_exs:; mkdir -p $(BIN) && cp $(EXS) $(BIN)
 install_cnf:; mkdir -p $(CNF) && cp $(C)   $(CNF)
 install_bops2:; mkdir -p $(BIN) && cp bops2 $(BIN)/bops2vtks && cp bops2 $(BIN)/bops2txts
 
-ply2punto: ply2punto.cpp
+ply2punto: ply2punto.c
 
 test:; u.test test/*
 

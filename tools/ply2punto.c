@@ -15,7 +15,7 @@ FILE* fd;
 char line[1024]; /* a line from a file */
 int nv; /* number of vertices */
 
-bool comment_line() { /* returns true for a comment line in ply */
+int comment_line() { /* returns true for a comment line in ply */
     const char pre[] = "comment";
     return strncmp(pre, line, strlen(pre)) == 0;
 }
@@ -35,9 +35,11 @@ void read_header() {
 #undef nl
 
 void read_write_vertices() {
+    int iv, ib;
+    float x, y, z;
     fread(buf, NVAR*nv, sizeof(float), fd);
-    for (int iv = 0, ib = 0; iv < nv; ++iv) {
-        auto x = buf[ib++], y = buf[ib++], z = buf[ib++];
+    for (iv = ib = 0; iv < nv; ++iv) {
+        x = buf[ib++], y = buf[ib++], z = buf[ib++];
         printf("%g %g %g\n", x, y, z);
         ib++; ib++; ib++; /* skip vx, vy, vz */
     }
@@ -73,4 +75,5 @@ int main(int argc, const char** argv) {
         if (i > 1) printf("\n");
         read_file(argv[i]);
     }
+    return 0;
 }
