@@ -42,9 +42,9 @@ __global__ void collect_particles(const int27 fragstart, const Particle *pp, con
     if (gid + 1 == fragstart.d[fid + 1]) fnn[fid] = dst;    
 }
 
-__global__ void collect_colors(const int27 starts, const int *ii,
-                               const intp26 fragss, const intp26 fragcc, const intp26 fragcum,
-                               const int26 fragcapacity, /**/ intp26 fragii) {
+__global__ void collect_colors(const int27 fragstart, const int *ii,
+                               const intp26 bss, const intp26 bcc, const intp26 fss,
+                               const int26 cap, /**/ intp26 fii) {
     int gid, fid, hci, tid, src, dst, nsrc;
     int lpid, dpid, spid;
 
@@ -56,19 +56,19 @@ __global__ void collect_colors(const int27 starts, const int *ii,
     gid = threadIdx.x / (warpSize / 2) + 2 * blockIdx.x;
     tid = threadIdx.x % (warpSize / 2);
 
-    if (gid >= starts.d[26]) return;
+    if (gid >= fragstart.d[26]) return;
 
-    fid = k_common::fid(starts.d, gid);
-    hci = gid - starts.d[fid];
+    fid = k_common::fid(fragstart.d, gid);
+    hci = gid - fragstart.d[fid];
 
-    src = fragss.d[fid][hci];
-    dst = fragcum.d[fid][hci];
-    nsrc = min(fragcc.d[fid][hci], fragcapacity.d[fid] - dst);
+    src = bss.d[fid][hci];
+    dst = fss.d[fid][hci];
+    nsrc = min(bcc.d[fid][hci], cap.d[fid] - dst);
 
     for (lpid = tid; lpid < nsrc; lpid += warpSize / 2) {
         dpid = dst + lpid;
         spid = src + lpid;
-        fragii.d[fid][dpid] = ii[spid];
+        fii.d[fid][dpid] = ii[spid];
     }
 }
 
