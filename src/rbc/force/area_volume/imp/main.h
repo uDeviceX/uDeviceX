@@ -7,3 +7,7 @@ void area_volume(int nc, const Texo<float2> texvert, const Texo<int4> textri, /*
     Dzero(av, 2*nc);
     KL(dev::area_volume, (avBlocks, avThreads), (nt, nv, texvert, textri, av));
 }
+
+void area_volume_hst(int nc, const Texo<float2> texvert, const Texo<int4> textri, /**/ float *av) {
+    area_volume(nc, texvert, textri, av);
+}
