@@ -17,9 +17,9 @@ void ini(int maxd, Pack *p) {
     }
     ncs[BULK] = 0;
     
-    UC(ini(PINNED, NONE, sizeof(Particle), cap, /**/ &p->hpp, &p->dpp));
+    UC(ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &p->hpp, &p->dpp));
     if (multi_solvent)
-        UC(ini(PINNED, NONE,  sizeof(int), cap, /**/ &p->hcc, &p->dcc));
+        UC(ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ &p->hcc, &p->dcc));
 
     UC(ini(PINNED_HST, NONE, sizeof(int), ncs, /**/ &p->hfss, NULL));
 
