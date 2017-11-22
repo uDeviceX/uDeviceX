@@ -1,4 +1,5 @@
-static void dump(rbc::Quants q) {
+static void dump(rbc::Quants q, rbc::force::TicketT t) {
+    float av[2];
     int n;
     Particle *pp;
     static int i = 0;
@@ -6,6 +7,9 @@ static void dump(rbc::Quants q) {
     UC(emalloc(n*sizeof(Particle), (void**)&pp));
     cD2H(pp, q.pp, q.n);
     io::mesh::rbc(pp, q.tri_hst, q.nc, q.nv, q.nt, i++);
+    area_volume_hst(q.nc, t.texvert, t.textri, /**/ av);
+
+    MSG("av: %g %g", av[0]/RBCtotArea, av[1]/RBCtotVolume);
     diagnostics(pp, n, i);
     free(pp);
 }
@@ -19,7 +23,8 @@ static void run0(rbc::Quants q, rbc::force::TicketT t, rbc::stretch::Fo* stretch
         rbc::force::apply(q, t, /**/ f);
         rbc::stretch::apply(q.nc, stretch, /**/ f);
         scheme::move(rbc_mass, q.n, f, q.pp);
-        if (i % part_freq  == 0) dump(q);
+        if (i % part_freq  == 0) dump(q, t);
+        //        scheme::clear_vel(q.n, /**/ q.pp);
     }
 }
 
