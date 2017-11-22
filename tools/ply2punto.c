@@ -15,7 +15,7 @@ FILE* fd;
 char line[1024]; /* a line from a file */
 int nv; /* number of vertices */
 
-int comment_line() { /* returns true for a comment line in ply */
+int comment_line() {
     const char pre[] = "comment";
     return strncmp(pre, line, strlen(pre)) == 0;
 }
