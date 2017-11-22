@@ -20,4 +20,7 @@ void ini(int maxd, Pack *p) {
     ini(PINNED_DEV, NONE,      sizeof(int), cap, /**/ &p->hcc, &p->dcc);
 
     ini(PINNED_HST, NONE, sizeof(int), ncs, /**/ &p->hfss, NULL);
+
+    sz = 26 * sizeof(int);
+    d::Malloc((void**) &p->counts_dev, sz);
 }

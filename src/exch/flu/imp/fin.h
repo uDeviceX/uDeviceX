@@ -9,5 +9,7 @@ void fin(Pack *p) {
     fin(PINNED_DEV, NONE, /**/ &p->hcc, &p->dcc);
 
     fin(PINNED_HST, NONE, /**/ &p->hfss, NULL);
+
+    d::Free(p->counts_dev);
 }
 
