@@ -1,5 +1,5 @@
 #### periodic box: stretch
-# nTEST: rbc.u.main.simple.0
+# cTEST: rbc.u.main.sphere.0
 set -eu
 rm -rf bop diag.txt h5 ply rbc.off
 :
@@ -13,16 +13,18 @@ cell=data/cells/rbc/$nv.off
 cp              $cell           rbc.off
 u.stretch $A 5% $cell         > rbc.stretch
 cp $S/data/ic/ident             rbcs-ic.dat
-volume=`volume $cell` : needs gitlab:off
+:
+sph=1.0 : spericity
+volume=`sphericity2volume $sph $cell` : needs gitlab:off
 area=`area $cell`
 :
 x=24 y=16 z=16; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 :
 u.conf $S $U $C <<!
    rbcs
-   RBC_STRETCH RESTRAIN_RBC_VEL MESH_SHIFT_CENTER RBCtotArea=$area RBCtotVolume=$volume
+   RESTRAIN_RBC_VEL MESH_SHIFT_CENTER RBCtotArea=$area RBCtotVolume=$volume
    XS=48 YS=32 ZS=32 RBCnv=$nv RBC_RND=false
-   dt=1e-4 tend=10 part_freq=10000
+   dt=1e-8 tend=0.1 part_freq=100000
    run
 !
 { make clean && u.make -j; } > /dev/null
