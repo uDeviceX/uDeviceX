@@ -3,7 +3,7 @@
 #include <string.h>
 
 void usg() {
-    fprintf(stderr, "ply2punt0 1.ply 2.ply .. > punto.dat\n");
+    fprintf(stderr, "ply2punto 1.ply 2.ply .. > punto.dat\n");
     exit(0);
 }
 
@@ -16,55 +16,55 @@ char line[1024]; /* a line from a file */
 int nv; /* number of vertices */
 
 bool comment_line() { /* returns true for a comment line in ply */
-  auto pre = "comment";
-  return strncmp(pre, line, strlen(pre)) == 0;
+    auto pre = "comment";
+    return strncmp(pre, line, strlen(pre)) == 0;
 }
 
 #define nl() fgets(line, sizeof(line), fd) /* [n]ext [l]ine */
 void read_header() {
-  nl(); /* ply */
-  nl(); /* format binary_little_endian 1.0 */
-  do nl(); while (comment_line());
-  /* element vertex %nv% */
-  sscanf(line, "element vertex %d\n", &nv);
-  nl(); nl(); nl(); nl(); nl(); nl(); /* property float [xyzuvw] */
+    nl(); /* ply */
+    nl(); /* format binary_little_endian 1.0 */
+    do nl(); while (comment_line());
+    /* element vertex %nv% */
+    sscanf(line, "element vertex %d\n", &nv);
+    nl(); nl(); nl(); nl(); nl(); nl(); /* property float [xyzuvw] */
 
-  nl(); /* element faces */
-  nl(); /* property list int int vertex_index */
-  nl(); /* end_header */
+    nl(); /* element faces */
+    nl(); /* property list int int vertex_index */
+    nl(); /* end_header */
 }
 #undef nl
 
 void read_write_vertices() {
-  fread(buf, NVAR*nv, sizeof(float), fd);
-  for (int iv = 0, ib = 0; iv < nv; ++iv) {
-    auto x = buf[ib++], y = buf[ib++], z = buf[ib++];
-    printf("%g %g %g\n", x, y, z);
-    ib++; ib++; ib++; /* skip vx, vy, vz */
-  }
+    fread(buf, NVAR*nv, sizeof(float), fd);
+    for (int iv = 0, ib = 0; iv < nv; ++iv) {
+        auto x = buf[ib++], y = buf[ib++], z = buf[ib++];
+        printf("%g %g %g\n", x, y, z);
+        ib++; ib++; ib++; /* skip vx, vy, vz */
+    }
 }
 
 FILE* efopen(const char *p, const char *m) {
     FILE *f;
     f = fopen(p, m);
     if (f == NULL) {
-        fprintf(stderr, "fail to open %s\n", p);
+        fprintf(stderr, "ply2punto: fail to open %s\n", p);
         exit(2);
     }
     return f;
 }
 
 void read_file(const char* fn) {
-  fd = efopen(fn, "r");
-  read_header();
-  read_write_vertices();
-  fclose(fd);
+    fd = efopen(fn, "r");
+    read_header();
+    read_write_vertices();
+    fclose(fd);
 }
 
 int eq(const char *a, const char *b) { return strcmp(a, b) == 0; }
 
 void help(int c, const char** a) {
-	if (c > 1 && eq(a[1], "-h")) usg();
+    if (c > 1 && eq(a[1], "-h")) usg();
 }
 
 int main(int argc, const char** argv) {
