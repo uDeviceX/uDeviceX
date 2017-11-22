@@ -28,7 +28,6 @@ void read_header() {
     /* element vertex %nv% */
     sscanf(line, "element vertex %d\n", &nv);
     nl(); nl(); nl(); nl(); nl(); nl(); /* property float [xyzuvw] */
-
     nl(); /* element faces */
     nl(); /* property list int int vertex_index */
     nl(); /* end_header */
