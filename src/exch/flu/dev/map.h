@@ -18,6 +18,7 @@ static __device__ int frag2bulk(int hci, const int org[3], const int ext[3]) {
     return src[X] + XS * (src[Y] + YS * src[Z]);
 }
 
+/* collect cell informations from bulk cells to frag cells */
 __global__ void count_cells(const int27 cellpackstarts, const int *start, const int *count,
                             /**/ intp26 fragss, intp26 fragcc) {
     enum {X, Y, Z};
@@ -44,6 +45,7 @@ __global__ void count_cells(const int27 cellpackstarts, const int *start, const 
     }
 }
 
+/* convert cell starts from bulk coordinates to fragment coordinates */
 template <int NWARPS>
 __global__ void scan(const int26 fragn, const intp26 fragcc, /**/ intp26 fragcum) {
     __shared__ int shdata[32];
