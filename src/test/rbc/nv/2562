@@ -1,11 +1,11 @@
 #### periodic box: dumped relativly to domain center
-# sTEST: rbc.nv2562.0
+# nTEST: rbc.nv2562.0
 rm -rf bop diag.txt h5 ply rbc.off
 nv=2562
 cp data/cells/rbc/$nv.off rbc.off
 export PATH=../tools:$PATH
 (cd ../cmd; make ) > /dev/null
-x=6 y=6 z=6
+x=24 y=6 z=6
 echo 1 0 0 $x \
      0 1 0 $y \
      0 0 1 $z \
@@ -14,7 +14,7 @@ echo 1 0 0 $x \
 u.conf conf/couette.h <<!!!
    KL_SYNC CC_SYNC
    RBCnv=$nv
-   XS=12 YS=12 ZS=12
+   XS=48 YS=12 ZS=12
    rbcs tend=0.5 part_freq=300
    run
 !!!
