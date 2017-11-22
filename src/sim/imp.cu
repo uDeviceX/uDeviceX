@@ -69,7 +69,7 @@
 
 #include "fsi/type.h"
 #include "fsi/imp.h"
-#include "lforces/imp.h"
+#include "fsolvent/bulk/imp.h"
 
 #include "exch/map/type.h"
 #include "exch/obj/type.h"

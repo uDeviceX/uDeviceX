@@ -19,6 +19,8 @@ $B/field.o: $S/field.cpp; $X -I$S/.
 $B/flu/imp.o: $S/flu/imp.cu; $N -I$S/. -I$S/flu
 $B/frag/imp.o: $S/frag/imp.cpp; $X -I$S/. -I$S/frag
 $B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/. -I$S/fsi
+$B/fsolvent/bulk/imp.o: $S/fsolvent/bulk/imp.cu; $N -I$S/. -I$S/fsolvent/bulk
+$B/fsolvent/bulk/transpose/imp.o: $S/fsolvent/bulk/transpose/imp.cu; $N -I$S/. -I$S/fsolvent/bulk/transpose
 $B/generate/rig/imp.o: $S/generate/rig/imp.cu; $N -I$S/. -I$S/generate/rig
 $B/glb/imp.o: $S/glb/imp.cu; $N -I$S/. -I$S/glb
 $B/glb/wvel/imp.o: $S/glb/wvel/imp.cu; $N -I$S/. -I$S/glb/wvel
@@ -37,8 +39,6 @@ $B/io/off.o: $S/io/off.cpp; $X -I$S/. -I$S/io
 $B/io/ply.o: $S/io/ply.cpp; $X -I$S/. -I$S/io
 $B/io/restart.o: $S/io/restart.cpp; $X -I$S/. -I$S/io
 $B/io/rig.o: $S/io/rig.cpp; $X -I$S/. -I$S/io
-$B/lforces/imp.o: $S/lforces/imp.cu; $N -I$S/. -I$S/lforces
-$B/lforces/transpose/imp.o: $S/lforces/transpose/imp.cu; $N -I$S/. -I$S/lforces/transpose
 $B/main.o: $S/main.cpp; $X -I$S/.
 $B/math/linal.o: $S/math/linal.cpp; $X -I$S/. -I$S/math
 $B/mesh/bbox.o: $S/mesh/bbox.cu; $N -I$S/. -I$S/mesh
