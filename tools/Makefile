@@ -1,4 +1,4 @@
-CFLAGS += -O3 -Wall
+CFLAGS += -O3 -g -Wall -Wextra -std=c99 -pedantic
 
 BIN=$(HOME)/bin
 CNF=$(HOME)/.udx # config directory
