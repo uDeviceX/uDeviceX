@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 
 void usg() {
     fprintf(stderr, "ply2punto 1.ply 2.ply .. > punto.dat\n");
@@ -8,7 +9,6 @@ void usg() {
 }
 
 #define NVT   3 /* vertices per triangle */
-#define NVMAX 1000000
 #define NVAR  6 /* x, y, z, vx, vy, vz */
 FILE* fd;
 
@@ -17,7 +17,7 @@ int nv, nt; /* number of vertices and triangles */
 
 int commentp() { return strcmp("comment", line) == 0; }
 #define nl() fgets(line, sizeof(line), fd) /* [n]ext [l]ine */
-void header() {
+void read_header() {
     nl(); /* ply */
     nl(); /* format binary_little_endian 1.0 */
     do nl(); while (commentp());
@@ -30,22 +30,10 @@ void header() {
 }
 #undef nl
 
-void verts0(float *buf) {
-    int i, b;
-    float x, y, z;
-    efread(buf, NVAR*nv, sizeof(float), fd);
-    for (i = b = 0; i < nv; ++i) {
-        x = buf[b++], y = buf[b++], z = buf[b++];
-        printf("%g %g %g\n", x, y, z);
-        b++; b++; b++; /* skip vx, vy, vz */
-     }
-}
-void verts() {
-    float *buf;
-    int sz = nv*NVAR;
-    buf = malloc(nv*sizeof(buf));
-    verts0(buf);
-    free(buf);
+void write_header() {
+    int n_edges = 0;
+    printf("OFF\n");
+    printf("%d %d %d\n", nv, nt, n_edges);
 }
 
 void efread(void *ptr, size_t size, size_t nmemb, FILE *stream) {
@@ -57,18 +45,38 @@ void efread(void *ptr, size_t size, size_t nmemb, FILE *stream) {
     }
 }
 
+void verts0(float *buf) {
+    int i, b;
+    float x, y, z;
+    efread(buf, NVAR*nv, sizeof(float), fd);
+    for (i = b = 0; i < nv; ++i) {
+        x = buf[b++], y = buf[b++], z = buf[b++];
+        printf("%16.10e %16.10e %16.10e\n", x, y, z);
+        b++; b++; b++; /* skip vx, vy, vz */
+     }
+}
+void verts() {
+    float *buf;
+    int sz = nv*NVAR;
+    buf = malloc(sz*sizeof(buf[0]));
+    verts0(buf);
+    free(buf);
+}
+
 void tris0(int *buf) {
     int i, b;
+    int nvt, f1, f2, f3;
     efread(buf, nt*(NVT+1), sizeof(buf[0]), fd);
     for (i = b = 0; i < nt; ++i) {
-        b++;
-        printf("%d: %d %d %d\n", i, buf[b++], buf[b++], buf[b++]);
+        nvt=buf[b++]; assert(nvt == NVT);
+        f1 = buf[b++]; f2 = buf[b++]; f3 = buf[b++];
+        printf("%d %d %d %d\n", NVT, f1, f2, f3);
     }
 }
 void tris() {
     int *buf;
     int sz = nt*(NVT+1);
-    buf = malloc(nv*sizeof(buf));
+    buf = malloc(sz*sizeof(buf[0]));
     tris0(buf);
     free(buf);
 }
@@ -85,7 +93,8 @@ FILE* efopen(const char *p, const char *m) {
 
 void file(const char* fn) {
     fd = efopen(fn, "r");
-    header();
+    read_header();
+    write_header();    
     verts();
     tris();
     fclose(fd);
@@ -97,7 +106,6 @@ void help(int c, const char** a) {
 }
 
 int main(int argc, const char** argv) {
-    int i;
     help(argc, argv);
     file(argv[1]);
     return 0;

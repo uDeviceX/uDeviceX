@@ -1,0 +1,2 @@
+# TEST: ply2off.0
+ply2off test_data/rbc.ply  > rbc.out.off
