@@ -24,6 +24,7 @@ void pack(const Cloud *cloud, /**/ Pack *p) {
     }
 }
 
+/* assume collect_[particles,colors] write to pinned memory */
 void download_data(Pack *p) {
     int counts[26];
     d::MemcpyAsync(counts, p->counts_dev, sizeof(counts), D2H);

@@ -5,9 +5,9 @@ void fin(Pack *p) {
         d::Free(p->bii.d[i]);
     }
     
-    fin(PINNED_DEV, NONE, /**/ &p->hpp, &p->dpp);
+    fin(PINNED, NONE, /**/ &p->hpp, &p->dpp);
     if (multi_solvent)
-        fin(PINNED_DEV, NONE, /**/ &p->hcc, &p->dcc);
+        fin(PINNED, NONE, /**/ &p->hcc, &p->dcc);
 
     fin(PINNED_HST, NONE, /**/ &p->hfss, NULL);
 
