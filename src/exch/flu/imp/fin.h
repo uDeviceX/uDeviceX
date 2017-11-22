@@ -6,7 +6,8 @@ void fin(Pack *p) {
     }
     
     fin(PINNED_DEV, NONE, /**/ &p->hpp, &p->dpp);
-    fin(PINNED_DEV, NONE, /**/ &p->hcc, &p->dcc);
+    if (multi_solvent)
+        fin(PINNED_DEV, NONE, /**/ &p->hcc, &p->dcc);
 
     fin(PINNED_HST, NONE, /**/ &p->hfss, NULL);
 
@@ -22,7 +23,8 @@ void fin(Comm *c) {
 
 void fin(Unpack *u) {
     fin(PINNED_DEV, NONE, /**/ &u->hpp, &u->dpp);
-    fin(PINNED_DEV, NONE, /**/ &u->hcc, &u->dcc);
+    if (multi_solvent)
+        fin(PINNED_DEV, NONE, /**/ &u->hcc, &u->dcc);
 
     fin(PINNED_HST, NONE, /**/ &u->hfss, &u->dfss);
 }

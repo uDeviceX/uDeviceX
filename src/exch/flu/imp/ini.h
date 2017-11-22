@@ -18,7 +18,8 @@ void ini(int maxd, Pack *p) {
     ncs[BULK] = 0;
     
     ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &p->hpp, &p->dpp);
-    ini(PINNED_DEV, NONE,      sizeof(int), cap, /**/ &p->hcc, &p->dcc);
+    if (multi_solvent)
+        ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ &p->hcc, &p->dcc);
 
     ini(PINNED_HST, NONE, sizeof(int), ncs, /**/ &p->hfss, NULL);
 
@@ -44,7 +45,8 @@ void ini(int maxd, Unpack *u) {
     ncs[BULK] = 0;
     
     ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &u->hpp, &u->dpp);
-    ini(PINNED_DEV, NONE,      sizeof(int), cap, /**/ &u->hcc, &u->dcc);
+    if (multi_solvent)
+        ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ &u->hcc, &u->dcc);
 
     ini(PINNED_DEV, NONE, sizeof(int), ncs, /**/ &u->hfss, &u->dfss);
 }
