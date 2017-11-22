@@ -7,9 +7,11 @@ void usg() {
     exit(0);
 }
 
+#define NVT   3 /* vertices per triangle */
 #define NVMAX 1000000
 #define NVAR  6 /* x, y, z, vx, vy, vz */
-float  buf[NVAR*NVMAX];
+float   buf[NVAR*NVMAX];
+float  ibuf[(NVT+1)*NVMAX];
 FILE* fd;
 
 char line[1024]; /* a line from a file */
