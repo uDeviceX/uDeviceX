@@ -17,11 +17,11 @@ void ini(int maxd, Pack *p) {
     }
     ncs[BULK] = 0;
     
-    ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &p->hpp, &p->dpp);
+    UC(ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &p->hpp, &p->dpp));
     if (multi_solvent)
-        ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ &p->hcc, &p->dcc);
+        UC(ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ &p->hcc, &p->dcc));
 
-    ini(PINNED_HST, NONE, sizeof(int), ncs, /**/ &p->hfss, NULL);
+    UC(ini(PINNED_HST, NONE, sizeof(int), ncs, /**/ &p->hfss, NULL));
 
     sz = 26 * sizeof(int);
     d::Malloc((void**) &p->counts_dev, sz);
@@ -44,10 +44,10 @@ void ini(int maxd, Unpack *u) {
         ncs[i] = frag_ncell(i) + 1;
     ncs[BULK] = 0;
     
-    ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &u->hpp, &u->dpp);
+    UC(ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &u->hpp, &u->dpp));
     if (multi_solvent)
-        ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ &u->hcc, &u->dcc);
+        UC(ini(PINNED_DEV, NONE,  sizeof(int), cap, /**/ &u->hcc, &u->dcc));
 
-    ini(PINNED_DEV, NONE, sizeof(int), ncs, /**/ &u->hfss, &u->dfss);
+    UC(ini(PINNED_DEV, NONE, sizeof(int), ncs, /**/ &u->hfss, &u->dfss));
 }
 
