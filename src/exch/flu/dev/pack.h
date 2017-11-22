@@ -1,7 +1,7 @@
 
 __global__ void collect_particles(const int27 fragstart, const Particle *pp, const intp26 bss,
-                     const intp26 bcc, const intp26 fss, const int26 cap,
-                     /**/ intp26 fii, Pap26 fpp, int *fnn) {
+                                  const intp26 bcc, const intp26 fss, const int26 cap,
+                                  /**/ intp26 fii, Pap26 fpp, int *fnn) {
     int gid, fid, hci, tid, src, dst, nsrc, nfloat2s;
     int i, lpid, dpid, spid, c;
 
@@ -41,3 +41,34 @@ __global__ void collect_particles(const int27 fragstart, const Particle *pp, con
     }
     if (gid + 1 == fragstart.d[fid + 1]) fnn[fid] = dst;    
 }
+
+__global__ void collect_colors(const int27 starts, const int *ii,
+                               const intp26 fragss, const intp26 fragcc, const intp26 fragcum,
+                               const int26 fragcapacity, /**/ intp26 fragii) {
+    int gid, fid, hci, tid, src, dst, nsrc;
+    int lpid, dpid, spid;
+
+    /* 16 workers (warpSize/2) per cell  */
+    /* requirement: 32 threads per block */
+    /* gid: work group id                */
+    /* tid: worker id within the group   */
+
+    gid = threadIdx.x / (warpSize / 2) + 2 * blockIdx.x;
+    tid = threadIdx.x % (warpSize / 2);
+
+    if (gid >= starts.d[26]) return;
+
+    fid = k_common::fid(starts.d, gid);
+    hci = gid - starts.d[fid];
+
+    src = fragss.d[fid][hci];
+    dst = fragcum.d[fid][hci];
+    nsrc = min(fragcc.d[fid][hci], fragcapacity.d[fid] - dst);
+
+    for (lpid = tid; lpid < nsrc; lpid += warpSize / 2) {
+        dpid = dst + lpid;
+        spid = src + lpid;
+        fragii.d[fid][dpid] = ii[spid];
+    }
+}
+
