@@ -22,6 +22,12 @@
 #include "rbc/main/imp.h"
 #include "rbc/rnd/imp.h"
 #include "rbc/force/imp.h"
+#include "rbc/stretch/imp.h"
+
+#include "scheme/imp.h"
+
+#include "io/mesh/imp.h"
+#include "io/diag.h"
 
 #include "mpi/glb.h"
 

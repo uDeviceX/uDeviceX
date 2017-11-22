@@ -22,7 +22,8 @@
 #include "rbc/rnd/imp.h"
 #include "rbc/type.h"
 
-#include "rbc/adj/type.h"
+#include "rbc/adj/type/common.h"
+#include "rbc/adj/type/dev.h"
 #include "rbc/adj/dev.h"
 
 #include "rbc/rnd/api/imp.h"
@@ -41,8 +42,9 @@ namespace dev {
 #else
   #error RBC_PARAMS_* is undefined
 #endif
-#include "dev/common.h"
+#include "params/area_volume.h"
 
+#include "dev/common.h"
 #if   RBC_STRESS_FREE
   #include "dev/stress_free1/shape.h"
   #include "dev/stress_free1/force.h"

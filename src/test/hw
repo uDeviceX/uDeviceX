@@ -1,5 +1,5 @@
 #### check if hello world unit compiles and runs
-# cTEST: hw.0
+# TEST: hw.0
 set -eu
 S=`pwd`
 U=u/hw/hst

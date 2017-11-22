@@ -7,7 +7,8 @@
 #include "utils/error.h"
 #include "utils/halloc.h"
 
-#include "rbc/adj/type.h"
+#include "rbc/adj/type/common.h"
+#include "rbc/adj/type/hst.h"
 #include "rbc/adj/imp.h"
 #include "rbc/edg/imp.h"
 

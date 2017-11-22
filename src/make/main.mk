@@ -25,19 +25,16 @@ NVCCFLAGS += $(COMMON) -use_fast_math -restrict
 LIBS      += -lcudart
 LIBS      += -lcurand
 
-N  = $(NVCC)  $(ARCH) $(NVCCFLAGS) --compiler-options '$(NCFLAGS)' -dc $< -c -o $@
-X  = $(NVCC)  $(ARCH)              --compiler-options '$(XCFLAGS)'     $< -c -o $@
-NN = $(NVCC)  $(ARCH) $(NVCCFLAGS) --compiler-options '$(NCFLAGS)' -dc $< -c -o $@
-L  = $(NVCC)  $(ARCH) -dlink $O $(NVCCLIBS) -o $B/gpuCode.o && \
+LOG = @echo $< $@;
+N  = $(LOG) $(NVCC)  $(ARCH) $(NVCCFLAGS) --compiler-options '$(NCFLAGS)' -dc $< -c -o $@
+X  = $(LOG) $(NVCC)  $(ARCH)              --compiler-options '$(XCFLAGS)'     $< -c -o $@
+L  = $(LOG) $(NVCC)  $(ARCH) -dlink $O $(NVCCLIBS) -o $B/gpuCode.o && \
 	$(LINK)  $B/gpuCode.o $O $(LIBS) -o $@
 
 $B/udx: $O; $L
 $O:  $B/.cookie
 $B/.cookie:;       $D ; touch $@
 
-# special rules
-# $B/glb.o: $S/glb.cu; $(NN)
-# $B/bund.o: $S/bund.cu; $(NN)
 clean:; -rm -f $B/udx $O $B/gpuCode.o $B/.cookie
 
 test:

@@ -67,28 +67,28 @@ static void wfaces(const int4 *faces, int nc, int nv, int nt, write::File *f) {
     free(buf);
 }
 
-static void dump0(const Particle *pp, const int4 *faces,
+static void main0(const Particle *pp, const int4 *faces,
                   int nc, int nv, int nt, write::File *f) {
     header(nc,        nv, nt, f);
     vert(pp,      nc, nv,     f);
     wfaces(faces, nc, nv, nt, f);
 }
 
-static void dump1(const Particle *pp, const int4 *faces, int nc, int nv, int nt, write::File *f) {
+static void main1(const Particle *pp, const int4 *faces, int nc, int nv, int nt, write::File *f) {
     int sz, n;
     Particle *pp0;
     n = nc * nv;
     sz = n*sizeof(Particle);
     UC(emalloc(sz, (void**) &pp0));
     shift(pp, n, /**/ pp0); /* copy-shift to global coordinates */
-    dump0(pp0, faces, nc, nv, nt, f);
+    main0(pp0, faces, nc, nv, nt, f);
     free(pp0);
 }
 
-static void dump2(const Particle *pp, const int4 *faces, int nc, int nv, int nt, const char *fn) {
+void main(const Particle *pp, const int4 *faces, int nc, int nv, int nt, const char *fn) {
     write::File *f;
     write::fopen(fn, /**/ &f);
-    dump1(pp, faces, nc, nv, nt, f);
+    main1(pp, faces, nc, nv, nt, f);
     write::fclose(f);
 }
 
@@ -97,7 +97,7 @@ void rbc(const Particle *pp, const int4 *faces, int nc, int nv, int nt, int id) 
     char f[BUFSIZ]; /* file name */
     sprintf(f, fmt, id);
     if (write::rootp()) os::mkdir(DUMP_BASE "/r");
-    dump2(pp, faces, nc, nv, nt, f);
+    main(pp, faces, nc, nv, nt, f);
 }
 
 void rig(const Particle *pp, const int4 *faces, int nc, int nv, int nt, int id) {
@@ -105,5 +105,5 @@ void rig(const Particle *pp, const int4 *faces, int nc, int nv, int nt, int id) 
     char f[BUFSIZ]; /* file name */
     sprintf(f, fmt, id);
     if (write::rootp()) os::mkdir(DUMP_BASE "/s");
-    dump2(pp, faces, nc, nv, nt, f);
+    main(pp, faces, nc, nv, nt, f);
 }

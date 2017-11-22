@@ -9,7 +9,8 @@
 #include "rbc/edg/imp.h"
 #include "msg.h"
 
-#include "type.h"
+#include "type/common.h"
+#include "type/hst.h"
 #include "imp.h"
 
 namespace adj {
