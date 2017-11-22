@@ -19,6 +19,9 @@ static void alloc_pair(int i, AllocMod mod, /**/ hBags *hb, dBags *db) {
         CC(d::alloc_pinned(&hb->data[i], n));
         CC(d::HostGetDevicePointer(&db->data[i], hb->data[i], 0));
         break;
+    case PINNED_HST:
+        CC(d::alloc_pinned(&hb->data[i], n));
+        break;
     case PINNED_DEV:
         CC(d::alloc_pinned(&hb->data[i], n));
         CC(d::Malloc((void **) &db->data[i], n));
