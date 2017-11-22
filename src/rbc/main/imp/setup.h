@@ -43,7 +43,7 @@ static void setup_edg(int md, int nv, adj::Hst *adj, /**/ Edg *dev, float *totAr
     UC(emalloc(md*nv*sizeof(Edg), (void**) &hst));
     UC(emalloc(3*nv*sizeof(float), (void**) &rr));
 
-    evert("rbc.sress.free", nv, /**/ rr);
+    evert("rbc.stress.free", nv, /**/ rr);
     setup_edg1(md, nv, adj, rr, /**/ hst, totArea);
 
     cH2D(dev, hst, md*nv);

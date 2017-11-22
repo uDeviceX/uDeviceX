@@ -6,10 +6,12 @@ C=conf/default.h
 :
 nv=642
 cell=$S/data/cells/rbc/$nv.off
+:
 u.conf $S $U $C <<!!!
        RBCnv=$nv RBC_STRESS_FREE
        run
 !!!
 { u.make -j;     } > /dev/null
-cp          $cell rbc.off 
+cp          $cell rbc.off
+cp          $cell rbc.stress.free
 u.run ./udx rbc.off data/ic/two | uscale 0.1 >  forces.out.txt
