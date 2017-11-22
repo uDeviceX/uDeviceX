@@ -22,6 +22,7 @@ $B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/. -I$S/fsi
 $B/fsolvent/bulk/imp.o: $S/fsolvent/bulk/imp.cu; $N -I$S/. -I$S/fsolvent/bulk
 $B/fsolvent/bulk/transpose/imp.o: $S/fsolvent/bulk/transpose/imp.cu; $N -I$S/. -I$S/fsolvent/bulk/transpose
 $B/fsolvent/halo/imp.o: $S/fsolvent/halo/imp.cu; $N -I$S/. -I$S/fsolvent/halo
+$B/fsolvent/imp.o: $S/fsolvent/imp.cu; $N -I$S/. -I$S/fsolvent
 $B/generate/rig/imp.o: $S/generate/rig/imp.cu; $N -I$S/. -I$S/generate/rig
 $B/glb/imp.o: $S/glb/imp.cu; $N -I$S/. -I$S/glb
 $B/glb/wvel/imp.o: $S/glb/wvel/imp.cu; $N -I$S/. -I$S/glb/wvel

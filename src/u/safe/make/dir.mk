@@ -18,6 +18,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/flu                     && \
     d $B/frag                    && \
     d $B/fsi                     && \
+    d $B/fsolvent                && \
     d $B/fsolvent/bulk           && \
     d $B/fsolvent/bulk/transpose && \
     d $B/fsolvent/halo           && \
