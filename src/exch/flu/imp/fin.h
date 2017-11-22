@@ -13,3 +13,9 @@ void fin(Pack *p) {
     d::Free(p->counts_dev);
 }
 
+void fin(Comm *c) {
+    fin(/**/ &c->pp);
+    fin(/**/ &c->fss);
+    if (multi_solvent)
+        fin(/**/ &c->cc);
+}

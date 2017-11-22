@@ -25,3 +25,11 @@ void ini(int maxd, Pack *p) {
     sz = 26 * sizeof(int);
     d::Malloc((void**) &p->counts_dev, sz);
 }
+
+void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c) {
+    UC(ini(comm, /*io*/ tg, /**/ &c->pp));
+    UC(ini(comm, /*io*/ tg, /**/ &c->fss));
+    if (multi_solvent)
+        UC(ini(comm, /*io*/ tg, /**/ &c->cc));
+}
+
