@@ -17,16 +17,12 @@ FILE* fd;
 char line[1024]; /* a line from a file */
 int nv; /* number of vertices */
 
-int comment_line() {
-    const char pre[] = "comment";
-    return strncmp(pre, line, strlen(pre)) == 0;
-}
-
+int commentp() { return strcmp("comment", line) == 0; }
 #define nl() fgets(line, sizeof(line), fd) /* [n]ext [l]ine */
 void header() {
     nl(); /* ply */
     nl(); /* format binary_little_endian 1.0 */
-    do nl(); while (comment_line());
+    do nl(); while (commentp());
     /* element vertex %nv% */
     sscanf(line, "element vertex %d\n", &nv);
     nl(); nl(); nl(); nl(); nl(); nl(); /* property float [xyzuvw] */
