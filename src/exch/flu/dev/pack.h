@@ -1,4 +1,4 @@
-
+/* copy particles from bulk array pp to fragments to be exchanged */
 __global__ void collect_particles(const int27 fragstart, const Particle *pp, const intp26 bss,
                                   const intp26 bcc, const intp26 fss, const int26 cap,
                                   /**/ intp26 fii, Pap26 fpp, int *fnn) {
@@ -42,6 +42,7 @@ __global__ void collect_particles(const int27 fragstart, const Particle *pp, con
     if (gid + 1 == fragstart.d[fid + 1]) fnn[fid] = dst;    
 }
 
+/* copy colors from bulk array ii to fragments to be exchanged */
 __global__ void collect_colors(const int27 fragstart, const int *ii,
                                const intp26 bss, const intp26 bcc, const intp26 fss,
                                const int26 cap, /**/ intp26 fii) {
