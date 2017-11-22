@@ -23,3 +23,9 @@ void pack(const Cloud *cloud, /**/ Pack *p) {
             (ss, cloud->cc, p->bss, p->bcc, p->fss, p->cap, /**/ fcc));        
     }
 }
+
+void download_data(Pack *p) {
+    int counts[26];
+    d::MemcpyAsync(counts, p->counts_dev, sizeof(counts), D2H);
+    dSync(); /* wait for collect_* and counts memcpy*/
+}
