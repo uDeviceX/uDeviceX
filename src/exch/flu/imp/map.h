@@ -28,8 +28,8 @@ static void download_cell_starts(intp26 src, /**/ intp26 dst) {
     size_t sz;
 
     for(i = 0; i < NFRAGS; ++i) {
-        nc = frag_ncell(i);
-        sz = (nc + 1) * sizeof(int);
+        nc = frag_ncell(i) + 1;
+        sz = nc * sizeof(int);
         d::MemcpyAsync(dst.d[i], src.d[i], sz, D2H);
     }
 }
@@ -38,5 +38,6 @@ void download_cell_starts(/**/ Pack *p) {
     intp26 fss_hst;
     bag2Sarray(p->hfss, /**/ &fss_hst);
     download_cell_starts(p->fss, /**/ fss_hst);
+    /* size of the messages is fixed throughout the whole simulation */
 }
 
