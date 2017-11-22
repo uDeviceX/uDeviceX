@@ -15,6 +15,7 @@ namespace flu {
 struct Pack {
     intp26 bcc, bss, bii, fss;
     int *counts_dev;
+    int26 cap;
 
     comm::dBags dpp, dcc;
     comm::hBags hpp, hcc, hfss;

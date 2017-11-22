@@ -4,6 +4,7 @@ void ini(int maxd, Pack *p) {
 
     frag_estimates(NFRAGS, maxd, /**/ cap);
     cap[BULK] = 0;
+    memcpy(p->cap.d, cap, NFRAGS * sizeof(int));
     
     for (i = 0; i < NFRAGS; ++i) {
         ncs[i] = nc = frag_ncell(i);
