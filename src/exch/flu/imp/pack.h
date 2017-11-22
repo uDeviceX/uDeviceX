@@ -24,9 +24,30 @@ void pack(const Cloud *cloud, /**/ Pack *p) {
     }
 }
 
-/* assume collect_[particles,colors] write to pinned memory */
+static void copy(int n, const int counts[], const dBags *d, /**/ hBags *h) {
+    int i, c;
+    size_t sz;
+    
+    for (i = 0; i < NFRAGS; ++i) {
+        c = counts[i];
+        sz = c * h->bsize;
+        d::MemcpyAsync(h->data[i], d->data[i], sz, D2H);
+    }
+}
+
 void download_data(Pack *p) {
     int counts[26];
+
     d::MemcpyAsync(counts, p->counts_dev, sizeof(counts), D2H);
-    dSync(); /* wait for collect_* and counts memcpy*/
+    dSync(); /* wait for counts memcpy */
+
+    copy(NFRAGS, counts, &p->dpp, /**/ &p->hpp);
+    if (multi_solvent)
+        copy(NFRAGS, counts, &p->dcc, /**/ &p->hcc);
+
+    memcpy(p->hpp.counts, counts, sizeof(counts));
+    if (multi_solvent)
+        memcpy(p->hcc.counts, counts, sizeof(counts));
+
+    dSync(); /* wait for copy */
 }
