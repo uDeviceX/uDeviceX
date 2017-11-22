@@ -20,10 +20,10 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/fsi                     && \
     d $B/fsolvent/bulk           && \
     d $B/fsolvent/bulk/transpose && \
+    d $B/fsolvent/halo           && \
     d $B/generate/rig            && \
     d $B/glb                     && \
     d $B/glb/wvel                && \
-    d $B/hforces                 && \
     d $B/inter                   && \
     d $B/io                      && \
     d $B/io/bop                  && \
