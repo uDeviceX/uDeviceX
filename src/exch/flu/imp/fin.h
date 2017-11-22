@@ -8,6 +8,6 @@ void fin(Pack *p) {
     fin(PINNED_DEV, NONE, /**/ &p->hpp, &p->dpp);
     fin(PINNED_DEV, NONE, /**/ &p->hcc, &p->dcc);
 
-    fin(PINNED_DEV, NONE, /**/ &p->hfss, &p->dfss);
+    fin(PINNED_HST, NONE, /**/ &p->hfss, NULL);
 }
 

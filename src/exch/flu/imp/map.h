@@ -16,13 +16,10 @@ void compute_map(const int *start, const int *count, /**/ Pack *p) {
     int nc;
     int26 cc;
     int27 ss;
-    intp26 fss;
     nc = get_cell_num(/**/ cc.d);
     scan(NFRAGS, cc.d, /**/ ss.d);
-    KL(dev::count_cells, (k_cnf(nc)), (ss, start, count, /**/ p->bss, p->bcc));
-
-    bag2Sarray(p->dfss, /**/ &fss);
-    KL(dev::scan<32>, (26, 32 * 32), (cc, p->bcc, /**/ fss));
+    KL(dev::count_cells, (k_cnf(nc)), (ss, start, count, /**/ p->bss, p->bcc));    
+    KL(dev::scan<32>, (26, 32 * 32), (cc, p->bcc, /**/ p->fss));
 }
 
 

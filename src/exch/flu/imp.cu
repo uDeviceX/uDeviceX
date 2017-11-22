@@ -19,6 +19,8 @@
 #include "comm/imp.h"
 #include "comm/utils.h"
 
+#include "cloud/imp.h"
+
 #include "type.h"
 #include "imp.h"
 
@@ -35,8 +37,8 @@ namespace dev {
 #include "imp/fin.h"
 #include "imp/map.h"
 #include "imp/pack.h"
-// #include "imp/com.h"
-// #include "imp/unpack.h"
+#include "imp/com.h"
+#include "imp/unpack.h"
 
 } // flu
 } // exch

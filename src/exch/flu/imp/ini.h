@@ -19,5 +19,5 @@ void ini(int maxd, Pack *p) {
     ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &p->hpp, &p->dpp);
     ini(PINNED_DEV, NONE,      sizeof(int), cap, /**/ &p->hcc, &p->dcc);
 
-    ini(PINNED_DEV, NONE, sizeof(int), ncs, /**/ &p->hfss, &p->dfss);
+    ini(PINNED_HST, NONE, sizeof(int), ncs, /**/ &p->hfss, NULL);
 }
