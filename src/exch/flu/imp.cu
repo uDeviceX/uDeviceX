@@ -28,6 +28,7 @@ using namespace comm;
 
 namespace dev {
 #include "dev/map.h"
+#include "dev/pack.h"
 } // dev
 
 #include "imp/ini.h"
