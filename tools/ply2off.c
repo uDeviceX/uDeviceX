@@ -23,7 +23,7 @@ int comment_line() {
 }
 
 #define nl() fgets(line, sizeof(line), fd) /* [n]ext [l]ine */
-void read_header() {
+void header() {
     nl(); /* ply */
     nl(); /* format binary_little_endian 1.0 */
     do nl(); while (comment_line());
@@ -36,7 +36,7 @@ void read_header() {
 }
 #undef nl
 
-void read_write_vertices() {
+void vertices() {
     int iv, ib;
     float x, y, z;
     fread(buf, NVAR*nv, sizeof(float), fd);
@@ -46,6 +46,18 @@ void read_write_vertices() {
         ib++; ib++; ib++; /* skip vx, vy, vz */
     }
 }
+
+void faces() {
+    int iv, ib;
+    float x, y, z;
+    fread(buf, NVAR*nv, sizeof(float), fd);
+    for (iv = ib = 0; iv < nv; ++iv) {
+        x = buf[ib++], y = buf[ib++], z = buf[ib++];
+        printf("%g %g %g\n", x, y, z);
+        ib++; ib++; ib++; /* skip vx, vy, vz */
+    }
+}
+
 
 FILE* efopen(const char *p, const char *m) {
     FILE *f;
@@ -57,10 +69,10 @@ FILE* efopen(const char *p, const char *m) {
     return f;
 }
 
-void read_file(const char* fn) {
+void file(const char* fn) {
     fd = efopen(fn, "r");
-    read_header();
-    read_write_vertices();
+    header();
+    vertices();
     fclose(fd);
 }
 
@@ -75,7 +87,7 @@ int main(int argc, const char** argv) {
     help(argc, argv);
     for (i = 1; i < argc; i++) {
         if (i > 1) printf("\n");
-        read_file(argv[i]);
+        file(argv[i]);
     }
     return 0;
 }
