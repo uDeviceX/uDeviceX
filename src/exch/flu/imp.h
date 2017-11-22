@@ -14,5 +14,9 @@ void wait_send(Comm *c);
 
 void unpack(Unpack *u);
 
+// LFrag26 get_local_frags(const Pack *p);
+// RFrag26 get_remote_frags(const Unpack *u);
+
+
 } // flu
 } // exch
