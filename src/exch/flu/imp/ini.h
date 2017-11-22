@@ -7,8 +7,8 @@ void ini(int maxd, Pack *p) {
     memcpy(p->cap.d, cap, NFRAGS * sizeof(int));
     
     for (i = 0; i < NFRAGS; ++i) {
-        ncs[i] = nc = frag_ncell(i);
-        sz = (nc + 1) * sizeof(int);
+        ncs[i] = nc = frag_ncell(i) + 1;
+        sz = nc * sizeof(int);
         d::Malloc((void**) &p->bcc.d[i], sz);
         d::Malloc((void**) &p->bss.d[i], sz);
 
@@ -31,5 +31,21 @@ void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c) {
     UC(ini(comm, /*io*/ tg, /**/ &c->fss));
     if (multi_solvent)
         UC(ini(comm, /*io*/ tg, /**/ &c->cc));
+}
+
+void ini(int maxd, Unpack *u) {
+    int i, cap[NBAGS], ncs[NBAGS];
+
+    frag_estimates(NFRAGS, maxd, /**/ cap);
+    cap[BULK] = 0;
+    
+    for (i = 0; i < NFRAGS; ++i)
+        ncs[i] = frag_ncell(i) + 1;
+    ncs[BULK] = 0;
+    
+    ini(PINNED_DEV, NONE, sizeof(Particle), cap, /**/ &u->hpp, &u->dpp);
+    ini(PINNED_DEV, NONE,      sizeof(int), cap, /**/ &u->hcc, &u->dcc);
+
+    ini(PINNED_DEV, NONE, sizeof(int), ncs, /**/ &u->hfss, &u->dfss);
 }
 

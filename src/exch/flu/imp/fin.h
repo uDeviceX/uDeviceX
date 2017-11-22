@@ -19,3 +19,11 @@ void fin(Comm *c) {
     if (multi_solvent)
         fin(/**/ &c->cc);
 }
+
+void fin(Unpack *u) {
+    fin(PINNED_DEV, NONE, /**/ &u->hpp, &u->dpp);
+    fin(PINNED_DEV, NONE, /**/ &u->hcc, &u->dcc);
+
+    fin(PINNED_HST, NONE, /**/ &u->hfss, &u->dfss);
+}
+
