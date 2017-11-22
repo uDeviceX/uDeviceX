@@ -23,7 +23,7 @@ void compute_map(const int *start, const int *count, /**/ Pack *p) {
 }
 
 
-void download_cell_starts(intp26 src, /**/ intp26 dst) {
+static void download_cell_starts(intp26 src, /**/ intp26 dst) {
     int i, nc;
     size_t sz;
 
@@ -32,5 +32,11 @@ void download_cell_starts(intp26 src, /**/ intp26 dst) {
         sz = (nc + 1) * sizeof(int);
         d::MemcpyAsync(dst.d[i], src.d[i], sz, D2H);
     }
+}
+
+void download_cell_starts(/**/ Pack *p) {
+    intp26 fss_hst;
+    bag2Sarray(p->hfss, /**/ &fss_hst);
+    download_cell_starts(p->fss, /**/ fss_hst);
 }
 
