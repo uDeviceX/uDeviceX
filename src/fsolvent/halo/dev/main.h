@@ -14,7 +14,7 @@ static __device__ float random(int aid, int bid, float seed, int mask) {
     return rnd::mean0var1uu(seed, a1, a2);
 }
 
-static __device__ void force0(const RndFrag rnd, const RFrag bfrag, const Map m, const forces::Pa a, int aid, /**/
+static __device__ void force0(const flu::RndFrag rnd, const flu::RFrag bfrag, const Map m, const forces::Pa a, int aid, /**/
                               float *fx, float *fy, float *fz) {
     forces::Pa b;
     int i;
@@ -30,7 +30,7 @@ static __device__ void force0(const RndFrag rnd, const RFrag bfrag, const Map m,
     }
 }
 
-static __device__ void force1(const RndFrag rnd, const RFrag frag, const Map m, const forces::Pa p, int id, Fo f) {
+static __device__ void force1(const flu::RndFrag rnd, const flu::RFrag frag, const Map m, const forces::Pa p, int id, Fo f) {
     float x, y, z; /* force */
     force0(rnd, frag, m, p, id, /**/ &x, &y, &z);
     atomicAdd(f.x, x);
@@ -38,7 +38,7 @@ static __device__ void force1(const RndFrag rnd, const RFrag frag, const Map m, 
     atomicAdd(f.z, z);
 }
 
-static __device__ void force2(const RFrag frag, const RndFrag rnd, forces::Pa p, int id, /**/ Fo f) {
+static __device__ void force2(const flu::RFrag frag, const flu::RndFrag rnd, forces::Pa p, int id, /**/ Fo f) {
     float x, y, z;
     Map m;
     forces::p2r3(&p, /**/ &x, &y, &z);
@@ -55,11 +55,11 @@ static __device__ Fo i2f(const int *ii, float *ff, int i) {
     return f;
 }
 
-static __device__ Fo sfrag2f(const LFrag frag, float *ff, int i) {
+static __device__ Fo sfrag2f(const flu::LFrag frag, float *ff, int i) {
     return i2f(frag.ii, ff, i);
 }
 
-static __device__ void force3(const LFrag afrag, const RFrag bfrag, const RndFrag rnd, int i, /**/ float *ff) {
+static __device__ void force3(const flu::LFrag afrag, const flu::RFrag bfrag, const flu::RndFrag rnd, int i, /**/ float *ff) {
     forces::Pa p;
     Fo f;
     cloud_get(afrag.c, i, &p);
@@ -67,10 +67,10 @@ static __device__ void force3(const LFrag afrag, const RFrag bfrag, const RndFra
     force2(bfrag, rnd, p, i, f);
 }
 
-__global__ void force(const int27 start, const LFrag26 lfrags, const RFrag26 rfrags, const RndFrag26 rrnd, /**/ float *ff) {
-    RndFrag  rnd;
-    RFrag rfrag;
-    LFrag lfrag;
+__global__ void force(const int27 start, const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ float *ff) {
+    flu::RndFrag  rnd;
+    flu::RFrag rfrag;
+    flu::LFrag lfrag;
     int gid;
     int fid; /* fragment id */
     int i; /* particle id */

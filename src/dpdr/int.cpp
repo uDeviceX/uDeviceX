@@ -155,7 +155,7 @@ void recv_ii(const TicketRhalo *t, /**/ TicketRIhalo *ti) {
 }
 
 
-static void ini_local_frags(TicketShalo ts, LFrag26 *lfrags) {
+static void ini_local_frags(TicketShalo ts, flu::LFrag26 *lfrags) {
     Cloud clouda = {0, 0};    
 
     for (int i = 0; i < 26; ++i) {
@@ -168,7 +168,7 @@ static void ini_local_frags(TicketShalo ts, LFrag26 *lfrags) {
     }
 }
 
-static void ini_remote_frags(TicketRhalo tr, /**/ RFrag26 *rfrags) {
+static void ini_remote_frags(TicketRhalo tr, /**/ flu::RFrag26 *rfrags) {
     enum {X, Y, Z};
     int i, dx, dy, dz, xcells, ycells, zcells;
     Cloud cloudb = {0, 0};
@@ -192,11 +192,11 @@ static void ini_remote_frags(TicketRhalo tr, /**/ RFrag26 *rfrags) {
             .xcells = xcells,
             .ycells = ycells,
             .zcells = zcells,
-            .type = (FragType)(abs(dx) + abs(dy) + abs(dz))};
+            .type = (flu::FragType)(abs(dx) + abs(dy) + abs(dz))};
     }
 }
 
-static void ini_rnd(TicketRnd trnd, /**/ RndFrag26 *rnd) {
+static void ini_rnd(TicketRnd trnd, /**/ flu::RndFrag26 *rnd) {
     for (int i = 0; i < 26; ++i)
         rnd->d[i] = {
             .seed = trnd.interrank_trunks[i]->get_float(),
@@ -204,20 +204,20 @@ static void ini_rnd(TicketRnd trnd, /**/ RndFrag26 *rnd) {
         };
 }
 
-static void ini_color_local_frags(TicketSIhalo t, /**/ LFrag26 *lfrags) {
+static void ini_color_local_frags(TicketSIhalo t, /**/ flu::LFrag26 *lfrags) {
     for (int i = 0; i < 26; ++i)
         ini_cloud_color(t.b.ii.d[i], &lfrags->d[i].c);
 }
 
-static void ini_color_remote_frags(TicketRIhalo t, /**/ RFrag26 *rfrags) {
+static void ini_color_remote_frags(TicketRIhalo t, /**/ flu::RFrag26 *rfrags) {
     for (int i = 0; i < 26; ++i)
         ini_cloud_color(t.b.ii.d[i], &rfrags->d[i].c);
 }
 
 void fremote_color(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, TicketSIhalo tis, TicketRIhalo tir, /**/ Force *ff) {
-    LFrag26   lfrags;
-    RFrag26   rfrags;
-    RndFrag26    rnd;
+    flu::LFrag26   lfrags;
+    flu::RFrag26   rfrags;
+    flu::RndFrag26    rnd;
 
     ini_local_frags(ts, /**/ &lfrags);
     ini_remote_frags (tr, /**/ &rfrags);
@@ -230,9 +230,9 @@ void fremote_color(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, TicketSIhalo 
 }
 
 void fremote(TicketRnd trnd, TicketShalo ts, TicketRhalo tr, /**/ Force *ff) {
-    LFrag26  lfrags;
-    RFrag26  rfrags;
-    RndFrag26   rnd;
+    flu::LFrag26  lfrags;
+    flu::RFrag26  rfrags;
+    flu::RndFrag26   rnd;
 
     ini_local_frags(ts, /**/ &lfrags);
     ini_remote_frags (tr, /**/ &rfrags);

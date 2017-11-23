@@ -75,13 +75,13 @@ static __device__ void xyz2rc(int type,
                               int xs, int ys, int zs, /* size */
                               /**/ int *prow, int *pcol, int *pjump) {
     int row, col, jump;
-    if      (type == FACE)
+    if      (type == flu::FACE)
         xyz2rc_face(dx, dy, dz, xc, yc, zc, xs, ys, zs, /**/ &row, &col, &jump);
-    else if (type == EDGE) {
+    else if (type == flu::EDGE) {
         row = jump = 1;
         col = max(xs, max(ys, zs));
     }
-    else if (type == CORNER) {
+    else if (type == flu::CORNER) {
         row = col = jump = 1;
     } else {
         printf("%s:%d: illigal fragmant type: %d [%d %d %d]\n",
@@ -99,7 +99,7 @@ static __device__  void r2size(float r, int nc, int S, /**/ int *pl, int *ps) {
     *pl = l; *ps = s;
 }
 
-static __device__ Map r2map(const RFrag frag, float x, float y, float z) {
+static __device__ Map r2map(const flu::RFrag frag, float x, float y, float z) {
     /* coordinate [r] to map */
     int id; /* base id */
     int xl, yl, zl; /* low */

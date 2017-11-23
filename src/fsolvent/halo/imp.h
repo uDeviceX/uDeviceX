@@ -1,5 +1,5 @@
 namespace hforces {
 
-void interactions(const LFrag26 lfrags, const RFrag26 rfrags, const RndFrag26 rrnd, /**/ float *ff);
+void interactions(const flu::LFrag26 lfrags, const flu::RFrag26 rfrags, const flu::RndFrag26 rrnd, /**/ float *ff);
 
 } /* namespace */

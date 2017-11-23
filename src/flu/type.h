@@ -1,4 +1,7 @@
-/* fragment */
+/* helpers to communicate between halo interactions and exchanger */
+
+namespace flu {
+
 enum FragType { BULK = 0, FACE = 1, EDGE = 2, CORNER = 3 };
 
 struct LFrag { /* "local" fragment */
@@ -22,3 +25,5 @@ struct RndFrag {
 typedef Sarray<LFrag,   26> LFrag26;
 typedef Sarray<RFrag,   26> RFrag26;
 typedef Sarray<RndFrag, 26> RndFrag26;
+
+} // flu
