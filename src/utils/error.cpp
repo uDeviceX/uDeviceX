@@ -25,14 +25,14 @@ static char back_trace [ MAX_TRACE  * BUFSIZ ];
 static int  stack_sz = 0;
 
 
-static void stack_pop() {
-    -- stack_sz;
+void stack_pop() {
+    stack_sz--;
     assert (stack_sz >= 0);
 }
 
-static void stack_push(const char *file, int line) {
+void stack_push(const char *file, int line) {
     sprintf(stack[stack_sz], ": %s: %d:", file, line);
-    ++ stack_sz;
+    stack_sz++;
     assert (stack_sz < MAX_TRACE);
 }
 
@@ -45,14 +45,6 @@ static void stack_dump() {
         assert(nchar >= 0);
         bt += nchar;
     }
-}
-
-void before(const char *file, int line) {
-    stack_push(file, line);
-}
-
-void after() {
-    stack_pop();
 }
 
 static void raise_error(const char *file, int line) {

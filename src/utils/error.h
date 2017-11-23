@@ -3,16 +3,16 @@
 
 /* udx check */
 #define UC(F) do {                                      \
-        UdxError::before(__FILE__, __LINE__);           \
+        UdxError::stack_push(__FILE__, __LINE__);       \
         F;                                              \
         if (UdxError::error())                          \
             UdxError::report(__FILE__, __LINE__);       \
-        UdxError::after();                              \
+        UdxError::stack_pop();                          \
     } while (0)
 
 namespace UdxError {
-void before(const char *file, int line);
-void after();
+void stack_push(const char *file, int line);
+void stack_pop();
 
 void signal_error(const char *file, int line, const char *fmt, ...);
 
