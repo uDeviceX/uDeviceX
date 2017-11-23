@@ -13,25 +13,25 @@ static void ini_obj_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Objexc
     
     UC(ini(MAX_OBJ_TYPES, MAX_OBJ_DENSITY, maxpsolid, &e->p));
     UC(ini(comm, /*io*/ tg, /**/ &e->c));
-    UC(ini(MAX_OBJ_DENSITY, maxpsolid, &e->u));
-    UC(ini(MAX_OBJ_DENSITY, maxpsolid, &e->pf));
-    UC(ini(MAX_OBJ_DENSITY, maxpsolid, &e->uf));
+    UC(ini(MAX_OBJ_DENSITY, maxpsolid, /**/ &e->u));
+    UC(ini(MAX_OBJ_DENSITY, maxpsolid, /**/ &e->pf));
+    UC(ini(MAX_OBJ_DENSITY, maxpsolid, /**/ &e->uf));
 }
 
 static void ini_mesh_exch(int nv, int max_m, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Mexch *e) {
     using namespace exch::mesh;
-    UC(ini(nv, max_m, &e->p));
+    UC(ini(nv, max_m, /**/ &e->p));
     UC(ini(comm, /*io*/ &tag_gen, /**/ &e->c));
-    UC(ini(nv, max_m, &e->u));
+    UC(ini(nv, max_m, /**/ &e->u));
 }
 
 static void ini_bb_exch(int nt, int nv, int max_m, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ BBexch *e) {
     UC(ini_mesh_exch(nv, max_m, comm, /*io*/ tg, /**/ e));
 
     using namespace exch::mesh;
-    UC(ini(nt, max_m, &e->pm));
+    UC(ini(nt, max_m, /**/ &e->pm));
     UC(ini(comm, /*io*/ tg, /**/ &e->cm));
-    UC(ini(nt, max_m, &e->um));
+    UC(ini(nt, max_m, /**/ &e->um));
 }
 
 static void ini_flu_distr(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ FluDistr *d) {
