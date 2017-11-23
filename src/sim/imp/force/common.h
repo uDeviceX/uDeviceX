@@ -1,4 +1,4 @@
-void body_force(scheme::force::Fparams fpar) {
+void body_force(scheme::force::Param fpar) {
     scheme::force::main(1, fpar,  o::q.n, o::q.pp, /**/ o::ff);
     if (pushsolid && solids0)
         scheme::force::main(solid_mass, fpar, s::q.n, s::q.pp, /**/ s::ff);
