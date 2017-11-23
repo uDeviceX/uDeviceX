@@ -1,4 +1,3 @@
-#include <mpi.h>
 #include <conf.h>
 #include "inc/conf.h"
 
@@ -12,7 +11,6 @@
 #include "inc/dev.h"
 #include "glb/get.h"
 
-#include "mpi/wrapper.h"
 #include "restrain/imp.h"
 
 #include "imp.h"
