@@ -1,48 +1,34 @@
 void forces_dpd() {
-    using namespace dpdr;
     using namespace o;
-    int *count = q.cells.counts;
-    int *start = q.cells.starts;
+    const int *count = q.cells.counts;
+    const int *start = q.cells.starts;
     Cloud cloud;
+    flu::LFrag26 lfrags;
+    flu::RFrag26 rfrags;
 
     ini_cloud(q.pp, /**/ &cloud);
     if (multi_solvent)
         ini_cloud_color(q.cc, /**/ &cloud);
+
+    compute_map(start, count, /**/ &e.p);
+    download_cell_starts(/**/ &e.p);
+    pack(&cloud, /**/ &e.p);
+    download_data(/**/ &e.p);
+
+    post_recv(&e.c, &e.u);
+    post_send(&e.p, &e.c);
     
-    gather_cells(start, count, /**/ &h.ts);
-    if (h.tc.first) post_expected_recv(&h.tc, &h.tr);
-    if (multi_solvent && h.tic.first)
-        post_expected_recv_ii(&h.tc, &h.tr, /**/ &h.tic, &h.tri);
-
-    copy_cells(&h.ts);
-
-    pack(q.pp, /**/ &h.ts);
-    if (multi_solvent)
-        pack_ii(q.cc, &h.ts, /**/ &h.tsi);
-
-    post_send(&h.tc, &h.ts);
-    if (multi_solvent)
-        post_send_ii(&h.tc, &h.ts, /**/ &h.tic, &h.tsi);
- 
     prepare(q.n, &cloud, /**/ bulkdata);
     bulk_forces(q.n, bulkdata, start, count, /**/ ff);
-    
-    
-    wait_recv(&h.tc);
-    if (multi_solvent)
-        wait_recv_ii(&h.tic);
-    
-    recv(&h.tr);
-    if (multi_solvent)
-        recv_ii(&h.tr, /**/ &h.tri);
+    dSync();
+    wait_recv(&e.c, &e.u);
+    wait_send(&e.c);
 
-    post_expected_recv(&h.tc, &h.tr);
-    if (multi_solvent)
-        post_expected_recv_ii(&h.tc, &h.tr, /**/ &h.tic, &h.tri);
-    
-    if (multi_solvent) fremote_color(h.trnd, h.ts, h.tr, h.tsi, h.tri, /**/ ff);
-    else               fremote(h.trnd, h.ts, h.tr, /**/ ff);
+    unpack(&e.u);
 
-    h.tc.first = false;
-    h.tic.first = false;
+    get_local_frags(&e.p, /**/ &lfrags);
+    get_remote_frags(&e.u, /**/ &rfrags);
+
+    prepare(lfrags, rfrags, /**/ halodata);
+    halo_forces(halodata, /**/ ff);
 }

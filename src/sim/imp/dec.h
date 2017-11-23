@@ -6,12 +6,12 @@ basetags::TagGen tag_gen;
 namespace o /* s[o]lvent */
 {
 flu::Quants       q;
-BulkData *bulkdata;
 
 FluDistr d;
+Fluexch e;
 
-/* [h]alo interactions : local halos : see type.h */
-H h;
+BulkData *bulkdata;
+HaloData *halodata;
 
 Force *ff;
 Force  ff_hst[MAX_PART_NUM]; /* solvent forces on host    */

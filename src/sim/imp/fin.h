@@ -1,26 +1,33 @@
+static void fin_flu_exch(/**/ Fluexch *e) {
+    using namespace exch::flu;
+    fin(/**/ &e->p);
+    fin(/**/ &e->c);
+    fin(/**/ &e->u);
+}
+
 static void fin_obj_exch(/**/ Objexch *e) {
     using namespace exch::obj;
-    fin(&e->p);
-    fin(&e->c);
-    fin(&e->u);
-    fin(&e->pf);
-    fin(&e->uf);
+    fin(/**/ &e->p);
+    fin(/**/ &e->c);
+    fin(/**/ &e->u);
+    fin(/**/ &e->pf);
+    fin(/**/ &e->uf);
 }
 
 static void fin_mesh_exch(/**/ Mexch *e) {
     using namespace exch::mesh;
-    fin(&e->p);
-    fin(&e->c);
-    fin(&e->u);
+    fin(/**/ &e->p);
+    fin(/**/ &e->c);
+    fin(/**/ &e->u);
 }
 
 static void fin_bb_exch(/**/ BBexch *e) {
     fin_mesh_exch(/**/ e);
     
     using namespace exch::mesh;
-    fin(&e->pm);
-    fin(&e->cm);
-    fin(&e->um);
+    fin(/**/ &e->pm);
+    fin(/**/ &e->cm);
+    fin(/**/ &e->um);
 }
 
 static void fin_flu_distr(/**/ FluDistr *d) {
@@ -68,19 +75,10 @@ void fin() {
 
     flu::fin(&o::q);
     fin(/**/ o::bulkdata);
+    fin(/**/ o::halodata);
  
-    dpdr::free_ticketcom(&o::h.tc);
-    dpdr::free_ticketrnd(&o::h.trnd);
-    dpdr::free_ticketSh(&o::h.ts);
-    dpdr::free_ticketRh(&o::h.tr);
-
     fin_flu_distr(/**/ &o::d);
-    
-    if (multi_solvent) {
-        dpdr::free_ticketIcom(&o::h.tic);
-        dpdr::free_ticketSIh(&o::h.tsi);
-        dpdr::free_ticketRIh(&o::h.tri);
-    }
+    fin_flu_exch(/**/ &o::e);
 
     if (multi_solvent && rbcs)
         fin_colorer(/**/ &colorer);

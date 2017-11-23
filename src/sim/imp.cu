@@ -79,8 +79,8 @@
 #include "exch/mesh/imp.h"
 
 #include "flu/type.h"
-#include "dpdr/type.h"
-#include "dpdr/int.h"
+#include "exch/flu/type.h"
+#include "exch/flu/imp.h"
 
 #include "fsolvent/imp.h"
 

@@ -1,4 +1,4 @@
-void get_local_frags(const Pack *p, LFrag26 *lfrags) {
+void get_local_frags(const Pack *p, /**/ LFrag26 *lfrags) {
     Cloud clouda = {0, 0};    
     
     for (int i = 0; i < 26; ++i) {

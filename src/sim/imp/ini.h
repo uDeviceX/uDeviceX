@@ -1,28 +1,37 @@
+static void ini_flu_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Fluexch *e) {
+    using namespace exch::flu;
+    int maxd = HSAFETY_FACTOR * numberdensity;
+    
+    UC(ini(maxd, /**/ &e->p));
+    UC(ini(comm, /*io*/ tg, /**/ &e->c));
+    UC(ini(maxd, /**/ &e->u));
+}
+
 static void ini_obj_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Objexch *e) {
     using namespace exch::obj;
     int maxpsolid = MAX_PSOLID_NUM;
     
     UC(ini(MAX_OBJ_TYPES, MAX_OBJ_DENSITY, maxpsolid, &e->p));
     UC(ini(comm, /*io*/ tg, /**/ &e->c));
-    UC(ini(MAX_OBJ_DENSITY, maxpsolid, &e->u));
-    UC(ini(MAX_OBJ_DENSITY, maxpsolid, &e->pf));
-    UC(ini(MAX_OBJ_DENSITY, maxpsolid, &e->uf));
+    UC(ini(MAX_OBJ_DENSITY, maxpsolid, /**/ &e->u));
+    UC(ini(MAX_OBJ_DENSITY, maxpsolid, /**/ &e->pf));
+    UC(ini(MAX_OBJ_DENSITY, maxpsolid, /**/ &e->uf));
 }
 
 static void ini_mesh_exch(int nv, int max_m, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Mexch *e) {
     using namespace exch::mesh;
-    UC(ini(nv, max_m, &e->p));
+    UC(ini(nv, max_m, /**/ &e->p));
     UC(ini(comm, /*io*/ &tag_gen, /**/ &e->c));
-    UC(ini(nv, max_m, &e->u));
+    UC(ini(nv, max_m, /**/ &e->u));
 }
 
 static void ini_bb_exch(int nt, int nv, int max_m, MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ BBexch *e) {
     UC(ini_mesh_exch(nv, max_m, comm, /*io*/ tg, /**/ e));
 
     using namespace exch::mesh;
-    UC(ini(nt, max_m, &e->pm));
+    UC(ini(nt, max_m, /**/ &e->pm));
     UC(ini(comm, /*io*/ tg, /**/ &e->cm));
-    UC(ini(nt, max_m, &e->um));
+    UC(ini(nt, max_m, /**/ &e->um));
 }
 
 static void ini_flu_distr(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ FluDistr *d) {
@@ -90,22 +99,13 @@ void ini() {
 
     flu::ini(&o::q);
     ini(MAX_PART_NUM, /**/ &o::bulkdata);
+    ini(/**/ &o::halodata);
     
     UC(ini_flu_distr(m::cart, /*io*/ &tag_gen, /**/ &o::d));
-
-    dpdr::ini_ticketcom(m::cart, &tag_gen, &o::h.tc);
-    dpdr::ini_ticketrnd(o::h.tc, /**/ &o::h.trnd);
-    dpdr::alloc_ticketSh(/**/ &o::h.ts);
-    dpdr::alloc_ticketRh(/**/ &o::h.tr);
-
+    UC(ini_flu_exch(m::cart, /*io*/ &tag_gen, /**/ &o::e));
+    
     Dalloc(&o::ff, MAX_PART_NUM);
     
-    if (multi_solvent) {
-        dpdr::ini_ticketIcom(/*io*/ &tag_gen, /**/ &o::h.tic);
-        dpdr::alloc_ticketSIh(/**/ &o::h.tsi);
-        dpdr::alloc_ticketRIh(/**/ &o::h.tri);
-    }
-
     if (multi_solvent && rbcs)
         UC(ini_colorer(r::q.nv, m::cart, /*io*/ &tag_gen, /**/ &colorer));
     

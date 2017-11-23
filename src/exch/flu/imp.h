@@ -1,6 +1,15 @@
 namespace exch {
 namespace flu {
 
+void ini(int maxd, Pack *p);
+void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c);
+void ini(int maxd, Unpack *u);
+
+void fin(Pack *p);
+void fin(Comm *c);
+void fin(Unpack *u);
+
+
 void compute_map(const int *start, const int *count, /**/ Pack *p);
 void download_cell_starts(/**/ Pack *p);
 
@@ -17,8 +26,8 @@ void unpack(Unpack *u);
 using ::flu::LFrag26;
 using ::flu::RFrag26;
 
-LFrag26 get_local_frags(const Pack *p);
-RFrag26 get_remote_frags(const Unpack *u);
-
+void get_local_frags(const Pack *p, /**/ LFrag26 *lfrags);
+void get_remote_frags(const Unpack *u, /**/ RFrag26 *rfrags);
+    
 } // flu
 } // exch
