@@ -26,6 +26,7 @@
 #include "rbc/stretch/imp.h"
 
 #include "scheme/move/imp.h"
+#include "scheme/force/imp.h"
 
 #include "io/mesh/imp.h"
 #include "io/diag.h"

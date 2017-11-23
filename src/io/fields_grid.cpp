@@ -1,7 +1,5 @@
-#include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include <assert.h>
 
 #include <conf.h>
 #include "inc/conf.h"

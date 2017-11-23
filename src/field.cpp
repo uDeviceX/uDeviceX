@@ -1,6 +1,4 @@
 #include <stdio.h>
-#include <assert.h>
-#include <stdlib.h>
 #include <math.h>
 
 #include <conf.h>
@@ -158,6 +156,6 @@ void dump(const int N[], const float* D) {
     float *W;
     UC(emalloc(XS*YS*ZS*sizeof(float), (void**) &W));
     dump1(N, D, /*w*/ W);
-    free(W);
+    efree(W);
 }
 } /* namespace field */

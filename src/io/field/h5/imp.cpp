@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <hdf5.h>
 
 #include "msg.h"

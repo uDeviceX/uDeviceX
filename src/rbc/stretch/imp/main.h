@@ -14,9 +14,10 @@ static void read(FILE *f, int n, /**/ float *h) {
         ;
     if (i != n) ERR("got %d != %d lines", i, n);
 }
-static void ini0(const char* path, int n, float *h, /**/ float *d) {
+void ini0(const char* path, int n, float *h, /**/ float *d) {
     MSG("reading <%s>", path);
-    FILE *f = efopen(path, "r");
+    FILE *f;
+    UC(efopen(path, "r", /**/ &f));
     read(f, n , /**/ h);
     cH2D(d, h, 3*n);
     fclose(f);
@@ -26,13 +27,13 @@ void ini1(const char* path, int n, /**/ Fo *f) {
     alloc(n, f);
     d = f->f;
     UC(emalloc(3 * n * sizeof(float), (void**) &h));
-    ini0(path, n, /*w*/ h, /**/ d);
+    UC(ini0(path, n, /*w*/ h, /**/ d));
     free(h);
 }
 void ini(const char* path, int nv, /**/ Fo **fp) {
     Fo *f;
     UC(emalloc(sizeof(Fo), (void**) &f));
-    ini1(path, nv, f);
+    UC(ini1(path, nv, f));
     f->nv = nv;
     *fp = f;
 }

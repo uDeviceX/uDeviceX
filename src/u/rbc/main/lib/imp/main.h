@@ -14,6 +14,13 @@ static void dump(rbc::Quants q, rbc::force::TicketT t) {
     free(pp);
 }
 
+static int body_force(rbc::Quants q, Force *f) {
+    scheme::force::Param fpar;
+    fpar.a = FORCE_PAR_A;
+    scheme::force::main(rbc_mass, fpar, q.n, q.pp, /**/ f);
+    return 0;
+}
+
 static void run0(rbc::Quants q, rbc::force::TicketT t, rbc::stretch::Fo* stretch, Force *f) {
     long i;
     long nsteps = (long)(tend / dt);
@@ -22,6 +29,7 @@ static void run0(rbc::Quants q, rbc::force::TicketT t, rbc::stretch::Fo* stretch
         Dzero(f, q.n);
         rbc::force::apply(q, t, /**/ f);
         rbc::stretch::apply(q.nc, stretch, /**/ f);
+        if (pushrbc) body_force(q, f);
         scheme::move::main(rbc_mass, q.n, f, q.pp);
         if (i % part_freq  == 0) dump(q, t);
         //        scheme::clear_vel(q.n, /**/ q.pp);
@@ -40,7 +48,7 @@ static void run2(const char *cell, const char *ic, rbc::Quants q) {
     rbc::stretch::Fo *stretch;
     rbc::force::TicketT t;
     rbc::main::gen_quants(cell, ic, /**/ &q);
-    rbc::stretch::ini("rbc.stretch", q.nv, /**/ &stretch);
+    UC(rbc::stretch::ini("rbc.stretch", q.nv, /**/ &stretch));
     rbc::force::gen_ticket(q, &t);
     run1(q, t, stretch);
     rbc::stretch::fin(stretch);

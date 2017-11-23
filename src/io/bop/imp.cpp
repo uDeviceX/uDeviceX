@@ -1,5 +1,3 @@
-#include <stdlib.h>
-#include <assert.h>
 #include <mpi.h>
 
 #include "conf.h"
