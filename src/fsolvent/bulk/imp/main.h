@@ -12,7 +12,7 @@ static void setup_flocal() {
     }
 }
 
-static void ini_flocal(float4 *zip0, ushort4 *zip1, int np, int *start, int *count, float seed, float *ff) {
+static void ini_flocal(const float4 *zip0, const ushort4 *zip1, int np, const int *start, const int *count, float seed, float *ff) {
     tex_cells(start, count);
     ini_cloud(zip0, zip1, np);
     set_info(ff, np, seed);
@@ -31,11 +31,11 @@ static void launch(int np) {
     }
 }
 
-static void ini_flocal_color(int *cc, int n) {
+static void ini_flocal_color(const int *cc, int n) {
     ini_cloud_color(cc, n);
 }
 
-void flocal(float4 *zip0, ushort4 *zip1, int n, int *start, int *count,
+void flocal(const float4 *zip0, const ushort4 *zip1, int n, const int *start, const int *count,
             rnd::KISS* rnd, /**/ Force *ff) {
     if (n <= 0) return;
     setup_flocal();
@@ -44,7 +44,7 @@ void flocal(float4 *zip0, ushort4 *zip1, int n, int *start, int *count,
     transpose(n, ff);
 }
 
-void flocal_color(float4 *zip0, ushort4 *zip1, int *colors, int n, int *start, int *count,
+void flocal_color(const float4 *zip0, const ushort4 *zip1, const int *colors, int n, const int *start, const int *count,
                   rnd::KISS* rnd, /**/ Force *ff) {
     if (n <= 0) return;
     setup_flocal();

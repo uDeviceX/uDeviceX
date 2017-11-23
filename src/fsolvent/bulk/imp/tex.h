@@ -1,4 +1,4 @@
-static void tex_cells(int *start, int *count) {
+static void tex_cells(const int *start, const int *count) {
     const int ncells = XS * YS * ZS;
     static uint2 *start_and_count;
     static int last_nc;
