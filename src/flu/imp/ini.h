@@ -15,13 +15,3 @@ void ini(Quants *q) {
     if (global_ids)    ini_ii(&q->ii, &q->ii0, &q->ii_hst);
     if (multi_solvent) ini_ii(&q->cc, &q->cc0, &q->cc_hst);
 }
-
-
-void ini(/**/ TicketZ *t) {
-    Dalloc(&t->zip0, 2*MAX_PART_NUM);
-    Dalloc(&t->zip1,  MAX_PART_NUM); /* was 2*n ? */
-}
-
-void ini(/**/ TicketRND *t) {
-    t->rnd = new rnd::KISS(0, 0, 0, 0);
-}

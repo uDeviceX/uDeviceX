@@ -16,25 +16,8 @@ struct Quants {
     int *cc_hst;    /* colors on host   */    
 }; 
 
-struct TicketZ { /* zip */
-    float4  *zip0;
-    ushort4 *zip1;
-};
-
-struct TicketRND { /* random */
-    rnd::KISS *rnd;
-};
-
 void ini(Quants *q);
 void fin(Quants *q);
-
-void ini(/**/ TicketZ *t);
-void fin(/**/ TicketZ *t);
-
-void ini(/**/ TicketRND *t);
-void fin(/**/ TicketRND *t);
-
-void get_ticketZ(Quants q, /**/ TicketZ *t);
 
 void gen_quants(Quants *q);
 void gen_ids(const int n, Quants *q);
