@@ -68,6 +68,7 @@ $B/rigid/imp.o: $S/rigid/imp.cu; $N -I$S/rigid -I$S/.
 $B/rig/imp.o: $S/rig/imp.cu; $N -I$S/rig -I$S/.
 $B/rnd/imp.o: $S/rnd/imp.cpp; $X -I$S/rnd -I$S/.
 $B/scheme/main/imp.o: $S/scheme/main/imp.cu; $N -I$S/scheme/main -I$S/.
+$B/scheme/restrain/imp.o: $S/scheme/restrain/imp.cu; $N -I$S/scheme/restrain -I$S/.
 $B/sdf/imp.o: $S/sdf/imp.cu; $N -I$S/sdf -I$S/.
 $B/sdf/int.o: $S/sdf/int.cu; $N -I$S/sdf -I$S/.
 $B/sim/imp.o: $S/sim/imp.cu; $N -I$S/sim -I$S/.

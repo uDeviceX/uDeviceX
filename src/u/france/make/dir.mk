@@ -54,6 +54,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/rigid                   && \
     d $B/rnd                     && \
     d $B/scheme/main             && \
+    d $B/scheme/restrain         && \
     d $B/sdf                     && \
     d $B/sim                     && \
     d $B/utils                   && \
