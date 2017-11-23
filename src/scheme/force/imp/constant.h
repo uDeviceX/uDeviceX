@@ -1,3 +1,5 @@
 void main(float mass, Param par, int n, const Particle *pp, /**/ Force* ff) {
-    KL(dev::main, (k_cnf(n)), (mass, par, n, pp, /**/ ff));
+    float ax, ay, az;
+    ax = par.a; bx = par.b; cx = par.c;
+    KL(dev::main, (k_cnf(n)), (mass, ax, ay, az, n, pp, /**/ ff));
 }
