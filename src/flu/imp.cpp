@@ -16,6 +16,9 @@
 #include "d/api.h"
 #include "mpi/wrapper.h"
 
+#include "utils/error.h"
+#include "utils/halloc.h"
+
 #include "utils/mc.h"
 #include "utils/cc.h"
 
