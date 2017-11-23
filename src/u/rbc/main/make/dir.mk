@@ -25,7 +25,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/restrain              && \
     d $B/restrain/stat         && \
     d $B/restrain/sum          && \
-    d $B/scheme                && \
+    d $B/scheme/main           && \
     d $B/u/rbc/main            && \
     d $B/u/rbc/main/lib        && \
     d $B/utils                
