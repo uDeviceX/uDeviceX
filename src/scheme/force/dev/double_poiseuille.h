@@ -1,4 +1,4 @@
-__global__ void force(float mass, Fparams fpar, int n, const Particle *pp, /**/ Force *ff) {
+__global__ void main(float mass, Fparams fpar, int n, const Particle *pp, /**/ Force *ff) {
     enum {X, Y, Z};
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;

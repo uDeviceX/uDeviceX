@@ -6,7 +6,7 @@ O = $B/d/api.o $B/glb/imp.o $B/glb/wvel/imp.o $B/io/bop/imp.o $B/io/com.o $B/io/
     $B/rbc/edg/imp.o $B/rbc/force/area_volume/imp.o $B/rbc/force/imp.o \
     $B/rbc/gen/imp.o $B/rbc/main/anti/imp.o $B/rbc/main/imp.o \
     $B/rbc/rnd/api/imp.o $B/rbc/rnd/imp.o $B/rbc/stretch/imp.o \
-    $B/scheme/main/imp.o $B/scheme/move/imp.o $B/scheme/restrain/imp.o \
+    $B/scheme/force/imp.o $B/scheme/move/imp.o $B/scheme/restrain/imp.o \
     $B/scheme/restrain/sub/imp.o $B/scheme/restrain/sub/stat/imp.o \
     $B/scheme/restrain/sub/sum/imp.o $B/u/rbc/main/lib/imp.o \
     $B/u/rbc/main/main.o $B/utils/cc.o $B/utils/error.o $B/utils/halloc.o \

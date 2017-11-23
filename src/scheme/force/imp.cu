@@ -17,7 +17,7 @@
 
 #include "imp.h"
 
-namespace scheme {
+namespace scheme { namespace force {
 namespace dev {
 #if   defined(FORCE_NONE)
   #include "dev/none.h"
@@ -33,4 +33,4 @@ namespace dev {
 } /* namespace */
 
 #include "imp/main.h"
-} /* namespace */
+}} /* namespace */
