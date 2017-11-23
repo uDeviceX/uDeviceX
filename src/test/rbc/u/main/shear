@@ -6,7 +6,6 @@ rm -rf bop diag.txt h5 ply rbc.off
 S=`pwd`
 U=u/rbc/main
 C=conf/lina.h
-A=5e2 : stretching force L/S^2
 nv=2562
 seed=123456
 cell=data/cells/rbc/$nv.off
@@ -14,7 +13,6 @@ cell0=data/cells/sph/$nv.off
 :
 cp              $cell           rbc.off
 cp              $cell0          rbc.stress.free
-u.stretch $A 5% $cell         > rbc.stretch
 cp $S/data/ic/ident             rbcs-ic.dat
 :
 volume=`volume $cell` : needs gitlab:off
