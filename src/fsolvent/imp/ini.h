@@ -6,3 +6,7 @@ void ini(int maxp, /**/ BulkData **bd) {
     b->colors = NULL;
     *bd = b;
 }
+
+void ini(/**/ HaloData **h) {
+    *h = new HaloData;
+}

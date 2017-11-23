@@ -4,3 +4,7 @@ void fin(/**/ BulkData *b) {
     delete b->rnd;
     delete b;
 }
+
+void ini(/**/ HaloData *h) {
+    delete h;
+}
