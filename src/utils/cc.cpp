@@ -3,12 +3,16 @@
 #include <conf.h>
 #include "inc/conf.h"
 
-#include "msg.h"
+#include "utils/error.h"
 #include "d/api.h"
 
 #include "cc/common.h"
 namespace cc {
 void check(int rc, const char *file, int line) {
-    if (rc != 0) ERR("%s:%d: %s", file, line, d::emsg());
+    if (rc != 0) {
+        UdxError::signal_cuda_error(file, line, d::emsg());
+        UdxError::report();
+        UdxError::abort();
+    }
 }
 }
