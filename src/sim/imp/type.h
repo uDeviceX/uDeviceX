@@ -22,6 +22,12 @@ struct FluDistr {
     distr::flu::Unpack u;
 };
 
+struct FluExch {
+    exch::flu::Pack p;
+    exch::flu::Comm c;
+    exch::flu::Unpack u;
+};
+
 /* rbc distribution */
 struct RbcDistr {
     distr::rbc::Pack p;
