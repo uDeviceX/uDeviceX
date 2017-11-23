@@ -10,8 +10,11 @@
   #define       RBCkb ( 100.0        )
 #endif
 
+#ifndef RBCp
+  #define       RBCp  ( 0.00136      )
+#endif
+
 #define         RBCx0 ( 0.457        )
-#define          RBCp ( 0.00136      )
 #define         RBCka ( 4900.0       )
 #define         RBCkd ( 5000.0       )
 #define         RBCkv ( 5000.0       )
