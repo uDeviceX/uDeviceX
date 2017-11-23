@@ -9,7 +9,7 @@ void sample(long id, int n, const Particle *pp, const int *starts, const int *co
         sample(n, pp, starts, counts, /**/ c);
 }
 
-void adjust(long id, /**/ PidVCont *c, scheme::Fparams *fpar) {
+void adjust(long id, /**/ PidVCont *c, scheme::force::Fparams *fpar) {
     if (valid_step(id, VCON_ADJUST_FREQ)) {
         float3 f;
         f = adjustF(/**/ c);
