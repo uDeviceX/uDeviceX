@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <vector_types.h>
 #include <mpi.h>
 
@@ -68,5 +67,5 @@ void dump_com(long id, int n, const int *ii, const float3 *rr) {
     UC(nchar = swrite(n, ii, rr, /**/ data));
     write_mpi(fname, nchar, data);
     
-    free(data);
+    efree(data);
 }

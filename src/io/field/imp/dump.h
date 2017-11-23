@@ -72,5 +72,5 @@ void dump(Particle *pp, int n) {
     UC(emalloc(sz, (void**) &u[Y]));
     UC(emalloc(sz, (void**) &u[Z]));
     dump0(pp, n, nc, /*w*/ rho, u);
-    free(rho); free(u[X]); free(u[Y]); free(u[Z]);
+    efree(rho); efree(u[X]); efree(u[Y]); efree(u[Z]);
 }
