@@ -77,9 +77,10 @@ bool error() {return err_status || mpi_status || cuda_status;}
 void report(const char *file, int line) {
     if (err_status) {
         stack_dump();
-        ERR("%s: %d: Error: %s\n"
+        MSG("%s: %d: Error: %s\n"
             "backtrace:\n%s",
             err_file, err_line, err_msg, back_trace);
+        exit(1);
     }
 }
 
