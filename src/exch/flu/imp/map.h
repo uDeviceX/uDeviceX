@@ -1,17 +1,3 @@
-static int get_cell_num(int *cc) {
-    int i, nc, c;
-    for (nc = i = 0; i < NFRAGS; ++i) {
-        c = cc[i] = frag_ncell(i);
-        nc += c;
-    }
-    return nc;
-}
-
-static void scan(int n, int *cc, /**/ int *ss) {
-    ss[0] = 0;
-    for (int i = 0; i < n; ++i) ss[i+1] = ss[i] + cc[i];
-}
-
 void compute_map(const int *start, const int *count, /**/ Pack *p) {
     int nc;
     int26 cc;
@@ -39,5 +25,6 @@ void download_cell_starts(/**/ Pack *p) {
     bag2Sarray(p->hfss, /**/ &fss_hst);
     download_cell_starts(p->fss, /**/ fss_hst);
     /* size of the messages is fixed throughout the whole simulation */
+    /* sizes are frag_ncell(fid) + 1 */
 }
 
