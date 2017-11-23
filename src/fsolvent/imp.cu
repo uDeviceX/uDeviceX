@@ -17,6 +17,8 @@
 
 #include "imp.h"
 
+/* implementation */
+
 #include "imp/type.h"
 #include "dev.h"
 #include "imp/ini.h"
