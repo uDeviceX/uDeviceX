@@ -93,7 +93,9 @@
 
 #include "inter/imp.h"
 #include "inter/color.h"
-#include "scheme/imp.h"
+#include "scheme/force/imp.h"
+#include "scheme/move/imp.h"
+#include "scheme/restrain/imp.h"
 
 #include "vcontroller/imp.h"
 

@@ -1,5 +1,5 @@
 void run_eq(long te) { /* equilibrate */
-    scheme::Fparams fpar = {
+    scheme::force::Param fpar = {
         .a = 0,
         .b = 0,
         .c = 0
@@ -14,7 +14,7 @@ void run(long ts, long te) {
     long it; /* current timestep */
     dump_strt_templ(); /* :TODO: is it the right place? */
 
-    scheme::Fparams fpar = {
+    scheme::force::Param fpar = {
         .a = FORCE_PAR_A,
         .b = 0,
         .c = 0

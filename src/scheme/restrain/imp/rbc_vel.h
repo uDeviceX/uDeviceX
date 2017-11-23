@@ -2,8 +2,8 @@ static void report0() {
     enum {X, Y, Z};
     int n;
     float v[3];
-    restrain::stat(/**/ &n, v);
-    MSG("restrain RED: n = %d [% .3e % .3e % .3e]", n, v[X], v[Y], v[Z]);
+    stats(/**/ &n, v);
+    MSG("restrain RBC: n = %d [% .3e % .3e % .3e]", n, v[X], v[Y], v[Z]);
 }
 
 static void report(int it) {
@@ -14,7 +14,7 @@ static void report(int it) {
     if (cond) report0();
 }
 
-void restrain(const int *cc, NN nn, long it, /**/ QQ qq) {
-    restrain::color::vel(cc, RED_COLOR, nn.o, /**/ qq.o);
+void main(const int*, NN nn, long it, /**/ QQ qq) {
+    grey::vel(nn.r, /**/ qq.r);
     report(it);
 }

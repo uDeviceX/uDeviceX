@@ -28,4 +28,4 @@ static void avg_v(/**/ float *v) {
     stat::setn(n);
 }
 
-void stat(/**/ int *n, float *v) { stat::get(/**/ n, v); }
+void stats(/**/ int *n, float *v) { stat::get(/**/ n, v); }

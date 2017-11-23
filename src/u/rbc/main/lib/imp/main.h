@@ -22,7 +22,7 @@ static void run0(rbc::Quants q, rbc::force::TicketT t, rbc::stretch::Fo* stretch
         Dzero(f, q.n);
         rbc::force::apply(q, t, /**/ f);
         rbc::stretch::apply(q.nc, stretch, /**/ f);
-        scheme::move(rbc_mass, q.n, f, q.pp);
+        scheme::move::main(rbc_mass, q.n, f, q.pp);
         if (i % part_freq  == 0) dump(q, t);
         //        scheme::clear_vel(q.n, /**/ q.pp);
     }
