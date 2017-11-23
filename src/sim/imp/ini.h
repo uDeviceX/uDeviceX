@@ -103,20 +103,9 @@ void ini() {
     
     UC(ini_flu_distr(m::cart, /*io*/ &tag_gen, /**/ &o::d));
     UC(ini_flu_exch(m::cart, /*io*/ &tag_gen, /**/ &o::e));
-
-    dpdr::ini_ticketcom(m::cart, &tag_gen, &o::h.tc);
-    dpdr::ini_ticketrnd(o::h.tc, /**/ &o::h.trnd);
-    dpdr::alloc_ticketSh(/**/ &o::h.ts);
-    dpdr::alloc_ticketRh(/**/ &o::h.tr);
-
+    
     Dalloc(&o::ff, MAX_PART_NUM);
     
-    if (multi_solvent) {
-        dpdr::ini_ticketIcom(/*io*/ &tag_gen, /**/ &o::h.tic);
-        dpdr::alloc_ticketSIh(/**/ &o::h.tsi);
-        dpdr::alloc_ticketRIh(/**/ &o::h.tri);
-    }
-
     if (multi_solvent && rbcs)
         UC(ini_colorer(r::q.nv, m::cart, /*io*/ &tag_gen, /**/ &colorer));
     

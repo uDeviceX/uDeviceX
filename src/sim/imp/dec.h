@@ -13,9 +13,6 @@ Fluexch e;
 BulkData *bulkdata;
 HaloData *halodata;
 
-/* [h]alo interactions : local halos : see type.h */
-H h;
-
 Force *ff;
 Force  ff_hst[MAX_PART_NUM]; /* solvent forces on host    */
 

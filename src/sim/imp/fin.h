@@ -77,19 +77,8 @@ void fin() {
     fin(/**/ o::bulkdata);
     fin(/**/ o::halodata);
  
-    dpdr::free_ticketcom(&o::h.tc);
-    dpdr::free_ticketrnd(&o::h.trnd);
-    dpdr::free_ticketSh(&o::h.ts);
-    dpdr::free_ticketRh(&o::h.tr);
-
     fin_flu_distr(/**/ &o::d);
     fin_flu_exch(/**/ &o::e);
-    
-    if (multi_solvent) {
-        dpdr::free_ticketIcom(&o::h.tic);
-        dpdr::free_ticketSIh(&o::h.tsi);
-        dpdr::free_ticketRIh(&o::h.tri);
-    }
 
     if (multi_solvent && rbcs)
         fin_colorer(/**/ &colorer);
