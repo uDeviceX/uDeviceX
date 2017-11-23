@@ -1,32 +1,20 @@
+= compilation command
+
+Shows full compilation and linking commands
+----
+u.make LOG=
+----
+
 = profile compilation time
 
-Collect log
+----
+u.make LOG='@time -f "%e $<"'
+----
 
-----
-u.make LOG='@time -f "%e $<"' > comile.time
-----
+Summarize time used to compile
 
 ----
 10.09 flu/imp.cu
 10.16 restrain/imp.cu
-10.16 rigid/imp.cu
-10.18 sdf/int.cu
-10.18 wall/force/imp.cu
-10.26 distr/rbc/imp.cu
-10.26 sdf/imp.cu
-10.40 distr/rig/imp.cu
-10.41 exch/obj/imp.cu
-10.48 rbc/force/imp.cu
-10.50 scheme/imp.cu
-10.56 distr/flu/imp.cu
-10.62 inter/imp.cu
-10.72 fsi/imp.cu
-10.75 lforces/imp.cu
-10.82 exch/mesh/imp.cu
-10.86 vcontroller/imp.cu
-10.95 dpdr/imp.cu
-11.48 meshbb/imp.cu
-11.71 generate/rig/imp.cu
-11.75 sim/imp.cu
-11.79 hforces/imp.cu
+...
 ----
