@@ -47,19 +47,26 @@ static void stack_dump() {
     }
 }
 
-static void raise_error(const char *file, int line) {
+static void set_err_loc(const char *file, int line) {
     err_line = line;
-    err_status = 1;
     err_file = file;
     memset(err_msg, 0, sizeof(err_msg));
 }
 
 void signal_error(const char *file, int line, const char *fmt, ...) {
-    raise_error(file, line);
+    set_err_loc(file, line);
+    err_status = 1;
+
     va_list ap;
     va_start(ap, fmt);
     vsprintf(err_msg, fmt, ap);
     va_end(ap);    
+}
+
+void signal_cuda_error(const char *file, int line, const char *msg) {
+    set_err_loc(file, line);
+    cuda_status = 1;
+    strcpy(err_msg, msg);
 }
 
 bool error() {return err_status || mpi_status || cuda_status;}
