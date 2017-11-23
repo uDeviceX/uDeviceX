@@ -7,7 +7,7 @@
 #include "msg.h"
 
 #include "inc/type.h"
-#include "restrain/imp.h"
+#include "sub/imp.h"
 #include "imp.h"
 
 namespace scheme { namespace restrain {

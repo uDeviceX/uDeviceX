@@ -61,14 +61,14 @@ $B/rbc/main/imp.o: $S/rbc/main/imp.cpp; $X -I$S/rbc/main -I$S/.
 $B/rbc/rnd/api/imp.o: $S/rbc/rnd/api/imp.cpp; $X -I$S/rbc/rnd/api -I$S/.
 $B/rbc/rnd/imp.o: $S/rbc/rnd/imp.cpp; $X -I$S/rbc/rnd -I$S/.
 $B/rbc/stretch/imp.o: $S/rbc/stretch/imp.cu; $N -I$S/rbc/stretch -I$S/.
-$B/restrain/imp.o: $S/restrain/imp.cu; $N -I$S/restrain -I$S/.
-$B/restrain/stat/imp.o: $S/restrain/stat/imp.cpp; $X -I$S/restrain/stat -I$S/.
-$B/restrain/sum/imp.o: $S/restrain/sum/imp.cpp; $X -I$S/restrain/sum -I$S/.
 $B/rigid/imp.o: $S/rigid/imp.cu; $N -I$S/rigid -I$S/.
 $B/rig/imp.o: $S/rig/imp.cu; $N -I$S/rig -I$S/.
 $B/rnd/imp.o: $S/rnd/imp.cpp; $X -I$S/rnd -I$S/.
 $B/scheme/main/imp.o: $S/scheme/main/imp.cu; $N -I$S/scheme/main -I$S/.
 $B/scheme/restrain/imp.o: $S/scheme/restrain/imp.cpp; $X -I$S/scheme/restrain -I$S/.
+$B/scheme/restrain/sub/imp.o: $S/scheme/restrain/sub/imp.cu; $N -I$S/scheme/restrain/sub -I$S/.
+$B/scheme/restrain/sub/stat/imp.o: $S/scheme/restrain/sub/stat/imp.cpp; $X -I$S/scheme/restrain/sub/stat -I$S/.
+$B/scheme/restrain/sub/sum/imp.o: $S/scheme/restrain/sub/sum/imp.cpp; $X -I$S/scheme/restrain/sub/sum -I$S/.
 $B/sdf/imp.o: $S/sdf/imp.cu; $N -I$S/sdf -I$S/.
 $B/sdf/int.o: $S/sdf/int.cu; $N -I$S/sdf -I$S/.
 $B/sim/imp.o: $S/sim/imp.cu; $N -I$S/sim -I$S/.
