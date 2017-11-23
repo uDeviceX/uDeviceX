@@ -1,5 +1,5 @@
 #### periodic box: stretch
-# cTEST: rbc.u.main.shear.0
+# sTEST: rbc.u.main.shear.0
 set -eu
 rm -rf bop diag.txt h5 ply rbc.off
 :
@@ -9,26 +9,34 @@ C=conf/lina.h
 nv=2562
 seed=123456
 A=0
-alpha=20
+alpha=1
 cell=data/cells/rbc/$nv.off
 cell0=data/cells/sph/$nv.off
 :
 cp              $cell           rbc.off
 cp              $cell0          rbc.stress.free
 u.stretch $A 5% $cell         > rbc.stretch
-cp $S/data/ic/ident             rbcs-ic.dat
 :
 volume=`volume $cell` : needs gitlab:off
 area=`area $cell`
 :
-x=24 y=16 z=16; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
+XS=48 YS=48 ZS=48
+half () { awk -v n=$1 'BEGIN {print n/2}'; }
+x=`half $XS` y=`half $YS` z=`half $ZS`
+: 'cos(pi/2) and sin(pi/2)'
+cs=0 si=1
+echo 1   0    0  $x \
+     0 $cs -$si  $y \
+     0 $si  $cs  $z \
+     0   0   0   1  \
+     > rbcs-ic.txt
 :
 u.conf $S $U $C <<!
    rbcs
    RESTRAIN_RBC_VEL RBC_STRESS_FREE MESH_SHIFT_CENTER
    pushrbc FORCE_SHEAR FORCE_PAR_A=$alpha
    RBCtotArea=$area RBCtotVolume=$volume
-   XS=48 YS=32 ZS=32 RBCnv=$nv RBC_RND=false
+   XS=$XS YS=$YS ZS=$ZS RBCnv=$nv RBC_RND=false
    dt=1e-4 tend=200.0 part_freq=5000
    run
 !
