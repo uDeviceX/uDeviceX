@@ -1,1 +1,2 @@
-int emalloc(size_t size, /**/ void **data);
+int emalloc(size_t, /**/ void **);
+void efree(void*);
