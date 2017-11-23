@@ -24,9 +24,6 @@ void forces_dpd() {
     if (multi_solvent)
         post_send_ii(&h.tc, &h.ts, /**/ &h.tic, &h.tsi);
  
-    // if (multi_solvent) flocal_color(tz.zip0, tz.zip1, q.cc, q.n, start, count, trnd.rnd, /**/ ff);
-    // else flocal(tz.zip0, tz.zip1, q.n, start, count, trnd.rnd, /**/ ff);
-
     prepare(q.n, &cloud, /**/ bulkdata);
     bulk_forces(q.n, bulkdata, start, count, /**/ ff);
     
