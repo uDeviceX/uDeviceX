@@ -15,7 +15,9 @@
 #include "utils/kl.h"
 #include "utils/cc.h"
 
+#include "flu/type.h"
 #include "bulk/imp.h"
+#include "halo/imp.h"
 
 #include "imp.h"
 
