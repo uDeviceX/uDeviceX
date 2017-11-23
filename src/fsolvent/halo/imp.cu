@@ -33,6 +33,8 @@
 #include "cloud/imp.h"
 #include "cloud/dev.h"
 
+#include "flu/type.h"
+
 #include "imp.h"
 
 namespace hforces {

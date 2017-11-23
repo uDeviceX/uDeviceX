@@ -78,6 +78,7 @@
 #include "exch/mesh/type.h"
 #include "exch/mesh/imp.h"
 
+#include "flu/type.h"
 #include "dpdr/type.h"
 #include "dpdr/int.h"
 
