@@ -19,8 +19,6 @@
 
 #include "imp.h"
 
-namespace restrain {
-
 /* common part */
 namespace dev {
 #include "dev/dec.h"
@@ -49,5 +47,4 @@ namespace dev {
 #include "imp/grey/main.h"
 }
 
-}
 

@@ -1,5 +1,3 @@
-namespace restrain {
-
 /* return statistics of restrain: number of particle and center of
    mass velocity */
 void stats(/**/ int *n, float *v);
@@ -12,4 +10,3 @@ namespace grey {
 void vel(int n, /**/ Particle *pp);
 }
 
-}
