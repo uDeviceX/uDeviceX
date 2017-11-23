@@ -3,6 +3,12 @@ void forces_dpd() {
     using namespace o;
     int *count = q.cells.counts;
     int *start = q.cells.starts;
+    Cloud cloud;
+
+    ini_cloud(q.pp, /**/ &cloud);
+    if (multi_solvent)
+        ini_cloud_color(q.cc, /**/ &cloud);
+    
     gather_cells(start, count, /**/ &h.ts);
     if (h.tc.first) post_expected_recv(&h.tc, &h.tr);
     if (multi_solvent && h.tic.first)
@@ -18,9 +24,13 @@ void forces_dpd() {
     if (multi_solvent)
         post_send_ii(&h.tc, &h.ts, /**/ &h.tic, &h.tsi);
  
-    if (multi_solvent) flocal_color(tz.zip0, tz.zip1, q.cc, q.n, start, count, trnd.rnd, /**/ ff);
-    else flocal(tz.zip0, tz.zip1, q.n, start, count, trnd.rnd, /**/ ff);
+    // if (multi_solvent) flocal_color(tz.zip0, tz.zip1, q.cc, q.n, start, count, trnd.rnd, /**/ ff);
+    // else flocal(tz.zip0, tz.zip1, q.n, start, count, trnd.rnd, /**/ ff);
 
+    prepare(q.n, &cloud, /**/ bulkdata);
+    bulk_forces(q.n, bulkdata, start, count, /**/ ff);
+    
+    
     wait_recv(&h.tc);
     if (multi_solvent)
         wait_recv_ii(&h.tic);
