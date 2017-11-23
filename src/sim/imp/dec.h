@@ -9,6 +9,8 @@ flu::Quants       q;
 flu::TicketZ     tz; /* [z]ip             */
 flu::TicketRND trnd; /* random            */
 
+BulkData *bulkdata;
+
 FluDistr d;
 
 /* [h]alo interactions : local halos : see type.h */

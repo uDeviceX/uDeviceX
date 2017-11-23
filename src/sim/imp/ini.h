@@ -91,6 +91,7 @@ void ini() {
     flu::ini(&o::q);
     flu::ini(&o::tz);
     flu::ini(&o::trnd);
+    ini(MAX_PART_NUM, /**/ &o::bulkdata);
     
     UC(ini_flu_distr(m::cart, /*io*/ &tag_gen, /**/ &o::d));
 
