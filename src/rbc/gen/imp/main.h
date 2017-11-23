@@ -43,14 +43,14 @@ static void assert_nc(int nc) {
     ERR("nc = %d >= MAX_CELL_NUM = %d", nc, MAX_CELL_NUM);
 }
 
-static int setup_hst0(float *rr0, const char *r_state, int nv, Particle *pp) {
+static int setup_hst0(float *rr0, const char *ic, int nv, Particle *pp) {
     int c, nc = 0;
     int mi[3], L[3] = {XS, YS, ZS};
     for (c = 0; c < 3; ++c) mi[c] = (m::coords[c] + 0.5) * L[c];
 
     float A[4*4]; /* 4x4 affice transformation matrix */
-    FILE *f = fopen(r_state, "r");
-    if (f == NULL) ERR("Could not open <%s>\n", r_state);
+    FILE *f = fopen(ic, "r");
+    if (f == NULL) ERR("Could not open <%s>\n", ic);
 
     while ( read_A(f, /**/ A) ) {
         shift2local(mi, /**/ A);
@@ -70,13 +70,13 @@ static void vert(const char *f, int n0, /**/ float *vert) {
         ERR("wrong vert number in <%s> : %d != %d", f, n0, n);
 }
 
-int main(const char *cell, const char *r_state, int nv, /**/ Particle *pp) {
+int main(const char *cell, const char *ic, int nv, /**/ Particle *pp) {
     float *rr0;
     int nc;
     UC(emalloc(3*nv*sizeof(float), (void**) &rr0));
 
     vert(cell, nv, /**/ rr0);
-    nc = setup_hst0(rr0, r_state, nv, pp);
+    nc = setup_hst0(rr0, ic, nv, pp);
 
     free(rr0);
     return nc;
