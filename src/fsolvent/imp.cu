@@ -1,3 +1,4 @@
+#include <mpi.h>
 #include <stdint.h>
 #include <assert.h>
 
@@ -14,6 +15,11 @@
 #include "d/api.h"
 #include "utils/kl.h"
 #include "utils/cc.h"
+#include "utils/mc.h"
+
+#include "mpi/wrapper.h"
+#include "mpi/glb.h"
+#include "frag/imp.h"
 
 #include "flu/type.h"
 #include "bulk/imp.h"
