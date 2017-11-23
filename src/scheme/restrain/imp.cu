@@ -3,16 +3,9 @@
 
 #include "inc/def.h"
 #include "msg.h"
-#include "utils/mc.h"
-#include "utils/cc.h"
 
-#include "utils/kl.h"
 #include "inc/type.h"
-#include "inc/dev.h"
-#include "glb/get.h"
-
 #include "restrain/imp.h"
-
 #include "imp.h"
 
 namespace scheme { namespace restrain {
