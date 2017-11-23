@@ -1,4 +1,4 @@
-__global__ void main(float mass, Param par, int n, const Particle *pp, /**/ Force *ff) {
+__global__ void main(float mass, float f0, int n, const Particle *pp, /**/ Force *ff) {
     enum {X, Y};
     int pid;
     float fx, fy, *f;
@@ -19,7 +19,7 @@ __global__ void main(float mass, Param par, int n, const Particle *pp, /**/ Forc
 
     fx =  2*sin(x)*cos(y);
     fy = -2*cos(x)*sin(y);
-    fx *= par.a; fy *= par.a;
+    fx *= f0; fy *= f0;
 
     f[X] += mass * fx;
     f[Y] += mass * fy;
