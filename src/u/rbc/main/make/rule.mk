@@ -34,7 +34,7 @@ $B/restrain/imp.o: $S/restrain/imp.cu; $N -I$S/restrain -I$S/.
 $B/restrain/stat/imp.o: $S/restrain/stat/imp.cpp; $X -I$S/restrain/stat -I$S/.
 $B/restrain/sum/imp.o: $S/restrain/sum/imp.cpp; $X -I$S/restrain/sum -I$S/.
 $B/scheme/main/imp.o: $S/scheme/main/imp.cu; $N -I$S/scheme/main -I$S/.
-$B/scheme/restrain/imp.o: $S/scheme/restrain/imp.cu; $N -I$S/scheme/restrain -I$S/.
+$B/scheme/restrain/imp.o: $S/scheme/restrain/imp.cpp; $X -I$S/scheme/restrain -I$S/.
 $B/u/rbc/main/lib/imp.o: $S/u/rbc/main/lib/imp.cu; $N -I$S/u/rbc/main/lib -I$S/.
 $B/u/rbc/main/main.o: $S/u/rbc/main/main.cpp; $X -I$S/u/rbc/main -I$S/.
 $B/utils/cc.o: $S/utils/cc.cpp; $X -I$S/utils -I$S/.
