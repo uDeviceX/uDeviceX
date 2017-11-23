@@ -1,7 +1,7 @@
 struct BulkData;
 struct HaloData;
 
-void ini(int maxp, /**/ BulkData *b);
+void ini(int maxp, /**/ BulkData **b);
 void fin(/**/ BulkData *b);
 
 void prepare(int n, const Cloud *c, /**/ BulkData *b);
