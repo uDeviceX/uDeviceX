@@ -70,7 +70,7 @@ void signal_cuda_error(const char *file, int line, const char *msg) {
 }
 
 bool error() {return err_status || mpi_status || cuda_status;}
-void report(const char *file, int line) {
+void report() {
     if (err_status) {
         stack_dump();
         MSG("%s: %d: Error: %s\n"
