@@ -17,3 +17,16 @@ void bulk_forces(int n, const BulkData *b, const int *start, const int *count, /
     else
         flocal(b->zipped_pp, b->zipped_rr, n, start, count, b->rnd, /**/ ff);
 }
+
+
+void prepare(flu::LFrag26 lfrags, flu::RFrag26 rfrags, /**/ HaloData *h) {
+    h->lfrags = lfrags;
+    h->rfrags = rfrags;
+
+    for (int i = 0; i < 26; ++i) {
+        h->rndfrags.d[i] = {
+            .seed = h->trunks[i]->get_float(),
+            .mask = h->masks[i]
+        };
+    }
+}

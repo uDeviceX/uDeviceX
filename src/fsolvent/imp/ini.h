@@ -31,9 +31,7 @@ static void get_interrank_infos(int fid, /**/ rnd::KISS* trunks[], bool masks[])
 
     {
         int mysign = 2 * is_plus(d) - 1;
-
         int v[3] = {1 + mysign * d[0], 1 + mysign * d[1], 1 + mysign * d[2]};
-
         seed_offset = v[0] + 3 * (v[1] + 3 * v[2]);
     }
 
