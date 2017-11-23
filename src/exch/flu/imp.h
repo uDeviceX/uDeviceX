@@ -1,6 +1,15 @@
 namespace exch {
 namespace flu {
 
+void ini(int maxd, Pack *p);
+void ini(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Comm *c);
+void ini(int maxd, Unpack *u);
+
+void fin(Pack *p);
+void fin(Comm *c);
+void fin(Unpack *u);
+
+
 void compute_map(const int *start, const int *count, /**/ Pack *p);
 void download_cell_starts(/**/ Pack *p);
 
