@@ -19,9 +19,6 @@
 
 namespace scheme { namespace force {
 #if   defined(FORCE_NONE)
-  namespace dev {
-  #include "dev/none.h"
-  }
   #include "imp/none.h"
 #elif defined(FORCE_CONSTANT)
   namespace dev {
