@@ -16,7 +16,7 @@ int post_send(const hBags *b, Stamp *s) {
         n = c * b->bsize;
         tag = s->bt + i;
 
-        if (c >= cap)
+        if (c > cap)
             signal_error_extra("sending more than capacity in fragment %d : (%ld / %ld)", i, (long) c, (long) cap);
         COMM_MC(m::Isend(b->data[i], n, MPI_BYTE, s->ranks[i], tag, s->cart, s->sreq + i));
     }
@@ -35,7 +35,7 @@ static void get_counts(const MPI_Status ss[NFRAGS], /**/ hBags *b) {
     for (i = 0; i < NFRAGS; ++i) {
         c = cc[i] / b->bsize;
         b->counts[i] = c;
-        if (c >= b->capacity[i])
+        if (c > b->capacity[i])
             signal_error_extra("recv more than capacity in fragment %d : (%ld / %ld)", i, (long) c, (long) b->capacity[i]);
     }
 }
