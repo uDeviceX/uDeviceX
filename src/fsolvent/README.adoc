@@ -2,14 +2,14 @@
 
 solvent forces
 
-== bulk
+== structures
+TODO
 
+== submodules
+
+=== bulk
 solvent bulk interactions
 
-== halo
-
+=== halo
 interactions with solvent of neighbouring subdomains
 
-== RND
-
-holders for random number generators

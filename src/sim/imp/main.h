@@ -34,7 +34,6 @@ void sim_gen() {
     flu::gen_quants(&o::q);
     flu::build_cells(&o::q);
     if (global_ids)    flu::gen_ids  (o::q.n, &o::q);
-    flu::get_ticketZ(o::q, &o::tz);
     if (rbcs) {
         rbc::main::gen_quants("rbc.off", "rbcs-ic.txt", /**/ &r::q);
         rbc::force::gen_ticket(r::q, &r::tt);
@@ -50,7 +49,6 @@ void sim_gen() {
         gen();
         dSync();
         if (walls && w::q.n) wall::gen_ticket(w::q, &w::t);
-        flu::get_ticketZ(o::q, &o::tz);
         solids0 = solids;
         if (rbcs && multi_solvent) gen_colors(&colorer);
         run(wall_creation, nsteps);
@@ -77,7 +75,6 @@ void sim_strt() {
     if (walls) wall::strt_quants(MAXNWALL, &w::q);
 
     /*T*/
-    flu::get_ticketZ(o::q, &o::tz);
     if (rbcs)            rbc::force::gen_ticket(r::q, &r::tt);
     if (walls && w::q.n) wall::gen_ticket(w::q, &w::t);
 

@@ -16,12 +16,13 @@ $B/exch/flu/imp.o: $S/exch/flu/imp.cu; $N -I$S/exch/flu -I$S/.
 $B/exch/mesh/imp.o: $S/exch/mesh/imp.cu; $N -I$S/exch/mesh -I$S/.
 $B/exch/obj/imp.o: $S/exch/obj/imp.cu; $N -I$S/exch/obj -I$S/.
 $B/field.o: $S/field.cpp; $X -I$S/.
-$B/flu/imp.o: $S/flu/imp.cu; $N -I$S/flu -I$S/.
+$B/flu/imp.o: $S/flu/imp.cpp; $X -I$S/flu -I$S/.
 $B/frag/imp.o: $S/frag/imp.cpp; $X -I$S/frag -I$S/.
 $B/fsi/imp.o: $S/fsi/imp.cu; $N -I$S/fsi -I$S/.
 $B/fsolvent/bulk/imp.o: $S/fsolvent/bulk/imp.cu; $N -I$S/fsolvent/bulk -I$S/.
 $B/fsolvent/bulk/transpose/imp.o: $S/fsolvent/bulk/transpose/imp.cu; $N -I$S/fsolvent/bulk/transpose -I$S/.
 $B/fsolvent/halo/imp.o: $S/fsolvent/halo/imp.cu; $N -I$S/fsolvent/halo -I$S/.
+$B/fsolvent/imp.o: $S/fsolvent/imp.cu; $N -I$S/fsolvent -I$S/.
 $B/generate/rig/imp.o: $S/generate/rig/imp.cu; $N -I$S/generate/rig -I$S/.
 $B/glb/imp.o: $S/glb/imp.cu; $N -I$S/glb -I$S/.
 $B/glb/wvel/imp.o: $S/glb/wvel/imp.cu; $N -I$S/glb/wvel -I$S/.

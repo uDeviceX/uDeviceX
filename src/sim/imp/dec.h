@@ -6,8 +6,7 @@ basetags::TagGen tag_gen;
 namespace o /* s[o]lvent */
 {
 flu::Quants       q;
-flu::TicketZ     tz; /* [z]ip             */
-flu::TicketRND trnd; /* random            */
+BulkData *bulkdata;
 
 FluDistr d;
 

@@ -1,4 +1,6 @@
+#include <vector_types.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include <mpi.h>
 #include <assert.h>
@@ -14,9 +16,11 @@
 #include "d/api.h"
 #include "mpi/wrapper.h"
 
+#include "utils/error.h"
+#include "utils/halloc.h"
+
 #include "utils/mc.h"
 #include "utils/cc.h"
-#include "utils/kl.h"
 
 #include "algo/scan/int.h"
 #include "clist/imp.h"
@@ -28,8 +32,6 @@
 #include "imp.h"
 
 namespace flu {
-
-#include "dev.h"
 
 #include "imp/ini.h"
 #include "imp/fin.h"

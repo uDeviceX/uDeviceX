@@ -3,7 +3,7 @@ O = $B/algo/minmax.o $B/algo/scan/imp.o $B/clist/imp.o $B/cnt/imp.o $B/color/flu
     $B/distr/rbc/imp.o $B/distr/rig/imp.o $B/dpdr/imp.o $B/dpdr/int.o \
     $B/exch/flu/imp.o $B/exch/mesh/imp.o $B/exch/obj/imp.o $B/field.o $B/flu/imp.o \
     $B/frag/imp.o $B/fsi/imp.o $B/fsolvent/bulk/imp.o \
-    $B/fsolvent/bulk/transpose/imp.o $B/fsolvent/halo/imp.o \
+    $B/fsolvent/bulk/transpose/imp.o $B/fsolvent/halo/imp.o $B/fsolvent/imp.o \
     $B/generate/rig/imp.o $B/glb/imp.o $B/glb/wvel/imp.o $B/inter/imp.o \
     $B/io/bop/imp.o $B/io/com.o $B/io/diag.o $B/io/field/h5/imp.o \
     $B/io/field/imp.o $B/io/field/xmf/imp.o $B/io/fields_grid.o $B/io/mesh/imp.o \

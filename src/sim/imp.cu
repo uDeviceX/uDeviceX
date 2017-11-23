@@ -81,6 +81,8 @@
 #include "dpdr/type.h"
 #include "dpdr/int.h"
 
+#include "fsolvent/imp.h"
+
 #include "mesh/collision.h"
 #include "mesh/bbox.h"
 
