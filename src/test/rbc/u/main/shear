@@ -8,11 +8,14 @@ U=u/rbc/main
 C=conf/lina.h
 nv=2562
 seed=123456
+A=0
+alpha=20
 cell=data/cells/rbc/$nv.off
 cell0=data/cells/sph/$nv.off
 :
 cp              $cell           rbc.off
 cp              $cell0          rbc.stress.free
+u.stretch $A 5% $cell         > rbc.stretch
 cp $S/data/ic/ident             rbcs-ic.dat
 :
 volume=`volume $cell` : needs gitlab:off
@@ -23,6 +26,7 @@ x=24 y=16 z=16; echo 1 0 0 $x  0 1 0 $y  0 0 1 $z  0 0 0 1 > rbcs-ic.txt
 u.conf $S $U $C <<!
    rbcs
    RESTRAIN_RBC_VEL RBC_STRESS_FREE MESH_SHIFT_CENTER
+   pushrbc FORCE_SHEAR FORCE_PAR_A=$alpha
    RBCtotArea=$area RBCtotVolume=$volume
    XS=48 YS=32 ZS=32 RBCnv=$nv RBC_RND=false
    dt=1e-4 tend=200.0 part_freq=5000
