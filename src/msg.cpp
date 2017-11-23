@@ -13,7 +13,7 @@ static FILE* safe_fopen(const char *path, const char *mode) {
     f = fopen(path, mode);
     if (!f) {
         fprintf(stderr, "fail to open: %s\n", path);
-        exit(1);
+        msg::exit(1);
     }
     return f;
 }
@@ -32,6 +32,7 @@ static void print0(FILE *f) {
     if (m::rank == 0) fprintf(stderr, ": %s\n", buf);
 }
 
+void exit(int status) { ::exit(status); }
 void print() {
     char n[BUFSIZ]; /* name */
     FILE *f;

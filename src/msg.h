@@ -1,6 +1,7 @@
 namespace msg {
 extern char buf[];
 void print();
+void exit(int);
 }
 
 #define MSG(fmt, ...)                           \
@@ -12,5 +13,5 @@ void print();
 #define ERR(fmt, ...)                           \
     do {                                        \
         MSG(fmt, ##__VA_ARGS__);                \
-        exit(1);                                \
+        msg::exit(1);                           \
     } while(0)

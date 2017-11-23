@@ -1,6 +1,6 @@
 #include <string.h>
 #include <stdio.h>
-#include <assert.h>
+#include <stdlib.h>
 #include <mpi.h>
 
 #include "msg.h"
