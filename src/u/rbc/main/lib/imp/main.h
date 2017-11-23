@@ -40,7 +40,7 @@ static void run2(const char *cell, const char *ic, rbc::Quants q) {
     rbc::stretch::Fo *stretch;
     rbc::force::TicketT t;
     rbc::main::gen_quants(cell, ic, /**/ &q);
-    rbc::stretch::ini("rbc.stretch", q.nv, /**/ &stretch);
+    UC(rbc::stretch::ini("rbc.stretch", q.nv, /**/ &stretch));
     rbc::force::gen_ticket(q, &t);
     run1(q, t, stretch);
     rbc::stretch::fin(stretch);

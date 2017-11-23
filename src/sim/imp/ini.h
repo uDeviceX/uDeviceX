@@ -69,7 +69,7 @@ void ini() {
 
         UC(ini_rbc_distr(r::q.nv, m::cart, /*io*/ &tag_gen, /**/ &r::d));
         if (rbc_com_dumps) rbc::com::ini(MAX_CELL_NUM, /**/ &r::com);
-        if (RBC_STRETCH)   rbc::stretch::ini("rbc.stretch", r::q.nv, /**/ &r::stretch);
+        if (RBC_STRETCH)   UC(rbc::stretch::ini("rbc.stretch", r::q.nv, /**/ &r::stretch));
     }
 
     if (VCON) ini_vcont(m::cart, /**/ &o::vcont);
