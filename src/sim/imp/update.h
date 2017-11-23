@@ -37,8 +37,8 @@ void bounce_solid(long it) {
     exch::mesh::pack(nv, i_pp, /**/ &s::e.p);
     exch::mesh::download(&s::e.p);
 
-    exch::mesh::post_send(&s::e.p, &s::e.c);
-    exch::mesh::post_recv(&s::e.c, &s::e.u);
+    UC(exch::mesh::post_send(&s::e.p, &s::e.c));
+    UC(exch::mesh::post_recv(&s::e.c, &s::e.u));
 
     exch::mesh::wait_send(&s::e.c);
     exch::mesh::wait_recv(&s::e.c, &s::e.u);
@@ -63,8 +63,8 @@ void bounce_solid(long it) {
     exch::mesh::packM(nt, counts, bb::mm + nm * nt, /**/ &s::e.pm);
     exch::mesh::downloadM(counts, /**/ &s::e.pm);
 
-    exch::mesh::post_recv(&s::e.cm, &s::e.um);
-    exch::mesh::post_send(&s::e.pm, &s::e.cm);
+    UC(exch::mesh::post_recv(&s::e.cm, &s::e.um));
+    UC(exch::mesh::post_send(&s::e.pm, &s::e.cm));
     exch::mesh::wait_recv(&s::e.cm, &s::e.um);
     exch::mesh::wait_send(&s::e.cm);
 

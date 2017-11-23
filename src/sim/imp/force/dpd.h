@@ -16,7 +16,7 @@ void forces_dpd() {
     download_data(/**/ &e.p);
 
     post_recv(&e.c, &e.u);
-    post_send(&e.p, &e.c);
+    UC(post_send(&e.p, &e.c));
     
     prepare(q.n, &cloud, /**/ bulkdata);
     bulk_forces(q.n, bulkdata, start, count, /**/ ff);

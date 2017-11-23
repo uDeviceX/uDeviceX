@@ -9,8 +9,8 @@ void gen_colors(Colorer *c) {
     pack(nv, r::q.pp, /**/ &c->e.p);
     download(&c->e.p);
 
-    post_send(&c->e.p, &c->e.c);
-    post_recv(&c->e.c, &c->e.u);
+    UC(post_send(&c->e.p, &c->e.c));
+    UC(post_recv(&c->e.c, &c->e.u));
 
     if (nm * nv) CC(d::MemcpyAsync(c->pp, r::q.pp, nm * nv * sizeof(Particle), D2D));
     
