@@ -1,5 +1,5 @@
 __global__ void main(float mass, float f0, int n, const Particle *pp, /**/ Force *ff) {
-    enum {X, Y, Z};
+    enum {X, Y};
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
 
