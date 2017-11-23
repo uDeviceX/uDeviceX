@@ -17,7 +17,6 @@
 #include "glb/get.h"
 
 #include "mpi/wrapper.h"
-#include "restrain/imp.h"
 
 #include "imp.h"
 
@@ -43,15 +42,4 @@ namespace dev {
 } /* namespace */
 
 #include "imp/main.h"
-
-#if   defined(RESTRAIN_NONE)
-  #include "imp/restrain/none.h"
-#elif defined(RESTRAIN_RED_VEL)
-  #include "imp/restrain/red_vel.h"
-#elif defined(RESTRAIN_RBC_VEL)
-  #include "imp/restrain/rbc_vel.h"
-#else
-  #error RESTRAIN_* is undefined
-#endif
-
 } /* namespace */

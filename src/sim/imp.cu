@@ -92,6 +92,7 @@
 #include "inter/imp.h"
 #include "inter/color.h"
 #include "scheme/main/imp.h"
+#include "scheme/restrain/imp.h"
 
 #include "vcontroller/imp.h"
 
