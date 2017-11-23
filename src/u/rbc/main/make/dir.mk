@@ -23,6 +23,7 @@ D = @d () { test -d "$$1" || mkdir -p -- "$$1"; } && \
     d $B/rbc/rnd/api              && \
     d $B/rbc/stretch              && \
     d $B/scheme/main              && \
+    d $B/scheme/move              && \
     d $B/scheme/restrain          && \
     d $B/scheme/restrain/sub      && \
     d $B/scheme/restrain/sub/stat && \

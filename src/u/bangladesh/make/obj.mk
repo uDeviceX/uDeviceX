@@ -14,8 +14,8 @@ O = $B/algo/minmax.o $B/algo/scan/imp.o $B/clist/imp.o $B/cnt/imp.o $B/color/flu
     $B/rbc/force/area_volume/imp.o $B/rbc/force/imp.o $B/rbc/gen/imp.o \
     $B/rbc/main/anti/imp.o $B/rbc/main/imp.o $B/rbc/rnd/api/imp.o \
     $B/rbc/rnd/imp.o $B/rbc/stretch/imp.o $B/rig/imp.o $B/rigid/imp.o $B/rnd/imp.o \
-    $B/scheme/main/imp.o $B/scheme/restrain/imp.o $B/scheme/restrain/sub/imp.o \
-    $B/scheme/restrain/sub/stat/imp.o $B/scheme/restrain/sub/sum/imp.o \
-    $B/sdf/imp.o $B/sdf/int.o $B/sim/imp.o $B/utils/cc.o $B/utils/error.o \
-    $B/utils/halloc.o $B/utils/mc.o $B/utils/os.o $B/vcontroller/imp.o \
-    $B/wall/exch/imp.o $B/wall/force/imp.o $B/wall/imp.o
+    $B/scheme/main/imp.o $B/scheme/move/imp.o $B/scheme/restrain/imp.o \
+    $B/scheme/restrain/sub/imp.o $B/scheme/restrain/sub/stat/imp.o \
+    $B/scheme/restrain/sub/sum/imp.o $B/sdf/imp.o $B/sdf/int.o $B/sim/imp.o \
+    $B/utils/cc.o $B/utils/error.o $B/utils/halloc.o $B/utils/mc.o $B/utils/os.o \
+    $B/vcontroller/imp.o $B/wall/exch/imp.o $B/wall/force/imp.o $B/wall/imp.o
