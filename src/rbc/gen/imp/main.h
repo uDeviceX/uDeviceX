@@ -70,12 +70,12 @@ static void vert(const char *f, int n0, /**/ float *vert) {
         ERR("wrong vert number in <%s> : %d != %d", f, n0, n);
 }
 
-int main(const char *r_templ, const char *r_state, int nv, /**/ Particle *pp) {
+int main(const char *cell, const char *r_state, int nv, /**/ Particle *pp) {
     float *rr0;
     int nc;
     UC(emalloc(3*nv*sizeof(float), (void**) &rr0));
 
-    vert(r_templ, nv, /**/ rr0);
+    vert(cell, nv, /**/ rr0);
     nc = setup_hst0(rr0, r_state, nv, pp);
 
     free(rr0);

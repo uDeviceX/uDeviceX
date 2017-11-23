@@ -13,12 +13,12 @@ static void ids_from_strt(const int id, /**/ int *ii) {
     restart::read_ii(CODE, IDEXT, id, ii, &nc);
 }
 
-void strt_quants(const char *r_templ, const int id, Quants *q) {
+void strt_quants(const char *cell, const int id, Quants *q) {
     int md, nt, nv;
     md = RBCmd;
     nt = RBCnt;
     nv = RBCnv;
-    setup(md, nt, nv, r_templ, /**/
+    setup(md, nt, nv, cell, /**/
           q->shape.anti, q->shape.edg, &q->shape.totArea,
           q->tri_hst, q->tri, q->adj0, q->adj1);
     setup_from_strt(nv, id, /**/ q->pp, &q->nc, &q->n, /*w*/ q->pp_hst);
