@@ -36,6 +36,7 @@ void get_remote_frags(const Unpack *u, /**/ RFrag26 *rfrags) {
             .xcells = xcells,
             .ycells = ycells,
             .zcells = zcells,
-            .type = (::flu::FragType)(abs(dx) + abs(dy) + abs(dz))};
+            .type = abs(dx) + abs(dy) + abs(dz)
+        };
     }
 }

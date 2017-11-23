@@ -2,7 +2,7 @@
 
 namespace flu {
 
-enum FragType { BULK = 0, FACE = 1, EDGE = 2, CORNER = 3 };
+enum { BULK = 0, FACE = 1, EDGE = 2, CORNER = 3 };
 
 struct LFrag { /* "local" fragment */
     Cloud c;
@@ -14,7 +14,7 @@ struct RFrag { /* "remote" fragment */
     Cloud c;
     const int *start;
     int dx, dy, dz, xcells, ycells, zcells;
-    FragType type;
+    int type;
 };
 
 struct RndFrag {

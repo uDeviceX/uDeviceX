@@ -192,7 +192,7 @@ static void ini_remote_frags(TicketRhalo tr, /**/ flu::RFrag26 *rfrags) {
             .xcells = xcells,
             .ycells = ycells,
             .zcells = zcells,
-            .type = (flu::FragType)(abs(dx) + abs(dy) + abs(dz))};
+            .type = abs(dx) + abs(dy) + abs(dz)};
     }
 }
 
