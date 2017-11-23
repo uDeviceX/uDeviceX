@@ -1,7 +1,7 @@
 void clear_vel() {
-    scheme::clear_vel(o::q.n, o::q.pp);
-    if (solids) scheme::clear_vel(s::q.n, s::q.pp);
-    if (rbcs  ) scheme::clear_vel(r::q.n, r::q.pp);
+    scheme::move::clear_vel(o::q.n, o::q.pp);
+    if (solids) scheme::move::clear_vel(s::q.n, s::q.pp);
+    if (rbcs  ) scheme::move::clear_vel(r::q.n, r::q.pp);
 }
 
 void update_solid() {
@@ -80,14 +80,14 @@ void bounce_solid(long it) {
 
 
 void update_solvent(long it) {
-    scheme::move(dpd_mass, o::q.n, o::ff, o::q.pp);
+    scheme::move::main(dpd_mass, o::q.n, o::ff, o::q.pp);
 }
 
 void update_rbc(long it) {
     bool cond;
     cond = multi_solvent && color_freq && it % color_freq == 0;
     if (cond) {MSG("recolor"); gen_colors(&colorer);};
-    scheme::move(rbc_mass, r::q.n, r::ff, r::q.pp);
+    scheme::move::main(rbc_mass, r::q.n, r::ff, r::q.pp);
 }
 
 void restrain(long it) {
