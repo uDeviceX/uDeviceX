@@ -3,6 +3,8 @@ void get_local_frags(const Pack *p, LFrag26 *lfrags) {
     
     for (int i = 0; i < 26; ++i) {
         ini_cloud((Particle*) p->dpp.data[i], &clouda);
+        if (multi_solvent)
+            ini_cloud_color((int*) p->dcc.data[i], &clouda);
 
         lfrags->d[i] = {
             .c  = clouda,            
@@ -26,7 +28,9 @@ void get_remote_frags(const Unpack *u, /**/ RFrag26 *rfrags) {
         ycells = dy == 0 ? YS : 1;
         zcells = dz == 0 ? ZS : 1;
         ini_cloud((Particle*) u->dpp.data[i], &cloudb);
-        
+        if (multi_solvent)
+            ini_cloud_color((int*) u->dcc.data[i], &cloudb);
+            
         rfrags->d[i] = {
             .c     = cloudb,
             .start = (int*) u->dfss.data[i],
