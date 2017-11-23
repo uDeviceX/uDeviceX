@@ -26,7 +26,7 @@ void unpack(Unpack *u);
 using ::flu::LFrag26;
 using ::flu::RFrag26;
 
-void get_local_frags(const Pack *p, LFrag26 *lfrags);
+void get_local_frags(const Pack *p, /**/ LFrag26 *lfrags);
 void get_remote_frags(const Unpack *u, /**/ RFrag26 *rfrags);
     
 } // flu
