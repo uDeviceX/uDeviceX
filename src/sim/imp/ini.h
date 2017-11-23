@@ -1,3 +1,12 @@
+static void ini_flu_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Fluexch *e) {
+    using namespace exch::flu;
+    int maxd = HSAFETY_FACTOR * numberdensity;
+    
+    UC(ini(maxd, /**/ &e->p));
+    UC(ini(comm, /*io*/ tg, /**/ &e->c));
+    UC(ini(maxd, /**/ &e->u));
+}
+
 static void ini_obj_exch(MPI_Comm comm, /*io*/ basetags::TagGen *tg, /**/ Objexch *e) {
     using namespace exch::obj;
     int maxpsolid = MAX_PSOLID_NUM;

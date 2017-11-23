@@ -22,7 +22,8 @@ struct FluDistr {
     distr::flu::Unpack u;
 };
 
-struct FluExch {
+/* particle exchanger for solvent forces */
+struct Fluexch {
     exch::flu::Pack p;
     exch::flu::Comm c;
     exch::flu::Unpack u;

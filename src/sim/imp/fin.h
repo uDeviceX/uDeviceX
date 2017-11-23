@@ -1,3 +1,10 @@
+static void fin_flu_exch(/**/ Fluexch *e) {
+    using namespace exch::flu;
+    fin(/**/ &e->p);
+    fin(/**/ &e->c);
+    fin(/**/ &e->u);
+}
+
 static void fin_obj_exch(/**/ Objexch *e) {
     using namespace exch::obj;
     fin(&e->p);
