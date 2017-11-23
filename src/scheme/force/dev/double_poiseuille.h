@@ -1,4 +1,4 @@
-__global__ void main(float mass, Param fpar, int n, const Particle *pp, /**/ Force *ff) {
+__global__ void main(float mass, Param par, int n, const Particle *pp, /**/ Force *ff) {
     enum {X, Y, Z};
     int pid = threadIdx.x + blockDim.x * blockIdx.x;
     if (pid >= n) return;
@@ -8,6 +8,6 @@ __global__ void main(float mass, Param fpar, int n, const Particle *pp, /**/ For
 
     float d = r[Y] - glb::r0[Y]; /* coordinate relative to domain
                                      center */
-    if (d <= 0) fpar.a *= -1;
-    f[X] += mass * fpar.a;
+    if (d <= 0) par.a *= -1;
+    f[X] += mass * par.a;
 }
