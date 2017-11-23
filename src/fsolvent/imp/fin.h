@@ -5,6 +5,6 @@ void fin(/**/ BulkData *b) {
     delete b;
 }
 
-void ini(/**/ HaloData *h) {
+void fin(/**/ HaloData *h) {
     delete h;
 }
