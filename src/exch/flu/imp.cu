@@ -20,6 +20,7 @@
 #include "comm/utils.h"
 
 #include "cloud/imp.h"
+#include "flu/type.h"
 
 #include "type.h"
 #include "imp.h"
@@ -39,6 +40,7 @@ namespace dev {
 #include "imp/pack.h"
 #include "imp/com.h"
 #include "imp/unpack.h"
+#include "imp/get.h"
 
 } // flu
 } // exch
