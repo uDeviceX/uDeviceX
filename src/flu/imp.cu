@@ -16,7 +16,6 @@
 
 #include "utils/mc.h"
 #include "utils/cc.h"
-#include "utils/kl.h"
 
 #include "algo/scan/int.h"
 #include "clist/imp.h"
@@ -28,8 +27,6 @@
 #include "imp.h"
 
 namespace flu {
-
-#include "dev.h"
 
 #include "imp/ini.h"
 #include "imp/fin.h"
