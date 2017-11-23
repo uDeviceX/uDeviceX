@@ -15,6 +15,8 @@
 #include "utils/kl.h"
 #include "utils/cc.h"
 
+#include "bulk/imp.h"
+
 #include "imp.h"
 
 /* implementation */

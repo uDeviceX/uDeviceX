@@ -10,3 +10,10 @@ void prepare(int n, const Cloud *c, /**/ BulkData *b) {
     if (multi_solvent)
         b->colors = c->cc;
 }
+
+void bulk_forces(int n, const BulkData *b, const int *start, const int *count, /**/ Force *ff) {
+    if (multi_solvent)
+        flocal_color(b->zipped_pp, b->zipped_rr, b->colors, n, start, count, b->rnd, /**/ ff);
+    else
+        flocal(b->zipped_pp, b->zipped_rr, n, start, count, b->rnd, /**/ ff);
+}
