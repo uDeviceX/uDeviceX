@@ -7,5 +7,4 @@ static void zip(const int n, const float *pp, /**/ float4 *zipped_pp, ushort4 *z
 void prepare(int n, const Cloud *c, /**/ BulkData *b) {
     if (n == 0) return;
     zip(n, c->pp, /**/ b->zipped_pp, b->zipped_rr);
-    
 }
