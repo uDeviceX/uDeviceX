@@ -82,6 +82,7 @@ void fin() {
     dpdr::free_ticketRh(&o::h.tr);
 
     fin_flu_distr(/**/ &o::d);
+    fin_flu_exch(/**/ &o::e);
     
     if (multi_solvent) {
         dpdr::free_ticketIcom(&o::h.tic);

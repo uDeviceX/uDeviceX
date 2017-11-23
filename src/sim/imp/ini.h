@@ -101,6 +101,7 @@ void ini() {
     ini(MAX_PART_NUM, /**/ &o::bulkdata);
     
     UC(ini_flu_distr(m::cart, /*io*/ &tag_gen, /**/ &o::d));
+    UC(ini_flu_exch(m::cart, /*io*/ &tag_gen, /**/ &o::e));
 
     dpdr::ini_ticketcom(m::cart, &tag_gen, &o::h.tc);
     dpdr::ini_ticketrnd(o::h.tc, /**/ &o::h.trnd);

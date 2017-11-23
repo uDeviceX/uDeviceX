@@ -9,6 +9,7 @@ flu::Quants       q;
 BulkData *bulkdata;
 
 FluDistr d;
+Fluexch e;
 
 /* [h]alo interactions : local halos : see type.h */
 H h;
